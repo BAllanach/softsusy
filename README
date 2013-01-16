@@ -1,0 +1,137 @@
+NB - started at revision 520
+
+-------------------------------------------------
+		   SOFTSUSY
+-------------------------------------------------
+
+
+QUICK INSTALLATION AND RUN TEST
+-------------------------------
+
+Download the gzipped tarball, from the SOFTSUSY homepage 
+http://projects.hepforge.org/softsusy/ for instance softsusy-3.2.tar.gz. Then,
+type (on a linux box)
+
+> tar -xvzf softsusy-3.2.tar.gz
+> cd softsusy-3.2
+> ./configure F77=gfortran
+> make
+
+which should compile the code. There are four C++ test programs, three of
+which can be run by the commands 
+> ./softsusy.x
+> ./rpvsoftsusy.x 
+> ./rpvneut.x
+The output from these commands can be checked against outputTest,
+rpvOutputTest and the RPV neutrino SOFTSUSY manual, respectively.
+
+You can run the SUSY Les Houches Accord input provided by running the commands
+> ./softpoint.x leshouches < lesHouchesInput
+> ./softpoint.x leshouches < slha2Input
+> ./softpoint.x leshouches < rpvHouchesInput
+You may check the output of these commands against the output files
+lesHouchesOutput, slha2Output and rpvHouchesOutput, respectively, that are
+provided with the SOFTSUSY distribution
+
+Alternatively, run with command line inputs, for example
+> ./softpoint.x sugra 100 250 -100 10 unified 1 lambdaP 3 2 2 0.01
+The output of this command is supplied in neutOutputTest
+
+INTRODUCTION
+------------
+
+The most recent version of SOFTSUSY and full documentation can be obtained
+from: http://projects.hepforge.org/softsusy/
+
+This code provides a SUSY spectrum in the MSSM with or without R-parity
+consistent with input low energy data, and a user supplied high energy
+constraint (eg minmal SUGRA). It is written in C++ with an emphasis on easy
+generalisability. Full three-family couplings and renormalisation group
+equations are employed, as well as one-loop finite corrections a la Bagger,
+Matchev, Pierce and Zhang. It can be used in conjunction with other programs
+for many different particle physics calculations. 
+
+If you use SOFTSUSY to write a paper, please cite B.C. Allanach,
+Comp. Phys. Comm. 143 (2002) 305, hep-ph/0104145, which is the SOFTSUSY
+manual. If you use the R-parity violating aspects, please cite
+B.C. Allanach and M.A. Bernhardt, Comp. Phys. Comm. 181 (2010) 232,
+arXiv:0903.1805 [hep-ph]. 
+If you use neutrino masses or mixings, please cite
+B.C. Allanach, M. Hanussek and C.H. Kom, arXiv:????.????.
+The manuals on the electronic hep-ph/ archive will be updated with the most
+recent version.  
+
+There are detailed comparisons between SOFTSUSY and other publicly available
+codes in 
+        * Precise Determination of the Neutral Higgs Boson Masses in the MSSM,
+	B.C. Allanach, A. Djouadi, J.L. Kneur, W. Porod, P. Slavich, JHEP 0409
+	(2004) 044, hep-ph/0406166, 
+        * Theoretical uncertainties in sparticle mass predictions from
+	computational tools, B.C. Allanach, S. Kraml, W. Porod, JHEP 03 (2003)
+	045, hep-ph/0302102  
+
+
+
+EXECTUABLE FILES: AFTER INSTALLATION
+------------------------------------
+    * softpoint.x: command-line interface. GMSB, AMSB, mSUGRA and general
+    boundary conditions possible. Main program: softpoint.cpp
+    * softsusy.x: example C++ test program - calculates spectrum of SPS1a
+    mSUGRA point with varying tan beta. Main program: main.cpp
+    * rpvsoftsusy.x: example C++ test program - calculates spectrum of SPS1a
+    mSUGRA point with varying lambda'_{331}(M_GUT). Main program: rpvmain.cpp
+    * rpvneut.x: example neutrino mass calculating R-parity violating 
+    test program. 
+
+FILES INCLUDED IN THIS DISTRIBUTION
+-----------------------------------
+aclocal.m4        lowe.cpp         rpvHouchesOutput  softpoint.h
+CHANGES           lowe.h           rpvmain.cpp       softsusy.cpp
+Config            main.cpp         rpvmain.h         softsusy.h
+configure         main.h           rpvneut.cpp       susy.cpp
+configure.ac      Makefile.am      rpvneut.h         susy.h
+COPYING           Makefile.in      rpvneutmain.cpp   tensor.cpp
+def.cpp           mycomplex.h      rpvOutputTest     tensor.h
+def.h             numerics.cpp     rpvsoft.cpp       twoloophiggs.f
+flavoursoft.cpp   numerics.h       rpvsoft.h         twoloophiggs.h
+flavoursoft.h     outputTest       rpvsusypars.cpp   utils.cpp
+GUIDELINES        physpars.cpp     rpvsusypars.h     utils.h
+INSTALL           physpars.h       slha2Input        xpr-base.h
+lesHouchesInput   README           slha2Output       xpr-matrix.h
+lesHouchesOutput  rge.cpp          softpars.cpp      xpr-vector.h
+linalg.cpp        rge.h            softpars.h
+linalg.h          rpvHouchesInput  softpoint.cpp
+
+INPUT AND INFO FILES
+--------------------
+    * [README] contains installation instructions and a list of included files
+    * [outputTest] is the output from the test program
+    * [slha2Input] is an alternative input file in the SUSY Les Houches Accord
+    2 format for SPS1a' 
+    * [slha2Output] is the result of running with the above input file and
+    includes flavour violation, for inclusion into codes like SusyBsg1.3 which
+    include flavour corrections     
+    * [lesHouchesInput] is an alternative input file in the SUSY  
+    Les Houches Accord format
+    * [rpvHouchesInput] is an alternative input file in the SUSY 
+    Les Houches Accord format for R-parity violation
+    * [rpvHouchesOutput] is the output from the R-parity violating test program
+    rpvmain.cpp
+
+LICENSE
+-------
+
+    SOFTSUSY Copyright (C) 2007 B.C. Allanach
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    See http://www.gnu.org/licenses/.  
+

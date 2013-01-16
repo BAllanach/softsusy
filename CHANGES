@@ -1,0 +1,6 @@
+1. 21/11/12 Added 3-loop SUSY MSSM RGEs in 3rd fam approximation
+2. 28/11/12 Testing the 2-loop SQCD corrections, which look wrong, and also
+making MSUSY the default output scale for DRbar parameters, even in the SLHA1
+option. 
+3. 6/1/12 Made predMzsq more accurate due to re-summing some logs in MZ^2
+calculation. I should improve convergence further. Thanks to David Shih.

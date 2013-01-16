@@ -1,0 +1,56 @@
+# Makefile for SOFTSUSY library and test program - old school version
+# Ben Allanach 
+
+.KEEP_STATE:
+
+# Choose your c++ compiler here: if you want to use the link to fortran, 
+# it's probably going to have to be g++ on linux
+CC=g++
+# fortran compiler and linker to C: pick the relevant one for your system .Sometimes g77-34 works. 
+#FF= g77
+#LFC= -lg2c 
+FF= gfortran
+LFC= -lgfortran
+
+.SUFFIXES:	.o .cpp .h .f .F
+.PRECIOUS:	.cpp .h .f .F libsoft.a
+
+#Optimisation level, eg: -O2 -march=i686, speeds by a factor of 2 on my machine
+OPT=
+#OR debug level: -g(n=1,2,3)
+DEBUG=
+CFLAGS= -I. -L. $(DEBUG) $(OPT) 
+
+.cpp.o:
+	$(CC) -c $(CFLAGS) $<
+.cpp.a:
+	$(CC) -c $(CFLAGS) $<
+	ar r $@ $*.o; rm $*.o
+.f.o:
+	$(FF) $(OPT) -c $< 
+.f.a:
+	$(FF) $(OPT) -c $< 
+	ar r $@ $*.o; rm $*.o
+
+# Chooses whether to use ranlib - not if your system is a linux one
+all: softsusy.x softpoint.x 
+	case `uname` in \
+	   Linux) RANL=;;\
+	   OSF1) CFLAGS="$(CFLAGS) -ieee";;\
+	   *) RANL="ranlib libnr.a";;\
+	   esac
+
+# Example C++ Softsusy calling program
+softsusy.x: Makefile main.o libsoft.a
+	$(CC) -o softsusy.x $(CFLAGS) main.o -lm -lsoft $(LFC);\
+	touch softsusy.x
+
+# Command-line program interface
+softpoint.x: Makefile softpoint.o libsoft.a
+	$(CC) -o softpoint.x $(CFLAGS) softpoint.o -lm -lsoft $(LFC);\
+	touch softpoint.x
+
+# Example R-parity violating calling program 
+rpvsoftsusy.x: Makefile rpvmain.o libsoft.a
+	$(CC) -o rpvsoftsusy.x $(CFLAGS) rpvmain.o -lm -lsoft $(LFC);\
+	touch softpoint.x
