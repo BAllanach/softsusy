@@ -379,8 +379,10 @@ public:
   /// muOld is a value of mu with which the current one is to be averaged, if
   /// it is set to some value above the number of the beast. This can be
   /// useful in attaining convergence in regions where it is difficult.
+  /// eps reflects how the old and new values of mu are to be averaged:
+  /// it's (eps * mu + (1-eps) * muOld)
   virtual void rewsb(int sgnMu, double mt, const DoubleVector & pars,
-		     double muOld = -6.66e66);
+		     double muOld = -6.66e66, double eps = 0.);
   /// Organises tree-level rewsb: call it at the low scale M_{SUSY}
   /// IO parameters: sgnMu is +/-1 (desired sign of mu)
   virtual void rewsbTreeLevel(int sgnMu);
@@ -398,10 +400,11 @@ public:
 		 int  & err);
   /// This is a check: predicts tan beta from the values of soft parameters
   /// and mu that we have
-  double predTanb() const;
+  double predTanb(double muSusy = -6.66e66) const;
   /// Predicts value of MZ(pole) from values of soft parameters and mu that we
   /// have. tanb=tan beta is also predicted
-  double predMzsq(double & tanb) const;
+  double predMzsq(double & tanb, double muOld = -6.66e66, double eps = 0.) 
+    const;
   /// Calculates fine-tuning for soft parameters and mu, m_3^2, top Yukawa. 
   /// IO parameters: bcPars 
   /// should be a vector giving the high-scale SUSY breaking boundary
@@ -864,6 +867,8 @@ double lnLHiggs(double mh);
 void nonUniGauginos(MssmSoftsusy & m, const DoubleVector & inputParameters);
 
 void splitGmsb(MssmSoftsusy & m, const DoubleVector & inputParameters);
+
+//double averageMus(susyMu, muOld);
 #endif
 
 

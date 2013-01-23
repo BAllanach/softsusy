@@ -90,11 +90,30 @@ int MssmSoftsusy::rewsbM3sq(double mu, double & m3sq) const {
 
 /// Predicts tan beta once mu and soft terms are predicted at low energy
 /// Useful for fine-tuning calculation. Call at MSusy only.
-double MssmSoftsusy::predTanb() const  {
+/*double MssmSoftsusy::predTanb() const  {
   double sin2t = 2.0 * displayM3Squared() / 
     (displayMh1Squared() - displayTadpole1Ms() + 
      displayMh2Squared() - displayTadpole2Ms() + 2.0 *
-     sqr(displaySusyMu())); 
+     sqr(susyMu)); 
+  
+  /// Note: we want to take inverse sine so that fundamental domain is greater
+  /// than pi/4. sin(pi - 2 beta)=sin 2 beta should achieve this.
+  /// we also use tan (pi/2 - theta) = 1/tan(theta)
+  double theta;
+  if (fabs(sin2t) < 1.0) theta = asin(sin2t) * 0.5;
+  else return 0.0;
+  
+  return 1.0 / tan(theta);
+  }*/
+/// Predicts tan beta once mu and soft terms are predicted at low energy
+/// Useful for fine-tuning calculation. Call at MSusy only.
+double MssmSoftsusy::predTanb(double susyMu) const  {
+  if (susyMu < -6.e66) susyMu = displaySusyMu();
+
+  double sin2t = 2.0 * displayM3Squared() / 
+    (displayMh1Squared() - displayTadpole1Ms() + 
+     displayMh2Squared() - displayTadpole2Ms() + 2.0 *
+     sqr(susyMu)); 
   
   /// Note: we want to take inverse sine so that fundamental domain is greater
   /// than pi/4. sin(pi - 2 beta)=sin 2 beta should achieve this.
@@ -105,6 +124,7 @@ double MssmSoftsusy::predTanb() const  {
   
   return 1.0 / tan(theta);
 }
+
 
 void MssmSoftsusy::doTadpoles(double mt, double sinthDRbar) {
 
@@ -511,21 +531,39 @@ void MssmSoftsusy::calcTadpole2Ms1loop(double mt, double sinthDRbar) {/// CHECKE
   }
 }
 
+//double averageMus(susyMu, muOld) {
+//  return; ///< placeholder
+//}
+
 /// Apply at scale MSusy: checked 19.12.2000
 /// Displays PHYSICAL MZ, ie MZ(q) - piZz^T(q)
 /// Fixed pizztMS to resummed version 6/1/13
-double MssmSoftsusy::predMzsq(double & tanb) const {
+double MssmSoftsusy::predMzsq(double & tanb, double muOld, double eps) const {
+  double susyMu = displaySusyMu();
+  tanb = predTanb(susyMu); 
+  if (muOld > -6.e66) susyMu = susyMu / eps - muOld * (1. / eps - 1.);
+
+  double pizztMS = sqr(displayMzRun()) - sqr(displayMz()); ///< resums logs
+  double MZsq = 2.0 *
+    ((displayMh1Squared() - displayTadpole1Ms() - 
+      (displayMh2Squared() - displayTadpole2Ms()) *
+      sqr(tanb)) / (sqr(tanb) - 1.0) - sqr(susyMu)) - 
+    pizztMS;
+
+  return MZsq;
+}
+/*double MssmSoftsusy::predMzsq(double & tanb) const {
   tanb = predTanb(); 
   
   double pizztMS = sqr(displayMzRun()) - sqr(displayMz()); ///< resums logs
   double MZsq = 2.0 *
     ((displayMh1Squared() - displayTadpole1Ms() - 
       (displayMh2Squared() - displayTadpole2Ms()) *
-      sqr(tanb)) / (sqr(tanb) - 1.0) - sqr(displaySusyMu())) - 
+      sqr(tanb)) / (sqr(tanb) - 1.0) - sqr(susyMu)) - 
     pizztMS;
 
   return MZsq;
-}
+  }*/
 
 /// Used to get useful information into ftCalc
 static MssmSoftsusy *tempSoft1;
@@ -885,7 +923,7 @@ void MssmSoftsusy::rewsbTreeLevel(int sgnMu) {
 /// mT2^2)) is best, or below if it's decoupled from there. 
 /// Call with zero, or no mt if you want tree level
 void MssmSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars,
-			 double muOld) {
+			 double muOld, double eps) {
   if (altEwsb) {
     alternativeEwsb(mt);
     return;
@@ -909,15 +947,21 @@ void MssmSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars,
     iterateMu(munew, sgnMu, mt, maxTries, pizztMS, sinthDRbarMS,
 	      tol, err); 
     
-    if (err == 2) flagMusqwrongsign(true);
+    if (err == 2) {
+      flagMusqwrongsign(true);
+      if (PRINTOUT > 2) cout << " mu^2<0 ";
+    }
     else flagMusqwrongsign(false); 
-    if (err == 1) flagNoMuConvergence(true);
+    if (err == 1) {
+      flagNoMuConvergence(true);
+      if (PRINTOUT > 2) cout << " no mu convergence ";
+    }
     else setSusyMu(munew);
     
     /// average mu with the input value of muOld, if it isn't the number of the
     /// beast   
     if (muOld > -6.e66) {
-      munew = ((munew + muOld) * 0.5);
+      munew = (munew * eps + muOld * (1. - eps));
       setSusyMu(munew);
     }
     
@@ -926,8 +970,6 @@ void MssmSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars,
     
     setM3Squared(m3sqnew);
 
-    
-    
     if ((displayMh1Squared() + 2.0 * sqr(displaySusyMu()) +
 	 displayMh2Squared() - 2.0 * fabs(displayM3Squared())) < 0.0 )
       flagHiggsufb(true);
@@ -6715,10 +6757,11 @@ void MssmSoftsusy::itLowsoft
     if (numTries == 1) setMsusy(calcMs()); 
     
     int err = 0;
-    err = runto(displayMsusy(), eps);
-    double tbIn; double predictedMzSq = predMzsq(tbIn);    
-    setPredMzSq(predictedMzSq);    
 
+    err = runto(displayMsusy(), eps);
+    double tbIn; double predictedMzSq = 0.;
+    predictedMzSq = predMzsq(tbIn);
+    setPredMzSq(predictedMzSq);  
     if (!ewsbBCscale) err = runto(mx, eps);
 
     /// Guard against the top Yukawa fixed point
@@ -6783,9 +6826,18 @@ void MssmSoftsusy::itLowsoft
     if (PRINTOUT > 0) cout << " mgut=" << mx << flush;
     
     mtrun = forLoops.mt;
-    /// Uses the average of the last two mu values if over 12 iterations
-    if (numTries < 11) rewsb(sgnMu, mtrun, pars);    
-    else rewsb(sgnMu, mtrun, pars, oldMu);    
+    //    double tbIn; double predictedMzSq = 0.;
+    if (numTries < 11) {
+      rewsb(sgnMu, mtrun, pars);    
+      //      predictedMzSq = predMzsq(tbIn);   
+    }
+    else { ///< After 11 tries, we start averaging old/new mu values
+      double epsi = 0.5;
+      if (numTries > 20) epsi = 0.2;
+      if (numTries > 30) epsi = 0.1;
+      rewsb(sgnMu, mtrun, pars, oldMu, epsi);    
+      //      predictedMzSq = predMzsq(tbIn, oldMu, eps);   
+    }
 
     oldMu = displaySusyMu();
 
