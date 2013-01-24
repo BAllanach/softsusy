@@ -30,3 +30,4 @@ outputTest
 rpvHouchesOutput
 rpvOutputTest
 slha2Output
+benchmarks/*.spec
