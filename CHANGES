@@ -3,4 +3,7 @@
 making MSUSY the default output scale for DRbar parameters, even in the SLHA1
 option. 
 3. 6/1/12 Made predMzsq more accurate due to re-summing some logs in MZ^2
-calculation. I should improve convergence further. Thanks to David Shih.
+calculation. Should improve convergence further. Thanks to David Shih.
+4. 22/1/12 Implemented more changes to convergence by taking different
+averages as the iterations progress. 
+

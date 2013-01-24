@@ -3,8 +3,7 @@
    - Project:     SOFTSUSY 
    - Author:      Ben Allanach 
    - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
-   - Webpage:     http://projects.hepforge.org/softsusy/
-
+   - Webpage:     http://allanach.home.cern.ch/allanach/softsusy.html
    \brief complex numbers and operators between them
 */
 
@@ -31,9 +30,7 @@ public:
   *********************************************************************************/
 
   double mod() const { return std::abs(*this); }///< returns modulus of number
-#if !(defined(__GXX_EXPERIMENTAL_CXX0X) || __cplusplus >= 201103L)
   double arg() const { return std::arg(*this); }///< returns angle (in Argand diagram): theta=-pi->pi
-#endif
 
   Complex conj() const { return std::conj(*this); }///< Complex conjugate
   Complex cc()   const { return std::conj(*this); }///< Complex conjugate
