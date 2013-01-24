@@ -31,3 +31,5 @@ rpvHouchesOutput
 rpvOutputTest
 slha2Output
 benchmarks/*.spec
+doc/*.ps
+doc/*.pdf
