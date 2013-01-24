@@ -1,4 +1,4 @@
-bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x
+bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x 
 
 lib_LTLIBRARIES = libsoft.la
 
@@ -14,7 +14,8 @@ rpvsoftsusy_x_LDADD = libsoft.la
 rpvneut_x_SOURCES = rpvneutmain.cpp
 rpvneut_x_LDADD = libsoft.la 
 
-EXTRA_DIST = doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
+DOCFILES=doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
+EXTRA_DIST=$(DOCFILES)
 
 OUTPUTFILES = slha2Output outputTest rpvOutputTest \
 lesHouchesOutput rpvHouchesOutput neutOutputTest \
@@ -98,7 +99,7 @@ benchmarks/rpv2.4.in benchmarks/rpv2.5.in \
 benchmarks/rpv3.1.in benchmarks/rpv3.2.in benchmarks/rpv3.3.in \
 benchmarks/rpv3.4.in benchmarks/rpv3.5.in 
 
-dist_pkgdata_DATA = $(INPUTFILES) $(OUTPUTFILES) CHANGES GUIDELINES COPYING
+dist_pkgdata_DATA = $(INPUTFILES) $(OUTPUTFILES) CHANGES GUIDELINES COPYING $(DOCFILES)
 CLEANFILES = 
 
 pkginclude_HEADERS = \
