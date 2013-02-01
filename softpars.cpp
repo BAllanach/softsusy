@@ -879,7 +879,7 @@ SoftParsMssm SoftParsMssm::beta2() const {
 	displaySusyMu() * 
 	(-12.0 * (3.0 * Ut * ht * ht2 + 3.0 * Ub * hb * hb2 + Ut * hb2 * ht +
 		  Ub * ht2 * hb + Utau * htau2 * htau) +
-	 (32.0 * gsq(3) + 1.9 * gsq(1)) * huuT + 
+	 (32.0 * gsq(3) + 1.6 * gsq(1)) * huuT + 
 	 (32.0 * gsq(3) - 0.8 * gsq(1)) * hddT + 2.4 * gsq(1) * heeT -
 	 (32.0 * gsq(3) * mG(3) + 1.6 * gsq(1) * mG(1)) * uuT -
 	 (32.0 * gsq(3) * mG(3) - 0.8 * gsq(1) * mG(1)) * ddT -
