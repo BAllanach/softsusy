@@ -929,7 +929,7 @@ int main(int argc, char *argv[]) {
 		  break;
 		case 13: {
 		  int num = int(d + EPSTOL);
-		  if (num == 1) tryToConvergeHard = true;		  
+		  if (num == 1) mAFlag = true;		  
 		}
 		  break;
 		default:

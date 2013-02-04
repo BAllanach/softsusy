@@ -17,6 +17,6 @@ Block MINPAR		     # Input parameters
     4   1.000000000e+00	     # sign(mu)
     5   0.000000000e+00	     # A0
 Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
-    1   1.000000000e-03      # Numerical precision: suggested range 10^(-3...-6)
+    1   1.000000000e-04      # Numerical precision: suggested range 10^(-3...-6)
     2   0.000000000e+00	     # Quark mixing parameter: see manual
     5   1.000000000e+00      # Include 2-loop scalar mass squared/trilinear RGEs

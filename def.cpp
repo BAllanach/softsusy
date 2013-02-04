@@ -45,7 +45,7 @@ namespace softsusy {
   /// default is to do a quick calculation instead of trying hard to get
   /// convergence 
   bool tryToConvergeHard = false;
-  /// DEBUG
-  bool printMuState = false;
+  /// default is to set tree-level tachyonic A masses to 0 in loops
+  bool mAFlag = false;
 }
 /// end of global variable declaration
