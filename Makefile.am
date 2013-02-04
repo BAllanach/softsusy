@@ -1,4 +1,4 @@
-bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf test
+bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf 
 
 lib_LTLIBRARIES = libsoft.la 
 
