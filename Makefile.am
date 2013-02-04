@@ -1,4 +1,4 @@
-bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
+bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf test
 
 lib_LTLIBRARIES = libsoft.la 
 
@@ -33,6 +33,16 @@ libsoft_la_LDFLAGS = $(FLIBS)
 
 DOCFILES=doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
 EXTRA_DIST=$(DOCFILES)
+
+OUTPUTFILES = slha2Output lesHouchesOutput rpvHouchesOutput 
+TESTOUTPUTFILES = .test/slha2Output .test/rpvHouchesOutput .test/lesHouchesOutput
+INPUTFILES = slha2Input lesHouchesInput rpvHouchesInput
+
+test: softpoint.x 
+	cp $(OUTPUTFILES) .test; make $(OUTPUTFILES); \
+	ndiff --relative-error 1.0e-3 slha2Output .test/slha2Output; \
+	ndiff --relative-error 1.0e-3 lesHouchesOutput .test/lesHouchesOutput; \
+	ndiff --relative-error 1.0e-3 rpvHouchesOutput .test/rpvHouchesOutput
 
 %Output : %Input softpoint.x 
 	./softpoint.x leshouches < $< > $@
