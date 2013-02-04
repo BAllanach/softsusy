@@ -15,7 +15,7 @@ rpvneut_x_SOURCES = rpvneutmain.cpp
 rpvneut_x_LDADD = libsoft.la 
 
 DOCFILES=doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
-EXTRA_DIST=$(DOCFILES)
+EXTRA_DIST=$(DOCFILES) 
 
 OUTPUTFILES = slha2Output outputTest rpvOutputTest \
 lesHouchesOutput rpvHouchesOutput neutOutputTest \
@@ -132,22 +132,3 @@ benchmarks/%.spec: benchmarks/%.in softpoint.x
 	$(install_sh) -d benchmarks
 	./softpoint.x leshouches < $< > $@
 
-doc: doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
-
-doc/rpcManual.pdf: doc/rpcManual.tex
-	cd doc; \
-	latex rpcManual.tex; latex rpcManual.tex; \
-	dvips -f rpcManual > rpcManual.ps; 	\
-	ps2pdf rpcManual.ps; cd ..
-
-doc/rpvManual.pdf: doc/rpvManual.tex
-	cd doc; \
-	latex rpvManual.tex; latex rpvManual.tex; \
-	dvips -f rpvManual > rpvManual.ps; 	\
-	ps2pdf rpvManual.ps; cd ..
-
-doc/neutManual.pdf: doc/neutManual.tex
-	cd doc; \
-	latex neutManual.tex; latex neutManual.tex; \
-	dvips -f neutManual > neutManual.ps; 	\
-	ps2pdf neutManual.ps; cd ..
