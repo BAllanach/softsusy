@@ -6444,6 +6444,11 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   /// 3-family mixed-up Yukawa couplings: From PDG 2000
   doQuarkMixing(mDq, mUq); 
 
+  if (MIXING == -1) {
+    mDq(1, 1) = 0.; mDq(2, 2) = 0.; mUq(1, 1) = 0.; mUq(2, 2) = 0.;
+    mLep(1, 1) = 0.; mLep(2, 2) = 0.;
+  }
+
   setMw(sqrt(0.25 * sqr(newGauge(2)) * sqr(vev) - 
 	     piWWT(displayMw(), displayMu()))); 
   setGaugeCoupling(1, newGauge(1));
