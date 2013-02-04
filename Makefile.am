@@ -49,10 +49,6 @@ neutrinoOutputTest: rpvneut.x
 gaugeUn.out: gaugeUn.x
 	./gaugeUn.x > gaugeUn.out 
 
-spsSLHAfiles/%.out : spsSLHAfiles/%.in softpoint.x
-	$(install_sh) -d spsSLHAfiles
-	./softpoint.x leshouches < $< > $@
-
 doc: doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
 
 doc/rpcManual.pdf: doc/rpcManual.tex
