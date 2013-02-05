@@ -39,7 +39,7 @@ int main() {
   cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
 
   /// Parameters used: CMSSM parameters
-  double m12 = 300., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 300.;
+  double m12 = 300., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 2710.5;
   int sgnMu = 1;      ///< sign of mu parameter 
   int numPoints = 10; ///< number of scan points
 
@@ -52,6 +52,8 @@ int main() {
   oneset.setMbMb(mbmb);
 
   oneset.toMz();      ///< Runs SM fermion masses to MZ
+
+  TOLERANCE = 1.0E-7;
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
@@ -66,7 +68,8 @@ int main() {
   
   /// Calculate the spectrum
   PRINTOUT = 1;
-  trialMuSq = 90000.;
+  //  for (int i = 0; i < numPoints; i++)
+  trialMuSq = 10000.;
   r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
   
   /// check the point in question is problem free: if so print the output
