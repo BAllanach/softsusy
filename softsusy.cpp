@@ -6342,10 +6342,10 @@ double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {
   /// of MZ compared to TOLERANCE if the program is struggling and gone beyond
   /// 10 tries - an extra 2 comes from MZ v MZ^2
   if (!in.displayProblem().testSeriousProblem()) {
-    sT(k) = 0.5 * 
+    /* DEBUG    sT(k) = 0.5 * 
       fabs(1. - minimum(predictedMzSq, sqr(MZ)) / 
 	   maximum(sqr(MZ), predictedMzSq));
-    if (numTries > 10) sT(k) *= 0.1;
+	   if (numTries > 10) sT(k) *= 0.1; */
   }
 
   return sT.max();
@@ -6811,18 +6811,24 @@ void MssmSoftsusy::itLowsoft
     if (PRINTOUT > 0) cout << " mgut=" << mx << flush;
     
     mtrun = forLoops.mt;
-    //    double tbIn; double predictedMzSq = 0.;
-    if (numTries < 11) {
+    /* OLD EWSB    if (numTries < 11) {
       rewsb(sgnMu, mtrun, pars);    
-      //      predictedMzSq = predMzsq(tbIn);   
     }
     else { ///< After 11 tries, we start averaging old/new mu values
       double epsi = 0.5;
       if (numTries > 20) epsi = 0.2;
       if (numTries > 30) epsi = 0.1;
       rewsb(sgnMu, mtrun, pars, oldMu, epsi);    
-      //      predictedMzSq = predMzsq(tbIn, oldMu, eps);   
-    }
+      } */
+
+    /// Beginning of new EWSB:
+    double munew = sgnMu * sqrt(fabs(trialMuSq));
+    setSusyMu(munew);
+    double m3sqnew = 0.;
+    if (rewsbM3sq(munew, m3sqnew) == 0) flagM3sq(false);
+    else flagM3sq(true);
+    setM3Squared(m3sqnew);    
+    /// End of new EWSB
 
     oldMu = displaySusyMu();
 

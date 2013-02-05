@@ -68,5 +68,7 @@ namespace softsusy{
   extern bool tryToConvergeHard;
   /// If =0 (default), sets tachyonic mA=0, otherwise resets mA=sqrt(|mA|^2)
   extern bool mAFlag;
+  /// this is the trial solution for mu that we're going to suppose
+  extern double trialMuSq;
 }
 #endif

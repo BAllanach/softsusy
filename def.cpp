@@ -47,5 +47,7 @@ namespace softsusy {
   bool tryToConvergeHard = false;
   /// default is to set tree-level tachyonic A masses to 0 in loops
   bool mAFlag = false;
+  /// this is the trial solution for mu that we're going to suppose
+  double trialMuSq = 0.;
 }
 /// end of global variable declaration
