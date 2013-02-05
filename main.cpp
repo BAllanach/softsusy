@@ -39,7 +39,7 @@ int main() {
   cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
 
   /// Parameters used: CMSSM parameters
-  double m12 = 300., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 2710.5;
+  double m12 = 300., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 2649.5;
   int sgnMu = 1;      ///< sign of mu parameter 
   int numPoints = 10; ///< number of scan points
 
@@ -67,20 +67,19 @@ int main() {
   bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
   
   /// Calculate the spectrum
-  PRINTOUT = 1;
-  //  for (int i = 0; i < numPoints; i++)
-  trialMuSq = 10000.;
-  r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+  PRINTOUT = 0;
+  for (int i = 0; i < numPoints; i++) {
+    trialMuSq = double(i * i) + 0.01;
+    r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
   
   /// check the point in question is problem free: if so print the output
   if (!r.displayProblem().test()) 
-    cout << tanb << " " << r.displayPhys().mh0 << " " 
-	 << r.displayPhys().mA0 << " " 
-	 << r.displayPhys().mH0 << " " 
-	 << r.displayPhys().mHpm << endl;
+    cout << sqrt(trialMuSq) << " " << r.displayPredMzSq() / sqr(MZ) << endl;
   else
     /// print out what the problem(s) is(are)
-    cout << tanb << " " << r.displayProblem() << endl;
+    cout << sqrt(trialMuSq) << " " << r.displayPredMzSq() / sqr(MZ) << 
+      r.displayProblem() << endl;
+  }
   }
   catch(const string & a) { cout << a; }
   catch(const char * a) { cout << a; }
