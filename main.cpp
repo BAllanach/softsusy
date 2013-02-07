@@ -41,7 +41,7 @@ int main() {
   /// Parameters used: CMSSM parameters
   double m12 = 300., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 2649.5;
   int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 10; ///< number of scan points
+  int numPoints = 100; ///< number of scan points
 
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
 
@@ -53,13 +53,15 @@ int main() {
 
   oneset.toMz();      ///< Runs SM fermion masses to MZ
 
-  TOLERANCE = 1.0E-7;
+  TOLERANCE = 1.0E-4;
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
-  cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
-       << TOLERANCE << endl << oneset << endl;
 
+  for (int k=0; k < 30; k++) {
+
+    m0 = 350. + k * 100.;
+    cout << "# m0=" << m0 << endl;
   /// Preparation for calculation: set up object and input parameters
   MssmSoftsusy r; 
   DoubleVector pars(3); 
@@ -69,7 +71,9 @@ int main() {
   /// Calculate the spectrum
   PRINTOUT = 0;
   for (int i = 0; i < numPoints; i++) {
-    trialMuSq = double(i * i) + 0.01;
+    double start = 0.1, end = 1000.;
+    double mu = (end - start) / double(numPoints) * double(i) + start;
+    trialMuSq = sqr(mu);
     r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
   
   /// check the point in question is problem free: if so print the output
@@ -77,8 +81,10 @@ int main() {
     cout << sqrt(trialMuSq) << " " << r.displayPredMzSq() / sqr(MZ) << endl;
   else
     /// print out what the problem(s) is(are)
-    cout << sqrt(trialMuSq) << " " << r.displayPredMzSq() / sqr(MZ) << 
+    cout << "# " << sqrt(trialMuSq) << " " << r.displayPredMzSq() / sqr(MZ) << 
       r.displayProblem() << endl;
+  }
+  cout << endl;
   }
   }
   catch(const string & a) { cout << a; }
