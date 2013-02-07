@@ -5,6 +5,7 @@ config.log
 configure
 Makefile
 Makefile.am
+anc/*.eps
 doc/*.dvi
 doc/*.aux
 doc/*.toc
