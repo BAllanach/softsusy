@@ -6,6 +6,8 @@ configure
 Makefile
 Makefile.am
 anc/*.eps
+anc/*.ps
+anc/*.pdf
 doc/*.dvi
 doc/*.aux
 doc/*.toc

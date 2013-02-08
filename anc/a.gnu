@@ -43,3 +43,8 @@ set output "multi11.eps"
 plot "cmssmScans" i 0 tit "default" w l, 1 notit w l ls 1 lc 2, \
 "cmssmScans" i 11 tit "M_{1/2}=400 GeV" w l ls 2 lc 3
 
+!gs -q -sPAPERSIZE=a4 -dNOPAUSE -dBATCH -sDEVICE=pswrite -sOutputFile=concat.ps *.eps
+!mpage -2 concat.ps > b.ps
+!ps2pdf b.ps 
+#!rm *.ps
+
