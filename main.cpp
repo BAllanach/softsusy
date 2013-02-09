@@ -62,14 +62,17 @@ void scan(double mtop, double alphasMZ, double mbmb, double m12, double a0,
       double mu = (end - start) / double(numPoints) * double(i) + start;
       trialMuSq = sqr(mu);
       r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+
+      r.runto(r.displayMsusy());
       
       /// check the point in question is problem free: if so print the output
       if (!r.displayProblem().test()) 
-	cout << sqrt(trialMuSq) << " " << r.displayPredMzSq() / sqr(MZ) << endl;
+	cout << sqrt(trialMuSq) << " " << r.displayPredMzSq() / sqr(MZ) 
+	     << " " << r.displayM3Squared()<< endl;
   else
     /// print out what the problem(s) is(are)
-    cout << "# " << sqrt(trialMuSq) << " " << r.displayPredMzSq() / sqr(MZ) << 
-      r.displayProblem() << endl;
+    cout << "# " << sqrt(trialMuSq) << " " << r.displayPredMzSq() / sqr(MZ) 
+	 << " " << r.displayM3Squared()<< r.displayProblem() << endl;
   }
   cout << endl;
   }  

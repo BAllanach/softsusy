@@ -1,11 +1,11 @@
 set term post enhanced color "Helvetica" 24
 set xlabel "{/Symbol m}(M_{SUSY})/GeV"
 set ylabel "M_Z^2(pred)/M_Z^2(exp)"
-set yrange [-40:40]
+#set yrange [-40:40]
 set title "m_0=350+(k*500) GeV, M_{1/2}=300 GeV, tan{/Symbol b}=10, A_0=0"
 
 set output "multi.eps"
-plot "cmssmScans" i 0 tit "default" w l, 1 notit w l ls 1 lc 2
+plot "cmssmScan" i 0 u 1:3 tit "default" w l, 1 notit w l ls 1 lc 2
 
 set output "multi1.eps"
 plot "cmssmScans" i 0 tit "default" w l, 1 notit w l ls 1 lc 2, \
