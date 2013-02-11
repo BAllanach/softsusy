@@ -78,6 +78,59 @@ void scan(double mtop, double alphasMZ, double mbmb, double m12, double a0,
   }  
 }
 
+void zoom(double mtop, double alphasMZ, double mbmb, double m12, double a0, 
+	 double tanb) {
+  double mGutGuess = 2.0e16;
+  /// Parameters used: CMSSM parameters
+  int sgnMu = 1;      ///< sign of mu parameter 
+  int numPoints = 200; ///< number of scan points
+  
+  QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
+  
+  oneset.setAlpha(ALPHAS, alphasMZ);
+  oneset.setPoleMt(mtop);
+  oneset.setMbMb(mbmb);
+
+  oneset.toMz();      ///< Runs SM fermion masses to MZ
+
+  TOLERANCE = 1.0E-6;
+
+  /// Print out the SM data being used, as well as quark mixing assumption and
+  /// the numerical accuracy of the solution
+
+  for (int k=23; k < 24; k++) {
+
+    double m0 = 350. + k * 100.;
+    cout << "# m0=" << m0 << endl;
+    /// Preparation for calculation: set up object and input parameters
+    MssmSoftsusy r; 
+    DoubleVector pars(3); 
+    pars(1) = m0; pars(2) = m12; pars(3) = a0;
+    bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
+    
+    /// Calculate the spectrum
+    PRINTOUT = 0;
+    for (int i = 0; i < numPoints; i++) {
+      double start = 50., end = 51.5;
+      double mu = (end - start) / double(numPoints) * double(i) + start;
+      trialMuSq = sqr(mu);
+      r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+
+      r.runto(r.displayMsusy());
+      
+      /// check the point in question is problem free: if so print the output
+      if (!r.displayProblem().test()) 
+	cout << sqrt(trialMuSq) << " " << r.displayPredMzSq() / sqr(MZ) 
+	     << " " << r.displayM3Squared()<< endl;
+  else
+    /// print out what the problem(s) is(are)
+    cout << "# " << sqrt(trialMuSq) << " " << r.displayPredMzSq() / sqr(MZ) 
+	 << " " << r.displayM3Squared()<< r.displayProblem() << endl;
+  }
+  cout << endl;
+  }  
+}
+
 int main() {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
@@ -90,6 +143,9 @@ int main() {
     /// most important Standard Model inputs: you may change these and recompile
     double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
     double m12 = 300., a0 = 0., tanb = 10.0;
+    zoom(mtop, alphasMZ, mbmb, m12, a0, tanb); cout << endl;
+    exit(0);
+
     scan(mtop, alphasMZ, mbmb, m12, a0, tanb); cout << endl;
 
     mtop = 172.5; cout << "# mt=172.5\n";
