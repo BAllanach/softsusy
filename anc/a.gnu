@@ -12,6 +12,17 @@ set output "multi.eps"
 set xlabel "{/Symbol m}(M_{SUSY})/GeV"
 plot "cmssmScans" i 0 u 1:2 tit "default" w l, 1 notit w l ls 1 lc 2
 
+set output "zoom1.eps"
+set title "m_0=2360 GeV, M_{1/2}=300 GeV, tan{/Symbol b}=10, A_0=0"
+plot "cmssmZoom" i 0 u 1:2  tit "default" w l, 1 notit w l ls 1 lc 2
+
+set output "zoom2.eps"
+set yrange [8.5:9.1]
+set xrange [50:55]
+plot "cmssmZoom" i 0 u 1:2  tit "default" w l, 1 notit w l ls 1 lc 2
+set autoscale
+set title "m_0=350+(k*500) GeV, M_{1/2}=300 GeV, tan{/Symbol b}=10, A_0=0"
+
 set output "multi1.eps"
 plot "cmssmScans" i 0 tit "default" w l, 1 notit w l ls 1 lc 2, \
 "cmssmScans" i 1 tit "m_t=173.5-1" w l ls 2 lc 3
