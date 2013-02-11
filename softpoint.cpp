@@ -931,6 +931,11 @@ int main(int argc, char *argv[]) {
 		  int num = int(d + EPSTOL);
 		  if (num == 1) mAFlag = true;		  
 		}
+		case 14: {
+		  int num = int(d + EPSTOL);
+		  if (num == 1) tryToConvergeHard = true;		  
+		}
+
 		  break;
 		default:
 		  cout << "# WARNING: Don't understand data input " << i 
@@ -1006,6 +1011,10 @@ int main(int argc, char *argv[]) {
     }
     
     oneset.toMz();
+
+    /// Initial guess for mu
+    //    double muFirst = 1000.;
+    //    r->setSusyMu(muFirst);
 
     double mgut =  r->lowOrg(boundaryCondition, mgutGuess, pars, sgnMu,
 			     tanb, oneset, gaugeUnification, ewsbBCscale);
