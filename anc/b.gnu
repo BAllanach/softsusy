@@ -13,7 +13,9 @@ plot "twoCond" i 0 u ($1):($5/500) tit "M_i/(500 GeV)" w l ls 1 lw 4 lc 2, \
 "twoCond" i 0 u ($1):2 tit "g_{1,2}" w l ls 1 lw 4, \
 "twoCond" i 0 u ($1):3 notit w l ls 1 lc 1 lw 4, \
 "twoCond" i 0 u ($1):4 tit "h_t" w l lw 4 lc 3, \
-"twoCond" i 1 u ($1):2 tit "boundary condition" w p  pt 7, \
+"twoCond" i 0 u ($1):($8/500) tit "{/Symbol m}/500 GeV" w l lw 4 lc 4, \
+"twoCond" i 1 u ($1):2 tit "boundary condition" w p  pt 7 lc 0, \
 "twoCond" i 1 u ($1):3 notit w p pt 7 lc 0, \
 "twoCond" i 1 u ($1):4 notit w p pt 7 lc 0, \
-"twoCond" i 2 u ($1):($5/500) notit w p pt 7 lc 0
+"twoCond" i 2 u ($1):($5/500) notit w p pt 7 lc 0, \
+"twoCond" i 3 u ($1):($8/500) notit w p pt 7 lc 0
