@@ -710,6 +710,69 @@ void FlavourMssmSoftsusy::lesHouchesAccordOutput(ostream & out,
   out.precision(nn);
 }
 
+void FlavourMssmSoftsusy::minparSLHA(ostream & out, const char model [], 
+				     const DoubleVector & pars, double tanb, 
+				     int sgnMu, double mgut, 
+				     bool ewsbBCscale) {
+  /// For universal models, users still want to know MX and it has to be
+  /// specially printed out as EXTPAR 0
+  bool printMX = false;
+
+  out << "Block MINPAR               # SUSY breaking input parameters\n";
+  out << "     3   "; printRow(out, tanb)            ; out << "   # tanb" << endl;
+  if (displayAltEwsb()) {
+    out << "     4   "; 
+    printRow(out, double(sgnMu)); 
+    out << "   # sign(mu)"<< endl;
+  }
+  if (!strcmp(model, "sugra")) {
+    out << "     1   "; printRow(out, sqrt(pars.display(4))); out << "   # m0" << endl;
+    out << "     2   "; printRow(out, pars.display(2)) ; out << "   # m12" << endl;
+    out << "     5   "; printRow(out, pars.display(62)) ; out << "   # A0" << endl;
+    printMX = true;
+  }
+  else if (!strcmp(model, "gmsb")) {
+    out << "     1   "; printRow(out, pars.display(3)); out << "   # lambda" << endl;
+    out << "     2   "; printRow(out, pars.display(2)) ; out << "   # M_mess" 
+	 << endl;
+    out << "     5   "; printRow(out, pars.display(1)) ; out << "   # N5" << endl;
+    out << "     6   "; printRow(out, pars.display(4)) ; out << "   # cgrav" << endl;
+  }
+  else if (!strcmp(model, "splitgmsb")) {
+    out << "     1   "; printRow(out, pars.display(2)); out << "   # lambdaL" << endl;
+    out << "     2   "; printRow(out, pars.display(3)) ; out << "   # lambdaD" 
+	 << endl;
+    out << "     5   "; printRow(out, pars.display(1)) ; out << "   # N5" << endl; 
+    out << "     6   "; printRow(out, 1.0) ; out << "   # cgrav" << endl;
+    out << "     7   "; printRow(out, pars.display(4)) ; out << "   # mMess" << endl;
+    out << "     8   "; printRow(out, pars.display(5)) ; out << "   # mu/M2" << endl;
+    out << "     9   "; printRow(out, pars.display(6)) ; out << "   # mA(pole)/M2" << endl;
+    out << "    10   "; printRow(out, pars.display(7)) ; out << "   # desired mh^0" << endl;
+}
+  else if (!strcmp(model, "amsb")) {
+    out << "     1   "; printRow(out, pars.display(2)) ; out << "   # m0" 
+	<< endl;
+    out << "     2   "; printRow(out, pars.display(1)); out << "   # m3/2" 
+	<< endl;
+    printMX = true;
+  }
+  else 
+    if (!strcmp(model, "nonUniversal")) 
+      extparSLHA(out, pars, mgut, ewsbBCscale);
+  else {
+    ostringstream ii;
+    ii << "Attempting to use SUSY Les Houches Accord for model " 
+       << model << " - cannot do at present in flavour violating version\n";
+    throw ii.str();
+  }  
+  if (printMX) {
+  out << "Block EXTPAR               # scale of SUSY breaking BCs\n";
+  out << "     0   "; printRow(out, mgut); out << "   # MX scale\n";
+  }
+}
+ 
+
+
 void FlavourMssmSoftsusy::doUpSquarks(double mt, double pizztMS, 
 				      double sinthDRbarMS, int accuracy) { 
   /// now need to re-do 6 by 6 scalar mass matrices
