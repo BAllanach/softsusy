@@ -40,7 +40,7 @@ INPUTFILES = slha2Input lesHouchesInput rpvHouchesInput
 
 test: softpoint.x 
 	git checkout $(OUTPUTFILES)
-	cp $(OUTPUTFILES) .test; make $(OUTPUTFILES); \
+	cp $(OUTPUTFILES) .test; rm $(OUTPUTFILES); make $(OUTPUTFILES); \
 	ndiff --relative-error 1.0e-3 slha2Output .test/slha2Output; \
 	ndiff --relative-error 1.0e-3 lesHouchesOutput .test/lesHouchesOutput; \
 	ndiff --relative-error 1.0e-3 rpvHouchesOutput .test/rpvHouchesOutput
