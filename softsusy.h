@@ -624,7 +624,7 @@ public:
   /// SMINPUTS block of SLHA
   void sminputsSLHA(ostream & out);
   /// MINPAR block of SLHA
-  virtual void minparSLHA(ostream & out, const char model [], 
+  void minparSLHA(ostream & out, const char model [], 
 		  const DoubleVector & pars, double tanb, int sgnMu, 
 		  double mgut, bool ewsbBCscale);
   /// EXTPAR block of SLHA

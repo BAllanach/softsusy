@@ -3070,8 +3070,7 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
   modselSLHA(out, model);
   FlavourMssmSoftsusy::sminputsSLHA(out);
   vckminSLHA(out);
-  FlavourMssmSoftsusy::minparSLHA(out, model, pars, tanb, sgnMu, mgut, 
-				  ewsbBCscale);  
+  MssmSoftsusy::minparSLHA(out, model, pars, tanb, sgnMu, mgut, ewsbBCscale);  
 
   RpvSoftsusy kw;
   kw.RpvSoftsusy::rpvSet(pars);
@@ -3142,7 +3141,7 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
   }  
   out.precision(nn);
 }
-  
+
 void RpvNeutrino::higgsMSLHA(ostream & out) {
   out << "        25    "; printRow(out, displayPhys().mh0); 
   out << "   # CP even neutral scalar\n";

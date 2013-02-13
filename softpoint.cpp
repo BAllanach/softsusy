@@ -959,7 +959,7 @@ int main(int argc, char *argv[]) {
     }
 
     /// prepare CKM angles
-    if (flavourViolation) k.setAngles(lambda, aCkm, rhobar, etabar);
+    if (flavourViolation || RPVflag) k.setAngles(lambda, aCkm, rhobar, etabar);
 
     if (r->displayAltEwsb()) {
       if (strcmp(modelIdent, "splitgmsb")) {
