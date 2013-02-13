@@ -4,4 +4,6 @@ from user. Don't use with flavour mixing though.
 3. 2/1/13: Fixed mAsq=0 problem when tree-level A-bosons are tachyonic. Should
 get rid of a few points that were labeled as `non-perturbative'. Thanks to S
 Kulkarni for noticing the problem
+4. 13/2/13: SLHA2 output in MINPAR and VCKMIN fixed for flavour violating and
+R-parity violating scenarios
  

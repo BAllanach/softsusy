@@ -720,7 +720,7 @@ void FlavourMssmSoftsusy::minparSLHA(ostream & out, const char model [],
 
   out << "Block MINPAR               # SUSY breaking input parameters\n";
   out << "     3   "; printRow(out, tanb)            ; out << "   # tanb" << endl;
-  if (displayAltEwsb()) {
+  if (!displayAltEwsb()) {
     out << "     4   "; 
     printRow(out, double(sgnMu)); 
     out << "   # sign(mu)"<< endl;

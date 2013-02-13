@@ -28,9 +28,9 @@ Block VCKMIN               # input CKM mixing matrix parameters
 Block MINPAR               # SUSY breaking input parameters
      3    1.00000000e+01   # tanb
      4    1.00000000e+00   # sign(mu)
-     1    5.00000000e+02   # m0
+     1    1.25000000e+02   # m0
      2    5.00000000e+02   # m12
-     5    5.00000000e+02   # A0
+     5    0.00000000e+00   # A0
 Block EXTPAR               # scale of SUSY breaking BCs
      0    1.80977083e+16   # MX scale
 # SOFTSUSY-specific non SLHA information:
