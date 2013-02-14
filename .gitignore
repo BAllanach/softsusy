@@ -27,9 +27,7 @@ softsusy.x
 aclocal.m4
 neutOutputTest
 outputTest
-rpvHouchesOutput
 rpvOutputTest
-slha2Output
 benchmarks/*.spec
 doc/*.ps
 doc/*.spl

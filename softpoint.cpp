@@ -929,8 +929,13 @@ int main(int argc, char *argv[]) {
 		  break;
 		case 13: {
 		  int num = int(d + EPSTOL);
+		  if (num == 1) mAFlag = true;		  
+		}
+		case 14: {
+		  int num = int(d + EPSTOL);
 		  if (num == 1) tryToConvergeHard = true;		  
 		}
+
 		  break;
 		default:
 		  cout << "# WARNING: Don't understand data input " << i 
@@ -954,7 +959,7 @@ int main(int argc, char *argv[]) {
     }
 
     /// prepare CKM angles
-    if (flavourViolation) k.setAngles(lambda, aCkm, rhobar, etabar);
+    if (flavourViolation || RPVflag) k.setAngles(lambda, aCkm, rhobar, etabar);
 
     if (r->displayAltEwsb()) {
       if (strcmp(modelIdent, "splitgmsb")) {

@@ -66,6 +66,7 @@ namespace softsusy{
   /// Tries really hard to get convergence when the going gets tough, at the
   /// cost of time for those points (takes up to 43 sec on my computer)
   extern bool tryToConvergeHard;
-  extern bool printMuState; ///< DEBUG
+  /// If =0 (default), sets tachyonic mA=0, otherwise resets mA=sqrt(|mA|^2)
+  extern bool mAFlag;
 }
 #endif

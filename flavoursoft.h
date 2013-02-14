@@ -161,6 +161,10 @@ public:
   void sminputsSLHA(ostream & out);
   /// VCKMIN inputs block of SLHA2
   void vckminSLHA(ostream & out);
+  /// Input SUSY parameters part of SLHA2
+  void minparSLHA(ostream & out, const char model [], 
+		  const DoubleVector & pars, double tanb, int sgnMu, 
+		  double mgut, bool ewsbBCscale);
   /// EXTPAR block of SLHA
   virtual void extparSLHA(ostream & out, const DoubleVector & pars, double mgut,
 			  bool ewsbBCscale);

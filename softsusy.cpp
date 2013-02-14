@@ -6283,9 +6283,6 @@ double MssmSoftsusy::realMinMs() const {
 /// Difference between two SOFTSUSY objects in and out: EWSB terms only
 double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {
 
-  if (printMuState) cout << in.displaySusyMu() << " " 
-			 << in.displayM3Squared() << endl;
-
   drBarPars inforLoops(in.displayDrBarPars()), 
     outforLoops(out.displayDrBarPars());  
 
@@ -6444,6 +6441,11 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   /// 3-family mixed-up Yukawa couplings: From PDG 2000
   doQuarkMixing(mDq, mUq); 
 
+  if (MIXING == -1) {
+    mDq(1, 1) = 0.; mDq(2, 2) = 0.; mUq(1, 1) = 0.; mUq(2, 2) = 0.;
+    mLep(1, 1) = 0.; mLep(2, 2) = 0.;
+  }
+
   setMw(sqrt(0.25 * sqr(newGauge(2)) * sqr(vev) - 
 	     piWWT(displayMw(), displayMu()))); 
   setGaugeCoupling(1, newGauge(1));
@@ -6506,25 +6508,8 @@ void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2,
   double mAsq = displayM3Squared() / (sin(beta) * cos(beta));
 
   if (mAsq < 0.) {
-    mAsq = 0.; 
-    flagTachyon(A0);
-    if (PRINTOUT > 1) cout << " mA^2(tree)=" << mAsq << " since m3sq=" 
-			     << displayM3Squared() << " @ "<< displayMu() 
-			   << " " << endl; 
-  }
-  /*  
-      This is the old version prior to 19/10/12. It struck me as a bad idea in
-      terms of convergence to have different treatments for if ma^2<0.
-
-      double mAsq = displayM3Squared() / (sin(beta) * cos(beta));
-      if (fabs(mAsq) < 1.0e-10) mAsq = displayMaCond();
-      if (mAsq < 0.0) {
-      
-      /// If it's for the EWSB BC at MZ, we simply use the one-loop corrected
-      /// mass for mA instead. You could indeed make this option permanent (ie
-      /// even for mAsq > 0) 
-      double tol = EPSTOL;
-      if (close(displayMu(), MZ, tol)) {
+    /* Previous solution: if we're at MZ, use the pole mA^2
+       if (close(displayMu(), MZ, tol)) {
       double mApole = physpars.mA0; /// physical value
       setDrBarPars(eg);
       
@@ -6540,18 +6525,18 @@ void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2,
       mAsq = poleMasq;
       
       if (mAsq < 0.) { flagTachyon(A0); mAsq = fabs(poleMasq); }
-      } 
-      else {
-      
-      flagTachyon(A0);
-      if (PRINTOUT > 1) cout << " mA^2(tree)=" << mAsq << " since m3sq=" <<
-      displayM3Squared() << " @ "<< displayMu() <<
-      " " << endl; 
-      mAsq = fabs(mAsq);
       }
-      }
-  */
-
+     */
+    flagTachyon(A0); 
+    if (mAFlag == false) mAsq = zeroSqrt(mAsq); 
+    /// This may be  a bad idea in terms of convergence
+    else mAsq = fabs(mAsq);
+    
+    if (PRINTOUT > 1) cout << " mA^2(tree)=" << mAsq << " since m3sq=" 
+			   << displayM3Squared() << " @ "<< displayMu() 
+			   << " " << endl; 
+  }
+    
   DoubleMatrix mH(2, 2); 
   mH(1, 1) = mAsq * sqr(sin(beta)) + mz2 * sqr(cos(beta));
   mH(1, 2) = - sin(beta) * cos(beta) * (mAsq + mz2); 
@@ -6841,10 +6826,8 @@ void MssmSoftsusy::itLowsoft
 
     oldMu = displaySusyMu();
 
-    if (printMuState) cout << numTries << " ";
     fracDiff = sumTol(*this, old, numTries);    
     
-    if (!printMuState) {///DEBUG
     if (numTries !=0 && fracDiff < tol) {///< Accuracy achieved: bail out
       numTries = 0; ///< Reset the number of iterations for the next time
       if (PRINTOUT > 0) cout << " sT=" << fracDiff << " " << flush; 
@@ -6853,7 +6836,7 @@ void MssmSoftsusy::itLowsoft
 
       return; 
     }
-    }///< DEBUG
+
     // All problems should be reset since only the ones of the final iteration
     // should count (sometimes problems disappear). This can mean that problems
     // only show up as no rho convergence....
