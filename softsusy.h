@@ -703,6 +703,12 @@ public:
   /// corrections into account etc. oneset provides low energy data and
   /// tanb=tan beta 
   virtual MssmSusy guessAtSusyMt(double tanb, const QedQcd & oneset);
+
+  string  printSumut() {
+    ostringstream a; a << displayMu() << endl; return a.str();
+  };
+  
+
 };
 
 inline MssmSoftsusy::MssmSoftsusy()
