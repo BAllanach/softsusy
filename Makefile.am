@@ -132,3 +132,12 @@ benchmarks/%.spec: benchmarks/%.in softpoint.x
 	$(install_sh) -d benchmarks
 	./softpoint.x leshouches < $< > $@
 
+updateWeb: dist 
+	scp softsusy-*.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; \
+	scp *{Input,Output}* allanach@login.hepforge.org:~/softsusy/public_html/code; \
+	scp {def.h,outputTest,README} allanach@login.hepforge.org:~/softsusy/public_html/code; \
+	scp Makefile.alt allanach@login.hepforge.org:~/softsusy/public_html/Makefile
+	scp -r doc allanach@login.hepforge.org:~/softsusy/public_html/; \
+	doxygen softsusy.cfg; \
+	scp -r html allanach@login.hepforge.org:~/softsusy/public_html; \
+	rm -fr html *.tar.gz
