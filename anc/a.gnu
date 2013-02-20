@@ -61,7 +61,7 @@ plot "cmssmScans" i 0 tit "default" w l, 1 notit w l ls 1 lc 2, \
 
 set title "m_0=2350 GeV, M_{1/2}=300 GeV, tan{/Symbol b}=10, A_0=0"
 unset ylabel
-set xtics 0.02
+set xtics 0.1
 set output "reason.eps"
 plot "zoomEwsb" i 0 u 1:(4*($2-($7-$8))) tit \
 "M_Z-(m_{{/Symbol c}@_1^0}+m_{{/Symbol c}@_2^0})" w l, 0 notit w l, \
@@ -70,7 +70,7 @@ plot "zoomEwsb" i 0 u 1:(4*($2-($7-$8))) tit \
 
 
 set output "reason2.eps"
-plot "zoomEwsb" i 0 u 1:14 tit "PI" w l
+plot "zoomEwsb" i 0 u 1:11 tit "{/Symbol P}_{WW}^{T}(M_W)" w l
 set xtics 1
 #plot "zoomEwsb" i 1 u 1:($7+$6), "zoomEwsb" i 1 u 1:5
 #plot "zoomEwsb" i 1 u 1:(($5-($7+$6))) tit \

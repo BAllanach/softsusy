@@ -865,7 +865,7 @@ SoftParsMssm SoftParsMssm::beta2() const {
        cuBeta * huuT - cuBeta * mG * uuT + 
        cdBeta * hddT - cdBeta * mG * ddT + 
        ceBeta * heeT - ceBeta * mG * eeT); // checked
-
+  
     double dmH1sq2, dm3sq2, dmH2sq2;
     if (MIXING < 1) {
       /// The following are valid in the third-family approximation -- they are

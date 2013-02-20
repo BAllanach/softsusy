@@ -49,5 +49,8 @@ namespace softsusy {
   bool mAFlag = false;
   /// this is the trial solution for mu that we're going to suppose
   double trialMuSq = 0.;
+  /// For debugging purposes: only prints certain information out after it's
+  /// been switched on
+  bool printDEBUG = false;
 }
 /// end of global variable declaration

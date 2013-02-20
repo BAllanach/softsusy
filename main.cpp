@@ -110,7 +110,7 @@ void zoom(double mtop, double alphasMZ, double mbmb, double m12, double a0,
     
     /// Calculate the spectrum
     PRINTOUT = 0;
-    for (int i = 0; i < numPoints; i++) {
+    for (int i = 3; i < 4; i++) {
       double start = 55., end = 60.;
       double mu = (end - start) / double(numPoints) * double(i) + start;
       trialMuSq = sqr(mu);
@@ -121,6 +121,9 @@ void zoom(double mtop, double alphasMZ, double mbmb, double m12, double a0,
       
       drBarPars s(r.displayDrBarPars());
 
+      printDEBUG = true;
+
+      cout << endl; ///< DEBUG
       /// check the point in question is problem free: if so print the output
       if (!r.displayProblem().test()) {
 	cout << sqrt(trialMuSq) << " " << r.displayMu() << " " << 
@@ -129,8 +132,8 @@ void zoom(double mtop, double alphasMZ, double mbmb, double m12, double a0,
 	cout << " " << s.mw << " " << " " << s.mch(1) << " " 
 	     << " " << s.mneut(1) << " " << s.mneut(2) << " " 
 	     << r.piZZT(r.displayMz(), r.displayMu(), true) << " " 
-	     << r.piWWT(0., r.displayMu(), true) << " " 
-	     << r.piWWT(r.displayMw(), r.displayMu(), true) << " " 
+	  //	     << r.piWWT(0., r.displayMu(), true) << " " 
+	     << r.piWWT(r.displayMwRun(), r.displayMu(), true) << " " 
 	     << r.displayGaugeCoupling(1) << " " 
 	     << r.displayGaugeCoupling(2) << " " 
 	     << r.displayGaugeCoupling(3) << " " 

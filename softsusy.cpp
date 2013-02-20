@@ -7235,6 +7235,10 @@ double MssmSoftsusy::piWWT(double p, double q, bool usePoleMt) const {
 	/ sqr(g);
     }
 
+  if (printDEBUG) {
+    cout << "DEBUG*** " << smHiggs << " " << susyHiggs << " " << sfermions << " " << fermions << " " << gauginos << " " << slepton << " " << stopBot << endl 
+	 << hfn(p, mU, mD, q) << " "<< hfn(p, mc, ms, q) << " " << hfn(p, mtop, mb, q) << " " << hfn(p, 0.0, mE, q) << " " << hfn(p, EPSTOL, mmu, q) << " " << hfn(p, 0.0, mtau, q) << " " << mmu << " " << q << " " << p << endl;
+  }
   ans = smHiggs + susyHiggs + sfermions + fermions + gauginos + slepton + 
     stopBot;
 

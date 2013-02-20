@@ -70,5 +70,6 @@ namespace softsusy{
   extern bool mAFlag;
   /// this is the trial solution for mu that we're going to suppose
   extern double trialMuSq;
+  extern bool printDEBUG;
 }
 #endif
