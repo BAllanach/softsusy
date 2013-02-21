@@ -51,6 +51,6 @@ namespace softsusy {
   double trialMuSq = 0.;
   /// For debugging purposes: only prints certain information out after it's
   /// been switched on
-  bool printDEBUG = false;
+  vector<bool> printDEBUG(1, false);
 }
 /// end of global variable declaration

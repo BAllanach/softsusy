@@ -13,6 +13,8 @@
 #define DEF_H
 
 #include <cmath>
+#include <vector>
+using std::vector;
 namespace softsusy{
   const char SOFTSUSY_VERSION[] = "3.3.6";
 
@@ -70,6 +72,6 @@ namespace softsusy{
   extern bool mAFlag;
   /// this is the trial solution for mu that we're going to suppose
   extern double trialMuSq;
-  extern bool printDEBUG;
+  extern vector<bool> printDEBUG;
 }
 #endif

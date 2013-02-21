@@ -7235,9 +7235,16 @@ double MssmSoftsusy::piWWT(double p, double q, bool usePoleMt) const {
 	/ sqr(g);
     }
 
-  if (printDEBUG) {
-    cout << "DEBUG*** " << smHiggs << " " << susyHiggs << " " << sfermions << " " << fermions << " " << gauginos << " " << slepton << " " << stopBot << endl 
-	 << hfn(p, mU, mD, q) << " "<< hfn(p, mc, ms, q) << " " << hfn(p, mtop, mb, q) << " " << hfn(p, 0.0, mE, q) << " " << hfn(p, EPSTOL, mmu, q) << " " << hfn(p, 0.0, mtau, q) << " " << mmu << " " << q << " " << p << endl;
+  if (printDEBUG[0]) {
+    /*    cout << "DEBUG*** " << smHiggs << " " << susyHiggs << " " << sfermions << " " << fermions << " " << gauginos << " " << slepton << " " << stopBot << endl 
+	 << hfn(p, mU, mD, q) << " "<< hfn(p, mc, ms, q) << " " << hfn(p,
+	 mtop, mb, q) << " " << hfn(p, 0.0, mE, q) << " " << hfn(p, EPSTOL,
+	 mmu, q) << " " << hfn(p, 0.0, mtau, q) << " " << mmu << " " << q << "
+	 " << p << endl; */
+    printDEBUG[1] = true;
+    cout << "\nDEBUG: " << hfn(p, 0., mmu, q) << " " << p << " " << mmu << " " << q << endl;
+    cout << "\nDEBUG: " << hfn(p, 0., mE, q) << " " << p << " " << mE << " " << q << endl;
+    //    printDEBUG[1] = false;
   }
   ans = smHiggs + susyHiggs + sfermions + fermions + gauginos + slepton + 
     stopBot;

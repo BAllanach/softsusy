@@ -121,7 +121,7 @@ void zoom(double mtop, double alphasMZ, double mbmb, double m12, double a0,
       
       drBarPars s(r.displayDrBarPars());
 
-      printDEBUG = true;
+
 
       cout << endl; ///< DEBUG
       /// check the point in question is problem free: if so print the output
@@ -131,10 +131,12 @@ void zoom(double mtop, double alphasMZ, double mbmb, double m12, double a0,
 	     << s.mz;
 	cout << " " << s.mw << " " << " " << s.mch(1) << " " 
 	     << " " << s.mneut(1) << " " << s.mneut(2) << " " 
-	     << r.piZZT(r.displayMz(), r.displayMu(), true) << " " 
+	     << r.piZZT(r.displayMz(), r.displayMu(), true) << " ";
+	printDEBUG[0] = true;	
 	  //	     << r.piWWT(0., r.displayMu(), true) << " " 
-	     << r.piWWT(r.displayMwRun(), r.displayMu(), true) << " " 
-	     << r.displayGaugeCoupling(1) << " " 
+	cout << r.piWWT(r.displayMwRun(), r.displayMu(), true) << " ";
+	printDEBUG[0] = false; 
+	cout  << r.displayGaugeCoupling(1) << " " 
 	     << r.displayGaugeCoupling(2) << " " 
 	     << r.displayGaugeCoupling(3) << " " 
 	     << endl;
@@ -149,13 +151,13 @@ void zoom(double mtop, double alphasMZ, double mbmb, double m12, double a0,
 }
 
 int main() {
+  printDEBUG.push_back(false);
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
   try {
     /// Sets format of output: 6 decimal places
-    outputCharacteristics(6);
-    
+    outputCharacteristics(16);
     
     /// most important Standard Model inputs: you may change these and recompile
     double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
