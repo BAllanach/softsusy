@@ -157,7 +157,7 @@ int main() {
 
   try {
     /// Sets format of output: 6 decimal places
-    outputCharacteristics(16);
+    outputCharacteristics(6);
     
     /// most important Standard Model inputs: you may change these and recompile
     double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
