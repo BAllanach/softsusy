@@ -90,7 +90,7 @@ double d0(double m1, double m2, double m3, double m4);
 
 // inlined PV functions
 inline double a0(double m, double q) {
-  if (m == 0.0) return 0.0;
+  if (fabs(m) < EPSTOL) return 0.;
   return sqr(m) * (1.0 - log(sqr(m / q)));
 }
 
@@ -113,12 +113,13 @@ inline double b22bar(double p, double m1, double m2, double q) {
   return b22(p, m1, m2, q) - 0.25 * a0(m1, q) - 0.25 * a0(m2, q);
 }
 
-inline double fB(const Complex & x) {
+/*inline double fB(const Complex & x) {
   /// special case at 0
   //  if (x.real() < EPSTOL * 10. && x.imag() < EPSTOL * 10.) return -1.;
   return (log(Complex(1.0 - x)) - x * log(Complex(1.0 - 1.0 / x)) 
-	  - Complex(1.0)).real();
-  } 
+         - Complex(1.0)).real();
+	 } */
+double fB(const Complex & x);
 
 double dilogarg(double t);
 double dilog(double x);

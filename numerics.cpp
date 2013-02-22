@@ -318,6 +318,43 @@ double bIntegral(int n1, double p, double m1, double m2, double mt) {
 /// Decides level at which one switches to p=0 limit of calculations
 const double pTolerance = 1.0e-6; 
 
+double fB(const Complex & a) {
+  /// First, special cases at problematic points
+  double x = a.real(), y = a.imag();
+  if (close(y, 0., pTolerance)) {
+    if (close(x, 0., pTolerance)) {
+      double ans = -1. - x - sqr(x) + PI * y;
+      if (x > 0.) ans += x * log(x);
+      else ans += -PI * y;
+      return ans;
+    }
+    if (close(x, 1., pTolerance)) {
+      double eps = x - 1.;
+      double ans = -1. + eps;
+      if (eps > 0.) ans += -eps * log(eps);
+      else ans += PI * y;
+
+      return ans;
+    }
+  } else if (close(x, 0., pTolerance)) {
+
+    Complex ans(0., 0.), I(0., 1), one(1., 0.);
+    ans = -1. - I * y * log(Complex(1. + I / y));
+    ans += -x * log(Complex(1. + I / y));
+    return ans.real();
+  } else if (close(x, 1., pTolerance)) {
+    double eps = x - 1.;
+    Complex ans(0., 0.), I(0., 1), one(1., 0.);
+    ans = -one + log(-I * y) - log(Complex(y  /(-I  + y))) * (-I + y);
+    ans += -eps * log(y / (y-I));
+    return ans.real(); 
+  }
+
+  Complex ans = log(Complex(1.0 - a)) - a * log(Complex(1.0 - 1.0 / a)) 
+    - Complex(1.0);
+  return ans.real();
+}
+  
 /*
   Analytic expressions follow for above integrals: sometimes useful!
   From hep-ph/9606211
@@ -329,23 +366,20 @@ double b0(double p, double m1, double m2, double q) {
   return B0(p*p, m1*m1, m2*m2).real();
 #endif
 
-  //  cout << "printDEBUG=" << printDEBUG[1];
-
   double mMin = minimum(fabs(m1), fabs(m2));
   double mMax = maximum(fabs(m1), fabs(m2));
 
   double pSq = sqr(p), mMinSq = sqr(mMin), mMaxSq = sqr(mMax);
   double s = pSq - mMinSq + mMaxSq;
 
-  //  if (printDEBUG[1]) cout << " disc=" << sqr(p) << " <> " << pTolerance * sqr(mMin)<< " ";
   if (sqr(p) > pTolerance * sqr(mMin)) {    
-    //    if (printDEBUG[1]) cout << "High p ";
-    if (mMaxSq < pSq * pTolerance) {
+    /*    if (mMaxSq < pSq * pTolerance) {
+      //      cerr << "High p " << m2 << endl;
       if (printDEBUG[1]) cout << "#" << mMaxSq << "<"<< pSq * pTolerance <<" ";
       return 2. - 2. * log(p / q);
-    }
+      }*/
 
-    Complex iEpsilon(0.0, EPSTOL * sqr(mMax));
+    Complex iEpsilon(0.0, EPSTOL);
     
     Complex xPlus, xMinus;
 
@@ -353,26 +387,22 @@ double b0(double p, double m1, double m2, double q) {
       (2. * sqr(p));
     xMinus = 2. * (sqr(mMax) - iEpsilon) / 
       (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
-    
+   
     double ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
 
     return ans;
   }
   else {
-    //    if (printDEBUG[1]) cout << "Low p ";
     if (close(m1, m2, EPSTOL)) {
-      //      if (printDEBUG[1]) cout << "close m ";      
       return - log(sqr(m1 / q));
     }
     else {
       double Mmax2 = sqr(mMax),
 	Mmin2 = sqr(mMin); 
       if (Mmin2 < sqr(TOLERANCE)) {
-	//		if (printDEBUG[1]) cout << "low mMin ";
 	return 1.0 - log(Mmax2 / sqr(q));
       }
       else {
-	//		if (printDEBUG[1]) cout << "high mMin ";
 	return 
 	  1.0 - log(Mmax2 / sqr(q)) + Mmin2 * log(Mmax2 / Mmin2) 
 	  / (Mmin2 - Mmax2);
@@ -411,34 +441,27 @@ double b22(double p,  double m1, double m2, double q) {
   double answer;
   
   if (sqr(p) < pTolerance * maximum(sqr(m1), sqr(m2)) ) {
-    //    if (printDEBUG[1]) cout << "Low p approx ";
     // m1 == m2 with good accuracy
     if (close(m1, m2, EPSTOL)) {
-      //      if (printDEBUG[1]) cout << "m1=m2 approx\n";
       answer = -sqr(m1) * log(sqr(m1 / q)) * 0.5 + sqr(m1) * 0.5;
     }
     else
       /// This zero p limit is good
       if (fabs(m1) > EPSTOL && fabs(m2) > EPSTOL) {
-	//	if (printDEBUG[1]) cout << "General low p approx ";
 	answer = 0.375 * (sqr(m1) + sqr(m2)) - 0.25 * 
 	  (sqr(sqr(m2)) * log(sqr(m2 / q)) - sqr(sqr(m1)) * 
 	   log(sqr(m1 / q))) / (sqr(m2) - sqr(m1)); 
       }
       else
 	if (fabs(m1) < EPSTOL) {
-	  //	  if (printDEBUG[1]) cout << "Low m1 approx ";
 	  answer = 0.375 * sqr(m2) - 0.25 * sqr(m2) * log(sqr(m2 / q));
 	}
 	else {
-	  //	  if (printDEBUG[1]) cout << "Low m2 approx\n";
 	  answer = 0.375 * sqr(m1) - 0.25 * sqr(m1) * log(sqr(m1 / q));
 	}
   }
   else {// checked
-    //    if (printDEBUG[1]) cout << "General approx ";
     double b0Save = b0(p, m1, m2, q);
-    //    if (printDEBUG[1]) cout << "b0=" << b0Save;
     double m2p = m2, m1p = m1, pp = p, qp = q;    
 
     double ans = 1.0 / 6.0 * 
@@ -456,8 +479,6 @@ double b22(double p,  double m1, double m2, double q) {
     answer = ans;
   }
 
-  //  if (printDEBUG[1]) cout << " b22(" << p << "," << m1 << "," << m2 << "," << q << ")=" << answer;
-  
   return answer;
 }
 
