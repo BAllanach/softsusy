@@ -66,8 +66,11 @@ bool testNan(double f) {
 }
 
 bool close(double m1, double m2, double tol) {
-  return (fabs(maximum(fabs(m1), fabs(m2)) - fabs(minimum(fabs(m1), fabs(m2))))
-	  <= tol * maximum(fabs(m1), fabs(m2)));
+  double mmax = fabs(maximum(fabs(m1), fabs(m2)));
+  double mmin = fabs(minimum(fabs(m1), fabs(m2)));
+
+  if (mmax < EPSTOL) return 1; 
+  return (mmax - mmin <= tol * mmax);
 }
 
 
