@@ -63,24 +63,25 @@ void muScan(double m0, double mtop, double alphasMZ, double mbmb, double m12,
     double mu = (end - start) / double(numPoints) * double(i) + start;
     trialMuSq = sqr(mu);
     double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
-    
+
     drBarPars s(r.displayDrBarPars());
     
     /// check the point in question is problem free: if so print the output
     if (!r.displayProblem().test()) {
       cout << sqrt(trialMuSq) << " " 
 	   << r.displayMu() << " " 
-	   << r.displayPredMzSq() / sqr(r.displayMu()) << " " 
+	   << r.displayPredMzSq() / sqr(MZ) << " " 
 	   << s.mw << " " << " " << s.mch(1) << " " 
 	   << " " << s.mneut(1) << " " << s.mneut(2) << " " 
 	   << r.piZZT(r.displayMz(), r.displayMu(), true) << " "
 	   << r.piWWT(0., r.displayMu(), true) << " " 
-	   << r.piWWT(r.displayMwRun(), r.displayMu(), true) << " ";
+	   << r.piWWT(r.displayMw(), r.displayMu(), true) << " ";
       cout  << r.displayGaugeCoupling(1) << " " 
 	    << r.displayGaugeCoupling(2) << " " 
 	    << r.displayGaugeCoupling(3) << " " 
 	    << r.displayTadpole1Ms() << " "
 	    << r.displayTadpole2Ms() << " "
+	    << mx
 	    << endl;
     }
   }

@@ -59,23 +59,22 @@ set output "multi11.eps"
 plot "cmssmScans" i 0 tit "default" w l, 1 notit w l ls 1 lc 2, \
 "cmssmScans" i 11 tit "M_{1/2}=400 GeV" w l ls 2 lc 3
 
+set key spacing 1.5
 set title "m_0=2650 GeV, M_{1/2}=300 GeV, tan{/Symbol b}=10, A_0=0"
 unset ylabel
 set xtics 1
-set output "reason.eps"
-plot "zoomEwsb" i 1 u 1:($2-(abs($6)+abs($7))) tit \
-"M_Z-(m_{{/Symbol c}@_1^0}+m_{{/Symbol c}@_2^0})" w l, 0 notit w l, \
-"zoomEwsb" i 1 u 1:(10*($3-8.98)-0.5) tit "f(M_Z^2(pred)/M_Z^2(exp))" w l
+set xlabel "{/Symbol m}(M_{SUSY})"
+set output "reason1.eps"
+
+set yrange [-20:30]
+plot "zoomEwsb" i 1 u 1:(91.1887-(abs($6)+abs($7))) tit \
+"M_Z-(m_{{/Symbol c}@_1^0}+m_{{/Symbol c}@_2^0})" w l lw 4, 0 notit w l ls 1 lc 2 lw 4, \
+"zoomEwsb" i 1 u 1:(91.1887-(2*abs($5))) tit "M_Z-2m_{{/Symbol c}@_1^0}" w l lw 4, \
+"zoomEwsb" i 1 u 1:(10*($3-8.98)-0.5) tit "f(M_Z^2(pred)/M_Z^2(exp))" w l lw 4, \
+"zoomEwsb" i 1 u 1:($10+95) tit "{/Symbol P}_{WW}^{T}(M_W)" w l lw 4, \
+"zoomEwsb" i 1 u 1:(($16-1.84e16)/1.e14-120) tit "M_{GUT}/10^{16} GeV" w l lc 0 lw 4
 set autoscale
 
-set output "reason2.eps"
-plot "zoomEwsb" i 0 u 1:10 tit "{/Symbol P}_{WW}^{T}(M_W)" w l
-set xtics 1
-#plot "zoomEwsb" i 1 u 1:($7+$6), "zoomEwsb" i 1 u 1:5
-#plot "zoomEwsb" i 1 u 1:(($5-($7+$6))) tit \
-#"M_Z-2m_{{/Symbol c}@_2^0}" w l, 0 notit w l, \
-#"zoomEwsb" i 1 u 1:(10*($3-8.4)) tit "f(M_Z^2(pred)/M_Z^2(exp))" w l
-unset xtics
 
 
 !gs -q -sPAPERSIZE=a4 -dNOPAUSE -dBATCH -sDEVICE=pswrite -sOutputFile=concat.ps *.eps
