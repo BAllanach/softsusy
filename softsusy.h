@@ -131,8 +131,11 @@ public:
   void flagIrqfp(bool a) { problem.irqfp = a; };
   /// Flags non-perturbative RG evolution
   void flagNonperturbative(bool a) { problem.nonperturbative = a; };
-  /// Flags a negative-mass squared scalar (really a CCB problem)
-  void flagTachyon(tachyonType a) { problem.tachyon = a; };
+  /// Flags a negative-mass squared scalar (really a CCB problem) or vector
+  void flagTachyon(tachyonType a) { 
+    problem.tachyon = a; 
+    if (PRINTOUT > 1) cout << tachyonNames[a] << " tachyon ";
+  };
   /// Flags problem with Higgs potential minimum
   void flagM3sq(bool a) { problem.m3sq = a; };
   /// Flags fact that calculation hasn't acheived required accuracy

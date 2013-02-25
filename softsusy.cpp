@@ -6413,6 +6413,19 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   double piwwt0  = piWWT(0., displayMu(), true);
   double piwwtMW = piWWT(displayMw(), displayMu(), true);
   
+  if (piwwt0 < -sqr(displayMwRun())) {
+    flagTachyon(W);
+    piwwt0 = -sqr(displayMwRun());
+  }
+  if (piwwtMW < -sqr(displayMwRun())) {
+    flagTachyon(W);
+    piwwtMW = -sqr(displayMwRun());
+  }
+  if (pizztMZ < -sqr(displayMzRun())) {
+    flagTachyon(Z);
+    piwwtMW = -sqr(displayMzRun());
+  }
+
   rhohat(outrho, outsin, alphaDrbar, pizztMZ, piwwt0, piwwtMW, tol, maxTries);
 
   if (problem.noRhoConvergence) 
@@ -7106,10 +7119,10 @@ double MssmSoftsusy::piZZT(double p, double q, bool usePoleMt) const {
 
   double pi = rhs * sqr(g) / (cw2DRbar * 16.0 * sqr(PI));
 
-  if (pi + sqr(mz) < 0.0) { 
+  /*  if (pi + sqr(mz) < 0.0) { 
     if (PRINTOUT > 2) cout << " tachyon MZ "; 
     return 0.; 
-  }
+    }*/
 
   return pi;
 }
@@ -7251,9 +7264,10 @@ double MssmSoftsusy::piWWT(double p, double q, bool usePoleMt) const {
 
   double pi = ans * sqr(g) / (16.0 * sqr(PI));
 
-  if (pi + sqr(displayMw()) < 0.0) {   
-    return 0.0; /// tachyonic 
-  }
+  /*  if (pi + sqr(displayMw()) < 0.0) {   
+    /// tachyonic 
+    return -sqr(displayMw()); 
+    }*/
 	
   return pi;
 }
