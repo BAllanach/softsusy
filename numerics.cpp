@@ -321,37 +321,17 @@ const double pTolerance = 1.0e-6;
 double fB(const Complex & a) {
   /// First, special cases at problematic points
   double x = a.real(), y = a.imag();
-  if (close(y, 0., pTolerance)) {
-    if (close(x, 0., pTolerance)) {
-      double ans = -1. - x - sqr(x) + PI * y;
-      if (x > 0.) ans += x * log(x);
-      else ans += -PI * y;
-      return ans;
-    }
-    if (close(x, 1., pTolerance)) {
-      double eps = x - 1.;
-      double ans = -1. + eps;
-      if (eps > 0.) ans += -eps * log(eps);
-      else ans += PI * y;
-
-      return ans;
-    }
-  } else if (close(x, 0., pTolerance)) {
-
-    Complex ans(0., 0.), I(0., 1), one(1., 0.);
-    ans = -1. - I * y * log(Complex(1. + I / y));
-    ans += -x * log(Complex(1. + I / y));
-    return ans.real();
-  } else if (close(x, 1., pTolerance)) {
-    double eps = x - 1.;
-    Complex ans(0., 0.), I(0., 1), one(1., 0.);
-    ans = -one + log(-I * y) - log(Complex(y  /(-I  + y))) * (-I + y);
-    ans += -eps * log(y / (y-I));
-    return ans.real(); 
+  if (fabs(x) < pTolerance) {
+    double ans = -1. - x + sqr(x) * 0.5;
+    return ans;
   }
-
-  Complex ans = log(Complex(1.0 - a)) - a * log(Complex(1.0 - 1.0 / a)) 
-    - Complex(1.0);
+  if (close(x, 1., pTolerance)) {
+    double eps = x - 1.;
+    double ans = -1. + eps + sqr(eps) * 0.5;
+    return ans;
+  }
+  
+  Complex ans = log(1.0 - a) - a * log(a - 1.0) + a * log(a) - 1.;
   return ans.real();
 }
   
@@ -379,7 +359,7 @@ double b0(double p, double m1, double m2, double q) {
       return 2. - 2. * log(p / q);
       }*/
 
-    Complex iEpsilon(0.0, EPSTOL);
+    Complex iEpsilon(0.0, EPSTOL * mMax);
     
     Complex xPlus, xMinus;
 
