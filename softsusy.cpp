@@ -1024,8 +1024,9 @@ void printShortInitialise() {
   }
 
 /// Prints mu, B and important spectral information
-void MssmSoftsusy::printShort() const {
+string MssmSoftsusy::printShort() const {
   
+  ostringstream a;
   const double problemFlag = -1.0;
 
   double mu, m3sq;
@@ -1039,11 +1040,11 @@ void MssmSoftsusy::printShort() const {
   if (displayProblem().tachyon) m3sq = -1.0 * m3sq;
   
   if (displayProblem().nonperturbative || displayProblem().noMuConvergence) {
-    cout << " ";
-    int i; for (i=1; i<=12; i++) cout << problemFlag << " ";
+    a << " ";
+    int i; for (i=1; i<=12; i++) a << problemFlag << " ";
   }
-    else {
-      cout << " " << mu << " " << m3sq << " "
+  else {
+    a << " " << mu << " " << m3sq << " "
 	   << minimum(s.me(1, 3), s.me(2, 3)) << " " 
 	   << minimum(s.md(1, 3), s.md(2, 3)) << " " 
 	   << minimum(s.mu(1, 3), s.mu(2, 3)) << " " 
@@ -1057,10 +1058,11 @@ void MssmSoftsusy::printShort() const {
 	   << s.mGluino << " ";
     }
   
-  cout << flush;
+  a << flush;
+  return a.str();
 }
 
-void MssmSoftsusy::printLong() {
+string MssmSoftsusy::printLong() {
   /// output:
   ///  1  2     3      4   5   6   7    8  9  10 11   12    13    
   /// mu  m3sq mH1sq mH2sq g1 g2 mt(mt) mh mA mH mH+ alphaH msnu3
@@ -1072,27 +1074,13 @@ void MssmSoftsusy::printLong() {
   /// mgl mch1 mch2 thetaL thetaR mneut1 mneut2 mneut3 mneut4
   ///   39    40     41 
   /// sinthW t1ov1 t2ov2 
+  ostringstream a;
   double mu = displaySusyMu();
   if (displayProblem().muSqWrongSign || displayProblem().m3sq ||
       displayProblem().higgsUfb) 
     mu = -1.0 *  mu;
-  ///  if (displayProblem().noConvergence) 
-  /// mu = asin(-2.0);
   
-  if (displayProblem().tachyon) {
-    drBarPars s(displayDrBarPars());
-    s.me = -1.0 * s.me;
-    s.md = -1.0 * s.md;
-    s.mu = -1.0 * s.mu;
-    s.msnu = -1.0 * s.msnu;	
-    s.mh0 = -1.0 * s.mh0;
-    s.mA0 = -1.0 * s.mA0;
-    s.mH0 = -1.0 * s.mH0;
-    s.mHpm = -1.0 * s.mHpm;
-    setDrBarPars(s);
-  }
-  
-  cout <<" " << mu << " " 
+  a << " " << mu << " " 
        << displayM3Squared() << " " 
        << displayMh1Squared() << " " <<
     displayMh2Squared() << " " << 
@@ -1134,8 +1122,9 @@ void MssmSoftsusy::printLong() {
     displayTadpole1Ms() << " " <<
     displayTadpole2Ms() << " ";
 
-  if (displayProblem().test()) cout << "%" << displayProblem();
-  cout << endl << flush;
+  if (displayProblem().test()) a << "%" << displayProblem();
+  a << flush;
+  return a.str();
 }
 
 

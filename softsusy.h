@@ -495,9 +495,10 @@ public:
   int nlsp(double & mass, int & posi, int & posj) const;
   
   /// Prints a list of important sparticle/Higgs masses to standard output
-  void printShort() const;
+  string printShort() const;
   /// Prints a list of all sparticle/Higgs masses to standard output
-  void printLong();
+  string printLong();
+
   /// Prints whols object to standard output
   virtual void printObj() { cout << *this; };
   
