@@ -132,7 +132,10 @@ public:
   /// Flags non-perturbative RG evolution
   void flagNonperturbative(bool a) { problem.nonperturbative = a; };
   /// Flags a negative-mass squared scalar (really a CCB problem)
-  void flagTachyon(tachyonType a) { problem.tachyon = a; };
+  void flagTachyon(tachyonType a) { 
+    problem.tachyon = a; 
+    if (PRINTOUT > 2) cout << tachyonNames[a] << " tachyon ";
+  };
   /// Flags problem with Higgs potential minimum
   void flagM3sq(bool a) { problem.m3sq = a; };
   /// Flags fact that calculation hasn't acheived required accuracy
@@ -333,10 +336,10 @@ public:
   /// Calculates DRbar sin theta_w at the current scale from gauge couplings 
   double calcSinthdrbar() const;
   /// Calculates Higgs VEV parameter from gauge couplings and MZ
-  double getVev() const;
+  double getVev();
   /// Input for this one (saves time, possibly) is to give the self-energy of
   /// the Z at the current scale
-  double getVev(double pizzt) const;
+  double getVev(double pizzt);
   /// Calculates pole chargino masses and mixing using approximate 1-loop SUSY
   /// corrections. IO parameters: piwwt is the W self-energy at the current,
   /// accuracy is the number of loops required (0 or 1 currently)
