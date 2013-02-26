@@ -102,7 +102,7 @@ void m0Scan(double mtop, double alphasMZ, double mbmb, double m12, double a0,
   double mGutGuess = 2.0e16;
   /// Parameters used: CMSSM parameters
   int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 10; ///< number of scan points
+  int numPoints = 6; ///< number of scan points
   
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
   
@@ -119,7 +119,7 @@ void m0Scan(double mtop, double alphasMZ, double mbmb, double m12, double a0,
 
   for (int k=0; k <=numPoints; k++) {
 
-    double m0 = 600. + k * 300.;
+    double m0 = 600. + k * 500.;
     muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, muStart, muEnd);
   }
 }
