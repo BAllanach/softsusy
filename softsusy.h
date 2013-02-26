@@ -400,14 +400,13 @@ public:
   /// err=1 if no iteration reached, 2 if incorrect rewsb
   void iterateMu(double & munew, int sgnMu, double mt, 
 		  int maxTries, double pizztMS, double sinthDRbar, double tol,
-		 int  & err);
+		 int & err);
   /// This is a check: predicts tan beta from the values of soft parameters
   /// and mu that we have
   double predTanb(double muSusy = -6.66e66) const;
   /// Predicts value of MZ(pole) from values of soft parameters and mu that we
   /// have. tanb=tan beta is also predicted
-  double predMzsq(double & tanb, double muOld = -6.66e66, double eps = 0.) 
-    const;
+  double predMzsq(double & tanb, double muOld = -6.66e66, double eps = 0.);
   /// Calculates fine-tuning for soft parameters and mu, m_3^2, top Yukawa. 
   /// IO parameters: bcPars 
   /// should be a vector giving the high-scale SUSY breaking boundary

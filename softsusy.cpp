@@ -538,7 +538,12 @@ void MssmSoftsusy::calcTadpole2Ms1loop(double mt, double sinthDRbar) {/// CHECKE
 /// Apply at scale MSusy: checked 19.12.2000
 /// Displays PHYSICAL MZ, ie MZ(q) - piZz^T(q)
 /// Fixed pizztMS to resummed version 6/1/13
-double MssmSoftsusy::predMzsq(double & tanb, double muOld, double eps) const {
+double MssmSoftsusy::predMzsq(double & tanb, double muOld, double eps) {
+  if (fabs(displayPhys().t1OV1Ms) < EPSTOL && 
+      fabs(displayPhys().t2OV2Ms) < EPSTOL) {
+    calcDrBarPars();
+    doTadpoles(displayDrBarPars().mt, calcSinthdrbar());
+  }
   double susyMu = displaySusyMu();
   tanb = predTanb(susyMu); 
   if (muOld > -6.e66) susyMu = susyMu / eps - muOld * (1. / eps - 1.);
@@ -6359,11 +6364,6 @@ double MssmSoftsusy::calcSinthdrbar() const {
 	 sqr(displayGaugeCoupling(2)) * 5. / 3.);
 
   return sinth;   
-  
-  /** old, slower and probably less accurate version
-  double tanth = displayGaugeCoupling(1) / 
-    displayGaugeCoupling(2) * sqrt(0.6);
-    return sin(atan(tanth)); */
 }
 
 //VEV at current scale, using an input value of Z self-energy
@@ -7248,27 +7248,11 @@ double MssmSoftsusy::piWWT(double p, double q, bool usePoleMt) const {
 	/ sqr(g);
     }
 
-  if (printDEBUG[0]) {
-    /*    cout << "DEBUG*** " << smHiggs << " " << susyHiggs << " " << sfermions << " " << fermions << " " << gauginos << " " << slepton << " " << stopBot << endl 
-	 << hfn(p, mU, mD, q) << " "<< hfn(p, mc, ms, q) << " " << hfn(p,
-	 mtop, mb, q) << " " << hfn(p, 0.0, mE, q) << " " << hfn(p, EPSTOL,
-	 mmu, q) << " " << hfn(p, 0.0, mtau, q) << " " << mmu << " " << q << "
-	 " << p << endl; */
-    printDEBUG[1] = true;
-    cout << "\nDEBUG: " << hfn(p, 0., mmu, q) << " " << p << " " << mmu << " " << q << endl;
-    cout << "\nDEBUG: " << hfn(p, 0., mE, q) << " " << p << " " << mE << " " << q << endl;
-    //    printDEBUG[1] = false;
-  }
   ans = smHiggs + susyHiggs + sfermions + fermions + gauginos + slepton + 
     stopBot;
 
   double pi = ans * sqr(g) / (16.0 * sqr(PI));
 
-  /*  if (pi + sqr(displayMw()) < 0.0) {   
-    /// tachyonic 
-    return -sqr(displayMw()); 
-    }*/
-	
   return pi;
 }
 

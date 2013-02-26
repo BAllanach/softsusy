@@ -54,9 +54,6 @@ struct sPhysical {
   /// two loops because of the way that they are organised.
   double t1OV1Ms1loop, t2OV2Ms1loop;
   
-  /// Feynman rules
-  //  DoubleMatrix aChi0ChicW, bChi0ChicW;
-  
   sPhysical(); ///< Constructor: initialises with zeroes
   sPhysical(const sPhysical &); ///< Constructor copies another object
   /// Displays the object in situations where a const is required
