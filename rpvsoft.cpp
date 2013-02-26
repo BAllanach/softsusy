@@ -554,7 +554,7 @@ static double mz, sinthDRbarMS;
 // mt will only become relevant once 1-loop corrections are incorporated.
 // Currently, this is a tree-level algorithm
 void RpvSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars, 
-			double muOld) {
+			double muOld, double eps) {
   /// Set the RPV couplings here if we need to: currently only works with
   /// CMSSM 
   if (susyRpvBCatMSUSY) RpvSoftsusy::rpvSet(pars);
@@ -581,7 +581,8 @@ void RpvSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars,
   DoubleVector sneutrinoVevs(3);
 
   int numTries = 0;
-  iterateRewsb(mu, m3sq, sneutrinoVevs, sgnMu, numTries, maxTries, tol, mt);
+  iterateRewsb(mu, m3sq, sneutrinoVevs, sgnMu, numTries, maxTries, tol, mt, 
+	       muOld, eps);
 
   if (PRINTOUT > 2) cout << "VEVs" << sneutrinoVevs;
   //  check(sneutrinoVevs);
@@ -593,7 +594,8 @@ void RpvSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars,
 // minimisation, returning the VEVs.
 void RpvSoftsusy::iterateRewsb(double & mu, double & m3sq, DoubleVector &
 			       sneutrinoVevs, int sgnMu, int & numTries, int
-			       maxTries, double tol, double mt) {
+			       maxTries, double tol, double mt, double muOld, 
+			       double eps) {
 
   static double oldMu, oldM3sq;
   static DoubleVector oldSneutrinoVevs(3);
@@ -616,6 +618,7 @@ void RpvSoftsusy::iterateRewsb(double & mu, double & m3sq, DoubleVector &
     return;
   }
 
+  if (oldMu > -6.e66) mu = (mu * eps + oldMu * (1. - eps));
   setSusyMu(mu);
   
   // calculate the new one-loop tadpoles with old value of mu
@@ -646,7 +649,8 @@ void RpvSoftsusy::iterateRewsb(double & mu, double & m3sq, DoubleVector &
 
   if (difference < tol) return;
 
-  iterateRewsb(mu, m3sq, sneutrinoVevs, sgnMu, numTries, maxTries, tol, mt);
+  iterateRewsb(mu, m3sq, sneutrinoVevs, sgnMu, numTries, maxTries, tol, mt, 
+	       oldMu, eps);
 }
 
 // Returns value of mu consistent with sneutrino vevs given
