@@ -327,7 +327,7 @@ double fB(const Complex & a) {
   }
   if (close(x, 1., pTolerance)) {
     double eps = x - 1.;
-    double ans = -1. + eps + sqr(eps) * 0.5;
+    double ans = -1. + sqr(eps) * 0.5;
     return ans;
   }
     
