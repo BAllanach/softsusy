@@ -544,7 +544,16 @@ void MssmSoftsusy::calcTadpole2Ms1loop(double mt, double sinthDRbar) {/// CHECKE
 /// Apply at scale MSusy: checked 19.12.2000
 /// Displays PHYSICAL MZ, ie MZ(q) - piZz^T(q)
 /// Fixed pizztMS to resummed version 6/1/13
-double MssmSoftsusy::predMzsq(double & tanb, double muOld, double eps) const {
+double MssmSoftsusy::predMzsq(double & tanb, double muOld, double eps) {
+
+  if (fabs(displayTadpole1Ms()) < EPSTOL && 
+      fabs(displayTadpole2Ms()) < EPSTOL) {
+    double sinthDRbar = calcSinthdrbar();
+    calcDrBarPars(); 
+    double mt = forLoops.mt;
+    doTadpoles(mt, sinthDRbar);
+  }
+  
   double susyMu = displaySusyMu();
   tanb = predTanb(susyMu); 
   if (muOld > -6.e66) susyMu = susyMu / eps - muOld * (1. / eps - 1.);
@@ -6783,7 +6792,7 @@ void MssmSoftsusy::itLowsoft
     if (ewsbBCscale) mx = displayMsusy();
     if (PRINTOUT > 0) cout << " mgut=" << mx << flush;
     
-    mtrun = forLoops.mt;
+    mtrun = forLoops.mt; ///< This will be at MSUSY
     //    double tbIn; double predictedMzSq = 0.;
     if (numTries < 11) {
       rewsb(sgnMu, mtrun, pars);    
