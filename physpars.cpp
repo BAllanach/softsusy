@@ -31,8 +31,6 @@ const sPhysical & sPhysical::operator=(const sPhysical &s) {
   thetaL = s.thetaL; thetaR = s.thetaR; mGluino = s.mGluino;
   thetat = s.thetat; thetab = s.thetab; thetatau = s.thetatau;
   mu = s.mu; md = s.md; me = s.me; thetaH = s.thetaH;
-  t1OV1Ms = s.t1OV1Ms; t2OV2Ms = s.t2OV2Ms;
-  t1OV1Ms1loop = s.t1OV1Ms1loop; t2OV2Ms1loop = s.t2OV2Ms1loop;
   return *this;
 }
 

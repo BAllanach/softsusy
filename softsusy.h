@@ -75,6 +75,8 @@ private:
   bool setTbAtMX;     ///< flag: do we set tan beta at the SUSY breaking scale?
   bool altEwsb;       ///< flag: do we set mu, mA at the SUSY breaking scale?
   double predMzSq;    ///< predicted Z mass squared after iteration
+  double t1OV1Ms, t2OV2Ms;  ///< DRbar tadpoles(MSusy): incl 2 loops
+  double t1OV1Ms1loop, t2OV2Ms1loop; ///< DRbar tadpoles(MSusy): excl 2 loops
 public:
   //  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &);
   /// Default constructor fills object with zeroes
@@ -116,6 +118,8 @@ public:
   double displayMzRun() const; 
   double displayTadpole1Ms() const; ///< displays t_1/v_1 tadpole
   double displayTadpole2Ms() const; ///< displays t_2/v_2 tadpole
+  double displayTadpole1Ms1loop() const; ///< displays t_1/v_1 tadpole@1 loop
+  double displayTadpole2Ms1loop() const; ///< displays t_2/v_2 tadpole@1 loop
   /// Returns object as a const
   const MssmSoftsusy & displaySoftsusy() const { return *this; }
   /// Returns value of pole MZ being used
@@ -713,7 +717,8 @@ inline MssmSoftsusy::MssmSoftsusy()
   : SoftParsMssm(), AltEwsbMssm(), physpars(), forLoops(), 
     problem(), msusy(0.0), minV(6.66e66), 
     mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false), 
-    predMzSq(0.) { 
+    predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), 
+    t2OV2Ms1loop(0.) { 
       setPars(110);
       setMu(0.0);
       setLoops(0);
@@ -728,7 +733,10 @@ inline MssmSoftsusy::MssmSoftsusy(const MssmSoftsusy & s)
     problem(s.problem), msusy(s.msusy), minV(s.minV), 
     mw(s.mw), dataSet(s.displayDataSet()), fracDiff(s.displayFracDiff()), 
     setTbAtMX(s.displaySetTbAtMX()), 
-    altEwsb(s.displayAltEwsb()), predMzSq(0.) {
+    altEwsb(s.displayAltEwsb()), predMzSq(s.displayPredMzSq()), 
+    t1OV1Ms(s.displayTadpole1Ms()), t2OV2Ms(s.displayTadpole2Ms()), 
+    t1OV1Ms1loop(s.displayTadpole1Ms1loop()), 
+    t2OV2Ms1loop(s.displayTadpole2Ms1loop()) {
 
     setPars(110);
     setMu(s.displayMu()); 
@@ -740,7 +748,8 @@ inline MssmSoftsusy::MssmSoftsusy(const MssmSusy &s)
   : SoftParsMssm(s), AltEwsbMssm(), 
     physpars(), forLoops(), problem(), 
     msusy(0.0), minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), 
-    setTbAtMX(false), altEwsb(false), predMzSq(0.) { 
+    setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
+    t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.) { 
   setPars(110);
   setMu(s.displayMu()); 
   setLoops(s.displayLoops());
@@ -752,7 +761,8 @@ inline MssmSoftsusy::MssmSoftsusy
  double hv) 
   : SoftParsMssm(s), AltEwsbMssm(), physpars(sp), forLoops(), problem(), msusy(0.0),
     minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), 
-    altEwsb(false), predMzSq(0.) {
+    altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
+    t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.) {
   setHvev(hv);
   setPars(110);
   setMu(mu);
@@ -775,11 +785,19 @@ inline double MssmSoftsusy::displayMsusy() const { return msusy; }
 inline double MssmSoftsusy::displayMw() const { return mw; } 
 
 inline double MssmSoftsusy::displayTadpole1Ms() const {
-  return physpars.t1OV1Ms; 
+  return t1OV1Ms; 
 }
 
 inline double MssmSoftsusy::displayTadpole2Ms() const {
-  return physpars.t2OV2Ms; 
+  return t2OV2Ms; 
+}
+
+inline double MssmSoftsusy::displayTadpole1Ms1loop() const {
+  return t1OV1Ms1loop; 
+}
+
+inline double MssmSoftsusy::displayTadpole2Ms1loop() const {
+  return t2OV2Ms1loop; 
 }
 
 inline void MssmSoftsusy::setMinpot(double f) { minV = f; }
