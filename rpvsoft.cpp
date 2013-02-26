@@ -769,9 +769,9 @@ double neutrinoSum(const RpvSoftsusy & r) {
   double M1 = r.displayGaugino(1);
   double smu = r.displaySusyMu();
   double beta = atan(r.displayTanb()); 
-  double vu = r.displayHvev() * sin(beta) / sqrt(2.0);
-  double vd = r.displayHvev() * cos(beta) / sqrt(2.0);
-  DoubleVector lambda = r.displaySneutrinoVevs() * (1.0 / sqrt(2.0)) - 
+  double vu = r.displayHvev() * sin(beta) / root2;
+  double vd = r.displayHvev() * cos(beta) / root2;
+  DoubleVector lambda = r.displaySneutrinoVevs() * (1.0 / root2) - 
     vd / smu * r.displayKappa();
   double mnuCorrection = fabs(smu * (M1 * sqr(g2) + M2 * sqr(gp)) * 
     (sqr(lambda(3)) + sqr(lambda(2)) + sqr(lambda(1))) / 

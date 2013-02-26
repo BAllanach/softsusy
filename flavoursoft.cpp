@@ -797,11 +797,10 @@ void FlavourMssmSoftsusy::doUpSquarks(double mt, double pizztMS,
   double vev = displayHvev();
   double tanb = displayTanb(), beta = atan(tanb);
   double sinb = sin(beta), cosb = cos(beta);
-  const double sqrt2 = sqrt(2.0);
   /// the following contributions are only calculated at tree-level:
   int i, j;   for (i=1; i<=3; i++) {
-    mu(i) = yu(i) * vev / sqrt2 * sinb;
-    md(i) = yd(i) * vev / sqrt2 * cosb;
+    mu(i) = yu(i) * vev / root2 * sinb;
+    md(i) = yd(i) * vev / root2 * cosb;
 
     for (j=i; j<=3; j++) {
       massUsq(i, j) = mqSqSckm(i, j);
@@ -813,7 +812,7 @@ void FlavourMssmSoftsusy::doUpSquarks(double mt, double pizztMS,
     }
   
     for (j=4; j<=6; j++) {
-      massUsq(i, j) = vev * sinb / sqrt2 * tuSckm(j-3, i);
+      massUsq(i, j) = vev * sinb / root2 * tuSckm(j-3, i);
       if (i == j-3) massUsq(i, j) = massUsq(i, j) - susyMu * mu(i) / tanb;
     }
   }
@@ -900,11 +899,10 @@ void FlavourMssmSoftsusy::doDownSquarks(double mb, double pizztMS,
   double vev = displayHvev();
   double tanb = displayTanb(), beta = atan(tanb);
   double sinb = sin(beta), cosb = cos(beta);
-  const double sqrt2 = sqrt(2.0);
   /// the following contributions are only calculated at tree-level:
   int i, j;   for (i=1; i<=3; i++) {
-    mu(i) = yu(i) * vev / sqrt2 * sinb;
-    md(i) = yd(i) * vev / sqrt2 * cosb;
+    mu(i) = yu(i) * vev / root2 * sinb;
+    md(i) = yd(i) * vev / root2 * cosb;
 
     for (j=i; j<=3; j++) {
       massDsq(i, j) = mqSqSckm(i, j);
@@ -916,7 +914,7 @@ void FlavourMssmSoftsusy::doDownSquarks(double mb, double pizztMS,
     }
 
     for (j=4; j<=6; j++) {
-      massDsq(i, j) = vev * cosb / sqrt2 * tdSckm(j-3, i);
+      massDsq(i, j) = vev * cosb / root2 * tdSckm(j-3, i);
       if (i == j-3) massDsq(i, j) = massDsq(i, j) - susyMu * md(i) * tanb;
     }
   }
@@ -1005,10 +1003,9 @@ void FlavourMssmSoftsusy::doChargedSleptons(double mtau, double pizztMS,
   double vev = displayHvev();
   double tanb = displayTanb(), beta = atan(tanb);
   double cosb = cos(beta);
-  const double sqrt2 = sqrt(2.0);
   /// the following contributions are only calculated at tree-level:
   int i, j;   for (i=1; i<=3; i++) {
-    me(i) = ye(i) * vev / sqrt2 * cosb;
+    me(i) = ye(i) * vev / root2 * cosb;
 
     for (j=i; j<=3; j++) {
       massEsq(i, j) = mlSqSckm(i, j);
@@ -1020,7 +1017,7 @@ void FlavourMssmSoftsusy::doChargedSleptons(double mtau, double pizztMS,
     }
   
     for (j=4; j<=6; j++) {
-      massEsq(i, j) = vev * cosb / sqrt2 * teSckm(j-3, i);
+      massEsq(i, j) = vev * cosb / root2 * teSckm(j-3, i);
       if (i == j-3) massEsq(i, j) = massEsq(i, j) - susyMu * me(i) * tanb;
     }
   }
@@ -1239,12 +1236,11 @@ void FlavourMssmSoftsusy::calcDrBarPars() {
   double susyMu = displaySusyMu();
   double tanb = displayTanb();
   double sinb = sin(beta), cosb = cos(beta);
-  const double sqrt2 = sqrt(2.0);
   /// the following contributions are only calculated at tree-level:
   int i, j;   for (i=1; i<=3; i++) {
-    me(i) = ye(i) * vev / sqrt2 * cosb;
-    mu(i) = yu(i) * vev / sqrt2 * sinb;
-    md(i) = yd(i) * vev / sqrt2 * cosb;
+    me(i) = ye(i) * vev / root2 * cosb;
+    mu(i) = yu(i) * vev / root2 * sinb;
+    md(i) = yd(i) * vev / root2 * cosb;
 
     for (j=i; j<=3; j++) {
       massUsq(i, j) = mqSqUckm(i, j);
@@ -1265,9 +1261,9 @@ void FlavourMssmSoftsusy::calcDrBarPars() {
     }
   
     for (j=4; j<=6; j++) {
-      massUsq(i, j) = vev * sinb / sqrt2 * tuSckm(j-3, i);
-      massDsq(i, j) = vev * cosb / sqrt2 * tdSckm(j-3, i);
-      massEsq(i, j) = vev * cosb / sqrt2 * teSckm(j-3, i);
+      massUsq(i, j) = vev * sinb / root2 * tuSckm(j-3, i);
+      massDsq(i, j) = vev * cosb / root2 * tdSckm(j-3, i);
+      massEsq(i, j) = vev * cosb / root2 * teSckm(j-3, i);
       if (i == j-3) {
 	massUsq(i, j) = massUsq(i, j) - susyMu * mu(i) / tanb;
 	massDsq(i, j) = massDsq(i, j) - susyMu * md(i) * tanb;
@@ -1662,12 +1658,11 @@ void FlavourMssmSoftsusy::sCkmRunning
   double susyMu = displaySusyMu();
   double tanb = displayTanb();
   double sinb = sin(beta), cosb = cos(beta);
-  const double sqrt2 = sqrt(2.0);
   /// the following contributions are only calculated at tree-level:
   int i, j;   for (i=1; i<=3; i++) {
-    me(i) = ye(i) * vev / sqrt2 * cosb;
-    mu(i) = yu(i) * vev / sqrt2 * sinb;
-    md(i) = yd(i) * vev / sqrt2 * cosb;
+    me(i) = ye(i) * vev / root2 * cosb;
+    mu(i) = yu(i) * vev / root2 * sinb;
+    md(i) = yd(i) * vev / root2 * cosb;
 
     for (j=i; j<=3; j++) {
       massUsq(i, j) = mqSqUckm(i, j);
@@ -1688,9 +1683,9 @@ void FlavourMssmSoftsusy::sCkmRunning
     }
   
     for (j=4; j<=6; j++) {
-      massUsq(i, j) = vev * sinb / sqrt2 * tuSckm(j-3, i);
-      massDsq(i, j) = vev * cosb / sqrt2 * tdSckm(j-3, i);
-      massEsq(i, j) = vev * cosb / sqrt2 * teSckm(j-3, i);
+      massUsq(i, j) = vev * sinb / root2 * tuSckm(j-3, i);
+      massDsq(i, j) = vev * cosb / root2 * tdSckm(j-3, i);
+      massEsq(i, j) = vev * cosb / root2 * teSckm(j-3, i);
       if (i == j-3) {
 	massUsq(i, j) = massUsq(i, j) - susyMu * mu(i) / tanb;
 	massDsq(i, j) = massDsq(i, j) - susyMu * md(i) * tanb;

@@ -1,3 +1,5 @@
 1. 25/2/13 Modified fB function: sometimes it was giving large numerical
 inaccuracies, if one used optimisation. This is now fixed. 
 2. 25/2/13 Made W/Z tachyon flags. 
+3. 26/2/13 Moved tadpoles to MssmSoftsusy object
+

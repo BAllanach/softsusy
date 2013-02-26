@@ -10244,10 +10244,6 @@ double MssmSoftsusy::smPredictionMW() const {
     c4 * (dh - 1.) - c5 * dAlpha + c6 * dt - c7 * sqr(dt) - c8 * dH * dt + 
     c9 * dh * dt - c10 * dAlphas + c11 * dZ;
 
-  ///  double alpha = 1. / 137.03599976;
-  ///  double deltaRsm = sqrt(2.0) * GMU / (PI * alpha) * sqr(MW) * 
-  ///  (1.0 - sqr(MW) / sqr(MZ)) - 1.;
-
   return ans;
 }
 
@@ -10330,11 +10326,11 @@ double MssmSoftsusy::twoLoopGm2(double amu1Loop) const {
 
   DoubleVector lChiCh0(2), lChiCH0(2), lChiCA0(2);
   int k; for (k=1; k<=2; k++) {
-    lChiCh0(k) = sqrt(2.0) * MW / mch(k) *
+    lChiCh0(k) = root2 * MW / mch(k) *
       ((u(k, 1) * v(k, 2)).real() * cosA - sinA * (u(k, 2) * v(k, 1)).real());
-    lChiCH0(k) = sqrt(2.0) * MW / mch(k) *
+    lChiCH0(k) = root2 * MW / mch(k) *
       ((u(k, 1) * v(k, 2)).real() * sinA + cosA * (u(k, 2) * v(k, 1)).real());
-    lChiCA0(k) = sqrt(2.0) * MW / mch(k) *
+    lChiCA0(k) = root2 * MW / mch(k) *
       (-(u(k, 1) * v(k, 2)).real() * cosb - sinb * (u(k, 2) * v(k, 1)).real());
   }
     
