@@ -9129,7 +9129,7 @@ void MssmSoftsusy::isajetNumbers764
   mNeut(1, 1) = m1;
   mNeut(2, 2) = m2;
   mNeut(3, 4) = - smu;
-  store.addNeutralinoLoop(m1, mNeut);
+  store.addNeutralinoLoop(fabs(m1), mNeut);
 
   m1 = fabs(mNeut(1, 1));
   m2 = fabs(mNeut(2, 2));
