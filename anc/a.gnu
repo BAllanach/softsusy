@@ -1,58 +1,44 @@
 set term post enhanced color "Helvetica" 24
 
 set ylabel "M_Z^2(pred)/M_Z^2(exp)"
-#set yrange [-40:40]
-set title "m_0=600+(k*500) GeV, M_{1/2}=300 GeV, tan{/Symbol b}=10, A_0=0"
+set xlabel "{/Symbol m}(M_{SUSY})/GeV"
 
-set output "largeSlope.eps"
-set xlabel "[{/Symbol m}(M_{SUSY})/TeV]^2"
-plot "cmssmScans" i 0 u (($1)*($1)/1000000):3 tit "default" w l, 1 notit w l ls 1 lc 2
+set output "muPoint.eps"
+set title "{/Symbol m}(BC)=(34 GeV+0.1)*k,  M_{1/2}=300 GeV, tan{/Symbol b}=10, A_0=0"
+plot "muPoint" i 0 u 1:2 notit w l lw 4, 1 w l lc 2 lw 4
+
 
 set output "multi.eps"
+set title "M_{1/2}=300 GeV, tan{/Symbol b}=10, A_0=0"
 set xlabel "{/Symbol m}(M_{SUSY})/GeV"
-plot "cmssmScans" i 0 u 1:3 tit "default" w l, 1 notit w l ls 1 lc 2
+plot "cmssmScans" i 0 u 1:3 tit "m_0=0.6 TeV" w l lw 4, 1 notit w l ls 0, \
+"cmssmScans" i 1 u 1:3 tit "m_0=2.6 TeV" w l lw 4, \
+"cmssmScans" i 2 u 1:3 tit "m_0=3.1 TeV" w l lw 4, \
+"cmssmScans" i 3 u 1:3 tit "m_0=3.6 TeV" w l lw 4, \
+"cmssmScans" i 4 u 1:2 notit w l ls 0, \
+"cmssmScans" i 5 u 1:2 notit w l ls 0, \
+"cmssmScans" i 6 u 1:2 notit w l ls 0
 
-set title "m_0=350+(k*500) GeV, M_{1/2}=300 GeV, tan{/Symbol b}=10, A_0=0"
+set output "zoom.eps"
+set title "m_0=3.1 TeV, M_{1/2}=300 GeV, tan{/Symbol b}=10, A_0=0"
+set yrange [-8:15]
+unset ylabel
+set key spacing 1.5
+plot "cmssmScans" i 2 u 1:3 tit "M@_Z^2(pred)/M@_Z^2(exp)" w l lw 4, \
+"cmssmScans" i 2 u 1:(($2-abs($6)-abs($7))/10) tit "(M_Z-|M_{{/Symbol c}@_1^0}|-|M_{{/Symbol c}@_2^0|})/10 GeV" w l lw 4, \
+"cmssmScans" i 2 u 1:(($2-abs($5)-abs($5))/10) tit "(M_Z-2|M_{{/Symbol c}@_1^+}|)/10 GeV" w l lw 4, \
+0 notit w l lt 0, \
+"cmssmScans" i 7 u 1:2 notit w l ls 0, \
+"cmssmScans" i 8 u 1:2 notit w l ls 0, \
+"cmssmScans" i 9 u 1:2 notit w l ls 0, \
+"cmssmScans" i 2 u 1:((($5))/10) tit "M_{{/Symbol c}@_1^+}/10 GeV" w l lw 4 lt 4
 
-set output "multi1.eps"
-plot "cmssmScans" i 0 u 1:3 tit "default" w l, 1 notit w l ls 1 lc 2, \
-"cmssmScans" i 1 u 1:3 tit "m_t=173.5-1" w l ls 2 lc 3
-
-set output "multi2.eps"
-plot "cmssmScans" i 0 u 1:3 tit "default" w l, 1 notit w l ls 1 lc 2, \
-"cmssmScans" i 2 u 1:3 tit "m_t=173.5+1" w l ls 2 lc 3
-
-set output "multi3.eps"
-plot "cmssmScans" i 0 u 1:3 tit "default" w l, 1 notit w l ls 1 lc 2, \
-"cmssmScans" i 3 u 1:3 tit "{/Symbol a}_s(M_Z)=0.1187-0.001" w l ls 2 lc 3
-
-set output "multi4.eps"
-plot "cmssmScans" i 0 u 1:3 tit "default" w l, 1 notit w l ls 1 lc 2, \
-"cmssmScans" i 4 u 1:3 tit "{/Symbol a}_s(M_Z)=0.1187+0.001" w l ls 2 lc 3
-
-set output "multi7.eps"
-plot "cmssmScans" i 0 u 1:3 tit "default" w l, 1 notit w l ls 1 lc 2, \
-"cmssmScans" i 7 u 1:3 tit "A_0=500 GeV" w l ls 2 lc 3
-
-set output "multi8.eps"
-plot "cmssmScans" i 0 u 1:3 tit "default" w l, 1 notit w l ls 1 lc 2, \
-"cmssmScans" i 8 u 1:3 tit "A_0=-500 GeV" w l ls 2 lc 3
-
-set output "multi9.eps"
-plot "cmssmScans" i 0 u 1:3 tit "default" w l, 1 notit w l ls 1 lc 2, \
-"cmssmScans" i 9 u 1:3 tit "tan {/Symbol b}=40" w l ls 2 lc 3
-
-set output "multi10.eps"
-plot "cmssmScans" i 0 u 1:3 tit "default" w l, 1 notit w l ls 1 lc 2, \
-"cmssmScans" i 10 u 1:3 tit "M_{1/2}=200 GeV" w l ls 2 lc 3
-
-set output "multi11.eps"
-plot "cmssmScans" i 0 u 1:3 tit "default" w l, 1 notit w l ls 1 lc 2, \
-"cmssmScans" i 11 u 1:3 tit "M_{1/2}=400 GeV" w l ls 2 lc 3
+set output 
 
 !gs -q -sPAPERSIZE=a4 -dNOPAUSE -dBATCH -sDEVICE=pswrite -sOutputFile=concat.ps *.eps
 !mpage -2 concat.ps > b.ps
 !ps2pdf b.ps 
 !rm *.ps
+
 
 

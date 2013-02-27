@@ -25,15 +25,60 @@
 #include "utils.h"
 #include "numerics.h"
 
-/// Scans through mu for a given value of m0
-void muScan(double m0, double mtop, double alphasMZ, double mbmb, double m12, 
-	  double a0, double tanb, double start, double end) {
+void muPoint(double m0, double mtop, double alphasMZ, double mbmb, double m12, 
+	     double a0, double tanb, double start, double end, double muGuess) {
   
   MssmSoftsusy r;
   double mGutGuess = 2.0e16;
   /// Parameters used: CMSSM parameters
   int sgnMu = 1;      ///< sign of mu parameter 
   int numPoints = 50; ///< number of scan points
+  
+  QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
+  
+  oneset.setAlpha(ALPHAS, alphasMZ);
+  oneset.setPoleMt(mtop);
+  oneset.setMbMb(mbmb);
+  oneset.toMz();      ///< Runs SM fermion masses to MZ
+
+  DoubleVector pars(3); 
+  pars(1) = m0; pars(2) = m12; pars(3) = a0;
+  bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
+
+  TOLERANCE = 1.0E-4;
+
+  cout << "# m0=" << m0 << " mt=" << mtop << " a_s(M_Z)=" << alphasMZ 
+       << " mb(mb)=" << mbmb << "\n# m12=" << m12 << " a0=" << a0 
+       << " tanb=" << tanb << endl;
+  cout << "# mu(MSUSY)    MZ          (MZ:P/E^2)   MW(MW)      "
+       << "mch(1)         " 
+       << "mneut(1)      mneut(2)     PIZZT(MZ)    PIWWT(0)     "
+       << " PIWWT(MW)    g1(MZ)       g2(MZ)       g3(MZ)       "
+       << "t1/v1        t2/v2\n";
+
+  /// Calculate the spectrum
+  PRINTOUT = 0;
+  trialMuSq = sqr(muGuess);
+  double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+
+  r.runto(r.displayMsusy());
+  /// scan through mu, predicting MZ^2 as we go
+  for (int i=0; i<=numPoints; i++) {
+    double mu = (end - start) / double(numPoints) * double(i) + start;
+    r.setSusyMu(mu); double tanb = 0.;
+    cout << mu << " " << r.predMzsq(tanb) / sqr(MZ) << endl;
+  }
+  cout << endl;
+}	       
+
+/// Scans through mu for a given value of m0
+void muScan(double m0, double mtop, double alphasMZ, double mbmb, double m12, 
+	    double a0, double tanb, double start, double end, int numPoints) {
+  
+  MssmSoftsusy r;
+  double mGutGuess = 2.0e16;
+  /// Parameters used: CMSSM parameters
+  int sgnMu = 1;      ///< sign of mu parameter 
   
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
   
@@ -102,7 +147,7 @@ void m0Scan(double mtop, double alphasMZ, double mbmb, double m12, double a0,
   double mGutGuess = 2.0e16;
   /// Parameters used: CMSSM parameters
   int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 6; ///< number of scan points
+  int numPoints = 6; ///< number of m0-scan points
   
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
   
@@ -120,7 +165,12 @@ void m0Scan(double mtop, double alphasMZ, double mbmb, double m12, double a0,
   for (int k=0; k <=numPoints; k++) {
 
     double m0 = 600. + k * 500.;
-    muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, muStart, muEnd);
+    double mStart = 0.1, mEnd=40.;
+    muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, mStart, mEnd, 40);
+    mStart = 40.; mEnd = 60.;
+    muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, mStart, mEnd, 50);
+    mStart = 60.; mEnd = 200.;
+    muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, mStart, mEnd, 40);
   }
 }
 
@@ -135,15 +185,23 @@ int main() {
     
     /// most important Standard Model inputs: you may change these and recompile
     double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
-    double m12 = 300., a0 = 0., tanb = 10.0, m0 = 3050.;
+    double m12 = 300., a0 = 0., tanb = 10.0, m0 = 3300.;
     double start = 0.1, end = 200.;
-    /*    muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, start, end); cout << endl << endl;
-
-    //    start = 58., end = 59;
-    //    muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, start, end); cout << endl << endl;
+    int numPoints = 5.;
+    /*    for (int i=0; i<=numPoints; i++) {
+    double muGuess = 34. * i + 0.1;
+      muPoint(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, start, end, muGuess); 
+    }
+    */    
+    //    exit(0);
+    
+    /*   start = 40., end = 60;
+    muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, start, end); cout << endl << endl;
     exit(0);
     */
     m0Scan(mtop, alphasMZ, mbmb, m12, a0, tanb, start, end); cout << endl;
+
+    exit(0);
 
     mtop = 172.5; cout << "# mt=172.5\n";
     m0Scan(mtop, alphasMZ, mbmb, m12, a0, tanb, start, end); cout << endl;

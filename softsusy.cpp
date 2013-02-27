@@ -539,10 +539,10 @@ void MssmSoftsusy::calcTadpole2Ms1loop(double mt, double sinthDRbar) {/// CHECKE
 /// Displays PHYSICAL MZ, ie MZ(q) - piZz^T(q)
 /// Fixed pizztMS to resummed version 6/1/13
 double MssmSoftsusy::predMzsq(double & tanb, double muOld, double eps) {
-  if (fabs(displayPhys().t1OV1Ms) < EPSTOL && 
-      fabs(displayPhys().t2OV2Ms) < EPSTOL) {
     calcDrBarPars();
     doTadpoles(displayDrBarPars().mt, calcSinthdrbar());
+  if (fabs(displayPhys().t1OV1Ms) < EPSTOL && 
+      fabs(displayPhys().t2OV2Ms) < EPSTOL) {
   }
   double susyMu = displaySusyMu();
   tanb = predTanb(susyMu); 
