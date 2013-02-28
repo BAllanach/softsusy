@@ -67,6 +67,62 @@ void muPoint(double m0, double mtop, double alphasMZ, double mbmb, double m12,
   cout << endl;
 }	       
 
+/// Investigates the reason for -infinity in MZ^2(pred)
+void muScanInv(double m0, double mtop, double alphasMZ, double mbmb, double m12, 
+	    double a0, double tanb, double start, double end, int numPoints) {
+  
+  MssmSoftsusy r;
+  double mGutGuess = 2.0e16;
+  /// Parameters used: CMSSM parameters
+  int sgnMu = 1;      ///< sign of mu parameter 
+  
+  QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
+  
+  oneset.setAlpha(ALPHAS, alphasMZ);
+  oneset.setPoleMt(mtop);
+  oneset.setMbMb(mbmb);
+  oneset.toMz();      ///< Runs SM fermion masses to MZ
+
+  DoubleVector pars(3); 
+  pars(1) = m0; pars(2) = m12; pars(3) = a0;
+  bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
+
+  TOLERANCE = 1.0E-4;
+
+  cout << "# m0=" << m0 << " mt=" << mtop << " a_s(M_Z)=" << alphasMZ 
+       << " mb(mb)=" << mbmb << "\n# m12=" << m12 << " a0=" << a0 
+       << " tanb=" << tanb << endl;
+
+  /// Calculate the spectrum
+  PRINTOUT = 0;
+  for (int i = 0; i <= numPoints; i++) {
+    double mu = (end - start) / double(numPoints) * double(i) + start;
+    trialMuSq = sqr(mu);
+    double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+
+    r.runto(r.displayMsusy());
+    r.calcDrBarPars();
+    drBarPars s = r.displayDrBarPars();      
+    //    cout << sqrt(trialMuSq) << " " << endl;
+    r.doTadpoles(r.displayDrBarPars().mt, r.calcSinthdrbar());
+
+    double susyMu = r.displaySusyMu();
+    tanb = r.predTanb(susyMu); 
+    
+    double pizztMS = sqr(r.displayMzRun()) - sqr(r.displayMz()); ///< resums logs
+    double MZsq = 2.0 *
+      ((r.displayMh1Squared() - r.displayTadpole1Ms() - 
+	(r.displayMh2Squared() - r.displayTadpole2Ms()) *
+	sqr(tanb)) / (sqr(tanb) - 1.0) - sqr(susyMu)) - 
+      pizztMS;
+
+    cout << susyMu << " " << tanb << " " << pizztMS << " " << MZsq;
+    if (r.displayProblem().test()) cout << "#" << r.displayProblem();
+    cout << endl;
+  }
+  cout << endl;
+}	       
+
 /// Scans through mu for a given value of m0
 void muScan(double m0, double mtop, double alphasMZ, double mbmb, double m12, 
 	    double a0, double tanb, double start, double end, int numPoints) {
@@ -183,17 +239,17 @@ int main() {
     double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
     double m12 = 300., a0 = 0., tanb = 10.0, m0 = 3100.;
     double start = 0.1, end = 200.;
-    int numPoints = 5.;
-    for (int i=0; i<=numPoints; i++) {
+    /*int numPoints = 5.;
+        for (int i=0; i<=numPoints; i++) {
     double muGuess = 8.7 * i + 0.1;
       muPoint(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, start, end, muGuess); 
     }
-    exit(0);
+    exit(0);*/
     
-    /*   start = 40., end = 60;
-    muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, start, end); cout << endl << endl;
+    start = 0.1, end = 40.; m0 = 3100.;
+    muScanInv(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, start, end, 200); cout << endl << endl;
     exit(0);
-    */
+   
     m0Scan(mtop, alphasMZ, mbmb, m12, a0, tanb, start, end); cout << endl;
 
     exit(0);
