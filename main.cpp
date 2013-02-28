@@ -50,11 +50,7 @@ void muPoint(double m0, double mtop, double alphasMZ, double mbmb, double m12,
   cout << "# m0=" << m0 << " mt=" << mtop << " a_s(M_Z)=" << alphasMZ 
        << " mb(mb)=" << mbmb << "\n# m12=" << m12 << " a0=" << a0 
        << " tanb=" << tanb << endl;
-  cout << "# mu(MSUSY)    MZ          (MZ:P/E^2)   MW(MW)      "
-       << "mch(1)         " 
-       << "mneut(1)      mneut(2)     PIZZT(MZ)    PIWWT(0)     "
-       << " PIWWT(MW)    g1(MZ)       g2(MZ)       g3(MZ)       "
-       << "t1/v1        t2/v2\n";
+  cout << "# mu(MSUSY)    (MZ:P/E^2)\n";
 
   /// Calculate the spectrum
   PRINTOUT = 0;
@@ -185,15 +181,14 @@ int main() {
     
     /// most important Standard Model inputs: you may change these and recompile
     double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
-    double m12 = 300., a0 = 0., tanb = 10.0, m0 = 3300.;
+    double m12 = 300., a0 = 0., tanb = 10.0, m0 = 3100.;
     double start = 0.1, end = 200.;
     int numPoints = 5.;
-    /*    for (int i=0; i<=numPoints; i++) {
-    double muGuess = 34. * i + 0.1;
+    for (int i=0; i<=numPoints; i++) {
+    double muGuess = 8.7 * i + 0.1;
       muPoint(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, start, end, muGuess); 
     }
-    */    
-    //    exit(0);
+    exit(0);
     
     /*   start = 40., end = 60;
     muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, start, end); cout << endl << endl;

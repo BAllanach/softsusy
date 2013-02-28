@@ -4,8 +4,8 @@ set ylabel "M_Z^2(pred)/M_Z^2(exp)"
 set xlabel "{/Symbol m}(M_{SUSY})/GeV"
 
 set output "muPoint.eps"
-set title "{/Symbol m}(BC)=(34 GeV+0.1)*k,  M_{1/2}=300 GeV, tan{/Symbol b}=10, A_0=0"
-plot "muPoint" i 0 u 1:2 notit w l lw 4, 1 w l lc 2 lw 4
+set title "{/Symbol m}(BC)=(8.7*k+0.1) GeV,  m_0=3.1 TeV, M_{1/2}=300 GeV, tan{/Symbol b}=10" 
+plot "muPoint" i 0 u 1:2 notit w l lw 4, 1 notit w l lc 2 lw 4
 
 
 set output "multi.eps"
@@ -31,9 +31,13 @@ plot "cmssmScans" i 2 u 1:3 tit "M@_Z^2(pred)/M@_Z^2(exp)" w l lw 4, \
 "cmssmScans" i 7 u 1:2 notit w l ls 0, \
 "cmssmScans" i 8 u 1:2 notit w l ls 0, \
 "cmssmScans" i 9 u 1:2 notit w l ls 0, \
-"cmssmScans" i 2 u 1:((($5))/10) tit "M_{{/Symbol c}@_1^+}/10 GeV" w l lw 4 lt 4
-
+"cmssmScans" i 2 u 1:((($5))/10) tit "M_{{/Symbol c}@_1^+}/10 GeV" w l lw 4 lt 4, \
+"cmssmScans" i 2 u 1:(5000*$8/($2*$2)) tit "5x10^3 {/Symbol P}@_{Z}^{T}/M@_Z^2" w l lt 5 lw 4
 set output 
+
+set autoscale
+set output "tads.eps"
+plot "cmssmScans" i 2 u 1:21, "cmssmScans" i 2 u 1:22
 
 !gs -q -sPAPERSIZE=a4 -dNOPAUSE -dBATCH -sDEVICE=pswrite -sOutputFile=concat.ps *.eps
 !mpage -2 concat.ps > b.ps
