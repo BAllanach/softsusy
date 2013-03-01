@@ -71,7 +71,7 @@ private:
   DoubleVector g; ///< Gauge couplings in GUT normalisation (for g1)
   /// Bilinear Higgs superpotential parameter and ratio of Higgs VEVs,
   /// \f$ v_1/v_2 \f$ 
-  double smu, tanb, hVev; 
+  double smu, tanB, hVev; 
   
 public:
   MssmSusy(); ///< Constructor fills object with zeroes by default
@@ -221,7 +221,7 @@ inline double MssmSusy::displayHvev() const { return hVev; }
 
 inline void MssmSusy::setHvev(double h) { hVev = h; }
 inline void MssmSusy::setSusyMu(double f) { smu = f; }
-inline void MssmSusy::setTanb(double f) { tanb = f; }
+inline void MssmSusy::setTanb(double f) { tanB = f; }
 inline DoubleVector MssmSusy::displayGauge() const { return g; }
 inline double MssmSusy::displayGaugeCoupling(int i) const { 
   return g.display(i); 

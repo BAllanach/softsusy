@@ -39,7 +39,7 @@ void sBrevity::calculate(const DoubleMatrix & yu, const DoubleMatrix & yd,
 
 
 MssmSusy::MssmSusy()
-  : u(3, 3), d(3, 3), e(3, 3), g(3), smu(0.0), tanb(0.0), hVev(0.0) {
+  : u(3, 3), d(3, 3), e(3, 3), g(3), smu(0.0), tanB(0.0), hVev(0.0) {
     setPars(numSusyPars);
     setMu(0.0);
     setLoops(2);
@@ -47,7 +47,7 @@ MssmSusy::MssmSusy()
 }
 
 MssmSusy::MssmSusy(const MssmSusy &s)
-  : u(s.u), d(s.d), e(s.e), g(s.g), smu(s.smu), tanb(s.tanb), hVev(s.hVev) { 
+  : u(s.u), d(s.d), e(s.e), g(s.g), smu(s.smu), tanB(s.tanB), hVev(s.hVev) { 
     setPars(numSusyPars);
     setMu(s.displayMu()); 
     setLoops(s.displayLoops());
@@ -57,7 +57,7 @@ MssmSusy::MssmSusy(const MssmSusy &s)
 MssmSusy::MssmSusy(const DoubleMatrix & u, const DoubleMatrix & d, const
 		     DoubleMatrix & e, const DoubleVector & v, double m,
 		     double tb, double MU, int l, int t, double hv)
-  : u(u), d(d), e(e), g(v), smu(m), tanb(tb), hVev(hv) { 
+  : u(u), d(d), e(e), g(v), smu(m), tanB(tb), hVev(hv) { 
     setPars(numSusyPars);
     setMu(MU); 
     setLoops(l);
@@ -70,7 +70,7 @@ const MssmSusy & MssmSusy::operator=(const MssmSusy & s) {
   d = s.d;
   e = s.e;
   smu = s.smu;
-  tanb = s.tanb;
+  tanB = s.tanB;
   g = s.g;
   setMu(s.displayMu());
   setLoops(s.displayLoops());
@@ -151,7 +151,7 @@ const DoubleVector MssmSusy::display() const {
     y(k) = g.display(i);
   }
   y(31) = smu;
-  y(32) = tanb;
+  y(32) = tanB;
   y(33) = hVev;
   return y;
 }
@@ -171,11 +171,11 @@ void MssmSusy::set(const DoubleVector & y) {
     g(i) = y.display(k);
   }
   smu = y.display(31);
-  tanb = y.display(32);
+  tanB = y.display(32);
   hVev = y.display(33);
 }
 
-double MssmSusy::displayTanb() const { return tanb; }
+double MssmSusy::displayTanb() const { return tanB; }
 
 ostream & operator <<(ostream &left, const MssmSusy &s) {
   left << "Supersymmetric parameters at Q: " << s.displayMu() << endl;
@@ -208,18 +208,18 @@ void MssmSusy::setSusy(const MssmSusy & s) {
 istream & operator >>(istream &left, MssmSusy &s) {
   char c[70];
   DoubleMatrix u(3, 3), d(3, 3), e(3, 3);
-  double g1, g2, g3, smu, mu, tanb, hv;
+  double g1, g2, g3, smu, mu, tanB, hv;
   int loops, thresh;
   left >> c >> c >> c >> c >> mu;
   left >> c >> u >> c >> d >> c >> e >> c >> c >> hv;
-  left >> c >> c >> tanb >> c >> smu;
+  left >> c >> c >> tanB >> c >> smu;
   left >> c >> g1 >> c >> g2 >> c >> g3;
   left >> c >> thresh >> c >> loops;
   s.setYukawaMatrix(YU, u);
   s.setYukawaMatrix(YD, d);
   s.setYukawaMatrix(YE, e);
   s.setHvev(hv);
-  s.setTanb(tanb);
+  s.setTanb(tanB);
   s.setGaugeCoupling(1, g1);
   s.setGaugeCoupling(2, g2);
   s.setGaugeCoupling(3, g3);
@@ -292,7 +292,7 @@ MssmSusy MssmSusy::beta(sBrevity & a) const {
        (16 * gsq(3) + 0.8 * gsq(1)) * uuT);
   }
 
-  double cosb2 = sqr(cos(atan(tanb))), sinb2 = 1.0 - cosb2;
+  double cosb2 = sqr(cos(atan(tanB))), sinb2 = 1.0 - cosb2;
   double feynman = 1.5 * gsq(2) + 0.3 * gsq(1);
   /// One-loop RGEs in Feynman gauge
   double dt = displayTanb() * (sH1H1 - sH2H2);

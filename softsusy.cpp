@@ -531,21 +531,15 @@ void MssmSoftsusy::calcTadpole2Ms1loop(double mt, double sinthDRbar) {/// CHECKE
   }
 }
 
-//double averageMus(susyMu, muOld) {
-//  return; ///< placeholder
-//}
-
 /// Apply at scale MSusy: checked 19.12.2000
 /// Displays PHYSICAL MZ, ie MZ(q) - piZz^T(q)
 /// Fixed pizztMS to resummed version 6/1/13
 double MssmSoftsusy::predMzsq(double & tanb, double muOld, double eps) {
-    calcDrBarPars();
-    doTadpoles(displayDrBarPars().mt, calcSinthdrbar());
-  if (fabs(displayPhys().t1OV1Ms) < EPSTOL && 
-      fabs(displayPhys().t2OV2Ms) < EPSTOL) {
-  }
+  calcDrBarPars();
+  doTadpoles(displayDrBarPars().mt, calcSinthdrbar());
+
   double susyMu = displaySusyMu();
-  tanb = predTanb(susyMu); 
+  tanb = displayTanb(); 
   if (muOld > -6.e66) susyMu = susyMu / eps - muOld * (1. / eps - 1.);
 
   double pizztMS = sqr(displayMzRun()) - sqr(displayMz()); ///< resums logs
@@ -2395,7 +2389,7 @@ double MssmSoftsusy::calcRunningMt() {
     }            
   }
 
-  resigmat = resigmat + charginoContribution;
+  resigmat = resigmat + charginoContribution; 
     
   resigmat = resigmat * mtpole / (16.0 * sqr(PI));  
 
@@ -5936,8 +5930,8 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
       log(tree.me(2,2) / q) + 
       log(tree.me(1,3) / q) + 
       log(tree.me(2,3) / q)) / 3.0 
-     + (log(fabs(tree.mch(1)) / q) 
-	+ log(fabs(tree.mch(2)) / q)) * 4.0 / 3.0;
+    + (log(fabs(tree.mch(1)) / q) 
+       + log(fabs(tree.mch(2)) / q)) * 4.0 / 3.0;
   
   double deltaAlpha;
   deltaAlpha = -alphaEm / (2.0 * PI) * (deltaASM + deltaASusy);
@@ -6464,7 +6458,7 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   setGaugeCoupling(1, newGauge(1));
   setGaugeCoupling(2, newGauge(2));
   setGaugeCoupling(3, newGauge(3));
-  setHvev(vev);
+  setHvev(vev); 
   setYukawaMatrix(YU, mUq * (root2 / (vev * sin(beta))));
   setYukawaMatrix(YD, mDq * (root2 / (vev * cos(beta)))); 
   setYukawaMatrix(YE, mLep * (root2 / (vev * cos(beta)))); 

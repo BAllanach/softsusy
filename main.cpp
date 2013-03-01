@@ -100,25 +100,30 @@ void muScanInv(double m0, double mtop, double alphasMZ, double mbmb, double m12,
     trialMuSq = sqr(mu);
     double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
 
-    r.runto(r.displayMsusy());
-    r.calcDrBarPars();
     drBarPars s = r.displayDrBarPars();      
+    //    r.runto(r.displayMsusy());
+
+    r.calcDrBarPars();
     //    cout << sqrt(trialMuSq) << " " << endl;
-    r.doTadpoles(r.displayDrBarPars().mt, r.calcSinthdrbar());
 
     double susyMu = r.displaySusyMu();
-    tanb = r.predTanb(susyMu); 
     
     double pizztMS = sqr(r.displayMzRun()) - sqr(r.displayMz()); ///< resums logs
     double MZsq = 2.0 *
       ((r.displayMh1Squared() - r.displayTadpole1Ms() - 
 	(r.displayMh2Squared() - r.displayTadpole2Ms()) *
-	sqr(tanb)) / (sqr(tanb) - 1.0) - sqr(susyMu)) - 
+	sqr(r.displayTanb())) / (sqr(r.displayTanb()) - 1.0) - sqr(susyMu)) - 
       pizztMS;
 
-    cout << susyMu << " " << tanb << " " << pizztMS << " " << MZsq;
-    if (r.displayProblem().test()) cout << "#" << r.displayProblem();
-    cout << endl;
+    double piwwt0  = r.piWWT(0., r.displayMu(), true);
+    double piwwtMW = r.piWWT(r.displayMw(), r.displayMu(), true);
+
+    cout << susyMu << " " << r.displayTanb() << " " << pizztMS << " " << MZsq;
+    cout << " " << r.displayMh1Squared() << " " << r.displayMh2Squared();
+    cout << " " << r.displayTadpole1Ms() << " " << r.displayTadpole2Ms();
+    cout << " " << r.displayMwRun() << " " << r.displayMzRun()
+	 << endl; 
+    //    cout << r;
   }
   cout << endl;
 }	       
@@ -141,7 +146,8 @@ void muScan(double m0, double mtop, double alphasMZ, double mbmb, double m12,
 
   DoubleVector pars(3); 
   pars(1) = m0; pars(2) = m12; pars(3) = a0;
-  bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
+  /// DEBUG
+  bool uni = false; // MGUT defined by g1(MGUT)=g2(MGUT)
 
   TOLERANCE = 1.0E-4;
 
@@ -187,7 +193,8 @@ void muScan(double m0, double mtop, double alphasMZ, double mbmb, double m12,
 	 << " " << s.mneut(1) << " " << s.mneut(2) << " " 
 	 << r.piZZT(r.displayMz(), r.displayMu(), true) << " "
 	 << r.piWWT(0., r.displayMu(), true) << " " 
-	 << r.piWWT(r.displayMw(), r.displayMu(), true) << " " << endl;
+	 << r.piWWT(r.displayMw(), r.displayMu(), true) << " " 
+	 << r.displayTanb() << endl;
     if (r.displayProblem().test()) cout << r.displayProblem() << endl;
   }
   cout << endl;
@@ -219,11 +226,18 @@ void m0Scan(double mtop, double alphasMZ, double mbmb, double m12, double a0,
     double m0 = 600. + k * 500.;
     double mStart = 0.1, mEnd=40.;
     muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, mStart, mEnd, 40);
+    cout << endl;
     mStart = 40.; mEnd = 60.;
     muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, mStart, mEnd, 50);
+    cout << endl;
     mStart = 60.; mEnd = 200.;
     muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, mStart, mEnd, 40);
+    cout << endl;
   }
+
+  cout << "# coordinates of intersection\n2.2 -50\n2.2 1\n\n\n";
+  cout << "8.9 -50\n8.9 1\n\n\n150 -50\n150 1\n\n\n51 -8\n51 15\n\n\n";
+  cout << "58 -8\n58 15\n\n\n5.5 -8\n5.5 15\n\n\n";
 }
 
 int main() {
@@ -244,12 +258,12 @@ int main() {
     double muGuess = 8.7 * i + 0.1;
       muPoint(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, start, end, muGuess); 
     }
-    exit(0);*/
-    
+    exit(0);
+    */
     start = 0.1, end = 40.; m0 = 3100.;
     muScanInv(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, start, end, 200); cout << endl << endl;
     exit(0);
-   
+    
     m0Scan(mtop, alphasMZ, mbmb, m12, a0, tanb, start, end); cout << endl;
 
     exit(0);
