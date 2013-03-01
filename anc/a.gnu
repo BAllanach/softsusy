@@ -36,13 +36,25 @@ plot "cmssmScans" i 2 u 1:3 tit "M@_Z^2(pred)/M@_Z^2(exp)" w l lw 4, \
 set output 
 
 set autoscale
+set title "m_0=3.1 TeV, M_{1/2}=300 GeV, tan{/Symbol b}=10, A_0=0"
+set xrange [0:100]
+set yrange [-2:6]
+set output "constMgut.eps"
+set ylabel "M@_Z^2(pred)/M@_Z^2(exp)"
+plot "constMgutScan" i 7 u 1:3 tit "M_{GUT}=2.1 10^{16} GeV" w l ls 3, \
+"constMgutScan" i 0 u 1:3 tit "M_{GUT}=1.955 10^{16} GeV" w l ls 1, 1 notit w l ls 0, \
+"constMgutScan" i 1 notit w l ls 0, "constMgutScan" i 2 notit w l ls 0, \
+"constMgutScan" i 3 notit w l ls 0, "constMgutScan" i 4 notit w l ls 0, \
+"constMgutScan" i 5 notit w l ls 0, \
+"constMgutScan" i 6 u 1:3 tit "M_{GUT}=1.9 10^{16} GeV" w l ls 2
+
+set autoscale
+
 set output "inv.eps"
 plot "oneScan" u 1:($6/1.6e6) tit "m@_{H_2}^2(M_S)/1.6e+06 GeV^2" w l lw 4
  
 set output "inv2.eps"
 plot "oneScan" u 1:($9) tit "h_t(M_Z)" w l lw 4
- 
-
 
 !gs -q -sPAPERSIZE=a4 -dNOPAUSE -dBATCH -sDEVICE=pswrite -sOutputFile=concat.ps *.eps
 !mpage -2 concat.ps > b.ps

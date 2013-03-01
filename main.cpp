@@ -72,7 +72,7 @@ void muScanInv(double m0, double mtop, double alphasMZ, double mbmb, double m12,
 	    double a0, double tanb, double start, double end, int numPoints) {
   
   MssmSoftsusy r;
-  double mGutGuess = 2.0e16;
+  double mGutGuess = 2.e16;
   /// Parameters used: CMSSM parameters
   int sgnMu = 1;      ///< sign of mu parameter 
   
@@ -133,7 +133,7 @@ void muScan(double m0, double mtop, double alphasMZ, double mbmb, double m12,
 	    double a0, double tanb, double start, double end, int numPoints) {
   
   MssmSoftsusy r;
-  double mGutGuess = 2.0e16;
+  double mGutGuess = 2.1e16;
   /// Parameters used: CMSSM parameters
   int sgnMu = 1;      ///< sign of mu parameter 
   
@@ -153,7 +153,7 @@ void muScan(double m0, double mtop, double alphasMZ, double mbmb, double m12,
 
   cout << "# m0=" << m0 << " mt=" << mtop << " a_s(M_Z)=" << alphasMZ 
        << " mb(mb)=" << mbmb << "\n# m12=" << m12 << " a0=" << a0 
-       << " tanb=" << tanb << endl;
+       << " tanb=" << tanb << " mx=" << mGutGuess << endl;
   cout << "# mu(MSUSY)    MZ          (MZ:P/E^2)   MW(MW)      "
        << "mch(1)         " 
        << "mneut(1)      mneut(2)     PIZZT(MZ)    PIWWT(0)     "
@@ -194,8 +194,9 @@ void muScan(double m0, double mtop, double alphasMZ, double mbmb, double m12,
 	 << r.piZZT(r.displayMz(), r.displayMu(), true) << " "
 	 << r.piWWT(0., r.displayMu(), true) << " " 
 	 << r.piWWT(r.displayMw(), r.displayMu(), true) << " " 
-	 << r.displayTanb() << endl;
+	 << r.displayTanb();
     if (r.displayProblem().test()) cout << r.displayProblem() << endl;
+    else cout << endl;
   }
   cout << endl;
 }	       
@@ -221,18 +222,15 @@ void m0Scan(double mtop, double alphasMZ, double mbmb, double m12, double a0,
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
 
-  for (int k=0; k <=numPoints; k++) {
+  for (int k=numPoints-1; k <=numPoints-1; k++) {
 
     double m0 = 600. + k * 500.;
     double mStart = 0.1, mEnd=40.;
     muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, mStart, mEnd, 40);
-    cout << endl;
     mStart = 40.; mEnd = 60.;
     muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, mStart, mEnd, 50);
-    cout << endl;
     mStart = 60.; mEnd = 200.;
     muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, mStart, mEnd, 40);
-    cout << endl;
   }
 
   cout << "# coordinates of intersection\n2.2 -50\n2.2 1\n\n\n";
@@ -259,11 +257,11 @@ int main() {
       muPoint(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, start, end, muGuess); 
     }
     exit(0);
-    */
+    
     start = 0.1, end = 40.; m0 = 3100.;
     muScanInv(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, start, end, 200); cout << endl << endl;
     exit(0);
-    
+    */
     m0Scan(mtop, alphasMZ, mbmb, m12, a0, tanb, start, end); cout << endl;
 
     exit(0);
