@@ -341,10 +341,11 @@ double fB(const Complex & a) {
   Note it returns the REAL PART ONLY. 
 */
 double b0(double p, double m1, double m2, double q) {
-#ifdef USE_LOOPTOOLS
+  //#ifdef USE_LOOPTOOLS
   setmudim(q*q);
-  return B0(p*p, m1*m1, m2*m2).real();
-#endif
+  double b0l = B0(p*p, m1*m1, m2*m2).real();
+  //  return B0(p*p, m1*m1, m2*m2).real();
+  //#endif //DEBUG
 
   double mMin = minimum(fabs(m1), fabs(m2));
   double mMax = maximum(fabs(m1), fabs(m2));
@@ -370,6 +371,8 @@ double b0(double p, double m1, double m2, double q) {
    
     double ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
 
+    if (!close(b0l, ans, 1.0e-6)) 
+      cout << "DEBUG Err: " << 1. - b0l / ans << endl; 
     return ans;
   }
   else {

@@ -22,7 +22,7 @@
 using namespace softsusy;
 
 /// Comment if you want default softsusy behaviour
-#define USE_LOOPTOOLS
+//#define USE_LOOPTOOLS
 
 /// A single step of Runge Kutta (5th order), input: 
 /// y and dydx (derivative of y), x is independent variable. yout is value
