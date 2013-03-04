@@ -318,6 +318,8 @@ double bIntegral(int n1, double p, double m1, double m2, double mt) {
 /// Decides level at which one switches to p=0 limit of calculations
 const double pTolerance = 1.0e-6; 
 
+
+
 double fB(const Complex & a) {
   /// First, special cases at problematic points
   double x = a.real(), y = a.imag();
@@ -325,13 +327,14 @@ double fB(const Complex & a) {
     double ans = -1. - x + sqr(x) * 0.5;
     return ans;
   }
-  if (close(x, 1., pTolerance)) {
+  if (close(x, 1., pTolerance)) { 
+    if (close(x, 1., EPSTOL)) return -1.;
     double eps = x - 1.;
     double ans = -1. + eps + sqr(eps) * 0.5;
     return ans;
   }
   
-  Complex ans = log(1.0 - a) - a * log(a - 1.0) + a * log(a) - 1.;
+  Complex ans = log(1. - a) -1. - a * log(1.0 - 1.0 / a);
   return ans.real();
 }
   
@@ -341,12 +344,13 @@ double fB(const Complex & a) {
   Note it returns the REAL PART ONLY. 
 */
 double b0(double p, double m1, double m2, double q) {
-  //#ifdef USE_LOOPTOOLS
+#ifdef USE_LOOPTOOLS
   setmudim(q*q);
   double b0l = B0(p*p, m1*m1, m2*m2).real();
   //  return B0(p*p, m1*m1, m2*m2).real();
-  //#endif //DEBUG
+#endif //DEBUG
 
+  double ans  = 0.;
   double mMin = minimum(fabs(m1), fabs(m2));
   double mMax = maximum(fabs(m1), fabs(m2));
 
@@ -354,13 +358,7 @@ double b0(double p, double m1, double m2, double q) {
   double s = pSq - mMinSq + mMaxSq;
 
   if (sqr(p) > pTolerance * sqr(mMin)) {    
-    /*    if (mMaxSq < pSq * pTolerance) {
-      //      cerr << "High p " << m2 << endl;
-      if (printDEBUG[1]) cout << "#" << mMaxSq << "<"<< pSq * pTolerance <<" ";
-      return 2. - 2. * log(p / q);
-      }*/
-
-    Complex iEpsilon(0.0, EPSTOL * mMax);
+    Complex iEpsilon(0.0, EPSTOL * sqr(mMax));
     
     Complex xPlus, xMinus;
 
@@ -369,26 +367,37 @@ double b0(double p, double m1, double m2, double q) {
     xMinus = 2. * (sqr(mMax) - iEpsilon) / 
       (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
    
-    double ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
-
-    if (!close(b0l, ans, 1.0e-6)) 
-      cout << "DEBUG Err: " << 1. - b0l / ans << endl; 
+    ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
+    
+    if (!close(b0l, ans, 1.0e-5)) 
+      cout << "1. DEBUG Err: b0(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << 1.-b0l/ans << " x+=" << xPlus << " x-=" << xMinus << " fB=" << fB(xPlus) << " and " << fB(xMinus) << endl;
     return ans;
   }
   else {
     if (close(m1, m2, EPSTOL)) {
-      return - log(sqr(m1 / q));
+      ans = - log(sqr(m1 / q));
+    if (!close(b0l, ans, 1.0e-5)) 
+      cout << "2. DEBUG Err: b0(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << 1.-b0l/ans << endl;
+    return ans;
     }
     else {
       double Mmax2 = sqr(mMax),
 	Mmin2 = sqr(mMin); 
       if (Mmin2 < sqr(TOLERANCE)) {
-	return 1.0 - log(Mmax2 / sqr(q));
+	ans = 1.0 - log(Mmax2 / sqr(q));
+    if (!close(b0l, ans, 1.0e-5)) 
+      cout << "3. DEBUG Err: b0(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << 1.-b0l/ans << endl;
+
+      return ans;
       }
       else {
-	return 
+	ans = 
 	  1.0 - log(Mmax2 / sqr(q)) + Mmin2 * log(Mmax2 / Mmin2) 
 	  / (Mmin2 - Mmax2);
+    if (!close(b0l, ans, 1.0e-5)) 
+      cout << "4. DEBUG Err: b0(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << 1.-b0l/ans << endl;
+
+	return ans;
       }
     }
   }   
@@ -397,7 +406,7 @@ double b0(double p, double m1, double m2, double q) {
 double b1(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
-  return -B1(p*p, m1*m1, m2*m2).real();
+  //  return -B1(p*p, m1*m1, m2*m2).real();
 #endif
 
   if (sqr(p) > pTolerance * sqr(maximum(m1, m2))) {
@@ -467,11 +476,6 @@ double b22(double p,  double m1, double m2, double q) {
 
 // debugged 23.01.07 - thanks to Shindou Tetsuo 
 double d0(double m1, double m2, double m3, double m4) {
-
-#ifdef USE_LOOPTOOLS
-  return D0(0.01, 0., 0., 0., 0., 0., m1*m1, m2*m2, m3*m3, m4*m4).real();
-#endif
-
   if (close(m1, m2, EPSTOL)) {
     double m2sq = sqr(m2), m3sq = sqr(m3), m4sq = sqr(m4);
 
