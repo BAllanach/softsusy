@@ -39,3 +39,5 @@ AC_PROG_LIBTOOL
 AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
+
+# To run with looptools, run: ./configure CPPFLAGS=-I/home/bca20/code/looptools/LoopTools/install/include LDFLAGS=-L/home/bca20/code/looptools/LoopTools/install/lib/ F77=gfortran

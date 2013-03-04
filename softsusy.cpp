@@ -5736,7 +5736,8 @@ void MssmSoftsusy::physical(int accuracy) {
     i++;
   }
 
-  if (higgsTachyon) { flagTachyon(h0); flagTachyon(A0); flagTachyon(hpm); }
+  if (higgsTachyon) { flagTachyon(h0); flagTachyon(softsusy::A0); 
+    flagTachyon(hpm); }
   physpars.mh0 = ppp->displayPhys().mh0;
   physpars.mA0 = ppp->displayPhys().mA0;
   physpars.mH0 = ppp->displayPhys().mH0;
@@ -6186,7 +6187,7 @@ double MssmSoftsusy::lowOrg
     
     setSusy(t);
     
-    /// Initial guess: B=0, mu=1st parameter, need better guesses
+    /// Initial guess: B=0, 
     boundaryCondition(*this, pars);
 
     if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
@@ -6534,7 +6535,7 @@ void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2,
       if (mAsq < 0.) { flagTachyon(A0); mAsq = fabs(poleMasq); }
       }
      */
-    flagTachyon(A0); 
+    flagTachyon(softsusy::A0); 
     if (mAFlag == false) mAsq = zeroSqrt(mAsq); 
     /// This may be  a bad idea in terms of convergence
     else mAsq = fabs(mAsq);

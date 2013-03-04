@@ -50,11 +50,20 @@ plot "constMgutScan" i 7 u 1:3 tit "M_{GUT}=2.1 10^{16} GeV" w l ls 3, \
 
 set autoscale
 
-set output "inv.eps"
-plot "oneScan" u 1:($6/1.6e6) tit "m@_{H_2}^2(M_S)/1.6e+06 GeV^2" w l lw 4
- 
-set output "inv2.eps"
-plot "oneScan" u 1:($9) tit "h_t(M_Z)" w l lw 4
+#set output "mgzoom.eps"
+#set title "m_0=3.1 TeV, M_{1/2}=300 GeV, tan{/Symbol b}=10, A_0=0"
+#set yrange [-8:15]
+#unset ylabel
+#set key spacing 1.5
+#plot "constMgutScan" i 0 u 1:3 tit "M@_Z^2(pred)/M@_Z^2(exp)" w l lw 4, \
+#"constMgutScan" i 0 u 1:(($2-abs($6)-abs($7))/10) tit "(M_Z(exp)-|M_{{/Symbol c}@_1^0}|-|M_{{/Symbol c}@_2^0|})/10 GeV" w l lw 4, \
+#"constMgutScan" i 0 u 1:(($2-abs($5)-abs($5))/10) tit "(M_Z(exp)-2|M_{{/Symbol c}@_1^+}|)/10 GeV" w l lw 4, \
+#0 notit w l lt 0, \
+#"constMgutScan" i 0 u 1:((($5))/10) tit "M_{{/Symbol c}@_1^+}/10 GeV" w l lw 4 lt 4, \
+#"constMgutScan" i 0 u 1:(5000*$8/($2*$2)) tit "5x10^3 {/Symbol P}@_{Z}^{T}/M@_Z^2(exp)" w l lt 5 lw 4, \
+#"constMgutScan" i 1 notit w l ls 0, "constMgutScan" i 2 notit w l ls 0, "constMgutScan" i 3 notit w l ls 0 
+#set output 
+
 
 !gs -q -sPAPERSIZE=a4 -dNOPAUSE -dBATCH -sDEVICE=pswrite -sOutputFile=concat.ps *.eps
 !mpage -2 concat.ps > b.ps

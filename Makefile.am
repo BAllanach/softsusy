@@ -3,19 +3,19 @@ bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x doc/rpcM
 lib_LTLIBRARIES = libsoft.la 
 
 softsusy_x_SOURCES = main.cpp
-softsusy_x_LDADD = libsoft.la  
+softsusy_x_LDADD = libsoft.la -looptools
 
 softpoint_x_SOURCES = softpoint.cpp 
-softpoint_x_LDADD = libsoft.la -lkernlib -lpacklib -lmathlib  
+softpoint_x_LDADD = libsoft.la -lkernlib -lpacklib -lmathlib -looptools
 
 rpvsoftsusy_x_SOURCES = rpvmain.cpp
-rpvsoftsusy_x_LDADD = libsoft.la 
+rpvsoftsusy_x_LDADD = libsoft.la -looptools
 
 rpvneut_x_SOURCES = rpvneutmain.cpp
-rpvneut_x_LDADD = libsoft.la 
+rpvneut_x_LDADD = libsoft.la -looptools
 
 gaugeUn_x_SOURCES = gaugeUn.cpp
-gaugeUn_x_LDADD = libsoft.la 
+gaugeUn_x_LDADD = libsoft.la -looptools
 
 pkginclude_HEADERS = \
 def.h main.h numerics.h \

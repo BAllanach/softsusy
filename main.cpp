@@ -167,6 +167,8 @@ void muScan(double m0, double mtop, double alphasMZ, double mbmb, double m12,
     trialMuSq = sqr(mu);
     double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
 
+    cout << r; exit(0); ///< DEBUG
+
     r.calcDrBarPars();
     drBarPars s(r.displayDrBarPars());
 
@@ -239,6 +241,12 @@ void m0Scan(double mtop, double alphasMZ, double mbmb, double m12, double a0,
 }
 
 int main() {
+  double p = 1000., q = 100., m1 = 0., m2 = 800.;
+  ltini(); setmudim(q * q);
+  /*  cout << b0(p, m1, m2, q) << endl; 
+  cout << B0(p*p, m1*m1, m2*m2) << endl;
+  ltexi(); exit(0);
+  */
   printDEBUG.push_back(false);
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 

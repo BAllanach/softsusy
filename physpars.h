@@ -18,7 +18,8 @@
 using namespace softsusy;
 using namespace std;
 
-typedef enum {none=0, selectron, smuon, stau, sup, scharm, stop, sdown, 
+namespace softsusy {
+  typedef enum {none=0, selectron, smuon, stau, sup, scharm, stop, sdown, 
 	      sstrange, sbottom, h0, A0, hpm, snue, snumu, snutau, W, Z} 
   tachyonType;
 
@@ -26,6 +27,7 @@ const static char* tachyonNames[18] = {
   "none", "selectron", "smuon", "stau", "sup", "scharm", "stop", "sdown", 
   "sstrange", "sbottom", "h0", "A0", "hpm", "snue", "snumu", "snutau", 
   "W", "Z"};
+}
 
 /// Masses of the physical particles. 
 struct sPhysical {
