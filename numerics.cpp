@@ -331,7 +331,7 @@ double fB(const Complex & a) {
     return ans;
   }
     
-    Complex ans = log(1.0 - a) - a * log(a - 1.0) + a * log(a) - 1.;
+    Complex ans = log(1.0 - a) - a * log(1.0 - 1.0 / a) - 1.;
     return ans.real();
 }
   
