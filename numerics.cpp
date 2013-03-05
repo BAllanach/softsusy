@@ -9,6 +9,27 @@
 
 #include "numerics.h"
 
+double log1minusx(double x) {
+  if (x > 1.) return 0.; 
+  else if (close(1., x, EPSTOL)) return 6.66e66;
+  else if (fabs(x) > 0.125) return log(1. - x);
+  else if (x < 1.e-200) return 0.;
+  double test = -x; int i = 1; double l1mx = -x;
+  /// Find largest power that we need from the expansion
+  do { 
+    i++;
+    test = l1mx; 
+    l1mx = l1mx - pow(x, i) / double(i);
+    if (close(l1mx, test, 1.0e-15)) break;
+  } while (!close(l1mx, test, 1.0e-15));
+  l1mx = 0.;
+  int nMax = i;
+  for (i=nMax; i>=1; i--) {
+    l1mx -= pow(x, i) / double(i);
+  }
+  return l1mx;
+}
+
 // returns >0 if there's a problem:
 int integrateOdes(DoubleVector & ystart, double from, double to, double eps,
 	      double h1, double hmin, 
@@ -335,6 +356,7 @@ double fB(const Complex & a) {
   }
   
   Complex ans = log(1. - a) -1. - a * log(1.0 - 1.0 / a);
+  //double ans = log1minusx(a.real()) - 1. - a.real() * log1minusx(1.0 / a.real());
   return ans.real();
 }
   
@@ -343,6 +365,70 @@ double fB(const Complex & a) {
   From hep-ph/9606211
   Note it returns the REAL PART ONLY. 
 */
+double b0(double p, double m1, double m2, double q) {
+#ifdef USE_LOOPTOOLS
+  setmudim(q*q);
+  double b0l = B0(p*p, m1*m1, m2*m2).real();
+  //  return B0(p*p, m1*m1, m2*m2).real();
+#endif
+
+  double ans  = 0.;
+  double mMin = minimum(fabs(m1), fabs(m2));
+  double mMax = maximum(fabs(m1), fabs(m2));
+
+  double pSq = sqr(p), mMinSq = sqr(mMin), mMaxSq = sqr(mMax);
+  double s = pSq - mMinSq + mMaxSq;
+
+  if (sqr(p) > pTolerance * sqr(mMin)) {  ///< p is not 0
+    //    double s1 = p / m; 
+    //    s = log(1 - s1);
+
+    Complex iEpsilon(0.0, EPSTOL * sqr(mMax));
+    
+    Complex xPlus, xMinus;
+
+    xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
+      (2. * sqr(p));
+    xMinus = 2. * (sqr(mMax) - iEpsilon) / 
+      (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
+   
+    ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
+    
+    if (!close(b0l, ans, 1.0e-3)) 
+    cout << "1. DEBUG Err: b0(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << 1.-b0l/ans << " x+=" << xPlus << " x-=" << xMinus << " fB=" << fB(xPlus) << " and " << fB(xMinus) << endl;
+    return ans;
+  }
+  else {
+    if (close(m1, m2, EPSTOL)) {
+      ans = - log(sqr(m1 / q));
+          if (!close(b0l, ans, 1.0e-5)) 
+            cout << "2. DEBUG Err: b0(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << 1.-b0l/ans << endl;
+    return ans;
+    }
+    else {
+      double Mmax2 = sqr(mMax),
+	Mmin2 = sqr(mMin); 
+      if (Mmin2 < sqr(TOLERANCE)) {
+	ans = 1.0 - log(Mmax2 / sqr(q));
+    if (!close(b0l, ans, 1.0e-5)) 
+      cout << "3. DEBUG Err: b0(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << 1.-b0l/ans << endl;
+
+      return ans;
+      }
+      else {
+	ans = 
+	  1.0 - log(Mmax2 / sqr(q)) + Mmin2 * log(Mmax2 / Mmin2) 
+	  / (Mmin2 - Mmax2);
+	    if (!close(b0l, ans, 1.0e-5)) 
+	      cout << "4. DEBUG Err: b0(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << 1.-b0l/ans << endl;
+
+	return ans;
+      }
+    }
+  }   
+}
+
+/* old function
 double b0(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
@@ -401,7 +487,7 @@ double b0(double p, double m1, double m2, double q) {
       }
     }
   }   
-}
+}*/
 
 double b1(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS

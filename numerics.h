@@ -213,5 +213,7 @@ bool integrateReversibly(DoubleVector & xi,
 /// useful for 2-loop mb/mt corrections
 double fin(double mm1, double mm2);
 double den(double a, int b); /// 1/a^b
+
+double log1minusx(double x);
 #endif
 
