@@ -91,7 +91,7 @@ double d0(double m1, double m2, double m3, double m4);
 // inlined PV functions
 inline double a0(double m, double q) {
   if (fabs(m) < EPSTOL) return 0.;
-  return sqr(m) * (1.0 - log(sqr(m / q)));
+  return sqr(m) * (1.0 - 2. * log(abs(m / q)));
 }
 
 inline double ffn(double p, double m1, double m2, double q) {

@@ -228,6 +228,9 @@ void m0Scan(double mtop, double alphasMZ, double mbmb, double m12, double a0,
 
     double m0 = 600. + k * 500.;
     double mStart = 0.1, mEnd=40.;
+    /// DEBUG
+    mStart = 100.; mEnd = 2000.;
+
     muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, mStart, mEnd, 40);
     mStart = 40.; mEnd = 60.;
     muScan(m0, mtop, alphasMZ, mbmb, m12, a0, tanb, mStart, mEnd, 50);
