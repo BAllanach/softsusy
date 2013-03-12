@@ -27,7 +27,7 @@ tensor.h rpvmain.h flavoursoft.h \
 xpr-base.h xpr-matrix.h xpr-vector.h rpvneut.h 
 
 libsoft_la_SOURCES = def.cpp linalg.cpp lowe.cpp numerics.cpp  rpvneut.cpp \
-physpars.cpp rge.cpp softpars.cpp rgeroutines.cpp softsusy.cpp susy.cpp utils.cpp \
+physpars.cpp rge.cpp rgeroutines.cpp softsusy.cpp susy.cpp utils.cpp \
 tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp twoloophiggs.f
 libsoft_la_LDFLAGS = $(FLIBS)
 

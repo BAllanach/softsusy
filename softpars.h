@@ -27,8 +27,10 @@ typedef enum {UA=1, DA, EA} trilinears;
 /// Number of parameters contained in RGEs
 const static int numSoftParsMssm = 78 + numSusyPars;
 
-/// Soft SUSY breaking parameters and beta functions. 
-class SoftParsMssm: public MssmSusy {
+/// Soft SUSY breaking parameters and beta functions.
+template<class Susy, class Brevity>
+class SoftPars: public Susy
+{
 private:
   DoubleVector mGaugino; ///< Gaugino masses, see ::beta for definitions
   DoubleMatrix ua, da, ea; ///< Trilinear soft terms..
@@ -40,30 +42,45 @@ private:
   double m3sq, mH1sq, mH2sq; 
   double m32;         ///< Gravitino mass
 public:
+  using Susy::setPars;
+  using Susy::setMu;
+  using Susy::setLoops;
+  using Susy::setThresholds;
+  using Susy::setSusyMu;
+  using Susy::displayGaugeCoupling;
+  using Susy::displayYukawaElement;
+  using Susy::displayYukawaMatrix;
+  using Susy::displayLoops;
+  using Susy::displaySusyMu;
+  using Susy::displaySusy;
+  using Susy::displayMu;
+  using Susy::displayThresholds;
+  using Susy::displayGauge;
+
   /// Default constructor fills object with zeroes
-  SoftParsMssm();
+  SoftPars();
   /// Constructor fills SUSY conserving parts with another object, all
   /// SUSY breaking parameters set to zero
-  SoftParsMssm(const MssmSusy &);
+  SoftPars(const Susy &);
   /// Constructor sets all parameters equal to those in another object
-  SoftParsMssm(const SoftParsMssm &);
+  SoftPars(const SoftPars &);
   /// Sets all parameters equal to those in another object
-  const SoftParsMssm & operator=(const SoftParsMssm & s);
+  const SoftPars & operator=(const SoftPars & s);
   /// Constructor sets RPC SUSY parameters to s, gaugino masses to mG,
   /// trilinears to aU, aD, aE for au, ad, ae
   /// trilnears respectively,  \f$m_Q^2\f$=mQl, \f$m_U^2\f$=mUr,
   /// \f$m_D^2\f$=mDr, \f$m_L^2\f$=mLl, \f$m_E^2\f$=mEr, \f$ m_3^2\f$=m3sq,
   /// \f$m_{H_1}^2\f$=mH1sq, \f$m_{H_2}^2\f$=mH2sq, mu parameter, number of
   /// loops=l, and threshold parameter=t
-  SoftParsMssm(const MssmSusy & s, const DoubleVector & mG, const
+  SoftPars(const Susy & s, const DoubleVector & mG, const
 	       DoubleMatrix & aU, const DoubleMatrix & aD, const DoubleMatrix
 	       & aE, const DoubleMatrix & mQl, const DoubleMatrix & mUr, const
 	       DoubleMatrix & mDr, const DoubleMatrix & mLl, const
-	       DoubleMatrix & mEr, double m3sq, double mH1sq, double mH2sq, 
+	       DoubleMatrix & mEr, double m3sq, double mH1sq, double mH2sq,
 	       double mGravitino, double mu, int l, int t);
 
   /// Returns whole object as a const
-  inline const SoftParsMssm & displaySoftPars() const;
+  const SoftPars & displaySoftPars() const;
 
   /// Return a trilinear coupling matrix
   const DoubleMatrix & displayTrilinear(trilinears) const;
@@ -77,18 +94,18 @@ public:
   double displaySoftMassSquared(softMasses, int i, int j) const;
 
   double displayGravitino() const; ///< Returns the gravitino mass
-  inline double displayM3Squared() const;     ///< Return \f$ m_3^2\f$
-  inline double displayMh1Squared() const;    ///< Return \f$m_{H_1}^2\f$
-  inline double displayMh2Squared() const;    ///< Return \f$m_{H_2}^2\f$=mH2sq
-  inline DoubleVector displayGaugino() const; ///< Return \f$M_{G_i}\f$
-  inline double displayGaugino(int i) const;  ///< Return \f$M_{G_i}\f$
+  double displayM3Squared() const;     ///< Return \f$ m_3^2\f$
+  double displayMh1Squared() const;    ///< Return \f$m_{H_1}^2\f$
+  double displayMh2Squared() const;    ///< Return \f$m_{H_2}^2\f$=mH2sq
+  DoubleVector displayGaugino() const; ///< Return \f$M_{G_i}\f$
+  double displayGaugino(int i) const;  ///< Return \f$M_{G_i}\f$
   /// Return contents of object in a vector: for RG evolution
   virtual const DoubleVector display() const; 
   
   /// Sets gravitino mass
   void setM32(double);
   /// Sets whole thing equal to another object
-  void setSoftPars(SoftParsMssm const &);
+  void setSoftPars(SoftPars const &);
   /// Set one element of a soft mass squared matrix 
   void setSoftMassElement(softMasses, int, int, double);
   /// Set whole of a soft mass squared matrix
@@ -106,12 +123,12 @@ public:
   void setMh2Squared(double); ///< Sets \f$ m_{H_2}^2\f$
   /// Sets total set of RGE parameters equal to elements of a vector
   void set(const DoubleVector &);
-  //  void setSusy(const MssmSusy &);
+  //  void setSusy(const Susy &);
 
   /// Returns double vector containing numerical beta functions of parameters
   DoubleVector beta() const; 
   /// Returns numerical beta functions of parameters  
-  SoftParsMssm beta2() const; 
+  SoftPars beta2() const;
   /// Returns derivatives of anomalous dimensions of fields with respect to
   /// renormalisation scale in MSSM for: RH leptons, LH leptons, LH quarks, RH
   /// up quarks, RH down quarks, H1 and H2 respectively
@@ -153,13 +170,18 @@ public:
   void inputSoftParsOnly();
 };
 
-/// Formatted ouput of whole object
-ostream & operator <<(ostream &left, const SoftParsMssm &s);
-/// Formatted input of whole object
-istream & operator >>(istream &left, SoftParsMssm &s);
+typedef SoftPars<MssmSusy, sBrevity> SoftParsMssm;
 
-inline SoftParsMssm::SoftParsMssm()
-  : MssmSusy(), mGaugino(3), ua(3, 3), da(3, 3), ea(3, 3), 
+/// Formatted ouput of whole object
+template<class Susy, class Brevity>
+ostream & operator <<(ostream &left, const SoftPars<Susy, Brevity> &s);
+/// Formatted input of whole object
+template<class Susy, class Brevity>
+istream & operator >>(istream &left, SoftPars<Susy, Brevity> &s);
+
+template<class Susy, class Brevity>
+SoftPars<Susy, Brevity>::SoftPars()
+  : Susy(), mGaugino(3), ua(3, 3), da(3, 3), ea(3, 3),
   mQLsq(3, 3), mURsq(3, 3), mDRsq(3, 3), mLLsq(3, 3), mSEsq(3, 3), m3sq(0.0),
   mH1sq(0.0), mH2sq(0.0), m32(1.e19) {      
   
@@ -169,8 +191,9 @@ inline SoftParsMssm::SoftParsMssm()
   setThresholds(0);
 }
 
-inline SoftParsMssm::SoftParsMssm(const SoftParsMssm & s)
-  : MssmSusy(s.displaySusy()), 
+template<class Susy, class Brevity>
+SoftPars<Susy, Brevity>::SoftPars(const SoftPars<Susy, Brevity> & s)
+  : Susy(s.displaySusy()),
   mGaugino(s.displayGaugino()), ua(s.displayTrilinear(UA)),
   da(s.displayTrilinear(DA)), ea(s.displayTrilinear(EA)),
   mQLsq(s.displaySoftMassSquared(mQl)), 
@@ -187,8 +210,9 @@ inline SoftParsMssm::SoftParsMssm(const SoftParsMssm & s)
   setThresholds(s.displayThresholds());
 }
 
-inline SoftParsMssm::SoftParsMssm(const MssmSusy &s)
-  : MssmSusy(s), mGaugino(3), ua(3, 3), da(3, 3), ea(3, 3), 
+template<class Susy, class Brevity>
+SoftPars<Susy, Brevity>::SoftPars(const Susy &s)
+  : Susy(s), mGaugino(3), ua(3, 3), da(3, 3), ea(3, 3),
     mQLsq(3, 3), mURsq(3, 3), mDRsq(3, 3), mLLsq(3, 3), mSEsq(3, 3), m3sq(0.0),
     mH1sq(0.0),  mH2sq(0.0), m32(1.e19) { 
       setPars(numSoftParsMssm);
@@ -197,13 +221,14 @@ inline SoftParsMssm::SoftParsMssm(const MssmSusy &s)
       setThresholds(s.displayThresholds());
 }
 
-inline SoftParsMssm::SoftParsMssm
-(const MssmSusy & s, const DoubleVector & mG, const
+template<class Susy, class Brevity>
+SoftPars<Susy, Brevity>::SoftPars
+(const Susy & s, const DoubleVector & mG, const
  DoubleMatrix & aU, const DoubleMatrix & aD, const DoubleMatrix & aE, const
  DoubleMatrix & mQl, const DoubleMatrix & mUr, const DoubleMatrix & mDr, const
  DoubleMatrix & mLl, const DoubleMatrix & mEr, double m3sqn, double mH1sq,
  double mH2sq, double mg, double mu, int l, int t)
-  : MssmSusy(s), mGaugino(mG), ua(aU), da(aD), ea(aE),
+  : Susy(s), mGaugino(mG), ua(aU), da(aD), ea(aE),
     mQLsq(mQl), mURsq(mUr), mDRsq(mDr), mLLsq(mLl), mSEsq(mEr), m3sq(m3sqn),
     mH1sq(mH1sq), mH2sq(mH2sq), m32(mg) {
       setPars(numSoftParsMssm);
@@ -212,29 +237,59 @@ inline SoftParsMssm::SoftParsMssm
       setThresholds(t);
 }
 
-inline const SoftParsMssm & SoftParsMssm::displaySoftPars() const { return *this; }
-
-inline double SoftParsMssm::displayM3Squared() const { return m3sq; }
-
-inline double SoftParsMssm::displayMh1Squared() const { return mH1sq; }
-
-inline double SoftParsMssm::displayMh2Squared() const { return mH2sq; }
-
-inline DoubleVector SoftParsMssm::displayGaugino() const { return mGaugino; }
-
-inline double SoftParsMssm::displayGaugino(int i) const { 
-  return mGaugino.display(i); 
+template<class Susy, class Brevity>
+const SoftPars<Susy, Brevity> & SoftPars<Susy, Brevity>::displaySoftPars() const {
+   return *this;
 }
 
-inline double SoftParsMssm::displayGravitino() const { return m32; }
-
-inline void SoftParsMssm::setGauginoMass(int i, double f) { 
-  mGaugino(i) = f; 
+template<class Susy, class Brevity>
+double SoftPars<Susy, Brevity>::displayM3Squared() const {
+   return m3sq;
 }
 
-inline void SoftParsMssm::setM3Squared(double f) { m3sq = f; }
-inline void SoftParsMssm::setMh1Squared(double f) { mH1sq = f; }
-inline void SoftParsMssm::setMh2Squared(double f) { mH2sq = f; }
-inline void SoftParsMssm::setSoftPars(SoftParsMssm const & s) { *this = s; }
-inline void SoftParsMssm::setM32(double a) { m32 = a; }
+template<class Susy, class Brevity>
+double SoftPars<Susy, Brevity>::displayMh1Squared() const {
+   return mH1sq;
+}
+
+template<class Susy, class Brevity>
+double SoftPars<Susy, Brevity>::displayMh2Squared() const {
+   return mH2sq;
+}
+
+template<class Susy, class Brevity>
+DoubleVector SoftPars<Susy, Brevity>::displayGaugino() const {
+   return mGaugino;
+}
+
+template<class Susy, class Brevity>
+double SoftPars<Susy, Brevity>::displayGaugino(int i) const {
+  return mGaugino.display(i);
+}
+
+template<class Susy, class Brevity>
+double SoftPars<Susy, Brevity>::displayGravitino() const { return m32; }
+
+template<class Susy, class Brevity>
+void SoftPars<Susy, Brevity>::setGauginoMass(int i, double f) {
+  mGaugino(i) = f;
+}
+
+template<class Susy, class Brevity>
+void SoftPars<Susy, Brevity>::setM3Squared(double f) { m3sq = f; }
+
+template<class Susy, class Brevity>
+void SoftPars<Susy, Brevity>::setMh1Squared(double f) { mH1sq = f; }
+
+template<class Susy, class Brevity>
+void SoftPars<Susy, Brevity>::setMh2Squared(double f) { mH2sq = f; }
+
+template<class Susy, class Brevity>
+void SoftPars<Susy, Brevity>::setSoftPars(SoftPars<Susy, Brevity> const & s) { *this = s; }
+
+template<class Susy, class Brevity>
+void SoftPars<Susy, Brevity>::setM32(double a) { m32 = a; }
+
+#include "softpars.cpp"
+
 #endif
