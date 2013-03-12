@@ -27,6 +27,12 @@ namespace softsusy{
   extern bool INCLUDE_2_LOOP_SCALAR_CORRECTIONS;
   /// Set to number of loops to use for calculation of Higgs mass 
   /// (currently up to 2, the default)
+
+  /// PA: flag for NMSSM, esed in tree level diagonalisation. I think
+  /// this is the simplest option for combining the nmssm softsusy
+  /// parts with the mssm ones
+  extern bool NMSSM;
+
   extern int numHiggsMassLoops;
   /// Set to number of loops to use for REWSB condition up to the default of 2
   extern int numRewsbLoops;

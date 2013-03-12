@@ -26,6 +26,10 @@ namespace softsusy {
   /// scalar mass Higgs parameters? (Other quantities all 2-loop anyway): the
   /// default in SOFTSUSY 3 is to include all 2-loop terms
   bool INCLUDE_2_LOOP_SCALAR_CORRECTIONS = true;
+  /// PA: flag for NMSSM, esed in tree level diagonalisation. I think
+  /// this is the simplest option for combining the nmssm softsusy
+  /// parts with the mssm ones
+  bool NMSSM = true;
   /// number of loops used to calculate Higgs mass and tadpoles. They should be
   /// identical for a consistent calculation
   int numHiggsMassLoops = 2, numRewsbLoops = 2;
