@@ -158,6 +158,7 @@ void test_parameter_equality(const SoftParsNmssm& a, const NMSSMSoftPars& b)
    const double vev = sqrt(sqr(b.get_vu()) + sqr(b.get_vd()));
    TEST_EQUALITY(a.displayTanb(), tanBeta);
    TEST_EQUALITY(a.displayHvev(), vev);
+   TEST_EQUALITY(a.displaySvev(), b.get_vS());
 }
 
 void test_beta_function_equality(const SoftParsNmssm& a, const NMSSMSoftPars& b)
@@ -207,6 +208,7 @@ void test_beta_function_equality(const SoftParsNmssm& a, const NMSSMSoftPars& b)
    TEST_EQUALITY(beta_a.displayTanb(), beta_tanBeta);
    TEST_EQUALITY(a.displayHvev(), vev);
    TEST_EQUALITY(beta_a.displayHvev(), beta_vev);
+   TEST_EQUALITY(beta_a.displaySvev(), beta_b.get_vS());
 }
 
 void compare_rges(int loopLevel)
@@ -230,6 +232,7 @@ void compare_rges(int loopLevel)
    const double vev = 246.0;
    const double vu = vev * sinBeta;
    const double vd = vev * cosBeta;
+   const double vs = 1500.0;
    const double lambda = 0.3;
    const double kappa = 0.4;
    DoubleMatrix Yu(3,3), Yd(3,3), Ye(3,3);
@@ -266,6 +269,7 @@ void compare_rges(int loopLevel)
    sarah.set_TYe(a0 * Ye);
    sarah.set_vu(vu);
    sarah.set_vd(vd);
+   sarah.set_vS(vs);
 
    SoftParsNmssm softSusy;
    softSusy.setMu(91);
@@ -293,6 +297,7 @@ void compare_rges(int loopLevel)
    softSusy.setTrilinearMatrix(EA, a0 * Ye);
    softSusy.setHvev(vev);
    softSusy.setTanb(tanBeta);
+   softSusy.setSvev(vs);
 
    std::cout << "comparing parameters ... ";
    test_parameter_equality(softSusy, sarah);
