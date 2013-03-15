@@ -224,8 +224,7 @@ void compare_rges(int loopLevel)
    const double vev = 246.0;
    const double vu = vev * sinBeta;
    const double vd = vev * cosBeta;
-   const double susyMu = 120.0;
-   const double BMu = sqr(2.0 * susyMu);
+   const double lambda = 0.3;
    DoubleMatrix Yu(3,3), Yd(3,3), Ye(3,3);
    Yu(3,3) = 165.0   * root2 / (vev * sinBeta);
    Yd(3,3) = 2.9     * root2 / (vev * cosBeta);
@@ -243,6 +242,7 @@ void compare_rges(int loopLevel)
    sarah.set_Yu(Yu);
    sarah.set_Yd(Yd);
    sarah.set_Ye(Ye);
+   sarah.set_Lambdax(lambda);
    sarah.set_MassB(M12);
    sarah.set_MassG(M12);
    sarah.set_MassWB(M12);
@@ -268,6 +268,7 @@ void compare_rges(int loopLevel)
    softSusy.setYukawaMatrix(YU, Yu);
    softSusy.setYukawaMatrix(YD, Yd);
    softSusy.setYukawaMatrix(YE, Ye);
+   softSusy.setLambda(lambda);
    softSusy.setGauginoMass(1, M12);
    softSusy.setGauginoMass(2, M12);
    softSusy.setGauginoMass(3, M12);
