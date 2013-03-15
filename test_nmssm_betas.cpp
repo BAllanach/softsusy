@@ -118,6 +118,7 @@ void compare_anomalous_dimensions(const SoftParsNmssm& a, const NMSSMSoftPars& b
   TEST_EQUALITY(gDD, b.get_SdRSdR());
   TEST_EQUALITY(gH1H1, b.get_SHdSHd());
   TEST_EQUALITY(gH2H2, b.get_SHuSHu());
+  TEST_EQUALITY(gSS  , b.get_SsRSsR());
 }
 
 void test_parameter_equality(const SoftParsNmssm& a, const NMSSMSoftPars& b)
