@@ -135,6 +135,9 @@ void test_parameter_equality(const SoftParsNmssm& a, const NMSSMSoftPars& b)
    TEST_EQUALITY(a.displayYukawaMatrix(YD), b.get_Yd());
    TEST_EQUALITY(a.displayYukawaMatrix(YE), b.get_Ye());
 
+   TEST_EQUALITY(a.displayLambda(), b.get_Lambdax());
+   TEST_EQUALITY(a.displayKappa(), b.get_Kappa());
+
    TEST_EQUALITY(a.displayGaugino(1), b.get_MassB());
    TEST_EQUALITY(a.displayGaugino(2), b.get_MassWB());
    TEST_EQUALITY(a.displayGaugino(3), b.get_MassG());
@@ -173,6 +176,9 @@ void test_beta_function_equality(const SoftParsNmssm& a, const NMSSMSoftPars& b)
    TEST_EQUALITY(beta_a.displayYukawaMatrix(YU), beta_b.get_Yu());
    TEST_EQUALITY(beta_a.displayYukawaMatrix(YD), beta_b.get_Yd());
    TEST_EQUALITY(beta_a.displayYukawaMatrix(YE), beta_b.get_Ye());
+
+   TEST_EQUALITY(beta_a.displayLambda(), beta_b.get_Lambdax());
+   TEST_EQUALITY(beta_a.displayKappa(), beta_b.get_Kappa());
 
    TEST_EQUALITY(beta_a.displayGaugino(1), beta_b.get_MassB());
    TEST_EQUALITY(beta_a.displayGaugino(2), beta_b.get_MassWB());
