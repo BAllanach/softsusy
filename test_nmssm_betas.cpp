@@ -298,6 +298,9 @@ void compare_rges(int loopLevel)
    softSusy.setHvev(vev);
    softSusy.setTanb(tanBeta);
    softSusy.setSvev(vs);
+   // the following parameters are not peresent in the SARAH classes
+   softSusy.setZeta(0.0);
+   softSusy.setMu_s(0.0);
 
    std::cout << "comparing parameters ... ";
    test_parameter_equality(softSusy, sarah);
