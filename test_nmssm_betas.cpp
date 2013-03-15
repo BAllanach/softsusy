@@ -150,9 +150,6 @@ void test_parameter_equality(const SoftParsNmssm& a, const NMSSMSoftPars& b)
    TEST_EQUALITY(a.displayTrilinear(DA), b.get_TYd());
    TEST_EQUALITY(a.displayTrilinear(EA), b.get_TYe());
 
-   // TEST_EQUALITY(a.displaySusyMu(), b.get_Mu());
-   // TEST_EQUALITY(a.displayM3Squared(), b.get_BMu());
-
    const double tanBeta = b.get_vu() / b.get_vd();
    const double vev = sqrt(sqr(b.get_vu()) + sqr(b.get_vd()));
    TEST_EQUALITY(a.displayTanb(), tanBeta);
@@ -191,9 +188,6 @@ void test_beta_function_equality(const SoftParsNmssm& a, const NMSSMSoftPars& b)
    TEST_EQUALITY(beta_a.displayTrilinear(UA), beta_b.get_TYu());
    TEST_EQUALITY(beta_a.displayTrilinear(DA), beta_b.get_TYd());
    TEST_EQUALITY(beta_a.displayTrilinear(EA), beta_b.get_TYe());
-
-   // TEST_EQUALITY(beta_a.displaySusyMu(), beta_b.get_Mu());
-   // TEST_EQUALITY(beta_a.displayM3Squared(), beta_b.get_BMu());
 
    const double vu = b.get_vu();
    const double vd = b.get_vd();
@@ -239,33 +233,30 @@ void compare_rges(int loopLevel)
    for (int i=1; i<=3; i++) ID(i, i) = 1.0;
    mm0 = ID * sqr(m0);
 
-   NMSSMSoftPars m;
-   m.setMu(91);
-   m.setLoops(loopLevel);
-   m.set_g1(g1); // this is gY, but we set it to g1 to compare the
-                 // beta functions more easyly
-   m.set_g2(g2);
-   m.set_g3(g3);
-   m.set_Yu(Yu);
-   m.set_Yd(Yd);
-   m.set_Ye(Ye);
-   m.set_MassB(M12);
-   m.set_MassG(M12);
-   m.set_MassWB(M12);
-   m.set_mq2(mm0);
-   m.set_ml2(mm0);
-   m.set_md2(mm0);
-   m.set_mu2(mm0);
-   m.set_me2(mm0);
-   m.set_mHd2(sqr(m0));
-   m.set_mHu2(sqr(m0));
-   m.set_TYu(a0 * Yu);
-   m.set_TYd(a0 * Yd);
-   m.set_TYe(a0 * Ye);
-   // m.set_Mu(susyMu);
-   // m.set_BMu(BMu);
-   m.set_vu(vu);
-   m.set_vd(vd);
+   NMSSMSoftPars sarah;
+   sarah.setMu(91);
+   sarah.setLoops(loopLevel);
+   sarah.set_g1(g1);
+   sarah.set_g2(g2);
+   sarah.set_g3(g3);
+   sarah.set_Yu(Yu);
+   sarah.set_Yd(Yd);
+   sarah.set_Ye(Ye);
+   sarah.set_MassB(M12);
+   sarah.set_MassG(M12);
+   sarah.set_MassWB(M12);
+   sarah.set_mq2(mm0);
+   sarah.set_ml2(mm0);
+   sarah.set_md2(mm0);
+   sarah.set_mu2(mm0);
+   sarah.set_me2(mm0);
+   sarah.set_mHd2(sqr(m0));
+   sarah.set_mHu2(sqr(m0));
+   sarah.set_TYu(a0 * Yu);
+   sarah.set_TYd(a0 * Yd);
+   sarah.set_TYe(a0 * Ye);
+   sarah.set_vu(vu);
+   sarah.set_vd(vd);
 
    SoftParsNmssm softSusy;
    softSusy.setMu(91);
@@ -289,19 +280,17 @@ void compare_rges(int loopLevel)
    softSusy.setTrilinearMatrix(UA, a0 * Yu);
    softSusy.setTrilinearMatrix(DA, a0 * Yd);
    softSusy.setTrilinearMatrix(EA, a0 * Ye);
-   // softSusy.setSusyMu(susyMu);
-   // softSusy.setM3Squared(BMu);
    softSusy.setHvev(vev);
    softSusy.setTanb(tanBeta);
 
    std::cout << "comparing parameters ... ";
-   test_parameter_equality(softSusy, m);
+   test_parameter_equality(softSusy, sarah);
    std::cout << "done\n";
    std::cout << "comparing beta functions ... ";
-   test_beta_function_equality(softSusy, m);
+   test_beta_function_equality(softSusy, sarah);
    std::cout << "done\n";
    std::cout << "comparing anomalous dimensions ... ";
-   compare_anomalous_dimensions(softSusy, m);
+   compare_anomalous_dimensions(softSusy, sarah);
    std::cout << "done\n";
 }
 
