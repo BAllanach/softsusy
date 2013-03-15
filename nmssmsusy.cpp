@@ -212,8 +212,7 @@ nMssmSusy nMssmSusy::beta(nmsBrevity & a) const {
   double dHvev = displayHvev() *
     (cosb2 * (-sH1H1 + feynman * oneLoop) +
      sinb2 * (-sH2H2 + feynman * oneLoop));
-  //set s vev evolution to zero until it is needed
-  double dSvev = 0;
+  const double dSvev = - sVev * oneLoop * 2 * (sqr(lambda) + sqr(kappa));
 
   if (displayLoops() > 1) {
     /// Two-loop pieces
