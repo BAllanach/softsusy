@@ -139,7 +139,8 @@ void MssmSoftsusy::doTadpoles(double mt, double sinthDRbar) {
     t1OV1Ms = t1OV1Ms1loop;
     t2OV2Ms = t2OV2Ms1loop;
 
-    if (numRewsbLoops > 1) {
+    /// tachyons tend to screw up this, so only calculate if we don't have them
+    if (numRewsbLoops > 1 && displayProblem().tachyon == none) {
       /// add the two-loop terms, prepare inputs
       double s1s = 0., s2s = 0., s1t = 0., s2t = 0.,
 	gs = displayGaugeCoupling(3), 
