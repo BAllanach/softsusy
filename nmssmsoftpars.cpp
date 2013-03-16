@@ -213,12 +213,10 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     //PA: checked 14/9/2012
     double curlyS = mH2sq - mH1sq + mqT - mlT - 2.0 * muT + mdT + meT;
     
-    dm3sq = 2.0 * displaySusyMu() * (0.6 * gsqM(1) + 3.0 * gsqM(2) + 
-                       3.0 * huuT  +  3.0 * hddT + heeT) 
-      + m3sq * (3.0 * uuT + 3.0 * ddT + eeT - 0.6 * gsq(1) - 3.0 * gsq(2));
+    dm3sq = base.displayM3Squared();
 
     const double dm3sqnm = + 4.0 * displaySusyMu() * lam * hlam + 6.0 * lsq * m3sq + 2.0 * lam * kap * mSpsq;
-    dm3sq += dm3sqnm;
+    dm3sq += dm3sqnm * ONEO16Pisq;
    
     dmH1sq = 2.0 * 
       (-0.3 * gsq(1) * curlyS - 0.6 * gMsq(1) - 3.0 * gMsq(2) +
@@ -301,7 +299,6 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
 
     // convert to proper derivatives: 
     dmG    = ONEO16Pisq * dmG;
-    dm3sq  *= ONEO16Pisq;
     dmH1sq *= ONEO16Pisq;
     dmH2sq *= ONEO16Pisq;
     dmSsq  *= ONEO16Pisq;
