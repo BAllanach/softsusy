@@ -58,6 +58,8 @@ public:
   SoftParsNmssm(const nMssmSusy &);
   /// Constructor sets all parameters equal to those in another object
   SoftParsNmssm(const SoftParsNmssm &);
+  /// Constructor sets all parameters equal to those in the base class
+  SoftParsNmssm(const SoftPars<nMssmSusy, nmsBrevity> &);
   /// Sets all parameters equal to those in another object
   const SoftParsNmssm & operator=(const SoftParsNmssm & s);
   /// Constructor sets RPC SUSY parameters to s, gaugino masses to mG,
@@ -170,6 +172,15 @@ inline SoftParsNmssm::SoftParsNmssm(const SoftParsNmssm & s)
 }
 
 inline SoftParsNmssm::SoftParsNmssm(const nMssmSusy &s)
+    : SoftPars<nMssmSusy, nmsBrevity>(s), alambda(0.0), akappa(0.0),
+    mSsq(0.0), mSpsq(0.0), zeta_s(0.0) {
+      setPars(numSoftParsNmssm);
+      setMu(s.displayMu());
+      setLoops(s.displayLoops());
+      setThresholds(s.displayThresholds());
+}
+
+inline SoftParsNmssm::SoftParsNmssm(const SoftPars<nMssmSusy, nmsBrevity> & s)
     : SoftPars<nMssmSusy, nmsBrevity>(s), alambda(0.0), akappa(0.0),
     mSsq(0.0), mSpsq(0.0), zeta_s(0.0) {
       setPars(numSoftParsNmssm);

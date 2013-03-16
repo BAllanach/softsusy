@@ -135,6 +135,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
   // calculate derivatives for full SUSY spectrum. Brevity calculations come
   // out encoded in a
   dsb = nMssmSusy::beta(a);
+  SoftPars<nMssmSusy, nmsBrevity> base(SoftPars<nMssmSusy, nmsBrevity>::beta2());
   
   // To keep this a const function: TIME SAVINGS
   DoubleMatrix &u1=a.u1, &d1=a.d1, &e1=a.e1;
@@ -212,26 +213,24 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     //PA: checked 14/9/2012
     double curlyS = mH2sq - mH1sq + mqT - mlT - 2.0 * muT + mdT + meT;
     
+    dm3sq = 2.0 * displaySusyMu() * (0.6 * gsqM(1) + 3.0 * gsqM(2) + 
+                       3.0 * huuT  +  3.0 * hddT + heeT) 
+      + m3sq * (3.0 * uuT + 3.0 * ddT + eeT - 0.6 * gsq(1) - 3.0 * gsq(2));
 
-    dm3sq = 2.0 * displaySusyMu() * (0.6 * gsqM(1) + 3.0 * gsqM(2) + aYtr) 
-      + m3sq * (Ytr - 0.6 * gsq(1) - 3.0 * gsq(2) );
-   
-double dm3sqnm = + 4.0 * displaySusyMu() * lam * hlam + 6.0 * lsq * m3sq + 2.0 * lam * kap * mSpsq;
-
- dm3sq += dm3sqnm;
- 
-
-    //PA: checked numerically 14/9/2012
-
+    const double dm3sqnm = + 4.0 * displaySusyMu() * lam * hlam + 6.0 * lsq * m3sq + 2.0 * lam * kap * mSpsq;
+    dm3sq += dm3sqnm;
    
     dmH1sq = 2.0 * 
       (-0.3 * gsq(1) * curlyS - 0.6 * gMsq(1) - 3.0 * gMsq(2) +
-       3.0 * Xd + Xe) + 2.0 * Mlamsq;
+       3.0 * (mH1sq * ddT + (d2 * mq).trace() + (d2t * md).trace() + hdT) +
+       (mH1sq * eeT + (e2 * ml).trace() + (e2t * me).trace() + heT))
+       + 2.0 * Mlamsq;
     
 
     dmH2sq = 2.0 * 
       (0.3 * gsq(1) * curlyS - 0.6 * gMsq(1) - 3.0 * gMsq(2) +
-       3.0 * Xu) + 2.0 * Mlamsq;
+       3.0 * (mH2sq * uuT + (u2 * mq).trace() + (u2t * mu).trace() + huT))
+       + 2.0 * Mlamsq;
   
     dmSsq = 4.0 * Mlamsq + 4.0 * Mkapsq;
    
@@ -299,35 +298,27 @@ double dm3sqnm = + 4.0 * displaySusyMu() * lam * hlam + 6.0 * lsq * m3sq + 2.0 *
        + 4.0 * zeta * (lam * hlam + kap * hkap)
        + 4.0 * lam * smu * (mH2sq + mH1sq) + 4.0 * kap * mu_s * mSsq
        + 4.0 * hlam * m3sq + 2.0 * hkap * mSpsq;
-    
-    
-  //PA: checked 14/9/2012, errors found arising from discrepancy between Lewis' pdf and ellwanger review
- 
-                                        
 
-   // convert to proper derivatives: 
-    dmG      = ONEO16Pisq * dmG;
-    dm3sq   *= ONEO16Pisq;
-    dmH1sq  *= ONEO16Pisq;
-   dmH2sq   *= ONEO16Pisq;
-   dmSsq    *= ONEO16Pisq;
-   dmSpsq   *= ONEO16Pisq;
-   dmq      *= ONEO16Pisq;
-   dml      *= ONEO16Pisq;
-   dmu      *= ONEO16Pisq;
-   dmd      *= ONEO16Pisq;
-   dme      *= ONEO16Pisq;
-   dhu      *= ONEO16Pisq;
-   dhd      *= ONEO16Pisq;
-   dhe      *= ONEO16Pisq;
-   dhkap    *= ONEO16Pisq;
-   dhlam    *= ONEO16Pisq;
-   dz_s     *= ONEO16Pisq; 
-
+    // convert to proper derivatives: 
+    dmG    = ONEO16Pisq * dmG;
+    dm3sq  *= ONEO16Pisq;
+    dmH1sq *= ONEO16Pisq;
+    dmH2sq *= ONEO16Pisq;
+    dmSsq  *= ONEO16Pisq;
+    dmSpsq *= ONEO16Pisq;
+    dmq    *= ONEO16Pisq;
+    dml    *= ONEO16Pisq;
+    dmu    *= ONEO16Pisq;
+    dmd    *= ONEO16Pisq;
+    dme    *= ONEO16Pisq;
+    dhu    *= ONEO16Pisq;
+    dhd    *= ONEO16Pisq;
+    dhe    *= ONEO16Pisq;
+    dhkap  *= ONEO16Pisq;
+    dhlam  *= ONEO16Pisq;
+    dz_s   *= ONEO16Pisq; 
   }
-
-
-
+  
   // two-loop contributions. I got these from hep-ph/9311340. WIth respect to
   // their notation, the Yukawas and h's are TRANSPOSED. Gaugino masses are
   // identical, as are soft masses. B(mV) = mu(BBO) B(BBO)
