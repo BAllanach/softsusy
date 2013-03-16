@@ -756,12 +756,12 @@ ostream & operator <<(ostream &left, const SoftParsNmssm &s) {
        << " mDRsq" << s.displaySoftMassSquared(mDr) 
        << " mLLsq" << s.displaySoftMassSquared(mLl) 
        << " mSEsq" << s.displaySoftMassSquared(mEr);
-  left << "m3sq: " << s.displayM3Squared() 
+  left << " m3sq: " << s.displayM3Squared() 
        << " mH1sq: " << s.displayMh1Squared() 
        << " mH2sq: " << s.displayMh2Squared() 
        << " mSsq: "  << s.displayMsSquared()
        << " mSPsq: "  << s.displayMspSquared()
-      << " zeta_s: "  << s.displayZeta_s()
+       << " zeta_s: "  << s.displayZeta_s()
        << '\n';
   left << "Gaugino masses" << s.displayGaugino();
   left << s.displaySusy();
