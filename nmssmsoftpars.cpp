@@ -244,9 +244,8 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     dhd = base.displayTrilinear(DA);
     dhd = dhd + (lsq * hd + 2.0 * lam * hlam * d1) * ONEO16Pisq;
     
-    dhe = (eeT + 3.0 * ddT - 3.0 * gsq(2) - 1.8 * gsq(1) + lsq) * he
-      + (3.6 * gsqM(1) + 6.0 * gsqM(2) + 2.0 * heeT + 6.0 * hddT) * e1 +
-      4.0 * he * e2t + 5.0 * e2 * he + 2.0 * lam * hlam * e1;
+    dhe = base.displayTrilinear(EA);
+    dhe = dhe + (lsq * he + 2.0 * lam * hlam * e1) * ONEO16Pisq;
 
     dhlam = (Ytr + 4.0 * lsq + 2.0 * ksq
              - 0.6 * gsq(1) - 3.0 * gsq(2)) * hlam
@@ -266,7 +265,6 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     // convert to proper derivatives: 
     dmSsq  *= ONEO16Pisq;
     dmSpsq *= ONEO16Pisq;
-    dhe    *= ONEO16Pisq;
     dhkap  *= ONEO16Pisq;
     dhlam  *= ONEO16Pisq;
     dz_s   *= ONEO16Pisq; 
@@ -379,31 +377,16 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
            - 2.0 * lsq * d1 * (3.0 * lam * hlam + 2.0 * kap * hkap + 3.0 * huuT)
            - 2.0 * lam * hlam * (3.0 * d2 * d1 + u2 * d1); 
 
-	dhe2 = 
-	  (-3.0 * (3.0 * hb4 + ht2 * hb2 + htau4) -
-	   5.0 * e2 * (3.0 * ddT + eeT) - 6.0 * e2 * e2 + 
-	   (16.0 * gsq(3) - 0.4 * gsq(1)) * ddT + 1.2 * gsq(1) * eeT +
-	   (12.0 * gsq(2) - 1.2 * gsq(1)) * eeT + 7.5 * g4(2) + 
-	   1.8 * gsq(2) * gsq(1) + 13.5 * g4(1)) * he +
-	  (-6.0 * (6.0 * Ub * hb2 * hb + Ut * hb2 * ht + Ub * ht2 * hb +
-		   2.0 * Utau * htau2 * htau) - 
-	   4.0 * he * et * (3.0 * ddT + eeT) - 6.0 * e2 * (3.0 * hddT + heeT) -
-	   6.0 * he * e2t * et - 8.0 * e2 * he * et + 
-	   (32.0 * gsq(3) - 0.8 * gsq(1)) * hddT + 2.4 * gsq(1) * heeT + 
-	   (6.0 * gsq(2) + 1.2 * gsq(1)) * he * et -
-	   (32.0 * gsq(3) * mG(3) - 0.8 * gsq(1) * mG(1)) * ddT - 
-	   2.4 * gsq(1) * mG(1) * eeT - 12.0 * gsq(2) * mG(2) * e2 -
-	   30.0 * g4(2) * mG(2) - 3.6 * gsq(2) * gsq(1) * (mG(1) + mG(2)) -
-	   54.0 * g4(1) * mG(1)) * e1 // checked
+	dhe2 =
            - lsq * he * (3.0 * lsq + 2.0 * ksq + 3.0 * uuT)
            - lsq * (3.0 * e2 * he + 3.0 * he * e2t)
            - 2.0 * lam * hlam * e1 * (3.0 * lsq + 2.0 * ksq + 3.0 * uuT)
            - 2.0 * lsq * e1 * (3.0 * lam * hlam + 2.0 * kap * hkap + 3.0 * huuT)
            - 6.0 * lam * hlam *  e2 * e1; 
-      
 
- //Mixing < 1  // PA: warning in  3rd family terms the trilinears are Ut etc and the Yukawas are ht, hb, htau 
-        
+        // Mixing < 1
+        // PA: warning in 3rd family terms the trilinears are Ut etc
+        // and the Yukawas are ht, hb, htau
 
   dhlam2 = - 50.0 * l4 * hlam - 36.0 * lam * (Ut * ht * ht2)
            - 36.0 * lam * (Ub * hb * hb2)  
@@ -483,25 +466,8 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
            - 2.0 * lsq * d1 * (3.0 * lam * hlam + 2.0 * kap * hkap + 3.0 * huuT)
            - 2.0 * lam * hlam * (3.0 * d2 * d1 + u2 * d1); 
 
-	dhe2 = 
-           (-3.0 * (3.0 * d4t + ut * d2 * u1 + e2t * e2t).trace() -
-            5.0 * e2 * (3.0 * ddT + eeT) - 6.0 * e2 * e2 + 
-            (16.0 * gsq(3) - 0.4 * gsq(1)) * ddT + 1.2 * gsq(1) * eeT +
-            (12.0 * gsq(2) - 1.2 * gsq(1)) * e2 + 7.5 * g4(2) + 
-            1.8 * gsq(2) * gsq(1) + 13.5 * g4(1)) * he +
-           (-6.0 * (6.0 * hdt * d2 * d1 + hut * d2 * u1 + hdt * u2 * d1 +
-                    2.0 * het * e2 * e1).trace() - 
-            4.0 * he * et * (3.0 * ddT + eeT) - 6.0 * e2 * (3.0 * hddT + heeT) -
-            6.0 * he * e2t * et - 8.0 * e2 * he * et + 
-            (32.0 * gsq(3) - 0.8 * gsq(1)) * hddT + 2.4 * gsq(1) * heeT + 
-            (6.0 * gsq(2) + 1.2 * gsq(1)) * he * et -
-            (32.0 * gsq(3) * mG(3) - 0.8 * gsq(1) * mG(1)) * ddT - 
-            2.4 * gsq(1) * mG(1) * eeT - 12.0 * gsq(2) * mG(2) * e2 -
-            30.0 * g4(2) * mG(2) - 3.6 * gsq(2) * gsq(1) * (mG(1) + mG(2)) -
-            54.0 * g4(1) * mG(1)) * e1;
-	
-  // checked
-       dhe2 = dhe2 - lsq * he * (3.0 * lsq + 2.0 * ksq + 3.0 * uuT)
+        dhe2 =
+           - lsq * he * (3.0 * lsq + 2.0 * ksq + 3.0 * uuT)
            - lsq * (5.0 * e2 * he + 4.0 * he * e2t)
            - 2.0 * lam * hlam * e1 * (3.0 * lsq + 2.0 * ksq + 3.0 * uuT)
            - 2.0 * lsq * e1 * (3.0 * lam * hlam + 2.0 * kap * hkap + 3.0 * huuT)
