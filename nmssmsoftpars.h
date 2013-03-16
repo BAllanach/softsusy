@@ -120,21 +120,15 @@ public:
 		      DoubleMatrix & gDD,
 		      double & gH1H1, double & gH2H2, double & gSS) const;
 
-  /// Reads in universal boundary conditions at the current scale:
-  /// m0, M1/2, A0, B-parameter and mu
-  void universal(double m0,  double m12,  double a0,  double mu,
-		 double m3sq);
-  /// Reads in universal boundary conditions at the current scale: m0, M1/2, A0
-  void standardSugra(double m0,  double m12, double a0);
   /// Reads in universal boundary conditions at the current scale: m0, M1/2, A, mS, Al and Ak
   void standardsemiSugra(double m0,  double mS, double m12, double a0, double Al, double Ak);
-/// Sets all flavour-diagonal SUSY breaking scalar masses to m0
+  /// Sets all flavour-diagonal SUSY breaking scalar masses to m0
   void universalScalars(double m0);
   /// Sets singet soft mass to mS and all other flavour-diagonal SUSY breaking scalar masses to m0
   void semiuniversalScalars(double m0, double mS);
   /// Sets all SUSY breaking trilinear couplings to a0
   void universalTrilinears(double a0);
- /// Sets singlet trilinears to ak  and al and all SUSY breaking trilinear couplings to a0
+  /// Sets singlet trilinears to ak  and al and all SUSY breaking trilinear couplings to a0
   void semiuniversalTrilinears(double a0, double al, double ak);
 
   /// Reads in soft SUSY breaking parameters from a file

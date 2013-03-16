@@ -660,83 +660,36 @@ void SoftParsNmssm::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
    gSS = 0.0;
 }
 
-// Reads in universal boundary conditions at the current scale:
-// m0, M1/2, A0, B and sign of mu
-void SoftParsNmssm::universal(double m0,  double m12,  double a0,  double mu,
-			      double m3sq) {
-  standardSugra(m0, m12, a0);  
-  setSusyMu(mu);
-  setM3Squared(m3sq);
-}
-
 //PA: for fully constrained models
 void SoftParsNmssm::universalScalars(double m0) {
-  // scalar masses
-  DoubleMatrix ID(3, 3), mm0(3, 3);
-  int i; for (i=1; i<=3; i++) ID(i, i) = 1.0;
-  mm0 = ID * sqr(m0);
-  setSoftMassMatrix(mQl, mm0); setSoftMassMatrix(mUr, mm0);
-  setSoftMassMatrix(mDr, mm0); setSoftMassMatrix(mLl, mm0);
-  setSoftMassMatrix(mEr, mm0);
-  setMh1Squared(sqr(m0)); setMh2Squared(sqr(m0));
+  SoftPars<nMssmSusy, nmsBrevity>::universalScalars(m0);
   setMsSquared(sqr(m0));
 }
+
 //PA: for semi constrained models
 void SoftParsNmssm::semiuniversalScalars(double m0, double mS) {
-  // scalar masses
-  DoubleMatrix ID(3, 3), mm0(3, 3);
-  int i; for (i=1; i<=3; i++) ID(i, i) = 1.0;
-  mm0 = ID * sqr(m0);
-  setSoftMassMatrix(mQl, mm0); setSoftMassMatrix(mUr, mm0);
-  setSoftMassMatrix(mDr, mm0); setSoftMassMatrix(mLl, mm0);
-  setSoftMassMatrix(mEr, mm0);
-  setMh1Squared(sqr(m0)); setMh2Squared(sqr(m0));
+  universalScalars(m0);
   setMsSquared(sqr(mS));
 }
 
-//PA:: for fully constrained
-void SoftParsNmssm::universalTrilinears(double a0)  {  
-  // trilinears
-  setTrilinearMatrix(UA, a0 * displayYukawaMatrix(YU)); 
-  setTrilinearMatrix(DA, a0 * displayYukawaMatrix(YD));
-  setTrilinearMatrix(EA, a0 * displayYukawaMatrix(YE));
-  setTrialambda(a0 * displayLambda()); 
+//PA: for fully constrained
+void SoftParsNmssm::universalTrilinears(double a0) {
+  SoftPars<nMssmSusy, nmsBrevity>::universalTrilinears(a0);
+  setTrialambda(a0 * displayLambda());
   setTriakappa(a0 * displayKappa());
 }
- //PA:: for semi constrained models 
+
+//PA: for semi constrained models
 //(allows both Alambda and Akappa to be separately specified)
-void SoftParsNmssm::semiuniversalTrilinears(double a0, double al, double ak)  {  
-  // trilinears
-  setTrilinearMatrix(UA, a0 * displayYukawaMatrix(YU)); 
-  setTrilinearMatrix(DA, a0 * displayYukawaMatrix(YD));
-  setTrilinearMatrix(EA, a0 * displayYukawaMatrix(YE));
-   setTrialambda(al * displayLambda()); 
-   setTriakappa(ak * displayKappa());
+void SoftParsNmssm::semiuniversalTrilinears(double a0, double al, double ak) {
+  SoftPars<nMssmSusy, nmsBrevity>::universalTrilinears(a0);
+  setTrialambda(al * displayLambda());
+  setTriakappa(ak * displayKappa());
 }
- 
 
-
-// Input m0, NOT m0 squared.
-void SoftParsNmssm::standardSugra(double m0,  double m12, double a0) {
-  /*  if (m0 < 0.0) {
-    ostringstream ii;
-    ii << "m0=" << m0 << " passed to universal boundary" <<
-      "conditions illegally negative.";
-    throw ii.str();
-    } Deleted on request from A Pukhov */
-  universalScalars(m0);
-  universalGauginos(m12);
-  universalTrilinears(a0);
-}
 //PA: for semi constrained models
 void SoftParsNmssm::standardsemiSugra(double m0,  double mS, double m12, double a0, double Al, double Ak) {
-  /*  if (m0 < 0.0) {
-    ostringstream ii;
-    ii << "m0=" << m0 << " passed to universal boundary" <<
-      "conditions illegally negative.";
-    throw ii.str();
-    } Deleted on request from A Pukhov */
-   semiuniversalScalars(m0, mS);
+  semiuniversalScalars(m0, mS);
   universalGauginos(m12);
   semiuniversalTrilinears(a0, Al, Ak);
 }
