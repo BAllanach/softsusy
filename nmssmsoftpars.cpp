@@ -120,11 +120,9 @@ void SoftParsNmssm::set(const DoubleVector & y) {
 // CHECKED: 24/05/02
 SoftParsNmssm SoftParsNmssm::beta2() const {
   // Constants for gauge running
-  static DoubleVector bBeta(3), cuBeta(3), cdBeta(3), ceBeta(3), clBeta(3);
-  static DoubleMatrix babBeta(3, 3);
-  
-  if (bBeta(1) < 1.0e-5) // Constants not set yet
-     nmsetBetas(babBeta, cuBeta, cdBeta, ceBeta, clBeta, bBeta);
+  static DoubleVector clBeta(3);
+  if (clBeta(1) < 1.0e-5) // Constants not set yet
+     setBetaLambda(clBeta);
   
   // For calculational brevity: 
   static nmsBrevity a;

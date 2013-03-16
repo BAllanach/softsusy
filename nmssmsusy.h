@@ -162,6 +162,9 @@ istream & operator >>(istream &left, nMssmSusy &s);
 void nmsetBetas(DoubleMatrix &, DoubleVector  &, DoubleVector  &, DoubleVector
                 &, DoubleVector  &, DoubleVector  & );
 
+/// Outputs beta function coefficients for lambda.
+void setBetaLambda(DoubleVector&);
+
 inline const nMssmSusy & nMssmSusy::displaySusy() const { return *this; }
 
 inline double nMssmSusy::displaySvev() const { return sVev; }

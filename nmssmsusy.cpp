@@ -232,6 +232,10 @@ void nmsetBetas(DoubleMatrix & babBeta, DoubleVector &cuBeta, DoubleVector
                 & cdBeta, DoubleVector & ceBeta, DoubleVector & clBeta,
                 DoubleVector & bBeta) {
    setBetas(babBeta, cuBeta, cdBeta, ceBeta, bBeta);
+   setBetaLambda(clBeta);
+}
+
+void setBetaLambda(DoubleVector& clBeta) {
    clBeta(1) = 6.0 / 5.0;  clBeta(2) = 2.0; clBeta(3) = 0.0;
 }
 
