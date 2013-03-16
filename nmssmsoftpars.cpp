@@ -192,7 +192,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
   const double Ytr = 3.0 * uuT + 3.0 * ddT + eeT;
   const double aYtr = 3.0 * huuT + 3.0 * hddT + heeT;
 
-  const double ONEO16Pisq = 1.0 / (16.0 * sqr(PI));
+  static const double ONEO16Pisq = 1.0 / (16.0 * sqr(PI));
 
   if (displayLoops() > 0) {
     dmG = base.displayGaugino();
@@ -262,7 +262,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     const double Xu = (mq * u2).trace() + (mu * u2t).trace() + mH2sq * uuT + huT;
     const double Xd = mH1sq * ddT + (mq * d2).trace() + (md * d2t).trace() + hdT;
     const double Xe = mH1sq * eeT + (ml * e2).trace() + (me * e2t).trace() + heT;
-    const double oneO16Pif = sqr(ONEO16Pisq);
+    static const double oneO16Pif = sqr(ONEO16Pisq);
 
     const DoubleVector &g4=a.g4;
 
