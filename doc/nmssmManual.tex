@@ -1,0 +1,282 @@
+\documentclass[final,3p,times,pdflatex]{elsarticle}
+\usepackage{axodraw}
+
+\bibstyle{elsarticle-num}
+
+% beginning of macros
+\def\SOFTSUSY{{\tt SOFTSUSY}}
+\def\code#1{\small{\tt #1}\normalsize}
+% end of macros
+
+\journal{Computer Physics Communications}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Next-to-Minimal SOFTSUSY}
+
+\author{B.C.~Allanach}
+\address{DAMTP, CMS, University of Cambridge, Wilberforce road, Cambridge, CB3
+  0WA, United Kingdom}
+
+\author{P.~Athron}
+\author{A.~Williams}
+\author{L.~Tunstall}
+\address{Department of Physics, North Terrace, University of Adelaide,
+  Adelaide SA 5005, Australia}
+
+\author{A.~Voigt}
+\address{Dipl.-Phys. Alexander Voigt,
+Institut für Kern- und Teilchenphysik,
+Helmholtzstraße 10, 
+D-01069 Dresden,
+Germany}
+\begin{abstract}
+  Here, we describe an extension to the
+  {\tt SOFTSUSY}~program to calculate the sparticle spectrum in the
+  {\em next-to-minimal} supersymmetric standard model, where a chiral
+  superfield that is a singlet of the Standard Model gauge group is added to
+  the minimal supersymmetric standard model fields. 
+  The user provides a theoretical boundary condition upon the couplings and
+  masses of the singlet.
+  Successful radiative electroweak symmetry breaking,
+  electroweak and CKM matrix data are used
+  as weak-scale boundary conditions. 
+  The renormalisation group equations are solved
+  numerically between the weak scale and a high energy scale using a nested
+  iterative algorithm. 
+  This paper serves as a manual to the
+  next-to-minimal mode of the program, detailing the approximations and
+  conventions used. 
+\end{abstract}
+
+\begin{keyword}
+sparticle, 
+MSSM
+\PACS 12.60.Jv
+\PACS 14.80.Ly
+\end{keyword}
+\end{frontmatter}
+
+\section{Program Summary}
+\noindent{\em Program title:} \SOFTSUSY{}\\
+{\em Program obtainable
+  from:} {\tt http://projects.hepforge.org/softsusy/}\\
+{\em Distribution format:}\/ tar.gz\\
+{\em Programming language:} {\tt C++}, {\tt fortran}\\
+{\em Computer:}\/ Personal computer\\
+{\em Operating system:}\/ Tested on Linux 4.x\\
+{\em Word size:}\/ 32 bits\\
+{\em External routines:}\/ None\\
+{\em Typical running time:}\/ a few seconds per parameter point.\\
+{\em Nature of problem:}\/ Calculating supersymmetric particle spectrum and
+mixing parameters in the next-to-minimal minimal supersymmetric standard
+model. The solution to the renormalisation group equations must be consistent
+with boundary conditions on supersymmetry breaking parameters, as
+well as a weak-scale boundary condition on gauge 
+couplings, Yukawa couplings and the Higgs potential parameters.\\
+{\em Solution method:}\/ Nested iterative algorithm and numerical minimsation
+of the Higgs potential. \\
+{\em Restrictions:} {\SOFTSUSY} will provide a solution only in the
+perturbative r\'{e}gime and it
+assumes that all couplings of the model are real
+(i.e.\ $CP-$conserving). The iterative \SOFTSUSY~algorithm will not 
+converge if parameters are too close to a boundary of successful electroweak
+symmetry breaking, but a warning flag will alert the user to this fact.
+
+\newpage
+
+\section{Introduction}
+
+\section{NMSSM Parameters \label{sec:notation}}
+
+In this section, we introduce the NMSSM parameters
+in the \SOFTSUSY~conventions. The translations to the actual variable
+names that are being used in the program code are shown explicitly in
+appendix~\ref{sec:objects}. 
+
+\subsection{Supersymmetric parameters \label{susypars}}
+The chiral superfield particle content of the NMSSM has the 
+following $SU(3)_c\times SU(2)_L\times U(1)_Y$ quantum numbers:
+\begin{eqnarray}
+L:&(1,2,-\frac{1}{2}),\quad {\bar E}:&(1,1,1),\qquad\, Q:\,(3,2,\frac{1}{6}),\quad
+{\bar U}:\,(\bar 3,1,-\frac{2}{3}),\nonumber\\ {\bar D}:&(\bar 3,1,\frac{1}{3}),\quad
+H_1:&(1,2,-\frac{1}{2}),\quad  H_2:\,(1,2,\frac{1}{2}),\quad N:\,(1,1,0)
+\label{fields}
+\end{eqnarray}
+$N$ is the Higgs singlet that is particular to the NMSSM.
+$L$, $Q$, $H_1$, and $H_2$ are the left handed doublet lepton and
+quark superfields and the two Higgs doublets. $\bar E$, $\bar U$, and
+$\bar D$ are the lepton, up-type quark and down-type quark
+right-handed superfield singlets, respectively. 
+Note that the lepton
+doublet superfields $L^a_i$ and the Higgs doublet superfield coupling
+to the down-type quarks, $H_1$, have the same SM gauge 
+quantum numbers. 
+Here, we denote an $SU(3)$ colour index of the fundamental
+representation by  $\{x,y,z\} \in \{1,2,3 \}$. The $SU(2)_L$ fundamental
+representation indices are denoted by $\{a,b,c\} \in \{1,2\}$ and the generation
+indices by $\{i,j,k\} \in \{1,2,3\}$. 
+$\epsilon_{xyz}=\epsilon^{xyz}$ and  $\epsilon_{ab}=\epsilon^{ab}$ are totally
+antisymmetric tensors, with $\epsilon_{123}=1$ and $\epsilon_{12}=1$,
+respectively.  Currently, 
+only real couplings in the superpotential and Lagrangian are included. 
+
+\subsection{Next-to-Minimal SUSY breaking parameters \label{sec:susybreak}}
+
+
+\subsection{Tree-level masses \label{sec:tree}}
+
+\section{Calculation Algorithm \label{sec:calculation}}
+
+
+\begin{figure}
+\begin{center}
+\begin{picture}(323,245)
+\put(10,0){\makebox(280,10)[c]{\fbox{7.\ Calculate Higgs and
+      sparticle pole masses. Run to $M_Z$.}}}
+\put(10,40){\makebox(280,10)[c]{\fbox{6.\ Run to $M_Z$.}}}
+\put(150,76.5){\vector(0,-1){23}}
+\put(10,80){\makebox(280,10)[c]{\fbox{5.\ Run to $M_X$. Apply soft breaking
+and NMSSM SUSY boundary conditions.}}}
+\put(150,116.5){\vector(0,-1){23}}
+\put(10,120){\makebox(280,10)[c]{\fbox{4.\ EWSB, iterative solution of $\mu$ and sneutrino VEVs.}}}
+\put(150,156){\vector(0,-1){23}}
+\put(10,160){\makebox(280,10)[c]{\fbox{3.\ Run to $M_S$.}}}
+\put(30,170){convergence}
+\DashLine(115,165)(0,165){5}
+\DashLine(0,165)(0,5){5}
+\DashLine(0,5)(30,5){5}
+\put(30,5){\vector(1,0){2}}
+\put(150,197){\vector(0,-1){24}}
+\put(150,239){\vector(0,-1){26}}
+\put(60,245){\fbox{1.\ SUSY radiative corrections to
+$g_i(M_Z)$}}
+\put(10,200){\makebox(280,10)[c]{\fbox{2.\ $Y_E$, $Y_D$ include $v_k$
+      contributions. Iterative solution of $Y_E$.}}} 
+\put(182,45){\line(1,0){161}}
+\put(343,45){\line(0,1){200}}
+\put(343,245){\vector(-1,0){115}}
+\end{picture}
+\end{center}
+\caption{Iterative algorithm used to calculate the NMSSM spectrum. 
+The initial step is the
+uppermost one. $M_S$ is the scale at which the EWSB
+conditions 
+are imposed, as discussed in the text. $M_X$ is the scale at which the high
+energy SUSY breaking boundary conditions are imposed.
+\label{fig:algorithm}}
+\end{figure}
+
+
+\subsection{Running of NMSSM couplings~\label{running}}
+The program 
+can be made to run faster by switching off the two-loop renormalisation of 
+the scalar masses and tri-linear scalar couplings. All
+$\beta$ functions are real and include inter-generational quark mixing
+effects. 
+
+\subsection{Electroweak symmetry breaking \label{ewsb}}
+
+
+\subsection{MMSSM spectrum \label{spec}}
+
+
+
+\section*{Acknowledgments}
+This work has been partially supported by 
+STFC\@. 
+
+
+\appendix
+
+\section{Running \SOFTSUSY}
+\label{sec:run}
+
+\SOFTSUSY~produces an executable called \code{softpoint.x}. For the calculation
+of the spectrum of single points in parameter space, we recommend the
+SUSY Les Houches Accord 2 (SLHA2)~\cite{Allanach:2008qq}  input/output
+option. The user must provide a file (\textit{e.g.} the example file included
+in the \SOFTSUSY~distribution
+\code{rpvHouchesInput}), that specifies the model dependent input
+parameters. The program may then be run with
+\small
+\begin{verbatim}
+ ./softpoint.x leshouches < nmssmHouchesInput
+\end{verbatim}
+\normalsize
+For the SLHA2 input option, 
+the output will also be given in 
+SLHA2 format. Such output can be used for
+input into other programs which subscribe to the accord, such as
+\code{PYTHIA}~\cite{Sjostrand:2007gs} (for
+simulating sparticle production and decays at colliders), for example. For
+further details on the necessary format of 
+the input file, see ref.~\cite{Allanach:2008qq}. It supports 
+the setting of all other SLHA2 input blocks associated with non-complex
+couplings. 
+
+$M_{GUT}$ is used (defined to be the $\overline{DR}$ scale $Q$ at which $g_1(Q) =
+g_2(Q)$). The default output is in SLHA2 format, the conventions of which are
+explained in Ref.~\cite{Allanach:2008qq}. 
+
+
+\section{Object Structure\label{sec:objects}}
+
+We now go on to sketch the objects and their relationship to each other. This
+is necessary information for any generalisation. Only
+methods and data which are deemed of possible importance for prospective users
+are 
+mentioned here, but there are many others within the program itself.
+
+\subsection{NmssmSoftsusy}
+\label{nmssmsoftsusy}
+
+
+\subsection{General object structure}
+
+From an RGE point of view, data in a particular quantum field theory 
+consist of a set of parameters defined at some
+renormalisation scale $Q$. 
+A set of $\beta$ functions describes the
+evolution of the parameters and masses to a different scale
+$Q'$. This concept is embodied in an {\em abstract} \code{RGE}
+object, which contains the methods required to run objects of derived
+classes to different renormalisation scales (their beta functions). The other
+objects 
+displayed in figure~\ref{fig:objstruc} are particular instances of
+\code{RGE}, and therefore inherit from it. \code{QedQcd}, \code{MssmSusy},
+\code{SoftParsMssm} and \code{MssmSoftsusy}~objects encode the $R_p$ part of the
+MSSM and its SM input data~\cite{Allanach:2001kg}.
+\code{RpvSusyPars} contains all of the supersymmetric  couplings contained
+within  Eq.~(\ref{superpot1}). 
+\code{RpvSoftPars}~contains the  soft supersymmetry breaking parameters
+listed in 
+Eqs.~(\ref{softhabertril}) and~(\ref{softhaberbil}). \code{RpvSoftsusy} is
+the  $R-$parity violating
+generalisation of the \code{MssmSoftsusy}~class. 
+Code in
+the \code{MssmSoftsusy} class organises and performs the main part of
+the calculation, using polymorphism to detect the correct $\beta$ functions to
+use (in this case, the $-$NMSSM $\beta$ functions). 
+All of the \code{Nmssm}~objects contain default constructors
+and destructors, as well as overloaded \code{>>},\code{<<}~operators for input
+and output. 
+There is always an implicit dependence of running RGE quantities on the
+current renormalisation scale $Q$. Thus, if a method is called that returns
+one of the object's couplings or masses, that object will return it at the
+current scale $Q$ of the object. 
+In the following, we provide basic information on the 
+classes associated with , so that users may program using the class
+structure of \SOFTSUSY\@. More detailed and
+technical documentation on the program should be obtained from the
+\SOFTSUSY~website. 
+
+
+\subsection{\code{NmssmSusyPars}~class}
+
+\begin{thebibliography}{10}
+\end{thebibliography}
+
+\end{document}
