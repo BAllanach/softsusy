@@ -136,10 +136,6 @@ public:
   void universalTrilinears(double a0);
  /// Sets singlet trilinears to ak  and al and all SUSY breaking trilinear couplings to a0
   void semiuniversalTrilinears(double a0, double al, double ak);
-  /// Boundary conditions to be applied at messenger scale for Gauge mediated
-  /// SUSY breaking (see hep-ph/9703211 for example), n5 is the number of
-  /// 5-plets, mMess is the messenger scale and lambda is the GMSB scale
-  void minimalGmsb(int n5, double lambda, double mMess, double cgrav);
 
   /// Reads in soft SUSY breaking parameters from a file
   void inputSoftParsOnly();
