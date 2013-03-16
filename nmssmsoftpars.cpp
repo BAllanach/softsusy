@@ -138,22 +138,22 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
   SoftPars<nMssmSusy, nmsBrevity> base(SoftPars<nMssmSusy, nmsBrevity>::beta2());
   
   // To keep this a const function: TIME SAVINGS
-  DoubleMatrix &u1=a.u1, &d1=a.d1, &e1=a.e1;
-  DoubleMatrix &u2=a.u2, &d2=a.d2, &e2=a.e2,
+  const DoubleMatrix &u1=a.u1, &d1=a.d1, &e1=a.e1;
+  const DoubleMatrix &u2=a.u2, &d2=a.d2, &e2=a.e2,
     &u2t=a.u2t, &d2t=a.d2t, &e2t=a.e2t, &dt=a.dt, &ut=a.ut, &et=a.et;      
-  double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT;
-  double  &lsq = a.lsq, &ksq = a.ksq, &l4 = a.l4, &k4 =a.k4; 
-  DoubleVector &gsq=a.gsq;
+  const double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT;
+  const double  &lsq = a.lsq, &ksq = a.ksq, &l4 = a.l4, &k4 =a.k4; 
+  const DoubleVector &gsq=a.gsq;
   const double &lam = displayLambda();
   const double &kap = displayKappa();
   // Best to make these const DoubleMatrix & type
   const DoubleMatrix &hu = displayTrilinear(UA), &hd = displayTrilinear(DA),
     &he = displayTrilinear(EA);
   const double &hlam = displayTrialambda();
- const double &hkap = displayTriakappa();
- const double &mu_s = displayMu_s();
- const double &zeta = displayZeta();  
- const double &smu = displaySusyMu();
+  const double &hkap = displayTriakappa();
+  const double &mu_s = displayMu_s();
+  const double &zeta = displayZeta();  
+  const double &smu = displaySusyMu();
   static DoubleMatrix hut(3, 3), hdt(3, 3), het(3, 3);
   static DoubleMatrix hu2(3, 3), hd2(3, 3), he2(3, 3);
   static DoubleMatrix hu2t(3, 3), hd2t(3, 3), he2t(3, 3);
@@ -166,12 +166,12 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
 
   hut = hu.transpose(); hdt = hd.transpose(); het = he.transpose();
   hu2 = hu * hut; hd2 = hd * hdt; he2 = he * het;
-  double huT = hu2.trace(), hdT = hd2.trace(), heT = he2.trace();
+  const double huT = hu2.trace(), hdT = hd2.trace(), heT = he2.trace();
   hu2t = hut * hu; hd2t = hdt * hd; he2t = het * he;
-  double mqT = mq.trace(), muT = mu.trace(), mdT = md.trace(), meT =
+  const double mqT = mq.trace(), muT = mu.trace(), mdT = md.trace(), meT =
     me.trace(), mlT = ml.trace();
   
-  double huuT = (hu * ut).trace(), hddT = (hd * dt).trace(), 
+  const double huuT = (hu * ut).trace(), hddT = (hd * dt).trace(), 
     heeT = (he * et).trace(); 
   mG = displayGaugino(); msq = mG * mG; gsqM = gsq * mG; gMsq = gsq * msq;
  
@@ -187,22 +187,17 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
   static DoubleMatrix dhu(3, 3), dhd(3, 3), dhe(3, 3);
   static double dhlam=0, dhkap=0;
   
-//PA:  defined with an additional factor of \lambda^2  compared to literature to avoid division and ensure running can be tested with lambda = 0.
-  //PA: for speed issues may wish to set differently in depending on value of mixing
-  double Mlamsq = lsq * (mH2sq + mH1sq + mSsq) + sqr(hlam); 		   
-  
-  double Mkapsq = 3.0 * ksq * mSsq + sqr(hkap);			   
-    // double Xu = (u2 * mq).trace() + (u2t * mu).trace() + mH2sq * uuT + huT; 
-    // double Xd = mH1sq * ddT + (d2 * mq).trace() + (d2t * md).trace() + hdT;
-    // double Xe = mH1sq * eeT + (e2 * ml).trace() + (e2t * me).trace() + heT;
- double Xu = (mq * u2).trace() + (mu * u2t).trace() + mH2sq * uuT + huT; 
-    double Xd = mH1sq * ddT + (mq * d2).trace() + (md * d2t).trace() + hdT;
-    double Xe = mH1sq * eeT + (ml * e2).trace() + (me * e2t).trace() + heT;
+  // defined with an additional factor of \lambda^2 compared to
+  // literature to avoid division and ensure running can be tested
+  // with lambda = 0.  For speed issues may wish to set differently in
+  // depending on value of mixing
+  const double Mlamsq = lsq * (mH2sq + mH1sq + mSsq) + sqr(hlam);
+  const double Mkapsq = 3.0 * ksq * mSsq + sqr(hkap);
 
-
-    //PA: these trace factors appear frequently, so defined here to simplify expressions 
-    double Ytr = 3.0 * uuT + 3.0 * ddT + eeT;
-    double aYtr = 3.0 * huuT + 3.0 * hddT + heeT;
+  // These trace factors appear frequently, so defined here to
+  // simplify expressions
+  const double Ytr = 3.0 * uuT + 3.0 * ddT + eeT;
+  const double aYtr = 3.0 * huuT + 3.0 * hddT + heeT;
 
   const double ONEO16Pisq = 1.0 / (16.0 * sqr(PI));
   if (displayLoops() > 0) {
@@ -211,12 +206,9 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     
     dmG = base.displayGaugino();
     
-    double curlyS = mH2sq - mH1sq + mqT - mlT - 2.0 * muT + mdT + meT;
-    
     dm3sq = base.displayM3Squared();
-
-    const double dm3sqnm = + 4.0 * displaySusyMu() * lam * hlam + 6.0 * lsq * m3sq + 2.0 * lam * kap * mSpsq;
-    dm3sq += dm3sqnm * ONEO16Pisq;
+    dm3sq += (4.0 * displaySusyMu() * lam * hlam
+              + 6.0 * lsq * m3sq + 2.0 * lam * kap * mSpsq) * ONEO16Pisq;
    
     dmH1sq = base.displayMh1Squared();
     dmH1sq += 2.0 * Mlamsq * ONEO16Pisq;
@@ -230,8 +222,6 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     dmSpsq = 4.0 * lam * (lam * mSpsq + 2.0 * mu_s * hlam) 
        + 8.0 * kap * (kap * mSpsq + mu_s * hkap) + 8.0 * lam * kap * m3sq;
    
-    //PA: checked numerically 14/9/2012
-
     dmq = base.displaySoftMassSquared(mQl);
     dml = base.displaySoftMassSquared(mLl);
     dmu = base.displaySoftMassSquared(mUr);
@@ -279,16 +269,19 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
       dml2(3, 3);
     static DoubleMatrix dhu2(3, 3), dhd2(3, 3), dhe2(3, 3);
     static double dhlam2, dhkap2; 
+    const double Xu = (mq * u2).trace() + (mu * u2t).trace() + mH2sq * uuT + huT;
+    const double Xd = mH1sq * ddT + (mq * d2).trace() + (md * d2t).trace() + hdT;
+    const double Xe = mH1sq * eeT + (ml * e2).trace() + (me * e2t).trace() + heT;
     const double oneO16Pif = sqr(ONEO16Pisq);
     
-    DoubleVector &g4=a.g4;
+    const DoubleVector &g4=a.g4;
 
-    double ht = displayYukawaElement(YU, 3, 3), ht2 = sqr(ht);
-    double htau = displayYukawaElement(YE, 3, 3), htau2 = sqr(htau);
-    double hb = displayYukawaElement(YD, 3, 3), hb2 = sqr(hb);
-    double Ut = displayTrilinear(UA, 3, 3);
-    double Ub = displayTrilinear(DA, 3, 3);
-    double Utau = displayTrilinear(EA, 3, 3);
+    const double ht = displayYukawaElement(YU, 3, 3), ht2 = sqr(ht);
+    const double htau = displayYukawaElement(YE, 3, 3), htau2 = sqr(htau);
+    const double hb = displayYukawaElement(YD, 3, 3), hb2 = sqr(hb);
+    const double Ut = displayTrilinear(UA, 3, 3);
+    const double Ub = displayTrilinear(DA, 3, 3);
+    const double Utau = displayTrilinear(EA, 3, 3);
    
     DoubleMatrix u4(u2 * u2), d4(d2 * d2), e4(e2 * e2);
 
