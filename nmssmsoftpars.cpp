@@ -629,7 +629,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
 }  
   
 
-  SoftParsNmssm dsoft(dsb, dmG, dhu, dhd, dhe, dhlam, dhkap, dmq, dmu,
+  SoftParsNmssm dsoft(base.displaySusy(), dmG, dhu, dhd, dhe, dhlam, dhkap, dmq, dmu,
                       dmd, dml, dme, dm3sq, dmH1sq, dmH2sq, dmSsq, dmSpsq, dz_s,
 		     displayGravitino(), displayMu(),
 		     displayLoops(), displayThresholds());
