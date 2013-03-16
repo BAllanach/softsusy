@@ -278,58 +278,19 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     static DoubleMatrix dmq2(3, 3), dmu2(3, 3), dmd2(3, 3), dme2(3, 3), 
       dml2(3, 3);
     static DoubleMatrix dhu2(3, 3), dhd2(3, 3), dhe2(3, 3);
-    static DoubleVector sigma(3);
     static double dhlam2, dhkap2; 
     const double oneO16Pif = sqr(ONEO16Pisq);
     
     DoubleVector &g4=a.g4;
 
-    double mq3 = displaySoftMassSquared(mQl, 3, 3);
-    double mu3 = displaySoftMassSquared(mUr, 3, 3);
-    double md3 = displaySoftMassSquared(mDr, 3, 3);
-    double ml3 = displaySoftMassSquared(mLl, 3, 3);
-    double me3 = displaySoftMassSquared(mEr, 3, 3);
-    double ht = displayYukawaElement(YU, 3, 3), ht2 = sqr(ht), ht4 = sqr(ht2);
-    double htau = displayYukawaElement(YE, 3, 3), htau2 = sqr(htau), 
-      htau4 = sqr(htau2);
-    double hb = displayYukawaElement(YD, 3, 3), hb2 = sqr(hb), hb4 = sqr(hb2);
-    double Ut = displayTrilinear(UA, 3, 3), Ut2 = sqr(Ut);
-    double Ub = displayTrilinear(DA, 3, 3), Ub2 = sqr(Ub);
-    double Utau = displayTrilinear(EA, 3, 3), Utau2 = sqr(Utau);
+    double ht = displayYukawaElement(YU, 3, 3), ht2 = sqr(ht);
+    double htau = displayYukawaElement(YE, 3, 3), htau2 = sqr(htau);
+    double hb = displayYukawaElement(YD, 3, 3), hb2 = sqr(hb);
+    double Ut = displayTrilinear(UA, 3, 3);
+    double Ub = displayTrilinear(DA, 3, 3);
+    double Utau = displayTrilinear(EA, 3, 3);
    
-    double sP;
-    if (MIXING < 1) {
-      sP = ///< dominant 3rd family approximation
-	-(3.0 * mH2sq + mq3 - 4.0 * mu3) * ht2 +  
-	(3.0 * mH1sq - mq3 - 2.0 * md3) * hb2 + 
-	(mH1sq + ml3 - 2.0 * me3) * htau2 +
-	(1.5 * gsq(2) + 0.3 * gsq(1)) * (mH2sq - mH1sq - mlT) +
-	(8.0 / 3.0 * gsq(3) + 1.5 * gsq(2) + gsq(1) / 30.0) * mqT -
-	(16.0 / 3.0 * gsq(3) + 16.0 / 15.0 * gsq(1)) * muT +
-	(8.0 / 3.0 * gsq(3) + 2.0 / 15.0 * gsq(1)) * mdT +       
-         1.2 * gsq(1) * meT + lsq * (mH1sq - mH2sq);  //checked
-    } else {
-      sP = ///< fully mixed case -- slower
-	-(3.0 * mH2sq * uuT + (mq * u2).trace()) 
-	+ 4.0 * (u1 * mu * ut).trace() + 
-	3.0 * mH1sq * ddT - (mq * d2).trace() - 2.0 * (d1 * md * dt).trace() + 
-	mH1sq * eeT + (ml * e2).trace() -
-	(2.0 * e1 * me * et).trace() +
-	(1.5 * gsq(2) + 0.3 * gsq(1)) * (mH2sq - mH1sq - mlT) +
-	(8.0 / 3.0 * gsq(3) + 1.5 * gsq(2) + gsq(1) / 30.0) * mqT -
-	(16.0 / 3.0 * gsq(3) + 16.0 / 15.0 * gsq(1)) * muT +
-	(8.0 / 3.0 * gsq(3) + 2.0 / 15.0 * gsq(1)) * mdT +       
-         1.2 * gsq(1) * meT + lsq * (mH1sq - mH2sq);  //checked
-      }
-
-
-    sigma(1) = 0.2 * gsq(1) *
-      (3.0 * (mH1sq + mH2sq) + mqT + 3.0 * mlT + 8.0 * muT + 2.0 * mdT + 6.0 *
-       meT);
-    sigma(2) = gsq(2) * (mH1sq + mH2sq + (3.0 * mqT + mlT));
-    sigma(3) = gsq(3) * (2.0 * mqT + muT + mdT); // these 3 checked
-
-    DoubleMatrix u4(u2 * u2), d4(d2 * d2), e4(e2 * e2), u4t(u2t * u2t), d4t(d2t * d2t);
+    DoubleMatrix u4(u2 * u2), d4(d2 * d2), e4(e2 * e2);
 
     if (INCLUDE_2_LOOP_SCALAR_CORRECTIONS) {
     /* new dominant 3-family version */
@@ -388,7 +349,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
         // PA: warning in 3rd family terms the trilinears are Ut etc
         // and the Yukawas are ht, hb, htau
 
-  dhlam2 = - 50.0 * l4 * hlam - 36.0 * lam * (Ut * ht * ht2)
+        dhlam2 = - 50.0 * l4 * hlam - 36.0 * lam * (Ut * ht * ht2)
            - 36.0 * lam * (Ub * hb * hb2)  
            - 12.0 * lam * (Utau * htau * htau2) 
            - 9.0 * hlam * (ht2 * ht2)
@@ -411,9 +372,8 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
            + 0.02 * g4(1) * (207.0 * hlam - 828.0 * lam * mG(1))
            + 0.5 * g4(2) * (15.0 * hlam - 60.0 * lam * mG(2))
            + 1.8 * gsq(1) * gsq(2) * (hlam - 2.0* (mG(1) + mG(2)));
- 
 
-} else {
+      } else {
 	// NB you should introduce speedy computation here. For example sum
 	// traces, not add then trace. Also surely some of the products are
 	// repeated, eg u2 * u2 = u4, d2 * d2 = d4, u1 * mu * ut, d1 * md *
@@ -473,7 +433,6 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
            - 2.0 * lsq * e1 * (3.0 * lam * hlam + 2.0 * kap * hkap + 3.0 * huuT)
            - 6.0 * lam * hlam *  e2 * e1; 
 
-	
         dhlam2 = - 50.0 * l4 * hlam - 36.0 * lam * (hu * ut * u2).trace()
            - 36.0 * lam * (hd * dt * d2).trace()  
            - 12.0 * lam * (he * et * e2).trace() 
@@ -495,7 +454,6 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
            + 0.02 * g4(1) * (207.0 * hlam - 828.0 * lam * mG(1))
            + 0.5 * g4(2) * (15.0 * hlam - 60.0 * lam * mG(2))
            + 1.8 * gsq(1) * gsq(2) * (hlam - 2.0 * lam * (mG(1) + mG(2)));
-        
 
       }
       dhkap2 = - 120.0 * k4 * hkap - 12.0 * l4 * hkap 
@@ -581,15 +539,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
                            - 2.0 * mu_s * mG(1))
          + 12.0 * gsq(2) * (lsq * mSpsq + 2.0 * mu_s * lam * hlam 
                            - 2.0 * mu_s * mG(2));
-         
 
-   
-
-         
-                        
-                        
-                        
-      
     } else {
       /// In the mixed case, we need to use the slower full 3-family
       /// expressions
@@ -617,7 +567,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
          - 8.0 * (lsq * kap * hlam + ksq * lam * hkap) * mu_s  
          + 2.4 * gsq(1) * lsq * (m3sq - smu * mG(1))
          + 12 * gsq(2) * lsq * (m3sq - smu * mG(2));
-  
+
 
       dmSsq2 = - 16.0 * lsq * (Mlamsq + sqr(hlam)) 
          - 32.0 * ksq * (Mkapsq + sqr(hkap))
@@ -630,9 +580,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
          + 12.0 * gsq(2) * (Mlamsq - 2.0 * lam * hlam * mG(2) 
                             + 2.0 * lsq * msq(2));
  
-//PA: checked numerically 19/9/2012
-
-    
+      // PA: checked numerically 19/9/2012
       dmSpsq2 = - 8.0 * (l4 * mSpsq + 4.0 * lsq * lam * mu_s * hlam)
          - 16.0 * (2.0 * k4 * mSpsq + 5.0 * ksq * kap * mu_s * hkap)
          - 32.0 * ksq * lsq * mSpsq - 48.0 * lam * ksq * mu_s * hlam
@@ -679,7 +627,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
                                                + 2.0 * msq(2))
                                 + 2.0 * zeta * (hlam - lam * mG(2)));
 
-      
+
     dmG = dmG + dmG2 * oneO16Pif;
     dm3sq = dm3sq + dm3sq2 * oneO16Pif;
     dmH1sq = dmH1sq + dmH1sq2 * oneO16Pif;
