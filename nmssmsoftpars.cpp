@@ -152,7 +152,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
   const DoubleMatrix &mq = displaySoftMassSquared(mQl),
     &mu = displaySoftMassSquared(mUr), &md = displaySoftMassSquared(mDr),
     &ml = displaySoftMassSquared(mLl), &me = displaySoftMassSquared(mEr); 
-  static DoubleVector mG(displayGaugino()); 
+  static DoubleVector mG(1, 3);
   static DoubleVector msq(1, 3), gsqM(1, 3), gMsq(1, 3);
   
 
@@ -160,12 +160,13 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
   hu2 = hu * hut; hd2 = hd * hdt; he2 = he * het;
   const double huT = hu2.trace(), hdT = hd2.trace(), heT = he2.trace();
   hu2t = hut * hu; hd2t = hdt * hd; he2t = het * he;
-  const double mqT = mq.trace(), muT = mu.trace(), mdT = md.trace(), meT =
-    me.trace(), mlT = ml.trace();
   
   const double huuT = (hu * ut).trace(), hddT = (hd * dt).trace(), 
     heeT = (he * et).trace(); 
-  mG = displayGaugino(); msq = mG * mG; gsqM = gsq * mG; gMsq = gsq * msq;
+  mG = displayGaugino();
+  msq = mG * mG;
+  gsqM = gsq * mG;
+  gMsq = gsq * msq;
  
   const double m3sq = displayM3Squared();
   const double mH1sq = displayMh1Squared();
@@ -193,9 +194,6 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
 
   const double ONEO16Pisq = 1.0 / (16.0 * sqr(PI));
   if (displayLoops() > 0) {
-    const static double sixteenO3 = 16.0 / 3.0, oneO15 = 1.0 /
-      15.0;
-    
     dmG = base.displayGaugino();
     
     dm3sq = base.displayM3Squared();
