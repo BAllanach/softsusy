@@ -233,10 +233,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     //PA: checked numerically 14/9/2012
 
     dmq = base.displaySoftMassSquared(mQl);
-    
-    dml = 2.0 *
-      ( -0.3 * gsq(1) * curlyS - 0.6 * gMsq(1) - 3.0 * gMsq(2) + 
-	0.5 * (e2 * ml + ml * e2 + 2.0 * (e1 * me * et + mH1sq * e2 + he2)));
+    dml = base.displaySoftMassSquared(mLl);
     
     dmu = 2.0 *
       (-0.4 * gsq(1) * curlyS - 16.0 * oneO15 * gMsq(1) - sixteenO3 *
@@ -290,7 +287,6 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     dmG    = ONEO16Pisq * dmG;
     dmSsq  *= ONEO16Pisq;
     dmSpsq *= ONEO16Pisq;
-    dml    *= ONEO16Pisq;
     dmu    *= ONEO16Pisq;
     dmd    *= ONEO16Pisq;
     dme    *= ONEO16Pisq;
@@ -374,25 +370,9 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
                     + 2.0 * hd2) - 2.0 * Mlamsq * d2
            - 2.0 * lam * hlam * (d1 * hdt + hd * dt);
 
-	dml2 = -(2.0 * ml + 8.0 * mH1sq) * e2 * e2 - 4.0 * e1 * me * e2t * et -
-	  4.0 * e2 * ml * e2 - 4.0 * e2 * e1 * me * et - 2.0 * e2 * e2 * ml -
-	  ((ml + 4.0 * mH1sq) * e2 + 2.0 * e1 * me * et + e2 * ml) * 
-	  (3.0 * ddT + eeT) -
-	  e2 * (6.0 * mq * d2 + 6.0 * d1 * md * dt + 2.0 * ml * e2 + 
-		2.0 * e1 * me * et).trace() -
-	  4.0 * (e2 * he2 + he2 * e2 + e1 * he2t * et + he * e2t * het) -
-	  he2 * (6.0 * ddT + 2.0 * eeT) - e2 * (6.0 * Ub2 + 2.0 * Utau2) -
-	  he * et * (6.0 * hddT + 2.0 * heeT) - 
-	  e1 * het * (6.0 * hddT + 2.0 * heeT) +
-	  1.2 * gsq(2) * 
-	  ((ml + 2.0 * mH1sq) * e2 + 2.0 * e1 * me * et + e2 * ml +
-	   2.0 * he2 - 2.0 * mG(1) * he * et - 2.0 * mG(1) * e1 *
-			  het + 4.0 * msq(1) * e2) -
-	  1.2 * gsq(1) * sP + 33.0 * g4(2) * msq(2) + 3.6 * gsq(2) * gsq(1) *
-	  (msq(2) + msq(1) + mG(1) * mG(2)) + 621.0 / 25.0 * g4(1) * msq(1) +
-	  3.0 * gsq(2) * sigma(2) + 0.6 * gsq(1) * sigma(1) //checked
+	dml2 =
            - lsq * (2.0 * et * me * e1 + ml * e2 + e2 * ml 
-                          + 2.0 * mH1sq * e2 + 2.0 * he2) - 2.0 * Mlamsq * e2  
+                    + 2.0 * mH1sq * e2 + 2.0 * he2) - 2.0 * Mlamsq * e2  
            - 2.0 * lam * hlam * (e1 * het + he * et);
 	
 dmu2 = -(2.0 * mu + 8.0 * mH2sq) * u4t - 4.0 * ut * mq * u2 * u1 
@@ -606,25 +586,7 @@ dmu2 = -(2.0 * mu + 8.0 * mH2sq) * u4t - 4.0 * ut * mq * u2 * u1
          //PA: checked 14/9/2012
          
          
-         dml2 = -(2.0 * ml + 8.0 * mH1sq) * e2 * e2 - 4.0 * e1 * me * e2t * et -
-            4.0 * e2 * ml * e2 - 4.0 * e2 * e1 * me * et - 2.0 * e2 * e2 * ml -
-            ((ml + 4.0 * mH1sq) * e2 + 2.0 * e1 * me * et + e2 * ml) * 
-            (3.0 * ddT + eeT) -
-            e2 * (6.0 * mq * d2 + 6.0 * d1 * md * dt + 2.0 * ml * e2 + 
-                  2.0 * e1 * me * et).trace() -
-            4.0 * (e2 * he2 + he2 * e2 + e1 * he2t * et + he * e2t * het) -
-            he2 * (6.0 * ddT + 2.0 * eeT) - 
-            e2 * (6.0 * hdT + 2.0 * heT) -
-            he * et * (6.0 * hddT + 2.0 * heeT) - 
-            e1 * het * (6.0 * hddT + 2.0 * heeT) +
-            1.2 * gsq(1) * ((ml + 2.0 * mH1sq) * e2 + 2.0 * e1 * me * et + 
-                            e2 * ml +
-                            2.0 * he2 - 2.0 * mG(1) * he * et - 
-                            2.0 * mG(1) * e1 *
-                            het + 4.0 * msq(1) * e2) -
-            1.2 * gsq(1) * sP + 33.0 * g4(2) * msq(2) + 3.6 * gsq(2) * gsq(1) *
-            (msq(2) + msq(1) + mG(1) * mG(2)) + 621.0 / 25.0 * g4(1) * msq(1) +
-            3.0 * gsq(2) * sigma(2) + 0.6 * gsq(1) * sigma(1) //checked
+         dml2 =
             - lsq * (2.0 * et * me * e1 + ml * e2 + e2 * ml + 2.0 * mH1sq * e2
                      + 2.0 * he2) - 2.0 * Mlamsq * e2  
             - 2.0 * lam * hlam * (e1 * het + he * et);	
