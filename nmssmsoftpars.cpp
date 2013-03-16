@@ -126,12 +126,9 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
   
   // For calculational brevity: 
   static nmsBrevity a;
-  // convert to beta functions
-  static nMssmSusy dsb;
-  
-  // calculate derivatives for full SUSY spectrum. Brevity calculations come
-  // out encoded in a
-  dsb = nMssmSusy::beta(a);
+
+  // Brevity calculation
+  nMssmSusy::beta(a);
   SoftPars<nMssmSusy, nmsBrevity> base(SoftPars<nMssmSusy, nmsBrevity>::beta2());
   
   // To keep this a const function: TIME SAVINGS
