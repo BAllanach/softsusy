@@ -1,10 +1,9 @@
-/** \file softpars.cpp
+/** \file nmssmsoftpars.cpp
    - Project:     SOFTSUSY 
-   - Author:      Ben Allanach 
+   - Author:      Ben Allanach, Peter Athron, Alexander Voigt
    - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
    - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
-   - Description: includes all MSSM parameters in the Lagrangian
-
+   - Description: includes all NMSSM parameters in the Lagrangian
 */
 
 #include "nmssmsoftpars.h"
@@ -21,25 +20,25 @@ const SoftParsNmssm & SoftParsNmssm::operator=(const SoftParsNmssm & s) {
 }
 
 double SoftParsNmssm::displaySoftAlambda() const {
-   if (fabs(displayLambda()) < 1.0e-100) {
+  if (fabs(displayLambda()) < 1.0e-100) {
     ostringstream ii;
     ii << "WARNING: asking for SoftParsNmssm::displaySoftAlambda() where Yukawa coupling is " <<
        fabs(displayLambda()) << endl;
     throw ii.str();
-  } 
+  }
   double temp = displayTrialambda() / displayLambda();
-   return temp;
+  return temp;
 }
 
 double SoftParsNmssm::displaySoftAkappa() const {
-   if (fabs(displayKappa()) < 1.0e-100) {
+  if (fabs(displayKappa()) < 1.0e-100) {
     ostringstream ii;
     ii << "WARNING: asking for SoftParsNmssm::displaySoftAkappa() where Yukawa coupling is " <<
        fabs(displayKappa()) << endl;
     throw ii.str();
-  } 
-   double temp = displayTriakappa() / displayKappa();
-   return temp;
+  }
+  double temp = displayTriakappa() / displayKappa();
+  return temp;
 }
 
 const DoubleVector SoftParsNmssm::display() const {
@@ -120,8 +119,8 @@ void SoftParsNmssm::set(const DoubleVector & y) {
 // thresholds.
 // CHECKED: 24/05/02
 SoftParsNmssm SoftParsNmssm::beta2() const {
- // Constants for gauge running
-   static DoubleVector bBeta(3), cuBeta(3), cdBeta(3), ceBeta(3), clBeta(3);
+  // Constants for gauge running
+  static DoubleVector bBeta(3), cuBeta(3), cdBeta(3), ceBeta(3), clBeta(3);
   static DoubleMatrix babBeta(3, 3);
   
   if (bBeta(1) < 1.0e-5) // Constants not set yet
@@ -694,11 +693,8 @@ void SoftParsNmssm::standardsemiSugra(double m0,  double mS, double m12, double 
   semiuniversalTrilinears(a0, Al, Ak);
 }
 
-
-#define HR "---------------------------------------------------------------\n"
-
 ostream & operator <<(ostream &left, const SoftParsNmssm &s) {
-  left << "SUSY breaking MSSM parameters at Q: " << s.displayMu() << endl;
+  left << "SUSY breaking NMSSM parameters at Q: " << s.displayMu() << endl;
   left << " UA" << s.displayTrilinear(UA) 
        << " UD" << s.displayTrilinear(DA) 
        << " UE" << s.displayTrilinear(EA); 
@@ -720,8 +716,6 @@ ostream & operator <<(ostream &left, const SoftParsNmssm &s) {
   left << s.displaySusy();
   return left;
 }
-
-#undef HR
 
 void SoftParsNmssm::inputSoftParsOnly() {
   SoftPars<nMssmSusy, nmsBrevity>::inputSoftParsOnly();
