@@ -232,12 +232,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
    
     //PA: checked numerically 14/9/2012
 
-    dmq = 2.0 *
-      (0.1 * gsq(1) * curlyS - oneO15 * gMsq(1) - 3.0 * gMsq(2) -
-       sixteenO3 * gMsq(3) +
-       0.5 * (u2 * mq + mq * u2 + 2.0 * (u1 * mu * ut + mH2sq * u2 + hu2))
-       + 0.5 * (d2 * mq + mq * d2 + 2.0 * (d1 * md * dt + mH1sq * d2 +
-					   hd2)));
+    dmq = base.displaySoftMassSquared(mQl);
     
     dml = 2.0 *
       ( -0.3 * gsq(1) * curlyS - 0.6 * gMsq(1) - 3.0 * gMsq(2) + 
@@ -295,7 +290,6 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     dmG    = ONEO16Pisq * dmG;
     dmSsq  *= ONEO16Pisq;
     dmSpsq *= ONEO16Pisq;
-    dmq    *= ONEO16Pisq;
     dml    *= ONEO16Pisq;
     dmu    *= ONEO16Pisq;
     dmd    *= ONEO16Pisq;
@@ -372,45 +366,13 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     if (INCLUDE_2_LOOP_SCALAR_CORRECTIONS) {
     /* new dominant 3-family version */
       if (MIXING < 1) {
-	dmq2 = -(2.0 * mq + 8.0 * mH2sq) * u4 - 
-	  4.0 * u1 * mu * u2t * ut - 
-	  4.0 * u2 * mq * u2 - 4.0 * u2 * u1 * mu * ut - 2.0 * u4 * mq -
-	  (2.0 * mq + 8.0 * mH1sq) * d4 - 4.0 * d1 * md * d2t * dt - 
-	  4.0 * d2 * mq * d2 - 4.0 * d2 * d1 * md * dt - 2.0 * d4 * mq -
-	  ((mq + 4.0 * mH2sq) * u2 + 2.0 * u1 * mu * ut + u2 * mq) * uuT 
-	  * 3.0 -
-	  ((mq + 4.0 * mH1sq) * d2 + 2.0 * d1 * md * dt + d2 * mq) * 
-	  (3.0 * ddT + eeT) -
-	  6.0 * u2 * ((mq * u2).trace() + (u1 * mu * ut).trace()) -
-	  d2 * ((6.0 * mq * d2).trace() + (6.0 * d1 * md * dt).trace() + 
-		(2.0 * ml * e2).trace() + (2.0 * e1 * me * et).trace()) -
-	  4.0 * (u2 * hu2 + hu2 * u2 + u1 * hu2t * ut + hu * u2t * hut) -
-	  4.0 * (d2 * hd2 + hd2 * d2 + d1 * hd2t * dt + hd * d2t * hdt) -
-	  hu2 * uuT * 6.0 - u2 * 6.0 * Ut2 - hu * ut * 6.0 * huuT -
-	  u1 * hut * 6.0 * huuT - hd2 * (6.0 * ddT + 2.0 * eeT) - 
-	  d2 * (6.0 * Ub2 + 2.0 * Utau2) -
-	  hd * dt * (6.0 * hddT + 2.0 * heeT) - 
-	  d1 * hdt * (6.0 * hddT + 2.0 * heeT) + 0.4 * gsq(1) * 
-	  ((2.0 * mq +  4.0 * mH2sq) * u2 + 4.0 * u1 * mu * ut +
-	   2.0 * u2 * mq + 4.0 * hu2 - 4.0 * mG(1) * hu * ut - 4.0
-	   * mG(1) * u1 * hut + 8.0 * msq(1) * u2 +
-	   (mq + 2.0 * mH1sq) * d2 + 2.0 * d1 * md * dt +
-	   d2 * mq + 2.0 * hd2 - 2.0 * mG(1) * hd * dt - 
-	   2.0 * mG(1) * d1 * hdt + 4.0 * msq(1) * d2) +
-	  0.4 * gsq(1) * sP - 128.0 / 3.0 * g4(3) * msq(3) + 32.0 * gsq(3) *
-	  gsq(2) * (msq(3) + msq(2) + mG(2) * mG(3)) +
-	  32.0 / 45.0 * gsq(3) * gsq(1) * 
-	  (msq(3) + msq(1) + mG(1) * mG(3)) + 33.0
-	  * g4(2) * msq(2) + 0.4 * gsq(2) * gsq(1) * (msq(2) + msq(1) + mG(1) *
-						      mG(2)) +
-	  199.0 / 75.0 * g4(1) * msq(1) + 16.0 / 3.0 * gsq(3) * sigma(3) +
-	  3.0 * gsq(2) * sigma(2) + gsq(1) * sigma(1) / 15.0 // checked
-         - lsq * (2.0 * ut * mu * u1 + mq * u2 + u2 * mq + 2.0 * mH2sq * u2
-                     + 2.0 * hu2) - 2.0 * Mlamsq * u2  
+	dmq2 =
+           - lsq * (2.0 * ut * mu * u1 + mq * u2 + u2 * mq + 2.0 * mH2sq * u2
+                    + 2.0 * hu2) - 2.0 * Mlamsq * u2
            - 2.0 * lam * hlam * (u1 * hut + hu * ut)
-            - lsq * (2.0 * dt * md * d1 + mq * d2 + d2 * mq + 2.0 * mH1sq * d2
-                     + 2.0 * hd2) - 2.0 * Mlamsq * d2  
-            - 2.0 * lam * hlam * (d1 * hdt + hd * dt);
+           - lsq * (2.0 * dt * md * d1 + mq * d2 + d2 * mq + 2.0 * mH1sq * d2
+                    + 2.0 * hd2) - 2.0 * Mlamsq * d2
+           - 2.0 * lam * hlam * (d1 * hdt + hd * dt);
 
 	dml2 = -(2.0 * ml + 8.0 * mH1sq) * e2 * e2 - 4.0 * e1 * me * e2t * et -
 	  4.0 * e2 * ml * e2 - 4.0 * e2 * e1 * me * et - 2.0 * e2 * e2 * ml -
@@ -633,46 +595,13 @@ dmu2 = -(2.0 * mu + 8.0 * mH2sq) * u4t - 4.0 * ut * mq * u2 * u1
 	// traces, not add then trace. Also surely some of the products are
 	// repeated, eg u2 * u2 = u4, d2 * d2 = d4, u1 * mu * ut, d1 * md *
 	// dt, d2 * d1, d2 * mq
-         dmq2 = -(2.0 * mq + 8.0 * mH2sq) * u4 - 4.0 * u1 * mu * u2t * ut 
-            - 4.0 * u2 * mq * u2 - 4.0 * u2 * u1 * mu * ut - 2.0 * u4 * mq -
-            (2.0 * mq + 8.0 * mH1sq) * d4 - 4.0 * d1 * md * d2t * dt - 
-            4.0 * d2 * mq * d2 - 4.0 * d2 * d1 * md * dt - 2.0 * d4 * mq -
-            ((mq + 4.0 * mH2sq) * u2 + 2.0 * u1 * mu * ut + u2 * mq) * uuT * 3.0 
-            -((mq + 4.0 * mH1sq) * d2 + 2.0 * d1 * md * dt + d2 * mq) * 
-            (3.0 * ddT + eeT) -
-            6.0 * u2 * ((mq * u2).trace() + (u1 * mu * ut).trace()) -
-            d2 * (6.0 * (mq * d2).trace() + 6.0 * (d1 * md * dt).trace() + 
-                  2.0 * (ml * e2).trace() + 2.0 * (e1 * me * et).trace()) -
-            4.0 * (u2 * hu2 + hu2 * u2 + u1 * hu2t * ut + hu * u2t * hut) -
-            4.0 * (d2 * hd2 + hd2 * d2 + d1 * hd2t * dt + hd * d2t * hdt) -
-            hu2 * uuT * 6.0 - u2 * 6.0 * huT - 
-            hu * ut * 6.0 * huuT - u1 * hut * 6.0 * huuT - hd2 * 
-            (6.0 * ddT + 2.0 * eeT) - 
-            d2 * (6.0 * hdT + 2.0 * heT) -
-            hd * dt * (6.0 * hddT + 2.0 * heeT) - 
-            d1 * hdt * (6.0 * hddT + 2.0 * heeT) +
-            0.4 * gsq(1) * 
-            ((2.0 * mq +  4.0 * mH2sq) * u2 + 4.0 * u1 * mu * ut +
-             2.0 * u2 * mq + 4.0 * hu2 - 4.0 * mG(1) * hu * ut - 4.0
-             * mG(1) * u1 * hut + 8.0 * msq(1) * u2 +
-             (mq + 2.0 * mH1sq) * d2 + 2.0 * d1 * md * dt +
-             d2 * mq + 2.0 * hd2 - 2.0 * mG(1) * hd * dt - 
-             2.0 * mG(1) * d1 * hdt + 4.0 * msq(1) * d2) +
-            0.4 * gsq(1) * sP - 128.0 / 3.0 * g4(3) * msq(3) + 32.0 * gsq(3) *
-            gsq(2) * (msq(3) + msq(2) + mG(2) * mG(3)) +
-            32.0 / 45.0 * gsq(3) * gsq(1) * (msq(3) + msq(1) + 
-					   mG(1) * mG(3)) + 33.0
-            * g4(2) * msq(2) + 0.4 * gsq(2) * gsq(1) * (msq(2) + msq(1) + mG(1) *
-						      mG(2)) +
-            199.0 / 75.0 * g4(1) * msq(1) + 16.0 / 3.0 * gsq(3) * sigma(3) +
-            3.0 * gsq(2) * sigma(2) + gsq(1) * sigma(1) / 15.0 // checked
+         dmq2 =
             - lsq * (2.0 * ut * mu * u1 + mq * u2 + u2 * mq + 2.0 * mH2sq * u2
-                     + 2.0 * hu2) - 2.0 * Mlamsq * u2  
-           - 2.0 * lam * hlam * (u1 * hut + hu * ut)
+                     + 2.0 * hu2) - 2.0 * Mlamsq * u2
+            - 2.0 * lam * hlam * (u1 * hut + hu * ut)
             - lsq * (2.0 * dt * md * d1 + mq * d2 + d2 * mq + 2.0 * mH1sq * d2
-                     + 2.0 * hd2) - 2.0 * Mlamsq * d2  
+                     + 2.0 * hd2) - 2.0 * Mlamsq * d2
             - 2.0 * lam * hlam * (d1 * hdt + hd * dt);
-        
 
          //PA: checked 14/9/2012
          
