@@ -209,8 +209,8 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     const static double sixteenO3 = 16.0 / 3.0, oneO15 = 1.0 /
       15.0;
     
-    dmG = gsqM * 2.0 * bBeta;
-    //PA: checked 14/9/2012
+    dmG = base.displayGaugino();
+    
     double curlyS = mH2sq - mH1sq + mqT - mlT - 2.0 * muT + mdT + meT;
     
     dm3sq = base.displayM3Squared();
@@ -273,7 +273,6 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
        + 4.0 * hlam * m3sq + 2.0 * hkap * mSpsq;
 
     // convert to proper derivatives: 
-    dmG    = ONEO16Pisq * dmG;
     dmSsq  *= ONEO16Pisq;
     dmSpsq *= ONEO16Pisq;
     dhu    *= ONEO16Pisq;
@@ -695,11 +694,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     // Default is to include these 2-loop corrections anyhow because they can 
     // be so important: gauginos + higgs 
     dmG2 = 2.0 * gsq * 
-       (babBeta * gsqM + mG * (babBeta * gsq) + 
-        cuBeta * huuT - cuBeta * mG * uuT + 
-        cdBeta * hddT - cdBeta * mG * ddT + 
-        ceBeta * heeT - ceBeta * mG * eeT +
-        clBeta * lam * hlam - clBeta * mG * lsq); // checked
+       (clBeta * lam * hlam - clBeta * mG * lsq); // checked
 
     double dmH1sq2, dm3sq2, dmH2sq2;
     double dmSsq2, dmSpsq2, dz_s2;
