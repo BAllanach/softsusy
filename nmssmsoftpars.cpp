@@ -660,64 +660,11 @@ DoubleVector SoftParsNmssm::beta() const {
 void SoftParsNmssm::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				  DoubleMatrix & gQQ, DoubleMatrix & gUU,
 				  DoubleMatrix & gDD, 
-                                   double & gH1H1, double & gH2H2, double & gSS)  const {
-  // Constants for gauge running
-   static DoubleVector bBeta(3), cuBeta(3), cdBeta(3), ceBeta(3), clBeta(3);
-  static DoubleMatrix babBeta(3, 3);
-  
-  if (bBeta(1) < 1.0e-5) // Constants not set yet
-     nmsetBetas(babBeta, cuBeta, cdBeta, ceBeta, clBeta, bBeta);
-  
-  // For calculational brevity: 
-  static nmsBrevity a;
-  // convert to beta functions
-  static nMssmSusy dsb;
-  
-  // calculate derivatives for full SUSY spectrum. Brevity calculations come
-  // out encoded in a
-  dsb = nMssmSusy::beta(a);
-  
-  static DoubleVector g1(3);
-  g1 = displayGauge();
-  
-  // To keep this a const function: TIME SAVINGS
-  DoubleMatrix &dt=a.dt, &ut=a.ut, &et=a.et;      
-  DoubleVector &gsq=a.gsq; // &g3=a.g3, &g4=a.g4;
-  
-  static DoubleMatrix hu(3, 3), hd(3, 3), he(3, 3);
-  static DoubleMatrix hut(3, 3), hdt(3, 3), het(3, 3);
-  static DoubleVector gsqM(1, 3);
-  
-  hu = displayTrilinear(UA); hd = displayTrilinear(DA); 
-  he = displayTrilinear(EA); 
-  hut = hu.transpose(); hdt = hd.transpose(); het = he.transpose();
-  
-  double huuT = (hu * ut).trace(), hddT = (hd * dt).trace(), 
-    heeT = (he * et).trace(); 
-  gsqM = gsq * displayGaugino(); 
-  
-  if (displayLoops() > 0) { // CHECKED: agrees with our conventions
-    const static double eightO3 = 8.0 / 3.0, oneO30 = 1.0 / 30.0;
-    gLL = - (he * et + 0.3 * gsqM(1) + 1.5 * gsqM(2));
-    gEE = - (2.0 * (et * he) + 1.2 * gsqM(1));
-    gQQ = - (hd * dt + hu * ut + oneO30 * gsqM(1) + 1.5 * gsqM(2) + 
-	     eightO3 * gsqM(3));
-    gDD = - (2.0 * dt * hd + 4.0 * oneO30 * gsqM(1) + 
-	     eightO3 * gsqM(3));
-    gUU = - (2.0 * ut * hu + 16.0 * oneO30 * gsqM(1) +
-	     eightO3 * gsqM(3));
-    gH1H1 = - (3.0 * hddT + heeT + 0.3 * gsqM(1) + 1.5 * gsqM(2));
-    gH2H2 = - (3.0 * huuT + 0.3 * gsqM(1) + 1.5 * gsqM(2));
-
-    const static double oneO16Pisq = 1.0 / (16.0 * sqr(PI));
-    gH1H1 = gH1H1 * oneO16Pisq;
-    gH2H2 = gH2H2 * oneO16Pisq;
-    gEE  *= oneO16Pisq;    
-    gLL  *= oneO16Pisq;
-    gQQ  *= oneO16Pisq;
-    gUU  *= oneO16Pisq;
-    gDD  *= oneO16Pisq;
-  }
+                                   double & gH1H1, double & gH2H2, double & gSS)  const
+{
+   SoftPars<nMssmSusy, nmsBrevity>::anomalousDeriv(gEE, gLL, gQQ, gUU, gDD,
+                                                   gH1H1, gH2H2);
+   gSS = 0.0;
 }
 
 // Reads in universal boundary conditions at the current scale:
