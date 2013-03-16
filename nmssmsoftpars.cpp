@@ -127,9 +127,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
   // For calculational brevity: 
   static nmsBrevity a;
 
-  // Brevity calculation
-  nMssmSusy::beta(a);
-  SoftPars<nMssmSusy, nmsBrevity> base(SoftPars<nMssmSusy, nmsBrevity>::beta2());
+  SoftPars<nMssmSusy, nmsBrevity> base(SoftPars<nMssmSusy, nmsBrevity>::beta2(a));
   
   // To keep this a const function: TIME SAVINGS
   const DoubleMatrix &u1=a.u1, &d1=a.d1, &e1=a.e1;

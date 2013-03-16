@@ -226,6 +226,11 @@ void SoftPars<Susy, Brevity>::set(const DoubleVector & y) {
   mH2sq = y.display(k+66);
 }
 
+template<class Susy, class Brevity>
+SoftPars<Susy, Brevity> SoftPars<Susy, Brevity>::beta2() const {
+  static Brevity a;
+  return beta2(a);
+}
 
 // Outputs derivatives (DRbar scheme) in the form of dsoft
 // thresholds = 0 and NOTHING is decoupled.
@@ -233,7 +238,7 @@ void SoftPars<Susy, Brevity>::set(const DoubleVector & y) {
 // thresholds.
 // CHECKED: 24/05/02
 template<class Susy, class Brevity>
-SoftPars<Susy, Brevity> SoftPars<Susy, Brevity>::beta2() const {
+SoftPars<Susy, Brevity> SoftPars<Susy, Brevity>::beta2(Brevity& a) const {
 
   // Constants for gauge running
   static DoubleVector bBeta(3), cuBeta(3), cdBeta(3), ceBeta(3);
@@ -242,8 +247,6 @@ SoftPars<Susy, Brevity> SoftPars<Susy, Brevity>::beta2() const {
   if (bBeta(1) < 1.0e-5) // Constants not set yet
     setBetas(babBeta, cuBeta, cdBeta, ceBeta, bBeta);
   
-  // For calculational brevity: 
-  static Brevity a;
   // convert to beta functions
   static Susy dsb;
   

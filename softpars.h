@@ -129,6 +129,8 @@ public:
   DoubleVector beta() const; 
   /// Returns numerical beta functions of parameters  
   SoftPars beta2() const;
+  /// Returns numerical beta functions of parameters and Brevity
+  SoftPars beta2(Brevity&) const;
   /// Returns derivatives of anomalous dimensions of fields with respect to
   /// renormalisation scale in MSSM for: RH leptons, LH leptons, LH quarks, RH
   /// up quarks, RH down quarks, H1 and H2 respectively
