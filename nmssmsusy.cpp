@@ -188,9 +188,10 @@ nMssmSusy nMssmSusy::beta(nmsBrevity & a) const {
   DoubleVector &gsq=a.gsq;
   DoubleMatrix &u2=a.u2, &d2=a.d2, &e2=a.e2, &d2t=a.d2t;
   double t = (d2 * u2).trace();
+  double &lamdbaSqr = a.lsq;
   static const double oneLoop = 1.0 / (16.0 * sqr(PI));
-  double sH1H1 = oneLoop * (3.0 * ddT + eeT);
-  double sH2H2 = oneLoop * 3.0 * uuT;
+  double sH1H1 = oneLoop * (3.0 * ddT + eeT + lamdbaSqr);
+  double sH2H2 = oneLoop * (3.0 * uuT + lamdbaSqr);
 
   const static double twolp = 4.010149318236068e-5; // 1/(16 pi^2)^2
   if (displayLoops() > 1) {
