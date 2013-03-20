@@ -184,10 +184,10 @@ nMssmSusy nMssmSusy::beta(nmsBrevity & a) const {
   // opposed to the chiral superfield one - see hep-ph/0111209).
   // Additional contribution from Feynman gauge running at two-loops of tan
   // beta: we need this to link up with BPMZ: hep-ph/0112251
-  double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT;
-  DoubleVector &gsq=a.gsq, &g4 = a.g4;
-  DoubleMatrix &u2=a.u2, &d2=a.d2, &e2=a.e2, &d2t=a.d2t;
-  double t = (d2 * u2).trace();
+  const double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT;
+  const DoubleVector &gsq=a.gsq, &g4 = a.g4;
+  const DoubleMatrix &u2=a.u2, &d2=a.d2, &e2=a.e2, &d2t=a.d2t;
+  const double t = (d2 * u2).trace();
   const double &lsq = a.lsq, &ksq = a.ksq, &l4 = a.l4, &k4 = a.k4;
   static const double oneLoop = 1.0 / (16.0 * sqr(PI));
   double sH1H1 = oneLoop * (3.0 * ddT + eeT + lsq);
