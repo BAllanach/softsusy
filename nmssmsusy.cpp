@@ -185,7 +185,7 @@ nMssmSusy nMssmSusy::beta(nmsBrevity & a) const {
   // Additional contribution from Feynman gauge running at two-loops of tan
   // beta: we need this to link up with BPMZ: hep-ph/0112251
   double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT;
-  DoubleVector &gsq=a.gsq;
+  DoubleVector &gsq=a.gsq, &g4 = a.g4;
   DoubleMatrix &u2=a.u2, &d2=a.d2, &e2=a.e2, &d2t=a.d2t;
   double t = (d2 * u2).trace();
   const double &lsq = a.lsq, &ksq = a.ksq, &l4 = a.l4, &k4 = a.k4;
@@ -195,16 +195,16 @@ nMssmSusy nMssmSusy::beta(nmsBrevity & a) const {
 
   const static double twolp = 4.010149318236068e-5; // 1/(16 pi^2)^2
   if (displayLoops() > 1) {
-    // I don't posess the O(g^4) terms for these RGEs in the Feynman gauge
-    // and consequently have neglected. They CANCEL in the RGE for tan
-    // beta, but not in the RGE of the Higgs vev.
+    const double g4terms = 2.07 * g4(1) + 0.9 * gsq(1) * gsq(2) + 3.75 * g4(2);
     sH1H1 = sH1H1 + twolp *
       (-(3.0 * (e2 * e2).trace() + 9.0 * (d2t * d2t).trace() + 3.0 * t) +
        (16 * gsq(3) - 0.4 * gsq(1)) * ddT + 1.2 * gsq(1) * eeT
+       + g4terms
        - 2 * ksq * lsq - 3 * l4 - 3 * lsq * uuT);
     sH2H2 = sH2H2 + twolp *
       (- (9.0 * (u2 * u2).trace() + 3.0 * t) +
        (16 * gsq(3) + 0.8 * gsq(1)) * uuT
+       + g4terms
        - 2 * ksq * lsq - 3 * l4 - lsq * (3 * ddT + eeT));
   }
 
