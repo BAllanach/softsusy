@@ -176,10 +176,7 @@ nMssmSusy nMssmSusy::beta(nmsBrevity & a) const {
   dmu = displaySusyMu() * (gH1H1 + gH2H2);
   dmu_s = 2.0 * mu_s * gSS;
   dz = zeta * gSS;
-  //PA: checked 14/9/2012
 
-
-  //PA:  WARNING the higgs vev RGEs and scalar anom dims have not been modifidied from MSSM yet.
   // Following is from hep-ph/9308335: scalar H anomalous dimensions (as
   // opposed to the chiral superfield one - see hep-ph/0111209).
   // Additional contribution from Feynman gauge running at two-loops of tan
