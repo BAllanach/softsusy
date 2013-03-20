@@ -150,12 +150,18 @@ NMSSMSusyPars NMSSMSusyPars::calcBeta() const
          Power(g1,2)*traceYeAdjYe - 100*traceYeAdjYeYeAdjYe))*vd)/100. + 3*
          Lambdax*traceYuAdjYu*vd*Conj(Lambdax) + 2*Kappa*Lambdax*vd*Conj(Kappa)
          *Conj(Lambdax) + 3*Power(Lambdax,2)*vd*Power(Conj(Lambdax),2));
+      // \hat\gamma terms
+      beta_vd = beta_vd - twoLoop * vd * (0.3 * g1*g1 + 1.5 * g2*g2) *
+         (3 * traceYdAdjYd + traceYeAdjYe + Lambdax*Conj(Lambdax));
       beta_vu = beta_vu + twoLoop*(-((207*Power(g1,4) + 90*Power(g1,2)
          *Power(g2,2) + 375*Power(g2,4) - 300*traceYdAdjYuYuAdjYd + 80*(Power(
          g1,2) + 20*Power(g3,2))*traceYuAdjYu - 900*traceYuAdjYuYuAdjYu)*vu)
          /100. + Lambdax*(3*traceYdAdjYd + traceYeAdjYe)*vu*Conj(Lambdax) + 2*
          Kappa*Lambdax*vu*Conj(Kappa)*Conj(Lambdax) + 3*Power(Lambdax,2)*vu*
          Power(Conj(Lambdax),2));
+      // \hat\gamma terms
+      beta_vu = beta_vu - twoLoop * vu * (0.3 * g1*g1 + 1.5 * g2*g2) *
+         (3 * traceYuAdjYu + Lambdax*Conj(Lambdax));
       beta_vS = beta_vS + twoLoop*(8*Power(Kappa,2)*vS*Power(Conj(
          Kappa),2) + 8*Kappa*Lambdax*vS*Conj(Kappa)*Conj(Lambdax) + (2*Lambdax*
          vS*Conj(Lambdax)*(-3*Power(g1,2) - 15*Power(g2,2) + 15*traceYdAdjYd +
