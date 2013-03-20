@@ -188,10 +188,10 @@ nMssmSusy nMssmSusy::beta(nmsBrevity & a) const {
   DoubleVector &gsq=a.gsq;
   DoubleMatrix &u2=a.u2, &d2=a.d2, &e2=a.e2, &d2t=a.d2t;
   double t = (d2 * u2).trace();
-  double &lamdbaSqr = a.lsq;
+  const double &lsq = a.lsq, &ksq = a.ksq, &l4 = a.l4, &k4 = a.k4;
   static const double oneLoop = 1.0 / (16.0 * sqr(PI));
-  double sH1H1 = oneLoop * (3.0 * ddT + eeT + lamdbaSqr);
-  double sH2H2 = oneLoop * (3.0 * uuT + lamdbaSqr);
+  double sH1H1 = oneLoop * (3.0 * ddT + eeT + lsq);
+  double sH2H2 = oneLoop * (3.0 * uuT + lsq);
 
   const static double twolp = 4.010149318236068e-5; // 1/(16 pi^2)^2
   if (displayLoops() > 1) {
@@ -200,10 +200,12 @@ nMssmSusy nMssmSusy::beta(nmsBrevity & a) const {
     // beta, but not in the RGE of the Higgs vev.
     sH1H1 = sH1H1 + twolp *
       (-(3.0 * (e2 * e2).trace() + 9.0 * (d2t * d2t).trace() + 3.0 * t) +
-       (16 * gsq(3) - 0.4 * gsq(1)) * ddT + 1.2 * gsq(1) * eeT);
+       (16 * gsq(3) - 0.4 * gsq(1)) * ddT + 1.2 * gsq(1) * eeT
+       - 2 * ksq * lsq - 3 * l4 - 3 * lsq * uuT);
     sH2H2 = sH2H2 + twolp *
       (- (9.0 * (u2 * u2).trace() + 3.0 * t) +
-       (16 * gsq(3) + 0.8 * gsq(1)) * uuT);
+       (16 * gsq(3) + 0.8 * gsq(1)) * uuT
+       - 2 * ksq * lsq - 3 * l4 - lsq * (3 * ddT + eeT));
   }
 
   double cosb2 = sqr(cos(atan(displayTanb()))), sinb2 = 1.0 - cosb2;
@@ -213,13 +215,15 @@ nMssmSusy nMssmSusy::beta(nmsBrevity & a) const {
   double dHvev = displayHvev() *
     (cosb2 * (-sH1H1 + feynman * oneLoop) +
      sinb2 * (-sH2H2 + feynman * oneLoop));
-  const double dSvev = - sVev * oneLoop * 2 * (sqr(lambda) + sqr(kappa));
+  double dSvev = - sVev * oneLoop * 2 * (lsq + ksq);
 
   if (displayLoops() > 1) {
     /// Two-loop pieces
     dt = dt + displayTanb() * twolp * (3.0 * ddT + eeT - 3.0 * uuT) * feynman;
     dHvev = dHvev - displayHvev() * twolp * (cosb2 * (3.0 * ddT + eeT) +
-				    sinb2 * 3.0 * uuT) * feynman;
+				    sinb2 * 3.0 * uuT + lsq) * feynman;
+    dSvev = dSvev + sVev * twolp * (8 * k4 + 8 * ksq * lsq
+            + 2 * lsq * (-2 * feynman + 2 * lsq + 3 * ddT + eeT + 3 * uuT));
   }
 
   // Contains all susy derivatives:
