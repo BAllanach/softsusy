@@ -323,8 +323,6 @@ int main()
 
    std::cout << "====================\n";
    std::cout << "compare 2-loop level\n";
-   std::cout << "Note: SoftSusy misses two-loop g^4 terms for the vev\n";
-   std::cout << "Note: SARAH misses delta Zhat two-loop terms for the vevs\n";
    std::cout << "====================\n";
    compare_rges(2);
 
