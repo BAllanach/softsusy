@@ -1181,12 +1181,15 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc) {
       } else throw("In zriddr: never get here.");
       if (fabs(xh-xl) <= xacc) return ans;
     }
-    throw("zriddr exceed maximum iterations");
+    throw("zriddr exceeded maximum iterations");
   }
   else {
     if (close(fl, 0.0, EPSTOL)) return x1;
     if (close(fh, 0.0, EPSTOL)) return x2;
-    throw("root must be bracketed in zriddr.");
+    ostringstream s;
+    s << "Root must be bracketed in zriddr. f(" << x1 << ")=" << fl 
+      << ", fh(" << x2 << ")=" << fh << endl;
+    throw(s.str());
   }
   return 0.0;
 }
