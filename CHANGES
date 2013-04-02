@@ -4,3 +4,6 @@ inaccuracies, if one used optimisation. This is now fixed.
 3. 26/2/13 Moved tadpoles to MssmSoftsusy object and fixed up Rpv REWSB
 4. 5/3/13  Improved numerical accuracy of b0 loop function
 5. 20/3/13 Fixed SLHA2 output of neutral fermion mixing in RPV case
+6. 2/4/13: Added protection in 2x2 diagonalisation routines against negative
+eigenvalues. Only prints out an error message if DISPLAY_ARRAY_BOUNDS is
+switched on 
