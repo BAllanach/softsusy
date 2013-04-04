@@ -25,7 +25,7 @@ const NMdrBarPars & NMdrBarPars::operator=(const NMdrBarPars &s) {
 
 const nmsPhysical & nmsPhysical::operator=(const nmsPhysical &s) {
   if (this == &s) return *this;
-  mh0 = s.mh0; mA0 = s.mA0; mH0 = s.mH0; mHpm = s.mHpm;
+  mh0 = s.mh0; mA0 = s.mA0; mHpm = s.mHpm;
   mH1 = s.mH1; mH2 = s.mH2; mA1 = s.mA1; mA2 = s.mA2;
   msnu = s.msnu; 
   mch = s.mch; mneut = s.mneut; mixNeut = s.mixNeut;
@@ -39,8 +39,8 @@ const nmsPhysical & nmsPhysical::operator=(const nmsPhysical &s) {
 
 // a should be in C convention ie start from index zero
 void nmsPhysical::display(double *a) const {
-  a[0] = mh0; a[1] = mA0;
-  a[2] = mH0; a[3] = mHpm;
+  a[0] = mh0(1); a[1] = mA0(1);
+  a[2] = mh0(2); a[3] = mHpm;
   
   a[4] = msnu.display(1); a[5] = msnu.display(2); a[6] = msnu.display(3);
 
@@ -91,9 +91,9 @@ std::ostream & operator <<(std::ostream & left, const NMdrBarPars &s) {
 }
 
 std::ostream & operator <<(std::ostream & left, const nmsPhysical &s) {
-  left << "mh^0: " << s.mh0 << " mA^0: " << s.mA0
+  left << "mh^0: " << s.mh0(1) << " mA^0: " << s.mA0(1)
        << " mH^0: " << 
-    s.mH0 << " mH^+-: " << s.mHpm << "\n";
+    s.mh0(2) << " mH^+-: " << s.mHpm << "\n";
   left << "alpha: " << s.thetaH << "\n";
   left << "sneutrinos" << s.msnu; 
   left << "mU~" << s.mu << "mD~" << s.md << "mE~" << s.me;
@@ -113,8 +113,8 @@ std::ostream & operator <<(std::ostream & left, const nmsPhysical &s) {
 std::istream & operator >>(std::istream & left, nmsPhysical &s) {
   char c[70];
   left >> c >> c >> c >> c;
-  left >> c >> s.mh0 >> c >> s.mA0
-       >> c >> s.mH0 >> c >> s.mHpm;
+  left >> c >> s.mh0(1) >> c >> s.mA0(1)
+       >> c >> s.mh0(2) >> c >> s.mHpm;
   left >> c >> s.thetaH;
   left >> s.msnu; 
   left >> c >> s.mu >> c >> s.md >> c >> s.me;

@@ -26,8 +26,9 @@ const static char* tachyonNames[16] = {
 
 /// Masses of the physical particles. 
 struct nmsPhysical {
-   double mh0, mA0, mH0, mHpm;
-   //PA: new nmssm masses (mH0, mA0 no longer correspond to phyical states but leaving them in at least for just for sanity checks)
+  DoubleVector mh0, mA0;
+  double mHpm;
+  //PA: new nmssm masses (mH0, mA0 no longer correspond to phyical states but leaving them in at least for just for sanity checks)
    double mH1, mH2, mA1, mA2;
   /// sneutrino masses
   DoubleVector msnu;
@@ -161,7 +162,7 @@ inline NMdrBarPars::NMdrBarPars(const NMdrBarPars &s)
 {}
 
 inline nmsPhysical::nmsPhysical()
-  : mh0(0.), mA0(0.), mH0(0.), mHpm(0.), mH1(0.), mH2(0.), mA1(0.), mA2(0.),
+  : mh0(2), mA0(1), mHpm(0.), mH1(0.), mH2(0.), mA1(0.), mA2(0.),
     msnu(3), mch(2), mneut(5), mhiggs(3), mGluino(0.0),
     mixNeut(5, 5), mixHiggs(3,3), 
     thetaL(0.0), thetaR(0.0), thetat(0.0), thetab(0.0),
@@ -170,7 +171,7 @@ inline nmsPhysical::nmsPhysical()
 {}
 
 inline nmsPhysical::nmsPhysical(const nmsPhysical & s)
-   : mh0(s.mh0), mA0(s.mA0), mH0(s.mH0), mHpm(s.mHpm), 
+   : mh0(s.mh0), mA0(s.mA0), mHpm(s.mHpm), 
     mH1(s.mH1), mH2(s.mH2), mA1(s.mA1), mA2(s.mA2), 
     msnu(s.msnu), mch(s.mch), 
     mneut(s.mneut), mhiggs(s.mhiggs), mGluino(s.mGluino), 
