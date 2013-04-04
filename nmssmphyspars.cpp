@@ -39,42 +39,29 @@ const nmsPhysical & nmsPhysical::operator=(const nmsPhysical &s) {
 
 // a should be in C convention ie start from index zero
 void nmsPhysical::display(double *a) const {
-  a[0] = mh0(1); a[1] = mA0(1);
-  a[2] = mh0(2); a[3] = mHpm;
-  
-  a[4] = msnu.display(1); a[5] = msnu.display(2); a[6] = msnu.display(3);
-
-  a[7] = mch.display(1); a[8] = mch.display(2);
-
-  a[9] = mneut.display(1); a[10] = mneut.display(2); 
-  a[11] = mneut.display(3); a[12] = mneut.display(4);
-
-  a[13] = mGluino;
-
-  int i, j, k = 13; 
-  for (i=1; i<=4; i++)
-    for (j=1; j<=4; j++) {
-      k++;
-      a[k] = mixNeut.display(i, j);  
-    }
-
-  a[30] = thetaL; a[31] = thetaR; 
-  a[32] = thetat; a[33] = thetab; a[34] = thetatau;
-
-  k = 34;
-  for (i=1; i<=2; i++)
-    for (j=1; j<=3; j++) {
-      k++;
-      a[k] = mu.display(i, j);
-      a[k+6] = md.display(i, j);
-      a[k+12] = me.display(i, j);
-    }  
-
-  a[53] = thetaH;
-
-a[54] = mH1; a[55] = mH2;
-  a[56] = mA1; a[57] = mA2;
-  a[58] = thetaHP;
+  std::size_t k = 0;
+  mh0.fillArray(a,k);   k += mh0.size();
+  mA0.fillArray(a,k);   k += mA0.size();
+  a[k++] = mHpm;
+  msnu.fillArray(a,k);  k += msnu.size();
+  mch.fillArray(a,k);   k += mch.size();
+  mneut.fillArray(a,k); k += mneut.size();
+  a[k++] = mGluino;
+  mixNeut.fillArray(a,k); k += mixNeut.size();
+  a[k++] = thetaL;
+  a[k++] = thetaR;
+  a[k++] = thetat;
+  a[k++] = thetab;
+  a[k++] = thetatau;
+  mu.fillArray(a,k); k += mu.size();
+  md.fillArray(a,k); k += md.size();
+  me.fillArray(a,k); k += me.size();
+  a[k++] = thetaH;
+  a[k++] = mH1;
+  a[k++] = mH2;
+  a[k++] = mA1;
+  a[k++] = mA2;
+  a[k++] = thetaHP;
 }
 #define HR "---------------------------------------------------------------\n"
 
