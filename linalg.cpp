@@ -498,6 +498,7 @@ DoubleVector DoubleMatrix::sym2by2(double & theta) const  {
   temp(1) = mm(1, 1);
   temp(2) = mm(2, 2);
   
+#ifdef ARRAY_BOUNDS_CHECKING
   double maxtol = maximum(abs(temp(1)), abs(temp(2))) * TOLERANCE;
   if (abs(mm(2, 1)) > maxtol || abs(mm(1, 2)) > maxtol) {
     ostringstream ii;
@@ -506,6 +507,7 @@ DoubleVector DoubleMatrix::sym2by2(double & theta) const  {
     ii << "Found diagonalised matrix to be " << mm;
     throw ii.str();
   }
+#endif
   
   return temp; 
 }
@@ -514,16 +516,16 @@ DoubleVector DoubleMatrix::sym2by2(double & theta) const  {
 // [ cos thetaL    sin thetaL ]   A   [ cos thetaR -sin thetaR ]  = diag
 // [ -sin thetaL   cos thetaL ]       [ sin thetaR  cos thetaR ]
 DoubleVector DoubleMatrix::asy2by2(double & thetaL, double & thetaR) const {
-  DoubleVector temp1(2), temp2(2);
+   DoubleVector temp1(2), temp2(2);
   DoubleMatrix e(*this);
   
   DoubleMatrix h(e.transpose() * e);
-  temp1 = (h.sym2by2(thetaR)).apply(sqrt);
+  temp1 = (h.sym2by2(thetaR)).apply(zeroSqrt);
   if (temp1(1) > temp1(2))
     thetaR = thetaR + PI * 0.5;
   
   h = e * e.transpose();
-  temp2 = (h.sym2by2(thetaL)).apply(sqrt);
+  temp2 = (h.sym2by2(thetaL)).apply(zeroSqrt);
   
   // Did the eigenvalues come out in the wrong order? 
   // If so, swap the order of the second case by adding pi/2 to the angle.
@@ -534,6 +536,7 @@ DoubleVector DoubleMatrix::asy2by2(double & thetaL, double & thetaR) const {
   DoubleMatrix mm(2, 2);
   mm = rot2d(thetaL) * e * rot2d(-thetaR);
   
+#ifdef ARRAY_BOUNDS_CHECKING
   double maxtol = maximum(abs(temp1(1)), abs(temp1(2))) * TOLERANCE;
   if (abs(mm(2, 1)) > maxtol || abs(mm(1, 2)) > maxtol) {
     outputCharacteristics(15);
@@ -545,6 +548,7 @@ DoubleVector DoubleMatrix::asy2by2(double & thetaL, double & thetaR) const {
     ii << "m=" << mm;
     throw ii.str();
   }
+#endif
   
   temp1(1) = mm(1, 1); temp1(2) = mm(2, 2);
   

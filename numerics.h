@@ -11,6 +11,8 @@
 
 #ifndef NUMERICS_H
 #define NUMERICS_H
+#define MAXIT 60
+#define UNUSED (-1.11e30)
 
 #include "utils.h"
 #include "mycomplex.h"
@@ -213,5 +215,11 @@ bool integrateReversibly(DoubleVector & xi,
 /// useful for 2-loop mb/mt corrections
 double fin(double mm1, double mm2);
 double den(double a, int b); /// 1/a^b
+double log1minusx(double x);
+/// sign of inputs
+#define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
+/// returns a root of function func between x1 and x2 to accuracy xacc (x1 and
+/// x2 MUST bracket a root)
+double zriddr(double (*func)(double), double x1, double x2, double xacc);
 #endif
 

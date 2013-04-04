@@ -816,9 +816,6 @@ double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries);
 /// returns the square root of the absolute value of the argument
 // returns sqrt(f) for f>0 
 inline double ccbSqrt(double f){ return sqrt(fabs(f)); }
-/// returns either sqrt(f) for f>0 or 0 otherwise
-inline double zeroSqrt(double f){ if (f > 0.) return sqrt(f); 
-  else return EPSTOL; }
 /// returns f * f * sign(f)
 inline double signedSqr(double f){ if (f > 0.) return sqr(f); 
   else return -sqr(f); }

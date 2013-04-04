@@ -33,6 +33,10 @@
 using namespace std;
 using namespace softsusy;
 
+/// returns either sqrt(f) for f>0 or 0 otherwise
+inline double zeroSqrt(double f){ if (f > 0.) return sqrt(f); 
+  else return EPSTOL; 
+}
 /// Gives exponent of the largest number: either imaginary or real part
 double frexp(const Complex & c, int * i);
 /// Exception handler - will even trap errors in the fortran portion

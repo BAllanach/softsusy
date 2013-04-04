@@ -536,7 +536,7 @@ boundary condition.}}}
 \put(150,116.5){\vector(0,-1){23}}
 \put(10,80){\makebox(280,10)[c]{\fbox{EWSB, iterative solution of $\mu$}}}
 \put(150,156){\vector(0,-1){23}}
-\put(10,120){\makebox(280,10)[c]{\fbox{Run to $M_S$.}}}
+\put(10,120){\makebox(280,10)[c]{\fbox{Run to $M_{SUSY}$.}}}
 \DashLine(115,125)(0,125){5}
 \DashLine(0,125)(0,5){5}
 \DashLine(0,5)(12,5){5}
@@ -551,7 +551,7 @@ $g_i(M_Z)$, $h_{t,b,\tau}(M_Z)$.}}}
 \end{picture}
 \caption{Iterative algorithm used to calculate the SUSY spectrum. Each step
 (represented by a box) is detailed in the text. The initial step is the
-uppermost one. $M_S$ is the scale at which the EWSB
+uppermost one. $M_{SUSY}$ is the scale at which the EWSB
 conditions 
 are imposed, as discussed in the text. $M_X$ is the scale at which the high
 energy SUSY breaking boundary conditions are imposed.}\end{center}\end{figure}
@@ -716,7 +716,7 @@ eqs.~(2),(3) of BMPZ in order to obtain the MSSM $\overline{DR}$ value.
 
 All soft breaking and SUSY parameters are then evolved to the scale
 \begin{equation}
-M_S \equiv \sqrt{m_{{\tilde t}_1}(M_S) m_{{\tilde t}_2}(M_S)}, \label{msusy}
+M_{SUSY} \equiv \sqrt{m_{{\tilde t}_1}(M_{SUSY}) m_{{\tilde t}_2}(M_{SUSY})}, \label{msusy}
 \end{equation}
 where~\cite{Casas:1998vh} the scale dependence of the electroweak
 breaking conditions is smallest. 
@@ -737,7 +737,7 @@ g_1^4) / (16 \pi^2)^2$~\cite{Martin:2001vx,Yamada:2001ck}.
 There is no
 step-function decoupling of sparticles: this is taken into account at leading
 logarithmic order in the radiative corrections previously calculated at $M_Z$
-and in the calculation of the physical sparticle spectrum at $M_S$, described
+and in the calculation of the physical sparticle spectrum at $M_{SUSY}$, described
 below. All $\beta$ functions are real and include 3 family (and mixing)
 contributions. If no flavour mixing is present in the model specified by the
 user, the 2-loop parts of the RGEs switch to the dominant 3rd-family version,
@@ -745,9 +745,9 @@ where the lighter two families' Yukawa couplings are neglected.
 
 \subsection{Electroweak Symmetry Breaking}
 
-The Higgs VEV parameter $v(M_S)$ is set by:
+The Higgs VEV parameter $v(M_{SUSY})$ is set by:
 \begin{equation}
-v^2(M_S) = 4 \frac{M_Z^2 + \Re\Pi_{ZZ}^T(M_S)}{g_2^2(M_S) + 3 g_1^2(M_S) / 5},
+v^2(M_{SUSY}) = 4 \frac{M_Z^2 + \Re\Pi_{ZZ}^T(M_{SUSY})}{g_2^2(M_{SUSY}) + 3 g_1^2(M_{SUSY}) / 5},
 \end{equation}
 where
 $M_Z$ is the pole $Z$ mass and
@@ -757,7 +757,7 @@ conditions at this scale are then employed to\footnote{Note that there is also
   an option to extract $m_{H_1}(M_{SUSY})$ and $m_{H_2}(M_{SUSY})$ from input
   $\mu(M_{SUSY})$ and  
 $m_A(\mbox{pole})$ values, see section~\protect\ref{sec:altewsb}.}
-calculate $m_3(M_S)$ and $\mu(M_S)$. $\mu(M_S)$ requires an iterative solution
+calculate $m_3(M_{SUSY})$ and $\mu(M_{SUSY})$. $\mu(M_{SUSY})$ requires an iterative solution
 because the tadpoles depend upon the value of $\mu$ assumed.
 The symmetry breaking condition for $\mu$ can be phrased
 as~\cite{Pierce:1997zz}
@@ -773,16 +773,16 @@ The value of $\mu$ coming from the tree-level EWSB
 condition (eq.~\ref{mucond}, with $\Re\Pi_{ZZ}^T=t_i=0$)
 is utilised as an initial guess, then the one-loop contributions in the
 tadpoles and self-energy terms are added to
-provide a new value of $\mu(M_S)$. Two-loop terms 
+provide a new value of $\mu(M_{SUSY})$. Two-loop terms 
 $\oatq$, $\oabatau$, $\oabq$, $\oabas$, $\oatas$, $\oatauq$ and
 $\oatab$
  are also included
 in the 
 tadpoles~\cite{Dedes:2002dy,Dedes:2003km}. 
 The tadpole corrections are then calculated
-using the new value of $\mu(M_S)$ and the procedure is repeated until it
-converges to a given accuracy. $m_3(M_S)$ is then determined by input the value
-of $\mu(M_S)$ into the EWSB condition
+using the new value of $\mu(M_{SUSY})$ and the procedure is repeated until it
+converges to a given accuracy. $m_3(M_{SUSY})$ is then determined by input the value
+of $\mu(M_{SUSY})$ into the EWSB condition
 \begin{equation}
 m_3^2=\frac{s_{2\beta}}{2} \left( m_{\bar{H}_1}^2 + m_{\bar{H}_2}^2 + 2 \mu^2
 \right). \label{Bcond}
@@ -800,9 +800,9 @@ M_X^{new} = M_X \exp \left({\frac{g_2(M_X) - g_1(M_X)}{g_1'(M_X) - g_2'(M_X)}}\r
 where primes denote derivatives calculated to 2-loop order.
 The user-supplied boundary
 conditions are then imposed upon the soft terms before the model is evolved
-back down to $M_S$. The super particle mass spectrum is determined at this
+back down to $M_{SUSY}$. The super particle mass spectrum is determined at this
 scale. Because $\mu$ and $m_3$ are 
-more scale independent at $M_S$ as opposed to some other scale, the Higgs,
+more scale independent at $M_{SUSY}$ as opposed to some other scale, the Higgs,
 neutralino and chargino masses also ought to be more scale independent 
 by determining them at this scale. 
 
@@ -886,7 +886,7 @@ pole mass.
 
 Finally, the running MSSM parameters are evolved back down to $M_Z$.
 The whole process is iterated as shown in figure~\ref{fig:algorithm}, until the
-$\overline{DR}$ sparticle masses evaluated at $M_S$
+$\overline{DR}$ sparticle masses evaluated at $M_{SUSY}$
 all converge to better than the desired fractional accuracy
 (\code{TOLERANCE}), which may be set by the user in the main program or input
 file. The predicted value of $M_Z$ is required to be in the domain
@@ -929,10 +929,10 @@ numerically finding the derivative of $M_Z^{pole}=\hat M_Z +
 \Re\Pi_{ZZ}^T(M_Z^2)$ in eq.~(\ref{mucond}). 
 The input parameters are
 changed slightly (one by one), then the MSSM parameter ensemble is run from 
-$M_X$ to $M_S$ where the sparticle mass spectrum is determined along with the
+$M_X$ to $M_{SUSY}$ where the sparticle mass spectrum is determined along with the
 corresponding $\overline{MS}$ Higgs VEV parameter
 $v^2 \equiv v_1^2 + v_2^2$. 
-First of all, $\tan \beta(M_S)$ is determined by inverting
+First of all, $\tan \beta(M_{SUSY})$ is determined by inverting
 eq.~(\ref{Bcond}) and the resulting value is utilised in a version of
 eq.~(\ref{mucond}) inverted to give $M_Z^{pole}$ in terms of the other
 parameters.
@@ -1069,33 +1069,33 @@ Setting \code{PRINTOUT} to a non-zero value gives additional information
 on 
 each successive iteration. If \code{PRINTOUT}$>$0, a warning flag is
 produced when the overall iteration 
-finishes. The predicted values of $M_Z^{pole}$ and $\tan \beta(M_S)$ after
+finishes. The predicted values of $M_Z^{pole}$ and $\tan \beta(M_{SUSY})$ after
 iteration convergence
 are also output\footnote{Note that the input value of $\tan \beta$ is the
-value at $M_Z$.}. The level of convergence, $\mu(M_S)$, $m_3^2(M_S)$ and $M_Z$
+value at $M_Z$.}. The level of convergence, $\mu(M_{SUSY})$, $m_3^2(M_{SUSY})$ and $M_Z$
 are output with each iteration, as well as a flag if the object becomes
 non-perturbative. 
 \code{PRINTOUT}$>$1 produces output on the fine-tuning calculation. The
-predicted values of $M_Z^{pole}$ and $\tan \beta(M_S)$ are output with each
+predicted values of $M_Z^{pole}$ and $\tan \beta(M_{SUSY})$ are output with each
 variation 
 in the initial inputs. A warning flag is produced when a
 negative-mass squared scalar is present.
 \code{PRINTOUT}$>$2 prints output on the sub-iterations that determine
-$\mu(M_S)$ and $s_W(M_S)$, and flags the nature of any tachyons
+$\mu(M_{SUSY})$ and $s_W(M_{SUSY})$, and flags the nature of any tachyons
 encountered. Values \code{PRINTOUT}$>$0 are only required
 if additional diagnostics are required for debugging purposes.
 
-\code{QEWSB}~may be used to multiplicatively change the scale $M_S$ at which 
+\code{QEWSB}~may be used to multiplicatively change the scale $M_{SUSY}$ at which 
 the Higgs potential is minimised and sparticle masses calculated, or it may
 alternatively be used as a fixed scale.
 This can be useful if one wants to examine
 the scale dependence of the results~\cite{scaledep}. Setting
 \code{QEWSB}=$x<M_Z/1$ GeV,
-sets $M_S = x\sqrt{m_{\tilde t_1}(M_S) m_{\tilde t_2}(M_S)}$. Values from
-0.5 to 2 are common. If $M_S<M_Z$ results from the above expression, $M_S=M_Z$
-is used. If on the other hand a {\em fixed scale}\/ is desired from $M_S$, 
+sets $M_{SUSY} = x\sqrt{m_{\tilde t_1}(M_{SUSY}) m_{\tilde t_2}(M_{SUSY})}$. Values from
+0.5 to 2 are common. If $M_{SUSY}<M_Z$ results from the above expression, $M_{SUSY}=M_Z$
+is used. If on the other hand a {\em fixed scale}\/ is desired from $M_{SUSY}$, 
 setting \code{QEWSB}$>M_Z/1$ GeV in the input results in 
-$M_S=$\code{QEWSB}~GeV being fixed.
+$M_{SUSY}=$\code{QEWSB}~GeV being fixed.
 
 If \code{INCLUDE\_2\_LOOP\_SCALAR\_CORRECTIONS} is switched off (\code{0}) as
 in the default case, 
@@ -1878,10 +1878,10 @@ $M_{SUSY}$ & \code{setTbAtMX} \\ \hline
 \code{bool altEwsb} & flag: \code{true}~for alternative EWSB &
 \code{displayAltEwsb} \\ 
 & conditions & \\ \hline
-\code{double t1OV1Ms} & 2-loop tadpole $t_1/v_1(M_S)$ & \code{displayTadpole1Ms} \\
-\code{double t2OV2Ms} & 2-loop tadpole $t_2/v_2(M_S)$ & \code{displayTadpole2Ms} \\
-\code{double t1OV1Ms1loop} & 1-loop tadpole $t_1/v_1(M_S)$ & \code{displayTadpole1Ms1loop} \\
-\code{double t2OV2Ms1loop} & 1-loop tadpole $t_2/v_2(M_S)$ & \code{displayTadpole2Ms1loop} \\
+\code{double t1OV1Ms} & 2-loop tadpole $t_1/v_1(M_{SUSY})$ & \code{displayTadpole1Ms} \\
+\code{double t2OV2Ms} & 2-loop tadpole $t_2/v_2(M_{SUSY})$ & \code{displayTadpole2Ms} \\
+\code{double t1OV1Ms1loop} & 1-loop tadpole $t_1/v_1(M_{SUSY})$ & \code{displayTadpole1Ms1loop} \\
+\code{double t2OV2Ms1loop} & 1-loop tadpole $t_2/v_2(M_{SUSY})$ & \code{displayTadpole2Ms1loop} \\
 \hline
 \end{tabular}\caption{\label{tab:mssmsoftdata}\code{MssmSoftsusy} class data and accessor methods.}\end{center}\end{table}
 
@@ -1903,7 +1903,7 @@ $h_t$\\
  & self-energy and gauge couplings\\ 
 \code{calcSinthdrbar} & Calculates $s_W^{\overline{DR}}$ at current scale
 from\\  & gauge couplings \\
-\code{calcMs} & Calculates $M_S$\\ 
+\code{calcMs} & Calculates $M_{SUSY}$\\ 
 \code{printShort} & short list of important parameters printed out \\ &to standard
 output in columns\\ 
 \code{printLong} & long list of important parameters printed out \\ &to standard
