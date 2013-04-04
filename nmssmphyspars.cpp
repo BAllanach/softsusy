@@ -57,6 +57,7 @@ void nmsPhysical::display(double *a) const {
   md.fillArray(a,k); k += md.size();
   me.fillArray(a,k); k += me.size();
   a[k++] = thetaH;
+  // new NMSSM parameters
   a[k++] = mH1;
   a[k++] = mH2;
   a[k++] = mA1;
