@@ -139,6 +139,8 @@ public:
   double average() const; ///< average element
   /// Closest element of the vector to the input
   int closest(double a) const; 
+  ///< fill array, starting at offset
+  void fillArray(double* array, unsigned offset = 0) const;
 };
 
 

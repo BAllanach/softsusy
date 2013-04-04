@@ -120,6 +120,11 @@ int DoubleVector::closest(double a) const {
   return position;
 }
 
+void DoubleVector::fillArray(double* array, unsigned offset) const
+{
+   for (unsigned i = 0; i < x.size(); ++i)
+      array[i + offset] = x[i];
+}
 
 
 
