@@ -122,8 +122,7 @@ int DoubleVector::closest(double a) const {
 
 void DoubleVector::fillArray(double* array, unsigned offset) const
 {
-   for (unsigned i = 0; i < x.size(); ++i)
-      array[i + offset] = x[i];
+   ::fillArray(x, array, offset);
 }
 
 
@@ -1334,6 +1333,11 @@ DoubleMatrix DoubleMatrix::ludcmp(double & d) const {
   return a;
 }
 
+void DoubleMatrix::fillArray(double* array, unsigned offset) const
+{
+   ::fillArray(x, array, offset);
+}
+
 double DoubleMatrix::determinant() const {
   double ans = 1.;
   DoubleMatrix lu(this->ludcmp(ans));
@@ -1379,4 +1383,11 @@ double DoubleVector::average() const {
   double f = 0.0;
   int i; for (i=start; i<=end; i++) f += x[i];
   return f / double(end);
+}
+
+/// fill array from valarray, starting at offset
+void fillArray(const std::valarray<double>& x, double* array, unsigned offset)
+{
+   for (unsigned i = 0; i < x.size(); ++i)
+      array[i + offset] = x[i];
 }

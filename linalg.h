@@ -113,6 +113,7 @@ public:
   double min(int & p) const;///< minimum element in vector
   /// Returns sum of absolute values of all elements
   double sumElements() const { return abs(x).sum(); }  
+  std::size_t size() const { return x.size(); }
   
   void swap(int i, int j); ///< swaps ith and jth elements of a vector
   
@@ -139,7 +140,7 @@ public:
   double average() const; ///< average element
   /// Closest element of the vector to the input
   int closest(double a) const; 
-  ///< fill array, starting at offset
+  /// fill array, starting at offset
   void fillArray(double* array, unsigned offset = 0) const;
 };
 
@@ -299,6 +300,7 @@ public:
   /// Obvious elementary row/column operations
   void swaprows(int i, int j);
   void swapcols(int i,int j);
+  std::size_t size() const { return x.size(); }
 
   double trace() const;///< trace must only be performed on a square matrix
   DoubleMatrix transpose() const; ///< can be any size
@@ -354,6 +356,8 @@ public:
   /// Returns LU decomposition of a matrix. d gives whether there are an even
   /// or odd number of permutations
   DoubleMatrix ludcmp(double & d) const;
+  /// fill array, starting at offset
+  void fillArray(double* array, unsigned offset = 0) const;
 };
 
 /*
@@ -389,6 +393,8 @@ double pythagoras(double a, double b);
 void diagonaliseJac(DoubleMatrix & a,  int n,  DoubleVector & d, DoubleMatrix
 		    & v,  int *nrot);
 
+/// fill array from valarray, starting at offset
+void fillArray(const std::valarray<double>&, double*, unsigned offset = 0);
 
 /*
  *  INLINE FUNCTION DEFINITIONS
