@@ -194,7 +194,7 @@ double mttMax(const MssmSoftsusy & r) {
 // PRD 62 015009 (2000). They return minus values if the chain doesn't exist
 double mhqMax(const MssmSoftsusy & r) {
 
-  double mh0 = r.displayPhys().mh0, mchi10 = r.displayPhys().mneut.display(1), 
+  double mh0 = r.displayPhys().mh0(1), mchi10 = r.displayPhys().mneut.display(1), 
     mchi20 = r.displayPhys().mneut.display(2), 
     msqL = 0.5 * (r.displayPhys().mu.display(1, 1) + r.displayPhys().md.display(1, 1));
 
@@ -316,7 +316,7 @@ double mllqMin(double msqL, double mchi20, double mer, double mchi10) {
 
 double mhqMin(const MssmSoftsusy & r) {
 
-  double mh0 = r.displayPhys().mh0, mchi10 = r.displayPhys().mneut.display(1), 
+  double mh0 = r.displayPhys().mh0(1), mchi10 = r.displayPhys().mneut.display(1), 
     mchi20 = r.displayPhys().mneut.display(2), 
     msqL = 0.5 * (r.displayPhys().mu.display(1, 1) + 
 		  r.displayPhys().md.display(1, 1));

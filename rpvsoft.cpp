@@ -1664,10 +1664,10 @@ void RpvSoftsusy::slha1(ostream & out, const char model[],
   // out << "          6   "; printRow(out, displayDataSet().displayPoleMt()); 
   // out << "   # top\n";
   out << "        24    "; printRow(out, displayMw()); out << "   # MW\n";
-  out << "        25    "; printRow(out, s.mh0); out << "   # h0\n";
+  out << "        25    "; printRow(out, s.mh0(1)); out << "   # h0\n";
   // out << "         32   "; printRow(out, displayMz()); out << "   # MZ\n";
-  out << "        35    "; printRow(out, s.mH0); out << "   # H0\n";
-  out << "        36    "; printRow(out, s.mA0); out << "   # A0\n";
+  out << "        35    "; printRow(out, s.mh0(2)); out << "   # H0\n";
+  out << "        36    "; printRow(out, s.mA0(1)); out << "   # A0\n";
   out << "        37    "; printRow(out, s.mHpm); out << "   # H+\n";
   out << "   1000001    "; printRow(out, s.md(1, 1)); out << "   # ~d_L\n";
   out << "   1000002    "; printRow(out, s.mu(1, 1)); out << "   # ~u_L\n";

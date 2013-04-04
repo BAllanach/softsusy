@@ -2939,7 +2939,7 @@ void RpvNeutrino::rvamixSLHA(ostream & out) {
   /// Need to find out what basis ordering we should really be in for SLHA2.
   /// CP- scalars: find lightest boson that's not the goldstone etc
   DoubleVector pos(5);
-  pos(1) = displayPhys().mA0;
+  pos(1) = displayPhys().mA0(1);
   pos(2) = displayPhys().msnu(1);
   pos(3) = displayPhys().msnu(2);
   pos(4) = displayPhys().msnu(3);
@@ -3084,25 +3084,25 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
   /// There are some re-orderings of masses required in the SLHA 2 version.
   /// CP+ scalars  
   DoubleVector m(5);
-  m(1) = displayPhys().mh0;
-  m(2) = displayPhys().mH0;
+  m(1) = displayPhys().mh0(1);
+  m(2) = displayPhys().mh0(2);
   m(3) = displayPhys().msnu(1);
   m(4) = displayPhys().msnu(2);
   m(5) = displayPhys().msnu(3);
   DoubleVector newCpEvens(m.sort());
   sPhysical s(rr.displayPhys());
-  s.mh0 = newCpEvens(1); s.mH0 = newCpEvens(2); 
+  s.mh0(1) = newCpEvens(1); s.mh0(2) = newCpEvens(2); 
   s.msnu(1) = newCpEvens(3); s.msnu(2) = newCpEvens(4); 
   s.msnu(3) = newCpEvens(5);
 
-  m(1) = displayPhys().mA0;
+  m(1) = displayPhys().mA0(1);
   m(2) = displayPhys().msnu(1);
   m(3) = displayPhys().msnu(2);
   m(4) = displayPhys().msnu(3);
   m(5) = 6.66e66; /// goldstone boson in last place
 
   DoubleVector newCpOdds(m.sort());
-  s.mA0 = newCpOdds(1);
+  s.mA0(1) = newCpOdds(1);
   s.msnu(1) = newCpOdds(2); 
   s.msnu(2) = newCpOdds(3);
   s.msnu(3) = newCpOdds(4);
@@ -3143,11 +3143,11 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
 }
 
 void RpvNeutrino::higgsMSLHA(ostream & out) {
-  out << "        25    "; printRow(out, displayPhys().mh0); 
+  out << "        25    "; printRow(out, displayPhys().mh0(1)); 
   out << "   # CP even neutral scalar\n";
-  out << "        35    "; printRow(out, displayPhys().mH0); 
+  out << "        35    "; printRow(out, displayPhys().mh0(2)); 
   out << "   # CP even neutral scalar\n";
-  out << "        36    "; printRow(out, displayPhys().mA0); 
+  out << "        36    "; printRow(out, displayPhys().mA0(1)); 
   out << "   # CP odd neutral scalar\n";
   out << "        37    "; printRow(out, displayPhys().mHpm); 
   out << "   # charged scalar\n";

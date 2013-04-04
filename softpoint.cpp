@@ -1021,7 +1021,7 @@ int main(int argc, char *argv[]) {
 
     /// Fix to mh if additional operators are assumed
     if (desiredMh > 0.1) {
-      sPhysical s(r->displayPhys()); s.mh0 = desiredMh; r->setPhys(s);
+      sPhysical s(r->displayPhys()); s.mh0(1) = desiredMh; r->setPhys(s);
     }
     
     r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  

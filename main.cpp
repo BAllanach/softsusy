@@ -81,9 +81,9 @@ int main() {
 
     /// check the point in question is problem free: if so print the output
     if (!r.displayProblem().test()) 
-      cout << tanb << " " << r.displayPhys().mh0 << " " 
-	   << r.displayPhys().mA0 << " " 
-	   << r.displayPhys().mH0 << " " 
+      cout << tanb << " " << r.displayPhys().mh0(1) << " " 
+	   << r.displayPhys().mA0(1) << " " 
+	   << r.displayPhys().mh0(2) << " " 
 	   << r.displayPhys().mHpm << endl;
     else
       /// print out what the problem(s) is(are)

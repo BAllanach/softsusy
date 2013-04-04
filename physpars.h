@@ -27,7 +27,8 @@ const static char* tachyonNames[18] = {
 
 /// Masses of the physical particles. 
 struct sPhysical {
-  double mh0, mA0, mH0, mHpm;
+  DoubleVector mh0, mA0;
+  double mHpm;
   /// sneutrino masses
   DoubleVector msnu;
   /// chargino/neutralino masses: ordered
@@ -145,14 +146,14 @@ inline drBarPars::drBarPars(const drBarPars &s)
 {}
 
 inline sPhysical::sPhysical()
-  : mh0(0.), mA0(0.), mH0(0.), mHpm(0.), msnu(3), mch(2), mneut(4), 
+  : mh0(2), mA0(1), mHpm(0.), msnu(3), mch(2), mneut(4), 
     mGluino(0.0),
     mixNeut(4, 4), thetaL(0.0), thetaR(0.0), thetat(0.0), thetab(0.0),
     thetatau(0.0), mu(2, 3), md(2, 3), me(2, 3), thetaH(0.0)
 {}
 
 inline sPhysical::sPhysical(const sPhysical & s)
-  : mh0(s.mh0), mA0(s.mA0), mH0(s.mH0), mHpm(s.mHpm), msnu(s.msnu), mch(s.mch), 
+  : mh0(s.mh0), mA0(s.mA0), mHpm(s.mHpm), msnu(s.msnu), mch(s.mch), 
     mneut(s.mneut), mGluino(s.mGluino), mixNeut(s.mixNeut), thetaL(s.thetaL),
     thetaR(s.thetaR), thetat(s.thetat), thetab(s.thetab),
     thetatau(s.thetatau), mu(s.mu), md(s.md), me(s.me), thetaH(s.thetaH)
