@@ -161,7 +161,7 @@ public:
     problem.noConvergence = a; problem.higgsUfb = a;
     problem.nonperturbative = a; problem.noRhoConvergence = a; 
     problem.noMuConvergence = a; problem.muSqWrongSign = a; 
-    problem.inaccurateHiggsMass = b; }
+    problem.inaccurateHiggsMass = b; problem.mgutOutOfBounds = a; }
   /// Flags a numerical exception eg number too big/small
   void flagProblemThrown(bool a) { problem.problemThrown = a; }
   
