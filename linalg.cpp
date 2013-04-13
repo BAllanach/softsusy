@@ -201,6 +201,36 @@ void DoubleMatrix::swapcols(int i, int j) {
   col(j) = temp;
 }
 
+void DoubleMatrix::setCols(int numberOfCols)
+{
+   if (numberOfCols == cols)
+      return;
+
+   std::valarray<double> old(x);
+   x.resize(rows * numberOfCols, 0.0);
+   if (numberOfCols > cols) {
+      for (std::size_t i = 0; i < old.size(); ++i)
+         x[i + (i / cols) * (numberOfCols - cols)] = old[i];
+   } else {
+      for (std::size_t i = 0; i < x.size(); ++i)
+         x[i] = old[i + (i / numberOfCols) * (cols - numberOfCols)];
+   }
+   cols = numberOfCols;
+}
+
+void DoubleMatrix::setRows(int numberOfRows)
+{
+   if (numberOfRows == rows)
+      return;
+
+   std::valarray<double> old(x);
+   x.resize(rows * numberOfRows, 0.0);
+   const std::size_t minSize = std::min(old.size(), x.size());
+   for (std::size_t i = 0; i < minSize; ++i)
+      x[i] = old[i];
+   rows = numberOfRows;
+}
+
 double DoubleMatrix::trace() const {
 #ifdef ARRAY_BOUNDS_CHECKING
   if (rows != cols)  {

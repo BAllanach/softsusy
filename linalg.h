@@ -301,6 +301,8 @@ public:
   void swaprows(int i, int j);
   void swapcols(int i,int j);
   std::size_t size() const { return x.size(); }
+  void setCols(int);
+  void setRows(int);
 
   double trace() const;///< trace must only be performed on a square matrix
   DoubleMatrix transpose() const; ///< can be any size
