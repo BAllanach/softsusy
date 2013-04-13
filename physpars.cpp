@@ -31,6 +31,7 @@ const sPhysical & sPhysical::operator=(const sPhysical &s) {
   thetaL = s.thetaL; thetaR = s.thetaR; mGluino = s.mGluino;
   thetat = s.thetat; thetab = s.thetab; thetatau = s.thetatau;
   mu = s.mu; md = s.md; me = s.me; thetaH = s.thetaH;
+  mixh0 = s.mixh0; mixA0 = s.mixA0;
   return *this;
 }
 
@@ -54,6 +55,8 @@ void sPhysical::display(double *a) const {
   md.fillArray(a,k); k += md.size();
   me.fillArray(a,k); k += me.size();
   a[k++] = thetaH;
+  mixh0.fillArray(a,k); k += mixh0.size();
+  mixA0.fillArray(a,k); k += mixA0.size();
 }
 
 #define HR "---------------------------------------------------------------\n"
