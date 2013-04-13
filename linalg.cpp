@@ -231,6 +231,12 @@ void DoubleMatrix::setRows(int numberOfRows)
    rows = numberOfRows;
 }
 
+void DoubleMatrix::resize(int numberOfRows, int numberOfCols)
+{
+   setCols(numberOfCols);
+   setRows(numberOfRows);
+}
+
 double DoubleMatrix::trace() const {
 #ifdef ARRAY_BOUNDS_CHECKING
   if (rows != cols)  {

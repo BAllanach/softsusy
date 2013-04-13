@@ -301,8 +301,12 @@ public:
   void swaprows(int i, int j);
   void swapcols(int i,int j);
   std::size_t size() const { return x.size(); }
+  /// change number of columns (Warning: can be slow because it internally copys a std::valarray<double>)
   void setCols(int);
+  /// change number of rows (Warning: can be slow because it internally copys a std::valarray<double>)
   void setRows(int);
+  /// resize matrix (Warning: can be slow because it internally copys a std::valarray<double>)
+  void resize(int, int);
 
   double trace() const;///< trace must only be performed on a square matrix
   DoubleMatrix transpose() const; ///< can be any size
