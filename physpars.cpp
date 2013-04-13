@@ -74,9 +74,8 @@ std::ostream & operator <<(std::ostream & left, const drBarPars &s) {
 }
 
 std::ostream & operator <<(std::ostream & left, const sPhysical &s) {
-  left << "mh^0: " << s.mh0(1) << " mA^0: " << s.mA0(1)
-       << " mH^0: " << 
-      s.mh0(2) << " mH^+-: " << s.mHpm << "\n";
+  left << "mh^0: " << s.mh0 << " mA^0: " << s.mA0
+       << " mH^+-: " << s.mHpm << "\n";
   left << "alpha: " << s.thetaH << "\n";
   left << "sneutrinos" << s.msnu; 
   left << "mU~" << s.mu << "mD~" << s.md << "mE~" << s.me;
@@ -95,8 +94,8 @@ std::ostream & operator <<(std::ostream & left, const sPhysical &s) {
 std::istream & operator >>(std::istream & left, sPhysical &s) {
   char c[70];
   left >> c >> c >> c >> c;
-  left >> c >> s.mh0(1) >> c >> s.mA0(1)
-       >> c >> s.mh0(2) >> c >> s.mHpm;
+  left >> c >> s.mh0 >> c >> s.mA0
+       >> c >> s.mHpm;
   left >> c >> s.thetaH;
   left >> s.msnu; 
   left >> c >> s.mu >> c >> s.md >> c >> s.me;
