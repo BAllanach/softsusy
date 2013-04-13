@@ -74,8 +74,8 @@ std::ostream & operator <<(std::ostream & left, const drBarPars &s) {
 }
 
 std::ostream & operator <<(std::ostream & left, const sPhysical &s) {
-  left << "mh^0: " << s.mh0 << " mA^0: " << s.mA0
-       << " mH^+-: " << s.mHpm << "\n";
+  left << "mh^0: " << s.mh0 << "mA^0: " << s.mA0
+       << "mH^+-: " << s.mHpm << "\n";
   left << "alpha: " << s.thetaH << "\n";
   left << "sneutrinos" << s.msnu; 
   left << "mU~" << s.mu << "mD~" << s.md << "mE~" << s.me;
