@@ -87,6 +87,8 @@ std::ostream & operator <<(std::ostream & left, const sPhysical &s) {
   left << "thetaL: " << s.thetaL << " thetaR: " << s.thetaR << "\n";
   left << "neutralinos" << s.mneut;
   left << "neutralino mixing matrix " << s.mixNeut;
+  left << "CP even Higgs mixing matrix: " << s.mixh0;
+  left << "CP odd Higgs mixing matrix: " << s.mixA0;
   return left;
 }
 
@@ -105,6 +107,8 @@ std::istream & operator >>(std::istream & left, sPhysical &s) {
   left >> c >> s.thetaL >> c >> s.thetaR;
   left >> s.mneut;
   left >> c >> c >> c >> c >> s.mixNeut;
+  left >> c >> c >> c >> c >> s.mixh0;
+  left >> c >> c >> c >> c >> s.mixA0;
   return left;
 }
 
