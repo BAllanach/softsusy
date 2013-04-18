@@ -7,3 +7,4 @@ inaccuracies, if one used optimisation. This is now fixed.
 6. 2/4/13: Added protection in 2x2 diagonalisation routines against negative
 eigenvalues. Only prints out an error message if DISPLAY_ARRAY_BOUNDS is
 switched on 
+7 18/4/13: Bug-fixed slepton correction to slepton mass. Thanks to A Voigt.

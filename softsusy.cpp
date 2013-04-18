@@ -3725,6 +3725,7 @@ void MssmSoftsusy::addSlepCorrection(DoubleMatrix & mass, int family) {
   DoubleMatrix piSq(2, 2); /// Self-energy matrix
 	
   /// brevity
+  double    mw      = displayMwRun();
   double    mz      = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
@@ -3892,8 +3893,8 @@ void MssmSoftsusy::addSlepCorrection(DoubleMatrix & mass, int family) {
     ffn(p1, msel(1), 0., q);
   higgs(1, 1) = higgs(1, 1) +   
     sqr(g) / sqr(costhDrbar) * sqr(geL) * 
-    ffn(p1, msel(family), mz, q) +
-    sqr(g) * 0.5 * ffn(p1, msnu(family), mw, q);
+    ffn(p1, msel(1), mz, q) +
+    sqr(g) * 0.5 * ffn(p1, msnu(1), mw, q);
 
   electroweak(1, 1) = electroweak(1, 1) +   
     sqr(g) * 0.25 * (a0(msel(1), q) + 2.0 * a0(msnu(family), q));
@@ -3982,6 +3983,7 @@ void MssmSoftsusy::addStauCorrection(double p, DoubleMatrix & mass,
   DoubleMatrix piSq(2, 2); /// Self-energy matrix
 	
   /// brevity
+  double    mw      = displayMwRun();
   double    mz      = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
