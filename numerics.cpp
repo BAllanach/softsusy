@@ -394,8 +394,8 @@ double b0(double p, double m1, double m2, double q) {
    
     ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
     
-    if (!close(b0l, ans, 1.0e-3)) 
-    cout << "1. DEBUG Err: b0(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << 1.-b0l/ans << " x+=" << xPlus << " x-=" << xMinus << " fB=" << fB(xPlus) << " and " << fB(xMinus) << endl;
+    //    if (!close(b0l, ans, 1.0e-6)) 
+    cout << "1. DEBUG Err: db0(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << 1.-b0l/ans << " x+=" << xPlus << " x-=" << xMinus << " fB=" << fB(xPlus) << " and " << fB(xMinus) << endl;
     return ans;
   }
   else {
@@ -420,7 +420,7 @@ double b0(double p, double m1, double m2, double q) {
 	  1.0 - log(Mmax2 / sqr(q)) + Mmin2 * log(Mmax2 / Mmin2) 
 	  / (Mmin2 - Mmax2);
 	    if (!close(b0l, ans, 1.0e-5)) 
-	      cout << "4. DEBUG Err: b0(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << 1.-b0l/ans << endl;
+	      cout << "4. DEBUG Err: b0(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << b0l << " or " << ans << endl;
 
 	return ans;
       }
@@ -498,13 +498,13 @@ double b1(double p, double m1, double m2, double q) {
 
   double ans = 0.;
   if (sqr(p) > sqr(pTolerance) * sqr(maximum(m1, m2))) {
-    /*    double mMin = minimum(fabs(m1), fabs(m2));
+        double mMin = minimum(fabs(m1), fabs(m2));
     double mMax = maximum(fabs(m1), fabs(m2));
-    m1 = mMax; m2 = mMin;*/
+    m1 = mMax; m2 = mMin;
     ans = (a0(m2, q) - a0(m1, q) + (sqr(p) + sqr(m1) - sqr(m2)) 
 	   * b0(p, m1, m2, q)) / (2.0 * sqr(p)); 
     if (!close(b1l, ans, 1.0e-3)) 
-      cout << "4. DEBUG Err: b1(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << 1.-b1l/ans << " pieces " << a0(m2, q) << " " << a0(m1, q) << " " <<  (sqr(p) + sqr(m1) - sqr(m2)) 
+      cout << "4. DEBUG Err: db1(" << p << ", " << m1 << ", " << m2 << ", "  << q << ")=" << 1.-b1l/ans<< ". pieces " << a0(m2, q) << " " << a0(m1, q) << " " <<  (sqr(p) + sqr(m1) - sqr(m2)) 
 	* b0(p, m1, m2, q) << " " << sqr(p) << " " << sqr(m1) << " " << sqr(m2) << " " << b0(p, m1, m2, q) << " " <<b1l << " " << ans << endl;
     //    return -B1(p*p, m1*m1, m2*m2).real(); IT IS THIS ONE!!!
     return ans;
