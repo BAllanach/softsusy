@@ -1559,10 +1559,10 @@ void MssmSoftsusy::addCharginoLoop(double p, DoubleMatrix & mass) {
 	   aPsicNue(i, k) * aPsicNue(j, k) * b1(p, 0., msmuon(k), q) +
 	   aPsicENu(i, k) * aPsicENu(j, k) * b1(p, 0., msnumu(k), q));
 	sigmaL(i, j) = sigmaL(i, j) + 0.5 * 
-	  (3.0 * aPsicBtm(i, k) * aPsicBtm(j, k) * b1(p, mt, mstop(k), q) +
-	   3.0 * aPsicTbm(i, k) * aPsicTbm(j, k) * b1(p, mb, msbot(k), q) +
-	   aPsicNuTaum(i, k) * aPsicNuTaum(j, k) * b1(p, mtau, mstau(k), q) +
-	   aPsicTauNu(i, k) * aPsicTauNu(j, k) * b1(p, 0., msnutau(k), q));
+	  (3.0 * aPsicBtm(i, k) * aPsicBtm(j, k) * b1(p, mb, mstop(k), q) +
+	   3.0 * aPsicTbm(i, k) * aPsicTbm(j, k) * b1(p, mt, msbot(k), q) +
+	   aPsicNuTaum(i, k) * aPsicNuTaum(j, k) * b1(p, 0., mstau(k), q) +
+	   aPsicTauNu(i, k) * aPsicTauNu(j, k) * b1(p, mtau, msnutau(k), q));
 	sigmaR(i, j) = sigmaR(i, j) + 0.5 * 
 	  (3.0 * bPsicDu(i, k) * bPsicDu(j, k) * b1(p, 0., msup(k), q) +
 	   3.0 * bPsicUd(i, k) * bPsicUd(j, k) * b1(p, 0., msdown(k), q) +
@@ -1574,15 +1574,15 @@ void MssmSoftsusy::addCharginoLoop(double p, DoubleMatrix & mass) {
 	   bPsicNue(i, k) * bPsicNue(j, k) * b1(p, 0., msmuon(k), q) +
 	   bPsicENu(i, k) * bPsicENu(j, k) * b1(p, 0., msnumu(k), q));
 	sigmaR(i, j) = sigmaR(i, j) + 0.5 * 
-	  (3.0 * bPsicBtm(i, k) * bPsicBtm(j, k) * b1(p, mt, mstop(k), q) +
-	   3.0 * bPsicTbm(i, k) * bPsicTbm(j, k) * b1(p, mb, msbot(k), q) +
-	   bPsicNuTaum(i, k) * bPsicNuTaum(j, k) * b1(p, mtau, mstau(k), q) +
-	   bPsicTauNu(i, k) * bPsicTauNu(j, k) * b1(p, 0., msnutau(k), q));
+	  (3.0 * bPsicBtm(i, k) * bPsicBtm(j, k) * b1(p, mb, mstop(k), q) +
+	   3.0 * bPsicTbm(i, k) * bPsicTbm(j, k) * b1(p, mt, msbot(k), q) +
+	   bPsicNuTaum(i, k) * bPsicNuTaum(j, k) * b1(p, 0., mstau(k), q) +
+	   bPsicTauNu(i, k) * bPsicTauNu(j, k) * b1(p, mtau, msnutau(k), q));
 	sigmaS(i, j) = sigmaS(i, j) + 
-	  (3.0 * bPsicBtm(i, k) * aPsicBtm(j, k) * mt * b0(p, mt, mstop(k), q) +
-	   3.0 * bPsicTbm(i, k) * aPsicTbm(j, k) * mb * b0(p, mb, msbot(k), q) +
+	  (3.0 * bPsicBtm(i, k) * aPsicBtm(j, k) * mt * b0(p, mb, mstop(k), q) +
+	   3.0 * bPsicTbm(i, k) * aPsicTbm(j, k) * mb * b0(p, mt, msbot(k), q) +
 	   bPsicNuTaum(i, k) * aPsicNuTaum(j, k) * mtau *
-	   b0(p, mtau, mstau(k), q));
+	   b0(p, mtau, msnutau(k), q));
       }
   
   /// checked and corrected  
@@ -3725,6 +3725,7 @@ void MssmSoftsusy::addSlepCorrection(DoubleMatrix & mass, int family) {
   DoubleMatrix piSq(2, 2); /// Self-energy matrix
 	
   /// brevity
+  double    mw      = displayMwRun();
   double    mz      = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
@@ -3892,8 +3893,8 @@ void MssmSoftsusy::addSlepCorrection(DoubleMatrix & mass, int family) {
     ffn(p1, msel(1), 0., q);
   higgs(1, 1) = higgs(1, 1) +   
     sqr(g) / sqr(costhDrbar) * sqr(geL) * 
-    ffn(p1, msel(family), mz, q) +
-    sqr(g) * 0.5 * ffn(p1, msnu(family), mw, q);
+    ffn(p1, msel(1), mz, q) +
+    sqr(g) * 0.5 * ffn(p1, msnu(1), mw, q);
 
   electroweak(1, 1) = electroweak(1, 1) +   
     sqr(g) * 0.25 * (a0(msel(1), q) + 2.0 * a0(msnu(family), q));
@@ -3982,6 +3983,7 @@ void MssmSoftsusy::addStauCorrection(double p, DoubleMatrix & mass,
   DoubleMatrix piSq(2, 2); /// Self-energy matrix
 	
   /// brevity
+  double    mw      = displayMwRun();
   double    mz      = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));

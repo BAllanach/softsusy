@@ -8,10 +8,10 @@ AC_CONFIG_HEADERS([Config/config.h])
 
 dnl === disable debug symbols by default =====
 if test "x$CXXFLAGS" = "x"; then
-   CXXFLAGS=-O2
+   CXXFLAGS=-O3
 fi
 if test "x$FFLAGS" = "x"; then
-   FFLAGS=-O2 
+   FFLAGS=-O3 
 fi
 dnl ==========================================
 
