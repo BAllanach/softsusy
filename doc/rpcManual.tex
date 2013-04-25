@@ -745,13 +745,15 @@ where the lighter two families' Yukawa couplings are neglected.
 
 \subsection{Electroweak Symmetry Breaking}
 
-The Higgs VEV parameter $v(M_{SUSY})$ is set by:
+The Higgs VEV parameter $v(M_Z)$ is set by:
 \begin{equation}
-v^2(M_{SUSY}) = 4 \frac{M_Z^2 + \Re\Pi_{ZZ}^T(M_{SUSY})}{g_2^2(M_{SUSY}) + 3 g_1^2(M_{SUSY}) / 5},
+v^2(M_Z) = 4 \frac{M_Z^2 + \Re\Pi_{ZZ}^T(M_Z)}{g_2^2(M_Z) + 3 g_1^2(M_Z) / 5},
 \end{equation}
 where
 $M_Z$ is the pole $Z$ mass and
-$\Pi_{ZZ}^T$ is the transverse $Z$ self-energy. 
+$\Pi_{ZZ}^T$ is the transverse $Z$ self-energy. $v$ is renormalised with
+two-loop MSSM RGEs to the scale $M_{SUSY}$, along with the other MSSM
+parameters.  
 The full one-loop EWSB
 conditions at this scale are then employed to\footnote{Note that there is also
   an option to extract $m_{H_1}(M_{SUSY})$ and $m_{H_2}(M_{SUSY})$ from input
@@ -762,12 +764,14 @@ because the tadpoles depend upon the value of $\mu$ assumed.
 The symmetry breaking condition for $\mu$ can be phrased
 as~\cite{Pierce:1997zz}
 \begin{equation}
-\mu^2 = \half \left( \tan 2\beta \left[m_{\bar{H}_2}^2\tan \beta
-- m_{\bar{H}_1}^2  \cot \beta \right] -  M_{\bar Z}^2 \right),
+\mu^2(M_{SUSY}) =
+\frac{m_{\bar{H}_1}^2(M_{SUSY}) -  m_{\bar{H}_2}^2(M_{SUSY}) \tan^2
+  \beta(M_{SUSY})}{\tan^2 \beta(M_{SUSY}) - 1} 
+- \frac{1}{2} M_{\bar Z}^2
 \label{mucond} 
 \end{equation}
-where $m_{\bar{H}_i}^2 = m_{H_i}^2 - t_i/v_i$, $M_{\bar Z}^2 = M_Z^2 +
-\Re\Pi_{ZZ}^T(M_Z^2)$ is the running $Z$ mass and
+where $m_{\bar{H}_i}^2 = m_{H_i}^2 - t_i/v_i$, $M_{\bar Z}^2(M_{SUSY}) = M_Z^2 +
+\Re\Pi_{ZZ}^T(M_{SUSY})$ is the running $Z$ mass squared and
 $t_i$ are the tadpole contributions.
 The value of $\mu$ coming from the tree-level EWSB
 condition (eq.~\ref{mucond}, with $\Re\Pi_{ZZ}^T=t_i=0$)
@@ -781,10 +785,11 @@ in the
 tadpoles~\cite{Dedes:2002dy,Dedes:2003km}. 
 The tadpole corrections are then calculated
 using the new value of $\mu(M_{SUSY})$ and the procedure is repeated until it
-converges to a given accuracy. $m_3(M_{SUSY})$ is then determined by input the value
+converges to a given accuracy. $m_3(M_{SUSY})$ is then determined by inputting
+the value 
 of $\mu(M_{SUSY})$ into the EWSB condition
 \begin{equation}
-m_3^2=\frac{s_{2\beta}}{2} \left( m_{\bar{H}_1}^2 + m_{\bar{H}_2}^2 + 2 \mu^2
+m_3^2(M_{SUSY})=\frac{s_{2\beta}(M_{SUSY})}{2} \left( m_{\bar{H}_1}^2(M_{SUSY} + m_{\bar{H}_2}^2(M_{SUSY}) + 2 \mu^2(M_{SUSY})
 \right). \label{Bcond}
 \end{equation}
 The ensemble of MSSM parameters are then evolved using the $\beta$ functions
