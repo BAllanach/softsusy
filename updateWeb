@@ -1,0 +1,8 @@
+#!/bin/bash
+scp softsusy-*.tar.gz $cedar:~/softsusy/downloads
+scp *{Input,Output}* $cedar:~/softsusy/public_html/code
+scp {def.h,outputTest,README} $cedar:~/softsusy/public_html/code
+scp Makefile.alt $cedar:~/softsusy/public_html/Makefile
+doxygen softsusy.cfg
+scp -r html $cedar:~/softsusy/public_html
+rm -fr html *.tar.gz
