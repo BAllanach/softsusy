@@ -1579,8 +1579,8 @@ void MssmSoftsusy::addCharginoLoop(double p, DoubleMatrix & mass) {
 	   bPsicNuTaum(i, k) * bPsicNuTaum(j, k) * b1(p, 0., mstau(k), q) +
 	   bPsicTauNu(i, k) * bPsicTauNu(j, k) * b1(p, mtau, msnutau(k), q));
 	sigmaS(i, j) = sigmaS(i, j) + 
-	  (3.0 * bPsicBtm(i, k) * aPsicBtm(j, k) * mt * b0(p, mb, mstop(k), q) +
-	   3.0 * bPsicTbm(i, k) * aPsicTbm(j, k) * mb * b0(p, mt, msbot(k), q) +
+	  (3.0 * bPsicBtm(i, k) * aPsicBtm(j, k) * mb * b0(p, mb, mstop(k), q) +
+	   3.0 * bPsicTbm(i, k) * aPsicTbm(j, k) * mt * b0(p, mt, msbot(k), q) +
 	   bPsicNuTaum(i, k) * aPsicNuTaum(j, k) * mtau *
 	   b0(p, mtau, msnutau(k), q));
       }
