@@ -18,11 +18,12 @@
 using namespace softsusy;
 using namespace std;
 
-typedef enum {none=0, selectron, smuon, stau, sup, scharm, stop, sdown, sstrange, sbottom, h0, A0, hpm, snue, snumu, snutau} tachyonType;
+typedef enum {none=0, selectron, smuon, stau, sup, scharm, stop, sdown, sstrange, sbottom, h0, A0, hpm, snue, snumu, snutau, W, Z} tachyonType;
 
-const static char* tachyonNames[16] = {
+const static char* tachyonNames[18] = {
   "none", "selectron", "smuon", "stau", "sup", "scharm", "stop", "sdown", 
-  "sstrange", "sbottom", "h0", "A0", "hpm", "snue", "snumu", "snutau"};
+  "sstrange", "sbottom", "h0", "A0", "hpm", "snue", "snumu", "snutau", "W", 
+  "Z"};
 
 /// Masses of the physical particles. 
 struct sPhysical {
@@ -41,18 +42,6 @@ struct sPhysical {
   DoubleMatrix mu, md, me;
   /// Higgs mixing angle (alpha)
   double thetaH;
-  
-  /// DRbar tadpoles evaluated at MSusy: these tadpoles include the 2-loop
-  /// pieces
-  double t1OV1Ms, t2OV2Ms;
-
-  /// These DRbar tadpoles evaluated at MSusy only include 1-loop pieces. One
-  /// must keep them in order to get the Higgs mass calculations correct to
-  /// two loops because of the way that they are organised.
-  double t1OV1Ms1loop, t2OV2Ms1loop;
-  
-  /// Feynman rules
-  //  DoubleMatrix aChi0ChicW, bChi0ChicW;
   
   sPhysical(); ///< Constructor: initialises with zeroes
   sPhysical(const sPhysical &); ///< Constructor copies another object
@@ -159,17 +148,14 @@ inline sPhysical::sPhysical()
   : mh0(0.), mA0(0.), mH0(0.), mHpm(0.), msnu(3), mch(2), mneut(4), 
     mGluino(0.0),
     mixNeut(4, 4), thetaL(0.0), thetaR(0.0), thetat(0.0), thetab(0.0),
-    thetatau(0.0), mu(2, 3), md(2, 3), me(2, 3), thetaH(0.0), 
-    t1OV1Ms(0.0), t2OV2Ms(0.0), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.)
+    thetatau(0.0), mu(2, 3), md(2, 3), me(2, 3), thetaH(0.0)
 {}
 
 inline sPhysical::sPhysical(const sPhysical & s)
   : mh0(s.mh0), mA0(s.mA0), mH0(s.mH0), mHpm(s.mHpm), msnu(s.msnu), mch(s.mch), 
     mneut(s.mneut), mGluino(s.mGluino), mixNeut(s.mixNeut), thetaL(s.thetaL),
     thetaR(s.thetaR), thetat(s.thetat), thetab(s.thetab),
-    thetatau(s.thetatau), mu(s.mu), md(s.md), me(s.me), thetaH(s.thetaH),
-    t1OV1Ms(s.t1OV1Ms), t2OV2Ms(s.t2OV2Ms),    
-    t1OV1Ms1loop(s.t1OV1Ms1loop), t2OV2Ms1loop(s.t2OV2Ms1loop)
+    thetatau(s.thetatau), mu(s.mu), md(s.md), me(s.me), thetaH(s.thetaH)
 {}
 
 inline sProblem::sProblem()

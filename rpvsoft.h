@@ -134,7 +134,7 @@ public:
   /// IO parameters: sgnMu is +/-1, the sign of mu
   /// mt is the RUNNING DRbar top mass
   virtual void rewsb(int sgnMu, double mt, const DoubleVector & pars, 
-		     double muOld = -6.66e66);
+		     double muOld = -6.66e66, double eps = 0.);
   /// Iterative solution to electroweak symmetry breaking boundary conditions.
   /// IO parameters: mu, m3sq are input and output Higgs potential parameters,
   /// iterated along with the sneutrino Vevs. Input sgnMu is the sign of mu,
@@ -142,7 +142,7 @@ public:
   /// fractional accuracy and mt is the DRbar running top mass
   void iterateRewsb(double & mu, double & m3sq, DoubleVector & sneutrinoVevs,
 		     int sgnMu, int & numTries, int maxTries, double tol, 
-		    double mt);
+		    double mt, double oldMu, double eps);
   /// Returns value of mu consistent with sneutrino vevs given
   /// (which should be a length-3 vector)
   /// IO parameters: sgnMu=+/-1, sign of Higgs potential mu parameter, v1 and

@@ -32,7 +32,7 @@ Block RVLAMLQDIN             # GUT scale RPV trilinear coupling
  3 3 3 -3.500000000e-05      # lam'_{333}
 Block SOFTSUSY
     1   1.000000000e-03
-    2   1.000000000e+00      # quark mixing: none (=0), up (=1) or down (=2)
+    2   2.000000000e+00      # quark mixing: none (=0), up (=1) or down (=2)
     9   0.000000000e+00	     # Use normal hierarchy(=0.0) or inverted (=1.0)
 Block VCKMIN		     # input parameters for CKM matrix
     1   2.272000000e-01      # lambda

@@ -554,7 +554,7 @@ static double mz, sinthDRbarMS;
 // mt will only become relevant once 1-loop corrections are incorporated.
 // Currently, this is a tree-level algorithm
 void RpvSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars, 
-			double muOld) {
+			double muOld, double eps) {
   /// Set the RPV couplings here if we need to: currently only works with
   /// CMSSM 
   if (susyRpvBCatMSUSY) RpvSoftsusy::rpvSet(pars);
@@ -581,7 +581,8 @@ void RpvSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars,
   DoubleVector sneutrinoVevs(3);
 
   int numTries = 0;
-  iterateRewsb(mu, m3sq, sneutrinoVevs, sgnMu, numTries, maxTries, tol, mt);
+  iterateRewsb(mu, m3sq, sneutrinoVevs, sgnMu, numTries, maxTries, tol, mt, 
+	       muOld, eps);
 
   if (PRINTOUT > 2) cout << "VEVs" << sneutrinoVevs;
   //  check(sneutrinoVevs);
@@ -593,7 +594,8 @@ void RpvSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars,
 // minimisation, returning the VEVs.
 void RpvSoftsusy::iterateRewsb(double & mu, double & m3sq, DoubleVector &
 			       sneutrinoVevs, int sgnMu, int & numTries, int
-			       maxTries, double tol, double mt) {
+			       maxTries, double tol, double mt, double muOld, 
+			       double eps) {
 
   static double oldMu, oldM3sq;
   static DoubleVector oldSneutrinoVevs(3);
@@ -616,6 +618,7 @@ void RpvSoftsusy::iterateRewsb(double & mu, double & m3sq, DoubleVector &
     return;
   }
 
+  if (oldMu > -6.e66) mu = (mu * eps + oldMu * (1. - eps));
   setSusyMu(mu);
   
   // calculate the new one-loop tadpoles with old value of mu
@@ -646,7 +649,8 @@ void RpvSoftsusy::iterateRewsb(double & mu, double & m3sq, DoubleVector &
 
   if (difference < tol) return;
 
-  iterateRewsb(mu, m3sq, sneutrinoVevs, sgnMu, numTries, maxTries, tol, mt);
+  iterateRewsb(mu, m3sq, sneutrinoVevs, sgnMu, numTries, maxTries, tol, mt, 
+	       oldMu, eps);
 }
 
 // Returns value of mu consistent with sneutrino vevs given
@@ -769,9 +773,9 @@ double neutrinoSum(const RpvSoftsusy & r) {
   double M1 = r.displayGaugino(1);
   double smu = r.displaySusyMu();
   double beta = atan(r.displayTanb()); 
-  double vu = r.displayHvev() * sin(beta) / sqrt(2.0);
-  double vd = r.displayHvev() * cos(beta) / sqrt(2.0);
-  DoubleVector lambda = r.displaySneutrinoVevs() * (1.0 / sqrt(2.0)) - 
+  double vu = r.displayHvev() * sin(beta) / root2;
+  double vd = r.displayHvev() * cos(beta) / root2;
+  DoubleVector lambda = r.displaySneutrinoVevs() * (1.0 / root2) - 
     vd / smu * r.displayKappa();
   double mnuCorrection = fabs(smu * (M1 * sqr(g2) + M2 * sqr(gp)) * 
     (sqr(lambda(3)) + sqr(lambda(2)) + sqr(lambda(1))) / 

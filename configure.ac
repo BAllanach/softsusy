@@ -1,17 +1,17 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([softsusy],[3.3.7],[softsusy@projects.hepforge.org],[softsusy])
+AC_INIT([softsusy],[3.3.8],[softsusy@projects.hepforge.org],[softsusy])
 AC_CONFIG_SRCDIR([softpoint.h])
 AC_CONFIG_AUX_DIR([Config])
 AC_CONFIG_HEADERS([Config/config.h])
 
 dnl === disable debug symbols by default =====
 if test "x$CXXFLAGS" = "x"; then
-   CXXFLAGS=-O2
+   CXXFLAGS=-O3
 fi
 if test "x$FFLAGS" = "x"; then
-   FFLAGS=-O2 
+   FFLAGS=-O3 
 fi
 dnl ==========================================
 

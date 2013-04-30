@@ -41,6 +41,11 @@ const MssmSoftsusy & MssmSoftsusy::operator=(const MssmSoftsusy & s) {
   setSetTbAtMX(s.displaySetTbAtMX());
   altEwsb = s.altEwsb;
   predMzSq = s.displayPredMzSq();
+  t1OV1Ms = s.displayTadpole1Ms(); 
+  t2OV2Ms = s.displayTadpole2Ms(); 
+  t1OV1Ms1loop = s.displayTadpole1Ms1loop(); 
+  t2OV2Ms1loop = s.displayTadpole2Ms1loop(); 
+
   return *this;
 }
 
@@ -131,10 +136,11 @@ void MssmSoftsusy::doTadpoles(double mt, double sinthDRbar) {
     calcTadpole1Ms1loop(mt, sinthDRbar);
     calcTadpole2Ms1loop(mt, sinthDRbar);
     
-    physpars.t1OV1Ms = physpars.t1OV1Ms1loop;
-    physpars.t2OV2Ms = physpars.t2OV2Ms1loop;
+    t1OV1Ms = t1OV1Ms1loop;
+    t2OV2Ms = t2OV2Ms1loop;
 
-    if (numRewsbLoops > 1) {
+    /// tachyons tend to screw up this, so only calculate if we don't have them
+    if (numRewsbLoops > 1 && displayProblem().tachyon == none) {
       /// add the two-loop terms, prepare inputs
       double s1s = 0., s2s = 0., s1t = 0., s2t = 0.,
 	gs = displayGaugeCoupling(3), 
@@ -172,8 +178,8 @@ void MssmSoftsusy::doTadpoles(double mt, double sinthDRbar) {
 		&costau, &scalesq, &amu, &tanb, &vev2, &s1tau, &s2tau);
 
       if (!testNan(s1s * s1t * s1b * s1tau * s2s * s2t * s2b * s2tau)) {
-	physpars.t1OV1Ms += - s1s - s1t - s1b - s1tau;
-	physpars.t2OV2Ms += - s2s - s2t - s2b - s2tau; 
+	t1OV1Ms += - s1s - s1t - s1b - s1tau;
+	t2OV2Ms += - s2s - s2t - s2b - s2tau; 
 	/// end of 2-loop bit
       }
       else  {
@@ -348,12 +354,13 @@ double MssmSoftsusy::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
   return delta / (16.0 * sqr(PI));
 }
 
-void MssmSoftsusy::calcTadpole1Ms1loop(double mt, double sinthDRbar) { /// checked
+/// checked
+void MssmSoftsusy::calcTadpole1Ms1loop(double mt, double sinthDRbar) { 
   
-  physpars.t1OV1Ms1loop = doCalcTadpole1oneLoop(mt, sinthDRbar);
+  t1OV1Ms1loop = doCalcTadpole1oneLoop(mt, sinthDRbar);
 
-  if (testNan(physpars.t1OV1Ms1loop)) {
-    physpars.t1OV1Ms1loop = 0.0;
+  if (testNan(t1OV1Ms1loop)) {
+    t1OV1Ms1loop = 0.0;
     flagNoMuConvergence(true);
   }
 }
@@ -524,10 +531,10 @@ double MssmSoftsusy::doCalcTadpole2oneLoop(double mt, double sinthDRbar) {
 }
 
 void MssmSoftsusy::calcTadpole2Ms1loop(double mt, double sinthDRbar) {/// CHECKED
-  physpars.t2OV2Ms1loop = doCalcTadpole2oneLoop(mt, sinthDRbar); 
-  if (testNan(physpars.t2OV2Ms1loop)) {
+  t2OV2Ms1loop = doCalcTadpole2oneLoop(mt, sinthDRbar); 
+  if (testNan(t2OV2Ms1loop)) {
     flagNoMuConvergence(true);
-    physpars.t2OV2Ms1loop = 0.0;
+    t2OV2Ms1loop = 0.0;
   }
 }
 
@@ -538,7 +545,16 @@ void MssmSoftsusy::calcTadpole2Ms1loop(double mt, double sinthDRbar) {/// CHECKE
 /// Apply at scale MSusy: checked 19.12.2000
 /// Displays PHYSICAL MZ, ie MZ(q) - piZz^T(q)
 /// Fixed pizztMS to resummed version 6/1/13
-double MssmSoftsusy::predMzsq(double & tanb, double muOld, double eps) const {
+double MssmSoftsusy::predMzsq(double & tanb, double muOld, double eps) {
+
+  if (fabs(displayTadpole1Ms()) < EPSTOL && 
+      fabs(displayTadpole2Ms()) < EPSTOL) {
+    double sinthDRbar = calcSinthdrbar();
+    calcDrBarPars(); 
+    double mt = forLoops.mt;
+    doTadpoles(mt, sinthDRbar);
+  }
+  
   double susyMu = displaySusyMu();
   tanb = predTanb(susyMu); 
   if (muOld > -6.e66) susyMu = susyMu / eps - muOld * (1. / eps - 1.);
@@ -552,18 +568,6 @@ double MssmSoftsusy::predMzsq(double & tanb, double muOld, double eps) const {
 
   return MZsq;
 }
-/*double MssmSoftsusy::predMzsq(double & tanb) const {
-  tanb = predTanb(); 
-  
-  double pizztMS = sqr(displayMzRun()) - sqr(displayMz()); ///< resums logs
-  double MZsq = 2.0 *
-    ((displayMh1Squared() - displayTadpole1Ms() - 
-      (displayMh2Squared() - displayTadpole2Ms()) *
-      sqr(tanb)) / (sqr(tanb) - 1.0) - sqr(susyMu)) - 
-    pizztMS;
-
-  return MZsq;
-  }*/
 
 /// Used to get useful information into ftCalc
 static MssmSoftsusy *tempSoft1;
@@ -855,14 +859,14 @@ void MssmSoftsusy::alternativeEwsb(double mt) {
   newMh1sq = sqr(sin(beta)) * (sqr(displayMaCond()) + piaa + sqr(mzRun) - dMA) 
     - (sqr(displaySusyMu()) + 0.5 * sqr(mzRun)) +
     displayTadpole1Ms() - sqr(sqr(sin(beta))) * 
-    displayPhys().t1OV1Ms1loop -
-    displayPhys().t2OV2Ms1loop * sqr(sin(beta)) * sqr(cos(beta));
+    t1OV1Ms1loop -
+    t2OV2Ms1loop * sqr(sin(beta)) * sqr(cos(beta));
   
   newMh2sq = sqr(cos(beta)) * (sqr(displayMaCond()) + piaa + sqr(mzRun) - dMA) 
     - (sqr(displaySusyMu()) + 0.5 * sqr(mzRun)) -
-    displayPhys().t1OV1Ms1loop * sqr(sin(beta)) * sqr(cos(beta)) +
+    t1OV1Ms1loop * sqr(sin(beta)) * sqr(cos(beta)) +
     displayTadpole2Ms() - sqr(sqr(cos(beta))) * 
-    displayPhys().t2OV2Ms1loop;
+    t2OV2Ms1loop;
   
   setMh1Squared(newMh1sq);
   setMh2Squared(newMh2sq);
@@ -942,7 +946,6 @@ void MssmSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars,
     double tol = TOLERANCE * 1.0e-6;
     
     double pizztMS = sqr(displayMzRun()) - sqr(displayMz()); ///< resums logs
-  //double pizztMS = piZZT(displayMz(), displayMu());
     
     iterateMu(munew, sgnMu, mt, maxTries, pizztMS, sinthDRbarMS,
 	      tol, err); 
@@ -988,6 +991,8 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
   left << "Data set:\n" << s.displayDataSet();
   left << HR << endl;
   left << s.displaySoftPars();
+  left << "t1/v1(MS)=" << s.displayTadpole1Ms() 
+       << " t2/v2(MS)=" << s.displayTadpole2Ms() << endl;
   left << HR << "\nPhysical MSSM parameters:\n";
   left << s.displayPhys();
   double mass; int posi, posj, id;
@@ -1257,15 +1262,15 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS) {
       minimisation conditions are explicitly used (in the calculation of mA)
      */
     dMA = p2s + p2w + p2b + p2tau;
-    mhAtmh(1, 1) = mHtree(1, 1) + physpars.t1OV1Ms1loop + dMA * sqr(sin(beta));
+    mhAtmh(1, 1) = mHtree(1, 1) + t1OV1Ms1loop + dMA * sqr(sin(beta));
     mhAtmh(1, 2) = mHtree(1, 2) - dMA * sin(beta) * cos(beta);
-    mhAtmh(2, 2) = mHtree(2, 2) + physpars.t2OV2Ms1loop + dMA * sqr(cos(beta));
+    mhAtmh(2, 2) = mHtree(2, 2) + t2OV2Ms1loop + dMA * sqr(cos(beta));
     mhAtmh(2, 1) = mhAtmh(1 ,2);
     mhAtmh = mhAtmh - sigmaMh;
 
-    mhAtmH(1, 1) = mHtree(1, 1) + physpars.t1OV1Ms1loop + dMA * sqr(sin(beta));
+    mhAtmH(1, 1) = mHtree(1, 1) + t1OV1Ms1loop + dMA * sqr(sin(beta));
     mhAtmH(1, 2) = mHtree(1, 2) - dMA * sin(beta) * cos(beta);
-    mhAtmH(2, 2) = mHtree(2, 2) + physpars.t2OV2Ms1loop + dMA * sqr(cos(beta));
+    mhAtmH(2, 2) = mHtree(2, 2) + t2OV2Ms1loop + dMA * sqr(cos(beta));
     mhAtmH(2, 1) = mhAtmH(1 ,2);
     mhAtmH = mhAtmH - sigmaMH;
   }
@@ -1280,7 +1285,7 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS) {
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << " h0/H tachyon: m^2=" << temp;
   }
-  temp = temp.apply(ccbSqrt);
+  temp = temp.apply(zeroSqrt);
 
   /// If certain DRbar ratios are large, they can cause massive higher order
   /// corrections in the higgs mass, making it have O(1) uncertainties. 
@@ -1313,7 +1318,7 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS) {
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << " h0/H tachyon: m^2=" << temp;
   }
-  temp = temp.apply(ccbSqrt);
+  temp = temp.apply(zeroSqrt);
   double bigMh = temp.max();
 
   double piaa = piAA(mApole, displayMu()); 
@@ -1326,8 +1331,8 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS) {
 	(displayMh2Squared() - displayTadpole2Ms() - 
 	 displayMh1Squared() + displayTadpole1Ms()) / 
 	cos(2.0 * beta) - mzRun2 - piaa +
-	sqr(sin(beta)) * physpars.t1OV1Ms1loop + sqr(cos(beta)) *
-	physpars.t2OV2Ms1loop + dMA;
+	sqr(sin(beta)) * t1OV1Ms1loop + sqr(cos(beta)) *
+	t2OV2Ms1loop + dMA;
     }
 
   double pihphm = piHpHm(physpars.mHpm, displayMu());
@@ -1335,9 +1340,9 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS) {
   double poleMhcSq = poleMasq + sqr(displayMw()) + piaa + piwwtMS - pihphm;
 
   physpars.mh0 = littleMh;
-  physpars.mA0 = ccbSqrt(poleMasq);
+  physpars.mA0 = zeroSqrt(poleMasq);
   physpars.mH0 = bigMh;
-  physpars.mHpm = ccbSqrt(poleMhcSq);
+  physpars.mHpm = zeroSqrt(poleMhcSq);
 
   if (poleMhcSq > 0. && poleMasq > 0. && !h0Htachyon) return false;
   else {
@@ -1554,10 +1559,10 @@ void MssmSoftsusy::addCharginoLoop(double p, DoubleMatrix & mass) {
 	   aPsicNue(i, k) * aPsicNue(j, k) * b1(p, 0., msmuon(k), q) +
 	   aPsicENu(i, k) * aPsicENu(j, k) * b1(p, 0., msnumu(k), q));
 	sigmaL(i, j) = sigmaL(i, j) + 0.5 * 
-	  (3.0 * aPsicBtm(i, k) * aPsicBtm(j, k) * b1(p, mt, mstop(k), q) +
-	   3.0 * aPsicTbm(i, k) * aPsicTbm(j, k) * b1(p, mb, msbot(k), q) +
-	   aPsicNuTaum(i, k) * aPsicNuTaum(j, k) * b1(p, mtau, mstau(k), q) +
-	   aPsicTauNu(i, k) * aPsicTauNu(j, k) * b1(p, 0., msnutau(k), q));
+	  (3.0 * aPsicBtm(i, k) * aPsicBtm(j, k) * b1(p, mb, mstop(k), q) +
+	   3.0 * aPsicTbm(i, k) * aPsicTbm(j, k) * b1(p, mt, msbot(k), q) +
+	   aPsicNuTaum(i, k) * aPsicNuTaum(j, k) * b1(p, 0., mstau(k), q) +
+	   aPsicTauNu(i, k) * aPsicTauNu(j, k) * b1(p, mtau, msnutau(k), q));
 	sigmaR(i, j) = sigmaR(i, j) + 0.5 * 
 	  (3.0 * bPsicDu(i, k) * bPsicDu(j, k) * b1(p, 0., msup(k), q) +
 	   3.0 * bPsicUd(i, k) * bPsicUd(j, k) * b1(p, 0., msdown(k), q) +
@@ -1569,15 +1574,15 @@ void MssmSoftsusy::addCharginoLoop(double p, DoubleMatrix & mass) {
 	   bPsicNue(i, k) * bPsicNue(j, k) * b1(p, 0., msmuon(k), q) +
 	   bPsicENu(i, k) * bPsicENu(j, k) * b1(p, 0., msnumu(k), q));
 	sigmaR(i, j) = sigmaR(i, j) + 0.5 * 
-	  (3.0 * bPsicBtm(i, k) * bPsicBtm(j, k) * b1(p, mt, mstop(k), q) +
-	   3.0 * bPsicTbm(i, k) * bPsicTbm(j, k) * b1(p, mb, msbot(k), q) +
-	   bPsicNuTaum(i, k) * bPsicNuTaum(j, k) * b1(p, mtau, mstau(k), q) +
-	   bPsicTauNu(i, k) * bPsicTauNu(j, k) * b1(p, 0., msnutau(k), q));
+	  (3.0 * bPsicBtm(i, k) * bPsicBtm(j, k) * b1(p, mb, mstop(k), q) +
+	   3.0 * bPsicTbm(i, k) * bPsicTbm(j, k) * b1(p, mt, msbot(k), q) +
+	   bPsicNuTaum(i, k) * bPsicNuTaum(j, k) * b1(p, 0., mstau(k), q) +
+	   bPsicTauNu(i, k) * bPsicTauNu(j, k) * b1(p, mtau, msnutau(k), q));
 	sigmaS(i, j) = sigmaS(i, j) + 
-	  (3.0 * bPsicBtm(i, k) * aPsicBtm(j, k) * mt * b0(p, mt, mstop(k), q) +
-	   3.0 * bPsicTbm(i, k) * aPsicTbm(j, k) * mb * b0(p, mb, msbot(k), q) +
+	  (3.0 * bPsicBtm(i, k) * aPsicBtm(j, k) * mb * b0(p, mb, mstop(k), q) +
+	   3.0 * bPsicTbm(i, k) * aPsicTbm(j, k) * mt * b0(p, mt, msbot(k), q) +
 	   bPsicNuTaum(i, k) * aPsicNuTaum(j, k) * mtau *
-	   b0(p, mtau, mstau(k), q));
+	   b0(p, mtau, msnutau(k), q));
       }
   
   /// checked and corrected  
@@ -2747,7 +2752,6 @@ void MssmSoftsusy::addSquarkCorrection(DoubleMatrix & mass) {
 
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
-    if (PRINTOUT > 2) cout << " squark tachyonic ";
     flagTachyon(sup); flagTachyon(sdown); flagTachyon(scharm); 
     flagTachyon(sstrange);
     return;
@@ -2778,8 +2782,8 @@ void MssmSoftsusy::addSnuTauCorrection(double & mass) {
 
   /// No point adding radiative corrections to tachyonic particles
   if (mass < 0.0) { 
-    if (PRINTOUT > 2) cout << " snu_tau tachyonic ";
     flagTachyon(snutau);
+    mass = EPSTOL;
     return;
   }
 
@@ -3021,7 +3025,6 @@ void MssmSoftsusy::addSnuCorrection(double & mass, int family) {
 
   /// No point adding radiative corrections to tachyonic particles
   if (mass < 0.0) { 
-    if (PRINTOUT > 2) cout << " tree level snu tachyonic ";
     if (family == 1) flagTachyon(snue);
     else if (family == 2) flagTachyon(snumu);
     return;
@@ -3253,8 +3256,9 @@ void MssmSoftsusy::addStopCorrection(double p, DoubleMatrix & mass,
 
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
-    if (PRINTOUT > 2) cout << " stop tachyonic ";
     flagTachyon(stop);
+    if (mass(1, 1) < 0.) mass(1, 1) = EPSTOL;
+    else mass(2, 2) = EPSTOL;
     return;
   }
 
@@ -3710,7 +3714,8 @@ void MssmSoftsusy::addSlepCorrection(DoubleMatrix & mass, int family) {
 
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
-    if (PRINTOUT > 2) cout << " slepton tachyonic ";
+    if (mass(1, 1) < 0.) mass(1, 1) = EPSTOL;
+    else mass(2, 2) = EPSTOL;
     if (family == 1) flagTachyon(selectron);
     if (family == 2) flagTachyon(smuon);
     return;
@@ -3720,6 +3725,7 @@ void MssmSoftsusy::addSlepCorrection(DoubleMatrix & mass, int family) {
   DoubleMatrix piSq(2, 2); /// Self-energy matrix
 	
   /// brevity
+  double    mw      = displayMwRun();
   double    mz      = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
@@ -3887,8 +3893,8 @@ void MssmSoftsusy::addSlepCorrection(DoubleMatrix & mass, int family) {
     ffn(p1, msel(1), 0., q);
   higgs(1, 1) = higgs(1, 1) +   
     sqr(g) / sqr(costhDrbar) * sqr(geL) * 
-    ffn(p1, msel(family), mz, q) +
-    sqr(g) * 0.5 * ffn(p1, msnu(family), mw, q);
+    ffn(p1, msel(1), mz, q) +
+    sqr(g) * 0.5 * ffn(p1, msnu(1), mw, q);
 
   electroweak(1, 1) = electroweak(1, 1) +   
     sqr(g) * 0.25 * (a0(msel(1), q) + 2.0 * a0(msnu(family), q));
@@ -3967,8 +3973,9 @@ void MssmSoftsusy::addStauCorrection(double p, DoubleMatrix & mass,
 
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
-    if (PRINTOUT > 2) cout << " tree stau tachyonic ";
     flagTachyon(stau);
+    if (mass(1, 1) < 0.) mass(1, 1) = EPSTOL;
+    else mass(2, 2) = EPSTOL;
     return;
   }
 
@@ -3976,6 +3983,7 @@ void MssmSoftsusy::addStauCorrection(double p, DoubleMatrix & mass,
   DoubleMatrix piSq(2, 2); /// Self-energy matrix
 	
   /// brevity
+  double    mw      = displayMwRun();
   double    mz      = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
@@ -4296,7 +4304,6 @@ void MssmSoftsusy::addSdownCorrection(DoubleMatrix & mass, int family) {
 
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
-    if (PRINTOUT > 2) cout << " sdown tachyonic ";
     if (family == 1) flagTachyon(sdown); 
     else if (family == 2) flagTachyon(sstrange);
     return;
@@ -4608,8 +4615,9 @@ void MssmSoftsusy::addSbotCorrection(double p,
 
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
-    if (PRINTOUT > 2) cout << " tree sbottom tachyonic ";
     flagTachyon(sbottom);
+    if (mass(1, 1) < 0.) mass(1, 1) = EPSTOL;
+    else mass(2, 2) = EPSTOL;
     return;
   }
 
@@ -5007,7 +5015,8 @@ void MssmSoftsusy::addSupCorrection(DoubleMatrix & mass, int family) {
 
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
-    if (PRINTOUT > 2) cout << " tree sup tachyonic ";
+    if (mass(1, 1) < 0.) mass(1, 1) = EPSTOL;
+    else mass(2, 2) = EPSTOL;
     if (family == 1) flagTachyon(sup);
     else if (family == 2) flagTachyon(scharm);
     return;
@@ -5384,10 +5393,9 @@ void MssmSoftsusy::doUpSquarks(double mt, double pizztMS, double sinthDRbarMS,
 	physicalStopMassesSquared(2) < 0.0) {
       if (family == 1) flagTachyon(sup);
       else if (family == 2) flagTachyon(scharm);
-      if (PRINTOUT > 2) cout << " tachyonic up/scharm ";
     }
 
-    DoubleVector physicalStopMasses(physicalStopMassesSquared.apply(ccbSqrt));
+    DoubleVector physicalStopMasses(physicalStopMassesSquared.apply(zeroSqrt));
 
     physpars.mu(1, family) = physicalStopMasses(1);
     physpars.mu(2, family) = physicalStopMasses(2);
@@ -5417,12 +5425,11 @@ void MssmSoftsusy::doUpSquarks(double mt, double pizztMS, double sinthDRbarMS,
       ||  physicalStopMassesSquared2(1) < 0.0 || 
       physicalStopMassesSquared2(2) < 0.0) {
     flagTachyon(stop);
-    if (PRINTOUT > 2) cout << " tachyonic stops ";
   }
   
-  DoubleVector physicalStopMasses(physicalStopMassesSquared.apply(ccbSqrt));
+  DoubleVector physicalStopMasses(physicalStopMassesSquared.apply(zeroSqrt));
   DoubleVector 
-      physicalStopMasses2(physicalStopMassesSquared2.apply(ccbSqrt));
+      physicalStopMasses2(physicalStopMassesSquared2.apply(zeroSqrt));
   
   double lightStopMass = minimum(physicalStopMasses(1), physicalStopMasses(2));
   double heavyStopMass = maximum(physicalStopMasses2(1), 
@@ -5486,10 +5493,9 @@ void MssmSoftsusy::doDownSquarks(double mb, double pizztMS, double
 	physicalSbotMassesSquared(2) < 0.0) {
       if (family == 1) flagTachyon(sdown);
       else if (family == 2) flagTachyon(sstrange);
-      if (PRINTOUT > 2) cout << " tachyonic down squarks ";
     }
 
-    DoubleVector physicalSbotMasses(physicalSbotMassesSquared.apply(ccbSqrt));
+    DoubleVector physicalSbotMasses(physicalSbotMassesSquared.apply(zeroSqrt));
 
     physpars.md(1, family) = physicalSbotMasses(1);
     physpars.md(2, family) = physicalSbotMasses(2);
@@ -5521,11 +5527,10 @@ void MssmSoftsusy::doDownSquarks(double mb, double pizztMS, double
       < 0.0 || minimum(physicalSbotMassesSquared2(1), 
 		       physicalSbotMassesSquared2(2)) < 0.0) {
     flagTachyon(sbottom);
-    if (PRINTOUT > 2) cout << " tachyonic sbottom ";
   }
 
-  DoubleVector physicalSbotMasses(physicalSbotMassesSquared.apply(ccbSqrt));
-  DoubleVector physicalSbotMasses2(physicalSbotMassesSquared2.apply(ccbSqrt));
+  DoubleVector physicalSbotMasses(physicalSbotMassesSquared.apply(zeroSqrt));
+  DoubleVector physicalSbotMasses2(physicalSbotMassesSquared2.apply(zeroSqrt));
 
   /// twisted measures the ordering of the sbottom masses. If msbot1 > msbot2,
   /// twisted is defined to be true (msbot2 > msbot1 is defined "untwisted").
@@ -5584,11 +5589,10 @@ void MssmSoftsusy::doChargedSleptons(double mtau, double pizztMS, double
     if (mSlepSquared(1, 1) < 0.0 || mSlepSquared(2, 2) < 0.0) {
       if (family == 1) flagTachyon(selectron);
       else if (family == 2) flagTachyon(smuon);
-      if (PRINTOUT > 2) cout << " slepton tachyonic ";
     }
       
-    physpars.me(1, family) = ccbSqrt(mSlepSquared(1, 1));
-    physpars.me(2, family) = ccbSqrt(mSlepSquared(2, 2));
+    physpars.me(1, family) = zeroSqrt(mSlepSquared(1, 1));
+    physpars.me(2, family) = zeroSqrt(mSlepSquared(2, 2));
   }
 
   /// do third family
@@ -5613,12 +5617,11 @@ void MssmSoftsusy::doChargedSleptons(double mtau, double pizztMS, double
       ||  physicalStauMassesSquared2(1) < 0.0 || 
       physicalStauMassesSquared2(2) < 0.0) {
     flagTachyon(stau);
-    if (PRINTOUT > 2) cout << " tachyonic staus ";
   }
   
-  DoubleVector physicalStauMasses(physicalStauMassesSquared.apply(ccbSqrt));
+  DoubleVector physicalStauMasses(physicalStauMassesSquared.apply(zeroSqrt));
   DoubleVector 
-      physicalStauMasses2(physicalStauMassesSquared2.apply(ccbSqrt));
+      physicalStauMasses2(physicalStauMassesSquared2.apply(zeroSqrt));
   
   double lightStauMass = minimum(physicalStauMasses(1), physicalStauMasses(2));
   double heavyStauMass = maximum(physicalStauMasses2(1), 
@@ -5647,7 +5650,7 @@ void MssmSoftsusy::doSnu(double pizztMS, int accuracy) {
       addSnuCorrection(mSnuSquared, family);
     }
 
-    physpars.msnu(family) = ccbSqrt(mSnuSquared);
+    physpars.msnu(family) = zeroSqrt(mSnuSquared);
   }
 }
 
@@ -6218,16 +6221,6 @@ double MssmSoftsusy::lowOrg
     runto(mz);
     
     if (PRINTOUT) cout << " end of iteration" << endl;
-
-    /// check to see if there are any negative mass squared scalars: if there
-    /// are, flag tachyon problem
-    /*    int posi, posj, lspCode; double minmass;
-    lspCode = lsp(minmass, posi, posj); 
-    if (lspCode > 0 && lspCode < 6 && lspCode !=4 && minmass < 0.0) { 
-      flagTachyon(true); 
-      if (PRINTOUT > 2) recogLsp(posi, posj); cout << " tachyonic ";
-      }*/
-    
   }
   catch(const char *a) {
     ostringstream ii;
@@ -6356,20 +6349,22 @@ double MssmSoftsusy::calcSinthdrbar() const {
 }
 
 //VEV at current scale, using an input value of Z self-energy
-double MssmSoftsusy::getVev(double pizzt) const {
+double MssmSoftsusy::getVev(double pizzt) {
 
   double vsquared = 4.0 * (sqr(displayMz()) + pizzt) /
     (sqr(displayGaugeCoupling(2)) +
      sqr(displayGaugeCoupling(1)) * 0.6); 
 
-  if (vsquared < 200.0 || testNan(vsquared)) 
+  if (vsquared < 0.0 || testNan(vsquared)) {
+    flagTachyon(Z);
     return 246.22;
+  }
 
   return sqrt(vsquared);
 }
 
 //VEV at current scale: calculates Z self energy first
-double MssmSoftsusy::getVev() const {
+double MssmSoftsusy::getVev() {
   double pizzt = piZZT(displayMz(), displayMu());
 
   return getVev(pizzt);
@@ -6435,8 +6430,10 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
     mLep(1, 1) = 0.; mLep(2, 2) = 0.;
   }
 
-  setMw(sqrt(0.25 * sqr(newGauge(2)) * sqr(vev) - 
-	     piWWT(displayMw(), displayMu()))); 
+  double poleMwSq = 0.25 * sqr(newGauge(2)) * sqr(vev) - 
+    piWWT(displayMw(), displayMu());
+  if (poleMwSq < 0.) flagTachyon(W);
+  setMw(zeroSqrt(poleMwSq)); 
   setGaugeCoupling(1, newGauge(1));
   setGaugeCoupling(2, newGauge(2));
   setGaugeCoupling(3, newGauge(3));
@@ -6535,9 +6532,8 @@ void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2,
   mSq = mH.sym2by2(eg.thetaH);
   if (mSq(1) < 0. || mSq(2) < 0.) {
     flagTachyon(h0);
-    if (PRINTOUT > 1) cout << " mH/h tachyon ";
   }
-  DoubleVector temp(mSq.apply(ccbSqrt));
+  DoubleVector temp(mSq.apply(zeroSqrt));
   if (temp(2) > temp(1)) eg.thetaH = eg.thetaH + PI * 0.5; 
 
   int pos;
@@ -6799,7 +6795,7 @@ void MssmSoftsusy::itLowsoft
     if (ewsbBCscale) mx = displayMsusy();
     if (PRINTOUT > 0) cout << " mgut=" << mx << flush;
     
-    mtrun = forLoops.mt;
+    mtrun = forLoops.mt; ///< This will be at MSUSY
     //    double tbIn; double predictedMzSq = 0.;
     if (numTries < 11) {
       rewsb(sgnMu, mtrun, pars);    
@@ -7089,11 +7085,6 @@ double MssmSoftsusy::piZZT(double p, double q, bool usePoleMt) const {
 
   double pi = rhs * sqr(g) / (cw2DRbar * 16.0 * sqr(PI));
 
-  if (pi + sqr(mz) < 0.0) { 
-    if (PRINTOUT > 2) cout << " tachyon MZ "; 
-    return 0.; 
-  }
-
   return pi;
 }
 
@@ -7223,10 +7214,6 @@ double MssmSoftsusy::piWWT(double p, double q, bool usePoleMt) const {
 
   double pi = ans * sqr(g) / (16.0 * sqr(PI));
 
-  if (pi + sqr(displayMw()) < 0.0) {   
-    return 0.0; /// tachyonic 
-  }
-	
   return pi;
 }
 
@@ -9145,7 +9132,7 @@ void MssmSoftsusy::isajetNumbers764
   mNeut(1, 1) = m1;
   mNeut(2, 2) = m2;
   mNeut(3, 4) = - smu;
-  store.addNeutralinoLoop(m1, mNeut);
+  store.addNeutralinoLoop(fabs(m1), mNeut);
 
   m1 = fabs(mNeut(1, 1));
   m2 = fabs(mNeut(2, 2));
@@ -10269,10 +10256,6 @@ double MssmSoftsusy::smPredictionMW() const {
     c4 * (dh - 1.) - c5 * dAlpha + c6 * dt - c7 * sqr(dt) - c8 * dH * dt + 
     c9 * dh * dt - c10 * dAlphas + c11 * dZ;
 
-  ///  double alpha = 1. / 137.03599976;
-  ///  double deltaRsm = sqrt(2.0) * GMU / (PI * alpha) * sqr(MW) * 
-  ///  (1.0 - sqr(MW) / sqr(MZ)) - 1.;
-
   return ans;
 }
 
@@ -10355,11 +10338,11 @@ double MssmSoftsusy::twoLoopGm2(double amu1Loop) const {
 
   DoubleVector lChiCh0(2), lChiCH0(2), lChiCA0(2);
   int k; for (k=1; k<=2; k++) {
-    lChiCh0(k) = sqrt(2.0) * MW / mch(k) *
+    lChiCh0(k) = root2 * MW / mch(k) *
       ((u(k, 1) * v(k, 2)).real() * cosA - sinA * (u(k, 2) * v(k, 1)).real());
-    lChiCH0(k) = sqrt(2.0) * MW / mch(k) *
+    lChiCH0(k) = root2 * MW / mch(k) *
       ((u(k, 1) * v(k, 2)).real() * sinA + cosA * (u(k, 2) * v(k, 1)).real());
-    lChiCA0(k) = sqrt(2.0) * MW / mch(k) *
+    lChiCA0(k) = root2 * MW / mch(k) *
       (-(u(k, 1) * v(k, 2)).real() * cosb - sinb * (u(k, 2) * v(k, 1)).real());
   }
     

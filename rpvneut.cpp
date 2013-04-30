@@ -3024,7 +3024,7 @@ void RpvNeutrino::inomixingSLHA(ostream & out) {
   for (int i=1; i<=7; i++)
     for (int j=1; j<=7; j++) {
       out << "  " << i << " " << j << "   ";
-      printRow(out, displayPhysNeutMix().display(i,j));
+      printRow(out, displayPhysNeutMix().display(j, i));
       out << "   # N_{" << i << j << "}\n";
     }
   /// We must re-order the rows and columns of the chargino mass
