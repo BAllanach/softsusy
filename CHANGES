@@ -1,11 +1,11 @@
-1. 25/2/13 Modified fB function: sometimes it was giving large numerical
+<li> 25/2/13 Modified fB function: sometimes it was giving large numerical
 inaccuracies, if one used optimisation. This is now fixed. 
-2. 25/2/13 Made W/Z tachyon flags. 
-3. 26/2/13 Moved tadpoles to MssmSoftsusy object and fixed up Rpv REWSB
-4. 5/3/13  Improved numerical accuracy of b0 loop function
-5. 20/3/13 Fixed SLHA2 output of neutral fermion mixing in RPV case
-6. 2/4/13 Added protection in 2x2 diagonalisation routines against negative
+<li> 25/2/13 Made W/Z tachyon flags. 
+<li> 26/2/13 Moved tadpoles to MssmSoftsusy object and fixed up Rpv REWSB
+<li> 5/3/13  Improved numerical accuracy of b0 loop function
+<li> 20/3/13 Fixed SLHA2 output of neutral fermion mixing in RPV case
+<li> 2/4/13 Added protection in 2x2 diagonalisation routines against negative
 eigenvalues. Only prints out an error message if DISPLAY_ARRAY_BOUNDS is
 switched on 
-7. 18/4/13 Bug-fixed slepton correction to slepton mass. Thanks to A Voigt.
-8. 23/4/13 Bug-fixed 3rd family corrections to chargino mass. Thanks to A Voigt
+<li> 18/4/13 Bug-fixed slepton correction to slepton mass. Thanks to A Voigt.
+<li> 23/4/13 Bug-fixed 3rd family corrections to chargino mass. Thanks to A Voigt

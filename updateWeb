@@ -5,4 +5,5 @@ scp {def.h,outputTest,README} $cedar:~/softsusy/public_html/code
 scp Makefile.alt $cedar:~/softsusy/public_html/Makefile
 doxygen softsusy.cfg
 scp -r html $cedar:~/softsusy/public_html
+scp -r CHANGES $cedar:~/softsusy/public_html/CHANGES.html
 rm -fr html *.tar.gz
