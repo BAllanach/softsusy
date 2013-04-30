@@ -4289,9 +4289,13 @@ void MssmSoftsusy::addStauCorrection(double p, DoubleMatrix & mass,
 
   for (i=1; i<=4; i++) {
     double one = gfn(p, mneut(i), mtau, q);
-    neutralino(1, 1) = neutralino(1, 1) + fChi0TauStauLL(i) * one;
-    neutralino(2, 2) = neutralino(2, 2) + fChi0TauStauRR(i) * one;
-    neutralino(1, 2) = neutralino(1, 2) + fChi0TauStauLR(i) * one;
+    double two = 2.0 * mneut(i) * mtau * b0(p, mneut(i), mtau, q);
+    neutralino(1, 1) = neutralino(1, 1) + fChi0TauStauLL(i) * one
+       - gChi0TauStauLL(i) * two;
+    neutralino(2, 2) = neutralino(2, 2) + fChi0TauStauRR(i) * one
+       - gChi0TauStauRR(i) * two;
+    neutralino(1, 2) = neutralino(1, 2) + fChi0TauStauLR(i) * one
+       - gChi0TauStauLR(i) * two;
   }
 
   piSq = 1.0 / (16.0 * sqr(PI)) * 
