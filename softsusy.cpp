@@ -4018,6 +4018,7 @@ void MssmSoftsusy::addStauCorrection(double p, DoubleMatrix & mass,
 
   double    smu     = -displaySusyMu();
   double q = displayMu(), 
+    hb   = forLoops.hb,
     htau = forLoops.htau, 
     sinb = sin(beta), cosb = cos(beta), 
     htausq = sqr(htau);
@@ -4163,7 +4164,8 @@ void MssmSoftsusy::addStauCorrection(double p, DoubleMatrix & mass,
   /// start
   stop(1, 1) = htausq * (sqr(stau) * a0t1 + sqr(ctau) * a0t2);
   stop(2, 2) = htausq * (sqr(ctau) * a0t1 + sqr(stau) * a0t2);
-  stop(1, 2) = htausq * ctau * stau * (a0t1 - a0t2);
+  stop(1, 2) = htausq * ctau * stau * (a0t1 - a0t2)
+     + 3.0 * htau * hb * cb * sb * (a0(msbot(1), q) - a0(msbot(2), q));
 
   for (i=1; i<=4; i++) {
     higgs(1, 1) = higgs(1, 1) + 
