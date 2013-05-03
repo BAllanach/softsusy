@@ -4633,6 +4633,7 @@ void MssmSoftsusy::addSbotCorrection(double p,
 	
   /// brevity
   double    mz      = displayMzRun();
+  double    mw      = displayMwRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
   double    alpha   = forLoops.thetaH;
