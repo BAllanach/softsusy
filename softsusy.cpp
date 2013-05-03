@@ -4319,6 +4319,7 @@ void MssmSoftsusy::addSdownCorrection(DoubleMatrix & mass, int family) {
   DoubleMatrix piSq(2, 2); /// Self-energy matrix
 	
   /// brevity
+  double    mw      = displayMwRun();
   double    mz      = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
