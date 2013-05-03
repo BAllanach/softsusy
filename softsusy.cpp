@@ -4670,6 +4670,7 @@ void MssmSoftsusy::addSbotCorrection(double p,
   double q = displayMu(), g3sq = sqr(displayGaugeCoupling(3)), 
     ht = forLoops.ht,
     hb = forLoops.hb,
+    htau = forLoops.htau,
     mb = dataSet.displayMass(mBottom),
     htsq = sqr(ht), 
     sinb = sin(beta), cosb = cos(beta), 
@@ -4863,7 +4864,8 @@ void MssmSoftsusy::addSbotCorrection(double p,
 
   stop(1, 1) = hbsq * (sqr(sb) * a0t1 + sqr(cb) * a0t2);
   stop(2, 2) = hbsq * (sqr(cb) * a0t1 + sqr(sb) * a0t2);
-  stop(1, 2) = hbsq * cb * sb * 3.0 * (a0t1 - a0t2);
+  stop(1, 2) = hbsq * cb * sb * 3.0 * (a0t1 - a0t2)
+     + hb * htau * ctau * stau * (a0(mstop(1), q) - a0(mstop(2), q));
 
   sbottom(1, 1) = 
     htsq * (sqr(st) * a0(mstop(1), q) + sqr(ct) * a0(mstop(2), q));
