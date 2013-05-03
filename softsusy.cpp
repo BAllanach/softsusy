@@ -4369,8 +4369,8 @@ void MssmSoftsusy::addSdownCorrection(DoubleMatrix & mass, int family) {
   DoubleVector dnu(4), dnd(4), cn(4);
   assignHiggsSfermions(higgsm, higgsc, dnu, dnd, cn, beta);
 
-  DoubleMatrix lsSbotLSbotLR(4, 2), lsSbotLSbot12(4, 2);
-  DoubleMatrix lsSbotRSbotLR(4, 2), lsSbotRSbot12(4, 2);
+  DoubleMatrix lsSbotLSbotLR(4, 2);
+  DoubleMatrix lsSbotRSbotLR(4, 2);
   /// Order (s1 s2 G A, L R)
   lsSbotLSbotLR(1, 1) = g * mz * gdL * cosb / costhDrbar;
   lsSbotLSbotLR(2, 1) = -g * mz * gdL * sinb / costhDrbar;
@@ -4388,13 +4388,13 @@ void MssmSoftsusy::addSdownCorrection(DoubleMatrix & mass, int family) {
   DoubleMatrix lHSbotLSbot12(lsSbotLSbotLR), lHSbotRSbot12(lsSbotRSbotLR);
   /// Mix CP-even Higgses up
   for (i=1; i<=2; i++) { /// i is the L/R label
-    temp(1) = lsSbotLSbot12(1, i);
-    temp(2) = lsSbotLSbot12(2, i);
+    temp(1) = lsSbotLSbotLR(1, i);
+    temp(2) = lsSbotLSbotLR(2, i);
     temp2 = rot2d(alpha) * temp;
     lHSbotLSbot12(1, i) = temp2(1);
     lHSbotLSbot12(2, i) = temp2(2);
-    temp(1) = lsSbotRSbot12(1, i);
-    temp(2) = lsSbotRSbot12(2, i);
+    temp(1) = lsSbotRSbotLR(1, i);
+    temp(2) = lsSbotRSbotLR(2, i);
     temp2 = rot2d(alpha) * temp;
     lHSbotRSbot12(1, i) = temp2(1);
     lHSbotRSbot12(2, i) = temp2(2);
