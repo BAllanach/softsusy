@@ -46,6 +46,7 @@ public:
   using Susy::setMu;
   using Susy::setLoops;
   using Susy::setThresholds;
+  using Susy::setSusy;
   using Susy::setSusyMu;
   using Susy::displayGaugeCoupling;
   using Susy::displayYukawaElement;
