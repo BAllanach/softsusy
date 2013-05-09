@@ -4662,7 +4662,7 @@ void MssmSoftsusy::addSbotCorrection(double p,
   double q = displayMu(), g3sq = sqr(displayGaugeCoupling(3)), 
     ht = forLoops.ht,
     hb = forLoops.hb,
-    mb = dataSet.displayMass(mBottom),
+    mb = forLoops.mb,
     htsq = sqr(ht), 
     sinb = sin(beta), cosb = cos(beta), 
     hbsq = sqr(hb);
