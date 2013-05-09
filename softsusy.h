@@ -28,10 +28,9 @@
 #include <lowe.h>
 #include <softpars.h>
 #include <twoloophiggs.h>
+#include "bcs.h"
+#include "mssmUtils.h"
 using namespace softsusy;
-
-class MssmSoftsusy;
-std::istream & operator >>(std::istream &left, MssmSoftsusy &s);
 
 /// A different REWSB condition - given by mu and MA instead of mh1,2
 class AltEwsbMssm {
@@ -53,7 +52,8 @@ public:
 };
 
 /// Contains all supersymmetric MSSM parameters, incorporating R_p MSSM
-class MssmSoftsusy: public SoftParsMssm, public AltEwsbMssm {
+template<class SoftPars>
+class Softsusy: public SoftPars, public AltEwsbMssm {
   /// Includes
   /// - Soft terms
   /// - DRbar masses
@@ -78,24 +78,64 @@ private:
   double t1OV1Ms, t2OV2Ms;  ///< DRbar tadpoles(MSusy): incl 2 loops
   double t1OV1Ms1loop, t2OV2Ms1loop; ///< DRbar tadpoles(MSusy): excl 2 loops
 public:
-  //  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &);
+  using SoftPars::set;
+  using SoftPars::setPars;
+  using SoftPars::setSoftPars;
+  using SoftPars::setMu;
+  using SoftPars::setLoops;
+  using SoftPars::setThresholds;
+  using SoftPars::setSusy;
+  using SoftPars::setSusyMu;
+  using SoftPars::setHvev;
+  using SoftPars::setMh1Squared;
+  using SoftPars::setMh2Squared;
+  using SoftPars::setM3Squared;
+  using SoftPars::setM32;
+  using SoftPars::setTanb;
+  using SoftPars::setGaugeCoupling;
+  using SoftPars::setYukawaMatrix;
+  using SoftPars::setYukawaElement;
+  using SoftPars::display;
+  using SoftPars::displayGaugeCoupling;
+  using SoftPars::displayYukawaElement;
+  using SoftPars::displayYukawaMatrix;
+  using SoftPars::displayLoops;
+  using SoftPars::displaySusyMu;
+  using SoftPars::displaySusy;
+  using SoftPars::displayMu;
+  using SoftPars::displayThresholds;
+  using SoftPars::displayGauge;
+  using SoftPars::displayMh1Squared;
+  using SoftPars::displayMh2Squared;
+  using SoftPars::displayM3Squared;
+  using SoftPars::displayTanb;
+  using SoftPars::displayHvev;
+  using SoftPars::displayGaugino;
+  using SoftPars::displaySoftMassSquared;
+  using SoftPars::displaySoftA;
+  using SoftPars::displayGravitino;
+  using SoftPars::displayTrilinear;
+  using SoftPars::run;
+  using SoftPars::runto;
+
+  //  void (*boundaryCondition)(Softsusy &, const DoubleVector &);
   /// Default constructor fills object with zeroes
-  MssmSoftsusy();
+  Softsusy();
   /// Constructor sets SUSY parameters only from another object
-  MssmSoftsusy(const MssmSusy &);
+  Softsusy(const MssmSusy &);
   /// Constructor copies another object
-  MssmSoftsusy(const MssmSoftsusy &);
+  Softsusy(const Softsusy &);
   /// Sets all parameters from s, sp, mu is the mu superpotential parameter, l
   /// is the number of loops used for RG evolution, t is the thresholds
   /// accuracy parameter, mg is the gravitino mass, hv is the Higgs VEV
   /// parameter. 
-  MssmSoftsusy(const SoftParsMssm & s, const sPhysical & sp, double mu, int l, 
+  Softsusy(const SoftPars & s, const sPhysical & sp, double mu, int l, 
 	       int t, double hv);
   /// Set all data in the object equal to another
-  const MssmSoftsusy & operator=(const MssmSoftsusy & s);
+  const Softsusy & operator=(const Softsusy & s);
   
   /// Displays whole object as a const
-  inline const MssmSoftsusy & displayMssmSoft() const;
+  inline const Softsusy & displayMssmSoft() const;
 
   /// Displays physical parameters only
   inline const sPhysical & displayPhys() const;
@@ -121,7 +161,7 @@ public:
   double displayTadpole1Ms1loop() const; ///< displays t_1/v_1 tadpole@1 loop
   double displayTadpole2Ms1loop() const; ///< displays t_2/v_2 tadpole@1 loop
   /// Returns object as a const
-  const MssmSoftsusy & displaySoftsusy() const { return *this; }
+  const Softsusy & displaySoftsusy() const { return *this; }
   /// Returns value of pole MZ being used
   double displayMz() const { return displayDataSet().displayMu(); }
   /// Is tan beta set at the user defined SUSY breaking scale?
@@ -166,7 +206,7 @@ public:
   void flagProblemThrown(bool a) { problem.problemThrown = a; }
   
   /// Sets whole object equal to another  
-  void setSoftsusy(const MssmSoftsusy & s) { *this = s; };
+  void setSoftsusy(const Softsusy & s) { *this = s; };
   /// Sets low energy Standard Model fermion mass and gauge coupling data
   void setData(const QedQcd & r) { dataSet = r; };
   /// Sets potential value at minimum of Higgs potential
@@ -418,7 +458,7 @@ public:
   /// user-supplied function that sets the SUSY breaking BCs.
   /// If doTop is true, it also calculates the fine tuning associated with the
   /// top Yukawa coupling. 
-  DoubleVector fineTune(void (*boundaryCondition)(MssmSoftsusy &, 
+  DoubleVector fineTune(void (*boundaryCondition)(Softsusy &, 
 						  const DoubleVector &), 
 			const DoubleVector & bcPars, double MX, 
 			bool doTop = false);
@@ -530,7 +570,7 @@ public:
   /// condition is set to \f$\sqrt{m_{{\tilde t}_1} m_{{\tilde t}_2}} \f$, ie
   /// like in the "pheno MSSM".
   double lowOrg(void (*boundaryCondition)
-		(MssmSoftsusy &, const DoubleVector &),
+		(Softsusy &, const DoubleVector &),
 		double mxGuess, 
 		const DoubleVector & pars, int sgnMu, double tanb,
 		const QedQcd & oneset, bool gaugeUnification, 
@@ -545,7 +585,7 @@ public:
   /// initially as a boundary condition. tanb = desired value of DR bar tan
   /// beta(MZ).
   void itLowsoft(int maxTries, double & mx, int sgnMu, double tol, 
-		 double tanb, void (*boundaryCondition)(MssmSoftsusy &, 
+		 double tanb, void (*boundaryCondition)(Softsusy &, 
 							const DoubleVector &), 
 		 const DoubleVector & pars, bool gaugeUnification, 
 		 bool ewsbBCscale);
@@ -701,7 +741,7 @@ public:
 
   /// Input diagonal mass matrices and it'll give you back mixed ones, based on
   /// the CKM quark mixing matrix you supplied in vCkm. 
-  /// The idea is that MssmSoftsusy objects are UNmixed. Therefore this method
+  /// The idea is that Softsusy objects are UNmixed. Therefore this method
   /// does nothing. Derived objects may have mixing implemented
   virtual void doQuarkMixing(DoubleMatrix & mDon, DoubleMatrix & mUpq);
 
@@ -712,8 +752,13 @@ public:
   virtual MssmSusy guessAtSusyMt(double tanb, const QedQcd & oneset);
 };
 
-inline MssmSoftsusy::MssmSoftsusy()
-  : SoftParsMssm(), AltEwsbMssm(), physpars(), forLoops(), 
+typedef Softsusy<SoftParsMssm> MssmSoftsusy;
+
+std::istream& operator>>(std::istream& left, MssmSoftsusy& s);
+
+template<class SoftPars>
+Softsusy<SoftPars>::Softsusy()
+  : SoftPars(), AltEwsbMssm(), physpars(), forLoops(), 
     problem(), msusy(0.0), minV(6.66e66), 
     mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false), 
     predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), 
@@ -725,8 +770,9 @@ inline MssmSoftsusy::MssmSoftsusy()
 }
 
 
-inline MssmSoftsusy::MssmSoftsusy(const MssmSoftsusy & s)
-  : SoftParsMssm(s.displaySoftPars()), AltEwsbMssm(s.displayAltEwsbMssm()), 
+template<class SoftPars>
+Softsusy<SoftPars>::Softsusy(const Softsusy & s)
+  : SoftPars(s.displaySoftPars()), AltEwsbMssm(s.displayAltEwsbMssm()), 
     physpars(s.displayPhys()), 
     forLoops(s.displayDrBarPars()), 
     problem(s.problem), msusy(s.msusy), minV(s.minV), 
@@ -743,8 +789,9 @@ inline MssmSoftsusy::MssmSoftsusy(const MssmSoftsusy & s)
     setThresholds(s.displayThresholds());
 }
 
-inline MssmSoftsusy::MssmSoftsusy(const MssmSusy &s)
-  : SoftParsMssm(s), AltEwsbMssm(), 
+template<class SoftPars>
+Softsusy<SoftPars>::Softsusy(const MssmSusy &s)
+  : SoftPars(s), AltEwsbMssm(), 
     physpars(), forLoops(), problem(), 
     msusy(0.0), minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), 
     setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
@@ -755,10 +802,11 @@ inline MssmSoftsusy::MssmSoftsusy(const MssmSusy &s)
   setThresholds(s.displayThresholds());
 }
 
-inline MssmSoftsusy::MssmSoftsusy
-(const SoftParsMssm & s, const sPhysical & sp, double mu, int l, int t, 
+template<class SoftPars>
+Softsusy<SoftPars>::Softsusy
+(const SoftPars & s, const sPhysical & sp, double mu, int l, int t, 
  double hv) 
-  : SoftParsMssm(s), AltEwsbMssm(), physpars(sp), forLoops(), problem(), msusy(0.0),
+  : SoftPars(s), AltEwsbMssm(), physpars(sp), forLoops(), problem(), msusy(0.0),
     minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), 
     altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
     t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.) {
@@ -769,59 +817,64 @@ inline MssmSoftsusy::MssmSoftsusy
   setThresholds(t);
 }
 
-inline const MssmSoftsusy & MssmSoftsusy::displayMssmSoft() const { return *this; }
+template<class SoftPars>
+const Softsusy<SoftPars> & Softsusy<SoftPars>::displayMssmSoft() const { return *this; }
 
-inline const QedQcd & MssmSoftsusy::displayDataSet() const { return dataSet; }
+template<class SoftPars>
+const QedQcd & Softsusy<SoftPars>::displayDataSet() const { return dataSet; }
 
-inline const sPhysical & MssmSoftsusy::displayPhys() const { return physpars; }
+template<class SoftPars>
+const sPhysical & Softsusy<SoftPars>::displayPhys() const { return physpars; }
 
-inline const drBarPars & MssmSoftsusy::displayDrBarPars() const { 
+template<class SoftPars>
+const drBarPars & Softsusy<SoftPars>::displayDrBarPars() const { 
   return forLoops; 
 }
 
-inline double MssmSoftsusy::displayMinpot() const { return minV; } 
-inline double MssmSoftsusy::displayMsusy() const { return msusy; } 
-inline double MssmSoftsusy::displayMw() const { return mw; } 
+template<class SoftPars>
+double Softsusy<SoftPars>::displayMinpot() const { return minV; } 
+template<class SoftPars>
+double Softsusy<SoftPars>::displayMsusy() const { return msusy; } 
+template<class SoftPars>
+double Softsusy<SoftPars>::displayMw() const { return mw; } 
 
-inline double MssmSoftsusy::displayTadpole1Ms() const {
+template<class SoftPars>
+double Softsusy<SoftPars>::displayTadpole1Ms() const {
   return t1OV1Ms; 
 }
 
-inline double MssmSoftsusy::displayTadpole2Ms() const {
+template<class SoftPars>
+double Softsusy<SoftPars>::displayTadpole2Ms() const {
   return t2OV2Ms; 
 }
 
-inline double MssmSoftsusy::displayTadpole1Ms1loop() const {
+template<class SoftPars>
+double Softsusy<SoftPars>::displayTadpole1Ms1loop() const {
   return t1OV1Ms1loop; 
 }
 
-inline double MssmSoftsusy::displayTadpole2Ms1loop() const {
+template<class SoftPars>
+double Softsusy<SoftPars>::displayTadpole2Ms1loop() const {
   return t2OV2Ms1loop; 
 }
 
-inline void MssmSoftsusy::setMinpot(double f) { minV = f; }
-inline void MssmSoftsusy::setMsusy(double f) { msusy = f; }
-inline void MssmSoftsusy::setMw(double f) { mw = f; }
-inline void MssmSoftsusy::doUfb3(double mgut) { setMinpot(ufb3sl(mgut) -
+template<class SoftPars>
+void Softsusy<SoftPars>::setMinpot(double f) { minV = f; }
+template<class SoftPars>
+void Softsusy<SoftPars>::setMsusy(double f) { msusy = f; }
+template<class SoftPars>
+void Softsusy<SoftPars>::setMw(double f) { mw = f; }
+template<class SoftPars>
+void Softsusy<SoftPars>::doUfb3(double mgut) { setMinpot(ufb3sl(mgut) -
 							  realMinMs()); } 
-/// Allows user to specify a boundary condition where ALL SUSY breaking
-/// parameters are specified in inputParameters
-void generalBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
 /// Prints out header line for print-short output
 void printShortInitialise();
-/// Formatted output
-ostream & operator <<(ostream &, const MssmSoftsusy &); 
-/// Calculates fractional difference in Drbar masses between in and out
-double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries);
 /// returns the square root of the absolute value of the argument
 // returns sqrt(f) for f>0 
 inline double ccbSqrt(double f){ return sqrt(fabs(f)); }
 /// returns f * f * sign(f)
 inline double signedSqr(double f){ if (f > 0.) return sqr(f); 
   else return -sqr(f); }
-/// Prints out the identity of the LSP to standard output. 
-/// temp, j are defined from lsp function 
-string recogLsp(int temp, int j);
 /// Two-loop Standard Model corrections to rho parameter
 double rho2(double r);
 
@@ -829,50 +882,12 @@ double rho2(double r);
 /// potential at the minimum. The following global variables must be set before
 /// it is called: unificationScale=high BC scale, minTol=fractional accuracy
 /// with which minimum is found
-extern double minimufb3(double);
-/// Given mu paramer, tau Yukawa htau, family number examined, finds height of
-/// potential for temp at |H_2|=h2.
-double ufb3fn(double mu, double htau, double h2, int family, const MssmSoftsusy
-	      & temp);
-/// For UFB-3direction, returns scale at which one-loop corrections are
-/// smallest. IO parameters: inminTol is fractional accuracy with which
-/// minimum is found, eR is value of RH selectron field, h2 is value of H2
-/// field, Lisq=|L_i|^2 slepton VEV value, mx=high BC-scale
-double getQhat(double inminTol,double eR, double h2, double Lisq, double mx,
-	       MssmSoftsusy & temp);
-
-/// non-universal mSUGRA boundary conditions including mH1^2 and mH2^2
-void extendedSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
-/// User supplied routine. Inputs m at the unification scale, and uses
-/// inputParameters vector to output m with high energy soft boundary
-/// conditions. 
-void sugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
-/// Non-universal higgs mass conditions. Paramaters are, in order: m0,m12,mH,a0
-void nuhmI(MssmSoftsusy & m, const DoubleVector & inputParameters);
-/// Non-universal higgs mass conditions. Paramaters are, in order:
-/// m0,m12,mH1,mH2,a0
-void nuhmII(MssmSoftsusy & m, const DoubleVector & inputParameters);
-/// Adds 2-loop AMSB boundary conditions onto m
-void amsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
-/// One-loop GMSB boundary conditions
-void gmsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
-/// Large Volume string compactification boundary conditions
-void lvsBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
-/// For the user to define....
-void userDefinedBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
-/// Sets all soft parameters in m except for mh1sq or mh2sq: it is intended
-/// for the case where mu and M_A^0(pole) is specified
-void generalBcs2(MssmSoftsusy & m, const DoubleVector & inputParameters);
+double minimufb3(double);
 
 /// function used for calculating sin theta_eff
 double gEff(double x);
 /// function used for calculating sin theta_eff
 double fEff(double x);
-
-/// Pietro's fit to the totality of LEP2 data: gives whether the lightest
-/// Higgs is allowed or not - depends only upon the mass and beta-alpha.
-/// true means allowed, false means ruled out. 
-bool testLEPHiggs(const MssmSoftsusy & r, double error = 3.0);
 
 /// parameterisation of LEP2 likelihood for Standard Model higgs mass
 double lep2Likelihood(double mh);
@@ -882,11 +897,10 @@ DoubleVector mhIntegrand(double mh, const DoubleVector & y);
 /// the log likelihood
 double lnLHiggs(double mh);
 
-void nonUniGauginos(MssmSoftsusy & m, const DoubleVector & inputParameters);
-
-void splitGmsb(MssmSoftsusy & m, const DoubleVector & inputParameters);
-
 //double averageMus(susyMu, muOld);
+
+#include "softsusy.cpp"
+
 #endif
 
 

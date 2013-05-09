@@ -2741,8 +2741,6 @@ void RpvNeutrino::physical(int accuracy) {
   if (accuracy > 0 && leptonNumberViolation()) neutrinoData();
 }
 
-#define HR "----------------------------------------------------------\n"
-
 ostream & operator <<(ostream &left, const RpvNeutrino & r) {
   left << r.displayRpvSoftsusy();
   left << "Physical neutrino parameters:" << endl;

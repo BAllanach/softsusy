@@ -24,8 +24,6 @@ const RpvSoftsusy & RpvSoftsusy::operator = (const RpvSoftsusy &s) {
   return *this;
 }
 
-#define HR "----------------------------------------------------------\n"
-
 ostream & operator <<(ostream &left, const RpvSoftsusy & r) {
 
   left << HR;
