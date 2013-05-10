@@ -1581,7 +1581,7 @@ void MssmSoftsusy::addCharginoLoop(double p, DoubleMatrix & mass) {
 	sigmaS(i, j) = sigmaS(i, j) + 
 	  (3.0 * bPsicBtm(i, k) * aPsicBtm(j, k) * mb * b0(p, mb, mstop(k), q) +
 	   3.0 * bPsicTbm(i, k) * aPsicTbm(j, k) * mt * b0(p, mt, msbot(k), q) +
-	   bPsicNuTaum(i, k) * aPsicNuTaum(j, k) * mtau *
+	   bPsicTauNu(i, k) * aPsicTauNu(j, k) * mtau *
 	   b0(p, mtau, msnutau(k), q));
       }
   
@@ -4018,6 +4018,7 @@ void MssmSoftsusy::addStauCorrection(double p, DoubleMatrix & mass,
 
   double    smu     = -displaySusyMu();
   double q = displayMu(), 
+    hb   = forLoops.hb,
     htau = forLoops.htau, 
     sinb = sin(beta), cosb = cos(beta), 
     htausq = sqr(htau);
@@ -4163,7 +4164,8 @@ void MssmSoftsusy::addStauCorrection(double p, DoubleMatrix & mass,
   /// start
   stop(1, 1) = htausq * (sqr(stau) * a0t1 + sqr(ctau) * a0t2);
   stop(2, 2) = htausq * (sqr(ctau) * a0t1 + sqr(stau) * a0t2);
-  stop(1, 2) = htausq * ctau * stau * (a0t1 - a0t2);
+  stop(1, 2) = htausq * ctau * stau * (a0t1 - a0t2)
+     + 3.0 * htau * hb * cb * sb * (a0(msbot(1), q) - a0(msbot(2), q));
 
   for (i=1; i<=4; i++) {
     higgs(1, 1) = higgs(1, 1) + 
@@ -4287,9 +4289,13 @@ void MssmSoftsusy::addStauCorrection(double p, DoubleMatrix & mass,
 
   for (i=1; i<=4; i++) {
     double one = gfn(p, mneut(i), mtau, q);
-    neutralino(1, 1) = neutralino(1, 1) + fChi0TauStauLL(i) * one;
-    neutralino(2, 2) = neutralino(2, 2) + fChi0TauStauRR(i) * one;
-    neutralino(1, 2) = neutralino(1, 2) + fChi0TauStauLR(i) * one;
+    double two = 2.0 * mneut(i) * mtau * b0(p, mneut(i), mtau, q);
+    neutralino(1, 1) = neutralino(1, 1) + fChi0TauStauLL(i) * one
+       - gChi0TauStauLL(i) * two;
+    neutralino(2, 2) = neutralino(2, 2) + fChi0TauStauRR(i) * one
+       - gChi0TauStauRR(i) * two;
+    neutralino(1, 2) = neutralino(1, 2) + fChi0TauStauLR(i) * one
+       - gChi0TauStauLR(i) * two;
   }
 
   piSq = 1.0 / (16.0 * sqr(PI)) * 
@@ -4313,6 +4319,7 @@ void MssmSoftsusy::addSdownCorrection(DoubleMatrix & mass, int family) {
   DoubleMatrix piSq(2, 2); /// Self-energy matrix
 	
   /// brevity
+  double    mw      = displayMwRun();
   double    mz      = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
@@ -4363,8 +4370,8 @@ void MssmSoftsusy::addSdownCorrection(DoubleMatrix & mass, int family) {
   DoubleVector dnu(4), dnd(4), cn(4);
   assignHiggsSfermions(higgsm, higgsc, dnu, dnd, cn, beta);
 
-  DoubleMatrix lsSbotLSbotLR(4, 2), lsSbotLSbot12(4, 2);
-  DoubleMatrix lsSbotRSbotLR(4, 2), lsSbotRSbot12(4, 2);
+  DoubleMatrix lsSbotLSbotLR(4, 2);
+  DoubleMatrix lsSbotRSbotLR(4, 2);
   /// Order (s1 s2 G A, L R)
   lsSbotLSbotLR(1, 1) = g * mz * gdL * cosb / costhDrbar;
   lsSbotLSbotLR(2, 1) = -g * mz * gdL * sinb / costhDrbar;
@@ -4382,13 +4389,13 @@ void MssmSoftsusy::addSdownCorrection(DoubleMatrix & mass, int family) {
   DoubleMatrix lHSbotLSbot12(lsSbotLSbotLR), lHSbotRSbot12(lsSbotRSbotLR);
   /// Mix CP-even Higgses up
   for (i=1; i<=2; i++) { /// i is the L/R label
-    temp(1) = lsSbotLSbot12(1, i);
-    temp(2) = lsSbotLSbot12(2, i);
+    temp(1) = lsSbotLSbotLR(1, i);
+    temp(2) = lsSbotLSbotLR(2, i);
     temp2 = rot2d(alpha) * temp;
     lHSbotLSbot12(1, i) = temp2(1);
     lHSbotLSbot12(2, i) = temp2(2);
-    temp(1) = lsSbotRSbot12(1, i);
-    temp(2) = lsSbotRSbot12(2, i);
+    temp(1) = lsSbotRSbotLR(1, i);
+    temp(2) = lsSbotRSbotLR(2, i);
     temp2 = rot2d(alpha) * temp;
     lHSbotRSbot12(1, i) = temp2(1);
     lHSbotRSbot12(2, i) = temp2(2);
@@ -4626,6 +4633,7 @@ void MssmSoftsusy::addSbotCorrection(double p,
 	
   /// brevity
   double    mz      = displayMzRun();
+  double    mw      = displayMwRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
   double    alpha   = forLoops.thetaH;
@@ -4663,6 +4671,7 @@ void MssmSoftsusy::addSbotCorrection(double p,
     ht = forLoops.ht,
     hb = forLoops.hb,
     mb = forLoops.mb,
+    htau = forLoops.htau,
     htsq = sqr(ht), 
     sinb = sin(beta), cosb = cos(beta), 
     hbsq = sqr(hb);
@@ -4855,7 +4864,8 @@ void MssmSoftsusy::addSbotCorrection(double p,
 
   stop(1, 1) = hbsq * (sqr(sb) * a0t1 + sqr(cb) * a0t2);
   stop(2, 2) = hbsq * (sqr(cb) * a0t1 + sqr(sb) * a0t2);
-  stop(1, 2) = hbsq * cb * sb * 3.0 * (a0t1 - a0t2);
+  stop(1, 2) = hbsq * cb * sb * 3.0 * (a0t1 - a0t2)
+     + hb * htau * ctau * stau * (a0(mstop(1), q) - a0(mstop(2), q));
 
   sbottom(1, 1) = 
     htsq * (sqr(st) * a0(mstop(1), q) + sqr(ct) * a0(mstop(2), q));
