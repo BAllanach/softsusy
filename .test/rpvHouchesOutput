@@ -55,10 +55,10 @@ Block MASS                      # Mass spectrum
    1000021     1.14813606e+03   # ~g
    1000022     2.05522128e+02   # ~neutralino(1)
    1000023     3.87791798e+02   # ~neutralino(2)
-   1000024     3.87961847e+02   # ~chargino(1)
+   1000024     3.87862344e+02   # ~chargino(1)
    1000025    -6.33183756e+02   # ~neutralino(3)
    1000035     6.45282163e+02   # ~neutralino(4)
-   1000037     6.45604772e+02   # ~chargino(2)
+   1000037     6.46060161e+02   # ~chargino(2)
    1000011     2.17153020e+02   # charged scalar
    1000013     2.17240952e+02   # charged scalar
    1000015     3.32394842e+02   # charged scalar
