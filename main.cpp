@@ -245,12 +245,18 @@ void m0Scan(double mtop, double alphasMZ, double mbmb, double m12, double a0,
 
 int main() {
     outputCharacteristics(6);
-    cout << b1(2.849934e+00, 2.423902e+00, 3.858506e+03, 9.118760e+01) << endl;
-	//    cout << b1(2.849934e+00, 2.423902e+00, 3.858506e+03, 9.118760e+01) << endl;
-    exit(0);
+    /*    double p = 6.554676e+2, m1 = 2.534452e+03, m2 = 2.302428e+00, 
+      q = 2.176440e+03;
 
-  double p = 1000., q = 100., m1 = 0., m2 = 800.;
-  ltini(); setmudim(q * q);
+      cout << b1(p, m1, m2, q) << endl;
+    //  cout << b1(6.554676e+2, 2.302428e+00, 2.534452e+03, 2.176440e+03) <<
+    //  endl;
+    m1 = 2.423902e+00, m2 = 3.858506e+03, q = 9.118760e+01;
+    cout << b1(p, m1, m2, q) << endl;
+    //  cout << b1(2.849934e+00, 2.423902e+00, 3.858506e+03, 9.118760e+01) << endl;
+    exit(0);
+    */
+    //  ltini(); setmudim(q * q);
   /*  cout << b0(p, m1, m2, q) << endl; 
   cout << B0(p*p, m1*m1, m2*m2) << endl;
   ltexi(); exit(0);

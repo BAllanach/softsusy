@@ -438,9 +438,11 @@ double b1(double p, double m1, double m2, double q) {
   double ans = 0.;
   double pTest = sqr(p) / maximum(sqr(m1), sqr(m2));
 
+  //  cout << "pT=" << pTest << endl; ///< DEBUG
+
   char * methodId = (char *) "";
 
-  if (pTest > pTolerance) {
+  if (pTest > pTolerance * 1.0e3) {
     methodId = (char *) "B1A";
 
     ans = (a0(m2, q) - a0(m1, q) + (sqr(p) + sqr(m1) - sqr(m2)) 
@@ -458,8 +460,8 @@ double b1(double p, double m1, double m2, double q) {
     ans = bIntegral(1, p, m1, m2, q); 
   }
 
-  if (!close(b1l, ans, 1.0e-3)) {
-    cout << methodId << " ";
+  if (!close(b1l, ans, 5.0e-2)) {
+    cout << methodId << " Test=" << pTest << " ";
     cout << "DEBUG Err: Db1(" << p << ", " << m1 << ", " << m2 
 	 << ", "  << q << ")=" << 1.-b1l/ans << endl;
     cout << "SOFTSUSY  B1=" << ans << " B0=" << b0(p, m1, m2, q) << endl;
