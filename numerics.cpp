@@ -380,9 +380,12 @@ double b0(double p, double m1, double m2, double q) {
   double dm = mMaxSq - mMinSq;
   s = pSq + dm;
 
+  char * methodId = (char *) "";
+
   double pTest = sqr(p) / sqr(mMax);
   /// p is not 0  
   if (pTest > pTolerance) {  
+    methodId = (char *) "B0A";
     
     Complex iEpsilon(0.0, EPSTOL * sqr(mMax));
     
@@ -394,63 +397,34 @@ double b0(double p, double m1, double m2, double q) {
       (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
     
     ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
-    
-    if (!close(b0l, ans, 1.0e-3)) {
-      cout << "B0A. ";
-      cout << "DEBUG Err: DB0(" << p << ", " << m1 << ", " << m2 
-	   << ", "  << q << ")=" << 1.-b0l/ans << endl;
-      cout << "SOFTSUSY  B0=" << ans << endl;
-      cout << "LOOPTOOLS B0=" << b0l << endl;
-    }
-
-      return ans;
-  }
-  else {
+  } else {
     if (close(m1, m2, EPSTOL)) {
-      ans = - log(sqr(m1 / q));
-
-      if (!close(b0l, ans, 1.0e-3)) {
-      cout << "B0B. ";
-      cout << "DEBUG Err: DB0(" << p << ", " << m1 << ", " << m2 
-	   << ", "  << q << ")=" << 1.-b0l/ans << endl;
-      cout << "SOFTSUSY  B0=" << ans << endl;
-      cout << "LOOPTOOLS B0=" << b0l << endl;
-      }
-
-      return ans;
-    }
-    else {
-      double Mmax2 = sqr(mMax),
-	Mmin2 = sqr(mMin); 
-      if (Mmin2 < sqr(TOLERANCE)) {
-	ans = 1.0 - log(Mmax2 / sqr(q));
-	if (!close(b0l, ans, 1.0e-3)) {
-	  cout << "B0C";
-      cout << "DEBUG Err: DB0(" << p << ", " << m1 << ", " << m2 
-	   << ", "  << q << ")=" << 1.-b0l/ans << endl;
-      cout << "SOFTSUSY  B0=" << ans << endl;
-      cout << "LOOPTOOLS B0=" << b0l << endl;
-	}
+      methodId = (char *) "B0B";
       
-      return ans;
-      }
-      else {
-	ans = 
-	  1.0 - log(Mmax2 / sqr(q)) + Mmin2 * log(Mmax2 / Mmin2) 
+      ans = - log(sqr(m1 / q));
+    } else {
+      double Mmax2 = sqr(mMax), Mmin2 = sqr(mMin); 
+      if (Mmin2 < sqr(TOLERANCE)) {
+	methodId = (char *) "B0C";
+
+	ans = 1.0 - log(Mmax2 / sqr(q));
+      } else {
+	methodId = (char *) "B0D";
+
+	ans = 1.0 - log(Mmax2 / sqr(q)) + Mmin2 * log(Mmax2 / Mmin2) 
 	  / (Mmin2 - Mmax2);
-	
-	if (!close(b0l, ans, 1.0e-3)) {
-	  cout << "B0D";
-	  cout << "DEBUG Err: DB0(" << p << ", " << m1 << ", " << m2 
-	       << ", "  << q << ")=" << 1.-b0l/ans << endl;
-	  cout << "SOFTSUSY  B0=" << ans << endl;
-	  cout << "LOOPTOOLS B0=" << b0l << endl;
-	}
-	
-	return ans;
       }
     }
   }   
+  
+  if (!close(b0l, ans, 1.0e-3)) {
+    cout << methodId << " ";
+    cout << "DEBUG Err: DB0(" << p << ", " << m1 << ", " << m2 
+	 << ", "  << q << ")=" << 1.-b0l/ans << endl;
+    cout << "SOFTSUSY  B0=" << ans << endl;
+    cout << "LOOPTOOLS B0=" << b0l << endl;
+  }
+  return ans;
 }
 
 /// Note that b1 is NOT symmetric in m1 <-> m2!!!

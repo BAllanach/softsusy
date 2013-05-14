@@ -245,7 +245,7 @@ void m0Scan(double mtop, double alphasMZ, double mbmb, double m12, double a0,
 
 int main() {
     outputCharacteristics(6);
-    cout << b1(2.849934e+02, 2.423902e+00, 3.858506e+03, 9.118760e+01) << endl;
+    cout << b1(2.849934e+00, 2.423902e+00, 3.858506e+03, 9.118760e+01) << endl;
 	//    cout << b1(2.849934e+00, 2.423902e+00, 3.858506e+03, 9.118760e+01) << endl;
     exit(0);
 
