@@ -9,6 +9,27 @@
 
 #include "numerics.h"
 
+double accurateSqrt1Plusx(double x) {
+  if (x > 1.) return sqrt(1.0 + x);
+  
+  /// calculate approximate number of terms we're going to need to get 16
+  /// digit precision
+  int num = -16.0 / log10(x); 
+
+  cout << "Number of terms: " << num << endl;
+
+  double factor = 0.5 * x;
+  double ans = 1. + factor;
+  double pow = -0.5;
+
+  for (int i=2; i<=num; i++) {
+    factor *= x * pow / double(i);
+    pow -= 1.;
+    ans += factor;
+  }
+  return ans;
+}
+
 double log1minusx(double x) {
   if (x > 1.) return 0.; 
   else if (close(1., x, EPSTOL)) return 6.66e66;
@@ -346,15 +367,10 @@ double fB(const Complex & a) {
     double ans = -1. - x + sqr(x) * 0.5;
     return ans;
   }
-  if (close(x, 1., pTolerance)) { 
-    if (close(x, 1., EPSTOL)) return -1.;
-    double eps = x - 1.;
-    double ans = -1. + eps + sqr(eps) * 0.5;
-    return ans;
-  }
+  if (close(x, 1., EPSTOL)) return -1.;
   
   Complex ans = log(1. - a) -1. - a * log(1.0 - 1.0 / a);
-  //double ans = log1minusx(a.real()) - 1. - a.real() * log1minusx(1.0 / a.real());
+  //  double ans = log1minusx(a.real()) - 1. - a.real() * log1minusx(1.0 / a.real());
   return ans.real();
 }
   
@@ -377,8 +393,8 @@ double b0(double p, double m1, double m2, double q) {
   double pSq = sqr(p), mMinSq = sqr(mMin), mMaxSq = sqr(mMax);
   double s = 0.;
   /// Try to increase the accuracy of s
-  double dm = mMaxSq - mMinSq;
-  s = pSq + dm;
+  double dmSq = mMaxSq - mMinSq;
+  s = pSq + dmSq;
 
   char * methodId = (char *) "";
 
@@ -390,12 +406,27 @@ double b0(double p, double m1, double m2, double q) {
     Complex iEpsilon(0.0, EPSTOL * sqr(mMax));
     
     Complex xPlus, xMinus;
-    
+
+    /*    if (pTest > 1.) {
+      double x = sqr(dmSq) / sqr(pSq);
+      x -= 2.0 * (sqr(mMax) + sqr(mMin)) / pSq;
+      Complex sqrtPiece = accurateSqrt1Plusx(x) * (1. * Complex(0., 1.0e-14));
+      xPlus = Complex(dmSq, 0.);
+      xPlus += pSq * (1. + pSq * sqrtPiece);
+      xPlus /= 2. * pSq;
+      xMinus = Complex(dmSq, 0.);
+      xMinus += pSq * (1. - pSq * sqrtPiece);
+      xMinus /= 2. * pSq;
+    }
+    else { */
     xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
       (2. * sqr(p));
     xMinus = 2. * (sqr(mMax) - iEpsilon) / 
       (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
-    
+    //    }    
+
+    //    cout << "x+=" << xPlus << " x-=" << xMinus << endl;
+
     ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
   } else {
     if (close(m1, m2, EPSTOL)) {
@@ -442,7 +473,7 @@ double b1(double p, double m1, double m2, double q) {
 
   char * methodId = (char *) "";
 
-  if (pTest > pTolerance * 1.0e3) {
+  if (pTest > pTolerance * 1.0e2) {
     methodId = (char *) "B1A";
 
     ans = (a0(m2, q) - a0(m1, q) + (sqr(p) + sqr(m1) - sqr(m2)) 
@@ -460,7 +491,7 @@ double b1(double p, double m1, double m2, double q) {
     ans = bIntegral(1, p, m1, m2, q); 
   }
 
-  if (!close(b1l, ans, 5.0e-2)) {
+  if (!close(b1l, ans, 1.0e-3)) {
     cout << methodId << " Test=" << pTest << " ";
     cout << "DEBUG Err: Db1(" << p << ", " << m1 << ", " << m2 
 	 << ", "  << q << ")=" << 1.-b1l/ans << endl;

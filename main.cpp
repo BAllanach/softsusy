@@ -167,7 +167,7 @@ void muScan(double m0, double mtop, double alphasMZ, double mbmb, double m12,
     trialMuSq = sqr(mu);
     double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
 
-    cout << r; exit(0); ///< DEBUG
+    //    cout << r; exit(0); ///< DEBUG
 
     r.calcDrBarPars();
     drBarPars s(r.displayDrBarPars());
@@ -244,11 +244,11 @@ void m0Scan(double mtop, double alphasMZ, double mbmb, double m12, double a0,
 }
 
 int main() {
-    outputCharacteristics(6);
-    /*    double p = 6.554676e+2, m1 = 2.534452e+03, m2 = 2.302428e+00, 
+    outputCharacteristics(16);
+    /*
+    double p = 8.398814e+01, m1 = 2.302429e+00, m2 = 2.534452e+03, 
       q = 2.176440e+03;
-
-      cout << b1(p, m1, m2, q) << endl;
+    cout << b1(p, m1, m2, q) << endl; exit(0);
     //  cout << b1(6.554676e+2, 2.302428e+00, 2.534452e+03, 2.176440e+03) <<
     //  endl;
     m1 = 2.423902e+00, m2 = 3.858506e+03, q = 9.118760e+01;
@@ -286,7 +286,7 @@ int main() {
     */
     m0Scan(mtop, alphasMZ, mbmb, m12, a0, tanb, start, end); cout << endl;
 
-    exit(0);
+    //    exit(0);
 
     mtop = 172.5; cout << "# mt=172.5\n";
     m0Scan(mtop, alphasMZ, mbmb, m12, a0, tanb, start, end); cout << endl;
