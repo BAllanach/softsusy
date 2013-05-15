@@ -407,41 +407,23 @@ double b0(double p, double m1, double m2, double q) {
     
     Complex xPlus, xMinus;
 
-    /*    if (pTest > 1.) {
-      double x = sqr(dmSq) / sqr(pSq);
-      x -= 2.0 * (sqr(mMax) + sqr(mMin)) / pSq;
-      Complex sqrtPiece = accurateSqrt1Plusx(x) * (1. * Complex(0., 1.0e-14));
-      xPlus = Complex(dmSq, 0.);
-      xPlus += pSq * (1. + pSq * sqrtPiece);
-      xPlus /= 2. * pSq;
-      xMinus = Complex(dmSq, 0.);
-      xMinus += pSq * (1. - pSq * sqrtPiece);
-      xMinus /= 2. * pSq;
-    }
-    else { */
     xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
       (2. * sqr(p));
     xMinus = 2. * (sqr(mMax) - iEpsilon) / 
       (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
-    //    }    
-
-    //    cout << "x+=" << xPlus << " x-=" << xMinus << endl;
 
     ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
   } else {
     if (close(m1, m2, EPSTOL)) {
       methodId = (char *) "B0B";
-      
       ans = - log(sqr(m1 / q));
     } else {
       double Mmax2 = sqr(mMax), Mmin2 = sqr(mMin); 
       if (Mmin2 < sqr(TOLERANCE)) {
 	methodId = (char *) "B0C";
-
 	ans = 1.0 - log(Mmax2 / sqr(q));
       } else {
 	methodId = (char *) "B0D";
-
 	ans = 1.0 - log(Mmax2 / sqr(q)) + Mmin2 * log(Mmax2 / Mmin2) 
 	  / (Mmin2 - Mmax2);
       }
@@ -469,25 +451,20 @@ double b1(double p, double m1, double m2, double q) {
   double ans = 0.;
   double pTest = sqr(p) / maximum(sqr(m1), sqr(m2));
 
-  //  cout << "pT=" << pTest << endl; ///< DEBUG
-
   char * methodId = (char *) "";
 
   if (pTest > pTolerance * 1.0e2) {
     methodId = (char *) "B1A";
-
     ans = (a0(m2, q) - a0(m1, q) + (sqr(p) + sqr(m1) - sqr(m2)) 
 	   * b0(p, m1, m2, q)) / (2.0 * sqr(p)); 
   } else if (fabs(m1) > EPSTOL && !close(m1, m2, EPSTOL) 
 	     && fabs(m2) > EPSTOL) { ///< checked
     methodId = (char *) "B1B";
-
     double Mmax2 = maximum(sqr(m1) , sqr(m2)), x = sqr(m2 / m1);
     ans = 0.5 * (-log(Mmax2 / sqr(q)) + 0.5 + 1.0 / (1.0 - x) + log(x) /
 		 sqr(1.0 - x) - theta(1.0 - x) * log(x)); ///< checked
   } else {
     methodId = (char *) "B1C";
-
     ans = bIntegral(1, p, m1, m2, q); 
   }
 
@@ -499,6 +476,7 @@ double b1(double p, double m1, double m2, double q) {
     cout << "LOOPTOOLS B1=" << b1l << " B0=" << B0(p*p, m1*m1, m2*m2).real() 
 	 << endl;
   }
+  
   return ans;
 }
 
@@ -598,7 +576,7 @@ double c0(double m1, double m2, double m3) {
   double q = 100.;
   setmudim(q*q); 
   double psq = 0.;
-  //  return C0(psq, psq, psq, m1*m1, m2*m2, m3*m3).real();
+  return C0(psq, psq, psq, m1*m1, m2*m2, m3*m3).real();
 #endif
 
   if (close(m2, m3, EPSTOL)) {

@@ -217,6 +217,7 @@ bool integrateReversibly(DoubleVector & xi,
 double fin(double mm1, double mm2);
 double den(double a, int b); /// 1/a^b
 
+/// This function DOESNT WORK YET!!!
 double log1minusx(double x);
 #endif
 
