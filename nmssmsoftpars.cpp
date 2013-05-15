@@ -263,6 +263,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     const double Xd = mH1sq * ddT + (mq * d2).trace() + (md * d2t).trace() + hdT;
     const double Xe = mH1sq * eeT + (ml * e2).trace() + (me * e2t).trace() + heT;
     static const double oneO16Pif = sqr(ONEO16Pisq);
+    const double sP = lsq * (mH1sq - mH2sq);
 
     const DoubleVector &g4=a.g4;
 
@@ -284,27 +285,32 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
            - 2.0 * lam * hlam * (u1 * hut + hu * ut)
            - lsq * (2.0 * dt * md * d1 + mq * d2 + d2 * mq + 2.0 * mH1sq * d2
                     + 2.0 * hd2) - 2.0 * Mlamsq * d2
-           - 2.0 * lam * hlam * (d1 * hdt + hd * dt);
+           - 2.0 * lam * hlam * (d1 * hdt + hd * dt)
+           + 0.4 * gsq(1) * sP;
 
 	dml2 =
            - lsq * (2.0 * et * me * e1 + ml * e2 + e2 * ml
                     + 2.0 * mH1sq * e2 + 2.0 * he2) - 2.0 * Mlamsq * e2
-           - 2.0 * lam * hlam * (e1 * het + he * et);
+           - 2.0 * lam * hlam * (e1 * het + he * et)
+           - 1.2 * gsq(1) * sP;
 
         dmu2 =
            - 2.0 * lsq * (2.0 * ut * mq * u1 + mu * u2 + u2 * mu
                           + 2.0 * mH2sq * u2 + 2.0 * hu2) - 4.0 * Mlamsq * u2
-           - 4.0 * lam * hlam * (ut * hu + hut * u1);
+           - 4.0 * lam * hlam * (ut * hu + hut * u1)
+           - 1.6 * gsq(1) * sP;
 
 	dmd2 =
            - 2.0 * lsq * (2.0 * dt * mq * d1 + md * d2 + d2 * md
                           + 2.0 * mH1sq * d2 + 2.0 * hd2) - 4.0 * Mlamsq * d2
-           - 4.0 * lam * hlam * (dt * hd + hdt * d1);
+           - 4.0 * lam * hlam * (dt * hd + hdt * d1)
+           + 0.8 * gsq(1) * sP;
 
 	dme2 =
            - 2.0 * lsq * (2.0 * et * ml * e1 + me * e2 + e2 * me + 2.0 * mH1sq * e2
                           + 2.0 * he2) - 4.0 * Mlamsq * e2
-           - 4.0 * lam * hlam * (et * he + het * e1);
+           - 4.0 * lam * hlam * (et * he + het * e1)
+           + 2.4 * gsq(1) * sP;
 
 	dhu2 =
            - lsq * hu * (3.0 * lsq + 2.0 * ksq + 3.0 * ddT + eeT)
@@ -367,27 +373,32 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
            - 2.0 * lam * hlam * (u1 * hut + hu * ut)
            - lsq * (2.0 * dt * md * d1 + mq * d2 + d2 * mq + 2.0 * mH1sq * d2
                     + 2.0 * hd2) - 2.0 * Mlamsq * d2
-           - 2.0 * lam * hlam * (d1 * hdt + hd * dt);
+           - 2.0 * lam * hlam * (d1 * hdt + hd * dt)
+           + 0.4 * gsq(1) * sP;
 
         dml2 =
            - lsq * (2.0 * et * me * e1 + ml * e2 + e2 * ml + 2.0 * mH1sq * e2
                     + 2.0 * he2) - 2.0 * Mlamsq * e2
-           - 2.0 * lam * hlam * (e1 * het + he * et);
+           - 2.0 * lam * hlam * (e1 * het + he * et)
+           - 1.2 * gsq(1) * sP;
 
         dmu2 =
            - 2.0 * lsq * (2.0 * ut * mq * u1 + mu * u2t + u2t * mu
                           + 2.0 * mH2sq * u2t + 2.0 * hu2t) - 4.0 * Mlamsq * u2t
-           - 4.0 * lam * hlam * (ut * hu + hut * u1);
+           - 4.0 * lam * hlam * (ut * hu + hut * u1)
+           - 1.6 * gsq(1) * sP;
 
         dmd2 =
            - 2.0 * lsq * (2.0 * dt * mq * d1 + md * d2t + d2t * md
                           + 2.0 * mH1sq * d2t + 2.0 * hd2t) - 4.0 * Mlamsq * d2t
-           - 4.0 * lam * hlam * (dt * hd + hdt * d1);
+           - 4.0 * lam * hlam * (dt * hd + hdt * d1)
+           + 0.8 * gsq(1) * sP;
 
         dme2 =
            - 2.0 * lsq * (2.0 * et * ml * e1 + me * e2t + e2t * me
                           + 2.0 * mH1sq * e2t + 2.0 * he2t) - 4.0 * Mlamsq * e2t
-           - 4.0 * lam * hlam * (et * he + het * e1);
+           - 4.0 * lam * hlam * (et * he + het * e1)
+           + 2.4 * gsq(1) * sP;
 
 	dhu2 =
            - lsq * hu * (3.0 * lsq + 2.0 * ksq + 3.0 * ddT + eeT)
@@ -486,12 +497,14 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
          - 12.0 * lsq * (Mlamsq + hlam * hlam)
          - 6.0 * (lsq * Xd + ddT * Mlamsq + 2.0 * lam * hlam * hddT)
          - 2.0 * (lsq * Xe + eeT * Mlamsq + 2.0 * lam * hlam * heeT)
-         - 4.0 * (ksq * Mlamsq + lsq * Mkapsq + 2.0 * lam * kap * hlam * hkap);
+         - 4.0 * (ksq * Mlamsq + lsq * Mkapsq + 2.0 * lam * kap * hlam * hkap)
+         + 1.2 * gsq(1) * sP;
 
       dmH1sq2 =
          - 12.0 * lsq * (Mlamsq + hlam * hlam)
          - 6.0 * (lsq * Xu + uuT * Mlamsq + 2.0 * lam * hlam * huuT)
-         - 4.0 * (ksq * Mlamsq + lsq * Mkapsq + 2.0 * lam * kap * hlam * hkap);
+         - 4.0 * (ksq * Mlamsq + lsq * Mkapsq + 2.0 * lam * kap * hlam * hkap)
+         - 1.2 * gsq(1) * sP;
 
       dmSsq2 = - 16.0 * lsq * (Mlamsq + sqr(hlam))
          - 32.0 * ksq * (Mkapsq + sqr(hkap))
@@ -523,12 +536,14 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
          - 12.0 * lsq * (Mlamsq + hlam * hlam)
          - 6.0 * (lsq * Xd + ddT * Mlamsq + 2.0 * lam * hlam * hddT)
          - 2.0 * (lsq * Xe + eeT * Mlamsq + 2.0 * lam * hlam * heeT)
-         - 4.0 * (ksq * Mlamsq + lsq * Mkapsq + 2.0 * lam * kap * hlam * hkap);
+         - 4.0 * (ksq * Mlamsq + lsq * Mkapsq + 2.0 * lam * kap * hlam * hkap)
+         + 1.2 * gsq(1) * sP;
 
       dmH1sq2 =
          - 12.0 * lsq * (Mlamsq + hlam * hlam)
          - 6.0 * (lsq * Xu + uuT * Mlamsq + 2.0 * lam * hlam * huuT)
-         - 4.0 * (ksq * Mlamsq + lsq * Mkapsq + 2.0 * lam * kap * hlam * hkap);
+         - 4.0 * (ksq * Mlamsq + lsq * Mkapsq + 2.0 * lam * kap * hlam * hkap)
+         - 1.2 * gsq(1) * sP;
 
       dm3sq2 = - 14.0 * l4 * m3sq - 32.0 * smu * lam * lsq * hlam
          - 15.0 * lsq * m3sq * uuT - 18.0 * lsq * smu * huuT

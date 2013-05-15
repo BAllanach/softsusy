@@ -242,6 +242,8 @@ void compare_rges(int loopLevel)
    DoubleMatrix ID(3, 3), mm0(3, 3);
    for (int i=1; i<=3; i++) ID(i, i) = 1.0;
    mm0 = ID * sqr(m0);
+   const double mH2sq = sqr(m0);
+   const double mH1sq = 10 * mH2sq;
 
    NMSSMSoftPars sarah;
    sarah.setMu(91);
@@ -262,8 +264,8 @@ void compare_rges(int loopLevel)
    sarah.set_md2(mm0);
    sarah.set_mu2(mm0);
    sarah.set_me2(mm0);
-   sarah.set_mHd2(sqr(m0));
-   sarah.set_mHu2(sqr(m0));
+   sarah.set_mHd2(mH1sq);
+   sarah.set_mHu2(mH2sq);
    sarah.set_TYu(a0 * Yu);
    sarah.set_TYd(a0 * Yd);
    sarah.set_TYe(a0 * Ye);
@@ -290,8 +292,8 @@ void compare_rges(int loopLevel)
    softSusy.setSoftMassMatrix(mDr, mm0);
    softSusy.setSoftMassMatrix(mLl, mm0);
    softSusy.setSoftMassMatrix(mEr, mm0);
-   softSusy.setMh1Squared(sqr(m0));
-   softSusy.setMh2Squared(sqr(m0));
+   softSusy.setMh1Squared(mH1sq);
+   softSusy.setMh2Squared(mH2sq);
    softSusy.setTrilinearMatrix(UA, a0 * Yu);
    softSusy.setTrilinearMatrix(DA, a0 * Yd);
    softSusy.setTrilinearMatrix(EA, a0 * Ye);
