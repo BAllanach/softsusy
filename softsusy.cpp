@@ -538,10 +538,6 @@ void MssmSoftsusy::calcTadpole2Ms1loop(double mt, double sinthDRbar) {/// CHECKE
   }
 }
 
-//double averageMus(susyMu, muOld) {
-//  return; ///< placeholder
-//}
-
 /// Apply at scale MSusy: checked 19.12.2000
 /// Displays PHYSICAL MZ, ie MZ(q) - piZz^T(q)
 /// Fixed pizztMS to resummed version 6/1/13
@@ -554,9 +550,9 @@ double MssmSoftsusy::predMzsq(double & tanb, double muOld, double eps) {
     double mt = forLoops.mt;
     doTadpoles(mt, sinthDRbar);
   }
-  
+
   double susyMu = displaySusyMu();
-  tanb = predTanb(susyMu); 
+  tanb = predTanb(susyMu);
   if (muOld > -6.e66) susyMu = susyMu / eps - muOld * (1. / eps - 1.);
 
   double pizztMS = sqr(displayMzRun()) - sqr(displayMz()); ///< resums logs
@@ -2384,7 +2380,7 @@ double MssmSoftsusy::calcRunningMt() {
     }            
   }
 
-  resigmat = resigmat + charginoContribution;
+  resigmat = resigmat + charginoContribution; 
     
   resigmat = resigmat * mtpole / (16.0 * sqr(PI));  
 
@@ -5739,7 +5735,8 @@ void MssmSoftsusy::physical(int accuracy) {
     i++;
   }
 
-  if (higgsTachyon) { flagTachyon(h0); flagTachyon(A0); flagTachyon(hpm); }
+  if (higgsTachyon) { flagTachyon(h0); flagTachyon(softsusy::A0); 
+    flagTachyon(hpm); }
   physpars.mh0 = ppp->displayPhys().mh0;
   physpars.mA0 = ppp->displayPhys().mA0;
   physpars.mH0 = ppp->displayPhys().mH0;
@@ -5933,8 +5930,8 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
       log(tree.me(2,2) / q) + 
       log(tree.me(1,3) / q) + 
       log(tree.me(2,3) / q)) / 3.0 
-     + (log(fabs(tree.mch(1)) / q) 
-	+ log(fabs(tree.mch(2)) / q)) * 4.0 / 3.0;
+    + (log(fabs(tree.mch(1)) / q) 
+       + log(fabs(tree.mch(2)) / q)) * 4.0 / 3.0;
   
   double deltaAlpha;
   deltaAlpha = -alphaEm / (2.0 * PI) * (deltaASM + deltaASusy);
@@ -6189,7 +6186,7 @@ double MssmSoftsusy::lowOrg
     
     setSusy(t);
     
-    /// Initial guess: B=0, mu=1st parameter, need better guesses
+    /// Initial guess: B=0, 
     boundaryCondition(*this, pars);
 
     if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
@@ -6337,7 +6334,7 @@ double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {
     sT(k) = 0.5 * 
       fabs(1. - minimum(predictedMzSq, sqr(MZ)) / 
 	   maximum(sqr(MZ), predictedMzSq));
-    if (numTries > 10) sT(k) *= 0.1;
+    if (numTries > 10) sT(k) *= 0.1; 
   }
 
   return sT.max();
@@ -6351,11 +6348,6 @@ double MssmSoftsusy::calcSinthdrbar() const {
 	 sqr(displayGaugeCoupling(2)) * 5. / 3.);
 
   return sinth;   
-  
-  /** old, slower and probably less accurate version
-  double tanth = displayGaugeCoupling(1) / 
-    displayGaugeCoupling(2) * sqrt(0.6);
-    return sin(atan(tanth)); */
 }
 
 //VEV at current scale, using an input value of Z self-energy
@@ -6376,6 +6368,10 @@ double MssmSoftsusy::getVev(double pizzt) {
 //VEV at current scale: calculates Z self energy first
 double MssmSoftsusy::getVev() {
   double pizzt = piZZT(displayMz(), displayMu());
+  if (pizzt + displayMz() < 0.) {
+    pizzt = -displayMz() + EPSTOL;
+    flagTachyon(Z);
+  }
 
   return getVev(pizzt);
 }
@@ -6407,10 +6403,23 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   double piwwt0  = piWWT(0., displayMu(), true);
   double piwwtMW = piWWT(displayMw(), displayMu(), true);
   
+  if (piwwt0 + sqr(displayMw()) < 0.) {
+    flagTachyon(W);
+    piwwt0 = -sqr(displayMw()) + EPSTOL;
+  }
+  if (piwwtMW + sqr(displayMw()) < 0.) {
+    flagTachyon(W);
+    piwwtMW = -sqr(displayMw()) + EPSTOL;
+  }
+  if (pizztMZ + sqr(displayMz()) < 0.) {
+    flagTachyon(Z);
+    pizztMZ = -sqr(displayMz()) + EPSTOL;
+  }
+
   rhohat(outrho, outsin, alphaDrbar, pizztMZ, piwwt0, piwwtMW, tol, maxTries);
 
-  if (problem.noRhoConvergence) 
-    outsin = sqrt(1.0 - sqr(displayMw() / displayMz())); 
+  //  if (problem.noRhoConvergence) 
+  //    outsin = sqrt(1.0 - sqr(displayMw() / displayMz())); 
   
   double eDR = sqrt(4.0 * PI * alphaDrbar), costhDR = cos(asin(outsin));
 
@@ -6447,7 +6456,7 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   setGaugeCoupling(1, newGauge(1));
   setGaugeCoupling(2, newGauge(2));
   setGaugeCoupling(3, newGauge(3));
-  setHvev(vev);
+  setHvev(vev); 
   setYukawaMatrix(YU, mUq * (root2 / (vev * sin(beta))));
   setYukawaMatrix(YD, mDq * (root2 / (vev * cos(beta)))); 
   setYukawaMatrix(YE, mLep * (root2 / (vev * cos(beta)))); 
@@ -6493,9 +6502,13 @@ void MssmSoftsusy::calcDrBarNeutralinos(double beta, double mz, double mw,
 
 void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, 
 				  double sinthDRbar, drBarPars & eg) {
-  if (eg.mt > 200. || eg.mt < 50.) 
-    throw("In MssmSoftsusy::calcDrBarHiggs and eg.mt is outside bounds\n");
-  
+  if (eg.mt > 200. || eg.mt < 50.) {
+    /// Gone badly non-perturbative
+    flagNonperturbative(true);
+    if (eg.mt > 200.) eg.mt = 200.;
+    if (eg.mt < 50.) eg.mt = 50.;
+  }
+
   /// You could instead do like sPHENO, choose what you'd get from minimising
   /// the potential at tree level, ie (mH2^2-mH1^2)/cos(2 beta)-mz^2. This
   /// *may* be less sensitive to becoming a tachyon at MZ. 
@@ -6523,7 +6536,7 @@ void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2,
       if (mAsq < 0.) { flagTachyon(A0); mAsq = fabs(poleMasq); }
       }
      */
-    flagTachyon(A0); 
+    flagTachyon(softsusy::A0); 
     if (mAFlag == false) mAsq = zeroSqrt(mAsq); 
     /// This may be  a bad idea in terms of convergence
     else mAsq = fabs(mAsq);
@@ -6723,7 +6736,6 @@ void MssmSoftsusy::itLowsoft
   /// On first iteration, don't bother with finite corrections
   
   numTries = numTries + 1;
-
   try {
     sparticleThresholdCorrections(tanb); 
 
@@ -6809,15 +6821,13 @@ void MssmSoftsusy::itLowsoft
     //    double tbIn; double predictedMzSq = 0.;
     if (numTries < 11) {
       rewsb(sgnMu, mtrun, pars);    
-      //      predictedMzSq = predMzsq(tbIn);   
     }
     else { ///< After 11 tries, we start averaging old/new mu values
       double epsi = 0.5;
       if (numTries > 20) epsi = 0.2;
       if (numTries > 30) epsi = 0.1;
       rewsb(sgnMu, mtrun, pars, oldMu, epsi);    
-      //      predictedMzSq = predMzsq(tbIn, oldMu, eps);   
-    }
+      } 
 
     oldMu = displaySusyMu();
 
