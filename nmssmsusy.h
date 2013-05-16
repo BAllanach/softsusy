@@ -50,7 +50,7 @@ inline nmsBrevity::nmsBrevity(const nmsBrevity &s)
 
 
 /// Contains all supersymmetric RPC-MSSM parameters and RGEs
-class nMssmSusy: public MssmSusy
+class NmssmSusy: public MssmSusy
 {
 private:
   /// new nmssm parameters, lambda, kappa appearing as superpotential
@@ -59,65 +59,65 @@ private:
   double lambda, kappa, sVev;
   /// new parameters appearing the general MSSM, but not the ususal
   /// form of the NMSSM which solves the mu-problem nor the MSSM.
-  /// They appear in superpotential terms zeta S and \frac{1}{2} mu_s
+  /// They appear in superpotential terms xiF S and \frac{1}{2} mupr
   /// S^2
-  double zeta, mu_s;
+  double xiF, mupr;
 
 public:
-  nMssmSusy(); ///< Constructor fills object with zeroes by default
+  NmssmSusy(); ///< Constructor fills object with zeroes by default
   /// Constructor sets object to be equal to another
-  nMssmSusy(const nMssmSusy &);
+  NmssmSusy(const NmssmSusy &);
   /// PA: Constructor given Yukawa matrices u,d,e, gauge couplings v, mu
-  /// parameter=m, tan beta=tb, lambda, kappa, mu_s, zeta,
+  /// parameter=m, tan beta=tb, lambda, kappa, mupr, xiF,
   //renormalisation scale MU, number of loops in
   /// RG evolution l and thresholds parameter t
-  nMssmSusy(const DoubleMatrix & u, const DoubleMatrix & d, const
+  NmssmSusy(const DoubleMatrix & u, const DoubleMatrix & d, const
             DoubleMatrix & e, const DoubleVector & v, double m,
             double tb, double MU, int l, int t, double h, double s,
-            double lambda, double kappa, double zeta, double mu_s);
-  virtual ~nMssmSusy(); ///< Default destructor
+            double lambda, double kappa, double xiF, double mupr);
+  virtual ~NmssmSusy(); ///< Default destructor
 
   /// sets object to be equal to another
-  const nMssmSusy & operator=(const nMssmSusy & s);
+  const NmssmSusy & operator=(const NmssmSusy & s);
   /// set the MssmSusy part
-  const nMssmSusy & operator=(const MssmSusy & s);
+  const NmssmSusy & operator=(const MssmSusy & s);
   /// sets object to be equal to another
-  void setSusy(const nMssmSusy &s);
+  void setSusy(const NmssmSusy &s);
 
   /// sets DRbar running singlet vev.
   void setSvev(double s);
   /// Copies MSSM Yukawa matrices and gauge couplings from s only
-  void setSomePars(const nMssmSusy & s);
+  void setSomePars(const NmssmSusy & s);
   /// sets the \lambda S H_u H_d coupling
   void setLambda(double);
   /// sets the \frac{1}{3} \kappa S^3 coupling
   void setKappa(double);
-  /// sets the \frac{1}{2} mu_s S^2 coupling
-  void setMu_s(double);
-   /// sets the zeta S coupling
-  void setZeta(double);
+  /// sets the \frac{1}{2} mupr S^2 coupling
+  void setMupr(double);
+   /// sets the xiF S coupling
+  void setXiF(double);
   /// Sets all RGE parameters to elements of vector
   void set(const DoubleVector &);
 
   /// returns DRbar running Singlet Higgs vev
   double displaySvev() const;
   /// Returns whole object as a const
-  inline const nMssmSusy & displaySusy() const;
+  inline const NmssmSusy & displaySusy() const;
   /// returns superpotential parameter lambda
   double displayLambda() const;
   /// returns superpotential parameter lambda
   double displayKappa() const;
-  /// returns mu_s superpotential parameter
-  double displayMu_s() const;
-  /// returns zeta superpotential parameter
-  double displayZeta() const;
+  /// returns mupr superpotential parameter
+  double displayMupr() const;
+  /// returns xiF superpotential parameter
+  double displayXiF() const;
   /// Returns all parameters as elements of a vector
   const DoubleVector display() const;
 
   /// Calculate beta functions of SUSY preserving parameters of RPC MSSM
   DoubleVector beta() const;
   /// Calculate beta functions of SUSY preserving parameters of RPC MSSM
-  nMssmSusy beta(nmsBrevity &) const;
+  NmssmSusy beta(nmsBrevity &) const;
   /// Outputs one-loop anomlous dimensions gii given matrix inputs.
   /// for RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1 and H2
   /// respectively. Note that we use the convention (for matrices in terms of
@@ -152,10 +152,10 @@ public:
 };
 
 /// Formatted output
-ostream & operator <<(ostream &, const nMssmSusy &);
+ostream & operator <<(ostream &, const NmssmSusy &);
 
 /// Formatted input
-istream & operator >>(istream &left, nMssmSusy &s);
+istream & operator >>(istream &left, NmssmSusy &s);
 
 /// Outputs beta function coefficients for MSSM gauge coupling evolution in
 /// arguments.
@@ -165,20 +165,20 @@ void nmsetBetas(DoubleMatrix &, DoubleVector  &, DoubleVector  &, DoubleVector
 /// Outputs beta function coefficients for lambda.
 void setBetaLambda(DoubleVector&);
 
-inline const nMssmSusy & nMssmSusy::displaySusy() const { return *this; }
+inline const NmssmSusy & NmssmSusy::displaySusy() const { return *this; }
 
-inline double nMssmSusy::displaySvev() const { return sVev; }
+inline double NmssmSusy::displaySvev() const { return sVev; }
 
-inline void nMssmSusy::setSvev(double h) { sVev = h; }
-inline void nMssmSusy::setMu_s(double f) { mu_s = f; }
-inline void nMssmSusy::setZeta(double z) { zeta = z; }
+inline void NmssmSusy::setSvev(double h) { sVev = h; }
+inline void NmssmSusy::setMupr(double f) { mupr = f; }
+inline void NmssmSusy::setXiF(double z) { xiF = z; }
 
-inline void nMssmSusy::setLambda(double l) { lambda = l; }
-inline void nMssmSusy::setKappa(double k) { kappa = k; }
+inline void NmssmSusy::setLambda(double l) { lambda = l; }
+inline void NmssmSusy::setKappa(double k) { kappa = k; }
 
-inline double nMssmSusy::displayMu_s() const { return mu_s; }
-inline double nMssmSusy::displayZeta() const { return zeta; }
-inline double nMssmSusy::displayLambda() const { return lambda; }
-inline double nMssmSusy::displayKappa() const { return kappa; }
+inline double NmssmSusy::displayMupr() const { return mupr; }
+inline double NmssmSusy::displayXiF() const { return xiF; }
+inline double NmssmSusy::displayLambda() const { return lambda; }
+inline double NmssmSusy::displayKappa() const { return kappa; }
 
 #endif

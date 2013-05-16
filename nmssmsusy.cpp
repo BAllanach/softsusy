@@ -32,107 +32,107 @@ void nmsBrevity::calculate(const DoubleMatrix & yu, const DoubleMatrix & yd,
 }
 
 
-nMssmSusy::nMssmSusy()
+NmssmSusy::NmssmSusy()
    : MssmSusy()
-   , lambda(0.0), kappa(0.0), sVev(0.0), zeta(0.0), mu_s(0.0)
+   , lambda(0.0), kappa(0.0), sVev(0.0), xiF(0.0), mupr(0.0)
 {
     setPars(numNMssmPars);
 }
 
-nMssmSusy::nMssmSusy(const nMssmSusy &s)
+NmssmSusy::NmssmSusy(const NmssmSusy &s)
    : MssmSusy(s)
-   , lambda(s.lambda), kappa(s.kappa), sVev(s.sVev), zeta(s.zeta), mu_s(s.mu_s)
+   , lambda(s.lambda), kappa(s.kappa), sVev(s.sVev), xiF(s.xiF), mupr(s.mupr)
 {
     setPars(numNMssmPars);
 }
 
 
-nMssmSusy::nMssmSusy(const DoubleMatrix & u, const DoubleMatrix & d, const
+NmssmSusy::NmssmSusy(const DoubleMatrix & u, const DoubleMatrix & d, const
 		     DoubleMatrix & e, const DoubleVector & v, double m,
 		     double tb, double MU, int l, int t, double hv, double sv,
-                     double lam, double kap, double m_s, double z)
+                     double lam, double kap, double mpr, double z)
    : MssmSusy(u, d, e, v, m, tb, MU, l, t, hv)
-   , lambda(lam), kappa(kap), sVev(sv), zeta(z), mu_s(m_s)
+   , lambda(lam), kappa(kap), sVev(sv), xiF(z), mupr(mpr)
 {
     setPars(numNMssmPars);
 }
 
-nMssmSusy::~nMssmSusy() {
+NmssmSusy::~NmssmSusy() {
 }
 
-const nMssmSusy & nMssmSusy::operator=(const nMssmSusy & s) {
+const NmssmSusy & NmssmSusy::operator=(const NmssmSusy & s) {
   if (this == &s) return *this;
   MssmSusy::operator=(s);
   sVev = s.sVev;
   lambda = s.lambda;
   kappa = s.kappa;
-  mu_s = s.mu_s;
-  zeta = s.zeta;
+  mupr = s.mupr;
+  xiF = s.xiF;
   return *this;
 }
 
-const nMssmSusy & nMssmSusy::operator=(const MssmSusy & s) {
+const NmssmSusy & NmssmSusy::operator=(const MssmSusy & s) {
   if (this == &s) return *this;
   MssmSusy::operator=(s);
   return *this;
 }
 
-void nMssmSusy::setSomePars(const nMssmSusy & s) {
+void NmssmSusy::setSomePars(const NmssmSusy & s) {
   MssmSusy::setSomePars(s);
 }
 
-const DoubleVector nMssmSusy::display() const {
+const DoubleVector NmssmSusy::display() const {
   DoubleVector y(MssmSusy::display());
   assert(y.displayStart() == 1 && y.displayEnd() == numSusyPars);
   y.setEnd(numNMssmPars);
   y(34) = sVev;
   y(35) = lambda;
   y(36) = kappa;
-  y(37) = mu_s;
-  y(38) = zeta;
+  y(37) = mupr;
+  y(38) = xiF;
   return y;
 }
 
-void nMssmSusy::set(const DoubleVector & y) {
+void NmssmSusy::set(const DoubleVector & y) {
   assert(y.displayEnd() - y.displayStart() + 1 >= numNMssmPars);
   MssmSusy::set(y);
   sVev = y.display(34);
   lambda = y.display(35);
   kappa = y.display(36);
-  mu_s = y.display(37);
-  zeta = y.display(38);
+  mupr = y.display(37);
+  xiF = y.display(38);
 }
 
-ostream & operator <<(ostream &left, const nMssmSusy &s) {
+ostream & operator <<(ostream &left, const NmssmSusy &s) {
   left << static_cast<MssmSusy>(s)
        << " lambda: " << s.displayLambda()
        << " kappa: " << s.displayKappa()
        << " smu: " << s.displaySusyMu()
-       << " mu_s: " << s.displayMu_s()
-       << " zeta: " << s.displayZeta()
+       << " mupr: " << s.displayMupr()
+       << " xiF: " << s.displayXiF()
        << '\n';
   return left;
 }
 
-void nMssmSusy::setSusy(const nMssmSusy & s) {
+void NmssmSusy::setSusy(const NmssmSusy & s) {
   MssmSusy::setSusy(s);
   setLambda(s.displayLambda());
   setKappa(s.displayKappa());
   setSvev(s.displaySvev());
-  setMu_s(s.displayMu_s());
-  setZeta(s.displayZeta());
+  setMupr(s.displayMupr());
+  setXiF(s.displayXiF());
 }
 
-istream & operator >>(istream &left, nMssmSusy &s) {
+istream & operator >>(istream &left, NmssmSusy &s) {
   MssmSusy ms;
   left >> ms;
   s = ms;
-  double mu_s = 0.0, zeta = 0.0, sv = 0.0, lambda = 0.0, kappa = 0.0;
+  double mupr = 0.0, xiF = 0.0, sv = 0.0, lambda = 0.0, kappa = 0.0;
   s.setLambda(lambda);
   s.setKappa(kappa);
   s.setSvev(sv);
-  s.setMu_s(mu_s);
-  s.setZeta(zeta);
+  s.setMupr(mupr);
+  s.setXiF(xiF);
   return left;
 }
 
@@ -144,7 +144,7 @@ istream & operator >>(istream &left, nMssmSusy &s) {
 // EXCEPT for the sign of smu, which is opposite. These equations are also
 // valid for W=  - LL Y^E H1 ER - QL Y^D H1 DR + QL Y^U H2 UR + smu H2 H1, the
 // New SOFTSUSY convention
-nMssmSusy nMssmSusy::beta(nmsBrevity & a) const {
+NmssmSusy NmssmSusy::beta(nmsBrevity & a) const {
   // Wave function renormalisations: convention for g**(i, j) is that i is the
   // LOWER index and j the upper in our paper hep-ph/9902251
   static DoubleMatrix gEE(3, 3), gLL(3, 3), gQQ(3, 3), gDD(3, 3),
@@ -163,7 +163,7 @@ nMssmSusy nMssmSusy::beta(nmsBrevity & a) const {
 
   // contain derivatives of up, down quarks and leptons
   static DoubleMatrix du(3, 3), dd(3, 3), de(3, 3);
-  static double dl, dk, dz, dmu_s;
+  static double dl, dk, dz, dmupr;
   // mu parameter derivatives
   double dmu;
 
@@ -174,8 +174,8 @@ nMssmSusy nMssmSusy::beta(nmsBrevity & a) const {
   dl = lambda * (gH1H1 + gH2H2 + gSS);
   dk = kappa * (3.0 * gSS);
   dmu = displaySusyMu() * (gH1H1 + gH2H2);
-  dmu_s = 2.0 * mu_s * gSS;
-  dz = zeta * gSS;
+  dmupr = 2.0 * mupr * gSS;
+  dz = xiF * gSS;
 
   // Following is from hep-ph/9308335: scalar H anomalous dimensions (as
   // opposed to the chiral superfield one - see hep-ph/0111209).
@@ -224,8 +224,8 @@ nMssmSusy nMssmSusy::beta(nmsBrevity & a) const {
   }
 
   // Contains all susy derivatives:
-  nMssmSusy ds(du, dd, de, dg, dmu, dt, displayMu(), displayLoops(),
-	       displayThresholds(), dHvev, dSvev, dl, dk, dmu_s, dz);
+  NmssmSusy ds(du, dd, de, dg, dmu, dt, displayMu(), displayLoops(),
+	       displayThresholds(), dHvev, dSvev, dl, dk, dmupr, dz);
 
   return ds;
 }
@@ -246,7 +246,7 @@ void setBetaLambda(DoubleVector& clBeta) {
 // gamma^Li_Lj = M_ij for LH fields and
 // gamma^Rj_Ri = M_ij for RH fields (since they are really the complex
 // conjugates of the RH fields): CHECKED 23/5/02
-void nMssmSusy::getOneLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
+void NmssmSusy::getOneLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				DoubleMatrix & gQQ, DoubleMatrix & gDD,
 				DoubleMatrix & gUU, double & gH1H1, double &
                                 gH2H2, double & gSS, nmsBrevity & a) const {
@@ -264,7 +264,7 @@ void nMssmSusy::getOneLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 // adds two-loop anomalous dimension contribution to gii given matrix inputs
 // g^Li_Lj = m_{ij} for LH fields
 // g^Ei_Ej = m_{ji} for RH fields CHECKED: 23/5/02
-void nMssmSusy::getTwoLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
+void NmssmSusy::getTwoLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				DoubleMatrix & gQQ, DoubleMatrix & gDD,
 				DoubleMatrix & gUU, double & gH1H1, double &
                                 gH2H2, double & gSS, nmsBrevity & a) const {
@@ -311,7 +311,7 @@ void nMssmSusy::getTwoLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 
 // Outputs wave function renormalisation for SUSY parameters and gauge beta
 // functions up to 2 loops.
-void nMssmSusy::anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
+void NmssmSusy::anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				    DoubleMatrix & gQQ, DoubleMatrix & gUU,
 				    DoubleMatrix & gDD, DoubleVector & dg,
 				    double & gH1H1, double & gH2H2,
@@ -351,11 +351,11 @@ void nMssmSusy::anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
 
 // Outputs derivatives vector y[n] for SUSY parameters: interfaces to
 // integration routines
-DoubleVector nMssmSusy::beta() const {
+DoubleVector NmssmSusy::beta() const {
   static nmsBrevity a;
 
   // calculate the derivatives
-  static nMssmSusy ds;
+  static NmssmSusy ds;
 
   ds = beta(a);
 

@@ -60,7 +60,7 @@ public:
   /// Default constructor fills object with zeroes
   NmssmSoftsusy();
   /// Constructor sets SUSY parameters only from another object
-  NmssmSoftsusy(const nMssmSusy &);
+  NmssmSoftsusy(const NmssmSusy &);
   /// Constructor copies another object
   NmssmSoftsusy(const NmssmSoftsusy &);
   /// Sets all parameters from s, sp, mu is the mu superpotential parameter, l
@@ -339,8 +339,8 @@ forLoops = s; };
   /// Tree-level REWSB calculation, returning m3sq at correct value consistent
   /// with mu
   virtual int rewsbM3sq(double, double &, double &, bool) const;
-  //PA: new NMSSM tree level EWSB condition, sets zeta_S for the general NMSSM case
-  virtual int rewsbZetaS(double & zetaS, bool Z3) const;
+  //PA: new NMSSM tree level EWSB condition, sets xiS for the general NMSSM case
+  virtual int rewsbXiS(double & xiS, bool Z3) const;
 
 
   /// Organises high accuracy rewsb: call it at the low scale M_{SUSY}
@@ -664,7 +664,7 @@ forLoops = s; };
   /// oneset (should be at MZ) - it's very crude, doesn't take radiative
   /// corrections into account etc. oneset provides low energy data and
   /// tanb=tan beta 
-  virtual nMssmSusy guessAtSusyMt(double tanb, DoubleVector nmpars, const QedQcd & oneset);
+  virtual NmssmSusy guessAtSusyMt(double tanb, DoubleVector nmpars, const QedQcd & oneset);
 };
 
 
@@ -691,7 +691,7 @@ inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSoftsusy & s)
     setThresholds(s.displayThresholds());
 }
 
-inline NmssmSoftsusy::NmssmSoftsusy(const nMssmSusy &s)
+inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSusy &s)
   : SoftParsNmssm(s), physpars(), forLoops(), problem(), 
     msusy(0.0), minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), 
     setTbAtMX(false) { 

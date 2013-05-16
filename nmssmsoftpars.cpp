@@ -10,12 +10,12 @@
 
 const SoftParsNmssm & SoftParsNmssm::operator=(const SoftParsNmssm & s) {
   if (this == &s) return *this;
-  SoftPars<nMssmSusy, nmsBrevity>::operator=(s);
+  SoftPars<NmssmSusy, nmsBrevity>::operator=(s);
   alambda = s.alambda;
   akappa = s.akappa;
   mSsq = s.mSsq;
   mSpsq = s.mSpsq;
-  zeta_s = s.zeta_s;
+  xiS = s.xiS;
   return *this;
 }
 
@@ -42,7 +42,7 @@ double SoftParsNmssm::displaySoftAkappa() const {
 }
 
 const DoubleVector SoftParsNmssm::display() const {
-  DoubleVector y(nMssmSusy::display());
+  DoubleVector y(NmssmSusy::display());
   y.setEnd(numSoftParsNmssm);
   int i, j, k=numNMssmPars;
   for (i=1; i<=3; i++) {
@@ -67,7 +67,7 @@ const DoubleVector SoftParsNmssm::display() const {
   y(k+66) = displayMh2Squared();
   y(k+67) = mSsq;
   y(k+68) = mSpsq;
-  y(k+69) = zeta_s;
+  y(k+69) = xiS;
   y(k+70) = alambda;
   y(k+71) = akappa;
 
@@ -83,7 +83,7 @@ void SoftParsNmssm::setTriakappa(double ak) {
 }
 
 void SoftParsNmssm::set(const DoubleVector & y) {
-  nMssmSusy::set(y);
+  NmssmSusy::set(y);
   int i, j, k=numNMssmPars;
   for (i=1; i<=3; i++) {
     k++;
@@ -107,7 +107,7 @@ void SoftParsNmssm::set(const DoubleVector & y) {
   setMh2Squared(y.display(k+66));
   mSsq = y.display(k+67);
   mSpsq = y.display(k+68);
-  zeta_s = y.display(k+69);
+  xiS = y.display(k+69);
   alambda =  y.display(k+70);
   akappa = y.display(k+71);
 }
@@ -127,7 +127,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
   // For calculational brevity:
   static nmsBrevity a;
 
-  SoftPars<nMssmSusy, nmsBrevity> base(SoftPars<nMssmSusy, nmsBrevity>::beta2(a));
+  SoftPars<NmssmSusy, nmsBrevity> base(SoftPars<NmssmSusy, nmsBrevity>::beta2(a));
 
   // To keep this a const function: TIME SAVINGS
   const DoubleMatrix &u1=a.u1, &d1=a.d1, &e1=a.e1;
@@ -143,8 +143,8 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     &he = displayTrilinear(EA);
   const double &hlam = displayTrialambda();
   const double &hkap = displayTriakappa();
-  const double &mu_s = displayMu_s();
-  const double &zeta = displayZeta();
+  const double &mupr = displayMupr();
+  const double &xiF = displayXiF();
   const double &smu = displaySusyMu();
   static DoubleMatrix hut(3, 3), hdt(3, 3), het(3, 3);
   static DoubleMatrix hu2(3, 3), hd2(3, 3), he2(3, 3);
@@ -175,7 +175,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
   // derivatives of soft parameters
   static DoubleVector dmG(1, 3);
   static double dmH1sq, dmH2sq, dm3sq;
-  static double dmSsq=0, dmSpsq=0, dz_s=0;
+  static double dmSsq=0, dmSpsq=0, dxiS=0;
   static DoubleMatrix dmq(3, 3), dmu(3, 3), dmd(3, 3), dme(3, 3), dml(3, 3);
   static DoubleMatrix dhu(3, 3), dhd(3, 3), dhe(3, 3);
   static double dhlam=0, dhkap=0;
@@ -209,8 +209,8 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
 
     dmSsq = 4.0 * Mlamsq + 4.0 * Mkapsq;
 
-    dmSpsq = 4.0 * lam * (lam * mSpsq + 2.0 * mu_s * hlam)
-       + 8.0 * kap * (kap * mSpsq + mu_s * hkap) + 8.0 * lam * kap * m3sq;
+    dmSpsq = 4.0 * lam * (lam * mSpsq + 2.0 * mupr * hlam)
+       + 8.0 * kap * (kap * mSpsq + mupr * hkap) + 8.0 * lam * kap * m3sq;
 
     dmq = base.displaySoftMassSquared(mQl);
     dml = base.displaySoftMassSquared(mLl);
@@ -236,10 +236,10 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
        + 6.0 * hkap * lsq;
 
     //tadpole
-    dz_s = 2.0 * zeta_s * (lsq +  ksq)
-       + 2.0 * mu_s * (2.0 * lam * m3sq + kap * mSpsq)
-       + 4.0 * zeta * (lam * hlam + kap * hkap)
-       + 4.0 * lam * smu * (mH2sq + mH1sq) + 4.0 * kap * mu_s * mSsq
+    dxiS = 2.0 * xiS * (lsq +  ksq)
+       + 2.0 * mupr * (2.0 * lam * m3sq + kap * mSpsq)
+       + 4.0 * xiF * (lam * hlam + kap * hkap)
+       + 4.0 * lam * smu * (mH2sq + mH1sq) + 4.0 * kap * mupr * mSsq
        + 4.0 * hlam * m3sq + 2.0 * hkap * mSpsq;
 
     // convert to proper derivatives:
@@ -247,7 +247,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     dmSpsq *= ONEO16Pisq;
     dhkap  *= ONEO16Pisq;
     dhlam  *= ONEO16Pisq;
-    dz_s   *= ONEO16Pisq;
+    dxiS   *= ONEO16Pisq;
   }
 
   // two-loop contributions. I got these from hep-ph/9311340. WIth respect to
@@ -475,7 +475,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
        (clBeta * lam * hlam - clBeta * mG * lsq);
 
     double dmH1sq2, dm3sq2, dmH2sq2;
-    double dmSsq2, dmSpsq2, dz_s2;
+    double dmSsq2, dmSpsq2, dxiS2;
     if (MIXING < 1) {
       /// The following are valid in the third-family approximation -- they are
       /// much faster, and should be a good approximation to the no-mixed case
@@ -489,7 +489,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
          - 2.0 * smu * lam * hlam * eeT
          - 4.0 * lsq * ksq * m3sq - 8.0 * lam * ksq * smu * hlam
          - 8.0 * lsq * kap * smu * hkap - 8.0 * lam * kap * (ksq + lsq) * mSpsq
-         - 8.0 * (lsq * kap * hlam + ksq * lam * hkap) * mu_s
+         - 8.0 * (lsq * kap * hlam + ksq * lam * hkap) * mupr
          + 2.4 * gsq(1) * lsq * (m3sq - smu * mG(1))
          + 12 * gsq(2) * lsq * (m3sq - smu * mG(2));
 
@@ -515,19 +515,19 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
          + 2.4 * gsq(1) * (Mlamsq - 2.0 * lam * hlam * mG(1) + 2.0 * lsq * msq(1))
          + 12.0 * gsq(2) * (Mlamsq - 2.0 * lam * hlam * mG(2) + 2.0 * lsq * msq(2));
 
-      dmSpsq2 = - 8.0 * (l4 * mSpsq + 4.0 * lsq * lam * mu_s * hlam)
-         - 16.0 * (2.0 * k4 * mSpsq + 5.0 * ksq * kap * mu_s * hkap)
-         - 32.0 * ksq * lsq * mSpsq - 48.0 * lam * ksq * mu_s * hlam
-         - 32.0 * lsq * kap * mu_s * hkap - 8.0 * lam * hlam * mu_s * Ytr
-         - 4.0 * lsq * ( mSpsq * Ytr + 2.0 * mu_s * aYtr)
+      dmSpsq2 = - 8.0 * (l4 * mSpsq + 4.0 * lsq * lam * mupr * hlam)
+         - 16.0 * (2.0 * k4 * mSpsq + 5.0 * ksq * kap * mupr * hkap)
+         - 32.0 * ksq * lsq * mSpsq - 48.0 * lam * ksq * mupr * hlam
+         - 32.0 * lsq * kap * mupr * hkap - 8.0 * lam * hlam * mupr * Ytr
+         - 4.0 * lsq * ( mSpsq * Ytr + 2.0 * mupr * aYtr)
          - 16.0 * lsq * kap * (lam * m3sq + smu * hlam)
          - 8.0 * lam * kap * (m3sq * Ytr + smu * aYtr)
          + 4.8 * lam * kap * gsq(1) * (m3sq - smu * mG(1))
          + 24.0 * lam * kap * gsq(2) * (m3sq - smu * mG(2))
-         + 2.4 * gsq(1) * (lsq * mSpsq + 2.0 * mu_s * lam * hlam
-                           - 2.0 * mu_s * mG(1))
-         + 12.0 * gsq(2) * (lsq * mSpsq + 2.0 * mu_s * lam * hlam
-                           - 2.0 * mu_s * mG(2));
+         + 2.4 * gsq(1) * (lsq * mSpsq + 2.0 * mupr * lam * hlam
+                           - 2.0 * mupr * mG(1))
+         + 12.0 * gsq(2) * (lsq * mSpsq + 2.0 * mupr * lam * hlam
+                           - 2.0 * mupr * mG(2));
 
     } else {
       /// In the mixed case, we need to use the slower full 3-family
@@ -554,7 +554,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
          - 2.0 * smu * lam * hlam * eeT
          - 4.0 * lsq * ksq * m3sq - 8.0 * lam * ksq * smu * hlam
          - 8.0 * lsq * kap * smu * hkap - 8.0 * lam * kap * (ksq + lsq) * mSpsq
-         - 8.0 * (lsq * kap * hlam + ksq * lam * hkap) * mu_s
+         - 8.0 * (lsq * kap * hlam + ksq * lam * hkap) * mupr
          + 2.4 * gsq(1) * lsq * (m3sq - smu * mG(1))
          + 12 * gsq(2) * lsq * (m3sq - smu * mG(2));
 
@@ -570,50 +570,50 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
          + 12.0 * gsq(2) * (Mlamsq - 2.0 * lam * hlam * mG(2)
                             + 2.0 * lsq * msq(2));
 
-      dmSpsq2 = - 8.0 * (l4 * mSpsq + 4.0 * lsq * lam * mu_s * hlam)
-         - 16.0 * (2.0 * k4 * mSpsq + 5.0 * ksq * kap * mu_s * hkap)
-         - 32.0 * ksq * lsq * mSpsq - 48.0 * lam * ksq * mu_s * hlam
-         - 32.0 * lsq * kap * mu_s * hkap
-         - 4.0 * lsq * (mSpsq * Ytr + 2.0 * mu_s * aYtr)
-         - 8.0 * lam * hlam * mu_s * Ytr
+      dmSpsq2 = - 8.0 * (l4 * mSpsq + 4.0 * lsq * lam * mupr * hlam)
+         - 16.0 * (2.0 * k4 * mSpsq + 5.0 * ksq * kap * mupr * hkap)
+         - 32.0 * ksq * lsq * mSpsq - 48.0 * lam * ksq * mupr * hlam
+         - 32.0 * lsq * kap * mupr * hkap
+         - 4.0 * lsq * (mSpsq * Ytr + 2.0 * mupr * aYtr)
+         - 8.0 * lam * hlam * mupr * Ytr
          - 16.0 * lsq * kap * (lam * m3sq + smu * hlam)
          - 8.0 * lam * kap * (m3sq * Ytr + smu * aYtr)
          + 4.8 * lam * kap * gsq(1) * (m3sq - smu * mG(1))
          + 24.0 * lam * kap * gsq(2) * (m3sq - smu * mG(2))
-         + 2.4 * gsq(1) * (lsq * mSpsq + 2.0 * mu_s * lam * hlam
-                           - 2.0 * lsq * mu_s * mG(1))
-         + 12.0 * gsq(2) * (lsq * mSpsq + 2.0 * mu_s * lam * hlam
-                           - 2.0 * lsq * mu_s * mG(2));
+         + 2.4 * gsq(1) * (lsq * mSpsq + 2.0 * mupr * lam * hlam
+                           - 2.0 * lsq * mupr * mG(1))
+         + 12.0 * gsq(2) * (lsq * mSpsq + 2.0 * mupr * lam * hlam
+                           - 2.0 * lsq * mupr * mG(2));
     }
 
-    dz_s2 = - 4.0 * l4 * zeta_s - 16.0 * lam * lsq * hlam * zeta
-       - 8.0 * k4 * zeta_s - 32.0 * kap * ksq * hkap * zeta
-       - 2.0 * lsq * zeta * (zeta_s * Ytr + 2.0 * aYtr)
-       - 4.0 * lam * hlam * zeta * Ytr
-       - 8.0 * lsq * ksq * zeta_s
-       - 16.0 * lam * kap * (kap * hlam + lam * hkap) * zeta
-       - 4.0 * lam * (m3sq * (mu_s * Ytr + aYtr)
+    dxiS2 = - 4.0 * l4 * xiS - 16.0 * lam * lsq * hlam * xiF
+       - 8.0 * k4 * xiS - 32.0 * kap * ksq * hkap * xiF
+       - 2.0 * lsq * xiF * (xiS * Ytr + 2.0 * aYtr)
+       - 4.0 * lam * hlam * xiF * Ytr
+       - 8.0 * lsq * ksq * xiS
+       - 16.0 * lam * kap * (kap * hlam + lam * hkap) * xiF
+       - 4.0 * lam * (m3sq * (mupr * Ytr + aYtr)
                       + smu * (3.0 * (Xu + Xd) + Xe)
                       + smu * (mH1sq + mH2sq) * Ytr
-                      + smu * mu_s * aYtr)
+                      + smu * mupr * aYtr)
        - 4.0 * hlam * (m3sq * Ytr + smu * aYtr)
-       - 8.0 * lsq * (m3sq * (2.0 * hlam + lam * mu_s) + hlam * smu * mu_s)
+       - 8.0 * lsq * (m3sq * (2.0 * hlam + lam * mupr) + hlam * smu * mupr)
        - 8.0 * lam * (Mlamsq + sqr(hlam) + lsq * (mH1sq + mH2sq)) * smu
-       - 8.0 * lsq * kap * mu_s * (mSpsq + 2.0 * mSsq)
-       - 8.0 * (kap * mu_s * Mlamsq + (kap * lam * hlam + lsq * hkap) * mSpsq
-                + lam * kap * hlam * sqr(mu_s) + lam * hlam * hkap * mu_s )
-       - 8.0 * ksq * (mSpsq * (2.0 * hkap + kap * mu_s) + hkap * mu_s * mu_s)
-       - 8.0 * kap * (mu_s * Mkapsq + sqr(hkap) * mu_s + 2.0 * ksq * mu_s * mSsq)
+       - 8.0 * lsq * kap * mupr * (mSpsq + 2.0 * mSsq)
+       - 8.0 * (kap * mupr * Mlamsq + (kap * lam * hlam + lsq * hkap) * mSpsq
+                + lam * kap * hlam * sqr(mupr) + lam * hlam * hkap * mupr )
+       - 8.0 * ksq * (mSpsq * (2.0 * hkap + kap * mupr) + hkap * mupr * mupr)
+       - 8.0 * kap * (mupr * Mkapsq + sqr(hkap) * mupr + 2.0 * ksq * mupr * mSsq)
        + 1.2 * gsq(1) * (3.0 * m3sq - 2.0 * smu * mG(1)) * hlam
-       + 1.2 * gsq(1) * lam * (3.0 * m3sq * (mu_s - mG(1)) + lam * zeta_s
-                               + 2.0 * smu * (mH1sq + mH2sq - mu_s * mG(1)
+       + 1.2 * gsq(1) * lam * (3.0 * m3sq * (mupr - mG(1)) + lam * xiS
+                               + 2.0 * smu * (mH1sq + mH2sq - mupr * mG(1)
                                               + 2.0 * msq(1))
-                               + 2.0 * zeta * (hlam - lam * mG(1)))
+                               + 2.0 * xiF * (hlam - lam * mG(1)))
        + 3.0 * gsq(2) * (3.0 * m3sq - 2.0 * smu * mG(2)) * hlam
-       + 3.0 * gsq(2) * lam * (3.0 * m3sq * (mu_s - mG(2)) + lam * zeta_s
-                               + 2.0 * smu * (mH1sq + mH2sq - mu_s * mG(2)
+       + 3.0 * gsq(2) * lam * (3.0 * m3sq * (mupr - mG(2)) + lam * xiS
+                               + 2.0 * smu * (mH1sq + mH2sq - mupr * mG(2)
                                               + 2.0 * msq(2))
-                               + 2.0 * zeta * (hlam - lam * mG(2)));
+                               + 2.0 * xiF * (hlam - lam * mG(2)));
 
 
     dmG = dmG + dmG2 * oneO16Pif;
@@ -622,12 +622,12 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     dmH2sq = dmH2sq + dmH2sq2 * oneO16Pif;
     dmSsq = dmSsq + dmSsq2 * oneO16Pif;
     dmSpsq = dmSpsq + dmSpsq2 * oneO16Pif;
-    dz_s = dz_s + dz_s2 * oneO16Pif;
+    dxiS = dxiS + dxiS2 * oneO16Pif;
 
   }
 
   SoftParsNmssm dsoft(base.displaySusy(), dmG, dhu, dhd, dhe, dhlam, dhkap, dmq, dmu,
-                      dmd, dml, dme, dm3sq, dmH1sq, dmH2sq, dmSsq, dmSpsq, dz_s,
+                      dmd, dml, dme, dm3sq, dmH1sq, dmH2sq, dmSsq, dmSpsq, dxiS,
 		     displayGravitino(), displayMu(),
 		     displayLoops(), displayThresholds());
   return dsoft;
@@ -649,14 +649,14 @@ void SoftParsNmssm::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				  DoubleMatrix & gDD,
                                    double & gH1H1, double & gH2H2, double & gSS)  const
 {
-   SoftPars<nMssmSusy, nmsBrevity>::anomalousDeriv(gEE, gLL, gQQ, gUU, gDD,
+   SoftPars<NmssmSusy, nmsBrevity>::anomalousDeriv(gEE, gLL, gQQ, gUU, gDD,
                                                    gH1H1, gH2H2);
    gSS = 0.0;
 }
 
 //PA: for fully constrained models
 void SoftParsNmssm::universalScalars(double m0) {
-  SoftPars<nMssmSusy, nmsBrevity>::universalScalars(m0);
+  SoftPars<NmssmSusy, nmsBrevity>::universalScalars(m0);
   setMsSquared(sqr(m0));
 }
 
@@ -668,7 +668,7 @@ void SoftParsNmssm::semiuniversalScalars(double m0, double mS) {
 
 //PA: for fully constrained
 void SoftParsNmssm::universalTrilinears(double a0) {
-  SoftPars<nMssmSusy, nmsBrevity>::universalTrilinears(a0);
+  SoftPars<NmssmSusy, nmsBrevity>::universalTrilinears(a0);
   setTrialambda(a0 * displayLambda());
   setTriakappa(a0 * displayKappa());
 }
@@ -676,7 +676,7 @@ void SoftParsNmssm::universalTrilinears(double a0) {
 //PA: for semi constrained models
 //(allows both Alambda and Akappa to be separately specified)
 void SoftParsNmssm::semiuniversalTrilinears(double a0, double al, double ak) {
-  SoftPars<nMssmSusy, nmsBrevity>::universalTrilinears(a0);
+  SoftPars<NmssmSusy, nmsBrevity>::universalTrilinears(a0);
   setTrialambda(al * displayLambda());
   setTriakappa(ak * displayKappa());
 }
@@ -705,7 +705,7 @@ ostream & operator <<(ostream &left, const SoftParsNmssm &s) {
        << " mH2sq: " << s.displayMh2Squared()
        << " mSsq: "  << s.displayMsSquared()
        << " mSPsq: "  << s.displayMspSquared()
-       << " zeta_s: "  << s.displayZeta_s()
+       << " xiS: "  << s.displayXiS()
        << '\n';
   left << "Gaugino masses" << s.displayGaugino();
   left << s.displaySusy();
@@ -713,9 +713,9 @@ ostream & operator <<(ostream &left, const SoftParsNmssm &s) {
 }
 
 void SoftParsNmssm::inputSoftParsOnly() {
-  SoftPars<nMssmSusy, nmsBrevity>::inputSoftParsOnly();
+  SoftPars<NmssmSusy, nmsBrevity>::inputSoftParsOnly();
   char c[70];
-  cin >> c >> mSsq >> c >> mSpsq >> c >> zeta_s;
+  cin >> c >> mSsq >> c >> mSpsq >> c >> xiS;
   cin >> c >> alambda
       >> c >> akappa;
 }
@@ -750,13 +750,13 @@ istream & operator >>(istream &left, SoftParsNmssm &s) {
   double m3sq, mh1sq, mh2sq;
   left >> c >> m3sq >> c >> mh1sq >> c >> mh2sq;
   s.setM3Squared(m3sq); s.setMh1Squared(mh1sq); s.setMh2Squared(mh2sq);
-  double mSsq, mSpsq, zeta_s;
-  left >> c >> mSsq >> c >> mSpsq >> c >> zeta_s;
-  s.setMsSquared(mSsq); s.setMspSquared(mSpsq); s.setZeta_s(zeta_s);
+  double mSsq, mSpsq, xiS;
+  left >> c >> mSsq >> c >> mSpsq >> c >> xiS;
+  s.setMsSquared(mSsq); s.setMspSquared(mSpsq); s.setXiS(xiS);
   DoubleVector mg(3);
   left >> c >> mg;
   s.setAllGauginos(mg);
-  nMssmSusy ss;
+  NmssmSusy ss;
   left >> ss;   s.setSusy(ss);
   return left;
 }

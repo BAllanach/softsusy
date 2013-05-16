@@ -92,7 +92,7 @@ int NmssmSoftsusy::rewsbM3sq(double mu, double & m3sq, double & kap, bool Z3) co
      double lam = displayLambda();
      double s = displaySvev();    
      double alam = displayTrialambda();
-     double mus = displayMu_s();
+     double mupr = displayMupr();
      //PA now using:
      //m3sqeff = m3sq + 0.5 (\sqrt{2} A_\lambda + \kappa s) \lambda s
      //        = m3sq + 0.5 (\sqrt{2} a_lambda s + \kappa \lambda s^2)
@@ -109,7 +109,7 @@ int NmssmSoftsusy::rewsbM3sq(double mu, double & m3sq, double & kap, bool Z3) co
      else{
         kap = displayKappa(); 
         m3sq = m3sqeff - 0.5 * (sqrt(2.0) * alam * s + lam * kap * s * s)
-           - lam * (mus * s / sqrt(2.0) + displayZeta());         
+           - lam * (mupr * s / sqrt(2.0) + displayXiF());         
      }
   }
   /// Following means no good rewsb
@@ -119,25 +119,25 @@ int NmssmSoftsusy::rewsbM3sq(double mu, double & m3sq, double & kap, bool Z3) co
 }
 
 //PA: third EWSB condition (for the singlet Higgs field) which is new with respect to the MSSM
-int NmssmSoftsusy::rewsbZetaS(double & zetaS, bool Z3) const {
+int NmssmSoftsusy::rewsbXiS(double & xiS, bool Z3) const {
    double mSsq = displayMsSquared();
    double mSpsq = displayMspSquared();
-   double mu_s = displayMu_s();
+   double mupr = displayMupr();
    double kap = displayKappa(); 
    double lam = displayLambda();
    double alam = displayTrialambda();
    double akap = displayTriakappa();
-   double zetaF = displayZeta();
+   double xiF = displayXiF();
    double s = displaySvev();
    double sin2b = sin(2.0 * atan(displayTanb()));
    double vev = displayHvev();
    double smu = displaySusyMu();
-   zetaS = - s / root2 * (mSsq + mSpsq + sqr(mu_s) + 2.0 * kap * zetaF 
+   xiS = - s / root2 * (mSsq + mSpsq + sqr(mupr) + 2.0 * kap * xiF 
                 + akap * s / root2 + sqr(kap) * sqr(s)
-                + 3.0 * kap * s * mu_s / root2 + 0.5 * sqr(lam) * sqr(vev)
+                + 3.0 * kap * s * mupr / root2 + 0.5 * sqr(lam) * sqr(vev)
                           - 0.5 * lam * kap * sqr(vev) * sin2b ) 
-      - 0.5 * smu * lam * sqr(vev) - zetaF * mu_s
-      - 0.5 * sqr(vev) * sin2b * (alam + lam * mu_s);
+      - 0.5 * smu * lam * sqr(vev) - xiF * mupr
+      - 0.5 * sqr(vev) * sin2b * (alam + lam * mupr);
   
  // cout << "  mSsq      = "  <<       mSsq      << endl; 
  // cout << "  mSpsq     = "  <<       mSpsq     << endl; 
@@ -146,12 +146,12 @@ int NmssmSoftsusy::rewsbZetaS(double & zetaS, bool Z3) const {
  // cout << "   lam       = "  <<       lam      << endl; 
  // cout << "   alam      = "  <<       alam     << endl; 
  // cout << "   akap      = "  <<       akap     << endl; 
- // cout << "   zetaF     = "  <<       zetaF    << endl; 
+ // cout << "   xiF     = "  <<       xiF    << endl; 
  // cout << "   s         = "  <<       s        << endl; 
  // cout << "   sin2b    = "  <<        sin2b    << endl; 
  // cout << "vev = "  << vev << endl;            
 
- // cout << " zetaS = " << zetaS << endl;  
+ // cout << " xiS = " << xiS << endl;  
  
  
  return 0;
@@ -858,9 +858,9 @@ void NmssmSoftsusy::iterateMu(double & muold, int sgnMu,
     }
     setM3Squared(m3sqnew);
   
-     double ZetaSnew;
-    rewsbZetaS(ZetaSnew, Z3);
-    setZeta_s(ZetaSnew);
+     double xiSnew;
+    rewsbXiS(xiSnew, Z3);
+    setXiS(xiSnew);
   }
   catch(const char *a) {
     numTries = 0;
@@ -880,7 +880,7 @@ void NmssmSoftsusy::iterateMu(double & muold, int sgnMu,
 //PA:  For the general Z3 violating case
 void NmssmSoftsusy::rewsbTreeLevel(int sgnMu) {
    double mu, m3sq, s, kap;
-  double ZetaS;
+  double xiS;
    //PA: also takes s now for Z3 preserving case with s as output, 
    //but here we set Z3 false anyway
   bool Z3 = false;
@@ -896,8 +896,8 @@ void NmssmSoftsusy::rewsbTreeLevel(int sgnMu) {
   setM3Squared(m3sq);
 
   
-  rewsbZetaS(ZetaS, Z3);
-  setZeta_s(ZetaS);
+  rewsbXiS(xiS, Z3);
+  setXiS(xiS);
 
   if ((displayMh1Squared() + 2.0 * sqr(displaySusyMu()) +
        displayMh2Squared() - 2.0 * fabs(displayM3Squared())) < 0.0 )
@@ -913,7 +913,7 @@ void NmssmSoftsusy::rewsbTreeLevel(int sgnMu) {
 /// Call with zero, or no mt if you want tree level
 void NmssmSoftsusy::rewsb(int sgnMu, double mt, double muOld) {
    double munew, m3sqnew, kapnew;
-  double ZetaSnew;
+  double xiSnew;
   double sinthDRbarMS = calcSinthdrbar();
   //PA:  this should become an imput when the Z3 symmetric version is ready
   bool Z3 = false;
@@ -952,8 +952,8 @@ void NmssmSoftsusy::rewsb(int sgnMu, double mt, double muOld) {
   setM3Squared(m3sqnew);
   
   
-    rewsbZetaS(ZetaSnew, Z3);
-    setZeta_s(ZetaSnew);
+    rewsbXiS(xiSnew, Z3);
+    setXiS(xiSnew);
 
   if ((displayMh1Squared() + 2.0 * sqr(displaySusyMu()) +
        displayMh2Squared() - 2.0 * fabs(displayM3Squared())) < 0.0 )
@@ -6061,7 +6061,7 @@ double NmssmSoftsusy::calcMs() const {
 /// Provides the first guess at a SUSY object at mt, inputting tanb and oneset
 /// (should be at MZ) - it's very crude, doesn't take radiative corrections
 /// into account etc. 
-nMssmSusy NmssmSoftsusy::guessAtSusyMt(double tanb, DoubleVector nmpars, const QedQcd & oneset) {
+NmssmSusy NmssmSoftsusy::guessAtSusyMt(double tanb, DoubleVector nmpars, const QedQcd & oneset) {
   /// This bit gives a guess at a SUSY object
   QedQcd leAtMt(oneset);
 
@@ -6070,14 +6070,14 @@ nMssmSusy NmssmSoftsusy::guessAtSusyMt(double tanb, DoubleVector nmpars, const Q
   /// Gauge couplings at mt
   a = leAtMt.getGaugeMu(oneset.displayPoleMt(), sinth2);
   
-  nMssmSusy t; 
+  NmssmSusy t; 
   t.setTanb(tanb);
   double beta = atan(tanb);
   t.setLambda(nmpars(1));
   t.setKappa(nmpars(2));
   t.setSvev(nmpars(3));
-  t.setZeta(nmpars(4));                         
-  t.setMu_s(nmpars(5));
+  t.setXiF(nmpars(4));                         
+  t.setMupr(nmpars(5));
 
   /// Yukawa couplings -- at roughly tree level
   double vev = 246.22;
@@ -6167,7 +6167,7 @@ double NmssmSoftsusy::lowOrg
     int maxtries = int(-log(TOLERANCE) / log(10.0) * 10);
     double tol = TOLERANCE;
     
-    nMssmSusy t(guessAtSusyMt(tanb, nmpars, oneset));
+    NmssmSusy t(guessAtSusyMt(tanb, nmpars, oneset));
     
     t.setLoops(2); /// 2 loops should protect against ht Landau pole 
     t.runto(mx); 
@@ -6255,7 +6255,7 @@ double NmssmSoftsusy::lowOrg
 /// You should evaluate this at a scale MSusy average of stops.
 /// Depth of electroweak minimum: hep-ph/9507294. Bug-fixed 19/11/04
 double NmssmSoftsusy::realMinMs() const {
-  nMssmSusy temp(displaySusy());
+  NmssmSusy temp(displaySusy());
   temp.runto(calcMs(), TOLERANCE); 
   
   double beta = atan(temp.displayTanb());
@@ -6575,7 +6575,7 @@ void NmssmSoftsusy::calcDrBarPars() {
   //PA:  we need a 5x5 neutralino mass matrix in the nmssm
   DoubleMatrix mNeut(5, 5);
   double kap = displayKappa();
-  double mus = displayMu_s();
+  double mus = displayMupr();
   mNeut(1, 1) = displayGaugino(1);
   mNeut(2, 2) = displayGaugino(2);
   mNeut(1, 3) = - mz * cos(beta) * sinthDRbar;
@@ -6606,17 +6606,17 @@ void NmssmSoftsusy::calcDrBarPars() {
   double mueff =  displaySusyMu() + lam * svev / root2;
   cout << "mueff = "  << mueff << endl;
   double m3sq = displayM3Squared();
-  double zetaF = displayZeta();
+  double xiF = displayXiF();
   cout << "m3sq = "  << m3sq << endl;
-  cout << "zetaF = " << zetaF << endl;
+  cout << "xiF = " << xiF << endl;
   //double Alam = displaySoftAlambda();
   //cout << "Alam = "  << Alam << endl;
   double alam = displayTrialambda();
   // double Akap = displaySoftAkappa();
   //cout << "Akap = "  << Akap << endl;
   double akap = displayTriakappa();
-  double zetaS = displayZeta_s();
-  double m3sqeff = m3sqeff = m3sq  + lam * (mus * svev / root2 + zetaF)
+  double xiS = displayXiS();
+  double m3sqeff = m3sqeff = m3sq  + lam * (mus * svev / root2 + xiF)
      + alam * svev * root2  +   0.5 * lam * kap * sqr(svev);
 
   cout << "m3sqeff = "  << m3sqeff << endl;
@@ -6624,7 +6624,7 @@ void NmssmSoftsusy::calcDrBarPars() {
   bool Sdecoupled = false;
   if (Sdecoupled){
      //PA: note that here the terms which go like 1 / svev are removed, 
-     //but in this situation we should have s = lam = alam = zetaF = zetaS = 0
+     //but in this situation we should have s = lam = alam = xiF = xiS = 0
      //to allow <S> = 0 with v_u and v_d both non-zero.
      MHP(1, 1) = m3sqeff / (sin(beta) * cos(beta)); 
      cout << "MHP(1,1) = " << m3sqeff / (sin(beta) * cos(beta)) << endl;
@@ -6633,7 +6633,7 @@ void NmssmSoftsusy::calcDrBarPars() {
      MHP(2, 1) = MHP(1, 2);
      MHP(2, 2) = - 3.0 * akap * svev / root2 - 2.0 * sqr(mus) 
         - kap * mus * svev / root2
-        - zetaF * (4.0 * kap);     
+        - xiF * (4.0 * kap);     
   }
   else{
      if(svev == 0) {
@@ -6647,7 +6647,7 @@ void NmssmSoftsusy::calcDrBarPars() {
                    + lam * mus) * sqr(vev) * sin(beta) * cos(beta) / (svev * root2)
         - 3.0 * akap * svev / root2 - 2.0 * sqr(mus) 
         - kap * mus * svev / root2
-        - zetaF * (4.0 * kap + mus * root2 / svev) - zetaS * root2 / svev;
+        - xiF * (4.0 * kap + mus * root2 / svev) - xiS * root2 / svev;
   }
   cout << "MHP = "  << MHP << endl;
   cout << "alam = " << alam << endl;
@@ -6656,8 +6656,8 @@ void NmssmSoftsusy::calcDrBarPars() {
   cout << "kap = " << kap << endl;
   cout << "svev = "  << svev << endl;
   cout << "mus = "  << mus << endl;
-  cout << "zetaF = "  << zetaF << endl;
-  cout << "zetaS = "  << zetaS << endl;
+  cout << "xiF = "  << xiF << endl;
+  cout << "xiS = "  << xiS << endl;
   
      
   mSq = MHP.sym2by2(eg.thetaHP);
@@ -6721,7 +6721,7 @@ void NmssmSoftsusy::calcDrBarPars() {
   //PA: deal with case where s = 0 differently for decoupled singlet / MSSM limit
   //bool Sdecoupled = false;
   if (Sdecoupled){
-     //PA: here we should have s = lambda = zetaF = zetaS = 0!
+     //PA: here we should have s = lambda = xiF = xiS = 0!
      mH(1, 1) = m3sqeff * displayTanb() + mz2 * sqr(cos(beta));
      mH(1, 2) = sin(beta) * cos(beta) * (sqr(lam) * sqr(vev) - mz2) - m3sqeff; 
      mH(2, 2) = m3sqeff / displayTanb() + mz2 * sqr(sin(beta)); 
@@ -6744,7 +6744,7 @@ void NmssmSoftsusy::calcDrBarPars() {
      //     mH(2, 1) = mH(1 ,2);
      mH(3, 3) = (alam + lam * mus) * sqr(vev) / (root2 * svev) 
         + svev * (akap + 4.0 * sqr(kap) * svev + 3.0 * kap * mus)
-        - (zetaS + zetaF * mus) / svev;
+        - (xiS + xiF * mus) / svev;
      mH(1, 3) = root2 * lam * mueff * vev * cos(beta)
         - (alam + root2 * lam * kap * svev + lam * mus) * vev * sin(beta) / root2;
      // mH(3, 1) = mH(1, 3); 
@@ -6865,20 +6865,20 @@ void NmssmSoftsusy::itLowsoft
   numTries = numTries + 1;
  
   //PA:  to check converegence of these.
-  double lamold = displayLambda(), kapold = displayKappa(), Svevold = displaySvev(), Zetaold = displayZeta(), mu_sold = displayMu_s();
+  double lamold = displayLambda(), kapold = displayKappa(), Svevold = displaySvev(), xiFold = displayXiF(), muprold = displayMupr();
 
   // cout << " lamold = "  << lamold << endl;
   // cout << " kapold = "  << kapold << endl;
   // cout << " Svevold = "  << Svevold << endl;
-  // cout << " Zetaold = "  << Zetaold << endl;
+  // cout << " xiFold = "  << xiFold << endl;
   // cout << " mu_sold = "  << mu_sold << endl;
 
   //PA: reset new low energy inputs of general nmssm at mz.
   setLambda(nmpars(1));
   setKappa(nmpars(2));
   setSvev(nmpars(3));
-  setZeta(nmpars(4));                         
-  setMu_s(nmpars(5));
+  setXiF(nmpars(4));                         
+  setMupr(nmpars(5));
 
   try {
     sparticleThresholdCorrections(tanb, pars); 
@@ -6922,7 +6922,7 @@ void NmssmSoftsusy::itLowsoft
   
     if (gaugeUnification) {
       nmsBrevity (dummy);
-      nMssmSusy a(this -> nMssmSusy::beta(dummy));
+      NmssmSusy a(this -> NmssmSusy::beta(dummy));
       
       /// Equal gauge couplings: let them and their derivatives set the boundary
       /// condition scale -- linear approximation
@@ -9516,7 +9516,7 @@ void NmssmSoftsusy::isajetInterface764(const char fname[80]) const {
 }
 
 void generalBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
-  nMssmSusy s; SoftParsNmssm r;
+  NmssmSusy s; SoftParsNmssm r;
   double m3sq = m.displayM3Squared();
   s = m.displaySusy();
   r.set(inputParameters);
@@ -9529,7 +9529,7 @@ void generalBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 
 /// This one doesn't overwrite mh1sq or mh2sq at the high scale
 void generalBcs2(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
-  nMssmSusy s; SoftParsNmssm r;
+  NmssmSusy s; SoftParsNmssm r;
   double mh1sq = m.displayMh1Squared(); 
   double mh2sq = m.displayMh2Squared();
   double m3sq = m.displayM3Squared();
