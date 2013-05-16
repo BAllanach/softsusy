@@ -363,13 +363,13 @@ const double pTolerance = 1.0e-6;
 double fB(const Complex & a) {
   /// First, special cases at problematic points
   double x = a.real(), y = a.imag();
-  if (fabs(x) < pTolerance) {
+  if (fabs(x) < EPSTOL) {
     double ans = -1. - x + sqr(x) * 0.5;
     return ans;
   }
   if (close(x, 1., EPSTOL)) return -1.;
-  
-  Complex ans = log(1. - a) -1. - a * log(1.0 - 1.0 / a);
+
+  Complex ans = log(1. - a) - 1. - a * log(1.0 - 1.0 / a);
   //  double ans = log1minusx(a.real()) - 1. - a.real() * log1minusx(1.0 / a.real());
   return ans.real();
 }
@@ -412,14 +412,22 @@ double b0(double p, double m1, double m2, double q) {
     xMinus = 2. * (sqr(mMax) - iEpsilon) / 
       (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
 
+    /// DEBUG
+    
+    //    cout << "x+=" << xPlus << " x-=" << xMinus << endl;
     ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
+    /*    cout << "fB(x+)=" << fB(xPlus) << " fB(x-)=" << fB(xMinus) << endl;
+    cout << "log(1-x+)=" << log(1.-xPlus) << " log(1-x-)=" << log(1.-xMinus) 
+	 << endl;
+    cout << "log(1-1/x+)=" << log(1.-1./xPlus) << " log(1-1/x-)=" << log(1.-1./xMinus) 
+    << endl;*/
   } else {
     if (close(m1, m2, EPSTOL)) {
       methodId = (char *) "B0B";
       ans = - log(sqr(m1 / q));
     } else {
       double Mmax2 = sqr(mMax), Mmin2 = sqr(mMin); 
-      if (Mmin2 < sqr(TOLERANCE)) {
+      if (Mmin2 < 1.e-30) {
 	methodId = (char *) "B0C";
 	ans = 1.0 - log(Mmax2 / sqr(q));
       } else {
@@ -429,7 +437,8 @@ double b0(double p, double m1, double m2, double q) {
       }
     }
   }   
-  
+
+#ifdef USE_LOOPTOOLS
   if (!close(b0l, ans, 1.0e-3)) {
     cout << methodId << " ";
     cout << "DEBUG Err: DB0(" << p << ", " << m1 << ", " << m2 
@@ -437,6 +446,8 @@ double b0(double p, double m1, double m2, double q) {
     cout << "SOFTSUSY  B0=" << ans << endl;
     cout << "LOOPTOOLS B0=" << b0l << endl;
   }
+#endif
+
   return ans;
 }
 
@@ -457,17 +468,22 @@ double b1(double p, double m1, double m2, double q) {
     methodId = (char *) "B1A";
     ans = (a0(m2, q) - a0(m1, q) + (sqr(p) + sqr(m1) - sqr(m2)) 
 	   * b0(p, m1, m2, q)) / (2.0 * sqr(p)); 
-  } else if (fabs(m1) > EPSTOL && !close(m1, m2, EPSTOL) 
-	     && fabs(m2) > EPSTOL) { ///< checked
+  } else if (fabs(m1) > 1.0e-15 && !close(m1, m2, EPSTOL) 
+	     && fabs(m2) > 1.0e-15) { ///< checked
     methodId = (char *) "B1B";
     double Mmax2 = maximum(sqr(m1) , sqr(m2)), x = sqr(m2 / m1);
     ans = 0.5 * (-log(Mmax2 / sqr(q)) + 0.5 + 1.0 / (1.0 - x) + log(x) /
 		 sqr(1.0 - x) - theta(1.0 - x) * log(x)); ///< checked
+    ans = 0.5 * (1. + log(sqr(q) / sqr(m2)) + 
+		 sqr(sqr(m1) / (sqr(m1) - sqr(m2))) * log(sqr(m2) / sqr(m1)) +
+		 0.5 * (sqr(m1) + sqr(m2)) / (sqr(m1) - sqr(m2))
+		 );
   } else {
     methodId = (char *) "B1C";
     ans = bIntegral(1, p, m1, m2, q); 
   }
 
+#ifdef USE_LOOPTOOLS
   if (!close(b1l, ans, 1.0e-3)) {
     cout << methodId << " Test=" << pTest << " ";
     cout << "DEBUG Err: Db1(" << p << ", " << m1 << ", " << m2 
@@ -476,57 +492,65 @@ double b1(double p, double m1, double m2, double q) {
     cout << "LOOPTOOLS B1=" << b1l << " B0=" << B0(p*p, m1*m1, m2*m2).real() 
 	 << endl;
   }
+#endif
   
   return ans;
 }
 
 double b22(double p,  double m1, double m2, double q) {
-
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
-  //  return B00(p*p, m1*m1, m2*m2).real();
+  double b22l = B00(p*p, m1*m1, m2*m2).real();
 #endif
 
-  double answer;
+  char * methodId = (char *) "";
+  double answer = 0.;
   
   if (sqr(p) < pTolerance * maximum(sqr(m1), sqr(m2)) ) {
     // m1 == m2 with good accuracy
     if (close(m1, m2, EPSTOL)) {
+      methodId = (char *) "B22A";
       answer = -sqr(m1) * log(sqr(m1 / q)) * 0.5 + sqr(m1) * 0.5;
     }
     else
       /// This zero p limit is good
       if (fabs(m1) > EPSTOL && fabs(m2) > EPSTOL) {
+	methodId = (char *) "B22B";
 	answer = 0.375 * (sqr(m1) + sqr(m2)) - 0.25 * 
 	  (sqr(sqr(m2)) * log(sqr(m2 / q)) - sqr(sqr(m1)) * 
 	   log(sqr(m1 / q))) / (sqr(m2) - sqr(m1)); 
       }
       else
 	if (fabs(m1) < EPSTOL) {
+	  methodId = (char *) "B22C";
 	  answer = 0.375 * sqr(m2) - 0.25 * sqr(m2) * log(sqr(m2 / q));
 	}
 	else {
+	  methodId = (char *) "B22D";
 	  answer = 0.375 * sqr(m1) - 0.25 * sqr(m1) * log(sqr(m1 / q));
 	}
   }
   else {// checked
+    methodId = (char *) "B22E";
     double b0Save = b0(p, m1, m2, q);
-    double m2p = m2, m1p = m1, pp = p, qp = q;    
-
-    double ans = 1.0 / 6.0 * 
-      (0.5 * (a0(m1p, qp) + a0(m2p, qp)) + (sqr(m1p) + sqr(m2p) - 0.5 * sqr(pp))
-       * b0Save + (sqr(m2p) - sqr(m1p)) / (2.0 * sqr(pp)) *
-       (a0(m2p, qp) - a0(m1p, qp) - (sqr(m2p) - sqr(m1p)) * b0Save) +
-       sqr(m1p) + sqr(m2p) - sqr(pp) / 3.0);
 
     answer = 1.0 / 6.0 * 
       (0.5 * (a0(m1, q) + a0(m2, q)) + (sqr(m1) + sqr(m2) - 0.5 * sqr(p))
        * b0Save + (sqr(m2) - sqr(m1)) / (2.0 * sqr(p)) *
        (a0(m2, q) - a0(m1, q) - (sqr(m2) - sqr(m1)) * b0Save) +
        sqr(m1) + sqr(m2) - sqr(p) / 3.0);
-
-    answer = ans;
   }
+
+#ifdef USE_LOOPTOOLS
+  if (!close(b22l, answer, 1.0e-3)) {
+    cout << methodId;
+    cout << " DEBUG Err: Db22(" << p << ", " << m1 << ", " << m2 
+	 << ", "  << q << ")=" << 1.-b22l/answer << endl;
+    cout << "SOFTSUSY  B22=" << answer << " B0=" << b0(p, m1, m2, q) << endl;
+    cout << "LOOPTOOLS B22=" << b22l << " B0=" << B0(p*p, m1*m1, m2*m2).real() 
+	 << endl;
+  }
+#endif
 
   return answer;
 }
@@ -576,33 +600,39 @@ double c0(double m1, double m2, double m3) {
   double q = 100.;
   setmudim(q*q); 
   double psq = 0.;
-  return C0(psq, psq, psq, m1*m1, m2*m2, m3*m3).real();
+  double c0l = C0(psq, psq, psq, m1*m1, m2*m2, m3*m3).real();
 #endif
+
+  double ans;
 
   if (close(m2, m3, EPSTOL)) {
     if (close(m1, m2, EPSTOL)) {
-      return ( - 0.5 / sqr(m2) ); // checked 14.10.02
+      ans = ( - 0.5 / sqr(m2) ); // checked 14.10.02
     }
     else {
-      return ( sqr(m1) / sqr(sqr(m1)-sqr(m2) ) * log(sqr(m2)/sqr(m1))
+      ans = ( sqr(m1) / sqr(sqr(m1)-sqr(m2) ) * log(sqr(m2)/sqr(m1))
                + 1.0 / (sqr(m1) - sqr(m2)) ) ; // checked 14.10.02
     }
   }
   else
     if (close(m1, m2, EPSTOL)) {
-      return ( - ( 1.0 + sqr(m3) / (sqr(m2)-sqr(m3)) * log(sqr(m3)/sqr(m2)) )
+      ans = ( - ( 1.0 + sqr(m3) / (sqr(m2)-sqr(m3)) * log(sqr(m3)/sqr(m2)) )
                / (sqr(m2)-sqr(m3)) ) ; // checked 14.10.02
     }
     else
       if (close(m1, m3, EPSTOL)) {
-        return ( - (1.0 + sqr(m2) / (sqr(m3)-sqr(m2)) * log(sqr(m2)/sqr(m3))) 
+        ans = ( - (1.0 + sqr(m2) / (sqr(m3)-sqr(m2)) * log(sqr(m2)/sqr(m3))) 
                  / (sqr(m3)-sqr(m2)) ); // checked 14.10.02
       }
-      else return (1.0 / (sqr(m2) - sqr(m3)) * 
+      else {
+	ans = (1.0 / (sqr(m2) - sqr(m3)) * 
 		   (sqr(m2) / (sqr(m1) - sqr(m2)) *
 		    log(sqr(m2) / sqr(m1)) -
 		    sqr(m3) / (sqr(m1) - sqr(m3)) *
 		    log(sqr(m3) / sqr(m1))) );
+      }
+
+  return ans;
 }
 
 double gasdev(long & idum) {

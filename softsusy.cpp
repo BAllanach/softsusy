@@ -6368,15 +6368,20 @@ double MssmSoftsusy::getVev(double pizzt) const {
     (sqr(displayGaugeCoupling(2)) +
      sqr(displayGaugeCoupling(1)) * 0.6); 
 
-  if (vsquared < 200.0 || testNan(vsquared)) 
+  if (vsquared < 200.0 || testNan(vsquared)) {
     return 246.22;
+  }
 
   return sqrt(vsquared);
 }
 
 //VEV at current scale: calculates Z self energy first
-double MssmSoftsusy::getVev() const {
+double MssmSoftsusy::getVev() {
   double pizzt = piZZT(displayMz(), displayMu());
+  if (pizzt + displayMz() < 0.) {
+    pizzt = -displayMz() + EPSTOL;
+    flagTachyon(Z);
+  }
 
   return getVev(pizzt);
 }
@@ -6408,23 +6413,23 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   double piwwt0  = piWWT(0., displayMu(), true);
   double piwwtMW = piWWT(displayMw(), displayMu(), true);
   
-  if (piwwt0 < -sqr(displayMwRun())) {
+  if (piwwt0 + sqr(displayMw()) < 0.) {
     flagTachyon(W);
-    piwwt0 = -sqr(displayMwRun());
+    piwwt0 = -sqr(displayMw()) + EPSTOL;
   }
-  if (piwwtMW < -sqr(displayMwRun())) {
+  if (piwwtMW + sqr(displayMw()) < 0.) {
     flagTachyon(W);
-    piwwtMW = -sqr(displayMwRun());
+    piwwtMW = -sqr(displayMw()) + EPSTOL;
   }
-  if (pizztMZ < -sqr(displayMzRun())) {
+  if (pizztMZ + sqr(displayMz()) < 0.) {
     flagTachyon(Z);
-    piwwtMW = -sqr(displayMzRun());
+    pizztMZ = -sqr(displayMz()) + EPSTOL;
   }
 
   rhohat(outrho, outsin, alphaDrbar, pizztMZ, piwwt0, piwwtMW, tol, maxTries);
 
-  if (problem.noRhoConvergence) 
-    outsin = sqrt(1.0 - sqr(displayMw() / displayMz())); 
+  //  if (problem.noRhoConvergence) 
+  //    outsin = sqrt(1.0 - sqr(displayMw() / displayMz())); 
   
   double eDR = sqrt(4.0 * PI * alphaDrbar), costhDR = cos(asin(outsin));
 
@@ -6505,9 +6510,13 @@ void MssmSoftsusy::calcDrBarNeutralinos(double beta, double mz, double mw,
 
 void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, 
 				  double sinthDRbar, drBarPars & eg) {
-  if (eg.mt > 200. || eg.mt < 50.) 
-    throw("In MssmSoftsusy::calcDrBarHiggs and eg.mt is outside bounds\n");
-  
+  if (eg.mt > 200. || eg.mt < 50.) {
+    /// Gone badly non-perturbative
+    flagNonperturbative(true);
+    if (eg.mt > 200.) eg.mt = 200.;
+    if (eg.mt < 50.) eg.mt = 50.;
+  }
+
   /// You could instead do like sPHENO, choose what you'd get from minimising
   /// the potential at tree level, ie (mH2^2-mH1^2)/cos(2 beta)-mz^2. This
   /// *may* be less sensitive to becoming a tachyon at MZ. 
@@ -6736,7 +6745,6 @@ void MssmSoftsusy::itLowsoft
   /// On first iteration, don't bother with finite corrections
   
   numTries = numTries + 1;
-
   try {
     sparticleThresholdCorrections(tanb); 
 
@@ -6819,7 +6827,7 @@ void MssmSoftsusy::itLowsoft
     if (PRINTOUT > 0) cout << " mgut=" << mx << flush;
     
     mtrun = forLoops.mt;
-    /* OLD EWSB    if (numTries < 11) {
+    if (numTries < 11) {
       rewsb(sgnMu, mtrun, pars);    
     }
     else { ///< After 11 tries, we start averaging old/new mu values
@@ -6827,15 +6835,17 @@ void MssmSoftsusy::itLowsoft
       if (numTries > 20) epsi = 0.2;
       if (numTries > 30) epsi = 0.1;
       rewsb(sgnMu, mtrun, pars, oldMu, epsi);    
-      } */
+      } 
 
     /// Beginning of new EWSB:
+    /*
     double munew = sgnMu * sqrt(fabs(trialMuSq));
     setSusyMu(munew);
     double m3sqnew = 0.;
     if (rewsbM3sq(munew, m3sqnew) == 0) flagM3sq(false);
     else flagM3sq(true);
     setM3Squared(m3sqnew);    
+    */
     /// End of new EWSB
 
     oldMu = displaySusyMu();

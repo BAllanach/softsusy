@@ -336,7 +336,7 @@ public:
   /// Calculates DRbar sin theta_w at the current scale from gauge couplings 
   double calcSinthdrbar() const;
   /// Calculates Higgs VEV parameter from gauge couplings and MZ
-  double getVev() const;
+  double getVev();
   /// Input for this one (saves time, possibly) is to give the self-energy of
   /// the Z at the current scale
   double getVev(double pizzt) const;
