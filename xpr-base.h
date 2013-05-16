@@ -259,15 +259,13 @@ public:
   {
     T value = T();
     for (int i=1; i<= a.displayCols(); ++i) {
-#ifdef ARRAY_BOUNDS_CHECKING
       int n2, n3;
       frexp(a(m,i), &n2); frexp(b(i,n), &n3);
       if (n2+n3>=1024 || n2+n3 <= -1024) { 
-	throw("Multiply * overload; overflow\n");
+	//	throw("Multiply * overload; overflow\n");
 	if (n2+n3<=-1024) return 1e-290;
 	else return 1e290;
       } else 
-#endif
 	value += a(m,i) * b(i,n);
     }
     return value;
@@ -288,15 +286,14 @@ public:
   {
     T value = T();
     for (int i=1; i<= a.displayCols(); ++i) {
-#ifdef ARRAY_BOUNDS_CHECKING
       int n2, n3;
       frexp(a(n,i), &n2); frexp(b(i), &n3);
       if (n2+n3>=1024 || n2+n3 <= -1024) { 
-	throw("Multiply * overload; overflow\n");
+	//	throw("Multiply * overload; overflow\n");
 	if (n2+n3<=-1024) return 1e-290;
 	else return 1e290;
       } else 
-#endif
+
       value += a(n,i) * b(i);
     }
     return value;
