@@ -412,15 +412,7 @@ double b0(double p, double m1, double m2, double q) {
     xMinus = 2. * (sqr(mMax) - iEpsilon) / 
       (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
 
-    /// DEBUG
-    
-    //    cout << "x+=" << xPlus << " x-=" << xMinus << endl;
     ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
-    /*    cout << "fB(x+)=" << fB(xPlus) << " fB(x-)=" << fB(xMinus) << endl;
-    cout << "log(1-x+)=" << log(1.-xPlus) << " log(1-x-)=" << log(1.-xMinus) 
-	 << endl;
-    cout << "log(1-1/x+)=" << log(1.-1./xPlus) << " log(1-1/x-)=" << log(1.-1./xMinus) 
-    << endl;*/
   } else {
     if (close(m1, m2, EPSTOL)) {
       methodId = (char *) "B0B";
@@ -604,33 +596,49 @@ double c0(double m1, double m2, double m3) {
 #endif
 
   double ans;
+  char * methodId = (char *) "";
 
   if (close(m2, m3, EPSTOL)) {
     if (close(m1, m2, EPSTOL)) {
+      methodId = (char *) "C0A";
       ans = ( - 0.5 / sqr(m2) ); // checked 14.10.02
     }
     else {
+      methodId = (char *) "C0B";
       ans = ( sqr(m1) / sqr(sqr(m1)-sqr(m2) ) * log(sqr(m2)/sqr(m1))
                + 1.0 / (sqr(m1) - sqr(m2)) ) ; // checked 14.10.02
     }
   }
   else
     if (close(m1, m2, EPSTOL)) {
+      methodId = (char *) "C0C";
       ans = ( - ( 1.0 + sqr(m3) / (sqr(m2)-sqr(m3)) * log(sqr(m3)/sqr(m2)) )
                / (sqr(m2)-sqr(m3)) ) ; // checked 14.10.02
     }
     else
       if (close(m1, m3, EPSTOL)) {
+      methodId = (char *) "C0D";
         ans = ( - (1.0 + sqr(m2) / (sqr(m3)-sqr(m2)) * log(sqr(m2)/sqr(m3))) 
                  / (sqr(m3)-sqr(m2)) ); // checked 14.10.02
       }
       else {
+      methodId = (char *) "C0E";
 	ans = (1.0 / (sqr(m2) - sqr(m3)) * 
 		   (sqr(m2) / (sqr(m1) - sqr(m2)) *
 		    log(sqr(m2) / sqr(m1)) -
 		    sqr(m3) / (sqr(m1) - sqr(m3)) *
 		    log(sqr(m3) / sqr(m1))) );
       }
+
+#ifdef USE_LOOPTOOLS
+  if (!close(c0l, ans, 1.0e-3)) {
+    cout << methodId;
+    cout << " DEBUG Err: C0" << m1 << ", " << m2 
+	 << ", "  << m3 << ")=" << 1.-c0l/ans << endl;
+    cout << "SOFTSUSY  C0=" << ans << endl;
+    cout << "LOOPTOOLS C0=" << c0l << endl;
+  }
+#endif
 
   return ans;
 }
