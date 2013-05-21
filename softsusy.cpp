@@ -3625,7 +3625,8 @@ void MssmSoftsusy::addStopCorrection(double p, DoubleMatrix & mass,
 	     a0(forLoops.msnu(3), q)));
 
   higgs(1, 2) += 
-    sqr(gp) * yuL * yuR * st * ct * (a0(mstop(1), q) - a0(mstop(2), q)) +
+    sqr(gp) * 0.25 * yuL * yuR * st * ct *
+    (a0(mstop(1), q) - a0(mstop(2), q)) +
     sqr(2.0 / 3.0 * e) * st * ct * 
     (ffn(p, mstop(1), 0.0, q) - ffn(p, mstop(2), 0.0, q)) -
     sqr(g) / costhDrbar2 * guL * guR * st * ct *
@@ -4865,7 +4866,7 @@ void MssmSoftsusy::addSbotCorrection(double p,
   stop(1, 1) = hbsq * (sqr(sb) * a0t1 + sqr(cb) * a0t2);
   stop(2, 2) = hbsq * (sqr(cb) * a0t1 + sqr(sb) * a0t2);
   stop(1, 2) = hbsq * cb * sb * 3.0 * (a0t1 - a0t2)
-     + hb * htau * ctau * stau * (a0(mstop(1), q) - a0(mstop(2), q));
+     + hb * htau * ctau * stau * (a0(mstau(1), q) - a0(mstau(2), q));
 
   sbottom(1, 1) = 
     htsq * (sqr(st) * a0(mstop(1), q) + sqr(ct) * a0(mstop(2), q));
