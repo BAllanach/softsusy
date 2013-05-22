@@ -86,7 +86,8 @@ inline int massorder(double & a, double & b, double & c) {
    return 0;
 }
 
-/// checks if ABSOLUTE (or squared) values are closer than tol
+/// checks if ABSOLUTE (or squared) values are closer than tol, or both
+/// numbers are smaller than EPSTOL
 bool close(double m1, double m2, double tol);
 
 /// Returns |a| with sign of b in front

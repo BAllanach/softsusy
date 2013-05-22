@@ -13,6 +13,8 @@
 #define NUMERICS_H
 #define MAXIT 60
 #define UNUSED (-1.11e30)
+/// Comment if you want default softsusy behaviour
+// #define USE_LOOPTOOLS
 
 #include "utils.h"
 #include "mycomplex.h"
@@ -20,11 +22,13 @@
 #include "def.h"
 #include "linalg.h"
 #include "twoloophiggs.h"
-//#include "clooptools.h"
+#ifdef USE_LOOPTOOLS
+#include "clooptools.h"
+#endif
 using namespace softsusy;
 
-/// Comment if you want default softsusy behaviour
-//#define USE_LOOPTOOLS
+/// calculates root(1+x), where x<<1 accurately
+double accurateSqrt1Plusx(double x);
 
 /// A single step of Runge Kutta (5th order), input: 
 /// y and dydx (derivative of y), x is independent variable. yout is value
@@ -93,7 +97,7 @@ double d0(double m1, double m2, double m3, double m4);
 // inlined PV functions
 inline double a0(double m, double q) {
   if (fabs(m) < EPSTOL) return 0.;
-  return sqr(m) * (1.0 - log(sqr(m / q)));
+  return sqr(m) * (1.0 - 2. * log(abs(m / q)));
 }
 
 inline double ffn(double p, double m1, double m2, double q) {
@@ -215,11 +219,13 @@ bool integrateReversibly(DoubleVector & xi,
 /// useful for 2-loop mb/mt corrections
 double fin(double mm1, double mm2);
 double den(double a, int b); /// 1/a^b
+/// This function DOESNT WORK YET!!!
 double log1minusx(double x);
 /// sign of inputs
 #define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 /// returns a root of function func between x1 and x2 to accuracy xacc (x1 and
 /// x2 MUST bracket a root)
 double zriddr(double (*func)(double), double x1, double x2, double xacc);
+
 #endif
 
