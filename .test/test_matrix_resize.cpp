@@ -103,5 +103,16 @@ int main()
       }
    }
 
+   // test from Peter that segfaults
+   {
+      DoubleMatrix D(4,4);
+      D.resize(5,5);
+      for (int r = 1; r <= 5; r++) {
+         for (int c = 1; c <= 5; c++) {
+            D(r,c) = 0.5 + r*c;
+         }
+      }
+   }
+
    return 0;
 }
