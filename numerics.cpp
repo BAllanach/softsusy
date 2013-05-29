@@ -357,9 +357,6 @@ double bIntegral(int n1, double p, double m1, double m2, double mt) {
   return v(1) - 1.0;
 }
 
-/// Decides level at which one switches to p=0 limit of calculations
-const double pTolerance = 1.0e-6; 
-
 double fB(const Complex & a) {
   /// First, special cases at problematic points
   double x = a.real(), y = a.imag();
@@ -399,6 +396,9 @@ double b0(double p, double m1, double m2, double q) {
   char * methodId = (char *) "";
 
   double pTest = sqr(p) / sqr(mMax);
+  /// Decides level at which one switches to p=0 limit of calculations
+  const double pTolerance = 1.0e-6; 
+
   /// p is not 0  
   if (pTest > pTolerance) {  
     methodId = (char *) "B0A";
@@ -456,7 +456,10 @@ double b1(double p, double m1, double m2, double q) {
 
   char * methodId = (char *) "";
 
-  if (pTest > pTolerance * 1.0e2) {
+  /// Decides level at which one switches to p=0 limit of calculations
+  const double pTolerance = 1.0e-4; 
+
+  if (pTest > pTolerance) {
     methodId = (char *) "B1A";
     ans = (a0(m2, q) - a0(m1, q) + (sqr(p) + sqr(m1) - sqr(m2)) 
 	   * b0(p, m1, m2, q)) / (2.0 * sqr(p)); 
@@ -498,6 +501,9 @@ double b22(double p,  double m1, double m2, double q) {
   char * methodId = (char *) "";
   double answer = 0.;
   
+  /// Decides level at which one switches to p=0 limit of calculations
+  const double pTolerance = 1.0e-6; 
+
   if (sqr(p) < pTolerance * maximum(sqr(m1), sqr(m2)) ) {
     // m1 == m2 with good accuracy
     if (close(m1, m2, EPSTOL)) {
@@ -848,6 +854,19 @@ double calcCL(double cl, const DoubleVector & l) {
     }
   }
   return likelihood;
+}
+
+int *ivector(long nl, long nh) {
+	int *v;
+
+	v=(int *)malloc((size_t) ((nh-nl+2)*sizeof(int)));
+	if (!v) throw("allocation failure in ivector()\n");
+	return v-nl+1;
+}
+
+/* free an int vector allocated with ivector() */
+void free_ivector(int *v, long nl, long nh) {
+	free((char *) (v+nl-1));
 }
 
 double calc1dFraction(double y, const DoubleVector & l) {
@@ -1252,6 +1271,8 @@ double fin(double mm1, double mm2) {
 }
 
 double zriddr(double (*func)(double), double x1, double x2, double xacc) {
+  const int MAXIT = 60;
+  const double UNUSED = -1.11e30;
   int j;
   double ans,fh,fl,fm,fnew,s,xh,xl,xm,xnew;
   
@@ -1285,7 +1306,7 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc) {
       } else throw("In zriddr: never get here.");
       if (fabs(xh-xl) <= xacc) return ans;
     }
-    throw("zriddr exceeded maximum iterations");
+    throw("zriddr exceeded maximum iterations\n");
   }
   else {
     if (close(fl, 0.0, EPSTOL)) return x1;
@@ -1297,3 +1318,236 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc) {
   }
   return 0.0;
 }
+
+/// You will need to clear this lot up....
+
+void fdjac(int n, DoubleVector x, DoubleVector fvec, DoubleMatrix & df,
+	   void (*vecfunc)(int, DoubleVector, DoubleVector &)) {
+  const double EPS = 1.0e-4;
+  int i,j;
+  double h,temp;
+  
+  DoubleVector f(1,n);
+  for (j=1; j<=n; j++) {
+    temp = x(j);
+    h = EPS * fabs(temp);
+    if (h == 0.0) h = EPS;
+    x(j) = temp + h;
+    h = x(j) - temp;
+    (*vecfunc)(n, x, f);
+    x(j) = temp;
+    for (i=1; i<=n; i++) df(i, j) = (f(i) - fvec(i)) / h;
+  }
+}
+
+double fmin(DoubleVector x) {
+  int i;
+  double sum;
+  
+  (*NR::nrfuncv)(NR::nn, x, NR::fvec);
+  for (sum=0.0,i=1; i<=NR::nn; i++) sum += sqr(NR::fvec(i));
+  return 0.5 * sum;
+}
+
+void lnsrch(int n, DoubleVector xold, double fold, DoubleVector g, 
+	    DoubleVector p, 
+	    DoubleVector & x, double & f, double stpmax, int & check, 
+	    double (*func)(DoubleVector)) {
+  const double ALF = 1.0e-4;
+  const double TOLX = 1.0e-7;
+  
+  int i;
+  double a,alam,alam2,alamin,b,disc,f2,fold2,rhs1,rhs2,slope,sum,temp,
+    test,tmplam;
+  
+  check = 0;
+  for (sum=0.0,i=1;i<=n;i++) sum += p(i)*p(i);
+  sum=sqrt(sum);
+  if (sum > stpmax)
+    for (i=1;i<=n;i++) p(i) *= stpmax/sum;
+  for (slope=0.0,i=1;i<=n;i++)
+    slope += g(i)*p(i);
+  test=0.0;
+  for (i=1;i<=n;i++) {
+    temp=fabs(p(i))/maximum(fabs(xold(i)),1.0);
+    if (temp > test) test=temp;
+  }
+  alamin=TOLX/test;
+  alam=1.0;
+  for (;;) {
+    for (i=1;i<=n;i++) x(i)=xold(i)+alam*p(i);
+    f=(*func)(x);
+    if (alam < alamin) {
+      for (i=1;i<=n;i++) x(i)=xold(i);
+      check = 1;
+      return;
+    } else if (f <= fold+ALF*alam*slope) return;
+    else {
+      if (alam == 1.0)
+	tmplam = -slope/(2.0*(f-fold-slope));
+      else {
+	rhs1 = f-fold-alam*slope;
+	rhs2=f2-fold2-alam2*slope;
+	a=(rhs1/(alam*alam)-rhs2/(alam2*alam2))/(alam-alam2);
+	b=(-alam2*rhs1/(alam*alam)+alam*rhs2/(alam2*alam2))/(alam-alam2);
+	if (a == 0.0) tmplam = -slope/(2.0*b);
+	else {
+	  disc=b*b-3.0*a*slope;
+	  if (disc<0.0) throw("Roundoff problem in lnsrch.\n");
+	  else tmplam=(-b+sqrt(disc))/(3.0*a);
+	}
+	if (tmplam>0.5*alam)
+	  tmplam=0.5*alam;
+      }
+    }
+    alam2=alam;
+    f2 = f;
+    fold2=fold;
+    alam=maximum(tmplam,0.1*alam);
+  }
+}
+
+void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b) {
+  int i,ii=0,ip,j;
+  float sum;
+  
+  for (i=1;i<=n;i++) {
+    ip=indx[i];
+    sum=b(ip);
+    b(ip)=b(i);
+    if (ii)
+      for (j=ii;j<=i-1;j++) sum -= a(i, j) * b(j);
+    else if (sum) ii=i;
+    b(i)=sum;
+  }
+  for (i=n;i>=1;i--) {
+    sum=b(i);
+    for (j=i+1;j<=n;j++) sum -= a(i, j)*b(j);
+    b(i)=sum/a(i, i);
+  }
+}
+
+
+
+void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
+  const double TINY = 1.0e-20;
+  int i,imax,j,k;
+  float big,dum,sum,temp;
+  DoubleVector vv(n);
+
+  d=1.0;
+  for (i=1;i<=n;i++) {
+    big=0.0;
+    for (j=1;j<=n;j++)
+      if ((temp=fabs(a(i, j))) > big) big=temp;
+    if (big == 0.0) throw("Singular matrix in routine ludcmp");
+    vv(i)=1.0/big;
+  }
+  for (j=1;j<=n;j++) {
+    for (i=1;i<j;i++) {
+      sum=a(i, j);
+      for (k=1;k<i;k++) sum -= a(i, k)*a(k, j);
+      a(i, j)=sum;
+    }
+    big=0.0;
+    for (i=j;i<=n;i++) {
+      sum=a(i, j);
+      for (k=1;k<j;k++)
+	sum -= a(i, k)*a(k, j);
+      a(i, j)=sum;
+      if ( (dum=vv(i)*fabs(sum)) >= big) {
+	big=dum;
+	imax=i;
+      }
+    }
+    if (j != imax) {
+      for (k=1;k<=n;k++) {
+	dum=a(imax, k);
+	a(imax, k)=a(j, k);
+	a(j, k)=dum;
+      }
+      d = -(d);
+      vv(imax)=vv(j);
+    }
+    indx[j]=imax;
+    if (a(j, j) == 0.0) a(j, j)=TINY;
+    if (j != n) {
+      dum=1.0/(a(j, j));
+      for (i=j+1;i<=n;i++) a(i, j) *= dum;
+    }
+  }
+}
+
+
+/*void newt(double x[], int n, int *check,
+	void (*vecfunc)(int, double [], double [])) {
+  const int    MAXITS = 200;
+  const double TOLF   = 1.0e-4;
+  const double TOLMIN = 1.0e-6;
+  const double TOLX   = 1.0e-7;
+  const double STPMX  = 100.0;
+  
+  void lnsrch(int n, double xold[], double fold, double g[], double p[], double x[],
+	      double *f, double stpmax, int *check, double (*func)(double []));
+  void lubksb(double **a, int n, int *indx, double b[]);
+  void ludcmp(double **a, int n, int *indx, double *d);
+  int i,its,j,*indx;
+  double d,den,f,fold,stpmax,sum,temp,test,**fjac,*g,*p,*xold;
+  
+	indx=ivector(1,n);
+	fjac=matrix(1,n,1,n);
+	g=vector(1,n);
+	p=vector(1,n);
+	xold=vector(1,n);
+	fvec=vector(1,n);
+	nn=n;
+	nrfuncv=vecfunc;
+	f=fmin(x);
+	test=0.0;
+	for (i=1;i<=n;i++)
+		if (fabs(fvec[i]) > test) test=fabs(fvec[i]);
+	if (test < 0.01*TOLF) {
+		*check=0;
+		FREERETURN
+	}
+	for (sum=0.0,i=1;i<=n;i++) sum += SQR(x[i]);
+	stpmax=STPMX*FMAX(sqrt(sum),(double)n);
+	for (its=1;its<=MAXITS;its++) {
+		fdjac(n,x,fvec,fjac,vecfunc);
+		for (i=1;i<=n;i++) {
+			for (sum=0.0,j=1;j<=n;j++) sum += fjac[j][i]*fvec[j];
+			g[i]=sum;
+		}
+		for (i=1;i<=n;i++) xold[i]=x[i];
+		fold=f;
+		for (i=1;i<=n;i++) p[i] = -fvec[i];
+		ludcmp(fjac,n,indx,&d);
+		lubksb(fjac,n,indx,p);
+		lnsrch(n,xold,fold,g,p,x,&f,stpmax,check,fmin);
+		test=0.0;
+		for (i=1;i<=n;i++)
+			if (fabs(fvec[i]) > test) test=fabs(fvec[i]);
+		if (test < TOLF) {
+			*check=0;
+			FREERETURN
+		}
+		if (*check) {
+			test=0.0;
+			den=FMAX(f,0.5*n);
+			for (i=1;i<=n;i++) {
+				temp=fabs(g[i])*FMAX(fabs(x[i]),1.0)/den;
+				if (temp > test) test=temp;
+			}
+			*check=(test < TOLMIN ? 1 : 0);
+			FREERETURN
+		}
+		test=0.0;
+		for (i=1;i<=n;i++) {
+			temp=(fabs(x[i]-xold[i]))/FMAX(fabs(x[i]),1.0);
+			if (temp > test) test=temp;
+		}
+		if (test < TOLX) FREERETURN
+	}
+	throw("MAXITS exceeded in newt");
+}
+*/

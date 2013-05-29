@@ -11,8 +11,7 @@
 
 #ifndef NUMERICS_H
 #define NUMERICS_H
-#define MAXIT 60
-#define UNUSED (-1.11e30)
+
 /// Comment if you want default softsusy behaviour
 // #define USE_LOOPTOOLS
 
@@ -226,6 +225,27 @@ double log1minusx(double x);
 /// returns a root of function func between x1 and x2 to accuracy xacc (x1 and
 /// x2 MUST bracket a root)
 double zriddr(double (*func)(double), double x1, double x2, double xacc);
-
+/// Forward difference approximation to Jacobian matrix. On input, x is the
+/// point to be evaluated, fvec is the vector of function values at the point,
+/// and  vecfunc(n, x, f) is the Jacobian array
+void fdjac(int n, DoubleVector x, DoubleVector fvec, DoubleMatrix & df,
+	   void (*vecfunc)(int, DoubleVector, DoubleVector &));
+namespace NR{
+  extern int nn;
+  extern DoubleVector fvec;
+  extern void (*nrfuncv)(int n, DoubleVector v, DoubleVector & f);
+}
+/// These are experimental things for trying the shooting method - returns
+/// F.F/2 evaluated at x. nrfuncv points to a user supplied routine in the
+/// main program.
+void lnsrch(int n, DoubleVector xold, double fold, DoubleVector g, 
+	    DoubleVector p, 
+	    DoubleVector & x, double & f, double stpmax, int & check, 
+	    double (*func)(DoubleVector));
+/* allocate an int vector with subscript range v[nl..nh] */
+int *ivector(long nl, long nh);
+/* free an int vector allocated with ivector() */
+void free_ivector(int *v, long nl, long nh);
+void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b);
 #endif
 
