@@ -17,7 +17,7 @@ int main() {
   
  
   //Create an empty object
-  nMssmSusy n; 
+  NmssmSusy n; 
   //show that it's empty
   
   cout << n.display() << endl;
@@ -70,7 +70,7 @@ int main() {
       // n.setMu_s(1);
     // // n.setSusyMuPrime(1);
     // n.setXiF(200);
-     n.setZeta(200);
+     n.setXiF(200);
      // n.setSvev(2000);
      //         n.setSusyMu(100);
      n.setTanb(20);
@@ -108,10 +108,10 @@ int main() {
   // sn.setHLam(8.27252e-02);
   //sn.setHKap(2.498275e03);
 
-     sn.setMu_s(1.487261);
+     sn.setMupr(1.487261);
      //sn.setSusyMuPrime(1.487261);
    // sn.setXiS(2.4981);
-    sn.setZeta_s(2.4981);
+    sn.setXiS(2.4981);
   
  
 
