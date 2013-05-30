@@ -238,8 +238,8 @@ namespace NR {
 void lnsrch(int n, DoubleVector xold, double fold, DoubleVector g, 
 	    DoubleVector p, 
 	    DoubleVector & x, double & f, double stpmax, int & check, 
-	    double (*func)(DoubleVector, void (*vecfunc)(int, DoubleVector, 
-							 DoubleVector &)));
+	    void (*vecfunc)(int, DoubleVector, DoubleVector &), 
+	    DoubleVector & fvec);
 /* allocate an int vector with subscript range v[nl..nh] */
 int *ivector(long nl, long nh);
 /* free an int vector allocated with ivector() */

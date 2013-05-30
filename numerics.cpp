@@ -1343,7 +1343,8 @@ void fdjac(int n, DoubleVector x, DoubleVector fvec, DoubleMatrix & df,
 void lnsrch(int n, DoubleVector xold, double fold, DoubleVector g, 
 	    DoubleVector p, 
 	    DoubleVector & x, double & f, double stpmax, int & check, 
-	    void (*vecfunc)(int, DoubleVector, DoubleVector &)) {
+	    void (*vecfunc)(int, DoubleVector, DoubleVector &), 
+	    DoubleVector & fvec) {
   const double ALF = 1.0e-4;
   const double TOLX = 1.0e-7;
   
@@ -1367,8 +1368,8 @@ void lnsrch(int n, DoubleVector xold, double fold, DoubleVector g,
   alam=1.0;
   for (;;) {
     for (i=1;i<=n;i++) x(i)=xold(i)+alam*p(i);
-    vecfunc(n, x, NR::fvec); 
-    f = NR::fvec.dot(NR::fvec);
+    vecfunc(n, x, fvec); 
+    f = fvec.dot(fvec);
     if (alam < alamin) {
       for (i=1;i<=n;i++) x(i)=xold(i);
       check = 1;
@@ -1485,13 +1486,13 @@ void newt(DoubleVector & x, int n, int & check,
   indx = ivector(1, n);
   DoubleMatrix fjac(n, n);
   DoubleVector g(n), p(n), xold(n);
-  NR::fvec = DoubleVector(n);
+  DoubleVector fvec(n);
 
-  vecfunc(n, x, NR::fvec); 
-  f = NR::fvec.dot(NR::fvec);
+  vecfunc(n, x, fvec); 
+  f = fvec.dot(fvec);
   test = 0.0;
   for (i=1; i<=n; i++)
-    if (fabs(NR::fvec(i)) > test) test = fabs(NR::fvec(i));
+    if (fabs(fvec(i)) > test) test = fabs(fvec(i));
   if (test < 0.01 * TOLF) {
     check = 0;
     free_ivector(indx,1,n);return;
@@ -1499,20 +1500,20 @@ void newt(DoubleVector & x, int n, int & check,
   for (sum=0.0, i=1; i<=n; i++) sum += sqr(x(i));
   stpmax = STPMX * maximum(sqrt(sum), (double) n);
   for (its = 1; its <=MAXITS; its++) {
-    fdjac(n, x, NR::fvec, fjac, vecfunc);
+    fdjac(n, x, fvec, fjac, vecfunc);
     for (i=1;i<=n;i++) {
-      for (sum=0.0,j=1;j<=n;j++) sum += fjac(j, i) * NR::fvec(j);
+      for (sum=0.0,j=1;j<=n;j++) sum += fjac(j, i) * fvec(j);
       g(i)=sum;
     }
     for (i=1;i<=n;i++) xold(i) = x(i);
     fold=f;
-    for (i=1;i<=n;i++) p(i) = -NR::fvec(i);
+    for (i=1;i<=n;i++) p(i) = -fvec(i);
     ludcmp(fjac, n, indx, d);
     lubksb(fjac, n, indx, p);
-    lnsrch(n, xold, fold, g, p, x, f, stpmax, check, vecfunc);
+    lnsrch(n, xold, fold, g, p, x, f, stpmax, check, vecfunc, fvec);
     test=0.0;
     for (i=1; i<=n; i++)
-      if (fabs(NR::fvec(i)) > test) test=fabs(NR::fvec(i));
+      if (fabs(fvec(i)) > test) test=fabs(fvec(i));
     if (test < TOLF) {
       check=0;
       free_ivector(indx, 1, n);
