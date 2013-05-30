@@ -38,8 +38,6 @@ namespace NR {
   DoubleVector fvec(2);
 }
 
-void (*nrfuncv)(int n, DoubleVector v, DoubleVector & f);
-
 int main() {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 

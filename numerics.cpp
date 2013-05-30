@@ -1340,16 +1340,6 @@ void fdjac(int n, DoubleVector x, DoubleVector fvec, DoubleMatrix & df,
   }
 }
 
-double fmin(DoubleVector x, void (*vecfunc)(int, DoubleVector, 
-					    DoubleVector &)) {
-  int i;
-  double sum;
-  
-  vecfunc(NR::nn, x, NR::fvec);
-  for (sum=0.0,i=1; i<=NR::nn; i++) sum += sqr(NR::fvec(i));
-  return 0.5 * sum;
-}
-
 void lnsrch(int n, DoubleVector xold, double fold, DoubleVector g, 
 	    DoubleVector p, 
 	    DoubleVector & x, double & f, double stpmax, int & check, 
@@ -1377,7 +1367,7 @@ void lnsrch(int n, DoubleVector xold, double fold, DoubleVector g,
   alam=1.0;
   for (;;) {
     for (i=1;i<=n;i++) x(i)=xold(i)+alam*p(i);
-    vecfunc(NR::nn, x, NR::fvec); 
+    vecfunc(n, x, NR::fvec); 
     f = NR::fvec.dot(NR::fvec);
     if (alam < alamin) {
       for (i=1;i<=n;i++) x(i)=xold(i);
@@ -1496,10 +1486,8 @@ void newt(DoubleVector & x, int n, int & check,
   DoubleMatrix fjac(n, n);
   DoubleVector g(n), p(n), xold(n);
   NR::fvec = DoubleVector(n);
-  NR::nn   = n;
-  nrfuncv  = vecfunc;
-  //  f=fmin(x, vecfunc);
-  vecfunc(NR::nn, x, NR::fvec); 
+
+  vecfunc(n, x, NR::fvec); 
   f = NR::fvec.dot(NR::fvec);
   test = 0.0;
   for (i=1; i<=n; i++)
