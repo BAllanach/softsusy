@@ -1321,8 +1321,8 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc) {
 
 /// You will need to clear this lot up....
 
-void fdjac(int n, DoubleVector x, DoubleVector fvec, DoubleMatrix & df,
-	   void (*vecfunc)(int, DoubleVector, DoubleVector &)) {
+void fdjac(int n, DoubleVector x, const DoubleVector & fvec, DoubleMatrix & df,
+	   void (*vecfunc)(int, const DoubleVector &, DoubleVector &)) {
   const double EPS = 1.0e-4;
   int i,j;
   double h,temp;
@@ -1336,19 +1336,18 @@ void fdjac(int n, DoubleVector x, DoubleVector fvec, DoubleMatrix & df,
     h = x(j) - temp;
     (*vecfunc)(n, x, f);
     x(j) = temp;
-    for (i=1; i<=n; i++) df(i, j) = (f(i) - fvec(i)) / h;
+    for (i=1; i<=n; i++) df(i, j) = (f(i) - fvec.display(i)) / h;
   }
 }
 
 void lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
 	    DoubleVector & p, 
 	    DoubleVector & x, double & f, double stpmax, int & check, 
-	    void (*vecfunc)(int, DoubleVector, DoubleVector &), 
+	    void (*vecfunc)(int, const DoubleVector &, DoubleVector &), 
 	    DoubleVector & fvec) {
   const double ALF = 1.0e-4;
   const double TOLX = 1.0e-7;
   
-  int n = xold.displayEnd(); 
   int i;
   double a,alam,alam2,alamin,b,disc,f2,fold2,rhs1,rhs2,slope,sum,temp,
     test,tmplam;
@@ -1402,6 +1401,7 @@ void lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g,
   }
 }
 
+/// Get rid of int n
 void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b) {
   int i,ii=0,ip,j;
   float sum;
@@ -1423,7 +1423,7 @@ void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b) {
 }
 
 
-
+/// Get rid of int n
 void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
   const double TINY = 1.0e-20;
   int i,imax,j,k;
@@ -1474,8 +1474,9 @@ void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
 }
 
 
+/// More work can be done on this: get rid of int n and in subfunctions too
 void newt(DoubleVector & x, int n, int & check,
-	  void (*vecfunc)(int, DoubleVector, DoubleVector &)) {
+	  void (*vecfunc)(int, const DoubleVector &, DoubleVector &)) {
   const int    MAXITS = 200;    ///< max iterations
   const double TOLF   = 1.0e-4; ///< convergence on function values
   const double TOLMIN = 1.0e-6; ///< spurious convergence to min of fmin

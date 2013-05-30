@@ -26,8 +26,8 @@
 #include "numerics.h"
 
 /// vector function that has (-2,-2) as its root
-void testv(int n, DoubleVector v, DoubleVector & f) {
-  double x = v(1); double y = v(2);
+void testv(int n, const DoubleVector & v, DoubleVector & f) {
+  double x = v.display(1); double y = v.display(2);
   f(1) = (x + 2.) * (y + 2.) * (x + 2.) + (y + 2.) * 2.;
   f(2) = (y + 2.) * (x + 2.) * (x + 2.) + (x + 2.) * 1.;
   return;
