@@ -1571,14 +1571,17 @@ void shoot(int n, const DoubleVector & v, DoubleVector & f) {
   double x1 = 1., x2 = 2.;
   /// Initial stepsize guess for integration
   h1 = (x2 - x1) * 0.01;
-  /// set initial BC: y1(1)=1
+
+  /// set initial BCs: y1(1)=1
   y(1) = 1.;
   y(2) = v.display(1);
-  /// integrate up from 1 to 2
+
+  /// integrate up from x1 to x2
   int err = integrateOdes(y, x1, x2, EPS, h1, hmin, testDerivs, odeStepper);
   
   /// now, determine a vector showing how far (WITH SIGN) the solution is from
   /// the second boundary condition: y2(2)=1.
   f(1) = y(2) - 1.;
+
   return;
 }
