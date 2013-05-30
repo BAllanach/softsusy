@@ -1344,7 +1344,7 @@ double fmin(DoubleVector x) {
   int i;
   double sum;
   
-  (*NR::nrfuncv)(NR::nn, x, NR::fvec);
+  (*nrfuncv)(NR::nn, x, NR::fvec);
   for (sum=0.0,i=1; i<=NR::nn; i++) sum += sqr(NR::fvec(i));
   return 0.5 * sum;
 }
@@ -1479,7 +1479,7 @@ void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
 }
 
 
-void newt(DoubleVector x, int n, int & check,
+void newt(DoubleVector & x, int n, int & check,
 	  void (*vecfunc)(int, DoubleVector, DoubleVector &)) {
   const int    MAXITS = 200;
   const double TOLF   = 1.0e-4;
@@ -1495,7 +1495,7 @@ void newt(DoubleVector x, int n, int & check,
   DoubleVector g(n), p(n), xold(n);
   NR::fvec = DoubleVector(n);
   NR::nn=n;
-  NR::nrfuncv=vecfunc;
+  nrfuncv=vecfunc;
   f=fmin(x);
   test=0.0;
   for (i=1;i<=n;i++)
@@ -1544,6 +1544,6 @@ void newt(DoubleVector x, int n, int & check,
     }
     if (test < TOLX) { free_ivector(indx,1,n); return; }
   }
-  throw("MAXITS exceeded in newt");
+  throw("MAXITS exceeded in newt\n");
 }
 

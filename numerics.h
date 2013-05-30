@@ -230,11 +230,11 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc);
 /// and  vecfunc(n, x, f) is the Jacobian array
 void fdjac(int n, DoubleVector x, DoubleVector fvec, DoubleMatrix & df,
 	   void (*vecfunc)(int, DoubleVector, DoubleVector &));
-namespace NR{
+namespace NR {
   extern int nn;
   extern DoubleVector fvec;
-  extern void (*nrfuncv)(int n, DoubleVector v, DoubleVector & f);
 }
+extern void (*nrfuncv)(int n, DoubleVector v, DoubleVector & f);
 /// These are experimental things for trying the shooting method - returns
 /// F.F/2 evaluated at x. nrfuncv points to a user supplied routine in the
 /// main program.
@@ -247,5 +247,7 @@ int *ivector(long nl, long nh);
 /* free an int vector allocated with ivector() */
 void free_ivector(int *v, long nl, long nh);
 void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b);
+void newt(DoubleVector & x, int n, int & check,
+	  void (*vecfunc)(int, DoubleVector, DoubleVector &));
 #endif
 
