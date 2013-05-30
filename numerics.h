@@ -241,7 +241,8 @@ extern void (*nrfuncv)(int n, DoubleVector v, DoubleVector & f);
 void lnsrch(int n, DoubleVector xold, double fold, DoubleVector g, 
 	    DoubleVector p, 
 	    DoubleVector & x, double & f, double stpmax, int & check, 
-	    double (*func)(DoubleVector));
+	    double (*func)(DoubleVector, void (*vecfunc)(int, DoubleVector, 
+							 DoubleVector &)));
 /* allocate an int vector with subscript range v[nl..nh] */
 int *ivector(long nl, long nh);
 /* free an int vector allocated with ivector() */
@@ -249,5 +250,7 @@ void free_ivector(int *v, long nl, long nh);
 void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b);
 void newt(DoubleVector & x, int n, int & check,
 	  void (*vecfunc)(int, DoubleVector, DoubleVector &));
+double fmin(DoubleVector x, void (*vecfunc)(int, DoubleVector, 
+					    DoubleVector &));
 #endif
 

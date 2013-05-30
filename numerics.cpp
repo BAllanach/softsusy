@@ -1340,11 +1340,12 @@ void fdjac(int n, DoubleVector x, DoubleVector fvec, DoubleMatrix & df,
   }
 }
 
-double fmin(DoubleVector x) {
+double fmin(DoubleVector x, void (*vecfunc)(int, DoubleVector, 
+					    DoubleVector &)) {
   int i;
   double sum;
   
-  (*nrfuncv)(NR::nn, x, NR::fvec);
+  vecfunc(NR::nn, x, NR::fvec);
   for (sum=0.0,i=1; i<=NR::nn; i++) sum += sqr(NR::fvec(i));
   return 0.5 * sum;
 }
@@ -1352,7 +1353,7 @@ double fmin(DoubleVector x) {
 void lnsrch(int n, DoubleVector xold, double fold, DoubleVector g, 
 	    DoubleVector p, 
 	    DoubleVector & x, double & f, double stpmax, int & check, 
-	    double (*func)(DoubleVector x)) {
+	    void (*vecfunc)(int, DoubleVector, DoubleVector &)) {
   const double ALF = 1.0e-4;
   const double TOLX = 1.0e-7;
   
@@ -1376,7 +1377,8 @@ void lnsrch(int n, DoubleVector xold, double fold, DoubleVector g,
   alam=1.0;
   for (;;) {
     for (i=1;i<=n;i++) x(i)=xold(i)+alam*p(i);
-    f=(*func)(x);
+    vecfunc(NR::nn, x, NR::fvec); 
+    f = NR::fvec.dot(NR::fvec);
     if (alam < alamin) {
       for (i=1;i<=n;i++) x(i)=xold(i);
       check = 1;
@@ -1481,68 +1483,70 @@ void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
 
 void newt(DoubleVector & x, int n, int & check,
 	  void (*vecfunc)(int, DoubleVector, DoubleVector &)) {
-  const int    MAXITS = 200;
-  const double TOLF   = 1.0e-4;
-  const double TOLMIN = 1.0e-6;
-  const double TOLX   = 1.0e-7;
-  const double STPMX  = 100.0;
+  const int    MAXITS = 200;    ///< max iterations
+  const double TOLF   = 1.0e-4; ///< convergence on function values
+  const double TOLMIN = 1.0e-6; ///< spurious convergence to min of fmin
+  const double TOLX   = 1.0e-7; ///< maximum dx convergence criterion
+  const double STPMX  = 100.0; ///< maximum step length allowed in line searches
   
   int i,its,j,*indx;
   double d,den,f,fold,stpmax,sum,temp,test;
   
-  indx=ivector(1,n);
+  indx = ivector(1, n);
   DoubleMatrix fjac(n, n);
   DoubleVector g(n), p(n), xold(n);
   NR::fvec = DoubleVector(n);
-  NR::nn=n;
-  nrfuncv=vecfunc;
-  f=fmin(x);
-  test=0.0;
-  for (i=1;i<=n;i++)
-    if (fabs(NR::fvec(i)) > test) test=fabs(NR::fvec(i));
-  if (test < 0.01*TOLF) {
-    check=0;
+  NR::nn   = n;
+  nrfuncv  = vecfunc;
+  //  f=fmin(x, vecfunc);
+  vecfunc(NR::nn, x, NR::fvec); 
+  f = NR::fvec.dot(NR::fvec);
+  test = 0.0;
+  for (i=1; i<=n; i++)
+    if (fabs(NR::fvec(i)) > test) test = fabs(NR::fvec(i));
+  if (test < 0.01 * TOLF) {
+    check = 0;
     free_ivector(indx,1,n);return;
   }
-  for (sum=0.0,i=1;i<=n;i++) sum += sqr(x(i));
-  stpmax=STPMX*maximum(sqrt(sum),(double)n);
-  for (its=1;its<=MAXITS;its++) {
-    fdjac(n,x,NR::fvec,fjac,vecfunc);
+  for (sum=0.0, i=1; i<=n; i++) sum += sqr(x(i));
+  stpmax = STPMX * maximum(sqrt(sum), (double) n);
+  for (its = 1; its <=MAXITS; its++) {
+    fdjac(n, x, NR::fvec, fjac, vecfunc);
     for (i=1;i<=n;i++) {
-      for (sum=0.0,j=1;j<=n;j++) sum += fjac(j, i)*NR::fvec(j);
+      for (sum=0.0,j=1;j<=n;j++) sum += fjac(j, i) * NR::fvec(j);
       g(i)=sum;
     }
-    for (i=1;i<=n;i++) xold(i)=x(i);
+    for (i=1;i<=n;i++) xold(i) = x(i);
     fold=f;
     for (i=1;i<=n;i++) p(i) = -NR::fvec(i);
     ludcmp(fjac, n, indx, d);
     lubksb(fjac, n, indx, p);
-    lnsrch(n, xold, fold, g, p, x, f, stpmax, check, fmin);
+    lnsrch(n, xold, fold, g, p, x, f, stpmax, check, vecfunc);
     test=0.0;
-    for (i=1;i<=n;i++)
+    for (i=1; i<=n; i++)
       if (fabs(NR::fvec(i)) > test) test=fabs(NR::fvec(i));
     if (test < TOLF) {
       check=0;
-      free_ivector(indx,1,n);
+      free_ivector(indx, 1, n);
       return;
     }
     if (check) {
-      test=0.0;
-      den=maximum(f,0.5*n);
-      for (i=1;i<=n;i++) {
-	temp=fabs(g(i))*maximum(fabs(x(i)),1.0)/den;
-	if (temp > test) test=temp;
+      test = 0.0;
+      den = maximum(f, 0.5 * n);
+      for (i=1; i<=n; i++) {
+	temp=fabs(g(i)) * maximum(fabs(x(i)), 1.0) / den;
+	if (temp > test) test = temp;
       }
-      check=(test < TOLMIN ? 1 : 0);
-      free_ivector(indx,1,n);
+      check = (test < TOLMIN ? 1 : 0);
+      free_ivector(indx, 1, n);
       return;
     }
-    test=0.0;
-    for (i=1;i<=n;i++) {
-      temp=(fabs(x(i)-xold(i)))/maximum(fabs(x(i)),1.0);
-      if (temp > test) test=temp;
+    test = 0.0;
+    for (i=1; i<=n; i++) {
+      temp=(fabs(x(i) - xold(i))) / maximum(fabs(x(i)), 1.0);
+      if (temp > test) test = temp;
     }
-    if (test < TOLX) { free_ivector(indx,1,n); return; }
+    if (test < TOLX) { free_ivector(indx, 1, n); return; }
   }
   throw("MAXITS exceeded in newt\n");
 }
