@@ -230,12 +230,9 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc);
 /// and  vecfunc(n, x, f) is the Jacobian array
 void fdjac(int n, DoubleVector x, DoubleVector fvec, DoubleMatrix & df,
 	   void (*vecfunc)(int, DoubleVector, DoubleVector &));
-namespace NR {
-  extern DoubleVector fvec;
-}
 /// These are experimental things for trying the shooting method - returns
 /// F.F/2 evaluated at x. 
-void lnsrch(int n, DoubleVector xold, double fold, DoubleVector g, 
+void lnsrch(const DoubleVector & xold, double fold, DoubleVector g, 
 	    DoubleVector p, 
 	    DoubleVector & x, double & f, double stpmax, int & check, 
 	    void (*vecfunc)(int, DoubleVector, DoubleVector &), 

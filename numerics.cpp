@@ -1340,7 +1340,7 @@ void fdjac(int n, DoubleVector x, DoubleVector fvec, DoubleMatrix & df,
   }
 }
 
-void lnsrch(int n, DoubleVector xold, double fold, DoubleVector g, 
+void lnsrch(const DoubleVector & xold, double fold, DoubleVector g, 
 	    DoubleVector p, 
 	    DoubleVector & x, double & f, double stpmax, int & check, 
 	    void (*vecfunc)(int, DoubleVector, DoubleVector &), 
@@ -1348,55 +1348,57 @@ void lnsrch(int n, DoubleVector xold, double fold, DoubleVector g,
   const double ALF = 1.0e-4;
   const double TOLX = 1.0e-7;
   
+  int n = xold.displayEnd(); 
   int i;
   double a,alam,alam2,alamin,b,disc,f2,fold2,rhs1,rhs2,slope,sum,temp,
     test,tmplam;
   
   check = 0;
-  for (sum=0.0,i=1;i<=n;i++) sum += p(i)*p(i);
-  sum=sqrt(sum);
+  for (sum=0.0, i=1; i<=n; i++) sum += p(i) * p(i);
+  sum = sqrt(sum);
   if (sum > stpmax)
-    for (i=1;i<=n;i++) p(i) *= stpmax/sum;
-  for (slope=0.0,i=1;i<=n;i++)
-    slope += g(i)*p(i);
-  test=0.0;
-  for (i=1;i<=n;i++) {
-    temp=fabs(p(i))/maximum(fabs(xold(i)),1.0);
-    if (temp > test) test=temp;
+    for (i=1; i<=n; i++) p(i) *= stpmax / sum;
+  for (slope=0.0, i=1; i<=n; i++)
+    slope += g(i) * p(i);
+  test = 0.0;
+  for (i=1; i<=n; i++) {
+    temp=fabs(p(i)) / maximum(fabs(xold(i)), 1.0);
+    if (temp > test) test = temp;
   }
-  alamin=TOLX/test;
-  alam=1.0;
+  alamin = TOLX / test;
+  alam = 1.0;
   for (;;) {
-    for (i=1;i<=n;i++) x(i)=xold(i)+alam*p(i);
+    for (i=1; i<=n; i++) x(i) = xold(i) + alam * p(i);
     vecfunc(n, x, fvec); 
     f = fvec.dot(fvec);
     if (alam < alamin) {
-      for (i=1;i<=n;i++) x(i)=xold(i);
+      for (i=1;i<=n;i++) x(i) = xold(i);
       check = 1;
       return;
-    } else if (f <= fold+ALF*alam*slope) return;
+    } else if (f <= fold + ALF * alam * slope) return;
     else {
       if (alam == 1.0)
-	tmplam = -slope/(2.0*(f-fold-slope));
+	tmplam = -slope / (2.0 * (f - fold - slope));
       else {
-	rhs1 = f-fold-alam*slope;
-	rhs2=f2-fold2-alam2*slope;
-	a=(rhs1/(alam*alam)-rhs2/(alam2*alam2))/(alam-alam2);
-	b=(-alam2*rhs1/(alam*alam)+alam*rhs2/(alam2*alam2))/(alam-alam2);
-	if (a == 0.0) tmplam = -slope/(2.0*b);
+	rhs1 = f - fold - alam * slope;
+	rhs2 = f2 - fold2 - alam2 * slope;
+	a=(rhs1 / (alam * alam) - rhs2 / (alam2 * alam2)) / (alam - alam2);
+	b=(-alam2 * rhs1 / (alam * alam) + alam * rhs2 / (alam2 * alam2)) / 
+	  (alam - alam2);
+	if (a == 0.0) tmplam = -slope / (2.0 * b);
 	else {
-	  disc=b*b-3.0*a*slope;
-	  if (disc<0.0) throw("Roundoff problem in lnsrch.\n");
-	  else tmplam=(-b+sqrt(disc))/(3.0*a);
+	  disc = b * b - 3.0 * a * slope;
+	  if (disc < 0.0) throw("Roundoff problem in lnsrch.\n");
+	  else tmplam = (-b + sqrt(disc)) / (3.0 * a);
 	}
-	if (tmplam>0.5*alam)
-	  tmplam=0.5*alam;
+	if (tmplam > 0.5 * alam)
+	  tmplam = 0.5 * alam;
       }
     }
-    alam2=alam;
+    alam2 = alam;
     f2 = f;
-    fold2=fold;
-    alam=maximum(tmplam,0.1*alam);
+    fold2 = fold;
+    alam = maximum(tmplam, 0.1 * alam);
   }
 }
 
@@ -1510,7 +1512,7 @@ void newt(DoubleVector & x, int n, int & check,
     for (i=1;i<=n;i++) p(i) = -fvec(i);
     ludcmp(fjac, n, indx, d);
     lubksb(fjac, n, indx, p);
-    lnsrch(n, xold, fold, g, p, x, f, stpmax, check, vecfunc, fvec);
+    lnsrch(xold, fold, g, p, x, f, stpmax, check, vecfunc, fvec);
     test=0.0;
     for (i=1; i<=n; i++)
       if (fabs(fvec(i)) > test) test=fabs(fvec(i));

@@ -33,11 +33,6 @@ void testv(int n, DoubleVector v, DoubleVector & f) {
   return;
 }
 
-namespace NR {
-  int nn;
-  DoubleVector fvec(2);
-}
-
 int main() {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
