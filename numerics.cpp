@@ -1340,8 +1340,8 @@ void fdjac(int n, DoubleVector x, DoubleVector fvec, DoubleMatrix & df,
   }
 }
 
-void lnsrch(const DoubleVector & xold, double fold, DoubleVector g, 
-	    DoubleVector p, 
+void lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
+	    DoubleVector & p, 
 	    DoubleVector & x, double & f, double stpmax, int & check, 
 	    void (*vecfunc)(int, DoubleVector, DoubleVector &), 
 	    DoubleVector & fvec) {
@@ -1354,25 +1354,25 @@ void lnsrch(const DoubleVector & xold, double fold, DoubleVector g,
     test,tmplam;
   
   check = 0;
-  for (sum=0.0, i=1; i<=n; i++) sum += p(i) * p(i);
+  for (sum=0.0, i=1; i<=xold.displayEnd(); i++) sum += p(i) * p(i);
   sum = sqrt(sum);
   if (sum > stpmax)
-    for (i=1; i<=n; i++) p(i) *= stpmax / sum;
-  for (slope=0.0, i=1; i<=n; i++)
+    for (i=1; i<=xold.displayEnd(); i++) p(i) *= stpmax / sum;
+  for (slope=0.0, i=1; i<=xold.displayEnd(); i++)
     slope += g(i) * p(i);
   test = 0.0;
-  for (i=1; i<=n; i++) {
+  for (i=1; i<=xold.displayEnd(); i++) {
     temp=fabs(p(i)) / maximum(fabs(xold(i)), 1.0);
     if (temp > test) test = temp;
   }
   alamin = TOLX / test;
   alam = 1.0;
   for (;;) {
-    for (i=1; i<=n; i++) x(i) = xold(i) + alam * p(i);
-    vecfunc(n, x, fvec); 
+    for (i=1; i<=xold.displayEnd(); i++) x(i) = xold(i) + alam * p(i);
+    vecfunc(xold.displayEnd(), x, fvec); 
     f = fvec.dot(fvec);
     if (alam < alamin) {
-      for (i=1;i<=n;i++) x(i) = xold(i);
+      for (i=1;i<=xold.displayEnd();i++) x(i) = xold(i);
       check = 1;
       return;
     } else if (f <= fold + ALF * alam * slope) return;

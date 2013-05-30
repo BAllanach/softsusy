@@ -232,8 +232,8 @@ void fdjac(int n, DoubleVector x, DoubleVector fvec, DoubleMatrix & df,
 	   void (*vecfunc)(int, DoubleVector, DoubleVector &));
 /// These are experimental things for trying the shooting method - returns
 /// F.F/2 evaluated at x. 
-void lnsrch(const DoubleVector & xold, double fold, DoubleVector g, 
-	    DoubleVector p, 
+void lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
+	    DoubleVector & p, 
 	    DoubleVector & x, double & f, double stpmax, int & check, 
 	    void (*vecfunc)(int, DoubleVector, DoubleVector &), 
 	    DoubleVector & fvec);
