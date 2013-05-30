@@ -38,11 +38,11 @@ int main() {
   signal(SIGFPE, FPE_ExceptionHandler); 
   outputCharacteristics(6);
 
-  int check = 0, n = 2;
-  DoubleVector x(2); x(1) = -2.2; x(2) = -1.8;
-  newt(x, n, check, testv);
+  int check = 0, n = 1;
+  DoubleVector x(1); x(1) = 0.5;
+  newt(x, n, check, shoot);
   cout << "Finished. x=" << x << " check=" << check << endl; 
-  newt(x, n, check, testv);
+  newt(x, n, check, shoot);
   cout << "Finished. x=" << x << " check=" << check << endl; exit(0);
 
   try {

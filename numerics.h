@@ -242,7 +242,22 @@ int *ivector(long nl, long nh);
 /* free an int vector allocated with ivector() */
 void free_ivector(int *v, long nl, long nh);
 void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b);
+/// Multi-dimensional globally convergent multi-dimensional root solver for n
+/// variables. adjusts x so that f(x)=0, where f is the last function provided
+/// by vecfunc, given vector input x. If check=0 on output, there is no
+/// error. If check=1, a local minimum or saddle-point has been found (df/dx=0)
 void newt(DoubleVector & x, int n, int & check,
 	  void (*vecfunc)(int, const DoubleVector &, DoubleVector &));
+/// calculates the n-vector y, given freely specifiable values v(1..n2) at x1
+void load(float x, const DoubleVector & v, DoubleVector & y);
+/// Gives a discrepancy vector f[1..n2] from ending boundary conditions at
+/// endpoint x2 given values for y there
+void score(float x, const DoubleVector & y, DoubleVector & f);
+/// Function that integrates ODEs: to be passed to Newton's method for solving
+/// the 2-boundary value problem. Given v[1..n2], it sets all the boundary
+/// conditions at the initial scale and calculates f[1..n2] - a score for how
+/// well the boundary condition at the high scale is satisfied. Then you
+/// should be able to find the solutions for the unknown numbers. 
+void shoot(int n, const DoubleVector & v, DoubleVector & f);
 #endif
 

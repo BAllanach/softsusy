@@ -1543,3 +1543,42 @@ void newt(DoubleVector & x, int n, int & check,
   throw("MAXITS exceeded in newt\n");
 }
 
+void load(float x, const DoubleVector & v, DoubleVector & f) {
+  f(1) = 1.; ///< initial boundary condition
+  f(2) = v.display(1); ///< free value
+  return;
+}
+
+void score(float x, const DoubleVector & y, DoubleVector & f) {
+  f(1) = y(2) - 1.;
+  return;
+}
+
+DoubleVector testDerivs(double x, const DoubleVector & y) {
+  DoubleVector dydx(2);
+  dydx(1) = y(1);
+  dydx(2) = y(2);
+  return dydx;
+}
+
+void shoot(int n, const DoubleVector & v, DoubleVector & f) {
+  double h1, hmin = 0.0;
+
+  const double EPS = 1.0e-6;
+  
+  DoubleVector y(2);
+  
+  double x1 = 1., x2 = 2.;
+  /// Initial stepsize guess for integration
+  h1 = (x2 - x1) * 0.01;
+  /// set initial BC: y1(1)=1
+  y(1) = 1.;
+  y(2) = v.display(1);
+  /// integrate up from 1 to 2
+  int err = integrateOdes(y, x1, x2, EPS, h1, hmin, testDerivs, odeStepper);
+  
+  /// now, determine a vector showing how far (WITH SIGN) the solution is from
+  /// the second boundary condition: y2(2)=1.
+  f(1) = y(2) - 1.;
+  return;
+}
