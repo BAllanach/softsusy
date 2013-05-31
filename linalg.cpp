@@ -224,7 +224,7 @@ void DoubleMatrix::setRows(int numberOfRows)
       return;
 
    std::valarray<double> old(x);
-   x.resize(rows * numberOfRows, 0.0);
+   x.resize(cols * numberOfRows, 0.0);
    const std::size_t minSize = std::min(old.size(), x.size());
    for (std::size_t i = 0; i < minSize; ++i)
       x[i] = old[i];
