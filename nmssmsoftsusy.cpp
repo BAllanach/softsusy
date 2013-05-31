@@ -91,7 +91,18 @@ void NmssmSoftsusy::treeUpSquark(DoubleMatrix & mass, double mtrun,
    mass(1, 2) = mass(1, 2) -  mtrun * lam * svev / (root2 * tanb);
    mass(2, 1) = mass(1, 2);
    }
+   cout << "Dev: mass = "  << mass << endl;
+   cout << "mtrun = "  << mtrun << endl;
+  cout << "lam = " << lam << endl;
+  cout << "mueff = " <<displaySusyMu() + lam * svev / root2  << endl;
+  cout<< "displaySusyMu() = " << displaySusyMu() << endl;
+  cout << "EPSTOL = "  << EPSTOL << endl;
+  
+  cout << "displaySoftA(UA, 3, 3) = "  << displaySoftA(UA, 3, 3) << endl;
+  cout << "tanb = "  << tanb << endl;
+  cout << "mt2 = "  << sqr(mtrun) << endl;
 }
+
 
 
 void NmssmSoftsusy::treeDownSquark(DoubleMatrix & mass, double mbrun, 
@@ -282,6 +293,7 @@ void NmssmSoftsusy::calcDrBarPars() {
   
   Softsusy::setNeutCurrCouplings(sinthDRbar, sw2, guL, gdL, geL, guR, gdR, geR);
   Softsusy::calcDRTrilinears(eg, vev, beta);
+  eg.mGluino = displayGaugino(3);
   DoubleVector mSq(2);
   int family; for(family = 1; family <= 3; family++) {
     
