@@ -27,6 +27,8 @@
 #include <physpars.h>
 #include <lowe.h>
 #include <softpars.h>
+#include <nmssmsoftpars.h>
+
 #include <twoloophiggs.h>
 #include "bcs.h"
 #include "mssmUtils.h"
@@ -124,6 +126,9 @@ public:
   /// Constructor sets SUSY parameters only from another object
   Softsusy(const MssmSusy &);
   /// Constructor copies another object
+  Softsusy(const NmssmSusy &);
+  /// Constructor copies another object
+
   Softsusy(const Softsusy &);
   /// Sets all parameters from s, sp, mu is the mu superpotential parameter, l
   /// is the number of loops used for RG evolution, t is the thresholds
@@ -131,6 +136,7 @@ public:
   /// parameter. 
   Softsusy(const SoftPars & s, const sPhysical & sp, double mu, int l, 
 	       int t, double hv);
+
   /// Set all data in the object equal to another
   const Softsusy & operator=(const Softsusy & s);
   
@@ -328,15 +334,19 @@ public:
   virtual void calcDrBarPars();
   /// calculates the higgs DRbar parameters. Make sure mt is set in eg. It
   /// will fill in the Higgs masses with the appropriate values on exit.
+  void setNeutCurrCouplings(double sinthDRbar, double & sw2, double & guL, double & gdL, double & geL, double & guR, double & gdR, double & geR );
+//PA: sets the Yukawas and Trilinears
+  void calcDRTrilinears(drBarPars & eg, double vev, double beta);
+
   void calcDrBarHiggs(double beta, double mz2, double mw2, 
 		      double sinthDRbar, drBarPars & eg);
   /// calculates the chargino DRbar parameters. It will fill in the chargino
   /// masses in eg with the appropriate values on exit. 
-  void calcDrBarCharginos(double beta, double mw, drBarPars & eg);
+  void calcDrBarCharginos(DoubleMatrix & mCh, double beta, double mw);
   /// calculates the chargino DRbar parameters. It will fill in the chargino
   /// masses in eg with the appropriate values on exit. 
-  void calcDrBarNeutralinos(double beta, double mz, double mw, double sinth, 
-			    drBarPars & eg);
+  void calcDrBarNeutralinos(DoubleMatrix & mN, double beta, double mz, 
+                            double mw, double sinth);
   /// For an input tan beta=tb, sets gauge and Yukawa couplings according to
   /// the tree-level spectrum and data set: pars contains the boundary
   /// conditions. They aren't used in R-parity conservation, though. 
@@ -796,11 +806,23 @@ Softsusy<SoftPars>::Softsusy(const MssmSusy &s)
     msusy(0.0), minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), 
     setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
     t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.) { 
-  setPars(110);
+  setPars(110); 
   setMu(s.displayMu()); 
   setLoops(s.displayLoops());
   setThresholds(s.displayThresholds());
 }
+
+template<class SoftPars>
+Softsusy<SoftPars>::Softsusy(const NmssmSusy &s)
+  : SoftPars(s), AltEwsbMssm(), 
+    physpars(), forLoops(), problem(), 
+    msusy(0.0), minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), 
+    setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
+    t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.) { 
+  setPars(110);
+ 
+}
+
 
 template<class SoftPars>
 Softsusy<SoftPars>::Softsusy
@@ -816,6 +838,8 @@ Softsusy<SoftPars>::Softsusy
   setLoops(l);
   setThresholds(t);
 }
+
+
 
 template<class SoftPars>
 const Softsusy<SoftPars> & Softsusy<SoftPars>::displayMssmSoft() const { return *this; }

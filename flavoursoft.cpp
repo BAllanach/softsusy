@@ -1382,8 +1382,19 @@ void FlavourMssmSoftsusy::calcDrBarPars() {
 
   double mw = displayMwRun();
   double mw2 = sqr(mw);
-  calcDrBarCharginos(beta, mw, s);
-  calcDrBarNeutralinos(beta, mz, mw, sinthDRbar, s);
+  DoubleMatrix mCh(2, 2);   
+  calcDrBarCharginos(mCh, beta, mw);
+  s.mch = mCh.asy2by2(s.thetaL, s.thetaR);
+  s.mpzCharginos();
+  DoubleMatrix mNeut(4, 4);
+  calcDrBarNeutralinos(mNeut, beta, mz, mw, sinthDRbar);
+  if (mNeut.diagonaliseSym(s.mixNeut, s.mneut) > TOLERANCE *
+      1.0e-3) { 
+     ostringstream ii;
+     ii << "accuracy bad in neutralino diagonalisation"<< flush;
+     throw ii.str(); 
+  }
+  s.mpzNeutralinos();
   s.mw = mw;
   s.mz = mz;
 

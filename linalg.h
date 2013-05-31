@@ -385,6 +385,14 @@ DoubleMatrix rot2d(double theta);
 // [ -sin(theta)  cos(theta) ]
 // [  cos(theta)  sin(theta) ] --
 DoubleMatrix rot2dTwist(double theta);
+
+/// LCT: Returns a 3x3 orthogonal matrix of rotation by angle theta.
+/// Used in rotating CP-odd Higgs matrix
+// [ -cos theta     sin theta		 0 ]
+// [ sin theta			cos theta		 0 ]
+// [ 0							0						 1 ]
+DoubleMatrix rot3d(double theta);
+
 /// Redefines mixing matrices to be complex such that diagonal values are
 /// positive for a 2 by 2: 
 // [ cos thetaL    sin thetaL ]   A   [ cos thetaR -sin thetaR ]  = diag
@@ -644,6 +652,13 @@ public:
   /// Obvious elementary row/column operations
   void swaprows(int i, int j);///< Swaps row i with row j
   void swapcols(int i,int j);///< Swaps column i with column j
+
+  /// change number of columns (Warning: can be slow because it internally copys a std::valarray<double>)
+  void setCols(int);
+  /// change number of rows (Warning: can be slow because it internally copys a std::valarray<double>)
+  void setRows(int);
+  /// resize matrix (Warning: can be slow because it internally copys a std::valarray<double>)
+  void resize(int, int);
 
   Complex trace() const;  
   ComplexMatrix transpose() const;

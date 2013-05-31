@@ -237,6 +237,7 @@ void DoubleMatrix::resize(int numberOfRows, int numberOfCols)
    setRows(numberOfRows);
 }
 
+
 double DoubleMatrix::trace() const {
 #ifdef ARRAY_BOUNDS_CHECKING
   if (rows != cols)  {
@@ -648,6 +649,20 @@ DoubleMatrix rot2dTwist(double theta) {
   n(2, 2) = sin(theta);
   return n;
 }
+
+
+// LCT: 3 dimensional rotation matrix U
+// Returns U = [ cos theta		 sin theta			 0 ]
+//             [ sin theta    -cos theta			 0 ]
+//						 [ 0						 0							 1 ]
+DoubleMatrix rot3d(double theta) {
+  DoubleMatrix u(3, 3);  
+  u(1, 1) = -cos(theta); u(2, 2) = -u(1, 1);
+  u(1, 2) = sin(theta);  u(2, 1) = u(1, 2);
+	u(3, 3) = 1.0;
+  return u;
+}
+
 
 // Redefines mixing matrices to be complex such that diagonal values are
 // positive for a 2 by 2: if  
@@ -1062,6 +1077,9 @@ istream & operator>>(istream & left, ComplexVector &v) {
  *  CONSTRUCTORS
  */
 
+
+
+
 ComplexMatrix::ComplexMatrix(const DoubleMatrix & m)
   : rows(m.displayRows()), cols(m.displayCols()), x(0.0, m.x.size()) {
   for (int i=0; i < rows*cols; ++i)
@@ -1118,6 +1136,45 @@ void ComplexMatrix::swapcols(int i,int j) {
   col(i) = col(j);
   col(j) = temp;
 }
+
+
+void ComplexMatrix::setCols(int numberOfCols)
+{
+   if (numberOfCols == cols)
+      return;
+
+   std::valarray<Complex> old(x);
+   x.resize(rows * numberOfCols, 0.0);
+   if (numberOfCols > cols) {
+      for (std::size_t i = 0; i < old.size(); ++i)
+         x[i + (i / cols) * (numberOfCols - cols)] = old[i];
+   } else {
+      for (std::size_t i = 0; i < x.size(); ++i)
+         x[i] = old[i + (i / numberOfCols) * (cols - numberOfCols)];
+   }
+   cols = numberOfCols;
+}
+
+void ComplexMatrix::setRows(int numberOfRows)
+{
+   if (numberOfRows == rows)
+      return;
+
+   std::valarray<Complex> old(x);
+   x.resize(cols * numberOfRows, 0.0);
+   const std::size_t minSize = std::min(old.size(), x.size());
+   for (std::size_t i = 0; i < minSize; ++i)
+      x[i] = old[i];
+   rows = numberOfRows;
+}
+
+
+void ComplexMatrix::resize(int numberOfRows, int numberOfCols)
+{
+   setCols(numberOfCols);
+   setRows(numberOfRows);
+}
+
 
 Complex ComplexMatrix::trace() const {
 #ifdef ARRAY_BOUNDS_CHECKING

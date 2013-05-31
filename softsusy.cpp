@@ -23,6 +23,7 @@ static double sw2 = 1.0 - sqr(MW / MZ),
   yeR = 2.0, 
   ynuL = -1.0; 
 
+
 template<class SoftPars>
 const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const Softsusy<SoftPars>& s) {
   if (this == &s) return *this;
@@ -173,14 +174,14 @@ void Softsusy<SoftPars>::doTadpoles(double mt, double sinthDRbar) {
       double s1b = 0.0, s2b = 0.0, s1tau = 0.0, s2tau = 0.0;
       
       ewsb2loop_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, 
-		 &amu, &tanb, &vev2, &gs, &s1s, &s2s);
+        	 &amu, &tanb, &vev2, &gs, &s1s, &s2s);
       ddstad_(&rmtsq, &rmbsq, &mAsq, &mst1sq, &mst2sq, &msb1sq, &msb2sq, 
-	      &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, &s1t, 
+              &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, &s1t, 
       	      &s2t);
       ewsb2loop_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq,
-		 &amu, &cotbeta, &vev2, &gs, &s2b, &s1b);
+        	 &amu, &cotbeta, &vev2, &gs, &s2b, &s1b);
       tausqtad_(&rmtausq, &mAsq, &msnusq, &mstau1sq, &mstau2sq, &sintau, 
-		&costau, &scalesq, &amu, &tanb, &vev2, &s1tau, &s2tau);
+        	&costau, &scalesq, &amu, &tanb, &vev2, &s1tau, &s2tau);
 
       if (!testNan(s1s * s1t * s1b * s1tau * s2s * s2t * s2b * s2tau)) {
 	t1OV1Ms += - s1s - s1t - s1b - s1tau;
@@ -854,14 +855,14 @@ void Softsusy<SoftPars>::alternativeEwsb(double mt) {
       mst2sq = sqr(displayDrBarPars().mu.display(2, 3));
     
     dszodd_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, &amu,
-	    &tbeta, &vev2, &gstrong, &p2s); 
+            &tbeta, &vev2, &gstrong, &p2s); 
     ddsodd_(&rmtsq, &rmbsq, &mAsq, &mst1sq, &mst2sq, &msb1sq, &msb2sq, 
-	      &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, 
-	    &p2w);
+              &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, 
+            &p2w);
     dszodd_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq, &amu,
-	    &cotbeta, &vev2, &gstrong, &p2b); 
+            &cotbeta, &vev2, &gstrong, &p2b); 
     tausqodd_(&rmtausq, &mAsq, &msnusq, &mstau1sq, &mstau2sq, &sintau,
-	      &costau, &scalesq, &amu, &tanb, &vev2, &p2tau);
+              &costau, &scalesq, &amu, &tanb, &vev2, &p2tau); // 
   }
 
   double dMA = p2s + p2b + p2w + p2tau;
@@ -1189,18 +1190,18 @@ bool Softsusy<SoftPars>::higgs(int accuracy, double piwwtMS, double pizztMS) {
       /// two-loop Higgs corrections: alpha_s alpha_t, alpha_s alpha_b and
       /// alpha_b^2, alpha_t*2, alpha_b alpha_t
       dszhiggs_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, &amu, 
-		&tbeta, &vev2, &gstrong, &kkk, &s11s, &s22s, &s12s);
+        	&tbeta, &vev2, &gstrong, &kkk, &s11s, &s22s, &s12s);
       dszodd_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, &amu,
-	      &tbeta, &vev2, &gstrong, &p2s); 
+              &tbeta, &vev2, &gstrong, &p2s); 
       dszhiggs_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq, &amu, 
-		&cotbeta, &vev2, &gstrong, &kkk, &s22b, &s11b, &s12b);
+        	&cotbeta, &vev2, &gstrong, &kkk, &s22b, &s11b, &s12b);
       dszodd_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq, &amu,
-	      &cotbeta, &vev2, &gstrong, &p2b); 
+              &cotbeta, &vev2, &gstrong, &p2b); 
       ddshiggs_(&rmtsq, &rmbsq, &fmasq, &mst1sq, &mst2sq, &msb1sq, &msb2sq, 
-	      &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, &s11w, 
+              &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, &s11w, 
       	      &s12w, &s22w);
       ddsodd_(&rmtsq, &rmbsq, &fmasq, &mst1sq, &mst2sq, &msb1sq, &msb2sq, 
-	      &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, 
+              &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, 
       	      &p2w);
        
       /// In hep-ph/0406277 found the lambda_tau^2 and lambda_tau lambda_b
@@ -1214,10 +1215,10 @@ bool Softsusy<SoftPars>::higgs(int accuracy, double piwwtMS, double pizztMS) {
 	mstau2sq = sqr(forLoops.me(2, 3));
       double msnusq = sqr(forLoops.msnu(3));
       tausqhiggs_(&rmtausq, &fmasq, &msnusq, &mstau1sq, &mstau2sq, &sintau,
-		  &costau, &scalesq, &amu, &tanb, &vev2, &OS, &s11tau, 
-		  &s22tau, &s12tau);
+        	  &costau, &scalesq, &amu, &tanb, &vev2, &OS, &s11tau, 
+        	  &s22tau, &s12tau);
       tausqodd_(&rmtausq, &fmasq, &msnusq, &mstau1sq, &mstau2sq, &sintau,
-		&costau, &scalesq, &amu, &tanb, &vev2, &p2tau);
+        	&costau, &scalesq, &amu, &tanb, &vev2, &p2tau);
       
 
       sigmaMh(1, 1) = sigmaMh(1, 1) - s11s - s11w - s11b - s11tau;
@@ -2717,7 +2718,7 @@ double Softsusy<SoftPars>::calcRunningMtau() const {
 template<class SoftPars>
 void Softsusy<SoftPars>::treeUpSquark(DoubleMatrix & mass, double mtrun, 
 				double pizztMS, double sinthDRbarMS, 
-				int family) { 
+                                      int family) { 
   const double cu = 2.0 / 3.0;
   double mz2 = sqr(displayMzRun()), mt2 = sqr(mtrun);
   double beta = atan(displayTanb()), mu = displaySusyMu(),
@@ -6336,22 +6337,17 @@ double Softsusy<SoftPars>::displayMzRun() const {
 } 
 
 template<class SoftPars>
-void Softsusy<SoftPars>::calcDrBarCharginos(double beta, double mw, drBarPars & eg) {
-
-  DoubleMatrix mCh(2, 2);   
+void Softsusy<SoftPars>::calcDrBarCharginos(DoubleMatrix & mCh, double beta, double mw) {
   mCh(1, 1) = displayGaugino(2);
   mCh(2, 1) = root2 * mw * cos(beta); 
   mCh(1, 2) = mCh(2, 1) * displayTanb();
   mCh(2, 2) = displaySusyMu();
-  eg.mch = mCh.asy2by2(eg.thetaL, eg.thetaR);
-  eg.mpzCharginos();
 }
 
 template<class SoftPars>
-void Softsusy<SoftPars>::calcDrBarNeutralinos(double beta, double mz, double mw, 
-					double sinthDRbar, 
-					drBarPars & eg) {
-  DoubleMatrix mNeut(4, 4);
+void Softsusy<SoftPars>::calcDrBarNeutralinos(DoubleMatrix & mNeut, double beta, double mz, 
+                                              double mw, double sinthDRbar) {
+  
   mNeut(1, 1) = displayGaugino(1);
   mNeut(2, 2) = displayGaugino(2);
   mNeut(1, 3) = - mz * cos(beta) * sinthDRbar;
@@ -6360,14 +6356,6 @@ void Softsusy<SoftPars>::calcDrBarNeutralinos(double beta, double mz, double mw,
   mNeut(2, 4) = - mNeut(2, 3) * displayTanb();
   mNeut(3, 4) = - displaySusyMu();
   mNeut.symmetrise();
-  if (mNeut.diagonaliseSym(eg.mixNeut, eg.mneut) > TOLERANCE *
-      1.0e-3) { 
-    ostringstream ii;
-    ii << "accuracy bad in neutralino diagonalisation"<< flush;
-    throw ii.str(); 
-    }
-
-  eg.mpzNeutralinos();
 }
 
 template<class SoftPars>
@@ -6434,29 +6422,21 @@ void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2,
   eg.mh0(1) = temp.min(pos); eg.mh0(2) = temp.max(); 
   eg.mA0(1) = sqrt(mAsq); eg.mHpm = sqrt(mAsq + mw2);  
 }
-
-/// calculates masses all at tree-level in the DRbar scheme, useful for
-/// radiative corrections. 
+//PA: sets the neutral current couplings
 template<class SoftPars>
-void Softsusy<SoftPars>::calcDrBarPars() {
-  drBarPars eg(displayDrBarPars());
-  /// First, must define mstop,sbot,stau and mixing angles in DRbar scheme
-  double beta = atan(displayTanb()), mzPole = displayMz();
-  double sinthDRbar = calcSinthdrbar();
-  double mz = displayMzRun(), mz2 = sqr(mz);
-  double pizzt = sqr(mz) - sqr(mzPole);
-
-  sw2 = sqr(sinthDRbar);
+void Softsusy<SoftPars>::setNeutCurrCouplings(double sinthDRbar, double & sw2, double & guL, double & gdL, double & geL, double & guR, double & gdR, double & geR ) {
+sw2 = sqr(sinthDRbar);
   guL = 0.5 - 2.0 * sw2 / 3.0;
   gdL = -0.5 + sw2 / 3.0;
   geL = -0.5 + sw2;
   guR = 2.0 * sw2 / 3.0;
   gdR = -sw2 / 3.0;
   geR = -sw2;
-
-  double vev = displayHvev();
-
-  if (MIXING > 0) {
+}
+//PA: sets the Yukawas and Trilinears
+template<class SoftPars>
+void Softsusy<SoftPars>::calcDRTrilinears(drBarPars & eg, double vev, double beta) {
+   if (MIXING > 0) {    
     DoubleMatrix diagUp(displayYukawaMatrix(YU)),
       diagDown(displayYukawaMatrix(YD)),
       diagLep(displayYukawaMatrix(YE));
@@ -6490,17 +6470,35 @@ void Softsusy<SoftPars>::calcDrBarPars() {
     eg.ub   = displayTrilinear(DA, 3, 3);
     eg.utau = displayTrilinear(EA, 3, 3);
   }
-
+ 
   eg.mt   = eg.ht   * vev * sin(beta) / root2;
   eg.mb   = eg.hb   * vev * cos(beta) / root2;
   eg.mtau = eg.htau * vev * cos(beta) / root2; 
 
-  eg.mGluino = displayGaugino(3);
-
   forLoops.ht = eg.ht; forLoops.mt = eg.mt; forLoops.ut = eg.ut;
   forLoops.hb = eg.hb; forLoops.mb = eg.mb; forLoops.ub = eg.ub;
   forLoops.htau = eg.htau; forLoops.mtau = eg.mtau; forLoops.utau = eg.utau;
+ }
 
+
+/// calculates masses all at tree-level in the DRbar scheme, useful for
+/// radiative corrections. 
+template<class SoftPars>
+void Softsusy<SoftPars>::calcDrBarPars() {
+  drBarPars eg(displayDrBarPars());
+  /// First, must define mstop,sbot,stau and mixing angles in DRbar scheme
+  double beta = atan(displayTanb()), mzPole = displayMz();
+  double sinthDRbar = calcSinthdrbar();
+  double mz = displayMzRun(), mz2 = sqr(mz);
+  double pizzt = sqr(mz) - sqr(mzPole);
+
+  setNeutCurrCouplings(sinthDRbar, sw2, guL, gdL, geL, guR, gdR, geR);
+  
+  double vev = displayHvev();
+  calcDRTrilinears(eg, vev, beta);
+  
+  eg.mGluino = displayGaugino(3);
+  
   DoubleVector mSq(2);
   int family; for(family = 1; family <= 3; family++) {
     
@@ -6565,13 +6563,22 @@ void Softsusy<SoftPars>::calcDrBarPars() {
 
   double mw = displayMwRun();
   double mw2 = sqr(mw);
-  calcDrBarCharginos(beta, mw, eg);
-  calcDrBarNeutralinos(beta, mz, mw, sinthDRbar, eg);
+   DoubleMatrix mCh(2, 2);   
+  calcDrBarCharginos(mCh, beta, mw);
+  eg.mch = mCh.asy2by2(eg.thetaL, eg.thetaR);
+  eg.mpzCharginos();
+  DoubleMatrix mNeut(4, 4);
+  calcDrBarNeutralinos(mNeut, beta, mz, mw, sinthDRbar);
+  if (mNeut.diagonaliseSym(eg.mixNeut, eg.mneut) > TOLERANCE *
+      1.0e-3) { 
+     ostringstream ii;
+     ii << "accuracy bad in neutralino diagonalisation"<< flush;
+     throw ii.str(); 
+  }
+  eg.mpzNeutralinos();
   eg.mw = mw;
-  eg.mz = mz;
-
-  calcDrBarHiggs(beta, mz2, mw2, sinthDRbar, eg);  
-  
+  eg.mz = mz; 
+  calcDrBarHiggs(beta, mz2, mw2, sinthDRbar, eg); 
   setDrBarPars(eg);
 
   return;

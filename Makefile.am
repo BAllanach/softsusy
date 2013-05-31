@@ -1,12 +1,12 @@
-bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf runnmssm.x nmssmsoftsusy.x .test/test_nmssm_betas.x .test/test_matrix_resize.x
+bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x Devtest.x doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf test_matrix_resize.x #test_nmssm_betas.x
 
-lib_LTLIBRARIES = libsoft.la libnmsoft.la .test/libsarah.la
+lib_LTLIBRARIES = libsoft.la libnmssm.la #.test/libsarah.la
 
 softsusy_x_SOURCES = main.cpp
 softsusy_x_LDADD = libsoft.la  
 
 softpoint_x_SOURCES = softpoint.cpp 
-softpoint_x_LDADD = libsoft.la
+softpoint_x_LDADD = libsoft.la 
 
 rpvsoftsusy_x_SOURCES = rpvmain.cpp
 rpvsoftsusy_x_LDADD = libsoft.la 
@@ -17,44 +17,50 @@ rpvneut_x_LDADD = libsoft.la
 gaugeUn_x_SOURCES = gaugeUn.cpp
 gaugeUn_x_LDADD = libsoft.la 
 
-nmssmsoftsusy_x_SOURCES = main-nmssm.cpp
-nmssmsoftsusy_x_LDADD = libnmsoft.la
+Devtest_x_SOURCES = mainDev.cpp
+Devtest_x_LDADD = libnmssm.la
 
-runnmssm_x_SOURCES = runnmssm.cpp
-runnmssm_x_LDADD = libnmsoft.la
+# test_nmssm_betas_x_SOURCES = .test/test_nmssm_betas.cpp
+# test_nmssm_betas_x_LDADD = .test/libsarah.la
 
-_test_test_nmssm_betas_x_SOURCES = .test/test_nmssm_betas.cpp
-_test_test_nmssm_betas_x_LDADD = .test/libsarah.la
-
-_test_test_matrix_resize_x_SOURCES = .test/test_matrix_resize.cpp
-_test_test_matrix_resize_x_LDADD = libsoft.la
+test_matrix_resize_x_SOURCES = .test/test_matrix_resize.cpp
+test_matrix_resize_x_LDADD = libsoft.la 
 
 pkginclude_HEADERS = \
 def.h main.h numerics.h \
 softpars.h susy.h linalg.h \
 physpars.h softpoint.h twoloophiggs.h \
 lowe.h mycomplex.h rge.h rgeroutines.h softsusy.h \
-utils.h rpvsoft.h rpvsusypars.h \
+utils.h mssmUtils.h rpvsoft.h rpvsusypars.h \
 tensor.h rpvmain.h flavoursoft.h \
 xpr-base.h xpr-matrix.h xpr-vector.h rpvneut.h \
-nmssmsusy.h nmssmsoftpars.h nmssmphyspars.h nmssmsoftsusy.h
+nmssmsusy.h nmssmsoftpars.h  \
+nmssmsoftsusy.h
+
+
 
 libsoft_la_SOURCES = def.cpp linalg.cpp lowe.cpp numerics.cpp  rpvneut.cpp \
 physpars.cpp rge.cpp rgeroutines.cpp susy.cpp utils.cpp bcs.cpp mssmUtils.cpp \
-tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp twoloophiggs.f
+tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp twoloophiggs.f 
 libsoft_la_LDFLAGS = $(FLIBS)
 
-libnmsoft_la_SOURCES = def.cpp linalg.cpp lowe.cpp numerics.cpp \
-nmssmphyspars.cpp rge.cpp nmssmsoftsusy.cpp nmssmsusy.cpp nmssmsoftpars.cpp \
- utils.cpp twoloophiggs.f tensor.cpp susy.cpp
-libnmsoft_la_LDFLAGS = $(FLIBS)
 
-_test_libsarah_la_SOURCES = def.cpp linalg.cpp lowe.cpp numerics.cpp \
-nmssmphyspars.cpp rge.cpp nmssmsoftsusy.cpp nmssmsusy.cpp nmssmsoftpars.cpp \
-utils.cpp twoloophiggs.f tensor.cpp susy.cpp \
-.test/sarah_nmssm_susy.cpp .test/sarah_nmssm_softpars.cpp \
-.test/mathematica_wrappers.cpp
-_test_libsarah_la_LDFLAGS = $(FLIBS)
+
+libnmssm_la_SOURCES = def.cpp linalg.cpp lowe.cpp numerics.cpp rpvneut.cpp \
+physpars.cpp rge.cpp rgeroutines.cpp\
+ nmssmsoftsusy.cpp nmssmsusy.cpp nmssmsoftpars.cpp \
+susy.cpp utils.cpp bcs.cpp mssmUtils.cpp \
+tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp twoloophiggs.f 
+libnmssm_la_LDFLAGS = $(FLIBS)
+
+
+
+# test_libsarah_la_SOURCES = def.cpp linalg.cpp lowe.cpp numerics.cpp \
+# nmssmphyspars.cpp rge.cpp nmssmsusy.cpp nmssmsoftpars.cpp \
+# utils.cpp twoloophiggs.f tensor.cpp susy.cpp \
+# .test/sarah_nmssm_susy.cpp .test/sarah_nmssm_softpars.cpp \
+# .test/mathematica_wrappers.cpp
+# test_libsarah_la_LDFLAGS = $(FLIBS)
 
 DOCFILES=doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
 EXTRA_DIST=$(DOCFILES)
@@ -85,6 +91,7 @@ neutrinoOutputTest: rpvneut.x
 gaugeUn.out: gaugeUn.x
 	./gaugeUn.x > gaugeUn.out 
 
+
 doc: doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
 
 doc/rpcManual.pdf: doc/rpcManual.tex
@@ -104,5 +111,6 @@ doc/neutManual.pdf: doc/neutManual.tex
 	latex neutManual.tex; latex neutManual.tex; \
 	dvips -f neutManual > neutManual.ps; 	\
 	ps2pdf neutManual.ps; cd ..
+
 
 
