@@ -91,16 +91,7 @@ void NmssmSoftsusy::treeUpSquark(DoubleMatrix & mass, double mtrun,
    mass(1, 2) = mass(1, 2) -  mtrun * lam * svev / (root2 * tanb);
    mass(2, 1) = mass(1, 2);
    }
-   cout << "Dev: mass = "  << mass << endl;
-   cout << "mtrun = "  << mtrun << endl;
-  cout << "lam = " << lam << endl;
-  cout << "mueff = " <<displaySusyMu() + lam * svev / root2  << endl;
-  cout<< "displaySusyMu() = " << displaySusyMu() << endl;
-  cout << "EPSTOL = "  << EPSTOL << endl;
-  
-  cout << "displaySoftA(UA, 3, 3) = "  << displaySoftA(UA, 3, 3) << endl;
-  cout << "tanb = "  << tanb << endl;
-  cout << "mt2 = "  << sqr(mtrun) << endl;
+   
 }
 
 
@@ -245,7 +236,6 @@ void NmssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, double s
   //PA using thetaH for now since in nmssm this is reundent
   DoubleVector mSq = mP2.sym2by2(eg.thetaH);
   //  
-  //  cout << "mSq: " << mSq << endl;
   if (mSq(1) < 0. || mSq(2) < 0.) {
      flagTachyon(A0);
      if (PRINTOUT > 1) cout << " mA1/mA2 tachyon";
