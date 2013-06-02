@@ -16,15 +16,11 @@
 
 double getRandomNum(double Min, double Max){
    double temp = rand();
-   return Min + temp /  RAND_MAX * Max;
+   return Min + temp /  RAND_MAX * (Max - Min);
 }
 int Fillfortest(SoftParsNmssm & r){
    srand(time(NULL));
-   cout << "rand() = " << rand() << endl;
-   cout << "rand() = " << rand() << endl;
-   cout << " RAND_MAX = "  <<  RAND_MAX << endl;
    double Scale = getRandomNum(0, 300);
-   cout << "Scale = "  << Scale << endl;
    DoubleMatrix yu(3,3), yd(3,3), ye(3,3), mUR(3,3), mDR(3,3), mER(3,3), mQL(3,3), mLL(3,3), ua(3,3), da(3,3), ea(3,3);
    for(int i = 1; i <= 3; i++){
       for(int j = 1; j <= 3; j++){
@@ -54,8 +50,8 @@ int Fillfortest(SoftParsNmssm & r){
          r.setSoftMassElement(mQl, i, j, mQL(i,j)); 
          r.setSoftMassElement(mLl, i, j, mLL(i,j));
          r.setTrilinearElement(UA, i, j, ua(i,j));
-         r.setTrilinearElement(DA, i, j, ua(i,j));
-         r.setTrilinearElement(EA, i, j, ua(i,j));
+         r.setTrilinearElement(DA, i, j, da(i,j));
+         r.setTrilinearElement(EA, i, j, ea(i,j));
       }
    }
    DoubleVector g(3), mG(3);
