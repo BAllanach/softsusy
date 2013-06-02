@@ -4,6 +4,22 @@
 
 #include <iostream>
 
+double sw2 = 1.0 - sqr(MW / MZ),
+  gnuL = 0.5,
+  guL = 0.5 - 2.0 * sw2 / 3.0,
+  gdL = -0.5 + sw2 / 3.0,
+  geL = -0.5 + sw2,
+  guR = 2.0 * sw2 / 3.0,
+  gdR = -sw2 / 3.0,
+  geR = -sw2,
+  yuL = 1.0 / 3.0,
+  yuR = -4.0 / 3.0,
+  ydL = 1.0 / 3.0,
+  ydR = 2.0 / 3.0,
+  yeL = -1.0,
+  yeR = 2.0,
+  ynuL = -1.0;
+
 /// Returns true if a point passes the Higgs constraint from LEP2, false
 /// otherwise.  Error is the amount of uncertainty on SOFTSUSY's mh prediction
 bool testLEPHiggs(const MssmSoftsusy & r, double error) {
