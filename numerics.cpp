@@ -1543,21 +1543,10 @@ void newt(DoubleVector & x, int n, int & check,
   throw("MAXITS exceeded in newt\n");
 }
 
-void load(float x, const DoubleVector & v, DoubleVector & f) {
-  f(1) = 1.; ///< initial boundary condition
-  f(2) = v.display(1); ///< free value
-  return;
-}
-
-void score(float x, const DoubleVector & y, DoubleVector & f) {
-  f(1) = y(2) - 1.;
-  return;
-}
-
 DoubleVector testDerivs(double x, const DoubleVector & y) {
   DoubleVector dydx(2);
-  dydx(1) = y(1);
-  dydx(2) = y(2);
+  dydx(1) = y(1) * y(2) * y(2);
+  dydx(2) = y(2) * y(1);
   return dydx;
 }
 
