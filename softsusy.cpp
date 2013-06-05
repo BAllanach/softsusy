@@ -730,6 +730,7 @@ DoubleVector MssmSoftsusy::fineTune
 /// technique
 /// err is 1 if no iteration reached
 /// 2 if incorrect rewsb
+/// Really, you should switch OFF iteration as it breaks gauge invariance
 void MssmSoftsusy::iterateMu(double & muold, int sgnMu,
 			     double mt, int maxTries, double pizzMS,
 			     double sinthDRbar, double tol, int & err) {
