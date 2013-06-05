@@ -25,29 +25,18 @@
 #include "utils.h"
 #include "numerics.h"
 
-/// vector function that has (-2,-2) as its root
-void testv(int n, const DoubleVector & v, DoubleVector & f) {
-  double x = v.display(1); double y = v.display(2);
-  f(1) = (x + 2.) * (y + 2.) * (x + 2.) + (y + 2.) * 2.;
-  f(2) = (y + 2.) * (x + 2.) * (x + 2.) + (x + 2.) * 1.;
-  return;
-}
-
 int main() {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
+  /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
 
-  int check = 0, n = 1;
-  DoubleVector x(1); x(1) = 0.5;
+  /*  int check = 0, n = 1;
+  DoubleVector x(1); x(1) = 0.1;
   newt(x, n, check, shoot);
-  cout << "Finished. x=" << x << " check=" << check << endl; 
-  newt(x, n, check, shoot);
-  cout << "Finished. x=" << x << " check=" << check << endl; exit(0);
+  cout << "Finished. x=" << x << " check=" << check << endl; exit(0);*/
 
   try {
- /// Sets format of output: 6 decimal places
-
 
   cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
        << " test program, Ben Allanach 2002\n";

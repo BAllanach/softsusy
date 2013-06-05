@@ -6127,6 +6127,57 @@ MssmSusy MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
   return t;
 }
 
+/// loads up object at GUT scale, runs it down, providing a vector score as to
+/// how well low-scale boundary conditions are satisfied. 
+/// v1 = m0 / 1000,  v2 = m12 / 1000, v3 = A0 / 1000, v4 = tanb(MX), 
+/// v5 = mx / 10^16, v6 = g1(=g2), v7 = g3, v8 = mu / 1000, v9 = m3sq / 10^6
+/// v10 = ht, v11 = hb, v12 = htau, v13 = VEVmx / 1000
+void mxToMz(int n, const DoubleVector & v, DoubleVector & f) {
+  double h1, hmin = 0.0;
+
+  const double EPS = 1.0e-6;
+  
+  DoubleVector pars(3);
+  pars(1) = v(1) * 1000.; pars(2) = v(2) * 1000.; pars(3) = v(3) * 1000.;
+  
+  double tanbmx = v(4);
+  double mx = v(5) * 1.e16;
+  double g1mx = v(6);
+  double g3mx = v(7);
+  double mumx = v(8) * 1000.;
+  double m3sqmx = v(9) * 1.0e6;
+  double htmx = v(10), hbmx = v(11), htaumx = v(12);
+  double hvevmx = v(13) * 1.0e3;
+
+  /// set initial BCs. You should put some checks on these 
+  sugraBcs(*tempSoft1, pars);
+  tempSoft1->setMu(mx);
+  tempSoft1->setTanb(tanbmx);
+  /// g1(mx)=g2(mx)
+  tempSoft1->setGaugeCoupling(1, g1mx);   tempSoft1->setGaugeCoupling(2, g1mx);
+  tempSoft1->setGaugeCoupling(3, g3mx);   
+  tempSoft1->setSusyMu(mumx); tempSoft1->setM3Squared(m3sqmx);
+  DoubleMatrix empty(3, 3);
+  tempSoft1->setYukawaMatrix(YU, empty);
+  tempSoft1->setYukawaMatrix(YD, empty);
+  tempSoft1->setYukawaMatrix(YE, empty);
+  tempSoft1->setYukawaElement(YU, 3, 3, htmx);
+  tempSoft1->setYukawaElement(YD, 3, 3, hbmx);
+  tempSoft1->setYukawaElement(YE, 3, 3, htaumx);
+  tempSoft1->setHvev(hvevmx);
+
+  cout << *tempSoft1; exit(0);
+
+  /// integrate up from x1 to x2
+  //  int err = integrateOdes(y, x1, x2, EPS, h1, hmin, testDerivs, odeStepper);
+  
+  /// now, determine a vector showing how far (WITH SIGN) the solution is from
+  /// the second boundary condition: y2(2)=1.
+  f(1) =  - 1.;
+
+  return;
+}
+
 /// Returns low energy softsusy object consistent with BC's m0 etc at MGUT.
 /// oneset should be at MZ and contains the SM data to fit the model to.
 /// If the running comes into difficulty, eg if a Landau pole is reached, it
@@ -6192,7 +6243,7 @@ double MssmSoftsusy::lowOrg
     boundaryCondition(*this, pars);
 
     if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
-      setSusyMu(sgnMu * 1.0);
+      setSusyMu(sgnMu * MZ);
       setM3Squared(0.);
     }
     else {
@@ -6205,6 +6256,22 @@ double MssmSoftsusy::lowOrg
 	setM3Squared(muFirst); 
       }
     }
+
+    /// Start of DEBUG
+    /// We start with a MssmSoftsusy object that is defined at MX as the
+    /// initial guess
+    tempSoft1 = this;
+    int check = 0, n = 1;
+    DoubleVector x(64); x(1) = pars(1) * 0.001; x(2) = pars(2)* 0.001; 
+    x(3) = pars(3) * 0.001; x(4) = displayTanb(); x(5) = mx * 1.0e-16;
+    x(6) = displayGaugeCoupling(1); x(7) = displayGaugeCoupling(3);
+    x(8) = displaySusyMu() * 0.001; x(9) = displayM3Squared() * 1.0e-6;
+    x(10) = displayYukawaElement(YU, 3, 3);
+    x(11) = displayYukawaElement(YD, 3, 3);
+    x(12) = displayYukawaElement(YE, 3, 3);
+    x(13) = displayHvev() * 1.0e-3;
+    newt(x, n, check, mxToMz);
+    /// End of DEBUG
 
     run(mx, mz);
 
