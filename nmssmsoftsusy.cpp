@@ -9,6 +9,9 @@
 
 #ifdef NMSSMSOFTSUSY_H
 
+extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
+  ydR, yeL, yeR, ynuL;
+
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.    
 void NmssmSoftsusy::printall(){
 
@@ -278,7 +281,6 @@ void NmssmSoftsusy::calcDrBarPars() {
   double sinthDRbar = calcSinthdrbar();
   double mz = displayMzRun(), mz2 = sqr(mz);
   double pizzt = sqr(mz) - sqr(mzPole);
-  double sw2, guL, gdL, geL, guR, gdR, geR;
   double vev = displayHvev();
   
   Softsusy::setNeutCurrCouplings(sinthDRbar, sw2, guL, gdL, geL, guR, gdR, geR);
