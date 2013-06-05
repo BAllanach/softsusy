@@ -6131,7 +6131,8 @@ MssmSusy MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
 /// how well low-scale boundary conditions are satisfied. 
 /// v1 = m0 / 1000,  v2 = m12 / 1000, v3 = A0 / 1000, v4 = tanb(MX), 
 /// v5 = mx / 10^16, v6 = g1(=g2), v7 = g3, v8 = mu / 1000, v9 = m3sq / 10^6
-/// v10 = ht, v11 = hb, v12 = htau, v13 = VEVmx / 1000
+/// v10 = htmx, v11 = hb, v12 = htaumx, v13 = VEVmx / 1000, v14 = msusy / 1000
+/// v15 = tanbmz
 void mxToMz(int n, const DoubleVector & v, DoubleVector & f) {
   double h1, hmin = 0.0;
 
@@ -6148,6 +6149,8 @@ void mxToMz(int n, const DoubleVector & v, DoubleVector & f) {
   double m3sqmx = v(9) * 1.0e6;
   double htmx = v(10), hbmx = v(11), htaumx = v(12);
   double hvevmx = v(13) * 1.0e3;
+  double msusy = v(14) * 1.0e3;
+  double tanbmz = v(15);
 
   /// set initial BCs. You should put some checks on these 
   sugraBcs(*tempSoft1, pars);
@@ -6165,15 +6168,50 @@ void mxToMz(int n, const DoubleVector & v, DoubleVector & f) {
   tempSoft1->setYukawaElement(YD, 3, 3, hbmx);
   tempSoft1->setYukawaElement(YE, 3, 3, htaumx);
   tempSoft1->setHvev(hvevmx);
+  tempSoft1->setMsusy(msusy);
 
-  cout << *tempSoft1; exit(0);
+  tempSoft1->runto(tempSoft1->displayMsusy(), EPS);
 
-  /// integrate up from x1 to x2
-  //  int err = integrateOdes(y, x1, x2, EPS, h1, hmin, testDerivs, odeStepper);
-  
+  tempSoft1->calcDrBarPars();
+
+  double tbOut; double predictedMzSq = 0.;
+  predictedMzSq = tempSoft1->predMzsq(tbOut);
+  double msusypred = tempSoft1->calcMs();
+
+  /// output vector which measures how well BCs are met
+  f(1) = predictedMzSq / sqr(MZ) - 1.;
+  f(2) = tempSoft1->displayTanb() / tbOut - 1.;
+  f(3) = msusypred / msusy - 1.;
+
+  tempSoft1->runto(MZ, EPS);
+  MssmSoftsusy predict(*tempSoft1);
+
+
+
+  /// match predict to data, but tempsoft1 is not matched to data
+  predict.sparticleThresholdCorrections(tempSoft1->displayTanb());
+
+  tempSoft1->calcDrBarPars();
+
+  double htmzpred = tempSoft1->displayYukawaElement(YU, 3, 3);
+  double hbmzpred = tempSoft1->displayYukawaElement(YD, 3, 3);
+  double htaumzpred = tempSoft1->displayYukawaElement(YE, 3, 3);
+  f(4) = htmzpred / predict.displayYukawaElement(YU, 3, 3) - 1.;
+  f(5) = hbmzpred / predict.displayYukawaElement(YD, 3, 3) - 1.;
+  f(6) = htaumzpred / predict.displayYukawaElement(YE, 3, 3) - 1.;
+
+  f(7) = tempSoft1->displayGaugeCoupling(1) / 
+    predict.displayGaugeCoupling(1) - 1.;
+  f(8) = tempSoft1->displayGaugeCoupling(2) / 
+    predict.displayGaugeCoupling(2) - 1.;
+  f(9) = tempSoft1->displayGaugeCoupling(3) / 
+    predict.displayGaugeCoupling(3) - 1.;
+  f(10) = tempSoft1->displayHvev() / predict.displayHvev() - 1.;
+  f(11) = tempSoft1->displayTanb() / tanbmz - 1.;
+
   /// now, determine a vector showing how far (WITH SIGN) the solution is from
   /// the second boundary condition: y2(2)=1.
-  f(1) =  - 1.;
+  cout << "outputs" << f;
 
   return;
 }
@@ -6244,7 +6282,7 @@ double MssmSoftsusy::lowOrg
 
     if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
       setSusyMu(sgnMu * MZ);
-      setM3Squared(0.);
+      setM3Squared(10.);
     }
     else {
       if (altEwsb) {
@@ -6261,7 +6299,7 @@ double MssmSoftsusy::lowOrg
     /// We start with a MssmSoftsusy object that is defined at MX as the
     /// initial guess
     tempSoft1 = this;
-    int check = 0, n = 1;
+    int check = 0, n = 11;
     DoubleVector x(64); x(1) = pars(1) * 0.001; x(2) = pars(2)* 0.001; 
     x(3) = pars(3) * 0.001; x(4) = displayTanb(); x(5) = mx * 1.0e-16;
     x(6) = displayGaugeCoupling(1); x(7) = displayGaugeCoupling(3);
@@ -6270,6 +6308,8 @@ double MssmSoftsusy::lowOrg
     x(11) = displayYukawaElement(YD, 3, 3);
     x(12) = displayYukawaElement(YE, 3, 3);
     x(13) = displayHvev() * 1.0e-3;
+    x(14) = calcMs() * 1.0e-3;
+    x(15) = tanb;
     newt(x, n, check, mxToMz);
     /// End of DEBUG
 
