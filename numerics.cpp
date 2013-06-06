@@ -1340,9 +1340,9 @@ void fdjac(int n, DoubleVector x, const DoubleVector & fvec, DoubleMatrix & df,
   }
 }
 
-void lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
+bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
 	    DoubleVector & p, 
-	    DoubleVector & x, double & f, double stpmax, int & check, 
+	    DoubleVector & x, double & f, double stpmax, 
 	    void (*vecfunc)(int, const DoubleVector &, DoubleVector &), 
 	    DoubleVector & fvec) {
   const double ALF = 1.0e-4;
@@ -1352,7 +1352,7 @@ void lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g,
   double a,alam,alam2,alamin,b,disc,f2,fold2,rhs1,rhs2,slope,sum,temp,
     test,tmplam;
   
-  check = 0;
+  bool err = false;
   for (sum=0.0, i=1; i<=xold.displayEnd(); i++) sum += p(i) * p(i);
   sum = sqrt(sum);
   if (sum > stpmax)
@@ -1372,9 +1372,9 @@ void lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g,
     f = fvec.dot(fvec);
     if (alam < alamin) {
       for (i=1;i<=xold.displayEnd();i++) x(i) = xold(i);
-      check = 1;
-      return;
-    } else if (f <= fold + ALF * alam * slope) return;
+      err = true;
+      return err;
+    } else if (f <= fold + ALF * alam * slope) return err;
     else {
       if (alam == 1.0)
 	tmplam = -slope / (2.0 * (f - fold - slope));
@@ -1399,6 +1399,7 @@ void lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g,
     fold2 = fold;
     alam = maximum(tmplam, 0.1 * alam);
   }
+  return err;
 }
 
 /// Get rid of int n
@@ -1475,14 +1476,16 @@ void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
 
 
 /// More work can be done on this: get rid of int n and in subfunctions too
-void newt(DoubleVector & x, int n, int & check,
+bool newt(DoubleVector & x, 
 	  void (*vecfunc)(int, const DoubleVector &, DoubleVector &)) {
+  bool err = false; 
   const int    MAXITS = 200;    ///< max iterations
   const double TOLF   = 1.0e-4; ///< convergence on function values
   const double TOLMIN = 1.0e-6; ///< spurious convergence to min of fmin
   const double TOLX   = 1.0e-7; ///< maximum dx convergence criterion
   const double STPMX  = 100.0; ///< maximum step length allowed in line searches
   
+  int n = x.displayEnd();
   int i,its,j,*indx;
   double d,den,f,fold,stpmax,sum,temp,test;
   
@@ -1497,8 +1500,8 @@ void newt(DoubleVector & x, int n, int & check,
   for (i=1; i<=n; i++)
     if (fabs(fvec(i)) > test) test = fabs(fvec(i));
   if (test < 0.01 * TOLF) {
-    check = 0;
-    free_ivector(indx,1,n);return;
+    err = false;
+    free_ivector(indx,1,n); return err;
   }
   for (sum=0.0, i=1; i<=n; i++) sum += sqr(x(i));
   stpmax = STPMX * maximum(sqrt(sum), (double) n);
@@ -1513,40 +1516,41 @@ void newt(DoubleVector & x, int n, int & check,
     for (i=1;i<=n;i++) p(i) = -fvec(i);
     ludcmp(fjac, n, indx, d);
     lubksb(fjac, n, indx, p);
-    lnsrch(xold, fold, g, p, x, f, stpmax, check, vecfunc, fvec);
+    err = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec);
     test=0.0;
     for (i=1; i<=n; i++)
       if (fabs(fvec(i)) > test) test=fabs(fvec(i));
     if (test < TOLF) {
-      check=0;
+      err = false;
       free_ivector(indx, 1, n);
-      return;
+      return err;
     }
-    if (check) {
+    if (err) {
       test = 0.0;
       den = maximum(f, 0.5 * n);
       for (i=1; i<=n; i++) {
 	temp=fabs(g(i)) * maximum(fabs(x(i)), 1.0) / den;
 	if (temp > test) test = temp;
       }
-      check = (test < TOLMIN ? 1 : 0);
+      err = (test < TOLMIN ? true : false);
       free_ivector(indx, 1, n);
-      return;
+      return err;
     }
     test = 0.0;
     for (i=1; i<=n; i++) {
       temp=(fabs(x(i) - xold(i))) / maximum(fabs(x(i)), 1.0);
       if (temp > test) test = temp;
     }
-    if (test < TOLX) { free_ivector(indx, 1, n); return; }
+    if (test < TOLX) { free_ivector(indx, 1, n); return err; }
   }
   throw("MAXITS exceeded in newt\n");
 }
 
 DoubleVector testDerivs(double x, const DoubleVector & y) {
-  DoubleVector dydx(2);
+  DoubleVector dydx(3);
   dydx(1) = y(1) * y(2) * y(2);
-  dydx(2) = y(2) * y(1);
+  dydx(2) = y(2) * y(1) * y(3);
+  dydx(3) = y(1);
   return dydx;
 }
 
@@ -1555,7 +1559,7 @@ void shoot(int n, const DoubleVector & v, DoubleVector & f) {
 
   const double EPS = 1.0e-6;
   
-  DoubleVector y(2);
+  DoubleVector y(3);
   
   double x1 = 1., x2 = 2.;
   /// Initial stepsize guess for integration
@@ -1564,6 +1568,7 @@ void shoot(int n, const DoubleVector & v, DoubleVector & f) {
   /// set initial BCs: y1(1)=1
   y(1) = 1.;
   y(2) = v.display(1);
+  y(3) = v.display(2);
 
   /// integrate up from x1 to x2
   int err = integrateOdes(y, x1, x2, EPS, h1, hmin, testDerivs, odeStepper);
@@ -1571,6 +1576,7 @@ void shoot(int n, const DoubleVector & v, DoubleVector & f) {
   /// now, determine a vector showing how far (WITH SIGN) the solution is from
   /// the second boundary condition: y2(2)=1.
   f(1) = y(2) - 1.;
+  f(2) = y(3) - y(1);
 
   return;
 }

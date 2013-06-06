@@ -6170,7 +6170,7 @@ void mxToMz(int n, const DoubleVector & v, DoubleVector & f) {
   tempSoft1->setHvev(hvevmx);
   tempSoft1->setMsusy(msusy);
 
-  tempSoft1->runto(tempSoft1->displayMsusy(), EPS);
+  tempSoft1->runto(msusy, EPS);
 
   tempSoft1->calcDrBarPars();
 
@@ -6179,7 +6179,7 @@ void mxToMz(int n, const DoubleVector & v, DoubleVector & f) {
   double msusypred = tempSoft1->calcMs();
 
   /// output vector which measures how well BCs are met
-  f(1) = predictedMzSq / sqr(MZ) - 1.;
+  f(1) = (predictedMzSq / sqr(MZ) - 1.) * 0.02;
   f(2) = tempSoft1->displayTanb() / tbOut - 1.;
   f(3) = msusypred / msusy - 1.;
 
@@ -6310,7 +6310,7 @@ double MssmSoftsusy::lowOrg
     x(13) = displayHvev() * 1.0e-3;
     x(14) = calcMs() * 1.0e-3;
     x(15) = tanb;
-    newt(x, n, check, mxToMz);
+    bool err = newt(x, mxToMz);
     /// End of DEBUG
 
     run(mx, mz);

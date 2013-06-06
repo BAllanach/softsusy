@@ -231,10 +231,10 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc);
 void fdjac(int n, DoubleVector x, const DoubleVector & fvec, DoubleMatrix & df,
 	   void (*vecfunc)(int, const DoubleVector &, DoubleVector &));
 /// These are experimental things for trying the shooting method - returns
-/// F.F/2 evaluated at x. 
-void lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
+/// F.F/2 evaluated at x. Boolean value on return is error flag
+bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
 	    DoubleVector & p, 
-	    DoubleVector & x, double & f, double stpmax, int & check, 
+	    DoubleVector & x, double & f, double stpmax, 
 	    void (*vecfunc)(int, const DoubleVector &, DoubleVector &), 
 	    DoubleVector & fvec);
 /* allocate an int vector with subscript range v[nl..nh] */
@@ -244,9 +244,10 @@ void free_ivector(int *v, long nl, long nh);
 void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b);
 /// Multi-dimensional globally convergent multi-dimensional root solver for n
 /// variables. adjusts x so that f(x)=0, where f is the last function provided
-/// by vecfunc, given vector input x. If check=0 on output, there is no
-/// error. If check=1, a local minimum or saddle-point has been found (df/dx=0)
-void newt(DoubleVector & x, int n, int & check,
+/// by vecfunc, given vector input x. If false on output, there is no
+/// error. If returns 1, a local minimum or saddle-point has been found
+/// (df/dx=0) 
+bool newt(DoubleVector & x, 
 	  void (*vecfunc)(int, const DoubleVector &, DoubleVector &));
 /// calculates the n-vector y, given freely specifiable values v(1..n2) at x1
 void load(float x, const DoubleVector & v, DoubleVector & y);
