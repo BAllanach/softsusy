@@ -26,6 +26,7 @@
 #include "numerics.h"
 
 int main() {
+  TOLERANCE = 1.0e-6;
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
   /// Sets format of output: 6 decimal places
@@ -97,6 +98,8 @@ int main() {
     else
       /// print out what the problem(s) is(are)
       cout << tanb << " " << r.displayProblem() << endl;
+
+    cout << r; exit(0); ///< DEBUG
   }
   }
   catch(const string & a) { cout << a; }

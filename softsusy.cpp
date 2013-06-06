@@ -6297,6 +6297,7 @@ double MssmSoftsusy::lowOrg
     /// Start of DEBUG
     /// We start with a MssmSoftsusy object that is defined at MX as the
     /// initial guess
+    /*
     tempSoft1 = this;
     tempSoft1->setThresholds(3); tempSoft1->setLoops(2);
     DoubleVector x(11); 
@@ -6310,8 +6311,9 @@ double MssmSoftsusy::lowOrg
     x(11) = calcMs() * 1.0e-3;
     bool err = newt(x, mxToMz);
     tempSoft1->physical(3);
-    tempSoft1->runto(x(2) * 1.e16);
+    //    tempSoft1->runto(x(2) * 1.e16);
     cout << *tempSoft1 << " err=" << err << endl << x; exit(0);
+    */
     /// End of DEBUG
 
     run(mx, mz);
