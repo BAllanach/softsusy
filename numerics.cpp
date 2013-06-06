@@ -1322,7 +1322,7 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc) {
 /// You will need to clear this lot up....
 
 void fdjac(int n, DoubleVector x, const DoubleVector & fvec, DoubleMatrix & df,
-	   void (*vecfunc)(int, const DoubleVector &, DoubleVector &)) {
+	   void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
   const double EPS = 1.0e-4;
   int i,j;
   double h,temp;
@@ -1334,7 +1334,7 @@ void fdjac(int n, DoubleVector x, const DoubleVector & fvec, DoubleMatrix & df,
     if (h == 0.0) h = EPS;
     x(j) = temp + h;
     h = x(j) - temp;
-    (*vecfunc)(n, x, f);
+    (*vecfunc)(x, f);
     x(j) = temp;
     for (i=1; i<=n; i++) df(i, j) = (f(i) - fvec.display(i)) / h;
   }
@@ -1343,7 +1343,7 @@ void fdjac(int n, DoubleVector x, const DoubleVector & fvec, DoubleMatrix & df,
 bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
 	    DoubleVector & p, 
 	    DoubleVector & x, double & f, double stpmax, 
-	    void (*vecfunc)(int, const DoubleVector &, DoubleVector &), 
+	    void (*vecfunc)(const DoubleVector &, DoubleVector &), 
 	    DoubleVector & fvec) {
   const double ALF = 1.0e-4;
   const double TOLX = 1.0e-7;
@@ -1368,7 +1368,7 @@ bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g,
   alam = 1.0;
   for (;;) {
     for (i=1; i<=xold.displayEnd(); i++) x(i) = xold(i) + alam * p(i);
-    vecfunc(xold.displayEnd(), x, fvec); 
+    vecfunc(x, fvec); 
     f = fvec.dot(fvec);
     if (alam < alamin) {
       for (i=1;i<=xold.displayEnd();i++) x(i) = xold(i);
@@ -1477,7 +1477,7 @@ void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
 
 /// More work can be done on this: get rid of int n and in subfunctions too
 bool newt(DoubleVector & x, 
-	  void (*vecfunc)(int, const DoubleVector &, DoubleVector &)) {
+	  void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
   bool err = false; 
   const int    MAXITS = 200;    ///< max iterations
   const double TOLF   = 1.0e-4; ///< convergence on function values
@@ -1494,7 +1494,7 @@ bool newt(DoubleVector & x,
   DoubleVector g(n), p(n), xold(n);
   DoubleVector fvec(n);
 
-  vecfunc(n, x, fvec); 
+  vecfunc(x, fvec); 
   f = fvec.dot(fvec);
   test = 0.0;
   for (i=1; i<=n; i++)
@@ -1544,6 +1544,7 @@ bool newt(DoubleVector & x,
     if (test < TOLX) { free_ivector(indx, 1, n); return err; }
   }
   throw("MAXITS exceeded in newt\n");
+  return true;
 }
 
 DoubleVector testDerivs(double x, const DoubleVector & y) {
@@ -1554,7 +1555,7 @@ DoubleVector testDerivs(double x, const DoubleVector & y) {
   return dydx;
 }
 
-void shoot(int n, const DoubleVector & v, DoubleVector & f) {
+void shoot(const DoubleVector & v, DoubleVector & f) {
   double h1, hmin = 0.0;
 
   const double EPS = 1.0e-6;

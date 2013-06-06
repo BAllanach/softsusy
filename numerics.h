@@ -229,13 +229,13 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc);
 /// point to be evaluated, fvec is the vector of function values at the point,
 /// and  vecfunc(n, x, f) is the Jacobian array
 void fdjac(int n, DoubleVector x, const DoubleVector & fvec, DoubleMatrix & df,
-	   void (*vecfunc)(int, const DoubleVector &, DoubleVector &));
+	   void (*vecfunc)(const DoubleVector &, DoubleVector &));
 /// These are experimental things for trying the shooting method - returns
 /// F.F/2 evaluated at x. Boolean value on return is error flag
 bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
 	    DoubleVector & p, 
 	    DoubleVector & x, double & f, double stpmax, 
-	    void (*vecfunc)(int, const DoubleVector &, DoubleVector &), 
+	    void (*vecfunc)(const DoubleVector &, DoubleVector &), 
 	    DoubleVector & fvec);
 /* allocate an int vector with subscript range v[nl..nh] */
 int *ivector(long nl, long nh);
@@ -248,7 +248,7 @@ void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b);
 /// error. If returns 1, a local minimum or saddle-point has been found
 /// (df/dx=0) 
 bool newt(DoubleVector & x, 
-	  void (*vecfunc)(int, const DoubleVector &, DoubleVector &));
+	  void (*vecfunc)(const DoubleVector &, DoubleVector &));
 /// calculates the n-vector y, given freely specifiable values v(1..n2) at x1
 void load(float x, const DoubleVector & v, DoubleVector & y);
 /// Gives a discrepancy vector f[1..n2] from ending boundary conditions at
@@ -259,6 +259,6 @@ void score(float x, const DoubleVector & y, DoubleVector & f);
 /// conditions at the initial scale and calculates f[1..n2] - a score for how
 /// well the boundary condition at the high scale is satisfied. Then you
 /// should be able to find the solutions for the unknown numbers. 
-void shoot(int n, const DoubleVector & v, DoubleVector & f);
+void shoot(const DoubleVector & v, DoubleVector & f);
 #endif
 

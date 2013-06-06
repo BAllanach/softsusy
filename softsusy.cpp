@@ -6133,7 +6133,7 @@ MssmSusy MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
 /// v5 = mx / 10^16, v6 = g1(=g2), v7 = g3, v8 = mu / 1000, v9 = m3sq / 10^6
 /// v10 = htmx, v11 = hb, v12 = htaumx, v13 = VEVmx / 1000, v14 = msusy / 1000
 /// v15 = tanbmz
-void mxToMz(int n, const DoubleVector & v, DoubleVector & f) {
+void mxToMz(const DoubleVector & v, DoubleVector & f) {
   double h1, hmin = 0.0;
 
   const double EPS = 1.0e-6;
