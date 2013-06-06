@@ -145,6 +145,9 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
 /// LCT: new routine for NMSSM neutralino masses, 
   //Returns tree-level Neutralino mass matrix in the NMSSM 
   void calcDrBarNeutralinos(DoubleMatrix & mass, double beta, double mz, double mw, double sinthDRbar);
+  //PA:  calls  calcDrBarCharginos and calcDrBarNeutralinos, 
+  // performs diagonalisation and fills eg with appropriate values.
+  void calcDrBarGauginos(double beta, double mw, double mz, double sinth, drBarPars & eg);
 
   void calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, drBarPars & eg);
  

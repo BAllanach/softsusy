@@ -6422,8 +6422,7 @@ void Softsusy<SoftPars>::calcDrBarCharginos(DoubleMatrix & mCh, double beta, dou
 }
 
 template<class SoftPars>
-void Softsusy<SoftPars>::calcDrBarNeutralinos(DoubleMatrix & mNeut, double beta, double mz, 
-                                              double mw, double sinthDRbar) {
+void Softsusy<SoftPars>::calcDrBarNeutralinos(DoubleMatrix & mNeut, double beta, double mz, double mw, double sinthDRbar) {
   
   mNeut(1, 1) = displayGaugino(1);
   mNeut(2, 2) = displayGaugino(2);
@@ -6435,6 +6434,22 @@ void Softsusy<SoftPars>::calcDrBarNeutralinos(DoubleMatrix & mNeut, double beta,
   mNeut.symmetrise();
 }
 
+template<class SoftPars>
+void Softsusy<SoftPars>::calcDrBarGauginos(double beta, double mw, double mz, double sinth, drBarPars & eg) {
+  DoubleMatrix mCh(2, 2);   
+  calcDrBarCharginos(mCh, beta, mw);
+  eg.mch = mCh.asy2by2(eg.thetaL, eg.thetaR);
+  eg.mpzCharginos();
+  DoubleMatrix mNeut(4, 4);
+  calcDrBarNeutralinos(mNeut, beta, mz, mw, sinth);
+  if (mNeut.diagonaliseSym(eg.mixNeut, eg.mneut) > TOLERANCE *
+      1.0e-3) { 
+     ostringstream ii;
+     ii << "accuracy bad in neutralino diagonalisation"<< flush;
+     throw ii.str(); 
+  }
+  eg.mpzNeutralinos();
+}
 template<class SoftPars>
 void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2, 
 				  double sinthDRbar, drBarPars & eg) {
@@ -6640,19 +6655,7 @@ void Softsusy<SoftPars>::calcDrBarPars() {
 
   double mw = displayMwRun();
   double mw2 = sqr(mw);
-   DoubleMatrix mCh(2, 2);   
-  calcDrBarCharginos(mCh, beta, mw);
-  eg.mch = mCh.asy2by2(eg.thetaL, eg.thetaR);
-  eg.mpzCharginos();
-  DoubleMatrix mNeut(4, 4);
-  calcDrBarNeutralinos(mNeut, beta, mz, mw, sinthDRbar);
-  if (mNeut.diagonaliseSym(eg.mixNeut, eg.mneut) > TOLERANCE *
-      1.0e-3) { 
-     ostringstream ii;
-     ii << "accuracy bad in neutralino diagonalisation"<< flush;
-     throw ii.str(); 
-  }
-  eg.mpzNeutralinos();
+  calcDrBarGauginos(beta, mw, mz, sinthDRbar, eg);
   eg.mw = mw;
   eg.mz = mz; 
   calcDrBarHiggs(beta, mz2, mw2, sinthDRbar, eg); 

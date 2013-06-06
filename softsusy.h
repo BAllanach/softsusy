@@ -391,6 +391,11 @@ public:
   /// masses in eg with the appropriate values on exit. 
   void calcDrBarNeutralinos(DoubleMatrix & mN, double beta, double mz, 
                             double mw, double sinth);
+  // calculates the chargino and neutralino DRbar parameters. 
+  //It will fill in the chargino and neutralino
+  /// masses in eg with the appropriate values on exit. 
+  void calcDrBarGauginos(double beta, double mw, double mz, double sinth, 
+                         drBarPars & eg);
   /// For an input tan beta=tb, sets gauge and Yukawa couplings according to
   /// the tree-level spectrum and data set: pars contains the boundary
   /// conditions. They aren't used in R-parity conservation, though. 
