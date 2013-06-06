@@ -31,7 +31,6 @@
 
 #include <twoloophiggs.h>
 
-#include "bcs.h"
 #include "mssmUtils.h"
 using namespace softsusy;
 

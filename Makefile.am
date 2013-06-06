@@ -37,7 +37,7 @@ nmssmsoftsusy.h
 
 
 libsoft_la_SOURCES = def.cpp linalg.cpp lowe.cpp numerics.cpp  rpvneut.cpp \
-physpars.cpp rge.cpp rgeroutines.cpp susy.cpp utils.cpp bcs.cpp mssmUtils.cpp \
+physpars.cpp rge.cpp rgeroutines.cpp susy.cpp utils.cpp mssmUtils.cpp \
 tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp twoloophiggs.f 
 libsoft_la_LDFLAGS = $(FLIBS)
 
@@ -46,7 +46,7 @@ libsoft_la_LDFLAGS = $(FLIBS)
 libnmssm_la_SOURCES = def.cpp linalg.cpp lowe.cpp numerics.cpp rpvneut.cpp \
 physpars.cpp rge.cpp rgeroutines.cpp\
  nmssmsoftsusy.cpp nmssmsusy.cpp nmssmsoftpars.cpp \
-susy.cpp utils.cpp bcs.cpp mssmUtils.cpp \
+susy.cpp utils.cpp mssmUtils.cpp \
 tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp twoloophiggs.f 
 libnmssm_la_LDFLAGS = $(FLIBS)
 

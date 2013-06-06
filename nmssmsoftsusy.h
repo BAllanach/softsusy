@@ -22,7 +22,6 @@
 #include <lowe.h>
 #include <nmssmsoftpars.h>
 #include <softsusy.h>
-#include "bcs.h"
 #include "mssmUtils.h"
 //#include <nmssm2loop.h>
 using namespace softsusy;
