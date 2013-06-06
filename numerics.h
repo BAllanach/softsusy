@@ -246,7 +246,8 @@ void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b);
 /// variables. adjusts x so that f(x)=0, where f is the last function provided
 /// by vecfunc, given vector input x. If false on output, there is no
 /// error. If returns 1, a local minimum or saddle-point has been found
-/// (df/dx=0) 
+/// (df/dx=0). The length of x should be equal to the number of parameters to
+/// vary AND the number of constraints ie the length of the vector in vecfunc.
 bool newt(DoubleVector & x, 
 	  void (*vecfunc)(const DoubleVector &, DoubleVector &));
 /// calculates the n-vector y, given freely specifiable values v(1..n2) at x1

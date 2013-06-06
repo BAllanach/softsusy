@@ -30,11 +30,15 @@ int main() {
   signal(SIGFPE, FPE_ExceptionHandler); 
   /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
-  
+
+  /*  try{
   int check = 0;
   DoubleVector x(2); x(1) = 0.1; x(2) = 0.5; 
   bool err = newt(x, shoot);
-  cout << "Finished. x=" << x << " err=" << err << endl; exit(0);
+  cout << "Finished. x=" << x << " err=" << err << endl;  
+  }
+  catch(const string & a) { cout << a; }
+  exit(0);*/
 
   try {
 

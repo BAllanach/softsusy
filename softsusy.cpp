@@ -6129,28 +6129,28 @@ MssmSusy MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
 
 /// loads up object at GUT scale, runs it down, providing a vector score as to
 /// how well low-scale boundary conditions are satisfied. 
-/// v1 = m0 / 1000,  v2 = m12 / 1000, v3 = A0 / 1000, v4 = tanb(MX), 
-/// v5 = mx / 10^16, v6 = g1(=g2), v7 = g3, v8 = mu / 1000, v9 = m3sq / 10^6
-/// v10 = htmx, v11 = hb, v12 = htaumx, v13 = VEVmx / 1000, v14 = msusy / 1000
-/// v15 = tanbmz
+/// v1 = tanb(MX), v2 = mx / 10^16, 
+/// v3 = g1(=g2) at mx, v4 = g3(mx), v5 = mu(mx) / 1000, v6 = m3sq(mx) / 10^6
+/// v7 = htmx, v8 = hb, v9 = htaumx, v10 = VEVmx / 1000, v11 = msusy / 1000
 void mxToMz(const DoubleVector & v, DoubleVector & f) {
   double h1, hmin = 0.0;
 
   const double EPS = 1.0e-6;
   
   DoubleVector pars(3);
-  pars(1) = v(1) * 1000.; pars(2) = v(2) * 1000.; pars(3) = v(3) * 1000.;
+  /// DEBUG: initial try in parameter space
+  pars(1) = 500.; pars(2) = 500.; pars(3) = 0.;
+  double tanbmz = 10.;
   
-  double tanbmx = v(4);
-  double mx = v(5) * 1.e16;
-  double g1mx = v(6);
-  double g3mx = v(7);
-  double mumx = v(8) * 1000.;
-  double m3sqmx = v(9) * 1.0e6;
-  double htmx = v(10), hbmx = v(11), htaumx = v(12);
-  double hvevmx = v(13) * 1.0e3;
-  double msusy = v(14) * 1.0e3;
-  double tanbmz = v(15);
+  double tanbmx = v(1);
+  double mx = v(2) * 1.e16;
+  double g1mx = v(3);
+  double g3mx = v(4);
+  double mumx = v(5) * 1000.;
+  double m3sqmx = v(6) * 1.0e6;
+  double htmx = v(7), hbmx = v(8), htaumx = v(9);
+  double hvevmx = v(10) * 1.0e3;
+  double msusy = v(11) * 1.0e3;
 
   /// set initial BCs. You should put some checks on these 
   sugraBcs(*tempSoft1, pars);
@@ -6176,22 +6176,19 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
 
   double tbOut; double predictedMzSq = 0.;
   predictedMzSq = tempSoft1->predMzsq(tbOut);
+  
   double msusypred = tempSoft1->calcMs();
 
   /// output vector which measures how well BCs are met
-  f(1) = (predictedMzSq / sqr(MZ) - 1.) * 0.02;
+  f(1) = (predictedMzSq / sqr(MZ) - 1.) * 0.0001;
   f(2) = tempSoft1->displayTanb() / tbOut - 1.;
   f(3) = msusypred / msusy - 1.;
 
   tempSoft1->runto(MZ, EPS);
   MssmSoftsusy predict(*tempSoft1);
 
-
-
   /// match predict to data, but tempsoft1 is not matched to data
   predict.sparticleThresholdCorrections(tempSoft1->displayTanb());
-
-  tempSoft1->calcDrBarPars();
 
   double htmzpred = tempSoft1->displayYukawaElement(YU, 3, 3);
   double hbmzpred = tempSoft1->displayYukawaElement(YD, 3, 3);
@@ -6208,6 +6205,8 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
     predict.displayGaugeCoupling(3) - 1.;
   f(10) = tempSoft1->displayHvev() / predict.displayHvev() - 1.;
   f(11) = tempSoft1->displayTanb() / tanbmz - 1.;
+
+  tempSoft1->setPredMzSq(predictedMzSq);
 
   /// now, determine a vector showing how far (WITH SIGN) the solution is from
   /// the second boundary condition: y2(2)=1.
@@ -6299,18 +6298,19 @@ double MssmSoftsusy::lowOrg
     /// We start with a MssmSoftsusy object that is defined at MX as the
     /// initial guess
     tempSoft1 = this;
-    int check = 0, n = 11;
-    DoubleVector x(64); x(1) = pars(1) * 0.001; x(2) = pars(2)* 0.001; 
-    x(3) = pars(3) * 0.001; x(4) = displayTanb(); x(5) = mx * 1.0e-16;
-    x(6) = displayGaugeCoupling(1); x(7) = displayGaugeCoupling(3);
-    x(8) = displaySusyMu() * 0.001; x(9) = displayM3Squared() * 1.0e-6;
-    x(10) = displayYukawaElement(YU, 3, 3);
-    x(11) = displayYukawaElement(YD, 3, 3);
-    x(12) = displayYukawaElement(YE, 3, 3);
-    x(13) = displayHvev() * 1.0e-3;
-    x(14) = calcMs() * 1.0e-3;
-    x(15) = tanb;
+    tempSoft1->setThresholds(3); tempSoft1->setLoops(2);
+    DoubleVector x(11); 
+    x(1) = displayTanb(); x(2) = mx * 1.0e-16;
+    x(3) = displayGaugeCoupling(1); x(4) = displayGaugeCoupling(3);
+    x(5) = displaySusyMu() * 0.001; x(6) = displayM3Squared() * 1.0e-6;
+    x(7) = displayYukawaElement(YU, 3, 3);
+    x(8) = displayYukawaElement(YD, 3, 3);
+    x(9) = displayYukawaElement(YE, 3, 3);
+    x(10) = displayHvev() * 1.0e-3;
+    x(11) = calcMs() * 1.0e-3;
     bool err = newt(x, mxToMz);
+    tempSoft1->physical(3);
+    cout << *tempSoft1 << " err=" << err << endl; exit(0);
     /// End of DEBUG
 
     run(mx, mz);

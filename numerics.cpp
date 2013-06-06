@@ -1320,14 +1320,14 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc) {
 }
 
 /// You will need to clear this lot up....
-
-void fdjac(int n, DoubleVector x, const DoubleVector & fvec, DoubleMatrix & df,
+DoubleMatrix fdjac(int n, DoubleVector x, const DoubleVector & fvec,
 	   void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
   const double EPS = 1.0e-4;
   int i,j;
   double h,temp;
   
-  DoubleVector f(1,n);
+  DoubleVector f(1, n);
+  DoubleMatrix df(n, n);
   for (j=1; j<=n; j++) {
     temp = x(j);
     h = EPS * fabs(temp);
@@ -1338,6 +1338,7 @@ void fdjac(int n, DoubleVector x, const DoubleVector & fvec, DoubleMatrix & df,
     x(j) = temp;
     for (i=1; i<=n; i++) df(i, j) = (f(i) - fvec.display(i)) / h;
   }
+  return df;
 }
 
 bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
@@ -1506,7 +1507,7 @@ bool newt(DoubleVector & x,
   for (sum=0.0, i=1; i<=n; i++) sum += sqr(x(i));
   stpmax = STPMX * maximum(sqrt(sum), (double) n);
   for (its = 1; its <=MAXITS; its++) {
-    fdjac(n, x, fvec, fjac, vecfunc);
+    fjac = fdjac(n, x, fvec, vecfunc);
     for (i=1;i<=n;i++) {
       for (sum=0.0,j=1;j<=n;j++) sum += fjac(j, i) * fvec(j);
       g(i)=sum;
