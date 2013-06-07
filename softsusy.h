@@ -30,6 +30,7 @@
 #include <nmssmsoftpars.h>
 
 #include <twoloophiggs.h>
+
 #include "bcs.h"
 #include "mssmUtils.h"
 using namespace softsusy;
@@ -79,6 +80,13 @@ private:
   double predMzSq;    ///< predicted Z mass squared after iteration
   double t1OV1Ms, t2OV2Ms;  ///< DRbar tadpoles(MSusy): incl 2 loops
   double t1OV1Ms1loop, t2OV2Ms1loop; ///< DRbar tadpoles(MSusy): excl 2 loops
+
+protected:
+  void setT1OV1Ms(double t1) { t1OV1Ms = t1; } 
+  void setT2OV2Ms(double t2) { t2OV2Ms = t2; } 
+  void setT1OV1Ms1loop(double t1) { t1OV1Ms1loop = t1; }
+  void setT2OV2Ms1loop(double t2) { t2OV2Ms1loop = t2; }
+ 
 public:
   using SoftPars::set;
   using SoftPars::setPars;
@@ -231,7 +239,44 @@ public:
   void useAlternativeEwsb() { altEwsb = true; }
   /// Set MZ^2 predicted after iteration
   void setPredMzSq(double a) { predMzSq = a; }
+//PA: fixes trilnear H1-sfermion-sfermion couplings 
+//for use in doCalcTadpole1oneLoop  
+  void H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, DoubleMatrix & lTauS1Lr, double gmzOcthW, double mu, double cosb, double v1);
+  //PA: fixes trilnear H2-sfermion-sfermion couplings 
+  //for use in doCalcTadpole1oneLoop
+  void H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr, DoubleMatrix & lTauS2Lr, double gmzOcthW, double mu, double sinb);
+  //PA: routine to calculate sfermiom contributions to H1 tadpole / v1
+  double doCalcTad1Sfermions(DoubleMatrix lTS1Lr,  DoubleMatrix lBS1Lr,  DoubleMatrix lTauS1Lr, double costhDRbar);
+  //PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
+  double doCalcTad2Sfermions(DoubleMatrix lTS2Lr, DoubleMatrix lBS2Lr, DoubleMatrix lTauS2Lr, double costhDRbar);
+  //PA: fixes trilnear H1-fermion-fermion couplings 
+  //for use in doCalcTadpole1oneLoop  
+  double doCalcTad1fermions(double q, double v1);
+  //PA: fixes trilnear H2-fermion-fermion couplings 
+  //for use in doCalcTadpole1oneLoop  
+  double doCalcTad2fermions(double q);
+  //PA: one loop H1 tadpole contributions from Higgs bosons in the loops
+  // Follwing BPMZ Goldstone bosons are not included in this.
+  double doCalcTad1Higgs(double q, double costhDRbar2, double g, double tanb);
+  //one loop H2 tadpole contributions from Higgs bosons in the loops
+  // Follwing BPMZ Goldstone bosons are not included in this.
+  double doCalcTad2Higgs(double q, double costhDRbar2, double g, double tanb);
+  //PA: one loop H1 tadpole contributions from Neutralinos in the loops
+  double doCalcTad1Neutralinos(double q, double costhDRbar, double g, 
+                             double cosb);
+ //PA: one loop H2 tadpole contributions from Neutralinos in the loops
+  double doCalcTad2Neutralinos(double q, double costhDRbar, double g, double sinb);
+   //PA: one loop H1 tadpole contributions from Charginos in the loops
+  double doCalcTad1Charginos(double q, double g, double cosb);
 
+  double doCalcTad2Charginos(double q, double g, double sinb);
+  
+ //PA: one loop H1 tadpole contributions from Charginos in the loops
+  double doCalcTad1GaugeBosons(double q, double costhDRbar2, double g, 
+                               double tanb);    
+
+  double doCalcTad2GaugeBosons(double q, double costhDRbar2, 
+			       double g, double tanb);
   /// Does the full 2-loop calculation of both tadpoles and sets them
   void doTadpoles(double mt, double sinthDRbar);
   /// Does the calculation of one-loop pieces of \f$ t_1 / v_1 \f$ 

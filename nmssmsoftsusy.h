@@ -53,6 +53,65 @@ public:
   /// Set all data in the object equal to another
   const NmssmSoftsusy & operator=(const NmssmSoftsusy & s);
   
+  double displayTadpoleSMs() const; ///< displays t_s/s tadpole
+  double displayTadpoleSMs1loop() const; ///< displays t_2/v_s tadpole@1 loop
+  //PA: obtains NMSSM H1-sfermion-sfermion couplings 
+  //for 3rd generation sfermions
+  void  H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, 
+			DoubleMatrix  & lTauS1Lr, double gmzOcthW, 
+			double mu,  double cosb, double v1);
+//PA: obtains NMSSM H2-sfermion-sfermion couplings 
+  //for 3rd generation sfermions
+  void H2SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, 
+		       DoubleMatrix  & lTauS1Lr, double gmzOcthW, 
+		       double mu,  double sinb);
+  //PA: obtains NMSSM S-sfermion-sfermion couplings 
+  //for 3rd generation sfermion
+  void SSfSfCouplings(DoubleMatrix & lTS3Lr, DoubleMatrix & lBS3Lr, 
+		      DoubleMatrix  & lTauS3Lr,  double lam);
+  //PA:routine to calculate sfermiom contributions to (16 \pi^2) ts / s 
+  double doCalcTadSSfermions(DoubleMatrix lTS3Lr, DoubleMatrix lBS3Lr, 
+			     DoubleMatrix lTauS3Lr, double q, double s);
+  //PA: for loop corrections, helps adding Higgs corrections in a tidy way
+  void assignHiggs(DoubleVector & higgsm, DoubleVector & higgsa, 
+                     DoubleVector & higgsc) const;
+  //PA: NMSSM routine to obtain Higgs loop parts of (16 \pi^2) t1/v1
+//Includes goldstone bosons. 
+  double doCalcTad1Higgs(double q, double costhDRbar, double g, double tanb);
+  //PA: NMSSM routine to obtain Higgs loop parts of (16 \pi^2) t2/v2
+  //Includes goldstone bosons.
+  double doCalcTad2Higgs(double q, double costhDRbar, double g, double tanb);
+  //PA: NMSSM routine to obtain Higgs loop parts of (16 \pi^2) ts/s
+  //Includes goldstone bosons.
+  double doCalcTadSHiggs(double q, double tanb);
+  //PA: NMSSM routine to obtain Neutralino loop parts of (16 \pi^2) t1/v1
+  double doCalcTad1Neutralinos(double q, double costhDRbar, double g, 
+                               double tanb);
+  //PA: NMSSM routine to obtain Neutralino loop parts of (16 \pi^2) t2/v2
+  double doCalcTad2Neutralinos(double q, double costhDRbar, 
+			     double g, double sinb);
+  //PA: NMSSM routine to obtain Neutralino loop parts of (16 \pi^2) tS/s
+  double doCalcTadSNeutralinos(double q,  double lam, double kap);
+  //PA: NMSSM routine to obtain Chargino loop parts of (16 \pi^2) tS/s
+  double doCalcTadSCharginos(double q,  double lam);
+/// Does the calculation of one-loop pieces of \f$ t_1 / v_1 \f$ 
+  virtual double doCalcTadpole1oneLoop(double mt, double sinthDRbar);
+  /// Does the calculation of one-loop pieces of \f$ t_2 / v_2 \f$ 
+  virtual double doCalcTadpole2oneLoop(double mt, double sinthDRbar);
+  /// Does the calculation of one-loop pieces of \f$ t_s / s \f$ 
+  virtual double doCalcTadpoleSoneLoop(double mt, double sinthDRbar);
+
+/// Calculates and sets the one-loop pieces of \f$ t_1 / v_1 \f$: sets both
+  /// 1-loop and total pieces equal to the one-loop piece
+  virtual void calcTadpole1Ms1loop(double mt, double sinthDRbar);
+  /// Calculates then sets the one-loop pieces of \f$ t_2 / v_2 \f$: sets both
+  /// 1-loop and total pieces equal to the one-loop piece
+  virtual void calcTadpole2Ms1loop(double mt, double sinthDRbar);
+/// Calculates then sets the one-loop pieces of \f$ t_s / s \f$: sets both
+  /// 1-loop and total pieces equal to the one-loop piece
+  /// Calculates then sets the one-loop pieces of \f$ t_s / s \f$: sets both
+  /// 1-loop and total pieces equal to the one-loop piece
+  virtual void calcTadpoleSMs1loop(double mt, double sinthDRbar);
  
   /// Organises tree-level calculation of all sparticle masses and mixings
   virtual void calcDrBarPars();
@@ -116,6 +175,15 @@ inline NmssmSoftsusy::NmssmSoftsusy
  double hv): Softsusy<SoftParsNmssm>(s, sp, mu, l, t, hv),tSOVSMs(0.0), tSOVSMs1loop(0.0)  {
  setPars(121);
   
+}
+
+
+inline double NmssmSoftsusy::displayTadpoleSMs() const {
+  return tSOVSMs; 
+}
+
+double NmssmSoftsusy::displayTadpoleSMs1loop() const {
+  return tSOVSMs1loop; 
 }
 
 #endif

@@ -10,6 +10,7 @@
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
   ydR, yeL, yeR, ynuL;
 
+
 template<class SoftPars>
 const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const Softsusy<SoftPars>& s) {
   if (this == &s) return *this;
@@ -181,80 +182,82 @@ void Softsusy<SoftPars>::doTadpoles(double mt, double sinthDRbar) {
     }
 }
 
-
-
-/// From hep-ph/9606211's appendix. It should be done at MSusy to minimize the
-/// 1-loop contributions. Only call if you've calculated drbarpars.
-/// inputs are running top/bottom masses: call at MSusy only
+//PA: fixes trilnear H1-sfermion-sfermion couplings 
+//for use in doCalcTadpole1oneLoop
 template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
+void Softsusy<SoftPars>::H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, DoubleMatrix & lTauS1Lr, double gmzOcthW, double mu, double cosb, double v1){
+  double ht = displayDrBarPars().ht;  
+  double hbsq = sqr(displayDrBarPars().hb); 
+  double htausq = sqr(displayDrBarPars().htau);
+    
+    lTS1Lr(1, 1) = gmzOcthW * guL * cosb;
+    lTS1Lr(1, 2) = ht * mu / root2;
+    lTS1Lr(2, 1) = lTS1Lr(1, 2);
+    lTS1Lr(2, 2) = gmzOcthW * guR * cosb;
+    
+    lBS1Lr(1, 1) = gmzOcthW * gdL * cosb + hbsq * v1;
+    lBS1Lr(1, 2) = forLoops.ub / root2;
+    lBS1Lr(2, 1) = lBS1Lr(1, 2);
+    lBS1Lr(2, 2) = gmzOcthW * gdR * cosb + hbsq * v1;
+  
+    lTauS1Lr(1, 1) = gmzOcthW * geL * cosb + htausq * v1;
+    lTauS1Lr(1, 2) = forLoops.utau / root2;
+    lTauS1Lr(2, 1) = lTauS1Lr(1, 2);
+    lTauS1Lr(2, 2) = gmzOcthW * geR * cosb + htausq * v1;
 
- if (forLoops.mu(1, 3) == 0.0 || forLoops.mu(2, 3) == 0.0) {
-   if (PRINTOUT > 1)
-    cout << "Trying to calculate tadpole without having first calculated"
-	 << " the DRbar masses.\n";
-   return 0.0; 
-  }
+ }
 
-  double g = displayGaugeCoupling(2), 
-    costhDRbar = cos(asin(sinthDRbar)),
-    tanb = displayTanb(), cosb = cos(atan(tanb)), 
-    ht = displayDrBarPars().ht,
-    mu = -displaySusyMu(), q = displayMu(),
-    hb = displayDrBarPars().hb,
-    hbsq = sqr(hb), mz = displayMzRun();
-  double beta = atan(displayTanb());
-  double v1 = displayHvev() * cos(beta);
+
+//PA: fixes trilnear H1-sfermion-sfermion couplings 
+//for use in doCalcTadpole1oneLoop
+template<class SoftPars>
+void Softsusy<SoftPars>::H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr, DoubleMatrix & lTauS2Lr, double gmzOcthW, double mu, double sinb){
+  double hb = displayDrBarPars().hb;  
+  double htsq = sqr(displayDrBarPars().ht); 
+  double htau = displayDrBarPars().htau;
+  double v2 = displayHvev() * sinb;
+  lTS2Lr(1, 1) = - gmzOcthW * guL * sinb + htsq * v2;
+  lTS2Lr(1, 2) = forLoops.ut / root2;
+  lTS2Lr(2, 1) = lTS2Lr(1, 2);
+  lTS2Lr(2, 2) = - gmzOcthW * guR * sinb + htsq * v2;
   
-  /// sneutrino coupling
-  double lSnu = g * mz / costhDRbar * 0.5 * cosb;
+  lBS2Lr(1, 1) = - gmzOcthW * gdL * sinb;
+  lBS2Lr(1, 2) = hb * mu / root2;
+  lBS2Lr(2, 1) = lBS2Lr(1, 2);
+  lBS2Lr(2, 2) = - gmzOcthW * gdR * sinb;
   
-  /// stop couplings
-  DoubleMatrix lTS1Lr(2, 2), lTS112(2, 2), rotate(2, 2);
-  lTS1Lr(1, 1) = g * mz / costhDRbar * guL * cosb;
-  lTS1Lr(1, 2) = ht * mu / root2;
-  lTS1Lr(2, 1) = lTS1Lr(1, 2);
-  lTS1Lr(2, 2) = g * mz / costhDRbar * guR * cosb;
-  rotate = rot2d(forLoops.thetat);
-  
-  lTS112 = rotate * lTS1Lr * rotate.transpose();
-  
-  /// sbottom couplings
-  DoubleMatrix lBS1Lr(2, 2), lBS112(2, 2);
-  double mA = forLoops.mA0(1), mH0 = forLoops.mh0(2), mHp =
-    forLoops.mHpm;
+  lTauS2Lr(1, 1) = - gmzOcthW * geL * sinb;
+  lTauS2Lr(1, 2) = htau * mu / root2;
+  lTauS2Lr(2, 1) = lTauS2Lr(1, 2);
+  lTauS2Lr(2, 2) = - gmzOcthW * geR * sinb;  
+    
+ }
+
+
+//PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
+template<class SoftPars>
+double Softsusy<SoftPars>::doCalcTad1Sfermions(DoubleMatrix lTS1Lr, DoubleMatrix lBS1Lr, DoubleMatrix lTauS1Lr, double costhDRbar){
   double mb = forLoops.mb;
   double mtau = forLoops.mtau;
+  double g = displayGaugeCoupling(2), mz = displayMzRun();
+  double tanb = displayTanb(), cosb = cos(atan(tanb));
+  double q = displayMu(); 
+  double gO2mwcosb = g / (2.0 * displayMwRun() * cosb);
+  /// sneutrino coupling
+  double lSnu = g * mz / costhDRbar * 0.5 * cosb;
 
-  lBS1Lr(1, 1) = g * mz / costhDRbar * gdL * cosb + hbsq * v1;
-  lBS1Lr(1, 2) = forLoops.ub / root2;
-  lBS1Lr(2, 1) = lBS1Lr(1, 2);
-  lBS1Lr(2, 2) = g * mz / costhDRbar * gdR * cosb + hbsq * v1;
+   /// stop, sbottom, stau couplings
+  DoubleMatrix lTS112(2, 2),lBS112(2, 2),lTauS112(2, 2), rotate(2, 2);
+
+  rotate = rot2d(forLoops.thetat);
+  lTS112 = rotate * lTS1Lr * rotate.transpose();
   
   rotate = rot2d(forLoops.thetab);
-  
   lBS112 = rotate * lBS1Lr * rotate.transpose();
-
-  /// stau couplings
-  DoubleMatrix lTauS1Lr(2, 2), lTauS112(2, 2);
-  double htau = forLoops.htau, htausq = sqr(htau);
-  
-  lTauS1Lr(1, 1) = g * mz / costhDRbar * geL * cosb + htausq * v1;
-  lTauS1Lr(1, 2) = forLoops.utau / root2;
-  lTauS1Lr(2, 1) = lTauS1Lr(1, 2);
-  lTauS1Lr(2, 2) = g * mz / costhDRbar * geR * cosb + htausq * v1;
   
   rotate = rot2d(forLoops.thetatau);
-  
   lTauS112 = rotate * lTauS1Lr * rotate.transpose();
-  
-  /// bottom quark and tau, ignore others - factor (10^-2)^3 down
-  /// I have included the bottom pole mass in the propagators and the Yukawa
-  /// for the coupling, hence BPMZ's hb is written mb * root2 / v1
-  double fermions = - 6.0 * hb * mb * root2 / v1 * a0(mb, q) 
-    - 2.0 * htau * mtau * root2 / v1 * a0(mtau, q);
-
-  double gO2mwcosb = g / (2.0 * displayMwRun() * cosb);
+   
   double stops = 0., sbots = 0.;
   /// third generation squarks
   stops = stops + 3.0 * gO2mwcosb * lTS112(1, 1) *
@@ -297,11 +300,106 @@ double Softsusy<SoftPars>::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
     sneuts = sneuts + gO2mwcosb * lSnu * a0(forLoops.msnu(family), q);
   }
   
-  /// Higgs
+   double sfermions = stops + sbots + staus + sneuts + sleps + sups + sdowns;
+   return sfermions;
+
+ }
+
+//PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
+template<class SoftPars>
+double Softsusy<SoftPars>::doCalcTad2Sfermions(DoubleMatrix lTS2Lr, DoubleMatrix lBS2Lr, DoubleMatrix lTauS2Lr, double costhDRbar){
+  double mtop = forLoops.mt, ht = displayDrBarPars().ht;
+  double g = displayGaugeCoupling(2), mz = displayMzRun();
+  double tanb = displayTanb(), sinb = sin(atan(tanb));
+  double q = displayMu(); 
+  DoubleMatrix lTS212(2, 2),  lBS212(2, 2), lTauS212(2, 2), rotate(2, 2);
+  rotate = rot2d(forLoops.thetat);
+  lTS212 = rotate * lTS2Lr * rotate.transpose();
+  rotate = rot2d(forLoops.thetab);
+  lBS212 = rotate * lBS2Lr * rotate.transpose(); 
+  rotate = rot2d(forLoops.thetatau);
+  lTauS212 = rotate * lTauS2Lr * rotate.transpose();
+  /// sneutrino coupling
+  double lSnu = - g * mz / costhDRbar * 0.5 * sinb;
+  /// third generation squarks
+  double sfermions = 3.0 * g * lTS212(1, 1) / (2.0 * displayMwRun() * sinb) *
+    a0(forLoops.mu(1, 3), q);
+  sfermions = sfermions + 3.0 * g * lTS212(2, 2) / 
+    (2.0 * displayMwRun() * sinb) *
+    a0(forLoops.mu(2, 3), q);
+  sfermions = sfermions + 3.0 * g * lBS212(1, 1) / 
+    (2.0 * displayMwRun() * sinb) *
+    a0(forLoops.md(1, 3), q);
+  sfermions = sfermions + 3.0 * g * lBS212(2, 2) / (2.0 * displayMwRun() * sinb) *
+    a0(forLoops.md(2, 3), q);
+  /// third generation sleptons
+  sfermions = sfermions + g * lTauS212(1, 1) / (2.0 * displayMwRun() * sinb) *
+    a0(forLoops.me(1, 3), q);
+  sfermions = sfermions + g * lTauS212(2, 2) / (2.0 * displayMwRun() * sinb) *
+    a0(forLoops.me(2, 3), q);
+  sfermions = sfermions + 
+    g * lSnu / (2.0 * displayMwRun() * sinb) * a0(forLoops.msnu(3), q);
+  
+  for (int family = 1; family <=2; family++)
+    {
+      sfermions = sfermions + 3.0 * g * 
+	(- g * mz / costhDRbar * guL * sinb * a0(forLoops.mu(1, family), q) 
+	 - g * mz / costhDRbar * guR * sinb * a0(forLoops.mu(2, family), q)) 
+	/ (2.0 * displayMwRun() * sinb);
+      sfermions = sfermions + 3.0 * g * 
+	(- g * mz / costhDRbar * gdL * sinb * a0(forLoops.md(1, family), q) 
+	 - g * mz / costhDRbar * gdR * sinb * a0(forLoops.md(2, family), q)) 
+	/ (2.0 * displayMwRun() * sinb);	
+    }
+  
+  /// sleptons
+  for (int family = 1; family <=2; family++)
+    {
+      sfermions = sfermions + g * 
+	(- g * mz / costhDRbar * geL * sinb * a0(forLoops.me(1, family), q) 
+	 - g * mz / costhDRbar * geR * sinb * a0(forLoops.me(2, family), q)) 
+	/ (2.0 * displayMwRun() * sinb);
+      sfermions = sfermions + g * lSnu * a0(forLoops.msnu(family), q)
+	/ (2.0 * displayMwRun() * sinb);
+    }
+  
+  return sfermions;
+
+}
+//PA: fixes trilnear H1-fermion-fermion couplings 
+//for use in doCalcTadpole1oneLoop  
+template<class SoftPars>
+double Softsusy<SoftPars>::doCalcTad1fermions(double q, double v1) {
+  double mb = forLoops.mb;
+  double mtau = forLoops.mtau;
+  double hb = displayDrBarPars().hb, htau = forLoops.htau;
+  /// bottom quark and tau, ignore others - factor (10^-2)^3 down
+  /// I have included the bottom pole mass in the propagators and the Yukawa
+  /// for the coupling, hence BPMZ's hb is written mb * root2 / v1
+  double  fermions = - 6.0 * hb * mb * root2 / v1 * a0(mb, q) 
+      - 2.0 * htau * mtau * root2 / v1 * a0(mtau, q);
+  return fermions;
+  }
+//PA: fixes trilnear H2-fermion-fermion couplings 
+//for use in doCalcTadpole1oneLoop  
+template<class SoftPars> 
+double Softsusy<SoftPars>::doCalcTad2fermions(double q){
+  double mtop = forLoops.mt, ht = displayDrBarPars().ht;
+  /// top quark, ignore others - factor (10^-2)^3 down
+  double fermions = - 6.0 * sqr(ht) * a0(mtop, q);
+  return fermions;
+}
+
+//one loop H1 tadpole contributions from Higgs bosons in the loops
+// Follwing BPMZ Goldstone bosons are not included in this.
+template<class SoftPars>
+double Softsusy<SoftPars>::doCalcTad1Higgs(double q, double costhDRbar2, 
+                                           double g, double tanb){
+  double mA = forLoops.mA0(1),  mh = forLoops.mh0(1), 
+     mH0 = forLoops.mh0(2), mHp = forLoops.mHpm;
   double alpha = forLoops.thetaH, sina2 = sqr(sin(alpha)), 
     cosa2 = 1.0 - sina2, cos2b = cos(2.0 * atan(tanb)), 
-    costhDRbar2 = sqr(costhDRbar), 
-    mh = forLoops.mh0(1), sin2a = sin(2.0 * alpha);
+    sin2a = sin(2.0 * alpha);
   double higgs = 0.0;
   higgs = higgs - sqr(g) * cos2b / (8.0 * costhDRbar2) *
     (a0(mA, q) + 2.0 * a0(mHp, q)) +
@@ -310,37 +408,154 @@ double Softsusy<SoftPars>::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
     (3.0 * sina2 - cosa2 + sin2a * tanb) +
     sqr(g) / (8.0 * costhDRbar2) * a0(mH0, q) *
     (3.0 * cosa2 - sina2 - sin2a * tanb); 
+  return higgs;
+  }
+
+//one loop H2 tadpole contributions from Higgs bosons in the loops
+// Follwing BPMZ Goldstone bosons are not included in this.
+template<class SoftPars>
+double Softsusy<SoftPars>::doCalcTad2Higgs(double q, double costhDRbar2, 
+                                           double g, double tanb){
+    /// Higgs
+  double alpha = forLoops.thetaH, sina2 = sqr(sin(alpha)), cosa2 = 1.0 -
+    sina2, cos2b = cos(2.0 * atan(tanb)), 
+    mh = forLoops.mh0(1), sin2a = sin(2.0 * alpha);
+  double mA = forLoops.mA0(1), mH0 = forLoops.mh0(2), mHp =
+    forLoops.mHpm;
+    
+  double higgs = 0.0;
+  higgs = sqr(g) * cos2b / (8.0 * costhDRbar2) *
+    (a0(mA, q) + 2.0 * a0(mHp, q)) +
+    sqr(g) * a0(mHp, q) * 0.5 +
+    sqr(g) / (8.0 * costhDRbar2) * a0(mh, q) *
+    (3.0 * cosa2 - sina2 + sin2a / tanb) +
+    sqr(g) / (8.0 * costhDRbar2) * a0(mH0, q) *
+    (3.0 * sina2 - cosa2 - sin2a / tanb);
   
-  /// Neutralinos
+  return higgs;
+}
+template<class SoftPars>
+double Softsusy<SoftPars>::doCalcTad1Neutralinos(double q, double costhDRbar, 
+                                                 double g, double cosb){
   ComplexMatrix n(forLoops.nBpmz);
   DoubleVector mneut(forLoops.mnBpmz);
-  ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
-  DoubleVector mch(forLoops.mchBpmz); 
-
+  
   double neutralinos = 0.0;
   double tanthDRbar = tan(acos(costhDRbar));
-  for (family = 1; family <= 4; family++)
+  for (int family = 1; family <= 4; family++)
     neutralinos = neutralinos - 
       sqr(g) * mneut(family) / (displayMwRun() * cosb) *
       (n(family, 3) * (n(family, 2) - n(family, 1) * tanthDRbar)).real() * 
       a0(mneut(family), q);
+  return neutralinos;
   
-  /// Charginos
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::doCalcTad2Neutralinos(double q, double costhDRbar, 
+                                                 double g, double sinb){
+  ComplexMatrix n(forLoops.nBpmz);
+  DoubleVector mneut(forLoops.mnBpmz);
+  double tanthDRbar = tan(acos(costhDRbar));
+  double neutralinos = 0.0;
+  for (int family = 1; family <= 4; family++)
+    neutralinos = neutralinos + sqr(g) * mneut(family) / 
+      (displayMwRun() * sinb) *
+      (n(family, 4) * (n(family, 2) - n(family, 1) * tanthDRbar)).real() * 
+      a0(mneut(family), q); 
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::doCalcTad1Charginos(double q, double g, 
+                                                double cosb){
+  ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
+  DoubleVector mch(forLoops.mchBpmz); 
   double charginos = 0.0;
-  for (family=1; family<=2; family++)
+  for (int family=1; family<=2; family++)
     charginos = charginos - root2 * sqr(g) / (displayMwRun() * cosb)
       * mch(family) * (v(family, 1) * u(family, 2)).real()
 	 * a0(mch(family), q);
-  
-  /// Weak bosons
+  return charginos;
+  }
+template<class SoftPars>
+double Softsusy<SoftPars>::doCalcTad2Charginos(double q, double g, 
+                                                double sinb){
+ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
+  DoubleVector mch(forLoops.mchBpmz); 
+  double charginos = 0.0;
+  for (int family = 1; family <= 2; family++)
+    charginos = charginos - root2 * sqr(g) * mch(family) /
+      (displayMwRun() * sinb)
+      * (v(family, 2) * u(family, 1)).real() * a0(mch(family), q);
+ }
+
+template<class SoftPars>
+double Softsusy<SoftPars>::doCalcTad1GaugeBosons(double q, double costhDRbar2, 
+                                                 double g, double tanb){
+  double cos2b = cos(2.0 * atan(tanb));
+  double mz = displayMzRun();
+  double mw = displayMwRun();
+
   double gaugeBosons = 0.0;
   gaugeBosons = gaugeBosons + 3.0 * sqr(g) / 4.0 * 
-    (2.0 * a0(displayMwRun(), q) + a0(mz, q) / costhDRbar2)
-    + sqr(g) * cos2b / (8.0 * costhDRbar2) * (2.0 * a0(displayMwRun(), q) + 
+    (2.0 * a0(mw, q) + a0(mz, q) / costhDRbar2)
+    + sqr(g) * cos2b / (8.0 * costhDRbar2) * (2.0 * a0(mw, q) + 
 					      a0(mz, q));
+  return gaugeBosons;
+  }
 
-  double sfermions = stops + sbots + staus + sneuts + sleps + sups + sdowns;
+  template<class SoftPars>
+double Softsusy<SoftPars>::doCalcTad2GaugeBosons(double q, double costhDRbar2, 
+                                                 double g, double tanb){
+  /// Weak bosons
+  double cos2b = cos(2.0 * atan(tanb));
+  double mz = displayMzRun();
+  double mw = displayMwRun();
+  double gaugeBosons = 3.0 * sqr(g) / 4.0 * 
+    (2.0 * a0(mw, q) + a0(mz, q) / costhDRbar2)
+    - sqr(g) * cos2b / (8.0 * costhDRbar2) * 
+    (2.0 * a0(mw, q) + a0(mz, q));
+  
+  return gaugeBosons;
+}
 
+/// From hep-ph/9606211's appendix. It should be done at MSusy to minimize the
+/// 1-loop contributions. Only call if you've calculated drbarpars.
+/// inputs are running top/bottom masses: call at MSusy only
+template<class SoftPars>
+double Softsusy<SoftPars>::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
+
+ if (forLoops.mu(1, 3) == 0.0 || forLoops.mu(2, 3) == 0.0) {
+   if (PRINTOUT > 1)
+    cout << "Trying to calculate tadpole without having first calculated"
+	 << " the DRbar masses.\n";
+   return 0.0; 
+  }
+
+  double g = displayGaugeCoupling(2), mz = displayMzRun(),  
+     costhDRbar = cos(asin(sinthDRbar)), costhDRbar2 = sqr(costhDRbar), 
+     tanb = displayTanb(), cosb = cos(atan(tanb)), 
+    mu = -displaySusyMu(), q = displayMu();
+  double beta = atan(displayTanb());
+  double v1 = displayHvev() * cos(beta);
+  const double gmzOcthW =  g * mz / costhDRbar;
+
+  double fermions =  doCalcTad1fermions(q, v1);
+  /// PA: stop, sbottom, stau, couplings in the left right basis 
+  // will be stored in these matrices 
+  DoubleMatrix lTS1Lr(2, 2), lBS1Lr(2, 2), lTauS1Lr(2, 2);
+  H1SfSfCouplings(lTS1Lr, lBS1Lr, lTauS1Lr, gmzOcthW, mu, cosb, v1);
+  //PA: Now we take these couplings and obtain sfermion contributions
+  double sfermions =  doCalcTad1Sfermions(lTS1Lr, lBS1Lr, lTauS1Lr, 
+					  costhDRbar);
+ /// Higgs
+  double higgs = doCalcTad1Higgs(q, costhDRbar2, g, tanb);
+  /// Neutralinos
+  double neutralinos = doCalcTad1Neutralinos(q, costhDRbar, g, cosb);
+  /// Charginos
+  double charginos = doCalcTad1Charginos(q, g, cosb);
+  /// Weak bosons
+  double gaugeBosons = doCalcTad1GaugeBosons(q, costhDRbar2, g, tanb);
   double delta = fermions + sfermions + higgs + charginos + neutralinos + 
     gaugeBosons;
 
@@ -379,148 +594,24 @@ double Softsusy<SoftPars>::doCalcTadpole2oneLoop(double mt, double sinthDRbar) {
   }
   
   double g = displayGaugeCoupling(2), 
-    costhDRbar = cos(asin(sinthDRbar)), 
-    tanb = displayTanb(), 
-    sinb = sin(atan(tanb)), 
-    ht = displayDrBarPars().ht,
-    htsq = sqr(ht),
+    costhDRbar = cos(asin(sinthDRbar)), costhDRbar2 = sqr(costhDRbar),
+    tanb = displayTanb(), sinb = sin(atan(tanb)), 
     mu = -displaySusyMu(), q = displayMu(),
-    hb = displayDrBarPars().hb,
     mz = displayMzRun();
   double beta = atan(displayTanb());
-  double v2 = displayHvev() * sin(beta);
-  double mtop = forLoops.mt;
-
-  /// Stop couplings
-  DoubleMatrix lTS2Lr(2, 2), lTS212(2, 2), rotate(2, 2);
-  
-  lTS2Lr(1, 1) = - g * mz / costhDRbar * guL * sinb + htsq * v2;
-  lTS2Lr(1, 2) = forLoops.ut / root2;
-  lTS2Lr(2, 1) = lTS2Lr(1, 2);
-  lTS2Lr(2, 2) = - g * mz / costhDRbar * guR * sinb + htsq * v2;
-  
-  rotate = rot2d(forLoops.thetat);
-  
-  lTS212 = rotate * lTS2Lr * rotate.transpose();
-  
-  /// sneutrino coupling
-  double lSnu = - g * mz / costhDRbar * 0.5 * sinb;
-  
-  /// sbottom couplings
-  DoubleMatrix lBS2Lr(2, 2), lBS212(2, 2);
-  double mA = forLoops.mA0(1), mH0 = forLoops.mh0(2), mHp =
-    forLoops.mHpm;
-  
-  lBS2Lr(1, 1) = - g * mz / costhDRbar * gdL * sinb;
-  lBS2Lr(1, 2) = hb * mu / root2;
-  lBS2Lr(2, 1) = lBS2Lr(1, 2);
-  lBS2Lr(2, 2) = - g * mz / costhDRbar * gdR * sinb;
-  
-  rotate = rot2d(forLoops.thetab);
-  
-  lBS212 = rotate * lBS2Lr * rotate.transpose();
-  
-  /// stau couplings
-  DoubleMatrix lTauS2Lr(2, 2), lTauS212(2, 2);
-  double htau = forLoops.htau;
-  
-  lTauS2Lr(1, 1) = - g * mz / costhDRbar * geL * sinb;
-  lTauS2Lr(1, 2) = htau * mu / root2;
-  lTauS2Lr(2, 1) = lTauS2Lr(1, 2);
-  lTauS2Lr(2, 2) = - g * mz / costhDRbar * geR * sinb;
-  
-  rotate = rot2d(forLoops.thetatau);
-  
-  lTauS212 = rotate * lTauS2Lr * rotate.transpose();
-  
-  double delta = 0.0;
-  
-  /// top quark, ignore others - factor (10^-2)^3 down
-  double fermions = - 6.0 * sqr(ht) * a0(mtop, q);
-
-  /// third generation squarks
-  double sfermions = 3.0 * g * lTS212(1, 1) / (2.0 * displayMwRun() * sinb) *
-    a0(forLoops.mu(1, 3), q);
-  sfermions = sfermions + 3.0 * g * lTS212(2, 2) / 
-    (2.0 * displayMwRun() * sinb) *
-    a0(forLoops.mu(2, 3), q);
-  sfermions = sfermions + 3.0 * g * lBS212(1, 1) / 
-    (2.0 * displayMwRun() * sinb) *
-    a0(forLoops.md(1, 3), q);
-  sfermions = sfermions + 3.0 * g * lBS212(2, 2) / (2.0 * displayMwRun() * sinb) *
-    a0(forLoops.md(2, 3), q);
-  /// third generation sleptons
-  sfermions = sfermions + g * lTauS212(1, 1) / (2.0 * displayMwRun() * sinb) *
-    a0(forLoops.me(1, 3), q);
-  sfermions = sfermions + g * lTauS212(2, 2) / (2.0 * displayMwRun() * sinb) *
-    a0(forLoops.me(2, 3), q);
-  sfermions = sfermions + 
-    g * lSnu / (2.0 * displayMwRun() * sinb) * a0(forLoops.msnu(3), q);
-  
-  int family; 
-  /// first two families of squarks
-  for (family = 1; family <=2; family++)
-    {
-      sfermions = sfermions + 3.0 * g * 
-	(- g * mz / costhDRbar * guL * sinb * a0(forLoops.mu(1, family), q) 
-	 - g * mz / costhDRbar * guR * sinb * a0(forLoops.mu(2, family), q)) 
-	/ (2.0 * displayMwRun() * sinb);
-      sfermions = sfermions + 3.0 * g * 
-	(- g * mz / costhDRbar * gdL * sinb * a0(forLoops.md(1, family), q) 
-	 - g * mz / costhDRbar * gdR * sinb * a0(forLoops.md(2, family), q)) 
-	/ (2.0 * displayMwRun() * sinb);	
-    }
-  
-  /// sleptons
-  for (family = 1; family <=2; family++)
-    {
-      sfermions = sfermions + g * 
-	(- g * mz / costhDRbar * geL * sinb * a0(forLoops.me(1, family), q) 
-	 - g * mz / costhDRbar * geR * sinb * a0(forLoops.me(2, family), q)) 
-	/ (2.0 * displayMwRun() * sinb);
-      sfermions = sfermions + g * lSnu * a0(forLoops.msnu(family), q)
-	/ (2.0 * displayMwRun() * sinb);
-    }
-  
-  /// Higgs
-  double alpha = forLoops.thetaH, sina2 = sqr(sin(alpha)), cosa2 = 1.0 -
-    sina2, cos2b = cos(2.0 * atan(tanb)), costhDRbar2 = sqr(costhDRbar), 
-    mh = forLoops.mh0(1), sin2a = sin(2.0 * alpha);
-  double higgs = 0.0;
-  higgs = sqr(g) * cos2b / (8.0 * costhDRbar2) *
-    (a0(mA, q) + 2.0 * a0(mHp, q)) +
-    sqr(g) * a0(mHp, q) * 0.5 +
-    sqr(g) / (8.0 * costhDRbar2) * a0(mh, q) *
-    (3.0 * cosa2 - sina2 + sin2a / tanb) +
-    sqr(g) / (8.0 * costhDRbar2) * a0(mH0, q) *
-    (3.0 * sina2 - cosa2 - sin2a / tanb);
-  
+  const double gmzOcthW =  g * mz / costhDRbar;
+  /// Sfermion couplings
+  DoubleMatrix lTS2Lr(2, 2),  lBS2Lr(2, 2),  lTauS2Lr(2, 2);
+  H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mu, sinb);
+  double fermions = doCalcTad2Sfermions(lTS2Lr, lBS2Lr, lTauS2Lr, costhDRbar);
+  double sfermions = doCalcTad2fermions(q);
+  double higgs = doCalcTad2Higgs(q, costhDRbar2, g, tanb);
   /// Neutralinos
-  ComplexMatrix n(forLoops.nBpmz);
-  DoubleVector mneut(forLoops.mnBpmz);
-  ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
-  DoubleVector mch(forLoops.mchBpmz); 
-
-  double tanthDRbar = tan(acos(costhDRbar));
-  double neutralinos = 0.0;
-  for (family = 1; family <= 4; family++)
-    neutralinos = neutralinos + sqr(g) * mneut(family) / 
-      (displayMwRun() * sinb) *
-      (n(family, 4) * (n(family, 2) - n(family, 1) * tanthDRbar)).real() * 
-      a0(mneut(family), q); 
-  double charginos = 0.0;
-  for (family = 1; family <= 2; family++)
-    charginos = charginos - root2 * sqr(g) * mch(family) /
-      (displayMwRun() * sinb)
-      * (v(family, 2) * u(family, 1)).real() * a0(mch(family), q);
+  double neutralinos = doCalcTad2Neutralinos(q, costhDRbar, g, sinb);
+  double charginos = doCalcTad2Charginos(q, g, sinb);
+  double gaugeBosons = doCalcTad2GaugeBosons(q, costhDRbar2, g, tanb);
   
-  /// Weak bosons
-  double gaugeBosons = 3.0 * sqr(g) / 4.0 * 
-    (2.0 * a0(displayMwRun(), q) + a0(mz, q) / costhDRbar2)
-    - sqr(g) * cos2b / (8.0 * costhDRbar2) * 
-    (2.0 * a0(displayMwRun(), q) + a0(mz, q));
-  
-  delta = fermions + sfermions + higgs + charginos + neutralinos + 
+  double delta = fermions + sfermions + higgs + charginos + neutralinos + 
     gaugeBosons;
 
   return delta / (16.0 * sqr(PI));
