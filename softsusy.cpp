@@ -6238,7 +6238,7 @@ double Softsusy<SoftPars>::lowOrg
 
     runto(mz);
     
-    if (PRINTOUT) cout << " end of iteration" << endl;
+    if (PRINTOUT > 1) cout << " end of iteration" << endl;
   }
   catch(const char *a) {
     ostringstream ii;
@@ -6775,7 +6775,7 @@ void Softsusy<SoftPars>::itLowsoft
 
     setMsusy(calcMs());
     if (ewsbBCscale) mx = displayMsusy();
-    if (PRINTOUT > 0) cout << " mgut=" << mx << flush;
+    if (PRINTOUT > 1) cout << " mgut=" << mx << flush;
     
     mtrun = forLoops.mt; ///< This will be at MSUSY
     //    double tbIn; double predictedMzSq = 0.;
@@ -6795,7 +6795,7 @@ void Softsusy<SoftPars>::itLowsoft
     
     if (numTries !=0 && fracDiff < tol) {///< Accuracy achieved: bail out
       numTries = 0; ///< Reset the number of iterations for the next time
-      if (PRINTOUT > 0) cout << " sT=" << fracDiff << " " << flush; 
+      if (PRINTOUT > 1) cout << " sT=" << fracDiff << " " << flush; 
       if (displayProblem().test() && PRINTOUT > 0) 
 	cout << " ***problem point***: " << displayProblem() << ".";
 
@@ -6814,7 +6814,7 @@ void Softsusy<SoftPars>::itLowsoft
     /// If a print out is desired, print respectively, the difference with the
     /// last iteration (sum tol or sT), the mu parameter and m3^2 from EWSB, and
     /// the predicted MW and MZ boson masses
-    if (PRINTOUT > 0) {
+    if (PRINTOUT > 1) {
       cout << "\n" << numTries << ". sT=" << fracDiff << " mu=" 
 	   << displaySusyMu() <<  " m3sq=" <<
 	displayM3Squared() << " MWp=" << displayMw() << " Mzp=" 
