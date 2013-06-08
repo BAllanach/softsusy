@@ -127,13 +127,13 @@ public:
   using SoftPars::run;
   using SoftPars::runto;
 
+  typedef typename SoftPars::susy_type Susy;
+
   //  void (*boundaryCondition)(Softsusy &, const DoubleVector &);
   /// Default constructor fills object with zeroes
   Softsusy();
   /// Constructor sets SUSY parameters only from another object
-  Softsusy(const MssmSusy &);
-  /// Constructor copies another object
-  Softsusy(const NmssmSusy &);
+  Softsusy(const Susy &);
   /// Constructor copies another object
 
   Softsusy(const Softsusy &);
@@ -849,7 +849,7 @@ Softsusy<SoftPars>::Softsusy(const Softsusy & s)
 }
 
 template<class SoftPars>
-Softsusy<SoftPars>::Softsusy(const MssmSusy &s)
+Softsusy<SoftPars>::Softsusy(const Susy &s)
   : SoftPars(s), AltEwsbMssm(), 
     physpars(), forLoops(), problem(), 
     msusy(0.0), minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), 
@@ -859,17 +859,6 @@ Softsusy<SoftPars>::Softsusy(const MssmSusy &s)
   setMu(s.displayMu()); 
   setLoops(s.displayLoops());
   setThresholds(s.displayThresholds());
-}
-
-template<class SoftPars>
-Softsusy<SoftPars>::Softsusy(const NmssmSusy &s)
-  : SoftPars(s), AltEwsbMssm(), 
-    physpars(), forLoops(), problem(), 
-    msusy(0.0), minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), 
-    setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
-    t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.) { 
-  setPars(110);
- 
 }
 
 

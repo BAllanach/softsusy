@@ -58,6 +58,8 @@ public:
   using Susy::displayThresholds;
   using Susy::displayGauge;
 
+  typedef Susy susy_type;
+
   /// Default constructor fills object with zeroes
   SoftPars();
   /// Constructor fills SUSY conserving parts with another object, all
