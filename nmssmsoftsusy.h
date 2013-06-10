@@ -58,47 +58,47 @@ public:
   //for 3rd generation sfermions
   void  H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, 
 			DoubleMatrix  & lTauS1Lr, double gmzOcthW, 
-			double mu,  double cosb, double v1);
+			double mu,  double cosb, double v1) const;
 //PA: obtains NMSSM H2-sfermion-sfermion couplings 
   //for 3rd generation sfermions
   void H2SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, 
 		       DoubleMatrix  & lTauS1Lr, double gmzOcthW, 
-		       double mu,  double sinb);
+		       double mu,  double sinb) const;
   //PA: obtains NMSSM S-sfermion-sfermion couplings 
   //for 3rd generation sfermion
   void SSfSfCouplings(DoubleMatrix & lTS3Lr, DoubleMatrix & lBS3Lr, 
-		      DoubleMatrix  & lTauS3Lr,  double lam);
+		      DoubleMatrix & lTauS3Lr, double lam) const;
   //PA:routine to calculate sfermiom contributions to (16 \pi^2) ts / s 
   double doCalcTadSSfermions(DoubleMatrix lTS3Lr, DoubleMatrix lBS3Lr, 
-			     DoubleMatrix lTauS3Lr, double q, double s);
+			     DoubleMatrix lTauS3Lr, double q, double s) const;
   //PA: for loop corrections, helps adding Higgs corrections in a tidy way
   void assignHiggs(DoubleVector & higgsm, DoubleVector & higgsa, 
                      DoubleVector & higgsc) const;
   //PA: NMSSM routine to obtain Higgs loop parts of (16 \pi^2) t1/v1
 //Includes goldstone bosons. 
-  double doCalcTad1Higgs(double q, double costhDRbar, double g, double tanb);
+  double doCalcTad1Higgs(double q, double costhDRbar, double g, double tanb) const;
   //PA: NMSSM routine to obtain Higgs loop parts of (16 \pi^2) t2/v2
   //Includes goldstone bosons.
-  double doCalcTad2Higgs(double q, double costhDRbar, double g, double tanb);
+  double doCalcTad2Higgs(double q, double costhDRbar, double g, double tanb) const;
   //PA: NMSSM routine to obtain Higgs loop parts of (16 \pi^2) ts/s
   //Includes goldstone bosons.
-  double doCalcTadSHiggs(double q, double tanb);
+  double doCalcTadSHiggs(double q, double tanb) const;
   //PA: NMSSM routine to obtain Neutralino loop parts of (16 \pi^2) t1/v1
   double doCalcTad1Neutralinos(double q, double costhDRbar, double g, 
-                               double tanb);
+                               double tanb) const;
   //PA: NMSSM routine to obtain Neutralino loop parts of (16 \pi^2) t2/v2
   double doCalcTad2Neutralinos(double q, double costhDRbar, 
-			     double g, double sinb);
+			     double g, double sinb) const;
   //PA: NMSSM routine to obtain Neutralino loop parts of (16 \pi^2) tS/s
-  double doCalcTadSNeutralinos(double q,  double lam, double kap);
+  double doCalcTadSNeutralinos(double q,  double lam, double kap) const;
   //PA: NMSSM routine to obtain Chargino loop parts of (16 \pi^2) tS/s
-  double doCalcTadSCharginos(double q,  double lam);
+  double doCalcTadSCharginos(double q,  double lam) const;
 /// Does the calculation of one-loop pieces of \f$ t_1 / v_1 \f$ 
-  virtual double doCalcTadpole1oneLoop(double mt, double sinthDRbar);
+  virtual double doCalcTadpole1oneLoop(double mt, double sinthDRbar) const;
   /// Does the calculation of one-loop pieces of \f$ t_2 / v_2 \f$ 
-  virtual double doCalcTadpole2oneLoop(double mt, double sinthDRbar);
+  virtual double doCalcTadpole2oneLoop(double mt, double sinthDRbar) const;
   /// Does the calculation of one-loop pieces of \f$ t_s / s \f$ 
-  virtual double doCalcTadpoleSoneLoop(double mt, double sinthDRbar);
+  virtual double doCalcTadpoleSoneLoop(double mt, double sinthDRbar) const;
 
 /// Calculates and sets the one-loop pieces of \f$ t_1 / v_1 \f$: sets both
   /// 1-loop and total pieces equal to the one-loop piece

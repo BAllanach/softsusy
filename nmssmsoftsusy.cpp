@@ -83,7 +83,8 @@ void NmssmSoftsusy::printall(){
 }
 //PA: obtains NMSSM H1-sfermion-sfermion couplings
   //for 3rd generation sfermions
-void NmssmSoftsusy::H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, DoubleMatrix  & lTauS1Lr, double gmzOcthW, double mu,  double cosb, double v1){
+void NmssmSoftsusy::H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, DoubleMatrix  & lTauS1Lr, double gmzOcthW, double mu,  double cosb, double v1) const
+{
   //PA: NMSSM parameters required.
   double s = displaySvev();
   double lam = displayLambda();
@@ -93,9 +94,11 @@ void NmssmSoftsusy::H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr
   double    mueff   = mu - lam * s / root2;
   Softsusy<SoftParsNmssm>::H1SfSfCouplings(lTS1Lr, lBS1Lr, lTauS1Lr, gmzOcthW, mueff, cosb, v1);
 }
+
 //PA: obtains NMSSM H2-sfermion-sfermion couplings
   //for 3rd generation sfermions
-void NmssmSoftsusy::H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr, DoubleMatrix  & lTauS2Lr, double gmzOcthW, double mu,  double sinb){
+void NmssmSoftsusy::H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr, DoubleMatrix  & lTauS2Lr, double gmzOcthW, double mu,  double sinb) const
+{
   //PA: NMSSM parameters required.
   double s = displaySvev();
   double lam = displayLambda();
@@ -105,9 +108,11 @@ void NmssmSoftsusy::H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr
   double    mueff   = mu - lam * s / root2;
   Softsusy<SoftParsNmssm>::H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mueff, sinb);
 }
+
 //PA: obtains NMSSM S-sfermion-sfermion couplings
   //for 3rd generation sfermions
-void NmssmSoftsusy::SSfSfCouplings(DoubleMatrix & lTS3Lr, DoubleMatrix & lBS3Lr, DoubleMatrix  & lTauS3Lr,  double lam){
+void NmssmSoftsusy::SSfSfCouplings(DoubleMatrix & lTS3Lr, DoubleMatrix & lBS3Lr, DoubleMatrix  & lTauS3Lr,  double lam) const
+{
   double v1 = displayHvev() * cos(atan(displayTanb()));
   double v2 = displayHvev() * sin(atan(displayTanb()));
   double ht = displayDrBarPars().ht,  hb = displayDrBarPars().hb;
@@ -128,7 +133,8 @@ void NmssmSoftsusy::SSfSfCouplings(DoubleMatrix & lTS3Lr, DoubleMatrix & lBS3Lr,
   lTauS3Lr(2, 2) = 0.0;
 }
 
-double NmssmSoftsusy::doCalcTadSSfermions(DoubleMatrix lTS3Lr, DoubleMatrix lBS3Lr, DoubleMatrix lTauS3Lr, double q, double s){
+double NmssmSoftsusy::doCalcTadSSfermions(DoubleMatrix lTS3Lr, DoubleMatrix lBS3Lr, DoubleMatrix lTauS3Lr, double q, double s) const
+{
   drBarPars fL(displayDrBarPars());
   DoubleMatrix lTS312(2, 2), lBS312(2, 2), lTauS312(2, 2), rotate(2, 2);
   rotate = rot2d(fL.thetat);
@@ -146,7 +152,6 @@ double NmssmSoftsusy::doCalcTadSSfermions(DoubleMatrix lTS3Lr, DoubleMatrix lBS3
   sfermions = sfermions + lTauS312(2, 2) / s * a0(fL.me(2, 3), q);
 
   return sfermions;
-
 }
 
 //PA: for loop corrections, helps adding Higgs corrections in a tidy way
@@ -167,7 +172,8 @@ void NmssmSoftsusy::assignHiggs(DoubleVector & higgsm, DoubleVector & higgsa,
 //PA: NMSSM routine to obtain Higgs loop parts of (16 \pi^2) t1/v1
 //Includes goldstone bosons.
 double NmssmSoftsusy::doCalcTad1Higgs(double q, double costhDRbar,
-                                           double g, double tanb){
+                                           double g, double tanb) const
+{
 /// LCT: NMSSM parameters
   double lam = displayLambda(), lsq = sqr(lam);
   double kap = displayKappa();
@@ -253,7 +259,8 @@ double NmssmSoftsusy::doCalcTad1Higgs(double q, double costhDRbar,
 //PA: NMSSM routine to obtain Higgs loop parts of (16 \pi^2) t2/v2
 //Includes goldstone bosons.
 double NmssmSoftsusy::doCalcTad2Higgs(double q, double costhDRbar,
-                                           double g, double tanb){
+                                           double g, double tanb) const
+{
 /// LCT: NMSSM parameters
   double lam = displayLambda(), lsq = sqr(lam);
   double kap = displayKappa();
@@ -340,7 +347,8 @@ double NmssmSoftsusy::doCalcTad2Higgs(double q, double costhDRbar,
 
 //PA: NMSSM routine to obtain Higgs loop parts of (16 \pi^2) t1/v1
 //Includes goldstone bosons.
-double NmssmSoftsusy::doCalcTadSHiggs(double q, double tb){
+double NmssmSoftsusy::doCalcTadSHiggs(double q, double tb) const
+{
   double lam = displayLambda(), lsq = sqr(lam);
   double kap = displayKappa(), ksq = sqr(kap);
   double s = displaySvev();
@@ -428,7 +436,8 @@ double NmssmSoftsusy::doCalcTadSHiggs(double q, double tb){
 }
 
 double NmssmSoftsusy::doCalcTad1Neutralinos(double q, double costhDRbar,
-                                           double g, double cosb){
+                                           double g, double cosb) const
+{
   ComplexMatrix n(displayDrBarPars().nBpmz);
   DoubleVector mneut(displayDrBarPars().mnBpmz);
   double neutralinos = 0.0;
@@ -444,8 +453,10 @@ double NmssmSoftsusy::doCalcTad1Neutralinos(double q, double costhDRbar,
   }
     return neutralinos;
 }
+
 double NmssmSoftsusy::doCalcTad2Neutralinos(double q, double costhDRbar,
-                                           double g, double sinb){
+                                           double g, double sinb) const
+{
   ComplexMatrix n(displayDrBarPars().nBpmz);
   DoubleVector mneut(displayDrBarPars().mnBpmz);
   double lam = displayLambda();
@@ -460,7 +471,9 @@ double NmssmSoftsusy::doCalcTad2Neutralinos(double q, double costhDRbar,
       (n(family, 3) * n(family, 5)).real() * a0(mneut(family), q); ///<< Extra NMSSM piece
   return neutralinos;
 }
-double NmssmSoftsusy::doCalcTadSNeutralinos(double q,  double lam, double kap){
+
+double NmssmSoftsusy::doCalcTadSNeutralinos(double q,  double lam, double kap) const
+{
   ComplexMatrix n(displayDrBarPars().nBpmz);
   DoubleVector mneut(displayDrBarPars().mnBpmz);
   double s = displaySvev();
@@ -473,7 +486,9 @@ double NmssmSoftsusy::doCalcTadSNeutralinos(double q,  double lam, double kap){
     (n(family, 3) * n(family, 4)).real() * a0(mneut(family), q);
  return neutralinos;
 }
-double NmssmSoftsusy::doCalcTadSCharginos(double q,  double lam){
+
+double NmssmSoftsusy::doCalcTadSCharginos(double q,  double lam) const
+{
   ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz);
   DoubleVector mch(displayDrBarPars().mchBpmz);
   double s = displaySvev();
@@ -485,7 +500,8 @@ double NmssmSoftsusy::doCalcTadSCharginos(double q,  double lam){
   return charginos;
 }
 
-double NmssmSoftsusy::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
+double NmssmSoftsusy::doCalcTadpole1oneLoop(double mt, double sinthDRbar) const
+{
  if (displayDrBarPars().mu(1, 3) == 0.0 || displayDrBarPars().mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)
     cout << "Trying to calculate tadpole without having first calculated"
@@ -529,7 +545,8 @@ double NmssmSoftsusy::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
 
 }
 
-double NmssmSoftsusy::doCalcTadpole2oneLoop(double mt, double sinthDRbar) {
+double NmssmSoftsusy::doCalcTadpole2oneLoop(double mt, double sinthDRbar) const
+{
  if (displayDrBarPars().mu(1, 3) == 0.0 || displayDrBarPars().mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)
     cout << "Trying to calculate tadpole without having first calculated"
@@ -564,10 +581,10 @@ double NmssmSoftsusy::doCalcTadpole2oneLoop(double mt, double sinthDRbar) {
     gaugeBosons;
 
   return delta / (16.0 * sqr(PI));
-
 }
 
-double NmssmSoftsusy::doCalcTadpoleSoneLoop(double mt, double sinthDRbar) {
+double NmssmSoftsusy::doCalcTadpoleSoneLoop(double mt, double sinthDRbar) const
+{
  if (displayDrBarPars().mu(1, 3) == 0.0 || displayDrBarPars().mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)
     cout << "Trying to calculate tadpole without having first calculated"
