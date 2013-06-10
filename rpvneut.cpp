@@ -2762,6 +2762,8 @@ ostream & operator <<(ostream &left, const RpvNeutrino & r) {
   cout << " dm^2(atm)=" << 1.0e18 * sqr(r.displayPhysNuMasses().display(1)) << endl;
 
   left << HR;
+
+  return left;
 }
 
 void RpvNeutrino::modselSLHA(ostream & out, const char model[]) {
