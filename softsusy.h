@@ -243,7 +243,7 @@ public:
   void H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, DoubleMatrix & lTauS1Lr, double gmzOcthW, double mu, double cosb, double v1) const;
   //PA: fixes trilnear H2-sfermion-sfermion couplings 
   //for use in doCalcTadpole1oneLoop
-  void H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr, DoubleMatrix & lTauS2Lr, double gmzOcthW, double mu, double sinb);
+  void H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr, DoubleMatrix & lTauS2Lr, double gmzOcthW, double mu, double sinb) const;
   //PA: routine to calculate sfermiom contributions to H1 tadpole / v1
   double doCalcTad1Sfermions(DoubleMatrix lTS1Lr,  DoubleMatrix lBS1Lr,  DoubleMatrix lTauS1Lr, double costhDRbar);
   //PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
@@ -551,18 +551,30 @@ public:
   //PA:Calculates (16 Pi^2) times the sfermion contribution to Higgs 
   //self-energy: for p=external momentum, q=renormalisation scale
   double pis1s1Sfermions(double p, double q,  DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau) const;
+ //PA:Calculates (16 Pi^2) times the sfermion contribution to Higgs 
+  //self-energy: for p=external momentum, q=renormalisation scale
+  double pis1s2Sfermions(double p, double q,  DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const;
  //PA:Calculates (16 Pi^2) times the fermion contribution to Higgs self-energy:
   //for p=external momentum, q=renormalisation scale
   double pis1s1Fermions(double p, double q) const;
 //PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
 //for p=external momentum, q=renormalisation scale
   double pis1s1Higgs(double p, double q) const;
+//PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
+//for p=external momentum, q=renormalisation scale
+  double pis1s2Higgs(double p, double q) const;
   //PA:Calculates (16 Pi^2) times the Neutralino contribution to the
   // Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis1s1Neutralinos(double p, double q) const;
+  //PA:Calculates (16 Pi^2) times the Neutralino contribution to the
+  // Higgs self-energy: for p=external momentum, q=renormalisation scale
+  double pis1s2Neutralinos(double p, double q) const;
   //PA:Calculates (16 Pi^2) times the Chargino contribution to the
   // Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis1s1Charginos(double p, double q) const;
+   //PA:Calculates (16 Pi^2) times the Chargino contribution to the
+  // Higgs self-energy: for p=external momentum, q=renormalisation scale
+  double pis1s2Charginos(double p, double q) const;
 /// Calculates transverse part of Higgs self-energy: for p=external momentum,
   /// Q=renormalisation scale
   double pis1s1(double p, double q) const;
