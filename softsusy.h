@@ -245,43 +245,43 @@ public:
   //for use in doCalcTadpole1oneLoop
   void H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr, DoubleMatrix & lTauS2Lr, double gmzOcthW, double mu, double sinb) const;
   //PA: routine to calculate sfermiom contributions to H1 tadpole / v1
-  double doCalcTad1Sfermions(DoubleMatrix lTS1Lr,  DoubleMatrix lBS1Lr,  DoubleMatrix lTauS1Lr, double costhDRbar);
+  double doCalcTad1Sfermions(DoubleMatrix lTS1Lr,  DoubleMatrix lBS1Lr,  DoubleMatrix lTauS1Lr, double costhDRbar) const;
   //PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
-  double doCalcTad2Sfermions(DoubleMatrix lTS2Lr, DoubleMatrix lBS2Lr, DoubleMatrix lTauS2Lr, double costhDRbar);
+  double doCalcTad2Sfermions(DoubleMatrix lTS2Lr, DoubleMatrix lBS2Lr, DoubleMatrix lTauS2Lr, double costhDRbar) const;
   //PA: fixes trilnear H1-fermion-fermion couplings 
   //for use in doCalcTadpole1oneLoop  
-  double doCalcTad1fermions(double q, double v1);
+  double doCalcTad1fermions(double q, double v1) const;
   //PA: fixes trilnear H2-fermion-fermion couplings 
   //for use in doCalcTadpole1oneLoop  
-  double doCalcTad2fermions(double q);
+  double doCalcTad2fermions(double q) const;
   //PA: one loop H1 tadpole contributions from Higgs bosons in the loops
   // Follwing BPMZ Goldstone bosons are not included in this.
-  double doCalcTad1Higgs(double q, double costhDRbar2, double g, double tanb);
+  double doCalcTad1Higgs(double q, double costhDRbar2, double g, double tanb) const;
   //one loop H2 tadpole contributions from Higgs bosons in the loops
   // Follwing BPMZ Goldstone bosons are not included in this.
-  double doCalcTad2Higgs(double q, double costhDRbar2, double g, double tanb);
+  double doCalcTad2Higgs(double q, double costhDRbar2, double g, double tanb) const;
   //PA: one loop H1 tadpole contributions from Neutralinos in the loops
   double doCalcTad1Neutralinos(double q, double costhDRbar, double g, 
-                             double cosb);
+                             double cosb) const;
  //PA: one loop H2 tadpole contributions from Neutralinos in the loops
-  double doCalcTad2Neutralinos(double q, double costhDRbar, double g, double sinb);
+  double doCalcTad2Neutralinos(double q, double costhDRbar, double g, double sinb) const;
    //PA: one loop H1 tadpole contributions from Charginos in the loops
-  double doCalcTad1Charginos(double q, double g, double cosb);
+  double doCalcTad1Charginos(double q, double g, double cosb) const;
 
-  double doCalcTad2Charginos(double q, double g, double sinb);
+  double doCalcTad2Charginos(double q, double g, double sinb) const;
   
  //PA: one loop H1 tadpole contributions from Charginos in the loops
   double doCalcTad1GaugeBosons(double q, double costhDRbar2, double g, 
-                               double tanb);    
+                               double tanb) const;
 
   double doCalcTad2GaugeBosons(double q, double costhDRbar2, 
-			       double g, double tanb);
+			       double g, double tanb) const;
   /// Does the full 2-loop calculation of both tadpoles and sets them
   void doTadpoles(double mt, double sinthDRbar);
   /// Does the calculation of one-loop pieces of \f$ t_1 / v_1 \f$ 
-  virtual double doCalcTadpole1oneLoop(double mt, double sinthDRbar);
+  virtual double doCalcTadpole1oneLoop(double mt, double sinthDRbar) const;
   /// Does the calculation of one-loop pieces of \f$ t_2 / v_2 \f$ 
-  virtual double doCalcTadpole2oneLoop(double mt, double sinthDRbar);
+  virtual double doCalcTadpole2oneLoop(double mt, double sinthDRbar) const;
   /// Calculates and sets the one-loop pieces of \f$ t_1 / v_1 \f$: sets both
   /// 1-loop and total pieces equal to the one-loop piece
   virtual void calcTadpole1Ms1loop(double mt, double sinthDRbar);
@@ -650,7 +650,7 @@ public:
   virtual void printObj() { cout << *this; };
   
   /// log(max(a^2, b^2, c^2) / Q^2)
-  double thet(double a, double b, double c);
+  double thet(double a, double b, double c = 0.0);
  
   /// Driver calculation to determine all sparticle masses and parameters.
   /// Returns low energy softsusy object consistent with BC's m0 etc at MGUT.

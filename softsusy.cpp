@@ -236,7 +236,7 @@ void Softsusy<SoftPars>::H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & l
 
 //PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
 template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad1Sfermions(DoubleMatrix lTS1Lr, DoubleMatrix lBS1Lr, DoubleMatrix lTauS1Lr, double costhDRbar){
+double Softsusy<SoftPars>::doCalcTad1Sfermions(DoubleMatrix lTS1Lr, DoubleMatrix lBS1Lr, DoubleMatrix lTauS1Lr, double costhDRbar) const {
   double mb = forLoops.mb;
   double mtau = forLoops.mtau;
   double g = displayGaugeCoupling(2), mz = displayMzRun();
@@ -307,7 +307,7 @@ double Softsusy<SoftPars>::doCalcTad1Sfermions(DoubleMatrix lTS1Lr, DoubleMatrix
 
 //PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
 template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad2Sfermions(DoubleMatrix lTS2Lr, DoubleMatrix lBS2Lr, DoubleMatrix lTauS2Lr, double costhDRbar){
+double Softsusy<SoftPars>::doCalcTad2Sfermions(DoubleMatrix lTS2Lr, DoubleMatrix lBS2Lr, DoubleMatrix lTauS2Lr, double costhDRbar) const {
   double mtop = forLoops.mt, ht = displayDrBarPars().ht;
   double g = displayGaugeCoupling(2), mz = displayMzRun();
   double tanb = displayTanb(), sinb = sin(atan(tanb));
@@ -369,7 +369,7 @@ double Softsusy<SoftPars>::doCalcTad2Sfermions(DoubleMatrix lTS2Lr, DoubleMatrix
 //PA: fixes trilnear H1-fermion-fermion couplings 
 //for use in doCalcTadpole1oneLoop  
 template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad1fermions(double q, double v1) {
+double Softsusy<SoftPars>::doCalcTad1fermions(double q, double v1) const {
   double mb = forLoops.mb;
   double mtau = forLoops.mtau;
   double hb = displayDrBarPars().hb, htau = forLoops.htau;
@@ -379,11 +379,12 @@ double Softsusy<SoftPars>::doCalcTad1fermions(double q, double v1) {
   double  fermions = - 6.0 * hb * mb * root2 / v1 * a0(mb, q) 
       - 2.0 * htau * mtau * root2 / v1 * a0(mtau, q);
   return fermions;
-  }
+}
+
 //PA: fixes trilnear H2-fermion-fermion couplings 
 //for use in doCalcTadpole1oneLoop  
 template<class SoftPars> 
-double Softsusy<SoftPars>::doCalcTad2fermions(double q){
+double Softsusy<SoftPars>::doCalcTad2fermions(double q) const {
   double mtop = forLoops.mt, ht = displayDrBarPars().ht;
   /// top quark, ignore others - factor (10^-2)^3 down
   double fermions = - 6.0 * sqr(ht) * a0(mtop, q);
@@ -394,7 +395,7 @@ double Softsusy<SoftPars>::doCalcTad2fermions(double q){
 // Follwing BPMZ Goldstone bosons are not included in this.
 template<class SoftPars>
 double Softsusy<SoftPars>::doCalcTad1Higgs(double q, double costhDRbar2, 
-                                           double g, double tanb){
+                                           double g, double tanb) const {
   double mA = forLoops.mA0(1),  mh = forLoops.mh0(1), 
      mH0 = forLoops.mh0(2), mHp = forLoops.mHpm;
   double alpha = forLoops.thetaH, sina2 = sqr(sin(alpha)), 
@@ -409,13 +410,13 @@ double Softsusy<SoftPars>::doCalcTad1Higgs(double q, double costhDRbar2,
     sqr(g) / (8.0 * costhDRbar2) * a0(mH0, q) *
     (3.0 * cosa2 - sina2 - sin2a * tanb); 
   return higgs;
-  }
+}
 
 //one loop H2 tadpole contributions from Higgs bosons in the loops
 // Follwing BPMZ Goldstone bosons are not included in this.
 template<class SoftPars>
 double Softsusy<SoftPars>::doCalcTad2Higgs(double q, double costhDRbar2, 
-                                           double g, double tanb){
+                                           double g, double tanb) const {
     /// Higgs
   double alpha = forLoops.thetaH, sina2 = sqr(sin(alpha)), cosa2 = 1.0 -
     sina2, cos2b = cos(2.0 * atan(tanb)), 
@@ -436,7 +437,7 @@ double Softsusy<SoftPars>::doCalcTad2Higgs(double q, double costhDRbar2,
 }
 template<class SoftPars>
 double Softsusy<SoftPars>::doCalcTad1Neutralinos(double q, double costhDRbar, 
-                                                 double g, double cosb){
+                                                 double g, double cosb) const {
   ComplexMatrix n(forLoops.nBpmz);
   DoubleVector mneut(forLoops.mnBpmz);
   
@@ -447,13 +448,13 @@ double Softsusy<SoftPars>::doCalcTad1Neutralinos(double q, double costhDRbar,
       sqr(g) * mneut(family) / (displayMwRun() * cosb) *
       (n(family, 3) * (n(family, 2) - n(family, 1) * tanthDRbar)).real() * 
       a0(mneut(family), q);
+
   return neutralinos;
-  
 }
 
 template<class SoftPars>
 double Softsusy<SoftPars>::doCalcTad2Neutralinos(double q, double costhDRbar, 
-                                                 double g, double sinb){
+                                                 double g, double sinb) const {
   ComplexMatrix n(forLoops.nBpmz);
   DoubleVector mneut(forLoops.mnBpmz);
   double tanthDRbar = tan(acos(costhDRbar));
@@ -463,11 +464,13 @@ double Softsusy<SoftPars>::doCalcTad2Neutralinos(double q, double costhDRbar,
       (displayMwRun() * sinb) *
       (n(family, 4) * (n(family, 2) - n(family, 1) * tanthDRbar)).real() * 
       a0(mneut(family), q); 
+
+  return neutralinos;
 }
 
 template<class SoftPars>
 double Softsusy<SoftPars>::doCalcTad1Charginos(double q, double g, 
-                                                double cosb){
+                                                double cosb) const {
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz); 
   double charginos = 0.0;
@@ -476,10 +479,11 @@ double Softsusy<SoftPars>::doCalcTad1Charginos(double q, double g,
       * mch(family) * (v(family, 1) * u(family, 2)).real()
 	 * a0(mch(family), q);
   return charginos;
-  }
+}
+
 template<class SoftPars>
 double Softsusy<SoftPars>::doCalcTad2Charginos(double q, double g, 
-                                                double sinb){
+                                                double sinb) const {
 ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz); 
   double charginos = 0.0;
@@ -487,11 +491,13 @@ ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz);
     charginos = charginos - root2 * sqr(g) * mch(family) /
       (displayMwRun() * sinb)
       * (v(family, 2) * u(family, 1)).real() * a0(mch(family), q);
+
+  return charginos;
  }
 
 template<class SoftPars>
 double Softsusy<SoftPars>::doCalcTad1GaugeBosons(double q, double costhDRbar2, 
-                                                 double g, double tanb){
+                                                 double g, double tanb) const {
   double cos2b = cos(2.0 * atan(tanb));
   double mz = displayMzRun();
   double mw = displayMwRun();
@@ -502,11 +508,11 @@ double Softsusy<SoftPars>::doCalcTad1GaugeBosons(double q, double costhDRbar2,
     + sqr(g) * cos2b / (8.0 * costhDRbar2) * (2.0 * a0(mw, q) + 
 					      a0(mz, q));
   return gaugeBosons;
-  }
+}
 
   template<class SoftPars>
 double Softsusy<SoftPars>::doCalcTad2GaugeBosons(double q, double costhDRbar2, 
-                                                 double g, double tanb){
+                                                 double g, double tanb) const {
   /// Weak bosons
   double cos2b = cos(2.0 * atan(tanb));
   double mz = displayMzRun();
@@ -523,7 +529,7 @@ double Softsusy<SoftPars>::doCalcTad2GaugeBosons(double q, double costhDRbar2,
 /// 1-loop contributions. Only call if you've calculated drbarpars.
 /// inputs are running top/bottom masses: call at MSusy only
 template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
+double Softsusy<SoftPars>::doCalcTadpole1oneLoop(double mt, double sinthDRbar) const {
 
  if (forLoops.mu(1, 3) == 0.0 || forLoops.mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)
@@ -584,7 +590,7 @@ double Softsusy<SoftPars>::displayMwRun() const {
 /// 1-loop contributions. Only call if you've calculated physpars
 /// inputs are running top/bottom masses. Call at MSusy
 template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTadpole2oneLoop(double mt, double sinthDRbar) {
+double Softsusy<SoftPars>::doCalcTadpole2oneLoop(double mt, double sinthDRbar) const {
 /// CHECKED
  if (forLoops.mu(1, 3) == 0.0 || forLoops.mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)
@@ -1785,7 +1791,7 @@ void Softsusy<SoftPars>::charginos(int accuracy, double piwwtMS) {
 }
 
 template<class SoftPars>
-double Softsusy<SoftPars>::thet(double a, double b, double c = 0.0) {
+double Softsusy<SoftPars>::thet(double a, double b, double c) {
   double yy = maximum(sqr(a), sqr(b));
   yy = maximum(yy, sqr(c));
   return log(yy / sqr(displayMu()));
