@@ -240,7 +240,7 @@ public:
   void setPredMzSq(double a) { predMzSq = a; }
 //PA: fixes trilnear H1-sfermion-sfermion couplings 
 //for use in doCalcTadpole1oneLoop  
-  void H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, DoubleMatrix & lTauS1Lr, double gmzOcthW, double mu, double cosb, double v1);
+  void H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, DoubleMatrix & lTauS1Lr, double gmzOcthW, double mu, double cosb, double v1) const;
   //PA: fixes trilnear H2-sfermion-sfermion couplings 
   //for use in doCalcTadpole1oneLoop
   void H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr, DoubleMatrix & lTauS2Lr, double gmzOcthW, double mu, double sinb);
@@ -548,7 +548,22 @@ public:
   /// Calculates transverse part of A^0 self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piAA(double p, double Q) const;
-  /// Calculates transverse part of Higgs self-energy: for p=external momentum,
+  //PA:Calculates (16 Pi^2) times the sfermion contribution to Higgs 
+  //self-energy: for p=external momentum, q=renormalisation scale
+  double pis1s1Sfermions(double p, double q,  DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau) const;
+ //PA:Calculates (16 Pi^2) times the fermion contribution to Higgs self-energy:
+  //for p=external momentum, q=renormalisation scale
+  double pis1s1Fermions(double p, double q) const;
+//PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
+//for p=external momentum, q=renormalisation scale
+  double pis1s1Higgs(double p, double q) const;
+  //PA:Calculates (16 Pi^2) times the Neutralino contribution to the
+  // Higgs self-energy: for p=external momentum, q=renormalisation scale
+  double pis1s1Neutralinos(double p, double q) const;
+  //PA:Calculates (16 Pi^2) times the Chargino contribution to the
+  // Higgs self-energy: for p=external momentum, q=renormalisation scale
+  double pis1s1Charginos(double p, double q) const;
+/// Calculates transverse part of Higgs self-energy: for p=external momentum,
   /// Q=renormalisation scale
   double pis1s1(double p, double q) const;
   /// Calculates transverse part of Higgs self-energy: for p=external momentum,
