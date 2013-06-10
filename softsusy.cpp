@@ -6143,7 +6143,7 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   double tanbmz = 10.;
   
   double tanbmx = v(1);
-  double mx = v(2) * 1.e16;
+  double mx = exp(v(2));
   double g1mx = v(3);
   double g3mx = v(4);
   double mumx = v(5) * 1000.;
@@ -6210,7 +6210,7 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
 
   /// now, determine a vector showing how far (WITH SIGN) the solution is from
   /// the second boundary condition: y2(2)=1.
-  cout << "outputs" << f;
+  cout << "inputs" << v << " outputs" << f;
 
   return;
 }
@@ -6297,11 +6297,10 @@ double MssmSoftsusy::lowOrg
     /// Start of DEBUG
     /// We start with a MssmSoftsusy object that is defined at MX as the
     /// initial guess
-    /*
     tempSoft1 = this;
     tempSoft1->setThresholds(3); tempSoft1->setLoops(2);
     DoubleVector x(11); 
-    x(1) = displayTanb(); x(2) = mx * 1.0e-16;
+    x(1) = displayTanb(); x(2) = log(mx);
     x(3) = displayGaugeCoupling(1); x(4) = displayGaugeCoupling(3);
     x(5) = displaySusyMu() * 0.001; x(6) = displayM3Squared() * 1.0e-6;
     x(7) = displayYukawaElement(YU, 3, 3);
@@ -6310,10 +6309,12 @@ double MssmSoftsusy::lowOrg
     x(10) = displayHvev() * 1.0e-3;
     x(11) = calcMs() * 1.0e-3;
     bool err = newt(x, mxToMz);
+    tempSoft1->runto(tempSoft1->calcMs());
     tempSoft1->physical(3);
-    //    tempSoft1->runto(x(2) * 1.e16);
+    tempSoft1->runto(MZ);
+    cout << "MX=" << exp(x(2));
     cout << *tempSoft1 << " err=" << err << endl << x; exit(0);
-    */
+    
     /// End of DEBUG
 
     run(mx, mz);

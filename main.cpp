@@ -26,7 +26,7 @@
 #include "numerics.h"
 
 int main() {
-  TOLERANCE = 1.0e-6;
+
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
   /// Sets format of output: 6 decimal places
@@ -49,7 +49,7 @@ int main() {
   cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
 
   /// Parameters used: CMSSM parameters
-  double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
+  double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 500.;
   int sgnMu = 1;      ///< sign of mu parameter 
   int numPoints = 10; ///< number of scan points
 
@@ -65,6 +65,7 @@ int main() {
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
+  TOLERANCE = 1.0e-5; MIXING=-1;
   cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
        << TOLERANCE << endl << oneset << endl;
 
@@ -80,6 +81,8 @@ int main() {
     tanb = (endTanb - startTanb) / double(numPoints) * double(i) +
       startTanb; // set tan beta ready for the scan.
 
+    tanb = 10.;
+
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r; 
     DoubleVector pars(3); 
@@ -87,7 +90,9 @@ int main() {
     bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
     
     /// Calculate the spectrum
-    r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+    double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+
+    cout << "MX=" << mx << r; exit(0);
 
     /// check the point in question is problem free: if so print the output
     if (!r.displayProblem().test()) 
@@ -98,8 +103,6 @@ int main() {
     else
       /// print out what the problem(s) is(are)
       cout << tanb << " " << r.displayProblem() << endl;
-
-    cout << r; exit(0); ///< DEBUG
   }
   }
   catch(const string & a) { cout << a; }
