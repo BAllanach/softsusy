@@ -7400,6 +7400,116 @@ drBarPars tree(displayDrBarPars());
 
   return sfermions;
 }
+
+template<class SoftPars>
+double Softsusy<SoftPars>::pis2s2Sfermions(double p, double q, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const {
+  drBarPars tree(displayDrBarPars()); 
+  double    thetat  = tree.thetat ;
+  double    thetab  = tree.thetab;
+  double    thetatau= tree.thetatau;
+  double    st      = sin(thetat) ;
+  double    sb      = sin(thetab) ;
+  double    stau    = sin(thetatau);
+  double    ct      = cos(thetat) ;
+  double    cb      = cos(thetab) ;
+  double    ctau    = cos(thetatau);
+  double    msbot1  = tree.md(1, 3);
+  double    msbot2  = tree.md(2, 3);
+  double    mstau1  = tree.me(1, 3);
+  double    mstau2  = tree.me(2, 3);
+  double    mstop1  = tree.mu(1, 3);
+  double    mstop2  = tree.mu(2, 3);
+  double    mz      = displayMzRun();
+  double    g       = displayGaugeCoupling(2);
+  double    thetaWDRbar = asin(calcSinthdrbar());
+  double    costhDrbar  = cos(thetaWDRbar);
+  double    cw2DRbar    = sqr(cos(thetaWDRbar));
+  double  ht = tree.ht, hb = tree.hb, htau = tree.htau;
+  double cosb = cos(atan(displayTanb())), sinb = sin(atan(displayTanb()));
+
+
+   /// stop contribution
+  double sfermions = 3.0 * sqr(ht) * (a0(mstop1, q) + a0(mstop2, q));
+  sfermions = sfermions - 3.0 * sqr(g) / (2.0 * cw2DRbar) *
+    (guL * (sqr(ct) * a0(mstop1, q) + sqr(st) * a0(mstop2, q)) +
+     guR * (sqr(st) * a0(mstop1, q) + sqr(ct) * a0(mstop2, q)));
+ 
+  /// sbottom contribution
+  sfermions = sfermions - 3.0 * sqr(g) / (2.0 * cw2DRbar) *
+    (gdL * (sqr(cb) * a0(msbot1, q) + sqr(sb) * a0(msbot2, q)) +
+     gdR * (sqr(sb) * a0(msbot1, q) + sqr(cb) * a0(msbot2, q)));
+
+  //stau
+  sfermions = sfermions - sqr(g) / (2.0 * cw2DRbar) *
+    (geL * (sqr(ctau) * a0(mstau1, q) + sqr(stau) * a0(mstau2, q)) +
+     geR * (sqr(stau) * a0(mstau1, q) + sqr(ctau) * a0(mstau2, q)));
+
+  /// first two families of sparticles
+  int fam; for(fam=1; fam<=2; fam++) 
+    sfermions = sfermions - 3.0 * sqr(g) / (2.0 * cw2DRbar) *
+      (guL * a0(tree.mu(1, fam), q) + 
+       guR * a0(tree.mu(2, fam), q) +
+       gdL * a0(tree.md(1, fam), q) + 
+       gdR * a0(tree.md(2, fam), q)) - sqr(g) / (2.0 * cw2DRbar) * 
+      (geL * a0(tree.me(1, fam), q) + 
+       geR * a0(tree.me(2, fam), q)) -
+      sqr(g)  / (2.0 * cw2DRbar) * gnuL *
+      (a0(tree.msnu(fam), q));
+  sfermions = sfermions -
+     sqr(g)  / (2.0 * cw2DRbar) * gnuL *
+      (a0(tree.msnu(3), q));
+
+  /// Mix 3rd family up
+  ls2tt = rot2d(thetat) * ls2tt * rot2d(-thetat);
+  ls2bb = rot2d(thetab) * ls2bb * rot2d(-thetab);
+  ls2tautau = rot2d(thetatau) * ls2tautau * rot2d(-thetatau);
+
+  for (int i=1; i<=2; i++)
+    for (int j=1; j<=2; j++) {
+      /// stop 
+      sfermions = sfermions + 3.0 * sqr(ls2tt(i, j)) * 
+	b0(p, tree.mu(i, 3), tree.mu(j, 3), q);
+      /// sbottom
+      sfermions = sfermions + 3.0 * sqr(ls2bb(i, j)) * 
+	b0(p, tree.md(i, 3), tree.md(j, 3), q);
+      /// stay
+      sfermions = sfermions + sqr(ls2tautau(i, j)) * 
+	b0(p, tree.me(i, 3), tree.me(j, 3), q);
+    }
+
+  /// couplings to s2 Higgs state: neglect Yukawas + mixing
+  double ls2uuLL = -g * mz * guL * sinb / costhDrbar;
+  double ls2uuRR = -g * mz * guR * sinb / costhDrbar;
+  double ls2eeLL = -g * mz * geL * sinb / costhDrbar;
+  double ls2eeRR = -g * mz * geR * sinb / costhDrbar;
+  double ls2ddLL = -g * mz * gdL * sinb / costhDrbar;
+  double ls2ddRR = -g * mz * gdR * sinb / costhDrbar;
+
+  int k; 
+  for (k=1; k<=2; k++) {
+    sfermions = sfermions + 3.0 * sqr(ls2uuLL) * 
+      b0(p, tree.mu(1, k), tree.mu(1, k), q) +
+      + 3.0 * sqr(ls2uuRR) * 
+      b0(p, tree.mu(2, k), tree.mu(2, k), q);
+    sfermions = sfermions + 3.0 * sqr(ls2ddLL) * 
+      b0(p, tree.md(1, k), tree.md(1, k), q) +
+      + 3.0 * sqr(ls2ddRR) * 
+      b0(p, tree.md(2, k), tree.md(2, k), q);
+    sfermions = sfermions + sqr(ls2eeLL) * 
+      b0(p, tree.me(1, k), tree.me(1, k), q) +
+      + sqr(ls2eeRR) * 
+      b0(p, tree.me(2, k), tree.me(2, k), q);
+    }  
+
+  sfermions = sfermions +
+    sqr(g * mz * gnuL * sinb) / cw2DRbar *
+    (b0(p, tree.msnu(1), tree.msnu(1), q) +
+     b0(p, tree.msnu(2), tree.msnu(2), q) +
+     b0(p, tree.msnu(3), tree.msnu(3), q));
+
+return sfermions;
+}
+
 template<class SoftPars>
 double Softsusy<SoftPars>::pis1s1Fermions(double p, double q) const {
  /// fermions: 3rd family only for now
@@ -7415,6 +7525,15 @@ double Softsusy<SoftPars>::pis1s1Fermions(double p, double q) const {
      2.0 * a0(mtau, q));
 
   return fermions;
+}
+template<class SoftPars>
+double Softsusy<SoftPars>::pis2s2Fermions(double p, double q) const {
+ /// fermions: 3rd family only for now
+   double mt =  displayDrBarPars().mt,  ht = displayDrBarPars().ht;
+   double fermions = 3.0 * sqr(ht) *
+    ((sqr(p) - 4.0 * sqr(mt)) * 
+     b0(p, mt, mt, q) - 2.0 * a0(mt, q));
+ return fermions;
 }
 
 template<class SoftPars>
@@ -7609,6 +7728,91 @@ double Softsusy<SoftPars>::pis1s2Higgs(double p, double q) const {
 }
 
 template<class SoftPars>
+double Softsusy<SoftPars>::pis2s2Higgs(double p, double q) const {
+double    thetaWDRbar = asin(calcSinthdrbar());
+  double    costhDrbar  = cos(thetaWDRbar);
+  double    cw2DRbar    = sqr(cos(thetaWDRbar));
+  double    sw2DRbar    = 1.0 - cw2DRbar;
+  double    alpha   = displayDrBarPars().thetaH;
+  double    calpha2 = sqr(cos(alpha)), salpha2 = sqr(sin(alpha)), 
+     s2alpha = sin(2.0 * alpha), c2alpha = cos(2.0 * alpha);
+  double    mz      = displayMzRun();
+  double    g       = displayGaugeCoupling(2);
+  double    mHc     = displayDrBarPars().mHpm;
+  double    mA      = displayDrBarPars().mA0(1);
+  double beta = atan(displayTanb());
+  double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta), 
+     sinb = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+ double higgs = sqr(g) * 0.25 *
+    (cosb2 * (2.0 * ffn(p, mHc, displayMwRun(), q) + 
+	      ffn(p, mA, mz, q) / cw2DRbar) +
+     sinb2 * (2.0 * ffn(p, displayMwRun(), displayMwRun(), q) + 
+	      ffn(p, mz, mz, q) / cw2DRbar)) +
+    1.75 * sqr(g) * sinb2 * 
+    (2.0 * sqr(displayMwRun()) * b0(p, displayMwRun(), displayMwRun(), q) + 
+     sqr(mz) * b0(p, mz, mz, q) / cw2DRbar) +
+    sqr(g) * (2.0 * a0(displayMwRun(), q) + a0(mz, q) / cw2DRbar);
+
+  double quartic = 0., trilinear = 0.;
+ 
+  /// Trilinear Higgs couplings in basis H h G A: have assumed the couplings
+  /// are symmetric (ie hHs2 = Hhs2)
+  DoubleMatrix hhs2(4, 4);
+  hhs2(1, 1) = sinb * (3.0 * salpha2 - calpha2) - cosb * s2alpha;
+  hhs2(2, 2) = sinb * (3.0 * calpha2 - salpha2) + cosb * s2alpha;
+  hhs2(1, 2) = 2.0 * sinb * s2alpha - cosb * c2alpha;
+  hhs2(2, 1) = hhs2(1, 2);
+  hhs2(3, 3) = -cos2b * sinb;
+  hhs2(4, 4) = cos2b * sinb;
+  hhs2(3, 4) = sin2b * sinb; hhs2(4, 3) = hhs2(3, 4);
+  hhs2 = hhs2 * (g * mz / (2.0 * costhDrbar));
+
+  /// Quadrilinear Higgs couplings
+  DoubleVector hhs2s2(4);
+  hhs2s2(1) = 3.0 * salpha2 - calpha2;
+  hhs2s2(2) = 3.0 * calpha2 - salpha2;
+  hhs2s2(3) = -cos2b; hhs2s2(4) = cos2b;
+  hhs2s2 = hhs2s2 * (sqr(g) * 0.25 / (sqr(costhDrbar)));
+
+  /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
+  DoubleVector higgsm(4), higgsc(2);
+  assignHiggs(higgsm, higgsc);
+
+  for (int i=1; i<=4; i++) {
+    for (int j=1; j<=4; j++) {
+      higgs = higgs + 0.5 * sqr(hhs2(i, j)) * b0(p, higgsm(i), higgsm(j), q);
+      trilinear = trilinear + 
+	0.5 * sqr(hhs2(i, j)) * b0(p, higgsm(i), higgsm(j), q);
+    }
+    higgs = higgs + 0.5 * hhs2s2(i) * a0(higgsm(i), q);
+    quartic = quartic + 0.5 * hhs2s2(i) * a0(higgsm(i), q);
+  }
+
+  DoubleMatrix hphps2(2, 2);
+  hphps2(1, 1) = -cos2b * sinb;
+  hphps2(2, 2) = cos2b * sinb + 2.0 * cw2DRbar * sinb;
+  hphps2(1, 2) = sin2b * sinb - cw2DRbar * cosb; 
+  hphps2(2, 1) = hphps2(1, 2);
+  hphps2 = hphps2 * (g * mz * 0.5 / costhDrbar);
+
+  DoubleVector hphps2s2(2);
+  hphps2s2(1) = cw2DRbar - sw2DRbar * cos2b;
+  hphps2s2(2) = cw2DRbar + sw2DRbar * cos2b;
+  hphps2s2 = hphps2s2 * (sqr(g) * 0.25 / cw2DRbar);
+
+  for (int i=1; i<=2; i++) {
+    for (int j=1; j<=2; j++) {
+      higgs = higgs + sqr(hphps2(i, j)) * b0(p, higgsc(i), higgsc(j), q);
+      trilinear = trilinear + sqr(hphps2(i, j)) * 
+	b0(p, higgsc(i), higgsc(j), q);
+    }
+    higgs = higgs + hphps2s2(i) * a0(higgsc(i), q);
+    quartic = quartic + hphps2s2(i) * a0(higgsc(i), q);
+  }
+return higgs;
+}
+
+template<class SoftPars>
 double Softsusy<SoftPars>::pis1s1Neutralinos(double p, double q) const {
   double    g       = displayGaugeCoupling(2);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
@@ -7683,6 +7887,39 @@ double Softsusy<SoftPars>::pis1s2Neutralinos(double p, double q) const {
 }
 
 template<class SoftPars>
+double Softsusy<SoftPars>::pis2s2Neutralinos(double p, double q) const {
+  double    g       = displayGaugeCoupling(2);
+  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
+/// Neutralino contribution
+  double neutralinos = 0.0;
+
+  DoubleMatrix aPsi(4, 4);
+  ComplexMatrix aChi(4, 4), bChi(4, 4);
+  ComplexMatrix n(displayDrBarPars().nBpmz);
+  DoubleVector mneut(displayDrBarPars().mnBpmz);
+  
+  aPsi(1, 4) = gp * 0.5; 
+  aPsi(2, 4) = -g * 0.5; 
+  aPsi.symmetrise();
+  aChi = n.complexConjugate() * aPsi * n.hermitianConjugate();
+  bChi = n * aPsi * n.transpose();
+
+  DoubleMatrix fChiChis2s2(4, 4), gChiChis2s2(4, 4);
+  for(int i=1; i<=4; i++)
+    for (int j=1; j<=4; j++) {
+      fChiChis2s2(i, j) = sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod());
+      gChiChis2s2(i, j) = (bChi(i, j).conj() * aChi(i, j) + 
+	aChi(i, j).conj() * bChi(i, j)).real();
+      neutralinos = neutralinos + 0.5 * 
+	(fChiChis2s2(i, j) * gfn(p, mneut(i), mneut(j), q) - 2.0 *
+	 gChiChis2s2(i, j) * mneut(i) * mneut(j) * 
+	 b0(p, mneut(i), mneut(j), q));
+    }
+
+return neutralinos;
+}
+
+template<class SoftPars>
 double Softsusy<SoftPars>::pis1s1Charginos(double p, double q) const {
   double chargino = 0.0;
   double g = displayGaugeCoupling(2);
@@ -7739,6 +7976,33 @@ double Softsusy<SoftPars>::pis1s2Charginos(double p, double q) const {
 
  return chargino;
 }
+template<class SoftPars>
+double Softsusy<SoftPars>::pis2s2Charginos(double p, double q) const {
+  double chargino = 0.0;
+  double g = displayGaugeCoupling(2);
+  ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
+  DoubleVector mch(displayDrBarPars().mchBpmz); 
+  DoubleMatrix aPsic(2, 2);
+  aPsic(2, 1) = g / root2;
+  ComplexMatrix aChic(2, 2), bChic(2, 2);
+  aChic = v.complexConjugate() * aPsic * u.hermitianConjugate();
+  bChic = u * aPsic.transpose() * v.transpose();
+  DoubleMatrix fChiChis2s2(4, 4), gChiChis2s2(4, 4);
+  for(int i=1; i<=2; i++)
+    for (int j=1; j<=2; j++) {
+      fChiChis2s2(i, j) = sqr(aChic(i, j).mod()) + sqr(bChic(i, j).mod());
+      gChiChis2s2(i, j) = (bChic(i, j).conj() * aChic(i, j) + 
+	aChic(i, j).conj() * bChic(i, j)).real();
+      chargino = chargino + 
+	(fChiChis2s2(i, j) * gfn(p, mch(i), mch(j), q) - 2.0 *
+	 gChiChis2s2(i, j) * mch(i) * mch(j) * 
+	 b0(p, mch(i), mch(j), q));
+    }
+
+ return chargino;
+}
+
+
 template<class SoftPars>
 double Softsusy<SoftPars>::pis1s1(double p, double q) const {
   drBarPars tree(displayDrBarPars());
@@ -7806,7 +8070,6 @@ double Softsusy<SoftPars>::pis1s2(double p, double q) const {
   /// Chargino contribution
   double chargino = pis1s2Charginos(p, q);  
 
- 
   return (sfermions + higgs + neutralinos + chargino) 
     / (16.0 * sqr(PI));
 }
@@ -7817,256 +8080,26 @@ double Softsusy<SoftPars>::pis2s2(double p, double q) const {
   drBarPars tree(displayDrBarPars());
 
   double    beta    = atan(displayTanb());
-  double    mt   =  tree.mt;
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    costhDrbar  = cos(thetaWDRbar);
   double    cw2DRbar    = sqr(cos(thetaWDRbar));
   double    sw2DRbar    = 1.0 - cw2DRbar;
-  double    thetat  = tree.thetat ;
-  double    thetab  = tree.thetab;
-  double    thetatau= tree.thetatau;
-  double    msbot1  = tree.md(1, 3);
-  double    msbot2  = tree.md(2, 3);
-  double    mstau1  = tree.me(1, 3);
-  double    mstau2  = tree.me(2, 3);
-  double    mstop1  = tree.mu(1, 3);
-  double    mstop2  = tree.mu(2, 3);
   double    smu     = -displaySusyMu(); /// minus sign taken into acct here!
-  double    st      = sin(thetat) ;
-  double    sb      = sin(thetab) ;
-  double    stau    = sin(thetatau);
-  double    ct      = cos(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    ctau    = cos(thetatau);
   double    g       = displayGaugeCoupling(2);
   double    mHc     = tree.mHpm;
   double    mA      = tree.mA0(1);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    alpha   = tree.thetaH;
-  double    calpha2 = sqr(cos(alpha)), salpha2 = sqr(sin(alpha)), 
-    s2alpha = sin(2.0 * alpha), c2alpha = cos(2.0 * alpha);
-  double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta),
-    sinb = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+  double sinb = sin(beta);
   double ht = tree.ht, mz = displayMzRun();
-
-  /// fermions: 3rd family only for now, others make negligible difference
-  double fermions = 3.0 * sqr(ht) *
-    ((sqr(p) - 4.0 * sqr(mt)) * 
-     b0(p, mt, mt, q) - 2.0 * a0(mt, q));
-
-  /// stop contribution
-  double sfermions = 3.0 * sqr(ht) * (a0(mstop1, q) + a0(mstop2, q));
-  sfermions = sfermions - 3.0 * sqr(g) / (2.0 * cw2DRbar) *
-    (guL * (sqr(ct) * a0(mstop1, q) + sqr(st) * a0(mstop2, q)) +
-     guR * (sqr(st) * a0(mstop1, q) + sqr(ct) * a0(mstop2, q)));
- 
-  /// sbottom contribution
-  sfermions = sfermions - 3.0 * sqr(g) / (2.0 * cw2DRbar) *
-    (gdL * (sqr(cb) * a0(msbot1, q) + sqr(sb) * a0(msbot2, q)) +
-     gdR * (sqr(sb) * a0(msbot1, q) + sqr(cb) * a0(msbot2, q)));
-
-  //stau
-  sfermions = sfermions - sqr(g) / (2.0 * cw2DRbar) *
-    (geL * (sqr(ctau) * a0(mstau1, q) + sqr(stau) * a0(mstau2, q)) +
-     geR * (sqr(stau) * a0(mstau1, q) + sqr(ctau) * a0(mstau2, q)));
-
-  /// first two families of sparticles
-  int fam; for(fam=1; fam<=2; fam++) 
-    sfermions = sfermions - 3.0 * sqr(g) / (2.0 * cw2DRbar) *
-      (guL * a0(tree.mu(1, fam), q) + 
-       guR * a0(tree.mu(2, fam), q) +
-       gdL * a0(tree.md(1, fam), q) + 
-       gdR * a0(tree.md(2, fam), q)) - sqr(g) / (2.0 * cw2DRbar) * 
-      (geL * a0(tree.me(1, fam), q) + 
-       geR * a0(tree.me(2, fam), q)) -
-      sqr(g)  / (2.0 * cw2DRbar) * gnuL *
-      (a0(tree.msnu(fam), q));
-  sfermions = sfermions -
-     sqr(g)  / (2.0 * cw2DRbar) * gnuL *
-      (a0(tree.msnu(3), q));
-
-  /// stop couplings to s2 Higgs state
-  DoubleMatrix ls2tt(2, 2);
-  ls2tt(1, 1) = - g * mz * guL * sinb / costhDrbar + root2 * ht * mt;
-  ls2tt(1, 2) = tree.ut / root2; 
-  ls2tt(2, 1) = ls2tt(1, 2);
-  ls2tt(2, 2) = - g * mz * guR * sinb / costhDrbar + root2 * ht * mt;
-
-  /// sbottom couplings to s2 Higgs state
-  DoubleMatrix ls2bb(2, 2);
-  ls2bb(1, 1) = -g * mz * gdL * sinb / costhDrbar;
-  ls2bb(1, 2) = tree.hb / root2 * smu; 
-  ls2bb(2, 1) = ls2bb(1, 2);
-  ls2bb(2, 2) = - g * mz * gdR * sinb / costhDrbar;
-
-  /// stau couplings to s2 Higgs state
-  DoubleMatrix ls2tautau(2, 2);
-  ls2tautau(1, 1) = -g * mz * geL * sinb / costhDrbar;
-  ls2tautau(1, 2) = tree.htau / root2 * smu; 
-  ls2tautau(2, 1) = ls2tautau(1, 2);
-  ls2tautau(2, 2) = -g * mz * geR * sinb / costhDrbar;
-  
-  /// Mix 3rd family up
-  ls2tt = rot2d(thetat) * ls2tt * rot2d(-thetat);
-  ls2bb = rot2d(thetab) * ls2bb * rot2d(-thetab);
-  ls2tautau = rot2d(thetatau) * ls2tautau * rot2d(-thetatau);
-
-  for (int i=1; i<=2; i++)
-    for (int j=1; j<=2; j++) {
-      /// stop 
-      sfermions = sfermions + 3.0 * sqr(ls2tt(i, j)) * 
-	b0(p, tree.mu(i, 3), tree.mu(j, 3), q);
-      /// sbottom
-      sfermions = sfermions + 3.0 * sqr(ls2bb(i, j)) * 
-	b0(p, tree.md(i, 3), tree.md(j, 3), q);
-      /// stay
-      sfermions = sfermions + sqr(ls2tautau(i, j)) * 
-	b0(p, tree.me(i, 3), tree.me(j, 3), q);
-    }
-
-  /// couplings to s2 Higgs state: neglect Yukawas + mixing
-  double ls2uuLL = -g * mz * guL * sinb / costhDrbar;
-  double ls2uuRR = -g * mz * guR * sinb / costhDrbar;
-  double ls2eeLL = -g * mz * geL * sinb / costhDrbar;
-  double ls2eeRR = -g * mz * geR * sinb / costhDrbar;
-  double ls2ddLL = -g * mz * gdL * sinb / costhDrbar;
-  double ls2ddRR = -g * mz * gdR * sinb / costhDrbar;
-
-  int k; 
-  for (k=1; k<=2; k++) {
-    sfermions = sfermions + 3.0 * sqr(ls2uuLL) * 
-      b0(p, tree.mu(1, k), tree.mu(1, k), q) +
-      + 3.0 * sqr(ls2uuRR) * 
-      b0(p, tree.mu(2, k), tree.mu(2, k), q);
-    sfermions = sfermions + 3.0 * sqr(ls2ddLL) * 
-      b0(p, tree.md(1, k), tree.md(1, k), q) +
-      + 3.0 * sqr(ls2ddRR) * 
-      b0(p, tree.md(2, k), tree.md(2, k), q);
-    sfermions = sfermions + sqr(ls2eeLL) * 
-      b0(p, tree.me(1, k), tree.me(1, k), q) +
-      + sqr(ls2eeRR) * 
-      b0(p, tree.me(2, k), tree.me(2, k), q);
-    }  
-
-  sfermions = sfermions +
-    sqr(g * mz * gnuL * sinb) / cw2DRbar *
-    (b0(p, tree.msnu(1), tree.msnu(1), q) +
-     b0(p, tree.msnu(2), tree.msnu(2), q) +
-     b0(p, tree.msnu(3), tree.msnu(3), q));
-
-  /// gauge boson/Higgs contributions
-  double higgs = sqr(g) * 0.25 *
-    (cosb2 * (2.0 * ffn(p, mHc, displayMwRun(), q) + 
-	      ffn(p, mA, mz, q) / cw2DRbar) +
-     sinb2 * (2.0 * ffn(p, displayMwRun(), displayMwRun(), q) + 
-	      ffn(p, mz, mz, q) / cw2DRbar)) +
-    1.75 * sqr(g) * sinb2 * 
-    (2.0 * sqr(displayMwRun()) * b0(p, displayMwRun(), displayMwRun(), q) + 
-     sqr(mz) * b0(p, mz, mz, q) / cw2DRbar) +
-    sqr(g) * (2.0 * a0(displayMwRun(), q) + a0(mz, q) / cw2DRbar);
-
-  double quartic = 0., trilinear = 0.;
- 
-  /// Trilinear Higgs couplings in basis H h G A: have assumed the couplings
-  /// are symmetric (ie hHs2 = Hhs2)
-  DoubleMatrix hhs2(4, 4);
-  hhs2(1, 1) = sinb * (3.0 * salpha2 - calpha2) - cosb * s2alpha;
-  hhs2(2, 2) = sinb * (3.0 * calpha2 - salpha2) + cosb * s2alpha;
-  hhs2(1, 2) = 2.0 * sinb * s2alpha - cosb * c2alpha;
-  hhs2(2, 1) = hhs2(1, 2);
-  hhs2(3, 3) = -cos2b * sinb;
-  hhs2(4, 4) = cos2b * sinb;
-  hhs2(3, 4) = sin2b * sinb; hhs2(4, 3) = hhs2(3, 4);
-  hhs2 = hhs2 * (g * mz / (2.0 * costhDrbar));
-
-  /// Quadrilinear Higgs couplings
-  DoubleVector hhs2s2(4);
-  hhs2s2(1) = 3.0 * salpha2 - calpha2;
-  hhs2s2(2) = 3.0 * calpha2 - salpha2;
-  hhs2s2(3) = -cos2b; hhs2s2(4) = cos2b;
-  hhs2s2 = hhs2s2 * (sqr(g) * 0.25 / (sqr(costhDrbar)));
-
-  /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
-  DoubleVector higgsm(4), higgsc(2);
-  assignHiggs(higgsm, higgsc);
-
-  for (int i=1; i<=4; i++) {
-    for (int j=1; j<=4; j++) {
-      higgs = higgs + 0.5 * sqr(hhs2(i, j)) * b0(p, higgsm(i), higgsm(j), q);
-      trilinear = trilinear + 
-	0.5 * sqr(hhs2(i, j)) * b0(p, higgsm(i), higgsm(j), q);
-    }
-    higgs = higgs + 0.5 * hhs2s2(i) * a0(higgsm(i), q);
-    quartic = quartic + 0.5 * hhs2s2(i) * a0(higgsm(i), q);
-  }
-
-  DoubleMatrix hphps2(2, 2);
-  hphps2(1, 1) = -cos2b * sinb;
-  hphps2(2, 2) = cos2b * sinb + 2.0 * cw2DRbar * sinb;
-  hphps2(1, 2) = sin2b * sinb - cw2DRbar * cosb; 
-  hphps2(2, 1) = hphps2(1, 2);
-  hphps2 = hphps2 * (g * mz * 0.5 / costhDrbar);
-
-  DoubleVector hphps2s2(2);
-  hphps2s2(1) = cw2DRbar - sw2DRbar * cos2b;
-  hphps2s2(2) = cw2DRbar + sw2DRbar * cos2b;
-  hphps2s2 = hphps2s2 * (sqr(g) * 0.25 / cw2DRbar);
-
-  for (int i=1; i<=2; i++) {
-    for (int j=1; j<=2; j++) {
-      higgs = higgs + sqr(hphps2(i, j)) * b0(p, higgsc(i), higgsc(j), q);
-      trilinear = trilinear + sqr(hphps2(i, j)) * 
-	b0(p, higgsc(i), higgsc(j), q);
-    }
-    higgs = higgs + hphps2s2(i) * a0(higgsc(i), q);
-    quartic = quartic + hphps2s2(i) * a0(higgsc(i), q);
-  }
-
-  /// Neutralino contribution
-  double neutralinos = 0.0;
-
-  DoubleMatrix aPsi(4, 4);
-  ComplexMatrix aChi(4, 4), bChi(4, 4);
-  ComplexMatrix n(tree.nBpmz);
-  DoubleVector mneut(tree.mnBpmz);
-  ComplexMatrix u(tree.uBpmz), v(tree.vBpmz); 
-  DoubleVector mch(tree.mchBpmz); 
-
-  aPsi(1, 4) = gp * 0.5; 
-  aPsi(2, 4) = -g * 0.5; 
-  aPsi.symmetrise();
-  aChi = n.complexConjugate() * aPsi * n.hermitianConjugate();
-  bChi = n * aPsi * n.transpose();
-
-  DoubleMatrix fChiChis2s2(4, 4), gChiChis2s2(4, 4);
-  for(int i=1; i<=4; i++)
-    for (int j=1; j<=4; j++) {
-      fChiChis2s2(i, j) = sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod());
-      gChiChis2s2(i, j) = (bChi(i, j).conj() * aChi(i, j) + 
-	aChi(i, j).conj() * bChi(i, j)).real();
-      neutralinos = neutralinos + 0.5 * 
-	(fChiChis2s2(i, j) * gfn(p, mneut(i), mneut(j), q) - 2.0 *
-	 gChiChis2s2(i, j) * mneut(i) * mneut(j) * 
-	 b0(p, mneut(i), mneut(j), q));
-    }
-
-  /// Chargino contribution
-  double chargino = 0.0;
-  DoubleMatrix aPsic(2, 2);
-  aPsic(2, 1) = g / root2;
-  ComplexMatrix aChic(2, 2), bChic(2, 2);
-  aChic = v.complexConjugate() * aPsic * u.hermitianConjugate();
-  bChic = u * aPsic.transpose() * v.transpose();
-  for(int i=1; i<=2; i++)
-    for (int j=1; j<=2; j++) {
-      fChiChis2s2(i, j) = sqr(aChic(i, j).mod()) + sqr(bChic(i, j).mod());
-      gChiChis2s2(i, j) = (bChic(i, j).conj() * aChic(i, j) + 
-	aChic(i, j).conj() * bChic(i, j)).real();
-      chargino = chargino + 
-	(fChiChis2s2(i, j) * gfn(p, mch(i), mch(j), q) - 2.0 *
-	 gChiChis2s2(i, j) * mch(i) * mch(j) * 
-	 b0(p, mch(i), mch(j), q));
-    }
+  double fermions = pis2s2Fermions(p, q);
+  double gmzOcthW = g * mz / costhDrbar;
+  /// sfermion couplings to s2 Higgs state
+  DoubleMatrix ls2tt(2, 2), ls2bb(2, 2), ls2tautau(2, 2);
+  H2SfSfCouplings(ls2tt, ls2bb, ls2tautau, gmzOcthW, smu, sinb);
+  double sfermions = pis2s2Sfermions(p, q, ls2tt, ls2bb, ls2tautau);
+  double higgs = pis2s2Higgs(p, q);
+  double neutralinos = pis2s2Neutralinos(p, q); 
+  double chargino = pis2s2Charginos(p, q);   
 
   return (fermions + sfermions + higgs + neutralinos + chargino) 
     / (16.0 * sqr(PI));
