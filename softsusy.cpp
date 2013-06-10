@@ -999,6 +999,11 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
   /// sector LSP mass, make it clear that the particle is the NLSP
   left << "lsp is " << recogLsp(id, posj);
   left << " of mass " << mass << " GeV\n";
+
+  left << HR << endl;
+  left << "DRbar parameters:\n";
+  left << s.displayDrBarPars();
+
   if (s.displayProblem().test()) left << "***** PROBLEM *****" <<
 				   s.displayProblem() << " *****" << endl;
   left << HR << endl;
@@ -1007,6 +1012,7 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
   if (s.displayAltEwsb()) left << "Alternative EWSB conditions: mu=" 
 			       << s.displayMuCond() 
 			       << " mA=" << s.displayMaCond() << endl;
+  
 
   return left;
 }
@@ -6127,12 +6133,19 @@ MssmSusy MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
   return t;
 }
 
+static MssmSoftsusy saveIt;
+
 /// loads up object at GUT scale, runs it down, providing a vector score as to
 /// how well low-scale boundary conditions are satisfied. 
 /// v1 = tanb(MX), v2 = mx / 10^16, 
 /// v3 = g1(=g2) at mx, v4 = g3(mx), v5 = mu(mx) / 1000, v6 = m3sq(mx) / 10^6
 /// v7 = htmx, v8 = hb, v9 = htaumx, v10 = VEVmx / 1000, v11 = msusy / 1000
 void mxToMz(const DoubleVector & v, DoubleVector & f) {
+  MssmSoftsusy tempSoft;
+  tempSoft.setMw(MW);
+  tempSoft.setM32(saveIt.displayGravitino());
+  tempSoft.setData(saveIt.displayDataSet());
+  tempSoft.setThresholds(3); tempSoft.setLoops(2);
   double h1, hmin = 0.0;
 
   const double EPS = TOLERANCE;
@@ -6153,60 +6166,63 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   double msusy = v(11) * 1.0e3;
 
   /// set initial BCs. You should put some checks on these 
-  sugraBcs(*tempSoft1, pars);
-  tempSoft1->setMu(mx);
-  tempSoft1->setTanb(tanbmx);
+  sugraBcs(tempSoft, pars);
+  tempSoft.setMu(mx);
+  tempSoft.setTanb(tanbmx);
   /// g1(mx)=g2(mx)
-  tempSoft1->setGaugeCoupling(1, g1mx);   tempSoft1->setGaugeCoupling(2, g1mx);
-  tempSoft1->setGaugeCoupling(3, g3mx);   
-  tempSoft1->setSusyMu(mumx); tempSoft1->setM3Squared(m3sqmx);
+  tempSoft.setGaugeCoupling(1, g1mx);   tempSoft.setGaugeCoupling(2, g1mx);
+  tempSoft.setGaugeCoupling(3, g3mx);   
+  tempSoft.setSusyMu(mumx); tempSoft.setM3Squared(m3sqmx);
   DoubleMatrix empty(3, 3);
-  tempSoft1->setYukawaMatrix(YU, empty);
-  tempSoft1->setYukawaMatrix(YD, empty);
-  tempSoft1->setYukawaMatrix(YE, empty);
-  tempSoft1->setYukawaElement(YU, 3, 3, htmx);
-  tempSoft1->setYukawaElement(YD, 3, 3, hbmx);
-  tempSoft1->setYukawaElement(YE, 3, 3, htaumx);
-  tempSoft1->setHvev(hvevmx);
-  tempSoft1->setMsusy(msusy);
+  tempSoft.setYukawaMatrix(YU, empty);
+  tempSoft.setYukawaMatrix(YD, empty);
+  tempSoft.setYukawaMatrix(YE, empty);
+  tempSoft.setYukawaElement(YU, 3, 3, htmx);
+  tempSoft.setYukawaElement(YD, 3, 3, hbmx);
+  tempSoft.setYukawaElement(YE, 3, 3, htaumx);
+  tempSoft.setHvev(hvevmx);
+  tempSoft.setMsusy(msusy);
 
-  tempSoft1->runto(msusy, EPS);
+  tempSoft.runto(msusy, EPS);
 
-  tempSoft1->calcDrBarPars();
+  tempSoft.calcDrBarPars();
 
   double tbOut; double predictedMzSq = 0.;
-  predictedMzSq = tempSoft1->predMzsq(tbOut);
+  predictedMzSq = tempSoft.predMzsq(tbOut);
+  tempSoft.setPredMzSq(predictedMzSq);
   
-  double msusypred = tempSoft1->calcMs();
+  double msusypred = tempSoft.calcMs();
 
   /// output vector which measures how well BCs are met
   f(1) = (predictedMzSq / sqr(MZ) - 1.) * 0.0001;
-  f(2) = tempSoft1->displayTanb() / tbOut - 1.;
+  f(2) = tempSoft.displayTanb() / tbOut - 1.;
   f(3) = msusypred / msusy - 1.;
 
-  tempSoft1->runto(MZ, EPS);
-  MssmSoftsusy predict(*tempSoft1);
+  tempSoft.runto(MZ, EPS);
+  MssmSoftsusy predict(tempSoft);
 
   /// match predict to data, but tempsoft1 is not matched to data
-  predict.sparticleThresholdCorrections(tempSoft1->displayTanb());
+  predict.sparticleThresholdCorrections(tempSoft.displayTanb());
 
-  double htmzpred = tempSoft1->displayYukawaElement(YU, 3, 3);
-  double hbmzpred = tempSoft1->displayYukawaElement(YD, 3, 3);
-  double htaumzpred = tempSoft1->displayYukawaElement(YE, 3, 3);
+  double htmzpred = tempSoft.displayYukawaElement(YU, 3, 3);
+  double hbmzpred = tempSoft.displayYukawaElement(YD, 3, 3);
+  double htaumzpred = tempSoft.displayYukawaElement(YE, 3, 3);
   f(4) = htmzpred / predict.displayYukawaElement(YU, 3, 3) - 1.;
   f(5) = hbmzpred / predict.displayYukawaElement(YD, 3, 3) - 1.;
   f(6) = htaumzpred / predict.displayYukawaElement(YE, 3, 3) - 1.;
 
-  f(7) = tempSoft1->displayGaugeCoupling(1) / 
+  f(7) = tempSoft.displayGaugeCoupling(1) / 
     predict.displayGaugeCoupling(1) - 1.;
-  f(8) = tempSoft1->displayGaugeCoupling(2) / 
+  f(8) = tempSoft.displayGaugeCoupling(2) / 
     predict.displayGaugeCoupling(2) - 1.;
-  f(9) = tempSoft1->displayGaugeCoupling(3) / 
+  f(9) = tempSoft.displayGaugeCoupling(3) / 
     predict.displayGaugeCoupling(3) - 1.;
-  f(10) = tempSoft1->displayHvev() / predict.displayHvev() - 1.;
-  f(11) = tempSoft1->displayTanb() / tanbmz - 1.;
+  f(10) = tempSoft.displayHvev() / predict.displayHvev() - 1.;
+  f(11) = tempSoft.displayTanb() / tanbmz - 1.;
 
-  tempSoft1->setPredMzSq(predictedMzSq);
+  tempSoft.setPredMzSq(predictedMzSq);
+
+  saveIt = tempSoft;
 
   /// now, determine a vector showing how far (WITH SIGN) the solution is from
   /// the second boundary condition: y2(2)=1.
@@ -6214,6 +6230,8 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
 
   return;
 }
+
+
 
 /// Returns low energy softsusy object consistent with BC's m0 etc at MGUT.
 /// oneset should be at MZ and contains the SM data to fit the model to.
@@ -6297,8 +6315,11 @@ double MssmSoftsusy::lowOrg
     /// Start of DEBUG
     /// We start with a MssmSoftsusy object that is defined at MX as the
     /// initial guess
-    tempSoft1 = this;
-    tempSoft1->setThresholds(3); tempSoft1->setLoops(2);
+    /*
+    saveIt.setData(oneset); 
+    saveIt.setMw(MW); 
+    saveIt.setM32(m32);
+
     DoubleVector x(11); 
     x(1) = displayTanb(); x(2) = log(mx);
     x(3) = displayGaugeCoupling(1); x(4) = displayGaugeCoupling(3);
@@ -6308,13 +6329,20 @@ double MssmSoftsusy::lowOrg
     x(9) = displayYukawaElement(YE, 3, 3);
     x(10) = displayHvev() * 1.0e-3;
     x(11) = calcMs() * 1.0e-3;
+
+    x(1) = 7.411921e+00; x(2) = 37.518001675;
+    x(3) = 0.7127211e+00; x(4) = 7.040075e-01;
+    x(5) = 0.6141080; x(6) = 6.037867e-02;
+    x(7) = 5.029865e-01; x(8) = 5.087478e-02; x(9) = 6.949927e-02;
+    x(10) = 0.2175445; x(11) = 0.9376734;
+
     bool err = newt(x, mxToMz);
-    tempSoft1->runto(tempSoft1->calcMs());
-    tempSoft1->physical(3);
-    tempSoft1->runto(MZ);
+    saveIt.runto(saveIt.calcMs());
+    saveIt.physical(3);
+    saveIt.runto(MZ);
     cout << "MX=" << exp(x(2));
-    cout << *tempSoft1 << " err=" << err << endl << x; exit(0);
-    
+    cout << saveIt << " err=" << err << endl << x; exit(0);
+    */
     /// End of DEBUG
 
     run(mx, mz);
