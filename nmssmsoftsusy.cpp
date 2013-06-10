@@ -91,7 +91,7 @@ void NmssmSoftsusy::H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr
    //PA: Add extra NMSSM coupling.
   //PA: minus sign since mu = - displaySusyMu for BPMZ conventions here.
   double    mueff   = mu - lam * s / root2;
-  Softsusy::H1SfSfCouplings(lTS1Lr, lBS1Lr, lTauS1Lr, gmzOcthW, mueff, cosb, v1);
+  Softsusy<SoftParsNmssm>::H1SfSfCouplings(lTS1Lr, lBS1Lr, lTauS1Lr, gmzOcthW, mueff, cosb, v1);
 }
 //PA: obtains NMSSM H2-sfermion-sfermion couplings
   //for 3rd generation sfermions
@@ -103,7 +103,7 @@ void NmssmSoftsusy::H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr
    //PA: Add extra NMSSM coupling.
   //PA: minus sign since mu = - displaySusyMu for BPMZ conventions here.
   double    mueff   = mu - lam * s / root2;
-  Softsusy::H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mueff, sinb);
+  Softsusy<SoftParsNmssm>::H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mueff, sinb);
 }
 //PA: obtains NMSSM S-sfermion-sfermion couplings
   //for 3rd generation sfermions
@@ -501,14 +501,14 @@ double NmssmSoftsusy::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
 
   const double gmzOcthW =  g * mz / costhDRbar;
   double costhDRbar2 = sqr(costhDRbar);
-  double fermions = Softsusy::doCalcTad1fermions(q, v1);
+  double fermions = Softsusy<SoftParsNmssm>::doCalcTad1fermions(q, v1);
   /// PA: stop, sbottom, stau, couplings in the left right basis
   // will be stored in these matrices
   DoubleMatrix lTS1Lr(2, 2), lBS1Lr(2, 2), lTauS1Lr(2, 2);
   H1SfSfCouplings(lTS1Lr, lBS1Lr, lTauS1Lr, gmzOcthW, mu, cosb, v1);
 
   //PA: Now we take these couplings and obtain sfermion contributions
-  double sfermions =  Softsusy::doCalcTad1Sfermions(lTS1Lr, lBS1Lr, lTauS1Lr,
+  double sfermions =  Softsusy<SoftParsNmssm>::doCalcTad1Sfermions(lTS1Lr, lBS1Lr, lTauS1Lr,
 					  costhDRbar);
   //PA: Higgs contributions, including goldstone bosons
   double higgs = doCalcTad1Higgs(q, costhDRbar, g, tanb);
@@ -542,12 +542,12 @@ double NmssmSoftsusy::doCalcTadpole2oneLoop(double mt, double sinthDRbar) {
     beta = atan(displayTanb()), mu = -displaySusyMu(), q = displayMu(),
     mz = displayMzRun();
   const double gmzOcthW =  g * mz / costhDRbar;
-  double fermions = Softsusy::doCalcTad2fermions(q);
+  double fermions = Softsusy<SoftParsNmssm>::doCalcTad2fermions(q);
   /// Sfermion couplings
   DoubleMatrix lTS2Lr(2, 2),  lBS2Lr(2, 2),  lTauS2Lr(2, 2);
   H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mu, sinb);
   //PA: Now we take these couplings and obtain sfermion contributions
-  double sfermions =  Softsusy::doCalcTad2Sfermions(lTS2Lr, lBS2Lr, lTauS2Lr,
+  double sfermions =  Softsusy<SoftParsNmssm>::doCalcTad2Sfermions(lTS2Lr, lBS2Lr, lTauS2Lr,
 						    costhDRbar);
   //PA: Higgs contributions, including goldstone bosons
   double  higgs = doCalcTad2Higgs(q, costhDRbar, g, tanb);
@@ -627,7 +627,7 @@ void NmssmSoftsusy::treeUpSquark(DoubleMatrix & mass, double mtrun,
 				int family) {
   //PA: only modification is to add lambda * s / root to mu
   double lam = displayLambda(), svev = displaySvev(), tanb = displayTanb();
-  Softsusy::treeUpSquark(mass, mtrun, pizztMS, sinthDRbarMS, family);
+  Softsusy<SoftParsNmssm>::treeUpSquark(mass, mtrun, pizztMS, sinthDRbarMS, family);
   if (family == 3){
      mass(1, 2) = mass(1, 2) -  mtrun * lam * svev / (root2 * tanb);
      mass(2, 1) = mass(1, 2);
@@ -642,7 +642,7 @@ void NmssmSoftsusy::treeDownSquark(DoubleMatrix & mass, double mbrun,
 				int family) {
   //PA: only modification is to add lambda * s / root to mu
   double lam = displayLambda(), svev = displaySvev(), tanb = displayTanb();
-  Softsusy::treeDownSquark(mass, mbrun, pizztMS, sinthDRbarMS, family);
+  Softsusy<SoftParsNmssm>::treeDownSquark(mass, mbrun, pizztMS, sinthDRbarMS, family);
   if (family == 3){
      mass(1, 2) = mass(1, 2) -  mbrun * lam * svev * tanb / (root2);
      mass(2, 1) = mass(1, 2);
@@ -655,7 +655,7 @@ void NmssmSoftsusy::treeChargedSlepton(DoubleMatrix & mass, double mtaurun,
 				int family) {
    //PA: only modification is to add lambda * s / root to mu
   double lam = displayLambda(), svev = displaySvev(), tanb = displayTanb();
-  Softsusy::treeChargedSlepton(mass, mtaurun, pizztMS, sinthDRbarMS, family);
+  Softsusy<SoftParsNmssm>::treeChargedSlepton(mass, mtaurun, pizztMS, sinthDRbarMS, family);
   if (family == 3) {
      mass(1, 2) = mass(1, 2) -  mtaurun * lam * svev * tanb / (root2);
      mass(2, 1) = mass(1, 2);
@@ -666,7 +666,7 @@ void NmssmSoftsusy::treeChargedSlepton(DoubleMatrix & mass, double mtaurun,
 void NmssmSoftsusy::calcDrBarCharginos(DoubleMatrix & mass, double beta, double mw) {
   double lam = displayLambda(), svev = displaySvev();
 
-  Softsusy::calcDrBarCharginos(mass, beta, mw);
+  Softsusy<SoftParsNmssm>::calcDrBarCharginos(mass, beta, mw);
   mass(2, 2) = mass(2, 2) + lam * svev / root2;
 }
 
@@ -678,7 +678,7 @@ void NmssmSoftsusy::calcDrBarNeutralinos(DoubleMatrix & mass, double beta, doubl
   double vev = displayHvev(), svev = displaySvev();
 
   /// Call MSSM 4 x4 neutralino mass matrix
-  Softsusy::calcDrBarNeutralinos(mass, beta, mz, mw, sinthDRbar);
+  Softsusy<SoftParsNmssm>::calcDrBarNeutralinos(mass, beta, mz, mw, sinthDRbar);
 
   /// Fill remaining values
   mass(3, 4) = mass(3, 4) - lam * svev / root2;
@@ -836,8 +836,8 @@ void NmssmSoftsusy::calcDrBarPars() {
   double mz = displayMzRun(), mz2 = sqr(mz);
   double pizzt = sqr(mz) - sqr(mzPole);
   double vev = displayHvev();
-  Softsusy::setNeutCurrCouplings(sinthDRbar, sw2, guL, gdL, geL, guR, gdR, geR);
-  Softsusy::calcDRTrilinears(eg, vev, beta);
+  Softsusy<SoftParsNmssm>::setNeutCurrCouplings(sinthDRbar, sw2, guL, gdL, geL, guR, gdR, geR);
+  Softsusy<SoftParsNmssm>::calcDRTrilinears(eg, vev, beta);
   eg.mGluino = displayGaugino(3);
   DoubleVector mSq(2);
   int family; for(family = 1; family <= 3; family++) {

@@ -156,7 +156,7 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
 
 };
 inline NmssmSoftsusy::NmssmSoftsusy()
-		     : Softsusy(), tSOVSMs(0.0), tSOVSMs1loop(0.0)  {}
+  : Softsusy<SoftParsNmssm>(), tSOVSMs(0.0), tSOVSMs1loop(0.0)  {}
 
 
 inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSoftsusy & s)
