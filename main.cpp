@@ -26,6 +26,7 @@
 #include "numerics.h"
 
 int main() {
+  newtonMethod = true;
 
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 

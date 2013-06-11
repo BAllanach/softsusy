@@ -990,6 +990,9 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
   left << s.displaySoftPars();
   left << "t1/v1(MS)=" << s.displayTadpole1Ms() 
        << " t2/v2(MS)=" << s.displayTadpole2Ms() << endl;
+  left << HR << "DRbar parameters:\n";
+  left << s.displayDrBarPars();
+
   left << HR << "\nPhysical MSSM parameters:\n";
   left << s.displayPhys();
   double mass; int posi, posj, id;
@@ -1001,8 +1004,6 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
   left << " of mass " << mass << " GeV\n";
 
   left << HR << endl;
-  left << "DRbar parameters:\n";
-  left << s.displayDrBarPars();
 
   if (s.displayProblem().test()) left << "***** PROBLEM *****" <<
 				   s.displayProblem() << " *****" << endl;
@@ -6224,10 +6225,6 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
 
   saveIt = tempSoft;
 
-  /// now, determine a vector showing how far (WITH SIGN) the solution is from
-  /// the second boundary condition: y2(2)=1.
-  cout << "inputs" << v << " outputs" << f;
-
   return;
 }
 
@@ -6315,28 +6312,28 @@ double MssmSoftsusy::lowOrg
     /// Start of DEBUG
     /// We start with a MssmSoftsusy object that is defined at MX as the
     /// initial guess
-    
-    saveIt.setData(oneset); 
-    saveIt.setMw(MW); 
-    saveIt.setM32(m32);
-
-    DoubleVector x(11); 
-    x(1) = displayTanb(); x(2) = log(mx);
-    x(3) = displayGaugeCoupling(1); x(4) = displayGaugeCoupling(3);
-    x(5) = displaySusyMu() * 0.001; x(6) = displayM3Squared() * 1.0e-6;
-    x(7) = displayYukawaElement(YU, 3, 3);
-    x(8) = displayYukawaElement(YD, 3, 3);
-    x(9) = displayYukawaElement(YE, 3, 3);
-    x(10) = displayHvev() * 1.0e-3;
-    x(11) = calcMs() * 1.0e-3;
-
-    bool err = newt(x, mxToMz);
-    saveIt.runto(saveIt.calcMs());
-    saveIt.physical(3);
-    saveIt.runto(MZ);
-    cout << "MX=" << exp(x(2));
-    cout << saveIt << " err=" << err << endl << x; exit(0);
-    
+    if (newtonMethod) {
+      saveIt.setData(oneset); 
+      saveIt.setMw(MW); 
+      saveIt.setM32(m32);
+      
+      DoubleVector x(11); 
+      x(1) = displayTanb(); x(2) = log(mx);
+      x(3) = displayGaugeCoupling(1); x(4) = displayGaugeCoupling(3);
+      x(5) = displaySusyMu() * 0.001; x(6) = displayM3Squared() * 1.0e-6;
+      x(7) = displayYukawaElement(YU, 3, 3);
+      x(8) = displayYukawaElement(YD, 3, 3);
+      x(9) = displayYukawaElement(YE, 3, 3);
+      x(10) = displayHvev() * 1.0e-3;
+      x(11) = calcMs() * 1.0e-3;
+      
+      bool err = newt(x, mxToMz);
+      saveIt.runto(saveIt.calcMs());
+      saveIt.physical(3);
+      saveIt.runto(MZ);
+      cout << "MX=" << exp(x(2));
+      cout << saveIt << " err=" << err << endl << x; exit(0);
+    }
     /// End of DEBUG
 
     run(mx, mz);

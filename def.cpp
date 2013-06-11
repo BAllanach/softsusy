@@ -49,5 +49,7 @@ namespace softsusy {
   bool mAFlag = false;
   /// default is that developer-level debugging printout flag is OFF
   bool printDEBUG = false;
+  /// default is fixed point iteration rather than Newton's method
+  bool newtonMethod = false; 
 }
 /// end of global variable declaration

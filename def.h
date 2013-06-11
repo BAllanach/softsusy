@@ -72,7 +72,8 @@ namespace softsusy{
   extern bool mAFlag;
   /// If true, it prints out special developer debugging
   extern bool printDEBUG; 
-
+  /// If true, uses Newton solution rather than fixed point iteration
+  extern bool newtonMethod;
 }
 
 #endif
