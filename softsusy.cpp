@@ -6315,7 +6315,7 @@ double MssmSoftsusy::lowOrg
     /// Start of DEBUG
     /// We start with a MssmSoftsusy object that is defined at MX as the
     /// initial guess
-    /*
+    
     saveIt.setData(oneset); 
     saveIt.setMw(MW); 
     saveIt.setM32(m32);
@@ -6330,19 +6330,13 @@ double MssmSoftsusy::lowOrg
     x(10) = displayHvev() * 1.0e-3;
     x(11) = calcMs() * 1.0e-3;
 
-    x(1) = 7.411921e+00; x(2) = 37.518001675;
-    x(3) = 0.7127211e+00; x(4) = 7.040075e-01;
-    x(5) = 0.6141080; x(6) = 6.037867e-02;
-    x(7) = 5.029865e-01; x(8) = 5.087478e-02; x(9) = 6.949927e-02;
-    x(10) = 0.2175445; x(11) = 0.9376734;
-
     bool err = newt(x, mxToMz);
     saveIt.runto(saveIt.calcMs());
     saveIt.physical(3);
     saveIt.runto(MZ);
     cout << "MX=" << exp(x(2));
     cout << saveIt << " err=" << err << endl << x; exit(0);
-    */
+    
     /// End of DEBUG
 
     run(mx, mz);
