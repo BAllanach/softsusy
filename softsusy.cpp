@@ -7916,7 +7916,7 @@ double Softsusy<SoftPars>::pis1s1Charginos(double p, double q) const {
   DoubleMatrix aPsic(2, 2);
   aPsic(1, 2) = g / root2; 
   ComplexMatrix aChic(2, 2), bChic(2, 2);
-  DoubleMatrix fChiChis1s1(4, 4), gChiChis1s1(4, 4);
+  DoubleMatrix fChiChis1s1(2, 2), gChiChis1s1(2, 2);
   aChic = v.complexConjugate() * aPsic * u.hermitianConjugate();
   bChic = u * aPsic.transpose() * v.transpose();
   for(int i=1; i<=2; i++)
@@ -7949,7 +7949,7 @@ double Softsusy<SoftPars>::pis1s2Charginos(double p, double q) const {
   aPsic2(2, 1) = g / root2;
   aChic2 = v.complexConjugate() * aPsic2 * u.hermitianConjugate();
   bChic2 = u * aPsic2.transpose() * v.transpose();
-  DoubleMatrix fChiChis1s2(4, 4), gChiChis1s2(4, 4);
+  DoubleMatrix fChiChis1s2(2, 2), gChiChis1s2(2, 2);
   for(int i=1; i<=2; i++)
     for (int j=1; j<=2; j++) {
       fChiChis1s2(i, j) = (aChic1(i, j).conj() * aChic2(i, j) + 
@@ -7975,7 +7975,7 @@ double Softsusy<SoftPars>::pis2s2Charginos(double p, double q) const {
   ComplexMatrix aChic(2, 2), bChic(2, 2);
   aChic = v.complexConjugate() * aPsic * u.hermitianConjugate();
   bChic = u * aPsic.transpose() * v.transpose();
-  DoubleMatrix fChiChis2s2(4, 4), gChiChis2s2(4, 4);
+  DoubleMatrix fChiChis2s2(2, 2), gChiChis2s2(2, 2);
   for(int i=1; i<=2; i++)
     for (int j=1; j<=2; j++) {
       fChiChis2s2(i, j) = sqr(aChic(i, j).mod()) + sqr(bChic(i, j).mod());
