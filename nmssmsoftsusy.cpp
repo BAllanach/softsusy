@@ -1085,6 +1085,22 @@ void NmssmSoftsusy::getS1NeutralinoCoup(ComplexMatrix & aChi,
   bChi = n * aPsi * n.transpose();
 }
 
+void NmssmSoftsusy::getS2NeutralinoCoup(ComplexMatrix & aChi, 
+                                        ComplexMatrix & bChi) const {
+  double g   = displayGaugeCoupling(2);
+  double gp  = displayGaugeCoupling(1) * sqrt(0.6);
+  double lam = displayLambda();
+  ComplexMatrix n(displayDrBarPars().nBpmz);
+  DoubleMatrix aPsi(5, 5);
+  aPsi(1, 4) = gp * 0.5; 
+  aPsi(2, 4) = -g * 0.5; 
+  aPsi(3, 5) = - lam / root2;
+  aPsi.symmetrise();
+  aChi = n.complexConjugate() * aPsi * n.hermitianConjugate();
+  bChi = n * aPsi * n.transpose();
+}
+
+
 double NmssmSoftsusy::pis1s1Neutralinos(double p, double q) const {
   
   double neutralinos = 0.0;
@@ -1105,6 +1121,51 @@ double NmssmSoftsusy::pis1s1Neutralinos(double p, double q) const {
 
   return neutralinos;
 }
+
+double NmssmSoftsusy::pis1s2Neutralinos(double p, double q) const {
+  ComplexMatrix aChi1(5, 5), bChi1(5, 5);
+  ComplexMatrix aChi2(5, 5), bChi2(5, 5);
+  DoubleVector mneut(displayDrBarPars().mnBpmz);
+  getS1NeutralinoCoup(aChi1, bChi1);
+  getS2NeutralinoCoup(aChi2, bChi2);
+  double neutralinos = 0.0;
+  DoubleMatrix fChiChis1s2(5, 5), gChiChis1s2(5, 5);
+  for(int i=1; i<=5; i++){
+     for(int j=1; j<=5; j++) {
+      fChiChis1s2(i, j) = (aChi1(i, j).conj() * aChi2(i, j) + 
+                           bChi1(i, j).conj() * bChi2(i, j)).real();
+      gChiChis1s2(i, j) = (bChi1(i, j).conj() * aChi2(i, j) + 
+                           aChi1(i, j).conj() * bChi2(i, j)).real();
+      neutralinos = neutralinos + 0.5 * 
+         (fChiChis1s2(i, j) * gfn(p, mneut(i), mneut(j), q) - 2.0 *
+          gChiChis1s2(i, j) * mneut(i) * mneut(j) * 
+          b0(p, mneut(i), mneut(j), q));
+    }
+  }
+return neutralinos;
+}
+double NmssmSoftsusy::pis2s2Neutralinos(double p, double q) const {
+  
+  double neutralinos = 0.0;
+  ComplexMatrix aChi(5, 5), bChi(5, 5);
+  DoubleVector mneut(displayDrBarPars().mnBpmz);
+  getS2NeutralinoCoup(aChi, bChi); 
+  DoubleMatrix fChiChis1s1(5, 5), gChiChis1s1(5, 5);
+  for(int i=1; i<=5; i++)
+    for (int j=1; j<=5; j++) {
+      fChiChis1s1(i, j) = sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod());
+      gChiChis1s1(i, j) = (bChi(i, j).conj() * aChi(i, j) + 
+	aChi(i, j).conj() * bChi(i, j)).real();
+      neutralinos = neutralinos + 0.5 * 
+	(fChiChis1s1(i, j) * gfn(p, mneut(i), mneut(j), q) - 2.0 *
+	 gChiChis1s1(i, j) * mneut(i) * mneut(j) * 
+	 b0(p, mneut(i), mneut(j), q));
+    }
+
+  return neutralinos;
+}
+
+
 double NmssmSoftsusy::pis1s1(double p, double q) const {
   drBarPars tree(displayDrBarPars());
   double    beta    = atan(displayTanb());

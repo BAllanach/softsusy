@@ -165,7 +165,16 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
   void getS1NeutralinoCoup(ComplexMatrix & aChi, ComplexMatrix & bChi) const;
   //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
   //for p=external momentum, q=renormalisation scale
+  void getS2NeutralinoCoup(ComplexMatrix & aChi, ComplexMatrix & bChi) const;
+  //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
+  //for p=external momentum, q=renormalisation scale
+  double pis1s2Neutralinos(double p, double q) const;
+  //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
+  //for p=external momentum, q=renormalisation scale
   double pis1s1Neutralinos(double p, double q) const;
+  //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
+  //for p=external momentum, q=renormalisation scale
+  double pis2s2Neutralinos(double p, double q) const;
   /// Calculates transverse part of Higgs self-energy: for p=external momentum,
   /// Q=renormalisation scale
   double pis1s1(double p, double q) const;
