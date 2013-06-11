@@ -993,8 +993,6 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
   left << s.displaySoftPars();
   left << "t1/v1(MS)=" << s.displayTadpole1Ms() 
        << " t2/v2(MS)=" << s.displayTadpole2Ms() << endl;
-  left << HR << "DRbar parameters:\n";
-  left << s.displayDrBarPars();
 
   left << HR << "\nPhysical MSSM parameters:\n";
   left << s.displayPhys();
@@ -6150,13 +6148,12 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   tempSoft.setM32(saveIt.displayGravitino());
   tempSoft.setData(saveIt.displayDataSet());
   tempSoft.setThresholds(3); tempSoft.setLoops(2);
-  double h1, hmin = 0.0;
 
   double tol = TOLERANCE;
   
   DoubleVector pars(3);
   /// DEBUG: initial try in parameter space
-  pars(1) = 4000.; pars(2) = 500.; pars(3) = 0.;
+  pars(1) = 5000.; pars(2) = 500.; pars(3) = 0.;
   double tanbmz = 10.;
   
   double tanbmx = v(1);
@@ -6177,7 +6174,7 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   /// g1(mx)=g2(mx)
   tempSoft.setGaugeCoupling(1, g1mx);   tempSoft.setGaugeCoupling(2, g1mx);
   tempSoft.setGaugeCoupling(3, g3mx);   
-  tempSoft.setSusyMu(muSqmx); tempSoft.setM3Squared(m3sqmx);
+  tempSoft.setSusyMu(sqrt(fabs(muSqmx))); tempSoft.setM3Squared(m3sqmx);
   DoubleMatrix empty(3, 3);
   tempSoft.setYukawaMatrix(YU, empty);
   tempSoft.setYukawaMatrix(YD, empty);
@@ -6333,7 +6330,7 @@ double MssmSoftsusy::lowOrg
       x(10) = displayHvev() * 1.0e-3;
       x(11) = calcMs() * 1.0e-3;
 
-      x(1) = 7.3868116626880669e+00;
+      /*      x(1) = 7.3868116626880669e+00;
       x(2) = log(2.2541171928098764e+16);
       x(3) = 7.0915992400290284e-01;
       x(4) = 6.9804194773612960e-01;
@@ -6343,19 +6340,20 @@ double MssmSoftsusy::lowOrg
       x(8) = 5.2631379804740273e-02;
       x(9) = 6.9156293569323818e-02;
       x(10) = 0.21602668062654300;
-      x(11) = 2.8665840454087547;
+      x(11) = 2.8665840454087547;*/
       
       bool err = newt(x, mxToMz);
       saveIt.runto(saveIt.calcMs());
+      saveIt.rewsb(1, saveIt.displayDrBarPars().mt, pars);
       saveIt.physical(3);
       saveIt.runto(MZ);
-      cout << "mzsq=" << saveIt.displayPredMzSq() << endl; ///< DEBUG
-      if (saveIt.displayPredMzSq() < 8100.)
+
+      if (saveIt.displayPredMzSq() < 8100. || x(2) < 0.)
 	saveIt.flagMusqwrongsign(true);
       cout << "MX=" << exp(x(2));
       cout << saveIt << " err=" << err << endl << x; exit(0);
     }
-    /// End of DEBUG
+
     run(mx, mz);
 
     if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
