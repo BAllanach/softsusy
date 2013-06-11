@@ -237,8 +237,6 @@ void Softsusy<SoftPars>::H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & l
 //PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
 template<class SoftPars>
 double Softsusy<SoftPars>::doCalcTad1Sfermions(DoubleMatrix lTS1Lr, DoubleMatrix lBS1Lr, DoubleMatrix lTauS1Lr, double costhDRbar) const {
-  double mb = forLoops.mb;
-  double mtau = forLoops.mtau;
   double g = displayGaugeCoupling(2), mz = displayMzRun();
   double tanb = displayTanb(), cosb = cos(atan(tanb));
   double q = displayMu(); 
@@ -308,7 +306,6 @@ double Softsusy<SoftPars>::doCalcTad1Sfermions(DoubleMatrix lTS1Lr, DoubleMatrix
 //PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
 template<class SoftPars>
 double Softsusy<SoftPars>::doCalcTad2Sfermions(DoubleMatrix lTS2Lr, DoubleMatrix lBS2Lr, DoubleMatrix lTauS2Lr, double costhDRbar) const {
-  double mtop = forLoops.mt, ht = displayDrBarPars().ht;
   double g = displayGaugeCoupling(2), mz = displayMzRun();
   double tanb = displayTanb(), sinb = sin(atan(tanb));
   double q = displayMu(); 
@@ -604,7 +601,6 @@ double Softsusy<SoftPars>::doCalcTadpole2oneLoop(double mt, double sinthDRbar) c
     tanb = displayTanb(), sinb = sin(atan(tanb)), 
     mu = -displaySusyMu(), q = displayMu(),
     mz = displayMzRun();
-  double beta = atan(displayTanb());
   const double gmzOcthW =  g * mz / costhDRbar;
   /// Sfermion couplings
   DoubleMatrix lTS2Lr(2, 2),  lBS2Lr(2, 2),  lTauS2Lr(2, 2);
@@ -7210,6 +7206,7 @@ double Softsusy<SoftPars>::piWWT(double p, double q, bool usePoleMt) const {
 template<class SoftPars>
 double Softsusy<SoftPars>::pis1s1Sfermions(double p, double q,  DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau) const {
   drBarPars tree(displayDrBarPars()); 
+  double hb = tree.hb, htau = tree.htau;
   double    thetat  = tree.thetat ;
   double    thetab  = tree.thetab;
   double    thetatau= tree.thetatau;
@@ -7230,12 +7227,11 @@ double Softsusy<SoftPars>::pis1s1Sfermions(double p, double q,  DoubleMatrix ls1
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    costhDrbar  = cos(thetaWDRbar);
   double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double hb = tree.hb, htau = tree.htau;
-  double cosb = cos(atan(displayTanb()));
+  double    cosb        = cos(atan(displayTanb()));
 
-  double sbots = 3.0 * sqr(tree.hb) * (a0(msbot1, q) + a0(msbot2, q));
+  double sbots = 3.0 * sqr(hb) * (a0(msbot1, q) + a0(msbot2, q));
 
-  double staus =  sqr(tree.htau) *
+  double staus =  sqr(htau) *
     (a0(mstau1, q) + a0(mstau2, q));
 
   double stops = 3.0 * sqr(g) / (2.0 * cw2DRbar) *
@@ -7325,24 +7321,10 @@ drBarPars tree(displayDrBarPars());
   double    thetat  = tree.thetat ;
   double    thetab  = tree.thetab;
   double    thetatau= tree.thetatau;
-  double    st      = sin(thetat) ;
-  double    sb      = sin(thetab) ;
-  double    stau    = sin(thetatau);
-  double    ct      = cos(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    msbot1  = tree.md(1, 3);
-  double    msbot2  = tree.md(2, 3);
-  double    mstau1  = tree.me(1, 3);
-  double    mstau2  = tree.me(2, 3);
-  double    mstop1  = tree.mu(1, 3);
-  double    mstop2  = tree.mu(2, 3);
   double    mz      = displayMzRun();
   double    g       = displayGaugeCoupling(2);
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    costhDrbar  = cos(thetaWDRbar);
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double  ht = tree.ht, hb = tree.hb, htau = tree.htau;
   double cosb = cos(atan(displayTanb())), sinb = sin(atan(displayTanb()));
 
    /// Mix 3rd family up
@@ -7430,8 +7412,8 @@ double Softsusy<SoftPars>::pis2s2Sfermions(double p, double q, DoubleMatrix ls2t
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    costhDrbar  = cos(thetaWDRbar);
   double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double  ht = tree.ht, hb = tree.hb, htau = tree.htau;
-  double cosb = cos(atan(displayTanb())), sinb = sin(atan(displayTanb()));
+  double  ht = tree.ht;
+  double sinb = sin(atan(displayTanb()));
 
 
    /// stop contribution
@@ -7642,7 +7624,7 @@ double Softsusy<SoftPars>::pis1s2Higgs(double p, double q) const {
   double    mHc     = displayDrBarPars().mHpm;
   double    mA      = displayDrBarPars().mA0(1);
   double beta = atan(displayTanb());
-  double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta), 
+  double cosb = cos(beta), cos2b = cos(2.0 * beta), 
      sinb = sin(beta), sin2b = sin(2.0 * beta);
 
  double higgs = sqr(g) * 0.25 * sinb * cosb *
@@ -8012,23 +7994,20 @@ double Softsusy<SoftPars>::pis2s2Charginos(double p, double q) const {
 template<class SoftPars>
 double Softsusy<SoftPars>::pis1s1(double p, double q) const {
   drBarPars tree(displayDrBarPars());
-
   double    beta    = atan(displayTanb());
   double    mb      = tree.mb;
   double    hb      = tree.hb;
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    costhDrbar  = cos(thetaWDRbar);
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
   double    smu     = -displaySusyMu(); /// minus sign taken into acct here!
   double    mz      = displayMzRun();
   double    g       = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
   double cosb = cos(beta);
+  double gmzOcthW = g * mz / costhDrbar;
   //PA: get fermion contribution
   double fermions = pis1s1Fermions(p, q);
   // sfermion couplings to s1 Higgs state
   DoubleMatrix ls1tt(2, 2), ls1bb(2, 2), ls1tautau(2, 2);
-  double gmzOcthW = g * mz / costhDrbar;
   H1SfSfCouplings(ls1tt, ls1bb, ls1tautau, gmzOcthW, smu, cosb, root2*mb/hb);
   //PA: get sfermion contribution
   double sfermions = pis1s1Sfermions(p, q, ls1tt, ls1bb, ls1tautau);
@@ -8052,12 +8031,8 @@ double Softsusy<SoftPars>::pis1s2(double p, double q) const {
   double    mb   =  tree.mb, hb   =  tree.hb; 
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    costhDrbar  = cos(thetaWDRbar);
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
   double    smu     = -displaySusyMu(); /// minus sign taken into acct here!
   double    g       = displayGaugeCoupling(2);
-  double    mHc     = tree.mHpm;
-  double    mA      = tree.mA0(1);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
   double cosb = cos(beta), sinb = sin(beta);
   double  mz = displayMzRun();
   // sfermion couplings to s1 Higgs state
@@ -8084,21 +8059,16 @@ double Softsusy<SoftPars>::pis1s2(double p, double q) const {
 template<class SoftPars>
 double Softsusy<SoftPars>::pis2s2(double p, double q) const {
   drBarPars tree(displayDrBarPars());
-
-  double    beta    = atan(displayTanb());
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    costhDrbar  = cos(thetaWDRbar);
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double    sw2DRbar    = 1.0 - cw2DRbar;
-  double    smu     = -displaySusyMu(); /// minus sign taken into acct here!
-  double    g       = displayGaugeCoupling(2);
-  double    mHc     = tree.mHpm;
-  double    mA      = tree.mA0(1);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
+  double beta = atan(displayTanb());
+  double thetaWDRbar = asin(calcSinthdrbar());
+  double costhDrbar = cos(thetaWDRbar);
+  double smu = -displaySusyMu(); /// minus sign taken into acct here!
+  double g = displayGaugeCoupling(2);
   double sinb = sin(beta);
-  double ht = tree.ht, mz = displayMzRun();
-  double fermions = pis2s2Fermions(p, q);
+  double mz = displayMzRun();
   double gmzOcthW = g * mz / costhDrbar;
+  
+  double fermions = pis2s2Fermions(p, q);
   /// sfermion couplings to s2 Higgs state
   DoubleMatrix ls2tt(2, 2), ls2bb(2, 2), ls2tautau(2, 2);
   H2SfSfCouplings(ls2tt, ls2bb, ls2tautau, gmzOcthW, smu, sinb);
