@@ -1070,22 +1070,27 @@ double NmssmSoftsusy::pis1s1Higgs(double p, double q) const {
    return higgs;
 }
 
-double NmssmSoftsusy::pis1s1Neutralinos(double p, double q) const {
+void NmssmSoftsusy::getS1NeutralinoCoup(ComplexMatrix & aChi, 
+                                        ComplexMatrix & bChi) const {
   double g   = displayGaugeCoupling(2);
   double gp  = displayGaugeCoupling(1) * sqrt(0.6);
   double lam = displayLambda();
-  double neutralinos = 0.0;
-  DoubleMatrix aPsi(5, 5);
-  ComplexMatrix aChi(5, 5), bChi(5, 5);
   ComplexMatrix n(displayDrBarPars().nBpmz);
-  DoubleVector mneut(displayDrBarPars().mnBpmz);
+  DoubleMatrix aPsi(5, 5);
   aPsi(1, 3) = -gp * 0.5; 
   aPsi(2, 3) = g * 0.5; 
   aPsi(4, 5) = - lam / root2;
   aPsi.symmetrise();
   aChi = n.complexConjugate() * aPsi * n.hermitianConjugate();
   bChi = n * aPsi * n.transpose();
+}
 
+double NmssmSoftsusy::pis1s1Neutralinos(double p, double q) const {
+  
+  double neutralinos = 0.0;
+  ComplexMatrix aChi(5, 5), bChi(5, 5);
+  DoubleVector mneut(displayDrBarPars().mnBpmz);
+  getS1NeutralinoCoup(aChi, bChi); 
   DoubleMatrix fChiChis1s1(5, 5), gChiChis1s1(5, 5);
   for(int i=1; i<=5; i++)
     for (int j=1; j<=5; j++) {
