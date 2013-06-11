@@ -112,6 +112,9 @@ public:
   /// 1-loop and total pieces equal to the one-loop piece
   virtual void calcTadpoleSMs1loop(double mt, double sinthDRbar);
  
+
+
+
   /// Organises tree-level calculation of all sparticle masses and mixings
   virtual void calcDrBarPars();
   
@@ -151,24 +154,54 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
 
   void calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, drBarPars & eg);
  
+  //PA:: fixes The CP odd mixing matrix with the conventions 
+  // Degrassi and Slavich arXiv:0907.4682
+  void DegrassiSlavicMix(DoubleMatrix & P) const; 
+  //PA: Obtains trilnear couplings of s1-higgs-higgs for use in loop functions
+  void getS1HiggsTriCoup(DoubleMatrix & sss1, DoubleMatrix & pps1, DoubleMatrix & hphps1, double thetaWDRbar) const; 
+  //PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
+  //for p=external momentum, q=renormalisation scale
+  double pis1s1Higgs(double p, double q) const;
+  //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
+  //for p=external momentum, q=renormalisation scale
+  double pis1s1Neutralinos(double p, double q) const;
+  /// Calculates transverse part of Higgs self-energy: for p=external momentum,
+  /// Q=renormalisation scale
+  double pis1s1(double p, double q) const;
+  /// Calculates transverse part of Higgs self-energy: for p=external momentum,
+  /// Q=renormalisation scale
+  double pis1s2(double p, double q) const;
+  /// Calculates transverse part of Higgs self-energy: for p=external momentum,
+  /// Q=renormalisation scale
+  double pis2s2(double p, double q) const;
+  // Calculates transverse part of Higgs self-energy: for p=external momentum,
+  /// Q=renormalisation scale
+  double pis1s3(double p, double q) const;
+  // Calculates transverse part of Higgs self-energy: for p=external momentum,
+  /// Q=renormalisation scale
+  double pis2s3(double p, double q) const;
+  // Calculates transverse part of Higgs self-energy: for p=external momentum,
+  /// Q=renormalisation scale
+  double pis3s3(double p, double q) const;
+
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.    
   void printall();
 
 };
 inline NmssmSoftsusy::NmssmSoftsusy()
-  : Softsusy<SoftParsNmssm>(), tSOVSMs(0.0), tSOVSMs1loop(0.0)  {}
+                     : Softsusy<SoftParsNmssm>(), tSOVSMs(0.0), tSOVSMs1loop(0.0)  {}
 
 
 inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSoftsusy & s)
 		     : Softsusy<SoftParsNmssm>(s),
- tSOVSMs1loop(s.tSOVSMs1loop ), tSOVSMs(s.tSOVSMs) {
-    setPars(121);   
+                     tSOVSMs(s.tSOVSMs), tSOVSMs1loop(s.tSOVSMs1loop)  {
+  setPars(121);   
 }
 
 
 inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSusy &s)
-  : Softsusy<SoftParsNmssm>(s),tSOVSMs(0.0), tSOVSMs1loop(0.0)  {
-      setPars(121);
+                     : Softsusy<SoftParsNmssm>(s),tSOVSMs(0.0), tSOVSMs1loop(0.0)  {
+  setPars(121);
 }
 
 
