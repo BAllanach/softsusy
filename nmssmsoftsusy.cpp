@@ -1458,7 +1458,7 @@ double NmssmSoftsusy::pis2s3Higgs(double p, double q) const {
   double higgs = 0.0;	
   //PA: trilinear couplings for s2, s3 to CP even, CP odd and charged Higgs
   DoubleMatrix sss2(3, 3), pps2(3, 3), hphps2(2, 2);
-  getS1HiggsTriCoup(sss2, pps2, hphps2, thetaWDRbar);
+  getS2HiggsTriCoup(sss2, pps2, hphps2, thetaWDRbar);
   DoubleMatrix sss3(3, 3), pps3(3, 3), hphps3(2, 2);
   getS3HiggsTriCoup(sss3, pps3, hphps3);
 
@@ -1911,6 +1911,76 @@ double NmssmSoftsusy::pis1s3Sfermions(double p, double q, DoubleMatrix ls1tt, Do
   return sfermions;
 }
 
+double NmssmSoftsusy::pis2s3Sfermions(double p, double q, DoubleMatrix ls2tt, DoubleMatrix ls2bb,  DoubleMatrix ls2tautau, DoubleMatrix ls3tt,  DoubleMatrix ls3bb,  DoubleMatrix ls3tautau) const {
+       
+  double lam     = displayLambda();
+  double msbot1  = displayDrBarPars().md(1, 3);
+  double msbot2  = displayDrBarPars().md(2, 3);
+  double mstau1  = displayDrBarPars().me(1, 3);
+  double mstau2  = displayDrBarPars().me(2, 3);
+  double thetat  = displayDrBarPars().thetat ;
+  double thetab  = displayDrBarPars().thetab;
+  double thetatau= displayDrBarPars().thetatau;
+  double cb      = cos(thetab) ;
+  double ctau    = cos(thetatau);
+  double sb      = sin(thetab) ;
+  double stau    = sin(thetatau);
+  
+  double hb = displayDrBarPars().hb, htau = displayDrBarPars().htau;
+  /// Quadrilinear contributions	
+  double sbots = -3.0 * hb * lam * cb * sb * (a0(msbot1, q) - a0(msbot2, q));
+  double staus =  -1.0 * htau * lam * ctau * stau * (a0(mstau1, q) - a0(mstau2, q));
+
+   /// Mix 3rd family up
+  ls2tt = rot2d(thetat) * ls2tt * rot2d(-thetat);
+  ls2bb = rot2d(thetab) * ls2bb * rot2d(-thetab);
+  ls2tautau = rot2d(thetatau) * ls2tautau * rot2d(-thetatau);
+  ls3tt = rot2d(thetat) * ls3tt * rot2d(-thetat);
+  ls3bb = rot2d(thetab) * ls3bb * rot2d(-thetab);
+  ls3tautau = rot2d(thetatau) * ls3tautau * rot2d(-thetatau);
+  
+  double sfermions = 0.0;
+  for (int i=1; i<=2; i++)
+     for (int j=1; j<=2; j++) {
+        sfermions = sfermions + 3.0 * ls2tt(i, j) * ls3tt(i, j) 
+           * b0(p, displayDrBarPars().mu(i, 3), displayDrBarPars().mu(j, 3), q);
+        sfermions = sfermions + 3.0 * ls2bb(i, j) * ls3bb(i, j) 
+           * b0(p, displayDrBarPars().md(i, 3), displayDrBarPars().md(j, 3), q);
+        sfermions = sfermions + ls2tautau(i, j) * ls3tautau(i, j) 
+           * b0(p, displayDrBarPars().me(i, 3), displayDrBarPars().me(j, 3), q);
+               }
+	
+  sfermions =  sfermions + sbots + staus; 
+
+
+  return sfermions;
+}
+
+double NmssmSoftsusy::pis3s3Sfermions(double p, double q, DoubleMatrix ls3tt,  DoubleMatrix ls3bb,  DoubleMatrix ls3tautau) const {
+       
+ 
+  double thetat  = displayDrBarPars().thetat ;
+  double thetab  = displayDrBarPars().thetab;
+  double thetatau= displayDrBarPars().thetatau;
+
+/// Mix 3rd family up
+  ls3tt = rot2d(thetat) * ls3tt * rot2d(-thetat);
+  ls3bb = rot2d(thetab) * ls3bb * rot2d(-thetab);
+  ls3tautau = rot2d(thetatau) * ls3tautau * rot2d(-thetatau);
+  
+  double sfermions = 0.0;
+  int i, j; for (i=1; i <= 2; i++)
+    for (j=1; j <= 2; j++) {
+      sfermions = sfermions + 3.0 * sqr(ls3tt(i, j)) 
+         * b0(p, displayDrBarPars().mu(i, 3), displayDrBarPars().mu(j, 3), q);
+      sfermions = sfermions + 3.0 * sqr(ls3bb(i, j)) 
+         * b0(p, displayDrBarPars().md(i, 3), displayDrBarPars().md(j, 3), q);
+      sfermions = sfermions + sqr(ls3tautau(i, j)) 
+         * b0(p, displayDrBarPars().me(i, 3), displayDrBarPars().me(j, 3), q);
+    }
+
+ return sfermions;
+}
 double NmssmSoftsusy::pis1s1(double p, double q) const {
   double    beta    = atan(displayTanb());
   double    mb      = displayDrBarPars().mb;
@@ -2028,5 +2098,47 @@ return (sfermions + higgs + neutralinos + chargino)
     / (16.0 * sqr(PI));
 
 }
+
+
+double NmssmSoftsusy::pis2s3(double p, double q) const {
+  double beta = atan(displayTanb());
+  double thetaWDRbar = asin(calcSinthdrbar());
+  double costhDrbar  = cos(thetaWDRbar);
+  double lam = displayLambda();         
+    /// minus sign taken into acct here!
+  double smu  = -displaySusyMu(); 
+  double mz   = displayMzRun();
+  double g    = displayGaugeCoupling(2);
+  double sinb = sin(beta);
+ // sfermion couplings to s1 Higgs state(NMSSM version)
+  DoubleMatrix ls2tt(2, 2), ls2bb(2, 2), ls2tautau(2, 2);
+  double gmzOcthW = g * mz / costhDrbar;
+  H2SfSfCouplings(ls2tt, ls2bb, ls2tautau, gmzOcthW, smu, sinb);
+  /// sfermion couplings to s3 Higgs state
+  DoubleMatrix ls3tt(2, 2), ls3bb(2, 2), ls3tautau(2, 2);
+  SSfSfCouplings(ls3tt, ls3bb, ls3tautau, lam);
+  double sfermions = pis2s3Sfermions(p, q, ls2tt, ls2bb, ls2tautau, ls3tt, ls3bb, ls3tautau);
+  double higgs =  pis2s3Higgs(p, q);
+  double neutralinos = pis2s3Neutralinos(p, q);
+  double chargino = pis2s3Charginos(p, q);
+  return (sfermions + higgs + neutralinos + chargino) 
+    / (16.0 * sqr(PI));
+}
+
+double NmssmSoftsusy::pis3s3(double p, double q) const {
+  double lam = displayLambda();         
+  /// sfermion couplings to s3 Higgs state
+  DoubleMatrix ls3tt(2, 2), ls3bb(2, 2), ls3tautau(2, 2);
+  SSfSfCouplings(ls3tt, ls3bb, ls3tautau, lam);
+  double sfermions = pis3s3Sfermions(p, q, ls3tt, ls3bb, ls3tautau);
+  double higgs =  pis3s3Higgs(p, q);
+  double neutralinos = pis3s3Neutralinos(p, q);
+  double chargino = pis3s3Charginos(p, q);
+return (sfermions + higgs + neutralinos + chargino) 
+    / (16.0 * sqr(PI));
+
+}
+
+
 
 #endif

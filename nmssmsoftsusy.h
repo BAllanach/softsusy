@@ -218,6 +218,13 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
                          DoubleMatrix ls1bb,  DoubleMatrix ls1tautau, 
                          DoubleMatrix ls3tt,  DoubleMatrix ls3bb,  
                          DoubleMatrix ls3tautau) const;
+  double pis2s3Sfermions(double p, double q, DoubleMatrix ls2tt,
+                         DoubleMatrix ls2bb,  DoubleMatrix ls2tautau, 
+                         DoubleMatrix ls3tt,  DoubleMatrix ls3bb,  
+                         DoubleMatrix ls3tautau) const;
+  double pis3s3Sfermions(double p, double q, DoubleMatrix ls3tt,  
+                         DoubleMatrix ls3bb, DoubleMatrix ls3tautau) const;
+     
   /// Calculates transverse part of Higgs self-energy: for p=external momentum,
   /// Q=renormalisation scale
   double pis1s1(double p, double q) const;
