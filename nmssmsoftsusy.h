@@ -172,6 +172,15 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
   //PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
   //for p=external momentum, q=renormalisation scale
   double pis2s2Higgs(double p, double q) const;
+  //PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
+  //for p=external momentum, q=renormalisation scale
+  double pis1s3Higgs(double p, double q) const;
+  //PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
+  //for p=external momentum, q=renormalisation scale
+  double pis2s3Higgs(double p, double q) const;
+  //PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
+  //for p=external momentum, q=renormalisation scale
+  double pis3s3Higgs(double p, double q) const;
   void getS1NeutralinoCoup(ComplexMatrix & aChi, ComplexMatrix & bChi) const;
   //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
   //for p=external momentum, q=renormalisation scale
@@ -197,6 +206,18 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
   //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
   //for p=external momentum, q=renormalisation scale
   double pis3s3Neutralinos(double p, double q) const;
+  //PA:Calculates (16 Pi^2) times Chargino contrib. to Higgs self-energy: 
+  //for p=external momentum, q=renormalisation scale
+  double pis1s3Charginos(double p, double q) const; 
+  double pis2s3Charginos(double p, double q) const;
+  double pis3s3Charginos(double p, double q) const;
+  
+   //PA:Calculates (16 Pi^2) times sfermion contrib. to Higgs self-energy: 
+  //for p=external momentum, q=renormalisation scale
+  double pis1s3Sfermions(double p, double q, DoubleMatrix ls1tt,  
+                         DoubleMatrix ls1bb,  DoubleMatrix ls1tautau, 
+                         DoubleMatrix ls3tt,  DoubleMatrix ls3bb,  
+                         DoubleMatrix ls3tautau) const;
   /// Calculates transverse part of Higgs self-energy: for p=external momentum,
   /// Q=renormalisation scale
   double pis1s1(double p, double q) const;
