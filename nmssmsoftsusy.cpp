@@ -968,6 +968,87 @@ void NmssmSoftsusy::getS1HiggsTriCoup(DoubleMatrix & sss1, DoubleMatrix & pps1,D
   hphps1(2, 1) = hphps1(1, 2);
   
 }
+
+//PA: Obtains trilnear couplings of s2-higgs-higgs for use in loop functions
+void NmssmSoftsusy::getS2HiggsTriCoup(DoubleMatrix & sss2, DoubleMatrix & pps2, DoubleMatrix & hphps2, double thetaWDRbar) const {
+  double lam =  displayLambda(), lsq = sqr(lam);
+  double s = displaySvev();
+  double kap = displayKappa();
+  double al = displayTrialambda();
+  double mupr = displayMupr();
+  double tanthDrbar  = tan(thetaWDRbar);
+  double cw2DRbar    = sqr(cos(thetaWDRbar));
+  double tw2DRbar    = sqr(tanthDrbar);
+  double g = displayGaugeCoupling(2), gsq = sqr(g);
+  double beta = atan(displayTanb());
+  double cb = cos(beta), cos2b = cos(2.0 * beta);
+  double sb = sin(beta), sin2b = sin(2.0 * beta);
+  double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
+  /// LCT: Trilinear CP-even Higgs couplings to s2 in basis HdR HuR SR
+  sss2(1, 1) = v2 * (2.0 * lsq - 0.5 * gsq / cw2DRbar) / 12.0;
+  sss2(2, 2) = 0.125 * v2 * gsq / cw2DRbar;
+  sss2(3, 3) = lam / 6.0 * (lam * v2 - kap * v1);
+  sss2(1, 2) = v1 * (2.0 * lsq - 0.5 * gsq / cw2DRbar) / 12.0;
+  sss2(1, 3) = - (al / root2 + lam * kap * s + lam * mupr / root2) / 6.0;
+  sss2(2, 3) = lsq * s / 6.0;
+  sss2.symmetrise();
+  /// LCT: Trilinear CP-odd Higgs couplings to s2 in basis HdI HuI SI
+  pps2(1, 1) = 0.25 * v2 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
+  pps2(2, 2) = 0.125 * gsq / cw2DRbar * v2;
+  pps2(3, 3) = 0.5 * lam * (lam * v2 + kap * v1);
+  pps2(1, 3) = 0.5 * (al / root2 - lam * kap * s - lam * mupr / root2);
+  pps2.symmetrise();
+  /// LCT: Trilinear coupling with charged Higgs. Basis (G+ G- H+ H-)
+  hphps2(1, 1) = 0.25 * gsq * (v2 * (1.0 - tw2DRbar * cos2b) - v1 * sin2b)
+     + 0.5 * lsq * v1 * sin2b;
+  hphps2(2, 2) = 0.25 * gsq * (v2 * (1.0 + tw2DRbar * cos2b) + v1 * sin2b)
+     - 0.5 * lsq * v1 * sin2b;
+  hphps2(1, 2) = 0.25 * gsq * (v2 * tw2DRbar * sin2b - v1 * cos2b)
+     + 0.5 * lsq * v1 * cos2b;
+  hphps2(2, 1) = hphps2(1, 2);
+
+}
+
+//PA: Obtains trilnear couplings of s2-higgs-higgs for use in loop functions
+void NmssmSoftsusy::getS3HiggsTriCoup(DoubleMatrix & sss3, DoubleMatrix & pps3, DoubleMatrix & hphps3) const {
+  double lam =  displayLambda(), lsq = sqr(lam);
+  double s = displaySvev();
+  double kap = displayKappa(), ksq = sqr(kap);
+  double al = displayTrialambda();
+  double ak = displayTriakappa();
+  double mupr = displayMupr();
+  double beta = atan(displayTanb());
+  double cb = cos(beta), cos2b = cos(2.0 * beta);
+  double sb = sin(beta), sin2b = sin(2.0 * beta);
+  double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
+  /// LCT: Trilinear CP-even Higgs couplings to s3 in basis HdR HuR SR
+  sss3(1, 1) = lsq / 6.0 * s;
+  sss3(2, 2) = lsq / 6.0 * s;
+  sss3(3, 3) = (ak / 3.0 + root2 * ksq * s + kap * mupr) / (root2); 
+  sss3(1, 2) = -(al / root2 + lam * kap * s + lam * mupr / root2) / (6.0);
+  sss3(1, 3) = lam * (lam * v1 - kap * v2) / (6.0);
+  sss3(2, 3) = lam * (lam * v2 - kap * v1) / (6.0);
+  sss3.symmetrise();
+
+	
+  /// LCT: Trilinear CP-odd Higgs couplings to s3 in basis HdI HuI SI
+  pps3(1, 1) = 0.5 * lsq * s;
+  pps3(2, 2) = pps3(1, 1);
+  pps3(3, 3) = (-ak + root2 * ksq * s + kap * mupr) / (root2);
+  pps3(1, 2) = 0.5 * (al / root2 + lam * kap * s + lam * mupr / root2);
+  pps3(1, 3) = -0.5 * lam * kap * v2;
+  pps3(2, 3) = -0.5 * lam * kap * v1;
+  pps3.symmetrise();
+	
+  /// LCT: Trilinear with charged Higgs. Basis (G+ G- H+ H-)
+  hphps3(1, 1) = 0.5 * (2.0 * lsq * s
+                        - (root2 * al + 2.0 * lam * kap * s) * sin2b);
+  hphps3(2, 2) = 0.5 * (2.0 * lsq * s 
+                        + (root2 * al + 2.0 * lam * kap * s) * sin2b); 
+  hphps3(1, 2) = -0.5 * (root2 * al + 2.0 * lam * kap * s) * cos2b;
+  hphps3(2, 1) = hphps3(1, 2);
+}
+
 double NmssmSoftsusy::pis1s1Higgs(double p, double q) const {
   double beta = atan(displayTanb()); 
   double thetaWDRbar = asin(calcSinthdrbar());

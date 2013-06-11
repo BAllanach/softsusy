@@ -159,6 +159,10 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
   void DegrassiSlavicMix(DoubleMatrix & P) const; 
   //PA: Obtains trilnear couplings of s1-higgs-higgs for use in loop functions
   void getS1HiggsTriCoup(DoubleMatrix & sss1, DoubleMatrix & pps1, DoubleMatrix & hphps1, double thetaWDRbar) const; 
+  //PA: Obtains trilnear couplings of s2-higgs-higgs for use in loop functions
+  void getS2HiggsTriCoup(DoubleMatrix & sss2, DoubleMatrix & pps2, DoubleMatrix & hphps2, double thetaWDRbar) const; 
+  //PA: Obtains trilnear couplings of s2-higgs-higgs for use in loop functions
+  void getS3HiggsTriCoup(DoubleMatrix & sss3, DoubleMatrix & pps3, DoubleMatrix & hphps3) const; 
   //PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
   //for p=external momentum, q=renormalisation scale
   double pis1s1Higgs(double p, double q) const;
