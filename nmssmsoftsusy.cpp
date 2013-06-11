@@ -1246,7 +1246,7 @@ double NmssmSoftsusy::pis1s2Higgs(double p, double q) const {
      higgs = higgs + 2.0 * hphps1s2(i) * a0(higgsc(i), q);
   }
   
-
+  
   return higgs;
 }
 
@@ -1258,8 +1258,8 @@ double NmssmSoftsusy::pis2s2Higgs(double p, double q) const {
   double tw2DRbar    = sqr(tanthDrbar); 
   double lam =  displayLambda(), lsq = sqr(lam);
   double g = displayGaugeCoupling(2), gsq = sqr(g);
-  double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta),
-    sinb = sin(beta); 
+  double cosb = cos(beta), cos2b = cos(2.0 * beta),
+     sinb = sin(beta), sinb2 = sqr(sinb); 
   double mw = displayMwRun(), mw2 = sqr(mw), mz = displayMzRun(), mz2 = sqr(mz);
   /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3), C(3, 3);
@@ -1271,8 +1271,85 @@ double NmssmSoftsusy::pis2s2Higgs(double p, double q) const {
   DoubleVector higgsm(3), higgsa(3), higgsc(2);
   assignHiggs(higgsm, higgsa, higgsc);
   
-  /// LCT: Charged Higgs/Goldstone parts unchanged in NMSSM.
   double higgs = 0.0;	
+ /// LCT: Charged Higgs/Goldstone parts unchanged in NMSSM.
+  for (int i=1; i <= 2; i++) {
+     higgs = higgs + gsq * 0.5 * sqr(C(i, 2)) * ffn(p, higgsc(i), mw, q);
+	}
+	
+  /// LCT: CP-odd states in basis G0 A1 A2
+  for (int i = 1; i <= 3; i++) {
+     higgs = higgs + gsq * 0.25 / cw2DRbar * sqr(P(i, 2)) 
+        * ffn(p, higgsa(i), mz, q);
+	} 
+	
+  /// LCT: Gauge bosons
+  higgs = higgs + 1.75 * gsq * sinb2 * (2.0 * mw2 * b0(p, mw, mw, q) 
+                                        + mz2 * b0(p, mz, mz, q) / cw2DRbar) 
+     + gsq * (2.0 * a0(mw, q) + a0(mz, q) / cw2DRbar);
+  
+  //PA: trilinear couplings for s2 to CP even, CP odd and charged Higgs
+  DoubleMatrix sss2(3, 3), pps2(3, 3), hphps2(2, 2);
+  getS2HiggsTriCoup(sss2, pps2, hphps2, thetaWDRbar);
+  /// LCT: Rotate to mass basis s2 Hi Hj
+  DoubleMatrix hhs2(3, 3), aas2(3, 3);
+  for (int i=1; i <= 3; i++) {
+     for (int j=1; j <= 3; j++) {
+        for (int a = 1; a <= 3; a++) {
+           for (int b = 1; b <= 3; b++) {
+              hhs2(i, j) = hhs2(i, j) + 3.0 * S(i, a) * S(j, b) * sss2(a, b);
+              aas2(i, j) = aas2(i, j) + P(i, a) * P(j, b) * pps2(a, b);
+           }
+        }
+     }
+  }
+  
+  /// LCT: Quadrilinear CP-even Higgs couplings 
+  DoubleMatrix sss2s2(3, 3);
+  sss2s2(1, 1) = (2.0 * lsq - 0.5 * gsq / cw2DRbar) / 48.0;
+  sss2s2(2, 2) = gsq / (32.0 * cw2DRbar);
+  sss2s2(3, 3) = lsq / 24.0;
+  sss2s2.symmetrise();
+  
+  /// LCT: Quadrilinear CP-odd Higgs couplings
+  DoubleMatrix pps2s2(3, 3);
+  pps2s2(1, 1) = (2.0 * lsq - 0.5 * gsq / cw2DRbar) / 8.0;
+  pps2s2(2, 2) = gsq / (16.0 * cw2DRbar);
+  pps2s2(3, 3) = 0.25 * lsq;
+  pps2s2.symmetrise();
+  
+  /// LCT: Rotate to mass bases s1 s1 Hi Hi and s1 s1 Ai Ai
+  DoubleVector hhs2s2(3), aas2s2(3);
+  for (int i = 1; i <= 3; i++) {
+     for (int a = 1; a <= 3; a++) {
+        for (int b = 1; b <= 3; b++) {
+           hhs2s2(i) = hhs2s2(i) + 6.0 * S(i, a) * S(i, b) * sss2s2(a, b);
+           aas2s2(i) = aas2s2(i) + P(i, a) * P(i, b) * pps2s2(a, b);
+        }
+     }
+  }
+  
+  for (int i=1; i<=3; i++) {
+     for (int j=1; j<=3; j++) {
+        higgs = higgs + 2.0 * sqr(hhs2(i, j)) * b0(p, higgsm(i), higgsm(j), q);
+        higgs = higgs + 2.0 * sqr(aas2(i, j)) * b0(p, higgsa(i), higgsa(j), q);
+    }
+     higgs = higgs + 2.0 * hhs2s2(i) * a0(higgsm(i), q);
+     higgs = higgs + 2.0 * aas2s2(i) * a0(higgsa(i), q);
+  }
+  
+  /// LCT: Quadrilinear (H1+ H1-) (Amended for NMSSM)
+  DoubleVector hphps2s2(2);
+  hphps2s2(1) = gsq * (1.0 - tw2DRbar * cos2b) / 8.0;
+  hphps2s2(2) = gsq * (1.0 + tw2DRbar * cos2b) / 8.0;
+
+  for (int i=1; i <= 2; i++) {
+     for (int j=1; j <= 2; j++) {
+        higgs = higgs + sqr(hphps2(i, j)) * b0(p, higgsc(i), higgsc(j), q);
+		}
+     higgs = higgs + 2.0 * hphps2s2(i) * a0(higgsc(i), q);
+  }
+  
   
   return higgs;
 }
@@ -1464,10 +1541,9 @@ double NmssmSoftsusy::pis1s1(double p, double q) const {
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    costhDrbar  = cos(thetaWDRbar);
     /// minus sign taken into acct here!
-  double    smu     = -displaySusyMu(); 
-  double    mz      = displayMzRun();
-  double    g       = displayGaugeCoupling(2);
-
+  double smu  = -displaySusyMu(); 
+  double mz   = displayMzRun();
+  double g    = displayGaugeCoupling(2);
   double cosb = cos(beta);
   //PA: get fermion contribution, uses MSSM version
   double fermions = pis1s1Fermions(p, q);
@@ -1520,5 +1596,32 @@ double NmssmSoftsusy::pis1s2(double p, double q) const {
     / (16.0 * sqr(PI));
 }
 
+double NmssmSoftsusy::pis2s2(double p, double q) const {
+  drBarPars tree(displayDrBarPars());
+  double beta = atan(displayTanb());
+  double thetaWDRbar = asin(calcSinthdrbar());
+  double costhDrbar = cos(thetaWDRbar);
+  double smu = -displaySusyMu(); /// minus sign taken into acct here!
+  double g = displayGaugeCoupling(2);
+  double sinb = sin(beta);
+  double mz = displayMzRun();
+  double gmzOcthW = g * mz / costhDrbar;
+  //PA: get femions (same as MSSM) 
+  double fermions = pis2s2Fermions(p, q);
+  ///PA: sfermion couplings to s2 Higgs state (NMSSM version)
+  DoubleMatrix ls2tt(2, 2), ls2bb(2, 2), ls2tautau(2, 2);
+  H2SfSfCouplings(ls2tt, ls2bb, ls2tautau, gmzOcthW, smu, sinb);
+  //PA: get sfermions (MSSM routine but with NMSSM couplings input)
+  double sfermions = pis2s2Sfermions(p, q, ls2tt, ls2bb, ls2tautau);
+  //PA: get higgs (NMSSM version)
+  double higgs = pis2s2Higgs(p, q);
+  //PA: get neutralinos (NMSSM version)
+  double neutralinos = pis2s2Neutralinos(p, q); 
+  //PA: get charginos (same as in MSSM version)
+  double chargino = pis2s2Charginos(p, q);   
+
+  return (fermions + sfermions + higgs + neutralinos + chargino) 
+    / (16.0 * sqr(PI));
+}
 
 #endif
