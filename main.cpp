@@ -31,7 +31,7 @@ int main() {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
   /// Sets format of output: 6 decimal places
-  outputCharacteristics(6);
+  outputCharacteristics(16);
 
   /*  try{
   int check = 0;
@@ -50,7 +50,7 @@ int main() {
   cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
 
   /// Parameters used: CMSSM parameters
-  double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 500.;
+  double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 4000.;
   int sgnMu = 1;      ///< sign of mu parameter 
   int numPoints = 10; ///< number of scan points
 
@@ -66,7 +66,7 @@ int main() {
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
-  TOLERANCE = 1.0e-5; MIXING=-1;
+  TOLERANCE = 1.0e-6; MIXING=-1;
   cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
        << TOLERANCE << endl << oneset << endl;
 
@@ -92,6 +92,7 @@ int main() {
     
     /// Calculate the spectrum
     double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+    r.runto(mx);
 
     cout << "MX=" << mx << r; exit(0);
 

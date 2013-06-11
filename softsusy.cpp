@@ -565,6 +565,7 @@ double MssmSoftsusy::predMzsq(double & tanb, double muOld, double eps) {
   return MZsq;
 }
 
+
 /// Used to get useful information into ftCalc
 static MssmSoftsusy *tempSoft1;
 static int ftFunctionality;
@@ -985,6 +986,8 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
   left << "Gravitino mass M3/2: " << s.displayGravitino() << endl;
   left << "Msusy: " << s.displayMsusy() << " MW: " << s.displayMw() 
        << " Predicted MZ: " << sqrt(s.displayPredMzSq()) << endl;  
+  left << "Fractional difference from iteration: " << s.displayFracDiff() 
+       << endl;
   left << "Data set:\n" << s.displayDataSet();
   left << HR << endl;
   left << s.displaySoftPars();
@@ -6149,18 +6152,19 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   tempSoft.setThresholds(3); tempSoft.setLoops(2);
   double h1, hmin = 0.0;
 
-  const double EPS = TOLERANCE;
+  double tol = TOLERANCE;
   
   DoubleVector pars(3);
   /// DEBUG: initial try in parameter space
-  pars(1) = 500.; pars(2) = 500.; pars(3) = 0.;
+  pars(1) = 4000.; pars(2) = 500.; pars(3) = 0.;
   double tanbmz = 10.;
   
   double tanbmx = v(1);
   double mx = exp(v(2));
   double g1mx = v(3);
   double g3mx = v(4);
-  double mumx = v(5) * 1000.;
+  double muSqmx = v(5) * 1.e6; 
+  double mumx = sqrt(fabs(muSqmx)); ///< assume mu>0 for now
   double m3sqmx = v(6) * 1.0e6;
   double htmx = v(7), hbmx = v(8), htaumx = v(9);
   double hvevmx = v(10) * 1.0e3;
@@ -6173,7 +6177,7 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   /// g1(mx)=g2(mx)
   tempSoft.setGaugeCoupling(1, g1mx);   tempSoft.setGaugeCoupling(2, g1mx);
   tempSoft.setGaugeCoupling(3, g3mx);   
-  tempSoft.setSusyMu(mumx); tempSoft.setM3Squared(m3sqmx);
+  tempSoft.setSusyMu(muSqmx); tempSoft.setM3Squared(m3sqmx);
   DoubleMatrix empty(3, 3);
   tempSoft.setYukawaMatrix(YU, empty);
   tempSoft.setYukawaMatrix(YD, empty);
@@ -6184,7 +6188,7 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   tempSoft.setHvev(hvevmx);
   tempSoft.setMsusy(msusy);
 
-  tempSoft.runto(msusy, EPS);
+  tempSoft.runto(msusy, tol);
 
   tempSoft.calcDrBarPars();
 
@@ -6199,7 +6203,7 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   f(2) = tempSoft.displayTanb() / tbOut - 1.;
   f(3) = msusypred / msusy - 1.;
 
-  tempSoft.runto(MZ, EPS);
+  tempSoft.runto(MZ, tol);
   MssmSoftsusy predict(tempSoft);
 
   /// match predict to data, but tempsoft1 is not matched to data
@@ -6224,6 +6228,8 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   tempSoft.setPredMzSq(predictedMzSq);
 
   saveIt = tempSoft;
+
+  cout << "inputs" << v << "output" << f;
 
   return;
 }
@@ -6320,22 +6326,36 @@ double MssmSoftsusy::lowOrg
       DoubleVector x(11); 
       x(1) = displayTanb(); x(2) = log(mx);
       x(3) = displayGaugeCoupling(1); x(4) = displayGaugeCoupling(3);
-      x(5) = displaySusyMu() * 0.001; x(6) = displayM3Squared() * 1.0e-6;
+      x(5) = sqr(displaySusyMu() * 0.001); x(6) = displayM3Squared() * 1.0e-6;
       x(7) = displayYukawaElement(YU, 3, 3);
       x(8) = displayYukawaElement(YD, 3, 3);
       x(9) = displayYukawaElement(YE, 3, 3);
       x(10) = displayHvev() * 1.0e-3;
       x(11) = calcMs() * 1.0e-3;
+
+      x(1) = 7.3868116626880669e+00;
+      x(2) = log(2.2541171928098764e+16);
+      x(3) = 7.0915992400290284e-01;
+      x(4) = 6.9804194773612960e-01;
+      x(5) = sqr(9.4994475873203584e+01 * 0.001); 
+      x(6) = 1.5777330215858871;
+      x(7) = 5.1276853232841990e-01;
+      x(8) = 5.2631379804740273e-02;
+      x(9) = 6.9156293569323818e-02;
+      x(10) = 0.21602668062654300;
+      x(11) = 2.8665840454087547;
       
       bool err = newt(x, mxToMz);
       saveIt.runto(saveIt.calcMs());
       saveIt.physical(3);
       saveIt.runto(MZ);
+      cout << "mzsq=" << saveIt.displayPredMzSq() << endl; ///< DEBUG
+      if (saveIt.displayPredMzSq() < 8100.)
+	saveIt.flagMusqwrongsign(true);
       cout << "MX=" << exp(x(2));
       cout << saveIt << " err=" << err << endl << x; exit(0);
     }
     /// End of DEBUG
-
     run(mx, mz);
 
     if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
