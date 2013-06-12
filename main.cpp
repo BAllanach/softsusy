@@ -26,7 +26,6 @@
 #include "numerics.h"
 
 int main() {
-  newtonMethod = true;
 
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
@@ -50,7 +49,7 @@ int main() {
   cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
 
   /// Parameters used: CMSSM parameters
-  double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 4005.;
+  double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 6000.;
   int sgnMu = 1;      ///< sign of mu parameter 
   int numPoints = 10; ///< number of scan points
 
@@ -75,35 +74,36 @@ int main() {
 
   int i; 
   /// Set limits of tan beta scan
-  double startTanb = 3.0, endTanb = 50.0;
+  double startM0 = 3000., endM0 = 6000.;
   /// Cycle through different points in the scan
   for (i = 0; i<=numPoints; i++) {
 
-    tanb = (endTanb - startTanb) / double(numPoints) * double(i) +
-      startTanb; // set tan beta ready for the scan.
-
-    tanb = 10.;
+    m0 = (endM0 - startM0) / double(numPoints) * double(i) +
+      startM0; // set tan beta ready for the scan.
 
     /// Preparation for calculation: set up object and input parameters
-    MssmSoftsusy r; 
+    MssmSoftsusy r, newtM; 
     DoubleVector pars(3); 
     pars(1) = m0; pars(2) = m12; pars(3) = a0;
     bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
     
+    newtonMethod = false;
     /// Calculate the spectrum
     double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
-    cout << "MX=" << mx << endl << r;
-    exit(0);
+    newtonMethod = true;
+    double mx2 = newtM.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, 
+			      uni);
 
     /// check the point in question is problem free: if so print the output
-    if (!r.displayProblem().test()) 
-      cout << tanb << " " << r.displayPhys().mh0 << " " 
-	   << r.displayPhys().mA0 << " " 
-	   << r.displayPhys().mH0 << " " 
-	   << r.displayPhys().mHpm << endl;
-    else
-      /// print out what the problem(s) is(are)
-      cout << tanb << " " << r.displayProblem() << endl;
+    cout << m0 << " " 
+	 << r.displaySusyMu() << " " << r.displayPredMzSq() << " " 
+	 << r.displayProblem().muSqWrongSign << " "
+	 << mx << " "
+	 << newtM.displaySusyMu() << " " << newtM.displayPredMzSq() << " " 
+	 << newtM.displayProblem().muSqWrongSign << " "
+	 << mx2 << " " << " # " << r.displayProblem() << " / " 
+	 << newtM.displayProblem() 
+	 << endl;
   }
   }
   catch(const string & a) { cout << a; }
