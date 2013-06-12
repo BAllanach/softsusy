@@ -6222,9 +6222,9 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   f(10) = tempSoft.displayHvev() / predict.displayHvev() - 1.;
   f(11) = tempSoft.displayTanb() / tanbmz - 1.;
 
-  tempSoft.setPredMzSq(predictedMzSq);
+  predict.setPredMzSq(predictedMzSq);
 
-  saveIt = tempSoft;
+  saveIt = predict;
 
   cout << "inputs" << v << "output" << f;
 
