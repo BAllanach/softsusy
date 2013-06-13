@@ -157,8 +157,26 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
   //PA:: fixes The CP odd mixing matrix with the conventions 
   // Degrassi and Slavich arXiv:0907.4682
   void DegrassiSlavicMix(DoubleMatrix & P) const; 
+  /// Calculates Higgs contribution to the transverse part of Z self-energy: 
+  //for p=external momentum, Q=renormalisation scale
+  virtual double piZZTHiggs(double p, double q,	double thetaWDRbar) const;
+  /// Calculates neutralino contrib. to the transverse part of Z self-energy: 
+  //for p=external momentum, Q=renormalisation scale
+  virtual double piZZTNeutralinos(double p, double Q, double thetaWDRbar) const;
+  /// Calculates transverse part of Z self-energy: for p=external momentum,
+  /// Q=renormalisation scale
+  virtual double piZZT(double p, double Q, bool usePoleMt = false) const;
+   /// Calculates Higgs contribution to the transverse part of W self-energy: 
+  //for p=external momentum, q=renormalisation scale
+  virtual double piWWTHiggs(double p, double q, double thetaWDRbar) const;
+  /// Calculates gaugino contr. to transverse part of W self-energy: 
+  //for p=external momentum, Q=renormalisation scale
+  virtual double piWWTgauginos(double p, double Q, double thetaWDRbar) const;
+  /// Calculates transverse part of W self-energy: for p=external momentum,
+  /// Q=renormalisation scale
+  virtual double piWWT(double p, double Q, bool usePoleMt = false) const;
   //PA: Obtains trilnear couplings of s1-higgs-higgs for use in loop functions
-  void getS1HiggsTriCoup(DoubleMatrix & sss1, DoubleMatrix & pps1, DoubleMatrix & hphps1, double thetaWDRbar) const; 
+   void getS1HiggsTriCoup(DoubleMatrix & sss1, DoubleMatrix & pps1, DoubleMatrix & hphps1, double thetaWDRbar) const; 
   //PA: Obtains trilnear couplings of s2-higgs-higgs for use in loop functions
   void getS2HiggsTriCoup(DoubleMatrix & sss2, DoubleMatrix & pps2, DoubleMatrix & hphps2, double thetaWDRbar) const; 
   //PA: Obtains trilnear couplings of s2-higgs-higgs for use in loop functions
