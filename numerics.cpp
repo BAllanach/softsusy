@@ -1346,8 +1346,8 @@ bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g,
 	    DoubleVector & x, double & f, double stpmax, 
 	    void (*vecfunc)(const DoubleVector &, DoubleVector &), 
 	    DoubleVector & fvec) {
-  const double ALF = 1.0e-4;
-  const double TOLX = TOLERANCE * 1.0e-3;
+  double ALF = TOLERANCE;
+  double TOLX = TOLERANCE * 1.0e-3;
   
   int i;
   double a,alam,alam2,alamin,b,disc,f2,fold2,rhs1,rhs2,slope,sum,temp,
