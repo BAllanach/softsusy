@@ -7124,50 +7124,19 @@ double Softsusy<SoftPars>::piZZT(double p, double q, bool usePoleMt) const {
   return pi;
 }
 
-/// W propagator to 1 loop in MSSM 
-/// It's all been checked
+
 template<class SoftPars>
-double Softsusy<SoftPars>::piWWT(double p, double q, bool usePoleMt) const {
-  drBarPars tree(displayDrBarPars());
-
-  double    mtop =  tree.mt;
-  /// We utilise pole mt for these corrections (which the 2-loop Standard Model
-  /// pieces assume)
-  if (usePoleMt) mtop = displayDataSet().displayPoleMt();
-  double    mb   =  tree.mb;
-  double    mtau =  tree.mtau;
-  double    beta    = atan(displayTanb());
-  double    alpha   = tree.thetaH ;
-  double    mH = tree.mh0(2); 
-  double    mh0 = tree.mh0(1);
-  double    mHc = tree.mHpm;
-  double    mA = tree.mA0(1);
-  /// fermions: these are valid at MZ
-  double    ms   =  displayDataSet().displayMass(mStrange) ;
-  double    mc   =  displayDataSet().displayMass(mCharm) ;
-  double    mmu  =  displayDataSet().displayMass(mMuon) ;
-  double    mE  =  displayDataSet().displayMass(mElectron) ;
-  double    mD  =  displayDataSet().displayMass(mDown) ;
-  double    mU  =  displayDataSet().displayMass(mUp);
-  double    thetat = tree.thetat ;
-  double    thetab = tree.thetab;
-  double    thetatau= tree.thetatau ;
-  double    st      = sin(thetat) ;
-  double    sb      = sin(thetab) ;
-  double    stau    = sin(thetatau) ;
-  double    ct      = cos(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double    sw2DRbar    = 1.0 - cw2DRbar;
-  double    g       = displayGaugeCoupling(2);
-  double    mz      = displayMzRun();
-
-  double ans = 0.0;
-
+double Softsusy<SoftPars>::piWWTHiggs(double p, double q, double thetaWDRbar) const {
+  double    beta      = atan(displayTanb());
+  double    alpha     = displayDrBarPars().thetaH ;
+  double    cw2DRbar  = sqr(cos(thetaWDRbar));
+  double    sw2DRbar  = 1.0 - cw2DRbar;
+  double    mH = displayDrBarPars().mh0(2); 
+  double    mh0 = displayDrBarPars().mh0(1);
+  double    mHc = displayDrBarPars().mHpm;
+  double    mA = displayDrBarPars().mA0(1);
   double smHiggs = 0.0, susyHiggs = 0.;
-  
+  double    mz      = displayMzRun();
   smHiggs = - sqr(sin(alpha - beta)) * 
     (b22bar(p, mh0, displayMwRun(), q) 
      - sqr(displayMwRun()) * b0(p, mh0, displayMwRun(), q));
@@ -7187,16 +7156,54 @@ double Softsusy<SoftPars>::piWWT(double p, double q, bool usePoleMt) const {
     - ((4.0 * sqr(p) + sqr(mz) + sqr(displayMwRun())) * cw2DRbar - sqr(mz)  *
        sqr(sw2DRbar)) * b0(p, mz, displayMwRun(), q);
 
-  double fermions =
+  double higgs = smHiggs + susyHiggs;
+
+  return higgs;
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::piWWTfermions(double p, double q, bool usePoleMt) const {
+ double    mtop =  displayDrBarPars().mt;
+  /// We utilise pole mt for these corrections (which the 2-loop Standard Model
+  /// pieces assume)
+  if (usePoleMt) mtop = displayDataSet().displayPoleMt();
+  double    mb   =  displayDrBarPars().mb;
+  double    mtau =  displayDrBarPars().mtau;
+ 
+  /// fermions: these are valid at MZ
+  double    ms   =  displayDataSet().displayMass(mStrange) ;
+  double    mc   =  displayDataSet().displayMass(mCharm) ;
+  double    mmu  =  displayDataSet().displayMass(mMuon) ;
+  double    mE  =  displayDataSet().displayMass(mElectron) ;
+  double    mD  =  displayDataSet().displayMass(mDown) ;
+  double    mU  =  displayDataSet().displayMass(mUp);
+  
+ double fermions =
     1.5 * (hfn(p, mU, mD, q) + hfn(p, mc, ms, q) + hfn(p, mtop, mb, q)) + 0.5
     * (hfn(p, 0.0, mE, q) + hfn(p, 0.0, mmu, q) + hfn(p, 0.0, mtau, q));     
+
+ return fermions;
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::piWWTsfermions(double p, double q) const {
   
+  double    thetat = displayDrBarPars().thetat ;
+  double    thetab = displayDrBarPars().thetab;
+  double    thetatau= displayDrBarPars().thetatau ;
+  double    st      = sin(thetat) ;
+  double    sb      = sin(thetab) ;
+  double    stau    = sin(thetatau) ;
+  double    ct      = cos(thetat) ;
+  double    cb      = cos(thetab) ;
+  double    ctau    = cos(thetatau);
+
   /// sfermions
   double sfermions = - 6.0 *
-    (b22bar(p, tree.mu(1, 1), tree.md(1, 1), q) +
-     b22bar(p, tree.mu(1, 2), tree.md(1, 2), q)) -
-    2.0 * (b22bar(p, tree.msnu(1), tree.me(1, 1), q) +
-	   b22bar(p, tree.msnu(2), tree.me(1, 2), q));
+    (b22bar(p, displayDrBarPars().mu(1, 1), displayDrBarPars().md(1, 1), q) +
+     b22bar(p, displayDrBarPars().mu(1, 2), displayDrBarPars().md(1, 2), q)) -
+    2.0 * (b22bar(p, displayDrBarPars().msnu(1), displayDrBarPars().me(1, 1), q) +
+	   b22bar(p, displayDrBarPars().msnu(2), displayDrBarPars().me(1, 2), q));
   
   /// stop/sbottom
   DoubleMatrix w(2, 2);
@@ -7206,15 +7213,25 @@ double Softsusy<SoftPars>::piWWT(double p, double q, bool usePoleMt) const {
   for(i=1; i<=2; i++)
     for(j=1; j<=2; j++)
       stopBot = stopBot - 6.0 * sqr(w(i, j)) * 
-	b22bar(p, tree.mu(i, 3), tree.md(j, 3), q);
+	b22bar(p, displayDrBarPars().mu(i, 3), displayDrBarPars().md(j, 3), q);
   
   /// LH slepton
   double slepton = - 2.0 * 
     (sqr(ctau) * 
-     b22bar(p, tree.msnu(3), tree.me(1, 3), q)
+     b22bar(p, displayDrBarPars().msnu(3), displayDrBarPars().me(1, 3), q)
      + sqr(stau) * 
-     b22bar(p, tree.msnu(3), tree.me(2, 3), q));
+     b22bar(p, displayDrBarPars().msnu(3), displayDrBarPars().me(2, 3), q));
   
+  sfermions += stopBot + slepton; 
+  
+  return sfermions;
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::piWWTgauginos(double p, double q, double thetaWDRbar) const {
+  double    cw2DRbar    = sqr(cos(thetaWDRbar));
+  double    sw2DRbar    = 1.0 - cw2DRbar;
+  double    g       = displayGaugeCoupling(2);
   ComplexMatrix aPsi0PsicW(4, 2), bPsi0PsicW(4, 2), aChi0ChicW(4, 2),
     bChi0ChicW(4, 2);
   DoubleMatrix fW(4, 2), gW(4, 2);
@@ -7225,10 +7242,10 @@ double Softsusy<SoftPars>::piWWT(double p, double q, bool usePoleMt) const {
   bPsi0PsicW(3, 2) = -g / root2;		     
   
   ComplexMatrix aPsi(4, 4), bPsi(4, 4), aChi(4, 4), bChi(4, 4);
-  ComplexMatrix n(tree.nBpmz);
-  DoubleVector mneut(tree.mnBpmz);
-  ComplexMatrix u(tree.uBpmz), v(tree.vBpmz); 
-  DoubleVector mch(tree.mchBpmz); 
+  ComplexMatrix n(displayDrBarPars().nBpmz);
+  DoubleVector mneut(displayDrBarPars().mnBpmz);
+  ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
+  DoubleVector mch(displayDrBarPars().mchBpmz); 
 
   /// These ought to be in physpars
   aChi0ChicW = n.complexConjugate() * aPsi0PsicW * v.transpose();
@@ -7236,8 +7253,8 @@ double Softsusy<SoftPars>::piWWT(double p, double q, bool usePoleMt) const {
 
   double gauginos = 0.0;
 
-  for(i=1;i<=4;i++)
-    for(j=1;j<=2;j++) {
+  for(int i=1;i<=4;i++)
+    for(int j=1;j<=2;j++) {
       fW(i, j) = sqr(aChi0ChicW(i, j).mod()) + sqr(bChi0ChicW(i, j).mod());
       gW(i, j) = 2.0 * (bChi0ChicW(i, j).conj() * aChi0ChicW(i, j)).real(); 
       gauginos = gauginos + 
@@ -7245,9 +7262,25 @@ double Softsusy<SoftPars>::piWWT(double p, double q, bool usePoleMt) const {
 	 + 2.0 * gW(i, j) * mneut(i) * mch(j) * b0(p, mneut(i), mch(j), q)) 
 	/ sqr(g);
     }
+return gauginos;
+}
 
-  ans = smHiggs + susyHiggs + sfermions + fermions + gauginos + slepton + 
-    stopBot;
+/// W propagator to 1 loop in MSSM 
+/// It's all been checked
+template<class SoftPars>
+double Softsusy<SoftPars>::piWWT(double p, double q, bool usePoleMt) const {
+
+  double    thetaWDRbar = asin(calcSinthdrbar());
+  double    cw2DRbar    = sqr(cos(thetaWDRbar));
+  double    sw2DRbar    = 1.0 - cw2DRbar;
+  double    g       = displayGaugeCoupling(2);
+
+  double ans = 0.0;
+  double higgs = piWWTHiggs(p, q, thetaWDRbar);
+  double fermions = piWWTfermions(p, q, usePoleMt);   
+  double sfermions = piWWTsfermions(p, q);   
+  double gauginos = piWWTgauginos(p, q, thetaWDRbar);
+  ans = higgs + sfermions + fermions + gauginos;
 
   double pi = ans * sqr(g) / (16.0 * sqr(PI));
 

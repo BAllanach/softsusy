@@ -539,7 +539,7 @@ public:
   /// Calculates sfermion contribution to the transverse part of Z self-energy: 
   //for p=external momentum, Q=renormalisation scale
   virtual double piZZTsfermions(double p, double Q) const;
-  /// Calculates sfermion contribution to the transverse part of Z self-energy: 
+  /// Calculates fermion contribution to the transverse part of Z self-energy: 
   //for p=external momentum, Q=renormalisation scale
   virtual double piZZTfermions(double p, double Q, bool usePoleMt) const;
  /// Calculates neutralino contrib. to the transverse part of Z self-energy: 
@@ -551,6 +551,18 @@ public:
   /// Calculates transverse part of Z self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piZZT(double p, double Q, bool usePoleMt = false) const;
+   /// Calculates Higgs contribution to the transverse part of W self-energy: 
+  //for p=external momentum, Q=renormalisation scale
+  double piWWTHiggs(double p, double q, double thetaWDRbar) const;
+  /// Calculates fermion contribution to the transverse part of W self-energy: 
+  //for p=external momentum, Q=renormalisation scale
+  virtual double piWWTfermions(double p, double Q, bool usePoleMt) const;
+  /// Calculates sfermion contribution to the transverse part of W self-energy: 
+  //for p=external momentum, Q=renormalisation scale
+  virtual double piWWTsfermions(double p, double Q) const;
+  /// Calculates transverse part of W self-energy: for p=external momentum,
+  /// Q=renormalisation scale
+  virtual double piWWTgauginos(double p, double Q, double thetaWDRbar) const;
   /// Calculates transverse part of W self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piWWT(double p, double Q, bool usePoleMt = false) const;
