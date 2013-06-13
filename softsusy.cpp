@@ -6357,10 +6357,16 @@ double MssmSoftsusy::lowOrg
       /// run the root finding algorithm itself
       bool err = newt(x, mxToMz);
 
+      /// DEBUG
+      cout << saveItForNewton; exit(0);
+
       mx = exp(x(2));
       setSoftsusy(saveItForNewton);
       
-      if (displayPredMzSq() < 8100. || x(5) < 0.) flagMusqwrongsign(true);
+      if (displayPredMzSq() < 8100.) flagMusqwrongsign(true);
+      cout << "tachz=" << displayProblem() << endl;
+
+      //      if (displayPredMzSq() < 0.) flagTachyon(Z);
     } else {
       run(mx, mz);
       
@@ -6373,19 +6379,16 @@ double MssmSoftsusy::lowOrg
       itLowsoft(maxtries, mx, sgnMu, tol, tanb, boundaryCondition, pars, 
 		gaugeUnification, ewsbBCscale);
     }
-
     if (displayProblem().nonperturbative 
 	|| displayProblem().higgsUfb || displayProblem().tachyon 
 	|| displayProblem().noRhoConvergence)
       return mx;
     
     runto(maximum(displayMsusy(), mz));
-    calcDrBarPars();
-    rewsb(sgnMu, displayDrBarPars().mt, pars);
     if (ewsbBCscale) boundaryCondition(*this, pars); 
     
     physical(3);
-    
+
     runto(mz);
     
     if (PRINTOUT) cout << " end of iteration" << endl;
@@ -6529,7 +6532,7 @@ double MssmSoftsusy::getVev(double pizzt) {
 //VEV at current scale: calculates Z self energy first
 double MssmSoftsusy::getVev() {
   double pizzt = piZZT(displayMz(), displayMu());
-  if (pizzt + displayMz() < 0.) {
+  if (pizzt + sqr(displayMz()) < 0.) {
     pizzt = -displayMz() + EPSTOL;
     flagTachyon(Z);
   }
