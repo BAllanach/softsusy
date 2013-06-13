@@ -1063,7 +1063,6 @@ double NmssmSoftsusy::piWWTHiggs(double p, double q, double thetaWDRbar) const {
 		  b0(p, displayMwRun(), 0.0, q))  
     - ((4.0 * sqr(p) + sqr(mz) + sqr(displayMwRun())) * cw2DRbar - sqr(mz)  *
        sqr(sw2DRbar)) * b0(p, mz, displayMwRun(), q);
-  cout << "Dev: nmHiggs = "  << nmHiggs << endl;
   return nmHiggs;
 }
 
@@ -1116,10 +1115,6 @@ double NmssmSoftsusy::piWWT(double p, double q, bool usePoleMt) const {
   double sfermions = piWWTsfermions(p, q);   
   double gauginos = piWWTgauginos(p, q, thetaWDRbar);
   ans = higgs + sfermions + fermions + gauginos;
-  cout << "Dev: gauginos = "  << gauginos << endl;
-  cout << "Dev: fermions = "  << fermions << endl;
-  cout << "Dev: sfermions = "  << sfermions << endl;
-  cout << "Dev: higgs = "  << higgs << endl;
   double pi = ans * sqr(g) / (16.0 * sqr(PI));
 
   return pi;
