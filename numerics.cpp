@@ -1347,7 +1347,7 @@ bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g,
 	    void (*vecfunc)(const DoubleVector &, DoubleVector &), 
 	    DoubleVector & fvec) {
   const double ALF = 1.0e-4;
-  const double TOLX = 1.0e-7;
+  const double TOLX = TOLERANCE * 1.0e-3;
   
   int i;
   double a,alam,alam2,alamin,b,disc,f2,fold2,rhs1,rhs2,slope,sum,temp,
@@ -1467,7 +1467,7 @@ void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
       vv(imax)=vv(j);
     }
     indx[j]=imax;
-    if (a(j, j) == 0.0) a(j, j)=TINY;
+    if (a(j, j) == 0.0) a(j, j) = TINY;
     if (j != n) {
       dum=1.0/(a(j, j));
       for (i=j+1;i<=n;i++) a(i, j) *= dum;
@@ -1480,12 +1480,12 @@ void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
 bool newt(DoubleVector & x, 
 	  void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
   bool err = false; 
-  const int    MAXITS = 200;    ///< max iterations
-  const double TOLF   = 1.0e-4; ///< convergence on function values
-  const double TOLMIN = 1.0e-6; ///< spurious convergence to min of fmin
-  const double TOLX   = 1.0e-7; ///< maximum dx convergence criterion
+  const int MAXITS = 200;    ///< max iterations
+  double TOLF   = TOLERANCE; ///< convergence on function values
+  double TOLMIN = TOLF * 1.e-2; ///< spurious convergence to min of fmin
+  double TOLX   = TOLF * 1.e-3; ///< maximum dx convergence criterion
   const double STPMX  = 100.0; ///< maximum step length allowed in line searches
-  
+   
   int n = x.displayEnd();
   int i,its,j,*indx;
   double d,den,f,fold,stpmax,sum,temp,test;
@@ -1501,26 +1501,32 @@ bool newt(DoubleVector & x,
   for (i=1; i<=n; i++)
     if (fabs(fvec(i)) > test) test = fabs(fvec(i));
   if (test < 0.01 * TOLF) {
+      cout << "bailing out of DEBUG 0\n";
     err = false;
     free_ivector(indx,1,n); return err;
   }
   for (sum=0.0, i=1; i<=n; i++) sum += sqr(x(i));
   stpmax = STPMX * maximum(sqrt(sum), (double) n);
-  for (its = 1; its <=MAXITS; its++) {
+  for (its=1; its<=MAXITS; its++) {
+    cout << its << endl; ///< DEBUG
     fjac = fdjac(n, x, fvec, vecfunc);
     for (i=1;i<=n;i++) {
-      for (sum=0.0,j=1;j<=n;j++) sum += fjac(j, i) * fvec(j);
-      g(i)=sum;
+      for (sum=0.0, j=1; j<=n; j++) sum += fjac(j, i) * fvec(j);
+      g(i) = sum;
     }
-    for (i=1;i<=n;i++) xold(i) = x(i);
-    fold=f;
-    for (i=1;i<=n;i++) p(i) = -fvec(i);
+    for (i=1; i<=n; i++) xold(i) = x(i);
+    fold = f;
+    for (i=1; i<=n; i++) p(i) = -fvec(i);
+    cout << " A " << endl; ///< DEBUG
     ludcmp(fjac, n, indx, d);
+    cout << " B " << endl; ///< DEBUG
     lubksb(fjac, n, indx, p);
+    cout << " C xold=" << xold << " fold=" << fold <<" g=" << g << " p=" << p << " x=" << x << " f=" << f << " stpmax=" << stpmax << " fvec=" << fvec << endl; ///< DEBUG
     err = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec);
-    test=0.0;
+    cout << " D "<< endl ; ///< DEBUG
+    test = 0.0;
     for (i=1; i<=n; i++)
-      if (fabs(fvec(i)) > test) test=fabs(fvec(i));
+      if (fabs(fvec(i)) > test) test = fabs(fvec(i));
     if (test < TOLF) {
       err = false;
       free_ivector(indx, 1, n);
@@ -1530,20 +1536,25 @@ bool newt(DoubleVector & x,
       test = 0.0;
       den = maximum(f, 0.5 * n);
       for (i=1; i<=n; i++) {
-	temp=fabs(g(i)) * maximum(fabs(x(i)), 1.0) / den;
+	temp = fabs(g(i)) * maximum(fabs(x(i)), 1.0) / den;
 	if (temp > test) test = temp;
       }
       err = (test < TOLMIN ? true : false);
       free_ivector(indx, 1, n);
       return err;
     }
+    /// Check points aren't getting too close together
     test = 0.0;
     for (i=1; i<=n; i++) {
-      temp=(fabs(x(i) - xold(i))) / maximum(fabs(x(i)), 1.0);
+      temp = (fabs(x(i) - xold(i))) / maximum(fabs(x(i)), 1.0);
       if (temp > test) test = temp;
     }
-    if (test < TOLX) { free_ivector(indx, 1, n); return err; }
+    if (test < TOLX) { 
+      free_ivector(indx, 1, n); 
+      return err; 
+    }
   }
+
   throw("MAXITS exceeded in newt\n");
   return true;
 }

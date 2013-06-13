@@ -185,6 +185,8 @@ public:
   void useAlternativeEwsb() { altEwsb = true; }
   /// Set MZ^2 predicted after iteration
   void setPredMzSq(double a) { predMzSq = a; }
+  /// Set the fractional difference parameter
+  void setFracDiff(double a) { fracDiff = a; }
 
   /// Does the full 2-loop calculation of both tadpoles and sets them
   void doTadpoles(double mt, double sinthDRbar);

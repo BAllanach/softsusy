@@ -6210,7 +6210,7 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   double msusypred = tempSoft.calcMs();
 
   /// output vector which measures how well BCs are met
-  f(1) = (predictedMzSq / sqr(MZ) - 1.) * 0.0001;
+  f(1) = (predictedMzSq / sqr(MZ) - 1.);
   f(2) = tempSoft.displayTanb() / tbOut - 1.;
   f(3) = msusypred / msusy - 1.;
 
@@ -6239,8 +6239,11 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   predict.setPredMzSq(predictedMzSq);
 
   saveItForNewton = predict;
+  double fd = f.apply(fabs).max();
+  saveItForNewton.setFracDiff(fd);
 
-  if (PRINTOUT > 0) cout << "Newton method inputs" << v << "output" << f;
+  if (PRINTOUT > 0) cout << "Newton method inputs" << v 
+			 << "Newton method outputs" << f;
 
   return;
 }
@@ -6356,13 +6359,13 @@ double MssmSoftsusy::lowOrg
 
       /// run the root finding algorithm itself
       bool err = newt(x, mxToMz);
+      if (err == 1) flagNoConvergence(true);
 
       mx = exp(x(2));
       setSoftsusy(saveItForNewton);
       
-      if (displayPredMzSq() < 8100.) flagMusqwrongsign(true);
-
-      //      if (displayPredMzSq() < 0.) flagTachyon(Z);
+      if (fabs(displayPredMzSq() / sqr(MZ) - 1.) > TOLERANCE) 
+	flagMusqwrongsign(true);
     } else {
       run(mx, mz);
       
@@ -10651,7 +10654,7 @@ void splitGmsb(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   m.setEwsbConditions(pars);
 }
 
-
+/*
 double MssmSoftsusy::twoLpMt() const {
   const double zt2 = sqr(PI) / 6.;
   double mmsb1 = sqr(displayDrBarPars().md(1, 3));
@@ -17028,4 +17031,4 @@ double MssmSoftsusy::twoLpMb() const {
          ;
 
   return resmb;
-}
+  }*/

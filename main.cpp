@@ -65,7 +65,7 @@ int main() {
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
-  TOLERANCE = 1.0e-4; MIXING=-1;
+  TOLERANCE = 1.0e-6; MIXING=-1;
   cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
        << TOLERANCE << endl << oneset << endl;
 
@@ -81,30 +81,30 @@ int main() {
     m0 = (endM0 - startM0) / double(numPoints) * double(i) +
       startM0; // set tan beta ready for the scan.
 
+    m0 = 4.68e3; PRINTOUT = 1; ///< DEBUG
+
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r, newtM; 
     DoubleVector pars(3); 
     pars(1) = m0; pars(2) = m12; pars(3) = a0;
     bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
     
-    newtonMethod = false;
+    /*    newtonMethod = false;
     /// Calculate the spectrum
     double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+    cout << m0 << " " 
+    << r.displaySusyMu() << " ";*/
 
     newtonMethod = true;
     double mx2 = newtM.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, 
 			      uni);
+    cout << m0 << " " << newtM.displaySusyMu() << " ";
 
     /// check the point in question is problem free: if so print the output
-    cout << m0 << " " 
-	 << r.displaySusyMu() << " " << r.displayPredMzSq() << " " 
-	 << r.displayProblem().muSqWrongSign << " "
-	 << mx << " "
-	 << newtM.displaySusyMu() << " " << newtM.displayPredMzSq() << " " 
-	 << newtM.displayProblem().muSqWrongSign << " "
-	 << mx2 << " " << " # " << r.displayProblem() << " / " 
+    cout << " # " << r.displayProblem() << " / " 
 	 << newtM.displayProblem() 
 	 << endl;
+    exit(0);
   }
   }
   catch(const string & a) { cout << a; }
