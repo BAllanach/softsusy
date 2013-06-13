@@ -533,6 +533,21 @@ public:
   /// Returns depth of electroweak minimum
   double realMinMs() const;
   
+  /// Calculates Higgs contribution to the transverse part of Z self-energy: 
+  //for p=external momentum, Q=renormalisation scale
+  virtual double piZZTHiggs(double p, double Q, double thetaWDRbar) const;
+  /// Calculates sfermion contribution to the transverse part of Z self-energy: 
+  //for p=external momentum, Q=renormalisation scale
+  virtual double piZZTsfermions(double p, double Q) const;
+  /// Calculates sfermion contribution to the transverse part of Z self-energy: 
+  //for p=external momentum, Q=renormalisation scale
+  virtual double piZZTfermions(double p, double Q, bool usePoleMt) const;
+ /// Calculates neutralino contrib. to the transverse part of Z self-energy: 
+  //for p=external momentum, Q=renormalisation scale
+  virtual double piZZTNeutralinos(double p, double Q, double thetaWDRbar) const;
+   /// Calculates chargino contrib. to the transverse part of Z self-energy: 
+  //for p=external momentum, Q=renormalisation scale
+  double piZZTCharginos(double p, double q, double thetaWDRbar) const;
   /// Calculates transverse part of Z self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piZZT(double p, double Q, bool usePoleMt = false) const;

@@ -6853,35 +6853,54 @@ void Softsusy<SoftPars>::itLowsoft
   }
 }
 
-/// Transverse part of Z self-energy: has been checked
+
+/// Higgs contribution to the Transverse part of Z self-energy
 template<class SoftPars>
-double Softsusy<SoftPars>::piZZT(double p, double q, bool usePoleMt) const {
-
-  drBarPars tree(displayDrBarPars());
-
-  /// fermions: these are valid at MZ
-  double    mtop =  tree.mt;
-  /// We utilise pole mt for these corrections (which the 2-loop Standard Model
-  /// pieces assume)
-  if (usePoleMt) mtop = displayDataSet().displayPoleMt();
-
-  double    mb   =  tree.mb;
-  double    mtau =  tree.mtau;
-  double    ms   =  displayDataSet().displayMass(mStrange) ;
-  double    mc   =  displayDataSet().displayMass(mCharm) ;
-  double    mmu  =  displayDataSet().displayMass(mMuon) ;
-  double    mE  =   displayDataSet().displayMass(mElectron) ;
-  double    mD  =   displayDataSet().displayMass(mDown) ;
-  double    mU  =   displayDataSet().displayMass(mUp);
-  double    thetaWDRbar = asin(calcSinthdrbar());
+double Softsusy<SoftPars>::piZZTHiggs(double p, double q, 
+				      double thetaWDRbar) const {
+  double    alpha   = displayDrBarPars().thetaH ;
+  double    beta    = atan(displayTanb());
+  double smHiggs = 0.0, susyHiggs = 0.0;
+  double    mz      = displayMzRun();
   double    cw2DRbar    = sqr(cos(thetaWDRbar));
   double    sw2DRbar    = 1.0 - cw2DRbar;
-  double    g       = displayGaugeCoupling(2);
-  double    alpha   = tree.thetaH ;
-  double    beta    = atan(displayTanb());
-  double    thetat = tree.thetat ;
-  double    thetab = tree.thetab;
-  double    thetatau= tree.thetatau ;
+
+  smHiggs = 
+    - sqr(sin(alpha - beta)) *
+    (b22bar(p, mz, displayDrBarPars().mh0(1), q) - 
+     sqr(mz) * b0(p, mz, displayDrBarPars().mh0(1), q));
+
+  susyHiggs = - sqr(sin(alpha - beta)) *
+    b22bar(p, displayDrBarPars().mA0(1), displayDrBarPars().mh0(2), q);
+ 
+  susyHiggs = susyHiggs
+    - sqr(cos(alpha - beta)) * 
+    (b22bar(p, mz, displayDrBarPars().mh0(2), q) +
+     b22bar(p, displayDrBarPars().mA0(1), displayDrBarPars().mh0(1), q) -
+     sqr(mz) * b0(p, mz, displayDrBarPars().mh0(2), q));
+  
+  smHiggs = smHiggs
+    - 2.0 * sqr(cw2DRbar) * (2 * sqr(p) + sqr(displayMwRun()) - sqr(mz) *
+			     sqr(sw2DRbar) / cw2DRbar)
+    * b0(p, displayMwRun(), displayMwRun(), q)
+    - (8.0 * sqr(cw2DRbar) + sqr(cos(2.0 * thetaWDRbar))) * 
+    b22bar(p, displayMwRun(), displayMwRun(), q);
+
+  susyHiggs = susyHiggs - 
+    sqr(cos(2.0 * thetaWDRbar)) 
+    * b22bar(p, displayDrBarPars().mHpm, displayDrBarPars().mHpm, q);
+  
+  double higgs = smHiggs + susyHiggs;
+
+  return higgs;
+}
+
+/// sfermion contribution to the Transverse part of Z self-energy
+template<class SoftPars>
+double Softsusy<SoftPars>::piZZTsfermions(double p, double q) const {
+  double    thetat = displayDrBarPars().thetat ;
+  double    thetab = displayDrBarPars().thetab;
+  double    thetatau= displayDrBarPars().thetatau ;
   double    st      = sin(thetat) ;
   double    sb      = sin(thetab) ;
   double    stau    = sin(thetatau) ;
@@ -6894,38 +6913,7 @@ double Softsusy<SoftPars>::piZZT(double p, double q, bool usePoleMt) const {
   double    st2     = (1.0 - ct2);
   double    sb2     = (1.0 - cb2);
   double    stau2   = (1.0 - ctau2);
-  double    mz      = displayMzRun();
-
-  double rhs = 0.0;
-  
-  double smHiggs = 0.0, susyHiggs = 0.0, charginos = 0.0, 
-    neutralinos = 0.0, squarks = 0.0, thirdFamily = 0.0, sneutrinos = 0.0, 
-    sleptons = 0.0;
-
-  smHiggs = 
-    - sqr(sin(alpha - beta)) *
-    (b22bar(p, mz, tree.mh0(1), q) - 
-     sqr(mz) * b0(p, mz, tree.mh0(1), q));
-
-  susyHiggs = - sqr(sin(alpha - beta)) *
-    b22bar(p, tree.mA0(1), tree.mh0(2), q);
- 
-  susyHiggs = susyHiggs
-    - sqr(cos(alpha - beta)) * 
-    (b22bar(p, mz, tree.mh0(2), q) +
-     b22bar(p, tree.mA0(1), tree.mh0(1), q) -
-     sqr(mz) * b0(p, mz, tree.mh0(2), q));
-  
-  smHiggs = smHiggs
-    - 2.0 * sqr(cw2DRbar) * (2 * sqr(p) + sqr(displayMwRun()) - sqr(mz) *
-			     sqr(sw2DRbar) / cw2DRbar)
-    * b0(p, displayMwRun(), displayMwRun(), q)
-    - (8.0 * sqr(cw2DRbar) + sqr(cos(2.0 * thetaWDRbar))) * 
-    b22bar(p, displayMwRun(), displayMwRun(), q);
-
-  susyHiggs = susyHiggs - 
-    sqr(cos(2.0 * thetaWDRbar)) * b22bar(p, tree.mHpm, tree.mHpm, q);
-  
+  double  squarks = 0.0, thirdFamily = 0.0, sneutrinos = 0.0, sleptons = 0.0;
   //static 
   DoubleVector vu(2), vd(2), ve(2);
   //static 
@@ -6960,20 +6948,20 @@ double Softsusy<SoftPars>::piZZT(double p, double q, bool usePoleMt) const {
   for (family = 1; family<=2; family++) {      
     /// sneutrinos
     sneutrinos = sneutrinos -  
-      b22bar(p, tree.msnu(family), tree.msnu(family), q);
+      b22bar(p, displayDrBarPars().msnu(family), displayDrBarPars().msnu(family), q);
     for (i=1; i<=2; i++) {
       /// up squarks
       squarks = squarks - 12.0 * sqr(vu(i)) * 
-	b22bar(p, tree.mu(i, family), 
-	       tree.mu(i, family), q); 
+	b22bar(p, displayDrBarPars().mu(i, family), 
+	       displayDrBarPars().mu(i, family), q); 
       /// down squarks
       squarks = squarks - 12.0 * sqr(vd(i)) * 
-	b22bar(p, tree.md(i, family), 
-	       tree.md(i, family), q);
+	b22bar(p, displayDrBarPars().md(i, family), 
+	       displayDrBarPars().md(i, family), q);
       /// sleptons
       sleptons = sleptons - 4.0 * sqr(ve(i)) * 
-	b22bar(p, tree.me(i, family), 
-	       tree.me(i, family), q); 
+	b22bar(p, displayDrBarPars().me(i, family), 
+	       displayDrBarPars().me(i, family), q); 
     }
   }
 
@@ -6982,25 +6970,48 @@ double Softsusy<SoftPars>::piZZT(double p, double q, bool usePoleMt) const {
   /// THIRD FAMILY
   /// sneutrinos
   thirdFamily = thirdFamily - 
-    b22bar(p, tree.msnu(family), 
-	   tree.msnu(family), q);
+    b22bar(p, displayDrBarPars().msnu(family), 
+	   displayDrBarPars().msnu(family), q);
   for (i=1; i<=2; i++)
     for (j=1; j<=2; j++) {
       /// up squarks
       thirdFamily = thirdFamily - 12.0 * sqr(vt(i, j)) * 
-	b22bar(p, tree.mu(i, family), 
-	       tree.mu(j, family), q); 
+	b22bar(p, displayDrBarPars().mu(i, family), 
+	       displayDrBarPars().mu(j, family), q); 
       
       /// down squarks
       thirdFamily = thirdFamily - 12.0 * sqr(vb(i, j)) * 
-	b22bar(p, tree.md(i, family), 
-	       tree.md(j, family), q);
+	b22bar(p, displayDrBarPars().md(i, family), 
+	       displayDrBarPars().md(j, family), q);
       /// selectrons
        thirdFamily = thirdFamily - 4.0 * sqr(vtau(i, j)) * 
-	b22bar(p, tree.me(i, family), 
-	       tree.me(j, family), q); 
+	b22bar(p, displayDrBarPars().me(i, family), 
+	       displayDrBarPars().me(j, family), q); 
     }
   
+  double sfermions = squarks + sleptons + sneutrinos  + thirdFamily;
+
+ return sfermions;
+}
+
+/// fermion contribution to the Transverse part of Z self-energy: 
+template<class SoftPars>
+double Softsusy<SoftPars>::piZZTfermions(double p, double q, bool usePoleMt) const {
+  /// fermions: these are valid at MZ
+  double    mtop =  displayDrBarPars().mt;
+  /// We utilise pole mt for these corrections (which the 2-loop Standard Model
+  /// pieces assume)
+  if (usePoleMt) mtop = displayDataSet().displayPoleMt();
+
+  double    mb   =  displayDrBarPars().mb;
+  double    mtau =  displayDrBarPars().mtau;
+  double    ms   =  displayDataSet().displayMass(mStrange) ;
+  double    mc   =  displayDataSet().displayMass(mCharm) ;
+  double    mmu  =  displayDataSet().displayMass(mMuon) ;
+  double    mE  =   displayDataSet().displayMass(mElectron) ;
+  double    mD  =   displayDataSet().displayMass(mDown) ;
+  double    mU  =   displayDataSet().displayMass(mUp);
+
   double quarks = 0.0;
 
   quarks = quarks + 3.0 * hfn(p, mU, mU, q) * (sqr(guL) + sqr(guR)); 
@@ -7022,13 +7033,21 @@ double Softsusy<SoftPars>::piZZT(double p, double q, bool usePoleMt) const {
 
   quarks = quarks + 3.0 * hfn(p, 0., 0., q) * 0.25;
   
+  return quarks;
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::piZZTNeutralinos(double p, double q, 
+					    double thetaWDRbar) const {
+  
+  double    cw2DRbar    = sqr(cos(thetaWDRbar));
+  double    g       = displayGaugeCoupling(2);
   /// Neutralinos
   //static 
+  double neutralinos = 0.0;
   ComplexMatrix aPsi(4, 4), bPsi(4, 4), aChi(4, 4), bChi(4, 4);
-  ComplexMatrix n(tree.nBpmz);
-  DoubleVector mneut(tree.mnBpmz);
-  ComplexMatrix u(tree.uBpmz), v(tree.vBpmz); 
-  DoubleVector mch(tree.mchBpmz); 
+  ComplexMatrix n(displayDrBarPars().nBpmz);
+  DoubleVector mneut(displayDrBarPars().mnBpmz);
 
   aPsi(3, 3) = g / (2.0 * cos(thetaWDRbar)); aPsi(4, 4) = -1. * aPsi(3, 3);
   bPsi = -1. * aPsi;
@@ -7036,8 +7055,8 @@ double Softsusy<SoftPars>::piZZT(double p, double q, bool usePoleMt) const {
   aChi = n.complexConjugate() * aPsi * n.transpose();
   bChi = n * bPsi * n.hermitianConjugate();
   
-  for (i=1; i<=4; i++)
-    for (j=1; j<=4; j++) {
+  for (int i=1; i<=4; i++)
+    for (int j=1; j<=4; j++) {
       neutralinos = neutralinos + cw2DRbar / (2.0 * sqr(g)) * 
 	((sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod())) * 
 	 hfn(p, mneut(i), mneut(j), q)
@@ -7045,8 +7064,19 @@ double Softsusy<SoftPars>::piZZT(double p, double q, bool usePoleMt) const {
 	 mneut(i) * mneut(j) * b0(p, mneut(i), mneut(j), q)); 
     }
   
+  return neutralinos;
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::piZZTCharginos(double p, double q, double thetaWDRbar) const {
+ 
+  double    cw2DRbar    = sqr(cos(thetaWDRbar));
+  double    g       = displayGaugeCoupling(2);
+  double  charginos = 0.0;
   /// Charginos
   ///  static 
+  ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
+  DoubleVector mch(displayDrBarPars().mchBpmz); 
   ComplexMatrix aPsiCh(2, 2), aCh(2, 2), bCh(2, 2);
   aPsiCh(1, 1) = g * cos(thetaWDRbar);
   aPsiCh(2, 2) = g * cos(2.0 * thetaWDRbar) / (2.0 * cos(thetaWDRbar));
@@ -7054,8 +7084,8 @@ double Softsusy<SoftPars>::piZZT(double p, double q, bool usePoleMt) const {
   aCh = v.complexConjugate() * aPsiCh * v.transpose();
   bCh = u * aPsiCh * u.hermitianConjugate();
   
-  for (i=1; i<=2; i++)
-    for(j=1; j<=2; j++) {	
+  for (int i=1; i<=2; i++)
+    for(int j=1; j<=2; j++) {	
       charginos = charginos + cw2DRbar / sqr(g) * 
 	((sqr(aCh(i, j).mod()) + sqr(bCh(i, j).mod())) * 
 	 hfn(p, mch(i), mch(j), q) 
@@ -7063,8 +7093,31 @@ double Softsusy<SoftPars>::piZZT(double p, double q, bool usePoleMt) const {
 	 mch(j) * b0(p, mch(i), mch(j), q));
     }
 
-  rhs = smHiggs + susyHiggs + charginos + neutralinos + squarks + sleptons 
-    + sneutrinos + quarks + thirdFamily;
+  return charginos;
+
+}
+/// Transverse part of Z self-energy: has been checked
+template<class SoftPars>
+double Softsusy<SoftPars>::piZZT(double p, double q, bool usePoleMt) const {
+  
+  double    thetaWDRbar = asin(calcSinthdrbar());
+  double    cw2DRbar    = sqr(cos(thetaWDRbar));
+  double    g       = displayGaugeCoupling(2);
+  double rhs = 0.0;
+ 
+  //PA: obtain Higgs contributions in separate method
+  double higgs = piZZTHiggs(p, q, thetaWDRbar);
+  //PA: obtain sfermion contributions in separate method
+  double sfermions = piZZTsfermions(p, q);
+  //PA: obtain fermion contributions in separate method
+  double fermions = piZZTfermions(p, q, usePoleMt);
+   //PA: obtain neutralino contributions in separate method
+  double neutralinos = piZZTNeutralinos(p, q, thetaWDRbar);
+   //PA: obtain neutralino contributions in separate method
+  double charginos = piZZTCharginos(p, q, thetaWDRbar);
+  
+  
+  rhs = higgs + charginos + neutralinos + fermions + sfermions ;
 
   double pi = rhs * sqr(g) / (cw2DRbar * 16.0 * sqr(PI));
 
