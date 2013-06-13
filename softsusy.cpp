@@ -6357,14 +6357,10 @@ double MssmSoftsusy::lowOrg
       /// run the root finding algorithm itself
       bool err = newt(x, mxToMz);
 
-      /// DEBUG
-      cout << saveItForNewton; exit(0);
-
       mx = exp(x(2));
       setSoftsusy(saveItForNewton);
       
       if (displayPredMzSq() < 8100.) flagMusqwrongsign(true);
-      cout << "tachz=" << displayProblem() << endl;
 
       //      if (displayPredMzSq() < 0.) flagTachyon(Z);
     } else {

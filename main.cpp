@@ -51,7 +51,7 @@ int main() {
   /// Parameters used: CMSSM parameters
   double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 6000.;
   int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 10; ///< number of scan points
+  int numPoints = 50; ///< number of scan points
 
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
 
@@ -65,7 +65,7 @@ int main() {
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
-  TOLERANCE = 1.0e-3; MIXING=-1;
+  TOLERANCE = 1.0e-4; MIXING=-1;
   cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
        << TOLERANCE << endl << oneset << endl;
 
@@ -90,6 +90,7 @@ int main() {
     newtonMethod = false;
     /// Calculate the spectrum
     double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+
     newtonMethod = true;
     double mx2 = newtM.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, 
 			      uni);
