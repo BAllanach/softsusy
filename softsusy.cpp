@@ -6373,7 +6373,7 @@ double MssmSoftsusy::lowOrg
       else x(2) = displayGaugeCoupling(2);
       x(3) = displayGaugeCoupling(1); 
       x(4) = displayGaugeCoupling(3);
-      x(5) = sqr(0.01 * displaySusyMu() * 0.001); 
+      x(5) = sqr(displaySusyMu() * 0.001); 
       x(6) = displayM3Squared() * 1.0e-6;
       x(7) = displayYukawaElement(YU, 3, 3);
       x(8) = displayYukawaElement(YD, 3, 3);
@@ -6382,18 +6382,23 @@ double MssmSoftsusy::lowOrg
       x(11) = calcMs() * 1.0e-3;
 
       /// Randomise the input parameters
-      /* x(1) *= (1. + 0.1 * gasdev(idummySave));
-      x(2) += gasdev(idummySave);
-      x(3) *= (1. + 0.1 * gasdev(idummySave));
-      x(4) *= (1. + 0.1 * gasdev(idummySave)); */
-      x(5) *= truncGaussWidthHalf(idummySave);
-      x(6) *= truncGaussWidthHalf(idummySave);
-      /*x(7) *= (1. + 0.1 * gasdev(idummySave));
-      x(8) *= (1. + 0.1 * gasdev(idummySave));
-      x(9) *= (1. + 0.1 * gasdev(idummySave));
-      x(10) *= (1. + 0.1 * gasdev(idummySave));
-      x(11) *= (1. + 0.1 * gasdev(idummySave)); */
-
+      if (numTry != 1) {
+	if (numTry == 2) x(5) = 1.;
+	if (numTry == 3) x(5) *= 2.;
+	else {
+	  x(1) *= (1. + 0.1 * gasdev(idummySave));
+	  x(2) += gasdev(idummySave);
+	  x(3) *= (1. + 0.1 * gasdev(idummySave));
+	  x(4) *= (1. + 0.1 * gasdev(idummySave));
+	  x(5) *= truncGaussWidthHalf(idummySave);
+	  x(6) *= truncGaussWidthHalf(idummySave);
+	  x(7) *= (1. + 0.1 * gasdev(idummySave));
+	  x(8) *= (1. + 0.1 * gasdev(idummySave));
+	  x(9) *= (1. + 0.1 * gasdev(idummySave));
+	  x(10) *= (1. + 0.1 * gasdev(idummySave));
+	  x(11) *= (1. + 0.1 * gasdev(idummySave)); 
+	}
+      }
       /// run the root finding algorithm itself
       bool err = newt(x, mxToMz);
       if (err) flagNoConvergence(true);
@@ -6430,7 +6435,7 @@ double MssmSoftsusy::lowOrg
     
     if (PRINTOUT) cout << " end of iteration" << endl;
   }
-  catch(const char *a) {
+    catch(const char *a) {
     ostringstream ii;
     ii << "SOFTSUSY problem: " << a << " pars=" << pars << " tanb=" << tanb 
        << " oneset=" << oneset << endl;
@@ -6452,7 +6457,7 @@ double MssmSoftsusy::lowOrg
     flagProblemThrown(true);
     throw ii.str();
   }
-
+  
   return mx;
 }
 

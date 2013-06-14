@@ -74,6 +74,7 @@ namespace softsusy{
   extern bool newtonMethod;
   /// A handy global variable for random number generator
   extern long idummySave;
+  extern int numTry;
 }
 
 #endif

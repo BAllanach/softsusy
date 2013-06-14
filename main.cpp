@@ -49,7 +49,7 @@ int main() {
   cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
 
   /// Parameters used: CMSSM parameters
-  double m12 = 660., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 2800.;
+  double m12 = 660., a0 = 0., mGutGuess = 2.0e16, tanb = 40.0, m0 = 2800.;
   int sgnMu = -1;      ///< sign of mu parameter 
   int numPoints = 50; ///< number of scan points
 
@@ -80,7 +80,6 @@ int main() {
 
     m0 = (endM0 - startM0) / double(numPoints) * double(i) +
       startM0; // set tan beta ready for the scan.
-    m0=4400. ;
 
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r, newtM; 
@@ -94,15 +93,15 @@ int main() {
     //  cout << m0 << " "     << r.displaySusyMu() << " ";
 
     vector<MssmSoftsusy> solutions;
-    newtonMethod = true;
-    for (int j=1; j<=10; j++) { 
+    newtonMethod = true; 
+    for (int j=1; j<=100; j++) { 
+      numTry++;
       double mx2 = newtM.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, 
 			      uni);
-      cout << newtM.displaySusyMu() << " " << " # " << newtM.displayProblem() << endl;
+
       if (!newtM.displayProblem().test()) {
 	if (solutions.end() == solutions.begin()) {
 	  solutions.push_back(newtM);
-	  cout << newtM;
 	}
 	else {
 	  bool differentSolution = true;
@@ -111,20 +110,17 @@ int main() {
 	       it!=solutions.end(); it++) 
 	    if (sumTol(newtM, *it, 0) < 1.e-3) differentSolution = false;
 	  if (differentSolution) {
-	    cout << newtM;
 	    solutions.push_back(newtM);
 	  }
 	}
-
-      /// check the point in question is problem free: if so print the output
-      cout << " # " << newtM.displayProblem() << endl;
       }
     }
-
-    //    cout << newtM;
-
-
-    exit(0);
+    
+    cout << m0 << " " << m12 << " " << a0 << " " << tanb << " ";
+    cout << solutions.size() << " ";
+    for (vector<MssmSoftsusy>::iterator it = solutions.begin(); 
+	 it!=solutions.end(); it++) cout << it->displaySusyMu() << " ";
+    cout << endl;
   }
   }
   catch(const string & a) { cout << a; }

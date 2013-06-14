@@ -53,5 +53,7 @@ namespace softsusy {
   bool newtonMethod = false; 
   /// random number seed
   long idummySave = -22;
+  /// my number of tries for multiple solutions
+  int numTry = 0;
 }
 /// end of global variable declaration
