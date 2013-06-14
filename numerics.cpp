@@ -1354,10 +1354,9 @@ bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g,
     test,tmplam;
   
   bool err = false;
-  for (sum=0.0, i=1; i<=xold.displayEnd(); i++) sum += p(i) * p(i);
-  sum = sqrt(sum);
-  if (sum > stpmax)
-    for (i=1; i<=xold.displayEnd(); i++) p(i) *= stpmax / sum;
+  sum = sqrt(p.dot(p));
+  if (sum > stpmax) p = (stpmax / sum) * p;
+
   for (slope=0.0, i=1; i<=xold.displayEnd(); i++)
     slope += g(i) * p(i);
   test = 0.0;
@@ -1368,11 +1367,11 @@ bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g,
   alamin = TOLX / test;
   alam = 1.0;
   for (;;) {
-    for (i=1; i<=xold.displayEnd(); i++) x(i) = xold(i) + alam * p(i);
+    x = xold + alam * p;
     vecfunc(x, fvec); 
     f = fvec.dot(fvec);
     if (alam < alamin) {
-      for (i=1;i<=xold.displayEnd();i++) x(i) = xold(i);
+      x = xold;
       err = true;
       return err;
     } else if (f <= fold + ALF * alam * slope) return err;
@@ -1501,14 +1500,14 @@ bool newt(DoubleVector & x,
   for (i=1; i<=n; i++)
     if (fabs(fvec(i)) > test) test = fabs(fvec(i));
   if (test < 0.01 * TOLF) {
-      cout << "bailing out of DEBUG 0\n";
+    //      cout << "bailing out of DEBUG 0\n";
     err = false;
     free_ivector(indx,1,n); return err;
   }
   for (sum=0.0, i=1; i<=n; i++) sum += sqr(x(i));
   stpmax = STPMX * maximum(sqrt(sum), (double) n);
   for (its=1; its<=MAXITS; its++) {
-    cout << its << endl; ///< DEBUG
+    //    cout << its << endl; ///< DEBUG
     fjac = fdjac(n, x, fvec, vecfunc);
     for (i=1;i<=n;i++) {
       for (sum=0.0, j=1; j<=n; j++) sum += fjac(j, i) * fvec(j);
@@ -1517,13 +1516,13 @@ bool newt(DoubleVector & x,
     for (i=1; i<=n; i++) xold(i) = x(i);
     fold = f;
     for (i=1; i<=n; i++) p(i) = -fvec(i);
-    cout << " A " << endl; ///< DEBUG
+    //    cout << " A " << endl; ///< DEBUG
     ludcmp(fjac, n, indx, d);
-    cout << " B " << endl; ///< DEBUG
+    //    cout << " B " << endl; ///< DEBUG
     lubksb(fjac, n, indx, p);
-    cout << " C xold=" << xold << " fold=" << fold <<" g=" << g << " p=" << p << " x=" << x << " f=" << f << " stpmax=" << stpmax << " fvec=" << fvec << endl; ///< DEBUG
+    //    cout << " C xold=" << xold << " fold=" << fold <<" g=" << g << " p=" << p << " x=" << x << " f=" << f << " stpmax=" << stpmax << " fvec=" << fvec << endl; ///< DEBUG
     err = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec);
-    cout << " D "<< endl ; ///< DEBUG
+    //    cout << " D "<< endl ; ///< DEBUG
     test = 0.0;
     for (i=1; i<=n; i++)
       if (fabs(fvec(i)) > test) test = fabs(fvec(i));

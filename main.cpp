@@ -49,8 +49,8 @@ int main() {
   cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
 
   /// Parameters used: CMSSM parameters
-  double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 6000.;
-  int sgnMu = 1;      ///< sign of mu parameter 
+  double m12 = 660., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 2800.;
+  int sgnMu = -1;      ///< sign of mu parameter 
   int numPoints = 50; ///< number of scan points
 
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
@@ -65,7 +65,7 @@ int main() {
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
-  TOLERANCE = 1.0e-6; MIXING=-1;
+  TOLERANCE = 1.0e-3; MIXING=-1; 
   cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
        << TOLERANCE << endl << oneset << endl;
 
@@ -80,7 +80,7 @@ int main() {
 
     m0 = (endM0 - startM0) / double(numPoints) * double(i) +
       startM0; // set tan beta ready for the scan.
-    m0=4.68e3;
+    m0=4000. ;
 
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r, newtM; 
@@ -90,21 +90,22 @@ int main() {
     
     newtonMethod = false;
     /// Calculate the spectrum
-    double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
-    cout << m0 << " " 
-    << r.displaySusyMu() << " ";
+    //  double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+    //  cout << m0 << " "     << r.displaySusyMu() << " ";
 
     newtonMethod = true;
     double mx2 = newtM.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, 
 			      uni);
-    cout << m0 << " " << newtM.displaySusyMu() << " ";
+    cout << " " << newtM.displaySusyMu() << " ";
+
+    //    cout << newtM;
 
     /// check the point in question is problem free: if so print the output
     cout << " # " << r.displayProblem() << " / " 
 	 << newtM.displayProblem() 
 	 << endl;
 
-    
+    exit(0);
   }
   }
   catch(const string & a) { cout << a; }

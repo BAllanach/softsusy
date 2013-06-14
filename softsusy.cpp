@@ -799,7 +799,7 @@ void MssmSoftsusy::iterateMu(double & muold, int sgnMu,
   }
   
   if (PRINTOUT > 2) cout << " mu=" << munew;
-  
+
   iterateMu(muold, sgnMu, mt, maxTries, pizzMS, sinthDRbar, tol, err);
 }
 
@@ -6165,7 +6165,9 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   if (v.displayEnd() < 11) throw("In mxToMz: v dimensions wrong\n");
 
   double tanbmx = v(1);
-  double mx = exp(v(2));
+  /// If mx<MZ or mx>MPlanck, there'll be trouble
+  double mx = maximum(exp(v(2)), MZ);
+  mx = minimum(mx, 1.0e19);
   double g1mx = v(3);
   double g2mx = g1mx;     ///< g1(mx)=g2(mx)
   if (!gaugeUnificationForNewton) {
@@ -6178,6 +6180,17 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   double htmx = v(7), hbmx = v(8), htaumx = v(9);
   double hvevmx = v(10) * 1.0e3;
   double msusy = v(11) * 1.0e3;
+
+  if (fabs(g1mx) > 5. || fabs(g2mx) > 5. || fabs(g3mx) > 5. || 
+      fabs(htmx) > 5. || fabs(hbmx) > 5. || fabs(htaumx) > 5.) 
+    tempSoft.flagNonperturbative(true);
+
+  if (g1mx > 5.) g1mx = 5.;
+  if (g2mx > 5.) g2mx = 5.;
+  if (g3mx > 5.) g3mx = 5.;
+  if (htmx > 5.) g1mx = 5.;
+  if (hbmx > 5.) g2mx = 5.;
+  if (htaumx > 5.) g3mx = 5.;
   
   /// set initial BCs. 
   boundaryConditionForNewton(tempSoft, pars);
@@ -6211,6 +6224,7 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
 
   /// output vector which measures how well BCs are met
   f(1) = (predictedMzSq / sqr(MZ) - 1.);
+  /// This is the tan beta obtained by EWSB from m3^2 etc at MSUSY
   f(2) = tempSoft.displayTanb() / tbOut - 1.;
   f(3) = msusypred / msusy - 1.;
 
@@ -6234,6 +6248,7 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   f(9) = tempSoft.displayGaugeCoupling(3) / 
     predict.displayGaugeCoupling(3) - 1.;
   f(10) = tempSoft.displayHvev() / predict.displayHvev() - 1.;
+  /// This is the input value of tan beta at MZ
   f(11) = tempSoft.displayTanb() / tanbmz - 1.;
 
   predict.setPredMzSq(predictedMzSq);
@@ -6329,7 +6344,6 @@ double MssmSoftsusy::lowOrg
       }
     }
 
-    /// Start of DEBUG
     /// We start with a MssmSoftsusy object that is defined at MX as the
     /// initial guess
     if (newtonMethod) {
@@ -6349,8 +6363,10 @@ double MssmSoftsusy::lowOrg
       x(1) = displayTanb(); 
       if (gaugeUnification) x(2) = log(mx);
       else x(2) = displayGaugeCoupling(2);
-      x(3) = displayGaugeCoupling(1); x(4) = displayGaugeCoupling(3);
-      x(5) = sqr(displaySusyMu() * 0.001); x(6) = displayM3Squared() * 1.0e-6;
+      x(3) = displayGaugeCoupling(1); 
+      x(4) = displayGaugeCoupling(3);
+      x(5) = sqr(0.01 * displaySusyMu() * 0.001); 
+      x(6) = displayM3Squared() * 1.0e-6;
       x(7) = displayYukawaElement(YU, 3, 3);
       x(8) = displayYukawaElement(YD, 3, 3);
       x(9) = displayYukawaElement(YE, 3, 3);
@@ -6675,8 +6691,8 @@ void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2,
   /// You could instead do like sPHENO, choose what you'd get from minimising
   /// the potential at tree level, ie (mH2^2-mH1^2)/cos(2 beta)-mz^2. This
   /// *may* be less sensitive to becoming a tachyon at MZ. 
-  //  double mAsq = (displayMh2Squared() - displayMh1Squared()) 
-  //    / (cos(2. * beta)) - mz2; 
+  //    double mAsq = (displayMh2Squared() - displayMh1Squared()) 
+  //      / (cos(2. * beta)) - mz2; 
   double mAsq = displayM3Squared() / (sin(beta) * cos(beta));
 
   if (mAsq < 0.) {
