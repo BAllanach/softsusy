@@ -65,7 +65,7 @@ int main() {
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
-  TOLERANCE = 1.0e-3; MIXING=-1; 
+  TOLERANCE = 1.0e-4; MIXING=-1; 
   cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
        << TOLERANCE << endl << oneset << endl;
 
@@ -80,7 +80,7 @@ int main() {
 
     m0 = (endM0 - startM0) / double(numPoints) * double(i) +
       startM0; // set tan beta ready for the scan.
-    m0=4000. ;
+    m0=4400. ;
 
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r, newtM; 
@@ -93,17 +93,36 @@ int main() {
     //  double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
     //  cout << m0 << " "     << r.displaySusyMu() << " ";
 
+    vector<MssmSoftsusy> solutions;
     newtonMethod = true;
-    double mx2 = newtM.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, 
+    for (int j=1; j<=10; j++) { 
+      double mx2 = newtM.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, 
 			      uni);
-    cout << " " << newtM.displaySusyMu() << " ";
+      cout << newtM.displaySusyMu() << " " << " # " << newtM.displayProblem() << endl;
+      if (!newtM.displayProblem().test()) {
+	if (solutions.end() == solutions.begin()) {
+	  solutions.push_back(newtM);
+	  cout << newtM;
+	}
+	else {
+	  bool differentSolution = true;
+	  /// check through solutions to see if they are the same or not
+	  for (vector<MssmSoftsusy>::iterator it = solutions.begin(); 
+	       it!=solutions.end(); it++) 
+	    if (sumTol(newtM, *it, 0) < 1.e-3) differentSolution = false;
+	  if (differentSolution) {
+	    cout << newtM;
+	    solutions.push_back(newtM);
+	  }
+	}
+
+      /// check the point in question is problem free: if so print the output
+      cout << " # " << newtM.displayProblem() << endl;
+      }
+    }
 
     //    cout << newtM;
 
-    /// check the point in question is problem free: if so print the output
-    cout << " # " << r.displayProblem() << " / " 
-	 << newtM.displayProblem() 
-	 << endl;
 
     exit(0);
   }

@@ -651,6 +651,14 @@ double c0(double m1, double m2, double m3) {
   return ans;
 }
 
+double truncGaussWidthHalf(long & idum) {
+  for (;;) {
+    double a = ran1(idum);
+    if (a < 0.5) return a * 2.0;
+	else return fabs(gasdev(idum)) + 1.;
+  }
+}
+
 double gasdev(long & idum) {
   static int iset=0;
   static double gset;
@@ -1554,7 +1562,6 @@ bool newt(DoubleVector & x,
     }
   }
 
-  throw("MAXITS exceeded in newt\n");
   return true;
 }
 

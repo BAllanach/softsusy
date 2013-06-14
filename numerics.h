@@ -135,6 +135,9 @@ Complex fnfn(double x);
 /// Gaussian deviated random number, mean 0 variance 1. Don't re-set idum once
 /// you've initially set it. Initialise with a NEGATIVE integer
 double gasdev(long & idum);
+/// Gives 1/2 chance of being between 0 and 1 (flat), otherwise, a decreasing
+/// Gaussian 
+double truncGaussWidthHalf(long & idum);
 /// Normally distributed random number between 0 and 1. Don't re-set idum once
 /// you've initially set it. Initialise with a NEGATIVE integer
 double ran1(long & idum);

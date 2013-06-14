@@ -6165,6 +6165,9 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   if (v.displayEnd() < 11) throw("In mxToMz: v dimensions wrong\n");
 
   double tanbmx = v(1);
+  /// tanb is constrained to lie between 2 and 60
+  tanbmx = maximum(v(1), 2.);
+  tanbmx = minimum(v(1), 60.);
   /// If mx<MZ or mx>MPlanck, there'll be trouble
   double mx = maximum(exp(v(2)), MZ);
   mx = minimum(mx, 1.0e19);
@@ -6180,6 +6183,11 @@ void mxToMz(const DoubleVector & v, DoubleVector & f) {
   double htmx = v(7), hbmx = v(8), htaumx = v(9);
   double hvevmx = v(10) * 1.0e3;
   double msusy = v(11) * 1.0e3;
+
+  msusy = maximum(msusy, MZ);
+  msusy = minimum(msusy, mx);
+  hvevmx = maximum(hvevmx, MZ);
+  hvevmx = minimum(hvevmx, 280.);
 
   if (fabs(g1mx) > 5. || fabs(g2mx) > 5. || fabs(g3mx) > 5. || 
       fabs(htmx) > 5. || fabs(hbmx) > 5. || fabs(htaumx) > 5.) 
@@ -6373,14 +6381,27 @@ double MssmSoftsusy::lowOrg
       x(10) = displayHvev() * 1.0e-3;
       x(11) = calcMs() * 1.0e-3;
 
+      /// Randomise the input parameters
+      /* x(1) *= (1. + 0.1 * gasdev(idummySave));
+      x(2) += gasdev(idummySave);
+      x(3) *= (1. + 0.1 * gasdev(idummySave));
+      x(4) *= (1. + 0.1 * gasdev(idummySave)); */
+      x(5) *= truncGaussWidthHalf(idummySave);
+      x(6) *= truncGaussWidthHalf(idummySave);
+      /*x(7) *= (1. + 0.1 * gasdev(idummySave));
+      x(8) *= (1. + 0.1 * gasdev(idummySave));
+      x(9) *= (1. + 0.1 * gasdev(idummySave));
+      x(10) *= (1. + 0.1 * gasdev(idummySave));
+      x(11) *= (1. + 0.1 * gasdev(idummySave)); */
+
       /// run the root finding algorithm itself
       bool err = newt(x, mxToMz);
-      if (err == 1) flagNoConvergence(true);
+      if (err) flagNoConvergence(true);
 
       mx = exp(x(2));
       setSoftsusy(saveItForNewton);
       
-      if (fabs(displayPredMzSq() / sqr(MZ) - 1.) > TOLERANCE) 
+      if (fabs(displayPredMzSq() / sqr(MZ) - 1.) > 1.0e-3) 
 	flagMusqwrongsign(true);
     } else {
       run(mx, mz);
@@ -6396,7 +6417,8 @@ double MssmSoftsusy::lowOrg
     }
     if (displayProblem().nonperturbative 
 	|| displayProblem().higgsUfb || displayProblem().tachyon 
-	|| displayProblem().noRhoConvergence)
+	|| displayProblem().noRhoConvergence 
+	|| (displayProblem().noConvergence && newtonMethod))
       return mx;
     
     runto(maximum(displayMsusy(), mz));
@@ -6673,6 +6695,7 @@ void MssmSoftsusy::calcDrBarNeutralinos(double beta, double mz, double mw,
       1.0e-3) { 
     ostringstream ii;
     ii << "accuracy bad in neutralino diagonalisation"<< flush;
+    ii << mNeut;
     throw ii.str(); 
     }
 

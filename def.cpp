@@ -51,5 +51,7 @@ namespace softsusy {
   bool printDEBUG = false;
   /// default is fixed point iteration rather than Newton's method
   bool newtonMethod = false; 
+  /// random number seed
+  long idummySave = -22;
 }
 /// end of global variable declaration
