@@ -2419,6 +2419,7 @@ double MssmSoftsusy::calcRunningMb() const {
   double    mH      = forLoops.mH0;
   double    mHp     = forLoops.mHpm;
   double    mz = displayMzRun();
+  double    mw = displayMwRun();
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    cw2DRbar    = sqr(cos(thetaWDRbar));
   double    ca      = cos(forLoops.thetaH);
@@ -2595,6 +2596,7 @@ double MssmSoftsusy::calcRunningMtau() const {
   double    mH      = forLoops.mH0;
   double    mHp     = forLoops.mHpm;
   double    mz = displayMzRun();
+  double    mw = displayMwRun();
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    cw2DRbar    = sqr(cos(thetaWDRbar));
   double    ca      = cos(forLoops.thetaH);
