@@ -5518,8 +5518,8 @@ void MssmSoftsusy::doDownSquarks(double mb, double pizztMS, double
     double pLight = minimum(forLoops.md(1, 3), forLoops.md(2, 3));
     double pHeavy = maximum(forLoops.md(1, 3), forLoops.md(2, 3));
 
-    addSbotCorrection(pLight, mSbotSquared, mb);  
-    addSbotCorrection(pHeavy, mSbotSquared2, mb);      
+    addSbotCorrection(pLight, mSbotSquared, mt);
+    addSbotCorrection(pHeavy, mSbotSquared2, mt);
   }
     
   double theta;
