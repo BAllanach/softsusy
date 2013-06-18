@@ -54,6 +54,19 @@ public:
   
   double displayTadpoleSMs() const; ///< displays t_s/s tadpole
   double displayTadpoleSMs1loop() const; ///< displays t_2/v_s tadpole@1 loop
+  //PA: obtains NMSSM P1-sfermion-sfermion couplings 
+  //for 3rd generation sfermions
+  void  P1SfSfCouplings(DoubleMatrix & lTP1Lr, DoubleMatrix & lBP1Lr, 
+			DoubleMatrix  & lTauP1Lr) const;
+  //PA: obtains NMSSM P2-sfermion-sfermion couplings 
+  //for 3rd generation sfermions
+  void  P2SfSfCouplings(DoubleMatrix & lTP2Lr, DoubleMatrix & lBP2Lr, 
+			DoubleMatrix  & lTauP2Lr) const;
+  //PA: obtains NMSSM P3-sfermion-sfermion couplings 
+  //for 3rd generation sfermions
+  void  P3SfSfCouplings(DoubleMatrix & lTP3Lr, DoubleMatrix & lBP3Lr, 
+			DoubleMatrix  & lTauP3Lr) const;
+
   //PA: obtains NMSSM H1-sfermion-sfermion couplings 
   //for 3rd generation sfermions
   void  H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, 
@@ -111,9 +124,6 @@ public:
   /// Calculates then sets the one-loop pieces of \f$ t_s / s \f$: sets both
   /// 1-loop and total pieces equal to the one-loop piece
   virtual void calcTadpoleSMs1loop(double mt, double sinthDRbar);
- 
-
-
 
   /// Organises tree-level calculation of all sparticle masses and mixings
   virtual void calcDrBarPars();
@@ -175,54 +185,48 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
   /// Calculates transverse part of W self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piWWT(double p, double Q, bool usePoleMt = false) const;
+  //PA: self energy routines for pseudo scalar self energies
+  double pip1p1(double p, double q) const;
+  double pip1p2(double p, double q) const;
+  double pip2p2(double p, double q) const;
+  double pip1p3(double p, double q) const;
+  double pip2p3(double p, double q) const;
+  double pip3p3(double p, double q) const;
+  //PA: Obtains trilnear couplings of P1-Higgs, for use in loop functions
+  void getP1HiggsTriCoup(DoubleMatrix & spp1, DoubleMatrix & hphpp1, double cw2DRbar) const;
+   //PA: Obtains trilnear couplings of P2-Higgs for use in loop functions
+  void getP2HiggsTriCoup(DoubleMatrix & spp2, DoubleMatrix & hphpp2, double cw2DRbar) const;
+   //PA: Obtains trilnear couplings of P3-Higgs for use in loop functions
+  void getP3HiggsTriCoup(DoubleMatrix & spp2, DoubleMatrix & hphpp2) const;
   //PA: Obtains trilnear couplings of s1-higgs-higgs for use in loop functions
    void getS1HiggsTriCoup(DoubleMatrix & sss1, DoubleMatrix & pps1, DoubleMatrix & hphps1, double thetaWDRbar) const; 
   //PA: Obtains trilnear couplings of s2-higgs-higgs for use in loop functions
   void getS2HiggsTriCoup(DoubleMatrix & sss2, DoubleMatrix & pps2, DoubleMatrix & hphps2, double thetaWDRbar) const; 
-  //PA: Obtains trilnear couplings of s2-higgs-higgs for use in loop functions
+  //PA: Obtains trilnear couplings of s3-higgs-higgs for use in loop functions
   void getS3HiggsTriCoup(DoubleMatrix & sss3, DoubleMatrix & pps3, DoubleMatrix & hphps3) const; 
   //PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
   //for p=external momentum, q=renormalisation scale
   double pis1s1Higgs(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
-  //for p=external momentum, q=renormalisation scale
   double pis1s2Higgs(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
-  //for p=external momentum, q=renormalisation scale
   double pis2s2Higgs(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
-  //for p=external momentum, q=renormalisation scale
   double pis1s3Higgs(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
-  //for p=external momentum, q=renormalisation scale
   double pis2s3Higgs(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
-  //for p=external momentum, q=renormalisation scale
   double pis3s3Higgs(double p, double q) const;
+  //PA: obtains CP even Higgs-Neutralino couplings
   void getS1NeutralinoCoup(ComplexMatrix & aChi, ComplexMatrix & bChi) const;
-  //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
-  //for p=external momentum, q=renormalisation scale
   void getS2NeutralinoCoup(ComplexMatrix & aChi, ComplexMatrix & bChi) const;
-  //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
-  //for p=external momentum, q=renormalisation scale
   void getS3NeutralinoCoup(ComplexMatrix & aChi, ComplexMatrix & bChi) const;
+  //PA: obtains CP odd Higgs-Neutralino couplings
+  void getP1NeutralinoCoup(ComplexMatrix & aChi, ComplexMatrix & bChi) const;
+  void getP2NeutralinoCoup(ComplexMatrix & aChi, ComplexMatrix & bChi) const;
+  void getP3NeutralinoCoup(ComplexMatrix & aChi, ComplexMatrix & bChi) const;
   //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
   //for p=external momentum, q=renormalisation scale
   double pis1s1Neutralinos(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
-  //for p=external momentum, q=renormalisation scale
   double pis1s2Neutralinos(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
-  //for p=external momentum, q=renormalisation scale
   double pis2s2Neutralinos(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
-  //for p=external momentum, q=renormalisation scale
   double pis1s3Neutralinos(double p, double q) const;
-   //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
-  //for p=external momentum, q=renormalisation scale
   double pis2s3Neutralinos(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times Neutralino contrib. to Higgs self-energy: 
-  //for p=external momentum, q=renormalisation scale
   double pis3s3Neutralinos(double p, double q) const;
   //PA:Calculates (16 Pi^2) times Chargino contrib. to Higgs self-energy: 
   //for p=external momentum, q=renormalisation scale
@@ -243,23 +247,13 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
   double pis3s3Sfermions(double p, double q, DoubleMatrix ls3tt,  
                          DoubleMatrix ls3bb, DoubleMatrix ls3tautau) const;
      
-  /// Calculates transverse part of Higgs self-energy: for p=external momentum,
+  /// Calculates the Higgs self-energy: for p=external momentum,
   /// Q=renormalisation scale
   double pis1s1(double p, double q) const;
-  /// Calculates transverse part of Higgs self-energy: for p=external momentum,
-  /// Q=renormalisation scale
   double pis1s2(double p, double q) const;
-  /// Calculates transverse part of Higgs self-energy: for p=external momentum,
-  /// Q=renormalisation scale
   double pis2s2(double p, double q) const;
-  // Calculates transverse part of Higgs self-energy: for p=external momentum,
-  /// Q=renormalisation scale
   double pis1s3(double p, double q) const;
-  // Calculates transverse part of Higgs self-energy: for p=external momentum,
-  /// Q=renormalisation scale
   double pis2s3(double p, double q) const;
-  // Calculates transverse part of Higgs self-energy: for p=external momentum,
-  /// Q=renormalisation scale
   double pis3s3(double p, double q) const;
 
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.    
