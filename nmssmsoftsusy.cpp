@@ -711,22 +711,22 @@ void NmssmSoftsusy::treeChargedSlepton(DoubleMatrix & mass, double mtaurun,
 }
 
 /// LCT: new routine to allocate NMSSM chargino masses
-void NmssmSoftsusy::calcDrBarCharginos(DoubleMatrix & mass, double beta, double mw) {
+void NmssmSoftsusy::treeCharginos(DoubleMatrix & mass, double beta, double mw) {
   double lam = displayLambda(), svev = displaySvev();
 
-  Softsusy<SoftParsNmssm>::calcDrBarCharginos(mass, beta, mw);
+  Softsusy<SoftParsNmssm>::treeCharginos(mass, beta, mw);
   mass(2, 2) = mass(2, 2) + lam * svev / root2;
 }
 
 /// LCT: new routine for NMSSM neutralino masses
-void NmssmSoftsusy::calcDrBarNeutralinos(DoubleMatrix & mass, double beta, double mz, double mw, double sinthDRbar) {
+void NmssmSoftsusy::treeNeutralinos(DoubleMatrix & mass, double beta, double mz, double mw, double sinthDRbar) {
   double lam = displayLambda(), kap = displayKappa();
   double mupr = displayMupr();
   double cosb = cos(beta), sinb = sin(beta);
   double vev = displayHvev(), svev = displaySvev();
 
   /// Call MSSM 4 x4 neutralino mass matrix
-  Softsusy<SoftParsNmssm>::calcDrBarNeutralinos(mass, beta, mz, mw, sinthDRbar);
+  Softsusy<SoftParsNmssm>::treeNeutralinos(mass, beta, mz, mw, sinthDRbar);
 
   /// Fill remaining values
   mass(3, 4) = mass(3, 4) - lam * svev / root2;
@@ -741,12 +741,12 @@ void NmssmSoftsusy::calcDrBarNeutralinos(DoubleMatrix & mass, double beta, doubl
 
 void NmssmSoftsusy::calcDrBarGauginos(double beta, double mw, double mz, double sinth, drBarPars & eg) {
  DoubleMatrix mCh(2, 2);
-  calcDrBarCharginos(mCh, beta, mw);
+  treeCharginos(mCh, beta, mw);
   eg.mch = mCh.asy2by2(eg.thetaL, eg.thetaR);
   eg.mpzCharginos();
 
   DoubleMatrix mNeut(5, 5);
-  calcDrBarNeutralinos(mNeut, beta, mz, mw, sinth);
+  treeNeutralinos(mNeut, beta, mz, mw, sinth);
   if (mNeut.diagonaliseSym(eg.mixNeut, eg.mneut) > TOLERANCE *
        1.0e-3) {
       ostringstream ii;

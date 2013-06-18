@@ -6416,7 +6416,7 @@ double Softsusy<SoftPars>::displayMzRun() const {
 } 
 
 template<class SoftPars>
-void Softsusy<SoftPars>::calcDrBarCharginos(DoubleMatrix & mCh, double beta, double mw) {
+void Softsusy<SoftPars>::treeCharginos(DoubleMatrix & mCh, double beta, double mw) {
   mCh(1, 1) = displayGaugino(2);
   mCh(2, 1) = root2 * mw * cos(beta); 
   mCh(1, 2) = mCh(2, 1) * displayTanb();
@@ -6424,7 +6424,7 @@ void Softsusy<SoftPars>::calcDrBarCharginos(DoubleMatrix & mCh, double beta, dou
 }
 
 template<class SoftPars>
-void Softsusy<SoftPars>::calcDrBarNeutralinos(DoubleMatrix & mNeut, double beta, double mz, double mw, double sinthDRbar) {
+void Softsusy<SoftPars>::treeNeutralinos(DoubleMatrix & mNeut, double beta, double mz, double mw, double sinthDRbar) {
   
   mNeut(1, 1) = displayGaugino(1);
   mNeut(2, 2) = displayGaugino(2);
@@ -6439,11 +6439,11 @@ void Softsusy<SoftPars>::calcDrBarNeutralinos(DoubleMatrix & mNeut, double beta,
 template<class SoftPars>
 void Softsusy<SoftPars>::calcDrBarGauginos(double beta, double mw, double mz, double sinth, drBarPars & eg) {
   DoubleMatrix mCh(2, 2);   
-  calcDrBarCharginos(mCh, beta, mw);
+  treeCharginos(mCh, beta, mw);
   eg.mch = mCh.asy2by2(eg.thetaL, eg.thetaR);
   eg.mpzCharginos();
   DoubleMatrix mNeut(4, 4);
-  calcDrBarNeutralinos(mNeut, beta, mz, mw, sinth);
+  treeNeutralinos(mNeut, beta, mz, mw, sinth);
   if (mNeut.diagonaliseSym(eg.mixNeut, eg.mneut) > TOLERANCE *
       1.0e-3) { 
      ostringstream ii;

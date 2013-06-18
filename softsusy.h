@@ -386,10 +386,10 @@ public:
 		      double sinthDRbar, drBarPars & eg);
   /// calculates the chargino DRbar parameters. It will fill in the chargino
   /// masses in eg with the appropriate values on exit. 
-  void calcDrBarCharginos(DoubleMatrix & mCh, double beta, double mw);
+  void treeCharginos(DoubleMatrix & mCh, double beta, double mw);
   /// calculates the chargino DRbar parameters. It will fill in the chargino
   /// masses in eg with the appropriate values on exit. 
-  void calcDrBarNeutralinos(DoubleMatrix & mN, double beta, double mz, 
+  void treeNeutralinos(DoubleMatrix & mN, double beta, double mz, 
                             double mw, double sinth);
   // calculates the chargino and neutralino DRbar parameters. 
   //It will fill in the chargino and neutralino
