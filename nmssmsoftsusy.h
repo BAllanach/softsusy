@@ -153,12 +153,12 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
 		double sinthDRbarMS, int family);
   /// LCT: new routine to allocate NMSSM chargino masses, 
   //Returns tree-level chargino mass matrix in the NMSSM 
-  void calcDrBarCharginos(DoubleMatrix & mass, double beta, double mw);
+  void treeCharginos(DoubleMatrix & mass, double beta, double mw);
   
 /// LCT: new routine for NMSSM neutralino masses, 
   //Returns tree-level Neutralino mass matrix in the NMSSM 
-  void calcDrBarNeutralinos(DoubleMatrix & mass, double beta, double mz, double mw, double sinthDRbar);
-  //PA:  calls  calcDrBarCharginos and calcDrBarNeutralinos, 
+  void treeNeutralinos(DoubleMatrix & mass, double beta, double mz, double mw, double sinthDRbar);
+  //PA:  calls  treeCharginos and treeNeutralinos, 
   // performs diagonalisation and fills eg with appropriate values.
   void calcDrBarGauginos(double beta, double mw, double mz, double sinth, drBarPars & eg);
 
