@@ -118,12 +118,12 @@ public:
   virtual void calcTadpole1Ms1loop(double mt, double sinthDRbar);
   /// Calculates then sets the one-loop pieces of \f$ t_2 / v_2 \f$: sets both
   /// 1-loop and total pieces equal to the one-loop piece
-  virtual void calcTadpole2Ms1loop(double mt, double sinthDRbar);
+   virtual void calcTadpole2Ms1loop(double mt, double sinthDRbar);
 /// Calculates then sets the one-loop pieces of \f$ t_s / s \f$: sets both
   /// 1-loop and total pieces equal to the one-loop piece
   /// Calculates then sets the one-loop pieces of \f$ t_s / s \f$: sets both
   /// 1-loop and total pieces equal to the one-loop piece
-  virtual void calcTadpoleSMs1loop(double mt, double sinthDRbar);
+   virtual void calcTadpoleSMs1loop(double mt, double sinthDRbar);
 
   /// Organises tree-level calculation of all sparticle masses and mixings
   virtual void calcDrBarPars();
@@ -133,7 +133,7 @@ public:
   /// input, is returned with radiative corrections added, mtrun=DR bar top
   /// mass, family=generation of squark, pizztMS=Z self energy at Q=M_SUSY,
   /// sinthDRbarMS=DRbar value of sin theta_w 
-void treeUpSquark(DoubleMatrix & mass, double mtrun, 
+virtual void treeUpSquark(DoubleMatrix & mass, double mtrun, 
                     double pizztMS, double sinthDRbarMS, 
                     int family);
 
@@ -142,14 +142,14 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
   /// input, is returned with radiative corrections added, mbrun=DR bar bottom
   /// mass, family=generation of squark, pizztMS=Z self energy at Q=M_SUSY,
   /// sinthDRbarMS=DRbar value of sin theta_w 
-  void treeDownSquark(DoubleMatrix & mass, double mbrun, double pizztMS, 
+virtual void treeDownSquark(DoubleMatrix & mass, double mbrun, double pizztMS, 
 		double sinthDRbarMS, int family);
   /// Returns tree-level down squark mass matrix in "mass" for NMSSM.
   /// IO parameters: mass=tree level mass matrix on
   /// input, is returned with radiative corrections added, mTrun=DR bar tau
   /// mass, family=generation of slepton, pizztMS=Z self energy at Q=M_SUSY,
   /// sinthDRbarMS=DRbar value of sin theta_w
-  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizztMS, 
+virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizztMS, 
 		double sinthDRbarMS, int family);
   /// LCT: new routine to allocate NMSSM chargino masses, 
   //Returns tree-level chargino mass matrix in the NMSSM 
@@ -157,13 +157,39 @@ void treeUpSquark(DoubleMatrix & mass, double mtrun,
   
 /// LCT: new routine for NMSSM neutralino masses, 
   //Returns tree-level Neutralino mass matrix in the NMSSM 
-  void treeNeutralinos(DoubleMatrix & mass, double beta, double mz, double mw, double sinthDRbar);
+  void treeNeutralinos(DoubleMatrix & mass, double beta, double mz, double mw, 
+                       double sinthDRbar);
   //PA:  calls  treeCharginos and treeNeutralinos, 
   // performs diagonalisation and fills eg with appropriate values.
-  void calcDrBarGauginos(double beta, double mw, double mz, double sinth, drBarPars & eg);
-
-  void calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, drBarPars & eg);
- 
+  void calcDrBarGauginos(double beta, double mw, double mz, double sinth, 
+                         drBarPars & eg);
+  //PA: fills tree level CP even and CP odd Higgs mass matrices 
+  //and tree level mHPm. Called in higgs and calcDrBarParsHiggs   
+  void  treeHiggs(DoubleMatrix & mS, DoubleMatrix & mPpr, DoubleMatrix & mP2, 
+                  double & mHpm, double beta) const;
+  //calculates DrBar Higgs masses and sets them    
+  void calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, 
+                      drBarPars & eg);
+  /// Calculates physical sparticle masses to accuracy number of loops. Should
+  /// be called at M_{SUSY}.
+  virtual void physical(int accuracy);
+  /// Calculates pole chargino masses and mixing.
+  // IO parameters: piwwt is the W self-energy at the current,
+  /// accuracy is the number of loops required (0 or 1 currently)
+  virtual void charginos(int accuracy, double piwwt, sPhysical & phys);
+/// Calculates pole neutralino masses and mixing. 
+//IO parameters: piwwt is the W self-energy at M_SUSY,
+  /// accuracy is the number of loops required (0 or 1 currently), pizzt is
+  /// the Z self-energy at M_SUSY
+  virtual void neutralinos(int accuracy, double piwwt, double pizzt, 
+                           sPhysical & phys);
+  /// Calculates pole Higgs masses and mixings: full 1-loop SUSY corrections
+  // leading log two loop for general nmssm and full effective potential 
+  //corrections at order alpha_s alpha_t for Z_3 case from Degrassi and Slavich.
+  /// IO parameters: piwwt is the W self-energy at M_SUSY, accuracy is number
+  /// of loops (0 or 1) to use and pizzt is the Z self-energy at M_SUSY
+  /// Returns "true" if there's a tachyon problem
+  bool higgs(int accuracy, double piwwt, double pizzt, sPhysical & phys);
   //PA:: fixes The CP odd mixing matrix with the conventions 
   // Degrassi and Slavich arXiv:0907.4682
   void DegrassiSlavicMix(DoubleMatrix & P) const; 

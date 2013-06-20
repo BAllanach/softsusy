@@ -555,8 +555,7 @@ double NmssmSoftsusy::doCalcTadpole1oneLoop(double mt, double sinthDRbar) const
   H1SfSfCouplings(lTS1Lr, lBS1Lr, lTauS1Lr, gmzOcthW, mu, cosb, v1);
 
   //PA: Now we take these couplings and obtain sfermion contributions
-  double sfermions =  Softsusy<SoftParsNmssm>::doCalcTad1Sfermions(lTS1Lr, lBS1Lr, lTauS1Lr,
-					  costhDRbar);
+  double sfermions = Softsusy<SoftParsNmssm>::doCalcTad1Sfermions(lTS1Lr, lBS1Lr, lTauS1Lr, costhDRbar);
   //PA: Higgs contributions, including goldstone bosons
   double higgs = doCalcTad1Higgs(q, costhDRbar, g, tanb);
   /// Neutralinos
@@ -595,8 +594,7 @@ double NmssmSoftsusy::doCalcTadpole2oneLoop(double mt, double sinthDRbar) const
   DoubleMatrix lTS2Lr(2, 2),  lBS2Lr(2, 2),  lTauS2Lr(2, 2);
   H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mu, sinb);
   //PA: Now we take these couplings and obtain sfermion contributions
-  double sfermions =  Softsusy<SoftParsNmssm>::doCalcTad2Sfermions(lTS2Lr, lBS2Lr, lTauS2Lr,
-						    costhDRbar);
+  double sfermions =  Softsusy<SoftParsNmssm>::doCalcTad2Sfermions(lTS2Lr, lBS2Lr, lTauS2Lr, costhDRbar);
   //PA: Higgs contributions, including goldstone bosons
   double  higgs = doCalcTad2Higgs(q, costhDRbar, g, tanb);
   double neutralinos = doCalcTad2Neutralinos(q, costhDRbar, g, sinb);
@@ -644,6 +642,7 @@ double NmssmSoftsusy::doCalcTadpoleSoneLoop(double mt, double sinthDRbar) const
  return delta / (16.0 * sqr(PI));
 }
 
+//PA: functions to set tadpoles.  We could remove these and exploit the virtual nature of these routines, so that when used by an NmssmSoftsusy object, calcTadpole routineswould point to the NmssmSoftsusy doCalc routines.  This work the same as now but the drawback would be the code may be less easy to read.
 void NmssmSoftsusy::calcTadpole1Ms1loop(double mt, double sinthDRbar) {
    double t1OV1 = doCalcTadpole1oneLoop(mt, sinthDRbar);
   if (testNan(t1OV1)) {
@@ -680,7 +679,7 @@ void NmssmSoftsusy::treeUpSquark(DoubleMatrix & mass, double mtrun,
      mass(1, 2) = mass(1, 2) -  mtrun * lam * svev / (root2 * tanb);
      mass(2, 1) = mass(1, 2);
   }
-
+ 
 }
 
 
@@ -702,7 +701,7 @@ void NmssmSoftsusy::treeChargedSlepton(DoubleMatrix & mass, double mtaurun,
 				double pizztMS, double sinthDRbarMS,
 				int family) {
    //PA: only modification is to add lambda * s / root to mu
-  double lam = displayLambda(), svev = displaySvev(), tanb = displayTanb();
+   double lam = displayLambda(), svev = displaySvev(), tanb = displayTanb();
   Softsusy<SoftParsNmssm>::treeChargedSlepton(mass, mtaurun, pizztMS, sinthDRbarMS, family);
   if (family == 3) {
      mass(1, 2) = mass(1, 2) -  mtaurun * lam * svev * tanb / (root2);
@@ -756,12 +755,21 @@ void NmssmSoftsusy::calcDrBarGauginos(double beta, double mw, double mz, double 
 
   eg.mpzNeutralinos();
 }
-/// LCT: new routine to set tree-level NMSSM CP-even and odd Higgs mass matrices squared
-void NmssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, drBarPars & eg) {
+
+
+// PA: fills tree level CP even and CP odd Higgs mass matrices 
+// and tree level mHPm. Called in higgs and calcDrBarParsHiggs
+// CP even mass matrix in (Hd, Hu, S) basis
+// CP odd Higgs mass matrices mPpr in (Hd, Hu, S) basis 
+// and mP2 in rotated basis (A, S) -- goldstone boson removed      
+void NmssmSoftsusy::treeHiggs(DoubleMatrix & mS, DoubleMatrix & mPpr, 
+                               DoubleMatrix & mP2, double & mHpmsq, 
+                               double beta) const {
   double tanb = displayTanb();
   double sinb = sin(beta), cosb = cos(beta);
   double sinb2 = sqr(sinb), cosb2 = sqr(cosb);
-
+  double mz = displayMzRun(), mz2 = sqr(mz);
+  double mw = displayMwRun(), mw2 = sqr(mw);
 	/// LCT: NMSSM parameters
   double lam = displayLambda(), kap = displayKappa();
   double mupr = displayMupr(), smu = displaySusyMu();
@@ -774,8 +782,7 @@ void NmssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, double s
 
   double mueff = lam * svev / root2 + smu;
   double m3effsq = m3sq + lam * (mupr * svev / root2 + xiF);
-  DoubleMatrix mS(3, 3), mPpr(3, 3), mP(3, 3), mP2(2, 2);
-
+ 
   /// CP-even Higgs in EHT notation and basis (HdR, HuR, SR)
   mS(1, 1) = mz2 * cosb2 + (0.5 * lam * kap * sqr(svev)
                             + al * svev / root2 + m3effsq) * tanb;
@@ -808,7 +815,29 @@ void NmssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, double s
                 + root2 * mupr / svev) - root2 * xiS / svev;
 
   mPpr.symmetrise();
+  DoubleMatrix mP(3, 3);
+  // LCT: Rotate CP-odd mass^2 matrix into (G, A, S_I) basis
+  mP = rot3d(beta).transpose() * mPpr * rot3d(beta);
+  /// LCT: Drop Goldstone from 3 x 3 CP-odd Higgs mass^2 matrix and
+  /// construct 2 x 2 matrix in (A, S_I) basis
+  mP2(1, 1) = mP(2, 2);
+  mP2(1, 2) = mP(2, 3);
+  mP2(2, 1) = mP(3, 2);
+  mP2(2, 2) = mP(3, 3);
+  
+  mHpmsq = mP2(1, 1) + mw2 - 0.5 * sqr(vev) * sqr(lam);
+   }
 
+/// LCT: new routine to set tree-level NMSSM CP-even and odd Higgs mass matrices squared
+void NmssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, drBarPars & eg) {
+  //PA: initialise CP even mass matrix in (Hd, Hu, S) basis
+  // CP odd Higgs mass matrices mPpr in (Hd, Hu, S) basis 
+   //and mP2 in roatated basis (A, S) -- goldstone boson removed    
+   DoubleMatrix mS(3,3), mPpr(3,3), mP2(2,2); 
+   double mHpmsq; 
+ //PA: fill tree level CP even and CP odd Higgs mass matrices 
+  //and tree level mHPm. 
+   treeHiggs(mS, mPpr, mP2, mHpmsq, beta);
 	/// LCT: Diagonalise 3 x 3 CP-even Higgs mass matrix.
 	/// Mass basis (H1, H2, H3) is ordered in increasing mass mH1 < mH2 < mH3
   DoubleVector mhsq(3);
@@ -830,42 +859,27 @@ void NmssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, double s
   //PA:  the diagonaliseSym gives us a mixing matrix A such that
   //A^T h^gauge = h^mass, but we want SLHA convention, so take transpose. 
   eg.mixh0 = mixh.transpose();
-  // LCT: Rotate CP-odd mass^2 matrix into (G, A, S_I) basis
-  mP = rot3d(beta).transpose() * mPpr * rot3d(beta);
-  /// LCT: Drop Goldstone from 3 x 3 CP-odd Higgs mass^2 matrix and
-  /// construct 2 x 2 matrix in (A, S_I) basis
-  mP2(1, 1) = mP(2, 2);
-  mP2(1, 2) = mP(2, 3);
-  mP2(2, 1) = mP(3, 2);
-  mP2(2, 2) = mP(3, 3);
-
-
+ 
   /// LCT: Diagonalise
-  //PA using thetaH for now since in nmssm this is reundent
+  //PA using thetaH for now since in nmssm this is not used by CP even
   DoubleVector mSq = mP2.sym2by2(eg.thetaH);
 
   if (mSq(1) < 0. || mSq(2) < 0.) {
      flagTachyon(A0);
      if (PRINTOUT > 1) cout << " mA1/mA2 tachyon";
   }
-  DoubleVector temp(mSq.apply(ccbSqrt));
+  DoubleVector temp(mSq.apply(zeroSqrt));
   if (temp(1) > temp(2)) eg.thetaH = eg.thetaH + PI * 0.5;
 
   int pos;
   eg.mA0(1) = temp.min(pos); eg.mA0(2) = temp.max();
-
-  /// LCT: Have not (as yet) included 1-loop corrections to mA1/mA2
-  /// in definition of mHpm
-  double mHpmsq = mP2(1, 1) + mw2 - 0.5 * sqr(vev) * sqr(lam);
+  
   if (mHpmsq < 0.) {
      flagTachyon(h0); mHpmsq = fabs(mHpmsq);
   }
   eg.mHpm = sqrt(mHpmsq);
 
 }
-
-
-
 
 void NmssmSoftsusy::calcDrBarPars() {
   drBarPars eg(displayDrBarPars());
@@ -963,6 +977,367 @@ void NmssmSoftsusy::calcDrBarPars() {
   setDrBarPars(eg);
 
   return;
+
+}
+
+
+/// Organises calculation of physical quantities such as sparticle masses etc
+/// Call AT MSusy
+void NmssmSoftsusy::physical(int accuracy) {
+  if(accuracy != 0){   
+    cout << "Warning: this code is not ready yet. "  << endl;
+    cout << "Please run with accuracy == 0 only " << endl;
+    cout << "Exiting." << endl;
+    return;
+    
+  }
+double sinthDRbarMS, piwwtMS, pizztMS;
+   calcDrBarPars();
+   
+  if (accuracy == 0) {
+    sinthDRbarMS = 0.0;
+    piwwtMS = 0.0;
+    pizztMS = 0.0;
+  }
+  else {
+    sinthDRbarMS = calcSinthdrbar();
+    piwwtMS = sqr(displayMwRun()) - sqr(displayMw());
+    pizztMS = sqr(displayMzRun()) - sqr(displayMz());
+  }
+
+   /// Running masses at MSUSY
+  double mt = displayDrBarPars().mt;
+  double mb = displayDrBarPars().mb;
+  double mtau = displayDrBarPars().mtau;
+
+  /// Re-calculate the 1-loop tadpoles for the calculation
+  calcTadpole1Ms1loop(mt, sinthDRbarMS);  
+  calcTadpole2Ms1loop(mt, sinthDRbarMS);
+  calcTadpoleSMs1loop(mt, sinthDRbarMS);
+
+  /// Sfermion masses: all three families in each
+  //PA: virtual methods diagonalisation carrreid out by
+  //Softsusy class methods, tree level matrices filled by
+  //NmssmSoftsusy methods
+  doUpSquarks(mt, pizztMS, sinthDRbarMS, accuracy); 
+  doDownSquarks(mb, pizztMS, sinthDRbarMS, accuracy, mt); 
+  doChargedSleptons(mtau, pizztMS, sinthDRbarMS, accuracy); 
+  doSnu(pizztMS, accuracy);
+  //PA:Fill with current values of physpars, 
+  //including those set by routines immediately above
+  sPhysical phys(displayPhys());
+  //PA: set up sPhysical object to be suitable for NMSSM
+  phys.mh0.setEnd(3);
+  phys.mA0.setEnd(2);
+  phys.mixh0.resize(3,3);
+  phys.mixA0.resize(2,2);
+  phys.mneut.setEnd(5);
+  phys.mixNeut.resize(5,5);
+
+ 
+  NmssmSoftsusy * ppp;
+  ppp = this;
+  ppp->higgs(accuracy, piwwtMS, pizztMS, phys); 
+  setPhys(phys);
+  const int maxHiggsIterations = 20;
+  double currentAccuracy = 1.0;
+  DoubleVector oldHiggsMasses(6);
+  oldHiggsMasses(1) = ppp->displayPhys().mh0(1);   
+  oldHiggsMasses(2) = ppp->displayPhys().mh0(2);
+  oldHiggsMasses(3) = ppp->displayPhys().mh0(3);
+  oldHiggsMasses(4) = ppp->displayPhys().mA0(1);
+  oldHiggsMasses(5) = ppp->displayPhys().mA0(2);  
+  oldHiggsMasses(6) = ppp->displayPhys().mHpm;
+
+  bool higgsTachyon = false;
+  /// Iterate Higgs calculation (unless accuracy=0, in which case we just need
+  /// a rough calculation) until the Higgs masses all converge to better than
+  /// TOLERANCE fractional accuracy
+  
+  int i = 1; while (i < maxHiggsIterations && accuracy > 0 && 
+		    currentAccuracy > TOLERANCE) {
+     higgsTachyon = ppp->higgs(accuracy, piwwtMS, pizztMS, phys); /// iterate  
+     setPhys(phys);
+    DoubleVector newHiggsMasses(6);
+    newHiggsMasses(1) = ppp->displayPhys().mh0(1);   
+    newHiggsMasses(2) = ppp->displayPhys().mh0(2);
+    newHiggsMasses(3) = ppp->displayPhys().mh0(3);
+    newHiggsMasses(4) = ppp->displayPhys().mA0(1);
+    newHiggsMasses(5) = ppp->displayPhys().mA0(2);  
+    newHiggsMasses(6) = ppp->displayPhys().mHpm;
+   
+    currentAccuracy = oldHiggsMasses.compare(newHiggsMasses);
+
+    oldHiggsMasses = newHiggsMasses;
+    
+    i++;
+  }
+  if (higgsTachyon) { flagTachyon(h0); flagTachyon(A0); flagTachyon(hpm); }
+  phys.mh0(1) = ppp->displayPhys().mh0(1);
+  phys.mh0(2) = ppp->displayPhys().mh0(2);
+  phys.mh0(3) = ppp->displayPhys().mh0(3);
+  phys.mA0(1) = ppp->displayPhys().mA0(1);
+  phys.mA0(2) = ppp->displayPhys().mA0(2);
+
+  charginos(accuracy, piwwtMS, phys); 
+  neutralinos(accuracy, piwwtMS, pizztMS, phys);
+  //PA: now set these values from NMSSM routines
+  setPhys(phys);
+  gluino(accuracy); 
+  return;
+}
+
+//PA: Higgs routine for NMSSM
+bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS, 
+                          sPhysical & phys) {
+   //PA: initialise CP even mass matrix in (Hd, Hu, S) basis
+   // CP odd Higgs mass matrices mPpr in (Hd, Hu, S) basis 
+   //and mP2 in roatated basis (A, S) -- goldstone boson removed    
+   DoubleMatrix mS(3,3), mPpr(3,3), mP2(2,2); 
+   double mHpmsq, beta = atan(displayTanb()); 
+   //PA: fill tree level CP even and CP odd Higgs mass matrices 
+   //and tree level mHPm. 
+   treeHiggs(mS, mPpr, mP2, mHpmsq, beta);
+   
+   DoubleMatrix mhAtmH1(mS), mhAtmH2(mS), mhAtmH3(mS);
+   DoubleMatrix sigmaMH1(3, 3), sigmaMH2(3, 3), sigmaMH3(3, 3);
+   DoubleMatrix maAtmA1(mPpr), maAtmA2(mPpr);
+   DoubleMatrix sigmaMA1(3, 3), sigmaMA2(3, 3);
+   double q = displayMu(), p; 
+   if(accuracy > 0){
+     cout << "Warning: this part of the code is not ready." << endl;
+     cout << "Requesting loop corrections to Higgs, which are not finished!" << endl;
+     cout << "filling CP even and CP odd self energies at one loop, but beware."<< endl;  
+     p = phys.mh0(1);    
+     sigmaMH1(1, 1) = pis1s1(p, q);
+     sigmaMH1(1, 2) = pis1s2(p, q);
+     sigmaMH1(1, 3) = pis1s3(p, q);
+     sigmaMH1(2, 2) = pis2s2(p, q);
+     sigmaMH1(2, 3) = pis2s3(p, q);
+     sigmaMH1(3, 3) = pis3s3(p, q);
+     
+     p = phys.mh0(2);		
+     sigmaMH2(1, 1) = pis1s1(p, q);
+     sigmaMH2(1, 2) = pis1s2(p, q);
+     sigmaMH2(1, 3) = pis1s3(p, q);
+     sigmaMH2(2, 2) = pis2s2(p, q);
+     sigmaMH2(2, 3) = pis2s3(p, q);
+     sigmaMH2(3, 3) = pis3s3(p, q);
+      
+     p = phys.mh0(3);    
+     sigmaMH3(1, 1) = pis1s1(p, q);
+     sigmaMH3(1, 2) = pis1s2(p, q);
+     sigmaMH3(1, 3) = pis1s3(p, q);
+     sigmaMH3(2, 2) = pis2s2(p, q);
+     sigmaMH3(2, 3) = pis2s3(p, q);
+     sigmaMH3(3, 3) = pis3s3(p, q);
+      
+     p = phys.mA0(1);
+     sigmaMA1(1, 1) = pip1p1(p, q);
+     sigmaMA1(1, 2) = pip1p2(p, q);
+     sigmaMA1(1, 3) = pip1p3(p, q);
+     sigmaMA1(2, 2) = pip2p2(p, q);
+     sigmaMA1(2, 3) = pip2p3(p, q);
+     sigmaMA1(3, 3) = pip3p3(p, q);
+      
+     p = phys.mA0(2);
+     sigmaMA2(1, 1) = pip1p1(p, q);
+     sigmaMA2(1, 2) = pip1p2(p, q);
+     sigmaMA2(1, 3) = pip1p3(p, q);
+     sigmaMA2(2, 2) = pip2p2(p, q);
+     sigmaMA2(2, 3) = pip2p3(p, q);
+     sigmaMA2(3, 3) = pip3p3(p, q);
+			
+     if(numHiggsMassLoops > 1) {
+        cout << "OK now you are just being silly!" << endl;
+        cout << "Warning: asking for two loop Higgs results! " << endl;
+        cout <<"two loop Higgs not added to clean develpment code yet." << endl;
+        cout <<"adding one loop only." << endl;
+   }
+
+     sigmaMH1.symmetrise();
+     sigmaMH2.symmetrise();
+     sigmaMH3.symmetrise();
+     sigmaMA1.symmetrise();
+     sigmaMA2.symmetrise();
+
+   //PA: not including any two loop pieces currently
+     mhAtmH1(1, 1) =  mhAtmH1(1, 1) + displayTadpole1Ms1loop();
+     mhAtmH2(1, 1) =  mhAtmH2(1, 1) + displayTadpole1Ms1loop();
+     mhAtmH3(1, 1) =  mhAtmH3(1, 1) + displayTadpole1Ms1loop();
+
+     mhAtmH1(2, 2) = mhAtmH1(2, 2) + displayTadpole2Ms1loop();
+     mhAtmH2(2, 2) = mhAtmH2(2, 2) + displayTadpole2Ms1loop();
+     mhAtmH3(2, 2) = mhAtmH3(2, 2) + displayTadpole2Ms1loop();
+     
+     mhAtmH1(3, 3) = mhAtmH1(3, 3) + displayTadpoleSMs1loop();
+     mhAtmH2(3, 3) = mhAtmH1(3, 3) + displayTadpoleSMs1loop();
+     mhAtmH3(3, 3) = mhAtmH1(3, 3) + displayTadpoleSMs1loop();
+     
+     mhAtmH1 = mhAtmH1 - sigmaMH1;
+     mhAtmH2 = mhAtmH2 - sigmaMH2;
+     mhAtmH3 = mhAtmH3 - sigmaMH3;
+     
+   }
+  /// LCT: NMSSM Higgs states.  CP-even first
+  DoubleVector temp(3);
+  DoubleMatrix mixHiggsLoops(3, 3);
+  
+  if (mhAtmH1.diagonaliseSym(mixHiggsLoops, temp) > TOLERANCE *
+      1.0e-3) { 
+    ostringstream ii;
+    ii << "accuracy bad in CP-even Higgs diagonalisation"<< flush;
+    throw ii.str(); 
+	}
+ bool h0Htachyon = false;
+  if (temp(1) < 0.0 || temp(2) < 0.0 || temp(3) < 0.0) {
+    h0Htachyon = true;
+    if (PRINTOUT > 2) cout << "H1/H2/H3 tachyon: m^2 = " << temp;
+  }
+  
+  temp = temp.apply(ccbSqrt);
+  phys.mixh0 = mixHiggsLoops;
+  phys.mh0(1) = temp(1);
+  
+  /// LCT: Now repeat for p = mH2.  Must reset CP-even mixing matrix
+  for (int i=1; i <= 3; i++) {
+    for (int j=1; j <= 3; j++) {
+      mixHiggsLoops(i, j) = 0.0;
+    }
+  }
+ 
+  if (mhAtmH2.diagonaliseSym(mixHiggsLoops, temp) > TOLERANCE *
+      1.0e-3) { /// LCT: default 1.0e-3
+    ostringstream ii;
+    ii << "accuracy bad in CP-even Higgs diagonalisation"<< flush;
+    throw ii.str(); 
+	}
+ 
+  if (temp(1) < 0.0 || temp(2) < 0.0 || temp(3) < 0.0) {
+    h0Htachyon = true;
+    if (PRINTOUT > 2) cout << "H1/H2/H3 tachyon: m^2 = " << temp;
+  }
+  
+  temp = temp.apply(ccbSqrt);
+  phys.mh0(2) = temp(2);
+  
+  /// LCT: Now repeat for p = mH3.  Must reset CP-even mixing matrix
+  for (int i=1; i <= 3; i++) {
+    for (int j=1; j <= 3; j++) {
+      mixHiggsLoops(i, j) = 0.0;
+    }
+  }
+  
+  if (mhAtmH3.diagonaliseSym(mixHiggsLoops, temp) > TOLERANCE *
+      1.0e-3) { /// LCT: default 1.0e-3
+    ostringstream ii;
+    ii << "accuracy bad in CP-even Higgs diagonalisation"<< flush;
+    throw ii.str(); 
+	}
+  
+  if (temp(1) < 0.0 || temp(2) < 0.0 || temp(3) < 0.0) {
+    h0Htachyon = true;
+    if (PRINTOUT > 2) cout << "H1/H2/H3 tachyon: m^2 = " << temp;
+  }
+  
+  temp = temp.apply(ccbSqrt);
+  phys.mh0(3) = temp(3);
+  
+  /// LCT: CP-odd states
+  DoubleMatrix mP(3, 3);
+  /// LCT: Rotate CP-odd mass^2 matrix into (G, A, S_I) basis
+  mP = rot3d(beta).transpose() * maAtmA1 * rot3d(beta);
+	
+  /// LCT: Drop Goldstone from 3 x 3 CP-odd Higgs mass^2 matrix and 
+  /// construct 2 x 2 matrix in (A, S_I) basis
+  mP2(1, 1) = mP(2, 2);
+  mP2(1, 2) = mP(2, 3);
+  mP2(2, 1) = mP(3, 2);
+  mP2(2, 2) = mP(3, 3);
+  
+  /// LCT: Diagonalise	
+  DoubleVector Atemp(2);
+  double Atheta;
+  
+  Atemp = mP2.sym2by2(Atheta);
+  
+  if (Atemp(1) < 0.0 && Atemp(2) < 0.0) {
+     h0Htachyon = true;
+     if (PRINTOUT > 2) cout << " A1/A2 tachyon: m^2=" << Atemp;
+  }
+  Atemp = Atemp.apply(zeroSqrt);
+  
+  if (Atemp(1) > Atemp(2)) Atheta = Atheta + PI * 0.5; 
+  
+  phys.thetaH = Atheta; /// Atheta defined for p=mA1  
+  int j; double mA1 = Atemp.apply(fabs).min(j);
+  
+  Atemp = mP2.sym2by2(Atheta);
+  
+  if (Atemp(1) < 0.0 && Atemp(2) < 0.0) {
+    h0Htachyon = true;
+    if (PRINTOUT > 2) cout << " A1/A2 tachyon: m^2=" << Atemp;
+  }
+  Atemp = Atemp.apply(zeroSqrt);
+  double mA2 = Atemp.max();
+  phys.mA0(1) = mA1;
+  phys.mA0(2) = mA2;
+  //PA: only tree level right now, loop corrections need to be added.
+  double poleMhcSq = mHpmsq;
+  
+  double poleMasq = (displayMh2Squared() - displayMh1Squared() )
+     / cos(2.0 * beta)- sqr(displayMzRun()) ;
+
+  phys.mHpm = zeroSqrt(poleMhcSq);
+ 
+if (poleMhcSq > 0. && !h0Htachyon) return false;
+  else {
+     if (PRINTOUT) cout << " mHc(phys)^2=" << poleMhcSq 
+		        << " but may be first iteration" << endl;
+    return true;
+  }
+}
+
+ 
+
+
+void NmssmSoftsusy::charginos(int accuracy, double piwwtMS, sPhysical & phys) {
+  DoubleMatrix mCh(2, 2);
+  double mw = displayMwRun(); 
+  double beta = atan(displayTanb());
+  treeCharginos(mCh, beta, mw);
+  if (accuracy == 0) {
+    phys.mch = mCh.asy2by2(phys.thetaL, phys.thetaR);
+    return;
+  }
+  else {
+      cout << "Warning: this part of the code is not ready." << endl;
+      cout << "Requesting loop corrections to charginos, which are not available!" << endl;
+      cout << "Calculating tree level charginos...  " << endl;
+      phys.mch = mCh.asy2by2(phys.thetaL, phys.thetaR);
+      return;
+   }
+
+}
+void NmssmSoftsusy::neutralinos(int accuracy, double piwwtMS, double pizztMS, sPhysical & phys) {
+   double mw = displayMwRun();
+   double mz = displayMzRun();
+   double beta = atan(displayTanb());
+   double sinth = calcSinthdrbar();
+   DoubleMatrix mNeut(5, 5);
+   treeNeutralinos(mNeut, beta, mz, mw, sinth);
+
+   if (accuracy == 0) {
+      mNeut.diagonaliseSym(phys.mixNeut, phys.mneut);
+      return;
+   }
+   else {
+      cout << "Warning: this part of the code is not ready." << endl;
+      cout << "Requesting loop corrections to neutralinos, which are not available!" << endl;
+      cout << "Calculating tree level neutralinos...  " << endl;
+      mNeut.diagonaliseSym(phys.mixNeut, phys.mneut);
+      return;
+   }
 
 }
 //PA:: fixes The CP odd mixing matrix with the conventions 
@@ -1222,7 +1597,7 @@ double NmssmSoftsusy::pip1p1(double p, double q) const {
   //
   /// LCT: Charged Higgs in basis G+ H+ G- H-
   double higgs = 0.0;
-  double GaugeHiggs;
+  double GaugeHiggs = 0.0;
   for (int i=1; i <=2; i++) {
      GaugeHiggs += gsq * 0.5 * sqr(C(i, 1)) * ffn(p, higgsc(i), mw, q);
   }
@@ -1237,6 +1612,7 @@ double NmssmSoftsusy::pip1p1(double p, double q) const {
   double GaugeBosons =  gsq * ( 0.5 * cosb2 * mw2 * b0(p, mw, mw, q) 
                          + 2.0 * a0(mw, q) + 1.0 / cw2DRbar * a0(mz, q));
    higgs += GaugeBosons;
+  
    /// Upsfermions
   //
   /// Quadrilinears gens 1-2
@@ -3583,7 +3959,7 @@ double NmssmSoftsusy::pis1s1(double p, double q) const {
   double neutralinos = pis1s1Neutralinos(p, q);
   /// Chargino contribution
   double chargino = pis1s1Charginos(p, q);  
-
+ 
   return 
     (sfermions + 
      fermions + higgs + neutralinos + chargino) / (16.0 * sqr(PI));

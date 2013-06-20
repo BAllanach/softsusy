@@ -5482,7 +5482,7 @@ void Softsusy<SoftPars>::doUpSquarks(double mt, double pizztMS, double sinthDRba
     
     DoubleMatrix mStopSquared(2, 2);
     treeUpSquark(mStopSquared, mt, pizztMS, sinthDRbarMS, family);
-
+    
     if (accuracy > 0) addSupCorrection(mStopSquared, family); 
 
     double theta;
