@@ -354,22 +354,23 @@ public:
   /// input, is returned with radiative corrections added, mtrun=DR bar top
   /// mass, family=generation of squark, pizztMS=Z self energy at Q=M_SUSY,
   /// sinthDRbarMS=DRbar value of sin theta_w 
-  void treeUpSquark(DoubleMatrix & mass, double mtrun, double pizztMS, 
-		double sinthDRbarMS, int family);
+  virtual void treeUpSquark(DoubleMatrix & mass, double mtrun, double pizztMS, 
+                            double sinthDRbarMS, int family);
   /// Returns tree-level down squark mass matrix in "mass".
   /// IO parameters: mass=tree level mass matrix on
   /// input, is returned with radiative corrections added, mbrun=DR bar bottom
   /// mass, family=generation of squark, pizztMS=Z self energy at Q=M_SUSY,
   /// sinthDRbarMS=DRbar value of sin theta_w 
-  void treeDownSquark(DoubleMatrix & mass, double mbrun, double pizztMS, 
-		double sinthDRbarMS, int family);
+  virtual void treeDownSquark(DoubleMatrix & mass, double mbrun, double pizztMS,
+                              double sinthDRbarMS, int family);
   /// Returns tree-level down squark mass matrix in "mass".
   /// IO parameters: mass=tree level mass matrix on
   /// input, is returned with radiative corrections added, mTrun=DR bar tau
   /// mass, family=generation of slepton, pizztMS=Z self energy at Q=M_SUSY,
   /// sinthDRbarMS=DRbar value of sin theta_w
-  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizztMS, 
-		double sinthDRbarMS, int family);
+  virtual void treeChargedSlepton(DoubleMatrix & mass, double mTrun, 
+                                  double pizztMS, double sinthDRbarMS, 
+                                  int family);
   /// Organises calculation of all sneutrino masses, pizztMS=Z self energy at
   /// Q=M_SUSY, mSq=mass of sneutrino, family=generation of sneutrino
   void treeSnu(double & mSq, double pizztMS, int family);
@@ -386,10 +387,10 @@ public:
 		      double sinthDRbar, drBarPars & eg);
   /// calculates the chargino DRbar parameters. It will fill in the chargino
   /// masses in eg with the appropriate values on exit. 
-  void calcDrBarCharginos(DoubleMatrix & mCh, double beta, double mw);
+  void treeCharginos(DoubleMatrix & mCh, double beta, double mw);
   /// calculates the chargino DRbar parameters. It will fill in the chargino
   /// masses in eg with the appropriate values on exit. 
-  void calcDrBarNeutralinos(DoubleMatrix & mN, double beta, double mz, 
+  void treeNeutralinos(DoubleMatrix & mN, double beta, double mz, 
                             double mw, double sinth);
   // calculates the chargino and neutralino DRbar parameters. 
   //It will fill in the chargino and neutralino
