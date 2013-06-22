@@ -82,6 +82,8 @@ void NmssmSoftsusy::printall(){
   cout << "xiS = " << displayXiS() << endl;
 }
 
+
+
 void NmssmSoftsusy::P1SfSfCouplings(DoubleMatrix & lp1tt, DoubleMatrix & lp1bb, DoubleMatrix  & lp1tautau) const {
   double s = displaySvev();
   double lam = displayLambda();
@@ -758,8 +760,9 @@ void NmssmSoftsusy::calcDrBarGauginos(double beta, double mw, double mz, double 
 
 
 // PA: fills tree level CP even and CP odd Higgs mass matrices 
-// and tree level mHPm. Called in higgs and calcDrBarParsHiggs
-// CP even mass matrix in (Hd, Hu, S) basis
+// and tree level mHPm all with treel level EWSB conditions used.
+// Called in higgs and calcDrBarParsHiggs
+// CP even mass matrix in (Hd, Hu, S) basis  
 // CP odd Higgs mass matrices mPpr in (Hd, Hu, S) basis 
 // and mP2 in rotated basis (A, S) -- goldstone boson removed      
 void NmssmSoftsusy::treeHiggs(DoubleMatrix & mS, DoubleMatrix & mPpr, 
@@ -778,41 +781,43 @@ void NmssmSoftsusy::treeHiggs(DoubleMatrix & mS, DoubleMatrix & mPpr,
   double m3sq = displayM3Squared(), mSpsq = displayMspSquared();
 
   double vev = displayHvev(), v1 = vev * cosb, v2 = vev * sinb;
-  double svev = displaySvev();
+  double s = displaySvev();
 
-  double mueff = lam * svev / root2 + smu;
-  double m3effsq = m3sq + lam * (mupr * svev / root2 + xiF);
+  double mueff = lam * s / root2 + smu;
+  double m3effsq = m3sq + lam * (mupr * s / root2 + xiF);
  
   /// CP-even Higgs in EHT notation and basis (HdR, HuR, SR)
-  mS(1, 1) = mz2 * cosb2 + (0.5 * lam * kap * sqr(svev)
-                            + al * svev / root2 + m3effsq) * tanb;
+  mS(1, 1) = mz2 * cosb2 + (0.5 * lam * kap * sqr(s)
+                            + al * s / root2 + m3effsq) * tanb;
   mS(1, 2) = - sinb * cosb * mz2 + sqr(lam) * sqr(vev) * sinb * cosb
-     - (0.5 * lam * kap * sqr(svev) + al * svev / root2 + m3effsq);
-  mS(1, 3) = root2 * lam * mueff * v1
-     - (al + lam * kap * svev * root2 + lam * mupr) * v2 / root2;
-  mS(2, 2) = mz2 * sinb2 + (0.5 * lam * kap * sqr(svev)
-                            + al * svev / root2 + m3effsq) / tanb;
-  mS(2, 3) = root2 * lam * mueff * v2
-     - (al + lam * kap * svev * root2 + lam * mupr) * v1 / root2;
-  mS(3, 3) = (al + lam * mupr) * v1 * v2 / (root2 * svev)
-     + svev / root2 * (ak + 2.0 * root2 * sqr(kap) * svev
-                       + 3.0 * kap * mupr) - root2 * (xiS + xiF * mupr) / svev;
+     - (0.5 * lam * kap * sqr(s) + al * s / root2 + m3effsq);
+  mS(1, 3) = root2 * lam * mueff * v1 
+     - (al + lam * kap * s * root2 + lam * mupr) * v2 / root2;
+  mS(2, 2) = mz2 * sinb2 + (0.5 * lam * kap * sqr(s)
+                            + al * s / root2 + m3effsq) / tanb;
+  mS(2, 3) = root2 * lam * mueff * v2 
+     - (al + lam * kap * s * root2 + lam * mupr) * v1 / root2;
+  mS(3, 3) = (al + lam * mupr) * v1 * v2 / (root2 * s)
+     + s / root2 * (ak + 2.0 * root2 * sqr(kap) * s
+                       + 3.0 * kap * mupr) 
+     - root2 * (xiS + xiF * mupr + 0.5 * lam * smu * sqr(vev)) / s;
 
   mS.symmetrise();
 
   /// CP-odd Higgs in EHT notation and basis (HdI, HuI, SI)
-  mPpr(1, 1) = (0.5 * lam * kap * sqr(svev) + al * svev / root2
+  mPpr(1, 1) = (0.5 * lam * kap * sqr(s) + al * s / root2
                 + m3effsq) * tanb;
-  mPpr(1, 2) = 0.5 * lam * kap * sqr(svev) + al * svev / root2 + m3effsq;
-  mPpr(1, 3) = v2 / root2 * (al - root2 * lam * kap * svev - lam * mupr);
-  mPpr(2, 2) = (0.5 * lam * kap * sqr(svev) + al * svev / root2
+  mPpr(1, 2) = 0.5 * lam * kap * sqr(s) + al * s / root2 + m3effsq;
+  mPpr(1, 3) = v2 / root2 * (al - root2 * lam * kap * s - lam * mupr);
+  mPpr(2, 2) = (0.5 * lam * kap * sqr(s) + al * s / root2
                 + m3effsq) / tanb;
-  mPpr(2, 3) = v1 / root2 * (al - root2 * lam * kap * svev - lam * mupr);
-  mPpr(3, 3) = (al + lam * kap * svev /root2
-             + 3.0 * lam * kap * svev / root2
-             + lam * mupr) * v1 * v2 / (root2 * svev) - 3.0 * ak * svev / root2
-     - 2.0 * mSpsq - kap * mupr * svev / root2 - xiF * (4.0 * kap
-                + root2 * mupr / svev) - root2 * xiS / svev;
+  mPpr(2, 3) = v1 / root2 * (al - root2 * lam * kap * s - lam * mupr);
+  mPpr(3, 3) = (al + lam * kap * s /root2
+             + 3.0 * lam * kap * s / root2
+             + lam * mupr) * v1 * v2 / (root2 * s) 
+     - 3.0 * ak * s / root2 - lam * smu * sqr(vev) / (root2 * s)
+     - 2.0 * mSpsq - kap * mupr * s / root2 
+     - xiF * (4.0 * kap + root2 * mupr / s) - root2 * xiS / s;
 
   mPpr.symmetrise();
   DoubleMatrix mP(3, 3);
@@ -827,6 +832,80 @@ void NmssmSoftsusy::treeHiggs(DoubleMatrix & mS, DoubleMatrix & mPpr,
   
   mHpmsq = mP2(1, 1) + mw2 - 0.5 * sqr(vev) * sqr(lam);
    }
+
+
+// PA: fills tree level CP even and CP odd Higgs mass matrices 
+// and tree level mHPm all without treel level EWSB conditions used.
+// Same as treeHiggs at tree level *if* tree level EWSB is imposed.
+// Useful when s is set to zero and for testing EWSB conditions.
+// CP even mass matrix in (Hd, Hu, S) basis  
+// CP odd Higgs mass matrices mPpr in (Hd, Hu, S) basis 
+// and mP2 in rotated basis (A, S) -- goldstone boson removed      
+void NmssmSoftsusy::treeHiggsAlt(DoubleMatrix & mS, DoubleMatrix & mPpr, 
+                               DoubleMatrix & mP2, double & mHpmsq, 
+                               double beta) const {
+  double tanb = displayTanb();
+  double sinb = sin(beta), cosb = cos(beta);
+  double sinb2 = sqr(sinb), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
+  double mz = displayMzRun(), mz2 = sqr(mz);
+  double mw = displayMwRun(), mw2 = sqr(mw);
+  double mHu2 = displayMh2Squared(), mHd2 = displayMh1Squared();
+	/// LCT: NMSSM parameters
+  double l = displayLambda(), k = displayKappa();
+  double mupr = displayMupr(), smu = displaySusyMu();
+  double al = displayTrialambda(), ak = displayTriakappa();
+  double xiF = displayXiF(), xiS = displayXiS();
+  double m3sq = displayM3Squared(), mSpr2 = displayMspSquared();
+  double mS2 = displayMsSquared();
+
+  double vev = displayHvev(), v1 = vev * cosb, v2 = vev * sinb;
+  double s = displaySvev();
+
+  double mueff = l * s / root2 + smu;
+  double m3effsq = m3sq + l * (mupr * s / root2 + xiF);
+ 
+  /// CP-even Higgs in EHT notation and basis (HdR, HuR, SR)
+  mS(1, 1) = mHd2 + sqr(l * s / root2 + smu) + 0.5 * sqr(l * v2)
+     + 0.5 * mz2 * cos2b + mz2 * sinb2;
+  mS(1, 2) = - sinb * cosb * mz2 + sqr(l) * sqr(vev) * sinb * cosb
+     - (0.5 * l * k * sqr(s) + al * s / root2 + m3effsq);
+  mS(1, 3) = root2 * l * mueff * v1 + root2 * l * smu * v1
+     - (al + l * k * s * root2 + l * mupr) * v2 / root2;
+  mS(2, 2) = mHu2 + sqr(l * s / root2 + smu) + 0.5 * sqr(l * v1) 
+     - 0.5 * mz2 * cos2b + mz2 * cosb2;
+  mS(2, 3) = root2 * l * mueff * v2 + root2 * l * smu * v2 
+     - (al + l * k * s * root2 + l * mupr) * v1 / root2;
+  mS(3, 3) = mS2 + mSpr2 + sqr(mupr) + 2.0 * k * xiF + root2 * ak * s
+     + 3.0 * sqr(k * s) + 3.0 * root2 * k * s * mupr + 0.5 * sqr(l * vev)
+     - l * k * v1 * v2; 
+
+  mS.symmetrise();
+
+  mPpr(1, 1) = mHd2 + sqr(smu + l * s / root2) + sqr(l * v2) 
+     + 0.5 * mz2 * cos2b;
+  mPpr(1, 2) = 0.5 * l * k * sqr(s) + al * s / root2 + m3effsq;
+  mPpr(1, 3) = v2 / root2 * (al - root2 * l * k * s - l * mupr);
+  mPpr(2, 2) = mHu2 + sqr(smu + l * s / root2) + sqr(l * v1) 
+     - 0.5 * mz2 * cos2b;
+  mPpr(2, 3) = v1 / root2 * (al - root2 * l * k * s - l * mupr);
+  mPpr(3, 3) = mS2 - mSpr2 + sqr(mupr) + sqr(k * s) + 0.5 * sqr(l * vev)
+     - 2.0 * k * xiF - root2 * ak * s + root2 * k * s * mupr + l * k * v1 * v2;
+
+
+  mPpr.symmetrise();
+  DoubleMatrix mP(3, 3);
+  // LCT: Rotate CP-odd mass^2 matrix into (G, A, S_I) basis
+  mP = rot3d(beta).transpose() * mPpr * rot3d(beta);
+  /// LCT: Drop Goldstone from 3 x 3 CP-odd Higgs mass^2 matrix and
+  /// construct 2 x 2 matrix in (A, S_I) basis
+  mP2(1, 1) = mP(2, 2);
+  mP2(1, 2) = mP(2, 3);
+  mP2(2, 1) = mP(3, 2);
+  mP2(2, 2) = mP(3, 3);
+  
+  mHpmsq = mP2(1, 1) + mw2 - 0.5 * sqr(vev) * sqr(l);
+   }
+
 
 /// LCT: new routine to set tree-level NMSSM CP-even and odd Higgs mass matrices squared
 void NmssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, drBarPars & eg) {
@@ -880,6 +959,8 @@ void NmssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, double s
   eg.mHpm = sqrt(mHpmsq);
 
 }
+
+
 
 void NmssmSoftsusy::calcDrBarPars() {
   drBarPars eg(displayDrBarPars());
@@ -1178,6 +1259,29 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS,
      mhAtmH2 = mhAtmH2 - sigmaMH2;
      mhAtmH3 = mhAtmH3 - sigmaMH3;
      
+     maAtmA1(1, 1) = mPpr(1, 1) + displayTadpole1Ms1loop();
+     maAtmA1(1, 2) = mPpr(1, 2);
+     maAtmA1(1, 3) = mPpr(1, 3);
+     maAtmA1(2, 1) = maAtmA1(1, 2);
+     maAtmA1(2, 2) = mPpr(2, 2) + displayTadpole2Ms1loop();
+     maAtmA1(2, 3) = mPpr(2, 3);
+     maAtmA1(3, 1) = maAtmA1(1, 3);
+     maAtmA1(3, 2) = maAtmA1(2, 3);
+     maAtmA1(3, 3) = maAtmA1(3, 3) + displayTadpoleSMs1loop();
+     maAtmA1 = maAtmA1 - sigmaMA1;
+     
+     maAtmA2(1, 1) = mPpr(1, 1) + displayTadpole1Ms1loop();
+     maAtmA2(1, 2) = mPpr(1, 2);
+     maAtmA2(1, 3) = mPpr(1, 3);
+     maAtmA2(2, 1) = maAtmA2(1, 2);
+     maAtmA2(2, 2) = mPpr(2, 2) + displayTadpole2Ms1loop();
+     maAtmA2(2, 3) = mPpr(2, 3);
+     maAtmA2(3, 1) = maAtmA2(1, 3);
+     maAtmA2(3, 2) = maAtmA2(2, 3);
+     maAtmA2(3, 3) = maAtmA2(3, 3) + displayTadpoleSMs1loop();
+     maAtmA2 = maAtmA2 - sigmaMA2;
+     
+
    }
   /// LCT: NMSSM Higgs states.  CP-even first
   DoubleVector temp(3);
@@ -1340,6 +1444,8 @@ void NmssmSoftsusy::neutralinos(int accuracy, double piwwtMS, double pizztMS, sP
    }
 
 }
+
+
 //PA:: fixes The CP odd mixing matrix with the conventions 
 // Degrassi and Slavich arXiv:0907.4682
 void NmssmSoftsusy::DegrassiSlavicMix(DoubleMatrix & P) const {
@@ -4093,5 +4199,22 @@ return (sfermions + higgs + neutralinos + chargino)
 }
 
 
+/// Provides the first guess at a SUSY object at mt, inputting tanb and oneset
+/// (should be at MZ) - it's very crude, doesn't take radiative corrections
+/// into account etc. 
+NmssmSusy NmssmSoftsusy::guessAtSusyMt(double tanb, DoubleVector nmpars, const QedQcd & oneset) {
+   
+   //PA: Most of the work is already done by the MSSM
+   NmssmSusy t(Softsusy::guessAtSusyMt(tanb, oneset));
+   //PA: now we just add our new nmssm parameters. 
+   //Only lambda directly affects the running of the MSSM Yukawas 
+   // at one loop and only kappa additionally at two loop.
+   t.setLambda(nmpars(1));
+   t.setKappa(nmpars(2));
+   t.setSvev(nmpars(3));
+   t.setXiF(nmpars(4));       
+   t.setMupr(nmpars(5));
+   return t;
+}
 
 #endif

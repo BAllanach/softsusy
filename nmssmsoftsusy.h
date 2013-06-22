@@ -163,9 +163,14 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   // performs diagonalisation and fills eg with appropriate values.
   void calcDrBarGauginos(double beta, double mw, double mz, double sinth, 
                          drBarPars & eg);
+   //PA: fills tree level CP even and CP odd Higgs mass matrices 
+  //and tree level mHPm. Does *not* use EWSB substitution   
+  void treeHiggsAlt(DoubleMatrix & mS, DoubleMatrix & mPpr, DoubleMatrix & mP2, 
+                  double & mHpm, double beta) const;
   //PA: fills tree level CP even and CP odd Higgs mass matrices 
-  //and tree level mHPm. Called in higgs and calcDrBarParsHiggs   
-  void  treeHiggs(DoubleMatrix & mS, DoubleMatrix & mPpr, DoubleMatrix & mP2, 
+  //and tree level mHPm. Uses EWSB substitution. 
+  //Called in higgs and calcDrBarParsHiggs   
+  void treeHiggs(DoubleMatrix & mS, DoubleMatrix & mPpr, DoubleMatrix & mP2, 
                   double & mHpm, double beta) const;
   //calculates DrBar Higgs masses and sets them    
   void calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, 
@@ -281,6 +286,8 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   double pis1s3(double p, double q) const;
   double pis2s3(double p, double q) const;
   double pis3s3(double p, double q) const;
+
+  NmssmSusy guessAtSusyMt(double tanb, DoubleVector nmpars, const QedQcd & oneset);
 
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.    
   void printall();
