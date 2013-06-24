@@ -6339,7 +6339,7 @@ double MssmSoftsusy::lowOrg
 
     if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
       setSusyMu(sgnMu * MZ);
-      setM3Squared(10.);
+      setM3Squared(1.0e6);
     }
     else {
       if (altEwsb) {
@@ -6399,6 +6399,8 @@ double MssmSoftsusy::lowOrg
 	  x(11) *= (1. + 0.1 * gasdev(idummySave)); 
 	}
       }
+      //      cout << "x=" << x;
+
       /// run the root finding algorithm itself
       bool err = newt(x, mxToMz);
       if (err) flagNoConvergence(true);

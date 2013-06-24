@@ -1330,7 +1330,7 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc) {
 /// You will need to clear this lot up....
 DoubleMatrix fdjac(int n, DoubleVector x, const DoubleVector & fvec,
 	   void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
-  const double EPS = 1.0e-4;
+  double EPS = maximum(TOLERANCE, 1.0e-4);
   int i,j;
   double h,temp;
   
@@ -1444,8 +1444,14 @@ void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
     big=0.0;
     for (j=1;j<=n;j++)
       if ((temp=fabs(a(i, j))) > big) big=temp;
-    if (big == 0.0) throw("Singular matrix in routine ludcmp");
-    vv(i)=1.0/big;
+    if (big == 0.0) {
+      ostringstream ii; ii.setf(ios::scientific, ios::floatfield);
+      ii.precision(6);
+      ii << "Singular matrix in routine ludcmp: ";
+      ii << a;
+      throw (ii.str());
+    }
+    vv(i)=1.0 / big;
   }
   for (j=1;j<=n;j++) {
     for (i=1;i<j;i++) {
@@ -1524,13 +1530,9 @@ bool newt(DoubleVector & x,
     for (i=1; i<=n; i++) xold(i) = x(i);
     fold = f;
     for (i=1; i<=n; i++) p(i) = -fvec(i);
-    //    cout << " A " << endl; ///< DEBUG
     ludcmp(fjac, n, indx, d);
-    //    cout << " B " << endl; ///< DEBUG
     lubksb(fjac, n, indx, p);
-    //    cout << " C xold=" << xold << " fold=" << fold <<" g=" << g << " p=" << p << " x=" << x << " f=" << f << " stpmax=" << stpmax << " fvec=" << fvec << endl; ///< DEBUG
     err = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec);
-    //    cout << " D "<< endl ; ///< DEBUG
     test = 0.0;
     for (i=1; i<=n; i++)
       if (fabs(fvec(i)) > test) test = fabs(fvec(i));

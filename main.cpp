@@ -65,7 +65,7 @@ int main() {
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
-  TOLERANCE = 1.0e-4; MIXING=-1; 
+  TOLERANCE = 1.0e-3; MIXING=-1; 
   cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
        << TOLERANCE << endl << oneset << endl;
 
@@ -92,9 +92,11 @@ int main() {
     //  double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
     //  cout << m0 << " "     << r.displaySusyMu() << " ";
 
+    cout << m0 << " " << m12 << " " << a0 << " " << tanb << " ";
+
     vector<MssmSoftsusy> solutions;
     newtonMethod = true; 
-    for (int j=1; j<=100; j++) { 
+    for (int j=1; j<=50; j++) { 
       numTry++;
       double mx2 = newtM.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, 
 			      uni);
@@ -102,6 +104,7 @@ int main() {
       if (!newtM.displayProblem().test()) {
 	if (solutions.end() == solutions.begin()) {
 	  solutions.push_back(newtM);
+	  cout << newtM.displaySusyMu() << " " << flush;
 	}
 	else {
 	  bool differentSolution = true;
@@ -110,16 +113,12 @@ int main() {
 	       it!=solutions.end(); it++) 
 	    if (sumTol(newtM, *it, 0) < 1.e-3) differentSolution = false;
 	  if (differentSolution) {
-	    solutions.push_back(newtM);
+	    cout << newtM.displaySusyMu() << " " << flush;
 	  }
 	}
       }
     }
     
-    cout << m0 << " " << m12 << " " << a0 << " " << tanb << " ";
-    cout << solutions.size() << " ";
-    for (vector<MssmSoftsusy>::iterator it = solutions.begin(); 
-	 it!=solutions.end(); it++) cout << it->displaySusyMu() << " ";
     cout << endl;
   }
   }
