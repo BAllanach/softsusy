@@ -2425,6 +2425,7 @@ double MssmSoftsusy::calcRunningMb() const {
   double    mH      = forLoops.mH0;
   double    mHp     = forLoops.mHpm;
   double    mz = displayMzRun();
+  double    mw = displayMwRun();
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    cw2DRbar    = sqr(cos(thetaWDRbar));
   double    ca      = cos(forLoops.thetaH);
@@ -2601,6 +2602,7 @@ double MssmSoftsusy::calcRunningMtau() const {
   double    mH      = forLoops.mH0;
   double    mHp     = forLoops.mHpm;
   double    mz = displayMzRun();
+  double    mw = displayMwRun();
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    cw2DRbar    = sqr(cos(thetaWDRbar));
   double    ca      = cos(forLoops.thetaH);
@@ -5524,8 +5526,8 @@ void MssmSoftsusy::doDownSquarks(double mb, double pizztMS, double
     double pLight = minimum(forLoops.md(1, 3), forLoops.md(2, 3));
     double pHeavy = maximum(forLoops.md(1, 3), forLoops.md(2, 3));
 
-    addSbotCorrection(pLight, mSbotSquared, mb);  
-    addSbotCorrection(pHeavy, mSbotSquared2, mb);      
+    addSbotCorrection(pLight, mSbotSquared, mt);
+    addSbotCorrection(pHeavy, mSbotSquared2, mt);
   }
     
   double theta;
