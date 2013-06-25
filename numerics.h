@@ -264,5 +264,22 @@ void score(float x, const DoubleVector & y, DoubleVector & f);
 /// well the boundary condition at the high scale is satisfied. Then you
 /// should be able to find the solutions for the unknown numbers. 
 void shoot(const DoubleVector & v, DoubleVector & f);
+/// QR decomposition of the matrix a. A = Q.R. Upper triangular matrix R is
+/// returned in upper triangle of a, except for diagonal elements which are
+/// returned in d. Orthog matrix Q is given as a product of n-1 Houselholder
+/// matrices $Q_1 \ldots Q_{n-1}$ where $Q_j=1-u_j \otimes u_j/c_j$. 
+/// sing returns true (1) if singularity is encountered (but decomposition is
+/// still completed) otherwise false (0).
+void qrdcmp(DoubleMatrix & a, int n, DoubleVector & c, DoubleVector & d, 
+	    int & sing);
+void qrupdt(DoubleMatrix & r, DoubleMatrix & qt, int n, 
+	    DoubleVector & u, DoubleVector & v);
+/// Given r and qt, carry out a Jacobi rotation on rows i and i+1 of each
+/// matrix. a and b are parameters of the rotation: $\cos
+/// \theta=a/\sqrt{a^2+b^2}, \sin \theta = b / \sqrt{a^2 + b^2}$.
+void rotate(DoubleMatrix & r, DoubleMatrix & qt, int n, int i, float a, 
+	    float b);
+void rsolv(const DoubleMatrix & a, int n, const DoubleVector & d, 
+	   DoubleVector & b);
 #endif
 

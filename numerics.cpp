@@ -1600,11 +1600,7 @@ void shoot(const DoubleVector & v, DoubleVector & f) {
   return;
 }
 
-//static int nn;
-//float *fvec;
-//void (*nrfuncv)(int n, float v[], float f[]);
-
-void broydn(DoubleVector x, int *check, 
+void broydn(DoubleVector x, int & check, 
 	    void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
   const int MAXITS = 200;
   double TOLF =  TOLERANCE;
@@ -1636,7 +1632,7 @@ void broydn(DoubleVector x, int *check,
   
   double test = fvec.apply(fabs).max();
   if (test < 0.01 * TOLF) {
-    *check = 0;
+    check = 0;
     return;
   }
   double sum = x.dot(x);
@@ -1645,7 +1641,7 @@ void broydn(DoubleVector x, int *check,
   for (int its=1; its<=MAXITS; its++) {
     if (restrt) {
       r = fdjac(n, x, fvec, vecfunc);
-      qrdcmp(r,n,c,d,&sing);
+      qrdcmp(r, n, c, d, sing);
       if (sing) throw("singular Jacobian in broydn\n");
       for (int i=1; i<=n; i++) {
 	for (int j=1; j<=n; j++) qt(i, j) = 0.0;
@@ -1676,18 +1672,18 @@ void broydn(DoubleVector x, int *check,
       }
       int skip = 1;
       for (int i=1; i<=n; i++) {
-	for (sum=0.0, int j=1; j<=n; j++) sum += qt(j, i) * t(j);
+	for (sum=0.0, j=1; j<=n; j++) sum += qt(j, i) * t(j);
 	w(i) = fvec(i) - fvcold(i) - sum;
 	if (fabs(w(i)) >= EPS * (fabs(fvec(i))+fabs(fvcold(i)))) skip=0;
 	else w(i)=0.0;
       }
       if (!skip) {
 	for (int i=1; i<=n; i++) {
-	  for (sum=0.0, int j=1; j<=n; j++) sum += qt(i, j) * w(j);
+	  for (sum=0.0, j=1; j<=n; j++) sum += qt(i, j) * w(j);
 	  t(i) = sum;
 	}
-	den += s.dot(s);
-	s = s / den;
+	double den = 0.; den += s.dot(s);
+	s = s * (1. / den);
 	qrupdt(r,qt,n,t,s);
 	for (int i=1;i<=n;i++) {
 	  if (r(i, i) == 0.0) throw("r singular in broydn\n");
@@ -1695,8 +1691,9 @@ void broydn(DoubleVector x, int *check,
 	}
       }
     }
+    int j;
     for (int i=1; i<=n; i++) {
-      for (sum=0.0, j=1; j<=n; j++) sum += qt(i, j) * fvec(j);
+      for (sum=0., j=1 ; j<=n; j++) sum += qt(i, j) * fvec(j);
       g(i) = sum;
     }
     for (int i=n; i>=1; i--) {
@@ -1705,27 +1702,28 @@ void broydn(DoubleVector x, int *check,
     }
     xold = x; 
     fvcold = fvec;
-    fold=f;
+    double fold = f;
     for (int i=1;i<=n;i++) {
       for (sum=0.0,j=1;j<=n;j++) sum += qt(i, j) * fvec(j);
       p(i) = -sum;
     }
-    rsolv(r,n,d,p);
-    lnsrch(n,xold,fold,g,p,x,&f,stpmax,check,fmin);
+    rsolv(r, n, d, p); 
+    DoubleVector fvec(n);
+    check = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec);
     test = 0.0;
     for (int i=1; i<=n; i++)
       if (fabs(fvec(i)) > test) test = fabs(fvec(i));
     if (test < TOLF) {
-      *check=0;
+      check=0;
       return;
     }
-    if (*check) {
+    if (check) {
       if (restrt) return;
       else {
 	test = 0.0;
-	den = maximum(f, 0.5 * n);
+	double den = maximum(f, 0.5 * n);
 	for (int i=1;i<=n;i++) {
-	  temp=fabs(g(i)) * maximum(fabs(x(i)),1.0)/den;
+	  double temp = fabs(g(i)) * maximum(fabs(x(i)), 1.0) / den;
 	  if (temp > test) test = temp;
 	}
 	if (test < TOLMIN) return;
@@ -1735,7 +1733,7 @@ void broydn(DoubleVector x, int *check,
       restrt = 0;
       test = 0.0;
       for (int i=1; i<=n; i++) {
-	temp=(fabs(x(i) - xold(i))) / maximum(fabs(x(i)), 1.0);
+	double temp = (fabs(x(i) - xold(i))) / maximum(fabs(x(i)), 1.0);
 	if (temp > test) test = temp;
       }
       if (test < TOLX) return;
@@ -1743,4 +1741,99 @@ void broydn(DoubleVector x, int *check,
   }
   throw("MAXITS exceeded in broydn\n");
   return;
+}
+
+void qrdcmp(DoubleMatrix & a, int n, DoubleVector & c, DoubleVector & d, 
+	    int & sing) {
+  int i,j,k;
+  double scale,sigma,sum,tau;
+  
+  sing = 0;
+  for (k=1; k<n; k++) {
+    scale = 0.0;
+    for (i=k; i<=n; i++) scale = maximum(scale, fabs(a(i, k)));
+    if (scale == 0.0) {
+      sing = 1;
+      c(k) = d(k) = 0.0;
+    } else {
+      for (i=k;i<=n;i++) a(i, k) /= scale;
+      for (sum=0.0,i=k;i<=n;i++) sum += sqr(a(i, k));
+      sigma = sign(sqrt(sum), a(k, k));
+      a(k, k) += sigma;
+      c(k) = sigma * a(k, k);
+      d(k) = -scale*sigma;
+      for (j=k+1; j<=n; j++) {
+	for (sum=0.0,i=k;i<=n;i++) sum += a(i, k) * a(i, j);
+	tau = sum / c(k);
+	for (i=k; i<=n; i++) a(i, j) -= tau * a(i, k);
+      }
+    }
+  }
+  d(n) = a(n, n);
+  if (d(n) == 0.0) sing = 1;
+}
+
+
+void qrupdt(DoubleMatrix & r, DoubleMatrix & qt, int n, 
+	    DoubleVector & u, DoubleVector & v) {
+  //	void rotate(float **r, float **qt, int n, int i, float a, float b);
+	int i,j,k;
+
+	for (k=n; k>=1; k--) {
+	  if (u(k)) break;
+	}
+	if (k < 1) k = 1;
+	for (i=k-1; i>=1; i--) {
+	  rotate(r, qt, n, i, u(i), -u(i+1));
+	  if (u(i) == 0.0) u(i) = fabs(u(i+1));
+		else if (fabs(u(i)) > fabs(u(i+1)))
+			u(i) = fabs(u(i)) * sqrt(1.0 + sqr(u(i+1) / u(i)));
+		else u(i) = fabs(u(i+1)) * sqrt(1.0 + sqr(u(i) / u(i+1)));
+	}
+	for (j=1; j<=n; j++) r(1, j) += u(1) * v(j);
+	for (i=1; i<k; i++)
+	  rotate(r, qt, n, i, r(i, i), -r(i+1, i));
+}
+
+void rotate(DoubleMatrix & r, DoubleMatrix & qt, int n, int i, float a, 
+	    float b) {
+  int j;
+  double c,fact,s,w,y;
+  
+  if (a == 0.0) {
+    c = 0.0;
+    s = (b >= 0.0 ? 1.0 : -1.0);
+  } else if (fabs(a) > fabs(b)) {
+    fact = b / a;
+    c = sign(1.0/sqrt(1.0+(fact*fact)),a);
+    s = fact*c;
+  } else {
+    fact = a / b;
+    s = sign(1.0 / sqrt(1.0 + (fact * fact)), b);
+    c = fact * s;
+  }
+  for (j=i; j<=n; j++) {
+    y = r(i, j);
+    w = r(i+1, j);
+    r(i, j) = c * y - s * w;
+    r(i+1, j) = s * y + c * w;
+  }
+  for (j=1; j<=n; j++) {
+    y = qt(i, j);
+    w = qt(i+1, j);
+    qt(i, j) = c * y - s * w;
+    qt(i+1, j) = s * y + c * w;
+  }
+}
+
+void rsolv(const DoubleMatrix & a, int n, const DoubleVector & d, 
+	   DoubleVector & b) {
+	int i,j;
+	double sum;
+
+	b(n) /= d(n);
+	for (i=n-1; i>=1; i--) {
+	  for (sum=0.0, j=i+1; j<=n; j++) sum += a(i, j) * b(j);
+	  b(i)=(b(i) - sum) / d(i);
+	}
 }
