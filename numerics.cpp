@@ -1509,16 +1509,14 @@ bool newt(DoubleVector & x,
   DoubleVector fvec(n);
 
   vecfunc(x, fvec); 
-  f = fvec.dot(fvec);
+  f = 0.5 * fvec.dot(fvec);
   test = 0.0;
-  for (i=1; i<=n; i++)
-    if (fabs(fvec(i)) > test) test = fabs(fvec(i));
+  test = fvec.apply(fabs).max();
   if (test < 0.01 * TOLF) {
-    //      cout << "bailing out of DEBUG 0\n";
     err = false;
-    free_ivector(indx,1,n); return err;
+    free_ivector(indx, 1, n); return err;
   }
-  for (sum=0.0, i=1; i<=n; i++) sum += sqr(x(i));
+  sum += x.dot(x);
   stpmax = STPMX * maximum(sqrt(sum), (double) n);
   for (its=1; its<=MAXITS; its++) {
     //    cout << its << endl; ///< DEBUG
@@ -1599,5 +1597,150 @@ void shoot(const DoubleVector & v, DoubleVector & f) {
   f(1) = y(2) - 1.;
   f(2) = y(3) - y(1);
 
+  return;
+}
+
+//static int nn;
+//float *fvec;
+//void (*nrfuncv)(int n, float v[], float f[]);
+
+void broydn(DoubleVector x, int *check, 
+	    void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
+  const int MAXITS = 200;
+  double TOLF =  TOLERANCE;
+  const double EPS = TOLF * 1.0e-3;
+  const double TOLX = EPS;
+  const double STPMX = 100.0;
+  double TOLMIN = TOLERANCE * 1.0e-2;
+
+  int n = x.displayEnd();
+ 
+  /*	void fdjac(int n, float x[], float fvec[], float **df,
+		void (*vecfunc)(int, float [], float []));
+	float fmin(float x[]);
+	void lnsrch(int n, float xold[], float fold, float g[], float p[], float x[],
+		 float *f, float stpmax, int *check, float (*func)(float []));
+	void qrdcmp(float **a, int n, float *c, float *d, int *sing);
+	void qrupdt(float **r, float **qt, int n, float u[], float v[]);
+	void rsolv(float **a, int n, float d[], float b[]);
+	int i,its,j,k,restrt,sing,skip;
+	float den,f,fold,stpmax,sum,temp,test,*c,*d,*fvcold;
+	float *g,*p,**qt,**r,*s,*t,*w,*xold; */
+
+  DoubleVector c(n), d(n), fvcold(n), g(n), p(n), s(n), t(n), w(n), xold(n), 
+    fvec(n);
+  DoubleMatrix qt(n, n), r(n, n);
+
+  vecfunc(x, fvec); 
+  double f = 0.5 * fvec.dot(fvec);
+  
+  double test = fvec.apply(fabs).max();
+  if (test < 0.01 * TOLF) {
+    *check = 0;
+    return;
+  }
+  double sum = x.dot(x);
+  double stpmax = STPMX * maximum(sqrt(sum), (double)n);
+  int restrt = 1, sing;
+  for (int its=1; its<=MAXITS; its++) {
+    if (restrt) {
+      r = fdjac(n, x, fvec, vecfunc);
+      qrdcmp(r,n,c,d,&sing);
+      if (sing) throw("singular Jacobian in broydn\n");
+      for (int i=1; i<=n; i++) {
+	for (int j=1; j<=n; j++) qt(i, j) = 0.0;
+	qt(i, i) = 1.0;
+      }
+      for (int k=1; k<n; k++) {
+	if (c(k)) {
+	  for (int j=1; j<=n; j++) {
+	    sum = 0.0;
+	    for (int i=k; i<=n; i++)
+	      sum += r(i, k) * qt(i, j);
+	    sum /= c(k);
+	    for (int i=k; i<=n; i++)
+	      qt(i, j) -= sum*r(i, k);
+	  }
+	}
+      }
+      for (int i=1; i<=n; i++) {
+	r(i, i) = d(i);
+	for (int j=1; j<i; j++) r(i, j) = 0.0;
+      }
+    } else {
+      s = x - xold;
+      int j;
+      for (int i=1; i<=n; i++) {
+	for (sum=0.0, j=i; j<=n; j++) sum += r(i, j) * s(j);
+	t(i) = sum;
+      }
+      int skip = 1;
+      for (int i=1; i<=n; i++) {
+	for (sum=0.0, int j=1; j<=n; j++) sum += qt(j, i) * t(j);
+	w(i) = fvec(i) - fvcold(i) - sum;
+	if (fabs(w(i)) >= EPS * (fabs(fvec(i))+fabs(fvcold(i)))) skip=0;
+	else w(i)=0.0;
+      }
+      if (!skip) {
+	for (int i=1; i<=n; i++) {
+	  for (sum=0.0, int j=1; j<=n; j++) sum += qt(i, j) * w(j);
+	  t(i) = sum;
+	}
+	den += s.dot(s);
+	s = s / den;
+	qrupdt(r,qt,n,t,s);
+	for (int i=1;i<=n;i++) {
+	  if (r(i, i) == 0.0) throw("r singular in broydn\n");
+	  d(i) = r(i, i);
+	}
+      }
+    }
+    for (int i=1; i<=n; i++) {
+      for (sum=0.0, j=1; j<=n; j++) sum += qt(i, j) * fvec(j);
+      g(i) = sum;
+    }
+    for (int i=n; i>=1; i--) {
+      for (sum=0.0, j=1; j<=i; j++) sum += r(j, i) * g(j);
+      g(i) = sum;
+    }
+    xold = x; 
+    fvcold = fvec;
+    fold=f;
+    for (int i=1;i<=n;i++) {
+      for (sum=0.0,j=1;j<=n;j++) sum += qt(i, j) * fvec(j);
+      p(i) = -sum;
+    }
+    rsolv(r,n,d,p);
+    lnsrch(n,xold,fold,g,p,x,&f,stpmax,check,fmin);
+    test = 0.0;
+    for (int i=1; i<=n; i++)
+      if (fabs(fvec(i)) > test) test = fabs(fvec(i));
+    if (test < TOLF) {
+      *check=0;
+      return;
+    }
+    if (*check) {
+      if (restrt) return;
+      else {
+	test = 0.0;
+	den = maximum(f, 0.5 * n);
+	for (int i=1;i<=n;i++) {
+	  temp=fabs(g(i)) * maximum(fabs(x(i)),1.0)/den;
+	  if (temp > test) test = temp;
+	}
+	if (test < TOLMIN) return;
+	else restrt = 1;
+      }
+    } else {
+      restrt = 0;
+      test = 0.0;
+      for (int i=1; i<=n; i++) {
+	temp=(fabs(x(i) - xold(i))) / maximum(fabs(x(i)), 1.0);
+	if (temp > test) test = temp;
+      }
+      if (test < TOLX) return;
+    }
+  }
+  throw("MAXITS exceeded in broydn\n");
   return;
 }

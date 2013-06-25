@@ -70,7 +70,7 @@ int main() {
        << TOLERANCE << endl << oneset << endl;
 
   /// Print out header line
-  cout << "# tan beta   mh           mA           mH0          mH+-\n";
+  cout << "#    m0             m12          A0         tanb        mu solutions\n";
 
   int i; 
   /// Set limits of tan beta scan
