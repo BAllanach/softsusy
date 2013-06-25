@@ -75,6 +75,9 @@ public:
             DoubleMatrix & e, const DoubleVector & v, double m,
             double tb, double MU, int l, int t, double h, double s,
             double lambda, double kappa, double xiF, double mupr);
+  
+  NmssmSusy(const MssmSusy &m);
+  
   virtual ~NmssmSusy(); ///< Default destructor
 
   /// sets object to be equal to another

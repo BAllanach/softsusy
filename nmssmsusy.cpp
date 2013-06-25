@@ -46,6 +46,13 @@ NmssmSusy::NmssmSusy(const NmssmSusy &s)
     setPars(numNMssmPars);
 }
 
+NmssmSusy::NmssmSusy(const MssmSusy &m)
+   : MssmSusy(m)
+   , lambda(0), kappa(0), sVev(0), xiF(0), mupr(0)
+{
+    setPars(numNMssmPars);
+}
+
 
 NmssmSusy::NmssmSusy(const DoubleMatrix & u, const DoubleMatrix & d, const
 		     DoubleMatrix & e, const DoubleVector & v, double m,
@@ -56,6 +63,7 @@ NmssmSusy::NmssmSusy(const DoubleMatrix & u, const DoubleMatrix & d, const
 {
     setPars(numNMssmPars);
 }
+
 
 NmssmSusy::~NmssmSusy() {
 }
@@ -105,6 +113,7 @@ void NmssmSusy::set(const DoubleVector & y) {
 
 ostream & operator <<(ostream &left, const NmssmSusy &s) {
   left << static_cast<MssmSusy>(s)
+       << "singlet VEV: " << s.displaySvev()
        << " lambda: " << s.displayLambda()
        << " kappa: " << s.displayKappa()
        << " smu: " << s.displaySusyMu()
