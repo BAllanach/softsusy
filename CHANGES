@@ -8,4 +8,6 @@ per mille accuracy
 that is input
 <li> 26/5/13 "Problem Thrown" flag now used instead of "non-perturbative" for
 other problems with the point
+<li> 26/5/13 SLHA problem when jointly using flavour violation and EXTPAR now
+fixed
 

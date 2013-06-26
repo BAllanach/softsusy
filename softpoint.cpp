@@ -557,19 +557,22 @@ int main(int argc, char *argv[]) {
 		    /// This is flavour violation with EXTPAR: mSUGRA BCs
 		    /// with flavour violation
 		    boundaryCondition = &flavourBcs;		    
-		    double m0 = pars(1), m12 = pars(2), a0 = pars(3);
-		    double msq = m0 * m0;
-		    pars.setEnd(77);
-		    int i; for (i=1; i<=3; i++) pars(i) = m12;
-		    /// Fill in scalar mass squareds
-		    for (i=1; i<=5; i++) {
-		      int num = (i-1) * 6 + 4;
-		      pars(num)  = msq; 
-		      pars(num+3)  = msq; 
-		      pars(num+5)  = msq;
-		    }
+		    if (pars.displayEnd() == 3) {
+		      double m0 = pars(1), m12 = pars(2), a0 = pars(3);
+		      double msq = m0 * m0;
+		      pars.setEnd(77);
+		      int i; for (i=1; i<=3; i++) pars(i) = m12;
+		      /// Fill in scalar mass squareds
+		      for (i=1; i<=5; i++) {
+			int num = (i-1) * 6 + 4;
+			pars(num)  = msq; 
+			pars(num+3)  = msq; 
+			pars(num+5)  = msq;
+		      }
+		    
 		    pars(62) = a0;
 		    pars(63) = msq; pars(64) = msq;
+		    }
 		    kw.setNumRpcBcs(65);
 		  }
 		}
@@ -593,6 +596,7 @@ int main(int argc, char *argv[]) {
 		    }
 		  }
 		  else if (i == 25) {
+		    cout << "IN here1\n";
 		    tanb = d;
 		    r->setSetTbAtMX(true);
 		  } 
