@@ -39,6 +39,9 @@ private:
   /// Sets which alternative condition to use: 1 is mu(MSUSY) and MApole
   /// 2 is mu(mInput) and tan beta
   double mAcond, muCond; ///< user set conditions on mA and mu at M_SUSY
+  /// Determines whether mAcond is the pole mass (true, default) or the
+  /// running mass - fixed at MX, the input scale for SUSY breaking
+  bool poleMA;
 public:
   inline void setAltEwsb(double ma, double mu) { mAcond = ma; muCond = mu; };
   inline void setAltEwsbMssm(const AltEwsbMssm & s) { *this = s; };
@@ -46,10 +49,12 @@ public:
   //  inline int displayConditionStyle() { return conditionStyle; };
   inline double displayMaCond() const { return mAcond; };
   inline double displayMuCond() const { return muCond; };
+  inline bool displayPoleMA() const { return poleMA; };
   inline const AltEwsbMssm & displayAltEwsbMssm() const { return *this; };
 
-  inline void setMaCond(double maInput) { mAcond = maInput; };
-  inline void setMuCond(double muInput) { muCond = muInput; };
+  inline void setPoleMA(bool isItPole)  { poleMA = isItPole; };
+  inline void setMaCond(double maInput) { mAcond = maInput;  };
+  inline void setMuCond(double muInput) { muCond = muInput;  };
 };
 
 /// Contains all supersymmetric MSSM parameters, incorporating R_p MSSM

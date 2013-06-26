@@ -596,10 +596,15 @@ int main(int argc, char *argv[]) {
 		    tanb = d;
 		    r->setSetTbAtMX(true);
 		  } 
-		  else if (i == 23 || i == 26) {
+		  else if (i == 23 || i == 26 || i == 24) {
 		    r->useAlternativeEwsb(); 
 		    if (i == 23) { r->setMuCond(d); r->setSusyMu(d); }
-		    if (i == 26) r->setMaCond(d);
+		    if (i == 26) {
+		      r->setMaCond(d); r->setPoleMA(true);
+		    }
+		    if (i == 24) {
+		      r->setMaCond(d); r->setPoleMA(false);
+		    }		      
 		  }
 		  else if (!flavourViolation) {
 		    if ((i > 0 && i <=  3) || (i >= 11 && i <= 13) || 
@@ -966,10 +971,13 @@ int main(int argc, char *argv[]) {
 	//	boundaryCondition = &extendedSugraBcs2;
 	r->setSusyMu(pars(23)); 
       } else {
+	ostringstream ii;
+	ii << "Split GMSB BCs should not supported with alternative EWSB\n";
+	throw ii.str();
 	/// Split GMSB BCs: different
-	r->setSusyMu(400.);
+	/*	r->setSusyMu(400.);
 	r->setMuCond(400.);
-	r->setMaCond(400.);
+	r->setMaCond(400.);*/
       }
       sgnMu = 0; // Flags different BCs
     }

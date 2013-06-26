@@ -818,53 +818,68 @@ void MssmSoftsusy::alternativeEwsb(double mt) {
     rmtsq = sqr(displayDrBarPars().mt), scalesq = sqr(displayMu()), 
     vev2 = sqr(displayHvev()), tbeta = displayTanb(), 
     amu = -displaySusyMu(), mg = displayGaugino()(3);
-  
-  double p2s = 0., p2w = 0., p2b = 0., p2tau = 0.;
-  if (numHiggsMassLoops > 1) {
-    /// two-loop Higgs corrections
-    double sintau = sin(displayDrBarPars().thetatau), 
-      costau = cos(displayDrBarPars().thetatau);
-    double msnusq = sqr(displayDrBarPars().msnu.display(3));
-    double sxb = sin(displayDrBarPars().thetab), 
-      cxb = cos(displayDrBarPars().thetab);
-    double msb1sq = sqr(displayDrBarPars().md.display(1, 3)), 
-      msb2sq = sqr(displayDrBarPars().md.display(2, 3));
-    double mstau1sq = sqr(displayDrBarPars().me.display(1, 3)), 
-      mstau2sq = sqr(displayDrBarPars().me.display(2, 3));
-    double cotbeta = 1.0 / tbeta;
-    double rmbsq = sqr(displayDrBarPars().mb);
-    double rmtausq = sqr(displayDrBarPars().mtau);      
-    double sxt = sin(displayDrBarPars().thetat), 
-      cxt = cos(displayDrBarPars().thetat);
-    double mst1sq = sqr(displayDrBarPars().mu.display(1, 3)), 
-      mst2sq = sqr(displayDrBarPars().mu.display(2, 3));
-    
-    dszodd_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, &amu,
-	    &tbeta, &vev2, &gstrong, &p2s); 
-    ddsodd_(&rmtsq, &rmbsq, &mAsq, &mst1sq, &mst2sq, &msb1sq, &msb2sq, 
-	      &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, 
-	    &p2w);
-    dszodd_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq, &amu,
-	    &cotbeta, &vev2, &gstrong, &p2b); 
-    tausqodd_(&rmtausq, &mAsq, &msnusq, &mstau1sq, &mstau2sq, &sintau,
-	      &costau, &scalesq, &amu, &tanb, &vev2, &p2tau);
-  }
+  double newMh1sq = 0., newMh2sq = 0.;
 
-  double dMA = p2s + p2b + p2w + p2tau;
- 
-  double newMh1sq, newMh2sq;
-  newMh1sq = sqr(sin(beta)) * (sqr(displayMaCond()) + piaa + sqr(mzRun) - dMA) 
-    - (sqr(displaySusyMu()) + 0.5 * sqr(mzRun)) +
-    displayTadpole1Ms() - sqr(sqr(sin(beta))) * 
-    t1OV1Ms1loop -
-    t2OV2Ms1loop * sqr(sin(beta)) * sqr(cos(beta));
-  
-  newMh2sq = sqr(cos(beta)) * (sqr(displayMaCond()) + piaa + sqr(mzRun) - dMA) 
-    - (sqr(displaySusyMu()) + 0.5 * sqr(mzRun)) -
-    t1OV1Ms1loop * sqr(sin(beta)) * sqr(cos(beta)) +
-    displayTadpole2Ms() - sqr(sqr(cos(beta))) * 
-    t2OV2Ms1loop;
-  
+  if (!displayPoleMA()) {
+    /// Note that these need checking. There could be a sign error in front of
+    /// both of the m3^2 terms. Run it back through the usual EWSB. I got
+    /// these from BPMZ.
+    ostringstream ii;
+    ii << "Trying to use non-pole ma in alternativeEwsb: not ready yet\n";
+    throw(ii.str()); ///< DEBUG
+    newMh1sq = displayTadpole1Ms() - 0.5 * sqr(mzRun) * cos(2. * beta)
+      + displayM3Squared() * tanb - sqr(amu);
+    newMh2sq = displayTadpole2Ms() + 0.5 * sqr(mzRun) * cos(2. * beta)
+      + displayM3Squared() * tanb - sqr(amu);
+  }
+  else {  
+    double p2s = 0., p2w = 0., p2b = 0., p2tau = 0.;
+    if (numHiggsMassLoops > 1) {
+      /// two-loop Higgs corrections
+      double sintau = sin(displayDrBarPars().thetatau), 
+	costau = cos(displayDrBarPars().thetatau);
+      double msnusq = sqr(displayDrBarPars().msnu.display(3));
+      double sxb = sin(displayDrBarPars().thetab), 
+	cxb = cos(displayDrBarPars().thetab);
+      double msb1sq = sqr(displayDrBarPars().md.display(1, 3)), 
+	msb2sq = sqr(displayDrBarPars().md.display(2, 3));
+      double mstau1sq = sqr(displayDrBarPars().me.display(1, 3)), 
+	mstau2sq = sqr(displayDrBarPars().me.display(2, 3));
+      double cotbeta = 1.0 / tbeta;
+      double rmbsq = sqr(displayDrBarPars().mb);
+      double rmtausq = sqr(displayDrBarPars().mtau);      
+      double sxt = sin(displayDrBarPars().thetat), 
+	cxt = cos(displayDrBarPars().thetat);
+      double mst1sq = sqr(displayDrBarPars().mu.display(1, 3)), 
+	mst2sq = sqr(displayDrBarPars().mu.display(2, 3));
+      
+      dszodd_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, &amu,
+	      &tbeta, &vev2, &gstrong, &p2s); 
+      ddsodd_(&rmtsq, &rmbsq, &mAsq, &mst1sq, &mst2sq, &msb1sq, &msb2sq, 
+	      &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, 
+	      &p2w);
+      dszodd_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq, &amu,
+	      &cotbeta, &vev2, &gstrong, &p2b); 
+      tausqodd_(&rmtausq, &mAsq, &msnusq, &mstau1sq, &mstau2sq, &sintau,
+		&costau, &scalesq, &amu, &tanb, &vev2, &p2tau);
+    }
+    
+    double dMA = p2s + p2b + p2w + p2tau;
+    
+    newMh1sq = sqr(sin(beta)) * (sqr(displayMaCond()) + piaa + 
+				 sqr(mzRun) - dMA) 
+      - (sqr(displaySusyMu()) + 0.5 * sqr(mzRun)) +
+      displayTadpole1Ms() - sqr(sqr(sin(beta))) * 
+      t1OV1Ms1loop -
+      t2OV2Ms1loop * sqr(sin(beta)) * sqr(cos(beta));
+    
+    newMh2sq = sqr(cos(beta)) * (sqr(displayMaCond()) + piaa + 
+				 sqr(mzRun) - dMA) 
+      - (sqr(displaySusyMu()) + 0.5 * sqr(mzRun)) -
+      t1OV1Ms1loop * sqr(sin(beta)) * sqr(cos(beta)) +
+      displayTadpole2Ms() - sqr(sqr(cos(beta))) * 
+      t2OV2Ms1loop;
+  }
   setMh1Squared(newMh1sq);
   setMh2Squared(newMh2sq);
   
