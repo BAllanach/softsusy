@@ -7,7 +7,7 @@ per mille accuracy
 <li> 26/5/13 Fixed SLHA input option for mu: it is now mu(MX), not mu(MSUSY),
 that is input
 <li> 26/5/13 "Problem Thrown" flag now used instead of "non-perturbative" for
-other problems with the point
+other problems with the point. Thanks to Simon Knapen
 <li> 26/5/13 SLHA problem when jointly using flavour violation and EXTPAR now
-fixed
+fixed. Thanks to Florian Staub
 
