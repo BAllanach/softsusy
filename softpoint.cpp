@@ -600,15 +600,10 @@ int main(int argc, char *argv[]) {
 		    tanb = d;
 		    r->setSetTbAtMX(true);
 		  } 
-		  else if (i == 23 || i == 26 || i == 24) {
+		  else if (i == 23 || i == 26) {
 		    r->useAlternativeEwsb(); 
 		    if (i == 23) { r->setMuCond(d); r->setSusyMu(d); }
-		    if (i == 26) {
-		      r->setMaCond(d); r->setPoleMA(true);
-		    }
-		    if (i == 24) {
-		      r->setMaCond(d); r->setPoleMA(false);
-		    }		      
+		    if (i == 26) r->setMaCond(d); 
 		  }
 		  else if (!flavourViolation) {
 		    if ((i > 0 && i <=  3) || (i >= 11 && i <= 13) || 
