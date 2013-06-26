@@ -2,3 +2,6 @@
 <li> 10/5/13 A Voigt's bug-fixes: small changes to stau mass and chargino corrections 
 <li> 16/5/13 Accuracy fixes to loop functions, which should now be better than
 per mille accuracy
+<li> 24/5/13 Tiny bugfixes to sbottom mass corrections
+<li> 27/5/13 Changed configure.ac file to look for gfortran by default
+

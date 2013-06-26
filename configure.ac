@@ -1,5 +1,8 @@
 dnl Process this file with autoconf to produce a configure script.
 
+dnl Put default fortran compiler for this variable
+F77=gfortran
+
 AC_PREREQ(2.59)
 AC_INIT([softsusy],[3.3],[softsusy@projects.hepforge.org],[softsusy])
 AC_CONFIG_SRCDIR([softpoint.h])
