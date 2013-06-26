@@ -804,7 +804,6 @@ void MssmSoftsusy::iterateMu(double & muold, int sgnMu,
 }
 
 void MssmSoftsusy::alternativeEwsb(double mt) {
-  setSusyMu(displayMuCond());
   calcDrBarPars();
   double sinthDRbarMS = calcSinthdrbar();
   double tanb = displayTanb(), beta = atan(tanb);
@@ -10175,7 +10174,7 @@ void extendedSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   if (!m.displayAltEwsb()) {
     m.setMh1Squared(inputParameters.display(21));
     m.setMh2Squared(inputParameters.display(22));
-  }
+  } else m.setSusyMu(m.displayMuCond());
 }
 
 /// universal mSUGRA boundary conditions

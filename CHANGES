@@ -3,5 +3,6 @@
 <li> 16/5/13 Accuracy fixes to loop functions, which should now be better than
 per mille accuracy
 <li> 24/5/13 Tiny bugfixes to sbottom mass corrections
-<li> 27/5/13 Changed configure.ac file to look for gfortran by default
-
+<li> 26/5/13 Changed configure.ac file to look for gfortran by default
+<li> 26/5/13 Fixed SLHA input option for mu: it is now mu(MX), not mu(MSUSY),
+that is input
