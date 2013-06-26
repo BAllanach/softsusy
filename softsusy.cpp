@@ -2168,7 +2168,7 @@ void MssmSoftsusy::gluino(int accuracy) {
 
   if (testNan(delta)) {
     if (PRINTOUT > 2) cout << "Nan in gluino loop\n";
-    flagNonperturbative(true);
+    flagProblemThrown(true);
     physpars.mGluino = displayGaugino(3);
     return;
   } 
@@ -6713,8 +6713,8 @@ void MssmSoftsusy::calcDrBarNeutralinos(double beta, double mz, double mw,
 void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, 
 				  double sinthDRbar, drBarPars & eg) {
   if (eg.mt > 200. || eg.mt < 50.) {
-    /// Gone badly non-perturbative
-    flagNonperturbative(true);
+    /// Gone badly off-track
+    flagProblemThrown(true);
     if (eg.mt > 200.) eg.mt = 200.;
     if (eg.mt < 50.) eg.mt = 50.;
   }
@@ -6978,9 +6978,9 @@ void MssmSoftsusy::itLowsoft
     
     if (err) {
       /// problem with running: bail out 
-      flagNonperturbative(true);
+      flagProblemThrown(true);
       if (PRINTOUT) 
-	cout << "itLowsoft gone non-perturbative approaching mgut\n"; 
+	cout << "itLowsoft can't run more approaching mgut\n"; 
       if (PRINTOUT > 1) printObj();
       numTries = 0; 
       return;
@@ -7016,7 +7016,7 @@ void MssmSoftsusy::itLowsoft
 
     if (err) {
       // problem with running: bail out 
-      flagNonperturbative(true);
+      flagProblemThrown(true);
       if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to MZ\n"; 
       if (PRINTOUT > 1) printObj();
       numTries = 0;
@@ -7080,7 +7080,7 @@ void MssmSoftsusy::itLowsoft
     err = runto(mz, eps);
     if (err) {
       /// problem with running: bail out 
-      flagNonperturbative(true);
+      flagProblemThrown(true);
       if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to MZ\n"; 
       if (PRINTOUT > 1) printObj();
       ///    old = MssmSoftsusy();

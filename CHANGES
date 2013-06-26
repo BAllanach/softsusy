@@ -6,3 +6,6 @@ per mille accuracy
 <li> 26/5/13 Changed configure.ac file to look for gfortran by default
 <li> 26/5/13 Fixed SLHA input option for mu: it is now mu(MX), not mu(MSUSY),
 that is input
+<li> 26/5/13 "Problem Thrown" flag now used instead of "non-perturbative" for
+other problems with the point
+
