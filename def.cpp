@@ -55,5 +55,8 @@ namespace softsusy {
   long idummySave = -22;
   /// my number of tries for multiple solutions
   int numTry = 0;
+  /// Default is to not include 2-loop MSSM corrections in degenerate
+  /// gluino/squark mass limit 
+  bool includeTwoLoopMssmCorrectionsToMt = false;
 }
 /// end of global variable declaration

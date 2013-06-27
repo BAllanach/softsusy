@@ -2236,19 +2236,19 @@ double MssmSoftsusy::calcRunningMt() {
      0.03799544386587666 * sqr(l));
   resigmat = resigmat + twoLoopQcd;
 
-  /*
-  cout << "twoloopqcd=" << twoLoopQcd 
-       << " twoloopSUSY=" 
-       << twoLpMt() * sqr(sqr(displayGaugeCoupling(3))) / 
-    sqr(16 * PI * PI) << endl;
-  */  
-
   /// 2 loop QCD involving MSSM sparticles -- hep-ph/0210258, in the
   /// approximation that all squarks and the gluino 
   /// have mass mSUSY: a few per mille error induced at SPS1a.
-  /*
+  if (includeTwoLoopMssmCorrectionsToMt) {
   const static double cf = 4.0 / 3.0, ca = 3.0;
-  double m = sqrt(forLoops.mu(1, 3) * forLoops.mu(2, 3));
+  /// colour weighted average mass scale of squarks and gluino
+  double m = (3.0 * (forLoops.mu(1, 3) + forLoops.mu(2, 3) + 
+		     forLoops.mu(1, 2) + forLoops.mu(2, 2) + 
+		     forLoops.mu(1, 1) + forLoops.mu(2, 1) + 
+		     forLoops.md(1, 3) + forLoops.md(2, 3) + 
+		     forLoops.md(1, 2) + forLoops.md(2, 2) + 
+		     forLoops.md(1, 1) + forLoops.md(2, 1)) +
+	      8.0 * mg) / 44.0;
   double aq = displaySoftA(UA, 3, 3) - displaySusyMu() / displayTanb();
   double logMoQsq = 2.0 * log(m / q);
   double twoLoopMssm = -cf * sqr(sqr(displayGaugeCoupling(3))) / 
@@ -2263,7 +2263,7 @@ double MssmSoftsusy::calcRunningMt() {
      ca * aq / m * (-8.0 / 3.0 + 4.0 * logMoQsq));
   
   resigmat = resigmat + twoLoopMssm;
-  */
+  }
 
   /// rest are extra bits from Matchev et al: 2% corrections
   double gtL = 0.5 - 2.0 * sw2 / 3.0, gtR = 2.0 * sw2 / 3.0;

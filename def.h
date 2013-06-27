@@ -75,6 +75,8 @@ namespace softsusy{
   /// A handy global variable for random number generator
   extern long idummySave;
   extern int numTry;
+  /// Include eq (62) from hep-ph/0210268: degenerate gluino/squark mass limit
+  extern bool includeTwoLoopMssmCorrectionsToMt;
 }
 
 #endif
