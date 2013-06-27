@@ -2218,7 +2218,7 @@ double MssmSoftsusy::calcRunningMt() {
     sqr(displayGaugeCoupling(3)) / 3.0;
   resigmat = resigmat + qcd;
   
-  double p = mtpole;
+  double p = mt;
   /// stop/gluino correction 6% correction
   stopGluino = 4.0 * sqr(displayGaugeCoupling(3)) / 3.0 *
     (b1(p, mg, mstop1, displayMu()) + 
@@ -2232,7 +2232,8 @@ double MssmSoftsusy::calcRunningMt() {
   /// 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
   double l = 2.0 * log(mt / displayMu());
   twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
-    (-0.538314 + 0.181534*l - 0.0379954*sqr(l));
+    (-0.5383144424082562 + 0.1815337873591885 * l - 
+     0.03799544386587666 * sqr(l));
   resigmat = resigmat + twoLoopQcd;
 
   /*
