@@ -567,6 +567,24 @@ public:
   /// Calculates transverse part of W self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piWWT(double p, double Q, bool usePoleMt = false) const;
+  /// LCT: Give neutralino-chargino-charged-Higgs trilinear couplings in 
+  /// unrotated basis
+  void getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, ComplexMatrix & apph2, ComplexMatrix & bpph1, ComplexMatrix & bpph2) const;
+  /// LCT: Calculates (16 Pi^2) times the fermion contribution to H^+H^- 
+  /// self-energy for p=external momentum, q=renormalisation scale
+  double piHpHmFermions(double p, double q) const;
+  /// LCT: Calculates (16 Pi^2) times the sfermion contribution to H^+H^-
+  /// self-energy for p=external momentum, q=renormalisation scale
+  double piHpHmSfermions(double p, double q) const;
+  /// LCT: Calculates (16 Pi^2) times the gauge contribution to H^+H^-
+  /// self-energy for p=external momentum, q=renormalisation scale
+  double piHpHmGauge(double p, double q) const;
+  /// LCT: Calculates (16 Pi^2) times the Higgs contribution to H^+H^-
+  /// self-energy for p=external momentum, q=renormalisation scale
+  double piHpHmHiggs(double p, double q) const;
+  /// LCT: Calculates (16 Pi^2) times the gaugino contribution to H^+H^-
+  /// self-energy for p=external momentum, q=renormalisation scale
+  double piHpHmGauginos(double p, double q) const;
   /// Calculates transverse part of H^+H^- self-energy:  
   /// for p=external momentum, Q=renormalisation scale
   virtual double piHpHm(double p, double Q) const;

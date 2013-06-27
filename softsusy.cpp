@@ -8167,12 +8167,46 @@ double Softsusy<SoftPars>::pis2s2(double p, double q) const {
     / (16.0 * sqr(PI));
 }
 
-/// New routine
+/// LCT: Returns trilinear neutralino-chargino-hpm coupling in unrotated basis
 template<class SoftPars>
-double Softsusy<SoftPars>::piHpHm(double p, double q) const {
+void Softsusy<SoftPars>::getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, ComplexMatrix & apph2, ComplexMatrix & bpph1, ComplexMatrix & bpph2) const {
+  double gp = sqrt(0.6) * displayGaugeCoupling(1);
+  double g = displayGaugeCoupling(2);
 
+  apph1(1, 2) = gp / root2;
+  bpph2(1, 2) = gp / root2;
+  apph1(2, 2) = g / root2;
+  bpph2(2, 2) = g / root2;
+  apph1(3, 1) = -g;
+  bpph2(4, 1) = g;
+}
+
+/// LCT: Returns fermion contributions to charged Higgs self-energy
+template<class SoftPars>
+double Softsusy<SoftPars>::piHpHmFermions(double p, double q) const {
+ /// fermions: 3rd family only for now
   drBarPars tree(displayDrBarPars());
+  double    ht      = tree.ht;
+  double    hb      = tree.hb;
+  double    htau    = tree.htau;
+  double    mt      = tree.mt;
+  double    mb      = tree.mb;
+  double    mtau    = tree.mtau;
+  double    beta    = atan(displayTanb());
+  double    cosb    = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
+  double    sinb    = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
 
+  double fermions = 3.0 * (sqr(ht) * cosb2 + sqr(hb) * sinb2) * 
+    gfn(p, mt, mb, q) + sinb2 * sqr(htau) * gfn(p, 0.0, mtau, q) -
+    6.0 * hb * ht * mt * mb * sin2b * b0(p, mt, mb, q);
+
+  return fermions;
+}
+
+/// LCT: Returns sfermion contributions to charged Higgs self-energy
+template<class SoftPars>
+double Softsusy<SoftPars>::piHpHmSfermions(double p, double q) const {
+  drBarPars tree(displayDrBarPars());
   double    ht      = tree.ht;
   double    hb      = tree.hb;
   double    htau    = tree.htau;
@@ -8196,19 +8230,11 @@ double Softsusy<SoftPars>::piHpHm(double p, double q) const {
   double    stau    = sin(thetatau);
   double    ctau    = cos(thetatau);
   double    g       = displayGaugeCoupling(2);
-  double    mh0     = tree.mh0(1);
-  double    mHc     = tree.mHpm;
-  double    mH     = tree.mh0(2);
-  double    mA      = tree.mA0(1);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
   double    mwRun   = displayMwRun();
-  double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta),
-    sinb = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
-  double   mu = - displaySusyMu();
-
-  double fermions = 3.0 * (sqr(ht) * cosb2 + sqr(hb) * sinb2) * 
-    gfn(p, mt, mb, q) + sinb2 * sqr(htau) * gfn(p, 0.0, mtau, q) -
-    6.0 * hb * ht * mt * mb * sin2b * b0(p, mt, mb, q);
+  double    cosb    = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
+  double    sinb    = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+  double    mu      = - displaySusyMu();
 
   /// first two generations: forget lighter Yukawas
   DoubleMatrix lHpud(2, 2), lHpen(2, 2);
@@ -8292,16 +8318,69 @@ double Softsusy<SoftPars>::piHpHm(double p, double q) const {
     (sqr(htau) * sinb2 - sqr(g) * cos2b * 0.5 * geR / cw2DRbar) *
     (sqr(stau) * a0(tree.me(1, 3), q) + sqr(ctau) * a0(tree.me(2, 3), q));
 
-  double weak = sqr(g) * 0.25 * 
+  sfermions = sfermions + thirdFamSfermions;
+
+  return sfermions;
+}
+
+/// LCT: Returns pure gauge contributions to charged Higgs self-energy
+template<class SoftPars>
+double Softsusy<SoftPars>::piHpHmGauge(double p, double q) const {
+  drBarPars tree(displayDrBarPars());
+  double    alpha = tree.thetaH;
+  double    mz = displayMzRun();
+  double    thetaWDRbar = asin(calcSinthdrbar());
+  double    cwDRbar    = cos(thetaWDRbar);
+  double    cw2DRbar    = sqr(cwDRbar);
+  double    sw2DRbar    = 1.0 - cw2DRbar;
+  double    g       = displayGaugeCoupling(2);
+  double    mh0     = tree.mh0(1);
+  double    mHc     = tree.mHpm;
+  double    mH      = tree.mh0(2);
+  double    mA      = tree.mA0(1);
+  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
+  double    mwRun   = displayMwRun();
+  double    beta    = atan(displayTanb());
+  double    cosb    = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
+  double    sinb    = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+  double    mu      = - displaySusyMu();
+
+double gauge = 2.0 * sqr(g) * a0(mwRun, q) +
+  sqr(g) * sqr(cos(2.0 * thetaWDRbar)) / cw2DRbar * a0(mz, q);
+
+ return gauge;
+}
+
+/// LCT: Returns Higgs contributions to charged Higgs self-energy
+template<class SoftPars>
+double Softsusy<SoftPars>::piHpHmHiggs(double p, double q) const {
+  drBarPars tree(displayDrBarPars());
+  double    alpha = tree.thetaH;
+  double    mz = displayMzRun();
+  double    thetaWDRbar = asin(calcSinthdrbar());
+  double    cwDRbar    = cos(thetaWDRbar);
+  double    cw2DRbar    = sqr(cwDRbar);
+  double    sw2DRbar    = 1.0 - cw2DRbar;
+  double    g       = displayGaugeCoupling(2);
+  double    mh0     = tree.mh0(1);
+  double    mHc     = tree.mHpm;
+  double    mH      = tree.mh0(2);
+  double    mA      = tree.mA0(1);
+  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
+  double    mwRun   = displayMwRun();
+  double    beta    = atan(displayTanb());
+  double    cosb    = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
+  double    sinb    = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+  double    mu      = - displaySusyMu();
+
+  double higgs = sqr(g) * 0.25 * 
     (sqr(sin(alpha - beta)) * ffn(p, mH, mwRun, q) +
      sqr(cos(alpha - beta)) * ffn(p, mh0, mwRun, q) +
      ffn(p, mA, mwRun, q) + sqr(cos(2.0 * thetaWDRbar)) / cw2DRbar * 
      ffn(p, mHc, mz, q)) +
-    sqr(g) * sw2 * ffn(p, mHc, 0., q) + 2.0 * sqr(g) * a0(mwRun, q) +
-    sqr(g) * sqr(cos(2.0 * thetaWDRbar)) / cw2DRbar * a0(mz, q) +
+    sqr(g) * sw2 * ffn(p, mHc, 0., q)  +
     sqr(g) * sqr(mwRun) * 0.25 * b0(p, mwRun, mA, q);
 
-  double higgs = 0.;
   DoubleMatrix lHpH0Hm(2, 2);
 
   /// BPMZ not so clear: assuming (D.67) that s_i G+ H- coupling is same as 
@@ -8316,6 +8395,7 @@ double Softsusy<SoftPars>::piHpHm(double p, double q) const {
   DoubleVector spech(2), specHm(2); 
   spech(1) = mH; spech(2) = mh0;
   specHm(1) = mwRun; specHm(2) = mHc;
+  int i,j;
   for(i=1; i<=2; i++) 
     for(j=1; j<=2; j++)
       higgs = higgs + sqr(lHpH0Hm(i, j)) * b0(p, spech(i), specHm(j), q);
@@ -8337,21 +8417,31 @@ double Softsusy<SoftPars>::piHpHm(double p, double q) const {
     lHpHmH0H0(2, 2) * a0(spech(2), q) + lHpHmG0G0 * a0(mz, q) + 
     lHpHmA0A0 * a0(mA, q)); 
 
+  return higgs;
+}
+
+/// LCT: Returns neutralino-chargino contributions to charged Higgs 
+/// self-energy
+template<class SoftPars>
+double Softsusy<SoftPars>::piHpHmGauginos(double p, double q) const {
+  drBarPars tree(displayDrBarPars());
+  double    g       = displayGaugeCoupling(2);
+  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
+  double    beta    = atan(displayTanb());
+  double    cosb    = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
+  double    sinb    = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+
   double gauginos = 0.;
   ComplexMatrix apph1(4, 2), apph2(4, 2), bpph1(4, 2), bpph2(4, 2);
-  apph1(1, 2) = gp / root2;
-  bpph2(1, 2) = gp / root2;
-  apph1(2, 2) = g / root2;
-  bpph2(2, 2) = g / root2;
-  apph1(3, 1) = -g;
-  bpph2(4, 1) = g;
+  getNeutralinoCharginoHpmCoup(apph1, apph2, bpph1, bpph2);
 
   /// Get to physical gaugino estates, and G+H+
   apph1 = -sinb * tree.nBpmz.complexConjugate() * 
     apph1 * tree.uBpmz.hermitianConjugate();
   bpph2 = cosb * tree.nBpmz * bpph2 * tree.vBpmz.transpose();
   
-  for (i=1; i<=4; i++)
+  int i,j;
+   for (i=1; i<=4; i++)
     for(j=1; j<=2; j++) {
       double f = sqr(apph1(i, j).mod()) + sqr(bpph2(i, j).mod());
       double ga = 2.0 * (bpph2(i, j).conj() * apph1(i, j)).real();
@@ -8360,10 +8450,25 @@ double Softsusy<SoftPars>::piHpHm(double p, double q) const {
 	b0(p, tree.mchBpmz(j), tree.mnBpmz(i), q);
     }
 
-  const static double loopFac = 1.0 / (16 * sqr(PI));
+   return gauginos;
+}
 
-  double pihh = fermions + sfermions + thirdFamSfermions + weak + higgs + 
-    gauginos;
+/// LCT: Charged Higgs self-energy 
+template<class SoftPars>
+double Softsusy<SoftPars>::piHpHm(double p, double q) const {
+  /// LCT: fermion contribution
+  double fermions = piHpHmFermions(p,q);
+  /// LCT: sfermion contribution
+  double sfermions = piHpHmSfermions(p, q);
+  /// LCT: pure gauge contribution
+  double gauge = piHpHmGauge(p, q);
+  /// LCT: Higgs contribution
+  double higgs = piHpHmHiggs(p, q);
+  /// LCT: neutralino-chargino contribution
+  double gauginos = piHpHmGauginos(p, q);
+
+  const static double loopFac = 1.0 / (16 * sqr(PI));
+  double pihh = fermions + sfermions + gauge + higgs + gauginos;
 
   return loopFac * pihh;
 }
