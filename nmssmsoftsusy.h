@@ -118,13 +118,16 @@ public:
   virtual void calcTadpole1Ms1loop(double mt, double sinthDRbar);
   /// Calculates then sets the one-loop pieces of \f$ t_2 / v_2 \f$: sets both
   /// 1-loop and total pieces equal to the one-loop piece
-   virtual void calcTadpole2Ms1loop(double mt, double sinthDRbar);
-/// Calculates then sets the one-loop pieces of \f$ t_s / s \f$: sets both
+  virtual void calcTadpole2Ms1loop(double mt, double sinthDRbar);
+  /// Calculates then sets the one-loop pieces of \f$ t_s / s \f$: sets both
   /// 1-loop and total pieces equal to the one-loop piece
   /// Calculates then sets the one-loop pieces of \f$ t_s / s \f$: sets both
   /// 1-loop and total pieces equal to the one-loop piece
-   virtual void calcTadpoleSMs1loop(double mt, double sinthDRbar);
-
+  virtual void calcTadpoleSMs1loop(double mt, double sinthDRbar);
+  //PA: calls routines to calculate all three tadpoles and sets them.
+  // Currently only works at one loop.  
+  // Two loop should be added later. 
+  void doTadpoles(double mt, double sinthDRbar);
   /// Organises tree-level calculation of all sparticle masses and mixings
   virtual void calcDrBarPars();
   
@@ -175,6 +178,56 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   //calculates DrBar Higgs masses and sets them    
   void calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, 
                       drBarPars & eg);
+  
+  /// Returns mu from rewsb requirement. 
+  /// returns 1 if there's a problem. Call at MSusy
+  //PA: To be used in general Z3 violating nmssm 
+  virtual int rewsbMu(int sgnMu, double & mu) const;
+  // PA: NMssm rewsb routine which fixes imn much the same way as 
+  // mu is fixed in the Mssm using mueff = lambda * s / root 
+  // For use in Z3 constrained version or when other scenarios 
+  // where mu = 0
+  virtual int rewsbSvev(int sgnMu, double & svev) const;
+  /// returns 1 if mu < 1.0e-9
+  //PA:  nmssm version for use in Z3 violating case.  
+  virtual int rewsbM3sq(double mu, double & m3sq) const;
+  //PA:: In case of Z3 invariance EWSB outputs kappa instead.
+  virtual int rewsbKap(double & kap) const;
+  //PA: third EWSB condition (for the singlet Higgs field) 
+  //new with respect to the MSSM.
+  virtual int rewsbXiS(double & xiS) const;
+  // PA:For Z3 invariant NMSSM when we solve for s, kappa and mS
+  // or for non universal Higgs
+  virtual int rewsbmSsq(double & mSsq) const;
+  //PA: for non universal Higgs
+  virtual int rewsbmH1sq(double & mH1sq) const;
+  //PA: for non universal Higgs
+  virtual int rewsbmH2sq(double & mH211sq) const;
+  //PA: Imposes EWSB at the tree level. 
+  virtual void rewsbTreeLevel(int sgnMu);
+  //PA: finds mu iteratively in the casew where we use EWSB to swap 
+  //(mu, m3sq, XiS) --> (mZ, tb, s) 
+  // Uses the full one loop tadpole from Degrassi and Slavich.  
+  // No two loop added yet.
+  void iterateMu(double & munew, int sgnMu, double mt, 
+		 int maxTries, double pizztMS, double sinthDRbar, double tol,
+		 int  & err);
+  //Routine for iteratively solving for the singlet vev, s = <S>.
+  // where the EWSB is used to swap (kappa, mS) --> (mZ, tb)   
+  // and determine s.
+  // Uses the full one loop tadpole from Degrassi and Slavich.  
+  // No two loop added yet.
+  void iterateSvev(double & sold, int sgnMu,
+		   double mt, int maxTries, double pizzMS,
+		   double sinthDRbar, double tol, int & err);
+  //PA: organises imposition of EWSB conditions. 
+  // Currently at full one loop, two loop to be added.
+  // Currently works for two cases depending on Z3 switch
+  //Z3 = true:  s --> mZ, kappa --> tan beta, mS --> s 
+  //ie (kappa, mS) --> (mZ, tb)
+  //Z3 = false:  mu --> mZ, m3sq --> tan beta, s --> XiS  (Z3 = false) 
+  // ie (mu, m3sq, XiS) --> (mZ, tb, s) 
+  void rewsb(int sgnMu, double mt, double muOld);
   /// Calculates physical sparticle masses to accuracy number of loops. Should
   /// be called at M_{SUSY}.
   virtual void physical(int accuracy);
@@ -286,6 +339,7 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   double pis1s3(double p, double q) const;
   double pis2s3(double p, double q) const;
   double pis3s3(double p, double q) const;
+
 
   NmssmSusy guessAtSusyMt(double tanb, DoubleVector nmpars, const QedQcd & oneset);
 

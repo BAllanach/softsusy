@@ -26,6 +26,10 @@ namespace softsusy {
   /// scalar mass Higgs parameters? (Other quantities all 2-loop anyway): the
   /// default in SOFTSUSY 3 is to include all 2-loop terms
   bool INCLUDE_2_LOOP_SCALAR_CORRECTIONS = true;
+  /// PA: switch for selecting between the Z3 preserving case and the
+  // Z3 violating case with mu and m3sq allowed
+  // needed fpr slecting which EWSB routines to use.
+  bool Z3 = true;
   /// number of loops used to calculate Higgs mass and tadpoles. They should be
   /// identical for a consistent calculation
   int numHiggsMassLoops = 2, numRewsbLoops = 2;

@@ -83,6 +83,28 @@ void NmssmSoftsusy::printall(){
 }
 
 
+//PA: calls routines to calculate all three tadpoles and sets them.
+// Currently only works at one loop.  
+// Two loop should be added later. 
+void NmssmSoftsusy::doTadpoles(double mt, double sinthDRbar) {
+
+    calcTadpole1Ms1loop(mt, sinthDRbar);
+    calcTadpole2Ms1loop(mt, sinthDRbar);
+    calcTadpoleSMs1loop(mt, sinthDRbar);
+    //PA: set to one loop first
+    double t1OV1 = displayTadpole1Ms1loop();
+    double t2OV2 = displayTadpole2Ms1loop();
+    double tSOVS = displayTadpoleSMs1loop();
+    
+    //PA: two loop routines to be added here!
+    //And these will be added to local t10V1, t20V2, tS0VS
+
+    //PA: After one and two loop tadpoels are added they are then set
+    setT1OV1Ms(t1OV1); 
+    setT2OV2Ms(t2OV2); 
+    tSOVSMs = tSOVSMs1loop;
+    
+}
 
 void NmssmSoftsusy::P1SfSfCouplings(DoubleMatrix & lp1tt, DoubleMatrix & lp1bb, DoubleMatrix  & lp1tautau) const {
   double s = displaySvev();
@@ -134,6 +156,8 @@ void NmssmSoftsusy::P3SfSfCouplings(DoubleMatrix & lp3tt, DoubleMatrix & lp3bb, 
   lp3tautau(1, 2) = - lp3tautau(2, 1);
 
 }
+
+
 
 
 //PA: obtains NMSSM H1-sfermion-sfermion couplings
@@ -947,7 +971,7 @@ void NmssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, double s
      flagTachyon(A0);
      if (PRINTOUT > 1) cout << " mA1/mA2 tachyon";
   }
-  DoubleVector temp(mSq.apply(zeroSqrt));
+  DoubleVector temp(mSq.apply(ccbSqrt));
   if (temp(1) > temp(2)) eg.thetaH = eg.thetaH + PI * 0.5;
 
   int pos;
@@ -1060,6 +1084,568 @@ void NmssmSoftsusy::calcDrBarPars() {
   return;
 
 }
+
+
+/// Returns mu from rewsb requirement. 
+/// returns 1 if there's a problem. Call at MSusy
+//PA: To be used in general Z3 violating nmssm 
+int NmssmSoftsusy::rewsbMu(int sgnMu, double & mu) const {
+  int flag = 0;
+   if (abs(sgnMu) != 1) {
+    ostringstream ii;     
+    ii << "Error: sign mu = " << sgnMu << "\n";
+    throw ii.str();
+  }
+   double mH1sq = displayMh1Squared(), mH2sq = displayMh2Squared(), tanb =
+     displayTanb(), tanb2 =  sqr(tanb), lam = displayLambda(), s = displaySvev();
+  /// PA: Treelevel relation just like in Mssm,
+  //but now \mueff = \mu + lambda s / root2
+  double musqeff = (mH1sq - mH2sq * tanb2) 
+    / (tanb2 - 1.0) - 0.5 * sqr(displayMz());
+  
+  double musq = musqeff - 0.5 * sqr(lam) * sqr(s) ;
+  //PA real root test
+  // bsqM4ac = 2.0 * sqr(lam * s) - 4 * 0.5 * sqr(lam * s) + 4 * musqeff;
+  double bsqM4ac =  4.0 * musqeff;
+ 
+  if(bsqM4ac < 0) {
+    mu = - lam * s / root2; //PA: take real part
+    flag = 1; //PA: mu is not real!
+  }
+  else{
+    mu = - lam * s / root2 + 0.5 * sgnMu * sqrt(bsqM4ac);
+  } 
+  
+  return flag;
+  
+}
+
+// PA: NMssm rewsb routine which fixes imn much the same way as 
+// mu is fixed in the Mssm using mueff = lambda * s / root 
+// For use in Z3 constrained version or when other scenarios 
+// where mu = 0
+int NmssmSoftsusy::rewsbSvev(int sgnMu, double & svev) const {
+  int flag = 0;
+   if (abs(sgnMu) != 1) {
+    ostringstream ii;     
+    ii << "Error: sign mu = " << sgnMu << "\n";
+    throw ii.str();
+  }
+   double mH1sq = displayMh1Squared(), mH2sq = displayMh2Squared(), tanb =
+     displayTanb(), tanb2 =  sqr(tanb), lam = displayLambda();
+  
+  /// PA: Tree-level relation just like in Mssm,
+  //but now \mu --> \mueff = lambda s / root2
+  double musqeff = (mH1sq - mH2sq * tanb2) 
+    / (tanb2 - 1.0) - 0.5 * sqr(displayMz());
+   if (musqeff < 0.0) flag = 1; /// mu has incorrect sign
+     double ssq = 2.0 * musqeff / sqr(lam);
+     svev = sgnMu * sqrt(fabs(ssq));
+
+  return flag;
+  
+}
+
+/// returns 1 if mu < 1.0e-9
+//PA:  nmssm version for use in Z3 violating case.  
+int NmssmSoftsusy::rewsbM3sq(double mu, double & m3sq) const {
+   int flag = 0;
+
+   if (fabs(mu) < 1.0e-9)
+     { flag = 1; m3sq = 0.0;} 
+   else{
+     double lam = displayLambda();
+     double s = displaySvev();   
+     double vev =  displayHvev();
+     double al = displayTrialambda();
+     double mupr = displayMupr();
+     double kap = displayKappa();
+     double mH1sq = displayMh1Squared();
+     double mH2sq = displayMh2Squared();
+     double t1 = displayTadpole1Ms();
+     double t2 = displayTadpole2Ms();
+     double s2b = sin(2 * atan(displayTanb()));
+     //PA now using:
+     // m3sqeff = m3sq  + lam * (mupr * svev / root2 + xiF)
+     // + al * svev / root2  +   0.5 * lam * kap * sqr(svev); 
+     // and swapping musq on the RHS for musqeff
+     double  m3sqeff  =  0.5 * 
+        (mH1sq + mH2sq - t2 - t1 + 2.0 * sqr(mu + lam * s / root2)  
+         + 0.5 * sqr(lam) * sqr(vev)) * s2b;
+     
+        m3sq = m3sqeff - 0.5 * (root2 * al * s + lam * kap * s * s)
+           - lam * (mupr * s / root2 + displayXiF());         
+   }
+  
+  /// Following means no good rewsb
+  if (m3sq < 0.0) flag = 1;
+  
+  return flag;
+}
+
+
+
+//PA:: In case of Z3 invariance EWSB outputs kappa instead.
+int NmssmSoftsusy::rewsbKap(double & kap) const {
+  int flag = 0;
+  if(abs(displayLambda()) < 1e-99){
+    if(PRINTOUT) cout << "Warning: called with lambd = 0." << endl;
+    if(PRINTOUT) cout << "rewsbKap routine rewquires non zero lambda." << endl;
+    flag = 2;
+  }
+  double lam = displayLambda();
+  double s = displaySvev();    
+  double vev =  displayHvev();
+  double al = displayTrialambda();
+  double mupr = displayMupr();
+  double xiF = displayXiF();
+  double m3sq = displayM3Squared();
+  double mu = displaySusyMu();
+  double mH1sq = displayMh1Squared();
+  double mH2sq = displayMh2Squared();
+  double t1 = displayTadpole1Ms();
+  double t2 = displayTadpole2Ms();
+  double s2b = sin(2 * atan(displayTanb()));
+  
+    
+  double  m3sqeff  =  0.5 * 
+    (mH1sq + mH2sq - t2 - t1 + 2.0 * sqr(mu + lam * s / root2)  
+     + 0.5 * sqr(lam * vev) ) * s2b;
+  
+  //PA this doesn't work when lam = 0.  Should add warning.
+  kap = (m3sqeff - m3sq - lam * (mupr * s / root2 + xiF)
+	 - al * s / root2) * 2.0 / (lam * s * s);
+  
+  
+  return flag;
+}
+
+//PA: third EWSB condition (for the singlet Higgs field) 
+//new with respect to the MSSM.
+int NmssmSoftsusy::rewsbXiS(double & xiS) const {
+   double mSsq = displayMsSquared();
+   double mSpsq = displayMspSquared();
+   double mupr = displayMupr();
+   double kap = displayKappa(); 
+   double lam = displayLambda();
+   double al = displayTrialambda();
+   double ak = displayTriakappa();
+   double xiF = displayXiF();
+   double s = displaySvev();
+   double sin2b = sin(2.0 * atan(displayTanb()));
+   double vev = displayHvev();
+   double smu = displaySusyMu();
+   xiS = - s / root2 * (mSsq - displayTadpoleSMs() + mSpsq + sqr(mupr) 
+                + 2.0 * kap * xiF + ak * s / root2 + sqr(kap) * sqr(s)
+                + 3.0 * kap * s * mupr / root2 + 0.5 * sqr(lam) * sqr(vev)
+                          - 0.5 * lam * kap * sqr(vev) * sin2b ) 
+      - 0.5 * smu * lam * sqr(vev) - xiF * mupr
+      + 0.25 * sqr(vev) * sin2b * (al + lam * mupr);
+
+ return 0;
+}
+
+// PA: for Z3 invariant NMSSM where we solve for s, kappa and mS
+// Or low energy non-universal Higgs versions
+int NmssmSoftsusy::rewsbmSsq(double & mSsq) const {
+  double kap   = displayKappa(); 
+  double lam   = displayLambda();
+  double alam  = displayTrialambda();
+  double akap  = displayTriakappa();
+  double s     = displaySvev();
+  double sin2b = sin(2.0 * atan(displayTanb()));
+  double vev   = displayHvev();
+  double smu   = displaySusyMu();   
+  double mupr  = displayMupr();
+  double xiF   = displayXiF();
+  double xiS   = displayXiS();
+  double mSprsq = displayMspSquared();
+  
+  //PA: Z3 part first
+  mSsq = - akap * s / root2 - sqr(kap * s) - 0.5 * sqr(lam * vev) 
+    + 0.5 * lam * kap * sqr(vev) * sin2b 
+    + 0.25 * alam * sqr(vev) * sin2b * root2 / s ;
+  //PA: now Z3 violating terms added on part added on.
+  mSsq = mSsq - mSprsq - sqr(mupr) - 2.0 * kap * xiF  
+    - 3.0 * kap * s * mupr / root2 - (xiS + xiF * mupr) * root2 / s 
+    + 0.25 * lam * mupr * sqr(vev) * sin2b * root2 / s 
+    -  smu * lam * sqr(vev) / (root2 * s) + displayTadpoleSMs();
+  
+  return 0;
+}
+
+//PA: for low energy non-universal Higgs versions 
+int NmssmSoftsusy::rewsbmH1sq(double & mH1sq) const {
+  double kap = displayKappa(); 
+  double lam = displayLambda();
+  double alam = displayTrialambda();
+  double svev = displaySvev();
+  double tb = displayTanb();
+  double c2b = cos(2.0 * atan(displayTanb()));
+  double vev = displayHvev();
+  double vu = vev * sin(atan(displayTanb()));
+  double vd = vev * cos(atan(displayTanb()));
+  double mupr = displayMupr();
+  double mueff = displaySusyMu() + lam * svev / root2;
+  double mueff2 = sqr(mueff);
+  double mz2 = sqr(displayMzRun());
+  double xiF = displayXiF();
+  double m3sq = displayM3Squared();
+  double m3sqeff = m3sq  + lam * (mupr * svev / root2 + xiF)
+     + alam * svev / root2  +   0.5 * lam * kap * sqr(svev); 
+  double t1 =  displayTadpole1Ms();
+
+  mH1sq = tb * m3sqeff - 0.5 * mz2 * c2b - 0.5 * sqr(lam * vu) - mueff2 + t1;
+ 
+   return 0;
+   
+
+}
+
+//PA: for low energy non-universal Higgs versions 
+int NmssmSoftsusy::rewsbmH2sq(double & mH2sq) const {
+  double kap = displayKappa(); 
+  double lam = displayLambda();
+  double alam = displayTrialambda();
+  double svev = displaySvev();
+  double tb = displayTanb();
+  double c2b = cos(2.0 * atan(displayTanb()));
+  double vev = displayHvev();
+  double vu = vev * sin(atan(displayTanb()));
+  double vd = vev * cos(atan(displayTanb()));
+  double mupr = displayMupr();
+  double mueff = displaySusyMu() + lam * svev / root2;
+  double mueff2 = sqr(mueff);
+  double mz2 = sqr(displayMzRun());
+  double xiF = displayXiF();
+  double m3sq = displayM3Squared();
+  double m3sqeff = m3sq  + lam * (mupr * svev / root2 + xiF)
+    + alam * svev / root2  +   0.5 * lam * kap * sqr(svev);
+  double t2 =  displayTadpole2Ms();
+  
+  mH2sq = m3sqeff / tb + 0.5 * mz2 * c2b - 0.5 * sqr(lam * vd) - mueff2 + t2;
+  
+  return 0;
+}
+
+
+//PA: Imposes EWSB at the tree level. 
+// Curently works for general nmssm mapping
+// mu --> mZ, m3sq --> tan beta, s --> XiS  (Z3 = false) 
+// ie (mu, m3sq, XiS) --> (mZ, tb, s) 
+//and s --> mZ, kappa --> tan beta, mS --> s  (Z3 = true)
+//ie (kappa, mS) --> (mZ, tb)   
+void NmssmSoftsusy::rewsbTreeLevel(int sgnMu) {
+  double mu, m3sq, s, kap;
+  double xiS, mSsq;
+  //PA: also takes s now for Z3 preserving case with s as output, 
+  //but here we set Z3 false anyway
+  if(Z3){
+    if (rewsbSvev(sgnMu,s)) flagMusqwrongsign(true);
+    else flagMusqwrongsign(false);
+    setSvev(s);
+  }
+  else{
+    if (rewsbMu(sgnMu, mu)) flagMusqwrongsign(true);
+    else flagMusqwrongsign(false);
+    setSusyMu(mu);
+  }
+  if(Z3){ 
+    if (rewsbKap(kap)) flagM3sq(true);  
+    else flagM3sq(false); 
+    setKappa(kap);
+  }
+  //PA:  again using rewsbM3sq which can work for Z3 violating case  
+  else { 
+    if (rewsbM3sq(mu, m3sq)) flagM3sq(true);  
+    else flagM3sq(false); 
+    setM3Squared(m3sq);
+  }
+  if(Z3 == false){
+    rewsbXiS(xiS);
+    setXiS(xiS);
+  }
+  else{
+    rewsbmSsq(mSsq);
+    setMsSquared(mSsq);
+  }
+  
+  if ((displayMh1Squared() + 2.0 * sqr(displaySusyMu()) +
+       displayMh2Squared() - 2.0 * fabs(displayM3Squared())) < 0.0 )
+    flagHiggsufb(true);
+  else 
+    flagHiggsufb(false);
+  return;
+}
+
+
+/// Obtains solution of one-loop effective potential minimisation via iteration
+/// technique
+/// err is 1 if no iteration reached
+/// 2 if incorrect rewsb
+void NmssmSoftsusy::iterateMu(double & muold, int sgnMu,
+			     double mt, int maxTries, double pizzMS,
+			     double sinthDRbar, double tol, int & err) {
+  static int numTries = 0;
+  static double munew = 0.;
+  double lam = displayLambda();
+  double s = displaySvev();
+  if (numTries - 1 > maxTries) { 
+    if (PRINTOUT) cout << "iterateMu reached maxtries\n"; 
+    numTries = 0; munew = 0.0;
+    err = 1; return;
+  }
+  /// How close to convergence are we?
+  double c = 1.0 - minimum(fabs(muold), fabs(munew)) / 
+    maximum(fabs(muold), fabs(munew));
+  if (PRINTOUT > 2) cout << " diff=" << c;
+
+  if (c < tol) { 
+    muold = munew; //err = 0;
+    numTries = 0; munew = 0.0;
+    if (PRINTOUT > 2) cout << " mu converged\n";
+    return; 
+  }
+
+  numTries = numTries + 1;
+  muold = munew;
+ 
+  double mH1sq = displayMh1Squared(), mH2sq = displayMh2Squared(), 
+    tanb = displayTanb(), tanb2 = sqr(tanb);
+  
+  double treeLevelMusqeff = (mH1sq - mH2sq * tanb2) 
+    / (tanb2 - 1.0) - 0.5 * sqr(displayMz());
+
+  try {
+    calcDrBarPars();
+    double oneLoopMusqeff = treeLevelMusqeff;
+    /// calculate the new one-loop tadpoles with old value of mu
+    if (numRewsbLoops > 0) {
+       doTadpoles(mt, sinthDRbar);
+
+      oneLoopMusqeff = treeLevelMusqeff - 0.5 * pizzMS + 
+	(displayTadpole2Ms() * sqr(tanb) - displayTadpole1Ms()) /
+	(sqr(tanb) - 1.0); 
+    }
+     //PA real root test
+     // bsqM4ac = 2.0*sqr(lam * s) - 4*0.5*sqr(lam * s) + 4 * oneLoopMusqeff;
+     double bsqM4ac =  4 * oneLoopMusqeff;
+     if(bsqM4ac < 0) {
+        munew = - lam * s / root2; // take real part
+        err = 2; 
+      if (PRINTOUT > 1) cout << "no real roots for mu";
+     }
+     else{
+        munew = - lam * s / root2 + 0.5 * sgnMu * sqrt(bsqM4ac);
+     } 
+       
+     setSusyMu(munew); 
+    double m3sqnew, kapnew;
+  
+    //PA:  using a rewsbM3sq for the Z3 violating case 
+    if (rewsbM3sq(munew, m3sqnew) == 0) {
+       flagM3sq(false);
+    }
+    else{
+       flagM3sq(true);
+    }
+    setM3Squared(m3sqnew);
+  
+    double xiSnew, mSsqnew;
+
+    rewsbXiS(xiSnew);
+    setXiS(xiSnew);
+
+ }
+
+ 
+  catch(const char *a) {
+    numTries = 0;
+    throw a;
+  }
+  catch(const string &a) {
+    numTries = 0;
+    throw a;
+  }
+  
+  if (PRINTOUT > 2) cout << " mu=" << munew;
+  
+  iterateMu(muold, sgnMu, mt, maxTries, pizzMS, sinthDRbar, tol, err);
+  }
+
+
+//Routine for iteratively solving for the singlet vev, s = <S>.
+// where the EWSB is used to swap (kappa, mS) --> (mZ, tb)   
+// and determine s.
+void NmssmSoftsusy::iterateSvev(double & sold, int sgnMu,
+			     double mt, int maxTries, double pizzMS,
+			     double sinthDRbar, double tol, int & err) {
+  static int numTries = 0;
+  static double snew = 0.0;
+  double lam = displayLambda();
+  double s = displaySvev();
+  if (numTries - 1 > maxTries) { 
+    if (PRINTOUT) cout << "iterateMu reached maxtries\n"; 
+    numTries = 0; snew = 0.0;
+    err = 1; return;
+  }
+  /// How close to convergence are we?
+  double c = 1.0 - minimum(fabs(sold), fabs(snew)) / 
+    maximum(fabs(sold), fabs(snew));
+  
+  if (PRINTOUT > 2) cout << " diff=" << c;
+
+  if (c < tol) { 
+    sold = snew; //err = 0;
+    numTries = 0; snew = 0.0;
+    if (PRINTOUT > 2) cout << " mu converged\n";
+    return; 
+  }
+
+  numTries = numTries + 1;
+ 
+  sold = snew;
+  
+  double mH1sq = displayMh1Squared(), mH2sq = displayMh2Squared(), 
+    tanb = displayTanb(), tanb2 = sqr(tanb);
+  
+  double treeLevelMusqeff = (mH1sq - mH2sq * tanb2) 
+    / (tanb2 - 1.0) - 0.5 * sqr(displayMz());
+  
+  try {
+   
+    calcDrBarPars();
+
+    double oneLoopMusqeff = treeLevelMusqeff;
+    /// calculate the new one-loop tadpoles with old value of mu
+    if (numRewsbLoops > 0) {
+   
+       doTadpoles(mt, sinthDRbar);
+
+      oneLoopMusqeff = treeLevelMusqeff - 0.5 * pizzMS + 
+	(displayTadpole2Ms() * sqr(tanb) - displayTadpole1Ms()) /
+	(sqr(tanb) - 1.0); 
+       }
+  
+    double ssq = 2.0 * oneLoopMusqeff / sqr(lam);
+    snew = sgnMu * sqrt(fabs(ssq));
+    if (oneLoopMusqeff < 0.0) {
+      err = 2; 
+      if (PRINTOUT > 1) cout << " mueff^2<0 ";
+    }  
+     setSvev(snew); 
+   
+     double m3sqnew, kapnew;
+   
+    //PA:  using a rewsKap which can work for Z3 symmetric version
+    //with kappa as output  
+    if (rewsbKap(kapnew) == 0) {
+       flagM3sq(false);
+    }
+    else{
+       flagM3sq(true);
+    }
+    setKappa(kapnew);
+  
+    double xiSnew, mSsqnew;
+
+     rewsbmSsq(mSsqnew);
+     setMsSquared(mSsqnew);
+  
+
+  }
+  catch(const char *a) {
+    numTries = 0;
+    throw a;
+  }
+  catch(const string &a) {
+    numTries = 0;
+    throw a;
+  }
+  
+  if (PRINTOUT > 2) cout << " singlet VEV =" << snew;
+  
+  iterateSvev(sold, sgnMu, mt, maxTries, pizzMS, sinthDRbar, tol, err);
+  }
+
+
+/// Organises rewsb: call it at the low scale MS^2 = sqrt(0.5 * (mT1^2 +
+/// mT2^2)) is best, or below if it's decoupled from there. 
+/// Call with zero, or no mt if you want tree level
+void NmssmSoftsusy::rewsb(int sgnMu, double mt, double muOld) {
+  double munew, m3sqnew, kapnew, snew;
+  double xiSnew, mSsqnew;
+  double sinthDRbarMS = calcSinthdrbar();
+  
+  calcTadpole1Ms1loop(mt, sinthDRbarMS);  
+  calcTadpole2Ms1loop(mt, sinthDRbarMS); 
+  calcTadpoleSMs1loop(mt, sinthDRbarMS); 
+  
+  munew = displaySusyMu();
+  snew = displaySvev();
+  
+  /// Iterate to get a self-consistent mu solution
+  int maxTries = 20, err = 0;
+  double tol = TOLERANCE * 1.0e-4;
+  
+  double pizztMS = sqr(displayMzRun()) - sqr(displayMz()); /// resums logs
+  //double pizztMS = piZZT(displayMz(), displayMu());
+  
+  if(Z3){
+    iterateSvev(snew, sgnMu, mt, maxTries, pizztMS, sinthDRbarMS,
+	    tol, err); 
+    if (err == 2) flagMusqwrongsign(true);
+    else flagMusqwrongsign(false); 
+    if (err == 1) flagNoMuConvergence(true);
+    else setSvev(snew);
+
+  }
+
+  else{
+  iterateMu(munew, sgnMu, mt, maxTries, pizztMS, sinthDRbarMS,
+	    tol, err); 
+  
+  if (err == 2) flagMusqwrongsign(true);
+  else flagMusqwrongsign(false); 
+  if (err == 1) flagNoMuConvergence(true);
+  else setSusyMu(munew);
+ 
+  /// average mu with the input value of muOld, if it isn't the number of the
+  /// beast   
+  if (muOld > -6.e66) {
+    munew = ((munew + muOld) * 0.5);
+    setSusyMu(munew);
+    }
+  }
+
+  //PA: using Z3 version of EWSB
+  //with kappa as output
+  if(Z3){
+if (rewsbKap(kapnew) == 0) flagM3sq(false);
+  else flagM3sq(true);   
+  setKappa(kapnew);
+  }
+  else{ //PA: use rewsbM3sq which can work for Z3 violating case
+  if (rewsbM3sq(munew, m3sqnew) == 0) flagM3sq(false);
+  else flagM3sq(true);   
+  setM3Squared(m3sqnew);
+  }
+  if(Z3 == false){
+    rewsbXiS(xiSnew);
+    setXiS(xiSnew);
+  }
+ else{
+     rewsbmSsq(mSsqnew);
+     setMsSquared(mSsqnew);
+  }
+
+  if ((displayMh1Squared() + 2.0 * sqr(displaySusyMu()) +
+       displayMh2Squared() - 2.0 * fabs(displayM3Squared())) < 0.0 )
+    flagHiggsufb(true);
+  else 
+    flagHiggsufb(false);
+}
+
 
 
 /// Organises calculation of physical quantities such as sparticle masses etc
@@ -4197,6 +4783,7 @@ return (sfermions + higgs + neutralinos + chargino)
     / (16.0 * sqr(PI));
 
 }
+
 
 
 /// Provides the first guess at a SUSY object at mt, inputting tanb and oneset

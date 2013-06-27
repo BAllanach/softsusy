@@ -30,10 +30,10 @@ namespace softsusy{
   /// Set to number of loops to use for calculation of Higgs mass 
   /// (currently up to 2, the default)
 
-  /// PA: flag for NMSSM, esed in tree level diagonalisation. I think
-  /// this is the simplest option for combining the nmssm softsusy
-  /// parts with the mssm ones
-  extern bool NMSSM;
+  /// PA: switch for selecting between the Z3 preserving case and the
+  // Z3 violating case with mu and m3sq allowed
+  // needed fpr slecting which EWSB routines to use.
+  extern bool Z3;
 
   extern int numHiggsMassLoops;
   /// Set to number of loops to use for REWSB condition up to the default of 2
