@@ -10,5 +10,3 @@ that is input
 other problems with the point. Thanks to Simon Knapen
 <li> 26/5/13 SLHA problem when jointly using flavour violation and EXTPAR now
 fixed. Thanks to Florian Staub
-<li> 27/5/13 Changed external momentum in top mass calculation to running mass
-just in case there's a problem with 2-loop terms (but I think there isn't)

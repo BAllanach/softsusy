@@ -2218,7 +2218,7 @@ double MssmSoftsusy::calcRunningMt() {
     sqr(displayGaugeCoupling(3)) / 3.0;
   resigmat = resigmat + qcd;
   
-  double p = mt;
+  double p = mtpole;
   /// stop/gluino correction 6% correction
   stopGluino = 4.0 * sqr(displayGaugeCoupling(3)) / 3.0 *
     (b1(p, mg, mstop1, displayMu()) + 
