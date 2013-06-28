@@ -2246,65 +2246,18 @@ void Softsusy<SoftPars>::gluino(int accuracy) {
   physpars.mGluino = displayGaugino(3) * (1.0 + delta); 
 }
 
-///  Formulae from hep-ph/9801365: checked but should be checked again!
-/// Implicitly calculates at the current scale.
 template<class SoftPars>
-double Softsusy<SoftPars>::calcRunningMt() {
-
-  /// For brevity
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double    mtpole      = dataSet.displayPoleMt();
-  double    mt          = forLoops.mt;
-  const double  costh   = (displayMw() / displayMz());
-  const double    cw2   = sqr(costh) ;
-  const double    sw2   = (1.0 - cw2);
-
-  double    ht      = forLoops.ht;
-  double    hb      = forLoops.hb;
-  double    mstop1  = forLoops.mu(1,3);
-  double    mstop2  = forLoops.mu(2,3);
-  double    mg      = forLoops.mGluino; 
-  double    thetat  = forLoops.thetat ;
-  double    mH      = forLoops.mh0(2); 
-  double    alpha   = forLoops.thetaH ;
-  double    g       = displayGaugeCoupling(2);
-  double    e       = g * calcSinthdrbar();
-  double    mh0     = forLoops.mh0(1);
-  double    mA      = forLoops.mA0(1);
-  double    beta    = atan(displayTanb());
-  double    mb      = forLoops.mb;
-  double    mHc     = forLoops.mHpm;
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    thetab  = forLoops.thetab;
-  double    mz      = displayMzRun();
-  double    q       = displayMu();
-  double resigmat = 0.0; 
-  
-  double qcd = 0.0, stopGluino = 0.0, twoLoopQcd = 0.0 , higgs = 0.0; 
-
-  /// 1 loop QCD only -- DRbar 10% correction
-  qcd = - (5.0 + 6.0 * log(displayMu() / mt)) * 4.0 *
+double Softsusy<SoftPars>::calcRunMtQCD() const {
+  double mt = forLoops.mt;
+/// 1 loop QCD only -- DRbar 10% correction
+  double qcd = - (5.0 + 6.0 * log(displayMu() / mt)) * 4.0 *
     sqr(displayGaugeCoupling(3)) / 3.0;
-  resigmat = resigmat + qcd;
-  
-  double p = mtpole;
-  /// stop/gluino correction 6% correction
-  stopGluino = 4.0 * sqr(displayGaugeCoupling(3)) / 3.0 *
-    (b1(p, mg, mstop1, displayMu()) + 
-     b1(p, mg, mstop2, displayMu()) -
-     sin(2.0 * thetat) * mg / mtpole *  
-     (b0(p, mg, mstop1, displayMu()) - 
-      b0(p, mg, mstop2, displayMu())));
-
-  resigmat = resigmat + stopGluino;
   
   /// 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
   double l = 2.0 * log(mt / displayMu());
-  twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
+  double twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
     (-0.538314 + 0.181534*l - 0.0379954*sqr(l));
-  resigmat = resigmat + twoLoopQcd;
-
+  
   /*
   cout << "twoloopqcd=" << twoLoopQcd 
        << " twoloopSUSY=" 
@@ -2334,10 +2287,58 @@ double Softsusy<SoftPars>::calcRunningMt() {
   resigmat = resigmat + twoLoopMssm;
   */
 
-  /// rest are extra bits from Matchev et al: 2% corrections
-  double gtL = 0.5 - 2.0 * sw2 / 3.0, gtR = 2.0 * sw2 / 3.0;
+
+  return qcd + twoLoopQcd;
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunMtStopGluino() const {
+  double    mstop1  = forLoops.mu(1,3);
+  double    mstop2  = forLoops.mu(2,3);
+  double    mg      = forLoops.mGluino; 
+  double    thetat  = forLoops.thetat ;
+  double    mtpole  = dataSet.displayPoleMt();
+  double p = mtpole;
+  /// stop/gluino correction 6% correction
+  double  stopGluino = 4.0 * sqr(displayGaugeCoupling(3)) / 3.0 *
+    (b1(p, mg, mstop1, displayMu()) + 
+     b1(p, mg, mstop2, displayMu()) -
+     sin(2.0 * thetat) * mg / mtpole * //PA: should be running mass?
+     (b0(p, mg, mstop1, displayMu()) - 
+      b0(p, mg, mstop2, displayMu())));
   
-  higgs = sqr(ht) / 2.0 * 
+  return stopGluino;
+
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunMtHiggs() const {
+
+  double    mH      = forLoops.mh0(2); 
+  double    alpha   = forLoops.thetaH ;
+  double    mh0     = forLoops.mh0(1);
+  double    mA      = forLoops.mA0(1);
+  double    mHc     = forLoops.mHpm;
+  double    beta    = atan(displayTanb());
+  double    g       = displayGaugeCoupling(2);
+  double    e       = g * calcSinthdrbar();
+  double    ht      = forLoops.ht;
+  double    hb      = forLoops.hb;
+  double    mtpole  = dataSet.displayPoleMt();
+  double    mt      = forLoops.mt;
+  double    mb      = forLoops.mb;
+  double    q       = displayMu();
+  double    mz      = displayMzRun();
+  double    thetaWDRbar = asin(calcSinthdrbar());
+  double    cw2DRbar    = sqr(cos(thetaWDRbar));
+  double p = mtpole;
+  
+  const double  costh   = (displayMw() / displayMz());
+  const double    cw2   = sqr(costh) ;
+  const double    sw2   = (1.0 - cw2);
+  double gtL = 0.5 - 2.0 * sw2 / 3.0, gtR = 2.0 * sw2 / 3.0;
+
+  double higgs = sqr(ht) / 2.0 * 
     (sqr(sin(alpha)) * (b1(p, mt, mH, q) + b0(p, mt, mH, q))
      + sqr(cos(alpha)) * (b1(p, mt, mh0, q) + 
 			  b0(p, mt, mh0, q))
@@ -2354,10 +2355,23 @@ double Softsusy<SoftPars>::calcRunningMt() {
     sqr(e) * 4.0 / 9.0 * (5.0 + 6.0 * log(q / mt)) +
     sqr(g) / cw2DRbar * ( (sqr(gtL) + sqr(gtR)) * b1(p, mt, mz, q) +
 			  4.0 * gtL * gtR * b0(p, mt, mz, q) );
-  resigmat = resigmat + higgs;
-  
+
+  return higgs;
+
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunMtNeutralinos() const {
+
+  double    q       = displayMu();
+  double    mtpole  = dataSet.displayPoleMt();
+  double    ht      = forLoops.ht;
+  double    g       = displayGaugeCoupling(2);
+  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
+  double    thetat  = forLoops.thetat ;
+  double p = mtpole;
   DoubleMatrix neutralinoContribution(4, 2);
-  /// Neutralino contribution
+  
   DoubleVector aPsi0TStopr(4), bPsi0TStopr(4), aPsi0TStopl(4),
     bPsi0TStopl(4); 
   aPsi0TStopr(1) = - 4 * gp / (3.0 * root2);
@@ -2372,9 +2386,7 @@ double Softsusy<SoftPars>::calcRunningMt() {
   /// Neutralinos
   ComplexMatrix n(forLoops.nBpmz);
   DoubleVector mneut(forLoops.mnBpmz);
-  ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
-  DoubleVector mch(forLoops.mchBpmz); 
-
+  
   aChi0TStopl = n.complexConjugate() * aPsi0TStopl;
   bChi0TStopl = n * bPsi0TStopl;
   aChi0TStopr = n.complexConjugate() * aPsi0TStopr;
@@ -2382,7 +2394,7 @@ double Softsusy<SoftPars>::calcRunningMt() {
 
   ComplexMatrix aNeutTStop(4, 2), bNeutTStop(4, 2);
   DoubleMatrix fNeutTStop(4, 2), gNeutTStop(4, 2);
-
+  double neutralinos = 0.0;
   int i, j;
   DoubleMatrix O(2, 2);
   ComplexVector tt(2), t1(2), t2(2);
@@ -2408,11 +2420,27 @@ double Softsusy<SoftPars>::calcRunningMt() {
 	 gNeutTStop(i, j) * mneut(i) /  mtpole *  
 	 b0(p, mneut(i), forLoops.mu(j, 3), q)) * 0.5;
 
-      resigmat = resigmat + neutralinoContribution(i, j);
+      neutralinos = neutralinos + neutralinoContribution(i, j);
     }
   }
 
-  /// Chargino contribution  
+  return neutralinos;
+
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunMtCharginos() const {
+  double    mtpole  = dataSet.displayPoleMt();
+  double    q       = displayMu();
+  double    ht      = forLoops.ht;
+  double    hb      = forLoops.hb;
+  double    thetab  = forLoops.thetab ;
+  double    g       = displayGaugeCoupling(2);
+  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
+  double p = mtpole;
+  
+  ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
+  DoubleVector mch(forLoops.mchBpmz); 
   DoubleVector bPsicTSbotl(2), bPsicTSbotr(2), aPsicTSbotl(2); 
 
   bPsicTSbotl(1) = g;
@@ -2431,14 +2459,15 @@ double Softsusy<SoftPars>::calcRunningMt() {
   bChicTSbotr = u * bPsicTSbotr;
        
   double charginoContribution = 0.0;
-
-  for(i=1; i<=2; i++) {  
+  DoubleMatrix O(2, 2);
+  ComplexVector tt(2), t1(2), t2(2);
+  for(int i=1; i<=2; i++) {  
     O = rot2d(thetab);      
     tt(1) = aChicTSbotl(i); tt(2) = aChicTSbotr(i);
     t1 = O * tt;
     tt(1) = bChicTSbotl(i); tt(2) = bChicTSbotr(i);      
     t2 = O * tt;
-    for (j=1; j<=2; j++) {
+    for (int j=1; j<=2; j++) {
 	aChTSbot(i, j) = t1(j);
 	bChTSbot(i, j) = t2(j);
 
@@ -2456,6 +2485,31 @@ double Softsusy<SoftPars>::calcRunningMt() {
     }            
   }
 
+  return charginoContribution;
+
+}
+///  Formulae from hep-ph/9801365: checked but should be checked again!
+/// Implicitly calculates at the current scale.
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunningMt() {
+  double    mtpole  = dataSet.displayPoleMt();
+  double resigmat = 0.0; 
+  double qcd = 0.0, stopGluino = 0.0, higgs = 0.0; 
+  //one and two loop qcd
+  qcd =  calcRunMtQCD();
+  resigmat = resigmat + qcd;
+  /// stop/gluino correction 6% correction
+  stopGluino = calcRunMtStopGluino();
+  resigmat = resigmat + stopGluino;
+  /// rest are extra bits from Matchev et al: 2% corrections  
+  //Higgs contribution
+  higgs = calcRunMtHiggs();
+  resigmat = resigmat + higgs;
+  /// Neutralino contribution
+  double neutralinos = calcRunMtNeutralinos();
+  resigmat = resigmat + neutralinos;
+  // Chargino contribution
+  double charginoContribution = calcRunMtCharginos();
   resigmat = resigmat + charginoContribution; 
     
   resigmat = resigmat * mtpole / (16.0 * sqr(PI));  
@@ -8167,21 +8221,6 @@ double Softsusy<SoftPars>::pis2s2(double p, double q) const {
     / (16.0 * sqr(PI));
 }
 
-/// LCT: Returns trilinear neutralino-chargino-hpm coupling in unrotated basis
-template<class SoftPars>
-void Softsusy<SoftPars>::getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, ComplexMatrix & apph2, ComplexMatrix & bpph1, ComplexMatrix & bpph2) const {
-  double gp = sqrt(0.6) * displayGaugeCoupling(1);
-  double g = displayGaugeCoupling(2);
-
-  apph1(1, 2) = gp / root2;
-  bpph2(1, 2) = gp / root2;
-  apph1(2, 2) = g / root2;
-  bpph2(2, 2) = g / root2;
-  apph1(3, 1) = -g;
-  bpph2(4, 1) = g;
-}
-
-/// LCT: Returns fermion contributions to charged Higgs self-energy
 template<class SoftPars>
 double Softsusy<SoftPars>::piHpHmFermions(double p, double q) const {
  /// fermions: 3rd family only for now
@@ -8203,7 +8242,6 @@ double Softsusy<SoftPars>::piHpHmFermions(double p, double q) const {
   return fermions;
 }
 
-/// LCT: Returns sfermion contributions to charged Higgs self-energy
 template<class SoftPars>
 double Softsusy<SoftPars>::piHpHmSfermions(double p, double q) const {
   drBarPars tree(displayDrBarPars());
@@ -8323,35 +8361,6 @@ double Softsusy<SoftPars>::piHpHmSfermions(double p, double q) const {
   return sfermions;
 }
 
-/// LCT: Returns pure gauge contributions to charged Higgs self-energy
-template<class SoftPars>
-double Softsusy<SoftPars>::piHpHmGauge(double p, double q) const {
-  drBarPars tree(displayDrBarPars());
-  double    alpha = tree.thetaH;
-  double    mz = displayMzRun();
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    cwDRbar    = cos(thetaWDRbar);
-  double    cw2DRbar    = sqr(cwDRbar);
-  double    sw2DRbar    = 1.0 - cw2DRbar;
-  double    g       = displayGaugeCoupling(2);
-  double    mh0     = tree.mh0(1);
-  double    mHc     = tree.mHpm;
-  double    mH      = tree.mh0(2);
-  double    mA      = tree.mA0(1);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    mwRun   = displayMwRun();
-  double    beta    = atan(displayTanb());
-  double    cosb    = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
-  double    sinb    = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
-  double    mu      = - displaySusyMu();
-
-double gauge = 2.0 * sqr(g) * a0(mwRun, q) +
-  sqr(g) * sqr(cos(2.0 * thetaWDRbar)) / cw2DRbar * a0(mz, q);
-
- return gauge;
-}
-
-/// LCT: Returns Higgs contributions to charged Higgs self-energy
 template<class SoftPars>
 double Softsusy<SoftPars>::piHpHmHiggs(double p, double q) const {
   drBarPars tree(displayDrBarPars());
@@ -8378,7 +8387,8 @@ double Softsusy<SoftPars>::piHpHmHiggs(double p, double q) const {
      sqr(cos(alpha - beta)) * ffn(p, mh0, mwRun, q) +
      ffn(p, mA, mwRun, q) + sqr(cos(2.0 * thetaWDRbar)) / cw2DRbar * 
      ffn(p, mHc, mz, q)) +
-    sqr(g) * sw2 * ffn(p, mHc, 0., q)  +
+    sqr(g) * sw2 * ffn(p, mHc, 0., q) + 2.0 * sqr(g) * a0(mwRun, q) +
+    sqr(g) * sqr(cos(2.0 * thetaWDRbar)) / cw2DRbar * a0(mz, q) +
     sqr(g) * sqr(mwRun) * 0.25 * b0(p, mwRun, mA, q);
 
   DoubleMatrix lHpH0Hm(2, 2);
@@ -8420,8 +8430,6 @@ double Softsusy<SoftPars>::piHpHmHiggs(double p, double q) const {
   return higgs;
 }
 
-/// LCT: Returns neutralino-chargino contributions to charged Higgs 
-/// self-energy
 template<class SoftPars>
 double Softsusy<SoftPars>::piHpHmGauginos(double p, double q) const {
   drBarPars tree(displayDrBarPars());
@@ -8433,7 +8441,12 @@ double Softsusy<SoftPars>::piHpHmGauginos(double p, double q) const {
 
   double gauginos = 0.;
   ComplexMatrix apph1(4, 2), apph2(4, 2), bpph1(4, 2), bpph2(4, 2);
-  getNeutralinoCharginoHpmCoup(apph1, apph2, bpph1, bpph2);
+  apph1(1, 2) = gp / root2;
+  bpph2(1, 2) = gp / root2;
+  apph1(2, 2) = g / root2;
+  bpph2(2, 2) = g / root2;
+  apph1(3, 1) = -g;
+  bpph2(4, 1) = g;
 
   /// Get to physical gaugino estates, and G+H+
   apph1 = -sinb * tree.nBpmz.complexConjugate() * 
@@ -8453,22 +8466,211 @@ double Softsusy<SoftPars>::piHpHmGauginos(double p, double q) const {
    return gauginos;
 }
 
-/// LCT: Charged Higgs self-energy 
+/// New routine
 template<class SoftPars>
 double Softsusy<SoftPars>::piHpHm(double p, double q) const {
-  /// LCT: fermion contribution
+
+  // drBarPars tree(displayDrBarPars());
+  // double    ht      = tree.ht;
+  // double    hb      = tree.hb;
+  // double    htau    = tree.htau;
+  // double    beta    = atan(displayTanb());
+  // double    mt     =  tree.mt;
+  // double    mb    =  tree.mb;
+  // double    mtau =    tree.mtau;
+  // double    alpha = tree.thetaH;
+  // double    mz = displayMzRun();
+  // double    thetaWDRbar = asin(calcSinthdrbar());
+  // double    cwDRbar    = cos(thetaWDRbar);
+  // double    cw2DRbar    = sqr(cwDRbar);
+  // double    sw2DRbar    = 1.0 - cw2DRbar;
+  // double    thetat  = tree.thetat ;
+  // double    thetab  = tree.thetab;
+  // double    thetatau= tree.thetatau;
+  // double    st      = sin(thetat) ;
+  // double    sb      = sin(thetab) ;
+  // double    ct      = cos(thetat) ;
+  // double    cb      = cos(thetab) ;
+  // double    stau    = sin(thetatau);
+  // double    ctau    = cos(thetatau);
+  // double    g       = displayGaugeCoupling(2);
+  // double    mh0     = tree.mh0(1);
+  // double    mHc     = tree.mHpm;
+  // double    mH     = tree.mh0(2);
+  // double    mA      = tree.mA0(1);
+  // double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
+  // double    mwRun   = displayMwRun();
+  // double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta),
+  //   sinb = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+  // double   mu = - displaySusyMu();
+
+  // double fermions = 3.0 * (sqr(ht) * cosb2 + sqr(hb) * sinb2) * 
+  //   gfn(p, mt, mb, q) + sinb2 * sqr(htau) * gfn(p, 0.0, mtau, q) -
+  //   6.0 * hb * ht * mt * mb * sin2b * b0(p, mt, mb, q);
+
   double fermions = piHpHmFermions(p,q);
-  /// LCT: sfermion contribution
+
+  // /// first two generations: forget lighter Yukawas
+  // DoubleMatrix lHpud(2, 2), lHpen(2, 2);
+  // lHpud(1, 1) = g * mwRun * sin2b / root2;
+
+  // double sfermions = 3.0 * sqr(lHpud(1, 1)) * 
+  //   (b0(p, tree.mu(1, 1), tree.md(1, 1), q) + 
+  //    b0(p, tree.mu(1, 2), tree.md(1, 2), q)) + sqr(lHpud(1, 1)) *
+  //   (b0(p, tree.msnu(1), tree.me(1, 1), q) + 
+  //    b0(p, tree.msnu(2), tree.me(1, 2), q));
+
+  // /// 3rd family
+  // lHpud(1, 1) = g * mwRun * sin2b / root2 
+  //   - ht * mt * cosb - hb * mb * sinb;
+  // lHpud(1, 2) = hb * mu * cosb - tree.ub * sinb;
+  // lHpud(2, 1) = ht * mu * sinb - tree.ut * cosb;
+  // lHpud(2, 2) = -ht * mb * cosb - hb * mt * sinb;
+  // lHpud = rot2d(tree.thetat) * lHpud * rot2d(-tree.thetab);
+
+  // lHpen(1, 1) = g * mwRun * sin2b / root2 
+  //    - htau * mtau * sinb;
+  // lHpen(1, 2) = htau * mu * cosb - tree.utau * sinb;
+  // lHpen(2, 1) = 0.;
+  // lHpen(2, 2) = 0.;
+  // lHpen = lHpen * rot2d(-tree.thetatau);
+
+  // double thirdFamSfermions = 0.;
+  // int i, j; for(i=1; i<=2; i++) 
+  //   for (j=1; j<=2; j++) 
+  //     thirdFamSfermions = thirdFamSfermions +
+  // 	3.0 * sqr(lHpud(i, j)) * b0(p, tree.mu(i, 3), tree.md(j, 3), q);
+    
+  // for (j=1; j<=2; j++) 
+  //   thirdFamSfermions = thirdFamSfermions +
+  //     sqr(lHpen(1, j)) * b0(p, tree.msnu(3), tree.me(j, 3), q);
+
+  // /// ups
+  // sfermions = sfermions + 
+  //   3.0 * sqr(g) * cos2b * (-0.5 * guL / cw2DRbar + 0.5) * 
+  //   (a0(tree.mu(1, 1), q) + a0(tree.mu(1, 2), q)) +
+  //   3.0 * sqr(g) * cos2b * (-0.5 * guR / cw2DRbar) * 
+  //   (a0(tree.mu(2, 1), q) + a0(tree.mu(2, 2), q));
+  // /// downs
+  // sfermions = sfermions + 
+  //   3.0 * sqr(g) * cos2b * (-0.5 * gdL / cw2DRbar - 0.5) * 
+  //   (a0(tree.md(1, 1), q) + a0(tree.md(1, 2), q)) +
+  //   3.0 * sqr(g) * cos2b * (-0.5 * gdR / cw2DRbar) * 
+  //   (a0(tree.md(2, 1), q) + a0(tree.md(2, 2), q));
+  // /// sneutrinos/selectrons
+  // sfermions = sfermions + 
+  //   sqr(g) * cos2b * (-0.5 * gnuL / cw2DRbar + 0.5) * 
+  //   (a0(tree.msnu(1), q) + a0(tree.msnu(2), q));
+  // /// downs
+  // sfermions = sfermions + 
+  //   sqr(g) * cos2b * (-0.5 * geL / cw2DRbar - 0.5) * 
+  //   (a0(tree.me(1, 1), q) + a0(tree.me(1, 2), q)) +
+  //   sqr(g) * cos2b * (-0.5 * geR / cw2DRbar) * 
+  //   (a0(tree.me(2, 1), q) + a0(tree.me(2, 2), q));  
+  // /// 3rd fam ups
+  // thirdFamSfermions = thirdFamSfermions +
+  //   3.0 * (sqr(hb) * sinb2 - sqr(g) * cos2b * 0.5 * guL / cw2DRbar + 
+  // 	   0.5 * cos2b * sqr(g)) * 
+  //   (sqr(ct) * a0(tree.mu(1, 3), q) + sqr(st) * a0(tree.mu(2, 3), q)) +
+  //   3.0 * (sqr(ht) * cosb2 - sqr(g) * cos2b * 0.5 * guR / cw2DRbar) *
+  //   (sqr(st) * a0(tree.mu(1, 3), q) + sqr(ct) * a0(tree.mu(2, 3), q));
+  // /// 3rd fam downs
+  // thirdFamSfermions = thirdFamSfermions +
+  //   3.0 * (sqr(ht) * cosb2 - sqr(g) * cos2b * 0.5 * gdL / cw2DRbar -
+  // 	   0.5 * cos2b * sqr(g)) * 
+  //   (sqr(cb) * a0(tree.md(1, 3), q) + sqr(sb) * a0(tree.md(2, 3), q)) +
+  //   3.0 * (sqr(hb) * sinb2 - sqr(g) * cos2b * 0.5 * gdR / cw2DRbar) *
+  //   (sqr(sb) * a0(tree.md(1, 3), q) + sqr(cb) * a0(tree.md(2, 3), q));
+  // /// 3rd fam snus
+  // thirdFamSfermions = thirdFamSfermions +
+  //   (sqr(htau) * sinb2 - sqr(g) * cos2b * 0.5 * gnuL / cw2DRbar + 
+  //    0.5 * cos2b * sqr(g)) * a0(tree.msnu(3), q);
+  // /// 3rd fam es
+  // thirdFamSfermions = thirdFamSfermions +
+  //   (-sqr(g) * cos2b * 0.5 * geL / cw2DRbar - 0.5 * cos2b * sqr(g)) * 
+  //   (sqr(ctau) * a0(tree.me(1, 3), q) + sqr(stau) * a0(tree.me(2, 3), q)) +
+  //   (sqr(htau) * sinb2 - sqr(g) * cos2b * 0.5 * geR / cw2DRbar) *
+  //   (sqr(stau) * a0(tree.me(1, 3), q) + sqr(ctau) * a0(tree.me(2, 3), q));
+
   double sfermions = piHpHmSfermions(p, q);
-  /// LCT: pure gauge contribution
-  double gauge = piHpHmGauge(p, q);
-  /// LCT: Higgs contribution
+
+  // double weak = sqr(g) * 0.25 * 
+  //   (sqr(sin(alpha - beta)) * ffn(p, mH, mwRun, q) +
+  //    sqr(cos(alpha - beta)) * ffn(p, mh0, mwRun, q) +
+  //    ffn(p, mA, mwRun, q) + sqr(cos(2.0 * thetaWDRbar)) / cw2DRbar * 
+  //    ffn(p, mHc, mz, q)) +
+  //   sqr(g) * sw2 * ffn(p, mHc, 0., q) + 2.0 * sqr(g) * a0(mwRun, q) +
+  //   sqr(g) * sqr(cos(2.0 * thetaWDRbar)) / cw2DRbar * a0(mz, q) +
+  //   sqr(g) * sqr(mwRun) * 0.25 * b0(p, mwRun, mA, q);
+
+  // double higgs = 0.;
+  // DoubleMatrix lHpH0Hm(2, 2);
+
+  // /// BPMZ not so clear: assuming (D.67) that s_i G+ H- coupling is same as 
+  // /// s_i G- H+ (by C conservation): basis is (s1 s2, G- H-)
+  // lHpH0Hm(1, 1) = -sin2b * cosb + cw2DRbar * sinb;
+  // lHpH0Hm(2, 1) =  sin2b * sinb - cw2DRbar * cosb;
+  // lHpH0Hm(1, 2) = -cos2b * cosb + 2.0 * cw2DRbar * cosb;
+  // lHpH0Hm(2, 2) =  cos2b * sinb + 2.0 * cw2DRbar * sinb;
+
+  // /// in (H h) basis
+  // lHpH0Hm = rot2d(alpha) * lHpH0Hm * (g * mz * 0.5 / cwDRbar); 
+  // DoubleVector spech(2), specHm(2); 
+  // spech(1) = mH; spech(2) = mh0;
+  // specHm(1) = mwRun; specHm(2) = mHc;
+  // int i,j;
+  // for(i=1; i<=2; i++) 
+  //   for(j=1; j<=2; j++)
+  //     higgs = higgs + sqr(lHpH0Hm(i, j)) * b0(p, spech(i), specHm(j), q);
+
+  // double l1 = (2.0 * sqr(sin2b) - 1.0) * sqr(g) * 0.25 / cw2DRbar;
+  // double l2 = 2.0 * sqr(cos2b) * sqr(g) * 0.25 / cw2DRbar;
+  // higgs = higgs + l1 * a0(specHm(1), q) + l2 * a0(specHm(2), q);
+  // DoubleMatrix lHpHmH0H0(2, 2);
+  // lHpHmH0H0(1, 1) = cw2DRbar - sw2DRbar * cos2b;
+  // lHpHmH0H0(1, 2) = cw2DRbar * sin2b;
+  // lHpHmH0H0(2, 1) = lHpHmH0H0(1, 2); 
+  // lHpHmH0H0(2, 2) = cw2DRbar + sw2DRbar * cos2b;
+  // lHpHmH0H0 = rot2d(alpha) * lHpHmH0H0 * rot2d(-alpha) *
+  //   (0.25 * sqr(g) / cw2DRbar);
+  // double lHpHmG0G0 = (cw2DRbar * (1.0 + sqr(sin2b)) - sw2DRbar * sqr(cos2b)) *
+  //   0.25 * sqr(g) / cw2DRbar;
+  // double lHpHmA0A0 = sqr(cos2b) * 0.25 * sqr(g) / cw2DRbar;
+  // higgs = higgs + 0.5 * (lHpHmH0H0(1, 1) * a0(spech(1), q) +
+  //   lHpHmH0H0(2, 2) * a0(spech(2), q) + lHpHmG0G0 * a0(mz, q) + 
+  //   lHpHmA0A0 * a0(mA, q)); 
+
   double higgs = piHpHmHiggs(p, q);
-  /// LCT: neutralino-chargino contribution
+
+  // double gauginos = 0.;
+  // ComplexMatrix apph1(4, 2), apph2(4, 2), bpph1(4, 2), bpph2(4, 2);
+  // apph1(1, 2) = gp / root2;
+  // bpph2(1, 2) = gp / root2;
+  // apph1(2, 2) = g / root2;
+  // bpph2(2, 2) = g / root2;
+  // apph1(3, 1) = -g;
+  // bpph2(4, 1) = g;
+
+  // /// Get to physical gaugino estates, and G+H+
+  // apph1 = -sinb * tree.nBpmz.complexConjugate() * 
+  //   apph1 * tree.uBpmz.hermitianConjugate();
+  // bpph2 = cosb * tree.nBpmz * bpph2 * tree.vBpmz.transpose();
+  
+  // int i,j;
+  //  for (i=1; i<=4; i++)
+  //   for(j=1; j<=2; j++) {
+  //     double f = sqr(apph1(i, j).mod()) + sqr(bpph2(i, j).mod());
+  //     double ga = 2.0 * (bpph2(i, j).conj() * apph1(i, j)).real();
+  //     gauginos = gauginos + f * gfn(p, tree.mchBpmz(j), tree.mnBpmz(i), q) -
+  // 	2.0 * ga * tree.mchBpmz(j) * tree.mnBpmz(i) * 
+  // 	b0(p, tree.mchBpmz(j), tree.mnBpmz(i), q);
+  //   }
+
   double gauginos = piHpHmGauginos(p, q);
 
   const static double loopFac = 1.0 / (16 * sqr(PI));
-  double pihh = fermions + sfermions + gauge + higgs + gauginos;
+
+  double pihh = fermions + sfermions + higgs + gauginos;
 
   return loopFac * pihh;
 }

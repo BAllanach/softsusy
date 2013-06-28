@@ -417,6 +417,23 @@ public:
   /// Calculates physical sparticle masses to accuracy number of loops. Should
   /// be called at M_{SUSY}.
   virtual void physical(int accuracy);
+   /// Obtains (16 Pi^2) / mt  times 1-loop and 2-loop QCD corrections 
+  //to the pole mt for use in calcRunningMt 
+  double calcRunMtQCD() const;
+  /// Obtains (16 Pi^2) / mt  times 1-loop stop-Gluino corrections 
+  //to the pole mt for use in calcRunningMt 
+  double calcRunMtStopGluino() const;
+  /// Obtains (16 Pi^2) / mt  times 1-loop Higgs corrections 
+  //to the pole mt for use in calcRunningMt 
+  double calcRunMtHiggs() const;
+
+  /// Obtains (16 Pi^2) / mt  times 1-loop Neutralino corrections 
+  //to the pole mt for use in calcRunningMt 
+  double calcRunMtNeutralinos() const;
+  /// Obtains (16 Pi^2) / mt  times 1-loop Charginos corrections 
+  //to the pole mt for use in calcRunningMt 
+  double calcRunMtCharginos() const;
+
   /// Applies 1-loop SUSY and 2-loop QCD corrections to pole mt in order to
   /// return the DRbar running value at the current scale
   double calcRunningMt();
@@ -567,18 +584,12 @@ public:
   /// Calculates transverse part of W self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piWWT(double p, double Q, bool usePoleMt = false) const;
-  /// LCT: Give neutralino-chargino-charged-Higgs trilinear couplings in 
-  /// unrotated basis
-  void getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, ComplexMatrix & apph2, ComplexMatrix & bpph1, ComplexMatrix & bpph2) const;
   /// LCT: Calculates (16 Pi^2) times the fermion contribution to H^+H^- 
   /// self-energy for p=external momentum, q=renormalisation scale
   double piHpHmFermions(double p, double q) const;
   /// LCT: Calculates (16 Pi^2) times the sfermion contribution to H^+H^-
   /// self-energy for p=external momentum, q=renormalisation scale
   double piHpHmSfermions(double p, double q) const;
-  /// LCT: Calculates (16 Pi^2) times the gauge contribution to H^+H^-
-  /// self-energy for p=external momentum, q=renormalisation scale
-  double piHpHmGauge(double p, double q) const;
   /// LCT: Calculates (16 Pi^2) times the Higgs contribution to H^+H^-
   /// self-energy for p=external momentum, q=renormalisation scale
   double piHpHmHiggs(double p, double q) const;
