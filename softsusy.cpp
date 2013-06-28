@@ -881,6 +881,11 @@ void MssmSoftsusy::alternativeEwsb(double mt) {
     flagHiggsufb(false);
 }
 
+double MssmSoftsusy::treeLevelMuSq() {
+  return (displayMh1Squared() - displayMh2Squared() * sqr(displayTanb())) / 
+    (sqr(displayTanb()) - 1.0) - 0.5 * sqr(displayMz());
+}
+
 void MssmSoftsusy::rewsbTreeLevel(int sgnMu) {
   if (altEwsb) {
     setSusyMu(displayMuCond());
@@ -6779,6 +6784,16 @@ void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2,
 /// calculates masses all at tree-level in the DRbar scheme, useful for
 /// radiative corrections. 
 void MssmSoftsusy::calcDrBarPars() {
+  /// We want to set mu to be the one obtained from the tree-level Higgs
+  /// potential for these purposes
+  double savedMu = displaySusyMu();
+  int sgnMu; 
+  if (savedMu > 1) sgnMu = 1;
+  else sgnMu = -1;
+  double muSq = treeLevelMuSq();
+  double muForNow = zeroSqrt(muSq);
+  setSusyMu(muForNow);
+
   drBarPars eg(displayDrBarPars());
   /// First, must define mstop,sbot,stau and mixing angles in DRbar scheme
   double beta = atan(displayTanb()), mzPole = displayMz();
@@ -6914,6 +6929,8 @@ void MssmSoftsusy::calcDrBarPars() {
   
   setDrBarPars(eg);
 
+  /// Restore the proper loop corrected value for mu
+  setSusyMu(savedMu);
   return;
 }
 

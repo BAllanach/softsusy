@@ -34,7 +34,7 @@ Block MINPAR               # SUSY breaking input parameters
 Block EXTPAR               # scale of SUSY breaking BCs
      0    1.81868040e+16   # MX scale
 # SOFTSUSY-specific non SLHA information:
-# MIXING=2 Desired accuracy=1.00000000e-04 Achieved accuracy=5.81264532e-05
+# MIXING=2 Desired accuracy=1.00000000e-04 Achieved accuracy=5.81264682e-05
 Block MASS                      # Mass spectrum
 # PDG code     mass             particle
         24     8.03780585e+01   # MW
@@ -144,21 +144,21 @@ Block DSQMIX  # super CKM squark mass^2 matrix
   2  1    -1.73623804e-03   # (DSQMIX)_{21}
   2  2     1.27839890e-02   # (DSQMIX)_{22}
   2  3    -2.19037306e-01   # (DSQMIX)_{23}
-  2  4    -2.31188122e-06   # (DSQMIX)_{24}
+  2  4    -2.31188121e-06   # (DSQMIX)_{24}
   2  5     3.72841743e-04   # (DSQMIX)_{25}
   2  6     9.75631116e-01   # (DSQMIX)_{26}
-  3  1     1.88659899e-06   # (DSQMIX)_{31}
+  3  1     1.88659900e-06   # (DSQMIX)_{31}
   3  2     4.35320715e-03   # (DSQMIX)_{32}
   3  3     3.89409419e-04   # (DSQMIX)_{33}
-  3  4     5.31611852e-06   # (DSQMIX)_{34}
+  3  4     5.31613897e-06   # (DSQMIX)_{34}
   3  5     9.99990387e-01   # (DSQMIX)_{35}
   3  6    -3.51763107e-04   # (DSQMIX)_{36}
   4  1     1.99458472e-04   # (DSQMIX)_{41}
-  4  2     6.29618543e-08   # (DSQMIX)_{42}
-  4  3    -2.41757847e-06   # (DSQMIX)_{43}
+  4  2     6.29617652e-08   # (DSQMIX)_{42}
+  4  3    -2.41757848e-06   # (DSQMIX)_{43}
   4  4     9.99999980e-01   # (DSQMIX)_{44}
-  4  5    -5.31511055e-06   # (DSQMIX)_{45}
-  4  6     2.18302331e-06   # (DSQMIX)_{46}
+  4  5    -5.31513101e-06   # (DSQMIX)_{45}
+  4  6     2.18302332e-06   # (DSQMIX)_{46}
   5  1    -1.37529610e-01   # (DSQMIX)_{51}
   5  2     9.89814304e-01   # (DSQMIX)_{52}
   5  3     3.61749374e-02   # (DSQMIX)_{53}
@@ -261,12 +261,12 @@ Block msl2 Q= 8.83274259e+02 # super MNS slepton mass^2 matrix - DRbar
   3  3     1.24561424e+05    # (m^_L^2)_{33}
 Block msd2 Q= 8.83274259e+02 # super CKM squark mass^2 matrix - DRbar
   1  1     9.63315269e+05    # (m^_d^2)_{11}
-  1  2    -2.38577429e-06    # (m^_d^2)_{12}
-  1  3     2.44933977e-03    # (m^_d^2)_{13}
-  2  1    -2.38577429e-06    # (m^_d^2)_{21}
+  1  2    -2.38574637e-06    # (m^_d^2)_{12}
+  1  3     2.44933972e-03    # (m^_d^2)_{13}
+  2  1    -2.38574637e-06    # (m^_d^2)_{21}
   2  2     9.63310075e+05    # (m^_d^2)_{22}
   2  3    -3.94823094e-01    # (m^_d^2)_{23}
-  3  1     2.44933977e-03    # (m^_d^2)_{31}
+  3  1     2.44933972e-03    # (m^_d^2)_{31}
   3  2    -3.94823094e-01    # (m^_d^2)_{32}
   3  3     9.53968560e+05    # (m^_d^2)_{33}
 Block msu2 Q= 8.83274259e+02 # super CKM squark mass^2 matrix - DRbar

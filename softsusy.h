@@ -395,6 +395,9 @@ public:
   /// Organises tree-level rewsb: call it at the low scale M_{SUSY}
   /// IO parameters: sgnMu is +/-1 (desired sign of mu)
   virtual void rewsbTreeLevel(int sgnMu);
+  /// This is the value you'd get from minimising the Higgs potential at
+  /// tree-level 
+  double treeLevelMuSq();
   /// Obtains solution of one-loop effective potential minimisation via
   /// iteration technique. Currently includes: all 1-loop SUSY tadpoles, plus
   /// 2-loop alpha_t (alpha_t + alpha_s) + alpha_b alpha_s corrections
