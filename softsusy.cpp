@@ -6140,147 +6140,6 @@ MssmSusy MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
   return t;
 }
 
-/// These static variables are for passing into numerical routines
-static MssmSoftsusy saveItForNewton;
-static int sgnMuForNewton;
-static void (*boundaryConditionForNewton)(MssmSoftsusy &, const DoubleVector &);
-static DoubleVector parsForNewton(3);
-static QedQcd onesetForNewton;
-static bool gaugeUnificationForNewton, ewsbBCscaleForNewton;
-static double m32ForNewton;
-static double tanbForNewton;
-static double mxForNewton;
-
-/// loads up object at GUT scale, runs it down, providing a vector score as to
-/// how well low-scale boundary conditions are satisfied. 
-/// v1 = tanb(MX), v2 = mx / 10^16 for gauge unification or g2mx without, 
-/// v3 = g1(=g2) at mx, v4 = g3(mx), v5 = mu(mx) / 1000, v6 = m3sq(mx) / 10^6
-/// v7 = htmx, v8 = hb, v9 = htaumx, v10 = VEVmx / 1000, v11 = msusy / 1000
-void mxToMz(const DoubleVector & v, DoubleVector & f) {
-  MssmSoftsusy tempSoft;
-  tempSoft.setThresholds(3); 
-  tempSoft.setLoops(2);
-
-  tempSoft.setMw(MW);
-  tempSoft.setM32(m32ForNewton);
-  tempSoft.setData(onesetForNewton);
-
-  double tol = TOLERANCE;
-  
-  DoubleVector pars(parsForNewton);
-  double tanbmz = tanbForNewton;
-  
-  if (v.displayEnd() < 11) throw("In mxToMz: v dimensions wrong\n");
-
-  double tanbmx = v(1);
-  /// tanb is constrained to lie between 2 and 60
-  tanbmx = maximum(v(1), 2.);
-  tanbmx = minimum(v(1), 60.);
-  /// If mx<MZ or mx>MPlanck, there'll be trouble
-  double mx = maximum(exp(v(2)), MZ);
-  mx = minimum(mx, 1.0e19);
-  double g1mx = v(3);
-  double g2mx = g1mx;     ///< g1(mx)=g2(mx)
-  if (!gaugeUnificationForNewton) {
-    g2mx = v(2);   mx = mxForNewton;
-  }
-  double g3mx = v(4);
-  double muSqmx = v(5) * 1.e6; 
-  double mumx = double(sgnMuForNewton) * sqrt(fabs(muSqmx)); 
-  double m3sqmx = v(6) * 1.0e6;
-  double htmx = v(7), hbmx = v(8), htaumx = v(9);
-  double hvevmx = v(10) * 1.0e3;
-  double msusy = v(11) * 1.0e3;
-
-  msusy = maximum(msusy, MZ);
-  msusy = minimum(msusy, mx);
-  hvevmx = maximum(hvevmx, MZ);
-  hvevmx = minimum(hvevmx, 280.);
-
-  if (fabs(g1mx) > 5. || fabs(g2mx) > 5. || fabs(g3mx) > 5. || 
-      fabs(htmx) > 5. || fabs(hbmx) > 5. || fabs(htaumx) > 5.) 
-    tempSoft.flagNonperturbative(true);
-
-  if (g1mx > 5.) g1mx = 5.;
-  if (g2mx > 5.) g2mx = 5.;
-  if (g3mx > 5.) g3mx = 5.;
-  if (htmx > 5.) g1mx = 5.;
-  if (hbmx > 5.) g2mx = 5.;
-  if (htaumx > 5.) g3mx = 5.;
-  
-  /// set initial BCs. 
-  boundaryConditionForNewton(tempSoft, pars);
-  tempSoft.setMu(mx);
-  tempSoft.setTanb(tanbmx);
-
-  tempSoft.setGaugeCoupling(1, g1mx);   
-  tempSoft.setGaugeCoupling(2, g2mx); 
-  tempSoft.setGaugeCoupling(3, g3mx);   
-  tempSoft.setSusyMu(mumx); 
-  tempSoft.setM3Squared(m3sqmx);
-  DoubleMatrix empty(3, 3);
-  tempSoft.setYukawaMatrix(YU, empty);
-  tempSoft.setYukawaMatrix(YD, empty);
-  tempSoft.setYukawaMatrix(YE, empty);
-  tempSoft.setYukawaElement(YU, 3, 3, htmx);
-  tempSoft.setYukawaElement(YD, 3, 3, hbmx);
-  tempSoft.setYukawaElement(YE, 3, 3, htaumx);
-  tempSoft.setHvev(hvevmx);
-  tempSoft.setMsusy(msusy);
-
-  tempSoft.runto(msusy, tol);
-
-  tempSoft.calcDrBarPars();
-
-  double tbOut; double predictedMzSq = 0.;
-  predictedMzSq = tempSoft.predMzsq(tbOut);
-  tempSoft.setPredMzSq(predictedMzSq);
-  
-  double msusypred = tempSoft.calcMs();
-
-  /// output vector which measures how well BCs are met
-  f(1) = (predictedMzSq / sqr(MZ) - 1.);
-  /// This is the tan beta obtained by EWSB from m3^2 etc at MSUSY
-  f(2) = tempSoft.displayTanb() / tbOut - 1.;
-  f(3) = msusypred / msusy - 1.;
-
-  tempSoft.runto(MZ, tol);
-  MssmSoftsusy predict(tempSoft);
-
-  /// match predict to data, but tempsoft1 is not matched to data
-  predict.sparticleThresholdCorrections(tempSoft.displayTanb());
-
-  double htmzpred = tempSoft.displayYukawaElement(YU, 3, 3);
-  double hbmzpred = tempSoft.displayYukawaElement(YD, 3, 3);
-  double htaumzpred = tempSoft.displayYukawaElement(YE, 3, 3);
-  f(4) = htmzpred / predict.displayYukawaElement(YU, 3, 3) - 1.;
-  f(5) = hbmzpred / predict.displayYukawaElement(YD, 3, 3) - 1.;
-  f(6) = htaumzpred / predict.displayYukawaElement(YE, 3, 3) - 1.;
-
-  f(7) = tempSoft.displayGaugeCoupling(1) / 
-    predict.displayGaugeCoupling(1) - 1.;
-  f(8) = tempSoft.displayGaugeCoupling(2) / 
-    predict.displayGaugeCoupling(2) - 1.;
-  f(9) = tempSoft.displayGaugeCoupling(3) / 
-    predict.displayGaugeCoupling(3) - 1.;
-  f(10) = tempSoft.displayHvev() / predict.displayHvev() - 1.;
-  /// This is the input value of tan beta at MZ
-  f(11) = tempSoft.displayTanb() / tanbmz - 1.;
-
-  predict.setPredMzSq(predictedMzSq);
-
-  saveItForNewton = predict;
-  double fd = f.apply(fabs).max();
-  saveItForNewton.setFracDiff(fd);
-
-  if (PRINTOUT > 0) cout << "Newton method inputs" << v 
-			 << "Newton method outputs" << f;
-
-  return;
-}
-
-
-
 /// Returns low energy softsusy object consistent with BC's m0 etc at MGUT.
 /// oneset should be at MZ and contains the SM data to fit the model to.
 /// If the running comes into difficulty, eg if a Landau pole is reached, it
@@ -6360,80 +6219,20 @@ double MssmSoftsusy::lowOrg
       }
     }
 
-    /// We start with a MssmSoftsusy object that is defined at MX as the
-    /// initial guess
-    if (newtonMethod) {
-      /// load up global variables
-      sgnMuForNewton = sgnMu;
-      boundaryConditionForNewton = boundaryCondition;
-      parsForNewton.setEnd(pars.displayEnd()); parsForNewton = pars;
-      onesetForNewton = oneset; 
-      gaugeUnificationForNewton = gaugeUnification; 
-      ewsbBCscaleForNewton = ewsbBCscale;
-      m32ForNewton = m32;
-      tanbForNewton = tanb;
-      mxForNewton = mx;
+    run(mx, mz);
+    
+    if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
       
-      /// now load up initial guesses for Newton's root finding
-      DoubleVector x(11); 
-      x(1) = displayTanb(); 
-      if (gaugeUnification) x(2) = log(mx);
-      else x(2) = displayGaugeCoupling(2);
-      x(3) = displayGaugeCoupling(1); 
-      x(4) = displayGaugeCoupling(3);
-      x(5) = sqr(displaySusyMu() * 0.001); 
-      x(6) = displayM3Squared() * 1.0e-6;
-      x(7) = displayYukawaElement(YU, 3, 3);
-      x(8) = displayYukawaElement(YD, 3, 3);
-      x(9) = displayYukawaElement(YE, 3, 3);
-      x(10) = displayHvev() * 1.0e-3;
-      x(11) = calcMs() * 1.0e-3;
-
-      /// Randomise the input parameters
-      if (numTry != 1) {
-	if (numTry == 2) x(5) = 1.;
-	if (numTry == 3) x(5) *= 2.;
-	else {
-	  x(1) *= (1. + 0.1 * gasdev(idummySave));
-	  x(2) += gasdev(idummySave);
-	  x(3) *= (1. + 0.1 * gasdev(idummySave));
-	  x(4) *= (1. + 0.1 * gasdev(idummySave));
-	  x(5) *= truncGaussWidthHalf(idummySave);
-	  x(6) *= truncGaussWidthHalf(idummySave);
-	  x(7) *= (1. + 0.1 * gasdev(idummySave));
-	  x(8) *= (1. + 0.1 * gasdev(idummySave));
-	  x(9) *= (1. + 0.1 * gasdev(idummySave));
-	  x(10) *= (1. + 0.1 * gasdev(idummySave));
-	  x(11) *= (1. + 0.1 * gasdev(idummySave)); 
-	}
-      }
-      //      cout << "x=" << x;
-
-      /// run the root finding algorithm itself
-      bool err = newt(x, mxToMz);
-      if (err) flagNoConvergence(true);
-
-      mx = exp(x(2));
-      setSoftsusy(saveItForNewton);
-      
-      if (fabs(displayPredMzSq() / sqr(MZ) - 1.) > 1.0e-3) 
-	flagMusqwrongsign(true);
-    } else {
-      run(mx, mz);
-      
-      if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
-      
-      physical(0);
-      
-      setThresholds(3); setLoops(2);
-      
-      itLowsoft(maxtries, mx, sgnMu, tol, tanb, boundaryCondition, pars, 
+    physical(0);
+    
+    setThresholds(3); setLoops(2);
+    
+    itLowsoft(maxtries, mx, sgnMu, tol, tanb, boundaryCondition, pars, 
 		gaugeUnification, ewsbBCscale);
-    }
+    
     if (displayProblem().nonperturbative 
 	|| displayProblem().higgsUfb || displayProblem().tachyon 
-	|| displayProblem().noRhoConvergence 
-	|| (displayProblem().noConvergence && newtonMethod))
+	|| displayProblem().noRhoConvergence)
       return mx;
     
     runto(maximum(displayMsusy(), mz));

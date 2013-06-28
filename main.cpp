@@ -26,22 +26,12 @@
 #include "numerics.h"
 
 int main() {
-
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
-  /// Sets format of output: 6 decimal places
-  outputCharacteristics(6);
-
-  /*  try{
-  int check = 0;
-  DoubleVector x(2); x(1) = 0.1; x(2) = 0.5; 
-  bool err = newt(x, shoot);
-  cout << "Finished. x=" << x << " err=" << err << endl;  
-  }
-  catch(const string & a) { cout << a; }
-  exit(0);*/
 
   try {
+ /// Sets format of output: 6 decimal places
+  outputCharacteristics(6);
 
   cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
        << " test program, Ben Allanach 2002\n";
@@ -49,9 +39,9 @@ int main() {
   cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
 
   /// Parameters used: CMSSM parameters
-  double m12 = 660., a0 = 0., mGutGuess = 2.0e16, tanb = 40.0, m0 = 2800.;
-  int sgnMu = -1;      ///< sign of mu parameter 
-  int numPoints = 50; ///< number of scan points
+  double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
+  int sgnMu = 1;      ///< sign of mu parameter 
+  int numPoints = 10; ///< number of scan points
 
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
 
@@ -65,61 +55,39 @@ int main() {
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
-  TOLERANCE = 1.0e-3; MIXING=-1; 
   cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
        << TOLERANCE << endl << oneset << endl;
 
   /// Print out header line
-  cout << "#    m0             m12          A0         tanb        mu solutions\n";
+  cout << "# tan beta   mh           mA           mH0          mH+-\n";
 
   int i; 
   /// Set limits of tan beta scan
-  double startM0 = 3000., endM0 = 6000.;
+  double startTanb = 3.0, endTanb = 50.0;
   /// Cycle through different points in the scan
   for (i = 0; i<=numPoints; i++) {
 
-    m0 = (endM0 - startM0) / double(numPoints) * double(i) +
-      startM0; // set tan beta ready for the scan.
+    tanb = (endTanb - startTanb) / double(numPoints) * double(i) +
+      startTanb; // set tan beta ready for the scan.
 
     /// Preparation for calculation: set up object and input parameters
-    MssmSoftsusy r, newtM; 
+    MssmSoftsusy r; 
     DoubleVector pars(3); 
     pars(1) = m0; pars(2) = m12; pars(3) = a0;
     bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
     
-    newtonMethod = false;
     /// Calculate the spectrum
-    //  double mx = r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
-    //  cout << m0 << " "     << r.displaySusyMu() << " ";
+    r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
 
-    cout << m0 << " " << m12 << " " << a0 << " " << tanb << " ";
-
-    vector<MssmSoftsusy> solutions;
-    newtonMethod = true; 
-    for (int j=1; j<=50; j++) { 
-      numTry++;
-      double mx2 = newtM.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, 
-			      uni);
-
-      if (!newtM.displayProblem().test()) {
-	if (solutions.end() == solutions.begin()) {
-	  solutions.push_back(newtM);
-	  cout << newtM.displaySusyMu() << " " << flush;
-	}
-	else {
-	  bool differentSolution = true;
-	  /// check through solutions to see if they are the same or not
-	  for (vector<MssmSoftsusy>::iterator it = solutions.begin(); 
-	       it!=solutions.end(); it++) 
-	    if (sumTol(newtM, *it, 0) < 1.e-3) differentSolution = false;
-	  if (differentSolution) {
-	    cout << newtM.displaySusyMu() << " " << flush;
-	  }
-	}
-      }
-    }
-    
-    cout << endl;
+    /// check the point in question is problem free: if so print the output
+    if (!r.displayProblem().test()) 
+      cout << tanb << " " << r.displayPhys().mh0 << " " 
+	   << r.displayPhys().mA0 << " " 
+	   << r.displayPhys().mH0 << " " 
+	   << r.displayPhys().mHpm << endl;
+    else
+      /// print out what the problem(s) is(are)
+      cout << tanb << " " << r.displayProblem() << endl;
   }
   }
   catch(const string & a) { cout << a; }

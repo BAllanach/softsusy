@@ -49,12 +49,8 @@ namespace softsusy {
   bool mAFlag = false;
   /// default is that developer-level debugging printout flag is OFF
   bool printDEBUG = false;
-  /// default is fixed point iteration rather than Newton's method
-  bool newtonMethod = false; 
   /// random number seed
   long idummySave = -22;
-  /// my number of tries for multiple solutions
-  int numTry = 0;
   /// Default is to not include 2-loop MSSM corrections in degenerate
   /// gluino/squark mass limit 
   bool includeTwoLoopMssmCorrectionsToMt = false;

@@ -70,8 +70,6 @@ namespace softsusy{
   extern bool tryToConvergeHard;
   /// If =0 (default), sets tachyonic mA=0, otherwise resets mA=sqrt(|mA|^2)
   extern bool mAFlag;
-  /// If true, uses Newton solution rather than fixed point iteration
-  extern bool newtonMethod;
   /// A handy global variable for random number generator
   extern long idummySave;
   extern int numTry;
