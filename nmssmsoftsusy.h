@@ -342,7 +342,14 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
 
 
   NmssmSusy guessAtSusyMt(double tanb, DoubleVector nmpars, const QedQcd & oneset);
-
+  
+  double lowOrg(void (*boundaryCondition)
+		(NmssmSoftsusy &, const DoubleVector &),
+		double mxGuess, const DoubleVector & pars, 
+                const DoubleVector nmpars, int sgnMu, double tanb,
+		const QedQcd & oneset, bool gaugeUnification, 
+		bool ewsbBCscale =  false); 
+  
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.    
   void printall();
 
@@ -379,5 +386,14 @@ inline double NmssmSoftsusy::displayTadpoleSMs() const {
 double NmssmSoftsusy::displayTadpoleSMs1loop() const {
   return tSOVSMs1loop; 
 }
+
+//PA:  just placing these here temporarily.  Should decide what to do  merge routines like this with mssmUtils or create NmssmUtils? 
+
+void NmssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
+
+void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
+
+void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
+
 
 #endif

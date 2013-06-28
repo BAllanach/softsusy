@@ -117,27 +117,45 @@ int Fillfortest(SoftParsNmssm & r){
 
 int main() {
 
-   /// Sets format of output: 12 decimal places
-   outputCharacteristics(20);
-   double eps = 1.000000e-20;
-   MIXING = 1;
-   bool speak = true;
+  /// Sets format of output: 12 decimal places
+  outputCharacteristics(20);
+  double eps = 1.0e-4;
+  MIXING = 1;  PRINTOUT = 0;  
+  bool speak = true;
+  
+  /// Parameters used: CMSSM parameters
+  double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
+  int sgnMu = 1;      ///< sign of mu parameter 
+  int numPoints = 10; ///< number of scan points
+  //PA: new nmssm parameters to be fed into lowOrg
+  double lambda = 0.0001, kappa = 0.00001, s = 1e3, xiF = 100.0, mupr = 10.0;
+  xiF = 0; mupr = 0; lambda = -2e-8; kappa =0; s =1;
+  
+  QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
  
-   NmssmSoftsusy n;
-   cout << "n = "  << n << endl;
-   Fillfortest(n);
-cout << "n = "  << n << endl;
-     n.calcDrBarPars();
-
-     n.printall();
-
-     
-     
-    
-
-
-    
+  /// most important Standard Model inputs: you may change these and recompile
+  double alphasMZ = 0.1187, mtop = 173.4, mbmb = 4.2;
+  oneset.setAlpha(ALPHAS, alphasMZ);
+  oneset.setPoleMt(mtop);
+  oneset.setMass(mBottom, mbmb);
+  oneset.toMz();      ///< Runs SM fermion masses to MZ
+  
+  NmssmSoftsusy n;
+  cout << "n = "  << n << endl;
+  Fillfortest(n);
+  cout << "n = "  << n << endl;
+  n.calcDrBarPars();
+  n.physical(0);
+  
+  DoubleVector pars(3); 
+  pars(1) = m0; pars(2) = m12; pars(3) = a0;
+  DoubleVector nmpars(5);
+  nmpars(1) = lambda; nmpars(2) = kappa; nmpars(3) = s; 
+  nmpars(4) = xiF; nmpars(5) = mupr;
+  bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
+  n.lowOrg(NmssmMsugraBcs, mGutGuess, pars, nmpars, sgnMu, tanb, oneset, uni);
+  
+  n.printall();
    
-   
-   return 1;
+  return 1;
 }

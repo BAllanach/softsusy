@@ -4785,7 +4785,6 @@ return (sfermions + higgs + neutralinos + chargino)
 }
 
 
-
 /// Provides the first guess at a SUSY object at mt, inputting tanb and oneset
 /// (should be at MZ) - it's very crude, doesn't take radiative corrections
 /// into account etc. 
@@ -4803,5 +4802,151 @@ NmssmSusy NmssmSoftsusy::guessAtSusyMt(double tanb, DoubleVector nmpars, const Q
    t.setMupr(nmpars(5));
    return t;
 }
+
+
+
+double NmssmSoftsusy::lowOrg
+(void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &),
+ double mxGuess,  const DoubleVector & pars, const DoubleVector nmpars, 
+ int sgnMu, double tanb, const QedQcd & oneset, bool gaugeUnification, 
+ bool ewsbBCscale) {
+
+  double mx = 0.0;
+
+  try {
+     
+    double muFirst = displaySusyMu(); /// Remember initial value
+    
+    const static NmssmSoftsusy empty;
+    bool setTbAtMXflag = displaySetTbAtMX(); 
+
+    setSoftsusy(empty); /// Always starts from an empty object
+    /// These are things that are re-written by the new initialisation
+    setSetTbAtMX(setTbAtMXflag);
+    setData(oneset); 
+    setMw(MW); 
+
+    double mz = displayMz();
+
+    if (mxGuess > 0.0) 
+      mx = mxGuess; 
+    else {
+      string ii("Trying to use negative mx in NmssmSoftsusy::lowOrg.\n");
+      ii = ii + "Now illegal! Use positive mx for first guess of mx.\n";
+      throw ii;
+    }
+    
+    if (oneset.displayMu() != mz) {
+      cout << "WARNING: lowOrg in softsusy.cpp called with oneset at scale\n" 
+	   << oneset.displayMu() << "\ninstead of " << mz << endl;
+    }
+    
+    int maxtries = int(-log(TOLERANCE) / log(10.0) * 10);
+    double tol = TOLERANCE;
+    
+    NmssmSusy t(guessAtSusyMt(tanb, nmpars, oneset));
+    
+    t.setLoops(2); /// 2 loops should protect against ht Landau pole 
+    t.runto(mx); 
+    
+    setSusy(t);
+    
+    /// Initial guess: B=0, mu=1st parameter, need better guesses
+    boundaryCondition(*this, pars);
+
+    if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
+      setSusyMu(sgnMu * 1.0);
+      setM3Squared(0.);
+    }
+    else {
+      setSusyMu(muFirst);
+      setM3Squared(muFirst); 
+    }
+   
+    run(mx, mz);
+  
+    if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
+    
+    physical(0);
+    
+    setThresholds(3); setLoops(2);
+    
+    //PA: itLowsoft to be added along with th rest of lowOrg
+    // itLowsoft(maxtries, mx, sgnMu, tol, tanb, boundaryCondition, pars, 
+    //          nmpars, gaugeUnification, ewsbBCscale);
+
+
+  }
+  catch(const char *a) {
+    ostringstream ii;
+    ii << "SOFTSUSY problem: " << a << " pars=" << pars << " tanb=" << tanb 
+       << " oneset=" << oneset << endl;
+    flagProblemThrown(true);
+    throw(ii.str());
+  }
+  catch(const string & a) {
+    ostringstream ii;
+    ii << "SOFTSUSY problem: " << a << " pars=" << pars << " tanb=" << tanb 
+	 << " oneset=" << oneset << endl;
+    flagProblemThrown(true);
+    throw ii.str();
+  }
+  catch(...) {
+    ostringstream ii;
+    ii << "SOFTSUSY problem: " << endl;
+    ii << "pars=" << pars << " tanb=" << tanb
+       << " oneset=" << oneset << endl;
+    flagProblemThrown(true);
+    throw ii.str();
+  }
+
+  return mx;
+}
+
+/// User supplied routine. Inputs m at the unification scale, and uses
+/// inputParameters vector to output m with high energy soft boundary
+/// conditions. 
+void NmssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+  double m0 = inputParameters.display(1);
+  double m12 = inputParameters.display(2);
+  double a0 = inputParameters.display(3);
+
+  /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
+  /// trilinear scalar coupling to be a0
+  ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
+  m.standardSugra(m0, m12, a0);
+    
+  return;
+}
+//PA: msugra bcs in the mssm limit of the general mssm
+void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+  double m0 = inputParameters.display(1);
+  double m12 = inputParameters.display(2);
+  double a0 = inputParameters.display(3);
+
+  /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
+  /// trilinear scalar coupling to be a0
+  ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
+  m.standardsemiSugra(m0, 0.0, m12, a0, 0.0, 0.0);
+    
+  return;
+}
+
+//PA: semi-msugra bcs for the nmssm
+void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+  double m0 = inputParameters.display(1);
+  double m12 = inputParameters.display(2);
+  double a0 = inputParameters.display(3);
+  double mS = inputParameters.display(4);
+  double Al = inputParameters.display(5);
+  double Ak = inputParameters.display(6);
+  /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
+  /// trilinear scalar coupling to be a0
+  ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
+  m.standardsemiSugra(m0, mS, m12, a0, Al, Ak);
+    
+  return;
+}
+
 
 #endif
