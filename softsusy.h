@@ -437,9 +437,35 @@ public:
   /// Applies 1-loop SUSY and 2-loop QCD corrections to pole mt in order to
   /// return the DRbar running value at the current scale
   double calcRunningMt();
+  //PA: calculates factor to convert to DrBar for mtau
+  double calcRunMtauDrBarConv() const;
+  // Obtains (1 / mTAU)  times 1-loop squark-chargino corrections 
+  //to mtau for use in calcRunningMtau 
+  double calcRunMtauCharginos(double mTauSMMZ) const;
+  // Obtains (1 / mTAU)  times 1-loop squark-neutralino corrections 
+  //to mtau for use in calcRunningMtau 
+  double calcRunMtauNeutralinos(double mTauSMMZ) const; 
+  /// Obtains (1 / mtau)  times 1-loop Higgs corrections 
+  // to mtau for use in calcRunningMtau 
+  double calcRunMtauHiggs() const;
   /// Applies 1-loop SUSY corrections to pole mtau in order to
   /// return the DRbar running value at the current scale
   double calcRunningMtau() const;  
+ 
+  //PA: calculates factor to convert to DrBar for mb
+  double calcRunMbDrBarConv() const;
+  /// Obtains (1 / mb)  times 1-loop sbottom-Gluino corrections 
+  //to mb for use in calcRunningMb 
+  double calcRunMbSquarkGluino() const;
+  /// Obtains (1 / mb)  times 1-loop squark-chargino corrections 
+  //to mb for use in calcRunningMb 
+  double calcRunMbChargino() const;
+  /// Obtains (1 / mb)  times 1-loop Higgs corrections 
+  // to mb for use in calcRunningMb 
+  double calcRunMbHiggs() const;
+   /// Obtains (1 / mb)  times 1-loop neutralino-suqrk corrections 
+  // to mb for use in calcRunningMb 
+  double calcRunMbNeutralinos() const;
   /// Applies approximate 1-loop SUSY corrections to mb(MZ) in order to
   /// return the DRbar running value
   double calcRunningMb() const;

@@ -2517,70 +2517,59 @@ double Softsusy<SoftPars>::calcRunningMt() {
   return mtpole + resigmat;
 }
 
+
 template<class SoftPars>
-double Softsusy<SoftPars>::calcRunningMb() const {
+double Softsusy<SoftPars>::calcRunMbDrBarConv() const {
+   double    g       = displayGaugeCoupling(2);
+   double    g1      = displayGaugeCoupling(1);
+   double alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
+   double conversion = (1.0 - alphasMZ / (3.0 * PI) 
+                        - 23.0 / 72.0 * sqr(alphasMZ) / sqr(PI) +
+                        3.0 * sqr(g) / (128.0 * sqr(PI)) +
+                        13.0 * sqr(g1) / (1152. * sqr(PI)));
+   return conversion;
 
-  if (displayMu() != displayMz()) {
-    ostringstream ii;
-    ii << "Softsusy<SoftPars>::calcRunningMb called with mu=" <<
-      displayMu() << endl; 
-    throw ii.str();
-  }
-  
-  drBarPars forLoops(displayDrBarPars());
+}
 
-  double mbMZ = dataSet.displayMass(mBottom),
-    alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
-
-  double    msbot1  = forLoops.md(1,3);
-  double    msbot2  = forLoops.md(2,3);
-  double    mg      = forLoops.mGluino;
-  double    thetab  = forLoops.thetab;
-  double    thetat  = forLoops.thetat;
-  double    g       = displayGaugeCoupling(2);
-  double    g1      = displayGaugeCoupling(1);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    mbMSSM  = forLoops.mb;
-  double    hb      = forLoops.hb;
-  double    ht      = forLoops.ht;
-  double    mb      = forLoops.mb;
-  double    mt      = forLoops.mt;
-  double    mh      = forLoops.mh0(1);
-  double    mA      = forLoops.mA0(1);
-  double    mH      = forLoops.mh0(2);
-  double    mHp     = forLoops.mHpm;
-  double    mz = displayMzRun();
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double    ca      = cos(forLoops.thetaH);
-  double    sa      = sin(forLoops.thetaH);
-  double    cosb    = cos(atan(displayTanb()));
-  double    sinb    = sin(atan(displayTanb()));
-
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunMbSquarkGluino() const {
+  double    msbot1  = displayDrBarPars().md(1,3);
+  double    msbot2  = displayDrBarPars().md(2,3);
+  double    mg      = displayDrBarPars().mGluino;
+  double    thetab  = displayDrBarPars().thetab;
+  double    thetat  = displayDrBarPars().thetat;
+  double mbMZ = dataSet.displayMass(mBottom),  
+     alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
   double p = mbMZ;
   double q = displayMu();
-  
-  /// First convert mbMZ into DRbar value from hep-ph/9703293,0207126,9701308
-  /// (SM gauge boson contributions)
-  mbMZ = mbMZ *
-    (1.0 - alphasMZ / (3.0 * PI) - 23.0 / 72.0 * sqr(alphasMZ) / sqr(PI) +
-  3.0 * sqr(g) / (128.0 * sqr(PI)) +
-  13.0 * sqr(g1) / (1152. * sqr(PI))); 
-
+  double mbMSSM  = displayDrBarPars().mb;
   double deltaSquarkGluino = - alphasMZ / (3.0 * PI) *
-    (b1(p, mg, msbot1, displayMu()) + 
-     b1(p, mg, msbot2, displayMu()) - 
-     sin(2.0 * thetab) * mg / mbMSSM *  
-     (b0(p, mg, msbot1, displayMu()) - 
-      b0(p, mg, msbot2, displayMu())));
+     (b1(p, mg, msbot1, displayMu()) + 
+      b1(p, mg, msbot2, displayMu()) - 
+      sin(2.0 * thetab) * mg / mbMSSM *  
+      (b0(p, mg, msbot1, displayMu()) - 
+       b0(p, mg, msbot2, displayMu())));
+  
+  return deltaSquarkGluino;
+}
 
-  /// Chargino contribution  
+
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunMbChargino() const {
+  double mbMZ = dataSet.displayMass(mBottom);
+  double p = mbMZ;
+  double q = displayMu();
+  double   mbMSSM  = displayDrBarPars().mb;
+  double g  = displayGaugeCoupling(2);
+  double g1 = displayGaugeCoupling(1);
+  double gp = displayGaugeCoupling(1) * sqrt(0.6);
+  double thetat = displayDrBarPars().thetat;
   DoubleVector bPsicBstopl(2), bPsicBstopr(2), 
     aPsicBstopl(2), aPsicBstopr(2); 
 
   aPsicBstopl(1) = g;
-  aPsicBstopr(2) = -forLoops.ht;
-  bPsicBstopl(2) = -forLoops.hb;
+  aPsicBstopr(2) = -displayDrBarPars().ht;
+  bPsicBstopl(2) = -displayDrBarPars().hb;
   
   DoubleVector aPsicCStopl(2);
   ComplexVector aChicBstopr(2), aChicBstopl(2), bChicBstopl(2),
@@ -2588,10 +2577,8 @@ double Softsusy<SoftPars>::calcRunningMb() const {
   ComplexMatrix aChBstop(2, 2), bChBstop(2, 2);
   DoubleMatrix fChBstop(2, 2), gChBstop(2, 2); 
 
-  ComplexMatrix n(forLoops.nBpmz);
-  DoubleVector mneut(forLoops.mnBpmz);
-  ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
-  DoubleVector mch(forLoops.mchBpmz); 
+  ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
+  DoubleVector mch(displayDrBarPars().mchBpmz); 
 
   aChicBstopl = v.complexConjugate() * aPsicBstopl;
   bChicBstopl = u * bPsicBstopl;
@@ -2618,17 +2605,41 @@ double Softsusy<SoftPars>::calcRunningMb() const {
       
       	charginoContribution = charginoContribution + 
 	  (fChBstop(i, j) * 
-	   b1(p, mch(i), fabs(forLoops.mu(j, 3)),
+	   b1(p, mch(i), fabs(displayDrBarPars().mu(j, 3)),
 	      q) +
 	   gChBstop(i, j) * mch(i) / mbMSSM * 
-	   b0(p, mch(i), forLoops.mu(j, 3), q)) * 0.5;
+	   b0(p, mch(i), displayDrBarPars().mu(j, 3), q)) * 0.5;
     }            
   }
   double deltaSquarkChargino = -charginoContribution / (16.0 * sqr(PI));
+  
+  return deltaSquarkChargino;
 
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunMbHiggs() const {
+  double mbMZ = dataSet.displayMass(mBottom);
+  double p = mbMZ;
+  double q = displayMu();
   double deltaHiggs = 0.;
-  /// new corrections follow and they must be checked! Neutralinos to follow...
-  /// Higgs
+  double hb = displayDrBarPars().hb;
+  double ht = displayDrBarPars().ht;
+  double mb = displayDrBarPars().mb;
+  double mt = displayDrBarPars().mt;
+  double  mh      = displayDrBarPars().mh0(1);
+  double  mA      = displayDrBarPars().mA0(1);
+  double  mH      = displayDrBarPars().mh0(2);
+  double  mHp     = displayDrBarPars().mHpm;
+  double  ca      = cos(displayDrBarPars().thetaH);
+  double  sa      = sin(displayDrBarPars().thetaH);
+  double  cosb    = cos(atan(displayTanb()));
+  double  sinb    = sin(atan(displayTanb()));
+  double  mz = displayMzRun();
+  double  mw = displayMwRun();
+  double  thetaWDRbar = asin(calcSinthdrbar());
+  double  cw2DRbar    = sqr(cos(thetaWDRbar));
+  double g  = displayGaugeCoupling(2);
   deltaHiggs = 0.5 * sqr(hb) * 
     (sqr(ca) * (b1(p, mb, mH, q) + b0(p, mb, mH, q)) + 
      sqr(sa) * (b1(p, mb, mh, q) + b0(p, mb, mh, q)) + 
@@ -2643,7 +2654,22 @@ double Softsusy<SoftPars>::calcRunningMb() const {
   
   deltaHiggs = - deltaHiggs / (16.0 * sqr(PI));
 
-  /// Neutralinos
+  return deltaHiggs;
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunMbNeutralinos() const {
+  double mbMZ = dataSet.displayMass(mBottom);
+  double p = mbMZ;
+  double q = displayMu();
+  double thetab  = displayDrBarPars().thetab;
+  double g       = displayGaugeCoupling(2);
+  double g1      = displayGaugeCoupling(1);
+  double gp      = displayGaugeCoupling(1) * sqrt(0.6);
+  double hb      = displayDrBarPars().hb;
+  double mbMSSM  = displayDrBarPars().mb;
+  ComplexMatrix n(displayDrBarPars().nBpmz);
+  DoubleVector mneut(displayDrBarPars().mnBpmz);
   DoubleVector aPsi0Bsbotr(4), bPsi0Bsbotr(4), aPsi0Bsbotl(4),
     bPsi0Bsbotl(4); 
   aPsi0Bsbotr(1) = gp / (root2 * 3.0) * 2.0;
@@ -2664,7 +2690,7 @@ double Softsusy<SoftPars>::calcRunningMb() const {
   ComplexMatrix aNeutBsbot(4, 2), bNeutBsbot(4, 2);
   DoubleMatrix fNeutBsbot(4, 2), gNeutBsbot(4, 2), 
     neutralinoContribution(4, 2);
-
+  int i, j; DoubleMatrix O(2, 2); ComplexVector tt(2), t1(2), t2(2);
   O = rot2d(thetab);
   for (i=1; i<=4; i++) {
     tt(1) = aChi0Bsbotl(i); tt(2) = aChi0Bsbotr(i);      
@@ -2683,9 +2709,9 @@ double Softsusy<SoftPars>::calcRunningMb() const {
 	(aNeutBsbot(i, j) * bNeutBsbot(i, j).conj()).real(); 
       
       neutralinoContribution(i, j) = (fNeutBsbot(i, j) * 
-	 b1(p, mneut(i), forLoops.md(j, 3), q) + 
+	 b1(p, mneut(i), displayDrBarPars().md(j, 3), q) + 
 	 gNeutBsbot(i, j) * mneut(i) /  mbMSSM *  
-	 b0(p, mneut(i), forLoops.md(j, 3), q)) * 0.5;
+	 b0(p, mneut(i), displayDrBarPars().md(j, 3), q)) * 0.5;
 
       deltaNeutralino = deltaNeutralino + neutralinoContribution(i, j);
     }
@@ -2693,51 +2719,55 @@ double Softsusy<SoftPars>::calcRunningMb() const {
 
   deltaNeutralino = -deltaNeutralino / (16.0 * sqr(PI));
 
+return deltaNeutralino; 
+}
+
+
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunningMb() const {
+
+  if (displayMu() != displayMz()) {
+    ostringstream ii;
+    ii << "Softsusy<SoftPars>::calcRunningMb called with mu=" <<
+      displayMu() << endl; 
+    throw ii.str();
+  }
+  
+  double mbMZ = dataSet.displayMass(mBottom);
+  /// First convert mbMZ into DRbar value from hep-ph/9703293,0207126,9701308
+  /// (SM gauge boson contributions)
+  mbMZ = mbMZ * calcRunMbDrBarConv(); 
+
+  double deltaSquarkGluino = calcRunMbSquarkGluino();
+  //Chargino-squark loops
+  double deltaSquarkChargino = calcRunMbChargino();
+  /// Higgs
+  double deltaHiggs = calcRunMbHiggs();
+  /// Neutralinos
+  double deltaNeutralino = calcRunMbNeutralinos();
+
   /// it's NOT clear if this resummation is reliable in the full 1-loop scheme
   /// but it's at least valid to 1 loop. Warning though: if you add higher
   /// loops, you'll have to re-arrange.
   return mbMZ / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs
 		 + deltaNeutralino);
 }
-
-
-/// Full BPMZ expression
 template<class SoftPars>
-double Softsusy<SoftPars>::calcRunningMtau() const {
+double Softsusy<SoftPars>::calcRunMtauDrBarConv() const {
+ double conv = (1.0 - 3.0 * (sqr(displayGaugeCoupling(1)) - sqr(displayGaugeCoupling(2))) / (128.0 * sqr(PI)));
+ return conv;
+}
 
-  drBarPars forLoops(displayDrBarPars());
-
-  /// MSbar value
-  double mTauSMMZ = displayDataSet().displayMass(mTau);
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunMtauCharginos(double mTauSMMZ) const {
+   
+  double g        = displayGaugeCoupling(2);
+  double gp       = displayGaugeCoupling(1) * sqrt(0.6);
+  double htau     = displayDrBarPars().htau;
+  double msnutau  = fabs(displayDrBarPars().msnu(3));
   double mTauPole = MTAU;
-
-  /// conversion to DRbar
-  mTauSMMZ = mTauSMMZ *
-    (1.0 - 3.0 * (sqr(displayGaugeCoupling(1)) - sqr(displayGaugeCoupling(2))) 
-     / (128.0 * sqr(PI))); 
-  
-  double    msnutau = fabs(forLoops.msnu(3));
-  double    thetatau= forLoops.thetatau;
-  double    g       = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    htau    = forLoops.htau;
-  double    mtau    = forLoops.mtau;
-  double    mh      = forLoops.mh0(1);
-  double    mA      = forLoops.mA0(1);
-  double    mH      = forLoops.mh0(2);
-  double    mHp     = forLoops.mHpm;
-  double    mz = displayMzRun();
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double    ca      = cos(forLoops.thetaH);
-  double    sa      = sin(forLoops.thetaH);
-  double    cosb    = cos(atan(displayTanb()));
-  double    sinb    = sin(atan(displayTanb()));
-
   double p = mTauPole;
   double q = displayMu();
-  
-  /// Chargino contribution  
   DoubleVector aPsicTauSnul(2), bPsicTauSnul(2); 
 
   aPsicTauSnul(1) = g;
@@ -2746,10 +2776,8 @@ double Softsusy<SoftPars>::calcRunningMtau() const {
   ComplexVector aChicTauSnul(2), bChicTauSnul(2);
   DoubleVector fChiTauSnu(2), gChiTauSnu(2); 
 
-  ComplexMatrix n(forLoops.nBpmz);
-  DoubleVector mneut(forLoops.mnBpmz);
-  ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
-  DoubleVector mch(forLoops.mchBpmz); 
+  ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
+  DoubleVector mch(displayDrBarPars().mchBpmz); 
 
   /// Mass eignebasis of charginos
   aChicTauSnul = v.complexConjugate() * aPsicTauSnul;
@@ -2770,7 +2798,30 @@ double Softsusy<SoftPars>::calcRunningMtau() const {
   double sigmaChargino = (charg(1) + charg(2)) / (16.0 * sqr(PI));
   /// checked charginos
 
-  /// Higgs
+  return sigmaChargino; 
+
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunMtauHiggs() const {
+  double mTauPole = MTAU;
+  double p = mTauPole;
+  double q = displayMu();
+  double mh  = displayDrBarPars().mh0(1);
+  double mA  = displayDrBarPars().mA0(1);
+  double mH  = displayDrBarPars().mh0(2);
+  double mHp = displayDrBarPars().mHpm;
+  double mz  = displayMzRun();
+  double mw  = displayMwRun();
+  double ca  = cos(displayDrBarPars().thetaH);
+  double sa  = sin(displayDrBarPars().thetaH);
+  double cosb = cos(atan(displayTanb()));
+  double sinb = sin(atan(displayTanb()));
+  double htau = displayDrBarPars().htau;
+  double mtau = displayDrBarPars().mtau;
+  double g    = displayGaugeCoupling(2);
+  double thetaWDRbar = asin(calcSinthdrbar());
+  double cw2DRbar    = sqr(cos(thetaWDRbar));
   double mnu = 0.;
   double sigmaHiggs = 0.5 * sqr(htau) * 
     (sqr(ca) * (b1(p, mtau, mH, q) + b0(p, mtau, mH, q)) + 
@@ -2784,7 +2835,22 @@ double Softsusy<SoftPars>::calcRunningMtau() const {
   
   sigmaHiggs = sigmaHiggs / (16.0 * sqr(PI));
   
-  /// Neutralinos
+  return sigmaHiggs;
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunMtauNeutralinos(double mTauSMMZ) const {
+  double thetatau = displayDrBarPars().thetatau;
+  double g        = displayGaugeCoupling(2);
+  double gp       = displayGaugeCoupling(1) * sqrt(0.6);
+  double htau = displayDrBarPars().htau;
+  double mtau = displayDrBarPars().mtau;
+  double mTauPole = MTAU;
+  double p = mTauPole;
+  double q = displayMu();
+  
+  ComplexMatrix n(displayDrBarPars().nBpmz);
+  DoubleVector mneut(displayDrBarPars().mnBpmz);
   DoubleVector aPsi0TauStaur(4), bPsi0TauStaur(4), aPsi0TauStaul(4),
     bPsi0TauStaul(4); 
   aPsi0TauStaur(1) = gp / root2 * 2.0;
@@ -2808,7 +2874,7 @@ double Softsusy<SoftPars>::calcRunningMtau() const {
 
   DoubleMatrix O(2, 2); O = rot2d(thetatau);
   ComplexVector t1(2), t2(2), tt(2);
-  for (i=1; i<=4; i++) {
+  for (int i=1; i<=4; i++) {
     tt(1) = aChi0TauStaul(i); tt(2) = aChi0TauStaur(i);      
     t1 = O * tt;
 
@@ -2826,23 +2892,39 @@ double Softsusy<SoftPars>::calcRunningMtau() const {
 	(aNeutTauStau(i, j) * bNeutTauStau(i, j).conj()).real(); 
       
       neutralinoContribution(i, j) = (fNeutTauStau(i, j) * 
-	 b1(p, mneut(i), forLoops.me(j, 3), q) + 
+	 b1(p, mneut(i), displayDrBarPars().me(j, 3), q) + 
 	 gNeutTauStau(i, j) * mneut(i) /  mTauSMMZ *  
-	 b0(p, mneut(i), forLoops.me(j, 3), q)) * 0.5;
+	 b0(p, mneut(i), displayDrBarPars().me(j, 3), q)) * 0.5;
 
       sigmaNeutralino = sigmaNeutralino + neutralinoContribution(i, j);
     }
   }
 
   sigmaNeutralino = sigmaNeutralino / (16.0 * sqr(PI));
+  return sigmaNeutralino;
+}
+/// Full BPMZ expression
+template<class SoftPars>
+double Softsusy<SoftPars>::calcRunningMtau() const {
+  /// MSbar value
+  double mTauSMMZ = displayDataSet().displayMass(mTau);
+  double mTauPole = MTAU;
+  /// conversion to DRbar
+  mTauSMMZ = mTauSMMZ * calcRunMtauDrBarConv();
+  /// Chargino contribution  
+  double sigmaChargino = calcRunMtauCharginos(mTauSMMZ);
+  /// Higgs
+  double sigmaHiggs = calcRunMtauHiggs();
+  /// Neutralinos
+  double  sigmaNeutralino = calcRunMtauNeutralinos(mTauSMMZ);
 
   /// old calculation of tau mass
   /**  double delta = sqr(displayGaugeCoupling(2)) / (16 * sqr(PI)) *
     (-displaySusyMu()) * displayGaugino(2) * displayTanb() /
     (sqr(displaySusyMu()) - sqr(displayGaugino(2))) *
     (b0(mTauPole, displayGaugino(2), 
-	forLoops.msnu(3), displayMu()) -
-	b0(mTauPole, -displaySusyMu(), forLoops.msnu(3), displayMu()));*/
+	displayDrBarPars().msnu(3), displayMu()) -
+	b0(mTauPole, -displaySusyMu(), displayDrBarPars().msnu(3), displayMu()));*/
 
   /// From hep-ph/9912516
   return mTauSMMZ * (1.0 + sigmaNeutralino + sigmaChargino + sigmaHiggs);
@@ -2864,10 +2946,10 @@ void Softsusy<SoftPars>::treeUpSquark(DoubleMatrix & mass, double mtrun,
 
   if (family != 3) mass(1, 2) = 0.0;
   else {
-    if (fabs(forLoops.ht) < EPSTOL) 
+    if (fabs(displayDrBarPars().ht) < EPSTOL) 
       mass(1, 2) = mtrun * (displaySoftA(UA, 3, 3) - mu / tanb);
     else 
-      mass(1, 2) = mtrun * (forLoops.ut / forLoops.ht - mu / tanb);
+      mass(1, 2) = mtrun * (displayDrBarPars().ut / displayDrBarPars().ht - mu / tanb);
 
     mass(1, 1) = mass(1, 1) + mt2;
     mass(2, 2) = mass(2, 2) + mt2;
