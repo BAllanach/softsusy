@@ -419,56 +419,56 @@ public:
   virtual void physical(int accuracy);
    /// Obtains (16 Pi^2) / mt  times 1-loop and 2-loop QCD corrections 
   //to the pole mt for use in calcRunningMt 
-  double calcRunMtQCD() const;
+  virtual double calcRunMtQCD() const;
   /// Obtains (16 Pi^2) / mt  times 1-loop stop-Gluino corrections 
   //to the pole mt for use in calcRunningMt 
-  double calcRunMtStopGluino() const;
+  virtual double calcRunMtStopGluino() const;
   /// Obtains (16 Pi^2) / mt  times 1-loop Higgs corrections 
   //to the pole mt for use in calcRunningMt 
-  double calcRunMtHiggs() const;
+  virtual double calcRunMtHiggs() const;
 
   /// Obtains (16 Pi^2) / mt  times 1-loop Neutralino corrections 
   //to the pole mt for use in calcRunningMt 
-  double calcRunMtNeutralinos() const;
+  virtual double calcRunMtNeutralinos() const;
   /// Obtains (16 Pi^2) / mt  times 1-loop Charginos corrections 
   //to the pole mt for use in calcRunningMt 
-  double calcRunMtCharginos() const;
+  virtual double calcRunMtCharginos() const;
 
   /// Applies 1-loop SUSY and 2-loop QCD corrections to pole mt in order to
   /// return the DRbar running value at the current scale
-  double calcRunningMt();
+  virtual double calcRunningMt();
   //PA: calculates factor to convert to DrBar for mtau
-  double calcRunMtauDrBarConv() const;
+  virtual double calcRunMtauDrBarConv() const;
   // Obtains (1 / mTAU)  times 1-loop squark-chargino corrections 
   //to mtau for use in calcRunningMtau 
-  double calcRunMtauCharginos(double mTauSMMZ) const;
+  virtual double calcRunMtauCharginos(double mTauSMMZ) const;
   // Obtains (1 / mTAU)  times 1-loop squark-neutralino corrections 
   //to mtau for use in calcRunningMtau 
-  double calcRunMtauNeutralinos(double mTauSMMZ) const; 
+  virtual double calcRunMtauNeutralinos(double mTauSMMZ) const; 
   /// Obtains (1 / mtau)  times 1-loop Higgs corrections 
   // to mtau for use in calcRunningMtau 
-  double calcRunMtauHiggs() const;
+  virtual double calcRunMtauHiggs() const;
   /// Applies 1-loop SUSY corrections to pole mtau in order to
   /// return the DRbar running value at the current scale
-  double calcRunningMtau() const;  
+  virtual double calcRunningMtau() const;  
  
   //PA: calculates factor to convert to DrBar for mb
-  double calcRunMbDrBarConv() const;
+  virtual double calcRunMbDrBarConv() const;
   /// Obtains (1 / mb)  times 1-loop sbottom-Gluino corrections 
   //to mb for use in calcRunningMb 
-  double calcRunMbSquarkGluino() const;
+  virtual double calcRunMbSquarkGluino() const;
   /// Obtains (1 / mb)  times 1-loop squark-chargino corrections 
   //to mb for use in calcRunningMb 
-  double calcRunMbChargino() const;
+  virtual double calcRunMbChargino() const;
   /// Obtains (1 / mb)  times 1-loop Higgs corrections 
   // to mb for use in calcRunningMb 
-  double calcRunMbHiggs() const;
+  virtual double calcRunMbHiggs() const;
    /// Obtains (1 / mb)  times 1-loop neutralino-suqrk corrections 
   // to mb for use in calcRunningMb 
-  double calcRunMbNeutralinos() const;
+  virtual double calcRunMbNeutralinos() const;
   /// Applies approximate 1-loop SUSY corrections to mb(MZ) in order to
   /// return the DRbar running value
-  double calcRunningMb() const;
+  virtual double calcRunningMb() const;
   /*
   /// Calculates top Yukawa coupling, supply Higgs vev parameter at current
   /// scale 
@@ -591,13 +591,13 @@ public:
   virtual double piZZTNeutralinos(double p, double Q, double thetaWDRbar) const;
    /// Calculates chargino contrib. to the transverse part of Z self-energy: 
   //for p=external momentum, Q=renormalisation scale
-  double piZZTCharginos(double p, double q, double thetaWDRbar) const;
+  virtual double piZZTCharginos(double p, double q, double thetaWDRbar) const;
   /// Calculates transverse part of Z self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piZZT(double p, double Q, bool usePoleMt = false) const;
    /// Calculates Higgs contribution to the transverse part of W self-energy: 
   //for p=external momentum, Q=renormalisation scale
-  double piWWTHiggs(double p, double q, double thetaWDRbar) const;
+  virtual double piWWTHiggs(double p, double q, double thetaWDRbar) const;
   /// Calculates fermion contribution to the transverse part of W self-energy: 
   //for p=external momentum, Q=renormalisation scale
   virtual double piWWTfermions(double p, double Q, bool usePoleMt) const;
@@ -610,12 +610,19 @@ public:
   /// Calculates transverse part of W self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piWWT(double p, double Q, bool usePoleMt = false) const;
+  /// LCT: Give neutralino-chargino-charged-Higgs trilinear couplings in 
+  /// unrotated basis
+  virtual void getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, ComplexMatrix & apph2, ComplexMatrix & bpph1, ComplexMatrix & bpph2) const;
   /// LCT: Calculates (16 Pi^2) times the fermion contribution to H^+H^- 
   /// self-energy for p=external momentum, q=renormalisation scale
   double piHpHmFermions(double p, double q) const;
   /// LCT: Calculates (16 Pi^2) times the sfermion contribution to H^+H^-
+  /// self-energy for p=external momentum, q=renormalisation scale, 
+  /// and SUSY parameter mu
+  double piHpHmSfermions(double p, double q, double mu) const;
+  /// LCT: Calculates (16 Pi^2) times the gauge contribution to H^+H^-
   /// self-energy for p=external momentum, q=renormalisation scale
-  double piHpHmSfermions(double p, double q) const;
+  double piHpHmGauge(double p, double q) const;
   /// LCT: Calculates (16 Pi^2) times the Higgs contribution to H^+H^-
   /// self-energy for p=external momentum, q=renormalisation scale
   double piHpHmHiggs(double p, double q) const;
@@ -684,7 +691,8 @@ public:
   double pis2s2(double p, double q) const;
   /// Calculates sin^2 theta^l_eff
   double sinSqThetaEff();
-
+  //PA: gets h1 mixing element with Hu.
+  virtual double h1s2Mix();
   /// Iterative determination of rho parameter consistent with muon decay
   /// constant, MZ and alpha_0. 
   /// IO parameters: outrho and outsin are the current DRbar values of sin
@@ -699,18 +707,18 @@ public:
   /// Calculates delta_v corrections for outrho=DRbar rho parameter,
   /// outsin=DRbar sin theta_w, alphaDRbar=alpha(Q) in the DR bar scheme,
   /// pizztMZ=self-energy of the Z at MZ
-  double deltaVb(double outrho, double outsin, double alphaDRbar, 
+  virtual double deltaVb(double outrho, double outsin, double alphaDRbar, 
 		double pizztMZ) const;
   /// Calculates delta rho corrections for outrho=DRbar rho parameter,
   /// outsin=DRbar sin theta_w, alphaDRbar=alpha(Q) in the DR bar scheme,
   /// pizztMZ=self-energy of the Z at MZ, piwwtMW=self-energy of the W at p=MW
-  double dRho(double outrho, double outsin, double alphaDRbar, 
+  virtual double dRho(double outrho, double outsin, double alphaDRbar, 
 		 double pizztMZ, double piwwtMW);
   /// Calculates delta r corrections for outrho=DRbar rho parameter,
   /// outsin=DRbar sin theta_w, alphaDRbar=alpha(Q) in the DR bar scheme,
   /// pizztMZ=self-energy of the Z at p=MZ, pizzt0=self-energy of the W at p=0
-  double dR(double outrho, double outsin, double alphaDRbar, double pizztMZ,
-	    double piwwt0);
+  virtual double dR(double outrho, double outsin, double alphaDRbar, 
+                    double pizztMZ, double piwwt0);
   /// Returns the mass of the heaviest SUSY particle, excluding gravitino
   double maxMass() const;
   /// Returns lsp mass in mass and function return labels which particle is 
