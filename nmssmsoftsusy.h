@@ -227,7 +227,7 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   //ie (kappa, mS) --> (mZ, tb)
   //Z3 = false:  mu --> mZ, m3sq --> tan beta, s --> XiS  (Z3 = false) 
   // ie (mu, m3sq, XiS) --> (mZ, tb, s) 
-  void rewsb(int sgnMu, double mt, double muOld);
+  void rewsb(int sgnMu, double mt, double muOld = -6.66e66, double eps = 0.);
   /// Calculates physical sparticle masses to accuracy number of loops. Should
   /// be called at M_{SUSY}.
   virtual void physical(int accuracy);
@@ -339,10 +339,90 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   double pis1s3(double p, double q) const;
   double pis2s3(double p, double q) const;
   double pis3s3(double p, double q) const;
+  
+  //PA: gets h1 mixing element with Hu.
+  virtual double h1s2Mix();
+
+  /// LCT: Charged Higgs-gauge trilinear couplings
+  void getHpWmZCoup(DoubleMatrix & HpWmZ) const;
+
+  /// LCT: Charged Higgs trilinear couplings with CP-odd and CP-even Higgs'
+  void getHp1HiggsTriCoup(DoubleMatrix & ahphp1, DoubleMatrix & hhphp1) const;
+  void getHp2HiggsTriCoup(DoubleMatrix & ahphp2, DoubleMatrix & hhphp2) const;
+
+  /// LCT: Charged Higgs trilinear couplings with neutralinos/charginos
+  void getHp1NeutCharCoup(ComplexMatrix & lnchhp1, ComplexMatrix & rnchp1) const;
+  /// LCT: Charged Higgs trilinear couplings with neutralinos/charginos
+  void getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, 
+  ComplexMatrix & apph2, ComplexMatrix & bpph1, ComplexMatrix & bpph2) const;
+
+  /// LCT: Returns gauge-Higgs-hpm trilinear couplings with hpm in weak basis
+  void getGaugeHiggsHpmCoup(DoubleVector & wmhhp1, DoubleVector & wmahp1, 
+  DoubleVector & gamhphp1, DoubleVector & zhphp1, DoubleVector & wmhhp2, 
+  DoubleVector & wmahp2, DoubleVector & gamhphp2, DoubleVector & zhphp2) const;
+
+  /// LCT: Calculates (16 Pi^2) times Higgs contribution to (i, j) component of 
+  /// the charged Higgs self-energy in the weak basis
+  /// for p=external momentum, q=renormalisation scale
+  double piHpm11Higgs(double p, double q) const;
+  double piHpm12Higgs(double p, double q) const;
+  double piHpm22Higgs(double p, double q) const;
+
+  /// LCT: Calculates (16 Pi^2) times gaugino contribution to (i, j) component 
+  /// of charged Higgs self-energy in the weak basis
+  /// for p=external momentum, q=renormalisation scale
+  double piHpm11Gaugino(double p, double q) const;
+  double piHpm12Gaugino(double p, double q) const;
+  double piHpm22Gaugino(double p, double q) const;
+
+ /// LCT: Calculates the charged Higgs self-energy in mass basis: 
+  /// for p=external momentum, q=renormalisation scale
+  double piHpm(double p, double q) const;
+  //PA: routine to calculate the Higgs loop contributions to running Mt
+  virtual double calcRunMtHiggs() const;
+  //PA: routine to calculate the Neutralino loop contributions to running Mt
+  virtual double calcRunMtNeutralinos() const;
+  //PA: routine to calculate the DrBar running top mass from the pole mass
+  // and full one loop self energy, with also two loop qcd included.
+  virtual double calcRunningMt();
+   //PA: routine to calculate the Higgs loop contributions to running Mb
+  virtual double calcRunMbHiggs() const;
+  //PA: routine to calculate the Neutralino loop contributions to running Mb
+  virtual double calcRunMbNeutralinos() const;
+  //  PA: routine to calculate the DrBar running bottom mass from the SM MS-bar 
+  //bottom m and one loop self energy minus photon and gluon parts.
+  virtual double calcRunningMb() const;
+  //PA: routine to calculate the Higgs loop contributions to running Mtau
+  virtual double calcRunMtauHiggs() const;
+  //PA: routine to calculate the Neutralino loop contributions to running Mtau
+  virtual double calcRunMtauNeutralinos(double mTauSMMZ) const;
+  //  PA: routine to calculate the DrBar running tau mass from the SM MS-bar 
+  //tau mass and one loop self energy minus photon parts.
+  virtual double calcRunningMtau() const;
 
 
   NmssmSusy guessAtSusyMt(double tanb, DoubleVector nmpars, const QedQcd & oneset);
   
+  double predTanb(double muSusy = -6.66e66) const;
+  double predMzsq(double & tanb, double muOld = -6.66e66, double eps = 0.);
+
+  /// Main iteration routine: 
+  /// Boundary condition is the theoretical condition on parameters at the high
+  /// energy scale mx: the parameters themselves are contained within the
+  /// vector. IO parameters:  
+  /// maxTries is the maximum number of iterations allowed, mx is the GUT
+  /// scale (negative if you require gauge unification),
+  /// sgnMu is the desired sign of mu: + or - 1 when lamda * s =0, 
+  // the desied sign of s when mu = 0 and the sign of in the quadratic equation
+  // for mu when  both mu and lambda * s are non-zer   tanb = desired value of 
+  // DR bar tan beta(MZ).
+  void itLowsoft(int maxTries, double & mx, int sgnMu, double tol, 
+		 double tanb, void (*boundaryCondition)(NmssmSoftsusy &, 
+							const DoubleVector &), 
+		 const DoubleVector & pars, const DoubleVector nmpars, 
+                 bool gaugeUnification, bool ewsbBCscale);
+  
+
   double lowOrg(void (*boundaryCondition)
 		(NmssmSoftsusy &, const DoubleVector &),
 		double mxGuess, const DoubleVector & pars, 
