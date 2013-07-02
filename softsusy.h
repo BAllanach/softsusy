@@ -238,6 +238,9 @@ public:
   void useAlternativeEwsb() { altEwsb = true; }
   /// Set MZ^2 predicted after iteration
   void setPredMzSq(double a) { predMzSq = a; }
+  //PA: sets fracDiff, needed for access by NmssmSoftsusy methods
+  double setFracDiff(double fD) { fracDiff = fD; }; 
+
 //PA: fixes trilnear H1-sfermion-sfermion couplings 
 //for use in doCalcTadpole1oneLoop  
   void H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, DoubleMatrix & lTauS1Lr, double gmzOcthW, double mu, double cosb, double v1) const;
