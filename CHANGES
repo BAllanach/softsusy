@@ -2,3 +2,11 @@
 <li> 10/5/13 A Voigt's bug-fixes: small changes to stau mass and chargino corrections 
 <li> 16/5/13 Accuracy fixes to loop functions, which should now be better than
 per mille accuracy
+<li> 24/5/13 Tiny bugfixes to sbottom mass corrections
+<li> 26/5/13 Changed configure.ac file to look for gfortran by default
+<li> 26/5/13 Fixed SLHA input option for mu: it is now mu(MX), not mu(MSUSY),
+that is input
+<li> 26/5/13 "Problem Thrown" flag now used instead of "non-perturbative" for
+other problems with the point. Thanks to Simon Knapen
+<li> 26/5/13 SLHA problem when jointly using flavour violation and EXTPAR now
+fixed. Thanks to Florian Staub

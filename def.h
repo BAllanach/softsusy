@@ -16,11 +16,11 @@
 #include <vector>
 using std::vector;
 namespace softsusy{
-  const char SOFTSUSY_VERSION[] = "3.3.6";
+  const char SOFTSUSY_VERSION[] = "3.3.9";
 
   /// uncomment if you want checking of vector/matrices bounds: slows code
   /// down. It also now checks over/underflows in matrix multiplication etc
-  //#define ARRAY_BOUNDS_CHECKING 
+  //    #define ARRAY_BOUNDS_CHECKING 
 
   /// Make true if you want to include the 2-loop RGE corrections to scalar mass
   /// squared parameters and trilinear terms: they slow it down by a factor of
@@ -76,7 +76,11 @@ namespace softsusy{
   extern bool tryToConvergeHard;
   /// If =0 (default), sets tachyonic mA=0, otherwise resets mA=sqrt(|mA|^2)
   extern bool mAFlag;
-  /// If true, it prints out special developer debugging
-  extern bool printDEBUG; 
+  /// A handy global variable for random number generator
+  extern long idummySave;
+  extern int numTry;
+  /// Include eq (62) from hep-ph/0210268: degenerate gluino/squark mass limit
+  extern bool includeTwoLoopMssmCorrectionsToMt;
 }
+
 #endif

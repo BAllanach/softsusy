@@ -49,8 +49,8 @@ public:
   inline double displayMuCond() const { return muCond; };
   inline const AltEwsbMssm & displayAltEwsbMssm() const { return *this; };
 
-  inline void setMaCond(double maInput) { mAcond = maInput; };
-  inline void setMuCond(double muInput) { muCond = muInput; };
+  inline void setMaCond(double maInput) { mAcond = maInput;  };
+  inline void setMuCond(double muInput) { muCond = muInput;  };
 };
 
 /// Contains all supersymmetric MSSM parameters, incorporating R_p MSSM
@@ -238,11 +238,12 @@ public:
   void useAlternativeEwsb() { altEwsb = true; }
   /// Set MZ^2 predicted after iteration
   void setPredMzSq(double a) { predMzSq = a; }
+
   //PA: sets fracDiff, needed for access by NmssmSoftsusy methods
   double setFracDiff(double fD) { fracDiff = fD; }; 
 
-//PA: fixes trilnear H1-sfermion-sfermion couplings 
-//for use in doCalcTadpole1oneLoop  
+  //PA: fixes trilnear H1-sfermion-sfermion couplings 
+  //for use in doCalcTadpole1oneLoop  
   void H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, DoubleMatrix & lTauS1Lr, double gmzOcthW, double mu, double cosb, double v1) const;
   //PA: fixes trilnear H2-sfermion-sfermion couplings 
   //for use in doCalcTadpole1oneLoop
@@ -539,6 +540,9 @@ public:
   /// Organises tree-level rewsb: call it at the low scale M_{SUSY}
   /// IO parameters: sgnMu is +/-1 (desired sign of mu)
   virtual void rewsbTreeLevel(int sgnMu);
+  /// This is the value you'd get from minimising the Higgs potential at
+  /// tree-level 
+  double treeLevelMuSq();
   /// Obtains solution of one-loop effective potential minimisation via
   /// iteration technique. Currently includes: all 1-loop SUSY tadpoles, plus
   /// 2-loop alpha_t (alpha_t + alpha_s) + alpha_b alpha_s corrections

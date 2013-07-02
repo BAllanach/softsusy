@@ -15,7 +15,7 @@ namespace softsusy {
   int MIXING = 1, PRINTOUT = 1;
   /// fractional accuracy required - may need to make smaller for accurate
   /// neutrino masses
-  double TOLERANCE = 1.0e-3;
+  double TOLERANCE = 1.0e-4;
   /// decay constant of muon
   double GMU = 1.16637e-5; 
   /// there are two possible conventions: if QEWSB > MZ, its value is assumed
@@ -53,5 +53,10 @@ namespace softsusy {
   bool mAFlag = false;
   /// default is that developer-level debugging printout flag is OFF
   bool printDEBUG = false;
+  /// random number seed
+  long idummySave = -22;
+  /// Default is to not include 2-loop MSSM corrections in degenerate
+  /// gluino/squark mass limit 
+  bool includeTwoLoopMssmCorrectionsToMt = false;
 }
 /// end of global variable declaration

@@ -41,8 +41,7 @@ int RGE::run(double x1, double x2, double eps) {
 
 // Runge-Kutte user defined routine: given log renorm scale x and the dependent
 // variables y of an RGE, will calculate the derivitives dydx.
-DoubleVector allDerivs(double x, const DoubleVector & y)
-{
+DoubleVector allDerivs(double x, const DoubleVector & y) {
   //  cout << " x=" << exp(x) << " y=" << y; // DEBUG
   tempRge->setMu(exp(x));
   tempRge->set(y);
@@ -65,7 +64,6 @@ int RGE::callRK(double x1, double x2, DoubleVector & v,
   // RGE in terms of natural log of renormalisation scale
   double from = log(fabs(x1));
   double to = log(fabs(x2));
-
 
   int err = 0;
   double guess = (from - to) * 0.1; //first step size

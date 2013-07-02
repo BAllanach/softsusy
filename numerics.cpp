@@ -357,9 +357,6 @@ double bIntegral(int n1, double p, double m1, double m2, double mt) {
   return v(1) - 1.0;
 }
 
-/// Decides level at which one switches to p=0 limit of calculations
-const double pTolerance = 1.0e-6; 
-
 double fB(const Complex & a) {
   /// First, special cases at problematic points
   double x = a.real(), y = a.imag();
@@ -399,6 +396,9 @@ double b0(double p, double m1, double m2, double q) {
   char * methodId = (char *) "";
 
   double pTest = sqr(p) / sqr(mMax);
+  /// Decides level at which one switches to p=0 limit of calculations
+  const double pTolerance = 1.0e-6; 
+
   /// p is not 0  
   if (pTest > pTolerance) {  
     methodId = (char *) "B0A";
@@ -456,7 +456,10 @@ double b1(double p, double m1, double m2, double q) {
 
   char * methodId = (char *) "";
 
-  if (pTest > pTolerance * 1.0e2) {
+  /// Decides level at which one switches to p=0 limit of calculations
+  const double pTolerance = 1.0e-4; 
+
+  if (pTest > pTolerance) {
     methodId = (char *) "B1A";
     ans = (a0(m2, q) - a0(m1, q) + (sqr(p) + sqr(m1) - sqr(m2)) 
 	   * b0(p, m1, m2, q)) / (2.0 * sqr(p)); 
@@ -498,6 +501,9 @@ double b22(double p,  double m1, double m2, double q) {
   char * methodId = (char *) "";
   double answer = 0.;
   
+  /// Decides level at which one switches to p=0 limit of calculations
+  const double pTolerance = 1.0e-6; 
+
   if (sqr(p) < pTolerance * maximum(sqr(m1), sqr(m2)) ) {
     // m1 == m2 with good accuracy
     if (close(m1, m2, EPSTOL)) {
@@ -643,6 +649,14 @@ double c0(double m1, double m2, double m3) {
 #endif
 
   return ans;
+}
+
+double truncGaussWidthHalf(long & idum) {
+  for (;;) {
+    double a = ran1(idum);
+    if (a < 0.5) return a * 2.0;
+	else return fabs(gasdev(idum)) + 1.;
+  }
 }
 
 double gasdev(long & idum) {
@@ -848,6 +862,19 @@ double calcCL(double cl, const DoubleVector & l) {
     }
   }
   return likelihood;
+}
+
+int *ivector(long nl, long nh) {
+	int *v;
+
+	v=(int *)malloc((size_t) ((nh-nl+2)*sizeof(int)));
+	if (!v) throw("allocation failure in ivector()\n");
+	return v-nl+1;
+}
+
+/* free an int vector allocated with ivector() */
+void free_ivector(int *v, long nl, long nh) {
+	free((char *) (v+nl-1));
 }
 
 double calc1dFraction(double y, const DoubleVector & l) {
@@ -1252,6 +1279,8 @@ double fin(double mm1, double mm2) {
 }
 
 double zriddr(double (*func)(double), double x1, double x2, double xacc) {
+  const int MAXIT = 60;
+  const double UNUSED = -1.11e30;
   int j;
   double ans,fh,fl,fm,fnew,s,xh,xl,xm,xnew;
   
@@ -1285,7 +1314,7 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc) {
       } else throw("In zriddr: never get here.");
       if (fabs(xh-xl) <= xacc) return ans;
     }
-    throw("zriddr exceeded maximum iterations");
+    throw("zriddr exceeded maximum iterations\n");
   }
   else {
     if (close(fl, 0.0, EPSTOL)) return x1;
@@ -1296,4 +1325,515 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc) {
     throw(s.str());
   }
   return 0.0;
+}
+
+/// You will need to clear this lot up....
+DoubleMatrix fdjac(int n, DoubleVector x, const DoubleVector & fvec,
+	   void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
+  double EPS = maximum(TOLERANCE, 1.0e-4);
+  int i,j;
+  double h,temp;
+  
+  DoubleVector f(1, n);
+  DoubleMatrix df(n, n);
+  for (j=1; j<=n; j++) {
+    temp = x(j);
+    h = EPS * fabs(temp);
+    if (h == 0.0) h = EPS;
+    x(j) = temp + h;
+    h = x(j) - temp;
+    (*vecfunc)(x, f);
+    x(j) = temp;
+    for (i=1; i<=n; i++) df(i, j) = (f(i) - fvec.display(i)) / h;
+  }
+  return df;
+}
+
+bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
+	    DoubleVector & p, 
+	    DoubleVector & x, double & f, double stpmax, 
+	    void (*vecfunc)(const DoubleVector &, DoubleVector &), 
+	    DoubleVector & fvec) {
+  double ALF = TOLERANCE;
+  double TOLX = TOLERANCE * 1.0e-3;
+  
+  int i;
+  double a,alam,alam2,alamin,b,disc,f2,fold2,rhs1,rhs2,slope,sum,temp,
+    test,tmplam;
+  
+  bool err = false;
+  sum = sqrt(p.dot(p));
+  if (sum > stpmax) p = (stpmax / sum) * p;
+
+  for (slope=0.0, i=1; i<=xold.displayEnd(); i++)
+    slope += g(i) * p(i);
+  test = 0.0;
+  for (i=1; i<=xold.displayEnd(); i++) {
+    temp=fabs(p(i)) / maximum(fabs(xold(i)), 1.0);
+    if (temp > test) test = temp;
+  }
+  alamin = TOLX / test;
+  alam = 1.0;
+  for (;;) {
+    x = xold + alam * p;
+    vecfunc(x, fvec); 
+    f = fvec.dot(fvec);
+    if (alam < alamin) {
+      x = xold;
+      err = true;
+      return err;
+    } else if (f <= fold + ALF * alam * slope) return err;
+    else {
+      if (alam == 1.0)
+	tmplam = -slope / (2.0 * (f - fold - slope));
+      else {
+	rhs1 = f - fold - alam * slope;
+	rhs2 = f2 - fold2 - alam2 * slope;
+	a=(rhs1 / (alam * alam) - rhs2 / (alam2 * alam2)) / (alam - alam2);
+	b=(-alam2 * rhs1 / (alam * alam) + alam * rhs2 / (alam2 * alam2)) / 
+	  (alam - alam2);
+	if (a == 0.0) tmplam = -slope / (2.0 * b);
+	else {
+	  disc = b * b - 3.0 * a * slope;
+	  if (disc < 0.0) throw("Roundoff problem in lnsrch.\n");
+	  else tmplam = (-b + sqrt(disc)) / (3.0 * a);
+	}
+	if (tmplam > 0.5 * alam)
+	  tmplam = 0.5 * alam;
+      }
+    }
+    alam2 = alam;
+    f2 = f;
+    fold2 = fold;
+    alam = maximum(tmplam, 0.1 * alam);
+  }
+  return err;
+}
+
+/// Get rid of int n
+void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b) {
+  int i,ii=0,ip,j;
+  float sum;
+  
+  for (i=1;i<=n;i++) {
+    ip=indx[i];
+    sum=b(ip);
+    b(ip)=b(i);
+    if (ii)
+      for (j=ii;j<=i-1;j++) sum -= a(i, j) * b(j);
+    else if (sum) ii=i;
+    b(i)=sum;
+  }
+  for (i=n;i>=1;i--) {
+    sum=b(i);
+    for (j=i+1;j<=n;j++) sum -= a(i, j)*b(j);
+    b(i)=sum/a(i, i);
+  }
+}
+
+
+/// Get rid of int n
+void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
+  const double TINY = 1.0e-20;
+  int i,imax,j,k;
+  float big,dum,sum,temp;
+  DoubleVector vv(n);
+
+  d=1.0;
+  for (i=1;i<=n;i++) {
+    big=0.0;
+    for (j=1;j<=n;j++)
+      if ((temp=fabs(a(i, j))) > big) big=temp;
+    if (big == 0.0) {
+      ostringstream ii; ii.setf(ios::scientific, ios::floatfield);
+      ii.precision(6);
+      ii << "Singular matrix in routine ludcmp: ";
+      ii << a;
+      throw (ii.str());
+    }
+    vv(i)=1.0 / big;
+  }
+  for (j=1;j<=n;j++) {
+    for (i=1;i<j;i++) {
+      sum=a(i, j);
+      for (k=1;k<i;k++) sum -= a(i, k)*a(k, j);
+      a(i, j)=sum;
+    }
+    big=0.0;
+    for (i=j;i<=n;i++) {
+      sum=a(i, j);
+      for (k=1;k<j;k++)
+	sum -= a(i, k)*a(k, j);
+      a(i, j)=sum;
+      if ( (dum=vv(i)*fabs(sum)) >= big) {
+	big=dum;
+	imax=i;
+      }
+    }
+    if (j != imax) {
+      for (k=1;k<=n;k++) {
+	dum=a(imax, k);
+	a(imax, k)=a(j, k);
+	a(j, k)=dum;
+      }
+      d = -(d);
+      vv(imax)=vv(j);
+    }
+    indx[j]=imax;
+    if (a(j, j) == 0.0) a(j, j) = TINY;
+    if (j != n) {
+      dum=1.0/(a(j, j));
+      for (i=j+1;i<=n;i++) a(i, j) *= dum;
+    }
+  }
+}
+
+
+/// More work can be done on this: get rid of int n and in subfunctions too
+bool newt(DoubleVector & x, 
+	  void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
+  bool err = false; 
+  const int MAXITS = 200;    ///< max iterations
+  double TOLF   = TOLERANCE; ///< convergence on function values
+  double TOLMIN = TOLF * 1.e-2; ///< spurious convergence to min of fmin
+  double TOLX   = TOLF * 1.e-3; ///< maximum dx convergence criterion
+  const double STPMX  = 100.0; ///< maximum step length allowed in line searches
+   
+  int n = x.displayEnd();
+  int i,its,j,*indx;
+  double d,den,f,fold,stpmax,sum,temp,test;
+  
+  indx = ivector(1, n);
+  DoubleMatrix fjac(n, n);
+  DoubleVector g(n), p(n), xold(n);
+  DoubleVector fvec(n);
+
+  vecfunc(x, fvec); 
+  f = 0.5 * fvec.dot(fvec);
+  test = 0.0;
+  test = fvec.apply(fabs).max();
+  if (test < 0.01 * TOLF) {
+    err = false;
+    free_ivector(indx, 1, n); return err;
+  }
+  sum += x.dot(x);
+  stpmax = STPMX * maximum(sqrt(sum), (double) n);
+  for (its=1; its<=MAXITS; its++) {
+    //    cout << its << endl; ///< DEBUG
+    fjac = fdjac(n, x, fvec, vecfunc);
+    for (i=1;i<=n;i++) {
+      for (sum=0.0, j=1; j<=n; j++) sum += fjac(j, i) * fvec(j);
+      g(i) = sum;
+    }
+    for (i=1; i<=n; i++) xold(i) = x(i);
+    fold = f;
+    for (i=1; i<=n; i++) p(i) = -fvec(i);
+    ludcmp(fjac, n, indx, d);
+    lubksb(fjac, n, indx, p);
+    err = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec);
+    test = 0.0;
+    for (i=1; i<=n; i++)
+      if (fabs(fvec(i)) > test) test = fabs(fvec(i));
+    if (test < TOLF) {
+      err = false;
+      free_ivector(indx, 1, n);
+      return err;
+    }
+    if (err) {
+      test = 0.0;
+      den = maximum(f, 0.5 * n);
+      for (i=1; i<=n; i++) {
+	temp = fabs(g(i)) * maximum(fabs(x(i)), 1.0) / den;
+	if (temp > test) test = temp;
+      }
+      err = (test < TOLMIN ? true : false);
+      free_ivector(indx, 1, n);
+      return err;
+    }
+    /// Check points aren't getting too close together
+    test = 0.0;
+    for (i=1; i<=n; i++) {
+      temp = (fabs(x(i) - xold(i))) / maximum(fabs(x(i)), 1.0);
+      if (temp > test) test = temp;
+    }
+    if (test < TOLX) { 
+      free_ivector(indx, 1, n); 
+      return err; 
+    }
+  }
+
+  return true;
+}
+
+DoubleVector testDerivs(double x, const DoubleVector & y) {
+  DoubleVector dydx(3);
+  dydx(1) = y(1) * y(2) * y(2);
+  dydx(2) = y(2) * y(1) * y(3);
+  dydx(3) = y(1);
+  return dydx;
+}
+
+void shoot(const DoubleVector & v, DoubleVector & f) {
+  double h1, hmin = 0.0;
+
+  const double EPS = 1.0e-6;
+  
+  DoubleVector y(3);
+  
+  double x1 = 1., x2 = 2.;
+  /// Initial stepsize guess for integration
+  h1 = (x2 - x1) * 0.01;
+
+  /// set initial BCs: y1(1)=1
+  y(1) = 1.;
+  y(2) = v.display(1);
+  y(3) = v.display(2);
+
+  /// integrate up from x1 to x2
+  int err = integrateOdes(y, x1, x2, EPS, h1, hmin, testDerivs, odeStepper);
+  
+  /// now, determine a vector showing how far (WITH SIGN) the solution is from
+  /// the second boundary condition: y2(2)=1.
+  f(1) = y(2) - 1.;
+  f(2) = y(3) - y(1);
+
+  return;
+}
+
+void broydn(DoubleVector x, int & check, 
+	    void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
+  const int MAXITS = 200;
+  double TOLF =  TOLERANCE;
+  const double EPS = TOLF * 1.0e-3;
+  const double TOLX = EPS;
+  const double STPMX = 100.0;
+  double TOLMIN = TOLERANCE * 1.0e-2;
+
+  int n = x.displayEnd();
+ 
+  /*	void fdjac(int n, float x[], float fvec[], float **df,
+		void (*vecfunc)(int, float [], float []));
+	float fmin(float x[]);
+	void lnsrch(int n, float xold[], float fold, float g[], float p[], float x[],
+		 float *f, float stpmax, int *check, float (*func)(float []));
+	void qrdcmp(float **a, int n, float *c, float *d, int *sing);
+	void qrupdt(float **r, float **qt, int n, float u[], float v[]);
+	void rsolv(float **a, int n, float d[], float b[]);
+	int i,its,j,k,restrt,sing,skip;
+	float den,f,fold,stpmax,sum,temp,test,*c,*d,*fvcold;
+	float *g,*p,**qt,**r,*s,*t,*w,*xold; */
+
+  DoubleVector c(n), d(n), fvcold(n), g(n), p(n), s(n), t(n), w(n), xold(n), 
+    fvec(n);
+  DoubleMatrix qt(n, n), r(n, n);
+
+  vecfunc(x, fvec); 
+  double f = 0.5 * fvec.dot(fvec);
+  
+  double test = fvec.apply(fabs).max();
+  if (test < 0.01 * TOLF) {
+    check = 0;
+    return;
+  }
+  double sum = x.dot(x);
+  double stpmax = STPMX * maximum(sqrt(sum), (double)n);
+  int restrt = 1, sing;
+  for (int its=1; its<=MAXITS; its++) {
+    if (restrt) {
+      r = fdjac(n, x, fvec, vecfunc);
+      qrdcmp(r, n, c, d, sing);
+      if (sing) throw("singular Jacobian in broydn\n");
+      for (int i=1; i<=n; i++) {
+	for (int j=1; j<=n; j++) qt(i, j) = 0.0;
+	qt(i, i) = 1.0;
+      }
+      for (int k=1; k<n; k++) {
+	if (c(k)) {
+	  for (int j=1; j<=n; j++) {
+	    sum = 0.0;
+	    for (int i=k; i<=n; i++)
+	      sum += r(i, k) * qt(i, j);
+	    sum /= c(k);
+	    for (int i=k; i<=n; i++)
+	      qt(i, j) -= sum*r(i, k);
+	  }
+	}
+      }
+      for (int i=1; i<=n; i++) {
+	r(i, i) = d(i);
+	for (int j=1; j<i; j++) r(i, j) = 0.0;
+      }
+    } else {
+      s = x - xold;
+      int j;
+      for (int i=1; i<=n; i++) {
+	for (sum=0.0, j=i; j<=n; j++) sum += r(i, j) * s(j);
+	t(i) = sum;
+      }
+      int skip = 1;
+      for (int i=1; i<=n; i++) {
+	for (sum=0.0, j=1; j<=n; j++) sum += qt(j, i) * t(j);
+	w(i) = fvec(i) - fvcold(i) - sum;
+	if (fabs(w(i)) >= EPS * (fabs(fvec(i))+fabs(fvcold(i)))) skip=0;
+	else w(i)=0.0;
+      }
+      if (!skip) {
+	for (int i=1; i<=n; i++) {
+	  for (sum=0.0, j=1; j<=n; j++) sum += qt(i, j) * w(j);
+	  t(i) = sum;
+	}
+	double den = 0.; den += s.dot(s);
+	s = s * (1. / den);
+	qrupdt(r,qt,n,t,s);
+	for (int i=1;i<=n;i++) {
+	  if (r(i, i) == 0.0) throw("r singular in broydn\n");
+	  d(i) = r(i, i);
+	}
+      }
+    }
+    int j;
+    for (int i=1; i<=n; i++) {
+      for (sum=0., j=1 ; j<=n; j++) sum += qt(i, j) * fvec(j);
+      g(i) = sum;
+    }
+    for (int i=n; i>=1; i--) {
+      for (sum=0.0, j=1; j<=i; j++) sum += r(j, i) * g(j);
+      g(i) = sum;
+    }
+    xold = x; 
+    fvcold = fvec;
+    double fold = f;
+    for (int i=1;i<=n;i++) {
+      for (sum=0.0,j=1;j<=n;j++) sum += qt(i, j) * fvec(j);
+      p(i) = -sum;
+    }
+    rsolv(r, n, d, p); 
+    DoubleVector fvec(n);
+    check = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec);
+    test = 0.0;
+    for (int i=1; i<=n; i++)
+      if (fabs(fvec(i)) > test) test = fabs(fvec(i));
+    if (test < TOLF) {
+      check=0;
+      return;
+    }
+    if (check) {
+      if (restrt) return;
+      else {
+	test = 0.0;
+	double den = maximum(f, 0.5 * n);
+	for (int i=1;i<=n;i++) {
+	  double temp = fabs(g(i)) * maximum(fabs(x(i)), 1.0) / den;
+	  if (temp > test) test = temp;
+	}
+	if (test < TOLMIN) return;
+	else restrt = 1;
+      }
+    } else {
+      restrt = 0;
+      test = 0.0;
+      for (int i=1; i<=n; i++) {
+	double temp = (fabs(x(i) - xold(i))) / maximum(fabs(x(i)), 1.0);
+	if (temp > test) test = temp;
+      }
+      if (test < TOLX) return;
+    }
+  }
+  throw("MAXITS exceeded in broydn\n");
+  return;
+}
+
+void qrdcmp(DoubleMatrix & a, int n, DoubleVector & c, DoubleVector & d, 
+	    int & sing) {
+  int i,j,k;
+  double scale,sigma,sum,tau;
+  
+  sing = 0;
+  for (k=1; k<n; k++) {
+    scale = 0.0;
+    for (i=k; i<=n; i++) scale = maximum(scale, fabs(a(i, k)));
+    if (scale == 0.0) {
+      sing = 1;
+      c(k) = d(k) = 0.0;
+    } else {
+      for (i=k;i<=n;i++) a(i, k) /= scale;
+      for (sum=0.0,i=k;i<=n;i++) sum += sqr(a(i, k));
+      sigma = sign(sqrt(sum), a(k, k));
+      a(k, k) += sigma;
+      c(k) = sigma * a(k, k);
+      d(k) = -scale*sigma;
+      for (j=k+1; j<=n; j++) {
+	for (sum=0.0,i=k;i<=n;i++) sum += a(i, k) * a(i, j);
+	tau = sum / c(k);
+	for (i=k; i<=n; i++) a(i, j) -= tau * a(i, k);
+      }
+    }
+  }
+  d(n) = a(n, n);
+  if (d(n) == 0.0) sing = 1;
+}
+
+
+void qrupdt(DoubleMatrix & r, DoubleMatrix & qt, int n, 
+	    DoubleVector & u, DoubleVector & v) {
+  //	void rotate(float **r, float **qt, int n, int i, float a, float b);
+	int i,j,k;
+
+	for (k=n; k>=1; k--) {
+	  if (u(k)) break;
+	}
+	if (k < 1) k = 1;
+	for (i=k-1; i>=1; i--) {
+	  rotate(r, qt, n, i, u(i), -u(i+1));
+	  if (u(i) == 0.0) u(i) = fabs(u(i+1));
+		else if (fabs(u(i)) > fabs(u(i+1)))
+			u(i) = fabs(u(i)) * sqrt(1.0 + sqr(u(i+1) / u(i)));
+		else u(i) = fabs(u(i+1)) * sqrt(1.0 + sqr(u(i) / u(i+1)));
+	}
+	for (j=1; j<=n; j++) r(1, j) += u(1) * v(j);
+	for (i=1; i<k; i++)
+	  rotate(r, qt, n, i, r(i, i), -r(i+1, i));
+}
+
+void rotate(DoubleMatrix & r, DoubleMatrix & qt, int n, int i, float a, 
+	    float b) {
+  int j;
+  double c,fact,s,w,y;
+  
+  if (a == 0.0) {
+    c = 0.0;
+    s = (b >= 0.0 ? 1.0 : -1.0);
+  } else if (fabs(a) > fabs(b)) {
+    fact = b / a;
+    c = sign(1.0/sqrt(1.0+(fact*fact)),a);
+    s = fact*c;
+  } else {
+    fact = a / b;
+    s = sign(1.0 / sqrt(1.0 + (fact * fact)), b);
+    c = fact * s;
+  }
+  for (j=i; j<=n; j++) {
+    y = r(i, j);
+    w = r(i+1, j);
+    r(i, j) = c * y - s * w;
+    r(i+1, j) = s * y + c * w;
+  }
+  for (j=1; j<=n; j++) {
+    y = qt(i, j);
+    w = qt(i+1, j);
+    qt(i, j) = c * y - s * w;
+    qt(i+1, j) = s * y + c * w;
+  }
+}
+
+void rsolv(const DoubleMatrix & a, int n, const DoubleVector & d, 
+	   DoubleVector & b) {
+	int i,j;
+	double sum;
+
+	b(n) /= d(n);
+	for (i=n-1; i>=1; i--) {
+	  for (sum=0.0, j=i+1; j<=n; j++) sum += a(i, j) * b(j);
+	  b(i)=(b(i) - sum) / d(i);
+	}
 }
