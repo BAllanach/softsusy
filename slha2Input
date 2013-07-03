@@ -18,7 +18,7 @@ Block MINPAR		     # Input parameters
     4   1.000000000e+00	     # sign(mu)
     5   0.000000000e+00	     # A_0
 Block SOFTSUSY               # SOFTSUSY specific inputs
-    1   1.000000000e-03      # tolerance
+    1   1.000000000e-04      # tolerance
     2   2.000000000e+00      # up-quark mixing (=1) or down (=2)
     5   1.000000000E+00      # 2-loop running
     3   0.000000000E+00	     # printout
