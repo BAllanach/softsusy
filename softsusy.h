@@ -283,9 +283,9 @@ public:
   /// Does the full 2-loop calculation of both tadpoles and sets them
   void doTadpoles(double mt, double sinthDRbar);
   /// Does the calculation of one-loop pieces of \f$ t_1 / v_1 \f$ 
-  virtual double doCalcTadpole1oneLoop(double mt, double sinthDRbar) const;
+  virtual double doCalcTadpole1oneLoop(double mt, double sinthDRbar);
   /// Does the calculation of one-loop pieces of \f$ t_2 / v_2 \f$ 
-  virtual double doCalcTadpole2oneLoop(double mt, double sinthDRbar) const;
+  virtual double doCalcTadpole2oneLoop(double mt, double sinthDRbar);
   /// Calculates and sets the one-loop pieces of \f$ t_1 / v_1 \f$: sets both
   /// 1-loop and total pieces equal to the one-loop piece
   virtual void calcTadpole1Ms1loop(double mt, double sinthDRbar);

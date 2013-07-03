@@ -101,8 +101,8 @@ public:
 	 (tadpoles calculated with DRbar parameters and in the Feynman gauge
 	 (xi=1)) */
   DoubleVector calculateSneutrinoTadpoles(double sinthDRbar);
-  double doCalcTadpole1oneLoop(double mt, double sinthDRbar);
-  double doCalcTadpole2oneLoop(double mt, double sinthDRbar);
+  virtual double doCalcTadpole1oneLoop(double mt, double sinthDRbar);
+  virtual double doCalcTadpole2oneLoop(double mt, double sinthDRbar);
 	
   ///  LNV neutral scalar mass matrices (CPE/CPO) in Feynman gauge (xi=1),
   ///  c.f. paper Allanach Kom 

@@ -526,7 +526,7 @@ double Softsusy<SoftPars>::doCalcTad2GaugeBosons(double q, double costhDRbar2,
 /// 1-loop contributions. Only call if you've calculated drbarpars.
 /// inputs are running top/bottom masses: call at MSusy only
 template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTadpole1oneLoop(double mt, double sinthDRbar) const {
+double Softsusy<SoftPars>::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
 
  if (forLoops.mu(1, 3) == 0.0 || forLoops.mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)
@@ -587,7 +587,7 @@ double Softsusy<SoftPars>::displayMwRun() const {
 /// 1-loop contributions. Only call if you've calculated physpars
 /// inputs are running top/bottom masses. Call at MSusy
 template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTadpole2oneLoop(double mt, double sinthDRbar) const {
+double Softsusy<SoftPars>::doCalcTadpole2oneLoop(double mt, double sinthDRbar) {
 /// CHECKED
  if (forLoops.mu(1, 3) == 0.0 || forLoops.mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)
