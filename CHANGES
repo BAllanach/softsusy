@@ -10,3 +10,4 @@ that is input
 other problems with the point. Thanks to Simon Knapen
 <li> 26/5/13 SLHA problem when jointly using flavour violation and EXTPAR now
 fixed. Thanks to Florian Staub
+<li> 3/7/13 Fixed 64 bit NaN issue in two loop higgs corrections for particular parameter points. Thanks to Brian Petersen
