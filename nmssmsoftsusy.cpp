@@ -557,7 +557,7 @@ double NmssmSoftsusy::doCalcTadSCharginos(double q,  double lam) const
   return charginos;
 }
 
-double NmssmSoftsusy::doCalcTadpole1oneLoop(double mt, double sinthDRbar) const
+double NmssmSoftsusy::doCalcTadpole1oneLoop(double mt, double sinthDRbar)
 {
  if (displayDrBarPars().mu(1, 3) == 0.0 || displayDrBarPars().mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)
@@ -601,7 +601,7 @@ double NmssmSoftsusy::doCalcTadpole1oneLoop(double mt, double sinthDRbar) const
 
 }
 
-double NmssmSoftsusy::doCalcTadpole2oneLoop(double mt, double sinthDRbar) const
+double NmssmSoftsusy::doCalcTadpole2oneLoop(double mt, double sinthDRbar)
 {
  if (displayDrBarPars().mu(1, 3) == 0.0 || displayDrBarPars().mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)

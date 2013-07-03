@@ -107,9 +107,9 @@ public:
   //PA: NMSSM routine to obtain Chargino loop parts of (16 \pi^2) tS/s
   double doCalcTadSCharginos(double q,  double lam) const;
 /// Does the calculation of one-loop pieces of \f$ t_1 / v_1 \f$ 
-  virtual double doCalcTadpole1oneLoop(double mt, double sinthDRbar) const;
+  virtual double doCalcTadpole1oneLoop(double mt, double sinthDRbar);
   /// Does the calculation of one-loop pieces of \f$ t_2 / v_2 \f$ 
-  virtual double doCalcTadpole2oneLoop(double mt, double sinthDRbar) const;
+  virtual double doCalcTadpole2oneLoop(double mt, double sinthDRbar);
   /// Does the calculation of one-loop pieces of \f$ t_s / s \f$ 
   virtual double doCalcTadpoleSoneLoop(double mt, double sinthDRbar) const;
 
