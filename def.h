@@ -75,6 +75,8 @@ namespace softsusy{
   extern int numTry;
   /// Include eq (62) from hep-ph/0210268: degenerate gluino/squark mass limit
   extern bool includeTwoLoopMssmCorrectionsToMt;
+  /// Switch to use SPHENO conventions for masses in loops
+  extern bool sphenoMassConv;
 }
 
 #endif

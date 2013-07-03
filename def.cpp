@@ -54,5 +54,8 @@ namespace softsusy {
   /// Default is to not include 2-loop MSSM corrections in degenerate
   /// gluino/squark mass limit 
   bool includeTwoLoopMssmCorrectionsToMt = false;
+  /// Default: use SOFTSUSY conventions for masses of sparticles in loops, ie
+  /// tree-level masses computed with the 2-loop Higgs potential
+  bool sphenoMassConv = false;
 }
 /// end of global variable declaration
