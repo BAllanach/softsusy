@@ -6,7 +6,7 @@ AC_CONFIG_SRCDIR([softpoint.h])
 AC_CONFIG_AUX_DIR([Config])
 AC_CONFIG_HEADERS([Config/config.h])
 
-dnl Put default fortran compiler for this variable
+dnl Put default fortran compiler for this variable, gfortran or g77-34 should work 
 F77=gfortran
 
 dnl === disable debug symbols by default =====
