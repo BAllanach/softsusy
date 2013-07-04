@@ -103,9 +103,9 @@ doc/neutManual.pdf: doc/neutManual.tex
 
 doc/nmssmManual.pdf: doc/nmssmManual.tex
 	cd doc; \
-	latex neutManual.tex; latex neutManual.tex; \
-	dvips -f neutManual > neutManual.ps; 	\
-	ps2pdf neutManual.ps; cd ..
+	latex nmssmManual.tex; latex nmssmManual.tex; \
+	dvips -f nmssmManual > nmssmManual.ps; 	\
+	ps2pdf nmssmManual.ps; cd ..
 
 
 
