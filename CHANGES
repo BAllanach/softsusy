@@ -1,11 +1,13 @@
-<li> 25/2/13 Modified fB function: sometimes it was giving large numerical
-inaccuracies, if one used optimisation. This is now fixed. 
-<li> 25/2/13 Made W/Z tachyon flags. 
-<li> 26/2/13 Moved tadpoles to MssmSoftsusy object and fixed up Rpv REWSB
-<li> 5/3/13  Improved numerical accuracy of b0 loop function
-<li> 20/3/13 Fixed SLHA2 output of neutral fermion mixing in RPV case
-<li> 2/4/13 Added protection in 2x2 diagonalisation routines against negative
-eigenvalues. Only prints out an error message if DISPLAY_ARRAY_BOUNDS is
-switched on 
-<li> 18/4/13 Bug-fixed slepton correction to slepton mass. Thanks to A Voigt.
-<li> 23/4/13 Bug-fixed 3rd family corrections to chargino mass. Thanks to A Voigt
+<li> 7/5/13  Fixed signs in two-loop part of the running
+<li> 10/5/13 A Voigt's bug-fixes: small changes to stau mass and chargino corrections 
+<li> 16/5/13 Accuracy fixes to loop functions, which should now be better than
+per mille accuracy
+<li> 24/5/13 Tiny bugfixes to sbottom mass corrections
+<li> 26/5/13 Changed configure.ac file to look for gfortran by default
+<li> 26/5/13 Fixed SLHA input option for mu: it is now mu(MX), not mu(MSUSY),
+that is input
+<li> 26/5/13 "Problem Thrown" flag now used instead of "non-perturbative" for
+other problems with the point. Thanks to Simon Knapen
+<li> 26/5/13 SLHA problem when jointly using flavour violation and EXTPAR now
+fixed. Thanks to Florian Staub
+<li> 3/7/13 Fixed 64 bit NaN issue in two loop higgs corrections for particular parameter points. Thanks to Brian Petersen

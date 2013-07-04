@@ -6,6 +6,9 @@ AC_CONFIG_SRCDIR([softpoint.h])
 AC_CONFIG_AUX_DIR([Config])
 AC_CONFIG_HEADERS([Config/config.h])
 
+dnl Put default fortran compiler for this variable, gfortran or g77-34 should work 
+F77=gfortran
+
 dnl === disable debug symbols by default =====
 if test "x$CXXFLAGS" = "x"; then
    CXXFLAGS=-O3
@@ -39,3 +42,5 @@ AC_PROG_LIBTOOL
 AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
+
+# To run with looptools, run: ./configure CPPFLAGS=-I/home/bca20/code/looptools/LoopTools/install/include LDFLAGS=-L/home/bca20/code/looptools/LoopTools/install/lib/ F77=gfortran and add -looptools to Makefile.am libs

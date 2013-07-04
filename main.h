@@ -56,4 +56,10 @@
 #include <rpvsoft.h>
 using namespace softsusy;
 
+namespace NR {
+  extern int nn;
+  extern DoubleVector fvec;
+}
+
+  extern void (*nrfuncv)(int n, DoubleVector v, DoubleVector & f);
 

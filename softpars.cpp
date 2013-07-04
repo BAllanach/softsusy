@@ -607,7 +607,7 @@ SoftParsMssm SoftParsMssm::beta2() const {
 		   2.0 * Utau * htau2 * htau) - 
 	   4.0 * he * et * (3.0 * ddT + eeT) - 6.0 * e2 * (3.0 * hddT + heeT) -
 	   6.0 * he * e2t * et - 8.0 * e2 * he * et + 
-	   (32.0 * gsq(3) - 0.8 * gsq(1)) * hddT - 2.4 * gsq(1) * heeT + 
+	   (32.0 * gsq(3) - 0.8 * gsq(1)) * hddT + 2.4 * gsq(1) * heeT + 
 	   (6.0 * gsq(2) + 1.2 * gsq(1)) * he * et -
 	   (32.0 * gsq(3) * mG(3) - 0.8 * gsq(1) * mG(1)) * ddT - 
 	   2.4 * gsq(1) * mG(1) * eeT - 12.0 * gsq(2) * mG(2) * e2 -
@@ -833,7 +833,7 @@ SoftParsMssm SoftParsMssm::beta2() const {
 	  (-3.0 * (3.0 * d4t + ut * d2 * u1 + e2t * e2t).trace() -
 	   5.0 * e2 * (3.0 * ddT + eeT) - 6.0 * e2 * e2 + 
 	   (16.0 * gsq(3) - 0.4 * gsq(1)) * ddT + 1.2 * gsq(1) * eeT +
-	   (12.0 * gsq(2) - 1.2 * gsq(1)) * eeT + 7.5 * g4(2) + 
+	   (12.0 * gsq(2) - 1.2 * gsq(1)) * e2 + 7.5 * g4(2) + 
 	   1.8 * gsq(2) * gsq(1) + 13.5 * g4(1)) * he +
 	  (-6.0 * (6.0 * hdt * d2 * d1 + hut * d2 * u1 + hdt * u2 * d1 +
 		   2.0 * het * e2 * e1).trace() - 
