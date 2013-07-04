@@ -59,7 +59,7 @@ int main() {
     const int numPoints = 20; 
     
     /// parameter region
-    double Start = 0. , End = 0.7;
+    double Start = 0. , End = 0.5;
     
     DoubleVector pars(3);
     /// set basic entries in pars
