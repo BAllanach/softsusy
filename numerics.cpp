@@ -383,6 +383,11 @@ double b0(double p, double m1, double m2, double q) {
   //  return B0(p*p, m1*m1, m2*m2).real();
 #endif
 
+  /// Avoids IR infinities
+  if (close(p, 0.0, EPSTOL) && close(m1, 0.0, EPSTOL)
+      && close(m2, 0.0, EPSTOL))
+    return 0.0;
+
   double ans  = 0.;
   double mMin = minimum(fabs(m1), fabs(m2));
   double mMax = maximum(fabs(m1), fabs(m2));
