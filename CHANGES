@@ -1,3 +1,4 @@
 <li> 12/7/13 Fixed potential infra-red problem in Passarino-Veltman b0
 function. 
-<li> 
+<li> 12/7/13 Made gauge of tan beta and VEVs explicit in SLHA comments
+

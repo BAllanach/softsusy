@@ -9650,9 +9650,9 @@ void MssmSoftsusy::hmixSLHA(ostream & out) {
   out << "     1    "; printRow(out, displaySusyMu()); 
   out << "    # mu(Q)MSSM DRbar\n";
   out << "     2    "; printRow(out, displayTanb()); 
-  out << "    # tan beta(Q)MSSM DRbar\n";
+  out << "    # tan beta(Q)MSSM DRbar Feynman gauge\n";
   out << "     3    "; printRow(out, displayHvev()); 
-  out << "    # higgs vev(Q)MSSM DRbar\n";
+  out << "    # higgs vev(Q)MSSM DRbar Feynman gauge\n";
   out << "     4    "; 
   printRow(out, displayM3Squared() / 
 	   (sin(atan(displayTanb())) * cos(atan(displayTanb())))); 

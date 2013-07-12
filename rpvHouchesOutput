@@ -206,8 +206,8 @@ Block ye Q= 8.75675217e+02   # diagonal lepton Yukawa matrix
   3  3     2.04297964e-01    # YE_{33}(Q)MSSM DRbar
 Block hmix Q= 8.75675217e+02 # Higgs mixing parameters
      1     6.27444129e+02    # mu(Q)MSSM DRbar
-     2     1.94099731e+01    # tan beta(Q)MSSM DRbar
-     3     2.44468465e+02    # higgs vev(Q)MSSM DRbar
+     2     1.94099731e+01    # tan beta(Q)MSSM DRbar Feynman gauge
+     3     2.44468465e+02    # higgs vev(Q)MSSM DRbar Feynman gauge
      4     4.76110474e+05    # mA^2(Q)MSSM DRbar
 Block RVLAMLLE Q= 8.75675217e+02 # non-zero R-Parity violating LLE couplings 
   1 2 1    1.13950418e-10   # lambda_{121}

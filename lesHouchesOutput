@@ -114,8 +114,8 @@ Block ye Q= 8.73739716e+02
   3  3     1.00497512e-01   # Ytau(Q)MSSM DRbar
 Block hmix Q= 8.73739716e+02 # Higgs mixing parameters
      1     6.34092521e+02    # mu(Q)MSSM DRbar
-     2     9.66953127e+00    # tan beta(Q)MSSM DRbar
-     3     2.44056605e+02    # higgs vev(Q)MSSM DRbar
+     2     9.66953127e+00    # tan beta(Q)MSSM DRbar Feynman gauge
+     3     2.44056605e+02    # higgs vev(Q)MSSM DRbar Feynman gauge
      4     5.39844154e+05    # mA^2(Q)MSSM DRbar
 Block msoft Q= 8.73739716e+02  # MSSM DRbar SUSY breaking parameters
      1     2.09279437e+02      # M_1(Q)
