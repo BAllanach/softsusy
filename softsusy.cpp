@@ -9856,7 +9856,7 @@ void MssmSoftsusy::minparSLHA(ostream & out, const char model [],
   bool printMX = false;
 
   out << "Block MINPAR               # SUSY breaking input parameters\n";
-  out << "     3   "; printRow(out, tanb)            ; out << "   # tanb" << endl;
+  out << "     3   "; printRow(out, tanb)            ; out << "   # tanb, DRbar, Feynman gauge" << endl;
   if (!altEwsb) {
     out << "     4   "; 
     printRow(out, double(sgnMu)); 

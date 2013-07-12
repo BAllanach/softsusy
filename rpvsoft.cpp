@@ -1559,7 +1559,7 @@ void RpvSoftsusy::slha1(ostream & out, const char model[],
 
   out << "Block MINPAR  # SUSY breaking input parameters\n";
   out << "     3   "; printRow(out, tanb)            ; 
-  out << "   # tanb" << endl;
+  out << "   # tanb, DRbar scheme, Feynman gauge" << endl;
 
   if (!displayAltEwsb()) {
     out << "     4   "; 

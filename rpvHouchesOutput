@@ -29,7 +29,7 @@ Block VCKMIN               # input CKM mixing matrix parameters
      3    2.21000000e-01   # rhobar
      4    3.40000000e-01   # etabar (no phases used in SOFTSUSY yet though)
 Block MINPAR               # SUSY breaking input parameters
-     3    2.00000000e+01   # tanb
+     3    2.00000000e+01   # tanb, DRbar, Feynman gauge
      4    1.00000000e+00   # sign(mu)
      1    1.00000000e+02   # m0
      2    5.00000000e+02   # m12

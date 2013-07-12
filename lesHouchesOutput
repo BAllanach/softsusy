@@ -14,7 +14,7 @@ Block SMINPUTS             # Standard Model inputs
      6    1.74300000e+02   # Mtop(pole)
      7    1.77700000e+00   # Mtau(pole)
 Block MINPAR               # SUSY breaking input parameters
-     3    1.00000000e+01   # tanb
+     3    1.00000000e+01   # tanb, DRbar, Feynman gauge
      4    1.00000000e+00   # sign(mu)
      1    1.25000000e+02   # m0
      2    5.00000000e+02   # m12

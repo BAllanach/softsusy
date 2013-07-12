@@ -236,8 +236,8 @@ Block ye Q= 8.83274259e+02   # diagonal lepton Yukawa matrix
   3  3     1.00547228e-01    # YE_{33}(Q)MSSM DRbar
 Block hmix Q= 8.83274259e+02 # Higgs mixing parameters
      1     6.21645855e+02    # mu(Q)MSSM DRbar
-     2     9.68279309e+00    # tan beta(Q)MSSM DRbar
-     3     2.44255157e+02    # higgs vev(Q)MSSM DRbar
+     2     9.68279309e+00    # tan beta(Q)MSSM DRbar Feynman gauge
+     3     2.44255157e+02    # higgs vev(Q)MSSM DRbar Feynman gauge
      4     5.24667415e+05    # mA^2(Q)MSSM DRbar
 Block msq2 Q= 8.83274259e+02 # super CKM squark mass^2 matrix - DRbar
   1  1     1.04795654e+06    # (m^_Q^2)_{11}
