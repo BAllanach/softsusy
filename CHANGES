@@ -1,4 +1,5 @@
 <li> 12/7/13 Fixed potential infra-red problem in Passarino-Veltman b0
 function. 
 <li> 12/7/13 Made gauge of tan beta and VEVs explicit in SLHA comments
-
+<li> 19/7/13 Small bug-fix in sbottom corrections: sneutrino_e+sneutrino_mu is
+used in loop rather than just 2 x sneutrino_mu. Thanks to Lewis Tunstall.

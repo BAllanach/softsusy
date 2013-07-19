@@ -4983,7 +4983,7 @@ void MssmSoftsusy::addSbotCorrection(double p,
      +3.0 * yuL * (a0(forLoops.mu(1, 2), q) + a0(forLoops.mu(1, 1), q))
      +3.0 * ydL * (a0(forLoops.md(1, 2), q) + a0(forLoops.md(1, 1), q))
      +      yeL * (a0(forLoops.me(1, 2), q) + a0(forLoops.me(1, 1), q))
-     +      ynuL * (a0(msnu(2), q) + a0(msnu(2), q))
+     +      ynuL * (a0(msnu(1), q) + a0(msnu(2), q))
      //
      +3.0 * yuR * (sqr(st) * a0(mstop(1), q) + sqr(ct) * a0(mstop(2), q))
      +3.0 * ydR * (sqr(sb) * a0(msbot(1), q) + sqr(cb) * a0(msbot(2), q))
