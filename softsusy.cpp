@@ -3905,7 +3905,7 @@ void MssmSoftsusy::addSlepCorrection(DoubleMatrix & mass, int family) {
   higgs(1, 1) = higgs(1, 1) +   
     sqr(g) / sqr(costhDrbar) * sqr(geL) * 
     ffn(p1, msel(1), mz, q) +
-    sqr(g) * 0.5 * ffn(p1, msnu(1), mw, q);
+    sqr(g) * 0.5 * ffn(p1, msnu(family), mw, q);
 
   electroweak(1, 1) = electroweak(1, 1) +   
     sqr(g) * 0.25 * (a0(msel(1), q) + 2.0 * a0(msnu(family), q));
