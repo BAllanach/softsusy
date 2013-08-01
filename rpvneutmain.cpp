@@ -74,7 +74,7 @@ int main() {
     kw.setInvertedOutput();
 
     /// Main driver routine: do the calculation
-    double mgut = kw.lowOrg(rpvSugraBcs, mxGuess, pars, sgnMu, tanb, oneset, 
+    kw.lowOrg(rpvSugraBcs, mxGuess, pars, sgnMu, tanb, oneset, 
 	      gaugeUnification);
 
     /// Output the results in SLHA2 format
@@ -82,7 +82,7 @@ int main() {
     int numPoints = 1; bool ewsbBCscale = false;
 
     kw.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
-			      numPoints, mgut, ewsbBCscale);
+			      numPoints, ewsbBCscale);
   }
   catch(const string & a) {
     cout << a; exit(-1);

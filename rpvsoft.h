@@ -235,8 +235,7 @@ public:
   /// as input parameters (not tan beta and mH1, mH2).
   void slha1(ostream & out, const char model[], 
 	     const DoubleVector & pars, int sgnMu, 
-	     double tanb, double qMax, int numPoints, 
-	     double mgut);
+	     double tanb, double qMax, int numPoints);
   /// Does the RPV coupling SLHA1 outputs
   void drbarRpv(ostream & out);
   bool leptonNumberViolation() const;

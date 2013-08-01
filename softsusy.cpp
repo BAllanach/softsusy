@@ -45,6 +45,7 @@ const MssmSoftsusy & MssmSoftsusy::operator=(const MssmSoftsusy & s) {
   t2OV2Ms = s.displayTadpole2Ms(); 
   t1OV1Ms1loop = s.displayTadpole1Ms1loop(); 
   t2OV2Ms1loop = s.displayTadpole2Ms1loop(); 
+  mxBC = s.displayMxBC();
 
   return *this;
 }
@@ -681,7 +682,7 @@ double MssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars) {
   
   /// High error: if can't find a derivative, error comes back with 1.0e30
   if (ftParameter > TOLERANCE && fabs(err / derivative) > 1.0) 
-    return 6.66e66;
+    return numberOfTheBeast;
 
   /// Restore initial parameters at correct scale
   setMu(initialMu);
@@ -5862,7 +5863,7 @@ double getQhat(double inminTol,double eR, double h2, double Lisq, double mx,
     oldQhat = qhat;
   }
   /// Return NOB if no convergence on qhat
-  return -6.66e66;
+  return -numberOfTheBeast;
 }
 
 /// Input mx the scale up to which you search for minima
@@ -6146,13 +6147,11 @@ MssmSusy MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
 /// returns a ZERO object: no result is possible!
 /// Boundary condition is the theoretical condition on parameters at the high
 /// energy scale mx: the parameters themselves are contained within the vector.
-double MssmSoftsusy::lowOrg
+void MssmSoftsusy::lowOrg
 (void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &),
  double mxGuess, 
  const DoubleVector & pars, int sgnMu, double tanb, const QedQcd &
  oneset, bool gaugeUnification, bool ewsbBCscale) {
-
-  double mx = 0.0;
 
   try {
 
@@ -6179,7 +6178,7 @@ double MssmSoftsusy::lowOrg
 
     /// Here all was same
     if (mxGuess > 0.0) 
-      mx = mxGuess; 
+      mxBC = mxGuess; 
     else {
       string ii("Trying to use negative mx in MssmSoftsusy::lowOrg.\n");
       ii = ii + "Now illegal! Use positive mx for first guess of mx.\n";
@@ -6197,7 +6196,7 @@ double MssmSoftsusy::lowOrg
     MssmSusy t(guessAtSusyMt(tanb, oneset));
     
     t.setLoops(2); /// 2 loops should protect against ht Landau pole 
-    t.runto(mx); 
+    t.runto(mxBC); 
     
     setSusy(t);
     
@@ -6219,7 +6218,7 @@ double MssmSoftsusy::lowOrg
       }
     }
 
-    run(mx, mz);
+    run(mxBC, mz);
     
     if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
       
@@ -6227,13 +6226,13 @@ double MssmSoftsusy::lowOrg
     
     setThresholds(3); setLoops(2);
     
-    itLowsoft(maxtries, mx, sgnMu, tol, tanb, boundaryCondition, pars, 
+    itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 
 		gaugeUnification, ewsbBCscale);
     
     if (displayProblem().nonperturbative 
 	|| displayProblem().higgsUfb || displayProblem().tachyon 
 	|| displayProblem().noRhoConvergence)
-      return mx;
+      return;
     
     runto(maximum(displayMsusy(), mz));
     if (ewsbBCscale) boundaryCondition(*this, pars); 
@@ -6266,8 +6265,6 @@ double MssmSoftsusy::lowOrg
     flagProblemThrown(true);
     throw ii.str();
   }
-  
-  return mx;
 }
 
 
@@ -6739,7 +6736,7 @@ void MssmSoftsusy::calcDrBarPars() {
 }
 
 void MssmSoftsusy::itLowsoft
-(int maxTries, double & mx, int sgnMu, double tol, double tanb, 
+(int maxTries, int sgnMu, double tol, double tanb, 
  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &), 
  const DoubleVector & pars, bool gaugeUnification, bool ewsbBCscale) {
 
@@ -6787,7 +6784,7 @@ void MssmSoftsusy::itLowsoft
     double tbIn; double predictedMzSq = 0.;
     predictedMzSq = predMzsq(tbIn);
     setPredMzSq(predictedMzSq);  
-    if (!ewsbBCscale) err = runto(mx, eps);
+    if (!ewsbBCscale) err = runto(mxBC, eps);
 
     /// Guard against the top Yukawa fixed point
     if (displayYukawaElement(YU, 3, 3) > 3.0 
@@ -6815,18 +6812,18 @@ void MssmSoftsusy::itLowsoft
       
       /// Equal gauge couplings: let them and their derivatives set the boundary
       /// condition scale -- linear approximation
-      mx = mx * exp((displayGaugeCoupling(2) - displayGaugeCoupling(1))
+      mxBC = mxBC * exp((displayGaugeCoupling(2) - displayGaugeCoupling(1))
 		    / (a.displayGaugeCoupling(1) - a.displayGaugeCoupling(2)));
 
       /// if mx is too high/low, will likely get non-perturbative problems
-      if (mx < 1.0e4) {
-	mx = 1.0e4;
-	if (PRINTOUT > 2) cout << " mx too low ";
+      if (mxBC < 1.0e4) {
+	mxBC = 1.0e4;
+	if (PRINTOUT > 2) cout << " mxBC too low ";
 	flagMgutOutOfBounds(true);
       }
-      if (mx > 5.0e17) {
-	if (PRINTOUT > 2) cout << " mx =" << mx <<" too high ";
-	mx = 5.0e17;
+      if (mxBC > 5.0e17) {
+	if (PRINTOUT > 2) cout << " mxBC =" << mxBC <<" too high ";
+	mxBC = 5.0e17;
 	flagMgutOutOfBounds(true);
       }
     }
@@ -6847,8 +6844,8 @@ void MssmSoftsusy::itLowsoft
     }
 
     setMsusy(calcMs());
-    if (ewsbBCscale) mx = displayMsusy();
-    if (PRINTOUT > 0) cout << " mgut=" << mx << flush;
+    if (ewsbBCscale) mxBC = displayMsusy();
+    if (PRINTOUT > 0) cout << " mgut=" << mxBC << flush;
     
     mtrun = forLoops.mt; ///< This will be at MSUSY
     //    double tbIn; double predictedMzSq = 0.;
@@ -6911,7 +6908,7 @@ void MssmSoftsusy::itLowsoft
       return;
     }
     
-    itLowsoft(maxTries, mx, sgnMu, tol, tanb, boundaryCondition, pars, 
+    itLowsoft(maxTries, sgnMu, tol, tanb, boundaryCondition, pars, 
 	      gaugeUnification, ewsbBCscale);
   }
   catch(const char *a) {
@@ -9462,7 +9459,7 @@ void MssmSoftsusy::spinfoSLHA(ostream & out) {
     out << "     4   Point invalid: " << displayProblem() << endl;
 }
 
-void MssmSoftsusy::softsusySLHA(ostream & out, double mgut) {
+void MssmSoftsusy::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
   out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
 }
@@ -9779,13 +9776,13 @@ void MssmSoftsusy::sminputsSLHA(ostream & out) {
 }
 
 void MssmSoftsusy::extparSLHA(ostream & out, 
-			      const DoubleVector & pars, double mgut,
+			      const DoubleVector & pars, 
 			      bool ewsbBCscale) {
   out << "Block EXTPAR               # non-universal SUSY breaking parameters\n";
   if (ewsbBCscale) 
     out << "     0    -1.00000000e+00  # Set MX=MSUSY\n";
   else {
-    out << "     0    "; printRow(out, mgut); out << "  # MX scale\n";
+    out << "     0    "; printRow(out, mxBC); out << "  # MX scale\n";
   }
   
   int i;
@@ -9849,7 +9846,7 @@ void MssmSoftsusy::extparSLHA(ostream & out,
 
 void MssmSoftsusy::minparSLHA(ostream & out, const char model [], 
 			      const DoubleVector & pars, double tanb, 
-			      int sgnMu, double mgut, 
+			      int sgnMu, 
 			      bool ewsbBCscale) {
   /// For universal models, users still want to know MX and it has to be
   /// specially printed out as EXTPAR 0
@@ -9895,7 +9892,7 @@ void MssmSoftsusy::minparSLHA(ostream & out, const char model [],
   }
   else 
     if (!strcmp(model, "nonUniversal")) 
-      extparSLHA(out, pars, mgut, ewsbBCscale);
+      extparSLHA(out, pars, ewsbBCscale);
   else {
     ostringstream ii;
     ii << "Attempting to use SUSY Les Houches Accord for model " 
@@ -9904,7 +9901,7 @@ void MssmSoftsusy::minparSLHA(ostream & out, const char model [],
   }  
   if (printMX) {
   out << "Block EXTPAR               # scale of SUSY breaking BCs\n";
-  out << "     0   "; printRow(out, mgut); out << "   # MX scale\n";
+  out << "     0   "; printRow(out, mxBC); out << "   # MX scale\n";
   }
 }
  
@@ -9912,10 +9909,10 @@ void MssmSoftsusy::slha1(ostream & out, const char model[],
 			 const DoubleVector & pars, 
 			 int sgnMu, double tanb, 
 			 double qMax, 
-			 int numPoints, double mgut, 
+			 int numPoints, 
 			 bool ewsbBCscale) {
   lesHouchesAccordOutput(out, model, pars, sgnMu, tanb, qMax, numPoints, 
-			 mgut, ewsbBCscale);
+			 ewsbBCscale);
 }
 
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
@@ -9923,10 +9920,10 @@ void MssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  const DoubleVector & pars, 
 					  int sgnMu, double tanb, 
 					  double qMax, 
-					  int numPoints, double mgut, 
+					  int numPoints, 
 					  bool ewsbBCscale) {
   if (forceSlha1 == true) {
-    slha1(out, model, pars, sgnMu, tanb, qMax, numPoints, mgut, 
+    slha1(out, model, pars, sgnMu, tanb, qMax, numPoints, 
 	  ewsbBCscale);
     return;
   }
@@ -9935,8 +9932,8 @@ void MssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
   spinfoSLHA(out);
   modselSLHA(out, model);
   sminputsSLHA(out); 
-  minparSLHA(out, model, pars, tanb, sgnMu, mgut, ewsbBCscale);
-  softsusySLHA(out, mgut);
+  minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale);
+  softsusySLHA(out);
 
   if (!displayProblem().testSeriousProblem() || printRuledOutSpectra) {
     massSLHA(out);
@@ -10262,7 +10259,7 @@ DoubleVector mhIntegrand(double mh, const DoubleVector & y) {
 double lnLHiggs(double mh) {
   if (mh > 130.) return 0.;
   /// error code
-  if (mh < EPSTOL) return -6.66e66;
+  if (mh < EPSTOL) return -numberOfTheBeast;
 
   double from = mh - 4.0 * sigmaMh, 
     to = mh + 4.0 * sigmaMh, 
@@ -10278,7 +10275,7 @@ double lnLHiggs(double mh) {
   /// odeint has a problem at f(0): therefore, define f'(b)=f(b)+1
   integrateOdes(v, from, to, eps, guess, hmin, mhIntegrand, odeStepper); 
   
-  if (v(1) < EPSTOL || fabs(v(1) - 1.0) < EPSTOL) return -6.66e66; 
+  if (v(1) < EPSTOL || fabs(v(1) - 1.0) < EPSTOL) return -numberOfTheBeast; 
   else return log((v(1) - 1.0) / (sqrt(2.0 * PI) * sigmaMh));
 }
 

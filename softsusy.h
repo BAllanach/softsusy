@@ -30,6 +30,9 @@
 #include <twoloophiggs.h>
 using namespace softsusy;
 
+///< default SUSY breaking boundary condition scale
+const double mxDefault = 1.9e16; 
+
 class MssmSoftsusy;
 std::istream & operator >>(std::istream &left, MssmSoftsusy &s);
 
@@ -77,6 +80,7 @@ private:
   double predMzSq;    ///< predicted Z mass squared after iteration
   double t1OV1Ms, t2OV2Ms;  ///< DRbar tadpoles(MSusy): incl 2 loops
   double t1OV1Ms1loop, t2OV2Ms1loop; ///< DRbar tadpoles(MSusy): excl 2 loops
+  double mxBC;        ///< Scale at which SUSY breaking boundary conditions set
 public:
   //  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &);
   /// Default constructor fills object with zeroes
@@ -120,6 +124,7 @@ public:
   double displayTadpole2Ms() const; ///< displays t_2/v_2 tadpole
   double displayTadpole1Ms1loop() const; ///< displays t_1/v_1 tadpole@1 loop
   double displayTadpole2Ms1loop() const; ///< displays t_2/v_2 tadpole@1 loop
+  double displayMxBC() const { return mxBC; }; ///< displays M_X value
   /// Returns object as a const
   const MssmSoftsusy & displaySoftsusy() const { return *this; }
   /// Returns value of pole MZ being used
@@ -177,6 +182,8 @@ public:
   void setMw(double);
   /// Sets all physical parameters
   void setPhys(const sPhysical & s) { physpars = s; };
+  /// Sets the scale at which high-scale boundary conditions are applied
+  void setMxBC(double mx) { mxBC = mx; };
   /// Sets tree-level DRbar parameters
   void setDrBarPars(const drBarPars & s) { forLoops = s; };
   /// Sets the setTbAtMX flag
@@ -534,7 +541,7 @@ public:
   /// SUSY breaking is set in the usual way. If it is true, the boundary
   /// condition is set to \f$\sqrt{m_{{\tilde t}_1} m_{{\tilde t}_2}} \f$, ie
   /// like in the "pheno MSSM".
-  double lowOrg(void (*boundaryCondition)
+  void lowOrg(void (*boundaryCondition)
 		(MssmSoftsusy &, const DoubleVector &),
 		double mxGuess, 
 		const DoubleVector & pars, int sgnMu, double tanb,
@@ -549,7 +556,7 @@ public:
   /// sgnMu is the desired sign of mu: + or - 1. If mu is 0, mu is set
   /// initially as a boundary condition. tanb = desired value of DR bar tan
   /// beta(MZ).
-  void itLowsoft(int maxTries, double & mx, int sgnMu, double tol, 
+  void itLowsoft(int maxTries, int sgnMu, double tol, 
 		 double tanb, void (*boundaryCondition)(MssmSoftsusy &, 
 							const DoubleVector &), 
 		 const DoubleVector & pars, bool gaugeUnification, 
@@ -617,11 +624,10 @@ public:
 				      const DoubleVector & pars, 
 				      int sgnMu, double tanb, double qMax, 
 				      int numPoints, 
-				      double mgut, 
 				      bool ewsbBCscale);
   void slha1(ostream & out, const char model[], const DoubleVector & pars, 
 	     int sgnMu, double tanb, double qMax, int numPoints, 
-	     double mgut, bool ewsbBCscale);
+	     bool ewsbBCscale);
   /// Normally, this is just a dummy function that is un-used. But sometimes,
   /// it can be used to re-set electroweak symmetry breaking conditions,
   /// depending on the value of inputs at the GUT scale. 
@@ -638,9 +644,9 @@ public:
   /// MINPAR block of SLHA
   void minparSLHA(ostream & out, const char model [], 
 		  const DoubleVector & pars, double tanb, int sgnMu, 
-		  double mgut, bool ewsbBCscale);
+		  bool ewsbBCscale);
   /// EXTPAR block of SLHA
-  virtual void extparSLHA(ostream & out, const DoubleVector & pars, double mgut,
+  virtual void extparSLHA(ostream & out, const DoubleVector & pars, 
 			  bool ewsbBCscale);
   /// This does the job of the above method, but outputs the Mass block
   void massSLHA(ostream & out);
@@ -653,7 +659,7 @@ public:
   /// This does the job of the above method, but outputs the UMIX/VMIX blocks
   void inomixingSLHA(ostream & out);
   /// SOFTSUSY comments in SLHA
-  void softsusySLHA(ostream & out, double mgut);
+  void softsusySLHA(ostream & out);
   /// sfermionic part of mixing blocks
   void alphaSLHA(ostream & out);
   /// higgs part of mixing blocks
@@ -722,7 +728,7 @@ inline MssmSoftsusy::MssmSoftsusy()
     problem(), msusy(0.0), minV(6.66e66), 
     mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false), 
     predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), 
-    t2OV2Ms1loop(0.) { 
+    t2OV2Ms1loop(0.), mxBC(mxDefault) { 
       setPars(110);
       setMu(0.0);
       setLoops(0);
@@ -740,7 +746,7 @@ inline MssmSoftsusy::MssmSoftsusy(const MssmSoftsusy & s)
     altEwsb(s.displayAltEwsb()), predMzSq(s.displayPredMzSq()), 
     t1OV1Ms(s.displayTadpole1Ms()), t2OV2Ms(s.displayTadpole2Ms()), 
     t1OV1Ms1loop(s.displayTadpole1Ms1loop()), 
-    t2OV2Ms1loop(s.displayTadpole2Ms1loop()) {
+    t2OV2Ms1loop(s.displayTadpole2Ms1loop()), mxBC(s.displayMxBC()) {
 
     setPars(110);
     setMu(s.displayMu()); 
@@ -753,7 +759,7 @@ inline MssmSoftsusy::MssmSoftsusy(const MssmSusy &s)
     physpars(), forLoops(), problem(), 
     msusy(0.0), minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), 
     setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
-    t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.) { 
+    t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), mxBC(mxDefault) { 
   setPars(110);
   setMu(s.displayMu()); 
   setLoops(s.displayLoops());
@@ -766,7 +772,7 @@ inline MssmSoftsusy::MssmSoftsusy
   : SoftParsMssm(s), AltEwsbMssm(), physpars(sp), forLoops(), problem(), msusy(0.0),
     minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), 
     altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
-    t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.) {
+    t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), mxBC(mxDefault) {
   setHvev(hv);
   setPars(110);
   setMu(mu);

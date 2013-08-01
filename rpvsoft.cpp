@@ -1519,8 +1519,7 @@ void RpvSoftsusy::drbarRpv(ostream & out) {
 void RpvSoftsusy::slha1(ostream & out, const char model[], 
 			const DoubleVector & pars, 
 			int sgnMu, double tanb, double qMax, 
-			int numPoints, 
-			double mgut) {
+			int numPoints) {
   outputCharacteristics(8);
 
   out << "# SOFTSUSY" << SOFTSUSY_VERSION << " SLHA 1 TYPE FILE" << endl;
@@ -1655,7 +1654,7 @@ void RpvSoftsusy::slha1(ostream & out, const char model[],
   
   out << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
        << TOLERANCE << endl;
-  out << "# mgut=" << mgut << " GeV\n";
+  out << "# mgut=" << displayMxBC() << " GeV\n";
 
   sPhysical s(displayPhys());
 
