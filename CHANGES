@@ -5,5 +5,5 @@ function.
 used in loop rather than just 2 x sneutrino_mu. Thanks to Lewis Tunstall.
 <li> 22/7/13 Small bug-fix in charged slepton corrections. Thanks to Lewis
 Tunstall.
-<li> 1/8/12 Added MX, the scale of SUSY breaking boundary conditions (may also
+<li> 1/8/13 Added MX, the scale of SUSY breaking boundary conditions (may also
 be unification scale), to MssmSoftsusy object for convenience.
