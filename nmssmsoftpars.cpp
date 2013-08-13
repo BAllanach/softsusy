@@ -198,9 +198,10 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     dmG = base.displayGaugino();
 
     dm3sq = base.displayM3Squared();
-    dm3sq += (4.0 * displaySusyMu() * lam * hlam
-              + 6.0 * lsq * m3sq + 2.0 * lam * kap * mSpsq) * ONEO16Pisq;
 
+    dm3sq += (4.0 * displaySusyMu() * lam * hlam
+              + 6.0 * lsq * m3sq + 2.0 * lam * kap * mSpsq) * ONEO16Pisq; 
+    
     dmH1sq = base.displayMh1Squared();
     dmH1sq += 2.0 * Mlamsq * ONEO16Pisq;
 
@@ -231,6 +232,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
              - 0.6 * gsq(1) - 3.0 * gsq(2)) * hlam
        + lam * ( 2.0 * aYtr  + 8.0 * hlam * lam
                  + 4.0 * hkap * kap + 1.2 * gsqM(1) + 6.0 * gsqM(2) );
+   
 
     dhkap = 18.0 * hkap * ksq + 12.0 * lam * kap * hlam
        + 6.0 * hkap * lsq;
@@ -360,7 +362,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
            + 16.0 * gsq(3) * hlam * (uuT + ddT)
            + 0.02 * g4(1) * (207.0 * hlam - 828.0 * lam * mG(1))
            + 0.5 * g4(2) * (15.0 * hlam - 60.0 * lam * mG(2))
-           + 1.8 * gsq(1) * gsq(2) * (hlam - 2.0* (mG(1) + mG(2)));
+           + 1.8 * gsq(1) * gsq(2) * (hlam - 2.0 * lam * (mG(1) + mG(2)));
 
       } else {
 	// NB you should introduce speedy computation here. For example sum
