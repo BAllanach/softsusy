@@ -151,7 +151,7 @@ inline SoftParsNmssm::SoftParsNmssm()
 
 inline SoftParsNmssm::SoftParsNmssm(const SoftParsNmssm & s)
   : SoftPars<NmssmSusy, nmsBrevity>(s),
-  alambda(s.displayTrialambda()), akappa(displayTriakappa()),
+  alambda(s.displayTrialambda()), akappa(s.displayTriakappa()),
   mSsq(s.displayMsSquared()), mSpsq(s.displayMspSquared()),
   xiS(s.displayXiS()) {
 
