@@ -27,7 +27,6 @@
 #include <physpars.h>
 #include <lowe.h>
 #include <softpars.h>
-#include <nmssmsoftpars.h>
 
 #include <twoloophiggs.h>
 
@@ -56,7 +55,7 @@ public:
 /// Contains all supersymmetric MSSM parameters, incorporating R_p MSSM
 template<class SoftPars>
 class Softsusy: public SoftPars, public AltEwsbMssm {
-  /// Includes
+  /// Includes 
   /// - Soft terms
   /// - DRbar masses
   /// - RGEs
@@ -292,41 +291,216 @@ public:
   /// Calculates then sets the one-loop pieces of \f$ t_2 / v_2 \f$: sets both
   /// 1-loop and total pieces equal to the one-loop piece
   virtual void calcTadpole2Ms1loop(double mt, double sinthDRbar);
+  /// LCT: Adds one-loop strong corrections to stop mass matrix
+  /// IO parameters: p=external momentum, mt=DR bar top mass, 
+  /// outputs strong=2x2 matrix of self-energies in LR basis
+  DoubleMatrix addStopQCD(double p, double mt, DoubleMatrix & strong);
+  /// LCT: Adds one-loop stop corrections to stop mass matrix
+  /// IO parameters: p=external momentum, mt=DR bar top mass, 
+  /// outputs stop=2x2 matrix of self-energies in LR basis
+  DoubleMatrix addStopStop(double p, double mt, DoubleMatrix & stop);
+  /// LCT: Adds one-loop sbottom corrections to stop mass matrix
+  /// IO parameters: p=external momentum, mt=DR bar top mass, 
+  /// outputs sbottom=2x2 matrix of self-energies in LR basis
+  DoubleMatrix addStopSbottom(double p, double mt, DoubleMatrix & sbottom);
+  /// LCT: Returns Higgs-Sfermion-Sfermion couplings with SUSY parameter mu as 
+  /// input.  CP-even Higgs couplings have all indices in weak basis, CP-odd 
+  /// and charged Higgs couplings have Higgs index in mass basis and sfermion
+  /// indices in weak basis
+  virtual void getHiggsSfermionSfermionCoup(double mu, DoubleMatrix & 
+  lsStopLStopLR, DoubleMatrix & lsStopRStopLR, DoubleMatrix & lChHstopLsbotLR, 
+  DoubleMatrix & lChHstopRsbotLR) const;
+  /// LCT: Adds one-loop Higgs corrections to stop mass matrix
+  /// IO parameters: p=external momentum, mt=DR bar top mass, 
+  /// outputs higgs=2x2 matrix of self-energies in LR basis
+  DoubleMatrix addStopHiggs(double p, double mt, DoubleMatrix & higgs);
+ /// LCT: Adds one-loop electroweak corrections to stop mass matrix
+  /// IO parameters: p=external momentum, mt=DR bar top mass, 
+  /// outputs electroweak=2x2 matrix of self-energies in LR basis
+  DoubleMatrix addStopEweak(double p, DoubleMatrix & electroweak);
+  /// LCT: Returns neutralino-fermion-stop trilinear couplings in weak basis
+  virtual void getNeutralinoFermionStopCoup(DoubleVector & aPsi0TStopr, 
+  DoubleVector & bPsi0TStopr, DoubleVector & aPsi0TStopl, 
+  DoubleVector & bPsi0TStopl) const;
+  /// LCT: Adds one-loop neutralino corrections to stop mass matrix
+  /// IO parameters: p=external momentum, outputs neutralino=2x2 matrix of 
+  /// self-energies in LR basis
+  DoubleMatrix addStopNeutralino(double p, double mt, DoubleMatrix & neutralino);
+  /// LCT: Adds one-loop chargino corrections to stop mass matrix
+  /// IO parameters: p=external momentum, outputs chargino=2x2 matrix of 
+  /// self-energies in LR basis
+  DoubleMatrix addStopChargino(double p, DoubleMatrix & chargino);
   /// Adds one-loop corrections to stop mass matrix
   /// IO parameters: p=external momentum, mass=tree level mass matrix on
   /// input, is returned with radiative corrections added, mt=DR bar top mass
-  void addStopCorrection(double p, DoubleMatrix & mass, double mt);
+  virtual void addStopCorrection(double p, DoubleMatrix & mass, double mt);
+  /// LCT: Adds one-loop strong corrections to sdown mass matrix
+  /// IO parameters: {p1,p2}=external momentum, outputs strong=2x2 matrix of 
+  /// self-energies in LR basis
+  DoubleMatrix addSdownQCD(double p1, double p2, int family, 
+  DoubleMatrix & strong); 
+  /// LCT: Adds one-loop Higgs corrections to sdown mass matrix
+  /// IO parameters: {p1,p2}=external momentum, outputs higgs=2x2 matrix of 
+  /// self-energies in LR basis
+  DoubleMatrix addSdownHiggs(double p1, double p2, int family, 
+  DoubleMatrix & higgs); 
+  /// LCT: Adds one-loop electroweak corrections to sdown mass matrix
+  /// IO parameters: {p1,p2}=external momentum, outputs electroweak=2x2 matrix 
+  /// of self-energies in LR basis
+  DoubleMatrix addSdownEweak(double p1, double p2, int family, 
+  DoubleMatrix & electroweak); 
+  /// LCT: Adds one-loop neutralino corrections to sdown mass matrix
+  /// IO parameters: {p1,p2}=external momentum, outputs neutralino=2x2 matrix 
+  /// of self-energies in LR basis
+  DoubleMatrix addSdownNeutralino(double p1, double p2, int family, 
+  DoubleMatrix & neutralino);
+  /// LCT: Adds one-loop chargino corrections to sdown mass matrix
+  /// IO parameters: {p1,p2}=external momentum, outputs chargino=2x2 matrix of 
+  /// self-energies in LR basis
+  DoubleMatrix addSdownChargino(double p1, double p2, int family, 
+  DoubleMatrix & chargino); 
   /// Adds one-loop corrections to sbottom mass matrix at p=root(mb1 mb2)
   /// IO parameters: mass=tree level mass matrix on
   /// input, is returned with radiative corrections added, mt=DR bar top mass
-  void addSdownCorrection(DoubleMatrix & mass, int family);
+  virtual void addSdownCorrection(DoubleMatrix & mass, int family);
+  /// LCT: Adds one-loop strong corrections to sbottom mass matrix
+  /// IO parameters: p=external momentum, mt=DR bar top mass, 
+  /// outputs strong=2x2 matrix of self-energies in LR basis
+  DoubleMatrix addSbotQCD(double p, double mt, DoubleMatrix & strong);
+  /// LCT: Adds one-loop stop, sbottom and stau corrections to sbottom mass 
+  /// matrix.  IO parameters: p=external momentum, mt=DR bar top mass, 
+  /// outputs {stop,sbottom}=2x2 matrix of self-energies in LR basis
+  void addSbotSfermion(double p, double mt, DoubleMatrix & stop, 
+  DoubleMatrix & sbottom);
+  /// LCT: Adds one-loop Higgs corrections to sbottom mass matrix
+  /// IO parameters: p=external momentum, mt=DR bar top mass, 
+  /// outputs higgs=2x2 matrix of self-energies in LR basis
+  DoubleMatrix addSbotHiggs(double p, double mt, DoubleMatrix & higgs);
+  /// LCT: Adds one-loop electroweak corrections to sbottom mass matrix
+  /// IO parameters: p=external momentum, outputs electroweak=2x2 matrix of 
+  /// self-energies in LR basis
+  DoubleMatrix addSbotEweak(double p, DoubleMatrix & electroweak);
+  /// LCT: Returns neutralino-fermion-sbottom trilinear couplings in weak basis
+  virtual void getNeutralinoFermionSbotCoup(DoubleVector & aPsi0BSbotr, 
+  DoubleVector & bPsi0BSbotr, DoubleVector & aPsi0BSbotl, 
+  DoubleVector & bPsi0BSbotl) const;
+  /// LCT: Adds one-loop neutralino corrections to sbottom mass matrix
+  /// IO parameters: p=external momentum, outputs neutralino=2x2 matrix of 
+  /// self-energies in LR basis
+  DoubleMatrix addSbotNeutralino(double p, double mt, DoubleMatrix & neutralino);
+  /// LCT: Adds one-loop chargino corrections to sbottom mass matrix
+  /// IO parameters: p=external momentum, outputs chargino=2x2 matrix of 
+  /// self-energies in LR basis
+  DoubleMatrix addSbotChargino(double p, double mt, DoubleMatrix & chargino);
   /// Adds one-loop corrections to sbottom mass matrix at p=root(mb1 mb2)
   /// IO parameters: p=external momentum scale, mass=tree level mass matrix on
   /// input, is returned with radiative corrections added, mt=DR bar top mass
-  void addSbotCorrection(double p, DoubleMatrix & mass, double mb);
+  virtual void addSbotCorrection(double p, DoubleMatrix & mass, double mb);
+  /// LCT: Adds one-loop Higgs corrections to slepton self energy
+  /// IO parameters: p=external momentum, family=generation, 
+  /// outputs higgs=2x2 matrix of self-energies
+  DoubleMatrix addSlepHiggs(double p1, double p2, int family, DoubleMatrix & higgs);
+  /// LCT: Adds one-loop electroweak corrections to slepton self energy
+  /// IO parameters: p=external momentum, family=generation, 
+  /// outputs electroweak=2x2 matrix of self-energies
+  DoubleMatrix addSlepEweak(double p1, double p2, int family, DoubleMatrix & electroweak);
+  /// LCT: Adds one-loop gaugino corrections to slepton self energy
+  /// IO parameters: p=external momentum, family=generation, 
+  /// outputs {chargino,neutralino}=2x2 matrix of self-energies
+  void addSlepGaugino(double p1, double p2, int family, DoubleMatrix & chargino, DoubleMatrix & neutralino);
   /// Adds one-loop corrections to sel_fam mass matrix at p=root(msel1 msel2)
   /// IO parameters: mass=tree level mass on
   /// input, is returned with radiative corrections added, mt=DR bar top mass
-  void addSlepCorrection(DoubleMatrix & mass, int family);
+  virtual void addSlepCorrection(DoubleMatrix & mass, int family);
   /// This is a special version that I've added to correct lower families'
   /// mixings too
   void addSlepCorrection(double p, DoubleMatrix & mass, int family);
+  /// LCT: Adds one-loop sfermion corrections to stau self energy
+  /// IO parameters: p=external momentum, mtau=DR bar tau mass,
+  /// outputs {stop,sbottom}=2x2 matrix of self-energies
+  void addStauSfermion(double p, double mtau, DoubleMatrix & stop, DoubleMatrix & sbottom);
+  /// LCT: Adds one-loop Higgs corrections to stau self energy
+  /// IO parameters: p=external momentum, mtau=DR bar tau mass,
+  /// outputs higgs=2x2 matrix of self-energies
+  void addStauGaugino(double p, double mtau, DoubleMatrix & chargino, DoubleMatrix & neutralino);
+  /// LCT: Adds one-loop gaugino corrections to stau self energy
+  /// IO parameters: p=external momentum, mtau=DR bar tau mass,
+  /// outputs {chargino,neutralino}=2x2 matrix of self-energies
+  DoubleMatrix addStauEweak(double p, double mtau, DoubleMatrix & electroweak);
+  /// LCT: Adds one-loop electroweak corrections to stau self energy
+  /// IO parameters: p=external momentum, mtau=DR bar tau mass,
+  /// outputs electroweak=2x2 matrix of self-energies
+  DoubleMatrix addStauHiggs(double p, double mtau, DoubleMatrix & higgs);
   /// Adds one-loop corrections to stau mass matrix at p=root(mtau1 mtau2)
   /// IO parameters: mass=tree level mass on
   /// input, is returned with radiative corrections added, mt=DR bar top mass
-  void addStauCorrection(double p, DoubleMatrix & mass, double mtau);
-  /// Adds one-loop corrections to stau mass matrix at p=root(mtau1 mtau2)
+  virtual void addStauCorrection(double p, DoubleMatrix & mass, double mtau);
+  /// LCT: Adds one-loop strong corrections to sup mass matrix
+  /// IO parameters: {p1,p2}=external momentum, outputs strong=2x2 matrix of 
+  /// self-energies in LR basis
+  DoubleMatrix addSupQCD(double p1, double p2, int family, 
+  DoubleMatrix & strong); 
+  /// LCT: Adds one-loop Higgs corrections to sup mass matrix
+  /// IO parameters: {p1,p2}=external momentum, outputs higgs=2x2 matrix of 
+  /// self-energies in LR basis
+  DoubleMatrix addSupHiggs(double p1, double p2, int family, 
+  DoubleMatrix & higgs); 
+  /// LCT: Adds one-loop electroweak corrections to sup mass matrix
+  /// IO parameters: {p1,p2}=external momentum, outputs electroweak=2x2 matrix 
+  /// of self-energies in LR basis
+  DoubleMatrix addSupEweak(double p1, double p2, int family, 
+  DoubleMatrix & electroweak); 
+  /// LCT: Returns neutralino-fermion-sup trilinear couplings in weak basis
+  virtual void getNeutralinoFermionSupCoup(DoubleVector & aPsi0TStopr, 
+  DoubleVector & bPsi0TStopr, DoubleVector & aPsi0TStopl, 
+  DoubleVector & bPsi0TStopl) const;
+  /// LCT: Adds one-loop neutralino corrections to sup mass matrix
+  /// IO parameters: {p1,p2}=external momentum, outputs neutralino=2x2 matrix 
+  /// of self-energies in LR basis
+  DoubleMatrix addSupNeutralino(double p1, double p2, int family, 
+  DoubleMatrix & neutralino); 
+  /// LCT: Adds one-loop chargino corrections to sup mass matrix
+  /// IO parameters: {p1,p2}=external momentum, outputs chargino=2x2 matrix of 
+  /// self-energies in LR basis
+  DoubleMatrix addSupChargino(double p1, double p2, int family, 
+  DoubleMatrix & chargino); 
+  /// Adds one-loop corrections to sup mass matrix at p=root(msup1 msup2)
   /// IO parameters: mass=tree level mass on
   /// input, is returned with radiative corrections added, mt=DR bar top mass
-  void addSupCorrection(DoubleMatrix & mass, int family);
+  virtual void addSupCorrection(DoubleMatrix & mass, int family);
+  /// LCT: Adds one-loop sfermion corrections to tau sneutrino self energy
+  /// IO parameters: p=external momentum, outputs {stop,sbottom}=self-energy
+  void addSnuTauSfermion(double p, double & stop, double & sbottom);
+  /// LCT: Adds one-loop Higgs corrections to tau sneutrino self energy
+  /// IO parameters: p=external momentum, outputs higgs=self-energy
+  double addSnuTauHiggs(double p, double & higgs);
+  /// LCT: Adds one-loop electroweak corrections to tau sneutrino self energy
+  /// IO parameters: p=external momentum, outputs electroweak=self-energy
+  double addSnuTauEweak(double p, double & electroweak);
+  /// LCT: Adds one-loop gaugino corrections to tau sneutrino self energy
+  /// IO parameters: p=external momentum, outputs 
+  /// {chargino,neutralino}=self-energy
+  void addSnuTauGaugino(double p, double & chargino, double & neutralino);
   /// Adds one-loop corrections to tau sneutrino mass 
   /// IO parameters: p=external momentum, mass=tree level mass matrix on
   /// input, is returned with radiative corrections added, mt=DR bar top mass
-  void addSnuTauCorrection(double & mass);
+  virtual void addSnuTauCorrection(double & mass);
+  /// LCT: Adds one-loop Higgs corrections to sneutrino self energy
+  /// IO parameters: p=external momentum, family=generation, 
+  /// outputs higgs=self-energy
+  double addSnuHiggs(double p, int family, double & higgs);
+  /// LCT: Adds one-loop electroweak corrections to sneutrino self energy
+  /// IO parameters: p=external momentum, family=generation,
+  /// outputs electroweak=self-energy
+  double addSnuEweak(double p, int family, double & electroweak);
+  /// LCT: Adds one-loop gaugino corrections to sneutrino self energy
+  /// IO parameters: p=external momentum, outputs 
+  /// {chargino,neutralino}=self-energy
+  void addSnuGaugino(double p, int family, double & chargino, double & neutralino);
   /// Adds one-loop corrections to sneutrino mass of family "family"
   /// IO parameters: mass=tree level mass matrix on
   /// input, is returned with radiative corrections added
-  void addSnuCorrection(double & mass, int family);
+  virtual void addSnuCorrection(double & mass, int family);
   /// Adds approximate one-loop corrections to squark mass matrix for first
   /// two families.
   /// IO parameters: mass=tree level mass matrix on
@@ -495,6 +669,15 @@ public:
   /// corrections. IO parameters: piwwt is the W self-energy at the current,
   /// accuracy is the number of loops required (0 or 1 currently)
   virtual void charginos(int accuracy, double piwwt);
+   ///PA: Fills sigmaL, sigmaR and sigmaS with sfermion parts of the charginos 
+  //loop corrections.
+  virtual void addChaLoopSfermion(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) const;
+   ///PA: Fills sigmaL, sigmaR and sigmaS with Gauge parts of the charginos 
+  //loop corrections.
+  virtual void addChaLoopGauge(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS, DoubleMatrix b1pCha, DoubleMatrix b0pCha, DoubleMatrix b1pNeut, DoubleMatrix b0pNeut) const;
+  ///PA: Fills sigmaL, sigmaR and sigmaS with Higgs parts of the charginos 
+  //loop corrections.
+  virtual void addChaLoopHiggs(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS, DoubleMatrix b1pCha, DoubleMatrix b0pCha, DoubleMatrix b1pNeut, DoubleMatrix b0pNeut) const;
   /// Adds the loop corrections on to an input tree-level chargino mass
   virtual void addCharginoLoop(double p, DoubleMatrix &);
   /// Calculates pole neutralino masses and mixingusing approximate 1-loop SUSY
@@ -502,6 +685,24 @@ public:
   /// accuracy is the number of loops required (0 or 1 currently), pizzt is
   /// the Z self-energy at M_SUSY
   virtual void neutralinos(int accuracy, double piwwt, double pizzt);
+  /// LCT: Adds sfermion loop corrections to neutralino mass matrix.
+  /// IO parameters: p=external momentum, {sigmaL,sigmaR,sigmaS}= 4x4 matrices 
+  /// of {left,right,scalar} corrections
+  void addNeutLoopSfermion(double p, DoubleMatrix & sigmaL, 
+  DoubleMatrix & sigmaR, DoubleMatrix & sigmaS);
+  /// LCT: Returns matrix of Passarino-Veltman B0 and B1 functions.
+  void getNeutPassarinoVeltman(double p, double q, DoubleMatrix & b0fn, 
+  DoubleMatrix & b1fn); 
+  /// LCT: Adds gauge loop corrections to neutralino mass matrix.
+  /// IO parameters: p=external momentum, {sigmaL,sigmaR,sigmaS}= 4x4 matrices 
+  /// of {left,right,scalar} corrections
+  void addNeutLoopGauge(double p, DoubleMatrix & sigmaL, 
+  DoubleMatrix & sigmaR, DoubleMatrix & sigmaS);
+  /// LCT: Adds Higgs loop corrections to neutralino mass matrix.
+  /// IO parameters: p=external momentum, {sigmaL,sigmaR,sigmaS}= 4x4 matrices 
+  /// of {left,right,scalar} corrections
+  void addNeutLoopHiggs(double p, DoubleMatrix & sigmaL, 
+  DoubleMatrix & sigmaR, DoubleMatrix & sigmaS);
   /// Adds the loop corrections on to an input tree-level neutralino mass
   virtual void addNeutralinoLoop(double p, DoubleMatrix &);
   /// Calculates pole gluino mass to 1-loop SUSY corrections
@@ -617,8 +818,8 @@ public:
   /// Calculates transverse part of W self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piWWT(double p, double Q, bool usePoleMt = false) const;
-  /// LCT: Give neutralino-chargino-charged-Higgs trilinear couplings in 
-  /// unrotated basis
+  /// LCT: Returns neutralino-chargino-charged-Higgs trilinear couplings in 
+  /// weak basis
   virtual void getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, ComplexMatrix & apph2, ComplexMatrix & bpph1, ComplexMatrix & bpph2) const;
   /// LCT: Calculates (16 Pi^2) times the fermion contribution to H^+H^- 
   /// self-energy for p=external momentum, q=renormalisation scale
