@@ -280,10 +280,7 @@ MssmSusy MssmSusy::beta(sBrevity & a) const {
 
   const static double twolp = 4.010149318236068e-5; // 1/(16 pi^2)^2
   if (displayLoops() > 1) {
-    // I don't posess the O(g^4) terms for these RGEs in the Feynman gauge
-    // and consequently have neglected. They CANCEL in the RGE for tan
-    // beta, but not in the RGE of the Higgs vev. 
-    const double g4terms = 2.07 * g4(1) + 0.9 * gsq(1) * gsq(2) + 3.75 * g4(2);
+    const double g4terms = 1.035 * g4(1) + 0.45 * gsq(1) * gsq(2) + 5.875 * g4(2);
     sH1H1 = sH1H1 + twolp * 
       (-(3.0 * (e2 * e2).trace() + 9.0 * (d2t * d2t).trace() + 3.0 * t) + 
        (16 * gsq(3) - 0.4 * gsq(1)) * ddT + 1.2 * gsq(1) * eeT  + g4terms);
