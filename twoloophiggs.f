@@ -1,4 +1,4 @@
-c     
+    
 c     Two-loop O(a_t^2 + at ab + ab^2) corrections to the Higgs masses 
 c     and to the minimization conditions of the effective potential. 
 c     Written by P. Slavich (e-mail: slavich@mppmu.mpg.de).
@@ -3985,20 +3985,21 @@ c$$$  pi = 3.14159265897d0
       
       s2t = 2d0*ct*st
       c2t = ct**2 - st**2
-      
+   
       X = (T1-T2)*s2t/2d0/mt    ! eq. (19) of DSZ
       A = X - mu/tanb           ! notice the sign convention for mu
-      
+
       sb = dsin(datan(tanb))
       ht = dsqrt(2d0/v2)*mt/sb
-      
+     
+
       k = 4d0*gs**2/(16d0*Pi**2)**2 ! gs^2/(16 Pi^2)^2 CF Nc
-      
+     
       call strfuncs(t,mg,T1,T2,s2t,c2t,q,F1,F2,F3)
       call strsfuncs(mg,T1,T2,q,A,sF2,sF3)
       call strdfuncs(t,mg,T1,T2,s2t,c2t,q,A,X,
      $     DF1,DF2,DF3,DsF2,DsF3)
-      
+    
       osdr = 1d0*OS
       
       if(s2t.ne.0.and.A.ne.0) then
@@ -4014,7 +4015,7 @@ c$$$  pi = 3.14159265897d0
      $        2d0 * ht**2 * mt * A * s2t * (F2 + sF2 + 
      $        osdr*(DF2 + DsF2)) + 
      $        2d0 * ht**2 * mt**2 * (F1 + osdr*DF1)
-         
+  
 c     some of the functions have poles in s2t=0 or in A=0. 
 c     when necessary we consider the residues:
          
@@ -4048,7 +4049,7 @@ c     when necessary we consider the residues:
       S11 = k*S11
       S12 = k*S12
       S22 = k*S22
-      
+
       return
       end
       
@@ -4972,132 +4973,132 @@ c     just call the pCSPEN routine
       return
       end
       
-c     Introduced by Ben Allanach to provide a wrapper to C class
-      subroutine dilogwrap(a, b, c, d)
-      
-      implicit none
-      
-      double precision a, b, c, d
-      complex*16 x, l, pCSPEN
-      
-      x = dcmplx(a, b)
-      l = pCSPEN(x)
-      
-      c = dble(l)
-      d = dimag(l)
-      
-      return
-      end
-      
-      
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     SPENCE-FUNKTION KOMPLEX, FREI NACH HOLLIK                     C
-C---------------------------------------------------------------------C
-C     20.07.83    LAST CHANGED 10.05.89        ANSGAR DENNER        C
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-      
-      FUNCTION pCSPEN(ZZ)
-      
-      COMPLEX*16 pCSPEN,W,SUM,ZZ,Z,U
-      DOUBLE PRECISION RZ,AZ,A1
-      DOUBLE PRECISION B(9)
-C     BEACHTE:                 B(N)=B2N
-C     B(1)=1./6.
-C     B(2)=-1./30.
-C     B(3)=1./42.
-C     B(4)=-1./30.
-C     B(5)=5./66.
-C     B(6)=-691./2730.
-C     B(7)=7./6.
-C     B(8)=-3617./510.
-C     B(9)=43867./798.
-C     PI=3.1415926535897932384
-C     PI*PI/6.=1.6449..., PI*PI/3=3.28986...
-      
-      B(1)=0.1666666666666666666666666667d0
-      B(2)=-0.0333333333333333333333333333d0
-      B(3)=0.0238095238095238095238095238d0
-      B(4)=-0.0333333333333333333333333333d0
-      B(5)=0.0757575757575757575757575758d0
-      B(6)=-0.2531135531135531135531135531d0
-      B(7)=1.1666666666666666666666666667d0
-      B(8)=-7.09215686274509804d0
-      B(9)=54.97117794486215539d0
-      
-c     write(*,*) 'z:',z
-      Z =ZZ*DCMPLX(1D0)
-      RZ=DREAL(Z)
-      AZ=CDABS(Z)
-      A1=CDABS(1D0-Z)
-c     write(*,*)'z, rz, az, a1:',z,rz,az,a1
-C     IF((SNGL(RZ) .EQ. 0.0) .AND. (SNGL(DIMAG(Z)) .EQ. 0.0)) THEN
-C     ---> CHANGED  10.5.89
-      IF(AZ .LT. 1D-20) THEN
-         pCSPEN=-CDLOG(1D0-Z)
-c     write(*,*) 'cspen:', cspen
-         RETURN
-      END IF
-      IF((SNGL(RZ) .EQ. 1.0) .AND. (SNGL(DIMAG(Z)) .EQ. 0.0)) THEN
-         pCSPEN=1.64493406684822643D0
-c     write(*,*) 'cspen:', cspen
-         RETURN
-      END IF
-      IF(RZ.GT.5D-1) GOTO 20
-      IF(AZ.GT.1D0) GOTO 10
-      W=-CDLOG(1D0-Z)
-      SUM=W-0.25D0*W*W
-      U=W
-      IF(CDABS(U).LT.1D-10) GOTO 2
-c     write(*,*) 'u:',u
-c     write(*,*) 'sum:',sum
-      DO 1 K=1,9
-         U=U*W*W/DFLOAT(2*K*(2*K+1))
-         IF(CDABS(U*B(K)/SUM).LT.1D-20) GOTO 2
-         SUM=SUM+U*B(K)
- 1    CONTINUE
- 2    pCSPEN=SUM
-c     write(*,*) 'cspen:', cspen
-      RETURN
- 10   W=-CDLOG(1D0-1D0/Z)
-      SUM=W-0.25D0*W*W
-      U=W
-      IF(CDABS(U).LT.1D-10) GOTO 12
-      
-      DO 11 K=1,9
-         U=U*W*W/DFLOAT(2*K*(2*K+1))
-         IF(CDABS(B(K)*U/SUM).LT.1D-20) GOTO 12
-         SUM=SUM+U*B(K)
- 11   CONTINUE
- 12   pCSPEN=-SUM-1.64493406684822643D0-.5D0*CDLOG(-Z)**2
-c     write(*,*) 'cspen:', cspen
-      RETURN
- 20   IF(A1.GT.1D0) GOTO 30
-      W=-CDLOG(Z)
-      SUM=W-0.25D0*W*W
-      U=W
-      IF(CDABS(U).LT.1D-10) GOTO 22
-      DO 21 K=1,9
-         U=U*W*W/DFLOAT(2*K*(2*K+1))
-         IF(CDABS(U*B(K)/SUM).LT.1D-20) GOTO 22
-         SUM=SUM+U*B(K)
- 21   CONTINUE
- 22   pCSPEN=-SUM+1.64493406684822643D0-CDLOG(Z)*CDLOG(1D0-Z)
-c     write(*,*) 'cspen:', cspen
-      RETURN
- 30   W=CDLOG(1D0-1D0/Z)
-      SUM=W-0.25D0*W*W
-      U=W
-      IF(CDABS(U).LT.1D-10) GOTO 32
-      DO 31 K=1,9
-         U=U*W*W/DFLOAT(2*K*(2*K+1))
-         IF(CDABS(U*B(K)/SUM).LT.1D-20) GOTO 32
-         SUM=SUM+U*B(K)
- 31   CONTINUE
- 32   pCSPEN=SUM+3.28986813369645287D0
-     *     +.5D0*CDLOG(Z-1D0)**2-CDLOG(Z)*CDLOG(1D0-Z)
-c     write(*,*) 'cspen:', cspen
-      END
-      
+c$$$c     Introduced by Ben Allanach to provide a wrapper to C class
+c$$$      subroutine dilogwrap(a, b, c, d)
+c$$$      
+c$$$      implicit none
+c$$$      
+c$$$      double precision a, b, c, d
+c$$$      complex*16 x, l, pCSPEN
+c$$$      
+c$$$      x = dcmplx(a, b)
+c$$$      l = pCSPEN(x)
+c$$$      
+c$$$      c = dble(l)
+c$$$      d = dimag(l)
+c$$$      
+c$$$      return
+c$$$      end
+c$$$      
+c$$$      
+c$$$CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+c$$$C     SPENCE-FUNKTION KOMPLEX, FREI NACH HOLLIK                     C
+c$$$C---------------------------------------------------------------------C
+c$$$C     20.07.83    LAST CHANGED 10.05.89        ANSGAR DENNER        C
+c$$$CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+c$$$      
+c$$$      FUNCTION pCSPEN(ZZ)
+c$$$      
+c$$$      COMPLEX*16 pCSPEN,W,SUM,ZZ,Z,U
+c$$$      DOUBLE PRECISION RZ,AZ,A1
+c$$$      DOUBLE PRECISION B(9)
+c$$$C     BEACHTE:                 B(N)=B2N
+c$$$C     B(1)=1./6.
+c$$$C     B(2)=-1./30.
+c$$$C     B(3)=1./42.
+c$$$C     B(4)=-1./30.
+c$$$C     B(5)=5./66.
+c$$$C     B(6)=-691./2730.
+c$$$C     B(7)=7./6.
+c$$$C     B(8)=-3617./510.
+c$$$C     B(9)=43867./798.
+c$$$C     PI=3.1415926535897932384
+c$$$C     PI*PI/6.=1.6449..., PI*PI/3=3.28986...
+c$$$      
+c$$$      B(1)=0.1666666666666666666666666667d0
+c$$$      B(2)=-0.0333333333333333333333333333d0
+c$$$      B(3)=0.0238095238095238095238095238d0
+c$$$      B(4)=-0.0333333333333333333333333333d0
+c$$$      B(5)=0.0757575757575757575757575758d0
+c$$$      B(6)=-0.2531135531135531135531135531d0
+c$$$      B(7)=1.1666666666666666666666666667d0
+c$$$      B(8)=-7.09215686274509804d0
+c$$$      B(9)=54.97117794486215539d0
+c$$$      
+c$$$c     write(*,*) 'z:',z
+c$$$      Z =ZZ*DCMPLX(1D0)
+c$$$      RZ=DREAL(Z)
+c$$$      AZ=CDABS(Z)
+c$$$      A1=CDABS(1D0-Z)
+c$$$c     write(*,*)'z, rz, az, a1:',z,rz,az,a1
+c$$$C     IF((SNGL(RZ) .EQ. 0.0) .AND. (SNGL(DIMAG(Z)) .EQ. 0.0)) THEN
+c$$$C     ---> CHANGED  10.5.89
+c$$$      IF(AZ .LT. 1D-20) THEN
+c$$$         pCSPEN=-CDLOG(1D0-Z)
+c$$$c     write(*,*) 'cspen:', cspen
+c$$$         RETURN
+c$$$      END IF
+c$$$      IF((SNGL(RZ) .EQ. 1.0) .AND. (SNGL(DIMAG(Z)) .EQ. 0.0)) THEN
+c$$$         pCSPEN=1.64493406684822643D0
+c$$$c     write(*,*) 'cspen:', cspen
+c$$$         RETURN
+c$$$      END IF
+c$$$      IF(RZ.GT.5D-1) GOTO 20
+c$$$      IF(AZ.GT.1D0) GOTO 10
+c$$$      W=-CDLOG(1D0-Z)
+c$$$      SUM=W-0.25D0*W*W
+c$$$      U=W
+c$$$      IF(CDABS(U).LT.1D-10) GOTO 2
+c$$$c     write(*,*) 'u:',u
+c$$$c     write(*,*) 'sum:',sum
+c$$$      DO 1 K=1,9
+c$$$         U=U*W*W/DFLOAT(2*K*(2*K+1))
+c$$$         IF(CDABS(U*B(K)/SUM).LT.1D-20) GOTO 2
+c$$$         SUM=SUM+U*B(K)
+c$$$ 1    CONTINUE
+c$$$ 2    pCSPEN=SUM
+c$$$c     write(*,*) 'cspen:', cspen
+c$$$      RETURN
+c$$$ 10   W=-CDLOG(1D0-1D0/Z)
+c$$$      SUM=W-0.25D0*W*W
+c$$$      U=W
+c$$$      IF(CDABS(U).LT.1D-10) GOTO 12
+c$$$      
+c$$$      DO 11 K=1,9
+c$$$         U=U*W*W/DFLOAT(2*K*(2*K+1))
+c$$$         IF(CDABS(B(K)*U/SUM).LT.1D-20) GOTO 12
+c$$$         SUM=SUM+U*B(K)
+c$$$ 11   CONTINUE
+c$$$ 12   pCSPEN=-SUM-1.64493406684822643D0-.5D0*CDLOG(-Z)**2
+c$$$c     write(*,*) 'cspen:', cspen
+c$$$      RETURN
+c$$$ 20   IF(A1.GT.1D0) GOTO 30
+c$$$      W=-CDLOG(Z)
+c$$$      SUM=W-0.25D0*W*W
+c$$$      U=W
+c$$$      IF(CDABS(U).LT.1D-10) GOTO 22
+c$$$      DO 21 K=1,9
+c$$$         U=U*W*W/DFLOAT(2*K*(2*K+1))
+c$$$         IF(CDABS(U*B(K)/SUM).LT.1D-20) GOTO 22
+c$$$         SUM=SUM+U*B(K)
+c$$$ 21   CONTINUE
+c$$$ 22   pCSPEN=-SUM+1.64493406684822643D0-CDLOG(Z)*CDLOG(1D0-Z)
+c$$$c     write(*,*) 'cspen:', cspen
+c$$$      RETURN
+c$$$ 30   W=CDLOG(1D0-1D0/Z)
+c$$$      SUM=W-0.25D0*W*W
+c$$$      U=W
+c$$$      IF(CDABS(U).LT.1D-10) GOTO 32
+c$$$      DO 31 K=1,9
+c$$$         U=U*W*W/DFLOAT(2*K*(2*K+1))
+c$$$         IF(CDABS(U*B(K)/SUM).LT.1D-20) GOTO 32
+c$$$         SUM=SUM+U*B(K)
+c$$$ 31   CONTINUE
+c$$$ 32   pCSPEN=SUM+3.28986813369645287D0
+c$$$     *     +.5D0*CDLOG(Z-1D0)**2-CDLOG(Z)*CDLOG(1D0-Z)
+c$$$c     write(*,*) 'cspen:', cspen
+c$$$      END
+c$$$      
       
 c     computed in term of the "resummed" bottom (tau) Yukawa coupling.
 c     
