@@ -24,6 +24,7 @@
 #include <utils.h>
 #include <numerics.h>
 #include <twoloophiggs.h>
+#include <dilogwrap.h>
 #include <rpvneut.h>
 using namespace softsusy;
 

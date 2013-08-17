@@ -20,7 +20,7 @@
 #include <iostream>
 #include "def.h"
 #include "linalg.h"
-#include "twoloophiggs.h"
+#include "dilogwrap.h"
 #ifdef USE_LOOPTOOLS
 #include "clooptools.h"
 #endif
