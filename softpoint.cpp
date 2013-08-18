@@ -73,6 +73,7 @@ int main(int argc, char *argv[]) {
   k.setInitialData(oneset);
   MssmSoftsusy * r = &m; 
   RpvNeutrino kw; bool RPVflag = false;
+  bool useNMSSM = false;
   bool oldSchoolRpvOutput = false;
 
   try {
@@ -393,6 +394,20 @@ int main(int argc, char *argv[]) {
 		       << model << ": terminal error\n";
 		    throw ii.str();
 		  }
+		  break;
+                case 3: { int i; kk >> i;
+		  switch(i) {
+		  case 0: useNMSSM = false; // default
+		    break;
+		  case 1: useNMSSM = true;
+		    break;
+		  default:
+		    ostringstream ii;
+		    ii << "MODSEL 3 choosing silly model switch\n"
+		       << "(" << i << ") not a valid switch" << endl;
+		    throw ii.str();
+                  }
+                  }
 		  break;
 		case 4: int i; kk >> i;
 		  switch(i) {
