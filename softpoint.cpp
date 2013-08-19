@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
   signal(SIGFPE, FPE_ExceptionHandler); 
 
   double lambda = 0., aCkm = 0., rhobar = 0., etabar = 0.;
-  struct {
+  struct NMSSM_input {
      double lambda;  // EXTPAR entry 61
      double kappa;   // EXTPAR entry 62
      double Alambda; // EXTPAR entry 63
@@ -67,6 +67,11 @@ int main(int argc, char *argv[]) {
      double muPrime; // EXTPAR entry 68
      double mPrimeS2;// EXTPAR entry 69
      double mS2;     // EXTPAR entry 70
+     NMSSM_input()
+        : lambda(0.), kappa(0.), Alambda(0.), Akappa(0.)
+        , lambdaS(0.), xiF(0.), xiS(0.), muPrime(0.), mPrimeS2(0.)
+        , mS2(0.)
+     {}
   } nmssm_input;
 
   bool flavourViolation = false;
