@@ -56,6 +56,18 @@ int main(int argc, char *argv[]) {
   signal(SIGFPE, FPE_ExceptionHandler); 
 
   double lambda = 0., aCkm = 0., rhobar = 0., etabar = 0.;
+  struct {
+     double lambda;  // EXTPAR entry 61
+     double kappa;   // EXTPAR entry 62
+     double Alambda; // EXTPAR entry 63
+     double Akappa;  // EXTPAR entry 64
+     double lambdaS; // lambda * <S> EXTPAR entry 65
+     double xiF;     // EXTPAR entry 66
+     double xiS;     // EXTPAR entry 67
+     double muPrime; // EXTPAR entry 68
+     double mPrimeS2;// EXTPAR entry 69
+     double mS2;     // EXTPAR entry 70
+  } nmssm_input;
 
   bool flavourViolation = false;
 
@@ -552,6 +564,25 @@ int main(int argc, char *argv[]) {
 	      }
 	      // Adding non-minimal options. 
 	      else if (block == "EXTPAR") {
+                int i; double d; kk >> i >> d;
+
+                // read extra NMSSM input parameters from EXTPAR
+                if (model == NMSSM) {
+                   switch (i) {
+                   case 61: nmssm_input.lambda   = d; break;
+                   case 62: nmssm_input.kappa    = d; break;
+                   case 63: nmssm_input.Alambda  = d; break;
+                   case 64: nmssm_input.Akappa   = d; break;
+                   case 65: nmssm_input.lambdaS  = d; break;
+                   case 66: nmssm_input.xiF      = d; break;
+                   case 67: nmssm_input.xiS      = d; break;
+                   case 68: nmssm_input.muPrime  = d; break;
+                   case 69: nmssm_input.mPrimeS2 = d; break;
+                   case 70: nmssm_input.mS2      = d; break;
+                   }
+                   continue;
+                }
+
 		/// First, we want to convert our input to EXTPAR if we have
 		/// mSUGRA already
 		if (!strcmp(modelIdent, "sugra")) {
@@ -593,7 +624,6 @@ int main(int argc, char *argv[]) {
 		}
 		
 		if (!strcmp(modelIdent, "nonUniversal")) {
-		  int i; double d; kk >> i >> d;  
 		  /// First, put parameters that depend not on
 		  /// flavoured/unflavoured input
 		  if (i == 0) { 
