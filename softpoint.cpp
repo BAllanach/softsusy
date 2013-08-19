@@ -71,11 +71,12 @@ int main(int argc, char *argv[]) {
   void (*nmssmBoundaryCondition)(NmssmSoftsusy&, const DoubleVector&) = MssmMsugraBcs;
 
   QedQcd oneset;
-  MssmSoftsusy m; FlavourMssmSoftsusy k; NmssmSoftsusy nmssm;
+  MssmSoftsusy m; FlavourMssmSoftsusy k;
+  NmssmSoftsusy nmssm;
   k.setInitialData(oneset);
   MssmSoftsusy * r = &m; 
   RpvNeutrino kw; bool RPVflag = false;
-  enum Model_t { MSSM, NMSSM } susy_model = MSSM; // MODSEL entry 3
+  enum Model_t { MSSM, NMSSM } susy_model = MSSM; // susy model (MODSEL entry 3)
   bool oldSchoolRpvOutput = false;
 
   try {
@@ -397,6 +398,7 @@ int main(int argc, char *argv[]) {
 		    throw ii.str();
 		  }
 		  break;
+                // reading entry 3: susy model (MSSM, NMSSM, ...)
                 case 3: { int i; kk >> i;
 		  switch(i) {
 		  case 0: susy_model = MSSM; // default
@@ -1031,6 +1033,7 @@ int main(int argc, char *argv[]) {
       sgnMu = 0; // Flags different BCs
     }
 
+    // set NMSSM boundary conditions
     if (susy_model == NMSSM) {
        if (boundaryCondition == &sugraBcs)
           nmssmBoundaryCondition = &MssmMsugraBcs;
