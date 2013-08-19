@@ -18,6 +18,7 @@
 #include <rge.h>
 #include <softsusy.h>
 #include <flavoursoft.h>
+#include <nmssmsoftsusy.h>
 #include <softpars.h>
 #include <physpars.h>
 #include <susy.h>

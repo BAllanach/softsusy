@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
   void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=sugraBcs;
 
   QedQcd oneset;
-  MssmSoftsusy m; FlavourMssmSoftsusy k;
+  MssmSoftsusy m; FlavourMssmSoftsusy k; NmssmSoftsusy nmssm;
   k.setInitialData(oneset);
   MssmSoftsusy * r = &m; 
   RpvNeutrino kw; bool RPVflag = false;

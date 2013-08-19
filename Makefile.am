@@ -6,7 +6,7 @@ softsusy_x_SOURCES = main.cpp
 softsusy_x_LDADD = libsoft.la  
 
 softpoint_x_SOURCES = softpoint.cpp 
-softpoint_x_LDADD = libsoft.la 
+softpoint_x_LDADD = libsoft.la libnmssm.la
 
 rpvsoftsusy_x_SOURCES = rpvmain.cpp
 rpvsoftsusy_x_LDADD = libsoft.la 
