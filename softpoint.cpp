@@ -1031,6 +1031,15 @@ int main(int argc, char *argv[]) {
       sgnMu = 0; // Flags different BCs
     }
 
+    if (susy_model == NMSSM) {
+       if (boundaryCondition == &sugraBcs)
+          nmssmBoundaryCondition = &MssmMsugraBcs;
+       else {
+          cout << "# Warning: non-sugra boundary conditions for the NMSSM"
+             " are currently not supported\n";
+       }
+    }
+
     int pos = 10;
     if (RPVflag) {
       kw.rpvDisplay(pars);
