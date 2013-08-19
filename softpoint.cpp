@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
   k.setInitialData(oneset);
   MssmSoftsusy * r = &m; 
   RpvNeutrino kw; bool RPVflag = false;
-  bool useNMSSM = false;
+  enum Model_t { MSSM, NMSSM } model = MSSM; // MODSEL entry 3
   bool oldSchoolRpvOutput = false;
 
   try {
@@ -397,9 +397,9 @@ int main(int argc, char *argv[]) {
 		  break;
                 case 3: { int i; kk >> i;
 		  switch(i) {
-		  case 0: useNMSSM = false; // default
+		  case 0: model = MSSM; // default
 		    break;
-		  case 1: useNMSSM = true;
+		  case 1: model = NMSSM;
 		    break;
 		  default:
 		    ostringstream ii;
