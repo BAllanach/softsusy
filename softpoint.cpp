@@ -56,23 +56,7 @@ int main(int argc, char *argv[]) {
   signal(SIGFPE, FPE_ExceptionHandler); 
 
   double lambda = 0., aCkm = 0., rhobar = 0., etabar = 0.;
-  struct NMSSM_input {
-     double lambda;  // EXTPAR entry 61
-     double kappa;   // EXTPAR entry 62
-     double Alambda; // EXTPAR entry 63
-     double Akappa;  // EXTPAR entry 64
-     double lambdaS; // lambda * <S> EXTPAR entry 65
-     double xiF;     // EXTPAR entry 66
-     double xiS;     // EXTPAR entry 67
-     double muPrime; // EXTPAR entry 68
-     double mPrimeS2;// EXTPAR entry 69
-     double mS2;     // EXTPAR entry 70
-     NMSSM_input()
-        : lambda(0.), kappa(0.), Alambda(0.), Akappa(0.)
-        , lambdaS(0.), xiF(0.), xiS(0.), muPrime(0.), mPrimeS2(0.)
-        , mS2(0.)
-     {}
-  } nmssm_input;
+  DoubleVector nmpars(5); // extra NMSSM parameters
 
   bool flavourViolation = false;
 
@@ -84,13 +68,14 @@ int main(int argc, char *argv[]) {
   outputCharacteristics(6);
 
   void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=sugraBcs;
+  void (*nmssmBoundaryCondition)(NmssmSoftsusy&, const DoubleVector&) = MssmMsugraBcs;
 
   QedQcd oneset;
   MssmSoftsusy m; FlavourMssmSoftsusy k; NmssmSoftsusy nmssm;
   k.setInitialData(oneset);
   MssmSoftsusy * r = &m; 
   RpvNeutrino kw; bool RPVflag = false;
-  enum Model_t { MSSM, NMSSM } model = MSSM; // MODSEL entry 3
+  enum Model_t { MSSM, NMSSM } susy_model = MSSM; // MODSEL entry 3
   bool oldSchoolRpvOutput = false;
 
   try {
@@ -414,9 +399,9 @@ int main(int argc, char *argv[]) {
 		  break;
                 case 3: { int i; kk >> i;
 		  switch(i) {
-		  case 0: model = MSSM; // default
+		  case 0: susy_model = MSSM; // default
 		    break;
-		  case 1: model = NMSSM;
+		  case 1: susy_model = NMSSM;
 		    break;
 		  default:
 		    ostringstream ii;
@@ -572,18 +557,33 @@ int main(int argc, char *argv[]) {
                 int i; double d; kk >> i >> d;
 
                 // read extra NMSSM input parameters from EXTPAR
-                if (model == NMSSM) {
+                if (susy_model == NMSSM) {
                    switch (i) {
-                   case 61: nmssm_input.lambda   = d; break;
-                   case 62: nmssm_input.kappa    = d; break;
-                   case 63: nmssm_input.Alambda  = d; break;
-                   case 64: nmssm_input.Akappa   = d; break;
-                   case 65: nmssm_input.lambdaS  = d; break;
-                   case 66: nmssm_input.xiF      = d; break;
-                   case 67: nmssm_input.xiS      = d; break;
-                   case 68: nmssm_input.muPrime  = d; break;
-                   case 69: nmssm_input.mPrimeS2 = d; break;
-                   case 70: nmssm_input.mS2      = d; break;
+                   case 61: nmpars(1) = d; break;
+                   case 62: nmpars(2) = d; break;
+                   case 65:
+                      if (!close(nmpars(1),0.,EPSTOL)) {
+                         nmpars(3) = d / nmpars(1);
+                      } else {
+                         cout << "# Error: You want to set lambda * <S> = " << d
+                              << " but lambda is close to zero (" << nmpars(1)
+                              << ").  Please set lambda (EXTPAR entry 61) to"
+                                 " a non-zero value before setting lambda * <S>"
+                                 " (EXTPAR entry 65)"
+                              << endl;
+                      }
+                      break;
+                   case 66: nmpars(4) = d; break;
+                   case 68: nmpars(5) = d; break;
+                   case 63:
+                   case 64:
+                   case 67:
+                   case 69:
+                   case 70:
+                      cout << "# Warning: NMSSM input parameter " << i
+                           << " in EXTPAR currently not supported, ignoring it"
+                           << endl;
+                      break;
                    }
                    continue;
                 }
@@ -1073,19 +1073,34 @@ int main(int argc, char *argv[]) {
     //    double muFirst = 1000.;
     //    r->setSusyMu(muFirst);
 
-    double mgut =  r->lowOrg(boundaryCondition, mgutGuess, pars, sgnMu,
-			     tanb, oneset, gaugeUnification, ewsbBCscale);
+    double mgut;
 
-    /// Fix to mh if additional operators are assumed
-    if (desiredMh > 0.1) {
-      sPhysical s(r->displayPhys()); s.mh0(1) = desiredMh; r->setPhys(s);
-    }
-    
-    r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
-			      numPoints, mgut, ewsbBCscale);
-    
-    if (r->displayProblem().test()) {
-      cout << "# SOFTSUSY problem with point: " << r->displayProblem() << endl;
+    switch (susy_model) {
+    case MSSM:
+       mgut = r->lowOrg(boundaryCondition, mgutGuess, pars, sgnMu,
+                        tanb, oneset, gaugeUnification, ewsbBCscale);
+       /// Fix to mh if additional operators are assumed
+       if (desiredMh > 0.1) {
+          sPhysical s(r->displayPhys()); s.mh0(1) = desiredMh; r->setPhys(s);
+       }
+       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,
+                                 numPoints, mgut, ewsbBCscale);
+       if (r->displayProblem().test()) {
+          cout << "# SOFTSUSY problem with point: " << r->displayProblem() << endl;
+       }
+       break;
+    case NMSSM:
+       mgut = nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu,
+                           tanb, oneset, gaugeUnification, ewsbBCscale);
+       if (nmssm.displayProblem().test()) {
+          cout << "# SOFTSUSY problem with NMSSM point: "
+               << nmssm.displayProblem() << endl;
+       }
+       break;
+    default:
+       cout << "# Error: unknown susy model " << susy_model
+            << ", please check your MODSEL (entry 3) settings" << endl;
+       break;
     }
   }
   catch(const string & a) { cout << a; }

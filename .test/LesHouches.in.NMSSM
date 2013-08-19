@@ -30,12 +30,12 @@ Block VCKMIN		      # input parameters for CKM matrix
     4   3.400000000e-01      # etabar
 Block EXTPAR  # Input parameters
    61   0.1                  # lambda
-#  62   0.1                  # kappa
+   62   0.1                  # kappa
    63   100                  # A_lambda
    64   100                  # A_kappa
-#  65   1000                 # lambda * <S>
+   65   1000                 # lambda * <S>
    66   0                    # xi_F
    67   0                    # xi_S
    68   0                    # mu'
    69   100                  # m'_S^2
-#  70   100                  # m_S^2
+   70   100                  # m_S^2
