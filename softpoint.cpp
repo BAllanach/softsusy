@@ -11,7 +11,6 @@
 */ 
 
 #include <softpoint.h>
-#include <cassert>
 
 // Returns a string with all characters in upper case: very handy
 string ToUpper(const string & s) {
@@ -51,86 +50,19 @@ void errorCall() {
   throw ii.str();
 }
 
+char const * const NMSSM_input::parameter_names[NUMBER_OF_NMSSM_INPUT_PARAMETERS] = {
+   "tanBeta", "mHd2", "mHu2", "mu", "BmuOverCosBetaSinBeta", "lambda",
+   "kappa", "Alambda", "Akappa", "lambda*S", "xiF", "xiS", "muPrime",
+   "mPrimeS2", "mS2"
+};
+
 int main(int argc, char *argv[]) {
   tryToConvergeHard = true;
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
   double lambda = 0., aCkm = 0., rhobar = 0., etabar = 0.;
-
-  class NMSSM_input {
-  public:
-     enum NMSSM_parameters {
-        tanBeta,               // MINPAR entry 3
-        mHd2,                  // EXTPAR entry 21
-        mHu2,                  // EXTPAR entry 22
-        mu,                    // EXTPAR entry 23
-        BmuOverCosBetaSinBeta, // m3^2/(cos(Beta)sin(Beta)) EXTPAR entry 24
-        lambda,                // EXTPAR entry 61
-        kappa,                 // EXTPAR entry 62
-        Alambda,               // EXTPAR entry 63
-        Akappa,                // EXTPAR entry 64
-        lambdaS,               // lambda * <S> EXTPAR entry 65
-        xiF,                   // EXTPAR entry 66
-        xiS,                   // EXTPAR entry 67
-        muPrime,               // EXTPAR entry 68
-        mPrimeS2,              // EXTPAR entry 69
-        mS2,                   // EXTPAR entry 70
-        NUMBER_OF_NMSSM_INPUT_PARAMETERS
-     };
-     NMSSM_input()
-        : parameter()    // sets all parameters to zero
-        , has_been_set() // sets all values to zero (false)
-     {}
-     /// set parameter to given value
-     void set(NMSSM_parameters par, double value) {
-        assert(par < NUMBER_OF_NMSSM_INPUT_PARAMETERS);
-        parameter[par] = value;
-        has_been_set[par] = true;
-     }
-     /// get value of parameter
-     double get(NMSSM_parameters par) const {
-        assert(par < NUMBER_OF_NMSSM_INPUT_PARAMETERS);
-        return parameter[par];
-     }
-     // returns vector with supersymmetric NMSSM parameters
-     DoubleVector get_nmpars() const {
-        DoubleVector nmpars(5);
-        nmpars(1) = get(NMSSM_input::lambda);
-        nmpars(2) = get(NMSSM_input::kappa);
-        if (!close(get(NMSSM_input::lambda),0.,EPSTOL)) {
-           nmpars(3) = get(NMSSM_input::lambdaS) / get(NMSSM_input::lambda);
-        } else {
-           cout << "# Error: you set lambda * <S> = "
-                << get(NMSSM_input::lambdaS) << ", but lambda is zero. "
-                   "Please set lambda (EXTPAR entry 61) to a non-zero value.\n";
-        }
-        nmpars(4) = get(NMSSM_input::xiF);
-        nmpars(5) = get(NMSSM_input::muPrime);
-        return nmpars;
-     };
-     /// returns the number of set NMSSM parameters
-     unsigned get_number_of_set_parameters() const {
-        unsigned num = 0;
-        for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++)
-           num += is_set(static_cast<NMSSM_parameters>(i));
-        return num;
-     }
-     /// returns true if parameter was set, false otherwise
-     bool is_set(NMSSM_parameters par) const { return has_been_set[par]; }
-     /// returns true if input parameter set defines a Z3 symmetric NMSSM
-     bool is_Z3_symmetric() const {
-        return (!has_been_set[mu]      || close(parameter[mu]      , 0., EPSTOL))
-           && (!has_been_set[BmuOverCosBetaSinBeta]
-               || close(parameter[BmuOverCosBetaSinBeta], 0., EPSTOL))
-           && (!has_been_set[muPrime]  || close(parameter[muPrime] , 0., EPSTOL))
-           && (!has_been_set[mPrimeS2] || close(parameter[mPrimeS2], 0., EPSTOL))
-           && (!has_been_set[xiF]      || close(parameter[xiF]     , 0., EPSTOL));
-     }
-  private:
-     double parameter[NUMBER_OF_NMSSM_INPUT_PARAMETERS];  ///< NMSSM parameters
-     bool has_been_set[NUMBER_OF_NMSSM_INPUT_PARAMETERS];
-  } nmssm_input;
+  NMSSM_input nmssm_input; // NMSSM input parameters
 
   bool flavourViolation = false;
 
@@ -1170,8 +1102,8 @@ int main(int argc, char *argv[]) {
        break;
     case NMSSM: {
        if (nmssm_input.get_number_of_set_parameters() > 12) {
-          cout << "# Error: more that 12 NMSSM parameters given.  Please select"
-             " no more than 12 parameters.\n";
+          cout << "# Error: more that 12 NMSSM parameters given: " << nmssm_input
+               << "  Please select no more than 12 parameters.\n";
        }
        softsusy::Z3 = nmssm_input.is_Z3_symmetric();
        DoubleVector nmpars(nmssm_input.get_nmpars());
