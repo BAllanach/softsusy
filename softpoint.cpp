@@ -11,6 +11,7 @@
 */ 
 
 #include <softpoint.h>
+#include <cassert>
 
 // Returns a string with all characters in upper case: very handy
 string ToUpper(const string & s) {
@@ -56,7 +57,74 @@ int main(int argc, char *argv[]) {
   signal(SIGFPE, FPE_ExceptionHandler); 
 
   double lambda = 0., aCkm = 0., rhobar = 0., etabar = 0.;
-  DoubleVector nmpars(5); // extra NMSSM parameters
+
+  class NMSSM_input {
+  public:
+     enum NMSSM_parameters {
+        tanBeta,               // MINPAR entry 3
+        mHd2,                  // EXTPAR entry 21
+        mHu2,                  // EXTPAR entry 22
+        mu,                    // EXTPAR entry 23
+        BmuOverCosBetaSinBeta, // m3^2/(cos(Beta)sin(Beta)) EXTPAR entry 24
+        lambda,                // EXTPAR entry 61
+        kappa,                 // EXTPAR entry 62
+        Alambda,               // EXTPAR entry 63
+        Akappa,                // EXTPAR entry 64
+        lambdaS,               // lambda * <S> EXTPAR entry 65
+        xiF,                   // EXTPAR entry 66
+        xiS,                   // EXTPAR entry 67
+        muPrime,               // EXTPAR entry 68
+        mPrimeS2,              // EXTPAR entry 69
+        mS2,                   // EXTPAR entry 70
+        NUMBER_OF_NMSSM_INPUT_PARAMETERS
+     };
+     NMSSM_input()
+        : parameter()    // sets all parameters to zero
+        , has_been_set() // sets all values to zero (false)
+     {}
+     /// set parameter to given value
+     void set(NMSSM_parameters par, double value) {
+        assert(par < NUMBER_OF_NMSSM_INPUT_PARAMETERS);
+        parameter[par] = value;
+        has_been_set[par] = true;
+     }
+     /// get value of parameter
+     double get(NMSSM_parameters par) const {
+        assert(par < NUMBER_OF_NMSSM_INPUT_PARAMETERS);
+        return parameter[par];
+     }
+     // returns vector with supersymmetric NMSSM parameters
+     DoubleVector get_nmpars() const {
+        DoubleVector nmpars(5);
+        nmpars(1) = get(NMSSM_input::lambda);
+        nmpars(2) = get(NMSSM_input::kappa);
+        if (!close(get(NMSSM_input::lambda),0.,EPSTOL)) {
+           nmpars(3) = get(NMSSM_input::lambdaS) / get(NMSSM_input::lambda);
+        } else {
+           cout << "# Error: you set lambda * <S> = "
+                << get(NMSSM_input::lambdaS) << ", but lambda is zero. "
+                   "Please set lambda (EXTPAR entry 61) to a non-zero value.\n";
+        }
+        nmpars(4) = get(NMSSM_input::xiF);
+        nmpars(5) = get(NMSSM_input::muPrime);
+        return nmpars;
+     };
+     /// returns true if parameter was set, false otherwise
+     bool is_set(NMSSM_parameters par) const { return has_been_set[par]; }
+     /// returns true if input parameter set defines a Z3 symmetric NMSSM
+     bool is_Z3_symmetric() const {
+        return (!has_been_set[mu]      || close(parameter[mu]      , 0., EPSTOL))
+           && (!has_been_set[BmuOverCosBetaSinBeta]
+               || close(parameter[BmuOverCosBetaSinBeta], 0., EPSTOL))
+           && (!has_been_set[muPrime]  || close(parameter[muPrime] , 0., EPSTOL))
+           && (!has_been_set[mPrimeS2] || close(parameter[mPrimeS2], 0., EPSTOL))
+           && (!has_been_set[xiF]      || close(parameter[xiF]     , 0., EPSTOL))
+           && (!has_been_set[xiS]      || close(parameter[xiS]     , 0., EPSTOL));
+     }
+  private:
+     double parameter[NUMBER_OF_NMSSM_INPUT_PARAMETERS];  ///< NMSSM parameters
+     bool has_been_set[NUMBER_OF_NMSSM_INPUT_PARAMETERS];
+  } nmssm_input;
 
   bool flavourViolation = false;
 
@@ -462,7 +530,9 @@ int main(int argc, char *argv[]) {
 	      else if (block == "MINPAR") {
 		int i; double d; kk >> i >> d; 
 		switch (i) {
-		case 3: tanb = d; break;
+		case 3: tanb = d;
+                   nmssm_input.set(NMSSM_input::tanBeta, d);
+                   break;
 		case 4: sgnMu = int(d); break;
 		default: 
 		  switch(model) {
@@ -561,31 +631,20 @@ int main(int argc, char *argv[]) {
                 // read extra NMSSM input parameters from EXTPAR
                 if (susy_model == NMSSM) {
                    switch (i) {
-                   case 61: nmpars(1) = d; break;
-                   case 62: nmpars(2) = d; break;
-                   case 65:
-                      if (!close(nmpars(1),0.,EPSTOL)) {
-                         nmpars(3) = d / nmpars(1);
-                      } else {
-                         cout << "# Error: You want to set lambda * <S> = " << d
-                              << " but lambda is close to zero (" << nmpars(1)
-                              << ").  Please set lambda (EXTPAR entry 61) to"
-                                 " a non-zero value before setting lambda * <S>"
-                                 " (EXTPAR entry 65)"
-                              << endl;
-                      }
-                      break;
-                   case 66: nmpars(4) = d; break;
-                   case 68: nmpars(5) = d; break;
-                   case 63:
-                   case 64:
-                   case 67:
-                   case 69:
-                   case 70:
-                      cout << "# Warning: NMSSM input parameter " << i
-                           << " in EXTPAR currently not supported, ignoring it"
-                           << endl;
-                      break;
+                   case 21: nmssm_input.set(NMSSM_input::mHd2                 , d); break;
+                   case 22: nmssm_input.set(NMSSM_input::mHu2                 , d); break;
+                   case 23: nmssm_input.set(NMSSM_input::mu                   , d); break;
+                   case 24: nmssm_input.set(NMSSM_input::BmuOverCosBetaSinBeta, d); break;
+                   case 61: nmssm_input.set(NMSSM_input::lambda               , d); break;
+                   case 62: nmssm_input.set(NMSSM_input::kappa                , d); break;
+                   case 63: nmssm_input.set(NMSSM_input::Alambda              , d); break;
+                   case 64: nmssm_input.set(NMSSM_input::Akappa               , d); break;
+                   case 65: nmssm_input.set(NMSSM_input::lambdaS              , d); break;
+                   case 66: nmssm_input.set(NMSSM_input::xiF                  , d); break;
+                   case 67: nmssm_input.set(NMSSM_input::xiS                  , d); break;
+                   case 68: nmssm_input.set(NMSSM_input::muPrime              , d); break;
+                   case 69: nmssm_input.set(NMSSM_input::mPrimeS2             , d); break;
+                   case 70: nmssm_input.set(NMSSM_input::mS2                  , d); break;
                    }
                    continue;
                 }
@@ -1101,12 +1160,15 @@ int main(int argc, char *argv[]) {
           cout << "# SOFTSUSY problem with point: " << r->displayProblem() << endl;
        }
        break;
-    case NMSSM:
+    case NMSSM: {
+       softsusy::Z3 = nmssm_input.is_Z3_symmetric();
+       DoubleVector nmpars(nmssm_input.get_nmpars());
        mgut = nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu,
                            tanb, oneset, gaugeUnification, ewsbBCscale);
        if (nmssm.displayProblem().test()) {
           cout << "# SOFTSUSY problem with NMSSM point: "
                << nmssm.displayProblem() << endl;
+       }
        }
        break;
     default:
