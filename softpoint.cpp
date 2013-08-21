@@ -1101,9 +1101,15 @@ int main(int argc, char *argv[]) {
        }
        break;
     case NMSSM: {
-       if (nmssm_input.get_number_of_set_parameters() > 12) {
-          cout << "# Error: more that 12 NMSSM parameters given: " << nmssm_input
-               << "  Please select no more than 12 parameters.\n";
+       const unsigned number_of_given_nmssm_pars
+          = nmssm_input.get_number_of_set_parameters();
+       if (number_of_given_nmssm_pars == 6) {
+          nmssm_input.setup_6_parameter_input();
+       } else if (number_of_given_nmssm_pars != 12) {
+          cout << "# Error: " << number_of_given_nmssm_pars << " NMSSM"
+             " parameters given: " << nmssm_input << "  Please select either"
+             " 6 or 12 parameters.\n";
+          return 1;
        }
        softsusy::Z3 = nmssm_input.is_Z3_symmetric();
        DoubleVector nmpars(nmssm_input.get_nmpars());

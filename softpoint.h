@@ -130,6 +130,34 @@ public:
          && (!has_been_set[xiF]      || close(parameter[xiF]     , 0., EPSTOL));
    }
 
+   /// checks the 6 input parameters and sets the non-standard parameters to zero
+   void setup_6_parameter_input() {
+      if (get_number_of_set_parameters() != 6)
+         return;
+
+      // check that the 6 set parameters are the ones from Eq. (60)
+      // arxiv.org/abs/0801.0045
+      const bool are_reduced_parameters = is_set(tanBeta)
+         || is_set(mHd2) || is_set(mHu2) || is_set(lambda)
+         || is_set(kappa) || is_set(Alambda) || is_set(Akappa)
+         || is_set(lambdaS) || is_set(mS2);
+
+      if (!are_reduced_parameters) {
+         cout << "# Error: 6 parameter set, but not all are \"standard"
+            " parameters\".  Please select 6 parameters from {"
+            "tanBeta, mHd2 mHu2, lambda, kappa, Alambda, Akappa, lambdaS,"
+            " mS2}" << endl;
+         return;
+      }
+
+      set(mu, 0.);
+      set(BmuOverCosBetaSinBeta, 0.);
+      set(muPrime, 0.);
+      set(mPrimeS2, 0.);
+      set(xiF, 0.);
+      set(xiS, 0.);
+   }
+
    friend std::ostream& operator<<(std::ostream& lhs, const NMSSM_input& rhs) {
       for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++) {
          if (rhs.is_set(static_cast<NMSSM_parameters>(i))) {
