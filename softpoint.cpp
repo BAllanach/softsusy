@@ -109,6 +109,13 @@ int main(int argc, char *argv[]) {
         nmpars(5) = get(NMSSM_input::muPrime);
         return nmpars;
      };
+     /// returns the number of set NMSSM parameters
+     unsigned get_number_of_set_parameters() const {
+        unsigned num = 0;
+        for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++)
+           num += is_set(static_cast<NMSSM_parameters>(i));
+        return num;
+     }
      /// returns true if parameter was set, false otherwise
      bool is_set(NMSSM_parameters par) const { return has_been_set[par]; }
      /// returns true if input parameter set defines a Z3 symmetric NMSSM
@@ -1092,6 +1099,8 @@ int main(int argc, char *argv[]) {
     }
 
     // set NMSSM boundary conditions
+    // @todo fill the `pars' vector such that it suits the NMSSM
+    //       boundary conditions
     if (susy_model == NMSSM) {
        if (boundaryCondition == &sugraBcs)
           nmssmBoundaryCondition = &MssmMsugraBcs;
@@ -1160,6 +1169,10 @@ int main(int argc, char *argv[]) {
        }
        break;
     case NMSSM: {
+       if (nmssm_input.get_number_of_set_parameters() > 12) {
+          cout << "# Error: more that 12 NMSSM parameters given.  Please select"
+             " no more than 12 parameters.\n";
+       }
        softsusy::Z3 = nmssm_input.is_Z3_symmetric();
        DoubleVector nmpars(nmssm_input.get_nmpars());
        mgut = nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu,
