@@ -118,8 +118,7 @@ int main(int argc, char *argv[]) {
                || close(parameter[BmuOverCosBetaSinBeta], 0., EPSTOL))
            && (!has_been_set[muPrime]  || close(parameter[muPrime] , 0., EPSTOL))
            && (!has_been_set[mPrimeS2] || close(parameter[mPrimeS2], 0., EPSTOL))
-           && (!has_been_set[xiF]      || close(parameter[xiF]     , 0., EPSTOL))
-           && (!has_been_set[xiS]      || close(parameter[xiS]     , 0., EPSTOL));
+           && (!has_been_set[xiF]      || close(parameter[xiF]     , 0., EPSTOL));
      }
   private:
      double parameter[NUMBER_OF_NMSSM_INPUT_PARAMETERS];  ///< NMSSM parameters
