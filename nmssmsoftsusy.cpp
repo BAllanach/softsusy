@@ -8647,6 +8647,20 @@ void NmssmSoftsusy::itLowsoft
  const DoubleVector & pars, const DoubleVector nmpars, bool gaugeUnification, bool ewsbBCscale) {
 
   static NmssmSoftsusy old;
+  /// LCT: Resize the drBarPars object to account for NMSSM parameters 
+  drBarPars o(old.displayDrBarPars());
+  o.mh0.setEnd(3);
+  o.mA0.setEnd(2);
+  o.mixh0.resize(3,3);
+  o.mixA0.resize(2,2);
+  o.mneut.setEnd(5);
+
+  o.mixNeut.resize(5,5);
+  o.mnBpmz.setEnd(5);
+  o.nBpmz.resize(5,5);
+
+  old.setDrBarPars(o);
+
   static double oldMu = 0.;
   static int numTries = 0;
   double mz = displayMz();
