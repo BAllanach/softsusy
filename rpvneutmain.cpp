@@ -85,9 +85,10 @@ int main() {
 			      numPoints, ewsbBCscale);
   }
   catch(const string & a) {
-    cout << a; exit(-1);
+    cout << a; return -1;
   }
   catch(const char *a) {
-    cout << a; exit(-1);
+    cout << a; return -1;
   }
+  return 0;
 }

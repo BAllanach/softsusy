@@ -90,9 +90,9 @@ int main() {
       cout << tanb << " " << r.displayProblem() << endl;
   }
   }
-  catch(const string & a) { cout << a; }
-  catch(const char * a) { cout << a; }
-  catch(...) { cout << "Unknown type of exception caught.\n"; }
+  catch(const string & a) { cout << a; return -1; }
+  catch(const char * a) { cout << a; return -1; }
+  catch(...) { cout << "Unknown type of exception caught.\n"; return -1; }
 
-  exit(0);
+  return 0;
 }
