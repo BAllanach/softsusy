@@ -111,20 +111,17 @@ NMSSM_input::NMSSM_input()
   , has_been_set() // sets all values to zero (false)
 {}
 
-/// set parameter to given value
 void NMSSM_input::set(NMSSM_parameters par, double value) {
    assert(par < NUMBER_OF_NMSSM_INPUT_PARAMETERS);
    parameter[par] = value;
    has_been_set[par] = true;
 }
 
-/// get value of parameter
 double NMSSM_input::get(NMSSM_parameters par) const {
    assert(par < NUMBER_OF_NMSSM_INPUT_PARAMETERS);
    return parameter[par];
 }
 
-/// returns vector with supersymmetric NMSSM parameters
 DoubleVector NMSSM_input::get_nmpars() const {
    DoubleVector nmpars(5);
    nmpars(1) = get(NMSSM_input::lambda);
@@ -145,7 +142,6 @@ DoubleVector NMSSM_input::get_nmpars() const {
    return nmpars;
 };
 
-/// returns the number of set NMSSM parameters
 unsigned NMSSM_input::get_number_of_set_parameters() const {
    unsigned num = 0;
    for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++)
@@ -153,13 +149,11 @@ unsigned NMSSM_input::get_number_of_set_parameters() const {
    return num;
 }
 
-/// returns true if parameter was set, false otherwise
 bool NMSSM_input::is_set(NMSSM_parameters par) const {
    assert(par < NUMBER_OF_NMSSM_INPUT_PARAMETERS);
    return has_been_set[par];
 }
 
-/// returns true if input parameter set defines a Z3 symmetric NMSSM
 bool NMSSM_input::is_Z3_symmetric() const {
    return (!has_been_set[mu]      || close(parameter[mu]      , 0., EPSTOL))
       && (!has_been_set[BmuOverCosBetaSinBeta]
@@ -169,13 +163,10 @@ bool NMSSM_input::is_Z3_symmetric() const {
       && (!has_been_set[xiF]      || close(parameter[xiF]     , 0., EPSTOL));
 }
 
-/// checks the NMSSM parameter setup, throws if not SLHA2 confrom
 void NMSSM_input::check_setup() {
    const unsigned number_of_set_parameter = get_number_of_set_parameters();
 
-   // check if the user has given enough input parameters
    if (number_of_set_parameter == 6) {
-      // check if the 6 set parameters are "standard parameters"
       check_6_input_parameters();
    } else if (number_of_set_parameter != 12) {
       std::ostringstream msg;
@@ -185,11 +176,9 @@ void NMSSM_input::check_setup() {
       throw msg.str();
    }
 
-   // check if the EWSB output parameter set is supported
    check_ewsb_output_parameters();
 }
 
-/// checks the 6 input parameters and sets the non-standard parameters to zero
 void NMSSM_input::check_6_input_parameters() {
    if (get_number_of_set_parameters() != 6) {
       std::ostringstream msg;
@@ -221,7 +210,6 @@ void NMSSM_input::check_6_input_parameters() {
    set(xiS, 0.);
 }
 
-/// checks if the unset parameters can be used as EWSB output
 void NMSSM_input::check_ewsb_output_parameters() const {
    if (get_number_of_set_parameters() != 12) {
       std::ostringstream msg;
