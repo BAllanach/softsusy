@@ -130,12 +130,16 @@ public:
          && (!has_been_set[xiF]      || close(parameter[xiF]     , 0., EPSTOL));
    }
 
+   /// checks the NMSSM parameter setup, returns true if is SLHA2 confrom
    bool check_setup() {
+      const unsigned number_of_set_parameter = get_number_of_set_parameters();
+
        // check if the user has given enough input parameters
-       if (get_number_of_set_parameters() == 6) {
+       if (number_of_set_parameter == 6) {
+          // check if the 6 set parameters are "standard parameters"
           if (!check_6_parameter_input())
              return false;
-       } else if (get_number_of_set_parameters() != 12) {
+       } else if (number_of_set_parameter != 12) {
           cout << "# Error: " << get_number_of_set_parameters() << " NMSSM"
              " parameters given: " << (*this) << "  Please select either"
              " 6 or 12 parameters.\n";
@@ -186,7 +190,8 @@ public:
       bool supported = false;
 
       // check supported cases
-      if (is_Z3_symmetric()) {
+      const bool Z3_symmetric = is_Z3_symmetric();
+      if (Z3_symmetric) {
          if (!has_been_set[lambdaS] && !has_been_set[kappa] &&
              !has_been_set[mS2])
             supported = true;
@@ -198,7 +203,8 @@ public:
 
       if (!supported) {
          cout << "# Error: the specified set of EWSB output parameters is"
-            " is currently not supported: ";
+            " is currently not supported for a Z3 "
+              << (Z3_symmetric ? "symmetric" : "violating") << " NMSSM: ";
          for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++) {
             if (!has_been_set[static_cast<NMSSM_parameters>(i)])
                cout << parameter_names[i] << ", ";

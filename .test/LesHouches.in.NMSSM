@@ -31,14 +31,15 @@ Block VCKMIN		      # input parameters for CKM matrix
 Block EXTPAR  # Input parameters
    21   21                   # mHd2
    22   22                   # mHu2
-#   23   23                   # Bmu
+   23   0                    # mu
+   24   0                    # Bmu / (cos(beta) * sin(beta))
    61   0.1                  # lambda
 #   62   1                    # kappa
    63   10                   # A_lambda
    64   100                  # A_kappa
 #   65   1000                 # lambda * <S>
-#   66   66                   # xi_F
-#   67   67                   # xi_S
-#   68   68                   # mu'
-#   69   69                   # m'_S^2
+   66   0                   # xi_F
+   67   0                   # xi_S
+   68   0                   # mu'
+   69   0                   # m'_S^2
 #   70   70                   # m_S^2
