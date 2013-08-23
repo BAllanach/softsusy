@@ -181,10 +181,10 @@ void NMSSM_input::check_setup() {
 
 void NMSSM_input::check_6_input_parameters() {
    if (get_number_of_set_parameters() != 6) {
-      std::ostringstream msg;
-      msg << "# Internal error: check_6_input_parameters() called but"
+      std::string msg =
+         "# Internal error: check_6_input_parameters() called but"
          " not 6 paramters set";
-      throw msg.str();
+      throw msg;
    }
 
    // check that the 6 set parameters are the ones from Eq. (60)
@@ -212,10 +212,10 @@ void NMSSM_input::check_6_input_parameters() {
 
 void NMSSM_input::check_ewsb_output_parameters() const {
    if (get_number_of_set_parameters() != 12) {
-      std::ostringstream msg;
-      msg << "# Internal error: check_ewsb_output_parameters()"
+      std::string msg =
+         "# Internal error: check_ewsb_output_parameters()"
          " called but not 12 paramters set";
-      throw msg.str();
+      throw msg;
    }
 
    bool supported = false;
