@@ -130,24 +130,42 @@ public:
          && (!has_been_set[xiF]      || close(parameter[xiF]     , 0., EPSTOL));
    }
 
+   bool check_setup() {
+       // check if the user has given enough input parameters
+       if (get_number_of_set_parameters() == 6) {
+          if (!check_6_parameter_input())
+             return false;
+       } else if (get_number_of_set_parameters() != 12) {
+          cout << "# Error: " << get_number_of_set_parameters() << " NMSSM"
+             " parameters given: " << (*this) << "  Please select either"
+             " 6 or 12 parameters.\n";
+          return false;
+       }
+
+       // check if the EWSB output parameter set is supported
+       if (!ewsb_output_parameters_are_supported())
+          return false;
+
+       return true;
+   }
+
    /// checks the 6 input parameters and sets the non-standard parameters to zero
-   void setup_6_parameter_input() {
+   bool check_6_parameter_input() {
       if (get_number_of_set_parameters() != 6)
-         return;
+         return false;
 
       // check that the 6 set parameters are the ones from Eq. (60)
       // arxiv.org/abs/0801.0045
-      const bool are_reduced_parameters = is_set(tanBeta)
-         || is_set(mHd2) || is_set(mHu2) || is_set(lambda)
-         || is_set(kappa) || is_set(Alambda) || is_set(Akappa)
-         || is_set(lambdaS) || is_set(mS2);
+      const bool are_reduced_parameters = !is_set(mu) &&
+         !is_set(BmuOverCosBetaSinBeta) && !is_set(muPrime) &&
+         !is_set(mPrimeS2) && !is_set(xiF) && !is_set(xiS);
 
       if (!are_reduced_parameters) {
          cout << "# Error: 6 parameter set, but not all are \"standard"
             " parameters\".  Please select 6 parameters from {"
-            "tanBeta, mHd2 mHu2, lambda, kappa, Alambda, Akappa, lambdaS,"
+            "tanBeta, mHd2, mHu2, lambda, kappa, Alambda, Akappa, lambdaS,"
             " mS2}" << endl;
-         return;
+         return false;
       }
 
       set(mu, 0.);
@@ -156,6 +174,39 @@ public:
       set(mPrimeS2, 0.);
       set(xiF, 0.);
       set(xiS, 0.);
+
+      return true;
+   }
+
+   /// checks if the unset parameters can be used as EWSB output
+   bool ewsb_output_parameters_are_supported() {
+      if (get_number_of_set_parameters() != 12)
+         return false;
+
+      bool supported = false;
+
+      // check supported cases
+      if (is_Z3_symmetric()) {
+         if (!has_been_set[lambdaS] && !has_been_set[kappa] &&
+             !has_been_set[mS2])
+            supported = true;
+      } else {
+         if (!has_been_set[mu] && !has_been_set[BmuOverCosBetaSinBeta] &&
+             !has_been_set[xiS])
+            supported = true;
+      }
+
+      if (!supported) {
+         cout << "# Error: the specified set of EWSB output parameters is"
+            " is currently not supported: ";
+         for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++) {
+            if (!has_been_set[static_cast<NMSSM_parameters>(i)])
+               cout << parameter_names[i] << ", ";
+         }
+         cout << '\n';
+      }
+
+      return supported;
    }
 
    friend std::ostream& operator<<(std::ostream& lhs, const NMSSM_input& rhs) {

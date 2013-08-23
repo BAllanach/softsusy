@@ -1101,17 +1101,11 @@ int main(int argc, char *argv[]) {
        }
        break;
     case NMSSM: {
-       const unsigned number_of_given_nmssm_pars
-          = nmssm_input.get_number_of_set_parameters();
-       if (number_of_given_nmssm_pars == 6) {
-          nmssm_input.setup_6_parameter_input();
-       } else if (number_of_given_nmssm_pars != 12) {
-          cout << "# Error: " << number_of_given_nmssm_pars << " NMSSM"
-             " parameters given: " << nmssm_input << "  Please select either"
-             " 6 or 12 parameters.\n";
+       if (!nmssm_input.check_setup())
           return 1;
-       }
+
        softsusy::Z3 = nmssm_input.is_Z3_symmetric();
+
        DoubleVector nmpars(nmssm_input.get_nmpars());
        mgut = nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu,
                            tanb, oneset, gaugeUnification, ewsbBCscale);
