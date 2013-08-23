@@ -663,9 +663,8 @@ void SoftParsNmssm::universalScalars(double m0) {
 }
 
 //PA: for semi constrained models
-void SoftParsNmssm::semiuniversalScalars(double m0, double mS) {
-  universalScalars(m0);
-  setMsSquared(sqr(mS));
+void SoftParsNmssm::semiuniversalScalars(double m0) {
+  SoftPars<NmssmSusy, nmsBrevity>::universalScalars(m0);
 }
 
 //PA: for fully constrained
@@ -684,8 +683,8 @@ void SoftParsNmssm::semiuniversalTrilinears(double a0, double al, double ak) {
 }
 
 //PA: for semi constrained models
-void SoftParsNmssm::standardsemiSugra(double m0,  double mS, double m12, double a0, double Al, double Ak) {
-  semiuniversalScalars(m0, mS);
+void SoftParsNmssm::standardsemiSugra(double m0, double m12, double a0, double Al, double Ak) {
+  semiuniversalScalars(m0);
   universalGauginos(m12);
   semiuniversalTrilinears(a0, Al, Ak);
 }

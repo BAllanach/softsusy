@@ -4313,15 +4313,6 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS,
 	 double DMS00 = s11s + s11w + s11b + s11tau + dMA * sqr(sb);
 	 double DMS01 = s12s + s12w + s12b + s12tau - dMA * cb * sb;
 	 double DMS11 = s22s + s22w + s22b + s22tau + dMA * sqr(cb);
-	 // cout << "DMS00 = "  << DMS00 << endl;
-	 // cout << "DMS01 = "  << DMS01 << endl;
-	 // cout << "DMS11 = "  << DMS11 << endl;
-	 
-	 // for(int i=0; i<=2; i++){
-	 //   for(int j=0; j<=2; j++){
-	 //     cout << "DMS[" << i << "][" << j << "] = "  << DMS[i][j]  << endl;
-	 //   }
-	 // }
 
 	 //PA: Now add two loop parts to the full one loop self energy
 	 sigmaMH1(1, 1) = sigmaMH1(1, 1) - DMS[0][0]; 
@@ -4346,50 +4337,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS,
 	 sigmaMH3(2, 3) = sigmaMH3(2, 3) - DMS[1][2]; 
 	 sigmaMH3(3, 3) = sigmaMH3(3, 3) - DMS[2][2]; 
        }
-       else {
-	 double mSUSY = displayMu();
-	 double mSUSYsq = sqr(mSUSY);
-	 double lt = log(mSUSYsq/rmtsq);
-	 double lA = log(MAeffsq/rmtsq);
-       
-	 double loop = 1.0 / (sqr(16.0 * PI * PI));       
-	 double c11 = 3.0 * sqr(hb * hb) * vev2 * sqr(cb) * loop;
-	 double c22 = 3.0 * sqr(ht * ht) * vev2 * sqr(sb) * loop; 
-	 
-	 double sum11t = 16.0 * sqr(gs) - 2.0 * sqr(gp) / 3.0 
-	   + 3.0 * sqr(sb * ht) - 3.0 * sqr(cb * hb);
-	 double sum11A = 3.0 * sqr(sb * hb) + 3.0 * sqr(sb * ht) + sqr(ht);
-	 double sum22t = 16.0 * sqr(gs) + 4.0 * sqr(gp) / 3.0 
-	   - 3.0 * sqr(sb * ht) + 3.0 * sqr(cb * hb);
-	 double sum22A = 3.0 * sqr(cb * ht) + 3.0 * sqr(cb * hb) + sqr(hb);
-	 
-	 double d11 = c11 * (sqr(lt) * sum11t + (sqr(lA) - sqr(lt)) * sum11A);
-	 double d22 = c22 * (sqr(lt) * sum22t + (sqr(lA) - sqr(lt)) * sum22A);
-	 // cout << "in nmssmsoftsusy adding two loop corrections " << endl; 
-	 // cout << "d11 = "  << d11 << endl;
-	 // cout << "d22 = "  << d22 << endl;
-	 
-
-	 // cout << "as at 22 part: c22 * sqr(lt) * 16.0 * sqr(gs) = " << c22 * sqr(lt) * 16.0 * sqr(gs) << endl;
-	 // cout << "as ab 11 part: c11 * sqr(lt) * 16.0 * sqr(gs) = " << c11 * sqr(lt) * 16.0 * sqr(gs) << endl;
-	 // cout << "yt^4 +yb^2yt^2 + yb^4 22 part = "  << c22 * sqr(lt) * (- 3.0 * sqr(sb * ht) + 3.0 * sqr(cb * hb)) + c22 *  (sqr(lA) - sqr(lt)) * ( 3.0 * sqr(cb * ht) + 3.0 * sqr(cb * hb) + sqr(hb)) << endl;
-
-	 // cout << "yt^4 +yb^2yt^2 + yb^4 11 part = "  << c11 * sqr(lt) * (3.0 * sqr(sb * ht) - 3.0 * sqr(cb * hb) ) + c11 *  (sqr(lA) - sqr(lt)) *(3.0 * sqr(sb * hb) + 3.0 * sqr(sb * ht) + sqr(ht)) << endl;
-
-	 
-	 // cout << "gp 22 part = " << c22 *  sqr(lt) * (4.0 * sqr(gp) / 3.0 ) << endl;
-	 // cout << "gp 11 part = " << c11 *  sqr(lt) * ( - 2.0 * sqr(gp) / 3.0  ) << endl;
-
-	 sigmaMH1(1, 1) = sigmaMH1(1, 1) + d11; 
-	 sigmaMH1(2, 2) = sigmaMH1(2, 2) + d22; 
-	 
-	 sigmaMH2(1, 1) = sigmaMH2(1, 1) + d11; 
-	 sigmaMH2(2, 2) = sigmaMH2(2, 2) + d22; 
-	 
-	 sigmaMH3(1, 1) = sigmaMH3(1, 1) + d11; 
-	 sigmaMH3(2, 2) = sigmaMH3(2, 2) + d22; 
-       }
-       
+      
      }
      
      sigmaMH1.symmetrise();
@@ -8647,6 +8595,20 @@ void NmssmSoftsusy::itLowsoft
  const DoubleVector & pars, const DoubleVector nmpars, bool gaugeUnification, bool ewsbBCscale) {
 
   static NmssmSoftsusy old;
+  /// LCT: Resize the drBarPars object to account for NMSSM parameters 
+  drBarPars o(old.displayDrBarPars());
+  o.mh0.setEnd(3);
+  o.mA0.setEnd(2);
+  o.mixh0.resize(3,3);
+  o.mixA0.resize(2,2);
+  o.mneut.setEnd(5);
+
+  o.mixNeut.resize(5,5);
+  o.mnBpmz.setEnd(5);
+  o.nBpmz.resize(5,5);
+
+  old.setDrBarPars(o);
+
   static double oldMu = 0.;
   static int numTries = 0;
   double mz = displayMz();
@@ -9106,7 +9068,7 @@ void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
   ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
-  m.standardsemiSugra(m0, 0.0, m12, a0, 0.0, 1e-15);
+  m.standardsemiSugra(m0, m12, a0, 0.0, 1e-15);
   m.setMspSquared(1e6);  
   return;
 }
@@ -9116,13 +9078,13 @@ void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   double m0 = inputParameters.display(1);
   double m12 = inputParameters.display(2);
   double a0 = inputParameters.display(3);
-  double mS = inputParameters.display(4);
-  double Al = inputParameters.display(5);
-  double Ak = inputParameters.display(6);
+  //  double mS = inputParameters.display(4);
+  double Al = inputParameters.display(4);
+  double Ak = inputParameters.display(5);
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
   ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
-  m.standardsemiSugra(m0, mS, m12, a0, Al, Ak);
+  m.standardsemiSugra(m0, m12, a0, Al, Ak);
     
   return;
 }
