@@ -100,7 +100,7 @@ private:
    static char const * const parameter_names[NUMBER_OF_NMSSM_INPUT_PARAMETERS];
 
    /// checks the 6 input parameters and sets the non-standard parameters to zero
-   void check_6_parameter_input();
+   void check_6_input_parameters();
    /// checks if the unset parameters can be used as EWSB output
    void check_ewsb_output_parameters() const;
 };
@@ -176,7 +176,7 @@ void NMSSM_input::check_setup() {
    // check if the user has given enough input parameters
    if (number_of_set_parameter == 6) {
       // check if the 6 set parameters are "standard parameters"
-      check_6_parameter_input();
+      check_6_input_parameters();
    } else if (number_of_set_parameter != 12) {
       std::ostringstream msg;
       msg << "# Error: " << get_number_of_set_parameters() << " NMSSM"
@@ -190,10 +190,10 @@ void NMSSM_input::check_setup() {
 }
 
 /// checks the 6 input parameters and sets the non-standard parameters to zero
-void NMSSM_input::check_6_parameter_input() {
+void NMSSM_input::check_6_input_parameters() {
    if (get_number_of_set_parameters() != 6) {
       std::ostringstream msg;
-      msg << "# Internal error: check_6_parameter_input() called but"
+      msg << "# Internal error: check_6_input_parameters() called but"
          " not 6 paramters set";
       throw msg.str();
    }
