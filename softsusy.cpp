@@ -2130,12 +2130,14 @@ DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
   for (i=1; i<=rank; i++) 
     for (j=1; j<=rank; j++) 
       for (k=1; k<=rank; k++) {
+	if (k<=2) {
 	  sigmaL(i, j) = sigmaL(i, j) + 2.0 * 
 	    (aPsi0ChicW(i, k).conj() * aPsi0ChicW(j, k) * b1fn(k, 1)).real();
 	  sigmaR(i, j) = sigmaR(i, j) + 2.0 * 
 	    (bPsi0ChicW(i, k).conj() * bPsi0ChicW(j, k) * b1fn(k, 1)).real();
 	  sigmaS(i, j) = sigmaS(i, j) - 8.0 * mch(k) * 
 	    (bPsi0ChicW(i, k).conj() * aPsi0ChicW(j, k) * b0fn(k, 1)).real();
+	}
 	
 	sigmaL(i, j) = sigmaL(i, j) +
 	  (aPsiChiZ(i, k).conj() * aPsiChiZ(j, k) * b1fn(k, 3)).real();
@@ -2263,6 +2265,7 @@ DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
   for (i=1; i<=4; i++) 
     for (j=1; j<=4; j++) 
       for (k=1; k<=4; k++) {
+	if (k<=2) {
 	  /// G+
 	  sigmaL(i, j) = sigmaL(i, j) + 
 	    (aPsiChiHGp(i, k).conj() * aPsiChiHGp(j, k) * b1fn(k, 1)).real();
@@ -2278,11 +2281,12 @@ DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
 	    (bPsiChiHHp(i, k).conj() * bPsiChiHHp(j, k) * b1fn(k, 2)).real();
 	  sigmaS(i, j) = sigmaS(i, j) + 2.0 * mch(k) * 
 	    (bPsiChiHHp(i, k).conj() * aPsiChiHHp(j, k) * b0fn(k, 2)).real();
+	}
 	
 	/// H
 	sigmaL(i, j) = sigmaL(i, j) + 0.5 *
 	  (aPsiChiH(i, k).conj() * aPsiChiH(j, k) * b1fn(k, 6)).real();
-	sigmaR(i, j) = sigmaR(i, j) + 0.5 * 
+	sigmaR(i, j) = sigmaR(i, j) + 0.5 *  
 	  (bPsiChiH(i, k).conj() * bPsiChiH(j, k) * b1fn(k, 6)).real();
 	sigmaS(i, j) = sigmaS(i, j) + mneut(k) * 
 	  (bPsiChiH(i, k).conj() * aPsiChiH(j, k) * b0fn(k, 6)).real();
