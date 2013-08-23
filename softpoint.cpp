@@ -1101,8 +1101,7 @@ int main(int argc, char *argv[]) {
        }
        break;
     case NMSSM: {
-       if (!nmssm_input.check_setup())
-          return 1;
+       nmssm_input.check_setup();
 
        softsusy::Z3 = nmssm_input.is_Z3_symmetric();
 
