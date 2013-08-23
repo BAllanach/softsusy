@@ -74,159 +74,188 @@ public:
       NUMBER_OF_NMSSM_INPUT_PARAMETERS
    };
 
-   NMSSM_input()
-      : parameter()    // sets all parameters to zero
-      , has_been_set() // sets all values to zero (false)
-   {}
+   NMSSM_input();
+   ~NMSSM_input() {}
 
    /// set parameter to given value
-   void set(NMSSM_parameters par, double value) {
-      assert(par < NUMBER_OF_NMSSM_INPUT_PARAMETERS);
-      parameter[par] = value;
-      has_been_set[par] = true;
-   }
-
+   void set(NMSSM_parameters, double);
    /// get value of parameter
-   double get(NMSSM_parameters par) const {
-      assert(par < NUMBER_OF_NMSSM_INPUT_PARAMETERS);
-      return parameter[par];
-   }
-
+   double get(NMSSM_parameters) const;
    /// returns vector with supersymmetric NMSSM parameters
-   DoubleVector get_nmpars() const {
-      DoubleVector nmpars(5);
-      nmpars(1) = get(NMSSM_input::lambda);
-      nmpars(2) = get(NMSSM_input::kappa);
-      if (!close(get(NMSSM_input::lambda),0.,EPSTOL)) {
-         nmpars(3) = get(NMSSM_input::lambdaS) / get(NMSSM_input::lambda);
-      } else {
-         cout << "# Error: you set lambda * <S> = "
-              << get(NMSSM_input::lambdaS) << ", but lambda is zero. "
-            "Please set lambda (EXTPAR entry 61) to a non-zero value.\n";
-      }
-      nmpars(4) = get(NMSSM_input::xiF);
-      nmpars(5) = get(NMSSM_input::muPrime);
-      return nmpars;
-   };
-
+   DoubleVector get_nmpars() const;
    /// returns the number of set NMSSM parameters
-   unsigned get_number_of_set_parameters() const {
-      unsigned num = 0;
-      for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++)
-         num += is_set(static_cast<NMSSM_parameters>(i));
-      return num;
-   }
-
+   unsigned get_number_of_set_parameters() const;
    /// returns true if parameter was set, false otherwise
-   bool is_set(NMSSM_parameters par) const { return has_been_set[par]; }
-
+   bool is_set(NMSSM_parameters par) const;
    /// returns true if input parameter set defines a Z3 symmetric NMSSM
-   bool is_Z3_symmetric() const {
-      return (!has_been_set[mu]      || close(parameter[mu]      , 0., EPSTOL))
-         && (!has_been_set[BmuOverCosBetaSinBeta]
-             || close(parameter[BmuOverCosBetaSinBeta], 0., EPSTOL))
-         && (!has_been_set[muPrime]  || close(parameter[muPrime] , 0., EPSTOL))
-         && (!has_been_set[mPrimeS2] || close(parameter[mPrimeS2], 0., EPSTOL))
-         && (!has_been_set[xiF]      || close(parameter[xiF]     , 0., EPSTOL));
-   }
-
+   bool is_Z3_symmetric() const;
    /// checks the NMSSM parameter setup, returns true if is SLHA2 confrom
-   bool check_setup() {
-      const unsigned number_of_set_parameter = get_number_of_set_parameters();
+   bool check_setup();
 
-       // check if the user has given enough input parameters
-       if (number_of_set_parameter == 6) {
-          // check if the 6 set parameters are "standard parameters"
-          if (!check_6_parameter_input())
-             return false;
-       } else if (number_of_set_parameter != 12) {
-          cout << "# Error: " << get_number_of_set_parameters() << " NMSSM"
-             " parameters given: " << (*this) << "  Please select either"
-             " 6 or 12 parameters.\n";
-          return false;
-       }
-
-       // check if the EWSB output parameter set is supported
-       if (!ewsb_output_parameters_are_supported())
-          return false;
-
-       return true;
-   }
-
-   /// checks the 6 input parameters and sets the non-standard parameters to zero
-   bool check_6_parameter_input() {
-      if (get_number_of_set_parameters() != 6)
-         return false;
-
-      // check that the 6 set parameters are the ones from Eq. (60)
-      // arxiv.org/abs/0801.0045
-      const bool are_reduced_parameters = !is_set(mu) &&
-         !is_set(BmuOverCosBetaSinBeta) && !is_set(muPrime) &&
-         !is_set(mPrimeS2) && !is_set(xiF) && !is_set(xiS);
-
-      if (!are_reduced_parameters) {
-         cout << "# Error: 6 parameter set, but not all are \"standard"
-            " parameters\".  Please select 6 parameters from {"
-            "tanBeta, mHd2, mHu2, lambda, kappa, Alambda, Akappa, lambdaS,"
-            " mS2}" << endl;
-         return false;
-      }
-
-      set(mu, 0.);
-      set(BmuOverCosBetaSinBeta, 0.);
-      set(muPrime, 0.);
-      set(mPrimeS2, 0.);
-      set(xiF, 0.);
-      set(xiS, 0.);
-
-      return true;
-   }
-
-   /// checks if the unset parameters can be used as EWSB output
-   bool ewsb_output_parameters_are_supported() const {
-      if (get_number_of_set_parameters() != 12)
-         return false;
-
-      bool supported = false;
-
-      // check supported cases
-      const bool Z3_symmetric = is_Z3_symmetric();
-      if (Z3_symmetric) {
-         if (!has_been_set[lambdaS] && !has_been_set[kappa] &&
-             !has_been_set[mS2])
-            supported = true;
-      } else {
-         if (!has_been_set[mu] && !has_been_set[BmuOverCosBetaSinBeta] &&
-             !has_been_set[xiS])
-            supported = true;
-      }
-
-      if (!supported) {
-         cout << "# Error: the specified set of EWSB output parameters is"
-            " currently not supported for a Z3 "
-              << (Z3_symmetric ? "symmetric" : "violating") << " NMSSM: ";
-         for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++) {
-            if (!has_been_set[static_cast<NMSSM_parameters>(i)])
-               cout << parameter_names[i] << ", ";
-         }
-         cout << '\n';
-      }
-
-      return supported;
-   }
-
-   friend std::ostream& operator<<(std::ostream& lhs, const NMSSM_input& rhs) {
-      for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++) {
-         if (rhs.is_set(static_cast<NMSSM_parameters>(i))) {
-            lhs << rhs.parameter_names[i] << " = "
-                << rhs.get(static_cast<NMSSM_parameters>(i)) << ", ";
-         }
-      }
-      return lhs;
-   }
+   friend std::ostream& operator<<(std::ostream&, const NMSSM_input&);
 
 private:
    double parameter[NUMBER_OF_NMSSM_INPUT_PARAMETERS];  ///< NMSSM parameters
    bool has_been_set[NUMBER_OF_NMSSM_INPUT_PARAMETERS];
    static char const * const parameter_names[NUMBER_OF_NMSSM_INPUT_PARAMETERS];
+
+   /// checks the 6 input parameters and sets the non-standard parameters to zero
+   bool check_6_parameter_input();
+   /// checks if the unset parameters can be used as EWSB output
+   bool ewsb_output_parameters_are_supported() const;
 };
+
+
+NMSSM_input::NMSSM_input()
+  : parameter()    // sets all parameters to zero
+  , has_been_set() // sets all values to zero (false)
+{}
+
+/// set parameter to given value
+void NMSSM_input::set(NMSSM_parameters par, double value) {
+   assert(par < NUMBER_OF_NMSSM_INPUT_PARAMETERS);
+   parameter[par] = value;
+   has_been_set[par] = true;
+}
+
+/// get value of parameter
+double NMSSM_input::get(NMSSM_parameters par) const {
+   assert(par < NUMBER_OF_NMSSM_INPUT_PARAMETERS);
+   return parameter[par];
+}
+
+/// returns vector with supersymmetric NMSSM parameters
+DoubleVector NMSSM_input::get_nmpars() const {
+   DoubleVector nmpars(5);
+   nmpars(1) = get(NMSSM_input::lambda);
+   nmpars(2) = get(NMSSM_input::kappa);
+   if (!close(get(NMSSM_input::lambda),0.,EPSTOL)) {
+      nmpars(3) = get(NMSSM_input::lambdaS) / get(NMSSM_input::lambda);
+   } else {
+      cout << "# Error: you set lambda * <S> = "
+           << get(NMSSM_input::lambdaS) << ", but lambda is zero. "
+         "Please set lambda (EXTPAR entry 61) to a non-zero value.\n";
+   }
+   nmpars(4) = get(NMSSM_input::xiF);
+   nmpars(5) = get(NMSSM_input::muPrime);
+   return nmpars;
+};
+
+/// returns the number of set NMSSM parameters
+unsigned NMSSM_input::get_number_of_set_parameters() const {
+   unsigned num = 0;
+   for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++)
+      num += is_set(static_cast<NMSSM_parameters>(i));
+   return num;
+}
+
+/// returns true if parameter was set, false otherwise
+bool NMSSM_input::is_set(NMSSM_parameters par) const {
+   assert(par < NUMBER_OF_NMSSM_INPUT_PARAMETERS);
+   return has_been_set[par];
+}
+
+/// returns true if input parameter set defines a Z3 symmetric NMSSM
+bool NMSSM_input::is_Z3_symmetric() const {
+   return (!has_been_set[mu]      || close(parameter[mu]      , 0., EPSTOL))
+      && (!has_been_set[BmuOverCosBetaSinBeta]
+          || close(parameter[BmuOverCosBetaSinBeta], 0., EPSTOL))
+      && (!has_been_set[muPrime]  || close(parameter[muPrime] , 0., EPSTOL))
+      && (!has_been_set[mPrimeS2] || close(parameter[mPrimeS2], 0., EPSTOL))
+      && (!has_been_set[xiF]      || close(parameter[xiF]     , 0., EPSTOL));
+}
+
+/// checks the NMSSM parameter setup, returns true if is SLHA2 confrom
+bool NMSSM_input::check_setup() {
+   const unsigned number_of_set_parameter = get_number_of_set_parameters();
+
+   // check if the user has given enough input parameters
+   if (number_of_set_parameter == 6) {
+      // check if the 6 set parameters are "standard parameters"
+      if (!check_6_parameter_input())
+         return false;
+   } else if (number_of_set_parameter != 12) {
+      cout << "# Error: " << get_number_of_set_parameters() << " NMSSM"
+         " parameters given: " << (*this) << "  Please select either"
+         " 6 or 12 parameters.\n";
+      return false;
+   }
+
+   // check if the EWSB output parameter set is supported
+   if (!ewsb_output_parameters_are_supported())
+      return false;
+
+   return true;
+}
+
+/// checks the 6 input parameters and sets the non-standard parameters to zero
+bool NMSSM_input::check_6_parameter_input() {
+   if (get_number_of_set_parameters() != 6)
+      return false;
+
+   // check that the 6 set parameters are the ones from Eq. (60)
+   // arxiv.org/abs/0801.0045
+   const bool are_reduced_parameters = !is_set(mu) &&
+      !is_set(BmuOverCosBetaSinBeta) && !is_set(muPrime) &&
+      !is_set(mPrimeS2) && !is_set(xiF) && !is_set(xiS);
+
+   if (!are_reduced_parameters) {
+      cout << "# Error: 6 parameter set, but not all are \"standard"
+         " parameters\".  Please select 6 parameters from {"
+         "tanBeta, mHd2, mHu2, lambda, kappa, Alambda, Akappa, lambdaS,"
+         " mS2}" << endl;
+      return false;
+   }
+
+   set(mu, 0.);
+   set(BmuOverCosBetaSinBeta, 0.);
+   set(muPrime, 0.);
+   set(mPrimeS2, 0.);
+   set(xiF, 0.);
+   set(xiS, 0.);
+
+   return true;
+}
+
+/// checks if the unset parameters can be used as EWSB output
+bool NMSSM_input::ewsb_output_parameters_are_supported() const {
+   if (get_number_of_set_parameters() != 12)
+      return false;
+
+   bool supported = false;
+
+   // check supported cases
+   const bool Z3_symmetric = is_Z3_symmetric();
+   if (Z3_symmetric) {
+      if (!has_been_set[lambdaS] && !has_been_set[kappa] &&
+          !has_been_set[mS2])
+         supported = true;
+   } else {
+      if (!has_been_set[mu] && !has_been_set[BmuOverCosBetaSinBeta] &&
+          !has_been_set[xiS])
+         supported = true;
+   }
+
+   if (!supported) {
+      cout << "# Error: the specified set of EWSB output parameters is"
+         " currently not supported for a Z3 "
+           << (Z3_symmetric ? "symmetric" : "violating") << " NMSSM: ";
+      for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++) {
+         if (!has_been_set[static_cast<NMSSM_parameters>(i)])
+            cout << parameter_names[i] << ", ";
+      }
+      cout << '\n';
+   }
+
+   return supported;
+}
+
+std::ostream& operator<<(std::ostream& lhs, const NMSSM_input& rhs) {
+   for (unsigned i = 0; i < NMSSM_input::NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++) {
+      if (rhs.is_set(static_cast<NMSSM_input::NMSSM_parameters>(i))) {
+         lhs << rhs.parameter_names[i] << " = "
+             << rhs.get(static_cast<NMSSM_input::NMSSM_parameters>(i)) << ", ";
+      }
+   }
+   return lhs;
+}
