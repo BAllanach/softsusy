@@ -165,6 +165,7 @@ public:
                 << rhs.get(static_cast<NMSSM_parameters>(i)) << ", ";
          }
       }
+      return lhs;
    }
 
 private:
