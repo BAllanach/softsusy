@@ -155,12 +155,12 @@ bool NMSSM_input::is_set(NMSSM_parameters par) const {
 }
 
 bool NMSSM_input::is_Z3_symmetric() const {
-   return (!has_been_set[mu]      || close(parameter[mu]      , 0., EPSTOL))
-      && (!has_been_set[BmuOverCosBetaSinBeta]
+   return (!is_set(mu)      || close(parameter[mu]      , 0., EPSTOL))
+      && (!is_set(BmuOverCosBetaSinBeta)
           || close(parameter[BmuOverCosBetaSinBeta], 0., EPSTOL))
-      && (!has_been_set[muPrime]  || close(parameter[muPrime] , 0., EPSTOL))
-      && (!has_been_set[mPrimeS2] || close(parameter[mPrimeS2], 0., EPSTOL))
-      && (!has_been_set[xiF]      || close(parameter[xiF]     , 0., EPSTOL));
+      && (!is_set(muPrime)  || close(parameter[muPrime] , 0., EPSTOL))
+      && (!is_set(mPrimeS2) || close(parameter[mPrimeS2], 0., EPSTOL))
+      && (!is_set(xiF)      || close(parameter[xiF]     , 0., EPSTOL));
 }
 
 void NMSSM_input::check_setup() {
@@ -223,12 +223,10 @@ void NMSSM_input::check_ewsb_output_parameters() const {
    // check supported cases
    const bool Z3_symmetric = is_Z3_symmetric();
    if (Z3_symmetric) {
-      if (!has_been_set[lambdaS] && !has_been_set[kappa] &&
-          !has_been_set[mS2])
+      if (!is_set(lambdaS) && !is_set(kappa) && !is_set(mS2))
          supported = true;
    } else {
-      if (!has_been_set[mu] && !has_been_set[BmuOverCosBetaSinBeta] &&
-          !has_been_set[xiS])
+      if (!is_set(mu) && !is_set(BmuOverCosBetaSinBeta) && !is_set(xiS))
          supported = true;
    }
 
@@ -238,7 +236,7 @@ void NMSSM_input::check_ewsb_output_parameters() const {
          " currently not supported for a Z3 "
           << (Z3_symmetric ? "symmetric" : "violating") << " NMSSM: ";
       for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++) {
-         if (!has_been_set[static_cast<NMSSM_parameters>(i)])
+         if (!is_set(static_cast<NMSSM_parameters>(i)))
             msg << parameter_names[i] << ", ";
       }
       msg << '\n';
