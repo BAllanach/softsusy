@@ -203,7 +203,7 @@ public:
 
       if (!supported) {
          cout << "# Error: the specified set of EWSB output parameters is"
-            " is currently not supported for a Z3 "
+            " currently not supported for a Z3 "
               << (Z3_symmetric ? "symmetric" : "violating") << " NMSSM: ";
          for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++) {
             if (!has_been_set[static_cast<NMSSM_parameters>(i)])
