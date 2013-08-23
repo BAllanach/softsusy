@@ -183,7 +183,7 @@ public:
    }
 
    /// checks if the unset parameters can be used as EWSB output
-   bool ewsb_output_parameters_are_supported() {
+   bool ewsb_output_parameters_are_supported() const {
       if (get_number_of_set_parameters() != 12)
          return false;
 
