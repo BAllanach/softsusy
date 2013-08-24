@@ -90,10 +90,10 @@ int main() {
     }
   }
   catch(const string & a) {
-    cout << a; exit(-1);
+    cout << a; return -1;
   }
   catch(const char *a) {
-    printf("%s", a); exit(-1);
+    printf("%s", a); return -1;
   }
-  
+  return 0;
 }

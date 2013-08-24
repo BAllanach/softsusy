@@ -1023,8 +1023,8 @@ int main(int argc, char *argv[]) {
     //    double muFirst = 1000.;
     //    r->setSusyMu(muFirst);
 
-    double mgut =  r->lowOrg(boundaryCondition, mgutGuess, pars, sgnMu,
-			     tanb, oneset, gaugeUnification, ewsbBCscale);
+    r->lowOrg(boundaryCondition, mgutGuess, pars, sgnMu, tanb, oneset, 
+	      gaugeUnification, ewsbBCscale);
 
     /// Fix to mh if additional operators are assumed
     if (desiredMh > 0.1) {
@@ -1032,16 +1032,16 @@ int main(int argc, char *argv[]) {
     }
     
     r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
-			      numPoints, mgut, ewsbBCscale);
+			      numPoints, ewsbBCscale);
     
     if (r->displayProblem().test()) {
       cout << "# SOFTSUSY problem with point: " << r->displayProblem() << endl;
     }
   }
-  catch(const string & a) { cout << a; }
-  catch(const char * a) { cout << a; }
-  catch(...) { cout << "Unknown type of exception caught.\n"; }
+  catch(const string & a) { cout << a; return -1; }
+  catch(const char * a) { cout << a; return -1; }
+  catch(...) { cout << "Unknown type of exception caught.\n"; return -1; }
   
-  exit(0);
+  return 0;
 }
 

@@ -751,7 +751,7 @@ int main() {
     TOLERANCE = 1.0e-6;
 
     /// Main driver routine: do the calculation
-    double mgut = kw.lowOrg(rpvSugraBcs, mxGuess, pars, sgnMu, tanb, oneset, gaugeUnification);
+    kw.lowOrg(rpvSugraBcs, mxGuess, pars, sgnMu, tanb, oneset, gaugeUnification);
 
     /// Output the results in SLHA2 format
     double qMax = 0.;  char * modelIdent = (char *)"sugra"; 
@@ -772,7 +772,7 @@ specifying a (sub--) set of global variables, all of which are
 described in the $\rpc$ manual~\cite{Allanach:2001kg}.  These include
 the \code{MIXING}~switch, which determines how any quark mixing is
 implemented, the
-\code{gaugeUnification} switch, which determines \code{mGutGuess}~as
+\code{gaugeUnification} switch, which determines $M_X$~as
 the scale of $M_{GUT}$ of electroweak gauge unification. The
 switch 
  \code{outputCharacteristics}, which specifies the output

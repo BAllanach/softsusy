@@ -3057,11 +3057,10 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
 					 const DoubleVector & pars, 
 					 int sgnMu, double tanb, double qMax, 
 					 int numPoints, 
-					 double mgut, 
 					 bool ewsbBCscale) {
   if (forceSlha1) {
     RpvSoftsusy::slha1(cout, model, pars, sgnMu, tanb, 
-		       qMax, numPoints, mgut);
+		       qMax, numPoints);
     return;
   }
   int nn = out.precision();
@@ -3070,13 +3069,13 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
   modselSLHA(out, model);
   FlavourMssmSoftsusy::sminputsSLHA(out);
   vckminSLHA(out);
-  MssmSoftsusy::minparSLHA(out, model, pars, tanb, sgnMu, mgut, ewsbBCscale);  
+  MssmSoftsusy::minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale);  
 
   RpvSoftsusy kw;
   kw.RpvSoftsusy::rpvSet(pars);
   kw.outputNonZeroInputs(out);
   
-  softsusySLHA(out, mgut);
+  softsusySLHA(out);
 
   RpvNeutrino rr;
   rr=*this;

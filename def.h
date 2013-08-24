@@ -42,6 +42,8 @@ namespace softsusy{
   const double EPSTOL = 1.0e-11; ///< underflow accuracy
   const double PI = atan(1.0) * 4.0; ///< or 3.141592653589793 longhand;
   const double root2 = sqrt(2.0);
+  ///< used to flag diabolical problems
+  const double numberOfTheBeast = 6.66e66; 
 
   extern double GMU;
   extern double MZ; 
@@ -81,6 +83,8 @@ namespace softsusy{
   extern int numTry;
   /// Include eq (62) from hep-ph/0210268: degenerate gluino/squark mass limit
   extern bool includeTwoLoopMssmCorrectionsToMt;
+  /// Switch to use SPHENO conventions for masses in loops
+  extern bool sphenoMassConv;
 }
 
 #endif
