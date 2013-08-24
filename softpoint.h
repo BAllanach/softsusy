@@ -27,7 +27,6 @@
 #include <twoloophiggs.h>
 #include <dilogwrap.h>
 #include <rpvneut.h>
-#include <cassert>
 using namespace softsusy;
 
 /// Requested by CMS
