@@ -50,12 +50,6 @@ void errorCall() {
   throw ii.str();
 }
 
-char const * const NMSSM_input::parameter_names[NUMBER_OF_NMSSM_INPUT_PARAMETERS] = {
-   "tanBeta", "mHd2", "mHu2", "mu", "BmuOverCosBetaSinBeta", "lambda",
-   "kappa", "Alambda", "Akappa", "lambda*S", "xiF", "xiS", "muPrime",
-   "mPrimeS2", "mS2"
-};
-
 int main(int argc, char *argv[]) {
   tryToConvergeHard = true;
   /// Sets up exception handling

@@ -25,6 +25,7 @@
 #include "mssmUtils.h"
 #include <nmssm2loop.h>
 #include <nmssm1loop.h>
+#include "nmssmUtils.h"
 using namespace softsusy;
 using namespace std;
 /* class NmssmSoftsusy;  */

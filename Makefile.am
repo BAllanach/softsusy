@@ -33,7 +33,7 @@ utils.h mssmUtils.h rpvsoft.h rpvsusypars.h \
 tensor.h rpvmain.h flavoursoft.h \
 xpr-base.h xpr-matrix.h xpr-vector.h rpvneut.h \
 nmssmsusy.h nmssmsoftpars.h  \
-nmssmsoftsusy.h
+nmssmsoftsusy.h nmssmUtils.h
 
 
 
@@ -47,7 +47,7 @@ libsoft_la_LDFLAGS = $(FLIBS)
 
 libnmssm_la_SOURCES = def.cpp linalg.cpp lowe.cpp numerics.cpp rpvneut.cpp \
 physpars.cpp rge.cpp rgeroutines.cpp nmssm2loop.f nmssm1loop.f dilogwrap.f \
- nmssmsoftsusy.cpp nmssmsusy.cpp nmssmsoftpars.cpp \
+ nmssmsoftsusy.cpp nmssmsusy.cpp nmssmsoftpars.cpp nmssmUtils.cpp \
 susy.cpp utils.cpp mssmUtils.cpp \
 tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp twoloophiggs.f 
 libnmssm_la_LDFLAGS = $(FLIBS)
