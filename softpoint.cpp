@@ -208,7 +208,7 @@ int main(int argc, char *argv[]) {
 	// end of SUGRA option
       }
     }
-    if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) exit(0);
+    if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) return 0;
     if (!strcmp(argv[1], "amsb")) {
       cout << "# SOFTSUSY mAMSB calculation" << endl;
       boundaryCondition = &amsbBcs;
@@ -1078,18 +1078,16 @@ int main(int argc, char *argv[]) {
     //    double muFirst = 1000.;
     //    r->setSusyMu(muFirst);
 
-    double mgut;
-
     switch (susy_model) {
     case MSSM:
-       mgut = r->lowOrg(boundaryCondition, mgutGuess, pars, sgnMu,
-                        tanb, oneset, gaugeUnification, ewsbBCscale);
+       r->lowOrg(boundaryCondition, mgutGuess, pars, sgnMu,
+                 tanb, oneset, gaugeUnification, ewsbBCscale);
        /// Fix to mh if additional operators are assumed
        if (desiredMh > 0.1) {
           sPhysical s(r->displayPhys()); s.mh0(1) = desiredMh; r->setPhys(s);
        }
        r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,
-                                 numPoints, mgut, ewsbBCscale);
+                                 numPoints, ewsbBCscale);
        if (r->displayProblem().test()) {
           cout << "# SOFTSUSY problem with point: " << r->displayProblem() << endl;
        }
@@ -1100,8 +1098,9 @@ int main(int argc, char *argv[]) {
        softsusy::Z3 = nmssm_input.is_Z3_symmetric();
 
        DoubleVector nmpars(nmssm_input.get_nmpars());
-       mgut = nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu,
-                           tanb, oneset, gaugeUnification, ewsbBCscale);
+       double mgut = nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars,
+                                  nmpars, sgnMu, tanb, oneset, gaugeUnification,
+                                  ewsbBCscale);
        if (nmssm.displayProblem().test()) {
           cout << "# SOFTSUSY problem with NMSSM point: "
                << nmssm.displayProblem() << endl;
@@ -1114,10 +1113,10 @@ int main(int argc, char *argv[]) {
        break;
     }
   }
-  catch(const string & a) { cout << a; }
-  catch(const char * a) { cout << a; }
-  catch(...) { cout << "Unknown type of exception caught.\n"; }
+  catch(const string & a) { cout << a; return -1; }
+  catch(const char * a) { cout << a; return -1; }
+  catch(...) { cout << "Unknown type of exception caught.\n"; return -1; }
   
-  exit(0);
+  return 0;
 }
 

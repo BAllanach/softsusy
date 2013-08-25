@@ -1517,8 +1517,7 @@ void RpvSoftsusy::drbarRpv(ostream & out) {
 void RpvSoftsusy::slha1(ostream & out, const char model[], 
 			const DoubleVector & pars, 
 			int sgnMu, double tanb, double qMax, 
-			int numPoints, 
-			double mgut) {
+			int numPoints) {
   outputCharacteristics(8);
 
   out << "# SOFTSUSY" << SOFTSUSY_VERSION << " SLHA 1 TYPE FILE" << endl;
@@ -1557,7 +1556,7 @@ void RpvSoftsusy::slha1(ostream & out, const char model[],
 
   out << "Block MINPAR  # SUSY breaking input parameters\n";
   out << "     3   "; printRow(out, tanb)            ; 
-  out << "   # tanb" << endl;
+  out << "   # tanb, DRbar scheme, Feynman gauge" << endl;
 
   if (!displayAltEwsb()) {
     out << "     4   "; 
@@ -1653,7 +1652,7 @@ void RpvSoftsusy::slha1(ostream & out, const char model[],
   
   out << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
        << TOLERANCE << endl;
-  out << "# mgut=" << mgut << " GeV\n";
+  out << "# mgut=" << displayMxBC() << " GeV\n";
 
   sPhysical s(displayPhys());
 
@@ -1831,9 +1830,9 @@ void RpvSoftsusy::slha1(ostream & out, const char model[],
     out << "     1    "; printRow(out, displaySusyMu()); 
     out << "   # mu(Q)MSSM DRbar\n";
     out << "     2    "; printRow(out, displayTanb()); 
-    out << "   # tan beta(Q)MSSM DRbar\n";
+    out << "   # tan beta(Q)MSSM DRbar, Feynman gauge\n";
     out << "     3    "; printRow(out, displayHvev()); 
-    out << "   # higgs vev(Q)MSSM DRbar\n";
+    out << "   # higgs vev(Q)MSSM DRbar, Feynman gauge\n";
     out << "     4    "; 
     printRow(out, displayM3Squared() / 
 	     (sin(atan(displayTanb())) * cos(atan(displayTanb())))); 
