@@ -1203,7 +1203,8 @@ ComplexMatrix ComplexMatrix::transpose() const {
 ComplexMatrix ComplexMatrix::hermitianConjugate() const {
   ComplexMatrix temp(cols,rows);
   for (int i=1; i<=rows; ++i)
-    temp.col(i) = this->row(i).apply(conj);
+     for (int k=1; k<=cols; ++k)
+        temp(k,i) = conj(elmt(i,k));
   return temp;
 }
 
