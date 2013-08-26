@@ -255,7 +255,8 @@ double DoubleMatrix::trace() const {
 DoubleMatrix DoubleMatrix::transpose() const {
   DoubleMatrix temp(cols,rows);
   for (int i=1; i<=rows; ++i)
-    temp.col(i) = this->row(i);
+     for (int k=1; k<=cols; ++k)
+        temp(k,i) = elmt(i,k);
   return temp;
 }
 
@@ -1193,7 +1194,8 @@ Complex ComplexMatrix::trace() const {
 ComplexMatrix ComplexMatrix::transpose() const {
   ComplexMatrix temp(cols,rows);
   for (int i=1; i<=rows; ++i)
-    temp.col(i) = this->row(i);
+     for (int k=1; k<=cols; ++k)
+        temp(k,i) = elmt(i,k);
   return temp;
 }
 
