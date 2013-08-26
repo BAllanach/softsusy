@@ -285,7 +285,6 @@ void NmssmSusy::getTwoLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
   DoubleVector &gsq = a.gsq;
 
   // Everything gets the (1/16pi^2)^2 factor at the bottom
-  DoubleMatrix ee(3, 3), ll(3, 3), qq(3, 3), dd(3, 3), uu(3, 3);
   double h1h1, h2h2;
 
   // Two-loop pure gauge anom dimensions
@@ -294,11 +293,11 @@ void NmssmSusy::getTwoLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
   // Two-loop pure Yukawa contributions
   const double s = (eeT + 3.0 * ddT);
 
-  ll = - lsq * e2;
-  ee = - 2.0 * lsq * e2t;
-  qq = - lsq * (u2 + d2);
-  dd = - 2.0 * lsq * d2t;
-  uu = - 2.0 * lsq * u2t;
+  const DoubleMatrix ll(- lsq * e2);
+  const DoubleMatrix ee(- 2.0 * lsq * e2t);
+  const DoubleMatrix qq(- lsq * (u2 + d2));
+  const DoubleMatrix dd(- 2.0 * lsq * d2t);
+  const DoubleMatrix uu(- 2.0 * lsq * u2t);
   h1h1 = - (3.0 * l4 + 2.0 * lsq * ksq + 3.0 * lsq * uuT);
   h2h2 = - (3.0 * l4 + 2.0 * lsq * ksq + lsq * s);
   ss = ss - (4.0 * l4 + 8.0 * k4 + 8.0 * lsq * ksq + 2.0 * lsq * s
