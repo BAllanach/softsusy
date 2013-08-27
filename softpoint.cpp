@@ -561,7 +561,28 @@ int main(int argc, char *argv[]) {
                 int i; double d; kk >> i >> d;
 
                 // read extra NMSSM input parameters from EXTPAR
-                if (susy_model == NMSSM) {
+                // (skipping NMSSM parameters if the MSSM was selected)
+                if (susy_model == MSSM) {
+                   switch (i) {
+                   case 21:
+                   case 22:
+                   case 23:
+                   case 24:
+                   case 61:
+                   case 62:
+                   case 63:
+                   case 64:
+                   case 65:
+                   case 66:
+                   case 67:
+                   case 68:
+                   case 69:
+                   case 70:
+                      cout << "# Warning: NMSSM parameter EXTPAR " << i
+                           << " given but MSSM chosen -- ignoring it.\n";
+                      continue;
+                   }
+                } else if (susy_model == NMSSM) {
                    switch (i) {
                    case 21: nmssm_input.set(NMSSM_input::mHd2                 , d); break;
                    case 22: nmssm_input.set(NMSSM_input::mHu2                 , d); break;
