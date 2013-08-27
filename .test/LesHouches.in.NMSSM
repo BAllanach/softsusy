@@ -1,7 +1,7 @@
 # Example input in SLHA2 format, and suitable for input to
 # SOFTSUSY (v1.8 or higher): CMSSM10.1.1 input - see arXiv:1109.3859
 Block MODSEL		     # Select model
-    6    1                   # flavour violation
+    6    0                   # flavour violation
     1    1		     # mSUGRA
     3    1                   # NMSSM
 Block SMINPUTS		     # Standard Model inputs
