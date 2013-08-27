@@ -3385,7 +3385,7 @@ DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
 	sigmaS(i, j) = sigmaS(i, j) + 2.0 * mch(k) * 
 	  (bPsiChiHGp(i, k).conj() * aPsiChiHGp(j, k) * b0fn(k, 1)).real();
 
-  	/// H+
+	/// H+
 	sigmaL(i, j) = sigmaL(i, j) + 
 	  (aPsiChiHHp(i, k).conj() * aPsiChiHHp(j, k) * b1fn(k, 2)).real();
 	sigmaR(i, j) = sigmaR(i, j) + 
@@ -3565,7 +3565,7 @@ int NmssmSoftsusy::rewsbKap(double & kap) const {
   int flag = 0;
   if(abs(displayLambda()) < 1e-99){
     if(PRINTOUT) cout << "Warning: called with lambd = 0." << endl;
-    if(PRINTOUT) cout << "rewsbKap routine rewquires non zero lambda." << endl;
+    if(PRINTOUT) cout << "rewsbKap routine rewquires non-zero lambda." << endl;
     flag = 2;
   }
   double lam = displayLambda();
@@ -4315,7 +4315,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS,
 	 double DMS00 = s11s + s11w + s11b + s11tau + dMA * sqr(sb);
 	 double DMS01 = s12s + s12w + s12b + s12tau - dMA * cb * sb;
 	 double DMS11 = s22s + s22w + s22b + s22tau + dMA * sqr(cb);
-
+	
 	 //PA: Now add two loop parts to the full one loop self energy
 	 sigmaMH1(1, 1) = sigmaMH1(1, 1) - DMS[0][0]; 
 	 sigmaMH1(1, 2) = sigmaMH1(1, 2) - DMS[0][1]; 
@@ -4340,6 +4340,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS,
 	 sigmaMH3(3, 3) = sigmaMH3(3, 3) - DMS[2][2]; 
        }
       
+       
      }
      
      sigmaMH1.symmetrise();
@@ -8639,9 +8640,8 @@ void NmssmSoftsusy::itLowsoft
  
   //PA: To check convergence of new parameters.
   double lamold = displayLambda(), kapold = displayKappa(), Svevold = displaySvev(), XiFold = displayXiF(), mu_sold = displayMupr();
-
+ 
   //PA: reset new low energy inputs of general nmssm at mz.
-  setLambda(nmpars(1));
   if(Z3){
     setXiF(0.0);                         
     setMupr(0.0);
@@ -8673,7 +8673,8 @@ void NmssmSoftsusy::itLowsoft
     double tbIn; double predictedMzSq = 0.;
     predictedMzSq = predMzsq(tbIn);
     setPredMzSq(predictedMzSq); 
-
+    if(!GUTlambda) setLambda(nmpars(1));
+                      
     if (!ewsbBCscale) err = runto(mx, eps);
 
     /// Guard against the top Yukawa fixed point
@@ -8719,8 +8720,8 @@ void NmssmSoftsusy::itLowsoft
       }
     }
     
-    boundaryCondition(*this, pars); 
- 
+    boundaryCondition(*this, pars);
+     if(GUTlambda) setLambda(nmpars(1));
     if (!ewsbBCscale) err = runto(displayMsusy(), eps);
 
     calcDrBarPars();
@@ -8974,7 +8975,7 @@ double NmssmSoftsusy::lowOrg
 
     /// Initial guess: B=0, mu=1st parameter, need better guesses
     boundaryCondition(*this, pars);
-
+    if(GUTlambda) setLambda(nmpars(1));
     if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
       /// LCT: Changed sets to match softsusy.cpp 8/8/13
       if(Z3){

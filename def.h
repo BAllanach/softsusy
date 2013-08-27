@@ -34,6 +34,9 @@ namespace softsusy{
   // Z3 violating case with mu and m3sq allowed
   // needed fpr slecting which EWSB routines to use.
   extern bool Z3;
+  //If true the input value of lambda is set at the GUT scale
+  //If false the input lambda is set at MSUSY.
+  extern bool GUTlambda;
 
   extern int numHiggsMassLoops;
   /// Set to number of loops to use for REWSB condition up to the default of 2
