@@ -8813,8 +8813,8 @@ void NmssmSoftsusy::itLowsoft
 /// LCT: Placed here for now.
 double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries) {
 
-  drBarPars inforLoops(in.displayDrBarPars()),
-    outforLoops(out.displayDrBarPars());
+  const drBarPars& inforLoops = in.displayDrBarPars();
+  const drBarPars& outforLoops = out.displayDrBarPars();
 
   double rank = in.displayDrBarPars().mneut.displayEnd();
 

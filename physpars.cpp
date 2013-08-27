@@ -167,12 +167,12 @@ void drBarPars::mpzNeutralinos() {
   
   ComplexMatrix K(rank, rank);
   int i; for (i=1; i<=rank; i++) 
-    if (mneut.display(i) < 0.0) K(i, i) = Complex(0.0, 1.0);
+    if (mneut.display(i) < 0.0) K(i, i) = Complex(0.0, -1.0);
     else
       K(i, i) = Complex(1.0, 0.0);
   
   mnBpmz = temp.apply(fabs);
-  nBpmz = K.hermitianConjugate() * mixNeut.transpose();
+  nBpmz = K * mixNeut.transpose();
 }
 
 // Returns mixing matrices u,v and neutralino masses mneut in the MPZ

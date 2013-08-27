@@ -255,7 +255,8 @@ double DoubleMatrix::trace() const {
 DoubleMatrix DoubleMatrix::transpose() const {
   DoubleMatrix temp(cols,rows);
   for (int i=1; i<=rows; ++i)
-    temp.col(i) = this->row(i);
+     for (int k=1; k<=cols; ++k)
+        temp(k,i) = elmt(i,k);
   return temp;
 }
 
@@ -320,7 +321,8 @@ void DoubleMatrix::symmetrise() {
   }
 #endif
   for (int i=1; i<=rows; ++i)
-    col(i) = row(i);
+     for (int k = 1; k < i && k <= cols; ++k)
+        elmt(i,k) = elmt(k,i);
 }
 
 // Gives sum of difference between two matrices
@@ -1193,14 +1195,16 @@ Complex ComplexMatrix::trace() const {
 ComplexMatrix ComplexMatrix::transpose() const {
   ComplexMatrix temp(cols,rows);
   for (int i=1; i<=rows; ++i)
-    temp.col(i) = this->row(i);
+     for (int k=1; k<=cols; ++k)
+        temp(k,i) = elmt(i,k);
   return temp;
 }
 
 ComplexMatrix ComplexMatrix::hermitianConjugate() const {
   ComplexMatrix temp(cols,rows);
   for (int i=1; i<=rows; ++i)
-    temp.col(i) = this->row(i).apply(conj);
+     for (int k=1; k<=cols; ++k)
+        temp(k,i) = conj(elmt(i,k));
   return temp;
 }
 
@@ -1221,7 +1225,8 @@ void ComplexMatrix::symmetrise() {
   }
 #endif
   for (int i=1; i<=rows; ++i)
-    col(i) = row(i);
+     for (int k = 1; k < i && k <= cols; ++k)
+        elmt(i,k) = elmt(k,i);
 }
 
 // Gives sum of difference between two matrices
