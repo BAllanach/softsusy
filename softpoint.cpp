@@ -594,6 +594,9 @@ int main(int argc, char *argv[]) {
                    case 68: nmssm_input.set(NMSSM_input::muPrime              , d); break;
                    case 69: nmssm_input.set(NMSSM_input::mPrimeS2             , d); break;
                    case 70: nmssm_input.set(NMSSM_input::mS2                  , d); break;
+                   default:
+                      cout << "# Warning: ignoring non-NMSSM parameter EXTPAR "
+                           << i << '\n';
                    }
                    continue;
                 }
