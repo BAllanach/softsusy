@@ -1042,11 +1042,22 @@ int main(int argc, char *argv[]) {
     }
 
     // set NMSSM boundary conditions
-    // @todo fill the `pars' vector such that it suits the NMSSM
-    //       boundary conditions
     if (susy_model == NMSSM) {
        if (boundaryCondition == &sugraBcs) {
-          nmssmBoundaryCondition = &NmssmMsugraBcs;
+          if (nmssm_input.is_set(NMSSM_input::Alambda) &&
+              nmssm_input.is_set(NMSSM_input::Akappa)) {
+             nmssmBoundaryCondition = &SemiMsugraBcs;
+             pars.setEnd(5);
+             pars(4) = nmssm_input.get(NMSSM_input::Alambda);
+             pars(5) = nmssm_input.get(NMSSM_input::Akappa);
+          } else {
+             nmssmBoundaryCondition = &NmssmMsugraBcs;
+             if (pars.size() != 3) {
+                string msg("# Error: NMSSM msugra boundary condition chosen, but"
+                           " pars has not 3 entries\n");
+                throw msg;
+             }
+          }
        } else {
           cout << "# Warning: non-sugra boundary conditions for the NMSSM"
              " are currently not supported\n";
