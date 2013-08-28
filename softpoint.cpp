@@ -1043,7 +1043,7 @@ int main(int argc, char *argv[]) {
 
     // set NMSSM boundary conditions
     if (susy_model == NMSSM) {
-       if (boundaryCondition == &sugraBcs) {
+       if (strcmp(modelIdent, "sugra") == 0) {
           if (nmssm_input.is_set(NMSSM_input::Alambda) &&
               nmssm_input.is_set(NMSSM_input::Akappa)) {
              nmssmBoundaryCondition = &SemiMsugraBcs;
@@ -1059,8 +1059,9 @@ int main(int argc, char *argv[]) {
              }
           }
        } else {
-          cout << "# Warning: non-sugra boundary conditions for the NMSSM"
-             " are currently not supported\n";
+          string msg("# Error: non-sugra boundary conditions for the NMSSM"
+                     " are currently not supported\n");
+          throw msg;
        }
     }
 
