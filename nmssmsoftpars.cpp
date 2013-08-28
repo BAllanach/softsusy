@@ -660,7 +660,6 @@ void SoftParsNmssm::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
 void SoftParsNmssm::universalScalars(double m0) {
   SoftPars<NmssmSusy, nmsBrevity>::universalScalars(m0);
   setMsSquared(sqr(m0));
-  setMspSquared(sqr(m0));
 }
 
 //PA: for semi constrained models
