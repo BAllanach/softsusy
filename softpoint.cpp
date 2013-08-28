@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
   outputCharacteristics(6);
 
   void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=sugraBcs;
-  void (*nmssmBoundaryCondition)(NmssmSoftsusy&, const DoubleVector&) = MssmMsugraBcs;
+  void (*nmssmBoundaryCondition)(NmssmSoftsusy&, const DoubleVector&) = NmssmMsugraBcs;
 
   QedQcd oneset;
   MssmSoftsusy m; FlavourMssmSoftsusy k;
@@ -1045,9 +1045,9 @@ int main(int argc, char *argv[]) {
     // @todo fill the `pars' vector such that it suits the NMSSM
     //       boundary conditions
     if (susy_model == NMSSM) {
-       if (boundaryCondition == &sugraBcs)
-          nmssmBoundaryCondition = &MssmMsugraBcs;
-       else {
+       if (boundaryCondition == &sugraBcs) {
+          nmssmBoundaryCondition = &NmssmMsugraBcs;
+       } else {
           cout << "# Warning: non-sugra boundary conditions for the NMSSM"
              " are currently not supported\n";
        }
