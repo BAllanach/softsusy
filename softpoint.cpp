@@ -564,10 +564,6 @@ int main(int argc, char *argv[]) {
                 // (skipping NMSSM parameters if the MSSM was selected)
                 if (susy_model == MSSM) {
                    switch (i) {
-                   case 21:
-                   case 22:
-                   case 23:
-                   case 24:
                    case 61:
                    case 62:
                    case 63:
