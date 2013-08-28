@@ -120,6 +120,8 @@ public:
 		      DoubleMatrix & gDD,
 		      double & gH1H1, double & gH2H2, double & gSS) const;
 
+  /// Reads in universal boundary conditions at the current scale: m0, M1/2, A
+  void standardSugra(double m0, double m12, double a0);
   /// Reads in universal boundary conditions at the current scale: m0, M1/2, A, mS, Al and Ak
   void standardsemiSugra(double m0,  double m12, double a0, double Al, double Ak);
   /// Sets all flavour-diagonal SUSY breaking scalar masses to m0
