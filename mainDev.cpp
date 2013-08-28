@@ -71,7 +71,7 @@ int main() {
   nmpars(1) = lambda; nmpars(2) = kappa; nmpars(3) = s; 
   nmpars(4) = xiF; nmpars(5) = mupr;
   bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
-  Z3 = false;
+  Z3 = true;
   n.lowOrg(MssmMsugraBcs, mGutGuess, pars, nmpars, sgnMu, tanb, oneset, uni);
 
    /// check the point in question is problem free: if so print the output

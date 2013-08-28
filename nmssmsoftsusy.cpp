@@ -185,7 +185,10 @@ void NmssmSoftsusy::printall(){
 // Currently only works at one loop.  
 // Two loop should be added later. 
 void NmssmSoftsusy::doTadpoles(double mt, double sinthDRbar) {
-
+   //PA: all the MSSM parts could be replaced by a single call to 
+   //Softsusy::doTadpoles and then add MSSM ones
+   //But we need to call some 2loop MSSM routines anyway
+   // to get 2loop S tadpoles
     calcTadpole1Ms1loop(mt, sinthDRbar);
     calcTadpole2Ms1loop(mt, sinthDRbar);
     calcTadpoleSMs1loop(mt, sinthDRbar);
@@ -193,15 +196,69 @@ void NmssmSoftsusy::doTadpoles(double mt, double sinthDRbar) {
     double t1OV1 = displayTadpole1Ms1loop();
     double t2OV2 = displayTadpole2Ms1loop();
     double tSOVS = displayTadpoleSMs1loop();
- 
-    //PA: two loop routines to be added here!
-    //And these will be added to local t10V1, t20V2, tS0VS
+    //  if (numRewsbLoops > 1 && displayProblem().tachyon == none && Z3 == true) {
+    if (numRewsbLoops > 1 && Z3 == true) {
+       double lam = displayLambda(), s = displaySvev();
+       drBarPars forLoops(displayDrBarPars());
+       /// add the two-loop terms, prepare inputs
+       double s1s = 0., s2s = 0., s1t = 0., s2t = 0.,
+         gs = displayGaugeCoupling(3),  as = sqr(gs) / (4.0 * PI), 
+         rmt = forLoops.mt, rmtsq = sqr(forLoops.mt), 
+         scalesq = sqr(displayMu()), vev = displayHvev(),
+         vev2 = sqr(vev), tanb = displayTanb(), 
+         amu = - lam * s / root2, mg = displayGaugino(3), 
+         mAsq = sqr(forLoops.mA0(1)); 
+      
+      double sxt = sin(forLoops.thetat), cxt = cos(forLoops.thetat);
+      double mst1sq = sqr(forLoops.mu(1, 3)), 
+	mst2sq = sqr(forLoops.mu(2, 3));
+      /// two-loop Higgs corrections: alpha_s alpha_b
+      double sxb = sin(forLoops.thetab), 
+	cxb = cos(forLoops.thetab);
+      double sintau = sin(forLoops.thetatau), 
+	costau = cos(forLoops.thetatau);
+      double msnusq = sqr(forLoops.msnu(3));
+      double msb1sq = sqr(forLoops.md(1, 3)), 
+	msb2sq = sqr(forLoops.md(2, 3));
+      double mstau1sq = sqr(forLoops.me(1, 3)), 
+	mstau2sq = sqr(forLoops.me(2, 3));
+      double cotbeta = 1.0 / tanb;
+      double rmb = forLoops.mb, rmbsq = sqr(forLoops.mb);
+      double rmtausq = sqr(forLoops.mtau);
+      double s1b = 0.0, s2b = 0.0, s1tau = 0.0, s2tau = 0.0;
+      
+      ewsb2loop_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, 
+        	 &amu, &tanb, &vev2, &gs, &s1s, &s2s);
+      ddstad_(&rmtsq, &rmbsq, &mAsq, &mst1sq, &mst2sq, &msb1sq, &msb2sq, 
+              &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, &s1t, 
+      	      &s2t);
+      ewsb2loop_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq,
+        	 &amu, &cotbeta, &vev2, &gs, &s2b, &s1b);
+      tausqtad_(&rmtausq, &mAsq, &msnusq, &mstau1sq, &mstau2sq, &sintau, 
+        	&costau, &scalesq, &amu, &tanb, &vev2, &s1tau, &s2tau);
+      
+      //rescale T1 to get TS
+      double sss = s1s * vev * cos(atan(tanb)) / s;
+      double ssb = s1b * vev * sin(atan(tanb)) / s;
+   
+      if (!testNan(s1s * s1t * s1b * s1tau * s2s * s2t * s2b * s2tau 
+                   * sss * ssb)) {
+	 t1OV1 += - s1s - s1t - s1b - s1tau;
+	 t2OV2 += - s2s - s2t - s2b - s2tau;
+         tSOVS += - sss - ssb;   
+         /// end of 2-loop bit
+      }
+      else  {
+	flagNoMuConvergence(true);
+	if (PRINTOUT > 1) cout << "2-loop tadpoles are nans\n";
+      }
+
+    }
 
     //PA: After one and two loop tadpoles are added they are then set
     setT1OV1Ms(t1OV1); 
     setT2OV2Ms(t2OV2); 
-    tSOVSMs =  tSOVS;
-   
+    tSOVSMs = tSOVS;
 }
 
 void NmssmSoftsusy::P1SfSfCouplings(DoubleMatrix & lp1tt, DoubleMatrix & lp1bb, DoubleMatrix  & lp1tautau) const {
