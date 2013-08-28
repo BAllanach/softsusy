@@ -1128,6 +1128,7 @@ int main(int argc, char *argv[]) {
        nmssm_input.check_setup();
 
        softsusy::Z3 = nmssm_input.is_Z3_symmetric();
+       softsusy::GUTlambda = true;
 
        DoubleVector nmpars(nmssm_input.get_nmpars());
        double mgut = nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars,
