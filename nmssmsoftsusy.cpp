@@ -3241,7 +3241,7 @@ void NmssmSoftsusy::getNeutPassarinoVeltman(double p, double q, DoubleMatrix & b
   DoubleVector mneut(forLoops.mnBpmz);
   DoubleVector mch(forLoops.mchBpmz); 
 
-  double rank = mneut.displayEnd();
+  const int rank = mneut.displayEnd();
   int k;
      for (k=1; k<=rank; k++) {
        if (k<=2){
@@ -3314,7 +3314,7 @@ DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
   DoubleVector mneut(forLoops.mnBpmz);
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz);
-  double rank = mneut.displayEnd();
+  const int rank = mneut.displayEnd();
 
   /// LCT: Neutralino-chargino-Hpm trilinear coupings
   DoubleMatrix aPsiPsiHc1(rank, 2), bPsiPsiHc1(rank, 2);
@@ -4606,7 +4606,7 @@ void NmssmSoftsusy::addChaLoopHiggs(double p, DoubleMatrix & sigmaL, DoubleMatri
   DoubleVector mneut(displayDrBarPars().mnBpmz);
   ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
   DoubleVector mch(displayDrBarPars().mchBpmz); 
-  double dimN =  mneut.displayEnd();
+  const int dimN =  mneut.displayEnd();
   /// checked and corrected
   DoubleMatrix aPsiPsiHc1(dimN, 2), bPsiPsiHc1(dimN, 2);
   DoubleMatrix aPsiPsiHc2(dimN, 2), bPsiPsiHc2(dimN, 2);
@@ -4788,7 +4788,7 @@ void NmssmSoftsusy::addCharginoLoop(double p, DoubleMatrix & mass) {
   DoubleVector mneut(displayDrBarPars().mnBpmz);
   ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
   DoubleVector mch(displayDrBarPars().mchBpmz); 
-  double dimN =  mneut.displayEnd();
+  const int dimN =  mneut.displayEnd();
   DoubleMatrix sigmaL(2, 2), sigmaR(2, 2), sigmaS(2, 2);
   //PA: calculate P-V's for gauge and Higgs at outset 
   //avoids repeated calls for same function
@@ -8874,7 +8874,7 @@ double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries)
   const drBarPars& inforLoops = in.displayDrBarPars();
   const drBarPars& outforLoops = out.displayDrBarPars();
 
-  double rank = in.displayDrBarPars().mneut.displayEnd();
+  const int rank = in.displayDrBarPars().mneut.displayEnd();
 
   // cout << "rank = " << rank << endl;
 
