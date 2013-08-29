@@ -699,8 +699,10 @@ void SoftParsNmssm::standardsemiSugra(double m0, double m12, double a0, double A
   universalGauginos(m12);
   semiuniversalTrilinears(a0, Al, Ak);
   //In the Z3 violating case we can still have mS as a parameter
-  if(Z3 == false) setMsSquared(mS); 
-  if(Z3==false)setMspSquared(displayM3Squared());//universal bilinears
+  if (Z3 == false) {
+     setMsSquared(mS);
+     setMspSquared(displayM3Squared()); //universal bilinears
+  }
 }
 
 ostream & operator <<(ostream &left, const SoftParsNmssm &s) {
