@@ -75,4 +75,12 @@ bool close(double m1, double m2, double tol) {
   return (mmax - mmin <= tol * mmax);
 }
 
+double sTfn(double sTins, double sTouts) {
+  double sTin  = fabs(sTins);
+  double sTout = fabs(sTouts);
+  if (sTin < 1. && sTout < 1.) return fabs(sTin - sTout);
+  else return fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
+}
+
+
 

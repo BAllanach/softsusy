@@ -7,3 +7,7 @@ used in loop rather than just 2 x sneutrino_mu. Thanks to Lewis Tunstall.
 Tunstall.
 <li> 1/8/13 Added MX, the scale of SUSY breaking boundary conditions (may also
 be unification scale), to MssmSoftsusy object for convenience.
+<li> 29/8/13 Difference between 2 MssmSoftsusy objects now changed: if a mass
+is less than 1 GeV, it is the ABSOLUTE mass difference that is returned by
+sumTol, not the relative mass difference.
+
