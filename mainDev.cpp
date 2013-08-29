@@ -77,10 +77,10 @@ int main() {
      n.lowOrg(MssmMsugraBcs, mGutGuess, pars, nmpars, sgnMu, tanb, oneset, uni);
   } catch (const std::string& error) {
      cout << "\nException thrown: " << error << endl;
-     return 1;
+     n.flagProblemThrown(true);
   } catch (const char* error) {
      cout << "\nException thrown: " << error << endl;
-     return 1;
+     n.flagProblemThrown(true);
   }
 
    /// check the point in question is problem free: if so print the output
