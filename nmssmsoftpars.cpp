@@ -689,6 +689,17 @@ void SoftParsNmssm::standardSugra(double m0, double m12, double a0) {
   setTriakappa(a0 * displayKappa());
 }
 
+
+
+//PA: for fully constrained models.
+void SoftParsNmssm::standardSugra(double m0, double m12, double a0) {
+  universalScalars(m0);
+  universalGauginos(m12);
+  universalTrilinears(a0);
+  if(Z3==false)setMspSquared(displayM3Squared());//universal bilinears
+}
+
+
 //PA: for semi constrained models
 void SoftParsNmssm::standardsemiSugra(double m0, double m12, double a0, double Al, double Ak) {
   semiuniversalScalars(m0);
