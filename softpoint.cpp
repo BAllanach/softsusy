@@ -1020,10 +1020,6 @@ int main(int argc, char *argv[]) {
     
     oneset.toMz();
 
-    /// Initial guess for mu
-    //    double muFirst = 1000.;
-    //    r->setSusyMu(muFirst);
-
     r->lowOrg(boundaryCondition, mgutGuess, pars, sgnMu, tanb, oneset, 
 	      gaugeUnification, ewsbBCscale);
 

@@ -767,7 +767,7 @@ void diagonaliseSvd(DoubleMatrix & a, DoubleVector & w, DoubleMatrix & v)
 	break; 
       }
       if (its  ==  30) 
-	throw "no convergence in 30 diagonaliseSvd iterations"; 
+	throw "no convergence in 30 diagonaliseSvd iterations\n"; 
       
       x = w(l); 
       nm = k - 1; 
@@ -908,10 +908,8 @@ void diagonaliseJac(DoubleMatrix & a,  int n,  DoubleVector & d,
     }
   }
   ostringstream ii;
-  if (PRINTOUT) {
-    ii << "Too many iterations in routine diagonaliseJac: diagonalising\n" 
-       << a << "to" << d << " with " << v;
-  }
+  ii << "Too many iterations in routine diagonaliseJac: diagonalising\n" 
+     << a << "to" << d << " with " << v;
   throw ii.str();
 }
 

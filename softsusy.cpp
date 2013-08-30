@@ -89,7 +89,10 @@ int MssmSoftsusy::rewsbM3sq(double mu, double & m3sq) const {
   
   /// Following means no good rewsb
   if (m3sq < 0.0) flag = 1;
-  
+  else if (testNan(m3sq)) {
+    flag = 1; m3sq = EPSTOL;
+  }
+
   return flag;
 }
 
@@ -973,7 +976,7 @@ void MssmSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars,
     
     if (rewsbM3sq(munew, m3sqnew) == 0) flagM3sq(false);
     else flagM3sq(true);
-    
+
     setM3Squared(m3sqnew);
 
     if ((displayMh1Squared() + 2.0 * sqr(displaySusyMu()) +
@@ -6842,6 +6845,9 @@ void MssmSoftsusy::itLowsoft
 	cout << " ***problem point***: " << displayProblem() << ".";
 
       return; 
+    } else if (numTries != 0 && fabs(displayM3Squared()) > 1.0e20) {
+      /// guards against nasty fatal problems 
+      numTries = 0; flagM3sq(true); return;
     }
 
     // All problems should be reset since only the ones of the final iteration
