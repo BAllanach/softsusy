@@ -218,6 +218,13 @@ DoubleMatrix DoubleMatrix::transpose() const {
   return temp;
 }
 
+bool DoubleMatrix::testNan() const {
+  for (int i=1; i<=rows; i++)
+    for (int j=1; j<=cols; j++)
+      if (display(i, j) != display(i, j)) return true;
+  return false;
+}
+
 /*
  *  NUMERICAL DIAGONALIZATION ROUTINES ETC.
  */
@@ -474,6 +481,7 @@ DoubleVector DoubleMatrix::sym2by2(double & theta) const  {
   }
 #endif
   
+  if (testNan()) throw("Nans present in linalg.cpp:sym2by2. Cannot calculate further\n");
   DoubleVector temp(1, 2);
   double sumTol = abs(abs(display(1, 1)) - abs(display(2, 2))) /
     maximum(abs(display(1, 1)), abs(display(2, 2)));
@@ -843,6 +851,8 @@ namespace { // helper function only
 
 void diagonaliseJac(DoubleMatrix & a,  int n,  DoubleVector & d,  
 		    DoubleMatrix & v,  int *nrot) {
+  if (testNan()) throw("Nans present in linalg.cpp:sym2by2. Cannot calculate further\n");
+
   int j, iq, ip, i;
   double tresh, theta, tau, t, sm, s, h, g, c; 
   
