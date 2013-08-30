@@ -1578,7 +1578,7 @@ void Softsusy<SoftPars>::addChaLoopGauge(double p, DoubleMatrix & sigmaL, Double
   DoubleVector mneut(forLoops.mnBpmz);
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz); 
-  double dimN = mneut.displayEnd();
+  const int dimN = mneut.displayEnd();
 
   /// checked and corrected
   ComplexMatrix aPsi0PsicW(dimN, 2), bPsi0PsicW(dimN, 2), aChi0PsicW(dimN, 2),
@@ -1654,7 +1654,7 @@ void Softsusy<SoftPars>::addChaLoopHiggs(double p, DoubleMatrix & sigmaL, Double
   DoubleVector mneut(forLoops.mnBpmz);
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz); 
-  double dimN =  mneut.displayEnd();
+  const int dimN =  mneut.displayEnd();
   /// checked and corrected
   DoubleMatrix aPsiPsiHc1(dimN, 2), bPsiPsiHc1(dimN, 2);
   DoubleMatrix aPsiPsiHc2(dimN, 2), bPsiPsiHc2(dimN, 2);
@@ -1784,7 +1784,7 @@ void Softsusy<SoftPars>::addCharginoLoop(double p, DoubleMatrix & mass) {
   DoubleVector mneut(forLoops.mnBpmz);
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz); 
-  double dimN =  mneut.displayEnd();
+  const int dimN =  mneut.displayEnd();
   DoubleMatrix sigmaL(2, 2), sigmaR(2, 2), sigmaS(2, 2);
   //PA: calculate P-V's fpr gauge and Higgs at outset 
   //avoids repeated calls for same function
@@ -1905,7 +1905,7 @@ DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz); 
 
-  double rank = mneut.displayEnd();
+  const int rank = mneut.displayEnd();
 
   DoubleMatrix aPsiUu(rank, 2), aPsiDd(rank, 2), 
     aPsiEe(rank, 2), aPsiNuNu(rank, 2);
@@ -2032,7 +2032,7 @@ void Softsusy<SoftPars>::getNeutPassarinoVeltman(double p, double q, DoubleMatri
   DoubleVector mneut(forLoops.mnBpmz);
   DoubleVector mch(forLoops.mchBpmz); 
 
-  double rank = mneut.displayEnd();
+  const int rank = mneut.displayEnd();
   int k;
      for (k=1; k<=rank; k++) {
        if (k<=2){
@@ -2100,7 +2100,7 @@ DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz); 
 
-  double rank = mneut.displayEnd();
+  const int rank = mneut.displayEnd();
 
  /// checked
   ComplexMatrix aPsi0PsicW(rank, 2), bPsi0PsicW(rank, 2), aPsi0ChicW(rank, 2),
@@ -3411,7 +3411,7 @@ void Softsusy<SoftPars>::addSnuTauGaugino(double p, double & chargino, double & 
   DoubleVector mch(forLoops.mchBpmz); 
 
   /// LCT: rank={4,5} in {MSSM,NMSSM}
-  double rank = mneut.displayEnd();
+  const int rank = mneut.displayEnd();
 
   DoubleVector aPsi0TSnul(rank), bPsi0TSnul(rank); 
   bPsi0TSnul(1) = gp * ynuL / root2;
@@ -3688,7 +3688,7 @@ void Softsusy<SoftPars>::addSnuGaugino(double p, int family, double & chargino, 
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz); 
 
-  double rank = mneut.displayEnd();
+  const int rank = mneut.displayEnd();
 
  /// Neutralino Feynman rules
   DoubleVector aPsi0TSnul(rank), bPsi0TSnul(rank); 
@@ -4678,7 +4678,7 @@ void Softsusy<SoftPars>::addSlepGaugino(double p1, double p2, int family, Double
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz);
 
-  double rank = mneut.displayEnd();
+  const int rank = mneut.displayEnd();
   DoubleVector aPsi0TauStaur(rank), bPsi0TauStaur(rank), aPsi0TauStaul(rank),
     bPsi0TauStaul(rank); 
   aPsi0TauStaur(1) = gp * root2;
@@ -5110,7 +5110,7 @@ void Softsusy<SoftPars>::addStauGaugino(double p, double mtau, DoubleMatrix & ch
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz); 
 
-  double rank = mneut.displayEnd();
+  const int rank = mneut.displayEnd();
 
   /// Neutralino Feynman rules
   DoubleVector aPsi0TauStaur(rank), bPsi0TauStaur(rank), aPsi0TauStaul(rank),
@@ -10110,7 +10110,7 @@ double Softsusy<SoftPars>::deltaVb(double outrho, double outsin,
   ComplexMatrix n(tree.nBpmz);
   DoubleVector mneut(tree.mnBpmz);
   //PA: get the dimension of menut
-  double dimN =  mneut.displayEnd();
+  const int dimN =  mneut.displayEnd();
   ComplexMatrix u(tree.uBpmz), v(tree.vBpmz); 
   DoubleVector mch(tree.mchBpmz); 
 
