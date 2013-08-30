@@ -683,11 +683,11 @@ void SoftParsNmssm::semiuniversalTrilinears(double a0, double al, double ak) {
 }
 
 // for constrained models
-void SoftParsNmssm::standardSugra(double m0, double m12, double a0) {
-  SoftPars<NmssmSusy, nmsBrevity>::standardSugra(m0, m12, a0);
-  setTrialambda(a0 * displayLambda());
-  setTriakappa(a0 * displayKappa());
-}
+// void SoftParsNmssm::standardSugra(double m0, double m12, double a0) {
+//   SoftPars<NmssmSusy, nmsBrevity>::standardSugra(m0, m12, a0);
+//   setTrialambda(a0 * displayLambda());
+//   setTriakappa(a0 * displayKappa());
+// }
 
 
 
