@@ -245,7 +245,7 @@ public:
   void setPredMzSq(double a) { predMzSq = a; }
 
   //PA: sets fracDiff, needed for access by NmssmSoftsusy methods
-  double setFracDiff(double fD) { fracDiff = fD; }; 
+  void setFracDiff(double fD) { fracDiff = fD; };
 
   //PA: fixes trilnear H1-sfermion-sfermion couplings 
   //for use in doCalcTadpole1oneLoop  

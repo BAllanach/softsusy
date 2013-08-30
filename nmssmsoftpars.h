@@ -123,7 +123,8 @@ public:
   /// Reads in universal boundary conditions at the current scale: m0, M1/2, A
   void standardSugra(double m0, double m12, double a0);
   /// Reads in universal boundary conditions at the current scale: m0, M1/2, A, mS, Al and Ak
-  void standardsemiSugra(double m0,  double m12, double a0, double Al, double Ak);
+  void standardsemiSugra(double m0,  double m12, double a0, double Al, 
+			 double Ak, double mS=0.0);
   /// Sets all flavour-diagonal SUSY breaking scalar masses to m0
   void universalScalars(double m0);
   /// Sets singet soft mass to mS and all other flavour-diagonal SUSY breaking scalar masses to m0

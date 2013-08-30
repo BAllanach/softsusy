@@ -682,18 +682,27 @@ void SoftParsNmssm::semiuniversalTrilinears(double a0, double al, double ak) {
   setTriakappa(ak * displayKappa());
 }
 
-// for constrained models
+
+//PA: for fully constrained models.
 void SoftParsNmssm::standardSugra(double m0, double m12, double a0) {
-  SoftPars<NmssmSusy, nmsBrevity>::standardSugra(m0, m12, a0);
-  setTrialambda(a0 * displayLambda());
-  setTriakappa(a0 * displayKappa());
+  universalScalars(m0);
+  universalGauginos(m12);
+  universalTrilinears(a0);
+  if(Z3==false)setMspSquared(displayM3Squared());//universal bilinears
 }
 
-//PA: for semi constrained models
-void SoftParsNmssm::standardsemiSugra(double m0, double m12, double a0, double Al, double Ak) {
+
+//PA: for semi constrained models.  Designed for the Z3 case but now also
+// works for Z3 violating NMSSM.
+void SoftParsNmssm::standardsemiSugra(double m0, double m12, double a0, double Al, double Ak, double mS) {
   semiuniversalScalars(m0);
   universalGauginos(m12);
   semiuniversalTrilinears(a0, Al, Ak);
+  //In the Z3 violating case we can still have mS as a parameter
+  if (Z3 == false) {
+     setMsSquared(mS);
+     setMspSquared(displayM3Squared()); //universal bilinears
+  }
 }
 
 ostream & operator <<(ostream &left, const SoftParsNmssm &s) {
