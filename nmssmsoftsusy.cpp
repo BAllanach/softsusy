@@ -9149,4 +9149,25 @@ void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   return;
 }
 
+   void generalNmssmBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+  NmssmSusy s; SoftParsNmssm r;
+  s = m.displaySusy();
+  r.set(inputParameters);
+  if(Z3==false){
+    double m3sq = m.displayM3Squared();
+    double XiS = m.displayXiS();
+    r.setM3Squared(m3sq);
+    r.setXiS(XiS);
+  }
+  else{
+    double mSsq = m.displayMsSquared();
+    r.setMsSquared(mSsq);
+  }
+  
+ 
+  m.setSoftPars(r);
+  m.setSusy(s);
+
+  return;
+}
 #endif
