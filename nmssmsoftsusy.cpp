@@ -9170,4 +9170,26 @@ void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 
   return;
 }
+
+/// This one doesn't overwrite mh1sq or mh2sq at the high scale.  For cases where the soft scalar Higgs masses are set in EWSB.
+void generalNmssmBcs2(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+  NmssmSusy s; SoftParsNmssm r;
+  double mh1sq = m.displayMh1Squared();
+  double mh2sq = m.displayMh2Squared();
+  double m3sq = m.displayM3Squared();
+  s = m.displaySusy();
+  r.set(inputParameters);
+  r.setMh1Squared(mh1sq);
+  r.setMh2Squared(mh2sq);
+  r.setM3Squared(m3sq);
+  m.setSoftPars(r);
+  m.setSusy(s);
+
+  return;
+}
+
+
+
+
+
 #endif
