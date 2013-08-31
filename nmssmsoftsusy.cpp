@@ -9176,12 +9176,14 @@ void generalNmssmBcs2(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   NmssmSusy s; SoftParsNmssm r;
   double mh1sq = m.displayMh1Squared();
   double mh2sq = m.displayMh2Squared();
+  double mSsq = m.displayMsSquared();
   double m3sq = m.displayM3Squared();
   s = m.displaySusy();
   r.set(inputParameters);
   r.setMh1Squared(mh1sq);
   r.setMh2Squared(mh2sq);
   r.setM3Squared(m3sq);
+  r.setMsSquared(mSsq);
   m.setSoftPars(r);
   m.setSusy(s);
 
