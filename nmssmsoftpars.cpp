@@ -688,7 +688,7 @@ void SoftParsNmssm::standardSugra(double m0, double m12, double a0) {
   universalScalars(m0);
   universalGauginos(m12);
   universalTrilinears(a0);
-  if(Z3==false)setMspSquared(displayM3Squared());//universal bilinears
+  if(Z3==false)setMspSquared(displayM3Squared() * displayMupr() / displaySusyMu());//universal bilinears
 }
 
 
@@ -701,7 +701,7 @@ void SoftParsNmssm::standardsemiSugra(double m0, double m12, double a0, double A
   //In the Z3 violating case we can still have mS as a parameter
   if (Z3 == false) {
      setMsSquared(mS);
-     setMspSquared(displayM3Squared()); //universal bilinears
+     setMspSquared(displayM3Squared() * displayMupr() / displaySusyMu()); //universal bilinears
   }
 }
 

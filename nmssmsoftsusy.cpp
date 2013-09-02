@@ -9191,7 +9191,102 @@ void generalNmssmBcs2(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 }
 
 
+void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+  int i;
+  for (i=1; i<=3; i++) m.setGauginoMass(i, inputParameters.display(i));
+  if (inputParameters.display(25) > 1. && m.displaySetTbAtMX())
+    m.setTanb(inputParameters.display(25));
+  m.setTrilinearElement(UA, 1, 1, m.displayYukawaElement(YU, 1, 1) *
+			inputParameters.display(11));
+  m.setTrilinearElement(UA, 2, 2, m.displayYukawaElement(YU, 2, 2) *
+			inputParameters.display(11));
+  m.setTrilinearElement(UA, 3, 3, m.displayYukawaElement(YU, 3, 3) *
+			inputParameters.display(11));
+  m.setTrilinearElement(DA, 1, 1, m.displayYukawaElement(YD, 1, 1) *
+			inputParameters.display(12));
+  m.setTrilinearElement(DA, 2, 2, m.displayYukawaElement(YD, 2, 2) *
+			inputParameters.display(12));
+  m.setTrilinearElement(DA, 3, 3, m.displayYukawaElement(YD, 3, 3) *
+			inputParameters.display(12));
+  m.setTrilinearElement(EA, 1, 1, m.displayYukawaElement(YE, 1, 1) *
+			inputParameters.display(13));
+  m.setTrilinearElement(EA, 2, 2, m.displayYukawaElement(YE, 2, 2) *
+			inputParameters.display(13));
+  m.setTrilinearElement(EA, 3, 3, m.displayYukawaElement(YE, 3, 3) *
+			inputParameters.display(13));
+  m.setSoftMassElement(mLl, 1, 1, signedSqr(inputParameters.display(31)));
+  m.setSoftMassElement(mLl, 2, 2, signedSqr(inputParameters.display(32)));
+  m.setSoftMassElement(mLl, 3, 3, signedSqr(inputParameters.display(33)));
+  m.setSoftMassElement(mEr, 1, 1, signedSqr(inputParameters.display(34)));
+  m.setSoftMassElement(mEr, 2, 2, signedSqr(inputParameters.display(35)));
+  m.setSoftMassElement(mEr, 3, 3, signedSqr(inputParameters.display(36)));
+  m.setSoftMassElement(mQl, 1, 1, signedSqr(inputParameters.display(41)));
+  m.setSoftMassElement(mQl, 2, 2, signedSqr(inputParameters.display(42)));
+  m.setSoftMassElement(mQl, 3, 3, signedSqr(inputParameters.display(43)));
+  m.setSoftMassElement(mUr, 1, 1, signedSqr(inputParameters.display(44)));
+  m.setSoftMassElement(mUr, 2, 2, signedSqr(inputParameters.display(45)));
+  m.setSoftMassElement(mUr, 3, 3, signedSqr(inputParameters.display(46)));
+  m.setSoftMassElement(mDr, 1, 1, signedSqr(inputParameters.display(47)));
+  m.setSoftMassElement(mDr, 2, 2, signedSqr(inputParameters.display(48)));
+  m.setSoftMassElement(mDr, 3, 3, signedSqr(inputParameters.display(49)));
+  m.setMh1Squared(inputParameters.display(21));
+  m.setMh2Squared(inputParameters.display(22));
+  
+  m.setTrialambda(m.displayLambda() * inputParameters.display(50));
+  m.setTriakappa(m.displayKappa() * inputParameters.display(51));
+ 
+  if(Z3 ==false) {
+    m.setMspSquared(inputParameters.display(inputParameters.display(52) * m.displayMupr()  ));
+    m.setMsSquared(signedSqr(inputParameters.display(53)));
+  }
+ 
+}
+//This won't work for Z3 == true until we allow mS not to be set EWSB consitions
+void nuhmINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+  double m0 = inputParameters.display(1);
+  double m12 = inputParameters.display(2);
+  double mH  = inputParameters.display(3);
+  double A0 = inputParameters.display(4);
+
+  double Al = inputParameters.display(5);
+  double Ak = inputParameters.display(6);
+  /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
+  /// trilinear scalar coupling to be A0
+  ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
+  m.standardsemiSugra(m0, m12, A0, Al, Ak);
+
+  m.setMh1Squared(mH * mH); m.setMh2Squared(mH * mH);
+  m.setMsSquared(mH * mH);
+  m.setTrialambda(m.displayLambda() * Al);
+  m.setTriakappa(m.displayKappa() * Ak);
+  if(Z3 == false) {
+ m.setMspSquared(inputParameters.display(inputParameters.display(52) * m.displayMupr()  ));
+  }
+  return;
+}
 
 
+void nuhmIINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+  double m0 = inputParameters.display(1);
+  double m12 = inputParameters.display(2);
+  double mH1  = inputParameters.display(3);
+  double mH2  = inputParameters.display(4);
+  double A0 = inputParameters.display(5);
+  double mS = 0.0;
+  if(Z3 == false) mS = inputParameters.display(6);
+  double Al = inputParameters.display(5);
+  double Ak = inputParameters.display(6);
+  m.standardsemiSugra(m0, m12, A0, Al, Ak);
+  
+  m.setMh1Squared(mH1 * mH1); m.setMh2Squared(mH2 * mH2);
+  if(Z3 == false) m.setMsSquared(mS * mS);
+  m.setTrialambda(m.displayLambda() * Al);
+  m.setTriakappa(m.displayKappa() * Ak);
+  if(Z3 == false) {
+    m.setMspSquared(inputParameters.display(inputParameters.display(52) * m.displayMupr()  ));
+  }
+  
+  return;
+}
 
 #endif
