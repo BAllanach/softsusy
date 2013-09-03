@@ -54,8 +54,6 @@ private:
    bool has_been_set[NUMBER_OF_NMSSM_INPUT_PARAMETERS];
    static char const * const parameter_names[NUMBER_OF_NMSSM_INPUT_PARAMETERS];
 
-   /// checks the 6 input parameters and sets the non-standard parameters to zero
-   void check_6_input_parameters();
    /// checks if the unset parameters can be used as EWSB output
    void check_ewsb_output_parameters() const;
 };

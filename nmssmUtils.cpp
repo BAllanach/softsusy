@@ -70,60 +70,10 @@ bool NMSSM_input::is_Z3_symmetric() const {
 }
 
 void NMSSM_input::check_setup() {
-   const unsigned number_of_set_parameter = get_number_of_set_parameters();
-
-   if (number_of_set_parameter == 6) {
-      check_6_input_parameters();
-   } else if (number_of_set_parameter != 12) {
-      std::ostringstream msg;
-      msg << "# Error: " << get_number_of_set_parameters() << " NMSSM"
-         " parameters given: " << (*this) << "  Please select either"
-         " 6 or 12 parameters.";
-      throw msg.str();
-   }
-
    check_ewsb_output_parameters();
 }
 
-void NMSSM_input::check_6_input_parameters() {
-   if (get_number_of_set_parameters() != 6) {
-      std::string msg =
-         "# Internal error: check_6_input_parameters() called but"
-         " not 6 paramters set";
-      throw msg;
-   }
-
-   // check that the 6 set parameters are the ones from Eq. (60)
-   // arxiv.org/abs/0801.0045
-   const bool are_reduced_parameters = !is_set(mu) &&
-      !is_set(BmuOverCosBetaSinBeta) && !is_set(muPrime) &&
-      !is_set(mPrimeS2) && !is_set(xiF) && !is_set(xiS);
-
-   if (!are_reduced_parameters) {
-      std::string msg =
-         "# Error: 6 parameter set, but not all are \"standard"
-         " parameters\".  Please select 6 parameters from {"
-         "tanBeta, mHd2, mHu2, lambda, kappa, Alambda, Akappa, lambdaS,"
-         " mS2}";
-      throw msg;
-   }
-
-   set(mu, 0.);
-   set(BmuOverCosBetaSinBeta, 0.);
-   set(muPrime, 0.);
-   set(mPrimeS2, 0.);
-   set(xiF, 0.);
-   set(xiS, 0.);
-}
-
 void NMSSM_input::check_ewsb_output_parameters() const {
-   if (get_number_of_set_parameters() != 12) {
-      std::string msg =
-         "# Internal error: check_ewsb_output_parameters()"
-         " called but not 12 paramters set";
-      throw msg;
-   }
-
    bool supported = false;
 
    // check supported cases
