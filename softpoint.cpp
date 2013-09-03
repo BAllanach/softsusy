@@ -1094,12 +1094,10 @@ int main(int argc, char *argv[]) {
           throw msg;
        }
        if (strcmp(modelIdent, "sugra") == 0) {
-          cout << "# DEBUG: using msugra boundary condition" << endl;
           nmssmBoundaryCondition = &NmssmMsugraBcs;
           if (pars.size() != 3)
              pars.setEnd(3);
        } else if (strcmp(modelIdent, "nonUniversal") == 0) {
-          cout << "# DEBUG: using nonUniversal boundary condition" << endl;
           nmssmBoundaryCondition = &extendedNMSugraBcs;
           if (pars.size() != 53) {
              string msg("# Error: NMSSM non-minmal sugra boundary condition"
