@@ -404,7 +404,11 @@ int main(int argc, char *argv[]) {
 		  case 0: susy_model = MSSM; // default
 		    break;
 		  case 1: susy_model = NMSSM;
-                    flavourViolation = false;
+                     if (flavourViolation) {
+                        flavourViolation = false;
+                        cout << "# Warning: flavour violation is currtently"
+                           " not supported in the NMSSM\n";
+                     }
 		    break;
 		  default:
 		    ostringstream ii;
@@ -431,10 +435,16 @@ int main(int argc, char *argv[]) {
 		  switch(j) {
 		  case 0: flavourViolation = false; break;
 		  default:
-		    r = &k; flavourViolation = true; 
-		    if (boundaryCondition != & amsbBcs) {
-		      pars.setEnd(64); boundaryCondition = &flavourBcs;
-		    }
+                     if (susy_model == NMSSM) {
+                        flavourViolation = false;
+                        cout << "# Warning: flavour violation is currtently"
+                           " not supported in the NMSSM\n";
+                     } else {
+                        r = &k; flavourViolation = true;
+                        if (boundaryCondition != & amsbBcs) {
+                           pars.setEnd(64); boundaryCondition = &flavourBcs;
+                        }
+                     }
 		  }
 		  break;
 		case 11: kk >> numPoints;
@@ -1086,20 +1096,15 @@ int main(int argc, char *argv[]) {
        if (strcmp(modelIdent, "sugra") == 0) {
           cout << "# DEBUG: using msugra boundary condition" << endl;
           nmssmBoundaryCondition = &NmssmMsugraBcs;
-          if (pars.size() != 3) {
-             string msg("# Error: NMSSM msugra boundary condition chosen, but"
-                        " pars has not 3 entries\n");
-             throw msg;
-          }
+          if (pars.size() != 3)
+             pars.setEnd(3);
        } else if (strcmp(modelIdent, "nonUniversal") == 0) {
           cout << "# DEBUG: using nonUniversal boundary condition" << endl;
           nmssmBoundaryCondition = &extendedNMSugraBcs;
           if (pars.size() != 53) {
-             ostringstream msg;
-             msg << "pars has not 53 entries: " << pars;
-             // string msg("# Error: NMSSM non-minmal sugra boundary condition"
-             //            " chosen, but pars does not have 53 entries\n");
-             throw msg.str();
+             string msg("# Error: NMSSM non-minmal sugra boundary condition"
+                        " chosen, but pars does not have 53 entries\n");
+             throw msg;
           }
        } else {
           string msg("# Error: non-sugra boundary conditions for the NMSSM"
