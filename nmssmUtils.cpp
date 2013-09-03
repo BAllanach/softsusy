@@ -95,7 +95,9 @@ void NMSSM_input::check_ewsb_output_parameters() const {
          if (!is_set(static_cast<NMSSM_parameters>(i)))
             msg << parameter_names[i] << ", ";
       }
-      msg << '\n';
+      msg << "\n" "# Note: supported are: "
+          << (Z3_symmetric ? "{lambda*S, kappa, mS^2}" : "{mu, Bmu, xi_S}")
+          << '\n';
       throw msg.str();
    }
 }
