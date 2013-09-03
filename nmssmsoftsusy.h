@@ -600,6 +600,8 @@ void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
 
 void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
 
+void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
+
 // Calculates fractional difference in Drbar masses between in and out
 /// LCT: May be able to do something cleverer with MSSM version
 double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries);

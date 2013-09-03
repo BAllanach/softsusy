@@ -88,8 +88,8 @@ void NMSSM_input::check_ewsb_output_parameters() const {
 
    if (!supported) {
       std::ostringstream msg;
-      msg << "# Error: the specified set of EWSB output parameters is"
-         " currently not supported for a Z3 "
+      msg << "# Error: no combination of the following unset parameters is"
+         " currently supported as EWSB output for a Z3 "
           << (Z3_symmetric ? "symmetric" : "violating") << " NMSSM: ";
       for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++) {
          if (!is_set(static_cast<NMSSM_parameters>(i)))

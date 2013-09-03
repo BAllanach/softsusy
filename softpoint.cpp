@@ -404,6 +404,7 @@ int main(int argc, char *argv[]) {
 		  case 0: susy_model = MSSM; // default
 		    break;
 		  case 1: susy_model = NMSSM;
+                    flavourViolation = false;
 		    break;
 		  default:
 		    ostringstream ii;
@@ -579,26 +580,14 @@ int main(int argc, char *argv[]) {
                       continue;
                    }
                 } else if (susy_model == NMSSM) {
+                   // read NMSSM susy parameters only and continue
                    switch (i) {
-                   case 21: nmssm_input.set(NMSSM_input::mHd2                 , d); break;
-                   case 22: nmssm_input.set(NMSSM_input::mHu2                 , d); break;
-                   case 23: nmssm_input.set(NMSSM_input::mu                   , d); break;
-                   case 24: nmssm_input.set(NMSSM_input::BmuOverCosBetaSinBeta, d); break;
-                   case 61: nmssm_input.set(NMSSM_input::lambda               , d); break;
-                   case 62: nmssm_input.set(NMSSM_input::kappa                , d); break;
-                   case 63: nmssm_input.set(NMSSM_input::Alambda              , d); break;
-                   case 64: nmssm_input.set(NMSSM_input::Akappa               , d); break;
-                   case 65: nmssm_input.set(NMSSM_input::lambdaS              , d); break;
-                   case 66: nmssm_input.set(NMSSM_input::xiF                  , d); break;
-                   case 67: nmssm_input.set(NMSSM_input::xiS                  , d); break;
-                   case 68: nmssm_input.set(NMSSM_input::muPrime              , d); break;
-                   case 69: nmssm_input.set(NMSSM_input::mPrimeS2             , d); break;
-                   case 70: nmssm_input.set(NMSSM_input::mS2                  , d); break;
-                   default:
-                      cout << "# Warning: ignoring non-NMSSM parameter EXTPAR "
-                           << i << '\n';
+                   case 61: nmssm_input.set(NMSSM_input::lambda , d); continue;
+                   case 62: nmssm_input.set(NMSSM_input::kappa  , d); continue;
+                   case 65: nmssm_input.set(NMSSM_input::lambdaS, d); continue;
+                   case 66: nmssm_input.set(NMSSM_input::xiF    , d); continue;
+                   case 68: nmssm_input.set(NMSSM_input::muPrime, d); continue;
                    }
-                   continue;
                 }
 
 		/// First, we want to convert our input to EXTPAR if we have
@@ -617,6 +606,13 @@ int main(int argc, char *argv[]) {
 		    for (i=31; i<=36; i++) pars(i) = m0;		    
 		    for (i=41; i<=49; i++) pars(i) = m0;		    
 		    kw.setNumRpcBcs(50); 
+                    if (susy_model == NMSSM) {
+                       pars.setEnd(53);
+                       pars(50) = a0; // Alambda
+                       pars(51) = a0; // Akappa
+                       pars(52) = 0.; // mS'^2 @todo which value should we chose here?
+                       pars(53) = m0*m0; // mS^2
+                    }
 		  } else {
 		    /// This is flavour violation with EXTPAR: mSUGRA BCs
 		    /// with flavour violation
@@ -665,7 +661,10 @@ int main(int argc, char *argv[]) {
 		  } 
 		  else if (i == 23 || i == 26) {
 		    r->useAlternativeEwsb(); 
-		    if (i == 23) { r->setMuCond(d); r->setSusyMu(d); }
+		    if (i == 23) {
+                       r->setMuCond(d); r->setSusyMu(d);
+                       nmssm_input.set(NMSSM_input::mu, d);
+                    }
 		    if (i == 26) r->setMaCond(d); 
 		  }
 		  else if (!flavourViolation) {
@@ -673,12 +672,45 @@ int main(int argc, char *argv[]) {
 			(i >= 21 && i <= 23) || (i == 26 || i == 25) 
 			|| (i >= 31 && i <= 36) || 
 			(i >= 41 && i <= 49)) {
-		      if (pars.displayEnd() != 49) pars.setEnd(49);
+		      if (pars.displayEnd() < 49) pars.setEnd(49);
 		      pars(i) = d;
-		    }
-		    else {
+                      if (susy_model == NMSSM) {
+                         if (pars.displayEnd() < 53) pars.setEnd(53);
+                         switch (i) {
+                         case 21: nmssm_input.set(NMSSM_input::mHd2, d); break;
+                         case 22: nmssm_input.set(NMSSM_input::mHu2, d); break;
+                         case 23: nmssm_input.set(NMSSM_input::mu  , d); break;
+                         }
+                      }
+		    } else if ((61 <= i && i <= 70) || i == 24) {
+                       switch (i) {
+                       case 24:
+                          nmssm_input.set(NMSSM_input::BmuOverCosBetaSinBeta, d);
+                          break;
+                       case 63:
+                          nmssm_input.set(NMSSM_input::Alambda, d);
+                          pars(50) = d;
+                          break;
+                       case 64:
+                          nmssm_input.set(NMSSM_input::Akappa, d);
+                          pars(51) = d;
+                          break;
+                       case 67:
+                          nmssm_input.set(NMSSM_input::xiS, d);
+                          // @todo currently not set in extendedNMSugraBcs()
+                          break;
+                       case 69:
+                          nmssm_input.set(NMSSM_input::mPrimeS2, d);
+                          pars(52) = d;
+                          break;
+                       case 70:
+                          nmssm_input.set(NMSSM_input::mS2, d);
+                          pars(53) = d;
+                          break;
+                       }
+		    } else {
 		      cout << "WARNING: did not understand parameter " 
-			   << i << " in flavoured EXTPAR inputs\n";
+			   << i << " in non-flavoured EXTPAR inputs\n";
 		    }
 		  } else {
 		    /// Have to translate the numbers from SLHA to your
@@ -1046,20 +1078,28 @@ int main(int argc, char *argv[]) {
 
     // set NMSSM boundary conditions
     if (susy_model == NMSSM) {
+       if (flavourViolation) {
+          string msg("# Error: flavour violation in the NMSSM is currenty"
+                     " not supported\n");
+          throw msg;
+       }
        if (strcmp(modelIdent, "sugra") == 0) {
-          if (nmssm_input.is_set(NMSSM_input::Alambda) &&
-              nmssm_input.is_set(NMSSM_input::Akappa)) {
-             nmssmBoundaryCondition = &SemiMsugraBcs;
-             pars.setEnd(5);
-             pars(4) = nmssm_input.get(NMSSM_input::Alambda);
-             pars(5) = nmssm_input.get(NMSSM_input::Akappa);
-          } else {
-             nmssmBoundaryCondition = &NmssmMsugraBcs;
-             if (pars.size() != 3) {
-                string msg("# Error: NMSSM msugra boundary condition chosen, but"
-                           " pars has not 3 entries\n");
-                throw msg;
-             }
+          cout << "# DEBUG: using msugra boundary condition" << endl;
+          nmssmBoundaryCondition = &NmssmMsugraBcs;
+          if (pars.size() != 3) {
+             string msg("# Error: NMSSM msugra boundary condition chosen, but"
+                        " pars has not 3 entries\n");
+             throw msg;
+          }
+       } else if (strcmp(modelIdent, "nonUniversal") == 0) {
+          cout << "# DEBUG: using nonUniversal boundary condition" << endl;
+          nmssmBoundaryCondition = &extendedNMSugraBcs;
+          if (pars.size() != 53) {
+             ostringstream msg;
+             msg << "pars has not 53 entries: " << pars;
+             // string msg("# Error: NMSSM non-minmal sugra boundary condition"
+             //            " chosen, but pars does not have 53 entries\n");
+             throw msg.str();
           }
        } else {
           string msg("# Error: non-sugra boundary conditions for the NMSSM"
