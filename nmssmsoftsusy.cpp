@@ -9236,11 +9236,57 @@ void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters)
   m.setTriakappa(m.displayKappa() * inputParameters.display(51));
  
   if(Z3 ==false) {
-    m.setMspSquared(inputParameters.display(inputParameters.display(52) * displayMupr()  ));
+    m.setMspSquared(inputParameters.display(inputParameters.display(52) * m.displayMupr()  ));
     m.setMsSquared(signedSqr(inputParameters.display(53)));
   }
  
 }
+//This won't work for Z3 == true until we allow mS not to be set EWSB consitions
+void nuhmINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+  double m0 = inputParameters.display(1);
+  double m12 = inputParameters.display(2);
+  double mH  = inputParameters.display(3);
+  double A0 = inputParameters.display(4);
 
+  double Al = inputParameters.display(5);
+  double Ak = inputParameters.display(6);
+  /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
+  /// trilinear scalar coupling to be A0
+  ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
+  m.standardsemiSugra(m0, m12, A0, Al, Ak);
+
+  m.setMh1Squared(mH * mH); m.setMh2Squared(mH * mH);
+  m.setMsSquared(mH * mH);
+  m.setTrialambda(m.displayLambda() * Al);
+  m.setTriakappa(m.displayKappa() * Ak);
+  if(Z3 == false) {
+ m.setMspSquared(inputParameters.display(inputParameters.display(52) * m.displayMupr()  ));
+  }
+  return;
+}
+
+
+void nuhmIINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+  double m0 = inputParameters.display(1);
+  double m12 = inputParameters.display(2);
+  double mH1  = inputParameters.display(3);
+  double mH2  = inputParameters.display(4);
+  double A0 = inputParameters.display(5);
+  double mS = 0.0;
+  if(Z3 == false) mS = inputParameters.display(6);
+  double Al = inputParameters.display(5);
+  double Ak = inputParameters.display(6);
+  m.standardsemiSugra(m0, m12, A0, Al, Ak);
+  
+  m.setMh1Squared(mH1 * mH1); m.setMh2Squared(mH2 * mH2);
+  if(Z3 == false) m.setMsSquared(mS * mS);
+  m.setTrialambda(m.displayLambda() * Al);
+  m.setTriakappa(m.displayKappa() * Ak);
+  if(Z3 == false) {
+    m.setMspSquared(inputParameters.display(inputParameters.display(52) * m.displayMupr()  ));
+  }
+  
+  return;
+}
 
 #endif
