@@ -38,8 +38,6 @@ public:
    double get(NMSSM_parameters) const;
    /// returns vector with supersymmetric NMSSM parameters
    DoubleVector get_nmpars() const;
-   /// returns the number of set NMSSM parameters
-   unsigned get_number_of_set_parameters() const;
    /// returns true if parameter was set, false otherwise
    bool is_set(NMSSM_parameters par) const;
    /// returns true if input parameter set defines a Z3 symmetric NMSSM

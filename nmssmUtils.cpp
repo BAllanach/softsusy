@@ -48,13 +48,6 @@ DoubleVector NMSSM_input::get_nmpars() const {
    return nmpars;
 };
 
-unsigned NMSSM_input::get_number_of_set_parameters() const {
-   unsigned num = 0;
-   for (unsigned i = 0; i < NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++)
-      num += is_set(static_cast<NMSSM_parameters>(i));
-   return num;
-}
-
 bool NMSSM_input::is_set(NMSSM_parameters par) const {
    assert(par < NUMBER_OF_NMSSM_INPUT_PARAMETERS);
    return has_been_set[par];
