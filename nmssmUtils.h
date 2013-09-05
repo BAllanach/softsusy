@@ -42,7 +42,7 @@ public:
    bool is_set(NMSSM_parameters par) const;
    /// returns true if input parameter set defines a Z3 symmetric NMSSM
    bool is_Z3_symmetric() const;
-   /// checks the NMSSM parameter setup, throws if not SLHA2 confrom
+   /// checks the NMSSM parameter setup, throws if not SLHA2 conform
    void check_setup();
 
    friend std::ostream& operator<<(std::ostream&, const NMSSM_input&);
