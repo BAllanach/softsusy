@@ -77,6 +77,7 @@ int main(int argc, char *argv[]) {
   MssmSoftsusy * r = &m; 
   RpvNeutrino kw; bool RPVflag = false;
   enum Model_t { MSSM, NMSSM } susy_model = MSSM; // susy model (MODSEL entry 3)
+  softsusy::GUTlambda = true;
   bool oldSchoolRpvOutput = false;
 
   try {
@@ -755,6 +756,31 @@ int main(int argc, char *argv[]) {
 		  }
 		}
 	      }
+              else if (block == "QEXTPAR") {
+                int i; double d; kk >> i >> d;
+                if (susy_model == NMSSM) {
+                   switch (i) {
+                   case 61: // scale where to input lambda
+                      if (fabs(d + 1.0) < EPSTOL) {
+                         softsusy::GUTlambda = false;
+                      } else {
+                         cout << "WARNING: cannot input NMSSM parameter lambda"
+                            " (set in QEXTPAR " << i << ") at a scale "
+                            "different from M_susy.  Please set QEXTPAR "
+                              << i << " to -1 (M_susy) or remove the entry.\n";
+                      }
+                      break;
+                   default:
+                      cout << "WARNING: cannot use parameter " << i <<
+                         " (set in QEXTPAR) as input at a different"
+                         " scale (in the NMSSM) -- ignoring the scale choice\n";
+                   }
+                   continue;
+                }
+                cout << "WARNING: cannot use parameter " << i <<
+                   " (set in QEXTPAR) as input at a different"
+                   " scale -- ignoring the scale choice\n";
+              }
 	      else if (block == "VCKMIN") {
 		int i; double d; kk >> i >> d;
 		switch(i) {
@@ -1171,7 +1197,6 @@ int main(int argc, char *argv[]) {
        nmssm_input.check_setup();
 
        softsusy::Z3 = nmssm_input.is_Z3_symmetric();
-       softsusy::GUTlambda = true;
 
        DoubleVector nmpars(nmssm_input.get_nmpars());
        double mgut = nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars,
