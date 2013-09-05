@@ -542,6 +542,9 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
 				      bool ewsbBCscale);
   /// This does the MODSEL block of SLHA
   void modselSLHA(ostream & out, const char model[]);
+  /// EXTPAR block of SLHA
+  virtual void extparSLHA(ostream & out, const DoubleVector & pars,
+			  bool ewsbBCscale);
 };
 inline NmssmSoftsusy::NmssmSoftsusy()
                      : Softsusy<SoftParsNmssm>(), tSOVSMs(0.0), tSOVSMs1loop(0.0)  {}

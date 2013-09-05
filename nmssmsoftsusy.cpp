@@ -8830,6 +8830,22 @@ void NmssmSoftsusy::modselSLHA(ostream & out, const char model[]) {
   out << "     3    1   # NMSSM\n";
 }
 
+void NmssmSoftsusy::extparSLHA(ostream & out,
+                               const DoubleVector & pars,
+                               bool ewsbBCscale) {
+  Softsusy<SoftParsNmssm>::extparSLHA(out, pars, ewsbBCscale);
+  out << "     63   "; printRow(out, pars.display(50));
+  out << "  # Alambda(MX)\n";
+  out << "     64   "; printRow(out, pars.display(51));
+  out << "  # Akappa(MX)\n";
+  if (!Z3) {
+    out << "     69   "; printRow(out, pars.display(52));
+    out << "  # mS'^2(MX)\n";
+    out << "     70   "; printRow(out, pars.display(53));
+    out << "  # mS^2(MX)\n";
+  }
+}
+
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
 void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  const DoubleVector & pars,
