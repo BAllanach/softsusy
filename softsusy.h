@@ -1075,6 +1075,8 @@ public:
   virtual void sfermionsSLHA(ostream & out);
   /// hmix block output of SLHA
   void sfermionmixSLHA(ostream & out);
+  /// nmix block output of SLHA
+  virtual void neutralinoMixingSLHA(ostream & out);
   /// This does the job of the above method, but outputs the UMIX/VMIX blocks
   void inomixingSLHA(ostream & out);
   /// SOFTSUSY comments in SLHA

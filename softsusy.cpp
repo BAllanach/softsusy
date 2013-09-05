@@ -10525,17 +10525,26 @@ void Softsusy<SoftPars>::alphaSLHA(ostream & out) {
 }
 
 template<class SoftPars>
-void Softsusy<SoftPars>::inomixingSLHA(ostream & out) {
-  sPhysical s(displayPhys());
- 
+void Softsusy<SoftPars>::neutralinoMixingSLHA(ostream & out) {
+  const sPhysical s(displayPhys());
+
   out << "Block nmix                  # neutralino mixing matrix\n";
   const int rank = s.mneut.displayEnd();
-  int i, j; for (i = 1; i <= rank; i++)
-    for (j = 1; j <= rank; j++) {
-      out << "  " << i << "  " << j << "    "; 
+  for (int i = 1; i <= rank; i++) {
+    for (int j = 1; j <= rank; j++) {
+      out << "  " << i << "  " << j << "    ";
       printRow(out, s.mixNeut(j, i));
       out << "   # N_{" << i << "," << j << "}\n";
     }
+  }
+}
+
+template<class SoftPars>
+void Softsusy<SoftPars>::inomixingSLHA(ostream & out) {
+  sPhysical s(displayPhys());
+  int i, j;
+
+  neutralinoMixingSLHA(out);
   
   DoubleMatrix u(rot2d(s.thetaL)), v(rot2d(s.thetaR)); 
 

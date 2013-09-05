@@ -8892,6 +8892,20 @@ void NmssmSoftsusy::nmamixSLHA(ostream& out) {
   }
 }
 
+void NmssmSoftsusy::neutralinoMixingSLHA(ostream& out) {
+  const sPhysical s(displayPhys());
+
+  out << "Block NMNmix                # neutralino mixing matrix\n";
+  const int rank = s.mneut.displayEnd();
+  for (int i = 1; i <= rank; i++) {
+    for (int j = 1; j <= rank; j++) {
+      out << "  " << i << "  " << j << "    ";
+      printRow(out, s.mixNeut(j, i));
+      out << "   # N_{" << i << "," << j << "}\n";
+    }
+  }
+}
+
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
 void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  const DoubleVector & pars,
