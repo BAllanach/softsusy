@@ -8852,6 +8852,14 @@ void NmssmSoftsusy::higgsMSLHA(ostream & out) {
   out << "        37    "; printRow(out, displayPhys().mHpm); out << "   # H+\n";
 }
 
+void NmssmSoftsusy::neutralinoCharginoMSLHA(ostream & out) {
+  sPhysical s(displayPhys());
+
+  Softsusy<SoftParsNmssm>::neutralinoCharginoMSLHA(out);
+  out << "   1000045    "; printRow(out, s.mneut(5));
+  out << "   # ~neutralino(5)\n";
+}
+
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
 void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  const DoubleVector & pars,

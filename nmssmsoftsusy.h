@@ -547,6 +547,8 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
 			  bool ewsbBCscale);
   /// higgs part of mass block of SLHA
   virtual void higgsMSLHA(ostream & out);
+  /// neutralino and charigno part of mass block of SLHA
+  virtual void neutralinoCharginoMSLHA(ostream & out);
 };
 
 inline NmssmSoftsusy::NmssmSoftsusy()
