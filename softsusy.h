@@ -1069,6 +1069,8 @@ public:
   void massSLHA(ostream & out);
   /// higgs part of mass block of SLHA
   virtual void higgsMSLHA(ostream & out);
+  /// neutralino and charigno part of mass block of SLHA
+  virtual void neutralinoCharginoMSLHA(ostream & out);
   /// sfermions part of mass block of SLHA
   virtual void sfermionsSLHA(ostream & out);
   /// hmix block output of SLHA

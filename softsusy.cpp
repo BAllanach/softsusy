@@ -10449,16 +10449,9 @@ void Softsusy<SoftPars>::higgsMSLHA(ostream & out) {
 }
 
 template<class SoftPars>
-void Softsusy<SoftPars>::massSLHA(ostream & out) {
+void Softsusy<SoftPars>::neutralinoCharginoMSLHA(ostream & out) {
   sPhysical s(displayPhys());
 
-  out << "Block MASS                      # Mass spectrum\n";
-  out << "# PDG code     mass             particle\n";
-  /// out << "          6   "; printRow(out, displayDataSet().displayPoleMt()); 
-  /// out << "   # top\n";
-  out << "        24    "; printRow(out, displayMw()); out << "   # MW\n";
-  higgsMSLHA(out);
-  out << "   1000021    "; printRow(out, s.mGluino); out << "   # ~g\n";
   out << "   1000022    "; printRow(out, s.mneut(1)); 
   out << "   # ~neutralino(1)\n";
   out << "   1000023    "; printRow(out, s.mneut(2)); 
@@ -10469,6 +10462,20 @@ void Softsusy<SoftPars>::massSLHA(ostream & out) {
   out << "   1000035    "; printRow(out, s.mneut(4));
   out << "   # ~neutralino(4)\n";
   out << "   1000037    "; printRow(out, fabs(s.mch(2))); out << "   # ~chargino(2)\n";
+}
+
+template<class SoftPars>
+void Softsusy<SoftPars>::massSLHA(ostream & out) {
+  sPhysical s(displayPhys());
+
+  out << "Block MASS                      # Mass spectrum\n";
+  out << "# PDG code     mass             particle\n";
+  /// out << "          6   "; printRow(out, displayDataSet().displayPoleMt()); 
+  /// out << "   # top\n";
+  out << "        24    "; printRow(out, displayMw()); out << "   # MW\n";
+  higgsMSLHA(out);
+  out << "   1000021    "; printRow(out, s.mGluino); out << "   # ~g\n";
+  neutralinoCharginoMSLHA(out);
   const double underflow = 1.0e-120, defaultG = 1.0e18;
   if (fabs(displayGravitino()) > underflow && 
       fabs(displayGravitino()) < defaultG) 
