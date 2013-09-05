@@ -209,8 +209,8 @@ void NmssmSoftsusy::doTadpoles(double mt, double sinthDRbar) {
        const drBarPars& forLoops = displayDrBarPars();
        /// add the two-loop terms, prepare inputs
        double s1s = 0., s2s = 0., s1t = 0., s2t = 0.,
-         gs = displayGaugeCoupling(3),  as = sqr(gs) / (4.0 * PI), 
-         rmt = forLoops.mt, rmtsq = sqr(forLoops.mt), 
+         gs = displayGaugeCoupling(3),
+         rmtsq = sqr(forLoops.mt), 
          scalesq = sqr(displayMu()), vev = displayHvev(),
          vev2 = sqr(vev), tanb = displayTanb(), 
          amu = - lam * s / root2, mg = displayGaugino(3), 
@@ -230,7 +230,7 @@ void NmssmSoftsusy::doTadpoles(double mt, double sinthDRbar) {
       double mstau1sq = sqr(forLoops.me(1, 3)), 
 	mstau2sq = sqr(forLoops.me(2, 3));
       double cotbeta = 1.0 / tanb;
-      double rmb = forLoops.mb, rmbsq = sqr(forLoops.mb);
+      double rmbsq = sqr(forLoops.mb);
       double rmtausq = sqr(forLoops.mtau);
       double s1b = 0.0, s2b = 0.0, s1tau = 0.0, s2tau = 0.0;
       
@@ -720,7 +720,7 @@ double NmssmSoftsusy::doCalcTadSCharginos(double q,  double lam) const
   return charginos;
 }
 
-double NmssmSoftsusy::doCalcTadpole1oneLoop(double mt, double sinthDRbar) const
+double NmssmSoftsusy::doCalcTadpole1oneLoop(double /* mt */, double sinthDRbar) const
 {
  if (displayDrBarPars().mu(1, 3) == 0.0 || displayDrBarPars().mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)
@@ -764,7 +764,7 @@ double NmssmSoftsusy::doCalcTadpole1oneLoop(double mt, double sinthDRbar) const
 
 }
 
-double NmssmSoftsusy::doCalcTadpole2oneLoop(double mt, double sinthDRbar) const
+double NmssmSoftsusy::doCalcTadpole2oneLoop(double /* mt */, double sinthDRbar) const
 {
  if (displayDrBarPars().mu(1, 3) == 0.0 || displayDrBarPars().mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)
@@ -801,7 +801,7 @@ double NmssmSoftsusy::doCalcTadpole2oneLoop(double mt, double sinthDRbar) const
   return delta / (16.0 * sqr(PI));
 }
 
-double NmssmSoftsusy::doCalcTadpoleSoneLoop(double mt, double sinthDRbar) const
+double NmssmSoftsusy::doCalcTadpoleSoneLoop(double /* mt */, double /* sinthDRbar */) const
 {
  if (displayDrBarPars().mu(1, 3) == 0.0 || displayDrBarPars().mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)
@@ -1033,7 +1033,6 @@ void NmssmSoftsusy::treeHiggs(DoubleMatrix & mS, DoubleMatrix & mPpr,
 void NmssmSoftsusy::treeHiggsAlt(DoubleMatrix & mS, DoubleMatrix & mPpr, 
                                DoubleMatrix & mP2, double & mHpmsq, 
                                double beta) const {
-  double tanb = displayTanb();
   double sinb = sin(beta), cosb = cos(beta);
   double sinb2 = sqr(sinb), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
   double mz = displayMzRun(), mz2 = sqr(mz);
@@ -1043,7 +1042,7 @@ void NmssmSoftsusy::treeHiggsAlt(DoubleMatrix & mS, DoubleMatrix & mPpr,
   double l = displayLambda(), k = displayKappa();
   double mupr = displayMupr(), smu = displaySusyMu();
   double al = displayTrialambda(), ak = displayTriakappa();
-  double xiF = displayXiF(), xiS = displayXiS();
+  double xiF = displayXiF();
   double m3sq = displayM3Squared(), mSpr2 = displayMspSquared();
   double mS2 = displayMsSquared();
 
@@ -1096,7 +1095,7 @@ void NmssmSoftsusy::treeHiggsAlt(DoubleMatrix & mS, DoubleMatrix & mPpr,
 
 
 /// LCT: new routine to set tree-level NMSSM CP-even and odd Higgs mass matrices squared
-void NmssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, drBarPars & eg) {
+void NmssmSoftsusy::calcDrBarHiggs(double beta, double /* mz2 */, double /* mw2 */, double /* sinthDRbar */, drBarPars & eg) {
   
   /// LCT: Copied condition on top mass from softsusy.cpp
    if (eg.mt > 200. || eg.mt < 50.) {
@@ -1543,9 +1542,6 @@ DoubleMatrix NmssmSoftsusy::addSupHiggs(double p1, double p2, int family, Double
   double    sinb             = sin(beta), cosb = cos(beta);
   double    mw               = displayMwRun();
   double    mz               = displayMzRun();
-  double    v1               = displayHvev() * cos(beta);
-  double    v2               = displayHvev() * sin(beta);
-  double    svev             = displaySvev();
   double    q                = displayMu();
   DoubleVector msd(2);
   msd(1)           = forLoops.md(1, family);
@@ -1766,10 +1762,8 @@ DoubleMatrix NmssmSoftsusy::addSbotHiggs(double p, double mt, DoubleMatrix & hig
   double    sinb             = sin(beta), cosb = cos(beta);
   double    thetat           = forLoops.thetat;
   double    thetab           = forLoops.thetab;
-  double    thetatau         = forLoops.thetatau;
   double    cb               = cos(thetab);
   double    sb               = sin(thetab);
-  double    v1               = displayHvev() * cosb;
   double    v2               = displayHvev() * sinb;
   double    svev             = displaySvev();
   double    smu              = -displaySusyMu();
@@ -1778,7 +1772,6 @@ DoubleMatrix NmssmSoftsusy::addSbotHiggs(double p, double mt, DoubleMatrix & hig
   double    q                = displayMu();
   double    ht               = forLoops.ht, htsq = sqr(ht);
   double    hb               = forLoops.hb, hbsq = sqr(hb);
-  double    htau             = forLoops.htau;
   double    mb               = forLoops.mb;
   DoubleVector msbot(2);
   msbot(1)                   = forLoops.md(1, 3);
@@ -2229,7 +2222,6 @@ double NmssmSoftsusy::addSnuTauHiggs(double p, double & higgs) {
   double    sinthDrbar  = calcSinthdrbar();
   double    tanthDrbar2 = sqr(tan(asin(sinthDrbar)));
   double    g  	        = displayGaugeCoupling(2), gsq = sqr(g);
-  double    gp          = displayGaugeCoupling(1) * sqrt(0.6);
   double    beta        = atan(displayTanb());
   double    sinb        = sin(beta), cosb = cos(beta);
   double    htau        = forLoops.htau, htausq = sqr(htau);
@@ -2455,7 +2447,6 @@ double NmssmSoftsusy::addSnuHiggs(double p, int family, double & higgs) {
   Hpm(2) = higgsc(1); 
 
   /// LCT: Charged Higgs contribution
-  double meL = forLoops.me(1, family);
   DoubleVector msel(2); 
   msel(1) = forLoops.me(1, family);
   msel(2) = forLoops.me(2, family);
@@ -2836,7 +2827,6 @@ DoubleMatrix NmssmSoftsusy::addSlepHiggs(double p1, double p2, int family, Doubl
   /// Taken from Franke & Fraas, arXiv:9512366 [hep-ph]
   DoubleMatrix lHstauLstauLR(3, 2), lHstauLstau12(3, 2);
   DoubleMatrix lHstauRstauLR(3, 2), lHstauRstau12(3, 2);
-  double utau = forLoops.utau;  
   
   lHstauLstauLR(1, 1) = g * mz / costhDrbar * geL 
     * (S(1, 2) * sinb - S(1, 1) * cosb);
@@ -3194,7 +3184,6 @@ int NmssmSoftsusy::rewsbMu(int sgnMu, double & mu) const {
   double musqeff = (mH1sq - mH2sq * tanb2) 
     / (tanb2 - 1.0) - 0.5 * sqr(displayMz());
   
-  double musq = musqeff - 0.5 * sqr(lam) * sqr(s) ;
   //PA real root test
   // bsqM4ac = 2.0 * sqr(lam * s) - 4 * 0.5 * sqr(lam * s) + 4 * musqeff;
   double bsqM4ac =  4.0 * musqeff;
@@ -3375,7 +3364,6 @@ int NmssmSoftsusy::rewsbmH1sq(double & mH1sq) const {
   double c2b = cos(2.0 * atan(displayTanb()));
   double vev = displayHvev();
   double vu = vev * sin(atan(displayTanb()));
-  double vd = vev * cos(atan(displayTanb()));
   double mupr = displayMupr();
   double mueff = displaySusyMu() + lam * svev / root2;
   double mueff2 = sqr(mueff);
@@ -3402,7 +3390,6 @@ int NmssmSoftsusy::rewsbmH2sq(double & mH2sq) const {
   double tb = displayTanb();
   double c2b = cos(2.0 * atan(displayTanb()));
   double vev = displayHvev();
-  double vu = vev * sin(atan(displayTanb()));
   double vd = vev * cos(atan(displayTanb()));
   double mupr = displayMupr();
   double mueff = displaySusyMu() + lam * svev / root2;
@@ -3531,7 +3518,7 @@ void NmssmSoftsusy::iterateMu(double & muold, int sgnMu,
      } 
        
      setSusyMu(munew); 
-    double m3sqnew, kapnew;
+    double m3sqnew;
   
     //PA:  using a rewsbM3sq for the Z3 violating case 
     if (rewsbM3sq(munew, m3sqnew) == 0) {
@@ -3542,7 +3529,7 @@ void NmssmSoftsusy::iterateMu(double & muold, int sgnMu,
     }
     setM3Squared(m3sqnew);
   
-    double xiSnew, mSsqnew;
+    double xiSnew;
 
     rewsbXiS(xiSnew);
     setXiS(xiSnew);
@@ -3574,7 +3561,6 @@ void NmssmSoftsusy::iterateSvev(double & sold, int sgnMu,
   static int numTries = 0;
   static double snew = 0.0;
   double lam = displayLambda();
-  double s = displaySvev();
   if (numTries - 1 > maxTries) { 
     if (PRINTOUT) cout << "iterateMu reached maxtries\n"; 
     numTries = 0; snew = 0.0;
@@ -3626,7 +3612,7 @@ void NmssmSoftsusy::iterateSvev(double & sold, int sgnMu,
     }  
      setSvev(snew); 
    
-     double m3sqnew, kapnew;
+     double kapnew;
    
     //PA:  using a rewsKap which can work for Z3 symmetric version
     //with kappa as output  
@@ -3638,7 +3624,7 @@ void NmssmSoftsusy::iterateSvev(double & sold, int sgnMu,
     }
     setKappa(kapnew);
   
-    double xiSnew, mSsqnew;
+    double mSsqnew;
 
      rewsbmSsq(mSsqnew);
      setMsSquared(mSsqnew);
@@ -3844,15 +3830,13 @@ void NmssmSoftsusy::physical(int accuracy) {
 }
 
 //PA: Higgs routine for NMSSM
-bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS, 
+bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
                           sPhysical & phys) {
   double tanb = displayTanb();
   double cb = cos(atan(tanb)), sb = sin(atan(tanb));     
   double ht = displayYukawaElement(YU, 3, 3);
   double hb = displayYukawaElement(YD, 3, 3);
-  double htau = displayYukawaElement(YE, 3, 3);
   double gp = displayGaugeCoupling(1) * sqrt(0.6);
-  double gs = displayGaugeCoupling(3);
   double lam = displayLambda();
   double svev = displaySvev();
   double kap = displayKappa();
@@ -3918,9 +3902,6 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS,
      sigmaMA2(2, 2) = pip2p2(p, q);
      sigmaMA2(2, 3) = pip2p3(p, q);
      sigmaMA2(3, 3) = pip3p3(p, q);
-
-     double d11 = 0.0;
-     double d22 = 0.0;
 
      if(numHiggsMassLoops > 1) {
 	 double mg = displayGaugino(3),  gs = displayGaugeCoupling(3), 
@@ -4337,7 +4318,6 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS,
   /// LCT: Charged Higgs pole mass accurate to 1-loop (for now)
   double pihphm = piHpHm(phys.mHpm, displayMu());
   
-  double mzPole = displayMz(), mzRun2 = sqr(displayMzRun());
   double poleMhcSq = mHpmsq - sqr(displayMwRun())+ sqr(displayMw()) ;
  
  if (accuracy > 0) {
@@ -4359,13 +4339,12 @@ if (poleMhcSq > 0. && !h0Htachyon) return false;
 
 //PA: adds gauge boson contribitions to the left right and scalar parts 
 //of the chargino self energy
-void NmssmSoftsusy::addChaLoopHiggs(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS, DoubleMatrix b1pCha, DoubleMatrix b0pCha, DoubleMatrix b1pNeut, DoubleMatrix b0pNeut) const {
+void NmssmSoftsusy::addChaLoopHiggs(double /* p */, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS, DoubleMatrix b1pCha, DoubleMatrix b0pCha, DoubleMatrix b1pNeut, DoubleMatrix b0pNeut) const {
   double g = displayGaugeCoupling(2), 
     gp = displayGaugeCoupling(1) * sqrt(0.6), 
     tanb = displayTanb();
   double beta = atan(tanb);
   double sinb = sin(beta), cosb = cos(beta);
-  double e = g * calcSinthdrbar(); 
   double lam = displayLambda();
 
   ComplexMatrix n(displayDrBarPars().nBpmz);
@@ -4630,7 +4609,7 @@ void NmssmSoftsusy::charginos(int accuracy, double piwwtMS, sPhysical & phys) {
   double sgn_mass = mch1(2) / abs(mch1(2));
   phys.mch(2) = sgn_mass * abs(mch2(2));
 }
-void NmssmSoftsusy::neutralinos(int accuracy, double piwwtMS, double pizztMS, sPhysical & phys) {
+void NmssmSoftsusy::neutralinos(int accuracy, double /* piwwtMS */, double /* pizztMS */, sPhysical & phys) {
    const drBarPars& forLoops = displayDrBarPars();
    double mw = displayMwRun();
    double mz = displayMzRun();
@@ -4827,7 +4806,7 @@ double NmssmSoftsusy::piWWTHiggs(double p, double q, double thetaWDRbar) const {
   return nmHiggs;
 }
 
-double NmssmSoftsusy::piWWTgauginos(double p, double q, double thetaWDRbar) const {
+double NmssmSoftsusy::piWWTgauginos(double p, double q, double /* thetaWDRbar */) const {
   double    g       = displayGaugeCoupling(2);
   ComplexMatrix aPsi0PsicW(5, 2), bPsi0PsicW(5, 2), aChi0ChicW(5, 2),
     bChi0ChicW(5, 2);
@@ -7432,8 +7411,8 @@ void NmssmSoftsusy::getHp1HiggsTriCoup(DoubleMatrix & ahphp1, DoubleMatrix & hhp
   double gsq = sqr(displayGaugeCoupling(2));
   double gpsq = 0.6 * sqr(displayGaugeCoupling(1));
   double beta = atan(displayTanb());
-  double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
-  double sinb = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+  double cosb = cos(beta);
+  double sinb = sin(beta);
   double lam = displayLambda(), lsq = sqr(lam);
   double kap = displayKappa();
   double mupr = displayMupr();
@@ -7467,8 +7446,8 @@ void NmssmSoftsusy::getHp2HiggsTriCoup(DoubleMatrix & ahphp2, DoubleMatrix & hhp
   double gsq = sqr(displayGaugeCoupling(2));
   double gpsq = 0.6 * sqr(displayGaugeCoupling(1));
   double beta = atan(displayTanb());
-  double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
-  double sinb = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+  double cosb = cos(beta);
+  double sinb = sin(beta);
   double lam = displayLambda(), lsq = sqr(lam);
   double kap = displayKappa();
   double mupr = displayMupr();
@@ -7498,8 +7477,6 @@ void NmssmSoftsusy::getHp2HiggsTriCoup(DoubleMatrix & ahphp2, DoubleMatrix & hhp
 }
 
 void NmssmSoftsusy::getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, ComplexMatrix & apph2, ComplexMatrix & bpph1, ComplexMatrix & bpph2) const {
-  double gp  = sqrt(0.6) * displayGaugeCoupling(1);
-  double g   = displayGaugeCoupling(2);
   double lam = displayLambda();
 
   /// Call MSSM couplings
@@ -7516,8 +7493,8 @@ void NmssmSoftsusy::getGaugeHiggsHpmCoup(DoubleVector & wmhhp1, DoubleVector & w
   double thetaW = asin(calcSinthdrbar());
   double sW = calcSinthdrbar(), cW = cos(thetaW);
   double beta = atan(displayTanb());
-  double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
-  double sinb = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+  double cosb = cos(beta);
+  double sinb = sin(beta);
   /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
   DegrassiSlavicMix(P);
@@ -7930,7 +7907,7 @@ double NmssmSoftsusy::calcRunMtHiggs() const {
   double g  = displayGaugeCoupling(2);
   double e  = g * calcSinthdrbar();
   double beta = atan(displayTanb());
-  double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
+  double cosb = cos(beta);
   double sinb = sin(beta);
   double thetaWDRbar = asin(calcSinthdrbar());
   double cw2DRbar    = sqr(cos(thetaWDRbar));
@@ -8126,7 +8103,6 @@ double NmssmSoftsusy::calcRunMbNeutralinos() const {
   double q = displayMu();
   double thetab  = displayDrBarPars().thetab;
   double g       = displayGaugeCoupling(2);
-  double g1      = displayGaugeCoupling(1);
   double gp      = displayGaugeCoupling(1) * sqrt(0.6);
   double hb      = displayDrBarPars().hb;
   double mbMSSM  = displayDrBarPars().mb;
@@ -8263,7 +8239,6 @@ double NmssmSoftsusy::calcRunMtauNeutralinos(double mTauSMMZ) const {
   double g        = displayGaugeCoupling(2);
   double gp       = displayGaugeCoupling(1) * sqrt(0.6);
   double htau = displayDrBarPars().htau;
-  double mtau = displayDrBarPars().mtau;
   double mTauPole = MTAU;
   double p = mTauPole;
   double q = displayMu();
@@ -8300,7 +8275,6 @@ double NmssmSoftsusy::calcRunMtauNeutralinos(double mTauSMMZ) const {
 
     tt(1) = bChi0TauStaul(i); tt(2) = bChi0TauStaur(i);      
     t2 = O * tt;    
-    int j;
     for (int j=1; j<=2; j++) {
       aNeutTauStau(i, j) = t1(j);
       bNeutTauStau(i, j) = t2(j);
@@ -8327,7 +8301,6 @@ double NmssmSoftsusy::calcRunMtauNeutralinos(double mTauSMMZ) const {
 double NmssmSoftsusy::calcRunningMtau() const {
   /// MSbar value
   double mTauSMMZ = displayDataSet().displayMass(mTau);
-  double mTauPole = MTAU;
   /// conversion to DRbar
   mTauSMMZ = mTauSMMZ * Softsusy<SoftParsNmssm>::calcRunMtauDrBarConv();
   /// Chargino contribution  
@@ -8442,15 +8415,11 @@ void NmssmSoftsusy::itLowsoft
 
   if (PRINTOUT > 1) cout << displayProblem(); 
 
-  double mtpole, mtrun;
+  double mtrun;
   
-  mtpole = displayDataSet().displayPoleMt();
   /// On first iteration, don't bother with finite corrections
   
   numTries = numTries + 1;
- 
-  //PA: To check convergence of new parameters.
-  double lamold = displayLambda(), kapold = displayKappa(), Svevold = displaySvev(), XiFold = displayXiF(), mu_sold = displayMupr();
  
   //PA: reset new low energy inputs of general nmssm at mz.
   if(Z3){
@@ -8703,7 +8672,6 @@ double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries)
     }
   /// The predicted value of MZ^2 is an absolute measure of how close to a
   /// true solution we are:
-  double tbPred = 0.;
   double predictedMzSq = in.displayPredMzSq();
   /// We allow an extra factor of 10 for the precision in the predicted value
   /// of MZ compared to TOLERANCE if the program is struggling and gone beyond
