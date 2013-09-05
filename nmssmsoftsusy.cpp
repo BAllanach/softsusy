@@ -6,6 +6,8 @@
 */
 
 #include "nmssmsoftsusy.h"
+#include <cassert>
+
 #ifdef NMSSMSOFTSUSY_H
 
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
@@ -8860,6 +8862,36 @@ void NmssmSoftsusy::neutralinoCharginoMSLHA(ostream & out) {
   out << "   # ~neutralino(5)\n";
 }
 
+void NmssmSoftsusy::nmhmixSLHA(ostream& out) {
+  const sPhysical s(displayPhys());
+  const int rank = s.mixh0.displayRows();
+  assert(rank == s.mixh0.displayCols());
+
+  out << "Block NMHmix                # CP even Higgs mixing matrix\n";
+  for (int i = 1; i <= rank; i++) {
+    for (int j = 1; j <= rank; j++) {
+      out << "  " << i << "  " << j << "    ";
+      printRow(out, s.mixh0(i, j));
+      out << "   # S_{" << i << "," << j << "}\n";
+    }
+  }
+}
+
+void NmssmSoftsusy::nmamixSLHA(ostream& out) {
+  const sPhysical s(displayPhys());
+  const int rank = s.mixA0.displayRows();
+  assert(rank == s.mixA0.displayCols());
+
+  out << "Block NMAmix                # CP odd Higgs mixing matrix\n";
+  for (int i = 1; i <= rank; i++) {
+    for (int j = 1; j <= rank; j++) {
+      out << "  " << i << "  " << j << "    ";
+      printRow(out, s.mixA0(i, j));
+      out << "   # P_{" << i << "," << j << "}\n";
+    }
+  }
+}
+
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
 void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  const DoubleVector & pars,
@@ -8877,7 +8909,8 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 
   if (!displayProblem().testSeriousProblem() || printRuledOutSpectra) {
     massSLHA(out);
-    alphaSLHA(out);
+    nmhmixSLHA(out);
+    nmamixSLHA(out);
     inomixingSLHA(out);
     sfermionmixSLHA(out);
 
