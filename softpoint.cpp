@@ -1202,6 +1202,7 @@ int main(int argc, char *argv[]) {
        double mgut = nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars,
                                   nmpars, sgnMu, tanb, oneset, gaugeUnification,
                                   ewsbBCscale);
+       nmssm.printall();
        if (nmssm.displayProblem().test()) {
           cout << "# SOFTSUSY problem with NMSSM point: "
                << nmssm.displayProblem() << endl;
