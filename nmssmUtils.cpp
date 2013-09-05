@@ -8,9 +8,9 @@
 #include <sstream>
 
 char const * const NMSSM_input::parameter_names[NUMBER_OF_NMSSM_INPUT_PARAMETERS] = {
-   "tanBeta", "mHd2", "mHu2", "mu", "BmuOverCosBetaSinBeta", "lambda",
-   "kappa", "Alambda", "Akappa", "lambda*S", "xiF", "xiS", "muPrime",
-   "mPrimeS2", "mS2"
+   "tan(beta)", "mHd^2", "mHu^2", "mu", "Bmu/(cos(beta)sin(beta))", "lambda",
+   "kappa", "Alambda", "Akappa", "lambda*S", "xiF", "xiS", "mu'",
+   "mS'^2", "mS^2"
 };
 
 NMSSM_input::NMSSM_input()
@@ -89,9 +89,17 @@ void NMSSM_input::check_ewsb_output_parameters() const {
          if (!is_set(static_cast<NMSSM_parameters>(i)))
             msg << parameter_names[i] << ", ";
       }
-      msg << "\n" "# Note: supported are: "
-          << (Z3_symmetric ? "{lambda*S, kappa, mS^2}" : "{mu, Bmu, xi_S}")
-          << '\n';
+      msg << "\n" "# Note: supported are: ";
+      if (Z3_symmetric) {
+         msg << "{" << parameter_names[lambdaS]
+             << ", " << parameter_names[kappa]
+             << ", " << parameter_names[mS2] << "}";
+      } else {
+         msg << "{" << parameter_names[mu]
+             << ", " << parameter_names[BmuOverCosBetaSinBeta]
+             << ", " << parameter_names[xiS] << "}";
+      }
+      msg << '\n';
       throw msg.str();
    }
 }
