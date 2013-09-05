@@ -138,12 +138,6 @@ public:
   /// IO parameters: p=external momentum, mt=DR bar top mass, 
   /// outputs higgs=2x2 matrix of self-energies in LR basis
   DoubleMatrix addStopHiggs(double p, double mt, DoubleMatrix & higgs);
-  /// LCT: Returns neutralino-fermion-stop trilinear couplings in weak basis
-  void getNeutralinoFermionStopCoup(DoubleVector & aPsi0TStopr, DoubleVector & bPsi0TStopr, DoubleVector & aPsi0TStopl, DoubleVector & bPsi0TStopl) const;
-  /// LCT: Adds one-loop neutralino corrections to stop mass matrix
-  /// IO parameters: p=external momentum, outputs neutralino=2x2 matrix of 
-  /// self-energies in LR basis
-  DoubleMatrix addStopNeutralino(double p, double mt, DoubleMatrix & neutralino);
   /// Adds one-loop corrections to stop mass matrix
   /// IO parameters: p=external momentum, mass=tree level mass matrix on
   /// input, is returned with radiative corrections added, mt=DR bar top mass
@@ -153,10 +147,6 @@ public:
   /// outputs higgs=2x2 matrix of self-energies in LR basis
   DoubleMatrix addSupHiggs(double p1, double p2, int family, 
   DoubleMatrix & higgs);
-  /// LCT: Adds one-loop neutralino corrections to stop mass matrix
-  /// IO parameters: {p1,p2}=external momentum, outputs neutralino=2x2 matrix 
-  /// of self-energies in LR basis
-  DoubleMatrix addSupNeutralino(double p1, double p2, int family, DoubleMatrix & neutralino);
   /// Adds one-loop corrections to sup mass matrix
   /// IO parameters: mass=tree level mass matrix on
   /// input, is returned with radiative corrections added for a given family
@@ -165,11 +155,6 @@ public:
   /// IO parameters: p=external momentum, mt=DR bar top mass, 
   /// outputs higgs=2x2 matrix of self-energies in LR basis
   DoubleMatrix addSbotHiggs(double p, double mt, DoubleMatrix & higgs);
-  /// LCT: Adds one-loop neutralino corrections to sbottom mass matrix
-  /// IO parameters: p=external momentum, mt=DR bar top mass, 
-  /// outputs neutralino=2x2 matrix of self-energies in LR basis
-  DoubleMatrix addSbotNeutralino(double p, double mt, 
-  DoubleMatrix & neutralino);
   /// Adds one-loop corrections to sbottom mass matrix
   /// IO parameters: p=external momentum, mass=tree level mass matrix on
   /// input, is returned with radiative corrections added, mt=DR bar top mass
@@ -179,11 +164,6 @@ public:
   /// outputs higgs=2x2 matrix of self-energies in LR basis
   DoubleMatrix addSdownHiggs(double p1, double p2, int family, 
   DoubleMatrix & higgs);
-  /// LCT: Adds one-loop neutralino corrections to sdown mass matrix
-  /// IO parameters: {p1,p2}=external momentum, outputs neutralino=2x2 matrix 
-  /// of self-energies in LR basis
-  DoubleMatrix addSdownNeutralino(double p1, double p2, int family, 
-  DoubleMatrix & neutralino);
   /// Adds one-loop corrections to sbottom mass matrix at p=root(mb1 mb2)
   /// IO parameters: mass=tree level mass matrix on
   /// input, is returned with radiative corrections added, mt=DR bar top mass
@@ -458,15 +438,9 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   //PA: gets h1 mixing element with Hu.
   virtual double h1s2Mix();
 
-  /// LCT: Charged Higgs-gauge trilinear couplings
-  void getHpWmZCoup(DoubleMatrix & HpWmZ) const;
-
   /// LCT: Charged Higgs trilinear couplings with CP-odd and CP-even Higgs'
   void getHp1HiggsTriCoup(DoubleMatrix & ahphp1, DoubleMatrix & hhphp1) const;
   void getHp2HiggsTriCoup(DoubleMatrix & ahphp2, DoubleMatrix & hhphp2) const;
-
-  /// LCT: Charged Higgs trilinear couplings with neutralinos/charginos
-  void getHp1NeutCharCoup(ComplexMatrix & lnchhp1, ComplexMatrix & rnchp1) const;
   /// LCT: Charged Higgs trilinear couplings with neutralinos/charginos
   void getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, 
   ComplexMatrix & apph2, ComplexMatrix & bpph1, ComplexMatrix & bpph2) const;

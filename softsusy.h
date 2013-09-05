@@ -309,13 +309,6 @@ public:
   /// IO parameters: p=external momentum, mt=DR bar top mass, 
   /// outputs sbottom=2x2 matrix of self-energies in LR basis
   DoubleMatrix addStopSbottom(double p, double mt, DoubleMatrix & sbottom);
-  /// LCT: Returns Higgs-Sfermion-Sfermion couplings with SUSY parameter mu as 
-  /// input.  CP-even Higgs couplings have all indices in weak basis, CP-odd 
-  /// and charged Higgs couplings have Higgs index in mass basis and sfermion
-  /// indices in weak basis
-  virtual void getHiggsSfermionSfermionCoup(double mu, DoubleMatrix & 
-  lsStopLStopLR, DoubleMatrix & lsStopRStopLR, DoubleMatrix & lChHstopLsbotLR, 
-  DoubleMatrix & lChHstopRsbotLR) const;
   /// LCT: Adds one-loop Higgs corrections to stop mass matrix
   /// IO parameters: p=external momentum, mt=DR bar top mass, 
   /// outputs higgs=2x2 matrix of self-energies in LR basis
@@ -324,10 +317,6 @@ public:
   /// IO parameters: p=external momentum, mt=DR bar top mass, 
   /// outputs electroweak=2x2 matrix of self-energies in LR basis
   DoubleMatrix addStopEweak(double p, DoubleMatrix & electroweak);
-  /// LCT: Returns neutralino-fermion-stop trilinear couplings in weak basis
-  virtual void getNeutralinoFermionStopCoup(DoubleVector & aPsi0TStopr, 
-  DoubleVector & bPsi0TStopr, DoubleVector & aPsi0TStopl, 
-  DoubleVector & bPsi0TStopl) const;
   /// LCT: Adds one-loop neutralino corrections to stop mass matrix
   /// IO parameters: p=external momentum, outputs neutralino=2x2 matrix of 
   /// self-energies in LR basis
@@ -386,10 +375,6 @@ public:
   /// IO parameters: p=external momentum, outputs electroweak=2x2 matrix of 
   /// self-energies in LR basis
   DoubleMatrix addSbotEweak(double p, DoubleMatrix & electroweak);
-  /// LCT: Returns neutralino-fermion-sbottom trilinear couplings in weak basis
-  virtual void getNeutralinoFermionSbotCoup(DoubleVector & aPsi0BSbotr, 
-  DoubleVector & bPsi0BSbotr, DoubleVector & aPsi0BSbotl, 
-  DoubleVector & bPsi0BSbotl) const;
   /// LCT: Adds one-loop neutralino corrections to sbottom mass matrix
   /// IO parameters: p=external momentum, outputs neutralino=2x2 matrix of 
   /// self-energies in LR basis
@@ -456,10 +441,6 @@ public:
   /// of self-energies in LR basis
   DoubleMatrix addSupEweak(double p1, double p2, int family, 
   DoubleMatrix & electroweak); 
-  /// LCT: Returns neutralino-fermion-sup trilinear couplings in weak basis
-  virtual void getNeutralinoFermionSupCoup(DoubleVector & aPsi0TStopr, 
-  DoubleVector & bPsi0TStopr, DoubleVector & aPsi0TStopl, 
-  DoubleVector & bPsi0TStopl) const;
   /// LCT: Adds one-loop neutralino corrections to sup mass matrix
   /// IO parameters: {p1,p2}=external momentum, outputs neutralino=2x2 matrix 
   /// of self-energies in LR basis
