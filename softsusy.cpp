@@ -9198,11 +9198,9 @@ double Softsusy<SoftPars>::piHpHmHiggs(double p, double q) const {
 template<class SoftPars>
 double Softsusy<SoftPars>::piHpHmGauginos(double p, double q) const {
   drBarPars tree(displayDrBarPars());
-  double    g       = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
   double    beta    = atan(displayTanb());
-  double    cosb    = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
-  double    sinb    = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+  double    cosb    = cos(beta);
+  double    sinb    = sin(beta);
 
   double gauginos = 0.;
 
@@ -11072,7 +11070,7 @@ inline double lep2Likelihood(double mh) {
 
 /// smears the likelihood curve for a Standard Model Higgs mass with a 3 GeV
 /// Gaussian theoretical error
-inline DoubleVector mhIntegrand(double mh, const DoubleVector & y) {
+inline DoubleVector mhIntegrand(double mh, const DoubleVector & /* y */) {
   DoubleVector dydx(1);
   dydx(1) = lep2Likelihood(mh) * 
     exp(-sqr(mhTrue - mh) / (2.0 * sqr(sigmaMh))) ;

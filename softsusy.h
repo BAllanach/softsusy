@@ -182,8 +182,8 @@ public:
   double displayMz() const { return displayDataSet().displayMu(); }
   /// Is tan beta set at the user defined SUSY breaking scale?
   bool displaySetTbAtMX() const { return setTbAtMX; } 
-  const bool displayAltEwsb() const { return altEwsb; }
-  const double displayPredMzSq() const { return predMzSq; }
+  bool displayAltEwsb() const { return altEwsb; }
+  double displayPredMzSq() const { return predMzSq; }
 
   /// Flags weird mgut-type problems
   void flagMgutOutOfBounds(bool a) { problem.mgutOutOfBounds = a; };
