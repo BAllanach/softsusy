@@ -555,6 +555,10 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   void nmhmixSLHA(ostream&);
   /// CP odd mixing matrix NMHMIX block of SLHA
   void nmamixSLHA(ostream&);
+  /// NMSSMRUN block of SLHA
+  void nmssmrunSLHA(ostream&);
+  /// outputs DRbar parameters at scale Q (default is at MSUSY)
+  virtual void drbarSLHA(ostream&, int numPoints, double qMax, int n);
 };
 
 inline NmssmSoftsusy::NmssmSoftsusy()

@@ -8906,6 +8906,39 @@ void NmssmSoftsusy::neutralinoMixingSLHA(ostream& out) {
   }
 }
 
+void NmssmSoftsusy::nmssmrunSLHA(ostream& out) {
+  const sPhysical s(displayPhys());
+
+  out << "Block NMSSMRUN Q= " << displayMu()
+      << "   # NMSSM specific DRbar parameters\n";
+
+  out << "     1    "; printRow(out, displayLambda());
+  out << "      # lambda(Q)\n";
+  out << "     2    "; printRow(out, displayKappa());
+  out << "      # kappa(Q)\n";
+  out << "     3    "; printRow(out, displayTrialambda());
+  out << "      # Alambda(Q)\n";
+  out << "     4    "; printRow(out, displayTriakappa());
+  out << "      # Akappa(Q)\n";
+  out << "     5    "; printRow(out, displayLambda() * displaySvev());
+  out << "      # lambda*S(Q)\n";
+  out << "     6    "; printRow(out, displayXiF());
+  out << "      # xiF(Q)\n";
+  out << "     7    "; printRow(out, displayXiS());
+  out << "      # xiS(Q)\n";
+  out << "     8    "; printRow(out, displayMupr());
+  out << "      # mu'(Q)\n";
+  out << "     9    "; printRow(out, displayMspSquared());
+  out << "      # mS'^2(Q)\n";
+  out << "    10    "; printRow(out, displayMsSquared());
+  out << "      # mS^2(Q)\n";
+}
+
+void NmssmSoftsusy::drbarSLHA(ostream& out, int numPoints, double qMax, int n) {
+   Softsusy<SoftParsNmssm>::drbarSLHA(out, numPoints, qMax, n);
+   nmssmrunSLHA(out);
+}
+
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
 void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  const DoubleVector & pars,
