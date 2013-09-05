@@ -545,7 +545,10 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   /// EXTPAR block of SLHA
   virtual void extparSLHA(ostream & out, const DoubleVector & pars,
 			  bool ewsbBCscale);
+  /// higgs part of mass block of SLHA
+  virtual void higgsMSLHA(ostream & out);
 };
+
 inline NmssmSoftsusy::NmssmSoftsusy()
                      : Softsusy<SoftParsNmssm>(), tSOVSMs(0.0), tSOVSMs1loop(0.0)  {}
 
