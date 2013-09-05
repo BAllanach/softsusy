@@ -8825,6 +8825,42 @@ double NmssmSoftsusy::lowOrg
   return mx;
 }
 
+void NmssmSoftsusy::modselSLHA(ostream & out, const char model[]) {
+  Softsusy<SoftParsNmssm>::modselSLHA(out, model);
+  out << "     3    1   # NMSSM\n";
+}
+
+/// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
+void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
+					  const DoubleVector & pars,
+					  int sgnMu, double tanb,
+					  double qMax,
+					  int numPoints,
+					  bool ewsbBCscale) {
+  int nn = out.precision();
+  headerSLHA(out);
+  spinfoSLHA(out);
+  modselSLHA(out, model);
+  sminputsSLHA(out);
+  minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale);
+  softsusySLHA(out);
+
+  if (!displayProblem().testSeriousProblem() || printRuledOutSpectra) {
+    massSLHA(out);
+    alphaSLHA(out);
+    inomixingSLHA(out);
+    sfermionmixSLHA(out);
+
+    int n = 0; while (n < numPoints) {
+      n++; drbarSLHA(out, numPoints, qMax, n);
+    }
+  } else {
+    out << "# Declining to write spectrum because of serious problem"
+	<< " with point" << endl;
+  }
+  out.precision(nn);
+}
+
 /// User supplied routine. Inputs m at the unification scale, and uses
 /// inputParameters vector to output m with high energy soft boundary
 /// conditions. 

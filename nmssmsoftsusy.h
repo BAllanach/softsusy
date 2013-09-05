@@ -523,6 +523,25 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.    
   void printall();
 
+  /// Outputs with Les Houches accord conventions to standard output.
+  /// Inputs:
+  /// out should be something like cout or fout depending on whether you want
+  /// output in a file or not.
+  /// model contains what form of model is used for the SUSY breaking terms
+  /// (eg sugra, gmsb, amsb, nonUniversal). qMax is only relevant if you want
+  /// a gridded output of running parameters up to some scale qMax. Put
+  /// numPoints = 1 if you don't want to use this option - then qMaz is
+  /// immaterial. mb is mb(mb) in the MSbar scheme used to produce the output,
+  /// whereas mtau is the pole mass used (eg 1.777). mgut is the GUT scale
+  /// that has been determined, and altEwsb is true if you specified mu and mA
+  /// as input parameters (not tan beta and mH1, mH2).
+  virtual void lesHouchesAccordOutput(ostream & out, const char model[],
+				      const DoubleVector & pars,
+				      int sgnMu, double tanb, double qMax,
+				      int numPoints,
+				      bool ewsbBCscale);
+  /// This does the MODSEL block of SLHA
+  void modselSLHA(ostream & out, const char model[]);
 };
 inline NmssmSoftsusy::NmssmSoftsusy()
                      : Softsusy<SoftParsNmssm>(), tSOVSMs(0.0), tSOVSMs1loop(0.0)  {}
