@@ -7,6 +7,8 @@
 
 #include "linalg.h"
 
+class NmssmSoftsusy;
+
 /// class for NMSSM input parameters
 class NMSSM_input {
 public:
@@ -55,5 +57,13 @@ private:
    /// checks if the unset parameters can be used as EWSB output
    void check_ewsb_output_parameters() const;
 };
+
+void NmssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
+
+void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
+
+void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
+
+void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
 
 #endif

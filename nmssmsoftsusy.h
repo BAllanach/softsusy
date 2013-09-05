@@ -562,19 +562,9 @@ inline double NmssmSoftsusy::displayTadpoleSMs() const {
   return tSOVSMs; 
 }
 
-double NmssmSoftsusy::displayTadpoleSMs1loop() const {
+inline double NmssmSoftsusy::displayTadpoleSMs1loop() const {
   return tSOVSMs1loop; 
 }
-
-//PA:  just placing these here temporarily.  Should decide what to do  merge routines like this with mssmUtils or create NmssmUtils? 
-
-void NmssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
-
-void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
-
-void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
-
-void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
 
 // Calculates fractional difference in Drbar masses between in and out
 /// LCT: May be able to do something cleverer with MSSM version
