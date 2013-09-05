@@ -13,11 +13,11 @@ Block SMINPUTS		     # Standard Model inputs
     6   1.709000000e+02	     # mtop(pole)
     7	1.777000000e+00	     # mtau(pole)
 Block MINPAR		     # Input parameters
-    1   1.250000000e+02	     # m_0
-    2   5.000000000e+02	     # m_12
+    1   4.000000000e+02	     # m_0
+    2   2.000000000e+02	     # m_12
     3   1.000000000e+01	     # tanb
     4   1.000000000e+00	     # sign(mu)
-    5  -5.000000000e+02	     # A_0
+    5  -3.000000000e+02	     # A_0
 Block SOFTSUSY               # SOFTSUSY specific inputs
     1   1.000000000e-04      # tolerance
     2   2.000000000e+00      # up-quark mixing (=1) or down (=2)
@@ -29,19 +29,19 @@ Block VCKMIN		      # input parameters for CKM matrix
     3   2.210000000e-01      # rhobar
     4   3.400000000e-01      # etabar
 Block EXTPAR  # Input parameters
-   21   21                   # mHd^2
-   22   22                   # mHu^2
-#   23   0                    # mu
-#   24   0                    # Bmu / (cos(beta) * sin(beta))
+#   21   21                   # mHd^2
+#   22   22                   # mHu^2
+##   23   0                    # mu
+##   24   0                    # Bmu / (cos(beta) * sin(beta))
    61   0.1                  # lambda
-   62   0.62                 # kappa
-   63   63                   # A_lambda
-   64   64                   # A_kappa
-   65   65                   # lambda * <S>
-   66   66                   # xi_F
-#   67   0                   # xi_S
-   68   68                   # mu'
-   69   69                   # m'_S^2
-   70   70                   # m_S^2
-Block QEXTPAR
-   61   -1                   # input lambda at Msusy
+#   62   0.62                 # kappa
+#   63   63                   # A_lambda
+#   64   64                   # A_kappa
+#   65   65                   # lambda * <S>
+#   66   66                   # xi_F
+##   67   0                   # xi_S
+#   68   68                   # mu'
+#   69   69                   # m'_S^2
+#   70   70                   # m_S^2
+#Block QEXTPAR
+#   61   -1                   # input lambda at Msusy
