@@ -32,7 +32,7 @@ namespace softsusy {
   bool Z3 = true;
   //If true the input value of lambda is set at the GUT scale
   //If false the input lambda is set at MSUSY.
-  bool GUTlambda = true;
+  bool GUTlambda = false;
   /// number of loops used to calculate Higgs mass and tadpoles. They should be
   /// identical for a consistent calculation
   int numHiggsMassLoops = 2, numRewsbLoops = 2;

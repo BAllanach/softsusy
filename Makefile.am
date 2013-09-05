@@ -1,4 +1,4 @@
-bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x Devtest.x doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf test_matrix_resize.x
+bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x Devtest.x TestNM.x doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf test_matrix_resize.x
 
 lib_LTLIBRARIES = libsoft.la libnmssm.la 
 
@@ -19,6 +19,9 @@ gaugeUn_x_LDADD = libsoft.la
 
 Devtest_x_SOURCES = mainDev.cpp
 Devtest_x_LDADD = libnmssm.la
+
+TestNM_x_SOURCES = mainTestNM.cpp
+TestNM_x_LDADD = libnmssm.la 
 
 test_matrix_resize_x_SOURCES = .test/test_matrix_resize.cpp
 test_matrix_resize_x_LDADD = libsoft.la 
