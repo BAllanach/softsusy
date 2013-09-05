@@ -1578,8 +1578,8 @@ DoubleMatrix NmssmSoftsusy::addSupHiggs(double p1, double p2, int family, Double
   /// LCT: Charged Higgs contribution
   for (int i=1; i<=2; i++) { 
     double a0p = a0(higgsc(i), q);
-    higgs(1, 1) += - lChHChHstopLstopL(i) * a0(higgsc(i), q);
-    higgs(2, 2) += - lChHChHstopRstopR(i) * a0(higgsc(i), q);
+    higgs(1, 1) += - lChHChHstopLstopL(i) * a0p;
+    higgs(2, 2) += - lChHChHstopRstopR(i) * a0p;
   }
 
   /// LCT: CP-even and CP-odd Feynman rules in (L R) basis. 
