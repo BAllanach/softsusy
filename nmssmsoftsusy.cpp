@@ -4312,9 +4312,6 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
   phys.mA0(1) = mA1;
   phys.mA0(2) = mA2;
 
-  cout << "nm loworg mA1 = " << phys.mA0(1) << endl;
-  cout << "nm lowOrg m2 = " << phys.mA0(2) << endl;
-
   /// LCT: Charged Higgs pole mass accurate to 1-loop (for now)
   double pihphm = piHpHm(phys.mHpm, displayMu());
   
