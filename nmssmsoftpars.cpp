@@ -656,6 +656,45 @@ void SoftParsNmssm::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
    gSS = 0.0;
 }
 
+/* 
+   Give it a SUSY object and a value of M3/2, and it will return a soft
+   object with AMSB soft breaking terms. Note that the sleptons will be
+   tachyonic, ie nothing has been done to fix that problem.
+   Note that in the following, we are neglecting all Yukawa couplings except
+   that of the third family.
+   
+   THE CURRENT STATE OF PLAY:
+   Two loop additions are possible, but a pain.
+   */
+void SoftParsNmssm::addAmsb(double maux) {
+   SoftPars<NmssmSusy,nmsBrevity>::addAmsb(maux);
+   NmssmSusy Nms(displaySusy());
+   const double ONEO16pisq = 1.0 / (16. * sqr(PI));
+   //PA: now must add nmssm corrcetions to mH2sq, mH1sq and set mSsq
+   double mh1sq = displayMh1Squared();
+   double mh2sq = displayMh2Squared();
+   double mssq = displayMsSquared();
+   double al = displayTrialambda();
+   double ak = displayTriakappa();
+   static nmsBrevity a;
+   static NmssmSusy dsb;
+   dsb = Nms.beta(a);
+   mh1sq += ONEO16pisq * dsb.displayLambda() * displayLambda();
+   mh2sq += ONEO16pisq * dsb.displayLambda() * displayLambda();
+   mssq  += ONEO16pisq * 2.0 * ( dsb.displayLambda() * displayLambda() 
+                                 + dsb.displayKappa() * displayKappa());
+
+   setMh1Squared(mh1sq);
+   setMh2Squared(mh2sq);
+   setMsSquared(mssq);
+   //PA: setting alamda and akappa
+   al += - dsb.displayLambda() * maux;
+   ak += - dsb.displayKappa() * maux;
+   setTrialambda(al);
+   setTriakappa(ak);
+   return;
+}
+
 //PA: for fully constrained models
 void SoftParsNmssm::universalScalars(double m0) {
   SoftPars<NmssmSusy, nmsBrevity>::universalScalars(m0);

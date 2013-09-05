@@ -160,7 +160,7 @@ void Softsusy<SoftPars>::doTadpoles(double mt, double sinthDRbar) {
       double rmbsq = sqr(forLoops.mb);
       double rmtausq = sqr(forLoops.mtau);
       double s1b = 0.0, s2b = 0.0, s1tau = 0.0, s2tau = 0.0;
-      
+
       ewsb2loop_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, 
         	 &amu, &tanb, &vev2, &gs, &s1s, &s2s);
       ddstad_(&rmtsq, &rmbsq, &mAsq, &mst1sq, &mst2sq, &msb1sq, &msb2sq, 
@@ -1415,8 +1415,20 @@ bool Softsusy<SoftPars>::higgs(int accuracy, double piwwtMS, double pizztMS) {
   
   double pihphm = 0.0;
   if(accuracy > 0) pihphm = piHpHm(physpars.mHpm, displayMu()); 
-  double poleMhcSq = poleMasq + sqr(displayMw()) + piaa + piwwtMS - pihphm;
- 
+  // double poleMhcSq = poleMasq + sqr(displayMw()) + piaa + piwwtMS - pihphm;
+  double poleMasq2 = poleMasq;
+  if (accuracy > 0) {
+    poleMasq2 = 
+      (displayMh2Squared() - displayTadpole2Ms() - 
+       displayMh1Squared() + displayTadpole1Ms()) / 
+      cos(2.0 * beta) - mzRun2 - piaa +
+	sqr(sin(beta)) * t1OV1Ms1loop + sqr(cos(beta)) *
+      t2OV2Ms1loop;
+  }
+
+  double poleMhcSq = poleMasq2 + sqr(displayMw()) + piaa + piwwtMS - pihphm;
+
+
   physpars.mh0(1) = littleMh;
   physpars.mA0(1) = zeroSqrt(poleMasq);
   physpars.mh0(2) = bigMh;
@@ -1867,23 +1879,21 @@ double Softsusy<SoftPars>::thet(double a, double b, double c) {
 }
 
 template<class SoftPars>
-void Softsusy<SoftPars>::addNeutLoopSfermion(double p, DoubleMatrix & sigmaL, 
-DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
- double g = displayGaugeCoupling(2), 
-    gp = displayGaugeCoupling(1) * sqrt(0.6), 
-    ht = displayDrBarPars().ht,
-    htau = displayDrBarPars().htau, 
-    hb = displayDrBarPars().hb,
-    q = displayMu(), 
-   tanb = displayTanb();
-  double beta = atan(tanb);
-  double sinb = sin(beta), cosb = cos(beta);
-  double mt = ht * displayHvev() * sin(beta) / root2,
-    mb = hb * displayHvev() * cos(beta) / root2,
-    mtau = htau * displayHvev() * cos(beta) / root2;
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double    thetatau= forLoops.thetatau;
+void Softsusy<SoftPars>::addNeutLoopSfermion(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
+  double    g        = displayGaugeCoupling(2);
+  double    gp       = displayGaugeCoupling(1) * sqrt(0.6);
+  double    ht       = displayDrBarPars().ht;
+  double    htau     = displayDrBarPars().htau;
+  double    hb       = displayDrBarPars().hb;
+  double    q        = displayMu();
+  double    beta     = atan(displayTanb());
+  double    sinb     = sin(beta), cosb = cos(beta);
+  double    mt       = ht * displayHvev() * sin(beta) / root2;
+  double    mb       = hb * displayHvev() * cos(beta) / root2;
+  double    mtau     = htau * displayHvev() * cos(beta) / root2;
+  double    thetat   = forLoops.thetat;
+  double    thetab   = forLoops.thetab;
+  double    thetatau = forLoops.thetatau;
 
   DoubleVector msup(2), msdown(2), msel(2), mscharm(2), msstrange(2), 
     msmuon(2), msnumu(2), mstop(2), msbot(2), mstau(2), msnutau(2), msnue(2);
@@ -2020,9 +2030,7 @@ DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
 	   3.0 * bPsiBb(i, k) * aPsiBb(j, k) * mb * b0(p, mb, msbot(k), q) +
 	   bPsiTauTau(i, k) * aPsiTauTau(j, k) * mtau *
 	   b0(p, mtau, mstau(k), q));
-
       }
-
 }
 
 template<class SoftPars>
@@ -2033,6 +2041,7 @@ void Softsusy<SoftPars>::getNeutPassarinoVeltman(double p, double q, DoubleMatri
   DoubleVector mch(forLoops.mchBpmz); 
 
   const int rank = mneut.displayEnd();
+
   int k;
      for (k=1; k<=rank; k++) {
        if (k<=2){
@@ -2063,37 +2072,8 @@ void Softsusy<SoftPars>::getNeutPassarinoVeltman(double p, double q, DoubleMatri
 template<class SoftPars>
 void Softsusy<SoftPars>::addNeutLoopGauge(double p, DoubleMatrix & sigmaL, 
 DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
- double g = displayGaugeCoupling(2), 
-    gp = displayGaugeCoupling(1) * sqrt(0.6), 
-    ht = displayDrBarPars().ht,
-    htau = displayDrBarPars().htau, 
-    hb = displayDrBarPars().hb,
-    q = displayMu(), 
-    tanb = displayTanb(),
-    mz = displayMzRun(), mw = displayMwRun();
-  double beta = atan(tanb);
-  double sinb = sin(beta), cosb = cos(beta);
-  double mt = ht * displayHvev() * sin(beta) / root2,
-    mb = hb * displayHvev() * cos(beta) / root2,
-    mtau = htau * displayHvev() * cos(beta) / root2;
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double    thetatau= forLoops.thetatau;
-
-  DoubleVector msup(2), msdown(2), msel(2), mscharm(2), msstrange(2), 
-    msmuon(2), msnumu(2), mstop(2), msbot(2), mstau(2), msnutau(2), msnue(2);
-  msup(1) = forLoops.mu(1, 1);      msup(2) = forLoops.mu(2, 1); 
-  mscharm(1) = forLoops.mu(1, 2);   mscharm(2) = forLoops.mu(2, 2); 
-  mstop(1) = forLoops.mu(1, 3);     mstop(2) = forLoops.mu(2, 3); 
-  msdown(1) = forLoops.md(1, 1);    msdown(2) = forLoops.md(2, 1); 
-  msstrange(1) = forLoops.md(1, 2); msstrange(2) = forLoops.md(2, 2); 
-  msbot(1) = forLoops.md(1, 3);     msbot(2) = forLoops.md(2, 3); 
-  msel(1) = forLoops.me(1, 1);      msel(2) = forLoops.me(2, 1); 
-  msmuon(1) = forLoops.me(1, 2);    msmuon(2) = forLoops.me(2, 2); 
-  mstau(1) = forLoops.me(1, 3);     mstau(2) = forLoops.me(2, 3); 
-  msnue(1) = forLoops.msnu(1); 
-  msnumu(1) = forLoops.msnu(2);
-  msnutau(1) = forLoops.msnu(3);
+  double g = displayGaugeCoupling(2); 
+  double q = displayMu();
 
   ComplexMatrix n(forLoops.nBpmz);
   DoubleVector mneut(forLoops.mnBpmz);
@@ -2152,37 +2132,11 @@ DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
 template<class SoftPars>
 void Softsusy<SoftPars>::addNeutLoopHiggs(double p, DoubleMatrix & sigmaL, 
 DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
-  double g = displayGaugeCoupling(2), 
-    gp = displayGaugeCoupling(1) * sqrt(0.6), 
-    ht = displayDrBarPars().ht,
-    htau = displayDrBarPars().htau, 
-    hb = displayDrBarPars().hb,
-    q = displayMu(), 
-    tanb = displayTanb(),
-    mz = displayMzRun(), mw = displayMwRun();
-  double beta = atan(tanb);
+  double g    = displayGaugeCoupling(2);
+  double gp   = displayGaugeCoupling(1) * sqrt(0.6);
+  double q    = displayMu();
+  double beta = atan(displayTanb());
   double sinb = sin(beta), cosb = cos(beta);
-  double mt = ht * displayHvev() * sin(beta) / root2,
-    mb = hb * displayHvev() * cos(beta) / root2,
-    mtau = htau * displayHvev() * cos(beta) / root2;
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double    thetatau= forLoops.thetatau;
-
-  DoubleVector msup(2), msdown(2), msel(2), mscharm(2), msstrange(2), 
-    msmuon(2), msnumu(2), mstop(2), msbot(2), mstau(2), msnutau(2), msnue(2);
-  msup(1) = forLoops.mu(1, 1);      msup(2) = forLoops.mu(2, 1); 
-  mscharm(1) = forLoops.mu(1, 2);   mscharm(2) = forLoops.mu(2, 2); 
-  mstop(1) = forLoops.mu(1, 3);     mstop(2) = forLoops.mu(2, 3); 
-  msdown(1) = forLoops.md(1, 1);    msdown(2) = forLoops.md(2, 1); 
-  msstrange(1) = forLoops.md(1, 2); msstrange(2) = forLoops.md(2, 2); 
-  msbot(1) = forLoops.md(1, 3);     msbot(2) = forLoops.md(2, 3); 
-  msel(1) = forLoops.me(1, 1);      msel(2) = forLoops.me(2, 1); 
-  msmuon(1) = forLoops.me(1, 2);    msmuon(2) = forLoops.me(2, 2); 
-  mstau(1) = forLoops.me(1, 3);     mstau(2) = forLoops.me(2, 3); 
-  msnue(1) = forLoops.msnu(1); 
-  msnumu(1) = forLoops.msnu(2);
-  msnutau(1) = forLoops.msnu(3);
 
   ComplexMatrix n(forLoops.nBpmz);
   DoubleVector mneut(forLoops.mnBpmz);
@@ -3203,14 +3157,14 @@ void Softsusy<SoftPars>::addSquarkCorrection(DoubleMatrix & mass) {
 
 template<class SoftPars>
 void Softsusy<SoftPars>::addSnuTauSfermion(double p, double & stop, double & sbottom) {
+  double  thetatau  = forLoops.thetatau;
+  double  ctau      = cos(thetatau);
+  double  stau      = sin(thetatau);;
+  double  q         = displayMu();
+  double  htau      = forLoops.htau, htausq = sqr(htau);
   DoubleVector mstau(2);
   mstau(1)          = forLoops.me(1, 3);
   mstau(2)          = forLoops.me(2, 3);
-  double   thetatau = forLoops.thetatau;
-  double  ctau      = cos(thetatau);
-  double  stau      = sin(thetatau);;
-  double q = displayMu();
-  double htau = forLoops.htau, htausq = sqr(htau);
 
   sbottom = 
     htausq * (sqr(stau) * a0(mstau(1), q) + sqr(ctau) * a0(mstau(2), q));
@@ -3221,29 +3175,26 @@ double Softsusy<SoftPars>::addSnuTauHiggs(double p, double & higgs) {
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
-  double    alpha   = forLoops.thetaH;
-  double    g	    = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    beta    = atan(displayTanb());
-  double    htau    = forLoops.htau;
-  double mtau = htau * displayHvev() / root2 * cos(beta);
-
+  double    alpha       = forLoops.thetaH;
+  double    g	        = displayGaugeCoupling(2);
+  double    beta        = atan(displayTanb());
+  double    sinb        = sin(beta), cosb = cos(beta);
+  double    htau        = forLoops.htau, htausq = sqr(htau);
+  double    thetatau    = forLoops.thetatau;
+  double    smu         = -displaySusyMu();
+  double    q           = displayMu();
+  double    v1          = displayHvev() * cos(beta);
+  double    mz          = displayMzRun();
+  double    mtau        = htau * displayHvev() / root2 * cos(beta);
   DoubleVector msnu(3);
-  msnu(1)           = forLoops.msnu(1);
-  msnu(2)           = forLoops.msnu(2);
-  msnu(3)           = forLoops.msnu(3);
+  msnu(1)               = forLoops.msnu(1);
+  msnu(2)               = forLoops.msnu(2);
+  msnu(3)               = forLoops.msnu(3);
   DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
-  double   thetatau = forLoops.thetatau;
-  double    smu     = -displaySusyMu();
-  double q = displayMu(), 
-    htausq = sqr(htau), 
-    sinb = sin(beta), cosb = cos(beta), 
-    v1 = displayHvev() * cos(beta),
-    mz = displayMzRun();
+  mstau(1)              = forLoops.me(1, 3);
+  mstau(2)              = forLoops.me(2, 3);
 
-  /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
+  /// Define Higgs vector of masses in 't-Hooft Feynman gauge, and couplings:
   DoubleVector higgsm(4), higgsc(2), dnu(4), dnd(4), cn(4);
   assignHiggsSfermions(higgsm, higgsc, dnu, dnd, cn, beta);
 
@@ -3316,26 +3267,26 @@ double Softsusy<SoftPars>::addSnuTauEweak(double p, double & electroweak) {
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
-  double    g	    = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-
+  double    g  	        = displayGaugeCoupling(2);
+  double    gp          = displayGaugeCoupling(1) * sqrt(0.6);
+  double    thetat      = forLoops.thetat;
+  double    thetab      = forLoops.thetab;
+  double    thetatau    = forLoops.thetatau;
+  double    ct          = cos(thetat);
+  double    st          = sin(thetat);
+  double    cb          = cos(thetab);
+  double    sb          = sin(thetab);
+  double    ctau        = cos(thetatau);
+  double    stau        = sin(thetatau);
+  double    q           = displayMu();
+  double    mz          = displayMzRun();
   DoubleVector msnu(3);
-  msnu(1)           = forLoops.msnu(1);
-  msnu(2)           = forLoops.msnu(2);
-  msnu(3)           = forLoops.msnu(3);
+  msnu(1)               = forLoops.msnu(1);
+  msnu(2)               = forLoops.msnu(2);
+  msnu(3)               = forLoops.msnu(3);
   DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double   thetatau = forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double  ctau      = cos(thetatau);
-  double  stau      = sin(thetatau);
-  double q = displayMu(), mz = displayMzRun();
+  mstau(1)              = forLoops.me(1, 3);
+  mstau(2)              = forLoops.me(2, 3);
 
   /// EW bosons
   electroweak = electroweak + 
@@ -3401,8 +3352,8 @@ void Softsusy<SoftPars>::addSnuTauGaugino(double p, double & chargino, double & 
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
   double    beta    = atan(displayTanb());
   double    htau    = forLoops.htau;
-  double mtau = htau * displayHvev() / root2 * cos(beta);
-  double q = displayMu();
+  double    mtau    = htau * displayHvev() / root2 * cos(beta);
+  double    q       = displayMu();
 
   /// Neutralino Feynman rules
   ComplexMatrix n(forLoops.nBpmz);
@@ -3410,7 +3361,6 @@ void Softsusy<SoftPars>::addSnuTauGaugino(double p, double & chargino, double & 
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz); 
 
-  /// LCT: rank={4,5} in {MSSM,NMSSM}
   const int rank = mneut.displayEnd();
 
   DoubleVector aPsi0TSnul(rank), bPsi0TSnul(rank); 
@@ -3476,7 +3426,7 @@ void Softsusy<SoftPars>::addSnuTauCorrection(double & mass) {
   double p = sqrt(mass);
 
   /// one-loop correction matrix
-  double piSq; /// Self-energy matrix
+  double piSq; 
 	
   double stop = 0., sbottom = 0., higgs = 0., electroweak = 0.,
     chargino = 0., neutralino = 0.;
@@ -3501,38 +3451,18 @@ double Softsusy<SoftPars>::addSnuHiggs(double p, int family, double & higgs) {
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
-  double    alpha   = forLoops.thetaH;
-  double    g	    = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    beta    = atan(displayTanb());
-
+  double    alpha       = forLoops.thetaH;
+  double    g	        = displayGaugeCoupling(2);
+  double    beta        = atan(displayTanb());
+  double    sinb        = sin(beta), cosb = cos(beta);
+  double    q           = displayMu();
+  double    mz          = displayMzRun();
   DoubleVector msnu(3);
-  msnu(1)           = forLoops.msnu(1);
-  msnu(2)           = forLoops.msnu(2);
-  msnu(3)           = forLoops.msnu(3);
-  DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
-  DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double   thetatau = forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double  ctau      = cos(thetatau);
-  double  stau      = sin(thetatau);
-  DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
-  double q = displayMu(), 
-    sinb = sin(beta), cosb = cos(beta), 
-    mz = displayMzRun();
+  msnu(1)               = forLoops.msnu(1);
+  msnu(2)               = forLoops.msnu(2);
+  msnu(3)               = forLoops.msnu(3);
 
-  /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
+  /// Define Higgs vector of masses in 't-Hooft Feynman gauge, and couplings:
   DoubleVector higgsm(4), higgsc(2), dnu(4), dnd(4), cn(4);
   assignHiggsSfermions(higgsm, higgsc, dnu, dnd, cn, beta);
 
@@ -3603,25 +3533,26 @@ double Softsusy<SoftPars>::addSnuEweak(double p, int family, double & electrowea
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
-  double    g	    = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-
+  double    g	        = displayGaugeCoupling(2);
+  double    gp          = displayGaugeCoupling(1) * sqrt(0.6);
+  double    thetat      = forLoops.thetat;
+  double    thetab      = forLoops.thetab;
+  double    thetatau    = forLoops.thetatau;
+  double    ct          = cos(thetat) ;
+  double    st          = sin(thetat) ;
+  double    cb          = cos(thetab) ;
+  double    sb          = sin(thetab) ;
+  double    ctau        = cos(thetatau);
+  double    stau        = sin(thetatau);
+  double    q           = displayMu();
+  double    mz          = displayMzRun();
+  double    meL         = forLoops.me(1, family);
   DoubleVector msnu(3);
-  msnu(1)           = forLoops.msnu(1);
-  msnu(2)           = forLoops.msnu(2);
-  msnu(3)           = forLoops.msnu(3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double   thetatau = forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double  ctau      = cos(thetatau);
-  double  stau      = sin(thetatau);
-  double q = displayMu(), mz = displayMzRun();
-  double meL = forLoops.me(1, family);
+  msnu(1)               = forLoops.msnu(1);
+  msnu(2)               = forLoops.msnu(2);
+  msnu(3)               = forLoops.msnu(3);
 
+  /// LCT: EW contributions
   electroweak = electroweak + 
     4.0 * sqr(g) / costhDrbar2 * sqr(gnuL) * a0(mz, q) + 
     2.0 * sqr(g) * a0(displayMwRun(), q) + 
@@ -3682,7 +3613,7 @@ template<class SoftPars>
 void Softsusy<SoftPars>::addSnuGaugino(double p, int family, double & chargino, double & neutralino) {
   double    g	    = displayGaugeCoupling(2);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double q = displayMu();
+  double    q       = displayMu();
 
   DoubleVector mneut(forLoops.mnBpmz);
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
@@ -3755,7 +3686,7 @@ void Softsusy<SoftPars>::addSnuCorrection(double & mass, int family) {
   double p = sqrt(mass);
 
   /// one-loop correction matrix
-  double piSq; /// Self-energy 
+  double piSq; 
 	
   double higgs = 0., electroweak = 0., chargino = 0., neutralino = 0.;
 
@@ -3774,17 +3705,18 @@ void Softsusy<SoftPars>::addSnuCorrection(double & mass, int family) {
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addStopQCD(double p, double mt, DoubleMatrix & strong) {
-  DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
   double    mg      = forLoops.mGluino;
   double    thetat  = forLoops.thetat;
   double    ct      = cos(thetat);
   double    st      = sin(thetat);
-  double q = displayMu(), g3sq = sqr(displayGaugeCoupling(3));
-  double a0t1 = a0(mstop(1), q), a0t2 = a0(mstop(2), q);
-  double ft1 = ffn(p, mstop(1), 0.0, q), ft2 = ffn(p, mstop(2), 0.0, q);
-  double ggt = gfn(p, mg, mt, q);
+  double    q       = displayMu();
+  double    g3sq    = sqr(displayGaugeCoupling(3));
+  DoubleVector mstop(2);
+  mstop(1)          = forLoops.mu(1, 3);
+  mstop(2)          = forLoops.mu(2, 3);
+  double    a0t1    = a0(mstop(1), q), a0t2 = a0(mstop(2), q);
+  double    ft1     = ffn(p, mstop(1), 0.0, q), ft2 = ffn(p, mstop(2), 0.0, q);
+  double    ggt     = gfn(p, mg, mt, q);
 
   strong(1, 1) = 4.0 * g3sq / 3.0 *
     (2.0 * ggt + sqr(ct) * (ft1 + a0t1) + sqr(st) * (ft2 + a0t2));
@@ -3799,13 +3731,13 @@ DoubleMatrix Softsusy<SoftPars>::addStopQCD(double p, double mt, DoubleMatrix & 
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addStopStop(double p, double mt, DoubleMatrix & stop) {
+  double thetat     = forLoops.thetat, ct = cos(thetat), st = sin(thetat);
+  double q          = displayMu();
   DoubleVector mstop(2);
   mstop(1)          = forLoops.mu(1, 3);
   mstop(2)          = forLoops.mu(2, 3);
-  double thetat  = forLoops.thetat, ct = cos(thetat), st = sin(thetat);
-  double q = displayMu();
-  double a0t1 = a0(mstop(1), q), a0t2 = a0(mstop(2), q);
-  double ht = forLoops.ht, htsq = sqr(ht);
+  double a0t1       = a0(mstop(1), q), a0t2 = a0(mstop(2), q);
+  double ht         = forLoops.ht, htsq = sqr(ht);
 
   stop(1, 1) = htsq * (sqr(st) * a0t1 + sqr(ct) * a0t2);
   stop(2, 2) = htsq * (sqr(ct) * a0t1 + sqr(st) * a0t2);
@@ -3817,12 +3749,13 @@ DoubleMatrix Softsusy<SoftPars>::addStopStop(double p, double mt, DoubleMatrix &
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addStopSbottom(double p, double mt, 
 DoubleMatrix & sbottom) {
+  double thetab     = forLoops.thetab, cb = cos(thetab), sb = sin(thetab) ;
+  double q          = displayMu();
+  double ht         = forLoops.ht, htsq = sqr(ht);
+  double hb         = forLoops.hb, hbsq = sqr(hb);
   DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double thetab  = forLoops.thetab, cb = cos(thetab), sb = sin(thetab) ;
-  double q = displayMu();
-  double ht = forLoops.ht, htsq = sqr(ht), hb = forLoops.hb, hbsq = sqr(hb);
+  msbot(1)          = forLoops.md(1, 3);
+  msbot(2)          = forLoops.md(2, 3);
 
   sbottom(1, 1) = 
     hbsq * (sqr(sb) * a0(msbot(1), q) + sqr(cb) * a0(msbot(2), q));
@@ -3832,99 +3765,36 @@ DoubleMatrix & sbottom) {
   return sbottom;
 }
 
-/// LCT: Returns trilinear Higgs-Sfermion-Sfermion couplings in unrotated basis
-template<class SoftPars>
-void Softsusy<SoftPars>::getHiggsSfermionSfermionCoup(double mu, DoubleMatrix & 
-lsStopLStopLR, DoubleMatrix & lsStopRStopLR, DoubleMatrix & lChHstopLsbotLR, 
-DoubleMatrix & lChHstopRsbotLR) const {
-  double sinthDrbar = calcSinthdrbar();
-  double costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
-  double costhDrbar2 = 1.0 - sqr(sinthDrbar);
-  double g = displayGaugeCoupling(2);
-  double beta = atan(displayTanb()), sinb = sin(beta), cosb = cos(beta);
-  double ht = forLoops.ht, hb = forLoops.hb, htsq = sqr(ht), hbsq = sqr(hb);
-  double v1 = displayHvev() * cos(beta), v2 = displayHvev() * sin(beta);
-  double mz = displayMzRun();
-
-  /// Order (s1 s2 G A, L R)
-  lsStopLStopLR(1, 1) = g * mz * guL * cosb / costhDrbar;
-  lsStopLStopLR(1, 2) = ht * mu / root2;
-  lsStopLStopLR(3, 2) = 1.0 / root2 * 
-    (mu * cosb * ht + forLoops.ut * sinb);
-  lsStopLStopLR(4, 2) = -1.0 / root2 * 
-    (mu * sinb * ht - forLoops.ut * cosb);
-  lsStopLStopLR(2, 1) = -g * mz * guL * sinb / costhDrbar
-    + htsq * v2;
-  lsStopLStopLR(2, 2) = forLoops.ut / root2;
-
-  lsStopRStopLR(1, 1) = lsStopLStopLR(1, 2);
-  lsStopRStopLR(1, 2) = g * mz * guR * cosb / costhDrbar;
-  lsStopRStopLR(2, 1) = lsStopLStopLR(2, 2);
-  lsStopRStopLR(2, 2) = -g * mz * guR * sinb / costhDrbar
-    + htsq * v2;
-  lsStopRStopLR(3, 1) = -lsStopLStopLR(3, 2);
-  lsStopRStopLR(4, 1) = -lsStopLStopLR(4, 2);
-
-  /// Charged Higgs Feynman rules
-  /// (H+ G+, L R) basis
-  lChHstopLsbotLR(1, 1) = (g * displayMwRun() * sin(2.0 * beta) 
-    - htsq * v2 * cosb - hbsq * v1 * sinb) / root2;
-  lChHstopLsbotLR(1, 2) = (mu * hb * cosb - 
-			   forLoops.ub * sinb);
-  lChHstopLsbotLR(2, 1) = (-g * displayMwRun() * cos(2.0 * beta) 
-    - htsq * v2 * sinb + hbsq * v1 * cosb) / root2;
-  lChHstopLsbotLR(2, 2) = hb * mu * sinb + forLoops.ub * cosb;
-
-  /// (H+ G+, L R) basis
-  lChHstopRsbotLR(1, 1) = ht * mu * sinb - forLoops.ut * cosb;
-  lChHstopRsbotLR(1, 2) = ht * hb * (- v1 * cosb - v2 * sinb) / root2;
-  lChHstopRsbotLR(2, 1) = -ht * mu * cosb - forLoops.ut * sinb;
-}
-
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addStopHiggs(double p, double mt, DoubleMatrix & higgs) {
-  /// brevity
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
-  double    alpha   = forLoops.thetaH;
-  double    g	    = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    beta    = atan(displayTanb());
-  // double    e       = g * sinthDrbar; /// DRbar value of e
-
+  double    alpha       = forLoops.thetaH;
+  double    g	        = displayGaugeCoupling(2);
+  double    beta        = atan(displayTanb());
+  double    sinb        = sin(beta), cosb = cos(beta);
+  double    smu         = -displaySusyMu(); 
+  double    thetat      = forLoops.thetat;
+  double    thetab      = forLoops.thetab;
+  double    thetatau    = forLoops.thetatau;
+  double    q           = displayMu(); 
+  double    ht          = forLoops.ht, htsq = sqr(ht);
+  double    hb          = forLoops.hb, hbsq = sqr(hb);
+  double    v1          = displayHvev() * cos(beta);
+  double    v2          = displayHvev() * sin(beta);
+  double    mz          = displayMzRun();
   DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double   thetatau = forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double  ctau      = cos(thetatau);
-  double  stau      = sin(thetatau);
+  msbot(1)              = forLoops.md(1, 3);
+  msbot(2)              = forLoops.md(2, 3);
   DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
-  double msbot1 = forLoops.md(1, 3), msbot2 = forLoops.md(2, 3);
-  double    smu     = -displaySusyMu(); ///<< LCT: Note sign!
-  double q = displayMu(), g3sq = sqr(displayGaugeCoupling(3)), 
-    ht = forLoops.ht,
-    hb = forLoops.hb,
-    htsq = sqr(ht), // 
-    sinb = sin(beta), cosb = cos(beta), 
-    hbsq = sqr(hb),
-    v1 = displayHvev() * cos(beta),
-    v2 = displayHvev() * sin(beta),
-    mz = displayMzRun();
+  mstop(1)              = forLoops.mu(1, 3);
+  mstop(2)              = forLoops.mu(2, 3);
 
   /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
   DoubleVector higgsm(4), higgsc(2);
   DoubleVector dnu(4), dnd(4), cn(4);
   assignHiggsSfermions(higgsm, higgsc, dnu, dnd, cn, beta);
-  // double sinthDRbar = calcSinthdrbar();
   setNeutCurrCouplings(sinthDrbar, sw2, guL, gdL, geL, guR, gdR, geR);
 
   /// Higgs-sfermion-sfermion couplings
@@ -3933,7 +3803,6 @@ DoubleMatrix Softsusy<SoftPars>::addStopHiggs(double p, double mt, DoubleMatrix 
 
   /// LCT: CP-{even,odd}-sfermion-sfermion Feynman rules
   /// Order (s1 s2 G A, L R)
-
   lsStopLStopLR(1, 1) = g * mz * guL * cosb / costhDrbar;
   lsStopLStopLR(1, 2) = ht * smu / root2;
   lsStopLStopLR(3, 2) = 1.0 / root2 * 
@@ -3983,8 +3852,7 @@ DoubleMatrix Softsusy<SoftPars>::addStopHiggs(double p, double mt, DoubleMatrix 
     lHStopRStop12(2, i) = temp2(2);
   }
 
-  /// Charged Higgs Feynman rules
-  /// (H+ G+, L R) basis
+  /// Charged Higgs Feynman rules  (H+ G+, L R) basis
   DoubleMatrix lChHstopLsbotLR(2, 2), lChHstopRsbotLR(2, 2);
   lChHstopLsbotLR(1, 1) = (g * displayMwRun() * sin(2.0 * beta) 
     - htsq * v2 * cosb - hbsq * v1 * sinb) / root2;
@@ -3994,7 +3862,6 @@ DoubleMatrix Softsusy<SoftPars>::addStopHiggs(double p, double mt, DoubleMatrix 
     - htsq * v2 * sinb + hbsq * v1 * cosb) / root2;
   lChHstopLsbotLR(2, 2) = hb * smu * sinb + forLoops.ub * cosb;
 
-  /// (H+ G+, L R) basis
   lChHstopRsbotLR(1, 1) = ht * smu * sinb - forLoops.ut * cosb;
   lChHstopRsbotLR(1, 2) = ht * hb * (- v1 * cosb - v2 * sinb) / root2;
   lChHstopRsbotLR(2, 1) = -ht * smu * cosb - forLoops.ut * sinb;
@@ -4043,7 +3910,6 @@ DoubleMatrix Softsusy<SoftPars>::addStopHiggs(double p, double mt, DoubleMatrix 
         * a0(higgsm(i), q);
   }
 
-
   int j; for(i=1; i<=4; i++)
     for (j=1; j<=2; j++) {
       double b0p = b0(p, higgsm(i), mstop(j), q);
@@ -4067,31 +3933,27 @@ DoubleMatrix Softsusy<SoftPars>::addStopHiggs(double p, double mt, DoubleMatrix 
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addStopEweak(double p, DoubleMatrix & electroweak) {
-  double sinthDrbar = calcSinthdrbar();
-  double costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
-  double costhDrbar2 = 1.0 - sqr(sinthDrbar);
-  double alpha = forLoops.thetaH;
-  double g = displayGaugeCoupling(2);
-  double gp = displayGaugeCoupling(1) * sqrt(0.6);
-  double e = g * sinthDrbar; /// DRbar value of e
-  DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double   thetatau = forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double  ctau      = cos(thetatau);
-  double  stau      = sin(thetatau);
+  double    sinthDrbar  = calcSinthdrbar();
+  double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
+  double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
+  double    g           = displayGaugeCoupling(2);
+  double    gp          = displayGaugeCoupling(1) * sqrt(0.6);
+  double    e           = g * sinthDrbar; /// DRbar value of e
+  double    thetat      = forLoops.thetat;
+  double    thetab      = forLoops.thetab;
+  double    thetatau    = forLoops.thetatau;
+  double    ct          = cos(thetat);
+  double    st          = sin(thetat);
+  double    cb          = cos(thetab);
+  double    sb          = sin(thetab);
+  double    ctau        = cos(thetatau);
+  double    stau        = sin(thetatau);
+  double    q           = displayMu();
+  double    mz          = displayMzRun();
   DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
-  double msbot1 = forLoops.md(1, 3), msbot2 = forLoops.md(2, 3);
-  double    mg      = forLoops.mGluino;
-  double q = displayMu(), mb = forLoops.mb, mz = displayMzRun();
+  mstop(1)              = forLoops.mu(1, 3);
+  mstop(2)              = forLoops.mu(2, 3);
+  double    msbot1      = forLoops.md(1, 3), msbot2 = forLoops.md(2, 3);
 
   electroweak(1, 1) += 
     4.0 * sqr(g) / costhDrbar2 * sqr(guL) * a0(mz, q) + 
@@ -4198,44 +4060,40 @@ DoubleMatrix Softsusy<SoftPars>::addStopEweak(double p, DoubleMatrix & electrowe
   return electroweak;
 }
 
-/// LCT: Returns trilinear gaugino-fermion-stop couplings in weak basis
 template<class SoftPars>
-void Softsusy<SoftPars>::getNeutralinoFermionStopCoup(DoubleVector & aPsi0TStopr, DoubleVector & bPsi0TStopr, DoubleVector & aPsi0TStopl, DoubleVector & bPsi0TStopl) const {
-  double g = displayGaugeCoupling(2);
+DoubleMatrix Softsusy<SoftPars>::addStopNeutralino(double p, double mt, DoubleMatrix & neutralino) {
+  double q  = displayMu();
+  double g  = displayGaugeCoupling(2);
   double gp = displayGaugeCoupling(1) * sqrt(0.6);
-  double ht = forLoops.ht, hb = forLoops.hb;
+  double ht = forLoops.ht;
+
+  ComplexMatrix n(forLoops.nBpmz);
+  DoubleVector mneut(forLoops.mnBpmz);
+
+  int rank = mneut.displayEnd();
 
   /// Neutralino Feynman rules
+  DoubleVector aPsi0TStopr(rank), bPsi0TStopr(rank), 
+    aPsi0TStopl(rank), bPsi0TStopl(rank);
   aPsi0TStopr(1) = - 4.0 * gp / (3.0 * root2);
   bPsi0TStopl(1) = gp / (3.0 * root2);
   bPsi0TStopl(2) = g / root2;
   aPsi0TStopl(4) = ht;
   bPsi0TStopr(4) = ht;
-}
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addStopNeutralino(double p, double mt, DoubleMatrix & neutralino) {
-  double q = displayMu();
-  /// LCT: get neutralino Feynman rules
-  DoubleVector aPsi0TStopr(4), bPsi0TStopr(4), aPsi0TStopl(4), bPsi0TStopl(4);
-  getNeutralinoFermionStopCoup(aPsi0TStopr, bPsi0TStopr, aPsi0TStopl, bPsi0TStopl);
-
-  ComplexVector aChi0TStopl(4), bChi0TStopl(4), aChi0TStopr(4), bChi0TStopr(4);
-  ComplexMatrix n(forLoops.nBpmz);
-  DoubleVector mneut(forLoops.mnBpmz);
-  ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
-
+  ComplexVector aChi0TStopl(rank), bChi0TStopl(rank), 
+    aChi0TStopr(rank), bChi0TStopr(rank);
   aChi0TStopl = n.complexConjugate() * aPsi0TStopl;
   bChi0TStopl = n * bPsi0TStopl;
   aChi0TStopr = n.complexConjugate() * aPsi0TStopr;
   bChi0TStopr = n * bPsi0TStopr;
 
-  DoubleVector gChi0TopStopLL(4), fChi0TopStopLL(4);
-  DoubleVector gChi0TopStopLR(4), fChi0TopStopLR(4);
-  DoubleVector gChi0TopStopRR(4), fChi0TopStopRR(4);
+  DoubleVector gChi0TopStopLL(rank), fChi0TopStopLL(rank);
+  DoubleVector gChi0TopStopLR(rank), fChi0TopStopLR(rank);
+  DoubleVector gChi0TopStopRR(rank), fChi0TopStopRR(rank);
 
   int i;
-  for (i=1; i<=4; i++) {
+  for (i=1; i<=rank; i++) {
     fChi0TopStopLL(i) = (aChi0TStopl(i) * aChi0TStopl(i).conj() + 
       bChi0TStopl(i) * bChi0TStopl(i).conj()).real();
     gChi0TopStopLL(i) = (bChi0TStopl(i).conj() * aChi0TStopl(i) + 
@@ -4250,7 +4108,7 @@ DoubleMatrix Softsusy<SoftPars>::addStopNeutralino(double p, double mt, DoubleMa
       bChi0TStopr(i) * aChi0TStopl(i).conj()).real();
   }
 
-  for (i=1; i<=4; i++) {
+  for (i=1; i<=rank; i++) {
     double one = gfn(p, mneut(i), mt, q);
     double two = 2.0 * mneut(i) * mt * b0(p, mneut(i), mt, q);
     neutralino(1, 1) = neutralino(1, 1) +
@@ -4266,11 +4124,11 @@ DoubleMatrix Softsusy<SoftPars>::addStopNeutralino(double p, double mt, DoubleMa
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addStopChargino(double p, DoubleMatrix & chargino) {
-  double g = displayGaugeCoupling(2);
-  double gp = displayGaugeCoupling(1) * sqrt(0.6);
-  double ht = forLoops.ht, hb = forLoops.hb;
+  double g  = displayGaugeCoupling(2);
+  double ht = forLoops.ht;
+  double hb = forLoops.hb;
   double mb = forLoops.mb;
-  double q = displayMu();
+  double q  = displayMu();
 
   /// Chargino Feynman Rules
   DoubleVector bPsicBStopl(2), bPsicBStopr(2), aPsicBStopl(2), aPsicBStopr(2);
@@ -4283,8 +4141,7 @@ DoubleMatrix Softsusy<SoftPars>::addStopChargino(double p, DoubleMatrix & chargi
   DoubleVector mch(forLoops.mchBpmz); 
 
   DoubleVector aPsicCSbotl(2);
-  ComplexVector aChicBStopr(2), aChicBStopl(2), bChicBStopl(2),
-      bChicBStopr(2);
+  ComplexVector aChicBStopr(2), aChicBStopl(2), bChicBStopl(2), bChicBStopr(2);
   ComplexMatrix aChBStop(2, 2), bChBStop(2, 2);
 
   aChicBStopl = v.complexConjugate() * aPsicBStopl;
@@ -4419,44 +4276,23 @@ void Softsusy<SoftPars>::assignHiggsSfermions(DoubleVector & higgsm,
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSlepHiggs(double p1, double p2, int family, DoubleMatrix & higgs) {
-  double    mw      = displayMwRun();
-  double    mz      = displayMzRun();
+  double    mz         = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
-  double    alpha   = forLoops.thetaH;
-  double    g	    = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    e       = g * sinthDrbar;
-  double    beta    = atan(displayTanb());
-
-  DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double    thetatau= forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    stau    = sin(thetatau);
-  DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
-  DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
+  double    alpha      = forLoops.thetaH;
+  double    g	       = displayGaugeCoupling(2);
+  double    beta       = atan(displayTanb());
+  double    sinb       = sin(beta), cosb = cos(beta);
+  double    q          = displayMu();
   DoubleVector msel(2);
-  msel(1)           = forLoops.me(1, family);
-  msel(2)           = forLoops.me(2, family);
+  msel(1)              = forLoops.me(1, family);
+  msel(2)              = forLoops.me(2, family);
   DoubleVector msnu(3);
-  msnu(1)           = forLoops.msnu(1);
-  msnu(2)           = forLoops.msnu(2);
-  msnu(3)           = forLoops.msnu(3);
- double q = displayMu(), sinb = sin(beta), cosb = cos(beta);
+  msnu(1)              = forLoops.msnu(1);
+  msnu(2)              = forLoops.msnu(2);
+  msnu(3)              = forLoops.msnu(3);
 
- /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
+  /// Define Higgs vector of masses in 't-Hooft Feynman gauge, and couplings:
   DoubleVector higgsm(4), higgsc(2), dnu(4), dnd(4), cn(4);
   assignHiggsSfermions(higgsm, higgsc, dnu, dnd, cn, beta);
 
@@ -4528,44 +4364,41 @@ DoubleMatrix Softsusy<SoftPars>::addSlepHiggs(double p1, double p2, int family, 
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSlepEweak(double p1, double p2, int family, DoubleMatrix & electroweak) {
-  double    mw      = displayMwRun();
-  double    mz      = displayMzRun();
+  double    mw         = displayMwRun();
+  double    mz         = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
-  double    alpha   = forLoops.thetaH;
-  double    g	    = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    e       = g * sinthDrbar;
-  double    beta    = atan(displayTanb());
-
+  double    g	       = displayGaugeCoupling(2);
+  double    gp         = displayGaugeCoupling(1) * sqrt(0.6);
+  double    e          = g * sinthDrbar;
+  double    thetat     = forLoops.thetat;
+  double    thetab     = forLoops.thetab;
+  double    thetatau   = forLoops.thetatau;
+  double    ct         = cos(thetat);
+  double    st         = sin(thetat);
+  double    cb         = cos(thetab);
+  double    sb         = sin(thetab);
+  double    ctau       = cos(thetatau);
+  double    stau       = sin(thetatau);
+  double    q          = displayMu();
   DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double    thetatau= forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    stau    = sin(thetatau);
+  msbot(1)             = forLoops.md(1, 3);
+  msbot(2)             = forLoops.md(2, 3);
   DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
+  mstop(1)             = forLoops.mu(1, 3);
+  mstop(2)             = forLoops.mu(2, 3);
   DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
+  mstau(1)             = forLoops.me(1, 3);
+  mstau(2)             = forLoops.me(2, 3);
   DoubleVector msel(2);
-  msel(1)           = forLoops.me(1, family);
-  msel(2)           = forLoops.me(2, family);
+  msel(1)              = forLoops.me(1, family);
+  msel(2)              = forLoops.me(2, family);
   DoubleVector msnu(3);
-  msnu(1)           = forLoops.msnu(1);
-  msnu(2)           = forLoops.msnu(2);
-  msnu(3)           = forLoops.msnu(3);
+  msnu(1)              = forLoops.msnu(1);
+  msnu(2)              = forLoops.msnu(2);
+  msnu(3)              = forLoops.msnu(3);
 
-  double q = displayMu(), sinb = sin(beta), cosb = cos(beta);
-
+  /// LCT: EW contributions
   electroweak(1, 1) = electroweak(1, 1) + 
     4.0 * sqr(g) / sqr(costhDrbar) * sqr(geL) * a0(mz, q) +
     2.0 * sqr(g) * a0(mw, q) + sqr(e) * 
@@ -4573,7 +4406,7 @@ DoubleMatrix Softsusy<SoftPars>::addSlepEweak(double p1, double p2, int family, 
   electroweak(1, 1) = electroweak(1, 1) +   
     sqr(g) / sqr(costhDrbar) * sqr(geL) * 
     ffn(p1, msel(1), mz, q) +
-    sqr(g) * 0.5 * ffn(p1, msnu(family), mw, q);///<< LCT: Changed msnu(1) --> msnu(family)
+    sqr(g) * 0.5 * ffn(p1, msnu(family), mw, q);
 
   electroweak(1, 1) = electroweak(1, 1) +   
     sqr(g) * 0.25 * (a0(msel(1), q) + 2.0 * a0(msnu(family), q));
@@ -4634,43 +4467,9 @@ DoubleMatrix Softsusy<SoftPars>::addSlepEweak(double p1, double p2, int family, 
 
 template<class SoftPars>
 void Softsusy<SoftPars>::addSlepGaugino(double p1, double p2, int family, DoubleMatrix & chargino, DoubleMatrix & neutralino) {
-  double    mw      = displayMwRun();
-  double    mz      = displayMzRun();
-  double    sinthDrbar = calcSinthdrbar();
-  double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
-  double    alpha   = forLoops.thetaH;
   double    g	    = displayGaugeCoupling(2);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    e       = g * sinthDrbar;
-  double    beta    = atan(displayTanb());
-
-  DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double    thetatau= forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    stau    = sin(thetatau);
-  DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
-  DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
-  DoubleVector msel(2);
-  msel(1)           = forLoops.me(1, family);
-  msel(2)           = forLoops.me(2, family);
-  DoubleVector msnu(3);
-  msnu(1)           = forLoops.msnu(1);
-  msnu(2)           = forLoops.msnu(2);
-  msnu(3)           = forLoops.msnu(3);
-
-  double q = displayMu(), sinb = sin(beta), cosb = cos(beta);
+  double    q       = displayMu();
 
   /// Neutralino Feynman rules
   ComplexMatrix n(forLoops.nBpmz);
@@ -4679,6 +4478,7 @@ void Softsusy<SoftPars>::addSlepGaugino(double p1, double p2, int family, Double
   DoubleVector mch(forLoops.mchBpmz);
 
   const int rank = mneut.displayEnd();
+
   DoubleVector aPsi0TauStaur(rank), bPsi0TauStaur(rank), aPsi0TauStaul(rank),
     bPsi0TauStaul(rank); 
   aPsi0TauStaur(1) = gp * root2;
@@ -4756,11 +4556,10 @@ void Softsusy<SoftPars>::addSlepCorrection(DoubleMatrix & mass, int family) {
   DoubleVector msel(2);
   msel(1)           = forLoops.me(1, family);
   msel(2)           = forLoops.me(2, family);	
-  double p1 = msel(1), p2 = msel(2);
+  double p1         = msel(1), p2 = msel(2);
   ///  double    p       = sqrt(msel(1) * msel(2));
 
-  DoubleMatrix higgs(2, 2), chargino(2, 2), neutralino(2, 2), 
-    electroweak(2, 2); 
+  DoubleMatrix higgs(2, 2), chargino(2, 2), neutralino(2, 2), electroweak(2, 2);
 
   /// LCT: Higgs contribution
   addSlepHiggs(p1, p2, family, higgs);
@@ -4777,29 +4576,28 @@ void Softsusy<SoftPars>::addSlepCorrection(DoubleMatrix & mass, int family) {
 
 template<class SoftPars>
 void Softsusy<SoftPars>::addStauSfermion(double p, double mtau, DoubleMatrix & stop, DoubleMatrix & sbottom) {
+  double    thetab   = forLoops.thetab;
+  double    thetatau = forLoops.thetatau;
+  double    cb       = cos(thetab);
+  double    sb       = sin(thetab);
+  double    ctau     = cos(thetatau);
+  double    stau     = sin(thetatau);
+  double    q        = displayMu(); 
+  double    hb       = forLoops.hb;
+  double    htau     = forLoops.htau;
+  double    htausq   = sqr(htau);
   DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetab  = forLoops.thetab;
-  double    thetatau= forLoops.thetatau;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    stau    = sin(thetatau);
+  msbot(1)           = forLoops.md(1, 3);
+  msbot(2)           = forLoops.md(2, 3);
   DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
+  mstau(1)           = forLoops.me(1, 3);
+  mstau(2)           = forLoops.me(2, 3);
   DoubleVector msnu(3);
-  msnu(1)           = forLoops.msnu(1);
-  msnu(2)           = forLoops.msnu(2);
-  msnu(3)           = forLoops.msnu(3);
+  msnu(1)            = forLoops.msnu(1);
+  msnu(2)            = forLoops.msnu(2);
+  msnu(3)            = forLoops.msnu(3);
 
-  double q = displayMu(), 
-    hb   = forLoops.hb,
-    htau = forLoops.htau, 
-    htausq = sqr(htau);
-
-  double a0t1 = a0(mstau(1), q), a0t2 = a0(mstau(2), q);
+  double     a0t1    = a0(mstau(1), q), a0t2 = a0(mstau(2), q);
 
   sbottom(2, 2) = htausq * a0(msnu(3), q);
 
@@ -4811,31 +4609,26 @@ void Softsusy<SoftPars>::addStauSfermion(double p, double mtau, DoubleMatrix & s
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addStauHiggs(double p, double mtau, DoubleMatrix & higgs) {
-  double    mz      = displayMzRun();
+  double    mz         = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
-  double    alpha   = forLoops.thetaH;
-  double    g	    = displayGaugeCoupling(2);
-  double    beta    = atan(displayTanb());
-
-  double    thetatau= forLoops.thetatau;
-  double    ctau    = cos(thetatau);
-  double    stau    = sin(thetatau);
+  double    alpha      = forLoops.thetaH;
+  double    g	       = displayGaugeCoupling(2);
+  double    beta       = atan(displayTanb());
+  double    sinb       = sin(beta), cosb = cos(beta);
+  double    smu        = -displaySusyMu();
+  double    q          = displayMu();
+  double    htau       = forLoops.htau, htausq = sqr(htau);
+  double    thetatau   = forLoops.thetatau;
   DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
+  mstau(1)             = forLoops.me(1, 3);
+  mstau(2)             = forLoops.me(2, 3);
   DoubleVector msnu(3);
-  msnu(1)           = forLoops.msnu(1);
-  msnu(2)           = forLoops.msnu(2);
-  msnu(3)           = forLoops.msnu(3);
+  msnu(1)              = forLoops.msnu(1);
+  msnu(2)              = forLoops.msnu(2);
+  msnu(3)              = forLoops.msnu(3);
 
-  double    smu     = -displaySusyMu();
-  double q = displayMu(), 
-    htau = forLoops.htau, 
-    sinb = sin(beta), cosb = cos(beta), 
-    htausq = sqr(htau);
-
-  /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
+  /// Define Higgs vector of masses in 't-Hooft Feynman gauge, and couplings:
   DoubleVector higgsm(4), higgsc(2);
   DoubleVector dnu(4), dnd(4), cn(4);
   assignHiggsSfermions(higgsm, higgsc, dnu, dnd, cn, beta);
@@ -4940,46 +4733,39 @@ DoubleMatrix Softsusy<SoftPars>::addStauHiggs(double p, double mtau, DoubleMatri
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addStauEweak(double p, double mtau, DoubleMatrix & electroweak) {
-  double    mw      = displayMwRun();
-  double    mz      = displayMzRun();
+  double    mw         = displayMwRun();
+  double    mz         = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
-  double    alpha   = forLoops.thetaH;
-  double    g	    = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    e       = g * sinthDrbar;
-  double    beta    = atan(displayTanb());
-
+  double    g	       = displayGaugeCoupling(2);
+  double    gp         = displayGaugeCoupling(1) * sqrt(0.6);
+  double    e          = g * sinthDrbar;
+  double    thetat     = forLoops.thetat;
+  double    thetab     = forLoops.thetab;
+  double    thetatau   = forLoops.thetatau;
+  double    ct         = cos(thetat);
+  double    st         = sin(thetat);
+  double    cb         = cos(thetab);
+  double    sb         = sin(thetab);
+  double    ctau       = cos(thetatau);
+  double    stau       = sin(thetatau);
+  double    smu        = -displaySusyMu();
+  double    q          = displayMu();
   DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double    thetatau= forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    stau    = sin(thetatau);
+  msbot(1)             = forLoops.md(1, 3);
+  msbot(2)             = forLoops.md(2, 3);
   DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
+  mstop(1)             = forLoops.mu(1, 3);
+  mstop(2)             = forLoops.mu(2, 3);
   DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
+  mstau(1)             = forLoops.me(1, 3);
+  mstau(2)             = forLoops.me(2, 3);
   DoubleVector msnu(3);
-  msnu(1)           = forLoops.msnu(1);
-  msnu(2)           = forLoops.msnu(2);
-  msnu(3)           = forLoops.msnu(3);
+  msnu(1)              = forLoops.msnu(1);
+  msnu(2)              = forLoops.msnu(2);
+  msnu(3)              = forLoops.msnu(3);
 
-  double    smu     = -displaySusyMu();
-  double q = displayMu(), 
-    hb   = forLoops.hb,
-    htau = forLoops.htau, 
-    sinb = sin(beta), cosb = cos(beta), 
-    htausq = sqr(htau);
-
+  /// LCT: EW contributions
   electroweak(1, 1) = electroweak(1, 1) + 
     4.0 * sqr(g) / sqr(costhDrbar) * sqr(geL) * a0(mz, q) +
     2.0 * sqr(g) * a0(mw, q) + sqr(e) * 
@@ -5065,45 +4851,10 @@ DoubleMatrix Softsusy<SoftPars>::addStauEweak(double p, double mtau, DoubleMatri
 
 template<class SoftPars>
 void Softsusy<SoftPars>::addStauGaugino(double p, double mtau, DoubleMatrix & chargino, DoubleMatrix & neutralino) {
-  double    mw      = displayMwRun();
-  double    mz      = displayMzRun();
-  double    sinthDrbar = calcSinthdrbar();
-  double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
-  double    alpha   = forLoops.thetaH;
   double    g	    = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    e       = g * sinthDrbar;
-  double    beta    = atan(displayTanb());
-
-  DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double    thetatau= forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    stau    = sin(thetatau);
-  DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
-  DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
-  DoubleVector msnu(3);
-  msnu(1)           = forLoops.msnu(1);
-  msnu(2)           = forLoops.msnu(2);
-  msnu(3)           = forLoops.msnu(3);
-
-  double    smu     = -displaySusyMu();
-  double q = displayMu(), 
-    hb   = forLoops.hb,
-    htau = forLoops.htau, 
-    sinb = sin(beta), cosb = cos(beta), 
-    htausq = sqr(htau);
+  double    gp      = displayGaugeCoupling(1) * sqrt(0.6); 
+  double    q       = displayMu();
+  double    htau    = forLoops.htau;
 
   ComplexMatrix n(forLoops.nBpmz);
   DoubleVector mneut(forLoops.mnBpmz);
@@ -5202,7 +4953,7 @@ void Softsusy<SoftPars>::addStauCorrection(double p, DoubleMatrix & mass,
   }
 
   /// one-loop correction matrix
-  DoubleMatrix piSq(2, 2); /// Self-energy matrix
+  DoubleMatrix piSq(2, 2); 
 	
   DoubleMatrix stop(2, 2), sbottom(2, 2), 
     higgs(2, 2), electroweak(2, 2), chargino(2, 2), neutralino(2, 2);
@@ -5226,13 +4977,14 @@ void Softsusy<SoftPars>::addStauCorrection(double p, DoubleMatrix & mass,
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSdownQCD(double p1, double p2, int family, DoubleMatrix & strong) {
+  double mg   = forLoops.mGluino;
+  double q    = displayMu();
+  double g3sq = sqr(displayGaugeCoupling(3));
   DoubleVector msd(2);
-  msd(1) = forLoops.md(1, family);
-  msd(2) = forLoops.md(2, family);
-  double mg = forLoops.mGluino;
-  double q = displayMu(), g3sq = sqr(displayGaugeCoupling(3)); 
+  msd(1)      = forLoops.md(1, family);
+  msd(2)      = forLoops.md(2, family);
   double a0t1 = a0(msd(1), q), a0t2 = a0(msd(2), q);
-  double ft1 = ffn(p1, msd(1), 0.0, q), ft2 = ffn(p2, msd(2), 0.0, q);
+  double ft1  = ffn(p1, msd(1), 0.0, q), ft2 = ffn(p2, msd(2), 0.0, q);
   double ggt1 = gfn(p1, mg, 0., q), ggt2 = gfn(p2, mg, 0., q);
 
   strong(1, 1) = 4.0 * g3sq / 3.0 * (2.0 * ggt1 + ft1 + a0t1);
@@ -5243,19 +4995,20 @@ DoubleMatrix Softsusy<SoftPars>::addSdownQCD(double p1, double p2, int family, D
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSdownHiggs(double p1, double p2, int family, DoubleMatrix & higgs) {
-  double mz = displayMzRun();
+  double mz         = displayMzRun();
   double sinthDrbar = calcSinthdrbar();
   double costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
-  double alpha = forLoops.thetaH;
-  double g = displayGaugeCoupling(2);
-  double beta = atan(displayTanb()), sinb = sin(beta), cosb = cos(beta);
+  double alpha      = forLoops.thetaH;
+  double g          = displayGaugeCoupling(2);
+  double beta       = atan(displayTanb());
+  double sinb       = sin(beta), cosb = cos(beta);
+  double q          = displayMu();
   DoubleVector msd(2);
-  msd(1) = forLoops.md(1, family);
-  msd(2) = forLoops.md(2, family);
+  msd(1)            = forLoops.md(1, family);
+  msd(2)            = forLoops.md(2, family);
   DoubleVector msup(2);
-  msup(1) = forLoops.mu(1, family);
-  msup(2) = forLoops.mu(2, family);
-  double q = displayMu();
+  msup(1)           = forLoops.mu(1, family);
+  msup(2)           = forLoops.mu(2, family);
 
   /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
   DoubleVector higgsm(4), higgsc(2);
@@ -5343,43 +5096,42 @@ DoubleMatrix Softsusy<SoftPars>::addSdownHiggs(double p1, double p2, int family,
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSdownEweak(double p1, double p2, int family, DoubleMatrix & electroweak) {
-  double mw = displayMwRun();
-  double mz = displayMzRun();
+  double mw         = displayMwRun();
+  double mz         = displayMzRun();
   double sinthDrbar = calcSinthdrbar();
   double costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
-  double g = displayGaugeCoupling(2);
-  double gp = displayGaugeCoupling(1) * sqrt(0.6);
-  double e = g * sinthDrbar;
-
+  double g          = displayGaugeCoupling(2);
+  double gp         = displayGaugeCoupling(1) * sqrt(0.6);
+  double e          = g * sinthDrbar;
+  double thetat     = forLoops.thetat;
+  double thetab     = forLoops.thetab;
+  double thetatau   = forLoops.thetatau;
+  double ct         = cos(thetat);
+  double st         = sin(thetat);
+  double cb         = cos(thetab);
+  double sb         = sin(thetab);
+  double ctau       = cos(thetatau);
+  double stau       = sin(thetatau);
+  double q          = displayMu();
   DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
+  msbot(1)          = forLoops.md(1, 3);
+  msbot(2)          = forLoops.md(2, 3);
   DoubleVector msd(2);
-  msd(1) = forLoops.md(1, family);
-  msd(2) = forLoops.md(2, family);
+  msd(1)            = forLoops.md(1, family);
+  msd(2)            = forLoops.md(2, family);
   DoubleVector msup(2);
-  msup(1) = forLoops.mu(1, family);
-  msup(2) = forLoops.mu(2, family);
-  double thetat = forLoops.thetat;
-  double thetab = forLoops.thetab;
-  double thetatau= forLoops.thetatau;
-  double ct = cos(thetat);
-  double st = sin(thetat);
-  double cb = cos(thetab);
-  double sb = sin(thetab);
-  double ctau = cos(thetatau);
-  double stau = sin(thetatau);
+  msup(1)           = forLoops.mu(1, family);
+  msup(2)           = forLoops.mu(2, family);
   DoubleVector mstop(2);
-  mstop(1) = forLoops.mu(1, 3);
-  mstop(2) = forLoops.mu(2, 3);
+  mstop(1)          = forLoops.mu(1, 3);
+  mstop(2)          = forLoops.mu(2, 3);
   DoubleVector mstau(2);
-  mstau(1) = forLoops.me(1, 3);
-  mstau(2) = forLoops.me(2, 3);
+  mstau(1)          = forLoops.me(1, 3);
+  mstau(2)          = forLoops.me(2, 3);
   DoubleVector msnu(3);
-  msnu(1) = forLoops.msnu(1);
-  msnu(2) = forLoops.msnu(2);
-  msnu(3) = forLoops.msnu(3);
-  double q = displayMu();
+  msnu(1)           = forLoops.msnu(1);
+  msnu(2)           = forLoops.msnu(2);
+  msnu(3)           = forLoops.msnu(3);
 
   electroweak(1, 1) = electroweak(1, 1) + 
     4.0 * sqr(g) / sqr(costhDrbar) * sqr(gdL) * a0(mz, q) +
@@ -5449,32 +5201,34 @@ DoubleMatrix Softsusy<SoftPars>::addSdownEweak(double p1, double p2, int family,
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSdownNeutralino(double p1, double p2, int family, DoubleMatrix & neutralino) {
-  double g = displayGaugeCoupling(2);
+  double g  = displayGaugeCoupling(2);
   double gp = displayGaugeCoupling(1) * sqrt(0.6);
-  double q = displayMu();
-
-  /// Neutralino Feynman rules
-  DoubleVector aPsi0BSbotr(4), bPsi0BSbotr(4), aPsi0BSbotl(4),
-    bPsi0BSbotl(4); 
-  aPsi0BSbotr(1) = gp * ydR / root2;
-  bPsi0BSbotl(1) = gp * ydL / root2;
-  bPsi0BSbotl(2) = -0.5 * g * root2;
-
-  ComplexVector aChi0BSbotl(4), bChi0BSbotl(4), aChi0BSbotr(4),
-    bChi0BSbotr(4);
+  double q  = displayMu();
 
   ComplexMatrix n(forLoops.nBpmz);
   DoubleVector mneut(forLoops.mnBpmz);
 
+  int rank = mneut.displayEnd();
+
+  /// Neutralino Feynman rules
+  DoubleVector aPsi0BSbotr(rank), bPsi0BSbotr(rank), 
+    aPsi0BSbotl(rank), bPsi0BSbotl(rank); 
+  aPsi0BSbotr(1) = gp * ydR / root2;
+  bPsi0BSbotl(1) = gp * ydL / root2;
+  bPsi0BSbotl(2) = -0.5 * g * root2;
+
+  ComplexVector aChi0BSbotl(rank), bChi0BSbotl(rank), 
+    aChi0BSbotr(rank), bChi0BSbotr(rank);
   aChi0BSbotl = n.complexConjugate() * aPsi0BSbotl;
   bChi0BSbotl = n * bPsi0BSbotl;
   aChi0BSbotr = n.complexConjugate() * aPsi0BSbotr;
   bChi0BSbotr = n * bPsi0BSbotr;
 
-  DoubleVector gChi0BotSbotLL(4), fChi0BotSbotLL(4);
-  DoubleVector gChi0BotSbotLR(4), fChi0BotSbotLR(4);
-  DoubleVector gChi0BotSbotRR(4), fChi0BotSbotRR(4);
-  for (int i=1; i<=4; i++) {
+  DoubleVector gChi0BotSbotLL(rank), fChi0BotSbotLL(rank);
+  DoubleVector gChi0BotSbotLR(rank), fChi0BotSbotLR(rank);
+  DoubleVector gChi0BotSbotRR(rank), fChi0BotSbotRR(rank);
+
+  for (int i=1; i<=rank; i++) {
     fChi0BotSbotLL(i) = (aChi0BSbotl(i) * aChi0BSbotl(i).conj() + 
       bChi0BSbotl(i) * bChi0BSbotl(i).conj()).real();
     gChi0BotSbotLL(i) = (bChi0BSbotl(i).conj() * aChi0BSbotl(i) + 
@@ -5489,7 +5243,7 @@ DoubleMatrix Softsusy<SoftPars>::addSdownNeutralino(double p1, double p2, int fa
       bChi0BSbotr(i) * aChi0BSbotl(i).conj()).real();
   }
 
-  for (int i=1; i<=4; i++) {
+  for (int i=1; i<=rank; i++) {
     double one = gfn(p1, mneut(i), 0., q);
     neutralino(1, 1) = neutralino(1, 1) +
       fChi0BotSbotLL(i) * one;
@@ -5509,24 +5263,20 @@ DoubleMatrix Softsusy<SoftPars>::addSdownChargino(double p1, double p2, int fami
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz); 
 
- /// Chargino Feynman Rules
-  DoubleVector bPsicTSbotl(2), bPsicTSbotr(2), aPsicTSbotl(2), 
-    aPsicTSbotr(2); 
-
+  /// Chargino Feynman Rules
+  DoubleVector bPsicTSbotl(2), bPsicTSbotr(2), aPsicTSbotl(2), aPsicTSbotr(2); 
   bPsicTSbotl(1) = g;
   
-  ComplexVector aChicTSbotr(2), aChicTSbotl(2), bChicTSbotl(2),
-      bChicTSbotr(2);
-  ComplexMatrix aChTSbot(2, 2), bChTSbot(2, 2);
-
+  ComplexVector aChicTSbotr(2), aChicTSbotl(2), bChicTSbotl(2), bChicTSbotr(2);
   aChicTSbotl = v.complexConjugate() * aPsicTSbotl;
   bChicTSbotl = u * bPsicTSbotl;
   aChicTSbotr = v.complexConjugate() * aPsicTSbotr;
   bChicTSbotr = u * bPsicTSbotr;
 
-  DoubleVector fChTSbotLL(2), gChTSbotLL(2) ;
+  DoubleVector fChTSbotLL(2), gChTSbotLL(2);
   DoubleVector fChTSbotLR(2), gChTSbotLR(2); 
   DoubleVector fChTSbotRR(2), gChTSbotRR(2); 
+
   for (int i=1; i<=2; i++) {
     fChTSbotLL(i) = (aChicTSbotl(i).conj() * aChicTSbotl(i) +
 		      bChicTSbotl(i).conj() * bChicTSbotl(i)).real();
@@ -5555,7 +5305,7 @@ DoubleMatrix Softsusy<SoftPars>::addSdownChargino(double p1, double p2, int fami
 template<class SoftPars>
 void Softsusy<SoftPars>::addSdownCorrection(DoubleMatrix & mass, int family) {
 
-/// No point adding radiative corrections to tachyonic particles
+  /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
     if (family == 1) flagTachyon(sdown); 
     else if (family == 2) flagTachyon(sstrange);
@@ -5591,21 +5341,20 @@ void Softsusy<SoftPars>::addSdownCorrection(DoubleMatrix & mass, int family) {
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSbotQCD(double p, double mt, DoubleMatrix & strong) {
-  DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
   double    thetab  = forLoops.thetab;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
+  double    cb      = cos(thetab);
+  double    sb      = sin(thetab);
   double    mg      = forLoops.mGluino;
-  double q = displayMu(), g3sq = sqr(displayGaugeCoupling(3)), 
-    hb = forLoops.hb,
-    mb = forLoops.mb,
-    hbsq = sqr(hb);
+  double    q       = displayMu();
+  double    g3sq    = sqr(displayGaugeCoupling(3));
+  double    mb      = forLoops.mb;
+  DoubleVector msbot(2);
+  msbot(1)          = forLoops.md(1, 3);
+  msbot(2)          = forLoops.md(2, 3);
+  double    a0t1    = a0(msbot(1), q), a0t2 = a0(msbot(2), q);
+  double    ft1     = ffn(p, msbot(1), 0.0, q), ft2 = ffn(p, msbot(2), 0.0, q);
+  double    ggt     = gfn(p, mg, mb, q);
 
-  double a0t1 = a0(msbot(1), q), a0t2 = a0(msbot(2), q);
-  double ft1 = ffn(p, msbot(1), 0.0, q), ft2 = ffn(p, msbot(2), 0.0, q);
-  double ggt = gfn(p, mg, mb, q);
   strong(1, 1) = 4.0 * g3sq / 3.0 *
     (2.0 * ggt + sqr(cb) * (ft1 + a0t1) + sqr(sb) * (ft2 + a0t2));
   strong(2, 2) = 4.0 * g3sq / 3.0 *
@@ -5617,35 +5366,32 @@ DoubleMatrix Softsusy<SoftPars>::addSbotQCD(double p, double mt, DoubleMatrix & 
 }
 
 template<class SoftPars>
-void Softsusy<SoftPars>::addSbotSfermion(double p, double mt, 
-						 DoubleMatrix & stop, DoubleMatrix & sbottom) {
+void Softsusy<SoftPars>::addSbotSfermion(double p, double mt, DoubleMatrix & stop, DoubleMatrix & sbottom) {
+  double    thetat   = forLoops.thetat;
+  double    thetab   = forLoops.thetab;
+  double    thetatau = forLoops.thetatau;
+  double    ct       = cos(thetat);
+  double    st       = sin(thetat);
+  double    cb       = cos(thetab);
+  double    sb       = sin(thetab);
+  double    ctau     = cos(thetatau);
+  double    stau     = sin(thetatau);
+  double    q        = displayMu();
+  double    ht       = forLoops.ht, htsq = sqr(ht);
+  double    hb       = forLoops.hb, hbsq = sqr(hb);
+  double    mb       = forLoops.mb;
+  double    htau     = forLoops.htau;
   DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double    thetatau= forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    stau    = sin(thetatau);
+  msbot(1)           = forLoops.md(1, 3);
+  msbot(2)           = forLoops.md(2, 3);
   DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
+  mstop(1)           = forLoops.mu(1, 3);
+  mstop(2)           = forLoops.mu(2, 3);
   DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
-  double    mg      = forLoops.mGluino;
-  double q = displayMu(), 
-    ht = forLoops.ht,
-    hb = forLoops.hb,
-    mb = forLoops.mb,
-    htau = forLoops.htau,
-    htsq = sqr(ht), 
-    hbsq = sqr(hb);
- double a0t1 = a0(msbot(1), q), a0t2 = a0(msbot(2), q);
+  mstau(1)           = forLoops.me(1, 3);
+  mstau(2)           = forLoops.me(2, 3);
+
+  double    a0t1     = a0(msbot(1), q), a0t2 = a0(msbot(2), q);
 
   stop(1, 1) = hbsq * (sqr(sb) * a0t1 + sqr(cb) * a0t2);
   stop(2, 2) = hbsq * (sqr(cb) * a0t1 + sqr(sb) * a0t2);
@@ -5660,49 +5406,27 @@ void Softsusy<SoftPars>::addSbotSfermion(double p, double mt,
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSbotHiggs(double p, double mt, DoubleMatrix & higgs) {
-  double    mz      = displayMzRun();
-  double    mw      = displayMwRun();
+  double    mz         = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
-  double    alpha   = forLoops.thetaH;
-  double    g	    = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    e       = g * sinthDrbar;
-  double    beta    = atan(displayTanb());
-
+  double    alpha      = forLoops.thetaH;
+  double    g	       = displayGaugeCoupling(2);
+  double    beta       = atan(displayTanb());
+  double    sinb       = sin(beta), cosb = cos(beta);
+  double    thetat     = forLoops.thetat;
+  double    thetab     = forLoops.thetab;
+  double    smu        = -displaySusyMu();
+  double    q          = displayMu();
+  double    ht         = forLoops.ht, htsq = sqr(ht);
+  double    hb         = forLoops.hb, hbsq = sqr(hb);
+  double    htau       = forLoops.htau;
+  double    mb         = forLoops.mb;
   DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double    thetatau= forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    stau    = sin(thetatau);
+  msbot(1)             = forLoops.md(1, 3);
+  msbot(2)             = forLoops.md(2, 3);
   DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
-  DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
-  DoubleVector msnu(3);
-  msnu(1)          = forLoops.msnu(1);
-  msnu(2)          = forLoops.msnu(2);
-  msnu(3)          = forLoops.msnu(3);
-
-  double    mg      = forLoops.mGluino;
-  double    smu     = -displaySusyMu();
-  double q = displayMu(), g3sq = sqr(displayGaugeCoupling(3)), 
-    ht = forLoops.ht,
-    hb = forLoops.hb,
-    mb = forLoops.mb,
-    htau = forLoops.htau,
-    htsq = sqr(ht), 
-    sinb = sin(beta), cosb = cos(beta), 
-    hbsq = sqr(hb);
+  mstop(1)             = forLoops.mu(1, 3);
+  mstop(2)             = forLoops.mu(2, 3); 
 
   /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
   DoubleVector higgsm(4), higgsc(2);
@@ -5762,8 +5486,8 @@ DoubleMatrix Softsusy<SoftPars>::addSbotHiggs(double p, double mt, DoubleMatrix 
   }
 
 
-  /// Charged Higgs Feynman rules
-  DoubleMatrix lChHsbotLstopLR(2, 2); /// (H+ G+, L R) basis
+  /// Charged Higgs Feynman rules (H+ G+, L R) basis
+  DoubleMatrix lChHsbotLstopLR(2, 2); 
   lChHsbotLstopLR(2, 1) = -g * displayMwRun() * cos(2.0 * beta) / root2 
     - ht * mt * sinb + hb * mb * cosb;
   lChHsbotLstopLR(2, 2) = -ht * smu * cosb - forLoops.ut * sinb;
@@ -5839,49 +5563,36 @@ DoubleMatrix Softsusy<SoftPars>::addSbotHiggs(double p, double mt, DoubleMatrix 
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSbotEweak(double p, DoubleMatrix & electroweak) {
-  double    mz      = displayMzRun();
-  double    mw      = displayMwRun();
+  double    mz         = displayMzRun();
+  double    mw         = displayMwRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
-  double    alpha   = forLoops.thetaH;
-  double    g	    = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    e       = g * sinthDrbar;
-  double    beta    = atan(displayTanb());
-
+  double    g  	       = displayGaugeCoupling(2);
+  double    gp         = displayGaugeCoupling(1) * sqrt(0.6);
+  double    e          = g * sinthDrbar;
+  double    thetat     = forLoops.thetat;
+  double    thetab     = forLoops.thetab;
+  double    thetatau   = forLoops.thetatau;
+  double    ct         = cos(thetat);
+  double    st         = sin(thetat);
+  double    cb         = cos(thetab);
+  double    sb         = sin(thetab);
+  double    ctau       = cos(thetatau);
+  double    stau       = sin(thetatau);
+  double    q          = displayMu();
   DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double    thetatau= forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    stau    = sin(thetatau);
+  msbot(1)             = forLoops.md(1, 3);
+  msbot(2)             = forLoops.md(2, 3);
   DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
+  mstop(1)             = forLoops.mu(1, 3);
+  mstop(2)             = forLoops.mu(2, 3);
   DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
+  mstau(1)             = forLoops.me(1, 3);
+  mstau(2)             = forLoops.me(2, 3);
   DoubleVector msnu(3);
-  msnu(1)          = forLoops.msnu(1);
-  msnu(2)          = forLoops.msnu(2);
-  msnu(3)          = forLoops.msnu(3);
-
-  double    mg      = forLoops.mGluino;
-  double    smu     = -displaySusyMu();
-  double q = displayMu(), g3sq = sqr(displayGaugeCoupling(3)), 
-    ht = forLoops.ht,
-    hb = forLoops.hb,
-    mb = forLoops.mb,
-    htau = forLoops.htau,
-    htsq = sqr(ht), 
-    sinb = sin(beta), cosb = cos(beta), 
-    hbsq = sqr(hb);
+  msnu(1)              = forLoops.msnu(1);
+  msnu(2)              = forLoops.msnu(2);
+  msnu(3)              = forLoops.msnu(3);
 
   electroweak(1, 1) = electroweak(1, 1) + 
     4.0 * sqr(g) / sqr(costhDrbar) * sqr(gdL) * a0(mz, q) +
@@ -5966,45 +5677,40 @@ DoubleMatrix Softsusy<SoftPars>::addSbotEweak(double p, DoubleMatrix & electrowe
 }
 
 template<class SoftPars>
-void Softsusy<SoftPars>::getNeutralinoFermionSbotCoup(DoubleVector & aPsi0BSbotr, DoubleVector & bPsi0BSbotr, DoubleVector & aPsi0BSbotl, DoubleVector & bPsi0BSbotl) const {
-  double g = displayGaugeCoupling(2);
+DoubleMatrix Softsusy<SoftPars>::addSbotNeutralino(double p, double mt, DoubleMatrix & neutralino) {
+  double g  = displayGaugeCoupling(2);
   double gp = displayGaugeCoupling(1) * sqrt(0.6);
   double hb = forLoops.hb;
+  double q  = displayMu();
+  double mb = forLoops.mb;
+
+  ComplexMatrix n(forLoops.nBpmz);
+  DoubleVector mneut(forLoops.mnBpmz);
+
+  int rank = mneut.displayEnd();
 
   /// Neutralino Feynman rules 
+  DoubleVector aPsi0BSbotr(rank), bPsi0BSbotr(rank), 
+    aPsi0BSbotl(rank), bPsi0BSbotl(rank);
   aPsi0BSbotr(1) = ydR * gp / root2;
   bPsi0BSbotl(1) = gp / (3.0 * root2);
   bPsi0BSbotl(2) = -g / root2;
   aPsi0BSbotl(3) = hb;
   bPsi0BSbotr(3) = hb;
-}
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSbotNeutralino(double p, double mt, DoubleMatrix & neutralino) {
-  double q = displayMu(),  mb = forLoops.mb;
-  DoubleVector aPsi0BSbotr(4), bPsi0BSbotr(4), aPsi0BSbotl(4),
-    bPsi0BSbotl(4);
-  getNeutralinoFermionSbotCoup(aPsi0BSbotr, bPsi0BSbotr, aPsi0BSbotl, bPsi0BSbotl);
-
-  ComplexVector aChi0BSbotl(4), bChi0BSbotl(4), aChi0BSbotr(4),
-    bChi0BSbotr(4);
-
-  ComplexMatrix n(forLoops.nBpmz);
-  DoubleVector mneut(forLoops.mnBpmz);
-  ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
-  DoubleVector mch(forLoops.mchBpmz); 
-
+  ComplexVector aChi0BSbotl(rank), bChi0BSbotl(rank), aChi0BSbotr(rank),
+    bChi0BSbotr(rank);
   aChi0BSbotl = n.complexConjugate() * aPsi0BSbotl;
   bChi0BSbotl = n * bPsi0BSbotl;
   aChi0BSbotr = n.complexConjugate() * aPsi0BSbotr;
   bChi0BSbotr = n * bPsi0BSbotr;
 
-  DoubleVector gChi0BotSbotLL(4), fChi0BotSbotLL(4);
-  DoubleVector gChi0BotSbotLR(4), fChi0BotSbotLR(4);
-  DoubleVector gChi0BotSbotRR(4), fChi0BotSbotRR(4);
+  DoubleVector gChi0BotSbotLL(rank), fChi0BotSbotLL(rank);
+  DoubleVector gChi0BotSbotLR(rank), fChi0BotSbotLR(rank);
+  DoubleVector gChi0BotSbotRR(rank), fChi0BotSbotRR(rank);
 
   int i;
-  for (i=1; i<=4; i++) {
+  for (i=1; i<=rank; i++) {
     fChi0BotSbotLL(i) = (aChi0BSbotl(i) * aChi0BSbotl(i).conj() + 
       bChi0BSbotl(i) * bChi0BSbotl(i).conj()).real();
     gChi0BotSbotLL(i) = (bChi0BSbotl(i).conj() * aChi0BSbotl(i) + 
@@ -6019,7 +5725,7 @@ DoubleMatrix Softsusy<SoftPars>::addSbotNeutralino(double p, double mt, DoubleMa
       bChi0BSbotr(i) * aChi0BSbotl(i).conj()).real();
   }
 
-  for (i=1; i<=4; i++) {
+  for (i=1; i<=rank; i++) {
     double one = gfn(p, mneut(i), mb, q);
     double two = 2.0 * mneut(i) * mb * b0(p, mneut(i), mb, q);
     neutralino(1, 1) = neutralino(1, 1) +
@@ -6035,27 +5741,22 @@ DoubleMatrix Softsusy<SoftPars>::addSbotNeutralino(double p, double mt, DoubleMa
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSbotChargino(double p, double mt, DoubleMatrix & chargino) {
-  double g = displayGaugeCoupling(2);
-  double gp = displayGaugeCoupling(1) * sqrt(0.6);
-  double ht = forLoops.ht, hb = forLoops.hb;
-  double mb = forLoops.mb;
-  double q = displayMu();
+  double g  = displayGaugeCoupling(2);
+  double ht = forLoops.ht;
+  double hb = forLoops.hb;
+  double q  = displayMu();
 
-   ComplexMatrix n(forLoops.nBpmz);
-   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
-   DoubleVector mch(forLoops.mchBpmz);
+  ComplexMatrix n(forLoops.nBpmz);
+  ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
+  DoubleVector mch(forLoops.mchBpmz);
 
   /// Chargino Feynman Rules
-  DoubleVector bPsicTSbotl(2), bPsicTSbotr(2), aPsicTSbotl(2), 
-    aPsicTSbotr(2); 
-
+  DoubleVector bPsicTSbotl(2), bPsicTSbotr(2), aPsicTSbotl(2), aPsicTSbotr(2); 
   bPsicTSbotl(1) = g;
   bPsicTSbotr(2) = -hb;
   aPsicTSbotl(2) = -ht;
   
-  ComplexVector aChicTSbotr(2), aChicTSbotl(2), bChicTSbotl(2),
-      bChicTSbotr(2);
-  ComplexMatrix aChTSbot(2, 2), bChTSbot(2, 2);
+  ComplexVector aChicTSbotr(2), aChicTSbotl(2), bChicTSbotl(2), bChicTSbotr(2);
 
   aChicTSbotl = v.complexConjugate() * aPsicTSbotl;
   bChicTSbotl = u * bPsicTSbotl;
@@ -6092,13 +5793,13 @@ DoubleMatrix Softsusy<SoftPars>::addSbotChargino(double p, double mt, DoubleMatr
     chargino(2, 2) = chargino(2, 2) + fChTSbotRR(i) * one - 
       gChTSbotRR(i) * two;
   }
+
   return chargino;
 }
 
-/// Cecked 16.08.2005
+/// Checked 16.08.2005
 template<class SoftPars>
-void Softsusy<SoftPars>::addSbotCorrection(double p, 
-				     DoubleMatrix & mass, double mt) {
+void Softsusy<SoftPars>::addSbotCorrection(double p, DoubleMatrix & mass, double mt) {
 
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
@@ -6110,7 +5811,7 @@ void Softsusy<SoftPars>::addSbotCorrection(double p,
 
   /// one-loop correction matrix
   DoubleMatrix piSq(2, 2); /// Self-energy matrix
-  /// LCT: Separate contributions contained in following matrices
+
   DoubleMatrix strong(2, 2), stop(2, 2), sbottom(2, 2), 
     higgs(2, 2), electroweak(2, 2), chargino(2, 2), neutralino(2, 2);
 
@@ -6131,71 +5832,48 @@ void Softsusy<SoftPars>::addSbotCorrection(double p,
     (strong + stop + sbottom + higgs + electroweak + chargino + neutralino);
 
   piSq(2, 1) = piSq(1, 2);
-  
+
   mass = mass - piSq;	
 }
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSupQCD(double p1, double p2, int family, DoubleMatrix & strong) {
-  double g = displayGaugeCoupling(2), g3sq = sqr(displayGaugeCoupling(3));
+  double g3sq = sqr(displayGaugeCoupling(3));
+  double mg   = forLoops.mGluino;
+  double q    = displayMu(); 
   DoubleVector msup(2); 
-  msup(1) = forLoops.mu(1, family);
-  msup(2) = forLoops.mu(2, family);
-  double mg = forLoops.mGluino;
-  double q = displayMu(); 
+  msup(1)     = forLoops.mu(1, family);
+  msup(2)     = forLoops.mu(2, family);
 
   double a0t1 = a0(msup(1), q), a0t2 = a0(msup(2), q);
-  double ft1 = ffn(p1, msup(1), 0.0, q), ft2 = ffn(p2, msup(2), 0.0, q);
+  double ft1  = ffn(p1, msup(1), 0.0, q), ft2 = ffn(p2, msup(2), 0.0, q);
   double ggt1 = gfn(p1, mg, 0., q), ggt2 = gfn(p2, mg, 0., q);
 
-  strong(1, 1) = 4.0 * g3sq / 3.0 *
-    (2.0 * ggt1 + (ft1 + a0t1));
-  strong(2, 2) = 4.0 * g3sq / 3.0 *
-    (2.0 * ggt2 + (ft2 + a0t2));
+  strong(1, 1) = 4.0 * g3sq / 3.0 * (2.0 * ggt1 + (ft1 + a0t1));
+  strong(2, 2) = 4.0 * g3sq / 3.0 * (2.0 * ggt2 + (ft2 + a0t2));
 
   return strong;
 }
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSupHiggs(double p1, double p2, int family, DoubleMatrix & higgs) {
-  /// brevity
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
-  double    alpha   = forLoops.thetaH;
-  double    g	    = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    beta    = atan(displayTanb());
-  double    e       = g * sinthDrbar; /// DRbar value of e
-
-  DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double   thetatau = forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double  ctau      = cos(thetatau);
-  double  stau      = sin(thetatau);
-  DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
+  double    alpha       = forLoops.thetaH;
+  double    g	        = displayGaugeCoupling(2);
+  double    beta        = atan(displayTanb());
+  double    q           = displayMu();
+  double    sinb        = sin(beta), cosb = cos(beta);
+  double    mz          = displayMzRun();
   DoubleVector msup(2);
-  msup(1)          = forLoops.mu(1, family);
-  msup(2)          = forLoops.mu(2, family);
+  msup(1)               = forLoops.mu(1, family);
+  msup(2)               = forLoops.mu(2, family);
   DoubleVector msd(2);
-  msd(1)          = forLoops.md(1, family);
-  msd(2)          = forLoops.md(2, family);
+  msd(1)                = forLoops.md(1, family);
+  msd(2)                = forLoops.md(2, family);
 
-  double    mg      = forLoops.mGluino;
-  double q = displayMu(), g3sq = sqr(displayGaugeCoupling(3)), 
-    sinb = sin(beta), cosb = cos(beta), 
-    mz = displayMzRun();
-
- /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
+  /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
   DoubleVector higgsm(4), higgsc(2);
   DoubleVector dnu(4), dnd(4), cn(4);
   assignHiggsSfermions(higgsm, higgsc, dnu, dnd, cn, beta);
@@ -6245,8 +5923,8 @@ DoubleMatrix Softsusy<SoftPars>::addSupHiggs(double p1, double p2, int family, D
     lHStopRStop12(2, i) = temp2(2);
   }
 
-  /// Charged Higgs Feynman rules
-  DoubleMatrix lChHstopLsbotLR(2, 2); /// (H+ G+, L R) basis
+  /// Charged Higgs Feynman rules (H+ G+, L R) basis
+  DoubleMatrix lChHstopLsbotLR(2, 2); 
   lChHstopLsbotLR(1, 1) = g * displayMwRun() * sin(2.0 * beta) / root2;
   lChHstopLsbotLR(2, 1) =-g * displayMwRun() * cos(2.0 * beta) / root2;
 
@@ -6312,34 +5990,26 @@ DoubleMatrix Softsusy<SoftPars>::addSupEweak(double p1, double p2, int family, D
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
-  double    alpha   = forLoops.thetaH;
-  double    g	    = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    e       = g * sinthDrbar; /// DRbar value of e
-  DoubleVector msbot(2);
-  msbot(1) = forLoops.md(1, 3);
-  msbot(2) = forLoops.md(2, 3);
-  double    thetat  = forLoops.thetat;
-  double    thetab  = forLoops.thetab;
-  double   thetatau = forLoops.thetatau;
-  double    ct      = cos(thetat) ;
-  double    st      = sin(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    sb      = sin(thetab) ;
-  double  ctau      = cos(thetatau);
-  double  stau      = sin(thetatau);
-  DoubleVector mstop(2);
-  mstop(1)          = forLoops.mu(1, 3);
-  mstop(2)          = forLoops.mu(2, 3);
+  double    g	        = displayGaugeCoupling(2);
+  double    gp          = displayGaugeCoupling(1) * sqrt(0.6);
+  double    e           = g * sinthDrbar; /// DRbar value of e
+  double    thetat      = forLoops.thetat;
+  double    thetab      = forLoops.thetab;
+  double    thetatau    = forLoops.thetatau;
+  double    ct          = cos(thetat);
+  double    st          = sin(thetat);
+  double    cb          = cos(thetab);
+  double    sb          = sin(thetab);
+  double    ctau        = cos(thetatau);
+  double    stau        = sin(thetatau);
+  double    q           = displayMu();
+  double    mz          = displayMzRun();
   DoubleVector msup(2);
-  msup(1)          = forLoops.mu(1, family);
-  msup(2)          = forLoops.mu(2, family);
+  msup(1)               = forLoops.mu(1, family);
+  msup(2)               = forLoops.mu(2, family);
   DoubleVector msd(2);
-  msd(1)          = forLoops.md(1, family);
-  msd(2)          = forLoops.md(2, family);
-
-  double    mg      = forLoops.mGluino;
-  double q = displayMu(), mz = displayMzRun();
+  msd(1)                = forLoops.md(1, family);
+  msd(2)                = forLoops.md(2, family);
 
   /// EW bosons
   electroweak(1, 1) += 
@@ -6431,46 +6101,41 @@ DoubleMatrix Softsusy<SoftPars>::addSupEweak(double p1, double p2, int family, D
      ynuL * (a0(forLoops.msnu(1), q) + 
 	     a0(forLoops.msnu(2), q) +
 	     a0(forLoops.msnu(3), q)));
+
   return electroweak;
-}
-
-/// LCT: Returns trilinear gaugino-fermion-sup couplings in weak basis
-template<class SoftPars>
-void Softsusy<SoftPars>::getNeutralinoFermionSupCoup(DoubleVector & aPsi0TStopr, DoubleVector & bPsi0TStopr, DoubleVector & aPsi0TStopl, DoubleVector & bPsi0TStopl) const {
-  double g = displayGaugeCoupling(2);
-  double gp = displayGaugeCoupling(1) * sqrt(0.6);
-
-  /// Neutralino Feynman rules 
-  aPsi0TStopr(1) = - 4.0 * gp / (3.0 * root2);
-  bPsi0TStopl(1) = gp / (3.0 * root2);
-  bPsi0TStopl(2) = g / root2;
 }
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSupNeutralino(double p1, double p2, int family, DoubleMatrix & neutralino) {
-  double q = displayMu();
+  double q  = displayMu();
+  double g  = displayGaugeCoupling(2);
+  double gp = displayGaugeCoupling(1) * sqrt(0.6);
 
-  /// LCT: get neutralino Feynman rules
-  DoubleVector aPsi0TStopr(4), bPsi0TStopr(4), aPsi0TStopl(4), bPsi0TStopl(4);
-  getNeutralinoFermionSupCoup(aPsi0TStopr, bPsi0TStopr, aPsi0TStopl, bPsi0TStopl);
-
- ComplexVector aChi0TStopl(4), bChi0TStopl(4), aChi0TStopr(4),
-    bChi0TStopr(4);
   ComplexMatrix n(forLoops.nBpmz);
   DoubleVector mneut(forLoops.mnBpmz);
-  ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
 
+  int rank = mneut.displayEnd();
+
+  /// Neutralino Feynman rules
+  DoubleVector aPsi0TStopr(rank), bPsi0TStopr(rank), 
+    aPsi0TStopl(rank), bPsi0TStopl(rank); 
+  aPsi0TStopr(1) = - 4.0 * gp / (3.0 * root2);
+  bPsi0TStopl(1) = gp / (3.0 * root2);
+  bPsi0TStopl(2) = g / root2;
+
+ ComplexVector aChi0TStopl(rank), bChi0TStopl(rank), 
+   aChi0TStopr(rank), bChi0TStopr(rank);
   aChi0TStopl = n.complexConjugate() * aPsi0TStopl;
   bChi0TStopl = n * bPsi0TStopl;
   aChi0TStopr = n.complexConjugate() * aPsi0TStopr;
   bChi0TStopr = n * bPsi0TStopr;
 
-  DoubleVector gChi0TopStopLL(4), fChi0TopStopLL(4);
-  DoubleVector gChi0TopStopLR(4), fChi0TopStopLR(4);
-  DoubleVector gChi0TopStopRR(4), fChi0TopStopRR(4);
+  DoubleVector gChi0TopStopLL(rank), fChi0TopStopLL(rank);
+  DoubleVector gChi0TopStopLR(rank), fChi0TopStopLR(rank);
+  DoubleVector gChi0TopStopRR(rank), fChi0TopStopRR(rank);
 
   int i;
-  for (i=1; i<=4; i++) {
+  for (i=1; i<=rank; i++) {
     fChi0TopStopLL(i) = (aChi0TStopl(i) * aChi0TStopl(i).conj() + 
       bChi0TStopl(i) * bChi0TStopl(i).conj()).real();
     gChi0TopStopLL(i) = (bChi0TStopl(i).conj() * aChi0TStopl(i) + 
@@ -6485,7 +6150,7 @@ DoubleMatrix Softsusy<SoftPars>::addSupNeutralino(double p1, double p2, int fami
       bChi0TStopr(i) * aChi0TStopl(i).conj()).real();
   }
 
- for (i=1; i<=4; i++) {
+ for (i=1; i<=rank; i++) {
     double one = gfn(p1, mneut(i), 0., q);
     double two = 0.;
     neutralino(1, 1) = neutralino(1, 1) +
@@ -6499,23 +6164,19 @@ DoubleMatrix Softsusy<SoftPars>::addSupNeutralino(double p1, double p2, int fami
 
 template<class SoftPars>
 DoubleMatrix Softsusy<SoftPars>::addSupChargino(double p1, double p2, int family, DoubleMatrix & chargino) {
-  double g = displayGaugeCoupling(2);
-  double gp = displayGaugeCoupling(1) * sqrt(0.6);
-  double q = displayMu();
+  double g  = displayGaugeCoupling(2);
+  double q  = displayMu();
 
   ComplexMatrix n(forLoops.nBpmz);
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz);
 
- /// Chargino Feynman Rules
-  DoubleVector bPsicBStopl(2), bPsicBStopr(2), aPsicBStopl(2), 
-    aPsicBStopr(2); 
-
+  /// Chargino Feynman Rules
+  /// LCT: Here stop <==> sup and sbot <==> sdown
+  DoubleVector bPsicBStopl(2), bPsicBStopr(2), aPsicBStopl(2), aPsicBStopr(2); 
   aPsicBStopl(1) = g;
   
-  DoubleVector aPsicCSbotl(2);
   ComplexVector aChicBStopr(2), aChicBStopl(2), bChicBStopl(2), bChicBStopr(2);
-  ComplexMatrix aChBStop(2, 2), bChBStop(2, 2);
 
   aChicBStopl = v.complexConjugate() * aPsicBStopl;
   bChicBStopl = u * bPsicBStopl;
@@ -9314,7 +8975,7 @@ void Softsusy<SoftPars>::getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, Com
 /// LCT: Returns fermion contributions to charged Higgs self-energy
 template<class SoftPars>
 double Softsusy<SoftPars>::piHpHmFermions(double p, double q) const {
- /// fermions: 3rd family only for now
+  /// fermions: 3rd family only for now
   drBarPars tree(displayDrBarPars());
   double    ht      = tree.ht;
   double    hb      = tree.hb;
@@ -9337,34 +8998,29 @@ double Softsusy<SoftPars>::piHpHmFermions(double p, double q) const {
 template<class SoftPars>
 double Softsusy<SoftPars>::piHpHmSfermions(double p, double q, double mu) const {
   drBarPars tree(displayDrBarPars());
-  double    ht      = tree.ht;
-  double    hb      = tree.hb;
-  double    htau    = tree.htau;
-  double    beta    = atan(displayTanb());
-  double    mt     =  tree.mt;
-  double    mb    =  tree.mb;
-  double    mtau =    tree.mtau;
-  double    alpha = tree.thetaH;
-  double    mz = displayMzRun();
+  double    ht          = tree.ht;
+  double    hb          = tree.hb;
+  double    htau        = tree.htau;
+  double    beta        = atan(displayTanb());
+  double    mt          = tree.mt;
+  double    mb          = tree.mb;
+  double    mtau        = tree.mtau;
   double    thetaWDRbar = asin(calcSinthdrbar());
-  double    cwDRbar    = cos(thetaWDRbar);
+  double    cwDRbar     = cos(thetaWDRbar);
   double    cw2DRbar    = sqr(cwDRbar);
-  double    sw2DRbar    = 1.0 - cw2DRbar;
-  double    thetat  = tree.thetat ;
-  double    thetab  = tree.thetab;
-  double    thetatau= tree.thetatau;
-  double    st      = sin(thetat) ;
-  double    sb      = sin(thetab) ;
-  double    ct      = cos(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    stau    = sin(thetatau);
-  double    ctau    = cos(thetatau);
-  double    g       = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    mwRun   = displayMwRun();
-  double    cosb    = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
-  double    sinb    = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
-  //  double    mu      = - displaySusyMu();
+  double    thetat      = tree.thetat;
+  double    thetab      = tree.thetab;
+  double    thetatau    = tree.thetatau;
+  double    st          = sin(thetat);
+  double    sb          = sin(thetab);
+  double    ct          = cos(thetat);
+  double    cb          = cos(thetab);
+  double    stau        = sin(thetatau);
+  double    ctau        = cos(thetatau);
+  double    g           = displayGaugeCoupling(2);
+  double    mwRun       = displayMwRun();
+  double    cosb        = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
+  double    sinb        = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
 
   /// first two generations: forget lighter Yukawas
   DoubleMatrix lHpud(2, 2), lHpen(2, 2);
@@ -9457,25 +9113,14 @@ double Softsusy<SoftPars>::piHpHmSfermions(double p, double q, double mu) const 
 template<class SoftPars>
 double Softsusy<SoftPars>::piHpHmGauge(double p, double q) const {
   drBarPars tree(displayDrBarPars());
-  double    alpha = tree.thetaH;
-  double    mz = displayMzRun();
+  double    mz          = displayMzRun();
   double    thetaWDRbar = asin(calcSinthdrbar());
-  double    cwDRbar    = cos(thetaWDRbar);
+  double    cwDRbar     = cos(thetaWDRbar);
   double    cw2DRbar    = sqr(cwDRbar);
-  double    sw2DRbar    = 1.0 - cw2DRbar;
-  double    g       = displayGaugeCoupling(2);
-  double    mh0     = tree.mh0(1);
-  double    mHc     = tree.mHpm;
-  double    mH      = tree.mh0(2);
-  double    mA      = tree.mA0(1);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    mwRun   = displayMwRun();
-  double    beta    = atan(displayTanb());
-  double    cosb    = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
-  double    sinb    = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
-  double    mu      = - displaySusyMu();
+  double    g           = displayGaugeCoupling(2);
+  double    mwRun       = displayMwRun();
 
-double gauge = 2.0 * sqr(g) * a0(mwRun, q) +
+  double gauge = 2.0 * sqr(g) * a0(mwRun, q) +
   sqr(g) * sqr(cos(2.0 * thetaWDRbar)) / cw2DRbar * a0(mz, q);
 
  return gauge;
@@ -9485,23 +9130,21 @@ double gauge = 2.0 * sqr(g) * a0(mwRun, q) +
 template<class SoftPars>
 double Softsusy<SoftPars>::piHpHmHiggs(double p, double q) const {
   drBarPars tree(displayDrBarPars());
-  double    alpha = tree.thetaH;
-  double    mz = displayMzRun();
+  double    alpha       = tree.thetaH;
+  double    mz          = displayMzRun();
   double    thetaWDRbar = asin(calcSinthdrbar());
-  double    cwDRbar    = cos(thetaWDRbar);
+  double    cwDRbar     = cos(thetaWDRbar);
   double    cw2DRbar    = sqr(cwDRbar);
   double    sw2DRbar    = 1.0 - cw2DRbar;
-  double    g       = displayGaugeCoupling(2);
-  double    mh0     = tree.mh0(1);
-  double    mHc     = tree.mHpm;
-  double    mH      = tree.mh0(2);
-  double    mA      = tree.mA0(1);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    mwRun   = displayMwRun();
-  double    beta    = atan(displayTanb());
-  double    cosb    = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
-  double    sinb    = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
-  double    mu      = - displaySusyMu();
+  double    g           = displayGaugeCoupling(2);
+  double    mh0         = tree.mh0(1);
+  double    mHc         = tree.mHpm;
+  double    mH          = tree.mh0(2);
+  double    mA          = tree.mA0(1);
+  double    mwRun       = displayMwRun();
+  double    beta        = atan(displayTanb());
+  double    cosb        = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
+  double    sinb        = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
 
   double higgs = sqr(g) * 0.25 * 
     (sqr(sin(alpha - beta)) * ffn(p, mH, mwRun, q) +
@@ -9555,11 +9198,9 @@ double Softsusy<SoftPars>::piHpHmHiggs(double p, double q) const {
 template<class SoftPars>
 double Softsusy<SoftPars>::piHpHmGauginos(double p, double q) const {
   drBarPars tree(displayDrBarPars());
-  double    g       = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
   double    beta    = atan(displayTanb());
-  double    cosb    = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
-  double    sinb    = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+  double    cosb    = cos(beta);
+  double    sinb    = sin(beta);
 
   double gauginos = 0.;
 
@@ -11429,7 +11070,7 @@ inline double lep2Likelihood(double mh) {
 
 /// smears the likelihood curve for a Standard Model Higgs mass with a 3 GeV
 /// Gaussian theoretical error
-inline DoubleVector mhIntegrand(double mh, const DoubleVector & y) {
+inline DoubleVector mhIntegrand(double mh, const DoubleVector & /* y */) {
   DoubleVector dydx(1);
   dydx(1) = lep2Likelihood(mh) * 
     exp(-sqr(mhTrue - mh) / (2.0 * sqr(sigmaMh))) ;

@@ -120,6 +120,8 @@ public:
 		      DoubleMatrix & gDD,
 		      double & gH1H1, double & gH2H2, double & gSS) const;
 
+  //adds amsb contribution to soft masses for NMSSM.
+  void addAmsb(double maux);
   /// Reads in universal boundary conditions at the current scale: m0, M1/2, A
   void standardSugra(double m0, double m12, double a0);
   /// Reads in universal boundary conditions at the current scale: m0, M1/2, A, mS, Al and Ak
