@@ -10529,8 +10529,9 @@ void Softsusy<SoftPars>::inomixingSLHA(ostream & out) {
   sPhysical s(displayPhys());
  
   out << "Block nmix                  # neutralino mixing matrix\n";
-  int i, j; for (i=1; i<=4; i++)
-    for (j=1; j<=4; j++) {
+  const int rank = s.mneut.displayEnd();
+  int i, j; for (i = 1; i <= rank; i++)
+    for (j = 1; j <= rank; j++) {
       out << "  " << i << "  " << j << "    "; 
       printRow(out, s.mixNeut(j, i));
       out << "   # N_{" << i << "," << j << "}\n";
