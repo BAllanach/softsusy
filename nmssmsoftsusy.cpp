@@ -8957,7 +8957,7 @@ void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters)
   m.setTriakappa(m.displayKappa() * inputParameters.display(51));
  
   if(Z3 ==false) {
-    m.setMspSquared(inputParameters.display(inputParameters.display(52) * m.displayMupr()  ));
+    m.setMspSquared(inputParameters.display(52) * m.displayMupr());
     m.setMsSquared(signedSqr(inputParameters.display(53)));
   }
  
