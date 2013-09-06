@@ -8376,7 +8376,7 @@ double NmssmSoftsusy::predMzsq(double & tanb, double mueffOld, double eps) {
 
 
 void NmssmSoftsusy::itLowsoft
-(int maxTries, double & mx, int sgnMu, double tol, double tanb, 
+(int maxTries, int sgnMu, double tol, double tanb, 
  void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &), 
  const DoubleVector & pars, const DoubleVector nmpars, bool gaugeUnification, bool ewsbBCscale) {
 
@@ -8454,7 +8454,7 @@ void NmssmSoftsusy::itLowsoft
     setPredMzSq(predictedMzSq); 
     if(!GUTlambda) setLambda(nmpars(1));
                       
-    if (!ewsbBCscale) err = runto(mx, eps);
+    if (!ewsbBCscale) err = runto(mxBC, eps);
 
     /// Guard against the top Yukawa fixed point
     if (displayYukawaElement(YU, 3, 3) > 3.0 
@@ -8483,18 +8483,18 @@ void NmssmSoftsusy::itLowsoft
       
       /// Equal gauge couplings: let them and their derivatives set the boundary
       /// condition scale -- linear approximation
-      mx = mx * exp((displayGaugeCoupling(2) - displayGaugeCoupling(1))
+      mxBC = mxBC * exp((displayGaugeCoupling(2) - displayGaugeCoupling(1))
 		    / (a.displayGaugeCoupling(1) - a.displayGaugeCoupling(2)));
 
       /// if mx is too high/low, will likely get non-perturbative problems
-      if (mx < 1.0e4) {
-	mx = 1.0e4;
-	if (PRINTOUT > 2) cout << " mx too low ";
+      if (mxBC < 1.0e4) {
+	mxBC = 1.0e4;
+	if (PRINTOUT > 2) cout << " mxBC too low ";
 	flagMgutOutOfBounds(true);
       }
-      if (mx > 5.0e17) {
-	if (PRINTOUT > 2) cout << " mx =" << mx <<" too high ";
-	mx = 5.0e17;
+      if (mxBC > 5.0e17) {
+	if (PRINTOUT > 2) cout << " mxBC =" << mxBC <<" too high ";
+	mxBC = 5.0e17;
 	flagMgutOutOfBounds(true);
       }
     }
@@ -8515,8 +8515,8 @@ void NmssmSoftsusy::itLowsoft
     }
 
     setMsusy(calcMs());
-    if (ewsbBCscale) mx = displayMsusy();
-    if (PRINTOUT > 0) cout << " mgut=" << mx << flush;
+    if (ewsbBCscale) mxBC = displayMsusy();
+    if (PRINTOUT > 0) cout << " mgut=" << mxBC << flush;
     
     mtrun = displayDrBarPars().mt;
     if (numTries < 11) {
@@ -8576,7 +8576,7 @@ void NmssmSoftsusy::itLowsoft
       return;
     }
     
-    itLowsoft(maxTries, mx, sgnMu, tol, tanb, boundaryCondition, pars, nmpars,
+    itLowsoft(maxTries, sgnMu, tol, tanb, boundaryCondition, pars, nmpars,
 	      gaugeUnification, ewsbBCscale);
   }
   catch(const char *a) {
@@ -8706,13 +8706,11 @@ NmssmSusy NmssmSoftsusy::guessAtSusyMt(double tanb, DoubleVector nmpars, const Q
 
 
 
-double NmssmSoftsusy::lowOrg
+void NmssmSoftsusy::lowOrg
 (void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &),
  double mxGuess,  const DoubleVector & pars, const DoubleVector nmpars, 
  int sgnMu, double tanb, const QedQcd & oneset, bool gaugeUnification, 
  bool ewsbBCscale) {
-
-  double mx = 0.0;
 
   try {
      
@@ -8730,7 +8728,7 @@ double NmssmSoftsusy::lowOrg
     double mz = displayMz();
 
     if (mxGuess > 0.0) 
-      mx = mxGuess; 
+      mxBC = mxGuess; 
     else {
       string ii("Trying to use negative mx in NmssmSoftsusy::lowOrg.\n");
       ii = ii + "Now illegal! Use positive mx for first guess of mx.\n";
@@ -8748,7 +8746,7 @@ double NmssmSoftsusy::lowOrg
     
     NmssmSusy t(guessAtSusyMt(tanb, nmpars, oneset));
     t.setLoops(2); /// 2 loops should protect against ht Landau pole 
-    t.runto(mx); 
+    t.runto(mxBC); 
     setSusy(t);
 
     /// Initial guess: B=0, mu=1st parameter, need better guesses
@@ -8771,7 +8769,7 @@ double NmssmSoftsusy::lowOrg
       setM3Squared(muFirst); 
     }
    
-    run(mx, mz);
+    run(mxBC, mz);
 
     if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
   
@@ -8780,13 +8778,8 @@ double NmssmSoftsusy::lowOrg
     setThresholds(3); setLoops(2);
     
     //PA: itLowsoft to be added along with the rest of lowOrg
-    itLowsoft(maxtries, mx, sgnMu, tol, tanb, boundaryCondition, pars, 
+    itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 
               nmpars, gaugeUnification, ewsbBCscale);
-    
-      // if (displayProblem().nonperturbative 
-      //   || displayProblem().higgsUfb || displayProblem().tachyon 
-      //   || displayProblem().noRhoConvergence)
-      // return mx;
 
     runto(maximum(displayMsusy(), MZ));
     if (ewsbBCscale) boundaryCondition(*this, pars); 
@@ -8820,8 +8813,6 @@ double NmssmSoftsusy::lowOrg
     flagProblemThrown(true);
     throw ii.str();
   }
-
-  return mx;
 }
 
 void NmssmSoftsusy::modselSLHA(ostream & out, const char model[]) {

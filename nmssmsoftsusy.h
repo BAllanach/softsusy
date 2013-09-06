@@ -506,14 +506,14 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   /// the desired sign of svev when mu = 0 and the sign of in the quadratic 
   /// equation for mu when  both mu and lambda * svev are non-zero. 
   /// tanb = desired value of DR bar tan beta(MZ).
-  void itLowsoft(int maxTries, double & mx, int sgnMu, double tol, 
+  void itLowsoft(int maxTries, int sgnMu, double tol, 
 		 double tanb, void (*boundaryCondition)(NmssmSoftsusy &, 
 							const DoubleVector &), 
 		 const DoubleVector & pars, const DoubleVector nmpars, 
                  bool gaugeUnification, bool ewsbBCscale);
   
 
-  double lowOrg(void (*boundaryCondition)
+  void lowOrg(void (*boundaryCondition)
 		(NmssmSoftsusy &, const DoubleVector &),
 		double mxGuess, const DoubleVector & pars, 
                 const DoubleVector nmpars, int sgnMu, double tanb,

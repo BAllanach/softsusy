@@ -1199,9 +1199,8 @@ int main(int argc, char *argv[]) {
        softsusy::Z3 = nmssm_input.is_Z3_symmetric();
 
        DoubleVector nmpars(nmssm_input.get_nmpars());
-       double mgut = nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars,
-                                  nmpars, sgnMu, tanb, oneset, gaugeUnification,
-                                  ewsbBCscale);
+       nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu,
+                    tanb, oneset, gaugeUnification, ewsbBCscale);
        nmssm.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,
                                     numPoints, ewsbBCscale);
        if (nmssm.displayProblem().test()) {
