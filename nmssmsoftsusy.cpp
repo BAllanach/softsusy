@@ -8878,15 +8878,21 @@ void NmssmSoftsusy::nmhmixSLHA(ostream& out) {
 }
 
 void NmssmSoftsusy::nmamixSLHA(ostream& out) {
-  const sPhysical s(displayPhys());
-  const int rank = s.mixA0.displayRows();
-  assert(rank == s.mixA0.displayCols());
+  DoubleMatrix P(3, 3);
+  DegrassiSlavicMix(P);
+
+  // convert 3x3 CP odd mixing matrix P to 2x3 SLHA standard by taking
+  // only the 2nd and 3rd row
+  DoubleMatrix NMAmix(2,3);
+  for (int i = 1; i <= 2; i++)
+     for (int k = 1; k <= 3; k++)
+        NMAmix(i,k) = P(i+1,k);
 
   out << "Block NMAmix                # CP odd Higgs mixing matrix\n";
-  for (int i = 1; i <= rank; i++) {
-    for (int j = 1; j <= rank; j++) {
+  for (int i = 1; i <= 2; i++) {
+    for (int j = 1; j <= 3; j++) {
       out << "  " << i << "  " << j << "    ";
-      printRow(out, s.mixA0(i, j));
+      printRow(out, NMAmix(i, j));
       out << "   # P_{" << i << "," << j << "}\n";
     }
   }
