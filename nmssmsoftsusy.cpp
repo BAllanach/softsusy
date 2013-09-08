@@ -3450,12 +3450,6 @@ void NmssmSoftsusy::rewsbTreeLevel(int sgnMu) {
     setMsSquared(mSsq);
   }
   
-  if ((displayMh1Squared() + 2.0 * sqr(displaySusyMu()) +
-       displayMh2Squared() - 2.0 * fabs(displayM3Squared())) < 0.0 )
-    flagHiggsufb(true);
-  else 
-    flagHiggsufb(false);
-  return;
 }
 
 
@@ -3719,11 +3713,6 @@ if (rewsbKap(kapnew) == 0) flagM3sq(false);
      setMsSquared(mSsqnew);
   }
 
-  if ((displayMh1Squared() + 2.0 * sqr(displaySusyMu()) +
-       displayMh2Squared() - 2.0 * fabs(displayM3Squared())) < 0.0 )
-    flagHiggsufb(true);
-  else 
-    flagHiggsufb(false);
 }
 
 
