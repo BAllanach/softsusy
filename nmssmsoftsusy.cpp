@@ -3970,13 +3970,13 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 	 double ps2 = 0.0, p2b = 0.0, p2w = 0.0, p2tau = 0.0;
 	 double fmasq = fabs(MAeffsq);
 	 dszhiggs_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, 
-		   &amu, &tanb, &vev2, &gs, &kkk, &s11s, &s22s, &s12s);
+	           &amu, &tanb, &vev2, &gs, &kkk, &s11s, &s22s, &s12s);
 	 dszodd_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, &amu,
-		 &tanb, &vev2, &gs, &ps2); 
+	         &tanb, &vev2, &gs, &ps2); 
 	 dszhiggs_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq,
-		   &amu, &cotb, &vev2, &gs, &kkk, &s22b, &s11b, &s12b);
+	           &amu, &cotb, &vev2, &gs, &kkk, &s22b, &s11b, &s12b);
 	 dszodd_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq, &amu,
-		 &cotb, &vev2, &gs, &p2b);
+	         &cotb, &vev2, &gs, &p2b);
 	 //Corrections as in MSSM, not corrected for NMSSM,
 	 //Should be OK for MSSM states when S state is close to decoupled 
 	 ddshiggs_(&rmtsq, &rmbsq, &fmasq, &mst1sq, &mst2sq, &msb1sq, 
@@ -3984,14 +3984,6 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 		   &vev2, &s11w, &s12w, &s22w);
 	 ddsodd_(&rmtsq, &rmbsq, &fmasq, &mst1sq, &mst2sq, &msb1sq, &msb2sq, 
 		 &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, &p2w);
-
-	 /// LCT: Check against strong corrs
-	 // cout << "ps2 = " << ps2 << endl;
-	 // cout << "p2b = " << p2b << endl;
-	 // cout << "ps2 + p2b = " << ps2 + p2b << endl;
-	 // double NMdma = sqr(sb) * DMP[0][0] + 2.0 * sb * cb * DMP[0][1] 
-	 //   + sqr(cb) * DMP[1][1];
-	 // cout << "NMdma strong = " << NMdma << endl;
 	 
 	 double sintau = sin(displayDrBarPars().thetatau),
 	   costau = cos(displayDrBarPars().thetatau);
@@ -4014,17 +4006,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 	 DMS[0][0] = DMS[0][0] + s11tau + sqr(sb) * p2tau;
 	 DMS[0][1] = DMS[0][1] + s12tau - sb * cb * p2tau;
 	 DMS[1][1] = DMS[1][1] + s22tau + sqr(cb) * p2tau;
-	 //PA: check against twoloophiggs.f pieces
-	 double dMA = ps2 + p2w + p2b + p2tau;
-	 double DMS00 = s11s + s11w + s11b + s11tau + dMA * sqr(sb);
-	 double DMS01 = s12s + s12w + s12b + s12tau - dMA * cb * sb;
-	 double DMS11 = s22s + s22w + s22b + s22tau + dMA * sqr(cb);
-
-	  // cout << "DMS00 = "  << DMS00 << endl;
-	  // cout << "DMS01 = "  << DMS01 << endl;
-	  // cout << "DMS11 = "  << DMS11 << endl;
-	  // cout << "DMS[0][0] = " << DMS[0][0] << endl;
-
+	 
 	 /// LCT: Add O(y_t^4 + y_t^2y_b^2 + y_b^4) from mssm two loop parts
 	 DMP[0][0] = DMP[0][0] + sqr(sb) * p2w;
 	 DMP[0][1] = DMP[0][1] + sb * cb * p2w;
@@ -4035,21 +4017,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 	 DMP[1][1] = DMP[1][1] + sqr(cb) * p2tau;
 	 
 
-	 // for(int i=0; i<=2; i++){
-	 //   for(int j=0; j<=2; j++){
-	 //     cout << "DMS[" << i << "][" << j << "] = "  << DMS[i][j]  << endl;
-	 //   }
-	 // }
-
-
-	 // cout << "In ::higgs " << endl;
-	 // cout << "dMA = " << dMA << endl;
-	 // NMdma = sqr(sb) * DMP[0][0] + 2.0 * sb * cb * DMP[0][1] 
-	 //   + sqr(cb) * DMP[1][1];
-	 // cout << "NMdma = " << NMdma << endl;
-	 // cout << "DMP[0][0] = " << DMP[0][0] << endl;
-	 // cout << "DMP[0][1] = " << DMP[0][1] << endl;
-	 // cout << "DMP[1][1] = " << DMP[1][1] << endl;
+	
 
 	 //PA: Now add two loop parts to the full one loop self energy
 	 sigmaMH1(1, 1) = sigmaMH1(1, 1) - DMS[0][0]; 
@@ -4090,49 +4058,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 	 sigmaMA2(3, 3) = sigmaMA2(3, 3) - DMP[2][2];
        }
       
-      else {
-	 double mSUSY = displayMu();
-	 double mSUSYsq = sqr(mSUSY);
-	 double lt = log(mSUSYsq/rmtsq);
-	 double lA = log(MAeffsq/rmtsq);
-       
-	 double loop = 1.0 / (sqr(16.0 * PI * PI));       
-	 double c11 = 3.0 * sqr(hb * hb) * vev2 * sqr(cb) * loop;
-	 double c22 = 3.0 * sqr(ht * ht) * vev2 * sqr(sb) * loop; 
-	 
-	 double sum11t = 16.0 * sqr(gs) - 2.0 * sqr(gp) / 3.0 
-	   + 3.0 * sqr(sb * ht) - 3.0 * sqr(cb * hb);
-	 double sum11A = 3.0 * sqr(sb * hb) + 3.0 * sqr(sb * ht) + sqr(ht);
-	 double sum22t = 16.0 * sqr(gs) + 4.0 * sqr(gp) / 3.0 
-	   - 3.0 * sqr(sb * ht) + 3.0 * sqr(cb * hb);
-	 double sum22A = 3.0 * sqr(cb * ht) + 3.0 * sqr(cb * hb) + sqr(hb);
-	 
-	 double d11 = c11 * (sqr(lt) * sum11t + (sqr(lA) - sqr(lt)) * sum11A);
-	 double d22 = c22 * (sqr(lt) * sum22t + (sqr(lA) - sqr(lt)) * sum22A);
-	 // cout << "in nmssmsoftsusy adding two loop corrections " << endl; 
-	 // cout << "d11 = "  << d11 << endl;
-	 // cout << "d22 = "  << d22 << endl;
-	 
-
-	 // cout << "as at 22 part: c22 * sqr(lt) * 16.0 * sqr(gs) = " << c22 * sqr(lt) * 16.0 * sqr(gs) << endl;
-	 // cout << "as ab 11 part: c11 * sqr(lt) * 16.0 * sqr(gs) = " << c11 * sqr(lt) * 16.0 * sqr(gs) << endl;
-	 // cout << "yt^4 +yb^2yt^2 + yb^4 22 part = "  << c22 * sqr(lt) * (- 3.0 * sqr(sb * ht) + 3.0 * sqr(cb * hb)) + c22 *  (sqr(lA) - sqr(lt)) * ( 3.0 * sqr(cb * ht) + 3.0 * sqr(cb * hb) + sqr(hb)) << endl;
-
-	 // cout << "yt^4 +yb^2yt^2 + yb^4 11 part = "  << c11 * sqr(lt) * (3.0 * sqr(sb * ht) - 3.0 * sqr(cb * hb) ) + c11 *  (sqr(lA) - sqr(lt)) *(3.0 * sqr(sb * hb) + 3.0 * sqr(sb * ht) + sqr(ht)) << endl;
-
-	 
-	 // cout << "gp 22 part = " << c22 *  sqr(lt) * (4.0 * sqr(gp) / 3.0 ) << endl;
-	 // cout << "gp 11 part = " << c11 *  sqr(lt) * ( - 2.0 * sqr(gp) / 3.0  ) << endl;
-
-	 sigmaMH1(1, 1) = sigmaMH1(1, 1) + d11; 
-	 sigmaMH1(2, 2) = sigmaMH1(2, 2) + d22; 
-	 
-	 sigmaMH2(1, 1) = sigmaMH2(1, 1) + d11; 
-	 sigmaMH2(2, 2) = sigmaMH2(2, 2) + d22; 
-	 
-	 sigmaMH3(1, 1) = sigmaMH3(1, 1) + d11; 
-	 sigmaMH3(2, 2) = sigmaMH3(2, 2) + d22; 
-       }   
+     
      }
      
      sigmaMH1.symmetrise();
