@@ -229,11 +229,13 @@ DoubleVector NMSSM_command_line_parser::get_pars() const {
    return pars;
 }
 
-double NMSSM_command_line_parser::get_value(const std::string& str, const std::string& prefix) {
+double NMSSM_command_line_parser::get_value(const std::string& str,
+                                            const std::string& prefix) {
    return atof(str.substr(prefix.size()).c_str());
 }
 
-bool NMSSM_command_line_parser::starts_with(const std::string& str, const std::string& prefix) {
+bool NMSSM_command_line_parser::starts_with(const std::string& str,
+                                            const std::string& prefix) {
    return !str.compare(0, prefix.size(), prefix);
 }
 
