@@ -47,6 +47,22 @@ void errorCall() {
   ii << "For SUSY breaking terms set at MSUSY, enter <mgut>=msusy.\n";
   ii << "lesHouchesInput contains the SUSY Les Houches Accord 2";
   ii << " input.\n";
+  ii << "\n"
+     "NMSSM command line options:\n"
+     "  softpoint.x nmssm <gut-condition> [flags] [parameters]\n"
+     "\n"
+     "Flags:\n"
+     "  --lambdaAtMsusy   input lambda at Q = Msusy\n"
+     "\n"
+     "Parameters:\n"
+     "  --m0= , --m12= , --a0= , --tanBeta= , --mHd2= , --mHu2= ,\n"
+     "  --mu= , --BmuOverCosBetaSinBeta= , --lambda= , --kappa= ,\n"
+     "  --Alambda= , --Akappa= , --lambdaS= , --xiF= , --xiS= ,\n"
+     "  --muPrime= , --mPrimeS2= , --mS2=\n"
+     "\n"
+     "Example:\n"
+     "  softpoint.x nmssm sugra --m0=125 --m12=200 --tanBeta=10 --a0=-300 \\\n"
+     "     --lambda=0.1 --lambdaAtMsusy\n";
   throw ii.str();
 }
 
