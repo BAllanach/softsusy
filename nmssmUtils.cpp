@@ -114,6 +114,100 @@ std::ostream& operator<<(std::ostream& lhs, const NMSSM_input& rhs) {
    return lhs;
 }
 
+
+NMSSM_command_line_parser::NMSSM_command_line_parser()
+   : nmssm_input(NULL)
+   , model_ident("")
+   , m0(0.)
+   , m12(0.)
+   , a0(0.)
+{}
+
+void NMSSM_command_line_parser::parse(int argc, char* argv[], NMSSM_input* nmssm_input) {
+   assert(nmssm_input);
+
+   if (argc < 3)
+      throw "# Error: NMSSM_command_line_parser: not enough command line"
+         " arguments given";
+
+   if (strcmp(argv[1], "nmssm"))
+      throw "# Error: NMSSM_command_line_parser: first argument is not"
+         " nmssm";
+
+   model_ident = argv[2];
+
+   for (int i = 3; i < argc; i++) {
+      if (starts_with(argv[i], "--m0="))
+         m0  = get_value(argv[i], "--m0=");
+      else if (starts_with(argv[i], "--m12="))
+         m12 = get_value(argv[i], "--m12=");
+      else if (starts_with(argv[i], "--a0="))
+         a0  = get_value(argv[i], "--a0=");
+      else if (strcmp(argv[i], "--lambdaAtMsusy") == 0)
+         softsusy::GUTlambda = false;
+      else if (starts_with(argv[i], "--tanBeta="))
+         nmssm_input->set(NMSSM_input::tanBeta, get_value(argv[i], "--tanBeta="));
+      else if (starts_with(argv[i], "--mHu2="))
+         nmssm_input->set(NMSSM_input::mHu2, get_value(argv[i], "--mHu2="));
+      else if (starts_with(argv[i], "--mHd2="))
+         nmssm_input->set(NMSSM_input::mHd2, get_value(argv[i], "--mHd2="));
+      else if (starts_with(argv[i], "--mu="))
+         nmssm_input->set(NMSSM_input::mu, get_value(argv[i], "--mu="));
+      else if (starts_with(argv[i], "--BmuOverCosBetaSinBeta="))
+         nmssm_input->set(NMSSM_input::BmuOverCosBetaSinBeta, get_value(argv[i], "--BmuOverCosBetaSinBeta="));
+      else if (starts_with(argv[i], "--lambda="))
+         nmssm_input->set(NMSSM_input::lambda, get_value(argv[i], "--lambda="));
+      else if (starts_with(argv[i], "--kappa="))
+         nmssm_input->set(NMSSM_input::kappa, get_value(argv[i], "--kappa="));
+      else if (starts_with(argv[i], "--Alambda="))
+         nmssm_input->set(NMSSM_input::Alambda, get_value(argv[i], "--Alambda="));
+      else if (starts_with(argv[i], "--Akappa="))
+         nmssm_input->set(NMSSM_input::Akappa, get_value(argv[i], "--Akappa="));
+      else if (starts_with(argv[i], "--lambdaS="))
+         nmssm_input->set(NMSSM_input::lambdaS, get_value(argv[i], "--lambdaS="));
+      else if (starts_with(argv[i], "--xiF="))
+         nmssm_input->set(NMSSM_input::xiF, get_value(argv[i], "--xiF="));
+      else if (starts_with(argv[i], "--xiS="))
+         nmssm_input->set(NMSSM_input::xiS, get_value(argv[i], "--xiS="));
+      else if (starts_with(argv[i], "--muPrime="))
+         nmssm_input->set(NMSSM_input::muPrime, get_value(argv[i], "--muPrime="));
+      else if (starts_with(argv[i], "--mPrimeS2="))
+         nmssm_input->set(NMSSM_input::mPrimeS2, get_value(argv[i], "--mPrimeS2="));
+      else if (starts_with(argv[i], "--mS2="))
+         nmssm_input->set(NMSSM_input::mS2, get_value(argv[i], "--mS2="));
+      else
+         throw std::string("# Error: unknown command line parameter: ")
+            + argv[i] + '\n';
+   }
+}
+
+const std::string& NMSSM_command_line_parser::get_modelIdent() const {
+   return model_ident;
+}
+
+DoubleVector NMSSM_command_line_parser::get_pars() const {
+   DoubleVector pars(3);
+
+   if (model_ident == "sugra") {
+      pars(1) = m0;
+      pars(2) = m12;
+      pars(3) = a0;
+   } else {
+      throw std::string("# Error: NMSSM boundary condition ") + model_ident
+         + " currently not supported\n";
+   }
+
+   return pars;
+}
+
+double NMSSM_command_line_parser::get_value(const std::string& str, const std::string& prefix) {
+   return atof(str.substr(prefix.size()).c_str());
+}
+
+bool NMSSM_command_line_parser::starts_with(const std::string& str, const std::string& prefix) {
+   return !str.compare(0, prefix.size(), prefix);
+}
+
 /// User supplied routine. Inputs m at the unification scale, and uses
 /// inputParameters vector to output m with high energy soft boundary
 /// conditions.

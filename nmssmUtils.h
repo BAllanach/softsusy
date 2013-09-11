@@ -58,6 +58,24 @@ private:
    void check_ewsb_output_parameters() const;
 };
 
+class NMSSM_command_line_parser {
+public:
+   NMSSM_command_line_parser();
+   ~NMSSM_command_line_parser() {}
+
+   void parse(int argc, char* argv[], NMSSM_input*);
+   const std::string& get_modelIdent() const;
+   DoubleVector get_pars() const;
+
+private:
+   NMSSM_input* nmssm_input;
+   std::string model_ident;
+   double m0, m12, a0;
+
+   static double get_value(const std::string& str, const std::string& prefix);
+   static bool starts_with(const std::string& str, const std::string& prefix);
+};
+
 void NmssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
 
 void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);

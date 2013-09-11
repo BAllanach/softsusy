@@ -101,20 +101,20 @@ int main(int argc, char *argv[]) {
    // or if none of the options are called, then go to error message
     if (argc == 1 || (strcmp(argv[1], "sugra") && strcmp(argv[1], "amsb") &&
 		      strcmp(argv[1], "gmsb") && 
-		      strcmp(argv[1], "runto") && 
+		      strcmp(argv[1], "runto") && strcmp(argv[1], "nmssm") &&
 		      strcmp(argv[1], "leshouches")  && strcmp(argv[1], "-v") &&
 		      strcmp(argv[1], "--version")))
       errorCall();
     
     DoubleVector pars(3); 
     
-    char * modelIdent = (char *)"";  
+    std::string modelIdent;
 
     if (!strcmp(argv[1], "sugra")) {
       cout << "# SOFTSUSY SUGRA calculation" << endl;
       boundaryCondition = &sugraBcs;
       if (argc == 8) {
-	modelIdent = (char *)"sugra";
+	modelIdent = "sugra";
 	double m0 = atof(argv[2]);
 	double m12 = atof(argv[3]);
 	double a0 = atof(argv[4]);
@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
 	pars(1) = m0; pars(2) = m12; pars(3) = a0;
 	r = &m;
       } else if (argc == 9) {
-	modelIdent = (char *)"sugra";
+	modelIdent = "sugra";
 	double m0 = atof(argv[2]);
 	double m12 = atof(argv[3]);
 	double a0 = atof(argv[4]);
@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
 	QEWSB = atof(argv[8]);
 	r = &m;
       } else if (argc == 12) {
-	modelIdent = (char *)"sugra";
+	modelIdent = "sugra";
 	double m0 = atof(argv[2]);
 	double m12 = atof(argv[3]);
 	double a0 = atof(argv[4]);
@@ -155,7 +155,7 @@ int main(int argc, char *argv[]) {
 	r = &m;
       } else if (argc == 13) {
 	RPVflag = true;
-	modelIdent = (char *)"sugra";
+	modelIdent = "sugra";
 	double m0 = atof(argv[2]);
 	double m12 = atof(argv[3]);
 	double a0 = atof(argv[4]);
@@ -171,14 +171,14 @@ int main(int argc, char *argv[]) {
 	  double d = atof(argv[12]);
 	  kw.setLambda(LE, k, i, j, d);
 	} else if (!strcmp(argv[8], "lambdaP")) {
-	  modelIdent = (char *)"sugra";
+	  modelIdent = "sugra";
 	  int i= int(atof(argv[9]));
 	  int j= int(atof(argv[10]));
 	  int k= int(atof(argv[11]));
 	  double d = atof(argv[12]);
 	  kw.setLambda(LD, k, i, j, d);
 	} else if (!strcmp(argv[8], "lambdaPP")) {
-	  modelIdent = (char *)"sugra";
+	  modelIdent = "sugra";
 	  int i= int(atof(argv[9]));
 	  int j= int(atof(argv[10]));
 	  int k= int(atof(argv[11]));
@@ -187,7 +187,7 @@ int main(int argc, char *argv[]) {
 	}
 	r = &m;
       } else if (argc == 11) {
-	modelIdent = (char *)"sugra";
+	modelIdent = "sugra";
 	RPVflag = true;
 	double m0 = atof(argv[2]);
 	double m12 = atof(argv[3]);
@@ -214,7 +214,7 @@ int main(int argc, char *argv[]) {
       cout << "# SOFTSUSY mAMSB calculation" << endl;
       boundaryCondition = &amsbBcs;
       if (argc == 7 || argc == 12) {
-	modelIdent = (char *)"amsb";
+	modelIdent = "amsb";
 	double m0 = atof(argv[2]);
 	double m32 = atof(argv[3]);
 	tanb = atof(argv[4]);
@@ -256,7 +256,7 @@ int main(int argc, char *argv[]) {
       cout << "# SOFTSUSY mGMSB calculation" << endl;
       
       boundaryCondition = &gmsbBcs;
-      modelIdent = (char *)"gmsb";
+      modelIdent = "gmsb";
       if (argc == 8) {
 	  double n5 = atof(argv[2]);
 	  double mMess = atof(argv[3]);
@@ -284,7 +284,7 @@ int main(int argc, char *argv[]) {
       }
       // for RPV GMSB
       else if (argc == 13) {
-	modelIdent = (char *)"gmsb";
+	modelIdent = "gmsb";
 	RPVflag = true;
 	double n5 = atof(argv[2]);
 	double mMess = atof(argv[3]);
@@ -333,6 +333,14 @@ int main(int argc, char *argv[]) {
       else 
 	errorCall();
     }
+    if (!strcmp(argv[1], "nmssm")) {
+      susy_model = NMSSM;
+      NMSSM_command_line_parser nmssm_parser;
+      nmssm_parser.parse(argc, argv, &nmssm_input);
+      modelIdent = nmssm_parser.get_modelIdent();
+      pars = nmssm_parser.get_pars();
+      cout << "# SOFTSUSY NMSSM " << modelIdent << " calculation\n";
+    }
     
     bool flag = false;
     if (!strcmp(argv[1], "leshouches")) {
@@ -365,31 +373,31 @@ int main(int argc, char *argv[]) {
 		case 1: kk >> model; 
 		  switch(model) {
 		  case 0: boundaryCondition = &extendedSugraBcs;
-		    modelIdent = (char *)"nonUniversal"; r=&m;
+		    modelIdent = "nonUniversal"; r=&m;
 		    break;
 		  case 1: 
 		    if (!flavourViolation) {
 		      pars.setEnd(3); 
 		      boundaryCondition = &sugraBcs; 
 		    }
-		    modelIdent = (char *)"sugra";
+		    modelIdent = "sugra";
 		    break;
 		  case 2: 
 		    if (!flavourViolation) {
 		      boundaryCondition = &gmsbBcs; 
 		      pars.setEnd(4); 
 		    } 
-		    modelIdent = (char *)"gmsb";
+		    modelIdent = "gmsb";
 		    break;
 		  case 3: 		    
 		    boundaryCondition = &amsbBcs; 
 		    pars.setEnd(2); 
-		    modelIdent = (char *)"amsb";
+		    modelIdent = "amsb";
 		    break;
 		  case 4:
 		    boundaryCondition = &splitGmsb;
 		    pars.setEnd(7); sgnMu = 0; 
-		    modelIdent = (char *)"splitgmsb";
+		    modelIdent = "splitgmsb";
 		    break;
 		  default: 
 		    ostringstream ii;
@@ -603,8 +611,8 @@ int main(int argc, char *argv[]) {
 
 		/// First, we want to convert our input to EXTPAR if we have
 		/// mSUGRA already
-		if (!strcmp(modelIdent, "sugra")) {
-		  modelIdent = (char *)"nonUniversal";
+		if (modelIdent == "sugra") {
+		  modelIdent = "nonUniversal";
 		  if (!flavourViolation) {
 		    /// We assume mSUGRA BCs with no flavour violation
 		    r=&m; 
@@ -648,7 +656,7 @@ int main(int argc, char *argv[]) {
 		  }
 		}
 		
-		if (!strcmp(modelIdent, "nonUniversal")) {
+		if (modelIdent == "nonUniversal") {
 		  /// First, put parameters that depend not on
 		  /// flavoured/unflavoured input
 		  if (i == 0) { 
@@ -843,44 +851,44 @@ int main(int argc, char *argv[]) {
 		}
 	      } 
 	      else if (block == "MSQ2IN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars(positionOfSym(i, j) + 3) = d;
 	      }
 	      else if (block == "MSU2IN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars(positionOfSym(i, j) + 9) = d;
 	      }
 	      else if (block == "MSD2IN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars(positionOfSym(i, j) + 15) = d;
 	      }
 	      else if (block == "MSL2IN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars(positionOfSym(i, j) + 21) = d;
 	      }
 	      else if (block == "MSE2IN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars(positionOfSym(i, j) + 27) = d;
 	      }
 	      else if (block == "TUIN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars((i-1) * 3 + j + 33) = d;
 		slha2setTrilinear[(i-1) * 3 + j - 1] = true;
 	      }
 	      else if (block == "TDIN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars((i-1) * 3 + j + 42) = d;
 		slha2setTrilinear[(i-1) * 3 + j + 8] = true;
 	      }
 	      else if (block == "TEIN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars((i-1) * 3 + j + 51) = d;
 		slha2setTrilinear[(i-1) * 3 + j + 17] = true;
@@ -1097,7 +1105,7 @@ int main(int argc, char *argv[]) {
     if (flavourViolation || RPVflag) k.setAngles(lambda, aCkm, rhobar, etabar);
 
     if (r->displayAltEwsb()) {
-      if (strcmp(modelIdent, "splitgmsb")) {
+      if (modelIdent != "splitgmsb") {
 	//	boundaryCondition = &extendedSugraBcs2;
 	r->setSusyMu(pars(23)); 
       } else {
@@ -1119,11 +1127,11 @@ int main(int argc, char *argv[]) {
                      " not supported\n");
           throw msg;
        }
-       if (strcmp(modelIdent, "sugra") == 0) {
+       if (modelIdent == "sugra") {
           nmssmBoundaryCondition = &NmssmMsugraBcs;
           if (pars.size() != 3)
              pars.setEnd(3);
-       } else if (strcmp(modelIdent, "nonUniversal") == 0) {
+       } else if (modelIdent == "nonUniversal") {
           nmssmBoundaryCondition = &extendedNMSugraBcs;
           if (pars.size() != 53) {
              string msg("# Error: NMSSM non-minmal sugra boundary condition"
@@ -1187,7 +1195,7 @@ int main(int argc, char *argv[]) {
        if (desiredMh > 0.1) {
           sPhysical s(r->displayPhys()); s.mh0(1) = desiredMh; r->setPhys(s);
        }
-       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,
+       r->lesHouchesAccordOutput(cout, modelIdent.c_str(), pars, sgnMu, tanb, qMax,
                                  numPoints, ewsbBCscale);
        if (r->displayProblem().test()) {
           cout << "# SOFTSUSY problem with point: " << r->displayProblem() << endl;
@@ -1201,7 +1209,7 @@ int main(int argc, char *argv[]) {
        DoubleVector nmpars(nmssm_input.get_nmpars());
        nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu,
                     tanb, oneset, gaugeUnification, ewsbBCscale);
-       nmssm.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,
+       nmssm.lesHouchesAccordOutput(cout, modelIdent.c_str(), pars, sgnMu, tanb, qMax,
                                     numPoints, ewsbBCscale);
        if (nmssm.displayProblem().test()) {
           cout << "# SOFTSUSY problem with NMSSM point: "
