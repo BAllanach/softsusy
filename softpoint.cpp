@@ -355,8 +355,8 @@ int main(int argc, char *argv[]) {
     }
     if (!strcmp(argv[1], "nmssm")) {
       susy_model = NMSSM;
-      NMSSM_command_line_parser nmssm_parser;
-      nmssm_parser.parse(argc, argv, &nmssm_input);
+      NMSSM_command_line_parser nmssm_parser(&nmssm_input);
+      nmssm_parser.parse(argc, argv);
       modelIdent = nmssm_parser.get_modelIdent();
       pars = nmssm_parser.get_pars();
       cout << "# SOFTSUSY NMSSM " << modelIdent << " calculation\n";

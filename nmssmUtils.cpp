@@ -115,18 +115,17 @@ std::ostream& operator<<(std::ostream& lhs, const NMSSM_input& rhs) {
 }
 
 
-NMSSM_command_line_parser::NMSSM_command_line_parser()
-   : nmssm_input(NULL)
+NMSSM_command_line_parser::NMSSM_command_line_parser(NMSSM_input* nmssm_input_)
+   : nmssm_input(nmssm_input_)
    , model_ident("")
    , m0(0.)
    , m12(0.)
    , a0(0.)
-{}
-
-void NMSSM_command_line_parser::parse(int argc, char* argv[], NMSSM_input* nmssm_input_) {
+{
    assert(nmssm_input_);
-   nmssm_input = nmssm_input_;
+}
 
+void NMSSM_command_line_parser::parse(int argc, char* argv[]) {
    if (argc < 3)
       throw "# Error: NMSSM_command_line_parser: not enough command line"
          " arguments given";

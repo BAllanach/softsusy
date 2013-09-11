@@ -61,11 +61,11 @@ private:
 /// class which parses command line options of the NMSSM
 class NMSSM_command_line_parser {
 public:
-   NMSSM_command_line_parser();
+   NMSSM_command_line_parser(NMSSM_input*);
    ~NMSSM_command_line_parser() {}
 
    /// parse command line options
-   void parse(int argc, char* argv[], NMSSM_input*);
+   void parse(int argc, char* argv[]);
    /// returns model identification string
    const std::string& get_modelIdent() const;
    /// returns vector of GUT parameters
