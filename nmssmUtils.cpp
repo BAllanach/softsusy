@@ -123,8 +123,9 @@ NMSSM_command_line_parser::NMSSM_command_line_parser()
    , a0(0.)
 {}
 
-void NMSSM_command_line_parser::parse(int argc, char* argv[], NMSSM_input* nmssm_input) {
-   assert(nmssm_input);
+void NMSSM_command_line_parser::parse(int argc, char* argv[], NMSSM_input* nmssm_input_) {
+   assert(nmssm_input_);
+   nmssm_input = nmssm_input_;
 
    if (argc < 3)
       throw "# Error: NMSSM_command_line_parser: not enough command line"
@@ -221,6 +222,25 @@ DoubleVector NMSSM_command_line_parser::get_pars() const {
       pars(51) = a0; // Akappa
       pars(52) = 0.; // mS'^2 @todo which value should we chose here?
       pars(53) = m0*m0; // mS^2
+
+      if (nmssm_input->is_set(NMSSM_input::Alambda))
+         pars(50) = nmssm_input->get(NMSSM_input::Alambda);
+      if (nmssm_input->is_set(NMSSM_input::Akappa))
+         pars(51) = nmssm_input->get(NMSSM_input::Akappa);
+      if (nmssm_input->is_set(NMSSM_input::mHd2))
+         pars(21) = nmssm_input->get(NMSSM_input::mHd2);
+      if (nmssm_input->is_set(NMSSM_input::mHu2))
+         pars(22) = nmssm_input->get(NMSSM_input::mHu2);
+      if (nmssm_input->is_set(NMSSM_input::mu))
+         pars(23) = nmssm_input->get(NMSSM_input::mu);
+      if (nmssm_input->is_set(NMSSM_input::BmuOverCosBetaSinBeta))
+         pars(24) = nmssm_input->get(NMSSM_input::BmuOverCosBetaSinBeta);
+      if (nmssm_input->is_set(NMSSM_input::xiS))
+         ; // currently not set in extendedNMSugraBcs()
+      if (nmssm_input->is_set(NMSSM_input::mPrimeS2))
+         pars(52) = nmssm_input->get(NMSSM_input::mPrimeS2);
+      if (nmssm_input->is_set(NMSSM_input::mS2))
+         pars(53) = nmssm_input->get(NMSSM_input::mS2);
    } else {
       throw std::string("# Error: NMSSM boundary condition ") + model_ident
          + " currently not supported at the command line\n";
