@@ -179,6 +179,23 @@ void NMSSM_command_line_parser::parse(int argc, char* argv[], NMSSM_input* nmssm
          throw std::string("# Error: unknown NMSSM command line option: ")
             + argv[i] + '\n';
    }
+
+   // check universality condition
+   if (model_ident == "sugra") {
+      // relax sugra condition if one of the following parameters is
+      // set
+      if (nmssm_input->is_set(NMSSM_input::Alambda) ||
+          nmssm_input->is_set(NMSSM_input::Akappa) ||
+          nmssm_input->is_set(NMSSM_input::mHd2) ||
+          nmssm_input->is_set(NMSSM_input::mHu2) ||
+          nmssm_input->is_set(NMSSM_input::mu) ||
+          nmssm_input->is_set(NMSSM_input::BmuOverCosBetaSinBeta) ||
+          nmssm_input->is_set(NMSSM_input::xiS) ||
+          nmssm_input->is_set(NMSSM_input::mPrimeS2) ||
+          nmssm_input->is_set(NMSSM_input::mS2)) {
+         model_ident = "nonUniversal";
+      }
+   }
 }
 
 const std::string& NMSSM_command_line_parser::get_modelIdent() const {
@@ -192,6 +209,18 @@ DoubleVector NMSSM_command_line_parser::get_pars() const {
       pars(1) = m0;
       pars(2) = m12;
       pars(3) = a0;
+   } else if (model_ident == "nonUniversal") {
+      pars.setEnd(53);
+      for (int i = 1; i <= 3; i++) pars(i) = m12;
+      for (int i = 11; i <= 13; i++) pars(i) = a0;
+      pars(21) = m0*m0;
+      pars(22) = m0*m0;
+      for (int i = 31; i <= 36; i++) pars(i) = m0;
+      for (int i = 41; i <= 49; i++) pars(i) = m0;
+      pars(50) = a0; // Alambda
+      pars(51) = a0; // Akappa
+      pars(52) = 0.; // mS'^2 @todo which value should we chose here?
+      pars(53) = m0*m0; // mS^2
    } else {
       throw std::string("# Error: NMSSM boundary condition ") + model_ident
          + " currently not supported at the command line\n";
