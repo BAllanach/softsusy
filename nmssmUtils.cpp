@@ -176,7 +176,7 @@ void NMSSM_command_line_parser::parse(int argc, char* argv[], NMSSM_input* nmssm
       else if (starts_with(argv[i], "--mS2="))
          nmssm_input->set(NMSSM_input::mS2, get_value(argv[i], "--mS2="));
       else
-         throw std::string("# Error: unknown command line parameter: ")
+         throw std::string("# Error: unknown NMSSM command line option: ")
             + argv[i] + '\n';
    }
 }
@@ -194,7 +194,7 @@ DoubleVector NMSSM_command_line_parser::get_pars() const {
       pars(3) = a0;
    } else {
       throw std::string("# Error: NMSSM boundary condition ") + model_ident
-         + " currently not supported\n";
+         + " currently not supported at the command line\n";
    }
 
    return pars;
