@@ -51,6 +51,8 @@ void errorCall() {
      "NMSSM command line options:\n"
      "  softpoint.x nmssm <gut-condition> [flags] [parameters]\n"
      "\n"
+     "Gut conditions: sugra\n"
+     "\n"
      "Flags:\n"
      "  --lambdaAtMsusy   input lambda at renormalization scale Q = Msusy\n"
      "\n"
