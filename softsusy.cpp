@@ -8983,8 +8983,9 @@ void MssmSoftsusy::rhohat(double & outrho, double & outsin, double alphaDRbar,
   
   if ((outrho < TOLERANCE || outsin < TOLERANCE) || 
       (numTries - 1 > maxTries)) {  
-    oldrho = 0.23, oldsin = 0.8;
+    oldrho = 0.23; oldsin = 0.8;
     numTries = 0;
+    outrho = 0.23; outsin = 0.8;
     flagNoRhoConvergence(true);
     if (PRINTOUT) cout << flush << "rhohat reached maxtries\n"; 
     return;
