@@ -648,8 +648,14 @@ void positivise(double thetaL, double thetaR, const DoubleVector & diag,
 }
 
 // ---------------- diagonalisation algorithms --------------------
-void diagonaliseSvd(DoubleMatrix & a, DoubleVector & w, DoubleMatrix & v)
-{
+void diagonaliseSvd(DoubleMatrix & a, DoubleVector & w, DoubleMatrix & v) {
+  if (a.testNan()) {
+    ostringstream ii;
+    ii << "Nans present in linalg.cpp:diagonaliseSvd: diagonalising\n" 
+       << a << endl;
+    throw ii.str();
+  }
+  
   int n = a.displayCols(), m = a.displayRows();
   int flag, i, its, j, jj, k, l = 0, nm = 0; 
   double anorm, c, f, g, h, s, scale, x, y, z; 
@@ -657,6 +663,7 @@ void diagonaliseSvd(DoubleMatrix & a, DoubleVector & w, DoubleMatrix & v)
   DoubleVector rv1(a.displayCols());
   
   g = scale = anorm = 0.0; 
+
   for (i = 1; i<= n; ++i) {
     l = i + 1; 
     rv1(i) = scale * g; 
@@ -703,6 +710,7 @@ void diagonaliseSvd(DoubleMatrix & a, DoubleVector & w, DoubleMatrix & v)
     }
     anorm = maximum(anorm, (abs(w(i)) + abs(rv1(i)))); 
   }
+
   for (i = n; i >= 1; i--) {
     if (i < n) {
       if (g) {
@@ -745,6 +753,7 @@ void diagonaliseSvd(DoubleMatrix & a, DoubleVector & w, DoubleMatrix & v)
 	}
 	if (abs(w(nm))+anorm  ==  anorm) break; 
       }
+
       if (flag) {
 	c = 0.0; 
 	s = 1.0; 
@@ -774,10 +783,10 @@ void diagonaliseSvd(DoubleMatrix & a, DoubleVector & w, DoubleMatrix & v)
 	}
 	break; 
       }
-      if (its  ==  30) 
-	throw "no convergence in 30 diagonaliseSvd iterations\n"; 
-      
-      x = w(l); 
+      if (its  ==  30 || l < 1 || k < 1) 
+	throw("Too many iterations in routine diagonaliseSvd, can go no further:\n");  
+      x = w(l);
+
       nm = k - 1; 
       y = w(nm); 
       g = rv1(nm); 

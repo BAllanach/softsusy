@@ -12,3 +12,4 @@ is less than 1 GeV, it is the ABSOLUTE mass difference that is returned by
 sumTol, not the relative mass difference.
 <li> 29/8/13 Problem with SLHA when you fix tanb to be at MX (which is MSUSY) now fixed.
 <li> 29/8/13 SLHA2 problem with output and ordering of squark/slepton masses fixed. Previously, it would occasionally give two identical masses when it shouldn't. Thanks to J Evans.
+<li> 16/9/13 Stops segfaults when rho iteration is screwed up and generates lots of NaNs. Also trapped some Nan matrices in diagonaliseSvd. Thanks to A Voigt
