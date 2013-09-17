@@ -47,6 +47,26 @@ void errorCall() {
   ii << "For SUSY breaking terms set at MSUSY, enter <mgut>=msusy.\n";
   ii << "lesHouchesInput contains the SUSY Les Houches Accord 2";
   ii << " input.\n";
+  ii << "\n"
+     "NMSSM command line options:\n"
+     "  softpoint.x nmssm <gut-condition> [flags] [parameters]\n"
+     "\n"
+     "Gut conditions: sugra\n"
+     "\n"
+     "Flags:\n"
+     "  --lambdaAtMsusy   input lambda at renormalization scale Q = Msusy\n"
+     "\n"
+     "Parameters:\n"
+     "  --m0= , --m12= , --a0= , --tanBeta= , --mHd2= , --mHu2= ,\n"
+     "  --mu= , --BmuOverCosBetaSinBeta= , --lambda= , --kappa= ,\n"
+     "  --Alambda= , --Akappa= , --lambdaS= , --xiF= , --xiS= ,\n"
+     "  --muPrime= , --mPrimeS2= , --mS2=\n"
+     "\n"
+     "  Note: unset parameters are assumed to be zero\n"
+     "\n"
+     "Example:\n"
+     "  softpoint.x nmssm sugra --m0=125 --m12=200 --tanBeta=10 --a0=-300 \\\n"
+     "     --lambda=0.1 --lambdaAtMsusy\n";
   throw ii.str();
 }
 
@@ -56,6 +76,7 @@ int main(int argc, char *argv[]) {
   signal(SIGFPE, FPE_ExceptionHandler); 
 
   double lambda = 0., aCkm = 0., rhobar = 0., etabar = 0.;
+  NMSSM_input nmssm_input; // NMSSM input parameters
 
   bool flavourViolation = false;
 
@@ -67,12 +88,16 @@ int main(int argc, char *argv[]) {
   outputCharacteristics(6);
 
   void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=sugraBcs;
+  void (*nmssmBoundaryCondition)(NmssmSoftsusy&, const DoubleVector&) = NmssmMsugraBcs;
 
   QedQcd oneset;
   MssmSoftsusy m; FlavourMssmSoftsusy k;
+  NmssmSoftsusy nmssm;
   k.setInitialData(oneset);
   MssmSoftsusy * r = &m; 
   RpvNeutrino kw; bool RPVflag = false;
+  enum Model_t { MSSM, NMSSM } susy_model = MSSM; // susy model (MODSEL entry 3)
+  softsusy::GUTlambda = true;
   bool oldSchoolRpvOutput = false;
 
   try {
@@ -96,20 +121,20 @@ int main(int argc, char *argv[]) {
    // or if none of the options are called, then go to error message
     if (argc == 1 || (strcmp(argv[1], "sugra") && strcmp(argv[1], "amsb") &&
 		      strcmp(argv[1], "gmsb") && 
-		      strcmp(argv[1], "runto") && 
+		      strcmp(argv[1], "runto") && strcmp(argv[1], "nmssm") &&
 		      strcmp(argv[1], "leshouches")  && strcmp(argv[1], "-v") &&
 		      strcmp(argv[1], "--version")))
       errorCall();
     
     DoubleVector pars(3); 
     
-    char * modelIdent = (char *)"";  
+    std::string modelIdent;
 
     if (!strcmp(argv[1], "sugra")) {
       cout << "# SOFTSUSY SUGRA calculation" << endl;
       boundaryCondition = &sugraBcs;
       if (argc == 8) {
-	modelIdent = (char *)"sugra";
+	modelIdent = "sugra";
 	double m0 = atof(argv[2]);
 	double m12 = atof(argv[3]);
 	double a0 = atof(argv[4]);
@@ -119,7 +144,7 @@ int main(int argc, char *argv[]) {
 	pars(1) = m0; pars(2) = m12; pars(3) = a0;
 	r = &m;
       } else if (argc == 9) {
-	modelIdent = (char *)"sugra";
+	modelIdent = "sugra";
 	double m0 = atof(argv[2]);
 	double m12 = atof(argv[3]);
 	double a0 = atof(argv[4]);
@@ -130,7 +155,7 @@ int main(int argc, char *argv[]) {
 	QEWSB = atof(argv[8]);
 	r = &m;
       } else if (argc == 12) {
-	modelIdent = (char *)"sugra";
+	modelIdent = "sugra";
 	double m0 = atof(argv[2]);
 	double m12 = atof(argv[3]);
 	double a0 = atof(argv[4]);
@@ -150,7 +175,7 @@ int main(int argc, char *argv[]) {
 	r = &m;
       } else if (argc == 13) {
 	RPVflag = true;
-	modelIdent = (char *)"sugra";
+	modelIdent = "sugra";
 	double m0 = atof(argv[2]);
 	double m12 = atof(argv[3]);
 	double a0 = atof(argv[4]);
@@ -166,14 +191,14 @@ int main(int argc, char *argv[]) {
 	  double d = atof(argv[12]);
 	  kw.setLambda(LE, k, i, j, d);
 	} else if (!strcmp(argv[8], "lambdaP")) {
-	  modelIdent = (char *)"sugra";
+	  modelIdent = "sugra";
 	  int i= int(atof(argv[9]));
 	  int j= int(atof(argv[10]));
 	  int k= int(atof(argv[11]));
 	  double d = atof(argv[12]);
 	  kw.setLambda(LD, k, i, j, d);
 	} else if (!strcmp(argv[8], "lambdaPP")) {
-	  modelIdent = (char *)"sugra";
+	  modelIdent = "sugra";
 	  int i= int(atof(argv[9]));
 	  int j= int(atof(argv[10]));
 	  int k= int(atof(argv[11]));
@@ -182,7 +207,7 @@ int main(int argc, char *argv[]) {
 	}
 	r = &m;
       } else if (argc == 11) {
-	modelIdent = (char *)"sugra";
+	modelIdent = "sugra";
 	RPVflag = true;
 	double m0 = atof(argv[2]);
 	double m12 = atof(argv[3]);
@@ -204,12 +229,12 @@ int main(int argc, char *argv[]) {
 	// end of SUGRA option
       }
     }
-    if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) exit(0);
+    if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) return 0;
     if (!strcmp(argv[1], "amsb")) {
       cout << "# SOFTSUSY mAMSB calculation" << endl;
       boundaryCondition = &amsbBcs;
       if (argc == 7 || argc == 12) {
-	modelIdent = (char *)"amsb";
+	modelIdent = "amsb";
 	double m0 = atof(argv[2]);
 	double m32 = atof(argv[3]);
 	tanb = atof(argv[4]);
@@ -251,7 +276,7 @@ int main(int argc, char *argv[]) {
       cout << "# SOFTSUSY mGMSB calculation" << endl;
       
       boundaryCondition = &gmsbBcs;
-      modelIdent = (char *)"gmsb";
+      modelIdent = "gmsb";
       if (argc == 8) {
 	  double n5 = atof(argv[2]);
 	  double mMess = atof(argv[3]);
@@ -279,7 +304,7 @@ int main(int argc, char *argv[]) {
       }
       // for RPV GMSB
       else if (argc == 13) {
-	modelIdent = (char *)"gmsb";
+	modelIdent = "gmsb";
 	RPVflag = true;
 	double n5 = atof(argv[2]);
 	double mMess = atof(argv[3]);
@@ -328,6 +353,14 @@ int main(int argc, char *argv[]) {
       else 
 	errorCall();
     }
+    if (!strcmp(argv[1], "nmssm")) {
+      susy_model = NMSSM;
+      NMSSM_command_line_parser nmssm_parser(&nmssm_input);
+      nmssm_parser.parse(argc, argv);
+      modelIdent = nmssm_parser.get_modelIdent();
+      pars = nmssm_parser.get_pars();
+      cout << "# SOFTSUSY NMSSM " << modelIdent << " calculation\n";
+    }
     
     bool flag = false;
     if (!strcmp(argv[1], "leshouches")) {
@@ -360,31 +393,31 @@ int main(int argc, char *argv[]) {
 		case 1: kk >> model; 
 		  switch(model) {
 		  case 0: boundaryCondition = &extendedSugraBcs;
-		    modelIdent = (char *)"nonUniversal"; r=&m;
+		    modelIdent = "nonUniversal"; r=&m;
 		    break;
 		  case 1: 
 		    if (!flavourViolation) {
 		      pars.setEnd(3); 
 		      boundaryCondition = &sugraBcs; 
 		    }
-		    modelIdent = (char *)"sugra";
+		    modelIdent = "sugra";
 		    break;
 		  case 2: 
 		    if (!flavourViolation) {
 		      boundaryCondition = &gmsbBcs; 
 		      pars.setEnd(4); 
 		    } 
-		    modelIdent = (char *)"gmsb";
+		    modelIdent = "gmsb";
 		    break;
 		  case 3: 		    
 		    boundaryCondition = &amsbBcs; 
 		    pars.setEnd(2); 
-		    modelIdent = (char *)"amsb";
+		    modelIdent = "amsb";
 		    break;
 		  case 4:
 		    boundaryCondition = &splitGmsb;
 		    pars.setEnd(7); sgnMu = 0; 
-		    modelIdent = (char *)"splitgmsb";
+		    modelIdent = "splitgmsb";
 		    break;
 		  default: 
 		    ostringstream ii;
@@ -393,6 +426,26 @@ int main(int argc, char *argv[]) {
 		       << model << ": terminal error\n";
 		    throw ii.str();
 		  }
+		  break;
+                // reading entry 3: susy model (MSSM, NMSSM, ...)
+                case 3: { int i; kk >> i;
+		  switch(i) {
+		  case 0: susy_model = MSSM; // default
+		    break;
+		  case 1: susy_model = NMSSM;
+                     if (flavourViolation) {
+                        flavourViolation = false;
+                        cout << "# Warning: flavour violation is currtently"
+                           " not supported in the NMSSM\n";
+                     }
+		    break;
+		  default:
+		    ostringstream ii;
+		    ii << "MODSEL 3 choosing silly model switch\n"
+		       << "(" << i << ") not a valid switch" << endl;
+		    throw ii.str();
+                  }
+                  }
 		  break;
 		case 4: int i; kk >> i;
 		  switch(i) {
@@ -411,10 +464,16 @@ int main(int argc, char *argv[]) {
 		  switch(j) {
 		  case 0: flavourViolation = false; break;
 		  default:
-		    r = &k; flavourViolation = true; 
-		    if (boundaryCondition != & amsbBcs) {
-		      pars.setEnd(64); boundaryCondition = &flavourBcs;
-		    }
+                     if (susy_model == NMSSM) {
+                        flavourViolation = false;
+                        cout << "# Warning: flavour violation is currtently"
+                           " not supported in the NMSSM\n";
+                     } else {
+                        r = &k; flavourViolation = true;
+                        if (boundaryCondition != & amsbBcs) {
+                           pars.setEnd(64); boundaryCondition = &flavourBcs;
+                        }
+                     }
 		  }
 		  break;
 		case 11: kk >> numPoints;
@@ -443,7 +502,9 @@ int main(int argc, char *argv[]) {
 	      else if (block == "MINPAR") {
 		int i; double d; kk >> i >> d; 
 		switch (i) {
-		case 3: tanb = d; break;
+		case 3: tanb = d;
+                   nmssm_input.set(NMSSM_input::tanBeta, d);
+                   break;
 		case 4: sgnMu = int(d); break;
 		default: 
 		  switch(model) {
@@ -537,10 +598,41 @@ int main(int argc, char *argv[]) {
 	      }
 	      // Adding non-minimal options. 
 	      else if (block == "EXTPAR") {
+                int i; double d; kk >> i >> d;
+
+                // read extra NMSSM input parameters from EXTPAR
+                // (skipping NMSSM parameters if the MSSM was selected)
+                if (susy_model == MSSM) {
+                   switch (i) {
+                   case 61:
+                   case 62:
+                   case 63:
+                   case 64:
+                   case 65:
+                   case 66:
+                   case 67:
+                   case 68:
+                   case 69:
+                   case 70:
+                      cout << "# Warning: NMSSM parameter EXTPAR " << i
+                           << " given but MSSM chosen -- ignoring it.\n";
+                      continue;
+                   }
+                } else if (susy_model == NMSSM) {
+                   // read NMSSM susy parameters only and continue
+                   switch (i) {
+                   case 61: nmssm_input.set(NMSSM_input::lambda , d); continue;
+                   case 62: nmssm_input.set(NMSSM_input::kappa  , d); continue;
+                   case 65: nmssm_input.set(NMSSM_input::lambdaS, d); continue;
+                   case 66: nmssm_input.set(NMSSM_input::xiF    , d); continue;
+                   case 68: nmssm_input.set(NMSSM_input::muPrime, d); continue;
+                   }
+                }
+
 		/// First, we want to convert our input to EXTPAR if we have
 		/// mSUGRA already
-		if (!strcmp(modelIdent, "sugra")) {
-		  modelIdent = (char *)"nonUniversal";
+		if (modelIdent == "sugra") {
+		  modelIdent = "nonUniversal";
 		  if (!flavourViolation) {
 		    /// We assume mSUGRA BCs with no flavour violation
 		    r=&m; 
@@ -553,6 +645,13 @@ int main(int argc, char *argv[]) {
 		    for (i=31; i<=36; i++) pars(i) = m0;		    
 		    for (i=41; i<=49; i++) pars(i) = m0;		    
 		    kw.setNumRpcBcs(50); 
+                    if (susy_model == NMSSM) {
+                       pars.setEnd(53);
+                       pars(50) = a0; // Alambda
+                       pars(51) = a0; // Akappa
+                       pars(52) = 0.; // mS'^2 @todo which value should we chose here?
+                       pars(53) = m0*m0; // mS^2
+                    }
 		  } else {
 		    /// This is flavour violation with EXTPAR: mSUGRA BCs
 		    /// with flavour violation
@@ -577,8 +676,7 @@ int main(int argc, char *argv[]) {
 		  }
 		}
 		
-		if (!strcmp(modelIdent, "nonUniversal")) {
-		  int i; double d; kk >> i >> d;  
+		if (modelIdent == "nonUniversal") {
 		  /// First, put parameters that depend not on
 		  /// flavoured/unflavoured input
 		  if (i == 0) { 
@@ -602,7 +700,10 @@ int main(int argc, char *argv[]) {
 		  } 
 		  else if (i == 23 || i == 26) {
 		    r->useAlternativeEwsb(); 
-		    if (i == 23) { r->setMuCond(d); r->setSusyMu(d); }
+		    if (i == 23) {
+                       r->setMuCond(d); r->setSusyMu(d);
+                       nmssm_input.set(NMSSM_input::mu, d);
+                    }
 		    if (i == 26) r->setMaCond(d); 
 		  }
 		  else if (!flavourViolation) {
@@ -610,12 +711,45 @@ int main(int argc, char *argv[]) {
 			(i >= 21 && i <= 23) || (i == 26 || i == 25) 
 			|| (i >= 31 && i <= 36) || 
 			(i >= 41 && i <= 49)) {
-		      if (pars.displayEnd() != 49) pars.setEnd(49);
+		      if (pars.displayEnd() < 49) pars.setEnd(49);
 		      pars(i) = d;
-		    }
-		    else {
+                      if (susy_model == NMSSM) {
+                         if (pars.displayEnd() < 53) pars.setEnd(53);
+                         switch (i) {
+                         case 21: nmssm_input.set(NMSSM_input::mHd2, d); break;
+                         case 22: nmssm_input.set(NMSSM_input::mHu2, d); break;
+                         case 23: nmssm_input.set(NMSSM_input::mu  , d); break;
+                         }
+                      }
+		    } else if ((61 <= i && i <= 70) || i == 24) {
+                       switch (i) {
+                       case 24:
+                          nmssm_input.set(NMSSM_input::BmuOverCosBetaSinBeta, d);
+                          break;
+                       case 63:
+                          nmssm_input.set(NMSSM_input::Alambda, d);
+                          pars(50) = d;
+                          break;
+                       case 64:
+                          nmssm_input.set(NMSSM_input::Akappa, d);
+                          pars(51) = d;
+                          break;
+                       case 67:
+                          nmssm_input.set(NMSSM_input::xiS, d);
+                          // @todo currently not set in extendedNMSugraBcs()
+                          break;
+                       case 69:
+                          nmssm_input.set(NMSSM_input::mPrimeS2, d);
+                          pars(52) = d;
+                          break;
+                       case 70:
+                          nmssm_input.set(NMSSM_input::mS2, d);
+                          pars(53) = d;
+                          break;
+                       }
+		    } else {
 		      cout << "WARNING: did not understand parameter " 
-			   << i << " in flavoured EXTPAR inputs\n";
+			   << i << " in non-flavoured EXTPAR inputs\n";
 		    }
 		  } else {
 		    /// Have to translate the numbers from SLHA to your
@@ -650,6 +784,31 @@ int main(int argc, char *argv[]) {
 		  }
 		}
 	      }
+              else if (block == "QEXTPAR") {
+                int i; double d; kk >> i >> d;
+                if (susy_model == NMSSM) {
+                   switch (i) {
+                   case 61: // scale where to input lambda
+                      if (fabs(d + 1.0) < EPSTOL) {
+                         softsusy::GUTlambda = false;
+                      } else {
+                         cout << "WARNING: cannot input NMSSM parameter lambda"
+                            " (set in QEXTPAR " << i << ") at a scale "
+                            "different from M_susy.  Please set QEXTPAR "
+                              << i << " to -1 (M_susy) or remove the entry.\n";
+                      }
+                      break;
+                   default:
+                      cout << "WARNING: cannot use parameter " << i <<
+                         " (set in QEXTPAR) as input at a different"
+                         " scale (in the NMSSM) -- ignoring the scale choice\n";
+                   }
+                   continue;
+                }
+                cout << "WARNING: cannot use parameter " << i <<
+                   " (set in QEXTPAR) as input at a different"
+                   " scale -- ignoring the scale choice\n";
+              }
 	      else if (block == "VCKMIN") {
 		int i; double d; kk >> i >> d;
 		switch(i) {
@@ -712,44 +871,44 @@ int main(int argc, char *argv[]) {
 		}
 	      } 
 	      else if (block == "MSQ2IN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars(positionOfSym(i, j) + 3) = d;
 	      }
 	      else if (block == "MSU2IN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars(positionOfSym(i, j) + 9) = d;
 	      }
 	      else if (block == "MSD2IN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars(positionOfSym(i, j) + 15) = d;
 	      }
 	      else if (block == "MSL2IN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars(positionOfSym(i, j) + 21) = d;
 	      }
 	      else if (block == "MSE2IN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars(positionOfSym(i, j) + 27) = d;
 	      }
 	      else if (block == "TUIN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars((i-1) * 3 + j + 33) = d;
 		slha2setTrilinear[(i-1) * 3 + j - 1] = true;
 	      }
 	      else if (block == "TDIN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars((i-1) * 3 + j + 42) = d;
 		slha2setTrilinear[(i-1) * 3 + j + 8] = true;
 	      }
 	      else if (block == "TEIN") {
-		modelIdent = (char *)"nonUniversal";
+		modelIdent = "nonUniversal";
 		int i, j; double d; kk >> i >> j >> d;
 		pars((i-1) * 3 + j + 51) = d;
 		slha2setTrilinear[(i-1) * 3 + j + 17] = true;
@@ -966,7 +1125,7 @@ int main(int argc, char *argv[]) {
     if (flavourViolation || RPVflag) k.setAngles(lambda, aCkm, rhobar, etabar);
 
     if (r->displayAltEwsb()) {
-      if (strcmp(modelIdent, "splitgmsb")) {
+      if (modelIdent != "splitgmsb") {
 	//	boundaryCondition = &extendedSugraBcs2;
 	r->setSusyMu(pars(23)); 
       } else {
@@ -979,6 +1138,31 @@ int main(int argc, char *argv[]) {
 	r->setMaCond(400.);*/
       }
       sgnMu = 0; // Flags different BCs
+    }
+
+    // set NMSSM boundary conditions
+    if (susy_model == NMSSM) {
+       if (flavourViolation) {
+          string msg("# Error: flavour violation in the NMSSM is currenty"
+                     " not supported\n");
+          throw msg;
+       }
+       if (modelIdent == "sugra") {
+          nmssmBoundaryCondition = &NmssmMsugraBcs;
+          if (pars.size() != 3)
+             pars.setEnd(3);
+       } else if (modelIdent == "nonUniversal") {
+          nmssmBoundaryCondition = &extendedNMSugraBcs;
+          if (pars.size() != 53) {
+             string msg("# Error: NMSSM non-minmal sugra boundary condition"
+                        " chosen, but pars does not have 53 entries\n");
+             throw msg;
+          }
+       } else {
+          string msg("# Error: non-sugra boundary conditions for the NMSSM"
+                     " are currently not supported\n");
+          throw msg;
+       }
     }
 
     int pos = 10;
@@ -1023,25 +1207,46 @@ int main(int argc, char *argv[]) {
     //    double muFirst = 1000.;
     //    r->setSusyMu(muFirst);
 
-    double mgut =  r->lowOrg(boundaryCondition, mgutGuess, pars, sgnMu,
-			     tanb, oneset, gaugeUnification, ewsbBCscale);
+    switch (susy_model) {
+    case MSSM:
+       r->lowOrg(boundaryCondition, mgutGuess, pars, sgnMu,
+                 tanb, oneset, gaugeUnification, ewsbBCscale);
+       /// Fix to mh if additional operators are assumed
+       if (desiredMh > 0.1) {
+          sPhysical s(r->displayPhys()); s.mh0(1) = desiredMh; r->setPhys(s);
+       }
+       r->lesHouchesAccordOutput(cout, modelIdent.c_str(), pars, sgnMu, tanb, qMax,
+                                 numPoints, ewsbBCscale);
+       if (r->displayProblem().test()) {
+          cout << "# SOFTSUSY problem with point: " << r->displayProblem() << endl;
+       }
+       break;
+    case NMSSM: {
+       nmssm_input.check_setup();
 
-    /// Fix to mh if additional operators are assumed
-    if (desiredMh > 0.1) {
-      sPhysical s(r->displayPhys()); s.mh0(1) = desiredMh; r->setPhys(s);
-    }
-    
-    r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
-			      numPoints, mgut, ewsbBCscale);
-    
-    if (r->displayProblem().test()) {
-      cout << "# SOFTSUSY problem with point: " << r->displayProblem() << endl;
+       softsusy::Z3 = nmssm_input.is_Z3_symmetric();
+
+       DoubleVector nmpars(nmssm_input.get_nmpars());
+       nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu,
+                    tanb, oneset, gaugeUnification, ewsbBCscale);
+       nmssm.lesHouchesAccordOutput(cout, modelIdent.c_str(), pars, sgnMu, tanb, qMax,
+                                    numPoints, ewsbBCscale);
+       if (nmssm.displayProblem().test()) {
+          cout << "# SOFTSUSY problem with NMSSM point: "
+               << nmssm.displayProblem() << endl;
+       }
+       }
+       break;
+    default:
+       cout << "# Error: unknown susy model " << susy_model
+            << ", please check your MODSEL (entry 3) settings" << endl;
+       break;
     }
   }
-  catch(const string & a) { cout << a; }
-  catch(const char * a) { cout << a; }
-  catch(...) { cout << "Unknown type of exception caught.\n"; }
+  catch(const string & a) { cout << a; return -1; }
+  catch(const char * a) { cout << a; return -1; }
+  catch(...) { cout << "Unknown type of exception caught.\n"; return -1; }
   
-  exit(0);
+  return 0;
 }
 

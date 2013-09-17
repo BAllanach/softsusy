@@ -198,9 +198,10 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
     dmG = base.displayGaugino();
 
     dm3sq = base.displayM3Squared();
-    dm3sq += (4.0 * displaySusyMu() * lam * hlam
-              + 6.0 * lsq * m3sq + 2.0 * lam * kap * mSpsq) * ONEO16Pisq;
 
+    dm3sq += (4.0 * displaySusyMu() * lam * hlam
+              + 6.0 * lsq * m3sq + 2.0 * lam * kap * mSpsq) * ONEO16Pisq; 
+    
     dmH1sq = base.displayMh1Squared();
     dmH1sq += 2.0 * Mlamsq * ONEO16Pisq;
 
@@ -231,6 +232,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
              - 0.6 * gsq(1) - 3.0 * gsq(2)) * hlam
        + lam * ( 2.0 * aYtr  + 8.0 * hlam * lam
                  + 4.0 * hkap * kap + 1.2 * gsqM(1) + 6.0 * gsqM(2) );
+   
 
     dhkap = 18.0 * hkap * ksq + 12.0 * lam * kap * hlam
        + 6.0 * hkap * lsq;
@@ -360,7 +362,7 @@ SoftParsNmssm SoftParsNmssm::beta2() const {
            + 16.0 * gsq(3) * hlam * (uuT + ddT)
            + 0.02 * g4(1) * (207.0 * hlam - 828.0 * lam * mG(1))
            + 0.5 * g4(2) * (15.0 * hlam - 60.0 * lam * mG(2))
-           + 1.8 * gsq(1) * gsq(2) * (hlam - 2.0* (mG(1) + mG(2)));
+           + 1.8 * gsq(1) * gsq(2) * (hlam - 2.0 * lam * (mG(1) + mG(2)));
 
       } else {
 	// NB you should introduce speedy computation here. For example sum
@@ -654,6 +656,45 @@ void SoftParsNmssm::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
    gSS = 0.0;
 }
 
+/* 
+   Give it a SUSY object and a value of M3/2, and it will return a soft
+   object with AMSB soft breaking terms. Note that the sleptons will be
+   tachyonic, ie nothing has been done to fix that problem.
+   Note that in the following, we are neglecting all Yukawa couplings except
+   that of the third family.
+   
+   THE CURRENT STATE OF PLAY:
+   Two loop additions are possible, but a pain.
+   */
+void SoftParsNmssm::addAmsb(double maux) {
+   SoftPars<NmssmSusy,nmsBrevity>::addAmsb(maux);
+   NmssmSusy Nms(displaySusy());
+   const double ONEO16pisq = 1.0 / (16. * sqr(PI));
+   //PA: now must add nmssm corrcetions to mH2sq, mH1sq and set mSsq
+   double mh1sq = displayMh1Squared();
+   double mh2sq = displayMh2Squared();
+   double mssq = displayMsSquared();
+   double al = displayTrialambda();
+   double ak = displayTriakappa();
+   static nmsBrevity a;
+   static NmssmSusy dsb;
+   dsb = Nms.beta(a);
+   mh1sq += ONEO16pisq * dsb.displayLambda() * displayLambda();
+   mh2sq += ONEO16pisq * dsb.displayLambda() * displayLambda();
+   mssq  += ONEO16pisq * 2.0 * ( dsb.displayLambda() * displayLambda() 
+                                 + dsb.displayKappa() * displayKappa());
+
+   setMh1Squared(mh1sq);
+   setMh2Squared(mh2sq);
+   setMsSquared(mssq);
+   //PA: setting alamda and akappa
+   al += - dsb.displayLambda() * maux;
+   ak += - dsb.displayKappa() * maux;
+   setTrialambda(al);
+   setTriakappa(ak);
+   return;
+}
+
 //PA: for fully constrained models
 void SoftParsNmssm::universalScalars(double m0) {
   SoftPars<NmssmSusy, nmsBrevity>::universalScalars(m0);
@@ -661,9 +702,8 @@ void SoftParsNmssm::universalScalars(double m0) {
 }
 
 //PA: for semi constrained models
-void SoftParsNmssm::semiuniversalScalars(double m0, double mS) {
-  universalScalars(m0);
-  setMsSquared(sqr(mS));
+void SoftParsNmssm::semiuniversalScalars(double m0) {
+  SoftPars<NmssmSusy, nmsBrevity>::universalScalars(m0);
 }
 
 //PA: for fully constrained
@@ -681,11 +721,27 @@ void SoftParsNmssm::semiuniversalTrilinears(double a0, double al, double ak) {
   setTriakappa(ak * displayKappa());
 }
 
-//PA: for semi constrained models
-void SoftParsNmssm::standardsemiSugra(double m0,  double mS, double m12, double a0, double Al, double Ak) {
-  semiuniversalScalars(m0, mS);
+
+//PA: for fully constrained models.
+void SoftParsNmssm::standardSugra(double m0, double m12, double a0) {
+  universalScalars(m0);
+  universalGauginos(m12);
+  universalTrilinears(a0);
+  if(Z3==false)setMspSquared(displayM3Squared() * displayMupr() / displaySusyMu());//universal bilinears
+}
+
+
+//PA: for semi constrained models.  Designed for the Z3 case but now also
+// works for Z3 violating NMSSM.
+void SoftParsNmssm::standardsemiSugra(double m0, double m12, double a0, double Al, double Ak, double mS) {
+  semiuniversalScalars(m0);
   universalGauginos(m12);
   semiuniversalTrilinears(a0, Al, Ak);
+  //In the Z3 violating case we can still have mS as a parameter
+  if (Z3 == false) {
+     setMsSquared(mS);
+     setMspSquared(displayM3Squared() * displayMupr() / displaySusyMu()); //universal bilinears
+  }
 }
 
 ostream & operator <<(ostream &left, const SoftParsNmssm &s) {

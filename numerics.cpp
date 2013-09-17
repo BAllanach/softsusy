@@ -32,7 +32,7 @@ double accurateSqrt1Plusx(double x) {
 
 double log1minusx(double x) {
   if (x > 1.) return 0.; 
-  else if (close(1., x, EPSTOL)) return 6.66e66;
+  else if (close(1., x, EPSTOL)) return numberOfTheBeast;
   else if (fabs(x) > 0.125) return log(1. - x);
   else if (x < 1.e-200) return 0.;
   double test = -x; int i = 1; double l1mx = -x;
@@ -382,6 +382,11 @@ double b0(double p, double m1, double m2, double q) {
   double b0l = B0(p*p, m1*m1, m2*m2).real();
   //  return B0(p*p, m1*m1, m2*m2).real();
 #endif
+
+  /// Avoids IR infinities
+  if (close(p, 0.0, EPSTOL) && close(m1, 0.0, EPSTOL)
+      && close(m2, 0.0, EPSTOL))
+    return 0.0;
 
   double ans  = 0.;
   double mMin = minimum(fabs(m1), fabs(m2));
@@ -990,7 +995,7 @@ double mllMax(double mChi1, double mSlep, double mChi2) {
   double chi   = sqr(mChi1);
   double expression = edgefn(xi, l, chi);
   if (mChi2 < mSlep) expression = sqr(mChi2-mChi1);
-  if (expression < 0.) return -6.66e66; 
+  if (expression < 0.) return -numberOfTheBeast; 
   return sqrt(expression);
 }
 
@@ -1002,11 +1007,11 @@ double mllq(double mSq, double mChi1, double mSlep, double mChi2) {
   if (sqr(l) < q * chi && q * chi < sqr(xi) && sqr(xi) * chi < q * sqr(l))
     return (mSq - mChi1);
   double exp1  = edgefn(q, xi, chi);
-  if (exp1 < 0.) exp1 = -6.66e66; 
+  if (exp1 < 0.) exp1 = -numberOfTheBeast; 
   double exp2  = edgefn(q, l, chi);
-  if (exp2 < 0.) exp2 = -6.66e66; 
+  if (exp2 < 0.) exp2 = -numberOfTheBeast; 
   double exp3  = (q * l - xi * chi) * (xi - l) / (xi * l);
-  if (exp3 < 0.) exp3 = -6.66e66; 
+  if (exp3 < 0.) exp3 = -numberOfTheBeast; 
   double expression = maximum(maximum(exp1, exp2), exp3);
   if (mChi2 < mSlep  && xi > sqr(q) * sqr(chi) ) return (mSq - mChi1);
   if (mChi2 < mSlep  && xi < sqr(q) * sqr(chi) )  expression = edgefn(q,xi,chi);  
@@ -1021,7 +1026,7 @@ double llqThresh(double mSq, double mChi1, double mSlep, double mChi2) {
   double ans   = 2.0 * l * (q - xi) * (xi - chi) + 
     (q + xi) * (xi - l) * (l - chi) - (q - xi) * 
     sqrt(sqr(xi + l) * sqr(l + chi) - 16. * xi * sqr(l) * chi); 
-  if (ans < 0.) return -6.66e66;
+  if (ans < 0.) return -numberOfTheBeast;
   return sqrt(ans / (4.0 * l * xi));
 }
 
@@ -1030,7 +1035,7 @@ double lqnear(double mSq, double mChi1, double mSlep, double mChi2) {
   double l     = sqr(mSlep);
   double q     = sqr(mSq);
   double expression = (q - xi) * (xi - l) / xi;
-  if (expression < 0.) return -6.66e66;
+  if (expression < 0.) return -numberOfTheBeast;
   return sqrt(expression);
 }
 
@@ -1040,7 +1045,7 @@ double lqfar(double mSq, double mChi1, double mSlep, double mChi2) {
   double chi   = sqr(mChi1);
   double q     = sqr(mSq);
   double expression = (q - xi) * (l - chi) / l;
-  if (expression < 0.) return -6.66e66;
+  if (expression < 0.) return -numberOfTheBeast;
   return sqrt(expression);
 }
 
@@ -1058,7 +1063,7 @@ double lqlow(double mSq, double mChi1, double mSlep, double mChi2) {
   double q     = sqr(mSq);
   double mlqnear = lqnear(mSq, mChi1, mSlep, mChi2);
   double mlqother  = (q - xi) * (l - chi) / (2.0 * l - chi);
-  if (mlqother < 0.) mlqother = -6.66e66;
+  if (mlqother < 0.) mlqother = -numberOfTheBeast;
   else mlqother = sqrt(mlqother);
 
   return minimum(mlqnear, mlqother);
@@ -1206,7 +1211,7 @@ bool midPtStep(DoubleVector & xi,
   DoubleVector xiPlus1Old(xi + tStep * derivs(tInitial + tStep, xi));
   DoubleVector xiPlus1New(xi.displayEnd());
 
-  double diff = 6.66e66, delta = 0.;
+  double diff = numberOfTheBeast, delta = 0.;
   int count = 0;
   while (diff > 1.0e-15 && count < 100) {
     count++;

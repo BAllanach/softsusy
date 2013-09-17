@@ -384,14 +384,15 @@ void FlavourMssmSoftsusy::vckminSLHA(ostream & out) {
 }
 
 void FlavourMssmSoftsusy::extparSLHA(ostream & out, 
-				     const DoubleVector & pars, double mgut,
+				     const DoubleVector & pars, 
 				     bool ewsbBCscale) {
     out << "Block EXTPAR              "
 	<< " # non-universal SUSY breaking parameters\n";
     if (ewsbBCscale) 
       out << "     0    -1.00000000e+00  # Set MX=MSUSY\n";
     else {
-      out << "     0    "; printRow(out, mgut); cout << "  # MX scale\n";
+      out << "     0    "; printRow(out, displayMxBC()); 
+      cout << "  # MX scale\n";
     }
 
     int count = 0, i;
@@ -685,7 +686,7 @@ void FlavourMssmSoftsusy::lesHouchesAccordOutput(ostream & out,
 						 const DoubleVector & pars, 
 						 int sgnMu, double tanb, 
 						 double qMax, 
-						 int numPoints, double mgut, 
+						 int numPoints, 
 						 bool ewsbBCscale) {
 
   int nn = out.precision();
@@ -694,8 +695,8 @@ void FlavourMssmSoftsusy::lesHouchesAccordOutput(ostream & out,
   modselSLHA(out, model);
   sminputsSLHA(out);
   vckminSLHA(out);
-  minparSLHA(out, model, pars, tanb, sgnMu, mgut, ewsbBCscale);  
-  softsusySLHA(out, mgut);
+  minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale);  
+  softsusySLHA(out);
   if (!displayProblem().testSeriousProblem() || printRuledOutSpectra) {
     massSLHA(out);
     inomixingSLHA(out);
@@ -712,7 +713,7 @@ void FlavourMssmSoftsusy::lesHouchesAccordOutput(ostream & out,
 
 void FlavourMssmSoftsusy::minparSLHA(ostream & out, const char model [], 
 				     const DoubleVector & pars, double tanb, 
-				     int sgnMu, double mgut, 
+				     int sgnMu, 
 				     bool ewsbBCscale) {
   /// For universal models, users still want to know MX and it has to be
   /// specially printed out as EXTPAR 0
@@ -758,7 +759,7 @@ void FlavourMssmSoftsusy::minparSLHA(ostream & out, const char model [],
   }
   else 
     if (!strcmp(model, "nonUniversal")) 
-      extparSLHA(out, pars, mgut, ewsbBCscale);
+      extparSLHA(out, pars, ewsbBCscale);
   else {
     ostringstream ii;
     ii << "Attempting to use SUSY Les Houches Accord for model " 
@@ -767,7 +768,7 @@ void FlavourMssmSoftsusy::minparSLHA(ostream & out, const char model [],
   }  
   if (printMX) {
   out << "Block EXTPAR               # scale of SUSY breaking BCs\n";
-  out << "     0   "; printRow(out, mgut); out << "   # MX scale\n";
+  out << "     0   "; printRow(out, displayMxBC()); out << "   # MX scale\n";
   }
 }
  

@@ -1,4 +1,3 @@
-
 /** \file susy.cpp
    - Project:     SOFTSUSY 
    - Author:      Ben Allanach 
@@ -272,7 +271,7 @@ MssmSusy MssmSusy::beta(sBrevity & a) const {
   // Additional contribution from Feynman gauge running at two-loops of tan
   // beta: we need this to link up with BPMZ: hep-ph/0112251
   double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT;
-  DoubleVector &gsq=a.gsq;
+  DoubleVector &gsq=a.gsq, &g4 = a.g4;
   DoubleMatrix &u2=a.u2, &d2=a.d2, &e2=a.e2, &d2t=a.d2t;
   double t = (d2 * u2).trace();
   static const double oneLoop = 1.0 / (16.0 * sqr(PI));
@@ -281,17 +280,15 @@ MssmSusy MssmSusy::beta(sBrevity & a) const {
 
   const static double twolp = 4.010149318236068e-5; // 1/(16 pi^2)^2
   if (displayLoops() > 1) {
-    // I don't posess the O(g^4) terms for these RGEs in the Feynman gauge
-    // and consequently have neglected. They CANCEL in the RGE for tan
-    // beta, but not in the RGE of the Higgs vev. 
+  const double g4terms = 1.035 * g4(1) + 0.45 * gsq(1) * gsq(2) + 5.875 * g4(2);
     sH1H1 = sH1H1 + twolp * 
       (-(3.0 * (e2 * e2).trace() + 9.0 * (d2t * d2t).trace() + 3.0 * t) + 
-       (16 * gsq(3) - 0.4 * gsq(1)) * ddT + 1.2 * gsq(1) * eeT);
+       (16 * gsq(3) - 0.4 * gsq(1)) * ddT + 1.2 * gsq(1) * eeT  + g4terms);
     sH2H2 = sH2H2 + twolp *
       (- (9.0 * (u2 * u2).trace() + 3.0 * t) +
-       (16 * gsq(3) + 0.8 * gsq(1)) * uuT);
+       (16 * gsq(3) + 0.8 * gsq(1)) * uuT+ g4terms);
   }
-
+  
   double cosb2 = sqr(cos(atan(tanb))), sinb2 = 1.0 - cosb2;
   double feynman = 1.5 * gsq(2) + 0.3 * gsq(1);
   /// One-loop RGEs in Feynman gauge
@@ -299,14 +296,12 @@ MssmSusy MssmSusy::beta(sBrevity & a) const {
   double dHvev = hVev * 
     (cosb2 * (-sH1H1 + feynman * oneLoop) + 
      sinb2 * (-sH2H2 + feynman * oneLoop)); 
-
   if (displayLoops() > 1) {
     /// Two-loop pieces
     dt = dt + displayTanb() * twolp * (3.0 * ddT + eeT - 3.0 * uuT) * feynman;
     dHvev = dHvev - hVev * twolp * (cosb2 * (3.0 * ddT + eeT) +
 				    sinb2 * 3.0 * uuT) * feynman;
   }
-
   // Contains all susy derivatives:
   MssmSusy ds(du, dd, de, dg, dmu, dt, displayMu(), displayLoops(),
 	       displayThresholds(), dHvev); 

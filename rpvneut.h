@@ -194,7 +194,6 @@ public:
 				      const DoubleVector & pars, 
 				      int sgnMu, double tanb, double qMax, 
 				      int numPoints, 
-				      double mgut, 
 				      bool ewsbBCscale); 
   /// SPINFO block of SLHA output
   void spinfoSLHA(ostream & out);

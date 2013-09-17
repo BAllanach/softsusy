@@ -23,7 +23,9 @@
 #include <nmssmsoftpars.h>
 #include <softsusy.h>
 #include "mssmUtils.h"
-//#include <nmssm2loop.h>
+#include <nmssm2loop.h>
+#include <nmssm1loop.h>
+#include "nmssmUtils.h"
 using namespace softsusy;
 using namespace std;
 /* class NmssmSoftsusy;  */
@@ -44,6 +46,8 @@ public:
   NmssmSoftsusy(const NmssmSusy &);
   /// Constructor copies another object
   NmssmSoftsusy(const NmssmSoftsusy &);
+  /// Constructor copies an MSSM object, needed for test vs mssm
+  NmssmSoftsusy(const MssmSoftsusy &);
   /// Sets all parameters from s, sp, mu is the mu superpotential parameter, l
   /// is the number of loops used for RG evolution, t is the thresholds
   /// accuracy parameter, mg is the gravitino mass, hv is the Higgs VEV
@@ -107,9 +111,9 @@ public:
   //PA: NMSSM routine to obtain Chargino loop parts of (16 \pi^2) tS/s
   double doCalcTadSCharginos(double q,  double lam) const;
 /// Does the calculation of one-loop pieces of \f$ t_1 / v_1 \f$ 
-  virtual double doCalcTadpole1oneLoop(double mt, double sinthDRbar);
+  virtual double doCalcTadpole1oneLoop(double mt, double sinthDRbar) const;
   /// Does the calculation of one-loop pieces of \f$ t_2 / v_2 \f$ 
-  virtual double doCalcTadpole2oneLoop(double mt, double sinthDRbar);
+  virtual double doCalcTadpole2oneLoop(double mt, double sinthDRbar) const;
   /// Does the calculation of one-loop pieces of \f$ t_s / s \f$ 
   virtual double doCalcTadpoleSoneLoop(double mt, double sinthDRbar) const;
 
@@ -130,6 +134,80 @@ public:
   void doTadpoles(double mt, double sinthDRbar);
   /// Organises tree-level calculation of all sparticle masses and mixings
   virtual void calcDrBarPars();
+ 
+  /// LCT: Adds one-loop higgs corrections to stop mass matrix
+  /// IO parameters: p=external momentum, mt=DR bar top mass, 
+  /// outputs higgs=2x2 matrix of self-energies in LR basis
+  DoubleMatrix addStopHiggs(double p, double mt, DoubleMatrix & higgs);
+  /// Adds one-loop corrections to stop mass matrix
+  /// IO parameters: p=external momentum, mass=tree level mass matrix on
+  /// input, is returned with radiative corrections added, mt=DR bar top mass
+  virtual void addStopCorrection(double p, DoubleMatrix & mass, double mt);
+  /// LCT: Adds one-loop higgs corrections to sup mass matrix
+  /// IO parameters: {p1,p2}=external momentum, 
+  /// outputs higgs=2x2 matrix of self-energies in LR basis
+  DoubleMatrix addSupHiggs(double p1, double p2, int family, 
+  DoubleMatrix & higgs);
+  /// Adds one-loop corrections to sup mass matrix
+  /// IO parameters: mass=tree level mass matrix on
+  /// input, is returned with radiative corrections added for a given family
+  virtual void addSupCorrection(DoubleMatrix & mass, int family);
+  /// LCT: Adds one-loop Higgs corrections to sbottom mass matrix
+  /// IO parameters: p=external momentum, mt=DR bar top mass, 
+  /// outputs higgs=2x2 matrix of self-energies in LR basis
+  DoubleMatrix addSbotHiggs(double p, double mt, DoubleMatrix & higgs);
+  /// Adds one-loop corrections to sbottom mass matrix
+  /// IO parameters: p=external momentum, mass=tree level mass matrix on
+  /// input, is returned with radiative corrections added, mt=DR bar top mass
+  virtual void addSbotCorrection(double p, DoubleMatrix & mass, double mt);
+  /// LCT: Adds one-loop higgs corrections to sdown mass matrix
+  /// IO parameters: {p1,p2}=external momentum, 
+  /// outputs higgs=2x2 matrix of self-energies in LR basis
+  DoubleMatrix addSdownHiggs(double p1, double p2, int family, 
+  DoubleMatrix & higgs);
+  /// Adds one-loop corrections to sbottom mass matrix at p=root(mb1 mb2)
+  /// IO parameters: mass=tree level mass matrix on
+  /// input, is returned with radiative corrections added, mt=DR bar top mass
+  virtual void addSdownCorrection(DoubleMatrix & mass, int family);
+  /// LCT: Adds one-loop Higgs corrections to tau sneutrino self energy
+  /// IO parameters: p=external momentum, outputs higgs=self-energy
+  double addSnuTauHiggs(double p, double & higgs);
+  /// Adds one-loop corrections to tau sneutrino mass 
+  /// IO parameters: p=external momentum, mass=tree level mass matrix on
+  /// input, is returned with radiative corrections added
+  virtual void addSnuTauCorrection(double & mass);
+  /// LCT: Adds one-loop Higgs corrections to sneutrino self energy
+  /// IO parameters: p=external momentum, family=generation, 
+  /// outputs higgs=self-energy
+  double addSnuHiggs(double p, int family, double & higgs);
+  /// Adds one-loop corrections to sneutrino mass of family "family"
+  /// IO parameters: mass=tree level mass matrix on
+  /// input, is returned with radiative corrections added
+  virtual void addSnuCorrection(double & mass, int family);
+  /// LCT: Adds one-loop electroweak corrections to stau self energy
+  /// IO parameters: p=external momentum, mtau=DR bar tau mass,
+  /// outputs electroweak=2x2 matrix of self-energies
+  DoubleMatrix addStauHiggs(double p, double mtau, DoubleMatrix & higgs);
+  /// Adds one-loop corrections to stau mass matrix at p=root(mtau1 mtau2)
+  /// IO parameters: mass=tree level mass on
+  /// input, is returned with radiative corrections added, mtau=DR bar tau mass
+  virtual void addStauCorrection(double p, DoubleMatrix & mass, double mtau);
+  /// LCT: Adds one-loop Higgs corrections to slepton self energy
+  /// IO parameters: p=external momentum, family=generation, 
+  /// outputs higgs=2x2 matrix of self-energies
+  DoubleMatrix addSlepHiggs(double p1, double p2, int family, DoubleMatrix & higgs);
+  /// Adds one-loop corrections to sel_fam mass matrix at p=root(msel1 msel2)
+  /// IO parameters: mass=tree level mass on
+  /// input, is returned with radiative corrections added, mt=DR bar top mass
+  virtual void addSlepCorrection(DoubleMatrix & mass, int family);
+  void getNeutPassarinoVeltman(double p, double q, DoubleMatrix & b0fn, 
+  DoubleMatrix & b1fn); 
+  /// LCT: Adds Higgs loop corrections to neutralino mass matrix.
+  /// IO parameters: p=external momentum, {sigmaL,sigmaR,sigmaS}= 4x4 matrices 
+  /// of {left,right,scalar} corrections
+  void addNeutLoopHiggs(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS);
+  /// Adds the loop corrections on to an input tree-level neutralino mass
+  virtual void addNeutralinoLoop(double p, DoubleMatrix &);
   
   /// Returns tree-level up squark mass matrix in "mass" for NMSSM.
   /// IO parameters: mass=tree level mass matrix on
@@ -231,6 +309,11 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   /// Calculates physical sparticle masses to accuracy number of loops. Should
   /// be called at M_{SUSY}.
   virtual void physical(int accuracy);
+  ///PA: Fills sigmaL, sigmaR and sigmaS with NMSSM Higgs parts 
+  ///of the charginos loop corrections.
+  virtual void addChaLoopHiggs(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS, DoubleMatrix b1pCha, DoubleMatrix b0pCha, DoubleMatrix b1pNeut, DoubleMatrix b0pNeut) const;
+/// Adds the loop corrections on to an input tree-level chargino mass
+ virtual void addCharginoLoop(double p, DoubleMatrix &);
   /// Calculates pole chargino masses and mixing.
   // IO parameters: piwwt is the W self-energy at the current,
   /// accuracy is the number of loops required (0 or 1 currently)
@@ -260,7 +343,12 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   /// Calculates transverse part of Z self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piZZT(double p, double Q, bool usePoleMt = false) const;
-   /// Calculates Higgs contribution to the transverse part of W self-energy: 
+   //Alternative Slavich version of the above. 
+  double testSlavichpiZZT(double g, double gp, double ht, double hb, double htau, double v1, double v2, double p, double Q) const;
+  //gets tree masses for slavich
+  void testSlavichTreeMasses() const;
+
+  /// Calculates Higgs contribution to the transverse part of W self-energy: 
   //for p=external momentum, q=renormalisation scale
   virtual double piWWTHiggs(double p, double q, double thetaWDRbar) const;
   /// Calculates gaugino contr. to transverse part of W self-energy: 
@@ -270,6 +358,8 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   /// Q=renormalisation scale
   virtual double piWWT(double p, double Q, bool usePoleMt = false) const;
   //PA: self energy routines for pseudo scalar self energies
+   //Alternative Slavich version of the above. 
+  double testSlavichpiWWT(double g, double gp, double ht, double hb, double htau, double v1, double v2, double p, double Q) const;
   double pip1p1(double p, double q) const;
   double pip1p2(double p, double q) const;
   double pip2p2(double p, double q) const;
@@ -339,19 +429,19 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   double pis1s3(double p, double q) const;
   double pis2s3(double p, double q) const;
   double pis3s3(double p, double q) const;
-  
+  //returns slavich calculation of the above pseudo scalar self energies.
+  double getpiPP(double g,double gp, double ll, double kk, double ht, double hb, double htau, double v1, double v2, double xx, double Ak, double Al, double At, double Ab, double Atau, double p, double Q, int i, int j) const;
+
+ //returns slavich calculation of the above cp even scalar self energies.
+  double getpiSS(double g,double gp, double ll, double kk, double ht, double hb, double htau, double v1, double v2, double xx, double Ak, double Al, double At, double Ab, double Atau, double p, double Q, int i, int j) const;
+
+
   //PA: gets h1 mixing element with Hu.
   virtual double h1s2Mix();
-
-  /// LCT: Charged Higgs-gauge trilinear couplings
-  void getHpWmZCoup(DoubleMatrix & HpWmZ) const;
 
   /// LCT: Charged Higgs trilinear couplings with CP-odd and CP-even Higgs'
   void getHp1HiggsTriCoup(DoubleMatrix & ahphp1, DoubleMatrix & hhphp1) const;
   void getHp2HiggsTriCoup(DoubleMatrix & ahphp2, DoubleMatrix & hhphp2) const;
-
-  /// LCT: Charged Higgs trilinear couplings with neutralinos/charginos
-  void getHp1NeutCharCoup(ComplexMatrix & lnchhp1, ComplexMatrix & rnchp1) const;
   /// LCT: Charged Higgs trilinear couplings with neutralinos/charginos
   void getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, 
   ComplexMatrix & apph2, ComplexMatrix & bpph1, ComplexMatrix & bpph2) const;
@@ -377,7 +467,7 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
 
  /// LCT: Calculates the charged Higgs self-energy in mass basis: 
   /// for p=external momentum, q=renormalisation scale
-  double piHpm(double p, double q) const;
+  double piHpHm(double p, double q) const;
   //PA: routine to calculate the Higgs loop contributions to running Mt
   virtual double calcRunMtHiggs() const;
   //PA: routine to calculate the Neutralino loop contributions to running Mt
@@ -412,18 +502,18 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   /// vector. IO parameters:  
   /// maxTries is the maximum number of iterations allowed, mx is the GUT
   /// scale (negative if you require gauge unification),
-  /// sgnMu is the desired sign of mu: + or - 1 when lamda * s =0, 
-  // the desied sign of s when mu = 0 and the sign of in the quadratic equation
-  // for mu when  both mu and lambda * s are non-zer   tanb = desired value of 
-  // DR bar tan beta(MZ).
-  void itLowsoft(int maxTries, double & mx, int sgnMu, double tol, 
+  /// sgnMu is the desired sign of mu: + or - 1 when lambda * svev = 0, 
+  /// the desired sign of svev when mu = 0 and the sign of in the quadratic 
+  /// equation for mu when  both mu and lambda * svev are non-zero. 
+  /// tanb = desired value of DR bar tan beta(MZ).
+  void itLowsoft(int maxTries, int sgnMu, double tol, 
 		 double tanb, void (*boundaryCondition)(NmssmSoftsusy &, 
 							const DoubleVector &), 
 		 const DoubleVector & pars, const DoubleVector nmpars, 
                  bool gaugeUnification, bool ewsbBCscale);
   
 
-  double lowOrg(void (*boundaryCondition)
+  void lowOrg(void (*boundaryCondition)
 		(NmssmSoftsusy &, const DoubleVector &),
 		double mxGuess, const DoubleVector & pars, 
                 const DoubleVector nmpars, int sgnMu, double tanb,
@@ -433,7 +523,44 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.    
   void printall();
 
+  /// Outputs with Les Houches accord conventions to standard output.
+  /// Inputs:
+  /// out should be something like cout or fout depending on whether you want
+  /// output in a file or not.
+  /// model contains what form of model is used for the SUSY breaking terms
+  /// (eg sugra, gmsb, amsb, nonUniversal). qMax is only relevant if you want
+  /// a gridded output of running parameters up to some scale qMax. Put
+  /// numPoints = 1 if you don't want to use this option - then qMaz is
+  /// immaterial. mb is mb(mb) in the MSbar scheme used to produce the output,
+  /// whereas mtau is the pole mass used (eg 1.777). mgut is the GUT scale
+  /// that has been determined, and altEwsb is true if you specified mu and mA
+  /// as input parameters (not tan beta and mH1, mH2).
+  virtual void lesHouchesAccordOutput(ostream & out, const char model[],
+				      const DoubleVector & pars,
+				      int sgnMu, double tanb, double qMax,
+				      int numPoints,
+				      bool ewsbBCscale);
+  /// This does the MODSEL block of SLHA
+  void modselSLHA(ostream & out, const char model[]);
+  /// EXTPAR block of SLHA
+  virtual void extparSLHA(ostream & out, const DoubleVector & pars,
+			  bool ewsbBCscale);
+  /// higgs part of mass block of SLHA
+  virtual void higgsMSLHA(ostream & out);
+  /// neutralino and charigno part of mass block of SLHA
+  virtual void neutralinoCharginoMSLHA(ostream & out);
+  /// nmnmix block output of SLHA
+  virtual void neutralinoMixingSLHA(ostream & out);
+  /// CP even mixing matrix NMHMIX block of SLHA
+  void nmhmixSLHA(ostream&);
+  /// CP odd mixing matrix NMHMIX block of SLHA
+  void nmamixSLHA(ostream&);
+  /// NMSSMRUN block of SLHA
+  void nmssmrunSLHA(ostream&);
+  /// outputs DRbar parameters at scale Q (default is at MSUSY)
+  virtual void drbarSLHA(ostream&, int numPoints, double qMax, int n);
 };
+
 inline NmssmSoftsusy::NmssmSoftsusy()
                      : Softsusy<SoftParsNmssm>(), tSOVSMs(0.0), tSOVSMs1loop(0.0)  {}
 
@@ -441,7 +568,16 @@ inline NmssmSoftsusy::NmssmSoftsusy()
 inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSoftsusy & s)
 		     : Softsusy<SoftParsNmssm>(s),
                      tSOVSMs(s.tSOVSMs), tSOVSMs1loop(s.tSOVSMs1loop)  {
-  setPars(121);   
+   
+   setPars(121);   
+}
+
+
+inline NmssmSoftsusy::NmssmSoftsusy(const MssmSoftsusy & s)
+		     : Softsusy<SoftParsNmssm>(s),
+                     tSOVSMs(0), tSOVSMs1loop(0)  {
+   cout << "swallowing tasty mssmsoftsusy" << endl;
+   setPars(121);   
 }
 
 
@@ -463,17 +599,13 @@ inline double NmssmSoftsusy::displayTadpoleSMs() const {
   return tSOVSMs; 
 }
 
-double NmssmSoftsusy::displayTadpoleSMs1loop() const {
+inline double NmssmSoftsusy::displayTadpoleSMs1loop() const {
   return tSOVSMs1loop; 
 }
 
-//PA:  just placing these here temporarily.  Should decide what to do  merge routines like this with mssmUtils or create NmssmUtils? 
-
-void NmssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
-
-void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
-
-void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
+// Calculates fractional difference in Drbar masses between in and out
+/// LCT: May be able to do something cleverer with MSSM version
+double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries);
 
 
 #endif

@@ -162,17 +162,17 @@ const sProblem & sProblem::operator=(const sProblem &s) {
 void drBarPars::mpzNeutralinos() { 
   // We want to change the PHASES of the neutralino mixing matrix in order to
   // produce POSITIVE neutralino masses, a la Matchev, Pierce and Zhang
-
+  const int rank = mneut.displayEnd();
   DoubleVector temp(mneut);
   
-  ComplexMatrix K(4, 4);
-  int i; for (i=1; i<=4; i++) 
-    if (mneut.display(i) < 0.0) K(i, i) = Complex(0.0, 1.0);
+  ComplexMatrix K(rank, rank);
+  int i; for (i=1; i<=rank; i++) 
+    if (mneut.display(i) < 0.0) K(i, i) = Complex(0.0, -1.0);
     else
       K(i, i) = Complex(1.0, 0.0);
   
   mnBpmz = temp.apply(fabs);
-  nBpmz = K.hermitianConjugate() * mixNeut.transpose();
+  nBpmz = K * mixNeut.transpose();
 }
 
 // Returns mixing matrices u,v and neutralino masses mneut in the MPZ

@@ -300,35 +300,35 @@ bool testLEPHiggs(const MssmSoftsusy & r, double error) {
 
 /// from hep-ph/9507294 -- debugged 19/11/04
 double ufb3fn(double mu, double htau, double h2, int family, const MssmSoftsusy
-	      & temp) {
+	      & temp) { 
   double vufb3 = 0.0;
   /// potential value for these VEVs
-  if (fabs(h2) >
-      sqrt(sqr(mu) / (4.0 * sqr(htau)) +
-	   4.0 * temp.displaySoftMassSquared(mLl, family, family) /
+  if (fabs(h2) > 
+      sqrt(sqr(mu) / (4.0 * sqr(htau)) + 
+	   4.0 * temp.displaySoftMassSquared(mLl, family, family) /  
 	   (0.6 * sqr(temp.displayGaugeCoupling(1)) +
-	    sqr(temp.displayGaugeCoupling(2)))) - fabs(mu) /
+	    sqr(temp.displayGaugeCoupling(2)))) - fabs(mu) / 
       temp.displayYukawaElement(YE, 3, 3) * 0.5)
-    vufb3 =
+    vufb3 = 
       sqr(h2) * (temp.displayMh2Squared() +
-		 temp.displaySoftMassSquared(mLl, family, family)) +
-      fabs(mu * h2) / htau *
+		 temp.displaySoftMassSquared(mLl, family, family)) + 
+      fabs(mu * h2) / htau * 
       (temp.displaySoftMassSquared(mLl, 3, 3) +
-       temp.displaySoftMassSquared(mEr, 3, 3)
+       temp.displaySoftMassSquared(mEr, 3, 3) 
        + temp.displaySoftMassSquared(mLl, family, family)) -
-      2.0 * sqr(temp.displaySoftMassSquared(mLl, family, family)) /
+      2.0 * sqr(temp.displaySoftMassSquared(mLl, family, family)) / 
       (0.6 * sqr(temp.displayGaugeCoupling(1)) +
        sqr(temp.displayGaugeCoupling(2)));
   else
-    vufb3 =
-      sqr(h2) * temp.displayMh2Squared() +
-      fabs(mu * h2) / htau *
+    vufb3 = 
+      sqr(h2) * temp.displayMh2Squared() + 
+      fabs(mu * h2) / htau * 
       (temp.displaySoftMassSquared(mLl, 3, 3) +
-       temp.displaySoftMassSquared(mEr, 3, 3)) +
+       temp.displaySoftMassSquared(mEr, 3, 3)) +  
       1.0 / 8.0 * (0.6 * sqr(temp.displayGaugeCoupling(1)) +
-		   sqr(temp.displayGaugeCoupling(2))) *
+		   sqr(temp.displayGaugeCoupling(2))) * 
       sqr(sqr(h2) + fabs(mu * h2) / htau);
-
+  
   if (PRINTOUT > 1) cout << vufb3 << endl;
   return vufb3;
 }
@@ -338,24 +338,26 @@ double getQhat(double inminTol,double eR, double h2, double Lisq, double mx,
 		MssmSoftsusy & temp) {
   double oldQhat = -1.0e16;
   int maxNum = 40;
-
+  
   int d; for (d = 1; d <= maxNum; d++)     {
-    double qhat =
-      maximum(maximum(maximum(temp.displayGaugeCoupling(2) * eR,
-		     temp.displayGaugeCoupling(2) * fabs(h2)),
+    double qhat = 
+      maximum(maximum(maximum(temp.displayGaugeCoupling(2) * eR, 
+		     temp.displayGaugeCoupling(2) * fabs(h2)), 
 		temp.displayGaugeCoupling(2) * sqrt(fabs(Lisq))),
 	   temp.displayYukawaElement(YU, 3, 3) * fabs(h2));
     /// Run all paramaters to that scale
     if (qhat < mx) temp.runto(qhat);
-    else temp.runto(mx);
+    else temp.runto(mx); 
     if (PRINTOUT > 1) cout << qhat << " ";
-
+    
     if (fabs((qhat - oldQhat) / qhat) < inminTol) return qhat;
     oldQhat = qhat;
   }
   /// Return NOB if no convergence on qhat
-  return -6.66e66;
+  return -numberOfTheBeast;
 }
+
+
 
 /// Difference between two SOFTSUSY objects in and out: EWSB terms only
 double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {

@@ -28,8 +28,11 @@ namespace softsusy {
   bool INCLUDE_2_LOOP_SCALAR_CORRECTIONS = true;
   /// PA: switch for selecting between the Z3 preserving case and the
   // Z3 violating case with mu and m3sq allowed
-  // needed fpr slecting which EWSB routines to use.
+  // needed fpr selecting which EWSB routines to use.
   bool Z3 = true;
+  //If true the input value of lambda is set at the GUT scale
+  //If false the input lambda is set at MSUSY.
+  bool GUTlambda = false;
   /// number of loops used to calculate Higgs mass and tadpoles. They should be
   /// identical for a consistent calculation
   int numHiggsMassLoops = 2, numRewsbLoops = 2;
@@ -58,5 +61,8 @@ namespace softsusy {
   /// Default is to not include 2-loop MSSM corrections in degenerate
   /// gluino/squark mass limit 
   bool includeTwoLoopMssmCorrectionsToMt = false;
+  /// Default: use SOFTSUSY conventions for masses of sparticles in loops, ie
+  /// tree-level masses computed with the 2-loop Higgs potential
+  bool sphenoMassConv = false;
 }
 /// end of global variable declaration

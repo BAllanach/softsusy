@@ -13,7 +13,7 @@ Block SMINPUTS		     # Standard Model inputs
 Block MINPAR		     # Input parameters
     1   1.250000000e+02	     # m0
     2   5.000000000e+02	     # m12
-    3   1.000000000e+01	     # tanb
+    3   1.000000000e+01	     # tan beta at MZ, in DRbar scheme, Feynman gauge
     4   1.000000000e+00	     # sign(mu)
     5   0.000000000e+00	     # A0
 Block SOFTSUSY               # Optional SOFTSUSY-specific parameters

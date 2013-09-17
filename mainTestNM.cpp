@@ -19,14 +19,14 @@ int main() {
   outputCharacteristics(6);
   
   /// Parameters used: CMSSM parameters
-  double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
+  // double m12 = 500., a0 = -900., mGutGuess = 2.0e16, tanb = 5.0, m0 = 1000.;
+    double m12 = 200., a0 = -500., mGutGuess = 2.0e16, tanb = 10.0, m0 = 200.;
+  
   int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 10; ///< number of scan points
+  int numPoints = 1; ///< number of scan points
   //PA: new nmssm parameters to be fed into lowOrg
-  double lambda = 0.1, kappa = 0.1, s = 1e3, xiF = 100.0, mupr = 10.0;
-  // xiF = 100; mupr = 10; lambda = 2e-1;  s =1e4, kappa = 0.4;
-  /// LCT: MSSM limit (of Z3 NMSSM)
-  xiF = 0.0; mupr = 0.0; lambda = 1e-15; s = 1e-6; kappa = 1e-15;
+   double lambda = 0.1, kappa = 0.1, Al = a0, Ak = a0,  s = 1e3, xiF = 0.0, mupr = 0.0;
+  // double lambda = 0.25, kappa = 0.1, Al = a0, Ak = -140,  s = 1e3, xiF = 0.0, mupr = 0.0;
   
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
  
@@ -45,14 +45,14 @@ int main() {
   /// Print out header line
   cout << "# tan beta   mh           mA           mH0          mH+-\n";
 
-  int i; 
-  /// Set limits of tan beta scan
-  double startTanb = 3.0, endTanb = 50.0;
-  /// Cycle through different points in the scan
-  for (i = 0; i<=numPoints; i++) {
+  // int i; 
+  // /// Set limits of tan beta scan
+  // double startTanb = 5.0, endTanb = 50.0;
+  // /// Cycle through different points in the scan
+  // for (i = 1; i<=numPoints; i++) {
 
-    tanb = (endTanb - startTanb) / double(numPoints) * double(i) +
-      startTanb; // set tan beta ready for the scan.
+  //   tanb = (endTanb - startTanb) / double(numPoints) * double(i) +
+  //     startTanb; // set tan beta ready for the scan.
   
   NmssmSoftsusy n;
   //   cout << "n = "  << n << endl;
@@ -65,23 +65,14 @@ int main() {
   // cout << "after physical " << endl;
   // n.calcRunMtHiggs();
 
-  DoubleVector pars(3); 
-  pars(1) = m0; pars(2) = m12; pars(3) = a0;
+  DoubleVector pars(5); 
+  pars(1) = m0; pars(2) = m12; pars(3) = a0, pars(4) = Al, pars(5) = Ak;
   DoubleVector nmpars(5);
   nmpars(1) = lambda; nmpars(2) = kappa; nmpars(3) = s; 
   nmpars(4) = xiF; nmpars(5) = mupr;
   bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
   Z3 = true;
-
-  try {
-     n.lowOrg(MssmMsugraBcs, mGutGuess, pars, nmpars, sgnMu, tanb, oneset, uni);
-  } catch (const std::string& error) {
-     cout << "\nException thrown: " << error << endl;
-     n.flagProblemThrown(true);
-  } catch (const char* error) {
-     cout << "\nException thrown: " << error << endl;
-     n.flagProblemThrown(true);
-  }
+  n.lowOrg(SemiMsugraBcs, mGutGuess, pars, nmpars, sgnMu, tanb, oneset, uni);
 
    /// check the point in question is problem free: if so print the output
     if (!n.displayProblem().test()) {
@@ -101,6 +92,11 @@ int main() {
       cout << "md = " <<   n.displayPhys().md << endl;
       cout << "me = " <<   n.displayPhys().me << endl;
       
+
+      cout << "lambda = " << n.displayLambda() << endl;
+      cout << "kappa = " << n.displayKappa() << endl;
+      n.printall();
+
       cout << " At = "  << n.displaySoftA(UA, 3, 3) << endl;
       cout << " Ab = "  << n.displaySoftA(DA, 3, 3) << endl;
       cout << " Atau = "  << n.displaySoftA(EA, 3, 3) << endl;
@@ -142,7 +138,7 @@ int main() {
       cout << "mu = " <<   n.displayPhys().mu << endl;
       cout << "md = " <<   n.displayPhys().md << endl;
       cout << "me = " <<   n.displayPhys().me << endl;
-      
+      n.printall();
       cout << " At = "  << n.displaySoftA(UA, 3, 3) << endl;
       cout << " Ab = "  << n.displaySoftA(DA, 3, 3) << endl;
       cout << " Atau = "  << n.displaySoftA(EA, 3, 3) << endl;
@@ -163,7 +159,7 @@ int main() {
 
 
     }
-  }
+ 
 
   //  cout << "after lowOrg() " << endl;
   // n.printall();

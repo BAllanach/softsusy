@@ -41,7 +41,7 @@ int main() {
   /// Parameters used: CMSSM parameters
   double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
   int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 10; ///< number of scan points
+  int numPoints = 100; ///< number of scan points
 
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
 
@@ -90,9 +90,9 @@ int main() {
       cout << tanb << " " << r.displayProblem() << endl;
   }
   }
-  catch(const string & a) { cout << a; }
-  catch(const char * a) { cout << a; }
-  catch(...) { cout << "Unknown type of exception caught.\n"; }
+  catch(const string & a) { cout << a; return -1; }
+  catch(const char * a) { cout << a; return -1; }
+  catch(...) { cout << "Unknown type of exception caught.\n"; return -1; }
 
-  exit(0);
+  return 0;
 }
