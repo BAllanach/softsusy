@@ -368,50 +368,25 @@ double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {
   DoubleVector sT(34);
   int k = 1;
 
-  double sTin  = fabs(inforLoops.mh0(1)); double sTout = fabs(outforLoops.mh0(1));
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout)); k++;
-  sTin  = fabs(inforLoops.mA0(1)); sTout = fabs(outforLoops.mA0(1));
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout)); k++;
-  sTin  = fabs(inforLoops.mh0(2)); sTout = fabs(outforLoops.mh0(2));
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout)); k++;
-  sTin  = fabs(inforLoops.mHpm); sTout = fabs(outforLoops.mHpm);
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout)); k++;
+  sT(k) = sTfn(inforLoops.mh0(1), outforLoops.mh0(1)); k++;
+  sT(k) = sTfn(inforLoops.mA0(1), outforLoops.mA0(1)); k++;
+  sT(k) = sTfn(inforLoops.mh0(2), outforLoops.mh0(2)); k++;
+  sT(k) = sTfn(inforLoops.mHpm, outforLoops.mHpm); k++;
   int i; for (i=1; i<=3; i++) {
-    sTin  = fabs(inforLoops.msnu(i));
-    sTout = fabs(outforLoops.msnu(i));
-    sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-    k++;
+    sT(k) = sTfn(inforLoops.msnu(i), outforLoops.msnu(i)); k++;
   }
   for (i=1; i<=2; i++) {
-    sTin = fabs(inforLoops.mch(i));
-    sTout = fabs(outforLoops.mch(i));
-    sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-    k++;
+    sT(k) = sTfn(inforLoops.mch(i), outforLoops.mch(i)); k++;
   }
   for (i=1; i<=4; i++) {
-    sTin = fabs(inforLoops.mneut(i));
-    sTout = fabs(outforLoops.mneut(i));
-    sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-    k++;
+    sT(k) = sTfn(inforLoops.mneut(i), outforLoops.mneut(i)); k++;
   }
-  sTin = fabs(inforLoops.mGluino);
-  sTout = fabs(outforLoops.mGluino);
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-  k++;
+  sT(k) = sTfn(inforLoops.mGluino, outforLoops.mGluino); k++;
   int j; for (j=1; j<=3; j++)
     for(i=1; i<=2; i++) {
-      sTin = fabs(inforLoops.mu(i, j));
-      sTout = fabs(outforLoops.mu(i, j));
-      sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-      k++;
-      sTin = fabs(inforLoops.md(i, j));
-      sTout = fabs(outforLoops.md(i, j));
-      sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-      k++;
-      sTin = fabs(inforLoops.me(i, j));
-      sTout = fabs(outforLoops.me(i, j));
-      sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-      k++;
+      sT(k) = sTfn(inforLoops.mu(i, j), outforLoops.mu(i, j)); k++;
+      sT(k) = sTfn(inforLoops.md(i, j), outforLoops.md(i, j)); k++;
+      sT(k) = sTfn(inforLoops.me(i, j), outforLoops.me(i, j)); k++;
     }
   /// The predicted value of MZ^2 is an absolute measure of how close to a
   /// true solution we are:
@@ -421,9 +396,7 @@ double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {
   /// of MZ compared to TOLERANCE if the program is struggling and gone beyond
   /// 10 tries - an extra 2 comes from MZ v MZ^2
   if (!in.displayProblem().testSeriousProblem()) {
-    sT(k) = 0.5 *
-      fabs(1. - minimum(predictedMzSq, sqr(MZ)) /
-	   maximum(sqr(MZ), predictedMzSq));
+    sT(k) = 0.5 * sTfn(predictedMzSq, sqr(MZ));
     if (numTries > 10) sT(k) *= 0.1;
   }
 
