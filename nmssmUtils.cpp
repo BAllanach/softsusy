@@ -114,6 +114,150 @@ std::ostream& operator<<(std::ostream& lhs, const NMSSM_input& rhs) {
    return lhs;
 }
 
+
+NMSSM_command_line_parser::NMSSM_command_line_parser(NMSSM_input* nmssm_input_)
+   : nmssm_input(nmssm_input_)
+   , model_ident("")
+   , m0(0.)
+   , m12(0.)
+   , a0(0.)
+{
+   assert(nmssm_input_);
+}
+
+void NMSSM_command_line_parser::parse(int argc, char* argv[]) {
+   if (argc < 3)
+      throw "# Error: NMSSM_command_line_parser: not enough command line"
+         " arguments given";
+
+   if (strcmp(argv[1], "nmssm"))
+      throw "# Error: NMSSM_command_line_parser: first argument is not"
+         " nmssm";
+
+   model_ident = argv[2];
+
+   for (int i = 3; i < argc; i++) {
+      if (starts_with(argv[i], "--m0="))
+         m0  = get_value(argv[i], "--m0=");
+      else if (starts_with(argv[i], "--m12="))
+         m12 = get_value(argv[i], "--m12=");
+      else if (starts_with(argv[i], "--a0="))
+         a0  = get_value(argv[i], "--a0=");
+      else if (strcmp(argv[i], "--lambdaAtMsusy") == 0)
+         softsusy::GUTlambda = false;
+      else if (starts_with(argv[i], "--tanBeta="))
+         nmssm_input->set(NMSSM_input::tanBeta, get_value(argv[i], "--tanBeta="));
+      else if (starts_with(argv[i], "--mHu2="))
+         nmssm_input->set(NMSSM_input::mHu2, get_value(argv[i], "--mHu2="));
+      else if (starts_with(argv[i], "--mHd2="))
+         nmssm_input->set(NMSSM_input::mHd2, get_value(argv[i], "--mHd2="));
+      else if (starts_with(argv[i], "--mu="))
+         nmssm_input->set(NMSSM_input::mu, get_value(argv[i], "--mu="));
+      else if (starts_with(argv[i], "--BmuOverCosBetaSinBeta="))
+         nmssm_input->set(NMSSM_input::BmuOverCosBetaSinBeta, get_value(argv[i], "--BmuOverCosBetaSinBeta="));
+      else if (starts_with(argv[i], "--lambda="))
+         nmssm_input->set(NMSSM_input::lambda, get_value(argv[i], "--lambda="));
+      else if (starts_with(argv[i], "--kappa="))
+         nmssm_input->set(NMSSM_input::kappa, get_value(argv[i], "--kappa="));
+      else if (starts_with(argv[i], "--Alambda="))
+         nmssm_input->set(NMSSM_input::Alambda, get_value(argv[i], "--Alambda="));
+      else if (starts_with(argv[i], "--Akappa="))
+         nmssm_input->set(NMSSM_input::Akappa, get_value(argv[i], "--Akappa="));
+      else if (starts_with(argv[i], "--lambdaS="))
+         nmssm_input->set(NMSSM_input::lambdaS, get_value(argv[i], "--lambdaS="));
+      else if (starts_with(argv[i], "--xiF="))
+         nmssm_input->set(NMSSM_input::xiF, get_value(argv[i], "--xiF="));
+      else if (starts_with(argv[i], "--xiS="))
+         nmssm_input->set(NMSSM_input::xiS, get_value(argv[i], "--xiS="));
+      else if (starts_with(argv[i], "--muPrime="))
+         nmssm_input->set(NMSSM_input::muPrime, get_value(argv[i], "--muPrime="));
+      else if (starts_with(argv[i], "--mPrimeS2="))
+         nmssm_input->set(NMSSM_input::mPrimeS2, get_value(argv[i], "--mPrimeS2="));
+      else if (starts_with(argv[i], "--mS2="))
+         nmssm_input->set(NMSSM_input::mS2, get_value(argv[i], "--mS2="));
+      else
+         throw std::string("# Error: unknown NMSSM command line option: ")
+            + argv[i] + '\n';
+   }
+
+   // check universality condition
+   if (model_ident == "sugra") {
+      // relax sugra condition if one of the following parameters is
+      // set
+      if (nmssm_input->is_set(NMSSM_input::Alambda) ||
+          nmssm_input->is_set(NMSSM_input::Akappa) ||
+          nmssm_input->is_set(NMSSM_input::mHd2) ||
+          nmssm_input->is_set(NMSSM_input::mHu2) ||
+          nmssm_input->is_set(NMSSM_input::mu) ||
+          nmssm_input->is_set(NMSSM_input::BmuOverCosBetaSinBeta) ||
+          nmssm_input->is_set(NMSSM_input::xiS) ||
+          nmssm_input->is_set(NMSSM_input::mPrimeS2) ||
+          nmssm_input->is_set(NMSSM_input::mS2)) {
+         model_ident = "nonUniversal";
+      }
+   }
+}
+
+const std::string& NMSSM_command_line_parser::get_modelIdent() const {
+   return model_ident;
+}
+
+DoubleVector NMSSM_command_line_parser::get_pars() const {
+   DoubleVector pars(3);
+
+   if (model_ident == "sugra") {
+      pars(1) = m0;
+      pars(2) = m12;
+      pars(3) = a0;
+   } else if (model_ident == "nonUniversal") {
+      pars.setEnd(53);
+      for (int i = 1; i <= 3; i++) pars(i) = m12;
+      for (int i = 11; i <= 13; i++) pars(i) = a0;
+      pars(21) = m0*m0;
+      pars(22) = m0*m0;
+      for (int i = 31; i <= 36; i++) pars(i) = m0;
+      for (int i = 41; i <= 49; i++) pars(i) = m0;
+      pars(50) = a0; // Alambda
+      pars(51) = a0; // Akappa
+      pars(52) = 0.; // mS'^2 @todo which value should we chose here?
+      pars(53) = m0*m0; // mS^2
+
+      if (nmssm_input->is_set(NMSSM_input::Alambda))
+         pars(50) = nmssm_input->get(NMSSM_input::Alambda);
+      if (nmssm_input->is_set(NMSSM_input::Akappa))
+         pars(51) = nmssm_input->get(NMSSM_input::Akappa);
+      if (nmssm_input->is_set(NMSSM_input::mHd2))
+         pars(21) = nmssm_input->get(NMSSM_input::mHd2);
+      if (nmssm_input->is_set(NMSSM_input::mHu2))
+         pars(22) = nmssm_input->get(NMSSM_input::mHu2);
+      if (nmssm_input->is_set(NMSSM_input::mu))
+         pars(23) = nmssm_input->get(NMSSM_input::mu);
+      if (nmssm_input->is_set(NMSSM_input::BmuOverCosBetaSinBeta))
+         pars(24) = nmssm_input->get(NMSSM_input::BmuOverCosBetaSinBeta);
+      if (nmssm_input->is_set(NMSSM_input::xiS))
+         ; // currently not set in extendedNMSugraBcs()
+      if (nmssm_input->is_set(NMSSM_input::mPrimeS2))
+         pars(52) = nmssm_input->get(NMSSM_input::mPrimeS2);
+      if (nmssm_input->is_set(NMSSM_input::mS2))
+         pars(53) = nmssm_input->get(NMSSM_input::mS2);
+   } else {
+      throw std::string("# Error: NMSSM boundary condition ") + model_ident
+         + " currently not supported at the command line\n";
+   }
+
+   return pars;
+}
+
+double NMSSM_command_line_parser::get_value(const std::string& str,
+                                            const std::string& prefix) {
+   return atof(str.substr(prefix.size()).c_str());
+}
+
+bool NMSSM_command_line_parser::starts_with(const std::string& str,
+                                            const std::string& prefix) {
+   return !str.compare(0, prefix.size(), prefix);
+}
+
 /// User supplied routine. Inputs m at the unification scale, and uses
 /// inputParameters vector to output m with high energy soft boundary
 /// conditions.
