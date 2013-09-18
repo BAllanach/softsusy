@@ -32,3 +32,4 @@ rpvOutputTest
 benchmarks/*.spec
 doc/*.ps
 doc/*.pdf
+doc/auto/*

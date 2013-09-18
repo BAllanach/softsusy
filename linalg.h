@@ -19,6 +19,7 @@ using namespace std;
 #include "xpr-vector.h"
 #include "xpr-matrix.h"
 #include "def.h"
+#include "utils.h"
 #include <iosfwd>
 #include <valarray>
 #include <sstream>
@@ -310,6 +311,7 @@ public:
 
   double trace() const;///< trace must only be performed on a square matrix
   DoubleMatrix transpose() const; ///< can be any size
+  bool testNan() const; ///< tests that all elements are not Nans 
 
   /*
    *  NUMERICAL DIAGONALIZATION ROUTINES ETC.

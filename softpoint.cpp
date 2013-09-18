@@ -666,8 +666,9 @@ int main(int argc, char *argv[]) {
 		    }
 		  }
 		  else if (i == 25) {
-		    cout << "IN here1\n";
 		    tanb = d;
+		    if (pars.displayEnd() != 49) pars.setEnd(49);
+		    pars(i) = d;
 		    r->setSetTbAtMX(true);
 		  } 
 		  else if (i == 23 || i == 26) {

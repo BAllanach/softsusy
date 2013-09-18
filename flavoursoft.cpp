@@ -859,15 +859,17 @@ void FlavourMssmSoftsusy::doUpSquarks(double mt, double pizztMS,
   // fill in the flavour conserving parts with the correct masses
   int t1Pos = 0;
   sPhysical s(displayPhys());
+  DoubleMatrix a(fv.uSqMix);
 
-  for(i=1; i<=3; i++) {
-    fv.uSqMix.displayCol(i).apply(fabs).max(j); 
+  for(i=3; i>=1; i--) {
+    a.displayCol(i).apply(fabs).max(j); 
     s.mu(1, i) = fv.msU(j);
+    for (int k=1; k<=6; k++) a(j, k) = 0.;
     if (i == 3) t1Pos = j;
-    fv.uSqMix.displayCol(i+3).apply(fabs).max(j); 
+    a.displayCol(i+3).apply(fabs).max(j); 
+    for (int k=1; k<=6; k++) a(j, k) = 0.;
     s.mu(2, i) = fv.msU(j);
   }
-  setPhys(s);
 
   s.thetat = asin(fv.uSqMix(t1Pos, 6));
   setPhys(s);
@@ -966,11 +968,15 @@ void FlavourMssmSoftsusy::doDownSquarks(double mb, double pizztMS,
   // fill in the flavour conserving parts with the correct masses
   sPhysical s(displayPhys());
   int b1Pos = 0;
-  for(i=1; i<=3; i++) {
-    fv.dSqMix.displayCol(i).max(j); 
+  DoubleMatrix a(fv.dSqMix);
+
+  for(i=3; i>=1; i--) {
+    a.displayCol(i).apply(fabs).max(j); 
     s.md(1, i) = fv.msD(j);
-    b1Pos = j;
-    fv.dSqMix.displayCol(i+3).max(j); 
+    for (int k=1; k<=6; k++) a(j, k) = 0.;
+    if (i == 3) b1Pos = j;
+    a.displayCol(i+3).apply(fabs).max(j); 
+    for (int k=1; k<=6; k++) a(j, k) = 0.;
     s.md(2, i) = fv.msD(j);
   }
 
@@ -1065,16 +1071,20 @@ void FlavourMssmSoftsusy::doChargedSleptons(double mtau, double pizztMS,
 
   // fill in the flavour conserving parts with the correct masses
   sPhysical s(displayPhys());
-  int b1Pos = 0;
-  for(i=1; i<=3; i++) {
-    fv.eSqMix.displayCol(i).max(j); 
+  int tau1Pos = 0;
+  DoubleMatrix a(fv.eSqMix);
+
+  for(i=3; i>=1; i--) {
+    a.displayCol(i).apply(fabs).max(j); 
     s.me(1, i) = fv.msE(j);
-    b1Pos = j;
-    fv.eSqMix.displayCol(i+3).max(j); 
+    for (int k=1; k<=6; k++) a(j, k) = 0.;
+    if (i == 3) tau1Pos = j;
+    a.displayCol(i+3).apply(fabs).max(j); 
+    for (int k=1; k<=6; k++) a(j, k) = 0.;
     s.me(2, i) = fv.msE(j);
   }
 
-  s.thetatau = asin(fv.eSqMix(b1Pos, 6));
+  s.thetatau = asin(fv.eSqMix(tau1Pos, 6));
   setPhys(s);
 }
 
