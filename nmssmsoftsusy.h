@@ -602,9 +602,4 @@ inline double NmssmSoftsusy::displayTadpoleSMs1loop() const {
   return tSOVSMs1loop; 
 }
 
-// Calculates fractional difference in Drbar masses between in and out
-/// LCT: May be able to do something cleverer with MSSM version
-double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries);
-
-
 #endif

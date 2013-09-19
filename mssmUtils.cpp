@@ -359,10 +359,10 @@ double getQhat(double inminTol,double eR, double h2, double Lisq, double mx,
 }
 
 /// Difference between two SOFTSUSY objects in and out: EWSB terms only
- double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {
-
-   DoubleVector sT(34);
-   sumTol(in.displayDrBarPars(), out.displayDrBarPars(), sT);
+double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {
+  
+  DoubleVector sT(34);
+  sumTol(in.displayDrBarPars(), out.displayDrBarPars(), sT);
   /// The predicted value of MZ^2 is an absolute measure of how close to a
   /// true solution we are:
   double tbPred = 0.;
