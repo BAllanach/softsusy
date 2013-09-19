@@ -112,79 +112,80 @@ void NmssmSoftsusy::testSlavichTreeMasses() const {
 
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.
 void NmssmSoftsusy::printall() const {
-   cout << "At scale " << displayMu() << endl;
-  cout << "mH1 = " << displayPhys().mh0(1) << endl;
-  cout << "mH2 = " << displayPhys().mh0(2) << endl;
-  cout << "mH3 = " << displayPhys().mh0(3) << endl;
+   cout << "At scale " << displayMu() << '\n';
+  cout << "mH1 = " << displayPhys().mh0(1) << '\n';
+  cout << "mH2 = " << displayPhys().mh0(2) << '\n';
+  cout << "mH3 = " << displayPhys().mh0(3) << '\n';
 
-  cout << "mA1 = " << displayPhys().mA0(1) << endl;
-  cout << "mA2 = " << displayPhys().mA0(2) << endl;
-  cout << "mHpm =" << displayPhys().mHpm << endl;
+  cout << "mA1 = " << displayPhys().mA0(1) << '\n';
+  cout << "mA2 = " << displayPhys().mA0(2) << '\n';
+  cout << "mHpm =" << displayPhys().mHpm << '\n';
 
 
-  cout << "mch = " <<  displayPhys().mch << endl;
-  cout << "mneut = " <<   displayPhys().mneut << endl;
-  cout << "mGluino = " <<   displayPhys().mGluino << endl;
-  cout << "mu = " <<   displayPhys().mu << endl;
-  cout << "md = " <<   displayPhys().md << endl;
-  cout << "me = " <<   displayPhys().me << endl;
-  cout << "msnu = " <<  displayPhys().msnu << endl;
+  cout << "mch = " <<  displayPhys().mch << '\n';
+  cout << "mneut = " <<   displayPhys().mneut << '\n';
+  cout << "mGluino = " <<   displayPhys().mGluino << '\n';
+  cout << "mu = " <<   displayPhys().mu << '\n';
+  cout << "md = " <<   displayPhys().md << '\n';
+  cout << "me = " <<   displayPhys().me << '\n';
+  cout << "msnu = " <<  displayPhys().msnu << '\n';
   
-  cout << "g1  g2   g3 " << displayGauge() << endl; 
-  cout << "Yu = " << displayYukawaMatrix(YU) << endl;
-  cout << "Yd = " << displayYukawaMatrix(YD) << endl;
-  cout << "Ye = " << displayYukawaMatrix(YE) << endl;
+  cout << "g1  g2   g3 " << displayGauge() << '\n';
+  cout << "Yu = " << displayYukawaMatrix(YU) << '\n';
+  cout << "Yd = " << displayYukawaMatrix(YD) << '\n';
+  cout << "Ye = " << displayYukawaMatrix(YE) << '\n';
 
     for(int i = 1; i <= 3; i++){
       for(int j = 1; j <= 3; j++){
-	cout << " Au(" << i << "," << j << ") = "  << displaySoftA(UA, i, j) << endl;
-  cout << " Ad(" << i << "," << j << ") = "  << displaySoftA(DA, i, j) << endl;
-  cout << " Ae(" << i << "," << j << ") = "  << displaySoftA(EA, i, j) << endl;
+	cout << " Au(" << i << "," << j << ") = "  << displaySoftA(UA, i, j) << '\n';
+  cout << " Ad(" << i << "," << j << ") = "  << displaySoftA(DA, i, j) << '\n';
+  cout << " Ae(" << i << "," << j << ") = "  << displaySoftA(EA, i, j) << '\n';
       }
     }
-  cout << " Alam = "  <<displaySoftAlambda() << endl;
-   cout << " Akap = "  << displaySoftAkappa() << endl;
+  cout << " Alam = "  <<displaySoftAlambda() << '\n';
+   cout << " Akap = "  << displaySoftAkappa() << '\n';
 
-  cout << " mQl = "  <<displaySoftMassSquared(mQl) << endl;
-  cout << " mUr = "  <<displaySoftMassSquared(mUr) << endl;
-  cout << " mDr = "  <<displaySoftMassSquared(mDr) << endl;
-  cout << " mEr = "  <<displaySoftMassSquared(mEr) << endl;
-  cout << " mLl = "  <<displaySoftMassSquared(mLl) << endl;
+  cout << " mQl = "  <<displaySoftMassSquared(mQl) << '\n';
+  cout << " mUr = "  <<displaySoftMassSquared(mUr) << '\n';
+  cout << " mDr = "  <<displaySoftMassSquared(mDr) << '\n';
+  cout << " mEr = "  <<displaySoftMassSquared(mEr) << '\n';
+  cout << " mLl = "  <<displaySoftMassSquared(mLl) << '\n';
 
-  cout << "mH1sq = " << displayMh1Squared() << endl;
-  cout << "mH2sq = " << displayMh2Squared() << endl;
-  cout << "m3sq = " << displayM3Squared() << endl;
-  cout << "mSsq = " << displayMsSquared() << endl;
-  cout << "mSpsq = " << displayMspSquared() << endl;
-  cout << "xiS = " << displayXiS() << endl;
+  cout << "mH1sq = " << displayMh1Squared() << '\n';
+  cout << "mH2sq = " << displayMh2Squared() << '\n';
+  cout << "m3sq = " << displayM3Squared() << '\n';
+  cout << "mSsq = " << displayMsSquared() << '\n';
+  cout << "mSpsq = " << displayMspSquared() << '\n';
+  cout << "xiS = " << displayXiS() << '\n';
 
-  cout << "M1 = "  << displayGaugino(1) << endl;
-  cout << "M2 = "  << displayGaugino(2) << endl;
-  cout << "M3 = "  << displayGaugino(3) << endl;
+  cout << "M1 = "  << displayGaugino(1) << '\n';
+  cout << "M2 = "  << displayGaugino(2) << '\n';
+  cout << "M3 = "  << displayGaugino(3) << '\n';
 
-  cout << " lam = "  <<displayLambda() << endl;
-  cout << " kap = "  <<displayKappa() << endl;
-  cout << " Svev = "  <<displaySvev() << endl;
-  cout <<"mupr = " <<displayMupr() << endl;
-  cout << "xiF = "  <<displayXiF() << endl;
+  cout << " lam = "  <<displayLambda() << '\n';
+  cout << " kap = "  <<displayKappa() << '\n';
+  cout << " Svev = "  <<displaySvev() << '\n';
+  cout <<"mupr = " <<displayMupr() << '\n';
+  cout << "xiF = "  <<displayXiF() << '\n';
 
  
 
   double Beff =displaySoftAlambda() +displayKappa() *displaySvev() / (sqrt(2.0));
   double  m3hatsq =displayM3Squared() + displayLambda() * (displayMupr() *displaySvev() +displayXiF() );
   double  mueff =displayLambda() *displaySvev() / (sqrt(2.0)) ;
-  cout << "mueff = "  << displayLambda() *displaySvev() / (sqrt(2.0)) << endl;
-  cout << " Beff = "  << Beff << endl;
-  cout << "m3hatsq = " << m3hatsq << endl;
-  cout << "m3effssq = "  << mueff * Beff + m3hatsq << endl;
-  cout << "normal mu = "  << displaySusyMu() << endl;
+  cout << "mueff = "  << displayLambda() *displaySvev() / (sqrt(2.0)) << '\n';
+  cout << " Beff = "  << Beff << '\n';
+  cout << "m3hatsq = " << m3hatsq << '\n';
+  cout << "m3effssq = "  << mueff * Beff + m3hatsq << '\n';
+  cout << "normal mu = "  << displaySusyMu() << '\n';
 
-  cout << "mH1sq = " << displayMh1Squared() << endl;
-  cout << "mH2sq = " << displayMh2Squared() << endl;
-  cout << "m3sq = " << displayM3Squared() << endl;
-  cout << "mSsq = " << displayMsSquared() << endl;
-  cout << "mSpsq = " << displayMspSquared() << endl;
-  cout << "xiS = " << displayXiS() << endl;
+  cout << "mH1sq = " << displayMh1Squared() << '\n';
+  cout << "mH2sq = " << displayMh2Squared() << '\n';
+  cout << "m3sq = " << displayM3Squared() << '\n';
+  cout << "mSsq = " << displayMsSquared() << '\n';
+  cout << "mSpsq = " << displayMspSquared() << '\n';
+  cout << "xiS = " << displayXiS() << '\n';
+  cout << flush;
 }
 
 
