@@ -14,7 +14,7 @@ if test "x$CXXFLAGS" = "x"; then
    CXXFLAGS="-O3 -Wall -Werror"
 fi
 if test "x$FFLAGS" = "x"; then
-   FFLAGS="-O3"
+   FFLAGS="-O3 -Wall -Werror"
 fi
 dnl ==========================================
 
