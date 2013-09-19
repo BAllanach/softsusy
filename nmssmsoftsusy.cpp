@@ -111,7 +111,7 @@ void NmssmSoftsusy::testSlavichTreeMasses() const {
 
 
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.
-void NmssmSoftsusy::printall(){
+void NmssmSoftsusy::printall() const {
    cout << "At scale " << displayMu() << endl;
   cout << "mH1 = " << displayPhys().mh0(1) << endl;
   cout << "mH2 = " << displayPhys().mh0(2) << endl;

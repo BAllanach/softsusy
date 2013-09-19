@@ -521,7 +521,7 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
 		bool ewsbBCscale =  false); 
   
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.    
-  void printall();
+  void printall() const;
 
   /// Outputs with Les Houches accord conventions to standard output.
   /// Inputs:
