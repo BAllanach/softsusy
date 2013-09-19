@@ -263,7 +263,7 @@ void score(float x, const DoubleVector & y, DoubleVector & f);
 /// conditions at the initial scale and calculates f[1..n2] - a score for how
 /// well the boundary condition at the high scale is satisfied. Then you
 /// should be able to find the solutions for the unknown numbers. 
-void shoot(const DoubleVector & v, DoubleVector & f);
+//void shoot(const DoubleVector & v, DoubleVector & f);
 /// QR decomposition of the matrix a. A = Q.R. Upper triangular matrix R is
 /// returned in upper triangle of a, except for diagonal elements which are
 /// returned in d. Orthog matrix Q is given as a product of n-1 Houselholder
