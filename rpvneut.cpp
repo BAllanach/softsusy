@@ -7,8 +7,6 @@
 
 #include "rpvneut.h"
 
-static int posChargedGolstone = 0;
-
 const RpvNeutrino & RpvNeutrino::operator = (const RpvNeutrino &s) {
   if (this == &s) return *this;
   setRpvSoftsusy(s.displayRpvSoftsusy());

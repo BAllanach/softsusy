@@ -73,7 +73,6 @@ int main(int argc, char *argv[]) {
   k.setInitialData(oneset);
   MssmSoftsusy * r = &m; 
   RpvNeutrino kw; bool RPVflag = false;
-  bool oldSchoolRpvOutput = false;
 
   try {
   if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
@@ -329,7 +328,6 @@ int main(int argc, char *argv[]) {
 	errorCall();
     }
     
-    bool flag = false;
     if (!strcmp(argv[1], "leshouches")) {
       outputCharacteristics(8);
       if (argc == 2) {
@@ -691,7 +689,7 @@ int main(int argc, char *argv[]) {
 		case 2: GMU = d; break;
 		case 3: oneset.setAlpha(ALPHAS, d); break; 
 		case 4: oneset.setMu(d); m.setData(oneset); MZ = d; break;
-		case 5: oneset.setMass(mBottom, d); flag = true; 
+		case 5: oneset.setMass(mBottom, d); 
 		  oneset.setMbMb(d); break;
 		case 6: oneset.setPoleMt(d); break;
 		case 7: oneset.setMass(mTau, d); 
@@ -982,7 +980,6 @@ int main(int argc, char *argv[]) {
       sgnMu = 0; // Flags different BCs
     }
 
-    int pos = 10;
     if (RPVflag) {
       kw.rpvDisplay(pars);
       kw.setFlavourSoftsusy(k);
@@ -995,11 +992,10 @@ int main(int argc, char *argv[]) {
       else if (boundaryCondition == &gmsbBcs) 
 	boundaryCondition = &rpvGmsbBcs;
       else if (boundaryCondition == &extendedSugraBcs) {
-	pos = 50;
 	boundaryCondition = &rpvExtendedSugraBcs;
       }
       else if (boundaryCondition == &extendedSugraBcs) {
-	pos = 50; boundaryCondition = &rpvExtendedSugraBcs;
+	boundaryCondition = &rpvExtendedSugraBcs;
         kw.useAlternativeEwsb();
       }
       else 

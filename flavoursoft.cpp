@@ -1509,7 +1509,6 @@ void FlavourMssmSoftsusy::sCkmAnalytic
   ckmNormalise(Vu, Vd, Uu, Ud); 
   DoubleMatrix V(displayCkm());
   // DoubleMatrix V(Vu.transpose() * Vd);
-  double lc = yu(2), ls = yd(2);
 
   double ddownL = sqr(MZ) * (-1./2. + 1./3. * sinthw2) * c2b;
   double ddownR = sqr(MZ) * (-1./3.) * sinthw2 * c2b;
@@ -1549,8 +1548,6 @@ void FlavourMssmSoftsusy::sCkmAnalytic
   double muR33 = sqr(mt) + dupR + sqr(mfac) * (-88./25. * sqr(sqr(g1)) + 
 					       8 * sqr(sqr(gs)) + 
 					       2 * sqr(lt) * bett);
-  double muRii = sqr(mfac) * (-88./25. * sqr(sqr(g1)) + 
-			      8 * sqr(sqr(gs))) + dupR;
   
   double muLRi3 = -vu * mfac * lt * sqr(lb) * V(2, 3) * V(3, 3) / sqrt(2.0);
 
@@ -1628,7 +1625,6 @@ void FlavourMssmSoftsusy::sCkmRunning
   // First, must define mstop,sbot,stau and mixing angles in DRbar scheme
   double beta = atan(displayTanb());
   double sinthDRbar = calcSinthdrbar();
-  double mz = displayMzRun(), mz2 = sqr(mz);
 
   sw2 = sqr(sinthDRbar);
   guL = 0.5 - 2.0 * sw2 / 3.0;

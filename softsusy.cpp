@@ -6561,9 +6561,6 @@ void MssmSoftsusy::calcDrBarPars() {
   double savedMu = displaySusyMu();
 
   if (sphenoMassConv) {
-    int sgnMu; 
-    if (savedMu > 1) sgnMu = 1;
-    else sgnMu = -1;
     double muSq = treeLevelMuSq();
     double muForNow = zeroSqrt(muSq);
     setSusyMu(muForNow);
@@ -6734,11 +6731,9 @@ void MssmSoftsusy::itLowsoft
 
   if (PRINTOUT > 1) cout << displayProblem(); 
 
-  double mtpole, mtrun;
+  double mtrun;
   
-  mtpole = displayDataSet().displayPoleMt();
-  /// On first iteration, don't bother with finite corrections
-  
+  /// On first iteration, don't bother with finite corrections  
   numTries = numTries + 1;
   try {
     sparticleThresholdCorrections(tanb); 
