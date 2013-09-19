@@ -49,7 +49,7 @@ then
 	mkdir "$CONFIG_DIR"
 fi
 autoheader
-libtoolize -c -f              # create file Config/ltmain.sh
+glibtoolize -c -f              # create file Config/ltmain.sh
 automake --add-missing --copy
 autoconf
 

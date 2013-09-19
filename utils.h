@@ -111,5 +111,10 @@ bool testNan(double f);
 /// of the absolute difference
 double sTfn(double sTins, double sTouts);
 
+/// LCT: Calculates fractional difference in Drbar masses between a and b
+class drBarPars;
+class DoubleVector;
+void sumTol(const drBarPars & a, const drBarPars & b, DoubleVector & sT);
+
 #endif
 

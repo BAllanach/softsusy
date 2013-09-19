@@ -1,4 +1,5 @@
 
+#include "utils.h"
 #include "mssmUtils.h"
 #include "softsusy.h"
 
@@ -357,37 +358,11 @@ double getQhat(double inminTol,double eR, double h2, double Lisq, double mx,
   return -numberOfTheBeast;
 }
 
-
-
 /// Difference between two SOFTSUSY objects in and out: EWSB terms only
-double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {
+ double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {
 
-  drBarPars inforLoops(in.displayDrBarPars()),
-    outforLoops(out.displayDrBarPars());
-
-  DoubleVector sT(34);
-  int k = 1;
-
-  sT(k) = sTfn(inforLoops.mh0(1), outforLoops.mh0(1)); k++;
-  sT(k) = sTfn(inforLoops.mA0(1), outforLoops.mA0(1)); k++;
-  sT(k) = sTfn(inforLoops.mh0(2), outforLoops.mh0(2)); k++;
-  sT(k) = sTfn(inforLoops.mHpm, outforLoops.mHpm); k++;
-  int i; for (i=1; i<=3; i++) {
-    sT(k) = sTfn(inforLoops.msnu(i), outforLoops.msnu(i)); k++;
-  }
-  for (i=1; i<=2; i++) {
-    sT(k) = sTfn(inforLoops.mch(i), outforLoops.mch(i)); k++;
-  }
-  for (i=1; i<=4; i++) {
-    sT(k) = sTfn(inforLoops.mneut(i), outforLoops.mneut(i)); k++;
-  }
-  sT(k) = sTfn(inforLoops.mGluino, outforLoops.mGluino); k++;
-  int j; for (j=1; j<=3; j++)
-    for(i=1; i<=2; i++) {
-      sT(k) = sTfn(inforLoops.mu(i, j), outforLoops.mu(i, j)); k++;
-      sT(k) = sTfn(inforLoops.md(i, j), outforLoops.md(i, j)); k++;
-      sT(k) = sTfn(inforLoops.me(i, j), outforLoops.me(i, j)); k++;
-    }
+   DoubleVector sT(34);
+   sumTol(in.displayDrBarPars(), out.displayDrBarPars(), sT);
   /// The predicted value of MZ^2 is an absolute measure of how close to a
   /// true solution we are:
   double tbPred = 0.;
@@ -395,6 +370,7 @@ double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {
   /// We allow an extra factor of 10 for the precision in the predicted value
   /// of MZ compared to TOLERANCE if the program is struggling and gone beyond
   /// 10 tries - an extra 2 comes from MZ v MZ^2
+  int k = sT.size() - 2;
   if (!in.displayProblem().testSeriousProblem()) {
     sT(k) = 0.5 * sTfn(predictedMzSq, sqr(MZ));
     if (numTries > 10) sT(k) *= 0.1;
