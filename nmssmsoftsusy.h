@@ -576,7 +576,6 @@ inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSoftsusy & s)
 inline NmssmSoftsusy::NmssmSoftsusy(const MssmSoftsusy & s)
 		     : Softsusy<SoftParsNmssm>(s),
                      tSOVSMs(0), tSOVSMs1loop(0)  {
-   cout << "swallowing tasty mssmsoftsusy" << endl;
    setPars(121);   
 }
 
