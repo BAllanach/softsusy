@@ -74,11 +74,11 @@ int main() {
     kw.setInvertedOutput();
 
     /// Main driver routine: do the calculation
-    kw.lowOrg(rpvSugraBcs, mxGuess, pars, sgnMu, tanb, oneset, 
+    kw.lowOrg(rpvCmssmBcs, mxGuess, pars, sgnMu, tanb, oneset, 
 	      gaugeUnification);
 
     /// Output the results in SLHA2 format
-    double qMax = 0.;  char * modelIdent = (char *)"sugra"; 
+    double qMax = 0.;  char * modelIdent = (char *)"cmssm"; 
     int numPoints = 1; bool ewsbBCscale = false;
 
     kw.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  

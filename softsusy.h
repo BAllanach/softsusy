@@ -613,7 +613,7 @@ public:
   /// out should be something like cout or fout depending on whether you want
   /// output in a file or not.
   /// model contains what form of model is used for the SUSY breaking terms
-  /// (eg sugra, gmsb, amsb, nonUniversal). qMax is only relevant if you want
+  /// (eg cmssm, gmsb, amsb, nonUniversal). qMax is only relevant if you want
   /// a gridded output of running parameters up to some scale qMax. Put
   /// numPoints = 1 if you don't want to use this option - then qMaz is
   /// immaterial. mb is mb(mb) in the MSbar scheme used to produce the output,
@@ -852,12 +852,12 @@ double ufb3fn(double mu, double htau, double h2, int family, const MssmSoftsusy
 double getQhat(double inminTol,double eR, double h2, double Lisq, double mx,
 	       MssmSoftsusy & temp);
 
-/// non-universal mSUGRA boundary conditions including mH1^2 and mH2^2
-void extendedSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
+/// non-universal mCMSSM boundary conditions including mH1^2 and mH2^2
+void extendedCmssmBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
 /// User supplied routine. Inputs m at the unification scale, and uses
 /// inputParameters vector to output m with high energy soft boundary
 /// conditions. 
-void sugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
+void cmssmBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
 /// Non-universal higgs mass conditions. Paramaters are, in order: m0,m12,mH,a0
 void nuhmI(MssmSoftsusy & m, const DoubleVector & inputParameters);
 /// Non-universal higgs mass conditions. Paramaters are, in order:

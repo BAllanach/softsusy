@@ -755,8 +755,8 @@ DoubleVector RpvSoftsusy::calculateSneutrinoVevs
 }
 
 // You must set SUSY RPV parameters before this
-void RpvSoftsusy::standardSugra(double m0,  double m12, double a0) {
-  SoftParsMssm::standardSugra(m0, m12, a0);
+void RpvSoftsusy::standardCmssm(double m0,  double m12, double a0) {
+  SoftParsMssm::standardCmssm(m0, m12, a0);
   //setHr(LU, a0 * displayLambda(LU));
   //setHr(LD, a0 * displayLambda(LD));
   //setHr(LE, a0 * displayLambda(LE));
@@ -854,7 +854,7 @@ void RpvSoftsusy::methodBoundaryCondition(const DoubleVector &
   k = 4;
   RpvSusyPars::set(inputParameters, k);
 
-  standardSugra(m0, m12, a0);
+  standardCmssm(m0, m12, a0);
 }
 
 void RpvSoftsusy::isawigInterface764(char herwigInputFile [80], 
@@ -1537,7 +1537,7 @@ void RpvSoftsusy::slha1(ostream & out, const char model[],
 
   out << "Block MODSEL  # Select model\n";
   int modsel = 0;
-  if (!strcmp(model, "sugra")) modsel = 1;
+  if (!strcmp(model, "cmssm")) modsel = 1;
   if (!strcmp(model, "gmsb")) modsel = 2;
   if (!strcmp(model, "amsb")) modsel = 3;
   out << "     1    " << modsel << "   # " << model << "\n"; // Les Houches
@@ -1565,7 +1565,7 @@ void RpvSoftsusy::slha1(ostream & out, const char model[],
     printRow(out, double(sgnMu)); 
     out << "   # sign(mu)"<< endl;
   }
-  if (!strcmp(model, "sugra")) {
+  if (!strcmp(model, "cmssm")) {
     out << "     1   "; printRow(out, pars.display(1)); 
     out << "   # m0" << endl;
     out << "     2   "; printRow(out, pars.display(2)) ; 
@@ -1911,13 +1911,13 @@ void RpvSoftsusy::slha1(ostream & out, const char model[],
 }
 
 
-void rpvSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
+void rpvCmssmBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
 
   double m0 = inputParameters.display(1);
   double m12 = inputParameters.display(2);
   double a0 = inputParameters.display(3);
 
-  m.SoftParsMssm::standardSugra(m0, m12, a0);
+  m.SoftParsMssm::standardCmssm(m0, m12, a0);
 
   /// only set the rest if the input parameters if we're not fixing them at MZ
   if (!susyRpvBCatMSUSY) m.rpvSet(inputParameters);
@@ -1931,7 +1931,7 @@ void rpvAmsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   double m32 = inputParameters.display(1);
   double m0 = inputParameters.display(2);
 
-  m.SoftParsMssm::standardSugra(m0, 0, 0);
+  m.SoftParsMssm::standardCmssm(m0, 0, 0);
   
   m.addAmsb(m32);
 
@@ -1952,9 +1952,9 @@ void rpvGmsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   return;
 }
 
-void rpvExtendedSugraBcs(MssmSoftsusy & m, 
+void rpvExtendedCmssmBcs(MssmSoftsusy & m, 
 			 const DoubleVector & inputParameters) { 
-  extendedSugraBcs(m, inputParameters);
+  extendedCmssmBcs(m, inputParameters);
 
   if (!susyRpvBCatMSUSY) m.rpvSet(inputParameters);  
 }

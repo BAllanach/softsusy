@@ -80,7 +80,7 @@ int main() {
       kw.rpvDisplay(pars);
       
       /// generate spectrum in RpvSoftsusy object kw
-      kw.lowOrg(rpvSugraBcs, mgutGuess, pars, sgnMu,
+      kw.lowOrg(rpvCmssmBcs, mgutGuess, pars, sgnMu,
                 tanb, oneset, gaugeUnification, ewsbBCscale);
       
       /// outputs for this scan

@@ -77,7 +77,7 @@ int main() {
     bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
     
     /// Calculate the spectrum
-    r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+    r.lowOrg(cmssmBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
 
     /// check the point in question is problem free: if so print the output
     if (!r.displayProblem().test()) 

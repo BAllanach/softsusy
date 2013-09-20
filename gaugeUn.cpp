@@ -53,7 +53,7 @@ MssmSoftsusy doStuff(double alphasMZ, double alphaMZinv, double mtop, double mbm
   bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
   
   /// Calculate the spectrum
-  r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+  r.lowOrg(cmssmBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
 
   cerr << r.displayProblem();
 

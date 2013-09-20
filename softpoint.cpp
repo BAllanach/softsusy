@@ -30,14 +30,14 @@ void errorCall() {
   ii << "SOFTSUSY" << SOFTSUSY_VERSION 
      << " called with incorrect arguments. Need to put either:\n";
   ii << "softpoint.x leshouches < lesHouchesInput\n for SLHA input, or\n";
-  ii << "softpoint.x sugra <m0> <m12> <a0> <tanb> <mgut> <sgnMu>\n";
+  ii << "softpoint.x cmssm <m0> <m12> <a0> <tanb> <mgut> <sgnMu>\n";
   ii << "softpoint.x amsb <m0> <m32> <tanb> <mgut> <sgnMu>\n";
   ii << "softpoint.x gmsb <n5> <mMess> <lambda> <cgrav> <tanb> <sgnMu> \n";
   ii << "Any of the above can be extended by R-parity violation of one coupling by\n";
   ii << "softpoint.x <non RPV model parameters as above> lambda <i> <j> <k> <coupling> \n";
   ii << "the word lambda replaceable with lambdaP or lambdaPP for LLE, LQD, UDD coupling, respectively \n\n";
   ii << "Other possibilities:\n";
-  ii << "softpoint.x sugra <m0> <m12> <a0> <tanb> <mgut> <sgnMu> <mb(mb)> ";
+  ii << "softpoint.x cmssm <m0> <m12> <a0> <tanb> <mgut> <sgnMu> <mb(mb)> ";
   ii << " <mt> <as(MZ)> <1/a(MZ)>\n";
   ii << "Bracketed entries are numerical values.\n";
   ii << "<mgut> denotes the scale at which the SUSY breaking ";
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
   // Sets format of output: 4 decimal places
   outputCharacteristics(6);
 
-  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=sugraBcs;
+  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=cmssmBcs;
 
   QedQcd oneset;
   MssmSoftsusy m; FlavourMssmSoftsusy k;
@@ -77,255 +77,167 @@ int main(int argc, char *argv[]) {
   try {
   if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
     cerr << "SOFTSUSY" << SOFTSUSY_VERSION << endl;
+    if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) exit(0);
     cerr << "B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
     cerr << " hep-ph/0104145\n";
-    cerr << "For RPV aspects, B.C. Allanach and M.A. Bernhardt, ";
-    cerr << "arXiv:0903.1805.\n\n";
+    cerr << "For RPV aspects, B.C. Allanach and M.A. Bernhardt, Comput. "
+	 << "Phys. Commun. 181 (2010) 232, arXiv:0903.1805.\n\n";
     cerr << "Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
 	 << TOLERANCE << endl;
     cerr << "G_F=" << GMU << " GeV^2" << endl;
   }
   
-  double mgutGuess = 2.0e16, tanb = 10.;
+  double mgutGuess = 2.0e16, tanb = 0.;
   int sgnMu = 1;
   bool gaugeUnification = true, ewsbBCscale = false;
   double desiredMh = 0.;
 
     // If there are no arguments, give error message,
    // or if none of the options are called, then go to error message
-    if (argc == 1 || (strcmp(argv[1], "sugra") && strcmp(argv[1], "amsb") &&
+  if (argc == 1 || ( (strcmp(argv[1], "cmssm") && 
+		      strcmp(argv[1], "amsb") &&
 		      strcmp(argv[1], "gmsb") && 
 		      strcmp(argv[1], "runto") && 
-		      strcmp(argv[1], "leshouches")  && strcmp(argv[1], "-v") &&
-		      strcmp(argv[1], "--version")))
+		      strcmp(argv[1], "leshouches") && 
+		      strcmp(argv[1], "-v") &&
+		      strcmp(argv[1], "--version"))))
       errorCall();
     
     DoubleVector pars(3); 
     
     char * modelIdent = (char *)"";  
 
-    if (!strcmp(argv[1], "sugra")) {
-      cout << "# SOFTSUSY SUGRA calculation" << endl;
-      boundaryCondition = &sugraBcs;
-      if (argc == 8) {
-	modelIdent = (char *)"sugra";
-	double m0 = atof(argv[2]);
-	double m12 = atof(argv[3]);
-	double a0 = atof(argv[4]);
-	tanb = atof(argv[5]);
-	mgutGuess = mgutCheck(argv[6], gaugeUnification, ewsbBCscale);
-	sgnMu =  atoi(argv[7]);
-	pars(1) = m0; pars(2) = m12; pars(3) = a0;
-	r = &m;
-      } else if (argc == 9) {
-	modelIdent = (char *)"sugra";
-	double m0 = atof(argv[2]);
-	double m12 = atof(argv[3]);
-	double a0 = atof(argv[4]);
-	tanb = atof(argv[5]);
-	mgutGuess = mgutCheck(argv[6], gaugeUnification, ewsbBCscale);
-	sgnMu =  atoi(argv[7]);
-	pars(1) = m0; pars(2) = m12; pars(3) = a0;
-	QEWSB = atof(argv[8]);
-	r = &m;
-      } else if (argc == 12) {
-	modelIdent = (char *)"sugra";
-	double m0 = atof(argv[2]);
-	double m12 = atof(argv[3]);
-	double a0 = atof(argv[4]);
-	tanb = atof(argv[5]);
-	mgutGuess = mgutCheck(argv[6], gaugeUnification, ewsbBCscale);
-	sgnMu =  atoi(argv[7]);
-	double mbrun = atof(argv[8]);
-	double mtpole = atof(argv[9]);
-	double as = atof(argv[10]);
-	double aInv = atof(argv[11]);
-	oneset.setMass(mBottom, mbrun);
-	oneset.setMbMb(mbrun);
-	oneset.setPoleMt(mtpole);
-	oneset.setAlpha(ALPHA, 1.0 / aInv);
-	oneset.setAlpha(ALPHAS, as);
-	pars(1) = m0; pars(2) = m12; pars(3) = a0;
-	r = &m;
-      } else if (argc == 13) {
+    /// Non model specific options
+    for (int i = 2; i < argc; i++) {
+      if (starts_with(argv[i],"--mbmb=")) 
+	oneset.setMass(mBottom, get_value(argv[i], "--mbmb="));
+      else if (starts_with(argv[i],"--mt=")) 
+	oneset.setPoleMt(get_value(argv[i], "--mt="));
+      else if (starts_with(argv[i],"--alpha_s="))
+	oneset.setAlpha(ALPHAS, get_value(argv[i], "--alpha_s="));      
+      else if (starts_with(argv[i],"--alpha_inverse="))
+	oneset.setAlpha(ALPHA, 1.0 / get_value(argv[i],"--alpha_inverse="));
+      else if (starts_with(argv[i],"--RPV")) 
 	RPVflag = true;
-	modelIdent = (char *)"sugra";
-	double m0 = atof(argv[2]);
-	double m12 = atof(argv[3]);
-	double a0 = atof(argv[4]);
-	tanb = atof(argv[5]);
-	mgutGuess = mgutCheck(argv[6], gaugeUnification, ewsbBCscale);
-	sgnMu =  atoi(argv[7]);
-	pars(1) = m0; pars(2) = m12; pars(3) = a0;
-	// check which lambda is set nonzero at MGUT
-	if (!strcmp(argv[8], "lambda")) {
-	  int i= int(atof(argv[9]));
-	  int j= int(atof(argv[10]));
-	  int k= int(atof(argv[11]));
-	  double d = atof(argv[12]);
-	  kw.setLambda(LE, k, i, j, d);
-	} else if (!strcmp(argv[8], "lambdaP")) {
-	  modelIdent = (char *)"sugra";
-	  int i= int(atof(argv[9]));
-	  int j= int(atof(argv[10]));
-	  int k= int(atof(argv[11]));
-	  double d = atof(argv[12]);
-	  kw.setLambda(LD, k, i, j, d);
-	} else if (!strcmp(argv[8], "lambdaPP")) {
-	  modelIdent = (char *)"sugra";
-	  int i= int(atof(argv[9]));
-	  int j= int(atof(argv[10]));
-	  int k= int(atof(argv[11]));
-	  double d = atof(argv[12]);
-	  kw.setLambda(LU, i, j, k, d);
-	}
-	r = &m;
-      } else if (argc == 11) {
-	modelIdent = (char *)"sugra";
-	RPVflag = true;
-	double m0 = atof(argv[2]);
-	double m12 = atof(argv[3]);
-	double a0 = atof(argv[4]);
-	tanb = atof(argv[5]);
-	mgutGuess = mgutCheck(argv[6], gaugeUnification, ewsbBCscale);
-	sgnMu =  atoi(argv[7]);
-	pars(1) = m0; pars(2) = m12; pars(3) = a0;
-	// check which lambda is set nonzero at MGUT
-	if (!strcmp(argv[8], "kappa")) {
-	  int i = int(atof(argv[9]));
-	  double d = atof(argv[10]);
-	  kw.setKappa(i, d);
-	}
-	r = &m;
-      } 
-      else {
-	errorCall();
-	// end of SUGRA option
-      }
+      else if (starts_with(argv[i], "--tanBeta=")) 
+	tanb = get_value(argv[i], "--tanBeta=");
+      else if (starts_with(argv[i], "--sgnMu=")) 
+	sgnMu = get_valuei(argv[i], "--sgnMu=");
+      else if (starts_with(argv[i], "--mgut=")) 
+	mgutGuess = mgutCheck(argv[i], gaugeUnification, ewsbBCscale); 
+      else if (starts_with(argv[i], "--QEWSB=")) 
+	QEWSB = get_value(argv[i], "--QEWSB=");
     }
-    if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) exit(0);
+    if (tanb < 1.5 || tanb > 70.) {
+	ostringstream ii; 
+	ii << "tanBeta=" << tanb 
+	   << " in CMSSM input. The point will not yield a sensible answer\n";
+	throw ii.str();
+    }
+
+    if (RPVflag) {
+      for (int i = 2; i < argc; i++) {
+	if (starts_with(argv[i], "--lambda") || 
+	    starts_with(argv[i], "--lambdaP") || 
+	    starts_with(argv[i], "--lambdaPP")) {
+	  int ii= int(atof(argv[i+1]));
+	  int j = int(atof(argv[i+2]));
+	  int k = int(atof(argv[i+3]));
+	  double d = atof(argv[i+4]);
+	  if (starts_with(argv[i], "--lambda"))   kw.setLambda(LE, k, ii, j, d);
+	  if (starts_with(argv[i], "--lambdaP"))  kw.setLambda(LD, k, ii, j, d);
+	  if (starts_with(argv[i], "--lambdaPP")) kw.setLambda(LU, ii, j, k, d);
+
+	  if (starts_with(argv[i], "--kappa")) {
+	    int ii = int(atof(argv[i+1]));
+	    double d = atof(argv[i+2]);
+	    kw.setKappa(ii, d);
+	  }
+	  
+	}
+      }      
+    }
+    
+    /// Model specific options
+    if (!strcmp(argv[1], "cmssm")) {
+      cout << "# SOFTSUSY CMSSM calculation" << endl;
+      boundaryCondition = &cmssmBcs;
+      modelIdent = (char *)"cmssm";
+      double m0 = 0., m12 = 0., a0 = 0.;
+      for (int i = 2; i < argc; i++) {
+	if (starts_with(argv[i], "--m0=")) m0  = get_value(argv[i], "--m0=");
+	else if (starts_with(argv[i], "--m12=")) 
+	  m12 = get_value(argv[i], "--m12=");
+	else if (starts_with(argv[i], "--a0="))
+	  a0  = get_value(argv[i], "--a0=");
+      }
+      pars(1) = m0; pars(2) = m12; pars(3) = a0;      
+      if (m12 < MZ) {
+	ostringstream ii; 
+	ii << "m12=" << m12 
+	   << " in CMSSM input. The point will not yield a sensible answer\n";
+	throw ii.str();
+      }
+      r = &m;
+    }
+
     if (!strcmp(argv[1], "amsb")) {
       cout << "# SOFTSUSY mAMSB calculation" << endl;
       boundaryCondition = &amsbBcs;
-      if (argc == 7 || argc == 12) {
-	modelIdent = (char *)"amsb";
-	double m0 = atof(argv[2]);
-	double m32 = atof(argv[3]);
-	tanb = atof(argv[4]);
-	mgutGuess = mgutCheck(argv[5], gaugeUnification, ewsbBCscale);
-	sgnMu =  atoi(argv[6]);
-	pars(1) = m32; pars(2) = m0;
-	// check if RPV
-	if (argc == 12) {
-	  if (!strcmp(argv[7], "lambda")) {
-	    RPVflag = true;
-	    int i= int(atof(argv[8]));
-	    int j= int(atof(argv[9]));
-	    int k= int(atof(argv[10]));
-	    double d = atof(argv[11]);
-	    kw.setLambda(LE, k, i, j, d);
-	  }	
-	  else if (!strcmp(argv[7], "lambdaP")) {
-	    RPVflag = true;
-	    int i= int(atof(argv[8]));
-	    int j= int(atof(argv[9]));
-	    int k= int(atof(argv[10]));
-	    double d = atof(argv[11]);
-	    kw.setLambda(LD, k, i, j, d);
-	  } else if (!strcmp(argv[7], "lambdaPP")) {
-	    RPVflag = true;
-	    int i= int(atof(argv[8]));
-	    int j= int(atof(argv[9]));
-	    int k= int(atof(argv[10]));
-	    double d = atof(argv[11]);
-	    kw.setLambda(LU, i, j, k, d);
-	  }
-	}
-	r = &m;
+      modelIdent = (char *)"amsb";
+      double m0 = 0., m32 = 0.;
+      for (int i = 2; i < argc; i++) {
+	if (starts_with(argv[i], "--m0=")) m0  = get_value(argv[i], "--m0=");
+	else if (starts_with(argv[i], "--m32=")) 
+	  m32 = get_value(argv[i], "--m32=");
       }
-      else 
-	errorCall();
+      pars(1) = m0; pars(2) = m32; 
+      if (m32 < 1.0e3) {
+	ostringstream ii; 
+	ii << "m32=" << m32 
+	   << " in CMSSM input (too low). The point will not yield a sensible answer\n";
+	throw ii.str();
+      }
+      r = &m;
     }
+
     if (!strcmp(argv[1], "gmsb")) {
       cout << "# SOFTSUSY mGMSB calculation" << endl;
-      
       boundaryCondition = &gmsbBcs;
       modelIdent = (char *)"gmsb";
-      if (argc == 8) {
-	  double n5 = atof(argv[2]);
-	  double mMess = atof(argv[3]);
-	  double lambda = atof(argv[4]);
-	  double cgrav = atof(argv[5]);
-	  tanb = atof(argv[6]);
-	  sgnMu =  atoi(argv[7]);
-	  mgutGuess = mMess;
-	  gaugeUnification = false;
-	  pars.setEnd(4);
-	  pars(1) = n5; pars(2) = mMess; pars(3) = lambda; pars(4) = cgrav;
-	  r = &m;
-	  if (lambda > mMess) {
-	  ostringstream ii;
-	  ii << "Input lambda=" << lambda << " should be less than mMess="
-	     << mMess << endl;
-	  throw ii.str();
-	}
+      double n5 = 0., mMess = 0., lambda = 0., cgrav = 1.;
+      for (int i = 2; i < argc; i++) {
+	if (starts_with(argv[i], "--n5=")) n5 = get_value(argv[i], "--n5=");
+	else if (starts_with(argv[i], "--mMess=")) 
+	  mMess = get_value(argv[i], "--mMess=");
+	else if (starts_with(argv[i], "--lambda=")) 
+	  lambda = get_value(argv[i], "--lambda=");
+	else if (starts_with(argv[i], "--cgrav=")) 
+	  cgrav = get_value(argv[i], "--cgrav=");
+      }
+
+      pars.setEnd(4);
+      pars(1) = n5; pars(2) = mMess; pars(3) = lambda; pars(4) = cgrav;
+      if (mMess < 1.0e3) {
+	ostringstream ii; 
+	ii << " mMess=" << mMess
+	   << " in CMSSM input (too low). The point will not yield a sensible answer\n";
+	throw ii.str();
+      }
+      
+      r = &m;
+      if (lambda > mMess) {
+	ostringstream ii;
+	ii << "Input lambda=" << lambda << " should be less than mMess="
+	   << mMess << endl;
+	throw ii.str();
+      }
 	if (cgrav > 1.0) {
 	  ostringstream ii;
 	  ii << "Input cgrav=" << cgrav << " a real number bigger than or "
 	     << " equal to 1 (you can use 1 as a default value).\n";
 	  throw ii.str();
 	}
-      }
-      // for RPV GMSB
-      else if (argc == 13) {
-	modelIdent = (char *)"gmsb";
-	RPVflag = true;
-	double n5 = atof(argv[2]);
-	double mMess = atof(argv[3]);
-	double lambda = atof(argv[4]);
-	double cgrav = atof(argv[5]);
-	tanb = atof(argv[6]);
-	sgnMu =  atoi(argv[7]);
-	mgutGuess = mMess;
-	gaugeUnification = false;
-	pars.setEnd(4);
-	pars(1) = n5; pars(2) = mMess; pars(3) = lambda; pars(4) = cgrav;
-	// check which lambda is set nonzero at MGUT
-	if (!strcmp(argv[8], "lambda")) {
-	  int i= int(atof(argv[9]));
-	  int j= int(atof(argv[10]));
-	  int k= int(atof(argv[11]));
-	  double d = atof(argv[12]);
-	  kw.setLambda(LE, k, i, j, d);
-	} else if (!strcmp(argv[8], "lambdaP")) {
-	  int i= int(atof(argv[9]));
-	  int j= int(atof(argv[10]));
-	  int k= int(atof(argv[11]));
-	  double d = atof(argv[12]);
-	  kw.setLambda(LD, k, i, j, d);
-	} else if (!strcmp(argv[8], "lambdaPP")) {
-	  int i= int(atof(argv[9]));
-	  int j= int(atof(argv[10]));
-	  int k= int(atof(argv[11]));
-	  double d = atof(argv[12]);
-	  kw.setLambda(LU, i, j, k, d);
-	}
-	r = &m;
-	if (lambda < mMess) {
-	  ostringstream ii;
-	  ii << "Input lambda=" << lambda << " should be greater than mMess="
-	     << mMess << endl;
-	  throw ii.str();
-	}
-	if (cgrav > 1.0) {
-	  ostringstream ii;
-	  ii << "Input cgrav=" << cgrav << " a real number bigger than or "
-	     << " equal to 1 (you can use 1 as a default value).\n";
-	  throw ii.str();
-	}
-      }
-      else 
-	errorCall();
     }
     
     if (!strcmp(argv[1], "leshouches")) {
@@ -357,15 +269,15 @@ int main(int argc, char *argv[]) {
 		switch(i) {
 		case 1: kk >> model; 
 		  switch(model) {
-		  case 0: boundaryCondition = &extendedSugraBcs;
+		  case 0: boundaryCondition = &extendedCmssmBcs;
 		    modelIdent = (char *)"nonUniversal"; r=&m;
 		    break;
 		  case 1: 
 		    if (!flavourViolation) {
 		      pars.setEnd(3); 
-		      boundaryCondition = &sugraBcs; 
+		      boundaryCondition = &cmssmBcs; 
 		    }
-		    modelIdent = (char *)"sugra";
+		    modelIdent = (char *)"cmssm";
 		    break;
 		  case 2: 
 		    if (!flavourViolation) {
@@ -446,7 +358,7 @@ int main(int argc, char *argv[]) {
 		default: 
 		  switch(model) {
 		  case 0:
-		    // SUGRA inputs to fill out the pheno MSSM case
+		    // CMSSM inputs to fill out the pheno MSSM case
 		    switch(i) {
 		    case 1: pars(1) = d; break;
 		    case 2: pars(2) = d; break;
@@ -456,7 +368,7 @@ int main(int argc, char *argv[]) {
 		      ii << "Didn't understand pheno MSSM input " << i << endl;
 		      break;
 		    } break;
-		  case 1: // SUGRA inputs
+		  case 1: // CMSSM inputs
 		    switch(i) {
 		    case 1: 
 		      if (flavourViolation) { pars.setEnd(77);
@@ -483,7 +395,7 @@ int main(int argc, char *argv[]) {
 		      break;
 		    default: 
 		      ostringstream ii;
-		      ii << "Didn't understand SUGRA input " << i << endl;
+		      ii << "Didn't understand CMSSM input " << i << endl;
 		      break;
 		    } break;
 		  case 2: // GMSB inputs
@@ -536,13 +448,13 @@ int main(int argc, char *argv[]) {
 	      // Adding non-minimal options. 
 	      else if (block == "EXTPAR") {
 		/// First, we want to convert our input to EXTPAR if we have
-		/// mSUGRA already
-		if (!strcmp(modelIdent, "sugra")) {
+		/// mCMSSM already
+		if (!strcmp(modelIdent, "cmssm")) {
 		  modelIdent = (char *)"nonUniversal";
 		  if (!flavourViolation) {
-		    /// We assume mSUGRA BCs with no flavour violation
+		    /// We assume mCMSSM BCs with no flavour violation
 		    r=&m; 
-		    boundaryCondition = &extendedSugraBcs;
+		    boundaryCondition = &extendedCmssmBcs;
 		    double m0 = pars(1), m12 = pars(2), a0 = pars(3);
 		    pars.setEnd(49);
 		    int i; for (i=1; i<=3; i++) pars(i) = m12;
@@ -552,7 +464,7 @@ int main(int argc, char *argv[]) {
 		    for (i=41; i<=49; i++) pars(i) = m0;		    
 		    kw.setNumRpcBcs(50); 
 		  } else {
-		    /// This is flavour violation with EXTPAR: mSUGRA BCs
+		    /// This is flavour violation with EXTPAR: mCMSSM BCs
 		    /// with flavour violation
 		    boundaryCondition = &flavourBcs;		    
 		    if (pars.displayEnd() == 3) {
@@ -966,7 +878,7 @@ int main(int argc, char *argv[]) {
 
     if (r->displayAltEwsb()) {
       if (strcmp(modelIdent, "splitgmsb")) {
-	//	boundaryCondition = &extendedSugraBcs2;
+	//	boundaryCondition = &extendedCmssmBcs2;
 	r->setSusyMu(pars(23)); 
       } else {
 	ostringstream ii;
@@ -985,17 +897,17 @@ int main(int argc, char *argv[]) {
       kw.setFlavourSoftsusy(k);
       r = &kw;
       
-      if (boundaryCondition == &sugraBcs) 
-	boundaryCondition = &rpvSugraBcs;
+      if (boundaryCondition == &cmssmBcs) 
+	boundaryCondition = &rpvCmssmBcs;
       else if (boundaryCondition == &amsbBcs) 
 	boundaryCondition = &rpvAmsbBcs;
       else if (boundaryCondition == &gmsbBcs) 
 	boundaryCondition = &rpvGmsbBcs;
-      else if (boundaryCondition == &extendedSugraBcs) {
-	boundaryCondition = &rpvExtendedSugraBcs;
+      else if (boundaryCondition == &extendedCmssmBcs) {
+	boundaryCondition = &rpvExtendedCmssmBcs;
       }
-      else if (boundaryCondition == &extendedSugraBcs) {
-	boundaryCondition = &rpvExtendedSugraBcs;
+      else if (boundaryCondition == &extendedCmssmBcs) {
+	boundaryCondition = &rpvExtendedCmssmBcs;
         kw.useAlternativeEwsb();
       }
       else 

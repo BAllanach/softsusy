@@ -9551,7 +9551,7 @@ void MssmSoftsusy::inomixingSLHA(ostream & out) {
 void MssmSoftsusy::modselSLHA(ostream & out, const char model[]) {
   out << "Block MODSEL  # Select model\n";
   int modsel = 0;
-  if (!strcmp(model, "sugra")) modsel = 1;
+  if (!strcmp(model, "cmssm")) modsel = 1;
   if (!strcmp(model, "gmsb")) modsel = 2;
   if (!strcmp(model, "amsb")) modsel = 3;
   if (!strcmp(model, "splitgmsb")) modsel = 4;
@@ -9832,7 +9832,7 @@ void MssmSoftsusy::minparSLHA(ostream & out, const char model [],
     printRow(out, double(sgnMu)); 
     out << "   # sign(mu)"<< endl;
   }
-  if (!strcmp(model, "sugra")) {
+  if (!strcmp(model, "cmssm")) {
     out << "     1   "; printRow(out, pars.display(1)); out << "   # m0" << endl;
     out << "     2   "; printRow(out, pars.display(2)) ; out << "   # m12" << endl;
     out << "     5   "; printRow(out, pars.display(3)) ; out << "   # A0" << endl;
@@ -9925,7 +9925,7 @@ void MssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 }
 
 
-void extendedSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
+void extendedCmssmBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   int i;
   for (i=1; i<=3; i++) m.setGauginoMass(i, inputParameters.display(i));
   if (inputParameters.display(25) > 1. && m.displaySetTbAtMX()) 
@@ -9970,8 +9970,8 @@ void extendedSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   } else m.setSusyMu(m.displayMuCond());
 }
 
-/// universal mSUGRA boundary conditions
-void sugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
+/// universal mCMSSM boundary conditions
+void cmssmBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   double m0 = inputParameters.display(1);
   double m12 = inputParameters.display(2);
   double a0 = inputParameters.display(3);
@@ -9979,7 +9979,7 @@ void sugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
   ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
-  m.standardSugra(m0, m12, a0);
+  m.standardCmssm(m0, m12, a0);
     
   return;
 }
@@ -9993,7 +9993,7 @@ void nuhmI(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
   ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
-  m.standardSugra(m0, m12, a0);
+  m.standardCmssm(m0, m12, a0);
   m.setMh1Squared(mH * mH); m.setMh2Squared(mH * mH);
     
   return;
@@ -10009,7 +10009,7 @@ void nuhmII(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
   ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
-  m.standardSugra(m0, m12, a0);
+  m.standardCmssm(m0, m12, a0);
   m.setMh1Squared(mH1 * mH1); m.setMh2Squared(mH2 * mH2);
     
   return;
@@ -10023,7 +10023,7 @@ void nonUniGauginos(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
   ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
-  m.standardSugra(m0, m12, a0);
+  m.standardCmssm(m0, m12, a0);
     
   m.setGauginoMass(2, inputParameters.display(4));
   m.setGauginoMass(3, inputParameters.display(5));
@@ -10036,7 +10036,7 @@ void amsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   double m32 = inputParameters.display(1);
   double m0 = inputParameters.display(2);
 
-  m.standardSugra(m0, 0., 0.);
+  m.standardCmssm(m0, 0., 0.);
   m.addAmsb(m32);
   return;
 }
@@ -10046,7 +10046,7 @@ void lvsBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   double m12 = inputParameters.display(1) * sqrt(3.);
   double a0  = -inputParameters.display(1) * sqrt(3.);
 
-  m.standardSugra(m0, m12, a0);
+  m.standardCmssm(m0, m12, a0);
 
   return;
 }
@@ -10064,7 +10064,7 @@ void gmsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
 
 void userDefinedBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   m.methodBoundaryCondition(inputParameters);
-  sugraBcs(m, inputParameters);
+  cmssmBcs(m, inputParameters);
 }
 
 /// Returns nlsp mass in mass and function return labels which particle is nlsp:
