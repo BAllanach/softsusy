@@ -6,6 +6,11 @@
 % beginning of macros
 \def\SOFTSUSY{{\tt SOFTSUSY}}
 \def\code#1{\small{\tt #1}\normalsize}
+\newcommand{\nn}{\nonumber}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\ba}{\begin{eqnarray}}
+\newcommand{\ea}{\end{eqnarray}}
 % end of macros
 
 \journal{Computer Physics Communications}
@@ -96,6 +101,8 @@ in the \SOFTSUSY~conventions. The translations to the actual variable
 names that are being used in the program code are shown explicitly in
 appendix~\ref{sec:objects}. 
 
+
+
 \subsection{Supersymmetric parameters \label{susypars}}
 The chiral superfield particle content of the NMSSM has the 
 following $SU(3)_c\times SU(2)_L\times U(1)_Y$ quantum numbers:
@@ -122,6 +129,31 @@ $\epsilon_{xyz}=\epsilon^{xyz}$ and  $\epsilon_{ab}=\epsilon^{ab}$ are totally
 antisymmetric tensors, with $\epsilon_{123}=1$ and $\epsilon_{12}=1$,
 respectively.  Currently, 
 only real couplings in the superpotential and Lagrangian are included. 
+
+The full renormalisable, R-parity conserving superpotential is given by,
+\ba 
+ W^{general}_{NMSSM} &=&\hat{u}^c \, \mathbf{y_u} \hat{Q} \hat{H}_u 
+-\hat{d}^c \, \mathbf{y_d} \hat{Q} \hat{H}_d 
+-\hat{e}^c \, \mathbf{y_e} \hat{L} \hat{H}_d 
++(\lambda \hat{S} + \mu)(\hat{H}_u \hat{H}_d)+\frac{1}{3}\kappa\hat{S}^3 + \zeta_F\hat{S} + \frac{1}{2} \mu^\prime\hat{S}^2 \\
+ &=& W_{MSSM}^{\mu =0}  +(\lambda \hat{S} + \mu)(\hat{H}_u \hat{H}_d)+\frac{1}{3}\kappa\hat{S}^3 + \zeta_F\hat{S} + \frac{1}{2} \mu^\prime\hat{S}^2 
+. 
+\label{eq:gensuperpotential}
+\ea
+ 
+Imposing the $Z_3$ symmetry restricts the superpotential to,
+
+\ba 
+ W_{NMSSM} &=& \hat{u}^c \, \mathbf{y_u} \hat{Q} \hat{H}_u 
+-\hat{d}^c \, \mathbf{y_d} \hat{Q} \hat{H}_d 
+-\hat{e}^c \, \mathbf{y_e} \hat{L} \hat{H}_d 
++\lambda \hat{S}(\hat{H}_u \hat{H}_d)+\frac{1}{3}\kappa\hat{S}^3 \\
+ &=& W_{MSSM}^{\mu =0}  +\lambda \hat{S} (\hat{H}_u \hat{H}_d)+\frac{1}{3}\kappa\hat{S}^3.
+\label{eq:superpotential}
+\ea
+
+In this form the NMSSM superpotential contains no explicit mass parameter, thereby solving the $\mu-problem$
+
 
 \subsection{Next-to-Minimal SUSY breaking parameters \label{sec:susybreak}}
 

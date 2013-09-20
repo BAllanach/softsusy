@@ -19,9 +19,9 @@ int main() {
   outputCharacteristics(6);
   
   /// Parameters used: CMSSM parameters
-  // double m12 = 500., a0 = -900., mGutGuess = 2.0e16, tanb = 5.0, m0 = 1000.;
-    double m12 = 200., a0 = -500., mGutGuess = 2.0e16, tanb = 10.0, m0 = 200.;
-  
+  //double m12 = 500., a0 = -900., mGutGuess = 2.0e16, tanb = 5.0, m0 = 1000.;
+   double m12 = 200., a0 = -500., mGutGuess = 2.0e16, tanb = 10.0, m0 = 200.;
+
   int sgnMu = 1;      ///< sign of mu parameter 
   int numPoints = 1; ///< number of scan points
   //PA: new nmssm parameters to be fed into lowOrg
