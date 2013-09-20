@@ -100,7 +100,7 @@ symmetry breaking, but a warning flag will alert the user to this fact.
 In this section, we introduce the NMSSM parameters
 in the \SOFTSUSY~conventions. The translations to the actual variable
 names that are being used in the program code are shown explicitly in
-appendix~\ref{sec:objects}. 
+~\ref{sec:objects}. 
 
 
 
@@ -152,11 +152,21 @@ The full renormalisable, $R-$parity conserving superpotential is given by,
 \ea
 
 
-\noindent The $Z_3$ NMSSM superpotential contains no explicit mass parameter, thereby solving the $\mu$-problem.   As such it is sometimes refered to as the scale invariant NMSSM in the literature.  Here we will always write $Z_3$-NMSSM when for the $Z_3$ conserving case and \Zv-NMSSM for the general $Z_3$ violating one. 
+\noindent The $Z_3$ NMSSM superpotential contains no explicit mass parameter, thereby solving the $\mu$-problem.   As such it is sometimes refered to as the scale invariant NMSSM in the literature.  Here we will always write $Z_3$-NMSSM for the $Z_3$ conserving case and \Zv-NMSSM for the general $Z_3$ violating one. 
 
 
 \subsection{Next-to-Minimal SUSY breaking parameters \label{sec:susybreak}}
+The soft breaking scalar potential is given by,
 
+\be V_{soft} = V_3 + V^{m_3^2 = 0}_2 + m_S^2|S|^2 + \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + a_\kappa S^3 + V_\Zv \ee where all \Zv terms are included in,
+\ba V_\Zv & = & \frac{1}{2}m_S^{\prime \, 2} S^2 + \xi_S S + \epsilon_{ab} m_3^2 H_2^a H_1^b + \textrm{H.c.} \ea while $V_3$ and $V_2$ are the trilinear scalar interaction potential and scalar bilinear SUSY breaking potential of the MSSM, given in the original softsusy manual for the $R$-parity conserving MSSM\cite{Allanach:2001kg}.   The superscript on $V^{m_3^2 = 0}_2$ indicates that the \Zv soft bilinear mass $m_3^2$ present in $V_2$ is set to zero so that it is not double counted. 
+
+%% \be V_{soft} = V_3 + V_2 + V_\Zv \ee where
+%% \ba V_3 & = & V^{MSSM}_3 + \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + a_\kappa S^3 \\
+%% V_2  & = & V^{MSSM}_2 + m_S^2|S|^2  \\
+%% V_\Zv & = & \frac{1}{2}m_S^{\prime \, 2} S^2 + \xi_S S + \textrm{H.c.} \ea
+%% \noindent and in the case of $Z_3$ conservation the soft potential reduces to,
+%% \be V_{soft} = V_3 + V^{m_3^2 = 0}_2 \ee with the superscript indicationg that the \Zv soft bilinear mass $m_3^2$ present in $V^{MSSM}_2$ is set to zero.    
 
 \subsection{Tree-level masses \label{sec:tree}}
 
@@ -309,6 +319,15 @@ technical documentation on the program should be obtained from the
 \subsection{\code{NmssmSusyPars}~class}
 
 \begin{thebibliography}{10}
+%\cite{Allanach:2001kg}
+\bibitem{Allanach:2001kg} 
+  B.~C.~Allanach,
+  %``SOFTSUSY: a program for calculating supersymmetric spectra,''
+  Comput.\ Phys.\ Commun.\  {\bf 143}, 305 (2002)
+  [hep-ph/0104145].
+  %%CITATION = HEP-PH/0104145;%%
+  %716 citations counted in INSPIRE as of 20 Sep 2013
+
 \end{thebibliography}
 
 \end{document}
