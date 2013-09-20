@@ -11,6 +11,7 @@
 \newcommand{\ee}{\end{equation}}
 \newcommand{\ba}{\begin{eqnarray}}
 \newcommand{\ea}{\end{eqnarray}}
+\newcommand{\Zv}{{\mbox{${\not\!\!Z_3}$}}}
 % end of macros
 
 \journal{Computer Physics Communications}
@@ -26,8 +27,8 @@
   0WA, United Kingdom}
 
 \author{P.~Athron}
-\author{A.~Williams}
 \author{L.~Tunstall}
+\author{A.G.~Williams}
 \address{Department of Physics, North Terrace, University of Adelaide,
   Adelaide SA 5005, Australia}
 
@@ -107,19 +108,19 @@ appendix~\ref{sec:objects}.
 The chiral superfield particle content of the NMSSM has the 
 following $SU(3)_c\times SU(2)_L\times U(1)_Y$ quantum numbers:
 \begin{eqnarray}
-L:&(1,2,-\frac{1}{2}),\quad {\bar E}:&(1,1,1),\qquad\, Q:\,(3,2,\frac{1}{6}),\quad
-{\bar U}:\,(\bar 3,1,-\frac{2}{3}),\nonumber\\ {\bar D}:&(\bar 3,1,\frac{1}{3}),\quad
-H_1:&(1,2,-\frac{1}{2}),\quad  H_2:\,(1,2,\frac{1}{2}),\quad N:\,(1,1,0)
+\hat{L}:&(1,2,-\frac{1}{2}),\quad \hat{{\bar E}}:&(1,1,1),\qquad\, \hat{Q}:\,(3,2,\frac{1}{6}),\quad
+\hat{{\bar U}}:\,(\bar 3,1,-\frac{2}{3}),\nonumber\\ \hat{{\bar D}}:&(\bar 3,1,\frac{1}{3}),\quad
+\hat{H}_1:&(1,2,-\frac{1}{2}),\quad \hat{H}_2:\,(1,2,\frac{1}{2}),\quad \hat{S}:\,(1,1,0)
 \label{fields}
 \end{eqnarray}
-$N$ is the Higgs singlet that is particular to the NMSSM.
-$L$, $Q$, $H_1$, and $H_2$ are the left handed doublet lepton and
-quark superfields and the two Higgs doublets. $\bar E$, $\bar U$, and
-$\bar D$ are the lepton, up-type quark and down-type quark
+$\hat S$ is the Higgs singlet that is particular to the NMSSM.
+$\hat L$, $\hat Q$, $\hat H_1$, and $\hat H_2$ are the left handed doublet lepton and
+quark superfields and the two Higgs doublets. $\hat{\bar E}$, $\hat{\bar U}$, and
+$\hat{\bar D}$ are the lepton, up-type quark and down-type quark
 right-handed superfield singlets, respectively. 
 Note that the lepton
-doublet superfields $L^a_i$ and the Higgs doublet superfield coupling
-to the down-type quarks, $H_1$, have the same SM gauge 
+doublet superfields $\hat{L}^a_i$ and the Higgs doublet superfield coupling
+to the down-type quarks, $\hat{H}_1$, have the same SM gauge 
 quantum numbers. 
 Here, we denote an $SU(3)$ colour index of the fundamental
 representation by  $\{x,y,z\} \in \{1,2,3 \}$. The $SU(2)_L$ fundamental
@@ -127,32 +128,31 @@ representation indices are denoted by $\{a,b,c\} \in \{1,2\}$ and the generation
 indices by $\{i,j,k\} \in \{1,2,3\}$. 
 $\epsilon_{xyz}=\epsilon^{xyz}$ and  $\epsilon_{ab}=\epsilon^{ab}$ are totally
 antisymmetric tensors, with $\epsilon_{123}=1$ and $\epsilon_{12}=1$,
-respectively.  Currently, 
-only real couplings in the superpotential and Lagrangian are included. 
+respectively.  Currently, only real couplings in the superpotential and Lagrangian are included. 
 
-The full renormalisable, R-parity conserving superpotential is given by,
+The full renormalisable, $R-$parity conserving superpotential is given by,
 \ba 
- W  &=&  \epsilon_{ab} \left[ (Y_E)_{ij} L_i^b
-H_1^a {\bar E}_j + (Y_D)_{ij} Q_i^{bx} H_1^a {\bar D}_{jx} +
-(Y_U)_{ij} Q_i^{ax} H_2^b {\bar U}_{jx} 
+ W_{\Zv}  &=&  \epsilon_{ab} \left[ (Y_E)_{ij} \hat L_i^b
+\hat H_1^a \hat{\bar E}_j + (Y_D)_{ij} \hat Q_i^{bx} \hat H_1^a \hat{\bar D}_{jx} +
+(Y_U)_{ij} \hat Q_i^{ax} \hat H_2^b \hat{\bar U}_{jx} 
 +(\lambda \hat{S} + \mu)(\hat{H}^a_2 \hat{H}^b_1) \right ] +\frac{1}{3}\kappa\hat{S}^3 + \zeta_F\hat{S} + \frac{1}{2} \mu^\prime\hat{S}^2 \\
- &=& W_{MSSM}^{\mu =0}  +  \epsilon_{ab}\left [(\lambda \hat{S} + \mu)(\hat{H}^a_2 \hat{H}^b_1) \right ]+\frac{1}{3}\kappa\hat{S}^3 + \zeta_F\hat{S} + \frac{1}{2} \mu^\prime\hat{S}^2 
-. 
-\label{eq:gensuperpotential}
+ &=& W_{MSSM}^{\mu =0}  +  \epsilon_{ab}\left [(\lambda \hat{S} + \mu)(\hat{H}^a_2 \hat{H}^b_1) \right ]+\frac{1}{3}\kappa\hat{S}^3 + \zeta_F\hat{S} + \frac{1}{2} \mu^\prime\hat{S}^2. 
+\label{eq:WZ3V}
 \ea
  
-Imposing the $Z_3$ symmetry restricts the superpotential to,
+\noindent where we have used the subscript \Zv to reflect taht this superpotential contains terms which violate the $Z_3$ saymmetry which is imposed on the NMSSM in it's most common form form.  Imposing the $Z_3$ symmetry restricts the superpotential to,
 
 \ba 
- W_{NMSSM} &=& \epsilon_{ab} \left[ (Y_E)_{ij} L_i^b
-H_1^a {\bar E}_j + (Y_D)_{ij} Q_i^{bx} H_1^a {\bar D}_{jx} +
-(Y_U)_{ij} Q_i^{ax} H_2^b {\bar U}_{jx}  
+ W_{Z_3} &=& \epsilon_{ab} \left[ (Y_E)_{ij} \hat L_i^b
+\hat H_1^a \hat{\bar E}_j + (Y_D)_{ij} \hat Q_i^{bx} \hat H_1^a \hat{\bar D}_{jx} +
+(Y_U)_{ij} \hat Q_i^{ax} \hat H_2^b \hat{\bar U}_{jx}  
 +\lambda \hat{S}(\hat{H}^a_2 \hat{H}^b_1) \right ]+\frac{1}{3}\kappa\hat{S}^3 \\
- &=& W_{MSSM}^{\mu =0}  + \epsilon_{ab} \lambda \hat{S} (\hat{H}^a_2 \hat{H}^b_2) +\frac{1}{3}\kappa\hat{S}^3.
-\label{eq:superpotential}
+ &=& W_{MSSM}^{\mu =0}  + \epsilon_{ab} \lambda \hat{S} (\hat{H}^a_2 \hat{H}^b_1) +\frac{1}{3}\kappa\hat{S}^3.
+\label{eq:WZ3C}
 \ea
 
-In this form the NMSSM superpotential contains no explicit mass parameter, thereby solving the $\mu-problem$
+
+\noindent The $Z_3$ NMSSM superpotential contains no explicit mass parameter, thereby solving the $\mu$-problem.   As such it is sometimes refered to as the scale invariant NMSSM in the literature.  Here we will always write $Z_3$-NMSSM when for the $Z_3$ conserving case and \Zv-NMSSM for the general $Z_3$ violating one. 
 
 
 \subsection{Next-to-Minimal SUSY breaking parameters \label{sec:susybreak}}
