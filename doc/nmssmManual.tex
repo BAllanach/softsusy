@@ -12,6 +12,7 @@
 \newcommand{\ba}{\begin{eqnarray}}
 \newcommand{\ea}{\end{eqnarray}}
 \newcommand{\Zv}{{\mbox{${\not\!\!Z_3}$}}}
+\newcommand{\ds}{\displaystyle}
 % end of macros
 
 \journal{Computer Physics Communications}
@@ -140,7 +141,7 @@ The full renormalisable, $R-$parity conserving superpotential is given by,
 \label{eq:WZ3V}
 \ea
  
-\noindent where we have used the subscript \Zv to reflect taht this superpotential contains terms which violate the $Z_3$ saymmetry which is imposed on the NMSSM in it's most common form form.  Imposing the $Z_3$ symmetry restricts the superpotential to,
+\noindent where we have used the subscript \Zv to reflect that this superpotential contains terms which violate the $Z_3$ symmetry which is imposed on the NMSSM in it's most common form.  Imposing the $Z_3$ symmetry restricts the superpotential to,
 
 \ba 
  W_{Z_3} &=& \epsilon_{ab} \left[ (Y_E)_{ij} \hat L_i^b
@@ -152,23 +153,134 @@ The full renormalisable, $R-$parity conserving superpotential is given by,
 \ea
 
 
-\noindent The $Z_3$ NMSSM superpotential contains no explicit mass parameter, thereby solving the $\mu$-problem.   As such it is sometimes refered to as the scale invariant NMSSM in the literature.  Here we will always write $Z_3$-NMSSM for the $Z_3$ conserving case and \Zv-NMSSM for the general $Z_3$ violating one. 
+\noindent The $Z_3$ NMSSM superpotential contains no explicit mass parameter, thereby allowing a solution to the $\mu$-problem when the singlet field picks up a VEV and generates an effective $\mu$ term of the right size.   As such it is sometimes referred to as the scale invariant NMSSM in the literature.  Here we will always write $Z_3$-NMSSM for the $Z_3$ conserving case and \Zv-NMSSM for the general $Z_3$ violating one. 
 
 
 \subsection{Next-to-Minimal SUSY breaking parameters \label{sec:susybreak}}
 The soft breaking scalar potential is given by,
 
-\be V_{soft} = V_3 + V^{m_3^2 = 0}_2 + m_S^2|S|^2 + \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + a_\kappa S^3 + V_\Zv \ee where all \Zv terms are included in,
-\ba V_\Zv & = & \frac{1}{2}m_S^{\prime \, 2} S^2 + \xi_S S + \epsilon_{ab} m_3^2 H_2^a H_1^b + \textrm{H.c.} \ea while $V_3$ and $V_2$ are the trilinear scalar interaction potential and scalar bilinear SUSY breaking potential of the MSSM, given in the original softsusy manual for the $R$-parity conserving MSSM\cite{Allanach:2001kg}.   The superscript on $V^{m_3^2 = 0}_2$ indicates that the \Zv soft bilinear mass $m_3^2$ present in $V_2$ is set to zero so that it is not double counted. 
+\be V_{soft} = V_3 + V^{m_3^2 = 0}_2 + m_S^2|S|^2 + \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + \frac{1}{3} a_\kappa S^3 + V_\Zv \ee where all \Zv terms are included in,
+\ba V_\Zv & = & \frac{1}{2}m_S^{\prime \, 2} S^2 + \xi_S S + \epsilon_{ab} m_3^2 H_2^a H_1^b + \textrm{H.c.} \ea while $V_3$ and $V_2$ are the trilinear scalar interaction potential and scalar bilinear SUSY breaking potential of the MSSM, given in the original SOFTSUSY manual for the $R$-parity conserving MSSM\cite{Allanach:2001kg}.   The superscript on $V^{m_3^2 = 0}_2$ indicates that the \Zv soft bilinear mass $m_3^2$ present in $V_2$ is set to zero so that it is not double counted. 
 
 %% \be V_{soft} = V_3 + V_2 + V_\Zv \ee where
-%% \ba V_3 & = & V^{MSSM}_3 + \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + a_\kappa S^3 \\
+%% \ba V_3 & = & V^{MSSM}_3 + \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + \frac{1}{3} a_\kappa S^3 \\
 %% V_2  & = & V^{MSSM}_2 + m_S^2|S|^2  \\
 %% V_\Zv & = & \frac{1}{2}m_S^{\prime \, 2} S^2 + \xi_S S + \textrm{H.c.} \ea
 %% \noindent and in the case of $Z_3$ conservation the soft potential reduces to,
 %% \be V_{soft} = V_3 + V^{m_3^2 = 0}_2 \ee with the superscript indicationg that the \Zv soft bilinear mass $m_3^2$ present in $V^{MSSM}_2$ is set to zero.    
 
+\subsection{Higgs potential and EWSB\label{sec:hpot}}
+The tree level Higgs potential is given by,
+\ba V_{Higgs} & = & V^H_F + V^H_D + V_{\rm soft}^H  \\
+            & = & V^{\mu=0}_{MSSM} + V^{HN}_{F} + V_{\rm soft}^{HN}\ea where 
+
+\ba  V^{HN}_{F} & = &  |\lambda S + \mu|^2 (|H_2|^2+|H_1|^2) + |\lambda H_2H_1
++\kappa S^2 + \mu^\prime S + \xi_S|^2  , \label{eq:HpotF} \\
+ V_{\rm soft}^{HN}  & = &  m_S^2|S|^2
++ [\lambda A_{\lambda}SH_2H_1+\frac{1}{3}\kappa A_{\kappa}S^3+ \ds\frac{1}{2}m_S^{\prime \, 2} S^2 + \xi_S S + \textrm{H.c.} ], 
+\label{eq:HpotS} \ea
+
+The three neutral Higgs fields then pick up vacuum expectation values,  
+\be 
+        \langle H_1 \rangle = \ds\frac{1}{\sqrt{2}}{v_1 \choose 0}, 
+\qquad  \langle H_2 \rangle = \ds\frac{1}{\sqrt{2}}{0 \choose v_2}, 
+\qquad  \langle S \rangle =  \ds\frac{1}{\sqrt{2}}s, \label{eq:potmin} \ee
+  
+\noindent and the minimisation conditions relate the VEVs to the soft masses,
+
+\ba m_{H_1}^2&=& \frac{1}{8} {\bar g}^2 (v_2^2-v_1^2) - \ds\frac{1}{2}\lambda^2 v_2^2
+ + (m_3^2)_\textrm{eff} \frac{v_2}{v_1} 
+- |\mu_\textrm{eff}|^2, \label{eq:mind}\\
+m_{H_2}^2&=& \frac{1}{8} {\bar g}^2 (v_1^2-v_2^2) - \ds\frac{1}{2}\lambda^2 v_1^2 
++ (m_3^2)_\textrm{eff} \frac{v_1}{v_2} 
+- |\mu_\textrm{eff}|^2 , \label{eq:minu} \\
+m_S^2 &=& -\kappa^2 s^2 - \ds\frac{1}{2}\lambda^2v^2 + \kappa\lambda v_2v_1
++ \lambda A_{\lambda} \frac{v_2v_1}{\sqrt{2}s}
+-\kappa A_{\kappa}s  - m^{\prime \,2}_S - \mu^{\prime \,2} + 2 \kappa \xi_F  - 3 \kappa s \mu^\prime \label{eq:mins}
+\ea
+
+where $\bar g = \sqrt{g^2+g^{\prime 2}}$ and $g$ and $g^{\prime}$
+are the gauge couplings of $SU(2)_L$ and $U(1)$ interactions
+respectively, with $g = g_2$ and $g^\prime = \sqrt{3/5} \, g_1$. For simplicity we have introduced,
+\be (m_3^2)_\textrm{eff} = \ds\frac{ \lambda s}{\sqrt{2}} B_\textrm{eff} + \widehat{m}_3^2 \ee and
+\be  \mu_\textrm{eff} = \mu + \lambda \frac{s}{\sqrt{2}} \;\;\;\; B_\textrm{eff}\equiv A_\lambda+\ds\frac{\kappa s}{\sqrt{2}} \;\;\;\; \widehat{m}_3^2 = m_3^2 + \lambda (\ds\frac{\mu^\prime s}{\sqrt{2}} + \xi_F) \ee
+
+
+
+%% Eq.(\ref{eq:mind}, \ref{eq:minu}) can be rewritten as
+%% \begin{eqnarray}
+%% 	\mu_\textrm{eff}^2&=&\frac{\overline{m}_{H_1}^2-\overline{m}_{H_2}^2t^2}{t^2-1}-\frac{1}{2}\overline{M}_z^2,\label{nmssm_mu}\\
+%% 	 (m_3^2)_\textrm{eff}&=&\frac{1}{2}\sin{2\beta}\left(\overline{m}_{H_2}^2+\overline{m}_{H_1}^2+ 2\mu_\textrm{eff}^2\left(1+\frac{\overline{M}_z^2}{\overline{g}^2s^2}\right)\right)\label{nmssm_bmu}
+%% \end{eqnarray}
+%% with  and we have also defined, 
+%% \ba \overline{m}^2_{H_1} &=&  m^2_{H_1} - \frac{1}{v_1}\frac{\partial \Delta V}{\partial v_1}, \quad
+%%  \overline{m}^2_{H_2} =  m^2_{H_2} - \frac{1}{v_2}\frac{\partial \Delta V}{\partial v_2}, \quad
+%% \overline{M}_Z^2 = M_Z^2 + {\mathcal Re}\Pi_{ZZ}^T. \ea.
+ 
+
 \subsection{Tree-level masses \label{sec:tree}}
+The chargino, gluino and sfermion masses are given by the same expressions as in the MSSM with \be\mu \rightarrow \mu_\textrm{eff} = \mu + \lambda \frac{s}{\sqrt{2}} \;\;\; {\rm where } \;\;\;\; \langle S \rangle = \frac{s}{\sqrt{2}} \ee with $\mu = 0$ in the $Z_3$-NMSSM. 
+
+The Lagrangian contains the neutralino mass matrix as
+$-\frac{1}{2}
+{\tilde\psi^0}{}^T{\cal M}_{\tilde\psi^0}\tilde\psi^0$ + h.c., where
+$\tilde\psi^0 =$ $(-i\tilde b,$ $-i\tilde w^3,$ $\tilde h_1,$ $\tilde
+h_2, \tilde{s})^T$ and
+%The Neutralinos mass matrix is, 
+\begin{equation}
+{\cal M}_{\tilde\psi^0} \ =\ \left(\begin{array}{ccccc} 
+M_1 & 0 &-M_Zc_\beta s_W & M_Zs_\beta s_W & 0 \\
+ 0 & M_2 & M_Zc_\beta c_W & -M_Zs_\beta c_W & 0 \\ 
+-M_Zc_\beta s_W & M_Zc_\beta c_W & 0 & -\mu & -\lambda v_2 \\
+M_Zs_\beta s_W & -M_Zs_\beta c_W & -\mu & 0 & - \lambda v_1 \\
+0 & 0 & 0 & 0 & 2 \kappa s + \mu^\prime
+\end{array} \right). \label{mchi0}
+\end{equation} 
+We use $s$ and $c$ for sine and cosine, so that
+$s_\beta\equiv\sin\beta,\ c_{\beta}\equiv\cos\beta$ and $s_W (c_W)$ is
+the sine (cosine) of the weak mixing angle.  
+
+The 5 by 5 neutralino mixing matrix is an orthogonal matrix $O$ with real
+entries,  such that $O^T {\cal M}_{\tilde\psi^0} O$ is diagonal.
+The neutralinos $\chi^0_i$ are defined such that their absolute masses
+increase with increasing $i$. Some of their mass values can be negative. 
+
+The CP-even gauge eigenstates $(H^0)^T = (H_1^0,\, H_2^0, \, S)$ are rotated into mass eigenstates by,
+\be h^0 = P H^0, \ee with the mass matrix appearing in the Lagrangian as  $-(H^0)^T M_H^0 H^0$ and is given by,
+\be
+M_{H^0}^2=
+\left(
+\begin{array}{ccc}
+\ds\frac{\partial^2 V}{\partial^2 v_1 } - \ds\frac{1}{v_1}\frac{\partial V}{\partial v_1}&
+\ds\frac{\partial^2 V}{\partial v_1 \partial v_2}&
+\ds\frac{\partial^2 V}{\partial v_1 \partial s}\\[0.3cm]
+\ds\frac{\partial^2 V}{\partial v_2 \partial v_1}&
+\ds\frac{\partial^2 V}{\partial^2 v_2} - \ds\frac{1}{v_2}\frac{\partial V}{\partial v_2}&
+\ds\frac{\partial^2 V}{\partial v_2 \partial s}\\[0.3cm]
+\ds\frac{\partial^2 V}{\partial s \partial v_1}&
+\ds\frac{\partial^2 V}{\partial s \partial v_2}&
+\ds\frac{\partial^2 V}{\partial^2 s} - \ds\frac{1}{s}\frac{\partial V}{\partial s},
+\end{array} 
+\right)
+ \ee
+
+where we have rewritten the elements of $M_{H^0}^2$ by imposing tree level EWSB substitution on the the double derivatives of the effective potential, which is equivalent to defining,  \be(M_{H^0}^2)_{ij} \equiv  \ds\frac{\partial^2 V}{\partial v_i \partial v_j} - \ds\frac{\delta_{ij}}{v_i}\frac{\partial V}{\partial v_i}, \ee with $v_3 \equiv s$.  The elements are then given as follows,   
+
+\ba
+ (M_{H^0}^2)_{11} & = & \frac{1}{2}g^2 v_1^2 + (\mu_\textrm{eff}\, B_\textrm{eff} +
+\widehat{m}_3^2)\,\tan\beta\;, \nn\\
+ (M_{H^0}^2)_{22} & = & \frac{1}{2} g^2 v_2^2 + (\mu_\textrm{eff}\, B_\textrm{eff} +
+\widehat{m}_3^2)/\tan\beta\;, \nn\\
+ (M_{H^0}^2)_{33} & = & \ds\frac{1}{\sqrt{2}}\lambda (A_\lambda + \mu') \frac{v_2 v_1}{s}
++ \frac{\kappa s}{\sqrt{2}} (A_\kappa + 4\frac{\kappa s}{\sqrt{2}}+ 3 \mu') - \sqrt{2}(\xi_S + \xi_F \mu')/s\;, \nn\\
+ (M_{H^0}^2)_{12} & = & (2\lambda^2 - g^2) \frac{v_2 v_1 }{2}- 
+\mu_\textrm{eff}\, B_\textrm{eff} - \widehat{m}_3^2 \;, \nn\\ 
+ (M_{H^0}^2)_{13} & = & \lambda (2 \mu_\textrm{eff}\,\frac{ v_1}{\sqrt{2}} -
+(B_\textrm{eff} + \kappa s + \mu')\frac{ v_2}{\sqrt{2}})\;, \nn\\
+ (M_{H^0}^2)_{23} & = & \lambda (2 \mu_\textrm{eff}\, \frac{ v_2}{\sqrt{2}} -
+(B_\textrm{eff} + \frac{\kappa s}{\sqrt{2}} + \mu')\frac{ v_1}{\sqrt{2}})\;.
+\label{2.22e}
+\ea
 
 \section{Calculation Algorithm \label{sec:calculation}}
 
