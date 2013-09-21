@@ -243,7 +243,7 @@ The neutralinos $\chi^0_i$ are defined such that their absolute masses
 increase with increasing $i$. Some of their mass values can be negative. 
 
 The CP-even gauge eigenstates $(H^0)^T = (H_1^0,\, H_2^0, \, S)$ are rotated into mass eigenstates by,
-\be h^0 = P H^0, \ee with the mass matrix appearing in the Lagrangian as  $-(H^0)^T M_H^0 H^0$ and is given by,
+\be h^0 = R H^0, \ee with the mass matrix appearing in the Lagrangian as  $-(H^0)^T M_H^0 H^0$ and is given by,
 \be
 M_{H^0}^2=
 \left(
@@ -265,19 +265,41 @@ where we have rewritten the elements of $M_{H^0}^2$ by imposing tree level EWSB 
 
 \ba
  (M_{H^0}^2)_{11} & = & M_Z^2 c_\beta^2 + (\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
-\widehat{m}_3^2)\,\tan\beta\;, \nn\\
- (M_{H^0}^2)_{22} & = & M_Z^2 s_\beta^2 + (\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
-\widehat{m}_3^2)/\tan\beta\;, \nn\\
- (M_{H^0}^2)_{33} & = & \ds\frac{1}{\sqrt{2}}\lambda (A_\lambda + \mu') \frac{v_2 v_1}{s}
-+ \frac{\kappa s}{\sqrt{2}} (A_\kappa + 4\frac{\kappa s}{\sqrt{2}}+ 3 \mu') - \sqrt{2}(\xi_S + \xi_F \mu')/s\;, \nn\\
+\widehat{m}_3^2)\,\tan\beta,\\
  (M_{H^0}^2)_{12} & = & (4\lambda^2 - \bar{g}^2) \frac{v_2 v_1 }{4}- 
-\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} - \widehat{m}_3^2 \;, \nn\\ 
+\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} - \widehat{m}_3^2, \\ 
  (M_{H^0}^2)_{13} & = & \lambda (2 \mu_\textrm{eff}\,\frac{ v_1}{\sqrt{2}} -
-(B_\textrm{eff} + \kappa s + \mu')\frac{ v_2}{\sqrt{2}})\;, \nn\\
+(B_\textrm{eff} + \kappa s + \mu')\frac{ v_2}{\sqrt{2}}),\\
+ (M_{H^0}^2)_{22} & = & M_Z^2 s_\beta^2 + (\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
+\widehat{m}_3^2)/\tan\beta\, \\
  (M_{H^0}^2)_{23} & = & \lambda (2 \mu_\textrm{eff}\, \frac{ v_2}{\sqrt{2}} -
-(B_\textrm{eff} + \frac{\kappa s}{\sqrt{2}} + \mu')\frac{ v_1}{\sqrt{2}})\;.
-\label{2.22e}
+(B_\textrm{eff} + \frac{\kappa s}{\sqrt{2}} + \mu')\frac{ v_1}{\sqrt{2}}), \\
+ (M_{H^0}^2)_{33} & = & \ds\frac{1}{\sqrt{2}}\lambda (A_\lambda + \mu') \frac{v_2 v_1}{s}
++ \frac{\kappa s}{\sqrt{2}} (A_\kappa + 4\frac{\kappa s}{\sqrt{2}}+ 3 \mu') - \sqrt{2}(\xi_S + \xi_F \mu')/s.
+\label{eq:MH0}
 \ea
+
+The three imaginary components of the neutral Higgs fields $(H^I)^T = (H^I_1, H_2^I, S^I)$ mix to give the two physical CP odd bosons and the goldstone boson, $a^T = (G^0, A_1, A_2)$, with the two bases related by,
+ \be a = P H^I \ee where $P$ matches the conventions of \cite{Degrassi:2009yq} and stripping the first row from $P$ leaves the 2 by 3 mixing matrix in SLHA2 conventions\cite{Allanach:2008qq}. Following the review of Ellwanger et al \cite{Ellwanger:2009dp} we write the entries of the 3 by 3 mass matrix in the $H^I$ basis, $ M^{\prime \, 2}_{P}$, after imposing tree level EWSB as,
+\ba
+( M^{\prime \, 2}_{P})_{11} & = & (\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
+\widehat{m}_3^2)\,\tan\beta , \\
+( M^{\prime \, 2}_{P})_{12} & = & \ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
+\widehat{m}_3^2, \\
+( M^{\prime \, 2}_{P})_{13} & = & \lambda v_u (A_\lambda - 2\kappa s - \mu'), \\
+( M^{\prime \, 2}_{P})_{22} & = & (\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
+\widehat{m}_3^2)/\tan\beta ,  \\
+( M^{\prime \, 2}_{P})_{23} & = & \lambda v_d (A_\lambda - 2\kappa s - \mu')\\
+( M^{\prime \, 2}_{P})_{33} & = & \lambda (B_\textrm{eff}+3\kappa s +\mu')\frac{v_u
+v_d}{s} -3\kappa A_\kappa s  -2 m_{S}'^2 -\kappa \mu' s 
+-\xi_F\left(4\kappa + \frac{\mu'}{s}\right) -\frac{\xi_S}{s}.
+\label{eq:MA0}
+\ea
+
+Note that the mixing of the goldstone boson, $G^0$ only depends on $\tan\beta$, as in the MSSM, as can be seen by first rotating by $\beta$, leaving a 2 by 2 block diagonal which may then be diagionalised as is shown in \cite{Ellwanger:2009dp}.  Therefore the CP-odd mixing can be stored as a single mixing angle $\theta_{HP}$ which SOFTSUSY does internally in the sPhysical object.
+
+
+  
 
 \section{Calculation Algorithm \label{sec:calculation}}
 
@@ -436,6 +458,33 @@ technical documentation on the program should be obtained from the
   [hep-ph/0104145].
   %%CITATION = HEP-PH/0104145;%%
   %716 citations counted in INSPIRE as of 20 Sep 2013
+
+%\cite{Degrassi:2009yq}
+\bibitem{Degrassi:2009yq} 
+  G.~Degrassi and P.~Slavich,
+  %``On the radiative corrections to the neutral Higgs boson masses in the NMSSM,''
+  Nucl.\ Phys.\ B {\bf 825}, 119 (2010)
+  [arXiv:0907.4682 [hep-ph]].
+  %%CITATION = ARXIV:0907.4682;%%
+  %35 citations counted in INSPIRE as of 21 Sep 2013
+%\cite{Allanach:2008qq}
+\bibitem{Allanach:2008qq} 
+  B.~C.~Allanach, C.~Balazs, G.~Belanger, M.~Bernhardt, F.~Boudjema, D.~Choudhury, K.~Desch and U.~Ellwanger {\it et al.},
+  %``SUSY Les Houches Accord 2,''
+  Comput.\ Phys.\ Commun.\  {\bf 180}, 8 (2009)
+  [arXiv:0801.0045 [hep-ph]].
+  %%CITATION = ARXIV:0801.0045;%%
+  %177 citations counted in INSPIRE as of 21 Sep 2013
+
+%\cite{Ellwanger:2009dp}
+\bibitem{Ellwanger:2009dp} 
+  U.~Ellwanger, C.~Hugonie and A.~M.~Teixeira,
+  %``The Next-to-Minimal Supersymmetric Standard Model,''
+  Phys.\ Rept.\  {\bf 496}, 1 (2010)
+  [arXiv:0910.1785 [hep-ph]].
+  %%CITATION = ARXIV:0910.1785;%%
+  %327 citations counted in INSPIRE as of 21 Sep 2013
+
 
 \end{thebibliography}
 
