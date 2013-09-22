@@ -1167,7 +1167,6 @@ void NmssmSoftsusy::calcDrBarPars() {
   eg.mh0.setEnd(3);
   eg.mA0.setEnd(2);
   eg.mixh0.resize(3,3);
-  eg.mixA0.resize(2,2);
   eg.mneut.setEnd(5);
   eg.mixNeut.resize(5,5);
 
@@ -3762,7 +3761,6 @@ void NmssmSoftsusy::physical(int accuracy) {
   phys.mh0.setEnd(3);
   phys.mA0.setEnd(2);
   phys.mixh0.resize(3,3);
-  phys.mixA0.resize(2,2);
   phys.mneut.setEnd(5);
   phys.mixNeut.resize(5,5);
 
@@ -8302,7 +8300,6 @@ void NmssmSoftsusy::itLowsoft
   o.mh0.setEnd(3);
   o.mA0.setEnd(2);
   o.mixh0.resize(3,3);
-  o.mixA0.resize(2,2);
   o.mneut.setEnd(5);
 
   o.mixNeut.resize(5,5);

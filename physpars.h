@@ -46,9 +46,9 @@ struct sPhysical {
   /// sparticle masses in order (i=L/R, family)
   DoubleMatrix mu, md, me;
   /// Higgs mixing angle (alpha)
-  double thetaH;
+   double thetaH, thetaA0;
   /// Higgs mixing matrices
-  DoubleMatrix mixh0, mixA0;
+  DoubleMatrix mixh0;
   
   sPhysical(); ///< Constructor: initialises with zeroes
   sPhysical(const sPhysical &); ///< Constructor copies another object
@@ -155,8 +155,8 @@ inline sPhysical::sPhysical()
   : mh0(2), mA0(1), mHpm(0.), msnu(3), mch(2), mneut(4), 
     mGluino(0.0),
     mixNeut(4, 4), thetaL(0.0), thetaR(0.0), thetat(0.0), thetab(0.0),
-    thetatau(0.0), mu(2, 3), md(2, 3), me(2, 3), thetaH(0.0),
-    mixh0(2,2), mixA0(2,2)
+                 thetatau(0.0), mu(2, 3), md(2, 3), me(2, 3), thetaH(0.0), 
+                 thetaA0(0.0), mixh0(2,2)
 {}
 
 inline sPhysical::sPhysical(const sPhysical & s)
@@ -164,7 +164,7 @@ inline sPhysical::sPhysical(const sPhysical & s)
     mneut(s.mneut), mGluino(s.mGluino), mixNeut(s.mixNeut), thetaL(s.thetaL),
     thetaR(s.thetaR), thetat(s.thetat), thetab(s.thetab),
     thetatau(s.thetatau), mu(s.mu), md(s.md), me(s.me), thetaH(s.thetaH),
-    mixh0(s.mixh0), mixA0(s.mixA0)
+    thetaA0(s.thetaA0), mixh0(s.mixh0)
 {}
 
 inline sProblem::sProblem()
