@@ -1139,15 +1139,15 @@ void NmssmSoftsusy::calcDrBarHiggs(double beta, double /* mz2 */, double /* mw2 
   eg.mixh0 = mixh.transpose();
  
   /// LCT: Diagonalise
-  //PA using thetaH for now since in nmssm this is not used by CP even
-  DoubleVector mSq = mP2.sym2by2(eg.thetaH);
+  //PA using thetaA0 for CP odd mixing angle
+  DoubleVector mSq = mP2.sym2by2(eg.thetaA0);
 
   if (mSq(1) < 0. || mSq(2) < 0.) {
      flagTachyon(A0);
      if (PRINTOUT > 1) cout << " mA1/mA2 tachyon";
   }
   DoubleVector temp(mSq.apply(ccbSqrt));
-  if (temp(1) > temp(2)) eg.thetaH = eg.thetaH + PI * 0.5;
+  if (temp(1) > temp(2)) eg.thetaA0 = eg.thetaA0 + PI * 0.5;
 
   int pos;
   eg.mA0(1) = temp.min(pos); eg.mA0(2) = temp.max();
@@ -4204,7 +4204,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
   
   if (Atemp(1) > Atemp(2)) Atheta = Atheta + PI * 0.5; 
   
-  phys.thetaH = Atheta; /// Atheta defined for p=mA1  
+  phys.thetaA0 = Atheta; /// Atheta defined for p=mA1  
   int j; double mA1 = Atemp.apply(fabs).min(j);
   
   /// LCT: Rotate CP-odd mass^2 matrix into (G, A, S_I) basis
@@ -4574,7 +4574,7 @@ void NmssmSoftsusy::neutralinos(int accuracy, double /* piwwtMS */, double /* pi
 //PA:: fixes The CP odd mixing matrix with the conventions 
 // Degrassi and Slavich arXiv:0907.4682
 void NmssmSoftsusy::DegrassiSlavicMix(DoubleMatrix & P) const {
-  double alphaP = displayDrBarPars().thetaH;
+  double alphaP = displayDrBarPars().thetaA0;
   DoubleMatrix Ppr(2, 2);
   double cb = cos(atan(displayTanb())), sb = sin(atan(displayTanb()));
   Ppr(1, 1) = cos(alphaP);
