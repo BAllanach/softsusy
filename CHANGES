@@ -14,3 +14,4 @@ sumTol, not the relative mass difference.
 <li> 29/8/13 SLHA2 problem with output and ordering of squark/slepton masses fixed. Previously, it would occasionally give two identical masses when it shouldn't. Thanks to J Evans.
 <li> 16/9/13 Stops segfaults when rho iteration is screwed up and generates lots of NaNs. Also trapped some Nan matrices in diagonaliseSvd. Thanks to A Voigt
 <li> 19/9/13 Got rid of warning messages during compilation
+<li> 23/9/13 Command line input method improved.

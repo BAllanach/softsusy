@@ -27,26 +27,24 @@ string ToUpper(const string & s) {
 
 void errorCall() {
   ostringstream ii;
-  ii << "SOFTSUSY" << SOFTSUSY_VERSION 
+  ii << "\n\nSOFTSUSY" << SOFTSUSY_VERSION 
      << " called with incorrect arguments. Need to put either:\n";
-  ii << "softpoint.x leshouches < lesHouchesInput\n for SLHA input, or\n";
-  ii << "softpoint.x cmssm <m0> <m12> <a0> <tanb> <mgut> <sgnMu>\n";
-  ii << "softpoint.x amsb <m0> <m32> <tanb> <mgut> <sgnMu>\n";
-  ii << "softpoint.x gmsb <n5> <mMess> <lambda> <cgrav> <tanb> <sgnMu> \n";
-  ii << "Any of the above can be extended by R-parity violation of one coupling by\n";
-  ii << "softpoint.x <non RPV model parameters as above> lambda <i> <j> <k> <coupling> \n";
-  ii << "the word lambda replaceable with lambdaP or lambdaPP for LLE, LQD, UDD coupling, respectively \n\n";
-  ii << "Other possibilities:\n";
-  ii << "softpoint.x cmssm <m0> <m12> <a0> <tanb> <mgut> <sgnMu> <mb(mb)> ";
-  ii << " <mt> <as(MZ)> <1/a(MZ)>\n";
-  ii << "Bracketed entries are numerical values.\n";
-  ii << "<mgut> denotes the scale at which the SUSY breaking ";
-  ii << "parameters are specified. \n";
-  ii << "Enter <mgut>=unified to define MGUT by g1(MGUT)=g2(MGUT), otherwise";
-  ii << "\nit will be fixed at the numerical value input.\n";
-  ii << "For SUSY breaking terms set at MSUSY, enter <mgut>=msusy.\n";
-  ii << "lesHouchesInput contains the SUSY Les Houches Accord 2";
-  ii << " input.\n";
+  ii << "./softpoint.x leshouches < lesHouchesInput\n for SLHA/SLAH2 input, or\n";
+  ii << "./softpoint.x cmssm [CMSSM parameters] [other options]\n";
+  ii << "./softpoint.x amsb [mAMSB parameters] [other options]\n";
+  ii << "./softpoint.x gmsb [mGMSB parameters] [other options]\n\n";
+  ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
+  ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value>\n";
+  ii << "--mgut=unified sets the scale at which SUSY breaking terms are set to the GUT\n";
+  ii << "scale where g1=g2. --mgut=<value> sets it to a fixed scale, ";
+  ii << "whereas --mgut=msusy\nsets it to MSUSY\n\n";
+  ii << "If you want the R-parity violating MSSM calculation, set any of the following:\n";
+  ii << "--lambda <i> <j> <k> <coupling>, the word lambda replaceable with lambdaP\nor lambdaPP for LLE, LQD, UDD coupling, respectively.\n\n";
+  ii << "[CMSSM parameters]: --m0=<value> --m12=<value> --a0=<value>\n";
+  ii << "[mAMSB parameters]: --m0=<value> --m32=<value>\n";
+  ii << "[mGMSB parameters]: --n5=<value> --mMess=<value> --lambda=<value> --cgrav=<value>\n\n";
+  ii << "Bracketed entries are numerical values, in units of GeV if they are massive.\n";
+  ii << "Warning: entries left unspecified will be assumed to be zero for SUSY breaking\nterms, unified (for mgut) or at their default central values for Standard Model parameters\n";
   throw ii.str();
 }
 
@@ -135,27 +133,26 @@ int main(int argc, char *argv[]) {
 	throw ii.str();
     }
 
-    if (RPVflag) {
-      for (int i = 2; i < argc; i++) {
-	if (starts_with(argv[i], "--lambda") || 
-	    starts_with(argv[i], "--lambdaP") || 
-	    starts_with(argv[i], "--lambdaPP")) {
-	  int ii= int(atof(argv[i+1]));
-	  int j = int(atof(argv[i+2]));
-	  int k = int(atof(argv[i+3]));
-	  double d = atof(argv[i+4]);
-	  if (starts_with(argv[i], "--lambda"))   kw.setLambda(LE, k, ii, j, d);
-	  if (starts_with(argv[i], "--lambdaP"))  kw.setLambda(LD, k, ii, j, d);
-	  if (starts_with(argv[i], "--lambdaPP")) kw.setLambda(LU, ii, j, k, d);
-
-	  if (starts_with(argv[i], "--kappa")) {
-	    int ii = int(atof(argv[i+1]));
-	    double d = atof(argv[i+2]);
-	    kw.setKappa(ii, d);
-	  }
-	  
-	}
-      }      
+    /// Pass through to see if there are any RPV options
+    for (int i = 2; i < argc; i++) {
+      if (starts_with(argv[i], "--lambda")) {
+	RPVflag = true;
+	int ii= int(atof(argv[i+1]));
+	int j = int(atof(argv[i+2]));
+	int k = int(atof(argv[i+3]));
+	double d = atof(argv[i+4]);
+	if (starts_with(argv[i], "--lambdaPP")) kw.setLambda(LU, ii, j, k, d);
+	else if (starts_with(argv[i], "--lambdaP"))  
+	  kw.setLambda(LD, k, ii, j, d);
+	else if (starts_with(argv[i], "--lambda"))
+	  kw.setLambda(LE, k, ii, j, d);
+      }
+      if (starts_with(argv[i], "--kappa")) {
+	int ii = int(atof(argv[i+1]));
+	double d = atof(argv[i+2]);
+	kw.setKappa(ii, d);
+	RPVflag = true;
+      }
     }
     
     /// Model specific options
@@ -939,9 +936,8 @@ int main(int argc, char *argv[]) {
     r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 			      numPoints, ewsbBCscale);
     
-    if (r->displayProblem().test()) {
+    if (r->displayProblem().test()) 
       cout << "# SOFTSUSY problem with point: " << r->displayProblem() << endl;
-    }
   }
   catch(const string & a) { cout << a; return -1; }
   catch(const char * a) { cout << a; return -1; }
