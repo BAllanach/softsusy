@@ -12,7 +12,7 @@ Block SMINPUTS		     # Standard Model inputs
     7	1.777000000e+00	     # mtau(pole)
 Block MINPAR		     # Input parameters
     1   1.200000000e+05	     # Lambda
-    2   1.000000000e+09	     # mMess
+    2   1.000000000e+14	     # mMess
     3   1.500000000e+01	     # tanb
     4   1.000000000e+00	     # sign(mu)
     5   1.000000000e+00	     # Nmess

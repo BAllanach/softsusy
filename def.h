@@ -16,7 +16,7 @@
 #include <vector>
 using std::vector;
 namespace softsusy{
-  const char SOFTSUSY_VERSION[] = "3.3.9";
+  const char SOFTSUSY_VERSION[] = "3.3.10";
 
   /// uncomment if you want checking of vector/matrices bounds: slows code
   /// down. It also now checks over/underflows in matrix multiplication etc
