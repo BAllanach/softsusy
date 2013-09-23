@@ -45,6 +45,7 @@ const MssmSoftsusy & MssmSoftsusy::operator=(const MssmSoftsusy & s) {
   t2OV2Ms = s.displayTadpole2Ms(); 
   t1OV1Ms1loop = s.displayTadpole1Ms1loop(); 
   t2OV2Ms1loop = s.displayTadpole2Ms1loop(); 
+  mxBC = s.displayMxBC();
 
   return *this;
 }
@@ -88,7 +89,10 @@ int MssmSoftsusy::rewsbM3sq(double mu, double & m3sq) const {
   
   /// Following means no good rewsb
   if (m3sq < 0.0) flag = 1;
-  
+  else if (testNan(m3sq)) {
+    flag = 1; m3sq = EPSTOL;
+  }
+
   return flag;
 }
 
@@ -681,7 +685,7 @@ double MssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars) {
   
   /// High error: if can't find a derivative, error comes back with 1.0e30
   if (ftParameter > TOLERANCE && fabs(err / derivative) > 1.0) 
-    return 6.66e66;
+    return numberOfTheBeast;
 
   /// Restore initial parameters at correct scale
   setMu(initialMu);
@@ -731,7 +735,6 @@ DoubleVector MssmSoftsusy::fineTune
 /// technique
 /// err is 1 if no iteration reached
 /// 2 if incorrect rewsb
-/// Really, you should switch OFF iteration as it breaks gauge invariance
 void MssmSoftsusy::iterateMu(double & muold, int sgnMu,
 			     double mt, int maxTries, double pizzMS,
 			     double sinthDRbar, double tol, int & err) {
@@ -973,7 +976,7 @@ void MssmSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars,
     
     if (rewsbM3sq(munew, m3sqnew) == 0) flagM3sq(false);
     else flagM3sq(true);
-    
+
     setM3Squared(m3sqnew);
 
     if ((displayMh1Squared() + 2.0 * sqr(displaySusyMu()) +
@@ -3905,7 +3908,7 @@ void MssmSoftsusy::addSlepCorrection(DoubleMatrix & mass, int family) {
   higgs(1, 1) = higgs(1, 1) +   
     sqr(g) / sqr(costhDrbar) * sqr(geL) * 
     ffn(p1, msel(1), mz, q) +
-    sqr(g) * 0.5 * ffn(p1, msnu(1), mw, q);
+    sqr(g) * 0.5 * ffn(p1, msnu(family), mw, q);
 
   electroweak(1, 1) = electroweak(1, 1) +   
     sqr(g) * 0.25 * (a0(msel(1), q) + 2.0 * a0(msnu(family), q));
@@ -4983,7 +4986,7 @@ void MssmSoftsusy::addSbotCorrection(double p,
      +3.0 * yuL * (a0(forLoops.mu(1, 2), q) + a0(forLoops.mu(1, 1), q))
      +3.0 * ydL * (a0(forLoops.md(1, 2), q) + a0(forLoops.md(1, 1), q))
      +      yeL * (a0(forLoops.me(1, 2), q) + a0(forLoops.me(1, 1), q))
-     +      ynuL * (a0(msnu(2), q) + a0(msnu(2), q))
+     +      ynuL * (a0(msnu(1), q) + a0(msnu(2), q))
      //
      +3.0 * yuR * (sqr(st) * a0(mstop(1), q) + sqr(ct) * a0(mstop(2), q))
      +3.0 * ydR * (sqr(sb) * a0(msbot(1), q) + sqr(cb) * a0(msbot(2), q))
@@ -5862,7 +5865,7 @@ double getQhat(double inminTol,double eR, double h2, double Lisq, double mx,
     oldQhat = qhat;
   }
   /// Return NOB if no convergence on qhat
-  return -6.66e66;
+  return -numberOfTheBeast;
 }
 
 /// Input mx the scale up to which you search for minima
@@ -6146,13 +6149,11 @@ MssmSusy MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
 /// returns a ZERO object: no result is possible!
 /// Boundary condition is the theoretical condition on parameters at the high
 /// energy scale mx: the parameters themselves are contained within the vector.
-double MssmSoftsusy::lowOrg
+void MssmSoftsusy::lowOrg
 (void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &),
  double mxGuess, 
  const DoubleVector & pars, int sgnMu, double tanb, const QedQcd &
  oneset, bool gaugeUnification, bool ewsbBCscale) {
-
-  double mx = 0.0;
 
   try {
 
@@ -6179,7 +6180,7 @@ double MssmSoftsusy::lowOrg
 
     /// Here all was same
     if (mxGuess > 0.0) 
-      mx = mxGuess; 
+      mxBC = mxGuess; 
     else {
       string ii("Trying to use negative mx in MssmSoftsusy::lowOrg.\n");
       ii = ii + "Now illegal! Use positive mx for first guess of mx.\n";
@@ -6197,7 +6198,7 @@ double MssmSoftsusy::lowOrg
     MssmSusy t(guessAtSusyMt(tanb, oneset));
     
     t.setLoops(2); /// 2 loops should protect against ht Landau pole 
-    t.runto(mx); 
+    t.runto(mxBC); 
     
     setSusy(t);
     
@@ -6219,7 +6220,7 @@ double MssmSoftsusy::lowOrg
       }
     }
 
-    run(mx, mz);
+    run(mxBC, mz);
     
     if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
       
@@ -6227,13 +6228,13 @@ double MssmSoftsusy::lowOrg
     
     setThresholds(3); setLoops(2);
     
-    itLowsoft(maxtries, mx, sgnMu, tol, tanb, boundaryCondition, pars, 
+    itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 
 		gaugeUnification, ewsbBCscale);
     
     if (displayProblem().nonperturbative 
 	|| displayProblem().higgsUfb || displayProblem().tachyon 
 	|| displayProblem().noRhoConvergence)
-      return mx;
+      return;
     
     runto(maximum(displayMsusy(), mz));
     if (ewsbBCscale) boundaryCondition(*this, pars); 
@@ -6266,8 +6267,6 @@ double MssmSoftsusy::lowOrg
     flagProblemThrown(true);
     throw ii.str();
   }
-  
-  return mx;
 }
 
 
@@ -6293,50 +6292,25 @@ double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {
   DoubleVector sT(34);
   int k = 1;
 
-  double sTin  = fabs(inforLoops.mh0); double sTout = fabs(outforLoops.mh0);
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout)); k++;
-  sTin  = fabs(inforLoops.mA0); sTout = fabs(outforLoops.mA0);
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout)); k++;
-  sTin  = fabs(inforLoops.mH0); sTout = fabs(outforLoops.mH0);
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout)); k++;
-  sTin  = fabs(inforLoops.mHpm); sTout = fabs(outforLoops.mHpm);
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout)); k++;
+  sT(k) = sTfn(inforLoops.mh0, outforLoops.mh0); k++;
+  sT(k) = sTfn(inforLoops.mA0, outforLoops.mA0); k++;
+  sT(k) = sTfn(inforLoops.mH0, outforLoops.mH0); k++;
+  sT(k) = sTfn(inforLoops.mHpm, outforLoops.mHpm); k++;
   int i; for (i=1; i<=3; i++) {
-    sTin  = fabs(inforLoops.msnu(i));
-    sTout = fabs(outforLoops.msnu(i));
-    sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-    k++;
+    sT(k) = sTfn(inforLoops.msnu(i), outforLoops.msnu(i)); k++;
   }
   for (i=1; i<=2; i++) {
-    sTin = fabs(inforLoops.mch(i));
-    sTout = fabs(outforLoops.mch(i));
-    sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-    k++;
+    sT(k) = sTfn(inforLoops.mch(i), outforLoops.mch(i)); k++;
   }
   for (i=1; i<=4; i++) {
-    sTin = fabs(inforLoops.mneut(i));
-    sTout = fabs(outforLoops.mneut(i));
-    sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-    k++;
+    sT(k) = sTfn(inforLoops.mneut(i), outforLoops.mneut(i)); k++;
   }
-  sTin = fabs(inforLoops.mGluino);
-  sTout = fabs(outforLoops.mGluino);
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-  k++;
+  sT(k) = sTfn(inforLoops.mGluino, outforLoops.mGluino); k++;
   int j; for (j=1; j<=3; j++)
     for(i=1; i<=2; i++) {
-      sTin = fabs(inforLoops.mu(i, j));
-      sTout = fabs(outforLoops.mu(i, j));
-      sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-      k++;
-      sTin = fabs(inforLoops.md(i, j));
-      sTout = fabs(outforLoops.md(i, j));
-      sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-      k++;
-      sTin = fabs(inforLoops.me(i, j));
-      sTout = fabs(outforLoops.me(i, j));
-      sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-      k++;
+      sT(k) = sTfn(inforLoops.mu(i, j), outforLoops.mu(i, j)); k++;
+      sT(k) = sTfn(inforLoops.md(i, j), outforLoops.md(i, j)); k++;
+      sT(k) = sTfn(inforLoops.me(i, j), outforLoops.me(i, j)); k++;
     }
   /// The predicted value of MZ^2 is an absolute measure of how close to a
   /// true solution we are:
@@ -6346,9 +6320,7 @@ double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {
   /// of MZ compared to TOLERANCE if the program is struggling and gone beyond
   /// 10 tries - an extra 2 comes from MZ v MZ^2
   if (!in.displayProblem().testSeriousProblem()) {
-    sT(k) = 0.5 * 
-      fabs(1. - minimum(predictedMzSq, sqr(MZ)) / 
-	   maximum(sqr(MZ), predictedMzSq));
+    sT(k) = 0.5 * sTfn(predictedMzSq, sqr(MZ));
     if (numTries > 10) sT(k) *= 0.1; 
   }
 
@@ -6739,7 +6711,7 @@ void MssmSoftsusy::calcDrBarPars() {
 }
 
 void MssmSoftsusy::itLowsoft
-(int maxTries, double & mx, int sgnMu, double tol, double tanb, 
+(int maxTries, int sgnMu, double tol, double tanb, 
  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &), 
  const DoubleVector & pars, bool gaugeUnification, bool ewsbBCscale) {
 
@@ -6787,7 +6759,7 @@ void MssmSoftsusy::itLowsoft
     double tbIn; double predictedMzSq = 0.;
     predictedMzSq = predMzsq(tbIn);
     setPredMzSq(predictedMzSq);  
-    if (!ewsbBCscale) err = runto(mx, eps);
+    if (!ewsbBCscale) err = runto(mxBC, eps);
 
     /// Guard against the top Yukawa fixed point
     if (displayYukawaElement(YU, 3, 3) > 3.0 
@@ -6815,18 +6787,18 @@ void MssmSoftsusy::itLowsoft
       
       /// Equal gauge couplings: let them and their derivatives set the boundary
       /// condition scale -- linear approximation
-      mx = mx * exp((displayGaugeCoupling(2) - displayGaugeCoupling(1))
+      mxBC = mxBC * exp((displayGaugeCoupling(2) - displayGaugeCoupling(1))
 		    / (a.displayGaugeCoupling(1) - a.displayGaugeCoupling(2)));
 
       /// if mx is too high/low, will likely get non-perturbative problems
-      if (mx < 1.0e4) {
-	mx = 1.0e4;
-	if (PRINTOUT > 2) cout << " mx too low ";
+      if (mxBC < 1.0e4) {
+	mxBC = 1.0e4;
+	if (PRINTOUT > 2) cout << " mxBC too low ";
 	flagMgutOutOfBounds(true);
       }
-      if (mx > 5.0e17) {
-	if (PRINTOUT > 2) cout << " mx =" << mx <<" too high ";
-	mx = 5.0e17;
+      if (mxBC > 5.0e17) {
+	if (PRINTOUT > 2) cout << " mxBC =" << mxBC <<" too high ";
+	mxBC = 5.0e17;
 	flagMgutOutOfBounds(true);
       }
     }
@@ -6847,8 +6819,8 @@ void MssmSoftsusy::itLowsoft
     }
 
     setMsusy(calcMs());
-    if (ewsbBCscale) mx = displayMsusy();
-    if (PRINTOUT > 0) cout << " mgut=" << mx << flush;
+    if (ewsbBCscale) mxBC = displayMsusy();
+    if (PRINTOUT > 0) cout << " mgut=" << mxBC << flush;
     
     mtrun = forLoops.mt; ///< This will be at MSUSY
     //    double tbIn; double predictedMzSq = 0.;
@@ -6873,6 +6845,9 @@ void MssmSoftsusy::itLowsoft
 	cout << " ***problem point***: " << displayProblem() << ".";
 
       return; 
+    } else if (numTries != 0 && fabs(displayM3Squared()) > 1.0e20) {
+      /// guards against nasty fatal problems 
+      numTries = 0; flagM3sq(true); return;
     }
 
     // All problems should be reset since only the ones of the final iteration
@@ -6911,7 +6886,7 @@ void MssmSoftsusy::itLowsoft
       return;
     }
     
-    itLowsoft(maxTries, mx, sgnMu, tol, tanb, boundaryCondition, pars, 
+    itLowsoft(maxTries, sgnMu, tol, tanb, boundaryCondition, pars, 
 	      gaugeUnification, ewsbBCscale);
   }
   catch(const char *a) {
@@ -9006,10 +8981,11 @@ void MssmSoftsusy::rhohat(double & outrho, double & outsin, double alphaDRbar,
   
   static int numTries = 0;
   
-  if ((outrho < TOLERANCE || outsin < TOLERANCE) || 
+  if ((outrho < TOLERANCE || outsin < TOLERANCE) || fabs(outsin) > 1. ||
       (numTries - 1 > maxTries)) {  
-    oldrho = 0.23, oldsin = 0.8;
+    oldrho = 0.23; oldsin = 0.8;
     numTries = 0;
+    outrho = 0.23; outsin = 0.8; 
     flagNoRhoConvergence(true);
     if (PRINTOUT) cout << flush << "rhohat reached maxtries\n"; 
     return;
@@ -9462,7 +9438,7 @@ void MssmSoftsusy::spinfoSLHA(ostream & out) {
     out << "     4   Point invalid: " << displayProblem() << endl;
 }
 
-void MssmSoftsusy::softsusySLHA(ostream & out, double mgut) {
+void MssmSoftsusy::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
   out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
 }
@@ -9650,9 +9626,9 @@ void MssmSoftsusy::hmixSLHA(ostream & out) {
   out << "     1    "; printRow(out, displaySusyMu()); 
   out << "    # mu(Q)MSSM DRbar\n";
   out << "     2    "; printRow(out, displayTanb()); 
-  out << "    # tan beta(Q)MSSM DRbar\n";
+  out << "    # tan beta(Q)MSSM DRbar Feynman gauge\n";
   out << "     3    "; printRow(out, displayHvev()); 
-  out << "    # higgs vev(Q)MSSM DRbar\n";
+  out << "    # higgs vev(Q)MSSM DRbar Feynman gauge\n";
   out << "     4    "; 
   printRow(out, displayM3Squared() / 
 	   (sin(atan(displayTanb())) * cos(atan(displayTanb())))); 
@@ -9779,13 +9755,13 @@ void MssmSoftsusy::sminputsSLHA(ostream & out) {
 }
 
 void MssmSoftsusy::extparSLHA(ostream & out, 
-			      const DoubleVector & pars, double mgut,
+			      const DoubleVector & pars, 
 			      bool ewsbBCscale) {
   out << "Block EXTPAR               # non-universal SUSY breaking parameters\n";
   if (ewsbBCscale) 
     out << "     0    -1.00000000e+00  # Set MX=MSUSY\n";
   else {
-    out << "     0    "; printRow(out, mgut); out << "  # MX scale\n";
+    out << "     0    "; printRow(out, mxBC); out << "  # MX scale\n";
   }
   
   int i;
@@ -9849,14 +9825,14 @@ void MssmSoftsusy::extparSLHA(ostream & out,
 
 void MssmSoftsusy::minparSLHA(ostream & out, const char model [], 
 			      const DoubleVector & pars, double tanb, 
-			      int sgnMu, double mgut, 
+			      int sgnMu, 
 			      bool ewsbBCscale) {
   /// For universal models, users still want to know MX and it has to be
   /// specially printed out as EXTPAR 0
   bool printMX = false;
 
   out << "Block MINPAR               # SUSY breaking input parameters\n";
-  out << "     3   "; printRow(out, tanb)            ; out << "   # tanb" << endl;
+  out << "     3   "; printRow(out, tanb)            ; out << "   # tanb, DRbar, Feynman gauge" << endl;
   if (!altEwsb) {
     out << "     4   "; 
     printRow(out, double(sgnMu)); 
@@ -9895,7 +9871,7 @@ void MssmSoftsusy::minparSLHA(ostream & out, const char model [],
   }
   else 
     if (!strcmp(model, "nonUniversal")) 
-      extparSLHA(out, pars, mgut, ewsbBCscale);
+      extparSLHA(out, pars, ewsbBCscale);
   else {
     ostringstream ii;
     ii << "Attempting to use SUSY Les Houches Accord for model " 
@@ -9904,7 +9880,7 @@ void MssmSoftsusy::minparSLHA(ostream & out, const char model [],
   }  
   if (printMX) {
   out << "Block EXTPAR               # scale of SUSY breaking BCs\n";
-  out << "     0   "; printRow(out, mgut); out << "   # MX scale\n";
+  out << "     0   "; printRow(out, mxBC); out << "   # MX scale\n";
   }
 }
  
@@ -9912,10 +9888,10 @@ void MssmSoftsusy::slha1(ostream & out, const char model[],
 			 const DoubleVector & pars, 
 			 int sgnMu, double tanb, 
 			 double qMax, 
-			 int numPoints, double mgut, 
+			 int numPoints, 
 			 bool ewsbBCscale) {
   lesHouchesAccordOutput(out, model, pars, sgnMu, tanb, qMax, numPoints, 
-			 mgut, ewsbBCscale);
+			 ewsbBCscale);
 }
 
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
@@ -9923,10 +9899,10 @@ void MssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  const DoubleVector & pars, 
 					  int sgnMu, double tanb, 
 					  double qMax, 
-					  int numPoints, double mgut, 
+					  int numPoints, 
 					  bool ewsbBCscale) {
   if (forceSlha1 == true) {
-    slha1(out, model, pars, sgnMu, tanb, qMax, numPoints, mgut, 
+    slha1(out, model, pars, sgnMu, tanb, qMax, numPoints, 
 	  ewsbBCscale);
     return;
   }
@@ -9935,8 +9911,8 @@ void MssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
   spinfoSLHA(out);
   modselSLHA(out, model);
   sminputsSLHA(out); 
-  minparSLHA(out, model, pars, tanb, sgnMu, mgut, ewsbBCscale);
-  softsusySLHA(out, mgut);
+  minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale);
+  softsusySLHA(out);
 
   if (!displayProblem().testSeriousProblem() || printRuledOutSpectra) {
     massSLHA(out);
@@ -10262,7 +10238,7 @@ DoubleVector mhIntegrand(double mh, const DoubleVector & y) {
 double lnLHiggs(double mh) {
   if (mh > 130.) return 0.;
   /// error code
-  if (mh < EPSTOL) return -6.66e66;
+  if (mh < EPSTOL) return -numberOfTheBeast;
 
   double from = mh - 4.0 * sigmaMh, 
     to = mh + 4.0 * sigmaMh, 
@@ -10278,7 +10254,7 @@ double lnLHiggs(double mh) {
   /// odeint has a problem at f(0): therefore, define f'(b)=f(b)+1
   integrateOdes(v, from, to, eps, guess, hmin, mhIntegrand, odeStepper); 
   
-  if (v(1) < EPSTOL || fabs(v(1) - 1.0) < EPSTOL) return -6.66e66; 
+  if (v(1) < EPSTOL || fabs(v(1) - 1.0) < EPSTOL) return -numberOfTheBeast; 
   else return log((v(1) - 1.0) / (sqrt(2.0 * PI) * sigmaMh));
 }
 

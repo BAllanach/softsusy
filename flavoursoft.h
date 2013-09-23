@@ -153,8 +153,7 @@ public:
   virtual void lesHouchesAccordOutput(ostream & out, const char model[], 
 				      const DoubleVector & pars, 
 				      int sgnMu, double tanb, double qMax, 
-				      int numPoints, double mgut, 
-				      bool ewsbBCscale);
+				      int numPoints, bool ewsbBCscale);
   /// MODSEL block of SLHA2
   void modselSLHA(ostream & out, const char model[]);
   /// SM inputs block of SLHA2
@@ -164,9 +163,9 @@ public:
   /// Input SUSY parameters part of SLHA2
   void minparSLHA(ostream & out, const char model [], 
 		  const DoubleVector & pars, double tanb, int sgnMu, 
-		  double mgut, bool ewsbBCscale);
+		  bool ewsbBCscale);
   /// EXTPAR block of SLHA
-  virtual void extparSLHA(ostream & out, const DoubleVector & pars, double mgut,
+  virtual void extparSLHA(ostream & out, const DoubleVector & pars, 
 			  bool ewsbBCscale);
   /// sfermion part of mass block output of SLHA2
   virtual void sfermionsSLHA(ostream & out);

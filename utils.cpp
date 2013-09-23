@@ -68,8 +68,19 @@ bool testNan(double f) {
 bool close(double m1, double m2, double tol) {
   double mmax = fabs(maximum(fabs(m1), fabs(m2)));
   double mmin = fabs(minimum(fabs(m1), fabs(m2)));
+  double max_tol = tol * mmax;
+  if (max_tol == 0.0 && mmax != 0.0 && tol != 0.0)
+    return (mmax - mmin <= tol);
 
   return (mmax - mmin <= tol * mmax);
 }
+
+double sTfn(double sTins, double sTouts) {
+  double sTin  = fabs(sTins);
+  double sTout = fabs(sTouts);
+  if (sTin < 1. && sTout < 1.) return fabs(sTin - sTout);
+  else return fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
+}
+
 
 

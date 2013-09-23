@@ -1,13 +1,15 @@
-<li> 7/5/13  Fixed signs in two-loop part of the running
-<li> 10/5/13 A Voigt's bug-fixes: small changes to stau mass and chargino corrections 
-<li> 16/5/13 Accuracy fixes to loop functions, which should now be better than
-per mille accuracy
-<li> 24/5/13 Tiny bugfixes to sbottom mass corrections
-<li> 26/5/13 Changed configure.ac file to look for gfortran by default
-<li> 26/5/13 Fixed SLHA input option for mu: it is now mu(MX), not mu(MSUSY),
-that is input
-<li> 26/5/13 "Problem Thrown" flag now used instead of "non-perturbative" for
-other problems with the point. Thanks to Simon Knapen
-<li> 26/5/13 SLHA problem when jointly using flavour violation and EXTPAR now
-fixed. Thanks to Florian Staub
-<li> 3/7/13 Fixed 64 bit NaN issue in two loop higgs corrections for particular parameter points. Thanks to Brian Petersen
+<li> 12/7/13 Fixed potential infra-red problem in Passarino-Veltman b0
+function. 
+<li> 12/7/13 Made gauge of tan beta and VEVs explicit in SLHA comments
+<li> 19/7/13 Small bug-fix in sbottom corrections: sneutrino_e+sneutrino_mu is
+used in loop rather than just 2 x sneutrino_mu. Thanks to Lewis Tunstall.
+<li> 22/7/13 Small bug-fix in charged slepton corrections. Thanks to Lewis
+Tunstall.
+<li> 1/8/13 Added MX, the scale of SUSY breaking boundary conditions (may also
+be unification scale), to MssmSoftsusy object for convenience.
+<li> 29/8/13 Difference between 2 MssmSoftsusy objects now changed: if a mass
+is less than 1 GeV, it is the ABSOLUTE mass difference that is returned by
+sumTol, not the relative mass difference.
+<li> 29/8/13 Problem with SLHA when you fix tanb to be at MX (which is MSUSY) now fixed.
+<li> 29/8/13 SLHA2 problem with output and ordering of squark/slepton masses fixed. Previously, it would occasionally give two identical masses when it shouldn't. Thanks to J Evans.
+<li> 16/9/13 Stops segfaults when rho iteration is screwed up and generates lots of NaNs. Also trapped some Nan matrices in diagonaliseSvd. Thanks to A Voigt

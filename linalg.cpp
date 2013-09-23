@@ -218,6 +218,13 @@ DoubleMatrix DoubleMatrix::transpose() const {
   return temp;
 }
 
+bool DoubleMatrix::testNan() const {
+  for (int i=1; i<=rows; i++)
+    for (int j=1; j<=cols; j++)
+      if (display(i, j) != display(i, j)) return true;
+  return false;
+}
+
 /*
  *  NUMERICAL DIAGONALIZATION ROUTINES ETC.
  */
@@ -474,6 +481,7 @@ DoubleVector DoubleMatrix::sym2by2(double & theta) const  {
   }
 #endif
   
+  if (testNan()) throw("Nans present in linalg.cpp:sym2by2. Cannot calculate further\n");
   DoubleVector temp(1, 2);
   double sumTol = abs(abs(display(1, 1)) - abs(display(2, 2))) /
     maximum(abs(display(1, 1)), abs(display(2, 2)));
@@ -640,8 +648,14 @@ void positivise(double thetaL, double thetaR, const DoubleVector & diag,
 }
 
 // ---------------- diagonalisation algorithms --------------------
-void diagonaliseSvd(DoubleMatrix & a, DoubleVector & w, DoubleMatrix & v)
-{
+void diagonaliseSvd(DoubleMatrix & a, DoubleVector & w, DoubleMatrix & v) {
+  if (a.testNan()) {
+    ostringstream ii;
+    ii << "Nans present in linalg.cpp:diagonaliseSvd: diagonalising\n" 
+       << a << endl;
+    throw ii.str();
+  }
+  
   int n = a.displayCols(), m = a.displayRows();
   int flag, i, its, j, jj, k, l = 0, nm = 0; 
   double anorm, c, f, g, h, s, scale, x, y, z; 
@@ -649,6 +663,7 @@ void diagonaliseSvd(DoubleMatrix & a, DoubleVector & w, DoubleMatrix & v)
   DoubleVector rv1(a.displayCols());
   
   g = scale = anorm = 0.0; 
+
   for (i = 1; i<= n; ++i) {
     l = i + 1; 
     rv1(i) = scale * g; 
@@ -695,6 +710,7 @@ void diagonaliseSvd(DoubleMatrix & a, DoubleVector & w, DoubleMatrix & v)
     }
     anorm = maximum(anorm, (abs(w(i)) + abs(rv1(i)))); 
   }
+
   for (i = n; i >= 1; i--) {
     if (i < n) {
       if (g) {
@@ -737,6 +753,7 @@ void diagonaliseSvd(DoubleMatrix & a, DoubleVector & w, DoubleMatrix & v)
 	}
 	if (abs(w(nm))+anorm  ==  anorm) break; 
       }
+
       if (flag) {
 	c = 0.0; 
 	s = 1.0; 
@@ -766,10 +783,10 @@ void diagonaliseSvd(DoubleMatrix & a, DoubleVector & w, DoubleMatrix & v)
 	}
 	break; 
       }
-      if (its  ==  30) 
-	throw "no convergence in 30 diagonaliseSvd iterations"; 
-      
-      x = w(l); 
+      if (its  ==  30 || l < 1 || k < 1) 
+	throw("Too many iterations in routine diagonaliseSvd, can go no further:\n");  
+      x = w(l);
+
       nm = k - 1; 
       y = w(nm); 
       g = rv1(nm); 
@@ -843,6 +860,8 @@ namespace { // helper function only
 
 void diagonaliseJac(DoubleMatrix & a,  int n,  DoubleVector & d,  
 		    DoubleMatrix & v,  int *nrot) {
+  if (a.testNan()) throw("Nans present in linalg.cpp:sym2by2. Cannot calculate further\n");
+
   int j, iq, ip, i;
   double tresh, theta, tau, t, sm, s, h, g, c; 
   
@@ -908,10 +927,8 @@ void diagonaliseJac(DoubleMatrix & a,  int n,  DoubleVector & d,
     }
   }
   ostringstream ii;
-  if (PRINTOUT) {
-    ii << "Too many iterations in routine diagonaliseJac: diagonalising\n" 
-       << a << "to" << d << " with " << v;
-  }
+  ii << "Too many iterations in routine diagonaliseJac: diagonalising\n" 
+     << a << "to" << d << " with " << v;
   throw ii.str();
 }
 

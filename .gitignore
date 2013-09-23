@@ -34,3 +34,4 @@ doc/*.ps
 doc/*.spl
 doc/*.out
 doc/*.pdf
+doc/auto/*

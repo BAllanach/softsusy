@@ -384,14 +384,15 @@ void FlavourMssmSoftsusy::vckminSLHA(ostream & out) {
 }
 
 void FlavourMssmSoftsusy::extparSLHA(ostream & out, 
-				     const DoubleVector & pars, double mgut,
+				     const DoubleVector & pars, 
 				     bool ewsbBCscale) {
     out << "Block EXTPAR              "
 	<< " # non-universal SUSY breaking parameters\n";
     if (ewsbBCscale) 
       out << "     0    -1.00000000e+00  # Set MX=MSUSY\n";
     else {
-      out << "     0    "; printRow(out, mgut); cout << "  # MX scale\n";
+      out << "     0    "; printRow(out, displayMxBC()); 
+      cout << "  # MX scale\n";
     }
 
     int count = 0, i;
@@ -685,7 +686,7 @@ void FlavourMssmSoftsusy::lesHouchesAccordOutput(ostream & out,
 						 const DoubleVector & pars, 
 						 int sgnMu, double tanb, 
 						 double qMax, 
-						 int numPoints, double mgut, 
+						 int numPoints, 
 						 bool ewsbBCscale) {
 
   int nn = out.precision();
@@ -694,8 +695,8 @@ void FlavourMssmSoftsusy::lesHouchesAccordOutput(ostream & out,
   modselSLHA(out, model);
   sminputsSLHA(out);
   vckminSLHA(out);
-  minparSLHA(out, model, pars, tanb, sgnMu, mgut, ewsbBCscale);  
-  softsusySLHA(out, mgut);
+  minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale);  
+  softsusySLHA(out);
   if (!displayProblem().testSeriousProblem() || printRuledOutSpectra) {
     massSLHA(out);
     inomixingSLHA(out);
@@ -712,7 +713,7 @@ void FlavourMssmSoftsusy::lesHouchesAccordOutput(ostream & out,
 
 void FlavourMssmSoftsusy::minparSLHA(ostream & out, const char model [], 
 				     const DoubleVector & pars, double tanb, 
-				     int sgnMu, double mgut, 
+				     int sgnMu, 
 				     bool ewsbBCscale) {
   /// For universal models, users still want to know MX and it has to be
   /// specially printed out as EXTPAR 0
@@ -758,7 +759,7 @@ void FlavourMssmSoftsusy::minparSLHA(ostream & out, const char model [],
   }
   else 
     if (!strcmp(model, "nonUniversal")) 
-      extparSLHA(out, pars, mgut, ewsbBCscale);
+      extparSLHA(out, pars, ewsbBCscale);
   else {
     ostringstream ii;
     ii << "Attempting to use SUSY Les Houches Accord for model " 
@@ -767,7 +768,7 @@ void FlavourMssmSoftsusy::minparSLHA(ostream & out, const char model [],
   }  
   if (printMX) {
   out << "Block EXTPAR               # scale of SUSY breaking BCs\n";
-  out << "     0   "; printRow(out, mgut); out << "   # MX scale\n";
+  out << "     0   "; printRow(out, displayMxBC()); out << "   # MX scale\n";
   }
 }
  
@@ -858,15 +859,17 @@ void FlavourMssmSoftsusy::doUpSquarks(double mt, double pizztMS,
   // fill in the flavour conserving parts with the correct masses
   int t1Pos = 0;
   sPhysical s(displayPhys());
+  DoubleMatrix a(fv.uSqMix);
 
-  for(i=1; i<=3; i++) {
-    fv.uSqMix.displayCol(i).apply(fabs).max(j); 
+  for(i=3; i>=1; i--) {
+    a.displayCol(i).apply(fabs).max(j); 
     s.mu(1, i) = fv.msU(j);
+    for (int k=1; k<=6; k++) a(j, k) = 0.;
     if (i == 3) t1Pos = j;
-    fv.uSqMix.displayCol(i+3).apply(fabs).max(j); 
+    a.displayCol(i+3).apply(fabs).max(j); 
+    for (int k=1; k<=6; k++) a(j, k) = 0.;
     s.mu(2, i) = fv.msU(j);
   }
-  setPhys(s);
 
   s.thetat = asin(fv.uSqMix(t1Pos, 6));
   setPhys(s);
@@ -965,11 +968,15 @@ void FlavourMssmSoftsusy::doDownSquarks(double mb, double pizztMS,
   // fill in the flavour conserving parts with the correct masses
   sPhysical s(displayPhys());
   int b1Pos = 0;
-  for(i=1; i<=3; i++) {
-    fv.dSqMix.displayCol(i).max(j); 
+  DoubleMatrix a(fv.dSqMix);
+
+  for(i=3; i>=1; i--) {
+    a.displayCol(i).apply(fabs).max(j); 
     s.md(1, i) = fv.msD(j);
-    b1Pos = j;
-    fv.dSqMix.displayCol(i+3).max(j); 
+    for (int k=1; k<=6; k++) a(j, k) = 0.;
+    if (i == 3) b1Pos = j;
+    a.displayCol(i+3).apply(fabs).max(j); 
+    for (int k=1; k<=6; k++) a(j, k) = 0.;
     s.md(2, i) = fv.msD(j);
   }
 
@@ -1064,16 +1071,20 @@ void FlavourMssmSoftsusy::doChargedSleptons(double mtau, double pizztMS,
 
   // fill in the flavour conserving parts with the correct masses
   sPhysical s(displayPhys());
-  int b1Pos = 0;
-  for(i=1; i<=3; i++) {
-    fv.eSqMix.displayCol(i).max(j); 
+  int tau1Pos = 0;
+  DoubleMatrix a(fv.eSqMix);
+
+  for(i=3; i>=1; i--) {
+    a.displayCol(i).apply(fabs).max(j); 
     s.me(1, i) = fv.msE(j);
-    b1Pos = j;
-    fv.eSqMix.displayCol(i+3).max(j); 
+    for (int k=1; k<=6; k++) a(j, k) = 0.;
+    if (i == 3) tau1Pos = j;
+    a.displayCol(i+3).apply(fabs).max(j); 
+    for (int k=1; k<=6; k++) a(j, k) = 0.;
     s.me(2, i) = fv.msE(j);
   }
 
-  s.thetatau = asin(fv.eSqMix(b1Pos, 6));
+  s.thetatau = asin(fv.eSqMix(tau1Pos, 6));
   setPhys(s);
 }
 
