@@ -1,5 +1,9 @@
 \documentclass[final,3p,times,pdflatex]{elsarticle}
 \usepackage{axodraw}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{color} % for text editing
 
 \bibstyle{elsarticle-num}
 
@@ -13,6 +17,26 @@
 \newcommand{\ea}{\end{eqnarray}}
 \newcommand{\Zv}{{\mbox{${\not\!\!Z_3}$}}}
 \newcommand{\ds}{\displaystyle}
+% for RGEs
+\newcommand{\lamsq}{\lambda^2}
+\newcommand{\kapsq}{\kappa^2}
+\newcommand{\tr}{\mathrm{Tr}}
+\newcommand{\dt}{\frac{d}{dt}}
+\newcommand{\mhusq}{m^2_{H_2}}
+\newcommand{\mhdsq}{m^2_{H_1}}
+\newcommand{\mlamsq}{M_\lambda^2}
+\newcommand{\mkapsq}{M_\kappa^2}
+\newcommand{\mssq}{m_S^2}
+\newcommand{\mtrisq}{m_3^2}
+\newcommand{\msprsq}{m_S'^2}
+\newcommand{\mqsq}{\textbf{m}_Q^2}
+\newcommand{\mdsq}{\textbf{m}_D^2}
+\newcommand{\musq}{\textbf{m}_U^2}
+\newcommand{\mlsq}{\textbf{m}_L^2}
+\newcommand{\mesq}{\textbf{m}_E^2}
+\newcommand{\Musq}{M_u^2}
+\newcommand{\Mdsq}{M_d^2}
+\newcommand{\Mesq}{M_e^2}
 % end of macros
 
 \journal{Computer Physics Communications}
@@ -28,10 +52,11 @@
   0WA, United Kingdom}
 
 \author{P.~Athron}
-\author{L.~Tunstall}
+\author{Lewis~C.~Tunstall}
 \author{A.G.~Williams}
-\address{Department of Physics, North Terrace, University of Adelaide,
-  Adelaide SA 5005, Australia}
+\address{ARC Centre of Excellence for Particle Physics at 
+the Tera-scale, School of Chemistry and Physics, University of Adelaide, 
+Adelaide SA 5005 Australia}
 
 \author{A.~Voigt}
 \address{Dipl.-Phys. Alexander Voigt,
@@ -346,6 +371,77 @@ energy SUSY breaking boundary conditions are imposed.
 
 
 \subsection{Running of NMSSM couplings~\label{running}}
+Herein, we follow the conventions laid out in the SOFTSUSY manual for the MSSM.  hence those adopted by Martin and Vaughn (MV) \cite{MV94}.  There is one important difference: with respect to the MV notation, the Yukawas couplings $Y_\alpha$ and SUSY breaking trilinears $U_\alpha$ are {\it transposed}, as in the {\tt SOFTSUSY} code. The complete set of two-loop renormalization group equations (RGEs) for the parameters of the MSSM can be found in \cite{MV94,Yam94}.  For the NMSSM, \cite{Ellwanger:2009dp} (EHT) list the two-loop RGEs in the third generation approximation, where the results for the soft SUSY-breaking terms (and others) originate from \cite{Ell08}.
+
+For $t = \ln Q$, the evolution of the Yukawa couplings is given by the general expression
+%
+\begin{equation}
+\dt Y^{ijk} = Y^{ijp}\Gamma_p^k + Y^{kjp}\Gamma_p^i + Y^{ikp}\Gamma_p^j\,,
+\end{equation}
+%
+where 
+%
+\begin{equation}
+\Gamma_i^j = \frac{1}{16\pi^2}\gamma_i^{(1)j} 
++ \frac{1}{(16\pi^2)^2}\gamma_{i}^{(2)j}\,,
+\end{equation}
+%
+and the one- and two-loop anomalous dimensions $\gamma_i^j$ are
+%
+\begin{align}
+\gamma_i^{(1)j} =& \tfrac{1}{2}Y_{ipq}Y^{jpq} - 2\delta_i^j \sum_a g_a^2C_a(i)\,, \\
+%
+\gamma_i^{(2)j} =& -\tfrac{1}{2}Y_{imn}Y^{npq}Y_{pqr}Y^{mrj} 
++ Y_{ipq}Y^{ipq} \sum_a g_a^2[2C_a(p) - C_a(i)] \notag \\
+%
+&+ 2\delta_i^j \sum_a g_a^2 
+\Big[g_a^2C_a(i)S_a(R) +2\sum_b g_b^2C_a(i)C_b(i) - 3g_a^2C_a(i)C(G_a)\Big]\,.
+\end{align}
+%
+Here $C_a(k)$ is the quadratic Casimir invariant for superfield $\Phi_k$, with 
+an complex conjugation on the Yukawa couplings with downstairs indices 
+understood: $Y_{ijk} \equiv Y_{ijk}^*$.  Note that the Yukawa and trilinear 
+couplings are written with the same ordering as the superpotential, e.g. for 
+$k = H_2$ we get
+%
+\begin{equation}
+\dt (Y_u)^{ij} = (Y_u)^{ij}\Gamma^{H_2}_{H_2} + (Y_u)^{jp}\Gamma_{Q_p}^{Q_i} + (Y_u)^{ip}\Gamma_{U_p}^{U_j}\,.
+\end{equation}
+
+\subsubsection{Gauge Couplings}
+In the NMSSM, the one-loop RGEs of the for the gauge couplings $g_a$ are 
+identical to those for the MSSM.  At two-loop order however, the $\lambda$ 
+coupling appears through the term
+%
+\begin{equation}
+\dt g_a \ni - \frac{g_a^3}{(16\pi^2)^2} Y_{ijk}Y^{ijk} C_a(k)/d(G_a)\,,  
+\end{equation}
+%
+where $d(G_a)$ is the dimension of the adjoint representation of gauge group 
+$G_a$.  To obtain a non-zero contribution from $\lambda$, $k\neq S_k$ (since 
+$C_a(S)=0$) and furthermore $C_3(H_k)=0$. The explicit expression reads
+%
+\begin{align}
+\left. Y_{ijk}Y^{ijk}\right|_\lambda &= Y_{SH_1H_2}Y^{SH_1H_2} 
++ Y_{H_1SH_2}Y^{H_1SH_2} + (H_1 \leftrightarrow H_2) \notag \\
+%
+&= 8\lambda^2\,,
+\label{eqn:yuk S}\end{align}
+%
+where we have taken into account an additional factor of 2 which arises from 
+tracing over $SU(2)$.  By weighing each term with the appropriate $C_a(k)$ 
+factors, we get\footnote{Watch out for differing normalizations of $g_1$.  
+EHT present their results with the Standard Model normalization, while 
+\cite{MV94} (and hence this work) adopt a GUT scale normalization: 
+$(g_1^{SM})^2 = \tfrac{3}{5}(g_1^{GUT})^2$.}
+%
+\begin{equation}
+\left. \dt g_a\right|_\lambda = -\frac{g_a^3}{(16\pi^2)^2}\lamsq \Lambda_a^{(2)}\,,
+\qquad \Lambda_a^{(2)} = (\tfrac{6}{5},2,0)\,.
+\end{equation}
+
+\textcolor{red}{--- Up to here ---}
+
 The program 
 can be made to run faster by switching off the two-loop renormalisation of 
 the scalar masses and tri-linear scalar couplings. All
@@ -486,6 +582,34 @@ technical documentation on the program should be obtained from the
   [arXiv:0910.1785 [hep-ph]].
   %%CITATION = ARXIV:0910.1785;%%
   %327 citations counted in INSPIRE as of 21 Sep 2013
+
+%\cite{MV94}
+\bibitem{MV94} 
+  S.~P.~Martin and M.~T.~Vaughn,
+  %``Two loop renormalization group equations for soft supersymmetry breaking couplings,''
+  Phys.\ Rev.\ D {\bf 50}, 2282 (1994)
+  [Erratum-ibid.\ D {\bf 78}, 039903 (2008)]
+  [hep-ph/9311340].
+  %%CITATION = HEP-PH/9311340;%%
+  %568 citations counted in INSPIRE as of 24 Sep 2013
+
+%\cite{Yam94}
+\bibitem{Yam94} 
+  Y.~Yamada,
+  %``Two loop renormalization group equations for soft SUSY breaking scalar interactions: Supergraph method,''
+  Phys.\ Rev.\ D {\bf 50}, 3537 (1994)
+  [hep-ph/9401241].
+  %%CITATION = HEP-PH/9401241;%%
+  %225 citations counted in INSPIRE as of 24 Sep 2013
+
+%\cite{Ell08}
+\bibitem{Ell08} 
+  U.~Ellwanger, C.~-C.~Jean-Louis and A.~M.~Teixeira,
+  %``Phenomenology of the General NMSSM with Gauge Mediated Supersymmetry Breaking,''
+  JHEP {\bf 0805}, 044 (2008)
+  [arXiv:0803.2962 [hep-ph]].
+  %%CITATION = ARXIV:0803.2962;%%
+  %28 citations counted in INSPIRE as of 24 Sep 2013
 
 
 \end{thebibliography}
