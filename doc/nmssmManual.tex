@@ -34,6 +34,8 @@
 \newcommand{\musq}{\textbf{m}_U^2}
 \newcommand{\mlsq}{\textbf{m}_L^2}
 \newcommand{\mesq}{\textbf{m}_E^2}
+\newcommand{\Alam}{a_\lambda/\lambda}
+\newcommand{\Akap}{a_\kappa/\kappa}
 \newcommand{\Musq}{M_u^2}
 \newcommand{\Mdsq}{M_d^2}
 \newcommand{\Mesq}{M_e^2}
@@ -505,6 +507,147 @@ $\gamma_i^j$, and so the only new contributions arising from the NMSSM are
 - 3\lamsq \tr(Y_d Y_d^\dagger) - \lamsq \tr(Y_e Y_e^\dagger)\,.
 \end{align}
 %
+
+For the NMSSM Yuwaka couplings $\lambda$ and $\kappa$, the RGEs read
+%
+\begin{align}
+\dt\lambda &= \lambda (\Gamma^{H_1}_{H_1} + \Gamma^{H_2}_{H_2} + \Gamma^S_S)\,, \\
+%
+\dt\kappa &= \kappa 3\Gamma_S^S\,,
+\end{align}
+%
+with the one- and two-loop expressions for the singlet anomalous dimension 
+given by
+%
+\begin{align}
+\gamma_S^{(1)S} &= 2\lamsq + 2\kapsq\,,\\
+%
+\gamma_S^{(2)S} &= -4\lambda^4 - 8\kappa^4 - 8 \kapsq\lamsq 
+- 6\lamsq \tr(Y_uY_u^\dagger) - 6\lamsq \tr(Y_uY_u^\dagger) 
+- 2\lamsq \tr(Y_eY_e^\dagger) + \tfrac{6}{5}g_1^2\lamsq + 6g_2^2\lamsq\,.
+\end{align} 
+
+\subsubsection{Trilinear Couplings}
+In the notation of MV, the trilinear couplings $U^{ijk}$ evolve under 
+%
+\begin{equation}
+\dt U^{ijk} = \frac{1}{16\pi^2} \left[\beta_U^{(1)}\right]^{ijk} 
++ \frac{1}{(16\pi^2)^2} \left[\beta_U^{(2)}\right]^{ijk}\,,
+\end{equation}
+%
+where the expressions for the $\beta$ functions can be found in \cite{MV94}.  
+For $x = u,d,e$ the $\lambda$ contribution to the one-loop $\beta$ function 
+arises from the following factor
+%
+\begin{equation}
+\left[\beta_{U_x}^{(1)}\right]^{ij} \ni \tfrac{1}{2} (U_x)^{ij} 
+Y_{H_\alpha mn}Y^{mnH_\alpha} + (Y_x)^{ij} Y_{H_\alpha mn}U^{mnH_\alpha}\,,
+\end{equation}
+%
+where there is {\it no summation} over $\alpha = 1,2$, with the index 
+determined by the choice of $x$ (e.g.\ if $x=u$ then $\alpha = 2$). Expanding 
+the indices leads to
+%
+\begin{equation}
+\left.\left[\beta_{U_x}^{(1)}\right]^{ij}\right|_\lambda = (U_x)^{ij}\lambda^2 
++ (Y_x)^{ij} 2\lambda a_\lambda\,. \label{eqn: beta hx}
+\end{equation}
+%
+
+The two-loop expressions involve a large number of summations, so we choose to 
+express our results in terms of $3\times 3$ matrices:
+%
+\begin{align}
+\left.\beta_{ U_u}^{(2)}\right|_\lambda =& -\lamsq U_u\big[ 3\lamsq + 2\kapsq 
++ 3\tr( Y_d Y_d^\dagger) + \tr( Y_e Y_e^\dagger) \big] 
+-\lamsq\big[ 5 Y_u Y_u^\dagger U_u + 4 U_u Y_u^\dagger Y_u +  Y_d Y_d^\dagger U_u 
++ 2 U_d Y_d^\dagger Y_u \big] \notag \\
+%
+&-2\lambda  a_\lambda Y_u\big[ 3\lamsq + 2\kapsq + 3\tr( Y_d Y_d^\dagger) 
++ \tr( Y_e Y_e^\dagger) \big] -2\lamsq Y_u\big[ 3\lambda  a_\lambda 
++ 2\kappa a_\kappa + 3\tr( U_d Y_d^\dagger) + \tr( U_e Y_e^\dagger) \big] \notag \\
+%
+&-2\lambda  a_\lambda\big[ 3 Y_u Y_u^\dagger Y_u +  Y_d Y_d^\dagger Y_u \big]\,, \\
+%
+%
+\left.\beta_{ U_d}^{(2)}\right|_\lambda =& -\lamsq U_d\big[ 3\lamsq + 2\kapsq 
++ 3\tr( Y_u Y_u^\dagger) \big] 
+-\lamsq\big[ 5 Y_d Y_d^\dagger U_d + 4 U_d Y_d^\dagger Y_d + 2 U_u Y_u^\dagger Y_d 
++  Y_u Y_u^\dagger U_d \big] \notag \\
+%
+&-2\lambda  a_\lambda  Y_d\big[ 3\lamsq + 2\kapsq + 3\tr( Y_u Y_u^\dagger) \big]
+-2\lamsq Y_d\big[ 3\lambda  a_\lambda + 2\kappa a_\kappa 
++ 3\tr( U_u Y_u^\dagger) \big] -2\lambda  a_\lambda\big[ 3 Y_d Y_d^\dagger Y_d +  Y_u Y_u^\dagger Y_d\big]\,,  \\
+%
+%
+\left.\beta_{ U_e}^{(2)}\right|_\lambda =& -\lamsq  U_e\big[ 3\lamsq + 2\kapsq + 3\tr( Y_u Y_u^\dagger) \big] 
+-\lamsq\big[ 5 Y_e Y_e^\dagger U_e + 4 U_e Y_e^\dagger Y_e \big] 
+-2\lambda  a_\lambda  Y_e\big[ 3\lamsq + 2\kapsq + 3\tr( Y_u Y_u^\dagger) \notag \\
+%
+&-2\lamsq Y_e\big[ 3\lambda a_\lambda + 2\kappa a_\kappa + 3\tr( U_u Y_u^\dagger) \big] -6\lambda a_\lambda  Y_e Y_e^\dagger Y_e\,.
+\end{align}
+
+For $a_\lambda$, the one-loop $\beta$ function reads in full
+%
+\begin{align}
+\beta_{a_\lambda}^{(1)} =&\, \tfrac{1}{2}a_\lambda (Y_{H_1mn}Y^{mnH_1} + Y_{H_2mn}Y^{mnH_2} + Y_{Smn}Y^{mnS}) 
++ \lambda (Y_{H_1mn}U^{mnH_1} + Y_{H_2mn}U^{mnH_2} + Y_{Smn}U^{mnS}) \notag \\
+%
+&- 4\sum_{a=1,2,3} (a_\lambda - 2M_a\lambda)g_a^2C_a(H)\,.
+\end{align}
+%
+The various sums yield
+%
+\begin{align}
+Y_{H_1mn}Y^{mnH_1} &= 6\tr( Y_d  Y_d^\dagger) + 2\tr( Y_e  Y_e^\dagger) + 2\lamsq\,, \\
+%
+Y_{H_2mn}Y^{mnH_2} &= 6\tr( Y_u  Y_u^\dagger) + 2\lamsq\,, \label{eqn:YH2sq} \\
+%
+Y_{Smn}Y^{mnS} &= 4\lamsq + 4\kapsq\,, \\
+%
+Y_{H_1mn}U^{mnH_1} &= 6\tr( U_d  Y_d^\dagger) + 2\tr( U_e  Y_e^\dagger) + 2a_\lambda\lambda\,, \\
+%
+Y_{H_2mn}U^{mnH_2} &= 6\tr( U_u  Y_u^\dagger) + 2a_\lambda\lambda\,, \\
+%
+Y_{Smn}U^{mnS} &= 4a_\lambda\lambda + 4a_\kappa\kappa\,,
+\end{align}
+%
+and putting it all together:
+%
+\begin{align}
+\beta_{a_\lambda}^{(1)} =&\, a_\lambda[3\tr( Y_u  Y_u^\dagger) + 3\tr( Y_d  Y_d^\dagger) + \tr( Y_e  Y_e^\dagger) 
++ 12\lamsq + 2\kapsq - \tfrac{3}{5}g_1^2 - 3g_2^2] \notag \\
+%
+&+ \lambda[6\tr( U_u  Y_u^\dagger) + 6\tr( U_d  Y_d^\dagger) + 2\tr( U_e  Y_e^\dagger)  + 4a_\kappa\kappa + \tfrac{6}{5}g_1^2M_1 + 6g_2^2M_2]\,.
+\end{align}
+%
+The two-loop expression is:
+\begin{align}
+\beta_{a_\lambda}^{(2)} =&-50\lambda^4 a_\lambda -36\lambda\tr(U_u Y_u^\dagger Y_u Y_u^\dagger) - 36\lambda\tr(U_d Y_d^\dagger Y_d Y_d^\dagger)
+-12\lambda\tr(U_e Y_e^\dagger Y_e Y_e^\dagger) -9a_\lambda\tr( Y_u Y_u^\dagger Y_u Y_u^\dagger) \notag \\
+%
+&-9a_\lambda\tr( Y_d Y_d^\dagger Y_d Y_d^\dagger) - 3a_\lambda\tr( Y_e Y_e^\dagger Y_e Y_e^\dagger) - 8\kappa^4 a_\lambda - 32\lambda\kappa^3 h_\kappa - 12\lamsq\kapsq a_\lambda \notag \\
+%
+&-18\lambda^3\big[ (\Alam)\tr( Y_u Y_u^\dagger) + \tr(U_u Y_u^\dagger)\big] - 18\lambda^3\big[(\Alam)\tr( Y_d Y_d^\dagger) + \tr(U_d Y_d^\dagger)\big] \notag \\
+%
+&-6\lambda^3\big[(\Alam)\tr( Y_e Y_e^\dagger) + \tr(U_e Y_e^\dagger)\big] -24\lambda^3\kapsq\big[ (\Alam) + (\Akap)\big]
+-12\lambda\big[ \tr(U_u Y_u^\dagger Y_d Y_d^\dagger) + \tr(U_d Y_d^\dagger Y_u Y_u^\dagger) \big] \notag \\
+%
+&-3\lamsq a_\lambda\big[ 3\tr( Y_u Y_u^\dagger) + 3\tr( Y_d Y_d^\dagger) + \tr( Y_e Y_e^\dagger) \big] 
+-6a_\lambda\tr( Y_u Y_u^\dagger Y_d Y_d^\dagger) + \tfrac{12}{5}g_1^2\lamsq\big[ \tfrac{3}{2}a_\lambda - \lambda M_1\big] \notag \\
+%
+&+\tfrac{8}{5}g_1^2\lambda\big[ \tr(U_u Y_u^\dagger) - M_1\tr( Y_u Y_u^\dagger) \big]
+-\tfrac{4}{5}g_1^2\lambda\big[ \tr(U_d Y_d^\dagger) - M_1\tr( Y_d Y_d^\dagger)\big] +\tfrac{12}{5}g_1^2\lambda\big[\tr(U_e Y_e^\dagger) - M_1\tr( Y_e Y_e^\dagger)\big] \notag \\
+%
+&+\tfrac{2}{5}g_1^2 a_\lambda\big[ 2\tr( Y_u Y_u^\dagger) - \tr( Y_d Y_d^\dagger) + 3\tr( Y_e Y_e^\dagger) \big]
++12g_2^2\lamsq\big[ \tfrac{3}{2}a_\lambda - \lambda M_2\big] \notag \\
+%
+&+32g_3^2\lambda\big[ \tr(U_u Y_u^\dagger) - M_3\tr( Y_u Y_u^\dagger) \big]
++32g_3^2\lambda\big[\tr(U_d Y_d^\dagger) - M_3\tr( Y_d Y_d^\dagger) \big] + 16g_3^2 a_\lambda\big[ \tr( Y_u Y_u^\dagger) + \tr( Y_d Y_d^\dagger) \big] \notag \\
+%
+&+ \tfrac{1}{50}g_1^4\lambda\big[ 207(\Alam) - 828M_1\big] + \tfrac{1}{2}g_2^4\lambda\big[ 15(\Alam) - 60M_2\big]
++\tfrac{9}{5}g_1^2 g_2^2\lambda\big[ (\Alam) - 2(M_1 + M_2)\big] \,.
+\end{align}
 
 \textcolor{red}{--- Up to here ---}
 
