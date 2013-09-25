@@ -767,15 +767,19 @@ mentioned here, but there are many others within the program itself.
       \GBox(200,200)(0,0){0.9}
       \ArrowLine(100,180)(100,150)
       \ArrowLine(100,150)(100,120)
-      \ArrowLine(100,120)(100,80)
-      \ArrowLine(100,80)(100,30)
+      \ArrowLine(100,125)(100,100)
+      \ArrowLine(100,100)(100,75)
+      \ArrowLine(100,75)(100,50)
+      \ArrowLine(100,50)(100,25)
       \SetPFont{Teletype}{10}
       \put(0,0){\framebox(200,200){}}
       \BText(100,180){RGE}
       \BText(100,150){MssmSusy}
-      \BText(100,120){NmssmSusy}
-      \B2Text(100,80){SoftPars<NmssmSusy>}{= SoftParsNmssm}
-      \B2Text(100,30){Softsusy<SoftParsNmssm>}{= NmssmSoftsusy}
+      \BText(100,125){NmssmSusy}
+      \BText(100,100){SoftPars<NmssmSusy>}
+      \BText(100,75){SoftParsNmssm}
+      \BText(100,50){Softsusy<SoftParsNmssm>}
+      \BText(100,25){NmssmSoftsusy}
     \end{picture}
     \caption{\label{fig:objstruc} Heuristic high-level object
       structure of \SOFTSUSY\@. Inheritance is displayed by the
@@ -783,43 +787,41 @@ mentioned here, but there are many others within the program itself.
   \end{center}
 \end{figure}
 
-From an RGE point of view, data in a particular quantum field theory 
-consist of a set of parameters defined at some
-renormalisation scale $Q$. 
-A set of $\beta$ functions describes the
-evolution of the parameters and masses to a different scale
-$Q'$. This concept is embodied in an {\em abstract} \code{RGE}
-object, which contains the methods required to run objects of derived
-classes to different renormalisation scales (their beta functions). The other
-objects 
-displayed in figure~\ref{fig:objstruc} are particular instances of
-\code{RGE}, and therefore inherit from it. \code{QedQcd}, \code{MssmSusy},
-\code{SoftParsMssm} and \code{MssmSoftsusy}~objects encode the $R_p$ part of the
-MSSM and its SM input data~\cite{Allanach:2001kg}.
-\code{RpvSusyPars} contains all of the supersymmetric  couplings contained
-within  Eq.~(\ref{superpot1}). 
-\code{RpvSoftPars}~contains the  soft supersymmetry breaking parameters
-listed in 
-Eqs.~(\ref{softhabertril}) and~(\ref{softhaberbil}). \code{RpvSoftsusy} is
-the  $R-$parity violating
-generalisation of the \code{MssmSoftsusy}~class. 
-Code in
-the \code{MssmSoftsusy} class organises and performs the main part of
-the calculation, using polymorphism to detect the correct $\beta$ functions to
-use (in this case, the $-$NMSSM $\beta$ functions). 
-All of the \code{Nmssm}~objects contain default constructors
-and destructors, as well as overloaded \code{>>},\code{<<}~operators for input
-and output. 
-There is always an implicit dependence of running RGE quantities on the
-current renormalisation scale $Q$. Thus, if a method is called that returns
-one of the object's couplings or masses, that object will return it at the
-current scale $Q$ of the object. 
-In the following, we provide basic information on the 
-classes associated with , so that users may program using the class
-structure of \SOFTSUSY\@. More detailed and
-technical documentation on the program should be obtained from the
-\SOFTSUSY~website. 
+The NMSSM class hierarchy is structured analoguous to the MSSM with
+the following points in mind:
+%
+\begin{itemize}
+\item Supersymmetric parameters (gauge couplings, superpotential
+  parameters and VEVs), whose beta functions are independent of
+  soft-breaking parameters, are at the top of the hierarchy.  This
+  approach makes them usable independently of the soft-breaking
+  parameters, for example during the initial guess.
+\item To reuse as much MSSM code as possible, the NMSSM beta functions
+  are implemented in terms of the MSSM ones.  This is done via
+  the inheritance
+\begin{verbatim}
+class NmssmSusy : public MssmSusy {
+   virtual const DoubleVector display() const;
+   virtual void set(const DoubleVector&);
+   virtual DoubleVector beta() const;
+};
 
+class SoftParsNmssm: public SoftPars<NmssmSusy> {
+   virtual const DoubleVector display() const;
+   virtual void set(const DoubleVector&);
+   virtual DoubleVector beta() const;
+};
+\end{verbatim}
+  where the \code{RGE} interface functions \code{display}, \code{set}
+  and \code{beta}, are reimplemented in terms of MSSM functions.
+\item To reuse the MSSM mass matrices, Feynman rules and self-energy
+  routines from \code{Softsusy<T>}, the NMSSM user-interface class
+  \code{NmssmSoftsusy} inherits from \code{Softsusy<SoftParsNmssm>}
+  and reimplementes these routines using the MSSM ones.
+\end{itemize}
+
+\subsection{\code{NmssmSusy}~class}
+\label{nmssmsusy}
 
 \subsection{\code{NmssmSoftsusy}~class}
 \label{nmssmsoftsusy}
