@@ -764,6 +764,28 @@ mentioned here, but there are many others within the program itself.
 
 \subsection{General object structure}
 
+\begin{figure}
+  \begin{center}
+    \begin{picture}(200,200)
+      \GBox(200,200)(0,0){0.9}
+      \ArrowLine(100,180)(100,150)
+      \ArrowLine(100,150)(100,120)
+      \ArrowLine(100,120)(100,80)
+      \ArrowLine(100,80)(100,30)
+      \SetPFont{Teletype}{10}
+      \put(0,0){\framebox(200,200){}}
+      \BText(100,180){RGE}
+      \BText(100,150){MssmSusy}
+      \BText(100,120){NmssmSusy}
+      \B2Text(100,80){SoftPars<NmssmSusy>}{= SoftParsNmssm}
+      \B2Text(100,30){Softsusy<SoftParsNmssm>}{= NmssmSoftsusy}
+    \end{picture}
+    \caption{\label{fig:objstruc} Heuristic high-level object
+      structure of \SOFTSUSY\@. Inheritance is displayed by the
+      arrows and typedefs are displayed by the equals sign.}
+  \end{center}
+\end{figure}
+
 From an RGE point of view, data in a particular quantum field theory 
 consist of a set of parameters defined at some
 renormalisation scale $Q$. 
