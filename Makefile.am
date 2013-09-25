@@ -85,7 +85,8 @@ gaugeUn.out: gaugeUn.x
 	./gaugeUn.x > gaugeUn.out 
 
 
-doc: doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
+doc: doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
+	doc/nmssmManual.pdf
 
 doc/rpcManual.pdf: doc/rpcManual.tex
 	cd doc; \
@@ -105,5 +106,10 @@ doc/neutManual.pdf: doc/neutManual.tex
 	dvips -f neutManual > neutManual.ps; 	\
 	ps2pdf neutManual.ps; cd ..
 
+doc/nmssmManual.pdf: doc/nmssmManual.tex
+	cd doc; \
+	latex nmssmManual.tex; latex nmssmManual.tex; \
+	dvips -f nmssmManual > nmssmManual.ps; 	\
+	ps2pdf nmssmManual.ps; cd ..
 
 
