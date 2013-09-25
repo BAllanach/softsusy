@@ -757,7 +757,7 @@ data which are deemed of possible importance for prospective users are
 mentioned here, but there are many others within the program itself.
 
 
-\subsection{General object structure}
+\subsection{General structure}
 
 \begin{figure}
   \begin{center}
@@ -781,12 +781,12 @@ mentioned here, but there are many others within the program itself.
     \end{picture}
     \caption{\label{fig:objstruc} Heuristic high-level object
       structure of \SOFTSUSY\@. Inheritance is displayed by the
-      arrows and typedefs are displayed by the equals sign.}
+      arrows.}
   \end{center}
 \end{figure}
 
-The NMSSM class hierarchy is structured analoguous to the MSSM with
-the following points in mind:
+The NMSSM class hierarchy, see Figure~\ref{fig:objstruc}, is
+structured analoguous to the MSSM with the following points in mind:
 %
 \begin{itemize}
 \item Supersymmetric parameters (gauge couplings, superpotential
@@ -804,7 +804,7 @@ class NmssmSusy : public MssmSusy {
    virtual DoubleVector beta() const;
 };
 
-class SoftParsNmssm: public SoftPars<NmssmSusy> {
+class SoftParsNmssm : public SoftPars<NmssmSusy> {
    virtual const DoubleVector display() const;
    virtual void set(const DoubleVector&);
    virtual DoubleVector beta() const;
@@ -813,8 +813,8 @@ class SoftParsNmssm: public SoftPars<NmssmSusy> {
   where the \code{RGE} interface functions \code{display}, \code{set}
   and \code{beta}, are reimplemented in terms of MSSM functions.
 \item To reuse the MSSM mass matrices, Feynman rules and self-energy
-  routines from \code{Softsusy<T>}, the NMSSM user-interface class
-  \code{NmssmSoftsusy} inherits from \code{Softsusy<SoftParsNmssm>}
+  routines from \code{Softsusy<T>}, the NMSSM user-interface class,
+  \code{NmssmSoftsusy}, inherits from \code{Softsusy<SoftParsNmssm>}
   and reimplementes these routines using the MSSM ones.
 \end{itemize}
 
