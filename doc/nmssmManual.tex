@@ -4,6 +4,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{color} % for text editing
+\usepackage{slashed}
 
 \bibstyle{elsarticle-num}
 
@@ -15,7 +16,8 @@
 \newcommand{\ee}{\end{equation}}
 \newcommand{\ba}{\begin{eqnarray}}
 \newcommand{\ea}{\end{eqnarray}}
-\newcommand{\Zv}{{\mbox{${\not\!\!Z_3}$}}}
+%\newcommand{\Zv}{{\mbox{${\not\!\!Z_3}$}}}
+\newcommand{\Zv}{{\mbox{$\slashed{Z}_{3}$}}} % LCT: Better placement of \
 \newcommand{\ds}{\displaystyle}
 % for RGEs
 \newcommand{\lamsq}{\lambda^2}
@@ -373,9 +375,15 @@ energy SUSY breaking boundary conditions are imposed.
 
 
 \subsection{Running of NMSSM couplings~\label{running}}
+Here, we present the one- and two-loop renormalization group equations (RGEs) in the $\overline{\mbox{DR}}$ scheme for parameters of the $\Zv$ NMSSM.  Our strategy is to make use of existing results \cite{MV94,Yam94} for a general, semi-simple SUSY gauge theory.   
+
+Where possible, we refer the reader to the MSSM results --- saves space.
+
 Herein, we follow the conventions laid out in the SOFTSUSY manual for the MSSM.  hence those adopted by Martin and Vaughn (MV) \cite{MV94}.  There is one important difference: with respect to the MV notation, the Yukawas couplings $Y_{U,D,E}$ and SUSY breaking trilinears $U_A,D_A,E_A$ are {\it transposed}, as in the {\tt SOFTSUSY} code. The complete set of two-loop renormalization group equations (RGEs) for the parameters of the MSSM can be found in \cite{MV94,Yam94}.  For the NMSSM, \cite{Ellwanger:2009dp} (EHT) list the two-loop RGEs in the third generation approximation, where the results for the soft SUSY-breaking terms (and others) originate from \cite{Ell08}.
 
-For $t = \ln Q$, the evolution of the Yukawa couplings is given by the general expression
+\subsubsection{Yukawa Couplings}
+For $t = \ln Q$, the Yukawa couplings evolve according to the general expression
+ \cite{MV94}
 %
 \begin{equation}
 \dt Y^{ijk} = Y^{ijp}\Gamma_p^k + Y^{kjp}\Gamma_p^i + Y^{ikp}\Gamma_p^j\,,
@@ -400,15 +408,70 @@ and the one- and two-loop anomalous dimensions $\gamma_i^j$ are
 \Big[g_a^2C_a(i)S_a(R) +2\sum_b g_b^2C_a(i)C_b(i) - 3g_a^2C_a(i)C(G_a)\Big]\,.
 \end{align}
 %
-Here $C_a(k)$ is the quadratic Casimir invariant for superfield $\Phi_k$, with 
-an complex conjugation on the Yukawa couplings with downstairs indices 
-understood: $Y_{ijk} \equiv Y_{ijk}^*$.  Note that the Yukawa and trilinear 
-couplings are written with the same ordering as the superpotential, e.g. for 
-$k = H_2$ we get
+Here $C_a(k)$ is the quadratic Casimir invariant for chiral superfield $\Phi_k$,
+ with complex conjugation on downstairs indices understood: 
+$Y_{ijk} \equiv Y_{ijk}^*$.  Note that the Yukawa and trilinear couplings are 
+written with the same ordering as fields in the superpotential (\ref{eq:WZ3V}), 
+e.g.\ for $k = H_2$ we get
 %
 \begin{equation}
-\dt (Y_U)^{ij} = (Y_U)^{ij}\Gamma^{H_2}_{H_2} + (Y_U)^{jp}\Gamma_{Q_p}^{Q_i} + (Y_U)^{ip}\Gamma_{U_p}^{U_j}\,.
+\dt (Y_U)^{ij} = (Y_U)^{ij}\Gamma^{H_2}_{H_2} + (Y_U)^{jp}\Gamma_{Q_p}^{Q_i} 
++ (Y_U)^{ip}\Gamma_{U_p}^{U_j}\,.
 \end{equation}
+
+In the one-loop approximation, the only modification to the MSSM results 
+\cite{MV94,Yam94} for $Y_{U,D,E}$ is the inclusion of $\lamsq$ terms which 
+originate from the Higgs anomalous dimensions
+%
+\begin{align}
+\left.\gamma^{(1) H_1}_{H_1}\right|_\lambda = \lamsq\,, 
+\quad \mbox{and} \quad \left.\gamma^{(1) H_2}_{H_2} \right|_\lambda = \lamsq\,.
+\end{align}
+%
+At two-loop, all the gauge-Yukawa contributions from $\lambda$ cancel for each 
+$\gamma_i^{(2)j}$, so the additional contributions arising in the NMSSM are 
+simply given by
+%
+\begin{align}
+\left.\gamma_{L_i}^{(2)L_j}\right|_\lambda &= -\lamsq (Y_E Y_E^\dagger)_i^j\,, \\
+%
+\left.\gamma_{E_i}^{(2)E_j}\right|_\lambda &= -2\lamsq (Y_E^\dagger Y_E)_i^j\,, \\
+%
+\left.\gamma_{Q_i}^{(2)Q_j}\right|_\lambda &= -\lamsq (Y_U Y_U^\dagger)_i^j 
+- \lamsq (Y_D Y_D^\dagger)_i^j\,, \\
+%
+\left.\gamma_{D_i}^{(2)D_j}\right|_\lambda &= -2\lamsq (Y_D^\dagger Y_D)_i^j\,, \\
+%
+\left.\gamma_{U_i}^{(2)U_j}\right|_\lambda &= -2\lamsq (Y_U^\dagger Y_U)_i^j \,, \\
+%
+\left.\gamma_{H_1}^{(2)H_1}\right|_\lambda &= -3\lambda^4 -2\lamsq\kapsq 
+- 3\lamsq \tr(Y_U Y_U^\dagger)\,, \\
+%
+\left.\gamma_{H_2}^{(2)H_2}\right|_\lambda &= -3\lambda^4 -2\lamsq\kapsq 
+- 3\lamsq \tr(Y_D Y_D^\dagger) - \lamsq \tr(Y_E Y_E^\dagger)\,.
+\end{align}
+%
+
+For the NMSSM Yuwaka couplings $\lambda$ and $\kappa$, the RGEs read
+%
+\begin{align}
+\dt\lambda &= \lambda (\Gamma^{H_1}_{H_1} + \Gamma^{H_2}_{H_2} + \Gamma^S_S)\,, \\
+%
+\dt\kappa &= 3\kappa \Gamma_S^S\,,
+\end{align}
+%
+with the one- and two-loop expressions for the singlet anomalous dimension 
+given by
+%
+\begin{align}
+\gamma_S^{(1)S} &= 2\lamsq + 2\kapsq\,,\\
+%
+\gamma_S^{(2)S} &= -4\lambda^4 - 8\kappa^4 - 8 \kapsq\lamsq 
+- 6\lamsq \tr(Y_UY_U^\dagger) - 6\lamsq \tr(Y_UY_U^\dagger) 
+- 2\lamsq \tr(Y_EY_E^\dagger) + \tfrac{6}{5}g_1^2\lamsq + 6g_2^2\lamsq\,.
+\end{align} 
+
+
 
 \subsubsection{Gauge Couplings}
 In the NMSSM, the one-loop RGEs of the for the gauge couplings $g_a$ are 
@@ -420,27 +483,15 @@ coupling appears through the term
 \end{equation}
 %
 where $d(G_a)$ is the dimension of the adjoint representation of gauge group 
-$G_a$.  To obtain a non-zero contribution from $\lambda$, $k\neq S_k$ (since 
-$C_a(S)=0$) and furthermore $C_3(H_k)=0$. The explicit expression reads
-%
-\begin{align}
-\left. Y_{ijk}Y^{ijk}\right|_\lambda &= Y_{SH_1H_2}Y^{SH_1H_2} 
-+ Y_{H_1SH_2}Y^{H_1SH_2} + (H_1 \leftrightarrow H_2) \notag \\
-%
-&= 8\lambda^2\,,
-\label{eqn:yuk S}\end{align}
-%
-where we have taken into account an additional factor of 2 which arises from 
-tracing over $SU(2)$.  By weighing each term with the appropriate $C_a(k)$ 
-factors, we get\footnote{Watch out for differing normalizations of $g_1$.  
-EHT present their results with the Standard Model normalization, while 
-\cite{MV94} (and hence this work) adopt a GUT scale normalization: 
-$(g_1^{SM})^2 = \tfrac{3}{5}(g_1^{GUT})^2$.}
+$G_a$.  To obtain a non-zero contribution from $\lambda$ we must have  
+$k\neq S_k$ (since $C_a(S)=0$) and furthermore $C_3(H_k)=0$.  The result is
 %
 \begin{equation}
 \left. \dt g_a\right|_\lambda = -\frac{g_a^3}{(16\pi^2)^2}\lamsq \Lambda_a^{(2)}\,,
-\qquad \Lambda_a^{(2)} = (\tfrac{6}{5},2,0)\,.
+\qquad \Lambda_a^{(2)} = (\tfrac{6}{5},2,0)\,,
 \end{equation}
+where we have taken into account an additional factor of 2 which arises from 
+tracing over $SU(2)$ group indices.
 
 \subsubsection{Gaugino Mass Parameters}
 As for the gauge couplings above, we only need to consider the addition of the 
@@ -474,58 +525,6 @@ we obtain
 \left. \dt M_a\right|_{\lambda} = \frac{2g_a^2}{(16\pi^2)^2} 
 (\lambda a_\lambda - \lambda^2 M_a)\Lambda^{(2)}_a\,.
 \end{equation}
-
-\subsubsection{Yukawa Couplings}
-At one-loop, the only modification to the MSSM results \cite{MV94,Yam94} for 
-$Y_\alpha$ is the inclusion of $\lamsq$ terms which originate from the Higgs 
-anomalous dimensions
-%
-\begin{align}
-\left.\gamma^{(1) H_1}_{H_1}\right|_\lambda = \lamsq\,, 
-\quad \mbox{and} \quad \left.\gamma^{(1) H_2}_{H_2} \right|_\lambda = \lamsq\,.
-\end{align}
-%
-At two-loop, all the gauge-Yukawa contributions from $\lambda$ cancel for each 
-$\gamma_i^j$, and so the only new contributions arising from the NMSSM are
-%
-\begin{align}
-\left.\gamma_{L_i}^{(2)L_j}\right|_\lambda &= -\lamsq (Y_E Y_E^\dagger)_i^j\,, \\
-%
-\left.\gamma_{E_i}^{(2)E_j}\right|_\lambda &= -2\lamsq (Y_E^\dagger Y_E)_i^j\,, \\
-%
-\left.\gamma_{Q_i}^{(2)Q_j}\right|_\lambda &= -\lamsq (Y_U Y_U^\dagger)_i^j 
-- \lamsq (Y_D Y_D^\dagger)_i^j\,, \\
-%
-\left.\gamma_{D_i}^{(2)D_j}\right|_\lambda &= -2\lamsq (Y_D^\dagger Y_D)_i^j\,, \\
-%
-\left.\gamma_{U_i}^{(2)U_j}\right|_\lambda &= -2\lamsq (Y_U^\dagger Y_U)_i^j \,, \\
-%
-\left.\gamma_{H_1}^{(2)H_1}\right|_\lambda &= -3\lambda^4 -2\lamsq\kapsq 
-- 3\lamsq \tr(Y_U Y_U^\dagger)\,, \\
-%
-\left.\gamma_{H_2}^{(2)H_2}\right|_\lambda &= -3\lambda^4 -2\lamsq\kapsq 
-- 3\lamsq \tr(Y_D Y_D^\dagger) - \lamsq \tr(Y_E Y_E^\dagger)\,.
-\end{align}
-%
-
-For the NMSSM Yuwaka couplings $\lambda$ and $\kappa$, the RGEs read
-%
-\begin{align}
-\dt\lambda &= \lambda (\Gamma^{H_1}_{H_1} + \Gamma^{H_2}_{H_2} + \Gamma^S_S)\,, \\
-%
-\dt\kappa &= \kappa 3\Gamma_S^S\,,
-\end{align}
-%
-with the one- and two-loop expressions for the singlet anomalous dimension 
-given by
-%
-\begin{align}
-\gamma_S^{(1)S} &= 2\lamsq + 2\kapsq\,,\\
-%
-\gamma_S^{(2)S} &= -4\lambda^4 - 8\kappa^4 - 8 \kapsq\lamsq 
-- 6\lamsq \tr(Y_UY_U^\dagger) - 6\lamsq \tr(Y_UY_U^\dagger) 
-- 2\lamsq \tr(Y_EY_E^\dagger) + \tfrac{6}{5}g_1^2\lamsq + 6g_2^2\lamsq\,.
-\end{align} 
 
 \subsubsection{Trilinear Couplings}
 In the notation of MV, the trilinear couplings $U^{ijk}$ evolve under 
