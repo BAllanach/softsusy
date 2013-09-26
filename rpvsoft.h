@@ -181,7 +181,7 @@ public:
   /// Theoretical boundary condition upon SUSY breaking terms. SUSY RPV
   /// parameters must be set before this is applied
   /// IO parameters: m0=scalar mass, m12=gaugino mass, a0=trilinear coupling
-  void standardCmssm(double m0,  double m12, double a0);
+  void standardSugra(double m0,  double m12, double a0);
   
   /// Returns the 7 by 7 general RPV neutralino mass matrix
   DoubleMatrix neutralinoMassMatrix() const;
@@ -271,11 +271,11 @@ inline RpvSoftsusy::RpvSoftsusy(const RpvSoftsusy & s)
   setThresholds(s.displayThresholds());
 }
 
-/// universal mCMSSM boundary conditions for RPV
-void rpvCmssmBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
+/// universal mSUGRA boundary conditions for RPV
+void rpvSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
 void rpvAmsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
 void rpvGmsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
-void rpvExtendedCmssmBcs(MssmSoftsusy & m, 
+void rpvExtendedSugraBcs(MssmSoftsusy & m, 
 			 const DoubleVector & inputParameters);
 
 #endif

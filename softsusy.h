@@ -541,12 +541,25 @@ public:
   /// SUSY breaking is set in the usual way. If it is true, the boundary
   /// condition is set to \f$\sqrt{m_{{\tilde t}_1} m_{{\tilde t}_2}} \f$, ie
   /// like in the "pheno MSSM".
-  void lowOrg(void (*boundaryCondition)
+  void fixedPointIteration(void (*boundaryCondition)
+			   (MssmSoftsusy &, const DoubleVector &),
+			   double mxGuess, 
+			   const DoubleVector & pars, int sgnMu, double tanb,
+			   const QedQcd & oneset, bool gaugeUnification, 
+			   bool ewsbBCscale =  false); 
+  /// legacy wrapper to provide backward compatibility: does the same as the
+  /// above 
+  double lowOrg(void (*boundaryCondition)
 		(MssmSoftsusy &, const DoubleVector &),
 		double mxGuess, 
 		const DoubleVector & pars, int sgnMu, double tanb,
 		const QedQcd & oneset, bool gaugeUnification, 
-		bool ewsbBCscale =  false); 
+		bool ewsbBCscale =  false) {
+    fixedPointIteration(boundaryCondition, mxGuess, pars, sgnMu, tanb, oneset,
+			gaugeUnification, ewsbBCscale);
+    return displayMxBC();
+  }; 
+
   /// Main iteration routine: 
   /// Boundary condition is the theoretical condition on parameters at the high
   /// energy scale mx: the parameters themselves are contained within the
@@ -852,12 +865,12 @@ double ufb3fn(double mu, double htau, double h2, int family, const MssmSoftsusy
 double getQhat(double inminTol,double eR, double h2, double Lisq, double mx,
 	       MssmSoftsusy & temp);
 
-/// non-universal mCMSSM boundary conditions including mH1^2 and mH2^2
-void extendedCmssmBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
+/// non-universal mSUGRA boundary conditions including mH1^2 and mH2^2
+void extendedSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
 /// User supplied routine. Inputs m at the unification scale, and uses
 /// inputParameters vector to output m with high energy soft boundary
 /// conditions. 
-void cmssmBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
+void sugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
 /// Non-universal higgs mass conditions. Paramaters are, in order: m0,m12,mH,a0
 void nuhmI(MssmSoftsusy & m, const DoubleVector & inputParameters);
 /// Non-universal higgs mass conditions. Paramaters are, in order:

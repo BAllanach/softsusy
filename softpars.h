@@ -137,7 +137,7 @@ public:
   /// hep-ph/0312378 
   void u1R_PQflip();
   /// Reads in universal boundary conditions at the current scale: m0, M1/2, A0
-  void standardCmssm(double m0,  double m12, double a0);
+  void standardSugra(double m0,  double m12, double a0);
   /// Sets all flavour-diagonal SUSY breaking scalar masses to m0
   void universalScalars(double m0);
   /// Sets all flavour-diagonal SUSY breaking gaugino masses to m12

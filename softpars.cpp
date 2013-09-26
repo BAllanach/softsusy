@@ -1177,7 +1177,7 @@ void SoftParsMssm::u1R_PQflip() {
 // m0, M1/2, A0, B and sign of mu
 void SoftParsMssm::universal(double m0,  double m12,  double a0,  double mu,
 			      double m3sq) {
-  standardCmssm(m0, m12, a0);  
+  standardSugra(m0, m12, a0);  
   setSusyMu(mu);
   setM3Squared(m3sq);
 }
@@ -1206,7 +1206,7 @@ void SoftParsMssm::universalTrilinears(double a0)  {
 }
 
 // Input m0, NOT m0 squared.
-void SoftParsMssm::standardCmssm(double m0,  double m12, double a0) {
+void SoftParsMssm::standardSugra(double m0,  double m12, double a0) {
   /*  if (m0 < 0.0) {
     ostringstream ii;
     ii << "m0=" << m0 << " passed to universal boundary" <<

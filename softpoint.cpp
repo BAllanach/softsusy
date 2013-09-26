@@ -30,7 +30,7 @@ void errorCall() {
   ii << "\n\nSOFTSUSY" << SOFTSUSY_VERSION 
      << " called with incorrect arguments. Need to put either:\n";
   ii << "./softpoint.x leshouches < lesHouchesInput\n for SLHA/SLAH2 input, or\n";
-  ii << "./softpoint.x cmssm [CMSSM parameters] [other options]\n";
+  ii << "./softpoint.x sugra [SUGRA parameters] [other options]\n";
   ii << "./softpoint.x amsb [mAMSB parameters] [other options]\n";
   ii << "./softpoint.x gmsb [mGMSB parameters] [other options]\n\n";
   ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
@@ -40,7 +40,7 @@ void errorCall() {
   ii << "whereas --mgut=msusy\nsets it to MSUSY\n\n";
   ii << "If you want the R-parity violating MSSM calculation, set any of the following:\n";
   ii << "--lambda <i> <j> <k> <coupling>, the word lambda replaceable with lambdaP\nor lambdaPP for LLE, LQD, UDD coupling, respectively.\n\n";
-  ii << "[CMSSM parameters]: --m0=<value> --m12=<value> --a0=<value>\n";
+  ii << "[SUGRA parameters]: --m0=<value> --m12=<value> --a0=<value>\n";
   ii << "[mAMSB parameters]: --m0=<value> --m32=<value>\n";
   ii << "[mGMSB parameters]: --n5=<value> --mMess=<value> --lambda=<value> --cgrav=<value>\n\n";
   ii << "Bracketed entries are numerical values, in units of GeV if they are massive.\n";
@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
   // Sets format of output: 4 decimal places
   outputCharacteristics(6);
 
-  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=cmssmBcs;
+  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=sugraBcs;
 
   QedQcd oneset;
   MssmSoftsusy m; FlavourMssmSoftsusy k;
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
 
     // If there are no arguments, give error message,
    // or if none of the options are called, then go to error message
-  if (argc == 1 || ( (strcmp(argv[1], "cmssm") && 
+  if (argc == 1 || ( (strcmp(argv[1], "sugra") && 
 		      strcmp(argv[1], "amsb") &&
 		      strcmp(argv[1], "gmsb") && 
 		      strcmp(argv[1], "runto") && 
@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
     if (tanb < 1.5 || tanb > 70.) {
 	ostringstream ii; 
 	ii << "tanBeta=" << tanb 
-	   << " in CMSSM input. The point will not yield a sensible answer\n";
+	   << " in SUGRA input. The point will not yield a sensible answer\n";
 	throw ii.str();
     }
 
@@ -156,10 +156,10 @@ int main(int argc, char *argv[]) {
     }
     
     /// Model specific options
-    if (!strcmp(argv[1], "cmssm")) {
-      cout << "# SOFTSUSY CMSSM calculation" << endl;
-      boundaryCondition = &cmssmBcs;
-      modelIdent = (char *)"cmssm";
+    if (!strcmp(argv[1], "sugra")) {
+      cout << "# SOFTSUSY SUGRA calculation" << endl;
+      boundaryCondition = &sugraBcs;
+      modelIdent = (char *)"sugra";
       double m0 = 0., m12 = 0., a0 = 0.;
       for (int i = 2; i < argc; i++) {
 	if (starts_with(argv[i], "--m0=")) m0  = get_value(argv[i], "--m0=");
@@ -172,7 +172,7 @@ int main(int argc, char *argv[]) {
       if (m12 < MZ) {
 	ostringstream ii; 
 	ii << "m12=" << m12 
-	   << " in CMSSM input. The point will not yield a sensible answer\n";
+	   << " in SUGRA input. The point will not yield a sensible answer\n";
 	throw ii.str();
       }
       r = &m;
@@ -192,7 +192,7 @@ int main(int argc, char *argv[]) {
       if (m32 < 1.0e3) {
 	ostringstream ii; 
 	ii << "m32=" << m32 
-	   << " in CMSSM input (too low). The point will not yield a sensible answer\n";
+	   << " in SUGRA input (too low). The point will not yield a sensible answer\n";
 	throw ii.str();
       }
       r = &m;
@@ -218,7 +218,7 @@ int main(int argc, char *argv[]) {
       if (mMess < 1.0e3) {
 	ostringstream ii; 
 	ii << " mMess=" << mMess
-	   << " in CMSSM input (too low). The point will not yield a sensible answer\n";
+	   << " in SUGRA input (too low). The point will not yield a sensible answer\n";
 	throw ii.str();
       }
       
@@ -266,15 +266,15 @@ int main(int argc, char *argv[]) {
 		switch(i) {
 		case 1: kk >> model; 
 		  switch(model) {
-		  case 0: boundaryCondition = &extendedCmssmBcs;
+		  case 0: boundaryCondition = &extendedSugraBcs;
 		    modelIdent = (char *)"nonUniversal"; r=&m;
 		    break;
 		  case 1: 
 		    if (!flavourViolation) {
 		      pars.setEnd(3); 
-		      boundaryCondition = &cmssmBcs; 
+		      boundaryCondition = &sugraBcs; 
 		    }
-		    modelIdent = (char *)"cmssm";
+		    modelIdent = (char *)"sugra";
 		    break;
 		  case 2: 
 		    if (!flavourViolation) {
@@ -355,7 +355,7 @@ int main(int argc, char *argv[]) {
 		default: 
 		  switch(model) {
 		  case 0:
-		    // CMSSM inputs to fill out the pheno MSSM case
+		    // SUGRA inputs to fill out the pheno MSSM case
 		    switch(i) {
 		    case 1: pars(1) = d; break;
 		    case 2: pars(2) = d; break;
@@ -365,7 +365,7 @@ int main(int argc, char *argv[]) {
 		      ii << "Didn't understand pheno MSSM input " << i << endl;
 		      break;
 		    } break;
-		  case 1: // CMSSM inputs
+		  case 1: // SUGRA inputs
 		    switch(i) {
 		    case 1: 
 		      if (flavourViolation) { pars.setEnd(77);
@@ -392,7 +392,7 @@ int main(int argc, char *argv[]) {
 		      break;
 		    default: 
 		      ostringstream ii;
-		      ii << "Didn't understand CMSSM input " << i << endl;
+		      ii << "Didn't understand SUGRA input " << i << endl;
 		      break;
 		    } break;
 		  case 2: // GMSB inputs
@@ -445,13 +445,13 @@ int main(int argc, char *argv[]) {
 	      // Adding non-minimal options. 
 	      else if (block == "EXTPAR") {
 		/// First, we want to convert our input to EXTPAR if we have
-		/// mCMSSM already
-		if (!strcmp(modelIdent, "cmssm")) {
+		/// mSUGRA already
+		if (!strcmp(modelIdent, "sugra")) {
 		  modelIdent = (char *)"nonUniversal";
 		  if (!flavourViolation) {
-		    /// We assume mCMSSM BCs with no flavour violation
+		    /// We assume mSUGRA BCs with no flavour violation
 		    r=&m; 
-		    boundaryCondition = &extendedCmssmBcs;
+		    boundaryCondition = &extendedSugraBcs;
 		    double m0 = pars(1), m12 = pars(2), a0 = pars(3);
 		    pars.setEnd(49);
 		    int i; for (i=1; i<=3; i++) pars(i) = m12;
@@ -461,7 +461,7 @@ int main(int argc, char *argv[]) {
 		    for (i=41; i<=49; i++) pars(i) = m0;		    
 		    kw.setNumRpcBcs(50); 
 		  } else {
-		    /// This is flavour violation with EXTPAR: mCMSSM BCs
+		    /// This is flavour violation with EXTPAR: mSUGRA BCs
 		    /// with flavour violation
 		    boundaryCondition = &flavourBcs;		    
 		    if (pars.displayEnd() == 3) {
@@ -875,7 +875,7 @@ int main(int argc, char *argv[]) {
 
     if (r->displayAltEwsb()) {
       if (strcmp(modelIdent, "splitgmsb")) {
-	//	boundaryCondition = &extendedCmssmBcs2;
+	//	boundaryCondition = &extendedSugraBcs2;
 	r->setSusyMu(pars(23)); 
       } else {
 	ostringstream ii;
@@ -894,17 +894,17 @@ int main(int argc, char *argv[]) {
       kw.setFlavourSoftsusy(k);
       r = &kw;
       
-      if (boundaryCondition == &cmssmBcs) 
-	boundaryCondition = &rpvCmssmBcs;
+      if (boundaryCondition == &sugraBcs) 
+	boundaryCondition = &rpvSugraBcs;
       else if (boundaryCondition == &amsbBcs) 
 	boundaryCondition = &rpvAmsbBcs;
       else if (boundaryCondition == &gmsbBcs) 
 	boundaryCondition = &rpvGmsbBcs;
-      else if (boundaryCondition == &extendedCmssmBcs) {
-	boundaryCondition = &rpvExtendedCmssmBcs;
+      else if (boundaryCondition == &extendedSugraBcs) {
+	boundaryCondition = &rpvExtendedSugraBcs;
       }
-      else if (boundaryCondition == &extendedCmssmBcs) {
-	boundaryCondition = &rpvExtendedCmssmBcs;
+      else if (boundaryCondition == &extendedSugraBcs) {
+	boundaryCondition = &rpvExtendedSugraBcs;
         kw.useAlternativeEwsb();
       }
       else 
@@ -925,8 +925,8 @@ int main(int argc, char *argv[]) {
     
     oneset.toMz();
 
-    r->lowOrg(boundaryCondition, mgutGuess, pars, sgnMu, tanb, oneset, 
-	      gaugeUnification, ewsbBCscale);
+    r->fixedPointIteration(boundaryCondition, mgutGuess, pars, sgnMu, tanb, 
+			   oneset, gaugeUnification, ewsbBCscale);
 
     /// Fix to mh if additional operators are assumed
     if (desiredMh > 0.1) {
