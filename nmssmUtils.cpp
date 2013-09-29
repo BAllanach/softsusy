@@ -35,7 +35,8 @@ DoubleVector NMSSM_input::get_nmpars() const {
    nmpars(2) = get(NMSSM_input::kappa);
    if (is_set(NMSSM_input::lambdaS)) {
       if (!close(get(NMSSM_input::lambda),0.,EPSTOL)) {
-         nmpars(3) = get(NMSSM_input::lambdaS) / get(NMSSM_input::lambda);
+         nmpars(3) = get(NMSSM_input::lambdaS) * sqrt(2.)
+            / get(NMSSM_input::lambda);
       } else {
          std::string msg =
             "# Error: you set lambda * <S> to a non-zero value"
