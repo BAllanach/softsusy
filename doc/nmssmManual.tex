@@ -761,6 +761,18 @@ mentioned here, but there are many others within the program itself.
   \begin{center}
     \begin{picture}(200,200)
       \GBox(200,200)(0,0){0.9}
+      \ArrowLine(100,180)(100,150)
+      \ArrowLine(100,150)(100,110)
+      \ArrowLine(100,110)(100,60)
+      \SetPFont{Teletype}{10}
+      \put(0,0){\framebox(200,200){}}
+      \BText(100,180){RGE}
+      \BText(100,150){MssmSusy}
+      \B2Text(100,110){SoftPars<MssmSusy>}{= SoftParsMssm}
+      \B2Text(100,60){Softsusy<SoftParsMssm>}{= MssmSoftsusy}
+    \end{picture}\hfill
+    \begin{picture}(200,200)
+      \GBox(200,200)(0,0){0.9}
       \ArrowLine(100,175)(100,150)
       \ArrowLine(100,150)(100,125)
       \ArrowLine(100,125)(100,100)
@@ -779,7 +791,7 @@ mentioned here, but there are many others within the program itself.
     \end{picture}
     \caption{\label{fig:objstruc} Heuristic high-level object
       structure of \SOFTSUSY\@. Inheritance is displayed by the
-      arrows.}
+      arrows and typedefs are displayed by the equals signs.}
   \end{center}
 \end{figure}
 
