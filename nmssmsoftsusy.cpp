@@ -899,6 +899,12 @@ void NmssmSoftsusy::treeChargedSlepton(DoubleMatrix & mass, double mtaurun,
      mass(1, 2) = mass(1, 2) -  mtaurun * lam * svev * tanb / (root2);
      mass(2, 1) = mass(1, 2);
   }
+
+  if(family == 2 & NMSSMTools == true){
+     mass(1, 2) = mass(1, 2) -  MMUON * lam * svev * tanb / (root2);
+     mass(2, 1) = mass(1, 2);
+  }
+
 }
 
 /// LCT: new routine to allocate NMSSM chargino masses
