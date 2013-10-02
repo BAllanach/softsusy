@@ -30,7 +30,7 @@ const sPhysical & sPhysical::operator=(const sPhysical &s) {
   mch = s.mch; mneut = s.mneut; mixNeut = s.mixNeut;
   thetaL = s.thetaL; thetaR = s.thetaR; mGluino = s.mGluino;
   thetat = s.thetat; thetab = s.thetab; thetatau = s.thetatau;
-  mu = s.mu; md = s.md; me = s.me; thetaH = s.thetaH;  
+  thetamu = s.thetamu, mu = s.mu; md = s.md; me = s.me; thetaH = s.thetaH;  
   thetaA0 = s.thetaA0; mixh0 = s.mixh0; 
   return *this;
 }
@@ -51,6 +51,7 @@ void sPhysical::display(double *a) const {
   a[k++] = thetat;
   a[k++] = thetab;
   a[k++] = thetatau;
+  a[k++] = thetamu;
   mu.fillArray(a,k); k += mu.size();
   md.fillArray(a,k); k += md.size();
   me.fillArray(a,k); k += me.size();
@@ -80,7 +81,7 @@ std::ostream & operator <<(std::ostream & left, const sPhysical &s) {
   left << "sneutrinos" << s.msnu; 
   left << "mU~" << s.mu << "mD~" << s.md << "mE~" << s.me;
   left << "thetat: " << s.thetat << " thetab: " << s.thetab << 
-    " thetatau: " << s.thetatau << "\n";
+     " thetatau: " << s.thetatau <<"thetamu: "  << s.thetamu << "\n";
   left << "mGluino:  " << s.mGluino << "\n";
   left << "charginos" << s.mch;
   left << "thetaL: " << s.thetaL << " thetaR: " << s.thetaR << "\n";
@@ -100,7 +101,7 @@ std::istream & operator >>(std::istream & left, sPhysical &s) {
   left >> s.msnu; 
   left >> c >> s.mu >> c >> s.md >> c >> s.me;
   left >> c >> s.thetat >> c >> s.thetab >> 
-    c >> s.thetatau;
+     c >> s.thetatau >> c >> s.thetamu;
   left >> c >> s.mGluino;
   left >> s.mch;
   left >> c >> s.thetaL >> c >> s.thetaR;
