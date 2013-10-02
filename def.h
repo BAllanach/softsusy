@@ -37,7 +37,7 @@ namespace softsusy{
   //If true the input value of lambda is set at the GUT scale
   //If false the input lambda is set at MSUSY.
   extern bool GUTlambda;
-
+  extern bool NMSSMTools;
   extern int numHiggsMassLoops;
   /// Set to number of loops to use for REWSB condition up to the default of 2
   extern int numRewsbLoops;
