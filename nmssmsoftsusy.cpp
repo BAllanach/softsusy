@@ -8758,6 +8758,50 @@ void NmssmSoftsusy::drbarSLHA(ostream& out, int numPoints, double qMax, int n) {
    nmssmrunSLHA(out);
 }
 
+void NmssmSoftsusy::yukawaMatricesSLHA(ostream & out, const char* blockName) {
+   const DoubleMatrix yu(displayYukawaMatrix(YU)),
+      yd(displayYukawaMatrix(YD)),
+      ye(displayYukawaMatrix(YE));
+
+  out << "Block YU" << blockName << " Q= " << displayMu()
+      << "   # Up Yukawa matrix\n";
+  for (int i=1; i<=3; i++) {
+     for (int j=1; j<=3; j++) {
+        out << "  " << i << "  " << j << "     " << yu(i,j)
+            << "    # YU_{" << i << j << "}(Q)NMSSM DRbar" << endl;
+     }
+  }
+
+  out << "Block YD" << blockName << " Q= " << displayMu()
+      << "   # down Yukawa matrix\n";
+  for (int i=1; i<=3; i++) {
+     for (int j=1; j<=3; j++) {
+        out << "  " << i << "  " << j << "     " << yd(i,j)
+            << "    # YD_{" << i << j << "}(Q)NMSSM DRbar" << endl;
+     }
+  }
+
+  out << "Block YE" << blockName << " Q= " << displayMu()
+      << "   # lepton Yukawa matrix\n";
+  for (int i=1; i<=3; i++) {
+     for (int j=1; j<=3; j++) {
+        out << "  " << i << "  " << j << "     " << ye(i,j)
+            << "    # YE_{" << i << j << "}(Q)NMSSM DRbar" << endl;
+     }
+  }
+}
+
+void NmssmSoftsusy::extragaugeSLHA(ostream& out, const char* blockName) {
+  double gp = displayGaugeCoupling(1) * sqrt(0.6);
+  out << "Block " << blockName << " Q= " << displayMu()
+      << "  # SM gauge couplings\n";
+  out << "     1     " << gp << "   # g'(Q)NMSSM DRbar\n";
+  out << "     2     " << displayGaugeCoupling(2)
+      << "   # g(Q)NMSSM DRbar\n";
+  out << "     3     " << displayGaugeCoupling(3)
+      << "   # g3(Q)NMSSM DRbar\n";
+}
+
 void NmssmSoftsusy::nmssmtoolsSLHA(ostream& out) {
    out << "Block NMSSMTOOLS # NMSSMTools configuration\n";
    out << "     9    "; printRow(out, 0);
@@ -8773,6 +8817,8 @@ void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
    const double q2 = sqrt((2.0 * mQ2sqr + mU2sqr + mD2sqr) / 4.0);
 
    runto(q2);
+   extragaugeSLHA(out, "GAUGEATQ2");
+   yukawaMatricesSLHA(out, "ATQ2");
    nmssmrunSLHA(out, "NMSSMRUNATQ2");
 
    const double mQ3sqr = displaySoftMassSquared(mQl, 3, 3),
@@ -8780,6 +8826,8 @@ void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
    const double qstsb = sqrt(mQ3sqr * mU3sqr);
 
    runto(qstsb);
+   extragaugeSLHA(out, "GAUGEATQSTSB");
+   yukawaMatricesSLHA(out, "ATQSTSB");
    nmssmrunSLHA(out, "NMSSMRUNATQSTSB");
 }
 

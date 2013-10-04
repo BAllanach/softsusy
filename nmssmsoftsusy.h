@@ -561,6 +561,10 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   void nmssmtoolsSLHA(ostream&);
   /// extra DRbar parameters block for NMSSMTools decays
   void extranmssmtoolsSLHA(ostream&);
+  /// extra DRbar Yukawa couplings for NMSSMTools decays
+  void yukawaMatricesSLHA(ostream&, const char* blockName = "");
+  /// extra DRbar gauge couplings for NMSSMTools decays
+  void extragaugeSLHA(ostream&, const char* blockName = "GAUGE");
   /// outputs DRbar parameters at scale Q (default is at MSUSY)
   virtual void drbarSLHA(ostream&, int numPoints, double qMax, int n);
 };
