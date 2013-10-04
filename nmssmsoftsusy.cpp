@@ -8725,10 +8725,10 @@ void NmssmSoftsusy::neutralinoMixingSLHA(ostream& out) {
   }
 }
 
-void NmssmSoftsusy::nmssmrunSLHA(ostream& out) {
+void NmssmSoftsusy::nmssmrunSLHA(ostream& out, const char* blockName) {
   const sPhysical s(displayPhys());
 
-  out << "Block NMSSMRUN Q= " << displayMu()
+  out << "Block " << blockName << " Q= " << displayMu()
       << "   # NMSSM specific DRbar parameters\n";
 
   out << "     1    "; printRow(out, displayLambda());
@@ -8766,6 +8766,23 @@ void NmssmSoftsusy::nmssmtoolsSLHA(ostream& out) {
    out << "      # Sparticle decays via NMSDECAY (default 0)\n";
 }
 
+void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
+   const double mQ2sqr = displaySoftMassSquared(mQl, 2, 2),
+      mU2sqr = displaySoftMassSquared(mUr, 2, 2),
+      mD2sqr = displaySoftMassSquared(mDr, 2, 2);
+   const double q2 = sqrt((2.0 * mQ2sqr + mU2sqr + mD2sqr) / 4.0);
+
+   runto(q2);
+   nmssmrunSLHA(out, "NMSSMRUNATQ2");
+
+   const double mQ3sqr = displaySoftMassSquared(mQl, 3, 3),
+      mU3sqr = displaySoftMassSquared(mUr, 3, 3);
+   const double qstsb = sqrt(mQ3sqr * mU3sqr);
+
+   runto(qstsb);
+   nmssmrunSLHA(out, "NMSSMRUNATQSTSB");
+}
+
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
 void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  const DoubleVector & pars,
@@ -8792,8 +8809,10 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
       n++; drbarSLHA(out, numPoints, qMax, n);
     }
 
-    if (softsusy::NMSSMTools)
+    if (softsusy::NMSSMTools) {
        nmssmtoolsSLHA(out);
+       extranmssmtoolsSLHA(out);
+    }
   } else {
     out << "# Declining to write spectrum because of serious problem"
 	<< " with point" << endl;
