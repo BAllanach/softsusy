@@ -1099,6 +1099,10 @@ int main(int argc, char *argv[]) {
 		  int num = int(d + EPSTOL);
 		  if (num == 1) tryToConvergeHard = true;		  
 		}
+		case 15: {
+		  int num = int(d + EPSTOL);
+                  softsusy::NMSSMTools = num;
+		}
 
 		  break;
 		default:
