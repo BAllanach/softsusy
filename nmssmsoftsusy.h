@@ -557,6 +557,8 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   void nmamixSLHA(ostream&);
   /// NMSSMRUN block of SLHA
   void nmssmrunSLHA(ostream&);
+  /// NMSSMTools block of SLHA
+  void nmssmtoolsSLHA(ostream&);
   /// outputs DRbar parameters at scale Q (default is at MSUSY)
   virtual void drbarSLHA(ostream&, int numPoints, double qMax, int n);
 };

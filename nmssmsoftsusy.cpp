@@ -8758,6 +8758,14 @@ void NmssmSoftsusy::drbarSLHA(ostream& out, int numPoints, double qMax, int n) {
    nmssmrunSLHA(out);
 }
 
+void NmssmSoftsusy::nmssmtoolsSLHA(ostream& out) {
+   out << "Block NMSSMTOOLS # NMSSMTools configuration\n";
+   out << "     9    "; printRow(out, 0);
+   out << "      # Call micrOmegas (default 0=no)\n";
+   out << "    13    "; printRow(out, 0);
+   out << "      # Sparticle decays via NMSDECAY (default 0)\n";
+}
+
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
 void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  const DoubleVector & pars,
@@ -8783,6 +8791,9 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
     int n = 0; while (n < numPoints) {
       n++; drbarSLHA(out, numPoints, qMax, n);
     }
+
+    if (softsusy::NMSSMTools)
+       nmssmtoolsSLHA(out);
   } else {
     out << "# Declining to write spectrum because of serious problem"
 	<< " with point" << endl;
