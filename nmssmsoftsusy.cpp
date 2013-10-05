@@ -8811,6 +8811,8 @@ void NmssmSoftsusy::nmssmtoolsSLHA(ostream& out) {
 }
 
 void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
+   runto(displayMsusy());
+
    const double mQ2sqr = displaySoftMassSquared(mQl, 2, 2),
       mU2sqr = displaySoftMassSquared(mUr, 2, 2),
       mD2sqr = displaySoftMassSquared(mDr, 2, 2);
