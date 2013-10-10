@@ -35,7 +35,8 @@ DoubleVector NMSSM_input::get_nmpars() const {
    nmpars(2) = get(NMSSM_input::kappa);
    if (is_set(NMSSM_input::lambdaS)) {
       if (!close(get(NMSSM_input::lambda),0.,EPSTOL)) {
-         nmpars(3) = get(NMSSM_input::lambdaS) / get(NMSSM_input::lambda);
+         nmpars(3) = get(NMSSM_input::lambdaS) * sqrt(2.)
+            / get(NMSSM_input::lambda);
       } else {
          std::string msg =
             "# Error: you set lambda * <S> to a non-zero value"
@@ -436,4 +437,24 @@ void amsbBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 
   m.standardSugra(m0, 0., 0.);
   m.addAmsb(m32);
+}
+
+/// LCT: Difference between two NMSSM SOFTSUSY objects in and out: EWSB terms only
+double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries) {
+  DoubleVector sT(37);
+  sumTol(in.displayDrBarPars(), out.displayDrBarPars(), sT);
+  /// The predicted value of MZ^2 is an absolute measure of how close to a
+  /// true solution we are:
+  double tbPred = 0.;
+  double predictedMzSq = in.displayPredMzSq();
+  /// We allow an extra factor of 10 for the precision in the predicted value
+  /// of MZ compared to TOLERANCE if the program is struggling and gone beyond
+  /// 10 tries - an extra 2 comes from MZ v MZ^2
+  int k = sT.size() - 2;
+  if (!in.displayProblem().testSeriousProblem()) {
+    sT(k) = 0.5 * sTfn(predictedMzSq, sqr(MZ));
+    if (numTries > 10) sT(k) *= 0.1;
+  }
+
+  return sT.max();
 }

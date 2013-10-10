@@ -80,7 +80,10 @@ int Softsusy<SoftPars>::rewsbM3sq(double mu, double & m3sq) const {
   
   /// Following means no good rewsb
   if (m3sq < 0.0) flag = 1;
-  
+  else if (testNan(m3sq)) {
+    flag = 1; m3sq = EPSTOL;
+  }
+
   return flag;
 }
 
@@ -823,7 +826,7 @@ DoubleVector Softsusy<SoftPars>::fineTune
 /// technique
 /// err is 1 if no iteration reached
 /// 2 if incorrect rewsb
-/// Really, you should switch OFF iteration as it breaks gauge invariance
+
 template<class SoftPars>
 void Softsusy<SoftPars>::iterateMu(double & muold, int sgnMu,
 			     double mt, int maxTries, double pizzMS,
@@ -1072,7 +1075,7 @@ void Softsusy<SoftPars>::rewsb(int sgnMu, double mt, const DoubleVector & pars,
     
     if (rewsbM3sq(munew, m3sqnew) == 0) flagM3sq(false);
     else flagM3sq(true);
-    
+
     setM3Squared(m3sqnew);
 
     if ((displayMh1Squared() + 2.0 * sqr(displaySusyMu()) +
@@ -7056,6 +7059,7 @@ double Softsusy<SoftPars>::realMinMs() const {
     sqr(sqr(displayHvev()) * cos(2.0 * beta));
 }
 
+
 /// Calculates sin theta at the current scale
 template<class SoftPars>
 double Softsusy<SoftPars>::calcSinthdrbar() const {
@@ -7594,6 +7598,9 @@ void Softsusy<SoftPars>::itLowsoft
 	cout << " ***problem point***: " << displayProblem() << ".";
 
       return; 
+    } else if (numTries != 0 && fabs(displayM3Squared()) > 1.0e20) {
+      /// guards against nasty fatal problems 
+      numTries = 0; flagM3sq(true); return;
     }
 
     // All problems should be reset since only the ones of the final iteration
@@ -9998,10 +10005,11 @@ void Softsusy<SoftPars>::rhohat(double & outrho, double & outsin, double alphaDR
   
   static int numTries = 0;
   
-  if ((outrho < TOLERANCE || outsin < TOLERANCE) || 
+  if ((outrho < TOLERANCE || outsin < TOLERANCE) || fabs(outsin) > 1. ||
       (numTries - 1 > maxTries)) {  
-    oldrho = 0.23, oldsin = 0.8;
+    oldrho = 0.23; oldsin = 0.8;
     numTries = 0;
+    outrho = 0.23; outsin = 0.8; 
     flagNoRhoConvergence(true);
     if (PRINTOUT) cout << flush << "rhohat reached maxtries\n"; 
     return;

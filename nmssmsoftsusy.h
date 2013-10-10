@@ -521,7 +521,7 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
 		bool ewsbBCscale =  false); 
   
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.    
-  void printall();
+  void printall() const;
 
   /// Outputs with Les Houches accord conventions to standard output.
   /// Inputs:
@@ -576,7 +576,6 @@ inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSoftsusy & s)
 inline NmssmSoftsusy::NmssmSoftsusy(const MssmSoftsusy & s)
 		     : Softsusy<SoftParsNmssm>(s),
                      tSOVSMs(0), tSOVSMs1loop(0)  {
-   cout << "swallowing tasty mssmsoftsusy" << endl;
    setPars(121);   
 }
 
@@ -602,10 +601,5 @@ inline double NmssmSoftsusy::displayTadpoleSMs() const {
 inline double NmssmSoftsusy::displayTadpoleSMs1loop() const {
   return tSOVSMs1loop; 
 }
-
-// Calculates fractional difference in Drbar masses between in and out
-/// LCT: May be able to do something cleverer with MSSM version
-double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries);
-
 
 #endif

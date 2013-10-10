@@ -49,7 +49,9 @@ then
 	mkdir "$CONFIG_DIR"
 fi
 autoheader
-libtoolize -c -f              # create file Config/ltmain.sh
+# create file Config/ltmain.sh
+case `uname` in Darwin*) glibtoolize -c -f ;;
+  *) libtoolize -c -f ;; esac
 automake --add-missing --copy
 autoconf
 

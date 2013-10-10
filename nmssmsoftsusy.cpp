@@ -111,80 +111,81 @@ void NmssmSoftsusy::testSlavichTreeMasses() const {
 
 
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.
-void NmssmSoftsusy::printall(){
-   cout << "At scale " << displayMu() << endl;
-  cout << "mH1 = " << displayPhys().mh0(1) << endl;
-  cout << "mH2 = " << displayPhys().mh0(2) << endl;
-  cout << "mH3 = " << displayPhys().mh0(3) << endl;
+void NmssmSoftsusy::printall() const {
+   cout << "At scale " << displayMu() << '\n';
+  cout << "mH1 = " << displayPhys().mh0(1) << '\n';
+  cout << "mH2 = " << displayPhys().mh0(2) << '\n';
+  cout << "mH3 = " << displayPhys().mh0(3) << '\n';
 
-  cout << "mA1 = " << displayPhys().mA0(1) << endl;
-  cout << "mA2 = " << displayPhys().mA0(2) << endl;
-  cout << "mHpm =" << displayPhys().mHpm << endl;
+  cout << "mA1 = " << displayPhys().mA0(1) << '\n';
+  cout << "mA2 = " << displayPhys().mA0(2) << '\n';
+  cout << "mHpm =" << displayPhys().mHpm << '\n';
 
 
-  cout << "mch = " <<  displayPhys().mch << endl;
-  cout << "mneut = " <<   displayPhys().mneut << endl;
-  cout << "mGluino = " <<   displayPhys().mGluino << endl;
-  cout << "mu = " <<   displayPhys().mu << endl;
-  cout << "md = " <<   displayPhys().md << endl;
-  cout << "me = " <<   displayPhys().me << endl;
-  cout << "msnu = " <<  displayPhys().msnu << endl;
+  cout << "mch = " <<  displayPhys().mch << '\n';
+  cout << "mneut = " <<   displayPhys().mneut << '\n';
+  cout << "mGluino = " <<   displayPhys().mGluino << '\n';
+  cout << "mu = " <<   displayPhys().mu << '\n';
+  cout << "md = " <<   displayPhys().md << '\n';
+  cout << "me = " <<   displayPhys().me << '\n';
+  cout << "msnu = " <<  displayPhys().msnu << '\n';
   
-  cout << "g1  g2   g3 " << displayGauge() << endl; 
-  cout << "Yu = " << displayYukawaMatrix(YU) << endl;
-  cout << "Yd = " << displayYukawaMatrix(YD) << endl;
-  cout << "Ye = " << displayYukawaMatrix(YE) << endl;
+  cout << "g1  g2   g3 " << displayGauge() << '\n';
+  cout << "Yu = " << displayYukawaMatrix(YU) << '\n';
+  cout << "Yd = " << displayYukawaMatrix(YD) << '\n';
+  cout << "Ye = " << displayYukawaMatrix(YE) << '\n';
 
     for(int i = 1; i <= 3; i++){
       for(int j = 1; j <= 3; j++){
-	cout << " Au(" << i << "," << j << ") = "  << displaySoftA(UA, i, j) << endl;
-  cout << " Ad(" << i << "," << j << ") = "  << displaySoftA(DA, i, j) << endl;
-  cout << " Ae(" << i << "," << j << ") = "  << displaySoftA(EA, i, j) << endl;
+	cout << " Au(" << i << "," << j << ") = "  << displaySoftA(UA, i, j) << '\n';
+  cout << " Ad(" << i << "," << j << ") = "  << displaySoftA(DA, i, j) << '\n';
+  cout << " Ae(" << i << "," << j << ") = "  << displaySoftA(EA, i, j) << '\n';
       }
     }
-  cout << " Alam = "  <<displaySoftAlambda() << endl;
-   cout << " Akap = "  << displaySoftAkappa() << endl;
+  cout << " Alam = "  <<displaySoftAlambda() << '\n';
+   cout << " Akap = "  << displaySoftAkappa() << '\n';
 
-  cout << " mQl = "  <<displaySoftMassSquared(mQl) << endl;
-  cout << " mUr = "  <<displaySoftMassSquared(mUr) << endl;
-  cout << " mDr = "  <<displaySoftMassSquared(mDr) << endl;
-  cout << " mEr = "  <<displaySoftMassSquared(mEr) << endl;
-  cout << " mLl = "  <<displaySoftMassSquared(mLl) << endl;
+  cout << " mQl = "  <<displaySoftMassSquared(mQl) << '\n';
+  cout << " mUr = "  <<displaySoftMassSquared(mUr) << '\n';
+  cout << " mDr = "  <<displaySoftMassSquared(mDr) << '\n';
+  cout << " mEr = "  <<displaySoftMassSquared(mEr) << '\n';
+  cout << " mLl = "  <<displaySoftMassSquared(mLl) << '\n';
 
-  cout << "mH1sq = " << displayMh1Squared() << endl;
-  cout << "mH2sq = " << displayMh2Squared() << endl;
-  cout << "m3sq = " << displayM3Squared() << endl;
-  cout << "mSsq = " << displayMsSquared() << endl;
-  cout << "mSpsq = " << displayMspSquared() << endl;
-  cout << "xiS = " << displayXiS() << endl;
+  cout << "mH1sq = " << displayMh1Squared() << '\n';
+  cout << "mH2sq = " << displayMh2Squared() << '\n';
+  cout << "m3sq = " << displayM3Squared() << '\n';
+  cout << "mSsq = " << displayMsSquared() << '\n';
+  cout << "mSpsq = " << displayMspSquared() << '\n';
+  cout << "xiS = " << displayXiS() << '\n';
 
-  cout << "M1 = "  << displayGaugino(1) << endl;
-  cout << "M2 = "  << displayGaugino(2) << endl;
-  cout << "M3 = "  << displayGaugino(3) << endl;
+  cout << "M1 = "  << displayGaugino(1) << '\n';
+  cout << "M2 = "  << displayGaugino(2) << '\n';
+  cout << "M3 = "  << displayGaugino(3) << '\n';
 
-  cout << " lam = "  <<displayLambda() << endl;
-  cout << " kap = "  <<displayKappa() << endl;
-  cout << " Svev = "  <<displaySvev() << endl;
-  cout <<"mupr = " <<displayMupr() << endl;
-  cout << "xiF = "  <<displayXiF() << endl;
+  cout << " lam = "  <<displayLambda() << '\n';
+  cout << " kap = "  <<displayKappa() << '\n';
+  cout << " Svev = "  <<displaySvev() << '\n';
+  cout <<"mupr = " <<displayMupr() << '\n';
+  cout << "xiF = "  <<displayXiF() << '\n';
 
  
 
   double Beff =displaySoftAlambda() +displayKappa() *displaySvev() / (sqrt(2.0));
   double  m3hatsq =displayM3Squared() + displayLambda() * (displayMupr() *displaySvev() +displayXiF() );
   double  mueff =displayLambda() *displaySvev() / (sqrt(2.0)) ;
-  cout << "mueff = "  << displayLambda() *displaySvev() / (sqrt(2.0)) << endl;
-  cout << " Beff = "  << Beff << endl;
-  cout << "m3hatsq = " << m3hatsq << endl;
-  cout << "m3effssq = "  << mueff * Beff + m3hatsq << endl;
-  cout << "normal mu = "  << displaySusyMu() << endl;
+  cout << "mueff = "  << displayLambda() *displaySvev() / (sqrt(2.0)) << '\n';
+  cout << " Beff = "  << Beff << '\n';
+  cout << "m3hatsq = " << m3hatsq << '\n';
+  cout << "m3effssq = "  << mueff * Beff + m3hatsq << '\n';
+  cout << "normal mu = "  << displaySusyMu() << '\n';
 
-  cout << "mH1sq = " << displayMh1Squared() << endl;
-  cout << "mH2sq = " << displayMh2Squared() << endl;
-  cout << "m3sq = " << displayM3Squared() << endl;
-  cout << "mSsq = " << displayMsSquared() << endl;
-  cout << "mSpsq = " << displayMspSquared() << endl;
-  cout << "xiS = " << displayXiS() << endl;
+  cout << "mH1sq = " << displayMh1Squared() << '\n';
+  cout << "mH2sq = " << displayMh2Squared() << '\n';
+  cout << "m3sq = " << displayM3Squared() << '\n';
+  cout << "mSsq = " << displayMsSquared() << '\n';
+  cout << "mSpsq = " << displayMspSquared() << '\n';
+  cout << "xiS = " << displayXiS() << '\n';
+  cout << flush;
 }
 
 
@@ -1138,15 +1139,15 @@ void NmssmSoftsusy::calcDrBarHiggs(double beta, double /* mz2 */, double /* mw2 
   eg.mixh0 = mixh.transpose();
  
   /// LCT: Diagonalise
-  //PA using thetaH for now since in nmssm this is not used by CP even
-  DoubleVector mSq = mP2.sym2by2(eg.thetaH);
+  //PA using thetaA0 for CP odd mixing angle
+  DoubleVector mSq = mP2.sym2by2(eg.thetaA0);
 
   if (mSq(1) < 0. || mSq(2) < 0.) {
      flagTachyon(A0);
      if (PRINTOUT > 1) cout << " mA1/mA2 tachyon";
   }
   DoubleVector temp(mSq.apply(ccbSqrt));
-  if (temp(1) > temp(2)) eg.thetaH = eg.thetaH + PI * 0.5;
+  if (temp(1) > temp(2)) eg.thetaA0 = eg.thetaA0 + PI * 0.5;
 
   int pos;
   eg.mA0(1) = temp.min(pos); eg.mA0(2) = temp.max();
@@ -1166,7 +1167,6 @@ void NmssmSoftsusy::calcDrBarPars() {
   eg.mh0.setEnd(3);
   eg.mA0.setEnd(2);
   eg.mixh0.resize(3,3);
-  eg.mixA0.resize(2,2);
   eg.mneut.setEnd(5);
   eg.mixNeut.resize(5,5);
 
@@ -3761,7 +3761,6 @@ void NmssmSoftsusy::physical(int accuracy) {
   phys.mh0.setEnd(3);
   phys.mA0.setEnd(2);
   phys.mixh0.resize(3,3);
-  phys.mixA0.resize(2,2);
   phys.mneut.setEnd(5);
   phys.mixNeut.resize(5,5);
 
@@ -4205,7 +4204,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
   
   if (Atemp(1) > Atemp(2)) Atheta = Atheta + PI * 0.5; 
   
-  phys.thetaH = Atheta; /// Atheta defined for p=mA1  
+  phys.thetaA0 = Atheta; /// Atheta defined for p=mA1  
   int j; double mA1 = Atemp.apply(fabs).min(j);
   
   /// LCT: Rotate CP-odd mass^2 matrix into (G, A, S_I) basis
@@ -4575,7 +4574,7 @@ void NmssmSoftsusy::neutralinos(int accuracy, double /* piwwtMS */, double /* pi
 //PA:: fixes The CP odd mixing matrix with the conventions 
 // Degrassi and Slavich arXiv:0907.4682
 void NmssmSoftsusy::DegrassiSlavicMix(DoubleMatrix & P) const {
-  double alphaP = displayDrBarPars().thetaH;
+  double alphaP = displayDrBarPars().thetaA0;
   DoubleMatrix Ppr(2, 2);
   double cb = cos(atan(displayTanb())), sb = sin(atan(displayTanb()));
   Ppr(1, 1) = cos(alphaP);
@@ -8301,7 +8300,6 @@ void NmssmSoftsusy::itLowsoft
   o.mh0.setEnd(3);
   o.mA0.setEnd(2);
   o.mixh0.resize(3,3);
-  o.mixA0.resize(2,2);
   o.mneut.setEnd(5);
 
   o.mixNeut.resize(5,5);
@@ -8503,103 +8501,6 @@ void NmssmSoftsusy::itLowsoft
     throw a;
   }
 }
-
-/// Difference between two SOFTSUSY objects in and out: EWSB terms only
-/// LCT: Placed here for now.
-double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries) {
-
-  const drBarPars& inforLoops = in.displayDrBarPars();
-  const drBarPars& outforLoops = out.displayDrBarPars();
-
-  const int rank = in.displayDrBarPars().mneut.displayEnd();
-
-  // cout << "rank = " << rank << endl;
-
-  DoubleVector sT(34);
-  int k = 1;
-
-  double sTin  = fabs(inforLoops.mh0(1)); double sTout = fabs(outforLoops.mh0(1));
-
-  // cout << "sTin = " << sTin << " .  sTout = " << sTout << endl;
-
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout)); k++;
-  sTin  = fabs(inforLoops.mA0(1)); sTout = fabs(outforLoops.mA0(1));
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout)); k++;
-  sTin  = fabs(inforLoops.mh0(2)); sTout = fabs(outforLoops.mh0(2));
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout)); k++;
-  sTin  = fabs(inforLoops.mHpm); sTout = fabs(outforLoops.mHpm);
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout)); k++;
-
-  // cout << "sumTol af Higgs sT = " << sT << endl;
-
-  int i; for (i=1; i<=3; i++) {
-    sTin  = fabs(inforLoops.msnu(i));
-    sTout = fabs(outforLoops.msnu(i));
-    sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-    k++;
-  }
-
-  // cout << "sumTol af snu sT = " << sT << endl;
-
-  for (i=1; i<=2; i++) {
-    sTin = fabs(inforLoops.mch(i));
-    sTout = fabs(outforLoops.mch(i));
-    sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-    k++;
-  }
-
-  // cout << "sumTol af chargino sT = " << sT << endl;
-
-  for (i=1; i<=rank; i++) {
-    sTin = fabs(inforLoops.mneut(i));
-    sTout = fabs(outforLoops.mneut(i));
-    sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-    k++;
-  }
-
-  // cout << "sumTol af neutralino sT = " << sT << endl;
-
-  sTin = fabs(inforLoops.mGluino);
-  sTout = fabs(outforLoops.mGluino);
-  sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-  k++;
-
-  // cout << "sumTol af gluino sT = " << sT << endl;
-
-  int j; for (j=1; j<=3; j++)
-    for(i=1; i<=2; i++) {
-      sTin = fabs(inforLoops.mu(i, j));
-      sTout = fabs(outforLoops.mu(i, j));
-      sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-      k++;
-      sTin = fabs(inforLoops.md(i, j));
-      sTout = fabs(outforLoops.md(i, j));
-      sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-      k++;
-      sTin = fabs(inforLoops.me(i, j));
-      sTout = fabs(outforLoops.me(i, j));
-      sT(k) = fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-      k++;
-
-  // cout << "sumTol af sfermions sT = " << sT << endl;
-
-    }
-  /// The predicted value of MZ^2 is an absolute measure of how close to a
-  /// true solution we are:
-  double predictedMzSq = in.displayPredMzSq();
-  /// We allow an extra factor of 10 for the precision in the predicted value
-  /// of MZ compared to TOLERANCE if the program is struggling and gone beyond
-  /// 10 tries - an extra 2 comes from MZ v MZ^2
-  if (!in.displayProblem().testSeriousProblem()) {
-    sT(k) = 0.5 *
-      fabs(1. - minimum(predictedMzSq, sqr(MZ)) /
-	   maximum(sqr(MZ), predictedMzSq));
-    if (numTries > 10) sT(k) *= 0.1;
-  }
-
-  return sT.max();
-}
-
 
 /// Provides the first guess at a SUSY object at mt, inputting tanb and oneset
 /// (should be at MZ) - it's very crude, doesn't take radiative corrections
@@ -8832,8 +8733,8 @@ void NmssmSoftsusy::nmssmrunSLHA(ostream& out) {
   out << "      # Alambda(Q)\n";
   out << "     4    "; printRow(out, displayTriakappa());
   out << "      # Akappa(Q)\n";
-  out << "     5    "; printRow(out, displayLambda() * displaySvev());
-  out << "      # lambda*S(Q)\n";
+  out << "     5    "; printRow(out, displayLambda() * displaySvev() / root2);
+  out << "      # lambda*<S>(Q)\n";
   out << "     6    "; printRow(out, displayXiF());
   out << "      # xiF(Q)\n";
   out << "     7    "; printRow(out, displayXiS());
