@@ -3,7 +3,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
-\usepackage{color} % for text editing
+\usepackage{color} % LCT: for text editing
 \usepackage{slashed}
 
 \bibstyle{elsarticle-num}
@@ -488,6 +488,26 @@ $k\neq S_k$ (since $C_a(S)=0$) and furthermore $C_3(H_k)=0$.  The result is
 where we have taken into account an additional factor of 2 which arises from 
 tracing over $SU(2)$ group indices.
 
+For completeness, we reproduce the MSSM parts as well
+%
+\be
+\dt g_a = \frac{g_a^3}{16\pi^2}B_a^{(1)} + \frac{g_a^3}{(16\pi^2)^2}\Bigg[\sum_{b=1}^3 B_{ab}^{(2)}g_b^2 - \sum_{x=U,D,E}C_a^x\tr(Y_xY_x^\dagger) - \lamsq \Lambda_a^{(2)}\Bigg]\,,
+\ee
+%
+where $B_a^{(1)} = (33/5,1,-3)$, and 
+%
+\be
+B_{ab}^{(2)} = \left(\begin{array}{ccc}
+199/5 & 27/5 & 88/5 \\
+9/5   & 25   & 24   \\
+11/5  & 9    & 14   \end{array}\right) \quad \mbox{and} \quad
+C_a^{U,D,E} = \left(\begin{array}{ccc}
+26/5 & 14/5 & 18/5 \\
+6    & 6    & 2    \\
+4    & 4    & 0    \end{array}\right) \quad \mbox{and} \quad 
+\Lambda_a^{(2)} = (6/5,2,0)\,.
+\ee
+
 \subsubsection{Gaugino Mass Parameters}
 As for the gauge couplings above, we only need to consider the addition of the 
 $\lambda^2$ terms arising from
@@ -497,29 +517,27 @@ $\lambda^2$ terms arising from
 \frac{(U^{ijk} - M_a Y^{ijk}) Y_{ijk}C_a(k)}{d(G_a)}\,,
 \end{equation}
 %
-where $U^{ijk}$ is the trilinear soft SUSY-breaking parameter.  For the 
-$\lambda^2$ contribution, we only need to consider the soft term
+where $U^{ijk}$ is the trilinear soft SUSY-breaking parameter. The full expression reads
+% 
+\be
+\dt M_a = \frac{2g_a^2}{16\pi^2}(B_a^{(1)} - \lamsq\Lambda^{(2)}_a)M_a + \frac{2g_a^2}{(16\pi^2)^2}\Bigg\{\sum_{b=1}^3B_{ab}^{(2)}g_b^2(M_a+M_b) + \sum_{x=U,D,E}C_a^x[\tr(U_x^\dagger Y_x) - M_a\tr(Y_xY_x^\dagger)] + \lambda a_\lambda \Lambda_a^{(2)}\Bigg\}
+\ee
+
+\subsubsection{$\mu$ Parameters}
+The general expression for the SUSY-conserving bilinear terms \cite{MV94,Yam94} is given by  
 %
 \begin{equation}
--\mathcal{L}_{\mathrm{soft}} \ni a_\lambda H_2\cdot H_1 S\,,
+\dt \mu^{ij} = \mu^{ip}\Gamma_p^j + \mu^{jp}\Gamma_p^i\,,
 \end{equation}
 %
-For the soft contribution we find
+from which we get
 %
 \begin{align}
-\left. U^{ijk}Y_{ijk}\right|_{\lambda} &= U^{SH_2H_1}Y_{SH_2H1} 
-+ U^{H_2SH_1}Y_{H_2SH_1} + (H_1 \leftrightarrow H_2) \notag \\
+\dt\mu &= \mu (\Gamma_{H_1}^{H_1} + \Gamma_{H_2}^{H_2}), \notag \\
 %
-&= 8\lambda a_\lambda\,,
+\dt\mu' &= \mu' 2\Gamma_S^S
 \end{align}
 %
-with the Yukawa sum given by Eq.~(\ref{eqn:yuk S}).  By combining these results 
-we obtain
-%
-\begin{equation}
-\left. \dt M_a\right|_{\lambda} = \frac{2g_a^2}{(16\pi^2)^2} 
-(\lambda a_\lambda - \lambda^2 M_a)\Lambda^{(2)}_a\,.
-\end{equation}
 
 \subsubsection{Trilinear Couplings}
 In the notation of MV, the trilinear couplings $U^{ijk}$ evolve under 
