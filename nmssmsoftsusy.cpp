@@ -8733,8 +8733,8 @@ void NmssmSoftsusy::nmssmrunSLHA(ostream& out) {
   out << "      # Alambda(Q)\n";
   out << "     4    "; printRow(out, displayTriakappa());
   out << "      # Akappa(Q)\n";
-  out << "     5    "; printRow(out, displayLambda() * displaySvev());
-  out << "      # lambda*S(Q)\n";
+  out << "     5    "; printRow(out, displayLambda() * displaySvev() / root2);
+  out << "      # lambda*<S>(Q)\n";
   out << "     6    "; printRow(out, displayXiF());
   out << "      # xiF(Q)\n";
   out << "     7    "; printRow(out, displayXiS());

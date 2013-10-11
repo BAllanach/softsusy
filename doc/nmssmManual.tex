@@ -63,11 +63,8 @@ the Tera-scale, School of Chemistry and Physics, University of Adelaide,
 Adelaide SA 5005 Australia}
 
 \author{A.~Voigt}
-\address{Dipl.-Phys. Alexander Voigt,
-Institut für Kern- und Teilchenphysik,
-Helmholtzstraße 10, 
-D-01069 Dresden,
-Germany}
+\address{Institut f\"ur Kern- und Teilchenphysik,
+TU Dresden, Zellescher Weg 19, 01069 Dresden, Germany}
 \begin{abstract}
   Here, we describe an extension to the
   {\tt SOFTSUSY}~program to calculate the sparticle spectrum in the
@@ -288,9 +285,7 @@ M_{H^0}^2=
 \ds\frac{\partial^2 V}{\partial^2 s} - \ds\frac{1}{s}\frac{\partial V}{\partial s},
 \end{array} 
 \right)
- \ee
-
-where we have rewritten the elements of $M_{H^0}^2$ by imposing tree level EWSB substitution on the the double derivatives of the effective potential, which is equivalent to defining,  \be(M_{H^0}^2)_{ij} \equiv  \ds\frac{\partial^2 V}{\partial v_i \partial v_j} - \ds\frac{\delta_{ij}}{v_i}\ds\frac{\partial V}{\partial v_i}, \ee with $v_3 \equiv s$.  The elements are then given as follows,   
+ \ee where we have rewritten the elements of $M_{H^0}^2$ by imposing tree level EWSB substitution on the the double derivatives of the effective potential, which is equivalent to defining,  \be(M_{H^0}^2)_{ij} \equiv  \ds\frac{\partial^2 V}{\partial v_i \partial v_j} - \ds\frac{\delta_{ij}}{v_i}\ds\frac{\partial V}{\partial v_i}, \ee with $v_3 \equiv s$.  The elements are then given as follows,   
 
 \ba
  (M_{H^0}^2)_{11} & = & M_Z^2 c_\beta^2 + (\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
@@ -749,7 +744,7 @@ g_2(Q)$). The default output is in SLHA2 format, the conventions of which are
 explained in Ref.~\cite{Allanach:2008qq}. 
 
 
-\section{Object Structure\label{sec:objects}}
+\section{Class Structure\label{sec:objects}}
 
 We now go on to sketch the NMSSM class hierarchy.  Only methods and
 data which are deemed of possible importance for prospective users are
@@ -760,6 +755,18 @@ mentioned here, but there are many others within the program itself.
 
 \begin{figure}
   \begin{center}
+    \begin{picture}(200,200)
+      \GBox(200,200)(0,0){0.9}
+      \ArrowLine(100,180)(100,150)
+      \ArrowLine(100,150)(100,110)
+      \ArrowLine(100,110)(100,60)
+      \SetPFont{Teletype}{10}
+      \put(0,0){\framebox(200,200){}}
+      \BText(100,180){RGE}
+      \BText(100,150){MssmSusy}
+      \B2Text(100,110){SoftPars<MssmSusy>}{= SoftParsMssm}
+      \B2Text(100,60){Softsusy<SoftParsMssm>}{= MssmSoftsusy}
+    \end{picture}\hfill
     \begin{picture}(200,200)
       \GBox(200,200)(0,0){0.9}
       \ArrowLine(100,175)(100,150)
@@ -778,53 +785,118 @@ mentioned here, but there are many others within the program itself.
       \BText(100,50){Softsusy<SoftParsNmssm>}
       \BText(100,25){NmssmSoftsusy}
     \end{picture}
-    \caption{\label{fig:objstruc} Heuristic high-level object
+    \caption{\label{fig:objstruc} Heuristic high-level class
       structure of \SOFTSUSY\@. Inheritance is displayed by the
-      arrows.}
+      arrows and typedefs are displayed by the equals signs.}
   \end{center}
 \end{figure}
 
-The NMSSM class hierarchy, see Figure~\ref{fig:objstruc}, is
-structured analoguous to the MSSM with the following points in mind:
+To implement the NMSSM (and other non-minimal supersymmetric models),
+the \SOFTSUSY\ class hierarchy was generalized with the following
+requirements in mind:
 %
 \begin{itemize}
-\item Supersymmetric parameters (gauge couplings, superpotential
-  parameters and VEVs), whose beta functions are independent of
-  soft-breaking parameters, are at the top of the hierarchy.  This
-  approach makes them usable independently of the soft-breaking
-  parameters, for example during the initial guess.
-\item To reuse as much MSSM code as possible, the NMSSM beta functions
-  are implemented in terms of the MSSM ones.  This is done via
-  the inheritance
+\item The class of supersymmetric parameters (gauge couplings,
+  superpotential parameters and VEVs), whose beta functions are
+  independent of soft-breaking parameters, should be at the top of the
+  class hierarchy.  This makes them usable independently of the
+  soft-breaking parameters, for example during the initial guess.
+
+\item One should be able to reuse as much MSSM code as possible, for
+  example by inheriting from existing MSSM classes.
+\end{itemize}
+
+The above requirements were implemented by the following changes:
+%
+\begin{enumerate}
+\item The class of the soft breaking MSSM parameters and their beta
+  functions was converted into the class template \code{SoftPars<Susy>}.
+  The template parameter represents the class of supersymmetric
+  parameters, from which \code{SoftPars<Susy>} inherits.  The class
+  which contains \emph{all} MSSM parameters and beta functions,
+  \code{SoftParsMssm}, was made a typdef for
+  \code{SoftPars<MssmSusy>}, where \code{MssmSusy} is the class that
+  contains the supersymmetric MSSM parameters and beta functions.
 \begin{verbatim}
-class NmssmSusy : public MssmSusy {
-   virtual const DoubleVector display() const;
-   virtual void set(const DoubleVector&);
-   virtual DoubleVector beta() const;
+template <class Susy>
+class SoftPars : public Susy {
+   // implementation of soft breaking MSSM parameters
+   // and their beta functions
 };
 
-class SoftParsNmssm : public SoftPars<NmssmSusy> {
-   virtual const DoubleVector display() const;
-   virtual void set(const DoubleVector&);
-   virtual DoubleVector beta() const;
-};
+typedef SoftPars<MssmSusy> SoftParsMssm;
 \end{verbatim}
-  where the \code{RGE} interface functions \code{display}, \code{set}
-  and \code{beta}, are reimplemented in terms of MSSM functions.
-\item To reuse the MSSM mass matrices, Feynman rules and self-energy
-  routines from \code{Softsusy<T>}, the NMSSM user-interface class,
-  \code{NmssmSoftsusy}, inherits from \code{Softsusy<SoftParsNmssm>}
-  and reimplementes these routines using the MSSM ones.
-\end{itemize}
+  This approach makes it possible to have a class of soft breaking
+  MSSM parameters but with a different set of supersymmetric
+  parameters.  This mechanism is used in the NMSSM, see Section
+  \ref{nmssmsoftpars}.
+
+\item The class which organises the MSSM mass spectrum calculation was
+  converted into the class template \code{Softsusy<SoftPars>}.  The
+  template parameter represents the class of all model parameters and
+  beta functions, from which \code{Softsusy<SoftPars>} inherits.
+  \code{MssmSoftsusy} was made a typedef for
+  \code{Softsusy<SoftParsMssm>}.
+\begin{verbatim}
+template <class SoftPars>
+class Softsusy : public SoftPars {
+   // organisation of MSSM mass spectrum calculation
+   // using model parameters in SoftPars
+};
+
+typedef Softsusy<SoftParsMssm> MssmSoftsusy;
+\end{verbatim}
+  This approach makes it possible to have a MSSM spectrum calculation
+  class but with an arbitrary set of model parameters.  This mechanism
+  is used in the NMSSM, see Section \ref{nmssmsoftsusy}.
+\end{enumerate}
 
 \subsection{\code{NmssmSusy}~class}
 \label{nmssmsusy}
 
+The class of supersymmetric NMSSM parameters and beta functions,
+\code{NmssmSusy}, inherits from \code{MssmSusy} to reuse the MSSM
+ones, see \figurename~\ref{fig:objstruc}.
+
 \subsection{\code{SoftParsNmssm}~class}
 \label{nmssmsoftpars}
 
+To implement the class of soft-breaking NMSSM parameters,
+\code{SoftParsNmssm}, the \code{SoftPars<Susy>} template is
+instantiated using \code{NmssmSusy} as template parameter.  Thereby
+one obtains the class of MSSM soft-breaking beta functions, using
+supersymmetric NMSSM parameters.  \code{SoftParsNmssm} then inherits
+from \code{SoftPars<NmssmSusy>} to add extra NMSSM contributions to
+the soft-breaking beta functions:
+%
+\begin{verbatim}
+class NmssmSusy : public MssmSusy {
+   // implement supersymmetric NMSSM parameter beta functions
+   // by reusing MSSM ones
+};
+
+class SoftParsNmssm : public SoftPars<NmssmSusy> {
+   // implement soft-breaking NMSSM parameter beta functions
+   // by reusing MSSM ones
+};
+\end{verbatim}
+
 \subsection{\code{NmssmSoftsusy}~class}
 \label{nmssmsoftsusy}
+
+To create the NMSSM spectrum calculation class, \code{NmssmSoftsusy},
+the \code{Softsusy<SoftPars>} template class is instantiated using
+\code{SoftParsNmssm} as template parameter.  Thereby one obtains a
+MSSM spectrum calculator, which uses NMSSM parameters and beta
+functions.  \code{NmssmSoftsusy} then inherits from
+\code{Softsusy<SoftParsNmssm>} and overwrites MSSM functions to
+account for the extra NMSSM particles:
+%
+\begin{verbatim}
+class NmssmSoftsusy : public Softsusy<SoftParsNmssm> {
+   // organise NMSSM spectrum calculation reusing MSSM functions
+};
+\end{verbatim}
 
 
 \begin{thebibliography}{10}
