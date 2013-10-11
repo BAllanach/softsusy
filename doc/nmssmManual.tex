@@ -41,6 +41,8 @@
 \newcommand{\Musq}{M_u^2}
 \newcommand{\Mdsq}{M_d^2}
 \newcommand{\Mesq}{M_e^2}
+% text editing
+\newcommand*{\red}[1]{\textcolor{red}{#1}}
 % end of macros
 
 \journal{Computer Physics Communications}
@@ -162,8 +164,8 @@ The full renormalisable, $R-$parity conserving superpotential is given by,
  W_{\Zv}  &=&  \epsilon_{ab} \left[ (Y_E)_{ij} \hat L_i^b
 \hat H_1^a \hat{\bar E}_j + (Y_D)_{ij} \hat Q_i^{bx} \hat H_1^a \hat{\bar D}_{jx} +
 (Y_U)_{ij} \hat Q_i^{ax} \hat H_2^b \hat{\bar U}_{jx} 
-+(\lambda \hat{S} + \mu)(\hat{H}^a_2 \hat{H}^b_1) \right ] +\frac{1}{3}\kappa\hat{S}^3 + \zeta_F\hat{S} + \frac{1}{2} \mu^\prime\hat{S}^2 \\
- &=& W_{MSSM}^{\mu =0}  +  \epsilon_{ab}\left [(\lambda \hat{S} + \mu)(\hat{H}^a_2 \hat{H}^b_1) \right ]+\frac{1}{3}\kappa\hat{S}^3 + \zeta_F\hat{S} + \frac{1}{2} \mu^\prime\hat{S}^2. 
++(\lambda \hat{S} + \mu)(\hat{H}^a_2 \hat{H}^b_1) \right ] +\frac{1}{3}\kappa\hat{S}^3 + \red{\xi}_F\hat{S} + \frac{1}{2} \mu^\prime\hat{S}^2 \\
+ &=& W_{MSSM}^{\mu =0}  +  \epsilon_{ab}\left [(\lambda \hat{S} + \mu)(\hat{H}^a_2 \hat{H}^b_1) \right ]+\frac{1}{3}\kappa\hat{S}^3 + \red{\xi}_F\hat{S} + \frac{1}{2} \mu^\prime\hat{S}^2. 
 \label{eq:WZ3V}
 \ea
  
@@ -370,17 +372,27 @@ energy SUSY breaking boundary conditions are imposed.
 
 
 \subsection{Running of NMSSM couplings~\label{running}}
+\red{--- LCT: Prologue not to be taken seriously (yet) ---}
 
+For a general, semi-simple SUSY gauge theory, the expressions \cite{MV94,Yam94} for the one- and two-loop renormalization group equations (RGEs) in the $\overline{\mbox{DR}}$ scheme are known.  In particular, the RGEs for the MSSM with inter-generational quark mixing are listed by MV.  Here, we derive the NMSSM contributions with inter-generational mixing.  In each case, we have checked that our results reduce to the results of EHT in the limit where only the third generation couplings are non-vanishing.
 
-Here, we present the one- and two-loop renormalization group equations (RGEs) in the $\overline{\mbox{DR}}$ scheme for parameters of the $\Zv$ NMSSM.  Our strategy is to make use of existing results \cite{MV94,Yam94} for a general, semi-simple SUSY gauge theory.   
+The relevant pieces which arise in the NMSSM can be deduced by simply appending to the MSSM the additional contributions from superpotential parameters and soft susy-breaking sector.
 
-Where possible, we refer the reader to the MSSM results --- saves space.
+Here, we present the one- and two-loop renormalization group equations (RGEs) in the $\overline{\mbox{DR}}$ scheme for parameters exclusive to the $\Zv$ NMSSM.  Our strategy is to make use of existing results \cite{MV94,Yam94} for a general, semi-simple SUSY gauge theory.   
 
-Herein, we follow the conventions laid out in the SOFTSUSY manual for the MSSM.  hence those adopted by Martin and Vaughn (MV) \cite{MV94}.  There is one important difference: with respect to the MV notation, the Yukawas couplings $Y_{U,D,E}$ and soft SUSY-breaking trilinears $U_A,D_A,E_A$ are {\it transposed}, as in the {\tt SOFTSUSY} code. The complete set of two-loop renormalization group equations (RGEs) for the parameters of the MSSM can be found in \cite{MV94,Yam94}.  For the NMSSM, \cite{Ellwanger:2009dp} (EHT) list the two-loop RGEs in the third generation approximation, where the results for the soft SUSY-breaking terms (and others) originate from \cite{Ell08}.
+In the interest of brevity, we refer the reader to the MSSM results collected in \cite{MV94}.
+
+Results in the thrid family approximation
+
+We have checked that our results reproduce those of \cite{Ellwanger:2009dp} in the third family approximation.
+
+Have general mixing.
+
+Herein, we follow the conventions laid out in the SOFTSUSY manual for the MSSM.  hence those adopted by Martin and Vaughn (MV) \cite{MV94}.  There is one important difference: with respect to the MV notation, the Yukawa couplings $Y_{U,D,E}$ and soft SUSY-breaking trilinears $U_A,D_A,E_A$ are {\it transposed}, as in the {\tt SOFTSUSY} code. The complete set of two-loop renormalization group equations (RGEs) for the parameters of the MSSM can be found in \cite{MV94}.  For the NMSSM, \cite{Ellwanger:2009dp} (EHT) list the two-loop RGEs in the third generation approximation, where the results for the soft SUSY-breaking terms (and others) originate from \cite{Ell08}.
 
 \subsubsection{Yukawa Couplings}
-For $t = \ln Q$, the Yukawa couplings evolve according to the general expression
- \cite{MV94}
+For $t = \ln Q$, the trilinear superpotential parameter $Y^{ijk}$ evolves 
+according to the general expression \cite{MV94}
 %
 \begin{equation}
 \dt Y^{ijk} = Y^{ijp}\Gamma_p^k + Y^{kjp}\Gamma_p^i + Y^{ikp}\Gamma_p^j\,,
@@ -393,16 +405,8 @@ where
 + \frac{1}{(16\pi^2)^2}\gamma_{i}^{(2)j}\,,
 \end{equation}
 %
-and $\gamma^{(1,2)j}_i$ are the one- and two-loop anomalous dimensions respectively.  Note that the Yukawa (and trilinear couplings) are 
-written with the same ordering as fields in the superpotential (\ref{eq:WZ3V}), 
-e.g.\ for $k = H_2$ we get
-%
-\begin{equation}
-\dt (Y_U)^{ij} = (Y_U)^{ij}\Gamma^{H_2}_{H_2} + (Y_U)^{jp}\Gamma_{Q_p}^{Q_i} 
-+ (Y_U)^{ip}\Gamma_{U_p}^{U_j}\,.
-\end{equation}
-
-In the one-loop approximation, the only modification to the MSSM results 
+and $\gamma^{(1,2)j}_i$ are the one- and two-loop anomalous dimensions 
+respectively.  At one-loop order, the only addition to the MSSM expressions 
 \cite{MV94} for $Y_{U,D,E}$ is the inclusion of $\lamsq$ terms which 
 originate from the Higgs anomalous dimensions
 %
@@ -411,8 +415,8 @@ originate from the Higgs anomalous dimensions
 \quad \mbox{and} \quad \left.\gamma^{(1) H_2}_{H_2} \right|_\lambda = \lamsq\,.
 \end{align}
 %
-At two-loop order, all the gauge-Yukawa contributions from $\lambda$ cancel for each 
-$\gamma_i^{(2)j}$, so the additional contributions arising in the NMSSM are 
+At two-loop order, all the gauge-Yukawa contributions from $\lambda$ cancel for 
+each $\gamma_i^{(2)j}$, so the additional contributions arising in the NMSSM are 
 simply given by
 %
 \begin{align}
@@ -435,7 +439,7 @@ simply given by
 \end{align}
 %
 
-For the additional Yuwaka couplings $\lambda$ and $\kappa$, the RGEs read
+For the Yuwaka couplings $\lambda$ and $\kappa$, the RGEs read
 %
 \begin{align}
 \dt\lambda &= \lambda (\Gamma^{H_1}_{H_1} + \Gamma^{H_2}_{H_2} + \Gamma^S_S)\,, \\
