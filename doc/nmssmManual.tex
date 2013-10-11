@@ -680,7 +680,7 @@ At two-loop we have
 \end{align}
 
 \subsubsection{Higgs Masses}
-To determine the $\lambda$ and $\kappa$ contributions to the Higgs masses, it's useful to define the following quantities
+To determine the $\lambda$ and $\kappa$ contributions to the Higgs masses, it is useful to define the following quantities \cite{Ellwanger:2009dp}
 %
 \begin{align}
 \mlamsq =& \mhdsq + \mhusq + \mssq + a_\lambda^2/\lamsq\,, \notag \\
@@ -697,29 +697,14 @@ To determine the $\lambda$ and $\kappa$ contributions to the Higgs masses, it's 
 + \mhdsq\tr( Y_e Y_e^\dagger) + \tr( E_A E_A^\dagger)\,. \notag \\
 \end{align}
 %
-Both the up- and down-type Higgs masses $m_{H_2},m_{H_1}$ receive the same $\lambda$ contribution at {\bf 1-loop}, so consider (say)
-%
-\begin{align}
-\beta_{\mhusq}^{(1)} &= Y_{H_2pq}Y^{pqH_2}\mhusq + 2Y_{H_2pq}Y^{H_2pr}(m^2)_r^q + h_{H_2pq}h^{H_2pq}\,.
-\end{align}
-%
-Restricting myself to just the $\lambda$ contributions, the first sum can be found in (\ref{eqn:YH2sq}) while the other two are given by
-%
-\begin{align}
-Y_{H_2pq}Y^{H_2pr}(m^2)_r^q =& \lamsq\mssq + \lamsq\mhdsq + 3\tr(\mqsq Y_u Y_u^\dagger) 
-+ 3\tr(  Y_u\musq Y_u^\dagger) \,, \\
-%
-h_{H_2pq}h^{H_2pq} =& 2a_\lambda^2 + 6\tr( U_A U_A^\dagger) \,.
-\end{align}
-%
-Thus the result for either $m_{H_1}$ or $m_{H_2}$ is 
+Both the up- and down-type Higgs masses $m_{H_2},m_{H_1}$ receive the same $\lambda$ contribution at one-loop order, 
 %
 \begin{equation}
 \left.\beta_{m_{H_\alpha}^2}^{(1)}\right|_\lambda = 2\lamsq \mlamsq\,.
 \end{equation}
 %
 
-The {\bf 2-loop} expressions are rather involved; My working for the up-type Higgs mass beta function will be included in an Appendix (eventually!) and the down-type calculation follows similarly.  By collecting all the terms, I get:
+The two-loop expressions for the up-type Higgs are 
 %
 \begin{align}
 \left.\beta_{m_{H_2}^2}^{(2)}\right|_\lambda =& -12\lambda^4\big\{ M_\lambda^2 + (\Alam)^2\big\} 
@@ -732,7 +717,7 @@ The {\bf 2-loop} expressions are rather involved; My working for the up-type Hig
 &+ \tfrac{6}{5}g_1^2\lamsq(\mhdsq-\mhusq) \,.
 \end{align}
 %
-Similarly, I obtain for the down-type Higgs,
+Similarly, we obtain for the down-type Higgs,
 %
 \begin{align}
 \left.\beta_{m_{H_1}^2}^{(2)}\right|_\lambda =& -12\lambda^4\big\{M_\lambda^2 + (\Alam)^2\big\} 
@@ -742,7 +727,7 @@ Similarly, I obtain for the down-type Higgs,
 - \tfrac{6}{5}g_1^2\lamsq(\mhdsq-\mhusq)\,.
 \end{align}
 
-For the singlet mass $m_S$, the {\bf 1-loop} result is
+For the singlet mass $m_S$, the one-loop result is
 %
 \begin{equation}
 \beta_{m_S^2}^{(1)} = Y_{Spq}Y^{pqS}m_S^2 + 2Y_{Spq}Y^{Spr}(m^2)^q_r + h_{Spq}h^{Spq}\,, \label{eqn:beta mSsq}
@@ -762,7 +747,7 @@ and thus (\ref{eqn:beta mSsq}) becomes
 \beta_{m_S^2}^{(1)} = 4\lamsq \mlamsq + 4\kapsq \mkapsq\,.
 \end{equation}
 %
-At {\bf 2-loop} I get
+At two-loop we get
 \begin{align}
 \beta_{m_S^2}^{(2)} =& -16\lambda^4\big\{ \mlamsq + (\Alam)^2\big\} - 32\kappa^4\big\{ \mkapsq + (\Akap)^2\big\}
 -12\lamsq\big\{ \mlamsq\tr( Y_u Y_u^\dagger) + \Musq + 2(\Alam)\tr( U_A Y_u^\dagger)\big\} \notag \\
@@ -840,42 +825,21 @@ and thus for $i=S$ one has
 \dt \xi_F = \xi_F \Gamma_S^S\,.
 \end{equation}
 %
-For the soft term $\xi_S$, I had to dig out the general RGE from \cite{Yam94} because MV don't include the tadpole as part of $\mathcal{L}_{\mathrm{soft}}$.  I'll define the general soft tadpole term as $t^i\phi_i$, for which the RGE reads
+For the soft SUSY-breaking term $\xi_S$, we use the general RGE from \cite{Yam94} because Martin and Vaughn \cite{MV94} do not include the tadpole as part of $\mathcal{L}_{\mathrm{soft}}$.  The relevant RGE reads
 %
 \begin{equation}
-\dt t^i = \frac{1}{16\pi^2} \beta_{t^i}^{(1)} + \frac{1}{(16\pi^2)^2} \beta_{t^i}^{(2)}\,,
+\dt \xi_S = \frac{1}{16\pi^2} \beta_{\xi_S}^{(1)} + \frac{1}{(16\pi^2)^2} \beta_{\xi_S}^{(2)}\,,
 \end{equation}
 %
-where the {\bf 1-loop} $\beta$ function is given by\footnote{Note that on pg.~43 of Martin's primer \cite{Mar97}, the expression for $\beta_{t^i}^{(1)}$ is incomplete.}
+where the one-loop $\beta$ function is given by
 %
 \begin{align}
-\beta_{t^i}^{(1)} &= \tfrac{1}{2}Y^{ijk}Y_{jkl}t^l + h^{ijk}Y_{jkl}L^l + \mu^{il}Y_{ljk}b^{jk}
-+ 2Y^{ijk}(m^2)_k^l\mu_{jl} + h^{ijk}b_{jk}\,.
+\beta_{\xi^{}_S}^{(1)} &= 2(\lamsq + \kapsq)\xi^{}_S + 4(\lambda a_\lambda + \kappa a_\kappa)\xi^{}_F + 2\mu'(2\lambda m_3^2 + \kappa m_S'^2) \notag \\
+%
+&+ 4[\lambda\mu (\mhusq + \mhdsq) + \kappa\mu' \mssq]\mu_{jl} + 4a_\lambda m_3^2 + 2a_\kappa m_S'^2\,.
 \end{align}
 %
-For $i=S$, $t^S \equiv \xi^{}_S$, and thus I get
-%
-\begin{align}
-\beta_{\xi^{}_S}^{(1)} &= \tfrac{1}{2}Y^{Sjk}Y_{jkS}\xi^{}_S + h^{Sjk}Y_{jkS}\xi^{}_F + \mu'Y_{Sjk}b^{jk} \notag \\
-%
-&+ 2Y^{Sjk}(m^2)_k^l\mu_{jl} + h^{Sjk}b_{jk}\,.
-\end{align}
-%
-The various summations yield
-%
-\begin{align}
-Y^{Sjk}Y_{jkS} &= 4\lamsq + 4\kapsq\,, \\
-%
-h^{Sjk}Y_{jkS} &= 4\lambda a_\lambda + 4\kappa a_\kappa\,, \\
-%
-Y_{Sjk}b^{jk} &= 4\lambda m_3^2 + 2\kappa m_S'^2\,, \\
-%
-Y^{Sjk}(m^2)_k^l\mu_{jl} &= 2\lambda\mu (\mhusq + \mhdsq) + 2\kappa\mu' \mssq\, \notag \\
-%
-h^{Sjk}b_{jk} &= 4a_\lambda m_3^2 + 2a_\kappa m_S'^2\,,
-\end{align}
-%
-noting that the terms involving $\msprsq$ carry a factor of $\tfrac{1}{2}$ due to the differing normalisations between soft mass terms for $S$ and those for $H_\alpha$ ({\it viz.} $b_{SS} = \tfrac{1}{2}\msprsq = b^{SS}$).  At {\bf 2-loop} I obtain
+At two-loop we obtain
 %
 \begin{align}
 \beta_{\xi^{}_S}^{(2)} =& -4\lambda^4\big\{ \xi_S + 4(\Alam)\xi_F\big\} 
@@ -915,20 +879,13 @@ noting that the terms involving $\msprsq$ carry a factor of $\tfrac{1}{2}$ due t
 \end{align}
 
 \subsubsection{Additional Parameters}
-Here I list the $\lambda$ and $\kappa$ contributions to the RGEs for the scalar masses $\mtrisq \equiv B\mu$ and $\msprsq \equiv B'\mu'$.  For the former, the relevant terms for the {\bf 1-loop} $\beta$ function are
-%
-\begin{align}
-\beta_{\mtrisq}^{(1)} &\ni \tfrac{1}{2}\mtrisq Y_{H_2mn}Y^{mnH_2} + \tfrac{1}{2}\lambda Y_{Smn}b^{mn} + \mu Y_{H_2mn}h^{mnH_2} 
-+ (H_2 \leftrightarrow H_1)\,.
-\end{align}
-%
-There are no new sums involved here, and thus the final result is
+Here we list the $\lambda$ and $\kappa$ contributions to the RGEs for the scalar masses $\mtrisq \equiv B\mu$ and $\msprsq \equiv B'\mu'$.  At one-loop we get
 %
 \begin{equation}
-\left.\beta_{\mtrisq}^{(1)}\right|_\lambda = 2\lambda(3\lambda\mtrisq + 2\mu a_\lambda) + 2\lambda\kappa\msprsq\,,
+\left.\beta_{\mtrisq}^{(1)}\right|_\lambda = 2\lambda(3\lambda\mtrisq + 2\mu a_\lambda) + 2\lambda\kappa\msprsq\,.
 \end{equation}
 %
-which agrees with EHT.  At {\bf 2-loop} I obtain
+At two-loop we have
 %
 \begin{align}
 \left.\beta_{\mtrisq}^{(2)}\right|_\lambda &= -2\lambda^4(7\mtrisq + 16\mu a_\lambda/\lambda) -3\lamsq\big\{ 5\mtrisq\tr( Y_u Y_u^\dagger) 
@@ -946,16 +903,14 @@ which agrees with EHT.  At {\bf 2-loop} I obtain
 &+\tfrac{12}{5}g_1^2\lamsq(\mtrisq - \mu M_1) + 12g_2^2\lamsq(\mtrisq -\mu M_2) \,.
 \end{align}
 
-For $\msprsq$, the {\bf 1-loop} $\beta$ function doesn't involve any new sums, however one must keep track of a factor of 2 on the left-hand side of the RGE: $d_t b^{SS} = \tfrac{1}{2}d_t\msprsq$, and hence the 1- and 2-loop $\beta$ functions must be multiplied by 2. The result is:
+For $\msprsq$, the one-loop $\beta$ function reads
 %
-\begin{align}
-\beta_{\msprsq}^{(1)} &= 2\big\{\tfrac{1}{2}\msprsq Y_{Smn}Y^{mnS} + \kappa Y_{Smn}b^{mn} + 2\mu' Y_{Smn}h^{mnS}\big\} \notag \\
-%
-&= 4\lambda(\lambda\msprsq + 2\mu' a_\lambda) + 8\kappa(\kappa\msprsq + \mu' a_\kappa) + 8\lambda\kappa\mtrisq \,.
-\end{align}
+\begin{equation}
+\beta_{\msprsq}^{(1)} = 4\lambda(\lambda\msprsq + 2\mu' a_\lambda) + 8\kappa(\kappa\msprsq + \mu' a_\kappa) + 8\lambda\kappa\mtrisq \,.
+\end{equation}
 %
 %
-At {\bf 2-loop} I get
+At two-loop we have
 \begin{align}
 \beta_{\msprsq}^{(2)} =& -8\lambda^4\big\{\msprsq + 4\mu'(a_\lambda/\lambda)\big\} - 16\kappa^4\big\{ 2\msprsq + 5\mu'(a_\kappa/\kappa) \big\} 
 - 16\lamsq\kapsq\big\{ 2\msprsq + \mu'[3(a_\lambda/\lambda) + 2(a_\kappa/\kappa)] \big\} \notag \\
