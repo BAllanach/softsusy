@@ -31,11 +31,11 @@
 \newcommand{\mssq}{m_S^2}
 \newcommand{\mtrisq}{m_3^2}
 \newcommand{\msprsq}{m_S'^2}
-\newcommand{\mqsq}{\textbf{m}_Q^2}
-\newcommand{\mdsq}{\textbf{m}_D^2}
-\newcommand{\musq}{\textbf{m}_U^2}
-\newcommand{\mlsq}{\textbf{m}_L^2}
-\newcommand{\mesq}{\textbf{m}_E^2}
+\newcommand{\mqsq}{m_{\tilde{Q}}^2}
+\newcommand{\mdsq}{m_{\tilde{d}}^2}
+\newcommand{\musq}{m_{\tilde{u}}^2}
+\newcommand{\mlsq}{m_{\tilde{L}}^2}
+\newcommand{\mesq}{m_{\tilde{e}}^2}
 \newcommand{\Alam}{a_\lambda/\lambda}
 \newcommand{\Akap}{a_\kappa/\kappa}
 \newcommand{\Musq}{M_u^2}
@@ -370,11 +370,13 @@ energy SUSY breaking boundary conditions are imposed.
 
 
 \subsection{Running of NMSSM couplings~\label{running}}
+
+
 Here, we present the one- and two-loop renormalization group equations (RGEs) in the $\overline{\mbox{DR}}$ scheme for parameters of the $\Zv$ NMSSM.  Our strategy is to make use of existing results \cite{MV94,Yam94} for a general, semi-simple SUSY gauge theory.   
 
 Where possible, we refer the reader to the MSSM results --- saves space.
 
-Herein, we follow the conventions laid out in the SOFTSUSY manual for the MSSM.  hence those adopted by Martin and Vaughn (MV) \cite{MV94}.  There is one important difference: with respect to the MV notation, the Yukawas couplings $Y_{U,D,E}$ and SUSY breaking trilinears $U_A,D_A,E_A$ are {\it transposed}, as in the {\tt SOFTSUSY} code. The complete set of two-loop renormalization group equations (RGEs) for the parameters of the MSSM can be found in \cite{MV94,Yam94}.  For the NMSSM, \cite{Ellwanger:2009dp} (EHT) list the two-loop RGEs in the third generation approximation, where the results for the soft SUSY-breaking terms (and others) originate from \cite{Ell08}.
+Herein, we follow the conventions laid out in the SOFTSUSY manual for the MSSM.  hence those adopted by Martin and Vaughn (MV) \cite{MV94}.  There is one important difference: with respect to the MV notation, the Yukawas couplings $Y_{U,D,E}$ and soft SUSY-breaking trilinears $U_A,D_A,E_A$ are {\it transposed}, as in the {\tt SOFTSUSY} code. The complete set of two-loop renormalization group equations (RGEs) for the parameters of the MSSM can be found in \cite{MV94,Yam94}.  For the NMSSM, \cite{Ellwanger:2009dp} (EHT) list the two-loop RGEs in the third generation approximation, where the results for the soft SUSY-breaking terms (and others) originate from \cite{Ell08}.
 
 \subsubsection{Yukawa Couplings}
 For $t = \ln Q$, the Yukawa couplings evolve according to the general expression
@@ -391,21 +393,7 @@ where
 + \frac{1}{(16\pi^2)^2}\gamma_{i}^{(2)j}\,,
 \end{equation}
 %
-and the one- and two-loop anomalous dimensions $\gamma_i^j$ are
-%
-\begin{align}
-\gamma_i^{(1)j} =& \tfrac{1}{2}Y_{ipq}Y^{jpq} - 2\delta_i^j \sum_a g_a^2C_a(i)\,, \\
-%
-\gamma_i^{(2)j} =& -\tfrac{1}{2}Y_{imn}Y^{npq}Y_{pqr}Y^{mrj} 
-+ Y_{ipq}Y^{ipq} \sum_a g_a^2[2C_a(p) - C_a(i)] \notag \\
-%
-&+ 2\delta_i^j \sum_a g_a^2 
-\Big[g_a^2C_a(i)S_a(R) +2\sum_b g_b^2C_a(i)C_b(i) - 3g_a^2C_a(i)C(G_a)\Big]\,.
-\end{align}
-%
-Here $C_a(k)$ is the quadratic Casimir invariant for chiral superfield $\Phi_k$,
- with complex conjugation on downstairs indices understood: 
-$Y_{ijk} \equiv Y_{ijk}^*$.  Note that the Yukawa and trilinear couplings are 
+and $\gamma^{(1,2)j}_i$ are the one- and two-loop anomalous dimensions respectively.  Note that the Yukawa (and trilinear couplings) are 
 written with the same ordering as fields in the superpotential (\ref{eq:WZ3V}), 
 e.g.\ for $k = H_2$ we get
 %
@@ -415,7 +403,7 @@ e.g.\ for $k = H_2$ we get
 \end{equation}
 
 In the one-loop approximation, the only modification to the MSSM results 
-\cite{MV94,Yam94} for $Y_{U,D,E}$ is the inclusion of $\lamsq$ terms which 
+\cite{MV94} for $Y_{U,D,E}$ is the inclusion of $\lamsq$ terms which 
 originate from the Higgs anomalous dimensions
 %
 \begin{align}
@@ -423,7 +411,7 @@ originate from the Higgs anomalous dimensions
 \quad \mbox{and} \quad \left.\gamma^{(1) H_2}_{H_2} \right|_\lambda = \lamsq\,.
 \end{align}
 %
-At two-loop, all the gauge-Yukawa contributions from $\lambda$ cancel for each 
+At two-loop order, all the gauge-Yukawa contributions from $\lambda$ cancel for each 
 $\gamma_i^{(2)j}$, so the additional contributions arising in the NMSSM are 
 simply given by
 %
@@ -447,7 +435,7 @@ simply given by
 \end{align}
 %
 
-For the NMSSM Yuwaka couplings $\lambda$ and $\kappa$, the RGEs read
+For the additional Yuwaka couplings $\lambda$ and $\kappa$, the RGEs read
 %
 \begin{align}
 \dt\lambda &= \lambda (\Gamma^{H_1}_{H_1} + \Gamma^{H_2}_{H_2} + \Gamma^S_S)\,, \\
@@ -475,38 +463,19 @@ coupling appears through the term
 %
 \begin{equation}
 \dt g_a \ni - \frac{g_a^3}{(16\pi^2)^2} Y_{ijk}Y^{ijk} C_a(k)/d(G_a)\,,  
+\label{eqn:dg}
 \end{equation}
 %
 where $d(G_a)$ is the dimension of the adjoint representation of gauge group 
-$G_a$.  To obtain a non-zero contribution from $\lambda$ we must have  
-$k\neq S_k$ (since $C_a(S)=0$) and furthermore $C_3(H_k)=0$.  The result is
+$G_a$.  The result is
 %
 \begin{equation}
 \left. \dt g_a\right|_\lambda = -\frac{g_a^3}{(16\pi^2)^2}\lamsq \Lambda_a^{(2)}\,,
 \qquad \Lambda_a^{(2)} = (\tfrac{6}{5},2,0)\,,
 \end{equation}
-where we have taken into account an additional factor of 2 which arises from 
-tracing over $SU(2)$ group indices.
-
-For completeness, we reproduce the MSSM parts as well
 %
-\be
-\dt g_a = \frac{g_a^3}{16\pi^2}B_a^{(1)} + \frac{g_a^3}{(16\pi^2)^2}\Bigg[\sum_{b=1}^3 B_{ab}^{(2)}g_b^2 - \sum_{x=U,D,E}C_a^x\tr(Y_xY_x^\dagger) - \lamsq \Lambda_a^{(2)}\Bigg]\,,
-\ee
-%
-where $B_a^{(1)} = (33/5,1,-3)$, and 
-%
-\be
-B_{ab}^{(2)} = \left(\begin{array}{ccc}
-199/5 & 27/5 & 88/5 \\
-9/5   & 25   & 24   \\
-11/5  & 9    & 14   \end{array}\right) \quad \mbox{and} \quad
-C_a^{U,D,E} = \left(\begin{array}{ccc}
-26/5 & 14/5 & 18/5 \\
-6    & 6    & 2    \\
-4    & 4    & 0    \end{array}\right) \quad \mbox{and} \quad 
-\Lambda_a^{(2)} = (6/5,2,0)\,.
-\ee
+where we have taken into account the additional factor of 2 which arises from 
+tracing over $SU(2)$ group indices in Eq.~(\ref{eqn:dg}).
 
 \subsubsection{Gaugino Mass Parameters}
 As for the gauge couplings above, we only need to consider the addition of the 
@@ -515,27 +484,28 @@ $\lambda^2$ terms arising from
 \begin{equation}
 \dt M_a \ni \frac{2g_a^2}{(16\pi^2)^2} 
 \frac{(U^{ijk} - M_a Y^{ijk}) Y_{ijk}C_a(k)}{d(G_a)}\,,
+\label{eqn:dM}
 \end{equation}
 %
-where $U^{ijk}$ is the trilinear soft SUSY-breaking parameter. The full expression reads
-% 
-\be
-\dt M_a = \frac{2g_a^2}{16\pi^2}(B_a^{(1)} - \lamsq\Lambda^{(2)}_a)M_a + \frac{2g_a^2}{(16\pi^2)^2}\Bigg\{\sum_{b=1}^3B_{ab}^{(2)}g_b^2(M_a+M_b) + \sum_{x=U,D,E}C_a^x[\tr(U_x^\dagger Y_x) - M_a\tr(Y_xY_x^\dagger)] + \lambda a_\lambda \Lambda_a^{(2)}\Bigg\}
-\ee
+where $U^{ijk}$ is the trilinear soft SUSY-breaking parameter. Evaluating the summations in (\ref{eqn:dM}), we find
+%
+\begin{equation}
+\left. \dt M_a\right|_{\lambda} = \frac{2g_a^2}{(16\pi^2)^2} (\lambda a_\lambda - \lambda^2 M_a)\Lambda^{(2)}_a\,.
+\end{equation}
 
 \subsubsection{$\mu$ Parameters}
-The general expression for the SUSY-conserving bilinear terms \cite{MV94,Yam94} is given by  
+The general expression \cite{MV94,Yam94} for the SUSY-conserving bilinear terms is given by  
 %
 \begin{equation}
 \dt \mu^{ij} = \mu^{ip}\Gamma_p^j + \mu^{jp}\Gamma_p^i\,,
 \end{equation}
 %
-from which we get
+from which we obtain
 %
 \begin{align}
 \dt\mu &= \mu (\Gamma_{H_1}^{H_1} + \Gamma_{H_2}^{H_2}), \notag \\
 %
-\dt\mu' &= \mu' 2\Gamma_S^S
+\dt\mu' &= 2\mu' \Gamma_S^S
 \end{align}
 %
 
@@ -548,7 +518,7 @@ In the notation of MV, the trilinear couplings $U^{ijk}$ evolve under
 \end{equation}
 %
 where the expressions for the $\beta$ functions can be found in \cite{MV94}.  
-For $x = u,d,e$ the $\lambda$ contribution to the one-loop $\beta$ function 
+For $x = U,D,E$ the $\lambda$ contribution to the one-loop $\beta$ function 
 arises from the following factor
 %
 \begin{equation}
@@ -557,7 +527,7 @@ Y_{H_\alpha mn}Y^{mnH_\alpha} + (Y_x)^{ij} Y_{H_\alpha mn}U^{mnH_\alpha}\,,
 \end{equation}
 %
 where there is {\it no summation} over $\alpha = 1,2$, with the index 
-determined by the choice of $x$ (e.g.\ if $x=u$ then $\alpha = 2$). Expanding 
+determined by the choice of $x$ (e.g.\ if $x=U$ then $\alpha = 2$). Expanding 
 the indices leads to
 %
 \begin{equation}
@@ -650,7 +620,7 @@ The two-loop expression is:
 %
 &- 9a_\lambda\tr( Y_D Y_D^\dagger Y_D Y_D^\dagger) 
 - 3a_\lambda\tr( Y_E Y_E^\dagger Y_E Y_E^\dagger) - 8\kappa^4 a_\lambda 
-- 32\lambda\kappa^3 h_\kappa - 12\lamsq\kapsq a_\lambda \notag \\
+- 32\lambda\kappa^3 a_\kappa - 12\lamsq\kapsq a_\lambda \notag \\
 %
 &-18\lambda^3\big[ (\Alam)\tr( Y_U Y_U^\dagger) + \tr(U_A Y_U^\dagger)\big] 
 - 18\lambda^3\big[(\Alam)\tr( Y_D Y_D^\dagger) + \tr(D_A Y_D^\dagger)\big] \notag \\
@@ -707,6 +677,304 @@ At two-loop we have
 %
 &+ \tfrac{36}{5}g_1^2\lamsq\kappa\big[ (\Alam) + \tfrac{1}{2}(\Akap) - M_1\big] 
 + 36g_2^2\lamsq \kappa\big[ (\Alam) + \tfrac{1}{2}(\Akap) - M_2 \big]\,.
+\end{align}
+
+\subsubsection{Higgs Masses}
+To determine the $\lambda$ and $\kappa$ contributions to the Higgs masses, it's useful to define the following quantities
+%
+\begin{align}
+\mlamsq =& \mhdsq + \mhusq + \mssq + a_\lambda^2/\lamsq\,, \notag \\
+%
+\mkapsq =& 3\mssq + a_\kappa^2/\kapsq\,, \notag \\
+%
+\Musq =& \tr(\mqsq Y_u Y_u^\dagger) + \tr( Y_u\musq Y_u^\dagger)
++ \mhusq\tr( Y_u Y_u^\dagger) + \tr( U_A U_A^\dagger)\,, \notag \\
+%
+\Mdsq =& \tr(\mqsq Y_d Y_d^\dagger) + \tr( Y_d\mdsq Y_d^\dagger) 
++ \mhdsq\tr( Y_d Y_d^\dagger) + \tr( D_A D_A^\dagger)\,, \notag \\
+%
+\Mesq =& \tr(\mlsq Y_e Y_e^\dagger) + \tr( Y_e\mesq Y_e^\dagger) 
++ \mhdsq\tr( Y_e Y_e^\dagger) + \tr( E_A E_A^\dagger)\,. \notag \\
+\end{align}
+%
+Both the up- and down-type Higgs masses $m_{H_2},m_{H_1}$ receive the same $\lambda$ contribution at {\bf 1-loop}, so consider (say)
+%
+\begin{align}
+\beta_{\mhusq}^{(1)} &= Y_{H_2pq}Y^{pqH_2}\mhusq + 2Y_{H_2pq}Y^{H_2pr}(m^2)_r^q + h_{H_2pq}h^{H_2pq}\,.
+\end{align}
+%
+Restricting myself to just the $\lambda$ contributions, the first sum can be found in (\ref{eqn:YH2sq}) while the other two are given by
+%
+\begin{align}
+Y_{H_2pq}Y^{H_2pr}(m^2)_r^q =& \lamsq\mssq + \lamsq\mhdsq + 3\tr(\mqsq Y_u Y_u^\dagger) 
++ 3\tr(  Y_u\musq Y_u^\dagger) \,, \\
+%
+h_{H_2pq}h^{H_2pq} =& 2a_\lambda^2 + 6\tr( U_A U_A^\dagger) \,.
+\end{align}
+%
+Thus the result for either $m_{H_1}$ or $m_{H_2}$ is 
+%
+\begin{equation}
+\left.\beta_{m_{H_\alpha}^2}^{(1)}\right|_\lambda = 2\lamsq \mlamsq\,.
+\end{equation}
+%
+
+The {\bf 2-loop} expressions are rather involved; My working for the up-type Higgs mass beta function will be included in an Appendix (eventually!) and the down-type calculation follows similarly.  By collecting all the terms, I get:
+%
+\begin{align}
+\left.\beta_{m_{H_2}^2}^{(2)}\right|_\lambda =& -12\lambda^4\big\{ M_\lambda^2 + (\Alam)^2\big\} 
+- 6\lamsq\big\{ \Mdsq + M_\lambda^2\tr( Y_d Y_d^\dagger) + 2(a_\lambda/\lambda)\tr( D_A Y_d^\dagger) \big\} \notag \\
+%
+&-2\lamsq\big\{ \Mesq + M_\lambda^2\tr( Y_e Y_e^\dagger) + 2(a_\lambda/\lambda)\tr( E_A Y_e^\dagger)\big\}
+%
+-4\lamsq\kapsq\big\{ M_\lambda^2 + M_\kappa^2 + 2(a_\lambda/\lambda)(a_\kappa/\kappa) \big\}  \notag \\
+%
+&+ \tfrac{6}{5}g_1^2\lamsq(\mhdsq-\mhusq) \,.
+\end{align}
+%
+Similarly, I obtain for the down-type Higgs,
+%
+\begin{align}
+\left.\beta_{m_{H_1}^2}^{(2)}\right|_\lambda =& -12\lambda^4\big\{M_\lambda^2 + (\Alam)^2\big\} 
+- 6\lamsq\big\{ \Musq + M_\lambda^2\tr( Y_u Y_u^\dagger) + 2(a_\lambda/\lambda)\tr( U_A Y_u^\dagger) \big\} \notag \\
+%
+&-4\lamsq\kapsq\big\{ M_\lambda^2 + M_\kappa^2 + 2(a_\lambda/\lambda)(a_\kappa/\kappa) \big\} 
+- \tfrac{6}{5}g_1^2\lamsq(\mhdsq-\mhusq)\,.
+\end{align}
+
+For the singlet mass $m_S$, the {\bf 1-loop} result is
+%
+\begin{equation}
+\beta_{m_S^2}^{(1)} = Y_{Spq}Y^{pqS}m_S^2 + 2Y_{Spq}Y^{Spr}(m^2)^q_r + h_{Spq}h^{Spq}\,, \label{eqn:beta mSsq}
+\end{equation}
+%
+where 
+%
+\begin{align}
+Y_{Spq}Y^{Spr}(m^2)^q_r &= 2\lamsq(\mhdsq + \mhusq) + 4\kapsq m_S^2\,, \notag \\
+%
+h_{Spq}h^{Spq} &= 4a_\lambda^2 + 4a_\kappa^2\,,
+\end{align}
+%
+and thus (\ref{eqn:beta mSsq}) becomes
+%
+\begin{equation}
+\beta_{m_S^2}^{(1)} = 4\lamsq \mlamsq + 4\kapsq \mkapsq\,.
+\end{equation}
+%
+At {\bf 2-loop} I get
+\begin{align}
+\beta_{m_S^2}^{(2)} =& -16\lambda^4\big\{ \mlamsq + (\Alam)^2\big\} - 32\kappa^4\big\{ \mkapsq + (\Akap)^2\big\}
+-12\lamsq\big\{ \mlamsq\tr( Y_u Y_u^\dagger) + \Musq + 2(\Alam)\tr( U_A Y_u^\dagger)\big\} \notag \\
+%
+&- 12\lamsq\big\{ \mlamsq\tr( Y_d Y_d^\dagger) + \Mdsq + 2(\Alam)\tr( D_A Y_d^\dagger) \big\} 
+- 4\lamsq\big\{ \mlamsq\tr( Y_e Y_e^\dagger) + \Mesq + 2(\Alam)\tr( E_A Y_e^\dagger) \big\} \notag \\
+%
+&- 16\lamsq\kapsq\big\{ \mlamsq + \mkapsq + 2(\Alam)(\Akap) \big\}
++ \tfrac{12}{5}g_1^2\lamsq \big\{ \mlamsq - 2M_1[(\Alam) - M_1] \big\} \notag \\
+%
+&+ 12g_2^2\lamsq\big\{ \mlamsq -2M_2[(\Alam) - M_2]\big\}
+\end{align}
+
+\subsubsection{Squark and Slepton Masses}
+The squark and slepton masses only receive contributions from $\lambda,\kappa$ at two-loop order.  The results are listed below, where $\mathbf{1}$ is a $3\times 3$ unit matrix.
+%
+\begin{align}
+\left.\beta_{\mqsq}^{(2)}\right|_\lambda =& -\lamsq \big\{ 2 Y_u^\dagger\musq Y_u + \mqsq Y_u Y_u^\dagger +  Y_u Y_u^\dagger\mqsq \notag 
++ 2\mhusq Y_u Y_u^\dagger + 2 U_A U_A^\dagger + 2\mlamsq Y_u Y_u^\dagger 
++ 2a_\lambda/\lambda(  Y_u U_A^\dagger +  U_A Y_u^\dagger) \big\} \notag \\
+%
+&-\lamsq\big\{ 2 Y_d^\dagger\mdsq Y_d + \mqsq Y_d Y_d^\dagger +  Y_d Y_d^\dagger\mqsq 
++ 2\mhdsq Y_d Y_d^\dagger + 2 D_A D_A^\dagger + 2\mlamsq Y_d Y_d^\dagger 
++ 2a_\lambda/\lambda(  Y_d D_A^\dagger +  D_A Y_d^\dagger) \big\} \notag \\
+%
+&+ \tfrac{2}{5}g_1^2\lamsq(\mhdsq - \mhusq)\mathbf{1}\,,
+\end{align}
+%
+%
+\begin{align}
+\left.\beta_{\musq}^{(2)}\right|_\lambda =& -2\lamsq \big\{ 2 Y_u^\dagger\mqsq Y_u + \musq Y_u^\dagger Y_u +  Y_u^\dagger Y_u\musq 
++ 2\mhusq Y_u^\dagger Y_u + 2 U_A^\dagger U_A + 2\mlamsq Y_u^\dagger Y_u 
++ 2a_\lambda/\lambda(  Y_u^\dagger U_A +  U_A^\dagger Y_u) \big\}  \notag \\
+%
+&- \tfrac{8}{5}g_1^2\lamsq(\mhdsq - \mhusq)\mathbf{1}\,,
+\end{align}
+%
+%
+\begin{align}
+\left.\beta_{\mdsq}^{(2)}\right|_\lambda =& -2\lamsq \big\{ 2 Y_d^\dagger\mqsq Y_d + \mdsq Y_d^\dagger Y_d +  Y_d^\dagger Y_d\mdsq 
++ 2\mhdsq Y_d^\dagger Y_d + 2 D_A^\dagger D_A + 2\mlamsq Y_d^\dagger Y_d 
++ 2a_\lambda/\lambda(  Y_d^\dagger D_A +  D_A^\dagger Y_d) \big\} \notag \\
+%
+&+ \tfrac{4}{5}g_1^2\lamsq(\mhdsq - \mhusq)\mathbf{1}\,,
+\end{align}
+%
+%
+\begin{align}
+\left.\beta_{\mlsq}^{(2)}\right|_\lambda =& -\lamsq \big\{ 2 Y_e^\dagger\mesq Y_e + \mlsq Y_e Y_e^\dagger +  Y_e Y_e^\dagger\mlsq 
++ 2\mhdsq Y_e Y_e^\dagger + 2 E_A E_A^\dagger + 2\mlamsq Y_e Y_e^\dagger 
++ 2a_\lambda/\lambda(  Y_e E_A^\dagger +  E_A Y_e^\dagger) \big\} \notag \\
+%
+&- \tfrac{6}{5}g_1^2\lamsq(\mhdsq - \mhusq)\mathbf{1}\,,
+\end{align}
+%
+%
+\begin{align}
+\left.\beta_{\mesq}^{(2)}\right|_\lambda =& -2\lamsq \big\{ 2 Y_e^\dagger\mlsq Y_e + \mesq Y_e^\dagger Y_e +  Y_e^\dagger Y_e\mesq 
++ 2\mhdsq Y_e^\dagger Y_e + 2 E_A^\dagger E_A + 2\mlamsq Y_e^\dagger Y_e
++ 2a_\lambda/\lambda(  Y_e^\dagger E_A +  E_A^\dagger Y_e) \big\} \notag \\
+%
+&+ \tfrac{12}{5}g_1^2\lamsq(\mhdsq - \mhusq)\mathbf{1}\,.
+\end{align}
+
+\subsubsection{Tadpole Terms}
+The general RGE for a SUSY-conserving tadpole term reads
+%
+\begin{equation}
+\dt L^i = L^p\Gamma_p^i\,,
+\end{equation}
+%
+and thus for $i=S$ one has
+%
+\begin{equation}
+\dt \xi_F = \xi_F \Gamma_S^S\,.
+\end{equation}
+%
+For the soft term $\xi_S$, I had to dig out the general RGE from \cite{Yam94} because MV don't include the tadpole as part of $\mathcal{L}_{\mathrm{soft}}$.  I'll define the general soft tadpole term as $t^i\phi_i$, for which the RGE reads
+%
+\begin{equation}
+\dt t^i = \frac{1}{16\pi^2} \beta_{t^i}^{(1)} + \frac{1}{(16\pi^2)^2} \beta_{t^i}^{(2)}\,,
+\end{equation}
+%
+where the {\bf 1-loop} $\beta$ function is given by\footnote{Note that on pg.~43 of Martin's primer \cite{Mar97}, the expression for $\beta_{t^i}^{(1)}$ is incomplete.}
+%
+\begin{align}
+\beta_{t^i}^{(1)} &= \tfrac{1}{2}Y^{ijk}Y_{jkl}t^l + h^{ijk}Y_{jkl}L^l + \mu^{il}Y_{ljk}b^{jk}
++ 2Y^{ijk}(m^2)_k^l\mu_{jl} + h^{ijk}b_{jk}\,.
+\end{align}
+%
+For $i=S$, $t^S \equiv \xi^{}_S$, and thus I get
+%
+\begin{align}
+\beta_{\xi^{}_S}^{(1)} &= \tfrac{1}{2}Y^{Sjk}Y_{jkS}\xi^{}_S + h^{Sjk}Y_{jkS}\xi^{}_F + \mu'Y_{Sjk}b^{jk} \notag \\
+%
+&+ 2Y^{Sjk}(m^2)_k^l\mu_{jl} + h^{Sjk}b_{jk}\,.
+\end{align}
+%
+The various summations yield
+%
+\begin{align}
+Y^{Sjk}Y_{jkS} &= 4\lamsq + 4\kapsq\,, \\
+%
+h^{Sjk}Y_{jkS} &= 4\lambda a_\lambda + 4\kappa a_\kappa\,, \\
+%
+Y_{Sjk}b^{jk} &= 4\lambda m_3^2 + 2\kappa m_S'^2\,, \\
+%
+Y^{Sjk}(m^2)_k^l\mu_{jl} &= 2\lambda\mu (\mhusq + \mhdsq) + 2\kappa\mu' \mssq\, \notag \\
+%
+h^{Sjk}b_{jk} &= 4a_\lambda m_3^2 + 2a_\kappa m_S'^2\,,
+\end{align}
+%
+noting that the terms involving $\msprsq$ carry a factor of $\tfrac{1}{2}$ due to the differing normalisations between soft mass terms for $S$ and those for $H_\alpha$ ({\it viz.} $b_{SS} = \tfrac{1}{2}\msprsq = b^{SS}$).  At {\bf 2-loop} I obtain
+%
+\begin{align}
+\beta_{\xi^{}_S}^{(2)} =& -4\lambda^4\big\{ \xi_S + 4(\Alam)\xi_F\big\} 
+- 8\kappa^4\big\{ \xi_S + 4(\Akap)\xi_F\big\} 
+-6\lamsq\big\{ \xi_S\tr( Y_u Y_u^\dagger)+ 2[(\Alam)\tr( Y_u Y_u^\dagger) + \tr( U_A Y_u^\dagger)]\big\}\xi_F \notag \\
+%
+&-6\lamsq\big\{\xi_S\tr( Y_d Y_d^\dagger) + 2[(\Alam)\tr( Y_d Y_d^\dagger) + \tr( D_A Y_d^\dagger)]\big\}\xi_F  \notag \\
+%
+&-2\lamsq\big\{\xi_S\tr( Y_e Y_e^\dagger) + 2[(\Alam)\tr( Y_e Y_e^\dagger) + \tr( E_A Y_e^\dagger)]\big\}\xi_F \notag \\
+%
+&-8\lamsq\kapsq\big\{ \xi_S + 2[(\Alam) + (\Akap)]\xi_F\big\} \notag \\
+%
+&-12\lambda\big\{ \mtrisq[(\Alam) + \mu']\tr( Y_u Y_u^\dagger) + \mtrisq\tr( U_A Y_u^\dagger)
++ \mu\{\Musq + [(\Alam) + \mu']\tr( U_A Y_u^\dagger) + [\mhdsq + \mhusq]\tr( Y_u Y_u^\dagger)\} \big\} \notag \\
+%
+&-12\lambda\big\{ \mtrisq[(\Alam) + \mu']\tr( Y_d Y_d^\dagger) + \mtrisq\tr( D_A Y_d^\dagger)
++ \mu\{\Mdsq + [(\Alam) +\mu']\tr( D_A Y_d^\dagger) + [\mhdsq + \mhusq]\tr( Y_d Y_d^\dagger)\} \big\}  \notag \\
+%
+&-4\lambda\big\{ \mtrisq[(\Alam)+ \mu']\tr( Y_e Y_e^\dagger) + \mtrisq\tr( E_A Y_e^\dagger)
++ \mu\{\Mesq + [(\Alam) +\mu']\tr( E_A Y_e^\dagger) + [\mhdsq + \mhusq]\tr( Y_e Y_e^\dagger)\} \big\} \notag \\
+%
+&-8\lambda^3\big\{ \mtrisq[2(\Alam) + \mu'] + \mu[\mlamsq + (\Alam)[(\Alam) + \mu'] + \mhdsq + \mhusq]\big\} \notag \\
+%
+&-8\lamsq\kappa\big\{ \msprsq[(\Alam) + (\Akap) + \mu']
++ \mu'[\mlamsq + (\Alam)[(\Akap) + \mu'] + 2\mssq] \big\} \notag \\
+%
+&-8\kappa^3\big\{ \msprsq[2(\Akap) + \mu'] 
++ \mu'[\mkapsq + (\Akap)[(\Akap) + \mu'] + 2\mssq] \big\} \notag \\
+%
+&+ \tfrac{6}{5}\lambda g_1^2\big\{ 3\mtrisq[(\Alam) + \mu' - M_1]
++ 2\mu[\mhdsq + \mhusq -(\Alam)M_1 - \mu' M_1 + 2M_1^2] 
++ \lambda[2\xi_F[(\Alam) - M_1]  + \xi_S] \big\} \notag \\
+%
+&+ 3\lambda g_2^2\big\{ 3\mtrisq[(\Alam) + \mu' - M_2]
++ 2\mu[\mhdsq + \mhusq - (\Alam)M_2 - \mu' M_2 + 2M_2^2] 
++ \lambda[2\xi_F[(\Alam) - M_2] + \xi_S] \big\}\,.
+\end{align}
+
+\subsubsection{Additional Parameters}
+Here I list the $\lambda$ and $\kappa$ contributions to the RGEs for the scalar masses $\mtrisq \equiv B\mu$ and $\msprsq \equiv B'\mu'$.  For the former, the relevant terms for the {\bf 1-loop} $\beta$ function are
+%
+\begin{align}
+\beta_{\mtrisq}^{(1)} &\ni \tfrac{1}{2}\mtrisq Y_{H_2mn}Y^{mnH_2} + \tfrac{1}{2}\lambda Y_{Smn}b^{mn} + \mu Y_{H_2mn}h^{mnH_2} 
++ (H_2 \leftrightarrow H_1)\,.
+\end{align}
+%
+There are no new sums involved here, and thus the final result is
+%
+\begin{equation}
+\left.\beta_{\mtrisq}^{(1)}\right|_\lambda = 2\lambda(3\lambda\mtrisq + 2\mu a_\lambda) + 2\lambda\kappa\msprsq\,,
+\end{equation}
+%
+which agrees with EHT.  At {\bf 2-loop} I obtain
+%
+\begin{align}
+\left.\beta_{\mtrisq}^{(2)}\right|_\lambda &= -2\lambda^4(7\mtrisq + 16\mu a_\lambda/\lambda) -3\lamsq\big\{ 5\mtrisq\tr( Y_u Y_u^\dagger) 
++ 2\mu[3\tr( U_A Y_u^\dagger) + (a_\lambda/\lambda)\tr( Y_u Y_u^\dagger)] \big\} \notag \\
+%
+&-3\lamsq\big\{ 5\mtrisq\tr( Y_d Y_d^\dagger) + 2\mu[3\tr( D_A Y_d^\dagger) 
++ (a_\lambda/\lambda)\tr( Y_d Y_d^\dagger) \big\} \notag \\
+%
+&-\lamsq\big\{5\mtrisq\tr( Y_e Y_e^\dagger) 
++ 2\mu[3\tr( E_A Y_e^\dagger) + (a_\lambda/\lambda)\tr( Y_e Y_e^\dagger)] \big\} \notag \\
+%
+&-4\lamsq\kapsq\big\{ \mtrisq + 2\mu[(a_\lambda/\lambda) + (a_\kappa/\kappa)] \big\} 
+-8\lambda^3\kappa\big\{ m_S'^2 + \mu'(a_\lambda/\lambda)\big\} - 8\lambda\kappa^3\big\{m_S'^2 + \mu'(a_\kappa/\kappa)\big\} \notag \\
+%
+&+\tfrac{12}{5}g_1^2\lamsq(\mtrisq - \mu M_1) + 12g_2^2\lamsq(\mtrisq -\mu M_2) \,.
+\end{align}
+
+For $\msprsq$, the {\bf 1-loop} $\beta$ function doesn't involve any new sums, however one must keep track of a factor of 2 on the left-hand side of the RGE: $d_t b^{SS} = \tfrac{1}{2}d_t\msprsq$, and hence the 1- and 2-loop $\beta$ functions must be multiplied by 2. The result is:
+%
+\begin{align}
+\beta_{\msprsq}^{(1)} &= 2\big\{\tfrac{1}{2}\msprsq Y_{Smn}Y^{mnS} + \kappa Y_{Smn}b^{mn} + 2\mu' Y_{Smn}h^{mnS}\big\} \notag \\
+%
+&= 4\lambda(\lambda\msprsq + 2\mu' a_\lambda) + 8\kappa(\kappa\msprsq + \mu' a_\kappa) + 8\lambda\kappa\mtrisq \,.
+\end{align}
+%
+%
+At {\bf 2-loop} I get
+\begin{align}
+\beta_{\msprsq}^{(2)} =& -8\lambda^4\big\{\msprsq + 4\mu'(a_\lambda/\lambda)\big\} - 16\kappa^4\big\{ 2\msprsq + 5\mu'(a_\kappa/\kappa) \big\} 
+- 16\lamsq\kapsq\big\{ 2\msprsq + \mu'[3(a_\lambda/\lambda) + 2(a_\kappa/\kappa)] \big\} \notag \\
+%
+&-12\lamsq\big\{ \msprsq\tr( Y_u Y_u^\dagger) + 2\mu'[(\Alam)\tr( Y_u Y_u^\dagger) + \tr( U_A Y_u^\dagger)] \big\} \notag \\
+%
+&-12\lamsq\big\{\msprsq\tr( Y_d Y_d^\dagger) + 2\mu'[(\Alam)\tr( Y_d Y_d^\dagger) + \tr( D_A Y_d^\dagger)] \big\} \notag \\
+%
+&-4\lamsq\big\{\msprsq\tr( Y_e Y_e^\dagger) + 2\mu'[(\Alam)\tr( Y_e Y_e^\dagger) + \tr( E_A Y_e^\dagger)] \big\} 
+-16\lambda^3\kappa\big\{ \mtrisq + \mu(\Alam)\big \} \notag \\
+%
+&-24\lambda\kappa\big\{ \mtrisq\tr( Y_u Y_u^\dagger) + \mu\tr( U_A Y_u^\dagger)\big\} 
+-24\lambda\kappa\big\{ \mtrisq\tr( Y_d Y_d^\dagger) + \mu\tr( D_A Y_d^\dagger)\big\} \notag \\
+%
+&-8\lambda\kappa\big\{ \mtrisq\tr( Y_e Y_e^\dagger) + \mu\tr( E_A Y_e^\dagger)\big\} 
++\tfrac{24}{5}\lambda\kappa g_1^2\big\{\mtrisq - \mu M_1\big\} + 24\lambda\kappa g_2^2\big\{\mtrisq - \mu M_2 \big\} \notag \\
+%
+&+\tfrac{12}{5}\lamsq g_1^2\big\{\msprsq + 2\mu'[(\Alam) - M_1]\big\} 
++12\lamsq g_2^2 \big\{\msprsq + 2\mu'[(\Alam) - M_2] \big\}\,.
 \end{align}
 
 \textcolor{red}{--- LCT: Up to here ---}
