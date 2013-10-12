@@ -318,7 +318,7 @@ v_d}{s} -3\kappa A_\kappa s  -2 m_{S}'^2 -\kappa \mu' s
 \label{eq:MA0}
 \ea
 
-Note that the mixing of the Goldstone boson, $G^0$ only depends on $\tan\beta$, as in the MSSM, as can be seen by first rotating by $\beta$, leaving a 2 by 2 block diagonal which may then be diagonalised as is shown in \cite{Ellwanger:2009dp}.  Therefore the CP-odd mixing can be stored as a single mixing angle $\theta_{HP}$ which SOFTSUSY does internally in the sPhysical object.
+Note that the mixing of the Goldstone boson, $G^0$ only depends on $\tan\beta$, as in the MSSM, as can be seen by first rotating by $\beta$, leaving a 2 by 2 block diagonal which may then be diagonalised as is shown in \cite{Ellwanger:2009dp}.  Therefore the CP-odd mixing can be stored as a single mixing angle\footnote{SOFTSUSY does this internally storing $\theta_{A^0}$ in the sPhysical object (see Sec.\ref{}) but in the SLHA output gives the 3x2 mixing matrix, matching SLHA2 conventions.}.
 
 
 The charged Higgs fields in mass basis give one massless charged Goldstone boson, $G^+$ and a charged Higgs, $H^\pm$, with mass,
@@ -326,7 +326,9 @@ The charged Higgs fields in mass basis give one massless charged Goldstone boson
 \widehat{m}_3^2\right)(\tan \beta + \cot \beta) + M_W^2 - \ds\frac{\lambda^2 v^2}{2},\qquad. \ee
   
 \section{Calculation Algorithm \label{sec:calculation}}
+We now describe the algorithm used to perform the calculation.  As in the MSSM we match to Standard Model fermions and gauge boson masses, $\alpha(M_Z)$, $G_F^\mu$ and $\alpha_S(M_z)$.  The evolution below $M_Z$ proceeds as in the MSSM, as described in Section 3.1 of the MSSM SOFTSUSY manual\cite{Allanach:2001kg}.  The initial guess for the SUSY preserving $\overline{DR}$ parameters at $m_t$ also follows the procedure in \cite{Allanach:2001kg}, with new NMSSM parameters $\{\lambda, \kappa, s, \xi_F, \mu^\prime \}$ either initially set to their input values values or to zero in  the case of $\kappa$ and $s$ when they are to be output from the EWSB conditions.      
 
+Following the initial guess the SUSY preserving parameters are evolved to the GUT scale with two loop RGEs.   
 
 \begin{figure}
 \begin{center}
