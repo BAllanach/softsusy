@@ -39,6 +39,28 @@
 \newcommand{\Musq}{M_u^2}
 \newcommand{\Mdsq}{M_d^2}
 \newcommand{\Mesq}{M_e^2}
+\def\at{\alpha_t}
+\def\ab{\alpha_b}
+\def\as{\alpha_s}
+\def\atau{\alpha_{\tau}}
+\def\oat{{\cal O}(\at)}
+\def\oab{{\cal O}(\ab)}
+\def\oatau{{\cal O}(\atau)}
+\def\oatab{{\cal O}(\at\ab)}
+\def\oatas{{\cal O}(\at\as)}
+\def\oabas{{\cal O}(\ab\as)}
+\def\oatababq{{\cal O}(\at\ab + \ab^2)}
+\def\oatqatababq{{\cal O}(\at^2 + \at\ab + \ab^2)}
+\def\oatasatq{{\cal O}(\at\as + \at^2)}
+\def\oatasabas{{\cal O}(\at\as +\ab\as)}
+\def\oatasabasatq{{\cal O}(\at\as + \at^2 +\ab\as)}
+\def\oatq{{\cal O}(\at^2)}
+\def\oabq{{\cal O}(\ab^2)}
+\def\oatauq{{\cal O}(\atau^2)}
+\def\oabatau{{\cal O}(\ab \atau)}
+\def\oas{{\cal O}(\as)}
+\def\oatauqatab{{\cal O}(\atau^2 +\ab \atau )}
+
 % end of macros
 
 \journal{Computer Physics Communications}
@@ -133,15 +155,15 @@ names that are being used in the program code are shown explicitly in
 The chiral superfield particle content of the NMSSM has the 
 following $SU(3)_c\times SU(2)_L\times U(1)_Y$ quantum numbers:
 \begin{eqnarray}
-\hat{L}:&(1,2,-\frac{1}{2}),\quad \hat{{\bar E}}:&(1,1,1),\qquad\, \hat{Q}:\,(3,2,\frac{1}{6}),\quad
-\hat{{\bar U}}:\,(\bar 3,1,-\frac{2}{3}),\nonumber\\ \hat{{\bar D}}:&(\bar 3,1,\frac{1}{3}),\quad
+\hat{L}:&(1,2,-\frac{1}{2}),\quad \hat{{\overline E}}:&(1,1,1),\qquad\, \hat{Q}:\,(3,2,\frac{1}{6}),\quad
+\hat{{\overline U}}:\,(\overline 3,1,-\frac{2}{3}),\nonumber\\ \hat{{\overline D}}:&(\overline 3,1,\frac{1}{3}),\quad
 \hat{H}_1:&(1,2,-\frac{1}{2}),\quad \hat{H}_2:\,(1,2,\frac{1}{2}),\quad \hat{S}:\,(1,1,0)
 \label{fields}
 \end{eqnarray}
 $\hat S$ is the Higgs singlet that is particular to the NMSSM.
 $\hat L$, $\hat Q$, $\hat H_1$, and $\hat H_2$ are the left handed doublet lepton and
-quark superfields and the two Higgs doublets. $\hat{\bar E}$, $\hat{\bar U}$, and
-$\hat{\bar D}$ are the lepton, up-type quark and down-type quark
+quark superfields and the two Higgs doublets. $\hat{\overline E}$, $\hat{\overline U}$, and
+$\hat{\overline D}$ are the lepton, up-type quark and down-type quark
 right-handed superfield singlets, respectively. 
 Note that the lepton
 doublet superfields $\hat{L}^a_i$ and the Higgs doublet superfield coupling
@@ -158,8 +180,8 @@ respectively.  Currently, only real couplings in the superpotential and Lagrangi
 The full renormalisable, $R-$parity conserving superpotential is given by,
 \ba 
  W_{\Zv}  &=&  \epsilon_{ab} \left[ (Y_E)_{ij} \hat L_i^b
-\hat H_1^a \hat{\bar E}_j + (Y_D)_{ij} \hat Q_i^{bx} \hat H_1^a \hat{\bar D}_{jx} +
-(Y_U)_{ij} \hat Q_i^{ax} \hat H_2^b \hat{\bar U}_{jx} 
+\hat H_1^a \hat{\overline E}_j + (Y_D)_{ij} \hat Q_i^{bx} \hat H_1^a \hat{\overline D}_{jx} +
+(Y_U)_{ij} \hat Q_i^{ax} \hat H_2^b \hat{\overline U}_{jx} 
 +(\lambda \hat{S} + \mu)(\hat{H}^a_2 \hat{H}^b_1) \right ] +\frac{1}{3}\kappa\hat{S}^3 + \zeta_F\hat{S} + \frac{1}{2} \mu^\prime\hat{S}^2 \\
  &=& W_{MSSM}^{\mu =0}  +  \epsilon_{ab}\left [(\lambda \hat{S} + \mu)(\hat{H}^a_2 \hat{H}^b_1) \right ]+\frac{1}{3}\kappa\hat{S}^3 + \zeta_F\hat{S} + \frac{1}{2} \mu^\prime\hat{S}^2. 
 \label{eq:WZ3V}
@@ -169,8 +191,8 @@ The full renormalisable, $R-$parity conserving superpotential is given by,
 
 \ba 
  W_{Z_3} &=& \epsilon_{ab} \left[ (Y_E)_{ij} \hat L_i^b
-\hat H_1^a \hat{\bar E}_j + (Y_D)_{ij} \hat Q_i^{bx} \hat H_1^a \hat{\bar D}_{jx} +
-(Y_U)_{ij} \hat Q_i^{ax} \hat H_2^b \hat{\bar U}_{jx}  
+\hat H_1^a \hat{\overline E}_j + (Y_D)_{ij} \hat Q_i^{bx} \hat H_1^a \hat{\overline D}_{jx} +
+(Y_U)_{ij} \hat Q_i^{ax} \hat H_2^b \hat{\overline U}_{jx}  
 +\lambda \hat{S}(\hat{H}^a_2 \hat{H}^b_1) \right ]+\frac{1}{3}\kappa\hat{S}^3 \\
  &=& W_{MSSM}^{\mu =0}  + \epsilon_{ab} \lambda \hat{S} (\hat{H}^a_2 \hat{H}^b_1) +\frac{1}{3}\kappa\hat{S}^3.
 \label{eq:WZ3C}
@@ -219,7 +241,7 @@ m_{H_2}^2&=& \frac{1}{2}M_Z^2 \cos(2\beta) - \ds\frac{1}{2}\lambda^2 v_1^2
 m_S^2 &=& -\kappa^2 s^2 - \ds\frac{1}{2}\lambda^2v^2 + \kappa\lambda v_2v_1
 + \lambda A_{\lambda} \frac{v_2v_1}{\sqrt{2}s}
 -\kappa A_{\kappa}s  - m^{\prime \,2}_S - \mu^{\prime \,2} + 2 \kappa \xi_F  - 3 \kappa s \mu^\prime \label{eq:mins}
-\ea where $\tan \beta = v_2 /  v_1$. %% $\bar g = \sqrt{g^2+g^{\prime 2}}$ and $g$ and $g^{\prime}$
+\ea where $\tan \beta = v_2 /  v_1$. %% $\overline g = \sqrt{g^2+g^{\prime 2}}$ and $g$ and $g^{\prime}$
 %% are the gauge couplings of $SU(2)_L$ and $U(1)$ interactions
 %% respectively, with $g = g_2$ and $g^\prime = \sqrt{3/5} \, g_1$.
 For simplicity we have introduced,
@@ -288,7 +310,7 @@ M_{H^0}^2=
 \ba
  (M_{H^0}^2)_{11} & = & M_Z^2 c_\beta^2 + (\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
 \widehat{m}_3^2)\,\tan\beta,\\
- (M_{H^0}^2)_{12} & = & (4\lambda^2 - \bar{g}^2) \ds\frac{v_2 v_1 }{4}- 
+ (M_{H^0}^2)_{12} & = & (4\lambda^2 - \overline{g}^2) \ds\frac{v_2 v_1 }{4}- 
 \ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} - \widehat{m}_3^2, \\ 
  (M_{H^0}^2)_{13} & = & \lambda (2 \mu_\textrm{eff}\,\ds\frac{ v_1}{\sqrt{2}} -
 (B_\textrm{eff} + \kappa s + \mu')\ds\frac{ v_2}{\sqrt{2}}),\\
@@ -702,16 +724,38 @@ the scalar masses and tri-linear scalar couplings. All
 $\beta$ functions are real and include inter-generational quark mixing
 effects. 
 
-\subsection{Electroweak symmetry breaking \label{ewsb}}
+
+
+\subsection{Low energy boundary conditions and EWSB \label{ewsb}}
+The low energy boundary conditions come from measured values of Standard Model fermions and gauge boson masses, $\alpha(M_Z)$, $G_F^\mu$ and $\alpha_S(M_z)$ and two input parameters, which then fix the gauge and Yukawa couplings and the output parameters of electroweak symmetry breaking.  The three gauge couplings $g_1$, $g_2$ and $g_3$, where $g_1$ is the GUT normalised gauge coupling of $U(1)_Y$ and 3rd family $\overline{DR}$ Yukawa couplings, $y_t$, $y_b$ and $y_\tau$ are fixed, including the precision corrections at $M_Z$, in the same procedure as described in Section 3.3 of \cite{Allanach:2001kg}.  However the one loop self energies of the gauge bosons and fermions are modified to match those given in \cite{Degrassi:2009yq} for the NMSSM.  
+ 
+
+The parameters are then evolved to the scale $M_{SUSY}= \equiv \sqrt{m_{{\tilde t}_1}(M_{SUSY}) m_{{\tilde t}_2}(M_{SUSY})}$.   The three EWSB conditions allow the pole $Z$ mass, to be input with it's central value $M_Z$, while constraining three parameters.  Equations \ref{eq:mind} and \ref{eq:minu} can be rewritten as in the MSSM.  Including tadpole corrections, $t_i$ and the transverse self energy of the $Z$ boson, $\Pi^T_{ZZ}$, these appear as 
+
+\ba
+\mu_{eff}^2(M_{SUSY}) &=&
+\frac{m_{\overline{H}_1}^2(M_{SUSY}) -  m_{\overline{H}_2}^2(M_{SUSY}) \tan^2
+  \beta(M_{SUSY})}{\tan^2 \beta(M_{SUSY}) - 1} 
+- \frac{1}{2} M_{\overline Z}^2 (M_{SUSY})\label{eq:mueffcond}\\ 
+(m^2_3)_\textrm{eff}(M_{SUSY})&=&\frac{\sin{2\beta}(M_{SUSY})}{2}\left(\overline{m}_{H_u}^2(M_{SUSY})+\overline{m}_{H_d}^2(M_{SUSY})+ 2\mu_\textrm{eff}^2(M_{SUSY})\left(1+\frac{\overline{M}_z^2}{\overline{g}^2s^2}(M_{SUSY})\right)\right)\label{eq:bmucond}
+\ea where $m_{\overline{H}_i}^2 = m_{H_i}^2 - t_i/v_i$ and $M_{\overline Z}^2(M_{SUSY}) = M_Z^2 + \Re\Pi_{ZZ}^T(M_{SUSY})$ is the $\overline{DR}$ running (mass)$^2$ of the $Z$ boson and $\bar g = \sqrt{g_2^2+g^{\prime 2}}$ and $g_2$ and $g^{\prime}$
+are the gauge couplings of $SU(2)_L$ and (unnormalised) $U(1)$ interactions
+respectively, with $g^\prime = \sqrt{3/5} \, g_1$.  In this way we can fix $\mu_{eff}$ and $(m^2_3)_\textrm{eff}$ in a similar manner as the MSSM.  However in this case these are effective parameters constructed from several model parameters, so we must select which ones are fixed.
+
+In the $Z_3$-NMSSM we fix $s$ in Eq.~\ref{eq:mueffcond} and $\kappa$ in  Eq.~\ref{eq:bmucond} and we use the third EWSB condition to fix $m_S^2$.  In the \Zv-NMSSM we have more freedom and can choose to fix $\mu$ and $m_3^2$ just as in the MSSM, and use the third EWSB condition to fix $\xi_S$.  
+
+The full one loop tadpoles from \cite{Degrassi:2009yq} are used along with NMSSM two loop $\oatas$ and $\oabas$ contributions to the tadpoles are used from \cite{Degrassi} (the fortran files for which were very helpfully supplied by Pietro Slavich) while two loop corrections from the MSSM are used for $\oatq$, $\oabatau$, $\oabq$, $\oatauq$ and $\oatab$, though it should be noted that these are not complete in the NMSSM. 
+ 
+In both cases the tadpole corrections themselves depend on the output from the EWSB conditions, therefore an iteration is employed to find a self consistent solution.     
 
 
 \subsection{NMSSM spectrum \label{spec}}
-
+After the iteration has converged we calculate the pole masses.  The Higgs pole masses are calculated using one loop self energies from  \cite{Degrassi:2009yq} with additional contributions to the Higgs self energies  
 
 
 \section*{Acknowledgments}
 This work has been partially supported by 
-STFC\@. 
+STFC\@. We thank Pietro Slavich for supplying us with the NMSSM fortran files with two loop  $\oatas$ and $\oabas$ contributions to the Higgs masses and also a fortran file with one loop self energies which we used as a cross check as well as his helpful explanations on how to use them.
 
 
 \appendix
