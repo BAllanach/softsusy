@@ -725,19 +725,17 @@ $\beta$ functions are real and include inter-generational quark mixing
 effects. 
 
 
-
+The parameters are then evolved to the scale $M_{SUSY}= \equiv \sqrt{m_{{\tilde t}_1}(M_{SUSY}) m_{{\tilde t}_2}(M_{SUSY})}$.  The $\overline{DR}$ running masses for the mass eigenstates are calculated using the expressions given in Section \ref{sec:tree}.
 \subsection{Low energy boundary conditions and EWSB \label{ewsb}}
-The low energy boundary conditions come from measured values of Standard Model fermions and gauge boson masses, $\alpha(M_Z)$, $G_F^\mu$ and $\alpha_S(M_z)$ and two input parameters, which then fix the gauge and Yukawa couplings and the output parameters of electroweak symmetry breaking.  The three gauge couplings $g_1$, $g_2$ and $g_3$, where $g_1$ is the GUT normalised gauge coupling of $U(1)_Y$ and 3rd family $\overline{DR}$ Yukawa couplings, $y_t$, $y_b$ and $y_\tau$ are fixed, including the precision corrections at $M_Z$, in the same procedure as described in Section 3.3 of \cite{Allanach:2001kg}.  However the one loop self energies of the gauge bosons and fermions are modified to match those given in \cite{Degrassi:2009yq} for the NMSSM.  
+The low energy boundary conditions come from measured values of Standard Model fermions and gauge boson masses, $\alpha(M_Z)$, $G_F^\mu$ and $\alpha_S(M_z)$ and two input parameters, which then fix the gauge and Yukawa couplings and the output parameters of electroweak symmetry breaking. 
  
-
-The parameters are then evolved to the scale $M_{SUSY}= \equiv \sqrt{m_{{\tilde t}_1}(M_{SUSY}) m_{{\tilde t}_2}(M_{SUSY})}$.   The three EWSB conditions allow the pole $Z$ mass, to be input with it's central value $M_Z$, while constraining three parameters.  Equations \ref{eq:mind} and \ref{eq:minu} can be rewritten as in the MSSM.  Including tadpole corrections, $t_i$ and the transverse self energy of the $Z$ boson, $\Pi^T_{ZZ}$, these appear as 
-
+   The three EWSB conditions allow the pole $Z$ mass, to be input with it's central value $M_Z$, while constraining three parameters.  Equations \ref{eq:mind} and \ref{eq:minu} can be rewritten as in the MSSM.  Including tadpole corrections, $t_i$ and the transverse self energy of the $Z$ boson, $\Pi^T_{ZZ}$, these appear as, 
 \ba
 \mu_{eff}^2(M_{SUSY}) &=&
 \frac{m_{\overline{H}_1}^2(M_{SUSY}) -  m_{\overline{H}_2}^2(M_{SUSY}) \tan^2
   \beta(M_{SUSY})}{\tan^2 \beta(M_{SUSY}) - 1} 
 - \frac{1}{2} M_{\overline Z}^2 (M_{SUSY})\label{eq:mueffcond}\\ 
-(m^2_3)_\textrm{eff}(M_{SUSY})&=&\frac{\sin{2\beta}(M_{SUSY})}{2}\left(\overline{m}_{H_u}^2(M_{SUSY})+\overline{m}_{H_d}^2(M_{SUSY})+ 2\mu_\textrm{eff}^2(M_{SUSY})\left(1+\frac{\overline{M}_z^2}{\overline{g}^2s^2}(M_{SUSY})\right)\right)\label{eq:bmucond}
+(m^2_3)_\textrm{eff}(M_{SUSY})&=&\frac{\sin{2\beta}(M_{SUSY})}{2}\left(\overline{m}_{H_u}^2(M_{SUSY})+\overline{m}_{H_d}^2(M_{SUSY})+ 2\mu_\textrm{eff}^2(M_{SUSY})\left(1+\frac{\overline{M}_z^2}{\overline{g}^2s^2}(M_{SUSY})\right)\right),\label{eq:bmucond}
 \ea where $m_{\overline{H}_i}^2 = m_{H_i}^2 - t_i/v_i$ and $M_{\overline Z}^2(M_{SUSY}) = M_Z^2 + \Re\Pi_{ZZ}^T(M_{SUSY})$ is the $\overline{DR}$ running (mass)$^2$ of the $Z$ boson and $\bar g = \sqrt{g_2^2+g^{\prime 2}}$ and $g_2$ and $g^{\prime}$
 are the gauge couplings of $SU(2)_L$ and (unnormalised) $U(1)$ interactions
 respectively, with $g^\prime = \sqrt{3/5} \, g_1$.  In this way we can fix $\mu_{eff}$ and $(m^2_3)_\textrm{eff}$ in a similar manner as the MSSM.  However in this case these are effective parameters constructed from several model parameters, so we must select which ones are fixed.
@@ -748,9 +746,11 @@ The full one loop tadpoles from \cite{Degrassi:2009yq} are used along with NMSSM
  
 In both cases the tadpole corrections themselves depend on the output from the EWSB conditions, therefore an iteration is employed to find a self consistent solution.     
 
+After the EWSB iteration converges the parameters are run to $m_Z$.  Here the three gauge couplings $g_1$, $g_2$ and $g_3$, where $g_1$ is the GUT normalied gauge coupling of $U(1)_Y$ and 3rd family $\overline{DR}$ Yukawa couplings, $y_t$, $y_b$ and $y_\tau$ are fixed, including the precision corrections at $M_Z$, in the same procedure as described in Section 3.3 of \cite{Allanach:2001kg}.  However the one loop self energies of the gauge bosons and fermions are modified to match those given in \cite{Degrassi:2009yq} for the NMSSM.  \textcolor{red}{--- PA: Add comment on the delta rho corrections and the Higgs ---}
+
 
 \subsection{NMSSM spectrum \label{spec}}
-After the iteration has converged we calculate the pole masses.  The Higgs pole masses are calculated using one loop self energies from  \cite{Degrassi:2009yq} with additional contributions to the Higgs self energies  
+After the iteration has converged we calculate the pole masses.  The Higgs pole masses are calculated using one loop self energies from  \cite{Degrassi:2009yq} with additional contributions to the Higgs self couplings from \Zv couplings added using Appendix A of \cite{Ellwanger:2009dp}.  
 
 
 \section*{Acknowledgments}
