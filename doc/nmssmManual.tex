@@ -794,6 +794,13 @@ match those given in \cite{Degrassi:2009yq} for the NMSSM.
 \textcolor{red}{--- PA: Add comment on the delta rho corrections and
   the Higgs ---}
 
+In the \Zv-NMSSM $\kappa$, $s$, $\xi_F$ and $\mu^\prime$ are also
+reset to their input values at $M_Z$.  The parameters are then evolved
+back to $M_{SUSY}$ where the $M_Z^2$ and $\tan\beta$ are predicted as
+part of a consistency check and if the user has specified that
+$\lambda$ is to be input at the SUSY scale then $\lambda$ is set here.
+
+
 The parameters are then evolved back up to $M_X$ and the procedure is repeated until convergence is achieved, as shown in Fig.~\ref{fig:algorithm}. 
 
 \subsection{NMSSM spectrum \label{spec}}
@@ -823,8 +830,6 @@ and also auto-generated Latex output from SARAH showing these self
 energies, as well as simple checks by deriving a few things ourselves.
 
 Finally all one loop self energies, Tadpoles and two loop RGEs were unit tested against code pieces auto-generated from FLEXIBLE SUPERSYMMETRY \cite{flexi-susy}, an in development MATHEMATICA package for generating C++ code which makes use of the aforementioned SARAH package\cite{Staub:2009bi,Staub:2010jh,Staub:2012pb,Staub:2013tta}. 
-
-
 
 
 \section*{Acknowledgments}
