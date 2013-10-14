@@ -646,6 +646,7 @@ public:
   int displayRows() const { return rows; }; 
   int displayCols() const { return cols; };
   const ComplexMatrix & display() const { return *this; };///< returns whole matrix
+  std::size_t size() const { return x.size(); }
 
   /// Sets diagonal entries equal to v, rest are 0
   const ComplexMatrix & operator=(const Complex &v);  
