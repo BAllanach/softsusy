@@ -1,4 +1,4 @@
-bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x Devtest.x TestNM.x doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf test_matrix_resize.x
+bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x Devtest.x TestNM.x doc/nmssmManual.pdf doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf test_matrix_resize.x
 
 lib_LTLIBRARIES = libsoft.la libnmssm.la 
 
@@ -55,7 +55,8 @@ susy.cpp utils.cpp mssmUtils.cpp \
 tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp twoloophiggs.f 
 libnmssm_la_LDFLAGS = $(FLIBS)
 
-DOCFILES=doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
+DOCFILES=doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
+doc/nmssmManual.pdf
 EXTRA_DIST=$(DOCFILES)
 
 OUTPUTFILES = slha2Output lesHouchesOutput rpvHouchesOutput 
@@ -111,5 +112,3 @@ doc/nmssmManual.pdf: doc/nmssmManual.tex
 	latex nmssmManual.tex; latex nmssmManual.tex; \
 	dvips -f nmssmManual > nmssmManual.ps; 	\
 	ps2pdf nmssmManual.ps; cd ..
-
-
