@@ -1218,7 +1218,7 @@ At two-loop we obtain
 \end{align}
 
 \subsection{Additional Parameters}
-Here we list the $\lambda$ and $\kappa$ contributions to the RGEs for the scalar masses $\mtrisq \equiv B\mu$ and $\msprsq \equiv B'\mu'$.  At one-loop we get
+Here we list the $\lambda$ and $\kappa$ contributions to the RGEs for the scalar masses $\mtrisq \equiv B\mu$ and $\msprsq \equiv B'\mu'$, and the evolution of the Higgs vevs $v_{1,2,s}$.  For the former, we get at one-loop
 %
 \begin{equation}
 \left.\beta_{\mtrisq}^{(1)}\right|_\lambda = 2\lambda(3\lambda\mtrisq + 2\mu a_\lambda) + 2\lambda\kappa\msprsq\,.
@@ -1270,6 +1270,40 @@ At two-loop we have
 &+\tfrac{12}{5}\lamsq g_1^2\big\{\msprsq + 2\mu'[(\Alam) - M_1]\big\} 
 +12\lamsq g_2^2 \big\{\msprsq + 2\mu'[(\Alam) - M_2] \big\}\,.
 \end{align}
+
+At one-loop, the up- and down-type Higgs vevs $v_{u,d}$ receive additional contributions solely from $\lambda$ \cite{Sper13},
+%
+\be
+\left.\beta^{(1)}_{v_\alpha}\right|_\lambda = -v_\alpha\lamsq\,, \qquad \alpha=1,2\,,
+\ee
+%
+while the $\beta$ function for the singlet vev $s$ is given by
+%
+\be 
+\beta^{(1)}_s = -2s(\lamsq + \kapsq)\,.
+\ee
+%
+At two-loop, the $\beta$ functions are given by \cite{Sper13}
+%
+\begin{align}
+\beta^{(2)}_{v_1} &= v_1\Bigg\{\gamma^{(2)H_1}_{H_1} - \Big(\tfrac{3}{10}g_1^2 + \tfrac{3}{2}g_2^2\Big)\Big[3\tr(Y_DY_D^\dagger) + \tr(Y_EY_E^\dagger) + \lamsq\Big] + R\Bigg\}\,, \\
+%
+\beta^{(2)}_{v_2} &= v_2\Bigg\{\gamma^{(2)H_2}_{H_2} - 
+\Big(\tfrac{3}{10}g_1^2 + \tfrac{3}{2}g_2^2\Big)
+\Big[3\tr(Y_UY_U^\dagger) + \lamsq\Big] + R\Bigg\}\,, \\
+%
+\beta^{(2)}_s &= s\gamma^{(2)S}_S\,,
+\end{align}
+%
+where $R$ is an $O(g^4)$ polynomial whose expression is given in \red{[REF]}.
+
+The one-loop $\beta$ function for $\tan\beta$ is the same in the NMSSM as the MSSM.  At two-loop, one has
+%
+\be
+\beta^{(2)}_{t_\beta} = \tan\beta\Bigg\{\gamma^{(2)H_2}_{H_2} - 
+\gamma^{(2)H_1}_{H_1} + \Big(\tfrac{3}{10}g_1^2 + \tfrac{3}{2}g_2^2\Big)
+\frac{\beta^{(1)}_{t_\beta}}{\tan\beta}\Bigg\}
+\ee
 
 
 \begin{thebibliography}{10}
@@ -1384,6 +1418,15 @@ At two-loop we have
 \bibitem{flexi-susy} 
 P.~Athron, Jae-hyeon Park, D.~Stockinger and A.~Voigt, {\it Flexible Supersymmetry}, In development, \\
 https://github.com/Expander/FlexibleSUSY
+
+%\cite{Sper13}
+\bibitem{Sper13} 
+  M.~Sperling, D.~Stöckinger and A.~Voigt,
+  %``Renormalization of vacuum expectation values in spontaneously broken gauge theories,''
+  JHEP {\bf 1307}, 132 (2013)
+  [arXiv:1305.1548 [hep-ph]].
+  %%CITATION = ARXIV:1305.1548;%%
+  %4 citations counted in INSPIRE as of 14 Oct 2013
 
 
 \end{thebibliography}
