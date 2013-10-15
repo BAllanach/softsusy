@@ -407,6 +407,21 @@ energy SUSY breaking boundary conditions are imposed.
 \subsection{Running of NMSSM couplings~\label{running}}
 \red{--- LCT: Prologue not to be taken seriously (yet) ---}
 
+As in MSSM \SOFTSUSY, once radiative corrections to gauge and Yukawa couplings 
+have been computed at $M_Z$, all SUSY preserving and soft breaking parameters 
+are evolved to the scale
+%
+\be
+M_S = \sqrt{m_{\tilde{t}_1}(M_S)m_{\tilde{t}_2}(M_S)}\,.
+\ee
+%
+The evolution of parameters is governed by three family, two-loop $\beta$ 
+functions for the $\Zv$ NMSSM.  The renormalization group equations (RGEs) were derived from the general results provided by Martin and Vaughn \cite{MV94} and Yamada \cite{Yam94}.  In particular, we appended to the MSSM RGEs \cite{MV94} the relavant contributions arising from NMSSM pieces.  These expressions are coolected in \ref{sec:RGEs}.  In each case, we have checked that our results with full flavour-mixing reduce to the RGEs obtained by EHT in the third family approximation, i.e.\ when the lightest two families in the Yukawa matrices are neglected.
+
+
+Note that in the program, all Yukawa couplings are real and family-mixing is incorporated.
+
+$\tan\beta$ and the Higgs vev parameters $v_\alpha$ and $s$ are also run to the same level of accuracy as MSSM \SOFTSUSY (i.e.\ two-loop order in Feynman gauge).  We have utilised the results of Sperling et al.\ \cite{Sper13} to incorporate append the additional NMSSM pieces to the MSSM RGEs for $\tan\beta$ and $v_\alpha$.  Similarly, the running of $s$ has been lifted from this work.
 
 
 \textcolor{red}{--- LCT: Up to here ---}
@@ -417,9 +432,7 @@ the scalar masses and tri-linear scalar couplings. All
 $\beta$ functions are real and include inter-generational quark mixing
 effects. 
 
-
-The parameters are then evolved to the scale $M_{SUSY}= \equiv
-\sqrt{m_{{\tilde t}_1}(M_{SUSY}) m_{{\tilde t}_2}(M_{SUSY})}$.  The
+ The
 $\overline{DR}$ running masses for the mass eigenstates are calculated
 using the expressions given in Section \ref{sec:tree}.
 \subsection{Low energy boundary conditions and EWSB \label{ewsb}}
@@ -721,18 +734,20 @@ class NmssmSoftsusy : public Softsusy<SoftParsNmssm> {
 };
 \end{verbatim}
 
-\section{Renormalization Group Equations for the NMSSM}
-For a general, ${\cal N}=1$ semi-simple SUSY gauge theory, the expressions \cite{MV94,Yam94} 
-for the one- and two-loop renormalization group equations (RGEs) in the 
-$\overline{\mbox{DR}}$ scheme are known.%
-\footnote{Herein, the term `RGEs' refers to the one- and two-loop expressions --- higher order contributions are not considered.}
-From these results, it is possible to derive the explicit form of the RGEs in a 
-chosen model, e.g.\ the work of Martin and Vaughn \cite{MV94} provides a 
-complete list of the RGEs for the MSSM.  
+\section{Renormalization Group Equations for the NMSSM}\label{sec:RGEs}
+For a general, ${\cal N}=1$ semi-simple SUSY gauge theory, the expressions 
+\cite{MV94,Yam94} for the one- and two-loop renormalization group equations 
+(RGEs) in the $\overline{\mbox{DR}}$ scheme are known.%
+\footnote{Herein, the term `RGEs' refers to the one- and two-loop expressions 
+--- higher order contributions are not considered.}
+From these general results, it is possible to derive the explicit form of the 
+RGEs in a chosen model, e.g.\ the work of Martin and Vaughn \cite{MV94} provides
+ a complete list of the RGEs for the MSSM.  
 
-In the case of the $\Zv$ NMSSM considered in this work, it is a simple task to generalise the MSSM expressions \cite{MV94} to include contributions due to superpotential parameters such as $\lambda$ and their soft SUSY-breaking counterparts $a_\lambda$.  Naturally, the RGEs for such parameters must be derived separately.  
-
-In the third generation approximation
+In the case of the $\Zv$ NMSSM, it is a simple task to generalise the MSSM 
+expressions \cite{MV94} to include contributions due to superpotential 
+parameters such as $\lambda$ and their soft SUSY-breaking counterparts 
+$a_\lambda$.  (Naturally, the RGEs for such parameters must be derived separately.)  Such a procedure was carried out by Ellwanger et al.\ \cite{Ellwanger:2009dp}, who made use of the the third generation approximation
 %
 \begin{equation}
 Y_U \approx \left(\begin{array}{c c c} 
@@ -754,7 +769,11 @@ Y_E \approx \left(\begin{array}{c c c}
 \end{array}\right)\,, 
 \end{equation}
 %
-the RGEs for the $\Zv$ NMSSM can be found in the work of Ellwanger et al.\ \cite{Ellwanger:2009dp}.
+in order to simplify the resulting expressions.
+
+In \SOFTSUSY, the whole calculation is performed with quark mixing incorporated, so our strategy is to derive the additional NMSSM contributions from general results \cite{MV94,Yam94} and present them below.  For the parts of the RGEs which overlap with the NMSSM, we refer the reader to \cite{MV94}.
+
+In each case, we have checked our results against EHT by imposing 3rd gen approx.
 
 The expressions for these additional contributions are listed below, where we have included effects due to inter-generation quark mixing.  In the interest of brevity we refer the reader to the MSSM results \cite{MV94} where necessary. 
 
