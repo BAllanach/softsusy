@@ -1,7 +1,7 @@
 #! /bin/sh
 
 DIE=0
-PROJECT="NMSSM SoftSusy"
+PROJECT="Softsusy"
 CONFIG_DIR="Config"
 
 (aclocal --version) < /dev/null > /dev/null 2>&1 || {
