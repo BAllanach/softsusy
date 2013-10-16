@@ -8883,18 +8883,17 @@ void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
 
    const double mQ2sqr = displaySoftMassSquared(mQl, 2, 2),
       mU2sqr = displaySoftMassSquared(mUr, 2, 2),
-      mD2sqr = displaySoftMassSquared(mDr, 2, 2);
+      mD2sqr = displaySoftMassSquared(mDr, 2, 2),
+      mQ3sqr = displaySoftMassSquared(mQl, 3, 3),
+      mU3sqr = displaySoftMassSquared(mUr, 3, 3);
    const double q2 = sqrt((2.0 * mQ2sqr + mU2sqr + mD2sqr) / 4.0);
+   const double qstsb = sqrt(mQ3sqr * mU3sqr);
 
    runto(q2);
    extragaugeSLHA(out, "GAUGEATQ2");
    yukawaMatricesSLHA(out, "ATQ2");
    extramsoftSLHA(out, "ATQ2");
    nmssmrunSLHA(out, "NMSSMRUNATQ2");
-
-   const double mQ3sqr = displaySoftMassSquared(mQl, 3, 3),
-      mU3sqr = displaySoftMassSquared(mUr, 3, 3);
-   const double qstsb = sqrt(mQ3sqr * mU3sqr);
 
    runto(qstsb);
    extragaugeSLHA(out, "GAUGEATQSTSB");
