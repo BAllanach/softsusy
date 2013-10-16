@@ -8859,6 +8859,28 @@ void NmssmSoftsusy::extramsoftSLHA(ostream& out, const char* blockName) {
    out << "      # Atau(Q)NMSSM DRbar" << '\n';
 }
 
+void NmssmSoftsusy::extrahmixSLHA(ostream& out, const char* blockName) {
+  out << "Block HMIX" << blockName << " Q= " << displayMu() <<
+    " # Higgs mixing parameters\n";
+  out << "     1    "; printRow(out, displaySusyMu());
+  out << "      # mu(Q)NMSSM DRbar\n";
+  out << "     2    "; printRow(out, displayTanb());
+  out << "      # tan beta(Q)NMSSM DRbar Feynman gauge\n";
+  out << "     3    "; printRow(out, displayHvev());
+  out << "      # higgs vev(Q)NMSSM DRbar Feynman gauge\n";
+  out << "     4    ";
+  const double lam = displayLambda();
+  const double s = displaySvev();
+  const double mueff = lam * s / root2;
+  const double Beff = displaySoftAlambda() + displayKappa() * s / root2;
+  const double m3hatsq = displayM3Squared()
+     + lam * (displayMupr() * s + displayXiF()); // TODO: check for missing factor root2
+  const double MP11 = 2. * (mueff * Beff + m3hatsq)
+     / sin(2. * atan(displayTanb()));
+  printRow(out, MP11);
+  out << "      # mA^2(Q)NMSSM DRbar\n";
+}
+
 void NmssmSoftsusy::extragaugeSLHA(ostream& out, const char* blockName) {
   double gp = displayGaugeCoupling(1) * sqrt(0.6);
   out << "Block " << blockName << " Q= " << displayMu()
@@ -8899,6 +8921,7 @@ void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
    extragaugeSLHA(out, "GAUGEATQSTSB");
    yukawaMatricesSLHA(out, "ATQSTSB");
    extramsoftSLHA(out, "ATQSTSB");
+   extrahmixSLHA(out, "ATQSTSB");
    nmssmrunSLHA(out, "NMSSMRUNATQSTSB");
 }
 
