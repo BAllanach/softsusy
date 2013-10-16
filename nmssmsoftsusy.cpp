@@ -8874,7 +8874,7 @@ void NmssmSoftsusy::extrahmixSLHA(ostream& out, const char* blockName) {
   const double mueff = lam * s / root2;
   const double Beff = displaySoftAlambda() + displayKappa() * s / root2;
   const double m3hatsq = displayM3Squared()
-     + lam * (displayMupr() * s + displayXiF()); // TODO: check for missing factor root2
+     + lam * (displayMupr() * s / root2 + displayXiF());
   const double MP11 = 2. * (mueff * Beff + m3hatsq)
      / sin(2. * atan(displayTanb()));
   printRow(out, MP11);
