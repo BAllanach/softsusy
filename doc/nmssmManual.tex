@@ -354,16 +354,22 @@ The charged Higgs fields in mass basis give one massless charged Goldstone boson
 \widehat{m}_3^2\right)(\tan \beta + \cot \beta) + M_W^2 - \ds\frac{\lambda^2 v^2}{2},\qquad. \ee
   
 \section{Calculation Algorithm \label{sec:calculation}}
-We now describe the algorithm used to perform the calculation.  The full iterative algorithm to determine the mass spectra is shown schematically in Fig.\ref{fig:algorithm}.  Here we will provide a detailed description of this procedure and specify all contributions taht are included in our calculations.  
+We now describe the algorithm used to perform the calculation.  The full iterative algorithm to determine the mass \red{spectrum} %%%
+ is shown schematically in Fig.\ \ref{fig:algorithm}.  Here we will provide a detailed description of this procedure and specify all contributions that are included in \red{the calculation.} %%%  
 
-As in the MSSM we match to Standard Model fermions and gauge boson masses, $\alpha(M_Z)$, $G_F^\mu$ and $\alpha_S(M_z)$.  The evolution below $M_Z$ proceeds as in the MSSM, as described in Section 3.1 of the MSSM SOFTSUSY manual\cite{Allanach:2001kg}.  The initial guess for the SUSY preserving $\overline{DR}$ parameters at $m_t$ also follows the procedure in \cite{Allanach:2001kg}, with new NMSSM parameters $\{\lambda, \kappa, s, \xi_F, \mu^\prime \}$ either initially set to their input values values or to zero in  the case of $\kappa$ and $s$ when they are to be output from the EWSB conditions.      
-
-Following the initial guess the SUSY preserving parameters are evolved to a user specified $M_X$ scale with two loop RGEs. As in the MSSM version if gauge-unification has been specified as a boundary condition, $M_X$ is revised to leading log order to provide a more accurate value upon the next iteration:
-\begin{equation}
-M_X^{new} = M_X \exp \left({\frac{g_2(M_X) - g_1(M_X)}{g_1'(M_X) - g_2'(M_X)}}\right),
-\label{mguteq}
-\end{equation}
-where primes denote derivatives calculated to 2-loop order.   
+As in MSSM \red{\SOFTSUSY, the Standard Model fermion and gauge boson masses, 
+and the couplings $\alpha(M_Z)$, $G_F^\mu$, and $\alpha_s(M_z)$ act as low-energy constraints. 
+ Below $M_Z$, the evolution of these input parameters} %%%
+ proceeds \red{in the manner} %%%
+ described in \red{Sec.\ 3.1} %%%
+ of the MSSM \red{\SOFTSUSY} %%%
+ manual \cite{Allanach:2001kg}.  \red{Similarly,} %%%
+the initial guess for the SUSY preserving $\overline{DR}$ parameters at $m_t$ 
+follows the procedure \red{outlined in Sec.\ 3.2 of \cite{Allanach:2001kg},} %%% 
+with \red{the additional} %%%
+ NMSSM parameters $\{\lambda, \kappa, s, \xi_F, \mu^\prime \}$ either initially set to their \red{(user specified)} %%% 
+input values, or to zero in the case \red{when $\kappa$ and $s$ are treated as} %%%
+ output from the EWSB conditions \red{(Sec.\ \ref{ewsb}).} %%%      
 
 \begin{figure}
 \begin{center}
@@ -405,27 +411,33 @@ energy SUSY breaking boundary conditions are imposed.
 
 
 \subsection{Running of NMSSM couplings~\label{running}}
-As in MSSM \SOFTSUSY, once radiative corrections to gauge and Yukawa couplings 
-have been computed at $M_Z$, all SUSY preserving and soft breaking parameters 
-are evolved to the scale
+Following the initial guess at $m_t$, the two-loop $\beta$ functions of the 
+$\Zv$ NMSSM are used to evolve the SUSY preserving parameters to a user 
+specified scale $M_X$. If gauge unification has been specified as a boundary 
+condition, $M_X$ is revised to leading-log order to provide a more accurate 
+value upon the next iteration:
 %
-\be
-M_S \equiv \sqrt{m_{\tilde{t}_1}(M_S)m_{\tilde{t}_2}(M_S)}\,.
-\ee
+\begin{equation}
+M_X^{\textrm{new}} = M_X \exp 
+\left({\frac{g_2(M_X) - g_1(M_X)}{g_1'(M_X) - g_2'(M_X)}}\right)\,,
+\label{mguteq}
+\end{equation}
 %
-The evolution of the $\Zv$ NMSSM parameters is governed by three family, 
-two-loop renormalization group equations (RGEs), whose form \cite{MV94,Yam94} 
-for a general, ${\cal N}=1$ semi-simple SUSY gauge theory is known. From these 
-general results, it is possible to derive the explicit expressions of the 
-RGEs in a chosen model (e.g.\ the work of Martin and Vaughn \cite{MV94} provides
- a complete list of the RGEs for the MSSM).  
+where primes denote derivatives calculated to two-loop order.   
 
-In the case of the $\Zv$ NMSSM considered here, it is a simple task to 
-generalise the MSSM expressions \cite{MV94} to include contributions due to 
-superpotential parameters such as $\lambda$ and their soft SUSY-breaking 
-counterparts $a_\lambda$.  (Naturally, the RGEs for such parameters must be 
-derived separately.)  Such a procedure has been carried out by EHT, who make use
- of the the third family approximation
+In all stages of the calculation, the evolution of the NMSSM parameters is 
+governed by three family, two-loop renormalization group equations (RGEs), whose
+ form \cite{MV94,Yam94} for a general, ${\cal N}=1$ semi-simple SUSY gauge 
+theory is known. From these general results, it is possible to derive the 
+explicit expressions of the RGEs in a chosen model (e.g.\ the work of Martin and
+ Vaughn \cite{MV94} provides a complete list of the RGEs for the MSSM).  
+
+In the case of the NMSSM considered here, it is a simple task to generalise the 
+MSSM expressions \cite{MV94} to include contributions due to superpotential 
+parameters such as $\lambda$ and their soft SUSY-breaking counterparts 
+$a_\lambda$.  (Naturally, the RGEs for such parameters must be derived 
+separately.)  Such a procedure has been carried out by EHT, who make use of the 
+the third family approximation
 %
 \begin{equation}
 Y_U \approx \left(\begin{array}{c c c} 
@@ -450,18 +462,28 @@ Y_E \approx \left(\begin{array}{c c c}
 %
 in order to simplify the resulting expressions.
 
-However in \SOFTSUSY, the whole calculation is performed with quark 
+However, in \SOFTSUSY\ the whole calculation is performed with quark 
 flavor-mixing between all three families, so it is necessary to derive the 
 additional NMSSM contributions from the general RGEs \cite{MV94,Yam94}.  The 
 resulting expressions are collected in \ref{sec:RGEs} and in each case we have 
-found agreement with the RGEs of EHT once the third family approximation 
-(\ref{eq:3rd fam}) is enforced.  Note that in the \SOFTSUSY conventions, all 
+found agreement with the results of EHT once the third family approximation 
+(\ref{eq:3rd fam}) is enforced.  Note that in the \SOFTSUSY\ conventions, all 
 $\beta$ functions are real.
 
-We also incorporate the two-loop running for $\tan\beta$ and the Higgs vev parameters $v_{1,2}$ and $s$.  Here, we make use of the results obtained by Sperling et al.\ \cite{Sper13}, where the purely NMSSM contributions are reproduced in \ref{sec:RGEs}.
+We also incorporate the two-loop running for $\tan\beta$ and the Higgs vacuum 
+expectation values (VEVs) $v_{1,2}$ and $s$.  Here, we make use of the results 
+obtained by Sperling et al.\ \cite{Sper13}, where the purely NMSSM contributions
+ are reproduced in \ref{sec:RGEs}.
 
 Note that the program can be made to run faster by switching off the two-loop
- renormalisation of the scalar masses and tri-linear scalar couplings. 
+ renormalization of the scalar masses and tri-linear scalar couplings.
+
+Once the user-supplied boundary conditions are applied at $M_X$, the whole 
+ensemble of NMSSM soft breaking and SUSY preserving couplings are evolved to 
+$M_Z$. The inclusion of radiative corrections to the gauge and Yukawa couplings 
+(steps 1 and 2 in Fig.\ \ref{fig:algorithm}), and NMSSM renormalization (step 3)
+ is analogous to MSSM \SOFTSUSY\ --- for details we refer the reader to Sects.\ 
+3.3 and 3.4 of the \SOFTSUSY\ manual \cite{Allanach:2001kg}.
 
 \subsection{Low energy boundary conditions and EWSB \label{ewsb}}
 The low energy boundary conditions come from measured values of
@@ -1391,15 +1413,6 @@ The one-loop $\beta$ function for $\tan\beta$ is the same in the NMSSM as the MS
   %%CITATION = HEP-PH/9401241;%%
   %225 citations counted in INSPIRE as of 24 Sep 2013
 
-%\cite{Ell08}
-\bibitem{Ell08} 
-  U.~Ellwanger, C.~-C.~Jean-Louis and A.~M.~Teixeira,
-  %``Phenomenology of the General NMSSM with Gauge Mediated Supersymmetry Breaking,''
-  JHEP {\bf 0805}, 044 (2008)
-  [arXiv:0803.2962 [hep-ph]].
-  %%CITATION = ARXIV:0803.2962;%%
-  %28 citations counted in INSPIRE as of 24 Sep 2013
-
 \cite{Sper13}
 \bibitem{Sper13} 
   M.~Sperling, D.~Stöckinger and A.~Voigt,
@@ -1408,6 +1421,15 @@ The one-loop $\beta$ function for $\tan\beta$ is the same in the NMSSM as the MS
   [arXiv:1305.1548 [hep-ph]].
   %%CITATION = ARXIV:1305.1548;%%
   %4 citations counted in INSPIRE as of 14 Oct 2013
+
+%\cite{Ell08}
+\bibitem{Ell08} 
+  U.~Ellwanger, C.~-C.~Jean-Louis and A.~M.~Teixeira,
+  %``Phenomenology of the General NMSSM with Gauge Mediated Supersymmetry Breaking,''
+  JHEP {\bf 0805}, 044 (2008)
+  [arXiv:0803.2962 [hep-ph]].
+  %%CITATION = ARXIV:0803.2962;%%
+  %28 citations counted in INSPIRE as of 24 Sep 2013
 
 
   %\cite{Staub:2010ty}
