@@ -27,12 +27,7 @@ double NmssmSoftsusy::testSlavichpiWWT(double g, double gp, double ht, double hb
  }
 
 double NmssmSoftsusy::getpiSS(double g,double gp, double ll, double kk, double ht, double hb, double htau, double v1, double v2, double xx, double Ak, double Al, double At, double Ab, double Atau, double p, double Q, int i, int j) const {
-   double piSS[3][3];
-   for(int ii=0; ii<=2; ii++){
-      for(int jj=0; jj<=2; jj++){
-         piSS[ii][jj] = 0;
-      }
-   }
+   double piSS[3][3] = { 0 };
 
 getpiss_(&g,&gp, &ll, &kk, &ht, &hb, &htau, &v1, &v2, &xx, &Ak, &Al, &At, &Ab, &Atau, &p, &Q, &piSS); 
   return piSS[i-1][j-1];
@@ -41,12 +36,7 @@ getpiss_(&g,&gp, &ll, &kk, &ht, &hb, &htau, &v1, &v2, &xx, &Ak, &Al, &At, &Ab, &
 
 
 double NmssmSoftsusy::getpiPP(double g,double gp, double ll, double kk, double ht, double hb, double htau, double v1, double v2, double xx, double Ak, double Al, double At, double Ab, double Atau, double p, double Q, int i, int j) const {
-   double piPP[3][3];
-   for(int ii=0; ii<=2; ii++){
-      for(int jj=0; jj<=2; jj++){
-         piPP[ii][jj] = 0;
-      }
-   }
+   double piPP[3][3] = { 0 };
 
    getpipp_(&g,&gp, &ll, &kk, &ht, &hb, &htau, &v1, &v2, &xx, &Ak, &Al, &At, 
 	    &Ab, &Atau, &p, &Q, &piPP); 
