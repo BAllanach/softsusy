@@ -8791,6 +8791,74 @@ void NmssmSoftsusy::yukawaMatricesSLHA(ostream & out, const char* blockName) {
   }
 }
 
+void NmssmSoftsusy::extramsoftSLHA(ostream& out, const char* blockName) {
+   out << "Block MSOFT" << blockName << " Q= " << displayMu()
+       << "  # NMSSM DRbar SUSY breaking parameters\n";
+   for (int i=1; i<=3; i++) {
+      out << "     " << i << "    ";
+      printRow(out, displayGaugino(i));
+      out << "      # M_" << i << "(Q)" << '\n';
+   }
+
+   out << "    21    "; printRow(out, displayMh1Squared());
+   out << "      # mH1^2(Q)" << '\n';
+   out << "    22    "; printRow(out, displayMh2Squared());
+   out << "      # mH2^2(Q)" << '\n';
+
+   out << "    31    "; printRow(out, ccbSqrt(displaySoftMassSquared(mLl, 1, 1)));
+   out << "      # meL(Q)" << '\n';
+   out << "    32    "; printRow(out, ccbSqrt(displaySoftMassSquared(mLl, 2, 2)));
+   out << "      # mmuL(Q)" << '\n';
+   out << "    33    "; printRow(out, ccbSqrt(displaySoftMassSquared(mLl, 3, 3)));
+   out << "      # mtauL(Q)" << '\n';
+   out << "    34    "; printRow(out, ccbSqrt(displaySoftMassSquared(mEr, 1, 1)));
+   out << "      # meR(Q)" << '\n';
+   out << "    35    "; printRow(out, ccbSqrt(displaySoftMassSquared(mEr, 2, 2)));
+   out << "      # mmuR(Q)" << '\n';
+   out << "    36    "; printRow(out, ccbSqrt(displaySoftMassSquared(mEr, 3, 3)));
+   out << "      # mtauR(Q)" << '\n';
+   out << "    41    "; printRow(out, ccbSqrt(displaySoftMassSquared(mQl, 1, 1)));
+   out << "      # mqL1(Q)" << '\n';
+   out << "    42    "; printRow(out, ccbSqrt(displaySoftMassSquared(mQl, 2, 2)));
+   out << "      # mqL2(Q)" << '\n';
+   out << "    43    "; printRow(out, ccbSqrt(displaySoftMassSquared(mQl, 3, 3)));
+   out << "      # mqL3(Q)" << '\n';
+   out << "    44    "; printRow(out, ccbSqrt(displaySoftMassSquared(mUr, 1, 1)));
+   out << "      # muR(Q)" << '\n';
+   out << "    45    "; printRow(out, ccbSqrt(displaySoftMassSquared(mUr, 2, 2)));
+   out << "      # mcR(Q)" << '\n';
+   out << "    46    "; printRow(out, ccbSqrt(displaySoftMassSquared(mUr, 3, 3)));
+   out << "      # mtR(Q)" << '\n';
+   out << "    47    "; printRow(out, ccbSqrt(displaySoftMassSquared(mDr, 1, 1)));
+   out << "      # mdR(Q)" << '\n';
+   out << "    48    "; printRow(out, ccbSqrt(displaySoftMassSquared(mDr, 2, 2)));
+   out << "      # msR(Q)" << '\n';
+   out << "    49    "; printRow(out, ccbSqrt(displaySoftMassSquared(mDr, 3, 3)));
+   out << "      # mbR(Q)" << '\n';
+
+   out << "Block AU" << blockName << " Q= " << displayMu() << '\n'
+       << "  1  1    "; printRow(out, displaySoftA(UA, 1, 1));
+   out << "      # Au(Q)NMSSM DRbar" << '\n'
+       << "  2  2    "; printRow(out, displaySoftA(UA, 2, 2));
+   out << "      # Ac(Q)NMSSM DRbar" << '\n'
+       << "  3  3    "; printRow(out, displaySoftA(UA, 3, 3));
+   out << "      # At(Q)NMSSM DRbar" << '\n';
+   out << "Block AD" << blockName << " Q= " << displayMu() << '\n'
+       << "  1  1    "; printRow(out, displaySoftA(DA, 1, 1));
+   out << "      # Ad(Q)NMSSM DRbar" << '\n'
+       << "  2  2    "; printRow(out, displaySoftA(DA, 2, 2));
+   out << "      # As(Q)NMSSM DRbar" << '\n'
+       << "  3  3    "; printRow(out, displaySoftA(DA, 3, 3));
+   out << "      # Ab(Q)NMSSM DRbar" << '\n';
+   out << "Block AE" << blockName << " Q= " << displayMu() << '\n'
+       << "  1  1    "; printRow(out, displaySoftA(EA, 1, 1));
+   out << "      # Ae(Q)NMSSM DRbar" << '\n'
+       << "  2  2    "; printRow(out, displaySoftA(EA, 2, 2));
+   out << "      # Amu(Q)NMSSM DRbar" << '\n'
+       << "  3  3    ";   printRow(out, displaySoftA(EA, 3, 3));
+   out << "      # Atau(Q)NMSSM DRbar" << '\n';
+}
+
 void NmssmSoftsusy::extragaugeSLHA(ostream& out, const char* blockName) {
   double gp = displayGaugeCoupling(1) * sqrt(0.6);
   out << "Block " << blockName << " Q= " << displayMu()
@@ -8821,6 +8889,7 @@ void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
    runto(q2);
    extragaugeSLHA(out, "GAUGEATQ2");
    yukawaMatricesSLHA(out, "ATQ2");
+   extramsoftSLHA(out, "ATQ2");
    nmssmrunSLHA(out, "NMSSMRUNATQ2");
 
    const double mQ3sqr = displaySoftMassSquared(mQl, 3, 3),
@@ -8830,6 +8899,7 @@ void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
    runto(qstsb);
    extragaugeSLHA(out, "GAUGEATQSTSB");
    yukawaMatricesSLHA(out, "ATQSTSB");
+   extramsoftSLHA(out, "ATQSTSB");
    nmssmrunSLHA(out, "NMSSMRUNATQSTSB");
 }
 
