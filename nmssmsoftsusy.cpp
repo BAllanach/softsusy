@@ -8365,7 +8365,7 @@ void NmssmSoftsusy::itLowsoft
     double tbIn; double predictedMzSq = 0.;
     predictedMzSq = predMzsq(tbIn);
     setPredMzSq(predictedMzSq); 
-    if(!GUTlambda) setLambda(nmpars(1));
+    if(!softsusy::GUTlambda) setLambda(nmpars(1));
                       
     if (!ewsbBCscale) err = runto(mxBC, eps);
 
@@ -8413,7 +8413,7 @@ void NmssmSoftsusy::itLowsoft
     }
     
     boundaryCondition(*this, pars);
-     if(GUTlambda) setLambda(nmpars(1));
+    if(softsusy::GUTlambda) setLambda(nmpars(1));
     if (!ewsbBCscale) err = runto(displayMsusy(), eps);
 
     calcDrBarPars();
@@ -8567,7 +8567,7 @@ void NmssmSoftsusy::lowOrg
 
     /// Initial guess: B=0, mu=1st parameter, need better guesses
     boundaryCondition(*this, pars);
-    if(GUTlambda) setLambda(nmpars(1));
+    if(softsusy::GUTlambda) setLambda(nmpars(1));
     if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
       /// LCT: Changed sets to match softsusy.cpp 8/8/13
       if(Z3){
