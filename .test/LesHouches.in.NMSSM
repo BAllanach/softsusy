@@ -44,5 +44,5 @@ Block EXTPAR  # Input parameters
 #   68   68                   # mu'
 #   69   69                   # m'_S^2
 #   70   70                   # m_S^2
-#Block QEXTPAR
+Block QEXTPAR
 #   61   -1                   # input lambda at Msusy

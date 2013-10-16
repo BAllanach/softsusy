@@ -64,6 +64,14 @@ public:
     return *this;
   }
 
+  DoubleVector& operator=(const DoubleVector& other) {
+    x.resize(other.x.size());
+    x = other.x;
+    start = other.start;
+    end = other.end;
+    return *this;
+  }
+
   template <typename E>
   DoubleVector(const Xpr<double,E> & v)
     : Indexable<double,DoubleVector>(), 
@@ -246,6 +254,14 @@ public:
   template<class E>
   DoubleMatrix & operator=(const MatXpr<double,E> & x) {
     *this = copy_from(x);
+    return *this;
+  }
+
+  DoubleMatrix& operator=(const DoubleMatrix& other) {
+    x.resize(other.x.size());
+    x = other.x;
+    rows = other.rows;
+    cols = other.cols;
     return *this;
   }
 
@@ -488,6 +504,14 @@ public:
     return *this;
   }
 
+  ComplexVector& operator=(const ComplexVector& other) {
+    x.resize(other.x.size());
+    x = other.x;
+    start = other.start;
+    end = other.end;
+    return *this;
+  }
+
   template <typename E>
   ComplexVector(const Xpr<Complex,E> & v)
     : Indexable<Complex,ComplexVector>(), 
@@ -627,6 +651,14 @@ public:
     return *this;
   }
 
+  ComplexMatrix& operator=(const ComplexMatrix& other) {
+    x.resize(other.x.size());
+    x = other.x;
+    rows = other.rows;
+    cols = other.cols;
+    return *this;
+  }
+
   template <typename E>
   ComplexMatrix(const MatXpr<Complex, E> & m)
     : MatIndexable<Complex,ComplexMatrix>(), 
@@ -646,6 +678,7 @@ public:
   int displayRows() const { return rows; }; 
   int displayCols() const { return cols; };
   const ComplexMatrix & display() const { return *this; };///< returns whole matrix
+  std::size_t size() const { return x.size(); }
 
   /// Sets diagonal entries equal to v, rest are 0
   const ComplexMatrix & operator=(const Complex &v);  

@@ -171,7 +171,7 @@ void NmssmSoftsusy::printall() const {
  
 
   double Beff =displaySoftAlambda() +displayKappa() *displaySvev() / (sqrt(2.0));
-  double  m3hatsq =displayM3Squared() + displayLambda() * (displayMupr() *displaySvev() +displayXiF() );
+  double  m3hatsq =displayM3Squared() + displayLambda() * (displayMupr() *displaySvev() / root2 +displayXiF() );
   double  mueff =displayLambda() *displaySvev() / (sqrt(2.0)) ;
   cout << "mueff = "  << displayLambda() *displaySvev() / (sqrt(2.0)) << '\n';
   cout << " Beff = "  << Beff << '\n';
@@ -8371,7 +8371,7 @@ void NmssmSoftsusy::itLowsoft
     double tbIn; double predictedMzSq = 0.;
     predictedMzSq = predMzsq(tbIn);
     setPredMzSq(predictedMzSq); 
-    if(!GUTlambda) setLambda(nmpars(1));
+    if(!softsusy::GUTlambda) setLambda(nmpars(1));
                       
     if (!ewsbBCscale) err = runto(mxBC, eps);
 
@@ -8419,7 +8419,7 @@ void NmssmSoftsusy::itLowsoft
     }
     
     boundaryCondition(*this, pars);
-     if(GUTlambda) setLambda(nmpars(1));
+    if(softsusy::GUTlambda) setLambda(nmpars(1));
     if (!ewsbBCscale) err = runto(displayMsusy(), eps);
 
     calcDrBarPars();
@@ -8573,7 +8573,7 @@ void NmssmSoftsusy::lowOrg
 
     /// Initial guess: B=0, mu=1st parameter, need better guesses
     boundaryCondition(*this, pars);
-    if(GUTlambda) setLambda(nmpars(1));
+    if(softsusy::GUTlambda) setLambda(nmpars(1));
     if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
       /// LCT: Changed sets to match softsusy.cpp 8/8/13
       if(Z3){

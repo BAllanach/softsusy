@@ -6,9 +6,11 @@ AC_CONFIG_SRCDIR([softpoint.h])
 AC_CONFIG_AUX_DIR([Config])
 AC_CONFIG_HEADERS([Config/config.h])
 
-dnl Put default fortran compiler for this variable, gfortran or g77-34 should work 
-F77=gfortran
 
+dnl Put default fortran compiler for this variable
+if test "x$CXXFLAGS" = "x"; then
+   F77=gfortran
+fi
 dnl === disable debug symbols by default =====
 if test "x$CXXFLAGS" = "x"; then
    CXXFLAGS=
