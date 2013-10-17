@@ -481,7 +481,12 @@ DoubleVector DoubleMatrix::sym2by2(double & theta) const  {
   }
 #endif
   
-  if (testNan()) throw("Nans present in linalg.cpp:sym2by2. Cannot calculate further\n");
+  if (testNan()) {
+    ostringstream ii;
+    ii << "Nans present in linalg.cpp:sym2by2. Cannot calculate further\n";
+    ii << "Diagonalising: " << *this;
+    throw ii.str();
+  }
   DoubleVector temp(1, 2);
   double sumTol = abs(abs(display(1, 1)) - abs(display(2, 2))) /
     maximum(abs(display(1, 1)), abs(display(2, 2)));
@@ -496,7 +501,7 @@ DoubleVector DoubleMatrix::sym2by2(double & theta) const  {
       theta = -PI * 0.25;
   }
   
-  DoubleMatrix mm(rot2d(theta) * (*this) * rot2d(theta).transpose());
+  DoubleMatrix mm(rot2d(theta) * (*this) * rot2d(-theta));
   
   temp(1) = mm(1, 1);
   temp(2) = mm(2, 2);
@@ -506,7 +511,8 @@ DoubleVector DoubleMatrix::sym2by2(double & theta) const  {
   if (abs(mm(2, 1)) > maxtol || abs(mm(1, 2)) > maxtol) {
     ostringstream ii;
     ii << "Inaccurate diagonalisation in LINALG::sym2by2\n";
-    ii << "Diagonalising " << * this;
+    ii << "Diagonalising " << *this;
+    ii << "With angle " << theta;
     ii << "Found diagonalised matrix to be " << mm;
     throw ii.str();
   }
