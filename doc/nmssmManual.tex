@@ -793,7 +793,39 @@ typedef Softsusy<SoftParsMssm> MssmSoftsusy;
 
 The class of supersymmetric NMSSM parameters and beta functions,
 \code{NmssmSusy}, inherits from \code{MssmSusy} to reuse the MSSM
-ones, see \figurename~\ref{fig:objstruc}.
+parameters and beta functions, see \figurename~\ref{fig:objstruc}.  It
+adds data members and access methods for the new supersymmetric NMSSM
+parameters, which can be found in \tablename~\ref{tab:nmssmsusy}.
+%
+\begin{table}
+  \centering
+  \begin{tabular}{lll}
+    data variable & & methods \\\hline
+    \code{\small double lambda, kappa} & trilinear superpotential &
+    \code{\small displayLambda}
+    \\
+    $\lambda$, $\kappa$ & couplings & \code{\small displayKappa}
+    \\\hline
+    \code{\small double mupr} & bilinear superpotential &
+    \code{\small displayMupr}
+    \\
+    $\mu'$ & coupling &
+    \\\hline
+    \code{\small double xiF} & linear superpotential &
+    \code{\small displayXiF}
+    \\
+    $\xi_F$ & coupling &
+    \\\hline
+    \code{\small double sVev} & VEV of singlet field &
+    \code{\small displaySvev}
+    \\
+    $s$ & &
+    \\\hline
+    \normalsize
+  \end{tabular}
+  \caption{\code{NmssmSusy} class data and accessor methods
+    \label{tab:nmssmsusy}}
+\end{table}
 
 \subsection{\code{SoftParsNmssm}~class}
 \label{nmssmsoftpars}
@@ -817,6 +849,40 @@ class SoftParsNmssm : public SoftPars<NmssmSusy> {
    // by reusing MSSM ones
 };
 \end{verbatim}
+%
+Furthermore, \code{SoftParsNmssm} adds new soft-breaking NMSSM data
+members and access methods, which are listed in
+\tablename~\ref{tab:nmssmsoftpars}.
+%
+\begin{table}
+  \centering
+  \begin{tabular}{lll}
+    data variable & & methods \\\hline
+    \code{\small double alambda, akappa} & trilinear scalar &
+    \code{\small displaySoftAlambda}
+    \\
+    $a_\lambda$, $a_\kappa$ & interactions & \code{\small displaySoftAkappa}
+    \\\hline
+    \code{\small double mSpsq} & bilinear scalar &
+    \code{\small displayMspSquared}
+    \\
+    $m_{S}'^2$ & interaction &
+    \\\hline
+    \code{\small double mSsq} & soft scalar mass &
+    \code{\small displayMsSquared}
+    \\
+    $m_S^2$ & &
+    \\\hline
+    \code{\small double xiS} & linear scalar &
+    \code{\small displayXiS}
+    \\
+    $\xi_S$ & soft-breaking term &
+    \\\hline
+    \normalsize
+  \end{tabular}
+  \caption{\code{SoftParsNmssm} class data and accessor methods
+    \label{tab:nmssmsoftpars}}
+\end{table}
 
 \subsection{\code{NmssmSoftsusy}~class}
 \label{nmssmsoftsusy}
