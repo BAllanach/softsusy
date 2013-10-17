@@ -900,6 +900,39 @@ class NmssmSoftsusy : public Softsusy<SoftParsNmssm> {
    // organise NMSSM spectrum calculation reusing MSSM functions
 };
 \end{verbatim}
+%
+To implement the NMSSM pole masses and mixing matrices, the
+\code{sPhysical} struct had to be generalized, see
+\tablename~\ref{tab:sphys}.
+%
+\begin{table}
+  \centering
+  \begin{tabular}{ll}
+    data variable & description \\ \hline
+    \code{DoubleVector mh0,mA0} & vectors of neutral Higgs masses $m_{h^0_{1\ldots n}}, m_{A^0_{1\ldots m}}$\\
+    & (MSSM: $n=2, m=1$, NMSSM: $n=3, m=2$) \\
+    \code{double mHpm} & charged Higgs mass $m_{H^\pm}$ \\
+    \code{DoubleVector msnu} & vector of $m_{{\tilde \nu}_{i=1 \ldots 3}}$ masses \\
+    \code{DoubleVector mch,mneut} & vectors of $m_{{\chi^\pm}_{i=1 \ldots 2}}$, 
+    $m_{{\chi^0}_{i=1 \ldots n}}$ respectively \\
+    & (MSSM: $n=4$, NMSSM: $n=5$) \\
+    \code{double mGluino} & gluino mass $m_{\tilde g}$ \\
+    \code{DoubleMatrix mixNeut} & orthogonal neutralino mixing matrix $O$\\
+    & (MSSM: 4 by 4, NMSSM: 5 by 5)\\
+    \code{double thetaL, thetaR} & $\theta_{L, R}$ chargino mixing angles \\
+    \code{double thetat, thetab} & $\theta_{t,b}$ sparticle mixing angles \\
+    \code{double thetatau} & $\theta_{\tau}$ sparticle mixing angle \\
+    \code{double thetaH} & CP-even Higgs mixing angle $\alpha$ in the MSSM \\
+    \code{double thetaA0} & CP-odd Higgs mixing angle $\theta_{A^0}$ in the NMSSM \\
+    \code{DoubleMatrix mixh0} & orthogonal CP-even Higgs mixing matrix $R$ in the NMSSM \\
+    \code{DoubleMatrix mu, md, me} & (2 by 3) matrices of up squark, down squark
+    and\\
+    &  charged slepton masses \\
+  \end{tabular}
+  \caption{\label{tab:sphys}\code{sPhysical} structure. Masses are pole
+    masses, and stored in units of GeV. Mixing angles are in radian
+    units.}
+\end{table}
 
 \section{Renormalization Group Equations for the NMSSM}\label{sec:RGEs}
 In this section, we present the components of the one- and two-loop renormalization group equations (RGEs) which belong exclusively to the NMSSM.  Our expressions have been derived in the $\overline{\mbox{DR}}$ scheme from existing results \cite{MV94,Yam94} for general SUSY gauge theories. The complete RGEs are then obtained by combing the expressions below with those for the MSSM \cite{MV94}.
