@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{color} % LCT: for text editing
 \usepackage{slashed}
+\usepackage{amsfonts} % LCT: for Germanic "e" and "m" to match \Re and \Im
 
 \bibstyle{elsarticle-num}
 
@@ -48,23 +49,42 @@
 \def\ab{\alpha_b}
 \def\as{\alpha_s}
 \def\atau{\alpha_{\tau}}
-\def\oat{{\cal O}(\at)}
-\def\oab{{\cal O}(\ab)}
-\def\oatau{{\cal O}(\atau)}
-\def\oatab{{\cal O}(\at\ab)}
-\def\oatas{{\cal O}(\at\as)}
-\def\oabas{{\cal O}(\ab\as)}
-\def\oatababq{{\cal O}(\at\ab + \ab^2)}
-\def\oatqatababq{{\cal O}(\at^2 + \at\ab + \ab^2)}
-\def\oatasatq{{\cal O}(\at\as + \at^2)}
-\def\oatasabas{{\cal O}(\at\as +\ab\as)}
-\def\oatasabasatq{{\cal O}(\at\as + \at^2 +\ab\as)}
-\def\oatq{{\cal O}(\at^2)}
-\def\oabq{{\cal O}(\ab^2)}
-\def\oatauq{{\cal O}(\atau^2)}
-\def\oabatau{{\cal O}(\ab \atau)}
-\def\oas{{\cal O}(\as)}
-\def\oatauqatab{{\cal O}(\atau^2 +\ab \atau )}
+% \def\oat{{\cal O}(\at)}
+% \def\oab{{\cal O}(\ab)}
+% \def\oatau{{\cal O}(\atau)}
+% \def\oatab{{\cal O}(\at\ab)}
+% \def\oatas{{\cal O}(\at\as)}
+% \def\oabas{{\cal O}(\ab\as)}
+% \def\oatababq{{\cal O}(\at\ab + \ab^2)}
+% \def\oatqatababq{{\cal O}(\at^2 + \at\ab + \ab^2)}
+% \def\oatasatq{{\cal O}(\at\as + \at^2)}
+% \def\oatasabas{{\cal O}(\at\as +\ab\as)}
+% \def\oatasabasatq{{\cal O}(\at\as + \at^2 +\ab\as)}
+% \def\oatq{{\cal O}(\at^2)}
+% \def\oabq{{\cal O}(\ab^2)}
+% \def\oatauq{{\cal O}(\atau^2)}
+% \def\oabatau{{\cal O}(\ab \atau)}
+% \def\oas{{\cal O}(\as)}
+% \def\oatauqatab{{\cal O}(\atau^2 +\ab \atau )}
+%%
+% LCT: big O notation should not in calligraphic font
+\def\oat{O(\at)}
+\def\oab{O(\ab)}
+\def\oatau{O(\atau)}
+\def\oatab{O(\at\ab)}
+\def\oatas{O(\at\as)}
+\def\oabas{O(\ab\as)}
+\def\oatababq{O(\at\ab + \ab^2)}
+\def\oatqatababq{O(\at^2 + \at\ab + \ab^2)}
+\def\oatasatq{O(\at\as + \at^2)}
+\def\oatasabas{O(\at\as +\ab\as)}
+\def\oatasabasatq{O(\at\as + \at^2 +\ab\as)}
+\def\oatq{O(\at^2)}
+\def\oabq{O(\ab^2)}
+\def\oatauq{O(\atau^2)}
+\def\oabatau{O(\ab \atau)}
+\def\oas{O(\as)}
+\def\oatauqatab{O(\atau^2 +\ab \atau )}
 % end of macros
 
 \journal{Computer Physics Communications}
@@ -135,10 +155,10 @@ well as a weak-scale boundary condition on gauge
 couplings, Yukawa couplings and the Higgs potential parameters.\\
 {\em Solution method:}\/ Nested iterative algorithm and numerical minimisation
 of the Higgs potential. \\
-{\em Restrictions:} \SOFTSUSY will provide a solution only in the
+{\em Restrictions:} \SOFTSUSY~will provide a solution only in the
 perturbative regime and it
 assumes that all couplings of the model are real
-(i.e.\ $CP-$conserving). The iterative \SOFTSUSY algorithm will not 
+(i.e.\ $CP-$conserving). The iterative \SOFTSUSY~algorithm will not 
 converge if parameters are too close to a boundary of successful electroweak
 symmetry breaking, but a warning flag will alert the user to this fact.
 
@@ -152,7 +172,7 @@ and ATLAS experiments at over the 5$-\sigma$ level~\cite{}.
 \section{NMSSM Parameters \label{sec:notation}}
 
 In this section, we introduce the NMSSM parameters
-in the \SOFTSUSY conventions. The translations to the variable
+in the \SOFTSUSY~conventions. The translations to the variable
 names that are used in the program code are shown explicitly in
 ~\ref{sec:objects}. 
 
@@ -196,7 +216,7 @@ The full renormalisable, $R-$parity conserving superpotential is given by
 \end{align}
 
  
-\noindent where the subscript \Zv reflects the fact that this superpotential contains terms which violate the $Z_3$ symmetry which is commonly imposed on the 
+\noindent where the subscript \Zv~reflects the fact that this superpotential contains terms which violate the $Z_3$ symmetry which is commonly imposed on the 
 NMSSM.  Imposing the $Z_3$ symmetry restricts the superpotential to
 %
 \begin{align} 
@@ -227,23 +247,52 @@ V_{\textrm{soft}} = V_3 + \red{V_2\big|^{}_{m_3^2=0}} %%%
  + V_\Zv \,,
 \ee 
 %
-where all \Zv terms are included in
+where all \Zv~terms are included in
 \ba V_\Zv & = &  \xi_S S + \frac{m_S^{\prime \, 2}}{2} S^2
   + \epsilon_{ab} m_3^2 H_2^a H_1^b + \textrm{h.c.} \,,
 \ea
 % 
 while $V_3$ and $V_2$ are the trilinear scalar interaction potential and scalar 
 bilinear SUSY breaking potential of the MSSM, given in Sec.\ 2.2 of the 
-\SOFTSUSY manual \cite{Allanach:2001kg} for the $R$-parity conserving MSSM.  
+\SOFTSUSY~manual \cite{Allanach:2001kg} for the $R$-parity conserving MSSM.  
 The \red{notation $V_2\big|_{m_3^2=0}$} %%%
- indicates that the \Zv soft bilinear mass $m_3^2$ present in $V_2$ is set to zero to avoid double counting.
+ indicates that the \Zv~soft bilinear mass $m_3^2$ present in $V_2$ is set to zero to avoid double counting.
 
 %% \be V_{soft} = V_3 + V_2 + V_\Zv \ee where
 %% \ba V_3 & = & V^{MSSM}_3 + \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + \frac{1}{3} a_\kappa S^3 \\
 %% V_2  & = & V^{MSSM}_2 + m_S^2|S|^2  \\
 %% V_\Zv & = & \frac{1}{2}m_S^{\prime \, 2} S^2 + \xi_S S + \textrm{H.c.} \ea
 %% \noindent and in the case of $Z_3$ conservation the soft potential reduces to,
-%% \be V_{soft} = V_3 + V^{m_3^2 = 0}_2 \ee with the superscript indicationg that the \Zv soft bilinear mass $m_3^2$ present in $V^{MSSM}_2$ is set to zero.    
+%% \be V_{soft} = V_3 + V^{m_3^2 = 0}_2 \ee with the superscript indicationg that the \Zv soft bilinear mass $m_3^2$ present in $V^{MSSM}_2$ is set to zero. 
+
+\begin{table}\begin{center}
+\begin{tabular}{cccc}
+\SOFTSUSY & SLHA & Martin and Vaughn & Degrassi and Slavich \\ \hline
+$Y^{U}$ & $Y^{U}$ & $({Y^{U}})^T$  & $h_u$ \\
+$Y^{D,E}$ & $Y^{D,E}$ & $(-{Y^{D,E}})^T$ & $h_{d,e}$ \\
+$U_A$ & $T_{U}$ & $h_{U}^T$ & $h_uA_u$ \\
+$D_A, E_A$ & $T_{D,E}$ & $(-h_{D,E})^T$ & $h_{d}A_{d},\, h_eA_e$ \\
+$m_{{\tilde Q},{\tilde L}}^2$ & $m_{{\tilde Q},{\tilde L}}^2$ & $m_{{\tilde
+    Q},{\tilde L}}^2$ & $m_{Q,L}^2$ \\
+$m_{{\tilde u},{\tilde d},{\tilde e}}^2$ & ${m_{{\tilde u},{\tilde d},{\tilde
+    e}}^2}^T$ &
+$m_{{\tilde u},{\tilde d},{\tilde e}}^2$ & $m_{U,D,E}^2$ \\
+%$\mu$ & $\mu$ & $\mu$ \\
+%$m_3^2$ & $B \mu$ & $B$  \\
+$M_i$ & $M_i$ & $M_i$ & $M_i$ \\
+$m_{H_{1,2}}^2$ & $m_{H_{1,2}}^2$& $m_{H_{d,u}}^2$ & $m_{H_{1,2}}^2$ \\
+\end{tabular}
+\caption{\label{tab:conv} Comparison of conventions between \SOFTSUSY~and the literature. Note
+  that simple models of SUSY breaking, for example the CMSSM, will have
+  negative gaugino masses $M_i$ in the
+  \SOFTSUSY~conventions. The sign in front of the gaugino mass
+    term in front of the \SOFTSUSY~Lagrangian appears at first sight to be in
+    the     opposite convention 
+    to Ref.~\cite{mandv}. However, it is due to the absorption of a factor of
+    $i$ into the gaugino fields $\tilde B$, $\tilde W$ and $\tilde g$ which
+    means that the sign of the gaugino mass is identical to that of
+    \cite{mandv}, and is thus of the same convention.}
+\end{center}\end{table} 
 
 \subsection{Higgs potential and electroweak symmetry breaking}\label{sec:hpot}
 The tree level Higgs potential is given by
@@ -390,8 +439,8 @@ v_d}{s} -3\kappa A_\kappa s  -2 m_{S}'^2 -\kappa \mu' s
 where tree-level EWSB has been imposed.
 
 Note that --- as in the MSSM --- the mixing of the Goldstone boson $G^0$ depends only on $\tan\beta$. As shown in EHT \cite{Ellwanger:2009dp}, this can be seen by first performing a rotation by $\beta$, which converts $M^{\prime\, 2}_P$ to be block diagonal.  The resulting 2 by 2 submatrix may then be diagonalised.
-  Therefore the CP-odd mixing can be stored as a single mixing angle.\footnote{\SOFTSUSY does this internally storing $\theta_{A^0}$ in the {\tt sPhysical} object (see Sec.\ref{}) but in the SLHA output gives the 3x2 mixing matrix, matching SLHA2 conventions.}
-
+  Therefore the CP-odd mixing can be stored as a single mixing angle.%
+\footnote{\SOFTSUSY~does this internally by storing $\theta_{A^0}$ in the {\tt sPhysical} object (see \ref{nmssmsoftsusy}).  Note that the SLHA output gives the 3 by 2 mixing matrix and thus matches SLHA2 conventions.}
 
 Finally, the charged Higgs fields in the mass basis give one massless charged Goldstone boson $G^+$, and a charged Higgs, $H^\pm$ with mass
 \be m_{H^\pm}^2 = \left(\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
@@ -401,9 +450,8 @@ Finally, the charged Higgs fields in the mass basis give one massless charged Go
 We now describe the algorithm used to perform the calculation.  The full iterative algorithm to determine the mass spectrum is shown schematically in Fig.\ \ref{fig:algorithm}.  Here we will provide a detailed description of this procedure and specify all contributions that are included in the calculation.
 
 As in MSSM \SOFTSUSY, the Standard Model fermion and gauge boson masses, 
-and the couplings $\alpha(M_Z)$, $G_F^\mu$, and $\alpha_s(M_z)$ act as low-energy constraints. Below $M_Z$, the evolution of these input parameters
- proceeds in the manner described in Sec.\ 3.1 of the MSSM \SOFTSUSY
- manual \cite{Allanach:2001kg}.  Similarly,the initial guess for the SUSY preserving $\overline{DR}$ parameters at $m_t$ 
+and the couplings $\alpha(M_Z)$, $G_F^\mu$, and $\alpha_s(M_z)$ act as low energy constraints. Below $M_Z$, the evolution of these input parameters
+ proceeds in the manner described in Sec.\ 3.1 of the MSSM \SOFTSUSY~manual \cite{Allanach:2001kg}.  Similarly,the initial guess for the SUSY preserving $\overline{DR}$ parameters at $m_t$ 
 follows the procedure outlined in Sec.\ 3.2 of \cite{Allanach:2001kg}, with the additional NMSSM parameters $\{\lambda, \kappa, s, \xi_F, \mu^\prime \}$ either initially set to their (user specified)
 input values, or to zero in the case when $\kappa$ and $s$ are treated as
  output from the EWSB conditions (Sec.\ \ref{ewsb}).
@@ -420,7 +468,7 @@ and NMSSM SUSY boundary conditions.}}}
 \put(150,116.5){\vector(0,-1){23}}
 \put(10,120){\makebox(280,10)[c]{\fbox{4.\ EWSB with iterative solution for $\mu_\textrm{eff}$, outputs $\{s,\kappa,m_S\}$ in $Z_3$-NMSSM and $\{\mu, m_3^2, \xi_S \}$ in \Zv-NMSSM.}}}
 \put(150,156){\vector(0,-1){23}}
-\put(10,160){\makebox(280,10)[c]{\fbox{3.\ Run to $M_S$.}}}
+\put(10,160){\makebox(280,10)[c]{\fbox{3.\ Run to \red{$M_{SUSY}$}.}}}
 \put(30,170){convergence}
 \DashLine(115,165)(-70,165){5}
 \DashLine(-70,165)(-70,5){5}
@@ -439,7 +487,7 @@ $h_{t,b,\tau}(M_Z)$.}}}
 \end{center}
 \caption{Iterative algorithm used to calculate the NMSSM spectrum. 
 The initial step is the
-uppermost one. $M_S$ is the scale at which the EWSB
+uppermost one. \red{$M_{SUSY}$} is the scale at which the EWSB
 conditions 
 are imposed, as discussed in the text. $M_X$ is the scale at which the high
 energy SUSY breaking boundary conditions are imposed.
@@ -499,12 +547,12 @@ Y_E \approx \left(\begin{array}{c c c}
 %
 in order to simplify the resulting expressions.
 
-However, in \SOFTSUSY the whole calculation is performed with quark 
+However, in \SOFTSUSY~the whole calculation is performed with quark 
 flavor-mixing between all three families, so it is necessary to derive the 
 additional NMSSM contributions from the general RGEs \cite{MV94,Yam94}.  The 
 resulting expressions are collected in \ref{sec:RGEs} and in each case we have 
 found agreement with the results of EHT \cite{Ellwanger:2009dp} once the third family approximation 
-(\ref{eq:3rd fam}) is enforced.  Note that in the \SOFTSUSY conventions, all 
+(\ref{eq:3rd fam}) is enforced.  Note that in the \SOFTSUSY~conventions, all 
 $\beta$ functions are real.
 
 We also incorporate the two-loop running for $\tan\beta$ and the Higgs VEVs  
@@ -519,71 +567,66 @@ Once the user-supplied boundary conditions are applied at $M_X$, the whole
 ensemble of NMSSM soft breaking and SUSY preserving couplings are evolved to 
 $M_Z$. The inclusion of radiative corrections to the gauge and Yukawa couplings 
 (steps 1 and 2 in Fig.\ \ref{fig:algorithm}), and NMSSM renormalization (step 3)
- is analogous to MSSM \SOFTSUSY --- for details we refer the reader to Sects.\ 
-3.3 and 3.4 of the \SOFTSUSY manual \cite{Allanach:2001kg}.
+ is analogous to MSSM \SOFTSUSY~--- for details we refer the reader to Sects.\ 
+3.3 and 3.4 of the \SOFTSUSY~manual \cite{Allanach:2001kg}.
 
-\subsection{Low energy boundary conditions and EWSB \label{ewsb}}
+\subsection{Low energy boundary conditions and \red{electroweak symmetry breaking} \label{ewsb}}
 The low energy boundary conditions come from measured values of
 Standard Model fermions and gauge boson masses, $\alpha(M_Z)$,
 $G_F^\mu$ and $\alpha_S(M_z)$ and two input parameters, which then fix
 the gauge and Yukawa couplings and the output parameters of
-electroweak symmetry breaking.
+electroweak symmetry breaking. \red{ --- LCT: Is the preceding sentence really necessary? ---}
  
-   The three EWSB conditions allow the pole $Z$ mass, to be input with
-   it's central value $M_Z$, while constraining three parameters.
-   Equations \ref{eq:mind} and \ref{eq:minu} can be rewritten as in
-   the MSSM.  Including tadpole corrections, $t_i$ and the transverse
-   self energy of the $Z$ boson, $\Pi^T_{ZZ}$, these appear as, \ba
-   \mu_\textrm{eff}^2(M_{SUSY}) &=&
+   The three \red{electroweak symmetry breaking (EWSB) conditions allow the central value of the $Z$ pole mass $M_Z$ to be taken as input, thereby constraining three parameters. Eqs.~\ref{eq:mind} and \ref{eq:minu} can be rewritten in terms of $\mu_\textrm{eff}^2$ and $(m_3^2)_\textrm{eff}$, as in the MSSM.} %%%
+  Including tadpole corrections $t_i$ and the transverse
+   self energy $\Pi^T_{ZZ}$ of the $Z$ boson, the resulting expressions are 
+\begin{align}
+   \mu_\textrm{eff}^2(M_{SUSY}) &=
    \frac{m_{\overline{H}_1}^2(M_{SUSY}) -
      m_{\overline{H}_2}^2(M_{SUSY}) \tan^2 \beta(M_{SUSY})}{\tan^2
      \beta(M_{SUSY}) - 1} - \frac{1}{2} M_{\overline Z}^2
-   (M_{SUSY})\label{eq:mueffcond}\\ (m^2_3)_\textrm{eff}(M_{SUSY})&=&\frac{\sin{2\beta}(M_{SUSY})}{2}\left(\overline{m}_{H_u}^2(M_{SUSY})+\overline{m}_{H_d}^2(M_{SUSY})+
-   2\mu_\textrm{eff}^2(M_{SUSY})\left(1+\frac{\overline{M}_z^2}{\overline{g}^2s^2}(M_{SUSY})\right)\right),\label{eq:bmucond}
-   \ea where $m_{\overline{H}_i}^2 = m_{H_i}^2 - t_i/v_i$ and
-   $M_{\overline Z}^2(M_{SUSY}) = M_Z^2 + \Re\Pi_{ZZ}^T(M_{SUSY})$ is
-   the $\overline{DR}$ running (mass)$^2$ of the $Z$ boson and $\bar g
-   = \sqrt{g_2^2+g^{\prime 2}}$ and $g_2$ and $g^{\prime}$ are the
+   (M_{SUSY})\label{eq:mueffcond}\\ 
+%
+(m^2_3)_\textrm{eff}(M_{SUSY})&=\frac{\sin{2\beta}(M_{SUSY})}{2}\Bigg\{\overline{m}_{H_u}^2(M_{SUSY})+\overline{m}_{H_d}^2(M_{SUSY})+
+   2\mu_\textrm{eff}^2(M_{SUSY})\Bigg[1+\frac{\overline{M}_z^2}{\overline{g}^2s^2}(M_{SUSY})\Bigg]\Bigg\}\,.\label{eq:bmucond}
+   \end{align} 
+%
+\red{Here, $m_{\overline{H}_i}^2 = m_{H_i}^2 - t_i/v_i$, 
+   $M_{\overline Z}^2(M_{SUSY}) = M_Z^2 + \Re\mathfrak{e}\Pi_{ZZ}^T(M_{SUSY})$ is
+   the $\overline{DR}$ running (mass)$^2$ of the $Z$ boson, and $\overline{g}
+   = (g_2^2+g^{\prime 2})^{1/2}$ where $g_2$ and $g^{\prime}=\sqrt{3/5}g_1$ are the
    gauge couplings of $SU(2)_L$ and (unnormalised) $U(1)$ interactions
-   respectively, with $g^\prime = \sqrt{3/5} \, g_1$.  In this way we
+   respectively.} %%%
+  Through Eqs.~(\ref{eq:mueffcond}) and (\ref{eq:bmucond}) we
    can fix $\mu_{eff}$ and $(m^2_3)_\textrm{eff}$ in a similar manner
-   as the MSSM.  However in this case these are effective parameters
-   constructed from several model parameters, so we must select which
-   ones are fixed.
+   to the MSSM.  \red{Note however, that in this case these are {\it effective} parameters constructed from several model parameters, so we must select which
+  of the latter are fixed.} %%%
 
-In the $Z_3$-NMSSM we fix $s$ in Eq.~\ref{eq:mueffcond} and $\kappa$
-in Eq.~\ref{eq:bmucond} and we use the third EWSB condition to fix
-$m_S^2$.  In the \Zv-NMSSM we have more freedom and can choose to fix
-$\mu$ and $m_3^2$ just as in the MSSM, and use the third EWSB
+In the $Z_3$-NMSSM, we fix $s$ via Eq.~\ref{eq:mueffcond} and $\kappa$
+via Eq.~\ref{eq:bmucond}, and use the third EWSB condition to fix
+$m_S^2$.  In the \Zv-NMSSM, we have more freedom and can choose to fix
+$\mu$ and $m_3^2$ --- as in the MSSM --- and use the third EWSB
 condition to fix $\xi_S$.
 
-The full one loop tadpoles from \cite{Degrassi:2009yq} are used along
-with NMSSM two loop $\oatas$ and $\oabas$ contributions to the
-tadpoles are used from \cite{Degrassi:2009yq} (the FORTRAN files for
-which were very helpfully supplied by Pietro Slavich) while two loop
-corrections from the MSSM are used for $\oatq$, $\oabatau$, $\oabq$,
-$\oatauq$ and $\oatab$, though it should be noted that these are not
-complete in the NMSSM.
- 
-In both cases the tadpole corrections themselves depend on the output
-from the EWSB conditions, therefore an iteration is employed to find a
-self consistent solution.
+The full one-loop tadpole \red{corrections} %%%
+ from \cite{Degrassi:2009yq} are \red{implemented}, along
+with NMSSM two-loop $\oatas$ and $\oabas$ contributions \cite{Degrassi:2009yq} to the tadpoles.%
+\footnote{We thank Pietro Slavich for kindly supplying us with the {\tt FORTRAN} files.}
+ The two loop corrections from the MSSM are used for $\oatq$, $\oabatau$, $\oabq$, $\oatauq$ and $\oatab$, though it should be noted that these are not
+complete in the NMSSM.  In both one-loop and two-loop cases, the tadpole corrections themselves depend on the outputfrom the EWSB conditions, therefore an iteration is employed to find a self consistent solution.
 
-After the EWSB iteration converges the parameters are run to $m_Z$.
-Here the three gauge couplings $g_1$, $g_2$ and $g_3$, where $g_1$ is
-the GUT normalised gauge coupling of $U(1)_Y$ and 3rd family
+After the EWSB iteration converges, the \red{whole set of NMSSM} %%%
+ parameters are run to $m_Z$. \red{As detailed in Section 3.3 of \cite{Allanach:2001kg}, the gauge couplings $g_1$, $g_2$ and $g_3$ (where $g_1$ is
+the GUT normalised gauge coupling of $U(1)_Y$) and third family
 $\overline{DR}$ Yukawa couplings, $y_t$, $y_b$ and $y_\tau$ are fixed,
-including the precision corrections at $M_Z$, in the same procedure as
-described in Section 3.3 of \cite{Allanach:2001kg}.  However the one
-loop self energies of the gauge bosons and fermions are modified to
-match those given in \cite{Degrassi:2009yq} for the NMSSM.
+including the precision corrections at $M_Z$.  Note however, that the expressions for the one-loop self energies of the gauge bosons and fermions are modified to match those given in \cite{Degrassi:2009yq} for the NMSSM.} %%%
+
 \textcolor{red}{--- PA: Add comment on the delta rho corrections and
   the Higgs ---}
 
-In the \Zv-NMSSM $\kappa$, $s$, $\xi_F$ and $\mu^\prime$ are also
-reset to their input values at $M_Z$.  The parameters are then evolved
+In the \Zv-NMSSM, the parameters $\kappa$, $s$, $\xi_F$ and $\mu^\prime$ are reset to their input values at $M_Z$.  The parameters are then evolved
 back to $M_{SUSY}$ where $M_Z^2$ and $\tan\beta$ are predicted as
-part of a consistency check and if the user has specified that
+part of a consistency check.  If the user has specified that
 $\lambda$ is to be input at the SUSY scale then $\lambda$ is set here.
 
 
@@ -593,7 +636,7 @@ The parameters are then evolved back up to $M_X$ and the procedure is repeated u
 After the iteration has converged we calculate the pole masses.  The
 Higgs pole masses are calculated using one loop self energies from 
 \cite{Degrassi:2009yq} with additional contributions to the Higgs self
-couplings from \Zv couplings added using Appendix A of
+couplings from \Zv~couplings added using Appendix A of
 EHT \cite{Ellwanger:2009dp}.  Two loop corrections of order $\oatas$ and
 $\oabas$ are adding from \cite{Degrassi:2009yq} using the FORTRAN
 files provided by Pietro Slavich.  Contributions of order $\oatq$,
@@ -643,7 +686,7 @@ offering helpful remarks.
 of the spectrum of single points in parameter space, we recommend the
 SUSY Les Houches Accord 2 (SLHA2)~\cite{Allanach:2008qq}  input/output
 option. The user must provide a file (\textit{e.g.} the example file included
-in the \SOFTSUSY distribution
+in the \SOFTSUSY~distribution
 \code{rpvHouchesInput}), that specifies the model dependent input
 parameters. The program may then be run with
 \small
@@ -709,13 +752,13 @@ mentioned here, but there are many others within the program itself.
       \BText(100,25){NmssmSoftsusy}
     \end{picture}
     \caption{\label{fig:objstruc} Heuristic high-level class
-      structure of \SOFTSUSY@. Inheritance is displayed by the
+      structure of \SOFTSUSY. Inheritance is displayed by the
       arrows and typedefs are displayed by the equals signs.}
   \end{center}
 \end{figure}
 
 To implement the NMSSM (and other non-minimal supersymmetric models),
-the \SOFTSUSY class hierarchy was generalized with the following
+the \SOFTSUSY~class hierarchy was generalized with the following
 requirements in mind:
 %
 \begin{itemize}
