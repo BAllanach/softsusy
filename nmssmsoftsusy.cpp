@@ -160,10 +160,10 @@ void NmssmSoftsusy::printall() const {
 
  
 
-  double Beff =displaySoftAlambda() +displayKappa() *displaySvev() / (sqrt(2.0));
-  double  m3hatsq =displayM3Squared() + displayLambda() * (displayMupr() *displaySvev() / root2 +displayXiF() );
-  double  mueff =displayLambda() *displaySvev() / (sqrt(2.0)) ;
-  cout << "mueff = "  << displayLambda() *displaySvev() / (sqrt(2.0)) << '\n';
+  double Beff =displaySoftAlambda() +displayKappa() *displaySvev() / root2;
+  double m3hatsq =displayM3Squared() + displayLambda() * (displayMupr() *displaySvev() / root2 +displayXiF() );
+  double mueff =displayLambda() *displaySvev() / root2;
+  cout << "mueff = "  << mueff << '\n';
   cout << " Beff = "  << Beff << '\n';
   cout << "m3hatsq = " << m3hatsq << '\n';
   cout << "m3effssq = "  << mueff * Beff + m3hatsq << '\n';
