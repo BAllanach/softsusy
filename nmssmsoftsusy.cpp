@@ -900,7 +900,7 @@ void NmssmSoftsusy::treeChargedSlepton(DoubleMatrix & mass, double mtaurun,
      mass(2, 1) = mass(1, 2);
   }
 
-  if(family == 2 & NMSSMTools == true){
+  if (NMSSMTools && family == 2) {
      mass(1, 2) = mass(1, 2) -  MMUON * lam * svev * tanb / (root2);
      mass(2, 1) = mass(1, 2);
   }
