@@ -235,8 +235,6 @@ DoubleVector NMSSM_command_line_parser::get_pars() const {
          pars(23) = nmssm_input->get(NMSSM_input::mu);
       if (nmssm_input->is_set(NMSSM_input::BmuOverCosBetaSinBeta))
          pars(24) = nmssm_input->get(NMSSM_input::BmuOverCosBetaSinBeta);
-      if (nmssm_input->is_set(NMSSM_input::xiS))
-         ; // currently not set in extendedNMSugraBcs()
       if (nmssm_input->is_set(NMSSM_input::mPrimeS2))
          pars(52) = nmssm_input->get(NMSSM_input::mPrimeS2);
       if (nmssm_input->is_set(NMSSM_input::mS2))
