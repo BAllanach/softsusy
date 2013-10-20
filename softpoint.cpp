@@ -737,7 +737,6 @@ int main(int argc, char *argv[]) {
                           break;
                        case 67:
                           nmssm_input.set(NMSSM_input::xiS, d);
-                          // @todo currently not set in extendedNMSugraBcs()
                           break;
                        case 69:
                           nmssm_input.set(NMSSM_input::mPrimeS2, d);
