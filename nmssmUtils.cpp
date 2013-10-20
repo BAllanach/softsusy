@@ -401,7 +401,7 @@ void nuhmINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   m.setTrialambda(m.displayLambda() * Al);
   m.setTriakappa(m.displayKappa() * Ak);
   if(Z3 == false) {
- m.setMspSquared(inputParameters.display(inputParameters.display(52) * m.displayMupr()  ));
+     m.setMspSquared(inputParameters.display(52) * m.displayMupr());
   }
 }
 
@@ -424,7 +424,7 @@ void nuhmIINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   m.setTrialambda(m.displayLambda() * Al);
   m.setTriakappa(m.displayKappa() * Ak);
   if (Z3 == false) {
-    m.setMspSquared(inputParameters.display(inputParameters.display(52) * m.displayMupr()  ));
+    m.setMspSquared(inputParameters.display(52) * m.displayMupr());
   }
 }
 
