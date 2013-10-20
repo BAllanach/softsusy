@@ -96,7 +96,6 @@ void NmssmSoftsusy::testSlavichTreeMasses() const {
   treemasses_(&g,&gp,&lam,&kap,&ht,&hb,&htau,&v1,&v2,&s,&M1,&M2, &Ak,&Al,&At,&Ab,&Atau,&mQ3,&mtr,&mbr,&mQ,&mur,&mdr,&mL3,&mtaur,&mL,&mer,&Q,&errmass); 
 
  if(errmass) cout << "Warning tachyon in slavich treemasses."  << endl;
- return;
 }
 
 
@@ -1243,9 +1242,6 @@ void NmssmSoftsusy::calcDrBarPars() {
   calcDrBarHiggs(beta, mz2, mw2, sinthDRbar, eg);
 
   setDrBarPars(eg);
-
-  return;
-
 }
 
 DoubleMatrix NmssmSoftsusy::addStopHiggs(double p, double mt, DoubleMatrix & higgs) {
@@ -3806,7 +3802,6 @@ void NmssmSoftsusy::physical(int accuracy) {
   //PA: now set these values from NMSSM routines
   setPhys(phys);
   gluino(accuracy); 
-  return;
 }
 
 //PA: Higgs routine for NMSSM
@@ -4426,7 +4421,6 @@ void NmssmSoftsusy::addChaLoopHiggs(double /* p */, DoubleMatrix & sigmaL, Doubl
 	    (bPsiChiA2(i, k).conj() * aPsiChiA2(j, k) * b0pCha(k,4)).real();
 	}
       }
-  return;
 }
 
 
