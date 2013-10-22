@@ -4107,7 +4107,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
   // cout << "mhAtmH1: " << mhAtmH1 << endl;
 
  bool h0Htachyon = false;
-  if (temp(1) < 0.0 || temp(2) < 0.0 || temp(3) < 0.0) {
+ if (temp(1) < 0.0 || temp(2) < 0.0 || temp(3) < 0.0) {
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << "H1/H2/H3 tachyon: m^2 = " << temp;
   }
@@ -4132,7 +4132,8 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 
   // cout << "p=mH2 temp: " << temp << endl;
  
-  if (temp(1) < 0.0 || temp(2) < 0.0 || temp(3) < 0.0) {
+  if ((temp(1) < 0.0 && temp(2) < 0.0) || (temp(1) < 0.0 && temp(3) < 0.0) ||
+      (temp(2) < 0.0 && temp(3) < 0.0)  ) {
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << "H1/H2/H3 tachyon: m^2 = " << temp;
   }
@@ -4156,7 +4157,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
   
   // cout << "p=mH3 temp: " << temp << endl;
 
-  if (temp(1) < 0.0 || temp(2) < 0.0 || temp(3) < 0.0) {
+  if (temp(1) < 0.0 && temp(2) < 0.0 && temp(3) < 0.0) {
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << "H1/H2/H3 tachyon: m^2 = " << temp;
   }
@@ -4181,7 +4182,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
   
   Atemp = mP2.sym2by2(Atheta);
 
-  if (Atemp(1) < 0.0 && Atemp(2) < 0.0) {
+  if (Atemp(1) < 0.0 || Atemp(2) < 0.0) {
      h0Htachyon = true;
      if (PRINTOUT > 2) cout << " A1/A2 tachyon: m^2=" << Atemp;
   }
