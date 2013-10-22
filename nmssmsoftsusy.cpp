@@ -8222,6 +8222,7 @@ double NmssmSoftsusy::predTanb(double MuEff) const  {
   double m3sq = displayM3Squared();
   double mupr = displayMupr();
   double s = displaySvev();
+  double vev = displayHvev();
   double xiF = displayXiF();
   double al = displayTrialambda();
   double m3sqeff = m3sq  + lam * (mupr * s / root2 + xiF)
@@ -8230,7 +8231,7 @@ double NmssmSoftsusy::predTanb(double MuEff) const  {
   double sin2t = 2.0 * m3sqeff / 
     (displayMh1Squared() - displayTadpole1Ms() + 
      displayMh2Squared() - displayTadpole2Ms() + 2.0 *
-     sqr(MuEff)); 
+     sqr(MuEff) + 0.5 * sqr(lam) * sqr(vev)); 
   
   /// Note: we want to take inverse sine so that fundamental domain is greater
   /// than pi/4. sin(pi - 2 beta)=sin 2 beta should achieve this.
