@@ -186,7 +186,7 @@ Q&:(3,2,\tfrac{1}{6})\,,  & \bar{U}&:(\overline 3,1,-\tfrac{2}{3})\,, \notag \\
 H_2&:(1,2,\tfrac{1}{2})\,, & S&:(1,1,0)\,.
 \label{fields}
 \end{align}
-S is the gauge singlet chiral superfield that is particular to the NMSSM. 
+$S$ is the gauge singlet chiral superfield that is particular to the NMSSM. 
 $L$, $Q$, $H_1$, and $H_2$ are the left-handed doublet lepton and quark 
 superfields and the two Higgs doublets. $\bar{E}$, $\bar{U}$, and $\bar{D}$ are 
 the lepton, up-type quark and down-type quark right-handed superfield singlets, 
@@ -242,21 +242,21 @@ $Z_3$ violating one.
 The soft breaking scalar potential is given by
 
 \be 
-V_{\textrm{soft}} = V_3 + \red{V_2\big|^{}_{m_3^2=0}} %%%
- + m_S^2|S|^2 + \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + \frac{a_\kappa}{3} S^3
- + V_\Zv \,,
+V_{\textrm{soft}} = V_3 + V_2\big|^{}_{m_3^2=0} + m_S^2|S|^2 
++ \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + \frac{a_\kappa}{3} S^3 + V_\Zv \,,
 \ee 
 %
 where all \Zv~terms are included in
-\ba V_\Zv & = &  \xi_S S + \frac{m_S^{\prime \, 2}}{2} S^2
+\be 
+V_\Zv =  \xi_S S + \frac{m_S^{\prime \, 2}}{2} S^2
   + \epsilon_{ab} m_3^2 H_2^a H_1^b + \textrm{h.c.} \,,
-\ea
+\ee
 % 
 while $V_3$ and $V_2$ are the trilinear scalar interaction potential and scalar 
 bilinear SUSY breaking potential of the MSSM, given in Sec.\ 2.2 of the 
 \SOFTSUSY~manual \cite{Allanach:2001kg} for the $R$-parity conserving MSSM.  
-The \red{notation $V_2\big|_{m_3^2=0}$} %%%
- indicates that the \Zv~soft bilinear mass $m_3^2$ present in $V_2$ is set to zero to avoid double counting.
+The notation $V_2\big|_{m_3^2=0}$ indicates that the \Zv~soft bilinear mass 
+$m_3^2$ present in $V_2$ is set to zero to avoid double counting.
 
 %% \be V_{soft} = V_3 + V_2 + V_\Zv \ee where
 %% \ba V_3 & = & V^{MSSM}_3 + \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + \frac{1}{3} a_\kappa S^3 \\
@@ -267,7 +267,7 @@ The \red{notation $V_2\big|_{m_3^2=0}$} %%%
 
 \begin{table}\begin{center}
 \begin{tabular}{cccc}
-\SOFTSUSY & SLHA & Martin and Vaughn & Degrassi and Slavich \\ \hline
+\SOFTSUSY & SLHA & Martin and Vaughn & Degrassi and Slavich \\ \hline 
 $Y^{U}$ & $Y^{U}$ & $({Y^{U}})^T$  & $h_u$ \\
 $Y^{D,E}$ & $Y^{D,E}$ & $(-{Y^{D,E}})^T$ & $h_{d,e}$ \\
 $U_A$ & $T_{U}$ & $h_{U}^T$ & $h_uA_u$ \\
@@ -468,7 +468,7 @@ and NMSSM SUSY boundary conditions.}}}
 \put(150,116.5){\vector(0,-1){23}}
 \put(10,120){\makebox(280,10)[c]{\fbox{4.\ EWSB with iterative solution for $\mu_\textrm{eff}$, outputs $\{s,\kappa,m_S\}$ in $Z_3$-NMSSM and $\{\mu, m_3^2, \xi_S \}$ in \Zv-NMSSM.}}}
 \put(150,156){\vector(0,-1){23}}
-\put(10,160){\makebox(280,10)[c]{\fbox{3.\ Run to \red{$M_{SUSY}$}.}}}
+\put(10,160){\makebox(280,10)[c]{\fbox{3.\ Run to $M_{SUSY}$.}}}
 \put(30,170){convergence}
 \DashLine(115,165)(-70,165){5}
 \DashLine(-70,165)(-70,5){5}
@@ -487,7 +487,7 @@ $h_{t,b,\tau}(M_Z)$.}}}
 \end{center}
 \caption{Iterative algorithm used to calculate the NMSSM spectrum. 
 The initial step is the
-uppermost one. \red{$M_{SUSY}$} is the scale at which the EWSB
+uppermost one. $M_{SUSY}$ is the scale at which the EWSB
 conditions 
 are imposed, as discussed in the text. $M_X$ is the scale at which the high
 energy SUSY breaking boundary conditions are imposed.
@@ -570,37 +570,36 @@ $M_Z$. The inclusion of radiative corrections to the gauge and Yukawa couplings
  is analogous to MSSM \SOFTSUSY~--- for details we refer the reader to Sects.\ 
 3.3 and 3.4 of the \SOFTSUSY~manual \cite{Allanach:2001kg}.
 
-\subsection{Low energy boundary conditions and \red{electroweak symmetry breaking} \label{ewsb}}
-The low energy boundary conditions come from measured values of
-Standard Model fermions and gauge boson masses, $\alpha(M_Z)$,
-$G_F^\mu$ and $\alpha_S(M_z)$ and two input parameters, which then fix
-the gauge and Yukawa couplings and the output parameters of
-electroweak symmetry breaking. \red{ --- LCT: Is the preceding sentence really necessary? ---}
- 
-   The three \red{electroweak symmetry breaking (EWSB) conditions allow the central value of the $Z$ pole mass $M_Z$ to be taken as input, thereby constraining three parameters. Eqs.~\ref{eq:mind} and \ref{eq:minu} can be rewritten in terms of $\mu_\textrm{eff}^2$ and $(m_3^2)_\textrm{eff}$, as in the MSSM.} %%%
-  Including tadpole corrections $t_i$ and the transverse
-   self energy $\Pi^T_{ZZ}$ of the $Z$ boson, the resulting expressions are 
+\subsection{Low energy boundary conditions and electroweak 
+symmetry breaking \label{ewsb}} 
+The three electroweak symmetry breaking (EWSB) conditions allow the central 
+value of the $Z$ pole mass $M_Z$ to be taken as input, thereby constraining 
+three parameters. Eqs.~\ref{eq:mind} and \ref{eq:minu} can be rewritten in terms
+ of $\mu_\textrm{eff}^2$ and $(m_3^2)_\textrm{eff}$, as in the MSSM. Including 
+tadpole corrections $t_i$ and the transverse self energy $\Pi^T_{ZZ}$ of the $Z$ 
+boson, the resulting expressions are 
+%
 \begin{align}
-   \mu_\textrm{eff}^2(M_{SUSY}) &=
-   \frac{m_{\overline{H}_1}^2(M_{SUSY}) -
-     m_{\overline{H}_2}^2(M_{SUSY}) \tan^2 \beta(M_{SUSY})}{\tan^2
-     \beta(M_{SUSY}) - 1} - \frac{1}{2} M_{\overline Z}^2
-   (M_{SUSY})\label{eq:mueffcond}\\ 
+  \mu_\textrm{eff}^2(M_{SUSY}) &=
+  \frac{m_{\overline{H}_1}^2(M_{SUSY}) -
+    m_{\overline{H}_2}^2(M_{SUSY}) \tan^2 \beta(M_{SUSY})}{\tan^2
+    \beta(M_{SUSY}) - 1} - \frac{1}{2} M_{\overline Z}^2
+  (M_{SUSY})\label{eq:mueffcond}\\ 
 %
-(m^2_3)_\textrm{eff}(M_{SUSY})&=\frac{\sin{2\beta}(M_{SUSY})}{2}\Bigg\{\overline{m}_{H_u}^2(M_{SUSY})+\overline{m}_{H_d}^2(M_{SUSY})+
-   2\mu_\textrm{eff}^2(M_{SUSY})\Bigg[1+\frac{\overline{M}_z^2}{\overline{g}^2s^2}(M_{SUSY})\Bigg]\Bigg\}\,.\label{eq:bmucond}
-   \end{align} 
-%
-\red{Here, $m_{\overline{H}_i}^2 = m_{H_i}^2 - t_i/v_i$, 
-   $M_{\overline Z}^2(M_{SUSY}) = M_Z^2 + \Re\mathfrak{e}\Pi_{ZZ}^T(M_{SUSY})$ is
-   the $\overline{DR}$ running (mass)$^2$ of the $Z$ boson, and $\overline{g}
-   = (g_2^2+g^{\prime 2})^{1/2}$ where $g_2$ and $g^{\prime}=\sqrt{3/5}g_1$ are the
-   gauge couplings of $SU(2)_L$ and (unnormalised) $U(1)$ interactions
-   respectively.} %%%
-  Through Eqs.~(\ref{eq:mueffcond}) and (\ref{eq:bmucond}) we
-   can fix $\mu_{eff}$ and $(m^2_3)_\textrm{eff}$ in a similar manner
-   to the MSSM.  \red{Note however, that in this case these are {\it effective} parameters constructed from several model parameters, so we must select which
-  of the latter are fixed.} %%%
+  (m^2_3)_\textrm{eff}(M_{SUSY})&=\frac{\sin{2\beta}(M_{SUSY})}{2}\Bigg\{\overline{m}_{H_u}^2(M_{SUSY})+\overline{m}_{H_d}^2(M_{SUSY})+
+  2\mu_\textrm{eff}^2(M_{SUSY})\Bigg[1+\frac{\overline{M}_z^2}{\overline{g}^2s^2}(M_{SUSY})\Bigg]\Bigg\}\,.\label{eq:bmucond}
+\end{align} 
+% 
+Here, $m_{\overline{H}_i}^2 = m_{H_i}^2 - t_i/v_i$, 
+$M_{\overline Z}^2(M_{SUSY}) = M_Z^2 + \Re\mathfrak{e}\Pi_{ZZ}^T(M_{SUSY})$ is the 
+$\overline{DR}$ running (mass)$^2$ of the $Z$ boson, and 
+$\overline{g} = (g_2^2+g^{\prime 2})^{1/2}$ where $g_2$ and $g^{\prime}=\sqrt{3/5}g_1$
+are the gauge couplings of $SU(2)_L$ and (unnormalised) $U(1)$ interactions 
+respectively.  Through Eqs.~(\ref{eq:mueffcond}) and (\ref{eq:bmucond}) we
+can fix $\mu_{eff}$ and $(m^2_3)_\textrm{eff}$ in a similar manner
+to the MSSM.  Note however, that in this case these are {\it effective} 
+parameters constructed from several model parameters, so we must select which
+of the latter are fixed.
 
 In the $Z_3$-NMSSM, we fix $s$ via Eq.~\ref{eq:mueffcond} and $\kappa$
 via Eq.~\ref{eq:bmucond}, and use the third EWSB condition to fix
@@ -608,18 +607,25 @@ $m_S^2$.  In the \Zv-NMSSM, we have more freedom and can choose to fix
 $\mu$ and $m_3^2$ --- as in the MSSM --- and use the third EWSB
 condition to fix $\xi_S$.
 
-The full one-loop tadpole \red{corrections} %%%
- from \cite{Degrassi:2009yq} are \red{implemented}, along
-with NMSSM two-loop $\oatas$ and $\oabas$ contributions \cite{Degrassi:2009yq} to the tadpoles.%
-\footnote{We thank Pietro Slavich for kindly supplying us with the {\tt FORTRAN} files.}
- The two loop corrections from the MSSM are used for $\oatq$, $\oabatau$, $\oabq$, $\oatauq$ and $\oatab$, though it should be noted that these are not
-complete in the NMSSM.  In both one-loop and two-loop cases, the tadpole corrections themselves depend on the outputfrom the EWSB conditions, therefore an iteration is employed to find a self consistent solution.
+The full one-loop tadpole corrections
+ from \cite{Degrassi:2009yq} are implemented, along with NMSSM two-loop 
+$\oatas$ and $\oabas$ contributions \cite{Degrassi:2009yq} to the tadpoles.%
+\footnote{We thank Pietro Slavich for kindly supplying us with the {\tt FORTRAN}
+ files.}
+ The two loop corrections from the MSSM are used for $\oatq$, $\oabatau$, 
+$\oabq$, $\oatauq$ and $\oatab$, though it should be noted that these are not
+complete in the NMSSM.  In both one-loop and two-loop cases, the tadpole 
+corrections themselves depend on the outputfrom the EWSB conditions, therefore 
+an iteration is employed to find a self consistent solution.
 
-After the EWSB iteration converges, the \red{whole set of NMSSM} %%%
- parameters are run to $m_Z$. \red{As detailed in Section 3.3 of \cite{Allanach:2001kg}, the gauge couplings $g_1$, $g_2$ and $g_3$ (where $g_1$ is
-the GUT normalised gauge coupling of $U(1)_Y$) and third family
-$\overline{DR}$ Yukawa couplings, $y_t$, $y_b$ and $y_\tau$ are fixed,
-including the precision corrections at $M_Z$.  Note however, that the expressions for the one-loop self energies of the gauge bosons and fermions are modified to match those given in \cite{Degrassi:2009yq} for the NMSSM.} %%%
+After the EWSB iteration converges, the whole set of NMSSM parameters are run to
+ $m_Z$. As detailed in Section 3.3 of \cite{Allanach:2001kg}, the gauge 
+couplings $g_1$, $g_2$ and $g_3$ (where $g_1$ is the GUT normalised gauge 
+coupling of $U(1)_Y$) and third family $\overline{DR}$ Yukawa couplings, $y_t$, 
+$y_b$ and $y_\tau$ are fixed, including the precision corrections at $M_Z$.  Note
+ however, that the expressions for the one-loop self energies of the gauge 
+bosons and fermions are modified to match those given in \cite{Degrassi:2009yq}
+ for the NMSSM.
 
 \textcolor{red}{--- PA: Add comment on the delta rho corrections and
   the Higgs ---}
@@ -634,27 +640,36 @@ The parameters are then evolved back up to $M_X$ and the procedure is repeated u
 
 \subsection{NMSSM spectrum \label{spec}}
 After the iteration has converged we calculate the pole masses.  The
-Higgs pole masses are calculated using one-loop self energies from 
-\red{Degrassi and Slavich} %%%
-\cite{Degrassi:2009yq}, with additional \red{$\Zv$~contributions to the triple Higgs couplings included (see Appendix A of EHT \cite{Ellwanger:2009dp}).} %%%
-Two-loop corrections \cite{Degrassi:2009yq} of $\oatas$ and
-$\oabas$ are incorporated via {\tt FORTRAN} files provided by Pietro Slavich.  Contributions of order $\oatq$,
-$\oabatau$, $\oabq$, $\oatauq$ and $\oatab$ are included from the
-MSSM \red{{\tt FORTRAN} files (also supplied by Pietro Slavich), but we note that these expressions receive additional NSSM contributions which are currently unavailable.  Consequently, our calculation is not correct to this
-order, but rather to $\oatas$ and $\oabas$.  Evidently, the higher order MSSM contributions provide (a) a good approximation in the vicinity of the MSSM
-limit, and (b) easier comparisons against MSSM results.} %%%
+Higgs pole masses are calculated using one-loop self energies from Degrassi and 
+Slavich \cite{Degrassi:2009yq}, with additional $\Zv$~contributions to the 
+triple Higgs couplings included (see Appendix A of EHT \cite{Ellwanger:2009dp}).
+Two-loop corrections \cite{Degrassi:2009yq} of $\oatas$ and $\oabas$ are 
+incorporated via {\tt FORTRAN} files provided by Pietro Slavich.  Contributions 
+of order $\oatq$, $\oabatau$, $\oabq$, $\oatauq$ and $\oatab$ are included from 
+the MSSM {\tt FORTRAN} files (also supplied by Pietro Slavich), but we note that
+ these expressions receive additional NSSM contributions which are currently 
+unavailable.  Consequently, our calculation is not correct to this order, but 
+rather to $\oatas$ and $\oabas$.  Evidently, the higher order MSSM contributions
+ provide (a) a good approximation in the vicinity of the MSSM limit, and (b) 
+easier comparisons against MSSM results.
 
-The sfermions, neutralinos and charginos also receive new NMSSM
-corrections to their self energies. To the best of our knowledge, \red{the required expressions are presented only in \cite{Staub:2010ty}.} %%%
-  However, we found a
-number of \red{typographical errors} %%% 
-in the \red{published results \cite{Staub:2010ty}, whose origin%
+The sfermions, neutralinos and charginos also receive new NMSSM corrections to 
+their self energies. To the best of our knowledge, the required expressions are 
+presented only in \cite{Staub:2010ty}. However, we found a number of 
+typographical errors in the published results \cite{Staub:2010ty}, whose 
+origin%
 \footnote{F.~Staub, private communication.} 
-was due to the need to manually condense the auto-generated \LaTeX~output from {\tt SARAH} 
-\cite{Staub:2009bi,Staub:2010jh,Staub:2012pb,Staub:2013tta}.  In particular, the self energy expressions generated by {\tt SARAH} do not contain these errors. } %%%
- Therefore, we used a combination of \red{results listed in \cite{Staub:2010ty}, auto-generated \LaTeX~output from {\tt SARAH} for the self energies, plus individual checks of our own.}
+was due to the need to manually condense the auto-generated \LaTeX~output from 
+{\tt SARAH} \cite{Staub:2009bi,Staub:2010jh,Staub:2012pb,Staub:2013tta}.  In 
+particular, the self energy expressions generated by {\tt SARAH} do not contain 
+these errors. Therefore, we used a combination of results listed in 
+\cite{Staub:2010ty}, auto-generated \LaTeX~output from {\tt SARAH} for the self 
+energies, plus individual checks of our own.
 
-Finally, all one-loop self energies, tadpole corrections, and two-loop RGEs were unit tested against code pieces auto-generated from {\tt FlexibleSUSY} \cite{flexi-susy}, an in development {\tt MATHEMATICA} package for generating {\tt C++} code which makes use of the aforementioned {\tt SARAH} package. 
+Finally, all one-loop self energies, tadpole corrections, and two-loop RGEs were
+ unit tested against code pieces auto-generated from {\tt FlexibleSUSY} 
+\cite{flexi-susy}, an in development {\tt MATHEMATICA} package for generating 
+{\tt C++} code which makes use of the aforementioned {\tt SARAH} package. 
 
 
 \section*{Acknowledgments}
