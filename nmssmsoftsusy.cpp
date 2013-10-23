@@ -8899,7 +8899,7 @@ void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
       mQ3sqr = displaySoftMassSquared(mQl, 3, 3),
       mU3sqr = displaySoftMassSquared(mUr, 3, 3);
    const double q2 = sqrt((2.0 * mQ2sqr + mU2sqr + mD2sqr) / 4.0);
-   const double qstsb = sqrt(mQ3sqr * mU3sqr);
+   const double qstsb = sqrt(sqrt(mQ3sqr * mU3sqr));
 
    runto(q2);
    extragaugeSLHA(out, "GAUGEATQ2");
