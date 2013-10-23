@@ -1133,7 +1133,7 @@ void NmssmSoftsusy::calcDrBarHiggs(double beta, double /* mz2 */, double /* mw2 
   //PA:  the diagonaliseSym gives us a mixing matrix A such that
   //A^T h^gauge = h^mass, but we want SLHA convention, so take transpose. 
   eg.mixh0 = mixh.transpose();
- 
+
   /// LCT: Diagonalise
   //PA using thetaA0 for CP odd mixing angle
   DoubleVector mSq = mP2.sym2by2(eg.thetaA0);
@@ -4124,7 +4124,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
   }
   
   temp = temp.apply(ccbSqrt);
-  phys.mixh0 = mixHiggsLoops;
+  phys.mixh0 = mixHiggsLoops.transpose();
   phys.mh0(1) = temp(1);
   
   /// LCT: Now repeat for p = mH2.  Must reset CP-even mixing matrix
