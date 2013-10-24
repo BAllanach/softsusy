@@ -220,7 +220,7 @@ DoubleVector NMSSM_command_line_parser::get_pars() const {
       for (int i = 41; i <= 49; i++) pars(i) = m0;
       pars(50) = a0; // Alambda
       pars(51) = a0; // Akappa
-      pars(52) = 0.; // mS'^2 @todo which value should we chose here?
+      pars(52) = 0.; // mS'^2
       pars(53) = m0*m0; // mS^2
 
       if (nmssm_input->is_set(NMSSM_input::Alambda))
@@ -235,8 +235,14 @@ DoubleVector NMSSM_command_line_parser::get_pars() const {
          pars(23) = nmssm_input->get(NMSSM_input::mu);
       if (nmssm_input->is_set(NMSSM_input::BmuOverCosBetaSinBeta))
          pars(24) = nmssm_input->get(NMSSM_input::BmuOverCosBetaSinBeta);
-      if (nmssm_input->is_set(NMSSM_input::mPrimeS2))
-         pars(52) = nmssm_input->get(NMSSM_input::mPrimeS2);
+      if (nmssm_input->is_set(NMSSM_input::mPrimeS2) &&
+          nmssm_input->is_set(NMSSM_input::muPrime)) {
+         // setting pars(52) = B' = mS'^2 / mu'
+         const double muPrime  = nmssm_input->get(NMSSM_input::muPrime);
+         const double mPrimeS2 = nmssm_input->get(NMSSM_input::mPrimeS2);
+         if (!close(muPrime, 0.0, EPSTOL))
+            pars(52) = mPrimeS2 / muPrime;
+      }
       if (nmssm_input->is_set(NMSSM_input::mS2))
          pars(53) = nmssm_input->get(NMSSM_input::mS2);
    } else {
