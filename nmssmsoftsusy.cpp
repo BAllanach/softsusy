@@ -419,6 +419,7 @@ double NmssmSoftsusy::doCalcTad1Higgs(double q, double costhDRbar,
   double c2b = cos(2.0 * atan(tanb));
   double costhDRbar2 = sqr(costhDRbar);
   double mupr  = displayMupr();
+  double smu = displaySusyMu();
 
   /// LCT: Higgs mixing matrices
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
@@ -439,7 +440,7 @@ double NmssmSoftsusy::doCalcTad1Higgs(double q, double costhDRbar,
   sss1(2, 2) = 1.0 / 12.0 * (2.0 * lsq - 0.5 * gsq / costhDRbar2);
   sss1(3, 3) = lam / 6.0 * (lam - kap * tanb);
   sss1(1, 2) = tanb / 12.0 * (2.0 * lsq - 0.5 * gsq / costhDRbar2);
-  sss1(1, 3) = lsq * s / (6.0 * v1);
+  sss1(1, 3) = (lsq * s + root2 * smu * lam) / (6.0 * v1);
   sss1(2, 3) = - (al / root2 + lam * kap * s + lam * mupr / root2) / (6.0 * v1);
   sss1.symmetrise();
 
@@ -500,6 +501,7 @@ double NmssmSoftsusy::doCalcTad2Higgs(double q, double costhDRbar,
   /// mueff defined to be negative to remain consistent with SOFTSUSY convention
   // double mueff = mu - lam * s / root2;
   double mupr  = displayMupr();
+  double smu = displaySusyMu();
 
   /// LCT: new variables for Higgs mixing matrices
   DoubleMatrix Ppr(2, 2), P(3, 3), S(3, 3), C(2, 2);
@@ -521,7 +523,7 @@ double NmssmSoftsusy::doCalcTad2Higgs(double q, double costhDRbar,
   sss2(3, 3) = lam / 6.0 * (lam - kap / tanb);
   sss2(1, 2) =  (2.0 * lsq - 0.5 * gsq / costhDRbar2) / (12.0 * tanb);
   sss2(1, 3) = - (al / root2 + lam * kap * s + lam * mupr / root2) / (6.0 * v2);
-  sss2(2, 3) = lsq * s / (6.0 * v2);
+  sss2(2, 3) = (lsq * s + root2 * smu * lam)  / (6.0 * v2);
   sss2.symmetrise();
 
   /// LCT: Trilinear CP-odd Higgs couplings to s2 in basis HdI HuI SI
@@ -580,6 +582,7 @@ double NmssmSoftsusy::doCalcTadSHiggs(double q, double tb) const
   double sin2b = sin(2.0 * beta);
   double v1 = displayHvev() * cos(beta);
   double v2 = displayHvev() * sin(beta);
+  double smu = displaySusyMu();
 
   /// LCT: new variables for Higgs mixing matrices
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
@@ -596,8 +599,8 @@ double NmssmSoftsusy::doCalcTadSHiggs(double q, double tb) const
   /// divided by svev to get TSOVS
   /// LCT: Trilinear CP-even Higgs couplings to s3 in basis HdR HuR SR
   DoubleMatrix sss3(3, 3);
-  sss3(1, 1) = lsq / 6.0;
-  sss3(2, 2) = lsq / 6.0;
+  sss3(1, 1) = (lsq + root2 * smu * lam / s) / 6.0;
+  sss3(2, 2) = (lsq + root2 * smu * lam / s) / 6.0;
   sss3(3, 3) = (ak / 3.0 + root2 * ksq * s + kap * mupr) / (s * root2); ///<< Bug fixed.
   sss3(1, 2) = -(al / root2 + lam * kap * s + lam * mupr / root2) / (6.0 * s);
   sss3(1, 3) = lam * (lam * v1 - kap * v2) / (6.0 * s);
@@ -606,7 +609,7 @@ double NmssmSoftsusy::doCalcTadSHiggs(double q, double tb) const
 
   /// LCT: Trilinear CP-odd Higgs couplings to s3 in basis HdI HuI SI
   DoubleMatrix pps3(3, 3);
-  pps3(1, 1) = 0.5 * lsq;
+  pps3(1, 1) = 0.5 * (lsq + root2 * smu * lam / s);
   pps3(2, 2) = pps3(1, 1);
   pps3(3, 3) = (-ak + root2 * ksq * s + kap * mupr) / (s * root2);
   pps3(1, 2) = 0.5 * (al / root2 + lam * kap * s + lam * mupr / root2) / s;
@@ -629,10 +632,12 @@ double NmssmSoftsusy::doCalcTadSHiggs(double q, double tb) const
 
   /// LCT: Trilinear with charged Higgs. Basis (G+ G- H+ H-)
   DoubleMatrix hphps3(2, 2);
-  hphps3(1, 1) = 0.5 * (2.0 * lsq * s - (root2 * al + 2.0 * lam * kap * s
-					 + root2 * lam * mupr) * sin2b) / s;
-  hphps3(2, 2) = 0.5 * (2.0 * lsq * s + (root2 * al + 2.0 * lam * kap * s
-					 + root2 * lam * mupr) * sin2b) / s;
+  hphps3(1, 1) = 0.5 * (2.0 * (lsq * s + root2 * smu * lam) 
+			- (root2 * al + 2.0 * lam * kap * s
+			   + root2 * lam * mupr) * sin2b) / s;
+  hphps3(2, 2) = 0.5 * (2.0 * (lsq * s + root2 * smu * lam) 
+			+ (root2 * al + 2.0 * lam * kap * s
+			   + root2 * lam * mupr) * sin2b) / s;
 
   double higgs = 0.0;
   /// CP-even/-odd Higgs
@@ -6064,12 +6069,13 @@ void NmssmSoftsusy::getS1HiggsTriCoup(DoubleMatrix & sss1, DoubleMatrix & pps1,D
   double cb = cos(beta), cos2b = cos(2.0 * beta);
   double sb = sin(beta), sin2b = sin(2.0 * beta);
   double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
+  double smu = displaySusyMu();
   /// LCT: Trilinear CP-even Higgs couplings to s1 in basis HdR HuR SR
   sss1(1, 1) = 0.125 * gsq / cw2DRbar * v1;
   sss1(2, 2) = v1 / 12.0 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
   sss1(3, 3) = lam / 6.0 * (lam * v1 - kap * v2);
   sss1(1, 2) = v2 / 12.0 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
-  sss1(1, 3) = lsq * s / 6.0;
+  sss1(1, 3) = (lsq * s + root2 * smu * lam) / 6.0;
   sss1(2, 3) = - (al / root2 + lam * kap * s + lam * mupr / root2) / 6.0;
   sss1.symmetrise();
   
@@ -6106,13 +6112,14 @@ void NmssmSoftsusy::getS2HiggsTriCoup(DoubleMatrix & sss2, DoubleMatrix & pps2, 
   double cb = cos(beta), cos2b = cos(2.0 * beta);
   double sb = sin(beta), sin2b = sin(2.0 * beta);
   double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
+  double smu = displaySusyMu();
   /// LCT: Trilinear CP-even Higgs couplings to s2 in basis HdR HuR SR
   sss2(1, 1) = v2 * (2.0 * lsq - 0.5 * gsq / cw2DRbar) / 12.0;
   sss2(2, 2) = 0.125 * v2 * gsq / cw2DRbar;
   sss2(3, 3) = lam / 6.0 * (lam * v2 - kap * v1);
   sss2(1, 2) = v1 * (2.0 * lsq - 0.5 * gsq / cw2DRbar) / 12.0;
   sss2(1, 3) = - (al / root2 + lam * kap * s + lam * mupr / root2) / 6.0;
-  sss2(2, 3) = lsq * s / 6.0;
+  sss2(2, 3) = (lsq * s + root2 * smu * lam) / 6.0;
   sss2.symmetrise();
   /// LCT: Trilinear CP-odd Higgs couplings to s2 in basis HdI HuI SI
   pps2(1, 1) = 0.25 * v2 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
@@ -6143,9 +6150,10 @@ void NmssmSoftsusy::getS3HiggsTriCoup(DoubleMatrix & sss3, DoubleMatrix & pps3, 
   double cb = cos(beta), cos2b = cos(2.0 * beta);
   double sb = sin(beta), sin2b = sin(2.0 * beta);
   double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
+  double smu = displaySusyMu();
   /// LCT: Trilinear CP-even Higgs couplings to s3 in basis HdR HuR SR
-  sss3(1, 1) = lsq / 6.0 * s;
-  sss3(2, 2) = lsq / 6.0 * s;
+  sss3(1, 1) = (lsq + root2 * smu * lam / s)/ 6.0 * s;
+  sss3(2, 2) = (lsq + root2 * smu * lam / s)/ 6.0 * s;
   sss3(3, 3) = (ak / 3.0 + root2 * ksq * s + kap * mupr) / (root2); 
   sss3(1, 2) = -(al / root2 + lam * kap * s + lam * mupr / root2) / (6.0);
   sss3(1, 3) = lam * (lam * v1 - kap * v2) / (6.0);
@@ -6154,7 +6162,7 @@ void NmssmSoftsusy::getS3HiggsTriCoup(DoubleMatrix & sss3, DoubleMatrix & pps3, 
 
 	
   /// LCT: Trilinear CP-odd Higgs couplings to s3 in basis HdI HuI SI
-  pps3(1, 1) = 0.5 * lsq * s;
+  pps3(1, 1) = 0.5 * (lsq * s + root2 * smu * lam);
   pps3(2, 2) = pps3(1, 1);
   pps3(3, 3) = (-ak + root2 * ksq * s + kap * mupr) / (root2);
   pps3(1, 2) = 0.5 * (al / root2 + lam * kap * s + lam * mupr / root2);
@@ -6163,9 +6171,9 @@ void NmssmSoftsusy::getS3HiggsTriCoup(DoubleMatrix & sss3, DoubleMatrix & pps3, 
   pps3.symmetrise();
 	
   /// LCT: Trilinear with charged Higgs. Basis (G+ G- H+ H-)
-  hphps3(1, 1) = 0.5 * (2.0 * lsq * s
+  hphps3(1, 1) = 0.5 * (2.0 * (lsq * s + root2 * smu * lam)
                         - (root2 * al + 2.0 * lam * kap * s) * sin2b);
-  hphps3(2, 2) = 0.5 * (2.0 * lsq * s 
+  hphps3(2, 2) = 0.5 * (2.0 * (lsq * s + root2 * smu * lam) 
                         + (root2 * al + 2.0 * lam * kap * s) * sin2b); 
   hphps3(1, 2) = -0.5 * (root2 * al + 2.0 * lam * kap * s) * cos2b;
   hphps3(2, 1) = hphps3(1, 2);
