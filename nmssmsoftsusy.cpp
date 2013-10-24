@@ -4575,8 +4575,8 @@ void NmssmSoftsusy::DegrassiSlavicMix(DoubleMatrix & P) const {
   double cb = cos(atan(displayTanb())), sb = sin(atan(displayTanb()));
   Ppr(1, 1) = cos(alphaP);
   Ppr(1, 2) = sin(alphaP);
-  Ppr(2, 1) = - Ppr(1, 2);
-  Ppr(2, 2) = cos(alphaP);
+  Ppr(2, 1) =  Ppr(1, 2);
+  Ppr(2, 2) = - cos(alphaP);
   P(1, 1) = - cb;           P(1, 2) = sb;             P(1, 3) = 0.0;
   P(2, 1) = sb * Ppr(1, 1); P(2, 2) = cb * Ppr(1, 1); P(2, 3) = Ppr(1, 2);
   P(3, 1) = sb * Ppr(2, 1); P(3, 2) = cb * Ppr(2, 1); P(3, 3) = Ppr(2, 2);
@@ -8882,6 +8882,22 @@ void NmssmSoftsusy::extragaugeSLHA(ostream& out, const char* blockName) {
       << "   # g3(Q)NMSSM DRbar\n";
 }
 
+void NmssmSoftsusy::extrasfermionmixSLHA(ostream & out) {
+   sPhysical s(displayPhys());
+   DoubleMatrix m(2, 2);
+   out << "Block smumix               # smuon mixing matrix\n";
+   if (s.me(1, 2) < s.me(2, 2)) m = rot2d(s.thetamu);
+   else m = rot2dTwist(s.thetamu);
+   int i, j; 
+   for (i=1; i<=2; i++)
+      for (j=1; j<=2; j++) {
+         out << "  " << i << "  " << j << "    "; printRow(out, m(i, j));
+         out << "   # F_{" << i << j << "}" << endl;
+      }
+   
+   
+}
+
 void NmssmSoftsusy::nmssmtoolsSLHA(ostream& out) {
    out << "Block NMSSMTOOLS # NMSSMTools configuration\n";
    out << "     9    "; printRow(out, 0);
@@ -8900,7 +8916,8 @@ void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
       mU3sqr = displaySoftMassSquared(mUr, 3, 3);
    const double q2 = sqrt((2.0 * mQ2sqr + mU2sqr + mD2sqr) / 4.0);
    const double qstsb = sqrt(sqrt(mQ3sqr * mU3sqr));
-
+   
+   extrasfermionmixSLHA(out);
    runto(q2);
    extragaugeSLHA(out, "GAUGEATQ2");
    yukawaMatricesSLHA(out, "ATQ2");
