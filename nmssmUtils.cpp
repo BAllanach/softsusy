@@ -41,7 +41,7 @@ DoubleVector NMSSM_input::get_nmpars() const {
          std::string msg =
             "# Error: you set lambda * <S> to a non-zero value"
             ", but lambda is zero.  "
-            "Please set lambda (EXTPAR entry 61) to a non-zero value.";
+            "Please set lambda (EXTPAR entry 61) to a non-zero value.\n";
          throw msg;
       }
    }
