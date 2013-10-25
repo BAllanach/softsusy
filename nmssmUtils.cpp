@@ -79,6 +79,8 @@ void NMSSM_input::check_ewsb_output_parameters() const {
    } else {
       if (!is_set(mu) && !is_set(BmuOverCosBetaSinBeta) && !is_set(xiS))
          supported = true;
+      if (!is_set(lambdaS))
+         cout << "# WARNING: <S> is zero!\n";
    }
 
    if (!supported) {
