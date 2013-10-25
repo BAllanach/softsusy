@@ -8715,6 +8715,14 @@ void NmssmSoftsusy::neutralinoMixingSLHA(ostream& out) {
 void NmssmSoftsusy::nmssmrunSLHA(ostream& out) {
   const sPhysical s(displayPhys());
 
+  double Alambda = 0., Akappa = 0.;
+
+  try { Alambda = displaySoftAlambda(); }
+  catch (const string& error) {}
+
+  try { Akappa = displaySoftAkappa(); }
+  catch (const string& error) {}
+
   out << "Block NMSSMRUN Q= " << displayMu()
       << "   # NMSSM specific DRbar parameters\n";
 
@@ -8722,9 +8730,9 @@ void NmssmSoftsusy::nmssmrunSLHA(ostream& out) {
   out << "      # lambda(Q)\n";
   out << "     2    "; printRow(out, displayKappa());
   out << "      # kappa(Q)\n";
-  out << "     3    "; printRow(out, displaySoftAlambda());
+  out << "     3    "; printRow(out, Alambda);
   out << "      # Alambda(Q)\n";
-  out << "     4    "; printRow(out, displaySoftAkappa());
+  out << "     4    "; printRow(out, Akappa);
   out << "      # Akappa(Q)\n";
   out << "     5    "; printRow(out, displayLambda() * displaySvev() / root2);
   out << "      # lambda*<S>(Q)\n";
