@@ -79,7 +79,7 @@ void NMSSM_input::check_ewsb_output_parameters() const {
    } else {
       if (!is_set(mu) && !is_set(BmuOverCosBetaSinBeta) && !is_set(xiS))
          supported = true;
-      if (!is_set(lambdaS))
+      if (!is_set(lambdaS) || close(parameter[lambdaS], 0., EPSTOL))
          throw "# ERROR: <S> is zero!  In the Z3 violating NMSSM <S> is not"
             " determined by the EWSB conditions, so <S> has to be set to"
             " a non-zero value on the user-side!\n";
