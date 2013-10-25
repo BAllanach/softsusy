@@ -649,7 +649,7 @@ int main(int argc, char *argv[]) {
                        pars.setEnd(53);
                        pars(50) = a0; // Alambda
                        pars(51) = a0; // Akappa
-                       pars(52) = 0.; // mS'^2 @todo which value should we chose here?
+                       pars(52) = 0.; // mS'^2
                        pars(53) = m0*m0; // mS^2
                     }
 		  } else {
@@ -740,7 +740,12 @@ int main(int argc, char *argv[]) {
                           break;
                        case 69:
                           nmssm_input.set(NMSSM_input::mPrimeS2, d);
-                          pars(52) = d;
+                          // setting pars(52) = B' = mS'^2 / mu'
+                          if (nmssm_input.is_set(NMSSM_input::muPrime)) {
+                             const double muPrime = nmssm_input.get(NMSSM_input::muPrime);
+                             if (!close(muPrime, 0.0, EPSTOL))
+                                pars(52) = d / muPrime;
+                          }
                           break;
                        case 70:
                           nmssm_input.set(NMSSM_input::mS2, d);
