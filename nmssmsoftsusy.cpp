@@ -8718,10 +8718,10 @@ void NmssmSoftsusy::nmssmrunSLHA(ostream& out) {
   double Alambda = 0., Akappa = 0.;
 
   try { Alambda = displaySoftAlambda(); }
-  catch (const string& error) {}
+  catch (const string&) {}
 
   try { Akappa = displaySoftAkappa(); }
-  catch (const string& error) {}
+  catch (const string&) {}
 
   out << "Block NMSSMRUN Q= " << displayMu()
       << "   # NMSSM specific DRbar parameters\n";
