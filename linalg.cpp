@@ -917,7 +917,9 @@ namespace { // helper function only
 
 void diagonaliseJac(DoubleMatrix & a,  int n,  DoubleVector & d,  
 		    DoubleMatrix & v,  int *nrot) {
-  if (a.testNan()) throw("Nans present in linalg.cpp:sym2by2. Cannot calculate further\n");
+  if (a.testNan())
+     throw("Nans present in linalg.cpp:diagonaliseJac."
+           " Cannot calculate further\n");
 
   int j, iq, ip, i;
   double tresh, theta, tau, t, sm, s, h, g, c; 
