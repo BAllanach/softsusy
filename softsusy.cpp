@@ -6925,7 +6925,7 @@ MssmSusy Softsusy<SoftPars>::guessAtSusyMt(double tanb, const QedQcd & oneset) {
 /// Boundary condition is the theoretical condition on parameters at the high
 /// energy scale mx: the parameters themselves are contained within the vector.
 template<class SoftPars>
-void Softsusy<SoftPars>::lowOrg
+void Softsusy<SoftPars>::fixedPointIteration
 (void (*boundaryCondition)(Softsusy<SoftPars> &, const DoubleVector &),
  double mxGuess, 
  const DoubleVector & pars, int sgnMu, double tanb, const QedQcd &
@@ -6959,13 +6959,13 @@ void Softsusy<SoftPars>::lowOrg
     if (mxGuess > 0.0) 
       mxBC = mxGuess; 
     else {
-      string ii("Trying to use negative mx in Softsusy<SoftPars>::lowOrg.\n");
+      string ii("Trying to use negative mx in Softsusy<SoftPars>::fixedPointIteration.\n");
       ii = ii + "Now illegal! Use positive mx for first guess of mx.\n";
       throw ii;
     }
     
     if (oneset.displayMu() != mz) {
-      cout << "WARNING: lowOrg in softsusy.cpp called with oneset at scale\n" 
+      cout << "WARNING: fixedPointIteration in softsusy.cpp called with oneset at scale\n" 
 	   << oneset.displayMu() << "\ninstead of " << mz << endl;
     }
     
@@ -7058,7 +7058,6 @@ double Softsusy<SoftPars>::realMinMs() const {
      sqr(temp.displayGaugeCoupling(2))) * 
     sqr(sqr(displayHvev()) * cos(2.0 * beta));
 }
-
 
 /// Calculates sin theta at the current scale
 template<class SoftPars>
@@ -7364,9 +7363,6 @@ void Softsusy<SoftPars>::calcDrBarPars() {
   /// potential for these purposes
   double savedMu = displaySusyMu();
   if (sphenoMassConv) {
-     int sgnMu; 
-     if (savedMu > 1) sgnMu = 1;
-     else sgnMu = -1;
      double muSq = treeLevelMuSq();
      double muForNow = zeroSqrt(muSq);
      setSusyMu(muForNow);
@@ -7487,11 +7483,9 @@ void Softsusy<SoftPars>::itLowsoft
 
   if (PRINTOUT > 1) cout << displayProblem(); 
 
-  double mtpole, mtrun;
+  double mtrun;
   
-  mtpole = displayDataSet().displayPoleMt();
-  /// On first iteration, don't bother with finite corrections
-
+  /// On first iteration, don't bother with finite corrections  
   numTries = numTries + 1;
   try {
     sparticleThresholdCorrections(tanb); 

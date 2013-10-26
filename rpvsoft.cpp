@@ -319,11 +319,11 @@ RpvSoftsusy RpvSoftsusy::beta2() const {
   // Add the two together to get TOTAL anomalous dimensions
   DoubleMatrix gLLtot(3, 3), gEEtot(3, 3), gQQtot(3, 3), gDDtot(3, 3),
     gUUtot(3, 3); 
-  double gH1H1tot, gH2H2tot;
+  double gH2H2tot;
   gLLtot = gLL + gLLrpv; gEEtot = gEE + gEErpv;
   gQQtot = gQQ + gQQrpv; gUUtot = gUU + gUUrpv;
   gDDtot = gDD + gDDrpv; 
-  gH1H1tot = gH1H1 + gH1H1rpv;  gH2H2tot = gH2H2 + gH2H2rpv;  
+  gH2H2tot = gH2H2 + gH2H2rpv;  
   
    DoubleMatrix g1LLrpv(3, 3), g1EErpv(3, 3), g1QQrpv(3, 3), 
     g1DDrpv(3, 3), g1UUrpv(3, 3);
@@ -344,11 +344,11 @@ RpvSoftsusy RpvSoftsusy::beta2() const {
 
   DoubleMatrix g1LLtot(3, 3), g1EEtot(3, 3), g1QQtot(3, 3), 
     g1DDtot(3, 3), g1UUtot(3, 3); 
-  double g1H1H1tot, g1H2H2tot;
+  double g1H2H2tot;
   g1LLtot = g1LL + g1LLrpv; g1EEtot = g1EE + g1EErpv;
   g1QQtot = g1QQ + g1QQrpv; g1UUtot = g1UU + g1UUrpv;
   g1DDtot = g1DD + g1DDrpv; 
-  g1H1H1tot = g1H1H1 + g1H1H1rpv;  g1H2H2tot = g1H2H2 + g1H2H2rpv;  
+  g1H2H2tot = g1H2H2 + g1H2H2rpv;  
 
   // Define the y tilde parameters
   DoubleMatrix yeTildeRpv(3, 3), ydTildeRpv(3, 3), yuTildeRpv(3, 3);

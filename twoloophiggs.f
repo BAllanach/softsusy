@@ -4858,6 +4858,7 @@ c     from Davydychev and Tausk, Nucl. Phys. B397 (1993) 23
       implicit none
       double precision x,y,z,phi,pphi,myphi
       
+      pphi = 0.d0
       if(x.le.z.and.y.le.z) then
          pphi = myphi(x,y,z)
       elseif(z.le.x.and.y.le.x) then
@@ -4878,7 +4879,6 @@ c     from Davydychev and Tausk, Nucl. Phys. B397 (1993) 23
       double precision u,v
       double precision Pi,pLi2
       complex*16 clam,cxp,cxm,CLI2,ccphi
-      double precision delt,phi0,phi2,phi4
       
       Pi = 3.14159265358979d0
       
@@ -5290,26 +5290,26 @@ c
       double precision tauF1q,tauF2q,tauF3q,tauF4q,tauF5q,tauF6q,
      $     tauFq,tauGq,tauFAq
       
-      F1t = tauF1q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
-      F2t = tauF2q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
-      F3t = tauF3q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
-      F4t = tauF4q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
+      F1t = tauF1q(t,b,T1,T2,B1,B2,s2t,s2b,q,vv,tanb)
+      F2t = tauF2q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,q,vv,tanb)
+      F3t = tauF3q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,q,vv,tanb)
+      F4t = tauF4q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,q,vv,tanb)
       
-      F1b = tauF1q(b,t,B1,B2,T1,T2,s2b,c2b,s2t,c2t,q,mu,vv,tanb) 
-      F2b = tauF2q(b,t,B1,B2,T1,T2,s2b,c2b,s2t,c2t,q,mu,vv,tanb) 
-      F3b = tauF3q(b,t,B1,B2,T1,T2,s2b,c2b,s2t,c2t,q,mu,vv,tanb) 
-      F4b = tauF4q(b,t,B1,B2,T1,T2,s2b,c2b,s2t,c2t,q,mu,vv,tanb) 
+      F1b = tauF1q(b,t,B1,B2,T1,T2,s2b,s2t,q,vv,tanb) 
+      F2b = tauF2q(b,t,B1,B2,T1,T2,s2b,c2b,s2t,q,vv,tanb) 
+      F3b = tauF3q(b,t,B1,B2,T1,T2,s2b,c2b,s2t,q,vv,tanb) 
+      F4b = tauF4q(b,t,B1,B2,T1,T2,s2b,c2b,s2t,q,vv,tanb) 
       
-      F5 = tauF5q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
-      F6 = tauF6q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
+      F5 = tauF5q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,vv,tanb)
+      F6 = tauF6q(t,b,T1,T2,B1,B2,s2t,s2b,q,vv,tanb)
       
-      Ft = tauFq(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
-      Gt = tauGq(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
+      Ft = tauFq(t,b,T1,T2,B1,B2,s2t,c2t,s2b,q,vv,tanb)
+      Gt = tauGq(t,b,T1,T2,B1,B2,s2t,s2b,q,vv,tanb)
       
-      Fb = tauFq(b,t,B1,B2,T1,T2,s2b,c2b,s2t,c2t,q,mu,vv,tanb)
-      Gb = tauGq(b,t,B1,B2,T1,T2,s2b,c2b,s2t,c2t,q,mu,vv,tanb)
+      Fb = tauFq(b,t,B1,B2,T1,T2,s2b,c2b,s2t,q,vv,tanb)
+      Gb = tauGq(b,t,B1,B2,T1,T2,s2b,s2t,q,vv,tanb)
       
-      FAp = tauFAq(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
+      FAp = tauFAq(t,b,T1,T2,B1,B2,s2t,s2b,q,mu,vv,tanb)
       
       return
       end
@@ -5318,12 +5318,12 @@ c
 ***********************************************************************
 *     
       
-      function tauF1q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
+      function tauF1q(t,b,T1,T2,B1,B2,s2t,s2b,q,vv,tanb)
       
       implicit none
       
       double precision tauF1q
-      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb
+      double precision t,b,T1,T2,B1,B2,s2t,s2b,q,vv,tanb
       double precision ht,hb,pippob,pippot
       
       pippob = B1*(Log(B1/q)-1d0) - B2*(Log(B2/q)-1d0)
@@ -5341,12 +5341,12 @@ c
 ***********************************************************************
 *     
       
-      function tauF2q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
+      function tauF2q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,q,vv,tanb)
       
       implicit none
       
       double precision tauF2q
-      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb
+      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,q,vv,tanb
       double precision ht,hb,pippob,pippot
       
       pippob = B1*(Log(B1/q)-1d0) - B2*(Log(B2/q)-1d0)
@@ -5365,12 +5365,12 @@ c
 ***********************************************************************
 *     
       
-      function tauF3q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
+      function tauF3q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,q,vv,tanb)
       
       implicit none
       
       double precision tauF3q
-      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb
+      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,q,vv,tanb
       double precision ht,hb,pippob,pippot
       
       pippob = B1*(Log(B1/q)-1d0) - B2*(Log(B2/q)-1d0)
@@ -5390,12 +5390,12 @@ c
 ***********************************************************************
 *     
       
-      function tauF4q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
+      function tauF4q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,q,vv,tanb)
       
       implicit none
       
       double precision tauF4q
-      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb
+      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,q,vv,tanb
       double precision ht,hb,pippob,pippot
       
       pippob = B1*(Log(B1/q)-1d0) - B2*(Log(B2/q)-1d0)
@@ -5414,12 +5414,12 @@ c
 ***********************************************************************
 *     
       
-      function tauF5q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
+      function tauF5q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,vv,tanb)
       
       implicit none
       
       double precision tauF5q
-      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb
+      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,q,c2b,vv,tanb
       double precision ht,hb,pippob,pippot
       
       pippob = B1*(Log(B1/q)-1d0) - B2*(Log(B2/q)-1d0)
@@ -5442,12 +5442,12 @@ c
 ***********************************************************************
 *     
       
-      function tauF6q(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
+      function tauF6q(t,b,T1,T2,B1,B2,s2t,s2b,q,vv,tanb)
       
       implicit none
       
       double precision tauF6q
-      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb
+      double precision t,b,T1,T2,B1,B2,s2t,s2b,q,vv,tanb
       double precision ht,hb,pippob,pippot
       
       pippob = B1*(Log(B1/q)-1d0) - B2*(Log(B2/q)-1d0)
@@ -5465,12 +5465,12 @@ c
 ***********************************************************************
 *     
       
-      function tauFq(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
+      function tauFq(t,b,T1,T2,B1,B2,s2t,c2t,s2b,q,vv,tanb)
       
       implicit none
       
       double precision tauFq
-      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb
+      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,q,vv,tanb
       double precision ht,hb,pippob,pippot
       
       pippob = B1*(Log(B1/q)-1d0) - B2*(Log(B2/q)-1d0)
@@ -5489,12 +5489,12 @@ c
 ***********************************************************************
 *     
       
-      function tauGq(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
+      function tauGq(t,b,T1,T2,B1,B2,s2t,s2b,q,vv,tanb)
       
       implicit none
       
       double precision tauGq
-      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb
+      double precision t,b,T1,T2,B1,B2,s2t,s2b,q,vv,tanb
       double precision ht,hb,pippob,pippot
       
       pippob = B1*(Log(B1/q)-1d0) - B2*(Log(B2/q)-1d0)
@@ -5512,12 +5512,12 @@ c
 ***********************************************************************
 *     
       
-      function tauFAq(t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb)
+      function tauFAq(t,b,T1,T2,B1,B2,s2t,s2b,q,mu,vv,tanb)
       
       implicit none
       
       double precision tauFAq
-      double precision t,b,T1,T2,B1,B2,s2t,c2t,s2b,c2b,q,mu,vv,tanb
+      double precision t,b,T1,T2,B1,B2,s2t,s2b,q,mu,vv,tanb
       double precision Xt,Xb,At,Ab
       double precision ht,hb,pippob,pippot
       
@@ -5564,11 +5564,11 @@ C     .
       
       integer OS
       double precision ht,k,mt,pi,v2,tb
-      double precision t,mu2,A0,BL,T1,T2,st,ct,q,A,X,mu,tanb,sb,cb,s2t
+      double precision t,A0,BL,T1,T2,st,ct,q,A,X,mu,tanb,sb,cb,s2t
      $     ,c2t
       double precision F1,F2,F3,dmuF2,dmuF3,dAtF2,dAtF3,DM12,DM22
       double precision DF1,DF2,DF3,DdmuF2,DdmuF3,DdAtF2,DdAtF3,F2_s
-      double precision S11,S22,S12,osdr,DMom,ShiftB,ShiftB2,ShiftB3,sw
+      double precision S11,S22,S12,osdr,sw
       
       pi = 3.14159265897d0
       
@@ -5591,7 +5591,7 @@ c$$$  k = 3d0*ht**2/(16d0*Pi**2)**2
       k = ht**2/(16d0*Pi**2)**2 ! remove color factor !!!
       
       call taufuncs(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu,F1,F2,F3)
-      call tausfuncs(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu,A,ht,
+      call tausfuncs(t,T1,T2,s2t,q,mu,A,ht,
      $     dmuF2,dmuF3,dAtF2,dAtF3,DM12,DM22)
       call taudfuncs(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu,A,v2,
      $     DF1,DF2,DF3,DdmuF2,DdmuF3,DdAtF2,DdAtF3)
@@ -5665,15 +5665,15 @@ c     when necessary we consider the residues:
       double precision t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu,F1,F2,F3
       double precision tauF1ab,tauF1c,tauF2ab,tauF2c,tauF3ab,tauF3c
       
-      F1 = tauF1ab(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu) 
+      F1 = tauF1ab(t,A0,BL,T1,T2,cb,sb,q,mu) 
      $     + tauF1c(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu)
      $     + tauF1c(t,A0,BL,T2,T1,-s2t,-c2t,cb,sb,q,mu)
       
-      F2 = tauF2ab(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu) 
+      F2 = tauF2ab(T1,T2,q) 
      $     + tauF2c(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu)
      $     - tauF2c(t,A0,BL,T2,T1,-s2t,-c2t,cb,sb,q,mu)
       
-      F3 = tauF3ab(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu) 
+      F3 = tauF3ab(T1,T2,q) 
      $     + tauF3c(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu)
      $     + tauF3c(t,A0,BL,T2,T1,-s2t,-c2t,cb,sb,q,mu)
       
@@ -5684,10 +5684,10 @@ c     when necessary we consider the residues:
 *********************************************************************
 *     
       
-      function tauF1ab(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu)
+      function tauF1ab(t,A0,BL,T1,T2,cb,sb,q,mu)
       
       implicit none
-      double precision t,mu2,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu
+      double precision t,mu2,A0,BL,T1,T2,cb,sb,q,mu
       double precision delt,pLi2,phi
       double precision tauF1ab
       double precision Pi,Nc ! color factor !!!
@@ -5816,15 +5816,12 @@ c     when necessary we consider the residues:
 *********************************************************************
 *     
       
-      function tauF2ab(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu)
+      function tauF2ab(T1,T2,q)
       
       implicit none
-      double precision t,mu2,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu
-      double precision delt,pLi2,phi
-      double precision tauF2ab
-      double precision Pi,Nc ! color factor !!!
+      double precision T1,T2,q, tauF2ab
+      double precision Nc ! color factor !!!
       
-      Pi = 3.141592654d0
       Nc = 1d0
 
       tauF2ab = -(3.+Nc)/2.*(Log(T1/q)**2-Log(T2/q)**2)
@@ -5931,11 +5928,10 @@ c     when necessary we consider the residues:
 *********************************************************************
 *     
       
-      function tauF3ab(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu)
+      function tauF3ab(T1,T2,q)
       
       implicit none
-      double precision t,mu2,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu
-      double precision delt,pLi2,phi
+      double precision T1,T2,q
       double precision tauF3ab
       double precision Pi,Nc ! color factor !!!
       
@@ -6093,7 +6089,7 @@ c     when necessary we consider the residues:
       
       implicit none
       double precision t,mu2,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu
-      double precision delt,pLi2,phi,ct2,st2,Xt,Yt,At
+      double precision pLi2,phi,ct2,st2,Xt,Yt,At
       double precision F2_s
       double precision Pi,Nc ! color factor !!!
       
@@ -6133,11 +6129,11 @@ c     when necessary we consider the residues:
 *********************************************************************
 *     
       
-      subroutine tausfuncs(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu,At,ht,
+      subroutine tausfuncs(t,T1,T2,s2t,q,mu,At,ht,
      $     dmuF2,dmuF3,dAtF2,dAtF3,DM12,DM22)
       
       implicit none
-      double precision t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu,At,ht
+      double precision t,T1,T2,s2t,q,mu,At,ht
       double precision dmuF2,dmuF3,dAtF2,dAtF3,DM12,DM22
       double precision Pi,Nc ! color factor !!!
       
@@ -6184,7 +6180,7 @@ c     shift of the parameters from DRbar to On-Shell scheme
       double precision F1o,F2o,F3o,dm1,dm2,dmt,dAt,dth,ds2t,dv2,dv22,dmu
      $     ,dcotb
       double precision pi12_1,pi12_2
-      double precision mt,ct2,st2,v2,v22,colorfactor 
+      double precision mt,ct2,st2,v2,v22
       double precision Pi,Nc ! color factor !!!
       
       Pi = 3.141592654d0
@@ -6342,7 +6338,7 @@ c     DMA = 2-loop corrections to the CP-odd Higgs mass.
       implicit none
       
       double precision ht,k,mt,pi,v2,tb
-      double precision t,mu2,A0,BL,T1,T2,st,ct,q,A,X,mu,tanb,sb,cb,s2t
+      double precision t,A0,BL,T1,T2,st,ct,q,A,X,mu,tanb,sb,cb,s2t
      $     ,c2t
       double precision FA,FA_A,DMA
       
@@ -6397,12 +6393,12 @@ c     when necessary we consider the residues:
       double precision t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu
       double precision FA,FA_A,tauFAab,tauFAc,tauresFAc
       
-      FA = tauFAab(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu) 
+      FA = tauFAab(T1,T2,q) 
      $     + tauFAc(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu)
      $     - tauFAc(t,A0,BL,T2,T1,-s2t,-c2t,cb,sb,q,mu)
       
-      FA_A = tauresFAc(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu)
-     $     - tauresFAc(t,A0,BL,T2,T1,-s2t,-c2t,cb,sb,q,mu)
+      FA_A = tauresFAc(t,A0,BL,T1,T2,s2t,cb,sb,q,mu)
+     $     - tauresFAc(t,A0,BL,T2,T1,-s2t,cb,sb,q,mu)
       
       return
       end
@@ -6411,10 +6407,10 @@ c     when necessary we consider the residues:
 *********************************************************************
 *     
       
-      function tauFAab(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu)
+      function tauFAab(T1,T2,q)
       
       implicit none
-      double precision t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu
+      double precision T1,T2,q
       double precision tauFAab
       double precision Pi,Nc ! color factor !!!
       
@@ -6528,10 +6524,10 @@ c     when necessary we consider the residues:
 *********************************************************************
 *
 
-      function tauresFAc(t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu)
+      function tauresFAc(t,A0,BL,T1,T2,s2t,cb,sb,q,mu)
 
       implicit none
-      double precision t,A0,BL,T1,T2,s2t,c2t,cb,sb,q,mu
+      double precision t,A0,BL,T1,T2,s2t,cb,sb,q,mu
       double precision tauresFAc,phi,delt,pLi2
       double precision Pi,Nc,Xt,Yt ! color factor !!!
       
@@ -6578,7 +6574,7 @@ c             running (DRbar) parameters, evaluated at the scale Q.
       implicit none
 
       double precision ht,k,mt,pi,vv,v1,v2,tb
-      double precision t,mu2,A0,BL,T1,T2,st,ct,q,A,X,mu,tanb,sb,cb,s2t
+      double precision t,A0,BL,T1,T2,st,ct,q,A,X,mu,tanb,sb,cb,s2t
      $     ,c2t
       double precision F2l,G2l,S1,S2,sw
 
@@ -6684,7 +6680,7 @@ c$$$      k = 3d0*ht**2/(16d0*Pi**2)**2
      $     /s2t/(T1-T2)
      $     -sb2/2*((1-c2t)*t-2*s2t*Sqrt(t)*Xt+(1+c2t)*Xt**2))
      $     *pLi2(1-T2/BL)
-     $     +s2t**2*sb2*Xt**2/2*(pLi2(1-T2/T1)-pLi2(1-T1/T2))	       
+     $     +s2t**2*sb2*Xt**2/2*(pLi2(1-T2/T1)-pLi2(1-T1/T2))
      $     +(-((-2+s2t**2)*T1+s2t**2*T2)/2/(T1-T2)
      $     *(sb2*Xt**2+cb2*Yt**2+2*Sqrt(t)*At/s2t)
      $     -(2*A0*c2t**2+(T1-T2)*s2t**2)/4/(T1-T2)*cb2*Yt**2
@@ -6831,11 +6827,10 @@ c$$$      k = 3d0*ht**2/(16d0*Pi**2)**2
       end
 
 
-      subroutine twolpmtsqcd(MT)
-      implicit none
+c      subroutine twolpmtsqcd(MT)
+c      implicit none
       
-      double precision zt2, mt
-      double precision ans
+c      double precision zt2, mt
 
-      return
-      end
+c      return
+c      end

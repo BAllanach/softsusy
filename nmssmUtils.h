@@ -67,13 +67,13 @@ public:
    /// parse command line options
    void parse(int argc, char* argv[]);
    /// returns model identification string
-   const std::string& get_modelIdent() const;
+   char* get_modelIdent() const;
    /// returns vector of GUT parameters
    DoubleVector get_pars() const;
 
 private:
    NMSSM_input* nmssm_input;  ///< pointer to NMSSM input parameters
-   std::string model_ident;   ///< model identification string
+   char* model_ident;         ///< model identification string
    double m0, m12, a0;        ///< GUT parameters
 
    /// returns floating point number from string like --m0=125.4

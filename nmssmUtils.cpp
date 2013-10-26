@@ -122,7 +122,7 @@ std::ostream& operator<<(std::ostream& lhs, const NMSSM_input& rhs) {
 
 NMSSM_command_line_parser::NMSSM_command_line_parser(NMSSM_input* nmssm_input_)
    : nmssm_input(nmssm_input_)
-   , model_ident("")
+   , model_ident(const_cast<char*>(""))
    , m0(0.)
    , m12(0.)
    , a0(0.)
@@ -186,7 +186,7 @@ void NMSSM_command_line_parser::parse(int argc, char* argv[]) {
    }
 
    // check universality condition
-   if (model_ident == "sugra") {
+   if (strcmp(model_ident, "sugra") == 0) {
       // relax sugra condition if one of the following parameters is
       // set
       if (nmssm_input->is_set(NMSSM_input::Alambda) ||
@@ -198,23 +198,23 @@ void NMSSM_command_line_parser::parse(int argc, char* argv[]) {
           nmssm_input->is_set(NMSSM_input::xiS) ||
           nmssm_input->is_set(NMSSM_input::mPrimeS2) ||
           nmssm_input->is_set(NMSSM_input::mS2)) {
-         model_ident = "nonUniversal";
+         model_ident = const_cast<char*>("nonUniversal");
       }
    }
 }
 
-const std::string& NMSSM_command_line_parser::get_modelIdent() const {
+char* NMSSM_command_line_parser::get_modelIdent() const {
    return model_ident;
 }
 
 DoubleVector NMSSM_command_line_parser::get_pars() const {
    DoubleVector pars(3);
 
-   if (model_ident == "sugra") {
+   if (strcmp(model_ident, "sugra") == 0) {
       pars(1) = m0;
       pars(2) = m12;
       pars(3) = a0;
-   } else if (model_ident == "nonUniversal") {
+   } else if (strcmp(model_ident, "nonUniversal") == 0) {
       pars.setEnd(53);
       for (int i = 1; i <= 3; i++) pars(i) = m12;
       for (int i = 11; i <= 13; i++) pars(i) = a0;

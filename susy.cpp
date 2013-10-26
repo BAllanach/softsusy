@@ -590,7 +590,7 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				DoubleMatrix & gQQ, DoubleMatrix & gDD,
 				DoubleMatrix & gUU, double & gH1H1, double &
 				gH2H2, sBrevity & a) const {
-  DoubleVector &gsq=a.gsq, &g4=a.g4;
+  DoubleVector &gsq=a.gsq;
  
   /// powers of gauge couplings
   double a1 = gsq(1),  a2 = gsq(2),   a3 = gsq(3);   
@@ -602,32 +602,21 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 
   /// For calculational brevity
   /// NB Change notation to that of J&J  hep-ph/0408128 (Y->Y^T , etc)
-  DoubleMatrix &d1=a.dt,  &u1=a.ut,  &e1=a.et, &u2t=a.u2, &d2t=a.d2, &e2t=a.e2, 
-    &u2=a.u2t, &d2=a.d2t, &e2=a.e2t, &ut=a.u1, &dt=a.d1,  &et=a.e1;      
-  double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT; 
+  DoubleMatrix &u2t=a.u2, &d2t=a.d2, &e2t=a.e2;
 
-  DoubleMatrix u2tu2t = u2t*u2t; double u2tu2tT = u2tu2t.trace(); 
-  double u2tu2tu2tT = (u2tu2t*u2t).trace(); 
-  double u2tu2td2tT = (u2tu2t*u2t).trace(); 
+  DoubleMatrix u2tu2t = u2t*u2t; 
+  DoubleMatrix d2td2t = d2t*d2t; 
+  DoubleMatrix e2te2t = e2t*e2t; 
 
-  DoubleMatrix d2td2t = d2t*d2t; double d2td2tT = d2td2t.trace(); 
-  double d2td2td2tT = (d2td2t*d2t).trace();
-  double d2tu2td2tT = (d2td2t*u2t).trace();  //cyclic property
-
-  DoubleMatrix e2te2t = e2t*e2t; double e2te2tT = e2te2t.trace(); 
-  double e2te2te2tT = (e2te2t*e2t).trace();
-
-  double u2td2tT = (u2t*d2t).trace();
   /// Everything gets the (1/16pi^2)^3 factor at the bottom
   DoubleMatrix ee(3, 3), ll(3, 3), qq(3, 3), dd(3, 3), uu(3, 3); 
 
-  double ht = displayYukawaElement(YU, 3, 3), ht2 = sqr(ht), ht3 = ht2*ht, 
-    ht4 = sqr(ht2), ht5 = ht4*ht, ht6 = ht2*ht4;
+  double ht = displayYukawaElement(YU, 3, 3), ht2 = sqr(ht), 
+    ht4 = sqr(ht2), ht6 = ht2*ht4;
   double htau = displayYukawaElement(YE, 3, 3), htau2 = sqr(htau), 
-    htau3 = htau2*htau,
-    htau4 = sqr(htau2), htau5=htau4*htau, htau6 = htau2*htau4;
-  double hb = displayYukawaElement(YD, 3, 3), hb2 = sqr(hb), hb3 = hb2*hb, 
-    hb4 = sqr(hb2), hb5 = hb4*hb, hb6 = hb2*hb4;
+    htau4 = sqr(htau2), htau6 = htau2*htau4;
+  double hb = displayYukawaElement(YD, 3, 3), hb2 = sqr(hb), 
+    hb4 = sqr(hb2), hb6 = hb2*hb4;
   
   const static double O45= .02222222222222222222 ;
   const static double O27= .03703703703703703703 ;
