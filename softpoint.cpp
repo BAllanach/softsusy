@@ -161,26 +161,28 @@ int main(int argc, char *argv[]) {
       }
       
       /// Pass through to see if there are any RPV options
-      for (int i = 2; i < argc; i++) {
-	if (starts_with(argv[i], "--lambda")) {
-	  RPVflag = true;
-	  int ii= int(atof(argv[i+1]));
-	  int j = int(atof(argv[i+2]));
-	  int k = int(atof(argv[i+3]));
-	  double d = atof(argv[i+4]);
-	  if (starts_with(argv[i], "--lambdaPP")) 
-	    kw.setLambda(LU, ii, j, k, d);
-	  else if (starts_with(argv[i], "--lambdaP"))  
-	    kw.setLambda(LD, k, ii, j, d);
-	  else if (starts_with(argv[i], "--lambda"))
-	    kw.setLambda(LE, k, ii, j, d);
-	}
-	if (starts_with(argv[i], "--kappa")) {
-	  int ii = int(atof(argv[i+1]));
-	  double d = atof(argv[i+2]);
-	  kw.setKappa(ii, d);
-	  RPVflag = true;
-	}
+      if (strcmp(argv[1], "nmssm")) {
+        for (int i = 2; i < argc; i++) {
+          if (starts_with(argv[i], "--lambda")) {
+            RPVflag = true;
+            int ii= int(atof(argv[i+1]));
+            int j = int(atof(argv[i+2]));
+            int k = int(atof(argv[i+3]));
+            double d = atof(argv[i+4]);
+            if (starts_with(argv[i], "--lambdaPP"))
+              kw.setLambda(LU, ii, j, k, d);
+            else if (starts_with(argv[i], "--lambdaP"))
+              kw.setLambda(LD, k, ii, j, d);
+            else if (starts_with(argv[i], "--lambda"))
+              kw.setLambda(LE, k, ii, j, d);
+          }
+          if (starts_with(argv[i], "--kappa")) {
+            int ii = int(atof(argv[i+1]));
+            double d = atof(argv[i+2]);
+            kw.setKappa(ii, d);
+            RPVflag = true;
+          }
+        }
       }
       
       /// Model specific options
