@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
   
   DoubleVector pars(3); 
   
-  char * modelIdent = (char *)"";  
+  const char* modelIdent = "";
   
   /// Non model specific options
   if (strcmp(argv[1], "leshouches")) {
@@ -187,7 +187,7 @@ int main(int argc, char *argv[]) {
       if (!strcmp(argv[1], "sugra")) {
 	cout << "# SOFTSUSY SUGRA calculation" << endl;
 	boundaryCondition = &sugraBcs;
-	modelIdent = (char *)"sugra";
+	modelIdent = "sugra";
 	double m0 = 0., m12 = 0., a0 = 0.;
 	for (int i = 2; i < argc; i++) {
 	  if (starts_with(argv[i], "--m0=")) m0 = get_value(argv[i], "--m0=");
@@ -209,7 +209,7 @@ int main(int argc, char *argv[]) {
       if (!strcmp(argv[1], "amsb")) {
 	cout << "# SOFTSUSY mAMSB calculation" << endl;
 	boundaryCondition = &amsbBcs;
-	modelIdent = (char *)"amsb";
+	modelIdent = "amsb";
 	double m0 = 0., m32 = 0.;
 	for (int i = 2; i < argc; i++) {
 	  if (starts_with(argv[i], "--m0=")) 
@@ -230,7 +230,7 @@ int main(int argc, char *argv[]) {
       if (!strcmp(argv[1], "gmsb")) {
 	cout << "# SOFTSUSY mGMSB calculation" << endl;
 	boundaryCondition = &gmsbBcs;
-	modelIdent = (char *)"gmsb";
+	modelIdent = "gmsb";
 	double n5 = 0., mMess = 0., lambda = 0., cgrav = 1.;
 	for (int i = 2; i < argc; i++) {
 	  if (starts_with(argv[i], "--n5=")) n5 = get_value(argv[i], "--n5=");
@@ -306,31 +306,31 @@ int main(int argc, char *argv[]) {
 		  case 1: kk >> model; 
 		    switch(model) {
 		    case 0: boundaryCondition = &extendedSugraBcs;
-		      modelIdent = (char *)"nonUniversal"; r=&m;
+		      modelIdent = "nonUniversal"; r=&m;
 		      break;
 		    case 1: 
 		      if (!flavourViolation) {
 			pars.setEnd(3); 
 			boundaryCondition = &sugraBcs; 
 		      }
-		      modelIdent = (char *)"sugra";
+		      modelIdent = "sugra";
 		      break;
 		    case 2: 
 		      if (!flavourViolation) {
 			boundaryCondition = &gmsbBcs; 
 			pars.setEnd(4); 
 		      } 
-		      modelIdent = (char *)"gmsb";
+		      modelIdent = "gmsb";
 		      break;
 		    case 3: 		    
 		      boundaryCondition = &amsbBcs; 
 		      pars.setEnd(2); 
-		      modelIdent = (char *)"amsb";
+		      modelIdent = "amsb";
 		      break;
 		    case 4:
 		    boundaryCondition = &splitGmsb;
 		    pars.setEnd(7); sgnMu = 0; 
-		    modelIdent = (char *)"splitgmsb";
+		    modelIdent = "splitgmsb";
 		    break;
 		    default: 
 		      ostringstream ii;
@@ -544,7 +544,7 @@ int main(int argc, char *argv[]) {
 		  /// First, we want to convert our input to EXTPAR if we have
 		  /// mSUGRA already
 		  if (!strcmp(modelIdent, "sugra")) {
-		    modelIdent = (char *)"nonUniversal";
+		    modelIdent = "nonUniversal";
 		    if (!flavourViolation) {
 		      /// We assume mSUGRA BCs with no flavour violation
 		      r=&m; 
@@ -789,44 +789,44 @@ int main(int argc, char *argv[]) {
 		  }
 		} 
 		else if (block == "MSQ2IN") {
-		  modelIdent = (char *)"nonUniversal";
+		  modelIdent = "nonUniversal";
 		  int i, j; double d; kk >> i >> j >> d;
 		  pars(positionOfSym(i, j) + 3) = d;
 		}
 		else if (block == "MSU2IN") {
-		  modelIdent = (char *)"nonUniversal";
+		  modelIdent = "nonUniversal";
 		  int i, j; double d; kk >> i >> j >> d;
 		  pars(positionOfSym(i, j) + 9) = d;
 		}
 		else if (block == "MSD2IN") {
-		  modelIdent = (char *)"nonUniversal";
+		  modelIdent = "nonUniversal";
 		  int i, j; double d; kk >> i >> j >> d;
 		  pars(positionOfSym(i, j) + 15) = d;
 		}
 		else if (block == "MSL2IN") {
-		  modelIdent = (char *)"nonUniversal";
+		  modelIdent = "nonUniversal";
 		  int i, j; double d; kk >> i >> j >> d;
 		  pars(positionOfSym(i, j) + 21) = d;
 	      }
 		else if (block == "MSE2IN") {
-		  modelIdent = (char *)"nonUniversal";
+		  modelIdent = "nonUniversal";
 		  int i, j; double d; kk >> i >> j >> d;
 		  pars(positionOfSym(i, j) + 27) = d;
 		}
 		else if (block == "TUIN") {
-		  modelIdent = (char *)"nonUniversal";
+		  modelIdent = "nonUniversal";
 		  int i, j; double d; kk >> i >> j >> d;
 		  pars((i-1) * 3 + j + 33) = d;
 		  slha2setTrilinear[(i-1) * 3 + j - 1] = true;
 		}
 		else if (block == "TDIN") {
-		  modelIdent = (char *)"nonUniversal";
+		  modelIdent = "nonUniversal";
 		  int i, j; double d; kk >> i >> j >> d;
 		  pars((i-1) * 3 + j + 42) = d;
 		  slha2setTrilinear[(i-1) * 3 + j + 8] = true;
 		}
 		else if (block == "TEIN") {
-		  modelIdent = (char *)"nonUniversal";
+		  modelIdent = "nonUniversal";
 		  int i, j; double d; kk >> i >> j >> d;
 		  pars((i-1) * 3 + j + 51) = d;
 		  slha2setTrilinear[(i-1) * 3 + j + 17] = true;
