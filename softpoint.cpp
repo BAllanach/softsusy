@@ -274,7 +274,6 @@ int main(int argc, char *argv[]) {
       nmssm_parser.parse(argc, argv);
       modelIdent = nmssm_parser.get_modelIdent();
       pars = nmssm_parser.get_pars();
-      cout << "# SOFTSUSY NMSSM " << modelIdent << " calculation\n";
     }
     
   if (!strcmp(argv[1], "leshouches")) {
