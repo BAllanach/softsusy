@@ -1065,11 +1065,11 @@ int main(int argc, char *argv[]) {
                        " not supported\n");
             throw msg;
          }
-         if (modelIdent == "sugra") {
+         if (strcmp(modelIdent, "sugra") == 0) {
             nmssmBoundaryCondition = &NmssmMsugraBcs;
             if (pars.size() != 3)
                pars.setEnd(3);
-         } else if (modelIdent == "nonUniversal") {
+         } else if (strcmp(modelIdent, "nonUniversal") == 0) {
             nmssmBoundaryCondition = &extendedNMSugraBcs;
             if (pars.size() != 53) {
                string msg("# Error: NMSSM non-minmal sugra boundary condition"
