@@ -1,15 +1,3 @@
-<li> 12/7/13 Fixed potential infra-red problem in Passarino-Veltman b0
-function. 
-<li> 12/7/13 Made gauge of tan beta and VEVs explicit in SLHA comments
-<li> 19/7/13 Small bug-fix in sbottom corrections: sneutrino_e+sneutrino_mu is
-used in loop rather than just 2 x sneutrino_mu. Thanks to Lewis Tunstall.
-<li> 22/7/13 Small bug-fix in charged slepton corrections. Thanks to Lewis
-Tunstall.
-<li> 1/8/13 Added MX, the scale of SUSY breaking boundary conditions (may also
-be unification scale), to MssmSoftsusy object for convenience.
-<li> 29/8/13 Difference between 2 MssmSoftsusy objects now changed: if a mass
-is less than 1 GeV, it is the ABSOLUTE mass difference that is returned by
-sumTol, not the relative mass difference.
-<li> 29/8/13 Problem with SLHA when you fix tanb to be at MX (which is MSUSY) now fixed.
-<li> 29/8/13 SLHA2 problem with output and ordering of squark/slepton masses fixed. Previously, it would occasionally give two identical masses when it shouldn't. Thanks to J Evans.
-<li> 16/9/13 Stops segfaults when rho iteration is screwed up and generates lots of NaNs. Also trapped some Nan matrices in diagonaliseSvd. Thanks to A Voigt
+<li> 26/09/13 Added lowOrg wrapper, renaming old method fixedPointIteration in
+order to provide backwards compatibility: thanks to S Akula for the suggestion. Also, renamed CMSSM->SUGRA in boundary conditions to both provide backwards compatibility and for NMSSM generalisation
+<li> 2/10/13 In the case that user tries to invoke SLHA2 RPV+flavour violation, SOFTSUSY bails immediately with a better error message. It's not implemented yet...

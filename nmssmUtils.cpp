@@ -41,7 +41,7 @@ DoubleVector NMSSM_input::get_nmpars() const {
          std::string msg =
             "# Error: you set lambda * <S> to a non-zero value"
             ", but lambda is zero.  "
-            "Please set lambda (EXTPAR entry 61) to a non-zero value.";
+            "Please set lambda (EXTPAR entry 61) to a non-zero value.\n";
          throw msg;
       }
    }
@@ -79,6 +79,10 @@ void NMSSM_input::check_ewsb_output_parameters() const {
    } else {
       if (!is_set(mu) && !is_set(BmuOverCosBetaSinBeta) && !is_set(xiS))
          supported = true;
+      if (!is_set(lambdaS) || close(parameter[lambdaS], 0., EPSTOL))
+         throw "# ERROR: <S> is zero!  In the Z3 violating NMSSM <S> is not"
+            " determined by the EWSB conditions, so <S> has to be set to"
+            " a non-zero value on the user-side!\n";
    }
 
    if (!supported) {
@@ -182,7 +186,7 @@ void NMSSM_command_line_parser::parse(int argc, char* argv[]) {
    }
 
    // check universality condition
-   if (model_ident == "sugra") {
+   if (strcmp(model_ident, "sugra") == 0) {
       // relax sugra condition if one of the following parameters is
       // set
       if (nmssm_input->is_set(NMSSM_input::Alambda) ||
@@ -199,18 +203,18 @@ void NMSSM_command_line_parser::parse(int argc, char* argv[]) {
    }
 }
 
-const std::string& NMSSM_command_line_parser::get_modelIdent() const {
+const char* NMSSM_command_line_parser::get_modelIdent() const {
    return model_ident;
 }
 
 DoubleVector NMSSM_command_line_parser::get_pars() const {
    DoubleVector pars(3);
 
-   if (model_ident == "sugra") {
+   if (strcmp(model_ident, "sugra") == 0) {
       pars(1) = m0;
       pars(2) = m12;
       pars(3) = a0;
-   } else if (model_ident == "nonUniversal") {
+   } else if (strcmp(model_ident, "nonUniversal") == 0) {
       pars.setEnd(53);
       for (int i = 1; i <= 3; i++) pars(i) = m12;
       for (int i = 11; i <= 13; i++) pars(i) = a0;

@@ -719,15 +719,17 @@ For a quick examination of a single point in CMSSM parameter space, the
 command  
 \small
 \begin{verbatim}
-./softpoint.x sugra <m0> <m12> <a0> <tanb> <mx> <sgnMu> RPVcoupling <i> <j> <k> <value>
+./softpoint.x sugra --m0=<value> --m12=<value> --a0=<value> --tanb=<value>
+--sgnMu=1 --mgut=unified --lambda 1 2 3 0.1
 \end{verbatim}
 \normalsize
 can be utilised. Bracketed entries should be replaced by their numerical
 values, where all massive parameters ($m_0$, $M_{1/2}$, $A_0$, $M_{GUT}$)
 should be 
-quoted in GeV. \code{RPVcoupling}~$\in \{$\code{lambda}, \code{lambdaP}, or
-\code{lambdaPP}$\}\equiv \{\lam$, $\lam'$, $\lam''\}$ and \{\code{i,j,k}\}$\in
-\{1,2,3\}$ specify a single non-zero $\rpv$ GUT-scale coupling. 
+quoted in GeV. This particular example sets $\lambda_{123}(M_{GUT})=0.1$, and
+triggers the $\rpv$~calculation. Instead of (or as well as)
+\code{lambda}, one can set $\lambda'(\code{lambdaP})$, or
+$\lambda''(\code{lambdaPP}$). 
 \code{mx}~denotes the scale at which the high-energy boundary condition is to
 be applied. 
 If this is 

@@ -897,25 +897,29 @@ members and access methods, which are listed in
   \centering
   \begin{tabular}{lll}
     data variable & & methods \\\hline
-    \code{\small double alambda, akappa} & trilinear scalar &
-    \code{\small displaySoftAlambda}
+    \code{\small double alambda, akappa} & trilinear soft &
+    \code{\small displayTrialambda}
     \\
-    $a_\lambda$, $a_\kappa$ & interactions & \code{\small displaySoftAkappa}
+    $a_\lambda$, $a_\kappa$ & parameters & \code{\small displayTriakappa}
     \\\hline
-    \code{\small double mSpsq} & bilinear scalar &
+    $A_\lambda$ & $a_\lambda / \lambda$ & \code{\small displaySoftAlambda}
+    \\
+    $A_\kappa$ & $a_\kappa / \kappa$ & \code{\small displaySoftAkappa}
+    \\\hline
+    \code{\small double mSpsq} & bilinear soft &
     \code{\small displayMspSquared}
     \\
-    $m_{S}'^2$ & interaction &
+    $m_{S}'^2$ & parameters &
     \\\hline
     \code{\small double mSsq} & soft scalar mass &
     \code{\small displayMsSquared}
     \\
     $m_S^2$ & &
     \\\hline
-    \code{\small double xiS} & linear scalar &
+    \code{\small double xiS} & linear soft &
     \code{\small displayXiS}
     \\
-    $\xi_S$ & soft-breaking term &
+    $\xi_S$ & parameters &
     \\\hline
     \normalsize
   \end{tabular}
