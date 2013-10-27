@@ -310,13 +310,10 @@
      
 *     LINE NUMBER
       NLINE=NLINE+1
-      PRINT *, "NLINE = ", NLINE
       READ(15,'(A120)',END=29,ERR=999) CHINL
-      PRINT *, "CHINL = ", CHINL
 *     CHECK FOR EMPTY OR COMMENT LINES
       IF(CHINL.EQ.' '.OR.CHINL(1:1).EQ.'#'
      .  .OR.CHINL(1:1).EQ.'*') GOTO 21
-      PRINT *, "AFTER TEST FOR COMMENT"
 *     FORCE UPPER CASE LETTERS IN CHINL (AS REQUIRED BELOW)
       INL=0
  22   INL=INL+1
@@ -389,7 +386,6 @@
       ELSEIF(CHBLCK(1:12).EQ.'NMSSMRUNATQ2')THEN
        READ(CHINL,*,ERR=999) IX,VAL  
        IF(IX.EQ.1)THEN 
-          PRINT *,"FOR LLQ VAL=",VAL
           PAR(1)=VAL            ! lambda(SQRT(Q2))
        ENDIF
        IF(IX.EQ.2)THEN 
@@ -415,7 +411,6 @@
       ELSEIF(CHBLCK(1:15).EQ.'NMSSMRUNATQSTSB')THEN
        READ(CHINL,*,ERR=999) IX,VAL  
        IF(IX.EQ.1)THEN 
-          PRINT *,"FOR LLQ VAL=",VAL
           LLQ = VAL             ! lambda(SQRT(QSTSB))
        ENDIF
        IF(IX.EQ.2)THEN 
@@ -508,7 +503,7 @@
       ELSEIF(CHBLCK(1:6).EQ.'AEATQ2')THEN   
        READ(CHINL,*,ERR=999) IX1,IX2,VAL
        IF(IX1.EQ.3 .AND. IX2.EQ.3) PAR(14)=VAL  !Atau = AE3
-       IF(IX1.EQ.2 .AND. IX2.EQ.2) PAR(25)=VAL  !Atau = AE3
+       IF(IX1.EQ.2 .AND. IX2.EQ.2) PAR(25)=VAL  !Amu = AE3
 
 
 *     READ au
@@ -540,7 +535,7 @@
        IF(IX.EQ.3) PAR(22)=VAL  !M3
        IF(IX.EQ.21)MHDS=VAL !mH1^2
        IF(IX.EQ.22)MHUS=VAL !mH2^2
-       IF(IX.EQ.21)MHDS=VAL !mH1^2
+c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
        
 
 *     READ msoft
@@ -596,7 +591,6 @@
   
 *     READ NMHmix
       ELSEIF(CHBLCK(1:6).EQ.'NMHMIX')THEN   
-       PRINT *, "NMHMIX BLOCK"
        READ(CHINL,*,ERR=999) IX1,IX2,VAL        
        S(IX1,IX2)=VAL
      
@@ -675,7 +669,6 @@
          WRITE(0,1)"MA2 MUST BE GIVEN WITH POSITIVE VALUE" 
          ERR=1
       ENDIF
-      PRINT *, "MA2=", MA2
       MA2=DSQRT(MA2**2)
       PAR(23)=DSQRT(MA2)
 
@@ -693,9 +686,8 @@
       P2(1,1) = P(1,1)/ SIN(ATAN(PAR(3)))
       P2(2,1) = P(2,1)/ SIN(ATAN(PAR(3)))
       P2(1,2) = P(1,3)
-      P2(2,1) = P2(1,2)
       P2(2,2) = P(2,3)
-       
+
        
 !     Conventions for CP EVEN are not SLHA
        SCOMP(1,2)=S(1,1)
@@ -1450,7 +1442,7 @@
       WRITE(17,903) 2,1,SINB*PCOMP(2,1),"P_(2,1)"
       WRITE(17,903) 2,2,COSB*PCOMP(2,1),"P_(2,2)"
       WRITE(17,903) 2,3,PCOMP(2,2),"P_(2,3)"
-                  
+           
       SST=DSQRT(1-CST**2)
       SSB=DSQRT(1-CSB**2)
       SSL=DSQRT(1-CSL**2)
