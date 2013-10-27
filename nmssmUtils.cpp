@@ -41,7 +41,7 @@ DoubleVector NMSSM_input::get_nmpars() const {
          std::string msg =
             "# Error: you set lambda * <S> to a non-zero value"
             ", but lambda is zero.  "
-            "Please set lambda (EXTPAR entry 61) to a non-zero value.";
+            "Please set lambda (EXTPAR entry 61) to a non-zero value.\n";
          throw msg;
       }
    }
@@ -79,6 +79,10 @@ void NMSSM_input::check_ewsb_output_parameters() const {
    } else {
       if (!is_set(mu) && !is_set(BmuOverCosBetaSinBeta) && !is_set(xiS))
          supported = true;
+      if (!is_set(lambdaS) || close(parameter[lambdaS], 0., EPSTOL))
+         throw "# ERROR: <S> is zero!  In the Z3 violating NMSSM <S> is not"
+            " determined by the EWSB conditions, so <S> has to be set to"
+            " a non-zero value on the user-side!\n";
    }
 
    if (!supported) {
@@ -182,7 +186,7 @@ void NMSSM_command_line_parser::parse(int argc, char* argv[]) {
    }
 
    // check universality condition
-   if (model_ident == "sugra") {
+   if (strcmp(model_ident, "sugra") == 0) {
       // relax sugra condition if one of the following parameters is
       // set
       if (nmssm_input->is_set(NMSSM_input::Alambda) ||
@@ -199,18 +203,18 @@ void NMSSM_command_line_parser::parse(int argc, char* argv[]) {
    }
 }
 
-const std::string& NMSSM_command_line_parser::get_modelIdent() const {
+const char* NMSSM_command_line_parser::get_modelIdent() const {
    return model_ident;
 }
 
 DoubleVector NMSSM_command_line_parser::get_pars() const {
    DoubleVector pars(3);
 
-   if (model_ident == "sugra") {
+   if (strcmp(model_ident, "sugra") == 0) {
       pars(1) = m0;
       pars(2) = m12;
       pars(3) = a0;
-   } else if (model_ident == "nonUniversal") {
+   } else if (strcmp(model_ident, "nonUniversal") == 0) {
       pars.setEnd(53);
       for (int i = 1; i <= 3; i++) pars(i) = m12;
       for (int i = 11; i <= 13; i++) pars(i) = a0;
@@ -220,7 +224,7 @@ DoubleVector NMSSM_command_line_parser::get_pars() const {
       for (int i = 41; i <= 49; i++) pars(i) = m0;
       pars(50) = a0; // Alambda
       pars(51) = a0; // Akappa
-      pars(52) = 0.; // mS'^2 @todo which value should we chose here?
+      pars(52) = 0.; // mS'^2
       pars(53) = m0*m0; // mS^2
 
       if (nmssm_input->is_set(NMSSM_input::Alambda))
@@ -235,10 +239,14 @@ DoubleVector NMSSM_command_line_parser::get_pars() const {
          pars(23) = nmssm_input->get(NMSSM_input::mu);
       if (nmssm_input->is_set(NMSSM_input::BmuOverCosBetaSinBeta))
          pars(24) = nmssm_input->get(NMSSM_input::BmuOverCosBetaSinBeta);
-      if (nmssm_input->is_set(NMSSM_input::xiS))
-         ; // currently not set in extendedNMSugraBcs()
-      if (nmssm_input->is_set(NMSSM_input::mPrimeS2))
-         pars(52) = nmssm_input->get(NMSSM_input::mPrimeS2);
+      if (nmssm_input->is_set(NMSSM_input::mPrimeS2) &&
+          nmssm_input->is_set(NMSSM_input::muPrime)) {
+         // setting pars(52) = B' = mS'^2 / mu'
+         const double muPrime  = nmssm_input->get(NMSSM_input::muPrime);
+         const double mPrimeS2 = nmssm_input->get(NMSSM_input::mPrimeS2);
+         if (!close(muPrime, 0.0, EPSTOL))
+            pars(52) = mPrimeS2 / muPrime;
+      }
       if (nmssm_input->is_set(NMSSM_input::mS2))
          pars(53) = nmssm_input->get(NMSSM_input::mS2);
    } else {
@@ -403,7 +411,7 @@ void nuhmINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   m.setTrialambda(m.displayLambda() * Al);
   m.setTriakappa(m.displayKappa() * Ak);
   if(Z3 == false) {
- m.setMspSquared(inputParameters.display(inputParameters.display(52) * m.displayMupr()  ));
+     m.setMspSquared(inputParameters.display(52) * m.displayMupr());
   }
 }
 
@@ -426,7 +434,7 @@ void nuhmIINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   m.setTrialambda(m.displayLambda() * Al);
   m.setTriakappa(m.displayKappa() * Ak);
   if (Z3 == false) {
-    m.setMspSquared(inputParameters.display(inputParameters.display(52) * m.displayMupr()  ));
+    m.setMspSquared(inputParameters.display(52) * m.displayMupr());
   }
 }
 

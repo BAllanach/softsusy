@@ -7,8 +7,6 @@
 
 #include "rpvneut.h"
 
-static int posChargedGolstone = 0;
-
 const RpvNeutrino & RpvNeutrino::operator = (const RpvNeutrino &s) {
   if (this == &s) return *this;
   setRpvSoftsusy(s.displayRpvSoftsusy());
@@ -62,10 +60,7 @@ DoubleVector RpvNeutrino::calculateSneutrinoVevs
 
 
 DoubleVector RpvNeutrino::calculateSneutrinoTadpoles(double sinthDRbar) {
-
-  double g1 = displayGaugeCoupling(1) * sqrt(0.6), g2 = displayGaugeCoupling(2);
-  double tanb = displayTanb(), beta = atan(tanb);
-  
+  double g2 = displayGaugeCoupling(2);
   double costhDRbar = sqrt(1.0 - sqr(sinthDRbar)), 
     tanthDRbar = tan(asin(sinthDRbar)), tanthDRbar2 = sqr(tanthDRbar);
 	
@@ -476,9 +471,8 @@ DoubleVector RpvNeutrino::calculateSneutrinoTadpoles(double sinthDRbar) {
 
 double RpvNeutrino::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
 	
-  double g1 = displayGaugeCoupling(1) * sqrt(0.6), 
-    g2 = displayGaugeCoupling(2);
-  double tanb = displayTanb(), beta = atan(tanb);
+  double     g2 = displayGaugeCoupling(2);
+  double tanb = displayTanb();
   double costhDRbar = sqrt(1.0 - sqr(sinthDRbar)), 
 	  tanthDRbar = tan(asin(sinthDRbar)), tanthDRbar2 = sqr(tanthDRbar);
   
@@ -754,9 +748,8 @@ double RpvNeutrino::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
 
 double RpvNeutrino::doCalcTadpole2oneLoop(double mt, double sinthDRbar) {
   
-  double g1 = displayGaugeCoupling(1) * sqrt(0.6), 
-    g2 = displayGaugeCoupling(2);
-  double tanb = displayTanb(), beta = atan(tanb);
+  double g2 = displayGaugeCoupling(2);
+  double tanb = displayTanb();
   double costhDRbar = sqrt(1.0 - sqr(sinthDRbar)), 
     tanthDRbar = tan(asin(sinthDRbar)), tanthDRbar2 = sqr(tanthDRbar);
   
@@ -1000,11 +993,9 @@ double RpvNeutrino::doCalcTadpole2oneLoop(double mt, double sinthDRbar) {
 
 void RpvNeutrino::calculateLNVNeutralScalarMassMatrix(double sinthDRbar) {
   
-  double g1 = displayGaugeCoupling(1) * sqrt(0.6), 
-    g2 = displayGaugeCoupling(2);
+  double g2 = displayGaugeCoupling(2);
   double tanb = displayTanb();
-  double costhDRbar = sqrt(1.0 - sqr(sinthDRbar)),
-    tanthDRbar = tan(asin(sinthDRbar)), tanthDRbar2 = sqr(tanthDRbar);
+  double costhDRbar = sqrt(1.0 - sqr(sinthDRbar));
   
   double vSM = displayHvev();
   DoubleVector vi = displaySneutrinoVevs();
@@ -1065,8 +1056,7 @@ DoubleMatrix RpvNeutrino::calculateLNVSleptonMassMatrix(double sinthDRbar) {
   /// xi=1 Feynman gauge for loop calculations (m_G+=m+W); xi=0 gauge - m_G+=0
   double xiGauge = 1.0;  
   
-  double g1 = displayGaugeCoupling(1) * sqrt(0.6), g2 = displayGaugeCoupling(2);
-  double tanb = displayTanb();
+  double g2 = displayGaugeCoupling(2);
   double costhDRbar = sqrt(1.0 - sqr(sinthDRbar)), 
     tanthDRbar = tan(asin(sinthDRbar)), tanthDRbar2 = sqr(tanthDRbar);
   
@@ -1075,8 +1065,6 @@ DoubleMatrix RpvNeutrino::calculateLNVSleptonMassMatrix(double sinthDRbar) {
   double snuSq, v1, v2; 
   if (usefulVevs(vSM, vi, snuSq, v1, v2)) {
     cout << "sneutrino VEVs incompatible with MZ, MW!\n" << endl;}
-  double mw = displayMwRun();
-  double mz = displayMzRun();
   
   double smu = displaySusyMu(); 
   DoubleVector kappa =  displayKappa();
@@ -1170,20 +1158,15 @@ DoubleMatrix RpvNeutrino::calculateLNVSleptonMassMatrix(double sinthDRbar) {
 
 
 DoubleMatrix RpvNeutrino::calculateLNVDownSquarkMassMatrix(double sinthDRbar) {
-  double g1 = displayGaugeCoupling(1) * sqrt(0.6), 
-    g2 = displayGaugeCoupling(2);
-  double tanb = displayTanb(), beta = atan(tanb);
+  double g2 = displayGaugeCoupling(2);
   
-  double costhDRbar = sqrt(1.0 - sqr(sinthDRbar)), 
-    tanthDRbar = tan(asin(sinthDRbar)), tanthDRbar2 = sqr(tanthDRbar);
+  double tanthDRbar = tan(asin(sinthDRbar)), tanthDRbar2 = sqr(tanthDRbar);
   
   double vSM = displayHvev();
   DoubleVector vi = displaySneutrinoVevs();
   double snuSq, v1, v2;
   if (usefulVevs(vSM, vi, snuSq, v1, v2)) {
     cout << "sneutrino VEVs incompatible with MZ, MW!\n" << endl;}
-  double mw = displayMwRun();
-  double mz = displayMzRun();
   
   double smu = displaySusyMu(); 
   DoubleVector kappa =  displayKappa();
@@ -1246,16 +1229,13 @@ DoubleMatrix RpvNeutrino::calculateLNVDownSquarkMassMatrix(double sinthDRbar) {
 
 
 DoubleMatrix RpvNeutrino::calculateLNVUpSquarkMassMatrix(double sinthDRbar) {
-  double g1 = displayGaugeCoupling(1) * sqrt(0.6),  
-    g2 = displayGaugeCoupling(2);
+  double g2 = displayGaugeCoupling(2);
   double tanthDRbar = tan(asin(sinthDRbar)), tanthDRbar2 = sqr(tanthDRbar);
   double vSM = displayHvev();
   DoubleVector vi = displaySneutrinoVevs();
   double snuSq, v1, v2; 
   if (usefulVevs(vSM, vi, snuSq, v1, v2)) {
     cout << "sneutrino VEVs incompatible with MZ, MW!\n" << endl;}
-  double mw = displayMwRun();
-  double mz = displayMzRun();
   
   double smu = displaySusyMu();  
   DoubleVector kappa =  displayKappa();
@@ -1632,7 +1612,6 @@ void RpvNeutrino::neutrino(DoubleVector & neutrino, DoubleMatrix & mixMnu,
   /// gauge couplings and EW mixing angles
   double g1 = displayGaugeCoupling(1) * sqrt(0.6);
   double g2 = displayGaugeCoupling(2);
-  double gsqr = g1 * g1 + g2 * g2;
   double sw = g1/sqrt(g1 * g1 + g2 * g2); ///< = sqrt(oneset.displayAlpha(ALPHA)
 					/// * 4. * PI)/g2;
   double cw = sqrt(1. - sw * sw);
@@ -2808,7 +2787,6 @@ void RpvNeutrino::spinfoSLHA(ostream & out) {
 
 void RpvNeutrino::hmixSLHA(ostream & out) {
   MssmSoftsusy::hmixSLHA(out);
-  double ms = displayMsusy();
   const double tiny = 6.66e-66;
   //output RPV couplings LLE, LQD, UDD
   out << "Block RVLAMLLE Q= " << displayMu() <<  " # non-zero R-Parity violating LLE couplings \n";

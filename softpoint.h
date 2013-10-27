@@ -29,6 +29,20 @@
 #include <rpvneut.h>
 using namespace softsusy;
 
+/// string routine for options
+bool starts_with(const std::string& str,
+		 const std::string& prefix) {
+  return !str.compare(0, prefix.size(), prefix);
+}
+
+double get_value(const std::string& str, const std::string& prefix) {
+   return atof(str.substr(prefix.size()).c_str());
+}
+
+int get_valuei(const std::string& str, const std::string& prefix) {
+   return atoi(str.substr(prefix.size()).c_str());
+}
+
 /// Requested by CMS
 void splitGmsb(MssmSoftsusy & m, const DoubleVector & inputParameters);
 
@@ -37,15 +51,15 @@ void splitGmsb(MssmSoftsusy & m, const DoubleVector & inputParameters);
 inline double mgutCheck(char * a, bool & gaugeUnification, 
 			bool & ewsbBCscale) { 
   gaugeUnification = false; ewsbBCscale = false;
-  if (!strcmp(a, "?") || !strcmp(a,"unified")) {
+  if (!strcmp(a, "--mgut=?") || !strcmp(a,"--mgut=unified")) {
     gaugeUnification = true; 
     return 2.0e16;
   }
-  if (!strcmp(a, "msusy")) {
+  if (!strcmp(a, "--mgut=msusy")) {
     ewsbBCscale = true;
     return 1.0e3;
   }
-  else return atof(a);
+  else return get_value(a, "--mgut");
 }
 
 /// Incorrect input: gives advice on how to supply it

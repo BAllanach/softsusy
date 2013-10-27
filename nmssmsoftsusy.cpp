@@ -96,7 +96,6 @@ void NmssmSoftsusy::testSlavichTreeMasses() const {
   treemasses_(&g,&gp,&lam,&kap,&ht,&hb,&htau,&v1,&v2,&s,&M1,&M2, &Ak,&Al,&At,&Ab,&Atau,&mQ3,&mtr,&mbr,&mQ,&mur,&mdr,&mL3,&mtaur,&mL,&mer,&Q,&errmass); 
 
  if(errmass) cout << "Warning tachyon in slavich treemasses."  << endl;
- return;
 }
 
 
@@ -160,10 +159,10 @@ void NmssmSoftsusy::printall() const {
 
  
 
-  double Beff =displaySoftAlambda() +displayKappa() *displaySvev() / (sqrt(2.0));
-  double  m3hatsq =displayM3Squared() + displayLambda() * (displayMupr() *displaySvev() / root2 +displayXiF() );
-  double  mueff =displayLambda() *displaySvev() / (sqrt(2.0)) ;
-  cout << "mueff = "  << displayLambda() *displaySvev() / (sqrt(2.0)) << '\n';
+  double Beff =displaySoftAlambda() +displayKappa() *displaySvev() / root2;
+  double m3hatsq =displayM3Squared() + displayLambda() * (displayMupr() *displaySvev() / root2 +displayXiF() );
+  double mueff =displayLambda() *displaySvev() / root2;
+  cout << "mueff = "  << mueff << '\n';
   cout << " Beff = "  << Beff << '\n';
   cout << "m3hatsq = " << m3hatsq << '\n';
   cout << "m3effssq = "  << mueff * Beff + m3hatsq << '\n';
@@ -420,6 +419,7 @@ double NmssmSoftsusy::doCalcTad1Higgs(double q, double costhDRbar,
   double c2b = cos(2.0 * atan(tanb));
   double costhDRbar2 = sqr(costhDRbar);
   double mupr  = displayMupr();
+  double smu = displaySusyMu();
 
   /// LCT: Higgs mixing matrices
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
@@ -440,7 +440,7 @@ double NmssmSoftsusy::doCalcTad1Higgs(double q, double costhDRbar,
   sss1(2, 2) = 1.0 / 12.0 * (2.0 * lsq - 0.5 * gsq / costhDRbar2);
   sss1(3, 3) = lam / 6.0 * (lam - kap * tanb);
   sss1(1, 2) = tanb / 12.0 * (2.0 * lsq - 0.5 * gsq / costhDRbar2);
-  sss1(1, 3) = lsq * s / (6.0 * v1);
+  sss1(1, 3) = (lsq * s + root2 * smu * lam) / (6.0 * v1);
   sss1(2, 3) = - (al / root2 + lam * kap * s + lam * mupr / root2) / (6.0 * v1);
   sss1.symmetrise();
 
@@ -501,6 +501,7 @@ double NmssmSoftsusy::doCalcTad2Higgs(double q, double costhDRbar,
   /// mueff defined to be negative to remain consistent with SOFTSUSY convention
   // double mueff = mu - lam * s / root2;
   double mupr  = displayMupr();
+  double smu = displaySusyMu();
 
   /// LCT: new variables for Higgs mixing matrices
   DoubleMatrix Ppr(2, 2), P(3, 3), S(3, 3), C(2, 2);
@@ -522,7 +523,7 @@ double NmssmSoftsusy::doCalcTad2Higgs(double q, double costhDRbar,
   sss2(3, 3) = lam / 6.0 * (lam - kap / tanb);
   sss2(1, 2) =  (2.0 * lsq - 0.5 * gsq / costhDRbar2) / (12.0 * tanb);
   sss2(1, 3) = - (al / root2 + lam * kap * s + lam * mupr / root2) / (6.0 * v2);
-  sss2(2, 3) = lsq * s / (6.0 * v2);
+  sss2(2, 3) = (lsq * s + root2 * smu * lam)  / (6.0 * v2);
   sss2.symmetrise();
 
   /// LCT: Trilinear CP-odd Higgs couplings to s2 in basis HdI HuI SI
@@ -581,6 +582,7 @@ double NmssmSoftsusy::doCalcTadSHiggs(double q, double tb) const
   double sin2b = sin(2.0 * beta);
   double v1 = displayHvev() * cos(beta);
   double v2 = displayHvev() * sin(beta);
+  double smu = displaySusyMu();
 
   /// LCT: new variables for Higgs mixing matrices
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
@@ -597,8 +599,8 @@ double NmssmSoftsusy::doCalcTadSHiggs(double q, double tb) const
   /// divided by svev to get TSOVS
   /// LCT: Trilinear CP-even Higgs couplings to s3 in basis HdR HuR SR
   DoubleMatrix sss3(3, 3);
-  sss3(1, 1) = lsq / 6.0;
-  sss3(2, 2) = lsq / 6.0;
+  sss3(1, 1) = (lsq + root2 * smu * lam / s) / 6.0;
+  sss3(2, 2) = (lsq + root2 * smu * lam / s) / 6.0;
   sss3(3, 3) = (ak / 3.0 + root2 * ksq * s + kap * mupr) / (s * root2); ///<< Bug fixed.
   sss3(1, 2) = -(al / root2 + lam * kap * s + lam * mupr / root2) / (6.0 * s);
   sss3(1, 3) = lam * (lam * v1 - kap * v2) / (6.0 * s);
@@ -607,7 +609,7 @@ double NmssmSoftsusy::doCalcTadSHiggs(double q, double tb) const
 
   /// LCT: Trilinear CP-odd Higgs couplings to s3 in basis HdI HuI SI
   DoubleMatrix pps3(3, 3);
-  pps3(1, 1) = 0.5 * lsq;
+  pps3(1, 1) = 0.5 * (lsq + root2 * smu * lam / s);
   pps3(2, 2) = pps3(1, 1);
   pps3(3, 3) = (-ak + root2 * ksq * s + kap * mupr) / (s * root2);
   pps3(1, 2) = 0.5 * (al / root2 + lam * kap * s + lam * mupr / root2) / s;
@@ -630,10 +632,12 @@ double NmssmSoftsusy::doCalcTadSHiggs(double q, double tb) const
 
   /// LCT: Trilinear with charged Higgs. Basis (G+ G- H+ H-)
   DoubleMatrix hphps3(2, 2);
-  hphps3(1, 1) = 0.5 * (2.0 * lsq * s - (root2 * al + 2.0 * lam * kap * s
-					 + root2 * lam * mupr) * sin2b) / s;
-  hphps3(2, 2) = 0.5 * (2.0 * lsq * s + (root2 * al + 2.0 * lam * kap * s
-					 + root2 * lam * mupr) * sin2b) / s;
+  hphps3(1, 1) = 0.5 * (2.0 * (lsq * s + root2 * smu * lam) 
+			- (root2 * al + 2.0 * lam * kap * s
+			   + root2 * lam * mupr) * sin2b) / s;
+  hphps3(2, 2) = 0.5 * (2.0 * (lsq * s + root2 * smu * lam) 
+			+ (root2 * al + 2.0 * lam * kap * s
+			   + root2 * lam * mupr) * sin2b) / s;
 
   double higgs = 0.0;
   /// CP-even/-odd Higgs
@@ -1249,9 +1253,6 @@ void NmssmSoftsusy::calcDrBarPars() {
   calcDrBarHiggs(beta, mz2, mw2, sinthDRbar, eg);
 
   setDrBarPars(eg);
-
-  return;
-
 }
 
 DoubleMatrix NmssmSoftsusy::addStopHiggs(double p, double mt, DoubleMatrix & higgs) {
@@ -1412,7 +1413,7 @@ DoubleMatrix NmssmSoftsusy::addStopHiggs(double p, double mt, DoubleMatrix & hig
   DoubleVector lAstopLstopR(3), lAstopRstopL(3);
   for (int i=1; i<=3; i++) {
     lAstopLstopR(i) = forLoops.ut / root2 * P(i, 2) 
-      + 0.5 * lam * ht * (v1 * P(i, 3) + svev * P(i, 1));
+      + 0.5 * lam * ht * v1 * P(i, 3) - ht * mueff / root2 * P(i, 1);
     lAstopRstopL(i) = - lAstopLstopR(i);
   }
   /// LCT: Rotate to mixed basis
@@ -1434,7 +1435,8 @@ DoubleMatrix NmssmSoftsusy::addStopHiggs(double p, double mt, DoubleMatrix & hig
   }
 
   /// LCT: (CP-even) Higgs-stop-stop couplings in (L R) basis.  Order (h1 h2 h3)
-  /// Taken from Franke & Fraas, arXiv:9512366 [hep-ph]
+  /// Taken from Franke & Fraas, arXiv:9512366 [hep-ph] with terms ~ mu 
+  /// included
   DoubleMatrix lHstopLstopLR(3, 2), lHstopLstop12(3, 2);
   DoubleMatrix lHstopRstopLR(3, 2), lHstopRstop12(3, 2);
   double ut = forLoops.ut;  
@@ -1443,17 +1445,17 @@ DoubleMatrix NmssmSoftsusy::addStopHiggs(double p, double mt, DoubleMatrix & hig
     * (S(1, 2) * sinb - S(1, 1) * cosb) - g * sqr(mt) / (mw * sinb) * S(1, 2);
   lHstopLstopLR(1, 2) = - ut / root2 * S(1, 2) 
     + 0.5 * g * mt / (root2 * mw * sinb) * lam 
-    * (v1 * S(1, 3) + svev * S(1, 1));
+    * v1 * S(1, 3) - ht * mueff / root2 * S(1, 1); 
   lHstopLstopLR(2, 1) = g * mz / costhDrbar * guL 
     * (S(2, 2) * sinb - S(2, 1) * cosb) - g * sqr(mt) / (mw * sinb) * S(2, 2);
   lHstopLstopLR(2, 2) = - ut / root2 * S(2, 2) 
     + 0.5 * g * mt / (root2 * mw * sinb) * lam 
-    * (v1 * S(2, 3) + svev * S(2, 1));
+    * v1 * S(2, 3) - ht * mueff / root2 * S(2, 1);
   lHstopLstopLR(3, 1) = g * mz / costhDrbar * guL 
     * (S(3, 2) * sinb - S(3, 1) * cosb) - g * sqr(mt) / (mw * sinb) * S(3, 2);
   lHstopLstopLR(3, 2) = - ut / root2 * S(3, 2) 
     + 0.5 * g * mt / (root2 * mw * sinb) * lam 
-    * (v1 * S(3, 3) + svev * S(3, 1));
+    * v1 * S(3, 3) - ht * mueff / root2 * S(3, 1);
   
   lHstopRstopLR(1, 1) = lHstopLstopLR(1, 2);
   lHstopRstopLR(1, 2) = - g * sqr(mt) / (mw * sinb) * S(1, 2) 
@@ -1894,7 +1896,7 @@ DoubleMatrix NmssmSoftsusy::addSbotHiggs(double p, double mt, DoubleMatrix & hig
   DoubleVector lAsbotLsbotR(3), lAsbotRsbotL(3);
   for (int i=1; i<=3; i++) {
     lAsbotLsbotR(i) = forLoops.ub / root2 * P(i, 1) 
-      + 0.5 * lam * hb * (v2 * P(i, 3) + svev * P(i, 2));
+      + 0.5 * lam * hb * v2 * P(i, 3) - hb * mueff / root2 * P(i, 2);
     lAsbotRsbotL(i) = - lAsbotLsbotR(i);
   }
   /// LCT: Rotate to mixed basis
@@ -1915,7 +1917,8 @@ DoubleMatrix NmssmSoftsusy::addSbotHiggs(double p, double mt, DoubleMatrix & hig
   }
 
   /// LCT: (CP-even) Higgs-sbot-sbot couplings in (L R) basis.  Order (h1 h2 h3)
-  /// Taken from Franke & Fraas, arXiv:9512366 [hep-ph]
+  /// Taken from Franke & Fraas, arXiv:9512366 [hep-ph] but with additional 
+  /// terms ~ mu included
   DoubleMatrix lHsbotLsbotLR(3, 2), lHsbotLsbot12(3, 2);
   DoubleMatrix lHsbotRsbotLR(3, 2), lHsbotRsbot12(3, 2);
   double ub = forLoops.ub;  
@@ -1924,17 +1927,17 @@ DoubleMatrix NmssmSoftsusy::addSbotHiggs(double p, double mt, DoubleMatrix & hig
     * (S(1, 2) * sinb - S(1, 1) * cosb) - g * sqr(mb) / (mw * cosb) * S(1, 1);
   lHsbotLsbotLR(1, 2) = - ub / root2 * S(1, 1) 
     + 0.5 * g * mb / (root2 * mw * cosb) * lam 
-    * (v2 * S(1, 3) + svev * S(1, 2));
+    * v2 * S(1, 3) - hb * mueff / root2 * S(1, 2);
   lHsbotLsbotLR(2, 1) = g * mz / costhDrbar * gdL 
     * (S(2, 2) * sinb - S(2, 1) * cosb) - g * sqr(mb) / (mw * cosb) * S(2, 1);
   lHsbotLsbotLR(2, 2) = - ub / root2 * S(2, 1) 
     + 0.5 * g * mb / (root2 * mw * cosb) * lam 
-    * (v2 * S(2, 3) + svev * S(2, 2));
+    * v2 * S(2, 3) - hb * mueff / root2 * S(2, 2);
   lHsbotLsbotLR(3, 1) = g * mz / costhDrbar * gdL 
     * (S(3, 2) * sinb - S(3, 1) * cosb) - g * sqr(mb) / (mw * cosb) * S(3, 1);
   lHsbotLsbotLR(3, 2) = - ub / root2 * S(3, 1) 
     + 0.5 * g * mb / (root2 * mw * cosb) * lam 
-    * (v2 * S(3, 3) + svev * S(3, 2));
+    * v2 * S(3, 3) - hb * mueff / root2 * S(3, 2);
   
   lHsbotRsbotLR(1, 1) = lHsbotLsbotLR(1, 2);
   lHsbotRsbotLR(1, 2) = - g * sqr(mb) / (mw * cosb) * S(1, 1) 
@@ -2616,7 +2619,7 @@ DoubleMatrix NmssmSoftsusy::addStauHiggs(double p, double mtau, DoubleMatrix & h
   DoubleVector lAstauLstauR(3), lAstauRstauL(3);
   for (int i=1; i<=3; i++) {
     lAstauLstauR(i) = forLoops.utau / root2 * P(i, 1) 
-      + 0.5 * lam * htau * (v2 * P(i, 3) + svev * P(i, 2));
+      + 0.5 * lam * htau * v2 * P(i, 3) - htau * mueff / root2 * P(i, 2);
     lAstauRstauL(i) = - lAstauLstauR(i);
   }
   /// LCT: Rotate to mixed basis
@@ -2637,7 +2640,8 @@ DoubleMatrix NmssmSoftsusy::addStauHiggs(double p, double mtau, DoubleMatrix & h
   }
 
   /// LCT: (CP-even) Higgs-stau-stau couplings in (L R) basis.  Order (h1 h2 h3)
-  /// Taken from Franke & Fraas, arXiv:9512366 [hep-ph]
+  /// Taken from Franke & Fraas, arXiv:9512366 [hep-ph] but with terms ~ mu 
+  /// included
   DoubleMatrix lHstauLstauLR(3, 2), lHstauLstau12(3, 2);
   DoubleMatrix lHstauRstauLR(3, 2), lHstauRstau12(3, 2);
   double utau = forLoops.utau;  
@@ -2646,17 +2650,17 @@ DoubleMatrix NmssmSoftsusy::addStauHiggs(double p, double mtau, DoubleMatrix & h
     * (S(1, 2) * sinb - S(1, 1) * cosb) - g * sqr(mtau) / (mw * cosb) * S(1, 1);
   lHstauLstauLR(1, 2) = - utau / root2 * S(1, 1) 
     + 0.5 * g * mtau / (root2 * mw * cosb) * lam 
-    * (v2 * S(1, 3) + svev * S(1, 2));
+    * v2 * S(1, 3) - htau * mueff / root2 * S(1, 2);
   lHstauLstauLR(2, 1) = g * mz / costhDrbar * geL 
     * (S(2, 2) * sinb - S(2, 1) * cosb) - g * sqr(mtau) / (mw * cosb) * S(2, 1);
   lHstauLstauLR(2, 2) = - utau / root2 * S(2, 1) 
     + 0.5 * g * mtau / (root2 * mw * cosb) * lam 
-    * (v2 * S(2, 3) + svev * S(2, 2));
+    * v2 * S(2, 3) - htau * mueff / root2 * S(2, 2);
   lHstauLstauLR(3, 1) = g * mz / costhDrbar * geL 
     * (S(3, 2) * sinb - S(3, 1) * cosb) - g * sqr(mtau) / (mw * cosb) * S(3, 1);
   lHstauLstauLR(3, 2) = - utau / root2 * S(3, 1) 
     + 0.5 * g * mtau / (root2 * mw * cosb) * lam 
-    * (v2 * S(3, 3) + svev * S(3, 2));
+    * v2 * S(3, 3) - htau * mueff / root2 * S(3, 2);
   
   lHstauRstauLR(1, 1) = lHstauLstauLR(1, 2);
   lHstauRstauLR(1, 2) = - g * sqr(mtau) / (mw * cosb) * S(1, 1) 
@@ -3812,7 +3816,6 @@ void NmssmSoftsusy::physical(int accuracy) {
   //PA: now set these values from NMSSM routines
   setPhys(phys);
   gluino(accuracy); 
-  return;
 }
 
 //PA: Higgs routine for NMSSM
@@ -4115,7 +4118,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 
 
  bool h0Htachyon = false;
-  if (temp(1) < 0.0 || temp(2) < 0.0 || temp(3) < 0.0) {
+ if (temp(1) < 0.0 || temp(2) < 0.0 || temp(3) < 0.0) {
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << "H1/H2/H3 tachyon: m^2 = " << temp;
   }
@@ -4138,7 +4141,8 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
     throw ii.str(); 
 	}
 
-  if (temp(1) < 0.0 || temp(2) < 0.0 || temp(3) < 0.0) {
+  if ((temp(1) < 0.0 && temp(2) < 0.0) || (temp(1) < 0.0 && temp(3) < 0.0) ||
+      (temp(2) < 0.0 && temp(3) < 0.0)  ) {
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << "H1/H2/H3 tachyon: m^2 = " << temp;
   }
@@ -4161,7 +4165,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 	}
   
 
-  if (temp(1) < 0.0 || temp(2) < 0.0 || temp(3) < 0.0) {
+  if (temp(1) < 0.0 && temp(2) < 0.0 && temp(3) < 0.0) {
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << "H1/H2/H3 tachyon: m^2 = " << temp;
   }
@@ -4186,7 +4190,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
   
   Atemp = mP2.sym2by2(Atheta);
 
-  if (Atemp(1) < 0.0 && Atemp(2) < 0.0) {
+  if (Atemp(1) < 0.0 || Atemp(2) < 0.0) {
      h0Htachyon = true;
      if (PRINTOUT > 2) cout << " A1/A2 tachyon: m^2=" << Atemp;
   }
@@ -4426,7 +4430,6 @@ void NmssmSoftsusy::addChaLoopHiggs(double /* p */, DoubleMatrix & sigmaL, Doubl
 	    (bPsiChiA2(i, k).conj() * aPsiChiA2(j, k) * b0pCha(k,4)).real();
 	}
       }
-  return;
 }
 
 
@@ -6069,12 +6072,13 @@ void NmssmSoftsusy::getS1HiggsTriCoup(DoubleMatrix & sss1, DoubleMatrix & pps1,D
   double cb = cos(beta), cos2b = cos(2.0 * beta);
   double sb = sin(beta), sin2b = sin(2.0 * beta);
   double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
+  double smu = displaySusyMu();
   /// LCT: Trilinear CP-even Higgs couplings to s1 in basis HdR HuR SR
   sss1(1, 1) = 0.125 * gsq / cw2DRbar * v1;
   sss1(2, 2) = v1 / 12.0 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
   sss1(3, 3) = lam / 6.0 * (lam * v1 - kap * v2);
   sss1(1, 2) = v2 / 12.0 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
-  sss1(1, 3) = lsq * s / 6.0;
+  sss1(1, 3) = (lsq * s + root2 * smu * lam) / 6.0;
   sss1(2, 3) = - (al / root2 + lam * kap * s + lam * mupr / root2) / 6.0;
   sss1.symmetrise();
   
@@ -6111,13 +6115,14 @@ void NmssmSoftsusy::getS2HiggsTriCoup(DoubleMatrix & sss2, DoubleMatrix & pps2, 
   double cb = cos(beta), cos2b = cos(2.0 * beta);
   double sb = sin(beta), sin2b = sin(2.0 * beta);
   double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
+  double smu = displaySusyMu();
   /// LCT: Trilinear CP-even Higgs couplings to s2 in basis HdR HuR SR
   sss2(1, 1) = v2 * (2.0 * lsq - 0.5 * gsq / cw2DRbar) / 12.0;
   sss2(2, 2) = 0.125 * v2 * gsq / cw2DRbar;
   sss2(3, 3) = lam / 6.0 * (lam * v2 - kap * v1);
   sss2(1, 2) = v1 * (2.0 * lsq - 0.5 * gsq / cw2DRbar) / 12.0;
   sss2(1, 3) = - (al / root2 + lam * kap * s + lam * mupr / root2) / 6.0;
-  sss2(2, 3) = lsq * s / 6.0;
+  sss2(2, 3) = (lsq * s + root2 * smu * lam) / 6.0;
   sss2.symmetrise();
   /// LCT: Trilinear CP-odd Higgs couplings to s2 in basis HdI HuI SI
   pps2(1, 1) = 0.25 * v2 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
@@ -6148,9 +6153,10 @@ void NmssmSoftsusy::getS3HiggsTriCoup(DoubleMatrix & sss3, DoubleMatrix & pps3, 
   double cb = cos(beta), cos2b = cos(2.0 * beta);
   double sb = sin(beta), sin2b = sin(2.0 * beta);
   double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
+  double smu = displaySusyMu();
   /// LCT: Trilinear CP-even Higgs couplings to s3 in basis HdR HuR SR
-  sss3(1, 1) = lsq / 6.0 * s;
-  sss3(2, 2) = lsq / 6.0 * s;
+  sss3(1, 1) = (lsq + root2 * smu * lam / s)/ 6.0 * s;
+  sss3(2, 2) = (lsq + root2 * smu * lam / s)/ 6.0 * s;
   sss3(3, 3) = (ak / 3.0 + root2 * ksq * s + kap * mupr) / (root2); 
   sss3(1, 2) = -(al / root2 + lam * kap * s + lam * mupr / root2) / (6.0);
   sss3(1, 3) = lam * (lam * v1 - kap * v2) / (6.0);
@@ -6159,7 +6165,7 @@ void NmssmSoftsusy::getS3HiggsTriCoup(DoubleMatrix & sss3, DoubleMatrix & pps3, 
 
 	
   /// LCT: Trilinear CP-odd Higgs couplings to s3 in basis HdI HuI SI
-  pps3(1, 1) = 0.5 * lsq * s;
+  pps3(1, 1) = 0.5 * (lsq * s + root2 * smu * lam);
   pps3(2, 2) = pps3(1, 1);
   pps3(3, 3) = (-ak + root2 * ksq * s + kap * mupr) / (root2);
   pps3(1, 2) = 0.5 * (al / root2 + lam * kap * s + lam * mupr / root2);
@@ -6168,9 +6174,9 @@ void NmssmSoftsusy::getS3HiggsTriCoup(DoubleMatrix & sss3, DoubleMatrix & pps3, 
   pps3.symmetrise();
 	
   /// LCT: Trilinear with charged Higgs. Basis (G+ G- H+ H-)
-  hphps3(1, 1) = 0.5 * (2.0 * lsq * s
+  hphps3(1, 1) = 0.5 * (2.0 * (lsq * s + root2 * smu * lam)
                         - (root2 * al + 2.0 * lam * kap * s) * sin2b);
-  hphps3(2, 2) = 0.5 * (2.0 * lsq * s 
+  hphps3(2, 2) = 0.5 * (2.0 * (lsq * s + root2 * smu * lam) 
                         + (root2 * al + 2.0 * lam * kap * s) * sin2b); 
   hphps3(1, 2) = -0.5 * (root2 * al + 2.0 * lam * kap * s) * cos2b;
   hphps3(2, 1) = hphps3(1, 2);
@@ -8228,6 +8234,7 @@ double NmssmSoftsusy::predTanb(double MuEff) const  {
   double m3sq = displayM3Squared();
   double mupr = displayMupr();
   double s = displaySvev();
+  double vev = displayHvev();
   double xiF = displayXiF();
   double al = displayTrialambda();
   double m3sqeff = m3sq  + lam * (mupr * s / root2 + xiF)
@@ -8236,7 +8243,7 @@ double NmssmSoftsusy::predTanb(double MuEff) const  {
   double sin2t = 2.0 * m3sqeff / 
     (displayMh1Squared() - displayTadpole1Ms() + 
      displayMh2Squared() - displayTadpole2Ms() + 2.0 *
-     sqr(MuEff)); 
+     sqr(MuEff) + 0.5 * sqr(lam) * sqr(vev)); 
   
   /// Note: we want to take inverse sine so that fundamental domain is greater
   /// than pi/4. sin(pi - 2 beta)=sin 2 beta should achieve this.
@@ -8712,6 +8719,14 @@ void NmssmSoftsusy::neutralinoMixingSLHA(ostream& out) {
 void NmssmSoftsusy::nmssmrunSLHA(ostream& out, const char* blockName) {
   const sPhysical s(displayPhys());
 
+  double Alambda = 0., Akappa = 0.;
+
+  try { Alambda = displaySoftAlambda(); }
+  catch (const string&) {}
+
+  try { Akappa = displaySoftAkappa(); }
+  catch (const string&) {}
+
   out << "Block " << blockName << " Q= " << displayMu()
       << "   # NMSSM specific DRbar parameters\n";
 
@@ -8719,9 +8734,9 @@ void NmssmSoftsusy::nmssmrunSLHA(ostream& out, const char* blockName) {
   out << "      # lambda(Q)\n";
   out << "     2    "; printRow(out, displayKappa());
   out << "      # kappa(Q)\n";
-  out << "     3    "; printRow(out, displaySoftAlambda());
+  out << "     3    "; printRow(out, Alambda);
   out << "      # Alambda(Q)\n";
-  out << "     4    "; printRow(out, displaySoftAkappa());
+  out << "     4    "; printRow(out, Akappa);
   out << "      # Akappa(Q)\n";
   out << "     5    "; printRow(out, displayLambda() * displaySvev() / root2);
   out << "      # lambda*<S>(Q)\n";
