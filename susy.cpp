@@ -300,7 +300,8 @@ MssmSusy MssmSusy::beta(sBrevity & a) const {
     /// Two-loop pieces
     dt = dt + displayTanb() * twolp * (3.0 * ddT + eeT - 3.0 * uuT) * feynman;
     dHvev = dHvev - hVev * twolp * (cosb2 * (3.0 * ddT + eeT) +
-				    sinb2 * 3.0 * uuT) * feynman;
+				    sinb2 * 3.0 * uuT) * feynman
+                  + hVev * twolp * 4.5 * g4(2);
   }
   // Contains all susy derivatives:
   MssmSusy ds(du, dd, de, dg, dmu, dt, displayMu(), displayLoops(),
