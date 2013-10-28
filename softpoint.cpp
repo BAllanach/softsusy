@@ -848,6 +848,7 @@ int main(int argc, char *argv[]) {
 		    int num = int(d + EPSTOL);
 		    if (num == 1) mAFlag = true;		  
 		  }
+                    break;
 		  case 14: {
 		    int num = int(d + EPSTOL);
 		    if (num == 1) tryToConvergeHard = true;		  
