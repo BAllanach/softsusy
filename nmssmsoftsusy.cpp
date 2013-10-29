@@ -5989,10 +5989,11 @@ void NmssmSoftsusy::getP1HiggsTriCoup(DoubleMatrix & spp1, DoubleMatrix & hphpp1
   double g = displayGaugeCoupling(2), gsq = sqr(g);
   double cb = cos(beta), sb = sin(beta);
   double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
+  double smu = -displaySusyMu(); //<< note sign!
   
   spp1(1, 1) = 0.125 * gsq / cw2DRbar * v1;
   spp1(2, 1) = 0.25 * v2 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
-  spp1(3, 1) = 0.5 * lsq * s;
+  spp1(3, 1) = 0.5 * lsq * s - smu * lam / root2;
   spp1(3, 3) = - 0.5 * lam * kap * v2;
   spp1(2, 3) = 0.5 * (al / root2 - lam * kap * s - lam * mupr / root2);
   spp1(3, 2) = 0.5 * (al / root2 + lam * kap * s + lam * mupr / root2);
@@ -6014,12 +6015,13 @@ void NmssmSoftsusy::getP2HiggsTriCoup(DoubleMatrix & spp2, DoubleMatrix & hphpp2
   double g = displayGaugeCoupling(2), gsq = sqr(g);
   double cb = cos(beta), sb = sin(beta);
   double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
+  double smu = -displaySusyMu(); //<< note sign!
 
   spp2(1, 2) = 0.25 * v1 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
   spp2(1, 3) = 0.5 * (al / root2 - lam * kap * s - lam * mupr / root2);
   spp2(2, 2) = 0.125 * gsq / cw2DRbar * v2;
   spp2(3, 1) = 0.5 * (al / root2 + lam * kap * s + lam * mupr / root2);
-  spp2(3, 2) = 0.5 * lsq * s;
+  spp2(3, 2) = 0.5 * lsq * s - smu * lam / root2;
   spp2(3, 3) = -0.5 * lam * kap * v1;
   
   hphpp2(1, 2) = 0.25 * v1 * (2.0 * lsq - gsq);
@@ -6048,7 +6050,7 @@ void NmssmSoftsusy::getP3HiggsTriCoup(DoubleMatrix & spp3, DoubleMatrix & hphpp3
   spp3(3, 2) = -0.5 * lam * kap * v1;
   spp3(3, 3) = -ak / root2 + ksq * s + kap * mupr / root2;
 
-  hphpp3(1, 2) =  (al / root2 - lam * kap * s) ;
+  hphpp3(1, 2) =  (al / root2 - lam * kap * s - mupr * lam / root2) ;
   hphpp3(2, 1) = - hphpp3(1, 2);
 
 }
