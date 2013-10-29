@@ -227,7 +227,8 @@ NmssmSusy NmssmSusy::beta(nmsBrevity & a) const {
     /// Two-loop pieces
     dt = dt + displayTanb() * twolp * (3.0 * ddT + eeT - 3.0 * uuT) * feynman;
     dHvev = dHvev - displayHvev() * twolp * (cosb2 * (3.0 * ddT + eeT) +
-				    sinb2 * 3.0 * uuT + lsq) * feynman;
+				    sinb2 * 3.0 * uuT + lsq) * feynman
+                  + displayHvev() * twolp * 4.5 * g4(2);
     dSvev = dSvev + sVev * twolp * (8 * k4 + 8 * ksq * lsq
             + 2 * lsq * (-2 * feynman + 2 * lsq + 3 * ddT + eeT + 3 * uuT));
   }
