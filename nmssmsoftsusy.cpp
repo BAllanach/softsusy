@@ -6175,10 +6175,13 @@ void NmssmSoftsusy::getS3HiggsTriCoup(DoubleMatrix & sss3, DoubleMatrix & pps3, 
 	
   /// LCT: Trilinear with charged Higgs. Basis (G+ G- H+ H-)
   hphps3(1, 1) = 0.5 * (2.0 * (lsq * s + root2 * smu * lam)
-                        - (root2 * al + 2.0 * lam * kap * s) * sin2b);
+                        - (root2 * al + 2.0 * lam * kap * s 
+			   + root2 * lam * mupr) * sin2b);
   hphps3(2, 2) = 0.5 * (2.0 * (lsq * s + root2 * smu * lam) 
-                        + (root2 * al + 2.0 * lam * kap * s) * sin2b); 
-  hphps3(1, 2) = -0.5 * (root2 * al + 2.0 * lam * kap * s) * cos2b;
+                        + (root2 * al + 2.0 * lam * kap * s
+			   + root2 * lam * mupr) * sin2b); 
+  hphps3(1, 2) = -0.5 * (root2 * al + 2.0 * lam * kap * s
+			 + root2 * lam * mupr) * cos2b;
   hphps3(2, 1) = hphps3(1, 2);
 }
 
