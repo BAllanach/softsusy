@@ -7329,6 +7329,7 @@ void NmssmSoftsusy::getHp1HiggsTriCoup(DoubleMatrix & ahphp1, DoubleMatrix & hhp
   double al = displayTrialambda();
   double s = displaySvev();
   double vev = displayHvev(), v1 = vev * cosb, v2 = vev * sinb;
+  double smu = - displaySusyMu(); // note sign!
   /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
   DegrassiSlavicMix(P);
@@ -7338,16 +7339,15 @@ void NmssmSoftsusy::getHp1HiggsTriCoup(DoubleMatrix & ahphp1, DoubleMatrix & hhp
 
   for (int i=1; i<=2; i++) {
     for (int j=1; j<=3; j++) {
-      ahphp1(i, j) = 0.25 * C(i, 2) * (2.0 * P(j, 3) 
-		   * (2.0 * s * kap * lam - root2 * al)
-	           + v1 * (gsq - 2.0 * lsq) * P(j, 2) 
-	           + v2 * (gsq - 2.0 * lsq) * P(j, 1));
-      hhphp1(i, j) = - 0.25 * (C(i, 1) * (S(j, 2) * (gsq - gpsq) * v2 
-		   + S(j, 1) * (gsq + gpsq) * v1 + 4.0 * S(j, 3) * s * lsq) 
-		   + C(i, 2) * (S(j, 1) * v2 * (gsq - 2.0 * lsq) 
-	           + S(j, 2) * v1 * (gsq - 2.0 * lsq) 
-		   + 2.0 * S(j, 3) * (2.0 * s * lam * kap + root2 * al))) 
-	           + root2 * lam * mupr * S(j, 3) * cosb; // General NMSSM piece
+      ahphp1(i, j) = 0.25 * C(i, 2) * 
+	(2.0 * P(j, 3) * (2.0 * s * kap * lam - root2 * al + root2 * mupr * lam)
+	 + v1 * (gsq - 2.0 * lsq) * P(j, 2) + v2 * (gsq - 2.0 * lsq) * P(j, 1));
+      hhphp1(i, j) = - 0.25 * C(i, 1) * 
+	(S(j, 2) * (gsq - gpsq) * v2 + S(j, 1) * (gsq + gpsq) * v1 
+	 + 4.0 * S(j, 3) * (s * lsq - smu * lam * root2)) 
+	- 0.25 * C(i, 2) * 
+	(S(j, 1) * v2 * (gsq - 2.0 * lsq) + S(j, 2) * v1 * (gsq - 2.0 * lsq) 
+	 + 2.0 * S(j, 3) * (2.0 * s * lam * kap + root2 * (al + mupr * lam)));
     }
   }
 }
@@ -7364,6 +7364,7 @@ void NmssmSoftsusy::getHp2HiggsTriCoup(DoubleMatrix & ahphp2, DoubleMatrix & hhp
   double al = displayTrialambda();
   double s = displaySvev();
   double vev = displayHvev(), v1 = vev * cosb, v2 = vev * sinb;
+  double smu = - displaySusyMu(); // note sign!
   /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
   DegrassiSlavicMix(P);
@@ -7373,15 +7374,15 @@ void NmssmSoftsusy::getHp2HiggsTriCoup(DoubleMatrix & ahphp2, DoubleMatrix & hhp
 
   for (int i=1; i<=2; i++) {
     for (int j=1; j<=3; j++) {
-      ahphp2(i, j) = - 0.25 * C(i, 1) 
-	           * (2.0 * (2.0 * s * lam * kap - root2 * al) * P(j, 3)
-		   + (gsq - 2.0 * lsq) * (v1 * P(j, 2) + v2 * P(j, 1)));
-      hhphp2(i, j) = - 0.25 * (C(i, 1) * ((gsq - 2.0 * lsq) 
-		   * (v1 * S(j, 2) + v2 * S(j, 1)) 
-                   + 2.0 * S(j, 3) * (2.0 * s * lam * kap + root2 * al))
-		   + C(i, 2) * (S(j, 1) * v1 * (gsq - gpsq) 
-                   + S(j, 2) * (gsq + gpsq) * v2 + 4.0 * S(j, 3) * s * lsq)) 
-	           + root2 * lam * mupr * S(j, 3) * sinb;
+      ahphp2(i, j) = - 0.25 * C(i, 1) * 
+	(2.0 * (2.0 * s * lam * kap - root2 * al + root2 * mupr * lam) * P(j, 3)
+	 + (gsq - 2.0 * lsq) * (v1 * P(j, 2) + v2 * P(j, 1)));
+      hhphp2(i, j) = - 0.25 * C(i, 1) * 
+	((gsq - 2.0 * lsq) * (v1 * S(j, 2) + v2 * S(j, 1)) 
+	 + 2.0 * S(j, 3) * (2.0 * s * lam * kap + root2 * (al + mupr * lam)))
+	- 0.25 * C(i, 2) * 
+	(S(j, 1) * v1 * (gsq - gpsq) + S(j, 2) * (gsq + gpsq) * v2 
+	 + 4.0 * S(j, 3) * (s * lsq - root2 * smu * lam));
     }
   }
 }
