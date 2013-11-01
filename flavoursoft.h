@@ -26,7 +26,8 @@
 #include <softpars.h>
 #include <twoloophiggs.h>
 #include <softsusy.h>
-using namespace softsusy;
+
+namespace softsusy {
 
 /// Converts from input Wolfenstein parameterisation of a unitary matrix to
 /// the mixing angles under the assumption of CP-conservation, ie no complex
@@ -261,6 +262,7 @@ void flavourBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
 void ckmNormalise(DoubleMatrix & Vu, DoubleMatrix & Vd, DoubleMatrix & Uu,
 		  DoubleMatrix & Ud);
 
+} // namespace softsusy
 
 #endif
 

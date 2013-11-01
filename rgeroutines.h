@@ -22,7 +22,8 @@
 #include <string.h>
 #include <rpvsusypars.h>
 #include <rpvsoft.h>
-using namespace softsusy;
+
+namespace softsusy {
 
 const double factor = 1.;
 
@@ -63,4 +64,7 @@ double chiSqSU3(const MssmSoftsusy & r, double & chiMllMax,
 		double & chiMllqMax, double & chiMllqMin, 
 		double & chiMlqMin, double & chiMlqMax, 
 		double & chiMtautauMax, double msl, double msq);
+
+} // namespace softsusy
+
 #endif

@@ -17,7 +17,8 @@
 #include <linalg.h>
 #include <utils.h>
 #include <numerics.h>
-using namespace softsusy;
+
+namespace softsusy {
 
 /// SUSY breaking soft mass squared parameters
 typedef enum {mQl=1, mUr, mDr, mLl, mEr} softMasses;
@@ -296,5 +297,7 @@ template<class Susy, class Brevity>
 void SoftPars<Susy, Brevity>::setM32(double a) { m32 = a; }
 
 #include "softpars.cpp"
+
+} // namespace softsusy
 
 #endif

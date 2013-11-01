@@ -111,9 +111,11 @@ bool testNan(double f);
 /// of the absolute difference
 double sTfn(double sTins, double sTouts);
 
-/// LCT: Calculates fractional difference in Drbar masses between a and b
-class drBarPars;
+namespace softsusy {
+   class drBarPars;
+}
 class DoubleVector;
+/// LCT: Calculates fractional difference in Drbar masses between a and b
 void sumTol(const drBarPars & a, const drBarPars & b, DoubleVector & sT);
 
 #endif

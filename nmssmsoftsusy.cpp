@@ -10,6 +10,8 @@
 
 #ifdef NMSSMSOFTSUSY_H
 
+namespace softsusy {
+
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
   ydR, yeL, yeR, ynuL;
 
@@ -8790,5 +8792,7 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
   }
   out.precision(nn);
 }
+
+} // namespace softsusy
 
 #endif

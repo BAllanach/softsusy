@@ -23,7 +23,8 @@
 #include <softsusy.h>
 #include <linalg.h>
 #include <rpvsusypars.h>
-using namespace softsusy;
+
+namespace softsusy {
 
 /// Number of independent parameters for RGE
 static const int numRpvSoftPars = 99 + numSoftParsMssm; 
@@ -278,7 +279,6 @@ void rpvGmsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
 void rpvExtendedSugraBcs(MssmSoftsusy & m, 
 			 const DoubleVector & inputParameters);
 
+} // namespace softsusy
+
 #endif
-
-
-

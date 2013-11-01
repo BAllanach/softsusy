@@ -13,7 +13,8 @@
 #define NMSSMSUSY_H
 
 #include <susy.h>
-using namespace softsusy;
+
+namespace softsusy {
 
 // with the 5 new nmssm parameters we now have 38 in total
 const static int numNMssmPars = numSusyPars + 5;
@@ -183,5 +184,7 @@ inline double NmssmSusy::displayMupr() const { return mupr; }
 inline double NmssmSusy::displayXiF() const { return xiF; }
 inline double NmssmSusy::displayLambda() const { return lambda; }
 inline double NmssmSusy::displayKappa() const { return kappa; }
+
+} // namespace softsusy
 
 #endif

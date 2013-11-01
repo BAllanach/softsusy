@@ -7,6 +7,8 @@
 
 #include "rpvneut.h"
 
+namespace softsusy {
+
 const RpvNeutrino & RpvNeutrino::operator = (const RpvNeutrino &s) {
   if (this == &s) return *this;
   setRpvSoftsusy(s.displayRpvSoftsusy());
@@ -3168,3 +3170,4 @@ void RpvNeutrino::sleptonsSLHA(ostream & out) {
   out << "   # CP odd neutral scalar\n";
 }
 
+} // namespace softsusy

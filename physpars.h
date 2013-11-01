@@ -15,7 +15,6 @@
 
 #include <iostream>
 #include "linalg.h"
-using namespace softsusy;
 using namespace std;
 
 namespace softsusy {
@@ -27,7 +26,6 @@ namespace softsusy {
    "none", "selectron", "smuon", "stau", "sup", "scharm", "stop", "sdown", 
    "sstrange", "sbottom", "h0", "A0", "hpm", "snue", "snumu", "snutau", 
    "W", "Z"};
-}
 
 /// Masses of the physical particles. 
 struct sPhysical {
@@ -184,5 +182,7 @@ inline sProblem::sProblem(const sProblem & s)
     noMuConvergence(s.noMuConvergence), 
     inaccurateHiggsMass(s.inaccurateHiggsMass), problemThrown(s.problemThrown)
 {}
+
+} // namespace softsusy
 
 #endif
