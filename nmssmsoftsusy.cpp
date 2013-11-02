@@ -5993,10 +5993,11 @@ void NmssmSoftsusy::getP1HiggsTriCoup(DoubleMatrix & spp1, DoubleMatrix & hphpp1
   double g = displayGaugeCoupling(2), gsq = sqr(g);
   double cb = cos(beta), sb = sin(beta);
   double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
+  double smu = -displaySusyMu(); //<< note sign!
   
   spp1(1, 1) = 0.125 * gsq / cw2DRbar * v1;
   spp1(2, 1) = 0.25 * v2 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
-  spp1(3, 1) = 0.5 * lsq * s;
+  spp1(3, 1) = 0.5 * lsq * s - smu * lam / root2;
   spp1(3, 3) = - 0.5 * lam * kap * v2;
   spp1(2, 3) = 0.5 * (al / root2 - lam * kap * s - lam * mupr / root2);
   spp1(3, 2) = 0.5 * (al / root2 + lam * kap * s + lam * mupr / root2);
@@ -6018,12 +6019,13 @@ void NmssmSoftsusy::getP2HiggsTriCoup(DoubleMatrix & spp2, DoubleMatrix & hphpp2
   double g = displayGaugeCoupling(2), gsq = sqr(g);
   double cb = cos(beta), sb = sin(beta);
   double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
+  double smu = -displaySusyMu(); //<< note sign!
 
   spp2(1, 2) = 0.25 * v1 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
   spp2(1, 3) = 0.5 * (al / root2 - lam * kap * s - lam * mupr / root2);
   spp2(2, 2) = 0.125 * gsq / cw2DRbar * v2;
   spp2(3, 1) = 0.5 * (al / root2 + lam * kap * s + lam * mupr / root2);
-  spp2(3, 2) = 0.5 * lsq * s;
+  spp2(3, 2) = 0.5 * lsq * s - smu * lam / root2;
   spp2(3, 3) = -0.5 * lam * kap * v1;
   
   hphpp2(1, 2) = 0.25 * v1 * (2.0 * lsq - gsq);
@@ -6052,7 +6054,7 @@ void NmssmSoftsusy::getP3HiggsTriCoup(DoubleMatrix & spp3, DoubleMatrix & hphpp3
   spp3(3, 2) = -0.5 * lam * kap * v1;
   spp3(3, 3) = -ak / root2 + ksq * s + kap * mupr / root2;
 
-  hphpp3(1, 2) =  (al / root2 - lam * kap * s) ;
+  hphpp3(1, 2) =  (al / root2 - lam * kap * s - mupr * lam / root2) ;
   hphpp3(2, 1) = - hphpp3(1, 2);
 
 }
@@ -7331,6 +7333,7 @@ void NmssmSoftsusy::getHp1HiggsTriCoup(DoubleMatrix & ahphp1, DoubleMatrix & hhp
   double al = displayTrialambda();
   double s = displaySvev();
   double vev = displayHvev(), v1 = vev * cosb, v2 = vev * sinb;
+  double smu = - displaySusyMu(); // note sign!
   /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
   DegrassiSlavicMix(P);
@@ -7340,16 +7343,15 @@ void NmssmSoftsusy::getHp1HiggsTriCoup(DoubleMatrix & ahphp1, DoubleMatrix & hhp
 
   for (int i=1; i<=2; i++) {
     for (int j=1; j<=3; j++) {
-      ahphp1(i, j) = 0.25 * C(i, 2) * (2.0 * P(j, 3) 
-		   * (2.0 * s * kap * lam - root2 * al)
-	           + v1 * (gsq - 2.0 * lsq) * P(j, 2) 
-	           + v2 * (gsq - 2.0 * lsq) * P(j, 1));
-      hhphp1(i, j) = - 0.25 * (C(i, 1) * (S(j, 2) * (gsq - gpsq) * v2 
-		   + S(j, 1) * (gsq + gpsq) * v1 + 4.0 * S(j, 3) * s * lsq) 
-		   + C(i, 2) * (S(j, 1) * v2 * (gsq - 2.0 * lsq) 
-	           + S(j, 2) * v1 * (gsq - 2.0 * lsq) 
-		   + 2.0 * S(j, 3) * (2.0 * s * lam * kap + root2 * al))) 
-	           + root2 * lam * mupr * S(j, 3) * cosb; // General NMSSM piece
+      ahphp1(i, j) = 0.25 * C(i, 2) * 
+	(2.0 * P(j, 3) * (2.0 * s * kap * lam - root2 * al + root2 * mupr * lam)
+	 + v1 * (gsq - 2.0 * lsq) * P(j, 2) + v2 * (gsq - 2.0 * lsq) * P(j, 1));
+      hhphp1(i, j) = - 0.25 * C(i, 1) * 
+	(S(j, 2) * (gsq - gpsq) * v2 + S(j, 1) * (gsq + gpsq) * v1 
+	 + 4.0 * S(j, 3) * (s * lsq - smu * lam * root2)) 
+	- 0.25 * C(i, 2) * 
+	(S(j, 1) * v2 * (gsq - 2.0 * lsq) + S(j, 2) * v1 * (gsq - 2.0 * lsq) 
+	 + 2.0 * S(j, 3) * (2.0 * s * lam * kap + root2 * (al + mupr * lam)));
     }
   }
 }
@@ -7366,6 +7368,7 @@ void NmssmSoftsusy::getHp2HiggsTriCoup(DoubleMatrix & ahphp2, DoubleMatrix & hhp
   double al = displayTrialambda();
   double s = displaySvev();
   double vev = displayHvev(), v1 = vev * cosb, v2 = vev * sinb;
+  double smu = - displaySusyMu(); // note sign!
   /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
   DegrassiSlavicMix(P);
@@ -7375,15 +7378,15 @@ void NmssmSoftsusy::getHp2HiggsTriCoup(DoubleMatrix & ahphp2, DoubleMatrix & hhp
 
   for (int i=1; i<=2; i++) {
     for (int j=1; j<=3; j++) {
-      ahphp2(i, j) = - 0.25 * C(i, 1) 
-	           * (2.0 * (2.0 * s * lam * kap - root2 * al) * P(j, 3)
-		   + (gsq - 2.0 * lsq) * (v1 * P(j, 2) + v2 * P(j, 1)));
-      hhphp2(i, j) = - 0.25 * (C(i, 1) * ((gsq - 2.0 * lsq) 
-		   * (v1 * S(j, 2) + v2 * S(j, 1)) 
-                   + 2.0 * S(j, 3) * (2.0 * s * lam * kap + root2 * al))
-		   + C(i, 2) * (S(j, 1) * v1 * (gsq - gpsq) 
-                   + S(j, 2) * (gsq + gpsq) * v2 + 4.0 * S(j, 3) * s * lsq)) 
-	           + root2 * lam * mupr * S(j, 3) * sinb;
+      ahphp2(i, j) = - 0.25 * C(i, 1) * 
+	(2.0 * (2.0 * s * lam * kap - root2 * al + root2 * mupr * lam) * P(j, 3)
+	 + (gsq - 2.0 * lsq) * (v1 * P(j, 2) + v2 * P(j, 1)));
+      hhphp2(i, j) = - 0.25 * C(i, 1) * 
+	((gsq - 2.0 * lsq) * (v1 * S(j, 2) + v2 * S(j, 1)) 
+	 + 2.0 * S(j, 3) * (2.0 * s * lam * kap + root2 * (al + mupr * lam)))
+	- 0.25 * C(i, 2) * 
+	(S(j, 1) * v1 * (gsq - gpsq) + S(j, 2) * (gsq + gpsq) * v2 
+	 + 4.0 * S(j, 3) * (s * lsq - root2 * smu * lam));
     }
   }
 }

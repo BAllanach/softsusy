@@ -13,8 +13,6 @@
 #define DEF_H
 
 #include <cmath>
-#include <vector>
-using std::vector;
 namespace softsusy{
   const char SOFTSUSY_VERSION[] = "3.3.9";
 
