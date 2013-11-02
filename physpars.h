@@ -185,4 +185,14 @@ inline sProblem::sProblem(const sProblem & s)
 
 } // namespace softsusy
 
+/// Returns the relative difference between the orders of magnitude of two
+/// numbers unless they are less than one, in which case it returns the value
+/// of the absolute difference
+double sTfn(double sTins, double sTouts);
+
+/// LCT: Calculates fractional difference in Drbar masses between a and b
+class drBarPars;
+class DoubleVector;
+void sumTol(const softsusy::drBarPars & a, const softsusy::drBarPars & b, DoubleVector & sT);
+
 #endif

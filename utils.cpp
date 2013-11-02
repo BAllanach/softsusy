@@ -8,7 +8,6 @@
  */
 
 #include "utils.h"
-#include "physpars.h"
 
 double frexp(const Complex & c, int * i) {
   int a, b;
@@ -75,42 +74,3 @@ bool close(double m1, double m2, double tol) {
 
   return (mmax - mmin <= tol * mmax);
 }
-
-double sTfn(double sTins, double sTouts) {
-  double sTin  = fabs(sTins);
-  double sTout = fabs(sTouts);
-  if (sTin < 1. && sTout < 1.) return fabs(sTin - sTout);
-  else return fabs(1.0 - minimum(sTin, sTout) / maximum(sTin, sTout));
-}
-
-/// LCT: Difference between two drBarPars objects
-void sumTol(const drBarPars & a, const drBarPars & b, DoubleVector & sT) {
-  int k = 1;
-  
-  sT(k) = sTfn(a.mGluino, b.mGluino); k++;
-  int i; for (i=1; i<=a.mh0.displayEnd(); i++) {
-    sT(k) = sTfn(a.mh0(i), b.mh0(i)); k++;
-  }
-  for (i=1; i<=a.mA0.displayEnd(); i++) {
-    sT(k) = sTfn(a.mA0(i), b.mA0(i)); k++;
-  }
-  sT(k) = sTfn(a.mHpm, b.mHpm); k++;
-  for (i=1; i<=3; i++) {
-    sT(k) = sTfn(a.msnu(i), b.msnu(i)); k++;
-  }
-  for (i=1; i<=2; i++) {
-    sT(k) = sTfn(a.mch(i), b.mch(i)); k++;
-  }
-  for (i=1; i<=a.mneut.displayEnd(); i++) {
-    sT(k) = sTfn(a.mneut(i), b.mneut(i)); k++;
-  }
-  int j; for (j=1; j<=3; j++)
-    for(i=1; i<=2; i++) {
-      sT(k) = sTfn(a.mu(i, j), b.mu(i, j)); k++;
-      sT(k) = sTfn(a.md(i, j), b.md(i, j)); k++;
-      sT(k) = sTfn(a.me(i, j), b.me(i, j)); k++;
-    }
-}
-
-
-
