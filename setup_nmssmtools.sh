@@ -55,7 +55,6 @@ copy_file() {
 }
 
 copy_files() {
-    copy_file ${BASEDIR}/nmspec.f ${nmssmtools_dir}/main/nmspec.f
     copy_file ${BASEDIR}/nmProcessSpec.f ${nmssmtools_dir}/main/nmProcessSpec.f
     copy_file ${BASEDIR}/Makefile.nmssmtools ${nmssmtools_dir}/main/Makefile
 }
