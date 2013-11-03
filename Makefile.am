@@ -1,4 +1,4 @@
-bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x Devtest.x TestNM.x doc/nmssmManual.pdf doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf test_matrix_resize.x
+bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x Devtest.x TestNM.x doc/nmssmManual.pdf doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
 
 lib_LTLIBRARIES = libsoft.la libnmssm.la 
 
@@ -22,9 +22,6 @@ Devtest_x_LDADD = libnmssm.la
 
 TestNM_x_SOURCES = mainTestNM.cpp
 TestNM_x_LDADD = libnmssm.la 
-
-test_matrix_resize_x_SOURCES = .test/test_matrix_resize.cpp
-test_matrix_resize_x_LDADD = libsoft.la 
 
 pkginclude_HEADERS = \
 def.h main.h numerics.h \
