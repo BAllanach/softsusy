@@ -38,12 +38,14 @@ copy_file() {
     if test $# -ne 2 ; then
         echo "Internal error: copy_file not called with two arguments"
     fi
-    printf "Backup file $2 to $2~ ..."
-    if cp "$2" "$2~"; then
-        echo " done"
-    else
-        echo " failed"
-        exit 1
+    if test -r "$2"; then
+        printf "Backup file $2 to $2~ ..."
+        if cp "$2" "$2~"; then
+            echo " done"
+        else
+            echo " failed"
+            exit 1
+        fi
     fi
     printf "Copying $1 to $2 ..."
     if cp "$1" "$2"; then
