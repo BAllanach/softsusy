@@ -32,7 +32,8 @@ void errorCall() {
   ii << "./softpoint.x leshouches < lesHouchesInput\n for SLHA/SLAH2 input, or\n";
   ii << "./softpoint.x sugra [SUGRA parameters] [other options]\n";
   ii << "./softpoint.x amsb [mAMSB parameters] [other options]\n";
-  ii << "./softpoint.x gmsb [mGMSB parameters] [other options]\n\n";
+  ii << "./softpoint.x gmsb [mGMSB parameters] [other options]\n";
+  ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
   ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
   ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value>\n";
   ii << "--mgut=unified sets the scale at which SUSY breaking terms are set to the GUT\n";
@@ -46,24 +47,19 @@ void errorCall() {
   ii << "Bracketed entries are numerical values, in units of GeV if they are massive.\n";
   ii << "Warning: entries left unspecified will be assumed to be zero for SUSY breaking\nterms, unified (for mgut) or at their default central values for Standard Model parameters\n";
   ii << "\n"
-     "NMSSM command line options:\n"
-     "  softpoint.x nmssm <gut-condition> [flags] [parameters]\n"
-     "\n"
-     "Gut conditions: sugra\n"
-     "\n"
-     "Flags:\n"
+     "[NMSSM flags]:\n"
      "  --lambdaAtMsusy   input lambda at renormalization scale Q = Msusy\n"
      "\n"
-     "Parameters:\n"
+     "[NMSSM parameters]:\n"
      "  --m0= , --m12= , --a0= , --tanBeta= , --mHd2= , --mHu2= ,\n"
      "  --mu= , --BmuOverCosBetaSinBeta= , --lambda= , --kappa= ,\n"
      "  --Alambda= , --Akappa= , --lambdaS= , --xiF= , --xiS= ,\n"
      "  --muPrime= , --mPrimeS2= , --mS2=\n"
      "\n"
-     "  Note: unset parameters are assumed to be zero\n"
+     "  Unset NMSSM parameters are assumed to be zero\n"
      "\n"
-     "Example:\n"
-     "  softpoint.x nmssm sugra --m0=125 --m12=200 --tanBeta=10 --a0=-300 \\\n"
+     "NMSSM example:\n"
+     "  ./softpoint.x nmssm sugra --m0=125 --m12=200 --tanBeta=10 --a0=-300 \\\n"
      "     --lambda=0.1 --lambdaAtMsusy\n";
   throw ii.str();
 }
