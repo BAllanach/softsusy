@@ -34,6 +34,22 @@ check_nmssmtools() {
     fi
 }
 
+create_run_script() {
+    printf "Creating NMSSMTools run script ..."
+
+    sed -e "s|@NMSSMTOOLS_PATH@|$nmssmtools_dir|" \
+        < ${BASEDIR}/run_nmssmtools.sh.in > ${BASEDIR}/run_nmssmtools.sh
+
+    if test "x$?" = "x0"; then
+        echo " done"
+    else
+        echo " Error: could non create run_nmssmtools.sh"
+        exit 1
+    fi
+
+    chmod +x ${BASEDIR}/run_nmssmtools.sh
+}
+
 copy_file() {
     if test $# -ne 2 ; then
         echo "Internal error: copy_file not called with two arguments"
@@ -63,7 +79,10 @@ copy_files() {
 
 compile_nmssmtools() {
     printf "Compiling NMSSMTools ..."
-    if cd ${nmssmtools_dir} && make init > make.nmssmtools 2>&1 && make >> make.nmssmtools 2>&1; then
+
+    $(cd ${nmssmtools_dir} && make init > ${ABSBASEDIR}/make.nmssmtools 2>&1 && make >> ${ABSBASEDIR}/make.nmssmtools 2>&1)
+
+    if test "x$?" = "x0"; then
         echo " done"
     else
         echo " error"
@@ -92,8 +111,14 @@ check_nmssmtools
 copy_files
 if test "x${enable_compile_nmssmtools}" = "xyes"; then
     compile_nmssmtools
-else
-    echo ""
+fi
+create_run_script
+
+echo ""
+echo "Finished successfully."
+echo ""
+
+if ! test "x${enable_compile_nmssmtools}" = "xyes"; then
     echo "Next steps: recompile NMSSMTools"
     echo "  $ cd ${nmssmtools_dir}"
     echo "  $ make init"

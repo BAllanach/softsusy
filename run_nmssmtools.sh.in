@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# directory of this script
+BASEDIR=$(dirname $0)
+
+# path to the NMSSMTools directory
+NMSSMTOOLS_PATH="@NMSSMTOOLS_PATH@"
+
+if test $# -ne 1; then
+    cat <<EOF
+Usage: ./`basename $0` slha-input-file
+EOF
+    exit 1
+fi
+
+if ! test -d "${NMSSMTOOLS_PATH}"; then
+    echo "Error: Cannot find NMSSMTools directory \"${nmssmtools_dir}\""
+    exit 1
+fi
+
+slha_input_file="$1"
+slha_output_file="${slha_input_file}.$$.out"
+
+${BASEDIR}/softpoint.x leshouches < ${slha_input_file} > ${slha_output_file}
+cp ${slha_output_file} ${NMSSMTOOLS_PATH}/main/slha_nmssm
+$(cd ${NMSSMTOOLS_PATH}/main/; ./nmProcessSpec)
