@@ -26,16 +26,16 @@
      .     MST1,MST2,MSB1,MSB2,MSL1,MSL2,MSNT,
      .     CST,CSB,CSL,MSMU1,MSMU2,MSMUNT,CSMU
       COMMON/QQUARK/HTQ,HBQ,MTQ,MBQ 
-      COMMON/DELMB/DELMB        !
+      COMMON/DELMB/DELMB        
       COMMON/QGAUGE/G1Q,G2Q,GQ,ALSQ
       COMMON/SUSYMH/MHUS,MHDS,MHSS
       
 *     I/O files
 
       OPEN(15,FILE='slha_nmssm', STATUS= 'UNKNOWN')
-      OPEN(17,FILE='decayonly-spectr', STATUS= 'UNKNOWN') 
-      OPEN(18,FILE='decayonly-decay', STATUS= 'UNKNOWN') 
-      OPEN(19,FILE='decayonly-omega', STATUS= 'UNKNOWN')
+      OPEN(17,FILE='nmProcessSpec-spectr', STATUS= 'UNKNOWN') 
+      OPEN(18,FILE='nmProcessSpec-decay', STATUS= 'UNKNOWN') 
+      OPEN(19,FILE='nmProcessSpec-omega', STATUS= 'UNKNOWN')
 
 *   Initialization
 
@@ -680,9 +680,6 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       MBQ=H2Q*HDQ
       NUQ=KQ*MUQ/LLQ
      
-      !SHOULD ADD TEST TO ENSURES P(i,2) = COSBETA*P2(i,2) 
-      !P2(1,1) = P(1,1)/ SIN(ATAN(TANBQ))
-      !P2(2,1) = P(2,1)/ SIN(ATAN(TANBQ))
       P2(1,1) = P(1,1)/ SIN(ATAN(PAR(3)))
       P2(2,1) = P(2,1)/ SIN(ATAN(PAR(3)))
       P2(1,2) = P(1,3)
