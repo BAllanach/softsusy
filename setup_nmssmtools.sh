@@ -11,7 +11,7 @@ nmssmtools_dir=""
 
 usage() {
 cat <<EOF
-Usage: ./`basename $0` path-to-nmssmtools-dir [options]
+Usage: ./`basename $0` [options]
 Options:
   --compile|-c       compile NMSSMTools
   --nmssmtools-dir=  Path to NMSSMTools
@@ -20,6 +20,11 @@ EOF
 }
 
 check_nmssmtools() {
+    if test "x${nmssmtools_dir}" = "x"; then
+        echo "Error: No NMSSMTools directory specified!"
+        echo "  Please run with --nmssmtools-dir=/path/to/NMSSMTools"
+        exit 1
+    fi
     if ! test -d "${nmssmtools_dir}"; then
         echo "Error: Cannot find NMSSMTools directory \"${nmssmtools_dir}\""
         exit 1
