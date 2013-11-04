@@ -1,4 +1,4 @@
-bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x doc/nmssmManual.pdf doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
+bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x Devtest.x TestNM.x doc/nmssmManual.pdf doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
 
 lib_LTLIBRARIES = libsoft.la 
 
@@ -16,6 +16,12 @@ rpvneut_x_LDADD = libsoft.la
 
 gaugeUn_x_SOURCES = gaugeUn.cpp
 gaugeUn_x_LDADD = libsoft.la 
+
+Devtest_x_SOURCES = mainDev.cpp
+Devtest_x_LDADD = libsoft.la
+
+TestNM_x_SOURCES = mainTestNM.cpp
+TestNM_x_LDADD = libsoft.la 
 
 pkginclude_HEADERS = \
 def.h main.h numerics.h \
