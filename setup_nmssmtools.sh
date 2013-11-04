@@ -115,12 +115,21 @@ fi
 create_run_script
 
 echo ""
-echo "Finished successfully."
-echo ""
+echo "====================="
+echo "Finished successfully"
+echo "====================="
 
 if ! test "x${enable_compile_nmssmtools}" = "xyes"; then
+    echo ""
     echo "Next steps: recompile NMSSMTools"
     echo "  $ cd ${nmssmtools_dir}"
     echo "  $ make init"
     echo "  $ make"
+    echo ""
+    echo "Afterwards you can call run_nmssmtools.sh to calculate decays:"
+    echo "  $ ./run_nmssmtools.sh slha-input-file"
+else
+    echo ""
+    echo "Now you can call run_nmssmtools.sh to calculate decays:"
+    echo "  $ ./run_nmssmtools.sh slha-input-file"
 fi
