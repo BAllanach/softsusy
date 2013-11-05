@@ -30,7 +30,8 @@
 
 #include <twoloophiggs.h>
 #include "mssmUtils.h"
-using namespace softsusy;
+
+namespace softsusy {
 
 ///< default SUSY breaking boundary condition scale
 const double mxDefault = 1.9e16; 
@@ -1307,6 +1308,8 @@ double lnLHiggs(double mh);
 //double averageMus(susyMu, muOld);
 
 #include "softsusy.cpp"
+
+} // namespace softsusy
 
 #endif
 

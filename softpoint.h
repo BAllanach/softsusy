@@ -43,8 +43,10 @@ int get_valuei(const std::string& str, const std::string& prefix) {
    return atoi(str.substr(prefix.size()).c_str());
 }
 
-/// Requested by CMS
-void splitGmsb(MssmSoftsusy & m, const DoubleVector & inputParameters);
+namespace softsusy {
+   /// Requested by CMS
+   void splitGmsb(MssmSoftsusy & m, const DoubleVector & inputParameters);
+}
 
 /// Does the user require gauge unification or not -- gaugeUnification changed
 /// to be correct value

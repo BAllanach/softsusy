@@ -10,6 +10,8 @@
 
 #include "rpvsoft.h"
 
+namespace softsusy {
+
 const RpvSoftsusy & RpvSoftsusy::operator = (const RpvSoftsusy &s) {
   if (this == &s) return *this;
   snuVevs = s.snuVevs;
@@ -2096,3 +2098,5 @@ bool RpvSoftsusy::leptonNumberViolation() const {
 
   return false;
 }
+
+} // namespace softsusy

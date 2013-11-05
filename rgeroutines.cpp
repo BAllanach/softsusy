@@ -10,6 +10,8 @@
 
 #include <rgeroutines.h>
 
+namespace softsusy {
+
 double mlqspc(const MssmSoftsusy & r) {
   double chi = fabs(r.displayPhys().mneut.display(1)), 
     xi = fabs(r.displayPhys().mneut.display(2)), 
@@ -332,3 +334,4 @@ double mhqMin(const MssmSoftsusy & r) {
   else return -factor * sqrt(fabs(answer));
 }
 
+} // namespace softsusy

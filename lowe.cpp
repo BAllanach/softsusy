@@ -8,6 +8,8 @@
 
 #include "lowe.h"
 
+namespace softsusy {
+
 ///  external object temp used to get objects into external routines, however:
 ///  don't use it!
 static QedQcd *tempLe;
@@ -514,3 +516,4 @@ void massFermions(const QedQcd & r, DoubleMatrix & mDon,
   mEle(2, 2) = r.displayMass(mMuon);    
 }
 
+} // namespace softsusy

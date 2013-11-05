@@ -26,8 +26,9 @@
 #include <nmssm2loop.h>
 #include <nmssm1loop.h>
 #include "nmssmUtils.h"
-using namespace softsusy;
-using namespace std;
+
+namespace softsusy {
+
 /* class NmssmSoftsusy;  */
 /* std::istream & operator >>(std::istream &left, NmssmSoftsusy &s);\ */
 
@@ -601,5 +602,7 @@ inline double NmssmSoftsusy::displayTadpoleSMs() const {
 inline double NmssmSoftsusy::displayTadpoleSMs1loop() const {
   return tSOVSMs1loop; 
 }
+
+} // namespace softsusy
 
 #endif

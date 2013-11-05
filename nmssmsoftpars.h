@@ -19,7 +19,8 @@
 #include <numerics.h>
 #include <nmssmsusy.h>
 #include <softpars.h>
-using namespace softsusy;
+
+namespace softsusy {
 
 /// PA: Number of parameters contained in the NMSSM RGEs (5 more soft paraemeters than the MSSM).
 const static int numSoftParsNmssm = 83 + numNMssmPars;
@@ -215,5 +216,7 @@ inline void SoftParsNmssm::setMsSquared(double f) { mSsq = f; }
 inline void SoftParsNmssm::setMspSquared(double f) { mSpsq = f; }
 inline void SoftParsNmssm::setXiS(double f) { xiS = f; }
 inline void SoftParsNmssm::setSoftPars(SoftParsNmssm const & s) { *this = s; }
+
+} // namespace softsusy
 
 #endif

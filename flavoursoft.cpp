@@ -8,6 +8,8 @@
 
 #include "flavoursoft.h"
 
+namespace softsusy {
+
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL, 
   ydR, yeL, yeR, ynuL;
 
@@ -1738,3 +1740,5 @@ void FlavourMssmSoftsusy::sCkmRunning
 	(sqrt(fabs(massDsq(i, i) * massDsq(j+3, j+3))));
     }
 }
+
+} // namespace softsusy

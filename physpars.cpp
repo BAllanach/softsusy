@@ -9,6 +9,9 @@
 */
 
 #include <physpars.h>
+#include "utils.h"
+
+namespace softsusy {
 
 const drBarPars & drBarPars::operator=(const drBarPars &s) {
   if (this == &s) return *this;
@@ -185,6 +188,8 @@ void drBarPars::mpzCharginos() {
   mchBpmz = mch.apply(fabs); 
 }
 
+} // namespace softsusy
+
 double sTfn(double sTins, double sTouts) {
   double sTin  = fabs(sTins);
   double sTout = fabs(sTouts);
@@ -193,7 +198,7 @@ double sTfn(double sTins, double sTouts) {
 }
 
 /// LCT: Difference between two drBarPars objects
-void sumTol(const drBarPars & a, const drBarPars & b, DoubleVector & sT) {
+void sumTol(const softsusy::drBarPars & a, const softsusy::drBarPars & b, DoubleVector & sT) {
   int k = 1;
 
   sT(k) = sTfn(a.mGluino, b.mGluino); k++;

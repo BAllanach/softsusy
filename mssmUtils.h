@@ -5,9 +5,12 @@
 #include <iosfwd>
 #include <string>
 
+class DoubleVector;
+
+namespace softsusy {
+
 class sBrevity;
 class MssmSusy;
-class DoubleVector;
 
 template<class SoftPars> class Softsusy;
 template<class Susy, class Brevity> class SoftPars;
@@ -69,5 +72,7 @@ std::string recogLsp(int temp, int j);
 
 /// Formatted output
 std::ostream & operator<<(std::ostream&, const MssmSoftsusy&);
+
+} // namespace softsusy
 
 #endif

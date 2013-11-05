@@ -20,7 +20,6 @@
 #include "utils.h"
 #include "linalg.h"
 #include "rge.h"
-using namespace softsusy;
 
 namespace softsusy {
 const double MUP = 2.4e-3; ///< default running quark mass from PDG
@@ -48,7 +47,6 @@ typedef enum {mUp=1, mCharm, mTop, mDown, mStrange, mBottom, mElectron,
 	      mMuon, mTau} mass;
 /// order of gauge couplings stored in QedQcd
 typedef enum {ALPHA=1, ALPHAS} leGauge;
-}
 
 /// Returns beta functions of alpha, alpha_s only
 DoubleVector gaugeDerivs(double, const DoubleVector &);
@@ -161,5 +159,8 @@ inline QedQcd::QedQcd(const QedQcd &m)
 /// Returns diagonal fermion mass matrices given input object r
 void massFermions(const QedQcd & r, DoubleMatrix & mDon, 
 		  DoubleMatrix & mUpq, DoubleMatrix & mEle);
+
+} // namespace softsusy
+
 #endif
 

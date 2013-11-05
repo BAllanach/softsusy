@@ -5,6 +5,8 @@
 
 #include <iostream>
 
+namespace softsusy {
+
 double sw2 = 1.0 - sqr(MW / MZ),
   gnuL = 0.5,
   guL = 0.5 - 2.0 * sw2 / 3.0,
@@ -444,3 +446,5 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
 
   return left;
 }
+
+} // namespace softsusy
