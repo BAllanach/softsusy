@@ -111,12 +111,15 @@ Adelaide SA 5005 Australia}
 TU Dresden, Zellescher Weg 19, 01069 Dresden, Germany}
 \begin{abstract}
   Here, we describe an extension to the
-  {\tt SOFTSUSY}~program to calculate the sparticle spectrum in the
+  \SOFTSUSY~program to calculate the sparticle spectrum in the
   {\em next-to-minimal} supersymmetric standard model, where a chiral
   superfield that is a singlet of the Standard Model gauge group is added to
-  the minimal supersymmetric standard model fields. 
+  the minimal supersymmetric standard model fields. Often, a $Z_3$ symmetry is
+  imposed upon the model. \SOFTSUSY~can calculate the spectrum in this
+  case as well as the case where general $Z_3$ violating terms are added to
+  the soft supersymmetry breaking terms and the superpotential. 
   The user provides a theoretical boundary condition upon the couplings and
-  masses of the singlet.
+  mass terms of the singlet.
   Successful radiative electroweak symmetry breaking,
   electroweak and CKM matrix data are used
   as weak-scale boundary conditions. 
@@ -158,16 +161,47 @@ of the Higgs potential. \\
 {\em Restrictions:} \SOFTSUSY~will provide a solution only in the
 perturbative regime and it
 assumes that all couplings of the model are real
-(i.e.\ $CP-$conserving). The iterative \SOFTSUSY~algorithm will not 
-converge if parameters are too close to a boundary of successful electroweak
-symmetry breaking, but a warning flag will alert the user to this fact.
+(i.e.\ $CP-$conserving). If the parameter point under investigation is
+non-physical for some reason (for example because the electroweak potential
+does not have an acceptable minimum), \SOFTSUSY{} returns an error message.
 
 \newpage
 
 \section{Introduction}
 
-Recently, an apparently Standard Model Higgs boson was discovered in the CMS
-and ATLAS experiments at over the 5$-\sigma$ level~\cite{}. 
+TeV-scale supersymmetric particles have so far not been found\footnote{In some
+  cases, lower   bounds of 1 
+TeV or more have been placed upon gluinos and squarks by LHC experiments.}
+at the LHC~\cite{Aad:2013wta,CMSspart}, but searches for them continue, as does
+theoretical interest in supersymmetric models. 
+This is a
+testament to the 
+theoretical successes of weak-scale supersymmetry: chiefly the resolution of
+the technical hierarchy problem (but also because it contains a convenient
+dark matter candidate). 
+In order to do supersymmetric phenomenology, a long calculational chain is
+required~\cite{Allanach:2008zn}. Typically, this chain begins with the
+calculation of the 
+supersymmetric spectrum, including the couplings of the various sparticles and
+Higgs'. Currently, in the minimal supersymmetric standard model, there are
+several spectrum generators: {\tt
+  ISASUSY}~\cite{Baer:1993ae}, {\tt 
+  SOFTSUSY}~\cite{Allanach:2001kg}, {\tt   SPheno}~\cite{Porod:2003um}, {\tt
+  SUSEFLAV}~\cite{Chowdhury:2011zr} and {\tt SUSPECT}~\cite{Djouadi:2002ze}. 
+
+Recently, a boson was discovered in the CMS and 
+ATLAS experiments at over the 5$-\sigma$
+level~\cite{Aad:2012tfa,Chatrchyan:2012ufa} whose properties are consistent
+with a Standard Model Higgs boson. Using 4.8 fb$^{-1}$ of 7 TeV data and 20.7
+fb$^{-1}$ of 8 TeV data, ATLAS measures the mass to be
+$m_h=125.5\pm0.2^{+0.5}_{0.6}$ GeV by combining the $H \rightarrow \gamma
+\gamma$ and $H \rightarrow ZZ$ decay channels~\cite{ATLAS-CONF-2013-014}.
+In CMS, these channels give the combined constraint $m_h=125.3 \pm0.4 \pm0.5$
+GeV in 5.1 fb$^{-1}$ of 7 TeV data and 5.3 fb$^{-1}$ of 8 TeV data. 
+
+In the minimal supersymmetric standard model the model can be natural if stops
+are light, but stops must be heavy to get a heavy higgs. Cite Abdel too. But
+next-to-minimal helps naturalness. NMSSMTools and SPheno with SARAH.
 
 \section{NMSSM Parameters \label{sec:notation}}
 
@@ -288,10 +322,10 @@ $m_{H_{1,2}}^2$ & $m_{H_{1,2}}^2$& $m_{H_{d,u}}^2$ & $m_{H_{1,2}}^2$ \\
   \SOFTSUSY~conventions. The sign in front of the gaugino mass
     term in front of the \SOFTSUSY~Lagrangian appears at first sight to be in
     the     opposite convention 
-    to Ref.~\cite{mandv}. However, it is due to the absorption of a factor of
+    to Ref.~\cite{MV94}. However, it is due to the absorption of a factor of
     $i$ into the gaugino fields $\tilde B$, $\tilde W$ and $\tilde g$ which
     means that the sign of the gaugino mass is identical to that of
-    \cite{mandv}, and is thus of the same convention.}
+    \cite{MV94}, and is thus of the same convention.}
 \end{center}\end{table} 
 
 \subsection{Higgs potential and electroweak symmetry breaking}\label{sec:hpot}
@@ -1550,6 +1584,73 @@ The one-loop $\beta$ function for $\tan\beta$ is the same in the NMSSM as the MS
 
 
 \begin{thebibliography}{10}
+\bibitem{Aad:2013wta}
+  G.~Aad {\it et al.}  [ATLAS Collaboration],
+  %``Search for new phenomena in final states with large jet multiplicities and missing transverse momentum at $\sqrt{s}=8$ TeV proton-proton collisions using the ATLAS experiment,''
+  JHEP {\bf 1310} (2013) 130
+  [arXiv:1308.1841 [hep-ex]].
+  %%CITATION = ARXIV:1308.1841;%%
+  %10 citations counted in INSPIRE as of 06 Nov 2013
+%\cite{Aad:2012tfa}
+\bibitem{CMSspart}
+S.~Chatrchyan {\it et al.} [CMS Collaboration], (2013) CMS-PAS-SUS-13-012
+
+  \bibitem{Baer:1993ae}
+H.~Baer, F.~E. Paige, S.~D. Protopopescu and X.~Tata, 
+%{\it {Simulating
+%  Supersymmetry with ISAJET 7.0 / ISASUSY 1.0}},
+[hep-ph/9305342].
+%%CITATION = HEP-PH/9305342;%%
+
+\bibitem{Porod:2003um}
+W.~Porod, 
+%{\it {SPheno, a program for calculating supersymmetric spectra, SUSY
+%  particle decays and SUSY particle production at e+ e- colliders}},  
+  Comput.\ Phys.\ Commun. {\bf 153} (2003) 275--315
+  [hep-ph/0301101].
+%%CITATION = HEP-PH/0301101;%%
+\bibitem{Chowdhury:2011zr}
+D.~Chowdhury, R.~Garani and S.~K. Vempati, 
+%{\it {SUSEFLAV: Program for
+%  supersymmetric mass spectra with seesaw mechanism and rare lepton flavor
+%  violating decays}},  
+Comput.\ Phys.\ Commun. {\bf 184} (2013) 899--918
+  [arXiv:1109.3551 [hep-ph]].
+%%CITATION = ARXIV:1109.3551;%%
+
+\bibitem{Djouadi:2002ze}
+A.~Djouadi, J.-L. Kneur and G.~Moultaka, 
+%{\it {SuSpect: A Fortran code for the
+%  supersymmetric and Higgs particle spectrum in the MSSM}},  
+  Comput.\ Phys.\ Commun. {\bf 176} (2007) 426--455
+  [hep-ph/0211331].
+%%CITATION = HEP-PH/0211331;%%
+\bibitem{Aad:2012tfa}
+  G.~Aad {\it et al.}  [ATLAS Collaboration],
+  %``Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC,''
+  Phys.\ Lett.\ B {\bf 716} (2012) 1
+  [arXiv:1207.7214 [hep-ex]].
+  %%CITATION = ARXIV:1207.7214;%%
+  %1868 citations counted in INSPIRE as of 06 Nov 2013
+    %\cite{Allanach:2008zn}
+\bibitem{Allanach:2008zn}
+  B.~C.~Allanach,
+  %``SUSY Predictions and SUSY Tools at the LHC,''
+  Eur.\ Phys.\ J.\ C {\bf 59} (2009) 427
+  [arXiv:0805.2088 [hep-ph]].
+  %%CITATION = ARXIV:0805.2088;%%
+  %13 citations counted in INSPIRE as of 06 Nov 2013
+%\cite{Chatrchyan:2012ufa}
+\bibitem{Chatrchyan:2012ufa}
+  S.~Chatrchyan {\it et al.}  [CMS Collaboration],
+  %``Observation of a new boson at a mass of 125 GeV with the CMS experiment at the LHC,''
+  Phys.\ Lett.\ B {\bf 716} (2012) 30
+  [arXiv:1207.7235 [hep-ex]].
+  %%CITATION = ARXIV:1207.7235;%%
+  %1848 citations counted in INSPIRE as of 06 Nov 2013
+\bibitem{ATLAS-CONF-2013-014}
+G.~Aad {\it et al.}  [ATLAS Collaboration],
+ATLAS-CONF-2013-014, talk delivered at 48th Rencontres de Moriond on Electroweak Interactions and Unified Theories, La Thuile, Italy, 2 - 9 Mar 2013
 %\cite{Allanach:2001kg}
 \bibitem{Allanach:2001kg} 
   B.~C.~Allanach,
@@ -1567,6 +1668,14 @@ The one-loop $\beta$ function for $\tan\beta$ is the same in the NMSSM as the MS
   [arXiv:0907.4682 [hep-ph]].
   %%CITATION = ARXIV:0907.4682;%%
   %35 citations counted in INSPIRE as of 21 Sep 2013
+%\cite{Sjostrand:2007gs}
+\bibitem{Sjostrand:2007gs}
+  T.~Sjostrand, S.~Mrenna and P.~Z.~Skands,
+  %``A Brief Introduction to PYTHIA 8.1,''
+  Comput.\ Phys.\ Commun.\  {\bf 178} (2008) 852
+  [arXiv:0710.3820 [hep-ph]].
+  %%CITATION = ARXIV:0710.3820;%%
+  %914 citations counted in INSPIRE as of 06 Nov 2013
 %\cite{Allanach:2008qq}
 \bibitem{Allanach:2008qq} 
   B.~C.~Allanach, C.~Balazs, G.~Belanger, M.~Bernhardt, F.~Boudjema, D.~Choudhury, K.~Desch and U.~Ellwanger {\it et al.},
@@ -1604,7 +1713,6 @@ The one-loop $\beta$ function for $\tan\beta$ is the same in the NMSSM as the MS
   %%CITATION = HEP-PH/9401241;%%
   %225 citations counted in INSPIRE as of 24 Sep 2013
 
-\cite{Sper13}
 \bibitem{Sper13} 
   M.~Sperling, D.~St\"ockinger and A.~Voigt,
   %``Renormalization of vacuum expectation values in spontaneously broken gauge theories,''
