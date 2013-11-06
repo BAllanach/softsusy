@@ -193,9 +193,10 @@ DoubleVector RpvSoftsusy::beta() const {
 // Outputs the anomalous dimensions, of RPV SUSY effects.
 // CHECKED: 23/05/02
 void RpvSoftsusy::rpvAnomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
-			 	    DoubleMatrix & gQQ, DoubleMatrix & gUU,
-				    DoubleMatrix & gDD, 
-				    double & gH1H1, double & gH2H2,
+                                        DoubleMatrix & gQQ, DoubleMatrix & gUU,
+                                        DoubleMatrix & gDD,
+                                        double & /* gH1H1 */,
+                                        double & /* gH2H2 */,
 					DoubleVector & gH1L) const { 
   // To keep this a const function
   DoubleMatrix d1(displayYukawaMatrix(YD)), e1(displayYukawaMatrix(YE)); 
@@ -594,7 +595,7 @@ void RpvSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars,
 // minimisation, returning the VEVs.
 void RpvSoftsusy::iterateRewsb(double & mu, double & m3sq, DoubleVector &
 			       sneutrinoVevs, int sgnMu, int & numTries, int
-			       maxTries, double tol, double mt, double muOld, 
+			       maxTries, double tol, double mt, double /* muOld */, 
 			       double eps) {
 
   static double oldMu, oldM3sq;
@@ -711,7 +712,7 @@ int RpvSoftsusy::usefulVevs(double vSM,
 // Returns value of m3sq consistent with sneutrino vevs given
 // (which should be a length-3 vector)
 double RpvSoftsusy::calculateM3sq(const DoubleVector & sneutrinoVevs,
-				double snuSq, double v1, double v2) {
+                                  double /* snuSq */, double v1, double v2) {
 
   double tb = displayTanb();
   double beta = atan(tb);
@@ -728,8 +729,8 @@ double RpvSoftsusy::calculateM3sq(const DoubleVector & sneutrinoVevs,
 
 // Input a set of values for sneutrino VEVs and it returns a more accurate set
 DoubleVector RpvSoftsusy::calculateSneutrinoVevs
-(const DoubleVector & sneutrinoVevs, double tol, double snuSq, double v1,
- double v2) { 
+(const DoubleVector & /* sneutrinoVevs */, double /* tol */, double snuSq,
+ double v1, double v2) {
   
   double tb = displayTanb();
   double beta = atan(tb);

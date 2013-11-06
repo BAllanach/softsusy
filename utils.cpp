@@ -18,7 +18,7 @@ double frexp(const Complex & c, int * i) {
   return 0.;
 }
 
-void FPE_ExceptionHandler(int nErrType) {
+void FPE_ExceptionHandler(int /* nErrType */) {
   throw "SIGFPE"; ///< This reverts back to softsusy code!
 }
 

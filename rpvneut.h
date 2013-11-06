@@ -64,7 +64,7 @@ public:
   inline const DoubleMatrix & displayUpmns() const { return uPmns; }
   inline const DoubleMatrix & displayPhysNeutMix() const { 
     return physNeutMix;  }
-  inline const bool displayInvertedOutput() const { return invertedOutput; }
+  inline bool displayInvertedOutput() const { return invertedOutput; }
   inline const DoubleVector & displayCPEMasses() const { return CPEmasses; }
   inline const DoubleVector & displayCPOMasses() const { return CPOmasses; }
   inline const DoubleMatrix & displayCPEMassSq() const { return CPEscalars; }

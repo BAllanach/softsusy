@@ -23,7 +23,7 @@ int main() {
    double m12 = 200., a0 = -500., mGutGuess = 2.0e16, tanb = 10.0, m0 = 200.;
 
   int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 1; ///< number of scan points
+  // int numPoints = 1; ///< number of scan points
   //PA: new nmssm parameters to be fed into lowOrg
    double lambda = 0.1, kappa = 0.1, Al = a0, Ak = a0,  s = 1e3, xiF = 0.0, mupr = 0.0;
   // double lambda = 0.25, kappa = 0.1, Al = a0, Ak = -140,  s = 1e3, xiF = 0.0, mupr = 0.0;

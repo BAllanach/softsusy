@@ -3819,9 +3819,6 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
                           sPhysical & phys) {
   double tanb = displayTanb();
   double cb = cos(atan(tanb)), sb = sin(atan(tanb));     
-  double ht = displayYukawaElement(YU, 3, 3);
-  double hb = displayYukawaElement(YD, 3, 3);
-  double gp = displayGaugeCoupling(1) * sqrt(0.6);
   double lam = displayLambda();
   double svev = displaySvev();
   double kap = displayKappa();
