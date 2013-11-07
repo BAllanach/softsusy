@@ -586,7 +586,6 @@ int main(int argc, char *argv[]) {
 		  }
 		  
 		  if (!strcmp(modelIdent, "nonUniversal")) {
-		    int i; double d; kk >> i >> d;  
 		    /// First, put parameters that depend not on
 		    /// flavoured/unflavoured input
 		    if (i == 0) { 

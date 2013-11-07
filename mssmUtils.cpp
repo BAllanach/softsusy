@@ -5,6 +5,8 @@
 
 #include <iostream>
 
+namespace softsusy {
+
 double sw2 = 1.0 - sqr(MW / MZ),
   gnuL = 0.5,
   guL = 0.5 - 2.0 * sw2 / 3.0,
@@ -365,7 +367,7 @@ double sumTol(const MssmSoftsusy & in, const MssmSoftsusy & out, int numTries) {
   sumTol(in.displayDrBarPars(), out.displayDrBarPars(), sT);
   /// The predicted value of MZ^2 is an absolute measure of how close to a
   /// true solution we are:
-  double tbPred = 0.;
+  // double tbPred = 0.;
   double predictedMzSq = in.displayPredMzSq();
   /// We allow an extra factor of 10 for the precision in the predicted value
   /// of MZ compared to TOLERANCE if the program is struggling and gone beyond
@@ -444,3 +446,5 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
 
   return left;
 }
+
+} // namespace softsusy

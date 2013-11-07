@@ -10,6 +10,8 @@
 
 #ifdef NMSSMSOFTSUSY_H
 
+namespace softsusy {
+
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
   ydR, yeL, yeR, ynuL;
 
@@ -3823,9 +3825,6 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
                           sPhysical & phys) {
   double tanb = displayTanb();
   double cb = cos(atan(tanb)), sb = sin(atan(tanb));     
-  double ht = displayYukawaElement(YU, 3, 3);
-  double hb = displayYukawaElement(YD, 3, 3);
-  double gp = displayGaugeCoupling(1) * sqrt(0.6);
   double lam = displayLambda();
   double svev = displaySvev();
   double kap = displayKappa();
@@ -8983,5 +8982,7 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
   }
   out.precision(nn);
 }
+
+} // namespace softsusy
 
 #endif

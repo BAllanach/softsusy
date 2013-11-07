@@ -10,6 +10,8 @@
 #include "nmssmsusy.h"
 #include <cassert>
 
+namespace softsusy {
+
 const nmsBrevity & nmsBrevity::operator=(const sBrevity &s) {
   if (this == &s) return *this;
   sBrevity::operator=(s);
@@ -370,3 +372,5 @@ DoubleVector NmssmSusy::beta() const {
 
   return ds.display(); // convert to a long vector
 }
+
+} // namespace softsusy

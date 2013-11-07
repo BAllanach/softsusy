@@ -23,7 +23,8 @@
 #include <softsusy.h>
 #include <linalg.h>
 #include <rpvsusypars.h>
-using namespace softsusy;
+
+namespace softsusy {
 
 /// Number of independent parameters for RGE
 static const int numRpvSoftPars = 99 + numSoftParsMssm; 
@@ -93,7 +94,7 @@ public:
   /// 5 x 5 charged fermion mixing
   const DoubleMatrix & displayVch() const { return Vch; };
   /// Displays number of parameters in R-parity conserving BCs
-  const int displayNumRpcBcs() const { return numRpcBcs; };
+  int displayNumRpcBcs() const { return numRpcBcs; };
 
   /// Sets number of parameters in R-parity conserving BCs
   void setNumRpcBcs(int pos) { numRpcBcs = pos; };
@@ -278,7 +279,6 @@ void rpvGmsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
 void rpvExtendedSugraBcs(MssmSoftsusy & m, 
 			 const DoubleVector & inputParameters);
 
+} // namespace softsusy
+
 #endif
-
-
-

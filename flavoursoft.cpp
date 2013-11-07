@@ -8,6 +8,8 @@
 
 #include "flavoursoft.h"
 
+namespace softsusy {
+
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL, 
   ydR, yeL, yeR, ynuL;
 
@@ -774,8 +776,8 @@ void FlavourMssmSoftsusy::minparSLHA(ostream & out, const char model [],
  
 
 
-void FlavourMssmSoftsusy::doUpSquarks(double mt, double pizztMS, 
-				      double sinthDRbarMS, int accuracy) { 
+void FlavourMssmSoftsusy::doUpSquarks(double /* mt */, double /* pizztMS */,
+				      double sinthDRbarMS, int /* accuracy */) {
   /// now need to re-do 6 by 6 scalar mass matrices
   DoubleMatrix massUsq(6, 6);
 
@@ -876,9 +878,9 @@ void FlavourMssmSoftsusy::doUpSquarks(double mt, double pizztMS,
 
 }
 
-void FlavourMssmSoftsusy::doDownSquarks(double mb, double pizztMS, 
+void FlavourMssmSoftsusy::doDownSquarks(double /* mb */, double /* pizztMS */,
 					double sinthDRbarMS, int accuracy, 
-					double mt) { 
+					double /* mt */) {
   /// now need to re-do 6 by 6 scalar mass matrices
   DoubleMatrix massDsq(6, 6);
 
@@ -984,7 +986,7 @@ void FlavourMssmSoftsusy::doDownSquarks(double mb, double pizztMS,
   setPhys(s);
 }
 
-void FlavourMssmSoftsusy::doChargedSleptons(double mtau, double pizztMS, 
+void FlavourMssmSoftsusy::doChargedSleptons(double /* mtau */, double /* pizztMS */,
 					    double sinthDRbarMS, 
 					    int accuracy) { 
   //  MssmSoftsusy::doDownSquarks(mb, pizztMS, sinthDRbarMS, accuracy, mt); 
@@ -1088,7 +1090,7 @@ void FlavourMssmSoftsusy::doChargedSleptons(double mtau, double pizztMS,
   setPhys(s);
 }
 
-void FlavourMssmSoftsusy::doSnu(double pizztMS, int accuracy) {
+void FlavourMssmSoftsusy::doSnu(double /* pizztMS */, int accuracy) {
   
   /// Find the Yukawa rotation matrices such that the super-CKM basis may be
   /// defined
@@ -1738,3 +1740,5 @@ void FlavourMssmSoftsusy::sCkmRunning
 	(sqrt(fabs(massDsq(i, i) * massDsq(j+3, j+3))));
     }
 }
+
+} // namespace softsusy

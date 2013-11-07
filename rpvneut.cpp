@@ -7,6 +7,8 @@
 
 #include "rpvneut.h"
 
+namespace softsusy {
+
 const RpvNeutrino & RpvNeutrino::operator = (const RpvNeutrino &s) {
   if (this == &s) return *this;
   setRpvSoftsusy(s.displayRpvSoftsusy());
@@ -27,7 +29,7 @@ const RpvNeutrino & RpvNeutrino::operator = (const RpvNeutrino &s) {
 /// An adaption of the original rpvsoftsusy version (Input a set of values for
 /// sneutrino VEVs and it returns a more accurate set) 
 DoubleVector RpvNeutrino::calculateSneutrinoVevs
-(const DoubleVector & sneutrinoVevs, double tol, double snuSq, double v1, 
+(const DoubleVector & /* sneutrinoVevs */, double /* tol */, double snuSq, double v1, 
  double v2) { 
   
   double tb = displayTanb(), beta = atan(tb);
@@ -469,7 +471,7 @@ DoubleVector RpvNeutrino::calculateSneutrinoTadpoles(double sinthDRbar) {
 }
 
 
-double RpvNeutrino::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
+double RpvNeutrino::doCalcTadpole1oneLoop(double /* mt */, double sinthDRbar) {
 	
   double     g2 = displayGaugeCoupling(2);
   double tanb = displayTanb();
@@ -746,7 +748,7 @@ double RpvNeutrino::doCalcTadpole1oneLoop(double mt, double sinthDRbar) {
   return tadpoleOVd / (16.0 * sqr(PI)); 	
 }
 
-double RpvNeutrino::doCalcTadpole2oneLoop(double mt, double sinthDRbar) {
+double RpvNeutrino::doCalcTadpole2oneLoop(double /* mt */, double sinthDRbar) {
   
   double g2 = displayGaugeCoupling(2);
   double tanb = displayTanb();
@@ -3168,3 +3170,4 @@ void RpvNeutrino::sleptonsSLHA(ostream & out) {
   out << "   # CP odd neutral scalar\n";
 }
 
+} // namespace softsusy

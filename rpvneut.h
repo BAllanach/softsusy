@@ -26,6 +26,8 @@
 #include "lowe.h"
 #include "rpvsoft.h"
 
+namespace softsusy {
+
 /// Updates an RPV object with loop-corrected neutrino data: use for L violation
 class RpvNeutrino : public RpvSoftsusy {
   /// Vector of 3 pole neutrino mass values
@@ -62,7 +64,7 @@ public:
   inline const DoubleMatrix & displayUpmns() const { return uPmns; }
   inline const DoubleMatrix & displayPhysNeutMix() const { 
     return physNeutMix;  }
-  inline const bool displayInvertedOutput() const { return invertedOutput; }
+  inline bool displayInvertedOutput() const { return invertedOutput; }
   inline const DoubleVector & displayCPEMasses() const { return CPEmasses; }
   inline const DoubleVector & displayCPOMasses() const { return CPOmasses; }
   inline const DoubleMatrix & displayCPEMassSq() const { return CPEscalars; }
@@ -240,5 +242,7 @@ inline RpvNeutrino::RpvNeutrino(const RpvNeutrino & s)
 
 /// Formatted input
 ostream & operator <<(ostream &left, const RpvNeutrino & r);
+
+} // namespace softsusy
 
 #endif

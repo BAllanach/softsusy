@@ -413,25 +413,25 @@ c     just call the Dilog routine
       endif
       
       abs1z = abs(1 - z)
-	if( abs1z .lt. 1D-20 ) then
+        if( abs1z .lt. 1D-20 ) then
            Dilog = zeta2
            return
-	endif
+        endif
         
-	if( DBLE(z) .gt. .5D0 ) then
+        if( DBLE(z) .gt. .5D0 ) then
            mlogz = -log(z)
            t = zeta2 + mlogz*log(1 - z)
            if( abs1z .gt. 1 ) then
               Dilog = Dilogsum(log(1 - 1/z)) + zeta2 +
      $             .5D0*log(z - 1)**2 + t
            else
-	    Dilog = -Dilogsum(mlogz) + t
+            Dilog = -Dilogsum(mlogz) + t
          endif
       else
          if( absz .gt. 1 ) then
-	    Dilog = -Dilogsum(-log(1 - 1/z)) - zeta2 - .5D0*log(-z)**2
+            Dilog = -Dilogsum(-log(1 - 1/z)) - zeta2 - .5D0*log(-z)**2
          else
-	    Dilog = Dilogsum(-log(1 - z))
+            Dilog = Dilogsum(-log(1 - z))
          endif
       endif
       end

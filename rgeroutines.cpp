@@ -10,6 +10,8 @@
 
 #include <rgeroutines.h>
 
+namespace softsusy {
+
 double mlqspc(const MssmSoftsusy & r) {
   double chi = fabs(r.displayPhys().mneut.display(1)), 
     xi = fabs(r.displayPhys().mneut.display(2)), 
@@ -220,7 +222,7 @@ double mllMax(const MssmSoftsusy & r) {
 }
 
 
-double mllMax(double msqL, double mchi20, double mer, double mchi10) {
+double mllMax(double /* msqL */, double mchi20, double mer, double mchi10) {
   double sqrtArg = (sqr(mchi20) - sqr(mer)) *
     (sqr(mer) - sqr(mchi10));
 
@@ -270,7 +272,7 @@ double mlqMax(const MssmSoftsusy & r) {
   return mlqMax(msqL, mchi20, mer, mchi10);
 }
 
-double mlqMax(double msqL, double mchi20, double mer, double mchi10) {
+double mlqMax(double msqL, double mchi20, double mer, double /* mchi10 */) {
   double sqrtArg = (sqr(msqL) - sqr(mchi20)) * (sqr(mchi20) - sqr(mer)) 
     / (sqr(mchi20));
 
@@ -332,3 +334,4 @@ double mhqMin(const MssmSoftsusy & r) {
   else return -factor * sqrt(fabs(answer));
 }
 
+} // namespace softsusy

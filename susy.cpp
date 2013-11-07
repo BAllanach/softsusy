@@ -9,6 +9,8 @@
 
 #include "susy.h"
 
+namespace softsusy {
+
 #define HR "---------------------------------------------------------------\n"
 
 const sBrevity & sBrevity::operator=(const sBrevity &s) {
@@ -847,3 +849,5 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
   gH1H1 = gH1H1 + threelp * h1h1;
   gH2H2 = gH2H2 + threelp * h2h2;
 }
+
+} // namespace softsusy

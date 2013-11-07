@@ -18,7 +18,8 @@
 class DoubleVector; 
 #include "linalg.h"
 #include "numerics.h"
-using namespace softsusy;
+
+namespace softsusy {
 
 /// Describes a set of parameters and RGEs in general. 
 class RGE
@@ -84,6 +85,8 @@ public:
 /// Runge-Kutte user defined routine: given log renorm scale x and the
 /// dependent variables y of an RGE, will calculate the derivitives dydx.
 DoubleVector allDerivs(double, const DoubleVector &);
+
+} // namespace softsusy
 
 #endif
 

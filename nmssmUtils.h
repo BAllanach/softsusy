@@ -7,6 +7,8 @@
 
 #include "linalg.h"
 
+namespace softsusy {
+
 class NmssmSoftsusy;
 
 /// class for NMSSM input parameters
@@ -92,5 +94,7 @@ void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters)
 
 /// Calculates fractional difference in Drbar masses between in and out
 double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries);
+
+} // namespace softsusy
 
 #endif

@@ -289,7 +289,7 @@ double findMinimum(double ax, double bx, double cx, double (*f)(double),
 
 
 
-DoubleVector dd(double x, const DoubleVector & y) {
+DoubleVector dd(double x, const DoubleVector & /* y */) {
   DoubleVector dydx(1);
   dydx(1) = -integrandThreshbnr(x);
   return dydx;
@@ -314,7 +314,7 @@ Complex fnfn(double x) {
 	 / sqr(mtInt));
 }
 
-DoubleVector dilogarg(double t, const DoubleVector & y) {
+DoubleVector dilogarg(double t, const DoubleVector & /* y */) {
 
   const double eps = TOLERANCE * 1.0e-20;
 
@@ -850,7 +850,7 @@ int *ivector(long nl, long nh) {
 }
 
 /* free an int vector allocated with ivector() */
-void free_ivector(int *v, long nl, long nh) {
+void free_ivector(int *v, long nl, long /* nh */) {
 	free((char *) (v+nl-1));
 }
 
@@ -896,7 +896,7 @@ double ffbar(double z) {
 
 #define FUNC(x) ((*func)(x))
 
-double trapzd(double (*func)(double), double a, double b, int n, double EPS) {
+double trapzd(double (*func)(double), double a, double b, int n, double /* EPS */) {
 	double x,tnm,sum,del;
 	static double s;
 	int it,j;
@@ -1002,7 +1002,7 @@ double llqThresh(double mSq, double mChi1, double mSlep, double mChi2) {
   return sqrt(ans / (4.0 * l * xi));
 }
 
-double lqnear(double mSq, double mChi1, double mSlep, double mChi2) {
+double lqnear(double mSq, double /* mChi1 */, double mSlep, double mChi2) {
   double xi    = sqr(mChi2);
   double l     = sqr(mSlep);
   double q     = sqr(mSq);
@@ -1542,7 +1542,7 @@ bool newt(DoubleVector & x,
   return true;
 }
 
-DoubleVector testDerivs(double x, const DoubleVector & y) {
+DoubleVector testDerivs(double /* x */, const DoubleVector & y) {
   DoubleVector dydx(3);
   dydx(1) = y(1) * y(2) * y(2);
   dydx(2) = y(2) * y(1) * y(3);

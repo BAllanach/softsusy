@@ -7,6 +7,8 @@
 #include <cassert>
 #include <sstream>
 
+namespace softsusy {
+
 char const * const NMSSM_input::parameter_names[NUMBER_OF_NMSSM_INPUT_PARAMETERS] = {
    "tan(beta)", "mHd^2", "mHu^2", "mu", "Bmu/(cos(beta)sin(beta))", "lambda",
    "kappa", "Alambda", "Akappa", "lambda*S", "xiF", "xiS", "mu'",
@@ -453,7 +455,7 @@ double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries)
   sumTol(in.displayDrBarPars(), out.displayDrBarPars(), sT);
   /// The predicted value of MZ^2 is an absolute measure of how close to a
   /// true solution we are:
-  double tbPred = 0.;
+  // double tbPred = 0.;
   double predictedMzSq = in.displayPredMzSq();
   /// We allow an extra factor of 10 for the precision in the predicted value
   /// of MZ compared to TOLERANCE if the program is struggling and gone beyond
@@ -466,3 +468,5 @@ double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries)
 
   return sT.max();
 }
+
+} // namespace softsusy
