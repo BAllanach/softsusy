@@ -17,8 +17,8 @@
 \newcommand{\ee}{\end{equation}}
 \newcommand{\ba}{\begin{eqnarray}}
 \newcommand{\ea}{\end{eqnarray}}
-%\newcommand{\Zv}{{\mbox{${\not\!\!Z_3}$}}}
-\newcommand{\Zv}{{\mbox{$\slashed{Z}_{3}$}}} % LCT: Better placement of \
+%\newcommand{\Zv}{{\mbox{${\not\!\!\mathbb{Z}_3}$}}}
+\newcommand{\Zv}{{\mbox{$\slashed{\mathbb{Z}}_{3}$}}} % LCT: Better placement of \
 \newcommand{\ds}{\displaystyle}
 \newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
 % for RGEs
@@ -114,9 +114,11 @@ TU Dresden, Zellescher Weg 19, 01069 Dresden, Germany}
   \SOFTSUSY~program to calculate the sparticle spectrum in the
   {\em next-to-minimal} supersymmetric standard model, where a chiral
   superfield that is a singlet of the Standard Model gauge group is added to
-  the minimal supersymmetric standard model fields. Often, a $Z_3$ symmetry is
+  the minimal supersymmetric standard model fields. Often, a $\mathbb{Z}_3$
+  symmetry is 
   imposed upon the model. \SOFTSUSY~can calculate the spectrum in this
-  case as well as the case where general $Z_3$ violating terms are added to
+  case as well as the case where general $\mathbb{Z}_3$ violating terms are
+  added to 
   the soft supersymmetry breaking terms and the superpotential. 
   The user provides a theoretical boundary condition upon the couplings and
   mass terms of the singlet.
@@ -183,24 +185,56 @@ In order to do supersymmetric phenomenology, a long calculational chain is
 required~\cite{Allanach:2008zn}. Typically, this chain begins with the
 calculation of the 
 supersymmetric spectrum, including the couplings of the various sparticles and
-Higgs'. Currently, in the minimal supersymmetric standard model, there are
-several spectrum generators: {\tt
+Higgs'. Currently, in the minimal supersymmetric standard model (MSSM), there
+are several spectrum generators: {\tt
   ISASUSY}~\cite{Baer:1993ae}, {\tt 
   SOFTSUSY}~\cite{Allanach:2001kg}, {\tt   SPheno}~\cite{Porod:2003um}, {\tt
   SUSEFLAV}~\cite{Chowdhury:2011zr} and {\tt SUSPECT}~\cite{Djouadi:2002ze}. 
+Information from these spectrum generators is then passed to other programs
+(for example those that calculate decays, that simulate collider events, or
+that calculate the thermal relic density of dark matter) via data in the SUSY
+Les Houches Accord format~\cite{Skands:2003cj}.
 
 Recently, a boson was discovered in the CMS and 
 ATLAS experiments at over the 5$-\sigma$
 level~\cite{Aad:2012tfa,Chatrchyan:2012ufa} whose properties are consistent
 with a Standard Model Higgs boson. Using 4.8 fb$^{-1}$ of 7 TeV data and 20.7
 fb$^{-1}$ of 8 TeV data, ATLAS measures the mass to be
-$m_h=125.5\pm0.2^{+0.5}_{0.6}$ GeV by combining the $H \rightarrow \gamma
+$m_h=125.5\pm0.2^{+0.5}_{-0.6}$ GeV by combining the $H \rightarrow \gamma
 \gamma$ and $H \rightarrow ZZ$ decay channels~\cite{ATLAS-CONF-2013-014}.
 In CMS, these channels give the combined constraint $m_h=125.3 \pm0.4 \pm0.5$
 GeV in 5.1 fb$^{-1}$ of 7 TeV data and 5.3 fb$^{-1}$ of 8 TeV data. 
+In the MSSM, one can often obtain a CP even higgs that couples in a similar
+way to the Standard Model Higgs boson. At tree level, it's mass is bounded by
+$m_{h^0} < M_Z$, at odds with the LHC experiments' mass measurements. 
+However,
+the radiative corrections to the CP even Higgs mass can be sizeable,
+particularly those from stops. The corrections are larger if the stops are
+heavy, and if they are heavily mixed. Indeed, the MSSM has enough
+flexibility~\cite{Djouadi:2013lra} such that the experimental values of
+$m_{h^0}$ are achievable with TeV-scale stops and large mixing. On the other
+hand, these relatively heavy stops reintroduce the little hierarchy problem,
+requiring some level (at the level of one in several tens) of cancellation 
+between apparently unrelated parameters in the MSSM Higgs potential. 
+Thus, we have the well known correlation~\cite{Barbieri:1998uv} between a
+higher Higgs mass $m_{h^0}>106$ GeV and a higher level of apparently unnatural
+cancellation. In several
+well-studied simple models of supersymmetry breaking mediation, the
+problem is much exacerbated~\cite{Arbey:2011ab}. 
 
-In the minimal supersymmetric standard model the model can be natural if stops
-are light, but stops must be heavy to get a heavy higgs. Cite Abdel too. But
+In order to reduce the unnatural cancellations implied by the Higgs mass
+measurement, one can augment the MSSM by a gauge singlet chiral
+superfield~\cite{Ross:2011xv,Ross:2012nr}. We shall call this model the
+next-to-minimal 
+supersymmetric standard model (NMSSM), but shall distinguish between a
+version where an extra symmetry is assumed (often a $\mathbb{Z}_3$ symmetry) 
+and a version where it is not ($\Zv$).
+In the MSSM, (based on a two higgs doublet version of the Standard Model with
+softly broken $N=1$ global supersymmetry)
+the tree-level bound upon the higgs mass comes from the fact that 
+the quartic Higgs couplings are related to the electroweak gauge couplings by
+supersymmetry. In
+But
 next-to-minimal helps naturalness. NMSSMTools and SPheno with SARAH.
 
 \section{NMSSM Parameters \label{sec:notation}}
@@ -250,11 +284,11 @@ The full renormalisable, $R-$parity conserving superpotential is given by
 \end{align}
 
  
-\noindent where the subscript \Zv~reflects the fact that this superpotential contains terms which violate the $Z_3$ symmetry which is commonly imposed on the 
-NMSSM.  Imposing the $Z_3$ symmetry restricts the superpotential to
+\noindent where the subscript \Zv~reflects the fact that this superpotential contains terms which violate the $\mathbb{Z}_3$ symmetry which is commonly imposed on the 
+NMSSM.  Imposing the $\mathbb{Z}_3$ symmetry restricts the superpotential to
 %
 \begin{align} 
- W_{Z_3} &= \epsilon_{ab} \left[(Y_E)_{ij} L_i^b H_1^a \bar{E}_{j} 
+ W_{\mathbb{Z}_3} &= \epsilon_{ab} \left[(Y_E)_{ij} L_i^b H_1^a \bar{E}_{j} 
 + (Y_D)_{ij} Q_i^{bx} H_1^a \bar{D}_{jx} + (Y_U)_{ij} Q_i^{ax} H_2^b \bar{U}_{jx}  
 + \lambda S(H^a_2 H^b_1) \right] + \frac{\kappa}{3}S^{3} \\
 %
@@ -263,13 +297,13 @@ NMSSM.  Imposing the $Z_3$ symmetry restricts the superpotential to
 \label{eq:WZ3C}
 \end{align}
 %
-\noindent The $Z_3$-NMSSM superpotential (\ref{eq:WZ3C}) contains no explicit 
+\noindent The $\mathbb{Z}_3$-NMSSM superpotential (\ref{eq:WZ3C}) contains no explicit 
 mass parameter, thereby allowing a solution to the $\mu$-problem when the 
 singlet field acquires a vacuum expectation value (VEV) and generates an 
 effective $\mu$ term of the right size. As such, it is sometimes referred to as 
 the scale invariant NMSSM in the literature.  In this paper, we will always 
-write $Z_3$-NMSSM for the $Z_3$ conserving case and \Zv-NMSSM for the general 
-$Z_3$ violating one. 
+write $\mathbb{Z}_3$-NMSSM for the $\mathbb{Z}_3$ conserving case and \Zv-NMSSM for the general 
+$\mathbb{Z}_3$ violating one. 
 
 
 \subsection{Next-to-Minimal SUSY breaking parameters \label{sec:susybreak}}
@@ -296,7 +330,7 @@ $m_3^2$ present in $V_2$ is set to zero to avoid double counting.
 %% \ba V_3 & = & V^{MSSM}_3 + \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + \frac{1}{3} a_\kappa S^3 \\
 %% V_2  & = & V^{MSSM}_2 + m_S^2|S|^2  \\
 %% V_\Zv & = & \frac{1}{2}m_S^{\prime \, 2} S^2 + \xi_S S + \textrm{H.c.} \ea
-%% \noindent and in the case of $Z_3$ conservation the soft potential reduces to,
+%% \noindent and in the case of $\mathbb{Z}_3$ conservation the soft potential reduces to,
 %% \be V_{soft} = V_3 + V^{m_3^2 = 0}_2 \ee with the superscript indicationg that the \Zv soft bilinear mass $m_3^2$ present in $V^{MSSM}_2$ is set to zero. 
 
 \begin{table}\begin{center}
@@ -500,7 +534,7 @@ input values, or to zero in the case when $\kappa$ and $s$ are treated as
 \put(10,80){\makebox(280,10)[c]{\fbox{5.\ Run to $M_X$. Apply soft breaking
 and NMSSM SUSY boundary conditions.}}}
 \put(150,116.5){\vector(0,-1){23}}
-\put(10,120){\makebox(280,10)[c]{\fbox{4.\ EWSB with iterative solution for $\mu_\textrm{eff}$, outputs $\{s,\kappa,m_S\}$ in $Z_3$-NMSSM and $\{\mu, m_3^2, \xi_S \}$ in \Zv-NMSSM.}}}
+\put(10,120){\makebox(280,10)[c]{\fbox{4.\ EWSB with iterative solution for $\mu_\textrm{eff}$, outputs $\{s,\kappa,m_S\}$ in $\mathbb{Z}_3$-NMSSM and $\{\mu, m_3^2, \xi_S \}$ in \Zv-NMSSM.}}}
 \put(150,156){\vector(0,-1){23}}
 \put(10,160){\makebox(280,10)[c]{\fbox{3.\ Run to $M_{SUSY}$.}}}
 \put(30,170){convergence}
@@ -635,7 +669,7 @@ to the MSSM.  Note however, that in this case these are {\it effective}
 parameters constructed from several model parameters, so we must select which
 of the latter are fixed.
 
-In the $Z_3$-NMSSM, we fix $s$ via Eq.~\ref{eq:mueffcond} and $\kappa$
+In the $\mathbb{Z}_3$-NMSSM, we fix $s$ via Eq.~\ref{eq:mueffcond} and $\kappa$
 via Eq.~\ref{eq:bmucond}, and use the third EWSB condition to fix
 $m_S^2$.  In the \Zv-NMSSM, we have more freedom and can choose to fix
 $\mu$ and $m_3^2$ --- as in the MSSM --- and use the third EWSB
@@ -1625,6 +1659,52 @@ A.~Djouadi, J.-L. Kneur and G.~Moultaka,
   Comput.\ Phys.\ Commun. {\bf 176} (2007) 426--455
   [hep-ph/0211331].
 %%CITATION = HEP-PH/0211331;%%
+%\cite{Djouadi:2013lra}
+
+%\cite{Skands:2003cj}
+\bibitem{Skands:2003cj}
+  P.~Z.~Skands, B.~C.~Allanach, H.~Baer, C.~Balazs, G.~Belanger, F.~Boudjema, A.~Djouadi and R.~Godbole {\it et al.},
+  %``SUSY Les Houches accord: Interfacing SUSY spectrum calculators, decay packages, and event generators,''
+  JHEP {\bf 0407} (2004) 036
+  [hep-ph/0311123].
+  %%CITATION = HEP-PH/0311123;%%
+  %380 citations counted in INSPIRE as of 07 Nov 2013
+\bibitem{Djouadi:2013lra}
+  A.~Djouadi,
+  %``Implications of the Higgs discovery for the MSSM,''
+  arXiv:1311.0720 [hep-ph].
+  %%CITATION = ARXIV:1311.0720;%%
+\bibitem{Barbieri:1998uv}
+  R.~Barbieri and A.~Strumia,
+  %``About the fine tuning price of LEP,''
+  Phys.\ Lett.\ B {\bf 433} (1998) 63
+  [hep-ph/9801353].
+  %%CITATION = HEP-PH/9801353;%%
+  %94 citations counted in INSPIRE as of 07 Nov 2013
+
+%\cite{Arbey:2011ab}
+\bibitem{Arbey:2011ab}
+  A.~Arbey, M.~Battaglia, A.~Djouadi, F.~Mahmoudi and J.~Quevillon,
+  %``Implications of a 125 GeV Higgs for supersymmetric models,''
+  Phys.\ Lett.\ B {\bf 708} (2012) 162
+  [arXiv:1112.3028 [hep-ph]].
+  %%CITATION = ARXIV:1112.3028;%%
+  %188 citations counted in INSPIRE as of 07 Nov 2013
+%\cite{Ross:2011xv}
+\bibitem{Ross:2011xv}
+  G.~G.~Ross and K.~Schmidt-Hoberg,
+  %``The Fine-Tuning of the Generalised NMSSM,''
+  Nucl.\ Phys.\ B {\bf 862} (2012) 710
+  [arXiv:1108.1284 [hep-ph]].
+  %%CITATION = ARXIV:1108.1284;%%
+  %54 citations counted in INSPIRE as of 07 Nov 2013
+\bibitem{Ross:2012nr}
+  G.~G.~Ross, K.~Schmidt-Hoberg and F.~Staub,
+  %``The Generalised NMSSM at One Loop: Fine Tuning and Phenomenology,''
+  JHEP {\bf 1208} (2012) 074
+  [arXiv:1205.1509 [hep-ph]].
+  %%CITATION = ARXIV:1205.1509;%%
+  %37 citations counted in INSPIRE as of 07 Nov 2013
 \bibitem{Aad:2012tfa}
   G.~Aad {\it et al.}  [ATLAS Collaboration],
   %``Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC,''
