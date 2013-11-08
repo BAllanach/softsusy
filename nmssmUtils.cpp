@@ -75,16 +75,21 @@ void NMSSM_input::check_ewsb_output_parameters() const {
 
    // check supported cases
    const bool Z3_symmetric = is_Z3_symmetric();
-   if (Z3_symmetric && !SoftHiggsOut) {
-      if (!is_set(lambdaS) && !is_set(kappa) && !is_set(mS2))
+   if (SoftHiggsOut) {
+      if (!is_set(mHd2) && !is_set(mHu2) && !is_set(mS2))
          supported = true;
    } else {
-      if (!is_set(mu) && !is_set(BmuOverCosBetaSinBeta) && !is_set(xiS))
-         supported = true;
-      if (!is_set(lambdaS) || close(parameter[lambdaS], 0., EPSTOL))
-         throw "# ERROR: <S> is zero!  In the Z3 violating NMSSM <S> is not"
-            " determined by the EWSB conditions, so <S> has to be set to"
-            " a non-zero value on the user-side!\n";
+      if (Z3_symmetric) {
+         if (!is_set(lambdaS) && !is_set(kappa) && !is_set(mS2))
+            supported = true;
+      } else {
+         if (!is_set(mu) && !is_set(BmuOverCosBetaSinBeta) && !is_set(xiS))
+            supported = true;
+         if (!is_set(lambdaS) || close(parameter[lambdaS], 0., EPSTOL))
+            throw "# ERROR: <S> is zero!  In the Z3 violating NMSSM <S> is not"
+               " determined by the EWSB conditions, so <S> has to be set to"
+               " a non-zero value on the user-side!\n";
+      }
    }
 
    if (!supported) {
@@ -97,14 +102,20 @@ void NMSSM_input::check_ewsb_output_parameters() const {
             msg << parameter_names[i] << ", ";
       }
       msg << "\n" "# Note: supported are: ";
-      if (Z3_symmetric) {
-         msg << "{" << parameter_names[lambdaS]
-             << ", " << parameter_names[kappa]
-             << ", " << parameter_names[mS2] << "}";
+      if (SoftHiggsOut) {
+            msg << "{" << parameter_names[mHd2]
+                << ", " << parameter_names[mHu2]
+                << ", " << parameter_names[mS2] << "}";
       } else {
-         msg << "{" << parameter_names[mu]
-             << ", " << parameter_names[BmuOverCosBetaSinBeta]
-             << ", " << parameter_names[xiS] << "}";
+         if (Z3_symmetric) {
+            msg << "{" << parameter_names[lambdaS]
+                << ", " << parameter_names[kappa]
+                << ", " << parameter_names[mS2] << "}";
+         } else {
+            msg << "{" << parameter_names[mu]
+                << ", " << parameter_names[BmuOverCosBetaSinBeta]
+                << ", " << parameter_names[xiS] << "}";
+         }
       }
       msg << '\n';
       throw msg.str();
