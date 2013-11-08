@@ -75,7 +75,7 @@ void NMSSM_input::check_ewsb_output_parameters() const {
 
    // check supported cases
    const bool Z3_symmetric = is_Z3_symmetric();
-   if (Z3_symmetric) {
+   if (Z3_symmetric && !SoftHiggsOut) {
       if (!is_set(lambdaS) && !is_set(kappa) && !is_set(mS2))
          supported = true;
    } else {

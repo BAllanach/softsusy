@@ -35,6 +35,10 @@ namespace softsusy {
   bool GUTlambda = false;
   /// Enable/Disable NMSSMTools compatible SLHA output
   bool NMSSMTools = false;
+  //If true then the EWSB conditions will output soft Higgs masses
+  //Will be inconsistent with constrained models
+  //but can be useful for non-universal Higgs cases 
+  bool SoftHiggsOut = false;
   /// number of loops used to calculate Higgs mass and tadpoles. They should be
   /// identical for a consistent calculation
   int numHiggsMassLoops = 2, numRewsbLoops = 2;

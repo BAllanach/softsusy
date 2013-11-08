@@ -1019,6 +1019,11 @@ int main(int argc, char *argv[]) {
                     softsusy::NMSSMTools = num;
                   }
 		    break;
+                  case 16: {
+                    int num = int(d + EPSTOL);
+                    softsusy::SoftHiggsOut = num;
+                  }
+		    break;
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "
