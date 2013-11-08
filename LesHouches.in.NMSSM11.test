@@ -1,0 +1,94 @@
+# Example input in SLHA2 format, and suitable for input to
+# SOFTSUSY (v1.8 or higher): CMSSM10.1.1 input - see arXiv:1109.3859
+Block MODSEL		     # Select model
+    6    0                   # flavour violation
+    1    1		     # mSUGRA
+    3    1                   # NMSSM
+Block SMINPUTS		     # Standard Model inputs
+    1	1.279180000e+02	     # alpha^(-1) SM MSbar(MZ)
+    2   1.166390000e-05	     # G_Fermi
+    3   1.189000000e-01	     # alpha_s(MZ) SM MSbar
+    4   9.118760000e+01	     # MZ(pole)
+    5	4.200000000e+00	     # mb(mb) SM MSbar
+    6   1.709000000e+02	     # mtop(pole)
+    7	1.777000000e+00	     # mtau(pole)
+Block MINPAR		     # Input parameters
+    1   4.000000000e+02	     # m_0
+    2   2.000000000e+02	     # m_12
+    3   1.000000000e+01	     # tanb
+    4   1.000000000e+00	     # sign(mu)
+    5  -3.000000000e+02	     # A_0
+Block SOFTSUSY               # SOFTSUSY specific inputs
+    1   1.000000000e-04      # tolerance
+    2   2.000000000e+00      # up-quark mixing (=1) or down (=2)
+    5   1.000000000E+00      # 2-loop running
+    3   0.000000000E+00	     # printout
+    15  1.000000000E+00      # NMSSMTools compatible output (default: 0)
+    16  1.000000000E+00      # NMSSMTools compatible output (default: 0)		
+    
+Block VCKMIN		      # input parameters for CKM matrix
+    1   2.272000000e-01      # lambda
+    2   8.180000000e-01      # A
+    3   2.210000000e-01      # rhobar
+    4   3.400000000e-01      # etabar
+Block EXTPAR  # Input parameters
+   0    2.71524254e+04  # MX scale  
+    1     8.10296389e+01      # M_1(Q)
+     2     1.53256201e+02      # M_2(Q)
+     3     4.75969821e+02      # M_3(Q)
+#   21     1.64427911e+05      # mH1^2(Q)
+#   22    -1.06754750e+05      # mH2^2(Q)
+    31     4.19940459e+02      # meL(Q)
+    32     4.19932944e+02      # mmuL(Q)
+    33     4.17714413e+02      # mtauL(Q)
+    34     4.05914029e+02      # meR(Q)
+    35     4.05898367e+02      # mmuR(Q)
+    36     4.01260336e+02      # mtauR(Q)
+    41     5.84473016e+02      # mqL1(Q)
+    42     5.84470357e+02      # mqL2(Q)
+    43     5.01271030e+02      # mqL3(Q)
+    44     5.74969163e+02      # muR(Q)
+    45     5.74966472e+02      # mcR(Q)
+    46     3.90500579e+02      # mtR(Q)
+    47     5.73920590e+02      # mdR(Q)
+    48     5.73917818e+02      # msR(Q)
+    49     5.68834302e+02      # mbR(Q)    
+   # 1    2e+02       #M1
+#    2    2e+02	    #M2
+#    3    2e+02       #M3
+#    11  -3e+02       #At
+#    12  -3e+02       #Ab
+#    13  -3e+02       #Ae
+#    21   1.6e+05      #mH1sq
+#    22   1.6e+05      #mH2sq
+# #  23   0            # mu
+# #  24   0            # Bmu / (cos(beta) * sin(beta))
+#    31    4.00000000e+02  # meL
+#    32    4.00000000e+02  # mmuL
+#    33    4.00000000e+02  # mtauL
+#    34    4.00000000e+02  # meR
+#    35    4.00000000e+02  # mmuR
+#    36    4.00000000e+02  # mtauR
+#    41    4.00000000e+02  # mqL1
+#    42    4.00000000e+02  # mqL2
+#    43    4.00000000e+02  # mqL3
+#    44    4.00000000e+02  # muR
+#    45    4.00000000e+02  # mcR
+#    46    4.00000000e+02  # mtR
+#    47    4.00000000e+02  # mdR
+#    48    4.00000000e+02  # msR
+#    49    4.00000000e+02  # mbR
+
+   61   0.1        # lambda
+   62   0.62       # kappa
+   63   -3e+02        # A_lambda
+   64   -3e+02        # A_kappa
+   65   500         # lambda * <S>
+#   66   66         # xi_F
+#   67   0          # xi_S
+#   68   68         # mu'
+#   69   69         # m'_S^2
+#   70   70         # m_S^2
+Block QEXTPAR
+    61   -1                   # input lambda at Msusy
+
