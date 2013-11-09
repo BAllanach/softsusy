@@ -204,7 +204,7 @@ $m_h=125.5\pm0.2^{+0.5}_{-0.6}$ GeV by combining the $H \rightarrow \gamma
 \gamma$ and $H \rightarrow ZZ$ decay channels~\cite{ATLAS-CONF-2013-014}.
 In CMS, these channels give the combined constraint $m_h=125.3 \pm0.4 \pm0.5$
 GeV in 5.1 fb$^{-1}$ of 7 TeV data and 5.3 fb$^{-1}$ of 8 TeV data. 
-In the MSSM, one can often obtain a CP even higgs that couples in a similar
+In the MSSM, one can often obtain a CP even Higgs that couples in a similar
 way to the Standard Model Higgs boson. At tree level, it's mass is bounded by
 $m_{h^0} < M_Z$, at odds with the LHC experiments' mass measurements. 
 However,
@@ -232,9 +232,9 @@ between a
 version where an extra symmetry is assumed (often a $\mathbb{Z}_3$ symmetry) 
 and a version where it is not
 ($\Zv$)~\cite{Delgado:2010uj,Ross:2011xv,Ross:2012nr}. 
-In the MSSM, (based on a two higgs doublet version of the Standard Model with
+In the MSSM, (based on a two Higgs doublet version of the Standard Model with
 softly broken $N=1$ global supersymmetry)
-the tree-level bound upon the higgs mass comes from the fact that 
+the tree-level bound upon the Higgs mass comes from the fact that 
 the quartic Higgs couplings are related to the electroweak gauge couplings by
 supersymmetry. The Higgs potential is modified by the addition of a gauge
 singlet, and the resulting lightest CP even Higgs boson can receive additional
@@ -749,7 +749,7 @@ $\oatas$ and $\oabas$ contributions \cite{Degrassi:2009yq} to the tadpoles.%
  The two loop corrections from the MSSM are used for $\oatq$, $\oabatau$, 
 $\oabq$, $\oatauq$ and $\oatab$, though it should be noted that these are not
 complete in the NMSSM.  In both one-loop and two-loop cases, the tadpole 
-corrections themselves depend on the outputfrom the EWSB conditions, therefore 
+corrections themselves depend on the output from the EWSB conditions, therefore 
 an iteration is employed to find a self consistent solution.
 
 After the EWSB iteration converges, the whole set of NMSSM parameters are run to
@@ -780,7 +780,7 @@ Two-loop corrections \cite{Degrassi:2009yq} of $\oatas$ and $\oabas$ are
 incorporated via {\tt FORTRAN} files provided by Pietro Slavich.  Contributions 
 of order $\oatq$, $\oabatau$, $\oabq$, $\oatauq$ and $\oatab$ are included from 
 the MSSM {\tt FORTRAN} files (also supplied by Pietro Slavich), but we note that
- these expressions receive additional NSSM contributions which are currently 
+ these expressions receive additional NMSSM contributions which are currently 
 unavailable.  Consequently, our calculation is not correct to this order, but 
 rather to $\oatas$ and $\oabas$.  Evidently, the higher order MSSM contributions
  provide (a) a good approximation in the vicinity of the MSSM limit, and (b) 
@@ -988,8 +988,8 @@ parameters, which can be found in \tablename~\ref{tab:nmssmsusy}.
     \\
     $\xi_F$ & coupling &
     \\\hline
-    \code{\small double sVev} & VEV of singlet field &
-    \code{\small displaySvev}
+    \code{\small double sVEV} & VEV of singlet field &
+    \code{\small displaySVEV}
     \\
     $s$ & &
     \\\hline
@@ -1596,7 +1596,7 @@ At two-loop we obtain
 \end{align}
 
 \subsection{Additional Parameters}
-Here we list the $\lambda$ and $\kappa$ contributions to the RGEs for the scalar masses $\mtrisq \equiv B\mu$ and $\msprsq \equiv B'\mu'$, and the evolution of the Higgs vevs $v_{1,2,s}$.  For the former, we get at one-loop
+Here we list the $\lambda$ and $\kappa$ contributions to the RGEs for the scalar masses $\mtrisq \equiv B\mu$ and $\msprsq \equiv B'\mu'$, and the evolution of the Higgs VEVs $v_{1,2,s}$.  For the former, we get at one-loop
 %
 \begin{equation}
 \left.\beta_{\mtrisq}^{(1)}\right|_\lambda = 2\lambda(3\lambda\mtrisq + 2\mu a_\lambda) + 2\lambda\kappa\msprsq\,.
@@ -1649,13 +1649,13 @@ At two-loop we have
 +12\lamsq g_2^2 \big\{\msprsq + 2\mu'[(\Alam) - M_2] \big\}\,.
 \end{align}
 
-At one-loop, the up- and down-type Higgs vevs $v_{u,d}$ receive additional contributions solely from $\lambda$ \cite{Sper13},
+At one-loop, the up- and down-type Higgs VEVs $v_{u,d}$ receive additional contributions solely from $\lambda$ \cite{Sper13},
 %
 \be
 \left.\beta^{(1)}_{v_\alpha}\right|_\lambda = -v_\alpha\lamsq\,, \qquad \alpha=1,2\,,
 \ee
 %
-while the $\beta$ function for the singlet vev $s$ is given by
+while the $\beta$ function for the singlet VEV $s$ is given by
 %
 \be 
 \beta^{(1)}_s = -2s(\lamsq + \kapsq)\,.
