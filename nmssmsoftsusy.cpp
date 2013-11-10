@@ -120,6 +120,24 @@ void NmssmSoftsusy::printall() const {
   cout << "md = " <<   displayPhys().md << '\n';
   cout << "me = " <<   displayPhys().me << '\n';
   cout << "msnu = " <<  displayPhys().msnu << '\n';
+
+  
+  cout << "DR-bar mH1 = " << displayDrBarPars().mh0(1) << '\n';
+  cout << "DR-bar mH2 = " << displayDrBarPars().mh0(2) << '\n';
+  cout << "DR-bar mH3 = " << displayDrBarPars().mh0(3) << '\n';
+
+  cout << "DR-bar mA1 = " << displayDrBarPars().mA0(1) << '\n';
+  cout << "DR-bar mA2 = " << displayDrBarPars().mA0(2) << '\n';
+  cout << "DR-bar mHpm =" << displayDrBarPars().mHpm << '\n';
+
+
+  cout << "DR-bar mch = " <<  displayDrBarPars().mch << '\n';
+  cout << "DR-bar mneut = " <<   displayDrBarPars().mneut << '\n';
+  cout << "DR-bar mGluino = " <<   displayDrBarPars().mGluino << '\n';
+  cout << "DR-bar mu = " <<   displayDrBarPars().mu << '\n';
+  cout << "DR-bar md = " <<   displayDrBarPars().md << '\n';
+  cout << "DR-bar me = " <<   displayDrBarPars().me << '\n';
+  cout << "DR-bar msnu = " <<  displayDrBarPars().msnu << '\n';
   
   cout << "g1  g2   g3 " << displayGauge() << '\n';
   cout << "Yu = " << displayYukawaMatrix(YU) << '\n';
