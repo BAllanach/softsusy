@@ -3919,7 +3919,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 	   cxb = cos(displayDrBarPars().thetab);
 	 
 	 double scalesq = sqr(displayMu()); 
-       if(Z3){   
+
 	 double DMS[3][3], DMP[3][3];
 	 double DMSB[3][3], DMPB[3][3];
 	 for(int i=0; i<=2; i++){
@@ -4065,7 +4065,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 	 sigmaMA2(1, 3) = sigmaMA2(1, 3) - DMP[0][2];    
 	 sigmaMA2(2, 3) = sigmaMA2(2, 3) - DMP[1][2]; 
 	 sigmaMA2(3, 3) = sigmaMA2(3, 3) - DMP[2][2];
-       }
+       
       
      
      }
