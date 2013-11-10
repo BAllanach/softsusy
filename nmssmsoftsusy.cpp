@@ -3422,6 +3422,156 @@ int NmssmSoftsusy::rewsbmH2sq(double & mH2sq) const {
   return 0;
 }
 
+double NmssmSoftsusy::h(double mass) const {
+  double msq = sqr(mass);
+  double q = displayMu();
+
+  double logfactor = sqr(msq) * (log(msq / sqr(q)) - 3.0 / 2.0);
+
+  return logfactor;
+}
+
+double NmssmSoftsusy::VhAtMin(double s, int loop) const {
+  double kap   = displayKappa(); 
+  double lam   = displayLambda();
+  double al  = displayTrialambda();
+  double ak  = displayTriakappa();
+  double tb = displayTanb(); 
+  double s2b = sin(2.0 * atan(tb));
+  double c2b = cos(2.0 * atan(tb));
+  double sb = sin(atan(tb));
+  double cb = cos(atan(tb));
+  double vev   = displayHvev();
+  double smu   = displaySusyMu();   
+  double mupr  = displayMupr();
+  double xiF   = displayXiF();
+  double xiS   = displayXiS();
+  double mSprsq = displayMspSquared();
+  double mSsq = displayMsSquared();
+  double gp = displayGaugeCoupling(1) * sqrt(0.6);
+  double g2 = displayGaugeCoupling(2);
+  double mHu2 = displayMh2Squared(), mHd2 = displayMh1Squared();
+  double m3sq = displayM3Squared();
+
+  /// LCT: Parameters for 1-loop contributions
+  const drBarPars & forLoops = displayDrBarPars();
+  double mw = displayMwRun();
+  double mz = displayMzRun();
+  /// 3rd generation masses of sfermions / fermions
+  DoubleVector mstop(2);
+  mstop(1)          = forLoops.mu(1, 3);
+  mstop(2)          = forLoops.mu(2, 3);
+  DoubleVector msbot(2);
+  msbot(1)          = forLoops.md(1, 3);
+  msbot(2)          = forLoops.md(2, 3);
+  DoubleVector mstau(2);
+  mstau(1)          = forLoops.me(1, 3);
+  mstau(2)          = forLoops.me(2, 3);
+  double       mt   = forLoops.mt;
+  double       mb   = forLoops.mb;
+  double       mtau = forLoops.mtau;
+
+  /// 1st and 2nd generation sfermion masses
+  /// Sup
+  DoubleVector msup(2); 
+  msup(1)              = forLoops.mu(1, 1);
+  msup(2)              = forLoops.mu(2, 1);
+  /// Scharm
+  DoubleVector msch(2); 
+  msch(1)              = forLoops.mu(1, 2);
+  msch(2)              = forLoops.mu(2, 2);
+  /// Sdown
+  DoubleVector msd(2);
+  msd(1)               = forLoops.md(1, 1);
+  msd(2)               = forLoops.md(2, 1);
+  /// Sstrange
+  DoubleVector mss(2);
+  mss(1)               = forLoops.md(1, 2);
+  mss(2)               = forLoops.md(2, 2);
+  /// Selectron
+  DoubleVector msel(2);
+  msel(1)              = forLoops.me(1, 1);
+  msel(2)              = forLoops.me(2, 1);
+  /// Smuon
+  DoubleVector msmu(2);
+  msmu(1)              = forLoops.me(1, 2);
+  msmu(2)              = forLoops.me(2, 2);
+
+  /// Sneutrinos
+  DoubleVector msnu(3);
+  msnu(1)              = forLoops.msnu(1);
+  msnu(2)              = forLoops.msnu(2);
+  msnu(3)              = forLoops.msnu(3);
+  
+  /// LCT: Tree-level contributions to effective potential
+  double VH = sqr(-0.25 * lam * sqr(vev) * s2b + 0.5 * kap * sqr(s)
+		  + mupr * s / root2 + xiF)
+    + (sqr(gp) + sqr(g2)) * sqr(vev * vev) * sqr(c2b) / (32.0) 
+    + (mHu2 + sqr(smu + lam * s / root2)) * 0.5 * sqr(vev) * sqr (sb)
+    + (mHd2 + sqr(smu + lam * s / root2)) * 0.5 * sqr(vev) * sqr (cb)
+    + 0.5 * mSsq * sqr(s) - 0.5 * al * s2b * sqr(vev) * s
+    + ak * s * s * s / (3.0 * root2) - 0.5 * m3sq * sqr(vev) * s2b
+    + 0.5 * mSprsq * sqr(s) + root2 * xiS * s;
+
+  cout << "VH tree = " << VH << endl;
+ 
+  /// LCT: 1-loop contributions to effective potential
+  if (loop > 0) {
+  double sfermions = 0.0;
+  for (int i=1; i<=3; i++) {
+    if (i<=2) {
+    sfermions = sfermions + h(mstop(i)) + h(msbot(i)) + h(mstau(i)) + h(msup(i))
+      + h(msch(i)) + h(msd(i)) + h(mss(i)) + h(msel(i)) + h(msmu(i));
+    }
+    sfermions = sfermions + h(msnu(i));
+  }
+
+  /// LCT: Third generation SM fermions --- ignore contributions from 1st & 2nd 
+  /// generations vis-a-vis 1-loop tadpole calculations 
+  double fermions = - 12.0 * (h(mt) + h(mb)) - 4.0 * h(mtau);
+
+  /// Define Higgs vector in 't-Hooft Feynman gauge
+  DoubleVector higgsm(3), higgsa(3), higgsc(2);
+  assignHiggs(higgsm, higgsa, higgsc);
+  double higgs = 0.0;
+  for (int i=1; i<=3; i++) {
+    if (i<=2) {
+      higgs = higgs + h(higgsc(i));
+    }
+    higgs = higgs + h(higgsm(i)) + h(higgsa(i));
+  }
+
+  /// LCT: Neutralinos
+  DoubleVector mneut(forLoops.mnBpmz);
+  double neutralinos = 0.0;
+  for (int i=1; i<=5; i++) {
+    neutralinos = neutralinos - 2.0 * h(mneut(i));
+  }
+
+  /// LCT: Charginos
+  DoubleVector mch(forLoops.mchBpmz); 
+  double charginos = 0.0;
+  for (int i=1; i<=2; i++) {
+    charginos = charginos - 4.0 * h(mch(i));
+  }
+
+  /// LCT: Gauge bosons
+  double gauge = 3.0 * h(mz) + 6.0 * h(mw);
+
+  /// Total contribution to effective potential at 1-loop
+  double VHloop =  (sfermions + fermions + higgs + neutralinos 
+		    + charginos + gauge) / (32.0 * sqr(PI));
+
+  cout << "VHloop = " << VHloop << endl;
+
+  /// LCT: Combine tree-level and 1-loop corrections to effective potential
+  VH = VH + VHloop;
+  }
+
+  cout << "VH = " << VH << endl;
+		  
+  return VH;
+}
 
 //PA: Imposes EWSB at the tree level. 
 // Curently works for general nmssm mapping
@@ -3463,7 +3613,12 @@ void NmssmSoftsusy::rewsbTreeLevel(int sgnMu) {
     rewsbmSsq(mSsq);
     setMsSquared(mSsq);
   }
-  
+
+  /// LCT: Flag warning if Higgs potential is not at minimum
+  if (VhAtMin(displaySvev(), 0) > 0 )
+    flagHiggsNoMin(true);
+  else
+    flagHiggsNoMin(false);  
 }
 
 
@@ -3726,6 +3881,11 @@ if (rewsbKap(kapnew) == 0) flagM3sq(false);
      rewsbmSsq(mSsqnew);
      setMsSquared(mSsqnew);
   }
+
+  if (VhAtMin(displaySvev(), 1) > 0 )
+    flagHiggsNoMin(true);
+  else
+    flagHiggsNoMin(false);
 
 }
 
