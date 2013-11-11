@@ -1199,7 +1199,7 @@ void NmssmSoftsusy::calcDrBarPars() {
         }
         if (PRINTOUT > 2) cout << " tree sup(" << family << ") tachyon ";
      }
-    DoubleVector mstopDRbar(mSq.apply(zeroSqrt));
+    DoubleVector mstopDRbar(mSq.apply(ccbSqrt));
 
     treeDownSquark(mSquared, eg.mb, pizzt, sinthDRbar, family);
     mSq = mSquared.sym2by2(eg.thetab);
@@ -1212,7 +1212,7 @@ void NmssmSoftsusy::calcDrBarPars() {
       }
     if (PRINTOUT > 1) cout << " tree sdown(" << family << ") tachyon ";
     }
-    DoubleVector msbotDRbar(mSq.apply(zeroSqrt));
+    DoubleVector msbotDRbar(mSq.apply(ccbSqrt));
 
     treeChargedSlepton(mSquared, eg.mtau, pizzt, sinthDRbar, family);
     mSq = mSquared.sym2by2(eg.thetatau);
@@ -1225,7 +1225,7 @@ void NmssmSoftsusy::calcDrBarPars() {
       }
     if (PRINTOUT > 1) cout << " tree selectron(" << family << ") tachyon ";
     }
-    DoubleVector mstauDRbar(mSq.apply(zeroSqrt));
+    DoubleVector mstauDRbar(mSq.apply(ccbSqrt));
 
     int i; for (i=1; i<=2; i++) {
       eg.mu(i, family) = mstopDRbar(i);    eg.md(i, family) = msbotDRbar(i);
@@ -1244,7 +1244,7 @@ void NmssmSoftsusy::calcDrBarPars() {
     if (PRINTOUT > 1) cout << " tree sneutrino(" << family << ") tachyon@"
 			   << displayMu() << " ";
     }
-    eg.msnu(family) = zeroSqrt(mSnuSquared);
+    eg.msnu(family) = ccbSqrt(mSnuSquared);
   }
 
   double mw = displayMwRun();
@@ -4217,7 +4217,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
      h0Htachyon = true;
      if (PRINTOUT > 2) cout << " A1/A2 tachyon: m^2=" << Atemp;
   }
-  Atemp = Atemp.apply(zeroSqrt);
+  Atemp = Atemp.apply(ccbSqrt);
   
   if (Atemp(1) > Atemp(2)) Atheta = Atheta + PI * 0.5; 
   
@@ -4240,7 +4240,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << " A1/A2 tachyon: m^2=" << Atemp;
   }
-  Atemp = Atemp.apply(zeroSqrt);
+  Atemp = Atemp.apply(ccbSqrt);
   double mA2 = Atemp.max();
   phys.mA0(1) = mA1;
   phys.mA0(2) = mA2;
@@ -4257,7 +4257,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
   
  }
  
-  phys.mHpm = zeroSqrt(poleMhcSq);
+  phys.mHpm = ccbSqrt(poleMhcSq);
 if (poleMhcSq > 0. && !h0Htachyon) return false;
   else {
      if (PRINTOUT) cout << " mHc(phys)^2=" << poleMhcSq 
