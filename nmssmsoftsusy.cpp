@@ -3920,16 +3920,8 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 	 
 	 double scalesq = sqr(displayMu()); 
 
-	 double DMS[3][3], DMP[3][3];
-	 double DMSB[3][3], DMPB[3][3];
-	 for(int i=0; i<=2; i++){
-	   for(int j=0; j<=2; j++){
-	     DMS[i][j]  = 0;
-	     DMP[i][j]  = 0;
-	     DMSB[i][j] = 0;
-	     DMPB[i][j] = 0;
-	   }
-	 }
+	 double DMS[3][3] = { 0 }, DMP[3][3] = { 0 };
+	 double DMSB[3][3] = { 0 }, DMPB[3][3] = { 0 };
 	 
 	 double lamS = lam;
 	 double vevS =  vev / root2;
