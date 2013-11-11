@@ -3422,7 +3422,7 @@ int NmssmSoftsusy::rewsbmH2sq(double & mH2sq) const {
   return 0;
 }
 
-double NmssmSoftsusy::h(double mass) const {
+double NmssmSoftsusy::looplog(double mass) const {
   double msq = sqr(mass);
   double q = displayMu();
 
@@ -3432,26 +3432,24 @@ double NmssmSoftsusy::h(double mass) const {
 }
 
 double NmssmSoftsusy::VhAtMin(double s, int loop) const {
-  double kap   = displayKappa(); 
-  double lam   = displayLambda();
-  double al  = displayTrialambda();
-  double ak  = displayTriakappa();
-  double tb = displayTanb(); 
-  double s2b = sin(2.0 * atan(tb));
-  double c2b = cos(2.0 * atan(tb));
-  double sb = sin(atan(tb));
-  double cb = cos(atan(tb));
-  double vev   = displayHvev();
-  double smu   = displaySusyMu();   
-  double mupr  = displayMupr();
-  double xiF   = displayXiF();
-  double xiS   = displayXiS();
+  double kap    = displayKappa(); 
+  double lam    = displayLambda();
+  double al     = displayTrialambda();
+  double ak     = displayTriakappa();
+  double tb     = displayTanb(); 
+  double sb     = sin(atan(tb)), s2b = sin(2.0 * atan(tb));
+  double cb     = cos(atan(tb)), c2b = cos(2.0 * atan(tb));
+  double vev    = displayHvev();
+  double smu    = displaySusyMu();   
+  double mupr   = displayMupr();
+  double xiF    = displayXiF();
+  double xiS    = displayXiS();
   double mSprsq = displayMspSquared();
-  double mSsq = displayMsSquared();
-  double gp = displayGaugeCoupling(1) * sqrt(0.6);
-  double g2 = displayGaugeCoupling(2);
-  double mHu2 = displayMh2Squared(), mHd2 = displayMh1Squared();
-  double m3sq = displayM3Squared();
+  double mSsq   = displayMsSquared();
+  double gp     = displayGaugeCoupling(1) * sqrt(0.6);
+  double g2     = displayGaugeCoupling(2);
+  double mHu2   = displayMh2Squared(), mHd2 = displayMh1Squared();
+  double m3sq   = displayM3Squared();
 
   /// LCT: Parameters for 1-loop contributions
   const drBarPars & forLoops = displayDrBarPars();
@@ -3512,23 +3510,22 @@ double NmssmSoftsusy::VhAtMin(double s, int loop) const {
     + 0.5 * mSsq * sqr(s) - 0.5 * al * s2b * sqr(vev) * s
     + ak * s * s * s / (3.0 * root2) - 0.5 * m3sq * sqr(vev) * s2b
     + 0.5 * mSprsq * sqr(s) + root2 * xiS * s;
-
-  cout << "VH tree = " << VH << endl;
  
   /// LCT: 1-loop contributions to effective potential
   if (loop > 0) {
   double sfermions = 0.0;
   for (int i=1; i<=3; i++) {
     if (i<=2) {
-    sfermions = sfermions + h(mstop(i)) + h(msbot(i)) + h(mstau(i)) + h(msup(i))
-      + h(msch(i)) + h(msd(i)) + h(mss(i)) + h(msel(i)) + h(msmu(i));
+    sfermions = sfermions + looplog(mstop(i)) + looplog(msbot(i)) 
+      + looplog(mstau(i)) + looplog(msup(i)) + looplog(msch(i)) 
+      + looplog(msd(i)) + looplog(mss(i)) + looplog(msel(i)) + looplog(msmu(i));
     }
-    sfermions = sfermions + h(msnu(i));
+    sfermions = sfermions + looplog(msnu(i));
   }
 
   /// LCT: Third generation SM fermions --- ignore contributions from 1st & 2nd 
   /// generations vis-a-vis 1-loop tadpole calculations 
-  double fermions = - 12.0 * (h(mt) + h(mb)) - 4.0 * h(mtau);
+  double fermions = - 12.0 * (looplog(mt) + looplog(mb)) - 4.0 * looplog(mtau);
 
   /// Define Higgs vector in 't-Hooft Feynman gauge
   DoubleVector higgsm(3), higgsa(3), higgsc(2);
@@ -3536,39 +3533,35 @@ double NmssmSoftsusy::VhAtMin(double s, int loop) const {
   double higgs = 0.0;
   for (int i=1; i<=3; i++) {
     if (i<=2) {
-      higgs = higgs + h(higgsc(i));
+      higgs = higgs + looplog(higgsc(i));
     }
-    higgs = higgs + h(higgsm(i)) + h(higgsa(i));
+    higgs = higgs + looplog(higgsm(i)) + looplog(higgsa(i));
   }
-
+  
   /// LCT: Neutralinos
   DoubleVector mneut(forLoops.mnBpmz);
   double neutralinos = 0.0;
   for (int i=1; i<=5; i++) {
-    neutralinos = neutralinos - 2.0 * h(mneut(i));
+    neutralinos = neutralinos - 2.0 * looplog(mneut(i));
   }
-
+  
   /// LCT: Charginos
   DoubleVector mch(forLoops.mchBpmz); 
   double charginos = 0.0;
   for (int i=1; i<=2; i++) {
-    charginos = charginos - 4.0 * h(mch(i));
+    charginos = charginos - 4.0 * looplog(mch(i));
   }
 
   /// LCT: Gauge bosons
-  double gauge = 3.0 * h(mz) + 6.0 * h(mw);
+  double gauge = 3.0 * looplog(mz) + 6.0 * looplog(mw);
 
   /// Total contribution to effective potential at 1-loop
   double VHloop =  (sfermions + fermions + higgs + neutralinos 
 		    + charginos + gauge) / (32.0 * sqr(PI));
 
-  cout << "VHloop = " << VHloop << endl;
-
   /// LCT: Combine tree-level and 1-loop corrections to effective potential
   VH = VH + VHloop;
   }
-
-  cout << "VH = " << VH << endl;
 		  
   return VH;
 }

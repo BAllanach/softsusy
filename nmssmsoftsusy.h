@@ -38,6 +38,8 @@ private:
   
    double tSOVSMs;  ///< New Nmssm DRbar tadpole(MSusy): incl 2 loops
    double tSOVSMs1loop; ///<New Nmssm DRbar tadpole(MSusy): excl 2 loops
+   /// LCT: Returns logarithm factor from one-loop effective potential
+   double looplog(double mass) const;
 
 public:
 //  void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
@@ -262,8 +264,6 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   void calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, 
                       drBarPars & eg);
 
-  /// LCT: Returns logarithm factor from one-loop effective potential
-  double h(double mass) const;
   /// LCT: Returns Higgs potential at minimum.  Inputs: s=singlet vev from 
   /// minimization conditions, loop=number of loops (either 0 or 1)
   double VhAtMin(double s, int loop) const;
