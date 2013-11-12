@@ -5941,13 +5941,12 @@ double NmssmSoftsusy::pip2p3(double p, double q) const {
 
 double NmssmSoftsusy::pip3p3(double p, double q) const {
   const drBarPars& tree = displayDrBarPars();
-	
-  double    beta    = atan(displayTanb());
-  double    thetat  = tree.thetat ;
-  double    thetab  = tree.thetab;
-  double    thetatau= tree.thetatau;
-  double cosb = cos(beta), sinb = sin(beta), sin2b = sin(2.0 * beta);
-  /// LCT: Extra NMSSM parameters
+  double thetat  = tree.thetat ;
+  double thetab  = tree.thetab;
+  double thetatau= tree.thetatau;
+  double beta    = atan(displayTanb());
+  double cosb = cos(beta);
+  double sinb = sin(beta), sin2b = sin(2.0 * beta);
   double lam = displayLambda(), lsq =sqr(lam);
   double kap = displayKappa(), ksq = sqr(kap);
 
@@ -5960,30 +5959,28 @@ double NmssmSoftsusy::pip3p3(double p, double q) const {
   DoubleVector higgsm(3), higgsa(3), higgsc(2);
   assignHiggs(higgsm, higgsa, higgsc);
   
-   /// stop, sbottom, stau couplings to p3 Higgs state
+  /// stop, sbottom, stau trilinear couplings to p3 Higgs state
   DoubleMatrix lp3tt(2, 2), lp3bb(2, 2), lp3tautau(2, 2);
   P3SfSfCouplings(lp3tt, lp3bb, lp3tautau);
   
-  /// Mix 3rd family up
+  /// Mix 3rd family 
   lp3tt = rot2d(thetat) * lp3tt * rot2d(-thetat);
   lp3bb = rot2d(thetab) * lp3bb * rot2d(-thetab);
   lp3tautau = rot2d(thetatau) * lp3tautau * rot2d(-thetatau);
   
   double stops = 0.0, sbots = 0.0, staus = 0.0;
   int i, j; for (i=1; i<=2; i++) {
-     for (j=1; j<=2; j++) {
-        stops = stops + 3.0 * sqr(lp3tt(i, j)) * 
-           b0(p, tree.mu(i, 3), tree.mu(j, 3), q);
-        sbots = sbots + 3.0 * sqr(lp3bb(i, j)) *
-           b0(p, tree.md(i, 3), tree.md(j, 3), q);
-        staus = staus + sqr(lp3tautau(i, j)) * 
-           b0(p, tree.me(i, 3), tree.me(j, 3), q);
-     }
+    for (j=1; j<=2; j++) {
+      stops = stops + 3.0 * sqr(lp3tt(i, j)) 
+	* b0(p, tree.mu(i, 3), tree.mu(j, 3), q);
+      sbots = sbots + 3.0 * sqr(lp3bb(i, j)) 
+	* b0(p, tree.md(i, 3), tree.md(j, 3), q);
+      staus = staus + sqr(lp3tautau(i, j)) 
+	* b0(p, tree.me(i, 3), tree.me(j, 3), q);
+    }
   }	
-
-  /// Higgs
-  //	
-  /// Quadrilinear CP-even Higgs couplings 
+  
+  /// Quartic CP-even Higgs couplings 
   DoubleMatrix ssp3p3(3, 3);
   ssp3p3(1, 1) = 0.25 * lsq;
   ssp3p3(2, 2) = ssp3p3(1, 1);
@@ -5991,14 +5988,13 @@ double NmssmSoftsusy::pip3p3(double p, double q) const {
   ssp3p3(3, 3) = 0.5 * ksq;
   ssp3p3.symmetrise();
   
-  /// Quadrilinear CP-odd Higgs couplings
+  /// Quartic CP-odd Higgs couplings
   DoubleMatrix ppp3p3(3, 3);
   ppp3p3(1, 1) = lsq / 24.0;
   ppp3p3(2, 2) = ppp3p3(1, 1);
   ppp3p3(1, 2) = - lam * kap / 24.0;
   ppp3p3(3, 3) = 0.25 * ksq;
   ppp3p3.symmetrise();
-  
   /// LCT: Rotate to mass bases p3 p3 Hi Hi and p3 p3 Ai Ai
   DoubleVector hhp3p3(3), aap3p3(3);
   for (int i = 1; i <=3; i++) {
@@ -6009,7 +6005,7 @@ double NmssmSoftsusy::pip3p3(double p, double q) const {
       }
     }
   }
-
+  
   DoubleMatrix spp3(3, 3), hphpp3(2, 2);
   getP3HiggsTriCoup(spp3, hphpp3);
   /// LCT: Rotate to mass basis p3 Ai Hj
@@ -6026,14 +6022,14 @@ double NmssmSoftsusy::pip3p3(double p, double q) const {
   
   double higgs = 0.0;
   for (i=1; i<=3; i++) {
-     for (j=1; j<=3; j++) {
-        higgs = higgs + sqr(ahp3(i, j)) * b0(p, higgsa(i), higgsm(j), q);
-     }
-     higgs = higgs + 2.0 * hhp3p3(i) * a0(higgsm(i), q);
-     higgs = higgs + 2.0 * aap3p3(i) * a0(higgsa(i), q);
+    for (j=1; j<=3; j++) {
+      higgs = higgs + sqr(ahp3(i, j)) * b0(p, higgsa(i), higgsm(j), q);
+    }
+    higgs = higgs + 2.0 * hhp3p3(i) * a0(higgsm(i), q);
+    higgs = higgs + 2.0 * aap3p3(i) * a0(higgsa(i), q);
   }
   
-  /// Quadrilinear (H1+ H1- H2+ H2-)
+  /// Quartic charged Higgs couplings (H1+ H1- H2+ H2-)
   DoubleVector hphpp3p3(2);
   hphpp3p3(1) = 0.5 * lam * (lam + kap * sin2b);
   hphpp3p3(2) = 0.5 * lam * (lam - kap * sin2b);
@@ -6046,24 +6042,24 @@ double NmssmSoftsusy::pip3p3(double p, double q) const {
   }
 
   /// Neutralino contribution
-  double neutralinos = 0.0;
   DoubleVector mneut(tree.mnBpmz);
   ComplexMatrix aChi(5, 5), bChi(5, 5);
   getP3NeutralinoCoup(aChi, bChi);
   DoubleMatrix fChiChip3p3(5, 5), gChiChip3p3(5, 5);
+  
+  double neutralinos = 0.0;
   for(i=1; i<=5; i++)
     for (j=1; j<=5; j++) {
       fChiChip3p3(i, j) = sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod());
-      gChiChip3p3(i, j) = (bChi(i, j).conj() * aChi(i, j) + 
-			   aChi(i, j).conj() * bChi(i, j)).real();
-      neutralinos = neutralinos + 0.5 * 
-           (fChiChip3p3(i, j) * gfn(p, mneut(i), mneut(j), q) + 2.0 *
-            gChiChip3p3(i, j) * mneut(i) * mneut(j) * 
-            b0(p, mneut(i), mneut(j), q));
+      gChiChip3p3(i, j) = (bChi(i, j).conj() * aChi(i, j) 
+			   + aChi(i, j).conj() * bChi(i, j)).real();
+      neutralinos = neutralinos 
+	+ 0.5 * (fChiChip3p3(i, j) * gfn(p, mneut(i), mneut(j), q) 
+		 + 2.0 * gChiChip3p3(i, j) * mneut(i) * mneut(j) 
+		 * b0(p, mneut(i), mneut(j), q));
     }
   
   /// Chargino contribution
-  double chargino = 0.0;
   ComplexMatrix u(tree.uBpmz), v(tree.vBpmz); 
   DoubleVector mch(tree.mchBpmz); 
   DoubleMatrix aPsic(2, 2);
@@ -6071,22 +6067,22 @@ double NmssmSoftsusy::pip3p3(double p, double q) const {
   ComplexMatrix aChic(2, 2), bChic(2, 2);
   aChic = v.complexConjugate() * aPsic * u.hermitianConjugate();
   bChic = u * aPsic.transpose() * v.transpose();
+
+  double chargino = 0.0;
   for(i=1; i<=2; i++)
-     for (j=1; j<=2; j++) {
-        fChiChip3p3(i, j) = sqr(aChic(i, j).mod()) + sqr(bChic(i, j).mod());
-        gChiChip3p3(i, j) = (bChic(i, j).conj() * aChic(i, j) + 
-                             aChic(i, j).conj() * bChic(i, j)).real();
-        chargino = chargino + 
-           (fChiChip3p3(i, j) * gfn(p, mch(i), mch(j), q) + 2.0 *
-            gChiChip3p3(i, j) * mch(i) * mch(j) * 
-            b0(p, mch(i), mch(j), q));
+    for (j=1; j<=2; j++) {
+      fChiChip3p3(i, j) = sqr(aChic(i, j).mod()) + sqr(bChic(i, j).mod());
+      gChiChip3p3(i, j) = (bChic(i, j).conj() * aChic(i, j) 
+			   + aChic(i, j).conj() * bChic(i, j)).real();
+        chargino = chargino 
+	  + (fChiChip3p3(i, j) * gfn(p, mch(i), mch(j), q) 
+	     + 2.0 * gChiChip3p3(i, j) * mch(i) * mch(j) 
+	     * b0(p, mch(i), mch(j), q));
      }
 	
   double sfermions = staus + stops + sbots; 
   
-  return (sfermions + higgs + neutralinos 
-	  + chargino) / (16.0 * sqr(PI));
-
+  return (sfermions + higgs + neutralinos + chargino) / (16.0 * sqr(PI));
 }
 
 //PA: Obtains trilnear couplings of P1-Pi-Sj and P1-Hpm-Hpm 
