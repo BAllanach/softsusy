@@ -6399,36 +6399,41 @@ double NmssmSoftsusy::pis1s1Higgs(double p, double q) const {
 }
 
 double NmssmSoftsusy::pis1s2Higgs(double p, double q) const {
-  double beta = atan(displayTanb()); 
   double thetaWDRbar = asin(calcSinthdrbar());
   double cw2DRbar    = sqr(cos(thetaWDRbar));
-  double lam =  displayLambda(), lsq = sqr(lam);
-  double kap = displayKappa();
-  double g = displayGaugeCoupling(2), gsq = sqr(g);
-  double cosb = cos(beta), sinb = sin(beta), sin2b = sin(2.0 * beta); 
-  double mw = displayMwRun(), mw2 = sqr(mw), mz = displayMzRun(), mz2 = sqr(mz);
+  double lam         = displayLambda(), lsq = sqr(lam);
+  double kap         = displayKappa();
+  double g           = displayGaugeCoupling(2), gsq = sqr(g);
+  double beta        = atan(displayTanb()); 
+  double cosb        = cos(beta);
+  double sinb        = sin(beta), sin2b = sin(2.0 * beta); 
+  double mw          = displayMwRun(), mw2 = sqr(mw);
+  double mz          = displayMzRun(), mz2 = sqr(mz);
+
   /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
   DegrassiSlavicMix(P);
   S = displayDrBarPars().mixh0;
   C(1, 1) = - cosb;  C(1, 2) = sinb; 
   C(2, 1) = C(1, 2); C(2, 2) = cosb;
-   /// Define Higgs vector in 't-Hooft Feynman gauge:
+  /// Define Higgs vector in 't-Hooft Feynman gauge:
   DoubleVector higgsm(3), higgsa(3), higgsc(2);
   assignHiggs(higgsm, higgsa, higgsc);
+
   double higgs = 0.0;
   /// LCT: Gauge bosons
-  higgs = higgs + 3.5 * gsq * sinb * cosb * (mw2 * b0(p, mw, mw, q) 
-        + 0.5 / cw2DRbar * mz2 * b0(p, mz, mz, q));
+  higgs = higgs + 3.5 * gsq * sinb * cosb 
+    * (mw2 * b0(p, mw, mw, q) + 0.5 / cw2DRbar * mz2 * b0(p, mz, mz, q));
   /// PA: Charged Higgs-Gauge contribution
   for (int i=1; i <= 2; i++) {
-     higgs = higgs - 0.5 * gsq * C(i, 1) * C(i, 2) * ffn(p, higgsc(i), mw, q);
+    higgs = higgs - 0.5 * gsq * C(i, 1) * C(i, 2) * ffn(p, higgsc(i), mw, q);
   }
   /// PA: CP-odd Higgs-Gauge contribution
   for (int i=1; i <= 3; i++) {
-     higgs = higgs - 0.25 * gsq * P(i, 1) * P(i, 2) 
-        * ffn(p, higgsa(i), mz, q) / cw2DRbar;
+    higgs = higgs - 0.25 * gsq * P(i, 1) * P(i, 2) 
+      * ffn(p, higgsa(i), mz, q) / cw2DRbar;
   }
+  
   //PA: trilinear couplings for s1, s2 to CP even, CP odd and charged Higgs
   DoubleMatrix sss1(3, 3), pps1(3, 3), hphps1(2, 2);
   getS1HiggsTriCoup(sss1, pps1, hphps1, thetaWDRbar);
@@ -6437,62 +6442,60 @@ double NmssmSoftsusy::pis1s2Higgs(double p, double q) const {
   /// LCT: Rotate to mass bases s1 Hi Hj, s2 Hi Hj, s1 Ai Aj, s2 Ai Aj
   DoubleMatrix hhs1(3, 3), hhs2(3, 3), aas1(3, 3), aas2(3, 3);
   for (int i=1; i <= 3; i++) {
-     for (int j=1; j <= 3; j++) {
-        for (int a = 1; a <= 3; a++) {
-           for (int b = 1; b <= 3; b++) {
-              hhs1(i, j) = hhs1(i, j) + 3.0 * S(i, a) * S(j, b) * sss1(a, b);
-              hhs2(i, j) = hhs2(i, j) + 3.0 * S(i, a) * S(j, b) * sss2(a, b);
-              aas1(i, j) = aas1(i, j) + P(i, a) * P(j, b) * pps1(a, b);
-              aas2(i, j) = aas2(i, j) + P(i, a) * P(j, b) * pps2(a, b);
-           }
-        }
-     }
+    for (int j=1; j <= 3; j++) {
+      for (int a = 1; a <= 3; a++) {
+	for (int b = 1; b <= 3; b++) {
+	  hhs1(i, j) = hhs1(i, j) + 3.0 * S(i, a) * S(j, b) * sss1(a, b);
+	  hhs2(i, j) = hhs2(i, j) + 3.0 * S(i, a) * S(j, b) * sss2(a, b);
+	  aas1(i, j) = aas1(i, j) + P(i, a) * P(j, b) * pps1(a, b);
+	  aas2(i, j) = aas2(i, j) + P(i, a) * P(j, b) * pps2(a, b);
+	}
+      }
+    }
   }
   
-  /// LCT: CP-even quadrilinear Higgs couplings in basis HdR HuR SR
+  /// LCT: CP-even quartic Higgs couplings in basis HdR HuR SR
   DoubleMatrix sss1s2(3, 3), pps1s2(3, 3);
   sss1s2(1, 2) = (2.0 * lsq - 0.5 * gsq / cw2DRbar) / 48.0;
   sss1s2(3, 3) = - lam * kap / 24.0;
   sss1s2.symmetrise();
-  /// LCT: CP-odd quadrilinear Higgs couplings in basis HdI HuI SI
+  /// LCT: CP-odd quartic Higgs couplings in basis HdI HuI SI
   pps1s2(3, 3) = 0.25 * lam * kap;
   pps1s2.symmetrise();
   
   /// LCT: Rotate to mass bases hhs1s2 and aas1s2
   DoubleVector hhs1s2(3), aas1s2(3);
-  
   for (int i=1; i <= 3; i++) {
-     for (int a=1; a <= 3; a++) {
-        for (int b=1; b <= 3; b++) {
-           hhs1s2(i) = hhs1s2(i) + 6.0 * S(i, a) * S(i, b) * sss1s2(a, b);
-           aas1s2(i) = aas1s2(i) + P(i, a) * P(i, b) * pps1s2(a, b);
-        }
-     }
+    for (int a=1; a <= 3; a++) {
+      for (int b=1; b <= 3; b++) {
+	hhs1s2(i) = hhs1s2(i) + 6.0 * S(i, a) * S(i, b) * sss1s2(a, b);
+	aas1s2(i) = aas1s2(i) + P(i, a) * P(i, b) * pps1s2(a, b);
+      }
+    }
   }
-  /// Trilinear and quadrilinear contributions fron neutral Higgs
+  /// Trilinear and quartic contributions fron neutral Higgs
   for (int i=1; i <= 3; i++) {
      for (int j=1; j <= 3; j++) {
-        higgs = higgs + 2.0 * hhs1(i, j) * hhs2(i, j) 
-           * b0(p, higgsm(i), higgsm(j), q) + 2.0 * aas1(i, j) * aas2(i, j) 
-           * b0(p, higgsa(i), higgsa(j), q);
+       higgs = higgs + 2.0 * hhs1(i, j) * hhs2(i, j) 
+	 * b0(p, higgsm(i), higgsm(j), q) + 2.0 * aas1(i, j) * aas2(i, j) 
+	 * b0(p, higgsa(i), higgsa(j), q);
      }
      higgs = higgs + 2.0 * (hhs1s2(i) * a0(higgsm(i), q) 
                             + aas1s2(i) * a0(higgsa(i), q));
   }
-
-  /// Quadrilinear couplings for Charged Higgs
+  
+  /// Quartic couplings for Charged Higgs
   DoubleVector hphps1s2(2);
   hphps1s2(1) = (2.0 * lsq - gsq) * sin2b / 8.0;
   hphps1s2(2) = - hphps1s2(1);
   
   for (int i=1; i <=2; i++) {
-     for (int j=1; j <=2; j++) {
-        higgs = higgs + hphps1(i, j) * hphps2(j, i) *
-           b0(p, higgsc(i), higgsc(j), q);
-     }
-     higgs = higgs + 2.0 * hphps1s2(i) * a0(higgsc(i), q);
+    for (int j=1; j <=2; j++) {
+      higgs = higgs + hphps1(i, j) * hphps2(j, i) 
+	* b0(p, higgsc(i), higgsc(j), q);
+    }
+    higgs = higgs + 2.0 * hphps1s2(i) * a0(higgsc(i), q);
   }
-  
   
   return higgs;
 }
@@ -6967,23 +6970,24 @@ double NmssmSoftsusy::pis1s2Neutralinos(double p, double q) const {
   DoubleVector mneut(displayDrBarPars().mnBpmz);
   getS1NeutralinoCoup(aChi1, bChi1);
   getS2NeutralinoCoup(aChi2, bChi2);
+  
   double neutralinos = 0.0;
   DoubleMatrix fChiChis1s2(5, 5), gChiChis1s2(5, 5);
   for(int i=1; i<=5; i++){
-     for(int j=1; j<=5; j++) {
-      fChiChis1s2(i, j) = (aChi1(i, j).conj() * aChi2(i, j) + 
-                           bChi1(i, j).conj() * bChi2(i, j)).real();
-      gChiChis1s2(i, j) = (bChi1(i, j).conj() * aChi2(i, j) + 
-                           aChi1(i, j).conj() * bChi2(i, j)).real();
-      neutralinos = neutralinos + 0.5 * 
-         (fChiChis1s2(i, j) * gfn(p, mneut(i), mneut(j), q) - 2.0 *
-          gChiChis1s2(i, j) * mneut(i) * mneut(j) * 
-          b0(p, mneut(i), mneut(j), q));
+    for(int j=1; j<=5; j++) {
+      fChiChis1s2(i, j) = (aChi1(i, j).conj() * aChi2(i, j) 
+			   + bChi1(i, j).conj() * bChi2(i, j)).real();
+      gChiChis1s2(i, j) = (bChi1(i, j).conj() * aChi2(i, j) 
+			   + aChi1(i, j).conj() * bChi2(i, j)).real();
+      neutralinos = neutralinos 
+	+ 0.5 *	(fChiChis1s2(i, j) * gfn(p, mneut(i), mneut(j), q) 
+		 - 2.0 * gChiChis1s2(i, j) * mneut(i) * mneut(j) 
+		 * b0(p, mneut(i), mneut(j), q));
     }
   }
+  
 return neutralinos;
 }
-
 
 double NmssmSoftsusy::pis2s2Neutralinos(double p, double q) const {
   
