@@ -4925,7 +4925,6 @@ double NmssmSoftsusy::piWWT(double p, double q, bool usePoleMt) const {
 //PA: pseudoscalar self energies in basis Im(H_d), Im(H_u), Im(S).
 double NmssmSoftsusy::pip1p1(double p, double q) const {
   const drBarPars& tree = displayDrBarPars();	
-  double beta        = atan(displayTanb());
   double mtau        = tree.mtau;
   double mb          = tree.mb;
   double thetaWDRbar = asin(calcSinthdrbar());
@@ -4949,6 +4948,7 @@ double NmssmSoftsusy::pip1p1(double p, double q) const {
   double cb          = cos(thetab);
   double ctau        = cos(thetatau);
   double g           = displayGaugeCoupling(2), gsq = sqr(g);
+  double beta        = atan(displayTanb());
   double cosb        = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta);
   double sinb        = sin(beta);
   double hb          = tree.hb;
@@ -5175,7 +5175,6 @@ double NmssmSoftsusy::pip1p1(double p, double q) const {
 
 double NmssmSoftsusy::pip1p2(double p, double q) const {
   const drBarPars& tree = displayDrBarPars();
-  double beta        = atan(displayTanb());
   double thetaWDRbar = asin(calcSinthdrbar());
   double cw2DRbar    = sqr(cos(thetaWDRbar));
   double thetat      = tree.thetat;
@@ -5184,6 +5183,7 @@ double NmssmSoftsusy::pip1p2(double p, double q) const {
   double mz          = displayMzRun();
   double mw	     = displayMwRun();
   double g           = displayGaugeCoupling(2), gsq = sqr(g);
+  double beta        = atan(displayTanb());
   double cosb        = cos(beta);
   double sinb        = sin(beta), sin2b = sin(2.0 * beta);
   double lam         = displayLambda(), lsq = sqr(lam);
@@ -5359,36 +5359,34 @@ double NmssmSoftsusy::pip1p2(double p, double q) const {
 
 double NmssmSoftsusy::pip2p2(double p, double q) const {
   const drBarPars& tree = displayDrBarPars();
-	
-  double beta    = atan(displayTanb());
-  double mt      = tree.mt;
+  double mt          = tree.mt;
   double thetaWDRbar = asin(calcSinthdrbar());
   double cw2DRbar    = sqr(cos(thetaWDRbar));
   double tw2DRbar    = sqr(tan(thetaWDRbar));
-  double thetat  = tree.thetat ;
-  double thetab  = tree.thetab;
-  double thetatau = tree.thetatau;
-  double msbot1  = tree.md(1, 3);
-  double msbot2  = tree.md(2, 3);
-  double mstau1  = tree.me(1, 3);
-  double mstau2  = tree.me(2, 3);
-  double mstop1  = tree.mu(1, 3);
-  double mstop2  = tree.mu(2, 3);
-  double st      = sin(thetat) ;
-  double mz      = displayMzRun();
-  double mw	 = displayMwRun(), mw2 = sqr(mw); 
-  double sb      = sin(thetab) ;
-  double stau    = sin(thetatau);
-  double ct      = cos(thetat) ;
-  double cb      = cos(thetab) ;
-  double ctau    = cos(thetatau);
-  double g       = displayGaugeCoupling(2), gsq = sqr(g);
-  double cosb = cos(beta), cos2b = cos(2.0 * beta),
-     sinb = sin(beta), sinb2 = sqr(sinb);
-  double ht = tree.ht;
- 	
-	/// LCT: Extra NMSSM parameters
-  double lam = displayLambda(), lsq = sqr(lam);
+  double thetat      = tree.thetat;
+  double thetab      = tree.thetab;
+  double thetatau    = tree.thetatau;
+  double st          = sin(thetat);
+  double ct          = cos(thetat);
+  double sb          = sin(thetab);
+  double cb          = cos(thetab);
+  double stau        = sin(thetatau);
+  double ctau        = cos(thetatau);
+  double msbot1      = tree.md(1, 3);
+  double msbot2      = tree.md(2, 3);
+  double mstau1      = tree.me(1, 3);
+  double mstau2      = tree.me(2, 3);
+  double mstop1      = tree.mu(1, 3);
+  double mstop2      = tree.mu(2, 3);
+  double mz          = displayMzRun();
+  double mw          = displayMwRun(), mw2 = sqr(mw); 
+  double g           = displayGaugeCoupling(2), gsq = sqr(g);
+  double beta        = atan(displayTanb());
+  double cosb        = cos(beta), cos2b = cos(2.0 * beta);
+  double sinb        = sin(beta), sinb2 = sqr(sinb);
+  double ht          = tree.ht;
+  double lam         = displayLambda(), lsq = sqr(lam);
+
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
   DegrassiSlavicMix(P);
   S = displayDrBarPars().mixh0;
@@ -5399,133 +5397,127 @@ double NmssmSoftsusy::pip2p2(double p, double q) const {
   assignHiggs(higgsm, higgsa, higgsc);
 
   /// Fermions: 3rd family only for now
-  double fermions = 3.0 * sqr(ht) *	(sqr(p) * b0(p, mt, mt, q) - 2.0 * a0(mt, q));
+  double fermions = 3.0 * sqr(ht) 
+    * (sqr(p) * b0(p, mt, mt, q) - 2.0 * a0(mt, q));
   
-  /// Gauge contributions
   /// Charged Higgs in basis (G+ H+ G- H-)
   double higgs = 0.0;	
-  double GaugeHiggs = 0.0;
   for (int i=1; i <= 2; i++) {
-     GaugeHiggs += gsq * 0.5 * sqr(C(i, 2)) * ffn(p, higgsc(i), mw, q);
+    higgs = higgs + gsq * 0.5 * sqr(C(i, 2)) * ffn(p, higgsc(i), mw, q);
   }
   
-  /// LCT: CP-even states in basis H1 H2 H3
+  /// LCT: CP-even Higgs' in basis H1 H2 H3
   for (int i = 1; i <= 3; i++) {
-     GaugeHiggs = GaugeHiggs + 0.25 * gsq / cw2DRbar * 
-        sqr(S(i, 2)) * ffn(p, higgsm(i), mz, q);
+    higgs = higgs + 0.25 * gsq / cw2DRbar 
+      * sqr(S(i, 2)) * ffn(p, higgsm(i), mz, q);
   } 
   
   /// LCT: Gauge bosons
-  double GaugeBosons = gsq * ( 0.5 * sinb2 * mw2 * b0(p, mw, mw, q) 
-			       + 2.0 * a0(mw, q) + a0(mz, q) / cw2DRbar);
+  higgs = higgs + gsq * (0.5 * sinb2 * mw2 * b0(p, mw, mw, q) 
+			 + 2.0 * a0(mw, q) + a0(mz, q) / cw2DRbar);
 
-  /// Upsfermions
-  /// Quadrilinears gens 1-2
-  /// LH 
+  /// Up sfermion contributions
+  /// Left-handed quartic couplings gens 1-2
   double upsfermions = 0.0;
   upsfermions = upsfermions + 3.0 * (-gsq / (cw2DRbar) * 0.5 * guL) 
-     * (a0(tree.mu(1, 1), q) + a0(tree.mu(1, 2), q));
+    * (a0(tree.mu(1, 1), q) + a0(tree.mu(1, 2), q));
   
-  /// RH
+  /// Right-handed quartic couplings gens 1-2
   upsfermions = upsfermions + 3.0 * (-gsq / (cw2DRbar) * 0.5 * guR) 
-              * (a0(tree.mu(2, 1), q) + a0(tree.mu(2, 2), q));
+    * (a0(tree.mu(2, 1), q) + a0(tree.mu(2, 2), q));
 
-  /// Downsfermions
-  /// Quadrilinears gens 1-2
-  /// LH
+  /// Down sfermion contributions 
+  /// Left-handed quartic couplings gens 1-2
   double dsfermions = 0.0;
   dsfermions = dsfermions + 3.0 * (-gsq / (cw2DRbar) * 0.5 * gdL) 
     * (a0(tree.md(1, 1), q) + a0(tree.md(1, 2), q));
   
-  /// RH
+  /// Right-handed quartic couplings gens 1-2
   dsfermions = dsfermions + 3.0 * (-sqr(g) / (cw2DRbar) * 0.5 * gdR) 
     * (a0(tree.md(2, 1), q) + a0(tree.md(2, 2), q));
-
-  /// Slepton
-  /// Quadrilinears gens 1-2
-  /// LH
+  
+  /// Slepton contributions
+  /// Left-handed quartic couplings gens 1-2
   double sleptons = 0.;
   sleptons = (-gsq / (cw2DRbar) * 0.5 * geL) 
     * (a0(tree.me(1, 1), q) + a0(tree.me(1, 2), q));
   
-  /// RH
+  /// Right-handed quartic couplings gens 1-2
   sleptons = sleptons + (-gsq / (cw2DRbar) * 0.5 * geR) 
     * (a0(tree.me(2, 1), q) + a0(tree.me(2, 2), q));
   
-  /// Sneutrinos. 
-  double sneutrinos = - gsq / cw2DRbar * 0.5 * gnuL * (a0(tree.msnu(1), q) 
-                              + a0(tree.msnu(2), q) + a0(tree.msnu(3), q));
+  /// Sneutrino contributions 
+  double sneutrinos = - gsq / cw2DRbar * 0.5 * gnuL 
+    * (a0(tree.msnu(1), q) + a0(tree.msnu(2), q) + a0(tree.msnu(3), q));
 
-   /// 3rd Generation
-  /// Quadrilinears
+  /// 3rd generation sfermions
+  /// Quartic couplings
   double stops = 0.0;
   stops = stops + 3.0 * (-gsq / (cw2DRbar) * guL * 0.5 + sqr(ht)) 
-     * (sqr(ct) * a0(mstop1, q) + sqr(st) * a0(mstop2, q));
-	
+    * (sqr(ct) * a0(mstop1, q) + sqr(st) * a0(mstop2, q));
+  
   stops = stops + 3.0 * (-gsq / (cw2DRbar) * guR * 0.5 + sqr(ht)) 
-        * (sqr(st) * a0(mstop1, q) + sqr(ct) * a0(mstop2, q));
-	
+    * (sqr(st) * a0(mstop1, q) + sqr(ct) * a0(mstop2, q));
+  
   double sbots = 0.0;
   sbots = sbots + 3.0 * (-gsq / (cw2DRbar) * gdL * 0.5) 
-     * (sqr(cb) * a0(msbot1, q) + sqr(sb) * a0(msbot2, q));
+    * (sqr(cb) * a0(msbot1, q) + sqr(sb) * a0(msbot2, q));
   
   sbots = sbots + 3.0 * (-gsq / (cw2DRbar) * gdR * 0.5) 
-     * (sqr(sb) * a0(msbot1, q) + sqr(cb) * a0(msbot2, q));
+    * (sqr(sb) * a0(msbot1, q) + sqr(cb) * a0(msbot2, q));
   
   double staus = 0.0;
   staus = staus + 1.0 * (-gsq / (cw2DRbar) * geL * 0.5)
-     * (sqr(ctau) * a0(mstau1, q) + sqr(stau) * a0(mstau2, q));
+    * (sqr(ctau) * a0(mstau1, q) + sqr(stau) * a0(mstau2, q));
   
   staus = staus + 1.0 * (-gsq / (cw2DRbar) * geR * 0.5)
-	      * (sqr(stau) * a0(mstau1, q) + sqr(ctau) * a0(mstau2, q));
-
-  /// stop, sbottom, stau couplings to p2 Higgs state
+    * (sqr(stau) * a0(mstau1, q) + sqr(ctau) * a0(mstau2, q));
+  
+  /// stop, sbottom, stau trilinear couplings to p2 Higgs state
   DoubleMatrix lp2tt(2, 2), lp2bb(2, 2), lp2tautau(2, 2);
   P2SfSfCouplings(lp2tt, lp2bb, lp2tautau);
-  /// Mix 3rd family up
+  /// Mix 3rd family
   lp2tt = rot2d(thetat) * lp2tt * rot2d(-thetat);
   lp2bb = rot2d(thetab) * lp2bb * rot2d(-thetab);
   lp2tautau = rot2d(thetatau) * lp2tautau * rot2d(-thetatau);
   int i, j; for (i=1; i <= 2; i++) {
-     for (j=1; j <= 2; j++) {
-        stops = stops + 3.0 * sqr(lp2tt(i, j)) * 
-           b0(p, tree.mu(i, 3), tree.mu(j, 3), q);
-        sbots = sbots + 3.0 * sqr(lp2bb(i, j)) *
-           b0(p, tree.md(i, 3), tree.md(j, 3), q);
-        staus = staus + sqr(lp2tautau(i, j)) * 
-           b0(p, tree.me(i, 3), tree.me(j, 3), q);
-     }
+    for (j=1; j <= 2; j++) {
+      stops = stops + 3.0 * sqr(lp2tt(i, j)) 
+	* b0(p, tree.mu(i, 3), tree.mu(j, 3), q);
+        sbots = sbots + 3.0 * sqr(lp2bb(i, j)) 
+	  * b0(p, tree.md(i, 3), tree.md(j, 3), q);
+        staus = staus + sqr(lp2tautau(i, j)) 
+	  * b0(p, tree.me(i, 3), tree.me(j, 3), q);
+    }
   }	
 
-  /// Higgs
-  /// Quadrilinear CP-even Higgs couplings 
+  /// Higgs contributions
+  /// Quartic CP-even Higgs couplings 
   DoubleMatrix ssp2p2(3, 3);
   ssp2p2(1, 1) = (2.0 * lsq - 0.5 * gsq / cw2DRbar) / 8.0;
   ssp2p2(2, 2) = gsq / (16.0 * cw2DRbar);
   ssp2p2(3, 3) = 0.25 * lsq;
   ssp2p2.symmetrise();
   
-  /// Quadrilinear CP-odd Higgs couplings
+  /// Quartic CP-odd Higgs couplings
   DoubleMatrix ppp2p2(3, 3);
   ppp2p2(1, 1) = (2.0 * lsq - 0.5 * gsq / cw2DRbar) / 48.0;
   ppp2p2(2, 2) = gsq / (32.0 * cw2DRbar);
   ppp2p2(3, 3) = lsq / 24.0;
   ppp2p2.symmetrise();
-  
   /// LCT: Rotate to mass bases p2 p2 Hi Hi and p2 p2 Ai Ai
   DoubleVector hhp2p2(3), aap2p2(3);
   for (int i = 1; i <= 3; i++) {
-     for (int a = 1; a <= 3; a++) {
-       for (int b = 1; b <= 3; b++) {
-	 hhp2p2(i) = hhp2p2(i) + S(i, a) * S(i, b) * ssp2p2(a, b);
-	 aap2p2(i) = aap2p2(i) + 6.0 * P(i, a) * P(i, b) * ppp2p2(a, b);
-       }
-     }
+    for (int a = 1; a <= 3; a++) {
+      for (int b = 1; b <= 3; b++) {
+	hhp2p2(i) = hhp2p2(i) + S(i, a) * S(i, b) * ssp2p2(a, b);
+	aap2p2(i) = aap2p2(i) + 6.0 * P(i, a) * P(i, b) * ppp2p2(a, b);
+      }
+    }
   }
   
   DoubleMatrix spp2(3, 3), hphpp2(2, 2);
   getP2HiggsTriCoup(spp2, hphpp2, cw2DRbar);
-  
   /// LCT: Rotate to mass basis p2 Ai Hj
   DoubleMatrix ahp2(3, 3);
   for (int i=1; i <= 3; i++) {
@@ -5538,77 +5530,74 @@ double NmssmSoftsusy::pip2p2(double p, double q) const {
     }
   }
   
-  double cpodd = 0.0, cpeven = 0.0;
   for (i=1; i <= 3; i++) {
     for (j=1; j <= 3; j++) {
-      cpeven = cpeven + sqr(ahp2(i, j)) * b0(p, higgsa(i), higgsm(j), q);
+      higgs = higgs + sqr(ahp2(i, j)) * b0(p, higgsa(i), higgsm(j), q);
     }
-    cpeven = cpeven + 2.0 * hhp2p2(i) * a0(higgsm(i), q);
-    cpodd = cpodd + 2.0 * aap2p2(i) * a0(higgsa(i), q);
+    higgs = higgs + 2.0 * hhp2p2(i) * a0(higgsm(i), q);
+    higgs = higgs + 2.0 * aap2p2(i) * a0(higgsa(i), q);
   }
   
-  /// Quadrilinear (G+ G- H+ H-)
+  /// Charge Higgs quartic couplings (G+ G- H+ H-)
   DoubleVector hphpp2p2(2);
   hphpp2p2(1) = gsq * (1.0 - tw2DRbar * cos2b) / 8.0;
   hphpp2p2(2) = gsq * (1.0 + tw2DRbar * cos2b) / 8.0;
   
-  double ChargedHiggs = 0.0;
+  /// Charged Higgs contributions
   for (i=1; i <= 2; i++) {
     for (j=1; j <= 2; j++) {
-      ChargedHiggs = ChargedHiggs + sqr(hphpp2(i, j)) * b0(p, higgsc(i), higgsc(j), q);
-     }
-    ChargedHiggs = ChargedHiggs + 2.0 * hphpp2p2(i) * a0(higgsc(i), q);
+      higgs = higgs + sqr(hphpp2(i, j)) * b0(p, higgsc(i), higgsc(j), q);
+    }
+    higgs = higgs + 2.0 * hphpp2p2(i) * a0(higgsc(i), q);
   }
-  
-  higgs = GaugeBosons + GaugeHiggs + ChargedHiggs + cpeven + cpodd;
 
   /// Neutralino contribution
-  double neutralinos = 0.0;
   ComplexMatrix aChi(5, 5), bChi(5, 5);
   getP2NeutralinoCoup(aChi, bChi);
   DoubleVector mneut(tree.mnBpmz);
-   DoubleMatrix fChiChip2p2(5, 5), gChiChip2p2(5, 5);
+  DoubleMatrix fChiChip2p2(5, 5), gChiChip2p2(5, 5);
+  
+  double neutralinos = 0.0;
   for(i=1; i <= 5; i++)
     for (j=1; j <= 5; j++) {
       fChiChip2p2(i, j) = sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod());
-      gChiChip2p2(i, j) = (bChi(i, j).conj() * aChi(i, j) + 
-													 aChi(i, j).conj() * bChi(i, j)).real();
-      neutralinos = neutralinos + 0.5 * (fChiChip2p2(i, j) 
-                  * gfn(p, mneut(i), mneut(j), q) + 2.0 * gChiChip2p2(i, j) 
-                  * mneut(i) * mneut(j) * b0(p, mneut(i), mneut(j), q));
+      gChiChip2p2(i, j) = (bChi(i, j).conj() * aChi(i, j) 
+			   + aChi(i, j).conj() * bChi(i, j)).real();
+      neutralinos = neutralinos 
+	+ 0.5 * (fChiChip2p2(i, j) * gfn(p, mneut(i), mneut(j), q) 
+		 + 2.0 * gChiChip2p2(i, j) * mneut(i) * mneut(j) 
+		 * b0(p, mneut(i), mneut(j), q));
     }
 
-
   /// Chargino contribution
-  double chargino = 0.0;
   ComplexMatrix u(tree.uBpmz), v(tree.vBpmz); 
-   DoubleVector mch(tree.mchBpmz);
+  DoubleVector mch(tree.mchBpmz);
   DoubleMatrix aPsic(2, 2);
   aPsic(2, 1) = -g / root2; 
   ComplexMatrix aChic(2, 2), bChic(2, 2);
   aChic = v.complexConjugate() * aPsic * u.hermitianConjugate();
   bChic = u * aPsic.transpose() * v.transpose();
+  
+  double chargino = 0.0;
   for(i=1; i <= 2; i++)
     for (j=1; j <= 2; j++) {
       fChiChip2p2(i, j) = sqr(aChic(i, j).mod()) + sqr(bChic(i, j).mod());
-      gChiChip2p2(i, j) = (bChic(i, j).conj() * aChic(i, j) + 
-													 aChic(i, j).conj() * bChic(i, j)).real();
+      gChiChip2p2(i, j) = (bChic(i, j).conj() * aChic(i, j) 
+			   + aChic(i, j).conj() * bChic(i, j)).real();
       chargino = chargino + (fChiChip2p2(i, j) * gfn(p, mch(i), mch(j), q) 
-               + 2.0 * gChiChip2p2(i, j) * mch(i) * mch(j) 
-               * b0(p, mch(i), mch(j), q));
+			     + 2.0 * gChiChip2p2(i, j) * mch(i) * mch(j) 
+			     * b0(p, mch(i), mch(j), q));
     }
-	
+  
   double sfermions = sneutrinos + sleptons + staus 
     + upsfermions + dsfermions + stops + sbots; 
-
+  
   return (fermions + sfermions + higgs 
 	  + neutralinos + chargino) / (16.0 * sqr(PI));
 }
 
-
 double NmssmSoftsusy::pip1p3(double p, double q) const {
   const drBarPars& tree = displayDrBarPars();
-  double beta        = atan(displayTanb());
   double thetaWDRbar = asin(calcSinthdrbar());
   double cw2DRbar    = sqr(cos(thetaWDRbar));
   double thetat      = tree.thetat;
@@ -5619,6 +5608,7 @@ double NmssmSoftsusy::pip1p3(double p, double q) const {
   double st          = sin(thetat);
   double ct          = cos(thetat);
   double g           = displayGaugeCoupling(2);
+  double beta        = atan(displayTanb());
   double cosb        = cos(beta);
   double sinb        = sin(beta);
   double ht          = tree.ht;
@@ -5774,24 +5764,23 @@ double NmssmSoftsusy::pip1p3(double p, double q) const {
   return (sfermions + higgs + neutralinos + chargino) / (16.0 * sqr(PI));
 }
 
-
 double NmssmSoftsusy::pip2p3(double p, double q) const {
   const drBarPars& tree = displayDrBarPars();
-  double    beta    = atan(displayTanb());
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double    thetat  = tree.thetat ;
-  double    thetab  = tree.thetab;
-  double    thetatau= tree.thetatau;
-  double    msbot1  = tree.md(1, 3);
-  double    msbot2  = tree.md(2, 3);
-  double    mstau1  = tree.me(1, 3);
-  double    mstau2  = tree.me(2, 3);
-  double    sb      = sin(thetab) ;
-  double    stau    = sin(thetatau);
-  double    cb      = cos(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    g       = displayGaugeCoupling(2);
+  double beta    = atan(displayTanb());
+  double thetaWDRbar = asin(calcSinthdrbar());
+  double cw2DRbar    = sqr(cos(thetaWDRbar));
+  double thetat  = tree.thetat ;
+  double thetab  = tree.thetab;
+  double thetatau= tree.thetatau;
+  double msbot1  = tree.md(1, 3);
+  double msbot2  = tree.md(2, 3);
+  double mstau1  = tree.me(1, 3);
+  double mstau2  = tree.me(2, 3);
+  double sb      = sin(thetab) ;
+  double stau    = sin(thetatau);
+  double cb      = cos(thetab) ;
+  double ctau    = cos(thetatau);
+  double g       = displayGaugeCoupling(2);
   double cosb = cos(beta), sinb = sin(beta);
   double hb = tree.hb, htau = tree.htau;
   /// LCT: Extra NMSSM parameters
