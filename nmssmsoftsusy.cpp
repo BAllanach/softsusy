@@ -6941,21 +6941,21 @@ void NmssmSoftsusy::getS3NeutralinoCoup(ComplexMatrix & aChi,
 
 
 double NmssmSoftsusy::pis1s1Neutralinos(double p, double q) const {
-  
-  double neutralinos = 0.0;
   ComplexMatrix aChi(5, 5), bChi(5, 5);
   DoubleVector mneut(displayDrBarPars().mnBpmz);
   getS1NeutralinoCoup(aChi, bChi); 
   DoubleMatrix fChiChis1s1(5, 5), gChiChis1s1(5, 5);
+
+  double neutralinos = 0.0;
   for(int i=1; i<=5; i++)
     for (int j=1; j<=5; j++) {
       fChiChis1s1(i, j) = sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod());
-      gChiChis1s1(i, j) = (bChi(i, j).conj() * aChi(i, j) + 
-	aChi(i, j).conj() * bChi(i, j)).real();
-      neutralinos = neutralinos + 0.5 * 
-	(fChiChis1s1(i, j) * gfn(p, mneut(i), mneut(j), q) - 2.0 *
-	 gChiChis1s1(i, j) * mneut(i) * mneut(j) * 
-	 b0(p, mneut(i), mneut(j), q));
+      gChiChis1s1(i, j) = (bChi(i, j).conj() * aChi(i, j) 
+			   + aChi(i, j).conj() * bChi(i, j)).real();
+      neutralinos = neutralinos 
+	+ 0.5 * (fChiChis1s1(i, j) * gfn(p, mneut(i), mneut(j), q) 
+		 - 2.0 * gChiChis1s1(i, j) * mneut(i) * mneut(j) 
+		 * b0(p, mneut(i), mneut(j), q));
     }
 
   return neutralinos;
@@ -7271,16 +7271,16 @@ double NmssmSoftsusy::pis3s3Sfermions(double p, double q, DoubleMatrix ls3tt,  D
  return sfermions;
 }
 double NmssmSoftsusy::pis1s1(double p, double q) const {
-  double    beta    = atan(displayTanb());
-  double    mb      = displayDrBarPars().mb;
-  double    hb      = displayDrBarPars().hb;
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    costhDrbar  = cos(thetaWDRbar);
-    /// minus sign taken into acct here!
-  double smu  = -displaySusyMu(); 
-  double mz   = displayMzRun();
-  double g    = displayGaugeCoupling(2);
-  double cosb = cos(beta);
+  double mb          = displayDrBarPars().mb;
+  double hb          = displayDrBarPars().hb;
+  double thetaWDRbar = asin(calcSinthdrbar());
+  double costhDrbar  = cos(thetaWDRbar);
+  double smu         = -displaySusyMu(); /// minus sign taken into acct here!
+  double mz          = displayMzRun();
+  double g           = displayGaugeCoupling(2);
+  double beta        = atan(displayTanb());
+  double cosb        = cos(beta);
+
   //PA: get fermion contribution, uses MSSM version
   double fermions = pis1s1Fermions(p, q);
   // sfermion couplings to s1 Higgs state
@@ -7295,12 +7295,10 @@ double NmssmSoftsusy::pis1s1(double p, double q) const {
   double neutralinos = pis1s1Neutralinos(p, q);
   /// Chargino contribution
   double chargino = pis1s1Charginos(p, q);  
- 
-  return 
-    (sfermions + 
-     fermions + higgs + neutralinos + chargino) / (16.0 * sqr(PI));
+  
+  return (sfermions + fermions + higgs 
+	  + neutralinos + chargino) / (16.0 * sqr(PI));
 }
-
 
 double NmssmSoftsusy::pis1s2(double p, double q) const {
   double    beta    = atan(displayTanb());
