@@ -2933,34 +2933,34 @@ void NmssmSoftsusy::getNeutPassarinoVeltman(double p, double q, DoubleMatrix & b
 
   const int rank = mneut.displayEnd();
   int k;
-     for (k=1; k<=rank; k++) {
-       if (k<=2){
-	 /// LCT: W+
-	 b0fn(k, 1) = b0(p, mch(k), mw, q);
-	 b1fn(k, 1) = b1(p, mch(k), mw, q);
-	 /// LCT: H+
-	 b0fn(k, 2) = b0(p, mch(k), forLoops.mHpm, q); 
-	 b1fn(k, 2) = b1(p, mch(k), forLoops.mHpm, q);
-       }
- 	
-       /// LCT: Z0
-       b0fn(k, 3) = b0(p, mneut(k), mz, q);
-       b1fn(k, 3) = b1(p, mneut(k), mz, q);
-
-       /// LCT: A1 A2
-       b0fn(k, 4) = b0(p, mneut(k), forLoops.mA0(1), q);
-       b1fn(k, 4) = b1(p, mneut(k), forLoops.mA0(1), q);
-       b0fn(k, 5) = b0(p, mneut(k), forLoops.mA0(2), q);
-       b1fn(k, 5) = b1(p, mneut(k), forLoops.mA0(2), q);
-
-       /// LCT: h1 h2 h3
-       b0fn(k, 6) = b0(p, mneut(k), forLoops.mh0(1), q);
-       b1fn(k, 6) = b1(p, mneut(k), forLoops.mh0(1), q);
-       b0fn(k, 7) = b0(p, mneut(k), forLoops.mh0(2), q);
-       b1fn(k, 7) = b1(p, mneut(k), forLoops.mh0(2), q);
-       b0fn(k, 8) = b0(p, mneut(k), forLoops.mh0(3), q);
-       b1fn(k, 8) = b1(p, mneut(k), forLoops.mh0(3), q);
-     }
+  for (k=1; k<=rank; k++) {
+    if (k<=2){
+      /// LCT: W+
+      b0fn(k, 1) = b0(p, mch(k), mw, q);
+      b1fn(k, 1) = b1(p, mch(k), mw, q);
+      /// LCT: H+
+      b0fn(k, 2) = b0(p, mch(k), forLoops.mHpm, q); 
+      b1fn(k, 2) = b1(p, mch(k), forLoops.mHpm, q);
+    }
+    
+    /// LCT: Z0
+    b0fn(k, 3) = b0(p, mneut(k), mz, q);
+    b1fn(k, 3) = b1(p, mneut(k), mz, q);
+    
+    /// LCT: A1 A2
+    b0fn(k, 4) = b0(p, mneut(k), forLoops.mA0(1), q);
+    b1fn(k, 4) = b1(p, mneut(k), forLoops.mA0(1), q);
+    b0fn(k, 5) = b0(p, mneut(k), forLoops.mA0(2), q);
+    b1fn(k, 5) = b1(p, mneut(k), forLoops.mA0(2), q);
+    
+    /// LCT: h1 h2 h3
+    b0fn(k, 6) = b0(p, mneut(k), forLoops.mh0(1), q);
+    b1fn(k, 6) = b1(p, mneut(k), forLoops.mh0(1), q);
+    b0fn(k, 7) = b0(p, mneut(k), forLoops.mh0(2), q);
+    b1fn(k, 7) = b1(p, mneut(k), forLoops.mh0(2), q);
+    b0fn(k, 8) = b0(p, mneut(k), forLoops.mh0(3), q);
+    b1fn(k, 8) = b1(p, mneut(k), forLoops.mh0(3), q);
+  }
 }
 
 void NmssmSoftsusy::addNeutLoopHiggs(double p, DoubleMatrix & sigmaL, 
@@ -6088,16 +6088,16 @@ double NmssmSoftsusy::pip3p3(double p, double q) const {
 //PA: Returns trilnear couplings of P1-Pi-Sj and P1-Hpm-Hpm 
 //for use in loop functions
 void NmssmSoftsusy::getP1HiggsTriCoup(DoubleMatrix & spp1, DoubleMatrix & hphpp1, double cw2DRbar) const {
-  double beta = atan(displayTanb());
-  double lam =  displayLambda(), lsq = sqr(lam);
-  double s = displaySvev();
-  double kap = displayKappa();
-  double al = displayTrialambda();
+  double lam  = displayLambda(), lsq = sqr(lam);
+  double s    = displaySvev();
+  double kap  = displayKappa();
+  double al   = displayTrialambda();
   double mupr = displayMupr();
-  double g = displayGaugeCoupling(2), gsq = sqr(g);
-  double cb = cos(beta), sb = sin(beta);
-  double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
-  double smu = -displaySusyMu(); //<< note sign!
+  double g    = displayGaugeCoupling(2), gsq = sqr(g);
+  double beta = atan(displayTanb());
+  double cb   = cos(beta), sb = sin(beta);
+  double v1   = displayHvev() * cb, v2 = displayHvev() * sb; 
+  double smu  = -displaySusyMu(); //<< note sign!
   
   spp1(1, 1) = 0.125 * gsq / cw2DRbar * v1;
   spp1(2, 1) = 0.25 * v2 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
@@ -6106,24 +6106,21 @@ void NmssmSoftsusy::getP1HiggsTriCoup(DoubleMatrix & spp1, DoubleMatrix & hphpp1
   spp1(2, 3) = 0.5 * (al / root2 - lam * kap * s - lam * mupr / root2);
   spp1(3, 2) = 0.5 * (al / root2 + lam * kap * s + lam * mupr / root2);
 
-
   hphpp1(1, 2) = 0.25 * v2 * (2.0 * lsq - gsq);
   hphpp1(2, 1) = -hphpp1(1, 2);	
-
 }
 
-
 void NmssmSoftsusy::getP2HiggsTriCoup(DoubleMatrix & spp2, DoubleMatrix & hphpp2, double cw2DRbar) const {
-  double beta = atan(displayTanb());
-  double lam =  displayLambda(), lsq = sqr(lam);
-  double s = displaySvev();
-  double kap = displayKappa();
-  double al = displayTrialambda();
+  double lam  = displayLambda(), lsq = sqr(lam);
+  double s    = displaySvev();
+  double kap  = displayKappa();
+  double al   = displayTrialambda();
   double mupr = displayMupr();
-  double g = displayGaugeCoupling(2), gsq = sqr(g);
-  double cb = cos(beta), sb = sin(beta);
-  double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
-  double smu = -displaySusyMu(); //<< note sign!
+  double g    = displayGaugeCoupling(2), gsq = sqr(g);
+  double beta = atan(displayTanb());
+  double cb   = cos(beta), sb = sin(beta);
+  double v1   = displayHvev() * cb, v2 = displayHvev() * sb; 
+  double smu  = -displaySusyMu(); //<< note sign!
 
   spp2(1, 2) = 0.25 * v1 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
   spp2(1, 3) = 0.5 * (al / root2 - lam * kap * s - lam * mupr / root2);
@@ -6134,21 +6131,18 @@ void NmssmSoftsusy::getP2HiggsTriCoup(DoubleMatrix & spp2, DoubleMatrix & hphpp2
   
   hphpp2(1, 2) = 0.25 * v1 * (2.0 * lsq - gsq);
   hphpp2(2, 1) = -hphpp2(1, 2);	
-
-
 }
 
-
 void NmssmSoftsusy::getP3HiggsTriCoup(DoubleMatrix & spp3, DoubleMatrix & hphpp3) const {
-  double beta = atan(displayTanb());
-  double lam =  displayLambda();
-  double s = displaySvev();
-  double kap = displayKappa(), ksq = sqr(kap);
-  double al = displayTrialambda();
-  double ak = displayTriakappa();
+  double lam  = displayLambda();
+  double s    = displaySvev();
+  double kap  = displayKappa(), ksq = sqr(kap);
+  double al   = displayTrialambda();
+  double ak   = displayTriakappa();
   double mupr = displayMupr();
-  double cb = cos(beta), sb = sin(beta);
-  double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
+  double beta = atan(displayTanb());
+  double cb   = cos(beta), sb = sin(beta);
+  double v1   = displayHvev() * cb, v2 = displayHvev() * sb; 
 
   spp3(1, 2) = 0.5 * (al / root2 - lam * kap * s - lam * mupr / root2);
   spp3(1, 3) = 0.5 * lam * (lam * v1 + kap * v2);
@@ -6160,25 +6154,25 @@ void NmssmSoftsusy::getP3HiggsTriCoup(DoubleMatrix & spp3, DoubleMatrix & hphpp3
 
   hphpp3(1, 2) =  (al / root2 - lam * kap * s - mupr * lam / root2) ;
   hphpp3(2, 1) = - hphpp3(1, 2);
-
 }
 
-//PA: Obtains trilnear couplings of s1-higgs-higgs for use in loop functions
+//PA: Returns trilnear couplings of s1-higgs-higgs for use in loop functions
 void NmssmSoftsusy::getS1HiggsTriCoup(DoubleMatrix & sss1, DoubleMatrix & pps1,DoubleMatrix & hphps1, double thetaWDRbar) const {
-  double lam =  displayLambda(), lsq = sqr(lam);
-  double s = displaySvev();
-  double kap = displayKappa();
-  double al = displayTrialambda();
-  double mupr = displayMupr();
-  double tanthDrbar  = tan(thetaWDRbar);
-  double cw2DRbar    = sqr(cos(thetaWDRbar));
-  double tw2DRbar    = sqr(tanthDrbar);
-  double g = displayGaugeCoupling(2), gsq = sqr(g);
-  double beta = atan(displayTanb());
-  double cb = cos(beta), cos2b = cos(2.0 * beta);
-  double sb = sin(beta), sin2b = sin(2.0 * beta);
-  double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
-  double smu = displaySusyMu();
+  double lam        =  displayLambda(), lsq = sqr(lam);
+  double s          = displaySvev();
+  double kap        = displayKappa();
+  double al         = displayTrialambda();
+  double mupr       = displayMupr();
+  double tanthDrbar = tan(thetaWDRbar);
+  double cw2DRbar   = sqr(cos(thetaWDRbar));
+  double tw2DRbar   = sqr(tanthDrbar);
+  double g          = displayGaugeCoupling(2), gsq = sqr(g);
+  double beta       = atan(displayTanb());
+  double cb         = cos(beta), cos2b = cos(2.0 * beta);
+  double sb         = sin(beta), sin2b = sin(2.0 * beta);
+  double v1         = displayHvev() * cb, v2 = displayHvev() * sb; 
+  double smu        = displaySusyMu();
+
   /// LCT: Trilinear CP-even Higgs couplings to s1 in basis HdR HuR SR
   sss1(1, 1) = 0.125 * gsq / cw2DRbar * v1;
   sss1(2, 2) = v1 / 12.0 * (2.0 * lsq - 0.5 * gsq / cw2DRbar);
@@ -6203,25 +6197,25 @@ void NmssmSoftsusy::getS1HiggsTriCoup(DoubleMatrix & sss1, DoubleMatrix & pps1,D
   hphps1(1, 2) = - 0.25 * gsq * (v1 * tw2DRbar * sin2b + v2 * cos2b)
      + 0.5 * v2 * lsq * cos2b;
   hphps1(2, 1) = hphps1(1, 2);
-  
 }
 
-//PA: Obtains trilnear couplings of s2-higgs-higgs for use in loop functions
+//PA: Returns trilnear couplings of s2-higgs-higgs for use in loop functions
 void NmssmSoftsusy::getS2HiggsTriCoup(DoubleMatrix & sss2, DoubleMatrix & pps2, DoubleMatrix & hphps2, double thetaWDRbar) const {
-  double lam =  displayLambda(), lsq = sqr(lam);
-  double s = displaySvev();
-  double kap = displayKappa();
-  double al = displayTrialambda();
-  double mupr = displayMupr();
-  double tanthDrbar  = tan(thetaWDRbar);
-  double cw2DRbar    = sqr(cos(thetaWDRbar));
-  double tw2DRbar    = sqr(tanthDrbar);
-  double g = displayGaugeCoupling(2), gsq = sqr(g);
-  double beta = atan(displayTanb());
-  double cb = cos(beta), cos2b = cos(2.0 * beta);
-  double sb = sin(beta), sin2b = sin(2.0 * beta);
-  double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
-  double smu = displaySusyMu();
+  double lam        = displayLambda(), lsq = sqr(lam);
+  double s          = displaySvev();
+  double kap        = displayKappa();
+  double al         = displayTrialambda();
+  double mupr       = displayMupr();
+  double tanthDrbar = tan(thetaWDRbar);
+  double cw2DRbar   = sqr(cos(thetaWDRbar));
+  double tw2DRbar   = sqr(tanthDrbar);
+  double g          = displayGaugeCoupling(2), gsq = sqr(g);
+  double beta       = atan(displayTanb());
+  double cb         = cos(beta), cos2b = cos(2.0 * beta);
+  double sb         = sin(beta), sin2b = sin(2.0 * beta);
+  double v1         = displayHvev() * cb, v2 = displayHvev() * sb; 
+  double smu        = displaySusyMu();
+
   /// LCT: Trilinear CP-even Higgs couplings to s2 in basis HdR HuR SR
   sss2(1, 1) = v2 * (2.0 * lsq - 0.5 * gsq / cw2DRbar) / 12.0;
   sss2(2, 2) = 0.125 * v2 * gsq / cw2DRbar;
@@ -6244,22 +6238,22 @@ void NmssmSoftsusy::getS2HiggsTriCoup(DoubleMatrix & sss2, DoubleMatrix & pps2, 
   hphps2(1, 2) = 0.25 * gsq * (v2 * tw2DRbar * sin2b - v1 * cos2b)
      + 0.5 * lsq * v1 * cos2b;
   hphps2(2, 1) = hphps2(1, 2);
-
 }
 
-//PA: Obtains trilnear couplings of s2-higgs-higgs for use in loop functions
+//PA: Returns trilnear couplings of s2-higgs-higgs for use in loop functions
 void NmssmSoftsusy::getS3HiggsTriCoup(DoubleMatrix & sss3, DoubleMatrix & pps3, DoubleMatrix & hphps3) const {
-  double lam =  displayLambda(), lsq = sqr(lam);
-  double s = displaySvev();
-  double kap = displayKappa(), ksq = sqr(kap);
-  double al = displayTrialambda();
-  double ak = displayTriakappa();
+  double lam  = displayLambda(), lsq = sqr(lam);
+  double s    = displaySvev();
+  double kap  = displayKappa(), ksq = sqr(kap);
+  double al   = displayTrialambda();
+  double ak   = displayTriakappa();
   double mupr = displayMupr();
   double beta = atan(displayTanb());
-  double cb = cos(beta), cos2b = cos(2.0 * beta);
-  double sb = sin(beta), sin2b = sin(2.0 * beta);
-  double v1 =  displayHvev() * cb, v2 =  displayHvev() * sb; 
-  double smu = displaySusyMu();
+  double cb   = cos(beta), cos2b = cos(2.0 * beta);
+  double sb   = sin(beta), sin2b = sin(2.0 * beta);
+  double v1   = displayHvev() * cb, v2 = displayHvev() * sb; 
+  double smu  = displaySusyMu();
+
   /// LCT: Trilinear CP-even Higgs couplings to s3 in basis HdR HuR SR
   sss3(1, 1) = (lsq + root2 * smu * lam / s)/ 6.0 * s;
   sss3(2, 2) = (lsq + root2 * smu * lam / s)/ 6.0 * s;
@@ -6269,7 +6263,6 @@ void NmssmSoftsusy::getS3HiggsTriCoup(DoubleMatrix & sss3, DoubleMatrix & pps3, 
   sss3(2, 3) = lam * (lam * v2 - kap * v1) / (6.0);
   sss3.symmetrise();
 
-	
   /// LCT: Trilinear CP-odd Higgs couplings to s3 in basis HdI HuI SI
   pps3(1, 1) = 0.5 * (lsq * s + root2 * smu * lam);
   pps3(2, 2) = pps3(1, 1);
@@ -6280,18 +6273,16 @@ void NmssmSoftsusy::getS3HiggsTriCoup(DoubleMatrix & sss3, DoubleMatrix & pps3, 
   pps3.symmetrise();
 	
   /// LCT: Trilinear with charged Higgs. Basis (G+ G- H+ H-)
-  hphps3(1, 1) = 0.5 * (2.0 * (lsq * s + root2 * smu * lam)
-                        - (root2 * al + 2.0 * lam * kap * s 
-			   + root2 * lam * mupr) * sin2b);
-  hphps3(2, 2) = 0.5 * (2.0 * (lsq * s + root2 * smu * lam) 
-                        + (root2 * al + 2.0 * lam * kap * s
-			   + root2 * lam * mupr) * sin2b); 
-  hphps3(1, 2) = -0.5 * (root2 * al + 2.0 * lam * kap * s
-			 + root2 * lam * mupr) * cos2b;
+  hphps3(1, 1) = 0.5 
+    * (2.0 * (lsq * s + root2 * smu * lam) 
+       - (root2 * al + 2.0 * lam * kap * s + root2 * lam * mupr) * sin2b);
+  hphps3(2, 2) = 0.5 
+    * (2.0 * (lsq * s + root2 * smu * lam) 
+       + (root2 * al + 2.0 * lam * kap * s + root2 * lam * mupr) * sin2b); 
+  hphps3(1, 2) = -0.5 
+    * (root2 * al + 2.0 * lam * kap * s + root2 * lam * mupr) * cos2b;
   hphps3(2, 1) = hphps3(1, 2);
 }
-
-
 
 double NmssmSoftsusy::pis1s1Higgs(double p, double q) const {
   double thetaWDRbar = asin(calcSinthdrbar());
@@ -6859,8 +6850,7 @@ double NmssmSoftsusy::pis3s3Higgs(double p, double q) const {
 }
 
 //PA: obtains CP odd Higgs-Neutralino couplings
-void NmssmSoftsusy::getP1NeutralinoCoup(ComplexMatrix & aChi, 
-                                        ComplexMatrix & bChi) const {
+void NmssmSoftsusy::getP1NeutralinoCoup(ComplexMatrix & aChi, ComplexMatrix & bChi) const {
   double g   = displayGaugeCoupling(2);
   double gp  = displayGaugeCoupling(1) * sqrt(0.6);
   double lam = displayLambda();
@@ -6873,8 +6863,8 @@ void NmssmSoftsusy::getP1NeutralinoCoup(ComplexMatrix & aChi,
   aChi = n.complexConjugate() * aPsi * n.hermitianConjugate();
   bChi = n * aPsi * n.transpose();
 }
-void NmssmSoftsusy::getP2NeutralinoCoup(ComplexMatrix & aChi2, 
-                                        ComplexMatrix & bChi2) const {
+
+void NmssmSoftsusy::getP2NeutralinoCoup(ComplexMatrix & aChi2, ComplexMatrix & bChi2) const {
   double g   = displayGaugeCoupling(2);
   double gp  = displayGaugeCoupling(1) * sqrt(0.6);
   double lam = displayLambda();
@@ -6888,24 +6878,19 @@ void NmssmSoftsusy::getP2NeutralinoCoup(ComplexMatrix & aChi2,
   bChi2 = n * aPsi2 * n.transpose();
 }
 
-
-void NmssmSoftsusy::getP3NeutralinoCoup(ComplexMatrix & aChi3, 
-                                        ComplexMatrix & bChi3) const {
+void NmssmSoftsusy::getP3NeutralinoCoup(ComplexMatrix & aChi3, ComplexMatrix & bChi3) const {
   double lam = displayLambda();
   double kap = displayKappa();
-  
   ComplexMatrix n(displayDrBarPars().nBpmz);
   DoubleMatrix aPsi3(5, 5);
   aPsi3(3, 4) = - lam / root2;
   aPsi3(5, 5) = root2 * kap;
-  
   aPsi3.symmetrise();
   aChi3 = n.complexConjugate() * aPsi3 * n.hermitianConjugate();
   bChi3 = n * aPsi3 * n.transpose();
-
 }
-void NmssmSoftsusy::getS1NeutralinoCoup(ComplexMatrix & aChi, 
-                                        ComplexMatrix & bChi) const {
+
+void NmssmSoftsusy::getS1NeutralinoCoup(ComplexMatrix & aChi, ComplexMatrix & bChi) const {
   double g   = displayGaugeCoupling(2);
   double gp  = displayGaugeCoupling(1) * sqrt(0.6);
   double lam = displayLambda();
@@ -6919,8 +6904,7 @@ void NmssmSoftsusy::getS1NeutralinoCoup(ComplexMatrix & aChi,
   bChi = n * aPsi * n.transpose();
 }
 
-void NmssmSoftsusy::getS2NeutralinoCoup(ComplexMatrix & aChi, 
-                                        ComplexMatrix & bChi) const {
+void NmssmSoftsusy::getS2NeutralinoCoup(ComplexMatrix & aChi, ComplexMatrix & bChi) const {
   double g   = displayGaugeCoupling(2);
   double gp  = displayGaugeCoupling(1) * sqrt(0.6);
   double lam = displayLambda();
@@ -6934,8 +6918,7 @@ void NmssmSoftsusy::getS2NeutralinoCoup(ComplexMatrix & aChi,
   bChi = n * aPsi * n.transpose();
 }
 
-void NmssmSoftsusy::getS3NeutralinoCoup(ComplexMatrix & aChi, 
-                                        ComplexMatrix & bChi) const {
+void NmssmSoftsusy::getS3NeutralinoCoup(ComplexMatrix & aChi, ComplexMatrix & bChi) const {
   double kap = displayKappa();
   double lam = displayLambda();
   ComplexMatrix n(displayDrBarPars().nBpmz);
@@ -6946,7 +6929,6 @@ void NmssmSoftsusy::getS3NeutralinoCoup(ComplexMatrix & aChi,
   aChi = n.complexConjugate() * aPsi * n.hermitianConjugate();
   bChi = n * aPsi * n.transpose();
 }
-
 
 double NmssmSoftsusy::pis1s1Neutralinos(double p, double q) const {
   ComplexMatrix aChi(5, 5), bChi(5, 5);
@@ -7441,18 +7423,19 @@ double NmssmSoftsusy::pis3s3(double p, double q) const {
 }
 
 void NmssmSoftsusy::getHp1HiggsTriCoup(DoubleMatrix & ahphp1, DoubleMatrix & hhphp1) const {
-  double gsq = sqr(displayGaugeCoupling(2));
+  double gsq  = sqr(displayGaugeCoupling(2));
   double gpsq = 0.6 * sqr(displayGaugeCoupling(1));
   double beta = atan(displayTanb());
   double cosb = cos(beta);
   double sinb = sin(beta);
-  double lam = displayLambda(), lsq = sqr(lam);
-  double kap = displayKappa();
+  double lam  = displayLambda(), lsq = sqr(lam);
+  double kap  = displayKappa();
   double mupr = displayMupr();
-  double al = displayTrialambda();
-  double s = displaySvev();
-  double vev = displayHvev(), v1 = vev * cosb, v2 = vev * sinb;
-  double smu = - displaySusyMu(); // note sign!
+  double al   = displayTrialambda();
+  double s    = displaySvev();
+  double vev  = displayHvev(), v1 = vev * cosb, v2 = vev * sinb;
+  double smu  = - displaySusyMu(); // note sign!
+
   /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
   DegrassiSlavicMix(P);
@@ -7476,25 +7459,26 @@ void NmssmSoftsusy::getHp1HiggsTriCoup(DoubleMatrix & ahphp1, DoubleMatrix & hhp
 }
 
 void NmssmSoftsusy::getHp2HiggsTriCoup(DoubleMatrix & ahphp2, DoubleMatrix & hhphp2) const {
-  double gsq = sqr(displayGaugeCoupling(2));
+  double gsq  = sqr(displayGaugeCoupling(2));
   double gpsq = 0.6 * sqr(displayGaugeCoupling(1));
   double beta = atan(displayTanb());
   double cosb = cos(beta);
   double sinb = sin(beta);
-  double lam = displayLambda(), lsq = sqr(lam);
-  double kap = displayKappa();
+  double lam  = displayLambda(), lsq = sqr(lam);
+  double kap  = displayKappa();
   double mupr = displayMupr();
-  double al = displayTrialambda();
-  double s = displaySvev();
-  double vev = displayHvev(), v1 = vev * cosb, v2 = vev * sinb;
-  double smu = - displaySusyMu(); // note sign!
+  double al   = displayTrialambda();
+  double s    = displaySvev();
+  double vev  = displayHvev(), v1 = vev * cosb, v2 = vev * sinb;
+  double smu  = - displaySusyMu(); // note sign!
+
   /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
   DegrassiSlavicMix(P);
   S = displayDrBarPars().mixh0;
   C(1, 1) = - cosb;  C(1, 2) = sinb; 
   C(2, 1) = C(1, 2); C(2, 2) = cosb;
-
+  
   for (int i=1; i<=2; i++) {
     for (int j=1; j<=3; j++) {
       ahphp2(i, j) = - 0.25 * C(i, 1) * 
@@ -7522,20 +7506,22 @@ void NmssmSoftsusy::getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, ComplexM
 }
 
 void NmssmSoftsusy::getGaugeHiggsHpmCoup(DoubleVector & wmhhp1, DoubleVector & wmahp1, DoubleVector & gamhphp1, DoubleVector & zhphp1, DoubleVector & wmhhp2, DoubleVector & wmahp2, DoubleVector & gamhphp2, DoubleVector & zhphp2) const {
-  double g    = displayGaugeCoupling(2);
-  double gp = sqrt(0.6) * displayGaugeCoupling(1);
+  double g      = displayGaugeCoupling(2);
+  double gp     = sqrt(0.6) * displayGaugeCoupling(1);
   double thetaW = asin(calcSinthdrbar());
-  double sW = calcSinthdrbar(), cW = cos(thetaW);
-  double beta = atan(displayTanb());
-  double cosb = cos(beta);
-  double sinb = sin(beta);
+  double sW     = calcSinthdrbar();
+  double cW     = cos(thetaW);
+  double beta   = atan(displayTanb());
+  double cosb   = cos(beta);
+  double sinb   = sin(beta);
+
   /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
   DegrassiSlavicMix(P);
   S = displayDrBarPars().mixh0;
   C(1, 1) = - cosb;  C(1, 2) = sinb; 
   C(2, 1) = C(1, 2); C(2, 2) = cosb;
- 
+  
   for (int i=1; i<=3; i++) {
     wmhhp1(i) = - 0.5 * g * S(i, 1);
     wmahp1(i) = 0.5 * g * P(i, 1);
