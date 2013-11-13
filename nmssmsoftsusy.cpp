@@ -4721,7 +4721,6 @@ void NmssmSoftsusy::neutralinos(int accuracy, double /* piwwtMS */, double /* pi
   phys.mneut(5) = mneut(5) / abs(mneut(5)) * abs(mneut5(5));
 }
 
-
 //PA:: fixes The CP odd mixing matrix with the conventions 
 // Degrassi and Slavich arXiv:0907.4682
 void NmssmSoftsusy::DegrassiSlavicMix(DoubleMatrix & P) const {
@@ -4737,85 +4736,79 @@ void NmssmSoftsusy::DegrassiSlavicMix(DoubleMatrix & P) const {
   P(3, 1) = sb * Ppr(2, 1); P(3, 2) = cb * Ppr(2, 1); P(3, 3) = Ppr(2, 2);
 }
 
-
-double NmssmSoftsusy::piZZTHiggs(double p, double q, 
-				      double thetaWDRbar) const {
-  //PA: NMSSM extensiion of BPMZ terms 
+double NmssmSoftsusy::piZZTHiggs(double p, double q, double thetaWDRbar) const {
+  //PA: NMSSM extension of BPMZ terms 
   //(only need to change mixing for new mass eigenstates, no new couplings)
-  double    mz      = displayMzRun();
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double    sw2DRbar    = 1.0 - cw2DRbar;
-   double    beta    = atan(displayTanb());
+  double mz       = displayMzRun();
+  double cw2DRbar = sqr(cos(thetaWDRbar));
+  double sw2DRbar = 1.0 - cw2DRbar;
+  double beta     = atan(displayTanb());
+  
   /// PA: 3 x 3 Higgs CP-even, S, and CP-odd, P, mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3);
   DegrassiSlavicMix(P);
   S = displayDrBarPars().mixh0;
-  	
   /// Define Higgs vector in 't-Hooft Feynman gauge:
   DoubleVector higgsm(3), higgsa(3), higgsc(2);
   assignHiggs(higgsm, higgsa, higgsc);
+
   double nmHiggs = 0.0;
   for(int i = 1; i <= 3; i++){ 
     nmHiggs = nmHiggs 
       + sqr(mz) * sqr(S(i, 1) * cos(beta) + S(i, 2) * sin(beta)) 
       * b0(p, mz, higgsm(i), q);//Z-Z-H
-    	for (int j = 1; j <= 3; j++) {
-	  nmHiggs =  nmHiggs - sqr(S(i, 1) * P(j, 1) - S(i, 2) * P(j, 2))
-	    * b22bar(p, higgsm(i), higgsa(j), q); //CPodd and neut Goldstone
-	}
+    for (int j = 1; j <= 3; j++) {
+      nmHiggs =  nmHiggs - sqr(S(i, 1) * P(j, 1) - S(i, 2) * P(j, 2))
+	* b22bar(p, higgsm(i), higgsa(j), q); //CPodd and neut Goldstone
+    }
   }	
   
   nmHiggs =  nmHiggs //charged Higgs
-     - sqr(cos(2.0 * thetaWDRbar)) * b22bar(p, displayDrBarPars().mHpm, displayDrBarPars().mHpm, q);
-
-  nmHiggs = nmHiggs
-    - 2.0 * sqr(cw2DRbar) * (2 * sqr(p) + sqr(displayMwRun()) - sqr(mz) *
-			     sqr(sw2DRbar) / cw2DRbar)
-    * b0(p, displayMwRun(), displayMwRun(), q) //charged goldstone  
-    - (8.0 * sqr(cw2DRbar) + sqr(cos(2.0 * thetaWDRbar))) * 
-    b22bar(p, displayMwRun(), displayMwRun(), q); //charged Higgs
+    - sqr(cos(2.0 * thetaWDRbar)) 
+    * b22bar(p, displayDrBarPars().mHpm, displayDrBarPars().mHpm, q);
   
-
- return nmHiggs;
+  nmHiggs = nmHiggs
+    - 2.0 * sqr(cw2DRbar) 
+    * (2 * sqr(p) + sqr(displayMwRun()) - sqr(mz) * sqr(sw2DRbar) / cw2DRbar)
+    * b0(p, displayMwRun(), displayMwRun(), q) //charged goldstone  
+    - (8.0 * sqr(cw2DRbar) + sqr(cos(2.0 * thetaWDRbar))) 
+    * b22bar(p, displayMwRun(), displayMwRun(), q); //charged Higgs
+  
+  return nmHiggs;
 }
 
-double NmssmSoftsusy::piZZTNeutralinos(double p, double q, 
-					    double thetaWDRbar) const {
-  
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double    g       = displayGaugeCoupling(2);
+double NmssmSoftsusy::piZZTNeutralinos(double p, double q, double thetaWDRbar) const {
+  double cw2DRbar = sqr(cos(thetaWDRbar));
+  double g        = displayGaugeCoupling(2);
   /// Neutralinos
   //static 
-  double neutralinos = 0.0;
   ComplexMatrix aPsi(5, 5), bPsi(5, 5), aChi(5, 5), bChi(5, 5);
   ComplexMatrix n(displayDrBarPars().nBpmz);
   DoubleVector mneut(displayDrBarPars().mnBpmz);
-
+  
   aPsi(3, 3) = g / (2.0 * cos(thetaWDRbar)); aPsi(4, 4) = -1. * aPsi(3, 3);
   bPsi = -1. * aPsi;
-  
   aChi = n.complexConjugate() * aPsi * n.transpose();
   bChi = n * bPsi * n.hermitianConjugate();
   
+  double neutralinos = 0.0;
   for (int i=1; i<=5; i++)
     for (int j=1; j<=5; j++) {
-      neutralinos = neutralinos + cw2DRbar / (2.0 * sqr(g)) * 
-	((sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod())) * 
-	 hfn(p, mneut(i), mneut(j), q)
-	 + 4.0 * (bChi(i, j).conj() * aChi(i, j)).real() *
-	 mneut(i) * mneut(j) * b0(p, mneut(i), mneut(j), q)); 
+      neutralinos = neutralinos + cw2DRbar / (2.0 * sqr(g)) 
+	* ((sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod())) 
+	   * hfn(p, mneut(i), mneut(j), q) 
+	   + 4.0 * (bChi(i, j).conj() * aChi(i, j)).real() 
+	   * mneut(i) * mneut(j) * b0(p, mneut(i), mneut(j), q)); 
     }
   
   return neutralinos;
 }
 
-
-double NmssmSoftsusy::piZZT(double p, double q, bool usePoleMt) const {
-  
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double    g       = displayGaugeCoupling(2);
-  double rhs = 0.0;
+double NmssmSoftsusy::piZZT(double p, double q, bool usePoleMt) const {  
+  double thetaWDRbar = asin(calcSinthdrbar());
+  double cw2DRbar    = sqr(cos(thetaWDRbar));
+  double g           = displayGaugeCoupling(2);
+  double rhs         = 0.0;
  
   //PA: obtain Higgs contributions in separate method
   double higgs = piZZTHiggs(p, q, thetaWDRbar);
@@ -4823,14 +4816,14 @@ double NmssmSoftsusy::piZZT(double p, double q, bool usePoleMt) const {
   double sfermions = piZZTsfermions(p, q);
   //PA: obtain fermion contributions in separate method
   double fermions = piZZTfermions(p, q, usePoleMt);
-   //PA: obtain neutralino contributions in separate method
+  //PA: obtain neutralino contributions in separate method
   double neutralinos = piZZTNeutralinos(p, q, thetaWDRbar);
-   //PA: obtain neutralino contributions in separate method
+  //PA: obtain neutralino contributions in separate method
   double charginos = piZZTCharginos(p, q, thetaWDRbar);
   
   rhs = higgs + charginos + neutralinos + fermions + sfermions ;
   double pi = rhs * sqr(g) / (cw2DRbar * 16.0 * sqr(PI));
-
+  
   return pi;
 }
 
@@ -7563,10 +7556,10 @@ double NmssmSoftsusy::piHpm11Higgs(double p, double q) const {
   S = displayDrBarPars().mixh0;
   C(1, 1) = - cosb;  C(1, 2) = sinb; 
   C(2, 1) = C(1, 2); C(2, 2) = cosb;
-   /// Define Higgs vector of masses in 't-Hooft Feynman gauge:
+  /// Define Higgs vector of masses in 't-Hooft Feynman gauge:
   DoubleVector higgsm(3), higgsa(3), higgsc(2);
   assignHiggs(higgsm, higgsa, higgsc);
-
+  
   /// LCT: Quadrilinear Hp-Hm-hp1-hp1 couplings
   /// Here (and elsewhere), hpi refers to a charged Higgs state in the gauge 
   /// basis (hp1+ hp2+)
