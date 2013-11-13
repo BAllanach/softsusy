@@ -4828,11 +4828,13 @@ double NmssmSoftsusy::piZZT(double p, double q, bool usePoleMt) const {
 }
 
 double NmssmSoftsusy::piWWTHiggs(double p, double q, double thetaWDRbar) const {
-  double    beta      = atan(displayTanb());
-  double    cw2DRbar  = sqr(cos(thetaWDRbar));
-  double    sw2DRbar  = 1.0 - cw2DRbar;
-  double    mz      = displayMzRun();
-  double sb = sin(beta), cb = cos(beta);
+  double cw2DRbar = sqr(cos(thetaWDRbar));
+  double sw2DRbar = 1.0 - cw2DRbar;
+  double mz       = displayMzRun();
+  double beta     = atan(displayTanb());
+  double sb       = sin(beta);
+  double cb       = cos(beta);
+
   /// PA: 3 x 3 Higgs CP-even, S, and CP-odd, P, mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
   DegrassiSlavicMix(P);
@@ -4849,26 +4851,26 @@ double NmssmSoftsusy::piWWTHiggs(double p, double q, double thetaWDRbar) const {
       + sqr(displayMwRun()) * sqr(S(i, 1) * cb + S(i, 2) * sb)
       * b0(p, displayMwRun(), higgsm(i), q); //W-W-H
     for (int j = 1; j <= 2; j++) {
-    nmHiggs = nmHiggs - sqr(S(i, 1) * C(j, 1) - S(i, 2) * C(j, 2)) 
-    * b22bar(p, higgsm(i), higgsc(j), q);//includes goldstone
-    nmHiggs = nmHiggs - sqr(P(i, 1) * C(j, 1) + P(i, 2) * C(j, 2)) 
-    * b22bar(p, higgsa(i), higgsc(j), q);//includes goldstones
+      nmHiggs = nmHiggs - sqr(S(i, 1) * C(j, 1) - S(i, 2) * C(j, 2)) 
+	* b22bar(p, higgsm(i), higgsc(j), q);//includes goldstone
+      nmHiggs = nmHiggs - sqr(P(i, 1) * C(j, 1) + P(i, 2) * C(j, 2)) 
+	* b22bar(p, higgsa(i), higgsc(j), q);//includes goldstones
     }
   }
   nmHiggs +=  - (8.0 * cw2DRbar) * b22bar(p, mz, displayMwRun(), q)
-    - sw2DRbar * (8.0 * b22bar(p, displayMwRun(), 0.0, q) + 4.0 * sqr(p) * 
-		  b0(p, displayMwRun(), 0.0, q))  
-    - ((4.0 * sqr(p) + sqr(mz) + sqr(displayMwRun())) * cw2DRbar - sqr(mz)  *
-       sqr(sw2DRbar)) * b0(p, mz, displayMwRun(), q);
+    - sw2DRbar * (8.0 * b22bar(p, displayMwRun(), 0.0, q) 
+		  + 4.0 * sqr(p) * b0(p, displayMwRun(), 0.0, q))  
+    - ((4.0 * sqr(p) + sqr(mz) + sqr(displayMwRun())) * cw2DRbar 
+       - sqr(mz) * sqr(sw2DRbar)) * b0(p, mz, displayMwRun(), q);
+
   return nmHiggs;
 }
 
 double NmssmSoftsusy::piWWTgauginos(double p, double q, double /* thetaWDRbar */) const {
-  double    g       = displayGaugeCoupling(2);
-  ComplexMatrix aPsi0PsicW(5, 2), bPsi0PsicW(5, 2), aChi0ChicW(5, 2),
-    bChi0ChicW(5, 2);
+  double g = displayGaugeCoupling(2);
+  ComplexMatrix aPsi0PsicW(5, 2), bPsi0PsicW(5, 2), 
+    aChi0ChicW(5, 2), bChi0ChicW(5, 2);
   DoubleMatrix fW(5, 2), gW(5, 2);
-  
   aPsi0PsicW(2, 1) = - g;
   bPsi0PsicW(2, 1) = - g;
   aPsi0PsicW(4, 2) = g / root2;		     
@@ -4879,7 +4881,7 @@ double NmssmSoftsusy::piWWTgauginos(double p, double q, double /* thetaWDRbar */
   DoubleVector mneut(displayDrBarPars().mnBpmz);
   ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
   DoubleVector mch(displayDrBarPars().mchBpmz); 
-
+  
   /// These ought to be in physpars
   aChi0ChicW = n.complexConjugate() * aPsi0PsicW * v.transpose();
   bChi0ChicW = n * bPsi0PsicW * u.hermitianConjugate();
@@ -4895,14 +4897,14 @@ double NmssmSoftsusy::piWWTgauginos(double p, double q, double /* thetaWDRbar */
 	 + 2.0 * gW(i, j) * mneut(i) * mch(j) * b0(p, mneut(i), mch(j), q)) 
 	/ sqr(g);
     }
-
+  
 return gauginos;
 }
+
 double NmssmSoftsusy::piWWT(double p, double q, bool usePoleMt) const {
-
   double thetaWDRbar = asin(calcSinthdrbar());
-  double g = displayGaugeCoupling(2);
-
+  double g           = displayGaugeCoupling(2);
+  
   double ans = 0.0;
   double higgs = piWWTHiggs(p, q, thetaWDRbar);
   double fermions = piWWTfermions(p, q, usePoleMt);   
@@ -4910,10 +4912,9 @@ double NmssmSoftsusy::piWWT(double p, double q, bool usePoleMt) const {
   double gauginos = piWWTgauginos(p, q, thetaWDRbar);
   ans = higgs + sfermions + fermions + gauginos;
   double pi = ans * sqr(g) / (16.0 * sqr(PI));
-
+  
   return pi;
 }
-
 
 //PA: pseudoscalar self energies in basis Im(H_d), Im(H_u), Im(S).
 double NmssmSoftsusy::pip1p1(double p, double q) const {
@@ -5934,14 +5935,14 @@ double NmssmSoftsusy::pip2p3(double p, double q) const {
 
 double NmssmSoftsusy::pip3p3(double p, double q) const {
   const drBarPars& tree = displayDrBarPars();
-  double thetat  = tree.thetat ;
-  double thetab  = tree.thetab;
-  double thetatau= tree.thetatau;
-  double beta    = atan(displayTanb());
-  double cosb = cos(beta);
-  double sinb = sin(beta), sin2b = sin(2.0 * beta);
-  double lam = displayLambda(), lsq =sqr(lam);
-  double kap = displayKappa(), ksq = sqr(kap);
+  double thetat   = tree.thetat ;
+  double thetab   = tree.thetab;
+  double thetatau = tree.thetatau;
+  double beta     = atan(displayTanb());
+  double cosb     = cos(beta);
+  double sinb     = sin(beta), sin2b = sin(2.0 * beta);
+  double lam      = displayLambda(), lsq =sqr(lam);
+  double kap      = displayKappa(), ksq = sqr(kap);
 
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
   DegrassiSlavicMix(P);
