@@ -4905,6 +4905,7 @@ double NmssmSoftsusy::piWWT(double p, double q, bool usePoleMt) const {
   double thetaWDRbar = asin(calcSinthdrbar());
   double g           = displayGaugeCoupling(2);
   
+  /// Get individual contributions
   double ans = 0.0;
   double higgs = piWWTHiggs(p, q, thetaWDRbar);
   double fermions = piWWTfermions(p, q, usePoleMt);   
@@ -6928,9 +6929,9 @@ double NmssmSoftsusy::pis1s1Neutralinos(double p, double q) const {
   ComplexMatrix aChi(5, 5), bChi(5, 5);
   DoubleVector mneut(displayDrBarPars().mnBpmz);
   getS1NeutralinoCoup(aChi, bChi); 
-  DoubleMatrix fChiChis1s1(5, 5), gChiChis1s1(5, 5);
 
   double neutralinos = 0.0;
+  DoubleMatrix fChiChis1s1(5, 5), gChiChis1s1(5, 5);
   for(int i=1; i<=5; i++)
     for (int j=1; j<=5; j++) {
       fChiChis1s1(i, j) = sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod());
@@ -7043,6 +7044,7 @@ double NmssmSoftsusy::pis3s3Neutralinos(double p, double q) const {
   ComplexMatrix aChi(5, 5), bChi(5, 5);
   DoubleVector mneut(displayDrBarPars().mnBpmz);
   getS3NeutralinoCoup(aChi, bChi); 
+
   double neutralinos = 0.0;
   DoubleMatrix fChiChis1s1(5, 5), gChiChis1s1(5, 5);
   for(int i=1; i<=5; i++)
@@ -7074,8 +7076,8 @@ double NmssmSoftsusy::pis1s3Charginos(double p, double q) const {
   aChic3 = v.complexConjugate() * aPsic3 * u.hermitianConjugate();
   bChic3 = u * aPsic3.transpose() * v.transpose();
   
-  DoubleMatrix fChiChis1s3(2, 2), gChiChis1s3(2, 2);
   double chargino = 0.0;
+  DoubleMatrix fChiChis1s3(2, 2), gChiChis1s3(2, 2);
   for(int i=1; i<=2; i++)
     for (int j=1; j<=2; j++) {
       fChiChis1s3(i, j) = (aChic1(i, j).conj() * aChic3(i, j) 
@@ -7233,9 +7235,9 @@ double NmssmSoftsusy::pis2s3Sfermions(double p, double q, DoubleMatrix ls2tt, Do
 }
 
 double NmssmSoftsusy::pis3s3Sfermions(double p, double q, DoubleMatrix ls3tt,  DoubleMatrix ls3bb,  DoubleMatrix ls3tautau) const {
-  double thetat  = displayDrBarPars().thetat ;
-  double thetab  = displayDrBarPars().thetab;
-  double thetatau= displayDrBarPars().thetatau;
+  double thetat   = displayDrBarPars().thetat ;
+  double thetab   = displayDrBarPars().thetab;
+  double thetatau = displayDrBarPars().thetatau;
 
   /// Mix 3rd family 
   ls3tt = rot2d(thetat) * ls3tt * rot2d(-thetat);
@@ -7531,14 +7533,14 @@ void NmssmSoftsusy::getGaugeHiggsHpmCoup(DoubleVector & wmhhp1, DoubleVector & w
 }
 
 double NmssmSoftsusy::piHpm11Higgs(double p, double q) const {
-  double gsq     = sqr(displayGaugeCoupling(2));
-  double gpsq    = 0.6 * sqr(displayGaugeCoupling(1));
-  double beta    = atan(displayTanb());
-  double cosb    = cos(beta);
-  double sinb    = sin(beta);
-  double lam     = displayLambda(), lsq = sqr(lam);
-  double mz      = displayMzRun();
-  double mw      = displayMwRun();
+  double gsq  = sqr(displayGaugeCoupling(2));
+  double gpsq = 0.6 * sqr(displayGaugeCoupling(1));
+  double beta = atan(displayTanb());
+  double cosb = cos(beta);
+  double sinb = sin(beta);
+  double lam  = displayLambda(), lsq = sqr(lam);
+  double mz   = displayMzRun();
+  double mw   = displayMwRun();
 
   /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices
   ///
@@ -7566,47 +7568,49 @@ double NmssmSoftsusy::piHpm11Higgs(double p, double q) const {
   /// basis (hp1+ hp2+)
   /// Couplings from F. Staub et al., arXiv:1007.4049 [hep-ph]
   DoubleVector lHpHmhp1hp1(2);
-  lHpHmhp1hp1(1) = 0.25 * (- 2.0 * (gsq + gpsq) * sqr(C(1, 1)) 
+  lHpHmhp1hp1(1) = 0.25 * (-2.0 * (gsq + gpsq) * sqr(C(1, 1)) 
 			   + (gsq + gpsq - 4.0 * lsq) * sqr(C(1, 2)));
-  lHpHmhp1hp1(2) = 0.25 * (- 2.0 * (gsq + gpsq) * sqr(C(2, 1)) 
+  lHpHmhp1hp1(2) = 0.25 * (-2.0 * (gsq + gpsq) * sqr(C(2, 1)) 
 			   + (gsq + gpsq - 4.0 * lsq) * sqr(C(2, 2)));
-
+  
   double higgs = 0.0;
   for(int i=1; i<=2; i++) {
-      higgs = higgs - lHpHmhp1hp1(i) * a0(higgsc(i), q);
+    higgs = higgs - lHpHmhp1hp1(i) * a0(higgsc(i), q);
   }
-
+  
   /// LCT: Quadrilinear A0A0-hphp and h0h0-hphp couplings
   /// CP-even basis (h1 h2 h3) ; CP-odd basis (G0 A1 A2)
   DoubleVector lA0A0hp1hp1(3), lH0H0hp1hp1(3);
   for (int i=1; i<=3; i++) {
-    lA0A0hp1hp1(i) = - 0.25 * (4.0 * lsq * sqr(P(i, 3)) 
-		+ (gsq - gpsq) * sqr(P(i, 2)) + (gsq + gpsq) * sqr(P(i, 1)));
-    lH0H0hp1hp1(i) = -0.25 * (4.0 * lsq * sqr(S(i, 3)) 
-		+ (gsq - gpsq) * sqr(S(i, 2)) + (gsq + gpsq) * sqr(S(i, 1)));
+    lA0A0hp1hp1(i) = 
+      - 0.25 * (4.0 * lsq * sqr(P(i, 3)) + (gsq - gpsq) * sqr(P(i, 2)) 
+		+ (gsq + gpsq) * sqr(P(i, 1)));
+    lH0H0hp1hp1(i) = 
+      - 0.25 * (4.0 * lsq * sqr(S(i, 3)) + (gsq - gpsq) * sqr(S(i, 2)) 
+		+ (gsq + gpsq) * sqr(S(i, 1)));
   }
   for (int i=1; i<=3; i++) {
     higgs = higgs - 0.5 * lA0A0hp1hp1(i) * a0(higgsa(i), q);
     higgs = higgs - 0.5 * lH0H0hp1hp1(i) * a0(higgsm(i), q);
   } 
-
+  
   /// LCT: Trilinear charged Hpm-H0-hp1 and Hpm-A0-hp1 couplings
   /// CP-even basis (h1 h2 h3) ; CP-odd basis (G0 A1 A2)
   DoubleMatrix lA0Hphp1(2, 3), lH0Hphp1(2, 3);
   getHp1HiggsTriCoup(lA0Hphp1, lH0Hphp1);
-
+  
   for (int i=1; i<=2; i++) {
-     for (int j=1; j<=3; j++) {
-        higgs = higgs + sqr(lA0Hphp1(i, j)) * b0(p, higgsc(i), higgsa(j), q);
-	higgs = higgs + sqr(lH0Hphp1(i, j)) * b0(p, higgsc(i), higgsm(j), q);
-     }
+    for (int j=1; j<=3; j++) {
+      higgs = higgs + sqr(lA0Hphp1(i, j)) * b0(p, higgsc(i), higgsa(j), q);
+      higgs = higgs + sqr(lH0Hphp1(i, j)) * b0(p, higgsc(i), higgsm(j), q);
+    }
   }
-
+  
   /// LCT: F0 function contributions
   DoubleVector lWmH0hp1(3), lWmA0hp1(3), lGamHphp1(2), lZHphp1(2),
-     lWmH0hp2(3), lWmA0hp2(3), lGamHphp2(2), lZHphp2(2);
+    lWmH0hp2(3), lWmA0hp2(3), lGamHphp2(2), lZHphp2(2);
   getGaugeHiggsHpmCoup(lWmH0hp1, lWmA0hp1, lGamHphp1, lZHphp1, lWmH0hp2, lWmA0hp2, lGamHphp2, lZHphp2);
-
+  
   for (int i=1; i<=2; i++) {
     higgs = higgs + sqr(lGamHphp1(i)) * ffn(p, higgsc(i), 0, q)
       + sqr(lZHphp1(i)) * ffn(p, higgsc(i), mz, q);
@@ -7615,20 +7619,100 @@ double NmssmSoftsusy::piHpm11Higgs(double p, double q) const {
     higgs = higgs + sqr(lWmA0hp1(i)) * ffn(p, higgsa(i), mw, q)
       + sqr(lWmH0hp1(i)) * ffn(p, higgsm(i), mw, q);
   }
-
+  
   return higgs;
 }
 
 double NmssmSoftsusy::piHpm12Higgs(double p, double q) const {
-  double gsq     = sqr(displayGaugeCoupling(2));
-  double gpsq    = 0.6 * sqr(displayGaugeCoupling(1));
-  double beta    = atan(displayTanb());
-  double cosb    = cos(beta);
-  double sinb    = sin(beta);
-  double lam     = displayLambda(), lsq = sqr(lam);
-  double kap     = displayKappa();
-  double mz      = displayMzRun();
-  double mw      = displayMwRun();
+  double gsq  = sqr(displayGaugeCoupling(2));
+  double gpsq = 0.6 * sqr(displayGaugeCoupling(1));
+  double beta = atan(displayTanb());
+  double cosb = cos(beta);
+  double sinb = sin(beta);
+  double lam  = displayLambda(), lsq = sqr(lam);
+  double kap  = displayKappa();
+  double mz   = displayMzRun();
+  double mw   = displayMwRun();
+  
+  /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
+  DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
+  DegrassiSlavicMix(P);
+  S = displayDrBarPars().mixh0;
+  C(1, 1) = - cosb;  C(1, 2) = sinb; 
+  C(2, 1) = C(1, 2); C(2, 2) = cosb;
+  /// Define Higgs vector of masses in 't-Hooft/Feynman gauge:
+  DoubleVector higgsm(3), higgsa(3), higgsc(2);
+  assignHiggs(higgsm, higgsa, higgsc);
+  
+  /// LCT: Quadrilinear Hp-Hm-hp1-hp1 couplings
+  /// Here (and elsewhere), hpi refers to a charged Higgs state in the gauge 
+  /// basis (hp1+ hp2+)
+  /// Couplings from F. Staub et al., arXiv:1007.4049 [hep-ph]
+  DoubleVector lHpHmhp1hp2(2);
+  lHpHmhp1hp2(1) = 0.25 * (gsq + gpsq - 4.0 * lsq) * C(1, 2) * C(1, 1);
+  lHpHmhp1hp2(2) = 0.25 * (gsq + gpsq - 4.0 * lsq) * C(2, 2) * C(2, 1);
+  
+  double higgs = 0.0;
+  for(int i=1; i<=2; i++) {
+    higgs = higgs - lHpHmhp1hp2(i) * a0(higgsc(i), q);
+  }
+  
+  /// LCT: Quadrilinear A0A0-hphp and h0h0-hphp couplings
+  /// CP-even basis (h1 h2 h3) ; CP-odd basis (G0 A1 A2)
+  DoubleVector lA0A0hp1hp2(3), lH0H0hp1hp2(3);
+  for (int i=1; i<=3; i++) {
+    lA0A0hp1hp2(i) = 0.25 * (4.0 * lam * kap * sqr(P(i, 3)) 
+			     + 2.0 * (gsq - 2.0 * lsq) * P(i, 1) * P(i, 2));
+    lH0H0hp1hp2(i) = - 0.25 * (4.0 * lam * kap * sqr(S(i, 3)) 
+			       + 2.0 * (gsq - 2.0 * lsq) * S(i, 1) * S(i, 2));
+  }
+  
+  for (int i=1; i<=3; i++) {
+    higgs = higgs - 0.5 * lA0A0hp1hp2(i) * a0(higgsa(i), q);
+    higgs = higgs - 0.5 * lH0H0hp1hp2(i) * a0(higgsm(i), q);
+  }
+  
+  /// LCT: Trilinear charged Hpm-H0-hp1 and Hpm-A0-hp1 couplings
+  /// CP-even basis (h1 h2 h3) ; CP-odd basis (G0 A1 A2)
+  DoubleMatrix lA0Hphp1(2, 3), lH0Hphp1(2, 3), lA0Hphp2(2, 3), lH0Hphp2(2, 3);
+  getHp1HiggsTriCoup(lA0Hphp1, lH0Hphp1);
+  getHp2HiggsTriCoup(lA0Hphp2, lH0Hphp2);
+  
+  for (int i=1; i<=2; i++) {
+    for (int j=1; j<=3; j++) {
+      higgs = higgs + lA0Hphp1(i, j) * lA0Hphp2(i, j) 
+	* b0(p, higgsc(i), higgsa(j), q);
+      higgs = higgs + lH0Hphp1(i, j) * lH0Hphp2(i, j) 
+	* b0(p, higgsc(i), higgsm(j), q);
+    }
+  }
+  
+  /// LCT: F0 function contributions
+  DoubleVector lWmH0hp1(3), lWmA0hp1(3), lGamHphp1(2), lZHphp1(2), 
+    lWmH0hp2(3), lWmA0hp2(3), lGamHphp2(2), lZHphp2(2);
+  getGaugeHiggsHpmCoup(lWmH0hp1, lWmA0hp1, lGamHphp1, lZHphp1, lWmH0hp2, lWmA0hp2, lGamHphp2, lZHphp2);
+  
+  for (int i=1; i<=2; i++) {
+    higgs = higgs + lGamHphp1(i) * lGamHphp2(i) * ffn(p, higgsc(i), 0, q)
+      + lZHphp1(i) * lZHphp2(i) * ffn(p, higgsc(i), mz, q);
+  }
+  for (int i=1; i<=3; i++) {
+    higgs = higgs + lWmA0hp1(i) * lWmA0hp2(i) * ffn(p, higgsa(i), mw, q)
+      + lWmH0hp1(i) * lWmH0hp2(i) * ffn(p, higgsm(i), mw, q);
+  }
+  
+  return higgs;
+}
+
+double NmssmSoftsusy::piHpm22Higgs(double p, double q) const {
+  double gsq  = sqr(displayGaugeCoupling(2));
+  double gpsq = 0.6 * sqr(displayGaugeCoupling(1));
+  double beta = atan(displayTanb());
+  double cosb = cos(beta);
+  double sinb = sin(beta);
+  double lam  = displayLambda(), lsq = sqr(lam);
+  double mz   = displayMzRun();
+  double mw   = displayMwRun();
 
   /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
@@ -7644,158 +7728,80 @@ double NmssmSoftsusy::piHpm12Higgs(double p, double q) const {
   /// Here (and elsewhere), hpi refers to a charged Higgs state in the gauge 
   /// basis (hp1+ hp2+)
   /// Couplings from F. Staub et al., arXiv:1007.4049 [hep-ph]
-  DoubleVector lHpHmhp1hp2(2);
-  lHpHmhp1hp2(1) = 0.25 * (gsq + gpsq - 4.0 * lsq) * C(1, 2) * C(1, 1);
-  lHpHmhp1hp2(2) = 0.25 * (gsq + gpsq - 4.0 * lsq) * C(2, 2) * C(2, 1);
-
-  double higgs = 0.0;
-  for(int i=1; i<=2; i++) {
-      higgs = higgs - lHpHmhp1hp2(i) * a0(higgsc(i), q);
-  }
-
-  /// LCT: Quadrilinear A0A0-hphp and h0h0-hphp couplings
-  /// CP-even basis (h1 h2 h3) ; CP-odd basis (G0 A1 A2)
-  DoubleVector lA0A0hp1hp2(3), lH0H0hp1hp2(3);
-  for (int i=1; i<=3; i++) {
-    lA0A0hp1hp2(i) = 0.25 * (4.0 * lam * kap * sqr(P(i, 3)) 
-                + 2.0 * (gsq - 2.0 * lsq) * P(i, 1) * P(i, 2));
-    lH0H0hp1hp2(i) = - 0.25 * (4.0 * lam * kap * sqr(S(i, 3)) 
-		+ 2.0 * (gsq - 2.0 * lsq) * S(i, 1) * S(i, 2));
-  }
-
-  for (int i=1; i<=3; i++) {
-    higgs = higgs - 0.5 * lA0A0hp1hp2(i) * a0(higgsa(i), q);
-    higgs = higgs - 0.5 * lH0H0hp1hp2(i) * a0(higgsm(i), q);
-  }
-
-  /// LCT: Trilinear charged Hpm-H0-hp1 and Hpm-A0-hp1 couplings
-  /// CP-even basis (h1 h2 h3) ; CP-odd basis (G0 A1 A2)
-  DoubleMatrix lA0Hphp1(2, 3), lH0Hphp1(2, 3), lA0Hphp2(2, 3), lH0Hphp2(2, 3);
-  getHp1HiggsTriCoup(lA0Hphp1, lH0Hphp1);
-  getHp2HiggsTriCoup(lA0Hphp2, lH0Hphp2);
-
-  for (int i=1; i<=2; i++) {
-     for (int j=1; j<=3; j++) {
-       higgs = higgs + lA0Hphp1(i, j) * lA0Hphp2(i, j) 
-             * b0(p, higgsc(i), higgsa(j), q);
-       higgs = higgs + lH0Hphp1(i, j) * lH0Hphp2(i, j) 
-       	     * b0(p, higgsc(i), higgsm(j), q);
-     }
-  }
-
-  /// LCT: F0 function contributions
-  DoubleVector lWmH0hp1(3), lWmA0hp1(3), lGamHphp1(2), lZHphp1(2), 
-    lWmH0hp2(3), lWmA0hp2(3), lGamHphp2(2), lZHphp2(2);
-  getGaugeHiggsHpmCoup(lWmH0hp1, lWmA0hp1, lGamHphp1, lZHphp1, lWmH0hp2, lWmA0hp2, lGamHphp2, lZHphp2);
-
-  for (int i=1; i<=2; i++) {
-    higgs = higgs + lGamHphp1(i) * lGamHphp2(i) * ffn(p, higgsc(i), 0, q)
-          + lZHphp1(i) * lZHphp2(i) * ffn(p, higgsc(i), mz, q);
-  }
-  for (int i=1; i<=3; i++) {
-    higgs = higgs + lWmA0hp1(i) * lWmA0hp2(i) * ffn(p, higgsa(i), mw, q)
-      + lWmH0hp1(i) * lWmH0hp2(i) * ffn(p, higgsm(i), mw, q);
-  }
-
-  return higgs;
-}
-
-double NmssmSoftsusy::piHpm22Higgs(double p, double q) const {
-  double gsq     = sqr(displayGaugeCoupling(2));
-  double gpsq    = 0.6 * sqr(displayGaugeCoupling(1));
-  double beta    = atan(displayTanb());
-  double cosb    = cos(beta);
-  double sinb    = sin(beta);
-  double lam     = displayLambda(), lsq = sqr(lam);
-  double mz      = displayMzRun();
-  double mw      = displayMwRun();
-
- /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
-  DoubleMatrix P(3, 3), S(3, 3), C(2, 2);
-  DegrassiSlavicMix(P);
-  S = displayDrBarPars().mixh0;
-  C(1, 1) = - cosb;  C(1, 2) = sinb; 
-  C(2, 1) = C(1, 2); C(2, 2) = cosb;
-   /// Define Higgs vector of masses in 't-Hooft/Feynman gauge:
-  DoubleVector higgsm(3), higgsa(3), higgsc(2);
-  assignHiggs(higgsm, higgsa, higgsc);
-
-  /// LCT: Quadrilinear Hp-Hm-hp1-hp1 couplings
-  /// Here (and elsewhere), hpi refers to a charged Higgs state in the gauge 
-  /// basis (hp1+ hp2+)
-  /// Couplings from F. Staub et al., arXiv:1007.4049 [hep-ph]
   DoubleVector lHpHmhp2hp2(2);
   lHpHmhp2hp2(1) = 0.25 * (- 2.0 * (gsq + gpsq) * sqr(C(1, 2)) 
 			   + (gsq + gpsq - 4.0 * lsq) * sqr(C(1, 1)));
   lHpHmhp2hp2(2) = 0.25 * (- 2.0 * (gsq + gpsq) * sqr(C(2, 2)) 
 			   + (gsq + gpsq - 4.0 * lsq) * sqr(C(2, 1)));
-
+  
   double higgs = 0.0;
   for(int i=1; i<=2; i++) {
-      higgs = higgs - lHpHmhp2hp2(i) * a0(higgsc(i), q);
+    higgs = higgs - lHpHmhp2hp2(i) * a0(higgsc(i), q);
   }
-
+  
   /// LCT: Quadrilinear A0A0-hphp and h0h0-hphp couplings
   /// CP-even basis (h1 h2 h3) ; CP-odd basis (G0 A1 A2)
   DoubleVector lA0A0hp2hp2(3), lH0H0hp2hp2(3);
   for (int i=1; i<=3; i++) {
-    lA0A0hp2hp2(i) = - 0.25 * (4.0 * lsq * sqr(P(i, 3)) 
-	        + (gsq - gpsq) * sqr(P(i, 1)) + (gsq + gpsq) * sqr(P(i, 2)));
-    lH0H0hp2hp2(i) = - 0.25 * (4.0 * lsq * sqr(S(i, 3)) 
-	        + (gsq - gpsq) * sqr(S(i, 1)) + (gsq + gpsq) * sqr(S(i, 2)));
+    lA0A0hp2hp2(i) = 
+      - 0.25 * (4.0 * lsq * sqr(P(i, 3)) + (gsq - gpsq) * sqr(P(i, 1)) 
+		+ (gsq + gpsq) * sqr(P(i, 2)));
+    lH0H0hp2hp2(i) = 
+      - 0.25 * (4.0 * lsq * sqr(S(i, 3)) + (gsq - gpsq) * sqr(S(i, 1)) 
+		+ (gsq + gpsq) * sqr(S(i, 2)));
   }
-
+  
   for (int i=1; i<=3; i++) {
     higgs = higgs - 0.5 * lA0A0hp2hp2(i) * a0(higgsa(i), q);
     higgs = higgs - 0.5 * lH0H0hp2hp2(i) * a0(higgsm(i), q);
   }
-
+  
   /// LCT: Trilinear charged Hpm-H0-hp1 and Hpm-A0-hp1 couplings
   /// CP-even basis (h1 h2 h3) ; CP-odd basis (G0 A1 A2)
   DoubleMatrix lA0Hphp2(2, 3), lH0Hphp2(2, 3);
   getHp2HiggsTriCoup(lA0Hphp2, lH0Hphp2);
-
+  
   for (int i=1; i<=2; i++) {
-     for (int j=1; j<=3; j++) {
-        higgs = higgs + sqr(lA0Hphp2(i, j)) * b0(p, higgsc(i), higgsa(j), q);
-	higgs = higgs + sqr(lH0Hphp2(i, j)) * b0(p, higgsc(i), higgsm(j), q);
-     }
+    for (int j=1; j<=3; j++) {
+      higgs = higgs + sqr(lA0Hphp2(i, j)) * b0(p, higgsc(i), higgsa(j), q);
+      higgs = higgs + sqr(lH0Hphp2(i, j)) * b0(p, higgsc(i), higgsm(j), q);
+    }
   }
-
+  
   /// LCT: F0 function parts
   DoubleVector lWmH0hp1(3), lWmA0hp1(3), lGamHphp1(2), lZHphp1(2), 
     lWmH0hp2(3), lWmA0hp2(3), lGamHphp2(2), lZHphp2(2);
   getGaugeHiggsHpmCoup(lWmH0hp1, lWmA0hp1, lGamHphp1, lZHphp1, lWmH0hp2, lWmA0hp2, lGamHphp2, lZHphp2);
-
+  
   for (int i=1; i<=2; i++) {
     higgs = higgs + sqr(lGamHphp2(i)) * ffn(p, higgsc(i), 0, q)
       + sqr(lZHphp2(i)) * ffn(p, higgsc(i), mz, q);
   }
   for (int i=1; i<=3; i++) {
     higgs = higgs + sqr(lWmA0hp2(i)) * ffn(p, higgsa(i), mw, q)
-          + sqr(lWmH0hp2(i)) * ffn(p, higgsm(i), mw, q);
+      + sqr(lWmH0hp2(i)) * ffn(p, higgsm(i), mw, q);
   }
-
+  
   return higgs;
 }
 
 double NmssmSoftsusy::piHpm11Gaugino(double p, double q) const {
   const drBarPars & tree = displayDrBarPars();
   double gauginos = 0.0;
-
+  
   /// LCT: Get trilinear couplings
   ComplexMatrix apph1(5, 2), apph2(5, 2), bpph1(5, 2), bpph2(5, 2);
   getNeutralinoCharginoHpmCoup(apph1, apph2, bpph1, bpph2);
-
+  
   /// LCT: Rotate to physical gaugino e-states
   apph1 = tree.nBpmz.complexConjugate() 
-        * apph1 * tree.uBpmz.hermitianConjugate();
+    * apph1 * tree.uBpmz.hermitianConjugate();
   bpph1 = - tree.nBpmz * bpph1 * tree.vBpmz.transpose(); ///<< See piHpm11Higgs 
   /// comment on charged Higgs mixing matrix C for origin of minus sign here
-
+  
   /// LCT: Get neutralino and chargino masses
   DoubleVector mneut(tree.mnBpmz), mch(tree.mchBpmz);
-
+  
   /// LCT: Contributions start here
   for(int i=1; i<=5; i++) {
     for(int j=1; j<=2; j++) {
@@ -7806,62 +7812,63 @@ double NmssmSoftsusy::piHpm11Gaugino(double p, double q) const {
 	* gfn(p, mch(j), mneut(i), q);
     }
   }
-
+  
   return gauginos;
 }
 
 double NmssmSoftsusy::piHpm12Gaugino(double p, double q) const {
   const drBarPars& tree = displayDrBarPars();
   double gauginos = 0.0;
-
+  
   /// LCT: Get trilinear couplings
   ComplexMatrix apph1(5, 2), apph2(5, 2), bpph1(5, 2), bpph2(5, 2);
   getNeutralinoCharginoHpmCoup(apph1, apph2, bpph1, bpph2);
-
+  
   /// LCT: Rotate to physical gaugino e-states
   apph1 = tree.nBpmz.complexConjugate() 
-        * apph1 * tree.uBpmz.hermitianConjugate();
+    * apph1 * tree.uBpmz.hermitianConjugate();
   apph2 = tree.nBpmz.complexConjugate() 
-        * apph2 * tree.uBpmz.hermitianConjugate();
+    * apph2 * tree.uBpmz.hermitianConjugate();
   bpph1 = - tree.nBpmz * bpph1 * tree.vBpmz.transpose();
   bpph2 = - tree.nBpmz * bpph2 * tree.vBpmz.transpose(); ///<< See piHpm11Higgs 
   /// comment on charged Higgs mixing matrix C for origin of minus sign here
-
+  
   /// LCT: Get neutralino and chargino masses
   DoubleVector mneut(tree.mnBpmz), mch(tree.mchBpmz);
-
+  
   /// LCT: Contributions start here
   for(int i=1; i<=5; i++) {
     for(int j=1; j<=2; j++) {
       gauginos = gauginos - 2.0 * mch(j) * mneut(i) 
 	* (apph2(i, j).conj() * bpph1(i, j) 
-        + bpph2(i, j).conj() * apph1(i, j)).real() 
+	   + bpph2(i, j).conj() * apph1(i, j)).real() 
 	* b0(p, mch(j), mneut(i), q) 
         + (apph2(i, j).conj() * apph1(i, j) 
-	+ bpph2(i, j).conj() * bpph1(i, j)).real() 
+	   + bpph2(i, j).conj() * bpph1(i, j)).real() 
 	* gfn(p, mch(j), mneut(i), q);
     }
   }
+  
   return gauginos;
 }
 
 double NmssmSoftsusy::piHpm22Gaugino(double p, double q) const {
   const drBarPars& tree = displayDrBarPars();
   double gauginos = 0.0;
-
+  
   /// LCT: Get trilinear couplings
   ComplexMatrix apph1(5, 2), apph2(5, 2), bpph1(5, 2), bpph2(5, 2);
   getNeutralinoCharginoHpmCoup(apph1, apph2, bpph1, bpph2);
-
+  
   /// LCT: Rotate to physical gaugino e-states
   apph2 = tree.nBpmz.complexConjugate() 
-        * apph2 * tree.uBpmz.hermitianConjugate();
+    * apph2 * tree.uBpmz.hermitianConjugate();
   bpph2 = - tree.nBpmz * bpph2 * tree.vBpmz.transpose(); ///<< See piHpm11Higgs 
   /// comment on charged Higgs mixing matrix C for origin of minus sign here
-
+  
   /// LCT: Get neutralino and chargino masses
   DoubleVector mneut(tree.mnBpmz), mch(tree.mchBpmz);
-
+  
   /// LCT: Contributions start here
   for(int i=1; i<=5; i++) {
     for(int j=1; j<=2; j++) {
@@ -7872,7 +7879,7 @@ double NmssmSoftsusy::piHpm22Gaugino(double p, double q) const {
 	* gfn(p, mch(j), mneut(i), q);
     }
   }
-
+  
   return gauginos;
 }
 
@@ -7886,24 +7893,24 @@ double NmssmSoftsusy::piHpHm(double p, double q) const {
   DoubleMatrix C(2, 2);
   C(1, 1) = - cosb;  C(1, 2) = sinb; 
   C(2, 1) = C(1, 2); C(2, 2) = cosb;
-
+  
   /// LCT: Contributions from gauge bosons
-  double gauge     = piHpHmGauge(p, q);
+  double gauge = piHpHmGauge(p, q);
   /// LCT: Contributions from fermions
-  double fermions  = piHpHmFermions(p, q);
+  double fermions = piHpHmFermions(p, q);
   /// LCT: Contributions from sfermions
   double sfermions = piHpHmSfermions(p, q, mueff);
   /// LCT: Contributions from Higgses (obtained by rotating self-energies in 
   /// gauge basis to mass basis by angle beta)
-  double higgs     = sqr(sinb) * piHpm11Higgs(p, q) 
-                   + sqr(cosb) * piHpm22Higgs(p, q) 
-                   + 2.0 * sinb * cosb * piHpm12Higgs(p, q);
+  double higgs = sqr(sinb) * piHpm11Higgs(p, q) 
+    + sqr(cosb) * piHpm22Higgs(p, q)
+    + 2.0 * sinb * cosb * piHpm12Higgs(p, q);
   /// LCT: Contributions from gauginos (obtained by rotating self-energies in 
   /// gauge basis to mass basis by angle beta)
-  double gauginos  = sqr(sinb) * piHpm11Gaugino(p, q) 
-                   + sqr(cosb) * piHpm22Gaugino(p, q) 
-                   + 2.0 * sinb * cosb * piHpm12Gaugino(p, q);
-
+  double gauginos = sqr(sinb) * piHpm11Gaugino(p, q) 
+    + sqr(cosb) * piHpm22Gaugino(p, q) 
+    + 2.0 * sinb * cosb * piHpm12Gaugino(p, q);
+  
   return (gauge + fermions + sfermions + higgs + gauginos) 
     / (16.0 * sqr(PI));
 }
