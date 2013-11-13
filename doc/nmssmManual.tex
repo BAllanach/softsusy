@@ -100,8 +100,13 @@
   0WA, United Kingdom}
 
 \author{P.~Athron}
-\author{Lewis~C.~Tunstall}
 \author{A.G.~Williams}
+\address{ARC Centre of Excellence for Particle Physics at 
+the Tera-scale, School of Chemistry and Physics, University of Adelaide, 
+Adelaide SA 5005 Australia}
+
+\author{Lewis~C.~Tunstall}
+\address{Albert Einstein Center for Fundamental Physics, Institute for Theoretical Physics, University of Bern, Sidlerstrasse 5, CH-3012 Bern, Switzerland}
 \address{ARC Centre of Excellence for Particle Physics at 
 the Tera-scale, School of Chemistry and Physics, University of Adelaide, 
 Adelaide SA 5005 Australia}
@@ -205,7 +210,7 @@ $m_h=125.5\pm0.2^{+0.5}_{-0.6}$ GeV by combining the $H \rightarrow \gamma
 In CMS, these channels give the combined constraint $m_h=125.3 \pm0.4 \pm0.5$
 GeV in 5.1 fb$^{-1}$ of 7 TeV data and 5.3 fb$^{-1}$ of 8 TeV data. 
 In the MSSM, one can often obtain a CP even Higgs that couples in a similar
-way to the Standard Model Higgs boson. At tree level, it's mass is bounded by
+way to the Standard Model Higgs boson. At tree-level, it's mass is bounded by
 $m_{h^0} < M_Z$, at odds with the LHC experiments' mass measurements. 
 However,
 the radiative corrections to the CP even Higgs mass can be sizeable,
@@ -297,9 +302,9 @@ the algorithm
 employed to calculate the spectrum of masses and couplings of NMSSM
 particles, detailing our level of approximation for various parts of the
 calculation. More technical information is relegated to the appendices. In
-Appendix~\ref{sec:run}, we state how to run the program. The class structure,
+\ref{sec:run}, we state how to run the program. The class structure,
 along with the data contained within each class, is shown in
-Appendix~\ref{sec:objects}. Finally, in Appendix~\ref{sec:RGEs}, we reproduce
+\ref{sec:objects}. Finally, in \ref{sec:RGEs}, we reproduce
 the renormalisation group equations of the NMSSM to two-loops including the
 full 3 by 3 flavour structure. 
 
@@ -312,7 +317,7 @@ names that are used in the program code are shown explicitly in
 
 \subsection{Supersymmetric parameters \label{susypars}}
 The chiral superfield particle content of the NMSSM has the 
-following $SU(3)_c\times SU(2)_L\times U(1)_Y$ quantum numbers:
+following $SU(3)_c\times SU(2)_L\times U(1)_Y$ quantum numbers
 \begin{align}
 L&:(1,2,-\tfrac{1}{2})\,, & \bar{E}&:(1,1,1)\,, & 
 Q&:(3,2,\tfrac{1}{6})\,,  & \bar{U}&:(\overline 3,1,-\tfrac{2}{3})\,, \notag \\
@@ -325,8 +330,8 @@ $L$, $Q$, $H_1$, and $H_2$ are the left-handed doublet lepton and quark
 superfields and the two Higgs doublets. $\bar{E}$, $\bar{U}$, and $\bar{D}$ are 
 the lepton, up-type quark and down-type quark right-handed superfield singlets, 
 respectively. Note that the lepton doublet superfields $L^a_i$ and the Higgs 
-doublet superfield coupling to the down-type quarks, $H$, have the same 
-Standard Model (SM) gauge quantum numbers. Here, we denote an $SU(3)$ colour 
+doublet superfield coupling to the down-type quarks $H$ have the same 
+Standard Model (SM) gauge quantum numbers. We denote an $SU(3)$ colour 
 index of the fundamental representation by  $\{x,y,z\} \in \{1,2,3 \}$. The 
 $SU(2)_L$ fundamental representation indices are denoted by 
 $\{a,b,c\} \in \{1,2\}$ and the generation indices by $\{i,j,k\} \in \{1,2,3\}$.
@@ -338,59 +343,65 @@ included.
 The full renormalisable, $R-$parity conserving superpotential is given by
 %
 \begin{align} 
- W_{\Zv}  &=  \epsilon_{ab} \left[ (Y_E)_{ij} L_i^b H_1^a \bar{E}_{j} 
+ W_{\slashed{\mathbb{Z}}_3}  &=  \epsilon_{ab} \left[ (Y_E)_{ij} L_i^b H_1^a \bar{E}_{j} 
 + (Y_D)_{ij} Q_i^{bx} H_1^a \bar{D}_{jx} 
 + (Y_U)_{ij} Q_i^{ax} H_2^b \bar{U}_{jx} 
 + (\lambda S + \mu)(H^a_2 H^b_1) \right]  + \xi_FS 
 + \frac{\mu^\prime}{2} S^{2} + \frac{\kappa}{3}S^{3} \\
 %
-&= W_{MSSM}^{\mu =0} + \epsilon_{ab}\left[ (\lambda S + \mu)(H^a_2 H^b_1) \right]  
-+ \xi_FS + \frac{\mu^\prime}{2}S^{2} + \frac{\kappa}{3}\kappa S^{3}. 
+&= W_\mathrm{MSSM}^{\mu =0} 
++ \epsilon_{ab}\left[ (\lambda S + \mu)(H^a_2 H^b_1) \right]  
++ \xi_FS + \frac{\mu^\prime}{2}S^{2} + \frac{\kappa}{3}\kappa S^{3} \,
 \label{eq:WZ3V}
 \end{align}
-
- 
-\noindent where the subscript \Zv~reflects the fact that this superpotential contains terms which violate the $\mathbb{Z}_3$ symmetry which is commonly imposed on the 
-NMSSM.  Imposing the $\mathbb{Z}_3$ symmetry restricts the superpotential to
+%
+\noindent where the subscript \Zv~reflects the fact that this superpotential 
+contains terms which violate the $\mathbb{Z}_3$ symmetry which is commonly 
+imposed on the NMSSM.  Imposing the $\mathbb{Z}_3$ symmetry restricts the 
+superpotential to
 %
 \begin{align} 
  W_{\mathbb{Z}_3} &= \epsilon_{ab} \left[(Y_E)_{ij} L_i^b H_1^a \bar{E}_{j} 
 + (Y_D)_{ij} Q_i^{bx} H_1^a \bar{D}_{jx} + (Y_U)_{ij} Q_i^{ax} H_2^b \bar{U}_{jx}  
 + \lambda S(H^a_2 H^b_1) \right] + \frac{\kappa}{3}S^{3} \\
 %
-&= W_{MSSM}^{\mu =0}  + \epsilon_{ab} \lambda S (H^a_2 H^b_1) 
+&= W_\mathrm{MSSM}^{\mu =0}  + \epsilon_{ab} \lambda S (H^a_2 H^b_1) 
 + \frac{\kappa}{3}S^{3}.
 \label{eq:WZ3C}
 \end{align}
 %
-\noindent The $\mathbb{Z}_3$-NMSSM superpotential (\ref{eq:WZ3C}) contains no explicit 
-mass parameter, thereby allowing a solution to the $\mu$-problem when the 
-singlet field acquires a vacuum expectation value (VEV) and generates an 
+\noindent The $\mathbb{Z}_3$-NMSSM superpotential (\ref{eq:WZ3C}) contains no 
+explicit mass parameter, thereby allowing a solution to the $\mu$-problem when 
+the singlet field acquires a vacuum expectation value (VEV) and generates an 
 effective $\mu$ term of the right size. As such, it is sometimes referred to as 
 the scale invariant NMSSM in the literature.  In this paper, we will always 
-write $\mathbb{Z}_3$-NMSSM for the $\mathbb{Z}_3$ conserving case and \Zv-NMSSM for the general 
-$\mathbb{Z}_3$ violating one. 
+write $\mathbb{Z}_3$-NMSSM for the $\mathbb{Z}_3$ conserving case 
+(\ref{eq:WZ3C}) and \Zv-NMSSM for the general $\mathbb{Z}_3$ violating one 
+(\ref{eq:WZ3V}). In Table~\ref{tab:conv} we provide a comparison of the 
+\SOFTSUSY~conventions with the SUSY Les Houches Accord~\cite{Allanach:2008qq}, ref.~\cite{MV94} (Martin and Vaughn), and ref.~\cite{Degrassi:2009yq} (Degrassi and Slavich).
 
 
-\subsection{Next-to-Minimal SUSY breaking parameters \label{sec:susybreak}}
+\subsection{Next-to-minimal SUSY breaking parameters \label{sec:susybreak}}
 The soft breaking scalar potential is given by
 
 \be 
 V_{\textrm{soft}} = V_3 + V_2\big|^{}_{m_3^2=0} + m_S^2|S|^2 
-+ \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + \frac{a_\kappa}{3} S^3 + V_\Zv \,,
++ \epsilon_{ab} \lambda A_\lambda S H^a_2 H^b_1 
++ \frac{\kappa A_\kappa}{3} S^3 + V_{\slashed{\mathbb{Z}}_3} \,,
 \ee 
 %
 where all \Zv~terms are included in
 \be 
-V_\Zv =  \xi_S S + \frac{m_S^{\prime \, 2}}{2} S^2
-  + \epsilon_{ab} m_3^2 H_2^a H_1^b + \textrm{h.c.} \,,
+V_{\slashed{\mathbb{Z}}_3} =  \xi_S S + \frac{m_S^{\prime \, 2}}{2} S^2
+  + \epsilon_{ab} m_3^2 H_2^a H_1^b + \textrm{h.c.} \,.
+\label{eq:VZ3V}
 \ee
 % 
-while $V_3$ and $V_2$ are the trilinear scalar interaction potential and scalar 
-bilinear SUSY breaking potential of the MSSM, given in Sec.\ 2.2 of the 
-\SOFTSUSY~manual \cite{Allanach:2001kg} for the $R$-parity conserving MSSM.  
-The notation $V_2\big|_{m_3^2=0}$ indicates that the \Zv~soft bilinear mass 
-$m_3^2$ present in $V_2$ is set to zero to avoid double counting.
+Expressions for the trilinear scalar interaction potential $V_3$ and scalar 
+bilinear SUSY breaking potential $V_2$  of the MSSM are given in Sect.\ 2.2 of 
+the \SOFTSUSY~manual \cite{Allanach:2001kg} for the $R$-parity conserving MSSM.
+ The notation $V_2\big|_{m_3^2=0}$ indicates that the \Zv~soft bilinear mass 
+$m_3^2$ present in $V_2$ is set to zero to avoid double counting with the third term in (\ref{eq:VZ3V}).
 
 %% \be V_{soft} = V_3 + V_2 + V_\Zv \ee where
 %% \ba V_3 & = & V^{MSSM}_3 + \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + \frac{1}{3} a_\kappa S^3 \\
@@ -429,46 +440,53 @@ $m_{H_{1,2}}^2$ & $m_{H_{1,2}}^2$& $m_{H_{d,u}}^2$ & $m_{H_{1,2}}^2$ \\
 \end{center}\end{table} 
 
 \subsection{Higgs potential and electroweak symmetry breaking}\label{sec:hpot}
-The tree level Higgs potential is given by
-\ba 
-V_{Higgs} & = & V^H_F + V^H_D + V_{\rm soft}^H  \\
-& = & V^{\mu=0}_{MSSM} + V^{HN}_{F} + V_{\rm soft}^{HN}\,,
-\ea 
+At tree-level, the Higgs potential is given by
+%
+\begin{align}
+V_\mathrm{Higgs} &=  V^H_F + V^H_D + V_{\rm soft}^H  \\
+&=  V^{\mu=0}_\mathrm{MSSM} + V^{HN}_{F} + V_{\rm soft}^{HN}\,,
+%
+\end{align} 
 where 
-\ba 
-V^{HN}_{F} & = &  |\lambda S + \mu|^2 (|H_2|^2+|H_1|^2) + |\lambda H_2H_1
-+\kappa S^2 + \mu^\prime S + \xi_S|^2  , \label{eq:HpotF} \\
- V_{\rm soft}^{HN}  & = &  m_S^2|S|^2
-+ \Bigg(\lambda A_{\lambda}SH_2H_1+\frac{\kappa}{3} A_{\kappa}S^3+ \ds\frac{m_S^{\prime \, 2}}{2} S^2 + \xi_S S + \textrm{h.c.} \Bigg)\,, 
-\label{eq:HpotS} \ea
+\begin{align}
+V^{HN}_{F} &=   |\lambda S + \mu|^2 (|H_2|^2+|H_1|^2) + |\lambda H_2H_1
++\kappa S^2 + \mu^\prime S + \xi_S|^2  \,, \label{eq:HpotF} \\
+ V_{\rm soft}^{HN}  &=   m_S^2|S|^2
++ \Bigg(\lambda A_{\lambda}SH_2H_1+\frac{\kappa}{3} A_{\kappa}S^3+ \ds\frac{m_S^{\prime \, 2}}{2} S^2 + \xi_S S + \textrm{h.c.} \Bigg)\,.
+\label{eq:HpotS} 
+\end{align}
 
-\noindent The three neutral Higgs fields then pick up vacuum expectation values,  
+\noindent The three neutral Higgs fields then pick up VEVs
+%  
 \be 
-        \langle H_1 \rangle = \ds\frac{1}{\sqrt{2}}{v_1 \choose 0}\,, 
-\qquad  \langle H_2 \rangle = \ds\frac{1}{\sqrt{2}}{0 \choose v_2}\,, 
-\qquad  \langle S \rangle =  \ds\frac{1}{\sqrt{2}}s\,, \label{eq:potmin} \ee
-  
-\noindent and the minimisation conditions relate the VEVs to the soft masses,
-\ba m_{H_1}^2&=& -\frac{M_Z^2}{2}\cos(2\beta) - \ds\frac{\lamsq}{2} v_2^2
+        \langle H_1^0 \rangle = \ds\frac{1}{\sqrt{2}}{v_1 \choose 0}\,, 
+\qquad  \langle H_2^0 \rangle = \ds\frac{1}{\sqrt{2}}{0 \choose v_2}\,, 
+\qquad  \langle S \rangle =  \ds\frac{1}{\sqrt{2}}s\,, \label{eq:potmin} 
+\ee
+%  
+\noindent which are related to the soft masses via the minimization conditions:
+%
+\begin{align}
+m_{H_1}^2&= -\frac{M_Z^2}{2}\cos(2\beta) - \ds\frac{\lamsq}{2} v_2^2
  + (m_3^2)_\textrm{eff} \tan\beta 
 - |\mu_\textrm{eff}|^2\,, \label{eq:mind}\\
-m_{H_2}^2&=& \frac{M_Z^2}{2}\cos(2\beta) - \ds\frac{\lamsq}{2}v_1^2 
+m_{H_2}^2&= \frac{M_Z^2}{2}\cos(2\beta) - \ds\frac{\lamsq}{2}v_1^2 
 +  \frac{(m_3^2)_\textrm{eff}}{\tan\beta} 
 - |\mu_\textrm{eff}|^2 \,, \label{eq:minu} \\
-m_S^2 &=& -\kappa^2 s^2 - \ds\frac{\lamsq}{2} 
+m_S^2 &= -\kappa^2 s^2 - \ds\frac{\lamsq}{2} 
 v^2 + \kappa\lambda v_2v_1
 + \lambda A_{\lambda} \frac{v_2v_1}{\sqrt{2}s}
--\kappa A_{\kappa}s  - m^{\prime \,2}_S - \mu^{\prime \,2} + 2 \kappa \xi_F  - 3 \kappa s \mu^\prime \,,\label{eq:mins}
-\ea 
-where $\tan \beta = v_2 /  v_1$. %% $\overline g = \sqrt{g^2+g^{\prime 2}}$ and $g$ and $g^{\prime}$
+-\kappa A_{\kappa}s  - m^{\prime \,2}_S - \mu^{\prime \,2} + 2 \kappa \xi_F  - 3 \kappa s \mu^\prime \,.\label{eq:mins}
+\end{align}
+%
+We have $\tan \beta = v_2 /  v_1$, %% $\overline g = \sqrt{g^2+g^{\prime 2}}$ and $g$ and $g^{\prime}$
 %% are the gauge couplings of $SU(2)_L$ and $U(1)$ interactions
 %% respectively, with $g = g_2$ and $g^\prime = \sqrt{3/5} \, g_1$.
-For simplicity we have introduced
+and for simplicity we have introduced
 \be (m_3^2)_\textrm{eff} \equiv
  \ds\frac{ \lambda s}{\sqrt{2}} B_\textrm{eff} + \widehat{m}_3^2\,, \ee and
 \be  \mu_\textrm{eff} \equiv
  \mu + \frac{\lambda s}{\sqrt{2}}\,, \;\;\;\; B_\textrm{eff}\equiv A_\lambda+\ds\frac{\kappa s}{\sqrt{2}}\,, \;\;\;\; \widehat{m}_3^2 \equiv m_3^2 + \lambda \Bigg(\ds\frac{\mu^\prime s}{\sqrt{2}} + \xi_F\Bigg)\,. \ee
-
 
 
 %% Eq.(\ref{eq:mind}, \ref{eq:minu}) can be rewritten as
@@ -508,40 +526,51 @@ $\chi^0_i$ are defined such that their absolute masses increase with increasing
 $i$. Note that some of their mass values can be negative. 
 
 The CP-even gauge eigenstates $(H^0)^T = (H_1^0,\, H_2^0, \, S)$ are rotated into
- mass eigenstates $h^0$ by a mixing matrix $R$,
+ mass eigenstates $(h^0)^T = (h_1, h_2, h_3)$ by a mixing matrix $R$,
 %
 \be 
 h^0 = R H^0\,. 
 \ee 
 %
-The mass matrix appears through the term $-(H^0)^T M^2_{H^0} H^0$ in the 
-Lagrangian, where
+The mass matrix arises from the Lagrangian term $-(H^0)^T M^2_{H^0} H^0$, where
 \be
 M_{H^0}^2=
 \left(
 \begin{array}{ccc}
-\ds\frac{\partial^2 V}{\partial^2 v_1 } - \ds\frac{1}{v_1}\frac{\partial V}{\partial v_1}&
+\ds\frac{\partial^2 V}{\partial^2 v_1 } 
+- \ds\frac{1}{v_1}\frac{\partial V}{\partial v_1}&
 \ds\frac{\partial^2 V}{\partial v_1 \partial v_2}&
 \ds\frac{\partial^2 V}{\partial v_1 \partial s}\\[0.3cm]
 \ds\frac{\partial^2 V}{\partial v_2 \partial v_1}&
-\ds\frac{\partial^2 V}{\partial^2 v_2} - \ds\frac{1}{v_2}\frac{\partial V}{\partial v_2}&
+\ds\frac{\partial^2 V}{\partial^2 v_2} 
+- \ds\frac{1}{v_2}\frac{\partial V}{\partial v_2}&
 \ds\frac{\partial^2 V}{\partial v_2 \partial s}\\[0.3cm]
 \ds\frac{\partial^2 V}{\partial s \partial v_1}&
 \ds\frac{\partial^2 V}{\partial s \partial v_2}&
-\ds\frac{\partial^2 V}{\partial^2 s} - \ds\frac{1}{s}\frac{\partial V}{\partial s},
+\ds\frac{\partial^2 V}{\partial^2 s} 
+- \ds\frac{1}{s}\frac{\partial V}{\partial s}
 \end{array} 
-\right)
+\right) \,,
  \ee 
-and we have rewritten the elements of $M_{H^0}^2$ by imposing tree level EWSB substitution on the the double derivatives of the effective potential.  This
-is equivalent to defining  \be(M_{H^0}^2)_{ij} \equiv  \ds\frac{\partial^2 V}{\partial v_i \partial v_j} - \ds\frac{\delta_{ij}}{v_i}\ds\frac{\partial V}{\partial v_i}\,, \ee with $v_3 \equiv s$.  Explicitly, the matrix elements are  
-
+and we have rewritten the elements of $M_{H^0}^2$ by imposing tree-level 
+electroweak symmetry breaking (EWSB) substitution on the the double derivatives 
+of the effective potential.  This is equivalent to defining  
+%
+\be
+(M_{H^0}^2)_{ij} \equiv  \ds\frac{\partial^2 V}{\partial v_i \partial v_j} 
+- \ds\frac{\delta_{ij}}{v_i}\ds\frac{\partial V}{\partial v_i}
+\ee
+%
+with $v_3 \equiv s$.  The explicit matrix elements are  
+%
 \ba
- (M_{H^0}^2)_{11} & = & M_Z^2 c_\beta^2 + \Bigg(\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
-\widehat{m}_3^2\Bigg)\,\tan\beta\,,\\
+ (M_{H^0}^2)_{11} & = & M_Z^2 c_\beta^2 
+ + \Bigg(\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
+ \widehat{m}_3^2\Bigg)\,\tan\beta\,,\\
  (M_{H^0}^2)_{12} & = & (4\lambda^2 - \overline{g}^2) \ds\frac{v_2 v_1 }{4}- 
-\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} - \widehat{m}_3^2\,, \\ 
+ \ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} - \widehat{m}_3^2\,, \\ 
  (M_{H^0}^2)_{13} & = & \lambda \Bigg[2 \mu_\textrm{eff}\,\ds\frac{ v_1}{\sqrt{2}} -
-(B_\textrm{eff} + \kappa s + \mu')\ds\frac{ v_2}{\sqrt{2}}\Bigg]\,,\\
+ (B_\textrm{eff} + \kappa s + \mu')\ds\frac{ v_2}{\sqrt{2}}\Bigg]\,,\\
  (M_{H^0}^2)_{22} & = & M_Z^2 s_\beta^2 + \Bigg(\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
 \widehat{m}_3^2\Bigg)/\tan\beta\, \\
  (M_{H^0}^2)_{23} & = & \lambda \Bigg[2 \mu_\textrm{eff}\, \ds\frac{ v_2}{\sqrt{2}} -
@@ -551,11 +580,21 @@ is equivalent to defining  \be(M_{H^0}^2)_{ij} \equiv  \ds\frac{\partial^2 V}{\p
 \label{eq:MH0}
 \ea
 
-The three imaginary components of the neutral Higgs fields $(H^I)^T = (H^I_1, H_2^I, S^I)$ mix to give the two physical CP odd bosons and the Goldstone boson, $a^T = (G^0, A_1, A_2)$, with the two bases related by,
- \be 
-a = P H^I\,. \ee 
-Here, $P$ matches the conventions of \cite{Degrassi:2009yq}, while deleting the first row from $P$ produces
- the 2 by 3 mixing matrix for the physical CP-odd Higgs bosons in SLHA2 conventions \cite{Allanach:2008qq}. Following the review of Ellwanger, Hugonie and Teixeira (EHT) \cite{Ellwanger:2009dp}, the entries of the 3 by 3 mass matrix $ M^{\prime \, 2}_{P}$ in the $H^I$ basis read
+The three imaginary components of the neutral Higgs fields 
+$(H^I)^T = (H^I_1, H_2^I, S^I)$ mix to give the two physical CP odd bosons 
+$A_{1,2}$ and the Goldstone boson $G^0$.  A mixing matrix $P$ relates the two 
+bases
+%
+\be 
+a = P H^I\,, 
+\ee
+%
+where $a^T = (G^0,A_1,A_2)$.  Here, $P$ matches the conventions of 
+\cite{Degrassi:2009yq}, while deleting the first row from $P$ produces the 2 by
+ 3 mixing matrix for the physical CP-odd Higgs bosons in SLHA2 conventions \cite{Allanach:2008qq}. Following the review of Ellwanger, Hugonie and Teixeira (EHT)
+ \cite{Ellwanger:2009dp}, the entries of the 3 by 3 mass matrix 
+$ M^{\prime \, 2}_{P}$ in the $H^I$ basis read
+%
 \ba
 ( M^{\prime \, 2}_{P})_{11} & = & \Bigg(\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
 \widehat{m}_3^2\Bigg)\,\tan\beta , \\
@@ -570,25 +609,43 @@ v_d}{s} -3\kappa A_\kappa s  -2 m_{S}'^2 -\kappa \mu' s
 -\xi_F\left(4\kappa + \frac{\mu'}{s}\right) -\ds\frac{\xi_S}{s}.
 \label{eq:MA0}
 \ea
+%
 where tree-level EWSB has been imposed.
 
-Note that --- as in the MSSM --- the mixing of the Goldstone boson $G^0$ depends only on $\tan\beta$. As shown in EHT \cite{Ellwanger:2009dp}, this can be seen by first performing a rotation by $\beta$, which converts $M^{\prime\, 2}_P$ to be block diagonal.  The resulting 2 by 2 submatrix may then be diagonalised.
-  Therefore the CP-odd mixing can be stored as a single mixing angle.%
-\footnote{\SOFTSUSY~does this internally by storing $\theta_{A^0}$ in the {\tt sPhysical} object (see \ref{nmssmsoftsusy}).  Note that the SLHA output gives the 3 by 2 mixing matrix and thus matches SLHA2 conventions.}
+Note that --- as in the MSSM --- the mixing of the Goldstone boson $G^0$ depends
+ only on $\tan\beta$. As shown in EHT \cite{Ellwanger:2009dp}, this can be seen 
+by first performing a rotation by $\beta$, which converts $M^{\prime\, 2}_P$ to be 
+block diagonal.  The resulting 2 by 2 submatrix may then be diagonalised. 
+Therefore the CP-odd mixing can be stored as a single mixing angle.%
+  \footnote{\SOFTSUSY~does this internally by storing $\theta_{A^0}$ in the 
+    {\tt sPhysical} object (see \ref{nmssmsoftsusy}).  Note that the SLHA output
+    gives the 3 by 2 mixing matrix and thus matches SLHA2 conventions.}
 
-Finally, the charged Higgs fields in the mass basis give one massless charged Goldstone boson $G^+$, and a charged Higgs, $H^\pm$ with mass
-\be m_{H^\pm}^2 = \left(\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
-\widehat{m}_3^2\right)(\tan \beta + \cot \beta) + M_W^2 - \ds\frac{\lambda^2 v^2}{2}\,. \ee
+Finally, the charged Higgs fields in the mass basis contain one massless 
+charged Goldstone boson $G^+$ and a charged Higgs, $H^\pm$ with mass
+%
+\be 
+m_{H^\pm}^2 = \left(\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
+\widehat{m}_3^2\right)(\tan \beta + \cot \beta) + M_W^2 - \ds\frac{\lambda^2 v^2}{2}\,. 
+%
+\ee
   
 \section{Calculation Algorithm \label{sec:calculation}}
-We now describe the algorithm used to perform the calculation.  The full iterative algorithm to determine the mass spectrum is shown schematically in Fig.\ \ref{fig:algorithm}.  Here we will provide a detailed description of this procedure and specify all contributions that are included in the calculation.
+We now describe the algorithm used to perform the calculation.  The full 
+iterative algorithm to determine the mass spectrum is shown schematically in 
+Fig.\ \ref{fig:algorithm}.  Here we will provide a detailed description of this 
+procedure and specify all contributions that are included in the calculation.
 
-As in MSSM \SOFTSUSY, the Standard Model fermion and gauge boson masses, 
-and the couplings $\alpha(M_Z)$, $G_F^\mu$, and $\alpha_s(M_z)$ act as low energy constraints. Below $M_Z$, the evolution of these input parameters
- proceeds in the manner described in Sec.\ 3.1 of the MSSM \SOFTSUSY~manual \cite{Allanach:2001kg}.  Similarly, the initial guess for the SUSY preserving $\overline{DR}$ parameters at $m_t$ 
-follows the procedure outlined in Sec.\ 3.2 of \cite{Allanach:2001kg}, with the additional NMSSM parameters $\{\lambda, \kappa, s, \xi_F, \mu^\prime \}$ either initially set to their (user specified)
-input values, or to zero in the case when $\kappa$ and $s$ are treated as
- output from the EWSB conditions (Sec.\ \ref{ewsb}).
+As in MSSM \SOFTSUSY, the Standard Model fermion and gauge boson masses, and the
+ couplings $\alpha(M_Z)$, $G_F^\mu$, and $\alpha_s(M_z)$ act as low energy 
+constraints. Below $M_Z$, the evolution of these input parameters proceeds in 
+the manner described in Sect.\ 3.1 of the MSSM \SOFTSUSY~manual 
+\cite{Allanach:2001kg}.  Similarly, the initial guess for the SUSY preserving 
+$\overline{DR}$ parameters at $m_t$ follows the procedure outlined in Sect.\ 3.2
+of \cite{Allanach:2001kg}, with the additional NMSSM parameters 
+$\{\lambda, \kappa, s, \xi_F, \mu^\prime \}$ either initially set to their 
+(user specified) input values, or to zero in the case when $\kappa$ and $s$ are 
+treated as outputs from the EWSB conditions (Sect.\ \ref{ewsb}).
 
 \begin{figure}
 \begin{center}
@@ -631,7 +688,7 @@ energy SUSY breaking boundary conditions are imposed.
 
 \subsection{Running of NMSSM couplings~\label{running}}
 Following the initial guess at $m_t$, the two-loop $\beta$ functions of the 
-$\Zv$ NMSSM are used to evolve the SUSY preserving parameters to a user 
+$\Zv$-NMSSM are used to evolve the SUSY preserving parameters to a user 
 specified scale $M_X$. If gauge unification has been specified as a boundary 
 condition, $M_X$ is revised to leading-log order to provide a more accurate 
 value upon the next iteration:
@@ -651,7 +708,7 @@ theory is known. From these general results, it is possible to derive the
 explicit expressions of the RGEs in a chosen model (e.g.\ the work of Martin and
  Vaughn \cite{MV94} provides a complete list of the RGEs for the MSSM).  
 
-In the case of the NMSSM considered here, it is a simple task to generalise the 
+In the case of the NMSSM considered here, it is a simple task to generalize the 
 MSSM expressions \cite{MV94} to include contributions due to superpotential 
 parameters such as $\lambda$ and their soft SUSY-breaking counterparts 
 $a_\lambda$.  (Naturally, the RGEs for such parameters must be derived 
@@ -817,8 +874,7 @@ when comparing against {\tt SARAH} and {\tt FlexibleSUSY}. PA and AV
 comments and discussions regarding the precision corrections included
 here and would also like to thank both him and Jae-hyeon Park for
 listening to a number of discussions about this project in general and
-offering helpful remarks.
-
+offering helpful remarks.  LCT is supported by the Federal Commission for Scholarships for Foreign Students.
 
 \appendix
 
