@@ -8212,19 +8212,20 @@ double NmssmSoftsusy::calcRunningMb() const {
 }
 
 double NmssmSoftsusy::calcRunMtauHiggs() const {
-  double mTauPole = MTAU;
-  double p = mTauPole;
-  double q = displayMu();
-  double mz  = displayMzRun();
-  double mw  = displayMwRun();
-  double cosb = cos(atan(displayTanb()));
-  double sinb = sin(atan(displayTanb()));
-  double htau = displayDrBarPars().htau;
-  double mtau = displayDrBarPars().mtau;
-  double g    = displayGaugeCoupling(2);
+  double mTauPole    = MTAU;
+  double p           = mTauPole;
+  double q           = displayMu();
+  double mz          = displayMzRun();
+  double mw          = displayMwRun();
+  double cosb        = cos(atan(displayTanb()));
+  double sinb        = sin(atan(displayTanb()));
+  double htau        = displayDrBarPars().htau;
+  double mtau        = displayDrBarPars().mtau;
+  double g           = displayGaugeCoupling(2);
   double thetaWDRbar = asin(calcSinthdrbar());
   double cw2DRbar    = sqr(cos(thetaWDRbar));
   double mnu = 0.;
+  
   double sigmaHiggs = 0.0;
   /// LCT: Higgs 3 x 3 CP-even S, CP-odd P, and charged C mixing matrices 
   DoubleMatrix P(3, 3), S(3, 3);
@@ -8237,23 +8238,23 @@ double NmssmSoftsusy::calcRunMtauHiggs() const {
 
   /// CP-even Higgs
   for (int i = 1; i <= 3; i++) {
-     sigmaHiggs = sigmaHiggs 
-        + 0.5 * sqr(htau) * (sqr(S(i,1)) * (b1(p, mtau, mH(i), q) 
-                                            + b0(p, mtau, mH(i), q)));
+    sigmaHiggs = sigmaHiggs + 0.5 * sqr(htau) 
+      * (sqr(S(i,1)) * (b1(p, mtau, mH(i), q) + b0(p, mtau, mH(i), q)));
   }
   for (int i = 1; i <= 3; i++) {
-     sigmaHiggs = sigmaHiggs 
-        + 0.5 * sqr(htau) * (sqr(P(i, 1)) * (b1(p, mtau, higgsa(i), q) 
-                                               -  b0(p, mtau, higgsa(i), q)));
+    sigmaHiggs = sigmaHiggs + 0.5 * sqr(htau) 
+      * (sqr(P(i, 1)) * (b1(p, mtau, higgsa(i), q) - b0(p, mtau, higgsa(i), q)));
   }
   
   /// Charged Higgs + SM contribution
-  sigmaHiggs = sigmaHiggs + 0.5 * (sqr(htau) * sqr(sinb) * b1(p, mnu, mHp, q) + (sqr(g) + sqr(htau) * sqr(cosb)) * b1(p, mnu, mw, q)) +
-     sqr(g) / cw2DRbar * ((sqr(geL) + sqr(geR)) * b1(p, mtau, mz, q) 
-                          +  4.0 * geL * geR * b0(p, mtau, mz, q));
- 
+  sigmaHiggs = sigmaHiggs 
+    + 0.5 * (sqr(htau) * sqr(sinb) * b1(p, mnu, mHp, q) 
+	     + (sqr(g) + sqr(htau) * sqr(cosb)) * b1(p, mnu, mw, q)) +
+    sqr(g) / cw2DRbar * ((sqr(geL) + sqr(geR)) * b1(p, mtau, mz, q) 
+			 +  4.0 * geL * geR * b0(p, mtau, mz, q));
+  
   sigmaHiggs = sigmaHiggs / (16.0 * sqr(PI));
-
+  
   return  sigmaHiggs;
 }
 
@@ -8261,24 +8262,24 @@ double NmssmSoftsusy::calcRunMtauNeutralinos(double mTauSMMZ) const {
   double thetatau = displayDrBarPars().thetatau;
   double g        = displayGaugeCoupling(2);
   double gp       = displayGaugeCoupling(1) * sqrt(0.6);
-  double htau = displayDrBarPars().htau;
+  double htau     = displayDrBarPars().htau;
   double mTauPole = MTAU;
-  double p = mTauPole;
-  double q = displayMu();
+  double p        = mTauPole;
+  double q        = displayMu();
   
   ComplexMatrix n(displayDrBarPars().nBpmz);
   DoubleVector mneut(displayDrBarPars().mnBpmz);
  /// Neutralinos
-  DoubleVector aPsi0TauStaur(5), bPsi0TauStaur(5), aPsi0TauStaul(5),
-    bPsi0TauStaul(5); 
+  DoubleVector aPsi0TauStaur(5), bPsi0TauStaur(5), 
+    aPsi0TauStaul(5), bPsi0TauStaul(5); 
   aPsi0TauStaur(1) = gp / root2 * 2.0;
   bPsi0TauStaul(1) = -gp / root2;
   bPsi0TauStaul(2) = -root2 * g * 0.5;
   aPsi0TauStaul(3) = htau;
   bPsi0TauStaur(3) = htau;
-
-  ComplexVector aChi0TauStaul(5), bChi0TauStaul(5), aChi0TauStaur(5),
-    bChi0TauStaur(5);
+  
+  ComplexVector aChi0TauStaul(5), bChi0TauStaul(5), 
+    aChi0TauStaur(5), bChi0TauStaur(5);
 
   double sigmaNeutralino = 0.;
   aChi0TauStaul = n.complexConjugate() * aPsi0TauStaul;
@@ -8304,20 +8305,21 @@ double NmssmSoftsusy::calcRunMtauNeutralinos(double mTauSMMZ) const {
       /// functions of couplings needed for loops
       fNeutTauStau(i, j) = sqr(aNeutTauStau(i, j).mod()) + 
 	sqr(bNeutTauStau(i, j).mod());
-
+      
       gNeutTauStau(i, j) = 2.0 * 
 	(aNeutTauStau(i, j) * bNeutTauStau(i, j).conj()).real(); 
       
-      neutralinoContribution(i, j) = (fNeutTauStau(i, j) * 
-	 b1(p, mneut(i), displayDrBarPars().me(j, 3), q) + 
-	 gNeutTauStau(i, j) * mneut(i) /  mTauSMMZ *  
-	 b0(p, mneut(i), displayDrBarPars().me(j, 3), q)) * 0.5;
-
+      neutralinoContribution(i, j) = 
+	(fNeutTauStau(i, j) * b1(p, mneut(i), displayDrBarPars().me(j, 3), q) 
+	 + gNeutTauStau(i, j) * mneut(i) /  mTauSMMZ 
+	 * b0(p, mneut(i), displayDrBarPars().me(j, 3), q)) * 0.5;
+      
       sigmaNeutralino = sigmaNeutralino + neutralinoContribution(i, j);
     }
   }
-
+  
   sigmaNeutralino = sigmaNeutralino / (16.0 * sqr(PI));
+  
   return sigmaNeutralino;
 }
 
@@ -8332,7 +8334,7 @@ double NmssmSoftsusy::calcRunningMtau() const {
   double sigmaHiggs = calcRunMtauHiggs();
   /// Neutralinos
   double  sigmaNeutralino = calcRunMtauNeutralinos(mTauSMMZ);
-
+  
   return mTauSMMZ * (1.0 + sigmaNeutralino + sigmaChargino + sigmaHiggs);
 }
 
@@ -8341,19 +8343,18 @@ double NmssmSoftsusy::h1s2Mix(){
    return displayDrBarPars().mixh0(1,2);
 }
 
-
 double NmssmSoftsusy::predTanb(double MuEff) const  {
-  double lam = displayLambda();
-  double kap = displayKappa();
-  double m3sq = displayM3Squared();
-  double mupr = displayMupr();
-  double s = displaySvev();
-  double vev = displayHvev();
-  double xiF = displayXiF();
-  double al = displayTrialambda();
+  double lam     = displayLambda();
+  double kap     = displayKappa();
+  double m3sq    = displayM3Squared();
+  double mupr    = displayMupr();
+  double s       = displaySvev();
+  double vev     = displayHvev();
+  double xiF     = displayXiF();
+  double al      = displayTrialambda();
   double m3sqeff = m3sq  + lam * (mupr * s / root2 + xiF)
     + al * s / root2  +   0.5 * lam * kap * sqr(s); 
-   if (MuEff < -6.e66) MuEff = displaySusyMu() + lam * s / root2;
+  if (MuEff < -6.e66) MuEff = displaySusyMu() + lam * s / root2;
   double sin2t = 2.0 * m3sqeff / 
     (displayMh1Squared() - displayTadpole1Ms() + 
      displayMh2Squared() - displayTadpole2Ms() + 2.0 *
@@ -8363,6 +8364,7 @@ double NmssmSoftsusy::predTanb(double MuEff) const  {
   /// than pi/4. sin(pi - 2 beta)=sin 2 beta should achieve this.
   /// we also use tan (pi/2 - theta) = 1/tan(theta)
   double theta;
+  
   if (fabs(sin2t) < 1.0) theta = asin(sin2t) * 0.5;
   else return 0.0;
   
@@ -8370,7 +8372,7 @@ double NmssmSoftsusy::predTanb(double MuEff) const  {
 }
 
 /// PA: Nmssm version modified to include full mueff = mu + lambda * s / root2
-// Apply at scale MSusy:
+/// Apply at scale MSusy:
 /// Displays PHYSICAL MZ, ie MZ(q) - piZz^T(q)
 double NmssmSoftsusy::predMzsq(double & tanb, double mueffOld, double eps) {
   //PA: new Nmssm parameters needed for mu effective
@@ -8388,17 +8390,16 @@ double NmssmSoftsusy::predMzsq(double & tanb, double mueffOld, double eps) {
   double susyMu = displaySusyMu() + lam * s /  root2;
   tanb = predTanb(susyMu);
   if (mueffOld > -6.e66) susyMu = susyMu / eps - mueffOld * (1. / eps - 1.);
-
+  
   double pizztMS = sqr(displayMzRun()) - sqr(displayMz()); ///< resums logs
   double MZsq = 2.0 *
     ((displayMh1Squared() - displayTadpole1Ms() - 
       (displayMh2Squared() - displayTadpole2Ms()) *
       sqr(tanb)) / (sqr(tanb) - 1.0) - sqr(susyMu)) - 
     pizztMS;
-
+  
   return MZsq;
 }
-
 
 void NmssmSoftsusy::itLowsoft
 (int maxTries, int sgnMu, double tol, double tanb, 
@@ -8416,9 +8417,9 @@ void NmssmSoftsusy::itLowsoft
   o.mixNeut.resize(5,5);
   o.mnBpmz.setEnd(5);
   o.nBpmz.resize(5,5);
-
+  
   old.setDrBarPars(o);
-
+  
   static double oldMu = 0.;
   static int numTries = 0;
   double mz = displayMz();
@@ -8435,15 +8436,15 @@ void NmssmSoftsusy::itLowsoft
     numTries = 0; 
     return;
   }
-
+  
   if (PRINTOUT > 1) cout << displayProblem(); 
-
+  
   double mtrun;
   
   /// On first iteration, don't bother with finite corrections
   
   numTries = numTries + 1;
- 
+  
   //PA: reset new low energy inputs of general nmssm at mz.
   if(Z3){
     setXiF(0.0);                         
