@@ -136,7 +136,7 @@ ostream & operator <<(ostream &st, const sProblem & p) {
   if (p.muSqWrongSign) st << "MuSqWrongsign ";
   if (p.m3sq) st << "m3sq-problem ";
   if (p.higgsUfb) st << "Higgs potential ufb ";
-  if (p.higgsNoMin) st << "Higgs potential no min " ;
+  if (p.higgsNoMin) st << "Higgs potential has no global min " ;
   if (p.inaccurateHiggsMass) st << "Inaccurate Higgs mass ";
   if (p.problemThrown) st << "Numerical problemThrown ";
   st << "]";

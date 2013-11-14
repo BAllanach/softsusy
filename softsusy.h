@@ -70,7 +70,7 @@ class Softsusy: public SoftPars, public AltEwsbMssm {
 private:
   sPhysical physpars; ///< Contains pole masses and mixings of sparticles
   drBarPars forLoops; ///< Contains DRbar tree-level masses
- 
+  sProblem problem;   ///< Contains problem flags 
   double msusy;       ///< Scale at which Higgs potential is minimised
   double minV;        ///< Value of Higgs potential at minimum
   double mw;          ///< Pole W mass prediction
@@ -83,7 +83,6 @@ private:
   double t1OV1Ms1loop, t2OV2Ms1loop; ///< DRbar tadpoles(MSusy): excl 2 loops
 
 protected:
-  sProblem problem;   ///< Contains problem flags 
   void setT1OV1Ms(double t1) { t1OV1Ms = t1; } 
   void setT2OV2Ms(double t2) { t2OV2Ms = t2; } 
   void setT1OV1Ms1loop(double t1) { t1OV1Ms1loop = t1; }
@@ -213,10 +212,12 @@ public:
   void flagInaccurateHiggsMass(bool a) { problem.inaccurateHiggsMass = a; };
   /// Flags an inconsistent Higgs minimum
   void flagHiggsufb(bool a) { problem.higgsUfb = a; };
+  /// LCT: Flags problem with no global minimum in Higgs potential
+  void flagHiggsNoMin(bool a) { problem.higgsNoMin = a; };
   /// Sets all problems equal to either true or false (contained in a)
   void flagAllProblems(bool a, tachyonType b) { problem.irqfp = a; 
     problem.tachyon = b; problem.m3sq = a; problem.badConvergence = a;
-    problem.noConvergence = a; problem.higgsUfb = a;
+    problem.noConvergence = a; problem.higgsUfb = a; problem.higgsNoMin = a;
     problem.nonperturbative = a; problem.noRhoConvergence = a; 
     problem.noMuConvergence = a; problem.muSqWrongSign = a; 
     problem.inaccurateHiggsMass = b; problem.mgutOutOfBounds = a; }
