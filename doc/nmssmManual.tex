@@ -43,6 +43,8 @@
 \newcommand{\Musq}{M_u^2}
 \newcommand{\Mdsq}{M_d^2}
 \newcommand{\Mesq}{M_e^2}
+\newcommand{\MSbar}{{\overline{MS}}}
+\DeclareMathOperator{\sign}{sign}
 % text editing
 \newcommand*{\red}[1]{\textcolor{red}{#1}}
 \def\at{\alpha_t}
@@ -908,6 +910,108 @@ $M_{GUT}$ is used (defined to be the $\overline{DR}$ scale $Q$ at which $g_1(Q) 
 g_2(Q)$). The default output is in SLHA2 format, the conventions of which are
 explained in Ref.~\cite{Allanach:2008qq}. 
 
+In \SOFTSUSY\ 4 the command line interface of \code{softpoint.x} has
+changed, see \code{softpoin.x --help}.  For the MSSM the new syntax is
+%
+\small
+\begin{verbatim}
+ ./softpoint.x <susy-breaking-model> [susy-breaking-model options] [general options]
+\end{verbatim}
+\normalsize
+%
+where the available susy-breaking models are listed in
+\tablename~\ref{tab:mssm-cmd-line-options} and the general options are
+listed in \tablename~\ref{tab:general-cmd-line-options}.
+%
+\begin{table}[tbh]
+  \centering
+  \begin{tabular}{lll}
+    susy-breaking model & susy-breaking model option & description \\
+    \hline
+    \code{sugra} & \code{--m0=<value>} & unified soft scalar mass \\
+                 & \code{--m12=<value>} & unified soft gaugino mass \\
+                 & \code{--a0=<value>} & unified trilinear coupling \\
+    \hline
+    \code{amsb} & \code{--m0=<value>} & unified soft scalar mass \\
+                & \code{--m32=<value>} & gravitino mass \\
+    \hline
+    \code{gmsb} & \code{--n5=<value>} & ??? \\
+                & \code{--mMess=<value>} & messenger scale \\
+                & \code{--lambda=<value>} & ??? \\
+                & \code{--cgrav=<value>} & ??? \\
+    \hline
+  \end{tabular}
+  \caption{MSSM command line options for \code{softpoint.x}}
+  \label{tab:mssm-cmd-line-options}
+\end{table}
+%
+\begin{table}[tbh]
+  \centering
+  \begin{tabular}{ll}
+    general option & description \\
+    \hline
+    \code{--mbmb=<value>} & bottom mass $m_b^\MSbar(m_b)$ \\
+    \code{--mt=<value>} & top mass $m_t^\text{pole}$ \\
+    \code{--alpha\_s=<value>} & strong coupling $\alpha_s^\MSbar(M_Z)$ \\
+    \code{--QEWSB=<value>} & EWSB scale \\
+    \code{--alpha\_inverse=<value>} & inverse electromagnetic cougling $1/\alpha^\MSbar_\text{em}(M_Z)$ \\
+    \code{--tanBeta=<value>} & $\tan\beta$ \\
+    \code{--sgnMu=<value>} & $\sign\mu$ \\
+    \code{--mgut=unified} & define unification scale $M_X$ by $g_1(M_X)=g_2(M_X)$ \\
+    \code{--mgut=msusy} & set unification scale to $M_\text{SUSY}$ \\
+    \code{--mgut=<value>} & set unification scale to fixed value \\
+    \hline
+  \end{tabular}
+  \caption{General command line options for \code{softpoint.x}}
+  \label{tab:general-cmd-line-options}
+\end{table}
+%
+For the NMSSM, the syntax is
+%
+\small
+\begin{verbatim}
+ ./softpoint.x nmssm <susy-breaking-model> [NMSSM flags] [NMSSM parameters] [general options]
+\end{verbatim}
+\normalsize
+%
+where only \code{sugra} is the currently available susy-breaking
+model.  The general options are listed in
+\tablename~\ref{tab:general-cmd-line-options} and the NMSSM flags and
+parameter options are listed in
+\tablename~\ref{tab:nmssm-cmd-line-options}.
+%
+\begin{table}[tbh]
+  \centering
+  \begin{tabular}{ll}
+    NMSSM flags & description \\
+    \hline
+    \code{--lambdaAtMsusy} & input $\lambda$ at scale $M_{SUSY}$ \\
+    \hline\\
+    NMSSM parameters & description \\
+    \hline
+    \code{--m0=<value>} & unified soft scalar mass \\
+    \code{--m12=<value>} & unified soft gaugino mass \\
+    \code{--a0=<value>} & unified trilinear coupling \\
+    \code{--tanBeta=<value>} & $\tan\beta$ \\
+    \code{--mHd2=<value>} & soft down-type Higgs mass squared $m_{H_1}^2$ \\
+    \code{--mHu2=<value>} & soft up-type Higgs mass squared $m_{H_2}^2$ \\
+    \code{--mu=<value>} & $\mu$ parameter \\
+    \code{--BmuOverCosBetaSinBeta=<value>} & $B\mu/(\cos\beta \sin\beta)$ \\
+    \code{--lambda=<value>} & trilinear superpotential coupling $\lambda$ \\
+    \code{--kappa=<value>} & trilinear superpotential coupling $\kappa$ \\
+    \code{--Alambda=<value>} & trilinear soft coupling $A_\lambda$ \\
+    \code{--Akappa=<value>} & trilinear soft coupling $A_\kappa$ \\
+    \code{--lambdaS=<value>} & $\lambda \langle S \rangle = \lambda s / \sqrt{2}$ \\
+    \code{--xiF=<value>} & linear superpotential coupling $\xi_F$ \\
+    \code{--xiS=<value>} & linear soft coupling $\xi_S$ \\
+    \code{--muPrime=<value>} & bilinear superpotential coupling $\mu'$ \\
+    \code{--mPrimeS2=<value>} & bilinear soft coupling $m_{S}'^2$ \\
+    \code{--mS2=<value>} & bilinear soft mass $m_{S}^2$ \\
+    \hline
+  \end{tabular}
+  \caption{NMSSM command line options for \code{softpoint.x}}
+  \label{tab:nmssm-cmd-line-options}
+\end{table}
 
 \section{Class Structure\label{sec:objects}}
 
