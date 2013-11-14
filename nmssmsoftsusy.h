@@ -63,7 +63,7 @@ public:
   double displayTadpoleSMs1loop() const; ///< displays t_2/v_s tadpole @1 loop
 
   /// LCT: Flag problem with Higgs potential minimum
-  void flagHiggsNoMin(bool a) { sProblem().higgsNoMin = a; };
+  void flagHiggsNoMin(bool a) { problem.higgsNoMin = a; };
 
   //PA: obtains NMSSM P1-sfermion-sfermion couplings 
   //for 3rd generation sfermions
