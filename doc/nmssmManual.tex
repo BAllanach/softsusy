@@ -1013,6 +1013,51 @@ parameter options are listed in
   \label{tab:nmssm-cmd-line-options}
 \end{table}
 
+\section{Calculating decays with NMSSMTools\label{sec:decays}}
+
+\SOFTSUSY~4 has a compatibility mode which interfaces with NMSSMTools
+4.1 to calculate sparticle decays in the NMSSM.  To enable it, the
+user has to first install NMSSMTools and then run the
+\code{setup\_nmssmtools.sh} script
+%
+\begin{verbatim}
+  $ cd /path/to/NMSSMTools/
+  $ wget http://www.th.u-psud.fr/NMHDECAY/NMSSMTools_4.1.2.tgz
+  $ tar xf NMSSMTools_4.1.2.tgz
+  $ cd /path/to/softsusy/
+  $ ./setup_nmssmtools.sh \
+       --nmssmtools-dir=/path/to/NMSSMTools/NMSSMTools_4.1.2 \
+       --compile
+\end{verbatim}
+%
+The \code{setup\_nmssmtools.sh} script copies \code{nmProcessSpec.f}
+and \code{Makefile.nmssmtools} from the \SOFTSUSY\ directory to the
+main/ directory within the NMSSMTools folder.  If the \code{--compile}
+flag is provided, NMSSMTools is recompiled.  Afterwards the user can
+generate an NMSSM spectrum with \SOFTSUSY\ and use NMSSMTools to
+calculate the decays.  The \code{run\_nmssmtools.sh} script combines
+these two steps:
+%
+\begin{verbatim}
+  $ ./run_nmssmtools.sh < slhaInput > slhaOutput
+\end{verbatim}
+%
+Here \code{slhaInput} is an SLHA input file with the SOFTSUSY block
+entry $15$ set to $1$
+%
+\begin{verbatim}
+   Block SOFTSUSY
+      15   1      # NMSSMTools compatible output (default: 0)
+\end{verbatim}
+%
+After \code{run\_nmssmtools.sh} was called, the following three output
+files can be found in the NMSSMTools directory
+\code{NMSSMTools\_4.1.2/main/}: The file \code{nmProcessSpec-decay}
+contains the sparticle decays in form of SLHA DECAY blocks,
+\code{nmProcessSpec-omega} \red{will be empty} and
+\code{nmProcessSpec-spectr} contains the spectrum calculated by
+NMSSMTools.
+
 \section{Class Structure\label{sec:objects}}
 
 We now go on to sketch the NMSSM class hierarchy.  Only methods and
