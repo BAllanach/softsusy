@@ -3562,7 +3562,42 @@ double NmssmSoftsusy::VhAtMin(double s, int loop) const {
   /// LCT: Combine tree-level and 1-loop corrections to effective potential
   VH = VH + VHloop;
   }
-		  
+
+ /// LCT: 2-loop O(alpha_s) corrections to effective potential (ref. Slavich)
+  if (loop > 0) {
+    double q = displayMu();//, zero = 0.0;
+    double mGluino = displayGaugino(3);
+    //double thetat = forLoops.thetat;
+    //double s2t = sin(2.0 * thetat), c2t = cos(2.0 * thetat);
+    // double ht = forLoops.ht, v2 = vev * cb, v1 = vev * sb, 
+    //   At  = displaySoftA(UA, 3, 3), svev = displaySvev();
+    // double X = ht * v2 / root2;
+    // double Xtilde = ht * (At * v2 / root2 - 0.5 * lam * svev * v1); 
+
+     // cout << "jj = " << jj_(&q, &mt, &mt) << endl;
+    double VH2loop = 2.0 * jj_(&q, &mt, &mt)
+      - 4.0 * sqr(mt) * ii0_(&q, &mt); 
+      // + 2.0 * sqr(mstop(1)) * ii_(&q, &mstop(1), &mstop(1), &zero);
+      // + 2.0 * ll_(&q, &mstop(1), &mGluino, &mt);
+      // - 4.0 * mt * mGluino * sin2t * ii_(&q, &mstop(1), &mGluino, &mt) 
+      // + 0.5 * (1 + sqr(c2t)) * jj_(&q, &mstop(1), &mstop(1))
+      // + 0.5 * sqr(s2t) * jj_(&q, &mstop(1), &mstop(2)) // stop 1
+      // + 2.0 * sqr(mstop(2)) * ii_(&q, &mstop(2), &mstop(2), &zero)
+      // + 2.0 * ll_(&q, &mstop(2), &mGluino, &mt) + 4.0 * mt * mGluino * sin2t 
+      // * ii_(&q, &mstop(2), &mGluino, &mt) + 0.5 * (1 + sqr(c2t)) 
+      // * jj_(&q, &mstop(2), &mstop(2)) 
+      // + 0.5 * sqr(s2t) * jj_(&q, &mstop(2), &mstop(1)); // stop 2
+
+    cout << "VH2loop = " << VH2loop << endl;
+
+    /// Need to include sbots and staus.
+
+    // /// LCT: Combine tree + 1-loop + 2-loop corrections
+    // VH = VH + VH2loop
+
+      // cout << "VHtot = " << VH << endl;
+      }
+	  
   return VH;
 }
 
@@ -8077,8 +8112,8 @@ double NmssmSoftsusy::calcRunMbHiggs() const {
   double mt          = displayDrBarPars().mt;
   double cosb        = cos(atan(displayTanb()));
   double sinb        = sin(atan(displayTanb()));
-  double  mz         = displayMzRun();
-  double  mw         = displayMwRun();
+  double mz          = displayMzRun();
+  double mw          = displayMwRun();
   double thetaWDRbar = asin(calcSinthdrbar());
   double cw2DRbar    = sqr(cos(thetaWDRbar));
   double g           = displayGaugeCoupling(2);

@@ -278,6 +278,40 @@ c     now build up the results
 **********************************************************************
 *
 
+c     From S. Martin arXiv:hep-ph/0307101, Eq. (6.8)
+
+      double precision function II0(q,m1) 
+      
+      implicit none
+      double precision q,m1
+
+      II0 = m1*(-Log(m1/q)**2+4d0*Log(m1/q)-5d0)
+
+      return
+      end 
+
+
+
+*
+**********************************************************************
+*
+
+c      double precision function LL(q,m1,m2,m3) 
+      
+c      implicit none
+c      double precision q,m1,m2,m3,JJ,II
+      
+c      LL = JJ(q,m2,m3)-JJ(q,m1,m2)-JJ(q,m1,m3)-(m1-m2-m3)*II(q,m1,m2,m3)
+      
+c      return
+c      end
+
+
+
+*
+**********************************************************************
+*
+
       function phiNM(x,y,z)
 
 c     from Davydychev and Tausk, Nucl. Phys. B397 (1993) 23
