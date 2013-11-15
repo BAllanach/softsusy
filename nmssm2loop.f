@@ -296,15 +296,17 @@ c     From S. Martin arXiv:hep-ph/0307101, Eq. (6.8)
 **********************************************************************
 *
 
-c      double precision function LL(q,m1,m2,m3) 
+c     Defined in Eq. (D3) of Degrassi & Slavich 
+
+      double precision function LL(q,m1,m2,m3) 
       
-c      implicit none
-c      double precision q,m1,m2,m3,JJ,II
+      implicit none
+      double precision q,m1,m2,m3,JJ,II
       
-c      LL = JJ(q,m2,m3)-JJ(q,m1,m2)-JJ(q,m1,m3)-(m1-m2-m3)*II(q,m1,m2,m3)
+      LL = JJ(q,m2,m3)-JJ(q,m1,m2)-JJ(q,m1,m3)-(m1-m2-m3)*II(q,m1,m2,m3)
       
-c      return
-c      end
+      return
+      end
 
 
 
