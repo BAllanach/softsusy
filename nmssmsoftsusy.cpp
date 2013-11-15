@@ -3575,7 +3575,7 @@ double NmssmSoftsusy::VhAtMin(double s, int loop) const {
   /// VH taken from Appendix C of Degrassi & Slavich, 
   /// Nucl.Phys. B825, 119 (2010), with 2-loop functions jj, ii, ii0 called from
   /// nmssm2loop.f.  Here, ii0 = ii(q, x, x, 0).
-  if (loop > 0) {
+  if (loop > 1) {
     /// LCT: Fermions
     double fermions = 2.0 * jj_(&q, &mt, &mt) - 4.0 * sqr(mt) * ii0_(&q, &mt)
       + 2.0 * jj_(&q, &mb, &mb) - 4.0 * sqr(mb) * ii0_(&q, &mb);
@@ -3652,12 +3652,6 @@ void NmssmSoftsusy::rewsbTreeLevel(int sgnMu) {
     rewsbmSsq(mSsq);
     setMsSquared(mSsq);
   }
-
-  /// LCT: Flag warning if Higgs potential is not at minimum
-  if (VhAtMin(displaySvev(), 0) > 0 )
-    flagHiggsNoMin(true);
-  else
-    flagHiggsNoMin(false);  
 }
 
 
@@ -3920,15 +3914,7 @@ if (rewsbKap(kapnew) == 0) flagM3sq(false);
      rewsbmSsq(mSsqnew);
      setMsSquared(mSsqnew);
   }
-
-  if (VhAtMin(displaySvev(), 1) > 0 )
-    flagHiggsNoMin(true);
-  else
-    flagHiggsNoMin(false);
-
 }
-
-
 
 /// Organises calculation of physical quantities such as sparticle masses etc
 /// Call AT MSusy
@@ -8760,6 +8746,12 @@ void NmssmSoftsusy::lowOrg
     physical(3);
 
     runto(mz);
+
+    /// LCT: Flag warning if not at global min of Higgs potential
+    if (VhAtMin(displaySvev(), 2) > 0 )
+      flagHiggsNoMin(true);
+    else
+      flagHiggsNoMin(false);
 
     if (PRINTOUT > 1) cout << " end of iteration" << endl;
     
