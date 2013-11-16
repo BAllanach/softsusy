@@ -9028,9 +9028,9 @@ void NmssmSoftsusy::extrasfermionmixSLHA(ostream & out) {
 
 void NmssmSoftsusy::nmssmtoolsSLHA(ostream& out) {
    out << "Block NMSSMTOOLS # NMSSMTools configuration\n";
-   out << "     9    "; printRow(out, 0);
+   out << "     9    "; printRow(out, softsusy::MICROMEGAS);
    out << "      # Call micrOmegas (default 0=no)\n";
-   out << "    13    "; printRow(out, 0);
+   out << "    13    "; printRow(out, softsusy::NMSDECAY);
    out << "      # Sparticle decays via NMSDECAY (default 0)\n";
 }
 
