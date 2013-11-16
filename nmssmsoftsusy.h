@@ -565,8 +565,6 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   void nmamixSLHA(ostream&);
   /// NMSSMRUN block of SLHA
   void nmssmrunSLHA(ostream&, const char* blockName = "NMSSMRUN");
-  /// NMSSMTools block of SLHA
-  void nmssmtoolsSLHA(ostream&);
   /// extra DRbar parameters block for NMSSMTools decays
   void extranmssmtoolsSLHA(ostream&);
   /// extra DRbar Yukawa couplings for NMSSMTools decays

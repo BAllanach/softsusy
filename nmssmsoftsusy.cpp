@@ -8750,6 +8750,13 @@ void NmssmSoftsusy::lowOrg
 void NmssmSoftsusy::modselSLHA(ostream & out, const char model[]) {
   Softsusy<SoftParsNmssm>::modselSLHA(out, model);
   out << "     3    1   # NMSSM\n";
+
+  if (softsusy::NMSSMTools) {
+    out << "     9    " << softsusy::MICROMEGAS;
+    out << "   # call micrOmegas (default: 0 = no)\n";
+    out << "    13    " << softsusy::NMSDECAY;
+    out << "   # sparticle decays via NMSDECAY (default: 0)\n";
+  }
 }
 
 void NmssmSoftsusy::extparSLHA(ostream & out,
@@ -9026,14 +9033,6 @@ void NmssmSoftsusy::extrasfermionmixSLHA(ostream & out) {
    
 }
 
-void NmssmSoftsusy::nmssmtoolsSLHA(ostream& out) {
-   out << "Block NMSSMTOOLS # NMSSMTools configuration\n";
-   out << "     9    "; printRow(out, softsusy::MICROMEGAS);
-   out << "      # Call micrOmegas (default 0=no)\n";
-   out << "    13    "; printRow(out, softsusy::NMSDECAY);
-   out << "      # Sparticle decays via NMSDECAY (default 0)\n";
-}
-
 void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
    runto(displayMsusy());
 
@@ -9087,7 +9086,6 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
     }
 
     if (softsusy::NMSSMTools) {
-       nmssmtoolsSLHA(out);
        extranmssmtoolsSLHA(out);
     }
   } else {
