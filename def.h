@@ -32,9 +32,10 @@ namespace softsusy{
   //If true the input value of lambda is set at the GUT scale
   //If false the input lambda is set at MSUSY.
   extern bool GUTlambda;
+  //Needed for NMSSMTools interfacing
   extern bool NMSSMTools;
-  extern bool MICROMEGAS;
-  extern bool NMSDECAY;
+  extern int MICROMEGAS;
+  extern int NMSDECAY;
   
   /// Set to number of loops to use for calculation of Higgs mass 
   /// (currently up to 2, the default)
