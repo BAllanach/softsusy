@@ -21,6 +21,11 @@ fi
 slha_input_file="$1"
 slha_output_file="${slha_input_file}.$$.out"
 
+if ! test -r "${slha_input_file}"; then
+    echo "Error: cannot open SLHA input file \"${slha_input_file}\""
+    exit 1
+fi
+
 ${BASEDIR}/softpoint.x leshouches < ${slha_input_file} > ${slha_output_file}
 cp ${slha_output_file} ${NMSSMTOOLS_PATH}/main/slha_nmssm
 $(cd ${NMSSMTOOLS_PATH}/main/; ./nmProcessSpec)
