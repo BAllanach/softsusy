@@ -1023,6 +1023,7 @@ int main(int argc, char *argv[]) {
                      int num = int(d + EPSTOL);
                      softsusy::MICROMEGAS = num;
                   }
+                    break;
                   case 17: {
                      int num = int(d + EPSTOL);
                      softsusy::NMSDECAY = num;
