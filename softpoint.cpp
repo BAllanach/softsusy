@@ -1019,6 +1019,15 @@ int main(int argc, char *argv[]) {
                     softsusy::NMSSMTools = num;
                   }
 		    break;
+                  case 16: {
+                     int num = int(d + EPSTOL);
+                     softsusy::MICROMEGAS = num;
+                  }
+                  case 17: {
+                     int num = int(d + EPSTOL);
+                     softsusy::NMSDECAY = num;
+                  }
+		    break;
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "
