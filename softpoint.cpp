@@ -1013,7 +1013,11 @@ int main(int argc, char *argv[]) {
 		    int num = int(d + EPSTOL);
 		    if (num == 1) tryToConvergeHard = true;		  
 		  }
-		    
+                    break;
+                  case 15: {
+                    int num = int(d + EPSTOL);
+                    softsusy::NMSSMTools = num;
+                  }
 		    break;
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 

@@ -564,7 +564,21 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   /// CP odd mixing matrix NMHMIX block of SLHA
   void nmamixSLHA(ostream&);
   /// NMSSMRUN block of SLHA
-  void nmssmrunSLHA(ostream&);
+  void nmssmrunSLHA(ostream&, const char* blockName = "NMSSMRUN");
+  /// NMSSMTools block of SLHA
+  void nmssmtoolsSLHA(ostream&);
+  /// extra DRbar parameters block for NMSSMTools decays
+  void extranmssmtoolsSLHA(ostream&);
+  /// extra DRbar Yukawa couplings for NMSSMTools decays
+  void yukawaMatricesSLHA(ostream&, const char* blockName = "");
+  /// extra DRbar soft parameters for NMSSMTools decays
+  void extramsoftSLHA(ostream&, const char* blockName = "");
+  /// extra DRbar Higgs mixing parameters for NMSSMTools decays
+  void extrahmixSLHA(ostream&, const char* blockName = "");
+  /// extra DRbar gauge couplings for NMSSMTools decays
+  void extragaugeSLHA(ostream&, const char* blockName = "GAUGE");
+  /// extra DRbar smuon mixing matrix elements for NMSSMTools decays
+  void extrasfermionmixSLHA(ostream & out);
   /// outputs DRbar parameters at scale Q (default is at MSUSY)
   virtual void drbarSLHA(ostream&, int numPoints, double qMax, int n);
 };

@@ -913,6 +913,12 @@ void NmssmSoftsusy::treeChargedSlepton(DoubleMatrix & mass, double mtaurun,
      mass(1, 2) = mass(1, 2) -  mtaurun * lam * svev * tanb / (root2);
      mass(2, 1) = mass(1, 2);
   }
+
+  if (NMSSMTools && family == 2) {
+     mass(1, 2) = mass(1, 2) -  MMUON * lam * svev * tanb / (root2);
+     mass(2, 1) = mass(1, 2);
+  }
+
 }
 
 /// LCT: new routine to allocate NMSSM chargino masses
@@ -4297,8 +4303,6 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
     throw ii.str(); 
 	}
 
-
- 
   if ((temp(1) < 0.0 && temp(2) < 0.0) || (temp(1) < 0.0 && temp(3) < 0.0) ||
       (temp(2) < 0.0 && temp(3) < 0.0)  ) {
     h0Htachyon = true;
@@ -4729,8 +4733,8 @@ void NmssmSoftsusy::DegrassiSlavicMix(DoubleMatrix & P) const {
   double cb = cos(atan(displayTanb())), sb = sin(atan(displayTanb()));
   Ppr(1, 1) = cos(alphaP);
   Ppr(1, 2) = sin(alphaP);
-  Ppr(2, 1) = - Ppr(1, 2);
-  Ppr(2, 2) = cos(alphaP);
+  Ppr(2, 1) =  Ppr(1, 2);
+  Ppr(2, 2) = - cos(alphaP);
   P(1, 1) = - cb;           P(1, 2) = sb;             P(1, 3) = 0.0;
   P(2, 1) = sb * Ppr(1, 1); P(2, 2) = cb * Ppr(1, 1); P(2, 3) = Ppr(1, 2);
   P(3, 1) = sb * Ppr(2, 1); P(3, 2) = cb * Ppr(2, 1); P(3, 3) = Ppr(2, 2);
@@ -8831,7 +8835,7 @@ void NmssmSoftsusy::neutralinoMixingSLHA(ostream& out) {
   }
 }
 
-void NmssmSoftsusy::nmssmrunSLHA(ostream& out) {
+void NmssmSoftsusy::nmssmrunSLHA(ostream& out, const char* blockName) {
   const sPhysical s(displayPhys());
 
   double Alambda = 0., Akappa = 0.;
@@ -8842,7 +8846,7 @@ void NmssmSoftsusy::nmssmrunSLHA(ostream& out) {
   try { Akappa = displaySoftAkappa(); }
   catch (const string&) {}
 
-  out << "Block NMSSMRUN Q= " << displayMu()
+  out << "Block " << blockName << " Q= " << displayMu()
       << "   # NMSSM specific DRbar parameters\n";
 
   out << "     1    "; printRow(out, displayLambda());
@@ -8872,6 +8876,190 @@ void NmssmSoftsusy::drbarSLHA(ostream& out, int numPoints, double qMax, int n) {
    nmssmrunSLHA(out);
 }
 
+void NmssmSoftsusy::yukawaMatricesSLHA(ostream & out, const char* blockName) {
+   const DoubleMatrix yu(displayYukawaMatrix(YU)),
+      yd(displayYukawaMatrix(YD)),
+      ye(displayYukawaMatrix(YE));
+
+  out << "Block YU" << blockName << " Q= " << displayMu()
+      << "   # Up Yukawa matrix\n";
+  for (int i=1; i<=3; i++) {
+     for (int j=1; j<=3; j++) {
+        out << "  " << i << "  " << j << "     " << yu(i,j)
+            << "    # YU_{" << i << j << "}(Q)NMSSM DRbar" << endl;
+     }
+  }
+
+  out << "Block YD" << blockName << " Q= " << displayMu()
+      << "   # down Yukawa matrix\n";
+  for (int i=1; i<=3; i++) {
+     for (int j=1; j<=3; j++) {
+        out << "  " << i << "  " << j << "     " << yd(i,j)
+            << "    # YD_{" << i << j << "}(Q)NMSSM DRbar" << endl;
+     }
+  }
+
+  out << "Block YE" << blockName << " Q= " << displayMu()
+      << "   # lepton Yukawa matrix\n";
+  for (int i=1; i<=3; i++) {
+     for (int j=1; j<=3; j++) {
+        out << "  " << i << "  " << j << "     " << ye(i,j)
+            << "    # YE_{" << i << j << "}(Q)NMSSM DRbar" << endl;
+     }
+  }
+}
+
+void NmssmSoftsusy::extramsoftSLHA(ostream& out, const char* blockName) {
+   out << "Block MSOFT" << blockName << " Q= " << displayMu()
+       << "  # NMSSM DRbar SUSY breaking parameters\n";
+   for (int i=1; i<=3; i++) {
+      out << "     " << i << "    ";
+      printRow(out, displayGaugino(i));
+      out << "      # M_" << i << "(Q)" << '\n';
+   }
+
+   out << "    21    "; printRow(out, displayMh1Squared());
+   out << "      # mH1^2(Q)" << '\n';
+   out << "    22    "; printRow(out, displayMh2Squared());
+   out << "      # mH2^2(Q)" << '\n';
+
+   out << "    31    "; printRow(out, ccbSqrt(displaySoftMassSquared(mLl, 1, 1)));
+   out << "      # meL(Q)" << '\n';
+   out << "    32    "; printRow(out, ccbSqrt(displaySoftMassSquared(mLl, 2, 2)));
+   out << "      # mmuL(Q)" << '\n';
+   out << "    33    "; printRow(out, ccbSqrt(displaySoftMassSquared(mLl, 3, 3)));
+   out << "      # mtauL(Q)" << '\n';
+   out << "    34    "; printRow(out, ccbSqrt(displaySoftMassSquared(mEr, 1, 1)));
+   out << "      # meR(Q)" << '\n';
+   out << "    35    "; printRow(out, ccbSqrt(displaySoftMassSquared(mEr, 2, 2)));
+   out << "      # mmuR(Q)" << '\n';
+   out << "    36    "; printRow(out, ccbSqrt(displaySoftMassSquared(mEr, 3, 3)));
+   out << "      # mtauR(Q)" << '\n';
+   out << "    41    "; printRow(out, ccbSqrt(displaySoftMassSquared(mQl, 1, 1)));
+   out << "      # mqL1(Q)" << '\n';
+   out << "    42    "; printRow(out, ccbSqrt(displaySoftMassSquared(mQl, 2, 2)));
+   out << "      # mqL2(Q)" << '\n';
+   out << "    43    "; printRow(out, ccbSqrt(displaySoftMassSquared(mQl, 3, 3)));
+   out << "      # mqL3(Q)" << '\n';
+   out << "    44    "; printRow(out, ccbSqrt(displaySoftMassSquared(mUr, 1, 1)));
+   out << "      # muR(Q)" << '\n';
+   out << "    45    "; printRow(out, ccbSqrt(displaySoftMassSquared(mUr, 2, 2)));
+   out << "      # mcR(Q)" << '\n';
+   out << "    46    "; printRow(out, ccbSqrt(displaySoftMassSquared(mUr, 3, 3)));
+   out << "      # mtR(Q)" << '\n';
+   out << "    47    "; printRow(out, ccbSqrt(displaySoftMassSquared(mDr, 1, 1)));
+   out << "      # mdR(Q)" << '\n';
+   out << "    48    "; printRow(out, ccbSqrt(displaySoftMassSquared(mDr, 2, 2)));
+   out << "      # msR(Q)" << '\n';
+   out << "    49    "; printRow(out, ccbSqrt(displaySoftMassSquared(mDr, 3, 3)));
+   out << "      # mbR(Q)" << '\n';
+
+   out << "Block AU" << blockName << " Q= " << displayMu() << '\n'
+       << "  1  1    "; printRow(out, displaySoftA(UA, 1, 1));
+   out << "      # Au(Q)NMSSM DRbar" << '\n'
+       << "  2  2    "; printRow(out, displaySoftA(UA, 2, 2));
+   out << "      # Ac(Q)NMSSM DRbar" << '\n'
+       << "  3  3    "; printRow(out, displaySoftA(UA, 3, 3));
+   out << "      # At(Q)NMSSM DRbar" << '\n';
+   out << "Block AD" << blockName << " Q= " << displayMu() << '\n'
+       << "  1  1    "; printRow(out, displaySoftA(DA, 1, 1));
+   out << "      # Ad(Q)NMSSM DRbar" << '\n'
+       << "  2  2    "; printRow(out, displaySoftA(DA, 2, 2));
+   out << "      # As(Q)NMSSM DRbar" << '\n'
+       << "  3  3    "; printRow(out, displaySoftA(DA, 3, 3));
+   out << "      # Ab(Q)NMSSM DRbar" << '\n';
+   out << "Block AE" << blockName << " Q= " << displayMu() << '\n'
+       << "  1  1    "; printRow(out, displaySoftA(EA, 1, 1));
+   out << "      # Ae(Q)NMSSM DRbar" << '\n'
+       << "  2  2    "; printRow(out, displaySoftA(EA, 2, 2));
+   out << "      # Amu(Q)NMSSM DRbar" << '\n'
+       << "  3  3    ";   printRow(out, displaySoftA(EA, 3, 3));
+   out << "      # Atau(Q)NMSSM DRbar" << '\n';
+}
+
+void NmssmSoftsusy::extrahmixSLHA(ostream& out, const char* blockName) {
+  out << "Block HMIX" << blockName << " Q= " << displayMu() <<
+    " # Higgs mixing parameters\n";
+  out << "     1    "; printRow(out, displaySusyMu());
+  out << "      # mu(Q)NMSSM DRbar\n";
+  out << "     2    "; printRow(out, displayTanb());
+  out << "      # tan beta(Q)NMSSM DRbar Feynman gauge\n";
+  out << "     3    "; printRow(out, displayHvev());
+  out << "      # higgs vev(Q)NMSSM DRbar Feynman gauge\n";
+  out << "     4    ";
+  const double lam = displayLambda();
+  const double s = displaySvev();
+  const double mueff = lam * s / root2;
+  const double Beff = displaySoftAlambda() + displayKappa() * s / root2;
+  const double m3hatsq = displayM3Squared()
+     + lam * (displayMupr() * s / root2 + displayXiF());
+  const double MP11 = 2. * (mueff * Beff + m3hatsq)
+     / sin(2. * atan(displayTanb()));
+  printRow(out, MP11);
+  out << "      # mA^2(Q)NMSSM DRbar\n";
+}
+
+void NmssmSoftsusy::extragaugeSLHA(ostream& out, const char* blockName) {
+  double gp = displayGaugeCoupling(1) * sqrt(0.6);
+  out << "Block " << blockName << " Q= " << displayMu()
+      << "  # SM gauge couplings\n";
+  out << "     1     " << gp << "   # g'(Q)NMSSM DRbar\n";
+  out << "     2     " << displayGaugeCoupling(2)
+      << "   # g(Q)NMSSM DRbar\n";
+  out << "     3     " << displayGaugeCoupling(3)
+      << "   # g3(Q)NMSSM DRbar\n";
+}
+
+void NmssmSoftsusy::extrasfermionmixSLHA(ostream & out) {
+   sPhysical s(displayPhys());
+   DoubleMatrix m(2, 2);
+   out << "Block smumix               # smuon mixing matrix\n";
+   if (s.me(1, 2) < s.me(2, 2)) m = rot2d(s.thetamu);
+   else m = rot2dTwist(s.thetamu);
+   int i, j; 
+   for (i=1; i<=2; i++)
+      for (j=1; j<=2; j++) {
+         out << "  " << i << "  " << j << "    "; printRow(out, m(i, j));
+         out << "   # F_{" << i << j << "}" << endl;
+      }
+   
+   
+}
+
+void NmssmSoftsusy::nmssmtoolsSLHA(ostream& out) {
+   out << "Block NMSSMTOOLS # NMSSMTools configuration\n";
+   out << "     9    "; printRow(out, 0);
+   out << "      # Call micrOmegas (default 0=no)\n";
+   out << "    13    "; printRow(out, 0);
+   out << "      # Sparticle decays via NMSDECAY (default 0)\n";
+}
+
+void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
+   runto(displayMsusy());
+
+   const double mQ2sqr = displaySoftMassSquared(mQl, 2, 2),
+      mU2sqr = displaySoftMassSquared(mUr, 2, 2),
+      mD2sqr = displaySoftMassSquared(mDr, 2, 2),
+      mQ3sqr = displaySoftMassSquared(mQl, 3, 3),
+      mU3sqr = displaySoftMassSquared(mUr, 3, 3);
+   const double q2 = sqrt((2.0 * mQ2sqr + mU2sqr + mD2sqr) / 4.0);
+   const double qstsb = sqrt(sqrt(mQ3sqr * mU3sqr));
+   
+   extrasfermionmixSLHA(out);
+   runto(q2);
+   extragaugeSLHA(out, "GAUGEATQ2");
+   yukawaMatricesSLHA(out, "ATQ2");
+   extramsoftSLHA(out, "ATQ2");
+   nmssmrunSLHA(out, "NMSSMRUNATQ2");
+
+   runto(qstsb);
+   extragaugeSLHA(out, "GAUGEATQSTSB");
+   yukawaMatricesSLHA(out, "ATQSTSB");
+   extramsoftSLHA(out, "ATQSTSB");
+   extrahmixSLHA(out, "ATQSTSB");
+   nmssmrunSLHA(out, "NMSSMRUNATQSTSB");
+}
+
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
 void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  const DoubleVector & pars,
@@ -8896,6 +9084,11 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 
     int n = 0; while (n < numPoints) {
       n++; drbarSLHA(out, numPoints, qMax, n);
+    }
+
+    if (softsusy::NMSSMTools) {
+       nmssmtoolsSLHA(out);
+       extranmssmtoolsSLHA(out);
     }
   } else {
     out << "# Declining to write spectrum because of serious problem"
