@@ -3436,9 +3436,9 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   double lam    = displayLambda();
   double al     = displayTrialambda();
   double ak     = displayTriakappa();
-  double beta     = atan(displayTanb()); 
-  double sinb     = sin(beta), s2b = sin(2.0 * beta);
-  double cosb     = cos(beta), c2b = cos(2.0 * beta);
+  double beta   = atan(displayTanb()); 
+  double sinb   = sin(beta);
+  double cosb   = cos(beta);
   double vev    = displayHvev();
   double v1sq   = sqr(v1);
   double v2sq   = sqr(v2);
@@ -3508,8 +3508,8 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   /// LCT: Parameters for 2-loop contributions
   double q = displayMu();
   double mGluino = displayGaugino(3);
-  double sin2t = sin(2.0 * forLoops.thetat);
-  double cos2t = cos(2.0 * forLoops.thetat);
+  double s2t = sin(2.0 * forLoops.thetat);
+  double c2t = cos(2.0 * forLoops.thetat);
   double sin2b = sin(2.0 * forLoops.thetab);
   double cos2b = cos(2.0 * forLoops.thetab);
   
@@ -3584,14 +3584,14 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   /// LCT: Sfermions
   double stops = 2.0 * sqr(mstop(1)) * ii0_(&q, &mstop(1)) 
     + 2.0 * ll_(&q, &mstop(1), &mGluino, &mt)
-    - 4.0 * mt * mGluino * sin2t * ii_(&q, &mstop(1), &mGluino, &mt)
-    + 0.5 * (1.0 + sqr(cos2t)) * jj_(&q, &mstop(1), &mstop(1))
-    + 0.5 * sqr(sin2t) * jj_(&q, &mstop(1), &mstop(2)) // stop 1
+    - 4.0 * mt * mGluino * s2t * ii_(&q, &mstop(1), &mGluino, &mt)
+    + 0.5 * (1.0 + sqr(c2t)) * jj_(&q, &mstop(1), &mstop(1))
+    + 0.5 * sqr(s2t) * jj_(&q, &mstop(1), &mstop(2)) // stop 1
     + 2.0 * sqr(mstop(2)) * ii0_(&q, &mstop(2))
-    + 2.0 * ll_(&q, &mstop(2), &mGluino, &mt) + 4.0 * mt * mGluino * sin2t 
-    * ii_(&q, &mstop(2), &mGluino, &mt) + 0.5 * (1.0 + sqr(cos2t)) 
+    + 2.0 * ll_(&q, &mstop(2), &mGluino, &mt) + 4.0 * mt * mGluino * s2t 
+    * ii_(&q, &mstop(2), &mGluino, &mt) + 0.5 * (1.0 + sqr(c2t)) 
     * jj_(&q, &mstop(2), &mstop(2)) 
-    + 0.5 * sqr(sin2t) * jj_(&q, &mstop(2), &mstop(1)); // stop 2
+    + 0.5 * sqr(s2t) * jj_(&q, &mstop(2), &mstop(1)); // stop 2
   
   double sbots = 2.0 * sqr(msbot(1)) * ii0_(&q, &msbot(1)) 
     + 2.0 * ll_(&q, &msbot(1), &mGluino, &mb)
