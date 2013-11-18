@@ -3510,8 +3510,8 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   double mGluino = displayGaugino(3);
   double s2t = sin(2.0 * forLoops.thetat);
   double c2t = cos(2.0 * forLoops.thetat);
-  double sin2b = sin(2.0 * forLoops.thetab);
-  double cos2b = cos(2.0 * forLoops.thetab);
+  double s2b = sin(2.0 * forLoops.thetab);
+  double c2b = cos(2.0 * forLoops.thetab);
   
   /// LCT: Tree-level contributions to effective potential
   double VH = 
@@ -3595,14 +3595,14 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   
   double sbots = 2.0 * sqr(msbot(1)) * ii0_(&q, &msbot(1)) 
     + 2.0 * ll_(&q, &msbot(1), &mGluino, &mb)
-    - 4.0 * mb * mGluino * sin2b * ii_(&q, &msbot(1), &mGluino, &mb)
-    + 0.5 * (1.0 + sqr(cos2b)) * jj_(&q, &msbot(1), &msbot(1))
-    + 0.5 * sqr(sin2b) * jj_(&q, &msbot(1), &msbot(2)) // sbot 1
+    - 4.0 * mb * mGluino * s2b * ii_(&q, &msbot(1), &mGluino, &mb)
+    + 0.5 * (1.0 + sqr(c2b)) * jj_(&q, &msbot(1), &msbot(1))
+    + 0.5 * sqr(s2b) * jj_(&q, &msbot(1), &msbot(2)) // sbot 1
     + 2.0 * sqr(msbot(2)) * ii0_(&q, &msbot(2))
-    + 2.0 * ll_(&q, &msbot(2), &mGluino, &mb) + 4.0 * mb * mGluino * sin2b 
-    * ii_(&q, &msbot(2), &mGluino, &mb) + 0.5 * (1.0 + sqr(cos2b)) 
+    + 2.0 * ll_(&q, &msbot(2), &mGluino, &mb) + 4.0 * mb * mGluino * s2b 
+    * ii_(&q, &msbot(2), &mGluino, &mb) + 0.5 * (1.0 + sqr(c2b)) 
     * jj_(&q, &msbot(2), &msbot(2)) 
-    + 0.5 * sqr(sin2b) * jj_(&q, &msbot(2), &msbot(1)); // sbot 2
+    + 0.5 * sqr(s2b) * jj_(&q, &msbot(2), &msbot(1)); // sbot 2
   
   double VH2loop = fermions + stops + sbots;
   
@@ -3918,11 +3918,16 @@ void NmssmSoftsusy::rewsb(int sgnMu, double mt, double muOld, double eps) {
     /// LCT: Flag warning if not at global min of Higgs potential
     double v1 = displayHvev() * cos(atan(displayTanb()));
     double v2 = displayHvev() * sin(atan(displayTanb()));
-    if (VhAtMin(v1, v2, displaySvev()) > 0 )
+    double s = displaySvev();
+    double VH = VhAtMin(v1, v2, s);
+    double V1 = VhAtMin(0.0, 0.0, 0.0);
+    double V2 = VhAtMin(0.0, 0.0, s);
+    double V3 = VhAtMin(0.0, v2, s);
+    double V4 = VhAtMin(v1, 0.0, s);
+    if (VH > V1 || VH > V2 || VH > V3 || VH > V4) 
       flagHiggsNoMin(true);  
     else
       flagHiggsNoMin(false);
-
 }
 
 /// Organises calculation of physical quantities such as sparticle masses etc
