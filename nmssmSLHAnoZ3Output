@@ -21,9 +21,9 @@ Block MINPAR               # SUSY breaking input parameters
      2    5.00000000e+02   # m12
      5   -2.00000000e+03   # A0
 Block EXTPAR               # scale of SUSY breaking BCs
-     0    1.90449936e+16   # MX scale
+     0    1.90449935e+16   # MX scale
 # SOFTSUSY-specific non SLHA information:
-# MIXING=2 Desired accuracy=1.00000000e-04 Achieved accuracy=4.28431875e-05
+# MIXING=2 Desired accuracy=1.00000000e-04 Achieved accuracy=4.28430734e-05
 Block MASS                      # Mass spectrum
 # PDG code     mass             particle
         24     8.03743478e+01   # MW
@@ -141,7 +141,7 @@ Block yd Q= 8.72606588e+02
 Block ye Q= 8.72606588e+02  
   3  3     1.00213730e-01   # Ytau(Q)MSSM DRbar
 Block hmix Q= 8.72606588e+02 # Higgs mixing parameters
-     1     6.59981724e+01    # mu(Q)MSSM DRbar
+     1     6.59981725e+01    # mu(Q)MSSM DRbar
      2     9.68825524e+00    # tan beta(Q)MSSM DRbar Feynman gauge
      3     2.44169557e+02    # higgs vev(Q)MSSM DRbar Feynman gauge
      4     5.15690370e+06    # mA^2(Q)MSSM DRbar
