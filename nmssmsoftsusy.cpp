@@ -3472,16 +3472,6 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s, int loop) {
   double       mb   = forLoops.mb;
   double       mtau = forLoops.mtau;
 
-  // cout << "before turning off vevs" << endl;
-  // cout << "mstop1 = " << mstop(1) << " " << "mstop2 = " << mstop(2) << endl;
-  // setHvev(0.0);
-  // //setSvev(0.0);
-  // calcDrBarPars();
-  // cout << "after turning off vevs" << endl;
-  // cout << "mstop1 = " << displayDrBarPars().mu(1, 3) << " " << "mstop2 = " << displayDrBarPars().mu(2, 3) << endl;
-  // cout << "mQ3 = " << sqrt(displaySoftMassSquared(mQl, 3, 3)) << endl;
-  // cout << "mU3 = " << sqrt(displaySoftMassSquared(mUr, 3, 3)) << endl;
-
   /// 1st and 2nd generation sfermion masses
   /// Sup
   DoubleVector msup(2); 
@@ -3507,7 +3497,6 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s, int loop) {
   DoubleVector msmu(2);
   msmu(1)              = forLoops.me(1, 2);
   msmu(2)              = forLoops.me(2, 2);
-
   /// Sneutrinos
   DoubleVector msnu(3);
   msnu(1)              = forLoops.msnu(1);
@@ -3533,7 +3522,6 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s, int loop) {
     + 0.5 * mSprsq * sqr(s) + root2 * xiS * s;
  
   /// LCT: 1-loop contributions to effective potential
-  if (loop > 0) {
   double sfermions = 0.0;
   for (int i=1; i<=3; i++) {
     if (i<=2) {
@@ -3582,45 +3570,42 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s, int loop) {
 
   /// LCT: Combine tree-level and 1-loop corrections to effective potential
   VH = VH + VHloop;
-  }
-
+  
   /// LCT: 2-loop O(alpha_s) corrections to effective potential. 
   /// VH taken from Appendix C of Degrassi & Slavich, 
   /// Nucl.Phys. B825, 119 (2010), with 2-loop functions jj, ii, ii0 called from
   /// nmssm2loop.f.  Here, ii0 = ii(q, x, x, 0).
-  if (loop > 1) {
-    /// LCT: Fermions
-    double fermions = 2.0 * jj_(&q, &mt, &mt) - 4.0 * sqr(mt) * ii0_(&q, &mt)
-      + 2.0 * jj_(&q, &mb, &mb) - 4.0 * sqr(mb) * ii0_(&q, &mb);
-
-    /// LCT: Sfermions
-    double stops = 2.0 * sqr(mstop(1)) * ii0_(&q, &mstop(1)) 
-      + 2.0 * ll_(&q, &mstop(1), &mGluino, &mt)
-      - 4.0 * mt * mGluino * sin2t * ii_(&q, &mstop(1), &mGluino, &mt)
-      + 0.5 * (1.0 + sqr(cos2t)) * jj_(&q, &mstop(1), &mstop(1))
-      + 0.5 * sqr(sin2t) * jj_(&q, &mstop(1), &mstop(2)) // stop 1
-      + 2.0 * sqr(mstop(2)) * ii0_(&q, &mstop(2))
-      + 2.0 * ll_(&q, &mstop(2), &mGluino, &mt) + 4.0 * mt * mGluino * sin2t 
-      * ii_(&q, &mstop(2), &mGluino, &mt) + 0.5 * (1.0 + sqr(cos2t)) 
-      * jj_(&q, &mstop(2), &mstop(2)) 
-      + 0.5 * sqr(sin2t) * jj_(&q, &mstop(2), &mstop(1)); // stop 2
-
-    double sbots = 2.0 * sqr(msbot(1)) * ii0_(&q, &msbot(1)) 
-      + 2.0 * ll_(&q, &msbot(1), &mGluino, &mb)
-      - 4.0 * mb * mGluino * sin2b * ii_(&q, &msbot(1), &mGluino, &mb)
-      + 0.5 * (1.0 + sqr(cos2b)) * jj_(&q, &msbot(1), &msbot(1))
-      + 0.5 * sqr(sin2b) * jj_(&q, &msbot(1), &msbot(2)) // sbot 1
-      + 2.0 * sqr(msbot(2)) * ii0_(&q, &msbot(2))
-      + 2.0 * ll_(&q, &msbot(2), &mGluino, &mb) + 4.0 * mb * mGluino * sin2b 
-      * ii_(&q, &msbot(2), &mGluino, &mb) + 0.5 * (1.0 + sqr(cos2b)) 
-      * jj_(&q, &msbot(2), &msbot(2)) 
-      + 0.5 * sqr(sin2b) * jj_(&q, &msbot(2), &msbot(1)); // sbot 2
-    
-    double VH2loop = fermions + stops + sbots;
-
-    /// LCT: Combine tree + 1-loop + 2-loop corrections
-    VH = VH + VH2loop;
-  }
+  /// LCT: Fermions
+  fermions = fermions + 2.0 * jj_(&q, &mt, &mt) - 4.0 * sqr(mt) * ii0_(&q, &mt)
+    + 2.0 * jj_(&q, &mb, &mb) - 4.0 * sqr(mb) * ii0_(&q, &mb);
+  
+  /// LCT: Sfermions
+  double stops = 2.0 * sqr(mstop(1)) * ii0_(&q, &mstop(1)) 
+    + 2.0 * ll_(&q, &mstop(1), &mGluino, &mt)
+    - 4.0 * mt * mGluino * sin2t * ii_(&q, &mstop(1), &mGluino, &mt)
+    + 0.5 * (1.0 + sqr(cos2t)) * jj_(&q, &mstop(1), &mstop(1))
+    + 0.5 * sqr(sin2t) * jj_(&q, &mstop(1), &mstop(2)) // stop 1
+    + 2.0 * sqr(mstop(2)) * ii0_(&q, &mstop(2))
+    + 2.0 * ll_(&q, &mstop(2), &mGluino, &mt) + 4.0 * mt * mGluino * sin2t 
+    * ii_(&q, &mstop(2), &mGluino, &mt) + 0.5 * (1.0 + sqr(cos2t)) 
+    * jj_(&q, &mstop(2), &mstop(2)) 
+    + 0.5 * sqr(sin2t) * jj_(&q, &mstop(2), &mstop(1)); // stop 2
+  
+  double sbots = 2.0 * sqr(msbot(1)) * ii0_(&q, &msbot(1)) 
+    + 2.0 * ll_(&q, &msbot(1), &mGluino, &mb)
+    - 4.0 * mb * mGluino * sin2b * ii_(&q, &msbot(1), &mGluino, &mb)
+    + 0.5 * (1.0 + sqr(cos2b)) * jj_(&q, &msbot(1), &msbot(1))
+    + 0.5 * sqr(sin2b) * jj_(&q, &msbot(1), &msbot(2)) // sbot 1
+    + 2.0 * sqr(msbot(2)) * ii0_(&q, &msbot(2))
+    + 2.0 * ll_(&q, &msbot(2), &mGluino, &mb) + 4.0 * mb * mGluino * sin2b 
+    * ii_(&q, &msbot(2), &mGluino, &mb) + 0.5 * (1.0 + sqr(cos2b)) 
+    * jj_(&q, &msbot(2), &msbot(2)) 
+    + 0.5 * sqr(sin2b) * jj_(&q, &msbot(2), &msbot(1)); // sbot 2
+  
+  double VH2loop = fermions + stops + sbots;
+  
+  /// LCT: Combine tree + 1-loop + 2-loop corrections
+  VH = VH + VH2loop;
   
   return VH;
 }
