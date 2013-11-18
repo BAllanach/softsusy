@@ -3431,7 +3431,7 @@ double NmssmSoftsusy::looplog(double mass) const {
   return logfactor;
 }
 
-double NmssmSoftsusy::VhAtMin(double s, int loop) {
+double NmssmSoftsusy::VhAtMin(double v1, double v2, double s, int loop) {
   double kap    = displayKappa(); 
   double lam    = displayLambda();
   double al     = displayTrialambda();
@@ -3451,6 +3451,9 @@ double NmssmSoftsusy::VhAtMin(double s, int loop) {
   double mHu2   = displayMh2Squared(), mHd2 = displayMh1Squared();
   double m3sq   = displayM3Squared();
 
+  /// LCT: Calculate DRbar parameters for each input of vevs
+  calcDrBarPars();
+
   /// LCT: Parameters for 1-loop contributions
   const drBarPars & forLoops = displayDrBarPars();
   double mw = displayMwRun();
@@ -3468,6 +3471,16 @@ double NmssmSoftsusy::VhAtMin(double s, int loop) {
   double       mt   = forLoops.mt;
   double       mb   = forLoops.mb;
   double       mtau = forLoops.mtau;
+
+  // cout << "before turning off vevs" << endl;
+  // cout << "mstop1 = " << mstop(1) << " " << "mstop2 = " << mstop(2) << endl;
+  // setHvev(0.0);
+  // //setSvev(0.0);
+  // calcDrBarPars();
+  // cout << "after turning off vevs" << endl;
+  // cout << "mstop1 = " << displayDrBarPars().mu(1, 3) << " " << "mstop2 = " << displayDrBarPars().mu(2, 3) << endl;
+  // cout << "mQ3 = " << sqrt(displaySoftMassSquared(mQl, 3, 3)) << endl;
+  // cout << "mU3 = " << sqrt(displaySoftMassSquared(mUr, 3, 3)) << endl;
 
   /// 1st and 2nd generation sfermion masses
   /// Sup
@@ -3897,23 +3910,32 @@ void NmssmSoftsusy::rewsb(int sgnMu, double mt, double muOld, double eps) {
   //PA: using Z3 version of EWSB
   //with kappa as output
   if(Z3){
-if (rewsbKap(kapnew) == 0) flagM3sq(false);
-  else flagM3sq(true);   
-  setKappa(kapnew);
+    if (rewsbKap(kapnew) == 0) flagM3sq(false);
+    else flagM3sq(true);   
+    setKappa(kapnew);
   }
   else{ //PA: use rewsbM3sq which can work for Z3 violating case
-  if (rewsbM3sq(munew, m3sqnew) == 0) flagM3sq(false);
-  else flagM3sq(true);   
-  setM3Squared(m3sqnew);
+    if (rewsbM3sq(munew, m3sqnew) == 0) flagM3sq(false);
+    else flagM3sq(true);   
+    setM3Squared(m3sqnew);
   }
   if(Z3 == false){
     rewsbXiS(xiSnew);
     setXiS(xiSnew);
   }
- else{
-     rewsbmSsq(mSsqnew);
-     setMsSquared(mSsqnew);
+  else{
+    rewsbmSsq(mSsqnew);
+    setMsSquared(mSsqnew);
   }
+
+    /// LCT: Flag warning if not at global min of Higgs potential
+    double v1 = displayHvev() * cos(atan(displayTanb()));
+    double v2 = displayHvev() * sin(atan(displayTanb()));
+    if (VhAtMin(v1, v2, displaySvev(), 2) > 0 )
+      flagHiggsNoMin(true);  
+    else
+      flagHiggsNoMin(false);
+
 }
 
 /// Organises calculation of physical quantities such as sparticle masses etc
@@ -8745,13 +8767,7 @@ void NmssmSoftsusy::lowOrg
 
     physical(3);
 
-    runto(mz);
-
-    /// LCT: Flag warning if not at global min of Higgs potential
-    if (VhAtMin(displaySvev(), 2) > 0 )
-      flagHiggsNoMin(true);
-    else
-      flagHiggsNoMin(false);
+    runto(mz); 
 
     if (PRINTOUT > 1) cout << " end of iteration" << endl;
     
