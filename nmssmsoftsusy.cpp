@@ -3431,7 +3431,7 @@ double NmssmSoftsusy::looplog(double mass) const {
   return logfactor;
 }
 
-double NmssmSoftsusy::VhAtMin(double s, int loop) const {
+double NmssmSoftsusy::VhAtMin(double s, int loop) {
   double kap    = displayKappa(); 
   double lam    = displayLambda();
   double al     = displayTrialambda();

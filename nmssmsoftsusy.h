@@ -263,7 +263,7 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
 
   /// LCT: Returns Higgs potential at minimum.  Inputs: s=singlet vev from 
   /// minimization conditions, loop=number of loops (either 0 or 1)
-  double VhAtMin(double s, int loop) const;
+  double VhAtMin(double s, int loop);
   
   /// Returns mu from rewsb requirement. 
   /// returns 1 if there's a problem. Call at MSusy
