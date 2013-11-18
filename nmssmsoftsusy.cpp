@@ -3431,15 +3431,17 @@ double NmssmSoftsusy::looplog(double mass) const {
   return logfactor;
 }
 
-double NmssmSoftsusy::VhAtMin(double v1, double v2, double s, int loop) {
+double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   double kap    = displayKappa(); 
   double lam    = displayLambda();
   double al     = displayTrialambda();
   double ak     = displayTriakappa();
-  double tb     = displayTanb(); 
-  double sb     = sin(atan(tb)), s2b = sin(2.0 * atan(tb));
-  double cb     = cos(atan(tb)), c2b = cos(2.0 * atan(tb));
+  double beta     = atan(displayTanb()); 
+  double sinb     = sin(beta), s2b = sin(2.0 * beta);
+  double cosb     = cos(beta), c2b = cos(2.0 * beta);
   double vev    = displayHvev();
+  double v1sq   = sqr(v1);
+  double v2sq   = sqr(v2);
   double smu    = displaySusyMu();   
   double mupr   = displayMupr();
   double xiF    = displayXiF();
@@ -3512,13 +3514,13 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s, int loop) {
   double cos2b = cos(2.0 * forLoops.thetab);
   
   /// LCT: Tree-level contributions to effective potential
-  double VH = sqr(-0.25 * lam * sqr(vev) * s2b + 0.5 * kap * sqr(s)
-		  + mupr * s / root2 + xiF)
-    + (sqr(gp) + sqr(g2)) * sqr(vev * vev) * sqr(c2b) / (32.0) 
-    + (mHu2 + sqr(smu + lam * s / root2)) * 0.5 * sqr(vev) * sqr (sb)
-    + (mHd2 + sqr(smu + lam * s / root2)) * 0.5 * sqr(vev) * sqr (cb)
-    + 0.5 * mSsq * sqr(s) - 0.5 * al * s2b * sqr(vev) * s
-    + ak * s * s * s / (3.0 * root2) - 0.5 * m3sq * sqr(vev) * s2b
+  double VH = 
+    sqr(-0.5 * lam * v1 * v2 + 0.5 * kap * sqr(s) + mupr * s / root2 + xiF) 
+    + (sqr(gp) + sqr(g2)) * sqr(v2sq - v1sq) / 32.0 
+    + 0.5 * (mHu2 + sqr(smu + lam * s / root2)) * v2sq 
+    + 0.5 * (mHd2 + sqr(smu + lam * s / root2)) * v1sq  
+    + 0.5 * mSsq * sqr(s) - al * v1 * v2 * s / root2 
+    + ak * s * s * s / (3.0 * root2) - m3sq * v1 * v2 
     + 0.5 * mSprsq * sqr(s) + root2 * xiS * s;
  
   /// LCT: 1-loop contributions to effective potential
@@ -3916,7 +3918,7 @@ void NmssmSoftsusy::rewsb(int sgnMu, double mt, double muOld, double eps) {
     /// LCT: Flag warning if not at global min of Higgs potential
     double v1 = displayHvev() * cos(atan(displayTanb()));
     double v2 = displayHvev() * sin(atan(displayTanb()));
-    if (VhAtMin(v1, v2, displaySvev(), 2) > 0 )
+    if (VhAtMin(v1, v2, displaySvev()) > 0 )
       flagHiggsNoMin(true);  
     else
       flagHiggsNoMin(false);
