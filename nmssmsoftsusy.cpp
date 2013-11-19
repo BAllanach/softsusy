@@ -3518,6 +3518,7 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   double c2t = cos(2.0 * forLoops.thetat);
   double s2b = sin(2.0 * forLoops.thetab);
   double c2b = cos(2.0 * forLoops.thetab);
+  double twoLoop = sqr(displayGaugeCoupling(3)) / (64.0 * sqr(sqr(PI)));
   
   /// LCT: Tree-level contributions to effective potential
   double VH = 
@@ -3530,15 +3531,18 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
     + 0.5 * mSprsq * sqr(s) + root2 * xiS * s;
  
   /// LCT: 1-loop contributions to effective potential
-  double sfermions = 0.0;
+  double sfermions = 0.0, squarks = 0.0, sleptons = 0.0;
   for (int i=1; i<=3; i++) {
     if (i<=2) {
-    sfermions = sfermions + looplog(mstop(i)) + looplog(msbot(i)) 
-      + looplog(mstau(i)) + looplog(msup(i)) + looplog(msch(i)) 
-      + looplog(msd(i)) + looplog(mss(i)) + looplog(msel(i)) + looplog(msmu(i));
-    }
-    sfermions = sfermions + looplog(msnu(i));
+      squarks = squarks 
+	+ 6.0 * (looplog(mstop(i)) + looplog(msbot(i)) + looplog(msup(i)) 
+		 + looplog(msch(i)) + looplog(msd(i)) + looplog(mss(i)));
+      sleptons = sleptons 
+	+ 2.0 * (looplog(mstau(i))+ looplog(msel(i)) + looplog(msmu(i)));
+     }
+    sleptons = sleptons + looplog(msnu(i));
   }
+  sfermions = squarks + sleptons;
 
   /// LCT: Third generation SM fermions --- ignore contributions from 1st & 2nd 
   /// generations vis-a-vis 1-loop tadpole calculations 
@@ -3574,7 +3578,7 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
 
   /// Total contribution to effective potential at 1-loop
   double VHloop =  (sfermions + fermions + higgs + neutralinos 
-		    + charginos + gauge) / (32.0 * sqr(PI));
+		    + charginos + gauge) / (64.0 * sqr(PI));
 
   /// LCT: Combine tree-level and 1-loop corrections to effective potential
   VH = VH + VHloop;
