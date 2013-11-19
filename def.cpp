@@ -33,6 +33,10 @@ namespace softsusy {
   //If true the input value of lambda is set at the GUT scale
   //If false the input lambda is set at MSUSY.
   bool GUTlambda = false;
+  /// Enable/Disable NMSSMTools compatible SLHA output
+  bool NMSSMTools = false;
+  int MICROMEGAS = 0;
+  int NMSDECAY = 0;
   /// number of loops used to calculate Higgs mass and tadpoles. They should be
   /// identical for a consistent calculation
   int numHiggsMassLoops = 2, numRewsbLoops = 2;

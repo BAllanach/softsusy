@@ -25,9 +25,6 @@ namespace softsusy{
   /// 3. Note that gaugino and Higgs mass parameters are evolved to 2-loops by
   /// default anyway.
   extern bool INCLUDE_2_LOOP_SCALAR_CORRECTIONS;
-  /// Set to number of loops to use for calculation of Higgs mass 
-  /// (currently up to 2, the default)
-
   /// PA: switch for selecting between the Z3 preserving case and the
   // Z3 violating case with mu and m3sq allowed
   // needed fpr slecting which EWSB routines to use.
@@ -35,7 +32,13 @@ namespace softsusy{
   //If true the input value of lambda is set at the GUT scale
   //If false the input lambda is set at MSUSY.
   extern bool GUTlambda;
-
+  //Needed for NMSSMTools interfacing
+  extern bool NMSSMTools;
+  extern int MICROMEGAS;
+  extern int NMSDECAY;
+  
+  /// Set to number of loops to use for calculation of Higgs mass 
+  /// (currently up to 2, the default)
   extern int numHiggsMassLoops;
   /// Set to number of loops to use for REWSB condition up to the default of 2
   extern int numRewsbLoops;

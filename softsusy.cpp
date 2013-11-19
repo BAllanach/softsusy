@@ -6449,7 +6449,28 @@ void Softsusy<SoftPars>::doChargedSleptons(double mtau, double pizztMS, double
 
     treeChargedSlepton(mSlepSquared, mtau, pizztMS, sinthDRbarMS, family);
     if (accuracy > 0) addSlepCorrection(mSlepSquared, family);
-
+   
+     if(NMSSMTools==true && family==2){
+       double theta;
+       DoubleVector physSmuMassesSq(mSlepSquared.sym2by2(theta));
+       physpars.thetamu = theta;
+       
+       if (physSmuMassesSq(1) < 0.0 || physSmuMassesSq(2) < 0.0) {
+          flagTachyon(smuon);
+       }
+       DoubleVector physSmuMasses(physSmuMassesSq.apply(zeroSqrt));
+       double lightSmuMass = minimum(physSmuMasses(1), physSmuMasses(2));
+       double heavySmuMass = maximum(physSmuMasses(1), physSmuMasses(2));
+       if (physSmuMassesSq(1) > physSmuMassesSq(2)){
+          physpars.me(1, family) = heavySmuMass; 
+          physpars.me(2, family) = lightSmuMass;
+       } 
+       else{
+           physpars.me(1, family) = lightSmuMass; 
+           physpars.me(2, family) = heavySmuMass;
+       }
+    }
+     else{
     if (mSlepSquared(1, 1) < 0.0 || mSlepSquared(2, 2) < 0.0) {
       if (family == 1) flagTachyon(selectron);
       else if (family == 2) flagTachyon(smuon);
@@ -6457,6 +6478,9 @@ void Softsusy<SoftPars>::doChargedSleptons(double mtau, double pizztMS, double
       
     physpars.me(1, family) = zeroSqrt(mSlepSquared(1, 1));
     physpars.me(2, family) = zeroSqrt(mSlepSquared(2, 2));
+
+     }
+
   }
 
   /// do third family
@@ -6467,7 +6491,7 @@ void Softsusy<SoftPars>::doChargedSleptons(double mtau, double pizztMS, double
   if (accuracy > 0) {
     double pLight = minimum(forLoops.me(1, 3), forLoops.me(2, 3));
     double pHeavy = maximum(forLoops.me(1, 3), forLoops.me(2, 3));
-
+    
     addStauCorrection(pLight, mSlepSquared, mtau);
     addStauCorrection(pHeavy, mSlepSquared2, mtau);  
   }
