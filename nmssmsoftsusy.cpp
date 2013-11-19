@@ -3662,11 +3662,7 @@ void NmssmSoftsusy::rewsbTreeLevel(int sgnMu) {
    setXiS(xiS);
   }
 
-  /// LCT: Flag warning if Higgs potential is not at minimum
-  if (VhAtMin(displaySvev(), 0) > 0 )
-    flagHiggsNoMin(true);
-  else
-    flagHiggsNoMin(false);  
+
 
 }
 
