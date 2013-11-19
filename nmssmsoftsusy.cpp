@@ -8488,10 +8488,14 @@ void NmssmSoftsusy::itLowsoft
     /// Guard against the top Yukawa fixed point
     if (displayYukawaElement(YU, 3, 3) > 3.0 
 	|| displayYukawaElement(YD, 3, 3) > 3.0 
-	|| displayYukawaElement(YE, 3, 3) > 3.0) {
+	|| displayYukawaElement(YE, 3, 3) > 3.0
+        || displayLambda() > 3.0
+        || displayKappa() > 3.0) {
       setYukawaElement(YU, 3, 3, minimum(3.0, displayYukawaElement(YU, 3, 3)));
       setYukawaElement(YD, 3, 3, minimum(3.0, displayYukawaElement(YD, 3, 3)));
       setYukawaElement(YE, 3, 3, minimum(3.0, displayYukawaElement(YE, 3, 3)));
+      setLambda(minimum(3.0, displayLambda()));
+      setKappa(minimum(3.0, displayKappa()));
       flagIrqfp(true); 
     }
     
