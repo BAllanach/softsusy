@@ -12,11 +12,11 @@ Block SMINPUTS               # Standard Model inputs
     6   1.709000000e+02      # mtop(pole)
     7   1.777000000e+00      # mtau(pole)
 Block MINPAR                 # Input parameters
-    1   1.000000000e+03      # m_0
-    2   5.000000000e+02      # m_12
+    1   4.000000000e+02      # m_0
+    2   2.000000000e+02      # m_12
     3   1.000000000e+01      # tanb
     4   1.000000000e+00      # sign(mu)
-    5  -2.000000000e+03      # A_0
+    5  -3.000000000e+02      # A_0
 Block SOFTSUSY               # SOFTSUSY specific inputs
     1   1.000000000e-04      # tolerance
     2   2.000000000e+00      # up-quark mixing (=1) or down (=2)
