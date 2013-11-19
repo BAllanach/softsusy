@@ -39,6 +39,8 @@ namespace softsusy {
   //Will be inconsistent with constrained models
   //but can be useful for non-universal Higgs cases 
   bool SoftHiggsOut = false;
+  int MICROMEGAS = 0;
+  int NMSDECAY = 0;
   /// number of loops used to calculate Higgs mass and tadpoles. They should be
   /// identical for a consistent calculation
   int numHiggsMassLoops = 2, numRewsbLoops = 2;

@@ -38,6 +38,8 @@ private:
   
    double tSOVSMs;  ///< New Nmssm DRbar tadpole(MSusy): incl 2 loops
    double tSOVSMs1loop; ///<New Nmssm DRbar tadpole(MSusy): excl 2 loops
+   /// LCT: Returns logarithm factor from one-loop effective potential
+   double looplog(double mass) const;
 
 public:
 //  void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
@@ -58,7 +60,8 @@ public:
   const NmssmSoftsusy & operator=(const NmssmSoftsusy & s);
   
   double displayTadpoleSMs() const; ///< displays t_s/s tadpole
-  double displayTadpoleSMs1loop() const; ///< displays t_2/v_s tadpole@1 loop
+  double displayTadpoleSMs1loop() const; ///< displays t_2/v_s tadpole @1 loop
+
   //PA: obtains NMSSM P1-sfermion-sfermion couplings 
   //for 3rd generation sfermions
   void  P1SfSfCouplings(DoubleMatrix & lTP1Lr, DoubleMatrix & lBP1Lr, 
@@ -77,7 +80,7 @@ public:
   void  H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, 
 			DoubleMatrix  & lTauS1Lr, double gmzOcthW, 
 			double mu,  double cosb, double v1) const;
-//PA: obtains NMSSM H2-sfermion-sfermion couplings 
+  //PA: obtains NMSSM H2-sfermion-sfermion couplings 
   //for 3rd generation sfermions
   void H2SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, 
 		       DoubleMatrix  & lTauS1Lr, double gmzOcthW, 
@@ -93,7 +96,7 @@ public:
   void assignHiggs(DoubleVector & higgsm, DoubleVector & higgsa, 
                      DoubleVector & higgsc) const;
   //PA: NMSSM routine to obtain Higgs loop parts of (16 \pi^2) t1/v1
-//Includes goldstone bosons. 
+  //Includes goldstone bosons. 
   double doCalcTad1Higgs(double q, double costhDRbar, double g, double tanb) const;
   //PA: NMSSM routine to obtain Higgs loop parts of (16 \pi^2) t2/v2
   //Includes goldstone bosons.
@@ -257,6 +260,10 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   //calculates DrBar Higgs masses and sets them    
   void calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, 
                       drBarPars & eg);
+
+  /// LCT: Returns Higgs potential at minimum.  Inputs: s=singlet vev from 
+  /// minimization conditions, loop=number of loops (either 0 or 1)
+  double VhAtMin(double s, int loop) const;
   
   /// Returns mu from rewsb requirement. 
   /// returns 1 if there's a problem. Call at MSusy
@@ -558,8 +565,6 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   void nmamixSLHA(ostream&);
   /// NMSSMRUN block of SLHA
   void nmssmrunSLHA(ostream&, const char* blockName = "NMSSMRUN");
-  /// NMSSMTools block of SLHA
-  void nmssmtoolsSLHA(ostream&);
   /// extra DRbar parameters block for NMSSMTools decays
   void extranmssmtoolsSLHA(ostream&);
   /// extra DRbar Yukawa couplings for NMSSMTools decays

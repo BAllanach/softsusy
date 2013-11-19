@@ -1020,8 +1020,20 @@ int main(int argc, char *argv[]) {
                   }
 		    break;
                   case 16: {
+
                     int num = int(d + EPSTOL);
                     softsusy::SoftHiggsOut = num;
+                  }
+                     break;
+                  case 17: {
+                     int num = int(d + EPSTOL);
+                     softsusy::MICROMEGAS = num;
+                  }
+                    break;
+                  case 18: {
+                     int num = int(d + EPSTOL);
+                     softsusy::NMSDECAY = num;
+
                   }
 		    break;
 		  default:

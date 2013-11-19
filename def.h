@@ -39,6 +39,9 @@ namespace softsusy{
   //Will be inconsistent with constrained models
   //but can be useful for non-universal Higgs cases 
   extern bool SoftHiggsOut;
+  extern int MICROMEGAS;
+  extern int NMSDECAY;
+  
   /// Set to number of loops to use for calculation of Higgs mass 
   /// (currently up to 2, the default)
   extern int numHiggsMassLoops;
