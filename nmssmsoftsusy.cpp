@@ -3439,15 +3439,17 @@ double NmssmSoftsusy::looplog(double mass) const {
   return logfactor;
 }
 
-double NmssmSoftsusy::VhAtMin(double s, int loop) const {
+double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   double kap    = displayKappa(); 
   double lam    = displayLambda();
   double al     = displayTrialambda();
   double ak     = displayTriakappa();
-  double tb     = displayTanb(); 
-  double sb     = sin(atan(tb)), s2b = sin(2.0 * atan(tb));
-  double cb     = cos(atan(tb)), c2b = cos(2.0 * atan(tb));
+  double beta   = atan(displayTanb()); 
+  double sinb   = sin(beta);
+  double cosb   = cos(beta);
   double vev    = displayHvev();
+  double v1sq   = sqr(v1);
+  double v2sq   = sqr(v2);
   double smu    = displaySusyMu();   
   double mupr   = displayMupr();
   double xiF    = displayXiF();
@@ -3458,6 +3460,9 @@ double NmssmSoftsusy::VhAtMin(double s, int loop) const {
   double g2     = displayGaugeCoupling(2);
   double mHu2   = displayMh2Squared(), mHd2 = displayMh1Squared();
   double m3sq   = displayM3Squared();
+
+  /// LCT: Calculate DRbar parameters for each input of vevs
+  calcDrBarPars();
 
   /// LCT: Parameters for 1-loop contributions
   const drBarPars & forLoops = displayDrBarPars();
@@ -3502,25 +3507,31 @@ double NmssmSoftsusy::VhAtMin(double s, int loop) const {
   DoubleVector msmu(2);
   msmu(1)              = forLoops.me(1, 2);
   msmu(2)              = forLoops.me(2, 2);
-
   /// Sneutrinos
   DoubleVector msnu(3);
   msnu(1)              = forLoops.msnu(1);
   msnu(2)              = forLoops.msnu(2);
   msnu(3)              = forLoops.msnu(3);
+
+  /// LCT: Parameters for 2-loop contributions
+  double q = displayMu();
+  double mGluino = displayGaugino(3);
+  double s2t = sin(2.0 * forLoops.thetat);
+  double c2t = cos(2.0 * forLoops.thetat);
+  double s2b = sin(2.0 * forLoops.thetab);
+  double c2b = cos(2.0 * forLoops.thetab);
   
   /// LCT: Tree-level contributions to effective potential
-  double VH = sqr(-0.25 * lam * sqr(vev) * s2b + 0.5 * kap * sqr(s)
-		  + mupr * s / root2 + xiF)
-    + (sqr(gp) + sqr(g2)) * sqr(vev * vev) * sqr(c2b) / (32.0) 
-    + (mHu2 + sqr(smu + lam * s / root2)) * 0.5 * sqr(vev) * sqr (sb)
-    + (mHd2 + sqr(smu + lam * s / root2)) * 0.5 * sqr(vev) * sqr (cb)
-    + 0.5 * mSsq * sqr(s) - 0.5 * al * s2b * sqr(vev) * s
-    + ak * s * s * s / (3.0 * root2) - 0.5 * m3sq * sqr(vev) * s2b
+  double VH = 
+    sqr(-0.5 * lam * v1 * v2 + 0.5 * kap * sqr(s) + mupr * s / root2 + xiF) 
+    + (sqr(gp) + sqr(g2)) * sqr(v2sq - v1sq) / 32.0 
+    + 0.5 * (mHu2 + sqr(smu + lam * s / root2)) * v2sq 
+    + 0.5 * (mHd2 + sqr(smu + lam * s / root2)) * v1sq  
+    + 0.5 * mSsq * sqr(s) - al * v1 * v2 * s / root2 
+    + ak * s * s * s / (3.0 * root2) - m3sq * v1 * v2 
     + 0.5 * mSprsq * sqr(s) + root2 * xiS * s;
  
   /// LCT: 1-loop contributions to effective potential
-  if (loop > 0) {
   double sfermions = 0.0;
   for (int i=1; i<=3; i++) {
     if (i<=2) {
@@ -3569,8 +3580,43 @@ double NmssmSoftsusy::VhAtMin(double s, int loop) const {
 
   /// LCT: Combine tree-level and 1-loop corrections to effective potential
   VH = VH + VHloop;
-  }
-		  
+  
+  /// LCT: 2-loop O(alpha_s) corrections to effective potential. 
+  /// VH taken from Appendix C of Degrassi & Slavich, 
+  /// Nucl.Phys. B825, 119 (2010), with 2-loop functions jj, ii, ii0 called from
+  /// nmssm2loop.f.  Here, ii0 = ii(q, x, x, 0).
+  /// LCT: Fermions
+  fermions = fermions + 2.0 * jj_(&q, &mt, &mt) - 4.0 * sqr(mt) * ii0_(&q, &mt)
+    + 2.0 * jj_(&q, &mb, &mb) - 4.0 * sqr(mb) * ii0_(&q, &mb);
+  
+  /// LCT: Sfermions
+  double stops = 2.0 * sqr(mstop(1)) * ii0_(&q, &mstop(1)) 
+    + 2.0 * ll_(&q, &mstop(1), &mGluino, &mt)
+    - 4.0 * mt * mGluino * s2t * ii_(&q, &mstop(1), &mGluino, &mt)
+    + 0.5 * (1.0 + sqr(c2t)) * jj_(&q, &mstop(1), &mstop(1))
+    + 0.5 * sqr(s2t) * jj_(&q, &mstop(1), &mstop(2)) // stop 1
+    + 2.0 * sqr(mstop(2)) * ii0_(&q, &mstop(2))
+    + 2.0 * ll_(&q, &mstop(2), &mGluino, &mt) + 4.0 * mt * mGluino * s2t 
+    * ii_(&q, &mstop(2), &mGluino, &mt) + 0.5 * (1.0 + sqr(c2t)) 
+    * jj_(&q, &mstop(2), &mstop(2)) 
+    + 0.5 * sqr(s2t) * jj_(&q, &mstop(2), &mstop(1)); // stop 2
+  
+  double sbots = 2.0 * sqr(msbot(1)) * ii0_(&q, &msbot(1)) 
+    + 2.0 * ll_(&q, &msbot(1), &mGluino, &mb)
+    - 4.0 * mb * mGluino * s2b * ii_(&q, &msbot(1), &mGluino, &mb)
+    + 0.5 * (1.0 + sqr(c2b)) * jj_(&q, &msbot(1), &msbot(1))
+    + 0.5 * sqr(s2b) * jj_(&q, &msbot(1), &msbot(2)) // sbot 1
+    + 2.0 * sqr(msbot(2)) * ii0_(&q, &msbot(2))
+    + 2.0 * ll_(&q, &msbot(2), &mGluino, &mb) + 4.0 * mb * mGluino * s2b 
+    * ii_(&q, &msbot(2), &mGluino, &mb) + 0.5 * (1.0 + sqr(c2b)) 
+    * jj_(&q, &msbot(2), &msbot(2)) 
+    + 0.5 * sqr(s2b) * jj_(&q, &msbot(2), &msbot(1)); // sbot 2
+  
+  double VH2loop = fermions + stops + sbots;
+  
+  /// LCT: Combine tree + 1-loop + 2-loop corrections
+  VH = VH + VH2loop;
+  
   return VH;
 }
 
@@ -3621,6 +3667,7 @@ void NmssmSoftsusy::rewsbTreeLevel(int sgnMu) {
     flagHiggsNoMin(true);
   else
     flagHiggsNoMin(false);  
+
 }
 
 
@@ -3885,35 +3932,41 @@ void NmssmSoftsusy::rewsb(int sgnMu, double mt, double muOld, double eps) {
   //PA: using Z3 version of EWSB
   //with kappa as output
   if(Z3){
-if (rewsbKap(kapnew) == 0) flagM3sq(false);
-  else flagM3sq(true);   
-  setKappa(kapnew);
+    if (rewsbKap(kapnew) == 0) flagM3sq(false);
+    else flagM3sq(true);   
+    setKappa(kapnew);
   }
   else{ //PA: use rewsbM3sq which can work for Z3 violating case
-  if (rewsbM3sq(munew, m3sqnew) == 0) flagM3sq(false);
-  else flagM3sq(true);   
-  setM3Squared(m3sqnew);
+    if (rewsbM3sq(munew, m3sqnew) == 0) flagM3sq(false);
+    else flagM3sq(true);   
+    setM3Squared(m3sqnew);
   }
   if(Z3 == false){
     rewsbXiS(xiSnew);
     setXiS(xiSnew);
   }
- else{
-     rewsbmSsq(mSsqnew);
-     setMsSquared(mSsqnew);
+  else{
+    rewsbmSsq(mSsqnew);
+    setMsSquared(mSsqnew);
   }
 
-  if (VhAtMin(displaySvev(), 1) > 0 )
-    flagHiggsNoMin(true);
-  else
-    flagHiggsNoMin(false);
-
+    /// LCT: Flag warning if not at global min of Higgs potential
+    double v1 = displayHvev() * cos(atan(displayTanb()));
+    double v2 = displayHvev() * sin(atan(displayTanb()));
+    double s = displaySvev();
+    double VH = VhAtMin(v1, v2, s);
+    double V1 = VhAtMin(0.0, 0.0, 0.0);
+    double V2 = VhAtMin(0.0, 0.0, s);
+    double V3 = VhAtMin(0.0, v2, s);
+    double V4 = VhAtMin(v1, 0.0, s);
+    if (VH > V1 || VH > V2 || VH > V3 || VH > V4) 
+      flagHiggsNoMin(true);  
+    else
+      flagHiggsNoMin(false);
 }
  
 
 }
-
-
 
 /// Organises calculation of physical quantities such as sparticle masses etc
 /// Call AT MSusy
@@ -4241,8 +4294,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 	 sigmaMA2(1, 3) = sigmaMA2(1, 3) - DMP[0][2];    
 	 sigmaMA2(2, 3) = sigmaMA2(2, 3) - DMP[1][2]; 
 	 sigmaMA2(3, 3) = sigmaMA2(3, 3) - DMP[2][2];
-       
-      
+  
      
      }
      
@@ -8106,8 +8158,8 @@ double NmssmSoftsusy::calcRunMbHiggs() const {
   double mt          = displayDrBarPars().mt;
   double cosb        = cos(atan(displayTanb()));
   double sinb        = sin(atan(displayTanb()));
-  double  mz         = displayMzRun();
-  double  mw         = displayMwRun();
+  double mz          = displayMzRun();
+  double mw          = displayMwRun();
   double thetaWDRbar = asin(calcSinthdrbar());
   double cw2DRbar    = sqr(cos(thetaWDRbar));
   double g           = displayGaugeCoupling(2);
@@ -8748,7 +8800,7 @@ void NmssmSoftsusy::lowOrg
 
     physical(3);
 
-    runto(mz);
+    runto(mz); 
 
     if (PRINTOUT > 1) cout << " end of iteration" << endl;
     

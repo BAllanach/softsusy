@@ -11,3 +11,13 @@ extern "C" int effpot_(int *lp,double *mt,double *mg,double *T1,double *T2,doubl
 /* extern "C" int  makederivNM(double *mt,double *mg,double *T1,double *T2,double *s2t,double *c2t,double *q,double *DT1,double *DT1T1,double *DT1t,double *DT1c2t,double *DT1T2,double *Dtt,double *Dc2t,double *Dc2tc2t,double *Dtc2t,double *Dcptmptt); */
 
 /* extern "C" int swap12NM(double *M); */
+
+/// LCT: Two-loop functions defined in Appendix D of Degrassi & Slavich
+extern "C" {
+  double jj_(double *q,double *m1,double *m2);
+  double ii_(double *q,double *m1,double *m2,double *m3);
+  double ii0_(double *q,double *m1);
+  double ll_(double *q,double *m1,double *m2,double *m3); 
+}
+
+
