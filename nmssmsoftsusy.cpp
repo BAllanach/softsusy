@@ -3960,10 +3960,10 @@ void NmssmSoftsusy::rewsb(int sgnMu, double mt, double muOld, double eps) {
     double V2 = VhAtMin(0.0, 0.0, s);
     double V3 = VhAtMin(0.0, v2, s);
     double V4 = VhAtMin(v1, 0.0, s);
-    if (VH > V1 || VH > V2 || VH > V3 || VH > V4) 
-      flagHiggsNoMin(true);  
-    else
-      flagHiggsNoMin(false);
+    // if (VH > V1 || VH > V2 || VH > V3 || VH > V4) 
+    //   flagHiggsNoMin(true);  
+    // else
+    //   flagHiggsNoMin(false);
 }
  
 
