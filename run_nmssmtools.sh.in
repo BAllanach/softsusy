@@ -18,6 +18,12 @@ if ! test -d "${NMSSMTOOLS_PATH}"; then
     exit 1
 fi
 
+if ! test -x "${NMSSMTOOLS_PATH}/main/nmProcessSpec"; then
+    echo "Error: Cannot find ${NMSSMTOOLS_PATH}/main/nmProcessSpec"
+    echo "   Please run ./setup_nmssmtools.sh --nmssmtools-dir=/path/to/NMSSMTools --compile"
+    exit 1
+fi
+
 slha_input_file="$1"
 slha_output_file="${slha_input_file}.$$.out"
 
@@ -28,4 +34,4 @@ fi
 
 ${BASEDIR}/softpoint.x leshouches < ${slha_input_file} > ${slha_output_file}
 cp ${slha_output_file} ${NMSSMTOOLS_PATH}/main/slha_nmssm
-$(cd ${NMSSMTOOLS_PATH}/main/; ./nmProcessSpec)
+$(cd ${NMSSMTOOLS_PATH}/main/ && ./nmProcessSpec)
