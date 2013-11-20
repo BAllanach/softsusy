@@ -1043,18 +1043,23 @@ these two steps:
 \end{verbatim}
 %
 Here \code{slhaInput} is an SLHA input file with the SOFTSUSY block
-entry $15$ set to $1$
+entry $15$ set to $1$.  Additional NMSSMTools specific flags can also be used with entries $16$ and $17$.
 %
 \begin{verbatim}
    Block SOFTSUSY
-      15   1      # NMSSMTools compatible output (default: 0)
+      15   1      # NMSSMTools compatible output (default: 0) 
+      16   4      # Micromegas options for use with NMSSMTools
+                  # (default: 0) 0=no, 1=relic density only
+                  # 2=direct detection, 3=indirect detection
+                  # 4=both  
+      17   1      # 1:sparticle decays via NMSDECAY (default: 0)
 \end{verbatim}
 %
-After \code{run\_nmssmtools.sh} was called, the following three output
+After \code{run\_nmssmtools.sh} is called, the following three output
 files can be found in the NMSSMTools directory
 \code{NMSSMTools\_4.1.2/main/}: The file \code{nmProcessSpec-decay}
 contains the sparticle decays in form of SLHA DECAY blocks,
-\code{nmProcessSpec-omega} \red{will be empty} and
+\code{nmProcessSpec-omega} will contain the output from micromegas if entry 16 is selected to be non-zero and
 \code{nmProcessSpec-spectr} contains the spectrum calculated by
 NMSSMTools.
 
