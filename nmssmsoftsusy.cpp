@@ -3483,41 +3483,42 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   /// 1st and 2nd generation sfermion masses
   /// Sup
   DoubleVector msup(2); 
-  msup(1)              = forLoops.mu(1, 1);
-  msup(2)              = forLoops.mu(2, 1);
+  msup(1)           = forLoops.mu(1, 1);
+  msup(2)           = forLoops.mu(2, 1);
   /// Scharm
   DoubleVector msch(2); 
-  msch(1)              = forLoops.mu(1, 2);
-  msch(2)              = forLoops.mu(2, 2);
+  msch(1)           = forLoops.mu(1, 2);
+  msch(2)           = forLoops.mu(2, 2);
   /// Sdown
   DoubleVector msd(2);
-  msd(1)               = forLoops.md(1, 1);
-  msd(2)               = forLoops.md(2, 1);
+  msd(1)            = forLoops.md(1, 1);
+  msd(2)            = forLoops.md(2, 1);
   /// Sstrange
   DoubleVector mss(2);
-  mss(1)               = forLoops.md(1, 2);
-  mss(2)               = forLoops.md(2, 2);
+  mss(1)            = forLoops.md(1, 2);
+  mss(2)            = forLoops.md(2, 2);
   /// Selectron
   DoubleVector msel(2);
-  msel(1)              = forLoops.me(1, 1);
-  msel(2)              = forLoops.me(2, 1);
+  msel(1)           = forLoops.me(1, 1);
+  msel(2)           = forLoops.me(2, 1);
   /// Smuon
   DoubleVector msmu(2);
-  msmu(1)              = forLoops.me(1, 2);
-  msmu(2)              = forLoops.me(2, 2);
+  msmu(1)           = forLoops.me(1, 2);
+  msmu(2)           = forLoops.me(2, 2);
   /// Sneutrinos
   DoubleVector msnu(3);
-  msnu(1)              = forLoops.msnu(1);
-  msnu(2)              = forLoops.msnu(2);
-  msnu(3)              = forLoops.msnu(3);
+  msnu(1)           = forLoops.msnu(1);
+  msnu(2)           = forLoops.msnu(2);
+  msnu(3)           = forLoops.msnu(3);
 
   /// LCT: Parameters for 2-loop contributions
-  double q = displayMu();
+  double q       = displayMu();
   double mGluino = displayGaugino(3);
-  double s2t = sin(2.0 * forLoops.thetat);
-  double c2t = cos(2.0 * forLoops.thetat);
-  double s2b = sin(2.0 * forLoops.thetab);
-  double c2b = cos(2.0 * forLoops.thetab);
+  double s2t     = sin(2.0 * forLoops.thetat);
+  double c2t     = cos(2.0 * forLoops.thetat);
+  double s2b     = sin(2.0 * forLoops.thetab);
+  double c2b     = cos(2.0 * forLoops.thetab);
+  double twoLoop = sqr(displayGaugeCoupling(3)) / (64.0 * sqr(sqr(PI)));
   
   /// LCT: Tree-level contributions to effective potential
   double VH = 
@@ -3530,15 +3531,18 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
     + 0.5 * mSprsq * sqr(s) + root2 * xiS * s;
  
   /// LCT: 1-loop contributions to effective potential
-  double sfermions = 0.0;
+  double sfermions = 0.0, squarks = 0.0, sleptons = 0.0;
   for (int i=1; i<=3; i++) {
     if (i<=2) {
-    sfermions = sfermions + looplog(mstop(i)) + looplog(msbot(i)) 
-      + looplog(mstau(i)) + looplog(msup(i)) + looplog(msch(i)) 
-      + looplog(msd(i)) + looplog(mss(i)) + looplog(msel(i)) + looplog(msmu(i));
-    }
-    sfermions = sfermions + looplog(msnu(i));
+      squarks = squarks 
+	+ 6.0 * (looplog(mstop(i)) + looplog(msbot(i)) + looplog(msup(i)) 
+		 + looplog(msch(i)) + looplog(msd(i)) + looplog(mss(i)));
+      sleptons = sleptons 
+	+ 2.0 * (looplog(mstau(i))+ looplog(msel(i)) + looplog(msmu(i)));
+     }
+    sleptons = sleptons + looplog(msnu(i));
   }
+  sfermions = squarks + sleptons;
 
   /// LCT: Third generation SM fermions --- ignore contributions from 1st & 2nd 
   /// generations vis-a-vis 1-loop tadpole calculations 
@@ -3550,7 +3554,7 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   double higgs = 0.0;
   for (int i=1; i<=3; i++) {
     if (i<=2) {
-      higgs = higgs + looplog(higgsc(i));
+      higgs = higgs + 2.0 * looplog(higgsc(i));
     }
     higgs = higgs + looplog(higgsm(i)) + looplog(higgsa(i));
   }
@@ -3574,18 +3578,19 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
 
   /// Total contribution to effective potential at 1-loop
   double VHloop =  (sfermions + fermions + higgs + neutralinos 
-		    + charginos + gauge) / (32.0 * sqr(PI));
+		    + charginos + gauge) / (64.0 * sqr(PI));
 
   /// LCT: Combine tree-level and 1-loop corrections to effective potential
   VH = VH + VHloop;
   
   /// LCT: 2-loop O(alpha_s) corrections to effective potential. 
   /// VH taken from Appendix C of Degrassi & Slavich, 
-  /// Nucl.Phys. B825, 119 (2010), with 2-loop functions jj, ii, ii0 called from
-  /// nmssm2loop.f.  Here, ii0 = ii(q, x, x, 0).
+  /// Nucl.Phys. B825, 119 (2010), with 2-loop functions jj, ii, ii0 called 
+  /// from nmssm2loop.f.  Here, ii0(q, x) = ii(q, x, x, 0).
+  
   /// LCT: Fermions
-  fermions = fermions + 2.0 * jj_(&q, &mt, &mt) - 4.0 * sqr(mt) * ii0_(&q, &mt)
-    + 2.0 * jj_(&q, &mb, &mb) - 4.0 * sqr(mb) * ii0_(&q, &mb);
+  double top = 2.0 * jj_(&q, &mt, &mt) - 4.0 * sqr(mt) * ii0_(&q, &mt);
+  double bottom = 2.0 * jj_(&q, &mb, &mb) - 4.0 * sqr(mb) * ii0_(&q, &mb);
   
   /// LCT: Sfermions
   double stops = 2.0 * sqr(mstop(1)) * ii0_(&q, &mstop(1)) 
@@ -3610,7 +3615,7 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
     * jj_(&q, &msbot(2), &msbot(2)) 
     + 0.5 * sqr(s2b) * jj_(&q, &msbot(2), &msbot(1)); // sbot 2
   
-  double VH2loop = fermions + stops + sbots;
+  double VH2loop = twoLoop * (top + bottom + stops + sbots);
   
   /// LCT: Combine tree + 1-loop + 2-loop corrections
   VH = VH + VH2loop;
