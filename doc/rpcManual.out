@@ -1,32 +1,32 @@
-\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
-\BOOKMARK [2][-]{subsection.1.1}{The Nature of the Physical Problem}{section.1}% 2
-\BOOKMARK [2][-]{subsection.1.2}{The Program}{section.1}% 3
-\BOOKMARK [2][-]{subsection.1.3}{Aims and Layout}{section.1}% 4
-\BOOKMARK [1][-]{section.2}{MSSM Parameters }{}% 5
-\BOOKMARK [2][-]{subsection.2.1}{Supersymmetric Parameters }{section.2}% 6
-\BOOKMARK [2][-]{subsection.2.2}{SUSY Breaking Parameters }{section.2}% 7
-\BOOKMARK [2][-]{subsection.2.3}{Tree-Level Masses }{section.2}% 8
-\BOOKMARK [1][-]{section.3}{Calculation }{}% 9
-\BOOKMARK [2][-]{subsection.3.1}{Below MZ}{section.3}% 10
-\BOOKMARK [2][-]{subsection.3.2}{Initial Estimate}{section.3}% 11
-\BOOKMARK [2][-]{subsection.3.3}{Gauge and Yukawa Couplings}{section.3}% 12
-\BOOKMARK [2][-]{subsection.3.4}{MSSM Renormalisation}{section.3}% 13
-\BOOKMARK [2][-]{subsection.3.5}{Electroweak Symmetry Breaking}{section.3}% 14
-\BOOKMARK [2][-]{subsection.3.6}{MSSM Spectrum}{section.3}% 15
-\BOOKMARK [2][-]{subsection.3.7}{Fine Tuning }{section.3}% 16
-\BOOKMARK [1][-]{appendix.A}{Running SOFTSUSY}{}% 17
-\BOOKMARK [2][-]{subsection.A.1}{Input file }{appendix.A}% 18
-\BOOKMARK [1][-]{appendix.B}{Sample Program }{}% 19
-\BOOKMARK [1][-]{appendix.C}{Sample Output }{}% 20
-\BOOKMARK [2][-]{subsection.C.1}{Problem flags }{appendix.C}% 21
-\BOOKMARK [1][-]{appendix.D}{Switches and Constants }{}% 22
-\BOOKMARK [1][-]{appendix.E}{Object Structure}{}% 23
-\BOOKMARK [2][-]{subsection.E.1}{Linear Algebra}{appendix.E}% 24
-\BOOKMARK [2][-]{subsection.E.2}{General Structure}{appendix.E}% 25
-\BOOKMARK [2][-]{subsection.E.3}{RGE Class}{appendix.E}% 26
-\BOOKMARK [2][-]{subsection.E.4}{QedQcd Class}{appendix.E}% 27
-\BOOKMARK [2][-]{subsection.E.5}{MssmSusy Class }{appendix.E}% 28
-\BOOKMARK [2][-]{subsection.E.6}{SoftParsMssm Class}{appendix.E}% 29
-\BOOKMARK [2][-]{subsection.E.7}{MssmSoftsusy Class }{appendix.E}% 30
-\BOOKMARK [2][-]{subsection.E.8}{Alternative electroweak symmetry breaking }{appendix.E}% 31
-\BOOKMARK [2][-]{subsection.E.9}{FlavourMssmSoftsusy Class }{appendix.E}% 32
+\BOOKMARK [1][-]{section.1}{Introduction}{}
+\BOOKMARK [2][-]{subsection.1.1}{The Nature of the Physical Problem}{section.1}
+\BOOKMARK [2][-]{subsection.1.2}{The Program}{section.1}
+\BOOKMARK [2][-]{subsection.1.3}{Aims and Layout}{section.1}
+\BOOKMARK [1][-]{section.2}{MSSM Parameters }{}
+\BOOKMARK [2][-]{subsection.2.1}{Supersymmetric Parameters }{section.2}
+\BOOKMARK [2][-]{subsection.2.2}{SUSY Breaking Parameters }{section.2}
+\BOOKMARK [2][-]{subsection.2.3}{Tree-Level Masses }{section.2}
+\BOOKMARK [1][-]{section.3}{Calculation }{}
+\BOOKMARK [2][-]{subsection.3.1}{Below MZ}{section.3}
+\BOOKMARK [2][-]{subsection.3.2}{Initial Estimate}{section.3}
+\BOOKMARK [2][-]{subsection.3.3}{Gauge and Yukawa Couplings}{section.3}
+\BOOKMARK [2][-]{subsection.3.4}{MSSM Renormalisation}{section.3}
+\BOOKMARK [2][-]{subsection.3.5}{Electroweak Symmetry Breaking}{section.3}
+\BOOKMARK [2][-]{subsection.3.6}{MSSM Spectrum}{section.3}
+\BOOKMARK [2][-]{subsection.3.7}{Fine Tuning }{section.3}
+\BOOKMARK [1][-]{appendix.A}{Running SOFTSUSY}{}
+\BOOKMARK [2][-]{subsection.A.1}{Input file }{appendix.A}
+\BOOKMARK [1][-]{appendix.B}{Sample Program }{}
+\BOOKMARK [1][-]{appendix.C}{Sample Output }{}
+\BOOKMARK [2][-]{subsection.C.1}{Problem flags }{appendix.C}
+\BOOKMARK [1][-]{appendix.D}{Switches and Constants }{}
+\BOOKMARK [1][-]{appendix.E}{Object Structure}{}
+\BOOKMARK [2][-]{subsection.E.1}{Linear Algebra}{appendix.E}
+\BOOKMARK [2][-]{subsection.E.2}{General Structure}{appendix.E}
+\BOOKMARK [2][-]{subsection.E.3}{RGE Class}{appendix.E}
+\BOOKMARK [2][-]{subsection.E.4}{QedQcd Class}{appendix.E}
+\BOOKMARK [2][-]{subsection.E.5}{MssmSusy Class }{appendix.E}
+\BOOKMARK [2][-]{subsection.E.6}{SoftParsMssm Class}{appendix.E}
+\BOOKMARK [2][-]{subsection.E.7}{MssmSoftsusy Class }{appendix.E}
+\BOOKMARK [2][-]{subsection.E.8}{Alternative electroweak symmetry breaking }{appendix.E}
+\BOOKMARK [2][-]{subsection.E.9}{FlavourMssmSoftsusy Class }{appendix.E}
