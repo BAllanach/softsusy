@@ -24,7 +24,6 @@
 #include <softsusy.h>
 #include "mssmUtils.h"
 #include <nmssm2loop.h>
-#include <nmssm1loop.h>
 #include "nmssmUtils.h"
 
 namespace softsusy {
@@ -351,11 +350,6 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   /// Calculates transverse part of Z self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piZZT(double p, double Q, bool usePoleMt = false) const;
-   //Alternative Slavich version of the above. 
-  double testSlavichpiZZT(double g, double gp, double ht, double hb, double htau, double v1, double v2, double p, double Q) const;
-  //gets tree masses for slavich
-  void testSlavichTreeMasses() const;
-
   /// Calculates Higgs contribution to the transverse part of W self-energy: 
   //for p=external momentum, q=renormalisation scale
   virtual double piWWTHiggs(double p, double q, double thetaWDRbar) const;
@@ -366,8 +360,6 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   /// Q=renormalisation scale
   virtual double piWWT(double p, double Q, bool usePoleMt = false) const;
   //PA: self energy routines for pseudo scalar self energies
-   //Alternative Slavich version of the above. 
-  double testSlavichpiWWT(double g, double gp, double ht, double hb, double htau, double v1, double v2, double p, double Q) const;
   double pip1p1(double p, double q) const;
   double pip1p2(double p, double q) const;
   double pip2p2(double p, double q) const;

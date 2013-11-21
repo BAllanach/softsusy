@@ -27,7 +27,7 @@ pkginclude_HEADERS = \
 def.h main.h numerics.h \
 softpars.h susy.h linalg.h \
 physpars.h softpoint.h twoloophiggs.h \
-nmssm2loop.h nmssm1loop.h dilogwrap.h \
+nmssm2loop.h dilogwrap.h \
 lowe.h mycomplex.h rge.h rgeroutines.h softsusy.h \
 utils.h mssmUtils.h rpvsoft.h rpvsusypars.h \
 tensor.h rpvmain.h flavoursoft.h \
@@ -36,7 +36,7 @@ nmssmsusy.h nmssmsoftpars.h  \
 nmssmsoftsusy.h nmssmUtils.h
 
 libsoft_la_SOURCES = def.cpp linalg.cpp lowe.cpp numerics.cpp  rpvneut.cpp \
-physpars.cpp rge.cpp rgeroutines.cpp nmssm2loop.f nmssm1loop.f dilogwrap.f \
+physpars.cpp rge.cpp rgeroutines.cpp nmssm2loop.f dilogwrap.f \
  nmssmsoftsusy.cpp nmssmsusy.cpp nmssmsoftpars.cpp nmssmUtils.cpp \
 susy.cpp utils.cpp mssmUtils.cpp \
 tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp twoloophiggs.f 
