@@ -3357,9 +3357,6 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   double al     = displayTrialambda();
   double ak     = displayTriakappa();
   double beta   = atan(displayTanb()); 
-  double sinb   = sin(beta);
-  double cosb   = cos(beta);
-  double vev    = displayHvev();
   double v1sq   = sqr(v1);
   double v2sq   = sqr(v2);
   double smu    = displaySusyMu();   
