@@ -1149,8 +1149,10 @@ int main(int argc, char *argv[]) {
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
       
-      if (r->displayProblem().test()) 
+      if (r->displayProblem().test()) {
 	cout << "# SOFTSUSY problem with point: " << r->displayProblem() << endl;
+        return -1;
+      }
       break;
     case NMSSM: {
       nmssm_input.check_setup();
@@ -1165,6 +1167,7 @@ int main(int argc, char *argv[]) {
       if (nmssm.displayProblem().test()) {
          cout << "# SOFTSUSY problem with NMSSM point: "
               << nmssm.displayProblem() << endl;
+         return -1;
       }
       }
       break;
