@@ -34,3 +34,5 @@ benchmarks/*.spec
 doc/*.ps
 doc/*.pdf
 doc/auto/*
+
+run_nmssmtools.sh
