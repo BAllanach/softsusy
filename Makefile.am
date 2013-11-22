@@ -5,6 +5,9 @@ lib_LTLIBRARIES = libsoft.la
 softsusy_x_SOURCES = main.cpp
 softsusy_x_LDADD = libsoft.la  
 
+softsusy_nmssm_x_SOURCES = main-nmssm.cpp
+softsusy_nmssm_x_LDADD = libsoft.la
+
 softpoint_x_SOURCES = softpoint.cpp 
 softpoint_x_LDADD = libsoft.la
 
@@ -16,9 +19,6 @@ rpvneut_x_LDADD = libsoft.la
 
 gaugeUn_x_SOURCES = gaugeUn.cpp
 gaugeUn_x_LDADD = libsoft.la 
-
-softsusy_nmssm_x_SOURCES = softsusy-nmssm.cpp
-softsusy_nmssm_x_LDADD = libsoft.la
 
 pkginclude_HEADERS = \
 def.h main.h numerics.h \
