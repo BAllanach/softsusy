@@ -25,6 +25,7 @@ rpvneut.x
 rpvsoftsusy.x
 softpoint.x
 softsusy.x
+softsusy-nmssm.x
 aclocal.m4
 neutOutputTest
 outputTest
