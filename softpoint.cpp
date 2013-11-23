@@ -1019,8 +1019,6 @@ int main(int argc, char *argv[]) {
                     softsusy::NMSSMTools = num;
                   }
 		    break;
-                
-                     break;
                   case 16: {
                      int num = int(d + EPSTOL);
                      softsusy::MICROMEGAS = num;
@@ -1029,14 +1027,13 @@ int main(int argc, char *argv[]) {
                   case 17: {
                      int num = int(d + EPSTOL);
                      softsusy::NMSDECAY = num;
-
                   }
 		    break;
                   case 18: {
-
                     int num = int(d + EPSTOL);
-                    softsusy::SoftHiggsOut = num;
+                    if(num == 1) softsusy::SoftHiggsOut = true;
                   }
+                     break;
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "
