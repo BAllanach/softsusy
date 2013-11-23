@@ -3366,19 +3366,29 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   double xiF    = displayXiF();
   double xiS    = displayXiS();
   double mSprsq = displayMspSquared();
-  double mSsq   = displayMsSquared();
   double gp     = displayGaugeCoupling(1) * sqrt(0.6);
   double g2     = displayGaugeCoupling(2);
-  double mHu2   = displayMh2Squared(), mHd2 = displayMh1Squared();
   double m3sq   = displayM3Squared();
+  double mHu2, mHd2, mSsq;
+  rewsbmH1sq(mHd2);
+  rewsbmH2sq(mHu2);
+  rewsbmSsq(mSsq);
 
-  /// LCT: Calculate DRbar parameters for each input of vevs
-  calcDrBarPars();
+  /// LCT: Tree-level contributions to effective potential
+  double VH = 0.25 * sqr(lam) * v1sq * v2sq + 0.25 * sqr(kap) * sqr(sqr(s)) 
+    + 0.5 * sqr(mupr) * sqr(s) + sqr(xiF) 
+    - lam * v1 * v2 * (0.5 * kap * sqr(s) + mupr * s / root2 + xiF)
+    + kap * sqr(s) * (mupr * s / root2 + xiF) + root2 * xiF * mupr * s
+    //sqr(-0.5 * lam * v1 * v2 + 0.5 * kap * sqr(s) + mupr * s / root2 + xiF) 
+    + (sqr(gp) + sqr(g2)) * sqr(v2sq - v1sq) / 32.0 
+    + 0.5 * (mHu2 + sqr(smu + lam * s / root2)) * v2sq 
+    + 0.5 * (mHd2 + sqr(smu + lam * s / root2)) * v1sq  
+    + 0.5 * mSsq * sqr(s) - al * v1 * v2 * s / root2 
+    + ak * s * s * s / (3.0 * root2) - m3sq * v1 * v2 
+    + 0.5 * mSprsq * sqr(s) + root2 * xiS * s;
 
   /// LCT: Parameters for 1-loop contributions
   const drBarPars & forLoops = displayDrBarPars();
-  double mw = displayMwRun();
-  double mz = displayMzRun();
   /// 3rd generation masses of sfermions / fermions
   DoubleVector mstop(2);
   mstop(1)          = forLoops.mu(1, 3);
@@ -3386,43 +3396,15 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   DoubleVector msbot(2);
   msbot(1)          = forLoops.md(1, 3);
   msbot(2)          = forLoops.md(2, 3);
-  DoubleVector mstau(2);
-  mstau(1)          = forLoops.me(1, 3);
-  mstau(2)          = forLoops.me(2, 3);
   double       mt   = forLoops.mt;
   double       mb   = forLoops.mb;
-  double       mtau = forLoops.mtau;
-
-  /// 1st and 2nd generation sfermion masses
-  /// Sup
-  DoubleVector msup(2); 
-  msup(1)           = forLoops.mu(1, 1);
-  msup(2)           = forLoops.mu(2, 1);
-  /// Scharm
-  DoubleVector msch(2); 
-  msch(1)           = forLoops.mu(1, 2);
-  msch(2)           = forLoops.mu(2, 2);
-  /// Sdown
-  DoubleVector msd(2);
-  msd(1)            = forLoops.md(1, 1);
-  msd(2)            = forLoops.md(2, 1);
-  /// Sstrange
-  DoubleVector mss(2);
-  mss(1)            = forLoops.md(1, 2);
-  mss(2)            = forLoops.md(2, 2);
-  /// Selectron
-  DoubleVector msel(2);
-  msel(1)           = forLoops.me(1, 1);
-  msel(2)           = forLoops.me(2, 1);
-  /// Smuon
-  DoubleVector msmu(2);
-  msmu(1)           = forLoops.me(1, 2);
-  msmu(2)           = forLoops.me(2, 2);
-  /// Sneutrinos
-  DoubleVector msnu(3);
-  msnu(1)           = forLoops.msnu(1);
-  msnu(2)           = forLoops.msnu(2);
-  msnu(3)           = forLoops.msnu(3);
+  double       ut   = forLoops.ut;
+  double       ub   = forLoops.ub;
+  double       ht   = forLoops.ht;
+  double       hb   = forLoops.hb;
+  double       mQl3 = displaySoftMassSquared(mQl, 3, 3);
+  double       mUr3 = displaySoftMassSquared(mUr, 3, 3);
+  double       mDr3 = displaySoftMassSquared(mDr, 3, 3);
 
   /// LCT: Parameters for 2-loop contributions
   double q       = displayMu();
@@ -3432,66 +3414,57 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   double s2b     = sin(2.0 * forLoops.thetab);
   double c2b     = cos(2.0 * forLoops.thetab);
   double twoLoop = sqr(displayGaugeCoupling(3)) / (64.0 * sqr(sqr(PI)));
-  
-  /// LCT: Tree-level contributions to effective potential
-  double VH = 
-    sqr(-0.5 * lam * v1 * v2 + 0.5 * kap * sqr(s) + mupr * s / root2 + xiF) 
-    + (sqr(gp) + sqr(g2)) * sqr(v2sq - v1sq) / 32.0 
-    + 0.5 * (mHu2 + sqr(smu + lam * s / root2)) * v2sq 
-    + 0.5 * (mHd2 + sqr(smu + lam * s / root2)) * v1sq  
-    + 0.5 * mSsq * sqr(s) - al * v1 * v2 * s / root2 
-    + ak * s * s * s / (3.0 * root2) - m3sq * v1 * v2 
-    + 0.5 * mSprsq * sqr(s) + root2 * xiS * s;
+
+  /// LCT: Set (s)particle masses for each vanishing vev scenario
+  if (v1 == 0 && v2 == 0 && s == 0) {
+    mstop(1) = sqrt(mQl3);
+    mstop(2) = sqrt(mUr3);
+    msbot(1) = sqrt(mQl3);
+    msbot(2) = sqrt(mDr3);
+    mt = 0.0;
+    mb = 0.0;
+    VH = 0.0;
+  }
+
+  double Mstop = 0.5 * (mQl3 + mUr3);
+  double dMst = 0.5 * (mQl3 - mUr3);
+  double Msbot = 0.5 * (mQl3 + mDr3);
+  double dMsb = 0.5 * (mQl3 - mDr3);
+  if (v1 == 0 && v2 != 0 && s == 0) {
+    mt = ht * sqrt(-4.0 * mHu2 / (sqr(gp) + sqr(g2)));
+    double Deltat = sqrt(sqr(dMst) + sqr(mt) * sqr(ut / ht));
+    mstop(1) = sqrt(Mstop + sqr(mt) - Deltat);
+    mstop(2) = sqrt(Mstop + sqr(mt) + Deltat);
+    msbot(1) = sqrt(mQl3);
+    msbot(2) = sqrt(mDr3);
+    mb = 0.0;
+    VH = - 2.0 * sqr(mHu2) / (sqr(gp) + sqr(g2));
+  }
+
+  if (v1 != 0 && v2 == 0 && s == 0) {
+    mb = hb * sqrt(-4.0 * mHd2 / (sqr(gp) + sqr(g2)));
+    double Deltab = sqrt(sqr(dMsb) + sqr(mb) * sqr(ub / hb));
+    mstop(1) = sqrt(mQl3);
+    mstop(2) = sqrt(mDr3);
+    msbot(1) = sqrt(Msbot + sqr(mb) - Deltab);
+    msbot(2) = sqrt(Msbot + sqr(mb) + Deltab);
+    mt = 0.0;
+    VH = - 2.0 * sqr(mHd2) / (sqr(gp) + sqr(g2));
+  }
  
   /// LCT: 1-loop contributions to effective potential
-  double sfermions = 0.0, squarks = 0.0, sleptons = 0.0;
-  for (int i=1; i<=3; i++) {
-    if (i<=2) {
+  double  squarks = 0.0;
+  for (int i=1; i<=2; i++) {
       squarks = squarks 
-	+ 6.0 * (looplog(mstop(i)) + looplog(msbot(i)) + looplog(msup(i)) 
-		 + looplog(msch(i)) + looplog(msd(i)) + looplog(mss(i)));
-      sleptons = sleptons 
-	+ 2.0 * (looplog(mstau(i))+ looplog(msel(i)) + looplog(msmu(i)));
-     }
-    sleptons = sleptons + looplog(msnu(i));
+	+ 6.0 * (looplog(mstop(i)) + looplog(msbot(i)));
   }
-  sfermions = squarks + sleptons;
 
   /// LCT: Third generation SM fermions --- ignore contributions from 1st & 2nd 
   /// generations vis-a-vis 1-loop tadpole calculations 
-  double fermions = - 12.0 * (looplog(mt) + looplog(mb)) - 4.0 * looplog(mtau);
-
-  /// Define Higgs vector in 't-Hooft Feynman gauge
-  DoubleVector higgsm(3), higgsa(3), higgsc(2);
-  assignHiggs(higgsm, higgsa, higgsc);
-  double higgs = 0.0;
-  for (int i=1; i<=3; i++) {
-    if (i<=2) {
-      higgs = higgs + 2.0 * looplog(higgsc(i));
-    }
-    higgs = higgs + looplog(higgsm(i)) + looplog(higgsa(i));
-  }
-  
-  /// LCT: Neutralinos
-  DoubleVector mneut(forLoops.mnBpmz);
-  double neutralinos = 0.0;
-  for (int i=1; i<=5; i++) {
-    neutralinos = neutralinos - 2.0 * looplog(mneut(i));
-  }
-  
-  /// LCT: Charginos
-  DoubleVector mch(forLoops.mchBpmz); 
-  double charginos = 0.0;
-  for (int i=1; i<=2; i++) {
-    charginos = charginos - 4.0 * looplog(mch(i));
-  }
-
-  /// LCT: Gauge bosons
-  double gauge = 3.0 * looplog(mz) + 6.0 * looplog(mw);
+  double fermions = - 12.0 * (looplog(mt) + looplog(mb));
 
   /// Total contribution to effective potential at 1-loop
-  double VHloop =  (sfermions + fermions + higgs + neutralinos 
-		    + charginos + gauge) / (64.0 * sqr(PI));
+  double VHloop =  (squarks + fermions) / (64.0 * sqr(PI));
 
   /// LCT: Combine tree-level and 1-loop corrections to effective potential
   VH = VH + VHloop;
@@ -3862,16 +3835,19 @@ void NmssmSoftsusy::rewsb(int sgnMu, double mt, double muOld, double eps) {
     setMsSquared(mSsqnew);
   }
 
-    /// LCT: Flag warning if not at global min of Higgs potential
-    double v1 = displayHvev() * cos(atan(displayTanb()));
-    double v2 = displayHvev() * sin(atan(displayTanb()));
-    double s = displaySvev();
-    double VH = VhAtMin(v1, v2, s);
-    double V1 = VhAtMin(0.0, 0.0, 0.0);
-    double V2 = VhAtMin(0.0, 0.0, s);
-    double V3 = VhAtMin(0.0, v2, s);
-    double V4 = VhAtMin(v1, 0.0, s);
-    // if (VH > V1 || VH > V2 || VH > V3 || VH > V4) 
+   /// LCT: Flag warning if not at global min of Higgs potential
+   double v1 = displayHvev() * cos(atan(displayTanb()));
+   double v2 = displayHvev() * sin(atan(displayTanb()));
+   double s = displaySvev();
+   double VH = VhAtMin(v1, v2, s);
+   double V0 = VhAtMin(0.0, 0.0, 0.0);
+   double V1, V2, V3;
+   if (displayMh1Squared() < 0.0)  
+   V1 = VhAtMin(v1, 0.0, 0.0);
+
+   if (displayMh2Squared() < 0.0)
+   V2 = VhAtMin(0.0, v2, 0.0);
+    // if (VH > V0 || VH > V1 || VH > V2 || VH > V3) 
     //   flagHiggsNoMin(true);  
     // else
     //   flagHiggsNoMin(false);
