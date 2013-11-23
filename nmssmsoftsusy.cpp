@@ -8420,7 +8420,6 @@ void NmssmSoftsusy::itLowsoft
     setMupr(0.0);
   }
   else  {
-  setKappa(nmpars(2));
   setSvev(nmpars(3));
   setXiF(nmpars(4));                         
   setMupr(nmpars(5));
@@ -8447,6 +8446,8 @@ void NmssmSoftsusy::itLowsoft
     predictedMzSq = predMzsq(tbIn);
     setPredMzSq(predictedMzSq); 
     if(!softsusy::GUTlambda) setLambda(nmpars(1));
+    if (!softsusy::GUTkappa && !softsusy::Z3)
+      setKappa(nmpars(2));
                       
     if (!ewsbBCscale) err = runto(mxBC, eps);
 
@@ -8500,6 +8501,8 @@ void NmssmSoftsusy::itLowsoft
     
     boundaryCondition(*this, pars);
     if(softsusy::GUTlambda) setLambda(nmpars(1));
+    if (softsusy::GUTkappa && !softsusy::Z3)
+      setKappa(nmpars(2));
     if (!ewsbBCscale) err = runto(displayMsusy(), eps);
 
     calcDrBarPars();
@@ -8654,6 +8657,8 @@ void NmssmSoftsusy::lowOrg
     /// Initial guess: B=0, mu=1st parameter, need better guesses
     boundaryCondition(*this, pars);
     if(softsusy::GUTlambda) setLambda(nmpars(1));
+    if (softsusy::GUTkappa && !softsusy::Z3)
+      setKappa(nmpars(2));
     if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
       /// LCT: Changed sets to match softsusy.cpp 8/8/13
       if(Z3){

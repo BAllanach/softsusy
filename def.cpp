@@ -33,6 +33,9 @@ namespace softsusy {
   //If true the input value of lambda is set at the GUT scale
   //If false the input lambda is set at MSUSY.
   bool GUTlambda = false;
+  //If true the input value of kappa is set at the GUT scale
+  //If false the input kappa is set at MSUSY.
+  bool GUTkappa = false;
   /// Enable/Disable NMSSMTools compatible SLHA output
   bool NMSSMTools = false;
   //If true then the EWSB conditions will output soft Higgs masses

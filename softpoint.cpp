@@ -92,6 +92,7 @@ int main(int argc, char *argv[]) {
   RpvNeutrino kw; bool RPVflag = false;
   enum Model_t { MSSM, NMSSM } susy_model = MSSM; // susy model (MODSEL entry 3)
   softsusy::GUTlambda = true;
+  softsusy::GUTkappa = true;
 
   try {
   if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
@@ -706,20 +707,30 @@ int main(int argc, char *argv[]) {
                         if (fabs(d + 1.0) < EPSTOL) {
                            softsusy::GUTlambda = false;
                         } else {
-                           cout << "WARNING: cannot input NMSSM parameter lambda"
+                           cout << "# WARNING: cannot input NMSSM parameter lambda"
+                              " (set in QEXTPAR " << i << ") at a scale "
+                              "different from M_susy.  Please set QEXTPAR "
+                                << i << " to -1 (M_susy) or remove the entry.\n";
+                        }
+                        break;
+                     case 62: // scale where to input kappa
+                        if (fabs(d + 1.0) < EPSTOL) {
+                           softsusy::GUTkappa = false;
+                        } else {
+                           cout << "# WARNING: cannot input NMSSM parameter kappa"
                               " (set in QEXTPAR " << i << ") at a scale "
                               "different from M_susy.  Please set QEXTPAR "
                                 << i << " to -1 (M_susy) or remove the entry.\n";
                         }
                         break;
                      default:
-                        cout << "WARNING: cannot use parameter " << i <<
+                        cout << "# WARNING: cannot use parameter " << i <<
                            " (set in QEXTPAR) as input at a different"
                            " scale (in the NMSSM) -- ignoring the scale choice\n";
                      }
                      continue;
                   }
-                  cout << "WARNING: cannot use parameter " << i <<
+                  cout << "# WARNING: cannot use parameter " << i <<
                      " (set in QEXTPAR) as input at a different"
                      " scale -- ignoring the scale choice\n";
                 }
