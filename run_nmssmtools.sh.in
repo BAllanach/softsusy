@@ -45,4 +45,4 @@ if test $? -ne 0; then
 fi
 
 cp ${slha_output_file} ${NMSSMTOOLS_PATH}/main/slha_nmssm
-$(cd ${NMSSMTOOLS_PATH}/main/ && ./nmProcessSpec)
+(cd ${NMSSMTOOLS_PATH}/main/ && ./nmProcessSpec)
