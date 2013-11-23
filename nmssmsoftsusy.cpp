@@ -8420,7 +8420,6 @@ void NmssmSoftsusy::itLowsoft
     setMupr(0.0);
   }
   else  {
-  setSvev(nmpars(3));
   setXiF(nmpars(4));                         
   setMupr(nmpars(5));
   }
@@ -8448,6 +8447,8 @@ void NmssmSoftsusy::itLowsoft
     if(!softsusy::GUTlambda) setLambda(nmpars(1));
     if (!softsusy::GUTkappa && !softsusy::Z3)
       setKappa(nmpars(2));
+    if (!softsusy::Z3)
+      setSvev(nmpars(3));
                       
     if (!ewsbBCscale) err = runto(mxBC, eps);
 
