@@ -13,10 +13,10 @@ if test "x$CXXFLAGS" = "x"; then
 fi
 dnl === disable debug symbols by default =====
 if test "x$CXXFLAGS" = "x"; then
-   CXXFLAGS="-O0 -Wall"
+   CXXFLAGS="-O3 -Wall"
 fi
 if test "x$FFLAGS" = "x"; then
-   FFLAGS="-O0 -Wall"
+   FFLAGS="-O3 -Wall"
 fi
 dnl ==========================================
 
