@@ -1019,23 +1019,24 @@ int main(int argc, char *argv[]) {
                     softsusy::NMSSMTools = num;
                   }
 		    break;
-                  case 16: {
-
-                    int num = int(d + EPSTOL);
-                    softsusy::SoftHiggsOut = num;
-                  }
+                
                      break;
-                  case 17: {
+                  case 16: {
                      int num = int(d + EPSTOL);
                      softsusy::MICROMEGAS = num;
                   }
                     break;
-                  case 18: {
+                  case 17: {
                      int num = int(d + EPSTOL);
                      softsusy::NMSDECAY = num;
 
                   }
 		    break;
+                  case 18: {
+
+                    int num = int(d + EPSTOL);
+                    softsusy::SoftHiggsOut = num;
+                  }
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "
