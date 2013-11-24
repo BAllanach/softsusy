@@ -35,6 +35,9 @@ namespace softsusy{
   //If true the input value of kappa is set at the GUT scale
   //If false the input kappa is set at MSUSY.
   extern bool GUTkappa;
+  extern bool GUTmuPrime;
+  extern bool GUTxiF;
+  extern bool GUTsVev;
   //If true we give the output needed for nmssmTools
   //otherwise normal nmssm softsusy output
   extern bool NMSSMTools;

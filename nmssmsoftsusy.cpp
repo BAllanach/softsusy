@@ -8419,10 +8419,6 @@ void NmssmSoftsusy::itLowsoft
     setXiF(0.0);                         
     setMupr(0.0);
   }
-  else  {
-  setXiF(nmpars(4));                         
-  setMupr(nmpars(5));
-  }
 
   try {
     sparticleThresholdCorrections(tanb); 
@@ -8447,9 +8443,13 @@ void NmssmSoftsusy::itLowsoft
     if(!softsusy::GUTlambda) setLambda(nmpars(1));
     if (!softsusy::GUTkappa && (!softsusy::Z3 || softsusy::SoftHiggsOut))
       setKappa(nmpars(2));
-    if (!softsusy::Z3)
+    if (!softsusy::GUTsVev && (!softsusy::Z3 || softsusy::SoftHiggsOut))
       setSvev(nmpars(3));
-                      
+    if (!softsusy::GUTxiF && !softsusy::Z3)
+      setXiF(nmpars(4));
+    if (!softsusy::GUTmuPrime && !softsusy::Z3)
+      setMupr(nmpars(5));
+
     if (!ewsbBCscale) err = runto(mxBC, eps);
 
     /// Guard against the top Yukawa fixed point
@@ -8504,6 +8504,13 @@ void NmssmSoftsusy::itLowsoft
     if(softsusy::GUTlambda) setLambda(nmpars(1));
     if (softsusy::GUTkappa && (!softsusy::Z3 || softsusy::SoftHiggsOut))
       setKappa(nmpars(2));
+    if (softsusy::GUTsVev && (!softsusy::Z3 || softsusy::SoftHiggsOut))
+      setSvev(nmpars(3));
+    if (softsusy::GUTxiF && !softsusy::Z3)
+      setXiF(nmpars(4));
+    if (softsusy::GUTmuPrime && !softsusy::Z3)
+      setMupr(nmpars(5));
+
     if (!ewsbBCscale) err = runto(displayMsusy(), eps);
 
     calcDrBarPars();
@@ -8660,6 +8667,13 @@ void NmssmSoftsusy::lowOrg
     if(softsusy::GUTlambda) setLambda(nmpars(1));
     if (softsusy::GUTkappa && (!softsusy::Z3 || softsusy::SoftHiggsOut))
       setKappa(nmpars(2));
+    if (softsusy::GUTsVev && (!softsusy::Z3 || softsusy::SoftHiggsOut))
+      setSvev(nmpars(3));
+    if (softsusy::GUTxiF && !softsusy::Z3)
+      setXiF(nmpars(4));
+    if (softsusy::GUTmuPrime && !softsusy::Z3)
+      setMupr(nmpars(5));
+
     if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
       /// LCT: Changed sets to match softsusy.cpp 8/8/13
       if(Z3){

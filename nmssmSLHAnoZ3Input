@@ -48,3 +48,6 @@ Block EXTPAR  # Input parameters
 Block QEXTPAR
 #   61   -1                   # input lambda at Msusy
 #   62   -1                   # input kappa at Msusy
+   65   -1                   # input lambda * <S> at Msusy
+#   66   -1                   # input xi_F at Msusy
+#   68   -1                   # input mu' at Msusy

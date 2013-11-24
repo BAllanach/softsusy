@@ -93,6 +93,9 @@ int main(int argc, char *argv[]) {
   enum Model_t { MSSM, NMSSM } susy_model = MSSM; // susy model (MODSEL entry 3)
   softsusy::GUTlambda = true;
   softsusy::GUTkappa = true;
+  softsusy::GUTmuPrime = true;
+  softsusy::GUTxiF = true;
+  softsusy::GUTsVev = true;
 
   try {
   if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
@@ -718,6 +721,36 @@ int main(int argc, char *argv[]) {
                            softsusy::GUTkappa = false;
                         } else {
                            cout << "# WARNING: cannot input NMSSM parameter kappa"
+                              " (set in QEXTPAR " << i << ") at a scale "
+                              "different from M_susy.  Please set QEXTPAR "
+                                << i << " to -1 (M_susy) or remove the entry.\n";
+                        }
+                        break;
+                     case 65: // scale where to input <S>
+                        if (fabs(d + 1.0) < EPSTOL) {
+                           softsusy::GUTsVev = false;
+                        } else {
+                           cout << "# WARNING: cannot input NMSSM parameter <S>"
+                              " (set in QEXTPAR " << i << ") at a scale "
+                              "different from M_susy.  Please set QEXTPAR "
+                                << i << " to -1 (M_susy) or remove the entry.\n";
+                        }
+                        break;
+                     case 66: // scale where to input xiF
+                        if (fabs(d + 1.0) < EPSTOL) {
+                           softsusy::GUTxiF = false;
+                        } else {
+                           cout << "# WARNING: cannot input NMSSM parameter xiF"
+                              " (set in QEXTPAR " << i << ") at a scale "
+                              "different from M_susy.  Please set QEXTPAR "
+                                << i << " to -1 (M_susy) or remove the entry.\n";
+                        }
+                        break;
+                     case 68: // scale where to input mu'
+                        if (fabs(d + 1.0) < EPSTOL) {
+                           softsusy::GUTmuPrime = false;
+                        } else {
+                           cout << "# WARNING: cannot input NMSSM parameter mu'"
                               " (set in QEXTPAR " << i << ") at a scale "
                               "different from M_susy.  Please set QEXTPAR "
                                 << i << " to -1 (M_susy) or remove the entry.\n";
