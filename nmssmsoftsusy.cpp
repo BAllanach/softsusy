@@ -8445,7 +8445,7 @@ void NmssmSoftsusy::itLowsoft
     predictedMzSq = predMzsq(tbIn);
     setPredMzSq(predictedMzSq); 
     if(!softsusy::GUTlambda) setLambda(nmpars(1));
-    if (!softsusy::GUTkappa && !softsusy::Z3)
+    if (!softsusy::GUTkappa && (!softsusy::Z3 || softsusy::SoftHiggsOut))
       setKappa(nmpars(2));
     if (!softsusy::Z3)
       setSvev(nmpars(3));
@@ -8502,7 +8502,7 @@ void NmssmSoftsusy::itLowsoft
     
     boundaryCondition(*this, pars);
     if(softsusy::GUTlambda) setLambda(nmpars(1));
-    if (softsusy::GUTkappa && !softsusy::Z3)
+    if (softsusy::GUTkappa && (!softsusy::Z3 || softsusy::SoftHiggsOut))
       setKappa(nmpars(2));
     if (!ewsbBCscale) err = runto(displayMsusy(), eps);
 
@@ -8658,7 +8658,7 @@ void NmssmSoftsusy::lowOrg
     /// Initial guess: B=0, mu=1st parameter, need better guesses
     boundaryCondition(*this, pars);
     if(softsusy::GUTlambda) setLambda(nmpars(1));
-    if (softsusy::GUTkappa && !softsusy::Z3)
+    if (softsusy::GUTkappa && (!softsusy::Z3 || softsusy::SoftHiggsOut))
       setKappa(nmpars(2));
     if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
       /// LCT: Changed sets to match softsusy.cpp 8/8/13
