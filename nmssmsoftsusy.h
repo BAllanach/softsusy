@@ -429,9 +429,7 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   double pis1s3(double p, double q) const;
   double pis2s3(double p, double q) const;
   double pis3s3(double p, double q) const;
-  
-
-
+ 
   //PA: gets h1 mixing element with Hu.
   virtual double h1s2Mix();
 

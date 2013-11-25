@@ -8330,7 +8330,7 @@ double NmssmSoftsusy::calcRunningMtau() const {
   return mTauSMMZ * (1.0 + sigmaNeutralino + sigmaChargino + sigmaHiggs);
 }
 
-//PA: returns the mixing of Hu into between h1
+//PA: returns the mixing of Hu into h1
 double NmssmSoftsusy::h1s2Mix(){
    return displayDrBarPars().mixh0(1,2);
 }
