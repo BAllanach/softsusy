@@ -3347,8 +3347,10 @@ int NmssmSoftsusy::rewsbmH2sq(double & mH2sq) const {
 double NmssmSoftsusy::looplog(double mass) const {
   double msq = sqr(mass);
   double q = displayMu();
+  double logfactor;
 
-  double logfactor = sqr(msq) * (log(msq / sqr(q)) - 3.0 / 2.0);
+  if (mass == 0) logfactor = 0.0;
+  else logfactor = sqr(msq) * (log(msq / sqr(q)) - 1.5);
 
   return logfactor;
 }
@@ -3359,6 +3361,9 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   double al     = displayTrialambda();
   double ak     = displayTriakappa();
   double beta   = atan(displayTanb()); 
+  double sinb   = sin(beta);
+  double cosb   = cos(beta);
+  double vev    = displayHvev();
   double v1sq   = sqr(v1);
   double v2sq   = sqr(v2);
   double smu    = displaySusyMu();   
@@ -3373,13 +3378,12 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   rewsbmH1sq(mHd2);
   rewsbmH2sq(mHu2);
   rewsbmSsq(mSsq);
-
+ 
   /// LCT: Tree-level contributions to effective potential
   double VH = 0.25 * sqr(lam) * v1sq * v2sq + 0.25 * sqr(kap) * sqr(sqr(s)) 
     + 0.5 * sqr(mupr) * sqr(s) + sqr(xiF) 
     - lam * v1 * v2 * (0.5 * kap * sqr(s) + mupr * s / root2 + xiF)
     + kap * sqr(s) * (mupr * s / root2 + xiF) + root2 * xiF * mupr * s
-    //sqr(-0.5 * lam * v1 * v2 + 0.5 * kap * sqr(s) + mupr * s / root2 + xiF) 
     + (sqr(gp) + sqr(g2)) * sqr(v2sq - v1sq) / 32.0 
     + 0.5 * (mHu2 + sqr(smu + lam * s / root2)) * v2sq 
     + 0.5 * (mHd2 + sqr(smu + lam * s / root2)) * v1sq  
@@ -3389,33 +3393,25 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
 
   /// LCT: Parameters for 1-loop contributions
   const drBarPars & forLoops = displayDrBarPars();
-  /// 3rd generation masses of sfermions / fermions
+  double mQl3 = displaySoftMassSquared(mQl, 3, 3);
+  double mUr3 = displaySoftMassSquared(mUr, 3, 3);
+  double mDr3 = displaySoftMassSquared(mDr, 3, 3);
+  /// 3rd generation masses of (s)quarks
   DoubleVector mstop(2);
   mstop(1)          = forLoops.mu(1, 3);
   mstop(2)          = forLoops.mu(2, 3);
   DoubleVector msbot(2);
   msbot(1)          = forLoops.md(1, 3);
   msbot(2)          = forLoops.md(2, 3);
-  double       mt   = forLoops.mt;
-  double       mb   = forLoops.mb;
-  double       ut   = forLoops.ut;
-  double       ub   = forLoops.ub;
   double       ht   = forLoops.ht;
   double       hb   = forLoops.hb;
-  double       mQl3 = displaySoftMassSquared(mQl, 3, 3);
-  double       mUr3 = displaySoftMassSquared(mUr, 3, 3);
-  double       mDr3 = displaySoftMassSquared(mDr, 3, 3);
+  double       ut   = forLoops.ut;
+  double       ub   = forLoops.ub;
+  double       mt   = forLoops.mt;
+  double       mb   = forLoops.mb;
+  double       mtau = forLoops.mtau; 
 
-  /// LCT: Parameters for 2-loop contributions
-  double q       = displayMu();
-  double mGluino = displayGaugino(3);
-  double s2t     = sin(2.0 * forLoops.thetat);
-  double c2t     = cos(2.0 * forLoops.thetat);
-  double s2b     = sin(2.0 * forLoops.thetab);
-  double c2b     = cos(2.0 * forLoops.thetab);
-  double twoLoop = sqr(displayGaugeCoupling(3)) / (64.0 * sqr(sqr(PI)));
-
-  /// LCT: Set (s)particle masses for each vanishing vev scenario
+  /// LCT: Scenario #1: All vevs vanish
   if (v1 == 0 && v2 == 0 && s == 0) {
     mstop(1) = sqrt(mQl3);
     mstop(2) = sqrt(mUr3);
@@ -3426,11 +3422,24 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
     VH = 0.0;
   }
 
-  double Mstop = 0.5 * (mQl3 + mUr3);
-  double dMst = 0.5 * (mQl3 - mUr3);
-  double Msbot = 0.5 * (mQl3 + mDr3);
-  double dMsb = 0.5 * (mQl3 - mDr3);
+  /// LCT: Scenario #2: Only v1 \neq 0
+  if (v1 != 0 && v2 == 0 && s == 0) {
+    double Msbot = 0.5 * (mQl3 + mDr3);
+    double dMsb = 0.5 * (mQl3 - mDr3);
+    mb = hb * sqrt(-4.0 * mHd2 / (sqr(gp) + sqr(g2)));
+    double Deltab = sqrt(sqr(dMsb) + sqr(mb) * sqr(ub / hb));
+    mstop(1) = sqrt(mQl3);
+    mstop(2) = sqrt(mUr3);
+    msbot(1) = sqrt(Msbot + sqr(mb) - Deltab);
+    msbot(2) = sqrt(Msbot + sqr(mb) + Deltab);
+    mt = 0.0;
+    VH = - 2.0 * sqr(mHd2) / (sqr(gp) + sqr(g2));
+  }
+
+  /// LCT: Scenario #3: Only v2 \neq 0
   if (v1 == 0 && v2 != 0 && s == 0) {
+    double Mstop = 0.5 * (mQl3 + mUr3);
+    double dMst = 0.5 * (mQl3 - mUr3);
     mt = ht * sqrt(-4.0 * mHu2 / (sqr(gp) + sqr(g2)));
     double Deltat = sqrt(sqr(dMst) + sqr(mt) * sqr(ut / ht));
     mstop(1) = sqrt(Mstop + sqr(mt) - Deltat);
@@ -3441,70 +3450,110 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
     VH = - 2.0 * sqr(mHu2) / (sqr(gp) + sqr(g2));
   }
 
-  if (v1 != 0 && v2 == 0 && s == 0) {
-    mb = hb * sqrt(-4.0 * mHd2 / (sqr(gp) + sqr(g2)));
-    double Deltab = sqrt(sqr(dMsb) + sqr(mb) * sqr(ub / hb));
+  /// LCT: Scenario #4: Only svev \neq 0 
+  if  (v1 == 0 && v2 == 0 && s != 0) {
     mstop(1) = sqrt(mQl3);
-    mstop(2) = sqrt(mDr3);
-    msbot(1) = sqrt(Msbot + sqr(mb) - Deltab);
-    msbot(2) = sqrt(Msbot + sqr(mb) + Deltab);
-    mt = 0.0;
-    VH = - 2.0 * sqr(mHd2) / (sqr(gp) + sqr(g2));
-  }
+    mstop(2) = sqrt(mUr3);
+    msbot(1) = sqrt(mQl3);
+    msbot(2) = sqrt(mDr3);
+    /// LCT: Coefficients from resulting cubic eqn in svev from EWSB
+    double a = 4.0 * sqr(kap);
+    double b = 6.0 * kap * mupr + 2.0 *ak;
+    double c = 2.0 * (sqr(mupr) + 2.0 * kap * xiF + mSsq + mSprsq);
+    double d = 2.0 * (mupr * xiF + xiS);
+    /// LCT: Parameters used in solving cubic eqn for a \neq 0    
+    double DeltaS, sigq, aux, VH1, VH2;  
+  
+    /// LCT: If O(s^3) coefficient vanishes, use EWSB to replace b * s^2 term 
+    /// in tree-level effective potential
+    if (a == 0) {
+      if (d != 0) {
+	DeltaS = - c / d;
+	VH = 0.5 * c * sqr(DeltaS) + d * DeltaS;
+      }
+    }
+
+    /// For a \neq 0
+    else {
+      double p = c / (3.0 * a) - sqr(b) / (9.0 * sqr(a));
+      double q = b * b * b / (27.0 * a * a * a) 
+	- b * c / (6.0 * sqr(a)) + 0.5 * d / a;
+      if (p == 0) {
+	if (q == 0) {
+	  DeltaS = - b / (3.0 * a);
+	}
+
+	/// For p = 0, q \neq 0
+	else {
+	  sigq = q / fabs(q);
+	  aux = cbrt(fabs(q));
+	  DeltaS = sigq * aux - b / (3.0 * a);
+	}
+	VH = 0.25 * a * sqr(sqr(DeltaS)) + b * DeltaS * sqr(DeltaS) / 3.0 
+	  + 0.5 * c * sqr(DeltaS) + d * DeltaS;
+      }
+
+      /// For p \neq 0, q = 0
+      else if (q == 0) {
+	DeltaS = - b / (3.0 * a);
+	VH = 0.25 * a * sqr(sqr(DeltaS)) + b * DeltaS * sqr(DeltaS) / 3.0 
+	  + 0.5 * c * sqr(DeltaS) + d * DeltaS;
+	if (p < 0) {
+	  DeltaS = sqrt(-p) - b / (3.0 * a);
+	  VH1 = 0.25 * a * sqr(sqr(DeltaS)) 
+	    + b * DeltaS * sqr(DeltaS) / 3.0 + 0.5 * c * sqr(DeltaS) 
+	    + d * DeltaS;
+	  DeltaS = - sqrt(-p) - b / (3.0 * a);
+	  VH2 = 0.25 * a * sqr(sqr(DeltaS)) 
+	    + b * DeltaS * sqr(DeltaS) / 3.0 + 0.5 * c * sqr(DeltaS) 
+	    + d * DeltaS;
+	  
+	  VH = minimum(VH, VH1, VH2);
+      	}
+      }
+
+      /// For p > 0, q \neq 0
+      else {
+	double det = sqr(q) + p * sqr(p);
+	sigq = q / fabs(q);
+	double r = sigq * sqrt(fabs(p));
+	
+	if (det > 0) {
+	  aux = cbrt(fabs(q) + sqrt(det));
+	  DeltaS = sigq * (p / aux - aux) - b / (3.0 * a);
+	  VH = 0.25 * a * sqr(sqr(DeltaS)) + b * DeltaS * sqr(DeltaS) / 3.0 
+	    + 0.5 * c * sqr(DeltaS) + d * DeltaS;
+	}
+	else {
+	  double phi = acos(fabs(q) / sqrt((fabs(p) * sqr(fabs(p)))));
+	  DeltaS = - 2.0 * r * cos(phi / 3.0) - b / (3.0 * a);
+	  VH1 = 0.25 * a * sqr(sqr(DeltaS)) + b * DeltaS * sqr(DeltaS) / 3.0 
+	    + 0.5 * c * sqr(DeltaS) + d * DeltaS;
+	  DeltaS = 2.0 * r * cos((phi - PI) / 3.0) - b / (3.0 * a);
+	  VH2 = 0.25 * a * sqr(sqr(DeltaS)) + b * DeltaS * sqr(DeltaS) / 3.0 
+	    + 0.5 * c * sqr(DeltaS) + d * DeltaS;
+	  
+	  VH = minimum(VH1, VH2);
+	}
+      }
+    }
+  }     
  
   /// LCT: 1-loop contributions to effective potential
-  double  squarks = 0.0;
+  double squarks = 0.0;
   for (int i=1; i<=2; i++) {
-      squarks = squarks 
-	+ 6.0 * (looplog(mstop(i)) + looplog(msbot(i)));
+    squarks = squarks 
+      + 6.0 * (looplog(mstop(i)) + looplog(msbot(i)));
   }
-
-  /// LCT: Third generation SM fermions --- ignore contributions from 1st & 2nd 
-  /// generations vis-a-vis 1-loop tadpole calculations 
-  double fermions = - 12.0 * (looplog(mt) + looplog(mb));
+ 
+  /// LCT: Third generation SM quarks 
+  double quarks = - 12.0 * (looplog(mt) + looplog(mb));
 
   /// Total contribution to effective potential at 1-loop
-  double VHloop =  (squarks + fermions) / (64.0 * sqr(PI));
+  double VHloop =  (squarks + quarks) / (64.0 * sqr(PI));
 
   /// LCT: Combine tree-level and 1-loop corrections to effective potential
   VH = VH + VHloop;
-  
-  /// LCT: 2-loop O(alpha_s) corrections to effective potential. 
-  /// VH taken from Appendix C of Degrassi & Slavich, 
-  /// Nucl.Phys. B825, 119 (2010), with 2-loop functions jj, ii, ii0 called 
-  /// from nmssm2loop.f.  Here, ii0(q, x) = ii(q, x, x, 0).
-  
-  /// LCT: Fermions
-  double top = 2.0 * jj_(&q, &mt, &mt) - 4.0 * sqr(mt) * ii0_(&q, &mt);
-  double bottom = 2.0 * jj_(&q, &mb, &mb) - 4.0 * sqr(mb) * ii0_(&q, &mb);
-  
-  /// LCT: Sfermions
-  double stops = 2.0 * sqr(mstop(1)) * ii0_(&q, &mstop(1)) 
-    + 2.0 * ll_(&q, &mstop(1), &mGluino, &mt)
-    - 4.0 * mt * mGluino * s2t * ii_(&q, &mstop(1), &mGluino, &mt)
-    + 0.5 * (1.0 + sqr(c2t)) * jj_(&q, &mstop(1), &mstop(1))
-    + 0.5 * sqr(s2t) * jj_(&q, &mstop(1), &mstop(2)) // stop 1
-    + 2.0 * sqr(mstop(2)) * ii0_(&q, &mstop(2))
-    + 2.0 * ll_(&q, &mstop(2), &mGluino, &mt) + 4.0 * mt * mGluino * s2t 
-    * ii_(&q, &mstop(2), &mGluino, &mt) + 0.5 * (1.0 + sqr(c2t)) 
-    * jj_(&q, &mstop(2), &mstop(2)) 
-    + 0.5 * sqr(s2t) * jj_(&q, &mstop(2), &mstop(1)); // stop 2
-  
-  double sbots = 2.0 * sqr(msbot(1)) * ii0_(&q, &msbot(1)) 
-    + 2.0 * ll_(&q, &msbot(1), &mGluino, &mb)
-    - 4.0 * mb * mGluino * s2b * ii_(&q, &msbot(1), &mGluino, &mb)
-    + 0.5 * (1.0 + sqr(c2b)) * jj_(&q, &msbot(1), &msbot(1))
-    + 0.5 * sqr(s2b) * jj_(&q, &msbot(1), &msbot(2)) // sbot 1
-    + 2.0 * sqr(msbot(2)) * ii0_(&q, &msbot(2))
-    + 2.0 * ll_(&q, &msbot(2), &mGluino, &mb) + 4.0 * mb * mGluino * s2b 
-    * ii_(&q, &msbot(2), &mGluino, &mb) + 0.5 * (1.0 + sqr(c2b)) 
-    * jj_(&q, &msbot(2), &msbot(2)) 
-    + 0.5 * sqr(s2b) * jj_(&q, &msbot(2), &msbot(1)); // sbot 2
-  
-  double VH2loop = twoLoop * (top + bottom + stops + sbots);
-  
-  /// LCT: Combine tree + 1-loop + 2-loop corrections
-  VH = VH + VH2loop;
   
   return VH;
 }
