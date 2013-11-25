@@ -3355,7 +3355,7 @@ double NmssmSoftsusy::looplog(double mass) const {
   return logfactor;
 }
 
-double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
+  double NmssmSoftsusy::VhAtMin(double v1, double v2, double s, double mHu2, double mHd2, double mSsq) {
   double kap    = displayKappa(); 
   double lam    = displayLambda();
   double al     = displayTrialambda();
@@ -3374,10 +3374,6 @@ double NmssmSoftsusy::VhAtMin(double v1, double v2, double s) {
   double gp     = displayGaugeCoupling(1) * sqrt(0.6);
   double g2     = displayGaugeCoupling(2);
   double m3sq   = displayM3Squared();
-  double mHu2, mHd2, mSsq;
-  rewsbmH1sq(mHd2);
-  rewsbmH2sq(mHu2);
-  rewsbmSsq(mSsq);
  
   /// LCT: Tree-level contributions to effective potential
   double VH = 0.25 * sqr(lam) * v1sq * v2sq + 0.25 * sqr(kap) * sqr(sqr(s)) 
@@ -8740,21 +8736,21 @@ void NmssmSoftsusy::lowOrg
     double v1 = displayHvev() * cos(atan(displayTanb()));
     double v2 = displayHvev() * sin(atan(displayTanb()));
     double s = displaySvev();
-    double VH = VhAtMin(v1, v2, s);
-    double V0 = VhAtMin(0.0, 0.0, 0.0);
-    double V1, V2, V3;
-
     /// Calculate soft masses at SUSY scale
-    // double mHu2, mHd2, mSsq;
-    // rewsbmH1sq(mHd2);
-    // rewsbmH2sq(mHu2);
-    // rewsbmSsq(mSsq);
+    double mHu2, mHd2, mSsq;
+    rewsbmH1sq(mHd2);
+    rewsbmH2sq(mHu2);
+    rewsbmSsq(mSsq);
+
+    double VH = VhAtMin(v1, v2, s, mHu2, mHd2, mSsq);
+    double V0 = VhAtMin(0.0, 0.0, 0.0, mHu2, mHd2, mSsq);
+    double V1, V2, V3;
  
-    if (displayMh1Squared() < 0.0)
-      V1 = VhAtMin(v1, 0.0, 0.0);
-    if (displayMh2Squared() < 0.0)
-      V2 = VhAtMin(0.0, v2, 0.0);
-    V3 = VhAtMin(0.0, 0.0, s);
+    if (mHd2 < 0.0) 
+      V1 = VhAtMin(v1, 0.0, 0.0, mHu2, mHd2, mSsq);
+    if (mHu2 < 0.0) 
+      V2 = VhAtMin(0.0, v2, 0.0, mHu2, mHd2, mSsq);
+    V3 = VhAtMin(0.0, 0.0, s, mHu2, mHd2, mSsq);
 
     if (VH != 0) {
       if (VH > V0 || VH > V1 || VH > V2 || VH > V3)
