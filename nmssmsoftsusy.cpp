@@ -8732,6 +8732,8 @@ void NmssmSoftsusy::lowOrg
     runto(maximum(displayMsusy(), MZ));
     if (ewsbBCscale) boundaryCondition(*this, pars); 
 
+    physical(3); 
+
     /// LCT: Flag warning if not at global min of Higgs potential
     double v1 = displayHvev() * cos(atan(displayTanb()));
     double v2 = displayHvev() * sin(atan(displayTanb()));
@@ -8750,7 +8752,7 @@ void NmssmSoftsusy::lowOrg
     else V1 = 0.0;
     if (mHu2 < 0.0) V2 = VhAtMin(0.0, v2, 0.0, mHu2, mHd2, mSsq);
     else V2 = 0.0;    
-    V3 = VhAtMin(0.0, 0.0, s, mHu2, mHd2, mSsq);
+    V3 = VhAtMin(0.0, 0.0, s, mHu2, mHd2, mSsq); 
 
     if (VH != 0) {
       if (VH > V0 || VH > V1 || VH > V2 || VH > V3)
@@ -8758,8 +8760,6 @@ void NmssmSoftsusy::lowOrg
       else
     	flagHiggsNoMin(false);
     }
-
-    physical(3); 
 
     runto(mz); 
 
