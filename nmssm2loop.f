@@ -321,6 +321,7 @@ c     from Davydychev and Tausk, Nucl. Phys. B397 (1993) 23
       implicit none
       double precision x,y,z,phiNM,pphiNM,myphiNM
       
+      pphiNM = 0.d0
       if(x.le.z.and.y.le.z) then
          pphiNM = myphiNM(x,y,z)
       elseif(z.le.x.and.y.le.x) then
