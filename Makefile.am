@@ -8,6 +8,9 @@ softsusy_x_LDADD = libsoft.la
 softpoint_x_SOURCES = softpoint.cpp 
 softpoint_x_LDADD = libsoft.la
 
+softsusy_nmssm_x_SOURCES = main-nmssm.cpp
+softsusy_nmssm_x_LDADD = libsoft.la
+
 rpvsoftsusy_x_SOURCES = rpvmain.cpp
 rpvsoftsusy_x_LDADD = libsoft.la
 
@@ -118,7 +121,7 @@ libsoft_la_SOURCES = def.cpp linalg.cpp lowe.cpp numerics.cpp rpvneut.cpp \
 physpars.cpp rge.cpp softpars.cpp softsusy.cpp susy.cpp utils.cpp \
 twoloophiggs.f tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp \
 nmssm2loop.f dilogwrap.f  nmssmsoftsusy.cpp nmssmsusy.cpp nmssmsoftpars.cpp \
-nmssmUtils.cpp softsusy-nmssm.cpp
+nmssmUtils.cpp 
 libsoft_la_LDFLAGS = $(FLIBS)
 
 %Output : %Input softpoint.x
