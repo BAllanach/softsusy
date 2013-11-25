@@ -262,7 +262,7 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
 
   /// LCT: Returns Higgs potential at minimum. Inputs: {v1,v2,s}=Higgs vevs from
   /// EWSB conditions, {mHu2,mHd2,mSsq}=soft masses calculated at scale mu.
-  double VhAtMin(double v1, double v2, double s, double mHu2, double mHd2, double mSsq);
+  double VhAtMin(double v1, double v2, double s, double mHu2, double mHd2, double mSsq); 
   
   /// Returns mu from rewsb requirement. 
   /// returns 1 if there's a problem. Call at MSusy  

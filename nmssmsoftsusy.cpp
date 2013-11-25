@@ -8746,10 +8746,10 @@ void NmssmSoftsusy::lowOrg
     double V0 = VhAtMin(0.0, 0.0, 0.0, mHu2, mHd2, mSsq);
     double V1, V2, V3;
  
-    if (mHd2 < 0.0) 
-      V1 = VhAtMin(v1, 0.0, 0.0, mHu2, mHd2, mSsq);
-    if (mHu2 < 0.0) 
-      V2 = VhAtMin(0.0, v2, 0.0, mHu2, mHd2, mSsq);
+    if (mHd2 < 0.0) V1 = VhAtMin(v1, 0.0, 0.0, mHu2, mHd2, mSsq);
+    else V1 = 0.0;
+    if (mHu2 < 0.0) V2 = VhAtMin(0.0, v2, 0.0, mHu2, mHd2, mSsq);
+    else V2 = 0.0;    
     V3 = VhAtMin(0.0, 0.0, s, mHu2, mHd2, mSsq);
 
     if (VH != 0) {
@@ -8759,7 +8759,7 @@ void NmssmSoftsusy::lowOrg
     	flagHiggsNoMin(false);
     }
 
-    physical(3);
+    physical(3); 
 
     runto(mz); 
 
