@@ -3883,26 +3883,7 @@ void NmssmSoftsusy::rewsb(int sgnMu, double mt, double muOld, double eps) {
     rewsbmSsq(mSsqnew);
     setMsSquared(mSsqnew);
   }
-
-   /// LCT: Flag warning if not at global min of Higgs potential
-   double v1 = displayHvev() * cos(atan(displayTanb()));
-   double v2 = displayHvev() * sin(atan(displayTanb()));
-   double s = displaySvev();
-   double VH = VhAtMin(v1, v2, s);
-   double V0 = VhAtMin(0.0, 0.0, 0.0);
-   double V1, V2, V3;
-   if (displayMh1Squared() < 0.0)  
-   V1 = VhAtMin(v1, 0.0, 0.0);
-
-   if (displayMh2Squared() < 0.0)
-   V2 = VhAtMin(0.0, v2, 0.0);
-    // if (VH > V0 || VH > V1 || VH > V2 || VH > V3) 
-    //   flagHiggsNoMin(true);  
-    // else
-    //   flagHiggsNoMin(false);
-}
- 
-
+   }
 }
 
 /// Organises calculation of physical quantities such as sparticle masses etc
@@ -8754,6 +8735,33 @@ void NmssmSoftsusy::lowOrg
 
     runto(maximum(displayMsusy(), MZ));
     if (ewsbBCscale) boundaryCondition(*this, pars); 
+
+    /// LCT: Flag warning if not at global min of Higgs potential
+    double v1 = displayHvev() * cos(atan(displayTanb()));
+    double v2 = displayHvev() * sin(atan(displayTanb()));
+    double s = displaySvev();
+    double VH = VhAtMin(v1, v2, s);
+    double V0 = VhAtMin(0.0, 0.0, 0.0);
+    double V1, V2, V3;
+
+    /// Calculate soft masses at SUSY scale
+    // double mHu2, mHd2, mSsq;
+    // rewsbmH1sq(mHd2);
+    // rewsbmH2sq(mHu2);
+    // rewsbmSsq(mSsq);
+ 
+    if (displayMh1Squared() < 0.0)
+      V1 = VhAtMin(v1, 0.0, 0.0);
+    if (displayMh2Squared() < 0.0)
+      V2 = VhAtMin(0.0, v2, 0.0);
+    V3 = VhAtMin(0.0, 0.0, s);
+
+    if (VH != 0) {
+      if (VH > V0 || VH > V1 || VH > V2 || VH > V3)
+    	flagHiggsNoMin(true);
+      else
+    	flagHiggsNoMin(false);
+    }
 
     physical(3);
 
