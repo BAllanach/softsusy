@@ -7265,14 +7265,8 @@ void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2,
     if (eg.mt > 200.) eg.mt = 200.;
     if (eg.mt < 50.) eg.mt = 50.;
   }
-  /// You could instead do like sPHENO, choose what you'd get from minimising
-  /// the potential at tree level, ie (mH2^2-mH1^2)/cos(2 beta)-mz^2. This
-  /// *may* be less sensitive to becoming a tachyon at MZ. 
   double mAsq;
-  if (sphenoMassConv)
-    mAsq = (displayMh2Squared() - displayMh1Squared()) 
-        / (cos(2. * beta)) - mz2; 
-  else mAsq = displayM3Squared() / (sin(beta) * cos(beta));
+  mAsq = displayM3Squared() / (sin(beta) * cos(beta));
 
   if (mAsq < 0.) {
     /* Previous solution: if we're at MZ, use the pole mA^2
@@ -7388,11 +7382,6 @@ void Softsusy<SoftPars>::calcDrBarPars() {
   /// We want to set mu to be the one obtained from the tree-level Higgs
   /// potential for these purposes
   double savedMu = displaySusyMu();
-  if (sphenoMassConv) {
-     double muSq = treeLevelMuSq();
-     double muForNow = ccbSqrt(muSq);
-     setSusyMu(muForNow);
-  }
 
   drBarPars eg(displayDrBarPars());
   /// First, must define mstop,sbot,stau and mixing angles in DRbar scheme

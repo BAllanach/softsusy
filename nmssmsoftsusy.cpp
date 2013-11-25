@@ -3357,10 +3357,6 @@ double NmssmSoftsusy::looplog(double mass) const {
   double lam    = displayLambda();
   double al     = displayTrialambda();
   double ak     = displayTriakappa();
-  double beta   = atan(displayTanb()); 
-  double sinb   = sin(beta);
-  double cosb   = cos(beta);
-  double vev    = displayHvev();
   double v1sq   = sqr(v1);
   double v2sq   = sqr(v2);
   double smu    = displaySusyMu();   
@@ -3402,7 +3398,6 @@ double NmssmSoftsusy::looplog(double mass) const {
   double       ub   = forLoops.ub;
   double       mt   = forLoops.mt;
   double       mb   = forLoops.mb;
-  double       mtau = forLoops.mtau; 
 
   /// LCT: Scenario #1: All vevs vanish
   if (v1 == 0 && v2 == 0 && s == 0) {
@@ -3801,8 +3796,6 @@ void NmssmSoftsusy::rewsb(int sgnMu, double mt, double muOld, double eps) {
    if(SoftHiggsOut) {
      calcDrBarPars();
      double sinthDRbarMS = calcSinthdrbar();
-     double tanb = displayTanb(), beta = atan(tanb);
-     double mzRun = displayMzRun();
      doTadpoles(mt, sinthDRbarMS);
      double mH1sq = 0.0, mH2sq = 0.0, mSsq = 0.0;
      rewsbmH1sq(mH1sq);
@@ -4072,8 +4065,8 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 	 
 	 double scalesq = sqr(displayMu()); 
 
-	 double DMS[3][3] = { 0 }, DMP[3][3] = { 0 };
-	 double DMSB[3][3] = { 0 }, DMPB[3][3] = { 0 };
+	 double DMS[3][3] = {{ 0.}}, DMP[3][3] = {{ 0. }};
+	 double DMSB[3][3] = {{ 0. }}, DMPB[3][3] = {{ 0. }};
 	 
 	 double lamS = lam;
 	 double vevS =  vev / root2;

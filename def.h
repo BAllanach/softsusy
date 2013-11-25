@@ -14,7 +14,7 @@
 
 #include <cmath>
 namespace softsusy{
-  const char SOFTSUSY_VERSION[] = "3.3.9";
+  const char SOFTSUSY_VERSION[] = "3.4.0";
 
   /// uncomment if you want checking of vector/matrices bounds: slows code
   /// down. It also now checks over/underflows in matrix multiplication etc
@@ -26,24 +26,24 @@ namespace softsusy{
   /// default anyway.
   extern bool INCLUDE_2_LOOP_SCALAR_CORRECTIONS;
   /// PA: switch for selecting between the Z3 preserving case and the
-  // Z3 violating case with mu and m3sq allowed
-  // needed fpr slecting which EWSB routines to use.
+  /// Z3 violating case with mu and m3sq allowed
+  /// needed fpr slecting which EWSB routines to use.
   extern bool Z3;
-  //If true the input value of lambda is set at the GUT scale
-  //If false the input lambda is set at MSUSY.
+  /// If true the input value of lambda is set at the GUT scale
+  /// If false the input lambda is set at MSUSY.
   extern bool GUTlambda;
-  //If true the input value of kappa is set at the GUT scale
-  //If false the input kappa is set at MSUSY.
+  /// If true the input value of kappa is set at the GUT scale
+  /// If false the input kappa is set at MSUSY.
   extern bool GUTkappa;
   extern bool GUTmuPrime;
   extern bool GUTxiF;
   extern bool GUTsVev;
-  //If true we give the output needed for nmssmTools
-  //otherwise normal nmssm softsusy output
+  /// If true we give the output needed for nmssmTools
+  /// otherwise normal nmssm softsusy output
   extern bool NMSSMTools;
-  //If true then the EWSB conditions will output soft Higgs masses
-  //Will be inconsistent with constrained models
-  //but can be useful for non-universal Higgs cases 
+  /// If true then the EWSB conditions will output soft Higgs masses
+  /// Will be inconsistent with constrained models
+  /// but can be useful for non-universal Higgs cases 
   extern bool SoftHiggsOut;
   extern int MICROMEGAS;
   extern int NMSDECAY;
@@ -98,8 +98,6 @@ namespace softsusy{
   extern int numTry;
   /// Include eq (62) from hep-ph/0210268: degenerate gluino/squark mass limit
   extern bool includeTwoLoopMssmCorrectionsToMt;
-  /// Switch to use SPHENO conventions for masses in loops
-  extern bool sphenoMassConv;
 }
 
 #endif
