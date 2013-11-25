@@ -25,6 +25,7 @@ rpvneut.x
 rpvsoftsusy.x
 softpoint.x
 softsusy.x
+softsusy-nmssm.x
 aclocal.m4
 neutOutputTest
 outputTest
@@ -33,3 +34,5 @@ benchmarks/*.spec
 doc/*.ps
 doc/*.pdf
 doc/auto/*
+
+run_nmssmtools.sh
