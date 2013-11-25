@@ -89,7 +89,7 @@ struct sProblem {
 	   inaccurateHiggsMass || problemThrown);}; 
   /// Only returns true if there's a serious problem
   bool testSeriousProblem() const 
-  {return (irqfp || tachyon || muSqWrongSign || higgsUfb || higgsNoMin || 
+  {return (irqfp || tachyon || muSqWrongSign || higgsUfb || 
 	   nonperturbative || noRhoConvergence || noMuConvergence || m3sq || 
 	   badConvergence || mgutOutOfBounds || problemThrown);}; 
 
