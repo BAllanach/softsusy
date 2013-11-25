@@ -75,7 +75,7 @@ struct sProblem {
   bool muSqWrongSign; ///< mu^2 came out with wrong sign; no REWSB
   bool m3sq; ///< m3sq came out with wrong sign; no REWSB
   bool higgsUfb; ///< Higgs potential inconsistent with a good minimum
-  bool higgsNoMin; ///< Higgs potential has no minimum
+  bool notGlobalMin; ///< Not in global minimum of Higgs potential
   bool nonperturbative; ///< Running went non-perturbative
   bool noMuConvergence; ///< mu couldn't be calculated
   /// Higgs mass is potentially inaccurate and cant be trusted
@@ -84,7 +84,7 @@ struct sProblem {
   /// returns true if there's any problem 
   bool test() const 
   {return (mgutOutOfBounds || irqfp || noConvergence || tachyon || 
-	   muSqWrongSign || higgsUfb || higgsNoMin || nonperturbative || 
+	   muSqWrongSign || higgsUfb || notGlobalMin || nonperturbative || 
 	   noRhoConvergence || noMuConvergence || m3sq || badConvergence || 
 	   inaccurateHiggsMass || problemThrown);}; 
   /// Only returns true if there's a serious problem
@@ -170,7 +170,7 @@ inline sProblem::sProblem()
   : mgutOutOfBounds(false), badConvergence(false), 
     irqfp(false), noRhoConvergence(false), noConvergence(false),
     tachyon(none), muSqWrongSign(false), m3sq(false), higgsUfb(false), 
-    higgsNoMin(false), nonperturbative(false), noMuConvergence(false),     
+    notGlobalMin(false), nonperturbative(false), noMuConvergence(false),     
     inaccurateHiggsMass(false), problemThrown(false)
 {}
 
@@ -179,7 +179,7 @@ inline sProblem::sProblem(const sProblem & s)
     irqfp(s.irqfp), noRhoConvergence(s.noRhoConvergence), 
     noConvergence(s.noConvergence),
     tachyon(s.tachyon), muSqWrongSign(s.muSqWrongSign), m3sq(s.m3sq),
-    higgsUfb(s.higgsUfb), higgsNoMin(s.higgsNoMin), 
+    higgsUfb(s.higgsUfb), notGlobalMin(s.notGlobalMin), 
     nonperturbative(s.nonperturbative), noMuConvergence(s.noMuConvergence), 
     inaccurateHiggsMass(s.inaccurateHiggsMass), problemThrown(s.problemThrown)
 {}

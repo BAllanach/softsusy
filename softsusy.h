@@ -212,12 +212,12 @@ public:
   void flagInaccurateHiggsMass(bool a) { problem.inaccurateHiggsMass = a; };
   /// Flags an inconsistent Higgs minimum
   void flagHiggsufb(bool a) { problem.higgsUfb = a; };
-  /// LCT: Flags problem with no global minimum in Higgs potential
-  void flagHiggsNoMin(bool a) { problem.higgsNoMin = a; };
+  /// LCT: Flags problem if not in global minimum of Higgs potential
+  void flagNotGlobalMin(bool a) { problem.notGlobalMin = a; };
   /// Sets all problems equal to either true or false (contained in a)
   void flagAllProblems(bool a, tachyonType b) { problem.irqfp = a; 
     problem.tachyon = b; problem.m3sq = a; problem.badConvergence = a;
-    problem.noConvergence = a; problem.higgsUfb = a; problem.higgsNoMin = a;
+    problem.noConvergence = a; problem.higgsUfb = a; problem.notGlobalMin = a;
     problem.nonperturbative = a; problem.noRhoConvergence = a; 
     problem.noMuConvergence = a; problem.muSqWrongSign = a; 
     problem.inaccurateHiggsMass = b; problem.mgutOutOfBounds = a; }

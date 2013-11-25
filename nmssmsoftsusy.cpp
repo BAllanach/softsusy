@@ -8758,9 +8758,9 @@ void NmssmSoftsusy::lowOrg
 
     if (VH != 0) {
       if (VH > V0 || VH > V1 || VH > V2 || VH > V3)
-    	flagHiggsNoMin(true);
+    	flagNotGlobalMin(true);
       else
-    	flagHiggsNoMin(false);
+    	flagNotGlobalMin(false);
     }
 
     runto(mz); 
