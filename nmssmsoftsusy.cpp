@@ -3426,7 +3426,9 @@ double NmssmSoftsusy::looplog(double mass) const {
     msbot(1) = sqrt(Msbot + sqr(mb) - Deltab);
     msbot(2) = sqrt(Msbot + sqr(mb) + Deltab);
     mt = 0.0;
+    if (Msbot + sqr(mb) - Deltab > 0.0)            /// protect against tachyon
     VH = - 2.0 * sqr(mHd2) / (sqr(gp) + sqr(g2));
+    else return VH = 0.0;
   }
 
   /// LCT: Scenario #3: Only v2 \neq 0
@@ -3440,7 +3442,9 @@ double NmssmSoftsusy::looplog(double mass) const {
     msbot(1) = sqrt(mQl3);
     msbot(2) = sqrt(mDr3);
     mb = 0.0;
+    if (Mstop + sqr(mt) - Deltat > 0.0)            /// protect against tachyon
     VH = - 2.0 * sqr(mHu2) / (sqr(gp) + sqr(g2));
+    else return VH = 0.0;
   }
 
   /// LCT: Scenario #4: Only svev \neq 0 
@@ -3546,7 +3550,7 @@ double NmssmSoftsusy::looplog(double mass) const {
   double VHloop =  (squarks + quarks) / (64.0 * sqr(PI));
 
   /// LCT: Combine tree-level and 1-loop corrections to effective potential
-  VH = VH + VHloop;
+  VH = VH + VHloop; 
   
   return VH;
 }
