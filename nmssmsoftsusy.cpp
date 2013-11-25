@@ -129,8 +129,6 @@ void NmssmSoftsusy::doTadpoles(double mt, double sinthDRbar) {
     double tSOVS = displayTadpoleSMs1loop();
  
     /// tachyons tend to screw up this, so only calculate if we don't have them
-    //  if (numRewsbLoops > 1 && displayProblem().tachyon == none && Z3 == true) {
-
     if (numRewsbLoops > 1 && displayProblem().tachyon == none) {
 
        double lam = displayLambda(), s = displaySvev();
@@ -266,7 +264,6 @@ void NmssmSoftsusy::H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr
 
 //PA: obtains NMSSM H2-sfermion-sfermion couplings
   //for 3rd generation sfermions
-
 void NmssmSoftsusy::H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr, DoubleMatrix  & lTauS2Lr, double gmzOcthW, double mu,  double sinb) const
 {
   //PA: NMSSM parameters required.
