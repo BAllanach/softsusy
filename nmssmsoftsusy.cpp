@@ -8729,6 +8729,11 @@ void NmssmSoftsusy::lowOrg
     itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 
               nmpars, gaugeUnification, ewsbBCscale);
 
+    if (displayProblem().nonperturbative 
+	|| displayProblem().higgsUfb || displayProblem().tachyon 
+	|| displayProblem().noRhoConvergence)
+      return;
+
     runto(maximum(displayMsusy(), MZ));
     if (ewsbBCscale) boundaryCondition(*this, pars); 
 
