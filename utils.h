@@ -56,6 +56,36 @@ inline int minimum(int a, int b) { return ((a < b) ? a : b); }
 /// Finds fractional difference between |a| and |b|
 double toleranceCheck(double sTin, double sTout);
 
+inline double minimum(double a, double b, double c) {
+   if(a <= b && a <= c) return a;
+   else if(b <= a && b <= c) return b;
+   else return c;
+}
+
+inline double maximum(double a, double b, double c) {
+   if(a >= b && a >= c) return a;
+   else if(b >= a && b >= c) return b;
+   else return c;
+}
+
+inline double middle(double a, double b, double c) {
+   if((a >= b && a <= c) ||(a >= c && a <= b)   ) return a;
+   else if((b >= a && b <= c) ||(b >= c && b <= a) ) return b;
+   else  return c;
+}
+
+inline int massorder(double & a, double & b, double & c) {
+   double anew, bnew, cnew;
+   anew = minimum(a,b,c);
+   cnew= maximum(a,b,c);
+   bnew = middle(a,b,c);
+
+   a = anew;
+   b = bnew;
+   c = cnew;
+   return 0;
+}
+
 /// checks if ABSOLUTE (or squared) values are closer than tol, or both
 /// numbers are smaller than EPSTOL
 bool close(double m1, double m2, double tol);
@@ -75,11 +105,6 @@ void printRow(ostream & o, double x);
 /// Returns true if f's a nan. Unfortunately, the behaviour of this function
 /// is not standardised across all platforms yet. 
 bool testNan(double f);
-
-/// Returns the relative difference between the orders of magnitude of two
-/// numbers unless they are less than one, in which case it returns the value
-/// of the absolute difference
-double sTfn(double sTins, double sTouts);
 
 #endif
 

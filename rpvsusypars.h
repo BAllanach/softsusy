@@ -16,7 +16,8 @@
 #include <fstream>
 #include <linalg.h>
 #include <tensor.h>
-using namespace softsusy;
+
+namespace softsusy {
 
 /// Which flavour of coupling: UDD, LQD or LLE operator?
 typedef enum {LU=1, LD, LE} RpvCouplings;
@@ -184,6 +185,8 @@ inline RpvSoftPars::RpvSoftPars(const DoubleVector & m, const Tensor & hu,
 
 /// Formatted output
 ostream & operator << (ostream &, const RpvSoftPars &);
+
+} // namespace softsusy
 
 #endif
 

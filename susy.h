@@ -17,7 +17,8 @@
 #include <fstream>
 #include <lowe.h>
 #include <utils.h>
-using namespace softsusy;
+
+namespace softsusy {
 
 const static int numSusyPars = 33;
 
@@ -228,7 +229,7 @@ inline double MssmSusy::displayGaugeCoupling(int i) const {
 }
 inline double MssmSusy::displaySusyMu() const { return smu; }
 
-
+} // namespace softsusy
 
 #endif
 

@@ -15,7 +15,6 @@
 
 #include <iostream>
 #include "linalg.h"
-using namespace softsusy;
 using namespace std;
 
 namespace softsusy {
@@ -27,11 +26,11 @@ namespace softsusy {
    "none", "selectron", "smuon", "stau", "sup", "scharm", "stop", "sdown", 
    "sstrange", "sbottom", "h0", "A0", "hpm", "snue", "snumu", "snutau", 
    "W", "Z"};
-}
 
 /// Masses of the physical particles. 
 struct sPhysical {
-  double mh0, mA0, mH0, mHpm;
+  DoubleVector mh0, mA0;
+  double mHpm;
   /// sneutrino masses
   DoubleVector msnu;
   /// chargino/neutralino masses: ordered
@@ -41,11 +40,13 @@ struct sPhysical {
   /// neutralino mixing
   DoubleMatrix mixNeut;
   /// chargino and third family mixing angles
-  double thetaL, thetaR, thetat, thetab, thetatau;
+   double thetaL, thetaR, thetat, thetab, thetatau, thetamu;
   /// sparticle masses in order (i=L/R, family)
   DoubleMatrix mu, md, me;
   /// Higgs mixing angle (alpha)
-  double thetaH;
+   double thetaH, thetaA0;
+  /// Higgs mixing matrices
+  DoubleMatrix mixh0;
   
   sPhysical(); ///< Constructor: initialises with zeroes
   sPhysical(const sPhysical &); ///< Constructor copies another object
@@ -74,6 +75,7 @@ struct sProblem {
   bool muSqWrongSign; ///< mu^2 came out with wrong sign; no REWSB
   bool m3sq; ///< m3sq came out with wrong sign; no REWSB
   bool higgsUfb; ///< Higgs potential inconsistent with a good minimum
+  bool notGlobalMin; ///< Not in global minimum of Higgs potential
   bool nonperturbative; ///< Running went non-perturbative
   bool noMuConvergence; ///< mu couldn't be calculated
   /// Higgs mass is potentially inaccurate and cant be trusted
@@ -82,14 +84,14 @@ struct sProblem {
   /// returns true if there's any problem 
   bool test() const 
   {return (mgutOutOfBounds || irqfp || noConvergence || tachyon || 
-	   muSqWrongSign || higgsUfb || nonperturbative || noRhoConvergence || 
-	   noMuConvergence || m3sq || badConvergence || inaccurateHiggsMass ||
-	   problemThrown);}; 
+	   muSqWrongSign || higgsUfb || notGlobalMin || nonperturbative || 
+	   noRhoConvergence || noMuConvergence || m3sq || badConvergence || 
+	   inaccurateHiggsMass || problemThrown);}; 
   /// Only returns true if there's a serious problem
   bool testSeriousProblem() const 
-  {return (irqfp || tachyon || muSqWrongSign || higgsUfb || nonperturbative 
-	   || noRhoConvergence || noMuConvergence || m3sq || badConvergence ||
-	   mgutOutOfBounds || problemThrown);}; 
+  {return (irqfp || tachyon || muSqWrongSign || higgsUfb || 
+	   nonperturbative || noRhoConvergence || noMuConvergence || m3sq || 
+	   badConvergence || mgutOutOfBounds || problemThrown);}; 
 
   inline sProblem(); ///< constructor full of false values
   /// Constructor that sets flags equal to those of s
@@ -149,24 +151,26 @@ inline drBarPars::drBarPars(const drBarPars &s)
 {}
 
 inline sPhysical::sPhysical()
-  : mh0(0.), mA0(0.), mH0(0.), mHpm(0.), msnu(3), mch(2), mneut(4), 
+  : mh0(2), mA0(1), mHpm(0.), msnu(3), mch(2), mneut(4), 
     mGluino(0.0),
     mixNeut(4, 4), thetaL(0.0), thetaR(0.0), thetat(0.0), thetab(0.0),
-    thetatau(0.0), mu(2, 3), md(2, 3), me(2, 3), thetaH(0.0)
+                 thetatau(0.0), thetamu(0.0), mu(2, 3), md(2, 3), me(2, 3), thetaH(0.0), 
+                 thetaA0(0.0), mixh0(2,2)
 {}
 
 inline sPhysical::sPhysical(const sPhysical & s)
-  : mh0(s.mh0), mA0(s.mA0), mH0(s.mH0), mHpm(s.mHpm), msnu(s.msnu), mch(s.mch), 
+  : mh0(s.mh0), mA0(s.mA0), mHpm(s.mHpm), msnu(s.msnu), mch(s.mch), 
     mneut(s.mneut), mGluino(s.mGluino), mixNeut(s.mixNeut), thetaL(s.thetaL),
-    thetaR(s.thetaR), thetat(s.thetat), thetab(s.thetab),
-    thetatau(s.thetatau), mu(s.mu), md(s.md), me(s.me), thetaH(s.thetaH)
+                 thetaR(s.thetaR), thetat(s.thetat), thetab(s.thetab), 
+    thetatau(s.thetatau), thetamu(s.thetamu), mu(s.mu), md(s.md), me(s.me), 
+                 thetaH(s.thetaH), thetaA0(s.thetaA0), mixh0(s.mixh0)
 {}
 
 inline sProblem::sProblem()
   : mgutOutOfBounds(false), badConvergence(false), 
     irqfp(false), noRhoConvergence(false), noConvergence(false),
     tachyon(none), muSqWrongSign(false), m3sq(false), higgsUfb(false), 
-    nonperturbative(false), noMuConvergence(false),     
+    notGlobalMin(false), nonperturbative(false), noMuConvergence(false),     
     inaccurateHiggsMass(false), problemThrown(false)
 {}
 
@@ -175,9 +179,21 @@ inline sProblem::sProblem(const sProblem & s)
     irqfp(s.irqfp), noRhoConvergence(s.noRhoConvergence), 
     noConvergence(s.noConvergence),
     tachyon(s.tachyon), muSqWrongSign(s.muSqWrongSign), m3sq(s.m3sq),
-    higgsUfb(s.higgsUfb), nonperturbative(s.nonperturbative), 
-    noMuConvergence(s.noMuConvergence), 
+    higgsUfb(s.higgsUfb), notGlobalMin(s.notGlobalMin), 
+    nonperturbative(s.nonperturbative), noMuConvergence(s.noMuConvergence), 
     inaccurateHiggsMass(s.inaccurateHiggsMass), problemThrown(s.problemThrown)
 {}
+
+} // namespace softsusy
+
+/// Returns the relative difference between the orders of magnitude of two
+/// numbers unless they are less than one, in which case it returns the value
+/// of the absolute difference
+double sTfn(double sTins, double sTouts);
+
+/// LCT: Calculates fractional difference in Drbar masses between a and b
+class drBarPars;
+class DoubleVector;
+void sumTol(const softsusy::drBarPars & a, const softsusy::drBarPars & b, DoubleVector & sT);
 
 #endif

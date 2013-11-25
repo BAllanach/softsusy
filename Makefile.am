@@ -1,4 +1,4 @@
-bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x 
+bin_PROGRAMS = softsusy.x softpoint.x rpvsoftsusy.x rpvneut.x softsusy-nmssm.x 
 
 lib_LTLIBRARIES = libsoft.la
 
@@ -14,7 +14,7 @@ rpvsoftsusy_x_LDADD = libsoft.la
 rpvneut_x_SOURCES = rpvneutmain.cpp
 rpvneut_x_LDADD = libsoft.la 
 
-DOCFILES=doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
+DOCFILES=doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf doc/nmssmManual.pdf
 EXTRA_DIST=$(DOCFILES) 
 
 OUTPUTFILES = slha2Output outputTest rpvOutputTest \
@@ -105,15 +105,20 @@ CLEANFILES =
 pkginclude_HEADERS = \
 def.h main.h numerics.h \
 softpars.h susy.h linalg.h \
+nmssm2loop.h dilogwrap.h \
 physpars.h softpoint.h twoloophiggs.h \
 lowe.h mycomplex.h rge.h softsusy.h \
 utils.h rpvsoft.h rpvsusypars.h \
 tensor.h rpvmain.h flavoursoft.h \
-xpr-base.h xpr-matrix.h xpr-vector.h rpvneut.h
+xpr-base.h xpr-matrix.h xpr-vector.h rpvneut.h \
+nmssmsusy.h nmssmsoftpars.h  \
+nmssmsoftsusy.h nmssmUtils.h
 
 libsoft_la_SOURCES = def.cpp linalg.cpp lowe.cpp numerics.cpp rpvneut.cpp \
 physpars.cpp rge.cpp softpars.cpp softsusy.cpp susy.cpp utils.cpp \
-twoloophiggs.f tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp
+twoloophiggs.f tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp \
+nmssm2loop.f dilogwrap.f  nmssmsoftsusy.cpp nmssmsusy.cpp nmssmsoftpars.cpp \
+nmssmUtils.cpp softsusy-nmssm.cpp
 libsoft_la_LDFLAGS = $(FLIBS)
 
 %Output : %Input softpoint.x

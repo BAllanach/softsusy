@@ -1,6 +1,6 @@
 \documentclass[]{article}
 \usepackage{axodraw}
-\usepackage{jheppub}
+\usepackage{jheppub}      
 
 \keywords{sparticle, MSSM}  
 % Macros
@@ -963,8 +963,8 @@ that specifies the input parameters. The user may then run the code with
 \small\begin{verbatim}
 ./softpoint.x leshouches < lesHouchesInput
 \end{verbatim}\normalsize
-In this case, the output will also be in
-SLHA format. Such output can be used for input into other programs 
+The output will also be in
+SLHA format. Such output can be used for input into other programs  
 which subscribe to the accord, such as \code{SDECAY}~\cite{sdecay},
 \code{PYTHIA}~\cite{pythia} (for 
 simulating sparticle production and decays at colliders) or
@@ -977,40 +977,44 @@ If the user desires to quickly run a single parameter point in AMSB, mSUGRA or
 GMSB parameter space, 
 but does not wish to use the SLHA, the following options are available:
 \small\begin{verbatim}
-./softpoint.x sugra <m0> <m12> <a0> <tanb> <mgut> <sgnMu>
-./softpoint.x amsb <m0> <m32> <tanb> <mgut> <sgnMu>
-./softpoint.x gmsb <n5> <mMess> <lambda> <tanb> <sgnMu> 
+./softpoint.x sugra [SUGRA parameters] [other options]
+./softpoint.x amsb  [mAMSB parameters] [other options] 
+./softpoint.x gmsb  [mGMSB parameters] [other options]
 \end{verbatim}\normalsize
 Bracketed entries should be replaced by the desired numerical values, (in GeV
 if they are dimensionful). The program will provide output from one point in
-CMSSM, 
-mAMSB or GMSB. 
-%The final option
-%can be used to provide generic SUSY breaking inputs from the file
-%\code{softBreakingInput}, an example of which is included within the \SOFTSUSY~
-%distribution. This covers all forms of non-universality in the patterns of
-%supersymmetry breaking at the scale \code{mgut}. 
+the CMSSM, 
+mAMSB or mGMSB model, respectively. 
+\code{[other options]} all have non-zero defaults, and so do not have to be
+specified: 
+\small\begin{verbatim}
+--mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>
+--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --mgut=unified
+\end{verbatim}\normalsize
 If \code{<mgut>}~is specified as \code{unified}~on input, 
 \SOFTSUSY~will determine
 \code{mgut}~to 
 be the scale that $g_1(M_{GUT})=g_2(M_{GUT})$, usually of order $10^{16}$ GeV.
-If \code{<mgut>}~is set to be \code{msusy}, the SUSY breaking parameters will
-be set at $M_{SUSY}$.
-%If a set of ``phenomenological MSSM'' SUSY breaking parameters specified at
-%the weak scale is desired for 
-%input, it suffices to set the numerical values of
-%\code{softBreakingInput}~appropriately and call \code{softpoint.x}~with the
-%\code{mgut}~argument set to \code{msusy}~with the
-%\code{general}~option.
-%The value of
-%\code{m3sq}~specified in~\code{softBreakingInput}
-%is irrelevant; it will be written over in memory with
-%the value that gives correct electroweak symmetry breaking.
-%The first \code{general}~option uses the values of $m_{H_1}^2$ and $m_{H_2}^2$ 
-%specified in \code{softBreakingInput} in order to determine $\mu$ and $m_3^2$,
-%whereas the second \code{general}~option uses the user supplied values of 
-%$\mu(M_{S})$ and $M_A^{pole}$ as constraints, determining $m_{H_1}^2$ and
-%$m_{H_2}^2$ to be consistent with these inputs and REWSB constraints.
+If \code{--mgut=msusy} is used instead, the SUSY breaking parameters will be
+set at $M_{SUSY}$. \code{--mgut=<value>} is will fix the SUSY breaking
+parameters at a fixed scale instead. 
+
+The SUSY breaking model parameters should instead be fixed, because often they
+have zero default values, and failing to set them could result in an
+unphysical point.
+For \code{[SUGRA parameters]}, one should specify
+\small\begin{verbatim}
+--m0=<value> --m12=<value> --a0=<value>
+\end{verbatim}\normalsize
+whereas \code{[mAMSB parameters]} are
+\small\begin{verbatim}
+--m0=<value> --m32=<value> 
+\end{verbatim}\normalsize
+and \code{[mGMSB parameters]} are
+\small\begin{verbatim}
+ --n5=<value> --mMess=<value> --lambda=<value> --cgrav=<value>
+\end{verbatim}\normalsize
+
 
 For users that are not familiar with \code{C++}, we note that the executable
 interface allows the calculation at just one parameter point in SUSY breaking 

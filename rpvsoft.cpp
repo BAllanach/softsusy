@@ -10,6 +10,8 @@
 
 #include "rpvsoft.h"
 
+namespace softsusy {
+
 const RpvSoftsusy & RpvSoftsusy::operator = (const RpvSoftsusy &s) {
   if (this == &s) return *this;
   snuVevs = s.snuVevs;
@@ -23,8 +25,6 @@ const RpvSoftsusy & RpvSoftsusy::operator = (const RpvSoftsusy &s) {
   setRpvSoftPars(s.displayRpvSoft());
   return *this;
 }
-
-#define HR "----------------------------------------------------------\n"
 
 ostream & operator <<(ostream &left, const RpvSoftsusy & r) {
 
@@ -193,9 +193,10 @@ DoubleVector RpvSoftsusy::beta() const {
 // Outputs the anomalous dimensions, of RPV SUSY effects.
 // CHECKED: 23/05/02
 void RpvSoftsusy::rpvAnomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
-			 	    DoubleMatrix & gQQ, DoubleMatrix & gUU,
-				    DoubleMatrix & gDD, 
-				    double & gH1H1, double & gH2H2,
+                                        DoubleMatrix & gQQ, DoubleMatrix & gUU,
+                                        DoubleMatrix & gDD,
+                                        double & /* gH1H1 */,
+                                        double & /* gH2H2 */,
 					DoubleVector & gH1L) const { 
   // To keep this a const function
   DoubleMatrix d1(displayYukawaMatrix(YD)), e1(displayYukawaMatrix(YE)); 
@@ -321,11 +322,11 @@ RpvSoftsusy RpvSoftsusy::beta2() const {
   // Add the two together to get TOTAL anomalous dimensions
   DoubleMatrix gLLtot(3, 3), gEEtot(3, 3), gQQtot(3, 3), gDDtot(3, 3),
     gUUtot(3, 3); 
-  double gH1H1tot, gH2H2tot;
+  double gH2H2tot;
   gLLtot = gLL + gLLrpv; gEEtot = gEE + gEErpv;
   gQQtot = gQQ + gQQrpv; gUUtot = gUU + gUUrpv;
   gDDtot = gDD + gDDrpv; 
-  gH1H1tot = gH1H1 + gH1H1rpv;  gH2H2tot = gH2H2 + gH2H2rpv;  
+  gH2H2tot = gH2H2 + gH2H2rpv;  
   
    DoubleMatrix g1LLrpv(3, 3), g1EErpv(3, 3), g1QQrpv(3, 3), 
     g1DDrpv(3, 3), g1UUrpv(3, 3);
@@ -346,11 +347,11 @@ RpvSoftsusy RpvSoftsusy::beta2() const {
 
   DoubleMatrix g1LLtot(3, 3), g1EEtot(3, 3), g1QQtot(3, 3), 
     g1DDtot(3, 3), g1UUtot(3, 3); 
-  double g1H1H1tot, g1H2H2tot;
+  double g1H2H2tot;
   g1LLtot = g1LL + g1LLrpv; g1EEtot = g1EE + g1EErpv;
   g1QQtot = g1QQ + g1QQrpv; g1UUtot = g1UU + g1UUrpv;
   g1DDtot = g1DD + g1DDrpv; 
-  g1H1H1tot = g1H1H1 + g1H1H1rpv;  g1H2H2tot = g1H2H2 + g1H2H2rpv;  
+  g1H2H2tot = g1H2H2 + g1H2H2rpv;  
 
   // Define the y tilde parameters
   DoubleMatrix yeTildeRpv(3, 3), ydTildeRpv(3, 3), yuTildeRpv(3, 3);
@@ -594,7 +595,7 @@ void RpvSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars,
 // minimisation, returning the VEVs.
 void RpvSoftsusy::iterateRewsb(double & mu, double & m3sq, DoubleVector &
 			       sneutrinoVevs, int sgnMu, int & numTries, int
-			       maxTries, double tol, double mt, double muOld, 
+			       maxTries, double tol, double mt, double /* muOld */, 
 			       double eps) {
 
   static double oldMu, oldM3sq;
@@ -711,7 +712,7 @@ int RpvSoftsusy::usefulVevs(double vSM,
 // Returns value of m3sq consistent with sneutrino vevs given
 // (which should be a length-3 vector)
 double RpvSoftsusy::calculateM3sq(const DoubleVector & sneutrinoVevs,
-				double snuSq, double v1, double v2) {
+                                  double /* snuSq */, double v1, double v2) {
 
   double tb = displayTanb();
   double beta = atan(tb);
@@ -728,8 +729,8 @@ double RpvSoftsusy::calculateM3sq(const DoubleVector & sneutrinoVevs,
 
 // Input a set of values for sneutrino VEVs and it returns a more accurate set
 DoubleVector RpvSoftsusy::calculateSneutrinoVevs
-(const DoubleVector & sneutrinoVevs, double tol, double snuSq, double v1,
- double v2) { 
+(const DoubleVector & /* sneutrinoVevs */, double /* tol */, double snuSq,
+ double v1, double v2) {
   
   double tb = displayTanb();
   double beta = atan(tb);
@@ -1663,10 +1664,10 @@ void RpvSoftsusy::slha1(ostream & out, const char model[],
   // out << "          6   "; printRow(out, displayDataSet().displayPoleMt()); 
   // out << "   # top\n";
   out << "        24    "; printRow(out, displayMw()); out << "   # MW\n";
-  out << "        25    "; printRow(out, s.mh0); out << "   # h0\n";
+  out << "        25    "; printRow(out, s.mh0(1)); out << "   # h0\n";
   // out << "         32   "; printRow(out, displayMz()); out << "   # MZ\n";
-  out << "        35    "; printRow(out, s.mH0); out << "   # H0\n";
-  out << "        36    "; printRow(out, s.mA0); out << "   # A0\n";
+  out << "        35    "; printRow(out, s.mh0(2)); out << "   # H0\n";
+  out << "        36    "; printRow(out, s.mA0(1)); out << "   # A0\n";
   out << "        37    "; printRow(out, s.mHpm); out << "   # H+\n";
   out << "   1000001    "; printRow(out, s.md(1, 1)); out << "   # ~d_L\n";
   out << "   1000002    "; printRow(out, s.mu(1, 1)); out << "   # ~u_L\n";
@@ -2098,3 +2099,5 @@ bool RpvSoftsusy::leptonNumberViolation() const {
 
   return false;
 }
+
+} // namespace softsusy

@@ -18,34 +18,51 @@
 #include <rge.h>
 #include <softsusy.h>
 #include <flavoursoft.h>
+#include <nmssmsoftsusy.h>
 #include <softpars.h>
 #include <physpars.h>
 #include <susy.h>
 #include <utils.h>
 #include <numerics.h>
 #include <twoloophiggs.h>
+#include <dilogwrap.h>
 #include <rpvneut.h>
 using namespace softsusy;
 
-/// Requested by CMS
-void splitGmsb(MssmSoftsusy & m, const DoubleVector & inputParameters);
+/// string routine for options
+bool starts_with(const std::string& str,
+		 const std::string& prefix) {
+  return !str.compare(0, prefix.size(), prefix);
+}
+
+double get_value(const std::string& str, const std::string& prefix) {
+   return atof(str.substr(prefix.size()).c_str());
+}
+
+int get_valuei(const std::string& str, const std::string& prefix) {
+   return atoi(str.substr(prefix.size()).c_str());
+}
+
+namespace softsusy {
+   /// Requested by CMS
+   void splitGmsb(MssmSoftsusy & m, const DoubleVector & inputParameters);
+}
 
 /// Does the user require gauge unification or not -- gaugeUnification changed
 /// to be correct value
 inline double mgutCheck(char * a, bool & gaugeUnification, 
 			bool & ewsbBCscale) { 
   gaugeUnification = false; ewsbBCscale = false;
-  if (!strcmp(a, "?") || !strcmp(a,"unified")) {
+  if (!strcmp(a, "--mgut=?") || !strcmp(a,"--mgut=unified")) {
     gaugeUnification = true; 
     return 2.0e16;
   }
-  if (!strcmp(a, "msusy")) {
+  if (!strcmp(a, "--mgut=msusy")) {
     ewsbBCscale = true;
     return 1.0e3;
   }
-  else return atof(a);
+  else return get_value(a, "--mgut");
 }
 
 /// Incorrect input: gives advice on how to supply it
 void errorCall();
-

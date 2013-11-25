@@ -289,7 +289,7 @@ double findMinimum(double ax, double bx, double cx, double (*f)(double),
 
 
 
-DoubleVector dd(double x, const DoubleVector & y) {
+DoubleVector dd(double x, const DoubleVector & /* y */) {
   DoubleVector dydx(1);
   dydx(1) = -integrandThreshbnr(x);
   return dydx;
@@ -314,7 +314,7 @@ Complex fnfn(double x) {
 	 / sqr(mtInt));
 }
 
-DoubleVector dilogarg(double t, const DoubleVector & y) {
+DoubleVector dilogarg(double t, const DoubleVector & /* y */) {
 
   const double eps = TOLERANCE * 1.0e-20;
 
@@ -359,7 +359,7 @@ double bIntegral(int n1, double p, double m1, double m2, double mt) {
 
 double fB(const Complex & a) {
   /// First, special cases at problematic points
-  double x = a.real(), y = a.imag();
+  double x = a.real();
   if (fabs(x) < EPSTOL) {
     double ans = -1. - x + sqr(x) * 0.5;
     return ans;
@@ -380,7 +380,7 @@ double b0(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
   double b0l = B0(p*p, m1*m1, m2*m2).real();
-  //  return B0(p*p, m1*m1, m2*m2).real();
+  return B0(p*p, m1*m1, m2*m2).real();
 #endif
 
   /// Avoids IR infinities
@@ -398,16 +398,12 @@ double b0(double p, double m1, double m2, double q) {
   double dmSq = mMaxSq - mMinSq;
   s = pSq + dmSq;
 
-  char * methodId = (char *) "";
-
   double pTest = sqr(p) / sqr(mMax);
   /// Decides level at which one switches to p=0 limit of calculations
   const double pTolerance = 1.0e-6; 
 
   /// p is not 0  
   if (pTest > pTolerance) {  
-    methodId = (char *) "B0A";
-    
     Complex iEpsilon(0.0, EPSTOL * sqr(mMax));
     
     Complex xPlus, xMinus;
@@ -420,15 +416,12 @@ double b0(double p, double m1, double m2, double q) {
     ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
   } else {
     if (close(m1, m2, EPSTOL)) {
-      methodId = (char *) "B0B";
       ans = - log(sqr(m1 / q));
     } else {
       double Mmax2 = sqr(mMax), Mmin2 = sqr(mMin); 
       if (Mmin2 < 1.e-30) {
-	methodId = (char *) "B0C";
 	ans = 1.0 - log(Mmax2 / sqr(q));
       } else {
-	methodId = (char *) "B0D";
 	ans = 1.0 - log(Mmax2 / sqr(q)) + Mmin2 * log(Mmax2 / Mmin2) 
 	  / (Mmin2 - Mmax2);
       }
@@ -437,7 +430,6 @@ double b0(double p, double m1, double m2, double q) {
 
 #ifdef USE_LOOPTOOLS
   if (!close(b0l, ans, 1.0e-3)) {
-    cout << methodId << " ";
     cout << "DEBUG Err: DB0(" << p << ", " << m1 << ", " << m2 
 	 << ", "  << q << ")=" << 1.-b0l/ans << endl;
     cout << "SOFTSUSY  B0=" << ans << endl;
@@ -459,18 +451,14 @@ double b1(double p, double m1, double m2, double q) {
   double ans = 0.;
   double pTest = sqr(p) / maximum(sqr(m1), sqr(m2));
 
-  char * methodId = (char *) "";
-
   /// Decides level at which one switches to p=0 limit of calculations
   const double pTolerance = 1.0e-4; 
 
   if (pTest > pTolerance) {
-    methodId = (char *) "B1A";
     ans = (a0(m2, q) - a0(m1, q) + (sqr(p) + sqr(m1) - sqr(m2)) 
 	   * b0(p, m1, m2, q)) / (2.0 * sqr(p)); 
   } else if (fabs(m1) > 1.0e-15 && !close(m1, m2, EPSTOL) 
 	     && fabs(m2) > 1.0e-15) { ///< checked
-    methodId = (char *) "B1B";
     double Mmax2 = maximum(sqr(m1) , sqr(m2)), x = sqr(m2 / m1);
     ans = 0.5 * (-log(Mmax2 / sqr(q)) + 0.5 + 1.0 / (1.0 - x) + log(x) /
 		 sqr(1.0 - x) - theta(1.0 - x) * log(x)); ///< checked
@@ -479,13 +467,12 @@ double b1(double p, double m1, double m2, double q) {
 		 0.5 * (sqr(m1) + sqr(m2)) / (sqr(m1) - sqr(m2))
 		 );
   } else {
-    methodId = (char *) "B1C";
     ans = bIntegral(1, p, m1, m2, q); 
   }
 
 #ifdef USE_LOOPTOOLS
   if (!close(b1l, ans, 1.0e-3)) {
-    cout << methodId << " Test=" << pTest << " ";
+    cout << " Test=" << pTest << " ";
     cout << "DEBUG Err: Db1(" << p << ", " << m1 << ", " << m2 
 	 << ", "  << q << ")=" << 1.-b1l/ans << endl;
     cout << "SOFTSUSY  B1=" << ans << " B0=" << b0(p, m1, m2, q) << endl;
@@ -503,7 +490,6 @@ double b22(double p,  double m1, double m2, double q) {
   double b22l = B00(p*p, m1*m1, m2*m2).real();
 #endif
 
-  char * methodId = (char *) "";
   double answer = 0.;
   
   /// Decides level at which one switches to p=0 limit of calculations
@@ -513,30 +499,24 @@ double b22(double p,  double m1, double m2, double q) {
     // m1 == m2 with good accuracy
     if (close(m1, m2, EPSTOL)) {
 
-      methodId = (char *) "B22A";
-
       answer = -sqr(m1) * log(sqr(m1 / q)) * 0.5 + sqr(m1) * 0.5;
     }
     else
       /// This zero p limit is good
       if (fabs(m1) > EPSTOL && fabs(m2) > EPSTOL) {
-	methodId = (char *) "B22B";
 	answer = 0.375 * (sqr(m1) + sqr(m2)) - 0.25 * 
 	  (sqr(sqr(m2)) * log(sqr(m2 / q)) - sqr(sqr(m1)) * 
 	   log(sqr(m1 / q))) / (sqr(m2) - sqr(m1)); 
       }
       else
 	if (fabs(m1) < EPSTOL) {
-	  methodId = (char *) "B22C";
 	  answer = 0.375 * sqr(m2) - 0.25 * sqr(m2) * log(sqr(m2 / q));
 	}
 	else {
-	  methodId = (char *) "B22D";
 	  answer = 0.375 * sqr(m1) - 0.25 * sqr(m1) * log(sqr(m1 / q));
 	}
   }
   else {// checked
-    methodId = (char *) "B22E";
     double b0Save = b0(p, m1, m2, q);
 
     answer = 1.0 / 6.0 * 
@@ -548,7 +528,6 @@ double b22(double p,  double m1, double m2, double q) {
 
 #ifdef USE_LOOPTOOLS
   if (!close(b22l, answer, 1.0e-3)) {
-    cout << methodId;
     cout << " DEBUG Err: Db22(" << p << ", " << m1 << ", " << m2 
 	 << ", "  << q << ")=" << 1.-b22l/answer << endl;
     cout << "SOFTSUSY  B22=" << answer << " B0=" << b0(p, m1, m2, q) << endl;
@@ -609,33 +588,27 @@ double c0(double m1, double m2, double m3) {
 #endif
 
   double ans;
-  char * methodId = (char *) "";
 
   if (close(m2, m3, EPSTOL)) {
     if (close(m1, m2, EPSTOL)) {
-      methodId = (char *) "C0A";
       ans = ( - 0.5 / sqr(m2) ); // checked 14.10.02
     }
     else {
-      methodId = (char *) "C0B";
       ans = ( sqr(m1) / sqr(sqr(m1)-sqr(m2) ) * log(sqr(m2)/sqr(m1))
                + 1.0 / (sqr(m1) - sqr(m2)) ) ; // checked 14.10.02
     }
   }
   else
     if (close(m1, m2, EPSTOL)) {
-      methodId = (char *) "C0C";
       ans = ( - ( 1.0 + sqr(m3) / (sqr(m2)-sqr(m3)) * log(sqr(m3)/sqr(m2)) )
                / (sqr(m2)-sqr(m3)) ) ; // checked 14.10.02
     }
     else
       if (close(m1, m3, EPSTOL)) {
-      methodId = (char *) "C0D";
         ans = ( - (1.0 + sqr(m2) / (sqr(m3)-sqr(m2)) * log(sqr(m2)/sqr(m3))) 
                  / (sqr(m3)-sqr(m2)) ); // checked 14.10.02
       }
       else {
-      methodId = (char *) "C0E";
 	ans = (1.0 / (sqr(m2) - sqr(m3)) * 
 		   (sqr(m2) / (sqr(m1) - sqr(m2)) *
 		    log(sqr(m2) / sqr(m1)) -
@@ -645,7 +618,6 @@ double c0(double m1, double m2, double m3) {
 
 #ifdef USE_LOOPTOOLS
   if (!close(c0l, ans, 1.0e-3)) {
-    cout << methodId;
     cout << " DEBUG Err: C0" << m1 << ", " << m2 
 	 << ", "  << m3 << ")=" << 1.-c0l/ans << endl;
     cout << "SOFTSUSY  C0=" << ans << endl;
@@ -878,7 +850,7 @@ int *ivector(long nl, long nh) {
 }
 
 /* free an int vector allocated with ivector() */
-void free_ivector(int *v, long nl, long nh) {
+void free_ivector(int *v, long nl, long /* nh */) {
 	free((char *) (v+nl-1));
 }
 
@@ -924,7 +896,7 @@ double ffbar(double z) {
 
 #define FUNC(x) ((*func)(x))
 
-double trapzd(double (*func)(double), double a, double b, int n, double EPS) {
+double trapzd(double (*func)(double), double a, double b, int n, double /* EPS */) {
 	double x,tnm,sum,del;
 	static double s;
 	int it,j;
@@ -1030,7 +1002,7 @@ double llqThresh(double mSq, double mChi1, double mSlep, double mChi2) {
   return sqrt(ans / (4.0 * l * xi));
 }
 
-double lqnear(double mSq, double mChi1, double mSlep, double mChi2) {
+double lqnear(double mSq, double /* mChi1 */, double mSlep, double mChi2) {
   double xi    = sqr(mChi2);
   double l     = sqr(mSlep);
   double q     = sqr(mSq);
@@ -1363,7 +1335,7 @@ bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g,
   double TOLX = TOLERANCE * 1.0e-3;
   
   int i;
-  double a,alam,alam2,alamin,b,disc,f2,fold2,rhs1,rhs2,slope,sum,temp,
+  double a,alam,alam2 = 0.,alamin,b,disc,f2 = 0.,fold2 = 0.,rhs1,rhs2,slope,sum,temp,
     test,tmplam;
   
   bool err = false;
@@ -1440,7 +1412,7 @@ void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b) {
 /// Get rid of int n
 void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
   const double TINY = 1.0e-20;
-  int i,imax,j,k;
+  int i, imax = 0, j, k;
   float big,dum,sum,temp;
   DoubleVector vv(n);
 
@@ -1506,7 +1478,7 @@ bool newt(DoubleVector & x,
    
   int n = x.displayEnd();
   int i,its,j,*indx;
-  double d,den,f,fold,stpmax,sum,temp,test;
+  double d,den,f,fold,stpmax,sum = 0., temp, test;
   
   indx = ivector(1, n);
   DoubleMatrix fjac(n, n);
@@ -1570,7 +1542,7 @@ bool newt(DoubleVector & x,
   return true;
 }
 
-DoubleVector testDerivs(double x, const DoubleVector & y) {
+DoubleVector testDerivs(double /* x */, const DoubleVector & y) {
   DoubleVector dydx(3);
   dydx(1) = y(1) * y(2) * y(2);
   dydx(2) = y(2) * y(1) * y(3);
@@ -1578,7 +1550,7 @@ DoubleVector testDerivs(double x, const DoubleVector & y) {
   return dydx;
 }
 
-void shoot(const DoubleVector & v, DoubleVector & f) {
+/*void shoot(const DoubleVector & v, DoubleVector & f) {
   double h1, hmin = 0.0;
 
   const double EPS = 1.0e-6;
@@ -1596,6 +1568,8 @@ void shoot(const DoubleVector & v, DoubleVector & f) {
 
   /// integrate up from x1 to x2
   int err = integrateOdes(y, x1, x2, EPS, h1, hmin, testDerivs, odeStepper);
+
+  if (err) 
   
   /// now, determine a vector showing how far (WITH SIGN) the solution is from
   /// the second boundary condition: y2(2)=1.
@@ -1603,8 +1577,8 @@ void shoot(const DoubleVector & v, DoubleVector & f) {
   f(2) = y(3) - y(1);
 
   return;
-}
-
+  }*/
+  
 void broydn(DoubleVector x, int & check, 
 	    void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
   const int MAXITS = 200;

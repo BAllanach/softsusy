@@ -23,7 +23,7 @@ int main() {
   /// default in SOFTSUSY 3 is to include all 2-loop terms, except for RPV,
   /// which is already slow and calculated to less accuracy than the R-parity
   /// conserving version
-  bool INCLUDE_2_LOOP_SCALAR_CORRECTIONS = false;
+  INCLUDE_2_LOOP_SCALAR_CORRECTIONS = false;
 
   /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
@@ -84,7 +84,6 @@ int main() {
                 tanb, oneset, gaugeUnification, ewsbBCscale);
       
       /// outputs for this scan
-      int pos;
       cout << lambda << "  " << kw.displayPhys().mu(2, 3) << " # " 
            << kw.displayProblem() << endl;
     }

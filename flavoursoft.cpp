@@ -8,6 +8,8 @@
 
 #include "flavoursoft.h"
 
+namespace softsusy {
+
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL, 
   ydR, yeL, yeR, ynuL;
 
@@ -774,8 +776,8 @@ void FlavourMssmSoftsusy::minparSLHA(ostream & out, const char model [],
  
 
 
-void FlavourMssmSoftsusy::doUpSquarks(double mt, double pizztMS, 
-				      double sinthDRbarMS, int accuracy) { 
+void FlavourMssmSoftsusy::doUpSquarks(double /* mt */, double /* pizztMS */,
+				      double sinthDRbarMS, int /* accuracy */) {
   /// now need to re-do 6 by 6 scalar mass matrices
   DoubleMatrix massUsq(6, 6);
 
@@ -876,9 +878,9 @@ void FlavourMssmSoftsusy::doUpSquarks(double mt, double pizztMS,
 
 }
 
-void FlavourMssmSoftsusy::doDownSquarks(double mb, double pizztMS, 
+void FlavourMssmSoftsusy::doDownSquarks(double /* mb */, double /* pizztMS */,
 					double sinthDRbarMS, int accuracy, 
-					double mt) { 
+					double /* mt */) {
   /// now need to re-do 6 by 6 scalar mass matrices
   DoubleMatrix massDsq(6, 6);
 
@@ -984,7 +986,7 @@ void FlavourMssmSoftsusy::doDownSquarks(double mb, double pizztMS,
   setPhys(s);
 }
 
-void FlavourMssmSoftsusy::doChargedSleptons(double mtau, double pizztMS, 
+void FlavourMssmSoftsusy::doChargedSleptons(double /* mtau */, double /* pizztMS */,
 					    double sinthDRbarMS, 
 					    int accuracy) { 
   //  MssmSoftsusy::doDownSquarks(mb, pizztMS, sinthDRbarMS, accuracy, mt); 
@@ -1088,7 +1090,7 @@ void FlavourMssmSoftsusy::doChargedSleptons(double mtau, double pizztMS,
   setPhys(s);
 }
 
-void FlavourMssmSoftsusy::doSnu(double pizztMS, int accuracy) {
+void FlavourMssmSoftsusy::doSnu(double /* pizztMS */, int accuracy) {
   
   /// Find the Yukawa rotation matrices such that the super-CKM basis may be
   /// defined
@@ -1393,8 +1395,7 @@ void FlavourMssmSoftsusy::calcDrBarPars() {
 
   double mw = displayMwRun();
   double mw2 = sqr(mw);
-  calcDrBarCharginos(beta, mw, s);
-  calcDrBarNeutralinos(beta, mz, mw, sinthDRbar, s);
+  calcDrBarGauginos(beta, mw, mz, sinthDRbar, s);
   s.mw = mw;
   s.mz = mz;
 
@@ -1509,7 +1510,6 @@ void FlavourMssmSoftsusy::sCkmAnalytic
   ckmNormalise(Vu, Vd, Uu, Ud); 
   DoubleMatrix V(displayCkm());
   // DoubleMatrix V(Vu.transpose() * Vd);
-  double lc = yu(2), ls = yd(2);
 
   double ddownL = sqr(MZ) * (-1./2. + 1./3. * sinthw2) * c2b;
   double ddownR = sqr(MZ) * (-1./3.) * sinthw2 * c2b;
@@ -1549,8 +1549,6 @@ void FlavourMssmSoftsusy::sCkmAnalytic
   double muR33 = sqr(mt) + dupR + sqr(mfac) * (-88./25. * sqr(sqr(g1)) + 
 					       8 * sqr(sqr(gs)) + 
 					       2 * sqr(lt) * bett);
-  double muRii = sqr(mfac) * (-88./25. * sqr(sqr(g1)) + 
-			      8 * sqr(sqr(gs))) + dupR;
   
   double muLRi3 = -vu * mfac * lt * sqr(lb) * V(2, 3) * V(3, 3) / sqrt(2.0);
 
@@ -1628,7 +1626,6 @@ void FlavourMssmSoftsusy::sCkmRunning
   // First, must define mstop,sbot,stau and mixing angles in DRbar scheme
   double beta = atan(displayTanb());
   double sinthDRbar = calcSinthdrbar();
-  double mz = displayMzRun(), mz2 = sqr(mz);
 
   sw2 = sqr(sinthDRbar);
   guL = 0.5 - 2.0 * sw2 / 3.0;
@@ -1743,3 +1740,5 @@ void FlavourMssmSoftsusy::sCkmRunning
 	(sqrt(fabs(massDsq(i, i) * massDsq(j+3, j+3))));
     }
 }
+
+} // namespace softsusy

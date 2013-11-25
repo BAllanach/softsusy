@@ -23,7 +23,8 @@
 #include <softsusy.h>
 #include <linalg.h>
 #include <rpvsusypars.h>
-using namespace softsusy;
+
+namespace softsusy {
 
 /// Number of independent parameters for RGE
 static const int numRpvSoftPars = 99 + numSoftParsMssm; 
@@ -70,14 +71,14 @@ public:
   void setRpvSoftsusy(const RpvSoftsusy & s) { *this = s; };
 
   /// returns double vector of 9 (untouched) free entries followed by 112 RPV
-  /// parameters the 9 entries are left free for general sugraBcs, amsbBcs,
+  /// parameters the 9 entries are left free for general cmssmBcs, amsbBcs,
   /// If you need *more parameters left, reserve the first pos (optional
   /// argument) 
   void rpvDisplay(DoubleVector & parameters) const;
   
   /// sets RPV parameters from entry 10 onwards
   /// using vector produced by RpvSoftsusy::rpvDisplay()
-  /// the 9 entries are left free for general sugraBcs, amsbBcs, ...
+  /// the 9 entries are left free for general cmssmBcs, amsbBcs, ...
   /// parameters
   virtual void rpvSet(const DoubleVector & parameters);
 
@@ -93,7 +94,7 @@ public:
   /// 5 x 5 charged fermion mixing
   const DoubleMatrix & displayVch() const { return Vch; };
   /// Displays number of parameters in R-parity conserving BCs
-  const int displayNumRpcBcs() const { return numRpcBcs; };
+  int displayNumRpcBcs() const { return numRpcBcs; };
 
   /// Sets number of parameters in R-parity conserving BCs
   void setNumRpcBcs(int pos) { numRpcBcs = pos; };
@@ -226,7 +227,7 @@ public:
   /// out should be something like cout or fout depending on whether you want
   /// output in a file or not.
   /// model contains what form of model is used for the SUSY breaking terms
-  /// (eg sugra, gmsb, amsb, nonUniversal). qMax is only relevant if you want
+  /// (eg cmssm, gmsb, amsb, nonUniversal). qMax is only relevant if you want
   /// a gridded output of running parameters up to some scale qMax. Put
   /// numPoints = 1 if you don't want to use this option - then qMaz is
   /// immaterial. mb is mb(mb) in the MSbar scheme used to produce the output,
@@ -278,7 +279,6 @@ void rpvGmsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
 void rpvExtendedSugraBcs(MssmSoftsusy & m, 
 			 const DoubleVector & inputParameters);
 
+} // namespace softsusy
+
 #endif
-
-
-

@@ -26,6 +26,27 @@ namespace softsusy {
   /// scalar mass Higgs parameters? (Other quantities all 2-loop anyway): the
   /// default in SOFTSUSY 3 is to include all 2-loop terms
   bool INCLUDE_2_LOOP_SCALAR_CORRECTIONS = true;
+  /// PA: switch for selecting between the Z3 preserving case and the
+  // Z3 violating case with mu and m3sq allowed
+  // needed fpr selecting which EWSB routines to use.
+  bool Z3 = true;
+  //If true the input value of lambda is set at the GUT scale
+  //If false the input lambda is set at MSUSY.
+  bool GUTlambda = false;
+  //If true the input value of kappa is set at the GUT scale
+  //If false the input kappa is set at MSUSY.
+  bool GUTkappa = false;
+  bool GUTmuPrime = false;
+  bool GUTxiF = false;
+  bool GUTsVev = false;
+  /// Enable/Disable NMSSMTools compatible SLHA output
+  bool NMSSMTools = false;
+  //If true then the EWSB conditions will output soft Higgs masses
+  //Will be inconsistent with constrained models
+  //but can be useful for non-universal Higgs cases 
+  bool SoftHiggsOut = false;
+  int MICROMEGAS = 0;
+  int NMSDECAY = 0;
   /// number of loops used to calculate Higgs mass and tadpoles. They should be
   /// identical for a consistent calculation
   int numHiggsMassLoops = 2, numRewsbLoops = 2;

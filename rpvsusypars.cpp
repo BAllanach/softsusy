@@ -10,6 +10,8 @@
 
 #include "rpvsusypars.h"
 
+namespace softsusy {
+
 RpvSusyPars::RpvSusyPars()
   :   lu(), ld(), le(), kappa(3) {}
 
@@ -378,3 +380,5 @@ DoubleVector boundaryCondition(double m0, double m12, double a0,
 
   return a;
 }
+
+} // namespace softsusy

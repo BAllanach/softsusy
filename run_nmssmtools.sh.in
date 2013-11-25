@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# directory of this script
+BASEDIR=$(dirname $0)
+
+# path to the NMSSMTools directory
+NMSSMTOOLS_PATH="@NMSSMTOOLS_PATH@"
+
+if test $# -lt 1 -o $# -gt 2; then
+    cat <<EOF
+Usage: ./`basename $0` slha-input-file [slha-output-file]
+EOF
+    exit 1
+fi
+
+if ! test -d "${NMSSMTOOLS_PATH}"; then
+    echo "Error: Cannot find NMSSMTools directory \"${nmssmtools_dir}\""
+    exit 1
+fi
+
+if ! test -x "${NMSSMTOOLS_PATH}/main/nmProcessSpec"; then
+    echo "Error: Cannot find ${NMSSMTOOLS_PATH}/main/nmProcessSpec"
+    echo "   Please run ./setup_nmssmtools.sh --nmssmtools-dir=/path/to/NMSSMTools --compile"
+    exit 1
+fi
+
+slha_input_file="$1"
+
+if test $# -ge 2; then
+    slha_output_file="$2"
+else
+    slha_output_file="${slha_input_file}.$$.out"
+fi
+
+if ! test -r "${slha_input_file}"; then
+    echo "Error: cannot open SLHA input file \"${slha_input_file}\""
+    exit 1
+fi
+
+${BASEDIR}/softpoint.x leshouches < ${slha_input_file} > ${slha_output_file}
+
+if test $? -ne 0; then
+    echo "Warning: invalid point"
+    exit 1
+fi
+
+cp ${slha_output_file} ${NMSSMTOOLS_PATH}/main/slha_nmssm
+(cd ${NMSSMTOOLS_PATH}/main/ && ./nmProcessSpec)

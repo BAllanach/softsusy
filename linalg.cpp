@@ -120,6 +120,10 @@ int DoubleVector::closest(double a) const {
   return position;
 }
 
+void DoubleVector::fillArray(double* array, unsigned offset) const
+{
+   ::fillArray(x, array, offset);
+}
 
 
 
@@ -197,6 +201,43 @@ void DoubleMatrix::swapcols(int i, int j) {
   col(j) = temp;
 }
 
+void DoubleMatrix::setCols(int numberOfCols)
+{
+   if (numberOfCols == cols)
+      return;
+
+   std::valarray<double> old(x);
+   x.resize(rows * numberOfCols, 0.0);
+   if (numberOfCols > cols) {
+      for (std::size_t i = 0; i < old.size(); ++i)
+         x[i + (i / cols) * (numberOfCols - cols)] = old[i];
+   } else {
+      for (std::size_t i = 0; i < x.size(); ++i)
+         x[i] = old[i + (i / numberOfCols) * (cols - numberOfCols)];
+   }
+   cols = numberOfCols;
+}
+
+void DoubleMatrix::setRows(int numberOfRows)
+{
+   if (numberOfRows == rows)
+      return;
+
+   std::valarray<double> old(x);
+   x.resize(cols * numberOfRows, 0.0);
+   const std::size_t minSize = std::min(old.size(), x.size());
+   for (std::size_t i = 0; i < minSize; ++i)
+      x[i] = old[i];
+   rows = numberOfRows;
+}
+
+void DoubleMatrix::resize(int numberOfRows, int numberOfCols)
+{
+   setCols(numberOfCols);
+   setRows(numberOfRows);
+}
+
+
 double DoubleMatrix::trace() const {
 #ifdef ARRAY_BOUNDS_CHECKING
   if (rows != cols)  {
@@ -214,7 +255,8 @@ double DoubleMatrix::trace() const {
 DoubleMatrix DoubleMatrix::transpose() const {
   DoubleMatrix temp(cols,rows);
   for (int i=1; i<=rows; ++i)
-    temp.col(i) = this->row(i);
+     for (int k=1; k<=cols; ++k)
+        temp(k,i) = elmt(i,k);
   return temp;
 }
 
@@ -286,7 +328,8 @@ void DoubleMatrix::symmetrise() {
   }
 #endif
   for (int i=1; i<=rows; ++i)
-    col(i) = row(i);
+     for (int k = 1; k < i && k <= cols; ++k)
+        elmt(i,k) = elmt(k,i);
 }
 
 // Gives sum of difference between two matrices
@@ -481,7 +524,12 @@ DoubleVector DoubleMatrix::sym2by2(double & theta) const  {
   }
 #endif
   
-  if (testNan()) throw("Nans present in linalg.cpp:sym2by2. Cannot calculate further\n");
+  if (testNan()) {
+    ostringstream ii;
+    ii << "Nans present in linalg.cpp:sym2by2. Cannot calculate further\n";
+    ii << "Diagonalising: " << *this;
+    throw ii.str();
+  }
   DoubleVector temp(1, 2);
   double sumTol = abs(abs(display(1, 1)) - abs(display(2, 2))) /
     maximum(abs(display(1, 1)), abs(display(2, 2)));
@@ -496,7 +544,7 @@ DoubleVector DoubleMatrix::sym2by2(double & theta) const  {
       theta = -PI * 0.25;
   }
   
-  DoubleMatrix mm(rot2d(theta) * (*this) * rot2d(theta).transpose());
+  DoubleMatrix mm(rot2d(theta) * (*this) * rot2d(-theta));
   
   temp(1) = mm(1, 1);
   temp(2) = mm(2, 2);
@@ -506,7 +554,8 @@ DoubleVector DoubleMatrix::sym2by2(double & theta) const  {
   if (abs(mm(2, 1)) > maxtol || abs(mm(1, 2)) > maxtol) {
     ostringstream ii;
     ii << "Inaccurate diagonalisation in LINALG::sym2by2\n";
-    ii << "Diagonalising " << * this;
+    ii << "Diagonalising " << *this;
+    ii << "With angle " << theta;
     ii << "Found diagonalised matrix to be " << mm;
     throw ii.str();
   }
@@ -616,6 +665,20 @@ DoubleMatrix rot2dTwist(double theta) {
   n(2, 2) = sin(theta);
   return n;
 }
+
+
+// LCT: 3 dimensional rotation matrix U
+// Returns U = [ cos theta		 sin theta			 0 ]
+//             [ sin theta    -cos theta			 0 ]
+//						 [ 0						 0							 1 ]
+DoubleMatrix rot3d(double theta) {
+  DoubleMatrix u(3, 3);  
+  u(1, 1) = -cos(theta); u(2, 2) = -u(1, 1);
+  u(1, 2) = sin(theta);  u(2, 1) = u(1, 2);
+	u(3, 3) = 1.0;
+  return u;
+}
+
 
 // Redefines mixing matrices to be complex such that diagonal values are
 // positive for a 2 by 2: if  
@@ -860,7 +923,9 @@ namespace { // helper function only
 
 void diagonaliseJac(DoubleMatrix & a,  int n,  DoubleVector & d,  
 		    DoubleMatrix & v,  int *nrot) {
-  if (a.testNan()) throw("Nans present in linalg.cpp:sym2by2. Cannot calculate further\n");
+  if (a.testNan())
+     throw("Nans present in linalg.cpp:diagonaliseJac."
+           " Cannot calculate further\n");
 
   int j, iq, ip, i;
   double tresh, theta, tau, t, sm, s, h, g, c; 
@@ -1039,6 +1104,9 @@ istream & operator>>(istream & left, ComplexVector &v) {
  *  CONSTRUCTORS
  */
 
+
+
+
 ComplexMatrix::ComplexMatrix(const DoubleMatrix & m)
   : rows(m.displayRows()), cols(m.displayCols()), x(0.0, m.x.size()) {
   for (int i=0; i < rows*cols; ++i)
@@ -1096,6 +1164,45 @@ void ComplexMatrix::swapcols(int i,int j) {
   col(j) = temp;
 }
 
+
+void ComplexMatrix::setCols(int numberOfCols)
+{
+   if (numberOfCols == cols)
+      return;
+
+   std::valarray<Complex> old(x);
+   x.resize(rows * numberOfCols, 0.0);
+   if (numberOfCols > cols) {
+      for (std::size_t i = 0; i < old.size(); ++i)
+         x[i + (i / cols) * (numberOfCols - cols)] = old[i];
+   } else {
+      for (std::size_t i = 0; i < x.size(); ++i)
+         x[i] = old[i + (i / numberOfCols) * (cols - numberOfCols)];
+   }
+   cols = numberOfCols;
+}
+
+void ComplexMatrix::setRows(int numberOfRows)
+{
+   if (numberOfRows == rows)
+      return;
+
+   std::valarray<Complex> old(x);
+   x.resize(cols * numberOfRows, 0.0);
+   const std::size_t minSize = std::min(old.size(), x.size());
+   for (std::size_t i = 0; i < minSize; ++i)
+      x[i] = old[i];
+   rows = numberOfRows;
+}
+
+
+void ComplexMatrix::resize(int numberOfRows, int numberOfCols)
+{
+   setCols(numberOfCols);
+   setRows(numberOfRows);
+}
+
+
 Complex ComplexMatrix::trace() const {
 #ifdef ARRAY_BOUNDS_CHECKING
   if (rows != cols)  {
@@ -1113,14 +1220,16 @@ Complex ComplexMatrix::trace() const {
 ComplexMatrix ComplexMatrix::transpose() const {
   ComplexMatrix temp(cols,rows);
   for (int i=1; i<=rows; ++i)
-    temp.col(i) = this->row(i);
+     for (int k=1; k<=cols; ++k)
+        temp(k,i) = elmt(i,k);
   return temp;
 }
 
 ComplexMatrix ComplexMatrix::hermitianConjugate() const {
   ComplexMatrix temp(cols,rows);
   for (int i=1; i<=rows; ++i)
-    temp.col(i) = this->row(i).apply(conj);
+     for (int k=1; k<=cols; ++k)
+        temp(k,i) = conj(elmt(i,k));
   return temp;
 }
 
@@ -1141,7 +1250,8 @@ void ComplexMatrix::symmetrise() {
   }
 #endif
   for (int i=1; i<=rows; ++i)
-    col(i) = row(i);
+     for (int k = 1; k < i && k <= cols; ++k)
+        elmt(i,k) = elmt(k,i);
 }
 
 // Gives sum of difference between two matrices
@@ -1346,6 +1456,11 @@ DoubleMatrix DoubleMatrix::ludcmp(double & d) const {
   return a;
 }
 
+void DoubleMatrix::fillArray(double* array, unsigned offset) const
+{
+   ::fillArray(x, array, offset);
+}
+
 double DoubleMatrix::determinant() const {
   double ans = 1.;
   DoubleMatrix lu(this->ludcmp(ans));
@@ -1391,4 +1506,11 @@ double DoubleVector::average() const {
   double f = 0.0;
   int i; for (i=start; i<=end; i++) f += x[i];
   return f / double(end);
+}
+
+/// fill array from valarray, starting at offset
+void fillArray(const std::valarray<double>& x, double* array, unsigned offset)
+{
+   for (unsigned i = 0; i < x.size(); ++i)
+      array[i + offset] = x[i];
 }

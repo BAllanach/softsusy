@@ -64,6 +64,14 @@ public:
     return *this;
   }
 
+  DoubleVector& operator=(const DoubleVector& other) {
+    x.resize(other.x.size());
+    x = other.x;
+    start = other.start;
+    end = other.end;
+    return *this;
+  }
+
   template <typename E>
   DoubleVector(const Xpr<double,E> & v)
     : Indexable<double,DoubleVector>(), 
@@ -114,6 +122,7 @@ public:
   double min(int & p) const;///< minimum element in vector
   /// Returns sum of absolute values of all elements
   double sumElements() const { return abs(x).sum(); }  
+  std::size_t size() const { return x.size(); }
   
   void swap(int i, int j); ///< swaps ith and jth elements of a vector
   
@@ -140,6 +149,8 @@ public:
   double average() const; ///< average element
   /// Closest element of the vector to the input
   int closest(double a) const; 
+  /// fill array, starting at offset
+  void fillArray(double* array, unsigned offset = 0) const;
 };
 
 
@@ -246,6 +257,14 @@ public:
     return *this;
   }
 
+  DoubleMatrix& operator=(const DoubleMatrix& other) {
+    x.resize(other.x.size());
+    x = other.x;
+    rows = other.rows;
+    cols = other.cols;
+    return *this;
+  }
+
   template <typename E>
   DoubleMatrix(const MatXpr<double, E> & m)
     : MatIndexable<double,DoubleMatrix>(), 
@@ -298,6 +317,13 @@ public:
   /// Obvious elementary row/column operations
   void swaprows(int i, int j);
   void swapcols(int i,int j);
+  std::size_t size() const { return x.size(); }
+  /// change number of columns (Warning: can be slow because it internally copys a std::valarray<double>)
+  void setCols(int);
+  /// change number of rows (Warning: can be slow because it internally copys a std::valarray<double>)
+  void setRows(int);
+  /// resize matrix (Warning: can be slow because it internally copys a std::valarray<double>)
+  void resize(int, int);
 
   double trace() const;///< trace must only be performed on a square matrix
   DoubleMatrix transpose() const; ///< can be any size
@@ -354,6 +380,8 @@ public:
   /// Returns LU decomposition of a matrix. d gives whether there are an even
   /// or odd number of permutations
   DoubleMatrix ludcmp(double & d) const;
+  /// fill array, starting at offset
+  void fillArray(double* array, unsigned offset = 0) const;
 };
 
 /*
@@ -375,6 +403,14 @@ DoubleMatrix rot2d(double theta);
 // [ -sin(theta)  cos(theta) ]
 // [  cos(theta)  sin(theta) ] --
 DoubleMatrix rot2dTwist(double theta);
+
+/// LCT: Returns a 3x3 orthogonal matrix of rotation by angle theta.
+/// Used in rotating CP-odd Higgs matrix
+// [ -cos theta     sin theta		 0 ]
+// [ sin theta			cos theta		 0 ]
+// [ 0							0						 1 ]
+DoubleMatrix rot3d(double theta);
+
 /// Redefines mixing matrices to be complex such that diagonal values are
 /// positive for a 2 by 2: 
 // [ cos thetaL    sin thetaL ]   A   [ cos thetaR -sin thetaR ]  = diag
@@ -389,6 +425,8 @@ double pythagoras(double a, double b);
 void diagonaliseJac(DoubleMatrix & a,  int n,  DoubleVector & d, DoubleMatrix
 		    & v,  int *nrot);
 
+/// fill array from valarray, starting at offset
+void fillArray(const std::valarray<double>&, double*, unsigned offset = 0);
 
 /*
  *  INLINE FUNCTION DEFINITIONS
@@ -463,6 +501,14 @@ public:
   template<class E>
   ComplexVector & operator=(const Xpr<Complex,E> & x) {
     *this = copy_from(x);
+    return *this;
+  }
+
+  ComplexVector& operator=(const ComplexVector& other) {
+    x.resize(other.x.size());
+    x = other.x;
+    start = other.start;
+    end = other.end;
     return *this;
   }
 
@@ -605,6 +651,14 @@ public:
     return *this;
   }
 
+  ComplexMatrix& operator=(const ComplexMatrix& other) {
+    x.resize(other.x.size());
+    x = other.x;
+    rows = other.rows;
+    cols = other.cols;
+    return *this;
+  }
+
   template <typename E>
   ComplexMatrix(const MatXpr<Complex, E> & m)
     : MatIndexable<Complex,ComplexMatrix>(), 
@@ -624,6 +678,7 @@ public:
   int displayRows() const { return rows; }; 
   int displayCols() const { return cols; };
   const ComplexMatrix & display() const { return *this; };///< returns whole matrix
+  std::size_t size() const { return x.size(); }
 
   /// Sets diagonal entries equal to v, rest are 0
   const ComplexMatrix & operator=(const Complex &v);  
@@ -632,6 +687,13 @@ public:
   /// Obvious elementary row/column operations
   void swaprows(int i, int j);///< Swaps row i with row j
   void swapcols(int i,int j);///< Swaps column i with column j
+
+  /// change number of columns (Warning: can be slow because it internally copys a std::valarray<double>)
+  void setCols(int);
+  /// change number of rows (Warning: can be slow because it internally copys a std::valarray<double>)
+  void setRows(int);
+  /// resize matrix (Warning: can be slow because it internally copys a std::valarray<double>)
+  void resize(int, int);
 
   Complex trace() const;  
   ComplexMatrix transpose() const;
