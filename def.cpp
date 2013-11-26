@@ -63,9 +63,6 @@ namespace softsusy {
 			      false, false, false, false, false, false};
   /// default is to *not* print out theoretically excluded spectra
   bool printRuledOutSpectra = false;
-  /// default is to do a quick calculation instead of trying hard to get
-  /// convergence 
-  bool tryToConvergeHard = false;
   /// default is to set tree-level tachyonic A masses to 0 in loops
   bool mAFlag = false;
   /// default is that developer-level debugging printout flag is OFF

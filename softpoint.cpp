@@ -65,7 +65,6 @@ void errorCall() {
 }
 
 int main(int argc, char *argv[]) {
-  tryToConvergeHard = true;
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
@@ -1051,11 +1050,6 @@ int main(int argc, char *argv[]) {
 		  case 13: {
 		    int num = int(d + EPSTOL);
 		    if (num == 1) mAFlag = true;		  
-		  }
-                    break;
-		  case 14: {
-		    int num = int(d + EPSTOL);
-		    if (num == 1) tryToConvergeHard = true;		  
 		  }
                     break;
                   case 15: {
