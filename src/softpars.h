@@ -12,11 +12,11 @@
 #define SOFTPARS_H
 
 #include <cmath>
-#include <susy.h>
-#include <def.h>
-#include <linalg.h>
-#include <utils.h>
-#include <numerics.h>
+#include <src/susy.h>
+#include <src/def.h>
+#include <src/linalg.h>
+#include <src/utils.h>
+#include <src/numerics.h>
 
 namespace softsusy {
 

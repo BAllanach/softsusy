@@ -15,16 +15,17 @@
 #include <cstring>
 #include <cstdlib>
 #include <cmath>
-#include <def.h>
-#include <utils.h>
-#include <numerics.h>
-#include <physpars.h> 
-#include <lowe.h>
-#include <nmssmsoftpars.h>
-#include <softsusy.h>
-#include "mssmUtils.h"
-#include <nmssm2loop.h>
-#include "nmssmUtils.h"
+#include <src/def.h>
+#include <src/utils.h>
+#include <src/numerics.h>
+#include <src/physpars.h> 
+#include <src/lowe.h>
+#include <src/nmssmsoftpars.h>
+#include <src/softsusy.h>
+#include "src/mssmUtils.h"
+#include <src/nmssm2loop.h>
+#include "src/nmssmUtils.h"
+#include <cassert>
 
 namespace softsusy {
 

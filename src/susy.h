@@ -15,8 +15,8 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
-#include <lowe.h>
-#include <utils.h>
+#include <src/lowe.h>
+#include <src/utils.h>
 
 namespace softsusy {
 

@@ -14,7 +14,8 @@
 #define PHYSPARSH
 
 #include <iostream>
-#include "linalg.h"
+#include "src/linalg.h"
+#include "utils.h"
 using namespace std;
 
 namespace softsusy {

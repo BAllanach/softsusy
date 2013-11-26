@@ -1,47 +1,50 @@
+AUTOMAKE_OPTIONS = subdir-objects
+ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
+
 bin_PROGRAMS = softsusy.x softsusy-nmssm.x softpoint.x rpvsoftsusy.x rpvneut.x 
 
 lib_LTLIBRARIES = libsoft.la 
 
-softsusy_x_SOURCES = main.cpp
+softsusy_x_SOURCES = src/main.cpp
 softsusy_x_LDADD = libsoft.la  
 
-softsusy_nmssm_x_SOURCES = main-nmssm.cpp
+softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp
 softsusy_nmssm_x_LDADD = libsoft.la
 
-softpoint_x_SOURCES = softpoint.cpp 
+softpoint_x_SOURCES = src/softpoint.cpp 
 softpoint_x_LDADD = libsoft.la
 
-rpvsoftsusy_x_SOURCES = rpvmain.cpp
+rpvsoftsusy_x_SOURCES = src/rpvmain.cpp
 rpvsoftsusy_x_LDADD = libsoft.la 
 
-rpvneut_x_SOURCES = rpvneutmain.cpp
+rpvneut_x_SOURCES = src/rpvneutmain.cpp
 rpvneut_x_LDADD = libsoft.la 
 
 pkginclude_HEADERS = \
-def.h main.h numerics.h \
-softpars.h susy.h linalg.h \
-physpars.h softpoint.h twoloophiggs.h \
-nmssm2loop.h dilogwrap.h \
-lowe.h mycomplex.h rge.h softsusy.h \
-utils.h mssmUtils.h rpvsoft.h rpvsusypars.h \
-tensor.h rpvmain.h flavoursoft.h \
-xpr-base.h xpr-matrix.h xpr-vector.h rpvneut.h \
-nmssmsusy.h nmssmsoftpars.h  \
-nmssmsoftsusy.h nmssmUtils.h
+src/def.h src/main.h src/numerics.h \
+src/softpars.h src/susy.h src/linalg.h \
+src/physpars.h src/softpoint.h src/twoloophiggs.h \
+src/nmssm2loop.h src/dilogwrap.h \
+src/lowe.h src/mycomplex.h src/rge.h src/softsusy.h \
+src/utils.h src/mssmUtils.h src/rpvsoft.h src/rpvsusypars.h \
+src/tensor.h src/rpvmain.h src/flavoursoft.h \
+src/xpr-base.h src/xpr-matrix.h src/xpr-vector.h src/rpvneut.h \
+src/nmssmsusy.h src/nmssmsoftpars.h  \
+src/nmssmsoftsusy.h src/nmssmUtils.h
 
-libsoft_la_SOURCES = def.cpp linalg.cpp lowe.cpp numerics.cpp  rpvneut.cpp \
-physpars.cpp rge.cpp nmssm2loop.f dilogwrap.f \
- nmssmsoftsusy.cpp nmssmsusy.cpp nmssmsoftpars.cpp nmssmUtils.cpp \
-susy.cpp utils.cpp mssmUtils.cpp \
-tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp twoloophiggs.f 
+libsoft_la_SOURCES = src/def.cpp src/linalg.cpp src/lowe.cpp src/numerics.cpp  src/rpvneut.cpp \
+src/physpars.cpp src/rge.cpp src/nmssm2loop.f src/dilogwrap.f \
+ src/nmssmsoftsusy.cpp src/nmssmsusy.cpp src/nmssmsoftpars.cpp src/nmssmUtils.cpp \
+src/susy.cpp src/utils.cpp src/mssmUtils.cpp \
+src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twoloophiggs.f 
 libsoft_la_LDFLAGS = $(FLIBS)
 
 DOCFILES=doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
 doc/nmssmManual.pdf
 EXTRA_DIST=$(DOCFILES)
 
-OUTPUTFILES = slha2Output lesHouchesOutput rpvHouchesOutput \
- nmssmSLHAZ3Output nmssmSLHAnoZ3Output neutOutputTest \
+OUTPUTFILES = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
+ inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output inOutFiles/neutOutputTest \
 benchmarks/cmssm10.1.1.spec benchmarks/cmssm10.1.2.spec \
 benchmarks/cmssm10.1.3.spec benchmarks/cmssm10.1.4.spec \
 benchmarks/cmssm10.1.5.spec \
@@ -81,7 +84,8 @@ benchmarks/rpv2.4.spec benchmarks/rpv2.5.spec \
 benchmarks/rpv3.1.spec benchmarks/rpv3.2.spec benchmarks/rpv3.3.spec \
 benchmarks/rpv3.4.spec benchmarks/rpv3.5.spec 
 
-INPUTFILES = slha2Input lesHouchesInput rpvHouchesInput \
+INPUTFILES = inOutFiles/slha2Input inOutFiles/lesHouchesInput inOutFiles/rpvHouchesInput \
+inOutFiles/nmssmSLHAZ3Input inOutFiles/nmssmSLHAnoZ3Input \
 benchmarks/cmssm10.1.1.in benchmarks/cmssm10.1.2.in \
 benchmarks/cmssm10.1.3.in benchmarks/cmssm10.1.4.in \
 benchmarks/cmssm10.1.5.in \
@@ -124,17 +128,17 @@ benchmarks/rpv3.4.in benchmarks/rpv3.5.in
 dist_pkgdata_DATA = $(INPUTFILES) $(OUTPUTFILES) CHANGES GUIDELINES COPYING $(DOCFILES)
 CLEANFILES=$(OUTPUTFILES) *.x
 
-%Output : %Input softpoint.x 
+inOutFiles/%Output : inOutFiles/%Input softpoint.x 
 	./softpoint.x leshouches < $< > $@
 
-outputTest: softsusy.x
-	./softsusy.x > outputTest
+inOutFiles/outputTest: softsusy.x
+	./softsusy.x > inOutFiles/outputTest
 
-rpvOutputTest: rpvsoftsusy.x
-	./rpvsoftsusy.x > rpvOutputTest
+inOutFiles/rpvOutputTest: rpvsoftsusy.x
+	./rpvsoftsusy.x > inOutFiles/rpvOutputTest
 
-neutOutputTest: rpvneut.x
-	./rpvneut.x > neutOutputTest
+inOutFiles/neutOutputTest: rpvneut.x
+	./rpvneut.x > inOutFiles/neutOutputTest
 
 benchmarks/%.spec: benchmarks/%.in softpoint.x
 	$(install_sh) -d benchmarks
@@ -142,8 +146,8 @@ benchmarks/%.spec: benchmarks/%.in softpoint.x
 
 updateWeb: dist 
 	scp softsusy-*.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; 
-	scp *{Input,Output}* allanach@login.hepforge.org:~/softsusy/public_html/code
-	scp {def.h,outputTest,README} allanach@login.hepforge.org:~/softsusy/public_html/code
+	scp inOutFiles/*{Input,Output}* allanach@login.hepforge.org:~/softsusy/public_html/code
+	scp {def.h,inOutFiles/outputTest,README} allanach@login.hepforge.org:~/softsusy/public_html/code
 	scp Makefile.alt allanach@login.hepforge.org:~/softsusy/public_html/Makefile
 	scp -r doc allanach@login.hepforge.org:~/softsusy/public_html/; \
 	doxygen softsusy.cfg &&\

@@ -59,9 +59,9 @@ namespace softsusy{
   const double root2 = sqrt(2.0);
   ///< used to flag diabolical problems
   const double numberOfTheBeast = 6.66e66; 
-
-  extern double GMU;
-  extern double MZ; 
+  
+  extern double GMU; ///< Fermi constant
+  extern double MZ;  ///< Z boson mass
   
   /// LEPEWWG central value 14/06/06. Is just used for intialisation etc
   const double MW = 80.404; 

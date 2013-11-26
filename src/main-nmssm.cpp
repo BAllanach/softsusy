@@ -53,11 +53,12 @@ int main() {
      NmssmSoftsusy n;
 
      try {
-        n.lowOrg(NmssmMsugraBcs, mGutGuess, pars, nmpars, sgnMu, tanb, oneset, uni);
+       n.lowOrg(NmssmMsugraBcs, mGutGuess, pars, nmpars, sgnMu, tanb, oneset, 
+		uni);
      } catch (const std::string& error) {
-        n.flagProblemThrown(true);
+       n.flagProblemThrown(true);
      } catch (const char* error) {
-        n.flagProblemThrown(true);
+       n.flagProblemThrown(true);
      }
 
      /// check the point in question is problem free: if so print the output

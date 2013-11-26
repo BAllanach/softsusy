@@ -15,18 +15,18 @@
 /// Comment if you want default softsusy behaviour
 // #define USE_LOOPTOOLS
 
-#include "utils.h"
-#include "mycomplex.h"
+#include "src/utils.h"
+#include "src/mycomplex.h"
 #include <iostream>
-#include "def.h"
-#include "linalg.h"
-#include "dilogwrap.h"
+#include "src/def.h"
+#include "src/linalg.h"
+#include "src/dilogwrap.h"
 #ifdef USE_LOOPTOOLS
-#include "clooptools.h"
+#include "src/clooptools.h"
 #endif
 using namespace softsusy;
 
-/// calculates root(1+x), where x<<1 accurately
+/// calculate root(1+x), where x<<1 accurately
 double accurateSqrt1Plusx(double x);
 
 /// A single step of Runge Kutta (5th order), input: 

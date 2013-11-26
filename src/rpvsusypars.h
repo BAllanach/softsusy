@@ -14,8 +14,8 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
-#include <linalg.h>
-#include <tensor.h>
+#include <src/linalg.h>
+#include <src/tensor.h>
 
 namespace softsusy {
 

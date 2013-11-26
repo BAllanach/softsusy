@@ -1,5 +1,3 @@
-NB - started at revision 520
-
 -------------------------------------------------
 		   SOFTSUSY
 -------------------------------------------------
@@ -9,21 +7,22 @@ QUICK INSTALLATION AND RUN TEST
 -------------------------------
 
 Download the gzipped tarball, from the SOFTSUSY homepage 
-http://projects.hepforge.org/softsusy/ for instance softsusy-3.2.tar.gz. Then,
+http://projects.hepforge.org/softsusy/ for instance softsusy-3.4.0.tar.gz. Then,
 type (on a linux box)
 
-> tar -xvzf softsusy-3.2.tar.gz
-> cd softsusy-3.2
-> ./configure F77=gfortran
+> tar -xvzf softsusy-3.4.0.tar.gz
+> cd softsusy-3.4.0
+> ./configure 
 > make
 
-which should compile the code. There are four C++ test programs, three of
-which can be run by the commands 
+which should compile the code and run some sample commands. There are five C++
+test programs, four of which can be run by the commands 
 > ./softsusy.x
 > ./rpvsoftsusy.x 
 > ./rpvneut.x
+> ./softsusy-nmssm.x
 The output from these commands can be checked against outputTest,
-rpvOutputTest and the RPV neutrino SOFTSUSY manual, respectively.
+rpvOutputTest, neutOutputTest and respectively.
 
 You can run the SUSY Les Houches Accord input provided by running the commands
 > ./softpoint.x leshouches < lesHouchesInput
@@ -34,22 +33,19 @@ lesHouchesOutput, slha2Output and rpvHouchesOutput, respectively, that are
 provided with the SOFTSUSY distribution
 
 Alternatively, run with command line inputs, for example
-> ./softpoint.x sugra 100 250 -100 10 unified 1 lambdaP 3 2 2 0.01
-The output of this command is supplied in neutOutputTest
+> ./softpoint.x nmssm sugra --m0=125 --m12=125 --a0=-300 --tanBeta=10 --lambda=0.1 --lambdaAtMsusy
 
 INTRODUCTION
 ------------
 
 The most recent version of SOFTSUSY and full documentation can be obtained
-from: http://projects.hepforge.org/softsusy/
+from: http://softsusy.hepforge.org/
 
-This code provides a SUSY spectrum in the MSSM with or without R-parity
-consistent with input low energy data, and a user supplied high energy
-constraint (eg minmal SUGRA). It is written in C++ with an emphasis on easy
-generalisability. Full three-family couplings and renormalisation group
-equations are employed, as well as one-loop finite corrections a la Bagger,
-Matchev, Pierce and Zhang. It can be used in conjunction with other programs
-for many different particle physics calculations. 
+This program provides a SUSY spectrum in the MSSM including flavour violation
+and with or without R-parity consistent with input Standard Model fermion
+mass/mixings and electroweak/strong coupling data. The R-parity violating mode
+now calculates neutrino masses and mixings to 1 loop. 
+Since version 3.4, it also calculates in the NMSSM.
 
 If you use SOFTSUSY to write a paper, please cite B.C. Allanach,
 Comp. Phys. Comm. 143 (2002) 305, hep-ph/0104145, which is the SOFTSUSY
@@ -57,7 +53,8 @@ manual. If you use the R-parity violating aspects, please cite
 B.C. Allanach and M.A. Bernhardt, Comp. Phys. Comm. 181 (2010) 232,
 arXiv:0903.1805 [hep-ph]. 
 If you use neutrino masses or mixings, please cite
-B.C. Allanach, M. Hanussek and C.H. Kom, arXiv:????.????.
+B.C. Allanach, M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012) 785,
+arXiv:1109.3735 [hep-ph].
 The manuals on the electronic hep-ph/ archive will be updated with the most
 recent version.  
 
@@ -69,8 +66,6 @@ codes in
         * Theoretical uncertainties in sparticle mass predictions from
 	computational tools, B.C. Allanach, S. Kraml, W. Porod, JHEP 03 (2003)
 	045, hep-ph/0302102  
-
-
 
 EXECTUABLE FILES: AFTER INSTALLATION
 ------------------------------------

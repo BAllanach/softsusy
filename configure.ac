@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
 AC_INIT([softsusy],[3.4],[softsusy@projects.hepforge.org],[softsusy])
-AC_CONFIG_SRCDIR([softpoint.h])
+AC_CONFIG_SRCDIR([src])
 AC_CONFIG_AUX_DIR([Config])
 AC_CONFIG_HEADERS([Config/config.h])
 

@@ -18,11 +18,11 @@
 #include <cstring>
 #include <sstream>
 #include <fstream>
-#include <def.h>
-#include <flavoursoft.h>
-#include <softsusy.h>
-#include <linalg.h>
-#include <rpvsusypars.h>
+#include <src/def.h>
+#include <src/flavoursoft.h>
+#include <src/softsusy.h>
+#include <src/linalg.h>
+#include <src/rpvsusypars.h>
 
 namespace softsusy {
 
