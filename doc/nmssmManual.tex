@@ -379,8 +379,21 @@ effective $\mu$ term of the right size. As such, it is sometimes referred to as
 the scale invariant NMSSM in the literature.  In this paper, we will always 
 write $\mathbb{Z}_3$-NMSSM for the $\mathbb{Z}_3$ conserving case 
 (\ref{eq:WZ3C}) and \Zv-NMSSM for the general $\mathbb{Z}_3$ violating one 
-(\ref{eq:WZ3V}). In Table~\ref{tab:conv} we provide a comparison of the 
-\SOFTSUSY~conventions with the SUSY Les Houches Accord~\cite{Allanach:2008qq}, ref.~\cite{MV94} (Martin and Vaughn), and ref.~\cite{Degrassi:2009yq} (Degrassi and Slavich).
+(\ref{eq:WZ3V}). 
+
+For parameters common to both the MSSM and either the $\mathbb{Z}_3$-NMSSM or 
+\Zv-NMSSM, a comparison of the \SOFTSUSY~conventions and the literature can be 
+found in Table 1 of MSSM \SOFTSUSY~manual \cite{Allanach:2001kg}.  Elsewhere, 
+our conventions are those of the SUSY Les Houches Accord~\cite{Allanach:2008qq} 
+and thus consistent with the review of Ellwanger, Hugonie and Teixeira (EHT) 
+ \cite{Ellwanger:2009dp} and ref.~\cite{Degrassi:2009yq}. (Note however that 
+our definitions of the neutral Higgs VEVs (Sect.~\ref{sec:hpot}) differ by a 
+factor of $\sqrt{2}$ compared to \cite{Ellwanger:2009dp,Degrassi:2009yq}.)
+
+
+%%% LCT: Commented out the following in case we reinstate the table.
+% In Table~\ref{tab:conv} we provide a comparison of the 
+% \SOFTSUSY~conventions with the SUSY Les Houches Accord~\cite{Allanach:2008qq}, ref.~\cite{MV94} (Martin and Vaughn), and ref.~\cite{Degrassi:2009yq} (Degrassi and Slavich).
 
 
 \subsection{Next-to-minimal SUSY breaking parameters \label{sec:susybreak}}
@@ -412,34 +425,35 @@ $m_3^2$ present in $V_2$ is set to zero to avoid double counting with the third 
 %% \noindent and in the case of $\mathbb{Z}_3$ conservation the soft potential reduces to,
 %% \be V_{soft} = V_3 + V^{m_3^2 = 0}_2 \ee with the superscript indicationg that the \Zv soft bilinear mass $m_3^2$ present in $V^{MSSM}_2$ is set to zero. 
 
-\begin{table}\begin{center}
-\begin{tabular}{cccc}
-\SOFTSUSY & SLHA & Martin and Vaughn & Degrassi and Slavich \\ \hline 
-$Y^{U}$ & $Y^{U}$ & $({Y^{U}})^T$  & $h_u$ \\
-$Y^{D,E}$ & $Y^{D,E}$ & $(-{Y^{D,E}})^T$ & $h_{d,e}$ \\
-$U_A$ & $T_{U}$ & $h_{U}^T$ & $h_uA_u$ \\
-$D_A, E_A$ & $T_{D,E}$ & $(-h_{D,E})^T$ & $h_{d}A_{d},\, h_eA_e$ \\
-$m_{{\tilde Q},{\tilde L}}^2$ & $m_{{\tilde Q},{\tilde L}}^2$ & $m_{{\tilde
-    Q},{\tilde L}}^2$ & $m_{Q,L}^2$ \\
-$m_{{\tilde u},{\tilde d},{\tilde e}}^2$ & ${m_{{\tilde u},{\tilde d},{\tilde
-    e}}^2}^T$ &
-$m_{{\tilde u},{\tilde d},{\tilde e}}^2$ & $m_{U,D,E}^2$ \\
-%$\mu$ & $\mu$ & $\mu$ \\
-%$m_3^2$ & $B \mu$ & $B$  \\
-$M_i$ & $M_i$ & $M_i$ & $M_i$ \\
-$m_{H_{1,2}}^2$ & $m_{H_{1,2}}^2$& $m_{H_{d,u}}^2$ & $m_{H_{1,2}}^2$ \\
-\end{tabular}
-\caption{\label{tab:conv} Comparison of conventions between \SOFTSUSY~and the literature. Note
-  that simple models of SUSY breaking, for example the CMSSM, will have
-  negative gaugino masses $M_i$ in the
-  \SOFTSUSY~conventions. The sign in front of the gaugino mass
-    term in front of the \SOFTSUSY~Lagrangian appears at first sight to be in
-    the     opposite convention 
-    to Ref.~\cite{MV94}. However, it is due to the absorption of a factor of
-    $i$ into the gaugino fields $\tilde B$, $\tilde W$ and $\tilde g$ which
-    means that the sign of the gaugino mass is identical to that of
-    \cite{MV94}, and is thus of the same convention.}
-\end{center}\end{table} 
+%%% LCT: Commented out table since our main comparison is against Degrassi and Slavich who are SLHA2 compatible anyway - can reinstate if desired.
+% \begin{table}\begin{center}
+% \begin{tabular}{cccc}
+% \SOFTSUSY & SLHA & Martin and Vaughn & Degrassi and Slavich \\ \hline 
+% $Y^{U}$ & $Y^{U}$ & $({Y^{U}})^T$  & $h_u$ \\
+% $Y^{D,E}$ & $Y^{D,E}$ & $(-{Y^{D,E}})^T$ & $h_{d,e}$ \\
+% $U_A$ & $T_{U}$ & $h_{U}^T$ & $h_uA_u$ \\
+% $D_A, E_A$ & $T_{D,E}$ & $(-h_{D,E})^T$ & $h_{d}A_{d},\, h_eA_e$ \\
+% $m_{{\tilde Q},{\tilde L}}^2$ & $m_{{\tilde Q},{\tilde L}}^2$ & $m_{{\tilde
+%     Q},{\tilde L}}^2$ & $m_{Q,L}^2$ \\
+% $m_{{\tilde u},{\tilde d},{\tilde e}}^2$ & ${m_{{\tilde u},{\tilde d},{\tilde
+%     e}}^2}^T$ &
+% $m_{{\tilde u},{\tilde d},{\tilde e}}^2$ & $m_{U,D,E}^2$ \\
+% %$\mu$ & $\mu$ & $\mu$ \\
+% %$m_3^2$ & $B \mu$ & $B$  \\
+% $M_i$ & $M_i$ & $M_i$ & $M_i$ \\
+% $m_{H_{1,2}}^2$ & $m_{H_{1,2}}^2$& $m_{H_{d,u}}^2$ & $m_{H_{1,2}}^2$ \\
+% \end{tabular}
+% \caption{\label{tab:conv} Comparison of conventions between \SOFTSUSY~and the literature. Note
+%   that simple models of SUSY breaking, for example the CMSSM, will have
+%   negative gaugino masses $M_i$ in the
+%   \SOFTSUSY~conventions. The sign in front of the gaugino mass
+%     term in front of the \SOFTSUSY~Lagrangian appears at first sight to be in
+%     the     opposite convention 
+%     to Ref.~\cite{MV94}. However, it is due to the absorption of a factor of
+%     $i$ into the gaugino fields $\tilde B$, $\tilde W$ and $\tilde g$ which
+%     means that the sign of the gaugino mass is identical to that of
+%     \cite{MV94}, and is thus of the same convention.}
+% \end{center}\end{table} 
 
 \subsection{Higgs potential and electroweak symmetry breaking}\label{sec:hpot}
 At tree-level, the Higgs potential is given by
@@ -593,9 +607,8 @@ a = P H^I\,,
 %
 where $a^T = (G^0,A_1,A_2)$.  Here, $P$ matches the conventions of 
 \cite{Degrassi:2009yq}, while deleting the first row from $P$ produces the 2 by
- 3 mixing matrix for the physical CP-odd Higgs bosons in SLHA2 conventions \cite{Allanach:2008qq}. Following the review of Ellwanger, Hugonie and Teixeira (EHT)
- \cite{Ellwanger:2009dp}, the entries of the 3 by 3 mass matrix 
-$ M^{\prime \, 2}_{P}$ in the $H^I$ basis read
+ 3 mixing matrix for the physical CP-odd Higgs bosons in SLHA2 conventions \cite{Allanach:2008qq}. Following EHT \cite{Ellwanger:2009dp}, the entries of the 
+3 by 3 mass matrix $ M^{\prime \, 2}_{P}$ in the $H^I$ basis read
 %
 \ba
 ( M^{\prime \, 2}_{P})_{11} & = & \Bigg(\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
@@ -714,7 +727,7 @@ In the case of the NMSSM considered here, it is a simple task to generalize the
 MSSM expressions \cite{MV94} to include contributions due to superpotential 
 parameters such as $\lambda$ and their soft SUSY-breaking counterparts 
 $a_\lambda$.  (Naturally, the RGEs for such parameters must be derived 
-separately.)  Such a procedure has been carried out by EHT \cite{Ellwanger:2009dp}, who make use of the 
+separately.)  The two-loop RGEs for the \Zv-NMSSM are presented in the review by EHT \cite{Ellwanger:2009dp}, with the 
 the third family approximation
 %
 \begin{equation}
@@ -738,20 +751,20 @@ Y_E \approx \left(\begin{array}{c c c}
 \label{eq:3rd fam} 
 \end{equation}
 %
-in order to simplify the resulting expressions.
+imposed to simplify the resulting expressions.
 
 However, in \SOFTSUSY~the whole calculation is performed with quark 
 flavor-mixing between all three families, so it is necessary to derive the 
 additional NMSSM contributions from the general RGEs \cite{MV94,Yam94}.  The 
 resulting expressions are collected in \ref{sec:RGEs} and in each case we have 
-found agreement with the results of EHT \cite{Ellwanger:2009dp} once the third family approximation 
-(\ref{eq:3rd fam}) is enforced.  Note that in the \SOFTSUSY~conventions, all 
-$\beta$ functions are real.
+found agreement with the results of EHT \cite{Ellwanger:2009dp} once the third 
+family approximation (\ref{eq:3rd fam}) is enforced.  Note that in the 
+\SOFTSUSY~conventions, all $\beta$ functions are real.
 
 We also incorporate the two-loop running for $\tan\beta$ and the Higgs VEVs  
 $v_{1,2}$ and $s$.  Here, we make use of the results obtained by 
-Sperling et al.\ \cite{Sper13,Sper13-2}, where the pure   NMSSM contributions are 
-reproduced in \ref{sec:RGEs}.
+Sperling et al.\ \cite{Sper13,Sper13-2}, where the pure   NMSSM contributions 
+are reproduced in \ref{sec:RGEs}.
 
 Note that the program can be made to run faster by switching off the two-loop
  renormalization of the scalar masses and tri-linear scalar couplings.
@@ -820,12 +833,23 @@ $y_b$ and $y_\tau$ are fixed, including the precision corrections at $M_Z$.  Not
 bosons and fermions are modified to match those given in \cite{Degrassi:2009yq}
  for the NMSSM.
 
-SOFTSUSY calculates corrections to $\sin \theta_W$ following the procedure outlined in \cite{Pierce:1997zz}.  We use the same procedure in the NMSSM, with self energies generalised to NMSSM and using the NMSSM the lightest Higgs mass and the coupling which will match that of the MSSM when in the MSSM limit.  This ensures a simple simple MSSM limit for threshold corrections. 
+\SOFTSUSY~calculates corrections to $\sin \theta_W$ following the procedure outlined in \cite{Pierce:1997zz}.  We use the same procedure in the NMSSM, with self energies generalised to NMSSM and using the NMSSM the lightest Higgs mass and the coupling which will match that of the MSSM when in the MSSM limit.  This ensures a simple simple MSSM limit for threshold corrections. 
 
-In the \Zv-NMSSM, the parameters $\kappa$, $s$, $\xi_F$ and $\mu^\prime$ are reset to their input values at $M_Z$.  The parameters are then evolved
-back to $M_{SUSY}$ where $M_Z^2$ and $\tan\beta$ are predicted as
-part of a consistency check.  If the user has specified that
-$\lambda$ is to be input at the SUSY scale then $\lambda$ is set here.
+In the \Zv-NMSSM, the parameters $\kappa$, $s$, $\xi_F$ and $\mu^\prime$ are 
+reset to their input values at $M_Z$.  The parameters are then evolved back to 
+$M_{SUSY}$ where $M_Z^2$ and $\tan\beta$ are predicted as part of a consistency 
+check.  If the user has specified that $\lambda$ is to be input at the SUSY 
+scale then $\lambda$ is set here.  
+
+In general, the scalar Higgs potential (in both the $\mathbb{Z}_3$- and 
+\Zv-NMSSM) can possess several local minima \cite{Ellwanger:2009dp}, so we 
+include a test at $M_{SUSY}$ to determine whether the chosen parameter space 
+point corresponds to a global minimum (as done in the {\tt NMSSMTOOLS} CHECKMIN
+ routine).  The test works by comparing the value of the physical potential at 
+the VEVs $v_u,v_d,s$ against scenarios where two or more VEVs are zero.  We 
+include one-loop radiative corrections to the effective potential from third 
+generation quarks and squarks; corrections from other sfermions are negligible 
+due to their small Yukawa couplings.   
 
 
 The parameters are then evolved back up to $M_X$ and the procedure is repeated until convergence is achieved, as shown in Fig.~\ref{fig:algorithm}. 
@@ -841,9 +865,9 @@ of order $\oatq$, $\oabatau$, $\oabq$, $\oatauq$ and $\oatab$ are included from
 the MSSM {\tt FORTRAN} files (also supplied by Pietro Slavich), but we note that
  these expressions receive additional NMSSM contributions which are currently 
 unavailable.  Consequently, our calculation is not correct to this order, but 
-rather to $\oatas$ and $\oabas$.  Evidently, the higher order MSSM contributions
- provide (a) a good approximation in the vicinity of the MSSM limit, and (b) 
-easier comparisons against MSSM results.
+rather to $\oatas$ and $\oabas$.  Nevertheless, the higher order MSSM 
+contributions provide (a) a good approximation in the vicinity of the MSSM limit
+, and (b) easier comparisons against MSSM results.
 
 The sfermions, neutralinos and charginos also receive new NMSSM corrections to 
 their self energies. To the best of our knowledge, the required expressions are 
@@ -911,7 +935,7 @@ g_2(Q)$). The default output is in SLHA2 format, the conventions of which are
 explained in Ref.~\cite{Allanach:2008qq}. 
 
 In \SOFTSUSY\ 4 the command line interface of \code{softpoint.x} has
-changed, see \code{softpoin.x --help}.  For the MSSM the new syntax is
+changed, see \code{softpoint.x --help}.  For the MSSM the new syntax is
 %
 \small
 \begin{verbatim}
@@ -935,10 +959,10 @@ listed in \tablename~\ref{tab:general-cmd-line-options}.
     \code{amsb} & \code{--m0=<value>} & unified soft scalar mass \\
                 & \code{--m32=<value>} & gravitino mass \\
     \hline
-    \code{gmsb} & \code{--n5=<value>} & ??? \\
+    \code{gmsb} & \code{--n5=<value>} & number of $SU(5)$ mulitplets \\
                 & \code{--mMess=<value>} & messenger scale \\
-                & \code{--lambda=<value>} & ??? \\
-                & \code{--cgrav=<value>} & ??? \\
+                & \code{--lambda=<value>} & SUSY breaking scale $<F_S> / <S>$ \\
+                & \code{--cgrav=<value>} & Gravitino mass scaling factor \\
     \hline
   \end{tabular}
   \caption{MSSM command line options for \code{softpoint.x}}
@@ -1275,8 +1299,8 @@ members and access methods, which are listed in
 
 To create the NMSSM spectrum calculation class, \code{NmssmSoftsusy},
 the \code{Softsusy<SoftPars>} template class is instantiated using
-\code{SoftParsNmssm} as template parameter.  Thereby one obtains a
-MSSM spectrum calculator, which uses NMSSM parameters and beta
+\code{SoftParsNmssm} as template parameter.  Thereby one obtains an
+NMSSM spectrum calculator, which uses NMSSM parameters and beta
 functions.  \code{NmssmSoftsusy} then inherits from
 \code{Softsusy<SoftParsNmssm>} and overwrites MSSM functions to
 account for the extra NMSSM particles:
