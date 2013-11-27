@@ -1127,6 +1127,8 @@ int main(int argc, char *argv[]) {
 
       // set NMSSM boundary conditions
       if (susy_model == NMSSM) {
+         softsusy::Z3 = nmssm_input.is_Z3_symmetric();
+
          if (flavourViolation) {
             string msg("# Error: flavour violation in the NMSSM is currenty"
                        " not supported\n");
@@ -1238,8 +1240,6 @@ int main(int argc, char *argv[]) {
       break;
     case NMSSM: {
       nmssm_input.check_setup();
-
-      softsusy::Z3 = nmssm_input.is_Z3_symmetric();
 
       DoubleVector nmpars(nmssm_input.get_nmpars());
       nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu,
