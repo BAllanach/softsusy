@@ -16,7 +16,7 @@ int main() {
   double m12 = 300., a0 = -300., mGutGuess = 2.0e16, tanb = 10.0, m0 = 500.;
   int sgnMu = 1;      ///< sign of mu parameter
   int numPoints = 10; ///< number of scan points
-  double lambda = 0.1, kappa = 0.1, s = 1e3, xiF = 100.0, mupr = 10.0;
+  double lambda = 0.1, kappa = 0.1, s = 0.0, xiF = 0.0, mupr = 0.0;
 
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
 
