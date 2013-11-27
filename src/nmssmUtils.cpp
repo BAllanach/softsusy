@@ -78,6 +78,10 @@ void NMSSM_input::check_ewsb_output_parameters() const {
    if (SoftHiggsOut) {
       if (!is_set(mHd2) && !is_set(mHu2) && !is_set(mS2))
          supported = true;
+      if (!is_set(lambdaS) || close(parameter[lambdaS], 0., EPSTOL))
+        throw "# ERROR: <S> is zero!  Since SoftHiggsOut == true, <S> is not"
+          " determined by the EWSB conditions, so <S> has to be set to"
+          " a non-zero value on the user-side!\n";
    } else {
       if (Z3_symmetric) {
          if (!is_set(lambdaS) && !is_set(kappa) && !is_set(mS2))
@@ -307,6 +311,9 @@ void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 
 //PA: semi-msugra bcs for the nmssm
 void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+  assert(inputParameters.size() == 5 &&
+         "SemiMsugraBcs: input parameter vector is not of length 5");
+
   double m0 = inputParameters.display(1);
   double m12 = inputParameters.display(2);
   double a0 = inputParameters.display(3);
@@ -316,6 +323,30 @@ void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
   m.standardsemiSugra(m0, m12, a0, Al, Ak);
+}
+
+/// NMSSM Msugra, without setting the soft Higgs masses
+void NmssmSugraNoSoftHiggsMassBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+  assert(inputParameters.size() == 6 &&
+         "NmssmSugraNoSoftHiggsMassBcs: input parameter"
+         " vector is not of length 6");
+
+  const double mHd2 = m.displayMh1Squared(),
+    mHu2 = m.displayMh2Squared(),
+    ms2 = m.displayMsSquared();
+
+  NmssmMsugraBcs(m, inputParameters);
+  m.setMh1Squared(mHd2);
+  m.setMh2Squared(mHu2);
+  m.setMsSquared(ms2);
+
+  // If SoftHiggsOut == true, then mu, Bmu and xiS are not fixed by
+  // EWSB.  In this case they must be set in the BCS.
+  if (!softsusy::Z3 && softsusy::SoftHiggsOut) {
+    m.setSusyMu(inputParameters(4));
+    m.setM3Squared(inputParameters(5));
+    m.setXiS(inputParameters(6));
+  }
 }
 
 void generalNmssmBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
@@ -393,15 +424,29 @@ void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters)
   m.setSoftMassElement(mDr, 1, 1, signedSqr(inputParameters.display(47)));
   m.setSoftMassElement(mDr, 2, 2, signedSqr(inputParameters.display(48)));
   m.setSoftMassElement(mDr, 3, 3, signedSqr(inputParameters.display(49)));
-  m.setMh1Squared(inputParameters.display(21));
-  m.setMh2Squared(inputParameters.display(22));
+
+  // If SoftHiggsOut == true, then mHu2, mHd2 and mS2 will be EWSB
+  // output.  If Z3 == true, mS2 will be EWSB output.
+  if (!softsusy::SoftHiggsOut) {
+    m.setMh1Squared(inputParameters.display(21));
+    m.setMh2Squared(inputParameters.display(22));
+    if (!softsusy::Z3)
+      m.setMsSquared(inputParameters.display(53));
+  }
 
   m.setTrialambda(m.displayLambda() * inputParameters.display(50));
   m.setTriakappa(m.displayKappa() * inputParameters.display(51));
 
-  if (Z3 == false) {
+  if (!softsusy::Z3) {
     m.setMspSquared(inputParameters.display(52) * m.displayMupr());
-    m.setMsSquared(signedSqr(inputParameters.display(53)));
+  }
+
+  // If SoftHiggsOut == true, then mu, Bmu and xiS are not fixed by
+  // EWSB.  In this case they must be set in the BCS.
+  if (!softsusy::Z3 && softsusy::SoftHiggsOut) {
+    m.setSusyMu(inputParameters(54));
+    m.setM3Squared(inputParameters(55));
+    m.setXiS(inputParameters(56));
   }
 }
 

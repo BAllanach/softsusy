@@ -38,8 +38,9 @@ int main() {
   /// Set limits of tan beta scan
   double startTanb = 5.0, endTanb = 55.0;
 
-  DoubleVector pars(3);
+  DoubleVector pars(5);
   pars(1) = m0; pars(2) = m12; pars(3) = a0;
+  pars(4) = a0, pars(5) = a0;
   DoubleVector nmpars(5);
   nmpars(1) = lambda; nmpars(2) = kappa; nmpars(3) = s;
   nmpars(4) = xiF; nmpars(5) = mupr;
@@ -53,8 +54,8 @@ int main() {
      NmssmSoftsusy n;
 
      try {
-       n.lowOrg(NmssmMsugraBcs, mGutGuess, pars, nmpars, sgnMu, tanb, oneset, 
-		uni);
+       n.lowOrg(SemiMsugraBcs, mGutGuess, pars, nmpars, sgnMu, tanb,
+                oneset, uni);
      } catch (const std::string& error) {
        n.flagProblemThrown(true);
      } catch (const char* error) {
