@@ -1344,7 +1344,7 @@ double lnLHiggs(double mh);
 
 //double averageMus(susyMu, muOld);
 
-#include "softsusy.cpp"
+#include "src/softsusy.cpp"
 
 } // namespace softsusy
 
