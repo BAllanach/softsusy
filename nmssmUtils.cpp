@@ -78,6 +78,10 @@ void NMSSM_input::check_ewsb_output_parameters() const {
    if (SoftHiggsOut) {
       if (!is_set(mHd2) && !is_set(mHu2) && !is_set(mS2))
          supported = true;
+      if (!is_set(lambdaS) || close(parameter[lambdaS], 0., EPSTOL))
+        throw "# ERROR: <S> is zero!  Since SoftHiggsOut == true, <S> is not"
+          " determined by the EWSB conditions, so <S> has to be set to"
+          " a non-zero value on the user-side!\n";
    } else {
       if (Z3_symmetric) {
          if (!is_set(lambdaS) && !is_set(kappa) && !is_set(mS2))
