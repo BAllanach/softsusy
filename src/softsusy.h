@@ -247,42 +247,51 @@ public:
   /// Set MZ^2 predicted after iteration
   void setPredMzSq(double a) { predMzSq = a; }
 
-  //PA: sets fracDiff, needed for access by NmssmSoftsusy methods
+  ///  sets fracDiff, needed for access by NmssmSoftsusy methods
   void setFracDiff(double fD) { fracDiff = fD; };
 
-  //PA: fixes trilnear H1-sfermion-sfermion couplings 
+  ///  fixes trilnear H1-sfermion-sfermion couplings 
   //for use in doCalcTadpole1oneLoop  
-  void H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, DoubleMatrix & lTauS1Lr, double gmzOcthW, double mu, double cosb, double v1) const;
-  //PA: fixes trilnear H2-sfermion-sfermion couplings 
+  void H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, 
+		       DoubleMatrix & lTauS1Lr, double gmzOcthW, double mu, 
+		       double cosb, double v1) const;
+  ///  fixes trilnear H2-sfermion-sfermion couplings 
   //for use in doCalcTadpole1oneLoop
-  void H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr, DoubleMatrix & lTauS2Lr, double gmzOcthW, double mu, double sinb) const;
-  //PA: routine to calculate sfermiom contributions to H1 tadpole / v1
-  double doCalcTad1Sfermions(DoubleMatrix lTS1Lr,  DoubleMatrix lBS1Lr,  DoubleMatrix lTauS1Lr, double costhDRbar) const;
-  //PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
-  double doCalcTad2Sfermions(DoubleMatrix lTS2Lr, DoubleMatrix lBS2Lr, DoubleMatrix lTauS2Lr, double costhDRbar) const;
-  //PA: fixes trilnear H1-fermion-fermion couplings 
+  void H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr, 
+		       DoubleMatrix & lTauS2Lr, double gmzOcthW, double mu, 
+		       double sinb) const;
+  ///  routine to calculate sfermiom contributions to H1 tadpole / v1
+  double doCalcTad1Sfermions(DoubleMatrix lTS1Lr,  DoubleMatrix lBS1Lr,  
+			     DoubleMatrix lTauS1Lr, double costhDRbar) const;
+  ///  routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
+  double doCalcTad2Sfermions(DoubleMatrix lTS2Lr, DoubleMatrix lBS2Lr, 
+			     DoubleMatrix lTauS2Lr, double costhDRbar) const;
+  ///  fixes trilnear H1-fermion-fermion couplings 
   //for use in doCalcTadpole1oneLoop  
   double doCalcTad1fermions(double q, double v1) const;
-  //PA: fixes trilnear H2-fermion-fermion couplings 
+  ///  fixes trilnear H2-fermion-fermion couplings 
   //for use in doCalcTadpole1oneLoop  
   double doCalcTad2fermions(double q) const;
-  //PA: one loop H1 tadpole contributions from Higgs bosons in the loops
+  ///  one loop H1 tadpole contributions from Higgs bosons in the loops
   // Follwing BPMZ Goldstone bosons are not included in this.
-  double doCalcTad1Higgs(double q, double costhDRbar2, double g, double tanb) const;
+  double doCalcTad1Higgs(double q, double costhDRbar2, double g, 
+			 double tanb) const;
   //one loop H2 tadpole contributions from Higgs bosons in the loops
   // Follwing BPMZ Goldstone bosons are not included in this.
-  double doCalcTad2Higgs(double q, double costhDRbar2, double g, double tanb) const;
-  //PA: one loop H1 tadpole contributions from Neutralinos in the loops
+  double doCalcTad2Higgs(double q, double costhDRbar2, double g, 
+			 double tanb) const;
+  ///  one loop H1 tadpole contributions from Neutralinos in the loops
   double doCalcTad1Neutralinos(double q, double costhDRbar, double g, 
                              double cosb) const;
- //PA: one loop H2 tadpole contributions from Neutralinos in the loops
-  double doCalcTad2Neutralinos(double q, double costhDRbar, double g, double sinb) const;
-   //PA: one loop H1 tadpole contributions from Charginos in the loops
+ ///  one loop H2 tadpole contributions from Neutralinos in the loops
+  double doCalcTad2Neutralinos(double q, double costhDRbar, double g, 
+			       double sinb) const;
+   ///  one loop H1 tadpole contributions from Charginos in the loops
   double doCalcTad1Charginos(double q, double g, double cosb) const;
 
   double doCalcTad2Charginos(double q, double g, double sinb) const;
   
- //PA: one loop H1 tadpole contributions from Charginos in the loops
+ ///  one loop H1 tadpole contributions from Charginos in the loops
   double doCalcTad1GaugeBosons(double q, double costhDRbar2, double g, 
                                double tanb) const;
 
@@ -323,7 +332,8 @@ public:
   /// LCT: Adds one-loop neutralino corrections to stop mass matrix
   /// IO parameters: p=external momentum, outputs neutralino=2x2 matrix of 
   /// self-energies in LR basis
-  DoubleMatrix addStopNeutralino(double p, double mt, DoubleMatrix & neutralino);
+  DoubleMatrix addStopNeutralino(double p, double mt, 
+				 DoubleMatrix & neutralino);
   /// LCT: Adds one-loop chargino corrections to stop mass matrix
   /// IO parameters: p=external momentum, outputs chargino=2x2 matrix of 
   /// self-energies in LR basis
@@ -381,7 +391,8 @@ public:
   /// LCT: Adds one-loop neutralino corrections to sbottom mass matrix
   /// IO parameters: p=external momentum, outputs neutralino=2x2 matrix of 
   /// self-energies in LR basis
-  DoubleMatrix addSbotNeutralino(double p, double mt, DoubleMatrix & neutralino);
+  DoubleMatrix addSbotNeutralino(double p, double mt, 
+				 DoubleMatrix & neutralino);
   /// LCT: Adds one-loop chargino corrections to sbottom mass matrix
   /// IO parameters: p=external momentum, outputs chargino=2x2 matrix of 
   /// self-energies in LR basis
@@ -393,15 +404,18 @@ public:
   /// LCT: Adds one-loop Higgs corrections to slepton self energy
   /// IO parameters: p=external momentum, family=generation, 
   /// outputs higgs=2x2 matrix of self-energies
-  DoubleMatrix addSlepHiggs(double p1, double p2, int family, DoubleMatrix & higgs);
+  DoubleMatrix addSlepHiggs(double p1, double p2, int family, 
+			    DoubleMatrix & higgs);
   /// LCT: Adds one-loop electroweak corrections to slepton self energy
   /// IO parameters: p=external momentum, family=generation, 
   /// outputs electroweak=2x2 matrix of self-energies
-  DoubleMatrix addSlepEweak(double p1, double p2, int family, DoubleMatrix & electroweak);
+  DoubleMatrix addSlepEweak(double p1, double p2, int family, 
+			    DoubleMatrix & electroweak);
   /// LCT: Adds one-loop gaugino corrections to slepton self energy
   /// IO parameters: p=external momentum, family=generation, 
   /// outputs {chargino,neutralino}=2x2 matrix of self-energies
-  void addSlepGaugino(double p1, double p2, int family, DoubleMatrix & chargino, DoubleMatrix & neutralino);
+  void addSlepGaugino(double p1, double p2, int family, 
+		      DoubleMatrix & chargino, DoubleMatrix & neutralino);
   /// Adds one-loop corrections to sel_fam mass matrix at p=root(msel1 msel2)
   /// IO parameters: mass=tree level mass on
   /// input, is returned with radiative corrections added, mt=DR bar top mass
@@ -412,11 +426,13 @@ public:
   /// LCT: Adds one-loop sfermion corrections to stau self energy
   /// IO parameters: p=external momentum, mtau=DR bar tau mass,
   /// outputs {stop,sbottom}=2x2 matrix of self-energies
-  void addStauSfermion(double p, double mtau, DoubleMatrix & stop, DoubleMatrix & sbottom);
+  void addStauSfermion(double p, double mtau, DoubleMatrix & stop, 
+		       DoubleMatrix & sbottom);
   /// LCT: Adds one-loop Higgs corrections to stau self energy
   /// IO parameters: p=external momentum, mtau=DR bar tau mass,
   /// outputs higgs=2x2 matrix of self-energies
-  void addStauGaugino(double p, double mtau, DoubleMatrix & chargino, DoubleMatrix & neutralino);
+  void addStauGaugino(double p, double mtau, DoubleMatrix & chargino, 
+		      DoubleMatrix & neutralino);
   /// LCT: Adds one-loop gaugino corrections to stau self energy
   /// IO parameters: p=external momentum, mtau=DR bar tau mass,
   /// outputs {chargino,neutralino}=2x2 matrix of self-energies
@@ -486,7 +502,8 @@ public:
   /// LCT: Adds one-loop gaugino corrections to sneutrino self energy
   /// IO parameters: p=external momentum, outputs 
   /// {chargino,neutralino}=self-energy
-  void addSnuGaugino(double p, int family, double & chargino, double & neutralino);
+  void addSnuGaugino(double p, int family, double & chargino, 
+		     double & neutralino);
   /// Adds one-loop corrections to sneutrino mass of family "family"
   /// IO parameters: mass=tree level mass matrix on
   /// input, is returned with radiative corrections added
@@ -547,8 +564,10 @@ public:
   virtual void calcDrBarPars();
   /// calculates the higgs DRbar parameters. Make sure mt is set in eg. It
   /// will fill in the Higgs masses with the appropriate values on exit.
-  void setNeutCurrCouplings(double sinthDRbar, double & sw2, double & guL, double & gdL, double & geL, double & guR, double & gdR, double & geR );
-//PA: sets the Yukawas and Trilinears
+  void setNeutCurrCouplings(double sinthDRbar, double & sw2, double & guL, 
+			    double & gdL, double & geL, double & guR,
+			    double & gdR, double & geR );
+  ///  sets the Yukawas and Trilinears
   void calcDRTrilinears(drBarPars & eg, double vev, double beta);
 
   void calcDrBarHiggs(double beta, double mz2, double mw2, 
@@ -605,7 +624,7 @@ public:
   /// Applies 1-loop SUSY and 2-loop QCD corrections to pole mt in order to
   /// return the DRbar running value at the current scale
   virtual double calcRunningMt();
-  //PA: calculates factor to convert to DrBar for mtau
+  ///  calculates factor to convert to DrBar for mtau
   virtual double calcRunMtauDrBarConv() const;
   // Obtains (1 / mTAU)  times 1-loop squark-chargino corrections 
   //to mtau for use in calcRunningMtau 
@@ -620,7 +639,7 @@ public:
   /// return the DRbar running value at the current scale
   virtual double calcRunningMtau() const;  
  
-  //PA: calculates factor to convert to DrBar for mb
+  ///  calculates factor to convert to DrBar for mb
   virtual double calcRunMbDrBarConv() const;
   /// Obtains (1 / mb)  times 1-loop sbottom-Gluino corrections 
   //to mb for use in calcRunningMb 
@@ -659,15 +678,23 @@ public:
   /// corrections. IO parameters: piwwt is the W self-energy at the current,
   /// accuracy is the number of loops required (0 or 1 currently)
   virtual void charginos(int accuracy, double piwwt);
-   ///PA: Fills sigmaL, sigmaR and sigmaS with sfermion parts of the charginos 
-  //loop corrections.
+  ///  Fills sigmaL, sigmaR and sigmaS with sfermion parts of the charginos 
+  /// loop corrections.
   virtual void addChaLoopSfermion(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) const;
-   ///PA: Fills sigmaL, sigmaR and sigmaS with Gauge parts of the charginos 
-  //loop corrections.
-  virtual void addChaLoopGauge(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS, DoubleMatrix b1pCha, DoubleMatrix b0pCha, DoubleMatrix b1pNeut, DoubleMatrix b0pNeut) const;
-  ///PA: Fills sigmaL, sigmaR and sigmaS with Higgs parts of the charginos 
-  //loop corrections.
-  virtual void addChaLoopHiggs(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS, DoubleMatrix b1pCha, DoubleMatrix b0pCha, DoubleMatrix b1pNeut, DoubleMatrix b0pNeut) const;
+  ///  Fills sigmaL, sigmaR and sigmaS with Gauge parts of the charginos 
+  /// loop corrections.
+  virtual void addChaLoopGauge(double p, DoubleMatrix & sigmaL, 
+			       DoubleMatrix & sigmaR, DoubleMatrix & sigmaS, 
+			       DoubleMatrix b1pCha, DoubleMatrix b0pCha, 
+			       DoubleMatrix b1pNeut, 
+			       DoubleMatrix b0pNeut) const;
+  /// Fills sigmaL, sigmaR and sigmaS with Higgs parts of the charginos 
+  /// loop corrections.
+  virtual void addChaLoopHiggs(double p, DoubleMatrix & sigmaL, 
+			       DoubleMatrix & sigmaR, DoubleMatrix & sigmaS, 
+			       DoubleMatrix b1pCha, DoubleMatrix b0pCha, 
+			       DoubleMatrix b1pNeut, 
+			       DoubleMatrix b0pNeut) const;
   /// Adds the loop corrections on to an input tree-level chargino mass
   virtual void addCharginoLoop(double p, DoubleMatrix &);
   /// Calculates pole neutralino masses and mixingusing approximate 1-loop SUSY
@@ -782,25 +809,25 @@ public:
   //for p=external momentum, Q=renormalisation scale
   virtual double piZZTsfermions(double p, double Q) const;
   /// Calculates fermion contribution to the transverse part of Z self-energy: 
-  //for p=external momentum, Q=renormalisation scale
+  /// for p=external momentum, Q=renormalisation scale
   virtual double piZZTfermions(double p, double Q, bool usePoleMt) const;
- /// Calculates neutralino contrib. to the transverse part of Z self-energy: 
-  //for p=external momentum, Q=renormalisation scale
+  /// Calculates neutralino contrib. to the transverse part of Z self-energy: 
+  /// for p=external momentum, Q=renormalisation scale
   virtual double piZZTNeutralinos(double p, double Q, double thetaWDRbar) const;
-   /// Calculates chargino contrib. to the transverse part of Z self-energy: 
-  //for p=external momentum, Q=renormalisation scale
+  /// Calculates chargino contrib. to the transverse part of Z self-energy: 
+  /// for p=external momentum, Q=renormalisation scale
   virtual double piZZTCharginos(double p, double q, double thetaWDRbar) const;
   /// Calculates transverse part of Z self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piZZT(double p, double Q, bool usePoleMt = false) const;
-   /// Calculates Higgs contribution to the transverse part of W self-energy: 
-  //for p=external momentum, Q=renormalisation scale
+  /// Calculates Higgs contribution to the transverse part of W self-energy: 
+  /// for p=external momentum, Q=renormalisation scale
   virtual double piWWTHiggs(double p, double q, double thetaWDRbar) const;
   /// Calculates fermion contribution to the transverse part of W self-energy: 
-  //for p=external momentum, Q=renormalisation scale
+  /// for p=external momentum, Q=renormalisation scale
   virtual double piWWTfermions(double p, double Q, bool usePoleMt) const;
   /// Calculates sfermion contribution to the transverse part of W self-energy: 
-  //for p=external momentum, Q=renormalisation scale
+  /// for p=external momentum, Q=renormalisation scale
   virtual double piWWTsfermions(double p, double Q) const;
   /// Calculates transverse part of W self-energy: for p=external momentum,
   /// Q=renormalisation scale
@@ -810,7 +837,10 @@ public:
   virtual double piWWT(double p, double Q, bool usePoleMt = false) const;
   /// LCT: Returns neutralino-chargino-charged-Higgs trilinear couplings in 
   /// weak basis
-  virtual void getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, ComplexMatrix & apph2, ComplexMatrix & bpph1, ComplexMatrix & bpph2) const;
+  virtual void getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, 
+					    ComplexMatrix & apph2, 
+					    ComplexMatrix & bpph1, 
+					    ComplexMatrix & bpph2) const;
   /// LCT: Calculates (16 Pi^2) times the fermion contribution to H^+H^- 
   /// self-energy for p=external momentum, q=renormalisation scale
   double piHpHmFermions(double p, double q) const;
@@ -836,49 +866,54 @@ public:
   /// Calculates transverse part of A^0 self-energy: for p=external momentum,
   /// Q=renormalisation scale
   virtual double piAA(double p, double Q) const;
-  //PA:Calculates (16 Pi^2) times the sfermion contribution to Higgs 
+  /// Calculates (16 Pi^2) times the sfermion contribution to Higgs 
   //self-energy: for p=external momentum, q=renormalisation scale
-  double pis1s1Sfermions(double p, double q,  DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau) const;
- //PA:Calculates (16 Pi^2) times the sfermion contribution to Higgs 
-  //self-energy: for p=external momentum, q=renormalisation scale
-  double pis1s2Sfermions(double p, double q,  DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const;
-//PA:Calculates (16 Pi^2) times the sfermion contribution to Higgs 
-  //self-energy: for p=external momentum, q=renormalisation scale
-  double pis2s2Sfermions(double p, double q, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const;
- //PA:Calculates (16 Pi^2) times the fermion contribution to Higgs self-energy:
-  //for p=external momentum, q=renormalisation scale
+  double pis1s1Sfermions(double p, double q,  DoubleMatrix ls1tt,  
+			 DoubleMatrix ls1bb,  DoubleMatrix ls1tautau) const;
+  /// Calculates (16 Pi^2) times the sfermion contribution to Higgs 
+  /// self-energy: for p=external momentum, q=renormalisation scale
+  double pis1s2Sfermions(double p, double q,  DoubleMatrix ls1tt,  
+			 DoubleMatrix ls1bb,  DoubleMatrix ls1tautau, 
+			 DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  
+			 DoubleMatrix ls2tautau) const;
+  /// Calculates (16 Pi^2) times the sfermion contribution to Higgs 
+  /// self-energy: for p=external momentum, q=renormalisation scale
+  double pis2s2Sfermions(double p, double q, DoubleMatrix ls2tt,  
+			 DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const;
+  /// Calculates (16 Pi^2) times the fermion contribution to Higgs self-energy:
+  /// for p=external momentum, q=renormalisation scale
   double pis1s1Fermions(double p, double q) const;
-//PA:Calculates (16 Pi^2) times the fermion contribution to Higgs self-energy:
-  //for p=external momentum, q=renormalisation scale
+  /// Calculates (16 Pi^2) times the fermion contribution to Higgs self-energy:
+  /// for p=external momentum, q=renormalisation scale
   double pis2s2Fermions(double p, double q) const;
-//PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
-//for p=external momentum, q=renormalisation scale
+  /// Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
+  /// for p=external momentum, q=renormalisation scale
   double pis1s1Higgs(double p, double q) const;
-//PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
-//for p=external momentum, q=renormalisation scale
+  /// Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
+  /// for p=external momentum, q=renormalisation scale
   double pis1s2Higgs(double p, double q) const;
-//PA:Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
-//for p=external momentum, q=renormalisation scale
+  /// Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
+  /// for p=external momentum, q=renormalisation scale
   double pis2s2Higgs(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times the Neutralino contribution to the
-  // Higgs self-energy: for p=external momentum, q=renormalisation scale
+  /// Calculates (16 Pi^2) times the Neutralino contribution to the
+  /// Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis1s1Neutralinos(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times the Neutralino contribution to the
-  // Higgs self-energy: for p=external momentum, q=renormalisation scale
+  /// Calculates (16 Pi^2) times the Neutralino contribution to the
+  /// Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis1s2Neutralinos(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times the Neutralino contribution to the
-  // Higgs self-energy: for p=external momentum, q=renormalisation scale
+  /// Calculates (16 Pi^2) times the Neutralino contribution to the
+  /// Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis2s2Neutralinos(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times the Chargino contribution to the
-  // Higgs self-energy: for p=external momentum, q=renormalisation scale
+  /// Calculates (16 Pi^2) times the Chargino contribution to the
+  /// Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis1s1Charginos(double p, double q) const;
-   //PA:Calculates (16 Pi^2) times the Chargino contribution to the
-  // Higgs self-energy: for p=external momentum, q=renormalisation scale
+  /// Calculates (16 Pi^2) times the Chargino contribution to the
+  /// Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis1s2Charginos(double p, double q) const;
-  //PA:Calculates (16 Pi^2) times the Chargino contribution to the
-  // Higgs self-energy: for p=external momentum, q=renormalisation scale
+  /// Calculates (16 Pi^2) times the Chargino contribution to the
+  /// Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis2s2Charginos(double p, double q) const;
-/// Calculates transverse part of Higgs self-energy: for p=external momentum,
+  /// Calculates transverse part of Higgs self-energy: for p=external momentum,
   /// Q=renormalisation scale
   double pis1s1(double p, double q) const;
   /// Calculates transverse part of Higgs self-energy: for p=external momentum,
@@ -889,7 +924,7 @@ public:
   double pis2s2(double p, double q) const;
   /// Calculates sin^2 theta^l_eff
   double sinSqThetaEff();
-  //PA: gets h1 mixing element with Hu.
+  ///  gets h1 mixing element with Hu.
   virtual double h1s2Mix();
   /// Iterative determination of rho parameter consistent with muon decay
   /// constant, MZ and alpha_0. 
