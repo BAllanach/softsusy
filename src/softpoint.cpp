@@ -534,6 +534,7 @@ int main(int argc, char *argv[]) {
                   } else if (susy_model == NMSSM) {
                      // read NMSSM susy parameters only and continue
                      switch (i) {
+                     case 23: nmssm_input.set(NMSSM_input::mu     , d); continue;
                      case 61: nmssm_input.set(NMSSM_input::lambda , d); continue;
                      case 62: nmssm_input.set(NMSSM_input::kappa  , d); continue;
                      case 65: nmssm_input.set(NMSSM_input::lambdaS, d); continue;
@@ -558,11 +559,14 @@ int main(int argc, char *argv[]) {
 		      for (i=41; i<=49; i++) pars(i) = m0;		    
 		      kw.setNumRpcBcs(50); 
                       if (susy_model == NMSSM) {
-                         pars.setEnd(53);
+                         pars.setEnd(56);
                          pars(50) = a0; // Alambda
                          pars(51) = a0; // Akappa
                          pars(52) = 0.; // mS'^2
                          pars(53) = m0*m0; // mS^2
+                         pars(54) = 0.; // mu
+                         pars(55) = 0.; // Bmu
+                         pars(56) = 0.; // xiS
                       }
   		    } else {
 		      /// This is flavour violation with EXTPAR: mSUGRA BCs
@@ -615,7 +619,11 @@ int main(int argc, char *argv[]) {
 		      r->useAlternativeEwsb(); 
 		      if (i == 23) {
                          r->setMuCond(d); r->setSusyMu(d);
-                         nmssm_input.set(NMSSM_input::mu, d);
+                         if (susy_model == NMSSM) {
+                           if (pars.displayEnd() < 56) pars.setEnd(56);
+                           nmssm_input.set(NMSSM_input::mu, d);
+                           pars(54) = d;
+                         }
                       }
 		      if (i == 26) r->setMaCond(d); 
 		    }
@@ -627,17 +635,21 @@ int main(int argc, char *argv[]) {
 			if (pars.displayEnd() < 49) pars.setEnd(49);
 			pars(i) = d;
                         if (susy_model == NMSSM) {
-                           if (pars.displayEnd() < 53) pars.setEnd(53);
+                           if (pars.displayEnd() < 56) pars.setEnd(56);
                            switch (i) {
                            case 21: nmssm_input.set(NMSSM_input::mHd2, d); break;
                            case 22: nmssm_input.set(NMSSM_input::mHu2, d); break;
-                           case 23: nmssm_input.set(NMSSM_input::mu  , d); break;
+                           case 23:
+                             nmssm_input.set(NMSSM_input::mu, d);
+                             pars(54) = d;
+                             break;
                            }
                         }
   		      } else if ((61 <= i && i <= 70) || i == 24) {
                         switch (i) {
                         case 24:
                            nmssm_input.set(NMSSM_input::BmuOverCosBetaSinBeta, d);
+                           pars(55) = d;
                            break;
                         case 63:
                            nmssm_input.set(NMSSM_input::Alambda, d);
@@ -649,6 +661,7 @@ int main(int argc, char *argv[]) {
                            break;
                         case 67:
                            nmssm_input.set(NMSSM_input::xiS, d);
+                           pars(56) = d;
                            break;
                         case 69:
                            nmssm_input.set(NMSSM_input::mPrimeS2, d);
@@ -1114,22 +1127,50 @@ int main(int argc, char *argv[]) {
 
       // set NMSSM boundary conditions
       if (susy_model == NMSSM) {
+         softsusy::Z3 = nmssm_input.is_Z3_symmetric();
+
          if (flavourViolation) {
             string msg("# Error: flavour violation in the NMSSM is currenty"
                        " not supported\n");
             throw msg;
          }
          if (strcmp(modelIdent, "sugra") == 0) {
-            nmssmBoundaryCondition = &NmssmMsugraBcs;
-            if (pars.size() != 3)
-               pars.setEnd(3);
+           // if we chose the soft Higgs masses as EWSB output, we
+           // must not use msugra, because it would overwrite mHu2,
+           // mHd2, mS2 at the GUT scale
+           if (softsusy::SoftHiggsOut) {
+             if (pars.size() != 6)
+               pars.setEnd(6);
+             pars(4) = nmssm_input.get(NMSSM_input::mu);
+             pars(5) = nmssm_input.get(NMSSM_input::BmuOverCosBetaSinBeta);
+             pars(6) = nmssm_input.get(NMSSM_input::xiS);
+             nmssmBoundaryCondition = &NmssmSugraNoSoftHiggsMassBcs;
+           } else {
+             if (softsusy::Z3) {
+               // Here we must use SemiMsugraBcs to avoid setting mS2
+               // at the GUT scale
+               if (pars.size() != 5)
+                 pars.setEnd(5);
+               pars(4) = pars(3); // sets Al to A0
+               pars(5) = pars(3); // sets Ak to A0
+               nmssmBoundaryCondition = &SemiMsugraBcs;
+             } else {
+               nmssmBoundaryCondition = &NmssmMsugraBcs;
+             }
+           }
          } else if (strcmp(modelIdent, "nonUniversal") == 0) {
-            nmssmBoundaryCondition = &extendedNMSugraBcs;
-            if (pars.size() != 53) {
-               string msg("# Error: NMSSM non-minmal sugra boundary condition"
-                          " chosen, but pars does not have 53 entries\n");
-               throw msg;
-            }
+           nmssmBoundaryCondition = &extendedNMSugraBcs;
+           if (pars.size() != 56) {
+              string msg("# Error: NMSSM non-minmal sugra boundary condition"
+                         " chosen, but pars does not have 56 entries\n");
+              throw msg;
+           }
+           if (nmssm_input.is_set(NMSSM_input::mu))
+             pars(54) = nmssm_input.get(NMSSM_input::mu);
+           if (nmssm_input.is_set(NMSSM_input::BmuOverCosBetaSinBeta))
+             pars(55) = nmssm_input.get(NMSSM_input::BmuOverCosBetaSinBeta);
+           if (nmssm_input.is_set(NMSSM_input::xiS))
+             pars(56) = nmssm_input.get(NMSSM_input::xiS);
          } else {
             string msg("# Error: non-sugra boundary conditions for the NMSSM"
                        " are currently not supported\n");
@@ -1199,8 +1240,6 @@ int main(int argc, char *argv[]) {
       break;
     case NMSSM: {
       nmssm_input.check_setup();
-
-      softsusy::Z3 = nmssm_input.is_Z3_symmetric();
 
       DoubleVector nmpars(nmssm_input.get_nmpars());
       nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu,
