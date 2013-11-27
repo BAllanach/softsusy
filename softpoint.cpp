@@ -536,12 +536,10 @@ int main(int argc, char *argv[]) {
                      // read NMSSM susy parameters only and continue
                      switch (i) {
                      case 23: nmssm_input.set(NMSSM_input::mu     , d); continue;
-                     case 24: nmssm_input.set(NMSSM_input::BmuOverCosBetaSinBeta, d); continue;
                      case 61: nmssm_input.set(NMSSM_input::lambda , d); continue;
                      case 62: nmssm_input.set(NMSSM_input::kappa  , d); continue;
                      case 65: nmssm_input.set(NMSSM_input::lambdaS, d); continue;
                      case 66: nmssm_input.set(NMSSM_input::xiF    , d); continue;
-                     case 67: nmssm_input.set(NMSSM_input::xiS    , d); continue;
                      case 68: nmssm_input.set(NMSSM_input::muPrime, d); continue;
                      }
                   }
@@ -1171,6 +1169,12 @@ int main(int argc, char *argv[]) {
                          " chosen, but pars does not have 56 entries\n");
               throw msg;
            }
+           if (nmssm_input.is_set(NMSSM_input::mu))
+             pars(54) = nmssm_input.get(NMSSM_input::mu);
+           if (nmssm_input.is_set(NMSSM_input::BmuOverCosBetaSinBeta))
+             pars(55) = nmssm_input.get(NMSSM_input::BmuOverCosBetaSinBeta);
+           if (nmssm_input.is_set(NMSSM_input::xiS))
+             pars(56) = nmssm_input.get(NMSSM_input::xiS);
          } else {
             string msg("# Error: non-sugra boundary conditions for the NMSSM"
                        " are currently not supported\n");
