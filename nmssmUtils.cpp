@@ -427,7 +427,7 @@ void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters)
     m.setMh1Squared(inputParameters.display(21));
     m.setMh2Squared(inputParameters.display(22));
     if (!softsusy::Z3)
-      m.setMsSquared(signedSqr(inputParameters.display(53)));
+      m.setMsSquared(inputParameters.display(53));
   }
 
   m.setTrialambda(m.displayLambda() * inputParameters.display(50));
