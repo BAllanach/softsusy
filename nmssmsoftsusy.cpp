@@ -8442,8 +8442,12 @@ void NmssmSoftsusy::itLowsoft
   numTries = numTries + 1;
   
   //PA: reset new low energy inputs of general nmssm at mz.
-  if(Z3){
-    setXiF(0.0);                         
+  if (Z3) {
+    if (PRINTOUT && !close(nmpars(4), 0.0, EPSTOL))
+      cout << "WARNING: you set Z3 == true and xiF != 0, xiF will be ignored\n";
+    if (PRINTOUT && !close(nmpars(5), 0.0, EPSTOL))
+      cout << "WARNING: you set Z3 == true and mu' != 0, mu' will be ignored\n";
+    setXiF(0.0);
     setMupr(0.0);
   }
 
