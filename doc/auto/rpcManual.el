@@ -91,7 +91,7 @@
      "table:probs"
      "tab:mssmsoftdata"
      "tab:softmeth"
-     "sec:altewsb"
+     "tab:altewsb"
      "altEwsbEqs"
      "sec:flavour"
      "tab:flavsoft"
