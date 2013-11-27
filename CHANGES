@@ -1,3 +1,6 @@
+<li> 26/11/13 Command line interface changed. Order of SUSY breaking terms no
+in format of, for example, <tt>--m0=100</tt>, where the order no longer
+matters. 
 <li> 26/09/13 Added lowOrg wrapper, renaming old method fixedPointIteration in
 order to provide backwards compatibility: thanks to S Akula for the suggestion. Also, renamed CMSSM->SUGRA in boundary conditions to both provide backwards compatibility and for NMSSM generalisation
 <li> 2/10/13 In the case that user tries to invoke SLHA2 RPV+flavour violation, SOFTSUSY bails immediately with a better error message. It's not implemented yet...
