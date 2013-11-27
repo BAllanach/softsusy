@@ -35,7 +35,7 @@ src/nmssmsoftsusy.h src/nmssmUtils.h
 libsoft_la_SOURCES = src/def.cpp src/linalg.cpp src/lowe.cpp src/numerics.cpp  src/rpvneut.cpp \
 src/physpars.cpp src/rge.cpp src/nmssm2loop.f src/dilogwrap.f \
  src/nmssmsoftsusy.cpp src/nmssmsusy.cpp src/nmssmsoftpars.cpp src/nmssmUtils.cpp \
-src/susy.cpp src/utils.cpp src/mssmUtils.cpp \
+src/softpars.cpp src/susy.cpp src/utils.cpp src/mssmUtils.cpp \
 src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twoloophiggs.f 
 libsoft_la_LDFLAGS = $(FLIBS)
 
@@ -125,7 +125,7 @@ benchmarks/rpv2.4.in benchmarks/rpv2.5.in \
 benchmarks/rpv3.1.in benchmarks/rpv3.2.in benchmarks/rpv3.3.in \
 benchmarks/rpv3.4.in benchmarks/rpv3.5.in 
 
-dist_pkgdata_DATA = $(INPUTFILES) $(OUTPUTFILES) CHANGES GUIDELINES COPYING $(DOCFILES)
+dist_pkgdata_DATA = run_nmssmtools.sh.in setup_nmssmtools.sh Makefile.nmssmtools $(INPUTFILES) $(OUTPUTFILES) CHANGES GUIDELINES COPYING $(DOCFILES)
 CLEANFILES=$(OUTPUTFILES) *.x
 
 inOutFiles/%Output : inOutFiles/%Input softpoint.x 
