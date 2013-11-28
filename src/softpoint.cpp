@@ -1235,7 +1235,8 @@ int main(int argc, char *argv[]) {
 				numPoints, ewsbBCscale);
       
       if (r->displayProblem().test()) {
-	cout << "# SOFTSUSY problem with point: " << r->displayProblem() << endl;
+	cout << "# SOFTSUSY problem with point: " << r->displayProblem() 
+	     << endl;
         return -1;
       }
       break;

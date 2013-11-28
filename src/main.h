@@ -18,14 +18,17 @@
 
     \section manual Official manual
     If you use SOFTSUSY to write a paper, please cite 
-    <a href="http://xxx.arxiv.org/abs/hep-ph/0104145">
+    [1] <a href="http://xxx.arxiv.org/abs/hep-ph/0104145">
     B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145, 
-    </a> which is the SOFTSUSY manual.
-    If you use the R-parity violating aspects, please cite
-    <a href="http://arxiv.org/abs/0903.1805">B.C. Allanach and M.A. Bernhardt, 
-    Comput. Phys. Commun. 181 (2010) 232-245,
-    arXiv:0903.1805</a>.
-    For RPV neutrino oscillation output, please cite 
+    </a> which is the main SOFTSUSY manual.<p>
+    If you calculate in the NMSSM, please cite [1] and 
+    [2] <a href="">B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and
+    A. Williams, arXiv:????.????.</a> <p>
+    If you use the R-parity violating aspects, please cite [1] and
+    [3] <a href="http://arxiv.org/abs/0903.1805">B.C. Allanach and 
+    M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232-245,
+    arXiv:0903.1805</a>.<p>
+    For RPV neutrino oscillation output, please cite [1], [3] and
     <a href="http://xxx.soton.ac.uk/abs/1109.3735">B.C. Allanach,
     M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012) 785,
     arXiv:1109.3735</a>. 
