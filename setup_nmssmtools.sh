@@ -43,16 +43,16 @@ create_run_script() {
     printf "Creating NMSSMTools run script ..."
 
     sed -e "s|@NMSSMTOOLS_PATH@|$nmssmtools_dir|" \
-        < ${BASEDIR}/run_nmssmtools.sh.in > ${BASEDIR}/run_nmssmtools.sh
+        < ${BASEDIR}/softsusy_nmssmtools.x.in > ${BASEDIR}/softsusy_nmssmtools.x
 
     if test "x$?" = "x0"; then
         echo " done"
     else
-        echo " Error: could non create run_nmssmtools.sh"
+        echo " Error: could non create softsusy_nmssmtools.x"
         exit 1
     fi
 
-    chmod +x ${BASEDIR}/run_nmssmtools.sh
+    chmod +x ${BASEDIR}/softsusy_nmssmtools.x
 }
 
 copy_file() {
@@ -131,10 +131,10 @@ if ! test "x${enable_compile_nmssmtools}" = "xyes"; then
     echo "  $ make init"
     echo "  $ make"
     echo ""
-    echo "Afterwards you can call run_nmssmtools.sh to calculate decays:"
-    echo "  $ ./run_nmssmtools.sh slha-input-file"
+    echo "Afterwards you can call softsusy_nmssmtools.x to calculate decays:"
+    echo "  $ ./softsusy_nmssmtools.x slha-input-file"
 else
     echo ""
-    echo "Now you can call run_nmssmtools.sh to calculate decays:"
-    echo "  $ ./run_nmssmtools.sh slha-input-file"
+    echo "Now you can call softsusy_nmssmtools.x to calculate decays:"
+    echo "  $ ./softsusy_nmssmtools.x slha-input-file"
 fi
