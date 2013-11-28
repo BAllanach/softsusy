@@ -35,7 +35,7 @@ src/nmssmsoftsusy.h src/nmssmUtils.h
 libsoft_la_SOURCES = src/def.cpp src/linalg.cpp src/lowe.cpp src/numerics.cpp  src/rpvneut.cpp \
 src/physpars.cpp src/rge.cpp src/nmssm2loop.f src/dilogwrap.f \
  src/nmssmsoftsusy.cpp src/nmssmsusy.cpp src/nmssmsoftpars.cpp src/nmssmUtils.cpp \
-src/softpars.cpp src/susy.cpp src/utils.cpp src/mssmUtils.cpp \
+src/softsusy.cpp src/softpars.cpp src/susy.cpp src/utils.cpp src/mssmUtils.cpp \
 src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twoloophiggs.f 
 libsoft_la_LDFLAGS = $(FLIBS)
 
