@@ -483,7 +483,8 @@ rest of the evolution.
 
 \subsection{Initial Estimate}
 
-The algorithm proceeds via the iterative method, and therefore an approximate
+The algorithm proceeds via the fixed point iteration method, and therefore an
+approximate 
 initial guess of MSSM parameters is required. 
 For this, the third family $\overline{DR}$ Yukawa couplings are approximated
 by 
@@ -549,7 +550,8 @@ $g_i(M_Z)$, $h_{t,b,\tau}(M_Z)$.}}}
 \put(323,45){\line(0,1){160}}
 \put(323,205){\vector(-1,0){40}}
 \end{picture}
-\caption{Iterative algorithm used to calculate the SUSY spectrum. Each step
+\caption{Fixed point iteration algorithm used to calculate the SUSY
+  spectrum. Each step 
 (represented by a box) is detailed in the text. The initial step is the
 uppermost one. $M_{SUSY}$ is the scale at which the EWSB
 conditions 
@@ -1048,7 +1050,6 @@ Block SOFTSUSY     # SOFTSUSY specific inputs
  12   <printSpectra>  # Prints spectrum even when point is theoretically
 excluded if=1
  13   <mAflag>        # If =0 (default), sets tachyonic mA=0, otherwise mA=sqrt(|mA|^2)
- 14   <tryToConvergeHard> # (Default=0), will go slow in attempt to get solution
 \end{verbatim}
 \normalsize
 The fractional numerical precision on masses and couplings output by \SOFTSUSY~is better than \code{TOLERANCE}, which
@@ -1238,9 +1239,9 @@ int main() {
     /// check the point in question is problem free: if so print the output
     if (!r.displayProblem().test()) 
       cout << tanb << " " << r.displayPhys().mh0 << " " 
-	   << r.displayPhys().mA0 << " " 
-	   << r.displayPhys().mH0 << " " 
-	   << r.displayPhys().mHpm << endl;
+           << r.displayPhys().mA0 << " " 
+           << r.displayPhys().mH0 << " " 
+           << r.displayPhys().mHpm << endl;
     else
       /// print out what the problem(s) is(are)
       cout << tanb << " " << r.displayProblem() << endl;
@@ -1529,22 +1530,26 @@ contained within each of the higher level objects that we now describe.
 \begin{figure}\begin{center}
 \begin{picture}(200,200)
 \GBox(200,200)(0,0){0.9}
-\ArrowLine(100,180)(50,130)
-\ArrowLine(100,180)(150,130)
-\ArrowLine(150,130)(150,100)
-\ArrowLine(150,100)(150,70)
-\ArrowLine(150,70)(130,20)
+\ArrowLine(70,180)(30,130)
+\ArrowLine(70,180)(120,160)
+\ArrowLine(120,160)(120,120)
+\ArrowLine(120,130)(120,70)
+\ArrowLine(120,100)(120,40)
+\ArrowLine(120,70)(120,20)
+\ArrowLine(50,40)(120,70)
 \SetPFont{Teletype}{10}
 \put(0,0){\framebox(200,200){}}
-\BText(100,180){RGE}
-\BText(50,130){QedQcd}
-\BText(150,130){MssmSusy}
-\BText(150,100){SoftParsMssm}
-\BText(150,70){MssmSoftsusy}
-\BText(130,20){FlavourMssmSoftsusy}
+\BText(70,180){RGE}
+\BText(30,130){QedQcd}
+\BText(120,160){MssmSusy}
+\B2Text(120,120){SoftPars<MssmSusy>}{=SoftParsMssm}
+\B2Text(120,70){SoftSusy<SoftParsMssm>}{=MssmSoftsusy}
+\BText(120,20){FlavourMssmSoftsusy}
+\BText(50,40){AltEwsbMssm}
 \end{picture}
 \caption{ \label{fig:objstruc} Heuristic high-level object structure of \SOFTSUSY\@. Inheritance is
-displayed by the arrows.}\end{center}\end{figure}
+displayed by the arrows and a type definition by the equals
+sign.}\end{center}\end{figure} 
 From a RGE point of view, a particular
 quantum 
 field theory model consists of a set of couplings and masses defined at some
@@ -1834,8 +1839,7 @@ $N$ defined in ref.~\cite{Pierce:1997zz} that would produce only positive
 $\overline{DR}$ neutralino masses. This information, as well as
 $\overline{DR}$ third family
 fermion masses are stored in the \code{drBarPars} structure.
-When \code{altEwsb}~is \code{true}, alternative EWSB conditions are used, as
-explained in Section~\ref{sec:altewsb}.
+
 
 \begin{table}\begin{center}\begin{tabular}{ll} 
 data variable & flags \\ \hline
@@ -1925,8 +1929,7 @@ parameters$^*$\\
 \code{lesHouchesAccordOutput} & prints output in SLHA~\cite{lhacc} format\\
 \code{sinSqThetaEff} & calculates then returns $\sin^2\theta_{eff}^l$\\
 \code{useAlternativeEwsb} & switches \code{altEwsb=true}, using alternative
-EWSB as in\\
-  & Section~\protect\ref{sec:altewsb}\\
+EWSB \\ 
 \end{tabular}
 \caption{\label{tab:softmeth}\code{MssmSoftsusy} methods and related functions. Functions marked with an
 asterisk are mentioned in the text.}\end{center}\end{table}
@@ -1964,6 +1967,45 @@ condition.
 \code{sgnMu} is the sign of the
 superpotential $\mu$ parameter, \code{tanb} is the value of $\tan \beta (M_Z)$
 required and \code{oneset} contains the $M_Z$ scale low energy data.
+If \code{altEwsb=true}, we have alternative boundary conditions on electroweak
+symmetry breaking, and the data in the class \code{AltEwsbMssm}~is used.
+
+\begin{table}\begin{center}\begin{tabular}{lll}      
+data & & methods \\ \hline
+\code{muCond} & Alternative electroweak boundary & \code{displayMuCond} \\
+ $\mu(M_{SUSY})$ & conditions & \code{setMuCond} \\
+\code{maCond} & Alternative electroweak boundary & \code{displayMaCond} \\
+ $M_A$(pole) & conditions & \code{setMaCond} \\
+\end{tabular}\caption{\label{tab:altewsb}\code{AltEwsbMssm} class data and
+  accessor methods.}\end{center}\end{table} 
+This class has just two private data variables, as shown in
+Table~\ref{tab:altewsb}, 
+where both are massive parameters in units of GeV. 
+They fix the
+boundary conditions on $\mu(M_{SUSY})$ and the pole pseudo-scalar Higgs
+mass $m_A(\mbox{pole})$. In this case, $m_A(M_{SUSY})$ is extracted 
+from the input $m_A(\mbox{pole})$ via $m_A^2(M_{SUSY}) = m_A^2(\mbox{pole})
+ + \Pi_{AA}(M_{SUSY})$, where $\Pi_{AA}(M_{SUSY})$ is the MSSM pseudo-scalar 
+self-energy correction.
+The Higgs mass squared parameters
+$m_{H_{1,2}}^2$ are {\em not}\/ set at $M_{GUT}$: they are instead set at
+$M_{SUSY}$ by solving the simultaneous equations~\ref{mucond},~\ref{Bcond}
+and using the relationship between $m_3^2(M_{SUSY})$ and $m_A(M_{SUSY})$:
+\begin{eqnarray}
+m_{H_1}^2 &=& \sin^2 \beta (m_A^2 + M_Z^2) + \frac{t_1}{v_1} (1 - \sin^4
+\beta)
+- \sin^2 \beta \cos^2 \beta \frac{t_2}{v_2} - (\mu^2 + \frac{1}{2} M_Z^2) 
+\nonumber \\
+m_{H_2}^2 &=& \cos^2 \beta (m_A^2 + M_Z^2) + \frac{t_2}{v_2} (1 - \cos^4
+\beta)
+- \sin^2 \beta \cos^2 \beta \frac{t_1}{v_1} - (\mu^2 + \frac{1}{2} M_Z^2),
+\label{altEwsbEqs}
+\end{eqnarray}
+where all quantities in eq.~\ref{altEwsbEqs} are running parameters evaluated
+at $M_{SUSY}$. 
+This option is covered under the SLHA input parameters
+\code{EXTPAR} 
+\code{23,26}~\cite{lhacc}. 
 
 The fine tuning (as defined in sec.~\ref{sec:calculation}) can be
 calculated with the method 
@@ -1993,37 +2035,6 @@ one-loop calculation of the quantity $\sin^2 \theta_{eff}^l$. It does {\em
   not}\/ contain any 2-loop corrections, and may not be accurate enough for
 precision electroweak fits. 
 
-
-\subsection{Alternative electroweak symmetry breaking \label{sec:altewsb}} 
-If \code{altEwsb}=\code{true}, then 
-two private data variables are used:
-\code{muCond}~and 
-\code{mAcond}, where both are massive parameters in units of GeV. 
-They fix the
-boundary conditions on $\mu(M_{SUSY})$ and the pole pseudo-scalar Higgs
-mass $m_A(\mbox{pole})$. In this case, $m_A(M_{SUSY})$ is extracted 
-from the input $m_A(\mbox{pole})$ via $m_A^2(M_{SUSY}) = m_A^2(\mbox{pole})
- + \Pi_{AA}(M_{SUSY})$, where $\Pi_{AA}(M_{SUSY})$ is the MSSM pseudo-scalar 
-self-energy correction.
-The Higgs mass squared parameters
-$m_{H_{1,2}}^2$ are {\em not}\/ set at $M_{GUT}$: they are instead set at
-$M_{SUSY}$ by solving the simultaneous equations~\ref{mucond},~\ref{Bcond}
-and using the relationship between $m_3^2(M_{SUSY})$ and $m_A(M_{SUSY})$:
-\begin{eqnarray}
-m_{H_1}^2 &=& \sin^2 \beta (m_A^2 + M_Z^2) + \frac{t_1}{v_1} (1 - \sin^4
-\beta)
-- \sin^2 \beta \cos^2 \beta \frac{t_2}{v_2} - (\mu^2 + \frac{1}{2} M_Z^2) 
-\nonumber \\
-m_{H_2}^2 &=& \cos^2 \beta (m_A^2 + M_Z^2) + \frac{t_2}{v_2} (1 - \cos^4
-\beta)
-- \sin^2 \beta \cos^2 \beta \frac{t_1}{v_1} - (\mu^2 + \frac{1}{2} M_Z^2),
-\label{altEwsbEqs}
-\end{eqnarray}
-where all quantities in eq.~\ref{altEwsbEqs} are running parameters evaluated
-at $M_{SUSY}$. 
-This option is covered under the SLHA input parameters
-\code{EXTPAR} 
-\code{23,26}~\cite{lhacc}.
 
 
 \subsection{\code{FlavourMssmSoftsusy}~Class \label{sec:flavour}}

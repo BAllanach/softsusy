@@ -290,7 +290,8 @@ int main(int argc, char *argv[]) {
 	    string word1, word2;
 	    input >> word1;
 	    
-	    if (word1.find("#") == string::npos) { 
+	    if (word1.find("#") == string::npos &&
+                !contains_only_whitespace(word1)) {
 	      // read in another word if there's no comment
 	      input >> word2; 
 	      
@@ -1234,7 +1235,8 @@ int main(int argc, char *argv[]) {
 				numPoints, ewsbBCscale);
       
       if (r->displayProblem().test()) {
-	cout << "# SOFTSUSY problem with point: " << r->displayProblem() << endl;
+	cout << "# SOFTSUSY problem with point: " << r->displayProblem() 
+	     << endl;
         return -1;
       }
       break;
