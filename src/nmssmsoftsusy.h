@@ -566,6 +566,8 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   void extrasfermionmixSLHA(ostream & out);
   /// outputs DRbar parameters at scale Q (default is at MSUSY)
   virtual void drbarSLHA(ostream&, int numPoints, double qMax, int n);
+  /// SOFTSUSY comments in SLHA
+  virtual void softsusySLHA(ostream & out);
 };
 
 inline NmssmSoftsusy::NmssmSoftsusy()

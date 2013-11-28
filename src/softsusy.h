@@ -1095,7 +1095,7 @@ public:
   /// This does the job of the above method, but outputs the UMIX/VMIX blocks
   void inomixingSLHA(ostream & out);
   /// SOFTSUSY comments in SLHA
-  void softsusySLHA(ostream & out);
+  virtual void softsusySLHA(ostream & out);
   /// sfermionic part of mixing blocks
   void alphaSLHA(ostream & out);
   /// higgs part of mixing blocks

@@ -9103,6 +9103,13 @@ void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
    nmssmrunSLHA(out, "NMSSMRUNATQSTSB");
 }
 
+void NmssmSoftsusy::softsusySLHA(ostream& out)
+{
+  Softsusy<SoftParsNmssm>::softsusySLHA(out);
+  out << "# Z3 = " << softsusy::Z3
+      << ", SoftHiggsOut = " << softsusy::SoftHiggsOut << '\n';
+}
+
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
 void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  const DoubleVector & pars,
