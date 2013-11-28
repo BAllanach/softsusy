@@ -132,9 +132,9 @@ if ! test "x${enable_compile_nmssmtools}" = "xyes"; then
     echo "  $ make"
     echo ""
     echo "Afterwards you can call softsusy_nmssmtools.x to calculate decays:"
-    echo "  $ ./softsusy_nmssmtools.x slha-input-file"
+    echo "  $ ./softsusy_nmssmtools.x leshouches < slha-input-file"
 else
     echo ""
     echo "Now you can call softsusy_nmssmtools.x to calculate decays:"
-    echo "  $ ./softsusy_nmssmtools.x slha-input-file"
+    echo "  $ ./softsusy_nmssmtools.x leshouches < slha-input-file"
 fi

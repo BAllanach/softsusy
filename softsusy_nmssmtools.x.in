@@ -6,9 +6,9 @@ BASEDIR=$(dirname $0)
 # path to the NMSSMTools directory
 NMSSMTOOLS_PATH="@NMSSMTOOLS_PATH@"
 
-if test $# -ne 2; then
-    cat <<EOF
-Usage: ./`basename $0` slha-input-file slha-output-file
+if test $# -ne 1 -o "x$1" != "xleshouches"; then
+    cat <<EOF > /dev/stderr
+Usage: ./`basename $0` leshouches < slha-input-file
 EOF
     exit 1
 fi
@@ -24,22 +24,15 @@ if ! test -x "${NMSSMTOOLS_PATH}/main/nmProcessSpec"; then
     exit 1
 fi
 
-slha_input_file="$1"
-slha_output_file="$2"
+nmssmtools_input_file="${NMSSMTOOLS_PATH}/main/slha_nmssm"
 
-if ! test -r "${slha_input_file}"; then
-    echo "Error: cannot open SLHA input file \"${slha_input_file}\""
-    exit 1
-fi
-
-${BASEDIR}/softpoint.x leshouches < ${slha_input_file} > ${slha_output_file}
+${BASEDIR}/softpoint.x leshouches < /dev/stdin | tee ${nmssmtools_input_file}
 
 if test $? -ne 0; then
-    echo "Warning: invalid point"
+    echo "Warning: invalid point in Softsusy"
     exit 1
 fi
 
-cp ${slha_output_file} ${NMSSMTOOLS_PATH}/main/slha_nmssm
 (cd ${NMSSMTOOLS_PATH}/main/ && ./nmProcessSpec)
 
 if test $? -ne 0; then
@@ -55,5 +48,5 @@ if ! test -r "${decay_output_file}"; then
     exit 1
 fi
 
-echo "\n" >> "${slha_output_file}"
-cat "${decay_output_file}" >> "${slha_output_file}"
+echo ""
+cat "${decay_output_file}"
