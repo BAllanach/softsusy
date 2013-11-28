@@ -1067,11 +1067,14 @@ calculate the decays.  The \code{run\_nmssmtools.sh} script combines
 these two steps:
 %
 \begin{verbatim}
-  $ ./run_nmssmtools.sh slhaInput
+  $ ./run_nmssmtools.sh slhaInput slhaOutput
 \end{verbatim}
 %
 Here \code{slhaInput} is an SLHA input file with the SOFTSUSY block
-entry $15$ set to $1$.  Additional NMSSMTools specific flags can also be used with entries $16$ and $17$.
+entry $15$ set to $1$.  \code{slhaOutput} is the name of the SLHA
+output file which will contain the spectrum and the decays.
+Additional NMSSMTools specific flags can also be used with entries
+$16$ and $17$.
 %
 \begin{verbatim}
    Block SOFTSUSY
