@@ -21,6 +21,7 @@ rpvneut_x_SOURCES = src/rpvneutmain.cpp
 rpvneut_x_LDADD = libsoft.la 
 
 pkginclude_HEADERS = \
+src/nmProcessSpec.f \
 src/def.h src/main.h src/numerics.h \
 src/softpars.h src/susy.h src/linalg.h \
 src/physpars.h src/softpoint.h src/twoloophiggs.h \
