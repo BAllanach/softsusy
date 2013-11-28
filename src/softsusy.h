@@ -1068,7 +1068,7 @@ public:
   /// CHANGES TO 8 SIG FIGS
   void headerSLHA(ostream & out);
   /// This does the SPINFO block of SLHA
-  void spinfoSLHA(ostream & out);
+  virtual void spinfoSLHA(ostream & out);
   /// This does the MODSEL block of SLHA
   void modselSLHA(ostream & out, const char model[]);
   /// SMINPUTS block of SLHA

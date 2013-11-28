@@ -9110,6 +9110,12 @@ void NmssmSoftsusy::softsusySLHA(ostream& out)
       << ", SoftHiggsOut = " << softsusy::SoftHiggsOut << '\n';
 }
 
+void NmssmSoftsusy::spinfoSLHA(ostream& out) {
+  Softsusy<SoftParsNmssm>::spinfoSLHA(out);
+  if (displayProblem().notGlobalMin)
+    out << "     3   # Warning: Not in global min of Higgs potential\n";
+}
+
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
 void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  const DoubleVector & pars,

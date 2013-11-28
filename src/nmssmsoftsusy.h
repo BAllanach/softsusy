@@ -568,6 +568,8 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   virtual void drbarSLHA(ostream&, int numPoints, double qMax, int n);
   /// SOFTSUSY comments in SLHA
   virtual void softsusySLHA(ostream & out);
+  /// This does the SPINFO block of SLHA
+  virtual void spinfoSLHA(ostream & out);
 };
 
 inline NmssmSoftsusy::NmssmSoftsusy()
