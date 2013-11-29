@@ -21,7 +21,7 @@ Block SMINPUTS             # Standard Model inputs
     11    5.10998902e-04   # Me(pole)
     13    1.05658357e-01   # Mmu(pole)
 Block VCKMIN               # input CKM mixing matrix parameters
-     1    2.27200000e-01   # lambda
+     1    2.27200000e-01   # lambda_W
      2    8.18000000e-01   # A
      3    2.21000000e-01   # rhobar
      4    3.40000000e-01   # etabar (no phases used in SOFTSUSY yet though)
