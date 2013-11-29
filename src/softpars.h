@@ -12,11 +12,11 @@
 #define SOFTPARS_H
 
 #include <cmath>
-#include <src/susy.h>
-#include <src/def.h>
-#include <src/linalg.h>
-#include <src/utils.h>
-#include <src/numerics.h>
+#include "susy.h"
+#include "def.h"
+#include "linalg.h"
+#include "utils.h"
+#include "numerics.h"
 
 namespace softsusy {
 
@@ -296,7 +296,7 @@ void SoftPars<Susy, Brevity>::setSoftPars(SoftPars<Susy, Brevity> const & s) { *
 template<class Susy, class Brevity>
 void SoftPars<Susy, Brevity>::setM32(double a) { m32 = a; }
 
-#include "src/softpars.cpp"
+#include "softpars.cpp"
 
 } // namespace softsusy
 

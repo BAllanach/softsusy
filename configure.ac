@@ -41,7 +41,9 @@ AC_PROG_LIBTOOL
 #AM_CONDITIONAL(NEED_APPLE_FIXES,
 #		[test "xx${host/darwin/foundit}xx" != "xx${host}xx"])
 
-AC_CONFIG_FILES([Makefile])
+AC_SUBST(FLIBS)
+
+AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile])
 
 AC_OUTPUT
 
