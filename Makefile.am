@@ -2,25 +2,7 @@ SUBDIRS = src
 
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 
-bin_PROGRAMS = softsusy.x softsusy-nmssm.x softpoint.x rpvsoftsusy.x rpvneut.x gaugeUn.x doc/nmssmManual.pdf doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
-
-softsusy_x_SOURCES = src/main.cpp
-softsusy_x_LDADD = src/libsoft.la  
-
-softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp
-softsusy_nmssm_x_LDADD = src/libsoft.la
-
-softpoint_x_SOURCES = src/softpoint.cpp 
-softpoint_x_LDADD = src/libsoft.la
-
-rpvsoftsusy_x_SOURCES = src/rpvmain.cpp
-rpvsoftsusy_x_LDADD = src/libsoft.la 
-
-rpvneut_x_SOURCES = src/rpvneutmain.cpp
-rpvneut_x_LDADD = src/libsoft.la 
-
-gaugeUn_x_SOURCES = src/gaugeUn.cpp
-gaugeUn_x_LDADD = src/libsoft.la 
+bin_PROGRAMS = doc/nmssmManual.pdf doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
 
 DOCFILES=doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
 doc/nmssmManual.pdf

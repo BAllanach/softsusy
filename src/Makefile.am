@@ -2,6 +2,31 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 
 lib_LTLIBRARIES = libsoft.la 
 
+bin_PROGRAMS = $(top_builddir)/softsusy.x \
+               $(top_builddir)/softsusy-nmssm.x \
+               $(top_builddir)/softpoint.x \
+               $(top_builddir)/rpvsoftsusy.x \
+               $(top_builddir)/rpvneut.x \
+               $(top_builddir)/gaugeUn.x
+
+__top_builddir__softsusy_x_SOURCES = main.cpp
+__top_builddir__softsusy_x_LDADD = libsoft.la  
+
+__top_builddir__softsusy_nmssm_x_SOURCES = main-nmssm.cpp
+__top_builddir__softsusy_nmssm_x_LDADD = libsoft.la
+
+__top_builddir__softpoint_x_SOURCES = softpoint.cpp 
+__top_builddir__softpoint_x_LDADD = libsoft.la
+
+__top_builddir__rpvsoftsusy_x_SOURCES = rpvmain.cpp
+__top_builddir__rpvsoftsusy_x_LDADD = libsoft.la 
+
+__top_builddir__rpvneut_x_SOURCES = rpvneutmain.cpp
+__top_builddir__rpvneut_x_LDADD = libsoft.la 
+
+__top_builddir__gaugeUn_x_SOURCES = gaugeUn.cpp
+__top_builddir__gaugeUn_x_LDADD = libsoft.la 
+
 pkginclude_HEADERS = \
 def.h main.h numerics.h \
 softpars.h susy.h linalg.h \
