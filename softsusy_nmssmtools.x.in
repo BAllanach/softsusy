@@ -14,12 +14,12 @@ EOF
 fi
 
 if ! test -d "${NMSSMTOOLS_PATH}"; then
-    echo "Error: Cannot find NMSSMTools directory \"${nmssmtools_dir}\""
+    echo "# Error: Cannot find NMSSMTools directory \"${nmssmtools_dir}\""
     exit 1
 fi
 
 if ! test -x "${NMSSMTOOLS_PATH}/main/nmProcessSpec"; then
-    echo "Error: Cannot find ${NMSSMTOOLS_PATH}/main/nmProcessSpec"
+    echo "# Error: Cannot find ${NMSSMTOOLS_PATH}/main/nmProcessSpec"
     echo "   Please run ./setup_nmssmtools.sh --nmssmtools-dir=/path/to/NMSSMTools --compile"
     exit 1
 fi
@@ -29,14 +29,14 @@ nmssmtools_input_file="${NMSSMTOOLS_PATH}/main/slha_nmssm"
 ${BASEDIR}/softpoint.x leshouches < /dev/stdin | tee ${nmssmtools_input_file}
 
 if test $? -ne 0; then
-    echo "Warning: invalid point in Softsusy"
+    echo "# Error: invalid point in Softsusy"
     exit 1
 fi
 
 (cd ${NMSSMTOOLS_PATH}/main/ && ./nmProcessSpec)
 
 if test $? -ne 0; then
-    echo "Error: NMSSMTools could not calculate the decays"
+    echo "# Error: NMSSMTools could not calculate the decays"
     exit 1
 fi
 
@@ -44,7 +44,7 @@ decay_output_file="${NMSSMTOOLS_PATH}/main/nmProcessSpec-decay"
 omega_output_file="${NMSSMTOOLS_PATH}/main/nmProcessSpec-omega"
 
 if ! test -r "${decay_output_file}"; then
-    echo "Error: cannot open decay output file \"${decay_output_file}\""
+    echo "# Error: cannot open decay output file \"${decay_output_file}\""
     exit 1
 fi
 
