@@ -184,8 +184,7 @@ This is a
 testament to the 
 theoretical successes of weak-scale supersymmetry: chiefly the resolution of
 the technical hierarchy problem, improvement of the apparent unification of Standard
-Model (SM) gauge couplings and the provision of a potential a
-dark matter candidate. 
+Model (SM) gauge couplings and the provision of a potential dark matter candidate. 
 In order to pursue SUSY phenomenology, a long calculational chain is
 required~\cite{Allanach:2008zn}. Typically, this chain begins with the
 calculation of the 
@@ -210,7 +209,7 @@ $m_h=125.5\pm0.2^{+0.5}_{-0.6}$ GeV by combining the $H \rightarrow \gamma
 In CMS, these channels give the combined constraint $m_h=125.3 \pm0.4 \pm0.5$
 GeV in 5.1 fb$^{-1}$ of 7 TeV data and 5.3 fb$^{-1}$ of 8 TeV data. 
 In the MSSM, one can often obtain a CP even Higgs that couples in a similar
-way to the Standard Model Higgs boson. At tree-level, it's mass is bounded by
+way to the SM Higgs boson. At tree-level, it's mass is bounded by
 $m_{h^0} < M_Z$, at odds with the LHC experiments' mass measurements. 
 However,
 the radiative corrections to the CP even Higgs mass can be sizeable,
@@ -236,8 +235,8 @@ Supersymmetric Standard Model (NMSSM)~\cite{NMSSM}. We shall distinguish
 between a 
 version where an extra symmetry is assumed (often a $\mathbb{Z}_3$ symmetry) 
 and a version where it is not
-($\Zv$)~\cite{Delgado:2010uj,Ross:2011xv,Ross:2012nr}. 
-In the MSSM, (based on a two Higgs doublet version of the Standard Model with
+($\Zv$)~\cite{Delgado:2010uj,Ell08,Ross:2011xv,Ross:2012nr}. 
+In the MSSM, (based on a two Higgs doublet version of the SM with
 softly broken $N=1$ global supersymmetry)
 the tree-level bound upon the Higgs mass comes from the fact that 
 the quartic Higgs couplings are related to the electroweak gauge couplings by
@@ -257,7 +256,7 @@ out-of-the-box package {\tt NMSPEC}~\cite{Ellwanger:2006rn} which calculates
 the spectrum of the 
 NMSSM, matching weak-scale data with theoretical boundary conditions on
 supersymmetry breaking and Higgs potential parameters. However, one can also 
-marry {\tt SARAH}~\cite{Staub:2010jh,Staub:2012pb,Staub:2013tta} with {\tt
+marry {\tt SARAH}~\cite{Staub:2009bi,Staub:2010jh,Staub:2012pb,Staub:2013tta} with {\tt
   SPheno}~\cite{Porod:2003um} in order to be 
 able to 
 calculate the spectrum after setting up the model. The NMSSM was included in
@@ -268,9 +267,9 @@ instance,
 {\tt
   NMHDECAY}~\cite{Ellwanger:2005dv} is 
 capable of calculating the NMSSM Higgs decays, and
-{\tt NMSDECAY}~\cite{Das:2011dg,Muhlleitner:2003vg} calculates sparticle
+{\tt NMSDECAY}~\cite{Muhlleitner:2003vg,Das:2011dg} calculates sparticle
 decays. \code{PYTHIA}~\cite{Sjostrand:2007gs} is then capable of simulating
-particle collisions in the NMSSM and, in addition, micrOMEGAs~\cite{Belanger:2008sj}
+particle collisions in the NMSSM and, in addition, \code{micrOMEGAs}~\cite{Belanger:2008sj}
 can calculate the thermal dark matter relic density.
 
 Having several public spectrum generators for the MSSM has proved fruitful for
@@ -281,7 +280,7 @@ assumptions about supersymmetry breaking mediation.
 The advantages of having
 several publicly available and supported spectrum generators naturally also extends to the
 case of the increasingly popular NMSSM.
-The extension of {\tt SOFTSUSY} program to include the
+The extension of {\tt SOFTSUSY} to include the
 NMSSM will hopefully aid the
 accuracy and feasibility of a variety of NMSSM studies. 
 
@@ -331,13 +330,13 @@ superfields and the two Higgs doublets. $\bar{E}$, $\bar{U}$, and $\bar{D}$ are
 the lepton, up-type quark and down-type quark right-handed superfield singlets, 
 respectively. Note that the lepton doublet superfields $L^a_i$ and the Higgs 
 doublet superfield coupling to the down-type quarks $H$ have the same 
-Standard Model (SM) gauge quantum numbers. We denote an $SU(3)$ colour 
+SM gauge quantum numbers. We denote an $SU(3)$ colour 
 index of the fundamental representation by  $\{x,y,z\} \in \{1,2,3 \}$. The 
 $SU(2)_L$ fundamental representation indices are denoted by 
 $\{a,b,c\} \in \{1,2\}$ and the generation indices by $\{i,j,k\} \in \{1,2,3\}$.
  $\epsilon_{xyz}=\epsilon^{xyz}$ and  $\epsilon_{ab}=\epsilon^{ab}$ are totally
-antisymmetric tensors, with $\epsilon_{123}=1$ and $\epsilon_{12}=1$, respectively
-.  Currently, only real couplings in the superpotential and Lagrangian are 
+antisymmetric tensors, with $\epsilon_{123}=1$ and $\epsilon_{12}=1$, 
+respectively.  Currently, only real couplings in the superpotential and Lagrangian are 
 included. 
 
 The full renormalisable, $R-$parity conserving superpotential is given by
@@ -414,7 +413,7 @@ Expressions for the trilinear scalar interaction potential $V_3$ and scalar
 bilinear SUSY breaking potential $V_2$  of the MSSM are given in Sect.\ 2.2 of 
 the \SOFTSUSY~manual \cite{Allanach:2001kg} for the $R$-parity conserving MSSM.
  The notation $V_2\big|_{m_3^2=0}$ indicates that the $\Zv$~soft bilinear mass 
-$m_3^2$ present in $V_2$ is set to zero to avoid double counting with the third term in (\ref{eq:VZ3V}).
+$m_3^2$ present in $V_2$ is set to zero to avoid double counting with the third term in Eq.~(\ref{eq:VZ3V}).
 
 %% \be V_{soft} = V_3 + V_2 + V_\Zv \ee where
 %% \ba V_3 & = & V^{MSSM}_3 + \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + \frac{1}{3} a_\kappa S^3 \\
@@ -649,7 +648,7 @@ iterative algorithm to determine the mass spectrum is shown schematically in
 Fig.\ \ref{fig:algorithm}.  Here we will provide a detailed description of this 
 procedure and specify all contributions that are included in the calculation.
 
-As in MSSM \SOFTSUSY, the Standard Model fermion and gauge boson masses, and the
+As in MSSM \SOFTSUSY, the SM fermion and gauge boson masses, and the
  couplings $\alpha(M_Z)$, $G_F^\mu$, and $\alpha_s(M_z)$ act as low energy 
 constraints. Below $M_Z$, the evolution of these input parameters proceeds in 
 the manner described in Sect.\ 3.1 of the MSSM \SOFTSUSY~manual 
@@ -674,7 +673,7 @@ and NMSSM SUSY boundary conditions.}}}
 \put(150,156){\vector(0,-1){23}}
 \put(10,160){\makebox(280,10)[c]{\fbox{3.\ Run to $M_{SUSY}$.}}}
 \put(30,170){convergence}
-\DashLine(115,165)(-70,165){5}
+\DashLine(110,165)(-70,165){5}
 \DashLine(-70,165)(-70,5){5}
 \DashLine(-70,5)(30,5){5}
 \put(30,5){\vector(1,0){2}}
@@ -716,7 +715,7 @@ where primes denote derivatives calculated to two-loop order.
 
 In all stages of the calculation, the evolution of the NMSSM parameters is 
 governed by three family, two-loop renormalization group equations (RGEs), whose
- form \cite{MV94,Yam94} for a general, ${\cal N}=1$ semi-simple SUSY gauge 
+ form \cite{MV94,Yam94} for a general, $N=1$ semi-simple SUSY gauge 
 theory is known. From these general results, it is possible to derive the 
 explicit expressions of the RGEs in a chosen model (e.g.\ the work of Martin and
  Vaughn \cite{MV94} provides a complete list of the RGEs for the MSSM).  
@@ -842,7 +841,7 @@ scale then $\lambda$ is set here.
 In general, the scalar Higgs potential (in both the $\mathbb{Z}_3$- and 
 $\Zv$-NMSSM) can possess several local minima \cite{Ellwanger:2009dp}, so we 
 include a test at $M_{\rm SUSY}$ to determine whether the chosen parameter space 
-point corresponds to a global minimum (as done in the {\tt NMSSMTOOLS} CHECKMIN
+point corresponds to a global minimum (as done in the {\tt NMSPEC}~\cite{Ellwanger:2006rn} CHECKMIN
  routine).  The test works by comparing the value of the physical potential at 
 the VEVs $v_u,v_d,s$ against scenarios where two or more VEVs are zero.  We 
 include one-loop radiative corrections to the effective potential from third 
@@ -917,7 +916,7 @@ useful discussions.  LCT is supported by the Federal Commission for Scholarships
 \SOFTSUSY~produces an executable called \code{softpoint.x}. For the calculation
 of the spectrum of single points in parameter space, we recommend the
 SUSY Les Houches Accord 2 (SLHA2)~\cite{Allanach:2008qq}  input/output
-option. The user must provide a file (\textit{e.g.} the example file included
+option. The user must provide a file (e.g.\ the example file included
 in the \SOFTSUSY~distribution
 \code{rpvHouchesInput}), that specifies the model dependent input
 parameters. The program may then be run with
@@ -933,7 +932,7 @@ input into other programs which subscribe to the accord, such as
 \code{PYTHIA}~\cite{Sjostrand:2007gs} (for
 simulating sparticle production and decays at colliders), for example. For
 further details on the necessary format of 
-the input file, see ref.~\cite{Allanach:2008qq}. It supports 
+the input file, see Ref.~\cite{Allanach:2008qq}. It supports 
 the setting of all other SLHA2 input blocks associated with non-complex
 couplings. 
 
@@ -950,7 +949,7 @@ changed, see \code{softpoint.x --help}.  For the MSSM the new syntax is
 \end{verbatim}
 \normalsize
 %
-where the available susy-breaking models are listed in
+where the available SUSY-breaking models are listed in
 \tablename~\ref{tab:mssm-cmd-line-options} and the general options are
 listed in \tablename~\ref{tab:general-cmd-line-options}.
 %
@@ -1005,7 +1004,7 @@ For the NMSSM, the syntax is
 \end{verbatim}
 \normalsize
 %
-where only \code{sugra} is the currently available susy-breaking
+where only \code{sugra} is the currently available SUSY-breaking
 model.  The general options are listed in
 \tablename~\ref{tab:general-cmd-line-options} and the NMSSM flags and
 parameter options are listed in
@@ -1063,7 +1062,7 @@ user has to first install NMSSMTools and then run the
 %
 The \code{setup\_nmssmtools.sh} script copies \code{nmProcessSpec.f}
 and \code{Makefile.nmssmtools} from the \SOFTSUSY\ directory to the
-main/ directory within the NMSSMTools folder.  If the \code{--compile}
+{\tt main/} directory within the NMSSMTools folder.  If the \code{--compile}
 flag is provided, NMSSMTools is recompiled.  Afterwards the user can
 generate an NMSSM spectrum with \SOFTSUSY\ and use NMSSMTools to
 calculate the decays.  The \code{softsusy\_nmssmtools.x} script combines
@@ -1094,7 +1093,7 @@ After \code{softsusy\_nmssmtools.x} is called, the following three output
 files can be found in the NMSSMTools directory
 \code{NMSSMTools\_4.1.2/main/}: The file \code{nmProcessSpec-decay}
 contains the sparticle decays in form of SLHA DECAY blocks,
-\code{nmProcessSpec-omega} will contain the output from micromegas if entry 16 is selected to be non-zero and
+\code{nmProcessSpec-omega} will contain the output from \code{micrOMEGAS} if entry 16 is selected to be non-zero and
 \code{nmProcessSpec-spectr} contains the spectrum calculated by
 NMSSMTools.
 
@@ -1928,14 +1927,6 @@ The one-loop $\beta$ function for $\tan\beta$ is the same in the NMSSM as the MS
 
 
 \begin{thebibliography}{10}
-%\cite{Allanach:2009bv}
-\bibitem{Allanach:2009bv}
-  B.~C.~Allanach and M.~A.~Bernhardt,
-  %``Including R-parity violation in the numerical computation of the spectrum of the minimal supersymmetric standard model: SOFTSUSY,''
-  Comput.\ Phys.\ Commun.\  {\bf 181} (2010) 232
-  [arXiv:0903.1805 [hep-ph]].
-  %%CITATION = ARXIV:0903.1805;%%
-  %22 citations counted in INSPIRE as of 07 Nov 2013
 \bibitem{Aad:2013wta}
   G.~Aad {\it et al.}  [ATLAS Collaboration],
   %``Search for new phenomena in final states with large jet multiplicities and missing transverse momentum at $\sqrt{s}=8$ TeV proton-proton collisions using the ATLAS experiment,''
@@ -1947,12 +1938,30 @@ The one-loop $\beta$ function for $\tan\beta$ is the same in the NMSSM as the MS
 \bibitem{CMSspart}
 S.~Chatrchyan {\it et al.} [CMS Collaboration], (2013) CMS-PAS-SUS-13-012
 
+% \cite{Allanach:2008zn}
+\bibitem{Allanach:2008zn}
+  B.~C.~Allanach,
+  %``SUSY Predictions and SUSY Tools at the LHC,''
+  Eur.\ Phys.\ J.\ C {\bf 59} (2009) 427
+  [arXiv:0805.2088 [hep-ph]].
+  %%CITATION = ARXIV:0805.2088;%%
+  %13 citations counted in INSPIRE as of 06 Nov 2013
+
   \bibitem{Baer:1993ae}
 H.~Baer, F.~E. Paige, S.~D. Protopopescu and X.~Tata, 
 %{\it {Simulating
 %  Supersymmetry with ISAJET 7.0 / ISASUSY 1.0}},
 [hep-ph/9305342].
 %%CITATION = HEP-PH/9305342;%%
+
+%\cite{Allanach:2001kg}
+\bibitem{Allanach:2001kg} 
+  B.~C.~Allanach,
+  %``SOFTSUSY: a program for calculating supersymmetric spectra,''
+  Comput.\ Phys.\ Commun.\  {\bf 143}, 305 (2002)
+  [hep-ph/0104145].
+  %%CITATION = HEP-PH/0104145;%%
+  %716 citations counted in INSPIRE as of 20 Sep 2013
 
 \bibitem{Porod:2003um}
 W.~Porod, 
@@ -1987,6 +1996,29 @@ A.~Djouadi, J.-L. Kneur and G.~Moultaka,
   [hep-ph/0311123].
   %%CITATION = HEP-PH/0311123;%%
   %380 citations counted in INSPIRE as of 07 Nov 2013
+
+\bibitem{Aad:2012tfa}
+  G.~Aad {\it et al.}  [ATLAS Collaboration],
+  %``Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC,''
+  Phys.\ Lett.\ B {\bf 716} (2012) 1
+  [arXiv:1207.7214 [hep-ex]].
+  %%CITATION = ARXIV:1207.7214;%%
+  %1868 citations counted in INSPIRE as of 06 Nov 2013
+ 
+
+%\cite{Chatrchyan:2012ufa}
+\bibitem{Chatrchyan:2012ufa}
+  S.~Chatrchyan {\it et al.}  [CMS Collaboration],
+  %``Observation of a new boson at a mass of 125 GeV with the CMS experiment at the LHC,''
+  Phys.\ Lett.\ B {\bf 716} (2012) 30
+  [arXiv:1207.7235 [hep-ex]].
+  %%CITATION = ARXIV:1207.7235;%%
+  %1848 citations counted in INSPIRE as of 06 Nov 2013
+
+\bibitem{ATLAS-CONF-2013-014}
+G.~Aad {\it et al.}  [ATLAS Collaboration],
+ATLAS-CONF-2013-014, talk delivered at 48th Rencontres de Moriond on Electroweak Interactions and Unified Theories, La Thuile, Italy, 2 - 9 Mar 2013.
+
 \bibitem{Djouadi:2013lra}
   A.~Djouadi,
   %``Implications of the Higgs discovery for the MSSM,''
@@ -2016,6 +2048,41 @@ A.~Djouadi, J.-L. Kneur and G.~Moultaka,
   [arXiv:1005.1282 [hep-ph]].
   %%CITATION = ARXIV:1005.1282;%%
   %38 citations counted in INSPIRE as of 07 Nov 2013
+
+\bibitem{Ellwanger:2011mu}
+  U.~Ellwanger, G.~Espitalier-Noel and C.~Hugonie,
+  %``Naturalness and Fine Tuning in the NMSSM: Implications of Early LHC Results,''
+  JHEP {\bf 1109} (2011) 105
+  [arXiv:1107.2472 [hep-ph]].
+  %%CITATION = ARXIV:1107.2472;%%
+  %42 citations counted in INSPIRE as of 07 Nov 2013
+
+%\cite{King:2012tr}
+\bibitem{King:2012tr}
+  S.~F.~King, M.~MÃ¼hlleitner, R.~Nevzorov and K.~Walz,
+  %``Natural NMSSM Higgs Bosons,''
+  Nucl.\ Phys.\ B {\bf 870} (2013) 323
+  [arXiv:1211.5074 [hep-ph]].
+  %%CITATION = ARXIV:1211.5074;%%
+  %36 citations counted in INSPIRE as of 07 Nov 2013
+%\cite{Perelstein:2012qg}
+\bibitem{Perelstein:2012qg}
+  M.~Perelstein and B.~Shakya,
+  %``XENON100 Implications for Naturalness in the MSSM, NMSSM and lambda-SUSY,''
+  Phys.\ Rev.\ D {\bf 88} (2013) 075003
+  [arXiv:1208.0833 [hep-ph]].
+  %%CITATION = ARXIV:1208.0833;%%
+  %29 citations counted in INSPIRE as of 07 Nov 2013
+%\cite{Ross:2011xv}
+%\cite{Gherghetta:2012gb}
+\bibitem{Gherghetta:2012gb} 
+  T.~Gherghetta, B.~von Harling, A.~D.~Medina and M.~A.~Schmidt,
+  %``The Scale-Invariant NMSSM and the 126 GeV Higgs Boson,''
+  JHEP {\bf 02}, 032 (2013)
+  [arXiv:1212.5243 [hep-ph]].
+  %%CITATION = ARXIV:1212.5243;%%
+  %33 citations counted in INSPIRE as of 29 Nov 2013
+
 %\cite{BasteroGil:2000bw}
 \bibitem{BasteroGil:2000bw}
   M.~Bastero-Gil, C.~Hugonie, S.~F.~King, D.~P.~Roy and S.~Vempati,
@@ -2061,40 +2128,15 @@ White, Phys. Rev. D {\bf 49} (1994) 2435; S.F. King and P.L. White, Phys. Rev. D
 \textbf{52} (1995) 4183;  F.~Franke and H.~Fraas, Int.\ J.\ Mod.\ Phys.\  A {\bf
 12} (1997) 479.   D.~J.~Miller, R.~Nevzorov and P.~M.~Zerwas,  Nucl.\ Phys.\ B {\bf 681}, 3 (2004) [hep-ph/0304049].
 
+%\cite{Ell08}
+\bibitem{Ell08} 
+  U.~Ellwanger, C.~-C.~Jean-Louis and A.~M.~Teixeira,
+  %``Phenomenology of the General NMSSM with Gauge Mediated Supersymmetry Breaking,''
+  JHEP {\bf 0805}, 044 (2008)
+  [arXiv:0803.2962 [hep-ph]].
+  %%CITATION = ARXIV:0803.2962;%%
+  %28 citations counted in INSPIRE as of 24 Sep 2013
 
-\bibitem{Ellwanger:2011mu}
-  U.~Ellwanger, G.~Espitalier-Noel and C.~Hugonie,
-  %``Naturalness and Fine Tuning in the NMSSM: Implications of Early LHC Results,''
-  JHEP {\bf 1109} (2011) 105
-  [arXiv:1107.2472 [hep-ph]].
-  %%CITATION = ARXIV:1107.2472;%%
-  %42 citations counted in INSPIRE as of 07 Nov 2013
-
-%\cite{King:2012tr}
-\bibitem{King:2012tr}
-  S.~F.~King, M.~MÃ¼hlleitner, R.~Nevzorov and K.~Walz,
-  %``Natural NMSSM Higgs Bosons,''
-  Nucl.\ Phys.\ B {\bf 870} (2013) 323
-  [arXiv:1211.5074 [hep-ph]].
-  %%CITATION = ARXIV:1211.5074;%%
-  %36 citations counted in INSPIRE as of 07 Nov 2013
-%\cite{Perelstein:2012qg}
-\bibitem{Perelstein:2012qg}
-  M.~Perelstein and B.~Shakya,
-  %``XENON100 Implications for Naturalness in the MSSM, NMSSM and lambda-SUSY,''
-  Phys.\ Rev.\ D {\bf 88} (2013) 075003
-  [arXiv:1208.0833 [hep-ph]].
-  %%CITATION = ARXIV:1208.0833;%%
-  %29 citations counted in INSPIRE as of 07 Nov 2013
-%\cite{Ross:2011xv}
-%\cite{Gherghetta:2012gb}
-\bibitem{Gherghetta:2012gb} 
-  T.~Gherghetta, B.~von Harling, A.~D.~Medina and M.~A.~Schmidt,
-  %``The Scale-Invariant NMSSM and the 126 GeV Higgs Boson,''
-  JHEP {\bf 02}, 032 (2013)
-  [arXiv:1212.5243 [hep-ph]].
-  %%CITATION = ARXIV:1212.5243;%%
-  %33 citations counted in INSPIRE as of 29 Nov 2013
 
 \bibitem{Ross:2011xv}
   G.~G.~Ross and K.~Schmidt-Hoberg,
@@ -2103,14 +2145,7 @@ White, Phys. Rev. D {\bf 49} (1994) 2435; S.F. King and P.L. White, Phys. Rev. D
   [arXiv:1108.1284 [hep-ph]].
   %%CITATION = ARXIV:1108.1284;%%
   %54 citations counted in INSPIRE as of 07 Nov 2013
-%\cite{Ellwanger:2006rn}
-\bibitem{Ellwanger:2006rn}
-  U.~Ellwanger and C.~Hugonie,
-  %``NMSPEC: A Fortran code for the sparticle and Higgs masses in the NMSSM with GUT scale boundary conditions,''
-  Comput.\ Phys.\ Commun.\  {\bf 177} (2007) 399
-  [hep-ph/0612134].
-  %%CITATION = HEP-PH/0612134;%%
-  %81 citations counted in INSPIRE as of 07 Nov 2013
+
 \bibitem{Ross:2012nr}
   G.~G.~Ross, K.~Schmidt-Hoberg and F.~Staub,
   %``The Generalised NMSSM at One Loop: Fine Tuning and Phenomenology,''
@@ -2118,6 +2153,7 @@ White, Phys. Rev. D {\bf 49} (1994) 2435; S.F. King and P.L. White, Phys. Rev. D
   [arXiv:1205.1509 [hep-ph]].
   %%CITATION = ARXIV:1205.1509;%%
   %37 citations counted in INSPIRE as of 07 Nov 2013
+
 %\cite{King:2012is}
 \bibitem{King:2012is}
   S.~F.~King, M.~Muhlleitner and R.~Nevzorov,
@@ -2127,50 +2163,87 @@ White, Phys. Rev. D {\bf 49} (1994) 2435; S.F. King and P.L. White, Phys. Rev. D
   %%CITATION = ARXIV:1201.2671;%%
   %106 citations counted in INSPIRE as of 29 Nov 2013
 
+%\cite{Ellwanger:2006rn}
+\bibitem{Ellwanger:2006rn}
+  U.~Ellwanger and C.~Hugonie,
+  %``NMSPEC: A Fortran code for the sparticle and Higgs masses in the NMSSM with GUT scale boundary conditions,''
+  Comput.\ Phys.\ Commun.\  {\bf 177} (2007) 399
+  [hep-ph/0612134].
+  %%CITATION = HEP-PH/0612134;%%
+  %81 citations counted in INSPIRE as of 07 Nov 2013
 
-\bibitem{Aad:2012tfa}
-  G.~Aad {\it et al.}  [ATLAS Collaboration],
-  %``Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC,''
-  Phys.\ Lett.\ B {\bf 716} (2012) 1
-  [arXiv:1207.7214 [hep-ex]].
-  %%CITATION = ARXIV:1207.7214;%%
-  %1868 citations counted in INSPIRE as of 06 Nov 2013
-    %\cite{Allanach:2008zn}
-\bibitem{Allanach:2008zn}
-  B.~C.~Allanach,
-  %``SUSY Predictions and SUSY Tools at the LHC,''
-  Eur.\ Phys.\ J.\ C {\bf 59} (2009) 427
-  [arXiv:0805.2088 [hep-ph]].
-  %%CITATION = ARXIV:0805.2088;%%
-  %13 citations counted in INSPIRE as of 06 Nov 2013
-%\cite{Chatrchyan:2012ufa}
-\bibitem{Chatrchyan:2012ufa}
-  S.~Chatrchyan {\it et al.}  [CMS Collaboration],
-  %``Observation of a new boson at a mass of 125 GeV with the CMS experiment at the LHC,''
-  Phys.\ Lett.\ B {\bf 716} (2012) 30
-  [arXiv:1207.7235 [hep-ex]].
-  %%CITATION = ARXIV:1207.7235;%%
-  %1848 citations counted in INSPIRE as of 06 Nov 2013
-\bibitem{ATLAS-CONF-2013-014}
-G.~Aad {\it et al.}  [ATLAS Collaboration],
-ATLAS-CONF-2013-014, talk delivered at 48th Rencontres de Moriond on Electroweak Interactions and Unified Theories, La Thuile, Italy, 2 - 9 Mar 2013
-%\cite{Allanach:2001kg}
-\bibitem{Allanach:2001kg} 
-  B.~C.~Allanach,
-  %``SOFTSUSY: a program for calculating supersymmetric spectra,''
-  Comput.\ Phys.\ Commun.\  {\bf 143}, 305 (2002)
-  [hep-ph/0104145].
-  %%CITATION = HEP-PH/0104145;%%
-  %716 citations counted in INSPIRE as of 20 Sep 2013
+%\cite{Staub:2009bi}
+\bibitem{Staub:2009bi} 
+  F.~Staub,
+  %``From Superpotential to Model Files for FeynArts and CalcHep/CompHep,''
+  Comput.\ Phys.\ Commun.\  {\bf 181}, 1077 (2010)
+  [arXiv:0909.2863 [hep-ph]].
+  %%CITATION = ARXIV:0909.2863;%%
+  %64 citations counted in INSPIRE as of 12 Oct 2013
 
-%\cite{Degrassi:2009yq}
-\bibitem{Degrassi:2009yq} 
-  G.~Degrassi and P.~Slavich,
-  %``On the radiative corrections to the neutral Higgs boson masses in the NMSSM,''
-  Nucl.\ Phys.\ B {\bf 825}, 119 (2010)
-  [arXiv:0907.4682 [hep-ph]].
-  %%CITATION = ARXIV:0907.4682;%%
-  %35 citations counted in INSPIRE as of 21 Sep 2013
+%\cite{Staub:2010jh}
+\bibitem{Staub:2010jh} 
+  F.~Staub,
+  %``Automatic Calculation of supersymmetric Renormalization Group Equations and Self Energies,''
+  Comput.\ Phys.\ Commun.\  {\bf 182}, 808 (2011)
+  [arXiv:1002.0840 [hep-ph]].
+  %%CITATION = ARXIV:1002.0840;%%
+  %60 citations counted in INSPIRE as of 12 Oct 2013
+
+%\cite{Staub:2012pb}
+\bibitem{Staub:2012pb} 
+  F.~Staub,
+  %``SARAH 3.2: Dirac Gauginos, UFO output, and more,''
+  Computer Physics Communications {\bf 184}, pp. 1792 (2013)
+  [Comput.\ Phys.\ Commun.\  {\bf 184}, 1792 (2013)]
+  [arXiv:1207.0906 [hep-ph]].
+  %%CITATION = ARXIV:1207.0906;%%
+  %19 citations counted in INSPIRE as of 12 Oct 2013
+
+%\cite{Staub:2013tta}
+\bibitem{Staub:2013tta} 
+  F.~Staub,
+  %``SARAH 4: A tool for (not only SUSY) model builders,''
+  arXiv:1309.7223 [hep-ph].
+  %%CITATION = ARXIV:1309.7223;%%
+  %2 citations counted in INSPIRE as of 12 Oct 2013
+
+%\cite{Allanach:2008qq}
+\bibitem{Allanach:2008qq} 
+  B.~C.~Allanach, C.~Balazs, G.~Belanger, M.~Bernhardt, F.~Boudjema, D.~Choudhury, K.~Desch and U.~Ellwanger {\it et al.},
+  %``SUSY Les Houches Accord 2,''
+  Comput.\ Phys.\ Commun.\  {\bf 180}, 8 (2009)
+  [arXiv:0801.0045 [hep-ph]].
+  %%CITATION = ARXIV:0801.0045;%%
+  %177 citations counted in INSPIRE as of 21 Sep 2013
+
+%\cite{Ellwanger:2005dv}
+\bibitem{Ellwanger:2005dv}
+  U.~Ellwanger and C.~Hugonie,
+  %``NMHDECAY 2.0: An Updated program for sparticle masses, Higgs masses, couplings and decay widths in the NMSSM,''
+  Comput.\ Phys.\ Commun.\  {\bf 175} (2006) 290
+  [hep-ph/0508022].
+  %%CITATION = HEP-PH/0508022;%%
+  %193 citations counted in INSPIRE as of 07 Nov 2013
+
+%\cite{Muhlleitner:2003vg}
+\bibitem{Muhlleitner:2003vg}
+  M.~Muhlleitner, A.~Djouadi and Y.~Mambrini,
+  %``SDECAY: A Fortran code for the decays of the supersymmetric particles in the MSSM,''
+  Comput.\ Phys.\ Commun.\  {\bf 168} (2005) 46
+  [hep-ph/0311167].
+  %%CITATION = HEP-PH/0311167;%%
+  %204 citations counted in INSPIRE as of 07 Nov 2013
+
+%\cite{Das:2011dg}
+\bibitem{Das:2011dg}
+  D.~Das, U.~Ellwanger and A.~M.~Teixeira,
+  %``NMSDECAY: A Fortran Code for Supersymmetric Particle Decays in the Next-to-Minimal Supersymmetric Standard Model,''
+  Comput.\ Phys.\ Commun.\  {\bf 183} (2012) 774
+  [arXiv:1106.5633 [hep-ph]].
+  %%CITATION = ARXIV:1106.5633;%%
+  %14 citations counted in INSPIRE as of 07 Nov 2013
+
 %\cite{Sjostrand:2007gs}
 \bibitem{Sjostrand:2007gs}
   T.~Sjostrand, S.~Mrenna and P.~Z.~Skands,
@@ -2189,14 +2262,43 @@ ATLAS-CONF-2013-014, talk delivered at 48th Rencontres de Moriond on Electroweak
   %%CITATION = ARXIV:0803.2360;%%
   %349 citations counted in INSPIRE as of 07 Nov 2013
 
-%\cite{Allanach:2008qq}
-\bibitem{Allanach:2008qq} 
-  B.~C.~Allanach, C.~Balazs, G.~Belanger, M.~Bernhardt, F.~Boudjema, D.~Choudhury, K.~Desch and U.~Ellwanger {\it et al.},
-  %``SUSY Les Houches Accord 2,''
-  Comput.\ Phys.\ Commun.\  {\bf 180}, 8 (2009)
-  [arXiv:0801.0045 [hep-ph]].
-  %%CITATION = ARXIV:0801.0045;%%
-  %177 citations counted in INSPIRE as of 21 Sep 2013
+%\cite{Allanach:2009bv}
+\bibitem{Allanach:2009bv}
+  B.~C.~Allanach and M.~A.~Bernhardt,
+  %``Including R-parity violation in the numerical computation of the spectrum of the minimal supersymmetric standard model: SOFTSUSY,''
+  Comput.\ Phys.\ Commun.\  {\bf 181} (2010) 232
+  [arXiv:0903.1805 [hep-ph]].
+  %%CITATION = ARXIV:0903.1805;%%
+  %22 citations counted in INSPIRE as of 07 Nov 2013
+
+%\cite{Allanach:2011de}
+\bibitem{Allanach:2011de}
+  B.~C.~Allanach, C.~H.~Kom and M.~Hanussek,
+  %``Computation of Neutrino Masses in R-parity Violating Supersymmetry: SOFTSUSY3.2,''
+  Comput.\ Phys.\ Commun.\  {\bf 183} (2012) 785
+  [arXiv:1109.3735 [hep-ph]].
+  %%CITATION = ARXIV:1109.3735;%%
+  %4 citations counted in INSPIRE as of 07 Nov 2013
+
+
+
+
+
+
+
+%\cite{Degrassi:2009yq}
+\bibitem{Degrassi:2009yq} 
+  G.~Degrassi and P.~Slavich,
+  %``On the radiative corrections to the neutral Higgs boson masses in the NMSSM,''
+  Nucl.\ Phys.\ B {\bf 825}, 119 (2010)
+  [arXiv:0907.4682 [hep-ph]].
+  %%CITATION = ARXIV:0907.4682;%%
+  %35 citations counted in INSPIRE as of 21 Sep 2013
+
+
+
+
+
 
 
 %\cite{MV94}
@@ -2232,42 +2334,6 @@ ATLAS-CONF-2013-014, talk delivered at 48th Rencontres de Moriond on Electroweak
   arXiv:1310.7629 [hep-ph].
   %%CITATION = ARXIV:1310.7629;%%
 
-%\cite{Ell08}
-\bibitem{Ell08} 
-  U.~Ellwanger, C.~-C.~Jean-Louis and A.~M.~Teixeira,
-  %``Phenomenology of the General NMSSM with Gauge Mediated Supersymmetry Breaking,''
-  JHEP {\bf 0805}, 044 (2008)
-  [arXiv:0803.2962 [hep-ph]].
-  %%CITATION = ARXIV:0803.2962;%%
-  %28 citations counted in INSPIRE as of 24 Sep 2013
-
-%\cite{Ellwanger:2005dv}
-\bibitem{Ellwanger:2005dv}
-  U.~Ellwanger and C.~Hugonie,
-  %``NMHDECAY 2.0: An Updated program for sparticle masses, Higgs masses, couplings and decay widths in the NMSSM,''
-  Comput.\ Phys.\ Commun.\  {\bf 175} (2006) 290
-  [hep-ph/0508022].
-  %%CITATION = HEP-PH/0508022;%%
-  %193 citations counted in INSPIRE as of 07 Nov 2013
-
-%\cite{Muhlleitner:2003vg}
-\bibitem{Muhlleitner:2003vg}
-  M.~Muhlleitner, A.~Djouadi and Y.~Mambrini,
-  %``SDECAY: A Fortran code for the decays of the supersymmetric particles in the MSSM,''
-  Comput.\ Phys.\ Commun.\  {\bf 168} (2005) 46
-  [hep-ph/0311167].
-  %%CITATION = HEP-PH/0311167;%%
-  %204 citations counted in INSPIRE as of 07 Nov 2013
-
-%\cite{Das:2011dg}
-\bibitem{Das:2011dg}
-  D.~Das, U.~Ellwanger and A.~M.~Teixeira,
-  %``NMSDECAY: A Fortran Code for Supersymmetric Particle Decays in the Next-to-Minimal Supersymmetric Standard Model,''
-  Comput.\ Phys.\ Commun.\  {\bf 183} (2012) 774
-  [arXiv:1106.5633 [hep-ph]].
-  %%CITATION = ARXIV:1106.5633;%%
-  %14 citations counted in INSPIRE as of 07 Nov 2013
-
 \bibitem{Pierce:1997zz}
 D.~M. Pierce, J.~A. Bagger, K.~Matchev, and R.~jie Zhang, {\it Precision
   corrections in the minimal supersymmetric standard model},  {\em Nucl. Phys.}
@@ -2283,53 +2349,25 @@ D.~M. Pierce, J.~A. Bagger, K.~Matchev, and R.~jie Zhang, {\it Precision
   %%CITATION = ARXIV:1007.4049;%%
   %28 citations counted in INSPIRE as of 12 Oct 2013
 
-%\cite{Staub:2009bi}
-\bibitem{Staub:2009bi} 
-  F.~Staub,
-  %``From Superpotential to Model Files for FeynArts and CalcHep/CompHep,''
-  Comput.\ Phys.\ Commun.\  {\bf 181}, 1077 (2010)
-  [arXiv:0909.2863 [hep-ph]].
-  %%CITATION = ARXIV:0909.2863;%%
-  %64 citations counted in INSPIRE as of 12 Oct 2013
-%\cite{Allanach:2011de}
-\bibitem{Allanach:2011de}
-  B.~C.~Allanach, C.~H.~Kom and M.~Hanussek,
-  %``Computation of Neutrino Masses in R-parity Violating Supersymmetry: SOFTSUSY3.2,''
-  Comput.\ Phys.\ Commun.\  {\bf 183} (2012) 785
-  [arXiv:1109.3735 [hep-ph]].
-  %%CITATION = ARXIV:1109.3735;%%
-  %4 citations counted in INSPIRE as of 07 Nov 2013
-
-%\cite{Staub:2010jh}
-\bibitem{Staub:2010jh} 
-  F.~Staub,
-  %``Automatic Calculation of supersymmetric Renormalization Group Equations and Self Energies,''
-  Comput.\ Phys.\ Commun.\  {\bf 182}, 808 (2011)
-  [arXiv:1002.0840 [hep-ph]].
-  %%CITATION = ARXIV:1002.0840;%%
-  %60 citations counted in INSPIRE as of 12 Oct 2013
-
-%\cite{Staub:2012pb}
-\bibitem{Staub:2012pb} 
-  F.~Staub,
-  %``SARAH 3.2: Dirac Gauginos, UFO output, and more,''
-  Computer Physics Communications {\bf 184}, pp. 1792 (2013)
-  [Comput.\ Phys.\ Commun.\  {\bf 184}, 1792 (2013)]
-  [arXiv:1207.0906 [hep-ph]].
-  %%CITATION = ARXIV:1207.0906;%%
-  %19 citations counted in INSPIRE as of 12 Oct 2013
-
-%\cite{Staub:2013tta}
-\bibitem{Staub:2013tta} 
-  F.~Staub,
-  %``SARAH 4: A tool for (not only SUSY) model builders,''
-  arXiv:1309.7223 [hep-ph].
-  %%CITATION = ARXIV:1309.7223;%%
-  %2 citations counted in INSPIRE as of 12 Oct 2013
-
 \bibitem{flexi-susy} 
 P.~Athron, Jae-hyeon Park, D.~Stockinger and A.~Voigt, {\it Flexible Supersymmetry}, In development, \\
 https://github.com/Expander/FlexibleSUSY
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 %
