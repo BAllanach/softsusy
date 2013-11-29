@@ -1321,13 +1321,13 @@ istream & operator >>(istream &left, SoftPars<Susy, Brevity> &s) {
 // Boundary conditions to be applied at messenger scale for Gauge mediated
 // SUSY breaking (see hep-ph/9703211 for example)
 template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::minimalGmsb(int n5, double lambda, double mMess, 
+void SoftPars<Susy, Brevity>::minimalGmsb(int n5, double LAMBDA, double mMess, 
 			       double cgrav) {
 
 // Modified thresholds by JEL 1-26-04 to accomodate numerical infinities
 
   const double epstol = 1.0e-4;
-  double x = lambda / mMess;
+  double x = LAMBDA / mMess;
 
   double f, g;
 
@@ -1354,34 +1354,34 @@ void SoftPars<Susy, Brevity>::minimalGmsb(int n5, double lambda, double mMess,
   double n5d = double(n5);
 
   /// There is a relative minus in the mGMSB conditions for gaugino masses,
-  /// since these equations are for L=-M/2 lambda lambda. See hep-ph/9801271:
+  /// since these equations are for L=-M/2 gaugino gaugino. See hep-ph/9801271:
   /// BCA 27/7/12
   double m1, m2, m3;
-  m1 = n5d * sqr(displayGaugeCoupling(1)) / (16.0 * sqr(PI)) * lambda * g; 
-  m2 = n5d * sqr(displayGaugeCoupling(2)) / (16.0 * sqr(PI)) * lambda * g; 
-  m3 = n5d * sqr(displayGaugeCoupling(3)) / (16.0 * sqr(PI)) * lambda * g; 
+  m1 = n5d * sqr(displayGaugeCoupling(1)) / (16.0 * sqr(PI)) * LAMBDA * g; 
+  m2 = n5d * sqr(displayGaugeCoupling(2)) / (16.0 * sqr(PI)) * LAMBDA * g; 
+  m3 = n5d * sqr(displayGaugeCoupling(3)) / (16.0 * sqr(PI)) * LAMBDA * g; 
   setGauginoMass(1, m1);   setGauginoMass(2, m2);   setGauginoMass(3, m3);
 
-  setM32(2.37e-19 * lambda * mMess * cgrav);
+  setM32(2.37e-19 * LAMBDA * mMess * cgrav);
 
   double g1f = sqr(sqr(displayGaugeCoupling(1)));
   double g2f = sqr(sqr(displayGaugeCoupling(2)));
   double g3f = sqr(sqr(displayGaugeCoupling(3)));
 
   double mursq, mdrsq, mersq, mqlsq, mllsq;
-  mursq = 2.0 * f * sqr(lambda) * n5d * 
+  mursq = 2.0 * f * sqr(LAMBDA) * n5d * 
     (4.0 / 3.0 * g3f + 0.6 * 4.0 / 9.0 * g1f) 
     / sqr(16.0 * sqr(PI));
-  mdrsq = 2.0 * f * sqr(lambda) * n5d * 
+  mdrsq = 2.0 * f * sqr(LAMBDA) * n5d * 
     (4.0 / 3.0 * g3f + 0.6 * 1.0 / 9.0 * g1f) 
     / sqr(16.0 * sqr(PI));
-  mersq = 2.0 * f * sqr(lambda) * n5d * 
+  mersq = 2.0 * f * sqr(LAMBDA) * n5d * 
     (0.6 * g1f) 
     / sqr(16.0 * sqr(PI));
-  mqlsq = 2.0 * f * sqr(lambda) * n5d * 
+  mqlsq = 2.0 * f * sqr(LAMBDA) * n5d * 
     (4.0 / 3.0 * g3f + 0.75 * g2f + 0.6 * g1f / 36.0) 
     / sqr(16.0 * sqr(PI));
-  mllsq = 2.0 * f * sqr(lambda) * n5d * 
+  mllsq = 2.0 * f * sqr(LAMBDA) * n5d * 
     (                  0.75 * g2f + 0.6 * 0.25 * g1f) 
     / sqr(16.0 * sqr(PI));
 

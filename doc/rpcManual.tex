@@ -1014,7 +1014,7 @@ whereas \code{[mAMSB parameters]} are
 \end{verbatim}\normalsize
 and \code{[mGMSB parameters]} are
 \small\begin{verbatim}
- --n5=<value> --mMess=<value> --lambda=<value> --cgrav=<value>
+ --n5=<value> --mMess=<value> --LAMBDA=<value> --cgrav=<value>
 \end{verbatim}\normalsize
 
 
@@ -1729,11 +1729,11 @@ terms~\cite{Randall:1998uk} to
 the model's soft parameters. Such terms are proportional to the VEV of a
 compensator superfield, so $m_{3/2}$ in table~\ref{tab:softparsmssm} must have
 been set before \code{addAmsb} is used. 
-\code{minimalGmsb(int n5, double lambda, double mMess)} applies the messenger
+\code{minimalGmsb(int n5, double LAMBDA, double mMess)} applies the messenger
 scale \code{mMess} boundary conditions to the soft masses in minimal
 gauge-mediated supersymmetry breaking~\cite{gmsb}. \code{n5} denotes the
 number of $5\oplus \bar 5$ messenger fields that are present and
-\code{lambda}($\Lambda$) is as described in ref.~\cite{gmsb}. 
+\code{LAMBDA}($\Lambda$) is as described in ref.~\cite{gmsb}. 
 
 \begin{table}\begin{center}\begin{tabular}{lll}
 data & & methods \\ \hline
@@ -2101,7 +2101,7 @@ is fit to $\sin \theta_{13}$ as in eq.~\ref{ckm} and $\delta$ is set to zero
 \small
 \begin{verbatim}
 void FlavourMssmSoftsusy::setAngles
-(double lambda, double aCkm, double rhobar, double etabar) 
+(double lambdaW, double aCkm, double rhobar, double etabar) 
 \end{verbatim}
 \normalsize
 Currently, an identical parameterisation is used for the PMNS
