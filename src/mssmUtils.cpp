@@ -165,10 +165,10 @@ void lvsBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
 void gmsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   int n5     = int(inputParameters.display(1));
   double mMess  = inputParameters.display(2);
-  double lambda = inputParameters.display(3);
+  double LAMBDA = inputParameters.display(3);
   double cgrav = inputParameters.display(4);
 
-  m.minimalGmsb(n5, lambda, mMess, cgrav);
+  m.minimalGmsb(n5, LAMBDA, mMess, cgrav);
 
   return;
 }

@@ -37,17 +37,17 @@ FlavourMssmSoftsusy::operator=(const FlavourMssmSoftsusy & s) {
     return *this;
 }
 
-void convertFromWolfenstein(double lambda, double A, double rhobar, 
+void convertFromWolfenstein(double lambdaW, double A, double rhobar, 
 			    double etabar, double & sin12, double & sin23, 
 			    double & sin13) {
-  sin12 = lambda;
-  sin23 = A * sqr(lambda);
+  sin12 = lambdaW;
+  sin23 = A * sqr(lambdaW);
   Complex x; ///< sin theta13 e^i delta
   Complex i(0., 1.);
-  double a2Lambda4 = sqr(A) * sqr(sqr(lambda));
-  x = A * lambda * sqr(lambda) * (rhobar + i * etabar) * 
-    sqrt(1.0 - a2Lambda4) / sqrt(1.0 - sqr(lambda)) /
-    (1.0 - a2Lambda4 * (rhobar + i * etabar));
+  double a2LambdaW4 = sqr(A) * sqr(sqr(lambdaW));
+  x = A * lambdaW * sqr(lambdaW) * (rhobar + i * etabar) * 
+    sqrt(1.0 - a2LambdaW4) / sqrt(1.0 - sqr(lambdaW)) /
+    (1.0 - a2LambdaW4 * (rhobar + i * etabar));
   sin13 = x.mod();
 }
 
@@ -367,18 +367,18 @@ void FlavourMssmSoftsusy::vckminSLHA(ostream & out) {
   double s13 = sin(theta13);
   
   out << "Block VCKMIN               # input CKM mixing matrix parameters\n";
-  double lambda = s12; 
+  double lambdaW = s12; 
   double aCkm;
   if (s23 == 0.) aCkm = 0.; 
-    else aCkm = s23 / sqr(lambda);
-  double c = sqrt((1.0 - sqr(s23)) / (1.0 - sqr(lambda)));
+    else aCkm = s23 / sqr(lambdaW);
+  double c = sqrt((1.0 - sqr(s23)) / (1.0 - sqr(lambdaW)));
   Complex eid(cos(deltaCkm), sin(deltaCkm));
   Complex r;
   if (s13 == 0.) r = Complex(0., 0.);
   else r = (s13 * eid / 
-	    (c * aCkm * lambda * sqr(lambda) + s13 * eid * sqr(s23)));
+	    (c * aCkm * lambdaW * sqr(lambdaW) + s13 * eid * sqr(s23)));
   
-  out << "     1    " << lambda << "   # lambda\n";
+  out << "     1    " << lambdaW << "   # lambda_W\n";
   out << "     2    " << aCkm << "   # A\n";
   out << "     3    " << r.real() << "   # rhobar\n";  
   out << "     4    " << r.imag() 
@@ -735,15 +735,15 @@ void FlavourMssmSoftsusy::minparSLHA(ostream & out, const char model [],
     printMX = true;
   }
   else if (!strcmp(model, "gmsb")) {
-    out << "     1   "; printRow(out, pars.display(3)); out << "   # lambda" << endl;
+    out << "     1   "; printRow(out, pars.display(3)); out << "   # LAMBDA" << endl;
     out << "     2   "; printRow(out, pars.display(2)) ; out << "   # M_mess" 
 	 << endl;
     out << "     5   "; printRow(out, pars.display(1)) ; out << "   # N5" << endl;
     out << "     6   "; printRow(out, pars.display(4)) ; out << "   # cgrav" << endl;
   }
   else if (!strcmp(model, "splitgmsb")) {
-    out << "     1   "; printRow(out, pars.display(2)); out << "   # lambdaL" << endl;
-    out << "     2   "; printRow(out, pars.display(3)) ; out << "   # lambdaD" 
+    out << "     1   "; printRow(out, pars.display(2)); out << "   # LAMBDAL" << endl;
+    out << "     2   "; printRow(out, pars.display(3)) ; out << "   # LAMBDAD" 
 	 << endl;
     out << "     5   "; printRow(out, pars.display(1)) ; out << "   # N5" << endl; 
     out << "     6   "; printRow(out, 1.0) ; out << "   # cgrav" << endl;
@@ -1428,17 +1428,17 @@ MssmSusy FlavourMssmSoftsusy::guessAtSusyMt(double tanb,
   return t;
 }
 
-void FlavourMssmSoftsusy::setAngles(double lambda, double aCkm, double rhobar, 
+void FlavourMssmSoftsusy::setAngles(double lambdaW, double aCkm, double rhobar, 
 				    double etabar) {
-  theta12 = asin(lambda);
-  theta23 = asin(aCkm * sqr(lambda));
+  theta12 = asin(lambdaW);
+  theta23 = asin(aCkm * sqr(lambdaW));
 
-  double lambda3 = lambda * sqr(lambda);
-  double lambda4 = lambda * lambda3;
+  double lambdaW3 = lambdaW * sqr(lambdaW);
+  double lambdaW4 = lambdaW * lambdaW3;
 
   Complex rpe(rhobar, etabar);
-  Complex lhs = aCkm * lambda3 * rpe * sqrt(1.0 - sqr(aCkm) * lambda4) / 
-    sqrt(1.0 - sqr(lambda)) / (1.0 - sqr(aCkm) * lambda4 * rpe);
+  Complex lhs = aCkm * lambdaW3 * rpe * sqrt(1.0 - sqr(aCkm) * lambdaW4) / 
+    sqrt(1.0 - sqr(lambdaW)) / (1.0 - sqr(aCkm) * lambdaW4 * rpe);
 
   theta13 = asin(lhs.mod());
   deltaCkm = lhs.arg();

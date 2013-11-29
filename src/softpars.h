@@ -170,7 +170,7 @@ public:
   /// Boundary conditions to be applied at messenger scale for Gauge mediated
   /// SUSY breaking (see hep-ph/9703211 for example), n5 is the number of
   /// 5-plets, mMess is the messenger scale and lambda is the GMSB scale
-  void minimalGmsb(int n5, double lambda, double mMess, double cgrav);  
+  void minimalGmsb(int n5, double LAMBDA, double mMess, double cgrav);  
 
   /// Reads in soft SUSY breaking parameters from a file
   void inputSoftParsOnly();

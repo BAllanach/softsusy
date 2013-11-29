@@ -43,7 +43,7 @@ void errorCall() {
   ii << "--lambda <i> <j> <k> <coupling>, the word lambda replaceable with lambdaP\nor lambdaPP for LLE, LQD, UDD coupling, respectively.\n\n";
   ii << "[SUGRA parameters]: --m0=<value> --m12=<value> --a0=<value>\n";
   ii << "[mAMSB parameters]: --m0=<value> --m32=<value>\n";
-  ii << "[mGMSB parameters]: --n5=<value> --mMess=<value> --lambda=<value> --cgrav=<value>\n\n";
+  ii << "[mGMSB parameters]: --n5=<value> --mMess=<value> --LAMBDA=<value> --cgrav=<value>\n\n";
   ii << "Bracketed entries are numerical values, in units of GeV if they are massive.\n";
   ii << "Warning: entries left unspecified will be assumed to be zero for SUSY breaking\nterms, unified (for mgut) or at their default central values for Standard Model parameters\n";
   ii << "\n"
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
-  double lambda = 0., aCkm = 0., rhobar = 0., etabar = 0.;
+  double lambdaW = 0., aCkm = 0., rhobar = 0., etabar = 0.;
   NMSSM_input nmssm_input; // NMSSM input parameters
 
   bool flavourViolation = false;
@@ -232,19 +232,19 @@ int main(int argc, char *argv[]) {
 	cout << "# SOFTSUSY mGMSB calculation" << endl;
 	boundaryCondition = &gmsbBcs;
 	modelIdent = "gmsb";
-	double n5 = 0., mMess = 0., lambda = 0., cgrav = 1.;
+	double n5 = 0., mMess = 0., LAMBDA = 0., cgrav = 1.;
 	for (int i = 2; i < argc; i++) {
 	  if (starts_with(argv[i], "--n5=")) n5 = get_value(argv[i], "--n5=");
 	  else if (starts_with(argv[i], "--mMess=")) 
 	    mMess = get_value(argv[i], "--mMess=");
-	  else if (starts_with(argv[i], "--lambda=")) 
-	    lambda = get_value(argv[i], "--lambda=");
+	  else if (starts_with(argv[i], "--LAMBDA=")) 
+	    LAMBDA = get_value(argv[i], "--LAMBDA=");
 	  else if (starts_with(argv[i], "--cgrav=")) 
 	    cgrav = get_value(argv[i], "--cgrav=");
 	}
 	
 	pars.setEnd(4);
-	pars(1) = n5; pars(2) = mMess; pars(3) = lambda; pars(4) = cgrav;
+	pars(1) = n5; pars(2) = mMess; pars(3) = LAMBDA; pars(4) = cgrav;
 	if (mMess < 1.0e3) {
 	  ostringstream ii; 
 	  ii << " mMess=" << mMess
@@ -253,9 +253,9 @@ int main(int argc, char *argv[]) {
 	}
 	
 	r = &m;
-	if (lambda > mMess) {
+	if (LAMBDA > mMess) {
 	  ostringstream ii;
-	  ii << "Input lambda=" << lambda << " should be less than mMess="
+	  ii << "Input LAMBDA=" << LAMBDA << " should be less than mMess="
 	     << mMess << endl;
 	  throw ii.str();
 	}
@@ -782,7 +782,7 @@ int main(int argc, char *argv[]) {
 		else if (block == "VCKMIN") {
 		  int i; double d; kk >> i >> d;
 		  switch(i) {
-		  case 1: lambda = d; break;
+		  case 1: lambdaW = d; break;
 		  case 2: aCkm = d;   break;		  
 		  case 3: rhobar = d; break;
 		  case 4: etabar = d; break;
@@ -1107,7 +1107,8 @@ int main(int argc, char *argv[]) {
       }
 
       /// prepare CKM angles
-      if (flavourViolation || RPVflag) k.setAngles(lambda, aCkm, rhobar, etabar);
+      if (flavourViolation || RPVflag) k.setAngles(lambdaW, aCkm, rhobar, 
+						   etabar);
       
       if (r->displayAltEwsb()) {
 	if (strcmp(modelIdent, "splitgmsb")) {
