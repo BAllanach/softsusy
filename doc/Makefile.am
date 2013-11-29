@@ -4,7 +4,12 @@ doc_DATA = nmssmManual.pdf \
            rpvManual.pdf \
            neutManual.pdf
 
-EXTRA_DIST=$(doc_DATA)
+EXTRA_DIST = \
+	$(doc_DATA) \
+	rpcManual.tex \
+	rpvManual.tex \
+	neutManual.tex \
+	nmssmManual.tex
 
 doc: $(doc_DATA)
 
