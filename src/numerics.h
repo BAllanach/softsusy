@@ -15,14 +15,14 @@
 /// Comment if you want default softsusy behaviour
 // #define USE_LOOPTOOLS
 
-#include "src/utils.h"
-#include "src/mycomplex.h"
+#include "utils.h"
+#include "mycomplex.h"
 #include <iostream>
-#include "src/def.h"
-#include "src/linalg.h"
-#include "src/dilogwrap.h"
+#include "def.h"
+#include "linalg.h"
+#include "dilogwrap.h"
 #ifdef USE_LOOPTOOLS
-#include "src/clooptools.h"
+#include "clooptools.h"
 #endif
 using namespace softsusy;
 

@@ -14,7 +14,7 @@
 #define PHYSPARSH
 
 #include <iostream>
-#include "src/linalg.h"
+#include "linalg.h"
 #include "utils.h"
 using namespace std;
 

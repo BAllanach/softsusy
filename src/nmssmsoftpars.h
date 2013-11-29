@@ -13,12 +13,12 @@
 
 #include <cmath>
 //#include <susy.h>
-#include <src/def.h>
-#include <src/linalg.h>
-#include <src/utils.h>
-#include <src/numerics.h>
-#include <src/nmssmsusy.h>
-#include <src/softpars.h>
+#include "def.h"
+#include "linalg.h"
+#include "utils.h"
+#include "numerics.h"
+#include "nmssmsusy.h"
+#include "softpars.h"
 
 namespace softsusy {
 

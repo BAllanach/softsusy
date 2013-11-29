@@ -15,11 +15,11 @@
 #include <vector>
 using namespace std;
 
-#include "src/mycomplex.h"
-#include "src/xpr-vector.h"
-#include "src/xpr-matrix.h"
-#include "src/def.h"
-#include "src/utils.h"
+#include "mycomplex.h"
+#include "xpr-vector.h"
+#include "xpr-matrix.h"
+#include "def.h"
+#include "utils.h"
 #include <iosfwd>
 #include <valarray>
 #include <sstream>
