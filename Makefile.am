@@ -150,10 +150,10 @@ benchmarks/%.spec: benchmarks/%.in softpoint.x
 updateWeb: dist 
 	scp softsusy-*.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; 
 	scp inOutFiles/*{Input,Output}* allanach@login.hepforge.org:~/softsusy/public_html/code
-	scp {def.h,inOutFiles/outputTest,README} allanach@login.hepforge.org:~/softsusy/public_html/code
+	scp {src/def.h,inOutFiles/outputTest,README} allanach@login.hepforge.org:~/softsusy/public_html/code
 	scp Makefile.alt allanach@login.hepforge.org:~/softsusy/public_html/Makefile
 	scp -r doc allanach@login.hepforge.org:~/softsusy/public_html/; \
 	doxygen softsusy.cfg &&\
 	scp -r html allanach@login.hepforge.org:~/softsusy/public_html; \
-	scp -r CHANGES $cedar:~/softsusy/public_html/CHANGES.html.3.4.0; \
+	scp -r CHANGES allanach@login.hepforge.org:~/softsusy/public_html/CHANGES.html.3.4.0; \
 	rm -fr html *.tar.gz
