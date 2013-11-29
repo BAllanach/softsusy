@@ -32,7 +32,7 @@ namespace softsusy {
 /// Converts from input Wolfenstein parameterisation of a unitary matrix to
 /// the mixing angles under the assumption of CP-conservation, ie no complex
 /// phases. Uses the modulus of complex number to calculate sin13
-void convertFromWolfenstein(double lambda, double A, double rhobar, 
+void convertFromWolfenstein(double lambdaW, double A, double rhobar, 
 			    double etabar, double & sin12, double & sin23, 
 			    double & sin13);
 
@@ -212,7 +212,7 @@ public:
 
   /// Sets the CKM angles given some Wolfenstein parameters (PDG) - matches up
   /// the absolute values to standard parameterisation with zero phase
-  void setAngles(double lambda, double aCkm, double rhobar, double etabar);
+  void setAngles(double lambdaW, double aCkm, double rhobar, double etabar);
 
   /// Return matrices of the flavour violating mass insertion delta
   /// parameters: see hep-ph/9604387 for (old) bounds

@@ -1063,11 +1063,11 @@ and \code{Makefile.nmssmtools} from the \SOFTSUSY\ directory to the
 main/ directory within the NMSSMTools folder.  If the \code{--compile}
 flag is provided, NMSSMTools is recompiled.  Afterwards the user can
 generate an NMSSM spectrum with \SOFTSUSY\ and use NMSSMTools to
-calculate the decays.  The \code{run\_nmssmtools.sh} script combines
+calculate the decays.  The \code{softsusy\_nmssmtools.x} script combines
 these two steps:
 %
 \begin{verbatim}
-  $ ./run_nmssmtools.sh slhaInput slhaOutput
+  $ ./softsusy_nmssmtools.x leshouches < slhaInput > slhaOutput
 \end{verbatim}
 %
 Here \code{slhaInput} is an SLHA input file with the SOFTSUSY block entry $15$ set to $1$.  \code{slhaOutput} is the name of the SLHA output file which will contain the spectrum and the decays. Additional NMSSMTools specific flags can also be used with entries $16$ and $17$, which are past to NMSSMTools as MODSEL blocks $9$ and $10$ respectively, following the NMSSMTools convention.
@@ -1084,7 +1084,7 @@ Here \code{slhaInput} is an SLHA input file with the SOFTSUSY block entry $15$ s
       17   1      # 1:sparticle decays via NMSDECAY (default: 0)
 \end{verbatim}
 %
-After \code{run\_nmssmtools.sh} is called, the following three output
+After \code{softsusy\_nmssmtools.x} is called, the following three output
 files can be found in the NMSSMTools directory
 \code{NMSSMTools\_4.1.2/main/}: The file \code{nmProcessSpec-decay}
 contains the sparticle decays in form of SLHA DECAY blocks,
