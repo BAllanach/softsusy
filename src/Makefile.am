@@ -29,10 +29,10 @@ __top_builddir__gaugeUn_x_LDADD = libsoft.la
 
 pkginclude_HEADERS = \
 def.h main.h numerics.h \
-softpars.h susy.h linalg.h \
+softpars.h softpars.cpp susy.h linalg.h \
 physpars.h softpoint.h twoloophiggs.h \
 nmssm2loop.h dilogwrap.h \
-lowe.h mycomplex.h rge.h rgeroutines.h softsusy.h \
+lowe.h mycomplex.h rge.h rgeroutines.h softsusy.h softsusy.cpp \
 utils.h mssmUtils.h rpvsoft.h rpvsusypars.h \
 tensor.h rpvmain.h flavoursoft.h \
 xpr-base.h xpr-matrix.h xpr-vector.h rpvneut.h \
