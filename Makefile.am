@@ -1,50 +1,6 @@
 SUBDIRS = src doc
 
-AUTOMAKE_OPTIONS = subdir-objects
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
-
-bin_PROGRAMS = softsusy.x softsusy-nmssm.x softpoint.x rpvsoftsusy.x rpvneut.x 
-
-lib_LTLIBRARIES = libsoft.la 
-
-softsusy_x_SOURCES = src/main.cpp
-softsusy_x_LDADD = libsoft.la  
-
-softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp
-softsusy_nmssm_x_LDADD = libsoft.la
-
-softpoint_x_SOURCES = src/softpoint.cpp 
-softpoint_x_LDADD = libsoft.la
-
-rpvsoftsusy_x_SOURCES = src/rpvmain.cpp
-rpvsoftsusy_x_LDADD = libsoft.la 
-
-rpvneut_x_SOURCES = src/rpvneutmain.cpp
-rpvneut_x_LDADD = libsoft.la 
-
-pkginclude_HEADERS = \
-src/nmProcessSpec.f \
-src/def.h src/main.h src/numerics.h \
-src/softpars.h src/susy.h src/linalg.h \
-src/physpars.h src/softpoint.h src/twoloophiggs.h \
-src/nmssm2loop.h src/dilogwrap.h \
-src/lowe.h src/mycomplex.h src/rge.h src/softsusy.h \
-src/utils.h src/mssmUtils.h src/rpvsoft.h src/rpvsusypars.h \
-src/tensor.h src/rpvmain.h src/flavoursoft.h \
-src/xpr-base.h src/xpr-matrix.h src/xpr-vector.h src/rpvneut.h \
-src/nmssmsusy.h src/nmssmsoftpars.h  \
-src/nmssmsoftsusy.h src/nmssmUtils.h
-
-libsoft_la_SOURCES = src/def.cpp src/linalg.cpp src/lowe.cpp src/numerics.cpp  src/rpvneut.cpp \
-src/physpars.cpp src/rge.cpp src/nmssm2loop.f src/dilogwrap.f \
- src/nmssmsoftsusy.cpp src/nmssmsusy.cpp src/nmssmsoftpars.cpp src/nmssmUtils.cpp \
-src/softsusy.cpp src/softpars.cpp src/susy.cpp src/utils.cpp src/mssmUtils.cpp \
-src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twoloophiggs.f 
-libsoft_la_LDFLAGS = $(FLIBS)
-
-DOCFILES=doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
-doc/nmssmManual.pdf
-EXTRA_DIST=$(DOCFILES)
 
 OUTPUTFILES = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
  inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output inOutFiles/neutOutputTest \
@@ -146,6 +102,21 @@ inOutFiles/neutOutputTest: rpvneut.x
 benchmarks/%.spec: benchmarks/%.in softpoint.x
 	$(install_sh) -d benchmarks
 	./softpoint.x leshouches < $< > $@
+
+.PHONY: doc test updateWeb
+
+test: softpoint.x
+	git checkout $(OUTPUTFILES)
+	cp $(OUTPUTFILES) .test; rm $(OUTPUTFILES); make $(OUTPUTFILES); \
+	ndiff --relative-error 1.0e-3 inOutFiles/slha2Output .test/slha2Output; \
+	ndiff --relative-error 1.0e-3 inOutFiles/lesHouchesOutput .test/lesHouchesOutput; \
+	ndiff --relative-error 1.0e-3 inOutFiles/rpvHouchesOutput .test/rpvHouchesOutput; \
+	ndiff --relative-error 1.0e-3 inOutFiles/nmssmSLHAZ3Output .test/nmssmSLHAZ3Output; \
+	ndiff --relative-error 1.0e-3 inOutFiles/nmssmSLHAnoZ3Output .test/nmssmSLHAnoZ3Output
+
+doc:
+	@echo Making $@ in $(top_builddir)/doc
+	cd $(top_builddir)/doc && make $@
 
 updateWeb: dist 
 	scp softsusy-*.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; 

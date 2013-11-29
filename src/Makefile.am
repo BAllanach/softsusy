@@ -28,7 +28,7 @@ def.h main.h numerics.h \
 softpars.h softpars.cpp susy.h linalg.h \
 physpars.h softpoint.h twoloophiggs.h \
 nmssm2loop.h dilogwrap.h \
-lowe.h mycomplex.h rge.h softsusy.h \
+lowe.h mycomplex.h rge.h softsusy.h softsusy.cpp \
 utils.h mssmUtils.h rpvsoft.h rpvsusypars.h \
 tensor.h rpvmain.h flavoursoft.h \
 xpr-base.h xpr-matrix.h xpr-vector.h rpvneut.h \
