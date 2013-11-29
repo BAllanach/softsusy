@@ -6,6 +6,8 @@ doc_DATA = nmssmManual.pdf \
 
 EXTRA_DIST=$(doc_DATA)
 
+doc: $(doc_DATA)
+
 rpcManual.pdf: rpcManual.tex
 	latex rpcManual.tex
 	latex rpcManual.tex

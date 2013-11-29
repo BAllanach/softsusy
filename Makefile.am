@@ -1,4 +1,5 @@
 SUBDIRS = src doc
+docdir = $(top_builddir)/doc
 
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 
@@ -10,6 +11,8 @@ TESTOUTPUTFILES = .test/slha2Output .test/rpvHouchesOutput \
 INPUTFILES = inOutfiles/slha2Input inOutFiles/lesHouchesInput \
 inOutFiles/rpvHouchesInput inOutFiles/nmssmSLHAZ3Input \
 inOutFiles/nmssmSLHAnoZ3Input
+
+.PHONY: doc test
 
 test: softpoint.x 
 	git checkout $(OUTPUTFILES)
@@ -34,3 +37,7 @@ inOutFiles/neutOutputTest: rpvneut.x
 
 inOutFiles/gaugeUn.out: gaugeUn.x
 	./gaugeUn.x > inOutFiles/gaugeUn.out 
+
+doc:
+	@echo Making $@ in $(docdir)
+	cd doc && make $@
