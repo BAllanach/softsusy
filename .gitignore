@@ -35,4 +35,4 @@ doc/*.ps
 doc/*.pdf
 doc/auto/*
 
-run_nmssmtools.sh
+softsusy_nmssmtools.x
