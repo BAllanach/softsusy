@@ -1,12 +1,6 @@
-SUBDIRS = src
+SUBDIRS = src doc
 
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
-
-bin_PROGRAMS = doc/nmssmManual.pdf doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf
-
-DOCFILES=doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
-doc/nmssmManual.pdf
-EXTRA_DIST=$(DOCFILES)
 
 OUTPUTFILES = inOutFiles/slha2Output inOutFiles/lesHouchesOutput \
 inOutFiles/nmssmSLHAZ3Output \
@@ -40,30 +34,3 @@ inOutFiles/neutOutputTest: rpvneut.x
 
 inOutFiles/gaugeUn.out: gaugeUn.x
 	./gaugeUn.x > inOutFiles/gaugeUn.out 
-
-doc: doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
-	doc/nmssmManual.pdf
-
-doc/rpcManual.pdf: doc/rpcManual.tex
-	cd doc; \
-	latex rpcManual.tex; latex rpcManual.tex; \
-	dvips -f rpcManual > rpcManual.ps; 	\
-	ps2pdf rpcManual.ps; cd ..
-
-doc/rpvManual.pdf: doc/rpvManual.tex
-	cd doc; \
-	latex rpvManual.tex; latex rpvManual.tex; \
-	dvips -f rpvManual > rpvManual.ps; 	\
-	ps2pdf rpvManual.ps; cd ..
-
-doc/neutManual.pdf: doc/neutManual.tex
-	cd doc; \
-	latex neutManual.tex; latex neutManual.tex; \
-	dvips -f neutManual > neutManual.ps; 	\
-	ps2pdf neutManual.ps; cd ..
-
-doc/nmssmManual.pdf: doc/nmssmManual.tex
-	cd doc; \
-	latex nmssmManual.tex; latex nmssmManual.tex; \
-	dvips -f nmssmManual > nmssmManual.ps; 	\
-	ps2pdf nmssmManual.ps; cd ..
