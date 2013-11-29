@@ -5,7 +5,7 @@
     Webpage:  https://github.com/Expander/softsusy.git
 */
 
-#include "src/nmssmsoftsusy.h"
+#include "nmssmsoftsusy.h"
 
 #ifdef NMSSMSOFTSUSY_H
 

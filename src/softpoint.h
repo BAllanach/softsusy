@@ -11,22 +11,22 @@
 #include <iostream>
 #include <sstream>
 #include <cstring>
-#include <src/mycomplex.h>
-#include <src/def.h>
-#include <src/linalg.h>
-#include <src/lowe.h>
-#include <src/rge.h>
-#include <src/softsusy.h>
-#include <src/flavoursoft.h>
-#include <src/nmssmsoftsusy.h>
-#include <src/softpars.h>
-#include <src/physpars.h>
-#include <src/susy.h>
-#include <src/utils.h>
-#include <src/numerics.h>
-#include <src/twoloophiggs.h>
-#include <src/dilogwrap.h>
-#include <src/rpvneut.h>
+#include "mycomplex.h"
+#include "def.h"
+#include "linalg.h"
+#include "lowe.h"
+#include "rge.h"
+#include "softsusy.h"
+#include "flavoursoft.h"
+#include "nmssmsoftsusy.h"
+#include "softpars.h"
+#include "physpars.h"
+#include "susy.h"
+#include "utils.h"
+#include "numerics.h"
+#include "twoloophiggs.h"
+#include "dilogwrap.h"
+#include "rpvneut.h"
 using namespace softsusy;
 
 /// string routine for options

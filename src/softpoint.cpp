@@ -10,7 +10,7 @@
    - in parameter space.
 */ 
 
-#include <src/softpoint.h>
+#include "softpoint.h"
 
 // Returns a string with all characters in upper case: very handy
 string ToUpper(const string & s) {

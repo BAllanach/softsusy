@@ -12,12 +12,12 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <src/mycomplex.h>
+#include "mycomplex.h"
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <cmath>
-#include <src/def.h>
+#include "def.h"
 #include <stdio.h>
 #include <string>
 #include <exception>

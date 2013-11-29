@@ -12,7 +12,7 @@
 #ifndef NMSSMSUSY_H
 #define NMSSMSUSY_H
 
-#include <src/susy.h>
+#include "susy.h"
 
 namespace softsusy {
 
