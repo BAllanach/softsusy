@@ -16,10 +16,10 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
-#include <src/linalg.h>
-#include <src/rge.h>
-#include <src/lowe.h>
-#include <src/susy.h>
+#include "linalg.h"
+#include "rge.h"
+#include "lowe.h"
+#include "susy.h"
 using namespace std;
 using namespace softsusy;
 

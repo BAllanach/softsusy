@@ -8,7 +8,7 @@
 
 */
 
-#include <src/physpars.h>
+#include "physpars.h"
 
 namespace softsusy {
 

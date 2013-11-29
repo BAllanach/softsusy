@@ -19,12 +19,12 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
-#include "src/def.h"
-#include "src/softsusy.h"
-#include "src/linalg.h"
-#include "src/rpvsusypars.h"
-#include "src/lowe.h"
-#include "src/rpvsoft.h"
+#include "def.h"
+#include "softsusy.h"
+#include "linalg.h"
+#include "rpvsusypars.h"
+#include "lowe.h"
+#include "rpvsoft.h"
 
 namespace softsusy {
 

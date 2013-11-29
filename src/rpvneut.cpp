@@ -5,7 +5,7 @@
    - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
 */
 
-#include "src/rpvneut.h"
+#include "rpvneut.h"
 
 namespace softsusy {
 

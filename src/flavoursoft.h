@@ -18,14 +18,14 @@
 #include <string>
 #include <cstdlib>
 #include <cmath>
-#include <src/def.h>
-#include <src/utils.h>
-#include <src/numerics.h>
-#include <src/physpars.h>
-#include <src/lowe.h>
-#include <src/softpars.h>
-#include <src/twoloophiggs.h>
-#include <src/softsusy.h>
+#include "def.h"
+#include "utils.h"
+#include "numerics.h"
+#include "physpars.h"
+#include "lowe.h"
+#include "softpars.h"
+#include "twoloophiggs.h"
+#include "softsusy.h"
 
 namespace softsusy {
 

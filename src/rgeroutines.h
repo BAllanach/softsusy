@@ -12,16 +12,16 @@
 #define RGEROUTINES_H
 
 #include <iostream>
-#include <src/utils.h>
-#include <src/softsusy.h>
-#include <src/softpars.h>
-#include <src/susy.h>
-#include <src/lowe.h>
-#include <src/linalg.h>
-#include <src/def.h>
+#include "utils.h"
+#include "softsusy.h"
+#include "softpars.h"
+#include "susy.h"
+#include "lowe.h"
+#include "linalg.h"
+#include "def.h"
 #include <string.h>
-#include <src/rpvsusypars.h>
-#include <src/rpvsoft.h>
+#include "rpvsusypars.h"
+#include "rpvsoft.h"
 
 namespace softsusy {
 

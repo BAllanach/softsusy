@@ -10,7 +10,7 @@
                 - scanning CMSSM10.1 with one varying RPV coupling
 */
 
-#include <src/rpvmain.h>
+#include "rpvmain.h"
 
 int main() {
   /// Sets up exception handling

@@ -8,7 +8,7 @@
 
 */
 
-#include <src/rgeroutines.h>
+#include "rgeroutines.h"
 
 namespace softsusy {
 
