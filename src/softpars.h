@@ -296,7 +296,7 @@ void SoftPars<Susy, Brevity>::setSoftPars(SoftPars<Susy, Brevity> const & s) { *
 template<class Susy, class Brevity>
 void SoftPars<Susy, Brevity>::setM32(double a) { m32 = a; }
 
-#include "src/softpars.cpp"
+#include "softpars.cpp"
 
 } // namespace softsusy
 
