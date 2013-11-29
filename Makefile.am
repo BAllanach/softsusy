@@ -1,5 +1,4 @@
 SUBDIRS = src doc
-docdir = $(top_builddir)/doc
 
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 
@@ -39,5 +38,5 @@ inOutFiles/gaugeUn.out: gaugeUn.x
 	./gaugeUn.x > inOutFiles/gaugeUn.out 
 
 doc:
-	@echo Making $@ in $(docdir)
+	@echo Making $@ in $(top_builddir)/doc
 	cd doc && make $@

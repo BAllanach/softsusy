@@ -1,3 +1,4 @@
+docdir = ${datadir}/doc/${PACKAGE}
 
 doc_DATA = nmssmManual.pdf \
            rpcManual.pdf \
