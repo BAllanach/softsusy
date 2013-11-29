@@ -24,7 +24,7 @@ Block SOFTSUSY
     8   1.000000000e+00      # Set RPV coupling at MRPV=MZ
     9   1.000000000e+00	     # Use normal hierarchy(=0.0) or inverted (=1.0)
 Block VCKMIN		     # input parameters for CKM matrix
-    1   2.272000000e-01      # lambda
+    1   2.272000000e-01      # lambda_W
     2   8.180000000e-01      # A
     3   2.210000000e-01      # rhobar
     4   3.400000000e-01      # etabar
