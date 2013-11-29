@@ -8432,16 +8432,6 @@ void NmssmSoftsusy::itLowsoft
   /// On first iteration, don't bother with finite corrections
   
   numTries = numTries + 1;
-  
-  //PA: reset new low energy inputs of general nmssm at mz.
-  if (Z3) {
-    if (PRINTOUT && !close(nmpars(4), 0.0, EPSTOL))
-      cout << "WARNING: you set Z3 == true and xiF != 0, xiF will be ignored\n";
-    if (PRINTOUT && !close(nmpars(5), 0.0, EPSTOL))
-      cout << "WARNING: you set Z3 == true and mu' != 0, mu' will be ignored\n";
-    setXiF(0.0);
-    setMupr(0.0);
-  }
 
   try {
     sparticleThresholdCorrections(tanb); 
@@ -8647,6 +8637,15 @@ void NmssmSoftsusy::lowOrg
  double mxGuess,  const DoubleVector & pars, const DoubleVector nmpars, 
  int sgnMu, double tanb, const QedQcd & oneset, bool gaugeUnification, 
  bool ewsbBCscale) {
+
+  if (Z3) {
+    if (PRINTOUT && !close(nmpars(4), 0.0, EPSTOL))
+      cout << "WARNING: you set Z3 == true and xiF != 0, xiF will be ignored\n";
+    if (PRINTOUT && !close(nmpars(5), 0.0, EPSTOL))
+      cout << "WARNING: you set Z3 == true and mu' != 0, mu' will be ignored\n";
+    setXiF(0.0);
+    setMupr(0.0);
+  }
 
   try {
      
@@ -9102,6 +9101,19 @@ void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
    extramsoftSLHA(out, "ATQSTSB");
    extrahmixSLHA(out, "ATQSTSB");
    nmssmrunSLHA(out, "NMSSMRUNATQSTSB");
+}
+
+void NmssmSoftsusy::softsusySLHA(ostream& out)
+{
+  Softsusy<SoftParsNmssm>::softsusySLHA(out);
+  out << "# Z3 = " << softsusy::Z3
+      << ", SoftHiggsOut = " << softsusy::SoftHiggsOut << '\n';
+}
+
+void NmssmSoftsusy::spinfoSLHA(ostream& out) {
+  Softsusy<SoftParsNmssm>::spinfoSLHA(out);
+  if (displayProblem().notGlobalMin)
+    out << "     3   # Warning: Not in global min of Higgs potential\n";
 }
 
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.

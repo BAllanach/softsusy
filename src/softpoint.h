@@ -43,6 +43,10 @@ int get_valuei(const std::string& str, const std::string& prefix) {
    return atoi(str.substr(prefix.size()).c_str());
 }
 
+bool contains_only_whitespace(const std::string& str) {
+  return str.find_first_not_of(" \t") == string::npos;
+}
+
 namespace softsusy {
    /// Requested by CMS
    void splitGmsb(MssmSoftsusy & m, const DoubleVector & inputParameters);

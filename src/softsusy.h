@@ -1103,7 +1103,7 @@ public:
   /// CHANGES TO 8 SIG FIGS
   void headerSLHA(ostream & out);
   /// This does the SPINFO block of SLHA
-  void spinfoSLHA(ostream & out);
+  virtual void spinfoSLHA(ostream & out);
   /// This does the MODSEL block of SLHA
   void modselSLHA(ostream & out, const char model[]);
   /// SMINPUTS block of SLHA
@@ -1130,7 +1130,7 @@ public:
   /// This does the job of the above method, but outputs the UMIX/VMIX blocks
   void inomixingSLHA(ostream & out);
   /// SOFTSUSY comments in SLHA
-  void softsusySLHA(ostream & out);
+  virtual void softsusySLHA(ostream & out);
   /// sfermionic part of mixing blocks
   void alphaSLHA(ostream & out);
   /// higgs part of mixing blocks
