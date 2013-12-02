@@ -119,12 +119,12 @@ doc:
 	cd $(top_builddir)/doc && make $@
 
 updateWeb: dist 
-	scp softsusy-*.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; 
+	scp softsusy-${VERSION}.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; 
 	scp inOutFiles/*{Input,Output}* allanach@login.hepforge.org:~/softsusy/public_html/code
 	scp {src/def.h,inOutFiles/outputTest,README} allanach@login.hepforge.org:~/softsusy/public_html/code
 	scp Makefile.alt allanach@login.hepforge.org:~/softsusy/public_html/Makefile
 	scp -r doc allanach@login.hepforge.org:~/softsusy/public_html/; \
 	doxygen softsusy.cfg &&\
 	scp -r html allanach@login.hepforge.org:~/softsusy/public_html; \
-	scp -r CHANGES allanach@login.hepforge.org:~/softsusy/public_html/CHANGES.html.3.4.0; \
+	scp -r CHANGES allanach@login.hepforge.org:~/softsusy/public_html/CHANGES.${VERSION}.html; \
 	rm -fr html *.tar.gz
