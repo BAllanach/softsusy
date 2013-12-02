@@ -1,3 +1,12 @@
+/** \file mssmUtils.h
+    - Project: SOFTSUSY 
+    - Author: Ben Allanach, Peter Athron, Lewis Tunstall, Alexander Voigt,
+      Anthony Williams
+    - Manual: http://arxiv.org/abs/1311.7659
+    - Webpage: http://hepforge.cedar.ac.uk/softsusy/
+
+    \brief A few handy routines for the MSSM: SUSY breaking conditions etc
+*/
 
 #ifndef MSSM_UTILS_H
 #define MSSM_UTILS_H

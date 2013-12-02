@@ -1,7 +1,7 @@
 /** \file def.h
    - Project:     SOFTSUSY
    - Author:      Ben Allanach, Markus Bernhardt
-   - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
+   - Manual:      arXiv:0903.1805, Comp. Phys. Comm. 181 (2010) 232
    - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
 
    \brief 

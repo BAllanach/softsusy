@@ -1,8 +1,12 @@
-/** \file nmssmsoftsusy.cpp
-    Project: NMSSMSOFTSUSY 
-    Author: Ben Allanach, Peter Athron, Lewis Tunstall, Alexander Voigt 
-    Manual: TBW
-    Webpage:  https://github.com/Expander/softsusy.git 
+/** \file nmssmsoftsusy.h
+    - Project: Next-to-Minimal SOFTSUSY 
+    - Author: Ben Allanach, Peter Athron, Lewis Tunstall, Alexander Voigt,
+      Anthony Williams
+    - Manual: http://arxiv.org/abs/1311.7659
+    - Webpage: http://hepforge.cedar.ac.uk/softsusy/
+
+    \brief NmssmSoftsusy object contains all the NMSSM functionality: SUSY
+    breaking and preserving parameters, and physical parameters etc
 */
 
 

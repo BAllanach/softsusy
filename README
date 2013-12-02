@@ -1,7 +1,8 @@
 -------------------------------------------------
 		   SOFTSUSY
 -------------------------------------------------
-
+by: B C Allanach, P Athron, M Bernhardt, D Grellscheid, M Hanussek, C H Kom, P
+		   Slavich, L Tunstall, A Voigt and A G Williams 
 
 QUICK INSTALLATION AND RUN TEST
 -------------------------------
@@ -21,16 +22,10 @@ test programs, four of which can be run by the commands
 > ./rpvsoftsusy.x 
 > ./rpvneut.x
 > ./softsusy-nmssm.x
-The output from these commands can be checked against outputTest,
-rpvOutputTest, neutOutputTest and respectively.
+> ./softpoint.x
 
 You can run the SUSY Les Houches Accord input provided by running the commands
-> ./softpoint.x leshouches < lesHouchesInput
-> ./softpoint.x leshouches < slha2Input
-> ./softpoint.x leshouches < rpvHouchesInput
-You may check the output of these commands against the output files
-lesHouchesOutput, slha2Output and rpvHouchesOutput, respectively, that are
-provided with the SOFTSUSY distribution
+> ./softpoint.x leshouches < inOutFiles/lesHouchesInput
 
 Alternatively, run with command line inputs, for example
 > ./softpoint.x nmssm sugra --m0=125 --m12=125 --a0=-300 --tanBeta=10 --lambda=0.1 --lambdaAtMsusy
@@ -41,11 +36,45 @@ INTRODUCTION
 The most recent version of SOFTSUSY and full documentation can be obtained
 from: http://softsusy.hepforge.org/
 
-This program provides a SUSY spectrum in the MSSM including flavour violation
-and with or without R-parity consistent with input Standard Model fermion
-mass/mixings and electroweak/strong coupling data. The R-parity violating mode
-now calculates neutrino masses and mixings to 1 loop. 
-Since version 3.4, it also calculates in the NMSSM.
+This program provides a SUSY spectrum in the NMSSM, or the MSSM including
+flavour violation and with or without R-parity consistent with input Standard
+Model fermion mass/mixings and electroweak/strong coupling data. The R-parity
+violating mode can calculate neutrino masses and mixings to 1 loop. 
+
+REFERENCES
+----------
+
+If you use SOFTSUSY to write a paper, please cite (see MCnet guidelines)
+
+[1] B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145,
+
+which is the SOFTSUSY manual for the R-parity conserving MSSM. If you
+calculate in the NMSSM, please cite [1] and 
+[2] B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and A. Williams,
+arXiv:1311.7659. 
+
+If you use the R-parity violating aspects, please cite [1] and
+[3] B.C. Allanach and M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232,
+arXiv:0903.1805. 
+
+If you use it to calculate neutrino masses and mixings, please cite [1], [3] and
+[4] B.C. Allanach, M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012)
+785, arXiv:1109.3735. 
+
+CALCULATING DECAYS IN THE NMSSM
+-------------------------------
+
+To link with NMSSMTools, so that SOFTSUSY NMSSM output can be piped through it
+(to calculate decays, for example), you'll need to download and
+NMSSMTools. Then, you can link it using by running 
+> ./setup_nmssmtools.sh --nmssmtools-dir=/path/to/NMSSMTools --compile 
+After this, there will be an additional executable ./softsusy_nmssmtools.x
+that calculates the spectrum with SOFTSUSY, and decays with NMSSMTools. It can
+be run by (for example): 
+> ./softsusy_nmssmools.x leshouches < inOutFiles/nmssmSLHAnoZ3Input 
+If you use it, you should of course provide the proper citations to
+NMSSMTools. Using the program in this mode, you should make sure in the SLHA
+input file that Block SOFTSUSY variables 15 and 17 are set to 1. 
 
 If you use SOFTSUSY to write a paper, please cite B.C. Allanach,
 Comp. Phys. Comm. 143 (2002) 305, hep-ph/0104145, which is the SOFTSUSY
@@ -73,45 +102,29 @@ EXECTUABLE FILES: AFTER INSTALLATION
     boundary conditions possible. Main program: softpoint.cpp
     * softsusy.x: example C++ test program - calculates spectrum of SPS1a
     mSUGRA point with varying tan beta. Main program: main.cpp
+    * softsusy-nmssm.x: example NMSSM test program - loops over tan beta.
     * rpvsoftsusy.x: example C++ test program - calculates spectrum of SPS1a
     mSUGRA point with varying lambda'_{331}(M_GUT). Main program: rpvmain.cpp
     * rpvneut.x: example neutrino mass calculating R-parity violating 
     test program. 
 
-FILES INCLUDED IN THIS DISTRIBUTION
------------------------------------
-aclocal.m4        lowe.cpp         rpvHouchesOutput  softpoint.h
-CHANGES           lowe.h           rpvmain.cpp       softsusy.cpp
-Config            main.cpp         rpvmain.h         softsusy.h
-configure         main.h           rpvneut.cpp       susy.cpp
-configure.ac      Makefile.am      rpvneut.h         susy.h
-COPYING           Makefile.in      rpvneutmain.cpp   tensor.cpp
-def.cpp           mycomplex.h      rpvOutputTest     tensor.h
-def.h             numerics.cpp     rpvsoft.cpp       twoloophiggs.f
-flavoursoft.cpp   numerics.h       rpvsoft.h         twoloophiggs.h
-flavoursoft.h     outputTest       rpvsusypars.cpp   utils.cpp
-GUIDELINES        physpars.cpp     rpvsusypars.h     utils.h
-INSTALL           physpars.h       slha2Input        xpr-base.h
-lesHouchesInput   README           slha2Output       xpr-matrix.h
-lesHouchesOutput  rge.cpp          softpars.cpp      xpr-vector.h
-linalg.cpp        rge.h            softpars.h
-linalg.h          rpvHouchesInput  softpoint.cpp
-
 INPUT AND INFO FILES
 --------------------
-    * [README] contains installation instructions and a list of included files
-    * [outputTest] is the output from the test program
-    * [slha2Input] is an alternative input file in the SUSY Les Houches Accord
-    2 format for SPS1a' 
-    * [slha2Output] is the result of running with the above input file and
-    includes flavour violation, for inclusion into codes like SusyBsg1.3 which
-    include flavour corrections     
-    * [lesHouchesInput] is an alternative input file in the SUSY  
-    Les Houches Accord format
-    * [rpvHouchesInput] is an alternative input file in the SUSY 
-    Les Houches Accord format for R-parity violation
-    * [rpvHouchesOutput] is the output from the R-parity violating test program
-    rpvmain.cpp
+ * These input and output files are contained in the inOutFiles/ subdirectory:
+ * [slha2Input] is an alternative input file in the SUSY Les Houches Accord 2
+ format for CMSSM10.1 
+ * [slha2Output] is the result of running with the above input file and
+ includes flavour violation, for inclusion into codes like SusyBsg which
+ include flavour corrections 
+ * [outputTest] is the output from the test program in main.cpp
+ * [rpvOutputTest] is the output from the test program in rpvmain.cpp
+ * [lesHouchesInput] is an input file in the SUSY Les Houches Accord format
+ for CMSSM10.1 	     
+ * [lesHouchesOutput] is the result of running with the above input file, ie 
+ * [rpvHouchesInput] is an alternative input file in the SUSY Les Houches
+ Accord 2 format
+ * [rpvHouchesOutput] is the result of running with the above input file, ie 
+ softpoint.x leshouches < lesHouchesInput > lesHouchesOutput    	   
 
 LICENSE
 -------

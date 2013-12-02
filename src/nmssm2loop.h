@@ -1,3 +1,13 @@
+/** \file nmssm2loop.h
+    - Project: Next-to-Minimal SOFTSUSY 
+    - Author: Ben Allanach, Peter Athron, Lewis Tunstall, Alexander Voigt,
+      Anthony Williams
+    - Manual: http://arxiv.org/abs/1311.7659
+    - Webpage: http://hepforge.cedar.ac.uk/softsusy/
+
+    \brief Two-loop Higgs and potential corrections from Pietro Slavich
+*/
+
 /** Calculates O(a_t a_s) two loop effective potential corrections to the scalar and pseudo scalar Higgs mass matrices.   Written P. Slavich (e-mail: slavich@lpthe.jussieu.fr).  Based on arXiv:0907.4682.
 **/
 

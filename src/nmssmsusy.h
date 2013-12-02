@@ -1,8 +1,9 @@
 
 /** \file nmssmsusy.h
-   - Project:     SOFTSUSY
-   - Author:      Ben Allanach, Peter Athron, Alexander Voigt
-   - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305
+   - Project:     Next-to-Minimal SOFTSUSY
+   - Author: Ben Allanach, Peter Athron, Lewis Tunstall, Alexander Voigt,
+     Anthony Williams
+   - Manual: http://arxiv.org/abs/1311.7659
    - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
 
    \brief nMssmSusy contains all NMSSM SUSY couplings and tan beta, as
