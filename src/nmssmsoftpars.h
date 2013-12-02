@@ -1,11 +1,12 @@
 
-/** \file softpars.h
-   - Project:     SOFTSUSY
-   - Author:      Ben Allanach
-   - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305
-   - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
-   \brief Soft SUSY breaking parameters
+/** \file nmssmsoftpars.h
+    - Project: Next-to-minimal SOFTSUSY 
+    - Author: Ben Allanach, Peter Athron, Lewis Tunstall, Alexander Voigt,
+      Anthony Williams
+    - Manual: http://arxiv.org/abs/1311.7659
+    - Webpage: http://hepforge.cedar.ac.uk/softsusy/
 
+    \brief Soft SUSY breaking parameters for NMSSM
 */
 
 #ifndef NMSSMSOFTPARS_H

@@ -20,6 +20,12 @@
       double precision c2t,s2t,At,mu,Xt,ht,sbe,pi,k
       double precision F1t,F2t,F3t,Ft,FA
 
+c     Added by Ben to avoid warnings
+      f3t = 0d0
+      ft = 0d0
+      f2t = 0d0
+      f1t = 0d0
+      fa = 0d0
 
       pi = 4d0*atan(1.d0)
 

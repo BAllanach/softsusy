@@ -1,7 +1,7 @@
 /** \file rpvneut.h
    - Project:     SOFTSUSY 
    - Author:      Ben Allanach, Marja Hanussek and Steve Kom
-   - Manual:      arXiv:1109.3735
+   - Manual:      arXiv:1109.3735, Comp. Phys. Comm. 183 (2012) 785
    - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
    - Description: Calculates neutrino masses to 1-loop in the RPV MSSM
 
