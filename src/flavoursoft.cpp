@@ -701,6 +701,7 @@ void FlavourMssmSoftsusy::lesHouchesAccordOutput(ostream & out,
   softsusySLHA(out);
   if (!displayProblem().testSeriousProblem() || printRuledOutSpectra) {
     massSLHA(out);
+    alphaSLHA(out);
     inomixingSLHA(out);
     sfermionmixSLHA(out);
     int n = 0; while (n < numPoints) {
