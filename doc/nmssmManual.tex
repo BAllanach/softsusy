@@ -921,60 +921,61 @@ The default output is in SLHA2 format, the conventions of which are
 explained in Ref.~\cite{Allanach:2008qq}. 
 
 As of {\tt SOFTSUSY 3.4}, the command line interface of \code{softpoint.x} has
-changed, see \code{softpoint.x --help}.  For the MSSM the new syntax is
+changed, see \code{softpoint.x --help}.  
+%For the MSSM the new syntax is
 %
-\small
-\begin{verbatim}
- ./softpoint.x <susy-breaking-model> [susy-breaking-model options] [general options]
-\end{verbatim}
-\normalsize
+%\small
+%\begin{verbatim}
+% ./softpoint.x <susy-breaking-model> [susy-breaking-model options] [general options]
+%\end{verbatim}
+%\normalsize
 %
-where the available SUSY-breaking models are listed in
-\tablename~\ref{tab:mssm-cmd-line-options} and the general options are
-listed in \tablename~\ref{tab:general-cmd-line-options}.
+%where the available SUSY-breaking models are listed in
+%\tablename~\ref{tab:mssm-cmd-line-options} and the general options are
+%listed in \tablename~\ref{tab:general-cmd-line-options}.
 %
-\begin{table}[tbh]
-  \centering
-  \begin{tabular}{lll}
-    susy-breaking model & susy-breaking model option & description \\
-    \hline
-    \code{sugra} & \code{--m0=<value>} & unified soft scalar mass \\
-                 & \code{--m12=<value>} & unified soft gaugino mass \\
-                 & \code{--a0=<value>} & unified trilinear coupling \\
-    \hline
-    \code{amsb} & \code{--m0=<value>} & unified soft scalar mass \\
-                & \code{--m32=<value>} & gravitino mass \\
-    \hline
-    \code{gmsb} & \code{--n5=<value>} & number of $SU(5)$ mulitplets \\
-                & \code{--mMess=<value>} & messenger scale \\
-                & \code{--LAMBDA=<value>} & SUSY breaking scale $<F_S> / <S>$ \\
-                & \code{--cgrav=<value>} & Gravitino mass scaling factor \\
-    \hline
-  \end{tabular}
-  \caption{MSSM command line options for \code{softpoint.x}}
-  \label{tab:mssm-cmd-line-options}
-\end{table}
-%
-\begin{table}[tbh]
-  \centering
-  \begin{tabular}{ll}
-    general option & description \\
-    \hline
-    \code{--mbmb=<value>} & bottom mass $m_b^\MSbar(m_b)$ \\
-    \code{--mt=<value>} & top mass $m_t^\text{pole}$ \\
-    \code{--alpha\_s=<value>} & strong coupling $\alpha_s^\MSbar(M_Z)$ \\
-    \code{--QEWSB=<value>} & EWSB scale \\
-    \code{--alpha\_inverse=<value>} & inverse electromagnetic cougling $1/\alpha^\MSbar_\text{em}(M_Z)$ \\
-    \code{--tanBeta=<value>} & $\tan\beta$ \\
-    \code{--sgnMu=<value>} & $\sign\mu$ \\
-    \code{--mgut=unified} & define unification scale $M_X$ by $g_1(M_X)=g_2(M_X)$ \\
-    \code{--mgut=msusy} & set unification scale to $M_\text{SUSY}$ \\
-    \code{--mgut=<value>} & set unification scale to fixed value \\
-    \hline
-  \end{tabular}
-  \caption{General command line options for \code{softpoint.x}}
-  \label{tab:general-cmd-line-options}
-\end{table}
+% \begin{table}[tbh]
+%   \centering
+%   \begin{tabular}{lll}
+%     susy-breaking model & susy-breaking model option & description \\
+%     \hline
+%     \code{sugra} & \code{--m0=<value>} & unified soft scalar mass \\
+%                  & \code{--m12=<value>} & unified soft gaugino mass \\
+%                  & \code{--a0=<value>} & unified trilinear coupling \\
+%     \hline
+%     \code{amsb} & \code{--m0=<value>} & unified soft scalar mass \\
+%                 & \code{--m32=<value>} & gravitino mass \\
+%     \hline
+%     \code{gmsb} & \code{--n5=<value>} & number of $SU(5)$ mulitplets \\
+%                 & \code{--mMess=<value>} & messenger scale \\
+%                 & \code{--LAMBDA=<value>} & SUSY breaking scale $<F_S> / <S>$ \\
+%                 & \code{--cgrav=<value>} & Gravitino mass scaling factor \\
+%     \hline
+%   \end{tabular}
+%   \caption{MSSM command line options for \code{softpoint.x}}
+%   \label{tab:mssm-cmd-line-options}
+% \end{table}
+% %
+% \begin{table}[tbh]
+%   \centering
+%   \begin{tabular}{ll}
+%     general option & description \\
+%     \hline
+%     \code{--mbmb=<value>} & bottom mass $m_b^\MSbar(m_b)$ \\
+%     \code{--mt=<value>} & top mass $m_t^\text{pole}$ \\
+%     \code{--alpha\_s=<value>} & strong coupling $\alpha_s^\MSbar(M_Z)$ \\
+%     \code{--QEWSB=<value>} & EWSB scale \\
+%     \code{--alpha\_inverse=<value>} & inverse electromagnetic cougling $1/\alpha^\MSbar_\text{em}(M_Z)$ \\
+%     \code{--tanBeta=<value>} & $\tan\beta$ \\
+%     \code{--sgnMu=<value>} & $\sign\mu$ \\
+%     \code{--mgut=unified} & define unification scale $M_X$ by $g_1(M_X)=g_2(M_X)$ \\
+%     \code{--mgut=msusy} & set unification scale to $M_\text{SUSY}$ \\
+%     \code{--mgut=<value>} & set unification scale to fixed value \\
+%     \hline
+%   \end{tabular}
+%   \caption{General command line options for \code{softpoint.x}}
+%   \label{tab:general-cmd-line-options}
+% \end{table}
 %
 For the NMSSM, the syntax is
 %
@@ -985,8 +986,9 @@ For the NMSSM, the syntax is
 \normalsize
 %
 where \code{sugra} is the only currently available susy-breaking
-model.  The general options are listed in
-\tablename~\ref{tab:general-cmd-line-options} and the NMSSM flags and
+model.  The general options are listed in Ref.~\cite{Allanach:2001kg}
+%\tablename~\ref{tab:general-cmd-line-options} 
+and the NMSSM flags and
 parameter options are listed in
 \tablename~\ref{tab:nmssm-cmd-line-options}.
 %
@@ -1071,7 +1073,7 @@ convention.
 %
 After \code{softsusy\_nmssmtools.x} is called, the following three output
 files can be found in the \NMSSMTools\ directory
-\code{NMSSMTools\_4.1.2/main/}: The file \code{nmProcessSpec-decay}
+\code{NMSSMTools\_4.1.2/main/}. The file \code{nmProcessSpec-decay}
 contains the sparticle decays in form of SLHA DECAY blocks,
 \code{nmProcessSpec-omega} will contain the output from \code{micrOMEGAS} if entry 16 is selected to be non-zero and
 \code{nmProcessSpec-spectr} contains the spectrum calculated by
