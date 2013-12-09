@@ -920,7 +920,7 @@ couplings.
 The default output is in SLHA2 format, the conventions of which are
 explained in Ref.~\cite{Allanach:2008qq}. 
 
-As of {\tt SOFTSUSY3.4}, the command line interface of \code{softpoint.x} has
+As of {\tt SOFTSUSY 3.4}, the command line interface of \code{softpoint.x} has
 changed, see \code{softpoint.x --help}.  For the MSSM the new syntax is
 %
 \small
@@ -1025,9 +1025,9 @@ parameter options are listed in
 
 \section{Calculating decays with \NMSSMTools\label{sec:decays}}
 
-\SOFTSUSY has a compatibility mode which interfaces with \NMSSMTools
+\SOFTSUSY\ has a compatibility mode which interfaces with \NMSSMTools\
 to calculate sparticle decays in the NMSSM.  To enable it, the
-user has to first install \NMSSMTools and then run the
+user has to first install \NMSSMTools\ and then run the
 \code{setup\_nmssmtools.sh} script
 %
 \begin{verbatim}
@@ -1042,9 +1042,9 @@ user has to first install \NMSSMTools and then run the
 %
 The \code{setup\_nmssmtools.sh} script copies \code{nmProcessSpec.f}
 and \code{Makefile.nmssmtools} from the \SOFTSUSY\ directory to the
-{\tt main/} directory within the \NMSSMTools folder.  If the \code{--compile}
-flag is provided, \NMSSMTools is recompiled.  Afterwards the user can
-generate a NMSSM spectrum with \SOFTSUSY\ and use \NMSSMTools to
+{\tt main/} directory within the \NMSSMTools\ folder.  If the \code{--compile}
+flag is provided, \NMSSMTools\ is recompiled.  Afterwards the user can
+generate a NMSSM spectrum with \SOFTSUSY\ and use \NMSSMTools\ to
 calculate the decays.  The \code{softsusy\_nmssmtools.x} script combines
 these two steps:
 %
@@ -1053,9 +1053,9 @@ these two steps:
 \end{verbatim}
 %
 Here \code{slhaInput} is an SLHA input file with the SOFTSUSY block
-entry $15$ set to $1$.  Additional \NMSSMTools specific flags can also
-be used with entries $16$ and $17$, which are past to \NMSSMTools as
-MODSEL blocks $9$ and $10$ respectively, following the \NMSSMTools
+entry $15$ set to $1$.  Additional \NMSSMTools\ specific flags can also
+be used with entries $16$ and $17$, which are past to \NMSSMTools\ as
+MODSEL blocks $9$ and $10$ respectively, following the \NMSSMTools\
 convention.
 %
 \begin{verbatim}
@@ -1070,7 +1070,7 @@ convention.
 \end{verbatim}
 %
 After \code{softsusy\_nmssmtools.x} is called, the following three output
-files can be found in the \NMSSMTools directory
+files can be found in the \NMSSMTools\ directory
 \code{NMSSMTools\_4.1.2/main/}: The file \code{nmProcessSpec-decay}
 contains the sparticle decays in form of SLHA DECAY blocks,
 \code{nmProcessSpec-omega} will contain the output from \code{micrOMEGAS} if entry 16 is selected to be non-zero and
@@ -1147,7 +1147,7 @@ The above requirements were implemented by the following changes:
   The template parameter represents the class of supersymmetric
   parameters, from which \code{SoftPars<Susy>} inherits.  The class
   which contains \emph{all} MSSM parameters and beta functions,
-  \code{SoftParsMssm}, was made a typdef for
+  \code{SoftParsMssm}, was made a typedef for
   \code{SoftPars<MssmSusy>}, where \code{MssmSusy} is the class that
   contains the supersymmetric MSSM parameters and beta functions.
 \begin{verbatim}
