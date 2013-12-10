@@ -4,7 +4,6 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{color} % LCT: for text editing
-\usepackage{slashed}
 \usepackage{amsfonts} % LCT: for Germanic "e" and "m" to match \Re and \Im
 
 \bibstyle{elsarticle-num}
@@ -18,9 +17,6 @@
 \newcommand{\ee}{\end{equation}}
 \newcommand{\ba}{\begin{eqnarray}}
 \newcommand{\ea}{\end{eqnarray}}
-%\newcommand{\Zv}{{\mbox{${\not\!\!\mathbb{Z}_3}$}}}
-%\newcommand{\Zv}{{\mbox{$\slashed{\mathbb{Z}}_{3}$}}} % LCT: Better placement of \
-%\newcommand{\Zv}{{\mbox{$\,\mathbf{\backslash}\mkern-11.0mu{\mathbb{Z}}_{3}$}}} % AGW: Backslash looks better
 \newcommand{\Zv}{\,\mathbf{\backslash}\mkern-11.0mu{\mathbb{Z}}_{3}} % AGW: Backslash looks better
 \newcommand{\ds}{\displaystyle}
 \newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
@@ -54,23 +50,6 @@
 \def\ab{\alpha_b}
 \def\as{\alpha_s}
 \def\atau{\alpha_{\tau}}
-% \def\oat{{\cal O}(\at)}
-% \def\oab{{\cal O}(\ab)}
-% \def\oatau{{\cal O}(\atau)}
-% \def\oatab{{\cal O}(\at\ab)}
-% \def\oatas{{\cal O}(\at\as)}
-% \def\oabas{{\cal O}(\ab\as)}
-% \def\oatababq{{\cal O}(\at\ab + \ab^2)}
-% \def\oatqatababq{{\cal O}(\at^2 + \at\ab + \ab^2)}
-% \def\oatasatq{{\cal O}(\at\as + \at^2)}
-% \def\oatasabas{{\cal O}(\at\as +\ab\as)}
-% \def\oatasabasatq{{\cal O}(\at\as + \at^2 +\ab\as)}
-% \def\oatq{{\cal O}(\at^2)}
-% \def\oabq{{\cal O}(\ab^2)}
-% \def\oatauq{{\cal O}(\atau^2)}
-% \def\oabatau{{\cal O}(\ab \atau)}
-% \def\oas{{\cal O}(\as)}
-% \def\oatauqatab{{\cal O}(\atau^2 +\ab \atau )}
 %%
 % LCT: big O notation should not in calligraphic font
 \def\oat{O(\at)}
@@ -413,43 +392,6 @@ the \SOFTSUSY~manual \cite{Allanach:2001kg} for the $R$-parity conserving MSSM.
  The notation $V_2\big|_{m_3^2=0}$ indicates that the $\Zv$~soft bilinear mass 
 $m_3^2$ present in $V_2$ is set to zero to avoid double counting with the third term in Eq.~(\ref{eq:VZ3V}).
 
-%% \be V_{soft} = V_3 + V_2 + V_\Zv \ee where
-%% \ba V_3 & = & V^{MSSM}_3 + \epsilon_{ab} a_\lambda S H^a_2 H^b_1 + \frac{1}{3} a_\kappa S^3 \\
-%% V_2  & = & V^{MSSM}_2 + m_S^2|S|^2  \\
-%% V_\Zv & = & \frac{1}{2}m_S^{\prime \, 2} S^2 + \xi_S S + \textrm{H.c.} \ea
-%% \noindent and in the case of $\mathbb{Z}_3$ conservation the soft potential reduces to,
-%% \be V_{soft} = V_3 + V^{m_3^2 = 0}_2 \ee with the superscript indicationg that the \Zv soft bilinear mass $m_3^2$ present in $V^{MSSM}_2$ is set to zero. 
-
-%%% LCT: Commented out table since our main comparison is against Degrassi and Slavich who are SLHA2 compatible anyway - can reinstate if desired.
-% \begin{table}\begin{center}
-% \begin{tabular}{cccc}
-% \SOFTSUSY & SLHA & Martin and Vaughn & Degrassi and Slavich \\ \hline 
-% $Y^{U}$ & $Y^{U}$ & $({Y^{U}})^T$  & $h_u$ \\
-% $Y^{D,E}$ & $Y^{D,E}$ & $(-{Y^{D,E}})^T$ & $h_{d,e}$ \\
-% $U_A$ & $T_{U}$ & $h_{U}^T$ & $h_uA_u$ \\
-% $D_A, E_A$ & $T_{D,E}$ & $(-h_{D,E})^T$ & $h_{d}A_{d},\, h_eA_e$ \\
-% $m_{{\tilde Q},{\tilde L}}^2$ & $m_{{\tilde Q},{\tilde L}}^2$ & $m_{{\tilde
-%     Q},{\tilde L}}^2$ & $m_{Q,L}^2$ \\
-% $m_{{\tilde u},{\tilde d},{\tilde e}}^2$ & ${m_{{\tilde u},{\tilde d},{\tilde
-%     e}}^2}^T$ &
-% $m_{{\tilde u},{\tilde d},{\tilde e}}^2$ & $m_{U,D,E}^2$ \\
-% %$\mu$ & $\mu$ & $\mu$ \\
-% %$m_3^2$ & $B \mu$ & $B$  \\
-% $M_i$ & $M_i$ & $M_i$ & $M_i$ \\
-% $m_{H_{1,2}}^2$ & $m_{H_{1,2}}^2$& $m_{H_{d,u}}^2$ & $m_{H_{1,2}}^2$ \\
-% \end{tabular}
-% \caption{\label{tab:conv} Comparison of conventions between \SOFTSUSY~and the literature. Note
-%   that simple models of SUSY breaking, for example the CMSSM, will have
-%   negative gaugino masses $M_i$ in the
-%   \SOFTSUSY~conventions. The sign in front of the gaugino mass
-%     term in front of the \SOFTSUSY~Lagrangian appears at first sight to be in
-%     the     opposite convention 
-%     to Ref.~\cite{MV94}. However, it is due to the absorption of a factor of
-%     $i$ into the gaugino fields $\tilde B$, $\tilde W$ and $\tilde g$ which
-%     means that the sign of the gaugino mass is identical to that of
-%     \cite{MV94}, and is thus of the same convention.}
-% \end{center}\end{table} 
-
 \subsection{Higgs potential and electroweak symmetry breaking}\label{sec:hpot}
 At tree-level, the Higgs potential is given by
 %
@@ -490,10 +432,7 @@ v^2 + \kappa\lambda v_2v_1
 -\kappa A_{\kappa}s  - m^{\prime \,2}_S - \mu^{\prime \,2} + 2 \kappa \xi_F  - 3 \kappa s \mu^\prime \,.\label{eq:mins}
 \end{align}
 %
-We have $\tan \beta = v_2 /  v_1$, %% $\overline g = \sqrt{g^2+g^{\prime 2}}$ and $g$ and $g^{\prime}$
-%% are the gauge couplings of $SU(2)_L$ and $U(1)$ interactions
-%% respectively, with $g = g_2$ and $g^\prime = \sqrt{3/5} \, g_1$.
-and for simplicity we have introduced
+We have $\tan \beta = v_2 /  v_1$ and for simplicity we have introduced
 \be (m_3^2)_\textrm{eff} \equiv
  \ds\frac{ \lambda s}{\sqrt{2}} B_\textrm{eff} + \widehat{m}_3^2\,, \ee and
 \be  \mu_\textrm{eff} \equiv
@@ -921,63 +860,7 @@ The default output is in SLHA2 format, the conventions of which are
 explained in Ref.~\cite{Allanach:2008qq}. 
 
 As of {\tt SOFTSUSY 3.4}, the command line interface of \code{softpoint.x} has
-changed, see \code{softpoint.x --help}.  
-%For the MSSM the new syntax is
-%
-%\small
-%\begin{verbatim}
-% ./softpoint.x <susy-breaking-model> [susy-breaking-model options] [general options]
-%\end{verbatim}
-%\normalsize
-%
-%where the available SUSY-breaking models are listed in
-%\tablename~\ref{tab:mssm-cmd-line-options} and the general options are
-%listed in \tablename~\ref{tab:general-cmd-line-options}.
-%
-% \begin{table}[tbh]
-%   \centering
-%   \begin{tabular}{lll}
-%     susy-breaking model & susy-breaking model option & description \\
-%     \hline
-%     \code{sugra} & \code{--m0=<value>} & unified soft scalar mass \\
-%                  & \code{--m12=<value>} & unified soft gaugino mass \\
-%                  & \code{--a0=<value>} & unified trilinear coupling \\
-%     \hline
-%     \code{amsb} & \code{--m0=<value>} & unified soft scalar mass \\
-%                 & \code{--m32=<value>} & gravitino mass \\
-%     \hline
-%     \code{gmsb} & \code{--n5=<value>} & number of $SU(5)$ mulitplets \\
-%                 & \code{--mMess=<value>} & messenger scale \\
-%                 & \code{--LAMBDA=<value>} & SUSY breaking scale $<F_S> / <S>$ \\
-%                 & \code{--cgrav=<value>} & Gravitino mass scaling factor \\
-%     \hline
-%   \end{tabular}
-%   \caption{MSSM command line options for \code{softpoint.x}}
-%   \label{tab:mssm-cmd-line-options}
-% \end{table}
-% %
-% \begin{table}[tbh]
-%   \centering
-%   \begin{tabular}{ll}
-%     general option & description \\
-%     \hline
-%     \code{--mbmb=<value>} & bottom mass $m_b^\MSbar(m_b)$ \\
-%     \code{--mt=<value>} & top mass $m_t^\text{pole}$ \\
-%     \code{--alpha\_s=<value>} & strong coupling $\alpha_s^\MSbar(M_Z)$ \\
-%     \code{--QEWSB=<value>} & EWSB scale \\
-%     \code{--alpha\_inverse=<value>} & inverse electromagnetic cougling $1/\alpha^\MSbar_\text{em}(M_Z)$ \\
-%     \code{--tanBeta=<value>} & $\tan\beta$ \\
-%     \code{--sgnMu=<value>} & $\sign\mu$ \\
-%     \code{--mgut=unified} & define unification scale $M_X$ by $g_1(M_X)=g_2(M_X)$ \\
-%     \code{--mgut=msusy} & set unification scale to $M_\text{SUSY}$ \\
-%     \code{--mgut=<value>} & set unification scale to fixed value \\
-%     \hline
-%   \end{tabular}
-%   \caption{General command line options for \code{softpoint.x}}
-%   \label{tab:general-cmd-line-options}
-% \end{table}
-%
-For the NMSSM, the syntax is
+changed, see \code{softpoint.x --help}.  For the NMSSM, the syntax is
 %
 \small
 \begin{verbatim}
