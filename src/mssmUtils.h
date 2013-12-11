@@ -18,7 +18,7 @@ class DoubleVector;
 
 namespace softsusy {
 
-class sBrevity;
+struct sBrevity;
 class MssmSusy;
 
 template<class SoftPars> class Softsusy;

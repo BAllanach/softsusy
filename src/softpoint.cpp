@@ -163,6 +163,10 @@ int main(int argc, char *argv[]) {
       if (strcmp(argv[1], "nmssm")) {
         for (int i = 2; i < argc; i++) {
           if (starts_with(argv[i], "--lambda")) {
+            if (i + 4 >= argc) {
+              throw "ERROR: three indices and one value need to be provided"
+                " after --lambda or --lambdaP or --lambdaPP\n";
+            }
             RPVflag = true;
             int ii= int(atof(argv[i+1]));
             int j = int(atof(argv[i+2]));
@@ -176,6 +180,10 @@ int main(int argc, char *argv[]) {
               kw.setLambda(LE, k, ii, j, d);
           }
           if (starts_with(argv[i], "--kappa")) {
+            if (i + 2 >= argc) {
+              throw "ERROR: one index and one value need to be provided"
+                " after --kappa\n";
+            }
             int ii = int(atof(argv[i+1]));
             double d = atof(argv[i+2]);
             kw.setKappa(ii, d);
