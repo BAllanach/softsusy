@@ -1,2 +1,3 @@
 <li> 08/12/13 Changes to manuals: taken MSSM stuff out of NMSSM manual
+<li> 12/12/13 SLHA printout doesn't take absolute values of soft mass squareds for printout at some scale Q, in case they're supposed to be negative. Thanks to S Knapen
 <li> 02/12/13 Reinstated block alpha to flavoursoft. Thanks to A Pukhov

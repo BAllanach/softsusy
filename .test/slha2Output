@@ -70,6 +70,8 @@ Block MASS                      # Mass spectrum
    2000002     1.02051354e+03   # ~u_4
    2000004     1.05858554e+03   # ~u_5
    2000006     1.05858895e+03   # ~u_6
+Block alpha                     # Effective Higgs mixing parameter
+          -1.06775889e-01       # alpha
 Block nmix                  # neutralino mixing matrix
   1  1     9.95646676e-01   # N_{1,1}
   1  2    -1.79285956e-02   # N_{1,2}
