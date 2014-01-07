@@ -17,17 +17,27 @@ type (on a linux box)
 > make
 
 which should compile the code and run some sample commands. There are five C++
-test programs, four of which can be run by the commands 
-> ./softsusy.x
-> ./rpvsoftsusy.x 
-> ./rpvneut.x
-> ./softsusy-nmssm.x
+test programs, which can be run by the commands:
+> ./softsusy.x > inOutFiles/outputTest
+> ./rpvsoftsusy.x > inOutFiles/rpvOutputTest
+> ./rpvneut.x > inOutFiles/neutOutputTest
+> ./softsusy-nmssm.x > inOutFiles/outputTest-nmssm
 > ./softpoint.x
 
-You can run the SUSY Les Houches Accord input provided by running the commands
-> ./softpoint.x leshouches < inOutFiles/lesHouchesInput
+This last executable requires additional command line options. For instance, 
+you can run the SUSY Les Houches Accord input provided by running the commands
+> ./softpoint.x leshouches < inOutFiles/lesHouchesInput > inOutFiles/lesHouchesOutput
+> ./softpoint.x leshouches < inOutFiles/nmssmSLHAnoZ3Input > inOutFiles/nmssmSLHAnoZ3Output
+> ./softpoint.x leshouches < inOutFiles/nmssmSLHAZ3Input > inOutFiles/nmssmSLHAZ3Output
+> ./softpoint.x leshouches < inOutFiles/rpvHouchesInput > inOutFiles/rpvHouchesOutput
+> ./softpoint.x leshouches < inOutFiles/slha2Input > inOutFiles/slha2Output
+All of the output files mentioned here are produced by the Makefile, along
+with many others in the benchmarks/ subdirectory. These may be otherwise
+produced by running the commands
+> ./softpoint.x leshouches < benchmarks/filename.in > benchmarks/filename.spec
+for each individual filename listed there.
 
-Alternatively, run with command line inputs, for example
+Alternatively, run it with command line inputs, for example
 > ./softpoint.x nmssm sugra --m0=125 --m12=125 --a0=-300 --tanBeta=10 --lambda=0.1 --lambdaAtMsusy
 
 INTRODUCTION
@@ -99,32 +109,16 @@ codes in
 EXECTUABLE FILES: AFTER INSTALLATION
 ------------------------------------
     * softpoint.x: command-line interface. GMSB, AMSB, mSUGRA and general
-    boundary conditions possible. Main program: softpoint.cpp
+    boundary conditions possible. Main program: src/softpoint.cpp
     * softsusy.x: example C++ test program - calculates spectrum of SPS1a
-    mSUGRA point with varying tan beta. Main program: main.cpp
-    * softsusy-nmssm.x: example NMSSM test program - loops over tan beta.
+    mSUGRA point with varying tan beta. Main program: src/main.cpp
+    * softsusy-nmssm.x: example NMSSM test program - loops over tan beta. Main
+    program: src/main-nmssm.cpp
     * rpvsoftsusy.x: example C++ test program - calculates spectrum of SPS1a
-    mSUGRA point with varying lambda'_{331}(M_GUT). Main program: rpvmain.cpp
+    mSUGRA point with varying lambda'_{331}(M_GUT). Main program: 
+    src/rpvmain.cpp
     * rpvneut.x: example neutrino mass calculating R-parity violating 
-    test program. 
-
-INPUT AND INFO FILES
---------------------
- * These input and output files are contained in the inOutFiles/ subdirectory:
- * [slha2Input] is an alternative input file in the SUSY Les Houches Accord 2
- format for CMSSM10.1 
- * [slha2Output] is the result of running with the above input file and
- includes flavour violation, for inclusion into codes like SusyBsg which
- include flavour corrections 
- * [outputTest] is the output from the test program in main.cpp
- * [rpvOutputTest] is the output from the test program in rpvmain.cpp
- * [lesHouchesInput] is an input file in the SUSY Les Houches Accord format
- for CMSSM10.1 	     
- * [lesHouchesOutput] is the result of running with the above input file, ie 
- * [rpvHouchesInput] is an alternative input file in the SUSY Les Houches
- Accord 2 format
- * [rpvHouchesOutput] is the result of running with the above input file, ie 
- softpoint.x leshouches < lesHouchesInput > lesHouchesOutput    	   
+    test program. Main program: src/rpvneut.cpp
 
 LICENSE
 -------

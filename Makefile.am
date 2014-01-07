@@ -4,6 +4,8 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 
 OUTPUTFILES = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
  inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output \
+ inOutFiles/neutOutputTest inOutFiles/rpvOutputTest \
+ inOutFiles/outputTest inOutFiles/outputTest-nmssm \
 benchmarks/cmssm10.1.1.spec benchmarks/cmssm10.1.2.spec \
 benchmarks/cmssm10.1.3.spec benchmarks/cmssm10.1.4.spec \
 benchmarks/cmssm10.1.5.spec \
@@ -93,6 +95,9 @@ inOutFiles/%Output : inOutFiles/%Input softpoint.x
 
 inOutFiles/outputTest: softsusy.x
 	./softsusy.x > inOutFiles/outputTest
+
+inOutFiles/outputTest-nmssm: softsusy-nmssm.x
+	./softsusy-nmssm.x > inOutFiles/outputTest-nmssm
 
 inOutFiles/rpvOutputTest: rpvsoftsusy.x
 	./rpvsoftsusy.x > inOutFiles/rpvOutputTest
