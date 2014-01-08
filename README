@@ -17,15 +17,21 @@ type (on a linux box)
 > make
 
 which should compile the code and run some sample commands. There are five C++
-test programs, which can be run by the commands:
+test programs, which can be run by the commands
+
 > ./softsusy.x > inOutFiles/outputTest
 > ./rpvsoftsusy.x > inOutFiles/rpvOutputTest
 > ./rpvneut.x > inOutFiles/neutOutputTest
 > ./softsusy-nmssm.x > inOutFiles/outputTest-nmssm
+
+These executables by default DO NOT use any input files, and all output is
+redirected to standard output.
+
 > ./softpoint.x
 
 This last executable requires additional command line options. For instance, 
 you can run the SUSY Les Houches Accord input provided by running the commands
+(the program uses no input aside from standard input)
 > ./softpoint.x leshouches < inOutFiles/lesHouchesInput > inOutFiles/lesHouchesOutput
 > ./softpoint.x leshouches < inOutFiles/nmssmSLHAnoZ3Input > inOutFiles/nmssmSLHAnoZ3Output
 > ./softpoint.x leshouches < inOutFiles/nmssmSLHAZ3Input > inOutFiles/nmssmSLHAZ3Output
