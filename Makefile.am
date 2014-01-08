@@ -2,8 +2,10 @@ SUBDIRS = src doc
 
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 
-OUTPUTFILES = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
- inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output \
+TESTOUTPUT = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
+ inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output
+
+OUTPUTFILES = $(TESTOUTPUT) \
  inOutFiles/neutOutputTest inOutFiles/rpvOutputTest \
  inOutFiles/outputTest inOutFiles/outputTest-nmssm \
 benchmarks/cmssm10.1.1.spec benchmarks/cmssm10.1.2.spec \
@@ -112,8 +114,8 @@ benchmarks/%.spec: benchmarks/%.in softpoint.x
 .PHONY: doc test updateWeb
 
 test: softpoint.x
-	git checkout $(OUTPUTFILES)
-	cp $(OUTPUTFILES) .test; rm $(OUTPUTFILES); make $(OUTPUTFILES); \
+	git checkout $(TESTOUTPUT)
+	cp $(TESTOUTPUT) .test; rm $(TESTOUTPUT); make $(TESTOUTPUT); \
 	ndiff --relative-error 1.0e-3 inOutFiles/slha2Output .test/slha2Output; \
 	ndiff --relative-error 1.0e-3 inOutFiles/lesHouchesOutput .test/lesHouchesOutput; \
 	ndiff --relative-error 1.0e-3 inOutFiles/rpvHouchesOutput .test/rpvHouchesOutput; \
