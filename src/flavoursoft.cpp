@@ -1187,7 +1187,7 @@ ostream & operator <<(ostream & left, const flavourPhysical &s) {
 }
 
 istream & operator >>(istream & left, flavourPhysical &s) {
-  char c[70];
+  string c;
   left >> c >> s.msU;
   left >> c >> c >> s.uSqMix;
   

@@ -95,7 +95,7 @@ std::ostream & operator <<(std::ostream & left, const sPhysical &s) {
 }
 
 std::istream & operator >>(std::istream & left, sPhysical &s) {
-  char c[70];
+  string c;
   left >> c >> c >> c >> c;
   left >> c >> s.mh0 >> c >> s.mA0
        >> c >> s.mHpm;
