@@ -1269,7 +1269,7 @@ ostream & operator <<(ostream &left, const SoftPars<Susy, Brevity> &s) {
 
 template<class Susy, class Brevity>
 void SoftPars<Susy, Brevity>::inputSoftParsOnly() {
-  char c[70];
+  string c;
 
   cin >> c >> c >> c >> c >> c;
   cin >> c >> ua
@@ -1286,7 +1286,7 @@ void SoftPars<Susy, Brevity>::inputSoftParsOnly() {
 
 template<class Susy, class Brevity>
 istream & operator >>(istream &left, SoftPars<Susy, Brevity> &s) {
-  char c[70];
+  string c;
 
   left >> c >> c >> c >> c >> c >> c >> c;
   DoubleMatrix ua(3, 3), da(3, 3), ea(3, 3);

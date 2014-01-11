@@ -780,14 +780,14 @@ ostream & operator <<(ostream &left, const SoftParsNmssm &s) {
 
 void SoftParsNmssm::inputSoftParsOnly() {
   SoftPars<NmssmSusy, nmsBrevity>::inputSoftParsOnly();
-  char c[70];
+  string c;
   cin >> c >> mSsq >> c >> mSpsq >> c >> xiS;
   cin >> c >> alambda
       >> c >> akappa;
 }
 
 istream & operator >>(istream &left, SoftParsNmssm &s) {
-  char c[70];
+  string c;
 
   left >> c >> c >> c >> c >> c >> c >> c;
   DoubleMatrix ua(3, 3), da(3, 3), ea(3, 3);

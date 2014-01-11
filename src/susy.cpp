@@ -207,7 +207,7 @@ void MssmSusy::setSusy(const MssmSusy & s) {
 }
 
 istream & operator >>(istream &left, MssmSusy &s) {
-  char c[70];
+  string c;
   DoubleMatrix u(3, 3), d(3, 3), e(3, 3);
   double g1, g2, g3, smu, mu, tanb, hv;
   int loops, thresh;
