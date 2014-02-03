@@ -8796,8 +8796,11 @@ void NmssmSoftsusy::modselSLHA(ostream & out, const char model[], double qMax) {
   out << "     3    1   # NMSSM\n";
 
   if (softsusy::NMSSMTools) {
-    out << "     0    " << qMax;
-    out << "   # parameter output scale for NMSSMTools\n";
+    // @todo remove if statement, but leave the block
+    if (softsusy::NMSSMTools_nmh_shlainp_on) {
+       out << "     0    " << qMax;
+       out << "   # parameter output scale for NMSSMTools\n";
+    }
     out << "     9    " << softsusy::MICROMEGAS;
     out << "   # call micrOmegas (default: 0 = no)\n";
     out << "    13    " << softsusy::NMSDECAY;
