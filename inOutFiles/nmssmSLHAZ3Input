@@ -1,5 +1,7 @@
 # Example NMSSM input in SLHA2 format
 Block MODSEL                 # Select model
+# @todo remove the following entry
+    0    1000                # DR-bar parameter output scale for NMSSMTools' nmh_slhainp.f
     6    0                   # flavour violation
     1    1                   # mSUGRA
     3    1                   # NMSSM
@@ -26,6 +28,8 @@ Block SOFTSUSY               # SOFTSUSY specific inputs
    16   0.000000000E+00      # Call micrOmegas (default: 0 = no)
    17   1.000000000E+00      # Sparticle decays via NMSDECAY (default: 0)
    18   0.000000000E+00      # use soft Higgs masses as EWSB output
+# @todo remove the following entry
+   19   0.000000000E+00      # enable nmh_slhainp.f compatibility mode (default: 0=no)
 Block VCKMIN                 # input parameters for CKM matrix
     1   2.272000000e-01      # lambda
     2   8.180000000e-01      # A
