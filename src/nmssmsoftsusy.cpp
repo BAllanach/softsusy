@@ -8791,11 +8791,13 @@ void NmssmSoftsusy::lowOrg
   }
 }
 
-void NmssmSoftsusy::modselSLHA(ostream & out, const char model[]) {
+void NmssmSoftsusy::modselSLHA(ostream & out, const char model[], double qMax) {
   Softsusy<SoftParsNmssm>::modselSLHA(out, model);
   out << "     3    1   # NMSSM\n";
 
   if (softsusy::NMSSMTools) {
+    out << "     0    " << qMax;
+    out << "   # parameter output scale for NMSSMTools\n";
     out << "     9    " << softsusy::MICROMEGAS;
     out << "   # call micrOmegas (default: 0 = no)\n";
     out << "    13    " << softsusy::NMSDECAY;
@@ -9123,10 +9125,18 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  double qMax,
 					  int numPoints,
 					  bool ewsbBCscale) {
+  if (softsusy::NMSSMTools) {
+    // in case of NMSSMTools compatible output, print only one copy of
+    // the DR-bar parameters (at qMax)
+    numPoints = 1;
+    if (close(qMax, 0., EPSTOL) || qMax < 0.)
+      qMax = displayMsusy();
+  }
+
   int nn = out.precision();
   headerSLHA(out);
   spinfoSLHA(out);
-  modselSLHA(out, model);
+  modselSLHA(out, model, qMax);
   sminputsSLHA(out);
   minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale);
   softsusySLHA(out);

@@ -312,6 +312,11 @@ int main(int argc, char *argv[]) {
 		  int i; kk >> i; 
 		  
 		  switch(i) {
+                  case 0: {
+                    kk >> qMax;
+                    if (close(qMax, 0., EPSTOL) || qMax < 0.)
+                      throw "MODSEL 0 output scale must be > zero!\n";
+                  }
 		  case 1: kk >> model; 
 		    switch(model) {
 		    case 0: boundaryCondition = &extendedSugraBcs;
