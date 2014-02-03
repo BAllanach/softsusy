@@ -8796,15 +8796,23 @@ void NmssmSoftsusy::modselSLHA(ostream & out, const char model[], double qMax) {
   out << "     3    1   # NMSSM\n";
 
   if (softsusy::NMSSMTools) {
-    // @todo remove if statement, but leave the block
-    if (softsusy::NMSSMTools_nmh_shlainp_on) {
-       out << "     0    " << qMax;
-       out << "   # parameter output scale for NMSSMTools\n";
-    }
     out << "     9    " << softsusy::MICROMEGAS;
     out << "   # call micrOmegas (default: 0 = no)\n";
     out << "    13    " << softsusy::NMSDECAY;
     out << "   # sparticle decays via NMSDECAY (default: 0)\n";
+  }
+}
+
+void NmssmSoftsusy::minparSLHA(ostream & out, const char model[],
+                               const DoubleVector & pars, double tanb,
+                               int sgnMu,
+                               bool ewsbBCscale, double qMax) {
+  Softsusy<SoftParsNmssm>::minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale);
+
+  // @todo remove softsusy::NMSSMTools_nmh_shlainp_on
+  if (softsusy::NMSSMTools && softsusy::NMSSMTools_nmh_shlainp_on) {
+    out << "     0   "; printRow(out, qMax);
+    out << "   # parameter output scale for NMSSMTools\n";
   }
 }
 
@@ -9144,7 +9152,7 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
   spinfoSLHA(out);
   modselSLHA(out, model, qMax);
   sminputsSLHA(out);
-  minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale);
+  minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale, qMax);
   softsusySLHA(out);
 
   if (!displayProblem().testSeriousProblem() || printRuledOutSpectra) {

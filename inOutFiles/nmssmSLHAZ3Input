@@ -1,7 +1,5 @@
 # Example NMSSM input in SLHA2 format
 Block MODSEL                 # Select model
-# @todo remove the following entry
-    0    1000                # DR-bar parameter output scale for NMSSMTools' nmh_slhainp.f
     6    0                   # flavour violation
     1    1                   # mSUGRA
     3    1                   # NMSSM
@@ -14,6 +12,8 @@ Block SMINPUTS               # Standard Model inputs
     6   1.709000000e+02      # mtop(pole)
     7   1.777000000e+00      # mtau(pole)
 Block MINPAR                 # Input parameters
+# @todo uncomment the following entry by default
+    0   1.000000000e+03      # DR-bar parameter output scale for NMSSMTools' nmh_slhainp.f
     1   4.000000000e+02      # m_0
     2   2.000000000e+02      # m_12
     3   1.000000000e+01      # tanb
