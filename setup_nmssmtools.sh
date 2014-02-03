@@ -79,6 +79,7 @@ copy_file() {
 
 copy_files() {
     copy_file ${BASEDIR}/src/nmProcessSpec.f ${nmssmtools_dir}/main/nmProcessSpec.f
+    copy_file ${BASEDIR}/src/nmh_slhainp.f ${nmssmtools_dir}/main/nmh_slhainp.f
     copy_file ${BASEDIR}/Makefile.nmssmtools ${nmssmtools_dir}/main/Makefile
 }
 
