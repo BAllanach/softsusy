@@ -1016,7 +1016,7 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       DOUBLE PRECISION DELMB,PX,PA(6),PB(2),PL(7),PK(8),MH(3),MMH(3)
       DOUBLE PRECISION DMH(3),MA(2),MMA(2),DMA(2),MHC,MMHC,DMHC
       DOUBLE PRECISION MHmin,MHmax,chi2max,chi2gam,chi2bb,chi2zz
-      DOUBLE PRECISION XENON100,PRINTCHANNELS,omg_
+      DOUBLE PRECISION LUX,PRINTCHANNELS,omg_
 
       COMMON/PFLAG/PFLAG
       COMMON/NMSFLAG/NMSFLAG
@@ -1151,7 +1151,7 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       IF(PROB(30).EQ.-1d0)
      . WRITE(17,900) 3,"# Problem in micrOMEGAs"
       IF(PROB(31).NE.0d0)WRITE(17,900) 3,
-     . "# Excluded by Xenon100"
+     . "# Excluded by LUX"
       IF(PROB(32).NE.0d0)
      . WRITE(17,900) 3,"# b -> s gamma more than 2 sigma away"
       IF(PROB(33).NE.0d0)
@@ -1399,7 +1399,7 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       ENDIF
       IF(OMGFLAG.EQ.2 .OR. OMGFLAG.EQ.4)THEN
 	WRITE(17,907)"# sigma(p)_SI (allowed: sigma_p^SI < ",
-     .   XENON100(DABS(MNEU(1))),"):"
+     .   LUX(DABS(MNEU(1))),"):"
 	WRITE(17,901) 20,CSPSI,"sigma_p^SI"
 	WRITE(17,915)"# values used for sigma_piN,sigma_S",
      .  " (strange content of the proton)"
