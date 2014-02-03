@@ -41,6 +41,7 @@ namespace softsusy {
   bool GUTsVev = false;
   /// Enable/Disable NMSSMTools compatible SLHA output
   bool NMSSMTools = false;
+  bool NMSSMTools_nmh_shlainp_on = false;
   //If true then the EWSB conditions will output soft Higgs masses
   //Will be inconsistent with constrained models
   //but can be useful for non-universal Higgs cases 

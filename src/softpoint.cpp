@@ -1099,6 +1099,13 @@ int main(int argc, char *argv[]) {
                     if(num == 1) softsusy::SoftHiggsOut = true;
                   }
                      break;
+                  // @todo remove the following case
+                  case 19: {
+                    int num = int(d + EPSTOL);
+                    if(num == 1)
+                       softsusy::NMSSMTools_nmh_shlainp_on = true;
+                  }
+                     break;
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "
