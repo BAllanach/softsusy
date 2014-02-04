@@ -8791,7 +8791,7 @@ void NmssmSoftsusy::lowOrg
   }
 }
 
-void NmssmSoftsusy::modselSLHA(ostream & out, const char model[]) {
+void NmssmSoftsusy::modselSLHA(ostream & out, const char model[], double qMax) {
   Softsusy<SoftParsNmssm>::modselSLHA(out, model);
   out << "     3    1   # NMSSM\n";
 
@@ -8800,72 +8800,11 @@ void NmssmSoftsusy::modselSLHA(ostream & out, const char model[]) {
     out << "   # call micrOmegas (default: 0 = no)\n";
     out << "    13    " << softsusy::NMSDECAY;
     out << "   # sparticle decays via NMSDECAY (default: 0)\n";
-  }
-}
-
-void NmssmSoftsusy::minparSLHA(ostream & out, const char model[],
-                               const DoubleVector & pars, double tanb,
-                               int sgnMu,
-                               bool ewsbBCscale, double qMax) {
-  /// For universal models, users still want to know MX and it has to be
-  /// specially printed out as EXTPAR 0
-  bool printMX = false;
-
-  out << "Block MINPAR               # SUSY breaking input parameters\n";
-  out << "     3   "; printRow(out, tanb)            ; out << "   # tanb, DRbar, Feynman gauge\n";
-  out << "     4   "; printRow(out, double(sgnMu))   ; out << "   # sign(mu)\n";
-
-  if (!strcmp(model, "sugra")) {
-    out << "     1   "; printRow(out, pars.display(1)); out << "   # m0\n";
-    out << "     2   "; printRow(out, pars.display(2)); out << "   # m12\n";
-    out << "     5   "; printRow(out, pars.display(3)); out << "   # A0\n";
-    // for the NMSSMTools compatible output we need to print the
-    // parameter output scale
     // @todo remove softsusy::NMSSMTools_nmh_shlainp_on
-    if (softsusy::NMSSMTools && softsusy::NMSSMTools_nmh_shlainp_on) {
-      out << "    12   "; printRow(out, qMax); out << "   # parameter output scale\n";
+    if (softsusy::NMSSMTools_nmh_shlainp_on) {
+      out << "    12   "; printRow(out, qMax);
+      out << "   # parameter output scale\n";
     }
-    printMX = true;
-  }
-  else if (!strcmp(model, "gmsb")) {
-    throw "<NmssmSoftsusy::minparSLHA> ACHTUNG: this NMSSM gmsb branch"
-       " is untested!\n";
-    out << "     1   "; printRow(out, pars.display(3)); out << "   # lambda\n";
-    out << "     2   "; printRow(out, pars.display(2)); out << "   # M_mess\n";
-    out << "     5   "; printRow(out, pars.display(1)); out << "   # N5\n";
-    out << "     6   "; printRow(out, pars.display(4)); out << "   # cgrav\n";
-  }
-  else if (!strcmp(model, "splitgmsb")) {
-    throw "<NmssmSoftsusy::minparSLHA> ACHTUNG: this NMSSM splitgmsb branch"
-       " is untested!\n";
-    out << "     1   "; printRow(out, pars.display(2)); out << "   # lambdaL\n";
-    out << "     2   "; printRow(out, pars.display(3)); out << "   # lambdaD\n";
-    out << "     5   "; printRow(out, pars.display(1)); out << "   # N5\n";
-    out << "     6   "; printRow(out, 1.0            ); out << "   # cgrav\n";
-    out << "     7   "; printRow(out, pars.display(4)); out << "   # mMess\n";
-    out << "     8   "; printRow(out, pars.display(5)); out << "   # mu/M2\n";
-    out << "     9   "; printRow(out, pars.display(6)); out << "   # mA(pole)/M2\n";
-    out << "    10   "; printRow(out, pars.display(7)); out << "   # desired mh^0\n";
-  }
-  else if (!strcmp(model, "amsb")) {
-    throw "<NmssmSoftsusy::minparSLHA> ACHTUNG: this NMSSM amsb branch"
-       " is untested!\n";
-    out << "     1   "; printRow(out, pars.display(2)); out << "   # m0\n";
-    out << "     2   "; printRow(out, pars.display(1)); out << "   # m3/2\n";
-    printMX = true;
-  }
-  else if (!strcmp(model, "nonUniversal")) {
-    extparSLHA(out, pars, ewsbBCscale);
-  }
-  else {
-    ostringstream ii;
-    ii << "Attempting to use SUSY Les Houches Accord for model "
-       << model << " - cannot do at present\n";
-    throw ii.str();
-  }
-  if (printMX) {
-    out << "Block EXTPAR               # scale of SUSY breaking BCs\n";
-    out << "     0   "; printRow(out, mxBC); out << "   # MX scale\n";
   }
 }
 
@@ -9203,9 +9142,9 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
   int nn = out.precision();
   headerSLHA(out);
   spinfoSLHA(out);
-  modselSLHA(out, model);
+  modselSLHA(out, model, qMax);
   sminputsSLHA(out);
-  minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale, qMax);
+  minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale);
   softsusySLHA(out);
 
   if (!displayProblem().testSeriousProblem() || printRuledOutSpectra) {
