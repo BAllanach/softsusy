@@ -540,7 +540,7 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
 				      int numPoints,
 				      bool ewsbBCscale);
   /// This does the MODSEL block of SLHA
-  void modselSLHA(ostream & out, const char model[], double qMax);
+  void modselSLHA(ostream & out, const char model[]);
   /// MINPAR block of SLHA
   void minparSLHA(ostream & out, const char model [],
 		  const DoubleVector & pars, double tanb, int sgnMu,

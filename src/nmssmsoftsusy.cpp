@@ -8791,7 +8791,7 @@ void NmssmSoftsusy::lowOrg
   }
 }
 
-void NmssmSoftsusy::modselSLHA(ostream & out, const char model[], double qMax) {
+void NmssmSoftsusy::modselSLHA(ostream & out, const char model[]) {
   Softsusy<SoftParsNmssm>::modselSLHA(out, model);
   out << "     3    1   # NMSSM\n";
 
@@ -9150,7 +9150,7 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
   int nn = out.precision();
   headerSLHA(out);
   spinfoSLHA(out);
-  modselSLHA(out, model, qMax);
+  modselSLHA(out, model);
   sminputsSLHA(out);
   minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale, qMax);
   softsusySLHA(out);
