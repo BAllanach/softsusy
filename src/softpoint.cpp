@@ -424,11 +424,6 @@ int main(int argc, char *argv[]) {
 		else if (block == "MINPAR") {
 		  int i; double d; kk >> i >> d; 
 		  switch (i) {
-                  case 0: {
-                    qMax = d;
-                    if (close(qMax, 0., EPSTOL) || qMax < 0.)
-                      throw "MINPAR 0 output scale must be > zero!\n";
-                  }
 		  case 3: tanb = d;
                     nmssm_input.set(NMSSM_input::tanBeta, d);
                     break;

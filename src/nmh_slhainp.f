@@ -380,7 +380,7 @@
       ELSEIF(CHBLCK(1:6).EQ.'MINPAR')THEN
        READ(CHINL,*,ERR=999) IX,VAL
        IF(IX.EQ.3) PAR(3)=VAL  ! fills DRbar tan(beta) at MZ
-       IF(IX.EQ.0) Q2=VAL**2
+       IF(IX.EQ.12) Q2=VAL**2
    
 *     READ NMSSMRUN
       ELSEIF(CHBLCK(1:8).EQ.'NMSSMRUN')THEN

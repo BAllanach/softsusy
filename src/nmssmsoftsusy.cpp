@@ -8811,8 +8811,8 @@ void NmssmSoftsusy::minparSLHA(ostream & out, const char model[],
 
   // @todo remove softsusy::NMSSMTools_nmh_shlainp_on
   if (softsusy::NMSSMTools && softsusy::NMSSMTools_nmh_shlainp_on) {
-    out << "     0   "; printRow(out, qMax);
-    out << "   # parameter output scale for NMSSMTools\n";
+    out << "    12   "; printRow(out, qMax);
+    out << "   # parameter output scale\n";
   }
 }
 

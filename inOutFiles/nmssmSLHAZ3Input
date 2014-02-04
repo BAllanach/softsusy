@@ -12,13 +12,13 @@ Block SMINPUTS               # Standard Model inputs
     6   1.709000000e+02      # mtop(pole)
     7   1.777000000e+00      # mtau(pole)
 Block MINPAR                 # Input parameters
-# @todo uncomment the following entry by default
-    0   1.000000000e+03      # DR-bar parameter output scale for NMSSMTools' nmh_slhainp.f
     1   4.000000000e+02      # m_0
     2   2.000000000e+02      # m_12
     3   1.000000000e+01      # tanb
     4   1.000000000e+00      # sign(mu)
     5  -3.000000000e+02      # A_0
+# @todo uncomment the following entry by default
+   12   1.000000000e+03      # DR-bar parameter output scale
 Block SOFTSUSY               # SOFTSUSY specific inputs
     1   1.000000000e-04      # tolerance
     2   2.000000000e+00      # up-quark mixing (=1) or down (=2)
@@ -29,7 +29,7 @@ Block SOFTSUSY               # SOFTSUSY specific inputs
    17   1.000000000E+00      # Sparticle decays via NMSDECAY (default: 0)
    18   0.000000000E+00      # use soft Higgs masses as EWSB output
 # @todo remove the following entry
-   19   0.000000000E+00      # enable nmh_slhainp.f compatibility mode (default: 0=no)
+   19   1.000000000E+00      # enable nmh_slhainp.f compatibility mode (default: 0=no)
 Block VCKMIN                 # input parameters for CKM matrix
     1   2.272000000e-01      # lambda
     2   8.180000000e-01      # A
