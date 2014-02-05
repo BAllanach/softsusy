@@ -3203,8 +3203,10 @@ int NmssmSoftsusy::rewsbM3sq(double mu, double & m3sq) const {
 int NmssmSoftsusy::rewsbKap(double & kap) const {
   int flag = 0;
   if(abs(displayLambda()) < 1e-99){
-    if(PRINTOUT) cout << "Warning: called with lambd = 0." << endl;
-    if(PRINTOUT) cout << "rewsbKap routine rewquires non-zero lambda." << endl;
+    if(PRINTOUT) {
+       cout << "Warning: called with lambd = 0.\n";
+       cout << "rewsbKap routine rewquires non-zero lambda.\n";
+    }
     flag = 2;
   }
   double lam = displayLambda();
@@ -4384,7 +4386,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 if (poleMhcSq > 0. && !h0Htachyon) return false;
   else {
      if (PRINTOUT) cout << " mHc(phys)^2=" << poleMhcSq 
-		        << " but may be first iteration" << endl;
+		        << " but may be first iteration\n";
     return true;
   }
 }
@@ -8175,7 +8177,7 @@ double NmssmSoftsusy::calcRunningMb() const {
   if (displayMu() != displayMz()) {
     ostringstream ii;
     ii << "Softsusy<SoftPars>::calcRunningMb called with mu=" <<
-      displayMu() << endl; 
+      displayMu() << '\n';
     throw ii.str();
   }
   
@@ -8414,8 +8416,8 @@ void NmssmSoftsusy::itLowsoft
 
   if (numTries != 0 && sqr(displayMu() / mz - 1.0) > TOLERANCE) {
     cout << "WARNING: itLowsoft called at inappropriate";
-    cout << " scale:" << displayMu() << endl; 
-    cout << "whereas it should be " << mz << endl; 
+    cout << " scale:" << displayMu() << '\n';
+    cout << "whereas it should be " << mz << '\n';
   }
   
   if (numTries - 1 > maxTries) {/// Iterating too long: bail out
@@ -8445,8 +8447,6 @@ void NmssmSoftsusy::itLowsoft
     
     /// first stab at MSUSY: root(mstop1(MZ) mstop2(MZ))
     if (numTries == 1) setMsusy(calcMs()); 
-    
-    // cout << "displayMsusy() = " << displayMsusy() << endl; 
 
     int err = 0;
     err = runto(displayMsusy(), eps);
@@ -8672,7 +8672,7 @@ void NmssmSoftsusy::lowOrg
     
     if (oneset.displayMu() != mz) {
       cout << "WARNING: lowOrg in softsusy.cpp called with oneset at scale\n" 
-	   << oneset.displayMu() << "\ninstead of " << mz << endl;
+	   << oneset.displayMu() << "\ninstead of " << mz << '\n';
     }
     
     /// LCT: Changed maxtries to match softsusy.cpp 8/8/13
@@ -8764,28 +8764,28 @@ void NmssmSoftsusy::lowOrg
 
     runto(mz); 
 
-    if (PRINTOUT > 1) cout << " end of iteration" << endl;
+    if (PRINTOUT > 1) cout << " end of iteration\n";
     
   }
   catch(const char *a) {
     ostringstream ii;
     ii << "SOFTSUSY problem: " << a << " pars=" << pars << " tanb=" << tanb 
-       << " oneset=" << oneset << endl;
+       << " oneset=" << oneset << '\n';
     flagProblemThrown(true);
     throw(ii.str());
   }
   catch(const string & a) {
     ostringstream ii;
     ii << "SOFTSUSY problem: " << a << " pars=" << pars << " tanb=" << tanb 
-	 << " oneset=" << oneset << endl;
+	 << " oneset=" << oneset << '\n';
     flagProblemThrown(true);
     throw ii.str();
   }
   catch(...) {
     ostringstream ii;
-    ii << "SOFTSUSY problem: " << endl;
+    ii << "SOFTSUSY problem: \n";
     ii << "pars=" << pars << " tanb=" << tanb
-       << " oneset=" << oneset << endl;
+       << " oneset=" << oneset << '\n';
     flagProblemThrown(true);
     throw ii.str();
   }
@@ -8942,7 +8942,7 @@ void NmssmSoftsusy::yukawaMatricesSLHA(ostream & out, const char* blockName) {
   for (int i=1; i<=3; i++) {
      for (int j=1; j<=3; j++) {
         out << "  " << i << "  " << j << "     " << yu(i,j)
-            << "    # YU_{" << i << j << "}(Q)NMSSM DRbar" << endl;
+            << "    # YU_{" << i << j << "}(Q)NMSSM DRbar\n";
      }
   }
 
@@ -8951,7 +8951,7 @@ void NmssmSoftsusy::yukawaMatricesSLHA(ostream & out, const char* blockName) {
   for (int i=1; i<=3; i++) {
      for (int j=1; j<=3; j++) {
         out << "  " << i << "  " << j << "     " << yd(i,j)
-            << "    # YD_{" << i << j << "}(Q)NMSSM DRbar" << endl;
+            << "    # YD_{" << i << j << "}(Q)NMSSM DRbar\n";
      }
   }
 
@@ -8960,7 +8960,7 @@ void NmssmSoftsusy::yukawaMatricesSLHA(ostream & out, const char* blockName) {
   for (int i=1; i<=3; i++) {
      for (int j=1; j<=3; j++) {
         out << "  " << i << "  " << j << "     " << ye(i,j)
-            << "    # YE_{" << i << j << "}(Q)NMSSM DRbar" << endl;
+            << "    # YE_{" << i << j << "}(Q)NMSSM DRbar\n";
      }
   }
 }
@@ -9076,7 +9076,7 @@ void NmssmSoftsusy::extrasfermionmixSLHA(ostream & out) {
    for (i=1; i<=2; i++)
       for (j=1; j<=2; j++) {
          out << "  " << i << "  " << j << "    "; printRow(out, m(i, j));
-         out << "   # F_{" << i << j << "}" << endl;
+         out << "   # F_{" << i << j << "}\n";
       }
    
    
@@ -9163,7 +9163,7 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
     }
   } else {
     out << "# Declining to write spectrum because of serious problem"
-	<< " with point" << endl;
+	<< " with point\n";
   }
   out.precision(nn);
 }
