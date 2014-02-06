@@ -101,7 +101,7 @@ ostream & operator <<(ostream &left, const QedQcd &m) {
 
 istream & operator >>(istream &left, QedQcd &m) {
 
-  char c[12], cmbmb[12], cmbpole[12];
+  string c, cmbmb, cmbpole;
   double mu, mc, mtpole, md, ms, me, mmu, mtau, invalph, 
     alphas, scale;
   int t, l;
@@ -129,7 +129,7 @@ istream & operator >>(istream &left, QedQcd &m) {
 
   m.setMass(mTop, getRunMtFromMz(mtpole, alphas));
 
-  if (!strcmp(cmbmb, "?") && !strcmp(cmbpole, "?")) {
+  if (cmbmb == "?" && cmbpole == "?") {
     ostringstream ii;
     ii << "Error reading in low energy QCDQED object: must specify ";
     ii << "running AND/OR pole bottom mass" << endl;
@@ -138,11 +138,11 @@ istream & operator >>(istream &left, QedQcd &m) {
 
   // If you set one of the bottom mass parameters to be "?", it will calculate
   // it from the other one
-  if (strcmp(cmbmb, "?") != 0) m.setMass(mBottom, atof(cmbmb)); 
-  if (strcmp(cmbpole, "?") != 0) m.setPoleMb(atof(cmbpole)); 
+  if (cmbmb != "?") m.setMass(mBottom, atof(cmbmb.c_str()));
+  if (cmbpole != "?") m.setPoleMb(atof(cmbpole.c_str()));
 
-  if (strcmp(cmbmb, "?") == 0) m.calcRunningMb();
-  if (strcmp(cmbpole, "?") == 0) m.calcPoleMb();
+  if (cmbmb == "?") m.calcRunningMb();
+  if (cmbpole == "?") m.calcPoleMb();
 
   return left;
 }
@@ -446,7 +446,7 @@ void readIn(QedQcd &mset, const char fname[80]) {
 
   // Read in data if it's not been set
   if (accessedReadIn == 0) {
-    char c[14];
+    string c;
     if (!strcmp(fname,"")) cin >> prevReadIn >> c >> MIXING >> c >> TOLERANCE 
 			       >> c >> PRINTOUT; // from standard input 
     else {   
