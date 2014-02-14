@@ -925,6 +925,60 @@ parameter options are listed in
   \label{tab:nmssm-cmd-line-options}
 \end{table}
 
+\subsection{SLHA interface for NMSSM-\SOFTSUSY}
+
+NMSSM-\SOFTSUSY\ accepts input in the SLHA-2 format
+\cite{Allanach:2008qq}.  The set of input parameters which also exist
+in the MSSM are entered as described in \cite{Skands:2003cj}, just as
+for the MSSM version of \SOFTSUSY, while the new NMSSM parameters are
+all given in the \code{EXTPAR} block as outlined in
+\cite{Allanach:2008qq}.  For example one can specify:
+%
+\begin{verbatim}
+Block EXTPAR
+   23   0                    # mu
+   24   0                    # Bmu / (cos(beta) * sin(beta))
+   61   0.1                  # lambda(MX)
+   62   0.1                  # kappa(MX)
+   63   1000                 # A_lambda(MX)
+   64   1000                 # A_kappa(MX)
+   65   100                  # (lambda * <S>)(MX)
+   66   100                  # xi_F(MX)
+   67   0                    # xi_S(MX)
+   68   0                    # mu'(MX)
+   69   0                    # m'_S^2(MX)
+   70   1000                 # m_S^2(MX)
+\end{verbatim}
+%
+By default all parameters are input at $M_X$ (defined in entry 0 in
+block EXTPAR).  In case the parameters $\lambda$, $\kappa$, $\lambda
+s$, $\xi_F$ and $\mu'$ should be input at $M_{SUSY}$ a corresponding
+$-1$ entry in the block \code{QEXTPAR} has to be given:
+%
+\begin{verbatim}
+Block QEXTPAR
+   61   -1                   # input lambda at Msusy
+   62   -1                   # input kappa at Msusy
+   65   -1                   # input lambda * <S> at Msusy
+   66   -1                   # input xi_F at Msusy
+   68   -1                   # input mu' at Msusy
+\end{verbatim}
+%
+Parameters that are output of the EWSB conditions cannot be given in
+the \code{EXTPAR} block.  For the $\mathbb{Z}_3$-NMSSM these are $s$,
+$\kappa$ and $m_S^2$.  In the $\Zv$-NMSSM these are $\mu$, $m_3^2$ and
+$\xi_S$.
+
+Instead of chosing the above parameter sets as EWSB output, it is also
+possible to let the EWSB conditions determine $m_{H_1}^2$, $m_{H_2}^2$
+and $m_S^2$.  This behaviour can be enabled by setting entry $18$ in
+block \SOFTSUSY\ to $1$:
+%
+\begin{verbatim}
+Block SOFTSUSY
+   18   1                    # use soft Higgs masses as EWSB output
+\end{verbatim}
+
 \section{Calculating decays with \NMSSMTools\label{sec:decays}}
 
 \SOFTSUSY\ has a compatibility mode which interfaces with \NMSSMTools\
