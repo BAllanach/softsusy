@@ -350,7 +350,7 @@ The full renormalisable, $R-$parity conserving superpotential is given by
 %
 &= W_\mathrm{MSSM}^{\mu =0} 
 + \epsilon_{ab}\left[ (\lambda S + \mu)(H^a_2 H^b_1) \right]  
-+ \xi_FS + \frac{\mu^\prime}{2}S^{2} + \frac{\kappa}{3}\kappa S^{3} \,
++ \xi_FS + \frac{\mu^\prime}{2}S^{2} + \frac{\kappa}{3} S^{3} \,
 \label{eq:WZ3V}
 \end{align}
 %
@@ -519,7 +519,7 @@ of the effective potential.  This is equivalent to defining
 - \ds\frac{\delta_{ij}}{v_i}\ds\frac{\partial V}{\partial v_i}
 \ee
 %
-with $v_3 \equiv s$.  The explicit elements of the matrix are  
+with $v_3 \equiv s$.  The explicit \red{matrix elements read} %%%   
 %
 \ba
  (M_{H^0}^2)_{11} & = & M_Z^2 c_\beta^2 
@@ -534,9 +534,11 @@ with $v_3 \equiv s$.  The explicit elements of the matrix are
  (M_{H^0}^2)_{23} & = & \lambda \Bigg[2 \mu_\textrm{eff}\, \ds\frac{ v_2}{\sqrt{2}} -
 (B_\textrm{eff} + \frac{\kappa s}{\sqrt{2}} + \mu')\ds\frac{ v_1}{\sqrt{2}}\Bigg]\,, \\
  (M_{H^0}^2)_{33} & = & \ds\frac{\lambda}{\sqrt{2}} (A_\lambda + \mu') \frac{v_2 v_1}{s}
-+ \frac{\kappa s}{\sqrt{2}} (A_\kappa + 4\frac{\kappa s}{\sqrt{2}}+ 3 \mu') - \sqrt{2}(\xi_S + \xi_F \mu')/s\,.
++ \frac{\kappa s}{\sqrt{2}} (A_\kappa + 4\frac{\kappa s}{\sqrt{2}}+ 3 \mu') - \sqrt{2}(\xi_S + \xi_F \mu')/s\,,
 \label{eq:MH0}
 \ea
+\red{where $\overline{g} = (g_2^2+g^{\prime 2})^{1/2}$ for gauge couplings $g_2$ and $g^{\prime}=\sqrt{3/5}g_1$ of $SU(2)_L$ and (unnormalised) 
+$U(1)$ interactions respectively.} %%%
 
 The three imaginary components of the neutral Higgs fields 
 $(H^I)^T = (H^I_1, H_2^I, S^I)$ mix to give the two physical CP odd bosons 
@@ -717,13 +719,13 @@ $M_Z$. The inclusion of radiative corrections to the gauge and Yukawa couplings
 
 \subsection{Low energy boundary conditions and electroweak 
 symmetry breaking \label{ewsb}} 
-The three electroweak symmetry breaking (EWSB) conditions allow the central 
-value of the $Z$ pole mass $M_Z$ to be taken as input, thereby constraining 
-three parameters. Eqs.~(\ref{eq:mind}) and (\ref{eq:minu}) can be rewritten in
-terms 
- of $\mu_\textrm{eff}^2$ and $(m_3^2)_\textrm{eff}$, as in the MSSM. Including 
-tadpole corrections $t_i$ and the transverse self energy $\Pi^T_{ZZ}$ of the $Z$ 
-boson, the resulting expressions are 
+The electroweak symmetry breaking (EWSB) conditions \red{(\ref{eq:mind}-\ref{eq:mins}) 
+allow one to constrain three model parameters of the theory.  With the central value 
+for the $Z$ pole mass $M_Z$ taken as input, we rewrite Eqs.~(\ref{eq:mind}) and 
+(\ref{eq:minu}) in terms of $\mu_\textrm{eff}^2$ and $(m_3^2)_\textrm{eff}$, as in 
+the MSSM.  By} %%%
+including tadpole corrections $t_i$ and the transverse self energy $\Pi^T_{ZZ}$ of the 
+$Z$ boson, \red{we find} %%% 
 %
 \begin{align}
   \mu_\textrm{eff}^2(M_{SUSY}) &=
@@ -733,15 +735,14 @@ boson, the resulting expressions are
   (M_{SUSY})\label{eq:mueffcond}\\ 
 %
   (m^2_3)_\textrm{eff}(M_{SUSY})&=\frac{\sin{2\beta}(M_{SUSY})}{2}\Bigg\{\overline{m}_{H_u}^2(M_{SUSY})+\overline{m}_{H_d}^2(M_{SUSY})+
-  2\mu_\textrm{eff}^2(M_{SUSY})\Bigg[1+\frac{\overline{M}_z^2}{\overline{g}^2s^2}(M_{SUSY})\Bigg]\Bigg\}\,.\label{eq:bmucond}
+  2\mu_\textrm{eff}^2(M_{SUSY})\Bigg[1+\frac{\overline{M}_z^2}{\overline{g}^2s^2}(M_{SUSY})\Bigg]\Bigg\}\,,
+  \label{eq:bmucond}
 \end{align} 
 % 
-Here, $m_{\overline{H}_i}^2 = m_{H_i}^2 - t_i/v_i$, 
+\red{where} %%% 
+$m_{\overline{H}_i}^2 = m_{H_i}^2 - t_i/v_i$, 
 $M_{\overline Z}^2(M_{SUSY}) = M_Z^2 + \Re\mathfrak{e}\Pi_{ZZ}^T(M_{SUSY})$ is the 
-$\overline{DR}$ running (mass)$^2$ of the $Z$ boson, and 
-$\overline{g} = (g_2^2+g^{\prime 2})^{1/2}$ where $g_2$ and $g^{\prime}=\sqrt{3/5}g_1$
-are the gauge couplings of $SU(2)_L$ and (unnormalised) $U(1)$ interactions 
-respectively.  Through Eqs.~(\ref{eq:mueffcond}) and (\ref{eq:bmucond}) we
+$\overline{DR}$ running (mass)$^2$ of the $Z$ boson.  Through Eqs.~(\ref{eq:mueffcond}) and (\ref{eq:bmucond}) we
 can fix $\mu_{eff}$ and $(m^2_3)_\textrm{eff}$ in a similar manner
 to the MSSM.  Note however, that in this case these are {\it effective} 
 parameters constructed from several model parameters, so we must select which
@@ -771,7 +772,11 @@ $y_b$ and $y_\tau$ are fixed, including the precision corrections at $M_Z$.  Not
 bosons and fermions are modified to match those given in \cite{Degrassi:2009yq}
  for the NMSSM.
 
-\SOFTSUSY~calculates corrections to $\sin \theta_W$ following the procedure outlined in \cite{Pierce:1997zz}.  We use the same procedure in the NMSSM, with self energies generalised to NMSSM and using the NMSSM the lightest Higgs mass and the coupling which will match that of the MSSM when in the MSSM limit.  This ensures a simple simple MSSM limit for threshold corrections. 
+\SOFTSUSY~calculates corrections to $\sin \theta_W$ following the procedure outlined 
+in \cite{Pierce:1997zz}.  We use the same procedure in the NMSSM, with self energies 
+generalised to NMSSM and using the NMSSM the lightest Higgs mass and the coupling 
+which will match that of the MSSM when in the MSSM limit.  This ensures a simple 
+MSSM limit for threshold corrections. 
 
 In the $\Zv$-NMSSM, the parameters $\kappa$, $s$, $\xi_F$ and $\mu^\prime$ are 
 reset to their input values at $M_Z$.  The parameters are then evolved back to 
@@ -782,13 +787,15 @@ scale then $\lambda$ is set here.
 In general, the scalar Higgs potential (in both the $\mathbb{Z}_3$- and 
 $\Zv$-NMSSM) can possess several local minima \cite{Ellwanger:2009dp}, so we 
 include a test at $M_{\rm SUSY}$ to determine whether the chosen parameter space 
-point corresponds to a global minimum (as done in the {\tt NMSPEC}~\cite{Ellwanger:2006rn} CHECKMIN
- routine).  The test works by comparing the value of the physical potential at 
+point corresponds to a global minimum (as done in the {\tt NMSPEC}~\cite{Ellwanger:2006rn} 
+CHECKMIN routine).  The test works by comparing the value of the physical potential at 
 the VEVs $v_u,v_d,s$ against scenarios where two or more VEVs are zero.  We 
 include one-loop radiative corrections to the effective potential from third 
 generation quarks and squarks; corrections from other sfermions are negligible 
-due to their small Yukawa couplings.   
-The parameters are then evolved back up to $M_X$ and the procedure is repeated until convergence is achieved, as shown in Fig.~\ref{fig:algorithm}. 
+due to their small Yukawa couplings. The parameters are then evolved back up to $M_X$ and 
+the procedure is repeated until convergence is achieved, as shown in Fig.~\ref{fig:algorithm}. 
+\red{(If the iteration does not converge to the desired accuracy, \SOFTSUSY~outputs a 
+{\tt No convergence} warning message --- see also Appendix C in \cite{Allanach:2001kg}.)} %%%
 
 \subsection{NMSSM spectrum \label{spec}}
 After the iteration has converged we calculate the pole masses.  The
