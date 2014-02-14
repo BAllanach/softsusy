@@ -329,7 +329,8 @@ $L$, $Q$, $H_1$, and $H_2$ are the left-handed doublet lepton and quark
 superfields and the two Higgs doublets. $\bar{E}$, $\bar{U}$, and $\bar{D}$ are 
 the lepton, up-type quark and down-type quark right-handed superfield singlets, 
 respectively. Note that the lepton doublet superfields $L^a_i$ and the Higgs 
-doublet superfield coupling to the down-type quarks $H$ have the same 
+doublet superfield \red{$H_1$} %%% 
+coupling to the down-type quarks have the same 
 SM gauge quantum numbers. We denote an $SU(3)$ colour 
 index of the fundamental representation by  $\{x,y,z\} \in \{1,2,3 \}$. The 
 $SU(2)_L$ fundamental representation indices are denoted by 
@@ -354,7 +355,9 @@ The full renormalisable, $R-$parity conserving superpotential is given by
 \label{eq:WZ3V}
 \end{align}
 %
-\noindent where the subscript $\Zv$~reflects the fact that this superpotential 
+\noindent where \red{$(Y_{U,D,E})_{ij}$ and $\lambda,\kappa$ are dimensionless Yukawa couplings, $\mu$ and $\mu'$ are supersymmetric mass terms, and $\xi_F$ encodes the effects of the supersymmetric tadpole term.  We use} %%% 
+the subscript $\Zv$~\red{to} %%%
+reflect the fact that this superpotential 
 contains terms which violate the $\mathbb{Z}_3$ symmetry that is commonly 
 imposed on the NMSSM.  Imposing the $\mathbb{Z}_3$ symmetry restricts the 
 superpotential to
@@ -431,10 +434,11 @@ V^{HN}_{F} &=   |\lambda S + \mu|^2 (|H_2|^2+|H_1|^2) + |\lambda H_2H_1
 \be 
         \langle H_1^0 \rangle = \ds\frac{1}{\sqrt{2}}{v_1 \choose 0}\,, 
 \qquad  \langle H_2^0 \rangle = \ds\frac{1}{\sqrt{2}}{0 \choose v_2}\,, 
-\qquad  \langle S \rangle =  \ds\frac{1}{\sqrt{2}}s\,, \label{eq:potmin} 
+\qquad  \langle S \rangle =  \ds\frac{1}{\sqrt{2}}s\,, 
+\label{eq:potmin} 
 \ee
 %  
-\noindent which are related to the soft masses via the minimization conditions:
+\noindent which are related to the soft masses via the minimization conditions
 %
 \begin{align}
 m_{H_1}^2&= -\frac{M_Z^2}{2}\cos(2\beta) - \ds\frac{\lamsq}{2} v_2^2
@@ -446,8 +450,12 @@ m_{H_2}^2&= \frac{M_Z^2}{2}\cos(2\beta) - \ds\frac{\lamsq}{2}v_1^2
 m_S^2 &= -\kappa^2 s^2 - \ds\frac{\lamsq}{2} 
 v^2 + \kappa\lambda v_2v_1
 + \lambda A_{\lambda} \frac{v_2v_1}{\sqrt{2}s}
--\kappa A_{\kappa}s  - m^{\prime \,2}_S - \mu^{\prime \,2} + 2 \kappa \xi_F  - 3 \kappa s \mu^\prime \,.\label{eq:mins}
+-\kappa A_{\kappa}s  - m^{\prime \,2}_S - \mu^{\prime \,2} + 2 \kappa \xi_F  - 3 \kappa s \mu^\prime \,,
+\label{eq:mins}
 \end{align}
+\red{where $M_Z^2 = \tfrac{1}{4}\bar{g}^2(v_1^2+v_2^2)$ and $\overline{g} = (g_2^2+g^{\prime 2})^{1/2}$ 
+for gauge couplings $g_2$ and $g^{\prime}=\sqrt{3/5}g_1$ of $SU(2)_L$ and (unnormalised) 
+$U(1)$ interactions respectively.}
 %
 We have $\tan \beta = v_2 /  v_1$ and for simplicity we have introduced
 \be (m_3^2)_\textrm{eff} \equiv
@@ -490,36 +498,35 @@ The CP-even gauge eigenstates $(H^0)^T = (H_1^0,\, H_2^0, \, S)$ are rotated int
 h^0 = R H^0\,. 
 \ee 
 %
-The mass matrix arises from the Lagrangian term $-(H^0)^T M^2_{H^0} H^0$, where
-\be
-M_{H^0}^2=
-\left(
-\begin{array}{ccc}
-\ds\frac{\partial^2 V}{\partial^2 v_1 } 
-- \ds\frac{1}{v_1}\frac{\partial V}{\partial v_1}&
-\ds\frac{\partial^2 V}{\partial v_1 \partial v_2}&
-\ds\frac{\partial^2 V}{\partial v_1 \partial s}\\[0.3cm]
-\ds\frac{\partial^2 V}{\partial v_2 \partial v_1}&
-\ds\frac{\partial^2 V}{\partial^2 v_2} 
-- \ds\frac{1}{v_2}\frac{\partial V}{\partial v_2}&
-\ds\frac{\partial^2 V}{\partial v_2 \partial s}\\[0.3cm]
-\ds\frac{\partial^2 V}{\partial s \partial v_1}&
-\ds\frac{\partial^2 V}{\partial s \partial v_2}&
-\ds\frac{\partial^2 V}{\partial^2 s} 
-- \ds\frac{1}{s}\frac{\partial V}{\partial s}
-\end{array} 
-\right) \,,
- \ee 
-and we have rewritten the elements of $M_{H^0}^2$ by imposing tree-level 
-electroweak symmetry breaking (EWSB) substitution on the the double derivatives 
-of the effective potential.  This is equivalent to defining  
+The mass matrix \red{$M^2_{H^0}$ is obtained by expanding $H_{1,2}$ and $S$ about their VEVs (\ref{eq:potmin}) and identifying terms $-(H^0)^T M^2_{H^0} H^0$ in the Lagrangian.  Typically, the resulting matrix elements $(M_{H^0}^2)_{ij}$ are simplified by using the tree-level 
+electroweak symmetry breaking (EWSB) conditions (\ref{eq:mind}-\ref{eq:mins}) in order to eliminate the soft terms $m_{H_1}^2$, $m_{H_2}^2$ and $m_S^2$.} %%% 
+% \be
+% M_{H^0}^2=
+% \left(
+% \begin{array}{ccc}
+% \ds\frac{\partial^2 V}{\partial^2 v_1 } 
+% - \ds\frac{1}{v_1}\frac{\partial V}{\partial v_1}&
+% \ds\frac{\partial^2 V}{\partial v_1 \partial v_2}&
+% \ds\frac{\partial^2 V}{\partial v_1 \partial s}\\[0.3cm]
+% \ds\frac{\partial^2 V}{\partial v_2 \partial v_1}&
+% \ds\frac{\partial^2 V}{\partial^2 v_2} 
+% - \ds\frac{1}{v_2}\frac{\partial V}{\partial v_2}&
+% \ds\frac{\partial^2 V}{\partial v_2 \partial s}\\[0.3cm]
+% \ds\frac{\partial^2 V}{\partial s \partial v_1}&
+% \ds\frac{\partial^2 V}{\partial s \partial v_2}&
+% \ds\frac{\partial^2 V}{\partial^2 s} 
+% - \ds\frac{1}{s}\frac{\partial V}{\partial s}
+% \end{array} 
+% \right) \,,
+%  \ee 
+This is equivalent to defining  
 %
 \be
 (M_{H^0}^2)_{ij} \equiv  \ds\frac{\partial^2 V}{\partial v_i \partial v_j} 
-- \ds\frac{\delta_{ij}}{v_i}\ds\frac{\partial V}{\partial v_i}
+- \ds\frac{\delta_{ij}}{v_i}\ds\frac{\partial V}{\partial v_i} \qquad \red{\mbox{with } v_3\equiv s\,,}
 \ee
 %
-with $v_3 \equiv s$.  The explicit \red{matrix elements read} %%%   
+\red{and under this prescription we find} %%%   
 %
 \ba
  (M_{H^0}^2)_{11} & = & M_Z^2 c_\beta^2 
@@ -534,11 +541,9 @@ with $v_3 \equiv s$.  The explicit \red{matrix elements read} %%%
  (M_{H^0}^2)_{23} & = & \lambda \Bigg[2 \mu_\textrm{eff}\, \ds\frac{ v_2}{\sqrt{2}} -
 (B_\textrm{eff} + \frac{\kappa s}{\sqrt{2}} + \mu')\ds\frac{ v_1}{\sqrt{2}}\Bigg]\,, \\
  (M_{H^0}^2)_{33} & = & \ds\frac{\lambda}{\sqrt{2}} (A_\lambda + \mu') \frac{v_2 v_1}{s}
-+ \frac{\kappa s}{\sqrt{2}} (A_\kappa + 4\frac{\kappa s}{\sqrt{2}}+ 3 \mu') - \sqrt{2}(\xi_S + \xi_F \mu')/s\,,
++ \frac{\kappa s}{\sqrt{2}} (A_\kappa + 4\frac{\kappa s}{\sqrt{2}}+ 3 \mu') - \sqrt{2}(\xi_S + \xi_F \mu')/s\,.
 \label{eq:MH0}
 \ea
-\red{where $\overline{g} = (g_2^2+g^{\prime 2})^{1/2}$ for gauge couplings $g_2$ and $g^{\prime}=\sqrt{3/5}g_1$ of $SU(2)_L$ and (unnormalised) 
-$U(1)$ interactions respectively.} %%%
 
 The three imaginary components of the neutral Higgs fields 
 $(H^I)^T = (H^I_1, H_2^I, S^I)$ mix to give the two physical CP odd bosons 
@@ -582,7 +587,8 @@ Therefore the CP-odd mixing can be stored as a single mixing angle.%
     gives the 3 by 2 mixing matrix and thus matches SLHA2 conventions.}
 
 Finally, the charged Higgs fields in the mass basis contain one massless 
-charged Goldstone boson $G^+$ and a charged Higgs, $H^\pm$ with mass
+charged Goldstone boson \red{$G^{\pm}$} %%% 
+and a charged Higgs, $H^\pm$ with mass
 %
 \be 
 m_{H^\pm}^2 = \left(\ds\frac{\lambda s}{\sqrt{2}} B_\textrm{eff} +
@@ -672,7 +678,7 @@ In the case of the NMSSM considered here, it is a simple task to generalize the
 MSSM expressions \cite{MV94} to include contributions due to superpotential 
 parameters such as $\lambda$ and their soft SUSY-breaking counterparts 
 $a_\lambda$.  (Naturally, the RGEs for such parameters must be derived 
-separately.)  The two-loop RGEs for the $§\Zv$-NMSSM are presented in the review by EHT \cite{Ellwanger:2009dp}, with the 
+separately.)  The two-loop RGEs for the $§\Zv$-NMSSM are presented in the review by EHT \cite{Ellwanger:2009dp}, with  
 the third family approximation
 %
 \begin{equation}
@@ -773,10 +779,14 @@ bosons and fermions are modified to match those given in \cite{Degrassi:2009yq}
  for the NMSSM.
 
 \SOFTSUSY~calculates corrections to $\sin \theta_W$ following the procedure outlined 
-in \cite{Pierce:1997zz}.  We use the same procedure in the NMSSM, with self energies 
-generalised to NMSSM and using the NMSSM the lightest Higgs mass and the coupling 
-which will match that of the MSSM when in the MSSM limit.  This ensures a simple 
-MSSM limit for threshold corrections. 
+in \cite{Pierce:1997zz}.  We use the same procedure in the NMSSM, with \red{expressions 
+for the MSSM self energies \cite{Pierce:1997zz} generalised to include NMSSM contributions 
+\cite{Degrassi:2009yq}.  In the Higgs sector, we only consider contributions from the 
+lightest NMSSM Higgs, since contributions from heavy Higgs states are negligible 
+\cite{Pierce:1997zz}.  This is achieved by taking the Higgs state whose mass and coupling 
+produces the contributions listed in \cite{Pierce:1997zz} once the MSSM limit is taken.  
+Note that} %%%
+this ensures a simple MSSM limit for threshold corrections. 
 
 In the $\Zv$-NMSSM, the parameters $\kappa$, $s$, $\xi_F$ and $\mu^\prime$ are 
 reset to their input values at $M_Z$.  The parameters are then evolved back to 
@@ -1211,7 +1221,8 @@ class NmssmSoftsusy : public Softsusy<SoftParsNmssm> {
 \end{verbatim}
 %
 To implement the NMSSM pole masses and mixing matrices, the
-\code{sPhysical} struct had to be generalized, as in
+\code{sPhysical} \red{structure} %%% 
+had to be generalized, as in
 \tablename~\ref{tab:sphys}.
 %
 \begin{table}
