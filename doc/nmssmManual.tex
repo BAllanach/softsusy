@@ -758,6 +758,9 @@ via Eq.~\ref{eq:bmucond}, and use the third EWSB condition to fix
 $m_S^2$.  In the $\Zv$-NMSSM, we have more freedom and can choose to fix
 $\mu$ and $m_3^2$ --- as in the MSSM --- and use the third EWSB
 condition to fix $\xi_S$.
+Alternatively, the EWSB conditions can be used to fix the soft Higgs
+masses $m_{H_1}^2$, $m_{H_2}^2$ and $m_S^2$, see
+\ref{sec:run}.
 
 The full one-loop tadpole corrections
  from \cite{Degrassi:2009yq} are implemented, along with NMSSM two-loop 
@@ -791,8 +794,7 @@ this ensures a simple MSSM limit for threshold corrections.
 In the $\Zv$-NMSSM, the parameters $\kappa$, $s$, $\xi_F$ and $\mu^\prime$ are 
 reset to their input values at $M_Z$.  The parameters are then evolved back to 
 $M_{\rm SUSY}$ where $M_Z^2$ and $\tan\beta$ are predicted as part of a consistency 
-check.  If the user has specified that $\lambda$ is to be input at the SUSY 
-scale then $\lambda$ is set here.  
+check.  If the user has specified that any of the parameters $\lambda$ the parameters $\lambda$, $\kappa$, $s$, $\xi_F$ and $\mu'$  are to be input at the SUSY scale rather than the default option of inputting it at the GUT scale\footnote{See \ref{sec:run} for details on how to do this.} then they are set here.  
 
 In general, the scalar Higgs potential (in both the $\mathbb{Z}_3$- and 
 $\Zv$-NMSSM) can possess several local minima \cite{Ellwanger:2009dp}, so we 
@@ -880,20 +882,74 @@ parameters. The program may then be run with
  ./softpoint.x leshouches < nmssmHouchesInput
 \end{verbatim}
 \normalsize
+
+NMSSM-\SOFTSUSY\ accepts input files compliant with the SLHA2 format given in Ref.~\cite{Allanach:2008qq} and supports the setting of all SLHA2
+input blocks associated with non-complex couplings.  The set of input
+parameters which also exist in the MSSM are entered as described in
+\cite{Skands:2003cj}, just as for the MSSM version of \SOFTSUSY, while
+the new NMSSM parameters are all given in the \code{EXTPAR} block as
+outlined in \cite{Allanach:2008qq}.  For example one can specify:
+%
+\begin{verbatim}
+Block EXTPAR
+   23   0                    # mu
+   24   0                    # Bmu / (cos(beta) * sin(beta))
+   61   0.1                  # lambda(MX)
+   62   0.1                  # kappa(MX)
+   63   1000                 # A_lambda(MX)
+   64   1000                 # A_kappa(MX)
+   65   100                  # (lambda * <S>)(MX)
+   66   100                  # xi_F(MX)
+   67   0                    # xi_S(MX)
+   68   0                    # mu'(MX)
+   69   0                    # m'_S^2(MX)
+   70   1000                 # m_S^2(MX)
+\end{verbatim}
+%
+By default all parameters are input at $M_X$ (defined in entry 0 in
+block EXTPAR).  In case the parameters $\lambda$, $\kappa$, $\lambda
+s / \sqrt{2}$, $\xi_F$ and $\mu'$ should be input at $M_{SUSY}$ a corresponding
+$-1$ entry in the block \code{QEXTPAR} has to be given:
+%
+\begin{verbatim}
+Block QEXTPAR
+   61   -1                   # input lambda at Msusy
+   62   -1                   # input kappa at Msusy
+   65   -1                   # input lambda * <S> at Msusy
+   66   -1                   # input xi_F at Msusy
+   68   -1                   # input mu' at Msusy
+\end{verbatim}
+%
+Parameters that are output of the EWSB conditions cannot be given in
+the \code{EXTPAR} block.  For the $\mathbb{Z}_3$-NMSSM these are $s$,
+$\kappa$ and $m_S^2$.  In the $\Zv$-NMSSM these are $\mu$, $m_3^2$ and
+$\xi_S$.
+
+Instead of choosing the above parameter sets as EWSB output, it is also
+possible to let the EWSB conditions determine $m_{H_1}^2$, $m_{H_2}^2$
+and $m_S^2$.  This behaviour can be enabled by setting entry $18$ in
+block \SOFTSUSY\ to $1$:
+%
+\begin{verbatim}
+Block SOFTSUSY
+   18   1                    # use soft Higgs masses as EWSB output
+\end{verbatim}
+
+
+%% The default output is in SLHA2 format, the conventions of which are
+%% explained in Ref.~\cite{Allanach:2008qq}. 
+
+
 For the SLHA2 input option, 
 the output will also be given in 
 SLHA2 format. Such output can be used for
 input into other programs which subscribe to the accord, such as
 \code{PYTHIA}~\cite{Sjostrand:2007gs} (for
 simulating sparticle production and decays at colliders), for example. For
-further details on the necessary format of 
-the input file, see Ref.~\cite{Allanach:2008qq}. It supports 
-the setting of all other SLHA2 input blocks associated with non-complex
-couplings. 
-The default output is in SLHA2 format, the conventions of which are
-explained in Ref.~\cite{Allanach:2008qq}. 
+further details on the format of 
+the input and output file, see Refs.~\cite{Allanach:2008qq} and \cite{Skands:2003cj}.
 
-As of {\tt SOFTSUSY 3.4}, the command line interface of \code{softpoint.x} has
+An alternative input option for \SOFTSUSY\ is to input the parameters via the command-line interface. As of {\tt SOFTSUSY 3.4}, the command line interface of \code{softpoint.x} has
 changed, see \code{softpoint.x --help}.  For the NMSSM, the syntax is
 %
 \small
@@ -941,6 +997,10 @@ parameter options are listed in
   \caption{NMSSM command line options for \code{softpoint.x}}
   \label{tab:nmssm-cmd-line-options}
 \end{table}
+
+%% \subsection{SLHA interface for NMSSM-\SOFTSUSY}
+%% \label{sec:appendix-nmssm-slha-interface}
+
 
 \section{Calculating decays with \NMSSMTools\label{sec:decays}}
 
