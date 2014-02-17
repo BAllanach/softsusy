@@ -41,10 +41,6 @@ namespace softsusy{
   /// If true we give the output needed for nmssmTools
   /// otherwise normal nmssm softsusy output
   extern bool NMSSMTools;
-  /// temporary NMSSMTools debug flag: enables output
-  /// for the new nmh_shlainp.f from U. Ellwanger
-  /// @todo remove me!
-  extern bool NMSSMTools_nmh_shlainp_on;
   /// If true then the EWSB conditions will output soft Higgs masses
   /// Will be inconsistent with constrained models
   /// but can be useful for non-universal Higgs cases 

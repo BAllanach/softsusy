@@ -8800,11 +8800,8 @@ void NmssmSoftsusy::modselSLHA(ostream & out, const char model[], double qMax) {
     out << "   # call micrOmegas (default: 0 = no)\n";
     out << "    13    " << softsusy::NMSDECAY;
     out << "   # sparticle decays via NMSDECAY (default: 0)\n";
-    // @todo remove softsusy::NMSSMTools_nmh_shlainp_on
-    if (softsusy::NMSSMTools_nmh_shlainp_on) {
-      out << "    12   "; printRow(out, qMax);
-      out << "   # parameter output scale\n";
-    }
+    out << "    12   "; printRow(out, qMax);
+    out << "   # parameter output scale\n";
   }
 }
 
@@ -9085,30 +9082,6 @@ void NmssmSoftsusy::extrasfermionmixSLHA(ostream & out) {
 void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
    runto(displayMsusy());
    extrasfermionmixSLHA(out);
-
-   // @todo remove the following block
-   if (!softsusy::NMSSMTools_nmh_shlainp_on) {
-     const double mQ2sqr = displaySoftMassSquared(mQl, 2, 2),
-        mU2sqr = displaySoftMassSquared(mUr, 2, 2),
-        mD2sqr = displaySoftMassSquared(mDr, 2, 2),
-        mQ3sqr = displaySoftMassSquared(mQl, 3, 3),
-        mU3sqr = displaySoftMassSquared(mUr, 3, 3);
-     const double q2 = sqrt((2.0 * mQ2sqr + mU2sqr + mD2sqr) / 4.0);
-     const double qstsb = sqrt(sqrt(mQ3sqr * mU3sqr));
-
-     runto(q2);
-     extragaugeSLHA(out, "GAUGEATQ2");
-     yukawaMatricesSLHA(out, "ATQ2");
-     extramsoftSLHA(out, "ATQ2");
-     nmssmrunSLHA(out, "NMSSMRUNATQ2");
-
-     runto(qstsb);
-     extragaugeSLHA(out, "GAUGEATQSTSB");
-     yukawaMatricesSLHA(out, "ATQSTSB");
-     extramsoftSLHA(out, "ATQSTSB");
-     extrahmixSLHA(out, "ATQSTSB");
-     nmssmrunSLHA(out, "NMSSMRUNATQSTSB");
-   }
 }
 
 void NmssmSoftsusy::softsusySLHA(ostream& out)

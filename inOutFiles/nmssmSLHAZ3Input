@@ -3,8 +3,6 @@ Block MODSEL                 # Select model
     6    0                   # flavour violation
     1    1                   # mSUGRA
     3    1                   # NMSSM
-# @todo uncomment the following entry by default
-   12    1.000000000e+03     # DR-bar parameter output scale
 Block SMINPUTS               # Standard Model inputs
     1   1.279180000e+02      # alpha^(-1) SM MSbar(MZ)
     2   1.166390000e-05      # G_Fermi
@@ -28,8 +26,6 @@ Block SOFTSUSY               # SOFTSUSY specific inputs
    16   0.000000000E+00      # Call micrOmegas (default: 0 = no)
    17   1.000000000E+00      # Sparticle decays via NMSDECAY (default: 0)
    18   0.000000000E+00      # use soft Higgs masses as EWSB output
-# @todo remove the following entry
-   19   1.000000000E+00      # enable nmh_slhainp.f compatibility mode (default: 0=no)
 Block VCKMIN                 # input parameters for CKM matrix
     1   2.272000000e-01      # lambda
     2   8.180000000e-01      # A
