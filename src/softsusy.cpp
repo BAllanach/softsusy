@@ -2703,12 +2703,12 @@ double Softsusy<SoftPars>::calcRunningMt() {
 template<class SoftPars>
 double Softsusy<SoftPars>::calcRunMbDrBarConv() const {
    double    g       = displayGaugeCoupling(2);
-   double    g1      = displayGaugeCoupling(1);
+   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
    double alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
    double conversion = (1.0 - alphasMZ / (3.0 * PI) 
                         - 23.0 / 72.0 * sqr(alphasMZ) / sqr(PI) +
                         3.0 * sqr(g) / (128.0 * sqr(PI)) +
-                        13.0 * sqr(g1) / (1152. * sqr(PI)));
+                        13.0 * sqr(gp) / (1152. * sqr(PI)));
    return conversion;
 }
 
@@ -2930,7 +2930,8 @@ double Softsusy<SoftPars>::calcRunningMb() const {
 }
 template<class SoftPars>
 double Softsusy<SoftPars>::calcRunMtauDrBarConv() const {
- double conv = (1.0 - 3.0 * (sqr(displayGaugeCoupling(1)) - sqr(displayGaugeCoupling(2))) / (128.0 * sqr(PI)));
+ double gp = displayGaugeCoupling(1) * sqrt(0.6);
+ double conv = (1.0 - 3.0 * (sqr(gp) - sqr(displayGaugeCoupling(2))) / (128.0 * sqr(PI)));
  return conv;
 }
 
