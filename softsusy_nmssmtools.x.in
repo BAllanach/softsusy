@@ -43,10 +43,16 @@ fi
 decay_output_file="${NMSSMTOOLS_PATH}/main/decay"
 omega_output_file="${NMSSMTOOLS_PATH}/main/omega"
 
-if ! test -r "${decay_output_file}"; then
+echo ""
+
+if test -r "${decay_output_file}"; then
+    cat "${decay_output_file}"
+else
     echo "# Error: cannot open decay output file \"${decay_output_file}\""
-    exit 1
 fi
 
-echo ""
-cat "${decay_output_file}"
+if test -r "${omega_output_file}"; then
+    cat "${omega_output_file}"
+else
+    echo "# Error: cannot open micrOmegas output file \"${omega_output_file}\""
+fi
