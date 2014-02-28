@@ -311,12 +311,12 @@
 *   THE BLOCK MODSEL MUST CONTAIN THE LINE "  9     1    "
       IF(CHBLCK(1:6).EQ.'MODSEL')THEN
        READ(CHINL,*,ERR=999) IX,VAL
-       IF(IX.EQ.8) PFLAG=INT(VAL)
-       IF(IX.EQ.9) OMGFLAG=INT(VAL)  !flag sets whether micromegas is called or not
-       IF(IX.EQ.11) GMUFLAG=INT(VAL) !flag sets whether (g-2) routine called or not
+       IF(IX.EQ.8) PFLAG=NINT(VAL)
+       IF(IX.EQ.9) OMGFLAG=NINT(VAL)  !flag sets whether micromegas is called or not
+       IF(IX.EQ.11) GMUFLAG=NINT(VAL) !flag sets whether (g-2) routine called or not
        IF(IX.EQ.12) Q2=VAL**2
-       IF(IX.EQ.13) NMSFLAG=INT(VAL) !flag sets whether NMSDECAY is called or not
-       IF(IX.EQ.14) VFLAG=INT(VAL)   !flag sets whether H->V*V* decays are included
+       IF(IX.EQ.13) NMSFLAG=NINT(VAL) !flag sets whether NMSDECAY is called or not
+       IF(IX.EQ.14) VFLAG=NINT(VAL)   !flag sets whether H->V*V* decays are included
       
 *   READ SMINPUTS
       ELSEIF(CHBLCK(1:8).EQ.'SMINPUTS')THEN
