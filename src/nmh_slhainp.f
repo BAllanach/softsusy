@@ -316,7 +316,7 @@
        IF(IX.EQ.11) GMUFLAG=INT(VAL) !flag sets whether (g-2) routine called or not
        IF(IX.EQ.12) Q2=VAL**2
        IF(IX.EQ.13) NMSFLAG=INT(VAL) !flag sets whether NMSDECAY is called or not
-       IF(IX.EQ.14) VFLAG=IVAL       !flag sets whether H->V*V* decays are included
+       IF(IX.EQ.14) VFLAG=INT(VAL)   !flag sets whether H->V*V* decays are included
       
 *   READ SMINPUTS
       ELSEIF(CHBLCK(1:8).EQ.'SMINPUTS')THEN
