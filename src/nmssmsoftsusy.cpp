@@ -4107,21 +4107,10 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 	   }
 	 }
 	 double amu = - lam * svev / root2;
-	 int kkk = 0.0;
-	 double s11s = 0.0, s12s = 0.0, s22s = 0.0;
-	 double s11b = 0.0, s12b = 0.0, s22b = 0.0;
 	 double s11w = 0.0, s12w = 0.0, s22w = 0.0;
 	 double s11tau = 0.0, s12tau = 0.0, s22tau = 0.0;
-	 double ps2 = 0.0, p2b = 0.0, p2w = 0.0, p2tau = 0.0;
+	 double p2w = 0.0, p2tau = 0.0;
 	 double fmasq = fabs(MAeffsq);
-	 dszhiggs_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, 
-	           &amu, &tanb, &vev2, &gs, &kkk, &s11s, &s22s, &s12s);
-	 dszodd_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, &amu,
-	         &tanb, &vev2, &gs, &ps2); 
-	 dszhiggs_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq,
-	           &amu, &cotb, &vev2, &gs, &kkk, &s22b, &s11b, &s12b);
-	 dszodd_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq, &amu,
-	         &cotb, &vev2, &gs, &p2b);
 	 //Corrections as in MSSM, not corrected for NMSSM,
 	 //Should be OK for MSSM states when S state is close to decoupled 
 	 ddshiggs_(&rmtsq, &rmbsq, &fmasq, &mst1sq, &mst2sq, &msb1sq, 
