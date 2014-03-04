@@ -4082,28 +4082,19 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 	 
 	 //PA: Make appropriate substitutions for elements following 0907.4682
 	 // bottom of page 9
-	 
-	 double temp = DMSB[0][0];
-	 DMSB[0][0] = DMSB[1][1];
-	 DMSB[1][1] = temp;
-	 temp = DMSB[0][2];
-	 DMSB[0][2] = DMSB[1][2];
-	 DMSB[1][2] = temp;
+         std::swap(DMSB[0][0], DMSB[1][1]);
+         std::swap(DMSB[0][2], DMSB[1][2]);
 
 	 /// LCT: Obtain the O(alpha_b alpha_s) corrections from O(alpha_t alpha_s) 
 	 /// parts by interchanging the (1, 1) <--> (2, 2) and (1, 3) <--> (2, 3) 
 	 /// matrix elements of CP-odd mass matrix (as in 0907.4682)
-	 double temp2 = DMPB[0][0];
-	 DMPB[0][0] = DMPB[1][1];
-	 DMPB[1][1] = temp2;
-	 temp2 = DMPB[0][2];
-	 DMPB[0][2] = DMPB[1][2];
-	 DMPB[1][2] = temp2;
+         std::swap(DMPB[0][0], DMPB[1][1]);
+         std::swap(DMPB[0][2], DMPB[1][2]);
 
 	 for(int i=0; i<=2; i++){
 	   for(int j=0; j<=2; j++){
-	     DMS[i][j] = DMS[i][j] + DMSB[i][j];
-	     DMP[i][j] = DMP[i][j] + DMPB[i][j]; 
+	     DMS[i][j] += DMSB[i][j];
+	     DMP[i][j] += DMPB[i][j];
 	   }
 	 }
 	 double amu = - lam * svev / root2;
