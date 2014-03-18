@@ -8786,14 +8786,83 @@ void NmssmSoftsusy::modselSLHA(ostream & out, const char model[]) {
 void NmssmSoftsusy::extparSLHA(ostream & out,
                                const DoubleVector & pars,
                                bool ewsbBCscale) {
-  Softsusy<SoftParsNmssm>::extparSLHA(out, pars, ewsbBCscale);
+  out << "Block EXTPAR               # non-universal SUSY breaking parameters\n";
+  if (ewsbBCscale) {
+    out << "     0    -1.00000000e+00  # Set MX=MSUSY\n";
+  } else {
+    out << "     0    "; printRow(out, mxBC); out << "  # MX scale\n";
+  }
+
+  for (int i=1; i<=3; i++) {
+    out << "     " << i << "    ";
+    printRow(out, pars.display(i));
+    out << "  # M_" << i << "(MX)\n";
+  }
+  out << "     11   "; printRow(out, pars.display(11));
+  out << "  # At(MX)\n";
+  out << "     12   "; printRow(out, pars.display(12));
+  out << "  # Ab(MX)\n";
+  out << "     13   "; printRow(out, pars.display(13));
+  out << "  # Atau(MX)\n";
+  if (!softsusy::SoftHiggsOut) {
+    out << "     21   "; printRow(out, pars.display(21));
+    out << "  # mHd^2(MX)\n";
+    out << "     22   "; printRow(out, pars.display(22));
+    out << "  # mHu^2(MX)\n";
+  }
+  if (!Z3 && softsusy::SoftHiggsOut) {
+    out << "     23   "; printRow(out, pars.display(54));
+    out << "  # mu(MX)\n";
+    out << "     26   "; printRow(out, pars.display(55));
+    out << "  # Bmu / (cos(beta) * sin(beta))\n";
+  }
+  if (displaySetTbAtMX()) {
+    out << "     25   "; printRow(out, pars.display(25));
+    out << "  # tan beta(MX)\n";
+  }
+  out << "     31   "; printRow(out, pars.display(31));
+  out << "  # meL(MX)\n";
+  out << "     32   "; printRow(out, pars.display(32));
+  out << "  # mmuL(MX)\n";
+  out << "     33   "; printRow(out, pars.display(33));
+  out << "  # mtauL(MX)\n";
+  out << "     34   "; printRow(out, pars.display(34));
+  out << "  # meR(MX)\n";
+  out << "     35   "; printRow(out, pars.display(35));
+  out << "  # mmuR(MX)\n";
+  out << "     36   "; printRow(out, pars.display(36));
+  out << "  # mtauR(MX)\n";
+  out << "     41   "; printRow(out, pars.display(41));
+  out << "  # mqL1(MX)\n";
+  out << "     42   "; printRow(out, pars.display(42));
+  out << "  # mqL2(MX)\n";
+  out << "     43   "; printRow(out, pars.display(43));
+  out << "  # mqL3(MX)\n";
+  out << "     44   "; printRow(out, pars.display(44));
+  out << "  # muR(MX)\n";
+  out << "     45   "; printRow(out, pars.display(45));
+  out << "  # mcR(MX)\n";
+  out << "     46   "; printRow(out, pars.display(46));
+  out << "  # mtR(MX)\n";
+  out << "     47   "; printRow(out, pars.display(47));
+  out << "  # mdR(MX)\n";
+  out << "     48   "; printRow(out, pars.display(48));
+  out << "  # msR(MX)\n";
+  out << "     49   "; printRow(out, pars.display(49));
+  out << "  # mbR(MX)\n";
   out << "     63   "; printRow(out, pars.display(50));
   out << "  # Alambda(MX)\n";
   out << "     64   "; printRow(out, pars.display(51));
   out << "  # Akappa(MX)\n";
+  if (!Z3 && softsusy::SoftHiggsOut) {
+    out << "     67   "; printRow(out, pars.display(56));
+    out << "  # xi_S(MX)\n";
+  }
   if (!Z3) {
-    out << "     69   "; printRow(out, pars.display(52));
+    out << "     69   "; printRow(out, pars.display(52) * displayMupr());
     out << "  # mS'^2(MX)\n";
+  }
+  if (!Z3 && !softsusy::SoftHiggsOut) {
     out << "     70   "; printRow(out, pars.display(53));
     out << "  # mS^2(MX)\n";
   }
