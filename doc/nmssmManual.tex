@@ -872,27 +872,47 @@ parameters. The program may then be run with
 \end{verbatim}
 \normalsize
 
-NMSSM-\SOFTSUSY\ accepts input files compliant with the SLHA2 format given in Ref.~\cite{Allanach:2008qq} and supports the setting of all SLHA2
-input blocks associated with non-complex couplings.  The set of input
-parameters which also exist in the MSSM are entered as described in
-\cite{Skands:2003cj}, just as for the MSSM version of \SOFTSUSY, while
-the new NMSSM parameters are all given in the \code{EXTPAR} block as
-outlined in \cite{Allanach:2008qq}.  For example one can specify:
+NMSSM-\SOFTSUSY\ accepts input files compliant with the SLHA2 format
+given in Ref.~\cite{Allanach:2008qq} and supports the setting of all
+SLHA2 input blocks associated with non-complex couplings.  The set of
+input parameters which also exist in the MSSM are entered as described
+in \cite{Skands:2003cj}, just as for the MSSM version of \SOFTSUSY,
+while the new NMSSM parameters are all given in the \code{EXTPAR}
+block as outlined in \cite{Allanach:2008qq}.  For example, in the
+$\Zv$-NMSSM one can set:
 %
 \begin{verbatim}
-Block EXTPAR
-   23   0                    # mu
-   24   0                    # m_3^2 / (cos(beta) * sin(beta))
+Block EXTPAR                 # Z3 violating NMSSM
+#  23   100                  # mu
+#  24   1000                 # m_3^2 / (cos(beta) * sin(beta))
    61   0.1                  # lambda(MX)
    62   0.1                  # kappa(MX)
    63   1000                 # A_lambda(MX)
    64   1000                 # A_kappa(MX)
-   65   100                  # (lambda * <S>)(MX)
+   65   500                  # (lambda * <S>)(MX)
    66   100                  # xi_F(MX)
-   67   0                    # xi_S(MX)
-   68   0                    # mu'(MX)
-   69   0                    # m'_S^2(MX)
+#  67   1000                 # xi_S(MX)
+   68   1000                 # mu'(MX)
+   69   1000                 # m'_S^2(MX)
    70   1000                 # m_S^2(MX)
+\end{verbatim}
+%
+The parameters $\mu$, $m_3^2 / (\cos\beta \sin\beta)$ and $m_S^2$ must
+not be set here, because they are output of the EWSB conditions, see
+section \ref{ewsb}.  To have a the $\mathbb{Z}_3$-NMSSM one must set
+all $\mathbb{Z}_3$ violating parameters ($\mu$, $m_3^2$, $\xi_F$,
+$\xi_S$, $\mu'$, $m_S^{\prime\, 2}$) to zero or comment them
+out\footnote{Unset parameters are assumed to be zero.}.  In the
+$\mathbb{Z}_3$-NMSSM the parameters $\kappa$, $s$ and $m_S^2$ are
+output of the EWSB conditions, see section \ref{ewsb}, and must
+therefore be unset as well.  One is then left with the following three
+free parameters:
+%
+\begin{verbatim}
+Block EXTPAR                 # Z3 symmetric NMSSM
+   61   0.1                  # lambda(MX)
+   63   1000                 # A_lambda(MX)
+   64   1000                 # A_kappa(MX)
 \end{verbatim}
 %
 By default all parameters are input at $M_X$ (defined in entry $0$ in
@@ -912,12 +932,7 @@ Block QEXTPAR
    68   -1                   # input mu' at Msusy
 \end{verbatim}
 %
-Parameters that are output of the EWSB conditions cannot be given in
-the \code{EXTPAR} block.  For the $\mathbb{Z}_3$-NMSSM these are $s$,
-$\kappa$ and $m_S^2$.  In the $\Zv$-NMSSM these are $\mu$, $m_3^2$ and
-$\xi_S$.
-
-Instead of choosing the above parameter sets as EWSB output, it is also
+Instead of choosing the above mentioned parameters as EWSB output, it is also
 possible to let the EWSB conditions determine $m_{H_1}^2$, $m_{H_2}^2$
 and $m_S^2$.  This behaviour can be enabled by setting entry $18$ in
 block \SOFTSUSY\ to $1$:
