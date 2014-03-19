@@ -895,10 +895,13 @@ Block EXTPAR
    70   1000                 # m_S^2(MX)
 \end{verbatim}
 %
-By default all parameters are input at $M_X$ (defined in entry 0 in
-block EXTPAR).  In case the parameters $\lambda$, $\kappa$, $\lambda
-s / \sqrt{2}$, $\xi_F$ and $\mu'$ should be input at $M_{SUSY}$ a corresponding
-$-1$ entry in the block \code{QEXTPAR} has to be given:
+By default all parameters are input at $M_X$ (defined in entry $0$ in
+block \code{EXTPAR}).  In case the parameters $\lambda$, $\kappa$,
+$\lambda s / \sqrt{2}$, $\xi_F$ and $\mu'$ should be input at
+$M_{SUSY}$ a corresponding $-1$ entry in the block \code{QEXTPAR} has
+to be given\footnote{The SUSY scale is defined as $M_{SUSY} =
+  \sqrt{m_{\tilde{t}_1} m_{\tilde{t}_2}}$ and is re-calculated in each
+  iteration.}:
 %
 \begin{verbatim}
 Block QEXTPAR
