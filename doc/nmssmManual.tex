@@ -898,14 +898,14 @@ Block EXTPAR                 # Z3 violating NMSSM
 \end{verbatim}
 %
 The parameters $\mu$, $m_3^2 / (\cos\beta \sin\beta)$ and $m_S^2$ must
-not be set here, because they are output of the EWSB conditions, see
-section \ref{ewsb}.  To have a the $\mathbb{Z}_3$-NMSSM one must set
+not be set here, because they are output by the EWSB conditions, see
+section \ref{ewsb}.  In the $\mathbb{Z}_3$-NMSSM one must set
 all $\mathbb{Z}_3$ violating parameters ($\mu$, $m_3^2$, $\xi_F$,
 $\xi_S$, $\mu'$, $m_S^{\prime\, 2}$) to zero or comment them
-out\footnote{Unset parameters are assumed to be zero.}.  In the
-$\mathbb{Z}_3$-NMSSM the parameters $\kappa$, $s$ and $m_S^2$ are
-output of the EWSB conditions, see section \ref{ewsb}, and must
-therefore be unset as well.  One is then left with the following three
+out\footnote{Unset parameters are assumed to be zero.}.  The parameters
+$\kappa$, $s$ and $m_S^2$ are then 
+output from the EWSB conditions, as in section \ref{ewsb}, and they should
+therefore not be set either.  One is then left with the following three
 free parameters:
 %
 \begin{verbatim}
@@ -949,7 +949,8 @@ input into other programs which subscribe to the accord, such as
 \code{PYTHIA}~\cite{Sjostrand:2007gs} (for
 simulating sparticle production and decays at colliders), for example. For
 further details on the format of 
-the input and output file, see Refs.~\cite{Allanach:2008qq} and \cite{Skands:2003cj}.
+the input and output files, see Refs.~\cite{Allanach:2008qq} and
+\cite{Skands:2003cj}. 
 
 An alternative input option for \SOFTSUSY\ is to input the parameters via the command-line interface. As of {\tt SOFTSUSY 3.4}, the command line interface of \code{softpoint.x} has
 changed, see \code{softpoint.x --help}.  For the NMSSM, the syntax is
