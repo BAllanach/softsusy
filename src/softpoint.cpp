@@ -52,7 +52,7 @@ void errorCall() {
      "\n"
      "[NMSSM parameters]:\n"
      "  --m0= , --m12= , --a0= , --tanBeta= , --mHd2= , --mHu2= ,\n"
-     "  --mu= , --BmuOverCosBetaSinBeta= , --lambda= , --kappa= ,\n"
+     "  --mu= , --m3SqrOverCosBetaSinBeta= , --lambda= , --kappa= ,\n"
      "  --Alambda= , --Akappa= , --lambdaS= , --xiF= , --xiS= ,\n"
      "  --muPrime= , --mPrimeS2= , --mS2=\n"
      "\n"

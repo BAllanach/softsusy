@@ -10,7 +10,7 @@
 namespace softsusy {
 
 char const * const NMSSM_input::parameter_names[NUMBER_OF_NMSSM_INPUT_PARAMETERS] = {
-   "tan(beta)", "mHd^2", "mHu^2", "mu", "Bmu/(cos(beta)sin(beta))", "lambda",
+   "tan(beta)", "mHd^2", "mHu^2", "mu", "m3^2/(cos(beta)sin(beta))", "lambda",
    "kappa", "Alambda", "Akappa", "lambda*S", "xiF", "xiS", "mu'",
    "mS'^2", "mS^2"
 };
@@ -175,8 +175,13 @@ void NMSSM_command_line_parser::parse(int argc, char* argv[]) {
          nmssm_input->set(NMSSM_input::mHd2, get_value(argv[i], "--mHd2="));
       else if (starts_with(argv[i], "--mu="))
          nmssm_input->set(NMSSM_input::mu, get_value(argv[i], "--mu="));
-      else if (starts_with(argv[i], "--BmuOverCosBetaSinBeta="))
-         nmssm_input->set(NMSSM_input::BmuOverCosBetaSinBeta, get_value(argv[i], "--BmuOverCosBetaSinBeta="));
+      else if (starts_with(argv[i], "--m3SqrOverCosBetaSinBeta="))
+         nmssm_input->set(NMSSM_input::BmuOverCosBetaSinBeta, get_value(argv[i], "--m3SqrOverCosBetaSinBeta="));
+      else if (starts_with(argv[i], "--BmuSqrOverCosBetaSinBeta=")) {
+         nmssm_input->set(NMSSM_input::BmuOverCosBetaSinBeta, get_value(argv[i], "--BmuSqrOverCosBetaSinBeta="));
+         cout << "# Warning: --BmuSqrOverCosBetaSinBeta= is deprecated, "
+            "please use --m3SqrOverCosBetaSinBeta= instead.\n";
+      }
       else if (starts_with(argv[i], "--lambda="))
          nmssm_input->set(NMSSM_input::lambda, get_value(argv[i], "--lambda="));
       else if (starts_with(argv[i], "--kappa="))
