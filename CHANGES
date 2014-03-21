@@ -1,3 +1,5 @@
+<li> 21/03/14 Error when fixing EXTPAR 25 with flavour violation turned on now
+trapped. Thanks to H Eberl
 <li> 21/03/14 Trapped nan in running down to MSUSY: previously, it was giving
 a segfault since it was trying to diagonalise a matrix of nans. (Noticed by A
 Voigt). 

@@ -1,8 +1,8 @@
-# SOFTSUSY3.4.0 SLHA compliant output
+# SOFTSUSY3.4.1 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    3.4.0       # version number
+     2    3.4.1       # version number
 Block MODSEL  # Select model
      1    1   # sugra
      6    1   # flavour violating MSSM
@@ -34,15 +34,15 @@ Block MINPAR               # SUSY breaking input parameters
 Block EXTPAR               # scale of SUSY breaking BCs
      0    1.81864153e+16   # MX scale
 # SOFTSUSY-specific non SLHA information:
-# MIXING=2 Desired accuracy=1.00000000e-03 Achieved accuracy=6.67971105e-04
+# MIXING=2 Desired accuracy=1.00000000e-03 Achieved accuracy=6.67970170e-04
 Block MASS                      # Mass spectrum
 # PDG code     mass             particle
-        24     8.03781805e+01   # MW
+        24     8.03781806e+01   # MW
         25     1.13597553e+02   # h0
         35     7.11024079e+02   # H0
         36     7.10738536e+02   # A0
         37     7.15515423e+02   # H+
-   1000021     1.15305687e+03   # ~g
+   1000021     1.15305686e+03   # ~g
    1000022     2.04229580e+02   # ~neutralino(1)
    1000023     3.85342203e+02   # ~neutralino(2)
    1000024     3.85343979e+02   # ~chargino(1)
@@ -104,7 +104,7 @@ Block USQMIX  # super CKM squark mass^2 matrix
   1  2     1.58120628e-04   # (USQMIX)_{12}
   1  3     4.31509083e-01   # (USQMIX)_{13}
   1  4     1.45935355e-11   # (USQMIX)_{14}
-  1  5     7.01091470e-08   # (USQMIX)_{15}
+  1  5     7.01091474e-08   # (USQMIX)_{15}
   1  6     9.02108578e-01   # (USQMIX)_{16}
   2  1     1.65252590e-04   # (USQMIX)_{21}
   2  2     1.74925442e-03   # (USQMIX)_{22}
@@ -115,14 +115,14 @@ Block USQMIX  # super CKM squark mass^2 matrix
   3  1     1.31458904e-07   # (USQMIX)_{31}
   3  2     8.70212443e-03   # (USQMIX)_{32}
   3  3    -5.92253887e-05   # (USQMIX)_{33}
-  3  4     1.70192741e-08   # (USQMIX)_{34}
+  3  4     1.70192770e-08   # (USQMIX)_{34}
   3  5     9.99962134e-01   # (USQMIX)_{35}
   3  6     2.67264938e-05   # (USQMIX)_{36}
   4  1     1.91715301e-05   # (USQMIX)_{41}
-  4  2     1.41536070e-10   # (USQMIX)_{42}
+  4  2     1.41536044e-10   # (USQMIX)_{42}
   4  3    -1.23238390e-08   # (USQMIX)_{43}
   4  4     1.00000000e+00   # (USQMIX)_{44}
-  4  5    -1.70245492e-08   # (USQMIX)_{45}
+  4  5    -1.70245521e-08   # (USQMIX)_{45}
   4  6     5.56119725e-09   # (USQMIX)_{46}
   5  1     1.88199383e-01   # (USQMIX)_{51}
   5  2     9.82092085e-01   # (USQMIX)_{52}
@@ -135,7 +135,7 @@ Block USQMIX  # super CKM squark mass^2 matrix
   6  3     1.56994187e-04   # (USQMIX)_{63}
   6  4    -1.88288940e-05   # (USQMIX)_{64}
   6  5     1.63761619e-03   # (USQMIX)_{65}
-  6  6    -5.83753072e-05   # (USQMIX)_{66}
+  6  6    -5.83753073e-05   # (USQMIX)_{66}
 Block DSQMIX  # super CKM squark mass^2 matrix
   1  1     4.60032306e-03   # (DSQMIX)_{11}
   1  2    -3.38688904e-02   # (DSQMIX)_{12}
@@ -152,15 +152,15 @@ Block DSQMIX  # super CKM squark mass^2 matrix
   3  1     1.88652861e-06   # (DSQMIX)_{31}
   3  2     4.35307828e-03   # (DSQMIX)_{32}
   3  3     3.89397896e-04   # (DSQMIX)_{33}
-  3  4     5.31590777e-06   # (DSQMIX)_{34}
+  3  4     5.31592418e-06   # (DSQMIX)_{34}
   3  5     9.99990388e-01   # (DSQMIX)_{35}
   3  6    -3.51750877e-04   # (DSQMIX)_{36}
   4  1     1.99452562e-04   # (DSQMIX)_{41}
-  4  2     6.29602460e-08   # (DSQMIX)_{42}
+  4  2     6.29601745e-08   # (DSQMIX)_{42}
   4  3    -2.41750687e-06   # (DSQMIX)_{43}
   4  4     9.99999980e-01   # (DSQMIX)_{44}
-  4  5    -5.31489987e-06   # (DSQMIX)_{45}
-  4  6     2.18294726e-06   # (DSQMIX)_{46}
+  4  5    -5.31491628e-06   # (DSQMIX)_{45}
+  4  6     2.18294727e-06   # (DSQMIX)_{46}
   5  1    -1.37529365e-01   # (DSQMIX)_{51}
   5  2     9.89814337e-01   # (DSQMIX)_{52}
   5  3     3.61750508e-02   # (DSQMIX)_{53}
@@ -263,9 +263,9 @@ Block msl2 Q= 8.83270076e+02 # super MNS slepton mass^2 matrix - DRbar
   3  3     1.24560402e+05    # (m_L^2)_{33}
 Block msd2 Q= 8.83270076e+02 # super CKM squark mass^2 matrix - DRbar
   1  1     9.63304848e+05    # (m_d^2)_{11}
-  1  2    -2.38576287e-06    # (m_d^2)_{12}
+  1  2    -2.38566612e-06    # (m_d^2)_{12}
   1  3     2.44902761e-03    # (m_d^2)_{13}
-  2  1    -2.38576287e-06    # (m_d^2)_{21}
+  2  1    -2.38566612e-06    # (m_d^2)_{21}
   2  2     9.63299655e+05    # (m_d^2)_{22}
   2  3    -3.94772775e-01    # (m_d^2)_{23}
   3  1     2.44902761e-03    # (m_d^2)_{31}
@@ -274,12 +274,12 @@ Block msd2 Q= 8.83270076e+02 # super CKM squark mass^2 matrix - DRbar
 Block msu2 Q= 8.83270076e+02 # super CKM squark mass^2 matrix - DRbar
   1  1     9.72272024e+05    # (m_u^2)_{11}
   1  2     4.00763734e-09    # (m_u^2)_{12}
-  1  3     1.42372893e-05    # (m_u^2)_{13}
+  1  3     1.42372979e-05    # (m_u^2)_{13}
   2  1     4.00763734e-09    # (m_u^2)_{21}
   2  2     9.72266786e+05    # (m_u^2)_{22}
-  2  3     6.83973762e-02    # (m_u^2)_{23}
-  3  1     1.42372893e-05    # (m_u^2)_{31}
-  3  2     6.83973762e-02    # (m_u^2)_{32}
+  2  3     6.83973761e-02    # (m_u^2)_{23}
+  3  1     1.42372979e-05    # (m_u^2)_{31}
+  3  2     6.83973761e-02    # (m_u^2)_{32}
   3  3     6.68535312e+05    # (m_u^2)_{33}
 Block mse2 Q= 8.83270076e+02 # super MNS slepton mass^2 matrix - DRbar
   1  1     4.92557952e+04    # (m_e^2)_{11}
@@ -294,7 +294,7 @@ Block mse2 Q= 8.83270076e+02 # super MNS slepton mass^2 matrix - DRbar
 Block tu Q= 8.83270076e+02   # super CKM trilinear matrix - DRbar
   1  1    -8.37103599e-03    # (T_u)_{11}
   1  2     4.20272683e-09    # (T_u)_{12}
-  1  3     5.80813129e-08    # (T_u)_{13}
+  1  3     5.80813195e-08    # (T_u)_{13}
   2  1     1.90772696e-06    # (T_u)_{21}
   2  2    -3.79980294e+00    # (T_u)_{22}
   2  3     2.79028352e-04    # (T_u)_{23}
@@ -303,7 +303,7 @@ Block tu Q= 8.83270076e+02   # super CKM trilinear matrix - DRbar
   3  3    -7.68067725e+02    # (T_u)_{33}
 Block td Q= 8.83270076e+02   # super CKM trilinear matrix - DRbar
   1  1    -1.95506383e-01    # (T_d)_{11}
-  1  2    -2.71705033e-06    # (T_d)_{12}
+  1  2    -2.71705034e-06    # (T_d)_{12}
   1  3     6.43508218e-05    # (T_d)_{13}
   2  1    -5.94902191e-05    # (T_d)_{21}
   2  2    -4.28020321e+00    # (T_d)_{22}
