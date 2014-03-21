@@ -1,3 +1,6 @@
+<li> 21/03/14 Trapped nan in running down to MSUSY: previously, it was giving
+a segfault since it was trying to diagonalise a matrix of nans. (Noticed by A
+Voigt). 
 <li> 25/02/14 F77 compiler now set even if CXXFLAGS isn't. Thanks to S Akula.
 <li> 25/02/14 Fixed DRbar conversion of tau and b masses
 <li> 08/01/14 README made clearer on the input/output files
