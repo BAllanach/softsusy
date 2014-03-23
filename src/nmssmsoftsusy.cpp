@@ -14,6 +14,16 @@ namespace softsusy {
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
   ydR, yeL, yeR, ynuL;
 
+
+const NmssmSoftsusy & NmssmSoftsusy::operator=(const NmssmSoftsusy & s) {
+  if (this == &s) return *this;
+  Softsusy<SoftParsNmssm>::operator=(s);
+  tSOVSMs = s.tSOVSMs;
+  tSOVSMs1loop = s.tSOVSMs1loop;
+  return *this;
+}
+
+
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.
 void NmssmSoftsusy::printall() const {
    cout << "At scale " << displayMu() << '\n';
