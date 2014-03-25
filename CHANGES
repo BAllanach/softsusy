@@ -1,3 +1,5 @@
+<li> 24/03/14 Error in flavour violation SLHA input fixed, when inputting
+symmetric matrices in an unfortunate order. Thanks to H Eberl
 <li> 21/03/14 Error when fixing EXTPAR 25 with flavour violation turned on now
 trapped. Thanks to H Eberl
 <li> 21/03/14 Trapped nan in running down to MSUSY: previously, it was giving
