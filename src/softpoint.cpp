@@ -243,8 +243,11 @@ int main(int argc, char *argv[]) {
 	double n5 = 0., mMess = 0., LAMBDA = 0., cgrav = 1.;
 	for (int i = 2; i < argc; i++) {
 	  if (starts_with(argv[i], "--n5=")) n5 = get_value(argv[i], "--n5=");
-	  else if (starts_with(argv[i], "--mMess=")) 
+	  else if (starts_with(argv[i], "--mMess=")) { 
+	    gaugeUnification = false; 
 	    mMess = get_value(argv[i], "--mMess=");
+	    mgutGuess = mMess;
+	  }
 	  else if (starts_with(argv[i], "--LAMBDA=")) 
 	    LAMBDA = get_value(argv[i], "--LAMBDA=");
 	  else if (starts_with(argv[i], "--cgrav=")) 
