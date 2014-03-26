@@ -1,5 +1,5 @@
 <li> 25/03/14 mGMSB scale of setting SUSY breaking boundary conditions now
-fixed the Mmess, at it should be (not MGUT) for command line input.
+fixed at Mmess, at it should be (not MGUT) for command line input.
 <li> 24/03/14 Error in flavour violation SLHA input fixed, when inputting
 symmetric matrices in an unfortunate order. Thanks to H Eberl
 <li> 21/03/14 Error when fixing EXTPAR 25 with flavour violation turned on now
