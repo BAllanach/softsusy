@@ -1,26 +1,52 @@
+CLEANFILES =  
+BUILT_SOURCES = 
 SUBDIRS = src doc
 
 AUTOMAKE_OPTIONS = subdir-objects
-ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
+ACLOCAL_AMFLAGS = -I m4 
 
 bin_PROGRAMS = softsusy.x softsusy-nmssm.x softpoint.x rpvsoftsusy.x rpvneut.x 
+
+AM_CXXFLAGS = -I./src
 
 lib_LTLIBRARIES = libsoft.la 
 
 softsusy_x_SOURCES = src/main.cpp
-softsusy_x_LDADD = libsoft.la  
+softsusy_x_LDADD = libsoft.la
+
+if FULL_SUSY_THRESHOLD
+softsusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
+softsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
+endif
 
 softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp
 softsusy_nmssm_x_LDADD = libsoft.la
 
-softpoint_x_SOURCES = src/softpoint.cpp 
+if FULL_SUSY_THRESHOLD
+softsusy_nmssm_x_LDADD += lib2lthresh.la libmssmparam.la 
+endif
+
+softpoint_x_SOURCES = src/softpoint.cpp
 softpoint_x_LDADD = libsoft.la
 
+if FULL_SUSY_THRESHOLD
+softpoint_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
+softpoint_x_LDADD += lib2lthresh.la libmssmparam.la 
+endif
+
 rpvsoftsusy_x_SOURCES = src/rpvmain.cpp
-rpvsoftsusy_x_LDADD = libsoft.la 
+rpvsoftsusy_x_LDADD = libsoft.la
+
+if FULL_SUSY_THRESHOLD
+rpvsoftsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
+endif
 
 rpvneut_x_SOURCES = src/rpvneutmain.cpp
-rpvneut_x_LDADD = libsoft.la 
+rpvneut_x_LDADD = libsoft.la
+
+if FULL_SUSY_THRESHOLD
+rpvneut_x_LDADD += lib2lthresh.la libmssmparam.la 
+endif
 
 pkginclude_HEADERS = \
 src/nmProcessSpec.f \
@@ -45,6 +71,11 @@ libsoft_la_LDFLAGS = $(FLIBS)
 DOCFILES=doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
 doc/nmssmManual.pdf
 EXTRA_DIST=$(DOCFILES)
+
+if FULL_SUSY_THRESHOLD
+include src/two_loop_thresholds/mssmparam.amk
+include src/two_loop_thresholds/two_loop_th.amk
+endif
 
 OUTPUTFILES = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
  inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output inOutFiles/neutOutputTest \
@@ -129,7 +160,7 @@ benchmarks/rpv3.1.in benchmarks/rpv3.2.in benchmarks/rpv3.3.in \
 benchmarks/rpv3.4.in benchmarks/rpv3.5.in 
 
 dist_pkgdata_DATA = softsusy_nmssmtools.x.in setup_nmssmtools.sh Makefile.nmssmtools $(INPUTFILES) $(OUTPUTFILES) CHANGES GUIDELINES COPYING $(DOCFILES)
-CLEANFILES=$(OUTPUTFILES) *.x
+CLEANFILES += $(OUTPUTFILES) *.x
 
 inOutFiles/%Output : inOutFiles/%Input softpoint.x 
 	./softpoint.x leshouches < $< > $@
@@ -155,5 +186,8 @@ updateWeb: dist
 	scp -r doc allanach@login.hepforge.org:~/softsusy/public_html/; \
 	doxygen softsusy.cfg &&\
 	scp -r html allanach@login.hepforge.org:~/softsusy/public_html; \
-	scp -r CHANGES allanach@login.hepforge.org:~/softsusy/public_html/CHANGES.html.3.4.0; \
+	scp -r CHANGES $cedar:~/softsusy/public_html/CHANGES.html.3.4.0; \
 	rm -fr html *.tar.gz
+
+install-data-local:
+	rm -f softsusy.x softsusy-nmssm.x softpoint.x rpvsoftsusy.x rpvneut.x *.la

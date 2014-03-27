@@ -1,22 +1,45 @@
 -------------------------------------------------
-		   SOFTSUSY
+		 SOFTSUSY
 -------------------------------------------------
 
+
+PREREQUISITES:
+--------------
+
+To include the three-loop running with leading two-loop thresholds for the strong coupling constant and the third generation of fermions within the MSSM
+
+- pkg-config
+- GiNaC 1.5 (with CLN)
+- autogen 5.10
+
+On Debian/Ubuntu system one can issue the following command to install 
+the prerequsites:
+
+sudo apt-get install pkg-config autogen libginac-dev
 
 QUICK INSTALLATION AND RUN TEST
 -------------------------------
 
 Download the gzipped tarball, from the SOFTSUSY homepage 
-http://projects.hepforge.org/softsusy/ for instance softsusy-3.4.0.tar.gz. Then,
+http://projects.hepforge.org/softsusy/ for instance softsusy-3.5.0.tar.gz. Then,
 type (on a linux box)
 
-> tar -xvzf softsusy-3.4.0.tar.gz
-> cd softsusy-3.4.0
-> ./configure 
+> tar -xvzf softsusy-3.5.0.tar.gz
+> cd softsusy-3.5.0
+> ./configure --enable-full_three_loop --enable-full_susy_threshold (These two flags force the inclusion of the full SUSY three-loop RGEs and two-loop threshold corrections to the strong coupling constant and third generation of fermions within the MSSM)  
 > make
+> make install
 
-which should compile the code and run some sample commands. There are five C++
-test programs, four of which can be run by the commands 
+which should compile the code and run some sample commands. 
+"make install" command is crucial for the evaluation of two-loop threshold effects, since corresponding two-loop expressions are stored in the form of GiNaC archive which could be found by main programs (e.g. softpoint.x) only if  ``make install'' is issued. After installation binary files can be found in PREFIX/bin where PREFIX is the installation prefix specified during configuration (PREFIX defaults to `/usr/local').
+
+Additional configure switches:
+ --enable-debug   A lot of debug printing (not related to original SOFTSUSY PRINTOUT option)
+ --prefix         Where the installation is done. Notice that the binaries go into prefix/bin  
+
+Since evaluation of two-loop decoupling corrections is rather a time-consuming process (especially thresholds for b-quark mass) they are not NOT turned on by default. Three-loop RGEs are also switched off.
+
+There are five C++ test programs, four of which can be run by the commands 
 > ./softsusy.x
 > ./rpvsoftsusy.x 
 > ./rpvneut.x
@@ -112,7 +135,7 @@ INPUT AND INFO FILES
     Les Houches Accord format for R-parity violation
     * [rpvHouchesOutput] is the output from the R-parity violating test program
     rpvmain.cpp
-
+    
 LICENSE
 -------
 

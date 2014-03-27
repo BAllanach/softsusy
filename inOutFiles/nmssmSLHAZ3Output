@@ -23,9 +23,9 @@ Block MINPAR               # SUSY breaking input parameters
      2    2.00000000e+02   # m12
      5   -3.00000000e+02   # A0
 Block EXTPAR               # scale of SUSY breaking BCs
-     0    2.71624184e+16   # MX scale
+     0    2.71624185e+16   # MX scale
 # SOFTSUSY-specific non SLHA information:
-# MIXING=2 Desired accuracy=1.00000000e-04 Achieved accuracy=7.92655002e-05
+# MIXING=2 Desired accuracy=1.00000000e-04 Achieved accuracy=7.92654221e-05
 # Z3 = 1, SoftHiggsOut = 0
 Block MASS                      # Mass spectrum
 # PDG code     mass             particle
@@ -37,12 +37,12 @@ Block MASS                      # Mass spectrum
         46     5.23673491e+02   # A0(2)
         37     5.27300192e+02   # H+
    1000021     5.19661018e+02   # ~g
-   1000022     7.75050162e+01   # ~neutralino(1)
+   1000022     7.75050163e+01   # ~neutralino(1)
    1000023     1.44570058e+02   # ~neutralino(2)
    1000024     1.44126968e+02   # ~chargino(1)
    1000025    -3.35845794e+02   # ~neutralino(3)
    1000035     3.51165661e+02   # ~neutralino(4)
-   1000037     3.53286428e+02   # ~chargino(2)
+   1000037     3.53286427e+02   # ~chargino(2)
    1000045     5.19814316e+02   # ~neutralino(5)
    1000001     6.01694117e+02   # ~d_L
    1000002     5.96645074e+02   # ~u_L
@@ -69,12 +69,12 @@ Block NMHmix                # CP even Higgs mixing matrix
   1  1     1.06823763e-01   # S_{1,1}
   1  2     9.92679946e-01   # S_{1,2}
   1  3    -5.63489862e-02   # S_{1,3}
-  2  1     8.39599268e-02   # S_{2,1}
+  2  1     8.39599269e-02   # S_{2,1}
   2  2     4.74648194e-02   # S_{2,2}
   2  3     9.95338044e-01   # S_{2,3}
   3  1     9.90726710e-01   # S_{3,1}
   3  2    -1.11056812e-01   # S_{3,2}
-  3  3    -7.82749650e-02   # S_{3,3}
+  3  3    -7.82749651e-02   # S_{3,3}
 Block NMAmix                # CP odd Higgs mixing matrix
   1  1     2.10804852e-01   # P_{1,1}
   1  2     2.10804854e-02   # P_{1,2}
@@ -98,7 +98,7 @@ Block NMNmix                # neutralino mixing matrix
   3  3     6.91907891e-01   # N_{3,3}
   3  4     7.11218329e-01   # N_{3,4}
   3  5     1.57935067e-02   # N_{3,5}
-  4  1    -1.23266435e-01   # N_{4,1}
+  4  1    -1.23266436e-01   # N_{4,1}
   4  2     3.07677158e-01   # N_{4,2}
   4  3     6.45416036e-01   # N_{4,3}
   4  4    -6.85489644e-01   # N_{4,4}
@@ -183,7 +183,7 @@ Block ae Q= 4.49423842e+02
   3  3    -4.16318428e+02      # Atau(Q)MSSM DRbar
 Block NMSSMRUN Q= 4.49423842e+02   # NMSSM specific DRbar parameters
      1     1.02979067e-01      # lambda(Q)
-     2     8.17393737e-02      # kappa(Q)
+     2     8.17393738e-02      # kappa(Q)
      3    -1.73156988e+02      # Alambda(Q)
      4    -2.87928246e+02      # Akappa(Q)
      5     3.26933447e+02      # lambda*<S>(Q)
@@ -266,7 +266,7 @@ Block AEATQ2 Q= 5.79479550e+02
   3  3    -4.15827546e+02      # Atau(Q)NMSSM DRbar
 Block NMSSMRUNATQ2 Q= 5.79479550e+02   # NMSSM specific DRbar parameters
      1     1.03158090e-01      # lambda(Q)
-     2     8.17529814e-02      # kappa(Q)
+     2     8.17529815e-02      # kappa(Q)
      3    -1.76515238e+02      # Alambda(Q)
      4    -2.87999774e+02      # Akappa(Q)
      5     3.27483631e+02      # lambda*<S>(Q)
