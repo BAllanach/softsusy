@@ -14,7 +14,7 @@
 
 #include <cmath>
 namespace softsusy{
-  const char SOFTSUSY_VERSION[] = "3.4.0";
+  const char SOFTSUSY_VERSION[] = "3.5.0";
 
   /// uncomment if you want checking of vector/matrices bounds: slows code
   /// down. It also now checks over/underflows in matrix multiplication etc
@@ -98,6 +98,33 @@ namespace softsusy{
   extern int numTry;
   /// Include eq (62) from hep-ph/0210268: degenerate gluino/squark mass limit
   extern bool includeTwoLoopMssmCorrectionsToMt;
+  /// Threshold to prevent the re-evaluation of two-loop leading SUSY 
+  /// thresholds corrections
+  extern double TWOLOOP_NUM_THRESH;
+  /// Controls the use of MSSM three-loop RGEs
+  extern bool SOFTSUSY_THREELOOP_RGE;
+  /// Includes the evaluation of leading two-loop thresholds corrections
+  /// to the strong coupling constant and to the third family of fermion masses 
+  extern bool SOFTSUSY_TWOLOOP;
+  /// Adds the evaluation of \f${\mathcal O}(\alpha_s^2)\f$ pole 
+  /// mass correction to the top quark
+  extern bool SOFTSUSY_TWOLOOP_TQUARK_STRONG;
+  /// Adds the evaluation \f${\mathcal O}(\alpha_s^2)\f$ decoupling correction
+  extern bool SOFTSUSY_TWOLOOP_BQUARK_STRONG;
+  /// Adds the evaluation \f${\mathcal O}(\alpha_s alpha_y+\alpha_y^2)\f$ 
+  /// decoupling correction
+  extern bool SOFTSUSY_TWOLOOP_BQUARK_YUKAWA;
+  /// Adds the evaluation \f${\mathcal O}(\alpha_y^2)\f$ decoupling correction
+  extern bool SOFTSUSY_TWOLOOP_TAU_YUKAWA;
+  /// Adds the evaluation \f${\mathcal O}(\alpha_s^2)\f$ strong 
+  /// coupling decoupling corrections
+  extern bool SOFTSUSY_TWOLOOP_GS;
+  /// just implements decoupling procedure "consistently" for
+  /// the case of b-quark mass. It requires the external momentum to be zero. 
+  /// However, the difference between the p^2 = 0 and p^2 = mb^2 cases
+  /// is expected to be of O((mb/MSUSY)^2), which we can formally neglect.
+  extern bool MB_DECOUPLING;
+  
 }
 
 #endif

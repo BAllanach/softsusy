@@ -75,5 +75,32 @@ namespace softsusy {
   /// Default: use SOFTSUSY conventions for masses of sparticles in loops, ie
   /// tree-level masses computed with the 2-loop Higgs potential
   bool sphenoMassConv = false;
+  /// Threshold to prevent the re-evaluation of two-loop leading SUSY thresholds
+  /// corrections. By default we set it to 10%. 
+  double TWOLOOP_NUM_THRESH = 0.1;
+  /// Controls the use of MSSM three-loop RGEs
+  bool SOFTSUSY_THREELOOP_RGE = true;
+  /// Includes the evaluation of leading two-loop thresholds corrections
+  /// to the strong coupling constant and to the third family of fermion masses 
+  bool SOFTSUSY_TWOLOOP = true;
+  /// Adds the evaluation of \f${\mathcal O}(\alpha_s^2)\f$ pole 
+  /// mass correction to the top quark
+  bool SOFTSUSY_TWOLOOP_TQUARK_STRONG = true;
+  /// Adds the evaluation \f${\mathcal O}(\alpha_s^2)\f$ decoupling correction
+  bool SOFTSUSY_TWOLOOP_BQUARK_STRONG = true;
+  /// Adds the evaluation \f${\mathcal O}(\alpha_s alpha_y+\alpha_y^2)\f$ 
+  /// decoupling correction
+  bool SOFTSUSY_TWOLOOP_BQUARK_YUKAWA = true;
+  /// Adds the evaluation \f${\mathcal O}(\alpha_y^2)\f$ decoupling correction
+  bool SOFTSUSY_TWOLOOP_TAU_YUKAWA = true;
+  /// Adds the evaluation \f${\mathcal O}(\alpha_s^2)\f$ strong 
+  /// coupling decoupling corrections
+  bool SOFTSUSY_TWOLOOP_GS = true;
+  /// just implements decoupling procedure "consistently" for
+  /// the case of b-quark mass. It requires the external momentum to be zero. 
+  /// However, the difference between the p^2 = 0 and p^2 = mb^2 cases
+  /// is expected to be of O((mb/MSUSY)^2), which we can formally neglect.
+  bool MB_DECOUPLING = false;
+
 }
 /// end of global variable declaration

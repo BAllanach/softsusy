@@ -18,6 +18,13 @@
 #include "lowe.h"
 #include "utils.h"
 
+//rruiz
+#include "tensor.h"
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 namespace softsusy {
 
 const static int numSusyPars = 33;
@@ -202,6 +209,11 @@ istream & operator >>(istream &left, MssmSusy &s);
 /// arguments. 
 void setBetas(DoubleMatrix &, DoubleVector  &, DoubleVector  &, DoubleVector
 	       &, DoubleVector  &);
+
+void setBetasThreeLoop(Tensor &, DoubleMatrix &, DoubleMatrix &, 
+       DoubleMatrix &, DoubleVector &, DoubleVector &, DoubleVector &,
+       DoubleVector &, DoubleVector &, DoubleVector &, DoubleVector &,  
+       DoubleVector &); 
 
 inline const MssmSusy & MssmSusy::displaySusy() const { return *this; }
 

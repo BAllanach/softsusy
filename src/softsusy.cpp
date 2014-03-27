@@ -10,6 +10,7 @@
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
   ydR, yeL, yeR, ynuL;
 
+//#define TWOLOOP_NUM_THRESH 0.01
 
 template<class SoftPars>
 const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const Softsusy<SoftPars>& s) {
@@ -2433,13 +2434,17 @@ double Softsusy<SoftPars>::calcRunMtQCD() const {
     sqr(displayGaugeCoupling(3)) / 3.0;
   
   /// 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
-  double l = 2.0 * log(mt / displayMu());
+  //rruiz: comment this out
+  //double l = 2.0 * log(mt / displayMu());
 
-double  twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
-    (-0.5383144424082562 + 0.1815337873591885 * l - 
-     0.03799544386587666 * sqr(l));
+  //double  twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
+  //  (-0.5383144424082562 + 0.1815337873591885 * l - 
+  //   0.03799544386587666 * sqr(l));
 
-  return qcd + twoLoopQcd;
+  //return qcd + twoLoopQcd;
+
+  return qcd;
+
 }
 
 template<class SoftPars>
@@ -2675,7 +2680,7 @@ double Softsusy<SoftPars>::calcRunMtCharginos() const {
 /// Implicitly calculates at the current scale.
 template<class SoftPars>
 double Softsusy<SoftPars>::calcRunningMt() {
-  double    mtpole  = dataSet.displayPoleMt();
+  double mtpole  = dataSet.displayPoleMt();
   double resigmat = 0.0; 
   double qcd = 0.0, stopGluino = 0.0, higgs = 0.0; 
   //one and two loop qcd
@@ -2697,7 +2702,58 @@ double Softsusy<SoftPars>::calcRunningMt() {
     
   resigmat = resigmat * mtpole / (16.0 * sqr(PI));  
 
+#ifdef FULL_SUSY_THRESHOLD
+  decoupling_corrections.dmt.one_loop = qcd + stopGluino + higgs + 
+     neutralinos + charginoContribution;
+
+  decoupling_corrections.dmt.one_loop /= (-16.0 * sqr(PI));  
+  decoupling_corrections.dmt.two_loop = 0.0;
+  if (SOFTSUSY_TWOLOOP) {
+    static bool needcalc = true; // flag: calculate corrections if two-previous iterations gave different results
+    using namespace GiNaC;
+    if (SOFTSUSY_TWOLOOP_TQUARK_STRONG) {  
+      	exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+// hack
+      	ex test = numeric(0);
+	if (needcalc) test = tquark_corrections::eval_tquark_twoloop_strong_pole(drbrp);
+	if (is_a<numeric>(test)) {
+// back converion Mt -> mt(mu)
+// dmt_as2 is already properly normalized
+// one need to normalize only 1-loop contribution
+  	  double dmtas2 = ex_to<numeric>(test).to_double();
+	  if (close(dmtas2, decoupling_corrections.dmt.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false; 
+          if (needcalc) 
+		decoupling_corrections.dmt.two_loop = dmtas2;
+	  else {
+			dmtas2 =  decoupling_corrections.dmt.two_loop;
+			dout << "mt: No calculation" << endl;
+	  }
+	  double dmtas = (qcd + stopGluino)/(16.0 * sqr(PI));
+	  double dmt_MT = (dmtas2 - dmtas*dmtas);
+	  resigmat -= mtpole*dmt_MT;
+	  dout << "two-loop tquark strong pole contribution: " 
+		<< dmtas2 << endl
+		<< "two-loop total correction (Mt -> mt)" 
+		<< dmt_MT << endl;
+	}
+	else {
+	  dout <<" Not numeric: 2loop pole t-quark " << endl;
+	}
+    }
+  
+  }
+#else
+   // 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
+   double mt = forLoops.mt;
+   double l = 2.0 * log(mt / displayMu());
+   double twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
+    (-0.538314 + 0.181534*l - 0.0379954*sqr(l));
+   resigmat = resigmat + mtpole*(twoLoopQcd / (16.0 * sqr(PI)));
+   //decoupling_corrections.dmt.two_loop = twoLoopQcd / (16.0 * sqr(PI)); 
+#endif
+
   return mtpole + resigmat;
+
 }
 
 template<class SoftPars>
@@ -2722,6 +2778,13 @@ double Softsusy<SoftPars>::calcRunMbSquarkGluino() const {
      alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
   double p = mbMZ;
   double mbMSSM  = displayDrBarPars().mb;
+
+#ifdef FULL_SUSY_THRESHOLD
+  if (MB_DECOUPLING) {
+   p = 0;
+  };
+#endif
+
   double deltaSquarkGluino = - alphasMZ / (3.0 * PI) *
      (b1(p, mg, msbot1, displayMu()) + 
       b1(p, mg, msbot2, displayMu()) - 
@@ -2743,6 +2806,12 @@ double Softsusy<SoftPars>::calcRunMbChargino() const {
   double thetat = displayDrBarPars().thetat;
   DoubleVector bPsicBstopl(2), bPsicBstopr(2), 
     aPsicBstopl(2), aPsicBstopr(2); 
+
+#ifdef FULL_SUSY_THRESHOLD
+  if (MB_DECOUPLING) {
+   p = 0;
+  };
+#endif
 
   aPsicBstopl(1) = g;
   aPsicBstopr(2) = -displayDrBarPars().ht;
@@ -2817,6 +2886,13 @@ double Softsusy<SoftPars>::calcRunMbHiggs() const {
   double  thetaWDRbar = asin(calcSinthdrbar());
   double  cw2DRbar    = sqr(cos(thetaWDRbar));
   double g  = displayGaugeCoupling(2);
+
+#ifdef FULL_SUSY_THRESHOLD
+  if (MB_DECOUPLING) {
+   p = 0;
+  };
+#endif
+
   deltaHiggs = 0.5 * sqr(hb) * 
     (sqr(ca) * (b1(p, mb, mH, q) + b0(p, mb, mH, q)) + 
      sqr(sa) * (b1(p, mb, mh, q) + b0(p, mb, mh, q)) + 
@@ -2848,6 +2924,13 @@ double Softsusy<SoftPars>::calcRunMbNeutralinos() const {
   DoubleVector mneut(displayDrBarPars().mnBpmz);
   DoubleVector aPsi0Bsbotr(4), bPsi0Bsbotr(4), aPsi0Bsbotl(4),
     bPsi0Bsbotl(4); 
+
+#ifdef FULL_SUSY_THRESHOLD
+  if (MB_DECOUPLING) {
+   p = 0;
+  };
+#endif
+
   aPsi0Bsbotr(1) = gp / (root2 * 3.0) * 2.0;
   bPsi0Bsbotl(1) = gp / (root2 * 3.0);
   bPsi0Bsbotl(2) = -root2 * g * 0.5;
@@ -2900,7 +2983,7 @@ return deltaNeutralino;
 
 
 template<class SoftPars>
-double Softsusy<SoftPars>::calcRunningMb() const {
+double Softsusy<SoftPars>::calcRunningMb() {
 
   if (displayMu() != displayMz()) {
     ostringstream ii;
@@ -2922,11 +3005,56 @@ double Softsusy<SoftPars>::calcRunningMb() const {
   /// Neutralinos
   double deltaNeutralino = calcRunMbNeutralinos();
 
+  double dzetamb = 0.;
+#ifdef FULL_SUSY_THRESHOLD
+
+  decoupling_corrections.dmb.one_loop = deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino;
+  decoupling_corrections.dmb.two_loop = 0.0;
+
+  if (SOFTSUSY_TWOLOOP) {
+   static bool needcalc = true; // flag: calculate corrections if two-previous iterations gave different results
+   using namespace GiNaC;
+
+// AVB: this also include top quark contribution (decoupling)!
+   exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+   if (SOFTSUSY_TWOLOOP_BQUARK_STRONG && (needcalc)) {
+		ex test = bquark_corrections::eval_bquark_twoloop_strong_dec(drbrp);
+		if (is_a<numeric>(test))
+  			dzetamb += ex_to<numeric>(test).to_double();
+		dout << "two-loop bquark strong decoupling constant: " 
+		     << test << endl;
+
+   }
+   if (SOFTSUSY_TWOLOOP_BQUARK_YUKAWA && (needcalc)) {
+ 		ex test = bquark_corrections::eval_bquark_twoloop_yukawa_dec(drbrp);
+		if (is_a<numeric>(test))
+  			dzetamb += ex_to<numeric>(test).to_double();
+		dout << "two-loop bquark yukawa decoupling constant: " 
+		     << test << endl;
+   }
+   if (close(dzetamb, decoupling_corrections.dmb.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false; 
+   if (needcalc) decoupling_corrections.dmb.two_loop = dzetamb;
+   else {
+		dzetamb = decoupling_corrections.dmb.two_loop;
+		dout << "mb: No calculation" << endl;
+    }
+   //dout <<" Mb dec (sq-gl): " << deltaSquarkGluino << endl;
+   //dout <<" Mb dec (sq-cha): " << deltaSquarkChargino << endl;
+   //dout <<" Mb dec (higgs): " << deltaHiggs << endl;
+   //dout <<" Mb dec (neut): " << deltaNeutralino << endl;
+   dout << " Mb 1-loop dec: " << decoupling_corrections.dmb.one_loop << endl;
+   dout << " Mb 2-loop dec: " << decoupling_corrections.dmb.two_loop << endl;
+   dout << " mb=" << mbMZ / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino + dzetamb) << endl;
+   dout << " mb_expanded=" << mbMZ * (1.0 - deltaSquarkGluino - deltaSquarkChargino - deltaHiggs - deltaNeutralino + sqr(deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino)- dzetamb) << endl;
+  }
+
+#endif
+
   /// it's NOT clear if this resummation is reliable in the full 1-loop scheme
   /// but it's at least valid to 1 loop. Warning though: if you add higher
   /// loops, you'll have to re-arrange.
   return mbMZ / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs
-		 + deltaNeutralino);
+		 + deltaNeutralino + dzetamb);
 }
 template<class SoftPars>
 double Softsusy<SoftPars>::calcRunMtauDrBarConv() const {
@@ -3079,7 +3207,7 @@ double Softsusy<SoftPars>::calcRunMtauNeutralinos(double mTauSMMZ) const {
 }
 /// Full BPMZ expression
 template<class SoftPars>
-double Softsusy<SoftPars>::calcRunningMtau() const {
+double Softsusy<SoftPars>::calcRunningMtau() {
   /// MSbar value
   double mTauSMMZ = displayDataSet().displayMass(mTau);
   // double mTauPole = MTAU;
@@ -3092,6 +3220,41 @@ double Softsusy<SoftPars>::calcRunningMtau() const {
   /// Neutralinos
   double  sigmaNeutralino = calcRunMtauNeutralinos(mTauSMMZ);
 
+  double dzetamtau2 = 0.;
+#ifdef FULL_SUSY_THRESHOLD
+  
+  const double dzetamtau = sigmaNeutralino + sigmaChargino + sigmaHiggs;
+
+  decoupling_corrections.dmtau.one_loop = -dzetamtau;
+  decoupling_corrections.dmtau.two_loop = 0.0;
+  if (SOFTSUSY_TWOLOOP) {
+    dzetamtau2 = -dzetamtau*dzetamtau;
+    using namespace GiNaC;
+    exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+    static bool needcalc = true;  // flag: calculate corrections if two-previous iterations gave different results
+    if (SOFTSUSY_TWOLOOP_TAU_YUKAWA) {
+// hack 
+	ex test = 0;
+  	if (needcalc) test = tau_corrections::eval_tau_twoloop_yukawa_dec(drbrp);
+	double dzmtau2 = 0;
+	if (is_a<numeric>(test)) dzmtau2 = ex_to<numeric>(test).to_double();
+
+        if (close(dzmtau2, decoupling_corrections.dmtau.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false;
+        if (needcalc) {
+			decoupling_corrections.dmtau.two_loop = dzmtau2;
+			dout << "mtau: storing..." << endl;
+	}
+        else {
+                        dzmtau2 =  decoupling_corrections.dmtau.two_loop;
+                        dout << "mtau: No calculation" << endl;
+        }
+  	dzetamtau2 += dzmtau2;
+        dout << "one-loop tau-lepton decoupling constant: " << dzetamtau << endl;
+	dout << "two-loop tau-lepton yukawa decoupling constant: " << dzmtau2 << endl;
+	dout << "two-loop tau-lepton yukawa decoupling constant, expanded: " << dzetamtau2 << endl;
+    }
+  }
+  
   /// old calculation of tau mass
   /**  double delta = sqr(displayGaugeCoupling(2)) / (16 * sqr(PI)) *
     (-displaySusyMu()) * displayGaugino(2) * displayTanb() /
@@ -3101,7 +3264,10 @@ double Softsusy<SoftPars>::calcRunningMtau() const {
 	b0(mTauPole, -displaySusyMu(), displayDrBarPars().msnu(3), displayMu()));*/
 
   /// From hep-ph/9912516
-  return mTauSMMZ * (1.0 + sigmaNeutralino + sigmaChargino + sigmaHiggs);
+#endif
+
+  return mTauSMMZ * (1.0 + sigmaNeutralino + sigmaChargino + sigmaHiggs - dzetamtau2);
+
 }
 
 template<class SoftPars>
@@ -6731,20 +6897,85 @@ double Softsusy<SoftPars>::ufb3sl(double mx) {
 /// Input alphas in MSbar and it returns it in DRbar scheme. 
 /// From hep-ph/9606211
 template<class SoftPars>
-double Softsusy<SoftPars>::qcdSusythresh(double alphasMSbar, double q) const {
+double Softsusy<SoftPars>::qcdSusythresh(double alphasMSbar, double q) {
   drBarPars tree(displayDrBarPars());
   double mt = tree.mt;
+
+/*
+#ifdef FULL_SUSY_THRESHOLD
+  // AVB: FIXME: alphasMSbar in righthand side should not appear 
+  //
+  double alphasDRbar_prev = 0.;
+
+  if (getenv("ALPHAS_MSBAR")!=NULL) {
+   alphasDRbar_prev = alphasMSbar;
+  }
+  else alphasDRbar_prev = sqr(displayGaugeCoupling(3))/(4.0 * PI);
+
+  //dout<<" alpha_S difference: " << (alphasDRbar_prev - alphasMSbar)/alphasMSbar*100 << " %" <<  endl;
+
+#endif
+*/
+
   double deltaAlphas = alphasMSbar / (2.0 * PI) *
     (0.5 - 2.0 / 3.0 * log(mt / q) - 
      2.0 * log(fabs(tree.mGluino) / q));
   
-  int i,j;
+  int i, j;
   for (i=1; i<=2; i++)
     for (j=1; j<=3; j++)
       deltaAlphas = deltaAlphas - alphasMSbar / (12.0 * PI) * 
 	(log(tree.mu(i, j) / q) + 
 	 log(tree.md(i, j) / q));
-  return alphasMSbar / (1.0 - deltaAlphas); 
+ 
+  double dalpha_2 = 0.;
+#ifdef FULL_SUSY_THRESHOLD
+  //dout << "one-loop alpha_s contribution: " 
+  //		<< -deltaAlphas << endl;
+
+  decoupling_corrections.das.one_loop = -deltaAlphas;	
+
+  if (SOFTSUSY_TWOLOOP) {
+
+   if (SOFTSUSY_TWOLOOP_GS) {
+     using namespace GiNaC;
+     exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+     ex test = gs_corrections::eval_gs_twoloop_strong(drbrp);
+     if (is_a<numeric>(test)) {
+  	double dgs2 = ex_to<numeric>(test).to_double();
+	dgs2 = 2.0*dgs2; 
+	decoupling_corrections.das.two_loop = dgs2;
+	dout << "two-loop alpha_s: " << dgs2 << endl;
+// g_MS = g_DR ( 1 + dz1 + dz2)
+// a_sMZ = a_sDR (1 + 2 dz1 + dz1^2 + 2 dz2)	
+// expressing dz1 in terms of dzas1  = -2 dz1 (Allanach convention) 
+// a_sMZ = a_sDR (1 - dzas1 + (-dzas1)^2/4 + 2 dz2)
+	// was	double dalpha_2 = deltaAlphas*deltaAlphas + 2.0*dgs2*alphasMSbar*alphasMSbar / (16.0 * PI * PI);
+	dalpha_2 = deltaAlphas*deltaAlphas/4.0 + dgs2;
+	dout << "two-loop alpha_s contribution: " << dalpha_2 << endl;
+     }
+     else {
+        dout << " Not numeric: 2loop gs " << test << endl;
+     }
+   }
+
+   //dout << " alpha_S (MZ) before: " << alphasDRbar_prev <<  endl);
+   dout << " alpha_S (MZ) correction ressumed w/o 2l: " << 1 / (1.0 - deltaAlphas ) <<  endl;
+   dout << " alpha_S (MZ) correction ressumed w 2l: " << 1 / (1.0 - deltaAlphas + dalpha_2 ) <<  endl;
+
+  }
+#endif
+
+  const double alphasDRbar_post = alphasMSbar / (1.0 - deltaAlphas + dalpha_2);
+
+#ifdef FULL_SUSY_THRESHOLD
+  if (SOFTSUSY_TWOLOOP_GS) dout<< " alpha_S (MZ) after: " << alphasDRbar_post << endl;
+#endif 
+
+  return alphasDRbar_post;
+
+  //return alphasMSbar / (1.0 - deltaAlphas); 
+
 }
 
 /// Does SUSY (and other) threshold corrections to alphaEm - returns alpha in
@@ -6999,7 +7230,15 @@ void Softsusy<SoftPars>::fixedPointIteration
     double tol = TOLERANCE;
     
     MssmSusy t(guessAtSusyMt(tanb, oneset));
-    t.setLoops(2); /// 2 loops should protect against ht Landau pole 
+    // default SoftSusy loop number
+    int lpnum = 2;
+
+#ifdef FULL_SUSY_THRESHOLD 
+    if (SOFTSUSY_THREELOOP_RGE) lpnum = 3; 
+    dout << lpnum << "-loop RGE's enabled" << endl;
+#endif
+
+    t.setLoops(lpnum); /// >= 2 loops should protect against ht Landau pole 
     t.runto(mxBC); 
    
     setSusy(t);
@@ -7027,7 +7266,7 @@ void Softsusy<SoftPars>::fixedPointIteration
   
     physical(0);
   
-    setThresholds(3); setLoops(2);
+    setThresholds(3); setLoops(lpnum);
     
     itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 
 		gaugeUnification, ewsbBCscale);

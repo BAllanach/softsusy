@@ -1,0 +1,32 @@
+# Library to feed  GiNaC code with parameters (code stolen from A. Sheplyakov)
+
+lib_LTLIBRARIES += libmssmparam.la
+
+libmssmparam_la_SOURCES = \
+src/two_loop_thresholds/softsusy_exmap.hpp \
+src/two_loop_thresholds/softsusy_exmap.cpp
+
+nodist_libmssmparam_la_SOURCES = \
+src/mssmparam.cpp \
+src/mssmparam.hpp 
+
+CLEANFILES += \
+src/mssmparam.cpp \
+src/mssmparam.hpp 
+
+BUILT_SOURCES += \
+src/mssmparam.cpp \
+src/mssmparam.hpp 
+
+#src/%.cpp src/%.hpp:: src/two_loop_thresholds/%.def
+#	@AUTOGEN@  -T $(basename $^).tpl $^
+        	
+src/%.cpp src/%.hpp:: src/two_loop_thresholds/%.def
+	@AUTOGEN@  -Lsrc/two_loop_thresholds $(basename $^).def
+	mv $(top_dir)$/mssmparam.cpp  $(top_dir)$/mssmparam.hpp  $(top_dir)$/src
+
+
+EXTRA_DIST += \
+src/two_loop_thresholds/mssmparam.def \
+src/two_loop_thresholds/mssmparam.tpl 
+

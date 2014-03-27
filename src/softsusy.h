@@ -15,6 +15,10 @@
 #ifndef SOFTSUSY_H
 #define SOFTSUSY_H
 
+#ifdef HAVE_CONFIG_H
+ #include <config.h>
+#endif
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -30,6 +34,17 @@
 
 #include "twoloophiggs.h"
 #include "mssmUtils.h"
+
+#ifdef FULL_SUSY_THRESHOLD
+ #include <ginac/ginac.h>
+ #include "two_loop_thresholds/softsusy_exmap.hpp"
+ #include "mssmparam.hpp"
+ #include "two_loop_thresholds/tau_corrections.hpp"
+ #include "two_loop_thresholds/bquark_corrections.hpp"
+ #include "two_loop_thresholds/tquark_corrections.hpp"
+ #include "two_loop_thresholds/gs_corrections.hpp"
+ #include "two_loop_thresholds/dec_cor_helper.hpp"
+#endif
 
 namespace softsusy {
 
@@ -131,6 +146,11 @@ public:
   using SoftPars::runto;
 
   typedef typename SoftPars::susy_type Susy;
+
+#ifdef FULL_SUSY_THRESHOLD
+  /// Public field :: only for informational purpose	
+  SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
+#endif
 
   //  void (*boundaryCondition)(Softsusy &, const DoubleVector &);
   /// Default constructor fills object with zeroes
@@ -596,7 +616,7 @@ public:
   /// Does SUSY (and other) threshold corrections to alphaS
   /// Input alphas in MSbar and it returns it in DRbar scheme. 
   /// From hep-ph/9606211
-  double qcdSusythresh(double alphasMSbar, double Q) const;
+  double qcdSusythresh(double alphasMSbar, double Q);
   /// Calculates the best scale at which to do symmetry breaking:
   /// \f$ M_{SUSY}=\sqrt{m_{{\tilde t}_1 {\tilde t}_2}} \f$. Should only be
   /// called after calcDrBarPars.
@@ -637,7 +657,7 @@ public:
   virtual double calcRunMtauHiggs() const;
   /// Applies 1-loop SUSY corrections to pole mtau in order to
   /// return the DRbar running value at the current scale
-  virtual double calcRunningMtau() const;  
+  virtual double calcRunningMtau() ;  
  
   ///  calculates factor to convert to DrBar for mb
   virtual double calcRunMbDrBarConv() const;
@@ -655,7 +675,8 @@ public:
   virtual double calcRunMbNeutralinos() const;
   /// Applies approximate 1-loop SUSY corrections to mb(MZ) in order to
   /// return the DRbar running value
-  virtual double calcRunningMb() const;
+  //rruiz: remove const
+  virtual double calcRunningMb();
   /*
   /// Calculates top Yukawa coupling, supply Higgs vev parameter at current
   /// scale 
