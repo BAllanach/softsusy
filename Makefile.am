@@ -1,6 +1,13 @@
-SUBDIRS = src doc
-
+lib_LTLIBRARIES = 
+bin_PROGRAMS =
+#SUBDIRS = src doc
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
+
+
+include src/softsusy.amk
+include doc/doc.amk
+
+
 
 TESTOUTPUT = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
  inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output
@@ -90,21 +97,27 @@ benchmarks/rpv3.4.in benchmarks/rpv3.5.in
 
 
 dist_pkgdata_DATA = softsusy_nmssmtools.x.in setup_nmssmtools.sh Makefile.nmssmtools $(INPUTFILES) $(OUTPUTFILES) CHANGES GUIDELINES COPYING $(DOCFILES)
+
 CLEANFILES=$(OUTPUTFILES) *.x
 
 inOutFiles/%Output : inOutFiles/%Input softpoint.x 
+	$(install_sh) -d inOutFiles
 	./softpoint.x leshouches < $< > $@
 
 inOutFiles/outputTest: softsusy.x
+	$(install_sh) -d inOutFiles
 	./softsusy.x > inOutFiles/outputTest
 
 inOutFiles/outputTest-nmssm: softsusy-nmssm.x
+	$(install_sh) -d inOutFiles
 	./softsusy-nmssm.x > inOutFiles/outputTest-nmssm
 
 inOutFiles/rpvOutputTest: rpvsoftsusy.x
+	$(install_sh) -d inOutFiles
 	./rpvsoftsusy.x > inOutFiles/rpvOutputTest
 
 inOutFiles/neutOutputTest: rpvneut.x
+	$(install_sh) -d inOutFiles
 	./rpvneut.x > inOutFiles/neutOutputTest
 
 benchmarks/%.spec: benchmarks/%.in softpoint.x
@@ -122,9 +135,9 @@ test: softpoint.x
 	ndiff --relative-error 1.0e-3 inOutFiles/nmssmSLHAZ3Output .test/nmssmSLHAZ3Output; \
 	ndiff --relative-error 1.0e-3 inOutFiles/nmssmSLHAnoZ3Output .test/nmssmSLHAnoZ3Output
 
-doc:
-	@echo Making $@ in $(top_builddir)/doc
-	cd $(top_builddir)/doc && make $@
+#doc:
+#	@echo Making $@ in $(top_builddir)/doc
+#	cd $(top_builddir)/doc && make $@
 
 updateWeb: dist 
 	scp softsusy-${VERSION}.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; 
