@@ -3,6 +3,7 @@ bin_PROGRAMS =
 #SUBDIRS = src doc
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 
+AUTOMAKE_OPTIONS = subdir-objects
 
 include src/softsusy.amk
 include doc/doc.amk
