@@ -42,7 +42,7 @@ AC_PROG_LIBTOOL
 
 AC_SUBST(FLIBS)
 
-AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile])
+AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
 
