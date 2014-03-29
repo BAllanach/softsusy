@@ -2759,12 +2759,12 @@ double Softsusy<SoftPars>::calcRunningMt() {
 template<class SoftPars>
 double Softsusy<SoftPars>::calcRunMbDrBarConv() const {
    double    g       = displayGaugeCoupling(2);
-   double    g1      = displayGaugeCoupling(1);
+   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
    double alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
    double conversion = (1.0 - alphasMZ / (3.0 * PI) 
                         - 23.0 / 72.0 * sqr(alphasMZ) / sqr(PI) +
                         3.0 * sqr(g) / (128.0 * sqr(PI)) +
-                        13.0 * sqr(g1) / (1152. * sqr(PI)));
+                        13.0 * sqr(gp) / (1152. * sqr(PI)));
    return conversion;
 }
 
@@ -3058,7 +3058,8 @@ double Softsusy<SoftPars>::calcRunningMb() {
 }
 template<class SoftPars>
 double Softsusy<SoftPars>::calcRunMtauDrBarConv() const {
- double conv = (1.0 - 3.0 * (sqr(displayGaugeCoupling(1)) - sqr(displayGaugeCoupling(2))) / (128.0 * sqr(PI)));
+ double gp = displayGaugeCoupling(1) * sqrt(0.6);
+ double conv = (1.0 - 3.0 * (sqr(gp) - sqr(displayGaugeCoupling(2))) / (128.0 * sqr(PI)));
  return conv;
 }
 
@@ -7756,6 +7757,18 @@ void Softsusy<SoftPars>::itLowsoft
     int err = 0;
 
     err = runto(displayMsusy(), eps);
+
+    if (err == 1) {
+      /// problem with running: bail out 
+      flagProblemThrown(true);
+      if (PRINTOUT) 
+	cout << "itLowsoft can't run more approaching msusy\n"; 
+      if (PRINTOUT > 1) printObj();
+      numTries = 0; 
+      return;
+    }
+
+
     double tbIn; double predictedMzSq = 0.;
     predictedMzSq = predMzsq(tbIn);
     setPredMzSq(predictedMzSq);  
@@ -10690,6 +10703,7 @@ template<class SoftPars>
 void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
   out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
+  out << "# MX=" << mxBC << " GeV" << endl;
 }
 
 template<class SoftPars>
@@ -10927,35 +10941,35 @@ void Softsusy<SoftPars>::msoftSLHA(ostream & out) {
       out << "    22    "; printRow(out, displayMh2Squared()); 
       out << "      # mH2^2(Q)" << endl;    
       
-      out << "    31    "; printRow(out, ccbSqrt(displaySoftMassSquared(mLl, 1, 1))); 
+      out << "    31    "; printRow(out, signedSqrt(displaySoftMassSquared(mLl, 1, 1))); 
       out << "      # meL(Q)" << endl;    
-      out << "    32    "; printRow(out, ccbSqrt(displaySoftMassSquared(mLl, 2, 2))); 
+      out << "    32    "; printRow(out, signedSqrt(displaySoftMassSquared(mLl, 2, 2))); 
       out << "      # mmuL(Q)" << endl;    
-      out << "    33    "; printRow(out, ccbSqrt(displaySoftMassSquared(mLl, 3, 3))); 
+      out << "    33    "; printRow(out, signedSqrt(displaySoftMassSquared(mLl, 3, 3))); 
       out << "      # mtauL(Q)" << endl;    
-      out << "    34    "; printRow(out, ccbSqrt(displaySoftMassSquared(mEr, 1, 1))); 
+      out << "    34    "; printRow(out, signedSqrt(displaySoftMassSquared(mEr, 1, 1))); 
       out << "      # meR(Q)" << endl;    
-      out << "    35    "; printRow(out, ccbSqrt(displaySoftMassSquared(mEr, 2, 2))); 
+      out << "    35    "; printRow(out, signedSqrt(displaySoftMassSquared(mEr, 2, 2))); 
       out << "      # mmuR(Q)" << endl;    
-      out << "    36    "; printRow(out, ccbSqrt(displaySoftMassSquared(mEr, 3, 3))); 
+      out << "    36    "; printRow(out, signedSqrt(displaySoftMassSquared(mEr, 3, 3))); 
       out << "      # mtauR(Q)" << endl;    
-      out << "    41    "; printRow(out, ccbSqrt(displaySoftMassSquared(mQl, 1, 1))); 
+      out << "    41    "; printRow(out, signedSqrt(displaySoftMassSquared(mQl, 1, 1))); 
       out << "      # mqL1(Q)" << endl;    
-      out << "    42    "; printRow(out, ccbSqrt(displaySoftMassSquared(mQl, 2, 2))); 
+      out << "    42    "; printRow(out, signedSqrt(displaySoftMassSquared(mQl, 2, 2))); 
       out << "      # mqL2(Q)" << endl;    
-      out << "    43    "; printRow(out, ccbSqrt(displaySoftMassSquared(mQl, 3, 3))); 
+      out << "    43    "; printRow(out, signedSqrt(displaySoftMassSquared(mQl, 3, 3))); 
       out << "      # mqL3(Q)" << endl;    
-      out << "    44    "; printRow(out, ccbSqrt(displaySoftMassSquared(mUr, 1, 1))); 
+      out << "    44    "; printRow(out, signedSqrt(displaySoftMassSquared(mUr, 1, 1))); 
       out << "      # muR(Q)" << endl;    
-      out << "    45    "; printRow(out, ccbSqrt(displaySoftMassSquared(mUr, 2, 2))); 
+      out << "    45    "; printRow(out, signedSqrt(displaySoftMassSquared(mUr, 2, 2))); 
       out << "      # mcR(Q)" << endl;    
-      out << "    46    "; printRow(out, ccbSqrt(displaySoftMassSquared(mUr, 3, 3))); 
+      out << "    46    "; printRow(out, signedSqrt(displaySoftMassSquared(mUr, 3, 3))); 
       out << "      # mtR(Q)" << endl;    
-      out << "    47    "; printRow(out, ccbSqrt(displaySoftMassSquared(mDr, 1, 1))); 
+      out << "    47    "; printRow(out, signedSqrt(displaySoftMassSquared(mDr, 1, 1))); 
       out << "      # mdR(Q)" << endl;    
-      out << "    48    "; printRow(out, ccbSqrt(displaySoftMassSquared(mDr, 2, 2))); 
+      out << "    48    "; printRow(out, signedSqrt(displaySoftMassSquared(mDr, 2, 2))); 
       out << "      # msR(Q)" << endl;    
-      out << "    49    "; printRow(out, ccbSqrt(displaySoftMassSquared(mDr, 3, 3))); 
+      out << "    49    "; printRow(out, signedSqrt(displaySoftMassSquared(mDr, 3, 3))); 
       out << "      # mbR(Q)" << endl;    
       
       out << "Block au Q= " << displayMu() << "  \n" 

@@ -1338,6 +1338,9 @@ void printShortInitialise();
 /// returns the square root of the absolute value of the argument
 // returns sqrt(f) for f>0 
 inline double ccbSqrt(double f){ return sqrt(fabs(f)); }
+/// returns the square root of the absolute value of the argument
+// returns sqrt(f) for f>0 or -sqrt(|f|) for f<0
+  inline double signedSqrt(double f){ return f<0 ? -ccbSqrt(f) : ccbSqrt(f); }
 /// returns f * f * sign(f)
 inline double signedSqr(double f){ if (f > 0.) return sqr(f); 
   else return -sqr(f); }

@@ -68,6 +68,8 @@
      "sec:finetune"
      "FT100index"
      "sec:run"
+     "tab:mssm-cmd-line-options"
+     "tab:general-cmd-line-options"
      "sec:input"
      "sec:prog"
      "bcs"

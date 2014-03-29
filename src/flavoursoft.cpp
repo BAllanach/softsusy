@@ -52,13 +52,17 @@ void convertFromWolfenstein(double lambdaW, double A, double rhobar,
 }
 
 int positionOfSym(int i, int j) {
-  switch (i) {
-  case 1: return j;   break;
-  case 2: return j+2; break;
-  case 3: return j+3; break;
-  default: 
-    cout << " # WARNING: can't convert position in 3 by 3 matrix" 
-	 << i << j << endl; 
+  if (i == 1 && j == 1) return 1;
+  else if (i == 2 && j == 2) return 4;
+  else if (i == 3 && j == 3) return 6;
+  else if ((i == 1 && j == 2) || (i == 2 && j == 1)) return 2;
+  else if ((i == 1 && j == 3) || (i == 3 && j == 1)) return 3;
+  else if ((i == 2 && j == 3) || (i == 3 && j == 2)) return 5;
+  else {
+    ostringstream ii;
+    ii << " # WARNING: can't convert position in 3 by 3 matrix" 
+       << i << j << endl; 
+    throw ii.str();
     return 0;
   }
 }
@@ -594,7 +598,7 @@ void FlavourMssmSoftsusy::msoftSLHA(ostream & out) {
       for (j=1; j<=3; j++) {
 	out << "  " << i << "  " << j << "    "; 
 	printRow(out, mqSqSckm(i, j));
-	out << "    # (m^_Q^2)_{" << i << j << "}" << endl;
+	out << "    # (m_Q^2)_{" << i << j << "}" << endl;
       }
     
     out << "Block msl2 Q= " << displayMu() << " # super MNS slepton mass^2 matrix"
@@ -603,7 +607,7 @@ void FlavourMssmSoftsusy::msoftSLHA(ostream & out) {
       for (j=1; j<=3; j++) {
 	out << "  " << i << "  " << j << "    "; 
 	printRow(out, mlSqSckm(i, j));
-	out << "    # (m^_L^2)_{" << i << j << "}" << endl;
+	out << "    # (m_L^2)_{" << i << j << "}" << endl;
       }
     
     out << "Block msd2 Q= " << displayMu() << " # super CKM squark mass^2 matrix"
@@ -612,7 +616,7 @@ void FlavourMssmSoftsusy::msoftSLHA(ostream & out) {
       for (j=1; j<=3; j++) {
 	out << "  " << i << "  " << j << "    "; 
 	printRow(out, mdSqSckm(i, j));
-	out << "    # (m^_d^2)_{" << i << j << "}" << endl;
+	out << "    # (m_d^2)_{" << i << j << "}" << endl;
       }
     
     out << "Block msu2 Q= " << displayMu() << " # super CKM squark mass^2 matrix"
@@ -621,7 +625,7 @@ void FlavourMssmSoftsusy::msoftSLHA(ostream & out) {
       for (j=1; j<=3; j++) {
 	out << "  " << i << "  " << j << "    "; 
 	printRow(out, muSqSckm(i, j));
-	out << "    # (m^_u^2)_{" << i << j << "}" << endl;
+	out << "    # (m_u^2)_{" << i << j << "}" << endl;
       }
     
     out << "Block mse2 Q= " << displayMu() << " # super MNS slepton mass^2 matrix"
@@ -630,7 +634,7 @@ void FlavourMssmSoftsusy::msoftSLHA(ostream & out) {
       for (j=1; j<=3; j++) {
 	out << "  " << i << "  " << j << "    "; 
 	printRow(out, meSqSckm(i, j));
-	out << "    # (m^_e^2)_{" << i << j << "}" << endl;
+	out << "    # (m_e^2)_{" << i << j << "}" << endl;
       }
     
     out << "Block tu Q= " << displayMu() << "   # super CKM trilinear matrix"
@@ -639,7 +643,7 @@ void FlavourMssmSoftsusy::msoftSLHA(ostream & out) {
       for (j=1; j<=3; j++) {
 	out << "  " << i << "  " << j << "    "; 
 	printRow(out, tuSckm(i, j));
-	out << "    # (T^_u)_{" << i << j << "}" << endl;
+	out << "    # (T_u)_{" << i << j << "}" << endl;
       }
     
     out << "Block td Q= " << displayMu() << "   # super CKM trilinear matrix"
@@ -648,7 +652,7 @@ void FlavourMssmSoftsusy::msoftSLHA(ostream & out) {
       for (j=1; j<=3; j++) {
 	out << "  " << i << "  " << j << "    "; 
 	printRow(out, tdSckm(i, j));
-	out << "    # (T^_d)_{" << i << j << "}" << endl;
+	out << "    # (T_d)_{" << i << j << "}" << endl;
       }
     
     out << "Block te Q= " << displayMu() << "   # super CKM trilinear matrix"
@@ -657,7 +661,7 @@ void FlavourMssmSoftsusy::msoftSLHA(ostream & out) {
       for (j=1; j<=3; j++) {
 	out << "  " << i << "  " << j << "    "; 
 	printRow(out, teSckm(i, j));
-	out << "    # (T^_e)_{" << i << j << "}" << endl;
+	out << "    # (T_e)_{" << i << j << "}" << endl;
       }
   DoubleMatrix vCkm(Vu.transpose() * Vd);
 
@@ -701,6 +705,7 @@ void FlavourMssmSoftsusy::lesHouchesAccordOutput(ostream & out,
   softsusySLHA(out);
   if (!displayProblem().testSeriousProblem() || printRuledOutSpectra) {
     massSLHA(out);
+    alphaSLHA(out);
     inomixingSLHA(out);
     sfermionmixSLHA(out);
     int n = 0; while (n < numPoints) {
@@ -1186,7 +1191,7 @@ ostream & operator <<(ostream & left, const flavourPhysical &s) {
 }
 
 istream & operator >>(istream & left, flavourPhysical &s) {
-  char c[70];
+  string c;
   left >> c >> s.msU;
   left >> c >> c >> s.uSqMix;
   

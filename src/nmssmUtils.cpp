@@ -10,7 +10,7 @@
 namespace softsusy {
 
 char const * const NMSSM_input::parameter_names[NUMBER_OF_NMSSM_INPUT_PARAMETERS] = {
-   "tan(beta)", "mHd^2", "mHu^2", "mu", "Bmu/(cos(beta)sin(beta))", "lambda",
+   "tan(beta)", "mHd^2", "mHu^2", "mu", "m3^2/(cos(beta)sin(beta))", "lambda",
    "kappa", "Alambda", "Akappa", "lambda*S", "xiF", "xiS", "mu'",
    "mS'^2", "mS^2"
 };
@@ -175,8 +175,13 @@ void NMSSM_command_line_parser::parse(int argc, char* argv[]) {
          nmssm_input->set(NMSSM_input::mHd2, get_value(argv[i], "--mHd2="));
       else if (starts_with(argv[i], "--mu="))
          nmssm_input->set(NMSSM_input::mu, get_value(argv[i], "--mu="));
-      else if (starts_with(argv[i], "--BmuOverCosBetaSinBeta="))
-         nmssm_input->set(NMSSM_input::BmuOverCosBetaSinBeta, get_value(argv[i], "--BmuOverCosBetaSinBeta="));
+      else if (starts_with(argv[i], "--m3SqrOverCosBetaSinBeta="))
+         nmssm_input->set(NMSSM_input::BmuOverCosBetaSinBeta, get_value(argv[i], "--m3SqrOverCosBetaSinBeta="));
+      else if (starts_with(argv[i], "--BmuSqrOverCosBetaSinBeta=")) {
+         nmssm_input->set(NMSSM_input::BmuOverCosBetaSinBeta, get_value(argv[i], "--BmuSqrOverCosBetaSinBeta="));
+         cout << "# Warning: --BmuSqrOverCosBetaSinBeta= is deprecated, "
+            "please use --m3SqrOverCosBetaSinBeta= instead.\n";
+      }
       else if (starts_with(argv[i], "--lambda="))
          nmssm_input->set(NMSSM_input::lambda, get_value(argv[i], "--lambda="));
       else if (starts_with(argv[i], "--kappa="))
@@ -232,7 +237,7 @@ DoubleVector NMSSM_command_line_parser::get_pars() const {
       pars(2) = m12;
       pars(3) = a0;
    } else if (strcmp(model_ident, "nonUniversal") == 0) {
-      pars.setEnd(53);
+      pars.setEnd(56);
       for (int i = 1; i <= 3; i++) pars(i) = m12;
       for (int i = 11; i <= 13; i++) pars(i) = a0;
       pars(21) = m0*m0;
@@ -252,10 +257,14 @@ DoubleVector NMSSM_command_line_parser::get_pars() const {
          pars(21) = nmssm_input->get(NMSSM_input::mHd2);
       if (nmssm_input->is_set(NMSSM_input::mHu2))
          pars(22) = nmssm_input->get(NMSSM_input::mHu2);
-      if (nmssm_input->is_set(NMSSM_input::mu))
+      if (nmssm_input->is_set(NMSSM_input::mu)) {
          pars(23) = nmssm_input->get(NMSSM_input::mu);
-      if (nmssm_input->is_set(NMSSM_input::BmuOverCosBetaSinBeta))
+         pars(54) = nmssm_input->get(NMSSM_input::mu);
+      }
+      if (nmssm_input->is_set(NMSSM_input::BmuOverCosBetaSinBeta)) {
          pars(24) = nmssm_input->get(NMSSM_input::BmuOverCosBetaSinBeta);
+         pars(55) = nmssm_input->get(NMSSM_input::BmuOverCosBetaSinBeta);
+      }
       if (nmssm_input->is_set(NMSSM_input::mPrimeS2) &&
           nmssm_input->is_set(NMSSM_input::muPrime)) {
          // setting pars(52) = B' = mS'^2 / mu'
@@ -266,6 +275,8 @@ DoubleVector NMSSM_command_line_parser::get_pars() const {
       }
       if (nmssm_input->is_set(NMSSM_input::mS2))
          pars(53) = nmssm_input->get(NMSSM_input::mS2);
+      if (nmssm_input->is_set(NMSSM_input::xiS))
+         pars(56) = nmssm_input->get(NMSSM_input::xiS);
    } else {
       throw std::string("# Error: NMSSM boundary condition ") + model_ident
          + " currently not supported at the command line\n";

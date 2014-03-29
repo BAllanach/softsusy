@@ -67,8 +67,7 @@ AC_ARG_ENABLE([debug],
  	      AC_DEFINE([DEBUG],[1],[Debugging output]),[])
 
 #Autogen
-AG_PATH_AUTOOPTS(5.17, [],
-                  [AC_MSG_ERROR([No suitable version of AutoGen could be found])])
+AG_PATH_AUTOOPTS([5.17], [], [AC_MSG_ERROR([No suitable version of AutoGen could be found])])
 
 # GiNaC/cln for two-loop decoupling corrections
 if test x"$enable_full_susy_threshold" = x"yes"; then
@@ -81,7 +80,7 @@ fi
 
 AC_SUBST(FLIBS)
 
-AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile])
+AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
 

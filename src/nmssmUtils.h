@@ -1,3 +1,12 @@
+/** \file nmssmUtils.h
+    - Project: Next-to-minimal SOFTSUSY 
+    - Author: Ben Allanach, Peter Athron, Lewis Tunstall, Alexander Voigt,
+      Anthony Williams
+    - Manual: http://arxiv.org/abs/1311.7659
+    - Webpage: http://hepforge.cedar.ac.uk/softsusy/
+
+    \brief A few handy routines for the NMSSM: SUSY breaking conditions etc
+*/
 
 #ifndef NMSSM_UTILS_H
 #define NMSSM_UTILS_H

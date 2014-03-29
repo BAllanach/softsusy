@@ -1,4 +1,16 @@
-<li> 26/11/13 <b>Major upgrade</b>: Added Next-to-Minimal Supersymmetric Standard Model. See manual for object structure and other details. 
-<li> 26/09/13 Added lowOrg wrapper, renaming old method fixedPointIteration in
-order to provide backwards compatibility: thanks to S Akula for the suggestion. Also, renamed CMSSM->SUGRA in boundary conditions to both provide backwards compatibility and for NMSSM generalisation
-<li> 2/10/13 In the case that user tries to invoke SLHA2 RPV+flavour violation, SOFTSUSY bails immediately with a better error message. 
+<li> 25/03/14 mGMSB scale of setting SUSY breaking boundary conditions now
+fixed at Mmess, at it should be (not MGUT) for command line input.
+<li> 24/03/14 Error in flavour violation SLHA input fixed, when inputting
+symmetric matrices in an unfortunate order. Thanks to H Eberl
+<li> 21/03/14 Error when fixing EXTPAR 25 with flavour violation turned on now
+trapped. Thanks to H Eberl
+<li> 21/03/14 Trapped nan in running down to MSUSY: previously, it was giving
+a segfault since it was trying to diagonalise a matrix of nans. (Noticed by A
+Voigt). 
+<li> 25/02/14 F77 compiler now set even if CXXFLAGS isn't. Thanks to S Akula.
+<li> 25/02/14 Fixed DRbar conversion of tau and b masses
+<li> 08/01/14 README made clearer on the input/output files
+<li> 07/01/14 outputTest files added
+<li> 08/12/13 Changes to manuals: taken MSSM stuff out of NMSSM manual
+<li> 12/12/13 SLHA printout doesn't take absolute values of soft mass squareds for printout at some scale Q, in case they're supposed to be negative. Thanks to S Knapen
+<li> 02/12/13 Reinstated block alpha to flavoursoft. Thanks to A Pukhov
