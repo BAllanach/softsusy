@@ -37,6 +37,24 @@ const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const Softsusy<SoftPars>
   t2OV2Ms1loop = s.displayTadpole2Ms1loop(); 
   mxBC = s.displayMxBC();
 
+#ifdef FULL_SUSY_THRESHOLD
+  /// Public field :: only for informational purpose	
+  decoupling_corrections.das.one_loop = 0; 
+  decoupling_corrections.das.two_loop = 0; 
+
+  decoupling_corrections.dmb.one_loop = 0; 
+  decoupling_corrections.dmb.two_loop = 0; 
+
+  decoupling_corrections.dmt.one_loop = 0; 
+  decoupling_corrections.dmt.two_loop = 0; 
+
+  decoupling_corrections.dmtau.one_loop = 0; 
+  decoupling_corrections.dmtau.two_loop = 0; 
+
+
+
+#endif
+
   return *this;
 }
 
@@ -3009,7 +3027,7 @@ double Softsusy<SoftPars>::calcRunningMb() {
 #ifdef FULL_SUSY_THRESHOLD
 
   decoupling_corrections.dmb.one_loop = deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino;
-  decoupling_corrections.dmb.two_loop = 0.0;
+  //decoupling_corrections.dmb.two_loop = 0.0;
 
   if (SOFTSUSY_TWOLOOP) {
    static bool needcalc = true; // flag: calculate corrections if two-previous iterations gave different results
@@ -3032,12 +3050,14 @@ double Softsusy<SoftPars>::calcRunningMb() {
 		dout << "two-loop bquark yukawa decoupling constant: " 
 		     << test << endl;
    }
+   dout << "Checking: " << dzetamb << " vs " << decoupling_corrections.dmb.two_loop << endl;
    if (close(dzetamb, decoupling_corrections.dmb.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false; 
    if (needcalc) decoupling_corrections.dmb.two_loop = dzetamb;
    else {
 		dzetamb = decoupling_corrections.dmb.two_loop;
 		dout << "mb: No calculation" << endl;
     }
+   dout << "Checking: " << dzetamb << " vs " << decoupling_corrections.dmb.two_loop << endl;
    //dout <<" Mb dec (sq-gl): " << deltaSquarkGluino << endl;
    //dout <<" Mb dec (sq-cha): " << deltaSquarkChargino << endl;
    //dout <<" Mb dec (higgs): " << deltaHiggs << endl;

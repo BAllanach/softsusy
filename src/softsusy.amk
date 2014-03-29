@@ -8,22 +8,45 @@ bin_PROGRAMS += softsusy.x \
                 rpvsoftsusy.x \
                 rpvneut.x 
 
-softsusy_x_SOURCES = src/main.cpp
+softsusy_x_SOURCES = src/main.cpp 
 softsusy_x_LDADD = libsoft.la  
 
-softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp
+softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp 
 softsusy_nmssm_x_LDADD = libsoft.la
 
 softpoint_x_SOURCES = src/softpoint.cpp 
 softpoint_x_LDADD = libsoft.la
 
-rpvsoftsusy_x_SOURCES = src/rpvmain.cpp
+rpvsoftsusy_x_SOURCES = src/rpvmain.cpp 
 rpvsoftsusy_x_LDADD = libsoft.la 
 
-rpvneut_x_SOURCES = src/rpvneutmain.cpp
+rpvneut_x_SOURCES = src/rpvneutmain.cpp 
 rpvneut_x_LDADD = libsoft.la 
 
-pkginclude_HEADERS = \
+
+if FULL_SUSY_THRESHOLD
+
+CPPFLAGS += -I$(srcdir)/src
+
+include src/two_loop_thresholds/mssmparam.amk
+include src/two_loop_thresholds/two_loop_th.amk
+
+softsusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
+softsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
+
+softsusy_nmssm_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
+softsusy_nmssm_x_LDADD += lib2lthresh.la libmssmparam.la 
+
+softpoint_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
+softpoint_x_LDADD += lib2lthresh.la libmssmparam.la 
+
+rpvsoftsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
+rpvneut_x_LDADD += lib2lthresh.la libmssmparam.la 
+
+
+endif
+
+pkginclude_HEADERS += \
 $(addprefix src/, \
 def.h main.h numerics.h \
 softpars.h softpars.cpp susy.h linalg.h \
@@ -45,4 +68,4 @@ src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twolo
 
 libsoft_la_LDFLAGS = @FLIBS@
 
-EXTRA_DIST = src/nmProcessSpec.f
+EXTRA_DIST += src/nmProcessSpec.f

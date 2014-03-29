@@ -35,10 +35,19 @@
 #include "twoloophiggs.h"
 #include "mssmUtils.h"
 
+#define HR "----------------------------------------------------------"
+
 #ifdef FULL_SUSY_THRESHOLD
+
+
  #include <ginac/ginac.h>
+
+namespace SoftSusy_helpers_ {
+  GiNaC::exmap drBarPars_exmap(const softsusy::MssmSoftsusy & );
+}
+
  #include "two_loop_thresholds/softsusy_exmap.hpp"
- #include "mssmparam.hpp"
+ #include "two_loop_thresholds/mssmparam.hpp"
  #include "two_loop_thresholds/tau_corrections.hpp"
  #include "two_loop_thresholds/bquark_corrections.hpp"
  #include "two_loop_thresholds/tquark_corrections.hpp"
