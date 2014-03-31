@@ -1,29 +1,28 @@
 docdir = ${datadir}/doc/${PACKAGE}
 
-doc_DATA = rpcManual.pdf \
-           rpvManual.pdf \
-           neutManual.pdf \
-	   nmssmManual.pdf 
+doc_DATA = doc/rpcManual.pdf \
+           doc/rpvManual.pdf \
+           doc/neutManual.pdf \
+	   doc/nmssmManual.pdf 
 
-EXTRA_DIST+ = \
-	$(doc_DATA) \
-	rpcManual.tex \
-	rpvManual.tex \
-	neutManual.tex \
-	nmssmManual.tex 
+EXTRA_DIST += \
+	doc/rpcManual.tex \
+	doc/rpvManual.tex \
+	doc/neutManual.tex \
+	doc/nmssmManual.tex 
 
 
 doc: $(doc_DATA)
 
-%.pdf: doc/%.tex
-	TEXINPUTS=$(srcdir)/doc: latex $<
-	TEXINPUTS=$(srcdir)/doc: latex $<
-	dvips -f $(*F) > $(*F).ps
+doc/%.pdf: doc/%.tex
+	cd $(top_builddir)/doc;\
+	latex $(*F).tex ; latex $(*F).tex ;\
+	dvips -f $(*F) > $(*F).ps ;\
 	ps2pdf $(*F).ps
 
 
 clean-local:
-	-rm -f *.log *.spl *.aux *.dvi *.ps *.toc *.out
+	-rm -f doc/*.log doc/*.spl doc/*.aux doc/*.dvi doc/*.ps doc/*.toc doc/*.out
 
 distclean-local: clean-local
 	-rm -f $(doc_DATA)
