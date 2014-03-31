@@ -4,7 +4,7 @@ CLEANFILES =
 BUILT_SOURCES=
 EXTRA_DIST=
 pkginclude_HEADERS=
-
+dist_pkgdata_DATA = 
 #SUBDIRS = src doc
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} 
 
@@ -12,7 +12,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 include src/softsusy.amk
 include doc/doc.amk
-
+include benchmarks/benchmarks.amk
 
 
 TESTOUTPUT = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
@@ -20,89 +20,13 @@ TESTOUTPUT = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHo
 
 OUTPUTFILES = $(TESTOUTPUT) \
  inOutFiles/neutOutputTest inOutFiles/rpvOutputTest \
- inOutFiles/outputTest inOutFiles/outputTest-nmssm \
-benchmarks/cmssm10.1.1.spec benchmarks/cmssm10.1.2.spec \
-benchmarks/cmssm10.1.3.spec benchmarks/cmssm10.1.4.spec \
-benchmarks/cmssm10.1.5.spec \
-benchmarks/cmssm10.2.1.spec benchmarks/cmssm10.2.2.spec \
-benchmarks/cmssm10.2.3.spec benchmarks/cmssm10.2.4.spec \
-benchmarks/cmssm10.2.5.spec \
-benchmarks/cmssm10.3.1.spec benchmarks/cmssm10.3.2.spec \
-benchmarks/cmssm10.3.3.spec benchmarks/cmssm10.3.4.spec \
-benchmarks/cmssm10.3.5.spec \
-benchmarks/cmssm10.4.1.spec benchmarks/cmssm10.4.2.spec \
-benchmarks/cmssm10.4.3.spec benchmarks/cmssm10.4.4.spec \
-benchmarks/cmssm10.4.5.spec \
-benchmarks/cmssm40.1.1.spec benchmarks/cmssm40.1.2.spec \
-benchmarks/cmssm40.1.3.spec benchmarks/cmssm40.1.4.spec \
-benchmarks/cmssm40.1.5.spec \
-benchmarks/cmssm40.2.1.spec benchmarks/cmssm40.2.2.spec \
-benchmarks/cmssm40.2.3.spec benchmarks/cmssm40.2.4.spec \
-benchmarks/cmssm40.2.5.spec \
-benchmarks/cmssm40.3.1.spec benchmarks/cmssm40.3.2.spec \
-benchmarks/cmssm40.3.3.spec benchmarks/cmssm40.3.4.spec \
-benchmarks/cmssm40.3.5.spec \
-benchmarks/mamsb1.1.spec benchmarks/mamsb1.2.spec benchmarks/mamsb1.3.spec \
-benchmarks/mgmsb1.1.spec benchmarks/mgmsb1.2.spec benchmarks/mgmsb1.3.spec \
-benchmarks/mgmsb1.4.spec benchmarks/mgmsb1.5.spec benchmarks/mgmsb1.6.spec \
-benchmarks/mgmsb2.1.1.spec benchmarks/mgmsb2.1.2.spec benchmarks/mgmsb2.1.3.spec \
-benchmarks/mgmsb2.1.4.spec benchmarks/mgmsb2.1.5.spec benchmarks/mgmsb2.1.6.spec \
-benchmarks/mgmsb2.2.1.spec benchmarks/mgmsb2.2.2.spec benchmarks/mgmsb2.2.3.spec \
-benchmarks/mgmsb2.2.4.spec benchmarks/mgmsb2.2.5.spec benchmarks/mgmsb2.2.6.spec \
-benchmarks/pmssm1.1.spec benchmarks/pmssm1.2.spec benchmarks/pmssm1.3.spec \
-benchmarks/pmssm1.4.spec benchmarks/pmssm1.5.spec benchmarks/pmssm1.6.spec \
-benchmarks/pmssm2.1.spec benchmarks/pmssm2.2.spec benchmarks/pmssm2.3.spec \
-benchmarks/pmssm2.4.spec benchmarks/pmssm2.5.spec benchmarks/pmssm2.6.spec \
-benchmarks/rpv1.1.spec benchmarks/rpv1.2.spec benchmarks/rpv1.3.spec \
-benchmarks/rpv1.4.spec benchmarks/rpv1.5.spec \
-benchmarks/rpv2.1.spec benchmarks/rpv2.2.spec benchmarks/rpv2.3.spec \
-benchmarks/rpv2.4.spec benchmarks/rpv2.5.spec \
-benchmarks/rpv3.1.spec benchmarks/rpv3.2.spec benchmarks/rpv3.3.spec \
-benchmarks/rpv3.4.spec benchmarks/rpv3.5.spec 
+ inOutFiles/outputTest inOutFiles/outputTest-nmssm 
 
 INPUTFILES = inOutFiles/slha2Input inOutFiles/lesHouchesInput inOutFiles/rpvHouchesInput \
-inOutFiles/nmssmSLHAZ3Input inOutFiles/nmssmSLHAnoZ3Input \
-benchmarks/cmssm10.1.1.in benchmarks/cmssm10.1.2.in \
-benchmarks/cmssm10.1.3.in benchmarks/cmssm10.1.4.in \
-benchmarks/cmssm10.1.5.in \
-benchmarks/cmssm10.2.1.in benchmarks/cmssm10.2.2.in \
-benchmarks/cmssm10.2.3.in benchmarks/cmssm10.2.4.in \
-benchmarks/cmssm10.2.5.in \
-benchmarks/cmssm10.3.1.in benchmarks/cmssm10.3.2.in \
-benchmarks/cmssm10.3.3.in benchmarks/cmssm10.3.4.in \
-benchmarks/cmssm10.3.5.in \
-benchmarks/cmssm10.4.1.in benchmarks/cmssm10.4.2.in \
-benchmarks/cmssm10.4.3.in benchmarks/cmssm10.4.4.in \
-benchmarks/cmssm10.4.5.in \
-benchmarks/cmssm40.1.1.in benchmarks/cmssm40.1.2.in \
-benchmarks/cmssm40.1.3.in benchmarks/cmssm40.1.4.in \
-benchmarks/cmssm40.1.5.in \
-benchmarks/cmssm40.2.1.in benchmarks/cmssm40.2.2.in \
-benchmarks/cmssm40.2.3.in benchmarks/cmssm40.2.4.in \
-benchmarks/cmssm40.2.5.in \
-benchmarks/cmssm40.3.1.in benchmarks/cmssm40.3.2.in \
-benchmarks/cmssm40.3.3.in benchmarks/cmssm40.3.4.in \
-benchmarks/cmssm40.3.5.in \
-benchmarks/mamsb1.1.in benchmarks/mamsb1.2.in benchmarks/mamsb1.3.in \
-benchmarks/mgmsb1.1.in benchmarks/mgmsb1.2.in benchmarks/mgmsb1.3.in \
-benchmarks/mgmsb1.4.in benchmarks/mgmsb1.5.in benchmarks/mgmsb1.6.in \
-benchmarks/mgmsb2.1.1.in benchmarks/mgmsb2.1.2.in benchmarks/mgmsb2.1.3.in \
-benchmarks/mgmsb2.1.4.in benchmarks/mgmsb2.1.5.in benchmarks/mgmsb2.1.6.in \
-benchmarks/mgmsb2.2.1.in benchmarks/mgmsb2.2.2.in benchmarks/mgmsb2.2.3.in \
-benchmarks/mgmsb2.2.4.in benchmarks/mgmsb2.2.5.in benchmarks/mgmsb2.2.6.in \
-benchmarks/pmssm1.1.in benchmarks/pmssm1.2.in benchmarks/pmssm1.3.in \
-benchmarks/pmssm1.4.in benchmarks/pmssm1.5.in benchmarks/pmssm1.6.in \
-benchmarks/pmssm2.1.in benchmarks/pmssm2.2.in benchmarks/pmssm2.3.in \
-benchmarks/pmssm2.4.in benchmarks/pmssm2.5.in benchmarks/pmssm2.6.in \
-benchmarks/rpv1.1.in benchmarks/rpv1.2.in benchmarks/rpv1.3.in \
-benchmarks/rpv1.4.in benchmarks/rpv1.5.in \
-benchmarks/rpv2.1.in benchmarks/rpv2.2.in benchmarks/rpv2.3.in \
-benchmarks/rpv2.4.in benchmarks/rpv2.5.in \
-benchmarks/rpv3.1.in benchmarks/rpv3.2.in benchmarks/rpv3.3.in \
-benchmarks/rpv3.4.in benchmarks/rpv3.5.in 
+inOutFiles/nmssmSLHAZ3Input inOutFiles/nmssmSLHAnoZ3Input
 
 
-dist_pkgdata_DATA = softsusy_nmssmtools.x.in setup_nmssmtools.sh Makefile.nmssmtools $(INPUTFILES) CHANGES GUIDELINES COPYING $(DOCFILES)
+dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh Makefile.nmssmtools $(INPUTFILES) $(OUTPUTFILES) CHANGES GUIDELINES COPYING $(DOCFILES)
 
 CLEANFILES += $(OUTPUTFILES) *.x
 
@@ -125,10 +49,6 @@ inOutFiles/rpvOutputTest: rpvsoftsusy.x
 inOutFiles/neutOutputTest: rpvneut.x
 	$(install_sh) -d inOutFiles
 	./rpvneut.x > inOutFiles/neutOutputTest
-
-benchmarks/%.spec: benchmarks/%.in softpoint.x
-	$(install_sh) -d benchmarks
-	./softpoint.x leshouches < $< > $@
 
 .PHONY: doc test updateWeb
 
