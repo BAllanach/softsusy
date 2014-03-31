@@ -13,53 +13,17 @@ AUTOMAKE_OPTIONS = subdir-objects
 include src/softsusy.amk
 include doc/doc.amk
 include benchmarks/benchmarks.amk
+include inOutFiles/inOut.amk
 
 
-TESTOUTPUT = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
- inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output
 
-OUTPUTFILES = $(TESTOUTPUT) \
- inOutFiles/neutOutputTest inOutFiles/rpvOutputTest \
- inOutFiles/outputTest inOutFiles/outputTest-nmssm 
-
-INPUTFILES = inOutFiles/slha2Input inOutFiles/lesHouchesInput inOutFiles/rpvHouchesInput \
-inOutFiles/nmssmSLHAZ3Input inOutFiles/nmssmSLHAnoZ3Input
-
-
-dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh Makefile.nmssmtools $(INPUTFILES) $(OUTPUTFILES) CHANGES GUIDELINES COPYING $(DOCFILES)
+dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh Makefile.nmssmtools CHANGES GUIDELINES COPYING $(DOCFILES)
 
 CLEANFILES += $(OUTPUTFILES) *.x
 
-inOutFiles/%Output : inOutFiles/%Input softpoint.x 
-	$(install_sh) -d inOutFiles
-	./softpoint.x leshouches < $< > $@
-
-inOutFiles/outputTest: softsusy.x
-	$(install_sh) -d inOutFiles
-	./softsusy.x > inOutFiles/outputTest
-
-inOutFiles/outputTest-nmssm: softsusy-nmssm.x
-	$(install_sh) -d inOutFiles
-	./softsusy-nmssm.x > inOutFiles/outputTest-nmssm
-
-inOutFiles/rpvOutputTest: rpvsoftsusy.x
-	$(install_sh) -d inOutFiles
-	./rpvsoftsusy.x > inOutFiles/rpvOutputTest
-
-inOutFiles/neutOutputTest: rpvneut.x
-	$(install_sh) -d inOutFiles
-	./rpvneut.x > inOutFiles/neutOutputTest
 
 .PHONY: doc test updateWeb
 
-test: softpoint.x
-	git checkout $(TESTOUTPUT)
-	cp $(TESTOUTPUT) .test; rm $(TESTOUTPUT); make $(TESTOUTPUT); \
-	ndiff --relative-error 1.0e-3 inOutFiles/slha2Output .test/slha2Output; \
-	ndiff --relative-error 1.0e-3 inOutFiles/lesHouchesOutput .test/lesHouchesOutput; \
-	ndiff --relative-error 1.0e-3 inOutFiles/rpvHouchesOutput .test/rpvHouchesOutput; \
-	ndiff --relative-error 1.0e-3 inOutFiles/nmssmSLHAZ3Output .test/nmssmSLHAZ3Output; \
-	ndiff --relative-error 1.0e-3 inOutFiles/nmssmSLHAnoZ3Output .test/nmssmSLHAnoZ3Output
 
 #doc:
 #	@echo Making $@ in $(top_builddir)/doc
