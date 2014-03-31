@@ -9,8 +9,10 @@ EXTRA_DIST += \
 	doc/rpcManual.tex \
 	doc/rpvManual.tex \
 	doc/neutManual.tex \
-	doc/nmssmManual.tex 
-
+	doc/nmssmManual.tex \
+	doc/axodraw.sty \
+	doc/jheppub.sty \
+	doc/elsarticle.cls
 
 doc: $(doc_DATA)
 
