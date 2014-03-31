@@ -111,7 +111,7 @@ benchmarks/%.spec: benchmarks/%.in softpoint.x
 	$(install_sh) -d benchmarks
 	./softpoint.x leshouches < $< > $@
 
-.PHONY: doc test updateWeb
+.PHONY: $(SUBDIRS) test updateWeb
 
 test: softpoint.x
 	git checkout $(TESTOUTPUT)
