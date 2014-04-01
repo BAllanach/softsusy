@@ -5,29 +5,23 @@ BUILT_SOURCES=
 EXTRA_DIST=
 pkginclude_HEADERS=
 dist_pkgdata_DATA = 
-#SUBDIRS = src doc
-ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} 
+ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
 AUTOMAKE_OPTIONS = subdir-objects
 
 include src/softsusy.amk
 include doc/doc.amk
+if FULL_SUSY_THRESHOLD
+else
 include benchmarks/benchmarks.amk
 include inOutFiles/inOut.amk
-
-
+endif
 
 dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh Makefile.nmssmtools CHANGES GUIDELINES COPYING $(DOCFILES)
 
 CLEANFILES += $(OUTPUTFILES) *.x
 
-
-.PHONY: doc test updateWeb
-
-
-#doc:
-#	@echo Making $@ in $(top_builddir)/doc
-#	cd $(top_builddir)/doc && make $@
+.PHONY: doc test updateWeb noOutput
 
 updateWeb: dist 
 	scp softsusy-${VERSION}.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; 
@@ -42,3 +36,4 @@ updateWeb: dist
 
 install-data-local:
 	rm -f softsusy.x softsusy-nmssm.x softpoint.x rpvsoftsusy.x rpvneut.x *.la
+

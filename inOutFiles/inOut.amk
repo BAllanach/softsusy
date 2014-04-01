@@ -29,9 +29,6 @@ inOutFiles/neutOutputTest: rpvneut.x
 	$(install_sh) -d inOutFiles
 	./rpvneut.x > inOutFiles/neutOutputTest
 
-
-
-
 test: softpoint.x
 	git checkout $(TESTOUTPUT)
 	cp $(TESTOUTPUT) .test; rm $(TESTOUTPUT); make $(TESTOUTPUT); \
