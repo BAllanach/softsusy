@@ -10,8 +10,6 @@
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
   ydR, yeL, yeR, ynuL;
 
-//#define TWOLOOP_NUM_THRESH 0.01
-
 template<class SoftPars>
 const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const Softsusy<SoftPars>& s) {
   if (this == &s) return *this;
@@ -10724,6 +10722,11 @@ void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
   out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
   out << "# MX=" << mxBC << " GeV" << endl;
+  out << "# 3-loop RGE corrections are ";
+  if (SOFTSUSY_THREELOOP_RGE) out << "on"; else out << "off";
+  out << ". 2-loop Yukawa/g3 thresholds are ";
+  if (SOFTSUSY_TWOLOOP) out << "on"; else out << "off";
+  out << endl;
 }
 
 template<class SoftPars>

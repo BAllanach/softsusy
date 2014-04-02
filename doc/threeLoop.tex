@@ -119,7 +119,19 @@ in the \SOFTSUSY~distribution
 parameters. The program may then be run with
 \small
 \begin{verbatim}
- ./softpoint.x leshouches < nmssmHouchesInput
+ ./softpoint.x leshouches < inOutFiles/lesHouchesInput
+\end{verbatim}
+\normalsize
+
+One can change whether the 3-loop RGE corrections are switched on with
+\code{SOFTSUSY Block} parameter 19, whereas the 2-loop third family and $g_3$
+threshold corrections 
+are switched on with \code{SOFTSUSY Block} parameter 20 in the SLHA2 input file:
+\small
+\begin{verbatim}
+Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
+   19   1.000000000e+00      # Include 3-loop RGE terms (0 to disable)
+   20   1.000000000e+00      # Include 2-loop thresholds (0 to disable)
 \end{verbatim}
 \normalsize
 
