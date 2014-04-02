@@ -1,5 +1,5 @@
 lib_LTLIBRARIES = 
-bin_PROGRAMS =
+bin_PROGRAMS = 
 CLEANFILES =
 BUILT_SOURCES=
 EXTRA_DIST=
@@ -13,15 +13,16 @@ include src/softsusy.amk
 include doc/doc.amk
 if FULL_SUSY_THRESHOLD
 else
-include benchmarks/benchmarks.amk
 include inOutFiles/inOut.amk
+include benchmarks/benchmarks.amk
 endif
 
-dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh Makefile.nmssmtools CHANGES GUIDELINES COPYING $(DOCFILES)
+dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh \
+Makefile.nmssmtools CHANGES GUIDELINES COPYING $(DOCFILES) 
 
 CLEANFILES += $(OUTPUTFILES) *.x
 
-.PHONY: doc test updateWeb noOutput
+.PHONY: doc test updateWeb install
 
 updateWeb: dist 
 	scp softsusy-${VERSION}.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; 

@@ -1,13 +1,19 @@
-TESTOUTPUT = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
- inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output
+TESTOUTPUT = 
+if FULL_SUSY_THRESHOLD
+else
+   TESTOUTPUT += inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
+   inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output inOutFiles/lesHouchesOutput
+endif
 
-OUTPUTFILES = $(TESTOUTPUT) \
- inOutFiles/neutOutputTest inOutFiles/rpvOutputTest \
- inOutFiles/outputTest inOutFiles/outputTest-nmssm 
-
-INPUTFILES = inOutFiles/slha2Input inOutFiles/lesHouchesInput inOutFiles/rpvHouchesInput \
-inOutFiles/nmssmSLHAZ3Input inOutFiles/nmssmSLHAnoZ3Input
-
+INPUTFILES = 
+OUTPUTFILES = $(TESTOUTPUT) 
+if FULL_SUSY_THRESHOLD
+else
+OUTPUTFILES += inOutFiles/neutOutputTest inOutFiles/rpvOutputTest \
+inOutFiles/outputTest inOutFiles/outputTest-nmssm
+INPUTFILES += inOutFiles/slha2Input inOutFiles/rpvHouchesInput \
+inOutFiles/nmssmSLHAZ3Input inOutFiles/nmssmSLHAnoZ3Input inOutFiles/lesHouchesInput 
+endif
 
 inOutFiles/%Output : inOutFiles/%Input softpoint.x 
 	$(install_sh) -d inOutFiles
@@ -32,11 +38,14 @@ inOutFiles/neutOutputTest: rpvneut.x
 test: softpoint.x
 	git checkout $(TESTOUTPUT)
 	cp $(TESTOUTPUT) .test; rm $(TESTOUTPUT); make $(TESTOUTPUT); \
+	if $(FULL_SUSY_THRESHOLD) then;
+	else	
+	ndiff --relative-error 1.0e-3 inOutFiles/lesHouchesOutput .test/lesHouchesOutput; 
 	ndiff --relative-error 1.0e-3 inOutFiles/slha2Output .test/slha2Output; \
-	ndiff --relative-error 1.0e-3 inOutFiles/lesHouchesOutput .test/lesHouchesOutput; \
 	ndiff --relative-error 1.0e-3 inOutFiles/rpvHouchesOutput .test/rpvHouchesOutput; \
 	ndiff --relative-error 1.0e-3 inOutFiles/nmssmSLHAZ3Output .test/nmssmSLHAZ3Output; \
 	ndiff --relative-error 1.0e-3 inOutFiles/nmssmSLHAnoZ3Output .test/nmssmSLHAnoZ3Output
+	fi
 
-dist_pkgdata_DATA += $(INPUTFILES) $(OUTPUTFILES)
+dist_pkgdata_DATA += $(INPUTFILES) $(OUTPUTFILES) 
 

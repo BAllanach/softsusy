@@ -47,7 +47,7 @@ AC_ARG_ENABLE([full_three_loop],
 
 AC_ARG_ENABLE([full_susy_threshold], 
                AC_HELP_STRING([--enable-full_susy_threshold],[Full two-loop SUSY threshold corr. to fermions third generation]),
-             [AC_DEFINE([FULL_SUSY_THRESHOLD],[1],[Full two-loop SUSY threshold corrections to fermions third generation]),
+             [AC_DEFINE([FULL_SUSY_THRESHOLD],[1],[Full two-loop SUSY threshold corrections to fermionic third generation Yukawa couplings]),
               case "${enableval}" in
               yes) full_susy_threshold=true ;;
               no)  full_susy_threshold=false ;;
@@ -78,14 +78,6 @@ AC_SUBST(FLIBS)
 AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
-
-AC_MSG_RESULT()
-if $FULL_THREE_LOOP; then
-   AC_MSG_RESULT(3-loop RGEs switched on. They will slow the program.)
-fi      
-if $FULL_SUSY_THRESHOLD; then
-   AC_MSG_RESULT(2-loop SUSY thresholds switched on. Output files will not be automatically made because of the slow running of the program.)
-fi
 
 # To run with looptools, run: ./configure CPPFLAGS=-I/home/bca20/code/looptools/LoopTools/install/include LDFLAGS=-L/home/bca20/code/looptools/LoopTools/install/lib/ F77=gfortran and add -looptools to Makefile.am libs
 
