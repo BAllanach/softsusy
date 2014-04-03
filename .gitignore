@@ -30,9 +30,7 @@ softpoint.x
 softsusy.x
 softsusy-nmssm.x
 aclocal.m4
-neutOutputTest
-outputTest
-rpvOutputTest
+inOutFiles/*utput*
 benchmarks/*.spec
 doc/*.ps
 doc/*.spl
