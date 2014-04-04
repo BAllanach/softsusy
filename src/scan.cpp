@@ -25,7 +25,7 @@
 #include "utils.h"
 #include "numerics.h"
 
-int main() {
+int main(int argc, char *argv[]) {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
@@ -41,7 +41,6 @@ int main() {
   /// Parameters used: CMSSM parameters
   double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 30.0, m0 = 125.;
   int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 0; ///< number of scan points
 
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
 
@@ -56,7 +55,7 @@ int main() {
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
   cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
-       << TOLERANCE << endl << oneset << endl;
+       << TOLERANCE << endl << oneset;
 
   /// Print out header line
   cout << "#       1:m0        2:m12         3:a0       4:tanb         5:mh         6:Dmh         7:mA         8:dmA        9:mH        10:DmH        11:mH+       12:DmH+ ";
@@ -74,75 +73,67 @@ int main() {
        << " 45:Dmchi+1  " << "   46:mchi+1 " << "  47:Dmchi+2 " 
        << "   48:mchi+2 " << endl;
 
-  int i, j; 
-  /// Set limits of tan beta scan
-  double startM0 = 100.0, endM0 = 6000.0;
-  double startM12 = 250., endM12 = 1000.;
-  /// Cycle through different points in the scan
-  for (i = 0; i<=numPoints; i++) {
+  if (argc != 5) { cout << "ERROR: ./scansusy.x requires two arguments: m0 m12 a0 tb\n"; exit(-1); }
 
-    m12 = (endM12 - startM12) / double(numPoints) * double(i) +
-      startM12; 
+  m0 = atof(argv[1]);
+  m12 = atof(argv[2]);
+  a0 = atof(argv[3]);
+  tanb = atof(argv[4]);
 
-    for (j = 0; j<=numPoints; j++) {
 
-      m0 = (endM0 - startM0) / double(numPoints) * double(j) +
-	startM0;
-      a0 = -2.0 * m0;
+  cout << m0 << " "<< m12 << " " << tanb << " " << a0 << endl;
       
-      if (numPoints == 0) { m0 = startM0; m12 = startM12; a0 = -2.0 * m0; }
-      
-      /// Preparation for calculation: set up object and input parameters
-      MssmSoftsusy r; 
-      DoubleVector pars(3); 
-      pars(1) = m0; pars(2) = m12; pars(3) = a0;
-      bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
-      
-      /// Switch off 3-loop RGEs etc
-      SOFTSUSY_THREELOOP_RGE = false;
-      SOFTSUSY_TWOLOOP = false;
-      SOFTSUSY_TWOLOOP_TQUARK_STRONG = false;
-      SOFTSUSY_TWOLOOP_BQUARK_STRONG = false;
-      SOFTSUSY_TWOLOOP_BQUARK_YUKAWA = false;
-      SOFTSUSY_TWOLOOP_TAU_YUKAWA = false;
-      SOFTSUSY_TWOLOOP_GS = false;
-      /// Calculate the spectrum
-      r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
-      
-      double msq2loop = (r.displayPhys().mu(2, 1) + r.displayPhys().mu(1, 1) +
-			 r.displayPhys().md(2, 1) + r.displayPhys().md(1, 1)) * 
-	0.25;
-      
-      MssmSoftsusy s; mGutGuess = 2.0e16;
-      SOFTSUSY_THREELOOP_RGE = true;
-      SOFTSUSY_TWOLOOP = true;
-      SOFTSUSY_TWOLOOP_TQUARK_STRONG = true;
-      SOFTSUSY_TWOLOOP_BQUARK_STRONG = true;
-      SOFTSUSY_TWOLOOP_BQUARK_YUKAWA = true;
-      SOFTSUSY_TWOLOOP_TAU_YUKAWA = true;
-      SOFTSUSY_TWOLOOP_GS = true;
-      s.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
-      
-      double msq3loop = (s.displayPhys().mu(2, 1) + s.displayPhys().mu(1, 1) +
-			 s.displayPhys().md(2, 1) + s.displayPhys().md(1, 1)) * 
-	0.25;
-      
-      /// check the point in question is problem free: if so print the output
-      if (r.displayProblem().test() || s.displayProblem().test()) cout << "# ";
-      cout << m0 << " " << m12 << " " << a0 << " " << tanb 
-	   << " " << r.displayPhys().mh0(1)
-	   << " " << (1. - r.displayPhys().mh0(1) / s.displayPhys().mh0(1))
-	   << " " << r.displayPhys().mA0(1)
-	   << " " << (1. - r.displayPhys().mA0(1) / s.displayPhys().mA0(1))
-	   << " " << r.displayPhys().mh0(2)
-	   << " " << (1. - r.displayPhys().mh0(2) / s.displayPhys().mh0(2))
-	   << " " << r.displayPhys().mHpm 
-	   << " " << (1. - r.displayPhys().mHpm / s.displayPhys().mHpm)
-	   << " " << r.displayPhys().mGluino
-	   << " " << (1. - r.displayPhys().mGluino / s.displayPhys().mGluino)
-	   << " " << msq2loop
-	   << " " << (1. - msq2loop / msq3loop)
-	   << " " << r.displayPhys().me(1, 1)
+  /// Preparation for calculation: set up object and input parameters
+  MssmSoftsusy r; 
+  DoubleVector pars(3); 
+  pars(1) = m0; pars(2) = m12; pars(3) = a0;
+  bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
+  
+  /// Switch off 3-loop RGEs etc
+  SOFTSUSY_THREELOOP_RGE = false;
+  SOFTSUSY_TWOLOOP = false;
+  SOFTSUSY_TWOLOOP_TQUARK_STRONG = false;
+  SOFTSUSY_TWOLOOP_BQUARK_STRONG = false;
+  SOFTSUSY_TWOLOOP_BQUARK_YUKAWA = false;
+  SOFTSUSY_TWOLOOP_TAU_YUKAWA = false;
+  SOFTSUSY_TWOLOOP_GS = false;
+  /// Calculate the spectrum
+  r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+  
+  double msq2loop = (r.displayPhys().mu(2, 1) + r.displayPhys().mu(1, 1) +
+		     r.displayPhys().md(2, 1) + r.displayPhys().md(1, 1)) * 
+    0.25;
+  
+  MssmSoftsusy s; mGutGuess = 2.0e16;
+  SOFTSUSY_THREELOOP_RGE = true;
+  SOFTSUSY_TWOLOOP = true;
+  SOFTSUSY_TWOLOOP_TQUARK_STRONG = true;
+  SOFTSUSY_TWOLOOP_BQUARK_STRONG = true;
+  SOFTSUSY_TWOLOOP_BQUARK_YUKAWA = true;
+  SOFTSUSY_TWOLOOP_TAU_YUKAWA = true;
+  SOFTSUSY_TWOLOOP_GS = true;
+  s.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+  
+  double msq3loop = (s.displayPhys().mu(2, 1) + s.displayPhys().mu(1, 1) +
+		     s.displayPhys().md(2, 1) + s.displayPhys().md(1, 1)) * 
+    0.25;
+  
+  /// check the point in question is problem free: if so print the output
+  if (r.displayProblem().test() || s.displayProblem().test()) cout << "# ";
+  cout << m0 << " " << m12 << " " << a0 << " " << tanb 
+       << " " << r.displayPhys().mh0(1)
+       << " " << (1. - r.displayPhys().mh0(1) / s.displayPhys().mh0(1))
+       << " " << r.displayPhys().mA0(1)
+       << " " << (1. - r.displayPhys().mA0(1) / s.displayPhys().mA0(1))
+       << " " << r.displayPhys().mh0(2)
+       << " " << (1. - r.displayPhys().mh0(2) / s.displayPhys().mh0(2))
+       << " " << r.displayPhys().mHpm 
+       << " " << (1. - r.displayPhys().mHpm / s.displayPhys().mHpm)
+       << " " << r.displayPhys().mGluino
+       << " " << (1. - r.displayPhys().mGluino / s.displayPhys().mGluino)
+       << " " << msq2loop
+       << " " << (1. - msq2loop / msq3loop)
+       << " " << r.displayPhys().me(1, 1)
 	   << " " << (1. - r.displayPhys().me(1, 1) / s.displayPhys().me(1, 1))
 	   << " " << r.displayPhys().me(2, 1)
 	   << " " << (1. - r.displayPhys().me(2, 1) / s.displayPhys().me(2, 1))
@@ -188,8 +179,7 @@ int main() {
 					  << s.displayProblem(); 
       cout << endl;
     }
-  }
-  }
+
   catch(const string & a) { cout << a; return -1; }
   catch(const char * a) { cout << a; return -1; }
   catch(...) { cout << "Unknown type of exception caught.\n"; return -1; }
