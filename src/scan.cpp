@@ -59,19 +59,20 @@ int main() {
        << TOLERANCE << endl << oneset << endl;
 
   /// Print out header line
-  cout << "#         m0          m12           a0         tanb           mh           Dmh           mA           dmA          mH           DmH           mH+          DmH+ ";
-  cout << "         Dmg " << "          mg " << "        Dmsq " 
-       << "         msq " << "        DmeL " << "         meL " 
-       << "        DmeR " << "         meR " << "     Dmneut1 " 
-       << "      mneut1 " << "     Dmneut2 " << "     mneut2  "
-       << "     Dmneut3 " << "      mneut3 " << "    Dmneut4  " 
-       << "      mneut4 " << "        dmtL " << "         mtL " 
-       << "       DmtR  " << "         mtR " << "       DmbL  " 
-       << "        mbL  " << "    DmtauL   " << "      mtauL  " 
-       << "        dht  " << "          ht " << "       dhb   " 
-       << "         hb  " << "      dhtau  " << "       htau  "
-       << "    Dmchi+1  " << "      mchi+1 " << "     Dmchi+2 " 
-       << "      mchi+2 " << endl;
+  cout << "#       1:m0        2:m12         3:a0       4:tanb         5:mh         6:Dmh         7:mA         8:dmA        9:mH        10:DmH        11:mH+       12:DmH+ ";
+  cout << "      13:Dmg " << "       14:mg " << "     15:Dmsq " 
+       << "      16:msq " << "      17:meL " << "     18: meL " 
+       << "     19:DmeR " << "      20:meR " << "  21:Dmneut1 " 
+       << "   22:mneut1 " << "  23:Dmneut2 " << "  24:mneut2  "
+       << "  25:Dmneut3 " << "  26: mneut3 " << " 27:Dmneut4  " 
+       << "   28:mneut4 " << "     29:dmtL " << "      30:mtL " 
+       << "    31:DmtR  " << "     32: mtR " << "    33:DmbL  " 
+       << "    34: mbL  " << " 35:DmtauL   " << "   36:mtauL  " 
+       << "     37:dht  " << "       38:ht " << "   39: dhb   " 
+       << "      40:hb  " << "   41:dhtau  " << "    42:htau  "
+       << " 43:Dmu      " << "   44:mu     " 
+       << " 45:Dmchi+1  " << "   46:mchi+1 " << "  47:Dmchi+2 " 
+       << "   48:mchi+2 " << endl;
 
   int i, j; 
   /// Set limits of tan beta scan
