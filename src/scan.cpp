@@ -33,11 +33,6 @@ int main(int argc, char *argv[]) {
  /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
 
-  cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
-       << " test program, Ben Allanach 2002\n";
-  cerr << "If you use SOFTSUSY, please refer to B.C. Allanach,\n";
-  cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
-
   /// Parameters used: CMSSM parameters
   double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 30.0, m0 = 125.;
   int sgnMu = 1;      ///< sign of mu parameter 
@@ -52,37 +47,30 @@ int main(int argc, char *argv[]) {
 
   oneset.toMz();      ///< Runs SM fermion masses to MZ
 
-  /// Print out the SM data being used, as well as quark mixing assumption and
-  /// the numerical accuracy of the solution
-  cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
-       << TOLERANCE << endl << oneset;
-
   /// Print out header line
-  cout << "#       1:m0        2:m12         3:a0       4:tanb         5:mh         6:Dmh         7:mA         8:dmA        9:mH        10:DmH        11:mH+       12:DmH+ ";
-  cout << "      13:Dmg " << "       14:mg " << "     15:Dmsq " 
-       << "      16:msq " << "      17:meL " << "     18: meL " 
-       << "     19:DmeR " << "      20:meR " << "  21:Dmneut1 " 
-       << "   22:mneut1 " << "  23:Dmneut2 " << "  24:mneut2  "
-       << "  25:Dmneut3 " << "  26: mneut3 " << " 27:Dmneut4  " 
-       << "   28:mneut4 " << "     29:dmtL " << "      30:mtL " 
-       << "    31:DmtR  " << "     32: mtR " << "    33:DmbL  " 
-       << "    34: mbL  " << " 35:DmtauL   " << "   36:mtauL  " 
-       << "     37:dht  " << "       38:ht " << "   39: dhb   " 
-       << "      40:hb  " << "   41:dhtau  " << "    42:htau  "
-       << " 43:Dmu      " << "   44:mu     " 
-       << " 45:Dmchi+1  " << "   46:mchi+1 " << "  47:Dmchi+2 " 
-       << "   48:mchi+2 " << endl;
+  //  cout << "#       1:m0        2:m12         3:a0       4:tanb         5:mh         6:Dmh         7:mA         8:dmA        9:mH        10:DmH        11:mH+       12:DmH+ ";
+   // cout << "      13:Dmg " << "       14:mg " << "     15:Dmsq " 
+   //     << "      16:msq " << "      17:meL " << "     18: meL " 
+   //     << "     19:DmeR " << "      20:meR " << "  21:Dmneut1 " 
+   //     << "   22:mneut1 " << "  23:Dmneut2 " << "  24:mneut2  "
+   //     << "  25:Dmneut3 " << "  26: mneut3 " << " 27:Dmneut4  " 
+   //     << "   28:mneut4 " << "     29:dmtL " << "      30:mtL " 
+   //     << "    31:DmtR  " << "     32: mtR " << "    33:DmbL  " 
+   //     << "    34: mbL  " << " 35:DmtauL   " << "   36:mtauL  " 
+   //     << "     37:dht  " << "       38:ht " << "   39: dhb   " 
+   //     << "      40:hb  " << "   41:dhtau  " << "    42:htau  "
+   //     << " 43:Dmu      " << "   44:mu     " 
+   //     << " 45:Dmchi+1  " << "   46:mchi+1 " << "  47:Dmchi+2 " 
+   //     << "   48:mchi+2 " << endl;
 
-  if (argc != 5) { cout << "ERROR: ./scansusy.x requires two arguments: m0 m12 a0 tb\n"; exit(-1); }
+  if (argc != 6) { exit(-1); }
 
   m0 = atof(argv[1]);
   m12 = atof(argv[2]);
   a0 = atof(argv[3]);
   tanb = atof(argv[4]);
+  sgnMu = atoi(argv[5]);
 
-
-  cout << m0 << " "<< m12 << " " << tanb << " " << a0 << endl;
-      
   /// Preparation for calculation: set up object and input parameters
   MssmSoftsusy r; 
   DoubleVector pars(3); 
