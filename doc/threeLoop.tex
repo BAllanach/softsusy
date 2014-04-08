@@ -21,8 +21,8 @@
 DAMTP-2014-??
 \end{flushright}
 
-\title{Incorporating Three Loop Gauge and Yukawa Renormalisation Group
-  Equations and Two Loop Threshold Effects in the Calculation of the Spectrum
+\title{Incorporating Two Loop Threshold Effects and Three Loop Gauge and
+  Yukawa Renormalisation Group Equations in the Calculation of the Spectrum
   of the Minimal Supersymmetric Standard Model: {\tt SOFTSUSY3.5.0}}
 
 \author[damtp]{B.C.~Allanach}
@@ -45,9 +45,9 @@ DAMTP-2014-??
   The gauge and Yukawa couplings are extended to have three-loop
   renormalisation group equations and leading two-loop threshold
   corrections are incorporated to the third family Yukawa couplings. 
-  We explore some of the implications of the additional corrections: in a
+  We explore some implications of the additional corrections: in a
   generic CMSSM point, some sparticle masses change by around 3$\%$ and the
-  lightest CP-even Higgs mass by around 1 GeV. We also provide detail on the
+  lightest CP-even Higgs mass by around 2 GeV. We also provide detail on the
   approximations used. This constitutes a manual for the increased accuracy
   mdoe of running for the program. 
 \end{abstract}
@@ -130,6 +130,36 @@ The gauge and Yukawa couplings are extended to have three-loop
 gluino mass and $m_q$ the average squark mass from the first two generations. }
 \end{figure}
 
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|ccccccc|}\hline
+quantity      & $m_h$  & $m_{\tilde g}$ & $m_{\chi_3^0}$  & $m_{\chi_4^0}$ &
+$m_{\chi_2^\pm}$ & $m_{{\tilde d}_L,{\tilde s}_L}$ & $m_{{\tilde d}_R, {\tilde
+    s}_R}$ \\ \hline
+value         & 115.3  & 1087           & 2535          &  2574  & 2574 & 1058
+&1027  \\
+$\Delta$/$\%$ & -1.8  & -0.3         & -0.2        &  -0.1 & -0.1 & -0.1 &
+-0.2\\ \hline
+%
+quantity & $g_3(M_{SUSY})$ & $Y_t(M_{SUSY})$ & $Y_b(M_{SUSY})$ & $Y_\tau(M_{SUSY})$ & $\mu(M_{SUSY})$    &&\\
+value &  1.036  & 0.836 & 0.128              &  0.097&2536 &&\\
+$\Delta$/$\%$
+& -1.0 & -1.9 & -1.8          &  -0.2&-0.002 &&\\
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{tab:pmssm} Differences due to the highest order terms
+  (three-loop 
+  RGEs for gauge and Yukawa couplings and two-loop threshold corrections to
+  third family fermion masses and $g_3$) on various quantities in the MSSM.
+  We display quantities of with a relative error of greater than $10^{-3}$ for the
+  parameter point pMSSM1.6~\cite{}. All masses are given in units of GeV, and
+  $\Delta$ shows the relative change due to the highest order terms.}
+\end{table}
+
+\section{Effect on Unification}
+
+
 \section*{Acknowledgments}
 This work has been partially supported by STFC 
 
@@ -137,6 +167,7 @@ This work has been partially supported by STFC
 
 \section{Installation of the Increased Accuracy Mode}
 \label{sec:install}
+
 
 \section{Running \SOFTSUSY in the Increased Accuracy Mode} 
 \label{sec:run}
