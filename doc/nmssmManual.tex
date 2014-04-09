@@ -1018,7 +1018,7 @@ user has to first install \NMSSMTools\ and then run the
        --compile
 \end{verbatim}
 %
-The \code{setup\_nmssmtools.sh} script copies \code{nmProcessSpec.f}
+The \code{setup\_nmssmtools.sh} script copies \code{nmh\_slhainp.f}
 and \code{Makefile.nmssmtools} from the \SOFTSUSY\ directory to the
 {\tt main/} directory within the \NMSSMTools\ folder.  If the \code{--compile}
 flag is provided, \NMSSMTools\ is recompiled.  Afterwards the user can
@@ -1049,10 +1049,10 @@ convention.
 %
 After \code{softsusy\_nmssmtools.x} is called, the following three output
 files can be found in the \NMSSMTools\ directory
-\code{NMSSMTools\_4.1.2/main/}. The file \code{nmProcessSpec-decay}
+\code{NMSSMTools\_4.1.2/main/}. The file \code{decay}
 contains the sparticle decays in form of SLHA DECAY blocks,
-\code{nmProcessSpec-omega} will contain the output from \code{micrOMEGAS} if entry 16 is selected to be non-zero and
-\code{nmProcessSpec-spectr} contains the spectrum calculated by
+\code{omega} will contain the output from \code{micrOMEGAS} if entry 16 is selected to be non-zero and
+\code{spectr} contains the spectrum calculated by
 \NMSSMTools.
 
 \section{Class Structure\label{sec:objects}}

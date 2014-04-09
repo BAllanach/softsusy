@@ -4,7 +4,7 @@
 
 *     May need these for problem point test.
       INTEGER NPROB,NPAR,ERR
-      PARAMETER (NPROB=49,NPAR=25)
+      PARAMETER (NPROB=51,NPAR=25)
       DOUBLE PRECISION PAR(NPAR),PROB(NPROB)
      
       INTEGER IFAIL,I
@@ -14,7 +14,7 @@
       DOUBLE PRECISION ZHU,ZHD,ZS,H1Q,H2Q,TANBQ 
       DOUBLE PRECISION MUR,MUL,MDR,MDL,MLR,MLL,MNL,
      C     MST1,MST2,MSB1,MSB2,MSL1,MSL2,MSNT,
-     C     CST,CSB,CSL,MSMU1,MSMU2,MSMUNT, CSMU
+     C     CST,CSB,CSL,MSMU1,MSMU2,MSMUNT,CSMU
       DOUBLE PRECISION M3,COEF,HTQ,HBQ,MTQ,MBQ  
       DOUBLE PRECISION G1Q,G2Q,GQ,ALSQ,AT,M2,PI
       DOUBLE PRECISION MHUS,MHDS,MHSS
@@ -32,10 +32,10 @@
       
 *     I/O files
 
-      OPEN(15,FILE='slha_nmssm', STATUS= 'UNKNOWN')
-      OPEN(17,FILE='nmProcessSpec-spectr', STATUS= 'UNKNOWN') 
-      OPEN(18,FILE='nmProcessSpec-decay', STATUS= 'UNKNOWN') 
-      OPEN(19,FILE='nmProcessSpec-omega', STATUS= 'UNKNOWN')
+      OPEN(15,FILE='inp', STATUS= 'UNKNOWN')
+      OPEN(17,FILE='spectr', STATUS= 'UNKNOWN') 
+      OPEN(18,FILE='decay', STATUS= 'UNKNOWN') 
+      OPEN(19,FILE='omega', STATUS= 'UNKNOWN')
 
 *   Initialization
 
@@ -44,11 +44,13 @@
 *     Reading of SLHA input file
       
       CALL SLHAINPUT(PAR,NPAR)
-      
+
       CALL NONSLHAINPUT
       DO I=1,NPROB
          PROB(I)=0d0
       ENDDO      
+
+      CALL RUNPAR(PAR)
 
 * Calculate DELMB
 * Calculation of the SUSY corrections to h_bot, DELMB, as in
@@ -86,6 +88,10 @@
 
       CALL MAGNMU(PAR,PROB)
       
+*   Landau Pole?
+
+      CALL RGES(PAR,PROB,IFAIL)
+      
 *   Get effective coouplings needed for RELDEN
       
       CALL EFFECTIVECOUPLINGS(PAR)
@@ -112,14 +118,11 @@
 
 
 *******************************************************************
-*   This subroutine reads an SLHA file from SOFTSUSY to get the
+*   This subroutine reads an SLHA file to get the
 *   mass spectrum, mixing, DR-bar parameters and entries of PAR.
 *******************************************************************
   
       SUBROUTINE SLHAINPUT(PAR,NPAR)
-* Currently all entries of PAR are filled except for:
-*      PAR(24) = MP (diagonal singlet CP-odd mass matrix element)
-* this could be added?
 
 *Fill PAR from SLHA file as
 
@@ -153,14 +156,13 @@
       CHARACTER CHINL*120,CHBLCK*60,CHDUM*120
       INTEGER I,J,NLINE,INL,ICH,IX,IVAL,Q2FIX
       INTEGER N0,NLOOP,NBER,NPAR,ERR,NTOT,GMUFLAG,HFLAG
-      INTEGER M1FLAG,M2FLAG,M3FLAG,MHDFLAG,MHUFLAG,MSFLAG
-      INTEGER AKFLAG,ALFLAG,OMGFLAG,MAFLAG,PFLAG,NMSFLAG
+      INTEGER OMGFLAG,MAFLAG,PFLAG,NMSFLAG,VFLAG
       
-      DOUBLE PRECISION PAR(*),VAL
+      DOUBLE PRECISION PAR(*),VAL,PI
       !Parameters to be filled
       DOUBLE PRECISION ALSMZ,ALEMMZ,GF,g1,g2,S2TW
       DOUBLE PRECISION MS,MC,MB,MBP,MT,MTAU,MMUON,MZ,MW
-      DOUBLE PRECISION VUS,VCB,VUB,MA2
+      DOUBLE PRECISION VUS,VCB,VUB,MA2,Q2MIN
       DOUBLE PRECISION SMASS(3),S(3,3),SCOMP(3,3)
       DOUBLE PRECISION PMASS(2),P(2,3),P2(2,2), CMASS
       DOUBLE PRECISION MGL,MCHA(2),U(2,2),V(2,2),MNEU(5),
@@ -169,19 +171,16 @@
      C     MST1,MST2,MSB1,MSB2,MSL1,MSL2,MSNT,
      C     CST,CSB,CSL,MSMU1,MSMU2,MSMUNT,CSMU,
      C     MSMUL,MSMUR
-      DOUBLE PRECISION ZHU,ZHD,ZS,H1Q,H2Q,TANBQ,VEV
       DOUBLE PRECISION HUQ,HDQ,MTQ,MBQ
-      DOUBLE PRECISION LLQ,KQ,ALQ,AKQ,MUQ,NUQ
       DOUBLE PRECISION XIF,XIS,MUP,MSP,M3H
-      DOUBLE PRECISION QSTSB,Q2,Q2MIN
+      DOUBLE PRECISION QSTSB,Q2
       DOUBLE PRECISION g1s,g2s,g3s,HTOPS,HBOTS,HTAUS
       DOUBLE PRECISION G1Q,G2Q,GQ,ALSQ
 *      Added for testing - second gensfermion masses
       DOUBLE PRECISION MDL2,MUL2,MUR2,MDR2 
       DOUBLE PRECISION MHUS,MHDS,MHSS
       DOUBLE PRECISION MQ3P,MU3P,MD3P,ATP,ABP
-          
-      COMMON/ALEM0/ALEM0 
+           
       COMMON/GAUGE/ALSMZ,ALEMMZ,GF,g1,g2,S2TW
       COMMON/SMSPEC/MS,MC,MB,MBP,MT,MTAU,MMUON,MZ,MW
       COMMON/CKM/VUS,VCB,VUB  
@@ -191,24 +190,19 @@
      .      MST1,MST2,MSB1,MSB2,MSL1,MSL2,MSNT,
      .      CST,CSB,CSL,MSMU1,MSMU2,MSMUNT,CSMU
       COMMON/DELMB/DELMB   !See line 425 in msferm.f
-      COMMON/STSBSCALE/QSTSB 
-      COMMON/QHIGGS/ZHU,ZHD,ZS,H1Q,H2Q,TANBQ!H1Q,H2Q = DRbar VEVs at QSTSB
-      !Note unusual convention H1Q=vu, H2Q=vd.
+      COMMON/STSBSCALE/QSTSB
       COMMON/QQUARK/HUQ,HDQ,MTQ,MBQ !HUQ,HDQ are DRbar Yukawa couplings.
-      COMMON/QPAR/LLQ,KQ,ALQ,AKQ,MUQ,NUQ
       COMMON/QEXT/XIF,XIS,MUP,MSP,M3H 
       COMMON/SUSYCOUP/g1s,g2s,g3s,HTOPS,HBOTS,HTAUS
-     
-      COMMON/SCANFLAGS/M1FLAG,M2FLAG,M3FLAG,MHDFLAG,MHUFLAG,
-     . MSFLAG,AKFLAG,ALFLAG
+      COMMON/Q2FIX/Q2MIN,Q2FIX
       COMMON/FLAGS/OMGFLAG,MAFLAG
       COMMON/PFLAG/PFLAG
       COMMON/NMSFLAG/NMSFLAG
       COMMON/GMUFLAG/GMUFLAG,HFLAG
+      COMMON/VFLAG/VFLAG
       COMMON/QGAUGE/G1Q,G2Q,GQ,ALSQ
       COMMON/SUSYMH/MHUS,MHDS,MHSS
       COMMON/RENSCALE/Q2
-      COMMON/Q2FIX/Q2MIN,Q2FIX
       COMMON/RADCOR2/MQ3P,MU3P,MD3P,ATP,ABP
 
 *   INITIALIZATION OF THE SUSY PARAMETERS
@@ -268,38 +262,19 @@
       CSL=1d99
       MSMU1=1d99
       MSMU2=1d99
-      MSMUNT=1d99
-     
-      LLQ=1d99
-      KQ=1d99
-      ALQ=1d99
-      AKQ=1d99
-      MUQ=1d99
-      
-      TANBQ=1d99
-
+      MSMUNT=1d99      
 
 *   DEFAULT VALUE FOR FLAGS
       OMGFLAG=0
+      MAFLAG=-1
       PFLAG=0
       NMSFLAG=0
-      M1FLAG=0
-      M2FLAG=0
-      M3FLAG=0
-      MHDFLAG=0
-      MHUFLAG=0
-      MSFLAG=1
-      ALFLAG=0
-      AKFLAG=0
       HFLAG=0
+      VFLAG=0
 
-*   Set Q2MIN, Q2FIX:      
+*   Set default for Q2
 
-      Q2MIN=100d0**2
-      Q2FIX=1
-      IF(Q2.LE.Q2MIN)THEN
-       Q2FIX=0
-      ENDIF
+      Q2=1d99
 
 *   INITIALIZE READ LOOP
       NLINE=0
@@ -335,11 +310,13 @@
 *   IF THE RELIC DENSITY SHOULD BE COMPUTED
 *   THE BLOCK MODSEL MUST CONTAIN THE LINE "  9     1    "
       IF(CHBLCK(1:6).EQ.'MODSEL')THEN
-       READ(CHINL,*,ERR=999) IX,IVAL
-       IF(IX.EQ.8) PFLAG=IVAL
-       IF(IX.EQ.9) OMGFLAG=IVAL  !flag sets whether micromegas is called or not
-       IF(IX.EQ.13) NMSFLAG=IVAL !flag sets whether NMSDECAY is called or not
-       IF(IX.EQ.11) GMUFLAG=IVAL !flag sets whether (g-2) routine called or not
+       READ(CHINL,*,ERR=999) IX,VAL
+       IF(IX.EQ.8) PFLAG=NINT(VAL)
+       IF(IX.EQ.9) OMGFLAG=NINT(VAL)  !flag sets whether micromegas is called or not
+       IF(IX.EQ.11) GMUFLAG=NINT(VAL) !flag sets whether (g-2) routine called or not
+       IF(IX.EQ.12) Q2=VAL**2
+       IF(IX.EQ.13) NMSFLAG=NINT(VAL) !flag sets whether NMSDECAY is called or not
+       IF(IX.EQ.14) VFLAG=NINT(VAL)   !flag sets whether H->V*V* decays are included
       
 *   READ SMINPUTS
       ELSEIF(CHBLCK(1:8).EQ.'SMINPUTS')THEN
@@ -377,14 +354,14 @@
 *                     PAR(8) = mU3**2
 *                     PAR(9) = mD3**2
      
-*   READ GUT PARAMETERS, SIGMU, Q2 AND TANBETA
+*   READ Q2 AND TANBETA
       ELSEIF(CHBLCK(1:6).EQ.'MINPAR')THEN
        READ(CHINL,*,ERR=999) IX,VAL
        IF(IX.EQ.3) PAR(3)=VAL  ! fills DRbar tan(beta) at MZ
    
 *     READ NMSSMRUN
-      ELSEIF(CHBLCK(1:12).EQ.'NMSSMRUNATQ2')THEN
-       READ(CHINL,*,ERR=999) IX,VAL  
+      ELSEIF(CHBLCK(1:8).EQ.'NMSSMRUN')THEN
+       READ(CHINL,*,ERR=999) IX,VAL   
        IF(IX.EQ.1)THEN 
           PAR(1)=VAL            ! lambda(SQRT(Q2))
        ENDIF
@@ -406,119 +383,30 @@
        IF(IX.EQ.9)MSP=VAL
        IF(IX.EQ.10)MHSS=VAL
        IF(IX.EQ.12)M3H=VAL
-       
-*     READ NMSSMRUN at QSTSB
-      ELSEIF(CHBLCK(1:15).EQ.'NMSSMRUNATQSTSB')THEN
-       READ(CHINL,*,ERR=999) IX,VAL  
-       IF(IX.EQ.1)THEN 
-          LLQ = VAL             ! lambda(SQRT(QSTSB))
-       ENDIF
-       IF(IX.EQ.2)THEN 
-          KQ=VAL
-       ENDIF
-       IF(IX.EQ.3)THEN
-          ALQ=VAL               ! Alambda(SQRT(QSTSB))
-       ENDIF
-       IF(IX.EQ.4)THEN
-          AKQ=VAL               ! Akappa(SQRT(QSTSB))
-       ENDIF
-       IF(IX.EQ.5)THEN
-          MUQ=VAL               ! mueff(SQRT(QSTSB))
-       ENDIF
-
-      ELSEIF(CHBLCK(1:11).EQ.'HMIXATQSTSB')THEN
+      ELSEIF(CHBLCK(1:4).EQ.'HMIX')THEN
        READ(CHINL,*,ERR=999) IX,VAL
-       IF(IX.EQ.2)TANBQ=VAL
-       IF(IX.EQ.3)VEV=VAL/SQRT(2.0) !SQRT(2) for non-slha convention here
        if(IX.eq.4)MA2=VAL
-
-      ELSEIF(CHBLCK(1:6).EQ.'YUATQ2')THEN
-       READ(CHINL,*,ERR=999) IX1,IX2,VAL
-       IF(IX1.EQ.3)THEN
-        IF(IX2.EQ.3)THEN
-           HTOPS=VAL !DRbar yt(MSUSY)
-        ENDIF
-       ENDIF
-
-        ELSEIF(CHBLCK(1:9).EQ.'YUATQSTSB')THEN
-       READ(CHINL,*,ERR=999) IX1,IX2,VAL
-       IF(IX1.EQ.3)THEN
-        IF(IX2.EQ.3)THEN
-           HUQ=VAL   !yt(Q)
-        ENDIF
-       ENDIF
-       
-      ELSEIF(CHBLCK(1:6).EQ.'YDATQ2')THEN
-       READ(CHINL,*,ERR=999) IX1,IX2,VAL
-       IF(IX1.EQ.3)THEN
-        IF(IX2.EQ.3)THEN
-           HBOTS=VAL  !DRbar yb(MSUSY)
-        ENDIF
-        ENDIF
-
-        ELSEIF(CHBLCK(1:9).EQ.'YDATQSTSB')THEN
-       READ(CHINL,*,ERR=999) IX1,IX2,VAL
-       IF(IX1.EQ.3)THEN
-        IF(IX2.EQ.3)THEN
-           HDQ=VAL
-        ENDIF
-        ENDIF
-
-
-         ELSEIF(CHBLCK(1:6).EQ.'YEATQ2')THEN
-       READ(CHINL,*,ERR=999) IX1,IX2,VAL
-       IF(IX1.EQ.3)THEN
-        IF(IX2.EQ.3)THEN
-           HTAUS=VAL  !DRbar ytau(MSUSY)
-        ENDIF
-        ENDIF
-
-        
-
-      !What do I do here if Q=/=MSUSY?
-      ELSEIF(CHBLCK(1:9).EQ.'GAUGEATQ2')THEN
-       READ(CHINL,*,ERR=999) IX1,VAL
-       IF(IX1.EQ.1)g1s=VAL*VAL  !g1s is g'**2(MSUSY)
-       IF(IX1.EQ.2)g2s=VAL*VAL  !g2s is g2**2(MSUSY)
-       IF(IX1.EQ.3)g3s=VAL*VAL  !g3s is g3**2(MSUSY)
-      
-        
-      ELSEIF(CHBLCK(1:12).EQ.'GAUGEATQSTSB')THEN
-       READ(CHINL,*,ERR=999) IX1,VAL
-       IF(IX1.EQ.1)G1Q=VAL*VAL  !G1Q is g'(QSTSB)
-       IF(IX1.EQ.2)G2Q=VAL*VAL  !G2Q is g2(QSTSB)
-     
      
 *     READ au
-      ELSEIF(CHBLCK(1:6).EQ.'AUATQ2')THEN   
+      ELSEIF(CHBLCK(1:2).EQ.'AU')THEN   
        READ(CHINL,*,ERR=999) IX1,IX2,VAL
        IF(IX1.EQ.3 .AND. IX2.EQ.3) PAR(12)=VAL  !At = AU3
+       IF(IX1.EQ.3 .AND. IX2.EQ.3)ATP=VAL  !At = AU3
 
 *     READ ad
-      ELSEIF(CHBLCK(1:6).EQ.'ADATQ2')THEN   
+      ELSEIF(CHBLCK(1:2).EQ.'AD')THEN   
        READ(CHINL,*,ERR=999) IX1,IX2,VAL
        IF(IX1.EQ.3 .AND. IX2.EQ.3) PAR(13)=VAL!Ab = AD3
+      IF(IX1.EQ.3 .AND. IX2.EQ.3) ABP=VAL!Ab = AD3
      
 *     READ ae
-      ELSEIF(CHBLCK(1:6).EQ.'AEATQ2')THEN   
+      ELSEIF(CHBLCK(1:2).EQ.'AE')THEN   
        READ(CHINL,*,ERR=999) IX1,IX2,VAL
        IF(IX1.EQ.3 .AND. IX2.EQ.3) PAR(14)=VAL  !Atau = AE3
        IF(IX1.EQ.2 .AND. IX2.EQ.2) PAR(25)=VAL  !Amu = AE3
 
-
-*     READ au
-      ELSEIF(CHBLCK(1:9).EQ.'AUATQSTSB')THEN   
-       READ(CHINL,*,ERR=999) IX1,IX2,VAL
-       IF(IX1.EQ.3 .AND. IX2.EQ.3)ATP=VAL  !At = AU3
-
-*     READ ad
-      ELSEIF(CHBLCK(1:9).EQ.'ADATQSTSB')THEN   
-       READ(CHINL,*,ERR=999) IX1,IX2,VAL
-       IF(IX1.EQ.3 .AND. IX2.EQ.3) ABP=VAL!Ab = AD3
-     
-         
 *     READ msoft
-      ELSEIF(CHBLCK(1:9).EQ.'MSOFTATQ2')THEN   
+      ELSEIF(CHBLCK(1:5).EQ.'MSOFT')THEN   
        READ(CHINL,*,ERR=999) IX,VAL 
        IF(IX.EQ.43) PAR(7)=VAL**2 !mqL3**2 = mQ3**2  
        IF(IX.EQ.46) PAR(8)=VAL**2 !mtR**2 = mU3**2
@@ -535,16 +423,10 @@
        IF(IX.EQ.3) PAR(22)=VAL  !M3
        IF(IX.EQ.21)MHDS=VAL !mH1^2
        IF(IX.EQ.22)MHUS=VAL !mH2^2
-c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
-       
-
-*     READ msoft
-      ELSEIF(CHBLCK(1:12).EQ.'MSOFTATQSTSB')THEN   
-       READ(CHINL,*,ERR=999) IX,VAL 
        IF(IX.EQ.43) MQ3P=VAL**2 !mqL3**2 = mQ3**2  
        IF(IX.EQ.46) MU3P=VAL**2 !mtR**2 = mU3**2
        IF(IX.EQ.49) MD3P=VAL**2 !mbR**2 = mD3**2
-      
+c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2      
 
 *     PAR is filled.  Now we fill the masses and mixings.
 
@@ -647,38 +529,37 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       
       ENDIF 
 
-     
-
        GOTO 21
 
 *   END OF READING FROM INPUT FILE
     
  29   ERR=0
-*     FIX COMMON BLOCK ELEMENTS NOT GIVEN IN SLHA2 FILE 
-*     BUT DIRECTLY RELATED TO PARAMETERS THAT ARE
+      
+*   g1,g2  and sin(theta)^2 in the on-shell scheme in terms of
+*   GF, MZ(pole) and MW(pole)
 
-*     THE NMSPEC CONVENTION HAS THE VEVS H1Q <--> H2Q 
-*     COMPARED TO THE USUAL USE OF H1, H2       
-      H2Q = VEV*COS(ATAN(TANBQ))
-      H1Q = VEV*SIN(ATAN(TANBQ))
-     
-*     As defined in 0910.1785     
-      GQ=(G1Q+G2Q)/2d0
+      g2=4d0*DSQRT(2d0)*GF*MW**2
+      g1=4d0*DSQRT(2d0)*GF*(MZ**2-MW**2)
+      S2TW=1d0-(MW/MZ)**2
+
+      IF(Q2.EQ.1D99) THEN
+        Q2=DSQRT(MAX(PAR(7)*PAR(8),100d0**2))
+      ENDIF
+!      QSTSB=Q2
+
+*   Set Q2MIN, Q2FIX:      
+
+      Q2MIN=100d0**2
+      Q2FIX=1
+      IF(Q2.LE.Q2MIN)THEN
+       Q2FIX=0
+      ENDIF
 
       IF(MA2.LT.0d0)THEN
          WRITE(0,1)"MA2 MUST BE GIVEN WITH POSITIVE VALUE" 
          ERR=1
       ENDIF
-      MA2=DSQRT(MA2**2)
       PAR(23)=DSQRT(MA2)
-
-      QSTSB=SQRT(PAR(7)*PAR(8))
-      Q2=(2d0*PAR(15)+PAR(16)+PAR(17))/4d0;
-      ! Could we change one to Q^2=MST1*MST2?
-
-      MTQ=H1Q*HUQ
-      MBQ=H2Q*HDQ
-      NUQ=KQ*MUQ/LLQ
      
       P2(1,1) = P(1,1)/ SIN(ATAN(PAR(3)))
       P2(2,1) = P(2,1)/ SIN(ATAN(PAR(3)))
@@ -870,33 +751,7 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       IF(CSL.EQ.1d99)THEN
        WRITE(0,1)"STAU MIXING MUST BE GIVEN IN BLOCK STAUMIX" 
        ERR=1
-      ENDIF
-
-      IF(LLQ.EQ.1d99)THEN
-       WRITE(0,1)"LAMBDA(Q) MUST BE GIVEN IN BLOCK NMSSMRUN" 
-       ERR=1
-      ENDIF
-      IF(KQ.EQ.1d99)THEN
-       WRITE(0,1)"KAPPA(Q) MUST BE GIVEN IN BLOCK NMSSMRUN" 
-       ERR=1
-      ENDIF
-      IF(ALQ.EQ.1d99)THEN
-       WRITE(0,1)"ALAMBDA(Q) MUST BE GIVEN IN BLOCK NMSSMRUN" 
-       ERR=1
-      ENDIF
-      IF(AKQ.EQ.1d99)THEN
-       WRITE(0,1)"AKAPPA(Q) MUST BE GIVEN IN BLOCK NMSSMRUN" 
-       ERR=1
-      ENDIF
-      IF(MUQ.EQ.1d99)THEN
-       WRITE(0,1)"MU(Q) MUST BE GIVEN IN BLOCK NMSSMRUN" 
-       ERR=1
-      ENDIF
-      IF(TANBQ.EQ.1d99)THEN
-       WRITE(0,1)"TANB(Q) MUST BE GIVEN IN BLOCK HMIX" 
-       ERR=1
-      ENDIF
-      
+      ENDIF      
       
 *   Stop if error
 
@@ -927,6 +782,7 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       COMMON/SMSPEC/MS,MC,MB,MBP,MT,MTAU,MMUON,MZ,MW
       COMMON/ALS/XLAMBDA,MC0,MB0,MT0,N0
       COMMON/GAUGE/ALSMZ,ALEMMZ,GF,g1,g2,S2TW
+
 *     Initialization for ALPHAS and RUNM (as in hdecay)
 *     The bottom quark pole mass MBP is set in INIT and can be changed
 *     only there (changing its running mass MB above has no effect
@@ -943,13 +799,6 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       XLAMBDA=XITLA(NLOOP,ALSMZ,ACC)
       CALL ALSINI(ACC)
       CALL BERNINI(NBER)
-      
-*   g1,g2  and sin(theta)^2 in the on-shell scheme in terms of
-*   GF, MZ(pole) and MW(pole)
-
-      g2=4d0*DSQRT(2d0)*GF*MW**2
-      g1=4d0*DSQRT(2d0)*GF*(MZ**2-MW**2)
-      S2TW=1d0-(MW/MZ)**2
 
       RETURN
       
@@ -964,9 +813,8 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
  
       IMPLICIT NONE
 
-      INTEGER I,NBIN,IFAIL,Q2FIX
-      INTEGER M1FLAG,M2FLAG,M3FLAG,MHDFLAG,MHUFLAG,MSFLAG
-      INTEGER AKFLAG,ALFLAG,NMSFLAG,OMGFLAG,MAFLAG,PFLAG
+      INTEGER I,NBIN,IFAIL
+      INTEGER NMSFLAG,OMGFLAG,MAFLAG,PFLAG
       INTEGER NSUSY,NGUT,NMES
       PARAMETER (NSUSY=14,NGUT=21,NMES=15)
 
@@ -990,22 +838,16 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       DOUBLE PRECISION MUR,MUL,MDR,MDL,MLR,MLL,MNL
       DOUBLE PRECISION MST1,MST2,MSB1,MSB2,MSL1,MSL2,MSNT
       DOUBLE PRECISION CST,CSB,CSL,MSMU1,MSMU2,MSMUNT,CSMU
-      DOUBLE PRECISION SST,SSB,SSL,Q2,Q2MIN
+      DOUBLE PRECISION SST,SSB,SSL,Q2
       DOUBLE PRECISION MGUT,g1s,g2s,g3s,HTOPS,HBOTS,HTAUS
       DOUBLE PRECISION MHUS,MHDS,MSS
       DOUBLE PRECISION G1GUT,G2GUT,G3GUT,LGUT,KGUT,HTOPGUT
-      DOUBLE PRECISION HBOTGUT,HTAUGUT,M1GUT,M2GUT,M3GUT,ALGUT,AKGUT
-      DOUBLE PRECISION ATGUT,ABGUT,ATAUGUT,AMUGUT,MHUGUT,MHDGUT,MSGUT
-      DOUBLE PRECISION MQ3GUT,MU3GUT,MD3GUT,MQGUT,MUGUT,MDGUT,ML3GUT
-      DOUBLE PRECISION ME3GUT,MLGUT,MEGUT,M0,M12,A0,SIGMU
-      DOUBLE PRECISION M1INP,M2INP,M3INP,MHDINP,MHUINP,ALINP,AKINP
-      DOUBLE PRECISION XIFINP,XISINP,MUPINP,MSPINP,MSINP,M3HINP
-      DOUBLE PRECISION XIFGUT,XISGUT,MUPGUT,MSPGUT,M3HGUT
+      DOUBLE PRECISION HBOTGUT,HTAUGUT
       DOUBLE PRECISION XIFSUSY,XISSUSY,MUPSUSY,MSPSUSY,M3HSUSY
       DOUBLE PRECISION OMG,OMGMIN,OMGMAX,LOAMASS
       DOUBLE PRECISION Xf,sigmaV,x(100),dNdx(100),EMIN
       DOUBLE PRECISION sigmaPiN,sigmaS,csPsi,csNsi,csPsd,csNsd
-      DOUBLE PRECISION MHUQ,MHDQ,MSQ,LQ,KQ,ALQ,AKQ,MUQ,NUQ
+      DOUBLE PRECISION LQ,KQ,ALQ,AKQ,MUQ,NUQ
       DOUBLE PRECISION ZHU,ZHD,ZS,H1Q,H2Q,TANBQ,QSTSB
       DOUBLE PRECISION BRSG,BRSGmax,BRSGmin,DMd,DMdmin,DMdmax,DMs,
      . DMsmax,DMsmin,BRBMUMU,BRBMUMUmax,BRBMUMUmin,BRBtaunu,
@@ -1016,17 +858,11 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       DOUBLE PRECISION DELMB,PX,PA(6),PB(2),PL(7),PK(8),MH(3),MMH(3)
       DOUBLE PRECISION DMH(3),MA(2),MMA(2),DMA(2),MHC,MMHC,DMHC
       DOUBLE PRECISION MHmin,MHmax,chi2max,chi2gam,chi2bb,chi2zz
-      DOUBLE PRECISION XENON100,PRINTCHANNELS,omg_
+      DOUBLE PRECISION LUX,PRINTCHANNELS,omg_
 
       COMMON/PFLAG/PFLAG
       COMMON/NMSFLAG/NMSFLAG
       COMMON/FLAGS/OMGFLAG,MAFLAG
-      COMMON/SCANFLAGS/M1FLAG,M2FLAG,M3FLAG,MHDFLAG,MHUFLAG,
-     . MSFLAG,AKFLAG,ALFLAG
-      COMMON/SIGMU/SIGMU
-      COMMON/SOFTGUT/M0,M12,A0
-      COMMON/INPPAR/M1INP,M2INP,M3INP,MHDINP,MHUINP,ALINP,AKINP,
-     . XIFINP,XISINP,MUPINP,MSPINP,MSINP,M3HINP
       COMMON/BRN/BRJJ,BRMM,BRLL,BRSS,BRCC,BRBB,BRTT,BRWW,BRZZ,
      . BRGG,BRZG,BRHHH,BRHAA,BRHCHC,BRHAZ,BRAHA,BRAHZ,
      . BRHCW,BRHIGGS,BRNEU,BRCHA,BRHSQ,BRHSL,BRASQ,BRASL,
@@ -1049,21 +885,15 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       COMMON/SFSPEC/MUR,MUL,MDR,MDL,MLR,MLL,MNL,
      . MST1,MST2,MSB1,MSB2,MSL1,MSL2,MSNT,
      . CST,CSB,CSL,MSMU1,MSMU2,MSMUNT,CSMU
-      COMMON/Q2FIX/Q2MIN,Q2FIX
       COMMON/RENSCALE/Q2
       COMMON/STSBSCALE/QSTSB
       COMMON/MGUT/MGUT
       COMMON/SUSYCOUP/g1s,g2s,g3s,HTOPS,HBOTS,HTAUS
       COMMON/SUSYMH/MHUS,MHDS,MSS
-      COMMON/QMHIGGS/MHUQ,MHDQ,MSQ
       COMMON/QHIGGS/ZHU,ZHD,ZS,H1Q,H2Q,TANBQ
       COMMON/QPAR/LQ,KQ,ALQ,AKQ,MUQ,NUQ
       COMMON/GUTCOUP/G1GUT,G2GUT,G3GUT,LGUT,KGUT,HTOPGUT,
      . HBOTGUT,HTAUGUT
-      COMMON/GUTPAR/M1GUT,M2GUT,M3GUT,ALGUT,AKGUT,ATGUT,ABGUT,
-     . ATAUGUT,AMUGUT,MHUGUT,MHDGUT,MSGUT,MQ3GUT,MU3GUT,MD3GUT,
-     . MQGUT,MUGUT,MDGUT,ML3GUT,ME3GUT,MLGUT,MEGUT
-      COMMON/GUTEXT/XIFGUT,XISGUT,MUPGUT,MSPGUT,M3HGUT
       COMMON/SUSYEXT/XIFSUSY,XISSUSY,MUPSUSY,MSPSUSY,M3HSUSY
       COMMON/MICROMG/OMG,OMGMIN,OMGMAX,Xf,sigmaV,x,dNdx,EMIN,NBIN
       COMMON/MICROMG2/sigmaPiN,sigmaS,csPsi,csNsi,csPsd,csNsd
@@ -1151,7 +981,7 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       IF(PROB(30).EQ.-1d0)
      . WRITE(17,900) 3,"# Problem in micrOMEGAs"
       IF(PROB(31).NE.0d0)WRITE(17,900) 3,
-     . "# Excluded by Xenon100"
+     . "# Excluded by LUX"
       IF(PROB(32).NE.0d0)
      . WRITE(17,900) 3,"# b -> s gamma more than 2 sigma away"
       IF(PROB(33).NE.0d0)
@@ -1238,71 +1068,37 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       WRITE(17,906) "VUB:",VUB
       
       WRITE(17,899) "BLOCK MINPAR"
-      IF(Q2FIX.EQ.1)WRITE(17,901) 0,DSQRT(Q2),"REN. SCALE"
-      WRITE(17,901) 1,M0,"M0(MGUT)"
-      WRITE(17,901) 2,M12,"M12(MGUT)"
+      WRITE(17,901) 0,DSQRT(Q2),"REN. SCALE"
       WRITE(17,901) 3,TANB,"TANBETA(MZ)"
-      IF(MAFLAG.NE.-5)THEN
-       WRITE(17,901) 4,SIGMU,"SIGMU"
-      ELSE
-       WRITE(17,920) 4,SIGMU,"SIGMU"
-      ENDIF
-      WRITE(17,901) 5,A0,"A0(MGUT)"
 
       WRITE(17,899) "BLOCK EXTPAR"       
-      IF(M1FLAG.EQ.1)WRITE(17,901) 1,M1INP,"M1 AT THE GUT SCALE"
-      IF(M2FLAG.EQ.1)WRITE(17,901) 2,M2INP,"M2 AT THE GUT SCALE"
-      IF(M3FLAG.EQ.1)WRITE(17,901) 3,M3INP,"M3 AT THE GUT SCALE"
-      IF(MHDFLAG.EQ.1)THEN
-       IF(MAFLAG.NE.-5)THEN
-        WRITE(17,901) 21,MHDINP,"MHD^2 AT THE GUT SCALE"
-       ELSE
-        WRITE(17,920) 21,MHDGUT,"MHD^2 AT THE GUT SCALE"
-       ENDIF
-      ENDIF
-      IF(MHUFLAG.EQ.1)THEN
-       IF(MAFLAG.NE.-5)THEN
-        WRITE(17,901) 22,MHUINP,"MHU^2 AT THE GUT SCALE"      
-       ELSE
-        WRITE(17,920) 22,MHUGUT,"MHU^2 AT THE GUT SCALE"      
-       ENDIF
-      ENDIF
       WRITE(17,901) 61,PAR(1),"LAMBDA AT THE SUSY SCALE"
-      IF(MAFLAG.EQ.-3 .OR. MAFLAG.EQ.-4 .OR. MAFLAG.EQ.-5)THEN
-        WRITE(17,901) 62,PAR(2),"KAPPA AT THE SUSY SCALE"
-      ELSE
-        WRITE(17,920) 62,PAR(2),"KAPPA AT THE SUSY SCALE"
-      ENDIF
-      IF(ALFLAG.EQ.1)WRITE(17,901) 63,ALINP,"ALAMBDA AT THE GUT SCALE"
-      IF(AKFLAG.EQ.1)WRITE(17,901) 64,AKINP,"AKAPPA AT THE GUT SCALE"
-      IF(MAFLAG.EQ.-5)THEN
-       WRITE(17,901) 65,PAR(4),"MUEFF AT THE SUSY SCALE"
-      ELSE
-       WRITE(17,920) 65,PAR(4),"MUEFF AT THE SUSY SCALE"
-      ENDIF
-      IF(MAFLAG.EQ.-1 .OR. MAFLAG.EQ.-2 .OR.MAFLAG.EQ.-5)THEN
-       IF(XIFINP.NE.0d0)
-     .  WRITE(17,901) 66,XIFINP,"XIF AT THE GUT SCALE"
-      ELSE
-       WRITE(17,920) 66,XIFGUT,"XIF AT THE GUT SCALE"
-      ENDIF
-      IF(MAFLAG.EQ.-1 .OR. MAFLAG.EQ.-3 .OR.MAFLAG.EQ.-5)THEN
-       IF(XISINP.NE.0d0)
-     .  WRITE(17,901) 67,XISINP,"XIS AT THE GUT SCALE"
-      ELSE
-       WRITE(17,920) 67,XISGUT,"XIS AT THE GUT SCALE"
-      ENDIF
-      IF(MUPINP.NE.0d0)
-     .  WRITE(17,901) 68,MUPINP,"MU' AT THE GUT SCALE "
-      IF(MSPINP.NE.0d0)
-     .  WRITE(17,901) 69,MSPINP,"MS'^2 AT THE GUT SCALE "
-      IF(MAFLAG.EQ.-2 .OR. MAFLAG.EQ.-4)THEN
-       WRITE(17,901) 70,MSINP,"MS^2 AT THE GUT SCALE"
-      ELSE
-       WRITE(17,920) 70,MSGUT,"MS^2 AT THE GUT SCALE"
-      ENDIF
-      IF(M3HINP.NE.0d0)
-     .  WRITE(17,901) 72,M3HINP,"M3H^2 AT THE GUT SCALE "
+      WRITE(17,901) 62,PAR(2),"KAPPA AT THE SUSY SCALE"
+      WRITE(17,901) 65,PAR(4),"MUEFF AT THE SUSY SCALE"
+      
+      WRITE(17,899) "# "
+      WRITE(17,899) "# NMSSM SPECIFIC PARAMETERS THE SUSY SCALE"
+      WRITE(17,907) "BLOCK NMSSMRUN Q=",DSQRT(Q2),
+     .   " # (INPUTS AT THE SUSY SCALE)"
+      WRITE(17,901) 1,PAR(1),"LAMBDA(Q,DR_bar)"
+      WRITE(17,901) 2,PAR(2),"KAPPA(Q,DR_bar)"
+      WRITE(17,901) 3,PAR(5),"ALAMBDA"
+      WRITE(17,901) 4,PAR(6),"AKAPPA"
+      WRITE(17,901) 5,PAR(4),"MUEFF"
+      WRITE(17,901) 6,XIFSUSY,"XIF"
+      WRITE(17,901) 7,XISSUSY,"XIS"
+      WRITE(17,901) 8,MUPSUSY,"MU'"
+      WRITE(17,901) 9,MSPSUSY,"MS'^2"
+      WRITE(17,901) 10,MSS,"MS^2"
+      WRITE(17,901) 12,M3HSUSY,"M3H^2"
+     
+      WRITE(17,899) "# "
+      WRITE(17,907) "BLOCK HMIX Q=",DSQRT(QSTSB),
+     .    " # (COMPUTED AT THE SCALE OF STOP/SBOTTOM MASSES)"
+      WRITE(17,901) 1,MUQ,"MUEFF"
+      WRITE(17,901) 2,TANBQ,"TAN(BETA)"
+      WRITE(17,901) 3,DSQRT(2d0*(H1Q**2+H2Q**2)),"V(Q)"
+      WRITE(17,901) 4,PAR(23)**2,"MA^2"            
 
       IF(IFAIL.NE.0.AND.IFAIL.NE.10) GOTO 1
       
@@ -1399,7 +1195,7 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       ENDIF
       IF(OMGFLAG.EQ.2 .OR. OMGFLAG.EQ.4)THEN
 	WRITE(17,907)"# sigma(p)_SI (allowed: sigma_p^SI < ",
-     .   XENON100(DABS(MNEU(1))),"):"
+     .   LUX(DABS(MNEU(1))),"):"
 	WRITE(17,901) 20,CSPSI,"sigma_p^SI"
 	WRITE(17,915)"# values used for sigma_piN,sigma_S",
      .  " (strange content of the proton)"
@@ -1407,15 +1203,6 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
 	WRITE(17,901) 40,sigmaS,"sigma_S"
       ENDIF
 !      IF(OMGFLAG.NE.0)CALL printRelDen(PROB,17)
-     
-      WRITE(17,899) "# "
-      WRITE(17,907) "BLOCK HMIX Q=",DSQRT(QSTSB),
-     .    " # (STOP/SBOTTOM MASSES)"
-      WRITE(17,901) 1,MUQ,"MUEFF"
-      WRITE(17,901) 2,TANBQ,"TAN(BETA)"
-      WRITE(17,901) 3,DSQRT(2d0*(H1Q**2+H2Q**2)),"V(Q)"
-      WRITE(17,901) 4,PAR(23)**2,"MA^2"      
-      WRITE(17,901) 5,PAR(24)**2,"MP^2"      
       
       WRITE(17,899) "# "
       WRITE(17,899) "# 3*3 Higgs mixing"
@@ -1587,21 +1374,6 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       WRITE(17,901) 47,PAR(17)/DSQRT(DABS(PAR(17))),"M_dR"
       WRITE(17,901) 48,PAR(17)/DSQRT(DABS(PAR(17))),"M_sR"
       WRITE(17,901) 49,PAR(9)/DSQRT(DABS(PAR(9))),"M_bR"
-      
-      WRITE(17,899) "# "
-      WRITE(17,899) "# NMSSM SPECIFIC PARAMETERS THE SUSY SCALE"
-      WRITE(17,907) "BLOCK NMSSMRUN Q=",DSQRT(Q2)," # (SUSY SCALE)"
-      WRITE(17,901) 1,PAR(1),"LAMBDA(Q,DR_bar)"
-      WRITE(17,901) 2,PAR(2),"KAPPA(Q,DR_bar)"
-      WRITE(17,901) 3,PAR(5),"ALAMBDA"
-      WRITE(17,901) 4,PAR(6),"AKAPPA"
-      WRITE(17,901) 5,PAR(4),"MUEFF"
-      WRITE(17,901) 6,XIFSUSY,"XIF"
-      WRITE(17,901) 7,XISSUSY,"XIS"
-      WRITE(17,901) 8,MUPSUSY,"MU'"
-      WRITE(17,901) 9,MSPSUSY,"MS'^2"
-      WRITE(17,901) 10,MSS,"MS^2"
-      WRITE(17,901) 12,M3HSUSY,"M3H^2"
 
       WRITE(17,899) "# "
       WRITE(17,899) "# REDUCED CROSS SECTIONS AT LHC"
@@ -1640,23 +1412,6 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
 
       WRITE(17,899) "# "
       WRITE(17,899)
-     . "# PARAMETERS OF THE EFFECTIVE LAGRANGIAN IN THE HIGGS SECTOR"
-      WRITE(17,899) "BLOCK  EFFECTIVE_COUPLINGS"
-      WRITE(17,917)," X",PX
-      DO I=1,6
-      WRITE(17,916)," A",I,PA(I)
-      ENDDO
-      DO I=1,2
-       WRITE(17,916)," B",I,PB(I)
-      ENDDO
-      DO I=1,7
-       WRITE(17,916)," L",I,PL(I)
-      ENDDO
-      DO I=1,8
-       WRITE(17,916)," K",I,PK(I)
-      ENDDO
-      WRITE(17,917)," DELMB",DELMB
-      WRITE(17,917)," XVEV", MUQ/LQ*DSQRT(ZS)
 
  1    WRITE(18,899) "# HIGGS + TOP BRANCHING RATIOS IN SLHA FORMAT"
       WRITE(18,899) "# Info about decay package"
@@ -2528,7 +2283,7 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       IF(PROB(30).LT.0d0.AND.PROB(30).NE.-1d0.AND.PROB(30).NE.-2d0)
      . WRITE(19,900) 3,"# Relic density too small (WMAP)"
       IF(PROB(31).NE.0d0)WRITE(19,900) 3,
-     . "# Excluded by Xenon100"
+     . "# Excluded by LUX"
       IF(IFAIL.EQ.0.OR.IFAIL.GE.10)THEN
         IF(OMGFLAG.NE.0)CALL printRelDen(PROB,19) 
       ELSE
@@ -2595,7 +2350,7 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
       DOUBLE PRECISION sb,cb,s2,Lmu_mh,Lnu_mh
       DOUBLE PRECISION LM2,Lmu,Lnu,Lmunu,Lmunu_mh,LM2mu_mh
       DOUBLE PRECISION LQZ,LA,LP,LS,LPP,P1,P2,LMAMT,LM1mu,LM2mu
-      DOUBLE PRECISION SUBDET,BOS,GAUGE,SFERM,MP2,MS2,Lmax1,MGAU
+      DOUBLE PRECISION SUBDET,BOS,GAUGE,SFERM,MP2,MS2,M12,Lmax1,MGAU
 
 
       DOUBLE PRECISION PX,PA(6),PB(2),PL(7),PK(8)
@@ -2666,6 +2421,9 @@ c$$$       IF(IX.EQ.21)MHSS=VAL !mH1^2
      .     -2d0*MSP-MUP*NUQ-LQ*XIS/MUQ
 *   Approximate value for the Singlet-like CP even Higgs mass squared:
       MS2=MAX(NUQ*(AKQ+4d0*NUQ+3d0*MUP)-LQ*(XIS+XIF*MUP)/MUQ,MZ**2)
+*   Approximate value for the off-diag. CP odd mass matrix element:
+      M12=LQ*DSQRT(h1q**2+h2q**2)*(ALQ-2d0*NUQ-MUP)
+
 
       MGAU= (G1q*M1+3d0*G2q*M2)
 
