@@ -915,8 +915,8 @@ Block EXTPAR                 # Z3 symmetric NMSSM
    64   1000                 # A_kappa(MX)
 \end{verbatim}
 %
-By default all parameters are input at $M_X$ (defined in entry $0$ in
-block \code{EXTPAR}).  In case the parameters $\lambda$, $\kappa$,
+By default all parameters are input at $M_X$, defined in entry $0$ in
+block \code{EXTPAR} or as scale where $g_1$ = $g_2$ (determined iteratively) when entry $0$ in block \code{EXTPAR} is not set.    In case the parameters $\lambda$, $\kappa$,
 $\lambda s / \sqrt{2}$, $\xi_F$ and $\mu'$ should be input at
 $M_{SUSY}$ a corresponding $-1$ entry in the block \code{QEXTPAR} has
 to be given\footnote{The SUSY scale is defined as $M_{SUSY} =
