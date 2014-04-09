@@ -553,7 +553,7 @@ $g_i(M_Z)$, $h_{t,b,\tau}(M_Z)$.}}}
 \caption{Fixed point iteration algorithm used to calculate the SUSY
   spectrum. Each step 
 (represented by a box) is detailed in the text. The initial step is the
-uppermost one. $M_{SUSY}$ is the scale at which the EWSB
+uppermost one. $M_{SUSY}$ is defined to be the scale at which the EWSB
 conditions 
 are imposed, as discussed in the text. $M_X$ is the scale at which the high
 energy SUSY breaking boundary conditions are imposed.}\end{center}\end{figure}
@@ -718,11 +718,13 @@ eqs.~(2),(3) of BMPZ in order to obtain the MSSM $\overline{DR}$ value.
 \subsection{MSSM Renormalisation}
 
 All soft breaking and SUSY parameters are then evolved to the scale
+$M_{SUSY}$. By default, we choose the value
 \begin{equation}
-M_{SUSY} \equiv \sqrt{m_{{\tilde t}_1}(M_{SUSY}) m_{{\tilde t}_2}(M_{SUSY})}, \label{msusy}
+M_{SUSY} =\sqrt{m_{{\tilde t}_1}(M_{SUSY}) m_{{\tilde t}_2}(M_{SUSY})}, \label{msusy}
 \end{equation}
 where~\cite{Casas:1998vh} the scale dependence of the electroweak
-breaking conditions is smallest. 
+breaking conditions is smallest. However, \SOFTSUSY~allows the user to pick
+their own value for $M_{SUSY}$.
 Throughout the iteration described here, the renormalisation group evolution
 (RGE) employs three family,
 2-loop MSSM $\beta$ functions for the supersymmetric

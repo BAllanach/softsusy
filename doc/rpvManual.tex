@@ -372,7 +372,7 @@ and $\rpv$ SUSY boundary conditions.}}}
 \put(150,116.5){\vector(0,-1){23}}
 \put(10,120){\makebox(280,10)[c]{\fbox{4.\ EWSB, iterative solution of $\mu$ and sneutrino VEVs.}}}
 \put(150,156){\vector(0,-1){23}}
-\put(10,160){\makebox(280,10)[c]{\fbox{3.\ Run to $M_S$.}}}
+\put(10,160){\makebox(280,10)[c]{\fbox{3.\ Run to $M_{SUSY}$.}}}
 \put(30,170){convergence}
 \DashLine(115,165)(0,165){5}
 \DashLine(0,165)(0,5){5}
@@ -391,7 +391,7 @@ $g_i(M_Z)$}}
 \end{center}
 \caption{Iterative algorithm used to calculate the $\rpv$ MSSM spectrum. 
 The initial step is the
-uppermost one. $M_S$ is the scale at which the EWSB
+uppermost one. $M_{SUSY}$ is the scale at which the EWSB
 conditions 
 are imposed, as discussed in the text. $M_X$ is the scale at which the high
 energy SUSY breaking boundary conditions are imposed.
@@ -406,24 +406,27 @@ gauge couplings and up quark masses at $M_Z$ are obtained as
 in the $R_p$ version of {\tt SOFTSUSY}~in ref.~\cite{Allanach:2001kg}. 
 However, the charged lepton and down-quark Yukawa couplings receive $\rpv$
 corrections, and are detailed in section~\ref{gyuk}. The MSSM parameters are
-then run to the scale
+then run to the scale $M_{SUSY}$, defined by default to be 
 \begin{equation}
-M_S \equiv \sqrt{m_{\tilde t_1}(M_S) m_{\tilde t_2}(M_S)}, \label{msusy}
+\sqrt{m_{\tilde t_1}(M_{SUSY}) m_{\tilde
+    t_2}(M_{SUSY})}, \label{msusy} 
 \end{equation}
 where the scale dependence of the electroweak breaking conditions is
-small \cite{Casas:1998cf}. Electroweak symmetry breaking (EWSB) conditions are
+small \cite{Casas:1998cf}. The user may make other choices for the value of
+$M_{SUSY}$, if they desire.
+Electroweak symmetry breaking (EWSB) conditions are
 then imposed, as described in section~\ref{ewsb}, taking into account
 sneutrino VEVs and other lepton-number violating effects. The MSSM parameters
 are then run up to some high energy scale $M_X$, where the soft SUSY breaking
 terms are fixed by a user-specified boundary condition. $M_X$ may be the
 electroweak gauge unification scale, some scale pre-specified by the user or
-indeed $M_S$. The running of the MSSM couplings is described in
+indeed $M_{SUSY}$. The running of the MSSM couplings is described in
 section~\ref{running}. 
 The SUSY $\rpv$ couplings $\lam_{ijk}$, $\lam'_{ijk}$,
 $\lampp_{ijk}$, $\kappa_i$ are then fixed at this scale $M_X$.
 The model is then run down to $M_Z$, when the iteration is performed again by
 returning to step 1 in Fig.~\ref{fig:algorithm}. Iteration proceeds until, at
-step 3, all parameters evaluated at $M_S$ are identical to within a fractional
+step 3, all parameters evaluated at $M_{SUSY}$ are identical to within a fractional
 accuracy of \code{TOLERANCE} to the previous iteration's (at step 3). 
 \code{TOLERANCE}$<1$ is a numerical parameter set by the user, with default
 value $10^{-3}$. 
@@ -598,7 +601,7 @@ by which \SOFTSUSY~obtains parameters describing a
 minimum of the potential with the correct properties, i.e.\ satisfying
 Eqs.~(\ref{muMSSM}),(\ref{minV}) and (\ref{minVI}). All of the running
 parameters discussed are evaluated at 
-a renormalisation scale $Q=M_S$. 
+a renormalisation scale $Q=M_{SUSY}$. 
 \begin{enumerate}
 \item
 For given value of $\tan \beta$, 
@@ -644,7 +647,7 @@ chargino masses are added to the two by two top left-hand corner of
 Eq.~(\ref{chargino}). 
 All $\overline{DR}$ quantities in the mass matrices are taken at the
 renormalisation scale
-$M_S$ in the tree-level mass matrices.  All other
+$M_{SUSY}$ in the tree-level mass matrices.  All other
 masses are calculated according to the $R_p-$conserving \SOFTSUSY~calculation,
 i.e.\ including the one-loop $R_p-$conserving threshold contributions.
 
