@@ -897,7 +897,7 @@ Block EXTPAR                 # Z3 violating NMSSM
    70   1000                 # m_S^2(MX)
 \end{verbatim}
 %
-The parameters $\mu$, $m_3^2 / (\cos\beta \sin\beta)$ and $\xi_F$ must
+The parameters $\mu$, $m_3^2 / (\cos\beta \sin\beta)$ and $\xi_S$ must
 not be set here, because they are output by the EWSB conditions, see
 section \ref{ewsb}.  In the $\mathbb{Z}_3$-NMSSM one must set
 all $\mathbb{Z}_3$ violating parameters ($\mu$, $m_3^2$, $\xi_F$,
@@ -932,15 +932,14 @@ Block QEXTPAR
    68   -1                   # input mu' at Msusy
 \end{verbatim}
 %
-Instead of choosing the above mentioned parameters as EWSB output, it is also
-possible to let the EWSB conditions determine $m_{H_1}^2$, $m_{H_2}^2$
-and $m_S^2$.  This behaviour can be enabled by setting entry $18$ in
-block \SOFTSUSY\ to $1$:
+Instead of choosing the default EWSB output parameters ($\kappa$, $s$ and $m_S^2$ in $\mathbb{Z}_3$-NMSSM or $\mu$, $m_3^2$ and $\xi_F$ in the $\Zv$-NMSSM), it is also possible output the soft scalar Higgs masses.  The EWSB conditions will determine $m_{H_1}^2$, $m_{H_2}^2$ and $m_S^2$ when entry $18$ in block \SOFTSUSY\ is set to $1$: 
 %
 \begin{verbatim}
 Block SOFTSUSY
    18   1                    # use soft Higgs masses as EWSB output
 \end{verbatim}
+
+In this case the usual EWSB output parameters must be given the SLHA file or they will be set to zero by default. Since all $\Zv$ parameters are inputs in this case setting any of them to a non-zero value implies the point considered is in the $\Zv$-NMSSM. In particular in this case entry 23, 24 and 67 in EXTPAR may now be set for a $\Zv$-NMSSM since they are no longer EWSB outputs.
 
 For the SLHA2 input option, 
 the output will also be given in 
