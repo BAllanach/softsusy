@@ -897,16 +897,22 @@ Block EXTPAR                 # Z3 violating NMSSM
    70   1000                 # m_S^2(MX)
 \end{verbatim}
 %
-The parameters $\mu$, $m_3^2 / (\cos\beta \sin\beta)$ and $\xi_S$ must
-not be set here, because they are output by the EWSB conditions, see
+The parameters
+\begin{equation}
+  \{\mu,m_3^2 / (\cos\beta \sin\beta),\xi_S\}: \qquad \Zv\mbox{-NMSSM} \label{eq:Z3v_ewsb}
+\end{equation}
+must not be set here, because they are output by the EWSB conditions, see
 section \ref{ewsb}.  In the $\mathbb{Z}_3$-NMSSM one must set
 all $\mathbb{Z}_3$ violating parameters ($\mu$, $m_3^2$, $\xi_F$,
 $\xi_S$, $\mu'$, $m_S^{\prime\, 2}$) to zero or comment them
 out.%
   \footnote{Unset parameters are assumed to be zero.}
   %
-The parameters $\kappa$, $s$ and $m_S^2$ are then 
-output from the EWSB conditions, as in section \ref{ewsb}, and they should
+The parameters
+\begin{equation}
+  \{\kappa,s,m_S^2\}: \qquad Z_3\mbox{-NMSSM} \label{eq:Z3_ewsb}
+\end{equation}
+are then output from the EWSB conditions, as in section \ref{ewsb}, and they should
 therefore not be set either.  One is then left with the following three
 free parameters:
 %
@@ -945,22 +951,17 @@ but in \SOFTSUSY\ there is also a special option to vary this scale by
 setting entry 4 of block \SOFTSUSY\ to give the value of QEWSB which alters 
 $M_{SUSY}$ as described in section A1 of the MSSM manual \cite{Allanach:2001kg}.
 
-Instead of choosing the default EWSB output parameters
-\begin{align}
-  \{\kappa, s, m_S^2\} : & \qquad \mathbb{Z}_3\mathrm{-NMSSM} \label{eq:Z3_ewsb}  \\
-  %
-  \{\mu,m_3^2,\xi_S\} :& \qquad  \Zv\mathrm{-NMSSM} \label{eq:Z3v_ewsb}
-\end{align}
-it is also possible output the soft scalar Higgs
-masses.  The EWSB conditions in Eqs.~(\ref{eq:mind}-\ref{eq:mins}) will then determine 
-$m_{H_1}^2$, $m_{H_2}^2$ and $m_S^2$ when entry $18$ in block \SOFTSUSY\ is set to $1$:
+Instead of choosing the default EWSB output parameters (\ref{eq:Z3v_ewsb}-\ref{eq:Z3_ewsb}) 
+it is also possible output the soft scalar Higgs masses.  The EWSB conditions in 
+Eqs.~(\ref{eq:mind}-\ref{eq:mins}) will then determine $m_{H_1}^2$, $m_{H_2}^2$ and $m_S^2$ 
+when entry $18$ in block \SOFTSUSY\ is set to $1$:
 %
 \begin{verbatim}
 Block SOFTSUSY
    18   1                    # use soft Higgs masses as EWSB output
 \end{verbatim}
 
-In this case the default EWSB output parameters (\ref{eq:Z3_ewsb}-\ref{eq:Z3v_ewsb}) must be given in the SLHA file or they will be set to zero by default. Since all $\Zv$ parameters are inputs in this case, setting any of them to a non-zero value implies that the point considered belongs to the $\Zv$-NMSSM. In this particular case, entries 23, 24 and 67 in block {\tt EXTPAR} may now be set for a $\Zv$-NMSSM point since they are no longer EWSB outputs.
+In this case the default EWSB output parameters (\ref{eq:Z3v_ewsb}-\ref{eq:Z3_ewsb}) must be given in the SLHA file or they will be set to zero by default. Since all $\Zv$ parameters are inputs in this case, setting any of them to a non-zero value implies that the point considered belongs to the $\Zv$-NMSSM. In this particular case, entries 23, 24 and 67 in block {\tt EXTPAR} may now be set for a $\Zv$-NMSSM point since they are no longer EWSB outputs.
 
 For the SLHA2 input option, 
 the output will also be given in 
