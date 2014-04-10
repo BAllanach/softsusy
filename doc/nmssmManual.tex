@@ -902,8 +902,10 @@ not be set here, because they are output by the EWSB conditions, see
 section \ref{ewsb}.  In the $\mathbb{Z}_3$-NMSSM one must set
 all $\mathbb{Z}_3$ violating parameters ($\mu$, $m_3^2$, $\xi_F$,
 $\xi_S$, $\mu'$, $m_S^{\prime\, 2}$) to zero or comment them
-out\footnote{Unset parameters are assumed to be zero.}.  The parameters
-$\kappa$, $s$ and $m_S^2$ are then 
+out.%
+  \footnote{Unset parameters are assumed to be zero.}
+  %
+The parameters $\kappa$, $s$ and $m_S^2$ are then 
 output from the EWSB conditions, as in section \ref{ewsb}, and they should
 therefore not be set either.  One is then left with the following three
 free parameters:
@@ -915,11 +917,13 @@ Block EXTPAR                 # Z3 symmetric NMSSM
    64   1000                 # A_kappa(MX)
 \end{verbatim}
 %
-By default all parameters are input at $M_X$, defined in entry $0$ in
-block \code{EXTPAR} or as scale where $g_1$ = $g_2$ (determined
-iteratively) when entry $0$ in block \code{EXTPAR} is not set.  In
-case the parameters $\lambda$, $\kappa$, $\lambda s / \sqrt{2}$,
-$\xi_F$ and $\mu'$ should be input at $M_{SUSY}$ a corresponding $-1$
+By default all parameters are input at the scale $M_X$, defined either by (a) entry $0$ in
+block \code{EXTPAR} or (b) as the gauge coupling unification scale where 
+$g_1$ = $g_2$ (determined iteratively) when entry $0$ in block \code{EXTPAR} 
+is not set.  
+
+Should the user desire to input the parameters $\lambda$, $\kappa$, $\lambda s / \sqrt{2}$, 
+$\xi_F$ and $\mu'$ at $M_{SUSY}$, a corresponding $-1$
 entry in the block \code{QEXTPAR} has to be given:
 %
 \begin{verbatim}
@@ -931,28 +935,32 @@ Block QEXTPAR
    68   -1                   # input mu' at Msusy
 \end{verbatim}
 %
-
-$M_{SUSY}$ is the scale where EWSB conditions are fixed which is (by
+Note that $M_{SUSY}$ is the scale where EWSB conditions are fixed, which is (by
 default) defined as $M_{SUSY} = \sqrt{m_{\tilde{t}_1}
   m_{\tilde{t}_2}}$ and is re-calculated at each step in the
-iteration. This matches SLHA conventions\footnote{though in the SLHA
-  papers this scale is named $M_{EWSB}$.}, but in SOFTSUSY there is
-also a special option to vary this scale by setting entry 4 of block
-SOFTSUSY to give the value of QEWSB which alters $M_{SUSY}$ as
-described in section A1 of the MSSM manual\cite{Allanach:2001kg}.
+iteration. This matches SLHA conventions,%
+  \footnote{though in the SLHA papers this scale is named $M_{EWSB}$.}
+  %
+but in \SOFTSUSY\ there is also a special option to vary this scale by 
+setting entry 4 of block \SOFTSUSY\ to give the value of QEWSB which alters 
+$M_{SUSY}$ as described in section A1 of the MSSM manual \cite{Allanach:2001kg}.
 
-Instead of choosing the default EWSB output parameters ($\kappa$, $s$
-and $m_S^2$ in $\mathbb{Z}_3$-NMSSM or $\mu$, $m_3^2$ and $\xi_F$ in
-the $\Zv$-NMSSM), it is also possible output the soft scalar Higgs
-masses.  The EWSB conditions will determine $m_{H_1}^2$, $m_{H_2}^2$
-and $m_S^2$ when entry $18$ in block \SOFTSUSY\ is set to $1$:
+Instead of choosing the default EWSB output parameters
+\begin{align}
+  \{\kappa, s, m_S^2\} : & \qquad \mathbb{Z}_3\mathrm{-NMSSM} \label{eq:Z3_ewsb}  \\
+  %
+  \{\mu,m_3^2,\xi_S\} :& \qquad  \Zv\mathrm{-NMSSM} \label{eq:Z3v_ewsb}
+\end{align}
+it is also possible output the soft scalar Higgs
+masses.  The EWSB conditions in Eqs.~(\ref{eq:mind}-\ref{eq:mins}) will then determine 
+$m_{H_1}^2$, $m_{H_2}^2$ and $m_S^2$ when entry $18$ in block \SOFTSUSY\ is set to $1$:
 %
 \begin{verbatim}
 Block SOFTSUSY
    18   1                    # use soft Higgs masses as EWSB output
 \end{verbatim}
 
-In this case the default EWSB output parameters must be given the SLHA file or they will be set to zero by default. Since all $\Zv$ parameters are inputs in this case setting any of them to a non-zero value implies the point considered is in the $\Zv$-NMSSM. In particular in this case entries 23, 24 and 67 in EXTPAR may now be set for a $\Zv$-NMSSM point since they are no longer EWSB outputs.
+In this case the default EWSB output parameters (\ref{eq:Z3_ewsb}-\ref{eq:Z3v_ewsb}) must be given in the SLHA file or they will be set to zero by default. Since all $\Zv$ parameters are inputs in this case, setting any of them to a non-zero value implies that the point considered belongs to the $\Zv$-NMSSM. In this particular case, entries 23, 24 and 67 in block {\tt EXTPAR} may now be set for a $\Zv$-NMSSM point since they are no longer EWSB outputs.
 
 For the SLHA2 input option, 
 the output will also be given in 
