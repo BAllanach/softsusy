@@ -36,8 +36,12 @@ void errorCall() {
   ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
   ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
   ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value>\n";
-  if (TWOLOOP_NUM_THRESH) ii << "--disable-full_susy_threshold disables the 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
-  if (SOFTSUSY_THREELOOP_RGE) ii << "--disable-full_three_loop disables 3-loop corrections to gauge and Yukawa couplings' RGEs\n";
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  if (USE_TWO_LOOP_THRESHOLD) ii << "--disable-full_susy_threshold disables the 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
+#endif //COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_THREE_LOOP_RGE
+  if (USE_THREE_LOOP_RGE) ii << "--disable-three_loop disables 3-loop corrections RGEs\n";
+#endif //COMPILE_THREE_LOOP_RGE
   ii << "--mgut=unified sets the scale at which SUSY breaking terms are set to the GUT\n";
   ii << "scale where g1=g2. --mgut=<value> sets it to a fixed scale, ";
   ii << "whereas --mgut=msusy\nsets it to MSUSY\n\n";
@@ -151,10 +155,14 @@ int main(int argc, char *argv[]) {
 	  sgnMu = get_valuei(argv[i], "--sgnMu=");
 	else if (starts_with(argv[i], "--mgut=")) 
 	  mgutGuess = mgutCheck(argv[i], gaugeUnification, ewsbBCscale); 
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
 	else if (starts_with(argv[i], "--disable-full_susy_threshold"))
-	  TWOLOOP_NUM_THRESH = false;
-	else if (starts_with(argv[i], "--disable-full_three_loop"))
-	  SOFTSUSY_THREELOOP_RGE = false;
+	  USE_TWO_LOOP_THRESHOLD = false;
+#endif
+#ifdef COMPILE_THREE_LOOP_RGE
+	else if (starts_with(argv[i], "--disable-three_loop_rge"))
+	  USE_THREE_LOOP_RGE = false;
+#endif
 	else if (starts_with(argv[i], "--QEWSB=")) 
 	  QEWSB = get_value(argv[i], "--QEWSB=");
       }
@@ -1110,20 +1118,24 @@ int main(int argc, char *argv[]) {
                     if(num == 1) softsusy::SoftHiggsOut = true;
                   }
                      break;
+#ifdef COMPILE_THREE_LOOP_RGE
 		  case 19: {
                     int num = int(d + EPSTOL);
-		    if (num == 1) SOFTSUSY_THREELOOP_RGE = true;
-		    else if (num == 0) SOFTSUSY_THREELOOP_RGE = false;
+		    if (num == 1) USE_THREE_LOOP_RGE = true;
+		    else if (num == 0) USE_THREE_LOOP_RGE = false;
 		    else cout << "WARNING: incorrect setting for SOFTSUSY Block 19 (should be 0 or 1)\n";
 		    break;			     
 		  }
+#endif
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
 		  case 20: {
                     int num = int(d + EPSTOL);
-		    if (num == 1) SOFTSUSY_TWOLOOP = true;
-		    else if (num == 0) SOFTSUSY_TWOLOOP = false;
+		    if (num == 1) USE_TWO_LOOP_THRESHOLD = true;
+		    else if (num == 0) USE_TWO_LOOP_THRESHOLD = false;
 		    else cout << "WARNING: incorrect setting for SOFTSUSY Block 20 (should be 0 or 1)\n";
 		    break;
 		  }
+#endif
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "

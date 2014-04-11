@@ -11,7 +11,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 include src/softsusy.amk
 include doc/doc.amk
-if FULL_SUSY_THRESHOLD
+if COMPILE_FULL_SUSY_THRESHOLD
 else
 include inOutFiles/inOut.amk
 include benchmarks/benchmarks.amk

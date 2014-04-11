@@ -98,14 +98,19 @@ namespace softsusy{
   extern int numTry;
   /// Include eq (62) from hep-ph/0210268: degenerate gluino/squark mass limit
   extern bool includeTwoLoopMssmCorrectionsToMt;
+
+#ifdef COMPILE_THREE_LOOP_RGE
+  /// Controls the use of MSSM three-loop RGEs
+  extern bool USE_THREE_LOOP_RGE;
+#endif
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
   /// Threshold to prevent the re-evaluation of two-loop leading SUSY 
   /// thresholds corrections
   extern double TWOLOOP_NUM_THRESH;
-  /// Controls the use of MSSM three-loop RGEs
-  extern bool SOFTSUSY_THREELOOP_RGE;
   /// Includes the evaluation of leading two-loop thresholds corrections
   /// to the strong coupling constant and to the third family of fermion masses 
-  extern bool SOFTSUSY_TWOLOOP;
+  extern bool USE_TWO_LOOP_THRESHOLD; //SOFTSUSY_TWOLOOP;
   /// Adds the evaluation of \f${\mathcal O}(\alpha_s^2)\f$ pole 
   /// mass correction to the top quark
   extern bool SOFTSUSY_TWOLOOP_TQUARK_STRONG;
@@ -124,6 +129,7 @@ namespace softsusy{
   /// However, the difference between the p^2 = 0 and p^2 = mb^2 cases
   /// is expected to be of O((mb/MSUSY)^2), which we can formally neglect.
   extern bool MB_DECOUPLING;
+#endif
   
 }
 

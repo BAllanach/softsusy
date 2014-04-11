@@ -999,7 +999,7 @@ SoftPars<Susy, Brevity> SoftPars<Susy, Brevity>::beta2(Brevity& a) const {
     dmH1sq = dmH1sq + dmH1sq2 * oneO16Pif;
     dmH2sq = dmH2sq + dmH2sq2 * oneO16Pif;
   
-  // three-loop contribution 3rd family approximation
+#ifdef COMPILE_THREE_LOOP_RGE
   if (displayLoops() > 2) {
 	
     const static double threelp = 2.53945672191370e-7; // 1/(16 pi^2)^3
@@ -1018,7 +1018,8 @@ SoftPars<Susy, Brevity> SoftPars<Susy, Brevity>::beta2(Brevity& a) const {
     double dmH2sq3, dmH1sq3, dm3sq3, dM13, dM23, dM33;
     double smu_ = displaySusyMu();
 
-#ifndef FULL_THREE_LOOP 
+  // three-loop contribution 3rd family approximation
+    if (MIXING < 0) {
 
     static const double O750= .00133333333333333333 ;
     static const double O27= .03703703703703703703 ;
@@ -2563,9 +2564,8 @@ SoftPars<Susy, Brevity> SoftPars<Susy, Brevity>::beta2(Brevity& a) const {
            << "dhl3 = " << dhl3 << endl;	 
     }
 
-#else // FULL_THREE_LOOP
+} else { // full matrix rge
 
-// output goes here
     static DoubleMatrix dmq3(3, 3), 
 			dmu3(3, 3), 
 		 	dmd3(3, 3), 
@@ -2828,27 +2828,26 @@ dm3sq3=m3sq*(18.*d4T*e2T+e6T*(1+kz)+6.*e2T*(e4T+u2d2T)+18.*(d2T*(e4T+u2d2T)+u2d2
     dhd3 *= threelp; dhd += dhd3;
     dhe3 *= threelp; dhe += dhe3;
 
-    if (getenv("SOFTSUSY_THREELOOP_RGE_DEBUG")!=NULL) {
-       dout << "dmq3 = " << dmq3 << endl
-            << "dmt3 = " << dmu3 << endl	 
-     	    << "dmb3 = " << dmd3 << endl	 
-      	    << "dml3 = " << dml3 << endl	 
-            << "dmtau3 = " << dme3 << endl	 
-            << "dmH1sq3 = " << dmH1sq3*threelp << endl	 
-            << "dmH2sq3 = " << dmH2sq3*threelp << endl	 
-            << "dm3sq3 = " << dm3sq3*threelp << endl	 
-            << "dM13 = " << dM13*threelp << endl	 
-            << "dM23 = " << dM23*threelp << endl	 
-            << "dM33 = " << dM33*threelp << endl	 
-            << "dht3 = " << dhu3 << endl	 
-            << "dhb3 = " << dhd3 << endl	 
-            << "dhl3 = " << dhe3 << endl;	 
-     }
+//    if (getenv("SOFTSUSY_THREELOOP_RGE_DEBUG")!=NULL) {
+//       dout << "dmq3 = " << dmq3 << endl
+//            << "dmt3 = " << dmu3 << endl	 
+//     	    << "dmb3 = " << dmd3 << endl	 
+//      	    << "dml3 = " << dml3 << endl	 
+//            << "dmtau3 = " << dme3 << endl	 
+//            << "dmH1sq3 = " << dmH1sq3*threelp << endl	 
+//            << "dmH2sq3 = " << dmH2sq3*threelp << endl	 
+//            << "dm3sq3 = " << dm3sq3*threelp << endl	 
+//            << "dM13 = " << dM13*threelp << endl	 
+//            << "dM23 = " << dM23*threelp << endl	 
+//            << "dM33 = " << dM33*threelp << endl	 
+//            << "dht3 = " << dhu3 << endl	 
+//            << "dhb3 = " << dhd3 << endl	 
+//            << "dhl3 = " << dhe3 << endl;	 
+//     }
 
-#endif
-
+       }
    } // end of 3-loop 
-
+#endif // COMPILE_THREE_LOOP_RGE
   }
 
   SoftPars<Susy, Brevity> dsoft(dsb, dmG, dhu, dhd, dhe, dmq, dmu,
