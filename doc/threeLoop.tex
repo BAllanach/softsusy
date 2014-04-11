@@ -193,6 +193,27 @@ This work has been partially supported by STFC
 \section{Installation of the Increased Accuracy Mode}
 \label{sec:install}
 
+Two compilation options are added
+\begin{itemize}
+	\item[] \verb|--enable_three_loop_rge_compilation| - compile three-loop RGEs in the MSSM 
+	\item[] \verb|--enable_full_susy_threshold_compilation| - compile additional two-loop threshold corrections to the third generation Yukawa couplings and the strong coupling constant 
+\end{itemize}
+
+Boolean variables that control the Increased Accuracy Mode at runtime
+\begin{itemize}
+	\item \verb|USE_THREE_LOOP_RGE = false|  - add three-loop contribution to MSSM RGE (corresponds to the \code{SOFTSUSY Block} parameter 19)
+	\item \verb|USE_TWO_LOOP_THRESHOLD = false| - add two-loop threshold corrections to the third generation Yukawa couplings and the strong coupling constant
+(corresponds to the \code{SOFTSUSY Block} parameter 20)
+\end{itemize}
+
+Additional variables that gives a finer control the Increased Accuracy Mode at runtime (with their default values)
+\begin{itemize}
+	\item \verb|double TWOLOOP_NUM_THRESH = 0.1|  - used in the iterative algorithm to prevent lengthy re-evaluation of two-loop thresholds 
+		if the relative difference between the result obtained in current step and the  calcululated previously is less than \verb|TWOLOOP_NUM_THRESH| 
+	\item \verb|boolean SOFTSUSY_TWOLOOP_blah = true| - control whether individual two-loop threshold corrections should be added (remove it or make a \verb|enum|?)
+	\item \verb|boolean MB_DECOUPLING = false| - evaluate b-quark self-energies at $p=0$ in order to incorporate ``decoupling'' precedure (remove it?)
+\end{itemize}
+
 
 \section{Running \SOFTSUSY in the Increased Accuracy Mode} 
 \label{sec:run}
