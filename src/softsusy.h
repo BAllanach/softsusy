@@ -37,7 +37,7 @@
 
 #define HR "----------------------------------------------------------"
 
-#ifdef FULL_SUSY_THRESHOLD
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
 
 
  #include <ginac/ginac.h>
@@ -53,7 +53,8 @@ namespace SoftSusy_helpers_ {
  #include "two_loop_thresholds/tquark_corrections.hpp"
  #include "two_loop_thresholds/gs_corrections.hpp"
  #include "two_loop_thresholds/dec_cor_helper.hpp"
-#endif
+
+#endif //COMPILE_FULL_SUSY_THRESHOLD
 
 namespace softsusy {
 
@@ -156,10 +157,10 @@ public:
 
   typedef typename SoftPars::susy_type Susy;
 
-#ifdef FULL_SUSY_THRESHOLD
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
   /// Public field :: only for informational purpose	
   SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
-#endif
+#endif //COMPILE_FULL_SUSY_THRESHOLD
 
   //  void (*boundaryCondition)(Softsusy &, const DoubleVector &);
   /// Default constructor fills object with zeroes

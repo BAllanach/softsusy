@@ -35,7 +35,7 @@ const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const Softsusy<SoftPars>
   t2OV2Ms1loop = s.displayTadpole2Ms1loop(); 
   mxBC = s.displayMxBC();
 
-#ifdef FULL_SUSY_THRESHOLD
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
   /// Public field :: only for informational purpose	
   decoupling_corrections.das.one_loop = 0; 
   decoupling_corrections.das.two_loop = 0; 
@@ -51,7 +51,7 @@ const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const Softsusy<SoftPars>
 
 
 
-#endif
+#endif //COMPILE_FULL_SUSY_THRESHOLD
 
   return *this;
 }
@@ -2718,13 +2718,14 @@ double Softsusy<SoftPars>::calcRunningMt() {
     
   resigmat = resigmat * mtpole / (16.0 * sqr(PI));  
 
-#ifdef FULL_SUSY_THRESHOLD
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
   decoupling_corrections.dmt.one_loop = qcd + stopGluino + higgs + 
      neutralinos + charginoContribution;
 
   decoupling_corrections.dmt.one_loop /= (-16.0 * sqr(PI));  
   decoupling_corrections.dmt.two_loop = 0.0;
-  if (SOFTSUSY_TWOLOOP) {
+
+  if (USE_TWO_LOOP_THRESHOLD) {
     static bool needcalc = true; // flag: calculate corrections if two-previous iterations gave different results
     using namespace GiNaC;
     if (SOFTSUSY_TWOLOOP_TQUARK_STRONG) {  
@@ -2758,7 +2759,7 @@ double Softsusy<SoftPars>::calcRunningMt() {
     }
   
   }
-#else
+#else //COMPILE_FULL_SUSY_THRESHOLD
    // 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
    double mt = forLoops.mt;
    double l = 2.0 * log(mt / displayMu());
@@ -2795,7 +2796,7 @@ double Softsusy<SoftPars>::calcRunMbSquarkGluino() const {
   double p = mbMZ;
   double mbMSSM  = displayDrBarPars().mb;
 
-#ifdef FULL_SUSY_THRESHOLD
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
   if (MB_DECOUPLING) {
    p = 0;
   };
@@ -2823,7 +2824,7 @@ double Softsusy<SoftPars>::calcRunMbChargino() const {
   DoubleVector bPsicBstopl(2), bPsicBstopr(2), 
     aPsicBstopl(2), aPsicBstopr(2); 
 
-#ifdef FULL_SUSY_THRESHOLD
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
   if (MB_DECOUPLING) {
    p = 0;
   };
@@ -2903,7 +2904,7 @@ double Softsusy<SoftPars>::calcRunMbHiggs() const {
   double  cw2DRbar    = sqr(cos(thetaWDRbar));
   double g  = displayGaugeCoupling(2);
 
-#ifdef FULL_SUSY_THRESHOLD
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
   if (MB_DECOUPLING) {
    p = 0;
   };
@@ -2941,7 +2942,7 @@ double Softsusy<SoftPars>::calcRunMbNeutralinos() const {
   DoubleVector aPsi0Bsbotr(4), bPsi0Bsbotr(4), aPsi0Bsbotl(4),
     bPsi0Bsbotl(4); 
 
-#ifdef FULL_SUSY_THRESHOLD
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
   if (MB_DECOUPLING) {
    p = 0;
   };
@@ -3022,12 +3023,13 @@ double Softsusy<SoftPars>::calcRunningMb() {
   double deltaNeutralino = calcRunMbNeutralinos();
 
   double dzetamb = 0.;
-#ifdef FULL_SUSY_THRESHOLD
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
 
   decoupling_corrections.dmb.one_loop = deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino;
   //decoupling_corrections.dmb.two_loop = 0.0;
 
-  if (SOFTSUSY_TWOLOOP) {
+  if (USE_TWO_LOOP_THRESHOLD) {
    static bool needcalc = true; // flag: calculate corrections if two-previous iterations gave different results
    using namespace GiNaC;
 
@@ -3240,13 +3242,13 @@ double Softsusy<SoftPars>::calcRunningMtau() {
   double  sigmaNeutralino = calcRunMtauNeutralinos(mTauSMMZ);
 
   double dzetamtau2 = 0.;
-#ifdef FULL_SUSY_THRESHOLD
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
   
   const double dzetamtau = sigmaNeutralino + sigmaChargino + sigmaHiggs;
 
   decoupling_corrections.dmtau.one_loop = -dzetamtau;
   decoupling_corrections.dmtau.two_loop = 0.0;
-  if (SOFTSUSY_TWOLOOP) {
+  if (USE_TWO_LOOP_THRESHOLD) {
     dzetamtau2 = -dzetamtau*dzetamtau;
     using namespace GiNaC;
     exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
@@ -6921,7 +6923,7 @@ double Softsusy<SoftPars>::qcdSusythresh(double alphasMSbar, double q) {
   double mt = tree.mt;
 
 /*
-#ifdef FULL_SUSY_THRESHOLD
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
   // AVB: FIXME: alphasMSbar in righthand side should not appear 
   //
   double alphasDRbar_prev = 0.;
@@ -6948,13 +6950,13 @@ double Softsusy<SoftPars>::qcdSusythresh(double alphasMSbar, double q) {
 	 log(tree.md(i, j) / q));
  
   double dalpha_2 = 0.;
-#ifdef FULL_SUSY_THRESHOLD
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
   //dout << "one-loop alpha_s contribution: " 
   //		<< -deltaAlphas << endl;
 
   decoupling_corrections.das.one_loop = -deltaAlphas;	
 
-  if (SOFTSUSY_TWOLOOP) {
+  if (USE_TWO_LOOP_THRESHOLD) {
 
    if (SOFTSUSY_TWOLOOP_GS) {
      using namespace GiNaC;
@@ -6983,11 +6985,11 @@ double Softsusy<SoftPars>::qcdSusythresh(double alphasMSbar, double q) {
    dout << " alpha_S (MZ) correction ressumed w 2l: " << 1 / (1.0 - deltaAlphas + dalpha_2 ) <<  endl;
 
   }
-#endif
+#endif // COMPILE_FULL_SUSY_THRESHOLD
 
   const double alphasDRbar_post = alphasMSbar / (1.0 - deltaAlphas + dalpha_2);
 
-#ifdef FULL_SUSY_THRESHOLD
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
   if (SOFTSUSY_TWOLOOP_GS) dout<< " alpha_S (MZ) after: " << alphasDRbar_post << endl;
 #endif 
 
@@ -7252,9 +7254,9 @@ void Softsusy<SoftPars>::fixedPointIteration
     // default SoftSusy loop number
     int lpnum = 2;
 
-#ifdef FULL_SUSY_THRESHOLD 
-    if (SOFTSUSY_THREELOOP_RGE) lpnum = 3; 
-    dout << lpnum << "-loop RGE's enabled" << endl;
+#ifdef COMPILE_THREE_LOOP_RGE
+    if (USE_THREE_LOOP_RGE) lpnum = 3; 
+    //dout << lpnum << "-loop RGE's enabled" << endl;
 #endif
 
     t.setLoops(lpnum); /// >= 2 loops should protect against ht Landau pole 
@@ -10722,10 +10724,14 @@ void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
   out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
   out << "# MX=" << mxBC << " GeV" << endl;
+#ifdef COMPILE_THREE_LOOP_RGE
   out << "# 3-loop RGE corrections are ";
-  if (SOFTSUSY_THREELOOP_RGE) out << "on"; else out << "off";
+  if (USE_THREE_LOOP_RGE) out << "on"; else out << "off";
+#endif
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
   out << ". 2-loop Yukawa/g3 thresholds are ";
-  if (SOFTSUSY_TWOLOOP) out << "on"; else out << "off";
+  if (USE_TWO_LOOP_THRESHOLD) out << "on"; else out << "off";
+#endif
   out << endl;
 }
 

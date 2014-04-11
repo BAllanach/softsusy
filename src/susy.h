@@ -177,18 +177,23 @@ public:
 		    DoubleMatrix & gQQ, DoubleMatrix & gDD,
 		    DoubleMatrix & gUU, double & gH1H1, double &
 		    gH2H2, sBrevity & a) const; 
-  /// Calculates three-loop anomalous dimensions in the dominant third family
-  /// approximation and adds them
-  void getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
-		      DoubleMatrix & gQQ, DoubleMatrix & gDD,
-		      DoubleMatrix & gUU, double & gH1H1, double &
-		      gH2H2, sBrevity & a) const;
+
   /// Outputs wave function renormalisation for SUSY parameters and gauge beta
   /// functions up to 2 loops. Also calculates and outputs a.
   /// IO parameters: RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1
   /// and H2 respectively. 
   /// g^Li_Lj = m_{ij} for LH fields
   /// g^Ei_Ej = m_{ji} for RH fields
+
+#ifdef COMPILE_THREE_LOOP_RGE
+  /// Calculates three-loop anomalous dimensions in the dominant third family
+  /// approximation and adds them
+  void getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
+		      DoubleMatrix & gQQ, DoubleMatrix & gDD,
+		      DoubleMatrix & gUU, double & gH1H1, double &
+		      gH2H2, sBrevity & a) const;
+#endif
+ 
   void anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
 			  DoubleMatrix & gQQ, DoubleMatrix & gUU,
 			  DoubleMatrix & gDD, DoubleVector & dg, 
@@ -210,10 +215,15 @@ istream & operator >>(istream &left, MssmSusy &s);
 void setBetas(DoubleMatrix &, DoubleVector  &, DoubleVector  &, DoubleVector
 	       &, DoubleVector  &);
 
+#ifdef COMPILE_THREE_LOOP_RGE
+
+
 void setBetasThreeLoop(Tensor &, DoubleMatrix &, DoubleMatrix &, 
        DoubleMatrix &, DoubleVector &, DoubleVector &, DoubleVector &,
        DoubleVector &, DoubleVector &, DoubleVector &, DoubleVector &,  
        DoubleVector &); 
+
+#endif //COMPILE_THREE_LOOP_RGE 
 
 inline const MssmSusy & MssmSusy::displaySusy() const { return *this; }
 

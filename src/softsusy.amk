@@ -2,8 +2,7 @@
 
 lib_LTLIBRARIES += libsoft.la 
 
-bin_PROGRAMS += scansusy.x \
-	        softsusy.x \
+bin_PROGRAMS += softsusy.x \
                 softsusy-nmssm.x \
                 softpoint.x \
                 rpvsoftsusy.x \
@@ -11,9 +10,6 @@ bin_PROGRAMS += scansusy.x \
 
 softsusy_x_SOURCES = src/main.cpp 
 softsusy_x_LDADD = libsoft.la  
-
-scansusy_x_SOURCES = src/scan.cpp 
-scansusy_x_LDADD = libsoft.la  
 
 softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp 
 softsusy_nmssm_x_LDADD = libsoft.la
@@ -28,18 +24,23 @@ rpvneut_x_SOURCES = src/rpvneutmain.cpp
 rpvneut_x_LDADD = libsoft.la 
 
 
-if FULL_SUSY_THRESHOLD
+if COMPILE_FULL_SUSY_THRESHOLD
 
 CPPFLAGS += -I$(srcdir)/src
 
 include src/two_loop_thresholds/mssmparam.amk
 include src/two_loop_thresholds/two_loop_th.amk
 
+bin_PROGRAMS += scansusy.x 
+
 softsusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
 softsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
 
+scansusy_x_SOURCES = src/scan.cpp 
+scansusy_x_LDADD = libsoft.la  
+
 scansusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
-scansusy_x_LDADD += lib2lthresh.la libmssmparam.la 
+scansusy_x_LDADD += lib2lthresh.la libmssmparam.la  
 
 softsusy_nmssm_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
 softsusy_nmssm_x_LDADD += lib2lthresh.la libmssmparam.la 

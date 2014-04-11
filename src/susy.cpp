@@ -337,6 +337,7 @@ void setBetas(DoubleMatrix & babBeta, DoubleVector &cuBeta, DoubleVector
 
 }
 
+#ifdef COMPILE_THREE_LOOP_RGE
 
 void setBetasThreeLoop(Tensor & teBeta, DoubleMatrix & duBeta,
        DoubleMatrix & ddBeta, DoubleMatrix & deBeta, DoubleVector &euBeta, 
@@ -380,6 +381,8 @@ void setBetasThreeLoop(Tensor & teBeta, DoubleMatrix & duBeta,
 
 
 }
+
+#endif
 
 // outputs one-loop anomlous dimensions gii given matrix inputs
 // Note that we use the convention (for matrices in terms of gamma's)
@@ -511,6 +514,7 @@ void MssmSusy::anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
 		    ddT - ceBeta * eeT) * twolp;  
   }
 
+#ifdef COMPILE_THREE_LOOP_RGE
   // 3 loop contributions:
   if (displayLoops() > 2) {
     //DoubleVector & g4 = a.g4;
@@ -551,6 +555,7 @@ void MssmSusy::anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
                        + gdeBeta * ddT * eeT) * threelp;
 
   }
+#endif //COMPILE_THREE_LOOP_RGE
 }
 
 // Outputs derivatives vector y[n] for SUSY parameters: interfaces to
@@ -661,6 +666,7 @@ void MssmSusy::diagQuarkBasis(DoubleMatrix & vdl, DoubleMatrix & vdr,
 }
 
 /// By Bednyakov, see arXiv:1009.5455
+#ifdef COMPILE_THREE_LOOP_RGE
 void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				DoubleMatrix & gQQ, DoubleMatrix & gDD,
 				DoubleMatrix & gUU, double & gH1H1, double &
@@ -675,7 +681,8 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
   const static double threelp = 2.53945672191370e-7; ///< 1/(16 pi^2)^3
   const static double kz = 7.21234141895757; ///< 6 Zeta(3)
 
-#ifdef FULL_THREE_LOOP  
+  // full three family 
+  if (MIXING > 0 ) {
   // For calculational brevity
   // NB!!! Change notations to that of J&J  hep-ph/0408128 (Y->Y^T , etc)
   DoubleMatrix &d1=a.dt, 
@@ -896,7 +903,7 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
   gH1H1 = gH1H1 + threelp * h1h1;
   gH2H2 = gH2H2 + threelp * h2h2;
 
-#else
+  } else { // third family approximation 
   /// For calculational brevity
   /// NB Change notation to that of J&J  hep-ph/0408128 (Y->Y^T , etc)
   DoubleMatrix &u2t=a.u2, &d2t=a.d2, &e2t=a.e2;
@@ -1143,7 +1150,7 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
   gH1H1 = gH1H1 + threelp * h1h1;
   gH2H2 = gH2H2 + threelp * h2h2;
 
-#endif
+  } // third family approximation 
 }
-
+#endif //COMPILE_THREE_LOOP_RGE
 } // namespace softsusy
