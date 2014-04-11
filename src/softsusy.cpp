@@ -3023,12 +3023,13 @@ double Softsusy<SoftPars>::calcRunningMb() {
   double deltaNeutralino = calcRunMbNeutralinos();
 
   double dzetamb = 0.;
+
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
 
   decoupling_corrections.dmb.one_loop = deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino;
   //decoupling_corrections.dmb.two_loop = 0.0;
 
-  if (SOFTSUSY_TWOLOOP) {
+  if (USE_TWO_LOOP_THRESHOLD) {
    static bool needcalc = true; // flag: calculate corrections if two-previous iterations gave different results
    using namespace GiNaC;
 
@@ -3247,7 +3248,7 @@ double Softsusy<SoftPars>::calcRunningMtau() {
 
   decoupling_corrections.dmtau.one_loop = -dzetamtau;
   decoupling_corrections.dmtau.two_loop = 0.0;
-  if (SOFTSUSY_TWOLOOP) {
+  if (USE_TWO_LOOP_THRESHOLD) {
     dzetamtau2 = -dzetamtau*dzetamtau;
     using namespace GiNaC;
     exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);

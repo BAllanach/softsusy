@@ -65,7 +65,7 @@ AC_ARG_ENABLE([debug],
 #AG_PATH_AUTOOPTS([5.17], [], [AC_MSG_ERROR([No suitable version of AutoGen could be found])])
 
 # GiNaC/cln for two-loop decoupling corrections
-if test x"$enable_full_susy_threshold" = x"yes"; then
+if test x"$enable_full_susy_threshold_compilation" = x"yes"; then
  PKG_CHECK_MODULES([CLN], cln >= 1.3.1)  
  PKG_CHECK_MODULES([GINAC], ginac >= 1.3.5)  
 
