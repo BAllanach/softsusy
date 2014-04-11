@@ -12,6 +12,10 @@
 #ifndef DEF_H
 #define DEF_H
 
+#ifdef HAVE_CONFIG_H
+ #include <config.h>
+#endif
+
 #include <cmath>
 namespace softsusy{
   const char SOFTSUSY_VERSION[] = "3.5.0";

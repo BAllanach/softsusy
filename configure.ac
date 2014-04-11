@@ -41,12 +41,12 @@ AC_F77_LIBRARY_LDFLAGS
 ## If you want shared libraries, configure with --enable-shared
 AC_PROG_LIBTOOL
 
-AC_ARG_ENABLE([three_loop_rge], 
+AC_ARG_ENABLE([three_loop_rge_compilation], 
                AC_HELP_STRING([--enable-three_loop_rge_compilation],[Compile three-loop RGEs]), 
  	      AC_DEFINE([COMPILE_THREE_LOOP_RGE],[1],[Complile 3-loop RGE]),[])
 
 AC_ARG_ENABLE([full_susy_threshold_compilation], 
-               AC_HELP_STRING([--enable-full_susy_threshold],[Compile two-loop SUSY thresholds to the third generation fermionic Yukawa couplings and the strong coupling]),
+               AC_HELP_STRING([--enable-full_susy_threshold_compilation],[Compile two-loop SUSY thresholds to the third generation fermionic Yukawa couplings and the strong coupling]),
              [AC_DEFINE([COMPILE_FULL_SUSY_THRESHOLD],[1],[Compile two-loop SUSY threshold corrections to fermionic third generation Yukawa couplings]),
               case "${enableval}" in
               yes) full_susy_threshold_compilation=true ;;

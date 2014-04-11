@@ -184,6 +184,15 @@ public:
   /// and H2 respectively. 
   /// g^Li_Lj = m_{ij} for LH fields
   /// g^Ei_Ej = m_{ji} for RH fields
+
+#ifdef COMPILE_THREE_LOOP_RGE
+  /// Calculates three-loop anomalous dimensions in the dominant third family
+  /// approximation and adds them
+  void getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
+		      DoubleMatrix & gQQ, DoubleMatrix & gDD,
+		      DoubleMatrix & gUU, double & gH1H1, double &
+		      gH2H2, sBrevity & a) const;
+#endif
  
   void anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
 			  DoubleMatrix & gQQ, DoubleMatrix & gUU,
@@ -208,12 +217,6 @@ void setBetas(DoubleMatrix &, DoubleVector  &, DoubleVector  &, DoubleVector
 
 #ifdef COMPILE_THREE_LOOP_RGE
 
-  /// Calculates three-loop anomalous dimensions in the dominant third family
-  /// approximation and adds them
-  void getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
-		      DoubleMatrix & gQQ, DoubleMatrix & gDD,
-		      DoubleMatrix & gUU, double & gH1H1, double &
-		      gH2H2, sBrevity & a) const;
 
 void setBetasThreeLoop(Tensor &, DoubleMatrix &, DoubleMatrix &, 
        DoubleMatrix &, DoubleVector &, DoubleVector &, DoubleVector &,
