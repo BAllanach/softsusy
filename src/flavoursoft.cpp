@@ -52,13 +52,17 @@ void convertFromWolfenstein(double lambdaW, double A, double rhobar,
 }
 
 int positionOfSym(int i, int j) {
-  switch (i) {
-  case 1: return j;   break;
-  case 2: return j+2; break;
-  case 3: return j+3; break;
-  default: 
-    cout << " # WARNING: can't convert position in 3 by 3 matrix" 
-	 << i << j << endl; 
+  if (i == 1 && j == 1) return 1;
+  else if (i == 2 && j == 2) return 4;
+  else if (i == 3 && j == 3) return 6;
+  else if ((i == 1 && j == 2) || (i == 2 && j == 1)) return 2;
+  else if ((i == 1 && j == 3) || (i == 3 && j == 1)) return 3;
+  else if ((i == 2 && j == 3) || (i == 3 && j == 2)) return 5;
+  else {
+    ostringstream ii;
+    ii << " # WARNING: can't convert position in 3 by 3 matrix" 
+       << i << j << endl; 
+    throw ii.str();
     return 0;
   }
 }

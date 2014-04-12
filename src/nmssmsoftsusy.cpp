@@ -14,6 +14,16 @@ namespace softsusy {
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
   ydR, yeL, yeR, ynuL;
 
+
+const NmssmSoftsusy & NmssmSoftsusy::operator=(const NmssmSoftsusy & s) {
+  if (this == &s) return *this;
+  Softsusy<SoftParsNmssm>::operator=(s);
+  tSOVSMs = s.tSOVSMs;
+  tSOVSMs1loop = s.tSOVSMs1loop;
+  return *this;
+}
+
+
  //PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.
 void NmssmSoftsusy::printall() const {
    cout << "At scale " << displayMu() << '\n';
@@ -3203,8 +3213,10 @@ int NmssmSoftsusy::rewsbM3sq(double mu, double & m3sq) const {
 int NmssmSoftsusy::rewsbKap(double & kap) const {
   int flag = 0;
   if(abs(displayLambda()) < 1e-99){
-    if(PRINTOUT) cout << "Warning: called with lambd = 0." << endl;
-    if(PRINTOUT) cout << "rewsbKap routine rewquires non-zero lambda." << endl;
+    if(PRINTOUT) {
+       cout << "Warning: called with lambd = 0.\n";
+       cout << "rewsbKap routine rewquires non-zero lambda.\n";
+    }
     flag = 2;
   }
   double lam = displayLambda();
@@ -4082,46 +4094,26 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 	 
 	 //PA: Make appropriate substitutions for elements following 0907.4682
 	 // bottom of page 9
-	 
-	 double temp = DMSB[0][0];
-	 DMSB[0][0] = DMSB[1][1];
-	 DMSB[1][1] = temp;
-	 temp = DMSB[0][2];
-	 DMSB[0][2] = DMSB[1][2];
-	 DMSB[1][2] = temp;
+         std::swap(DMSB[0][0], DMSB[1][1]);
+         std::swap(DMSB[0][2], DMSB[1][2]);
 
 	 /// LCT: Obtain the O(alpha_b alpha_s) corrections from O(alpha_t alpha_s) 
 	 /// parts by interchanging the (1, 1) <--> (2, 2) and (1, 3) <--> (2, 3) 
 	 /// matrix elements of CP-odd mass matrix (as in 0907.4682)
-	 double temp2 = DMPB[0][0];
-	 DMPB[0][0] = DMPB[1][1];
-	 DMPB[1][1] = temp2;
-	 temp2 = DMPB[0][2];
-	 DMPB[0][2] = DMPB[1][2];
-	 DMPB[1][2] = temp2;
+         std::swap(DMPB[0][0], DMPB[1][1]);
+         std::swap(DMPB[0][2], DMPB[1][2]);
 
 	 for(int i=0; i<=2; i++){
 	   for(int j=0; j<=2; j++){
-	     DMS[i][j] = DMS[i][j] + DMSB[i][j];
-	     DMP[i][j] = DMP[i][j] + DMPB[i][j]; 
+	     DMS[i][j] += DMSB[i][j];
+	     DMP[i][j] += DMPB[i][j];
 	   }
 	 }
 	 double amu = - lam * svev / root2;
-	 int kkk = 0.0;
-	 double s11s = 0.0, s12s = 0.0, s22s = 0.0;
-	 double s11b = 0.0, s12b = 0.0, s22b = 0.0;
 	 double s11w = 0.0, s12w = 0.0, s22w = 0.0;
 	 double s11tau = 0.0, s12tau = 0.0, s22tau = 0.0;
-	 double ps2 = 0.0, p2b = 0.0, p2w = 0.0, p2tau = 0.0;
+	 double p2w = 0.0, p2tau = 0.0;
 	 double fmasq = fabs(MAeffsq);
-	 dszhiggs_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, 
-	           &amu, &tanb, &vev2, &gs, &kkk, &s11s, &s22s, &s12s);
-	 dszodd_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, &amu,
-	         &tanb, &vev2, &gs, &ps2); 
-	 dszhiggs_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq,
-	           &amu, &cotb, &vev2, &gs, &kkk, &s22b, &s11b, &s12b);
-	 dszodd_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq, &amu,
-	         &cotb, &vev2, &gs, &p2b);
 	 //Corrections as in MSSM, not corrected for NMSSM,
 	 //Should be OK for MSSM states when S state is close to decoupled 
 	 ddshiggs_(&rmtsq, &rmbsq, &fmasq, &mst1sq, &mst2sq, &msb1sq, 
@@ -4384,7 +4376,7 @@ bool NmssmSoftsusy::higgs(int accuracy, double piwwtMS, double /* pizztMS */,
 if (poleMhcSq > 0. && !h0Htachyon) return false;
   else {
      if (PRINTOUT) cout << " mHc(phys)^2=" << poleMhcSq 
-		        << " but may be first iteration" << endl;
+		        << " but may be first iteration\n";
     return true;
   }
 }
@@ -8175,7 +8167,7 @@ double NmssmSoftsusy::calcRunningMb() const {
   if (displayMu() != displayMz()) {
     ostringstream ii;
     ii << "Softsusy<SoftPars>::calcRunningMb called with mu=" <<
-      displayMu() << endl; 
+      displayMu() << '\n';
     throw ii.str();
   }
   
@@ -8414,8 +8406,8 @@ void NmssmSoftsusy::itLowsoft
 
   if (numTries != 0 && sqr(displayMu() / mz - 1.0) > TOLERANCE) {
     cout << "WARNING: itLowsoft called at inappropriate";
-    cout << " scale:" << displayMu() << endl; 
-    cout << "whereas it should be " << mz << endl; 
+    cout << " scale:" << displayMu() << '\n';
+    cout << "whereas it should be " << mz << '\n';
   }
   
   if (numTries - 1 > maxTries) {/// Iterating too long: bail out
@@ -8445,8 +8437,6 @@ void NmssmSoftsusy::itLowsoft
     
     /// first stab at MSUSY: root(mstop1(MZ) mstop2(MZ))
     if (numTries == 1) setMsusy(calcMs()); 
-    
-    // cout << "displayMsusy() = " << displayMsusy() << endl; 
 
     int err = 0;
     err = runto(displayMsusy(), eps);
@@ -8672,7 +8662,7 @@ void NmssmSoftsusy::lowOrg
     
     if (oneset.displayMu() != mz) {
       cout << "WARNING: lowOrg in softsusy.cpp called with oneset at scale\n" 
-	   << oneset.displayMu() << "\ninstead of " << mz << endl;
+	   << oneset.displayMu() << "\ninstead of " << mz << '\n';
     }
     
     /// LCT: Changed maxtries to match softsusy.cpp 8/8/13
@@ -8764,34 +8754,34 @@ void NmssmSoftsusy::lowOrg
 
     runto(mz); 
 
-    if (PRINTOUT > 1) cout << " end of iteration" << endl;
+    if (PRINTOUT > 1) cout << " end of iteration\n";
     
   }
   catch(const char *a) {
     ostringstream ii;
     ii << "SOFTSUSY problem: " << a << " pars=" << pars << " tanb=" << tanb 
-       << " oneset=" << oneset << endl;
+       << " oneset=" << oneset << '\n';
     flagProblemThrown(true);
     throw(ii.str());
   }
   catch(const string & a) {
     ostringstream ii;
     ii << "SOFTSUSY problem: " << a << " pars=" << pars << " tanb=" << tanb 
-	 << " oneset=" << oneset << endl;
+	 << " oneset=" << oneset << '\n';
     flagProblemThrown(true);
     throw ii.str();
   }
   catch(...) {
     ostringstream ii;
-    ii << "SOFTSUSY problem: " << endl;
+    ii << "SOFTSUSY problem: \n";
     ii << "pars=" << pars << " tanb=" << tanb
-       << " oneset=" << oneset << endl;
+       << " oneset=" << oneset << '\n';
     flagProblemThrown(true);
     throw ii.str();
   }
 }
 
-void NmssmSoftsusy::modselSLHA(ostream & out, const char model[]) {
+void NmssmSoftsusy::modselSLHA(ostream & out, const char model[], double qMax) {
   Softsusy<SoftParsNmssm>::modselSLHA(out, model);
   out << "     3    1   # NMSSM\n";
 
@@ -8800,20 +8790,91 @@ void NmssmSoftsusy::modselSLHA(ostream & out, const char model[]) {
     out << "   # call micrOmegas (default: 0 = no)\n";
     out << "    13    " << softsusy::NMSDECAY;
     out << "   # sparticle decays via NMSDECAY (default: 0)\n";
+    out << "    12   "; printRow(out, qMax);
+    out << "   # parameter output scale\n";
   }
 }
 
 void NmssmSoftsusy::extparSLHA(ostream & out,
                                const DoubleVector & pars,
                                bool ewsbBCscale) {
-  Softsusy<SoftParsNmssm>::extparSLHA(out, pars, ewsbBCscale);
+  out << "Block EXTPAR               # non-universal SUSY breaking parameters\n";
+  if (ewsbBCscale) {
+    out << "     0    -1.00000000e+00  # Set MX=MSUSY\n";
+  } else {
+    out << "     0    "; printRow(out, mxBC); out << "  # MX scale\n";
+  }
+
+  for (int i=1; i<=3; i++) {
+    out << "     " << i << "    ";
+    printRow(out, pars.display(i));
+    out << "  # M_" << i << "(MX)\n";
+  }
+  out << "     11   "; printRow(out, pars.display(11));
+  out << "  # At(MX)\n";
+  out << "     12   "; printRow(out, pars.display(12));
+  out << "  # Ab(MX)\n";
+  out << "     13   "; printRow(out, pars.display(13));
+  out << "  # Atau(MX)\n";
+  if (!softsusy::SoftHiggsOut) {
+    out << "     21   "; printRow(out, pars.display(21));
+    out << "  # mHd^2(MX)\n";
+    out << "     22   "; printRow(out, pars.display(22));
+    out << "  # mHu^2(MX)\n";
+  }
+  if (!Z3 && softsusy::SoftHiggsOut) {
+    out << "     23   "; printRow(out, pars.display(54));
+    out << "  # mu(MX)\n";
+    out << "     26   "; printRow(out, pars.display(55));
+    out << "  # Bmu / (cos(beta) * sin(beta))\n";
+  }
+  if (displaySetTbAtMX()) {
+    out << "     25   "; printRow(out, pars.display(25));
+    out << "  # tan beta(MX)\n";
+  }
+  out << "     31   "; printRow(out, pars.display(31));
+  out << "  # meL(MX)\n";
+  out << "     32   "; printRow(out, pars.display(32));
+  out << "  # mmuL(MX)\n";
+  out << "     33   "; printRow(out, pars.display(33));
+  out << "  # mtauL(MX)\n";
+  out << "     34   "; printRow(out, pars.display(34));
+  out << "  # meR(MX)\n";
+  out << "     35   "; printRow(out, pars.display(35));
+  out << "  # mmuR(MX)\n";
+  out << "     36   "; printRow(out, pars.display(36));
+  out << "  # mtauR(MX)\n";
+  out << "     41   "; printRow(out, pars.display(41));
+  out << "  # mqL1(MX)\n";
+  out << "     42   "; printRow(out, pars.display(42));
+  out << "  # mqL2(MX)\n";
+  out << "     43   "; printRow(out, pars.display(43));
+  out << "  # mqL3(MX)\n";
+  out << "     44   "; printRow(out, pars.display(44));
+  out << "  # muR(MX)\n";
+  out << "     45   "; printRow(out, pars.display(45));
+  out << "  # mcR(MX)\n";
+  out << "     46   "; printRow(out, pars.display(46));
+  out << "  # mtR(MX)\n";
+  out << "     47   "; printRow(out, pars.display(47));
+  out << "  # mdR(MX)\n";
+  out << "     48   "; printRow(out, pars.display(48));
+  out << "  # msR(MX)\n";
+  out << "     49   "; printRow(out, pars.display(49));
+  out << "  # mbR(MX)\n";
   out << "     63   "; printRow(out, pars.display(50));
   out << "  # Alambda(MX)\n";
   out << "     64   "; printRow(out, pars.display(51));
   out << "  # Akappa(MX)\n";
+  if (!Z3 && softsusy::SoftHiggsOut) {
+    out << "     67   "; printRow(out, pars.display(56));
+    out << "  # xi_S(MX)\n";
+  }
   if (!Z3) {
-    out << "     69   "; printRow(out, pars.display(52));
+    out << "     69   "; printRow(out, pars.display(52) * displayMupr());
     out << "  # mS'^2(MX)\n";
+  }
+  if (!Z3 && !softsusy::SoftHiggsOut) {
     out << "     70   "; printRow(out, pars.display(53));
     out << "  # mS^2(MX)\n";
   }
@@ -8937,7 +8998,7 @@ void NmssmSoftsusy::yukawaMatricesSLHA(ostream & out, const char* blockName) {
   for (int i=1; i<=3; i++) {
      for (int j=1; j<=3; j++) {
         out << "  " << i << "  " << j << "     " << yu(i,j)
-            << "    # YU_{" << i << j << "}(Q)NMSSM DRbar" << endl;
+            << "    # YU_{" << i << j << "}(Q)NMSSM DRbar\n";
      }
   }
 
@@ -8946,7 +9007,7 @@ void NmssmSoftsusy::yukawaMatricesSLHA(ostream & out, const char* blockName) {
   for (int i=1; i<=3; i++) {
      for (int j=1; j<=3; j++) {
         out << "  " << i << "  " << j << "     " << yd(i,j)
-            << "    # YD_{" << i << j << "}(Q)NMSSM DRbar" << endl;
+            << "    # YD_{" << i << j << "}(Q)NMSSM DRbar\n";
      }
   }
 
@@ -8955,7 +9016,7 @@ void NmssmSoftsusy::yukawaMatricesSLHA(ostream & out, const char* blockName) {
   for (int i=1; i<=3; i++) {
      for (int j=1; j<=3; j++) {
         out << "  " << i << "  " << j << "     " << ye(i,j)
-            << "    # YE_{" << i << j << "}(Q)NMSSM DRbar" << endl;
+            << "    # YE_{" << i << j << "}(Q)NMSSM DRbar\n";
      }
   }
 }
@@ -9071,7 +9132,7 @@ void NmssmSoftsusy::extrasfermionmixSLHA(ostream & out) {
    for (i=1; i<=2; i++)
       for (j=1; j<=2; j++) {
          out << "  " << i << "  " << j << "    "; printRow(out, m(i, j));
-         out << "   # F_{" << i << j << "}" << endl;
+         out << "   # F_{" << i << j << "}\n";
       }
    
    
@@ -9079,28 +9140,7 @@ void NmssmSoftsusy::extrasfermionmixSLHA(ostream & out) {
 
 void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
    runto(displayMsusy());
-
-   const double mQ2sqr = displaySoftMassSquared(mQl, 2, 2),
-      mU2sqr = displaySoftMassSquared(mUr, 2, 2),
-      mD2sqr = displaySoftMassSquared(mDr, 2, 2),
-      mQ3sqr = displaySoftMassSquared(mQl, 3, 3),
-      mU3sqr = displaySoftMassSquared(mUr, 3, 3);
-   const double q2 = sqrt((2.0 * mQ2sqr + mU2sqr + mD2sqr) / 4.0);
-   const double qstsb = sqrt(sqrt(mQ3sqr * mU3sqr));
-   
    extrasfermionmixSLHA(out);
-   runto(q2);
-   extragaugeSLHA(out, "GAUGEATQ2");
-   yukawaMatricesSLHA(out, "ATQ2");
-   extramsoftSLHA(out, "ATQ2");
-   nmssmrunSLHA(out, "NMSSMRUNATQ2");
-
-   runto(qstsb);
-   extragaugeSLHA(out, "GAUGEATQSTSB");
-   yukawaMatricesSLHA(out, "ATQSTSB");
-   extramsoftSLHA(out, "ATQSTSB");
-   extrahmixSLHA(out, "ATQSTSB");
-   nmssmrunSLHA(out, "NMSSMRUNATQSTSB");
 }
 
 void NmssmSoftsusy::softsusySLHA(ostream& out)
@@ -9123,10 +9163,18 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  double qMax,
 					  int numPoints,
 					  bool ewsbBCscale) {
+  if (softsusy::NMSSMTools) {
+    // in case of NMSSMTools compatible output, print only one copy of
+    // the DR-bar parameters (at qMax)
+    numPoints = 1;
+    if (close(qMax, 0., EPSTOL) || qMax < 0.)
+      qMax = displayMsusy();
+  }
+
   int nn = out.precision();
   headerSLHA(out);
   spinfoSLHA(out);
-  modselSLHA(out, model);
+  modselSLHA(out, model, qMax);
   sminputsSLHA(out);
   minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale);
   softsusySLHA(out);
@@ -9147,7 +9195,7 @@ void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
     }
   } else {
     out << "# Declining to write spectrum because of serious problem"
-	<< " with point" << endl;
+	<< " with point\n";
   }
   out.precision(nn);
 }

@@ -52,7 +52,7 @@ void errorCall() {
      "\n"
      "[NMSSM parameters]:\n"
      "  --m0= , --m12= , --a0= , --tanBeta= , --mHd2= , --mHu2= ,\n"
-     "  --mu= , --BmuOverCosBetaSinBeta= , --lambda= , --kappa= ,\n"
+     "  --mu= , --m3SqrOverCosBetaSinBeta= , --lambda= , --kappa= ,\n"
      "  --Alambda= , --Akappa= , --lambdaS= , --xiF= , --xiS= ,\n"
      "  --muPrime= , --mPrimeS2= , --mS2=\n"
      "\n"
@@ -243,8 +243,11 @@ int main(int argc, char *argv[]) {
 	double n5 = 0., mMess = 0., LAMBDA = 0., cgrav = 1.;
 	for (int i = 2; i < argc; i++) {
 	  if (starts_with(argv[i], "--n5=")) n5 = get_value(argv[i], "--n5=");
-	  else if (starts_with(argv[i], "--mMess=")) 
+	  else if (starts_with(argv[i], "--mMess=")) { 
+	    gaugeUnification = false; 
 	    mMess = get_value(argv[i], "--mMess=");
+	    mgutGuess = mMess;
+	  }
 	  else if (starts_with(argv[i], "--LAMBDA=")) 
 	    LAMBDA = get_value(argv[i], "--LAMBDA=");
 	  else if (starts_with(argv[i], "--cgrav=")) 
@@ -543,12 +546,18 @@ int main(int argc, char *argv[]) {
                   } else if (susy_model == NMSSM) {
                      // read NMSSM susy parameters only and continue
                      switch (i) {
-                     case 23: nmssm_input.set(NMSSM_input::mu     , d); continue;
-                     case 61: nmssm_input.set(NMSSM_input::lambda , d); continue;
-                     case 62: nmssm_input.set(NMSSM_input::kappa  , d); continue;
-                     case 65: nmssm_input.set(NMSSM_input::lambdaS, d); continue;
-                     case 66: nmssm_input.set(NMSSM_input::xiF    , d); continue;
-                     case 68: nmssm_input.set(NMSSM_input::muPrime, d); continue;
+                     case 23: nmssm_input.set(NMSSM_input::mu     , d); 
+		       continue;
+                     case 61: nmssm_input.set(NMSSM_input::lambda , d); 
+		       continue;
+                     case 62: nmssm_input.set(NMSSM_input::kappa  , d); 
+		       continue;
+                     case 65: nmssm_input.set(NMSSM_input::lambdaS, d); 
+		       continue;
+                     case 66: nmssm_input.set(NMSSM_input::xiF    , d); 
+		       continue;
+                     case 68: nmssm_input.set(NMSSM_input::muPrime, d);
+		       continue;
                      }
                   }
 		  /// First, we want to convert our input to EXTPAR if we have
@@ -620,7 +629,8 @@ int main(int argc, char *argv[]) {
 		    }
 		    else if (i == 25) {
 		      tanb = d;
-		      if (pars.displayEnd() != 49) pars.setEnd(49);
+		      if (!flavourViolation && pars.displayEnd() != 49) 
+			pars.setEnd(49);
 		      pars(i) = d;
 		      r->setSetTbAtMX(true);
 		    } 

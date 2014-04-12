@@ -2703,12 +2703,12 @@ double Softsusy<SoftPars>::calcRunningMt() {
 template<class SoftPars>
 double Softsusy<SoftPars>::calcRunMbDrBarConv() const {
    double    g       = displayGaugeCoupling(2);
-   double    g1      = displayGaugeCoupling(1);
+   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
    double alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
    double conversion = (1.0 - alphasMZ / (3.0 * PI) 
                         - 23.0 / 72.0 * sqr(alphasMZ) / sqr(PI) +
                         3.0 * sqr(g) / (128.0 * sqr(PI)) +
-                        13.0 * sqr(g1) / (1152. * sqr(PI)));
+                        13.0 * sqr(gp) / (1152. * sqr(PI)));
    return conversion;
 }
 
@@ -2930,7 +2930,8 @@ double Softsusy<SoftPars>::calcRunningMb() const {
 }
 template<class SoftPars>
 double Softsusy<SoftPars>::calcRunMtauDrBarConv() const {
- double conv = (1.0 - 3.0 * (sqr(displayGaugeCoupling(1)) - sqr(displayGaugeCoupling(2))) / (128.0 * sqr(PI)));
+ double gp = displayGaugeCoupling(1) * sqrt(0.6);
+ double conv = (1.0 - 3.0 * (sqr(gp) - sqr(displayGaugeCoupling(2))) / (128.0 * sqr(PI)));
  return conv;
 }
 
@@ -7517,6 +7518,18 @@ void Softsusy<SoftPars>::itLowsoft
     int err = 0;
 
     err = runto(displayMsusy(), eps);
+
+    if (err == 1) {
+      /// problem with running: bail out 
+      flagProblemThrown(true);
+      if (PRINTOUT) 
+	cout << "itLowsoft can't run more approaching msusy\n"; 
+      if (PRINTOUT > 1) printObj();
+      numTries = 0; 
+      return;
+    }
+
+
     double tbIn; double predictedMzSq = 0.;
     predictedMzSq = predMzsq(tbIn);
     setPredMzSq(predictedMzSq);  
@@ -10451,6 +10464,7 @@ template<class SoftPars>
 void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
   out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
+  out << "# MX=" << mxBC << " GeV" << endl;
 }
 
 template<class SoftPars>
