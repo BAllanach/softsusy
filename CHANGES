@@ -1,3 +1,4 @@
+<li> 01/04/14 Now works with NMSSMTools_4.2.1
 <li> 25/03/14 mGMSB scale of setting SUSY breaking boundary conditions now
 fixed at Mmess, at it should be (not MGUT) for command line input.
 <li> 24/03/14 Error in flavour violation SLHA input fixed, when inputting
