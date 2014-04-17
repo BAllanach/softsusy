@@ -160,6 +160,9 @@ public:
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
   /// Public field :: only for informational purpose	
   SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
+  // Flags allowing to choose which two-loop tresholds have to be included
+  two_loop_thresholds included_thresholds; 
+
 #endif //COMPILE_FULL_SUSY_THRESHOLD
 
   //  void (*boundaryCondition)(Softsusy &, const DoubleVector &);

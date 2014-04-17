@@ -48,7 +48,18 @@ const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const Softsusy<SoftPars>
 
   decoupling_corrections.dmtau.one_loop = 0; 
   decoupling_corrections.dmtau.two_loop = 0; 
-
+/*
+  used_thresholds = ENABLE_TWO_LOOP_MT_AS     | 
+		    ENABLE_TWO_LOOP_AS_AS_YUK |
+	  	    ENABLE_TWO_LOOP_MB_AS     |
+		    ENABLE_TWO_LOOP_MB_YUK    | 
+	            ENABLE_TWO_LOOP_MTAU_YUK  ; 
+*/
+  included_thresholds = two_loop_thresholds(ENABLE_TWO_LOOP_MT_AS |  
+		                        ENABLE_TWO_LOOP_AS_AS_YUK | 
+					ENABLE_TWO_LOOP_MB_AS | 
+					ENABLE_TWO_LOOP_MB_YUK | 
+					ENABLE_TWO_LOOP_MTAU_YUK);
 
 
 #endif //COMPILE_FULL_SUSY_THRESHOLD
