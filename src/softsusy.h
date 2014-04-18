@@ -161,8 +161,7 @@ public:
   /// Public field :: only for informational purpose	
   SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
   // Flags allowing to choose which two-loop tresholds have to be included
-  two_loop_thresholds included_thresholds; 
-
+  int included_thresholds; 
 #endif //COMPILE_FULL_SUSY_THRESHOLD
 
   //  void (*boundaryCondition)(Softsusy &, const DoubleVector &);
@@ -1243,6 +1242,28 @@ Softsusy<SoftPars>::Softsusy()
       setMu(0.0);
       setLoops(0);
       setThresholds(0);
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  decoupling_corrections.das.one_loop = 0;
+  decoupling_corrections.das.two_loop = 0;
+
+  decoupling_corrections.dmb.one_loop = 0;
+  decoupling_corrections.dmb.two_loop = 0;
+
+  decoupling_corrections.dmt.one_loop = 0;
+  decoupling_corrections.dmt.two_loop = 0;
+
+  decoupling_corrections.dmtau.one_loop = 0;
+  decoupling_corrections.dmtau.two_loop = 0;
+
+  /// Public field :: included thresholds
+  included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
+	  	        ENABLE_TWO_LOOP_AS_AS_YUK | 
+			ENABLE_TWO_LOOP_MB_AS | 
+			ENABLE_TWO_LOOP_MB_YUK |
+			ENABLE_TWO_LOOP_MTAU_YUK;
+
+#endif
 }
 
 
@@ -1263,6 +1284,24 @@ Softsusy<SoftPars>::Softsusy(const Softsusy & s)
     setMu(s.displayMu()); 
     setLoops(s.displayLoops());
     setThresholds(s.displayThresholds());
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop ; 
+  decoupling_corrections.das.two_loop = s.decoupling_corrections.das.two_loop ; 
+
+  decoupling_corrections.dmb.one_loop = s.decoupling_corrections.dmb.one_loop ; 
+  decoupling_corrections.dmb.two_loop = s.decoupling_corrections.dmb.two_loop ; 
+
+  decoupling_corrections.dmt.one_loop = s.decoupling_corrections.dmt.one_loop ; 
+  decoupling_corrections.dmt.two_loop = s.decoupling_corrections.dmt.two_loop ; 
+
+  decoupling_corrections.dmtau.one_loop = s.decoupling_corrections.dmtau.one_loop ; 
+  decoupling_corrections.dmtau.two_loop = s.decoupling_corrections.dmtau.two_loop ; 
+  /// Public field :: included thresholds
+  included_thresholds = s.included_thresholds;
+
+#endif //COMPILE_FULL_SUSY_THRESHOLD
+
 }
 
 template<class SoftPars>
@@ -1276,6 +1315,27 @@ Softsusy<SoftPars>::Softsusy(const Susy &s)
   setMu(s.displayMu()); 
   setLoops(s.displayLoops());
   setThresholds(s.displayThresholds());
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  decoupling_corrections.das.one_loop = 0;
+  decoupling_corrections.das.two_loop = 0;
+
+  decoupling_corrections.dmb.one_loop = 0;
+  decoupling_corrections.dmb.two_loop = 0;
+
+  decoupling_corrections.dmt.one_loop = 0;
+  decoupling_corrections.dmt.two_loop = 0;
+
+  decoupling_corrections.dmtau.one_loop = 0;
+  decoupling_corrections.dmtau.two_loop = 0;
+  /// Public field :: included thresholds
+  included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
+	  	        ENABLE_TWO_LOOP_AS_AS_YUK | 
+			ENABLE_TWO_LOOP_MB_AS | 
+			ENABLE_TWO_LOOP_MB_YUK |
+			ENABLE_TWO_LOOP_MTAU_YUK;
+
+#endif //COMPILE_FULL_SUSY_THRESHOLD
 }
 
 
@@ -1292,6 +1352,7 @@ Softsusy<SoftPars>::Softsusy
   setMu(mu);
   setLoops(l);
   setThresholds(t);
+
 }
 
 

@@ -29,17 +29,6 @@ int main() {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
-  /// Switch off 3-loop RGEs etc
-  /*
-  SOFTSUSY_THREELOOP_RGE = false;
-  SOFTSUSY_TWOLOOP = false;
-  SOFTSUSY_TWOLOOP_TQUARK_STRONG = false;
-  SOFTSUSY_TWOLOOP_BQUARK_STRONG = false;
-  SOFTSUSY_TWOLOOP_BQUARK_YUKAWA = false;
-  SOFTSUSY_TWOLOOP_TAU_YUKAWA = false;
-  SOFTSUSY_TWOLOOP_GS = false;
-  */
-
   try {
  /// Sets format of output: 6 decimal places
   outputCharacteristics(6);

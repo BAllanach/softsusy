@@ -36,31 +36,19 @@ const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const Softsusy<SoftPars>
   mxBC = s.displayMxBC();
 
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
-  /// Public field :: only for informational purpose	
-  decoupling_corrections.das.one_loop = 0; 
-  decoupling_corrections.das.two_loop = 0; 
+  decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop ; 
+  decoupling_corrections.das.two_loop = s.decoupling_corrections.das.two_loop ; 
 
-  decoupling_corrections.dmb.one_loop = 0; 
-  decoupling_corrections.dmb.two_loop = 0; 
+  decoupling_corrections.dmb.one_loop = s.decoupling_corrections.dmb.one_loop ; 
+  decoupling_corrections.dmb.two_loop = s.decoupling_corrections.dmb.two_loop ; 
 
-  decoupling_corrections.dmt.one_loop = 0; 
-  decoupling_corrections.dmt.two_loop = 0; 
+  decoupling_corrections.dmt.one_loop = s.decoupling_corrections.dmt.one_loop ; 
+  decoupling_corrections.dmt.two_loop = s.decoupling_corrections.dmt.two_loop ; 
 
-  decoupling_corrections.dmtau.one_loop = 0; 
-  decoupling_corrections.dmtau.two_loop = 0; 
-/*
-  used_thresholds = ENABLE_TWO_LOOP_MT_AS     | 
-		    ENABLE_TWO_LOOP_AS_AS_YUK |
-	  	    ENABLE_TWO_LOOP_MB_AS     |
-		    ENABLE_TWO_LOOP_MB_YUK    | 
-	            ENABLE_TWO_LOOP_MTAU_YUK  ; 
-*/
-  included_thresholds = two_loop_thresholds(ENABLE_TWO_LOOP_MT_AS |  
-		                        ENABLE_TWO_LOOP_AS_AS_YUK | 
-					ENABLE_TWO_LOOP_MB_AS | 
-					ENABLE_TWO_LOOP_MB_YUK | 
-					ENABLE_TWO_LOOP_MTAU_YUK);
-
+  decoupling_corrections.dmtau.one_loop = s.decoupling_corrections.dmtau.one_loop ; 
+  decoupling_corrections.dmtau.two_loop = s.decoupling_corrections.dmtau.two_loop ; 
+  /// Public field :: included thresholds
+  included_thresholds = s.included_thresholds;
 
 #endif //COMPILE_FULL_SUSY_THRESHOLD
 
@@ -2739,7 +2727,7 @@ double Softsusy<SoftPars>::calcRunningMt() {
   if (USE_TWO_LOOP_THRESHOLD) {
     static bool needcalc = true; // flag: calculate corrections if two-previous iterations gave different results
     using namespace GiNaC;
-    if (SOFTSUSY_TWOLOOP_TQUARK_STRONG) {  
+    if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) {  
       	exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
 // hack
       	ex test = numeric(0);
@@ -3046,7 +3034,7 @@ double Softsusy<SoftPars>::calcRunningMb() {
 
 // AVB: this also include top quark contribution (decoupling)!
    exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-   if (SOFTSUSY_TWOLOOP_BQUARK_STRONG && (needcalc)) {
+   if ((included_thresholds & ENABLE_TWO_LOOP_MB_AS) && (needcalc)) {
 		ex test = bquark_corrections::eval_bquark_twoloop_strong_dec(drbrp);
 		if (is_a<numeric>(test))
   			dzetamb += ex_to<numeric>(test).to_double();
@@ -3054,7 +3042,7 @@ double Softsusy<SoftPars>::calcRunningMb() {
 		     << test << endl;
 
    }
-   if (SOFTSUSY_TWOLOOP_BQUARK_YUKAWA && (needcalc)) {
+   if ((included_thresholds & ENABLE_TWO_LOOP_MB_YUK) && (needcalc)) {
  		ex test = bquark_corrections::eval_bquark_twoloop_yukawa_dec(drbrp);
 		if (is_a<numeric>(test))
   			dzetamb += ex_to<numeric>(test).to_double();
@@ -3264,7 +3252,7 @@ double Softsusy<SoftPars>::calcRunningMtau() {
     using namespace GiNaC;
     exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
     static bool needcalc = true;  // flag: calculate corrections if two-previous iterations gave different results
-    if (SOFTSUSY_TWOLOOP_TAU_YUKAWA) {
+    if ((included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
 // hack 
 	ex test = 0;
   	if (needcalc) test = tau_corrections::eval_tau_twoloop_yukawa_dec(drbrp);
@@ -6969,7 +6957,7 @@ double Softsusy<SoftPars>::qcdSusythresh(double alphasMSbar, double q) {
 
   if (USE_TWO_LOOP_THRESHOLD) {
 
-   if (SOFTSUSY_TWOLOOP_GS) {
+   if ((included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK)) {
      using namespace GiNaC;
      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
      ex test = gs_corrections::eval_gs_twoloop_strong(drbrp);
@@ -7001,7 +6989,7 @@ double Softsusy<SoftPars>::qcdSusythresh(double alphasMSbar, double q) {
   const double alphasDRbar_post = alphasMSbar / (1.0 - deltaAlphas + dalpha_2);
 
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
-  if (SOFTSUSY_TWOLOOP_GS) dout<< " alpha_S (MZ) after: " << alphasDRbar_post << endl;
+  if ((included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK)) dout<< " alpha_S (MZ) after: " << alphasDRbar_post << endl;
 #endif 
 
   return alphasDRbar_post;
@@ -7232,7 +7220,18 @@ void Softsusy<SoftPars>::fixedPointIteration
     double muCondFirst = displayMuCond();
     double maCondFirst = displayMaCond();
 
+    #ifdef COMPILE_FULL_SUSY_THRESHOLD
+    SoftSusy_helpers_::decoupling_corrections_t d_coupl = decoupling_corrections;
+    int enabled_thresholds = included_thresholds;
+    #endif
+
+    cout << "HERE" << included_thresholds << endl;
     setSoftsusy(empty); /// Always starts from an empty object
+    #ifdef COMPILE_FULL_SUSY_THRESHOLD
+    decoupling_corrections = d_coupl;
+    included_thresholds = enabled_thresholds;
+    #endif
+    cout << "HERE" << included_thresholds << endl;
     /// These are things that are re-written by the new initialisation
     setSetTbAtMX(setTbAtMXflag); 
     if (altFlag) useAlternativeEwsb();

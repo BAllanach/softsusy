@@ -81,13 +81,9 @@ int main(int argc, char *argv[]) {
 #ifdef COMPILE_THREE_LOOP_RGE
   USE_THREE_LOOP_RGE = false;
 #endif
+
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
   USE_TWO_LOOP_THRESHOLD = false;
-  SOFTSUSY_TWOLOOP_TQUARK_STRONG = false;
-  SOFTSUSY_TWOLOOP_BQUARK_STRONG = false;
-  SOFTSUSY_TWOLOOP_BQUARK_YUKAWA = false;
-  SOFTSUSY_TWOLOOP_TAU_YUKAWA = false;
-  SOFTSUSY_TWOLOOP_GS = false;
 #endif
   /// Calculate the spectrum
   r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
@@ -103,13 +99,14 @@ int main(int argc, char *argv[]) {
 
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
   USE_TWO_LOOP_THRESHOLD = true;
-  SOFTSUSY_TWOLOOP_TQUARK_STRONG = true;
-  SOFTSUSY_TWOLOOP_BQUARK_STRONG = true;
-  SOFTSUSY_TWOLOOP_BQUARK_YUKAWA = true;
-  SOFTSUSY_TWOLOOP_TAU_YUKAWA = true;
-  SOFTSUSY_TWOLOOP_GS = true;
+  /*
+  s.included_thresholds &= ~ENABLE_TWO_LOOP_MB_YUK; 
+  s.included_thresholds &= ~ENABLE_TWO_LOOP_MB_AS; 
+  s.included_thresholds &= ~ENABLE_TWO_LOOP_MT_AS; 
+  s.included_thresholds &= ~ENABLE_TWO_LOOP_MTAU_YUK; 
+  s.included_thresholds &= ~ENABLE_TWO_LOOP_AS_AS_YUK; 
+  */
 #endif
-
   s.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
   
   double msq3loop = (s.displayPhys().mu(2, 1) + s.displayPhys().mu(1, 1) +
