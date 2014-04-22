@@ -1256,12 +1256,17 @@ Softsusy<SoftPars>::Softsusy()
   decoupling_corrections.dmtau.one_loop = 0;
   decoupling_corrections.dmtau.two_loop = 0;
 
-  /// Public field :: included thresholds
-  included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
+  if (USE_TWO_LOOP_THRESHOLD) {
+  	included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
 	  	        ENABLE_TWO_LOOP_AS_AS_YUK | 
 			ENABLE_TWO_LOOP_MB_AS | 
 			ENABLE_TWO_LOOP_MB_YUK |
 			ENABLE_TWO_LOOP_MTAU_YUK;
+  } else {
+	included_thresholds = 0;
+  }
+	
+
 
 #endif
 }
@@ -1329,11 +1334,15 @@ Softsusy<SoftPars>::Softsusy(const Susy &s)
   decoupling_corrections.dmtau.one_loop = 0;
   decoupling_corrections.dmtau.two_loop = 0;
   /// Public field :: included thresholds
-  included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
+  if (USE_TWO_LOOP_THRESHOLD) {
+  	included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
 	  	        ENABLE_TWO_LOOP_AS_AS_YUK | 
 			ENABLE_TWO_LOOP_MB_AS | 
 			ENABLE_TWO_LOOP_MB_YUK |
 			ENABLE_TWO_LOOP_MTAU_YUK;
+  } else {
+	included_thresholds = 0;
+  }
 
 #endif //COMPILE_FULL_SUSY_THRESHOLD
 }

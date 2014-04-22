@@ -7220,19 +7220,18 @@ void Softsusy<SoftPars>::fixedPointIteration
     double muCondFirst = displayMuCond();
     double maCondFirst = displayMaCond();
 
+    // keep it  
     #ifdef COMPILE_FULL_SUSY_THRESHOLD
     SoftSusy_helpers_::decoupling_corrections_t d_coupl = decoupling_corrections;
     int enabled_thresholds = included_thresholds;
     #endif
 
-    cout << "HERE" << included_thresholds << endl;
     setSoftsusy(empty); /// Always starts from an empty object
+    /// These are things that are re-written by the new initialisation
     #ifdef COMPILE_FULL_SUSY_THRESHOLD
     decoupling_corrections = d_coupl;
     included_thresholds = enabled_thresholds;
     #endif
-    cout << "HERE" << included_thresholds << endl;
-    /// These are things that are re-written by the new initialisation
     setSetTbAtMX(setTbAtMXflag); 
     if (altFlag) useAlternativeEwsb();
     setData(oneset); 
@@ -10741,6 +10740,16 @@ void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
   out << ". 2-loop Yukawa/g3 thresholds are ";
   if (USE_TWO_LOOP_THRESHOLD) out << "on"; else out << "off";
+  out << "\n# 2-loop t-quark O(a_s^2) thresholds are ";
+  if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) out << "on"; else out << "off";  
+  out << "\n# 2-loop b-quark O(a_s^2) thresholds are "; 
+  if (included_thresholds & ENABLE_TWO_LOOP_MB_AS) out << "on"; else out << "off";
+  out << "\n# 2-loop b-quark O(a_s y^2) and O(y^4) thresholds are ";
+  if (included_thresholds & ENABLE_TWO_LOOP_MB_YUK) out << "on"; else out << "off"; 
+  out << "\n# 2-loop tau-lepton  O(y^4) thresholds are ";
+  if (included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK) out << "on"; else out << "off"; 
+  out << "\n# 2-loop a_s  O(a_s^2) and O(a_s y^2) thresholds are ";
+  if (included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK) out << "on"; else out << "off";
 #endif
   out << endl;
 }
