@@ -42,6 +42,15 @@ scansusy_x_LDADD = libsoft.la
 scansusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
 scansusy_x_LDADD += lib2lthresh.la libmssmparam.la  
 
+bin_PROGRAMS += scansusy_slha.x 
+
+
+scansusy_slha_x_SOURCES = src/scan_slha.cpp 
+scansusy_slha_x_LDADD = libsoft.la  
+
+scansusy_slha_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
+scansusy_slha_x_LDADD += lib2lthresh.la libmssmparam.la  
+
 softsusy_nmssm_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
 softsusy_nmssm_x_LDADD += lib2lthresh.la libmssmparam.la 
 
