@@ -92,7 +92,6 @@ int main(int argc, char *argv[]) {
 		     r.displayPhys().md(2, 1) + r.displayPhys().md(1, 1)) * 
     0.25;
   
-  MssmSoftsusy s; mGutGuess = 2.0e16;
 #ifdef COMPILE_THREE_LOOP_RGE
   USE_THREE_LOOP_RGE = true;
 #endif
@@ -107,6 +106,9 @@ int main(int argc, char *argv[]) {
   s.included_thresholds &= ~ENABLE_TWO_LOOP_AS_AS_YUK; 
   */
 #endif
+
+  MssmSoftsusy s; mGutGuess = 2.0e16;
+
   s.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
   
   double msq3loop = (s.displayPhys().mu(2, 1) + s.displayPhys().mu(1, 1) +
