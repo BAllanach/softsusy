@@ -10735,11 +10735,11 @@ void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
   out << "# MX=" << mxBC << " GeV" << endl;
 #ifdef COMPILE_THREE_LOOP_RGE
   out << "# 3-loop RGE corrections are ";
-  if (USE_THREE_LOOP_RGE) out << "on"; else out << "off";
+  if (displayLoops() == 3) out << "on"; else out << "off";
 #endif
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
   out << ". 2-loop Yukawa/g3 thresholds are ";
-  if (USE_TWO_LOOP_THRESHOLD) out << "on"; else out << "off";
+  if (included_thresholds>0) out << "on"; else out << "off";
   out << "\n# 2-loop t-quark O(a_s^2) thresholds are ";
   if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) out << "on"; else out << "off";  
   out << "\n# 2-loop b-quark O(a_s^2) thresholds are "; 
