@@ -1135,9 +1135,11 @@ int main(int argc, char *argv[]) {
 		    //      to have a finer control over included thresholds
 		    if (num % 2 == 1) {
 		      USE_TWO_LOOP_THRESHOLD = true;
-		      if (num > 1) {
-		      r->included_thresholds = ((num >> 1) & (ENABLE_TWO_LOOP_AS_AS_YUK | ENABLE_TWO_LOOP_MT_AS | ENABLE_TWO_LOOP_MB_AS | ENABLE_TWO_LOOP_MB_YUK | ENABLE_TWO_LOOP_MTAU_YUK));
-				   }
+		      if (num == 1) 
+		          r->included_thresholds = (ENABLE_TWO_LOOP_AS_AS_YUK | ENABLE_TWO_LOOP_MT_AS | ENABLE_TWO_LOOP_MB_AS | ENABLE_TWO_LOOP_MB_YUK | ENABLE_TWO_LOOP_MTAU_YUK);
+		      else 
+		      	  r->included_thresholds = ((num >> 1) & (ENABLE_TWO_LOOP_AS_AS_YUK | ENABLE_TWO_LOOP_MT_AS | ENABLE_TWO_LOOP_MB_AS | ENABLE_TWO_LOOP_MB_YUK | ENABLE_TWO_LOOP_MTAU_YUK));
+				   
 		    } else if (num == 0) USE_TWO_LOOP_THRESHOLD = false;
 		    else cout << "WARNING: incorrect setting for SOFTSUSY Block 20 (should be 0 or 1)\n";
 		    break;
