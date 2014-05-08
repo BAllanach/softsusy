@@ -298,7 +298,13 @@ int main(int argc, char *argv[]) {
        << " " << omegaAs                                         ///< 126
        << " " << omegaMt                                         ///< 127
        << " " << omegaMb                                         ///< 128
-       << " " << omega3;                                         ///< 129
+       << " " << omega3                                         ///< 129
+       << " " << twoLoop.displayGaugeCoupling(3)                ///< 130
+       << " " << twoLoopAs.displayGaugeCoupling(3)              ///< 131
+       << " " << twoLoopMt.displayGaugeCoupling(3)              ///< 132
+       << " " << twoLoopMb.displayGaugeCoupling(3)              ///< 133
+       << " " << threeLoop.displayGaugeCoupling(3);             ///< 134
+
       if (twoLoop.displayProblem().test()) cout << "# 2-loop problem: " 
 					  << twoLoop.displayProblem();
        if (threeLoop.displayProblem().test()) cout << "# 3-loop problem " 

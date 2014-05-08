@@ -154,20 +154,32 @@ gluino mass and $m_q$ the average squark mass from the first two generations. }
 
 \begin{table}
 \begin{center}
-\begin{tabular}{|c|ccccccc|}\hline
-quantity      & $m_h$  & $m_{\tilde g}$ & $m_{\chi_3^0}$  & $m_{\chi_4^0}$ &
-$m_{\chi_2^\pm}$ & $m_{{\tilde d}_L,{\tilde s}_L}$ & $m_{{\tilde d}_R, {\tilde
-    s}_R}$ \\ \hline
-value         & 115.3  & 1087           & 2535          &  2574  & 2574 & 1058
-&1027  \\
-$\Delta$/$\%$ & -1.8  & -0.3         & -0.2        &  -0.1 & -0.1 & -0.1 &
--0.2\\ \hline
+\begin{tabular}{|c|c|ccccccc|}\hline
+Threshold & RGEs  & $m_h$  & $m_{\tilde g}$ & $m_{{\tilde q}}$ &
+$m_{\chi_1^0}$  & $m_{\chi_2^0}$ & $m_{\chi_3^0}$ & $m_{\chi_4}^0$ \\ \hline
+None                   & 2 & 126.3 & 1278   & 3125 & 221  &433 & 2211 &2212\\
+$\Delta \alpha_s$      & 2 & +0.5  & -24.3  & -4.4 & +0.4 &+1.2 &+21.4 &-21.4 \\
+$\Delta m_t$           & 2 & -4.1  &  -0.4  & -0.6 & -0.7 &-0.9 &-82.4 &-82.4 \\
+$\Delta_{m_b, m_\tau}$ & 2 & +0.0  & +0.4   & +0.0 & -0.4 &+0.0 &+0.0 &+0.0 \\
+$\Delta $ All          & 3 & -2.7  &  -26.3 & -8.9 & -0.3 &-0.1 &-47.0 &-47.0 \\
+ \hline
 %
-quantity & $g_3(M_{SUSY})$ & $Y_t(M_{SUSY})$ & $Y_b(M_{SUSY})$ &
-$Y_\tau(M_{SUSY})$ & $\mu(M_{SUSY})$    &&\\ \hline
-value &  1.036  & 0.836 & 0.128              &  0.097&2536 &&\\
-$\Delta$/$\%$
-& -1.0 & -1.9 & -1.8          &  -0.2&-0.2 &&\\
+ &   & $m_{{\tilde t}_L}$  & $m_{{\tilde t}_R}$ & $m_{{\tilde b}_L}$ &
+$m_{{\tilde b}_R}$  & $m_{{\tilde \tau}_L}$ & $m_{{\tilde \tau}_R}$ & $m_{\chi_1}^\pm$ \\ \hline
+None                   & 2 & 2004  & 813    & 1983  &2665  &2751 & 2448 & 434\\
+$\Delta \alpha_s$      & 2 & -20.7 & -54.3  & -19.7 &-16.3 &+0.5  &+0.3 & +1.1\\
+$\Delta m_t$           & 2 & +17.5 & +118.3 & +15.8 &-10.8 &-1.8  &-2.5 & -0.8\\
+$\Delta_{m_b, m_\tau}$ & 2 & +0.0  & +0.0   & +0.0  &+0.0  &-0.6  &-1.2 & +0.0\\
+$\Delta $ All          & 3 & -15.7 & +30.4  & -16.3 &-33.1 &-0.7  &-1.2 & +0.1\\
+ \hline
+%
+ &  & $g_3(M_{SUSY})$ & $Y_t(M_{SUSY})$ & $Y_b(M_{SUSY})$ & $Y_\tau(M_{SUSY})$
+ & $\mu(M_{SUSY})$    & $\Omega_{CDM} h^2$ &\\ \hline
+None                   & 2 &1.100   &0.844   &0.383  &0.303  &2213      & 13.2&\\
+$\Delta \alpha_s$      & 2 &-0.010   &-0.008  &+0.003  &+0.000  &+21.2   & -3.1& \\
+$\Delta m_t$           & 2 &-0.001   &-0.030   &+0.001  &+0.000  &-82.9  & +9.2& \\
+$\Delta_{m_b, m_\tau}$ & 2 &+0.000   &+0.000   &+0.000  &+0.000  &+0.000 & +0.0& \\
+$\Delta $ All          & 3 &-0.008  &-0.019   &+0.006  &+0.000  &-47.2  & +2.0& \\
 \hline
 \end{tabular}
 \end{center}
@@ -175,10 +187,25 @@ $\Delta$/$\%$
   (three-loop 
   RGEs for gauge and Yukawa couplings and two-loop threshold corrections to
   third family fermion masses and $g_3$) on various quantities in the MSSM.
-  We display quantities of with a relative error of greater than $10^{-3}$ for the
-  parameter point pMSSM1.6~\cite{}. All masses are given in units of GeV, and
-  $\Delta$ shows the relative change due to the highest order
-  terms. $M_{SUSY}=\sqrt{m_{{\tilde t}_1} m_{{\tilde t}_2}}$ changes by less
+  We display massive quantities in units of GeV for
+  the CMSSM
+  parameter point $m_0=3000$ GeV, $M_{1/2}=500$ GeV, $A_0=-6000$ GeV, $\tan
+  \beta=30$, $\mu>0$. 
+  The first column details which higher order threshold corrections are
+  included: `None'   meaning that only those present in {\tt
+    SOFTSUSY3.5.1}~are included, `$\Delta \alpha_s$' meaning that the 2-loop
+  threshold corrections to $\alpha_s$ are also included. `$\Delta m_t$ means
+  that only the 2-loop threshold corrections to $m_t$ are included, whereas
+  $\Delta m_b, 
+  m_\tau$ means that only the two-loop threshold corrections to $m_t$ and
+  $m_b$ are included. `All' means that all available two-loop threshold
+  corrections to $\alpha_s$, $m_t$ and $m_b$ are included.
+  $m_{\tilde q}$ refers to the average mass of the squarks of the first two
+  families. 
+  The rows marked with a $\Delta$ show the {\em change} in
+  the mass from the {\tt SOFTSUSY3.5.1} result. The column labeled `RGEs'
+  shows the number of loops used in the MSSM RGEs. 
+  $M_{SUSY}=\sqrt{m_{{\tilde t}_1} m_{{\tilde t}_2}}$ changes by less
     than 0.1 GeV due to the higher order effects.}
 \end{table}
 
