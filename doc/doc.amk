@@ -12,11 +12,18 @@ EXTRA_DIST += \
 	doc/neutManual.tex \
 	doc/nmssmManual.tex \
 	doc/threeLoop.tex \
+	doc/tableOne.tex \
 	doc/axodraw.sty \
 	doc/jheppub.sty \
 	doc/elsarticle.cls
 
 doc: $(doc_DATA)
+
+doc/threeLoop.tex: doc/tableOne.tex 
+	cd $(top_builddir)/doc;\
+	latex threeLoop.tex ; latex threeLoop.tex ;\
+	dvips -f threeLoop > threeLoop.ps ;\
+	ps2pdf threeLoop.ps
 
 doc/%.pdf: doc/%.tex
 	cd $(top_builddir)/doc;\

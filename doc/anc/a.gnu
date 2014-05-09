@@ -25,6 +25,11 @@ set label 2 "{/Symbol D}_{m_h}/m_h" at 6,1.06
 set output "atlasScanMh.eps"
 splot "atlas_scan.dat" u ($1/1000):($2/1000):6 notit w pm3d
 
+min(a, b) = a<b ? a : b
+
+set output "omega50.eps"
+splot "dat.out" u ($1/1000):($2/1000):(min($6,100)) notit w pm3d
+
 set label 2 "{/Symbol D}_{m_A}/m_A" at 6,1.06
 set output "atlasScanMA.eps"
 splot "atlas_scan.dat" u ($1/1000):($2/1000):8 notit w pm3d

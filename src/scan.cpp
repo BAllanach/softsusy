@@ -1,7 +1,7 @@
 
 /** 
    Project:     SOFTSUSY 
-   File:        main.cpp
+   File:        scan.cpp
    Author:      Ben Allanach 
    Manual:      B.C. Allanach,hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
                 B.C. Allanach, M.A. Bernhardt, arXiv:0903.1805, Comp. Phys. 
@@ -56,6 +56,206 @@ double doDarkMatter(DoubleVector & pars, double tanb, int sgnMu,
   return omega;
 }
 
+void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & twoLoopAs, 
+		MssmSoftsusy & twoLoopMt, MssmSoftsusy & twoLoopMb, 
+		MssmSoftsusy & threeLoop, double omega2, double omega2As, 
+		double omega2Mt, double omega2Mb, double omega3, 
+		double msqAv2, double msqAv2As, double msqAv2Mt, 
+		double msqAv2Mb, double msqAv3) {
+  cout << "\\begin{table}\n\\begin{center}\n\\begin{tabular}{|c|c|ccccccc|}"
+       << "\\hline\nThreshold & RGEs  & $m_h$  & $m_{\\tilde g}$ & "
+       << "$m_{{\\tilde q}}$ & $m_{\\chi_1^0}$  & $m_{\\chi_2^0}$ & "
+       << "$m_{\\chi_3^0}$ & $m_{\\chi_4}^0$ \\\\ \\hline\nNone"
+       << "               & 2 & ";
+  if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A\\\\\n"); else   printf("%5.1f & %4.0f & %4.0f & %4.0f & %4.0f & %4.0f &%4.0f\\\\\n",
+	 twoLoop.displayPhys().mh0(1), 
+	 twoLoop.displayPhys().mGluino, 
+	 msqAv2, 
+	 fabs(twoLoop.displayPhys().mneut(1)), 
+	 fabs(twoLoop.displayPhys().mneut(2)), 
+	 fabs(twoLoop.displayPhys().mneut(3)), 
+	 fabs(twoLoop.displayPhys().mneut(4))
+	 );
+  cout << "$\\Delta \\alpha_s$  & 2 & ";
+  if (omega2As!= omega2As) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 twoLoopAs.displayPhys().mh0(1) - twoLoop.displayPhys().mh0(1), 
+	 twoLoopAs.displayPhys().mGluino - twoLoop.displayPhys().mGluino, 
+	 msqAv2As - msqAv2, 
+	 fabs(twoLoopAs.displayPhys().mneut(1)) - 
+	 fabs(twoLoop.displayPhys().mneut(1)), 
+	 fabs(twoLoopAs.displayPhys().mneut(2)) - 
+	 fabs(twoLoop.displayPhys().mneut(2)), 
+	 fabs(twoLoopAs.displayPhys().mneut(3)) - 
+	 fabs(twoLoop.displayPhys().mneut(3)), 
+	 fabs(twoLoopAs.displayPhys().mneut(4)) - 
+	 fabs(twoLoop.displayPhys().mneut(4))
+	 );
+  cout << "$\\Delta m_t$      & 2 & ";
+  if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A  \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 twoLoopMt.displayPhys().mh0(1) - twoLoop.displayPhys().mh0(1), 
+	 twoLoopMt.displayPhys().mGluino - twoLoop.displayPhys().mGluino, 
+	 msqAv2Mt - msqAv2, 
+	 fabs(twoLoopMt.displayPhys().mneut(1)) - 
+	 fabs(twoLoop.displayPhys().mneut(1)), 
+	 fabs(twoLoopMt.displayPhys().mneut(2)) - 
+	 fabs(twoLoop.displayPhys().mneut(2)), 
+	 fabs(twoLoopMt.displayPhys().mneut(3)) - 
+	 fabs(twoLoop.displayPhys().mneut(3)), 
+	 fabs(twoLoopMt.displayPhys().mneut(4)) - 
+	 fabs(twoLoop.displayPhys().mneut(4))
+	 );
+  cout << "$\\Delta m_b, m_\\tau$& 2 & ";
+  if (omega2Mb != omega2Mb) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A  \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 twoLoopMb.displayPhys().mh0(1) - twoLoop.displayPhys().mh0(1), 
+	 twoLoopMb.displayPhys().mGluino - twoLoop.displayPhys().mGluino, 
+	 msqAv2Mb - msqAv2, 
+	 fabs(twoLoopMb.displayPhys().mneut(1)) - 
+	 fabs(twoLoop.displayPhys().mneut(1)), 
+	 fabs(twoLoopMb.displayPhys().mneut(2)) - 
+	 fabs(twoLoop.displayPhys().mneut(2)), 
+	 fabs(twoLoopMb.displayPhys().mneut(3)) - 
+	 fabs(twoLoop.displayPhys().mneut(3)), 
+	 fabs(twoLoopMb.displayPhys().mneut(4)) - 
+	 fabs(twoLoop.displayPhys().mneut(4))
+	 );
+  cout << "$\\Delta$ All      & 3 & ";
+  if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 threeLoop.displayPhys().mh0(1) - twoLoop.displayPhys().mh0(1), 
+	 threeLoop.displayPhys().mGluino - twoLoop.displayPhys().mGluino, 
+	 msqAv3 - msqAv2, 
+	 fabs(threeLoop.displayPhys().mneut(1)) - 
+	 fabs(twoLoop.displayPhys().mneut(1)), 
+	 fabs(threeLoop.displayPhys().mneut(2)) - 
+	 fabs(twoLoop.displayPhys().mneut(2)), 
+	 fabs(threeLoop.displayPhys().mneut(3)) - 
+	 fabs(twoLoop.displayPhys().mneut(3)), 
+	 fabs(threeLoop.displayPhys().mneut(4)) - 
+	 fabs(twoLoop.displayPhys().mneut(4))
+	 );
+  cout << "\n%\n\\hline"
+       << "&& $m_{{\\tilde t}_L}$  & $m_{{\\tilde t}_R}$ &$m_{{\\tilde b}_L}$&"
+       << "$m_{{\\tilde b}_R}$&$m_{{\\tilde \\tau}_L}$&$m_{{\\tilde \\tau}_R}$&"
+       << "$m_{\\chi_1}^\\pm$ \\\\ \\hline\n"
+       << "None             & 2 &";
+  if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%4.0f & %4.0f & %4.0f & %4.0f & %4.0f & %4.0f &%4.0f\\\\\n",
+	 twoLoop.displayPhys().mu(1, 3), 
+	 twoLoop.displayPhys().mu(2, 3), 
+	 twoLoop.displayPhys().md(1, 3), 
+	 twoLoop.displayPhys().md(2, 3), 
+	 twoLoop.displayPhys().me(1, 3), 
+	 twoLoop.displayPhys().me(2, 3), 
+	 twoLoop.displayPhys().mch(1)
+	 );
+  cout << "$\\Delta \\alpha_s$  & 2 & ";
+  if (omega2As != omega2As) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 twoLoopAs.displayPhys().mu(1, 3) - twoLoop.displayPhys().mu(1, 3), 
+	 twoLoopAs.displayPhys().mu(2, 3) - twoLoop.displayPhys().mu(2, 3), 
+	 twoLoopAs.displayPhys().md(1, 3) - twoLoop.displayPhys().md(1, 3), 
+	 twoLoopAs.displayPhys().md(2, 3) - twoLoop.displayPhys().md(2, 3), 
+	 twoLoopAs.displayPhys().me(1, 3) - twoLoop.displayPhys().me(1, 3), 
+	 twoLoopAs.displayPhys().me(2, 3) - twoLoop.displayPhys().me(2, 3), 
+	 fabs(twoLoopAs.displayPhys().mch(1)) - 
+	 fabs(twoLoop.displayPhys().mch(1))
+	 );
+  cout << "$\\Delta m_t$      & 2 & ";
+  if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 twoLoopMt.displayPhys().mu(1, 3) - twoLoop.displayPhys().mu(1, 3), 
+	 twoLoopMt.displayPhys().mu(2, 3) - twoLoop.displayPhys().mu(2, 3), 
+	 twoLoopMt.displayPhys().md(1, 3) - twoLoop.displayPhys().md(1, 3), 
+	 twoLoopMt.displayPhys().md(2, 3) - twoLoop.displayPhys().md(2, 3), 
+	 twoLoopMt.displayPhys().me(1, 3) - twoLoop.displayPhys().me(1, 3), 
+	 twoLoopMt.displayPhys().me(2, 3) - twoLoop.displayPhys().me(2, 3), 
+	 fabs(twoLoopMt.displayPhys().mch(1)) - 
+	 fabs(twoLoop.displayPhys().mch(1))
+	 );
+  cout << "$\\Delta m_b, m_\\tau$& 2 & ";
+  if (omega2Mb != omega2Mb) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 twoLoopMb.displayPhys().mu(1, 3) - twoLoop.displayPhys().mu(1, 3), 
+	 twoLoopMb.displayPhys().mu(2, 3) - twoLoop.displayPhys().mu(2, 3), 
+	 twoLoopMb.displayPhys().md(1, 3) - twoLoop.displayPhys().md(1, 3), 
+	 twoLoopMb.displayPhys().md(2, 3) - twoLoop.displayPhys().md(2, 3), 
+	 twoLoopMb.displayPhys().me(1, 3) - twoLoop.displayPhys().me(1, 3), 
+	 twoLoopMb.displayPhys().me(2, 3) - twoLoop.displayPhys().me(2, 3), 
+	 fabs(twoLoopMb.displayPhys().mch(1)) - 
+	 fabs(twoLoop.displayPhys().mch(1))
+	 );
+  cout << "$\\Delta$ All      & 3 & ";
+  if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 threeLoop.displayPhys().mu(1, 3) - twoLoop.displayPhys().mu(1, 3), 
+	 threeLoop.displayPhys().mu(2, 3) - twoLoop.displayPhys().mu(2, 3), 
+	 threeLoop.displayPhys().md(1, 3) - twoLoop.displayPhys().md(1, 3), 
+	 threeLoop.displayPhys().md(2, 3) - twoLoop.displayPhys().md(2, 3), 
+	 threeLoop.displayPhys().me(1, 3) - twoLoop.displayPhys().me(1, 3), 
+	 threeLoop.displayPhys().me(2, 3) - twoLoop.displayPhys().me(2, 3), 
+	 fabs(threeLoop.displayPhys().mch(1)) - 
+	 fabs(twoLoop.displayPhys().mch(1))
+	 );
+  cout << "\n%\n\\hline";
+  cout << "      &  & $g_3(M_{SUSY})$ & $Y_t(M_{SUSY})$ & "
+       << " $Y_b(M_{SUSY})$ & $Y_\\tau(M_{SUSY})$  & $\\mu(M_{SUSY})$"
+       << "    & $\\Omega_{CDM} h^2$ \\\\ \\hline\n"
+       << " None                   & 2 & ";
+
+  if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A &\\\\\n"); else printf("%5.3f & %5.3f & %5.3f & %5.3f & %4.0f & %5.3f &\\\\\n",
+	 twoLoop.displayGaugeCoupling(3), 
+	 twoLoop.displayYukawaElement(YU, 3, 3), 
+	 twoLoop.displayYukawaElement(YD, 3, 3), 
+	 twoLoop.displayYukawaElement(YE, 3, 3), 
+	 twoLoop.displaySusyMu(),
+	 omega2
+	 );
+
+  cout << "$\\Delta \\alpha_s$  & 2 & ";
+  if (omega2As != omega2As) printf("N/A & N/A & N/A & N/A & N/A & N/A &\\\\\n"); else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.3f &\\\\\n",
+	 twoLoopAs.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
+	 twoLoopAs.displayYukawaElement(YU, 3, 3) - 
+	 twoLoop.displayYukawaElement(YU, 3, 3), 
+	 twoLoopAs.displayYukawaElement(YD, 3, 3) -
+	 twoLoop.displayYukawaElement(YD, 3, 3), 
+	 twoLoopAs.displayYukawaElement(YE, 3, 3) -
+	 twoLoop.displayYukawaElement(YE, 3, 3), 
+	 twoLoopAs.displaySusyMu() - twoLoop.displaySusyMu(),
+	 omega2As - omega2
+	 );
+  cout << "$\\Delta m_t$      & 2 & ";
+    if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A & N/A & N/A& \\\\\n"); else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.3f &\\\\\n",
+	 twoLoopMt.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
+	 twoLoopMt.displayYukawaElement(YU, 3, 3) - 
+	 twoLoop.displayYukawaElement(YU, 3, 3), 
+	 twoLoopMt.displayYukawaElement(YD, 3, 3) -
+	 twoLoop.displayYukawaElement(YD, 3, 3), 
+	 twoLoopMt.displayYukawaElement(YE, 3, 3) -
+	 twoLoop.displayYukawaElement(YE, 3, 3), 
+	 twoLoopMt.displaySusyMu() - twoLoop.displaySusyMu(),
+	 omega2Mt - omega2
+	 );
+    cout << "$\\Delta m_b, m_\\tau$& 2 & ";
+    if (omega2Mb != omega2Mb) printf("N/A & N/A & N/A & N/A & N/A & N/A & \\\\\n"); else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.3f &\\\\\n",
+	 twoLoopMb.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
+	 twoLoopMb.displayYukawaElement(YU, 3, 3) - 
+	 twoLoop.displayYukawaElement(YU, 3, 3), 
+	 twoLoopMb.displayYukawaElement(YD, 3, 3) -
+	 twoLoop.displayYukawaElement(YD, 3, 3), 
+	 twoLoopMb.displayYukawaElement(YE, 3, 3) -
+	 twoLoop.displayYukawaElement(YE, 3, 3), 
+	 twoLoopMb.displaySusyMu() - twoLoop.displaySusyMu(),
+	 omega2Mb - omega2
+	 );
+    cout << "$\\Delta$ All      & 3 & ";
+    if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A & \\\\\n"); else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.3f &\\\\\n",
+	 threeLoop.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
+	 threeLoop.displayYukawaElement(YU, 3, 3) - 
+	 twoLoop.displayYukawaElement(YU, 3, 3), 
+	 threeLoop.displayYukawaElement(YD, 3, 3) -
+	 twoLoop.displayYukawaElement(YD, 3, 3), 
+	 threeLoop.displayYukawaElement(YE, 3, 3) -
+	 twoLoop.displayYukawaElement(YE, 3, 3), 
+	 threeLoop.displaySusyMu() - twoLoop.displaySusyMu(),
+	 omega3 - omega2
+	 );
+  cout << "\\hline\n\\end{tabular}\n\\end{center}\n";
+}
+
 /// Returns the object along with omega. Oneset should already be fixed at MZ
 void getCmssmAndOmega(MssmSoftsusy & r, DoubleVector & pars, const double tanb, 
 			      const int sgnMu, const QedQcd & oneset, 
@@ -79,7 +279,7 @@ void getCmssmAndOmega(MssmSoftsusy & r, DoubleVector & pars, const double tanb,
 		     r.displayPhys().md(1, 1)) * 
     0.25;
   
-  //  remove(fileName);
+  remove(fileName);
   return;
 }
 
@@ -104,214 +304,250 @@ int main(int argc, char *argv[]) {
   oneset.setMbMb(mbmb);
   oneset.toMz();      ///< Runs SM fermion masses to MZ
 
-  if (argc != 6) { exit(-1); }
+  if (argc == 6) {
+    m0 = atof(argv[1]);
+    m12 = atof(argv[2]);
+    a0 = atof(argv[3]);
+    tanb = atof(argv[4]);
+    sgnMu = atoi(argv[5]);
+    
+    /// Preparation for calculation: set up object and input parameters
+    DoubleVector pars(3); 
+    pars(1) = m0; pars(2) = m12; pars(3) = a0;
+    bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
+    
+    /// Switch off 3-loop RGEs etc
+    double omega2=asin(2.), msqAv2 = 0.;  
+    USE_THREE_LOOP_RGE = false;   USE_TWO_LOOP_THRESHOLD = false;
+    MssmSoftsusy twoLoop;
+    getCmssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
+		     uni, omega2, msqAv2);
 
-  m0 = atof(argv[1]);
-  m12 = atof(argv[2]);
-  a0 = atof(argv[3]);
-  tanb = atof(argv[4]);
-  sgnMu = atoi(argv[5]);
+    /*    cout << m0 << " " << m12 << " " << a0 << " " << tanb << " " << sgnMu 
+	 << " " << omega2 << " " << twoLoop.displayPhys().mh0(1) << endl;      
+	 exit(0); /// DEBUG*/
+    
+    /// Just 2-loop thresholds for strong coupling constant
+    double omegaAs = asin(2.), msqAvAs = 0.; mGutGuess = 2.e16;
+    MssmSoftsusy twoLoopAs; 
+    twoLoopAs.included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
+    USE_TWO_LOOP_THRESHOLD = true;
+    getCmssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mGutGuess, 
+		     uni, omegaAs, msqAvAs); 
+    
+    /// Just 2-loop strong thresholds for mt
+    USE_TWO_LOOP_THRESHOLD = false;
+    double omegaMt = asin(2.), msqAvMt = 0.; mGutGuess = 2.e16;
+    MssmSoftsusy twoLoopMt; 
+    twoLoopMt.included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
+    USE_TWO_LOOP_THRESHOLD = true;
+    getCmssmAndOmega(twoLoopMt, pars, tanb, sgnMu, oneset, mGutGuess, 
+		     uni, omegaMt, msqAvMt); 
+    
+    /// Just 2-loop for mb,mtau
+    USE_TWO_LOOP_THRESHOLD = false;
+    double omegaMb = asin(2.), msqAvMb = 0.; mGutGuess = 2.e16;
+    MssmSoftsusy twoLoopMb; 
+    twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
+    twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
+    twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
+    USE_TWO_LOOP_THRESHOLD = true;
+    getCmssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mGutGuess, 
+		     uni, omegaMb, msqAvMb); 
+    
+    /// 3-loop etc ON
+    double omega3 = asin(2.), msqAv3 = 0.; mGutGuess = 2.0e16;
+    USE_THREE_LOOP_RGE = true;
+    USE_TWO_LOOP_THRESHOLD = true;
+    MssmSoftsusy threeLoop;
+    getCmssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
+		     uni, omega3, msqAv3); 
 
-  /// Preparation for calculation: set up object and input parameters
-  DoubleVector pars(3); 
-  pars(1) = m0; pars(2) = m12; pars(3) = a0;
-  bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
+    writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
+	       omega2, omegaAs, omegaMt, omegaMb, omega3,
+	       msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3);
 
-  /// Switch off 3-loop RGEs etc
-  double omega2=0., msqAv2 = 0.;  
-  USE_THREE_LOOP_RGE = false;   USE_TWO_LOOP_THRESHOLD = false;
-  MssmSoftsusy twoLoop;
-  getCmssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
-		   uni, omega2, msqAv2);
+    exit(0); 
 
-  /// Just 2-loop thresholds for strong coupling constant
-  double omegaAs = 0., msqAvAs = 0.; mGutGuess = 2.e16;
-  MssmSoftsusy twoLoopAs; 
-  twoLoopAs.included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
-  USE_TWO_LOOP_THRESHOLD = true;
-  getCmssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mGutGuess, 
-		   uni, omegaAs, msqAvAs); 
+    /// check the point in question is problem free: if so print the output
+    //  if (twoLoop.displayProblem().test() ||
+    //  threeLoop.displayProblem().test()) cout << "# ";           ///< column
+    cout << m0                                                     ///< 1
+	 << " " << m12                                             ///< 2
+	 << " " << a0                                              ///< 3
+	 << " " << tanb                                            ///< 4
+	 << " " << twoLoop.displayPhys().mh0(1)                    ///< 5
+	 << " " << twoLoopAs.displayPhys().mh0(1)                  ///< 6
+	 << " " << twoLoopMt.displayPhys().mh0(1)                  ///< 7
+	 << " " << twoLoopMb.displayPhys().mh0(1)                  ///< 8
+	 << " " << threeLoop.displayPhys().mh0(1)                  ///< 9
+	 << " " << twoLoop.displayPhys().mA0(1)                    ///< 10
+	 << " " << twoLoopAs.displayPhys().mA0(1)                  ///< 11
+	 << " " << twoLoopMt.displayPhys().mA0(1)                  ///< 12
+	 << " " << twoLoopMb.displayPhys().mA0(1)                  ///< 13
+	 << " " << threeLoop.displayPhys().mA0(1)                  ///< 14
+	 << " " << twoLoop.displayPhys().mh0(2)                    ///< 15
+	 << " " << twoLoopAs.displayPhys().mh0(2)                  ///< 16
+	 << " " << twoLoopMt.displayPhys().mh0(2)                  ///< 17
+	 << " " << twoLoopMb.displayPhys().mh0(2)                  ///< 18
+	 << " " << threeLoop.displayPhys().mh0(2)                  ///< 19
+	 << " " << twoLoop.displayPhys().mHpm                      ///< 20
+	 << " " << twoLoopAs.displayPhys().mHpm                    ///< 21
+	 << " " << twoLoopMt.displayPhys().mHpm                    ///< 22
+	 << " " << twoLoopMb.displayPhys().mHpm                    ///< 23
+	 << " " << threeLoop.displayPhys().mHpm                    ///< 24
+	 << " " << twoLoop.displayPhys().mGluino                   ///< 25
+	 << " " << twoLoopAs.displayPhys().mGluino                 ///< 26
+	 << " " << twoLoopMt.displayPhys().mGluino                 ///< 27
+	 << " " << twoLoopMb.displayPhys().mGluino                 ///< 28
+	 << " " << threeLoop.displayPhys().mGluino                 ///< 29
+	 << " " << msqAv2                                          ///< 30
+	 << " " << msqAvAs                                         ///< 31 
+	 << " " << msqAvMt                                         ///< 32
+	 << " " << msqAvMb                                         ///< 33
+	 << " " << msqAv3                                          ///< 34
+	 << " " << twoLoop.displayPhys().me(1, 1)                  ///< 35 
+	 << " " << twoLoopAs.displayPhys().me(1, 1)                ///< 36 
+	 << " " << twoLoopMt.displayPhys().me(1, 1)                ///< 37 
+	 << " " << twoLoopMb.displayPhys().me(1, 1)                ///< 38 
+	 << " " << threeLoop.displayPhys().me(1, 1)                ///< 39 
+	 << " " << twoLoop.displayPhys().me(2, 1)                  ///< 40 
+	 << " " << twoLoopAs.displayPhys().me(2, 1)                ///< 41 
+	 << " " << twoLoopMt.displayPhys().me(2, 1)                ///< 42
+	 << " " << twoLoopMb.displayPhys().me(2, 1)                ///< 43
+	 << " " << threeLoop.displayPhys().me(2, 1)                ///< 44
+	 << " " << fabs(twoLoop.displayPhys().mneut(1))            ///< 45 
+	 << " " << fabs(twoLoopAs.displayPhys().mneut(1))          ///< 46
+	 << " " << fabs(twoLoopMt.displayPhys().mneut(1))          ///< 47
+	 << " " << fabs(twoLoopMb.displayPhys().mneut(1))          ///< 48
+	 << " " << fabs(threeLoop.displayPhys().mneut(1))          ///< 49
+	 << " " << fabs(twoLoop.displayPhys().mneut(2))            ///< 50
+	 << " " << fabs(twoLoopAs.displayPhys().mneut(2))          ///< 51
+	 << " " << fabs(twoLoopMt.displayPhys().mneut(2))          ///< 52
+	 << " " << fabs(twoLoopMb.displayPhys().mneut(2))          ///< 53
+	 << " " << fabs(threeLoop.displayPhys().mneut(2))          ///< 54
+	 << " " << fabs(twoLoop.displayPhys().mneut(3))            ///< 55
+	 << " " << fabs(twoLoopAs.displayPhys().mneut(3))          ///< 56
+	 << " " << fabs(twoLoopMt.displayPhys().mneut(3))          ///< 57 
+	 << " " << fabs(twoLoopMb.displayPhys().mneut(3))          ///< 58
+	 << " " << fabs(threeLoop.displayPhys().mneut(3))          ///< 59
+	 << " " << fabs(twoLoop.displayPhys().mneut(4))            ///< 60
+	 << " " << fabs(twoLoopAs.displayPhys().mneut(4))          ///< 61
+	 << " " << fabs(twoLoopMt.displayPhys().mneut(4))          ///< 62
+	 << " " << fabs(twoLoopMb.displayPhys().mneut(4))          ///< 63
+	 << " " << fabs(threeLoop.displayPhys().mneut(4))          ///< 64
+	 << " " << twoLoop.displayPhys().mu(1, 3)                  ///< 65
+	 << " " << twoLoopAs.displayPhys().mu(1, 3)                ///< 66
+	 << " " << twoLoopMt.displayPhys().mu(1, 3)                ///< 67
+	 << " " << twoLoopMb.displayPhys().mu(1, 3)                ///< 68
+	 << " " << threeLoop.displayPhys().mu(1, 3)                ///< 69
+	 << " " << twoLoop.displayPhys().mu(2, 3)                  ///< 70
+	 << " " << twoLoopAs.displayPhys().mu(2, 3)                ///< 71
+	 << " " << twoLoopMt.displayPhys().mu(2, 3)                ///< 72
+	 << " " << twoLoopMb.displayPhys().mu(2, 3)                ///< 73
+	 << " " << threeLoop.displayPhys().mu(2, 3)                ///< 74
+	 << " " << twoLoop.displayPhys().md(1, 3)                  ///< 75
+	 << " " << twoLoopAs.displayPhys().md(1, 3)                ///< 76
+	 << " " << twoLoopMt.displayPhys().md(1, 3)                ///< 77
+	 << " " << twoLoopMb.displayPhys().md(1, 3)                ///< 78
+	 << " " << threeLoop.displayPhys().md(1, 3)                ///< 79
+	 << " " << twoLoop.displayPhys().md(2, 3)                  ///< 80
+	 << " " << twoLoopAs.displayPhys().md(2, 3)                ///< 81
+	 << " " << twoLoopMt.displayPhys().md(2, 3)                ///< 82
+	 << " " << twoLoopMb.displayPhys().md(2, 3)                ///< 83
+	 << " " << threeLoop.displayPhys().md(2, 3)                ///< 84
+	 << " " << twoLoop.displayPhys().me(1, 3)                  ///< 85
+	 << " " << twoLoopAs.displayPhys().me(1, 3)                ///< 86
+	 << " " << twoLoopMt.displayPhys().me(1, 3)                ///< 87
+	 << " " << twoLoopMb.displayPhys().me(1, 3)                ///< 88
+	 << " " << threeLoop.displayPhys().me(1, 3)                ///< 89
+	 << " " << twoLoop.displayPhys().me(2, 3)                  ///< 90
+	 << " " << twoLoopAs.displayPhys().me(2, 3)                ///< 91
+	 << " " << twoLoopMt.displayPhys().me(2, 3)                ///< 92
+	 << " " << twoLoopMb.displayPhys().me(2, 3)                ///< 93
+	 << " " << threeLoop.displayPhys().me(2, 3)                ///< 94
+	 << " " << twoLoop.displayYukawaElement(YU, 3, 3)          ///< 95
+	 << " " << twoLoopAs.displayYukawaElement(YU, 3, 3)        ///< 96
+	 << " " << twoLoopMt.displayYukawaElement(YU, 3, 3)        ///< 97
+	 << " " << twoLoopMb.displayYukawaElement(YU, 3, 3)        ///< 98
+	 << " " << threeLoop.displayYukawaElement(YU, 3, 3)        ///< 99
+	 << " " << twoLoop.displayYukawaElement(YD, 3, 3)          ///< 100
+	 << " " << twoLoopAs.displayYukawaElement(YD, 3, 3)        ///< 101
+	 << " " << twoLoopMt.displayYukawaElement(YD, 3, 3)        ///< 102
+	 << " " << twoLoopMb.displayYukawaElement(YD, 3, 3)        ///< 103
+	 << " " << threeLoop.displayYukawaElement(YD, 3, 3)        ///< 104
+	 << " " << twoLoop.displayYukawaElement(YE, 3, 3)          ///< 105
+	 << " " << twoLoopAs.displayYukawaElement(YE, 3, 3)        ///< 106
+	 << " " << twoLoopMt.displayYukawaElement(YE, 3, 3)        ///< 107
+	 << " " << twoLoopMb.displayYukawaElement(YE, 3, 3)        ///< 108
+	 << " " << threeLoop.displayYukawaElement(YE, 3, 3);       ///< 109
+    int facMusq3= 1., facMusq2 = 1., facMusq2As = 1., facMusq2Mt = 1., 
+      facMusq2Mb = 1.;
+    if (twoLoop.displayProblem().muSqWrongSign) facMusq2 = -1. ;
+    if (twoLoopAs.displayProblem().muSqWrongSign) facMusq2As = -1. ;
+    if (twoLoopMt.displayProblem().muSqWrongSign) facMusq2Mt = -1. ;
+    if (twoLoopMb.displayProblem().muSqWrongSign) facMusq2Mb = -1. ;
+    if (threeLoop.displayProblem().muSqWrongSign) facMusq3 = -1. ;
+    cout << " " << twoLoop.displaySusyMu()  * facMusq2             ///< 110
+	 << " " << twoLoopAs.displaySusyMu()  * facMusq2As         ///< 111
+	 << " " << twoLoopMt.displaySusyMu()  * facMusq2Mt         ///< 112
+	 << " " << twoLoopMb.displaySusyMu()  * facMusq2Mb         ///< 113
+	 << " " << threeLoop.displaySusyMu()  * facMusq3           ///< 114
+	 << " " << fabs(twoLoop.displayPhys().mch(1))              ///< 115
+	 << " " << fabs(twoLoopAs.displayPhys().mch(1))            ///< 116
+	 << " " << fabs(twoLoopMt.displayPhys().mch(1))            ///< 117
+	 << " " << fabs(twoLoopMb.displayPhys().mch(1))            ///< 118
+	 << " " << fabs(threeLoop.displayPhys().mch(1))            ///< 119
+	 << " " << fabs(twoLoop.displayPhys().mch(2))              ///< 120
+	 << " " << fabs(twoLoopAs.displayPhys().mch(2))            ///< 121
+	 << " " << fabs(twoLoopMt.displayPhys().mch(2))            ///< 122
+	 << " " << fabs(twoLoopMb.displayPhys().mch(2))            ///< 123
+	 << " " << fabs(threeLoop.displayPhys().mch(2))            ///< 124
+	 << " " << omega2                                          ///< 125
+	 << " " << omegaAs                                         ///< 126
+	 << " " << omegaMt                                         ///< 127
+	 << " " << omegaMb                                         ///< 128
+	 << " " << omega3                                         ///< 129
+	 << " " << twoLoop.displayGaugeCoupling(3)                ///< 130
+	 << " " << twoLoopAs.displayGaugeCoupling(3)              ///< 131
+	 << " " << twoLoopMt.displayGaugeCoupling(3)              ///< 132
+	 << " " << twoLoopMb.displayGaugeCoupling(3)              ///< 133
+	 << " " << threeLoop.displayGaugeCoupling(3);             ///< 134
+    
+    if (twoLoop.displayProblem().test()) cout << "# 2-loop problem: " 
+					      << twoLoop.displayProblem();
+    if (threeLoop.displayProblem().test()) cout << "# 3-loop problem " 
+						<< threeLoop.displayProblem(); 
+    cout << endl;
+  } else 
+    if (argc == 5) { /// Scan in m0
+    m12 = atof(argv[1]);
+    a0 = atof(argv[2]);
+    tanb = atof(argv[3]);
+    sgnMu = atoi(argv[4]);
 
-  /// Just 2-loop strong thresholds for mt
-  USE_TWO_LOOP_THRESHOLD = false;
-  double omegaMt = 0., msqAvMt = 0.; mGutGuess = 2.e16;
-  MssmSoftsusy twoLoopMt; 
-  twoLoopMt.included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
-  USE_TWO_LOOP_THRESHOLD = true;
-  getCmssmAndOmega(twoLoopMt, pars, tanb, sgnMu, oneset, mGutGuess, 
-		   uni, omegaMt, msqAvMt); 
-
-  /// Just 2-loop for mb,mtau
-  USE_TWO_LOOP_THRESHOLD = false;
-  double omegaMb = 0., msqAvMb = 0.; mGutGuess = 2.e16;
-  MssmSoftsusy twoLoopMb; 
-  twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
-  twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
-  twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
-  USE_TWO_LOOP_THRESHOLD = true;
-  getCmssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mGutGuess, 
-		   uni, omegaMb, msqAvMb); 
-
-  /// 3-loop etc ON
-  double omega3 = 0., msqAv3 = 0.; mGutGuess = 2.0e16;
-  USE_THREE_LOOP_RGE = true;
-  USE_TWO_LOOP_THRESHOLD = true;
-  MssmSoftsusy threeLoop;
-  getCmssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
-					  uni, omega3, msqAv3); 
-
-  /// check the point in question is problem free: if so print the output
-  //  if (twoLoop.displayProblem().test() ||
-  //  threeLoop.displayProblem().test()) cout << "# ";           ///< column
-  cout << m0                                                     ///< 1
-       << " " << m12                                             ///< 2
-       << " " << a0                                              ///< 3
-       << " " << tanb                                            ///< 4
-       << " " << twoLoop.displayPhys().mh0(1)                    ///< 5
-       << " " << twoLoopAs.displayPhys().mh0(1)                  ///< 6
-       << " " << twoLoopMt.displayPhys().mh0(1)                  ///< 7
-       << " " << twoLoopMb.displayPhys().mh0(1)                  ///< 8
-       << " " << threeLoop.displayPhys().mh0(1)                  ///< 9
-       << " " << twoLoop.displayPhys().mA0(1)                    ///< 10
-       << " " << twoLoopAs.displayPhys().mA0(1)                  ///< 11
-       << " " << twoLoopMt.displayPhys().mA0(1)                  ///< 12
-       << " " << twoLoopMb.displayPhys().mA0(1)                  ///< 13
-       << " " << threeLoop.displayPhys().mA0(1)                  ///< 14
-       << " " << twoLoop.displayPhys().mh0(2)                    ///< 15
-       << " " << twoLoopAs.displayPhys().mh0(2)                  ///< 16
-       << " " << twoLoopMt.displayPhys().mh0(2)                  ///< 17
-       << " " << twoLoopMb.displayPhys().mh0(2)                  ///< 18
-       << " " << threeLoop.displayPhys().mh0(2)                  ///< 19
-       << " " << twoLoop.displayPhys().mHpm                      ///< 20
-       << " " << twoLoopAs.displayPhys().mHpm                    ///< 21
-       << " " << twoLoopMt.displayPhys().mHpm                    ///< 22
-       << " " << twoLoopMb.displayPhys().mHpm                    ///< 23
-       << " " << threeLoop.displayPhys().mHpm                    ///< 24
-       << " " << twoLoop.displayPhys().mGluino                   ///< 25
-       << " " << twoLoopAs.displayPhys().mGluino                 ///< 26
-       << " " << twoLoopMt.displayPhys().mGluino                 ///< 27
-       << " " << twoLoopMb.displayPhys().mGluino                 ///< 28
-       << " " << threeLoop.displayPhys().mGluino                 ///< 29
-       << " " << msqAv2                                          ///< 30
-       << " " << msqAvAs                                         ///< 31 
-       << " " << msqAvMt                                         ///< 32
-       << " " << msqAvMb                                         ///< 33
-       << " " << msqAv3                                          ///< 34
-       << " " << twoLoop.displayPhys().me(1, 1)                  ///< 35 
-       << " " << twoLoopAs.displayPhys().me(1, 1)                ///< 36 
-       << " " << twoLoopMt.displayPhys().me(1, 1)                ///< 37 
-       << " " << twoLoopMb.displayPhys().me(1, 1)                ///< 38 
-       << " " << threeLoop.displayPhys().me(1, 1)                ///< 39 
-       << " " << twoLoop.displayPhys().me(2, 1)                  ///< 40 
-       << " " << twoLoopAs.displayPhys().me(2, 1)                ///< 41 
-       << " " << twoLoopMt.displayPhys().me(2, 1)                ///< 42
-       << " " << twoLoopMb.displayPhys().me(2, 1)                ///< 43
-       << " " << threeLoop.displayPhys().me(2, 1)                ///< 44
-       << " " << fabs(twoLoop.displayPhys().mneut(1))            ///< 45 
-       << " " << fabs(twoLoopAs.displayPhys().mneut(1))          ///< 46
-       << " " << fabs(twoLoopMt.displayPhys().mneut(1))          ///< 47
-       << " " << fabs(twoLoopMb.displayPhys().mneut(1))          ///< 48
-       << " " << fabs(threeLoop.displayPhys().mneut(1))          ///< 49
-       << " " << fabs(twoLoop.displayPhys().mneut(2))            ///< 50
-       << " " << fabs(twoLoopAs.displayPhys().mneut(2))          ///< 51
-       << " " << fabs(twoLoopMt.displayPhys().mneut(2))          ///< 52
-       << " " << fabs(twoLoopMb.displayPhys().mneut(2))          ///< 53
-       << " " << fabs(threeLoop.displayPhys().mneut(2))          ///< 54
-       << " " << fabs(twoLoop.displayPhys().mneut(3))            ///< 55
-       << " " << fabs(twoLoopAs.displayPhys().mneut(3))          ///< 56
-       << " " << fabs(twoLoopMt.displayPhys().mneut(3))          ///< 57 
-       << " " << fabs(twoLoopMb.displayPhys().mneut(3))          ///< 58
-       << " " << fabs(threeLoop.displayPhys().mneut(3))          ///< 59
-       << " " << fabs(twoLoop.displayPhys().mneut(4))            ///< 60
-       << " " << fabs(twoLoopAs.displayPhys().mneut(4))          ///< 61
-       << " " << fabs(twoLoopMt.displayPhys().mneut(4))          ///< 62
-       << " " << fabs(twoLoopMb.displayPhys().mneut(4))          ///< 63
-       << " " << fabs(threeLoop.displayPhys().mneut(4))          ///< 64
-       << " " << twoLoop.displayPhys().mu(1, 3)                  ///< 65
-       << " " << twoLoopAs.displayPhys().mu(1, 3)                ///< 66
-       << " " << twoLoopMt.displayPhys().mu(1, 3)                ///< 67
-       << " " << twoLoopMb.displayPhys().mu(1, 3)                ///< 68
-       << " " << threeLoop.displayPhys().mu(1, 3)                ///< 69
-       << " " << twoLoop.displayPhys().mu(2, 3)                  ///< 70
-       << " " << twoLoopAs.displayPhys().mu(2, 3)                ///< 71
-       << " " << twoLoopMt.displayPhys().mu(2, 3)                ///< 72
-       << " " << twoLoopMb.displayPhys().mu(2, 3)                ///< 73
-       << " " << threeLoop.displayPhys().mu(2, 3)                ///< 74
-       << " " << twoLoop.displayPhys().md(1, 3)                  ///< 75
-       << " " << twoLoopAs.displayPhys().md(1, 3)                ///< 76
-       << " " << twoLoopMt.displayPhys().md(1, 3)                ///< 77
-       << " " << twoLoopMb.displayPhys().md(1, 3)                ///< 78
-       << " " << threeLoop.displayPhys().md(1, 3)                ///< 79
-       << " " << twoLoop.displayPhys().md(2, 3)                  ///< 80
-       << " " << twoLoopAs.displayPhys().md(2, 3)                ///< 81
-       << " " << twoLoopMt.displayPhys().md(2, 3)                ///< 82
-       << " " << twoLoopMb.displayPhys().md(2, 3)                ///< 83
-       << " " << threeLoop.displayPhys().md(2, 3)                ///< 84
-       << " " << twoLoop.displayPhys().me(1, 3)                  ///< 85
-       << " " << twoLoopAs.displayPhys().me(1, 3)                ///< 86
-       << " " << twoLoopMt.displayPhys().me(1, 3)                ///< 87
-       << " " << twoLoopMb.displayPhys().me(1, 3)                ///< 88
-       << " " << threeLoop.displayPhys().me(1, 3)                ///< 89
-       << " " << twoLoop.displayPhys().me(2, 3)                  ///< 90
-       << " " << twoLoopAs.displayPhys().me(2, 3)                ///< 91
-       << " " << twoLoopMt.displayPhys().me(2, 3)                ///< 92
-       << " " << twoLoopMb.displayPhys().me(2, 3)                ///< 93
-       << " " << threeLoop.displayPhys().me(2, 3)                ///< 94
-       << " " << twoLoop.displayYukawaElement(YU, 3, 3)          ///< 95
-       << " " << twoLoopAs.displayYukawaElement(YU, 3, 3)        ///< 96
-       << " " << twoLoopMt.displayYukawaElement(YU, 3, 3)        ///< 97
-       << " " << twoLoopMb.displayYukawaElement(YU, 3, 3)        ///< 98
-       << " " << threeLoop.displayYukawaElement(YU, 3, 3)        ///< 99
-       << " " << twoLoop.displayYukawaElement(YD, 3, 3)          ///< 100
-       << " " << twoLoopAs.displayYukawaElement(YD, 3, 3)        ///< 101
-       << " " << twoLoopMt.displayYukawaElement(YD, 3, 3)        ///< 102
-       << " " << twoLoopMb.displayYukawaElement(YD, 3, 3)        ///< 103
-       << " " << threeLoop.displayYukawaElement(YD, 3, 3)        ///< 104
-       << " " << twoLoop.displayYukawaElement(YE, 3, 3)          ///< 105
-       << " " << twoLoopAs.displayYukawaElement(YE, 3, 3)        ///< 106
-       << " " << twoLoopMt.displayYukawaElement(YE, 3, 3)        ///< 107
-       << " " << twoLoopMb.displayYukawaElement(YE, 3, 3)        ///< 108
-       << " " << threeLoop.displayYukawaElement(YE, 3, 3);       ///< 109
-  int facMusq3= 1., facMusq2 = 1., facMusq2As = 1., facMusq2Mt = 1., 
-    facMusq2Mb = 1.;
-  if (twoLoop.displayProblem().muSqWrongSign) facMusq2 = -1. ;
-  if (twoLoopAs.displayProblem().muSqWrongSign) facMusq2As = -1. ;
-  if (twoLoopMt.displayProblem().muSqWrongSign) facMusq2Mt = -1. ;
-  if (twoLoopMb.displayProblem().muSqWrongSign) facMusq2Mb = -1. ;
-  if (threeLoop.displayProblem().muSqWrongSign) facMusq3 = -1. ;
-  cout << " " << twoLoop.displaySusyMu()  * facMusq2             ///< 110
-       << " " << twoLoopAs.displaySusyMu()  * facMusq2As         ///< 111
-       << " " << twoLoopMt.displaySusyMu()  * facMusq2Mt         ///< 112
-       << " " << twoLoopMb.displaySusyMu()  * facMusq2Mb         ///< 113
-       << " " << threeLoop.displaySusyMu()  * facMusq3           ///< 114
-       << " " << fabs(twoLoop.displayPhys().mch(1))              ///< 115
-       << " " << fabs(twoLoopAs.displayPhys().mch(1))            ///< 116
-       << " " << fabs(twoLoopMt.displayPhys().mch(1))            ///< 117
-       << " " << fabs(twoLoopMb.displayPhys().mch(1))            ///< 118
-       << " " << fabs(threeLoop.displayPhys().mch(1))            ///< 119
-       << " " << fabs(twoLoop.displayPhys().mch(2))              ///< 120
-       << " " << fabs(twoLoopAs.displayPhys().mch(2))            ///< 121
-       << " " << fabs(twoLoopMt.displayPhys().mch(2))            ///< 122
-       << " " << fabs(twoLoopMb.displayPhys().mch(2))            ///< 123
-       << " " << fabs(threeLoop.displayPhys().mch(2))            ///< 124
-       << " " << omega2                                          ///< 125
-       << " " << omegaAs                                         ///< 126
-       << " " << omegaMt                                         ///< 127
-       << " " << omegaMb                                         ///< 128
-       << " " << omega3                                         ///< 129
-       << " " << twoLoop.displayGaugeCoupling(3)                ///< 130
-       << " " << twoLoopAs.displayGaugeCoupling(3)              ///< 131
-       << " " << twoLoopMt.displayGaugeCoupling(3)              ///< 132
-       << " " << twoLoopMb.displayGaugeCoupling(3)              ///< 133
-       << " " << threeLoop.displayGaugeCoupling(3);             ///< 134
-
-      if (twoLoop.displayProblem().test()) cout << "# 2-loop problem: " 
-					  << twoLoop.displayProblem();
-       if (threeLoop.displayProblem().test()) cout << "# 3-loop problem " 
-					  << threeLoop.displayProblem(); 
-      cout << endl;
+    int numPoints = 100;
+    double startM0 = 3000., endM0 = 8000.;
+    int i; for (i=0; i<=numPoints; i++) {
+      m0 = (endM0 - startM0) / double(numPoints) * double(i) + startM0;
+    /// Preparation for calculation: set up object and input parameters
+    DoubleVector pars(3); 
+    pars(1) = m0; pars(2) = m12; pars(3) = a0;
+    bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
+    
+    /// Switch off 3-loop RGEs etc
+    double omega2=0., msqAv2 = 0.;  
+    USE_THREE_LOOP_RGE = true;   USE_TWO_LOOP_THRESHOLD = true;
+    MssmSoftsusy twoLoop;
+    getCmssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
+		     uni, omega2, msqAv2);
+    cout << m0 << " " << m12 << " " << a0 << " " << tanb << " " << sgnMu 
+	 << " " << omega2 << " " << twoLoop.displayPhys().mh0(1) << endl;      
     }
 
+    }
+
+  }
   catch(const string & a) { cout << a; return -1; }
   catch(const char * a) { cout << a; return -1; }
   catch(...) { cout << "Unknown type of exception caught.\n"; return -1; }
