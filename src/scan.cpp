@@ -193,7 +193,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & twoLoopAs,
   cout << "\n%\n\\hline";
   cout << "      &  & $g_3(M_{SUSY})$ & $Y_t(M_{SUSY})$ & "
        << " $Y_b(M_{SUSY})$ & $Y_\\tau(M_{SUSY})$  & $\\mu(M_{SUSY})$"
-       << "    & $\\Omega_{CDM} h^2$ \\\\ \\hline\n"
+       << "    & $\\Omega_{CDM} h^2$ & \\\\ \\hline\n"
        << " None                   & 2 & ";
 
   if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A &\\\\\n"); else printf("%5.3f & %5.3f & %5.3f & %5.3f & %4.0f & %5.3f &\\\\\n",
@@ -284,6 +284,7 @@ void getCmssmAndOmega(MssmSoftsusy & r, DoubleVector & pars, const double tanb,
 }
 
 int main(int argc, char *argv[]) {
+  TOLERANCE = 1.0e-5;
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
@@ -526,8 +527,8 @@ int main(int argc, char *argv[]) {
     tanb = atof(argv[3]);
     sgnMu = atoi(argv[4]);
 
-    int numPoints = 100;
-    double startM0 = 3000., endM0 = 8000.;
+    int numPoints = 10;
+    double startM0 = 7100., endM0 = 7400.;
     int i; for (i=0; i<=numPoints; i++) {
       m0 = (endM0 - startM0) / double(numPoints) * double(i) + startM0;
     /// Preparation for calculation: set up object and input parameters
