@@ -41,13 +41,13 @@ AC_F77_LIBRARY_LDFLAGS
 ## If you want shared libraries, configure with --enable-shared
 AC_PROG_LIBTOOL
 
-AC_ARG_ENABLE([three_loop_rge_compilation], 
-               AC_HELP_STRING([--enable-three_loop_rge_compilation],[Compile three-loop RGEs]), 
+AC_ARG_ENABLE([three-loop-rge-compilation], 
+               AC_HELP_STRING([--enable-three-loop-rge-compilation],[Compile three-loop RGEs]), 
  	      AC_DEFINE([COMPILE_THREE_LOOP_RGE],[1],[Complile 3-loop RGE]),[])
 
-AC_ARG_ENABLE([full_susy_threshold_compilation], 
-               AC_HELP_STRING([--enable-full_susy_threshold_compilation],[Compile two-loop SUSY thresholds to the third generation fermionic Yukawa couplings and the strong coupling]),
-             [AC_DEFINE([COMPILE_FULL_SUSY_THRESHOLD],[1],[Compile two-loop SUSY threshold corrections to fermionic third generation Yukawa couplings]),
+AC_ARG_ENABLE([full-susy-threshold-compilation], 
+               AC_HELP_STRING([--enable-full-susy-threshold-compilation],[Compile two-loop SUSY thresholds to the third generation fermionic Yukawa couplings and the strong gauge coupling]),
+             [AC_DEFINE([COMPILE_FULL_SUSY_THRESHOLD],[1],[Compile leading two-loop SUSY threshold corrections to fermionic third generation Yukawa couplings]),
               case "${enableval}" in
               yes) full_susy_threshold_compilation=true ;;
               no)  full_susy_threshold_compilation=false ;;
@@ -58,8 +58,8 @@ AM_CONDITIONAL(COMPILE_FULL_SUSY_THRESHOLD, [test x$full_susy_threshold_compilat
 
 
 AC_ARG_ENABLE([debug], 
-               AC_HELP_STRING([--enable-debug],[enables debug printing]), 
- 	      AC_DEFINE([DEBUG],[1],[Debugging output]),[])
+               AC_HELP_STRING([--enable-debug],[enables debug printing in two-loop threshold corrections]), 
+ 	      AC_DEFINE([DEBUG],[1],[Threshold correction debugging output]),[])
 
 #Autogen
 #AG_PATH_AUTOOPTS([5.17], [], [AC_MSG_ERROR([No suitable version of AutoGen could be found])])
