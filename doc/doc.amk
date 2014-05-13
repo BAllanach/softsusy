@@ -19,19 +19,13 @@ EXTRA_DIST += \
 
 doc: $(doc_DATA)
 
-doc/threeLoop.pdf: doc/threeLoop.tex doc/tableOne.tex 
-	cd $(top_builddir)/doc;\
-	latex threeLoop.tex ; latex threeLoop.tex ;\
-	bibtex threeLoop; latex threeLoop.tex; \
-	dvips -f threeLoop > threeLoop.ps ;\
-	ps2pdf threeLoop.ps
-
 doc/%.pdf: doc/%.tex
 	cd $(top_builddir)/doc;\
 	latex $(*F).tex ; latex $(*F).tex ;\
 	dvips -f $(*F) > $(*F).ps ;\
 	ps2pdf $(*F).ps
 
+doc/threeLoop.tex: doc/tableOne.tex doc/tableTwo.tex
 
 clean-local:
 	-rm -f doc/*.log doc/*.spl doc/*.aux doc/*.dvi doc/*.ps doc/*.toc doc/*.out
