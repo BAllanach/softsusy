@@ -75,7 +75,7 @@ MSSM
 {\em Computer:}\/ Personal computer.\\
 {\em Operating system:}\/ Tested on Linux 3.x\\
 {\em Word size:}\/ 64 bits.\\
-{\em External routines:}\/ None.\\
+{\em External routines:}\/ At least {\tt GiNaC1.3.5} and {\tt CLN1.3.1}\\
 {\em Typical running time:}\/ A minute per parameter point.\\
 {\em Nature of problem:}\/ Calculating supersymmetric particle spectrum and
 mixing parameters in the next-to-minimal minimal supersymmetric standard
@@ -95,11 +95,11 @@ does not have an acceptable minimum), \SOFTSUSY{} returns an error message.\\
 {\em Reasons for the new version:} Major extension to include additional two
 and three-loop terms.\\
 {\em Summary of revisions:} 
-All minimal supersymmetric quantities are extended to have three-loop
-  renormalisation group equations in the dominant third family limit, 
-  and leading two-loop threshold
-  corrections are incorporated to the third family Yukawa couplings and the
-  strong gauge coupling. 
+All quantities in the minimal supersymmetric standard model are extended to
+have three-loop renormalisation group equations in the limit of real
+parameters and leading two-loop threshold
+corrections are incorporated to the third family Yukawa couplings and the
+strong gauge coupling. 
 \newpage
 
 \section{Introduction}
@@ -143,10 +143,62 @@ supersymmetric standard model (MSSM) with real parameters,
 they have slightly different
 approximations, resulting in numerical predictions that are not
 identical~\cite{Allanach:2003jw,Allanach:2004rh,Belanger:2005jk}. 
+Even when calculations have at the same headline order of approximation (for
+example, `two-loop RGEs and one-loop threshold corrections at $M_Z$),
+legitimate differences can result from the fact that higher order corrections
+contribute to the calculation implicitly in different ways. 
+If we take the example of a one-loop threshold correction to, for example, 
+the prediction of the stop mass, there are various contributions from Standard
+Model and supersymmetric particles. If we consider an internal loop with
+say a gluino propagator, which mass do we use for the gluino? One achieves
+numerically distinct results if one uses two of the obvious choices: the
+pole mass or the modified dimensional reduction ($\overline{DR}$) running
+mass. The difference between the two prescriptions is a two-loop threshold
+effect, and so either choice is allowed if one is working only at one loop.
+Such choices occur hundreds of times within the calculation, multiplying the
+poissibilities for numerical differences. Thus, the numerical differences
+between the spectrum calculators gives a rough estimate of the size of
+theoretical uncertainties associated with the calculation. 
 
+The constrained minimal supersymmetric standard model makes a simplying
+assumption about the supersymmetry breaking terms: each soft SUSY breaking
+scalar mass is set to a common value $m_0$ at a high scale $M_{GUT}$, the
+gaugino masses are set to a common value $M_{1/2}$ at $M_{GUT}$ and the 
+SUSY breaking trilinear scalar couplings are all fixed to a value $A_0$ at
+$M_{GUT}$. The other relevant parameters are $\tan \beta$, the ratio of the
+two Higgs vacuum expectation values, and the sign of a parameter $\mu$ that
+appears in the Higgs potential (its magnitude is fixed minimisation of the
+Higgs potential in order to predict the empirically measured central value of
+the $Z^0$ boson mass).
+
+The obvious way to reduce such a theoretical uncertainty is to incorporate the
+higher order effects, pushing the associated theoretical uncertainty to even
+higher orders.
+That is what we have done for the present paper: we have
+picked some available higher order terms that are expected to affect the
+predictions of the spectrum mass calculation, and included them in
+{\tt SOFTSUSY3.5.0}. The previous version of the program, {\tt SOFTSUSY3.4.1}, 
+contained two-loop RGEs and one-loop threshold corrections. 
+The higher order terms that we have included to the MSSM spectrum
+calculation are: 
+\begin{enumerate}
+\item
+Three-loop RGEs to all{\bf???} soft and supersymmetry preserving parameters
+assuming that they are real. The supersymmetric parameters contain the
+possibility of full three-family mixing. The three-loop contribution to the 
+soft-breaking MSSM parameters are calculated in the dominant third family
+approximation. 
+\item
+Two-loop threshold corrections to 
+\end{enumerate}
+None of these terms have been, to our knowledge, included in any publicly
+available programs before. 
+
+{\bf TALK ABOUT JJ AND SASCHA'S RESULTS AND ANY DIFFERENCE WE HAVE}.
 
 
 \section{Increases in Calculational Accuracy}
+SCALE DEPENDENCE?
 
 \section{Effect on Sparticle Spectra}
 \begin{figure}
@@ -209,9 +261,7 @@ gluino mass and $m_q$ the average squark mass from the first two generations. }
   third family fermion masses and $g_3$) on various predicted quantities 
   in the focus point of the CMSSM for $m_0=7130$ GeV, $M_{1/2}=800$ GeV,
   $A_0=-6000$ GeV, $\tan \beta=50$, $\mu>0$.
-  We display massive quantities in units of GeV for
-  the CMSSM
-  parameter point  
+  We display massive quantities in units of GeV.
   The first column details which higher order threshold corrections are
   included: `None'   meaning that only those present in {\tt
     SOFTSUSY3.4.1}~are included, `$\Delta \alpha_s$' meaning that the 2-loop
@@ -280,13 +330,49 @@ These two masses are controlled to leading order by $\mu$,
 which in turn is affected sensitively by the top Yukawa coupling. 
 The top Yukawa coupling is changed by the different value of $\alpha_s$
 through renormalisation group effects. {\bf one-loop $Y_t$ RGE}.
+(Higgs mass uncertainty).
 
+\input{tableTwo}
+\caption{\label{tab:pmssm}  Differences due to the highest order terms
+  (three-loop 
+  RGEs for gauge and Yukawa couplings and two-loop threshold corrections to
+  third family fermion masses and $g_3$) on various predicted quantities 
+  in the phenomenological MSSM point 1.6~\cite{AbdusSalam:2011fc}. The first
+  column details which higher order threshold corrections are 
+  included: `None'   meaning that only those present in {\tt
+    SOFTSUSY3.4.1}~are included, `$\Delta \alpha_s$' meaning that the 2-loop
+  threshold corrections to $\alpha_s$ are also included. `$\Delta m_t$' means
+  that only the 2-loop threshold corrections to $m_t$ are included, whereas
+  $\Delta m_b, 
+  m_\tau$ means that only the two-loop threshold corrections to $m_t$ and
+  $m_b$ are included. `All' means that all available two-loop threshold
+  corrections to $\alpha_s$, $m_t$ and $m_b$ are included.
+  `N/A' means that electroweak
+  symmetry was not broken, and so reliable results cannot be reported. 
+  $m_{\tilde q}$ refers to the average mass of the squarks of the first two
+  families. 
+  The rows marked with a $\Delta$ show the {\em change} in
+  the mass from the {\tt SOFTSUSY3.4.1} result. The column labeled `RGEs'
+  shows the number of loops used in the MSSM RGEs. }
+\end{table}
+We now wish to decouple the three-loop RGE effects from the two-loop threshold
+effects as far as possible while still giving a valid prediction for a point
+in MSSM parameter space. This can be achieved by studying the spectrum from a
+point in `phenomenological MSSM' parameter space, where supersymmetry breaking
+boundary conditions are imposed already at the SUSY breaking scale, defined to 
+be $\sqrt{m_{{\tilde t}_1} m_{{\tilde t}_2}}$. We use the point pMSSM1.6 from
+Ref.~\cite{AbdusSalam:2011fc}, which is defined to have all scalar trilinear
+couplings 0, the first two generation squark mass, 
+the tree-level bino and gluino masses all set to 800 GeV and a tree-level gluino
+mass of 960 GeV. The tree-level wino mass, $\mu$ and the pseudoscalar Higgs
+pole mass and all other tree-level squark and slepton masses are fixed to 2500
+GeV. 
 
 \section{Effect on Unification}
 
 
 \section*{Acknowledgments}
-This work has been partially supported by STFC 
+This work has been partially supported by STFC.
 
 \appendix
 
@@ -295,8 +381,10 @@ This work has been partially supported by STFC
 
 Two compilation options are added
 \begin{itemize}
-	\item[] \verb|--enable_three_loop_rge_compilation| - compile three-loop RGEs in the MSSM 
-	\item[] \verb|--enable_full_susy_threshold_compilation| - compile additional two-loop threshold corrections to the third generation Yukawa couplings and the strong coupling constant 
+	\item[] \verb|--enable-three-loop-rge-compilation| - compile three-loop RGEs in the MSSM 
+	\item[] \verb|--enable-full-susy-threshold-compilation| - compile
+          additional two-loop threshold corrections to the third generation
+          Yukawa couplings and the strong coupling constant.
 \end{itemize}
 
 Boolean variables that control the Increased Accuracy Mode at runtime
