@@ -324,10 +324,6 @@ int main(int argc, char *argv[]) {
     getCmssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
 		     uni, omega2, msqAv2);
 
-    /*    cout << m0 << " " << m12 << " " << a0 << " " << tanb << " " << sgnMu 
-	 << " " << omega2 << " " << twoLoop.displayPhys().mh0(1) << endl;      
-	 exit(0); /// DEBUG*/
-    
     /// Just 2-loop thresholds for strong coupling constant
     double omegaAs = asin(2.), msqAvAs = 0.; mGutGuess = 2.e16;
     MssmSoftsusy twoLoopAs; 

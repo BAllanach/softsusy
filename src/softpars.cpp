@@ -2566,146 +2566,146 @@ SoftPars<Susy, Brevity> SoftPars<Susy, Brevity>::beta2(Brevity& a) const {
 
 } else { // full matrix rge
 
-    static DoubleMatrix dmq3(3, 3), 
-			dmu3(3, 3), 
-		 	dmd3(3, 3), 
-			dme3(3, 3), 
-			dml3(3, 3);
-    static DoubleMatrix dhu3(3, 3), dhd3(3, 3), dhe3(3, 3);
-    //static DoubleMatrix dmq3(3,3), dmt3(3,3), dmb3(3,3), dmtau3(3,3), dml3(3,3), dht3(3,3), dhb3(3,3), dhl3(3,3); 
+      static DoubleMatrix dmq3(3, 3), 
+	dmu3(3, 3), 
+	dmd3(3, 3), 
+	dme3(3, 3), 
+	dml3(3, 3);
+      static DoubleMatrix dhu3(3, 3), dhd3(3, 3), dhe3(3, 3);
+      //static DoubleMatrix dmq3(3,3), dmt3(3,3), dmb3(3,3), dmtau3(3,3), dml3(3,3), dht3(3,3), dhb3(3,3), dhl3(3,3); 
 
-// aux matrices
-    const DoubleMatrix u6(u4*u2), d6(d4*d2), e4(e2*e2), e6(e4*e2),
-			      u6t(u4t*u2t), d6t(d4t*d2t), e4t(e2t*e2t), e6t(e4t*e2t);
-    const DoubleMatrix utd(ut*d1), // Yu^+ Yd
-			      dtu(dt*u1), // Yd^+ Yu
-			      utd2u(utd*dtu), // Yu^+ Yd Yd^+ Yu
-			      dtu2d(dtu*utd),  // Yd^+ Yu Yu^+ Yd
-			      umuut(u1*mu*ut),  //Yu mu Yu^+
-			      dmddt(d1*md*dt),  //Yd md Yd^+
-			      emeet(e1*me*et),  //Ye me Ye^+
-			      utmqu(ut*mq*u1),  //Yu^+ mq Yu
-			      dtmqd(d1*mq*d1),  //Yd^+ mq Yd
-			      utmqd(ut*mq*d1),  //Yu^+ mq Yd
-			      dtmqu(d1*mq*u1),  //Yd^+ mq Yu
-			      etmle(et*me*e1),  //Ye^+ ml Ye 
-			      uhut(huut.transpose()), // Yu hu^+
-			      uthu(ut*hu),  // Yu^+ hu
-			      hutu(uthu.transpose()), // hu^+ Yu
-			      dhdt(hddt.transpose()), // Yd hd^+
-			      dthd(dt*hd),  // Yd^+ hd
-			      hdtd(dthd.transpose()), // hd^+ Yd
-			      ehet(heet.transpose()), // Ye he^+
-			      ethe(et*he),  // Ye^+ he
-			      hete(ethe.transpose()), // he^+ Ye
-			      u2td2t(u2t*d2t), // Yu^+ Yu Yd^+ Yd
-			      d2tu2t(d2t*u2t), // Yd^+ Yd Yu^+ Yu
-			      u2d2(u2*d2), // Yu Yu^+ Yd Yd^+
-			      d2u2(d2*u2), // Yd Yd^+ Yu Yu^+
-			      ud2tut(u1*d2t*ut), // Yu Yd^+ Yd Yu^+
-			      du2tdt(d1*u2t*dt), // Yd Yu^+ Yu Yd^+
-//?
-			      hutu2u(hutu*u2t), // hu^+ Yu Yu^+ Yu
-			      uhutd2(uhut*d2), // Yu hu^+ Yd Yd^+	
-			      dhdtd2(dhdt*d2), // Yd hd^+ Yd Yd^+	
-			      dhdtu2(dhdt*u2), // Yd hd^+ Yu Yu^+	
-			      ehete2(ehet*e2), // Ye he^+ Ye Ye^+
- 			      uhu2tut(uhut*huut),   // Yu hu^+ hu Yu^+
-			      hd2u2(hd2*u2), // hd hd^+ Yu Yu^+
-			      hu2d2(hu2*d2), // hu hu^+ Yd Yu^+
-			      uhuthddt(uhut*hddt), // Yu hu^+ hd Yd^+
-			      dhd2tdt(dhdt*hddt), // Yd hd^+ hd Yd^+
-			      ehe2tet(ehet*heet), // Ye he^+ he Ye^+
-			      u4mq(u4*mq), // Yu Yu^+ Yu Yu^+ mq
-			      d4mq(d4*mq), // Yd Yd^+ Yd Yd^+ mq
-			      u2d2mq(u2d2*mq), // Yu Yu^+ Yd Yd^+ mq
-			      d2u2mq(d2u2*mq), // Yd Yd^+ Yu Yu^+ mq
-			      e4ml(e4*ml), // Ye Ye^+ Ye Ye^+ ml 
-			      u4tmt(u4t*mu), // Yu^+ Yu Yu^+ Yu mt 
-			      d2umuut(d2*umuut), // Yd Yd ^+ Yu mu Yu^+
-			      u2dmddt(u2*dmddt), // Yu Yu^+ Yd md Yd^+ 
-			      d2dmddt(d2*dmddt), //  Yd Yd^+ Yd md Yd^+ 
-			      e2emeet(e2*emeet), // Ye Ye^+ Ye me Ye^+  
-			      //u4d2(u4*d2),  // Yu Yu^+ Yu^+ Yu Yd Yd^+
-			      //d4u2(d4*u2),  // Yd Yd^+ Yd^+ Yd Yu Yu^+
-			      hu2tu4t(hu2t*u4t), //  hu^+ hu Yu^+ Yu Yu^+ Yu 
-			      u2dhdthddt(u2*dhdt*hddt), //  Yu Yu^+ Yd hd^+ hd  Yd^+ 
-			      hd2d2u2(hd2*d2u2), // hd hd^+ Yd Yd Yu Yu^+ 
-			      hu2d2u2(hu2*d2u2), // hu hu^+ Yd Yd Yu Yu^+ 
-			      uhuthuutd2(uhut*huut*d2), // Yu hu^+ hu Yu^+ Yd Yd^+	
-			      hu2d4(hu2*d4), //  hu hu^+ Yd Yd^+ Yd Yd^+ 
-			      hu2u4(hu2*u4), //  hu hu^+ Yu Yu^+ Yu Yu^+ 
-			      hd2u4(hd2*u4), //  hd hd^+ Yu Yu^+ Yu Yu^+ 
-			      huutuhutd2(huut*uhut*d2), //  hu Yu^+ Yu hu^+ Yd Yd^+
-			      hd2d4(hd2*d4), //  hd hd^+ Yd Yd^+ Yd Yd^+
-			      hd2td4t(hd2t*d4t), //  hd^+ hd Yd^+ Yd Yd^+ Yd 	
-			      uhutu2huut(uhut*u2*huut), //  Yu hu^+ Yu Yu^+ hu Yu^+
-			      uhutd2hddt(uhutd2*hddt), //  Yu hu^+ Yd Yd^+ hd Yd^+ 
-			      uhutu2hddt(uhut*u2*hddt), //  Yu hu^+ Yu Yu^+ hd Yd^+ 
-			      dhdtd2hddt(dhdtd2*hddt), //  Yd hd^+ Yd Yd^+ hd Yd^+ 	
-			      he2te4t(he2t*e4t), //  he^+ he Ye^+ Ye Ye^+ Ye  
-			      he2e4(he2*e4),  //  he he^+ Ye Ye^+ Ye Ye^+  
-			      ehete2heet(ehete2*heet), //  Ye he^+ Ye Ye^+ 
-			      d2uhuthddt(d2*uhuthddt), // Yd Yd^+ Yu hu^+ hd Yd^+ 
-			      u2uhuthddt(u2*uhuthddt), // Yu Yu^+ Yu hu^+ hd Yd^+  
-			      dhdtu2hddt(dhdtu2*hddt), // Yd hd^+ Yu Yu^+ hd Yd^+ 
-			      uhutd2u2(uhutd2*u2), //  Yu hu^+ Yd Yd^+ Yu Yu^+
-			      dhdtd2u2(dhdtd2*u2), // Yd hd^+ Yd Yd^+ Yu Yu^+  
-			      dhdtu2d2(dhdtu2*d2), //  Yd hd^+ Yt Yt^+ Yd Yd^+  
-			      dhdtu4(dhdt*u4), // Yd hd^+ Yt Yt^+ Yt Yt^+  
-			      uhutu2d2(uhut*u2d2), //  Yu hu^+ Yt Yt^+ Yd Yd^+   
-			      dhdtd4(dhdt*d4), //  Yd hd^+ Yd Yd^+ Yd Yd^+   
-			      uhutu4(uhut*u4), // Yu hu^+ Yu Yu^+ Yu Yu^+    
-			      uhutd4(uhut*d4), // Yu hu^+ Yd Yd^+ Yd Yd^+    
-			      ehete4(ehet*e4), // Ye he^+ Ye Ye^+ Ye Ye^+     
-			      u6mq(u6*mq),  
-			      d6mq(d6*mq),  
-			      u2d4(u2d2*d2), // Yu Yu^+ Yd^+ Yd Yd^+ Yd 	 
-			      u2d4mq(u2d4*mq),   
-			      d2u4(d2u2*u2), // Yd Yd^+ Yu^+ Yu Yu^+ Yu 	 
-			      d2u4mq(d2u4*mq),   
-			      d2u2d2(d2u2*d2), // Yd Yd^+ Yu^+ Yu Yd^+ Yd 	 
-			      d2u2d2mq(d2u2d2*mq),
-			      d4u2(d4*u2), // Yd Yd^+ Yd^+ Yd Yu^+ Yu 	 
-			      d4u2mq(d4u2*mq), // Yd Yd^+ Yd^+ Yd Yu^+ Yu mq 
-			      u4d2(u4*d2), // Yu Yu^+ Yu^+ Yu Yd^+ Yd 	 
-			      u4d2mq(u4d2*mq), // Yu Yu^+ Yu^+ Yu Yd^+ Yd mq 
-			      u2d2u2(u2d2*u2), // Yu Yu^+ Yd^+ Yd Yu^+ Yu 	 
-			      u2d2u2mq(u2d2u2*mq), // Yu Yu^+ Yd^+ Yd Yu^+ Yu mq 
-			      e6ml(e6*ml), 
-			      u6tmu(u6t*mu),
-			      u2d2dmddt(u2d2*dmddt), // Yu Yu^+ Yd Yd^+ Yd md Yd^+
-			      d2u2dmddt(d2u2*dmddt), // Yd Yd^+ Yu Yu^+ Yd md Yd^+
-			      u4dmddt(u4*dmddt), // Yu Yu^+ Yu Yu^+ Yd md Yd^+
-			      d6tmd(d6t*md), //  Yd^+ Yd Yd^+ Yd Yd^+ Yd md  
-			      u2d2umuut(u2d2*umuut), // Yu Yu^+ Yd Yd^+ Yu md Yu^+
-			      d2u2umuut(d2u2*umuut), // Yu Yu^+ Yd Yd^+ Yu md Yu^+
-			      d4umuut(d4*umuut), // Yd Yd^+ Yd Yd^+ Yu md Yu^+ 
-			      e6tme(e6t*me);  // Ye^+ Ye Ye^+ Ye Ye^+ Ye me  
-					
-
+      // aux matrices
+      const DoubleMatrix u6(u4*u2), d6(d4*d2), e4(e2*e2), e6(e4*e2),
+	u6t(u4t*u2t), d6t(d4t*d2t), e4t(e2t*e2t), e6t(e4t*e2t);
+      const DoubleMatrix utd(ut*d1), // Yu^+ Yd
+	dtu(dt*u1), // Yd^+ Yu
+	utd2u(utd*dtu), // Yu^+ Yd Yd^+ Yu
+	dtu2d(dtu*utd),  // Yd^+ Yu Yu^+ Yd
+	umuut(u1*mu*ut),  //Yu mu Yu^+
+	dmddt(d1*md*dt),  //Yd md Yd^+
+	emeet(e1*me*et),  //Ye me Ye^+
+	utmqu(ut*mq*u1),  //Yu^+ mq Yu
+	dtmqd(d1*mq*d1),  //Yd^+ mq Yd
+	utmqd(ut*mq*d1),  //Yu^+ mq Yd
+	dtmqu(d1*mq*u1),  //Yd^+ mq Yu
+	etmle(et*me*e1),  //Ye^+ ml Ye 
+	uhut(huut.transpose()), // Yu hu^+
+	uthu(ut*hu),  // Yu^+ hu
+	hutu(uthu.transpose()), // hu^+ Yu
+	dhdt(hddt.transpose()), // Yd hd^+
+	dthd(dt*hd),  // Yd^+ hd
+	hdtd(dthd.transpose()), // hd^+ Yd
+	ehet(heet.transpose()), // Ye he^+
+	ethe(et*he),  // Ye^+ he
+	hete(ethe.transpose()), // he^+ Ye
+	u2td2t(u2t*d2t), // Yu^+ Yu Yd^+ Yd
+	d2tu2t(d2t*u2t), // Yd^+ Yd Yu^+ Yu
+	u2d2(u2*d2), // Yu Yu^+ Yd Yd^+
+	d2u2(d2*u2), // Yd Yd^+ Yu Yu^+
+	ud2tut(u1*d2t*ut), // Yu Yd^+ Yd Yu^+
+	du2tdt(d1*u2t*dt), // Yd Yu^+ Yu Yd^+
+	//?
+	hutu2u(hutu*u2t), // hu^+ Yu Yu^+ Yu
+	uhutd2(uhut*d2), // Yu hu^+ Yd Yd^+	
+	dhdtd2(dhdt*d2), // Yd hd^+ Yd Yd^+	
+	dhdtu2(dhdt*u2), // Yd hd^+ Yu Yu^+	
+	ehete2(ehet*e2), // Ye he^+ Ye Ye^+
+	uhu2tut(uhut*huut),   // Yu hu^+ hu Yu^+
+	hd2u2(hd2*u2), // hd hd^+ Yu Yu^+
+	hu2d2(hu2*d2), // hu hu^+ Yd Yu^+
+	uhuthddt(uhut*hddt), // Yu hu^+ hd Yd^+
+	dhd2tdt(dhdt*hddt), // Yd hd^+ hd Yd^+
+	ehe2tet(ehet*heet), // Ye he^+ he Ye^+
+	u4mq(u4*mq), // Yu Yu^+ Yu Yu^+ mq
+	d4mq(d4*mq), // Yd Yd^+ Yd Yd^+ mq
+	u2d2mq(u2d2*mq), // Yu Yu^+ Yd Yd^+ mq
+	d2u2mq(d2u2*mq), // Yd Yd^+ Yu Yu^+ mq
+	e4ml(e4*ml), // Ye Ye^+ Ye Ye^+ ml 
+	u4tmt(u4t*mu), // Yu^+ Yu Yu^+ Yu mt 
+	d2umuut(d2*umuut), // Yd Yd ^+ Yu mu Yu^+
+	u2dmddt(u2*dmddt), // Yu Yu^+ Yd md Yd^+ 
+	d2dmddt(d2*dmddt), //  Yd Yd^+ Yd md Yd^+ 
+	e2emeet(e2*emeet), // Ye Ye^+ Ye me Ye^+  
+	//u4d2(u4*d2),  // Yu Yu^+ Yu^+ Yu Yd Yd^+
+	//d4u2(d4*u2),  // Yd Yd^+ Yd^+ Yd Yu Yu^+
+	hu2tu4t(hu2t*u4t), //  hu^+ hu Yu^+ Yu Yu^+ Yu 
+	u2dhdthddt(u2*dhdt*hddt), //  Yu Yu^+ Yd hd^+ hd  Yd^+ 
+	hd2d2u2(hd2*d2u2), // hd hd^+ Yd Yd Yu Yu^+ 
+	hu2d2u2(hu2*d2u2), // hu hu^+ Yd Yd Yu Yu^+ 
+	uhuthuutd2(uhut*huut*d2), // Yu hu^+ hu Yu^+ Yd Yd^+	
+	hu2d4(hu2*d4), //  hu hu^+ Yd Yd^+ Yd Yd^+ 
+	hu2u4(hu2*u4), //  hu hu^+ Yu Yu^+ Yu Yu^+ 
+	hd2u4(hd2*u4), //  hd hd^+ Yu Yu^+ Yu Yu^+ 
+	huutuhutd2(huut*uhut*d2), //  hu Yu^+ Yu hu^+ Yd Yd^+
+	hd2d4(hd2*d4), //  hd hd^+ Yd Yd^+ Yd Yd^+
+	hd2td4t(hd2t*d4t), //  hd^+ hd Yd^+ Yd Yd^+ Yd 	
+	uhutu2huut(uhut*u2*huut), //  Yu hu^+ Yu Yu^+ hu Yu^+
+	uhutd2hddt(uhutd2*hddt), //  Yu hu^+ Yd Yd^+ hd Yd^+ 
+	uhutu2hddt(uhut*u2*hddt), //  Yu hu^+ Yu Yu^+ hd Yd^+ 
+	dhdtd2hddt(dhdtd2*hddt), //  Yd hd^+ Yd Yd^+ hd Yd^+ 	
+	he2te4t(he2t*e4t), //  he^+ he Ye^+ Ye Ye^+ Ye  
+	he2e4(he2*e4),  //  he he^+ Ye Ye^+ Ye Ye^+  
+	ehete2heet(ehete2*heet), //  Ye he^+ Ye Ye^+ 
+	d2uhuthddt(d2*uhuthddt), // Yd Yd^+ Yu hu^+ hd Yd^+ 
+	u2uhuthddt(u2*uhuthddt), // Yu Yu^+ Yu hu^+ hd Yd^+  
+	dhdtu2hddt(dhdtu2*hddt), // Yd hd^+ Yu Yu^+ hd Yd^+ 
+	uhutd2u2(uhutd2*u2), //  Yu hu^+ Yd Yd^+ Yu Yu^+
+	dhdtd2u2(dhdtd2*u2), // Yd hd^+ Yd Yd^+ Yu Yu^+  
+	dhdtu2d2(dhdtu2*d2), //  Yd hd^+ Yt Yt^+ Yd Yd^+  
+	dhdtu4(dhdt*u4), // Yd hd^+ Yt Yt^+ Yt Yt^+  
+	uhutu2d2(uhut*u2d2), //  Yu hu^+ Yt Yt^+ Yd Yd^+   
+	dhdtd4(dhdt*d4), //  Yd hd^+ Yd Yd^+ Yd Yd^+   
+	uhutu4(uhut*u4), // Yu hu^+ Yu Yu^+ Yu Yu^+    
+	uhutd4(uhut*d4), // Yu hu^+ Yd Yd^+ Yd Yd^+    
+	ehete4(ehet*e4), // Ye he^+ Ye Ye^+ Ye Ye^+     
+	u6mq(u6*mq),  
+	d6mq(d6*mq),  
+	u2d4(u2d2*d2), // Yu Yu^+ Yd^+ Yd Yd^+ Yd 	 
+	u2d4mq(u2d4*mq),   
+	d2u4(d2u2*u2), // Yd Yd^+ Yu^+ Yu Yu^+ Yu 	 
+	d2u4mq(d2u4*mq),   
+	d2u2d2(d2u2*d2), // Yd Yd^+ Yu^+ Yu Yd^+ Yd 	 
+	d2u2d2mq(d2u2d2*mq),
+	d4u2(d4*u2), // Yd Yd^+ Yd^+ Yd Yu^+ Yu 	 
+	d4u2mq(d4u2*mq), // Yd Yd^+ Yd^+ Yd Yu^+ Yu mq 
+	u4d2(u4*d2), // Yu Yu^+ Yu^+ Yu Yd^+ Yd 	 
+	u4d2mq(u4d2*mq), // Yu Yu^+ Yu^+ Yu Yd^+ Yd mq 
+	u2d2u2(u2d2*u2), // Yu Yu^+ Yd^+ Yd Yu^+ Yu 	 
+	u2d2u2mq(u2d2u2*mq), // Yu Yu^+ Yd^+ Yd Yu^+ Yu mq 
+	e6ml(e6*ml), 
+	u6tmu(u6t*mu),
+	u2d2dmddt(u2d2*dmddt), // Yu Yu^+ Yd Yd^+ Yd md Yd^+
+	d2u2dmddt(d2u2*dmddt), // Yd Yd^+ Yu Yu^+ Yd md Yd^+
+	u4dmddt(u4*dmddt), // Yu Yu^+ Yu Yu^+ Yd md Yd^+
+	d6tmd(d6t*md), //  Yd^+ Yd Yd^+ Yd Yd^+ Yd md  
+	u2d2umuut(u2d2*umuut), // Yu Yu^+ Yd Yd^+ Yu md Yu^+
+	d2u2umuut(d2u2*umuut), // Yu Yu^+ Yd Yd^+ Yu md Yu^+
+	d4umuut(d4*umuut), // Yd Yd^+ Yd Yd^+ Yu md Yu^+ 
+	e6tme(e6t*me);  // Ye^+ Ye Ye^+ Ye Ye^+ Ye me  
+      
+      
 // Traces
 // Old ones
-	const double & u2T  = uuT, // Tr ( Yu Yu^+ ) 
-		     & d2T  = ddT, // Tr ( Yd Yd^+ ) 
-		     & e2T  = eeT, // Tr ( Ye Ye^+ )  
-		     & hutuT = huuT, // Tr ( hu^+ Yu ) = Tr( Yu^+ hu ),  Im h = Im Y = 0 assumed
-		     & hdtdT = hddT, // Tr ( hd^+ Yd )
-		     & heteT = heeT, // Tr ( he^+ Ye )
-		     & hu2T = huT, // Tr ( hu^+ hu )
-		     & hd2T = hdT, // Tr ( hd^+ hd )
-		     & he2T = heT; // Tr ( he^+ he )
-// New ones 
-	const double u2mqT = utmqu.trace(), // Tr ( Yu^+ mq Yu ) 
-			    d2mqT = dtmqd.trace(), // Tr ( Yd^+ mq Yd )  
-			    e2mlT = etmle.trace(), // Tr ( Ye^+ ml Ye )  
-			    u2tmuT = umuut.trace(), // Tr ( Yu mu Yu^+ )  
-			    d2tmdT = dmddt.trace(), // Tr ( Yd md Yd^+ )  
-	                    //e2tmeT = emeet.trace(), // Tr ( Ye me Ye^+ )  
-			    u4T = u4.trace(),
-			    d4T = d4.trace(),
-			    u2d2T = u2d2.trace(), // Tr( Yu Yu^+ Yd Yd^+ )
-			    e4T = e4.trace(),
+      const double & u2T  = uuT, // Tr ( Yu Yu^+ ) 
+	& d2T  = ddT, // Tr ( Yd Yd^+ ) 
+	& e2T  = eeT, // Tr ( Ye Ye^+ )  
+	& hutuT = huuT, // Tr ( hu^+ Yu ) = Tr( Yu^+ hu ),  Im h = Im Y = 0 assumed
+	& hdtdT = hddT, // Tr ( hd^+ Yd )
+	& heteT = heeT, // Tr ( he^+ Ye )
+	& hu2T = huT, // Tr ( hu^+ hu )
+	& hd2T = hdT, // Tr ( hd^+ hd )
+	& he2T = heT; // Tr ( he^+ he )
+      // New ones 
+      const double u2mqT = utmqu.trace(), // Tr ( Yu^+ mq Yu ) 
+	d2mqT = dtmqd.trace(), // Tr ( Yd^+ mq Yd )  
+	e2mlT = etmle.trace(), // Tr ( Ye^+ ml Ye )  
+	u2tmuT = umuut.trace(), // Tr ( Yu mu Yu^+ )  
+	d2tmdT = dmddt.trace(), // Tr ( Yd md Yd^+ )  
+	//e2tmeT = emeet.trace(), // Tr ( Ye me Ye^+ )  
+	u4T = u4.trace(),
+	d4T = d4.trace(),
+	u2d2T = u2d2.trace(), // Tr( Yu Yu^+ Yd Yd^+ )
+	e4T = e4.trace(),
 	hutu2uT = (hutu2u).trace(),  // Tr ( hu^+ Yu Yu^+ Yu)
 	hutd2uT = (uhutd2).trace(),  // Tr ( Yu hu^+ Yd Yd^+) 
 	hdtd2dT = (dhdtd2).trace(),  // Tr ( hd^+ Yd Yd^+ Yd)  = Tr( Yd hd^+ Yd Yd^+) 
@@ -2782,7 +2782,7 @@ SoftPars<Susy, Brevity> SoftPars<Susy, Brevity>::beta2(Brevity& a) const {
 	utd4umuT = (d4umuut).trace(), // Tr ( Yu^+ Yd Yd^+ Yd Yd^+ Yu md ) = Tr (Yd Yd^+ Yd Yd^+ Yu md Yu^+) 
 	e6tmeT = (e6tme).trace();  //Tr ( Ye^+ Ye Ye^+ Ye Ye^+ Ye me ) 
 
-dM13=-513.872*a13*M1+a12*(1.3066666666666666*hdtdT+6.48*heteT+4.506666666666667*hutuT+a2*(-11.04*M1-5.52*M2)+a3*(-58.45333333333333*M1-29.226666666666667*M3)+M1*(-2.6133333333333333*d2T-12.96*e2T-9.013333333333334*u2T))+a1*(-28.8*d2T*hdtdT-43.2*(hdtd2dT+hete2eT)-19.2*e2T*heteT-33.6*(e2T*hdtdT+d2T*heteT)-23.2*(hdtu2dT+hutd2uT)-67.2*hutu2uT+a22*(-32.4*M1-64.8*M2)+a32*(64.53333333333333*M1+129.06666666666666*M3)+a3*(34.13333333333333*hdtdT+46.93333333333333*hutuT+M1*(-34.13333333333333*d2T-46.93333333333333*u2T)+M3*(-34.13333333333333*d2T-46.93333333333333*u2T))+a2*(13.2*hdtdT+25.2*heteT+34.8*hutuT+a3*(-9.6*M1-9.6*M2-9.6*M3)+M1*(-13.2*d2T-25.2*e2T-34.8*u2T)+M2*(-13.2*d2T-25.2*e2T-34.8*u2T))-72.*hutuT*u2T+M1*(14.4*d2T*d2T+9.6*e2T*e2T+21.6*(d4T+e4T)+23.2*u2d2T+36.*u2T*u2T+33.6*(d2T*e2T+u4T)));
+      dM13=-513.872*a13*M1+a12*(1.3066666666666666*hdtdT+6.48*heteT+4.506666666666667*hutuT+a2*(-11.04*M1-5.52*M2)+a3*(-58.45333333333333*M1-29.226666666666667*M3)+M1*(-2.6133333333333333*d2T-12.96*e2T-9.013333333333334*u2T))+a1*(-28.8*d2T*hdtdT-43.2*(hdtd2dT+hete2eT)-19.2*e2T*heteT-33.6*(e2T*hdtdT+d2T*heteT)-23.2*(hdtu2dT+hutd2uT)-67.2*hutu2uT+a22*(-32.4*M1-64.8*M2)+a32*(64.53333333333333*M1+129.06666666666666*M3)+a3*(34.13333333333333*hdtdT+46.93333333333333*hutuT+M1*(-34.13333333333333*d2T-46.93333333333333*u2T)+M3*(-34.13333333333333*d2T-46.93333333333333*u2T))+a2*(13.2*hdtdT+25.2*heteT+34.8*hutuT+a3*(-9.6*M1-9.6*M2-9.6*M3)+M1*(-13.2*d2T-25.2*e2T-34.8*u2T)+M2*(-13.2*d2T-25.2*e2T-34.8*u2T))-72.*hutuT*u2T+M1*(14.4*d2T*d2T+9.6*e2T*e2T+21.6*(d4T+e4T)+23.2*u2d2T+36.*u2T*u2T+33.6*(d2T*e2T+u4T))); 
 
 dM23=a12*a2*(-73.12*M1-36.56*M2)+210.*a23*M2+a1*(a22*(3.6*M1+7.2*M2)+a2*(4.4*hdtdT+8.4*heteT+11.6*hutuT+a3*(-3.2*M1-3.2*M2-3.2*M3)+M1*(-4.4*d2T-8.4*e2T-11.6*u2T)+M2*(-4.4*d2T-8.4*e2T-11.6*u2T)))+a22*(22.*heteT+66.*(hdtdT+hutuT)+a3*(96.*M2+48.*M3)+M2*(-44.*e2T-132.*(d2T+u2T)))+a2*(-32.*hete2eT-e2T*(24.*hdtdT+8.*heteT)-24.*(hdtu2dT+d2T*heteT+hutd2uT)-96.*(hdtd2dT+hutu2uT)+a32*(88.*M2+176.*M3)-72.*(d2T*hdtdT+hutuT*u2T)+a3*(64.*(hdtdT+hutuT)-64.*M2*(d2T+u2T)-64.*M3*(d2T+u2T))+M2*(24.*d2T*e2T+4.*e2T*e2T+16.*e4T+24.*u2d2T+36.*(d2T*d2T+u2T*u2T)+48.*(d4T+u4T)));
 
@@ -2827,27 +2827,9 @@ dm3sq3=m3sq*(18.*d4T*e2T+e6T*(1+kz)+6.*e2T*(e4T+u2d2T)+18.*(d2T*(e4T+u2d2T)+u2d2
     dhu3 *= threelp; dhu += dhu3;
     dhd3 *= threelp; dhd += dhd3;
     dhe3 *= threelp; dhe += dhe3;
-
-//    if (getenv("SOFTSUSY_THREELOOP_RGE_DEBUG")!=NULL) {
-//       dout << "dmq3 = " << dmq3 << endl
-//            << "dmt3 = " << dmu3 << endl	 
-//     	    << "dmb3 = " << dmd3 << endl	 
-//      	    << "dml3 = " << dml3 << endl	 
-//            << "dmtau3 = " << dme3 << endl	 
-//            << "dmH1sq3 = " << dmH1sq3*threelp << endl	 
-//            << "dmH2sq3 = " << dmH2sq3*threelp << endl	 
-//            << "dm3sq3 = " << dm3sq3*threelp << endl	 
-//            << "dM13 = " << dM13*threelp << endl	 
-//            << "dM23 = " << dM23*threelp << endl	 
-//            << "dM33 = " << dM33*threelp << endl	 
-//            << "dht3 = " << dhu3 << endl	 
-//            << "dhb3 = " << dhd3 << endl	 
-//            << "dhl3 = " << dhe3 << endl;	 
-//     }
-
-       }
-   } // end of 3-loop 
-#endif // COMPILE_THREE_LOOP_RGE
+    }
+  } ///< end of 3-loop 
+#endif ///< COMPILE_THREE_LOOP_RGE
   }
 
   SoftPars<Susy, Brevity> dsoft(dsb, dmG, dhu, dhd, dhe, dmq, dmu,

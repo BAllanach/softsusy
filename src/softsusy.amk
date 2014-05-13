@@ -44,7 +44,6 @@ scansusy_x_LDADD += lib2lthresh.la libmssmparam.la
 
 bin_PROGRAMS += scansusy_slha.x 
 
-
 scansusy_slha_x_SOURCES = src/scan_slha.cpp 
 scansusy_slha_x_LDADD = libsoft.la  
 

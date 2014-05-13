@@ -38,8 +38,6 @@
 #define HR "----------------------------------------------------------"
 
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
-
-
  #include <ginac/ginac.h>
 
 namespace SoftSusy_helpers_ {
@@ -160,9 +158,9 @@ public:
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
   /// Public field :: only for informational purpose	
   SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
-  // Flags allowing to choose which two-loop tresholds have to be included
+  /// Flags allowing to choose which two-loop thresholds have to be included
   int included_thresholds; 
-#endif //COMPILE_FULL_SUSY_THRESHOLD
+#endif ///< COMPILE_FULL_SUSY_THRESHOLD
 
   //  void (*boundaryCondition)(Softsusy &, const DoubleVector &);
   /// Default constructor fills object with zeroes
@@ -1361,7 +1359,29 @@ Softsusy<SoftPars>::Softsusy
   setMu(mu);
   setLoops(l);
   setThresholds(t);
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  decoupling_corrections.das.one_loop = 0;
+  decoupling_corrections.das.two_loop = 0;
 
+  decoupling_corrections.dmb.one_loop = 0;
+  decoupling_corrections.dmb.two_loop = 0;
+
+  decoupling_corrections.dmt.one_loop = 0;
+  decoupling_corrections.dmt.two_loop = 0;
+
+  decoupling_corrections.dmtau.one_loop = 0;
+  decoupling_corrections.dmtau.two_loop = 0;
+  /// Public field :: included thresholds
+  if (USE_TWO_LOOP_THRESHOLD) {
+  	included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
+	  	        ENABLE_TWO_LOOP_AS_AS_YUK | 
+			ENABLE_TWO_LOOP_MB_AS | 
+			ENABLE_TWO_LOOP_MB_YUK |
+			ENABLE_TWO_LOOP_MTAU_YUK;
+  } else {
+	included_thresholds = 0;
+  }
+#endif
 }
 
 

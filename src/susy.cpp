@@ -233,17 +233,17 @@ istream & operator >>(istream &left, MssmSusy &s) {
 
 
 
-// Outputs derivatives (DRbar scheme) in the form of ds. a contains the
-// matrices calculated that are handy for computation.
-// W=  LL Y^E H1 ER + QL Y^D H1 DR + QL Y^U H2 UR + smu H2 H1
-// is the superpotential. Consistent with Allanach, Dedes, Dreiner
-// hep-ph/9902251 and Barger, Berger and Ohmann hep-ph/9209232, 9311269
-// EXCEPT for the sign of smu, which is opposite. These equations are also
-// valid for W=  - LL Y^E H1 ER - QL Y^D H1 DR + QL Y^U H2 UR + smu H2 H1, the
-// new SOFTSUSY convention
+/// Outputs derivatives (DRbar scheme) in the form of ds. a contains the
+/// matrices calculated that are handy for computation.
+/// W=  LL Y^E H1 ER + QL Y^D H1 DR + QL Y^U H2 UR + smu H2 H1
+/// is the superpotential. Consistent with Allanach, Dedes, Dreiner
+/// hep-ph/9902251 and Barger, Berger and Ohmann hep-ph/9209232, 9311269
+/// EXCEPT for the sign of smu, which is opposite. These equations are also
+/// valid for W=  - LL Y^E H1 ER - QL Y^D H1 DR + QL Y^U H2 UR + smu H2 H1, the
+/// new SOFTSUSY convention
 MssmSusy MssmSusy::beta(sBrevity & a) const {
-  // Wave function renormalisations: convention for g**(i, j) is that i is the
-  // LOWER index and j the upper in our paper hep-ph/9902251
+  /// Wave function renormalisations: convention for g**(i, j) is that i is the
+  /// LOWER index and j the upper in our paper hep-ph/9902251
   static DoubleMatrix gEE(3, 3), gLL(3, 3), gQQ(3, 3), gDD(3, 3), 
     gUU(3, 3);
   
@@ -251,28 +251,28 @@ MssmSusy MssmSusy::beta(sBrevity & a) const {
   double gH1H1=0.0, gH2H2=0.0;
   static DoubleVector dg(1,3);
   
-  // keep this option in order to interface with RPVSUSY  
+  /// keep this option in order to interface with RPVSUSY  
   anomalousDimension(gEE, gLL, gQQ, gUU, gDD, dg, gH1H1, gH2H2, a);
   
-  // To keep this a const function
+  /// To keep this a const function
   const DoubleMatrix &u1 = u.display(), &d1 = d.display(), &e1 = e.display();
   
-  // contain derivatives of up, down quarks and leptons
+  /// contain derivatives of up, down quarks and leptons
   static DoubleMatrix du(3, 3), dd(3, 3), de(3, 3); 
-  // mu parameter derivatives
+  /// mu parameter derivatives
   double dmu;
   
-  // RGEs of SUSY parameters
+  /// RGEs of SUSY parameters
   du = u1 * (gUU + gH2H2) + gQQ * u1;
   dd = d1 * (gDD + gH1H1) + gQQ * d1;
   de = e1 * (gEE + gH1H1) + gLL * e1;
   
   dmu = smu * (gH1H1 + gH2H2);
 
-  // Following is from hep-ph/9308335: scalar H anomalous dimensions (as
-  // opposed to the chiral superfield one - see hep-ph/0111209).
-  // Additional contribution from Feynman gauge running at two-loops of tan
-  // beta: we need this to link up with BPMZ: hep-ph/0112251
+  /// Following is from hep-ph/9308335: scalar H anomalous dimensions (as
+  /// opposed to the chiral superfield one - see hep-ph/0111209).
+  /// Additional contribution from Feynman gauge running at two-loops of tan
+  /// beta: we need this to link up with BPMZ: hep-ph/0112251
   double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT;
   DoubleVector &gsq=a.gsq, &g4 = a.g4;
   DoubleMatrix &u2=a.u2, &d2=a.d2, &e2=a.e2, &d2t=a.d2t;
@@ -281,7 +281,7 @@ MssmSusy MssmSusy::beta(sBrevity & a) const {
   double sH1H1 = oneLoop * (3.0 * ddT + eeT);
   double sH2H2 = oneLoop * 3.0 * uuT;
 
-  const static double twolp = 4.010149318236068e-5; // 1/(16 pi^2)^2
+  const static double twolp = 4.010149318236068e-5; /// 1/(16 pi^2)^2
   if (displayLoops() > 1) {
   const double g4terms = 1.035 * g4(1) + 0.45 * gsq(1) * gsq(2) + 5.875 * g4(2);
     sH1H1 = sH1H1 + twolp * 
@@ -306,7 +306,7 @@ MssmSusy MssmSusy::beta(sBrevity & a) const {
 				    sinb2 * 3.0 * uuT) * feynman
                   + hVev * twolp * 4.5 * g4(2);
   }
-  // Contains all susy derivatives:
+  /// Contains all susy derivatives:
   MssmSusy ds(du, dd, de, dg, dmu, dt, displayMu(), displayLoops(),
 	       displayThresholds(), dHvev); 
 
@@ -315,16 +315,16 @@ MssmSusy MssmSusy::beta(sBrevity & a) const {
 
 void setBetas(DoubleMatrix & babBeta, DoubleVector &cuBeta, DoubleVector
 	       & cdBeta, DoubleVector & ceBeta, DoubleVector & bBeta) {
-  // 1 loop gauge beta fns
+  /// 1 loop gauge beta fns
   bBeta(1) = 33.0 / 5.0; bBeta(2) = 1.0; bBeta(3) = -3.0; 
   
-  // Extra sleptons included in vectorlike rep.s: 3 ER + 2 LL
+  /// Extra sleptons included in vectorlike rep.s: 3 ER + 2 LL
   //#ifdef SLEPTONS
   //bBeta(1) = bBeta(1) + (3.0 * 1.2 + 0.6 * 2.0);
   //bBeta(2) = bBeta(2) + 2.0;
   //#endif
   
-  // Next come the two loop MSSM constants for gauge beta fns
+  /// Next come the two loop MSSM constants for gauge beta fns
   babBeta(1, 1) = 199.0 / 25.0; babBeta(1, 2) = 27.0 / 5.0; 
   babBeta(1, 3) = 88.0 / 5.0; 
   babBeta(2, 1) = 9.0 / 5.0;    babBeta(2, 2) = 25.0;       
@@ -393,7 +393,7 @@ void MssmSusy::getOneLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				DoubleMatrix & gQQ, DoubleMatrix & gDD,
 				DoubleMatrix & gUU, double & gH1H1, double &
 				gH2H2, sBrevity & a) const {
-  // For calculational brevity
+  /// For calculational brevity
   DoubleMatrix &u2=a.u2, &d2=a.d2, &e2=a.e2, &u2t=a.u2t, &d2t=a.d2t,
     &e2t=a.e2t;      
   double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT;
@@ -421,16 +421,16 @@ void MssmSusy::getTwoLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				DoubleMatrix & gQQ, DoubleMatrix & gDD,
 				DoubleMatrix & gUU, double & gH1H1, double &
 				gH2H2, sBrevity & a) const {
-  // For calculational brevity
+  /// For calculational brevity
   DoubleMatrix &dt=a.dt, &ut=a.ut, &u2=a.u2, &d2=a.d2, &e2=a.e2,
     &u2t=a.u2t, &d2t=a.d2t, &e2t=a.e2t, &u1=a.u1, &d1=a.d1;      
   double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT;
   DoubleVector &gsq=a.gsq, &g4=a.g4;
   
-  // Everything gets the (1/16pi^2)^2 factor at the bottom
+  /// Everything gets the (1/16pi^2)^2 factor at the bottom
   DoubleMatrix ee(3, 3), ll(3, 3), qq(3, 3), dd(3, 3), uu(3, 3); 
   
-  // Two-loop pure gauge anom dimensions
+  /// Two-loop pure gauge anom dimensions
   double h1h1 = (3.75 * g4(2) + 2.07 * g4(1) + 0.9 * gsq(2) * gsq(1));
   double h2h2 = h1h1;
   ll = h1h1;
@@ -453,7 +453,7 @@ void MssmSusy::getTwoLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
     eeT; 
   h2h2 = h2h2 + (16 * gsq(3) + 0.8 * gsq(1)) * uuT;
 
-  // Two-loop pure Yukawa contributions
+  /// Two-loop pure Yukawa contributions
   double s = (eeT + 3.0 * ddT), t = (d2 * u2).trace();
 
   ll = ll - (2.0 * e2 * e2 + s * e2);
@@ -465,7 +465,7 @@ void MssmSusy::getTwoLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 		 3.0 * t);
   h2h2 = h2h2 - (9.0 * (u2 * u2).trace() + 3.0 * t);
 
-  const static double twolp = 4.010149318236068e-5; // 1/(16 pi^2)^2
+  const static double twolp = 4.010149318236068e-5; /// 1/(16 pi^2)^2
   
   gLL = gLL + twolp * ll;
   gEE = gEE + twolp * ee;
@@ -483,20 +483,20 @@ void MssmSusy::anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				    DoubleMatrix & gDD, DoubleVector & dg, 
 				    double & gH1H1, double & gH2H2, 
 				    sBrevity & a)  const {
-  // Constants for gauge running
+  /// Constants for gauge running
   static DoubleVector bBeta(3), cuBeta(3), cdBeta(3), ceBeta(3);
   static DoubleMatrix babBeta(3, 3);
-  if (bBeta(1) < 1.0e-5) // Constants not set yet
+  if (bBeta(1) < 1.0e-5) /// Constants not set yet
     setBetas(babBeta, cuBeta, cdBeta, ceBeta, bBeta);
   
-  //  sBrevity a contains all of the shortcutted matrices etc;
+  ///  sBrevity a contains all of the shortcutted matrices etc;
   a.calculate(u.display(), d.display(), e.display(), g.display());
   
-  // For calculational brevity
+  /// For calculational brevity
   double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT;
   DoubleVector &gsq=a.gsq, &g3=a.g3;
   
-  // 1 loop contributions: 
+  /// 1 loop contributions: 
   if (displayLoops() > 0) {
     static const double oneO16Pisq = 1.0 / (16.0 * sqr(PI)); 
     
@@ -504,7 +504,7 @@ void MssmSusy::anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
     dg = oneO16Pisq * g3 * bBeta;  
   } 
 
-  // 2 loop contributions:  
+  /// 2 loop contributions:  
   if (displayLoops() > 1) { 
     getTwoLpAnom(gEE, gLL, gQQ, gDD, gUU, gH1H1, gH2H2, a); 
 							      
@@ -515,15 +515,15 @@ void MssmSusy::anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
   }
 
 #ifdef COMPILE_THREE_LOOP_RGE
-  // 3 loop contributions:
+  /// 3 loop contributions:
   if (displayLoops() > 2) {
     //DoubleVector & g4 = a.g4;
     DoubleMatrix &u2t = a.u2t, &d2t = a.d2t, &e2t = a.e2t;
     double uuTsq = uuT * uuT, ddTsq = ddT * ddT, eeTsq = eeT * eeT;
     const static double threelp = 2.53945672191370e-7;
-    // from http://www.liv.ac.uk/~dij/betas/allgennb.log
-    // only strong coupling constant + third family yukawa corrections are added
-    // Comments: rruiz
+    /// from http://www.liv.ac.uk/~dij/betas/allgennb.log
+    /// only strong coupling constant + third family yukawa corrections are added
+    /// Comments: rruiz
     getThreeLpAnom(gEE, gLL, gQQ, gDD, gUU, gH1H1, gH2H2, a); 
  
     Tensor teBeta; 
@@ -545,14 +545,14 @@ void MssmSusy::anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
     */
 
     dg = dg + g3 * (teBeta.dotProd(gsq, 3) * gsq  
-                       + (duBeta * gsq) * uuT + (ddBeta * gsq) * ddT 
-                       + (deBeta * gsq) * eeT + euBeta * uuTsq 
-                       + edBeta * ddTsq + eeBeta * eeTsq  
-                       + euBeta * (u2t*u2t).trace() 
-                       + edBeta * (d2t*d2t).trace()
-                       + eeBeta * (e2t*e2t).trace()
-                       + gudBeta * (u2t*d2t).trace()
-                       + gdeBeta * ddT * eeT) * threelp;
+		    + (duBeta * gsq) * uuT + (ddBeta * gsq) * ddT 
+		    + (deBeta * gsq) * eeT + euBeta * uuTsq 
+		    + edBeta * ddTsq + eeBeta * eeTsq  
+		    + euBeta * (u2t*u2t).trace() 
+		    + edBeta * (d2t*d2t).trace()
+		    + eeBeta * (e2t*e2t).trace()
+		    + gudBeta * (u2t*d2t).trace()
+		    + gdeBeta * ddT * eeT) * threelp;
 
   }
 #endif //COMPILE_THREE_LOOP_RGE
@@ -563,12 +563,12 @@ void MssmSusy::anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
 DoubleVector MssmSusy::beta() const {
   static sBrevity a;
   
-  // calculate the derivatives
+  /// calculate the derivatives
   static MssmSusy ds;
   
   ds = beta(a);
 
-  return ds.display(); // convert to a long vector
+  return ds.display(); /// convert to a long vector
 }
 
 
@@ -576,7 +576,7 @@ DoubleVector MssmSusy::beta() const {
 // r should be valid AT mt
 void MssmSusy::setDiagYukawas(const QedQcd & r, double vev) {
 
-  double v1, v2; // Higgs VEVs
+  double v1, v2; /// Higgs VEVs
 
   v1 = vev * cos(atan(displayTanb()));
   v2 = vev * sin(atan(displayTanb()));
@@ -681,10 +681,10 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
   const static double threelp = 2.53945672191370e-7; ///< 1/(16 pi^2)^3
   const static double kz = 7.21234141895757; ///< 6 Zeta(3)
 
-  // full three family 
+  /// full three family 
   if (MIXING > 0 ) {
-  // For calculational brevity
-  // NB!!! Change notations to that of J&J  hep-ph/0408128 (Y->Y^T , etc)
+  /// For calculational brevity
+  /// NB!!! Change notations to that of J&J  hep-ph/0408128 (Y->Y^T , etc)
   DoubleMatrix &d1=a.dt, 
 	       &u1=a.ut, 
                &e1=a.et, 
@@ -697,7 +697,7 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
                &ut=a.u1, 
                &dt=a.d1, 
 	       &et=a.e1;      
-  double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT; // Tr(Y Y^T) = Tr (Y^T Y)
+  double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT; /// Tr(Y Y^T) = Tr (Y^T Y)
 
   DoubleMatrix u2tu2t = u2t*u2t; double u2tu2tT = u2tu2t.trace(); 
   double u2tu2tu2tT = (u2tu2t*u2t).trace(); 
@@ -711,10 +711,10 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
   double e2te2te2tT = (e2te2t*e2t).trace();
 
   double u2td2tT = (u2t*d2t).trace();
-  // Everything gets the (1/16pi^2)^3 factor at the bottom
+  /// Everything gets the (1/16pi^2)^3 factor at the bottom
   DoubleMatrix ee(3, 3), ll(3, 3), qq(3, 3), dd(3, 3), uu(3, 3); 
 
-//aij = ai^j, ai = gi^2 
+  /// aij = ai^j, ai = gi^2 
 
   ll =  + a13 * ( 1839.0/100.0   - 597.0/500.0*kz      )
        + a12*a2 * ( 27.0/100.0   - 81.0/100.0*kz  )
@@ -734,7 +734,8 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
        + e2te2t*a2 * (  - 3.0 + 3.0*kz )
        + e2te2t*e2t * ( kz )
        + e2te2t * ( 6.0*ddT + 2.0*eeT )
-       + e2t * ( 6.0*u2td2tT - 9.0*ddT*ddT - 6.0*ddT*eeT + 18.0*d2td2tT - eeT*eeT + 6.0*e2te2tT );
+       + e2t * ( 6.0*u2td2tT - 9.0*ddT*ddT - 6.0*ddT*eeT + 
+		 18.0*d2td2tT - eeT*eeT + 6.0*e2te2tT );
 
   ee = + a13 * ( 7899.0/125.0   - 597.0/125.0*kz     )
        + a12*a2 * ( 81.0/5.0   - 81.0/25.0*kz   )
@@ -742,7 +743,8 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
        + a12 * (  - 78.0/5.0*uuT - 42.0/5.0*ddT - 54.0/5.0*eeT )
        + e2*a12 * (  - 1503.0/50.0 - 27.0/10.0*kz   )
        + e2*a1*a2 * (  - 27.0 + 27.0/5.0*kz )
-       + e2*a1 * ( 107.0/5.0*ddT + 7.0/5.0*ddT*kz + 9.0/5.0*eeT + 9.0/5.0*eeT*kz )
+       + e2*a1 * ( 107.0/5.0*ddT + 7.0/5.0*ddT*kz + 9.0/5.0*eeT + 
+		   9.0/5.0*eeT*kz )
        + e2*a22 * (  - 87.0/2.0 - 3.0/2.0*kz   )
        + e2*a2 * ( 27.0*ddT - 9.0*ddT*kz + 9.0*eeT - 3.0*eeT*kz )
        + e2*a3 * (  - 64.0*ddT + 16.0*ddT*kz )
@@ -750,7 +752,8 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
        + e1*e2t*et*a2 * ( 9.0 - 3.0*kz )
        + e1*e2te2t*et * ( 6.0 + 2.0*kz )
        + e1*e2t*et * ( 6.0*ddT + 2.0*eeT )
-       + e2 * ( 12.0*u2td2tT - 18.0*ddT*ddT - 12.0*ddT*eeT + 36.0*d2td2tT - 2.0*eeT*eeT + 12.0*e2te2tT );
+       + e2 * ( 12.0*u2td2tT - 18.0*ddT*ddT - 12.0*ddT*eeT + 
+		36.0*d2td2tT - 2.0*eeT*eeT + 12.0*e2te2tT );
 
   qq = + a13 * ( 28457.0/13500.0   - 199.0/1500.0*kz      )
        + a12*a2 * ( 11.0/100.0   - 9.0/100.0*kz   )
@@ -784,7 +787,8 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
        + d2t*a12 * (  - 633.0/100.0 + 7.0/180.0*kz   )
        + d2t*a1*a2 * (  - 41.0/10.0 + 3.0/10.0*kz )
        + d2t*a1*a3 * (  - 76.0/15.0 + 64.0/45.0*kz )
-       + d2t*a1 * ( 16.0/5.0*ddT - 4.0/5.0*ddT*kz - 8.0/5.0*eeT + 2.0/5.0*eeT*kz )
+       + d2t*a1 * ( 16.0/5.0*ddT - 4.0/5.0*ddT*kz - 8.0/5.0*eeT + 
+		    2.0/5.0*eeT*kz )
        + d2t*a22 * (  - 45.0/4.0 - 21.0/4.0*kz   )
        + d2t*a2*a3 * (  - 4.0 )
        + d2t*a2 * ( 18.0*ddT + 6.0*eeT )
@@ -796,7 +800,8 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
        + d2td2t*a3 * ( 64.0/3.0 )
        + d2td2t*d2t * ( kz )
        + d2td2t * ( 6.0*ddT + 2.0*eeT )
-       + d2t * ( 6.0*u2td2tT - 9.0*ddT*ddT - 6.0*ddT*eeT + 18.0*d2td2tT - eeT*eeT + 6.0*e2te2tT );
+       + d2t * ( 6.0*u2td2tT - 9.0*ddT*ddT - 6.0*ddT*eeT + 
+		 18.0*d2td2tT - eeT*eeT + 6.0*e2te2tT );
 
   dd = + a13 * ( 5629.0/675.0   - 199.0/375.0*kz      )
        + a12*a2 * ( 9.0/5.0   - 9.0/25.0*kz   )
@@ -828,7 +833,8 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
        + d1*d2t*dt*a3 * ( 64.0/3.0 )
        + d1*d2td2t*dt * ( 6.0 + 2.0*kz )
        + d1*d2t*dt * ( 6.0*ddT + 2.0*eeT )
-       + d2 * ( 12.0*u2td2tT - 18.0*ddT*ddT - 12.0*ddT*eeT + 36.0*d2td2tT - 2.0*eeT*eeT + 12.0*e2te2tT );
+       + d2 * ( 12.0*u2td2tT - 18.0*ddT*ddT - 12.0*ddT*eeT + 
+		36.0*d2td2tT - 2.0*eeT*eeT + 12.0*e2te2tT );
 
   uu = + a13 * ( 106868.0/3375.0   - 796.0/375.0*kz      )
        + a12*a2 * ( 36.0/5.0   - 36.0/25.0*kz   )
@@ -864,36 +870,47 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
   double h1h1 = + a13 * ( 1839.0/100.0   - 597.0/500.0*kz      )
        + a12*a2 * ( 27.0/100.0   - 81.0/100.0*kz  )
        + a12*a3 * ( 66.0/5.0   - 66.0/25.0*kz   )
-       + a12 * (  - 39.0/10.0*uuT - 175.0/12.0*ddT - 77.0/300.0*ddT*kz   - 603.0/20.0*eeT + 27.0/100.0*eeT*kz   )
+       + a12 * (  - 39.0/10.0*uuT - 175.0/12.0*ddT - 77.0/300.0*ddT*kz  
+		  - 603.0/20.0*eeT + 27.0/100.0*eeT*kz   )
        + a1*a22 * ( 9.0/4.0   - 27.0/20.0*kz   )
-       + a1*a2 * (  - 3.0/10.0*ddT - 3.0/2.0*ddT*kz - 81.0/10.0*eeT + 27.0/10.0*eeT*kz )
+       + a1*a2 * (  - 3.0/10.0*ddT - 3.0/2.0*ddT*kz - 81.0/10.0*eeT + 
+		    27.0/10.0*eeT*kz )
        + a1*a3 * (  - 284.0/15.0*ddT + 56.0/15.0*ddT*kz )
-       + a1 * (  - 12.0/5.0*u2td2tT + 7.0/5.0*u2td2tT*kz + 3.0*d2td2tT + 9.0/5.0*d2td2tT*kz + 9.0*e2te2tT - 9.0/5.0*e2te2tT*kz )
+       + a1 * (  - 12.0/5.0*u2td2tT + 7.0/5.0*u2td2tT*kz + 3.0*d2td2tT + 
+		 9.0/5.0*d2td2tT*kz + 9.0*e2te2tT - 9.0/5.0*e2te2tT*kz )
        + a23 * ( 345.0/4.0   + 105.0/4.0*kz      )
        + a22*a3 * ( 90.0  - 18.0*kz  )
-       + a22 * (  - 45.0/2.0*uuT - 225.0/4.0*ddT - 63.0/4.0*ddT*kz   - 75.0/4.0*eeT - 21.0/4.0*eeT*kz   )
+       + a22 * (  - 45.0/2.0*uuT - 225.0/4.0*ddT - 63.0/4.0*ddT*kz   - 
+		  75.0/4.0*eeT - 21.0/4.0*eeT*kz   )
        + a2*a3 * (  - 132.0*ddT + 24.0*ddT*kz )
-       + a2 * ( 18.0*u2td2tT + 9.0*d2td2tT + 9.0*d2td2tT*kz + 3.0*e2te2tT + 3.0*e2te2tT*kz )
+       + a2 * ( 18.0*u2td2tT + 9.0*d2td2tT + 9.0*d2td2tT*kz + 3.0*e2te2tT + 
+		3.0*e2te2tT*kz )
        + a32 * (  - 160.0/3.0*ddT - 8.0/3.0*ddT*kz  )
        + a3 * ( 24.0*u2td2tT - 8.0*u2td2tT*kz + 72.0*d2td2tT - 24.0*d2td2tT*kz )
-       + 18.0*uuT*u2td2tT + 9.0*u2tu2td2tT + 54.0*ddT*d2td2tT + 18.0*ddT*e2te2tT + 3.0*d2td2td2tT + 3.0*d2td2td2tT*kz + 18.0*eeT*d2td2tT + 6.0*eeT*e2te2tT + e2te2te2tT + e2te2te2tT*kz;
+       + 18.0*uuT*u2td2tT + 9.0*u2tu2td2tT + 54.0*ddT*d2td2tT + 
+    18.0*ddT*e2te2tT + 3.0*d2td2td2tT + 3.0*d2td2td2tT*kz + 
+    18.0*eeT*d2td2tT + 6.0*eeT*e2te2tT + e2te2te2tT + e2te2te2tT*kz;
 
   double h2h2 = + a13 * ( 1839.0/100.0   - 597.0/500.0*kz      )
        + a12*a2 * ( 27.0/100.0   - 81.0/100.0*kz  )
        + a12*a3 * ( 66.0/5.0   - 66.0/25.0*kz   )
-       + a12 * (  - 2123.0/60.0*uuT - 13.0/60.0*uuT*kz   - 21.0/10.0*ddT - 27.0/10.0*eeT )
+       + a12 * (  - 2123.0/60.0*uuT - 13.0/60.0*uuT*kz   - 
+		  21.0/10.0*ddT - 27.0/10.0*eeT )
        + a1*a22 * ( 9.0/4.0   - 27.0/20.0*kz   )
        + a1*a2 * (  - 57.0/10.0*uuT + 21.0/10.0*uuT*kz )
        + a1*a3 * (  - 124.0/3.0*uuT + 104.0/15.0*uuT*kz )
-       + a1 * ( 57.0/5.0*u2tu2tT - 3.0/5.0*u2tu2tT*kz + 6.0/5.0*u2td2tT + 1.0/5.0*u2td2tT*kz )
+       + a1 * ( 57.0/5.0*u2tu2tT - 3.0/5.0*u2tu2tT*kz + 6.0/5.0*u2td2tT + 
+		1.0/5.0*u2td2tT*kz )
        + a23 * ( 345.0/4.0   + 105.0/4.0*kz      )
        + a22*a3 * ( 90.0  - 18.0*kz  )
-       + a22 * (  - 225.0/4.0*uuT - 63.0/4.0*uuT*kz   - 45.0/2.0*ddT - 15.0/2.0*eeT )
+       + a22 * (  - 225.0/4.0*uuT - 63.0/4.0*uuT*kz   - 45.0/2.0*ddT - 
+		  15.0/2.0*eeT )
        + a2*a3 * (  - 132.0*uuT + 24.0*uuT*kz )
        + a2 * ( 9.0*u2tu2tT + 9.0*u2tu2tT*kz + 18.0*u2td2tT )
        + a32 * (  - 160.0/3.0*uuT - 8.0/3.0*uuT*kz  )
        + a3 * ( 72.0*u2tu2tT - 24.0*u2tu2tT*kz + 24.0*u2td2tT - 8.0*u2td2tT*kz )
-       + 54.0*uuT*u2tu2tT + 3.0*u2tu2tu2tT + 3.0*u2tu2tu2tT*kz + 18.0*ddT*u2td2tT + 9.0*d2tu2td2tT + 6.0*eeT*u2td2tT;
+       + 54.0*uuT*u2tu2tT + 3.0*u2tu2tu2tT + 3.0*u2tu2tu2tT*kz + 
+    18.0*ddT*u2td2tT + 9.0*d2tu2td2tT + 6.0*eeT*u2td2tT;
  
   gLL = gLL + threelp * ll;
   gEE = gEE + threelp * ee;
@@ -903,7 +920,7 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
   gH1H1 = gH1H1 + threelp * h1h1;
   gH2H2 = gH2H2 + threelp * h2h2;
 
-  } else { // third family approximation 
+  } else { /// third family approximation 
   /// For calculational brevity
   /// NB Change notation to that of J&J  hep-ph/0408128 (Y->Y^T , etc)
   DoubleMatrix &u2t=a.u2, &d2t=a.d2, &e2t=a.e2;
@@ -1150,7 +1167,7 @@ void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
   gH1H1 = gH1H1 + threelp * h1h1;
   gH2H2 = gH2H2 + threelp * h2h2;
 
-  } // third family approximation 
+  } /// third family approximation 
 }
-#endif //COMPILE_THREE_LOOP_RGE
-} // namespace softsusy
+#endif ///COMPILE_THREE_LOOP_RGE
+} /// namespace softsusy
