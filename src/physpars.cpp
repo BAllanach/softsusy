@@ -83,7 +83,7 @@ std::ostream & operator <<(std::ostream & left, const sPhysical &s) {
   left << "sneutrinos" << s.msnu; 
   left << "mU~" << s.mu << "mD~" << s.md << "mE~" << s.me;
   left << "thetat: " << s.thetat << " thetab: " << s.thetab << 
-     " thetatau: " << s.thetatau <<"thetamu: "  << s.thetamu << "\n";
+     " thetatau: " << s.thetatau <<"\nthetamu: "  << s.thetamu << "\n";
   left << "mGluino:  " << s.mGluino << "\n";
   left << "charginos" << s.mch;
   left << "thetaL: " << s.thetaL << " thetaR: " << s.thetaR << "\n";

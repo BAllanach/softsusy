@@ -21,7 +21,7 @@ doc: $(doc_DATA)
 
 doc/%.pdf: doc/%.tex
 	cd $(top_builddir)/doc;\
-	latex $(*F).tex ; latex $(*F).tex ;\
+	latex $(*F).tex ; bibtex $(*F); latex $(*F).tex; latex $(*F).tex ;\
 	dvips -f $(*F) > $(*F).ps ;\
 	ps2pdf $(*F).ps
 
