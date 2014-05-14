@@ -991,8 +991,6 @@ template<class SoftPars>
 void Softsusy<SoftPars>::rewsbTreeLevel(int sgnMu) {
   if (altEwsb) {
     setSusyMu(displayMuCond());
-    cout << "displayMu() = "  << displayMu() << endl;
-    cout << "displaySusyMu() = " << displaySusyMu() << endl;
     double newMh1sq, newMh2sq;
     double beta = atan(displayTanb());
     newMh1sq = sqr(sin(beta)) * (sqr(displayMaCond()) + sqr(MZ)) 
