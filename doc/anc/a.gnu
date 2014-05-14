@@ -27,8 +27,8 @@ splot "atlas_scan.dat" u ($1/1000):($2/1000):6 notit w pm3d
 
 min(a, b) = a<b ? a : b
 
-set output "omega50.eps"
-splot "dat.out" u ($1/1000):($2/1000):(min($6,100)) notit w pm3d
+#set output "omega50.eps"
+#splot "dat.out" u ($1/1000):($2/1000):(min($6,100)) notit w pm3d
 
 set label 2 "{/Symbol D}_{m_A}/m_A" at 6,1.06
 set output "atlasScanMA.eps"
@@ -171,3 +171,11 @@ set output "../hiTbScanOm2.eps"
 plot "omtb.data" notit w l lw 4 lc 2, \
 "ewsb3.data" notit w filledcurve y2 lc 0, \
 "ewsb2.data" notit w filledcurve y2 lc 9
+
+unset label 1
+unset label 2
+set label 3 ""
+set label 4 ""
+set output "../atlasExcl.eps"
+plot "ATLAS_SUSY_MSUGRA_201308.txt" u ($1/1000):($2/1000) notit w l lw 16 lc 2 \
+lt 3

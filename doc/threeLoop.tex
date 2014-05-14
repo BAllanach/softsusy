@@ -227,59 +227,7 @@ However,
 SCALE DEPENDENCE?
 
 \section{Effect on Sparticle Spectra}
-\begin{figure}
-\unitlength=1in
-\begin{center}
-\begin{picture}(6,7.8)
-  \put(-0.75,2.8){\includegraphics[angle=270,width=0.7\textwidth]{atlasScanMneut1}}
-  \put(0.08,2.24){\includegraphics[angle=270,width=0.45\textwidth]{atlasScanMneut12}}
-  \put(-0.75,5.5){\includegraphics[angle=270,width=0.7\textwidth]{atlasScanMg}}
-  \put(0.08,4.94){\includegraphics[angle=270,width=0.45\textwidth]{atlasScanMg2}}
-  \put(2.4,2.8){\includegraphics[angle=270,width=0.7\textwidth]{atlasScanMq}}
-  \put(3.22,2.24){\includegraphics[angle=270,width=0.45\textwidth]{atlasScanMq2}}
- \put(2.4,5.5){\includegraphics[angle=270,width=0.7\textwidth]{atlasScanMtR}}
-  \put(3.22,4.94){\includegraphics[angle=270,width=0.45\textwidth]{atlasScanMtR2}} 
-  \put(-0.75,8.2){\includegraphics[angle=270,width=0.7\textwidth]{atlasScanMh}}
-  \put(0.08,7.64){\includegraphics[angle=270,width=0.45\textwidth]{atlasScanMh2}}
-  \put(2.4,8.2){\includegraphics[angle=270,width=0.7\textwidth]{atlasScanMA}}
-  \put(3.22,7.64){\includegraphics[angle=270,width=0.45\textwidth]{atlasScanMA2}}
-\put(0,7.8){(a)}
-\put(3.2,7.8){(b)}
-\put(0,5){(c)}
-\put(3.2,5){(d)}
-\put(0,2.2){(e)}
-\put(3.2,2.2){(f)}
-\end{picture}
-\end{center}
-\caption{\label{fig:dm} Relative effect of highest order terms (three-loop
-  RGEs for gauge and Yukawa couplings and two-loop threshold corrections to
-  third family fermion masses and $g_3$) on various
-  particle pole masses in the CMSSM. The CMSSM 
-  parameters coincide with the latest ATLAS
-  CMSSM sparticle searches~\cite{}.
-  Contours of iso-mass are overlayed on each
-  figure, with each contour labelling the mass in GeV. Here, $m_g$ denotes the
-gluino mass and $m_q$ the average squark mass from the first two generations. }
-\end{figure}
-
-\begin{figure}
-\unitlength=1in
-\begin{center}
-\begin{picture}(3,3)
-  \put(-0.75,2.8){\includegraphics[angle=270,width=0.7\textwidth]{hiTbScanOm}}
-  \put(0.08,2.24){\includegraphics[angle=270,width=0.45\textwidth]{hiTbScanOm2}}
-\end{picture}
-\end{center}
-\caption{\label{fig:dm} Effect of highest order terms (three-loop
-  RGEs for gauge and Yukawa couplings and two-loop threshold corrections to
-  third family fermion masses and $g_3$) on the predicted dark matter relic
-  density in the CMSSM in a high $\tan \beta$ scenario. Contours of iso-relic
-  density for the highest order prediction are overlayed. Also shown is the
-  change in the position of the border of successful EWSB: the black region
-  (and to the right) denotes the region for higher loop corrections, whereas
-  the lighter one denotes the result of the standard \SOFTSUSY~calculation.}
-\end{figure}
-
+\subsection{Dissection of the higher order effects at benchmark points}
 \input{tableOne}
 \caption{\label{tab:cmssm} Differences due to the highest order terms
   (three-loop 
@@ -384,7 +332,8 @@ through renormalisation group effects. {\bf one-loop $Y_t$ RGE}.
 We now wish to decouple the three-loop RGE effects from the two-loop threshold
 effects as far as possible while still giving a valid prediction for a point
 in MSSM parameter space. This can be achieved by studying the spectrum from a
-point in `phenomenological MSSM' parameter space, where supersymmetry breaking
+point in phenomenological MSSM (pMSSM) parameter space, where supersymmetry
+breaking 
 boundary conditions are imposed already at the SUSY breaking scale, defined to 
 be $\sqrt{m_{{\tilde t}_1} m_{{\tilde t}_2}}$. We use the point pMSSM1.6 from
 Ref.~\cite{AbdusSalam:2011fc}, which is defined to have all scalar trilinear
@@ -392,7 +341,109 @@ couplings 0, the first two generation squark mass,
 the tree-level bino and gluino masses all set to 800 GeV and a tree-level gluino
 mass of 960 GeV. The tree-level wino mass, $\mu$ and the pseudoscalar Higgs
 pole mass and all other tree-level squark and slepton masses are fixed to 2500
-GeV. 
+GeV. The aim of using the pMSSM is to reduce the effects of the RGEs in order
+to study the threshold contributions more cleanly. However, we cannot
+eliminate RGE effects completely because there is still running between 
+$M_Z$ and $M_{SUSY} \sim 2.5$ TeV, however they are small, being of order
+$1/(16 \pi^2) \log M_{SUSY}/M_Z$, i.e.\ not enhanced by large logarithms,
+unlike the CMSSM case above. 
+We see that the lightest CP-even Higgs mass prediction decreases by 2.1 GeV,
+mainly because of the  corrections to the top mass. The high order strong
+corrections to $\alpha_s$ reduce
+squark and gluino masses at the per-mille level, which will only have a very
+small effect on collider signatures. 
+We see that the RGE corrections do induce a small additional change: but it is
+at the per-mille or smaller level for this point.
+The sparticle mass predictions only change by a
+very small amount, which is contrary to the case of the focus-point CMSSM
+(which is 
+admittedly very sensitive to small changes in the top Yukawa coupling) that is
+shown in Table~\ref{tab:cmssm}. However, we shall show next that even for more
+generic CMSSM points, there are typically changes in the spectra of 2-3$\%$.
+We conclude that in this point of the pMSSM, the higher order effects are not
+needed for collider studies except for those involving the lightest CP-even
+Higgs. We find it likely, where no input mass parameters are lighter
+than 700 GeV that this conclusion will hold more generally for the
+pMSSM because of sparticle decoupling in the corrections. 
+Obviously, to be sure of this conclusion, one should check the point's
+robustness with respect to the higher order effects. 
+
+\subsection{CMSSM parameter scans}
+
+We now perform a scan over CMSSM parameter space in order to examine the kind
+of behaviour expected more generically from the higher order corrections, and
+also to foretell possible effects on SUSY phenomenology. We choose the
+$m_0-M_{1/2}$ plane with $\mu>0$, $\tan \beta=30$ and $A_0=-2m_0$, which was
+recently used by ATLAS to place bounds upon the CMSSM from various LHC 8
+TeV searches~\cite{}. 
+
+In Fig.~\ref{fig:}, we show some contours of important MSSM particle masses as
+well as their relative change due to the higher order corrections. The region
+below the dashed line is excluded by either one or both of the most
+restrictive ATLAS SUSY searches~\cite{ATLAS-CONF-2013-047,Aad:2013wta}. 
+\begin{figure}
+\unitlength=1in
+\begin{center}
+\begin{picture}(6,7.8)
+  \put(-0.75,2.8){\includegraphics[angle=270,width=0.7\textwidth]{atlasScanMneut1}}
+  \put(0.08,2.24){\includegraphics[angle=270,width=0.45\textwidth]{atlasScanMneut12}}
+  \put(0.08,2.24){\includegraphics[angle=270,width=0.45\textwidth]{atlasExcl}}
+  \put(-0.75,5.5){\includegraphics[angle=270,width=0.7\textwidth]{atlasScanMg}}
+  \put(0.08,4.94){\includegraphics[angle=270,width=0.45\textwidth]{atlasScanMg2}}
+  \put(0.08,4.94){\includegraphics[angle=270,width=0.45\textwidth]{atlasExcl}}
+  \put(2.4,2.8){\includegraphics[angle=270,width=0.7\textwidth]{atlasScanMq}}
+  \put(3.22,2.24){\includegraphics[angle=270,width=0.45\textwidth]{atlasScanMq2}}
+  \put(3.22,2.24){\includegraphics[angle=270,width=0.45\textwidth]{atlasExcl}} 
+\put(2.4,5.5){\includegraphics[angle=270,width=0.7\textwidth]{atlasScanMtR}}
+  \put(3.22,4.94){\includegraphics[angle=270,width=0.45\textwidth]{atlasScanMtR2}} 
+  \put(3.22,4.94){\includegraphics[angle=270,width=0.45\textwidth]{atlasExcl}}
+  \put(-0.75,8.2){\includegraphics[angle=270,width=0.7\textwidth]{atlasScanMh}}
+  \put(0.08,7.64){\includegraphics[angle=270,width=0.45\textwidth]{atlasScanMh2}}
+  \put(0.08,7.64){\includegraphics[angle=270,width=0.45\textwidth]{atlasExcl}}
+  \put(2.4,8.2){\includegraphics[angle=270,width=0.7\textwidth]{atlasScanMA}}
+  \put(3.22,7.64){\includegraphics[angle=270,width=0.45\textwidth]{atlasScanMA2}}
+  \put(3.22,7.64){\includegraphics[angle=270,width=0.45\textwidth]{atlasExcl}}
+\put(0,7.8){(a)}
+\put(3.2,7.8){(b)}
+\put(0,5){(c)}
+\put(3.2,5){(d)}
+\put(0,2.2){(e)}
+\put(3.2,2.2){(f)}
+\end{picture}
+\end{center}
+\caption{\label{fig:dm} Relative effect of highest order terms (three-loop
+  RGEs for gauge and Yukawa couplings and two-loop threshold corrections to
+  third family fermion masses and $g_3$) on various
+  particle pole masses in the CMSSM. The CMSSM 
+  parameters coincide with the latest ATLAS searches for jets and missing
+  energy interpreted in the 
+  CMSSM~\cite{ATLAS-CONF-2013-047,Aad:2013wta}.
+  Contours of iso-mass are overlayed on each
+  figure, with each contour labelling the mass in GeV. Here, $m_g$ denotes the
+  gluino mass and $m_q$ the average squark mass from the first two 
+  generations.}
+\end{figure}
+
+\begin{figure}
+\unitlength=1in
+\begin{center}
+\begin{picture}(3,3)
+  \put(-0.75,2.8){\includegraphics[angle=270,width=0.7\textwidth]{hiTbScanOm}}
+  \put(0.08,2.24){\includegraphics[angle=270,width=0.45\textwidth]{hiTbScanOm2}}
+\end{picture}
+\end{center}
+\caption{\label{fig:dm} Effect of highest order terms (three-loop
+  RGEs for gauge and Yukawa couplings and two-loop threshold corrections to
+  third family fermion masses and $g_3$) on the predicted dark matter relic
+  density in the CMSSM in a high $\tan \beta$ scenario. Contours of iso-relic
+  density for the highest order prediction are overlayed. Also shown is the
+  change in the position of the border of successful EWSB: the black region
+  (and to the right) denotes the region for higher loop corrections, whereas
+  the lighter one denotes the result of the standard \SOFTSUSY~calculation.}
+\end{figure}
+
+
+
 
 \section{Effect on Unification}
 
