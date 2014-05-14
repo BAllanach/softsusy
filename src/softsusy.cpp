@@ -902,6 +902,7 @@ void Softsusy<SoftPars>::iterateMu(double & muold, int sgnMu,
 
 template<class SoftPars>
 void Softsusy<SoftPars>::alternativeEwsb(double mt) {
+  setSusyMu(displayMuCond());
   calcDrBarPars();
   double sinthDRbarMS = calcSinthdrbar();
   double tanb = displayTanb(), beta = atan(tanb);
