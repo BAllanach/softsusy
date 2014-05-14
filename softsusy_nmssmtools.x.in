@@ -18,13 +18,13 @@ if ! test -d "${NMSSMTOOLS_PATH}"; then
     exit 1
 fi
 
-if ! test -x "${NMSSMTOOLS_PATH}/main/nmProcessSpec"; then
-    echo "# Error: Cannot find ${NMSSMTOOLS_PATH}/main/nmProcessSpec"
+if ! test -x "${NMSSMTOOLS_PATH}/main/nmh_slhainp"; then
+    echo "# Error: Cannot find ${NMSSMTOOLS_PATH}/main/nmh_slhainp"
     echo "   Please run ./setup_nmssmtools.sh --nmssmtools-dir=/path/to/NMSSMTools --compile"
     exit 1
 fi
 
-nmssmtools_input_file="${NMSSMTOOLS_PATH}/main/slha_nmssm"
+nmssmtools_input_file="${NMSSMTOOLS_PATH}/main/inp"
 
 ${BASEDIR}/softpoint.x leshouches < /dev/stdin | tee ${nmssmtools_input_file}
 
@@ -33,20 +33,26 @@ if test $? -ne 0; then
     exit 1
 fi
 
-(cd ${NMSSMTOOLS_PATH}/main/ && ./nmProcessSpec)
+(cd ${NMSSMTOOLS_PATH}/main/ && ./nmh_slhainp)
 
 if test $? -ne 0; then
     echo "# Error: NMSSMTools could not calculate the decays"
     exit 1
 fi
 
-decay_output_file="${NMSSMTOOLS_PATH}/main/nmProcessSpec-decay"
-omega_output_file="${NMSSMTOOLS_PATH}/main/nmProcessSpec-omega"
-
-if ! test -r "${decay_output_file}"; then
-    echo "# Error: cannot open decay output file \"${decay_output_file}\""
-    exit 1
-fi
+decay_output_file="${NMSSMTOOLS_PATH}/main/decay"
+omega_output_file="${NMSSMTOOLS_PATH}/main/omega"
 
 echo ""
-cat "${decay_output_file}"
+
+if test -r "${decay_output_file}"; then
+    cat "${decay_output_file}"
+else
+    echo "# Error: cannot open decay output file \"${decay_output_file}\""
+fi
+
+if test -r "${omega_output_file}"; then
+    cat "${omega_output_file}"
+else
+    echo "# Error: cannot open micrOmegas output file \"${omega_output_file}\""
+fi

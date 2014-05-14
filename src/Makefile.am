@@ -43,4 +43,4 @@ tensor.cpp rpvsusypars.cpp rpvsoft.cpp flavoursoft.cpp twoloophiggs.f
 
 libsoft_la_LDFLAGS = @FLIBS@
 
-EXTRA_DIST = nmProcessSpec.f
+EXTRA_DIST = nmh_slhainp.f

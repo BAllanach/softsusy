@@ -1,6 +1,6 @@
 SUBDIRS = src doc
 
-ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
+ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
 TESTOUTPUT = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
  inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output
@@ -111,7 +111,7 @@ benchmarks/%.spec: benchmarks/%.in softpoint.x
 	$(install_sh) -d benchmarks
 	./softpoint.x leshouches < $< > $@
 
-.PHONY: doc test updateWeb
+.PHONY: $(SUBDIRS) test updateWeb
 
 test: softpoint.x
 	git checkout $(TESTOUTPUT)

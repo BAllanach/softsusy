@@ -17,7 +17,7 @@ ALIB =  ../sources/nmhdecay.a $(micrOr)/lib/aLib.a   $(micrO)/sources/micromegas
      $(cLib)/sqme_aux.so  $(cLib)/dynamic_me.a  $(cLib)/libSLHAplus.a $(cLib)/num_c.a  $(cLib)/ntools.a  $(cLib)/serv.a 
 
 
-EXEC = nmhdecay nmspec nmgmsb nmhdecay_grid nmhdecay_rand nmspec_grid nmspec_rand nmgmsb_grid nmgmsb_rand nmProcessSpec
+EXEC = nmhdecay nmspec nmgmsb nmhdecay_grid nmhdecay_rand nmspec_grid nmspec_rand nmgmsb_grid nmgmsb_rand nmh_slhainp
 
 all: $(EXEC)
 
@@ -51,7 +51,7 @@ nmgmsb_grid: 	nmgmsb_grid.o $(LIB)
 nmgmsb_rand: 	nmgmsb_rand.o $(LIB)
 	$(FC) $(FFLAGS) -o $@ $^ $(lDL) $(LX11)
 
-nmProcessSpec: nmProcessSpec.o $(LIB)
+nmh_slhainp: nmh_slhainp.o $(LIB)
 	$(FC) $(FFLAGS) -o $@ $^ $(lDL) $(LX11)
 
 clean:

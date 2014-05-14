@@ -7521,6 +7521,18 @@ void Softsusy<SoftPars>::itLowsoft
     int err = 0;
 
     err = runto(displayMsusy(), eps);
+
+    if (err == 1) {
+      /// problem with running: bail out 
+      flagProblemThrown(true);
+      if (PRINTOUT) 
+	cout << "itLowsoft can't run more approaching msusy\n"; 
+      if (PRINTOUT > 1) printObj();
+      numTries = 0; 
+      return;
+    }
+
+
     double tbIn; double predictedMzSq = 0.;
     predictedMzSq = predMzsq(tbIn);
     setPredMzSq(predictedMzSq);  
@@ -10455,6 +10467,7 @@ template<class SoftPars>
 void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
   out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
+  out << "# MX=" << mxBC << " GeV" << endl;
 }
 
 template<class SoftPars>

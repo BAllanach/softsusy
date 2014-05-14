@@ -1,14 +1,14 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([softsusy],[3.4.0],[softsusy@projects.hepforge.org],[softsusy])
+AC_INIT([softsusy],[3.4.1],[softsusy@projects.hepforge.org],[softsusy])
 AC_CONFIG_SRCDIR([src])
 AC_CONFIG_AUX_DIR([Config])
 AC_CONFIG_HEADERS([Config/config.h])
-
+AC_CONFIG_MACRO_DIR([m4])
 
 dnl Put default fortran compiler for this variable
-F77=gfortran
+# F77=gfortran
 
 dnl === disable debug symbols by default =====
 if test "x$CXXFLAGS" = "x"; then

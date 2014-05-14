@@ -14,11 +14,11 @@
 
 #include <cmath>
 namespace softsusy{
-  const char SOFTSUSY_VERSION[] = "3.4.0";
+  const char SOFTSUSY_VERSION[] = "3.4.1";
 
   /// uncomment if you want checking of vector/matrices bounds: slows code
   /// down. It also now checks over/underflows in matrix multiplication etc
-  //    #define ARRAY_BOUNDS_CHECKING 
+  /// #define ARRAY_BOUNDS_CHECKING 
 
   /// Make true if you want to include the 2-loop RGE corrections to scalar mass
   /// squared parameters and trilinear terms: they slow it down by a factor of
