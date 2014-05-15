@@ -37,6 +37,12 @@ void produceSLHAfile(MssmSoftsusy & t, const char * fileName, int sgnMu,
   fout.close();
 }
 
+void getCrossSection(char * fileName, double sigGG, double sigSG) {
+  char oFile[500], buff[500];
+  sprintf(oFile, "om");
+  sprintf(buff, "cp lesHout ../../code/prospino2.1/; cd ../../code/prospino2.1/; ./prospino_2.run > output");
+}
+
 double doDarkMatter(DoubleVector & pars, double tanb, int sgnMu, 
 		    char * fileName) {
   double m0 = pars(1), m12 = pars(2), a0 = pars(3);

@@ -21,7 +21,7 @@
 DAMTP-2014-??
 \end{flushright}
 
-\title{Incorporating Two Loop Threshold Effects and Three Loop Gauge and
+\title{Incorporating Some Two Loop Threshold Effects and Three Loop Gauge and
   Yukawa Renormalisation Group Equations in the Calculation of the Spectrum
   of the Minimal Supersymmetric Standard Model: {\tt SOFTSUSY3.5.0}}
 
@@ -42,7 +42,7 @@ DAMTP-2014-??
   contain two-loop 
   renormalisation group equations and one-loop threshold corrections to the
   gauge and Yukawa couplings. Here, we explore the effects of three-loop
-  renormalisation group equation terms, leading two-loop threshold
+  renormalisation group equation terms, some leading two-loop threshold
   corrections are incorporated to the third family Yukawa couplings and the
   strong coupling constant.
   We illustrate our results in the constrained minimal supersymmetric standard
@@ -104,7 +104,7 @@ strong gauge coupling.
 
 \section{Introduction}
 
-The recent discovery of the Higgs boson~\cite{Aad:2012tfa,Chatyrchan:2012ufa}
+The recent discovery of the Higgs boson~\cite{Aad:2012tfa,Chatrchyan:2012ufa}
 and the measurement of its mass at around 
 125-126 GeV~\cite{ATLAS-CONF-2013-014} solidify the important and well-known
 question of how its mass is 
@@ -179,37 +179,39 @@ picked some available higher order terms that are expected to affect the
 predictions of the spectrum mass calculation, and included them in
 {\tt SOFTSUSY3.5.0}. The previous version of the program, {\tt SOFTSUSY3.4.1}, 
 contained two-loop RGEs and one-loop threshold corrections. 
-The higher order terms that we have included to the MSSM spectrum
-calculation are: 
+The higher order terms that we have included are: 
 \begin{enumerate}
 \item
-Three-loop RGEs to all soft and supersymmetry preserving parameters, 
+Three-loop RGEs to all soft and supersymmetry preserving MSSM parameters, 
 assuming that they are real. The supersymmetric parameters contain the
 possibility of full three-family mixing. The three-loop contribution to the 
 soft-breaking MSSM parameters are calculated in the dominant third family
 approximation. 
 \item
 The following two-loop threshold corrections:
-\begin{enumerate}
-\item
-$\mathcal O(\alpha_s^2)$ corrections to $m_t$, which we call $\Delta m_t$
-\item
-$\mathcal O(\alpha_s^2)$, $\mathcal O(\alpha_s Y_b^2)$, $\mathcal O(\alpha_s
-Y_t^2)$ corrections to $\alpha_s$. Collectively, we call these corrections
-$\Delta \alpha_s$.
-\item
-$\mathcal O(\alpha_s^2)$, $\mathcal O(\alpha_s Y_b^2)$, $\mathcal O(\alpha_s
-Y_b^2)$ corrections to $m_b$. Also included are $\mathcal O(Y_\tau^4)$
-corrections to $m_\tau$. 
-{\bf Sascha is this correct?} We call this
-collection of corrections $\Delta m_b, m_\tau$.
+\begin{center}
+\begin{tabular}{|c|c|}\hline
+Name & Description \\ \hline
+$\Delta m_t$ & $\mathcal O(\alpha_s^2)$ corrections to $m_t$ \\
+ $\Delta \alpha_s$ & $\mathcal O(\alpha_s^2)$, $\mathcal O(\alpha_s Y_b^2)$,
+ $\mathcal O(\alpha_s 
+ Y_t^2)$ corrections to $\alpha_s$. \\
+ $\Delta m_b, m_\tau$ & $\mathcal O(\alpha_s^2)$, $\mathcal O(\alpha_s Y_b^2)$, $\mathcal O(\alpha_s
+ Y_b^2)$ corrections to $m_b$. Also included are $\mathcal O(Y_\tau^4)$
+ corrections to $m_\tau$. \\
+\hline \end{tabular}
+\end{center}
 \end{enumerate}
-\end{enumerate}
-None of these terms have been, to our knowledge, included in any publicly
-available programs before. 
+Here, $\alpha_s$ denotes the strong coupling constant, $m_t$ the top mass,
+$Y_b$ the bottom Yukawa coupling, $Y_t$ the top Yukawa coupling and $Y_\tau$
+the tau Yukawa coupling. 
+None of $\Delta m_t$, $\Delta \alpha_s$ or $\Delta m_b, m_\tau$ have been, to
+the best of our knowledge, made available to the public in a supported
+computer program before. 
 
-The effect of the three-loop RGEs upon the Snowmass Benchmark
-Points~\cite{Allanach:2002nj} were presented and studied in
+The effect of the three-loop RGEs upon the relative mass shifts 
+of Snowmass (SPS) benchmark 
+points~\cite{Allanach:2002nj} were presented and studied in 
 Ref.~\cite{Jack:2004ch} 
 without the inclusion of the two-loop threshold effects. 
 The three-loop RGEs are enhanced by a large logarithm $\log M_{GUT}/M_Z$,
@@ -219,14 +221,49 @@ Ref.~\cite{Jack:2004ch} were of the same order of other terms that were
 missing in the calculation. Effects upon sparticle mass predictions of around
 1-2$\%$ were typically found, although one point studied did have an 8$\%$
 difference in the light stop mass at the SPS5 point. 
-However, 
-{\bf TALK ABOUT JJ AND SASCHA'S RESULTS AND ANY DIFFERENCE WE HAVE}.
+We go beyond this calculation by including the threshold effects, which are of
+the same order as the three-loop effects.
 
+Subsequently, one of us performed~\cite{Bednyakov:2010ni} a preliminary study
+of the SPS 4 (CMSSM high
+$\tan \beta$) benchmark
+point~\cite{Allanach:2002nj}, with a modified version of {\tt SOFTSUSY} that
+included both three-loop RGEs and the two-loop thresholds that we consider
+here. 1-2$\%$ mass shifts in the strongly interacting sparticles, a 3$\%$
+correction to the higgsino mass and a 1$\%$ decrease in the lightest CP even
+higgs boson mass was observed. 
+
+Our purpose here is to provide a more extensive
+study of the higher order effects as well as to present a public version of {\tt
+  SOFTSUSY} that incorporates them, along with instructions on how to use it.
+We go beyond the pioneering study Ref.~\cite{Bednyakov:2010ni} in the
+following ways: in section~\ref{sec:results}, we show case the effect of the
+higher order terms in a CMSSM  
+focus-point, where a high sensitivity to the precise value of the top Yukawa
+coupling leads to large changes order one in the mass spectrum. 
+We also study the concomitant effects on the predicted relic density of
+dark matter.
+We then present a detailed
+breakdown in the case of a phenomenological MSSM point, where the effects of
+the RGEs are 
+small, allowing us to focus, to a reasonable approximation, purely on the size
+of the threshold corrections. We then quantify the effects of the higher order
+corrections in a CMSSM plane that is used by ATLAS to interpret their searches
+for supersymmetric particles in order to get an idea of the size of the
+corrections for generic points in parameter space that are not excluded by the
+current experimental limits. 
+We scan a high $\tan \beta$ CMSSM plane to illustrate the large effect that the
+higher order terms can have upon the dark matter relic density prediction,
+across parameter space. 
+We also study the improvement in scale dependence
+of the MSSM particle pole masses.  
+In the appendix, we give details on how to install and use the increased
+accuracy mode in a publicly available version of {\tt SOFTSUSY}.
 
 \section{Increases in Calculational Accuracy}
 SCALE DEPENDENCE?
 
-\section{Effect on Sparticle Spectra}
+\section{Effect on Sparticle Spectra \label{sec:results}}
 \subsection{Dissection of the higher order effects at benchmark points}
 \input{tableOne}
 \caption{\label{tab:cmssm} Differences due to the highest order terms
@@ -476,7 +513,8 @@ Talk about $\alpha_s Y_t^2$ and $Y_t^4$ corrections being the main ones
 remaining to do.  
 
 \section*{Acknowledgments}
-This work has been partially supported by STFC.
+This work has been partially supported by STFC. BCA thanks the Cambridge SUSY
+working group for useful discussions.
 
 \appendix
 
