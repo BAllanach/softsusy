@@ -28,7 +28,7 @@ doc/%.pdf: doc/%.tex
 doc/threeLoop.tex: doc/tableOne.tex doc/tableTwo.tex
 
 clean-local:
-	-rm -f doc/*.log doc/*.spl doc/*.aux doc/*.dvi doc/*.ps doc/*.toc doc/*.out
+	-rm -f doc/*.log doc/*.spl doc/*.aux doc/*.dvi doc/*.ps doc/*.toc doc/*.out doc/*.pdf
 
 distclean-local: clean-local
 	-rm -f $(doc_DATA)
