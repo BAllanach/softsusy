@@ -160,9 +160,14 @@ poissibilities for numerical differences. Thus, the numerical differences
 between the spectrum calculators gives a rough estimate of the size of
 theoretical uncertainties associated with the calculation. 
 
-The constrained minimal supersymmetric standard model makes a simplying
+We shall illustrate our results with two different assumptions about
+supersymmetry breaking soft terms. The first is the
+constrained minimal supersymmetric standard model (CMSSM), which makes a
+simplying 
 assumption about the supersymmetry breaking terms: each soft SUSY breaking
-scalar mass is set to a common value $m_0$ at a high scale $M_{GUT}$, the
+scalar mass is set to a common value $m_0$ at a high scale $M_{GUT}\sim
+10^{16}$ GeV (defined
+here to be the scale at which the electroweak gauge couplings unify), the
 gaugino masses are set to a common value $M_{1/2}$ at $M_{GUT}$ and the 
 SUSY breaking trilinear scalar couplings are all fixed to a value $A_0$ at
 $M_{GUT}$. The other relevant parameters are $\tan \beta$, the ratio of the
@@ -170,6 +175,8 @@ two Higgs vacuum expectation values, and the sign of a parameter $\mu$ that
 appears in the Higgs potential (its magnitude is fixed minimisation of the
 Higgs potential in order to predict the empirically measured central value of
 the $Z^0$ boson mass).
+The second SUSY breaking scenario is the phenomenological MSSM (pMSSM), where
+the supersymmetry breaking terms are fixed close to the weak scale. 
 
 The obvious way to reduce such a theoretical uncertainty is to incorporate the
 higher order effects, pushing the associated theoretical uncertainty to even
@@ -330,6 +337,12 @@ corrections (`$\Delta$ All'), we see that the Higgs mass lowers somewhat, and
 the dark matter 
 relic density is predicted to be the cosmologically acceptable value of 0.99
 once all of the higher order corrections are included.
+Here, we use {\tt
+  micrOMEGAs3.3.13}~\cite{Belanger:2001fz,Belanger:2004yn,Belanger:2013oya} to 
+predict the relic density of 
+lightest neutralinos, identified to be our dark matter candidate. 
+Fits to cosmological data constrain the relic density of dark matter to be
+$\Omega_{CDM} h^2=0.1198 \pm 0.0026$ from Planck data~\cite{Ade:2013zuv}.
 The two-loop threshold corrections to the bottom and tau Yukawa couplings 
 have a very small effect: smaller than 0.1 GeV for most of the sparticle
 masses, despite the fact that the Yukawa couplings themselves are of order the
@@ -342,6 +355,13 @@ which in turn is affected sensitively by the top Yukawa coupling.
 The top Yukawa coupling is changed by the different value of $\alpha_s$
 through renormalisation group effects. {\bf one-loop $Y_t$ RGE}.
 (Higgs mass uncertainty).
+The smaller changes in the gluino and average squark masses lead to associated
+changes in the squark and gluino production cross-sections. At this point, all
+SUSY particle production is dominated by the production of two gluinos and
+their subsequent decay, the squarks being too heavy to be produced with any
+appreciable cross-section. We calculate the next-to-leading order total QCD
+cross section for production at a 14 TeV LHC with {\tt
+  PROSPINO2.1}~\cite{Beenakker:1996ed,Beenakker:1996ch}. 
 
 \input{tableTwo}
 \caption{\label{tab:pmssm}  Differences due to the highest order terms
@@ -358,18 +378,20 @@ through renormalisation group effects. {\bf one-loop $Y_t$ RGE}.
   m_\tau$ means that only the two-loop threshold corrections to $m_t$ and
   $m_b$ are included. `All' means that all available two-loop threshold
   corrections to $\alpha_s$, $m_t$ and $m_b$ are included.
-  `N/A' means that electroweak
+  `N/A' means that electroweak  
   symmetry was not broken, and so reliable results cannot be reported. 
   $m_{\tilde q}$ refers to the average mass of the squarks of the first two
   families. 
   The rows marked with a $\Delta$ show the {\em change} in
   the mass from the {\tt SOFTSUSY3.4.1} result. The column labeled `RGEs'
-  shows the number of loops used in the MSSM RGEs. }
+  shows the number of loops used in the MSSM RGEs. The column headed
+  `$\sigma_{SUSY}^{TOT}$ shows the total cross-section in fb for the
+  production of   gluinos and squarks at a 14 TeV LHC.}
 \end{table}
 We now wish to decouple the three-loop RGE effects from the two-loop threshold
 effects as far as possible while still giving a valid prediction for a point
 in MSSM parameter space. This can be achieved by studying the spectrum from a
-point in phenomenological MSSM (pMSSM) parameter space, where supersymmetry
+point in pMSSM parameter space, where supersymmetry
 breaking 
 boundary conditions are imposed already at the SUSY breaking scale, defined to 
 be $\sqrt{m_{{\tilde t}_1} m_{{\tilde t}_2}}$. We use the point pMSSM1.6 from
@@ -500,7 +522,8 @@ We next perform a scan at high $\tan \beta$, displaying a region where
   density for the highest order prediction are overlayed. Also shown is the
   change in the position of the border of successful EWSB: the black region
   (and to the right) denotes the region for higher loop corrections, whereas
-  the lighter one denotes the result of the standard \SOFTSUSY~calculation.}
+  the lighter one denotes the result of the standard {\tt SOFTSUSY3.4.1}
+  calculation.} 
 \end{figure}
 
 
@@ -545,12 +568,12 @@ Additional variables that gives a finer control the Increased Accuracy Mode at r
 \end{itemize}
 
 
-\section{Running \SOFTSUSY in the Increased Accuracy Mode} 
+\section{Running \SOFTSUSY~in the Increased Accuracy Mode}  
 \label{sec:run}
 
 \SOFTSUSY~produces an executable called \code{softpoint.x}. For the calculation
 of the spectrum of single points in parameter space, we recommend the
-SUSY Les Houches Accord 2 (SLHA2)~\cite{Allanach:2008qq}  input/output
+SUSY Les Houches Accord (SLHA)~\cite{Skands:2003cj} input/output
 option. The user must provide a file (e.g.\ the example file included
 in the \SOFTSUSY~distribution
 \code{rpvHouchesInput}), that specifies the model dependent input

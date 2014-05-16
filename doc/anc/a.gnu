@@ -165,17 +165,17 @@ set label 4 "4000" at 4.2,0.43 tc rgb "white" font "Helvetica, 30" rotate by 280
 set output "../atlasScanMq2.eps"
 plot "mq.data" notit w l lw 4 lc rgb "white"
 
-set label 1 "0.09" at 0.7,0.43tc rgb "green" font "Helvetica, 30" rotate by 280
+set label 1 "0.09" at 0.14,0.43tc rgb "green" font "Helvetica, 30" rotate by 280
 set label 2 "0.11" at 1.4,0.3 tc rgb "green" font "Helvetica, 30" rotate by 70
+set label 3 ""
+set label 4 ""
 set output "../hiTbScanOm2.eps"
 plot "omtb.data" notit w l lw 4 lc 2, \
-"ewsb3.data" notit w filledcurve y2 lc 0, \
-"ewsb2.data" notit w filledcurve y2 lc 9
+"ewsb3.data" notit w filledcurve y1=0.12 lc 0, \
+"ewsb2.data" notit w filledcurve y1=0.12 lc 9
 
 unset label 1
 unset label 2
-set label 3 ""
-set label 4 ""
 set output "../atlasExcl.eps"
 plot "ATLAS_SUSY_MSUGRA_201308.txt" u ($1/1000):($2/1000) notit w l lw 16 lc 2 \
 lt 3
