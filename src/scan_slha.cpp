@@ -1664,54 +1664,6 @@ int main(int argc, char *argv[]) {
     writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
 	       omega2, omegaAs, omegaMt, omegaMb, omega3,
 	       msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, csMb, cs3);
-    exit(0);
-
-      /// Just 2-loop thresholds for strong coupling constant
-    /*      double omegaAs = asin(2.), msqAvAs = 0.; 
-      r->included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
-      MssmSoftsusy twoLoopAs(*r); 
-      USE_TWO_LOOP_THRESHOLD = true;
-      getMssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mgutGuess, 
-		      uni, omegaAs, msqAvAs, boundaryCondition, ewsbBCscale); 
-      r->included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
-    
-      /// Just 2-loop strong thresholds for mt
-      USE_TWO_LOOP_THRESHOLD = false;
-      double omegaMt = asin(2.), msqAvMt = 0.; 
-      r->included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
-      MssmSoftsusy twoLoopMt(*r); 
-      USE_TWO_LOOP_THRESHOLD = true;
-      getMssmAndOmega(twoLoopMt, pars, tanb, sgnMu, oneset, mgutGuess, 
-		      uni, omegaMt, msqAvMt, boundaryCondition, ewsbBCscale); 
-      r->included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
-
-      /// Just 2-loop for mb,mtau
-      USE_TWO_LOOP_THRESHOLD = false;
-      double omegaMb = asin(2.), msqAvMb = 0.; 
-      r->included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
-      r->included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
-      r->included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
-      MssmSoftsusy twoLoopMb(*r); 
-      USE_TWO_LOOP_THRESHOLD = true;
-      getMssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mgutGuess, 
-		      uni, omegaMb, msqAvMb, boundaryCondition, ewsbBCscale); 
-      r->included_thresholds &= ENABLE_TWO_LOOP_MB_AS;
-      r->included_thresholds &= ENABLE_TWO_LOOP_MB_YUK;
-      r->included_thresholds &= ENABLE_TWO_LOOP_MTAU_YUK;
-      
-
-      /// 3-loop etc ON
-      double omega3 = asin(2.), msqAv3 = 0.; 
-      USE_THREE_LOOP_RGE = true;
-      USE_TWO_LOOP_THRESHOLD = true;
-      MssmSoftsusy threeLoop(*r);
-      getMssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mgutGuess, 
-		      uni, omega3, msqAv3, boundaryCondition, ewsbBCscale); 
-      
-      writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
-		 omega2, omegaAs, omegaMt, omegaMb, omega3,
-		 msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3);
-    */
     }
     break;
     case NMSSM: {
