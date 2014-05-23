@@ -9,7 +9,7 @@ set cntrparam levels discrete 123,125,126,128
 splot "atlas_scan.dat" u ($1/1000):($2/1000):5 
 
 set table "omtb.data"
-set cntrparam levels discrete 0.09,0.11
+set cntrparam levels discrete 0.09,0.13
 splot "hiTb.dat" u ($1/1000):($2/1000):53
 
 set table "ewsb2.data"

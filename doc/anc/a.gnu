@@ -107,7 +107,7 @@ set output "atlasScanMq2.eps"
 plot "mq.data" notit w l lw 4 lc rgb "white"
 
 set label 1 "0.09" at 0.14,0.43tc rgb "green" font "Helvetica, 30" rotate by 280
-set label 2 "0.11" at 1.4,0.3 tc rgb "green" font "Helvetica, 30" rotate by 70
+set label 2 "0.13" at 1.4,0.3 tc rgb "green" font "Helvetica, 30" rotate by 70
 set label 3 ""
 set label 4 ""
 set output "hiTbScanOm2.eps"
@@ -120,3 +120,34 @@ unset label 2
 set output "atlasExcl.eps"
 plot "ATLAS_SUSY_MSUGRA_201308.txt" u ($1/1000):($2/1000) notit w l lw 16 lc 2 \
 lt 3
+set autoscale
+
+set label 1 "Allanach, Bednyakov, de Ruiz Austri, 2013" at 0,0.01 font \
+"Helvetica,12" 
+set output "tbScanDy.eps"
+set title "{/Symbol m}>0, m_0=3 TeV, M_{1/2}=2 TeV, A_0=-6 TeV"
+set xlabel "tan{/Symbol b}"
+set ylabel "Y_b(M_{GUT})-Y_{/Symbol t}(M_{GUT})"
+set xtics 
+set ytics
+plot "tbScan.dat" u 4:146 tit "None" w l lc 3 lw 4, \
+"tbScan.dat" u 4:150 tit "{/Symbol D}All" w l lw 4 lc 1
+
+set label 1 "Allanach, Bednyakov, de Ruiz Austri, 2013" at 0,0.82 font \
+"Helvetica,12" 
+set output "tbScanDyt.eps"
+set ylabel "Y_t(M_{GUT})-Y_b(M_{GUT})"
+plot "tbScan.dat" u 4:151 tit "None" w l lc 3 lw 4, \
+"tbScan.dat" u 4:155 tit "{/Symbol D}All" w l lw 4 lc 1
+
+set autoscale
+set label 1 "Allanach, Bednyakov, de Ruiz Austri, 2013" at 0,0.00024 font \
+"Helvetica,12" 
+set key bottom
+set title "{/Symbol m}>0, tan{/Symbol b}=30, A_0=-2m_0"
+set output "mScanAs.eps"
+set ylabel "{/Symbol a}_3(M_{GUT})-{/Symbol a}_1(M_{GUT})"
+set xlabel "m_0/TeV=M_{1/2}/TeV"
+plot "massScan.dat" u ($1/1000):141 tit "None" w l lc 3 lw 4, \
+"massScan.dat" u ($1/1000):145 tit "{/Symbol D}All" w l lw 4 lc 1, \
+0 notit w l lc 0

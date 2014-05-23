@@ -91,7 +91,12 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & twoLoopAs,
 		MssmSoftsusy & threeLoop, double omega2, double omega2As, 
 		double omega2Mt, double omega2Mb, double omega3, 
 		double msqAv2, double msqAv2As, double msqAv2Mt, 
-		double msqAv2Mb, double msqAv3, double cs, double csAs, double csMt, double csMb, double cs3) {
+		double msqAv2Mb, double msqAv3, double cs, double csAs, 
+		double csMt, double csMb, double cs3, double dAs, 
+		double dAsAs, double dAsMt, double dAsMb, double dAs3, 
+		double dY, double dYAs, double dYMt, 
+		double dYMb, double dY3, double dYp, double dYpAs, 
+		double dYpMt, double dYpMb, double dYp3) {
   cout << "\\begin{table}\n\\begin{center}\n\\begin{tabular}{|c|c|ccccccc|}"
        << "\\hline\nThreshold & RGEs  & $m_h$  & $m_{\\tilde g}$ & "
        << "$m_{{\\tilde q}}$ & $m_{\\chi_1^0}$  & $m_{\\chi_2^0}$ & "
@@ -273,7 +278,8 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & twoLoopAs,
 												omega2Mb - omega2, csMb - cs
 	 );
     cout << "$\\Delta$ All      & 3 & ";
-    if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A & \\\\\n"); else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.1f &%+5.1f\\\\\n",
+    if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A & \\\\\n"); 
+    else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.1f &%+5.1f\\\\\n",
 	 threeLoop.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
 	 threeLoop.displayYukawaElement(YU, 3, 3) - 
 	 twoLoop.displayYukawaElement(YU, 3, 3), 
@@ -285,6 +291,70 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & twoLoopAs,
 	 omega3 - omega2, 
          cs3-cs
 	);
+
+    twoLoop.runto(twoLoop.displayMxBC());
+    twoLoopAs.runto(twoLoop.displayMxBC());
+    twoLoopMt.runto(twoLoop.displayMxBC());
+    twoLoopMb.runto(twoLoop.displayMxBC());
+    threeLoop.runto(twoLoop.displayMxBC());
+
+  cout << "\n%\n\\hline"
+       << "&& $\\Delta \\alpha$ & $\\Delta Y$ & $\\Delta Y'$&"
+       << "$M_{GUT}/10^{16}$&&&"
+       << " \\\\ \\hline"
+       << " None                   & 2 & ";
+  if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A &\\\\\n"); 
+  else printf("%5.4f & %5.3f & %5.3f & %5.3f & & & \\\\\n",
+	      (sqr(twoLoop.displayGaugeCoupling(3)) - sqr(twoLoop.displayGaugeCoupling(1))) / (4.0 * PI), 
+	      twoLoop.displayYukawaElement(YD, 3, 3) - twoLoop.displayYukawaElement(YE, 3, 3), 
+	      twoLoop.displayYukawaElement(YU, 3, 3) - 	 twoLoop.displayYukawaElement(YD, 3, 3), 
+	      twoLoop.displayMxBC() * 1.0e-16);
+
+  cout << "$10^3\\Delta \\alpha_s$  & 2 & ";
+  if (omega2As != omega2As) printf("N/A & N/A & N/A & N/A & & &\\\\\n"); 
+  else printf(" %5.3f &  %5.3f &  %5.3f & %5.3f & & & \\\\\n",
+	      (sqr(twoLoopAs.displayGaugeCoupling(3)) - 
+	       sqr(twoLoopAs.displayGaugeCoupling(1))) / (4.0 * PI) * 1.e3,
+	      twoLoopAs.displayYukawaElement(YD, 3, 3) - 
+	      twoLoopAs.displayYukawaElement(YE, 3, 3) , 
+	      (twoLoopAs.displayYukawaElement(YU, 3, 3) - 	 
+	       twoLoopAs.displayYukawaElement(YD, 3, 3)), 
+	      (twoLoopAs.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16);
+
+  cout << "$\\Delta m_t$  & 2 & ";
+  if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A &  & &\\\\\n"); 
+  else printf(" %5.3f &  %5.3f &  %5.3f & %5.3f & & & \\\\\n",
+	      (sqr(twoLoopMt.displayGaugeCoupling(3)) - 
+	       sqr(twoLoopMt.displayGaugeCoupling(1))) / (4.0 * PI) * 1.e3,
+	      twoLoopMt.displayYukawaElement(YD, 3, 3) - 
+	      twoLoopMt.displayYukawaElement(YE, 3, 3) , 
+	      (twoLoopMt.displayYukawaElement(YU, 3, 3) - 	 
+	       twoLoopMt.displayYukawaElement(YD, 3, 3)) , 
+	      (twoLoopMt.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16);
+
+  cout << "$\\Delta m_b,m_\\tau$  & 2 & ";
+  if (omega2Mb != omega2Mb) printf("N/A & N/A & N/A & N/A & & &\\\\\n"); 
+  else printf(" %5.3f &  %5.3f &  %5.3f & %5.3f & & & \\\\\n",
+	      (sqr(twoLoopMb.displayGaugeCoupling(3)) - 
+	       sqr(twoLoopMb.displayGaugeCoupling(1))) / (4.0 * PI) * 1.e3,
+	      twoLoopMb.displayYukawaElement(YD, 3, 3) - 
+	      twoLoopMb.displayYukawaElement(YE, 3, 3) , 
+	      (twoLoopMb.displayYukawaElement(YU, 3, 3) - 	 
+	       twoLoopMb.displayYukawaElement(YD, 3, 3)), 
+	      (twoLoopMb.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16);
+  
+  cout << "$\\Delta$ All  & 3 & ";
+  if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & & &\\\\\n"); 
+  else printf(" %5.3f &  %5.3f &  %5.3f & %5.3f & & & \\\\\n",
+	      (sqr(threeLoop.displayGaugeCoupling(3)) - 
+	       sqr(threeLoop.displayGaugeCoupling(1))) / (4.0 * PI) * 1.e3,
+	      threeLoop.displayYukawaElement(YD, 3, 3) - 
+	      threeLoop.displayYukawaElement(YE, 3, 3), 
+	      (threeLoop.displayYukawaElement(YU, 3, 3) - 	 
+	       threeLoop.displayYukawaElement(YD, 3, 3)), 
+	      (threeLoop.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16);
+  
+
   cout << "\\hline\n\\end{tabular}\n\\end{center}\n";
 }
 
@@ -414,7 +484,8 @@ int main(int argc, char *argv[]) {
     writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
 	       omega2, omegaAs, omegaMt, omegaMb, omega3,
 	       msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, 
-	       csMb, cs3);
+	       csMb, cs3, dAs, dAsAs, dAsMt, dAsMb, dAs3, dY, dYAs, dYMt, 
+	       dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);
 
   } else 
     if (argc == 5) { /// Scan in m0
@@ -453,9 +524,14 @@ int main(int argc, char *argv[]) {
       oneset.toMz();      ///< Runs SM fermion masses to MZ
       
       m0 = 3000.; m12 = 2000.; a0 = -6000.; tanb = 30.; sgnMu = 1;
-      double tStart = 2.0, tEnd = 60.0; int numPoints = 20;
+      double tStart = 2.0, tEnd = 60.0; int numPoints = 40;
+      double mStart = 200., mEnd = 6000.; 
       for (int i=0; i<=numPoints; i++) {
 	tanb = (tEnd - tStart) * double(i) / double(numPoints) + tStart;
+	/*m0 = (mEnd - mStart) * double(i) / double(numPoints) + mStart;
+	m12 = m0;
+	a0 = -2.0 * m0;*/
+
 	/// Preparation for calculation: set up object and input parameters
 	DoubleVector pars(3); 
 	pars(1) = m0; pars(2) = m12; pars(3) = a0;
@@ -692,3 +768,4 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
+

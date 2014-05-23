@@ -119,7 +119,8 @@ exist it is possible, if not expected, that our effective field theory
 description breaks down and such huge corrections are absent
 for some reason. 
 In any case, mass scales associated with the string scale $\sim 10^{17}$ GeV
-or the GUT scale $\sim 10^{16}$ GeV reintroduce the question of stability of
+or the grand unified theory (GUT) scale $M_{GUT}\sim 10^{16}$ GeV reintroduce
+the question of stability of 
 the Higgs mass.  
 Imposing softly-broken supersymmetry upon the Standard Model provides a
 well-known answer to this question, and this approach has been pursued
@@ -162,23 +163,6 @@ poissibilities for numerical differences. Thus, the numerical differences
 between the spectrum calculators gives a rough estimate of the size of
 theoretical uncertainties associated with the calculation. 
 
-We shall illustrate our results with two different assumptions about
-supersymmetry breaking soft terms. The first is the
-constrained minimal supersymmetric standard model (CMSSM), which makes a
-simplying 
-assumption about the supersymmetry breaking terms: each soft SUSY breaking
-scalar mass is set to a common value $m_0$ at a high scale $M_{GUT}\sim
-10^{16}$ GeV (defined
-here to be the scale at which the electroweak gauge couplings unify), the
-gaugino masses are set to a common value $M_{1/2}$ at $M_{GUT}$ and the 
-SUSY breaking trilinear scalar couplings are all fixed to a value $A_0$ at
-$M_{GUT}$. The other relevant parameters are $\tan \beta$, the ratio of the
-two Higgs vacuum expectation values, and the sign of a parameter $\mu$ that
-appears in the Higgs potential (its magnitude is fixed minimisation of the
-Higgs potential in order to predict the empirically measured central value of
-the $Z^0$ boson mass).
-The second SUSY breaking scenario is the phenomenological MSSM (pMSSM), where
-the supersymmetry breaking terms are fixed close to the weak scale. 
 
 The obvious way to reduce such a theoretical uncertainty is to incorporate the
 higher order effects, pushing the associated theoretical uncertainty to even
@@ -218,6 +202,59 @@ None of $\Delta m_t$, $\Delta \alpha_s$ or $\Delta m_b, m_\tau$ have been, to
 the best of our knowledge, made available to the public in a supported
 computer program before. 
 
+We shall illustrate our results with two different assumptions about
+supersymmetry breaking soft terms. The first is the
+constrained minimal supersymmetric standard model (CMSSM), which makes a
+simplying 
+assumption about the supersymmetry breaking terms: each soft SUSY breaking
+scalar mass is set to a common value $m_0$ at a high scale $M_{GUT}\sim
+10^{16}$ GeV (defined
+here to be the scale at which the electroweak gauge couplings unify), the
+gaugino masses are set to a common value $M_{1/2}$ at $M_{GUT}$ and the 
+SUSY breaking trilinear scalar couplings are all fixed to a value $A_0$ at
+$M_{GUT}$. The other relevant parameters are $\tan \beta$, the ratio of the
+two Higgs vacuum expectation values, and the sign of a parameter $\mu$ that
+appears in the Higgs potential (its magnitude is fixed minimisation of the
+Higgs potential in order to predict the empirically measured central value of
+the $Z^0$ boson mass). GUTs make the gauge unification prediction 
+\begin{equation}
+\alpha_1(M_{GUT})=\alpha_2(M_{GUT})=\alpha_3(M_{GUT}).  \label{gaugeUn}
+\end{equation}
+It is well known that~{\bf CITE}, if one inputs measured gauge couplings and
+evolves them with the Standard Model RGEs, Eq.~\ref{gaugeUn} is not satisfied:
+the gauge couplings $\alpha_1$ and $\alpha_3$ meet at a very different
+renormalisation scale than $\alpha_1$ and $\alpha_2$. However, if we instead
+assume the MSSM and calculate the evolution of gauge couplings at one loop
+order, the prediction Eq.~\ref{gaugeUn} agrees with data well. Two-loop
+predictions spoil this good agreement, but discrepancies between the
+equalities are small and easily explained by realistic heavy particles which
+are not far below the GUT scale, for example $M_{GUT}/10$~{\bf CITE}. 
+These particles (for example heavy coloured triplets that come from
+spontaneous breaking of the GUT group) affect the running of the gauge
+couplings between their mass and $M_{GUT}$. Since we do not know of their
+existence in our effective MSSM field theory, and we do not know their mass,
+these effects are not taken into account in a general MSSM gauge unification
+calculation, allowing some small corrections instead.
+In practice, we define $M_{GUT}$
+to be the scale where $\alpha_1=\alpha_2$, allowing $\alpha_3(M_{GUT})$ to
+differ by a small amount due to the unknown heavy GUT-scale threshold
+corrections.  
+Some GUTs such as $SU(5)$~{\bf CITE} predict bottom-tau Yukawa unification
+\begin{equation}
+Y_b(M_{GUT})=Y_\tau(M_{GUT}), \label{bTau}
+\end{equation}
+because both
+particles reside in the same multiplet. In larger GUTs such as SO(10)~{\bf
+  CITE}, the top 
+Yukawa coupling is unified with the other two:
+\begin{equation}
+Y_t(M_{GUT})=Y_b(M_{GUT})=Y_\tau(M_{GUT}). \label{tbtau}
+\end{equation}
+In a similar way to gauge unification, small GUT threshold corrections may
+slightly spoil apparent Yukawa unification. We shall therefore bear in mind
+that there 
+may be small corrections to Eqs.~\ref{bTau}, \ref{tbtau}.
+
 The effect of the three-loop RGEs upon the relative mass shifts 
 of Snowmass (SPS) benchmark 
 points~\cite{Allanach:2002nj} were presented and studied in 
@@ -245,6 +282,7 @@ higgs boson mass was observed.
 Our purpose here is to provide a more extensive
 study of the higher order effects as well as to present a public version of {\tt
   SOFTSUSY} that incorporates them, along with instructions on how to use it.
+In particular, we shall study the effects on Yukawa and gauge unification. 
 We go beyond the pioneering study Ref.~\cite{Bednyakov:2010ni} in the
 following ways: in section~\ref{sec:results}, we show case the effect of the
 higher order terms in a CMSSM  
@@ -269,10 +307,41 @@ of the MSSM particle pole masses.
 In the appendix, we give details on how to install and use the increased
 accuracy mode in a publicly available version of {\tt SOFTSUSY}.
 
-\section{Increases in Calculational Accuracy}
-SCALE DEPENDENCE?
+\section{Effects of Higher Order Terms \label{sec:results}}
+Here, we shall examine how the higher order terms change unification
+predictions and the sparticle spectrum. The accuracy of unification is
+improved with the additional terms, and we shall investigate how much they
+affect the accuracy with which gauge and Yukawa unification is (or is not)
+achieved. 
 
-\section{Effect on Sparticle Spectra \label{sec:results}}
+Two-loop threshold effects
+are not included in the calculation of sparticle masses in any of the public
+programs, indeed most of them have not been calculated yet. This means that 
+we are missing some terms {\em of the same order}\/ as those that we include 
+in our higher order corrections for these quantities (for example, two-loop
+threshold corrections to squark and gluino masses). Thus we cannot claim to
+have included the accuracy of the sparticle mass predictions. Indeed, we have
+checked that there is essentially no difference in the renormalisation scale
+dependence of the derived sparticle pole masses. 
+Differences in
+sparticle masses due to the higher order corrections do give an estimate of
+the size of the missing terms, however, and are thereofer instructive. 
+Their inclusion is also a necessary step for the future when the two-loop
+sparticle mass threshold corrections are included. 
+In principle, {\tt SOFTSUSY} does contain the relevant higher order threshold
+corrections to the Higgs masses. However, recently it was realised that all of
+the public codes aside {\tt FeynHiggs} currently contain a missing piece that
+is effectively two loop (the piece that comes from the imaginary part of the
+one-loop mass correction squared). In the near future when this omission is
+fixed, 
+our corrections will allow for a more accurate Higgs mass determination in
+{\tt SOFTSUSY} and we would expect then to see a reduction in renormalisation
+scale dependence of the predicted Higgs pole mass.
+
+In the following, we shall examine two parameter points in detail
+before performing parameter scans to characterise more generally the size of
+the higher order effects.
+
 \subsection{Dissection of the higher order effects at benchmark points}
 \input{tableOne}
 \caption{\label{tab:cmssm} Differences due to the highest order terms
@@ -302,7 +371,7 @@ SCALE DEPENDENCE?
 In Table~\ref{tab:cmssm}, we show the effects of the higher order terms for a
 CMSSM parameter point that is in the high $\tan \beta$ focus point region:
 ($m_0=7130$ GeV, $M_{1/2}=800$ GeV, $A_0=-6000$ GeV,
-$\tan \beta=50$, sign $\mu>0$) with 
+$\tan \beta=50$, $\mu>0$) with 
 rather attractive properties: it has a high lightest CP even Higgs mass of
 122.3 GeV, within $1\sigma$ of the experimental
 central value, once theoretical uncertainties (estimated to be around $\pm3$
@@ -366,6 +435,13 @@ cross section for production at a 14 TeV LHC with {\tt
   PROSPINO2.1}~\cite{Beenakker:1996ed,Beenakker:1996ch}. We see that there is
 an large 30$\%$ increase due to the higher order effects modifying $\alpha_s$,
 which in turn changes the gluino mass. 
+For brevity, we have defined 
+\begin{equation}
+\Delta
+\alpha=\alpha_3(M_{GUT})-\alpha_1(M_{GUT}),\
+\Delta Y=Y_b(M_{GUT})-Y_\tau(M_{GUT}),\ 
+\Delta Y'=Y_t(M_{GUT})-Y_b(M_{GUT}).
+\end{equation}
 
 \input{tableTwo}
 \caption{\label{tab:pmssm}  Differences due to the highest order terms
@@ -387,7 +463,9 @@ which in turn changes the gluino mass.
   $m_{\tilde q}$ refers to the average mass of the squarks of the first two
   families. 
   The rows marked with a $\Delta$ show the {\em change} in
-  the mass from the {\tt SOFTSUSY3.4.1} result. The column labeled `RGEs'
+  the mass from the {\tt SOFTSUSY3.4.1} result except for 
+  the columns labeled $\Delta \alpha$, $\Delta Y$ or $\Delta Y'$. The column
+  labeled `RGEs' 
   shows the number of loops used in the MSSM RGEs. The column headed
   `$\sigma_{SUSY}^{TOT}$ shows the total cross-section in fb for the
   production of   gluinos and squarks at a 14 TeV LHC.}
@@ -435,17 +513,59 @@ robustness with respect to the higher order effects.
 
 \subsection{CMSSM parameter scans}
 
-We now perform a scan over CMSSM parameter space in order to examine the kind
-of behaviour expected more generically from the higher order corrections, and
-also to foretell possible effects on SUSY phenomenology. We choose the
+
+
+\begin{figure}
+\unitlength=1in
+\begin{center}
+\begin{picture}(7,2)
+\put(-0.5,2){\includegraphics[angle=270,width=0.48\textwidth]{anc/mScanAs.eps}}
+\put(1.83,2){\includegraphics[angle=270,width=0.48\textwidth]{anc/tbScanDy.eps}}
+\put(4.16,2){\includegraphics[angle=270,width=0.48\textwidth]{anc/tbScanDyt.eps}}
+\put(0,1.9){(a)}
+\put(2.33,1.9){(b)}
+\put(4.66,1.9){(c)}
+\end{picture}
+\end{center}
+\caption{\label{fig:uni}
+Effects of higher order terms on unification in the CMSSM. The legend defines
+whether the higher order terms are included (`$\Delta$All') or not (`None').}
+\end{figure}
+We now perform scans over CMSSM parameter space in order to examine the
+effects of the higher order terms on unification. 
+Fig.~\ref{fig:uni} shows one-dimensional scans through CMSSM parameter space
+around a parameter
 $m_0-M_{1/2}$ plane with $\mu>0$, $\tan \beta=30$ and $A_0=-2m_0$, which was
 recently used by ATLAS to place bounds upon the CMSSM from various 8
 TeV,  LHC jets plus missing energy
 searches~\cite{ATLAS-CONF-2013-047,Aad:2013wta} with 20 fb$^{-1}$ of
 integrated luminosity.  
-We have combined the two most restrictive exclusion limits into one: if a
-point is excluded by either or both of them, we count it as excluded. 
+We see in Fig.~\ref{fig:uni}a that exact gauge unfication occurs, for
+$A=-2m_0$, $\mu>0$ and $\tan \beta=30$, at around $m_0=M_{1/2}\approx 4$ TeV
+in the CMSSM. However, including the higher order terms, $\alpha_3(M_{GUT})$
+as predicted by data is around 0.001 times smaller than the other gauge
+couplings. Such a discrepancy may be explained within a more detail GUT model
+from GUT threshold effects, but the precise value of
+$\alpha_3(M_{GUT})-\alpha_1(M_{GUT})$ is important for constraining these. 
+We see from Fig.~\ref{fig:uni}b that bottom-tau Yukawa unification is only
+possible at low values of $\tan \beta$. Here, however, the Higgs mass
+prediction is too low compared with recent measurements. The higher order
+corrections change the prediction of the Yukawa coupling difference (to be 
+acquired through GUT threshold effects) of a few per mille. Top-bottom Yukawa
+unification is similarly not possible, as is evident in Fig.~\ref{fig:uni}c
+where the difference between them at the GUT scale is too large to be
+explained by small loop effects. If GUT thresholds are well below the GUT
+scale, perhaps such a large correction may be possible. The higher order
+effects make a large difference of several percent at high $\tan \beta$, and 
+would significantly change the constraints upon these thresholds. 
 
+We shall now display some of our results in the parameter plane recently
+defined by ATLAS.  
+We have combined the two most restrictive exclusion limits from their direct
+LHC 7/8 
+TeV searches~\cite{ATLAS-CONF-2013-047,Aad:2013wta} into one: if a
+point is excluded at 95$\%$ confidence level by either or both of them, we
+count it as excluded.  
 In Fig.~\ref{fig:cmssm}, we show some contours of important MSSM particle
 masses as 
 well as their relative change due to the higher order corrections. The region
@@ -535,7 +655,6 @@ We next perform a scan at high $\tan \beta$, displaying a region where
 
 
 
-\section{Effect on Unification}
 
 \section{Conclusions}
 Talk about $\alpha_s Y_t^2$ and $Y_t^4$ corrections being the main ones
