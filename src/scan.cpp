@@ -299,60 +299,69 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & twoLoopAs,
     threeLoop.runto(twoLoop.displayMxBC());
 
   cout << "\n%\n\\hline"
-       << "&& $\\Delta \\alpha$ & $\\Delta Y$ & $\\Delta Y'$&"
-       << "$M_{GUT}/10^{16}$&&&"
+       << "&& $M_{GUT}/10^{16}$& $1/\\alpha_{GUT}$&$\\Delta (\\alpha)$ & $\\Delta Y_{b\\tau}$ & $\\Delta Y_{tb}$&"
+       << "&"
        << " \\\\ \\hline"
        << " None                   & 2 & ";
   if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A &\\\\\n"); 
-  else printf("%5.4f & %5.3f & %5.3f & %5.3f & & & \\\\\n",
-	      (sqr(twoLoop.displayGaugeCoupling(3)) - sqr(twoLoop.displayGaugeCoupling(1))) / (4.0 * PI), 
+  else printf("%5.3f & %5.3f & %5.3f & %5.3f & %5.3f& & \\\\\n", 
+	      twoLoop.displayMxBC() * 1.0e-16,
+	      (4 * PI) / sqr(twoLoop.displayGaugeCoupling(1)),
+	      (sqr(twoLoop.displayGaugeCoupling(3)) - sqr(twoLoop.displayGaugeCoupling(1))) / (4 * PI), 
 	      twoLoop.displayYukawaElement(YD, 3, 3) - twoLoop.displayYukawaElement(YE, 3, 3), 
-	      twoLoop.displayYukawaElement(YU, 3, 3) - 	 twoLoop.displayYukawaElement(YD, 3, 3), 
-	      twoLoop.displayMxBC() * 1.0e-16);
+	      twoLoop.displayYukawaElement(YU, 3, 3) - 	 twoLoop.displayYukawaElement(YD, 3, 3));
 
-  cout << "$10^3\\Delta \\alpha_s$  & 2 & ";
+  cout << "$\\Delta \\alpha_s$  & 2 & ";
   if (omega2As != omega2As) printf("N/A & N/A & N/A & N/A & & &\\\\\n"); 
-  else printf(" %5.3f &  %5.3f &  %5.3f & %5.3f & & & \\\\\n",
+  else printf(" %5.3f &  %5.3f &  %5.3f & %5.3f &%5.3f & & \\\\\n", 
+	      (twoLoopAs.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16,
+	      (4 * PI) / sqr(twoLoopAs.displayGaugeCoupling(1)) - 
+	      (4 * PI) / sqr(twoLoop.displayGaugeCoupling(1)),
 	      (sqr(twoLoopAs.displayGaugeCoupling(3)) - 
-	       sqr(twoLoopAs.displayGaugeCoupling(1))) / (4.0 * PI) * 1.e3,
+	       sqr(twoLoopAs.displayGaugeCoupling(1))) / (4 * PI),
 	      twoLoopAs.displayYukawaElement(YD, 3, 3) - 
 	      twoLoopAs.displayYukawaElement(YE, 3, 3) , 
 	      (twoLoopAs.displayYukawaElement(YU, 3, 3) - 	 
-	       twoLoopAs.displayYukawaElement(YD, 3, 3)), 
-	      (twoLoopAs.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16);
+	       twoLoopAs.displayYukawaElement(YD, 3, 3)));
 
   cout << "$\\Delta m_t$  & 2 & ";
-  if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A &  & &\\\\\n"); 
-  else printf(" %5.3f &  %5.3f &  %5.3f & %5.3f & & & \\\\\n",
+  if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A &N/A  & &\\\\\n"); 
+  else printf(" %5.3f &  %5.3f &  %5.3f & %5.3f &%5.3f & & \\\\\n" , 
+	      (twoLoopMt.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16,
+	      4 * PI / sqr(twoLoopMt.displayGaugeCoupling(1)) / - 
+	      4 * PI / sqr(twoLoop.displayGaugeCoupling(1)),
 	      (sqr(twoLoopMt.displayGaugeCoupling(3)) - 
-	       sqr(twoLoopMt.displayGaugeCoupling(1))) / (4.0 * PI) * 1.e3,
+	       sqr(twoLoopMt.displayGaugeCoupling(1))) / (4 * PI),
 	      twoLoopMt.displayYukawaElement(YD, 3, 3) - 
 	      twoLoopMt.displayYukawaElement(YE, 3, 3) , 
 	      (twoLoopMt.displayYukawaElement(YU, 3, 3) - 	 
-	       twoLoopMt.displayYukawaElement(YD, 3, 3)) , 
-	      (twoLoopMt.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16);
+	       twoLoopMt.displayYukawaElement(YD, 3, 3)));
 
   cout << "$\\Delta m_b,m_\\tau$  & 2 & ";
   if (omega2Mb != omega2Mb) printf("N/A & N/A & N/A & N/A & & &\\\\\n"); 
-  else printf(" %5.3f &  %5.3f &  %5.3f & %5.3f & & & \\\\\n",
+  else printf(" %5.3f &  %5.3f &  %5.3f & %5.3f &%5.3f & & \\\\\n",
+	      (twoLoopMb.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16,
+	      4 * PI / sqr(twoLoopMb.displayGaugeCoupling(1)) - 
+	      4 * PI / sqr(twoLoop.displayGaugeCoupling(1)),
 	      (sqr(twoLoopMb.displayGaugeCoupling(3)) - 
-	       sqr(twoLoopMb.displayGaugeCoupling(1))) / (4.0 * PI) * 1.e3,
+	       sqr(twoLoopMb.displayGaugeCoupling(1))) / (4 * PI),
 	      twoLoopMb.displayYukawaElement(YD, 3, 3) - 
 	      twoLoopMb.displayYukawaElement(YE, 3, 3) , 
 	      (twoLoopMb.displayYukawaElement(YU, 3, 3) - 	 
-	       twoLoopMb.displayYukawaElement(YD, 3, 3)), 
-	      (twoLoopMb.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16);
+	       twoLoopMb.displayYukawaElement(YD, 3, 3)));
   
   cout << "$\\Delta$ All  & 3 & ";
   if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & & &\\\\\n"); 
-  else printf(" %5.3f &  %5.3f &  %5.3f & %5.3f & & & \\\\\n",
+  else printf(" %5.3f &  %5.3f &  %5.3f & %5.3f &%5.3f & & \\\\\n", 
+	      (threeLoop.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16,
+	      4 * PI / sqr(threeLoop.displayGaugeCoupling(1)) - 
+	      4 * PI / sqr(twoLoop.displayGaugeCoupling(1)),
 	      (sqr(threeLoop.displayGaugeCoupling(3)) - 
-	       sqr(threeLoop.displayGaugeCoupling(1))) / (4.0 * PI) * 1.e3,
+	       sqr(threeLoop.displayGaugeCoupling(1))) / (4 * PI),
 	      threeLoop.displayYukawaElement(YD, 3, 3) - 
 	      threeLoop.displayYukawaElement(YE, 3, 3), 
 	      (threeLoop.displayYukawaElement(YU, 3, 3) - 	 
-	       threeLoop.displayYukawaElement(YD, 3, 3)), 
-	      (threeLoop.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16);
+	       threeLoop.displayYukawaElement(YD, 3, 3)));
   
 
   cout << "\\hline\n\\end{tabular}\n\\end{center}\n";
@@ -434,7 +443,7 @@ int main(int argc, char *argv[]) {
     MssmSoftsusy twoLoop;
     getCmssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
 		     uni, omega2, msqAv2, cs, dAs, dY, dYp);
-    cout << twoLoop << cs << endl; 
+    twoLoop.runto(twoLoop.displayMxBC());
 
     /// Just 2-loop thresholds for strong coupling constant
     double omegaAs = asin(2.), msqAvAs = 0., csAs = 0., dAsAs = 0., 
@@ -444,7 +453,7 @@ int main(int argc, char *argv[]) {
     USE_TWO_LOOP_THRESHOLD = true;
     getCmssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mGutGuess, 
 		     uni, omegaAs, msqAvAs, csAs, dAsAs, dYAs, dYpAs); 
-    cout << twoLoopAs << csAs << endl;     
+    //    cout << twoLoopAs << csAs << endl;     
 
     /// Just 2-loop strong thresholds for mt
     USE_TWO_LOOP_THRESHOLD = false;
@@ -455,7 +464,7 @@ int main(int argc, char *argv[]) {
     USE_TWO_LOOP_THRESHOLD = true;
     getCmssmAndOmega(twoLoopMt, pars, tanb, sgnMu, oneset, mGutGuess, 
 		     uni, omegaMt, msqAvMt, csMt, dAsMt, dYMt, dYpMt); 
-    cout << twoLoopMt << csMt << endl;     
+    //    cout << twoLoopMt << csMt << endl;     
 
     /// Just 2-loop for mb,mtau
     USE_TWO_LOOP_THRESHOLD = false;
@@ -469,7 +478,7 @@ int main(int argc, char *argv[]) {
     getCmssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mGutGuess, 
 		     uni, omegaMb, msqAvMb, cs, dAsMb,
       dYMb, dYpMb); 
-    cout << twoLoopMb << csMb << endl;     
+    //    cout << twoLoopMb << csMb << endl;     
 
     /// 3-loop etc ON
     double omega3 = asin(2.), msqAv3 = 0., cs3 = 0., dAs3 = 0., 
@@ -479,7 +488,7 @@ int main(int argc, char *argv[]) {
     MssmSoftsusy threeLoop;
     getCmssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
 		     uni, omega3, msqAv3, cs3, dAs3, dY3, dYp3); 
-    cout << threeLoop << cs3 << endl; 
+    //    cout << threeLoop << cs3 << endl; 
 
     writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
 	       omega2, omegaAs, omegaMt, omegaMb, omega3,
