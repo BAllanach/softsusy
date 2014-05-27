@@ -21,7 +21,7 @@
 DAMTP-2014-??
 \end{flushright}
 
-\title{Incorporating Some Two Loop Threshold Effects and Gauge and
+\title{Incorporating Some Two Loop Threshold Corrections to Gauge and
   Yukawa Couplings and Three Loop
   Renormalisation Group Equations in the Calculation of Unification in
   the Minimal Supersymmetric Standard Model: {\tt SOFTSUSY3.5.0}}
@@ -43,18 +43,22 @@ DAMTP-2014-??
   contain two-loop 
   renormalisation group equations and one-loop threshold corrections to the
   gauge and Yukawa couplings. Here, we explore the effects of three-loop
-  renormalisation group equation terms, some leading two-loop threshold
-  corrections are incorporated to the third family Yukawa couplings and the
-  strong coupling constant on the unification of gauge and Yukawa couplings.
+  renormalisation group equation terms and some leading two-loop threshold
+  corrections. They result in more accurate predictions for gauge and Yukawa
+  unification. 
   We illustrate our results in the constrained minimal supersymmetric standard
   model (CMSSM). The discrepancy between the GUT-scale value of $\alpha_s$ and
-  the other two unified gauge couplings changes by XXX due to the higher order
-  corrections. The bottom-tau Yukawa unification prediction of $\tan \beta$
-  changes by YYY. The higher order corrections give an estimate of the size of
+  the other two unified gauge couplings changes by one per mille due to the
+  higher order 
+  corrections, neglecting GUT threshold corrections. The bottom-tau Yukawa
+  unification prediction of $\tan \beta$ 
+  changes by XXX, again neglecting GUT threshold corrections. 
+  The higher order corrections also give an estimate of the size of
   theoretical uncertainties in the MSSM spectrum. We use these to provide
   estimates 
   of theoretical uncertainties in predictions of the dark matter relic density
-  and the LHC sparticle production cross-section.
+  (which can be of order one due to its strong dependence on sparticle masses)
+  and the LHC sparticle production cross-section (often around 40$\%$).
   The additional higher order corrections have been
   incorporated into {\tt SOFTSUSY3.5.0}, and we provide details on how to
   compile and use the program. We also provide a summary of the
@@ -77,7 +81,8 @@ MSSM
 {\em Computer:}\/ Personal computer.\\
 {\em Operating system:}\/ Tested on Linux 3.x\\
 {\em Word size:}\/ 64 bits.\\
-{\em External routines:}\/ At least {\tt GiNaC1.3.5} and {\tt CLN1.3.1}\\
+{\em External routines:}\/ At least {\tt GiNaC1.3.5}~{\bf CITE} and {\tt
+  CLN1.3.1}~{\bf CITE}\\
 {\em Typical running time:}\/ A minute per parameter point.\\
 {\em Nature of problem:}\/ Calculating supersymmetric particle spectrum and
 mixing parameters in the next-to-minimal minimal supersymmetric standard
@@ -91,7 +96,9 @@ perturbative regime and it
 assumes that all couplings of the model are real
 (i.e.\ $CP-$conserving). If the parameter point under investigation is
 non-physical for some reason (for example because the electroweak potential
-does not have an acceptable minimum), \SOFTSUSY{} returns an error message.\\
+does not have an acceptable minimum), \SOFTSUSY{} returns an error message.
+The higher order corrections included are for the real $R-$parity conserving
+MSSM only.\\
 {\em CPC Classification:} 11.1 and 11.6.\\
 {\em Does the new version supersede the previous version?:} Yes.\\
 {\em Reasons for the new version:} Major extension to include additional two
@@ -228,7 +235,7 @@ assume the MSSM and calculate the evolution of gauge couplings at one loop
 order, the prediction Eq.~\ref{gaugeUn} agrees with data well. Two-loop
 predictions spoil this good agreement, but discrepancies between the
 equalities are small and easily explained by realistic heavy particles which
-are not far below the GUT scale, for example $M_{GUT}/10$~{\bf CITE}. 
+are not far below the GUT scale, for example $\sim \mathcal O(M_{GUT}/10)$~{\bf CITE}. 
 These particles (for example heavy coloured triplets that come from
 spontaneous breaking of the GUT group) affect the running of the gauge
 couplings between their mass and $M_{GUT}$. Since we do not know of their
@@ -338,7 +345,7 @@ our corrections will allow for a more accurate Higgs mass determination in
 {\tt SOFTSUSY} and we would expect then to see a reduction in renormalisation
 scale dependence of the predicted Higgs pole mass.
 
-In the following, we shall examine two parameter points in detail
+In the next subsection, we shall examine two parameter points in detail
 before performing parameter scans to characterise more generally the size of
 the higher order effects.
 
@@ -449,8 +456,8 @@ more accurate.
 For brevity, we have defined 
 \begin{equation}
 \Delta
-(\alpha)=\alpha_3(M_{GUT})-\alpha_1(M_{GUT}),\
-\Delta Y_{b\tau}=Y_b(M_{GUT})-Y_\tau(M_{GUT}),\ 
+(\alpha)=\alpha_3(M_{GUT})-\alpha_1(M_{GUT}),\qquad
+\Delta Y_{b\tau}=Y_b(M_{GUT})-Y_\tau(M_{GUT}),\qquad
 \Delta Y_{tb}=Y_t(M_{GUT})-Y_b(M_{GUT}),
 \end{equation}
 where $\alpha_{GUT}$ in the table refers to
@@ -551,8 +558,9 @@ whether the higher order terms are included (`$\Delta$All') or not (`None').}
 We now perform scans over CMSSM parameter space in order to examine the
 effects of the higher order terms on unification. 
 Fig.~\ref{fig:uni} shows one-dimensional scans through CMSSM parameter space
-around a parameter
-$m_0-M_{1/2}$ plane with $\mu>0$, $\tan \beta=30$ and $A_0=-2m_0$, which was
+around a 
+$m_0-M_{1/2}$ parameter plane with $\mu>0$, $\tan \beta=30$ and $A_0=-2m_0$,
+which was 
 recently used by ATLAS to place bounds upon the CMSSM from various 8
 TeV,  LHC jets plus missing energy
 searches~\cite{ATLAS-CONF-2013-047,Aad:2013wta} with 20 fb$^{-1}$ of
@@ -561,8 +569,8 @@ We see in Fig.~\ref{fig:uni}a that exact gauge unfication occurs, for
 $A=-2m_0$, $\mu>0$ and $\tan \beta=30$, at around $m_0=M_{1/2}\approx 4$ TeV
 in the CMSSM. However, including the higher order terms, $\alpha_3(M_{GUT})$
 as predicted by data is around 0.001 times smaller than the other gauge
-couplings. Such a discrepancy may be explained within a more detail GUT model
-from GUT threshold effects, but the precise value of
+couplings. Such a discrepancy may be explained within a more detailed GUT model
+via GUT threshold effects, but the precise value of
 $\alpha_3(M_{GUT})-\alpha_1(M_{GUT})$ is important for constraining these. 
 We see from Fig.~\ref{fig:uni}b that bottom-tau Yukawa unification is only
 possible at low values of $\tan \beta$. Here, however, the Higgs mass
@@ -673,9 +681,51 @@ We next perform a scan at high $\tan \beta$, displaying a region where
 
 
 
-\section{Conclusions}
-Talk about $\alpha_s Y_t^2$ and $Y_t^4$ corrections being the main ones
-remaining to do.  
+\section{Summary and Conclusions}
+ We have incorporated three-loop RGEs as well as some leading two-loop
+ threshold corrections to the QCD gauge coupling and third family fermion
+ masses into the {\tt SOFTSUSY} spectrum calculator. The corrections included
+ are: $\mathcal O(\alpha_s^2)$ corrections to $m_t$, $\mathcal O(\alpha_s^2)$,
+ $\mathcal O(\alpha_s Y_b^2)$ and
+ $\mathcal O(\alpha_s 
+ Y_t^2)$ corrections to $\alpha_s$, and $\mathcal O(\alpha_s^2)$, 
+ $\mathcal O(\alpha_s Y_b^2)$, $\mathcal O(\alpha_s
+ Y_b^2)$ corrections to $m_b$. $\mathcal O(Y_\tau^4)$
+ corrections to $m_\tau$ are also included. These corrections make gauge and
+ Yukawa unification  predictions more accurate. They also give a good estimate
+ for the size of theoretical uncertainties in the sparticle mass predictions
+ from higher order corrections. We report a 2-3 GeV theoretical uncertainty in
+ the prediction  of 
+ the lightest CP even Higgs mass. Other sparticle masses have larger
+ uncertainties when running to and from the GUT scale, as in the CMSSM, where
+ small threshold effects become amplified by sensitive renormalisation group
+ running. On the other hand, in the pMSSM, where there is only running between
+ $M_{SUSY}$ and $M_Z$, the theoretical uncertainties in sparticle masses are
+ smaller: typically at the percent level. The uncertainties in the spectrum
+ have a knock-on effect on derived observables: for example, the predicted
+ relic density of dark matter, since it depends so sensitively on sparticle
+ masses in some parts of parameter space, can have order 1 theoretical
+ uncertainties. The total LHC sparticle production cross-section can have a
+ $40\%$ error in the CMSSM (this decreases to a percent or so in the pMSSM).
+
+ Neither $\mathcal O(\alpha_s Y_t^2) $ nor $\mathcal O(Y_t^4)$
+ corrections are included in the calculation of the running value of
+ $m_t$. Since parts of the phenomenology are so 
+ sensitively dependent upon the precise value of of $m_t$ in parts of
+ parameter space (especially the focus point of the CMSSM), an important
+ future work will be to include these. At high values of $\tan \beta$, it will
+ be advantageous to include the $\mathcal O(\alpha_s Y_b^2) $ and $\mathcal
+ O(Y_b^4)$ corrections to the running value of 
+ $m_b$ as well. 
+ A much bigger future enterprise would
+ be to  include direct two-loop threshold corrections to sparticle masses. The
+ corrections that we have included are a necessary step toward this goal. 
+ There has been controversy over whether full top-bottom-tau Yukawa
+ unification is possible or not in supersymmetric minimal SO(10) GUT
+ models~{\bf CITE ???}. 
+ It will be an interesting future project to examine to what extent this is
+ possible or not while including the effects of the higher order corrections. 
+
 
 \section*{Acknowledgments}
 This work has been partially supported by STFC. BCA thanks the Cambridge SUSY
@@ -686,26 +736,55 @@ working group for useful discussions.
 \section{Installation of the Increased Accuracy Mode}
 \label{sec:install}
 
-Two compilation options are added
-\begin{itemize}
+The two freely available programs {\tt CLN} (at least version 1.3.1) and {\tt
+  GiNaC} (at least version 1.3.5) should be installed before the user attempts
+to install {\tt SOFTSUSY} with the higher order corrections. However, 
+{\tt SOFTSUSY} should compile without problems and without the higher order
+corrections if they are not. 
+Two compilation arguments are provided:
+\small\begin{itemize}
 	\item[] \verb|--enable-three-loop-rge-compilation| - compile three-loop RGEs in the MSSM 
 	\item[] \verb|--enable-full-susy-threshold-compilation| - compile
           additional two-loop threshold corrections to the third generation
           Yukawa couplings and the strong coupling constant.
-\end{itemize}
+\end{itemize}\normalsize
+If all higher order corrections are desired, the program including the higher
+order corrections may be compiled via:
+\begin{verbatim}
+> ./configure --enable-three-loop-rge-compilation --enable-full-susy-threshold-compilation
+> make
+\end{verbatim}
 
-Boolean variables that control the Increased Accuracy Mode at runtime
+We have included two boolean variables that control the higher order
+corrections  at run time, provided the program has already been compiled with 
+the higher order corrections included:
 \begin{itemize}
-	\item \verb|USE_THREE_LOOP_RGE = false|  - add three-loop contribution to MSSM RGE (corresponds to the \code{SOFTSUSY Block} parameter 19)
-	\item \verb|USE_TWO_LOOP_THRESHOLD = false| - add two-loop threshold corrections to the third generation Yukawa couplings and the strong coupling constant
-(corresponds to the \code{SOFTSUSY Block} parameter 20)
+	\item \verb|USE_THREE_LOOP_RGE|  - add three-loop contribution to
+          MSSM RGE (corresponds to the \code{SOFTSUSY Block} parameter 19). 
+	\item \verb|USE_TWO_LOOP_THRESHOLD| - add two-loop threshold
+          corrections to the third generation Yukawa couplings and the strong
+          coupling constant 
+          (corresponds to the \code{SOFTSUSY Block} parameter 20).
 \end{itemize}
+By default, both of these sets of higher order corrections are switched off 
+(the boolean values are set to {\tt false}), unless the user sets them. 
 
-Additional variables that gives a finer control the Increased Accuracy Mode at runtime (with their default values)
+Additional variables that gives a finer control the Increased Accuracy Mode at
+runtime (with their default values) 
 \begin{itemize}
-	\item \verb|double TWOLOOP_NUM_THRESH = 0.1|  - used in the iterative algorithm to prevent lengthy re-evaluation of two-loop thresholds 
-		if the relative difference between the result obtained in current step and the  calcululated previously is less than \verb|TWOLOOP_NUM_THRESH| 
-	\item \verb|boolean SOFTSUSY_TWOLOOP_blah = true| - control whether individual two-loop threshold corrections should be added (remove it or make a \verb|enum|?)
+	\item \verb|double TWOLOOP_NUM_THRESH = 0.1|  - 
+          used in the iterative 
+          algorithm to prevent lengthy re-evaluation of two-loop thresholds   
+		if the relative difference between the result obtained in
+                current iteration and the value calculated in the previous
+                iteration is less than
+                \verb|TWOLOOP_NUM_THRESH|. See Ref.~\cite{Allanach:201kg} for
+                details of the 
+                algorithm employed.
+	\item \verb|boolean SOFTSUSY_TWOLOOP_blah = true| - 
+          controls whether
+          individual two-loop threshold corrections should be added (remove it
+          or make a \verb|enum|?) 
 	\item \verb|boolean MB_DECOUPLING = false| - evaluate b-quark self-energies at $p=0$ in order to incorporate ``decoupling'' precedure (remove it?)
 \end{itemize}
 
@@ -733,8 +812,8 @@ are switched on with \code{SOFTSUSY Block} parameter 20 in the SLHA2 input file:
 \small
 \begin{verbatim}
 Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
-   19   1.000000000e+00      # Include 3-loop RGE terms (0 to disable)
-   20   1.000000000e+00      # Include 2-loop thresholds (0 to disable)
+   19   1.000000000e+00      # Include 3-loop RGE terms (default of 0 to disable)
+   20   1.000000000e+00      # Include all 2-loop thresholds (default of 0 to disable)
 \end{verbatim}
 \normalsize
 

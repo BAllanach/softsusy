@@ -89,21 +89,6 @@ namespace softsusy {
   /// Includes the evaluation of leading two-loop thresholds corrections
   /// to the strong coupling constant and to the third family of fermion masses 
   bool USE_TWO_LOOP_THRESHOLD = false;
-  /*
-  /// Adds the evaluation of \f${\mathcal O}(\alpha_s^2)\f$ pole 
-  /// mass correction to the top quark
-  bool SOFTSUSY_TWOLOOP_TQUARK_STRONG = true;
-  /// Adds the evaluation \f${\mathcal O}(\alpha_s^2)\f$ decoupling correction
-  bool SOFTSUSY_TWOLOOP_BQUARK_STRONG = true;
-  /// Adds the evaluation \f${\mathcal O}(\alpha_s alpha_y+\alpha_y^2)\f$ 
-  /// decoupling correction
-  bool SOFTSUSY_TWOLOOP_BQUARK_YUKAWA = true;
-  /// Adds the evaluation \f${\mathcal O}(\alpha_y^2)\f$ decoupling correction
-  bool SOFTSUSY_TWOLOOP_TAU_YUKAWA = true;
-  /// Adds the evaluation \f${\mathcal O}(\alpha_s^2)\f$ strong 
-  /// coupling decoupling corrections
-  bool SOFTSUSY_TWOLOOP_GS = true;
-  */
   /// just implements decoupling procedure "consistently" for
   /// the case of b-quark mass. It requires the external momentum to be zero. 
   /// However, the difference between the p^2 = 0 and p^2 = mb^2 cases

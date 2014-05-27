@@ -114,35 +114,19 @@ namespace softsusy{
   extern double TWOLOOP_NUM_THRESH;
   /// Includes the evaluation of leading two-loop thresholds corrections
   /// to the strong coupling constant and to the third family of fermion masses 
-  extern bool USE_TWO_LOOP_THRESHOLD; //SOFTSUSY_TWOLOOP;
-  /*
-  /// Adds the evaluation of \f${\mathcal O}(\alpha_s^2)\f$ pole 
-  /// mass correction to the top quark
-  extern bool SOFTSUSY_TWOLOOP_TQUARK_STRONG;
-  /// Adds the evaluation \f${\mathcal O}(\alpha_s^2)\f$ decoupling correction
-  extern bool SOFTSUSY_TWOLOOP_BQUARK_STRONG;
-  /// Adds the evaluation \f${\mathcal O}(\alpha_s alpha_y+\alpha_y^2)\f$ 
-  /// decoupling correction
-  extern bool SOFTSUSY_TWOLOOP_BQUARK_YUKAWA;
-  /// Adds the evaluation \f${\mathcal O}(\alpha_y^2)\f$ decoupling correction
-  extern bool SOFTSUSY_TWOLOOP_TAU_YUKAWA;
-  /// Adds the evaluation \f${\mathcal O}(\alpha_s^2)\f$ strong 
-  /// coupling decoupling corrections
-  extern bool SOFTSUSY_TWOLOOP_GS;
-  */
+  extern bool USE_TWO_LOOP_THRESHOLD; 
   /// just implements decoupling procedure "consistently" for
   /// the case of b-quark mass. It requires the external momentum to be zero. 
   /// However, the difference between the p^2 = 0 and p^2 = mb^2 cases
   /// is expected to be of O((mb/MSUSY)^2), which we can formally neglect.
   extern bool MB_DECOUPLING;
 
-  enum 			{ 
-		ENABLE_TWO_LOOP_MT_AS  = 0x1,    
-	        ENABLE_TWO_LOOP_AS_AS_YUK = 0x2,
-	  	ENABLE_TWO_LOOP_MB_AS  = 0x4, 
-		ENABLE_TWO_LOOP_MB_YUK = 0x8,    
-	        ENABLE_TWO_LOOP_MTAU_YUK = 0x10    
-  			};    
+  enum { ENABLE_TWO_LOOP_MT_AS  = 0x1,    
+	 ENABLE_TWO_LOOP_AS_AS_YUK = 0x2,
+	 ENABLE_TWO_LOOP_MB_AS  = 0x4, 
+	 ENABLE_TWO_LOOP_MB_YUK = 0x8,    
+	 ENABLE_TWO_LOOP_MTAU_YUK = 0x10    
+  };    
 
 #endif
   
