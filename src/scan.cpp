@@ -25,6 +25,187 @@
 #include "utils.h"
 #include "numerics.h"
 
+void printLineOut(double m0, double m12, double a0, double tanb, 
+		  MssmSoftsusy twoLoop, MssmSoftsusy twoLoopAs, 
+		  MssmSoftsusy & twoLoopMt, MssmSoftsusy & twoLoopMb, 
+		  MssmSoftsusy & threeLoop, double omega2, double omegaAs, 
+		  double omegaMt, double omegaMb, double omega3, 
+		  double msqAv2, double msqAvAs, double msqAvMt, 
+		  double msqAvMb, double msqAv3, double cs, double csAs, 
+		  double csMt, double csMb, double cs3, double dA, 
+		  double dAAs, double dAMt, double dAMb, double dA3, 
+		  double dY, double dYAs, double dYMt, 
+		  double dYMb, double dY3, double dYp, double dYpAs, 
+		  double dYpMt, double dYpMb, double dYp3) {
+	cout << m0                                                     ///< 1
+	     << " " << m12                                             ///< 2
+	     << " " << a0                                              ///< 3
+	     << " " << tanb                                            ///< 4
+	     << " " << twoLoop.displayPhys().mh0(1)                    ///< 5
+	     << " " << twoLoopAs.displayPhys().mh0(1)                  ///< 6
+	     << " " << twoLoopMt.displayPhys().mh0(1)                  ///< 7
+	     << " " << twoLoopMb.displayPhys().mh0(1)                  ///< 8
+	     << " " << threeLoop.displayPhys().mh0(1)                  ///< 9
+	     << " " << twoLoop.displayPhys().mA0(1)                    ///< 10
+	     << " " << twoLoopAs.displayPhys().mA0(1)                  ///< 11
+	     << " " << twoLoopMt.displayPhys().mA0(1)                  ///< 12
+	     << " " << twoLoopMb.displayPhys().mA0(1)                  ///< 13
+	     << " " << threeLoop.displayPhys().mA0(1)                  ///< 14
+	     << " " << twoLoop.displayPhys().mh0(2)                    ///< 15
+	     << " " << twoLoopAs.displayPhys().mh0(2)                  ///< 16
+	     << " " << twoLoopMt.displayPhys().mh0(2)                  ///< 17
+	     << " " << twoLoopMb.displayPhys().mh0(2)                  ///< 18
+	     << " " << threeLoop.displayPhys().mh0(2)                  ///< 19
+	     << " " << twoLoop.displayPhys().mHpm                      ///< 20
+	     << " " << twoLoopAs.displayPhys().mHpm                    ///< 21
+	     << " " << twoLoopMt.displayPhys().mHpm                    ///< 22
+	     << " " << twoLoopMb.displayPhys().mHpm                    ///< 23
+	     << " " << threeLoop.displayPhys().mHpm                    ///< 24
+	     << " " << twoLoop.displayPhys().mGluino                   ///< 25
+	     << " " << twoLoopAs.displayPhys().mGluino                 ///< 26
+	     << " " << twoLoopMt.displayPhys().mGluino                 ///< 27
+	     << " " << twoLoopMb.displayPhys().mGluino                 ///< 28
+	     << " " << threeLoop.displayPhys().mGluino                 ///< 29
+	     << " " << msqAv2                                          ///< 30
+	     << " " << msqAvAs                                         ///< 31 
+	     << " " << msqAvMt                                         ///< 32
+	     << " " << msqAvMb                                         ///< 33
+	     << " " << msqAv3                                          ///< 34
+	     << " " << twoLoop.displayPhys().me(1, 1)                  ///< 35 
+	     << " " << twoLoopAs.displayPhys().me(1, 1)                ///< 36 
+	     << " " << twoLoopMt.displayPhys().me(1, 1)                ///< 37 
+	     << " " << twoLoopMb.displayPhys().me(1, 1)                ///< 38 
+	     << " " << threeLoop.displayPhys().me(1, 1)                ///< 39 
+	     << " " << twoLoop.displayPhys().me(2, 1)                  ///< 40 
+	     << " " << twoLoopAs.displayPhys().me(2, 1)                ///< 41 
+	     << " " << twoLoopMt.displayPhys().me(2, 1)                ///< 42
+	     << " " << twoLoopMb.displayPhys().me(2, 1)                ///< 43
+	     << " " << threeLoop.displayPhys().me(2, 1)                ///< 44
+	     << " " << fabs(twoLoop.displayPhys().mneut(1))            ///< 45 
+	     << " " << fabs(twoLoopAs.displayPhys().mneut(1))          ///< 46
+	     << " " << fabs(twoLoopMt.displayPhys().mneut(1))          ///< 47
+	     << " " << fabs(twoLoopMb.displayPhys().mneut(1))          ///< 48
+	     << " " << fabs(threeLoop.displayPhys().mneut(1))          ///< 49
+	     << " " << fabs(twoLoop.displayPhys().mneut(2))            ///< 50
+	     << " " << fabs(twoLoopAs.displayPhys().mneut(2))          ///< 51
+	     << " " << fabs(twoLoopMt.displayPhys().mneut(2))          ///< 52
+	     << " " << fabs(twoLoopMb.displayPhys().mneut(2))          ///< 53
+	     << " " << fabs(threeLoop.displayPhys().mneut(2))          ///< 54
+	     << " " << fabs(twoLoop.displayPhys().mneut(3))            ///< 55
+	     << " " << fabs(twoLoopAs.displayPhys().mneut(3))          ///< 56
+	     << " " << fabs(twoLoopMt.displayPhys().mneut(3))          ///< 57 
+	     << " " << fabs(twoLoopMb.displayPhys().mneut(3))          ///< 58
+	     << " " << fabs(threeLoop.displayPhys().mneut(3))          ///< 59
+	     << " " << fabs(twoLoop.displayPhys().mneut(4))            ///< 60
+	     << " " << fabs(twoLoopAs.displayPhys().mneut(4))          ///< 61
+	     << " " << fabs(twoLoopMt.displayPhys().mneut(4))          ///< 62
+	     << " " << fabs(twoLoopMb.displayPhys().mneut(4))          ///< 63
+	     << " " << fabs(threeLoop.displayPhys().mneut(4))          ///< 64
+	     << " " << twoLoop.displayPhys().mu(1, 3)                  ///< 65
+	     << " " << twoLoopAs.displayPhys().mu(1, 3)                ///< 66
+	     << " " << twoLoopMt.displayPhys().mu(1, 3)                ///< 67
+	     << " " << twoLoopMb.displayPhys().mu(1, 3)                ///< 68
+	     << " " << threeLoop.displayPhys().mu(1, 3)                ///< 69
+	     << " " << twoLoop.displayPhys().mu(2, 3)                  ///< 70
+	     << " " << twoLoopAs.displayPhys().mu(2, 3)                ///< 71
+	     << " " << twoLoopMt.displayPhys().mu(2, 3)                ///< 72
+	     << " " << twoLoopMb.displayPhys().mu(2, 3)                ///< 73
+	     << " " << threeLoop.displayPhys().mu(2, 3)                ///< 74
+	     << " " << twoLoop.displayPhys().md(1, 3)                  ///< 75
+	     << " " << twoLoopAs.displayPhys().md(1, 3)                ///< 76
+	     << " " << twoLoopMt.displayPhys().md(1, 3)                ///< 77
+	     << " " << twoLoopMb.displayPhys().md(1, 3)                ///< 78
+	     << " " << threeLoop.displayPhys().md(1, 3)                ///< 79
+	     << " " << twoLoop.displayPhys().md(2, 3)                  ///< 80
+	     << " " << twoLoopAs.displayPhys().md(2, 3)                ///< 81
+	     << " " << twoLoopMt.displayPhys().md(2, 3)                ///< 82
+	     << " " << twoLoopMb.displayPhys().md(2, 3)                ///< 83
+	     << " " << threeLoop.displayPhys().md(2, 3)                ///< 84
+	     << " " << twoLoop.displayPhys().me(1, 3)                  ///< 85
+	     << " " << twoLoopAs.displayPhys().me(1, 3)                ///< 86
+	     << " " << twoLoopMt.displayPhys().me(1, 3)                ///< 87
+	     << " " << twoLoopMb.displayPhys().me(1, 3)                ///< 88
+	     << " " << threeLoop.displayPhys().me(1, 3)                ///< 89
+	     << " " << twoLoop.displayPhys().me(2, 3)                  ///< 90
+	     << " " << twoLoopAs.displayPhys().me(2, 3)                ///< 91
+	     << " " << twoLoopMt.displayPhys().me(2, 3)                ///< 92
+	     << " " << twoLoopMb.displayPhys().me(2, 3)                ///< 93
+	     << " " << threeLoop.displayPhys().me(2, 3)                ///< 94
+	     << " " << twoLoop.displayYukawaElement(YU, 3, 3)          ///< 95
+	     << " " << twoLoopAs.displayYukawaElement(YU, 3, 3)        ///< 96
+	     << " " << twoLoopMt.displayYukawaElement(YU, 3, 3)        ///< 97
+	     << " " << twoLoopMb.displayYukawaElement(YU, 3, 3)        ///< 98
+	     << " " << threeLoop.displayYukawaElement(YU, 3, 3)        ///< 99
+	     << " " << twoLoop.displayYukawaElement(YD, 3, 3)          ///< 100
+	     << " " << twoLoopAs.displayYukawaElement(YD, 3, 3)        ///< 101
+	     << " " << twoLoopMt.displayYukawaElement(YD, 3, 3)        ///< 102
+	     << " " << twoLoopMb.displayYukawaElement(YD, 3, 3)        ///< 103
+	     << " " << threeLoop.displayYukawaElement(YD, 3, 3)        ///< 104
+	     << " " << twoLoop.displayYukawaElement(YE, 3, 3)          ///< 105
+	     << " " << twoLoopAs.displayYukawaElement(YE, 3, 3)        ///< 106
+	     << " " << twoLoopMt.displayYukawaElement(YE, 3, 3)        ///< 107
+	     << " " << twoLoopMb.displayYukawaElement(YE, 3, 3)        ///< 108
+	     << " " << threeLoop.displayYukawaElement(YE, 3, 3);       ///< 109
+    int facMusq3= 1., facMusq2 = 1., facMusq2As = 1., facMusq2Mt = 1., 
+      facMusq2Mb = 1.;
+    if (twoLoop.displayProblem().muSqWrongSign) facMusq2 = -1. ;
+    if (twoLoopAs.displayProblem().muSqWrongSign) facMusq2As = -1. ;
+    if (twoLoopMt.displayProblem().muSqWrongSign) facMusq2Mt = -1. ;
+    if (twoLoopMb.displayProblem().muSqWrongSign) facMusq2Mb = -1. ;
+    if (threeLoop.displayProblem().muSqWrongSign) facMusq3 = -1. ;
+    cout << " " << twoLoop.displaySusyMu()  * facMusq2             ///< 110
+	 << " " << twoLoopAs.displaySusyMu()  * facMusq2As         ///< 111
+	 << " " << twoLoopMt.displaySusyMu()  * facMusq2Mt         ///< 112
+	 << " " << twoLoopMb.displaySusyMu()  * facMusq2Mb         ///< 113
+	 << " " << threeLoop.displaySusyMu()  * facMusq3           ///< 114
+	 << " " << fabs(twoLoop.displayPhys().mch(1))              ///< 115
+	 << " " << fabs(twoLoopAs.displayPhys().mch(1))            ///< 116
+	 << " " << fabs(twoLoopMt.displayPhys().mch(1))            ///< 117
+	 << " " << fabs(twoLoopMb.displayPhys().mch(1))            ///< 118
+	 << " " << fabs(threeLoop.displayPhys().mch(1))            ///< 119
+	 << " " << fabs(twoLoop.displayPhys().mch(2))              ///< 120
+	 << " " << fabs(twoLoopAs.displayPhys().mch(2))            ///< 121
+	 << " " << fabs(twoLoopMt.displayPhys().mch(2))            ///< 122
+	 << " " << fabs(twoLoopMb.displayPhys().mch(2))            ///< 123
+	 << " " << fabs(threeLoop.displayPhys().mch(2))            ///< 124
+	 << " " << omega2                                          ///< 125
+	 << " " << omegaAs                                         ///< 126
+	 << " " << omegaMt                                         ///< 127
+	 << " " << omegaMb                                         ///< 128
+	 << " " << omega3                                         ///< 129
+	 << " " << twoLoop.displayGaugeCoupling(3)                ///< 130
+	 << " " << twoLoopAs.displayGaugeCoupling(3)              ///< 131
+	 << " " << twoLoopMt.displayGaugeCoupling(3)              ///< 132
+	 << " " << twoLoopMb.displayGaugeCoupling(3)              ///< 133
+	 << " " << threeLoop.displayGaugeCoupling(3)             ///< 134
+	 << " " << cs                                             ///< 135
+	 << " " << csAs                                           ///< 136
+	 << " " << csMt                                           ///< 137
+	 << " " << csMb                                           ///< 138
+	 << " " << cs3                                            ///< 139
+	 << " " << QEWSB                                          ///< 140
+	 << " " << dA                                             ///< 141
+	 << " " << dAAs                                           ///< 142
+	 << " " << dAMt                                           ///< 143
+	 << " " << dAMb                                           ///< 144
+	 << " " << dA3                                            ///< 145
+	 << " " << dY                                             ///< 146
+	 << " " << dYAs                                           ///< 147
+	 << " " << dYMt                                           ///< 148
+	 << " " << dYMb                                           ///< 149
+	 << " " << dY3                                            ///< 150
+	 << " " << dYp                                            ///< 151
+	 << " " << dYpAs                                          ///< 152
+	 << " " << dYpMt                                          ///< 153
+	 << " " << dYpMb                                          ///< 154
+	 << " " << dYp3;                                          ///< 155
+    if (twoLoop.displayProblem().test()) cout << "# 2-loop problem: " 
+					      << twoLoop.displayProblem();
+    if (threeLoop.displayProblem().test()) cout << "# 3-loop problem " 
+						<< threeLoop.displayProblem(); 
+    cout << endl;
+}
+
 double getCrossSection(char * fileName) {
   char buff[500];
   sprintf(buff, "cp lesHout ../../code/prospino2.1/prospino.in.les_houches; cd ../../code/prospino2.1/; ./prospino_2.run > output");
@@ -490,19 +671,24 @@ int main(int argc, char *argv[]) {
 		     uni, omega3, msqAv3, cs3, dAs3, dY3, dYp3); 
     //    cout << threeLoop << cs3 << endl; 
 
-    writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
+    printLineOut(m0, m12, a0, tanb, twoLoop, twoLoopAs, twoLoopMt, 
+		 twoLoopMb, threeLoop, 
+		 omega2, omegaAs, omegaMt, omegaMb, omega3,
+		 msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, 
+		 csMb, cs3, dAs, dAsAs, dAsMt, dAsMb, dAs3, dY, dYAs, dYMt, 
+		 dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);
+    /*    writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
 	       omega2, omegaAs, omegaMt, omegaMb, omega3,
 	       msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, 
 	       csMb, cs3, dAs, dAsAs, dAsMt, dAsMb, dAs3, dY, dYAs, dYMt, 
-	       dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);
+	       dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);*/
 
   } else 
     if (argc == 5) { /// Scan in m0
-    m12 = atof(argv[1]);
-    a0 = atof(argv[2]);
-    tanb = atof(argv[3]);
-    sgnMu = atoi(argv[4]);
-
+      m12 = atof(argv[1]);
+	a0 = atof(argv[2]);
+	tanb = atof(argv[3]);
+	sgnMu = atoi(argv[4]);
     int numPoints = 10;
     double startM0 = 7100., endM0 = 7400.;
     int i; for (i=0; i<=numPoints; i++) {
@@ -597,173 +783,6 @@ int main(int argc, char *argv[]) {
 			 uni, omega3, msqAv3, cs3, dA3, 
 	  dY3, dYp3); 
 	
-	cout << m0                                                     ///< 1
-	     << " " << m12                                             ///< 2
-	     << " " << a0                                              ///< 3
-	     << " " << tanb                                            ///< 4
-	     << " " << twoLoop.displayPhys().mh0(1)                    ///< 5
-	     << " " << twoLoopAs.displayPhys().mh0(1)                  ///< 6
-	     << " " << twoLoopMt.displayPhys().mh0(1)                  ///< 7
-	     << " " << twoLoopMb.displayPhys().mh0(1)                  ///< 8
-	     << " " << threeLoop.displayPhys().mh0(1)                  ///< 9
-	     << " " << twoLoop.displayPhys().mA0(1)                    ///< 10
-	     << " " << twoLoopAs.displayPhys().mA0(1)                  ///< 11
-	     << " " << twoLoopMt.displayPhys().mA0(1)                  ///< 12
-	     << " " << twoLoopMb.displayPhys().mA0(1)                  ///< 13
-	     << " " << threeLoop.displayPhys().mA0(1)                  ///< 14
-	     << " " << twoLoop.displayPhys().mh0(2)                    ///< 15
-	     << " " << twoLoopAs.displayPhys().mh0(2)                  ///< 16
-	     << " " << twoLoopMt.displayPhys().mh0(2)                  ///< 17
-	     << " " << twoLoopMb.displayPhys().mh0(2)                  ///< 18
-	     << " " << threeLoop.displayPhys().mh0(2)                  ///< 19
-	     << " " << twoLoop.displayPhys().mHpm                      ///< 20
-	     << " " << twoLoopAs.displayPhys().mHpm                    ///< 21
-	     << " " << twoLoopMt.displayPhys().mHpm                    ///< 22
-	     << " " << twoLoopMb.displayPhys().mHpm                    ///< 23
-	     << " " << threeLoop.displayPhys().mHpm                    ///< 24
-	     << " " << twoLoop.displayPhys().mGluino                   ///< 25
-	     << " " << twoLoopAs.displayPhys().mGluino                 ///< 26
-	     << " " << twoLoopMt.displayPhys().mGluino                 ///< 27
-	     << " " << twoLoopMb.displayPhys().mGluino                 ///< 28
-	     << " " << threeLoop.displayPhys().mGluino                 ///< 29
-	     << " " << msqAv2                                          ///< 30
-	     << " " << msqAvAs                                         ///< 31 
-	     << " " << msqAvMt                                         ///< 32
-	     << " " << msqAvMb                                         ///< 33
-	     << " " << msqAv3                                          ///< 34
-	     << " " << twoLoop.displayPhys().me(1, 1)                  ///< 35 
-	     << " " << twoLoopAs.displayPhys().me(1, 1)                ///< 36 
-	     << " " << twoLoopMt.displayPhys().me(1, 1)                ///< 37 
-	     << " " << twoLoopMb.displayPhys().me(1, 1)                ///< 38 
-	     << " " << threeLoop.displayPhys().me(1, 1)                ///< 39 
-	     << " " << twoLoop.displayPhys().me(2, 1)                  ///< 40 
-	     << " " << twoLoopAs.displayPhys().me(2, 1)                ///< 41 
-	     << " " << twoLoopMt.displayPhys().me(2, 1)                ///< 42
-	     << " " << twoLoopMb.displayPhys().me(2, 1)                ///< 43
-	     << " " << threeLoop.displayPhys().me(2, 1)                ///< 44
-	     << " " << fabs(twoLoop.displayPhys().mneut(1))            ///< 45 
-	     << " " << fabs(twoLoopAs.displayPhys().mneut(1))          ///< 46
-	     << " " << fabs(twoLoopMt.displayPhys().mneut(1))          ///< 47
-	     << " " << fabs(twoLoopMb.displayPhys().mneut(1))          ///< 48
-	     << " " << fabs(threeLoop.displayPhys().mneut(1))          ///< 49
-	     << " " << fabs(twoLoop.displayPhys().mneut(2))            ///< 50
-	     << " " << fabs(twoLoopAs.displayPhys().mneut(2))          ///< 51
-	     << " " << fabs(twoLoopMt.displayPhys().mneut(2))          ///< 52
-	     << " " << fabs(twoLoopMb.displayPhys().mneut(2))          ///< 53
-	     << " " << fabs(threeLoop.displayPhys().mneut(2))          ///< 54
-	     << " " << fabs(twoLoop.displayPhys().mneut(3))            ///< 55
-	     << " " << fabs(twoLoopAs.displayPhys().mneut(3))          ///< 56
-	     << " " << fabs(twoLoopMt.displayPhys().mneut(3))          ///< 57 
-	     << " " << fabs(twoLoopMb.displayPhys().mneut(3))          ///< 58
-	     << " " << fabs(threeLoop.displayPhys().mneut(3))          ///< 59
-	     << " " << fabs(twoLoop.displayPhys().mneut(4))            ///< 60
-	     << " " << fabs(twoLoopAs.displayPhys().mneut(4))          ///< 61
-	     << " " << fabs(twoLoopMt.displayPhys().mneut(4))          ///< 62
-	     << " " << fabs(twoLoopMb.displayPhys().mneut(4))          ///< 63
-	     << " " << fabs(threeLoop.displayPhys().mneut(4))          ///< 64
-	     << " " << twoLoop.displayPhys().mu(1, 3)                  ///< 65
-	     << " " << twoLoopAs.displayPhys().mu(1, 3)                ///< 66
-	     << " " << twoLoopMt.displayPhys().mu(1, 3)                ///< 67
-	     << " " << twoLoopMb.displayPhys().mu(1, 3)                ///< 68
-	     << " " << threeLoop.displayPhys().mu(1, 3)                ///< 69
-	     << " " << twoLoop.displayPhys().mu(2, 3)                  ///< 70
-	     << " " << twoLoopAs.displayPhys().mu(2, 3)                ///< 71
-	     << " " << twoLoopMt.displayPhys().mu(2, 3)                ///< 72
-	     << " " << twoLoopMb.displayPhys().mu(2, 3)                ///< 73
-	     << " " << threeLoop.displayPhys().mu(2, 3)                ///< 74
-	     << " " << twoLoop.displayPhys().md(1, 3)                  ///< 75
-	     << " " << twoLoopAs.displayPhys().md(1, 3)                ///< 76
-	     << " " << twoLoopMt.displayPhys().md(1, 3)                ///< 77
-	     << " " << twoLoopMb.displayPhys().md(1, 3)                ///< 78
-	     << " " << threeLoop.displayPhys().md(1, 3)                ///< 79
-	     << " " << twoLoop.displayPhys().md(2, 3)                  ///< 80
-	     << " " << twoLoopAs.displayPhys().md(2, 3)                ///< 81
-	     << " " << twoLoopMt.displayPhys().md(2, 3)                ///< 82
-	     << " " << twoLoopMb.displayPhys().md(2, 3)                ///< 83
-	     << " " << threeLoop.displayPhys().md(2, 3)                ///< 84
-	     << " " << twoLoop.displayPhys().me(1, 3)                  ///< 85
-	     << " " << twoLoopAs.displayPhys().me(1, 3)                ///< 86
-	     << " " << twoLoopMt.displayPhys().me(1, 3)                ///< 87
-	     << " " << twoLoopMb.displayPhys().me(1, 3)                ///< 88
-	     << " " << threeLoop.displayPhys().me(1, 3)                ///< 89
-	     << " " << twoLoop.displayPhys().me(2, 3)                  ///< 90
-	     << " " << twoLoopAs.displayPhys().me(2, 3)                ///< 91
-	     << " " << twoLoopMt.displayPhys().me(2, 3)                ///< 92
-	     << " " << twoLoopMb.displayPhys().me(2, 3)                ///< 93
-	     << " " << threeLoop.displayPhys().me(2, 3)                ///< 94
-	     << " " << twoLoop.displayYukawaElement(YU, 3, 3)          ///< 95
-	     << " " << twoLoopAs.displayYukawaElement(YU, 3, 3)        ///< 96
-	     << " " << twoLoopMt.displayYukawaElement(YU, 3, 3)        ///< 97
-	     << " " << twoLoopMb.displayYukawaElement(YU, 3, 3)        ///< 98
-	     << " " << threeLoop.displayYukawaElement(YU, 3, 3)        ///< 99
-	     << " " << twoLoop.displayYukawaElement(YD, 3, 3)          ///< 100
-	     << " " << twoLoopAs.displayYukawaElement(YD, 3, 3)        ///< 101
-	     << " " << twoLoopMt.displayYukawaElement(YD, 3, 3)        ///< 102
-	     << " " << twoLoopMb.displayYukawaElement(YD, 3, 3)        ///< 103
-	     << " " << threeLoop.displayYukawaElement(YD, 3, 3)        ///< 104
-	     << " " << twoLoop.displayYukawaElement(YE, 3, 3)          ///< 105
-	     << " " << twoLoopAs.displayYukawaElement(YE, 3, 3)        ///< 106
-	     << " " << twoLoopMt.displayYukawaElement(YE, 3, 3)        ///< 107
-	     << " " << twoLoopMb.displayYukawaElement(YE, 3, 3)        ///< 108
-	     << " " << threeLoop.displayYukawaElement(YE, 3, 3);       ///< 109
-    int facMusq3= 1., facMusq2 = 1., facMusq2As = 1., facMusq2Mt = 1., 
-      facMusq2Mb = 1.;
-    if (twoLoop.displayProblem().muSqWrongSign) facMusq2 = -1. ;
-    if (twoLoopAs.displayProblem().muSqWrongSign) facMusq2As = -1. ;
-    if (twoLoopMt.displayProblem().muSqWrongSign) facMusq2Mt = -1. ;
-    if (twoLoopMb.displayProblem().muSqWrongSign) facMusq2Mb = -1. ;
-    if (threeLoop.displayProblem().muSqWrongSign) facMusq3 = -1. ;
-    cout << " " << twoLoop.displaySusyMu()  * facMusq2             ///< 110
-	 << " " << twoLoopAs.displaySusyMu()  * facMusq2As         ///< 111
-	 << " " << twoLoopMt.displaySusyMu()  * facMusq2Mt         ///< 112
-	 << " " << twoLoopMb.displaySusyMu()  * facMusq2Mb         ///< 113
-	 << " " << threeLoop.displaySusyMu()  * facMusq3           ///< 114
-	 << " " << fabs(twoLoop.displayPhys().mch(1))              ///< 115
-	 << " " << fabs(twoLoopAs.displayPhys().mch(1))            ///< 116
-	 << " " << fabs(twoLoopMt.displayPhys().mch(1))            ///< 117
-	 << " " << fabs(twoLoopMb.displayPhys().mch(1))            ///< 118
-	 << " " << fabs(threeLoop.displayPhys().mch(1))            ///< 119
-	 << " " << fabs(twoLoop.displayPhys().mch(2))              ///< 120
-	 << " " << fabs(twoLoopAs.displayPhys().mch(2))            ///< 121
-	 << " " << fabs(twoLoopMt.displayPhys().mch(2))            ///< 122
-	 << " " << fabs(twoLoopMb.displayPhys().mch(2))            ///< 123
-	 << " " << fabs(threeLoop.displayPhys().mch(2))            ///< 124
-	 << " " << omega2                                          ///< 125
-	 << " " << omegaAs                                         ///< 126
-	 << " " << omegaMt                                         ///< 127
-	 << " " << omegaMb                                         ///< 128
-	 << " " << omega3                                         ///< 129
-	 << " " << twoLoop.displayGaugeCoupling(3)                ///< 130
-	 << " " << twoLoopAs.displayGaugeCoupling(3)              ///< 131
-	 << " " << twoLoopMt.displayGaugeCoupling(3)              ///< 132
-	 << " " << twoLoopMb.displayGaugeCoupling(3)              ///< 133
-	 << " " << threeLoop.displayGaugeCoupling(3)             ///< 134
-	 << " " << cs                                             ///< 135
-	 << " " << csAs                                           ///< 136
-	 << " " << csMt                                           ///< 137
-	 << " " << csMb                                           ///< 138
-	 << " " << cs3                                            ///< 139
-	 << " " << QEWSB                                          ///< 140
-	 << " " << dA                                             ///< 141
-	 << " " << dAAs                                           ///< 142
-	 << " " << dAMt                                           ///< 143
-	 << " " << dAMb                                           ///< 144
-	 << " " << dA3                                            ///< 145
-	 << " " << dY                                             ///< 146
-	 << " " << dYAs                                           ///< 147
-	 << " " << dYMt                                           ///< 148
-	 << " " << dYMb                                           ///< 149
-	 << " " << dY3                                            ///< 150
-	 << " " << dYp                                            ///< 151
-	 << " " << dYpAs                                          ///< 152
-	 << " " << dYpMt                                          ///< 153
-	 << " " << dYpMb                                          ///< 154
-	 << " " << dYp3;                                          ///< 155
-    if (twoLoop.displayProblem().test()) cout << "# 2-loop problem: " 
-					      << twoLoop.displayProblem();
-    if (threeLoop.displayProblem().test()) cout << "# 3-loop problem " 
-						<< threeLoop.displayProblem(); 
-    cout << endl;
 
       }
     }
