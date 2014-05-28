@@ -1,4 +1,4 @@
-set dgrid3d 21,21,8
+fset dgrid3d 21,21,8
 set contour 
 set nosurface
 set cntrparam bspline 

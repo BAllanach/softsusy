@@ -349,7 +349,8 @@ In the next subsection, we shall examine two parameter points in detail
 before performing parameter scans to characterise more generally the size of
 the higher order effects.
 
-\subsection{Dissection of the higher order effects at benchmark points}
+\subsection{Dissection of the higher order effects at 
+  benchmark points}
 \input{tableOne}
 \caption{\label{tab:cmssm} Differences due to the highest order terms
   (three-loop 
@@ -424,6 +425,8 @@ predict the relic density of
 lightest neutralinos, identified to be our dark matter candidate. 
 Fits to cosmological data constrain the relic density of dark matter to be
 $\Omega_{CDM} h^2=0.1198 \pm 0.0026$ from Planck data~\cite{Ade:2013zuv}.
+{\bf EXPLAIN A LITTLE MORE ABOUT SUSY DM}.
+
 The two-loop threshold corrections to the bottom and tau Yukawa couplings 
 have a very small effect: smaller than 0.1 GeV for most of the sparticle
 masses, despite the fact that the Yukawa couplings themselves are of order the
@@ -584,30 +587,6 @@ scale, perhaps such a large correction may be possible. The higher order
 effects make a large difference of several percent at high $\tan \beta$, and 
 would significantly change the constraints upon these thresholds. 
 
-We shall now display some of our results in the parameter plane recently
-defined by ATLAS.  
-We have combined the two most restrictive exclusion limits from their direct
-LHC 7/8 
-TeV searches~\cite{ATLAS-CONF-2013-047,Aad:2013wta} into one: if a
-point is excluded at 95$\%$ confidence level by either or both of them, we
-count it as excluded.  
-In Fig.~\ref{fig:cmssm}, we show some contours of important MSSM particle
-masses as 
-well as their relative change due to the higher order corrections. The region
-below the dashed line is excluded by either one or both of the most
-restrictive ATLAS SUSY searches~\cite{ATLAS-CONF-2013-047,Aad:2013wta}. 
-We see that the gluino, the lightest CP even Higgs mass, the first two
-generation average squark mass and
-the CP odd Higgs mass $m_A$ typically becomes reduced by
-1-3$\%$ by the higher order corrections in the region allowed by the search. 
-In the CMSSM, the dominant production of SUSY particles is via gluino and 
-squark production. The reduction of gluino and squark masses change the SUSY
-production cross-section {\bf INVESTIGATE}.
-The mass of the lightest neutralino changes less: typically at the one
-per-mille level, whereas the lightest stop mass has larger contributions from
-the higher order corrections: up to about $\pm 8\%$. CMSSM signatures involving
-the lightest stops are therefore more sensitive to the higher order
-contributions. 
 \begin{figure}
 \unitlength=1in
 \begin{center}
@@ -656,8 +635,31 @@ contributions.
   confidence level by at least one of the most restrictive ATLAS jets plus
   missing energy searches.}
 \end{figure}
+We shall now display some of our results in the parameter plane recently
+defined by ATLAS.  
+We have combined the two most restrictive exclusion limits from their direct
+LHC 7/8 
+TeV searches~\cite{ATLAS-CONF-2013-047,Aad:2013wta} into one: if a
+point is excluded at 95$\%$ confidence level by either or both of them, we
+count it as excluded.  
+In Fig.~\ref{fig:cmssm}, we show some contours of important MSSM particle
+masses as 
+well as their relative change due to the higher order corrections. The region
+below the dashed line is excluded by either one or both of the most
+restrictive ATLAS SUSY searches~\cite{ATLAS-CONF-2013-047,Aad:2013wta}. 
+We see that the gluino, the lightest CP even Higgs mass, the first two
+generation average squark mass and
+the CP odd Higgs mass $m_A$ typically becomes reduced by
+1-3$\%$ by the higher order corrections in the region allowed by the search. 
+In the CMSSM, the dominant production of SUSY particles is via gluino and 
+squark production. The reduction of gluino and squark masses change the SUSY
+production cross-section {\bf INVESTIGATE}.
+The mass of the lightest neutralino changes less: typically at the one
+per-mille level, whereas the lightest stop mass has larger contributions from
+the higher order corrections: up to about $\pm 8\%$. CMSSM signatures involving
+the lightest stops are therefore more sensitive to the higher order
+contributions. 
 
-We next perform a scan at high $\tan \beta$, displaying a region where 
 \begin{figure}
 \unitlength=1in
 \begin{center}
@@ -676,10 +678,33 @@ We next perform a scan at high $\tan \beta$, displaying a region where
   the lighter one denotes the result of the standard {\tt SOFTSUSY3.4.1}
   calculation.} 
 \end{figure}
-
-
-
-
+We next perform a scan at high $\tan \beta$, displaying a region where the
+dark matter relic abundance appears to have the correct value compared to
+cosmological observational inference. 
+In Fig.~\ref{fig:dm}, we show this as the region between the two green
+contours. On the other hand, the background colour shows the apparent induced 
+theoretical uncertainty in the prediction of the dark matter relic density
+from higher orders. We have defined
+$\Delta \Omega_{CDM} h^2$ to be the `$\Delta$ None'$-$`$\Delta$ All' value. 
+We see that, for $m_0>1$ TeV, it is swamped by theoretical uncertainties and
+the prediction is completely unreliable. This is not unexpected at the focus
+point, because of huge sensitivities to $m_t$. While the uncertainties for
+fixed CMSSM parameters are huge, it is true that the region of dark
+matter relic abundance that agrees with observations will be present
+somewhere. However, it may move significantly with $m_0$. The contours shown
+track to be close to the boundary of successful electroweak symmetry breaking,
+shown by the black region. As we move across the plot from
+left to right, the value of $\mu(M_{SUSY})^2$ as predicted by minimisation of
+the Higgs potential decreases, and finally becomes less than zero in the black
+region, signalling incorrect electroweak symmetry breaking. Small but real
+values of $\mu(M_{SUSY})$ lead to a higgsino-dominated lightest neutralino dark
+matter candidate, which annihilates efficiently into $WW$, $ZZ$, $Zh$ or $t
+\bar t$~{\bf CITE}, reducing the dark matter relic density to an acceptable
+value. 
+If we omit the
+higher order corrections, we obtain instead the grey region, which would have
+its own contours of dark matter relic density predicted to be compatible with
+observations. 
 
 \section{Summary and Conclusions}
  We have incorporated three-loop RGEs as well as some leading two-loop
@@ -696,7 +721,7 @@ We next perform a scan at high $\tan \beta$, displaying a region where
  for the size of theoretical uncertainties in the sparticle mass predictions
  from higher order corrections. We report a 2-3 GeV theoretical uncertainty in
  the prediction  of 
- the lightest CP even Higgs mass. Other sparticle masses have larger
+ the lightest CP even Higgs mass. Some sparticle masses have larger 10$\%$
  uncertainties when running to and from the GUT scale, as in the CMSSM, where
  small threshold effects become amplified by sensitive renormalisation group
  running. On the other hand, in the pMSSM, where there is only running between
@@ -704,9 +729,24 @@ We next perform a scan at high $\tan \beta$, displaying a region where
  smaller: typically at the percent level. The uncertainties in the spectrum
  have a knock-on effect on derived observables: for example, the predicted
  relic density of dark matter, since it depends so sensitively on sparticle
- masses in some parts of parameter space, can have order 1 theoretical
+ masses in some parts of parameter space, can have order 1 relative theoretical
  uncertainties. The total LHC sparticle production cross-section can have a
  $40\%$ error in the CMSSM (this decreases to a percent or so in the pMSSM).
+ The change in the running
+ value of the top quark mass induces a particularly large change in the
+ higgsino mass parameter $\mu$ at the focus point of the CMSSM at large $m_0$,
+ resulting in 
+ huge theoretical uncertainties in some neutralino and chargino masses. 
+ This has important information for global fits of the CMSSM (see, for example
+{\bf A FEW CITES}). It is probable that regions of parameter space at high
+$m_0$ are weighted 
+ incorrectly. Ideally, the fit would be performed including a calculated
+ theoretical error (particularly that coming from the dark matter relic
+ density constraint). This could come from estimating the corrections using 
+ our higher order corrections in order to quantify the uncertainty, or from
+ renormalisation scale dependence of observables (for instance, how much would
+ the dark matter relic density prediction change if $M_{SUSY}$ were varied by
+ a factor of 2?) {\bf CITE BELANGER ET AL}
 
  Neither $\mathcal O(\alpha_s Y_t^2) $ nor $\mathcal O(Y_t^4)$
  corrections are included in the calculation of the running value of
@@ -726,6 +766,23 @@ We next perform a scan at high $\tan \beta$, displaying a region where
  It will be an interesting future project to examine to what extent this is
  possible or not while including the effects of the higher order corrections. 
 
+ We have examined the effects of the higher order terms that we do include
+ upon apparent discrepancies in various predictions of unification at the GUT
+ scale. We fix gauge and Yukawa couplings to data at $M_Z$, assuming some
+ value of $\tan \beta$. Then, by evolving to $M_{GUT}$, where the electroweak
+ gauge couplings meet, we obtain GUT scale gauge and Yukawa couplings. The
+ discrepancy between $\alpha_3(M_{GUT})-\alpha_1(M_{GUT})$ is typically larger 
+ once higher order corrections are included (particularly the two-loop
+ threshold corrections to $\alpha_3(M_Z)$). However, it is in any case only at
+ the per mille level and can easily be explained by small GUT threshold
+ corections. Yukawa unification has larger apparent GUT-scale discrepancies in
+ generic parts of parameter space. It is affected mostly by higher order top
+ mass and $\alpha_3(M_Z)$ threshold corrections. We have studied examples
+ where they change the GUT-scale
+ discrepancies by 4$\%$. This would certainly have an impact on detailed GUT
+ model building, in order to explain the discrepancy with, for example,
+ GUT-scale  threshold corrections. 
+ 
 
 \section*{Acknowledgments}
 This work has been partially supported by STFC. BCA thanks the Cambridge SUSY
@@ -764,7 +821,9 @@ the higher order corrections included:
 	\item \verb|USE_TWO_LOOP_THRESHOLD| - add two-loop threshold
           corrections to the third generation Yukawa couplings and the strong
           coupling constant 
-          (corresponds to the \code{SOFTSUSY Block} parameter 20).
+          (corresponds to the \code{SOFTSUSY Block} parameter 20). If this
+          variable is switched on, {\tt MssmSoftsusy} object constructors will 
+          automatically include all higher order threshold corrections. 
 \end{itemize}
 By default, both of these sets of higher order corrections are switched off 
 (the boolean values are set to {\tt false}), unless the user sets them. 
@@ -775,20 +834,20 @@ runtime (with their default values)
 	\item \verb|double TWOLOOP_NUM_THRESH = 0.1|  - 
           used in the iterative 
           algorithm to prevent lengthy re-evaluation of two-loop thresholds   
-		if the relative difference between the result obtained in
-                current iteration and the value calculated in the previous
-                iteration is less than
-                \verb|TWOLOOP_NUM_THRESH|. See Ref.~\cite{Allanach:201kg} for
-                details of the 
-                algorithm employed.
+          if the relative difference between the result obtained in
+          current iteration and the value calculated in the previous
+          iteration is less than
+          \verb|TWOLOOP_NUM_THRESH|. 
+          See Ref.~\cite{Allanach:2001kg} for
+          details of the 
+          algorithm employed.
 	\item \verb|boolean SOFTSUSY_TWOLOOP_blah = true| - 
           controls whether
           individual two-loop threshold corrections should be added (remove it
           or make a \verb|enum|?) 
-	\item \verb|boolean MB_DECOUPLING = false| - evaluate b-quark self-energies at $p=0$ in order to incorporate ``decoupling'' precedure (remove it?)
 \end{itemize}
-
-
+        
+        
 \section{Running \SOFTSUSY~in the Increased Accuracy Mode}  
 \label{sec:run}
 
