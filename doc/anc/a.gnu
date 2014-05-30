@@ -51,10 +51,49 @@ set label 2 "{/Symbol D}_{m_{tR}}/m_{tR}" at 6,1.08
 set output "atlasScanMtR.eps"
 splot "atlas_scan.dat" u ($1/1000):($2/1000):32 notit w pm3d
 
+set label 2 "{/Symbol Ds}/{/Symbol s}" at 6,1.08
+set output "atlasScanDs.eps"
+splot "m0m12scan.dat" u ($1/1000):($2/1000):(($139-$135)/$139) notit w pm3d
+
+set cbrange [0.29:0.36]
+set label 2 "{/Symbol D}Y_{bt} (None)" at 6,1.08
+set output "atlasScanYpNone.eps"
+splot "m0m12scan.dat" u ($1/1000):($2/1000):151 notit w pm3d
+
+set label 2 "{/Symbol D}Y_{bt} (All)" at 6,1.08
+set output "atlasScanYpAll.eps"
+splot "m0m12scan.dat" u ($1/1000):($2/1000):155 notit w pm3d
+
+
+
+set cbrange [-0.095:-0.045]
+set label 2 "{/Symbol D}Y_{b{/Symbol t}} (None)" at 6,1.08
+set output "atlasScanYbNone.eps"
+splot "m0m12scan.dat" u ($1/1000):($2/1000):146 notit w pm3d
+
+set label 2 "{/Symbol D}Y_{b{/Symbol t}} (All)" at 6,1.08
+set output "atlasScanYbAll.eps"
+splot "m0m12scan.dat" u ($1/1000):($2/1000):150 notit w pm3d
+
+
+set cbrange [-0.0024:0]
+set label 2 "{/Symbol Da} (None)" at 6,1.08
+set output "atlasScanDaNone.eps"
+splot "m0m12scan.dat" u ($1/1000):($2/1000):141 notit w pm3d
+
+set label 2 "{/Symbol Da} (All)" at 6,1.08
+set output "atlasScanDaAll.eps"
+splot "m0m12scan.dat" u ($1/1000):($2/1000):145 notit w pm3d
+
+
+unset cbrange
 set label 2 "{/Symbol D}{/Symbol W}_{CDM}h^2" at 6,1.08
 set title "{/Symbol m}>0, tan{/Symbol b}=50, A_0=0"
 set output "hiTbScanOm.eps"
 splot "hiTb.dat" u ($1/1000):($2/1000):($53-$54) notit w pm3d
+
+
+
 
 unset title
 unset xlabel
