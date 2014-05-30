@@ -21,6 +21,8 @@ set ylabel "M_{1/2}/TeV"
 # mu<0 tb=10
 set title "{/Symbol m}>0, tan{/Symbol b}=30, A_0=-2m_0"
 
+
+
 set label 2 "{/Symbol D}_{m_h}/m_h" at 6,1.06
 set output "atlasScanMh.eps"
 splot "atlas_scan.dat" u ($1/1000):($2/1000):6 notit w pm3d
@@ -55,43 +57,42 @@ set label 2 "{/Symbol Ds}/{/Symbol s}" at 6,1.08
 set output "atlasScanDs.eps"
 splot "m0m12scan.dat" u ($1/1000):($2/1000):(($139-$135)/$139) notit w pm3d
 
-set cbrange [0.29:0.36]
-set label 2 "{/Symbol D}Y_{bt} (None)" at 6,1.08
-set output "atlasScanYpNone.eps"
-splot "m0m12scan.dat" u ($1/1000):($2/1000):151 notit w pm3d
-
-set label 2 "{/Symbol D}Y_{bt} (All)" at 6,1.08
-set output "atlasScanYpAll.eps"
-splot "m0m12scan.dat" u ($1/1000):($2/1000):155 notit w pm3d
-
-
-
-set cbrange [-0.095:-0.045]
-set label 2 "{/Symbol D}Y_{b{/Symbol t}} (None)" at 6,1.08
-set output "atlasScanYbNone.eps"
-splot "m0m12scan.dat" u ($1/1000):($2/1000):146 notit w pm3d
-
-set label 2 "{/Symbol D}Y_{b{/Symbol t}} (All)" at 6,1.08
-set output "atlasScanYbAll.eps"
-splot "m0m12scan.dat" u ($1/1000):($2/1000):150 notit w pm3d
-
-
-set cbrange [-0.0024:0]
-set label 2 "{/Symbol Da} (None)" at 6,1.08
-set output "atlasScanDaNone.eps"
-splot "m0m12scan.dat" u ($1/1000):($2/1000):141 notit w pm3d
-
-set label 2 "{/Symbol Da} (All)" at 6,1.08
-set output "atlasScanDaAll.eps"
-splot "m0m12scan.dat" u ($1/1000):($2/1000):145 notit w pm3d
-
 
 unset cbrange
 set label 2 "{/Symbol D}{/Symbol W}_{CDM}h^2" at 6,1.08
 set title "{/Symbol m}>0, tan{/Symbol b}=50, A_0=0"
 set output "hiTbScanOm.eps"
 splot "hiTb.dat" u ($1/1000):($2/1000):($53-$54) notit w pm3d
+unset label 2
 
+set xrange [-4:4]
+set yrange [2:59]
+set pm3d corners2color c1
+set dgrid3d 21,20,8
+set xlabel "A_0/TeV"
+set ylabel "tan{/Symbol b}"
+set label 1 "Allanach, Bednyakov, de Ruiz Austri, 2013" at -4,62 font "Helvetica,12" 
+set title "{/Symbol m}>0, m_0=2 TeV, M_{1/2}=600 GeV"
+
+
+set label 2 "{/Symbol D}Y@_{bt}^{(All)}-{/Symbol D}Y@_{bt}^{(None)}" at 4.7,65
+set output "atlasScanYpNone.eps"
+splot "tbScan.dat" u ($3/1000):($4):($154-$151) notit w pm3d
+
+set label 2 "{/Symbol D}Y@_{bt}^{(All)}" at 4.7,65
+set output "atlasScanYpAll.eps"
+splot "tbScan.dat" u ($3/1000):4:155 notit w pm3d
+
+
+
+#set cbrange [-0.2:0.6]
+set label 2 "{/Symbol D}Y@_{b{/Symbol t}}^{(All)}-{/Symbol D}Y@_{b{/Symbol t}}^{(None)}" at 4.7,65
+set output "atlasScanYbNone.eps"
+splot "tbScan.dat" u ($3/1000):4:($150-$146) notit w pm3d
+
+set label 2 "{/Symbol D}Y@_{b{/Symbol t}}^{(All)}" at 4.7,65
+set output "atlasScanYbAll.eps"
+splot "tbScan.dat" u ($3/1000):4:150 notit w pm3d
 
 
 
