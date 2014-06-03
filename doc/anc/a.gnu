@@ -53,9 +53,10 @@ set label 2 "{/Symbol D}_{m_{tR}}/m_{tR}" at 6,1.08
 set output "atlasScanMtR.eps"
 splot "atlas_scan.dat" u ($1/1000):($2/1000):32 notit w pm3d
 
+unset cbrange 
 set label 2 "{/Symbol Ds}/{/Symbol s}" at 6,1.08
 set output "atlasScanDs.eps"
-splot "m0m12scan.dat" u ($1/1000):($2/1000):(($139-$135)/$139) notit w pm3d
+splot "sig.dat" u ($1/1000):($2/1000):(($139-$135)/$139) notit w pm3d
 
 
 unset cbrange
