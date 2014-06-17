@@ -277,9 +277,66 @@ public:
   /// Set MZ^2 predicted after iteration
   void setPredMzSq(double a) { predMzSq = a; }
 
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  /// Switch 2-loop threshold \f$O(\alpha_s^2), O(\alpha_s \alpha_b),
+  /// O(\alpha_s \alpha_t) \f$ corrections to
+  /// \f$\alpha_s\f$ ON/OFF 
+  void setTwoLoopAlphasThresholds(bool sw) {
+    if (sw) {
+      included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
+      USE_TWO_LOOP_THRESHOLD = true;
+    }
+    else included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
+  }
+  /// Switch 2-loop threshold \f$ O(\alpha_s^2) \f$ corrections to top mass 
+  /// ON/OFF
+  void setTwoLoopMtThresholds(bool sw) {
+    if (sw) {
+      included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
+      USE_TWO_LOOP_THRESHOLD = true;
+    }
+    else included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
+  }
+  /// Switch 2-loop threshold \f$O(\alpha_s^2), O(\alpha_t^2), O(\alpha_b^2),
+  /// O(\alpha_\tau^2), O(\alpha_s \alpha_b), O(\alpha_\tau \alpha_b)
+  /// O(\alpha_s \alpha_t) \f$ corrections to
+  /// \f$ m_b \f$ and \f$ O(\alpha_\tau^2), O(\alpha_t \alpha_\tau), O(\alpha_t
+  /// \alpha_b) \f$ corrections to \f$ m_\tau \f$ ON/OFF 
+  void setTwoLoopMbMtauThresholds(bool sw) {
+    if (sw) {
+      included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
+      included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
+      included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
+      USE_TWO_LOOP_THRESHOLD = true;
+    }
+    else {
+      included_thresholds &= ENABLE_TWO_LOOP_MB_AS;
+      included_thresholds &= ENABLE_TWO_LOOP_MB_YUK;
+      included_thresholds &= ENABLE_TWO_LOOP_MTAU_YUK;
+    }
+  }
+  void setAllTwoLoopThresholds(bool sw) {
+    if (sw) {
+      included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
+      included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
+      included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
+      included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
+      included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
+      USE_TWO_LOOP_THRESHOLD = true;
+    }
+    else {
+      included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
+      included_thresholds &= ENABLE_TWO_LOOP_MB_AS;
+      included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
+      included_thresholds &= ENABLE_TWO_LOOP_MB_YUK;
+      included_thresholds &= ENABLE_TWO_LOOP_MTAU_YUK;
+      USE_TWO_LOOP_THRESHOLD = false;
+    }
+  }
+#endif
+
   ///  sets fracDiff, needed for access by NmssmSoftsusy methods
   void setFracDiff(double fD) { fracDiff = fD; };
-
   ///  fixes trilnear H1-sfermion-sfermion couplings 
   //for use in doCalcTadpole1oneLoop  
   void H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, 

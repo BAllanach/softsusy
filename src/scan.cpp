@@ -783,7 +783,12 @@ int main(int argc, char *argv[]) {
 			 uni, omega3, msqAv3, cs3, dA3, 
 	  dY3, dYp3); 
 	
-
+	printLineOut(m0, m12, a0, tanb, twoLoop, twoLoopAs, twoLoopMt, 
+		     twoLoopMb, threeLoop, 
+		     omega2, omegaAs, omegaMt, omegaMb, omega3,
+		     msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, 
+		     csMb, cs3, dA, dAAs, dAMt, dAMb, dA3, dY, dYAs, dYMt, 
+		     dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);
       }
     }
     }
