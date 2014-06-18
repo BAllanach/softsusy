@@ -32,7 +32,7 @@ const double MTOP = 165.0; ///< default running quark mass from PDG
 const double MELECTRON = 5.10998902e-4; 
 const double MMUON = 1.05658357e-1; ///< default pole lepton mass from PDG
 const double MTAU = 1.77699; ///< default pole lepton mass from PDG
-const double ALPHASMZ = 0.1184; ///< default running mass from PDG
+const double ALPHASMZ = 0.1184; ///< default running value from PDG
 const double ALPHAMZ = 1.0 / 127.916; ///< default running alpha(MZ) from PDG
 
   const double PMTOP = 173.5; ///< PDG 2012

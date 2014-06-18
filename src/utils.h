@@ -12,6 +12,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#ifdef HAVE_CONFIG_H
+ #include <config.h>
+#endif
+
 #include "mycomplex.h"
 #include <cstdlib>
 #include <fstream>
@@ -105,6 +109,14 @@ void printRow(ostream & o, double x);
 /// Returns true if f's a nan. Unfortunately, the behaviour of this function
 /// is not standardised across all platforms yet. 
 bool testNan(double f);
+
+// For DEBUGING
+#ifdef DEBUG
+#define dout cout
+#else
+#define dout if(0)cout
+#endif
+
 
 #endif
 

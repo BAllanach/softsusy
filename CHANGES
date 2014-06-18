@@ -1,3 +1,5 @@
 <li> 13/5/14 Manual changed
 <li> 14/5/14 Fixed pMSSM conditions on mu(MSUSY): a bug was introduced in
 version 3.4.0. Now it works. 
+<li> 17/6/14 Added methods to switch on/off the various threshold corrections
+<li> 17/6/14 Added 3-loop RGE and 2-loop threshold corrections

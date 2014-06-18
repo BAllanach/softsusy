@@ -75,5 +75,26 @@ namespace softsusy {
   /// Default: use SOFTSUSY conventions for masses of sparticles in loops, ie
   /// tree-level masses computed with the 2-loop Higgs potential
   bool sphenoMassConv = false;
+
+#ifdef COMPILE_THREE_LOOP_RGE
+  /// Controls the use of MSSM three-loop RGEs
+  bool USE_THREE_LOOP_RGE = false;
+#endif
+  
+#ifdef COMPILE_FULL_SUSY_THRESHOLD 
+
+  /// Threshold to prevent the re-evaluation of two-loop leading SUSY thresholds
+  /// corrections. By default we set it to 10%. 
+  double TWOLOOP_NUM_THRESH = 0.1;
+  /// Includes the evaluation of leading two-loop thresholds corrections
+  /// to the strong coupling constant and to the third family of fermion masses 
+  bool USE_TWO_LOOP_THRESHOLD = false;
+  /// just implements decoupling procedure "consistently" for
+  /// the case of b-quark mass. It requires the external momentum to be zero. 
+  /// However, the difference between the p^2 = 0 and p^2 = mb^2 cases
+  /// is expected to be of O((mb/MSUSY)^2), which we can formally neglect.
+  bool MB_DECOUPLING = false;
+
+#endif //COMPILE_FULL_SUSY_THRESHOLD
 }
 /// end of global variable declaration

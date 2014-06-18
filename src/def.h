@@ -12,9 +12,13 @@
 #ifndef DEF_H
 #define DEF_H
 
+#ifdef HAVE_CONFIG_H
+ #include <config.h>
+#endif
+
 #include <cmath>
 namespace softsusy{
-  const char SOFTSUSY_VERSION[] = "3.4.1";
+  const char SOFTSUSY_VERSION[] = "3.5.0";
 
   /// uncomment if you want checking of vector/matrices bounds: slows code
   /// down. It also now checks over/underflows in matrix multiplication etc
@@ -98,6 +102,34 @@ namespace softsusy{
   extern int numTry;
   /// Include eq (62) from hep-ph/0210268: degenerate gluino/squark mass limit
   extern bool includeTwoLoopMssmCorrectionsToMt;
+
+#ifdef COMPILE_THREE_LOOP_RGE
+  /// Controls the use of MSSM three-loop RGEs
+  extern bool USE_THREE_LOOP_RGE;
+#endif
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  /// Threshold to prevent the re-evaluation of two-loop leading SUSY 
+  /// thresholds corrections
+  extern double TWOLOOP_NUM_THRESH;
+  /// Includes the evaluation of leading two-loop thresholds corrections
+  /// to the strong coupling constant and to the third family of fermion masses 
+  extern bool USE_TWO_LOOP_THRESHOLD; 
+  /// just implements decoupling procedure "consistently" for
+  /// the case of b-quark mass. It requires the external momentum to be zero. 
+  /// However, the difference between the p^2 = 0 and p^2 = mb^2 cases
+  /// is expected to be of O((mb/MSUSY)^2), which we can formally neglect.
+  extern bool MB_DECOUPLING;
+
+  enum { ENABLE_TWO_LOOP_MT_AS  = 0x1,    
+	 ENABLE_TWO_LOOP_AS_AS_YUK = 0x2,
+	 ENABLE_TWO_LOOP_MB_AS  = 0x4, 
+	 ENABLE_TWO_LOOP_MB_YUK = 0x8,    
+	 ENABLE_TWO_LOOP_MTAU_YUK = 0x10    
+  };    
+
+#endif
+  
 }
 
 #endif
