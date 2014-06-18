@@ -84,4 +84,11 @@ src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twolo
 
 libsoft_la_LDFLAGS = @FLIBS@
 
-EXTRA_DIST += src/nmspec.f
+EXTRA_DIST += src/nmspec.f src/two_loop_thresholds/bquark_corrections.cpp.in \
+src/two_loop_thresholds/bquark_corrections.hpp \
+src/two_loop_thresholds/gs_corrections.cpp.in \
+src/two_loop_thresholds/gs_corrections.hpp \
+src/two_loop_thresholds/tau_corrections.cpp.in \
+src/two_loop_thresholds/tau_corrections.hpp \
+src/two_loop_thresholds/tquark_corrections.cpp.in \
+src/two_loop_thresholds/tquark_corrections.hpp
