@@ -29,9 +29,13 @@
     M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232-245,
     arXiv:0903.1805</a>.<p>
     For RPV neutrino oscillation output, please cite [1], [3] and <br>
-    <a href="http://xxx.soton.ac.uk/abs/1109.3735">B.C. Allanach,
+    [4] <a href="http://xxx.soton.ac.uk/abs/1109.3735">B.C. Allanach,
     M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012) 785,
-    arXiv:1109.3735</a>. 
+    arXiv:1109.3735</a>.<p>
+    If you use the three-loop RGEs or two-loop threshold corrections, please 
+    cite [1] and<br>
+    [5] <a href="http://arxiv.org/abs/arXiv:????.???">B.C. Allanach, A. 
+    Bednyakov and R. Ruiz, arXiv:????.????</a>
 
     \section documentation Documentation
     These web-pages contain the documentation of the latest SOFTSUSY code.
