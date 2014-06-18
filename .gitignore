@@ -31,7 +31,6 @@ scansusy.x
 scansusy_slha.x
 softsusy-nmssm.x
 aclocal.m4
-inOutFiles/*utput*
 benchmarks/*.spec
 doc/*.ps
 doc/*.spl

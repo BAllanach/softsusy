@@ -1,8 +1,8 @@
-TESTOUTPUT = 
+TESTOUTPUT = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
+inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output inOutFiles/lesHouchesOutput
+
 if COMPILE_FULL_SUSY_THRESHOLD
-else
-   TESTOUTPUT += inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
-   inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output inOutFiles/lesHouchesOutput
+TESTOUTPUT =
 endif
 
 INPUTFILES = 
