@@ -14,7 +14,6 @@ include doc/doc.amk
 if COMPILE_FULL_SUSY_THRESHOLD
 else
 include inOutFiles/inOut.amk
-include benchmarks/benchmarks.amk
 endif
 
 dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh \
