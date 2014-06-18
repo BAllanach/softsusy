@@ -15,6 +15,10 @@
 #ifndef SOFTSUSY_H
 #define SOFTSUSY_H
 
+#ifdef HAVE_CONFIG_H
+ #include <config.h>
+#endif
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -30,6 +34,25 @@
 
 #include "twoloophiggs.h"
 #include "mssmUtils.h"
+
+#define HR "----------------------------------------------------------"
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+ #include <ginac/ginac.h>
+
+namespace SoftSusy_helpers_ {
+  GiNaC::exmap drBarPars_exmap(const softsusy::MssmSoftsusy & );
+}
+
+ #include "two_loop_thresholds/softsusy_exmap.hpp"
+ #include "two_loop_thresholds/mssmparam.hpp"
+ #include "two_loop_thresholds/tau_corrections.hpp"
+ #include "two_loop_thresholds/bquark_corrections.hpp"
+ #include "two_loop_thresholds/tquark_corrections.hpp"
+ #include "two_loop_thresholds/gs_corrections.hpp"
+ #include "two_loop_thresholds/dec_cor_helper.hpp"
+
+#endif //COMPILE_FULL_SUSY_THRESHOLD
 
 namespace softsusy {
 
@@ -131,6 +154,13 @@ public:
   using SoftPars::runto;
 
   typedef typename SoftPars::susy_type Susy;
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  /// Public field :: only for informational purpose	
+  SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
+  /// Flags allowing to choose which two-loop thresholds have to be included
+  int included_thresholds; 
+#endif ///< COMPILE_FULL_SUSY_THRESHOLD
 
   //  void (*boundaryCondition)(Softsusy &, const DoubleVector &);
   /// Default constructor fills object with zeroes
@@ -247,9 +277,66 @@ public:
   /// Set MZ^2 predicted after iteration
   void setPredMzSq(double a) { predMzSq = a; }
 
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  /// Switch 2-loop threshold \f$O(\alpha_s^2), O(\alpha_s \alpha_b),
+  /// O(\alpha_s \alpha_t) \f$ corrections to
+  /// \f$\alpha_s\f$ ON/OFF 
+  void setTwoLoopAlphasThresholds(bool sw) {
+    if (sw) {
+      included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
+      USE_TWO_LOOP_THRESHOLD = true;
+    }
+    else included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
+  }
+  /// Switch 2-loop threshold \f$ O(\alpha_s^2) \f$ corrections to top mass 
+  /// ON/OFF
+  void setTwoLoopMtThresholds(bool sw) {
+    if (sw) {
+      included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
+      USE_TWO_LOOP_THRESHOLD = true;
+    }
+    else included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
+  }
+  /// Switch 2-loop threshold \f$O(\alpha_s^2), O(\alpha_t^2), O(\alpha_b^2),
+  /// O(\alpha_\tau^2), O(\alpha_s \alpha_b), O(\alpha_\tau \alpha_b)
+  /// O(\alpha_s \alpha_t) \f$ corrections to
+  /// \f$ m_b \f$ and \f$ O(\alpha_\tau^2), O(\alpha_t \alpha_\tau), O(\alpha_t
+  /// \alpha_b) \f$ corrections to \f$ m_\tau \f$ ON/OFF 
+  void setTwoLoopMbMtauThresholds(bool sw) {
+    if (sw) {
+      included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
+      included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
+      included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
+      USE_TWO_LOOP_THRESHOLD = true;
+    }
+    else {
+      included_thresholds &= ENABLE_TWO_LOOP_MB_AS;
+      included_thresholds &= ENABLE_TWO_LOOP_MB_YUK;
+      included_thresholds &= ENABLE_TWO_LOOP_MTAU_YUK;
+    }
+  }
+  void setAllTwoLoopThresholds(bool sw) {
+    if (sw) {
+      included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
+      included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
+      included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
+      included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
+      included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
+      USE_TWO_LOOP_THRESHOLD = true;
+    }
+    else {
+      included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
+      included_thresholds &= ENABLE_TWO_LOOP_MB_AS;
+      included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
+      included_thresholds &= ENABLE_TWO_LOOP_MB_YUK;
+      included_thresholds &= ENABLE_TWO_LOOP_MTAU_YUK;
+      USE_TWO_LOOP_THRESHOLD = false;
+    }
+  }
+#endif
+
   ///  sets fracDiff, needed for access by NmssmSoftsusy methods
   void setFracDiff(double fD) { fracDiff = fD; };
-
   ///  fixes trilnear H1-sfermion-sfermion couplings 
   //for use in doCalcTadpole1oneLoop  
   void H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, 
@@ -596,7 +683,7 @@ public:
   /// Does SUSY (and other) threshold corrections to alphaS
   /// Input alphas in MSbar and it returns it in DRbar scheme. 
   /// From hep-ph/9606211
-  double qcdSusythresh(double alphasMSbar, double Q) const;
+  double qcdSusythresh(double alphasMSbar, double Q);
   /// Calculates the best scale at which to do symmetry breaking:
   /// \f$ M_{SUSY}=\sqrt{m_{{\tilde t}_1 {\tilde t}_2}} \f$. Should only be
   /// called after calcDrBarPars.
@@ -637,7 +724,7 @@ public:
   virtual double calcRunMtauHiggs() const;
   /// Applies 1-loop SUSY corrections to pole mtau in order to
   /// return the DRbar running value at the current scale
-  virtual double calcRunningMtau() const;  
+  virtual double calcRunningMtau() ;  
  
   ///  calculates factor to convert to DrBar for mb
   virtual double calcRunMbDrBarConv() const;
@@ -655,7 +742,8 @@ public:
   virtual double calcRunMbNeutralinos() const;
   /// Applies approximate 1-loop SUSY corrections to mb(MZ) in order to
   /// return the DRbar running value
-  virtual double calcRunningMb() const;
+  //rruiz: remove const
+  virtual double calcRunningMb();
   /*
   /// Calculates top Yukawa coupling, supply Higgs vev parameter at current
   /// scale 
@@ -1209,6 +1297,33 @@ Softsusy<SoftPars>::Softsusy()
       setMu(0.0);
       setLoops(0);
       setThresholds(0);
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  decoupling_corrections.das.one_loop = 0;
+  decoupling_corrections.das.two_loop = 0;
+
+  decoupling_corrections.dmb.one_loop = 0;
+  decoupling_corrections.dmb.two_loop = 0;
+
+  decoupling_corrections.dmt.one_loop = 0;
+  decoupling_corrections.dmt.two_loop = 0;
+
+  decoupling_corrections.dmtau.one_loop = 0;
+  decoupling_corrections.dmtau.two_loop = 0;
+
+  if (USE_TWO_LOOP_THRESHOLD) {
+  	included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
+	  	        ENABLE_TWO_LOOP_AS_AS_YUK | 
+			ENABLE_TWO_LOOP_MB_AS | 
+			ENABLE_TWO_LOOP_MB_YUK |
+			ENABLE_TWO_LOOP_MTAU_YUK;
+  } else {
+	included_thresholds = 0;
+  }
+	
+
+
+#endif
 }
 
 
@@ -1229,6 +1344,24 @@ Softsusy<SoftPars>::Softsusy(const Softsusy & s)
     setMu(s.displayMu()); 
     setLoops(s.displayLoops());
     setThresholds(s.displayThresholds());
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop ; 
+  decoupling_corrections.das.two_loop = s.decoupling_corrections.das.two_loop ; 
+
+  decoupling_corrections.dmb.one_loop = s.decoupling_corrections.dmb.one_loop ; 
+  decoupling_corrections.dmb.two_loop = s.decoupling_corrections.dmb.two_loop ; 
+
+  decoupling_corrections.dmt.one_loop = s.decoupling_corrections.dmt.one_loop ; 
+  decoupling_corrections.dmt.two_loop = s.decoupling_corrections.dmt.two_loop ; 
+
+  decoupling_corrections.dmtau.one_loop = s.decoupling_corrections.dmtau.one_loop ; 
+  decoupling_corrections.dmtau.two_loop = s.decoupling_corrections.dmtau.two_loop ; 
+  /// Public field :: included thresholds
+  included_thresholds = s.included_thresholds;
+
+#endif //COMPILE_FULL_SUSY_THRESHOLD
+
 }
 
 template<class SoftPars>
@@ -1242,6 +1375,31 @@ Softsusy<SoftPars>::Softsusy(const Susy &s)
   setMu(s.displayMu()); 
   setLoops(s.displayLoops());
   setThresholds(s.displayThresholds());
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  decoupling_corrections.das.one_loop = 0;
+  decoupling_corrections.das.two_loop = 0;
+
+  decoupling_corrections.dmb.one_loop = 0;
+  decoupling_corrections.dmb.two_loop = 0;
+
+  decoupling_corrections.dmt.one_loop = 0;
+  decoupling_corrections.dmt.two_loop = 0;
+
+  decoupling_corrections.dmtau.one_loop = 0;
+  decoupling_corrections.dmtau.two_loop = 0;
+  /// Public field :: included thresholds
+  if (USE_TWO_LOOP_THRESHOLD) {
+  	included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
+	  	        ENABLE_TWO_LOOP_AS_AS_YUK | 
+			ENABLE_TWO_LOOP_MB_AS | 
+			ENABLE_TWO_LOOP_MB_YUK |
+			ENABLE_TWO_LOOP_MTAU_YUK;
+  } else {
+	included_thresholds = 0;
+  }
+
+#endif //COMPILE_FULL_SUSY_THRESHOLD
 }
 
 
@@ -1258,6 +1416,29 @@ Softsusy<SoftPars>::Softsusy
   setMu(mu);
   setLoops(l);
   setThresholds(t);
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  decoupling_corrections.das.one_loop = 0;
+  decoupling_corrections.das.two_loop = 0;
+
+  decoupling_corrections.dmb.one_loop = 0;
+  decoupling_corrections.dmb.two_loop = 0;
+
+  decoupling_corrections.dmt.one_loop = 0;
+  decoupling_corrections.dmt.two_loop = 0;
+
+  decoupling_corrections.dmtau.one_loop = 0;
+  decoupling_corrections.dmtau.two_loop = 0;
+  /// Public field :: included thresholds
+  if (USE_TWO_LOOP_THRESHOLD) {
+  	included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
+	  	        ENABLE_TWO_LOOP_AS_AS_YUK | 
+			ENABLE_TWO_LOOP_MB_AS | 
+			ENABLE_TWO_LOOP_MB_YUK |
+			ENABLE_TWO_LOOP_MTAU_YUK;
+  } else {
+	included_thresholds = 0;
+  }
+#endif
 }
 
 

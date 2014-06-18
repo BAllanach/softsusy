@@ -741,12 +741,12 @@ to the MSSM.  Note however, that in this case these are {\it effective}
 parameters constructed from several model parameters, so we must select which
 of the latter are fixed.
 In the $\mathbb{Z}_3$-NMSSM, we fix $s$ via Eq.~\ref{eq:mueffcond} and $\kappa$
-via Eq.~\ref{eq:bmucond}, and use the third EWSB condition (\ref{eq:mins}) to fix
+via Eq.~\ref{eq:bmucond}, and use the third EWSB condition to fix
 $m_S^2$.  In the $\Zv$-NMSSM, we have more freedom and can choose to fix
 $\mu$ and $m_3^2$ --- as in the MSSM --- and use the third EWSB
 condition to fix $\xi_S$.
-Alternatively, the EWSB conditions (\ref{eq:mind}-\ref{eq:mins}) can be used to fix the soft Higgs
-masses $m_{H_1}^2$, $m_{H_2}^2$ and $m_S^2$: see
+Alternatively, the EWSB conditions can be used to fix the soft Higgs
+masses $m_{H_1}^2$, $m_{H_2}^2$ and $m_S^2$, see
 \ref{sec:run}.
 
 The full one-loop tadpole corrections
@@ -872,65 +872,33 @@ parameters. The program may then be run with
 \end{verbatim}
 \normalsize
 
-NMSSM-\SOFTSUSY\ accepts input files compliant with the SLHA2 format
-given in Ref.~\cite{Allanach:2008qq} and supports the setting of all
-SLHA2 input blocks associated with non-complex couplings.  The set of
-input parameters which also exist in the MSSM are entered as described
-in \cite{Skands:2003cj}, just as for the MSSM version of \SOFTSUSY,
-while the new NMSSM parameters are all given in the \code{EXTPAR}
-block as outlined in \cite{Allanach:2008qq}.  For example, in the
-$\Zv$-NMSSM one can set:
+NMSSM-\SOFTSUSY\ accepts input files compliant with the SLHA2 format given in Ref.~\cite{Allanach:2008qq} and supports the setting of all SLHA2
+input blocks associated with non-complex couplings.  The set of input
+parameters which also exist in the MSSM are entered as described in
+\cite{Skands:2003cj}, just as for the MSSM version of \SOFTSUSY, while
+the new NMSSM parameters are all given in the \code{EXTPAR} block as
+outlined in \cite{Allanach:2008qq}.  For example one can specify:
 %
 \begin{verbatim}
-Block EXTPAR                 # Z3 violating NMSSM
-#  23   100                  # mu
-#  24   1000                 # m_3^2 / (cos(beta) * sin(beta))
+Block EXTPAR
+   23   0                    # mu
+   24   0                    # Bmu / (cos(beta) * sin(beta))
    61   0.1                  # lambda(MX)
    62   0.1                  # kappa(MX)
    63   1000                 # A_lambda(MX)
    64   1000                 # A_kappa(MX)
-   65   500                  # (lambda * <S>)(MX)
+   65   100                  # (lambda * <S>)(MX)
    66   100                  # xi_F(MX)
-#  67   1000                 # xi_S(MX)
-   68   1000                 # mu'(MX)
-   69   1000                 # m'_S^2(MX)
+   67   0                    # xi_S(MX)
+   68   0                    # mu'(MX)
+   69   0                    # m'_S^2(MX)
    70   1000                 # m_S^2(MX)
 \end{verbatim}
 %
-The parameters
-\begin{equation}
-  \{\mu,m_3^2 / (\cos\beta \sin\beta),\xi_S\}: \qquad \Zv\mbox{-NMSSM} \label{eq:Z3v_ewsb}
-\end{equation}
-must not be set here, because they are output by the EWSB conditions, see
-section \ref{ewsb}.  In the $\mathbb{Z}_3$-NMSSM one must set
-all $\mathbb{Z}_3$ violating parameters ($\mu$, $m_3^2$, $\xi_F$,
-$\xi_S$, $\mu'$, $m_S^{\prime\, 2}$) to zero or comment them
-out.%
-  \footnote{Unset parameters are assumed to be zero.}
-  %
-The parameters
-\begin{equation}
-  \{\kappa,s,m_S^2\}: \qquad \mathbb{Z}_3\mbox{-NMSSM} \label{eq:Z3_ewsb}
-\end{equation}
-are then output from the EWSB conditions, as in section \ref{ewsb}, and they should
-therefore not be set either.  One is then left with the following three
-free parameters:
-%
-\begin{verbatim}
-Block EXTPAR                 # Z3 symmetric NMSSM
-   61   0.1                  # lambda(MX)
-   63   1000                 # A_lambda(MX)
-   64   1000                 # A_kappa(MX)
-\end{verbatim}
-%
-By default all parameters are input at the scale $M_X$, defined either by (a) entry $0$ in
-block \code{EXTPAR} or (b) as the gauge coupling unification scale where 
-$g_1$ = $g_2$ (determined iteratively) when entry $0$ in block \code{EXTPAR} 
-is not set.  
-
-Should the user desire to input the parameters $\lambda$, $\kappa$, $\lambda s / \sqrt{2}$, 
-$\xi_F$ and $\mu'$ at $M_{SUSY}$, a corresponding $-1$
-entry in the block \code{QEXTPAR} has to be given:
+By default all parameters are input at $M_X$ (defined in entry 0 in
+block EXTPAR).  In case the parameters $\lambda$, $\kappa$, $\lambda
+s / \sqrt{2}$, $\xi_F$ and $\mu'$ should be input at $M_{SUSY}$ a corresponding
+$-1$ entry in the block \code{QEXTPAR} has to be given:
 %
 \begin{verbatim}
 Block QEXTPAR
@@ -941,27 +909,20 @@ Block QEXTPAR
    68   -1                   # input mu' at Msusy
 \end{verbatim}
 %
-Note that $M_{SUSY}$ is the scale where EWSB conditions are fixed, which is (by
-default) defined as $M_{SUSY} = \sqrt{m_{\tilde{t}_1}
-  m_{\tilde{t}_2}}$ and is re-calculated at each step in the
-iteration. This matches SLHA conventions,%
-  \footnote{though in the SLHA papers this scale is named $M_{EWSB}$.}
-  %
-but in \SOFTSUSY\ there is also a special option to vary this scale by 
-setting entry 4 of block \SOFTSUSY\ to give the value of QEWSB, which alters 
-$M_{SUSY}$ as described in section A.1 of the MSSM manual \cite{Allanach:2001kg}.
+Parameters that are output of the EWSB conditions cannot be given in
+the \code{EXTPAR} block.  For the $\mathbb{Z}_3$-NMSSM these are $s$,
+$\kappa$ and $m_S^2$.  In the $\Zv$-NMSSM these are $\mu$, $m_3^2$ and
+$\xi_S$.
 
-Instead of choosing the default EWSB output parameters (\ref{eq:Z3v_ewsb}-\ref{eq:Z3_ewsb}) 
-it is also possible to output the soft scalar Higgs masses.  The EWSB conditions in 
-Eqs.~(\ref{eq:mind}-\ref{eq:mins}) will then determine $m_{H_1}^2$, $m_{H_2}^2$ and $m_S^2$ 
-when entry $18$ in block \SOFTSUSY\ is set to $1$:
+Instead of choosing the above parameter sets as EWSB output, it is also
+possible to let the EWSB conditions determine $m_{H_1}^2$, $m_{H_2}^2$
+and $m_S^2$.  This behaviour can be enabled by setting entry $18$ in
+block \SOFTSUSY\ to $1$:
 %
 \begin{verbatim}
 Block SOFTSUSY
    18   1                    # use soft Higgs masses as EWSB output
 \end{verbatim}
-
-In this case, the default EWSB output parameters (\ref{eq:Z3v_ewsb}-\ref{eq:Z3_ewsb}) must be given in the SLHA file or they will be set to zero by default. Since all $\Zv$ parameters are inputs in this case, setting any of them to a non-zero value implies that the point considered belongs to the $\Zv$-NMSSM. In this particular case, entries 23, 24 and 67 in block {\tt EXTPAR} may now be set for a $\Zv$-NMSSM point since they are no longer EWSB outputs.
 
 For the SLHA2 input option, 
 the output will also be given in 
@@ -970,8 +931,7 @@ input into other programs which subscribe to the accord, such as
 \code{PYTHIA}~\cite{Sjostrand:2007gs} (for
 simulating sparticle production and decays at colliders), for example. For
 further details on the format of 
-the input and output files, see Refs.~\cite{Allanach:2008qq} and
-\cite{Skands:2003cj}. 
+the input and output file, see Refs.~\cite{Allanach:2008qq} and \cite{Skands:2003cj}.
 
 An alternative input option for \SOFTSUSY\ is to input the parameters via the command-line interface. As of {\tt SOFTSUSY 3.4}, the command line interface of \code{softpoint.x} has
 changed, see \code{softpoint.x --help}.  For the NMSSM, the syntax is
@@ -1005,7 +965,7 @@ parameter options are listed in
     \code{--mHd2=<value>} & soft down-type Higgs mass squared $m_{H_1}^2$ \\
     \code{--mHu2=<value>} & soft up-type Higgs mass squared $m_{H_2}^2$ \\
     \code{--mu=<value>} & $\mu$ parameter \\
-    \code{--m3SqrOverCosBetaSinBeta=<value>} & $m_3^2/(\cos\beta \sin\beta)$ \\
+    \code{--BmuOverCosBetaSinBeta=<value>} & $B\mu/(\cos\beta \sin\beta)$ \\
     \code{--lambda=<value>} & trilinear superpotential coupling $\lambda$ \\
     \code{--kappa=<value>} & trilinear superpotential coupling $\kappa$ \\
     \code{--Alambda=<value>} & trilinear soft coupling $A_\lambda$ \\
@@ -1039,7 +999,7 @@ user has to first install \NMSSMTools\ and then run the
        --compile
 \end{verbatim}
 %
-The \code{setup\_nmssmtools.sh} script copies \code{nmh\_slhainp.f}
+The \code{setup\_nmssmtools.sh} script copies \code{nmProcessSpec.f}
 and \code{Makefile.nmssmtools} from the \SOFTSUSY\ directory to the
 {\tt main/} directory within the \NMSSMTools\ folder.  If the \code{--compile}
 flag is provided, \NMSSMTools\ is recompiled.  Afterwards the user can
@@ -1070,10 +1030,10 @@ convention.
 %
 After \code{softsusy\_nmssmtools.x} is called, the following three output
 files can be found in the \NMSSMTools\ directory
-\code{NMSSMTools\_4.1.2/main/}. The file \code{decay}
+\code{NMSSMTools\_4.1.2/main/}. The file \code{nmProcessSpec-decay}
 contains the sparticle decays in form of SLHA DECAY blocks,
-\code{omega} will contain the output from \code{micrOMEGAS} if entry 16 is selected to be non-zero and
-\code{spectr} contains the spectrum calculated by
+\code{nmProcessSpec-omega} will contain the output from \code{micrOMEGAS} if entry 16 is selected to be non-zero and
+\code{nmProcessSpec-spectr} contains the spectrum calculated by
 \NMSSMTools.
 
 \section{Class Structure\label{sec:objects}}

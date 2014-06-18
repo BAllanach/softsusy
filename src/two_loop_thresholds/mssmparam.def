@@ -1,0 +1,797 @@
+autogen definitions mssmparam;
+
+mssmmass = {
+	element = msusy;
+	info    = "SUSY mass scale"; };
+
+mssmmass = {
+	element = V;
+	info    = "Higgs field V.E.V"; };
+
+mssmmass = {
+	element = mt;
+	faName = "MT";
+	testVal = 155;
+	info    = "top quark mass"; };
+
+mssmmass = {
+	element = mb;
+	faName = "MB";
+	testVal = "3.52";
+	info    = "bottom quark mass"; };
+
+mssmmass = {
+	element = mtau;
+	faName = "ML";
+	testVal = "1.77";
+	info    = "tau lepton mass"; };
+
+mssmmass = {
+	element = mcha1;
+	faName = "MCha[1]";
+	info    = "First chargino mass"; };
+
+mssmmass = {
+	element = mcha2; 
+	faName = "MCha[2]";
+	info    = "Second chargino mass"; };
+
+mssmmass = {
+	element = mgl;
+	faName = "MGl";
+	testVal = 2390;
+	info    = "Gluino mass"; };
+
+mssmmass = { 
+	element = mh0;
+	faName = "Mh0";
+	testVal = 91;
+	info    = "SM Higgs boson mass"; };
+
+mssmmass = {
+	element = mA0;
+	faName = "MA0";
+	testVal = 2650;
+	info    = "Neutral CP=-1 Higgs boson mass"; };
+
+mssmmass = {
+	element = mH0;
+	faName = "MHH";
+	testVal = 2651;
+	info = "Neutral CP=1 Higgs boson mass"; };
+
+mssmmass = {
+	element = mG0;
+	info = "Neutral Goldstone mass"; };
+
+mssmmass = {
+	element = mGp;
+	info = "Charged Goldstone mass"; };
+
+mssmmass = {
+	element = mHp;
+	faName = "MHp";
+	testVal = 2649;
+	info = "Charged Higgs boson mass"; };
+
+mssmmass = {
+	element = MW;
+	testVal = 79;
+	info = "W boson mass"; };
+
+mssmmass = { 
+	element = MZ;
+	testVal = 91;
+	info = "Z boson mass"; };
+
+mssmmass = { 
+	element = mst1;
+	faName = "MSf[1,3,3]";
+	testVal = 2030;
+	info = "First stop mass"; };
+
+mssmmass = { 
+	element = mst2;
+	faName = "MSf[2,3,3]";
+	testVal = 1810;
+	info = "Second stop mass"; };
+
+mssmmass = { 
+	element = msb1;
+	faName = "MSf[1,4,3]";
+	testVal = 2020;
+	info = "First sbottom mass"; };
+
+mssmmass = { 
+	element = msb2;
+	faName = "MSf[2,4,3]";
+	testVal = 1940;
+	info = "Second sbottom mass"; };
+
+mssmmass = { 
+	element = msd1;
+	faName = "MSf[1,4,1]";
+	info = "First sdown mass"; };
+
+mssmmass = { 
+	element = msd2;
+	faName = "MSf[2,4,1]";
+	info = "Second sdown mass"; };
+
+mssmmass = { 
+	element = msu1;
+	faName = "MSf[1,3,1]";
+	info = "First sup mass"; };
+
+mssmmass = { 
+	element = msu2;
+	faName = "MSf[2,3,1]";
+	info = "Second sup mass"; };
+
+mssmmass = { 
+	element = msc1;
+	faName = "MSf[1,3,2]";
+	info = "First scharmed mass"; };
+
+mssmmass = { 
+	element = msc2;
+	faName = "MSf[2,3,2]";
+	info = "Second scharmed mass"; };
+
+mssmmass = { 
+	element = mss1;
+	faName = "MSf[1,4,2]";
+	info = "First sstrange mass"; };
+
+mssmmass = { 
+	element = mss2;
+	faName = "MSf[2,4,2]";
+	info = "Second sstrange mass"; };
+
+mssmmass = { 
+	element = msq1;
+	info = "First scalar quark mass"; };
+
+mssmmass = { 
+	element = msq2;
+	info = "Second scalar quark mass"; };
+
+mssmmass = { 
+	element = mstau1;
+	faName = "MSf[1,2,3]";
+	testVal = 2020;
+	info = "First stau mass"; };
+
+mssmmass = { 
+	element = mstau2;
+	faName = "MSf[2,2,3]";
+	testVal = 2020;
+	info = "Second stau mass"; };
+
+mssmmass = { 
+	element = msntau;
+	faName = "MSf[1,1,3]";
+	testVal = 2020;
+	info = "Tau snetrino  mass"; };
+
+mssmmass = { 
+	element = mneu1;
+	faName = "MNeu[1]";
+	info = "Neutralino 1 mass"; };
+
+mssmmass = { 
+	element = mneu2;
+	faName = "MNeu[2]";
+	info = "Neutralino 2 mass"; };
+
+mssmmass = { 
+	element = mneu3;
+	faName = "MNeu[3]";
+	info = "Neutralino 3 mass"; };
+
+mssmmass = { 
+	element = mneu4;
+	faName = "MNeu[4]";
+	info = "Neutralino 4 mass"; };
+
+mssmmass = {
+	element = MUE;
+	real;
+	testVal = 1050;
+	info = "Higgs mixing parameter"; };
+
+mssmmass = {
+	element = dmb;
+	info = "one-loop counter-term for b-quark mass"; };
+
+mssmmass = {
+	element = dmt;
+	info = "one-loop counter-term for t-quark mass"; };
+
+mssmmass = {
+	element = dMUE;
+	info = "one-loop counter-term for Higgs mixing parameter"; };
+
+
+mssmmass = {
+	element = dmst1;
+	info = "one-loop counter-term for stop1 mass squared"; };
+
+mssmmass = {
+	element = dmst2;
+	info = "one-loop counter-term for stop2 mass squared"; };
+
+mssmmass = {
+	element = dmst12;
+	info = "one-loop non-diagonal counter-term for stop mass matrix"; };
+
+mssmmass = {
+	element = dmsb1;
+	info = "one-loop counter-term for sbottom1 mass squared"; };
+
+mssmmass = {
+	element = dmsb2;
+	info = "one-loop counter-term for sbottom2 mass squared"; };
+
+mssmmass = {
+	element = dmsb12;
+	info = "one-loop non-diagonal counter-term for sbottom mass matrix"; };
+
+mssmmass = {
+	element = dmA0;
+	info = "one-loop counter-term for neutral CP-odd Higgs"; };
+
+mssmmass = {
+	element = dmH0;
+	info = "one-loop counter-term for neutral CP-even Higgs"; };
+
+mssmmass = {
+	element = dmh0;
+	info = "one-loop counter-term for SM Higgs"; };
+
+mssmmass = {
+	element = dmHp;
+	info = "one-loop counter-term for charged Higgs"; };
+
+mssmmass = {
+	element = dmGp;
+	info = "one-loop counter-term for charged Goldstone"; };
+
+mssmmass = {
+	element = dmG0;
+	info = "one-loop counter-term for neutral Goldstone"; };
+
+mssmmass = {
+	element = dmH0h0;
+	info = "one-loop non-diagonal counter-term for neutral CP-even Higgs mass matrix "; };
+
+mssmmass = {
+	element = dmA0G0;
+	info = "one-loop non-diagonal counter-term for neutral CP-odd Higgs mass matrix "; };
+
+mssmmass = {
+	element = dmHpGp;
+	info = "one-loop non-diagonal counter-term for charged Higgs mass matrix "; };
+
+
+
+
+mssmparam = {
+	element = GS;
+	testVal = 1;
+	info = "SU(3) gauge coupling"; };
+
+mssmparam = {
+	element = YT;
+	testVal = "0.87";
+	info = "Yukawa (top) coupling constant"; };
+
+mssmparam = {
+	element = dYT;
+	info = "one-loop renormalization of YT"; };
+
+mssmparam = {
+	element = YB;
+	testVal = "0.80";
+	info = "Yukawa (bottom) coupling constant"; };
+
+mssmparam = {
+	element = dYB;
+	info = "one-loop renormalization of YB"; };
+
+mssmparam = {
+	element = YL;
+	testVal = "0.38";
+	info = "Yukawa (tau) coupling constant"; };
+
+mssmparam = {
+	element = snb;
+	faName = "USf[4,3][1,2]";
+	testVal = "-0.5";
+	info = "sine of sbottom mixing angle"; };
+
+mssmparam = {
+	element = csb;
+	faName = "USf[4,3][1,1]";
+	info = "cosine of sbottom mixing angle"; };
+
+mssmparam = {
+	element = snl;
+	faName = "USf[2,3][1,2]";
+	testVal = "-0.5";
+	info = "sine of stau mixing angle"; };
+
+mssmparam = {
+	element = csl;
+	faName = "USf[2,3][1,1]";
+	info = "cosine of stau mixing angle"; };
+
+mssmparam = {
+	element = snt;
+	testVal = "-0.4";
+	faName = "USf[3,3][1,2]";
+	info = "sine of stop mixing angle"; };
+
+mssmparam = {
+	element = cst;
+	faName = "USf[3,3][1,1]";
+	info = "cosine of stop mixing angle"; };
+
+mssmparam = {
+	element = sn2b;
+	info = "sine of doubled sbottom mixing angle"; };
+
+mssmparam = {
+	element = cs2b;
+	info = "cosine of doubled sbottom mixing angle"; };
+
+mssmparam = {
+	element = sn2t;
+	info = "sine of doubled stop mixing angle"; };
+
+mssmparam = {
+	element = cs2t;
+	info = "cosine of doubled stop mixing angle"; };
+
+mssmparam = {
+	element = Gw;
+	info = "Electroweak coupling constant"; };
+
+mssmparam = {
+	element = Gprime;
+	info = "Hypercharge coupling constant"; };
+
+/*
+mssmparam = {
+	element = ZNeu11;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu12;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu13;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu14;
+	info = "Neutralino mixing matrix"; };
+
+
+mssmparam = {
+	element = ZNeu21;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu22;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu23;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu24;
+	info = "Neutralino mixing matrix"; };
+
+
+mssmparam = {
+	element = ZNeu31;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu32;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu33;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu34;
+	info = "Neutralino mixing matrix"; };
+
+
+mssmparam = {
+	element = ZNeu41;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu42;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu43;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu44;
+	info = "Neutralino mixing matrix"; };
+
+
+mssmparam = {
+	element = ZNeu11c;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu12c;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu13c;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu14c;
+	info = "Neutralino mixing matrix"; };
+
+
+mssmparam = {
+	element = ZNeu21c;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu22c;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu23c;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu24c;
+	info = "Neutralino mixing matrix"; };
+
+
+mssmparam = {
+	element = ZNeu31c;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu32c;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu33c;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu34c;
+	info = "Neutralino mixing matrix"; };
+
+
+mssmparam = {
+	element = ZNeu41c;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu42c;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu43c;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = ZNeu44c;
+	info = "Neutralino mixing matrix"; };
+
+mssmparam = {
+	element = VCha11;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = VCha12;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = VCha11c;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = VCha12c;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = VCha21;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = VCha22;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = VCha21c;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = VCha22c;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = UCha11;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = UCha12;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = UCha11c;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = UCha12c;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = UCha21;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = UCha22;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = UCha21c;
+	info = "Chargino mixing matrix"; };
+
+mssmparam = {
+	element = UCha22c;
+	info = "Chargino mixing matrix"; };
+
+*/
+
+mssmparam = {
+	element = SW;
+	info = "sine of Weinberg angle"; };
+
+mssmparam = {
+	element = EL;
+	info = "charge of electron"; };
+
+mssmparam = {
+	element = CW;
+	info = "cosine of Weinberg angle"; };
+
+mssmparam = {
+	element = CB;
+	info = "\\f$\\cos(\\beta)\\f$"; };
+
+mssmparam = {
+	element = SB;
+	info = "\\f$\\sin(\\beta)\\f$"; };
+
+mssmparam = {
+	element = C2B;
+	info = "\\f$\\cos(2\\beta)\\f$"; };
+
+mssmparam = {
+	element = S2B;
+	info = "\\f$\\sin(2\\beta)\\f$"; };
+
+
+mssmparam = {
+	element = TB;
+	testVal = 40;
+	info = "\\f$\\tan(\\beta)\\f$"; };
+
+mssmparam = {
+	element = CA;
+	info = "Neutral CP=1 Higgs bosons mixing angle cosine"; };
+
+mssmparam = {
+	element = SA;
+	testVal = "-0.025";
+	info = "Neutral CP=1 Higgs bosons mixing angle sine"; };
+
+mssmparam = {
+	element = C2A;
+	info = "\\f$\\cos(2\\alpha)\\f$"; };
+
+mssmparam = {
+	element = S2A;
+	info = "\\f$\\sin(2\\alpha)\\f$"; }; 
+
+mssmparam = {
+	element = CAB;
+	info = "\\f$\\cos(\\alpha+\\beta)\\f$"; };
+
+mssmparam = {
+	element = SAB;
+	info = "\\f$\\sin(\\alpha+\\beta)\\f$"; };
+
+mssmparam = {
+	element = CBA;
+	info = "\\f$\\cos(\\beta-\\alpha)\\f$"; };
+
+mssmparam = {
+	element = SBA;
+	info = "\\f$\\sin(\\beta-\\alpha)\\f$"; };
+
+mssmparam = {
+	element = Ab;
+	testVal = "-230";
+	faName = "Af[4,3]";
+	info = "Scalar soft-breaking (bottom) parameters"; };
+
+mssmparam = {
+	element = At;
+	testVal = "-1600";
+	faName = "Af[3,3]";
+	info = "Scalar soft-breaking (top) parameters"; };
+
+mssmparam = {
+	element = Al;
+	testVal = "-1600";
+	faName = "Af[2,3]";
+	info = "Scalar soft-breaking (tau) parameters"; };
+
+mssmparam = {
+	element = ab;
+	testVal = "-230";
+	info = "Ab - mu TB"; };
+
+mssmparam = {
+	element = al;
+	testVal = "-230";
+	info = "Al - mu TB"; };
+
+mssmparam = {
+	element = at;
+	testVal = "-230";
+	info = "At - mu / TB"; };
+
+mssmparam = {
+	element = m12;
+	testVal = "1000";
+	info = "Universal fermion mass";
+};
+
+mssmparam = {
+	element = m0;
+	testVal = "1000";
+	info = "Universal scalar mass";
+};
+
+mssmparam = {
+	element = a0;
+	testVal = "0";
+	info = "Universal trilinear coupling";
+};
+
+mssmparam = {
+	element = scale;
+	testVal = "91";
+	info = "Low-energy scale (usually MZ)";
+};
+
+
+
+mssmparam = {
+	element = colorCF;
+	info = "SU(3) C_F invariant"; };
+
+mssmparam = {
+	element = colorCA;
+	info = "SU(3) C_A invariant"; };
+
+mssmparam = {
+	element = Tf;
+	info = "SU(3) T_f invariant"; };
+
+auxsym = {
+	element = sun_T;
+	info = "Symbol for Gell-Mann matrices"; };
+
+auxsym = {
+	element = mu1;
+	info = "Symbol for constructing Lorentz index"; };
+
+auxsym = {
+	element = mu2;
+	info = "Symbol for constructing Lorentz index"; };
+
+auxsym = {
+	element = mu3;
+	info = "Symbol for constructing Lorentz index"; };
+
+auxsym = {
+	element = mu4;
+	info = "Symbol for constructing Lorentz index"; };
+
+auxsym = {
+	element = mu5;
+	info = "Symbol for constructing Lorentz index"; };
+
+auxsym = {
+	element = mu6;
+	info = "Symbol for constructing Lorentz index"; };
+
+auxsym = {
+	element = mu7;
+	info = "Symbol for constructing Lorentz index"; };
+
+
+auxsym = {
+	element = gi1;
+	info = "Symbol for constructing gluon index"; };
+
+auxsym = {
+	element = gi2;
+	info = "Symbol for constructing gluon index"; };
+
+auxsym = {
+	element = gi3;
+	info = "Symbol for constructing gluon index"; };
+
+auxsym = {
+	element = gi4;
+	info = "Symbol for constructing gluon index"; };
+
+auxsym = {
+	element = gi5;
+	info = "Symbol for constructing gluon index"; };
+
+auxsym = {
+	element = gi6;
+	info = "Symbol for constructing gluon index"; };
+
+
+auxsym = {
+	element = ci1;
+	info = "Symbol for constructing color index"; };
+
+auxsym = {
+	element = ci2;
+	info = "Symbol for constructing color index"; };
+
+auxsym = {
+	element = ci3;
+	info = "Symbol for constructing color index"; };
+
+auxsym = {
+	element = ci4;
+	info = "Symbol for constructing color index"; };
+
+auxsym = {
+	element = ci5;
+	info = "Symbol for constructing color index"; };
+
+auxsym = {
+	element = ci6;
+	info = "Symbol for constructing color index"; };
+
+auxsym = {
+	element = ci7;
+	info = "Symbol for constructing color index"; };
+
+
+
+
+
+
+
+
+

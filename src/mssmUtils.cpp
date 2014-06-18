@@ -418,6 +418,9 @@ string recogLsp(int temp, int posj) {
 
 ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
   left << HR << endl;
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  left << "Included higher-order thresholds=" << s.included_thresholds << endl;
+#endif ///< COMPILE_FULL_SUSY_THRESHOLD
   left << "Gravitino mass M3/2: " << s.displayGravitino() << endl;
   left << "Msusy: " << s.displayMsusy() << " MW: " << s.displayMw()
        << " Predicted MZ: " << sqrt(s.displayPredMzSq()) << endl;
