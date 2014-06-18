@@ -84,4 +84,4 @@ src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twolo
 
 libsoft_la_LDFLAGS = @FLIBS@
 
-EXTRA_DIST += src/nmProcessSpec.f
+EXTRA_DIST += src/nmspec.f
