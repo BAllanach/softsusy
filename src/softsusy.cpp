@@ -7528,36 +7528,37 @@ void Softsusy<SoftPars>::calcDrBarGauginos(double beta, double mw, double mz, do
 }
 template<class SoftPars>
 void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2, 
-                                        double /* sinthDRbar */, drBarPars & eg) {
-   if (eg.mt > 200. || eg.mt < 50.) {
+                                        double sinthDRbar, drBarPars & eg) {
+  if (eg.mt > 200. || eg.mt < 50.) {
     /// Gone badly off-track
     flagProblemThrown(true);
     if (eg.mt > 200.) eg.mt = 200.;
     if (eg.mt < 50.) eg.mt = 50.;
   }
-  double mAsq;
-  mAsq = displayM3Squared() / (sin(beta) * cos(beta));
 
-  if (mAsq < 0.) {
-    /* Previous solution: if we're at MZ, use the pole mA^2
-       if (close(displayMu(), MZ, tol)) {
-      double mApole = physpars.mA0(1); /// physical value
-      setDrBarPars(eg);
-      
-      double piaa = piAA(mApole, displayMu()); 
-      double t1Ov1 = doCalcTadpole1oneLoop(eg.mt, sinthDRbar), 
+  const double tol = 1.0e-6;
+  double mAsq = 0.;
+  double mAsqRunning = displayM3Squared() / (sin(beta) * cos(beta));
+  /// The prescription now is that we use the running MA^2 elsewhere and the
+  /// pole one at MZ
+  if (close(displayMu(), MZ, tol)) {
+    double mApole = physpars.mA0(1); /// physical value
+    setDrBarPars(eg);
+    
+    double piaa = piAA(mApole, displayMu()); 
+    double t1Ov1 = doCalcTadpole1oneLoop(eg.mt, sinthDRbar), 
       t2Ov2 = doCalcTadpole2oneLoop(eg.mt, sinthDRbar); 
-      double poleMasq = 
+    double poleMasq = 
       (displayMh2Squared() - t2Ov2 - 
-      displayMh1Squared() + t1Ov1) / 
+       displayMh1Squared() + t1Ov1) / 
       cos(2.0 * beta) - mz2 - piaa +
       sqr(sin(beta)) * t1Ov1 + sqr(cos(beta)) * t2Ov2;
-      
-      mAsq = poleMasq;
-      
-      if (mAsq < 0.) { flagTachyon(A0); mAsq = fabs(poleMasq); }
-      }
-     */
+    
+    mAsq = poleMasq;
+  } else 
+    mAsq = mAsqRunning;
+  
+  if (mAsq < 0.) {
     flagTachyon(softsusy::A0); 
     if (mAFlag == false) mAsq = ccbSqrt(mAsq); 
     /// This may be  a bad idea in terms of convergence
@@ -7569,9 +7570,9 @@ void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2,
   }
     
   DoubleMatrix mH(2, 2); 
-  mH(1, 1) = mAsq * sqr(sin(beta)) + mz2 * sqr(cos(beta));
-  mH(1, 2) = - sin(beta) * cos(beta) * (mAsq + mz2); 
-  mH(2, 2) = mAsq * sqr(cos(beta)) + mz2 * sqr(sin(beta)); 
+  mH(1, 1) = mAsqRunning * sqr(sin(beta)) + mz2 * sqr(cos(beta));
+  mH(1, 2) = - sin(beta) * cos(beta) * (mAsqRunning + mz2); 
+  mH(2, 2) = mAsqRunning * sqr(cos(beta)) + mz2 * sqr(sin(beta)); 
   mH(2, 1) = mH(1 ,2); 
 
   DoubleVector mSq(2);
