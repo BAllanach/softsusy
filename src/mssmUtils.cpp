@@ -57,24 +57,18 @@ void extendedSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   for (i=1; i<=3; i++) m.setGauginoMass(i, inputParameters.display(i));
   if (inputParameters.display(25) > 1. && m.displaySetTbAtMX())
     m.setTanb(inputParameters.display(25));
-  m.setTrilinearElement(UA, 1, 1, m.displayYukawaElement(YU, 1, 1) *
-			inputParameters.display(11));
-  m.setTrilinearElement(UA, 2, 2, m.displayYukawaElement(YU, 2, 2) *
-			inputParameters.display(11));
   m.setTrilinearElement(UA, 3, 3, m.displayYukawaElement(YU, 3, 3) *
 			inputParameters.display(11));
-  m.setTrilinearElement(DA, 1, 1, m.displayYukawaElement(YD, 1, 1) *
-			inputParameters.display(12));
-  m.setTrilinearElement(DA, 2, 2, m.displayYukawaElement(YD, 2, 2) *
-			inputParameters.display(12));
   m.setTrilinearElement(DA, 3, 3, m.displayYukawaElement(YD, 3, 3) *
 			inputParameters.display(12));
-  m.setTrilinearElement(EA, 1, 1, m.displayYukawaElement(YE, 1, 1) *
+  m.setTrilinearElement(EA, 3, 3, m.displayYukawaElement(YD, 3, 3) *
 			inputParameters.display(13));
-  m.setTrilinearElement(EA, 2, 2, m.displayYukawaElement(YE, 2, 2) *
-			inputParameters.display(13));
-  m.setTrilinearElement(EA, 3, 3, m.displayYukawaElement(YE, 3, 3) *
-			inputParameters.display(13));
+  m.setTrilinearElement(UA, 1, 1, 0.);
+  m.setTrilinearElement(DA, 1, 1, 0.);
+  m.setTrilinearElement(EA, 1, 1, 0.);
+  m.setTrilinearElement(UA, 2, 2, 0.);
+  m.setTrilinearElement(DA, 2, 2, 0.);
+  m.setTrilinearElement(EA, 2, 2, 0.);
   m.setSoftMassElement(mLl, 1, 1, signedSqr(inputParameters.display(31)));
   m.setSoftMassElement(mLl, 2, 2, signedSqr(inputParameters.display(32)));
   m.setSoftMassElement(mLl, 3, 3, signedSqr(inputParameters.display(33)));

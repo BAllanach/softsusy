@@ -1188,10 +1188,6 @@ int main(int argc, char *argv[]) {
 	  ostringstream ii;
 	  ii << "Split GMSB BCs should not supported with alternative EWSB\n";
 	  throw ii.str();
-	  /// Split GMSB BCs: different
-	  /*	r->setSusyMu(400.);
-		r->setMuCond(400.);
-		r->setMaCond(400.);*/
 	}
 	sgnMu = 0; // Flags different BCs
       }
