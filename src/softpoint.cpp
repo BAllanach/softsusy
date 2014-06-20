@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
   double lambdaW = 0., aCkm = 0., rhobar = 0., etabar = 0.;
   NMSSM_input nmssm_input; // NMSSM input parameters
 
-  bool flavourViolation = false;
+  bool flavourViolation = false, gutScaleOutput = false;
 
   int numPoints = 1;
 
@@ -424,12 +424,13 @@ int main(int argc, char *argv[]) {
 		    }
 		    break;
 		  case 12: double d; kk >> d;
-		    if (d < MZ) {
+		    if (d < MZ && d > 0.) {
 		      ostringstream ii;
 		      ii << "MODSEL 12 selecting silly scale Qmax"
 			 << "(" << d << ") < MZ to output" << endl;
 		      throw ii.str();
 		    }
+		    if (close(d + 1., 0., EPSTOL)) gutScaleOutput = true;
 		    qMax = d; break;
 		  default:
 		    cout << "# WARNING: don't understand first integer " 
@@ -1300,6 +1301,8 @@ int main(int argc, char *argv[]) {
         sPhysical s(r->displayPhys()); s.mh0(1) = desiredMh; r->setPhys(s);
       }
       
+      if (gutScaleOutput) qMax = r->displayMxBC();
+
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
       

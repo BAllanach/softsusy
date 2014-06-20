@@ -7555,8 +7555,7 @@ void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2,
       sqr(sin(beta)) * t1Ov1 + sqr(cos(beta)) * t2Ov2;
     
     mAsq = poleMasq;
-  } else 
-    mAsq = mAsqRunning;
+  } else mAsq = mAsqRunning;
   
   if (mAsq < 0.) {
     flagTachyon(softsusy::A0); 

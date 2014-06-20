@@ -1164,6 +1164,12 @@ early iterations of the algorithm depicted in Fig.~\ref{fig:algorithm},
  and such points may
 be physically fine if there are no further problems reported. 
 
+In the standard SLHA input format, a parameter 
+\code{12}~in \code{Block MODSEL} fixes the maximum scale of printing out the
+running parameters, $Q_{max}$. \SOFTSUSY~has an additional option to the usual SLHA
+definition: if the parameter is set to \code{-1.000000}, then the GUT scale is
+taken for $Q_{max}$.
+
 If \code{softpoint.x}~is used {\em without}\/ the SLHA interface, default
 Standard Model inputs are used from the files \code{def.h} and \code{lowe.h}.
 The low energy data is encoded in a \code{QedQcd} object and must be
