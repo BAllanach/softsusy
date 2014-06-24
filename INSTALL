@@ -7,6 +7,24 @@ Software Foundation, Inc.
 This file is free documentation; the Free Software Foundation gives
 unlimited permission to copy, distribute and modify it.
 
+Prerequisites:
+--------------
+
+SOFTSUSY should compile in its ordinary mode with the only prerequisites
+being a fortran77 and a C++ compiler. 
+
+However, to include the three-loop running with leading two-loop thresholds
+for the strong coupling constant and the third generation of fermions within
+the MSSM, one also requires: 
+
+- pkg-config
+- GiNaC >= 1.3.5 (with CLN>=1.3.1)
+
+On Debian/Ubuntu systems one can issue the following command to install 
+the prerequsites:
+
+sudo apt-get install pkg-config libginac-dev
+
 Quick Installation
 ------------------
 

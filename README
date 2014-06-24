@@ -5,24 +5,6 @@ by: B C Allanach, P Athron, A Bednyakov, M Bernhardt, D Grellscheid, M
 		 Hanussek, C H Kom, R Ruiz de Austri, P Slavich, L Tunstall, A
 		 Voigt and A G Williams 
 
-PREREQUISITES:
---------------
-
-SOFTSUSY should compile in its ordinary mode with the only prerequisites
-being a fortran77 and a C++ compiler. 
-
-However, to include the three-loop running with leading two-loop thresholds
-for the strong coupling constant and the third generation of fermions within
-the MSSM, one also requires: 
-
-- pkg-config
-- GiNaC >= 1.3.5 (with CLN>=1.3.1)
-
-On Debian/Ubuntu systems one can issue the following command to install 
-the prerequsites:
-
-sudo apt-get install pkg-config libginac-dev
-
 QUICK INSTALLATION AND RUN TEST
 -------------------------------
 
@@ -45,7 +27,12 @@ lesHouchesOutput, slha2Output and rpvHouchesOutput, respectively, that are
 provided with the SOFTSUSY distribution
 
 Alternatively, run with command line inputs, for example
-> ./softpoint.x nmssm sugra --m0=125 --m12=125 --a0=-300 --tanBeta=10 --lambda=0.1 --lambdaAtMsusy
+> ./softpoint.x nmssm sugra --m0=125 --m12=125 --a0=-300 --tanBeta=10
+--lambda=0.1 --lambdaAt Msusy
+
+See the manual (in the doc/ subdirectory) threeLoop.pdf for instructions on
+how to switch two-loop threshold corrections/three loop RGEs at run-time, once
+they've been compiled. 
 
 INTRODUCTION
 ------------
