@@ -9,7 +9,7 @@
 
 % beginning of macros
 \def\SOFTSUSY{{\tt SOFTSUSY}}
-\def\code#1{\small{\tt #1}\normalsize}
+\def\code#1{{\tt #1}}
 
 \journal{Computer Physics Communications}
 
@@ -1057,12 +1057,12 @@ to install {\tt SOFTSUSY} with the higher order corrections. However,
 {\tt SOFTSUSY} should compile without problems without the higher order
 corrections if they are not desired. 
 Two compilation arguments to the {\tt ./configure}~command are provided:
-\small\begin{itemize}
+\begin{itemize}
 	\item[] \verb|--enable-three-loop-rge-compilation| - compile three-loop RGEs in the MSSM 
 	\item[] \verb|--enable-full-susy-threshold-compilation| - compile
           additional two-loop threshold corrections to the third generation
           Yukawa couplings and the strong coupling constant.
-\end{itemize}\normalsize
+\end{itemize}
 Thus, if all higher order corrections are desired, {\tt CLN} and {\tt GiNaC}
 should be first installed, then 
 the program should be
@@ -1124,13 +1124,11 @@ One can change whether the 3-loop RGE corrections are switched on with
 \code{SOFTSUSY Block} parameter 19, whereas the 2-loop third family and $g_3$
 threshold corrections 
 are switched on with \code{SOFTSUSY Block} parameter 20 in the SLHA input file:
-\small
 \begin{verbatim}
 Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
    19   1.000000000e+00      # Include 3-loop RGE terms (default of 0 to disable)
    20  31.000000000e+00      # Include all 2-loop thresholds (default of 0 to disable)
 \end{verbatim}
-\normalsize
 A comment in the SLHA output file states which of the higher order terms is
 included in the calculation, provided {\tt SOFTSUSY}~has been compiled to
 include them. If only some of the additional two loop threshold corrections
