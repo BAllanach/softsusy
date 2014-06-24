@@ -370,6 +370,20 @@ double fB(const Complex & a) {
 
   return ans.real();
 }
+
+Complex fBc(const Complex & a) {
+  /// First, special cases at problematic points
+  double x = a.real();
+  if (fabs(x) < EPSTOL) {
+    double ans = -1. - x + sqr(x) * 0.5;
+    return ans;
+  }
+  if (close(x, 1., EPSTOL)) return -1.;
+
+  Complex ans = log(1. - a) - 1. - a * log(1.0 - 1.0 / a);
+
+  return ans;
+}
   
 /*
   Analytic expressions follow for above integrals: sometimes useful!
@@ -439,6 +453,76 @@ double b0(double p, double m1, double m2, double q) {
 
   return ans;
 }
+
+/*
+  Analytic expressions follow for above integrals: sometimes useful!
+  From hep-ph/9606211
+  Note it returns the REAL PART ONLY. 
+*/
+Complex b0c(double p, double m1, double m2, double q) {
+#ifdef USE_LOOPTOOLS
+  setmudim(q*q);
+  double b0l = B0(p*p, m1*m1, m2*m2);
+  return B0(p*p, m1*m1, m2*m2);
+#endif
+
+  /// Avoids IR infinities
+  if (close(p, 0.0, EPSTOL) && close(m1, 0.0, EPSTOL)
+      && close(m2, 0.0, EPSTOL))
+    return 0.0;
+
+  Complex ans  = 0.;
+  double mMin = minimum(fabs(m1), fabs(m2));
+  double mMax = maximum(fabs(m1), fabs(m2));
+
+  double pSq = sqr(p), mMinSq = sqr(mMin), mMaxSq = sqr(mMax);
+  double s = 0.;
+  /// Try to increase the accuracy of s
+  double dmSq = mMaxSq - mMinSq;
+  s = pSq + dmSq;
+
+  double pTest = sqr(p) / sqr(mMax);
+  /// Decides level at which one switches to p=0 limit of calculations
+  const double pTolerance = 1.0e-6; 
+
+  /// p is not 0  
+  if (pTest > pTolerance) {  
+    Complex iEpsilon(0.0, EPSTOL * sqr(mMax));
+    
+    Complex xPlus, xMinus;
+
+    xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
+      (2. * sqr(p));
+    xMinus = 2. * (sqr(mMax) - iEpsilon) / 
+      (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
+
+    ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
+  } else {
+    if (close(m1, m2, EPSTOL)) {
+      ans = - log(sqr(m1 / q));
+    } else {
+      double Mmax2 = sqr(mMax), Mmin2 = sqr(mMin); 
+      if (Mmin2 < 1.e-30) {
+	ans = 1.0 - log(Mmax2 / sqr(q));
+      } else {
+	ans = 1.0 - log(Mmax2 / sqr(q)) + Mmin2 * log(Mmax2 / Mmin2) 
+	  / (Mmin2 - Mmax2);
+      }
+    }
+  }   
+
+#ifdef USE_LOOPTOOLS
+  if (!close(b0l, ans, 1.0e-3)) {
+    cout << "DEBUG Err: DB0(" << p << ", " << m1 << ", " << m2 
+	 << ", "  << q << ")=" << 1.-b0l/ans << endl;
+    cout << "SOFTSUSY  B0=" << ans << endl;
+    cout << "LOOPTOOLS B0=" << b0l << endl;
+  }
+#endif
+
+  return ans;
+}
+
 
 /// Note that b1 is NOT symmetric in m1 <-> m2!!!
 double b1(double p, double m1, double m2, double q) {

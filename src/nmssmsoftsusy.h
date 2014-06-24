@@ -146,11 +146,11 @@ public:
   /// LCT: Adds one-loop higgs corrections to stop mass matrix
   /// IO parameters: p=external momentum, mt=DR bar top mass, 
   /// outputs higgs=2x2 matrix of self-energies in LR basis
-  DoubleMatrix addStopHiggs(double p, double mt, DoubleMatrix & higgs);
+  ComplexMatrix addStopHiggs(double p, double mt, ComplexMatrix & higgs);
   /// Adds one-loop corrections to stop mass matrix
   /// IO parameters: p=external momentum, mass=tree level mass matrix on
   /// input, is returned with radiative corrections added, mt=DR bar top mass
-  virtual void addStopCorrection(double p, DoubleMatrix & mass, double mt);
+  virtual void addStopCorrection(double p, ComplexMatrix & mass, double mt);
   /// LCT: Adds one-loop higgs corrections to sup mass matrix
   /// IO parameters: {p1,p2}=external momentum, 
   /// outputs higgs=2x2 matrix of self-energies in LR basis

@@ -33,6 +33,14 @@ int main() {
  /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
 
+  /// begin DEBUG
+  double p = 1000., m1 = 564., m2 = 680, q = 1200.; 
+  cout << a0(m1, q) << " " << a0c(m1, q) << endl;
+  cout << b0(p, m1, m2, q) << " " << b0c(p, m1, m2, q) << endl;
+
+  exit(0);
+  /// end DEBUG
+
   cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
        << " test program, Ben Allanach 2002\n";
   cerr << "If you use SOFTSUSY, please refer to B.C. Allanach,\n";
