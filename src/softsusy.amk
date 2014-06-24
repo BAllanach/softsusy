@@ -9,19 +9,19 @@ bin_PROGRAMS += softsusy.x \
                 rpvneut.x 
 
 softsusy_x_SOURCES = src/main.cpp 
-softsusy_x_LDADD = libsoft.la  
+softsusy_x_LDADD = libsoft.la -looptools
 
 softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp 
-softsusy_nmssm_x_LDADD = libsoft.la
+softsusy_nmssm_x_LDADD = libsoft.la -looptools
 
 softpoint_x_SOURCES = src/softpoint.cpp 
-softpoint_x_LDADD = libsoft.la
+softpoint_x_LDADD = libsoft.la -looptools
 
 rpvsoftsusy_x_SOURCES = src/rpvmain.cpp 
-rpvsoftsusy_x_LDADD = libsoft.la 
+rpvsoftsusy_x_LDADD = libsoft.la -looptools
 
 rpvneut_x_SOURCES = src/rpvneutmain.cpp 
-rpvneut_x_LDADD = libsoft.la 
+rpvneut_x_LDADD = libsoft.la -looptools
 
 
 if COMPILE_FULL_SUSY_THRESHOLD

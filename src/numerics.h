@@ -13,7 +13,7 @@
 #define NUMERICS_H
 
 /// Comment if you want default softsusy behaviour
-// #define USE_LOOPTOOLS
+#define USE_LOOPTOOLS
 
 #include "utils.h"
 #include "mycomplex.h"

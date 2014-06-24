@@ -461,8 +461,9 @@ double b0(double p, double m1, double m2, double q) {
 */
 Complex b0c(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
+  cout << "IN HERE\n";
   setmudim(q*q);
-  double b0l = B0(p*p, m1*m1, m2*m2);
+  Complex b0l = B0(p*p, m1*m1, m2*m2);
   return B0(p*p, m1*m1, m2*m2);
 #endif
 
@@ -512,7 +513,8 @@ Complex b0c(double p, double m1, double m2, double q) {
   }   
 
 #ifdef USE_LOOPTOOLS
-  if (!close(b0l, ans, 1.0e-3)) {
+  if (!close(b0l.real(), ans.real(), 1.0e-3) || 
+      !close(b0l.imag(), ans.imag(), 1.0e-3) ) {
     cout << "DEBUG Err: DB0(" << p << ", " << m1 << ", " << m2 
 	 << ", "  << q << ")=" << 1.-b0l/ans << endl;
     cout << "SOFTSUSY  B0=" << ans << endl;

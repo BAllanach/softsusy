@@ -34,9 +34,9 @@ int main() {
   outputCharacteristics(6);
 
   /// begin DEBUG
-  double p = 1000., m1 = 564., m2 = 680, q = 1200.; 
-  cout << a0(m1, q) << " " << a0c(m1, q) << endl;
-  cout << b0(p, m1, m2, q) << " " << b0c(p, m1, m2, q) << endl;
+  double p = 100., m1 = 564., m2 = 16800., q = 12000.; 
+  cout << "a0: " << a0(m1, q) << " " << a0c(m1, q) << endl;
+  cout << "b0: " << b0(p, m1, m2, q) << " " << b0c(p, m1, m2, q) << endl;
 
   exit(0);
   /// end DEBUG
