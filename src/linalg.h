@@ -535,6 +535,8 @@ public:
   int displayEnd() const { return end; }///< displays end of dimension
   const ComplexVector & display() const { return *this; }///< displays whole vector
 
+
+
   /// Changes the length of a vector - copies as many elements of old one as
   /// possible, and fills any extra up with zeroes
   void setEnd(int e);
@@ -702,12 +704,19 @@ public:
   
   /*
    *  NUMERICAL DIAGONALIZATION ROUTINES ETC.
-   */
+   */ 
 
   /// Fills in lower bottom half of a square matrix copying the top right
   void symmetrise();
   /// Returns the sum of the modulus of the difference of each element
   double compare(const ComplexMatrix & a) const;
+  /// This should only be applied to Hermitian matrices: makes a 2n x 2n real
+  /// matrix out of [ A -B ] ready for diagonalisation. It's especially not 
+  ///               [ B  A ] 
+  /// efficient for large matrices. 
+  DoubleMatrix makeHermitianRealForDiag() const;
+
+
 };
 
 /*

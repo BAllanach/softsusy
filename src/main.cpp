@@ -33,20 +33,15 @@ int main() {
  /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
 
-  /// begin DEBUG
-  for (int i = 0; i<= 10000; i++) {
-  double p = 2.172359e+03, m1 = 6.881746e+02, m2 = 1.105306e+02, 
-    q = 4.718758e+02;
-  p = exp(10. * ran1(idummySave));
-    m1 = exp(10. * ran1(idummySave));
-    m2 = exp(10. * ran1(idummySave));
-    q = exp(10. * ran1(idummySave));
-    Complex ans = b1c(p, m1, m2, q);
-    //    cout << "b1(" << p << ", " << m1 << ", " << m2 << ", " << q << ")=";
-    //    cout << endl;
-  }
+  ComplexMatrix a(2, 2);
+  a(1, 1) = 3.; a(1, 2) = Complex(1.4, 1.8);
+  a(2, 1) = a(1, 2).conj(); a(2, 2) = 3.2;
+  DoubleMatrix b(a.makeHermitianRealForDiag());
+    cout << "b" << b; 
+    DoubleMatrix v(4, 4); DoubleVector w(4); 
+  double error = b.diagonaliseSym(v, w);
+  cout << v.transpose() << "*" << b << "*" << v << "=" << v.transpose() * b * v << "opposed to " << w << endl;
   exit(0);
-  /// end DEBUG
 
   cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
        << " test program, Ben Allanach 2002\n";

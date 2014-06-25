@@ -123,11 +123,6 @@ Complex b1c(double p, double m1, double m2, double q);
 /// Passarino-Veltman function definition: complex answer
 Complex b22c(double p,  double m1, double m2, double q);
 /// Passarino-Veltman function definition: complex answer
-Complex c0c(double m1, double m2, double m3);
-/// Passarino-Veltman function definition: complex answer
-Complex d27c(double m1, double m2, double m3, double m4);
-/// Passarino-Veltman function definition: complex answer
-Complex d0c(double m1, double m2, double m3, double m4);
 /// inlined PV functions: complex answer
 inline Complex ffnc(double p, double m1, double m2, double q) {
   return a0(m1, q) - 2.0 * a0(m2, q) - 
@@ -141,7 +136,7 @@ inline Complex gfnc(double p, double m1, double m2, double q) {
 }
 /// inlined PV functions: complex answer
 inline Complex hfnc(double p, double m1, double m2, double q) {
-  return 4.0 * b22c(p, m1, m2, q) + gfn(p, m1, m2, q);
+  return 4.0 * b22c(p, m1, m2, q) + gfnc(p, m1, m2, q);
 }
 /// inlined PV functions: complex answer
 inline Complex b22barc(double p, double m1, double m2, double q) {

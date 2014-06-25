@@ -90,13 +90,16 @@ inline int massorder(double & a, double & b, double & c) {
    return 0;
 }
 
-/// checks if ABSOLUTE (or squared) values are closer than tol, or both
+/// Checks if ABSOLUTE (or squared) values are closer than tol, or both
 /// numbers are smaller than EPSTOL
 bool close(double m1, double m2, double tol);
 
+/// Requres that both the real and imaginary parts are close
+bool close(Complex m1, Complex m2, double tol);
+
 /// Returns |a| with sign of b in front
-inline double sign(double a, double b) 
-{ return ((b) >= 0.0 ? fabs(a) : -fabs(a)); }
+inline double sign(double a, double b) { return ((b) >= 0.0 ? 
+						 fabs(a) : -fabs(a)); }
 
 /// gives the sign (+-1) of x
 inline int sgn(double x)

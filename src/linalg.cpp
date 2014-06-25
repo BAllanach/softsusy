@@ -1241,6 +1241,21 @@ ComplexMatrix ComplexMatrix::complexConjugate() const {
  *  NUMERICAL DIAGONALIZATION ROUTINES ETC.
  */
 
+/// This should only be applied to Hermitian matrices
+DoubleMatrix ComplexMatrix::makeHermitianRealForDiag() const {
+  int n = displayRows() * 2;
+  DoubleMatrix ans(n, n);
+  
+  for (int i=1; i<= rows; i++) 
+    for (int j=1; j<= rows; j++) {
+      ans(i, j) = display(i, j).real();
+      ans(i + displayRows(), j) = -display(i, j).imag();
+      ans(i, j + displayRows()) =  display(i, j).imag();
+      ans(i + displayRows(), j + displayRows()) = display(i, j).real();
+  }
+  return ans;
+}
+
 void ComplexMatrix::symmetrise() {
 #ifdef ARRAY_BOUNDS_CHECKING
   if (rows != cols) {
@@ -1509,8 +1524,8 @@ double DoubleVector::average() const {
 }
 
 /// fill array from valarray, starting at offset
-void fillArray(const std::valarray<double>& x, double* array, unsigned offset)
-{
+void fillArray(const std::valarray<double>& x, double* array, unsigned offset) {
    for (unsigned i = 0; i < x.size(); ++i)
       array[i + offset] = x[i];
 }
+

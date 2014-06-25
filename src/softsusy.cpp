@@ -6464,7 +6464,7 @@ void Softsusy<SoftPars>::doUpSquarks(double mt, double pizztMS, double sinthDRba
   DoubleMatrix a(2, 2);
   treeUpSquark(a, mt, pizztMS, sinthDRbarMS, family);
   ComplexMatrix mStopSquared(a), mStopSquared2(a);
-  //  mStopSquared2 = mStopSquared; /// StopSquared2 is now tree-level
+  mStopSquared2 = mStopSquared; /// StopSquared2 is now tree-level
   
   /// one loop corrections 
   if (accuracy > 0) {
@@ -6475,7 +6475,7 @@ void Softsusy<SoftPars>::doUpSquarks(double mt, double pizztMS, double sinthDRba
     addStopCorrection(pHeavy, mStopSquared2, mt);
   }
 
-  /* DEBUG GOT TO WORK OUT HOW TO DIAGONALISE COMPLEX SYMMETRIC MATRIX
+  /* DEBUG GOT TO WORK OUT HOW TO DIAGONALISE COMPLEX 2 x 2 ASYMMETRIC MATRIX
   double theta;
   DoubleVector physicalStopMassesSquared2(mStopSquared2.sym2by2(theta));
   DoubleVector physicalStopMassesSquared(mStopSquared.sym2by2(theta));

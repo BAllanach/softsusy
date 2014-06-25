@@ -74,3 +74,7 @@ bool close(double m1, double m2, double tol) {
 
   return (mmax - mmin <= tol * mmax);
 }
+
+bool close(Complex m1, Complex m2, double tol) {
+  return (close(m1.real(), m2.real(), tol) && close(m1.imag(), m2.imag(), tol));
+}
