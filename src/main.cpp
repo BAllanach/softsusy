@@ -34,10 +34,17 @@ int main() {
   outputCharacteristics(6);
 
   /// begin DEBUG
-  double p = 100., m1 = 564., m2 = 16800., q = 12000.; 
-  cout << "a0: " << a0(m1, q) << " " << a0c(m1, q) << endl;
-  cout << "b0: " << b0(p, m1, m2, q) << " " << b0c(p, m1, m2, q) << endl;
-
+  for (int i = 0; i<= 10000; i++) {
+  double p = 2.172359e+03, m1 = 6.881746e+02, m2 = 1.105306e+02, 
+    q = 4.718758e+02;
+  p = exp(10. * ran1(idummySave));
+    m1 = exp(10. * ran1(idummySave));
+    m2 = exp(10. * ran1(idummySave));
+    q = exp(10. * ran1(idummySave));
+    Complex ans = b1c(p, m1, m2, q);
+    //    cout << "b1(" << p << ", " << m1 << ", " << m2 << ", " << q << ")=";
+    //    cout << endl;
+  }
   exit(0);
   /// end DEBUG
 

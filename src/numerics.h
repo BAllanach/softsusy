@@ -117,7 +117,6 @@ inline double b22bar(double p, double m1, double m2, double q) {
   return b22(p, m1, m2, q) - 0.25 * a0(m1, q) - 0.25 * a0(m2, q);
 }
 
-
 Complex b0c(double p, double m1, double m2, double q);
 /// Passarino-Veltman function definition: complex answer
 Complex b1c(double p, double m1, double m2, double q);
@@ -130,20 +129,15 @@ Complex d27c(double m1, double m2, double m3, double m4);
 /// Passarino-Veltman function definition: complex answer
 Complex d0c(double m1, double m2, double m3, double m4);
 /// inlined PV functions: complex answer
-inline double a0c(double m, double q) {
-  if (fabs(m) < EPSTOL) return 0.;
-  return sqr(m) * (1.0 - 2. * log(abs(m / q)));
-}
-/// inlined PV functions: complex answer
 inline Complex ffnc(double p, double m1, double m2, double q) {
-  return a0c(m1, q) - 2.0 * a0c(m2, q) - 
+  return a0(m1, q) - 2.0 * a0(m2, q) - 
     (2.0 * sqr(p) + 2.0 * sqr(m1) - sqr(m2)) * 
     b0c(p, m1, m2, q);
 }
 /// inlined PV functions: complex answer
 inline Complex gfnc(double p, double m1, double m2, double q) {
-  return (sqr(p) - sqr(m1) - sqr(m2)) * b0c(p, m1, m2, q) - a0c(m1, q) 
-    - a0c(m2, q); 
+  return (sqr(p) - sqr(m1) - sqr(m2)) * b0c(p, m1, m2, q) - a0(m1, q) 
+    - a0(m2, q); 
 }
 /// inlined PV functions: complex answer
 inline Complex hfnc(double p, double m1, double m2, double q) {
@@ -151,7 +145,7 @@ inline Complex hfnc(double p, double m1, double m2, double q) {
 }
 /// inlined PV functions: complex answer
 inline Complex b22barc(double p, double m1, double m2, double q) {
-  return b22c(p, m1, m2, q) - 0.25 * a0c(m1, q) - 0.25 * a0c(m2, q);
+  return b22c(p, m1, m2, q) - 0.25 * a0(m1, q) - 0.25 * a0(m2, q);
 }
 
 /*inline double fB(const Complex & x) {

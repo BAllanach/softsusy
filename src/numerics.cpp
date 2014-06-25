@@ -461,10 +461,9 @@ double b0(double p, double m1, double m2, double q) {
 */
 Complex b0c(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
-  cout << "IN HERE\n";
   setmudim(q*q);
   Complex b0l = B0(p*p, m1*m1, m2*m2);
-  return B0(p*p, m1*m1, m2*m2);
+  //  return B0(p*p, m1*m1, m2*m2);
 #endif
 
   /// Avoids IR infinities
@@ -497,7 +496,7 @@ Complex b0c(double p, double m1, double m2, double q) {
     xMinus = 2. * (sqr(mMax) - iEpsilon) / 
       (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
 
-    ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
+    ans = -2.0 * log(p / q) - fBc(xPlus) - fBc(xMinus);
   } else {
     if (close(m1, m2, EPSTOL)) {
       ans = - log(sqr(m1 / q));
@@ -514,11 +513,14 @@ Complex b0c(double p, double m1, double m2, double q) {
 
 #ifdef USE_LOOPTOOLS
   if (!close(b0l.real(), ans.real(), 1.0e-3) || 
-      !close(b0l.imag(), ans.imag(), 1.0e-3) ) {
-    cout << "DEBUG Err: DB0(" << p << ", " << m1 << ", " << m2 
-	 << ", "  << q << ")=" << 1.-b0l/ans << endl;
-    cout << "SOFTSUSY  B0=" << ans << endl;
-    cout << "LOOPTOOLS B0=" << b0l << endl;
+      !close(b0l.imag(), ans.imag(), 1.0e-3)) {
+    if (b0l.imag() < EPSTOL && ans.imag() < 5.0e-8) return ans;
+    else {
+	cout << "DEBUG Err: DB0(" << p << ", " << m1 << ", " << m2 
+	     << ", "  << q << ")=" << 1.-b0l/ans << endl;
+	cout << "SOFTSUSY  B0=" << ans << endl;
+	cout << "LOOPTOOLS B0=" << b0l << endl;
+      }
   }
 #endif
 
@@ -559,11 +561,53 @@ double b1(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   if (!close(b1l, ans, 1.0e-3)) {
     cout << " Test=" << pTest << " ";
+    cout << "DEBUG Err: Db1(" << p << ", " << m1 << ", " << m2
+    	 << ", "  << q << ")=" << 1.-b1l/ans << endl;
+    cout << "SOFTSUSY  B1=" << ans << endl;
+    cout << "LOOPTOOLS B1=" << b1l << endl;
+  }
+#endif
+  
+  return ans;
+}
+
+/// Note that b1 is NOT symmetric in m1 <-> m2!!!
+Complex b1c(double p, double m1, double m2, double q) {
+#ifdef USE_LOOPTOOLS
+  setmudim(q*q);
+  Complex b1l = -B1(p*p, m1*m1, m2*m2).real();
+  //    return b1l;
+#endif
+
+  Complex ans = 0.;
+  double pTest = sqr(p) / maximum(sqr(m1), sqr(m2));
+
+  /// Decides level at which one switches to p=0 limit of calculations
+  const double pTolerance = 1.0e-4; 
+
+  if (pTest > pTolerance) {
+    ans = (a0(m2, q) - a0(m1, q) + (sqr(p) + sqr(m1) - sqr(m2)) 
+	   * b0c(p, m1, m2, q)) / (2.0 * sqr(p)); 
+  } else if (fabs(m1) > 1.0e-15 && !close(m1, m2, EPSTOL) 
+	     && fabs(m2) > 1.0e-15) { ///< checked
+    double Mmax2 = maximum(sqr(m1) , sqr(m2)), x = sqr(m2 / m1);
+    ans = 0.5 * (-log(Mmax2 / sqr(q)) + 0.5 + 1.0 / (1.0 - x) + log(x) /
+		 sqr(1.0 - x) - theta(1.0 - x) * log(x)); ///< checked
+    ans = 0.5 * (1. + log(sqr(q) / sqr(m2)) + 
+		 sqr(sqr(m1) / (sqr(m1) - sqr(m2))) * log(sqr(m2) / sqr(m1)) +
+		 0.5 * (sqr(m1) + sqr(m2)) / (sqr(m1) - sqr(m2))
+		 );
+  } else {
+    ans = bIntegral(1, p, m1, m2, q); 
+  }
+
+#ifdef USE_LOOPTOOLS
+  if (!close(b1l.real(), ans.real(), 1.0e-3) || 
+      !close(b1l.imag(), ans.imag(), 1.0e-3)) {
     cout << "DEBUG Err: Db1(" << p << ", " << m1 << ", " << m2 
-	 << ", "  << q << ")=" << 1.-b1l/ans << endl;
-    cout << "SOFTSUSY  B1=" << ans << " B0=" << b0(p, m1, m2, q) << endl;
-    cout << "LOOPTOOLS B1=" << b1l << " B0=" << B0(p*p, m1*m1, m2*m2).real() 
-	 << endl;
+	 << ", "  << q << ")=" << (ans - b1l) / ans.mod() << endl;
+    cout << "SOFTSUSY  B1=" << ans << endl;
+    cout << "LOOPTOOLS B1=" << b1l << endl;
   }
 #endif
   
