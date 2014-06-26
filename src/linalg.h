@@ -357,7 +357,7 @@ public:
   /// therefore \f$ W = U^T A V \f$.
   double diagonalise(DoubleMatrix & u, DoubleMatrix & v, DoubleVector & w) const;
   /// For SYMMETRIC MATRICES ONLY!
-  /// \f$ A = V.W.V^T \f$ where W is a matrix of the eigenvalue therefore 
+  /// \f$ A = V.W.V^T \f$ where W is a vector of the eigenvalues therefore 
   /// \f$ W = V^T A V \f$. 
   double diagonaliseSym(DoubleMatrix & v, DoubleVector & w) const;
   double diagonaliseSym(ComplexMatrix & v, DoubleVector & w) const;
@@ -705,7 +705,8 @@ public:
   /*
    *  NUMERICAL DIAGONALIZATION ROUTINES ETC.
    */ 
-
+  /// Measures how far from Hermitian your matrix is
+  double nonHermiticity() const;
   /// Fills in lower bottom half of a square matrix copying the top right
   void symmetrise();
   /// Returns the sum of the modulus of the difference of each element
@@ -715,8 +716,10 @@ public:
   ///               [ B  A ] 
   /// efficient for large matrices. 
   DoubleMatrix makeHermitianRealForDiag() const;
-
-
+  /// For HERMITIAN MATRICES ONLY!
+  /// \f$ A = V W V^\dag \f$ where W is a matrix of the eigenvalues therefore
+  /// \f$ W = V^\dag A V \f$.
+  double diagonaliseHerm(ComplexMatrix & v, DoubleVector & w) const;
 };
 
 /*

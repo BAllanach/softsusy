@@ -33,14 +33,12 @@ int main() {
  /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
 
-  ComplexMatrix a(2, 2);
-  a(1, 1) = 3.; a(1, 2) = Complex(1.4, 1.8);
-  a(2, 1) = a(1, 2).conj(); a(2, 2) = 3.2;
-  DoubleMatrix b(a.makeHermitianRealForDiag());
-    cout << "b" << b; 
-    DoubleMatrix v(4, 4); DoubleVector w(4); 
-  double error = b.diagonaliseSym(v, w);
-  cout << v.transpose() << "*" << b << "*" << v << "=" << v.transpose() * b * v << "opposed to " << w << endl;
+  ComplexMatrix a(2, 2), vv(2, 2); DoubleVector evals(2);
+  a(1, 1) = 3.; a(1, 2) = Complex(1.4, sqrt(2.));
+  a(2, 1) = a(1, 2).conj(); a(2, 2) = 10.;
+
+  double err = a.diagonaliseHerm(vv, evals);
+
   exit(0);
 
   cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
