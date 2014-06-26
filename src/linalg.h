@@ -718,8 +718,15 @@ public:
   DoubleMatrix makeHermitianRealForDiag() const;
   /// For HERMITIAN MATRICES ONLY!
   /// \f$ A = V W V^\dag \f$ where W is a matrix of the eigenvalues therefore
-  /// \f$ W = V^\dag A V \f$.
+  /// \f$ W = V^\dag A V \f$. The double output is an estimate of how accurate
+  /// the diagonalisation is.
   double diagonaliseHerm(ComplexMatrix & v, DoubleVector & w) const;
+  /// For general non-singular complex matrices
+  /// \f$ W = U A V^\dag \f$, where \f$ W \f$ is a matrix of diagonal values.
+  /// The double output is an estimate of how accurate
+  /// the diagonalisation is.
+  double diagonalise(ComplexMatrix & u, ComplexMatrix & v, DoubleVector & w) 
+    const;
 };
 
 /*

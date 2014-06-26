@@ -33,11 +33,11 @@ int main() {
  /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
 
-  ComplexMatrix a(2, 2), vv(2, 2); DoubleVector evals(2);
+  ComplexMatrix a(2, 2), u(2, 2), v(2, 2); DoubleVector evals(2);
   a(1, 1) = 3.; a(1, 2) = Complex(1.4, sqrt(2.));
-  a(2, 1) = a(1, 2).conj(); a(2, 2) = 10.;
+  a(2, 1) = sqrt(3.); a(2, 2) = 10.;
 
-  double err = a.diagonaliseHerm(vv, evals);
+  double err = a.diagonalise(u, v, evals);
 
   exit(0);
 

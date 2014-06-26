@@ -1280,7 +1280,25 @@ double ComplexMatrix::nonHermiticity() const {
    return tot;
 }
 
- /// Again, only for Hermitian matrices
+/// Now for any Complex matrix
+double ComplexMatrix::diagonalise(ComplexMatrix & u, ComplexMatrix & v, 
+				  DoubleVector & w) 
+  const {
+  ComplexMatrix m(*this * this->hermitianConjugate());
+  ComplexMatrix n(this->hermitianConjugate() * *this);
+  DoubleVector mDiag(m.displayRows()), nDiag(n.displayRows());
+
+  double err1 = m.diagonaliseHerm(u, mDiag);
+  cout << "err1=" << err1 << u.hermitianConjugate() * m * u;
+
+  double err2 = n.diagonaliseHerm(v, nDiag);
+  cout << "err2=" << err2 << v.hermitianConjugate() * n * v;
+
+  cout << u * *this * v.hermitianConjugate();
+  return 0.;
+} 
+
+/// Again, only for Hermitian matrices
  double ComplexMatrix::diagonaliseHerm(ComplexMatrix & v, DoubleVector & w) 
    const {
 #ifdef ARRAY_BOUNDS_CHECKING
