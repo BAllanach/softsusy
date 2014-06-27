@@ -1289,13 +1289,27 @@ double ComplexMatrix::diagonalise(ComplexMatrix & u, ComplexMatrix & v,
   DoubleVector mDiag(m.displayRows()), nDiag(n.displayRows());
 
   double err1 = m.diagonaliseHerm(u, mDiag);
-  cout << "err1=" << err1 << u.hermitianConjugate() * m * u;
-
   double err2 = n.diagonaliseHerm(v, nDiag);
-  cout << "err2=" << err2 << v.hermitianConjugate() * n * v;
+  if (err1 > EPSTOL || err2 > EPSTOL) {
+     ostringstream ii;
+     ii << "In ComplexMatrix::diagonalise - inaccurate subdiagonalisation of"
+	<< " realified system\n";
+     throw(ii.str());    
+  }
 
-  cout << u * *this * v.hermitianConjugate();
-  return 0.;
+  ComplexMatrix putativeDiag(u.hermitianConjugate() * *this * v);
+  ComplexMatrix evals(displayRows(), displayCols());
+  for (int i=1; i<=displayCols(); i++) {
+    double theta = putativeDiag(i, i).arg();
+    evals(i, i) = putativeDiag(i, i).mod();
+    /// Multiply \f$ i^{th} \f$ column of V by exp(i theta) in order to end up
+    /// with real eigenvalues
+    for (int j=1; j<=displayCols(); j++) 
+      v(j, i) *= Complex(cos(theta), -sin(theta));
+  }
+
+  return this->compare(u * evals * v.hermitianConjugate()) / 
+    mDiag.apply(sqrt).max();
 } 
 
 /// Again, only for Hermitian matrices
