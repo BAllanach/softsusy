@@ -1301,7 +1301,8 @@ double ComplexMatrix::diagonalise(ComplexMatrix & u, ComplexMatrix & v,
   ComplexMatrix evals(displayRows(), displayCols());
   for (int i=1; i<=displayCols(); i++) {
     double theta = putativeDiag(i, i).arg();
-    evals(i, i) = putativeDiag(i, i).mod();
+    w(i) = putativeDiag(i, i).mod();
+    evals(i, i) = w(i);
     /// Multiply \f$ i^{th} \f$ column of V by exp(i theta) in order to end up
     /// with real eigenvalues
     for (int j=1; j<=displayCols(); j++) 

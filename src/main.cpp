@@ -39,7 +39,7 @@ int main() {
 
   double err = a.diagonalise(u, v, evals);
   
-  cout << "tol=" << err << endl;
+  cout << "tol=" << err << evals;
   exit(0);
 
   cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
