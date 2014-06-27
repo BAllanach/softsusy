@@ -399,36 +399,36 @@ public:
   /// LCT: Adds one-loop strong corrections to stop mass matrix
   /// IO parameters: p=external momentum, mt=DR bar top mass, 
   /// outputs strong=2x2 matrix of self-energies in LR basis
-  ComplexMatrix addStopQCD(double p, double mt, ComplexMatrix & strong);
+  DoubleMatrix addStopQCD(double p, double mt, DoubleMatrix & strong);
   /// LCT: Adds one-loop stop corrections to stop mass matrix
   /// IO parameters: p=external momentum, mt=DR bar top mass, 
   /// outputs stop=2x2 matrix of self-energies in LR basis
-  ComplexMatrix addStopStop(double p, double mt, ComplexMatrix & stop);
+  DoubleMatrix addStopStop(double p, double mt, DoubleMatrix & stop);
   /// LCT: Adds one-loop sbottom corrections to stop mass matrix
   /// IO parameters: p=external momentum, mt=DR bar top mass, 
   /// outputs sbottom=2x2 matrix of self-energies in LR basis
-  ComplexMatrix addStopSbottom(double p, double mt, ComplexMatrix & sbottom);
+  DoubleMatrix addStopSbottom(double p, double mt, DoubleMatrix & sbottom);
   /// LCT: Adds one-loop Higgs corrections to stop mass matrix
   /// IO parameters: p=external momentum, mt=DR bar top mass, 
   /// outputs higgs=2x2 matrix of self-energies in LR basis
-  ComplexMatrix addStopHiggs(double p, double mt, ComplexMatrix & higgs);
- /// LCT: Adds one-loop electroweak corrections to stop mass matrix
+  DoubleMatrix addStopHiggs(double p, double mt, DoubleMatrix & higgs);
+  /// LCT: Adds one-loop electroweak corrections to stop mass matrix
   /// IO parameters: p=external momentum, mt=DR bar top mass, 
   /// outputs electroweak=2x2 matrix of self-energies in LR basis
-  ComplexMatrix addStopEweak(double p, ComplexMatrix & electroweak);
+  DoubleMatrix addStopEweak(double p, DoubleMatrix & electroweak);
   /// LCT: Adds one-loop neutralino corrections to stop mass matrix
   /// IO parameters: p=external momentum, outputs neutralino=2x2 matrix of 
   /// self-energies in LR basis
-  ComplexMatrix addStopNeutralino(double p, double mt, 
-				 ComplexMatrix & neutralino);
+  DoubleMatrix addStopNeutralino(double p, double mt, 
+				  DoubleMatrix & neutralino);
   /// LCT: Adds one-loop chargino corrections to stop mass matrix
   /// IO parameters: p=external momentum, outputs chargino=2x2 matrix of 
   /// self-energies in LR basis
-  ComplexMatrix addStopChargino(double p, ComplexMatrix & chargino);
+  DoubleMatrix addStopChargino(double p, DoubleMatrix & chargino);
   /// Adds one-loop corrections to stop mass matrix
   /// IO parameters: p=external momentum, mass=tree level mass matrix on
   /// input, is returned with radiative corrections added, mt=DR bar top mass
-  virtual void addStopCorrection(double p, ComplexMatrix & mass, double mt);
+  virtual void addStopCorrection(double p, DoubleMatrix & mass, double mt);
   /// LCT: Adds one-loop strong corrections to sdown mass matrix
   /// IO parameters: {p1,p2}=external momentum, outputs strong=2x2 matrix of 
   /// self-energies in LR basis

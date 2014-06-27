@@ -3884,8 +3884,8 @@ void Softsusy<SoftPars>::addSnuCorrection(double & mass, int family) {
 }
 
 template<class SoftPars>
-ComplexMatrix Softsusy<SoftPars>::addStopQCD(double p, double mt, 
-					     ComplexMatrix & strong) {
+DoubleMatrix Softsusy<SoftPars>::addStopQCD(double p, double mt, 
+					     DoubleMatrix & strong) {
   double    mg      = forLoops.mGluino;
   double    thetat  = forLoops.thetat;
   double    ct      = cos(thetat);
@@ -3911,9 +3911,9 @@ ComplexMatrix Softsusy<SoftPars>::addStopQCD(double p, double mt,
 }
 
 template<class SoftPars>
-ComplexMatrix Softsusy<SoftPars>::addStopStop(double /* p */, 
+DoubleMatrix Softsusy<SoftPars>::addStopStop(double /* p */, 
 					      double /* mt */, 
-					      ComplexMatrix & stop) {
+					      DoubleMatrix & stop) {
   double thetat     = forLoops.thetat, ct = cos(thetat), st = sin(thetat);
   double q          = displayMu();
   DoubleVector mstop(2);
@@ -3930,8 +3930,8 @@ ComplexMatrix Softsusy<SoftPars>::addStopStop(double /* p */,
 }
 
 template<class SoftPars>
-ComplexMatrix Softsusy<SoftPars>::addStopSbottom(double /* p */, double /* mt */,
-                                                ComplexMatrix & sbottom) {
+DoubleMatrix Softsusy<SoftPars>::addStopSbottom(double /* p */, double /* mt */,
+                                                DoubleMatrix & sbottom) {
   double thetab     = forLoops.thetab, cb = cos(thetab), sb = sin(thetab) ;
   double q          = displayMu();
   double ht         = forLoops.ht, htsq = sqr(ht);
@@ -3949,8 +3949,8 @@ ComplexMatrix Softsusy<SoftPars>::addStopSbottom(double /* p */, double /* mt */
 }
 
 template<class SoftPars>
-ComplexMatrix Softsusy<SoftPars>::addStopHiggs(double p, double /* mt */,
-                                              ComplexMatrix & higgs) {
+DoubleMatrix Softsusy<SoftPars>::addStopHiggs(double p, double /* mt */,
+                                              DoubleMatrix & higgs) {
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
@@ -4115,7 +4115,7 @@ ComplexMatrix Softsusy<SoftPars>::addStopHiggs(double p, double /* mt */,
 }
 
 template<class SoftPars>
-ComplexMatrix Softsusy<SoftPars>::addStopEweak(double p, ComplexMatrix & electroweak) {
+DoubleMatrix Softsusy<SoftPars>::addStopEweak(double p, DoubleMatrix & electroweak) {
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
@@ -4244,7 +4244,7 @@ ComplexMatrix Softsusy<SoftPars>::addStopEweak(double p, ComplexMatrix & electro
 }
 
 template<class SoftPars>
-ComplexMatrix Softsusy<SoftPars>::addStopNeutralino(double p, double mt, ComplexMatrix & neutralino) {
+DoubleMatrix Softsusy<SoftPars>::addStopNeutralino(double p, double mt, DoubleMatrix & neutralino) {
   double q  = displayMu();
   double g  = displayGaugeCoupling(2);
   double gp = displayGaugeCoupling(1) * sqrt(0.6);
@@ -4306,7 +4306,7 @@ ComplexMatrix Softsusy<SoftPars>::addStopNeutralino(double p, double mt, Complex
 }
 
 template<class SoftPars>
-ComplexMatrix Softsusy<SoftPars>::addStopChargino(double p, ComplexMatrix & chargino) {
+DoubleMatrix Softsusy<SoftPars>::addStopChargino(double p, DoubleMatrix & chargino) {
   double g  = displayGaugeCoupling(2);
   double ht = forLoops.ht;
   double hb = forLoops.hb;
@@ -4367,7 +4367,7 @@ ComplexMatrix Softsusy<SoftPars>::addStopChargino(double p, ComplexMatrix & char
 
 /// As in BPMZ appendix
 template<class SoftPars>
-void Softsusy<SoftPars>::addStopCorrection(double p, ComplexMatrix & mass, 
+void Softsusy<SoftPars>::addStopCorrection(double p, DoubleMatrix & mass, 
 					   double mt) {
 
 /// No point adding radiative corrections to tachyonic particles
@@ -4379,10 +4379,10 @@ void Softsusy<SoftPars>::addStopCorrection(double p, ComplexMatrix & mass,
   }
 
   /// one-loop correction matrix
-  ComplexMatrix piSq(2, 2); /// Self-energy matrix
+  DoubleMatrix piSq(2, 2); /// Self-energy matrix
 
   /// Corrections themselves start here
-  ComplexMatrix strong(2, 2), stop(2, 2), sbottom(2, 2), 
+  DoubleMatrix strong(2, 2), stop(2, 2), sbottom(2, 2), 
     higgs(2, 2), electroweak(2, 2), chargino(2, 2), neutralino(2, 2);
   /// LCT: Corrections from strong interactions
   addStopQCD(p, mt, strong);
@@ -6463,7 +6463,7 @@ void Softsusy<SoftPars>::doUpSquarks(double mt, double pizztMS, double sinthDRba
   
   DoubleMatrix a(2, 2);
   treeUpSquark(a, mt, pizztMS, sinthDRbarMS, family);
-  ComplexMatrix mStopSquared(a), mStopSquared2(a);
+  DoubleMatrix mStopSquared(a), mStopSquared2(a);
   mStopSquared2 = mStopSquared; /// StopSquared2 is now tree-level
   
   /// one loop corrections 
@@ -6475,7 +6475,6 @@ void Softsusy<SoftPars>::doUpSquarks(double mt, double pizztMS, double sinthDRba
     addStopCorrection(pHeavy, mStopSquared2, mt);
   }
 
-  /* DEBUG GOT TO WORK OUT HOW TO DIAGONALISE COMPLEX 2 x 2 ASYMMETRIC MATRIX
   double theta;
   DoubleVector physicalStopMassesSquared2(mStopSquared2.sym2by2(theta));
   DoubleVector physicalStopMassesSquared(mStopSquared.sym2by2(theta));
@@ -6507,7 +6506,6 @@ void Softsusy<SoftPars>::doUpSquarks(double mt, double pizztMS, double sinthDRba
     physpars.mu(1, family) = lightStopMass;
     physpars.mu(2, family) = heavyStopMass;
   }
-  */
 }
 
 template<class SoftPars>
@@ -10745,9 +10743,9 @@ void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
     if (included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK) out << "on"; else out << "off"; 
     out << "\n# 2-loop a_s  O(a_s^2) and O(a_s y^2) thresholds are ";
     if (included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK) out << "on"; else out << "off";
+    cout << endl;
   }
 #endif
-  out << endl;
 }
 
 template<class SoftPars>

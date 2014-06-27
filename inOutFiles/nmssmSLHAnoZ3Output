@@ -3,7 +3,6 @@
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
      2    3.5.0       # version number
-     3   # Warning: stop LSP
 Block MODSEL  # Select model
      1    1   # sugra
      3    1   # NMSSM
@@ -53,7 +52,7 @@ Block MASS                      # Mass spectrum
    1000003     6.01732430e+02   # ~s_L
    1000004     5.96683590e+02   # ~c_L
    1000005     5.16017269e+02   # ~b_1
-   1000006     0.00000000e+00   # ~t_1
+   1000006     3.76488552e+02   # ~t_1
    1000011     4.22959964e+02   # ~e_L
    1000012     4.15163500e+02   # ~nue_L
    1000013     4.22953620e+02   # ~mu_L
@@ -65,7 +64,7 @@ Block MASS                      # Mass spectrum
    2000003     5.88967935e+02   # ~s_R
    2000004     5.88371127e+02   # ~c_R
    2000005     5.84967172e+02   # ~b_2
-   2000006     0.00000000e+00   # ~t_2
+   2000006     5.76921731e+02   # ~t_2
    2000011     4.08715461e+02   # ~e_R
    2000013     4.08698753e+02   # ~mu_R
    2000015     4.23819428e+02   # ~stau_2
@@ -123,10 +122,10 @@ Block Vmix                  # chargino V mixing matrix
   2  1     2.06210331e-01   # V_{2,1}
   2  2     9.78507690e-01   # V_{2,2}
 Block stopmix               # stop mixing matrix
-  1  1     0.00000000e+00   # F_{11}
-  1  2     1.00000000e+00   # F_{12}
-  2  1     1.00000000e+00   # F_{21}
-  2  2     0.00000000e+00   # F_{22}
+  1  1     4.91316364e-01   # F_{11}
+  1  2     8.70981188e-01   # F_{12}
+  2  1     8.70981188e-01   # F_{21}
+  2  2    -4.91316364e-01   # F_{22}
 Block sbotmix               # sbottom mixing matrix
   1  1     9.91917559e-01   # F_{11}
   1  2     1.26884023e-01   # F_{12}

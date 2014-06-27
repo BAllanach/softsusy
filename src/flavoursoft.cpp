@@ -841,12 +841,12 @@ void FlavourMssmSoftsusy::doUpSquarks(double /* mt */, double /* pizztMS */,
     temp(1, 2) = massUsq(family, family + 3);
     temp(2, 2) = massUsq(family + 3, family + 3);
 
-    ComplexMatrix aa(temp);
+    DoubleMatrix aa(temp);
     if (family < 3) addSupCorrection(temp, family);
     else {
       /// DEBUG: take the real part of the stop mass matrix for the time being
       addStopCorrection(p, aa, mu(family));
-      for (i=1; i<=2; i++) for (j=1; j<=2; j++) temp(i, j) = aa(i, j).real();
+      for (i=1; i<=2; i++) for (j=1; j<=2; j++) temp(i, j) = aa(i, j);
     }
     massUsq(family, family) = temp(1, 1);
     massUsq(family, family + 3) = temp(1, 2);

@@ -1197,8 +1197,8 @@ void NmssmSoftsusy::calcDrBarPars() {
   setDrBarPars(eg);
 }
 
-ComplexMatrix NmssmSoftsusy::addStopHiggs(double p, double mt, 
-					  ComplexMatrix & higgs) {
+DoubleMatrix NmssmSoftsusy::addStopHiggs(double p, double mt, 
+					 DoubleMatrix & higgs) {
   const drBarPars& forLoops = displayDrBarPars(); 
 
   double    sinthDrbar  = calcSinthdrbar();
@@ -1438,7 +1438,7 @@ ComplexMatrix NmssmSoftsusy::addStopHiggs(double p, double mt,
   return higgs;
 }
 
-void NmssmSoftsusy::addStopCorrection(double p, ComplexMatrix & mass, 
+void NmssmSoftsusy::addStopCorrection(double p, DoubleMatrix & mass, 
 				      double mt) {
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
@@ -1448,9 +1448,9 @@ void NmssmSoftsusy::addStopCorrection(double p, ComplexMatrix & mass,
     return;
   }
   /// one-loop correction matrix
-  ComplexMatrix piSq(2, 2); 
+  DoubleMatrix piSq(2, 2); 
 
-  ComplexMatrix strong(2, 2), stop(2, 2), sbottom(2, 2), 
+  DoubleMatrix strong(2, 2), stop(2, 2), sbottom(2, 2), 
     higgs(2, 2), electroweak(2, 2), chargino(2, 2), neutralino(2, 2);
 
   /// LCT: Corrections from strong interactions
