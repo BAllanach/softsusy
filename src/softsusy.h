@@ -819,6 +819,7 @@ public:
   /// of loops (0 or 1) to use and pizzt is the Z self-energy at M_SUSY
   /// Returns "true" if there's a tachyon problem
   bool higgs(int accuracy, double piwwt, double pizzt);
+  bool higgsc(int accuracy, double piwwt, double pizzt);
   /// Calculates pole Higgs masses and mixings: full 1-loop SUSY corrections
   /// and 2-loop alpha_t (alpha_s + alpha_t) + alpha_s alpha_b effective
   /// potential corrections. 
@@ -958,9 +959,15 @@ public:
   //self-energy: for p=external momentum, q=renormalisation scale
   double pis1s1Sfermions(double p, double q,  DoubleMatrix ls1tt,  
 			 DoubleMatrix ls1bb,  DoubleMatrix ls1tautau) const;
+  Complex pis1s1Sfermionsc(double p, double q,  DoubleMatrix ls1tt,  
+			 DoubleMatrix ls1bb,  DoubleMatrix ls1tautau) const;
   /// Calculates (16 Pi^2) times the sfermion contribution to Higgs 
   /// self-energy: for p=external momentum, q=renormalisation scale
   double pis1s2Sfermions(double p, double q,  DoubleMatrix ls1tt,  
+			 DoubleMatrix ls1bb,  DoubleMatrix ls1tautau, 
+			 DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  
+			 DoubleMatrix ls2tautau) const;
+  Complex pis1s2Sfermionsc(double p, double q,  DoubleMatrix ls1tt,  
 			 DoubleMatrix ls1bb,  DoubleMatrix ls1tautau, 
 			 DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  
 			 DoubleMatrix ls2tautau) const;
@@ -968,48 +975,64 @@ public:
   /// self-energy: for p=external momentum, q=renormalisation scale
   double pis2s2Sfermions(double p, double q, DoubleMatrix ls2tt,  
 			 DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const;
+  Complex pis2s2Sfermionsc(double p, double q, DoubleMatrix ls2tt,  
+			 DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const;
   /// Calculates (16 Pi^2) times the fermion contribution to Higgs self-energy:
   /// for p=external momentum, q=renormalisation scale
   double pis1s1Fermions(double p, double q) const;
+  Complex pis1s1Fermionsc(double p, double q) const;
   /// Calculates (16 Pi^2) times the fermion contribution to Higgs self-energy:
   /// for p=external momentum, q=renormalisation scale
   double pis2s2Fermions(double p, double q) const;
+  Complex pis2s2Fermionsc(double p, double q) const;
   /// Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
   /// for p=external momentum, q=renormalisation scale
   double pis1s1Higgs(double p, double q) const;
+  Complex pis1s1Higgsc(double p, double q) const;
   /// Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
   /// for p=external momentum, q=renormalisation scale
   double pis1s2Higgs(double p, double q) const;
+  Complex pis1s2Higgsc(double p, double q) const;
   /// Calculates (16 Pi^2) times the Higgs contribution to Higgs self-energy: 
   /// for p=external momentum, q=renormalisation scale
   double pis2s2Higgs(double p, double q) const;
+  Complex pis2s2Higgsc(double p, double q) const;
   /// Calculates (16 Pi^2) times the Neutralino contribution to the
   /// Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis1s1Neutralinos(double p, double q) const;
+  Complex pis1s1Neutralinosc(double p, double q) const;
   /// Calculates (16 Pi^2) times the Neutralino contribution to the
   /// Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis1s2Neutralinos(double p, double q) const;
+  Complex pis1s2Neutralinosc(double p, double q) const;
   /// Calculates (16 Pi^2) times the Neutralino contribution to the
   /// Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis2s2Neutralinos(double p, double q) const;
+  Complex pis2s2Neutralinosc(double p, double q) const;
   /// Calculates (16 Pi^2) times the Chargino contribution to the
   /// Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis1s1Charginos(double p, double q) const;
+  Complex pis1s1Charginosc(double p, double q) const;
   /// Calculates (16 Pi^2) times the Chargino contribution to the
   /// Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis1s2Charginos(double p, double q) const;
+  Complex pis1s2Charginosc(double p, double q) const;
   /// Calculates (16 Pi^2) times the Chargino contribution to the
   /// Higgs self-energy: for p=external momentum, q=renormalisation scale
   double pis2s2Charginos(double p, double q) const;
+  Complex pis2s2Charginosc(double p, double q) const;
   /// Calculates transverse part of Higgs self-energy: for p=external momentum,
   /// Q=renormalisation scale
   double pis1s1(double p, double q) const;
+  Complex pis1s1c(double p, double q) const;
   /// Calculates transverse part of Higgs self-energy: for p=external momentum,
   /// Q=renormalisation scale
   double pis1s2(double p, double q) const;
+  Complex pis1s2c(double p, double q) const;
   /// Calculates transverse part of Higgs self-energy: for p=external momentum,
   /// Q=renormalisation scale
   double pis2s2(double p, double q) const;
+  Complex pis2s2c(double p, double q) const;
   /// Calculates sin^2 theta^l_eff
   double sinSqThetaEff();
   ///  gets h1 mixing element with Hu.

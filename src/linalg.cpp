@@ -1239,6 +1239,24 @@
    return ComplexMatrix(x.apply(conj),rows,cols); 
  }
 
+DoubleMatrix ComplexMatrix::real() const { 
+  DoubleMatrix a(rows, cols);
+  for (int i=1; i<=rows; i++)
+    for (int j=1; j<=rows; j++) {
+      a(i, j) = display(i, j).real();
+    }
+  return a;
+}
+
+DoubleMatrix ComplexMatrix::imag() const { 
+  DoubleMatrix a(rows, cols);
+  for (int i=1; i<=rows; i++)
+    for (int j=1; j<=rows; j++) {
+      a(i, j) = display(i, j).imag();
+    }
+  return a;
+}
+
  /*
   *  NUMERICAL DIAGONALIZATION ROUTINES ETC.
   */

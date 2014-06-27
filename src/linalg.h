@@ -701,6 +701,10 @@ public:
   ComplexMatrix transpose() const;
   ComplexMatrix hermitianConjugate() const;
   ComplexMatrix complexConjugate() const;
+  /// Real part of matrix
+  DoubleMatrix real() const;
+  /// Imaginary part of matrix
+  DoubleMatrix imag() const;
   
   /*
    *  NUMERICAL DIAGONALIZATION ROUTINES ETC.
@@ -727,6 +731,15 @@ public:
   /// the diagonalisation is.
   double diagonalise(ComplexMatrix & u, ComplexMatrix & v, DoubleVector & w) 
     const;
+  /// Applies fn to every element
+  ComplexMatrix apply(Complex (*fn)(Complex)) const { 
+    ComplexMatrix a(rows, cols);
+    for (int i=1; i<=rows; i++)
+      for (int j=1; j<=rows; j++) 
+	a(i, j) = fn(display(i, j));
+      
+    return a;
+  }
 };
 
 /*

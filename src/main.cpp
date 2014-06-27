@@ -33,14 +33,14 @@ int main() {
  /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
 
-  ComplexMatrix a(2, 2), u(2, 2), v(2, 2); DoubleVector evals(2);
+  /*  ComplexMatrix a(2, 2), u(2, 2), v(2, 2); DoubleVector evals(2);
   a(1, 1) = 1.; a(1, 2) = Complex(1.4, sqrt(2.));
   a(2, 1) = sqrt(3.); a(2, 2) = 2.;
 
   double err = a.diagonalise(u, v, evals);
   
   cout << "tol=" << err << evals;
-  exit(0);
+  exit(0);*/
 
   cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
        << " test program, Ben Allanach 2002\n";
