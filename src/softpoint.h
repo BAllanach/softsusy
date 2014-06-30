@@ -17,6 +17,7 @@
 #include "lowe.h"
 #include "rge.h"
 #include "softsusy.h"
+/// extern template class Softsusy<SoftPars<MssmSusy, sBrevity> >;
 #include "flavoursoft.h"
 #include "nmssmsoftsusy.h"
 #include "softpars.h"
@@ -28,6 +29,8 @@
 #include "dilogwrap.h"
 #include "rpvneut.h"
 using namespace softsusy;
+
+
 
 /// string routine for options
 bool starts_with(const std::string& str,

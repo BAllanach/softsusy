@@ -1106,9 +1106,6 @@
   *  CONSTRUCTORS
   */
 
-
-
-
  ComplexMatrix::ComplexMatrix(const DoubleMatrix & m)
    : rows(m.displayRows()), cols(m.displayCols()), x(0.0, m.x.size()) {
    for (int i=0; i < rows*cols; ++i)
@@ -1291,11 +1288,45 @@ double ComplexMatrix::nonHermiticity() const {
    double tot = 0.;
    for (int i=1; i<=displayRows(); i++) 
      for (int j=1; j<=displayCols(); j++) {
-       if (i == j) tot += this->display(i, j).imag();
-       else if (i > j) tot += this->display(i, j).imag() + 
-			 this->display(j, i).imag();
+       if (i == j) tot += fabs(this->display(i, j).imag());
+       else if (i > j) tot += fabs(this->display(i, j).imag() + 
+				   this->display(j, i).imag());
      }
    return tot;
+}
+
+double ComplexMatrix::diagonaliseSym2by2(ComplexMatrix & u, DoubleVector & w) 
+  const {
+#ifdef ARRAY_BOUNDS_CHECKING
+  ///  check for symmetricity
+#endif
+  Complex t, c, eiphi, delta, d;
+  eiphi = (display(1, 1).conj() * display(1, 2) + 
+	   display(2, 2) * display(1, 2).conj()) /
+    Complex(display(1, 1).conj() * display(1, 2) + 
+	    display(2, 2) * display(1, 2).conj()).mod();
+  cout << "e^iphi=" << eiphi << endl;
+  Complex a11t = eiphi * display(1, 1);
+  Complex a22t = eiphi.conj() * display(2, 2);
+  delta = 0.5 * (a11t - a22t);
+  d = sqrt(delta * delta + display(1, 2) * display(1, 2));
+  Complex plusSign = delta + d, minusSign = delta - d;
+  cout << "+=" << plusSign << " -=" << minusSign << endl;
+  if (minusSign.mod() > plusSign.mod()) d*= -1.;
+  cout << "delta=" << delta << " d=" << d << endl;
+  t = display(1, 2) / (delta + d);
+  c = 1.0 / sqrt(1.0 + t * t);
+  cout << "t=" << t << " c=" << c << endl;
+  Complex sigma1 = display(1, 1) + t * display(1, 2) * eiphi.conj();
+  Complex sigma2 = display(2, 2) - t * display(1, 2) * eiphi;
+  cout << "s1=" << sigma1 << " s2=" << sigma2 << endl;
+  w(1) = sigma1.real();
+  w(2) = sigma2.real();
+  u(1, 1) = c;
+  u(1, 2) = t * c * eiphi;
+  u(2, 1) = -t * c * eiphi.conj();
+  u(2, 2) = c;
+  return 0.;
 }
 
 /// Now for any Complex matrix
@@ -1354,8 +1385,11 @@ double ComplexMatrix::diagonalise(ComplexMatrix & u, ComplexMatrix & v,
    DoubleMatrix vr(r.displayRows(), r.displayCols());
    double error = r.diagonaliseSym(vr, t);
 
-  if (error > EPSTOL) 
-    throw("In ComplexMatrix::diagonaliseHerm - not accurate enough\n");
+   if (error > EPSTOL) {
+     ostringstream ii;
+     ii <<"In ComplexMatrix::diagonaliseHerm - not accurate enough\n";
+     ii << "Diagonalising " << *this << " via " << r << " error=" << error << endl;
+   }
 
   for (int i=1; i<=w.displayEnd(); i++) {
     /// Store every other eigenvalue in w (they are repeated when realified)

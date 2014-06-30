@@ -11,7 +11,8 @@ extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
   ydR, yeL, yeR, ynuL;
 
 template<class SoftPars>
-const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const Softsusy<SoftPars>& s) {
+const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const 
+							Softsusy<SoftPars>& s) {
   if (this == &s) return *this;
   setSoftPars(s.displaySoftPars());
   setAltEwsbMssm(s.displayAltEwsbMssm());
@@ -2712,17 +2713,18 @@ double Softsusy<SoftPars>::calcRunningMt() {
   decoupling_corrections.dmt.two_loop = 0.0;
 
   if (USE_TWO_LOOP_THRESHOLD) {
-    static bool needcalc = true; // flag: calculate corrections if two-previous iterations gave different results
+    static bool needcalc = true; ///< flag: calculate corrections if 
+    /// two-previous iterations gave different results
     using namespace GiNaC;
     if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) {  
       	exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-// hack
+	// hack
       	ex test = numeric(0);
 	if (needcalc) test = tquark_corrections::eval_tquark_twoloop_strong_pole(drbrp);
 	if (is_a<numeric>(test)) {
-// back converion Mt -> mt(mu)
-// dmt_as2 is already properly normalized
-// one need to normalize only 1-loop contribution
+	  /// back converion Mt -> mt(mu)
+	  /// dmt_as2 is already properly normalized
+	  /// ones need to normalize only 1-loop contribution
   	  double dmtas2 = ex_to<numeric>(test).to_double();
 	  if (close(dmtas2, decoupling_corrections.dmt.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false; 
           if (needcalc) 
@@ -6789,7 +6791,8 @@ void Softsusy<SoftPars>::physical(int accuracy) {
   /// Charginos/neutralinos/higgs
   Softsusy<SoftPars> * ppp;
   ppp = this;
-  ppp->higgs(accuracy, piwwtMS, pizztMS); 
+  
+  ppp->higgsc(accuracy, piwwtMS, pizztMS);  /// DEBUG C version
 
   const int maxHiggsIterations = 20;
   double currentAccuracy = 1.0;
@@ -6804,7 +6807,8 @@ void Softsusy<SoftPars>::physical(int accuracy) {
   /// TOLERANCE fractional accuracy
   int i = 1; while (i < maxHiggsIterations && accuracy > 0 && 
 		    currentAccuracy > TOLERANCE) {
-    higgsTachyon = ppp->higgs(accuracy, piwwtMS, pizztMS); /// iterate 
+    /// DEBUG C version
+    higgsTachyon = ppp->higgsc(accuracy, piwwtMS, pizztMS); /// iterate 
 
     DoubleVector newHiggsMasses(4);
     newHiggsMasses(1) = ppp->displayPhys().mh0(1);
@@ -11896,7 +11900,7 @@ Complex Softsusy<SoftPars>::pis1s1Fermionsc(double p, double q) const {
    double    mb      = displayDrBarPars().mb;
    Complex fermions = 3.0 * sqr(hb) *
     ((sqr(p) - 4.0 * sqr(mb)) * 
-     b0(p, mb, mb, q) - 2.0 * a0(mb, q));
+     b0c(p, mb, mb, q) - 2.0 * a0(mb, q));
   
   fermions = fermions + sqr(htau) *
     ((sqr(p) - 4.0 * sqr(mtau)) * b0c(p, mtau, mtau, q) - 
@@ -12208,12 +12212,12 @@ Complex Softsusy<SoftPars>::pis1s1Neutralinosc(double p, double q) const {
   aChi = n.complexConjugate() * aPsi * n.hermitianConjugate();
   bChi = n * aPsi * n.transpose();
  
-  DoubleMatrix fChiChis1s1(4, 4), gChiChis1s1(4, 4);
+  ComplexMatrix fChiChis1s1(4, 4), gChiChis1s1(4, 4);
   for(int i=1; i<=4; i++)
     for (int j=1; j<=4; j++) {
       fChiChis1s1(i, j) = sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod());
       gChiChis1s1(i, j) = (bChi(i, j).conj() * aChi(i, j) + 
-	aChi(i, j).conj() * bChi(i, j)).real();
+			   aChi(i, j).conj() * bChi(i, j));
       neutralinos = neutralinos + 0.5 * 
 	(fChiChis1s1(i, j) * gfnc(p, mneut(i), mneut(j), q) - 2.0 *
 	 gChiChis1s1(i, j) * mneut(i) * mneut(j) * 
@@ -12247,13 +12251,13 @@ Complex Softsusy<SoftPars>::pis1s2Neutralinosc(double p, double q) const {
   aChi2 = n.complexConjugate() * aPsi2 * n.hermitianConjugate();
   bChi2 = n * aPsi2 * n.transpose();
 
-  DoubleMatrix fChiChis1s2(4, 4), gChiChis1s2(4, 4);
+  ComplexMatrix fChiChis1s2(4, 4), gChiChis1s2(4, 4);
   for(int i=1; i<=4; i++)
     for (int j=1; j<=4; j++) {
       fChiChis1s2(i, j) = (aChi1(i, j).conj() * aChi2(i, j) + 
-	bChi1(i, j).conj() * bChi2(i, j)).real();
+	bChi1(i, j).conj() * bChi2(i, j));
       gChiChis1s2(i, j) = (bChi1(i, j).conj() * aChi2(i, j) + 
-	aChi1(i, j).conj() * bChi2(i, j)).real();
+	aChi1(i, j).conj() * bChi2(i, j));
       neutralinos = neutralinos + 0.5 * 
 	(fChiChis1s2(i, j) * gfnc(p, mneut(i), mneut(j), q) - 2.0 *
 	 gChiChis1s2(i, j) * mneut(i) * mneut(j) * 
@@ -12281,12 +12285,12 @@ Complex Softsusy<SoftPars>::pis2s2Neutralinosc(double p, double q) const {
   aChi = n.complexConjugate() * aPsi * n.hermitianConjugate();
   bChi = n * aPsi * n.transpose();
 
-  DoubleMatrix fChiChis2s2(4, 4), gChiChis2s2(4, 4);
+  ComplexMatrix fChiChis2s2(4, 4), gChiChis2s2(4, 4);
   for(int i=1; i<=4; i++)
     for (int j=1; j<=4; j++) {
       fChiChis2s2(i, j) = sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod());
       gChiChis2s2(i, j) = (bChi(i, j).conj() * aChi(i, j) + 
-	aChi(i, j).conj() * bChi(i, j)).real();
+	aChi(i, j).conj() * bChi(i, j));
       neutralinos = neutralinos + 0.5 * 
 	(fChiChis2s2(i, j) * gfnc(p, mneut(i), mneut(j), q) - 2.0 *
 	 gChiChis2s2(i, j) * mneut(i) * mneut(j) * 
@@ -12305,14 +12309,14 @@ Complex Softsusy<SoftPars>::pis1s1Charginosc(double p, double q) const {
   DoubleMatrix aPsic(2, 2);
   aPsic(1, 2) = g / root2; 
   ComplexMatrix aChic(2, 2), bChic(2, 2);
-  DoubleMatrix fChiChis1s1(2, 2), gChiChis1s1(2, 2);
+  ComplexMatrix fChiChis1s1(2, 2), gChiChis1s1(2, 2);
   aChic = v.complexConjugate() * aPsic * u.hermitianConjugate();
   bChic = u * aPsic.transpose() * v.transpose();
   for(int i=1; i<=2; i++)
     for (int j=1; j<=2; j++) {
       fChiChis1s1(i, j) = sqr(aChic(i, j).mod()) + sqr(bChic(i, j).mod());
       gChiChis1s1(i, j) = (bChic(i, j).conj() * aChic(i, j) + 
-	aChic(i, j).conj() * bChic(i, j)).real();
+	aChic(i, j).conj() * bChic(i, j));
       chargino = chargino + 
 	(fChiChis1s1(i, j) * gfnc(p, mch(i), mch(j), q) - 2.0 *
 	 gChiChis1s1(i, j) * mch(i) * mch(j) * 
@@ -12338,13 +12342,13 @@ Complex Softsusy<SoftPars>::pis1s2Charginosc(double p, double q) const {
   aPsic2(2, 1) = g / root2;
   aChic2 = v.complexConjugate() * aPsic2 * u.hermitianConjugate();
   bChic2 = u * aPsic2.transpose() * v.transpose();
-  DoubleMatrix fChiChis1s2(2, 2), gChiChis1s2(2, 2);
+  ComplexMatrix fChiChis1s2(2, 2), gChiChis1s2(2, 2);
   for(int i=1; i<=2; i++)
     for (int j=1; j<=2; j++) {
       fChiChis1s2(i, j) = (aChic1(i, j).conj() * aChic2(i, j) + 
-	bChic1(i, j).conj() * bChic2(i, j)).real();
+	bChic1(i, j).conj() * bChic2(i, j));
       gChiChis1s2(i, j) = (bChic1(i, j).conj() * aChic2(i ,j) + 
-	aChic1(i, j).conj() * bChic2(i, j)).real();
+	aChic1(i, j).conj() * bChic2(i, j));
       chargino = chargino + 
 	(fChiChis1s2(i, j) * gfnc(p, mch(i), mch(j), q) - 2.0 *
 	 gChiChis1s2(i, j) * mch(i) * mch(j) * 
@@ -12364,12 +12368,12 @@ Complex Softsusy<SoftPars>::pis2s2Charginosc(double p, double q) const {
   ComplexMatrix aChic(2, 2), bChic(2, 2);
   aChic = v.complexConjugate() * aPsic * u.hermitianConjugate();
   bChic = u * aPsic.transpose() * v.transpose();
-  DoubleMatrix fChiChis2s2(2, 2), gChiChis2s2(2, 2);
+  ComplexMatrix fChiChis2s2(2, 2), gChiChis2s2(2, 2);
   for(int i=1; i<=2; i++)
     for (int j=1; j<=2; j++) {
       fChiChis2s2(i, j) = sqr(aChic(i, j).mod()) + sqr(bChic(i, j).mod());
       gChiChis2s2(i, j) = (bChic(i, j).conj() * aChic(i, j) + 
-	aChic(i, j).conj() * bChic(i, j)).real();
+	aChic(i, j).conj() * bChic(i, j));
       chargino = chargino + 
 	(fChiChis2s2(i, j) * gfnc(p, mch(i), mch(j), q) - 2.0 *
 	 gChiChis2s2(i, j) * mch(i) * mch(j) * 
@@ -12407,6 +12411,9 @@ Complex Softsusy<SoftPars>::pis1s1c(double p, double q) const {
   /// Chargino contribution
   Complex chargino = pis1s1Charginosc(p, q);  
 
+  cout << "PIS1S1: " << fermions << " " << sfermions << " " <<
+    higgs << " " << neutralinos << " " << chargino << endl;
+
   return 
     (sfermions + 
      fermions + higgs + neutralinos + chargino) / (16.0 * sqr(PI));
@@ -12437,8 +12444,10 @@ Complex Softsusy<SoftPars>::pis1s2c(double p, double q) const {
   Complex higgs = pis1s2Higgsc(p, q);
   /// Neutralino contribution
   Complex neutralinos = pis1s2Neutralinosc(p, q); 
+  cout << "neut12=" << neutralinos;
   /// Chargino contribution
   Complex chargino = pis1s2Charginosc(p, q);  
+  cout << " ch12=" << chargino << endl;
 
   return (sfermions + higgs + neutralinos + chargino) 
     / (16.0 * sqr(PI));
@@ -12496,7 +12505,7 @@ bool Softsusy<SoftPars>::higgsc(int accuracy, double piwwtMS,
   mHtree(2, 2) = mAsq * cosb2 + mzRun2 * sinb2; 
   mHtree(2, 1) = mHtree(1 ,2); 
 
-  DoubleMatrix mhAtmh(mHtree), mhAtmH(mHtree);
+  ComplexMatrix mhAtmh(mHtree), mhAtmH(mHtree);
   ComplexMatrix sigmaMh(2, 2), sigmaMH(2, 2);
 
   double q = displayMu(), p;     
@@ -12580,7 +12589,8 @@ bool Softsusy<SoftPars>::higgsc(int accuracy, double piwwtMS,
       sigmaMH(2, 2) = sigmaMH(2, 2) - s22s - s22w - s22b - s22tau;
  
     }
-    /// DEBUG: is this still true? 
+    /// DEBUG: is this still true? NO: not for neutralino/chargino parts.
+    /// you need PIs2s1 separately, unfortunately.
     sigmaMh(2, 1) = sigmaMh(1, 2);
     sigmaMH(2, 1) = sigmaMH(1, 2);
     /*
@@ -12603,21 +12613,28 @@ bool Softsusy<SoftPars>::higgsc(int accuracy, double piwwtMS,
     mhAtmh(1, 2) = mHtree(1, 2) - dMA * sin(beta) * cos(beta);
     mhAtmh(2, 2) = mHtree(2, 2) + t2OV2Ms1loop + dMA * sqr(cos(beta));
     mhAtmh(2, 1) = mhAtmh(1 ,2);
-    mhAtmh = mhAtmh - sigmaMh.real() + 
-      (sigmaMh.imag() * sigmaMh.imag());
+    mhAtmh = mhAtmh - sigmaMh;
 
     mhAtmH(1, 1) = mHtree(1, 1) + t1OV1Ms1loop + dMA * sqr(sin(beta));
     mhAtmH(1, 2) = mHtree(1, 2) - dMA * sin(beta) * cos(beta);
     mhAtmH(2, 2) = mHtree(2, 2) + t2OV2Ms1loop + dMA * sqr(cos(beta));
     mhAtmH(2, 1) = mhAtmH(1 ,2);
-    mhAtmH = mhAtmH - sigmaMH.real() + 
-      (sigmaMH.imag() + sigmaMH.imag());
+    mhAtmH = mhAtmH - sigmaMH;
+    cout << sigmaMh; ///< DEBUG
   }
-  
-  DoubleVector temp(2);  
-  double theta;
 
-  temp = mhAtmh.sym2by2(theta);
+  DoubleVector temp(2);  
+  ComplexMatrix u(2, 2), v(2, 2);
+  double err = mhAtmh.diagonaliseHerm(u, temp);
+  cout << "err=" << err << " u=" << u << temp;
+  if (err > EPSTOL) {
+    ostringstream ii;
+    ii << "In MssmSoftsusy::higgs. Inaccurate diagonalisation of Higgs mass"
+       << " matrix " << mhAtmh;
+    throw ii.str();
+  }
+
+  double theta; /// ASSIGN THETA SOMEHOW
 
   bool h0Htachyon = false;
   if (temp(1) < 0.0 || temp(2) < 0.0) {
@@ -12651,8 +12668,8 @@ bool Softsusy<SoftPars>::higgsc(int accuracy, double piwwtMS,
   physpars.thetaH = theta; /// theta defined for p=mh  
   int i; double littleMh = temp.apply(fabs).min(i);
 
-  temp = mhAtmH.sym2by2(theta);
-
+  // temp = mhAtmH.sym2by2(theta);
+  
   if (temp(1) < 0.0 && temp(2) < 0.0) {
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << " h0/H tachyon: m^2=" << temp;
@@ -12660,8 +12677,7 @@ bool Softsusy<SoftPars>::higgsc(int accuracy, double piwwtMS,
   temp = temp.apply(ccbSqrt);
   double bigMh = temp.max();
 
-
-double piaa = piAA(mApole, displayMu()); 
+  double piaa = piAA(mApole, displayMu()); 
   //  double piaa = piAA(displayDrBarPars().mA0, displayMu());
   double poleMasq = (displayMh2Squared() - displayMh1Squared() )
     / cos(2.0 * beta) - sqr(mzPole);
@@ -12678,7 +12694,6 @@ double piaa = piAA(mApole, displayMu());
   double pihphm = piHpHm(physpars.mHpm, displayMu());
 
   double poleMhcSq = poleMasq + sqr(displayMw()) + piaa + piwwtMS - pihphm;
-
 
   //PA:  below is the rearranged approach to calculating charged and cpodd Higgs used for comaprisons vs nmssmsoftsusy.cpp.   This leaves the initial accuracy == 0 calculation changed and while the actual calculation for accuarcy > 0 is unchanged this alters the final result for charged Higgs due to the numerical precion of the Higgs iteration. 
   /* ------------------------------------------------------------------------*/

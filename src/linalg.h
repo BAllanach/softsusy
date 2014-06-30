@@ -725,10 +725,14 @@ public:
   /// \f$ W = V^\dag A V \f$. The double output is an estimate of how accurate
   /// the diagonalisation is.
   double diagonaliseHerm(ComplexMatrix & v, DoubleVector & w) const;
+  /// For Complex Symmetric matrices only. Performs Takagi factorisation, ie
+  /// \f$ U^* A U^\dag = diag(\sigma_1, \sigma_2) \f$ for the 2 by 2 case.
+  /// w has eigenvalues and the double return is numerical error
+  double diagonaliseSym2by2(ComplexMatrix & v, DoubleVector & w) const;
   /// For general non-singular complex matrices
   /// \f$ W = U A V^\dag \f$, where \f$ W \f$ is a matrix of diagonal values.
   /// The double output is an estimate of how accurate
-  /// the diagonalisation is.
+  /// the diagonalisation is. 
   double diagonalise(ComplexMatrix & u, ComplexMatrix & v, DoubleVector & w) 
     const;
   /// Applies fn to every element
