@@ -26,9 +26,8 @@ Block MINPAR               # SUSY breaking input parameters
 Block EXTPAR               # scale of SUSY breaking BCs
      0    2.72415125e+16   # MX scale
 # SOFTSUSY-specific non SLHA information:
-# MIXING=2 Desired accuracy=1.00000000e-04 Achieved accuracy=9.78374175e-05
+# MIXING=2 Desired accuracy=1.00000000e-04 Achieved accuracy=9.78374172e-05
 # MX=2.72415125e+16 GeV
-
 # Z3 = 0, SoftHiggsOut = 0
 Block MASS                      # Mass spectrum
 # PDG code     mass             particle

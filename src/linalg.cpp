@@ -1326,6 +1326,12 @@ double ComplexMatrix::diagonaliseSym2by2(ComplexMatrix & u, DoubleVector & w)
   u(1, 2) = t * c * eiphi;
   u(2, 1) = -t * c * eiphi.conj();
   u(2, 2) = c;
+  cout << "ans" << u.complexConjugate() * *this * u.hermitianConjugate();
+
+  Complex s1t = a11t + t * display(1, 2);
+  Complex s2t = a22t - t * display(1, 2);
+  cout << "s1*=" << s1t * eiphi.conj();
+  cout << " s2*=" << s2t * eiphi << endl;
   return 0.;
 }
 
