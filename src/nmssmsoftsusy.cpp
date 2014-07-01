@@ -7253,19 +7253,19 @@ double NmssmSoftsusy::pis1s1(double p, double q) const {
   double cosb        = cos(beta);
 
   //PA: get fermion contribution, uses MSSM version
-  double fermions = pis1s1Fermions(p, q);
+  double fermions = pis1s1Fermions(p, q).real();
   // sfermion couplings to s1 Higgs state
   DoubleMatrix ls1tt(2, 2), ls1bb(2, 2), ls1tautau(2, 2);
   double gmzOcthW = g * mz / costhDrbar;
   H1SfSfCouplings(ls1tt, ls1bb, ls1tautau, gmzOcthW, smu, cosb, root2*mb/hb);
   //PA: get sfermion contribution
-  double sfermions = pis1s1Sfermions(p, q, ls1tt, ls1bb, ls1tautau);
+  double sfermions = pis1s1Sfermions(p, q, ls1tt, ls1bb, ls1tautau).real();
   //PA: get Higgs contribution
   double higgs = pis1s1Higgs(p, q);
   /// Neutralino contribution
   double neutralinos = pis1s1Neutralinos(p, q);
   /// Chargino contribution
-  double chargino = pis1s1Charginos(p, q);  
+  double chargino = pis1s1Charginos(p, q).real();  
   
   return (sfermions + fermions + higgs 
 	  + neutralinos + chargino) / (16.0 * sqr(PI));
@@ -7292,13 +7292,13 @@ double NmssmSoftsusy::pis1s2(double p, double q) const {
   H2SfSfCouplings(ls2tt, ls2bb, ls2tautau, gmzOcthW, smu, sinb);
   
   //PA: get sfermion contribution
-  double sfermions = pis1s2Sfermions(p, q, ls1tt, ls1bb, ls1tautau, ls2tt, ls2bb, ls2tautau);
+  double sfermions = pis1s2Sfermions(p, q, ls1tt, ls1bb, ls1tautau, ls2tt, ls2bb, ls2tautau).real();
   //PA: get Higgs contribution (NMSSM version)
   double higgs = pis1s2Higgs(p, q);
   /// Neutralino contribution (NMSSM version)
   double neutralinos = pis1s2Neutralinos(p, q); 
   /// Chargino contribution
-  double chargino = pis1s2Charginos(p, q);  
+  double chargino = pis1s2Charginos(p, q).real();  
  
   return (sfermions + higgs + neutralinos + chargino) / (16.0 * sqr(PI));
 }
@@ -7314,18 +7314,18 @@ double NmssmSoftsusy::pis2s2(double p, double q) const {
   double sinb        = sin(beta);
 
   //PA: get femions (same as MSSM) 
-  double fermions = pis2s2Fermions(p, q);
+  double fermions = pis2s2Fermions(p, q).real();
   ///PA: sfermion couplings to s2 Higgs state (NMSSM version)
   DoubleMatrix ls2tt(2, 2), ls2bb(2, 2), ls2tautau(2, 2);
   H2SfSfCouplings(ls2tt, ls2bb, ls2tautau, gmzOcthW, smu, sinb);
   //PA: get sfermions (MSSM routine but with NMSSM couplings input)
-  double sfermions = pis2s2Sfermions(p, q, ls2tt, ls2bb, ls2tautau);
+  double sfermions = pis2s2Sfermions(p, q, ls2tt, ls2bb, ls2tautau).real();
   //PA: get higgs (NMSSM version)
   double higgs = pis2s2Higgs(p, q);
   //PA: get neutralinos (NMSSM version)
   double neutralinos = pis2s2Neutralinos(p, q); 
   //PA: get charginos (same as in MSSM version)
-  double chargino = pis2s2Charginos(p, q);   
+  double chargino = pis2s2Charginos(p, q).real();   
 
   return (fermions + sfermions + higgs + neutralinos + chargino) 
     / (16.0 * sqr(PI));
