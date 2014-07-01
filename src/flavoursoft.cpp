@@ -10,6 +10,8 @@
 
 namespace softsusy {
 
+extern template class Softsusy<SoftParsMssm>;
+
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL, 
   ydR, yeL, yeR, ynuL;
 
