@@ -12411,9 +12411,6 @@ Complex Softsusy<SoftPars>::pis1s1c(double p, double q) const {
   /// Chargino contribution
   Complex chargino = pis1s1Charginosc(p, q);  
 
-  cout << "PIS1S1: " << fermions << " " << sfermions << " " <<
-    higgs << " " << neutralinos << " " << chargino << endl;
-
   return 
     (sfermions + 
      fermions + higgs + neutralinos + chargino) / (16.0 * sqr(PI));
@@ -12444,10 +12441,8 @@ Complex Softsusy<SoftPars>::pis1s2c(double p, double q) const {
   Complex higgs = pis1s2Higgsc(p, q);
   /// Neutralino contribution
   Complex neutralinos = pis1s2Neutralinosc(p, q); 
-  cout << "neut12=" << neutralinos;
   /// Chargino contribution
   Complex chargino = pis1s2Charginosc(p, q);  
-  cout << " ch12=" << chargino << endl;
 
   return (sfermions + higgs + neutralinos + chargino) 
     / (16.0 * sqr(PI));
@@ -12620,21 +12615,28 @@ bool Softsusy<SoftPars>::higgsc(int accuracy, double piwwtMS,
     mhAtmH(2, 2) = mHtree(2, 2) + t2OV2Ms1loop + dMA * sqr(cos(beta));
     mhAtmH(2, 1) = mhAtmH(1 ,2);
     mhAtmH = mhAtmH - sigmaMH;
-    cout << sigmaMh; ///< DEBUG
   }
 
-  DoubleVector temp(2);  
+  ComplexVector tempc(2);  
   ComplexMatrix u(2, 2), v(2, 2);
-  double err = mhAtmh.diagonaliseHerm(u, temp);
-  cout << "err=" << err << " u=" << u << temp;
+  double err = mhAtmh.diagonaliseSym2by2(u, tempc);
   if (err > EPSTOL) {
     ostringstream ii;
-    ii << "In MssmSoftsusy::higgs. Inaccurate diagonalisation of Higgs mass"
-       << " matrix " << mhAtmh;
+    ii << "In MssmSoftsusy::higgs. mh matrix " << mhAtmh 
+       << " inaccurately diagonalised. tol=" << err << endl;
     throw ii.str();
   }
-
-  double theta; /// ASSIGN THETA SOMEHOW
+  /// We pick up the real parts of the eigenvalues for the masses
+  DoubleVector temp(2); temp(1) = tempc(1).real(); temp(2) = tempc(2).real();
+  
+  /// To assign theta, we must match the complex case to the approximately
+  /// true real case. 
+  DoubleMatrix mm(2, 2);
+  for (int i=1; i<=2; i++) 
+    for (int j=1; j<=2; j++)
+      mm(i, j) = mhAtmh(i, j).real();
+  DoubleVector aa(2); double theta = 0.; 
+  aa = mm.sym2by2(theta);
 
   bool h0Htachyon = false;
   if (temp(1) < 0.0 || temp(2) < 0.0) {
@@ -12668,12 +12670,19 @@ bool Softsusy<SoftPars>::higgsc(int accuracy, double piwwtMS,
   physpars.thetaH = theta; /// theta defined for p=mh  
   int i; double littleMh = temp.apply(fabs).min(i);
 
-  // temp = mhAtmH.sym2by2(theta);
-  
-  if (temp(1) < 0.0 && temp(2) < 0.0) {
+  err = mhAtmH.diagonaliseSym2by2(v, tempc);
+  if (err > EPSTOL) {
+    ostringstream ii;
+    ii << "In MssmSoftsusy::higgs. mH matrix " << mhAtmh 
+       << " inaccurately diagonalised. tol=" << err << endl;
+    throw ii.str();
+  }
+
+  if (tempc(1).real() < 0.0 && tempc(2).real() < 0.0) {
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << " h0/H tachyon: m^2=" << temp;
   }
+  temp(1) = tempc(1).real(); temp(2) = tempc(2).real();
   temp = temp.apply(ccbSqrt);
   double bigMh = temp.max();
 
