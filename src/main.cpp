@@ -33,15 +33,6 @@ int main() {
  /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
 
-  ComplexMatrix a(2, 2), u(2, 2), v(2, 2); DoubleVector evals(2);
-  a(1, 1) = Complex(1., 0.4); a(1, 2) = Complex(1.4, sqrt(2.));
-  a(2, 1) = a(2, 1); a(2, 2) = Complex(1.2, 0.3);
-
-  double err = a.diagonaliseSym2by2(u, evals);
-  
-  cout << "tol=" << err << evals;
-  exit(0);
-
   cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
        << " test program, Ben Allanach 2002\n";
   cerr << "If you use SOFTSUSY, please refer to B.C. Allanach,\n";

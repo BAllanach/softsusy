@@ -727,8 +727,14 @@ public:
   double diagonaliseHerm(ComplexMatrix & v, DoubleVector & w) const;
   /// For Complex Symmetric matrices only. Performs Takagi factorisation, ie
   /// \f$ U^* A U^\dag = diag(\sigma_1, \sigma_2) \f$ for the 2 by 2 case.
-  /// w has eigenvalues and the double return is numerical error
-  double diagonaliseSym2by2(ComplexMatrix & v, DoubleVector & w) const;
+  /// w has eigenvalues and the double return is numerical error. The matrices
+  /// can  be singular.
+  double takagi(ComplexMatrix & v, ComplexVector & w) const;
+  /// For Complex Symmetric matrices only. Performs eigenvalue factorisation, ie
+  /// \f$ U A U^T = diag(\sigma_1, \sigma_2) \f$ for the 2 by 2 case.
+  /// w has eigenvalues and the double return is numerical error. The matrices
+  /// CANNOT be singular. From physics/0607103
+  double diagonaliseSym2by2(ComplexMatrix & v, ComplexVector & w) const;
   /// For general non-singular complex matrices
   /// \f$ W = U A V^\dag \f$, where \f$ W \f$ is a matrix of diagonal values.
   /// The double output is an estimate of how accurate

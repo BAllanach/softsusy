@@ -503,7 +503,8 @@
    for (i=1; i<=c; ++i) temp(i, i) = w(i);
    //this seems to be a relic
    //cout << v * temp * v.transpose();
-   return this->compare(ComplexMatrix(v.transpose() * temp * v)) / w.max();
+   return this->compare(ComplexMatrix(v.transpose() * temp * v)) / 
+     w.max();
  }
 
  // Special case that's often used: eigenvalues of 2 by 2 symmetric matrix
@@ -1295,44 +1296,92 @@ double ComplexMatrix::nonHermiticity() const {
    return tot;
 }
 
-double ComplexMatrix::diagonaliseSym2by2(ComplexMatrix & u, DoubleVector & w) 
+double ComplexMatrix::diagonaliseSym2by2(ComplexMatrix & u, ComplexVector & w) 
   const {
 #ifdef ARRAY_BOUNDS_CHECKING
+  if (displayCols() != 2 || displayRows() != 2) {
+    ostringstream ii;
+    ii << "In ComplexMatrix::diagonaliseSym2by2 for non 2x2 matrix " << *this;
+    throw ii.str();
+  }
   ///  check for symmetricity
+  if (!close(display(1, 2), display(2, 1), EPSTOL)) {
+    ostringstream ii;
+    ii << "In ComplexMatrix::diagonaliseSym2by2 but non symmetric " << *this;
+    throw ii.str();
+    }
 #endif
+  Complex Delta = 0.5 * (display(1, 1) - display(2, 2));
+  Complex d = sqrt(Delta * Delta + display(1, 2) * display(1, 2));
+  Complex plusSign = Delta + d, minusSign = Delta - d;
+  if (minusSign.mod() > plusSign.mod()) d*= -1.;
+
+  Complex delta = display(1, 2) * display(1, 2) / (Delta + d);
+  w(1) = display(1, 1) + delta;
+  w(2) = display(2, 2) - delta;
+
+  Complex t = display(1, 2) / (Delta + d);
+  Complex c = 1.0 / sqrt(1.0 + t * t);
+
+  u(1, 1) = c;
+  u(1, 2) = t * c;
+  u(2, 1) = -t * c;
+  u(2, 2) = c;
+
+  ComplexMatrix temp(2, 2);
+  temp(1, 1) = w(1); temp(2, 2) = w(2);
+  double den = maximum(w(1).mod(), w(2).mod());
+
+  return this->compare(u.transpose() * temp * u) / den;
+}
+
+double ComplexMatrix::takagi(ComplexMatrix & u, ComplexVector & w) 
+  const {
+#ifdef ARRAY_BOUNDS_CHECKING
+  if (displayCols() != 2 || displayRows() != 2) {
+    ostringstream ii;
+    ii << "In ComplexMatrix::diagonaliseSym2by2 for non 2x2 matrix " << *this;
+    throw ii.str();
+  }
+  ///  check for symmetricity
+  if (!close(display(1, 2), display(2, 1), EPSTOL)) {
+    ostringstream ii;
+    ii << "In ComplexMatrix::diagonaliseSym2by2 but non symmetric " << *this;
+    throw ii.str();
+    }
+#endif
+
   Complex t, c, eiphi, delta, d;
   eiphi = (display(1, 1).conj() * display(1, 2) + 
 	   display(2, 2) * display(1, 2).conj()) /
     Complex(display(1, 1).conj() * display(1, 2) + 
 	    display(2, 2) * display(1, 2).conj()).mod();
-  cout << "e^iphi=" << eiphi << endl;
+
   Complex a11t = eiphi * display(1, 1);
   Complex a22t = eiphi.conj() * display(2, 2);
   delta = 0.5 * (a11t - a22t);
   d = sqrt(delta * delta + display(1, 2) * display(1, 2));
   Complex plusSign = delta + d, minusSign = delta - d;
-  cout << "+=" << plusSign << " -=" << minusSign << endl;
+  /// Choice of sign for numerical round-off
   if (minusSign.mod() > plusSign.mod()) d*= -1.;
-  cout << "delta=" << delta << " d=" << d << endl;
+
   t = display(1, 2) / (delta + d);
   c = 1.0 / sqrt(1.0 + t * t);
-  cout << "t=" << t << " c=" << c << endl;
+
   Complex sigma1 = display(1, 1) + t * display(1, 2) * eiphi.conj();
   Complex sigma2 = display(2, 2) - t * display(1, 2) * eiphi;
-  cout << "s1=" << sigma1 << " s2=" << sigma2 << endl;
-  w(1) = sigma1.real();
-  w(2) = sigma2.real();
+  w(1) = sigma1;
+  w(2) = sigma2;
   u(1, 1) = c;
   u(1, 2) = t * c * eiphi;
   u(2, 1) = -t * c * eiphi.conj();
   u(2, 2) = c;
-  cout << "ans" << u.complexConjugate() * *this * u.hermitianConjugate();
 
-  Complex s1t = a11t + t * display(1, 2);
-  Complex s2t = a22t - t * display(1, 2);
-  cout << "s1*=" << s1t * eiphi.conj();
-  cout << " s2*=" << s2t * eiphi << endl;
-  return 0.;
+  ComplexMatrix temp(2, 2);
+  temp(1, 1) = w(1); temp(2, 2) = w(2);
+  double den = maximum(w(1).mod(), w(2).mod());
+
+  return this->compare(u.transpose() * temp * u) / den;
 }
 
 /// Now for any Complex matrix
