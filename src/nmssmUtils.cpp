@@ -536,4 +536,8 @@ double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries)
   return sT.max();
 }
 
+// explicit template instantiations
+// template class Softsusy<SoftParsNmssm>;
+template class SoftPars<NmssmSusy, nmsBrevity>;
+
 } // namespace softsusy
