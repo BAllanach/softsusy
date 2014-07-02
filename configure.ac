@@ -54,6 +54,16 @@ AC_ARG_ENABLE([full-susy-threshold-compilation],
 
 AM_CONDITIONAL(COMPILE_FULL_SUSY_THRESHOLD, [test x$full_susy_threshold_compilation = xtrue])
 
+AC_ARG_ENABLE([looptools], 
+               AC_HELP_STRING([--enable-looptools],[Looptools evaluation of Pasarino-Veltman functions]),
+             [AC_DEFINE([LOOPTOOLS],[1],[Looptools evaluation of Pasarino-Veltman functions]),
+              case "${enableval}" in
+              yes) looptools_compilation=true ;;
+              no)  looptools_compilation=false ;;
+              *) AC_MSG_ERROR([bad value ${enableval} for --enable-looptools]) ;;
+              esac],[looptools_compilation=false])
+
+AM_CONDITIONAL(LOOPTOOLS, [test x$full_susy_threshold_compilation = xtrue])
 
 AC_ARG_ENABLE([debug], 
                AC_HELP_STRING([--enable-debug],[enables debug printing in two-loop threshold corrections]), 
@@ -77,6 +87,6 @@ AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
 
-# To run with looptools, run: ./configure CPPFLAGS=-I/home/bca20/code/looptools/LoopTools/install/include LDFLAGS=-L/home/bca20/code/looptools/LoopTools/install/lib/ F77=gfortran and add -looptools to Makefile.am libs
+# To run with looptools, run: ./configure --enable-looptools CPPFLAGS=-I/home/bca20/code/looptools/LoopTools/install/include LDFLAGS=-L/home/bca20/code/looptools/LoopTools/install/lib/ and add -looptools to src/softsusy.amk libs
 
 
