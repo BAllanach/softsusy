@@ -444,4 +444,8 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
   return left;
 }
 
+// explicit template instantiations
+template class Softsusy<SoftParsMssm>;
+template class SoftPars<MssmSusy, sBrevity>;
+
 } // namespace softsusy

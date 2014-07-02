@@ -723,11 +723,16 @@ inline double ftCalc(double x) {
   return referenceMzsq;
 }
 
+template<class SoftPars>
+double Softsusy<SoftPars>::it1par(int numPar, const DoubleVector & bcPars) {
+   throw "it1par not implemented for non-MSSM models";
+}
+
 /// Give it a GUT scale object consistent with rewsb
 /// and it'll return the fine tuning by varying m32, mu and m3sq at the high
 /// scale
-template<class SoftPars>
-double Softsusy<SoftPars>::it1par(int numPar, const DoubleVector & bcPars) {
+template<>
+inline double Softsusy<SoftParsMssm>::it1par(int numPar, const DoubleVector & bcPars) {
   
   double ftParameter = 0.0, err, h = 0.01;
   
@@ -789,9 +794,9 @@ double Softsusy<SoftPars>::it1par(int numPar, const DoubleVector & bcPars) {
 }
 
 /// Pass it an object and it'll return the fine tuning parameters
-template<class SoftPars>
-DoubleVector Softsusy<SoftPars>::fineTune
-(void (*boundaryCondition)(Softsusy<SoftPars> &, const DoubleVector &),
+template<>
+inline DoubleVector Softsusy<SoftParsMssm>::fineTune
+(void (*boundaryCondition)(Softsusy<SoftParsMssm> &, const DoubleVector &),
  const DoubleVector  & bcPars, double mx, bool doTop) {
 
   /// Stores running parameters in a vector
@@ -823,6 +828,14 @@ DoubleVector Softsusy<SoftPars>::fineTune
   setPhys(savePhys);
 
   return tempFineTuning;
+}
+
+/// Pass it an object and it'll return the fine tuning parameters
+template<class SoftPars>
+DoubleVector Softsusy<SoftPars>::fineTune
+(void (*boundaryCondition)(Softsusy<SoftPars> &, const DoubleVector &),
+ const DoubleVector  & bcPars, double mx, bool doTop) {
+   throw "fineTune not implemented for non-MSSM models";
 }
 
 /// Obtains solution of one-loop effective potential minimisation via iteration
@@ -6623,8 +6636,8 @@ inline double minimufb3(double lnH2) {
 /// Input mx the scale up to which you search for minima
 /// Returns minimum value of potential along that direction
 /// Does ufbs truly properly but takes ages.
-template<class SoftPars>
-double Softsusy<SoftPars>::ufb3sl(double mx) {
+template<>
+inline double Softsusy<SoftParsMssm>::ufb3sl(double mx) {
 
   tempSoft1 = this;
 
@@ -6647,6 +6660,11 @@ double Softsusy<SoftPars>::ufb3sl(double mx) {
   ///  set(parSave);
   
   return Vmin;
+}
+
+template<class SoftPars>
+double Softsusy<SoftPars>::ufb3sl(double mx) {
+   throw "ufb3sl not implemented for non-MSSM models";
 }
 
 /// Does SUSY (and other) threshold corrections to alphaS
