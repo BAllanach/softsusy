@@ -5,7 +5,7 @@
 # B.C. Allanach, M. Hanussek and C.H. Kom, arXiv:1109.3735
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    3.5.0       # version number
+     2    3.4.1       # version number
 Block MODSEL  # Select model
      1    1   # sugra
      4    1   # R-parity violating
