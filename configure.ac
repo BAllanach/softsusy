@@ -63,7 +63,7 @@ AC_ARG_ENABLE([looptools],
               *) AC_MSG_ERROR([bad value ${enableval} for --enable-looptools]) ;;
               esac],[looptools_compilation=false])
 
-AM_CONDITIONAL(LOOPTOOLS, [test x$full_susy_threshold_compilation = xtrue])
+AM_CONDITIONAL(LOOPTOOLS, [test x$looptools_compilation = xtrue])
 
 AC_ARG_ENABLE([debug], 
                AC_HELP_STRING([--enable-debug],[enables debug printing in two-loop threshold corrections]), 
