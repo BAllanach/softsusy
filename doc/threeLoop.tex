@@ -186,13 +186,12 @@ The higher order terms that we have included in the present paper are:
 \begin{enumerate}
 \item
 Three-loop RGEs to all soft and supersymmetry preserving MSSM parameters, 
-assuming that they are real. The supersymmetric parameters contain the
-possibility of full three-family mixing. The three-loop contributions to the 
-soft-breaking MSSM parameters are calculated in the dominant third family
-approximation. 
+assuming that they are real. Both the supersymmetric and soft-breaking MSSM parameters 
+contain the possibility of full three-family mixing. 
+%The three-loop contributions to the soft-breaking MSSM parameters are calculated in the dominant third family approximation. 
 \item
 The following two-loop threshold
-corrections~\cite{Bednyakov:2005kt,Bednyakov:2009wt}: 
+corrections calculated in the gaugeless limit~\cite{Haestier:2005ja} of the MSSM\footnote{With the only exception being the top-quark mass, for which only strong interactions are taken into account.}~\cite{Bednyakov:2005kt,Bednyakov:2009wt}: 
 \begin{center}
 \begin{tabular}{|c|c|}\hline
 Name & Description \\ \hline
@@ -201,7 +200,9 @@ $\Delta m_t$ & $\mathcal O(\alpha_s^2)$ corrections to $m_t$ \\
  $\mathcal O(\alpha_s 
  \alpha_t)$ corrections to $\alpha_s$. \\
  $\Delta m_b, m_\tau$ & $\mathcal O(\alpha_t^2)$, $\mathcal O(\alpha_b^2)$,
- $\mathcal O(\alpha_\tau^2)$, $\mathcal O(\alpha_\tau \alpha_b)$, 
+$\mathcal O(\alpha_t \alpha_b)$, 
+ $\mathcal O(\alpha_\tau \alpha_b)$, 
+$\mathcal O(\alpha_\tau \alpha_t)$, 
 $\mathcal O(\alpha_s^2)$, $\mathcal O(\alpha_s
  \alpha_b)$, $\mathcal O(\alpha_s \alpha_t)$ 
  corrections to $m_b$. \\ &
@@ -213,7 +214,7 @@ $m_\tau$ includes $\mathcal O(\alpha_\tau^2)$, $\mathcal O(\alpha_\tau
 \end{enumerate}
 For our phenomenological analysis, we take the superpotential of the MSSM to be:
 \begin{equation}
-W=\mu H_2 H_1 + Y_t Q_3 H_2 u_3 + Y_b Q_3 H_2 d_3 + Y_\tau L_3 H_1 e_3,
+W=\mu H_2 H_1 + Y_t Q_3 H_2 u_3 + Y_b Q_3 H_1 d_3 + Y_\tau L_3 H_1 e_3,
 \end{equation}
 where the chiral superfields of the MSSM have the 
 following $G_{SM}=SU(3)_c\times SU(2)_L\times U(1)_Y$ quantum numbers
@@ -456,10 +457,15 @@ Y_\tau(M_Z) = \frac{\sqrt{2}m_\tau(M_Z)}{v \cos \beta}.
 We split the various higher order corrections up in
 the table: the `base' calculation is always considered to be {\tt
   SOFTSUSY3.4.1}, which does not contain the higher order corrections. 
+% AVB
+We can see that the two-loop threshold corrections to the strong couplings $\Delta \alpha_s$ and top-quark mass $\Delta m_t$ are the most important ones. 
+It is worth mentioning that both  one- and two-loop contributions to $\Delta \alpha_s$ and $\Delta m_t$ (see., e.g., \cite{Pierce:1996zz,Bednyakov:2010ni}) are usually positive and tend to decrease the corresponding running parameters at the matching scale. 
+% AVB
 We see that the row $\Delta m_t$, that includes 2-loop threshold corrections
 to $m_t$ coming from strong SUSY QCD corrections only contains `N/A' entries,
 indicating that the calculation failed in this approximation because
 electroweak symmetry was not broken successfully, as we now explain. 
+
 
 Minimising the MSSM Higgs potential with respect to the electrically neutral
 components of the Higgs vacuum expectation values, one obtains the well-known
@@ -954,12 +960,10 @@ observations.
  threshold corrections to the QCD gauge coupling and third family fermion
  masses into the {\tt SOFTSUSY} spectrum calculator. The corrections included
  are: $\mathcal O(\alpha_s^2)$ corrections to $m_t$, $\mathcal O(\alpha_s^2)$,
- $\mathcal O(\alpha_s \alpha_b)$ and
- $\mathcal O(\alpha_s 
- \alpha_t)$ corrections to $\alpha_s$, and $\mathcal O(\alpha_s^2)$, 
- $\mathcal O(\alpha_s \alpha_b)$, $\mathcal O(\alpha_s^2)$ corrections to
- $m_b$. $\mathcal O(\alpha_\tau^2), \mathcal O(\alpha_b \alpha_\tau), \mathcal
- O(\alpha_\tau \alpha_t)$ 
+ and $\mathcal O(\alpha_s \alpha_{t,b})$ 
+ corrections to $\alpha_s$, and $\mathcal O(\alpha_s^2)$, 
+ $\mathcal O(\alpha_s \alpha_{t,b})$, $\mathcal O(\alpha_{t,b}^2)$, $\mathcal O(\alpha_t \alpha_b)$, and $\mathcal O(\alpha_{t,b} \alpha_\tau)$ corrections to
+ $m_b$. $\mathcal O(\alpha_\tau^2), \mathcal O(\alpha_{t,b} \alpha_\tau)$ 
  corrections to $m_\tau$ are also included. These corrections make gauge and
  Yukawa unification  predictions more accurate. They also give a good estimate
  for the size of theoretical uncertainties in the sparticle mass predictions
@@ -1162,8 +1166,8 @@ Value & $m_t$ & $\alpha_s$ & Strong $m_b$ & Yukawa $m_b$ & Yukawa $m_\tau$ \\
 11 & $\checkmark$ &$\checkmark$ & &$\checkmark$ & \\
 12 & & &$\checkmark$ &$\checkmark$ & \\
 13 &$\checkmark$ & &$\checkmark$ &$\checkmark$ & \\
-14 & &$\checkmark$ & &$\checkmark$ & \\
-15 &$\checkmark$ &$\checkmark$ & &$\checkmark$ & \\
+14 & &$\checkmark$ & $\checkmark$ &$\checkmark$ & \\
+15 &$\checkmark$ &$\checkmark$ & $\checkmark$ &$\checkmark$ & \\
 16 & & & & & $\checkmark$\\
 17 &$\checkmark$ & & & &$\checkmark$ \\
 18 & &$\checkmark$ & & &$\checkmark$ \\
@@ -1188,17 +1192,13 @@ A $\checkmark$ indicates that the correction is present, whereas the absence
 of a $\checkmark$ indicates that the correction is absent. 
 The column labelled `$m_t$' refers
 to the $\mathcal O(\alpha_s^2)$ corrections to $m_t$, 
-`$\alpha_s$' refers to the $\mathcal O(\alpha_s^2)$, $\mathcal O(\alpha_s \alpha_b)$,
- $\mathcal O(\alpha_s 
- \alpha_t)$ corrections to $\alpha_s$, 
-`Strong $m_b$' refers to the $\mathcal O(\alpha_s^2)$, $\mathcal O(\alpha_s
- \alpha_b)$, $\mathcal O(\alpha_s \alpha_t)$ 
- corrections to $m_b$, 
-`Yukawa $m_b$' refers to the $\mathcal O(\alpha_t^2)$, $\mathcal O(\alpha_b^2)$,
- $\mathcal O(\alpha_\tau^2)$, $\mathcal O(\alpha_\tau \alpha_b)$ corrections
- to $m_b$ and
-`Yukawa $m_\tau$' refers to the $\mathcal O(\alpha_\tau^2)$, $\mathcal O(\alpha_\tau
-\alpha_t)$ and $\mathcal O(\alpha_\tau \alpha_b)$ corrections to $m_\tau$.
+`$\alpha_s$' refers to the $\mathcal O(\alpha_s^2)$, $\mathcal O(\alpha_s \alpha_{t,b})$
+  corrections to $\alpha_s$, 
+`Strong $m_b$' refers to the $\mathcal O(\alpha_s^2)$ correction to $m_b$, 
+`Yukawa $m_b$' refers to the $\mathcal O(\alpha_s \alpha_{t,b})$,$\mathcal O(\alpha_{b,t}^2)$, $\mathcal O(\alpha_b \alpha_t)$,
+and $\mathcal O(\alpha_{t,b} \alpha_\tau)$ corrections to $m_b$ and
+`Yukawa $m_\tau$' refers to the $\mathcal O(\alpha_\tau^2)$, and $\mathcal O(\alpha_\tau
+\alpha_{t,b})$ corrections to $m_\tau$.
 \label{tab:bitset}}
 \end{table}
 For convenience, we have included three {\tt MssmSoftsusy} methods that can be

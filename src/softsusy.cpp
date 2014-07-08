@@ -9615,7 +9615,7 @@ void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
 #endif
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
   out << ". 2-loop Yukawa/g3 thresholds are ";
-  if (!USE_TWO_LOOP_THRESHOLD) out << "off";
+  if (!USE_TWO_LOOP_THRESHOLD) out << "off\n";
   else {
     if (included_thresholds>0) out << "on"; else out << "off";
     out << "\n# 2-loop t-quark O(a_s^2) thresholds are ";
