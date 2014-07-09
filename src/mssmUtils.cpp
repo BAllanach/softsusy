@@ -424,7 +424,7 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
   left << "t1/v1(MS)=" << s.displayTadpole1Ms()
        << " t2/v2(MS)=" << s.displayTadpole2Ms() << endl;
   left << HR << "\nPhysical MSSM parameters:\n";
-  left << s.displayPhys();
+  left << s.displayPhys() << endl;
   double mass; int posi, posj, id;
   id = s.lsp(mass, posi, posj);
 
