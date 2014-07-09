@@ -9714,7 +9714,7 @@ void Softsusy<SoftPars>::alphaSLHA(ostream & out) {
   out << "Block alpha                   " << 
     "  # Effective Higgs mixing parameter\n";
   out << "          "; printRow(out, displayPhys().thetaH);        
-  out << "       # alpha\n";
+  out << "       # alpha - evaluated at p^2=0\n";
 }
 
 template<class SoftPars>
