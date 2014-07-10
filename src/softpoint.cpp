@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
 #ifdef COMPILE_THREE_LOOP_RGE
 	else if (starts_with(argv[i], "--disable-three-loop-rges"))
 	  USE_THREE_LOOP_RGE = false;
-	else if (starts_with(argv[i], "--enable-three-loop-rges"))
+	else if (starts_with(argv[i], "--three-loop-rges"))
 	  USE_THREE_LOOP_RGE = true;
 #endif
 	else if (starts_with(argv[i], "--QEWSB=")) 

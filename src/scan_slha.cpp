@@ -37,9 +37,28 @@ void produceSLHAfile(MssmSoftsusy & t, const char * fileName, int sgnMu,
   fout.close();
 }
 
-double getCrossSection(char * fileName) {
+double getCrossSection(MssmSoftsusy & r, char * fileName) {
+  double msq = (r.displayPhys().mu(1, 1) + r.displayPhys().mu(2, 1) + 
+	 r.displayPhys().md(1, 1) + r.displayPhys().mu(2, 1)) / 4;
+  double mg = r.displayPhys().mGluino;
+  double mt = r.displayDataSet().displayPoleMt();
+
+  fstream fout("/home/bca20/code/prospino/input", ios::out); 
+  fout << msq << " " << mg << " " << mt << " " << 1. << endl;
+  fout.close();
   char buff[500];
-  sprintf(buff, "cp lesHout ../../code/prospino2.1/prospino.in.les_houches; cd ../../code/prospino2.1/; ./prospino_2.run > output");
+  sprintf(buff, "cd /home/bca20/code/prospino; cat input | ./crosssec | grep -v NAN > output");
+  int err = system(buff);
+  double xs = 0.;
+  if (!err) {
+  fstream fin("/home/bca20/code/prospino/output", ios::in); 
+  fin >> xs;
+  } else  cout << "CROSS SECTION ERROR\n";
+  
+  cout << xs * 1.0e3;
+  return xs * 1.0e3;
+  /*  char buff[500];
+  sprintf(buff, "cp lesHout ../../code/prospino2.1/prospino.in.les_houches; cd ../../code/prospino2.1/; ./prospino_2.run output > err");
   int err = system(buff);
   double gg = 0., ss = 0., sb=0., sg = 0.;
   if (!err) {
@@ -60,11 +79,11 @@ double getCrossSection(char * fileName) {
   }
   else cout << "CROSS SECTION ERROR\n";
 
-  sprintf(buff, "cd ../../temp/3loop_non_recursive_make"); 
+  sprintf(buff, "cd ../../code/softsusy"); 
   err = system(buff);
   if (err) cout << "SHIT\n";
 
-  return (gg + ss + sb + sg) * 1.0e3; ///< total in fb
+  return (gg + ss + sb + sg) * 1.0e3; ///< total in fb*/
 }
 
 double doDarkMatter(DoubleVector & pars, double tanb, int sgnMu, 
@@ -302,7 +321,7 @@ void getMssmAndOmega(MssmSoftsusy & r, DoubleVector & pars, const double tanb,
   char fileName[500]; 
   sprintf(fileName,"lesHout");
   produceSLHAfile(r, fileName, sgnMu, tanb, pars);
-  cs = getCrossSection(fileName);
+  cs = getCrossSection(r, fileName);
 
   if (!r.displayProblem().test()) 
     omega = doDarkMatter(pars, tanb, sgnMu, fileName);

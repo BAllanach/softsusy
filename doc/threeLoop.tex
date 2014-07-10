@@ -410,7 +410,7 @@ $m_\tau=1.77699$ GeV.
   (three-loop 
   RGEs for gauge and Yukawa couplings and two-loop threshold corrections to
   third family fermion masses and $g_3$) on various predicted quantities 
-  in the focus point of the CMSSM for $m_0=7130$ GeV, $M_{1/2}=800$ GeV,
+  in the focus point of the CMSSM for $m_0=7200$ GeV, $M_{1/2}=800$ GeV,
   $A_0=-6000$ GeV, $\tan \beta=50$, $\mu>0$.
   We display massive quantities in units of GeV.
   The first column details which higher order threshold corrections are
@@ -431,18 +431,20 @@ $m_\tau=1.77699$ GeV.
   except for 
   the columns labeled $\Delta \alpha$, $\Delta Y_{b\tau}$ or $\Delta
   Y_{tb}$. The column labeled `RGEs' 
-  shows the number of loops used in the MSSM RGEs. }
+  shows the number of loops used in the MSSM RGEs. The column headed
+  `$\sigma_{SUSY}^{TOT}$' shows the total cross-section in fb for the
+  production of   gluinos and squarks at a 14 TeV LHC.}
 \end{table}
 In Table~\ref{tab:cmssm}, we show the effects of the higher order terms on a
 CMSSM parameter point that is in the high $\tan \beta$ focus point region:
-($m_0=7130$ GeV, $M_{1/2}=800$ GeV, $A_0=-6000$ GeV,
+($m_0=7200$ GeV, $M_{1/2}=800$ GeV, $A_0=-6000$ GeV,
 $\tan \beta=50$, $\mu>0$) with 
 rather attractive properties: it has a high lightest CP even Higgs mass of
 122.3 GeV, within $1\sigma$ of the experimental
 central value, once theoretical uncertainties (estimated to be around $\pm3$
 GeV~\cite{Allanach:2004rh}) 
 have been taken into account.
-It also has attractive dark matter properties: $\Omega_{CDM} h^2=0.099$ is
+It also has attractive dark matter properties: $\Omega_{CDM} h^2=0.122$ is
 close to the central value inferred from cosmological observations. Aside from
 that, the gluino and squark masses are heavy enough so as to not be ruled out
 by the LHC7/8 TeV data. Apart from these phenomenologically advantageous
@@ -503,7 +505,7 @@ mass (which, in the CMSSM at high masses, acts to a good approximation with
 identical couplings to the Standard Model Higgs)
 to within the one 1$\sigma$ level according to the {\tt SOFTSUSY3.4.1}
 calculation. However, one would discard the point based on the predicted value
-of 106 for $\Omega_{CDM} h^2$, which disagrees with the cosmologically inferred
+of 96.3 for $\Omega_{CDM} h^2$, which disagrees with the cosmologically inferred
 value by hundreds of sigma. On the other hand, including all of the high order
 corrections (`$\Delta$ All'), we see that the Higgs mass prediction lowers
 somewhat, and 
@@ -563,7 +565,7 @@ higgsino-gaugino dark matter with an observationally acceptable predicted value.
 In the literature,  a value of 2-3 GeV is often quoted as the spectrum
 calculators' theoretical uncertainty on the prediction of $m_h$. We see that
 this is borne out in our CMSSM model, where the higher order corrections give
-a 2.8 GeV shift in the prediction.
+a 2.7 GeV shift in the prediction.
 
 The two-loop threshold corrections to the bottom and tau Yukawa couplings 
 have a very small effect: smaller than 0.1 GeV for most of the sparticle
@@ -603,7 +605,7 @@ SUSY particle production is dominated by the production of two gluinos and
 their subsequent decay, the squarks being too heavy to be produced with any
 appreciable cross-section. We calculate the next-to-leading order total QCD
 cross section for production at a 14 TeV LHC with {\tt
-  PROSPINO2.1}~\cite{Beenakker:1996ed,Beenakker:1996ch}. We see that there is
+  PROSPINO}~\cite{Beenakker:1996ed,Beenakker:1996ch}. We see that there is
 a large 30$\%$ increase due to the higher order effects modifying $\alpha_s$,
 which in turn changes the gluino mass. We emphasise again that the changes in
 the 
@@ -653,7 +655,7 @@ our higher order corrections are taken into account.
   the {\tt SOFTSUSY3.4.1} prediction. The column
   labeled `RGEs' 
   shows the number of loops used in the MSSM RGEs. The column headed
-  `$\sigma_{SUSY}^{TOT}$ shows the total cross-section in fb for the
+  `$\sigma_{SUSY}^{TOT}$' shows the total cross-section in fb for the
   production of   gluinos and squarks at a 14 TeV LHC.}
 \end{table}
 We now wish to decouple the three-loop RGE effects from the two-loop threshold
@@ -1112,9 +1114,22 @@ We also add the variable
 \label{sec:run}
 
 \SOFTSUSY~produces an executable called \code{softpoint.x}. 
-One can run this executable from command line arguments. 
+One can run this executable from command line arguments, but the higher order
+corrections will be, by default, switched off. One may switch all of the
+higher order corrections on with 
+the arguments 
+\verb|--three-loop-rges --two-loop-susy-thresholds|, 
+(provided they have
+been compiled as specified above).
+Thus, in order to produce the spectrum detailed in the $\Delta(\mbox{all})$
+row of Table~\ref{tab:cmssm}, one may use the command
+{\small\begin{verbatim}
+./softpoint.x sugra --m0=7200 --m12=800 --a0=-6000 --tanBeta=50 --sgnMu=1 --mt=173.2 --alpha_s=0.1187 
+--twoloop-susy-thresholds --three-loop-rges
+\end{verbatim}\normalsize}
+with {\tt SOFTSUSY3.5.0}.
 For the calculation
-of the spectrum of single points in parameter space, we recommend the
+of the spectrum of single points in parameter space, one could also use the
 SUSY Les Houches Accord (SLHA)~\cite{Skands:2003cj} input/output
 option. The user must provide a file (e.g.\ the example file included
 in the \SOFTSUSY~distribution

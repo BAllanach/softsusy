@@ -734,7 +734,6 @@ int main(int argc, char *argv[]) {
       
       m0 = 3000.; m12 = 2000.; a0 = -6000.; tanb = 30.; sgnMu = 1;
       double tStart = 2.0, tEnd = 60.0; int numPoints = 40;
-      double mStart = 200., mEnd = 6000.; 
       for (int i=0; i<=numPoints; i++) {
 	tanb = (tEnd - tStart) * double(i) / double(numPoints) + tStart;
 	/*m0 = (mEnd - mStart) * double(i) / double(numPoints) + mStart;
