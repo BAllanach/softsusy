@@ -40,10 +40,10 @@ void errorCall() {
   ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
   ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value>\n";
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
-  if (USE_TWO_LOOP_THRESHOLD) ii << "--disable-full_susy_threshold disables the 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
+  if (USE_TWO_LOOP_THRESHOLD) ii << "--twoloop-susy-thresholds switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
 #endif //COMPILE_FULL_SUSY_THRESHOLD
 #ifdef COMPILE_THREE_LOOP_RGE
-  if (USE_THREE_LOOP_RGE) ii << "--disable-three_loop disables 3-loop corrections RGEs\n";
+  if (USE_THREE_LOOP_RGE) ii << "--three-loop-rges switches on 3-loop RGEs\n";
 #endif //COMPILE_THREE_LOOP_RGE
   ii << "--mgut=unified sets the scale at which SUSY breaking terms are set to the GUT\n";
   ii << "scale where g1=g2. --mgut=<value> sets it to a fixed scale, ";
@@ -159,12 +159,20 @@ int main(int argc, char *argv[]) {
 	else if (starts_with(argv[i], "--mgut=")) 
 	  mgutGuess = mgutCheck(argv[i], gaugeUnification, ewsbBCscale); 
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
-	else if (starts_with(argv[i], "--disable-full_susy_threshold"))
+	else if (starts_with(argv[i], "--disable-twoloop-susy-thresholds")) {
 	  USE_TWO_LOOP_THRESHOLD = false;
+	  m.setAllTwoLoopThresholds(false);
+	}
+	else if (starts_with(argv[i], "--twoloop-susy-thresholds")) {
+	  USE_TWO_LOOP_THRESHOLD = true;
+	  m.setAllTwoLoopThresholds(true);
+	}
 #endif
 #ifdef COMPILE_THREE_LOOP_RGE
-	else if (starts_with(argv[i], "--disable-three_loop_rge"))
+	else if (starts_with(argv[i], "--disable-three-loop-rges"))
 	  USE_THREE_LOOP_RGE = false;
+	else if (starts_with(argv[i], "--enable-three-loop-rges"))
+	  USE_THREE_LOOP_RGE = true;
 #endif
 	else if (starts_with(argv[i], "--QEWSB=")) 
 	  QEWSB = get_value(argv[i], "--QEWSB=");

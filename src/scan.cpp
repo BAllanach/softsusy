@@ -206,9 +206,28 @@ void printLineOut(double m0, double m12, double a0, double tanb,
     cout << endl;
 }
 
-double getCrossSection(char * fileName) {
+double getCrossSection(MssmSoftsusy & r, char * fileName) {
+  double msq = (r.displayPhys().mu(1, 1) + r.displayPhys().mu(2, 1) + 
+	 r.displayPhys().md(1, 1) + r.displayPhys().mu(2, 1)) / 4;
+  double mg = r.displayPhys().mGluino;
+  double mt = r.displayDataSet().displayPoleMt();
+
+  fstream fout("/home/bca20/code/prospino/input", ios::out); 
+  fout << msq << " " << mg << " " << mt << " " << 1. << endl;
+  fout.close();
   char buff[500];
-  sprintf(buff, "cp lesHout ../../code/prospino2.1/prospino.in.les_houches; cd ../../code/prospino2.1/; ./prospino_2.run > output");
+  sprintf(buff, "cd /home/bca20/code/prospino; cat input | ./crosssec | grep -v NAN > output");
+  int err = system(buff);
+  double xs = 0.;
+  if (!err) {
+  fstream fin("/home/bca20/code/prospino/output", ios::in); 
+  fin >> xs;
+  } else  cout << "CROSS SECTION ERROR\n";
+  
+  cout << xs * 1.0e3;
+  return xs * 1.0e3;
+  /*  char buff[500];
+  sprintf(buff, "cp lesHout ../../code/prospino2.1/prospino.in.les_houches; cd ../../code/prospino2.1/; ./prospino_2.run output > err");
   int err = system(buff);
   double gg = 0., ss = 0., sb=0., sg = 0.;
   if (!err) {
@@ -229,11 +248,11 @@ double getCrossSection(char * fileName) {
   }
   else cout << "CROSS SECTION ERROR\n";
 
-  sprintf(buff, "cd ../../temp/3loop_non_recursive_make"); 
+  sprintf(buff, "cd ../../code/softsusy"); 
   err = system(buff);
   if (err) cout << "SHIT\n";
 
-  return (gg + ss + sb + sg) * 1.0e3; ///< total in fb
+  return (gg + ss + sb + sg) * 1.0e3; ///< total in fb*/
 }
 
 void produceSLHAfile(MssmSoftsusy & t, const char * fileName, int sgnMu, 
@@ -256,14 +275,14 @@ double doDarkMatter(DoubleVector & pars, double tanb, int sgnMu,
   char oFile[500], buff[500];
   sprintf(oFile,"om_%d_%d_%d_%d_%d", int(m0), int(m12), int(a0), 
 	  int(tanb), int(sgnMu));
-  sprintf(buff,"../../code/micromegas_3.3.13/MSSM/main %s > %s",
-	  fileName, oFile);
+  sprintf(buff,"../../code/micromegas_3.3.13/MSSM/main %s > %s", 
+	  fileName, oFile); 
   int err = system(buff);
   double omega = 0.;
   if (!err) //throw("Problem in micromegas system call: \n");
     { fstream fin2(oFile, ios::in); fin2 >> omega; fin2.close(); }
   
-  remove(oFile);
+  remove(oFile); 
   return omega;
 }
 
@@ -561,7 +580,7 @@ void getCmssmAndOmega(MssmSoftsusy & r, DoubleVector & pars, const double tanb,
   char fileName[500]; 
   sprintf(fileName,"lesHout");
   produceSLHAfile(r, fileName, sgnMu, tanb, pars);
-  cs = getCrossSection(fileName);
+  cs = getCrossSection(r, fileName);
   if (!r.displayProblem().test()) 
     omega = doDarkMatter(pars, tanb, sgnMu, fileName);
 
@@ -580,7 +599,7 @@ void getCmssmAndOmega(MssmSoftsusy & r, DoubleVector & pars, const double tanb,
   deltaYp = c.displayYukawaElement(YU, 3, 3) -
     c.displayYukawaElement(YD, 3, 3);
 
-  remove(fileName);
+  remove(fileName); 
   return;
 }
 
@@ -624,7 +643,6 @@ int main(int argc, char *argv[]) {
     MssmSoftsusy twoLoop;
     getCmssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
 		     uni, omega2, msqAv2, cs, dAs, dY, dYp);
-    twoLoop.runto(twoLoop.displayMxBC());
 
     /// Just 2-loop thresholds for strong coupling constant
     double omegaAs = asin(2.), msqAvAs = 0., csAs = 0., dAsAs = 0., 
@@ -633,8 +651,7 @@ int main(int argc, char *argv[]) {
     twoLoopAs.included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
     USE_TWO_LOOP_THRESHOLD = true;
     getCmssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mGutGuess, 
-		     uni, omegaAs, msqAvAs, csAs, dAsAs, dYAs, dYpAs); 
-    //    cout << twoLoopAs << csAs << endl;     
+    		     uni, omegaAs, msqAvAs, csAs, dAsAs, dYAs, dYpAs); 
 
     /// Just 2-loop strong thresholds for mt
     USE_TWO_LOOP_THRESHOLD = false;
@@ -644,8 +661,7 @@ int main(int argc, char *argv[]) {
     twoLoopMt.included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
     USE_TWO_LOOP_THRESHOLD = true;
     getCmssmAndOmega(twoLoopMt, pars, tanb, sgnMu, oneset, mGutGuess, 
-		     uni, omegaMt, msqAvMt, csMt, dAsMt, dYMt, dYpMt); 
-    //    cout << twoLoopMt << csMt << endl;     
+    		     uni, omegaMt, msqAvMt, csMt, dAsMt, dYMt, dYpMt); 
 
     /// Just 2-loop for mb,mtau
     USE_TWO_LOOP_THRESHOLD = false;
@@ -657,9 +673,8 @@ int main(int argc, char *argv[]) {
     twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
     USE_TWO_LOOP_THRESHOLD = true;
     getCmssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mGutGuess, 
-		     uni, omegaMb, msqAvMb, cs, dAsMb,
-      dYMb, dYpMb); 
-    //    cout << twoLoopMb << csMb << endl;     
+    		     uni, omegaMb, msqAvMb, csMb, dAsMb,
+		     dYMb, dYpMb); 
 
     /// 3-loop etc ON
     double omega3 = asin(2.), msqAv3 = 0., cs3 = 0., dAs3 = 0., 
@@ -671,18 +686,17 @@ int main(int argc, char *argv[]) {
 		     uni, omega3, msqAv3, cs3, dAs3, dY3, dYp3); 
     //    cout << threeLoop << cs3 << endl; 
 
-    printLineOut(m0, m12, a0, tanb, twoLoop, twoLoopAs, twoLoopMt, 
+    /*    printLineOut(m0, m12, a0, tanb, twoLoop, twoLoopAs, twoLoopMt, 
 		 twoLoopMb, threeLoop, 
 		 omega2, omegaAs, omegaMt, omegaMb, omega3,
 		 msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, 
 		 csMb, cs3, dAs, dAsAs, dAsMt, dAsMb, dAs3, dY, dYAs, dYMt, 
-		 dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);
-    /*    writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
+		 dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);*/
+    writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
 	       omega2, omegaAs, omegaMt, omegaMb, omega3,
 	       msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, 
 	       csMb, cs3, dAs, dAsAs, dAsMt, dAsMb, dAs3, dY, dYAs, dYMt, 
-	       dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);*/
-
+	       dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);
   } else 
     if (argc == 5) { /// Scan in m0
       m12 = atof(argv[1]);

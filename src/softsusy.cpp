@@ -9608,7 +9608,6 @@ template<class SoftPars>
 void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
   out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
-  out << "# MX=" << mxBC << " GeV" << endl;
 #ifdef COMPILE_THREE_LOOP_RGE
   out << "# 3-loop RGE corrections are ";
   if (displayLoops() == 3) out << "on"; else out << "off";
@@ -9628,7 +9627,7 @@ void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
     if (included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK) out << "on"; else out << "off"; 
     out << "\n# 2-loop a_s  O(a_s^2) and O(a_s y^2) thresholds are ";
     if (included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK) out << "on"; else out << "off";
-    cout << endl;
+    out << endl;
   }
 #endif
 }
