@@ -16,6 +16,8 @@ Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
     1   1.000000000e-03      # Numerical precision: suggested range 10^(-3...-6)
     2   0.000000000e+00	     # Quark mixing parameter: see manual
     5   1.000000000e+00      # Include 2-loop scalar mass squared/trilinear RGEs
+   19   1.000000000e+00      # 3-loop RGEs
+   20  31.000000000e+00      # All 2-loop thresholds
 Block EXTPAR          # non-universal SUSY breaking parameters
       0   -1.000000000000000e+00	 # Set MX=MSUSY 
      1    8.000000000000000e+02         # M_1(MX)
