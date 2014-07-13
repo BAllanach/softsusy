@@ -2467,7 +2467,8 @@ double Softsusy<SoftPars>::calcRunningMt() {
   decoupling_corrections.dmt.two_loop = 0.0;
 
   if (USE_TWO_LOOP_THRESHOLD) {
-    static bool needcalc = true; ///< flag: calculate corrections if 
+    bool & needcalc = decoupling_corrections.dmt.two_loop_needs_recalc; 
+    ///< flag: calculate corrections if 
     /// two-previous iterations gave different results
     using namespace GiNaC;
     if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) {  
@@ -2772,12 +2773,16 @@ double Softsusy<SoftPars>::calcRunningMb() {
   //decoupling_corrections.dmb.two_loop = 0.0;
 
   if (USE_TWO_LOOP_THRESHOLD) {
-   static bool needcalc = true; // flag: calculate corrections if two-previous iterations gave different results
+   bool & needcalc = decoupling_corrections.dmb.two_loop_needs_recalc; 
+   dout << "Do I need to recalc mb :" << needcalc << endl;
+   dout << "Do I need to recalc mb (included thresh) :" << included_thresholds << endl;
+   // flag: calculate corrections if two-previous iterations gave different results
    using namespace GiNaC;
 
 // AVB: this also include top quark contribution (decoupling)!
    exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
    if ((included_thresholds & ENABLE_TWO_LOOP_MB_AS) && (needcalc)) {
+   	dout << "Strong mb?" << needcalc << endl;
 		ex test = bquark_corrections::eval_bquark_twoloop_strong_dec(drbrp);
 		if (is_a<numeric>(test))
   			dzetamb += ex_to<numeric>(test).to_double();
@@ -2786,6 +2791,7 @@ double Softsusy<SoftPars>::calcRunningMb() {
 
    }
    if ((included_thresholds & ENABLE_TWO_LOOP_MB_YUK) && (needcalc)) {
+   	dout << "Yukawa mb?" << needcalc << endl;
  		ex test = bquark_corrections::eval_bquark_twoloop_yukawa_dec(drbrp);
 		if (is_a<numeric>(test))
   			dzetamb += ex_to<numeric>(test).to_double();
@@ -2994,7 +3000,8 @@ double Softsusy<SoftPars>::calcRunningMtau() {
     dzetamtau2 = -dzetamtau*dzetamtau;
     using namespace GiNaC;
     exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-    static bool needcalc = true;  // flag: calculate corrections if two-previous iterations gave different results
+    // flag: calculate corrections if two-previous iterations gave different results
+    bool & needcalc = decoupling_corrections.dmtau.two_loop_needs_recalc;  
     if ((included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
 // hack 
 	ex test = 0;

@@ -9,6 +9,10 @@ namespace SoftSusy_helpers_ {
 	struct loop_corrections_t {
 		double one_loop;
 		double two_loop;
+		bool   two_loop_needs_recalc;
+		/// Fill struct with zeros
+		loop_corrections_t () : one_loop(0.0), two_loop(0.0), two_loop_needs_recalc(true) {}
+		
 	};
 	struct decoupling_corrections_t {
 		loop_corrections_t das; // alpha_s
