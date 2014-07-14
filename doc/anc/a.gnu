@@ -76,6 +76,8 @@ set label 1 "Allanach, Bednyakov, Ruiz de Austri, 2014" at -4,62 font "Helvetica
 set title "{/Symbol m}>0, m_0=2 TeV, M_{1/2}=600 GeV"
 
 
+set dgrid3d 21,21,8
+
 set label 2 "{/Symbol D}Y@_{bt}^{(All)}-{/Symbol D}Y@_{bt}^{(None)}" at 4.7,65
 set output "atlasScanYpNone.eps"
 splot "tbScan.dat" u ($3/1000):($4):($155-$151) notit w pm3d
