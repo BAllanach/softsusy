@@ -37,20 +37,22 @@ void printLineOut(double m0, double m12, double a0, double tanb,
 		  double dY, double dYAs, double dYMt, 
 		  double dYMb, double dY3, double dYp, double dYpAs, 
 		  double dYpMt, double dYpMb, double dYp3) {
+  double d1 = 1., d2 = 1., d3 = 1., d4 = 1., d5 = 1.;
+
 	cout << m0                                                     ///< 1
 	     << " " << m12                                             ///< 2
 	     << " " << a0                                              ///< 3
 	     << " " << tanb                                            ///< 4
-	     << " " << twoLoop.displayPhys().mh0(1)                    ///< 5
-	     << " " << twoLoopAs.displayPhys().mh0(1)                  ///< 6
-	     << " " << twoLoopMt.displayPhys().mh0(1)                  ///< 7
-	     << " " << twoLoopMb.displayPhys().mh0(1)                  ///< 8
-	     << " " << threeLoop.displayPhys().mh0(1)                  ///< 9
-	     << " " << twoLoop.displayPhys().mA0(1)                    ///< 10
-	     << " " << twoLoopAs.displayPhys().mA0(1)                  ///< 11
-	     << " " << twoLoopMt.displayPhys().mA0(1)                  ///< 12
-	     << " " << twoLoopMb.displayPhys().mA0(1)                  ///< 13
-	     << " " << threeLoop.displayPhys().mA0(1)                  ///< 14
+	     << " " << twoLoop.displayPhys().mh0(1)   * d1             ///< 5
+	     << " " << twoLoopAs.displayPhys().mh0(1) * d2             ///< 6
+	     << " " << twoLoopMt.displayPhys().mh0(1) * d3             ///< 7
+	     << " " << twoLoopMb.displayPhys().mh0(1) * d4             ///< 8
+	     << " " << threeLoop.displayPhys().mh0(1) * d5             ///< 9
+	     << " " << twoLoop.displayPhys().mA0(1)   * d1             ///< 10
+	     << " " << twoLoopAs.displayPhys().mA0(1) * d2             ///< 11
+	     << " " << twoLoopMt.displayPhys().mA0(1) * d3             ///< 12
+	     << " " << twoLoopMb.displayPhys().mA0(1) * d4             ///< 13
+	     << " " << threeLoop.displayPhys().mA0(1) * d5             ///< 14
 	     << " " << twoLoop.displayPhys().mh0(2)                    ///< 15
 	     << " " << twoLoopAs.displayPhys().mh0(2)                  ///< 16
 	     << " " << twoLoopMt.displayPhys().mh0(2)                  ///< 17
@@ -206,23 +208,24 @@ void printLineOut(double m0, double m12, double a0, double tanb,
     cout << endl;
 }
 
-double getCrossSection(MssmSoftsusy & r, char * fileName) {
+double getCrossSection(MssmSoftsusy & r, char * fileName, double m0, double m12, double a0, double tanb) {
   double msq = (r.displayPhys().mu(1, 1) + r.displayPhys().mu(2, 1) + 
 	 r.displayPhys().md(1, 1) + r.displayPhys().mu(2, 1)) / 4;
   double mg = r.displayPhys().mGluino;
   double mt = r.displayDataSet().displayPoleMt();
 
-  fstream fout("/home/bca20/code/prospino/input", ios::out); 
-  fout << msq << " " << mg << " " << mt << " " << 1. << endl;
-  fout.close();
   char buff[500];
-  sprintf(buff, "cd /home/bca20/code/prospino; cat input | ./crosssec | grep -v NAN > output");
+  char fn[500];
+  sprintf(fn, "/home/bca20/code/prospino/output_%d_%d_%d_%d",int(m0),int(m12),int(a0),int(tanb));
+  sprintf(buff, "cd /home/bca20/code/prospino; echo \"%d %d %d %d\" | ./crosssec | grep -v NAN > output_%d_%d_%d_%d",int(msq),int(mg),int(mt),1,int(m0),int(m12),int(a0),int(tanb));
   int err = system(buff);
   double xs = 0.;
+
   if (!err) {
-  fstream fin("/home/bca20/code/prospino/output", ios::in); 
+  fstream fin(fn, ios::in); 
   fin >> xs;
   } else  cout << "CROSS SECTION ERROR\n";
+  remove(fn);
   
   return xs * 1.0e3;
   /*  char buff[500];
@@ -274,7 +277,7 @@ double doDarkMatter(DoubleVector & pars, double tanb, int sgnMu,
   char oFile[500], buff[500];
   sprintf(oFile,"om_%d_%d_%d_%d_%d", int(m0), int(m12), int(a0), 
 	  int(tanb), int(sgnMu));
-  sprintf(buff,"../../code/micromegas_3.3.13/MSSM/main %s > %s", 
+  sprintf(buff,"../../code/micromegas_3.6.8/MSSM/main %s > %s", 
 	  fileName, oFile); 
   int err = system(buff);
   double omega = 0.;
@@ -571,15 +574,16 @@ void getCmssmAndOmega(MssmSoftsusy & r, DoubleVector & pars, const double tanb,
 			      const int sgnMu, const QedQcd & oneset, 
 			      double mGutGuess, bool uni, double & omega, 
 		      double & msqAv, double & cs, double & deltaAs, 
-		      double & deltaY, double & deltaYp) {
+		      double & deltaY, double & deltaYp, double m0, 
+		      double m12, double a0) {
   r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
   r.setData(oneset);
 
   /// Produces SLHA output file
   char fileName[500]; 
-  sprintf(fileName,"lesHout");
+  sprintf(fileName,"lesHout_%d_%d_%d_%d",int(m0),int(m12),int(a0),int(tanb));
   produceSLHAfile(r, fileName, sgnMu, tanb, pars);
-  cs = getCrossSection(r, fileName);
+  cs = getCrossSection(r, fileName, m0, m12, a0, tanb);
   if (!r.displayProblem().test()) 
     omega = doDarkMatter(pars, tanb, sgnMu, fileName);
 
@@ -641,7 +645,7 @@ int main(int argc, char *argv[]) {
     USE_THREE_LOOP_RGE = false;   USE_TWO_LOOP_THRESHOLD = false;
     MssmSoftsusy twoLoop;
     getCmssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
-		     uni, omega2, msqAv2, cs, dAs, dY, dYp);
+		     uni, omega2, msqAv2, cs, dAs, dY, dYp, m0, m12, a0);
 
     /// Just 2-loop thresholds for strong coupling constant
     double omegaAs = asin(2.), msqAvAs = 0., csAs = 0., dAsAs = 0., 
@@ -650,7 +654,7 @@ int main(int argc, char *argv[]) {
     twoLoopAs.included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
     USE_TWO_LOOP_THRESHOLD = true;
     getCmssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mGutGuess, 
-    		     uni, omegaAs, msqAvAs, csAs, dAsAs, dYAs, dYpAs); 
+    		     uni, omegaAs, msqAvAs, csAs, dAsAs, dYAs, dYpAs, m0, m12, a0); 
 
     /// Just 2-loop strong thresholds for mt
     USE_TWO_LOOP_THRESHOLD = false;
@@ -660,7 +664,7 @@ int main(int argc, char *argv[]) {
     twoLoopMt.included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
     USE_TWO_LOOP_THRESHOLD = true;
     getCmssmAndOmega(twoLoopMt, pars, tanb, sgnMu, oneset, mGutGuess, 
-    		     uni, omegaMt, msqAvMt, csMt, dAsMt, dYMt, dYpMt); 
+    		     uni, omegaMt, msqAvMt, csMt, dAsMt, dYMt, dYpMt, m0, m12, a0); 
 
     /// Just 2-loop for mb,mtau
     USE_TWO_LOOP_THRESHOLD = false;
@@ -673,7 +677,7 @@ int main(int argc, char *argv[]) {
     USE_TWO_LOOP_THRESHOLD = true;
     getCmssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mGutGuess, 
     		     uni, omegaMb, msqAvMb, csMb, dAsMb,
-		     dYMb, dYpMb); 
+		     dYMb, dYpMb, m0, m12, a0); 
 
     /// 3-loop etc ON
     double omega3 = asin(2.), msqAv3 = 0., cs3 = 0., dAs3 = 0., 
@@ -682,20 +686,20 @@ int main(int argc, char *argv[]) {
     USE_TWO_LOOP_THRESHOLD = true;
     MssmSoftsusy threeLoop;
     getCmssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
-		     uni, omega3, msqAv3, cs3, dAs3, dY3, dYp3); 
+		     uni, omega3, msqAv3, cs3, dAs3, dY3, dYp3, m0, m12, a0); 
     //    cout << threeLoop << cs3 << endl; 
 
-    /*    printLineOut(m0, m12, a0, tanb, twoLoop, twoLoopAs, twoLoopMt, 
+    printLineOut(m0, m12, a0, tanb, twoLoop, twoLoopAs, twoLoopMt, 
 		 twoLoopMb, threeLoop, 
 		 omega2, omegaAs, omegaMt, omegaMb, omega3,
 		 msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, 
 		 csMb, cs3, dAs, dAsAs, dAsMt, dAsMb, dAs3, dY, dYAs, dYMt, 
-		 dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);*/
-    writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
+		 dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);
+    /*    writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
 	       omega2, omegaAs, omegaMt, omegaMb, omega3,
 	       msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, 
 	       csMb, cs3, dAs, dAsAs, dAsMt, dAsMb, dAs3, dY, dYAs, dYMt, 
-	       dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);
+	       dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);*/
   } else 
     if (argc == 5) { /// Scan in m0
       m12 = atof(argv[1]);
@@ -717,7 +721,7 @@ int main(int argc, char *argv[]) {
     USE_THREE_LOOP_RGE = true;   USE_TWO_LOOP_THRESHOLD = true;
     MssmSoftsusy twoLoop;
     getCmssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
-		     uni, omega2, msqAv2, cs, dAs, dY, dYp);
+		     uni, omega2, msqAv2, cs, dAs, dY, dYp, m0, m12, a0);
     cout << m0 << " " << m12 << " " << a0 << " " << tanb << " " << sgnMu 
 	 << " " << omega2 << " " << twoLoop.displayPhys().mh0(1) << endl;      
     }} else if (argc == 1) { /// scan in tan beta
@@ -750,7 +754,7 @@ int main(int argc, char *argv[]) {
 	USE_THREE_LOOP_RGE = false;   USE_TWO_LOOP_THRESHOLD = false;
 	MssmSoftsusy twoLoop;
 	getCmssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
-			 uni, omega2, msqAv2, cs, dA, dY, dYp);
+			 uni, omega2, msqAv2, cs, dA, dY, dYp, m0, m12, a0);
 
 	/// Just 2-loop thresholds for strong coupling constant
 	double omegaAs = asin(2.), msqAvAs = 0., csAs = 0., dAAs = 0., 
@@ -759,7 +763,7 @@ int main(int argc, char *argv[]) {
 	twoLoopAs.included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
 	USE_TWO_LOOP_THRESHOLD = true;
 	getCmssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mGutGuess, 
-			 uni, omegaAs, msqAvAs, csAs, dAAs, dYAs, dYpAs); 
+			 uni, omegaAs, msqAvAs, csAs, dAAs, dYAs, dYpAs, m0, m12, a0); 
     
 	/// Just 2-loop strong thresholds for mt
 	USE_TWO_LOOP_THRESHOLD = false;
@@ -770,7 +774,7 @@ int main(int argc, char *argv[]) {
 	USE_TWO_LOOP_THRESHOLD = true;
 	getCmssmAndOmega(twoLoopMt, pars, tanb, sgnMu, oneset, mGutGuess, 
 			 uni, omegaMt, msqAvMt, csMt, dAMt, 
-	  dYMt, dYpMt); 
+	  dYMt, dYpMt, m0, m12, a0); 
 	
 	/// Just 2-loop for mb,mtau
 	USE_TWO_LOOP_THRESHOLD = false;
@@ -783,7 +787,7 @@ int main(int argc, char *argv[]) {
 	USE_TWO_LOOP_THRESHOLD = true;
 	getCmssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mGutGuess, 
 			 uni, omegaMb, msqAvMb, csMb, dAMb, 
-	  dYMb, dYpMb); 
+	  dYMb, dYpMb, m0, m12, a0); 
 	
 	/// 3-loop etc ON
 	double omega3 = asin(2.), msqAv3 = 0., cs3 = 0., dA3 = 0., 
@@ -793,7 +797,7 @@ int main(int argc, char *argv[]) {
 	MssmSoftsusy threeLoop;
 	getCmssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
 			 uni, omega3, msqAv3, cs3, dA3, 
-	  dY3, dYp3); 
+	  dY3, dYp3, m0, m12, a0); 
 	
 	printLineOut(m0, m12, a0, tanb, twoLoop, twoLoopAs, twoLoopMt, 
 		     twoLoopMb, threeLoop, 
