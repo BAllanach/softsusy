@@ -2464,7 +2464,6 @@ double Softsusy<SoftPars>::calcRunningMt() {
      neutralinos + charginoContribution;
 
   decoupling_corrections.dmt.one_loop /= (-16.0 * sqr(PI));  
-  decoupling_corrections.dmt.two_loop = 0.0;
 
   if (USE_TWO_LOOP_THRESHOLD) {
     bool & needcalc = decoupling_corrections.dmt.two_loop_needs_recalc; 
@@ -2473,35 +2472,32 @@ double Softsusy<SoftPars>::calcRunningMt() {
     using namespace GiNaC;
     if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) {  
       	exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-	// hack
-      	ex test = numeric(0);
-	if (needcalc) test = tquark_corrections::eval_tquark_twoloop_strong_pole(drbrp);
-	if (is_a<numeric>(test)) {
-	  /// back converion Mt -> mt(mu)
-	  /// dmt_as2 is already properly normalized
-	  /// ones need to normalize only 1-loop contribution
-  	  double dmtas2 = ex_to<numeric>(test).to_double();
-	  if (close(dmtas2, decoupling_corrections.dmt.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false; 
-          if (needcalc) 
+	double dmtas2 =  decoupling_corrections.dmt.two_loop;
+	if (needcalc) {
+      		ex test = tquark_corrections::eval_tquark_twoloop_strong_pole(drbrp);
+		if (is_a<numeric>(test)) dmtas2 = ex_to<numeric>(test).to_double();
+		else { 
+			dout <<" Not numeric: 2loop pole t-quark " << endl;
+		}
+	//        if (close(dmtas2, decoupling_corrections.dmt.two_loop,TWOLOOP_NUM_THRESH)) needcalc = false; 
+	//	dout << " mt: storing" << endl;
 		decoupling_corrections.dmt.two_loop = dmtas2;
-	  else {
-			dmtas2 =  decoupling_corrections.dmt.two_loop;
-			dout << "mt: No calculation" << endl;
-	  }
-	  double dmtas = (qcd + stopGluino)/(16.0 * sqr(PI));
-	  double dmt_MT = (dmtas2 - dmtas*dmtas);
-	  resigmat -= mtpole*dmt_MT;
-	  dout << "two-loop tquark strong pole contribution: " 
+	} else {
+		dout << " mt: no calculation " << endl;
+	}
+	/// back converion Mt -> mt(mu)
+	/// dmt_as2 is already properly normalized
+	/// ones need to normalize only 1-loop contribution
+	double dmtas = (qcd + stopGluino)/(16.0 * sqr(PI));
+	double dmt_MT = (dmtas2 - dmtas*dmtas);
+	resigmat -= mtpole*dmt_MT;
+	dout << "two-loop tquark strong pole contribution: " 
 		<< dmtas2 << endl
 		<< "two-loop total correction (Mt -> mt)" 
 		<< dmt_MT << endl;
 	}
-	else {
-	  dout <<" Not numeric: 2loop pole t-quark " << endl;
-	}
+	
     }
-  
-  }
 #else //COMPILE_FULL_SUSY_THRESHOLD
    // 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
    double mt = forLoops.mt;
@@ -2770,42 +2766,44 @@ double Softsusy<SoftPars>::calcRunningMb() {
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
 
   decoupling_corrections.dmb.one_loop = deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino;
-  //decoupling_corrections.dmb.two_loop = 0.0;
+  
+  // AVB: this also include top quark contribution (decoupling)!
 
   if (USE_TWO_LOOP_THRESHOLD) {
+
    bool & needcalc = decoupling_corrections.dmb.two_loop_needs_recalc; 
-   dout << "Do I need to recalc mb :" << needcalc << endl;
-   dout << "Do I need to recalc mb (included thresh) :" << included_thresholds << endl;
    // flag: calculate corrections if two-previous iterations gave different results
    using namespace GiNaC;
 
-// AVB: this also include top quark contribution (decoupling)!
-   exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-   if ((included_thresholds & ENABLE_TWO_LOOP_MB_AS) && (needcalc)) {
-   	dout << "Strong mb?" << needcalc << endl;
+   if (needcalc) {
+   	exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+
+   	if ((included_thresholds & ENABLE_TWO_LOOP_MB_AS)) {
+   		dout << "Strong mb?" << needcalc << endl;
 		ex test = bquark_corrections::eval_bquark_twoloop_strong_dec(drbrp);
 		if (is_a<numeric>(test))
   			dzetamb += ex_to<numeric>(test).to_double();
 		dout << "two-loop bquark strong decoupling constant: " 
 		     << test << endl;
 
-   }
-   if ((included_thresholds & ENABLE_TWO_LOOP_MB_YUK) && (needcalc)) {
-   	dout << "Yukawa mb?" << needcalc << endl;
+   	}
+   	if ((included_thresholds & ENABLE_TWO_LOOP_MB_YUK)) {
+   		dout << "Yukawa mb?" << needcalc << endl;
  		ex test = bquark_corrections::eval_bquark_twoloop_yukawa_dec(drbrp);
 		if (is_a<numeric>(test))
   			dzetamb += ex_to<numeric>(test).to_double();
 		dout << "two-loop bquark yukawa decoupling constant: " 
 		     << test << endl;
-   }
-   dout << "Checking: " << dzetamb << " vs " << decoupling_corrections.dmb.two_loop << endl;
-   if (close(dzetamb, decoupling_corrections.dmb.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false; 
-   if (needcalc) decoupling_corrections.dmb.two_loop = dzetamb;
-   else {
+   	}
+   	dout << "Checking: " << dzetamb << " vs " << decoupling_corrections.dmb.two_loop << endl;
+   	if (close(dzetamb, decoupling_corrections.dmb.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false; 
+	dout << "mb: storing" << endl;
+	decoupling_corrections.dmb.two_loop = dzetamb;
+     } else {
 		dzetamb = decoupling_corrections.dmb.two_loop;
 		dout << "mb: No calculation" << endl;
     }
-   dout << "Checking: " << dzetamb << " vs " << decoupling_corrections.dmb.two_loop << endl;
+    dout << "Checking: " << dzetamb << " vs " << decoupling_corrections.dmb.two_loop << endl;
    //dout <<" Mb dec (sq-gl): " << deltaSquarkGluino << endl;
    //dout <<" Mb dec (sq-cha): " << deltaSquarkChargino << endl;
    //dout <<" Mb dec (higgs): " << deltaHiggs << endl;
@@ -2995,30 +2993,28 @@ double Softsusy<SoftPars>::calcRunningMtau() {
   const double dzetamtau = sigmaNeutralino + sigmaChargino + sigmaHiggs;
 
   decoupling_corrections.dmtau.one_loop = -dzetamtau;
-  decoupling_corrections.dmtau.two_loop = 0.0;
+
   if (USE_TWO_LOOP_THRESHOLD) {
-    dzetamtau2 = -dzetamtau*dzetamtau;
-    using namespace GiNaC;
-    exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
     // flag: calculate corrections if two-previous iterations gave different results
     bool & needcalc = decoupling_corrections.dmtau.two_loop_needs_recalc;  
+    using namespace GiNaC;
     if ((included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
-// hack 
-	ex test = 0;
-  	if (needcalc) test = tau_corrections::eval_tau_twoloop_yukawa_dec(drbrp);
-	double dzmtau2 = 0;
-	if (is_a<numeric>(test)) dzmtau2 = ex_to<numeric>(test).to_double();
+        exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+	double dzmtau2 = decoupling_corrections.dmtau.two_loop;
+  	if (needcalc) {
+		ex test = tau_corrections::eval_tau_twoloop_yukawa_dec(drbrp);
+		if (is_a<numeric>(test)) dzmtau2 = ex_to<numeric>(test).to_double();
+		else { 
+			dout <<" Not numeric: 2loop  tau-lepton " << endl;
+		}
+		// if (close(dzmtau2, decoupling_corrections.dmtau.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false;
+		// dout << " mtau: storing" << endl;
+		decoupling_corrections.dmtau.two_loop = dzmtau2;
 
-        if (close(dzmtau2, decoupling_corrections.dmtau.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false;
-        if (needcalc) {
-			decoupling_corrections.dmtau.two_loop = dzmtau2;
-			dout << "mtau: storing..." << endl;
-	}
-        else {
-                        dzmtau2 =  decoupling_corrections.dmtau.two_loop;
-                        dout << "mtau: No calculation" << endl;
+	} else {
+   		dout << "mtau: No calculation" << endl;
         }
-  	dzetamtau2 += dzmtau2;
+    	dzetamtau2 = -dzetamtau*dzetamtau + dzmtau2;
         dout << "one-loop tau-lepton decoupling constant: " << dzetamtau << endl;
 	dout << "two-loop tau-lepton yukawa decoupling constant: " << dzmtau2 << endl;
 	dout << "two-loop tau-lepton yukawa decoupling constant, expanded: " << dzetamtau2 << endl;
