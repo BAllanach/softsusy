@@ -224,7 +224,6 @@ double getCrossSection(MssmSoftsusy & r, char * fileName) {
   fin >> xs;
   } else  cout << "CROSS SECTION ERROR\n";
   
-  cout << xs * 1.0e3;
   return xs * 1.0e3;
   /*  char buff[500];
   sprintf(buff, "cp lesHout ../../code/prospino2.1/prospino.in.les_houches; cd ../../code/prospino2.1/; ./prospino_2.run output > err");
