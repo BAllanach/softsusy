@@ -7,7 +7,7 @@ min(a,b) = (a < b) ? a : b
 set pm3d corners2color c1
 set view map
 
-set dgrid3d 21,21,8
+set dgrid3d 20,19,8
 
 # should be max number of solutions+1 (for zero solutions)
 
@@ -23,27 +23,27 @@ set title "{/Symbol m}>0, tan{/Symbol b}=30, A_0=-2m_0"
 
 
 
-set label 2 "{/Symbol D}_{m_h}/m_h" at 6,1.06
+set label 2 "{/Symbol D}_{m_h}/GeV" at 6,1.06
 set output "atlasScanMh.eps"
-splot "atlas_scan.dat" u ($1/1000):($2/1000):6 notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):($9-$5) notit w pm3d
 
 min(a, b) = a<b ? a : b
 
-set label 2 "{/Symbol D}_{m_A}/m_A" at 6,1.06
+set label 2 "{/Symbol D}_{m_A}/m_A" at 6,1.08
 set output "atlasScanMA.eps"
-splot "atlas_scan.dat" u ($1/1000):($2/1000):14 notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):(1-$10/$14) notit w pm3d
 
 set label 2 "{/Symbol D}_{m_g}/m_g" at 6,1.08
 set output "atlasScanMg.eps"
-splot "atlas_scan.dat" u ($1/1000):($2/1000):14 notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):(1-$25/$29) notit w pm3d
 
 set label 2 "{/Symbol D}_{m_q}/m_q" at 6,1.08
 set output "atlasScanMq.eps"
-splot "atlas_scan.dat" u ($1/1000):($2/1000):16 notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):(1-$30/$34) notit w pm3d
 
 set label 2 "{/Symbol D}_{m_{{/Symbol c}@_1^0}}/m_{{/Symbol c}@_1^0}" at 6,1.08
 set output "atlasScanMneut1.eps"
-splot "atlas_scan.dat" u ($1/1000):($2/1000):22 notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):(1-$45/$49) notit w pm3d
 
 set label 2 "{/Symbol D}_{m_{{/Symbol c}@_3^0}}/m_{{/Symbol c}@_3^0}" at 6,1.08
 set output "atlasScanMneut3.eps"
@@ -51,7 +51,7 @@ splot "atlas_scan.dat" u ($1/1000):($2/1000):26 notit w pm3d
 
 set label 2 "{/Symbol D}_{m_{tR}}/m_{tR}" at 6,1.08
 set output "atlasScanMtR.eps"
-splot "atlas_scan.dat" u ($1/1000):($2/1000):32 notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):(1-$70/$74) notit w pm3d
 
 unset cbrange 
 set label 2 "{/Symbol Ds}/{/Symbol s}" at 6,1.08

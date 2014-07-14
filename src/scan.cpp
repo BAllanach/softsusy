@@ -37,22 +37,25 @@ void printLineOut(double m0, double m12, double a0, double tanb,
 		  double dY, double dYAs, double dYMt, 
 		  double dYMb, double dY3, double dYp, double dYpAs, 
 		  double dYpMt, double dYpMb, double dYp3) {
-  double d1 = 1., d2 = 1., d3 = 1., d4 = 1., d5 = 1.;
+
+  /// Any problems and get gnuplot to ignore the point
+  if (twoLoop.displayProblem().test() || 
+      threeLoop.displayProblem().test()) cout << "# ";
 
 	cout << m0                                                     ///< 1
 	     << " " << m12                                             ///< 2
 	     << " " << a0                                              ///< 3
 	     << " " << tanb                                            ///< 4
-	     << " " << twoLoop.displayPhys().mh0(1)   * d1             ///< 5
-	     << " " << twoLoopAs.displayPhys().mh0(1) * d2             ///< 6
-	     << " " << twoLoopMt.displayPhys().mh0(1) * d3             ///< 7
-	     << " " << twoLoopMb.displayPhys().mh0(1) * d4             ///< 8
-	     << " " << threeLoop.displayPhys().mh0(1) * d5             ///< 9
-	     << " " << twoLoop.displayPhys().mA0(1)   * d1             ///< 10
-	     << " " << twoLoopAs.displayPhys().mA0(1) * d2             ///< 11
-	     << " " << twoLoopMt.displayPhys().mA0(1) * d3             ///< 12
-	     << " " << twoLoopMb.displayPhys().mA0(1) * d4             ///< 13
-	     << " " << threeLoop.displayPhys().mA0(1) * d5             ///< 14
+	     << " " << twoLoop.displayPhys().mh0(1)                    ///< 5
+	     << " " << twoLoopAs.displayPhys().mh0(1)                  ///< 6
+	     << " " << twoLoopMt.displayPhys().mh0(1)                  ///< 7
+	     << " " << twoLoopMb.displayPhys().mh0(1)                  ///< 8
+	     << " " << threeLoop.displayPhys().mh0(1)                  ///< 9
+	     << " " << twoLoop.displayPhys().mA0(1)                    ///< 10
+	     << " " << twoLoopAs.displayPhys().mA0(1)                  ///< 11
+	     << " " << twoLoopMt.displayPhys().mA0(1)                  ///< 12
+	     << " " << twoLoopMb.displayPhys().mA0(1)                  ///< 13
+	     << " " << threeLoop.displayPhys().mA0(1)                  ///< 14
 	     << " " << twoLoop.displayPhys().mh0(2)                    ///< 15
 	     << " " << twoLoopAs.displayPhys().mh0(2)                  ///< 16
 	     << " " << twoLoopMt.displayPhys().mh0(2)                  ///< 17
