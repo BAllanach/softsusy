@@ -52,18 +52,17 @@ set label 2 "{/Symbol D}_{m_{tR}}/m_{tR}" at 6,1.08
 set output "atlasScanMtR.eps"
 splot "atlas_scan.dat" u ($1/1000):($2/1000):(1-$70/$74) notit w pm3d
 
-unset cbrange 
 set label 2 "{/Symbol Ds}/{/Symbol s}" at 6,1.08
 set output "atlasScanDs.eps"
 splot "atlas_scan.dat" u ($1/1000):($2/1000):(($139-$135)/$139) notit w pm3d
 
-
-unset cbrange
-set label 2 "{/Symbol D}{/Symbol W}_{CDM}h^2" at 6,1.08
+set xrange [0:3.1]
+set label 2 "{/Symbol D}{/Symbol W}_{CDM}h^2" at 3.05,1.08
 set title "{/Symbol m}>0, tan{/Symbol b}=50, A_0=0"
 set output "hiTbScanOm.eps"
-splot "hiTb.dat" u ($1/1000):($2/1000):($53-$54) notit w pm3d
+splot "deltaOm.dat" u ($1/1000):($2/1000):3 notit w pm3d
 unset label 2
+unset xrange
 
 set xrange [-4:4]
 set yrange [2:59]
@@ -148,14 +147,18 @@ set label 4 "4000" at 4.2,0.43 tc rgb "white" font "Helvetica, 30" rotate by 280
 set output "atlasScanMq2.eps"
 plot "mq.data" notit w l lw 4 lc rgb "white"
 
-set label 1 "0.10" at 0.14,0.43tc rgb "green" font "Helvetica, 30" rotate by 280
-set label 2 "0.15" at 1.4,0.3 tc rgb "green" font "Helvetica, 30" rotate by 70
+set xrange [0:3.1]
+set yrange [0.1:1]
+set label 1 "0.10" at 0.4,0.3 tc rgb "green" font "Helvetica, 30" rotate by 280
+set label 2 "0.15" at 1.2,0.25 tc rgb "green" font "Helvetica, 30" rotate by 50
 set label 3 ""
 set label 4 ""
 set output "hiTbScanOm2.eps"
 plot "omtb.data" notit w l lw 4 lc 2, \
 "ewsb3.data" notit w filledcurve y1=0.12 lc 0, \
 "ewsb2.data" notit w filledcurve y1=0.12 lc 9
+unset xrange 
+unset yrange
 
 unset label 1
 unset label 2
@@ -194,6 +197,11 @@ plot "massScan.dat" u ($1/1000):141 tit "None" w l lc 3 lw 4, \
 "massScan.dat" u ($1/1000):145 tit "{/Symbol D}All" w l lw 4 lc 1, \
 0 notit w l lc 0
 
+set xlabel "m_0/TeV"
+set ylabel "M_{1/2}/TeV"
+
+set label 1 "Allanach, Bednyakov, Ruiz de Austri, 2014" at 0,1.04 font \
+"Helvetica,12" 
 set cbrange [-0.0024:0]
 set label 2 "{/Symbol Da}(None)" at 6,1.06
 set output "atlasScanDaNone.eps"

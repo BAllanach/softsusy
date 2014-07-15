@@ -231,33 +231,6 @@ double getCrossSection(MssmSoftsusy & r, char * fileName, double m0, double m12,
   remove(fn);
   
   return xs * 1.0e3;
-  /*  char buff[500];
-  sprintf(buff, "cp lesHout ../../code/prospino2.1/prospino.in.les_houches; cd ../../code/prospino2.1/; ./prospino_2.run output > err");
-  int err = system(buff);
-  double gg = 0., ss = 0., sb=0., sg = 0.;
-  if (!err) {
-  fstream fin("/home/bca20/code/prospino2.1/prospino.dat", ios::in); 
-  string o;
-  fin >> o >> o >> o >> o >> o >> o >> o 
-	>> o >> o >> o >> o >> sg >> o 
-	>> o >> o >> o;
-  fin >> o >> o >> o >> o >> o >> o >> o 
-	>> o >> o >> o >> o >> ss >> o 
-	>> o >> o >> o;
-  fin >> o >> o >> o >> o >> o >> o >> o 
-	>> o >> o >> o >> o >> sb >> o 
-	>> o >> o >> o;
-  fin >> o >> o >> o >> o >> o >> o >> o 
-	>> o >> o >> o >> o >> gg >> o 
-	>> o >> o >> o;
-  }
-  else cout << "CROSS SECTION ERROR\n";
-
-  sprintf(buff, "cd ../../code/softsusy"); 
-  err = system(buff);
-  if (err) cout << "SHIT\n";
-
-  return (gg + ss + sb + sg) * 1.0e3; ///< total in fb*/
 }
 
 void produceSLHAfile(MssmSoftsusy & t, const char * fileName, int sgnMu, 
@@ -280,7 +253,7 @@ double doDarkMatter(DoubleVector & pars, double tanb, int sgnMu,
   char oFile[500], buff[500];
   sprintf(oFile,"om_%d_%d_%d_%d_%d", int(m0), int(m12), int(a0), 
 	  int(tanb), int(sgnMu));
-  sprintf(buff,"../../code/micromegas_3.6.8/MSSM/main %s > %s", 
+  sprintf(buff,"../../code/micromegas_3.3.13/MSSM/main %s > %s", 
 	  fileName, oFile); 
   int err = system(buff);
   double omega = 0.;
@@ -810,7 +783,7 @@ int main(int argc, char *argv[]) {
 		     dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);
       }
     }
-    }
+  }
  
   
 
