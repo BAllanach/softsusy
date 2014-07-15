@@ -186,7 +186,7 @@ plot "tbScan1d.dat" u 4:151 tit "None" w l lc 3 lw 4, \
 "tbScan1d.dat" u 4:155 tit "{/Symbol D}All" w l lw 4 lc 1
 
 set autoscale
-set label 1 "Allanach, Bednyakov, Ruiz de Austri, 2014" at 0,0.00024 font \
+set label 1 "Allanach, Bednyakov, Ruiz de Austri, 2014" at 0,0.0006 font \
 "Helvetica,12" 
 set key bottom
 set title "{/Symbol m}>0, tan{/Symbol b}=30, A_0=-2m_0"
@@ -210,3 +210,4 @@ splot "atlas_scan.dat" u ($1/1000):($2/1000):141 notit w pm3d
 set label 2 "{/Symbol Da}(All)" at 6,1.06
 set output "atlasScanDaAll.eps"
 splot "atlas_scan.dat" u ($1/1000):($2/1000):145 notit w pm3d
+!rm *.data
