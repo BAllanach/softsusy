@@ -32,7 +32,7 @@ src/two_loop_thresholds/tau_corrections.cpp.in \
 src/two_loop_thresholds/tquark_corrections.cpp.in 
 
 # data will be stored here
-th_datadir = $(top_builddir)/src/two_loop_thresholds/two_loop_archives
+th_datadir = $(abs_builddir)/src/two_loop_thresholds/two_loop_archives
 
 # data is located here 
 #th_data_DATA = \
