@@ -7,13 +7,13 @@ min(a,b) = (a < b) ? a : b
 set pm3d corners2color c1
 set view map
 
-set dgrid3d 21,21,8
+set dgrid3d 20,19,8
 
 # should be max number of solutions+1 (for zero solutions)
 
 min(a,b) = (a<b) ? a : b
 
-set label 1 "Allanach, Bednyakov, de Ruiz Austri, 2013" at 0,1.03 font \
+set label 1 "Allanach, Bednyakov, Ruiz de Austri, 2014" at 0,1.03 font \
 "Helvetica,12" 
 set xlabel "m_0/TeV" 
 set ylabel "M_{1/2}/TeV" 
@@ -22,28 +22,27 @@ set ylabel "M_{1/2}/TeV"
 set title "{/Symbol m}>0, tan{/Symbol b}=30, A_0=-2m_0"
 
 
-
-set label 2 "{/Symbol D}_{m_h}/m_h" at 6,1.06
+set label 2 "{/Symbol D}_{m_h}/GeV" at 6,1.06
 set output "atlasScanMh.eps"
-splot "atlas_scan.dat" u ($1/1000):($2/1000):6 notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):($9-$5) notit w pm3d
 
 min(a, b) = a<b ? a : b
 
-set label 2 "{/Symbol D}_{m_A}/m_A" at 6,1.06
+set label 2 "{/Symbol D}_{m_A}/m_A" at 6,1.08
 set output "atlasScanMA.eps"
-splot "atlas_scan.dat" u ($1/1000):($2/1000):8 notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):(1-$10/$14) notit w pm3d
 
 set label 2 "{/Symbol D}_{m_g}/m_g" at 6,1.08
 set output "atlasScanMg.eps"
-splot "atlas_scan.dat" u ($1/1000):($2/1000):14 notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):(1-$25/$29) notit w pm3d
 
 set label 2 "{/Symbol D}_{m_q}/m_q" at 6,1.08
 set output "atlasScanMq.eps"
-splot "atlas_scan.dat" u ($1/1000):($2/1000):16 notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):(1-$30/$34) notit w pm3d
 
 set label 2 "{/Symbol D}_{m_{{/Symbol c}@_1^0}}/m_{{/Symbol c}@_1^0}" at 6,1.08
 set output "atlasScanMneut1.eps"
-splot "atlas_scan.dat" u ($1/1000):($2/1000):22 notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):(1-$45/$49) notit w pm3d
 
 set label 2 "{/Symbol D}_{m_{{/Symbol c}@_3^0}}/m_{{/Symbol c}@_3^0}" at 6,1.08
 set output "atlasScanMneut3.eps"
@@ -51,20 +50,19 @@ splot "atlas_scan.dat" u ($1/1000):($2/1000):26 notit w pm3d
 
 set label 2 "{/Symbol D}_{m_{tR}}/m_{tR}" at 6,1.08
 set output "atlasScanMtR.eps"
-splot "atlas_scan.dat" u ($1/1000):($2/1000):32 notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):(1-$70/$74) notit w pm3d
 
-unset cbrange 
 set label 2 "{/Symbol Ds}/{/Symbol s}" at 6,1.08
 set output "atlasScanDs.eps"
-splot "sig.dat" u ($1/1000):($2/1000):(($139-$135)/$139) notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):(($139-$135)/$139) notit w pm3d
 
-
-unset cbrange
-set label 2 "{/Symbol D}{/Symbol W}_{CDM}h^2" at 6,1.08
+set xrange [0:3.1]
+set label 2 "{/Symbol D}{/Symbol W}_{CDM}h^2" at 3.05,1.08
 set title "{/Symbol m}>0, tan{/Symbol b}=50, A_0=0"
 set output "hiTbScanOm.eps"
-splot "hiTb.dat" u ($1/1000):($2/1000):($53-$54) notit w pm3d
+splot "deltaOm.dat" u ($1/1000):($2/1000):3 notit w pm3d
 unset label 2
+unset xrange
 
 set xrange [-4:4]
 set yrange [2:59]
@@ -72,9 +70,11 @@ set pm3d corners2color c1
 set dgrid3d 21,20,8
 set xlabel "A_0/TeV"
 set ylabel "tan{/Symbol b}"
-set label 1 "Allanach, Bednyakov, de Ruiz Austri, 2013" at -4,62 font "Helvetica,12" 
+set label 1 "Allanach, Bednyakov, Ruiz de Austri, 2014" at -4,62 font "Helvetica,12" 
 set title "{/Symbol m}>0, m_0=2 TeV, M_{1/2}=600 GeV"
 
+
+set dgrid3d 21,21,8
 
 set label 2 "{/Symbol D}Y@_{bt}^{(All)}-{/Symbol D}Y@_{bt}^{(None)}" at 4.7,65
 set output "atlasScanYpNone.eps"
@@ -147,14 +147,18 @@ set label 4 "4000" at 4.2,0.43 tc rgb "white" font "Helvetica, 30" rotate by 280
 set output "atlasScanMq2.eps"
 plot "mq.data" notit w l lw 4 lc rgb "white"
 
-set label 1 "0.10" at 0.14,0.43tc rgb "green" font "Helvetica, 30" rotate by 280
-set label 2 "0.15" at 1.4,0.3 tc rgb "green" font "Helvetica, 30" rotate by 70
+set xrange [0:3.1]
+set yrange [0.1:1]
+set label 1 "0.10" at 0.4,0.3 tc rgb "green" font "Helvetica, 30" rotate by 280
+set label 2 "0.15" at 1.2,0.25 tc rgb "green" font "Helvetica, 30" rotate by 50
 set label 3 ""
 set label 4 ""
 set output "hiTbScanOm2.eps"
 plot "omtb.data" notit w l lw 4 lc 2, \
 "ewsb3.data" notit w filledcurve y1=0.12 lc 0, \
 "ewsb2.data" notit w filledcurve y1=0.12 lc 9
+unset xrange 
+unset yrange
 
 unset label 1
 unset label 2
@@ -163,7 +167,7 @@ plot "ATLAS_SUSY_MSUGRA_201308.txt" u ($1/1000):($2/1000) notit w l lw 16 lc 2 \
 lt 3
 set autoscale
 
-set label 1 "Allanach, Bednyakov, de Ruiz Austri, 2013" at 0,0.01 font \
+set label 1 "Allanach, Bednyakov, Ruiz de Austri, 2014" at 0,0.01 font \
 "Helvetica,12" 
 set output "tbScanDy.eps"
 set title "{/Symbol m}>0, m_0=3 TeV, M_{1/2}=2 TeV, A_0=-6 TeV"
@@ -174,7 +178,7 @@ set ytics
 plot "tbScan1d.dat" u 4:146 tit "None" w l lc 3 lw 4, \
 "tbScan1d.dat" u 4:150 tit "{/Symbol D}All" w l lw 4 lc 1
 
-set label 1 "Allanach, Bednyakov, de Ruiz Austri, 2013" at 0,0.82 font \
+set label 1 "Allanach, Bednyakov, Ruiz de Austri, 2014" at 0,0.82 font \
 "Helvetica,12" 
 set output "tbScanDyt.eps"
 set ylabel "Y_t(M_{GUT})-Y_b(M_{GUT})"
@@ -182,7 +186,7 @@ plot "tbScan1d.dat" u 4:151 tit "None" w l lc 3 lw 4, \
 "tbScan1d.dat" u 4:155 tit "{/Symbol D}All" w l lw 4 lc 1
 
 set autoscale
-set label 1 "Allanach, Bednyakov, de Ruiz Austri, 2013" at 0,0.00024 font \
+set label 1 "Allanach, Bednyakov, Ruiz de Austri, 2014" at 0,0.0006 font \
 "Helvetica,12" 
 set key bottom
 set title "{/Symbol m}>0, tan{/Symbol b}=30, A_0=-2m_0"
@@ -192,3 +196,18 @@ set xlabel "m_0/TeV=M_{1/2}/TeV"
 plot "massScan.dat" u ($1/1000):141 tit "None" w l lc 3 lw 4, \
 "massScan.dat" u ($1/1000):145 tit "{/Symbol D}All" w l lw 4 lc 1, \
 0 notit w l lc 0
+
+set xlabel "m_0/TeV"
+set ylabel "M_{1/2}/TeV"
+
+set label 1 "Allanach, Bednyakov, Ruiz de Austri, 2014" at 0,1.04 font \
+"Helvetica,12" 
+set cbrange [-0.0024:0]
+set label 2 "{/Symbol Da}(None)" at 6,1.06
+set output "atlasScanDaNone.eps"
+splot "atlas_scan.dat" u ($1/1000):($2/1000):141 notit w pm3d
+
+set label 2 "{/Symbol Da}(All)" at 6,1.06
+set output "atlasScanDaAll.eps"
+splot "atlas_scan.dat" u ($1/1000):($2/1000):145 notit w pm3d
+!rm *.data
