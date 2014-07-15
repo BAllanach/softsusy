@@ -22,7 +22,6 @@ set ylabel "M_{1/2}/TeV"
 set title "{/Symbol m}>0, tan{/Symbol b}=30, A_0=-2m_0"
 
 
-
 set label 2 "{/Symbol D}_{m_h}/GeV" at 6,1.06
 set output "atlasScanMh.eps"
 splot "atlas_scan.dat" u ($1/1000):($2/1000):($9-$5) notit w pm3d
@@ -56,7 +55,7 @@ splot "atlas_scan.dat" u ($1/1000):($2/1000):(1-$70/$74) notit w pm3d
 unset cbrange 
 set label 2 "{/Symbol Ds}/{/Symbol s}" at 6,1.08
 set output "atlasScanDs.eps"
-#splot "atlas_scan.dat" u ($1/1000):($2/1000):(($139-$135)/$139) notit w pm3d
+splot "atlas_scan.dat" u ($1/1000):($2/1000):(($139-$135)/$139) notit w pm3d
 
 
 unset cbrange
@@ -194,3 +193,12 @@ set xlabel "m_0/TeV=M_{1/2}/TeV"
 plot "massScan.dat" u ($1/1000):141 tit "None" w l lc 3 lw 4, \
 "massScan.dat" u ($1/1000):145 tit "{/Symbol D}All" w l lw 4 lc 1, \
 0 notit w l lc 0
+
+set cbrange [-0.0024:0]
+set label 2 "{/Symbol Da}(None)" at 6,1.06
+set output "atlasScanDaNone.eps"
+splot "atlas_scan.dat" u ($1/1000):($2/1000):141 notit w pm3d
+
+set label 2 "{/Symbol Da}(All)" at 6,1.06
+set output "atlasScanDaAll.eps"
+splot "atlas_scan.dat" u ($1/1000):($2/1000):145 notit w pm3d
