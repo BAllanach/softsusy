@@ -138,6 +138,8 @@ int main(int argc, char *argv[]) {
   DoubleVector pars(3); 
   
   const char* modelIdent = "";
+
+  bool compilationProblem = false;
   
   /// Non model specific options
   if (strcmp(argv[1], "leshouches")) {
@@ -158,25 +160,51 @@ int main(int argc, char *argv[]) {
 	  sgnMu = get_valuei(argv[i], "--sgnMu=");
 	else if (starts_with(argv[i], "--mgut=")) 
 	  mgutGuess = mgutCheck(argv[i], gaugeUnification, ewsbBCscale); 
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
 	else if (starts_with(argv[i], "--disable-two-loop-susy-thresholds")) {
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
 	  USE_TWO_LOOP_THRESHOLD = false;
 	  m.setAllTwoLoopThresholds(false);
+#else
+	  compilationProblem = true;
+	  cout << "Two-loop thresholds not compiled.\n";
+	  cout << "Please use the --enable-two-loop-susy-thresholds with the configure option.\n";
+	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
+#endif
 	}
 	else if (starts_with(argv[i], "--two-loop-susy-thresholds")) {
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
 	  USE_TWO_LOOP_THRESHOLD = true;
 	  m.setAllTwoLoopThresholds(true);
+#else
+	  compilationProblem = true;
+	  cout << "Two-loop thresholds not compiled.\n";
+	  cout << "Please use the --enable-two-loop-susy-thresholds with the configure option.\n";
+	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
+#endif
 	}
-#endif
+	else if (starts_with(argv[i], "--disable-three-loop-rges")) {
 #ifdef COMPILE_THREE_LOOP_RGE
-	else if (starts_with(argv[i], "--disable-three-loop-rges"))
 	  USE_THREE_LOOP_RGE = false;
-	else if (starts_with(argv[i], "--three-loop-rges"))
-	  USE_THREE_LOOP_RGE = true;
+#else
+	  compilationProblem = true;
+	  cout << "Two-loop thresholds not compiled.\n";
+	  cout << "Please use the --enable-two-loop-susy-thresholds with ./configure\n";
+	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
 #endif
+	}
+	else if (starts_with(argv[i], "--three-loop-rges")) {
+#ifdef COMPILE_THREE_LOOP_RGE
+	  USE_THREE_LOOP_RGE = true;
+#else
+	  compilationProblem = true;
+	  cout << "Three-loop RGEs not compiled.\n";
+	  cout << "Please use the --enable-three-loop-rges with ./configure\n";
+#endif
+	}
 	else if (starts_with(argv[i], "--QEWSB=")) 
 	  QEWSB = get_value(argv[i], "--QEWSB=");
       }
+      if (compilationProblem) exit(-1);
       if (tanb < 1.5 || tanb > 70.) {
 	ostringstream ii; 
 	ii << "tanBeta=" << tanb 

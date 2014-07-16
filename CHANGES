@@ -1,3 +1,4 @@
+<li>  16/7/14 Put in safety against trying to use higher order corrections without compiling them.
 <li>  16/7/14 Made delt() in two loop higgs routines more robust.
 <li>  3/7/14 Added muEff display method to NmssmSusy.
 <li>  2/7/14 Used extern templates to reduce compilation time. 

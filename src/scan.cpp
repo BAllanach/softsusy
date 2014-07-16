@@ -671,11 +671,11 @@ int main(int argc, char *argv[]) {
 		 msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, 
 		 csMb, cs3, dAs, dAsAs, dAsMt, dAsMb, dAs3, dY, dYAs, dYMt, 
 		 dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);
-    /*    writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
+        writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
 	       omega2, omegaAs, omegaMt, omegaMb, omega3,
 	       msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, 
 	       csMb, cs3, dAs, dAsAs, dAsMt, dAsMb, dAs3, dY, dYAs, dYMt, 
-	       dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);*/
+	       dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);
   } else 
     if (argc == 5) { /// Scan in m0
       m12 = atof(argv[1]);
