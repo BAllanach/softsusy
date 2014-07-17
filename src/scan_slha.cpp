@@ -37,52 +37,26 @@ void produceSLHAfile(MssmSoftsusy & t, const char * fileName, int sgnMu,
   fout.close();
 }
 
-double getCrossSection(MssmSoftsusy & r, char * fileName) {
+double getCrossSection(MssmSoftsusy & r, char * fileName, double m0, double m12, double a0, double tanb) {
   double msq = (r.displayPhys().mu(1, 1) + r.displayPhys().mu(2, 1) + 
 	 r.displayPhys().md(1, 1) + r.displayPhys().mu(2, 1)) / 4;
   double mg = r.displayPhys().mGluino;
   double mt = r.displayDataSet().displayPoleMt();
 
-  fstream fout("/home/bca20/code/prospino/input", ios::out); 
-  fout << msq << " " << mg << " " << mt << " " << 1. << endl;
-  fout.close();
   char buff[500];
-  sprintf(buff, "cd /home/bca20/code/prospino; cat input | ./crosssec | grep -v NAN > output");
+  char fn[500];
+  sprintf(fn, "/home/bca20/code/prospino/output_%d_%d_%d_%d",int(m0),int(m12),int(a0),int(tanb));
+  sprintf(buff, "cd /home/bca20/code/prospino; echo \"%d %d %d %d\" | ./crosssec | grep -v NAN > output_%d_%d_%d_%d",int(msq),int(mg),int(mt),1,int(m0),int(m12),int(a0),int(tanb));
   int err = system(buff);
   double xs = 0.;
+
   if (!err) {
-  fstream fin("/home/bca20/code/prospino/output", ios::in); 
+  fstream fin(fn, ios::in); 
   fin >> xs;
   } else  cout << "CROSS SECTION ERROR\n";
+  remove(fn);
   
   return xs * 1.0e3;
-  /*  char buff[500];
-  sprintf(buff, "cp lesHout ../../code/prospino2.1/prospino.in.les_houches; cd ../../code/prospino2.1/; ./prospino_2.run output > err");
-  int err = system(buff);
-  double gg = 0., ss = 0., sb=0., sg = 0.;
-  if (!err) {
-  fstream fin("/home/bca20/code/prospino2.1/prospino.dat", ios::in); 
-  string o;
-  fin >> o >> o >> o >> o >> o >> o >> o 
-	>> o >> o >> o >> o >> sg >> o 
-	>> o >> o >> o;
-  fin >> o >> o >> o >> o >> o >> o >> o 
-	>> o >> o >> o >> o >> ss >> o 
-	>> o >> o >> o;
-  fin >> o >> o >> o >> o >> o >> o >> o 
-	>> o >> o >> o >> o >> sb >> o 
-	>> o >> o >> o;
-  fin >> o >> o >> o >> o >> o >> o >> o 
-	>> o >> o >> o >> o >> gg >> o 
-	>> o >> o >> o;
-  }
-  else cout << "CROSS SECTION ERROR\n";
-
-  sprintf(buff, "cd ../../code/softsusy"); 
-  err = system(buff);
-  if (err) cout << "SHIT\n";
-
-  return (gg + ss + sb + sg) * 1.0e3; ///< total in fb*/
 }
 
 double doDarkMatter(DoubleVector & pars, double tanb, int sgnMu, 
@@ -289,7 +263,9 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & twoLoopAs,
 												omega2Mb - omega2, csMb - cs
 	 );
     cout << "$\\Delta$ All      & 3 & ";
-    if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A & \\\\\n"); else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.1f &%+5.1f\\\\\n",
+    //    if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A &
+    //    \\\\\n"); else 
+    printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.1f &%+5.1f\\\\\n",
 	 threeLoop.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
 	 threeLoop.displayYukawaElement(YU, 3, 3) - 
 	 twoLoop.displayYukawaElement(YU, 3, 3), 
@@ -312,6 +288,7 @@ void getMssmAndOmega(MssmSoftsusy & r, DoubleVector & pars, const double tanb,
 		     void (*boundaryCondition)(MssmSoftsusy &, 
 					       const DoubleVector &), 
 		     bool ewsbBcScale, double & cs) {
+  double m0 = pars(1), m12 = pars(2), a0 = pars(3);
   r.fixedPointIteration(boundaryCondition, mGutGuess, pars, sgnMu, tanb, 
 			oneset, uni, ewsbBcScale); 
   r.setData(oneset);
@@ -320,7 +297,7 @@ void getMssmAndOmega(MssmSoftsusy & r, DoubleVector & pars, const double tanb,
   char fileName[500]; 
   sprintf(fileName,"lesHout");
   produceSLHAfile(r, fileName, sgnMu, tanb, pars);
-  cs = getCrossSection(r, fileName);
+  cs = getCrossSection(r, fileName, m0, m12, a0, tanb);
 
   if (!r.displayProblem().test()) 
     omega = doDarkMatter(pars, tanb, sgnMu, fileName);
@@ -1628,20 +1605,20 @@ int main(int argc, char *argv[]) {
 
 
     /// Just 2-loop thresholds for strong coupling constant
-      double omegaAs = asin(2.), msqAvAs = 0., csAs = 0.; mgutGuess = 2.e16;
+      double omegaAs = asin(2.), msqAvAs = 0., csAs = 0.; mgutGuess = 2.5e3;
       MssmSoftsusy twoLoopAs; 
       twoLoopAs.useAlternativeEwsb(); twoLoopAs.setMuCond(2500.); 
       twoLoopAs.setMaCond(2500.); 
       twoLoopAs.included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
       USE_TWO_LOOP_THRESHOLD = true;
-      getMssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mgutGuess, 
+            getMssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mgutGuess, 
 		      uni, omegaAs, msqAvAs, boundaryCondition, ewsbBCscale, 
 		      csAs); 
       //      cout << twoLoopAs;
 
     /// Just 2-loop strong thresholds for mt
     USE_TWO_LOOP_THRESHOLD = false;
-    double omegaMt = asin(2.), msqAvMt = 0., csMt = 0.; mgutGuess = 2.e16;
+    double omegaMt = asin(2.), msqAvMt = 0., csMt = 0.; mgutGuess = 2.5e3;
     MssmSoftsusy twoLoopMt; 
     twoLoopMt.useAlternativeEwsb(); twoLoopMt.setMuCond(2500.); 
     twoLoopMt.setMaCond(2500.); 
@@ -1654,7 +1631,7 @@ int main(int argc, char *argv[]) {
 
     /// Just 2-loop for mb,mtau
     USE_TWO_LOOP_THRESHOLD = false;
-    double omegaMb = asin(2.), msqAvMb = 0., csMb = 0.; mgutGuess = 2.e16;
+    double omegaMb = asin(2.), msqAvMb = 0., csMb = 0.; mgutGuess = 2.5e3;
     MssmSoftsusy twoLoopMb; 
     twoLoopMb.useAlternativeEwsb(); twoLoopMb.setMuCond(2500.); 
     twoLoopMb.setMaCond(2500.); 
@@ -1663,25 +1640,26 @@ int main(int argc, char *argv[]) {
     twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
     USE_TWO_LOOP_THRESHOLD = true;
     getMssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mgutGuess, 
-		    uni, omegaMb, msqAvMb, boundaryCondition, ewsbBCscale, 
-		    csMb); 
+    		    uni, omegaMb, msqAvMb, boundaryCondition, ewsbBCscale, 
+    		    csMb); 
     //    cout << twoLoopMb;    
+
       
     /// 3-loop etc ON
-    double omega3 = asin(2.), msqAv3 = 0., cs3 = 0.; mgutGuess = 2.0e16;
-    USE_THREE_LOOP_RGE = true;
-    USE_TWO_LOOP_THRESHOLD = true;
+    double omega3 = asin(2.), msqAv3 = 0., cs3 = 0.; mgutGuess = 2.5e3;
+    USE_THREE_LOOP_RGE = true; 
+    USE_TWO_LOOP_THRESHOLD = true; 
     MssmSoftsusy threeLoop;
     threeLoop.useAlternativeEwsb(); threeLoop.setMuCond(2500.); 
     threeLoop.setMaCond(2500.); 
     getMssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mgutGuess, 
 		    uni, omega3, msqAv3, boundaryCondition, ewsbBCscale, 
-		    cs3 = 0.); 
-    //    cout << threeLoop;
+		    cs3); 
 
     writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
 	       omega2, omegaAs, omegaMt, omegaMb, omega3,
-	       msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, csMb, cs3);
+	       msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, 
+	       cs, csAs, csMt, csMb, cs3);
     }
     break;
     case NMSSM: {

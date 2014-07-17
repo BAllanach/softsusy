@@ -1333,6 +1333,8 @@ int main(int argc, char *argv[]) {
       
       if (gutScaleOutput) qMax = r->displayMxBC();
 
+      cout << *r; /// DEBUG
+
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
       
