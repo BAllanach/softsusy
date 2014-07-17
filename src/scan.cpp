@@ -630,7 +630,8 @@ int main(int argc, char *argv[]) {
     twoLoopAs.included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
     USE_TWO_LOOP_THRESHOLD = true;
     getCmssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mGutGuess, 
-    		     uni, omegaAs, msqAvAs, csAs, dAsAs, dYAs, dYpAs, m0, m12, a0); 
+    		     uni, omegaAs, msqAvAs, csAs, dAsAs, dYAs, dYpAs, m0, m12, 
+		     a0); 
 
     /// Just 2-loop strong thresholds for mt
     USE_TWO_LOOP_THRESHOLD = false;
@@ -653,7 +654,7 @@ int main(int argc, char *argv[]) {
     USE_TWO_LOOP_THRESHOLD = true;
     getCmssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mGutGuess, 
     		     uni, omegaMb, msqAvMb, csMb, dAsMb,
-		     dYMb, dYpMb, m0, m12, a0); 
+    		     dYMb, dYpMb, m0, m12, a0); 
 
     /// 3-loop etc ON
     double omega3 = asin(2.), msqAv3 = 0., cs3 = 0., dAs3 = 0., 
@@ -663,15 +664,16 @@ int main(int argc, char *argv[]) {
     MssmSoftsusy threeLoop;
     getCmssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
 		     uni, omega3, msqAv3, cs3, dAs3, dY3, dYp3, m0, m12, a0); 
-    //    cout << threeLoop << cs3 << endl; 
 
-    printLineOut(m0, m12, a0, tanb, twoLoop, twoLoopAs, twoLoopMt, 
+    cout << "% omega_{CDM h^2}=" << omega3 << endl;
+
+    /*    printLineOut(m0, m12, a0, tanb, twoLoop, twoLoopAs, twoLoopMt, 
 		 twoLoopMb, threeLoop, 
 		 omega2, omegaAs, omegaMt, omegaMb, omega3,
 		 msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, 
 		 csMb, cs3, dAs, dAsAs, dAsMt, dAsMb, dAs3, dY, dYAs, dYMt, 
-		 dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);
-        writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
+		 dYMb, dY3, dYp, dYpAs, dYpMt, dYpMb, dYp3);*/
+    writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
 	       omega2, omegaAs, omegaMt, omegaMb, omega3,
 	       msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, cs, csAs, csMt, 
 	       csMb, cs3, dAs, dAsAs, dAsMt, dAsMb, dAs3, dY, dYAs, dYMt, 

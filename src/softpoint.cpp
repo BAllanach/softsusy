@@ -38,7 +38,7 @@ void errorCall() {
   ii << "./softpoint.x gmsb [mGMSB parameters] [other options]\n";
   ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
   ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
-  ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value>\n";
+  ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
   if (USE_TWO_LOOP_THRESHOLD) ii << "--two-loop-susy-thresholds switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
 #endif //COMPILE_FULL_SUSY_THRESHOLD
@@ -146,6 +146,8 @@ int main(int argc, char *argv[]) {
       for (int i = 2; i < argc; i++) {
 	if (starts_with(argv[i],"--mbmb=")) 
 	  oneset.setMass(mBottom, get_value(argv[i], "--mbmb="));
+	else if (starts_with(argv[i],"--tol=")) 
+	  TOLERANCE = get_value(argv[i], "--tol=");
 	else if (starts_with(argv[i],"--mt=")) 
 	  oneset.setPoleMt(get_value(argv[i], "--mt="));
 	else if (starts_with(argv[i],"--alpha_s="))
@@ -1332,8 +1334,6 @@ int main(int argc, char *argv[]) {
       }
       
       if (gutScaleOutput) qMax = r->displayMxBC();
-
-      cout << *r; /// DEBUG
 
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
