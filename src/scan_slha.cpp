@@ -11,9 +11,306 @@
 */ 
 
 #include "softpoint.h"
+#include <iostream>
+#include "mycomplex.h"
+#include "def.h"
+#include "linalg.h"
+#include "lowe.h"
+#include "rge.h"
+#include "softsusy.h"
+#include "softpars.h"
+#include "susy.h"
+#include "utils.h"
+#include "numerics.h"
 
-extern template class Softsusy<SoftParsNmssm>;
-extern template class Softsusy<SoftParsMssm>;
+void produceSLHAfile(MssmSoftsusy & t, const char * fileName, int sgnMu, 
+		    double tanb, const DoubleVector & pars) {
+  const char * modelIdent = "sugra"; 
+  double qMax = 0.; int numPoints = 1; 
+  bool altEwsb = false;
+  fstream fout(fileName, ios::out);
+  fout.setf(ios::scientific, ios::floatfield);
+  fout.precision(10);  
+  // new softsusy call
+  t.lesHouchesAccordOutput(fout, modelIdent, pars, sgnMu, tanb, qMax, 
+			   numPoints, altEwsb);
+  fout.close();
+}
+
+double getCrossSection(MssmSoftsusy & r, char * fileName, double m0, double m12, double a0, double tanb) {
+  double msq = (r.displayPhys().mu(1, 1) + r.displayPhys().mu(2, 1) + 
+	 r.displayPhys().md(1, 1) + r.displayPhys().mu(2, 1)) / 4;
+  double mg = r.displayPhys().mGluino;
+  double mt = r.displayDataSet().displayPoleMt();
+
+  char buff[500];
+  char fn[500];
+  sprintf(fn, "/home/bca20/code/prospino/output_%d_%d_%d_%d",int(m0),int(m12),int(a0),int(tanb));
+  sprintf(buff, "cd /home/bca20/code/prospino; echo \"%d %d %d %d\" | ./crosssec | grep -v NAN > output_%d_%d_%d_%d",int(msq),int(mg),int(mt),1,int(m0),int(m12),int(a0),int(tanb));
+  int err = system(buff);
+  double xs = 0.;
+
+  if (!err) {
+  fstream fin(fn, ios::in); 
+  fin >> xs;
+  } else  cout << "CROSS SECTION ERROR\n";
+  remove(fn);
+  
+  return xs * 1.0e3;
+}
+
+double doDarkMatter(DoubleVector & pars, double tanb, int sgnMu, 
+		    char * fileName) {
+  double m0 = pars(1), m12 = pars(2), a0 = pars(3);
+  char oFile[500], buff[500];
+  sprintf(oFile,"om_%d_%d_%d_%d_%d", int(m0), int(m12), int(a0), 
+	  int(tanb), int(sgnMu));
+  sprintf(buff,"../../code/micromegas_3.3.13/MSSM/main %s > %s",
+	  fileName, oFile);
+  int err = system(buff);
+  double omega = 0.;
+  if (!err) //throw("Problem in micromegas system call: \n");
+    { fstream fin2(oFile, ios::in); fin2 >> omega; fin2.close(); }
+  
+  remove(oFile);
+  return omega;
+}
+
+void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & twoLoopAs, 
+		MssmSoftsusy & twoLoopMt, MssmSoftsusy & twoLoopMb, 
+		MssmSoftsusy & threeLoop, double omega2, double omega2As, 
+		double omega2Mt, double omega2Mb, double omega3, 
+		double msqAv2, double msqAv2As, double msqAv2Mt, 
+		double msqAv2Mb, double msqAv3, double cs, double csAs, double csMt, double csMb, double cs3) {
+  cout << "\\begin{table}\n\\begin{center}\n\\begin{tabular}{|c|c|ccccccc|}"
+       << "\\hline\nThreshold & RGEs  & $m_h$  & $m_{\\tilde g}$ & "
+       << "$m_{{\\tilde q}}$ & $m_{\\chi_1^0}$  & $m_{\\chi_2^0}$ & "
+       << "$m_{\\chi_3^0}$ & $m_{\\chi_4}^0$ \\\\ \\hline\nNone"
+       << "               & 2 & ";
+  if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A\\\\\n"); else   printf("%5.1f & %4.0f & %4.0f & %4.0f & %4.0f & %4.0f &%4.0f\\\\\n",
+	 twoLoop.displayPhys().mh0(1), 
+	 twoLoop.displayPhys().mGluino, 
+	 msqAv2, 
+	 fabs(twoLoop.displayPhys().mneut(1)), 
+	 fabs(twoLoop.displayPhys().mneut(2)), 
+	 fabs(twoLoop.displayPhys().mneut(3)), 
+	 fabs(twoLoop.displayPhys().mneut(4))
+	 );
+  cout << "$\\Delta \\alpha_s$  & 2 & ";
+  if (omega2As!= omega2As) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 twoLoopAs.displayPhys().mh0(1) - twoLoop.displayPhys().mh0(1), 
+	 twoLoopAs.displayPhys().mGluino - twoLoop.displayPhys().mGluino, 
+	 msqAv2As - msqAv2, 
+	 fabs(twoLoopAs.displayPhys().mneut(1)) - 
+	 fabs(twoLoop.displayPhys().mneut(1)), 
+	 fabs(twoLoopAs.displayPhys().mneut(2)) - 
+	 fabs(twoLoop.displayPhys().mneut(2)), 
+	 fabs(twoLoopAs.displayPhys().mneut(3)) - 
+	 fabs(twoLoop.displayPhys().mneut(3)), 
+	 fabs(twoLoopAs.displayPhys().mneut(4)) - 
+	 fabs(twoLoop.displayPhys().mneut(4))
+	 );
+  cout << "$\\Delta m_t$      & 2 & ";
+  if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A  \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 twoLoopMt.displayPhys().mh0(1) - twoLoop.displayPhys().mh0(1), 
+	 twoLoopMt.displayPhys().mGluino - twoLoop.displayPhys().mGluino, 
+	 msqAv2Mt - msqAv2, 
+	 fabs(twoLoopMt.displayPhys().mneut(1)) - 
+	 fabs(twoLoop.displayPhys().mneut(1)), 
+	 fabs(twoLoopMt.displayPhys().mneut(2)) - 
+	 fabs(twoLoop.displayPhys().mneut(2)), 
+	 fabs(twoLoopMt.displayPhys().mneut(3)) - 
+	 fabs(twoLoop.displayPhys().mneut(3)), 
+	 fabs(twoLoopMt.displayPhys().mneut(4)) - 
+	 fabs(twoLoop.displayPhys().mneut(4))
+	 );
+  cout << "$\\Delta m_b, m_\\tau$& 2 & ";
+  if (omega2Mb != omega2Mb) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A  \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 twoLoopMb.displayPhys().mh0(1) - twoLoop.displayPhys().mh0(1), 
+	 twoLoopMb.displayPhys().mGluino - twoLoop.displayPhys().mGluino, 
+	 msqAv2Mb - msqAv2, 
+	 fabs(twoLoopMb.displayPhys().mneut(1)) - 
+	 fabs(twoLoop.displayPhys().mneut(1)), 
+	 fabs(twoLoopMb.displayPhys().mneut(2)) - 
+	 fabs(twoLoop.displayPhys().mneut(2)), 
+	 fabs(twoLoopMb.displayPhys().mneut(3)) - 
+	 fabs(twoLoop.displayPhys().mneut(3)), 
+	 fabs(twoLoopMb.displayPhys().mneut(4)) - 
+	 fabs(twoLoop.displayPhys().mneut(4))
+	 );
+  cout << "$\\Delta$ All      & 3 & ";
+  if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 threeLoop.displayPhys().mh0(1) - twoLoop.displayPhys().mh0(1), 
+	 threeLoop.displayPhys().mGluino - twoLoop.displayPhys().mGluino, 
+	 msqAv3 - msqAv2, 
+	 fabs(threeLoop.displayPhys().mneut(1)) - 
+	 fabs(twoLoop.displayPhys().mneut(1)), 
+	 fabs(threeLoop.displayPhys().mneut(2)) - 
+	 fabs(twoLoop.displayPhys().mneut(2)), 
+	 fabs(threeLoop.displayPhys().mneut(3)) - 
+	 fabs(twoLoop.displayPhys().mneut(3)), 
+	 fabs(threeLoop.displayPhys().mneut(4)) - 
+	 fabs(twoLoop.displayPhys().mneut(4))
+	 );
+  cout << "\n%\n\\hline"
+       << "&& $m_{{\\tilde t}_L}$  & $m_{{\\tilde t}_R}$ &$m_{{\\tilde b}_L}$&"
+       << "$m_{{\\tilde b}_R}$&$m_{{\\tilde \\tau}_L}$&$m_{{\\tilde \\tau}_R}$&"
+       << "$m_{\\chi_1}^\\pm$ \\\\ \\hline\n"
+       << "None             & 2 &";
+  if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%4.0f & %4.0f & %4.0f & %4.0f & %4.0f & %4.0f &%4.0f\\\\\n",
+	 twoLoop.displayPhys().mu(1, 3), 
+	 twoLoop.displayPhys().mu(2, 3), 
+	 twoLoop.displayPhys().md(1, 3), 
+	 twoLoop.displayPhys().md(2, 3), 
+	 twoLoop.displayPhys().me(1, 3), 
+	 twoLoop.displayPhys().me(2, 3), 
+	 twoLoop.displayPhys().mch(1)
+	 );
+  cout << "$\\Delta \\alpha_s$  & 2 & ";
+  if (omega2As != omega2As) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 twoLoopAs.displayPhys().mu(1, 3) - twoLoop.displayPhys().mu(1, 3), 
+	 twoLoopAs.displayPhys().mu(2, 3) - twoLoop.displayPhys().mu(2, 3), 
+	 twoLoopAs.displayPhys().md(1, 3) - twoLoop.displayPhys().md(1, 3), 
+	 twoLoopAs.displayPhys().md(2, 3) - twoLoop.displayPhys().md(2, 3), 
+	 twoLoopAs.displayPhys().me(1, 3) - twoLoop.displayPhys().me(1, 3), 
+	 twoLoopAs.displayPhys().me(2, 3) - twoLoop.displayPhys().me(2, 3), 
+	 fabs(twoLoopAs.displayPhys().mch(1)) - 
+	 fabs(twoLoop.displayPhys().mch(1))
+	 );
+  cout << "$\\Delta m_t$      & 2 & ";
+  if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 twoLoopMt.displayPhys().mu(1, 3) - twoLoop.displayPhys().mu(1, 3), 
+	 twoLoopMt.displayPhys().mu(2, 3) - twoLoop.displayPhys().mu(2, 3), 
+	 twoLoopMt.displayPhys().md(1, 3) - twoLoop.displayPhys().md(1, 3), 
+	 twoLoopMt.displayPhys().md(2, 3) - twoLoop.displayPhys().md(2, 3), 
+	 twoLoopMt.displayPhys().me(1, 3) - twoLoop.displayPhys().me(1, 3), 
+	 twoLoopMt.displayPhys().me(2, 3) - twoLoop.displayPhys().me(2, 3), 
+	 fabs(twoLoopMt.displayPhys().mch(1)) - 
+	 fabs(twoLoop.displayPhys().mch(1))
+	 );
+  cout << "$\\Delta m_b, m_\\tau$& 2 & ";
+  if (omega2Mb != omega2Mb) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 twoLoopMb.displayPhys().mu(1, 3) - twoLoop.displayPhys().mu(1, 3), 
+	 twoLoopMb.displayPhys().mu(2, 3) - twoLoop.displayPhys().mu(2, 3), 
+	 twoLoopMb.displayPhys().md(1, 3) - twoLoop.displayPhys().md(1, 3), 
+	 twoLoopMb.displayPhys().md(2, 3) - twoLoop.displayPhys().md(2, 3), 
+	 twoLoopMb.displayPhys().me(1, 3) - twoLoop.displayPhys().me(1, 3), 
+	 twoLoopMb.displayPhys().me(2, 3) - twoLoop.displayPhys().me(2, 3), 
+	 fabs(twoLoopMb.displayPhys().mch(1)) - 
+	 fabs(twoLoop.displayPhys().mch(1))
+	 );
+  cout << "$\\Delta$ All      & 3 & ";
+  if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
+	 threeLoop.displayPhys().mu(1, 3) - twoLoop.displayPhys().mu(1, 3), 
+	 threeLoop.displayPhys().mu(2, 3) - twoLoop.displayPhys().mu(2, 3), 
+	 threeLoop.displayPhys().md(1, 3) - twoLoop.displayPhys().md(1, 3), 
+	 threeLoop.displayPhys().md(2, 3) - twoLoop.displayPhys().md(2, 3), 
+	 threeLoop.displayPhys().me(1, 3) - twoLoop.displayPhys().me(1, 3), 
+	 threeLoop.displayPhys().me(2, 3) - twoLoop.displayPhys().me(2, 3), 
+	 fabs(threeLoop.displayPhys().mch(1)) - 
+	 fabs(twoLoop.displayPhys().mch(1))
+	 );
+  cout << "\n%\n\\hline";
+  cout << "      &  & $g_3(M_{SUSY})$ & $Y_t(M_{SUSY})$ & "
+       << " $Y_b(M_{SUSY})$ & $Y_\\tau(M_{SUSY})$  & $\\mu(M_{SUSY})$"
+       << "    & $\\Omega_{CDM} h^2$ & $\\sigma_{SUSY}^{TOT}$\\\\ \\hline\n"
+       << " None                   & 2 & ";
+
+  if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A &\\\\\n"); else printf("%5.3f & %5.3f & %5.3f & %5.3f & %4.0f & %5.1f & %5.1f\\\\\n",
+	 twoLoop.displayGaugeCoupling(3), 
+	 twoLoop.displayYukawaElement(YU, 3, 3), 
+	 twoLoop.displayYukawaElement(YD, 3, 3), 
+	 twoLoop.displayYukawaElement(YE, 3, 3), 
+	 twoLoop.displaySusyMu(),
+											 omega2, cs
+	 );
+
+  cout << "$\\Delta \\alpha_s$  & 2 & ";
+  if (omega2As != omega2As) printf("N/A & N/A & N/A & N/A & N/A & N/A &\\\\\n"); else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.1f & %+5.1f\\\\\n",
+	 twoLoopAs.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
+	 twoLoopAs.displayYukawaElement(YU, 3, 3) - 
+	 twoLoop.displayYukawaElement(YU, 3, 3), 
+	 twoLoopAs.displayYukawaElement(YD, 3, 3) -
+	 twoLoop.displayYukawaElement(YD, 3, 3), 
+	 twoLoopAs.displayYukawaElement(YE, 3, 3) -
+	 twoLoop.displayYukawaElement(YE, 3, 3), 
+	 twoLoopAs.displaySusyMu() - twoLoop.displaySusyMu(),
+											     omega2As - omega2,
+											     csAs - cs
+	 );
+  cout << "$\\Delta m_t$      & 2 & ";
+    if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A & N/A & N/A& N/A\\\\\n"); else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.1f & %+5.1f\\\\\n",
+	 twoLoopMt.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
+	 twoLoopMt.displayYukawaElement(YU, 3, 3) - 
+	 twoLoop.displayYukawaElement(YU, 3, 3), 
+	 twoLoopMt.displayYukawaElement(YD, 3, 3) -
+	 twoLoop.displayYukawaElement(YD, 3, 3), 
+	 twoLoopMt.displayYukawaElement(YE, 3, 3) -
+	 twoLoop.displayYukawaElement(YE, 3, 3), 
+	 twoLoopMt.displaySusyMu() - twoLoop.displaySusyMu(),
+											       omega2Mt - omega2, csMt - cs
+	 );
+    cout << "$\\Delta m_b, m_\\tau$& 2 & ";
+    if (omega2Mb != omega2Mb) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A\\\\\n"); else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.3f & %+5.1f\\\\\n",
+	 twoLoopMb.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
+	 twoLoopMb.displayYukawaElement(YU, 3, 3) - 
+	 twoLoop.displayYukawaElement(YU, 3, 3), 
+	 twoLoopMb.displayYukawaElement(YD, 3, 3) -
+	 twoLoop.displayYukawaElement(YD, 3, 3), 
+	 twoLoopMb.displayYukawaElement(YE, 3, 3) -
+	 twoLoop.displayYukawaElement(YE, 3, 3), 
+	 twoLoopMb.displaySusyMu() - twoLoop.displaySusyMu(),
+												omega2Mb - omega2, csMb - cs
+	 );
+    cout << "$\\Delta$ All      & 3 & ";
+    //    if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A &
+    //    \\\\\n"); else 
+    printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.1f &%+5.1f\\\\\n",
+	 threeLoop.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
+	 threeLoop.displayYukawaElement(YU, 3, 3) - 
+	 twoLoop.displayYukawaElement(YU, 3, 3), 
+	 threeLoop.displayYukawaElement(YD, 3, 3) -
+	 twoLoop.displayYukawaElement(YD, 3, 3), 
+	 threeLoop.displayYukawaElement(YE, 3, 3) -
+	 twoLoop.displayYukawaElement(YE, 3, 3), 
+	 threeLoop.displaySusyMu() - twoLoop.displaySusyMu(),
+	 omega3 - omega2, 
+         cs3-cs
+	);
+  cout << "\\hline\n\\end{tabular}\n\\end{center}\n";
+}
+
+/// Returns the object along with omega. Oneset should already be fixed at MZ
+void getMssmAndOmega(MssmSoftsusy & r, DoubleVector & pars, const double tanb, 
+		     const int sgnMu, const QedQcd & oneset, 
+		     double mGutGuess, bool uni, double & omega, 
+		     double & msqAv,
+		     void (*boundaryCondition)(MssmSoftsusy &, 
+					       const DoubleVector &), 
+		     bool ewsbBcScale, double & cs) {
+  double m0 = pars(1), m12 = pars(2), a0 = pars(3);
+  r.fixedPointIteration(boundaryCondition, mGutGuess, pars, sgnMu, tanb, 
+			oneset, uni, ewsbBcScale); 
+  r.setData(oneset);
+
+  /// Produces SLHA output file
+  char fileName[500]; 
+  sprintf(fileName,"lesHout");
+  produceSLHAfile(r, fileName, sgnMu, tanb, pars);
+  cs = getCrossSection(r, fileName, m0, m12, a0, tanb);
+
+  if (!r.displayProblem().test()) 
+    omega = doDarkMatter(pars, tanb, sgnMu, fileName);
+
+  msqAv = (r.displayPhys().mu(2, 1) + 
+		     r.displayPhys().mu(1, 1) +
+		     r.displayPhys().md(2, 1) + 
+		     r.displayPhys().md(1, 1)) * 
+    0.25;
+  
+  remove(fileName);
+  return;
+}
 
 // Returns a string with all characters in upper case: very handy
 string ToUpper(const string & s) {
@@ -38,12 +335,12 @@ void errorCall() {
   ii << "./softpoint.x gmsb [mGMSB parameters] [other options]\n";
   ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
   ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
-  ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
+  ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value>\n";
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
-  if (USE_TWO_LOOP_THRESHOLD) ii << "--two-loop-susy-thresholds switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
+  if (USE_TWO_LOOP_THRESHOLD) ii << "--disable-full_susy_threshold disables the 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
 #endif //COMPILE_FULL_SUSY_THRESHOLD
 #ifdef COMPILE_THREE_LOOP_RGE
-  if (USE_THREE_LOOP_RGE) ii << "--three-loop-rges switches on 3-loop RGEs\n";
+  if (USE_THREE_LOOP_RGE) ii << "--disable-three_loop disables 3-loop corrections RGEs\n";
 #endif //COMPILE_THREE_LOOP_RGE
   ii << "--mgut=unified sets the scale at which SUSY breaking terms are set to the GUT\n";
   ii << "scale where g1=g2. --mgut=<value> sets it to a fixed scale, ";
@@ -80,7 +377,7 @@ int main(int argc, char *argv[]) {
   double lambdaW = 0., aCkm = 0., rhobar = 0., etabar = 0.;
   NMSSM_input nmssm_input; // NMSSM input parameters
 
-  bool flavourViolation = false, gutScaleOutput = false;
+  bool flavourViolation = false;
 
   int numPoints = 1;
 
@@ -89,7 +386,7 @@ int main(int argc, char *argv[]) {
   // Sets format of output: 4 decimal places
   outputCharacteristics(6);
 
-  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=extendedSugraBcs;
+  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=sugraBcs;
   void (*nmssmBoundaryCondition)(NmssmSoftsusy&, const DoubleVector&) = NmssmMsugraBcs;
 
   QedQcd oneset;
@@ -138,16 +435,12 @@ int main(int argc, char *argv[]) {
   DoubleVector pars(3); 
   
   const char* modelIdent = "";
-
-  bool compilationProblem = false;
   
   /// Non model specific options
   if (strcmp(argv[1], "leshouches")) {
       for (int i = 2; i < argc; i++) {
 	if (starts_with(argv[i],"--mbmb=")) 
 	  oneset.setMass(mBottom, get_value(argv[i], "--mbmb="));
-	else if (starts_with(argv[i],"--tol=")) 
-	  TOLERANCE = get_value(argv[i], "--tol=");
 	else if (starts_with(argv[i],"--mt=")) 
 	  oneset.setPoleMt(get_value(argv[i], "--mt="));
 	else if (starts_with(argv[i],"--alpha_s="))
@@ -162,51 +455,17 @@ int main(int argc, char *argv[]) {
 	  sgnMu = get_valuei(argv[i], "--sgnMu=");
 	else if (starts_with(argv[i], "--mgut=")) 
 	  mgutGuess = mgutCheck(argv[i], gaugeUnification, ewsbBCscale); 
-	else if (starts_with(argv[i], "--disable-two-loop-susy-thresholds")) {
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
+	else if (starts_with(argv[i], "--disable-full_susy_threshold"))
 	  USE_TWO_LOOP_THRESHOLD = false;
-	  m.setAllTwoLoopThresholds(false);
-#else
-	  compilationProblem = true;
-	  cout << "Two-loop thresholds not compiled.\n";
-	  cout << "Please use the --enable-two-loop-susy-thresholds with the configure option.\n";
-	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
 #endif
-	}
-	else if (starts_with(argv[i], "--two-loop-susy-thresholds")) {
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
-	  USE_TWO_LOOP_THRESHOLD = true;
-	  m.setAllTwoLoopThresholds(true);
-#else
-	  compilationProblem = true;
-	  cout << "Two-loop thresholds not compiled.\n";
-	  cout << "Please use the --enable-two-loop-susy-thresholds with the configure option.\n";
-	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
-#endif
-	}
-	else if (starts_with(argv[i], "--disable-three-loop-rges")) {
 #ifdef COMPILE_THREE_LOOP_RGE
+	else if (starts_with(argv[i], "--disable-three_loop_rge"))
 	  USE_THREE_LOOP_RGE = false;
-#else
-	  compilationProblem = true;
-	  cout << "Two-loop thresholds not compiled.\n";
-	  cout << "Please use the --enable-two-loop-susy-thresholds with ./configure\n";
-	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
 #endif
-	}
-	else if (starts_with(argv[i], "--three-loop-rges")) {
-#ifdef COMPILE_THREE_LOOP_RGE
-	  USE_THREE_LOOP_RGE = true;
-#else
-	  compilationProblem = true;
-	  cout << "Three-loop RGEs not compiled.\n";
-	  cout << "Please use the --enable-three-loop-rges with ./configure\n";
-#endif
-	}
 	else if (starts_with(argv[i], "--QEWSB=")) 
 	  QEWSB = get_value(argv[i], "--QEWSB=");
       }
-      if (compilationProblem) exit(-1);
       if (tanb < 1.5 || tanb > 70.) {
 	ostringstream ii; 
 	ii << "tanBeta=" << tanb 
@@ -465,13 +724,12 @@ int main(int argc, char *argv[]) {
 		    }
 		    break;
 		  case 12: double d; kk >> d;
-		    if (d < MZ && d > 0.) {
+		    if (d < MZ) {
 		      ostringstream ii;
 		      ii << "MODSEL 12 selecting silly scale Qmax"
 			 << "(" << d << ") < MZ to output" << endl;
 		      throw ii.str();
 		    }
-		    if (close(d + 1., 0., EPSTOL)) gutScaleOutput = true;
 		    qMax = d; break;
 		  default:
 		    cout << "# WARNING: don't understand first integer " 
@@ -1175,19 +1433,24 @@ int main(int argc, char *argv[]) {
 		    // AVB: can be set to just 1 Turn on all thresholds
 		    //      can be set to 1 + 2 * ( flags for included thresholds)
 		    //      to have a finer control over included thresholds
-		    if (num > 0) {
+		    if (num % 2 == 1) {
 		      USE_TWO_LOOP_THRESHOLD = true;
-		      r->included_thresholds = (num & 
-						    (ENABLE_TWO_LOOP_AS_AS_YUK | 
-						     ENABLE_TWO_LOOP_MT_AS | 
-						     ENABLE_TWO_LOOP_MB_AS | 
-						     ENABLE_TWO_LOOP_MB_YUK | 
-						     ENABLE_TWO_LOOP_MTAU_YUK));
+		      if (num == 1) 
+			r->included_thresholds = (ENABLE_TWO_LOOP_AS_AS_YUK |
+						  ENABLE_TWO_LOOP_MT_AS | 
+						  ENABLE_TWO_LOOP_MB_AS | 
+						  ENABLE_TWO_LOOP_MB_YUK | 
+						  ENABLE_TWO_LOOP_MTAU_YUK);
+		      else 
+			r->included_thresholds = ((num >> 1) & 
+						  (ENABLE_TWO_LOOP_AS_AS_YUK | 
+						   ENABLE_TWO_LOOP_MT_AS | 
+						   ENABLE_TWO_LOOP_MB_AS | 
+						   ENABLE_TWO_LOOP_MB_YUK | 
+						   ENABLE_TWO_LOOP_MTAU_YUK));
 				   
-		    } else if (num == 0) { 
-		      USE_TWO_LOOP_THRESHOLD = false;  
-		      r->included_thresholds = 0; 
-		    } else cout << "WARNING: incorrect setting for SOFTSUSY Block 20 (should be an integer number in range 0,...,31)\n";
+		    } else if (num == 0) USE_TWO_LOOP_THRESHOLD = false;
+		    else cout << "WARNING: incorrect setting for SOFTSUSY Block 20 (should be 0 or 1)\n";
 		    break;
 		  }
 #endif
@@ -1224,6 +1487,10 @@ int main(int argc, char *argv[]) {
 	  ostringstream ii;
 	  ii << "Split GMSB BCs should not supported with alternative EWSB\n";
 	  throw ii.str();
+	  /// Split GMSB BCs: different
+	  /*	r->setSusyMu(400.);
+		r->setMuCond(400.);
+		r->setMaCond(400.);*/
 	}
 	sgnMu = 0; // Flags different BCs
       }
@@ -1324,26 +1591,77 @@ int main(int argc, char *argv[]) {
       oneset.toMz();
       
     switch (susy_model) {
-    case MSSM:
-      r->fixedPointIteration(boundaryCondition, mgutGuess, pars, sgnMu, tanb, 
-			     oneset, gaugeUnification, ewsbBCscale);
-      
-      /// Fix to mh if additional operators are assumed
-      if (desiredMh > 0.1) {
-        sPhysical s(r->displayPhys()); s.mh0(1) = desiredMh; r->setPhys(s);
-      }
-      
-      if (gutScaleOutput) qMax = r->displayMxBC();
+    case MSSM: {
+      /// Switch off 3-loop RGEs etc
+      double cs = 0.;
+      double omega2=asin(2.), msqAv2 = 0.;  bool uni = gaugeUnification;
+      USE_THREE_LOOP_RGE = false;   USE_TWO_LOOP_THRESHOLD = false;
+      MssmSoftsusy twoLoop;
+      twoLoop.useAlternativeEwsb(); twoLoop.setMuCond(2500.); 
+      twoLoop.setMaCond(2500.); 
+      getMssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mgutGuess, 
+		      uni, omega2, msqAv2, boundaryCondition, ewsbBCscale, cs);
+      //      cout << twoLoop;
 
-      r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
-				numPoints, ewsbBCscale);
+
+    /// Just 2-loop thresholds for strong coupling constant
+      double omegaAs = asin(2.), msqAvAs = 0., csAs = 0.; mgutGuess = 2.5e3;
+      MssmSoftsusy twoLoopAs; 
+      twoLoopAs.useAlternativeEwsb(); twoLoopAs.setMuCond(2500.); 
+      twoLoopAs.setMaCond(2500.); 
+      twoLoopAs.included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
+      USE_TWO_LOOP_THRESHOLD = true;
+            getMssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mgutGuess, 
+		      uni, omegaAs, msqAvAs, boundaryCondition, ewsbBCscale, 
+		      csAs); 
+      //      cout << twoLoopAs;
+
+    /// Just 2-loop strong thresholds for mt
+    USE_TWO_LOOP_THRESHOLD = false;
+    double omegaMt = asin(2.), msqAvMt = 0., csMt = 0.; mgutGuess = 2.5e3;
+    MssmSoftsusy twoLoopMt; 
+    twoLoopMt.useAlternativeEwsb(); twoLoopMt.setMuCond(2500.); 
+    twoLoopMt.setMaCond(2500.); 
+    twoLoopMt.included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
+    USE_TWO_LOOP_THRESHOLD = true;
+    getMssmAndOmega(twoLoopMt, pars, tanb, sgnMu, oneset, mgutGuess, 
+		    uni, omegaMt, msqAvMt, boundaryCondition, ewsbBCscale,
+		    csMt); 
+    //    cout << twoLoopMt;    
+
+    /// Just 2-loop for mb,mtau
+    USE_TWO_LOOP_THRESHOLD = false;
+    double omegaMb = asin(2.), msqAvMb = 0., csMb = 0.; mgutGuess = 2.5e3;
+    MssmSoftsusy twoLoopMb; 
+    twoLoopMb.useAlternativeEwsb(); twoLoopMb.setMuCond(2500.); 
+    twoLoopMb.setMaCond(2500.); 
+    twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
+    twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
+    twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
+    USE_TWO_LOOP_THRESHOLD = true;
+    getMssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mgutGuess, 
+    		    uni, omegaMb, msqAvMb, boundaryCondition, ewsbBCscale, 
+    		    csMb); 
+    //    cout << twoLoopMb;    
+
       
-      if (r->displayProblem().test()) {
-	cout << "# SOFTSUSY problem with point: " << r->displayProblem() 
-	     << endl;
-        return -1;
-      }
-      break;
+    /// 3-loop etc ON
+    double omega3 = asin(2.), msqAv3 = 0., cs3 = 0.; mgutGuess = 2.5e3;
+    USE_THREE_LOOP_RGE = true; 
+    USE_TWO_LOOP_THRESHOLD = true; 
+    MssmSoftsusy threeLoop;
+    threeLoop.useAlternativeEwsb(); threeLoop.setMuCond(2500.); 
+    threeLoop.setMaCond(2500.); 
+    getMssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mgutGuess, 
+		    uni, omega3, msqAv3, boundaryCondition, ewsbBCscale, 
+		    cs3); 
+
+    writeTable(twoLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
+	       omega2, omegaAs, omegaMt, omegaMb, omega3,
+	       msqAv2, msqAvAs, msqAvMt, msqAvMb, msqAv3, 
+	       cs, csAs, csMt, csMb, cs3);
+    }
+    break;
     case NMSSM: {
       nmssm_input.check_setup();
 
