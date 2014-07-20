@@ -602,8 +602,22 @@ where $\Sigma_t(M_Z)$ represents the MSSM top quark mass threshold corrections
 The two-loop threshold corrections to the bottom and tau Yukawa couplings 
 have an effect, particularly on $m_{\chi_3^0}$ and $m_{\chi_4^0}$ through
 $\mu$ in a similar way to the effect from $\Delta m_t$, as explained above.
-The sbottom mass undergoes a 2$\%$ relative change, whereas the other masses
-are less effected.
+%
+In addition, the masses of heavy higgs bosons are shifted by several percents.
+It is due to the fact that the running mass of CP-odd neutral higgs $m_A$ 
+is given at tree-level by the well-known relation 
+\begin{eqnarray}
+	m_A^2 = \frac{1}{\cos 2 \beta} \left( m_{H_2}^2 - m_{H_1}^2 \right) - M_Z^2,
+	\label{eq:mA}
+\end{eqnarray}
+into which both $m_{H_1}^2$ and $m_{H_2}^2$ enter on equal footing. 
+Since the running of $m_{H_1}^2$ depends on the bottom Yukawa coupling \cite{Martin:1993zk},
+the reduction of the corresponding boundary condition at $M_Z$ leads via RGE
+to comparatively larger values of $m_{H_1}^2$ at $Q=M_{SUSY}$, which, in turn, 
+increase\footnote{Both $\cos 2\beta$ in \eqref{eq:mA} and $\tan 2\beta$ in \eqref{higgsMin} are negative for $\tan\beta>1$.} the value of $m_A^2$. 
+The effect due to $\Delta m_t$ is obviously opposite and tends to compensate that of $\Delta m_b$ \cite{Bednyakov:2010ni}. 
+One can also mention that the sbottom mass undergoes a 2$\%$ relative change, whereas the other masses
+are less affected by two loop contribution to $\Delta m_b$. 
 
 The smaller $\Delta \alpha_s$ changes in the gluino and average squark masses
 lead to associated 
@@ -1040,8 +1054,9 @@ incorrectly. Ideally, the fit would be performed including a calculated
  $\mathcal O(\alpha_s \alpha_t) $ and $\mathcal O(\alpha_t^2)$ corrections to
  $m_t$. 
  A more formidable future enterprise would
- be to  include direct two-loop threshold corrections to sparticle masses. The
- corrections that we have included are necessary if such corrections are to
+ be to  include direct two-loop threshold corrections to sparticle masses (e.g., 
+ with the help of TSIL \cite{Martin:2005qm} package~\cite{Martin:2005ch,Martin:2006ub}). 
+ The corrections that we have included are necessary if such corrections are to
  increase the accuracy of sparticle mass predictions.  
 
  We have examined the effects of the higher order terms that we include
@@ -1062,7 +1077,7 @@ incorrectly. Ideally, the fit would be performed including a calculated
  GUT-scale  threshold corrections. 
  
  We have provided details in the Appendix of how to compile and run a new
- publicly available version of {\tt    SOFTSUSY}~that incorporates the higher
+ publicly available version of {\tt    SOFTSUSY} that incorporates the higher
  order terms discussed above\footnote{There may be minimal changes (from a
    user's 
  perspective) to this procedure in future versions where additional
@@ -1081,7 +1096,10 @@ MULTIDARK CSD2209-00064, the Invisibles European ITN project
 origen de la Materia" (FPA2011-29678) and the ``Fenomenologia y Cosmologia de
 la Fisica mas alla del Modelo Estandar e lmplicaciones Experimentales en la
 era del LHC" (FPA2010-17747) MEC projects. BCA thanks the Cambridge SUSY
-working group for useful discussions. 
+working group for useful discussions.
+AVB is immensely grateful to A.~Sheplyakov for providing 
+a code for dealing with {\tt GiNaC} archives. The work of AVB is supported
+by the RFBR grants~12-12-02-00412-a,~14-02-00494-a, and the Russian President Grant~MK-1001.2014.2.
 
 \appendix
 
@@ -1090,13 +1108,13 @@ working group for useful discussions.
 
 The two freely available programs {\tt CLN} (at least version 1.3.1) and {\tt
   GiNaC} (at least version 1.3.5) should be installed before the user attempts
-to install {\tt SOFTSUSY} with the higher order corrections. However, 
+to install {\tt SOFTSUSY} with the higher order threshold corrections. However, 
 {\tt SOFTSUSY} should compile without problems without these libraries if our
-higher order 
-corrections are not required. 
+higher order corrections are not required. 
 Two compilation arguments to the {\tt ./configure}~command are provided:
 \begin{itemize}
-	\item[] \verb|--enable-three-loop-rge-compilation| - compile three-loop RGEs in the MSSM 
+	\item[] \verb|--enable-three-loop-rge-compilation| - compile three-loop RGEs in the MSSM\footnote{ {\tt GiNaC} and {\tt CLN} are not required 
+		for three-loop RGEs.}
 	\item[] \verb|--enable-full-susy-threshold-compilation| - compile
           additional two-loop threshold corrections to the third generation
           Yukawa couplings and the strong coupling constant.
@@ -1187,7 +1205,7 @@ include them. If only some of the additional two loop threshold corrections
 are required, they can be switched with a finer control by changing the value
 of the {\tt SOFTSUSY Block 20} parameter, as specified below.
 
-The two-loop threshold corrections in a {\tt MssmSoftsusy} object are
+The considered two-loop threshold corrections in a {\tt MssmSoftsusy} object are
 controlled by an {\tt integer} parameter \verb|included_thresholds|. 
 Depending upon the value of this integer, different approximations of the
 various thresholds are included. For SUSY Les Houches Accord input,
