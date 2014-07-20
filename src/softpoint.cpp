@@ -144,8 +144,10 @@ int main(int argc, char *argv[]) {
   /// Non model specific options
   if (strcmp(argv[1], "leshouches")) {
       for (int i = 2; i < argc; i++) {
-	if (starts_with(argv[i],"--mbmb=")) 
+	if (starts_with(argv[i],"--mbmb=")) {
 	  oneset.setMass(mBottom, get_value(argv[i], "--mbmb="));
+	  oneset.setMbMb(get_value(argv[i], "--mbmb="));
+	}
 	else if (starts_with(argv[i],"--tol=")) 
 	  TOLERANCE = get_value(argv[i], "--tol=");
 	else if (starts_with(argv[i],"--mt=")) 
@@ -1323,13 +1325,12 @@ int main(int argc, char *argv[]) {
       
       oneset.toMz();
       
-    switch (susy_model) {
     case MSSM:
       r->fixedPointIteration(boundaryCondition, mgutGuess, pars, sgnMu, tanb, 
 			     oneset, gaugeUnification, ewsbBCscale);
       
       /// Fix to mh if additional operators are assumed
-      if (desiredMh > 0.1) {
+      if (desiredMh > 1) {
         sPhysical s(r->displayPhys()); s.mh0(1) = desiredMh; r->setPhys(s);
       }
       
