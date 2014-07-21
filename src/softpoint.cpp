@@ -145,10 +145,10 @@ int main(int argc, char *argv[]) {
   if (strcmp(argv[1], "leshouches")) {
       for (int i = 2; i < argc; i++) {
 	if (starts_with(argv[i],"--mbmb=")) {
-	  double mbin = get_value(argv[i], "--mbmb=");
-	  oneset.setMass(mBottom, mbin);
-	  oneset.setMbMb(mbin);
-	} else if (starts_with(argv[i],"--tol=")) 
+	  double mbIn = get_value(argv[i], "--mbmb=");
+	  oneset.setMbMb(mbIn);
+	}
+	else if (starts_with(argv[i],"--tol=")) 
 	  TOLERANCE = get_value(argv[i], "--tol=");
 	else if (starts_with(argv[i],"--mt=")) 
 	  oneset.setPoleMt(get_value(argv[i], "--mt="));
