@@ -7284,7 +7284,8 @@ void Softsusy<SoftPars>::calcDrBarGauginos(double beta, double mw, double mz, do
 }
 template<class SoftPars>
 void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2, 
-                                        double /* sinthDRbar */, drBarPars & eg) {
+                                        double  sinthDRbar, 
+					drBarPars & eg) {
    if (eg.mt > 200. || eg.mt < 50.) {
     /// Gone badly off-track
     flagProblemThrown(true);
@@ -7294,27 +7295,11 @@ void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2,
   double mAsq;
   mAsq = displayM3Squared() / (sin(beta) * cos(beta));
 
+  bool a0Tach = false;
+
   if (mAsq < 0.) {
-    /* Previous solution: if we're at MZ, use the pole mA^2
-       if (close(displayMu(), MZ, tol)) {
-      double mApole = physpars.mA0(1); /// physical value
-      setDrBarPars(eg);
-      
-      double piaa = piAA(mApole, displayMu()); 
-      double t1Ov1 = doCalcTadpole1oneLoop(eg.mt, sinthDRbar), 
-      t2Ov2 = doCalcTadpole2oneLoop(eg.mt, sinthDRbar); 
-      double poleMasq = 
-      (displayMh2Squared() - t2Ov2 - 
-      displayMh1Squared() + t1Ov1) / 
-      cos(2.0 * beta) - mz2 - piaa +
-      sqr(sin(beta)) * t1Ov1 + sqr(cos(beta)) * t2Ov2;
-      
-      mAsq = poleMasq;
-      
-      if (mAsq < 0.) { flagTachyon(A0); mAsq = fabs(poleMasq); }
-      }
-     */
-    flagTachyon(softsusy::A0); 
+    if (!close(displayMu(), MZ, 1.0e-6)) flagTachyon(softsusy::A0); 
+    else a0Tach = true;
     if (mAFlag == false) mAsq = ccbSqrt(mAsq); 
     /// This may be  a bad idea in terms of convergence
     else mAsq = fabs(mAsq);
@@ -7340,12 +7325,39 @@ void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2,
 
   int pos;
   eg.mh0(1) = temp.min(pos); eg.mh0(2) = temp.max(); 
-  eg.mA0(1) = sqrt(mAsq); eg.mHpm = sqrt(mAsq + mw2);  
+  // Previous solution: if we're at MZ, use the pole mA^2
+  if (close(displayMu(), MZ, 1.0e-6) && a0Tach) { 
+      double mApole = physpars.mA0(1); /// physical value
+      setDrBarPars(eg);
+      
+      double piaa = piAA(mApole, displayMu()); 
+      double t1Ov1 = doCalcTadpole1oneLoop(eg.mt, sinthDRbar), 
+      t2Ov2 = doCalcTadpole2oneLoop(eg.mt, sinthDRbar); 
+      double poleMasq = 
+	(displayMh2Squared() - t2Ov2 - 
+	 displayMh1Squared() + t1Ov1) / 
+	cos(2.0 * beta) - mz2 - piaa +
+	sqr(sin(beta)) * t1Ov1 + sqr(cos(beta)) * t2Ov2;
+      
+      mAsq = poleMasq;
+      
+      if (mAsq < 0.) { 
+	flagTachyon(A0); 
+	if (mAFlag == false) mAsq = ccbSqrt(mAsq); 
+	else mAsq = fabs(poleMasq); 
+      }
+  }
+  
+  eg.mA0(1) = sqrt(mAsq); 
+  eg.mHpm = sqrt(mAsq + mw2);  
 }
 
 //PA: sets the neutral current couplings
 template<class SoftPars>
-void Softsusy<SoftPars>::setNeutCurrCouplings(double sinthDRbar, double & sw2, double & guL, double & gdL, double & geL, double & guR, double & gdR, double & geR ) {
+void Softsusy<SoftPars>::setNeutCurrCouplings(double sinthDRbar, double & sw2, 
+					      double & guL, double & gdL, 
+					      double & geL, double & guR, 
+					      double & gdR, double & geR) {
   sw2 = sqr(sinthDRbar); 
   guL = 0.5 - 2.0 * sw2 / 3.0;
   gdL = -0.5 + sw2 / 3.0;
@@ -7354,6 +7366,7 @@ void Softsusy<SoftPars>::setNeutCurrCouplings(double sinthDRbar, double & sw2, d
   gdR = -sw2 / 3.0;
   geR = -sw2;
 }
+
 //PA: sets the Yukawas and Trilinears
 template<class SoftPars>
 void Softsusy<SoftPars>::calcDRTrilinears(drBarPars & eg, double vev, double beta) {
