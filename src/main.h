@@ -34,8 +34,8 @@
     arXiv:1109.3735</a>.<p>
     If you use the three-loop RGEs or two-loop threshold corrections, please 
     cite [1] and<br>
-    [5] <a href="http://arxiv.org/abs/arXiv:????.???">B.C. Allanach, A. 
-    Bednyakov and R. Ruiz, arXiv:????.????</a>
+    [5] <a href="http://arxiv.org/abs/arXiv:1407.6130">B.C. Allanach, A. 
+    Bednyakov and R. Ruiz, arXiv:1407.6130</a>
 
     \section documentation Documentation
     These web-pages contain the documentation of the latest SOFTSUSY code.

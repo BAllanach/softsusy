@@ -22,7 +22,7 @@ DAMTP-2014-42\\
 IFIC/14-47
 \end{flushright}
 
-\title{Higher Order Corrections and Unification in
+\title{Higher Order Corrections, the Higgs Mass and Unification in
   the Minimal Supersymmetric Standard Model: {\tt SOFTSUSY3.5.0}}
 
 \author[damtp]{B.C.~Allanach}
@@ -42,7 +42,9 @@ IFIC/14-47
   model   renormalisation group equation terms and some leading two-loop
   threshold corrections on gauge and Yukawa
   unification: each being one loop higher order than 
-  current public spectrum calculators.
+  current public spectrum calculators. We also explore the effect of the
+  higher order terms on the lightest
+  CP even Higgs mass prediction, which is often 2-3 GeV. 
   We illustrate our results in the constrained minimal supersymmetric standard
   model. Neglecting threshold corrections at the grand unified scale, the
   discrepancy between the unification scale
@@ -136,7 +138,7 @@ Imposing softly-broken supersymmetry upon the Standard Model provides a
 well-known answer to this question, and this approach has been pursued
 with vigour in the literature and at various high energy colliders (see, for
 example, Refs.~\cite{Aad:2013wta,Chatrchyan:2014lfa}), where 
-the Standard Model particles' supersymmetric partners predicted are being
+the predicted Standard Model particles' supersymmetric partners are being
 searched for. To date, no unambiguous direct collider signals of
 supersymmetric particles have been found, and a significant portion of the
 most interesting parameter space has been ruled out. 
@@ -144,38 +146,55 @@ In order to rule a parameter point out, one predicts sparticle masses using
 a supersymmetric spectrum generator and then simulates various collisions,
 comparing to data to see if the predicted signals are significantly excluded
 or not (or conversely, to see if there is statistically significant evidence
-for a signal). 
+for a signal). The accurate measurement of a Higgs boson
+now has become an important constraint upon any supersymmetric model. 
+In order for this constraint to be as useful and as accurate as possible, the
+prediction of the MSSM Higgs masses needs to be as accurate as possible. 
+With a current estimated theoretical uncertainty in its prediction of around 3
+GeV for `normal' supersymmetric spectra (i.e.\ sparticles in the TeV range), 
+a reduction in the theoretical uncertainty in the lightest CP even Higgs
+mass\footnote{In a large part of parameter space the lightest CP even Higgs
+  boson 
+  behaves approximately like the Standard Model Higgs boson.}
+prediction is welcome. 
 
 There are currently several available sparticle generators: {\tt
-  ISAJET}~\cite{Paige:2003mg}, {\tt FlexibleSUSY}~\cite{Athron:2014yba},
+  ISAJET}~\cite{Paige:2003mg}, 
 {\tt 
   SOFTSUSY}~\cite{Allanach:2001kg,Allanach:2009bv,Allanach:2011de,Allanach:2013kza}, 
 {\tt SPheno}~\cite{Porod:2003um},
-{\tt SUSEFLAV}~\cite{Chowdhury:2011zr} and
-{\tt SUSPECT}~\cite{Djouadi:2002ze}. Even specialising to the minimal
+{\tt SUSEFLAV}~\cite{Chowdhury:2011zr}, 
+{\tt SUSPECT}~\cite{Djouadi:2002ze}
+as well as tailor made generators {\tt FlexibleSUSY}~\cite{Athron:2014yba} and
+{\tt SphenoMSSM}~\cite{Porod:2011nf} 
+based on {\tt SARAH}~\cite{Staub:2011dp,Staub:2013tta}.
+Even specialising to the minimal
 supersymmetric standard model (MSSM) with real parameters, 
-they have slightly different
+these programs have slightly different
 approximations, resulting in numerical predictions that are not
 identical~\cite{Allanach:2003jw,Allanach:2004rh,Belanger:2005jk}. 
 Even when calculations have at the same headline order of approximation (for
-example, two-loop renormalisation group equations (RGEs) and one-loop threshold corrections at $M_Z$),
+example, two-loop renormalisation group equations (RGEs) and one-loop
+threshold corrections at $M_Z$), 
 legitimate differences can result from the fact that higher order corrections
 contribute to the calculation implicitly in different ways. 
 If we take the example of a one-loop threshold correction to, for example, 
-the prediction of the stop mass, there are various contributions from Standard
+the prediction of the stop mass, there are various
+contributions from Standard 
 Model and supersymmetric particles. If we consider an internal loop with
 a gluino propagator, which mass do we use for the gluino? One achieves
 numerically distinct results if one uses two of the obvious choices: the
 pole mass or the modified dimensional reduction ($\overline{DR}$) running
 mass. The difference between the two prescriptions is a two-loop threshold
-effect, and so either choice is allowed if one is working only at one loop order.
+effect, and so either choice is allowed if one is working only at one loop
+threshold effect order (numerically this is equivalent to working to two-loop
+order in the RGEs, which are enhanced by a large logarithm).
 Such choices occur hundreds of times within the calculation, multiplying the
 possibilities for numerical differences. Thus, the numerical differences
 between the spectrum calculators gives a very rough estimate of the size of
 theoretical uncertainties associated with the calculation. 
 
-
-The obvious way to reduce such a theoretical uncertainty is to incorporate
+One obvious way to reduce such a theoretical uncertainty is to incorporate
 higher order effects, pushing the associated theoretical uncertainty to yet
 higher orders.
 That is what we have done for the present paper: we have
@@ -229,8 +248,6 @@ None of $\Delta m_t$, $\Delta \alpha_s$ or $\Delta m_b, m_\tau$ have been, to
 the best of our knowledge, made available to the public in a supported
 computer program before. 
 
-
-
 We shall illustrate our results with two different assumptions about
 supersymmetry breaking soft terms. The first is the
 constrained minimal supersymmetric standard model (CMSSM), which makes a
@@ -242,7 +259,8 @@ scalar mass is set to a common value $m_0$ at a high scale $M_{GUT}\sim
 here to be the scale at which the electroweak gauge couplings unify), the
 gaugino masses are set to a common value $M_{1/2}$ at $M_{GUT}$ and the 
 SUSY breaking trilinear scalar couplings are all fixed to a value $A_0$ at
-$M_{GUT}$. The other relevant input parameters are $\tan \beta$, the ratio of the
+$M_{GUT}$. The other relevant input parameters are $\tan \beta$, the ratio of
+the 
 two Higgs vacuum expectation values, and the sign of a parameter $\mu$ that
 appears in the Higgs potential (its magnitude is fixed by the empirically
 measured central value of 
@@ -330,7 +348,8 @@ study of the higher order effects as well as to present a public version of {\tt
   SOFTSUSY} that incorporates them, along with instructions on how to use it.
 In particular, we shall study the effects on Yukawa and gauge unification,
 whose accuracy is improved by the inclusion of the higher orders.
-In the prediction of the mass spectrum, there are other, two-loop direct mass
+In the prediction of the sparticle mass spectrum, there are other, two-loop
+direct mass 
 threshold 
 contributions of the same order as the ones that we have included. The mass
 spectrum does not therefore increase in precision, but the shift in masses
@@ -338,6 +357,9 @@ observed
 is a good estimator for the size of the theoretical uncertainty induced by
 such two-loop direct mass threshold contributions. We shall study these
 uncertainties and the induced uncertainties on other observables.
+Our Higgs mass prediction includes direct two-loop threshold effects of the
+same order as the ones that we have included, and so its accuracy is improved
+by the inclusion of higher orders. 
 We go beyond the pioneering study Ref.~\cite{Bednyakov:2010ni} in the
 following ways: in section~\ref{sec:results}, we show case the effect of the
 higher order terms in a CMSSM  
@@ -364,8 +386,8 @@ accuracy mode in a publicly available version of {\tt SOFTSUSY}.
 \section{Effects of Higher Order Terms
  \label{sec:results}} 
 Here, we shall examine how the higher order terms change unification
-predictions and the sparticle spectrum. The accuracy of the unification 
-calculation
+predictions and the Higgs and sparticle spectrum. The accuracy of the
+unification  calculation
 is
 improved with the additional terms, and we shall investigate how much they
 affect the accuracy with which gauge and Yukawa unification is (or is not)
@@ -635,8 +657,8 @@ spectrum that we see as a result of the higher order corrections are
 indicative of the size of theoretical uncertainties in 
 each mass prediction, but that the results with the higher order corrections
 are only as accurate as those without them. 
-However, our results on Yukawa and gauge couplings and unification {\em are}
-more accurate. 
+However, our results on Higgs mass predictions, Yukawa and gauge couplings and
+unification {\em are} more accurate. 
 
 For brevity, we have defined 
 \begin{equation}
@@ -992,13 +1014,16 @@ observations.
  and $\mathcal O(\alpha_s \alpha_{t,b})$ 
  corrections to $\alpha_s$, and $\mathcal O(\alpha_s^2)$, 
  $\mathcal O(\alpha_s \alpha_{t,b})$, $\mathcal O(\alpha_{t,b}^2)$, $\mathcal O(\alpha_t \alpha_b)$, and $\mathcal O(\alpha_{t,b} \alpha_\tau)$ corrections to
- $m_b$. $\mathcal O(\alpha_\tau^2), \mathcal O(\alpha_{t,b} \alpha_\tau)$ 
- corrections to $m_\tau$ are also included. These corrections make gauge and
- Yukawa unification  predictions more accurate. They also give a good estimate
- for the size of theoretical uncertainties in the sparticle mass predictions
- from higher order corrections. We report a 2-3 GeV change in
+ $m_b$. $\mathcal O(\alpha_tau^2), \mathcal O(\alpha_{t,b} \alpha_\tau)$ 
+ corrections to $m_\tau$ are also included. These corrections make higgs mass
+ predictions and gauge and
+ Yukawa unification predictions more accurate. 
+ We report up to a 3 GeV change in
  the prediction  of 
- the lightest CP even Higgs mass. Some sparticle masses have larger 10$\%$
+ the lightest CP even Higgs mass.
+ The inclusion of the higher order terms also gives a good estimate
+ for the size of theoretical uncertainties in the sparticle mass predictions
+ from higher order corrections. Some sparticle masses have larger 10$\%$
  uncertainties when running to and from the GUT scale, as in the CMSSM, where
  small threshold effects become amplified by sensitive renormalisation group
  running. On the other hand, in the pMSSM, where there is only running between
@@ -1037,11 +1062,15 @@ incorrectly. Ideally, the fit would be performed including a calculated
  calculation and addition of these terms. 
  We note that currently, no other spectrum calculator contains our higher
  order terms, which help to improve the accuracy of the higgs mass
- prediction. 
- In order to predict the Higgs masses with the highest available accuracy, one
- should use {\tt SOFTSUSY} in conjunction with a recent version of {\tt
-   FeynHiggs}~\cite{Borowka:2014wla}, which contains direct higher order threshold corrections to the
- Higgs masses. 
+ prediction. There has been a tendency in the recent literature for some
+ authors to increase the SUSY breaking mass scales to several tens of TeV, or
+ even higher. 
+ In this case, to get a $m_h$ prediction that is very accurate, the fixed
+ order calculations employed in {\tt SOFTSUSY} could be subject to corrections
+ of several GeV~\cite{Draper:2013oza,Bagnaschi:2014rsa}. For a more
+ accurate prediction, log resummation 
+ should be implemented: another important possible future direction for
+ research. 
 
  There has been attention in the literature 
  on the question of whether full top-bottom-tau Yukawa
@@ -1099,7 +1128,9 @@ era del LHC" (FPA2010-17747) MEC projects. BCA thanks the Cambridge SUSY
 working group for useful discussions.
 AVB is immensely grateful to A.~Sheplyakov for providing 
 a code for dealing with {\tt GiNaC} archives. The work of AVB is supported
-by the RFBR grants~12-12-02-00412-a,~14-02-00494-a, and the Russian President Grant~MK-1001.2014.2.
+by the RFBR grants~12-12-02-00412-a,~14-02-00494-a, and the Russian President
+Grant~MK-1001.2014.2. We thank P Slavich for helpful communication and
+suggestions. 
 
 \appendix
 

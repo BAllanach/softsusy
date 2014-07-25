@@ -1,3 +1,5 @@
+<li>  24/7/14 When MA^2(MZ)<0, use MA(pole) internally within loops. Thanks to
+P Slavich.
 <li>  17/7/14 Added tolerance argument to softpoint.x
 <li>  16/7/14 Put in safety against trying to use higher order corrections without compiling them.
 <li>  16/7/14 Made delt() in two loop higgs routines more robust.
