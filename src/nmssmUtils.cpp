@@ -535,9 +535,9 @@ double sumTol(const Softsusy<SoftParsNmssm> & in, const Softsusy<SoftParsNmssm> 
 
   return sT.max();
 }
-
-// explicit template instantiations
-extern template class Softsusy<SoftParsNmssm>;
-extern template class SoftPars<NmssmSusy, nmsBrevity>;
-
-} // namespace softsusy
+  
+  /// explicit template instantiations
+  extern template class Softsusy<SoftParsNmssm>;
+  extern template class SoftPars<NmssmSusy, nmsBrevity>;
+  
+} ///< namespace softsusy

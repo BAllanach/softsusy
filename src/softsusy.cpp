@@ -2435,8 +2435,9 @@ double Softsusy<SoftPars>::calcRunMtCharginos() const {
 }
 ///  Formulae from hep-ph/9801365: checked but should be checked again!
 /// Implicitly calculates at the current scale.
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunningMt() {
+///  Formulae from hep-ph/9801365: checked but should be checked again!
+/// Implicitly calculates at the current scale.
+template<class SoftPars> double Softsusy<SoftPars>::calcRunningMt() {
   double mtpole  = dataSet.displayPoleMt();
   double resigmat = 0.0; 
   double qcd = 0.0, stopGluino = 0.0, higgs = 0.0; 
@@ -2459,6 +2460,9 @@ double Softsusy<SoftPars>::calcRunningMt() {
     
   resigmat = resigmat * mtpole / (16.0 * sqr(PI));  
 
+  bool ordinaryQcdCorrections = true;
+
+  /// Fixed by Ben: 28/7/14
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
   decoupling_corrections.dmt.one_loop = qcd + stopGluino + higgs + 
      neutralinos + charginoContribution;
@@ -2466,50 +2470,45 @@ double Softsusy<SoftPars>::calcRunningMt() {
   decoupling_corrections.dmt.one_loop /= (-16.0 * sqr(PI));  
 
   if (USE_TWO_LOOP_THRESHOLD) {
+    ordinaryQcdCorrections = false;
     bool & needcalc = decoupling_corrections.dmt.two_loop_needs_recalc; 
-    ///< flag: calculate corrections if 
+    /// flag: calculate corrections if the
     /// two-previous iterations gave different results
     using namespace GiNaC;
     if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) {  
-      	exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-	double dmtas2 =  decoupling_corrections.dmt.two_loop;
-	if (needcalc) {
-      		ex test = tquark_corrections::eval_tquark_twoloop_strong_pole(drbrp);
-		if (is_a<numeric>(test)) dmtas2 = ex_to<numeric>(test).to_double();
-		else { 
-			dout <<" Not numeric: 2loop pole t-quark " << endl;
-		}
-	//        if (close(dmtas2, decoupling_corrections.dmt.two_loop,TWOLOOP_NUM_THRESH)) needcalc = false; 
-	//	dout << " mt: storing" << endl;
-		decoupling_corrections.dmt.two_loop = dmtas2;
-	} else {
-		dout << " mt: no calculation " << endl;
-	}
-	/// back converion Mt -> mt(mu)
-	/// dmt_as2 is already properly normalized
-	/// ones need to normalize only 1-loop contribution
-	double dmtas = (qcd + stopGluino)/(16.0 * sqr(PI));
-	double dmt_MT = (dmtas2 - dmtas*dmtas);
-	resigmat -= mtpole*dmt_MT;
-	dout << "two-loop tquark strong pole contribution: " 
-		<< dmtas2 << endl
-		<< "two-loop total correction (Mt -> mt)" 
-		<< dmt_MT << endl;
-	}
-	
+      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+      double dmtas2 =  decoupling_corrections.dmt.two_loop;
+      if (needcalc) {
+	ex test = tquark_corrections::eval_tquark_twoloop_strong_pole(drbrp);
+	if (is_a<numeric>(test)) dmtas2 = ex_to<numeric>(test).to_double();
+	else dout <<" Not numeric: 2loop pole t-quark " << endl;
+	decoupling_corrections.dmt.two_loop = dmtas2;
+      } else dout << " mt: no calculation " << endl;
+
+      /// back converion Mt -> mt(mu)
+      /// dmt_as2 is already properly normalized
+      /// ones need to normalize only 1-loop contribution
+      double dmtas = (qcd + stopGluino)/(16.0 * sqr(PI));
+      double dmt_MT = (dmtas2 - dmtas*dmtas);
+      resigmat -= mtpole*dmt_MT;
+      dout << "two-loop tquark strong pole contribution: " 
+	   << dmtas2 << endl
+	   << "two-loop total correction (Mt -> mt)" 
+	   << dmt_MT << endl;
     }
-#else //COMPILE_FULL_SUSY_THRESHOLD
-   // 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
-   double mt = forLoops.mt;
-   double l = 2.0 * log(mt / displayMu());
-   double twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
-    (-0.538314 + 0.181534*l - 0.0379954*sqr(l));
-   resigmat = resigmat + mtpole*(twoLoopQcd / (16.0 * sqr(PI)));
-   //decoupling_corrections.dmt.two_loop = twoLoopQcd / (16.0 * sqr(PI)); 
+  } else ordinaryQcdCorrections = true;
 #endif
+  /// default without the higher order corrections: ordinary SQCD
+  if (ordinaryQcdCorrections) {
+    /// 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
+    double mt = forLoops.mt;
+    double l = 2.0 * log(mt / displayMu());
+    double twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
+       (-0.538314 + 0.181534*l - 0.0379954*sqr(l));
+    resigmat = resigmat + mtpole*(twoLoopQcd / (16.0 * sqr(PI)));
+  }
 
   return mtpole + resigmat;
-
 }
 
 template<class SoftPars>
