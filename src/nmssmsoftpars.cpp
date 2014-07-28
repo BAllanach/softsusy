@@ -10,7 +10,8 @@
 
 namespace softsusy {
 
-template class SoftPars<NmssmSusy, nmsBrevity>;
+  /// Maybe we have to comment this for MACs...
+  ///  extern template class SoftPars<NmssmSusy, nmsBrevity>;
 
 const SoftParsNmssm & SoftParsNmssm::operator=(const SoftParsNmssm & s) {
   if (this == &s) return *this;

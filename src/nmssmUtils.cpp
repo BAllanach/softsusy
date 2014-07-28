@@ -537,7 +537,7 @@ double sumTol(const Softsusy<SoftParsNmssm> & in, const Softsusy<SoftParsNmssm> 
 }
 
 // explicit template instantiations
-template class Softsusy<SoftParsNmssm>;
-template class SoftPars<NmssmSusy, nmsBrevity>;
+extern template class Softsusy<SoftParsNmssm>;
+extern template class SoftPars<NmssmSusy, nmsBrevity>;
 
 } // namespace softsusy
