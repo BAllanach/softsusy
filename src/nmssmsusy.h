@@ -118,6 +118,9 @@ public:
   double displayXiF() const;
   /// Returns all parameters as elements of a vector
   const DoubleVector display() const;
+  /// Returns the effective mu parameter
+  double displayMuEff() const { return displaySusyMu() + 
+      displayLambda() * displaySvev() / sqrt(2.0); };
 
   /// Calculate beta functions of SUSY preserving parameters of RPC MSSM
   DoubleVector beta() const;

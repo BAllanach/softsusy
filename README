@@ -1,50 +1,38 @@
 -------------------------------------------------
-		   SOFTSUSY
+		 SOFTSUSY
 -------------------------------------------------
-by: B C Allanach, P Athron, M Bernhardt, D Grellscheid, M Hanussek, C H Kom, P
-		   Slavich, L Tunstall, A Voigt and A G Williams 
+by: B C Allanach, P Athron, A Bednyakov, M Bernhardt, D Grellscheid, M
+		 Hanussek, C H Kom, R Ruiz de Austri, P Slavich, L Tunstall, A
+		 Voigt and A G Williams 
 
 QUICK INSTALLATION AND RUN TEST
 -------------------------------
 
-Download the gzipped tarball, from the SOFTSUSY homepage 
-http://projects.hepforge.org/softsusy/ for instance softsusy-3.4.0.tar.gz. Then,
-type (on a linux box)
+See the "INSTALL" file in this directory for installation instructions. 
 
-> tar -xvzf softsusy-3.4.0.tar.gz
-> cd softsusy-3.4.0
-> ./configure 
-> make
+There are five C++ test programs, four of which can be run by the commands 
+> ./softsusy.x
+> ./rpvsoftsusy.x 
+> ./rpvneut.x
+> ./softsusy-nmssm.x
+The output from these commands can be checked against outputTest,
+rpvOutputTest, neutOutputTest and respectively.
 
-which should compile the code and run some sample commands. There are five C++
-test programs, which can be run by the commands
+You can run the SUSY Les Houches Accord input provided by running the commands
+> ./softpoint.x leshouches < lesHouchesInput
+> ./softpoint.x leshouches < slha2Input
+> ./softpoint.x leshouches < rpvHouchesInput
+You may check the output of these commands against the output files
+lesHouchesOutput, slha2Output and rpvHouchesOutput, respectively, that are
+provided with the SOFTSUSY distribution
 
-> ./softsusy.x > inOutFiles/outputTest
-> ./rpvsoftsusy.x > inOutFiles/rpvOutputTest
-> ./rpvneut.x > inOutFiles/neutOutputTest
-> ./softsusy-nmssm.x > inOutFiles/outputTest-nmssm
+Alternatively, run with command line inputs, for example
+> ./softpoint.x nmssm sugra --m0=125 --m12=125 --a0=-300 --tanBeta=10
+--lambda=0.1 --lambdaAt Msusy
 
-These executables by default DO NOT use any input files, and all output is
-redirected to standard output.
-
-> ./softpoint.x
-
-This last executable requires additional command line options. For instance, 
-you can run the SUSY Les Houches Accord input provided by running the commands
-(the program uses no input aside from standard input)
-> ./softpoint.x leshouches < inOutFiles/lesHouchesInput > inOutFiles/lesHouchesOutput
-> ./softpoint.x leshouches < inOutFiles/nmssmSLHAnoZ3Input > inOutFiles/nmssmSLHAnoZ3Output
-> ./softpoint.x leshouches < inOutFiles/nmssmSLHAZ3Input > inOutFiles/nmssmSLHAZ3Output
-> ./softpoint.x leshouches < inOutFiles/rpvHouchesInput > inOutFiles/rpvHouchesOutput
-> ./softpoint.x leshouches < inOutFiles/slha2Input > inOutFiles/slha2Output
-All of the output files mentioned here are produced by the Makefile, along
-with many others in the benchmarks/ subdirectory. These may be otherwise
-produced by running the commands
-> ./softpoint.x leshouches < benchmarks/filename.in > benchmarks/filename.spec
-for each individual filename listed there.
-
-Alternatively, run it with command line inputs, for example
-> ./softpoint.x nmssm sugra --m0=125 --m12=125 --a0=-300 --tanBeta=10 --lambda=0.1 --lambdaAtMsusy
+See the manual (in the doc/ subdirectory) threeLoop.pdf for instructions on
+how to switch two-loop threshold corrections/three loop RGEs at run-time, once
+they've been compiled. 
 
 INTRODUCTION
 ------------
@@ -76,6 +64,10 @@ arXiv:0903.1805.
 If you use it to calculate neutrino masses and mixings, please cite [1], [3] and
 [4] B.C. Allanach, M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012)
 785, arXiv:1109.3735. 
+
+If you use the three-loop RGEs or two-loop threshold corrections, please cite
+[1] and 
+[5] B.C. Allanach, A. Bednyakov and R. Ruiz de Autri, arXiv:????.????
 
 CALCULATING DECAYS IN THE NMSSM
 -------------------------------
@@ -124,8 +116,30 @@ EXECTUABLE FILES: AFTER INSTALLATION
     mSUGRA point with varying lambda'_{331}(M_GUT). Main program: 
     src/rpvmain.cpp
     * rpvneut.x: example neutrino mass calculating R-parity violating 
-    test program. Main program: src/rpvneut.cpp
+    test program. 
 
+FILES INCLUDED IN THIS DISTRIBUTION
+-----------------------------------
+Source files are to be found in the src/ subdirectory.
+
+INPUT AND INFO FILES
+--------------------
+    * [README] contains installation instructions and a list of included files
+    * [inOutFiles/outputTest] is the output from the test program
+    * [inOutFiles/slha2Input] is an alternative input file in the SUSY Les
+    Houches Accord 
+    2 format for SPS1a' 
+    * [inOutFiles/slha2Output] is the result of running with the above input
+    file and 
+    includes flavour violation, for inclusion into codes like SusyBsg1.3 which
+    include flavour corrections     
+    * [inOutFiles/lesHouchesInput] is an alternative input file in the SUSY  
+    Les Houches Accord format
+    * [inOutFiles/rpvHouchesInput] is an alternative input file in the SUSY 
+    Les Houches Accord format for R-parity violation
+    * [inOutFiles/rpvHouchesOutput] is the output from the R-parity violating
+    test program rpvmain.cpp
+    
 LICENSE
 -------
 

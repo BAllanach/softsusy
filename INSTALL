@@ -7,6 +7,60 @@ Software Foundation, Inc.
 This file is free documentation; the Free Software Foundation gives
 unlimited permission to copy, distribute and modify it.
 
+Prerequisites:
+--------------
+
+SOFTSUSY should compile in its ordinary mode with the only prerequisites
+being a fortran77 and a C++ compiler. 
+
+However, to include the three-loop running with leading two-loop thresholds
+for the strong coupling constant and the third generation of fermions within
+the MSSM, one also requires: 
+
+- pkg-config
+- GiNaC >= 1.3.5 (with CLN>=1.3.1)
+
+On Debian/Ubuntu systems one can issue the following command to install 
+the prerequsites:
+
+sudo apt-get install pkg-config libginac-dev
+
+Quick Installation
+------------------
+
+Download the gzipped tarball, from the SOFTSUSY homepage 
+http://projects.hepforge.org/softsusy/ for instance softsusy-3.5.0.tar.gz. Then,
+type (on a linux box)
+
+> tar -xvzf softsusy-3.5.0.tar.gz
+> cd softsusy-3.5.0
+> ./configure
+> make
+> make install
+
+which should compile the code and run some sample commands. 
+
+In order to compile with the  three-loop running with leading two-loop
+thresholds for the strong coupling constant and the third generation of
+fermions, replace the ./configure command above with
+> ./configure --enable-full_three_loop --enable-full_susy_threshold 
+The "make install" command is crucial for the evaluation of two-loop threshold
+effects, since corresponding two-loop expressions are stored in the form of
+GiNaC archive which could be found by main programs (e.g. softpoint.x) only if
+"make install" is issued. After installation, binary files can be found in
+PREFIX/bin where PREFIX is the installation prefix specified during
+configuration (PREFIX defaults to `/usr/local'). 
+
+Additional configure switches:
+ --enable-debug   Debug printing (not related to original SOFTSUSY
+ PRINTOUT option) for the two-loop thresholds and three-loop MSSM RGEs
+ --prefix         Where the installation is done. Notice that the binaries go
+ into prefix/bin   
+
+Since evaluation of two-loop decoupling corrections is rather a time-consuming
+process (especially thresholds for b-quark mass) they are not NOT turned on by
+default. Three-loop RGEs are also switched off. 
+
 Basic Installation
 ==================
 

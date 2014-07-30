@@ -16,6 +16,7 @@ int main() {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
+
   bool gaugeUnification = true, ewsbBCscale = false;
 
   /// Do we include 2-loop RGEs of *all* scalar masses and A-terms, or only the
@@ -59,7 +60,7 @@ int main() {
     const int numPoints = 20; 
     
     /// parameter region
-    double Start = 0. , End = 0.5;
+    double Start = 0. , End = 0.4;
     
     DoubleVector pars(3);
     /// set basic entries in pars

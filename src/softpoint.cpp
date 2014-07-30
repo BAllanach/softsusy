@@ -12,6 +12,9 @@
 
 #include "softpoint.h"
 
+extern template class Softsusy<SoftParsNmssm>;
+extern template class Softsusy<SoftParsMssm>;
+
 // Returns a string with all characters in upper case: very handy
 string ToUpper(const string & s) {
         string result;
@@ -35,7 +38,13 @@ void errorCall() {
   ii << "./softpoint.x gmsb [mGMSB parameters] [other options]\n";
   ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
   ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
-  ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value>\n";
+  ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  if (USE_TWO_LOOP_THRESHOLD) ii << "--two-loop-susy-thresholds switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
+#endif //COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_THREE_LOOP_RGE
+  if (USE_THREE_LOOP_RGE) ii << "--three-loop-rges switches on 3-loop RGEs\n";
+#endif //COMPILE_THREE_LOOP_RGE
   ii << "--mgut=unified sets the scale at which SUSY breaking terms are set to the GUT\n";
   ii << "scale where g1=g2. --mgut=<value> sets it to a fixed scale, ";
   ii << "whereas --mgut=msusy\nsets it to MSUSY\n\n";
@@ -71,7 +80,7 @@ int main(int argc, char *argv[]) {
   double lambdaW = 0., aCkm = 0., rhobar = 0., etabar = 0.;
   NMSSM_input nmssm_input; // NMSSM input parameters
 
-  bool flavourViolation = false;
+  bool flavourViolation = false, gutScaleOutput = false;
 
   int numPoints = 1;
 
@@ -80,7 +89,7 @@ int main(int argc, char *argv[]) {
   // Sets format of output: 4 decimal places
   outputCharacteristics(6);
 
-  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=sugraBcs;
+  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=extendedSugraBcs;
   void (*nmssmBoundaryCondition)(NmssmSoftsusy&, const DoubleVector&) = NmssmMsugraBcs;
 
   QedQcd oneset;
@@ -129,12 +138,18 @@ int main(int argc, char *argv[]) {
   DoubleVector pars(3); 
   
   const char* modelIdent = "";
+
+  bool compilationProblem = false;
   
   /// Non model specific options
   if (strcmp(argv[1], "leshouches")) {
       for (int i = 2; i < argc; i++) {
-	if (starts_with(argv[i],"--mbmb=")) 
-	  oneset.setMass(mBottom, get_value(argv[i], "--mbmb="));
+	if (starts_with(argv[i],"--mbmb=")) {
+	  double mbIn = get_value(argv[i], "--mbmb=");
+	  oneset.setMbMb(mbIn);
+	}
+	else if (starts_with(argv[i],"--tol=")) 
+	  TOLERANCE = get_value(argv[i], "--tol=");
 	else if (starts_with(argv[i],"--mt=")) 
 	  oneset.setPoleMt(get_value(argv[i], "--mt="));
 	else if (starts_with(argv[i],"--alpha_s="))
@@ -149,9 +164,51 @@ int main(int argc, char *argv[]) {
 	  sgnMu = get_valuei(argv[i], "--sgnMu=");
 	else if (starts_with(argv[i], "--mgut=")) 
 	  mgutGuess = mgutCheck(argv[i], gaugeUnification, ewsbBCscale); 
+	else if (starts_with(argv[i], "--disable-two-loop-susy-thresholds")) {
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+	  USE_TWO_LOOP_THRESHOLD = false;
+	  m.setAllTwoLoopThresholds(false);
+#else
+	  compilationProblem = true;
+	  cout << "Two-loop thresholds not compiled.\n";
+	  cout << "Please use the --enable-two-loop-susy-thresholds with the configure option.\n";
+	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
+#endif
+	}
+	else if (starts_with(argv[i], "--two-loop-susy-thresholds")) {
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+	  USE_TWO_LOOP_THRESHOLD = true;
+	  m.setAllTwoLoopThresholds(true);
+#else
+	  compilationProblem = true;
+	  cout << "Two-loop thresholds not compiled.\n";
+	  cout << "Please use the --enable-two-loop-susy-thresholds with the configure option.\n";
+	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
+#endif
+	}
+	else if (starts_with(argv[i], "--disable-three-loop-rges")) {
+#ifdef COMPILE_THREE_LOOP_RGE
+	  USE_THREE_LOOP_RGE = false;
+#else
+	  compilationProblem = true;
+	  cout << "Two-loop thresholds not compiled.\n";
+	  cout << "Please use the --enable-two-loop-susy-thresholds with ./configure\n";
+	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
+#endif
+	}
+	else if (starts_with(argv[i], "--three-loop-rges")) {
+#ifdef COMPILE_THREE_LOOP_RGE
+	  USE_THREE_LOOP_RGE = true;
+#else
+	  compilationProblem = true;
+	  cout << "Three-loop RGEs not compiled.\n";
+	  cout << "Please use the --enable-three-loop-rges with ./configure\n";
+#endif
+	}
 	else if (starts_with(argv[i], "--QEWSB=")) 
 	  QEWSB = get_value(argv[i], "--QEWSB=");
       }
+      if (compilationProblem) exit(-1);
       if (tanb < 1.5 || tanb > 70.) {
 	ostringstream ii; 
 	ii << "tanBeta=" << tanb 
@@ -410,12 +467,13 @@ int main(int argc, char *argv[]) {
 		    }
 		    break;
 		  case 12: double d; kk >> d;
-		    if (d < MZ) {
+		    if (d < MZ && d > 0.) {
 		      ostringstream ii;
 		      ii << "MODSEL 12 selecting silly scale Qmax"
 			 << "(" << d << ") < MZ to output" << endl;
 		      throw ii.str();
 		    }
+		    if (close(d + 1., 0., EPSTOL)) gutScaleOutput = true;
 		    qMax = d; break;
 		  default:
 		    cout << "# WARNING: don't understand first integer " 
@@ -1104,6 +1162,37 @@ int main(int argc, char *argv[]) {
                     if(num == 1) softsusy::SoftHiggsOut = true;
                   }
                      break;
+#ifdef COMPILE_THREE_LOOP_RGE
+		  case 19: {
+                    int num = int(d + EPSTOL);
+		    if (num == 1) USE_THREE_LOOP_RGE = true;
+		    else if (num == 0) USE_THREE_LOOP_RGE = false;
+		    else cout << "WARNING: incorrect setting for SOFTSUSY Block 19 (should be 0 or 1)\n";
+		    break;			     
+		  }
+#endif
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+		  case 20: {
+                    int num = int(d + EPSTOL);
+		    // AVB: can be set to just 1 Turn on all thresholds
+		    //      can be set to 1 + 2 * ( flags for included thresholds)
+		    //      to have a finer control over included thresholds
+		    if (num > 0) {
+		      USE_TWO_LOOP_THRESHOLD = true;
+		      r->included_thresholds = (num & 
+						    (ENABLE_TWO_LOOP_AS_AS_YUK | 
+						     ENABLE_TWO_LOOP_MT_AS | 
+						     ENABLE_TWO_LOOP_MB_AS | 
+						     ENABLE_TWO_LOOP_MB_YUK | 
+						     ENABLE_TWO_LOOP_MTAU_YUK));
+				   
+		    } else if (num == 0) { 
+		      USE_TWO_LOOP_THRESHOLD = false;  
+		      r->included_thresholds = 0; 
+		    } else cout << "WARNING: incorrect setting for SOFTSUSY Block 20 (should be an integer number in range 0,...,31)\n";
+		    break;
+		  }
+#endif
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "
@@ -1137,10 +1226,6 @@ int main(int argc, char *argv[]) {
 	  ostringstream ii;
 	  ii << "Split GMSB BCs should not supported with alternative EWSB\n";
 	  throw ii.str();
-	  /// Split GMSB BCs: different
-	  /*	r->setSusyMu(400.);
-		r->setMuCond(400.);
-		r->setMaCond(400.);*/
 	}
 	sgnMu = 0; // Flags different BCs
       }
@@ -1250,6 +1335,8 @@ int main(int argc, char *argv[]) {
         sPhysical s(r->displayPhys()); s.mh0(1) = desiredMh; r->setPhys(s);
       }
       
+      if (gutScaleOutput) qMax = r->displayMxBC();
+
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
       

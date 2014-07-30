@@ -57,24 +57,18 @@ void extendedSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   for (i=1; i<=3; i++) m.setGauginoMass(i, inputParameters.display(i));
   if (inputParameters.display(25) > 1. && m.displaySetTbAtMX())
     m.setTanb(inputParameters.display(25));
-  m.setTrilinearElement(UA, 1, 1, m.displayYukawaElement(YU, 1, 1) *
-			inputParameters.display(11));
-  m.setTrilinearElement(UA, 2, 2, m.displayYukawaElement(YU, 2, 2) *
-			inputParameters.display(11));
   m.setTrilinearElement(UA, 3, 3, m.displayYukawaElement(YU, 3, 3) *
 			inputParameters.display(11));
-  m.setTrilinearElement(DA, 1, 1, m.displayYukawaElement(YD, 1, 1) *
-			inputParameters.display(12));
-  m.setTrilinearElement(DA, 2, 2, m.displayYukawaElement(YD, 2, 2) *
-			inputParameters.display(12));
   m.setTrilinearElement(DA, 3, 3, m.displayYukawaElement(YD, 3, 3) *
 			inputParameters.display(12));
-  m.setTrilinearElement(EA, 1, 1, m.displayYukawaElement(YE, 1, 1) *
+  m.setTrilinearElement(EA, 3, 3, m.displayYukawaElement(YD, 3, 3) *
 			inputParameters.display(13));
-  m.setTrilinearElement(EA, 2, 2, m.displayYukawaElement(YE, 2, 2) *
-			inputParameters.display(13));
-  m.setTrilinearElement(EA, 3, 3, m.displayYukawaElement(YE, 3, 3) *
-			inputParameters.display(13));
+  m.setTrilinearElement(UA, 1, 1, 0.);
+  m.setTrilinearElement(DA, 1, 1, 0.);
+  m.setTrilinearElement(EA, 1, 1, 0.);
+  m.setTrilinearElement(UA, 2, 2, 0.);
+  m.setTrilinearElement(DA, 2, 2, 0.);
+  m.setTrilinearElement(EA, 2, 2, 0.);
   m.setSoftMassElement(mLl, 1, 1, signedSqr(inputParameters.display(31)));
   m.setSoftMassElement(mLl, 2, 2, signedSqr(inputParameters.display(32)));
   m.setSoftMassElement(mLl, 3, 3, signedSqr(inputParameters.display(33)));
@@ -418,6 +412,9 @@ string recogLsp(int temp, int posj) {
 
 ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
   left << HR << endl;
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  left << "Included higher-order thresholds=" << s.included_thresholds << endl;
+#endif ///< COMPILE_FULL_SUSY_THRESHOLD
   left << "Gravitino mass M3/2: " << s.displayGravitino() << endl;
   left << "Msusy: " << s.displayMsusy() << " MW: " << s.displayMw()
        << " Predicted MZ: " << sqrt(s.displayPredMzSq()) << endl;
@@ -427,7 +424,7 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
   left << "t1/v1(MS)=" << s.displayTadpole1Ms()
        << " t2/v2(MS)=" << s.displayTadpole2Ms() << endl;
   left << HR << "\nPhysical MSSM parameters:\n";
-  left << s.displayPhys();
+  left << s.displayPhys() << endl;
   double mass; int posi, posj, id;
   id = s.lsp(mass, posi, posj);
 
@@ -446,5 +443,9 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
 
   return left;
 }
+
+// explicit template instantiations
+template class Softsusy<SoftParsMssm>;
+template class SoftPars<MssmSusy, sBrevity>;
 
 } // namespace softsusy

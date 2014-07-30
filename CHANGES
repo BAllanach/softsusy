@@ -1,17 +1,18 @@
-<li> 01/04/14 Now works with NMSSMTools_4.2.1
-<li> 25/03/14 mGMSB scale of setting SUSY breaking boundary conditions now
-fixed at Mmess, at it should be (not MGUT) for command line input.
-<li> 24/03/14 Error in flavour violation SLHA input fixed, when inputting
-symmetric matrices in an unfortunate order. Thanks to H Eberl
-<li> 21/03/14 Error when fixing EXTPAR 25 with flavour violation turned on now
-trapped. Thanks to H Eberl
-<li> 21/03/14 Trapped nan in running down to MSUSY: previously, it was giving
-a segfault since it was trying to diagonalise a matrix of nans. (Noticed by A
-Voigt). 
-<li> 25/02/14 F77 compiler now set even if CXXFLAGS isn't. Thanks to S Akula.
-<li> 25/02/14 Fixed DRbar conversion of tau and b masses
-<li> 08/01/14 README made clearer on the input/output files
-<li> 07/01/14 outputTest files added
-<li> 08/12/13 Changes to manuals: taken MSSM stuff out of NMSSM manual
-<li> 12/12/13 SLHA printout doesn't take absolute values of soft mass squareds for printout at some scale Q, in case they're supposed to be negative. Thanks to S Knapen
-<li> 02/12/13 Reinstated block alpha to flavoursoft. Thanks to A Pukhov
+<li>  30/7/14 Corrected the A^0 tachyon fix at MZ back to a version where mh differs by 0.5 GeV. Previously, large corrections to MZ(MZ) resulted from the MA/MH loop, changing yt and therefore mh
+<li>  28/7/14 Fixed small yt bug when compiling but not using higher order corrections
+<li>  28/7/14 Hopefully fixed the MAC compilation problems. 
+<li>  24/7/14 When MA^2(MZ)<0, use MA(pole) internally within loops. Thanks to
+P Slavich.
+<li>  17/7/14 Added tolerance argument to softpoint.x
+<li>  16/7/14 Put in safety against trying to use higher order corrections without compiling them.
+<li>  16/7/14 Made delt() in two loop higgs routines more robust.
+<li>  3/7/14 Added muEff display method to NmssmSusy.
+<li>  2/7/14 Used extern templates to reduce compilation time. 
+<li>  1/7/14 Included the 1-loop imaginary parts into Higgs mixing matrix. They
+contribute at the two-loop level to the masses of the Higgs.
+<li> 20/6/13 EXTPAR setting of third family A parameters now doesn't fill in
+the others assuming universality. Thanks to F Staub.
+<li> 20/6/14 Added MODSEL 12=-1 printing running parameters out at MGUT option
+<li> 18/6/14 Major upgrade to allow the possibility of including <b>3-loop
+RGEs</b> and <b>some 2-loop threshold corrections</b> to gauge and Yukawa
+couplings. 

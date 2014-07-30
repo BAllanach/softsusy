@@ -6,6 +6,10 @@
 
 using namespace softsusy;
 
+namespace softsusy {
+   extern template class Softsusy<SoftParsNmssm>;
+}
+
 int main() {
 
   /// Sets format of output: 6 decimal places

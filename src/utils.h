@@ -12,6 +12,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#ifdef HAVE_CONFIG_H
+ #include <config.h>
+#endif
+
 #include "mycomplex.h"
 #include <cstdlib>
 #include <fstream>
@@ -86,13 +90,16 @@ inline int massorder(double & a, double & b, double & c) {
    return 0;
 }
 
-/// checks if ABSOLUTE (or squared) values are closer than tol, or both
+/// Checks if ABSOLUTE (or squared) values are closer than tol, or both
 /// numbers are smaller than EPSTOL
 bool close(double m1, double m2, double tol);
 
+/// Requres that both the real and imaginary parts are close
+bool close(Complex m1, Complex m2, double tol);
+
 /// Returns |a| with sign of b in front
-inline double sign(double a, double b) 
-{ return ((b) >= 0.0 ? fabs(a) : -fabs(a)); }
+inline double sign(double a, double b) { return ((b) >= 0.0 ? 
+						 fabs(a) : -fabs(a)); }
 
 /// gives the sign (+-1) of x
 inline int sgn(double x)
@@ -105,6 +112,14 @@ void printRow(ostream & o, double x);
 /// Returns true if f's a nan. Unfortunately, the behaviour of this function
 /// is not standardised across all platforms yet. 
 bool testNan(double f);
+
+// For DEBUGING
+#ifdef DEBUG
+#define dout cout
+#else
+#define dout if(0)cout
+#endif
+
 
 #endif
 

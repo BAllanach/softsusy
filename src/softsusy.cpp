@@ -10,9 +10,9 @@
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
   ydR, yeL, yeR, ynuL;
 
-
 template<class SoftPars>
-const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const Softsusy<SoftPars>& s) {
+const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const 
+							Softsusy<SoftPars>& s) {
   if (this == &s) return *this;
   setSoftPars(s.displaySoftPars());
   setAltEwsbMssm(s.displayAltEwsbMssm());
@@ -35,6 +35,23 @@ const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const Softsusy<SoftPars>
   t1OV1Ms1loop = s.displayTadpole1Ms1loop(); 
   t2OV2Ms1loop = s.displayTadpole2Ms1loop(); 
   mxBC = s.displayMxBC();
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop ; 
+  decoupling_corrections.das.two_loop = s.decoupling_corrections.das.two_loop ; 
+
+  decoupling_corrections.dmb.one_loop = s.decoupling_corrections.dmb.one_loop ; 
+  decoupling_corrections.dmb.two_loop = s.decoupling_corrections.dmb.two_loop ; 
+
+  decoupling_corrections.dmt.one_loop = s.decoupling_corrections.dmt.one_loop ; 
+  decoupling_corrections.dmt.two_loop = s.decoupling_corrections.dmt.two_loop ; 
+
+  decoupling_corrections.dmtau.one_loop = s.decoupling_corrections.dmtau.one_loop ; 
+  decoupling_corrections.dmtau.two_loop = s.decoupling_corrections.dmtau.two_loop ; 
+  /// Public field :: included thresholds
+  included_thresholds = s.included_thresholds;
+
+#endif //COMPILE_FULL_SUSY_THRESHOLD
 
   return *this;
 }
@@ -88,23 +105,6 @@ int Softsusy<SoftPars>::rewsbM3sq(double mu, double & m3sq) const {
 }
 
 
-/// Predicts tan beta once mu and soft terms are predicted at low energy
-/// Useful for fine-tuning calculation. Call at MSusy only.
-/*double MssmSoftsusy::predTanb() const  {
-  double sin2t = 2.0 * displayM3Squared() / 
-    (displayMh1Squared() - displayTadpole1Ms() + 
-     displayMh2Squared() - displayTadpole2Ms() + 2.0 *
-     sqr(susyMu)); 
-  
-  /// Note: we want to take inverse sine so that fundamental domain is greater
-  /// than pi/4. sin(pi - 2 beta)=sin 2 beta should achieve this.
-  /// we also use tan (pi/2 - theta) = 1/tan(theta)
-  double theta;
-  if (fabs(sin2t) < 1.0) theta = asin(sin2t) * 0.5;
-  else return 0.0;
-  
-  return 1.0 / tan(theta);
-  }*/
 /// Predicts tan beta once mu and soft terms are predicted at low energy
 /// Useful for fine-tuning calculation. Call at MSusy only.
 template<class SoftPars>
@@ -238,7 +238,7 @@ void Softsusy<SoftPars>::H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & l
  }
 
 
-//PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
+/// PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
 template<class SoftPars>
 double Softsusy<SoftPars>::doCalcTad1Sfermions(DoubleMatrix lTS1Lr, DoubleMatrix lBS1Lr, DoubleMatrix lTauS1Lr, double costhDRbar) const {
   double g = displayGaugeCoupling(2), mz = displayMzRun();
@@ -307,9 +307,12 @@ double Softsusy<SoftPars>::doCalcTad1Sfermions(DoubleMatrix lTS1Lr, DoubleMatrix
 
  }
 
-//PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
+/// PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
 template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad2Sfermions(DoubleMatrix lTS2Lr, DoubleMatrix lBS2Lr, DoubleMatrix lTauS2Lr, double costhDRbar) const {
+double Softsusy<SoftPars>::doCalcTad2Sfermions(DoubleMatrix lTS2Lr, 
+					       DoubleMatrix lBS2Lr, 
+					       DoubleMatrix lTauS2Lr, 
+					       double costhDRbar) const {
   double g = displayGaugeCoupling(2), mz = displayMzRun();
   double tanb = displayTanb(), sinb = sin(atan(tanb));
   double q = displayMu(); 
@@ -720,11 +723,16 @@ inline double ftCalc(double x) {
   return referenceMzsq;
 }
 
+template<class SoftPars>
+double Softsusy<SoftPars>::it1par(int numPar, const DoubleVector & bcPars) {
+   throw "it1par not implemented for non-MSSM models";
+}
+
 /// Give it a GUT scale object consistent with rewsb
 /// and it'll return the fine tuning by varying m32, mu and m3sq at the high
 /// scale
-template<class SoftPars>
-double Softsusy<SoftPars>::it1par(int numPar, const DoubleVector & bcPars) {
+template<>
+inline double Softsusy<SoftParsMssm>::it1par(int numPar, const DoubleVector & bcPars) {
   
   double ftParameter = 0.0, err, h = 0.01;
   
@@ -786,9 +794,9 @@ double Softsusy<SoftPars>::it1par(int numPar, const DoubleVector & bcPars) {
 }
 
 /// Pass it an object and it'll return the fine tuning parameters
-template<class SoftPars>
-DoubleVector Softsusy<SoftPars>::fineTune
-(void (*boundaryCondition)(Softsusy<SoftPars> &, const DoubleVector &),
+template<>
+inline DoubleVector Softsusy<SoftParsMssm>::fineTune
+(void (*boundaryCondition)(Softsusy<SoftParsMssm> &, const DoubleVector &),
  const DoubleVector  & bcPars, double mx, bool doTop) {
 
   /// Stores running parameters in a vector
@@ -820,6 +828,14 @@ DoubleVector Softsusy<SoftPars>::fineTune
   setPhys(savePhys);
 
   return tempFineTuning;
+}
+
+/// Pass it an object and it'll return the fine tuning parameters
+template<class SoftPars>
+DoubleVector Softsusy<SoftPars>::fineTune
+(void (*boundaryCondition)(Softsusy<SoftPars> &, const DoubleVector &),
+ const DoubleVector  & bcPars, double mx, bool doTop) {
+   throw "fineTune not implemented for non-MSSM models";
 }
 
 /// Obtains solution of one-loop effective potential minimisation via iteration
@@ -903,7 +919,7 @@ void Softsusy<SoftPars>::iterateMu(double & muold, int sgnMu,
 template<class SoftPars>
 void Softsusy<SoftPars>::alternativeEwsb(double mt) {
   setSusyMu(displayMuCond());
-   calcDrBarPars();
+  calcDrBarPars();
   double sinthDRbarMS = calcSinthdrbar();
   double tanb = displayTanb(), beta = atan(tanb);
   double mzRun = displayMzRun();
@@ -1210,265 +1226,6 @@ string Softsusy<SoftPars>::printLong() {
   return a.str();
 }
 
-
-
-template<class SoftPars>
-bool Softsusy<SoftPars>::higgs(int accuracy, double piwwtMS,
-                               double /* pizztMS */) {
-
-  double tanb = displayTanb();
-  double beta = atan(tanb);
-  double sinb = sin(beta), cosb = cos(beta);
-  double sinb2 = sqr(sinb), cosb2 = sqr(cosb), mzPole = displayMz(), 
-    mzRun2 = sqr(displayMzRun());
-  double mApole = physpars.mA0(1); /// physical value
-  ///  double mApole2 = sqr(mApole);
-
-  /// There'll be trouble if B has the opp sign to mu. This isn't really
-  /// tree-level since it includes some one loops correrctions, namely
-  /// tadpoles and Z loops 
-  /*  double mAsq =  (displayMh2Squared() - displayTadpole2Ms() - 
-		  displayMh1Squared() + displayTadpole1Ms()) / 
-		  cos(2.0 * beta) - mzRun2; */
-  double mAsq = displayM3Squared() / (sinb * cosb);
-
-  DoubleMatrix mHtree(2, 2);
-  mHtree(1, 1) = mAsq * sinb2 + mzRun2 * cosb2;
-  mHtree(1, 2) = - sinb * cosb * (mAsq + mzRun2); 
-  mHtree(2, 2) = mAsq * cosb2 + mzRun2 * sinb2; 
-  mHtree(2, 1) = mHtree(1 ,2); 
-
-  DoubleMatrix mhAtmh(mHtree), mhAtmH(mHtree);
-  DoubleMatrix sigmaMh(2, 2), sigmaMH(2, 2);
-
-  double q = displayMu(), p;     
-  double p2s = 0.0, p2w = 0.0, p2b = 0.0, p2tau = 0.0, dMA = 0.;
-  /// radiative corrections:
-  if (accuracy > 0) {
-    /// one-loop radiative corrections included in sigma
-    p = physpars.mh0(1);
-    sigmaMh(1, 1) = pis1s1(p, q); 
-    sigmaMh(1, 2) = pis1s2(p, q); 
-    sigmaMh(2, 2) = pis2s2(p, q); 
-
-    p = physpars.mh0(2);
-    sigmaMH(1, 1) = pis1s1(p, q); 
-    sigmaMH(1, 2) = pis1s2(p, q); 
-    sigmaMH(2, 2) = pis2s2(p, q);
-
-    if (numHiggsMassLoops > 1) {
-      double s11s = 0., s22s = 0., s12s = 0., 
-	gstrong = displayGaugeCoupling(3), 
-	rmtsq = sqr(forLoops.mt), scalesq = sqr(displayMu()), 
-	vev2 = sqr(displayHvev()), tbeta = displayTanb(), 
-	amu = -displaySusyMu(), mg = displayGaugino(3);
-      
-      double sxt = sin(forLoops.thetat), 
-	cxt = cos(forLoops.thetat);
-      double mst1sq = sqr(forLoops.mu(1, 3)), 
-	mst2sq = sqr(forLoops.mu(2, 3));
-      /// two-loop Higgs corrections: alpha_s alpha_b
-      double sxb = sin(forLoops.thetab), 
-      cxb = cos(forLoops.thetab);
-      double msb1sq = sqr(forLoops.md(1, 3)), 
-	msb2sq = sqr(forLoops.md(2, 3));
-      double cotbeta = 1.0 / tbeta;
-      double rmbsq = sqr(forLoops.mb);
-
-      double s11b = 0.0, s12b = 0.0, s22b = 0.0;
-      double s11tau = 0.0, s12tau = 0.0, s22tau = 0.0;
-      double s11w = 0.0, s22w = 0.0, s12w = 0.0;
-      int kkk = 0; /// chooses DR-bar scheme from slavich et al
-
-      double fmasq = fabs(mAsq);
-      /// two-loop Higgs corrections: alpha_s alpha_t, alpha_s alpha_b and
-      /// alpha_b^2, alpha_t*2, alpha_b alpha_t
-      dszhiggs_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, &amu, 
-        	&tbeta, &vev2, &gstrong, &kkk, &s11s, &s22s, &s12s);
-      dszodd_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, &amu,
-              &tbeta, &vev2, &gstrong, &p2s); 
-      dszhiggs_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq, &amu, 
-        	&cotbeta, &vev2, &gstrong, &kkk, &s22b, &s11b, &s12b);
-      dszodd_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq, &amu,
-              &cotbeta, &vev2, &gstrong, &p2b); 
-      ddshiggs_(&rmtsq, &rmbsq, &fmasq, &mst1sq, &mst2sq, &msb1sq, &msb2sq, 
-              &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, &s11w, 
-      	      &s12w, &s22w);
-      ddsodd_(&rmtsq, &rmbsq, &fmasq, &mst1sq, &mst2sq, &msb1sq, &msb2sq, 
-              &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, 
-      	      &p2w);
-       
-      /// In hep-ph/0406277 found the lambda_tau^2 and lambda_tau lambda_b
-      /// corrections to be negligible. Have commented them here for
-      /// calculational efficiency. Uncomment to see their effect.
-      double sintau = sin(forLoops.thetatau),
-	costau = cos(forLoops.thetatau);
-      double rmtausq = sqr(forLoops.mtau);
-      int OS = 0;
-      double mstau1sq = sqr(forLoops.me(1, 3)), 
-	mstau2sq = sqr(forLoops.me(2, 3));
-      double msnusq = sqr(forLoops.msnu(3));
-      tausqhiggs_(&rmtausq, &fmasq, &msnusq, &mstau1sq, &mstau2sq, &sintau,
-        	  &costau, &scalesq, &amu, &tanb, &vev2, &OS, &s11tau, 
-        	  &s22tau, &s12tau);
-      tausqodd_(&rmtausq, &fmasq, &msnusq, &mstau1sq, &mstau2sq, &sintau,
-        	&costau, &scalesq, &amu, &tanb, &vev2, &p2tau);
-      
-      sigmaMh(1, 1) = sigmaMh(1, 1) - s11s - s11w - s11b - s11tau;
-      sigmaMH(1, 1) = sigmaMH(1, 1) - s11s - s11w - s11b - s11tau;
-      sigmaMh(1, 2) = sigmaMh(1, 2) - s12s - s12w - s12b - s12tau;
-      sigmaMH(1, 2) = sigmaMH(1, 2) - s12s - s12w - s12b - s12tau;
-      sigmaMh(2, 2) = sigmaMh(2, 2) - s22s - s22w - s22b - s22tau;
-      sigmaMH(2, 2) = sigmaMH(2, 2) - s22s - s22w - s22b - s22tau;
- 
-    }
-
-    sigmaMh(2, 1) = sigmaMh(1, 2);
-    sigmaMH(2, 1) = sigmaMH(1, 2);
-    /*
-      As the calculation stands without the two-loop terms, BPMZ have
-      obviously organised PI_Sij (CP-even loop corrections) so that their pole
-      masses come out correctly to one-loop order, hence there is no need to
-      add any one-loop self energies of the PI^AA terms to DMA. Secondly, the
-      one loop terms involving mA in the PI_Sij are not proportional to either
-      alpha_s, alpha_t or alpha_b. So, within PI_Sij(1 loop), if I consider
-      the 2-loop order difference due to not using mA(pole), it will be (some
-      other coupling) x (either alpha_s OR alpha_t OR alpha_b) ie it will not
-      be of order alpha_s alpha_t, alpha_b alpha_s or alpha_t^2, thus
-      remaining consistent with your two-loop terms. They have also performed
-      the calculation where their stuff "adds on" to the 1-loop BPMZ stuff. 
-      The tadpoles therefore appear only as 1-loop pieces, except where
-      minimisation conditions are explicitly used (in the calculation of mA)
-     */
-    dMA = p2s + p2w + p2b + p2tau;
-    mhAtmh(1, 1) = mHtree(1, 1) + t1OV1Ms1loop + dMA * sqr(sin(beta));
-    mhAtmh(1, 2) = mHtree(1, 2) - dMA * sin(beta) * cos(beta);
-    mhAtmh(2, 2) = mHtree(2, 2) + t2OV2Ms1loop + dMA * sqr(cos(beta));
-    mhAtmh(2, 1) = mhAtmh(1 ,2);
-    mhAtmh = mhAtmh - sigmaMh;
-
-    mhAtmH(1, 1) = mHtree(1, 1) + t1OV1Ms1loop + dMA * sqr(sin(beta));
-    mhAtmH(1, 2) = mHtree(1, 2) - dMA * sin(beta) * cos(beta);
-    mhAtmH(2, 2) = mHtree(2, 2) + t2OV2Ms1loop + dMA * sqr(cos(beta));
-    mhAtmH(2, 1) = mhAtmH(1 ,2);
-    mhAtmH = mhAtmH - sigmaMH;
-    
-  }
-  
-
-  DoubleVector temp(2);  
-  double theta;
-
-  temp = mhAtmh.sym2by2(theta);
-
-  bool h0Htachyon = false;
-  if (temp(1) < 0.0 || temp(2) < 0.0) {
-    h0Htachyon = true;
-    if (PRINTOUT > 2) cout << " h0/H tachyon: m^2=" << temp;
-  }
-  temp = temp.apply(ccbSqrt);
-
-  /// If certain DRbar ratios are large, they can cause massive higher order
-  /// corrections in the higgs mass, making it have O(1) uncertainties. 
-  /// In these cases, you should switch to an OS calculation (eg by using
-  /// FEYNHIGGS) for the Higgs mass (but there are other points at high
-  /// tan beta where the DRbar scheme does better).
-  double mstop1 = minimum(displayDrBarPars().mu(1, 3), 
-			  displayDrBarPars().mu(2, 3));
-  double mgluino = displayGaugino(3);
-  if (sqr(mgluino / mstop1) > (16.0 * sqr(PI)) ||
-      sqr(displayMu() / mstop1) > (16.0 * sqr(PI))) 
-    flagInaccurateHiggsMass(true);
-    
-  /// Definitions are such that theta should diagonalise the matrix like
-  /// O = [ cos  sin ]
-  ///     [-sin  cos ] 
-  /// and
-  /// O m O^T = [ m2^2      ]
-  ///           [      m1^2 ]
-  /// where m1 < m2, therefore if they come out in the wrong order, 
-  /// add pi/2 onto theta.
-  if (temp(2) > temp(1)) theta = theta + PI * 0.5; 
-
-  physpars.thetaH = theta; /// theta defined for p=mh  
-  int i; double littleMh = temp.apply(fabs).min(i);
-
-  temp = mhAtmH.sym2by2(theta);
-
-  if (temp(1) < 0.0 && temp(2) < 0.0) {
-    h0Htachyon = true;
-    if (PRINTOUT > 2) cout << " h0/H tachyon: m^2=" << temp;
-  }
-  temp = temp.apply(ccbSqrt);
-  double bigMh = temp.max();
-
-
-double piaa = piAA(mApole, displayMu()); 
-  //  double piaa = piAA(displayDrBarPars().mA0, displayMu());
-  double poleMasq = (displayMh2Squared() - displayMh1Squared() )
-    / cos(2.0 * beta) - sqr(mzPole);
-  
-  if (accuracy > 0) {
-      poleMasq = 
-	(displayMh2Squared() - displayTadpole2Ms() - 
-	 displayMh1Squared() + displayTadpole1Ms()) / 
-	cos(2.0 * beta) - mzRun2 - piaa +
-	sqr(sin(beta)) * t1OV1Ms1loop + sqr(cos(beta)) *
-	t2OV2Ms1loop + dMA;
-    }
-
-  double pihphm = piHpHm(physpars.mHpm, displayMu());
-
-  double poleMhcSq = poleMasq + sqr(displayMw()) + piaa + piwwtMS - pihphm;
-
-
-  //PA:  below is the rearranged approach to calculating charged and cpodd Higgs used for comaprisons vs nmssmsoftsusy.cpp.   This leaves the initial accuracy == 0 calculation changed and while the actual calculation for accuarcy > 0 is unchanged this alters the final result for charged Higgs due to the numerical precion of the Higgs iteration. 
-  /* ------------------------------------------------------------------------*/
-  // double piaa = 0.0; 
-  // if(accuracy > 0) piaa = piAA(mApole, displayMu()); 
-  // //  double piaa = piAA(displayDrBarPars().mA0(1), displayMu());
-  // double poleMasq = (displayMh2Squared()-  displayTadpole2Ms() 
-  // 		     - displayMh1Squared()  + displayTadpole1Ms())
-  //   / cos(2.0 * beta) -  sqr(displayMz());
-
-  // if (accuracy > 0) {
-  //   poleMasq = 
-  //     (displayMh2Squared() - displayTadpole2Ms() - 
-  //      displayMh1Squared() + displayTadpole1Ms()) / 
-  //     cos(2.0 * beta) - mzRun2 - piaa +
-  //       sqr(sin(beta)) * t1OV1Ms1loop + sqr(cos(beta)) *
-  //     t2OV2Ms1loop + dMA;
-  // }
-  
-  // double pihphm = 0.0;
-  // if(accuracy > 0) pihphm = piHpHm(physpars.mHpm, displayMu()); 
-  // // double poleMhcSq = poleMasq + sqr(displayMw()) + piaa + piwwtMS - pihphm;
-  // double poleMasq2 = poleMasq;
-  // if (accuracy > 0) {
-  //   poleMasq2 = 
-  //     (displayMh2Squared() - displayTadpole2Ms() - 
-  //      displayMh1Squared() + displayTadpole1Ms()) / 
-  //     cos(2.0 * beta) - mzRun2 - piaa +
-  //       sqr(sin(beta)) * t1OV1Ms1loop + sqr(cos(beta)) *
-  //     t2OV2Ms1loop;
-  // }
-
-  // double poleMhcSq = poleMasq2 + sqr(displayMw()) + piaa + piwwtMS - pihphm;
-  /*-------------------------------------------------------------------------*/
-
-  physpars.mh0(1) = littleMh;
-  physpars.mA0(1) = ccbSqrt(poleMasq);
-  physpars.mh0(2) = bigMh;
-  physpars.mHpm = ccbSqrt(poleMhcSq);
-
-  if (poleMhcSq > 0. && poleMasq > 0. && !h0Htachyon) return false;
-  else {
-    if (PRINTOUT) cout << " mA(phys)^2=" << poleMasq  
-		       << " mHc(phys)^2=" << poleMhcSq 
-		       << " but may be first iteration" << endl;
-    return true;
-  }
-}
 //PA: adds sfermion contribitions to the left right and scalar parts 
 //of the self energy
 template<class SoftPars>
@@ -2434,13 +2191,17 @@ double Softsusy<SoftPars>::calcRunMtQCD() const {
     sqr(displayGaugeCoupling(3)) / 3.0;
   
   /// 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
-  double l = 2.0 * log(mt / displayMu());
+  //rruiz: comment this out
+  //double l = 2.0 * log(mt / displayMu());
 
-double  twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
-    (-0.5383144424082562 + 0.1815337873591885 * l - 
-     0.03799544386587666 * sqr(l));
+  //double  twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
+  //  (-0.5383144424082562 + 0.1815337873591885 * l - 
+  //   0.03799544386587666 * sqr(l));
 
-  return qcd + twoLoopQcd;
+  //return qcd + twoLoopQcd;
+
+  return qcd;
+
 }
 
 template<class SoftPars>
@@ -2674,9 +2435,10 @@ double Softsusy<SoftPars>::calcRunMtCharginos() const {
 }
 ///  Formulae from hep-ph/9801365: checked but should be checked again!
 /// Implicitly calculates at the current scale.
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunningMt() {
-  double    mtpole  = dataSet.displayPoleMt();
+///  Formulae from hep-ph/9801365: checked but should be checked again!
+/// Implicitly calculates at the current scale.
+template<class SoftPars> double Softsusy<SoftPars>::calcRunningMt() {
+  double mtpole  = dataSet.displayPoleMt();
   double resigmat = 0.0; 
   double qcd = 0.0, stopGluino = 0.0, higgs = 0.0; 
   //one and two loop qcd
@@ -2697,6 +2459,54 @@ double Softsusy<SoftPars>::calcRunningMt() {
   resigmat = resigmat + charginoContribution; 
     
   resigmat = resigmat * mtpole / (16.0 * sqr(PI));  
+
+  bool ordinaryQcdCorrections = true;
+
+  /// Fixed by Ben: 28/7/14
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  decoupling_corrections.dmt.one_loop = qcd + stopGluino + higgs + 
+     neutralinos + charginoContribution;
+
+  decoupling_corrections.dmt.one_loop /= (-16.0 * sqr(PI));  
+
+  if (USE_TWO_LOOP_THRESHOLD) {
+    ordinaryQcdCorrections = false;
+    bool & needcalc = decoupling_corrections.dmt.two_loop_needs_recalc; 
+    /// flag: calculate corrections if the
+    /// two-previous iterations gave different results
+    using namespace GiNaC;
+    if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) {  
+      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+      double dmtas2 =  decoupling_corrections.dmt.two_loop;
+      if (needcalc) {
+	ex test = tquark_corrections::eval_tquark_twoloop_strong_pole(drbrp);
+	if (is_a<numeric>(test)) dmtas2 = ex_to<numeric>(test).to_double();
+	else dout <<" Not numeric: 2loop pole t-quark " << endl;
+	decoupling_corrections.dmt.two_loop = dmtas2;
+      } else dout << " mt: no calculation " << endl;
+
+      /// back converion Mt -> mt(mu)
+      /// dmt_as2 is already properly normalized
+      /// ones need to normalize only 1-loop contribution
+      double dmtas = (qcd + stopGluino)/(16.0 * sqr(PI));
+      double dmt_MT = (dmtas2 - dmtas*dmtas);
+      resigmat -= mtpole*dmt_MT;
+      dout << "two-loop tquark strong pole contribution: " 
+	   << dmtas2 << endl
+	   << "two-loop total correction (Mt -> mt)" 
+	   << dmt_MT << endl;
+    }
+  } else ordinaryQcdCorrections = true;
+#endif
+  /// default without the higher order corrections: ordinary SQCD
+  if (ordinaryQcdCorrections) {
+    /// 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
+    double mt = forLoops.mt;
+    double l = 2.0 * log(mt / displayMu());
+    double twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
+       (-0.538314 + 0.181534*l - 0.0379954*sqr(l));
+    resigmat = resigmat + mtpole*(twoLoopQcd / (16.0 * sqr(PI)));
+  }
 
   return mtpole + resigmat;
 }
@@ -2723,6 +2533,13 @@ double Softsusy<SoftPars>::calcRunMbSquarkGluino() const {
      alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
   double p = mbMZ;
   double mbMSSM  = displayDrBarPars().mb;
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  if (MB_DECOUPLING) {
+   p = 0;
+  };
+#endif
+
   double deltaSquarkGluino = - alphasMZ / (3.0 * PI) *
      (b1(p, mg, msbot1, displayMu()) + 
       b1(p, mg, msbot2, displayMu()) - 
@@ -2744,6 +2561,12 @@ double Softsusy<SoftPars>::calcRunMbChargino() const {
   double thetat = displayDrBarPars().thetat;
   DoubleVector bPsicBstopl(2), bPsicBstopr(2), 
     aPsicBstopl(2), aPsicBstopr(2); 
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  if (MB_DECOUPLING) {
+   p = 0;
+  };
+#endif
 
   aPsicBstopl(1) = g;
   aPsicBstopr(2) = -displayDrBarPars().ht;
@@ -2818,6 +2641,13 @@ double Softsusy<SoftPars>::calcRunMbHiggs() const {
   double  thetaWDRbar = asin(calcSinthdrbar());
   double  cw2DRbar    = sqr(cos(thetaWDRbar));
   double g  = displayGaugeCoupling(2);
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  if (MB_DECOUPLING) {
+   p = 0;
+  };
+#endif
+
   deltaHiggs = 0.5 * sqr(hb) * 
     (sqr(ca) * (b1(p, mb, mH, q) + b0(p, mb, mH, q)) + 
      sqr(sa) * (b1(p, mb, mh, q) + b0(p, mb, mh, q)) + 
@@ -2849,6 +2679,13 @@ double Softsusy<SoftPars>::calcRunMbNeutralinos() const {
   DoubleVector mneut(displayDrBarPars().mnBpmz);
   DoubleVector aPsi0Bsbotr(4), bPsi0Bsbotr(4), aPsi0Bsbotl(4),
     bPsi0Bsbotl(4); 
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  if (MB_DECOUPLING) {
+   p = 0;
+  };
+#endif
+
   aPsi0Bsbotr(1) = gp / (root2 * 3.0) * 2.0;
   bPsi0Bsbotl(1) = gp / (root2 * 3.0);
   bPsi0Bsbotl(2) = -root2 * g * 0.5;
@@ -2901,7 +2738,7 @@ return deltaNeutralino;
 
 
 template<class SoftPars>
-double Softsusy<SoftPars>::calcRunningMb() const {
+double Softsusy<SoftPars>::calcRunningMb() {
 
   if (displayMu() != displayMz()) {
     ostringstream ii;
@@ -2923,11 +2760,66 @@ double Softsusy<SoftPars>::calcRunningMb() const {
   /// Neutralinos
   double deltaNeutralino = calcRunMbNeutralinos();
 
+  double dzetamb = 0.;
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+
+  decoupling_corrections.dmb.one_loop = deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino;
+  
+  // AVB: this also include top quark contribution (decoupling)!
+
+  if (USE_TWO_LOOP_THRESHOLD) {
+
+   bool & needcalc = decoupling_corrections.dmb.two_loop_needs_recalc; 
+   // flag: calculate corrections if two-previous iterations gave different results
+   using namespace GiNaC;
+
+   if (needcalc) {
+   	exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+
+   	if ((included_thresholds & ENABLE_TWO_LOOP_MB_AS)) {
+   		dout << "Strong mb?" << needcalc << endl;
+		ex test = bquark_corrections::eval_bquark_twoloop_strong_dec(drbrp);
+		if (is_a<numeric>(test))
+  			dzetamb += ex_to<numeric>(test).to_double();
+		dout << "two-loop bquark strong decoupling constant: " 
+		     << test << endl;
+
+   	}
+   	if ((included_thresholds & ENABLE_TWO_LOOP_MB_YUK)) {
+   		dout << "Yukawa mb?" << needcalc << endl;
+ 		ex test = bquark_corrections::eval_bquark_twoloop_yukawa_dec(drbrp);
+		if (is_a<numeric>(test))
+  			dzetamb += ex_to<numeric>(test).to_double();
+		dout << "two-loop bquark yukawa decoupling constant: " 
+		     << test << endl;
+   	}
+   	dout << "Checking: " << dzetamb << " vs " << decoupling_corrections.dmb.two_loop << endl;
+   	if (close(dzetamb, decoupling_corrections.dmb.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false; 
+	dout << "mb: storing" << endl;
+	decoupling_corrections.dmb.two_loop = dzetamb;
+     } else {
+		dzetamb = decoupling_corrections.dmb.two_loop;
+		dout << "mb: No calculation" << endl;
+    }
+    dout << "Checking: " << dzetamb << " vs " << decoupling_corrections.dmb.two_loop << endl;
+   //dout <<" Mb dec (sq-gl): " << deltaSquarkGluino << endl;
+   //dout <<" Mb dec (sq-cha): " << deltaSquarkChargino << endl;
+   //dout <<" Mb dec (higgs): " << deltaHiggs << endl;
+   //dout <<" Mb dec (neut): " << deltaNeutralino << endl;
+   dout << " Mb 1-loop dec: " << decoupling_corrections.dmb.one_loop << endl;
+   dout << " Mb 2-loop dec: " << decoupling_corrections.dmb.two_loop << endl;
+   dout << " mb=" << mbMZ / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino + dzetamb) << endl;
+   dout << " mb_expanded=" << mbMZ * (1.0 - deltaSquarkGluino - deltaSquarkChargino - deltaHiggs - deltaNeutralino + sqr(deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino)- dzetamb) << endl;
+  }
+
+#endif
+
   /// it's NOT clear if this resummation is reliable in the full 1-loop scheme
   /// but it's at least valid to 1 loop. Warning though: if you add higher
   /// loops, you'll have to re-arrange.
   return mbMZ / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs
-		 + deltaNeutralino);
+		 + deltaNeutralino + dzetamb);
 }
 template<class SoftPars>
 double Softsusy<SoftPars>::calcRunMtauDrBarConv() const {
@@ -3081,7 +2973,7 @@ double Softsusy<SoftPars>::calcRunMtauNeutralinos(double mTauSMMZ) const {
 }
 /// Full BPMZ expression
 template<class SoftPars>
-double Softsusy<SoftPars>::calcRunningMtau() const {
+double Softsusy<SoftPars>::calcRunningMtau() {
   /// MSbar value
   double mTauSMMZ = displayDataSet().displayMass(mTau);
   // double mTauPole = MTAU;
@@ -3094,6 +2986,40 @@ double Softsusy<SoftPars>::calcRunningMtau() const {
   /// Neutralinos
   double  sigmaNeutralino = calcRunMtauNeutralinos(mTauSMMZ);
 
+  double dzetamtau2 = 0.;
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  
+  const double dzetamtau = sigmaNeutralino + sigmaChargino + sigmaHiggs;
+
+  decoupling_corrections.dmtau.one_loop = -dzetamtau;
+
+  if (USE_TWO_LOOP_THRESHOLD) {
+    // flag: calculate corrections if two-previous iterations gave different results
+    bool & needcalc = decoupling_corrections.dmtau.two_loop_needs_recalc;  
+    using namespace GiNaC;
+    if ((included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
+        exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+	double dzmtau2 = decoupling_corrections.dmtau.two_loop;
+  	if (needcalc) {
+		ex test = tau_corrections::eval_tau_twoloop_yukawa_dec(drbrp);
+		if (is_a<numeric>(test)) dzmtau2 = ex_to<numeric>(test).to_double();
+		else { 
+			dout <<" Not numeric: 2loop  tau-lepton " << endl;
+		}
+		// if (close(dzmtau2, decoupling_corrections.dmtau.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false;
+		// dout << " mtau: storing" << endl;
+		decoupling_corrections.dmtau.two_loop = dzmtau2;
+
+	} else {
+   		dout << "mtau: No calculation" << endl;
+        }
+    	dzetamtau2 = -dzetamtau*dzetamtau + dzmtau2;
+        dout << "one-loop tau-lepton decoupling constant: " << dzetamtau << endl;
+	dout << "two-loop tau-lepton yukawa decoupling constant: " << dzmtau2 << endl;
+	dout << "two-loop tau-lepton yukawa decoupling constant, expanded: " << dzetamtau2 << endl;
+    }
+  }
+  
   /// old calculation of tau mass
   /**  double delta = sqr(displayGaugeCoupling(2)) / (16 * sqr(PI)) *
     (-displaySusyMu()) * displayGaugino(2) * displayTanb() /
@@ -3103,7 +3029,10 @@ double Softsusy<SoftPars>::calcRunningMtau() const {
 	b0(mTauPole, -displaySusyMu(), displayDrBarPars().msnu(3), displayMu()));*/
 
   /// From hep-ph/9912516
-  return mTauSMMZ * (1.0 + sigmaNeutralino + sigmaChargino + sigmaHiggs);
+#endif
+
+  return mTauSMMZ * (1.0 + sigmaNeutralino + sigmaChargino + sigmaHiggs - dzetamtau2);
+
 }
 
 template<class SoftPars>
@@ -3713,7 +3642,8 @@ void Softsusy<SoftPars>::addSnuCorrection(double & mass, int family) {
 }
 
 template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addStopQCD(double p, double mt, DoubleMatrix & strong) {
+DoubleMatrix Softsusy<SoftPars>::addStopQCD(double p, double mt, 
+					     DoubleMatrix & strong) {
   double    mg      = forLoops.mGluino;
   double    thetat  = forLoops.thetat;
   double    ct      = cos(thetat);
@@ -3739,7 +3669,9 @@ DoubleMatrix Softsusy<SoftPars>::addStopQCD(double p, double mt, DoubleMatrix & 
 }
 
 template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addStopStop(double /* p */, double /* mt */, DoubleMatrix & stop) {
+DoubleMatrix Softsusy<SoftPars>::addStopStop(double /* p */, 
+					      double /* mt */, 
+					      DoubleMatrix & stop) {
   double thetat     = forLoops.thetat, ct = cos(thetat), st = sin(thetat);
   double q          = displayMu();
   DoubleVector mstop(2);
@@ -4191,10 +4123,10 @@ DoubleMatrix Softsusy<SoftPars>::addStopChargino(double p, DoubleMatrix & chargi
   return chargino;
 }
 
-/// As in BPMZ appendix, INCLUDING weak boson loops.
+/// As in BPMZ appendix
 template<class SoftPars>
 void Softsusy<SoftPars>::addStopCorrection(double p, DoubleMatrix & mass, 
-				     double mt) {
+					   double mt) {
 
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
@@ -6287,8 +6219,9 @@ void Softsusy<SoftPars>::doUpSquarks(double mt, double pizztMS, double sinthDRba
   
   family = 3;
   
-  DoubleMatrix mStopSquared(2, 2), mStopSquared2(2, 2);
-  treeUpSquark(mStopSquared, mt, pizztMS, sinthDRbarMS, family);
+  DoubleMatrix a(2, 2);
+  treeUpSquark(a, mt, pizztMS, sinthDRbarMS, family);
+  DoubleMatrix mStopSquared(a), mStopSquared2(a);
   mStopSquared2 = mStopSquared; /// StopSquared2 is now tree-level
   
   /// one loop corrections 
@@ -6614,7 +6547,8 @@ void Softsusy<SoftPars>::physical(int accuracy) {
   /// Charginos/neutralinos/higgs
   Softsusy<SoftPars> * ppp;
   ppp = this;
-  ppp->higgs(accuracy, piwwtMS, pizztMS); 
+  
+  ppp->higgs(accuracy, piwwtMS, pizztMS);  /// DEBUG C version
 
   const int maxHiggsIterations = 20;
   double currentAccuracy = 1.0;
@@ -6629,6 +6563,7 @@ void Softsusy<SoftPars>::physical(int accuracy) {
   /// TOLERANCE fractional accuracy
   int i = 1; while (i < maxHiggsIterations && accuracy > 0 && 
 		    currentAccuracy > TOLERANCE) {
+    /// DEBUG C version
     higgsTachyon = ppp->higgs(accuracy, piwwtMS, pizztMS); /// iterate 
 
     DoubleVector newHiggsMasses(4);
@@ -6703,8 +6638,8 @@ inline double minimufb3(double lnH2) {
 /// Input mx the scale up to which you search for minima
 /// Returns minimum value of potential along that direction
 /// Does ufbs truly properly but takes ages.
-template<class SoftPars>
-double Softsusy<SoftPars>::ufb3sl(double mx) {
+template<>
+inline double Softsusy<SoftParsMssm>::ufb3sl(double mx) {
 
   tempSoft1 = this;
 
@@ -6729,24 +6664,94 @@ double Softsusy<SoftPars>::ufb3sl(double mx) {
   return Vmin;
 }
 
+template<class SoftPars>
+double Softsusy<SoftPars>::ufb3sl(double mx) {
+   throw "ufb3sl not implemented for non-MSSM models";
+}
+
 /// Does SUSY (and other) threshold corrections to alphaS
 /// Input alphas in MSbar and it returns it in DRbar scheme. 
 /// From hep-ph/9606211
 template<class SoftPars>
-double Softsusy<SoftPars>::qcdSusythresh(double alphasMSbar, double q) const {
+double Softsusy<SoftPars>::qcdSusythresh(double alphasMSbar, double q) {
   drBarPars tree(displayDrBarPars());
   double mt = tree.mt;
+
+/*
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  // AVB: FIXME: alphasMSbar in righthand side should not appear 
+  //
+  double alphasDRbar_prev = 0.;
+
+  if (getenv("ALPHAS_MSBAR")!=NULL) {
+   alphasDRbar_prev = alphasMSbar;
+  }
+  else alphasDRbar_prev = sqr(displayGaugeCoupling(3))/(4.0 * PI);
+
+  //dout<<" alpha_S difference: " << (alphasDRbar_prev - alphasMSbar)/alphasMSbar*100 << " %" <<  endl;
+
+#endif
+*/
+
   double deltaAlphas = alphasMSbar / (2.0 * PI) *
     (0.5 - 2.0 / 3.0 * log(mt / q) - 
      2.0 * log(fabs(tree.mGluino) / q));
   
-  int i,j;
+  int i, j;
   for (i=1; i<=2; i++)
     for (j=1; j<=3; j++)
       deltaAlphas = deltaAlphas - alphasMSbar / (12.0 * PI) * 
 	(log(tree.mu(i, j) / q) + 
 	 log(tree.md(i, j) / q));
-  return alphasMSbar / (1.0 - deltaAlphas); 
+ 
+  double dalpha_2 = 0.;
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  //dout << "one-loop alpha_s contribution: " 
+  //		<< -deltaAlphas << endl;
+
+  decoupling_corrections.das.one_loop = -deltaAlphas;	
+
+  if (USE_TWO_LOOP_THRESHOLD) {
+
+   if ((included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK)) {
+     using namespace GiNaC;
+     exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+     ex test = gs_corrections::eval_gs_twoloop_strong(drbrp);
+     if (is_a<numeric>(test)) {
+  	double dgs2 = ex_to<numeric>(test).to_double();
+	dgs2 = 2.0*dgs2; 
+	decoupling_corrections.das.two_loop = dgs2;
+	dout << "two-loop alpha_s: " << dgs2 << endl;
+// g_MS = g_DR ( 1 + dz1 + dz2)
+// a_sMZ = a_sDR (1 + 2 dz1 + dz1^2 + 2 dz2)	
+// expressing dz1 in terms of dzas1  = -2 dz1 (Allanach convention) 
+// a_sMZ = a_sDR (1 - dzas1 + (-dzas1)^2/4 + 2 dz2)
+	// was	double dalpha_2 = deltaAlphas*deltaAlphas + 2.0*dgs2*alphasMSbar*alphasMSbar / (16.0 * PI * PI);
+	dalpha_2 = deltaAlphas*deltaAlphas/4.0 + dgs2;
+	dout << "two-loop alpha_s contribution: " << dalpha_2 << endl;
+     }
+     else {
+        dout << " Not numeric: 2loop gs " << test << endl;
+     }
+   }
+
+   //dout << " alpha_S (MZ) before: " << alphasDRbar_prev <<  endl);
+   dout << " alpha_S (MZ) correction ressumed w/o 2l: " << 1 / (1.0 - deltaAlphas ) <<  endl;
+   dout << " alpha_S (MZ) correction ressumed w 2l: " << 1 / (1.0 - deltaAlphas + dalpha_2 ) <<  endl;
+
+  }
+#endif // COMPILE_FULL_SUSY_THRESHOLD
+
+  const double alphasDRbar_post = alphasMSbar / (1.0 - deltaAlphas + dalpha_2);
+
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  if ((included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK)) dout<< " alpha_S (MZ) after: " << alphasDRbar_post << endl;
+#endif 
+
+  return alphasDRbar_post;
+
+  //return alphasMSbar / (1.0 - deltaAlphas); 
+
 }
 
 /// Does SUSY (and other) threshold corrections to alphaEm - returns alpha in
@@ -6971,8 +6976,18 @@ void Softsusy<SoftPars>::fixedPointIteration
     double muCondFirst = displayMuCond();
     double maCondFirst = displayMaCond();
 
+    // keep it  
+    #ifdef COMPILE_FULL_SUSY_THRESHOLD
+    SoftSusy_helpers_::decoupling_corrections_t d_coupl = decoupling_corrections;
+    int enabled_thresholds = included_thresholds;
+    #endif
+
     setSoftsusy(empty); /// Always starts from an empty object
     /// These are things that are re-written by the new initialisation
+    #ifdef COMPILE_FULL_SUSY_THRESHOLD
+    decoupling_corrections = d_coupl;
+    included_thresholds = enabled_thresholds;
+    #endif
     setSetTbAtMX(setTbAtMXflag); 
     if (altFlag) useAlternativeEwsb();
     setData(oneset); 
@@ -7001,7 +7016,15 @@ void Softsusy<SoftPars>::fixedPointIteration
     double tol = TOLERANCE;
     
     MssmSusy t(guessAtSusyMt(tanb, oneset));
-    t.setLoops(2); /// 2 loops should protect against ht Landau pole 
+    // default SoftSusy loop number
+    int lpnum = 2;
+
+#ifdef COMPILE_THREE_LOOP_RGE
+    if (USE_THREE_LOOP_RGE) lpnum = 3; 
+    //dout << lpnum << "-loop RGE's enabled" << endl;
+#endif
+
+    t.setLoops(lpnum); /// >= 2 loops should protect against ht Landau pole 
     t.runto(mxBC); 
    
     setSusy(t);
@@ -7029,7 +7052,7 @@ void Softsusy<SoftPars>::fixedPointIteration
   
     physical(0);
   
-    setThresholds(3); setLoops(2);
+    setThresholds(3); setLoops(lpnum);
     
     itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 
 		gaugeUnification, ewsbBCscale);
@@ -7260,7 +7283,8 @@ void Softsusy<SoftPars>::calcDrBarGauginos(double beta, double mw, double mz, do
 }
 template<class SoftPars>
 void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2, 
-                                        double /* sinthDRbar */, drBarPars & eg) {
+                                        double  sinthDRbar, 
+					drBarPars & eg) {
    if (eg.mt > 200. || eg.mt < 50.) {
     /// Gone badly off-track
     flagProblemThrown(true);
@@ -7270,35 +7294,41 @@ void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2,
   double mAsq;
   mAsq = displayM3Squared() / (sin(beta) * cos(beta));
 
+  /// What if the tree-level A^0 appears to be tachyonic?
   if (mAsq < 0.) {
-    /* Previous solution: if we're at MZ, use the pole mA^2
-       if (close(displayMu(), MZ, tol)) {
-      double mApole = physpars.mA0(1); /// physical value
-      setDrBarPars(eg);
+    /// If it's only at MZ, the point may be OK: here, we may use the pole
+    /// mass in loops, if necessary
+    if (close(displayMu(), MZ, 1.0e-6)) { 
+      if (altEwsb) mAsq = sqr(displayMaCond());
+      else {
+	double mApole = physpars.mA0(1); /// physical value
+	setDrBarPars(eg);
       
-      double piaa = piAA(mApole, displayMu()); 
-      double t1Ov1 = doCalcTadpole1oneLoop(eg.mt, sinthDRbar), 
-      t2Ov2 = doCalcTadpole2oneLoop(eg.mt, sinthDRbar); 
-      double poleMasq = 
-      (displayMh2Squared() - t2Ov2 - 
-      displayMh1Squared() + t1Ov1) / 
-      cos(2.0 * beta) - mz2 - piaa +
-      sqr(sin(beta)) * t1Ov1 + sqr(cos(beta)) * t2Ov2;
-      
-      mAsq = poleMasq;
-      
-      if (mAsq < 0.) { flagTachyon(A0); mAsq = fabs(poleMasq); }
-      }
-     */
-    flagTachyon(softsusy::A0); 
-    if (mAFlag == false) mAsq = ccbSqrt(mAsq); 
-    /// This may be  a bad idea in terms of convergence
-    else mAsq = fabs(mAsq);
+	double piaa = piAA(mApole, displayMu()); 
+	double t1Ov1 = doCalcTadpole1oneLoop(eg.mt, sinthDRbar), 
+	  t2Ov2 = doCalcTadpole2oneLoop(eg.mt, sinthDRbar); 
+	double poleMasq = 
+	  (displayMh2Squared() - t2Ov2 - 
+	   displayMh1Squared() + t1Ov1) / 
+	  cos(2.0 * beta) - mz2 - piaa +
+	  sqr(sin(beta)) * t1Ov1 + sqr(cos(beta)) * t2Ov2;
+	
+	mAsq = poleMasq;	
+      } ///< not alternative EWSB conditions
+    } ///< we are at MZ
+
+    /// If, after using the pole mass or whatever, we still have a problem, we
+    /// must flag a tachyon and do something to stop a proliferation of NANs
+    if (mAsq < 0.) { 
+      flagTachyon(A0); 
+      if (mAFlag == false) mAsq = EPSTOL; 
+      else mAsq = fabs(mAsq); ///< could cause a convergence problem
+    } ///< ma^2 still < 0
     
     if (PRINTOUT > 1) cout << " mA^2(tree)=" << mAsq << " since m3sq=" 
 			   << displayM3Squared() << " @ "<< displayMu() 
 			   << " " << endl; 
-  }
+  } ///< Initial mA^2 < 0
     
   DoubleMatrix mH(2, 2); 
   mH(1, 1) = mAsq * sqr(sin(beta)) + mz2 * sqr(cos(beta));
@@ -7316,12 +7346,18 @@ void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2,
 
   int pos;
   eg.mh0(1) = temp.min(pos); eg.mh0(2) = temp.max(); 
-  eg.mA0(1) = sqrt(mAsq); eg.mHpm = sqrt(mAsq + mw2);  
+  // Previous solution: if we're at MZ, use the pole mA^2
+  
+  eg.mA0(1) = sqrt(mAsq); 
+  eg.mHpm = sqrt(mAsq + mw2);  
 }
 
 //PA: sets the neutral current couplings
 template<class SoftPars>
-void Softsusy<SoftPars>::setNeutCurrCouplings(double sinthDRbar, double & sw2, double & guL, double & gdL, double & geL, double & guR, double & gdR, double & geR ) {
+void Softsusy<SoftPars>::setNeutCurrCouplings(double sinthDRbar, double & sw2, 
+					      double & guL, double & gdL, 
+					      double & geL, double & guR, 
+					      double & gdR, double & geR) {
   sw2 = sqr(sinthDRbar); 
   guL = 0.5 - 2.0 * sw2 / 3.0;
   gdL = -0.5 + sw2 / 3.0;
@@ -7330,6 +7366,7 @@ void Softsusy<SoftPars>::setNeutCurrCouplings(double sinthDRbar, double & sw2, d
   gdR = -sw2 / 3.0;
   geR = -sw2;
 }
+
 //PA: sets the Yukawas and Trilinears
 template<class SoftPars>
 void Softsusy<SoftPars>::calcDRTrilinears(drBarPars & eg, double vev, double beta) {
@@ -8105,884 +8142,6 @@ double Softsusy<SoftPars>::piWWT(double p, double q, bool usePoleMt) const {
 }
 
 
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis1s1Sfermions(double p, double q,  DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau) const {
-  drBarPars tree(displayDrBarPars()); 
-  double hb = tree.hb, htau = tree.htau;
-  double    thetat  = tree.thetat ;
-  double    thetab  = tree.thetab;
-  double    thetatau= tree.thetatau;
-  double    st      = sin(thetat) ;
-  double    sb      = sin(thetab) ;
-  double    stau    = sin(thetatau);
-  double    ct      = cos(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    msbot1  = tree.md(1, 3);
-  double    msbot2  = tree.md(2, 3);
-  double    mstau1  = tree.me(1, 3);
-  double    mstau2  = tree.me(2, 3);
-  double    mstop1  = tree.mu(1, 3);
-  double    mstop2  = tree.mu(2, 3);
-  double    mz      = displayMzRun();
-  double    g       = displayGaugeCoupling(2);
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    costhDrbar  = cos(thetaWDRbar);
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double    cosb        = cos(atan(displayTanb()));
-
-  double sbots = 3.0 * sqr(hb) * (a0(msbot1, q) + a0(msbot2, q));
-
-  double staus =  sqr(htau) *
-    (a0(mstau1, q) + a0(mstau2, q));
-
-  double stops = 3.0 * sqr(g) / (2.0 * cw2DRbar) *
-    (guL * (sqr(ct) * a0(mstop1, q) + sqr(st) * a0(mstop2, q)) +
-     guR * (sqr(st) * a0(mstop1, q) + sqr(ct) * a0(mstop2, q)));
-
-  sbots = sbots + 3.0 * sqr(g) / (2.0 * cw2DRbar) *
-    (gdL * (sqr(cb) * a0(msbot1, q) + sqr(sb) * a0(msbot2, q)) +
-     gdR * (sqr(sb) * a0(msbot1, q) + sqr(cb) * a0(msbot2, q)));
-
-  staus = staus + sqr(g) / (2.0 * cw2DRbar) *
-    (geL * (sqr(ctau) * a0(mstau1, q) + sqr(stau) * a0(mstau2, q)) +
-     geR * (sqr(stau) * a0(mstau1, q) + sqr(ctau) * a0(mstau2, q)));
-
-  double sups = 0.0, sdowns = 0.0, sneutrinos = 0.0, sleps = 0.0;
-  int fam; for(fam=1; fam<=2; fam++) {
-    sups = sups + 3.0 * sqr(g) / (2.0 * cw2DRbar) *
-      (guL * a0(tree.mu(1, fam), q) + 
-       guR * a0(tree.mu(2, fam), q));
-    sdowns = sdowns + 3.0 * sqr(g) / (2.0 * cw2DRbar) *
-      (gdL * a0(tree.md(1, fam), q) + 
-       gdR * a0(tree.md(2, fam), q));
-    sleps = sleps + sqr(g) / (2.0 * cw2DRbar) * 
-      (geL * a0(tree.me(1, fam), q) + 
-       geR * a0(tree.me(2, fam), q));
-  }
-  
-
-/// Mix 3rd family up
-  ls1tt = rot2d(thetat) * ls1tt * rot2d(-thetat);
-  ls1bb = rot2d(thetab) * ls1bb * rot2d(-thetab);
-  ls1tautau = rot2d(thetatau) * ls1tautau * rot2d(-thetatau);
-
-  int i, j; for (i=1; i<=2; i++) {
-    for (j=1; j<=2; j++) {
-      stops = stops + 3.0 * sqr(ls1tt(i, j)) * 
-	b0(p, tree.mu(i, 3), tree.mu(j, 3), q);
-      sbots = sbots + 3.0 * sqr(ls1bb(i, j)) * 
-	b0(p, tree.md(i, 3), tree.md(j, 3), q);
-      staus = staus +  sqr(ls1tautau(i, j)) * 
-	b0(p, tree.me(i, 3), tree.me(j, 3), q);
-    }}
-
-  /// selectron couplings to s1 Higgs state: neglect Yukawas + mixing
-  double ls1eeLL = g * mz * geL * cosb / costhDrbar;
-  double ls1eeRR = g * mz * geR * cosb / costhDrbar;
-  double ls1ddLL = g * mz * gdL * cosb / costhDrbar;
-  double ls1ddRR = g * mz * gdR * cosb / costhDrbar;
-  double ls1uuLL = g * mz * guL * cosb / costhDrbar;
-  double ls1uuRR = g * mz * guR * cosb / costhDrbar;
-
-  int k; 
-  for (k=1; k<=2; k++) {
-    sups = sups + 
-      3.0 * sqr(ls1uuLL) * 
-      b0(p, tree.mu(1, k), tree.mu(1, k), q) +
-      + 3.0 * sqr(ls1uuRR) * 
-      b0(p, tree.mu(2, k), tree.mu(2, k), q);
-    sdowns = sdowns + 
-      3.0 * sqr(ls1ddLL) * 
-      b0(p, tree.md(1, k), tree.md(1, k), q) +
-      + 3.0 * sqr(ls1ddRR) * 
-      b0(p, tree.md(2, k), tree.md(2, k), q);
-    sleps = sleps + 
-      sqr(ls1eeLL) * 
-      b0(p, tree.me(1, k), tree.me(1, k), q) +
-      + sqr(ls1eeRR) * 
-      b0(p, tree.me(2, k), tree.me(2, k), q);
-    }  
-
-  sneutrinos = sneutrinos + 
-    sqr(g) / (2.0 * cw2DRbar) * gnuL * 
-    (a0(tree.msnu(1), q) + a0(tree.msnu(2), q) + 
-     a0(tree.msnu(3), q)) +
-    sqr(g * mz / sqrt(cw2DRbar) * gnuL * cosb) * 
-    (b0(p, tree.msnu(1), tree.msnu(1), q) +
-     b0(p, tree.msnu(2), tree.msnu(2), q) +
-     b0(p, tree.msnu(3), tree.msnu(3), q));
-
-  double sfermions = sups  + sdowns  + sleps  + stops  + sbots  + staus  + sneutrinos;
-   return sfermions;
-}
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis1s2Sfermions(double p, double q,  DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const {
-drBarPars tree(displayDrBarPars()); 
-  double    thetat  = tree.thetat ;
-  double    thetab  = tree.thetab;
-  double    thetatau= tree.thetatau;
-  double    mz      = displayMzRun();
-  double    g       = displayGaugeCoupling(2);
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    costhDrbar  = cos(thetaWDRbar);
-  double cosb = cos(atan(displayTanb())), sinb = sin(atan(displayTanb()));
-
-   /// Mix 3rd family up
-  ls1tt = rot2d(thetat) * ls1tt * rot2d(-thetat);
-  ls1bb = rot2d(thetab) * ls1bb * rot2d(-thetab);
-  ls1tautau = rot2d(thetatau) * ls1tautau * rot2d(-thetatau);
- 
-  ls2tt = rot2d(thetat) * ls2tt * rot2d(-thetat);
-  ls2bb = rot2d(thetab) * ls2bb * rot2d(-thetab);
-  ls2tautau = rot2d(thetatau) * ls2tautau * rot2d(-thetatau);
-  
-  double sfermions = 0.0;
-  int i, j; for (i=1; i<=2; i++)
-    for (j=1; j<=2; j++) {
-      sfermions = sfermions + 3.0 * ls1tt(i, j) * ls2tt(i, j) *
-	b0(p, tree.mu(i, 3), tree.mu(j, 3), q);
-      sfermions = sfermions + 3.0 * ls1bb(i, j) * ls2bb(i, j) * 
-	b0(p, tree.md(i, 3), tree.md(j, 3), q);
-      sfermions = sfermions + ls1tautau(i, j) * ls2tautau(i, j) * 
-	b0(p, tree.me(i, 3), tree.me(j, 3), q);
-    }
-    
-  /// sneutrinos
-  double l1 = g * mz / costhDrbar * cosb * gnuL, 
-    l2 = -g * mz / costhDrbar * gnuL * sinb; 
-  sfermions = sfermions +
-    l1 * l2 * (b0(p, tree.msnu(1), tree.msnu(1), q) +
-	       b0(p, tree.msnu(2), tree.msnu(2), q) +
-	       b0(p, tree.msnu(3), tree.msnu(3), q));
-
-  /// selectron couplings to s1 Higgs state: neglect Yukawas + mixing
-  double ls1uuLL = g * mz * guL * cosb / costhDrbar;
-  double ls1uuRR = g * mz * guR * cosb / costhDrbar;
-  double ls1eeLL = g * mz * geL * cosb / costhDrbar;
-  double ls1eeRR = g * mz * geR * cosb / costhDrbar;
-  double ls1ddLL = g * mz * gdL * cosb / costhDrbar;
-  double ls1ddRR = g * mz * gdR * cosb / costhDrbar;
-  /// couplings to s2 Higgs state: neglect Yukawas + mixing
-  double ls2uuLL = -g * mz * guL * sinb / costhDrbar;
-  double ls2uuRR = -g * mz * guR * sinb / costhDrbar;
-  double ls2eeLL = -g * mz * geL * sinb / costhDrbar;
-  double ls2eeRR = -g * mz * geR * sinb / costhDrbar;
-  double ls2ddLL = -g * mz * gdL * sinb / costhDrbar;
-  double ls2ddRR = -g * mz * gdR * sinb / costhDrbar;
-
-  int k; 
-  for (k=1; k<=2; k++) {
-    sfermions = sfermions + 3.0 * ls1uuLL * ls2uuLL *
-      b0(p, tree.mu(1, k), tree.mu(1, k), q) +
-      + 3.0 * ls1uuRR * ls2uuRR *
-      b0(p, tree.mu(2, k), tree.mu(2, k), q);
-    sfermions = sfermions + 3.0 * ls1ddLL * ls2ddLL *
-      b0(p, tree.md(1, k), tree.md(1, k), q) +
-      + 3.0 * ls1ddRR * ls2ddRR *
-      b0(p, tree.md(2, k), tree.md(2, k), q);
-    sfermions = sfermions + ls1eeLL * ls2eeLL * 
-      b0(p, tree.me(1, k), tree.me(1, k), q) +
-      + ls1eeRR * ls2eeRR * 
-      b0(p, tree.me(2, k), tree.me(2, k), q);
-    }  
-
-  return sfermions;
-}
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis2s2Sfermions(double p, double q, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const {
-  drBarPars tree(displayDrBarPars()); 
-  double    thetat  = tree.thetat ;
-  double    thetab  = tree.thetab;
-  double    thetatau= tree.thetatau;
-  double    st      = sin(thetat) ;
-  double    sb      = sin(thetab) ;
-  double    stau    = sin(thetatau);
-  double    ct      = cos(thetat) ;
-  double    cb      = cos(thetab) ;
-  double    ctau    = cos(thetatau);
-  double    msbot1  = tree.md(1, 3);
-  double    msbot2  = tree.md(2, 3);
-  double    mstau1  = tree.me(1, 3);
-  double    mstau2  = tree.me(2, 3);
-  double    mstop1  = tree.mu(1, 3);
-  double    mstop2  = tree.mu(2, 3);
-  double    mz      = displayMzRun();
-  double    g       = displayGaugeCoupling(2);
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    costhDrbar  = cos(thetaWDRbar);
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double  ht = tree.ht;
-  double sinb = sin(atan(displayTanb()));
-
-
-   /// stop contribution
-  double sfermions = 3.0 * sqr(ht) * (a0(mstop1, q) + a0(mstop2, q));
-  sfermions = sfermions - 3.0 * sqr(g) / (2.0 * cw2DRbar) *
-    (guL * (sqr(ct) * a0(mstop1, q) + sqr(st) * a0(mstop2, q)) +
-     guR * (sqr(st) * a0(mstop1, q) + sqr(ct) * a0(mstop2, q)));
- 
-  /// sbottom contribution
-  sfermions = sfermions - 3.0 * sqr(g) / (2.0 * cw2DRbar) *
-    (gdL * (sqr(cb) * a0(msbot1, q) + sqr(sb) * a0(msbot2, q)) +
-     gdR * (sqr(sb) * a0(msbot1, q) + sqr(cb) * a0(msbot2, q)));
-
-  //stau
-  sfermions = sfermions - sqr(g) / (2.0 * cw2DRbar) *
-    (geL * (sqr(ctau) * a0(mstau1, q) + sqr(stau) * a0(mstau2, q)) +
-     geR * (sqr(stau) * a0(mstau1, q) + sqr(ctau) * a0(mstau2, q)));
-
-  /// first two families of sparticles
-  int fam; for(fam=1; fam<=2; fam++) 
-    sfermions = sfermions - 3.0 * sqr(g) / (2.0 * cw2DRbar) *
-      (guL * a0(tree.mu(1, fam), q) + 
-       guR * a0(tree.mu(2, fam), q) +
-       gdL * a0(tree.md(1, fam), q) + 
-       gdR * a0(tree.md(2, fam), q)) - sqr(g) / (2.0 * cw2DRbar) * 
-      (geL * a0(tree.me(1, fam), q) + 
-       geR * a0(tree.me(2, fam), q)) -
-      sqr(g)  / (2.0 * cw2DRbar) * gnuL *
-      (a0(tree.msnu(fam), q));
-  sfermions = sfermions -
-     sqr(g)  / (2.0 * cw2DRbar) * gnuL *
-      (a0(tree.msnu(3), q));
-
-  /// Mix 3rd family up
-  ls2tt = rot2d(thetat) * ls2tt * rot2d(-thetat);
-  ls2bb = rot2d(thetab) * ls2bb * rot2d(-thetab);
-  ls2tautau = rot2d(thetatau) * ls2tautau * rot2d(-thetatau);
-
-  for (int i=1; i<=2; i++)
-    for (int j=1; j<=2; j++) {
-      /// stop 
-      sfermions = sfermions + 3.0 * sqr(ls2tt(i, j)) * 
-	b0(p, tree.mu(i, 3), tree.mu(j, 3), q);
-      /// sbottom
-      sfermions = sfermions + 3.0 * sqr(ls2bb(i, j)) * 
-	b0(p, tree.md(i, 3), tree.md(j, 3), q);
-      /// stay
-      sfermions = sfermions + sqr(ls2tautau(i, j)) * 
-	b0(p, tree.me(i, 3), tree.me(j, 3), q);
-    }
-
-  /// couplings to s2 Higgs state: neglect Yukawas + mixing
-  double ls2uuLL = -g * mz * guL * sinb / costhDrbar;
-  double ls2uuRR = -g * mz * guR * sinb / costhDrbar;
-  double ls2eeLL = -g * mz * geL * sinb / costhDrbar;
-  double ls2eeRR = -g * mz * geR * sinb / costhDrbar;
-  double ls2ddLL = -g * mz * gdL * sinb / costhDrbar;
-  double ls2ddRR = -g * mz * gdR * sinb / costhDrbar;
-
-  int k; 
-  for (k=1; k<=2; k++) {
-    sfermions = sfermions + 3.0 * sqr(ls2uuLL) * 
-      b0(p, tree.mu(1, k), tree.mu(1, k), q) +
-      + 3.0 * sqr(ls2uuRR) * 
-      b0(p, tree.mu(2, k), tree.mu(2, k), q);
-    sfermions = sfermions + 3.0 * sqr(ls2ddLL) * 
-      b0(p, tree.md(1, k), tree.md(1, k), q) +
-      + 3.0 * sqr(ls2ddRR) * 
-      b0(p, tree.md(2, k), tree.md(2, k), q);
-    sfermions = sfermions + sqr(ls2eeLL) * 
-      b0(p, tree.me(1, k), tree.me(1, k), q) +
-      + sqr(ls2eeRR) * 
-      b0(p, tree.me(2, k), tree.me(2, k), q);
-    }  
-
-  sfermions = sfermions +
-    sqr(g * mz * gnuL * sinb) / cw2DRbar *
-    (b0(p, tree.msnu(1), tree.msnu(1), q) +
-     b0(p, tree.msnu(2), tree.msnu(2), q) +
-     b0(p, tree.msnu(3), tree.msnu(3), q));
-
-return sfermions;
-}
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis1s1Fermions(double p, double q) const {
- /// fermions: 3rd family only for now
-   double hb = displayDrBarPars().hb, htau = displayDrBarPars().htau;
-   double    mtau    = displayDrBarPars().mtau;
-   double    mb      = displayDrBarPars().mb;
-   double fermions = 3.0 * sqr(hb) *
-    ((sqr(p) - 4.0 * sqr(mb)) * 
-     b0(p, mb, mb, q) - 2.0 * a0(mb, q));
-  
-  fermions = fermions + sqr(htau) *
-    ((sqr(p) - 4.0 * sqr(mtau)) * b0(p, mtau, mtau, q) - 
-     2.0 * a0(mtau, q));
-
-  return fermions;
-}
-template<class SoftPars>
-double Softsusy<SoftPars>::pis2s2Fermions(double p, double q) const {
- /// fermions: 3rd family only for now
-   double mt =  displayDrBarPars().mt,  ht = displayDrBarPars().ht;
-   double fermions = 3.0 * sqr(ht) *
-    ((sqr(p) - 4.0 * sqr(mt)) * 
-     b0(p, mt, mt, q) - 2.0 * a0(mt, q));
- return fermions;
-}
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis1s1Higgs(double p, double q) const {
-  
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    costhDrbar  = cos(thetaWDRbar);
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double    sw2DRbar    = 1.0 - cw2DRbar;
-  double    alpha   = displayDrBarPars().thetaH;
-  double    calpha2 = sqr(cos(alpha)), salpha2 = sqr(sin(alpha)), 
-     s2alpha = sin(2.0 * alpha), c2alpha = cos(2.0 * alpha);
-  double    mz      = displayMzRun();
-  double    g       = displayGaugeCoupling(2);
-  double    mHc     = displayDrBarPars().mHpm;
-  double    mA      = displayDrBarPars().mA0(1);
-  double beta = atan(displayTanb());
-  double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta), 
-     sinb = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
-
-  double higgs = sqr(g) * 0.25 *
-    (sinb2 * (2.0 * ffn(p, mHc, displayMwRun(), q) + 
-	      ffn(p, mA, mz, q) / cw2DRbar) +
-     cosb2 * (2.0 * ffn(p, displayMwRun(), displayMwRun(), q)  + 
-	      ffn(p, mz, mz, q) / cw2DRbar)) +
-    1.75 * sqr(g) * cosb2 * 
-    (2.0 * sqr(displayMwRun()) * b0(p, displayMwRun(), displayMwRun(), q) + 
-     sqr(mz) * b0(p, mz, mz, q) / cw2DRbar) +
-    sqr(g) * (2.0 * a0(displayMwRun(), q) + a0(mz, q) / cw2DRbar);
-
-  /// Trilinear Higgs couplings in basis H h G A: have assumed the couplings
-  /// are symmetric (ie hHs1 = Hhs1)
-  DoubleMatrix hhs1(4, 4);
-  hhs1(1, 1) = cosb * (3.0 * calpha2 - salpha2) - sinb * s2alpha;
-  hhs1(2, 2) = cosb * (3.0 * salpha2 - calpha2) + sinb * s2alpha;
-  hhs1(1, 2) = -2.0 * cosb * s2alpha - sinb * c2alpha;
-  hhs1(2, 1) = hhs1(1, 2);
-  hhs1(3, 3) = cos2b * cosb;
-  hhs1(4, 4) = -cos2b * cosb;
-  hhs1(3, 4) = -sin2b * cosb; hhs1(4, 3) = hhs1(3, 4);
-  hhs1 = hhs1 * (g * mz / (2.0 * costhDrbar));
-
-  /// Quadrilinear Higgs couplings
-  DoubleVector hhs1s1(4);
-  hhs1s1(1) = 3.0 * calpha2 - salpha2;
-  hhs1s1(2) = 3.0 * salpha2 - calpha2;
-  hhs1s1(3) = cos2b; hhs1s1(4) = -cos2b;
-  hhs1s1 = hhs1s1 * (sqr(g) * 0.25 / (sqr(costhDrbar)));
-
-  /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
-  DoubleVector higgsm(4), higgsc(2);
-  DoubleVector dnu(4), dnd(4), cn(4);
-  assignHiggs(higgsm, higgsc, dnu, dnd, cn, beta);
-
-  for (int i=1; i<=4; i++) {
-    for (int j=1; j<=4; j++) {
-      higgs = higgs + 0.5 * sqr(hhs1(i, j)) * b0(p, higgsm(i), higgsm(j), q);
-      ///      cout << "higgs(" << i << "," << j << ")=" << higgs;
-    }
-    higgs = higgs + 0.5 * hhs1s1(i) * a0(higgsm(i), q);
-    ///      cout << "higgs(" << i << "," << j << ")=" << higgs;
-  }
-
-  ///  cout << hhs1 << hhs1s1 << higgsm;
-
-  /// Basis (G+ H+, G- H-)
-  DoubleMatrix hphps1(2, 2);
-  hphps1(1, 1) = cos2b * cosb;
-  hphps1(2, 2) = -cos2b * cosb + 2.0 * cw2DRbar * cosb;
-  hphps1(1, 2) = -sin2b * cosb + cw2DRbar * sinb; 
-  hphps1(2, 1) = hphps1(1, 2);
-  hphps1 = hphps1 * (g * mz * 0.5 / costhDrbar);
- 
-  /// (G+ H+)
-  DoubleVector hphps1s1(2);
-  hphps1s1(1) = cw2DRbar + sw2DRbar * cos2b;
-  hphps1s1(2) = cw2DRbar - sw2DRbar * cos2b;
-  hphps1s1 = hphps1s1 * (sqr(g) * 0.25 / cw2DRbar);
-
-  for (int i=1; i<=2; i++) {
-    for (int j=1; j<=2; j++) 
-      higgs = higgs + sqr(hphps1(i, j)) * b0(p, higgsc(i), higgsc(j), q);
-    higgs = higgs + hphps1s1(i) * a0(higgsc(i), q);
-  }
-
-  return higgs;
-}
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis1s2Higgs(double p, double q) const {
-
- double    thetaWDRbar = asin(calcSinthdrbar());
-  double    costhDrbar  = cos(thetaWDRbar);
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double    alpha   = displayDrBarPars().thetaH;
-  double    calpha2 = sqr(cos(alpha)), salpha2 = sqr(sin(alpha)), 
-     s2alpha = sin(2.0 * alpha), c2alpha = cos(2.0 * alpha);
-  double    mz      = displayMzRun();
-  double    g       = displayGaugeCoupling(2);
-  double    mHc     = displayDrBarPars().mHpm;
-  double    mA      = displayDrBarPars().mA0(1);
-  double beta = atan(displayTanb());
-  double cosb = cos(beta), cos2b = cos(2.0 * beta), 
-     sinb = sin(beta), sin2b = sin(2.0 * beta);
-
- double higgs = sqr(g) * 0.25 * sinb * cosb *
-    (2.0 * ffn(p, displayMwRun(), displayMwRun(), q) -2.0 * ffn(p, mHc, displayMwRun(), q) +
-     (ffn(p, mz, mz, q) - ffn(p, mA, mz, q)) / cw2DRbar +
-     7.0 * (2.0 * sqr(displayMwRun()) * b0(p, displayMwRun(), displayMwRun(), q) + 
-	    sqr(mz) * b0(p, mz, mz, q) / cw2DRbar)); 
-  
-  /// Trilinear Higgs couplings in basis H h G A: have assumed the couplings
-  /// are symmetric (ie hHs1 = Hhs1)
-  DoubleMatrix hhs1(4, 4);
-  hhs1(1, 1) = cosb * (3.0 * calpha2 - salpha2) - sinb * s2alpha;
-  hhs1(2, 2) = cosb * (3.0 * salpha2 - calpha2) + sinb * s2alpha;
-  hhs1(1, 2) = -2.0 * cosb * s2alpha - sinb * c2alpha;
-  hhs1(2, 1) = hhs1(1, 2);
-  hhs1(3, 3) = cos2b * cosb;
-  hhs1(4, 4) = -cos2b * cosb;
-  hhs1(3, 4) = -sin2b * cosb; hhs1(4, 3) = hhs1(3, 4);
-  hhs1 = hhs1 * (g * mz / (2.0 * costhDrbar));
-  /// Trilinear Higgs couplings in basis H h G A: have assumed the couplings
-  /// are symmetric (ie hHs2 = Hhs2)
-  DoubleMatrix hhs2(4, 4);
-  hhs2(1, 1) = sinb * (3.0 * salpha2 - calpha2) - cosb * s2alpha;
-  hhs2(2, 2) = sinb * (3.0 * calpha2 - salpha2) + cosb * s2alpha;
-  hhs2(1, 2) = 2.0 * sinb * s2alpha - cosb * c2alpha;
-  hhs2(2, 1) = hhs2(1, 2);
-  hhs2(3, 3) = -cos2b * sinb;
-  hhs2(4, 4) = cos2b * sinb;
-  hhs2(3, 4) = sin2b * sinb; hhs2(4, 3) = hhs2(3, 4);
-  hhs2 = hhs2 * (g * mz / (2.0 * costhDrbar));
-
-  /// Quadrilinear Higgs couplings
-  DoubleVector hhs1s2(4);
-  hhs1s2(1) = -s2alpha;
-  hhs1s2(2) = s2alpha;
-  hhs1s2 = hhs1s2 * (sqr(g) * 0.25 / (sqr(costhDrbar)));
-
-  ///  cout << "alpha=" << alpha << " g=" << g << " " << gp << " cw" << costhDrbar << " " << displayTanb();
-
-  /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
-  DoubleVector higgsm(4), higgsc(2);
-  assignHiggs(higgsm, higgsc);
-
-  double trilinear = 0.;
-  double quartic = 0., quarticNeut = 0.;
-
-  for (int i=1; i<=4; i++) {
-    for (int j=1; j<=4; j++) {
-      higgs = higgs + 0.5 * hhs1(i, j) * hhs2(i, j) * 
-	b0(p, higgsm(i), higgsm(j), q);
-        trilinear = trilinear + 0.5 * hhs1(i, j) * hhs2(i, j) * 
-	  b0(p, higgsm(i), higgsm(j), q);
-    }
-    higgs = higgs + 0.5 * hhs1s2(i) * a0(higgsm(i), q);
-    quarticNeut = quarticNeut + 0.5 * hhs1s2(i) * a0(higgsm(i), q);
-  }
-
-  DoubleMatrix hphps2(2, 2);
-  hphps2(1, 1) = -cos2b * sinb;
-  hphps2(2, 2) = cos2b * sinb + 2.0 * cw2DRbar * sinb;
-  hphps2(1, 2) = sin2b * sinb - cw2DRbar * cosb; 
-  hphps2(2, 1) = hphps2(1, 2);
-  hphps2 = hphps2 * (g * mz * 0.5 / costhDrbar);
-  DoubleMatrix hphps1(2, 2);
-  hphps1(1, 1) = cos2b * cosb;
-  hphps1(2, 2) = -cos2b * cosb + 2.0 * cw2DRbar * cosb;
-  hphps1(1, 2) = -sin2b * cosb + cw2DRbar * sinb; 
-  hphps1(2, 1) = hphps1(1, 2);
-  hphps1 = hphps1 * (g * mz * 0.5 / costhDrbar);
-
-  DoubleVector hphps1s2(2);
-  hphps1s2(1) = - cw2DRbar * sin2b;
-  hphps1s2(2) = cw2DRbar * sin2b;
-  hphps1s2 = hphps1s2 * (sqr(g) * 0.25 / cw2DRbar);
-
-  for (int i=1; i<=2; i++) {
-    for (int j=1; j<=2; j++) {
-      higgs = higgs + hphps1(i, j) * hphps2(i, j) 
-	* b0(p, higgsc(i), higgsc(j), q);
-        trilinear = trilinear + 
-      hphps1(i, j) * hphps2(i, j) 
-	  * b0(p, higgsc(i), higgsc(j), q);
-    }
-    higgs = higgs + hphps1s2(i) * a0(higgsc(i), q);
-    quartic = quartic + hphps1s2(i) * a0(higgsc(i), q);
-  }
-
-  return higgs;
-}
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis2s2Higgs(double p, double q) const {
-double    thetaWDRbar = asin(calcSinthdrbar());
-  double    costhDrbar  = cos(thetaWDRbar);
-  double    cw2DRbar    = sqr(cos(thetaWDRbar));
-  double    sw2DRbar    = 1.0 - cw2DRbar;
-  double    alpha   = displayDrBarPars().thetaH;
-  double    calpha2 = sqr(cos(alpha)), salpha2 = sqr(sin(alpha)), 
-     s2alpha = sin(2.0 * alpha), c2alpha = cos(2.0 * alpha);
-  double    mz      = displayMzRun();
-  double    g       = displayGaugeCoupling(2);
-  double    mHc     = displayDrBarPars().mHpm;
-  double    mA      = displayDrBarPars().mA0(1);
-  double beta = atan(displayTanb());
-  double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta), 
-     sinb = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
- double higgs = sqr(g) * 0.25 *
-    (cosb2 * (2.0 * ffn(p, mHc, displayMwRun(), q) + 
-	      ffn(p, mA, mz, q) / cw2DRbar) +
-     sinb2 * (2.0 * ffn(p, displayMwRun(), displayMwRun(), q) + 
-	      ffn(p, mz, mz, q) / cw2DRbar)) +
-    1.75 * sqr(g) * sinb2 * 
-    (2.0 * sqr(displayMwRun()) * b0(p, displayMwRun(), displayMwRun(), q) + 
-     sqr(mz) * b0(p, mz, mz, q) / cw2DRbar) +
-    sqr(g) * (2.0 * a0(displayMwRun(), q) + a0(mz, q) / cw2DRbar);
-
-  double quartic = 0., trilinear = 0.;
- 
-  /// Trilinear Higgs couplings in basis H h G A: have assumed the couplings
-  /// are symmetric (ie hHs2 = Hhs2)
-  DoubleMatrix hhs2(4, 4);
-  hhs2(1, 1) = sinb * (3.0 * salpha2 - calpha2) - cosb * s2alpha;
-  hhs2(2, 2) = sinb * (3.0 * calpha2 - salpha2) + cosb * s2alpha;
-  hhs2(1, 2) = 2.0 * sinb * s2alpha - cosb * c2alpha;
-  hhs2(2, 1) = hhs2(1, 2);
-  hhs2(3, 3) = -cos2b * sinb;
-  hhs2(4, 4) = cos2b * sinb;
-  hhs2(3, 4) = sin2b * sinb; hhs2(4, 3) = hhs2(3, 4);
-  hhs2 = hhs2 * (g * mz / (2.0 * costhDrbar));
-
-  /// Quadrilinear Higgs couplings
-  DoubleVector hhs2s2(4);
-  hhs2s2(1) = 3.0 * salpha2 - calpha2;
-  hhs2s2(2) = 3.0 * calpha2 - salpha2;
-  hhs2s2(3) = -cos2b; hhs2s2(4) = cos2b;
-  hhs2s2 = hhs2s2 * (sqr(g) * 0.25 / (sqr(costhDrbar)));
-
-  /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
-  DoubleVector higgsm(4), higgsc(2);
-  assignHiggs(higgsm, higgsc);
-
-  for (int i=1; i<=4; i++) {
-    for (int j=1; j<=4; j++) {
-      higgs = higgs + 0.5 * sqr(hhs2(i, j)) * b0(p, higgsm(i), higgsm(j), q);
-      trilinear = trilinear + 
-	0.5 * sqr(hhs2(i, j)) * b0(p, higgsm(i), higgsm(j), q);
-    }
-    higgs = higgs + 0.5 * hhs2s2(i) * a0(higgsm(i), q);
-    quartic = quartic + 0.5 * hhs2s2(i) * a0(higgsm(i), q);
-  }
-
-  DoubleMatrix hphps2(2, 2);
-  hphps2(1, 1) = -cos2b * sinb;
-  hphps2(2, 2) = cos2b * sinb + 2.0 * cw2DRbar * sinb;
-  hphps2(1, 2) = sin2b * sinb - cw2DRbar * cosb; 
-  hphps2(2, 1) = hphps2(1, 2);
-  hphps2 = hphps2 * (g * mz * 0.5 / costhDrbar);
-
-  DoubleVector hphps2s2(2);
-  hphps2s2(1) = cw2DRbar - sw2DRbar * cos2b;
-  hphps2s2(2) = cw2DRbar + sw2DRbar * cos2b;
-  hphps2s2 = hphps2s2 * (sqr(g) * 0.25 / cw2DRbar);
-
-  for (int i=1; i<=2; i++) {
-    for (int j=1; j<=2; j++) {
-      higgs = higgs + sqr(hphps2(i, j)) * b0(p, higgsc(i), higgsc(j), q);
-      trilinear = trilinear + sqr(hphps2(i, j)) * 
-	b0(p, higgsc(i), higgsc(j), q);
-    }
-    higgs = higgs + hphps2s2(i) * a0(higgsc(i), q);
-    quartic = quartic + hphps2s2(i) * a0(higgsc(i), q);
-  }
-return higgs;
-}
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis1s1Neutralinos(double p, double q) const {
-  double    g       = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double neutralinos = 0.0;
-
-  DoubleMatrix aPsi(4, 4);
-  ComplexMatrix aChi(4, 4), bChi(4, 4);
-  ComplexMatrix n(displayDrBarPars().nBpmz);
-  DoubleVector mneut(displayDrBarPars().mnBpmz);
- 
-
-  aPsi(1, 3) = -gp * 0.5; 
-  aPsi(2, 3) = g * 0.5; 
-  aPsi.symmetrise();
-  aChi = n.complexConjugate() * aPsi * n.hermitianConjugate();
-  bChi = n * aPsi * n.transpose();
-
- 
-DoubleMatrix fChiChis1s1(4, 4), gChiChis1s1(4, 4);
-  for(int i=1; i<=4; i++)
-    for (int j=1; j<=4; j++) {
-      fChiChis1s1(i, j) = sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod());
-      gChiChis1s1(i, j) = (bChi(i, j).conj() * aChi(i, j) + 
-	aChi(i, j).conj() * bChi(i, j)).real();
-      neutralinos = neutralinos + 0.5 * 
-	(fChiChis1s1(i, j) * gfn(p, mneut(i), mneut(j), q) - 2.0 *
-	 gChiChis1s1(i, j) * mneut(i) * mneut(j) * 
-	 b0(p, mneut(i), mneut(j), q));
-    }
-
-  return neutralinos;
-}
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis1s2Neutralinos(double p, double q) const {
-  double    g       = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double neutralinos = 0.0;
-
-  DoubleMatrix aPsi1(4, 4);
-  ComplexMatrix aChi1(4, 4), bChi1(4, 4);
-  ComplexMatrix n(displayDrBarPars().nBpmz);
-  DoubleVector mneut(displayDrBarPars().mnBpmz);
- 
-  aPsi1(1, 3) = -gp * 0.5; 
-  aPsi1(2, 3) = g * 0.5; 
-  aPsi1.symmetrise();
-  aChi1 = n.complexConjugate() * aPsi1 * n.hermitianConjugate();
-  bChi1 = n * aPsi1 * n.transpose();
-  DoubleMatrix aPsi2(4, 4);
-  ComplexMatrix aChi2(4, 4), bChi2(4, 4);
-  aPsi2(1, 4) = gp * 0.5; 
-  aPsi2(2, 4) = -g * 0.5; 
-  aPsi2.symmetrise();
-  aChi2 = n.complexConjugate() * aPsi2 * n.hermitianConjugate();
-  bChi2 = n * aPsi2 * n.transpose();
-
-  DoubleMatrix fChiChis1s2(4, 4), gChiChis1s2(4, 4);
-  for(int i=1; i<=4; i++)
-    for (int j=1; j<=4; j++) {
-      fChiChis1s2(i, j) = (aChi1(i, j).conj() * aChi2(i, j) + 
-	bChi1(i, j).conj() * bChi2(i, j)).real();
-      gChiChis1s2(i, j) = (bChi1(i, j).conj() * aChi2(i, j) + 
-	aChi1(i, j).conj() * bChi2(i, j)).real();
-      neutralinos = neutralinos + 0.5 * 
-	(fChiChis1s2(i, j) * gfn(p, mneut(i), mneut(j), q) - 2.0 *
-	 gChiChis1s2(i, j) * mneut(i) * mneut(j) * 
-	 b0(p, mneut(i), mneut(j), q));
-    }
-
- return neutralinos;
-}
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis2s2Neutralinos(double p, double q) const {
-  double    g       = displayGaugeCoupling(2);
-  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-/// Neutralino contribution
-  double neutralinos = 0.0;
-
-  DoubleMatrix aPsi(4, 4);
-  ComplexMatrix aChi(4, 4), bChi(4, 4);
-  ComplexMatrix n(displayDrBarPars().nBpmz);
-  DoubleVector mneut(displayDrBarPars().mnBpmz);
-  
-  aPsi(1, 4) = gp * 0.5; 
-  aPsi(2, 4) = -g * 0.5; 
-  aPsi.symmetrise();
-  aChi = n.complexConjugate() * aPsi * n.hermitianConjugate();
-  bChi = n * aPsi * n.transpose();
-
-  DoubleMatrix fChiChis2s2(4, 4), gChiChis2s2(4, 4);
-  for(int i=1; i<=4; i++)
-    for (int j=1; j<=4; j++) {
-      fChiChis2s2(i, j) = sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod());
-      gChiChis2s2(i, j) = (bChi(i, j).conj() * aChi(i, j) + 
-	aChi(i, j).conj() * bChi(i, j)).real();
-      neutralinos = neutralinos + 0.5 * 
-	(fChiChis2s2(i, j) * gfn(p, mneut(i), mneut(j), q) - 2.0 *
-	 gChiChis2s2(i, j) * mneut(i) * mneut(j) * 
-	 b0(p, mneut(i), mneut(j), q));
-    }
-
-return neutralinos;
-}
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis1s1Charginos(double p, double q) const {
-  double chargino = 0.0;
-  double g = displayGaugeCoupling(2);
-  ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
-  DoubleVector mch(displayDrBarPars().mchBpmz); 
-  DoubleMatrix aPsic(2, 2);
-  aPsic(1, 2) = g / root2; 
-  ComplexMatrix aChic(2, 2), bChic(2, 2);
-  DoubleMatrix fChiChis1s1(2, 2), gChiChis1s1(2, 2);
-  aChic = v.complexConjugate() * aPsic * u.hermitianConjugate();
-  bChic = u * aPsic.transpose() * v.transpose();
-  for(int i=1; i<=2; i++)
-    for (int j=1; j<=2; j++) {
-      fChiChis1s1(i, j) = sqr(aChic(i, j).mod()) + sqr(bChic(i, j).mod());
-      gChiChis1s1(i, j) = (bChic(i, j).conj() * aChic(i, j) + 
-	aChic(i, j).conj() * bChic(i, j)).real();
-      chargino = chargino + 
-	(fChiChis1s1(i, j) * gfn(p, mch(i), mch(j), q) - 2.0 *
-	 gChiChis1s1(i, j) * mch(i) * mch(j) * 
-	 b0(p, mch(i), mch(j), q));
-    }
-  
-  return chargino;
-}
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis1s2Charginos(double p, double q) const {
-  double g = displayGaugeCoupling(2);
- double chargino = 0.0;
-  ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
-  DoubleVector mch(displayDrBarPars().mchBpmz); 
-
-  DoubleMatrix aPsic1(2, 2), aPsic2(2, 2);
-  aPsic1(1, 2) = g / root2; 
-  ComplexMatrix aChic1(2, 2), bChic1(2, 2);
-  ComplexMatrix aChic2(2, 2), bChic2(2, 2);
-  aChic1 = v.complexConjugate() * aPsic1 * u.hermitianConjugate();
-  bChic1 = u * aPsic1.transpose() * v.transpose();
-  aPsic2(2, 1) = g / root2;
-  aChic2 = v.complexConjugate() * aPsic2 * u.hermitianConjugate();
-  bChic2 = u * aPsic2.transpose() * v.transpose();
-  DoubleMatrix fChiChis1s2(2, 2), gChiChis1s2(2, 2);
-  for(int i=1; i<=2; i++)
-    for (int j=1; j<=2; j++) {
-      fChiChis1s2(i, j) = (aChic1(i, j).conj() * aChic2(i, j) + 
-	bChic1(i, j).conj() * bChic2(i, j)).real();
-      gChiChis1s2(i, j) = (bChic1(i, j).conj() * aChic2(i ,j) + 
-	aChic1(i, j).conj() * bChic2(i, j)).real();
-      chargino = chargino + 
-	(fChiChis1s2(i, j) * gfn(p, mch(i), mch(j), q) - 2.0 *
-	 gChiChis1s2(i, j) * mch(i) * mch(j) * 
-	 b0(p, mch(i), mch(j), q));
-    }
-
- return chargino;
-}
-template<class SoftPars>
-double Softsusy<SoftPars>::pis2s2Charginos(double p, double q) const {
-  double chargino = 0.0;
-  double g = displayGaugeCoupling(2);
-  ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
-  DoubleVector mch(displayDrBarPars().mchBpmz); 
-  DoubleMatrix aPsic(2, 2);
-  aPsic(2, 1) = g / root2;
-  ComplexMatrix aChic(2, 2), bChic(2, 2);
-  aChic = v.complexConjugate() * aPsic * u.hermitianConjugate();
-  bChic = u * aPsic.transpose() * v.transpose();
-  DoubleMatrix fChiChis2s2(2, 2), gChiChis2s2(2, 2);
-  for(int i=1; i<=2; i++)
-    for (int j=1; j<=2; j++) {
-      fChiChis2s2(i, j) = sqr(aChic(i, j).mod()) + sqr(bChic(i, j).mod());
-      gChiChis2s2(i, j) = (bChic(i, j).conj() * aChic(i, j) + 
-	aChic(i, j).conj() * bChic(i, j)).real();
-      chargino = chargino + 
-	(fChiChis2s2(i, j) * gfn(p, mch(i), mch(j), q) - 2.0 *
-	 gChiChis2s2(i, j) * mch(i) * mch(j) * 
-	 b0(p, mch(i), mch(j), q));
-    }
-
- return chargino;
-}
-
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis1s1(double p, double q) const {
-  drBarPars tree(displayDrBarPars());
-  double    beta    = atan(displayTanb());
-  double    mb      = tree.mb;
-  double    hb      = tree.hb;
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    costhDrbar  = cos(thetaWDRbar);
-  double    smu     = -displaySusyMu(); /// minus sign taken into acct here!
-  double    mz      = displayMzRun();
-  double    g       = displayGaugeCoupling(2);
-  double cosb = cos(beta);
-  double gmzOcthW = g * mz / costhDrbar;
-  //PA: get fermion contribution
-  double fermions = pis1s1Fermions(p, q);
-  // sfermion couplings to s1 Higgs state
-  DoubleMatrix ls1tt(2, 2), ls1bb(2, 2), ls1tautau(2, 2);
-  H1SfSfCouplings(ls1tt, ls1bb, ls1tautau, gmzOcthW, smu, cosb, root2*mb/hb);
-  //PA: get sfermion contribution
-  double sfermions = pis1s1Sfermions(p, q, ls1tt, ls1bb, ls1tautau);
-  //PA: get Higgs contribution
-  double higgs = pis1s1Higgs(p, q);
-  /// Neutralino contribution
-  double neutralinos = pis1s1Neutralinos(p, q);
-  /// Chargino contribution
-  double chargino = pis1s1Charginos(p, q);  
-
-  return 
-    (sfermions + 
-     fermions + higgs + neutralinos + chargino) / (16.0 * sqr(PI));
-}
-
-template<class SoftPars>
-double Softsusy<SoftPars>::pis1s2(double p, double q) const {
-  drBarPars tree(displayDrBarPars());
-
-  double    beta    = atan(displayTanb());
-  double    mb   =  tree.mb, hb   =  tree.hb; 
-  double    thetaWDRbar = asin(calcSinthdrbar());
-  double    costhDrbar  = cos(thetaWDRbar);
-  double    smu     = -displaySusyMu(); /// minus sign taken into acct here!
-  double    g       = displayGaugeCoupling(2);
-  double cosb = cos(beta), sinb = sin(beta);
-  double  mz = displayMzRun();
-  // sfermion couplings to s1 Higgs state
-  DoubleMatrix ls1tt(2, 2), ls1bb(2, 2), ls1tautau(2, 2);
-  double gmzOcthW = g * mz / costhDrbar;
-  H1SfSfCouplings(ls1tt, ls1bb, ls1tautau, gmzOcthW, smu, cosb, root2*mb/hb);
-  /// sfermion couplings to s2 Higgs state
-  DoubleMatrix ls2tt(2, 2), ls2bb(2, 2), ls2tautau(2, 2);
-  H2SfSfCouplings(ls2tt, ls2bb, ls2tautau, gmzOcthW, smu, sinb);
-  //PA: get sfermion contribution
-  double sfermions = pis1s2Sfermions(p, q, ls1tt, ls1bb, ls1tautau, ls2tt, ls2bb, ls2tautau);
-  //PA: get Higgs contribution
-  double higgs = pis1s2Higgs(p, q);
-  /// Neutralino contribution
-  double neutralinos = pis1s2Neutralinos(p, q); 
-  /// Chargino contribution
-  double chargino = pis1s2Charginos(p, q);  
-
-  return (sfermions + higgs + neutralinos + chargino) 
-    / (16.0 * sqr(PI));
-}
-
-/// checked 28.10.02
-template<class SoftPars>
-double Softsusy<SoftPars>::pis2s2(double p, double q) const {
-  drBarPars tree(displayDrBarPars());
-  double beta = atan(displayTanb());
-  double thetaWDRbar = asin(calcSinthdrbar());
-  double costhDrbar = cos(thetaWDRbar);
-  double smu = -displaySusyMu(); /// minus sign taken into acct here!
-  double g = displayGaugeCoupling(2);
-  double sinb = sin(beta);
-  double mz = displayMzRun();
-  double gmzOcthW = g * mz / costhDrbar;
-  
-  double fermions = pis2s2Fermions(p, q);
-  /// sfermion couplings to s2 Higgs state
-  DoubleMatrix ls2tt(2, 2), ls2bb(2, 2), ls2tautau(2, 2);
-  H2SfSfCouplings(ls2tt, ls2bb, ls2tautau, gmzOcthW, smu, sinb);
-  double sfermions = pis2s2Sfermions(p, q, ls2tt, ls2bb, ls2tautau);
-  double higgs = pis2s2Higgs(p, q);
-  double neutralinos = pis2s2Neutralinos(p, q); 
-  double chargino = pis2s2Charginos(p, q);   
-
-  return (fermions + sfermions + higgs + neutralinos + chargino) 
-    / (16.0 * sqr(PI));
-}
 
 /// LCT: Returns trilinear neutralino-chargino-hpm coupling in unrotated basis
 template<class SoftPars>
@@ -10465,7 +9624,28 @@ template<class SoftPars>
 void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
   out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
-  out << "# MX=" << mxBC << " GeV" << endl;
+#ifdef COMPILE_THREE_LOOP_RGE
+  out << "# 3-loop RGE corrections are ";
+  if (displayLoops() == 3) out << "on"; else out << "off";
+#endif
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  out << ". 2-loop Yukawa/g3 thresholds are ";
+  if (!USE_TWO_LOOP_THRESHOLD) out << "off\n";
+  else {
+    if (included_thresholds>0) out << "on"; else out << "off";
+    out << "\n# 2-loop t-quark O(a_s^2) thresholds are ";
+    if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) out << "on"; else out << "off";  
+    out << "\n# 2-loop b-quark O(a_s^2) thresholds are "; 
+    if (included_thresholds & ENABLE_TWO_LOOP_MB_AS) out << "on"; else out << "off";
+    out << "\n# 2-loop b-quark O(a_s y^2) and O(y^4) thresholds are ";
+    if (included_thresholds & ENABLE_TWO_LOOP_MB_YUK) out << "on"; else out << "off"; 
+    out << "\n# 2-loop tau-lepton  O(y^4) thresholds are ";
+    if (included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK) out << "on"; else out << "off"; 
+    out << "\n# 2-loop a_s  O(a_s^2) and O(a_s y^2) thresholds are ";
+    if (included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK) out << "on"; else out << "off";
+    out << endl;
+  }
+#endif
 }
 
 template<class SoftPars>
@@ -10549,7 +9729,7 @@ void Softsusy<SoftPars>::alphaSLHA(ostream & out) {
   out << "Block alpha                   " << 
     "  # Effective Higgs mixing parameter\n";
   out << "          "; printRow(out, displayPhys().thetaH);        
-  out << "       # alpha\n";
+  out << "       # alpha - evaluated at p^2=0\n";
 }
 
 template<class SoftPars>
@@ -11312,6386 +10492,1175 @@ void Softsusy<SoftPars>::doQuarkMixing(DoubleMatrix & /* mDon */,
   /// done in FLAVOURMSSMSOFTSUSY these days).
 }
 
-
-/*
+/// Complex versions of Higgs loop corrections
 template<class SoftPars>
-double MssmSoftsusy::twoLpMt() const {
-  const double zt2 = sqr(PI) / 6.;
-  double mmsb1 = sqr(displayDrBarPars().md(1, 3));
-  double mmsb2 = sqr(displayDrBarPars().md(2, 3));
-  double mmst1 = sqr(displayDrBarPars().mu(1, 3));
-  double mmst2 = sqr(displayDrBarPars().mu(2, 3));
-  double mgl = displayGaugino(3);
-  double mmgl = sqr(mgl);
-  double mt = displayDrBarPars().mt;
-  double mmt = sqr(mt);
-  double mb = displayDrBarPars().mb;
-  double mmb = sqr(mb);
-  double csb = cos(displayDrBarPars().thetab), 
-    cs2b = cos(displayDrBarPars().thetab * 2.), 
-    cs4b = cos(4 * displayDrBarPars().thetab);
-  double snb = sin(displayDrBarPars().thetab), 
-    sn2b = sin(displayDrBarPars().thetab * 2.), 
-    sn4b = sin(4 * displayDrBarPars().thetab);
-  double cst = cos(displayDrBarPars().thetat), 
-    cs2t = cos(displayDrBarPars().thetat * 2.), 
-    cs4t = cos(4 * displayDrBarPars().thetat);
-  double snt = sin(displayDrBarPars().thetat), 
-    sn2t = sin(displayDrBarPars().thetat * 2.), 
-    sn4t = sin(4 * displayDrBarPars().thetat);
-  double mmu = sqr(displayMu());
+Complex Softsusy<SoftPars>::pis1s1Sfermions(double p, double q, DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau) const {
+  drBarPars tree(displayDrBarPars()); 
+  double hb = tree.hb, htau = tree.htau;
+  double    thetat  = tree.thetat ;
+  double    thetab  = tree.thetab;
+  double    thetatau= tree.thetatau;
+  double    st      = sin(thetat) ;
+  double    sb      = sin(thetab) ;
+  double    stau    = sin(thetatau);
+  double    ct      = cos(thetat) ;
+  double    cb      = cos(thetab) ;
+  double    ctau    = cos(thetatau);
+  double    msbot1  = tree.md(1, 3);
+  double    msbot2  = tree.md(2, 3);
+  double    mstau1  = tree.me(1, 3);
+  double    mstau2  = tree.me(2, 3);
+  double    mstop1  = tree.mu(1, 3);
+  double    mstop2  = tree.mu(2, 3);
+  double    mz      = displayMzRun();
+  double    g       = displayGaugeCoupling(2);
+  double    thetaWDRbar = asin(calcSinthdrbar());
+  double    costhDrbar  = cos(thetaWDRbar);
+  double    cw2DRbar    = sqr(cos(thetaWDRbar));
+  double    cosb        = cos(atan(displayTanb()));
 
-  /// average of first 2 generations squark mass
-  double msq = 0.125 * (displayDrBarPars().mu(1, 1) + 
-			displayDrBarPars().mu(2, 1) + 
-			displayDrBarPars().md(1, 1) + 
-			displayDrBarPars().md(2, 1) + 		       
-			displayDrBarPars().mu(1, 2) + 
-			displayDrBarPars().mu(2, 2) + 
-			displayDrBarPars().md(1, 2) + 
-			displayDrBarPars().md(2, 2));
-  double mmsusy = sqr(msq);
+  Complex sbots = 3.0 * sqr(hb) * (a0(msbot1, q) + a0(msbot2, q));
 
-  double lnMglSq = log(mmgl);
-  double lnMsbSq = log(mmsb1);
-  double lnMsb2Sq = log(mmsb2);
-  double lnMst1Sq = log(mmst1);
-  double lnMst2Sq = log(mmst2);
-  double lnMmsusy = log(mmsusy);
-  double lnMmt = log(mmt);
-  double lnMmu = log(mmu);
+  Complex staus =  sqr(htau) *
+    (a0(mstau1, q) + a0(mstau2, q));
+
+  Complex stops = 3.0 * sqr(g) / (2.0 * cw2DRbar) *
+    (guL * (sqr(ct) * a0(mstop1, q) + sqr(st) * a0(mstop2, q)) +
+     guR * (sqr(st) * a0(mstop1, q) + sqr(ct) * a0(mstop2, q)));
+
+  sbots = sbots + 3.0 * sqr(g) / (2.0 * cw2DRbar) *
+    (gdL * (sqr(cb) * a0(msbot1, q) + sqr(sb) * a0(msbot2, q)) +
+     gdR * (sqr(sb) * a0(msbot1, q) + sqr(cb) * a0(msbot2, q)));
+
+  staus = staus + sqr(g) / (2.0 * cw2DRbar) *
+    (geL * (sqr(ctau) * a0(mstau1, q) + sqr(stau) * a0(mstau2, q)) +
+     geR * (sqr(stau) * a0(mstau1, q) + sqr(ctau) * a0(mstau2, q)));
+
+  Complex sups = 0.0, sdowns = 0.0, sneutrinos = 0.0, sleps = 0.0;
+  int fam; for(fam=1; fam<=2; fam++) {
+    sups = sups + 3.0 * sqr(g) / (2.0 * cw2DRbar) *
+      (guL * a0(tree.mu(1, fam), q) + 
+       guR * a0(tree.mu(2, fam), q));
+    sdowns = sdowns + 3.0 * sqr(g) / (2.0 * cw2DRbar) *
+      (gdL * a0(tree.md(1, fam), q) + 
+       gdR * a0(tree.md(2, fam), q));
+    sleps = sleps + sqr(g) / (2.0 * cw2DRbar) * 
+      (geL * a0(tree.me(1, fam), q) + 
+       geR * a0(tree.me(2, fam), q));
+  }
   
-  double resmt =
-
-       + sqr(cs2t) * (
-          - 640/9
-          - 128/9*zt2
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmst1,1)*sn2t * (
-          + 32/3*mmsusy/mt*mgl
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmst1,1) * (
-          + 16/3*mmst1
-          - 8*mmsusy
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmst1,2)*sn2t * (
-          + 32/3*mmst1*mmsusy/mt*mgl
-          - 32/3*sqr(mmst1)/mt*mgl
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmst1,2) * (
-          - 56/3*mmst1*mmsusy
-          + 56/3*sqr(mmst1)
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmst1,3) * (
-          - 32/3*sqr(mmst1)*mmsusy
-          + 32/3*pow(mmst1,3)
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmst2,1)*sn2t * (
-          - 32/3*mmsusy/mt*mgl
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmst2,1) * (
-          + 16/3*mmst2
-          - 8*mmsusy
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmst2,2)*sn2t * (
-          - 32/3*mmst2*mmsusy/mt*mgl
-          + 32/3*sqr(mmst2)/mt*mgl
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmst2,2) * (
-          - 56/3*mmst2*mmsusy
-          + 56/3*sqr(mmst2)
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmst2,3) * (
-          - 32/3*sqr(mmst2)*mmsusy
-          + 32/3*pow(mmst2,3)
-          )
-
-       + fin(mmgl,mmsusy) * (
-          - 16/3
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmst1,1)*sn2t * (
-          + 4/3*mmsb1/mt*mgl
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmst1,1) * (
-          - 1/3*mmsb1
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmst1,2)*sn2t * (
-          - 4/3*mmsb1*mmst1/mt*mgl
-          + 4/3*sqr(mmsb1)/mt*mgl
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmst1,2) * (
-          + mmsb1*sqr(mmst1
-          - mmsb1)
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmst1,3) * (
-          + 4/3*mmsb1*sqr(mmst1)
-          - 4/3*sqr(mmsb1)*mmst1
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmst2,1)*sn2t * (
-          - 4/3*mmsb1/mt*mgl
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmst2,1) * (
-          - 1/3*mmsb1
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmst2,2)*sn2t * (
-          + 4/3*mmsb1*mmst2/mt*mgl
-          - 4/3*sqr(mmsb1)/mt*mgl
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmst2,2) * (
-          + mmsb1*sqr(mmst2
-          - mmsb1)
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmst2,3) * (
-          + 4/3*mmsb1*sqr(mmst2)
-          - 4/3*sqr(mmsb1)*mmst2
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmst1,1)*sn2t * (
-          + 4/3*mmsb2/mt*mgl
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmst1,1) * (
-          - 1/3*mmsb2
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmst1,2)*sn2t * (
-          - 4/3*mmsb2*mmst1/mt*mgl
-          + 4/3*sqr(mmsb2)/mt*mgl
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmst1,2) * (
-          + mmsb2*sqr(mmst1
-          - mmsb2)
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmst1,3) * (
-          + 4/3*mmsb2*sqr(mmst1)
-          - 4/3*sqr(mmsb2)*mmst1
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmst2,1)*sn2t * (
-          - 4/3*mmsb2/mt*mgl
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmst2,1) * (
-          - 1/3*mmsb2
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmst2,2)*sn2t * (
-          + 4/3*mmsb2*mmst2/mt*mgl
-          - 4/3*sqr(mmsb2)/mt*mgl
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmst2,2) * (
-          + mmsb2*sqr(mmst2
-          - mmsb2)
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmst2,3) * (
-          + 4/3*mmsb2*sqr(mmst2)
-          - 4/3*sqr(mmsb2)*mmst2
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst1,1)*sn2t * (
-          + 88/9*mmst1/mt*mgl
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          + 5/3*mmst1
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 154/9*sqr(mmst1)
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1) * (
-          + 34/9*sqr(mmst1)
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst1,1) * (
-          + 22/9*mmst1
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst1,2) * (
-          + 12*sqr(mmst1)
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst1,3) * (
-          + 16/3*pow(mmst1,3)
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst2,1)*sn2t * (
-          - 16/9*mmst1/mt*mgl
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          - 5/3*mmst1
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 26/9*sqr(mmst1)
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1) * (
-          - 34/9*sqr(mmst1)
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst2,1) * (
-          + 16/9*mmst1
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst2,2)*sn2t * (
-          + 4/3*mmst1*mmst2/mt*mgl
-          - 4/3*sqr(mmst1)/mt*mgl
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst2,2)*sqr(cs2t) * (
-          + 26/9*mmst1*mmst2
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst2,2) * (
-          - 17/9*mmst1*sqr(mmst2
-          - mmst1)
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmst2,3) * (
-          + 4/3*mmst1*sqr(mmst2)
-          - 4/3*sqr(mmst1)*mmst2
-          )
-
-       + fin(mmst1,mmgl)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 128/9*mmst1
-          )
-
-       + fin(mmst1,mmsb1)*den(mmgl - mmst1,1) * (
-          - 2/3*mmst1
-          )
-
-       + fin(mmst1,mmsb1)*den(mmgl - mmst1,2)*sn2t * (
-          - 4/3*mmsb1*mmst1/mt*mgl
-          + 4/3*sqr(mmst1)/mt*mgl
-          )
-
-       + fin(mmst1,mmsb1)*den(mmgl - mmst1,2) * (
-          + mmsb1*mmst1
-          - 7/3*sqr(mmst1)
-          )
-
-       + fin(mmst1,mmsb1)*den(mmgl - mmst1,3) * (
-          + 4/3*mmsb1*sqr(mmst1)
-          - 4/3*pow(mmst1,3)
-          )
-
-       + fin(mmst1,mmsb2)*den(mmgl - mmst1,1) * (
-          - 2/3*mmst1
-          )
-
-       + fin(mmst1,mmsb2)*den(mmgl - mmst1,2)*sn2t * (
-          - 4/3*mmsb2*mmst1/mt*mgl
-          + 4/3*sqr(mmst1)/mt*mgl
-          )
-
-       + fin(mmst1,mmsb2)*den(mmgl - mmst1,2) * (
-          + mmsb2*mmst1
-          - 7/3*sqr(mmst1)
-          )
-
-       + fin(mmst1,mmsb2)*den(mmgl - mmst1,3) * (
-          + 4/3*mmsb2*sqr(mmst1)
-          - 4/3*pow(mmst1,3)
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst1,1)*sn2t * (
-          - 4/9*mmst1/mt*mgl
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          - 11/9*mmst1
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1) * (
-          - 8/9*sqr(mmst1)
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst1,1) * (
-          + mmst1
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst1,2)*sn2t * (
-          - 4/3*mmst1*mmst2/mt*mgl
-          + 4/3*sqr(mmst1)/mt*mgl
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          - 26/9*sqr(mmst1)
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst1,2) * (
-          + mmst1*mmst2
-          + 5/9*sqr(mmst1)
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst1,3) * (
-          + 4/3*sqr(mmst1)*mmst2
-          - 4/3*pow(mmst1,3)
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst2,1)*sn2t * (
-          + 4/9*mmst1/mt*mgl
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          - 11/9*mmst1
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1) * (
-          + 8/9*sqr(mmst1)
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst2,1) * (
-          + 1/9*mmst1
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst2,2)*sn2t * (
-          - 4/3*mmst1*mmst2/mt*mgl
-          + 4/3*sqr(mmst1)/mt*mgl
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst2,2)*sqr(cs2t) * (
-          - 26/9*mmst1*mmst2
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst2,2) * (
-          + 5/9*mmst1*sqr(mmst2
-          + mmst1)
-          )
-
-       + fin(mmst1,mmst2)*den(mmgl - mmst2,3) * (
-          - 4/3*mmst1*sqr(mmst2)
-          + 4/3*sqr(mmst1)*mmst2
-          )
-
-       + fin(mmst1,mmsusy)*den(mmgl - mmst1,1) * (
-          - 16/3*mmst1
-          )
-
-       + fin(mmst1,mmsusy)*den(mmgl - mmst1,2)*sn2t * (
-          - 32/3*mmst1*mmsusy/mt*mgl
-          + 32/3*sqr(mmst1)/mt*mgl
-          )
-
-       + fin(mmst1,mmsusy)*den(mmgl - mmst1,2) * (
-          + 8*mmst1*mmsusy
-          - 56/3*sqr(mmst1)
-          )
-
-       + fin(mmst1,mmsusy)*den(mmgl - mmst1,3) * (
-          + 32/3*sqr(mmst1)*mmsusy
-          - 32/3*pow(mmst1,3)
-          )
-
-       + fin(mmst2,mmgl)*sqr(cs2t) * (
-          - 128/9
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst1,1)*sn2t * (
-          + 16/9*mmst2/mt*mgl
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          + 26/9*mmst1
-          + 11/9*mmst2
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 26/9*sqr(mmst1)
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1) * (
-          + 34/9*sqr(mmst1)
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst1,1) * (
-          - 34/9*mmst1
-          - 2*mmst2
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst1,2)*sn2t * (
-          - 4/3*mmst1*mmst2/mt*mgl
-          + 4/3*sqr(mmst2)/mt*mgl
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          + 26/9*mmst1*mmst2
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst1,2) * (
-          - 17/9*mmst1*sqr(mmst2
-          - mmst2)
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst1,3) * (
-          - 4/3*mmst1*sqr(mmst2)
-          + 4/3*sqr(mmst1)*mmst2
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst2,1)*sn2t * (
-          - 88/9*mmst2/mt*mgl
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          - 154/9*mmst1
-          - 139/9*mmst2
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 154/9*sqr(mmst1)
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1) * (
-          - 34/9*sqr(mmst1)
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst2,1) * (
-          + 34/9*mmst1
-          + 56/9*mmst2
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst2,2) * (
-          + 12*sqr(mmst2)
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmst2,3) * (
-          + 16/3*pow(mmst2,3)
-          )
-
-       + fin(mmst2,mmgl)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 128/9*mmst1
-          )
-
-       + fin(mmst2,mmsb1)*den(mmgl - mmst2,1) * (
-          - 2/3*mmst2
-          )
-
-       + fin(mmst2,mmsb1)*den(mmgl - mmst2,2)*sn2t * (
-          + 4/3*mmsb1*mmst2/mt*mgl
-          - 4/3*sqr(mmst2)/mt*mgl
-          )
-
-       + fin(mmst2,mmsb1)*den(mmgl - mmst2,2) * (
-          + mmsb1*mmst2
-          - 7/3*sqr(mmst2)
-          )
-
-       + fin(mmst2,mmsb1)*den(mmgl - mmst2,3) * (
-          + 4/3*mmsb1*sqr(mmst2)
-          - 4/3*pow(mmst2,3)
-          )
-
-       + fin(mmst2,mmsb2)*den(mmgl - mmst2,1) * (
-          - 2/3*mmst2
-          )
-
-       + fin(mmst2,mmsb2)*den(mmgl - mmst2,2)*sn2t * (
-          + 4/3*mmsb2*mmst2/mt*mgl
-          - 4/3*sqr(mmst2)/mt*mgl
-          )
-
-       + fin(mmst2,mmsb2)*den(mmgl - mmst2,2) * (
-          + mmsb2*mmst2
-          - 7/3*sqr(mmst2)
-          )
-
-       + fin(mmst2,mmsb2)*den(mmgl - mmst2,3) * (
-          + 4/3*mmsb2*sqr(mmst2)
-          - 4/3*pow(mmst2,3)
-          )
-
-       + fin(mmst2,mmsusy)*den(mmgl - mmst2,1) * (
-          - 16/3*mmst2
-          )
-
-       + fin(mmst2,mmsusy)*den(mmgl - mmst2,2)*sn2t * (
-          + 32/3*mmst2*mmsusy/mt*mgl
-          - 32/3*sqr(mmst2)/mt*mgl
-          )
-
-       + fin(mmst2,mmsusy)*den(mmgl - mmst2,2) * (
-          + 8*mmst2*mmsusy
-          - 56/3*sqr(mmst2)
-          )
-
-       + fin(mmst2,mmsusy)*den(mmgl - mmst2,3) * (
-          + 32/3*sqr(mmst2)*mmsusy
-          - 32/3*pow(mmst2,3)
-          )
-
-       + lnMglSq*sqr(cs2t) * (
-          + 128/3
-          )
-
-       + sqr(lnMglSq)*sqr(cs2t) * (
-          - 64/9
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,1)*sn2t * (
-          + 2/3*mmsb1/mt*mgl
-          + 2/3*mmsb2/mt*mgl
-          + 10*mmst1/mt*mgl
-          + 2/3*mmst2/mt*mgl
-          + 16/3*mmsusy/mt*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          + 53/3*mmst1
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sn2t * (
-          + 8/3*sqr(mmst1)/mt*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 223/9*sqr(mmst1)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1) * (
-          + 43/9*sqr(mmst1)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,2)*sn2t * (
-          - 16/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,2) * (
-          + 32/9*pow(mmst1,3)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,3) * (
-          - 16/9*pow(mmst1,4)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,1) * (
-          - 1/2*mmsb1
-          - 1/2*mmsb2
-          - 73/6*mmst1
-          - 1/2*mmst2
-          + 4/3*mmsusy
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,2)*sn2t * (
-          + 2/3*mmsb1*mmst1/mt*mgl
-          + 2/3*mmsb2*mmst1/mt*mgl
-          + 2/3*mmst1*mmst2/mt*mgl
-          - 16*mmst1*mmsusy/mt*mgl
-          - 122/9*sqr(mmst1)/mt*mgl
-          + 32/3*sqr(mmsusy)/mt*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          + 53/6*sqr(mmst1)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,2)*den(mmst1 - mmst2,1)*sn2t * (
-          + 8/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,2)*den(mmst1 - mmst2,2) * (
-          + 8/9*pow(mmst1,4)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,2) * (
-          - 7/6*mmsb1*mmst1
-          - 7/6*mmsb2*mmst1
-          - 7/6*mmst1*mmst2
-          + 52/3*mmst1*mmsusy
-          + 151/9*sqr(mmst1)
-          - 8*sqr(mmsusy)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,3)*sn2t * (
-          - 8/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,3) * (
-          - 2/3*mmsb1*sqr(mmst1)
-          - 2/3*mmsb2*sqr(mmst1)
-          - 32/3*mmst1*sqr(mmsusy)
-          - 2/3*sqr(mmst1)*mmst2
-          + 16*sqr(mmst1)*mmsusy
-          + 46/3*pow(mmst1,3)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst1,4) * (
-          + 4/9*pow(mmst1,4)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,1)*sn2t * (
-          - 2/3*mmsb1/mt*mgl
-          - 2/3*mmsb2/mt*mgl
-          + 2/9*mmst1/mt*mgl
-          - 98/9*mmst2/mt*mgl
-          - 16/3*mmsusy/mt*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          - 223/9*mmst1
-          - 64/9*mmst2
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sn2t * (
-          - 8/3*sqr(mmst1)/mt*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 223/9*sqr(mmst1)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1) * (
-          - 43/9*sqr(mmst1)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,2)*sn2t * (
-          + 16/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,2) * (
-          - 32/9*pow(mmst1,3)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,3) * (
-          + 16/9*pow(mmst1,4)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,1) * (
-          - 1/2*mmsb1
-          - 1/2*mmsb2
-          + 109/18*mmst1
-          - 101/18*mmst2
-          + 4/3*mmsusy
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,2)*sn2t * (
-          - 2/3*mmsb1*mmst2/mt*mgl
-          - 2/3*mmsb2*mmst2/mt*mgl
-          - 14/9*mmst1*mmst2/mt*mgl
-          - 8/9*sqr(mmst1)/mt*mgl
-          + 16*mmst2*mmsusy/mt*mgl
-          + 38/3*sqr(mmst2)/mt*mgl
-          - 32/3*sqr(mmsusy)/mt*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,2)*sqr(cs2t) * (
-          + 53/6*sqr(mmst2)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,2)*den(mmst1 - mmst2,1)*sn2t * (
-          + 8/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,2)*den(mmst1 - mmst2,1) * (
-          - 32/9*pow(mmst1,3)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,2)*den(mmst1 - mmst2,2) * (
-          + 8/9*pow(mmst1,4)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,2) * (
-          - 7/6*mmsb1*mmst2
-          - 7/6*mmsb2*mmst2
-          + 11/18*mmst1*mmst2
-          + 8/3*sqr(mmst1)
-          + 52/3*mmst2*mmsusy
-          + 53/3*sqr(mmst2)
-          - 8*sqr(mmsusy)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,3)*sn2t * (
-          + 8/9*pow(mmst2,3)/mt*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,3) * (
-          - 2/3*mmsb1*sqr(mmst2)
-          - 2/3*mmsb2*sqr(mmst2)
-          - 2/3*mmst1*sqr(mmst2)
-          - 32/3*mmst2*sqr(mmsusy)
-          + 16*sqr(mmst2)*mmsusy
-          + 46/3*pow(mmst2,3)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmst2,4) * (
-          + 4/9*pow(mmst2,4)
-          )
-
-       + sqr(lnMglSq) * (
-          - 166/9
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmst1,1)*sn2t * (
-          - 4/3*mmsb1/mt*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmst1,1) * (
-          + mmsb1
-          - 4/3*mmst1
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmst1,2)*sn2t * (
-          - 4/3*mmsb1*mmst1/mt*mgl
-          + 8/3*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmst1,2) * (
-          + 7/3*mmsb1*mmst1
-          - 14/3*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmst1,3) * (
-          + 4/3*mmsb1*sqr(mmst1)
-          - 8/3*pow(mmst1,3)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmst2,1)*sn2t * (
-          + 4/3*mmsb1/mt*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmst2,1) * (
-          + mmsb1
-          - 4/3*mmst2
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmst2,2)*sn2t * (
-          + 4/3*mmsb1*mmst2/mt*mgl
-          - 8/3*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmst2,2) * (
-          + 7/3*mmsb1*mmst2
-          - 14/3*sqr(mmst2)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmst2,3) * (
-          + 4/3*mmsb1*sqr(mmst2)
-          - 8/3*pow(mmst2,3)
-          )
-
-       + lnMglSq*lnMsbSq * (
-          + 4/3
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmst1,1)*sn2t * (
-          - 4/3*mmsb2/mt*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmst1,1) * (
-          + mmsb2
-          - 4/3*mmst1
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmst1,2)*sn2t * (
-          - 4/3*mmsb2*mmst1/mt*mgl
-          + 8/3*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmst1,2) * (
-          + 7/3*mmsb2*mmst1
-          - 14/3*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmst1,3) * (
-          + 4/3*mmsb2*sqr(mmst1)
-          - 8/3*pow(mmst1,3)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmst2,1)*sn2t * (
-          + 4/3*mmsb2/mt*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmst2,1) * (
-          + mmsb2
-          - 4/3*mmst2
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmst2,2)*sn2t * (
-          + 4/3*mmsb2*mmst2/mt*mgl
-          - 8/3*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmst2,2) * (
-          + 7/3*mmsb2*mmst2
-          - 14/3*sqr(mmst2)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmst2,3) * (
-          + 4/3*mmsb2*sqr(mmst2)
-          - 8/3*pow(mmst2,3)
-          )
-
-       + lnMglSq*lnMsb2Sq * (
-          + 4/3
-          )
-
-       + lnMglSq*lnMst1Sq*sn2t * (
-          - 208/9/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*sqr(cs2t) * (
-          - 64/9
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,1)*sn2t * (
-          - 28/3*mmst1/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,1)*sn4t*cs2t * (
-          - 8/9*mmst1/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          - 121/9*mmst1
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sn2t
-       * (
-          - 8/3*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sn4t*
-      cs2t * (
-          + 16/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t)
-       * (
-          + 287/9*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1) * (
-          - 43/9*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,2)*sn2t
-       * (
-          + 16/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,2) * (
-          - 32/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,3) * (
-          + 16/9*pow(mmst1,4)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,1) * (
-          - 34/3*mmst1
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,2)*sn2t * (
-          + 172/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,2)*sn4t*cs2t * (
-          - 8/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          - 11/9*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,2)*den(mmst1 - mmst2,1)*sn2t
-       * (
-          - 8/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,2)*den(mmst1 - mmst2,2) * (
-          - 8/9*pow(mmst1,4)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,2) * (
-          - 130/3*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,3)*sn2t * (
-          + 16/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,3)*sqr(cs2t) * (
-          + 16/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,3) * (
-          - 212/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst1,4) * (
-          - 8/9*pow(mmst1,4)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,1)*sn2t * (
-          + 20/9*mmst1/mt*mgl
-          + 8/9*mmst2/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,1)*sn4t*cs2t * (
-          + 8/9*mmst1/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          + 5/3*mmst1
-          - 22/9*mmst2
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sn2t
-       * (
-          + 8/3*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sn4t*
-      cs2t * (
-          - 16/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t)
-       * (
-          - 31/9*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1) * (
-          + 43/9*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,2)*sn2t
-       * (
-          - 16/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,2) * (
-          + 32/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,3) * (
-          - 16/9*pow(mmst1,4)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,1) * (
-          - 34/9*mmst1
-          + 2/9*mmst2
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,2)*sn2t * (
-          + 4*mmst1*mmst2/mt*mgl
-          + 8/9*sqr(mmst1)/mt*mgl
-          - 8/3*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,2)*sn4t*cs2t * (
-          - 8/9*mmst1*mmst2/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,2)*sqr(cs2t) * (
-          - 32/9*mmst1*mmst2
-          - 52/9*sqr(mmst2)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,2)*den(mmst1 - mmst2,1)*sn2t
-       * (
-          - 8/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,2)*den(mmst1 - mmst2,1) * (
-          + 32/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,2)*den(mmst1 - mmst2,2) * (
-          - 8/9*pow(mmst1,4)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,2) * (
-          + 37/9*mmst1*mmst2
-          - 8/3*sqr(mmst1)
-          + 10/9*sqr(mmst2)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,3)*sqr(cs2t) * (
-          - 16/9*mmst1*sqr(mmst2)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmst2,3) * (
-          + 28/9*mmst1*sqr(mmst2)
-          - 8/3*pow(mmst2,3)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 256/9*mmgl
-          + 256/9*mmst1
-          )
-
-       + lnMglSq*lnMst1Sq * (
-          + 52/9
-          )
-
-       + lnMglSq*lnMst2Sq*sn2t * (
-          + 208/9/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*sqr(cs2t) * (
-          + 64/3
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,1)*sn2t * (
-          - 28/9*mmst2/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,1)*sn4t*cs2t * (
-          + 16/9*mmst1/mt*mgl
-          + 8/9*mmst2/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          - 53/9*mmst1
-          - 16/9*mmst2
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sn2t
-       * (
-          - 8/3*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sn4t*
-      cs2t * (
-          - 16/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t)
-       * (
-          + 31/9*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1) * (
-          - 43/9*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,2)*sn2t
-       * (
-          + 16/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,2) * (
-          - 32/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,3) * (
-          + 16/9*pow(mmst1,4)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,1) * (
-          + 61/9*mmst1
-          + 25/9*mmst2
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,2)*sn2t * (
-          - 28/9*mmst1*mmst2/mt*mgl
-          + 32/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,2)*sn4t*cs2t * (
-          + 8/9*mmst1*mmst2/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          - 32/9*mmst1*mmst2
-          - 52/9*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,2)*den(mmst1 - mmst2,1)*sn2t
-       * (
-          - 8/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,2)*den(mmst1 - mmst2,2) * (
-          - 8/9*pow(mmst1,4)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,2) * (
-          + 53/9*mmst1*mmst2
-          + 2*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,3)*sqr(cs2t) * (
-          - 16/9*sqr(mmst1)*mmst2
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst1,3) * (
-          + 28/9*sqr(mmst1)*mmst2
-          - 8/3*pow(mmst1,3)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,1)*sn2t * (
-          - 8/9*mmst1/mt*mgl
-          + 92/9*mmst2/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,1)*sn4t*cs2t * (
-          - 16/9*mmst1/mt*mgl
-          - 8/9*mmst2/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          + 287/9*mmst1
-          + 166/9*mmst2
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sn2t
-       * (
-          + 8/3*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sn4t*
-      cs2t * (
-          + 16/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t)
-       * (
-          - 287/9*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1) * (
-          + 43/9*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,2)*sn2t
-       * (
-          - 16/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,2) * (
-          + 32/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,3) * (
-          - 16/9*pow(mmst1,4)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,1) * (
-          - 59/9*mmst1
-          - 161/9*mmst2
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,2)*sn2t * (
-          + 8/9*mmst1*mmst2/mt*mgl
-          + 8/9*sqr(mmst1)/mt*mgl
-          - 164/9*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,2)*sn4t*cs2t * (
-          + 8/9*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,2)*sqr(cs2t) * (
-          - 11/9*sqr(mmst2)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,2)*den(mmst1 - mmst2,1)*sn2t
-       * (
-          - 8/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,2)*den(mmst1 - mmst2,1) * (
-          + 32/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,2)*den(mmst1 - mmst2,2) * (
-          - 8/9*pow(mmst1,4)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,2) * (
-          - 16/9*mmst1*mmst2
-          - 8/3*sqr(mmst1)
-          - 398/9*sqr(mmst2)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,3)*sn2t * (
-          - 16/9*pow(mmst2,3)/mt*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,3)*sqr(cs2t) * (
-          + 16/9*pow(mmst2,3)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,3) * (
-          - 212/9*pow(mmst2,3)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmst2,4) * (
-          - 8/9*pow(mmst2,4)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 256/9*mmgl
-          - 256/9*mmst1
-          )
-
-       + lnMglSq*lnMst2Sq * (
-          + 52/9
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmst1,1)*sn2t * (
-          - 32/3*mmsusy/mt*mgl
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmst1,1) * (
-          - 8/3*mmsusy
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmst1,2)*sn2t * (
-          + 32*mmst1*mmsusy/mt*mgl
-          - 64/3*sqr(mmsusy)/mt*mgl
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmst1,2) * (
-          - 104/3*mmst1*mmsusy
-          + 16*sqr(mmsusy)
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmst1,3) * (
-          + 64/3*mmst1*sqr(mmsusy)
-          - 32*sqr(mmst1)*mmsusy
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmst2,1)*sn2t * (
-          + 32/3*mmsusy/mt*mgl
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmst2,1) * (
-          - 8/3*mmsusy
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmst2,2)*sn2t * (
-          - 32*mmst2*mmsusy/mt*mgl
-          + 64/3*sqr(mmsusy)/mt*mgl
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmst2,2) * (
-          - 104/3*mmst2*mmsusy
-          + 16*sqr(mmsusy)
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmst2,3) * (
-          + 64/3*mmst2*sqr(mmsusy)
-          - 32*sqr(mmst2)*mmsusy
-          )
-
-    + lnMglSq*lnMmt*den(mmgl - mmst1,1)*sn2t * (
-          + 16/3*mmst1/mt*mgl
-          )
-
-       + lnMglSq*lnMmt*den(mmgl - mmst1,1) * (
-          - 16/3*mmst1
-          )
-
-       + lnMglSq*lnMmt*den(mmgl - mmst1,2) * (
-          - 8/3*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMmt*den(mmgl - mmst2,1)*sn2t * (
-          - 16/3*mmst2/mt*mgl
-          )
-
-       + lnMglSq*lnMmt*den(mmgl - mmst2,1) * (
-          - 16/3*mmst2
-          )
-
-       + lnMglSq*lnMmt*den(mmgl - mmst2,2) * (
-          - 8/3*sqr(mmst2)
-          )
-
-       + lnMglSq*lnMmt * (
-          - 40/3
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst1,1)*sn2t * (
-          - 16*mmst1/mt*mgl
-          + 16/9*mmst2/mt*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst1,1)*sn4t*cs2t * (
-          - 8/9*mmst1/mt*mgl
-          - 8/9*mmst2/mt*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          - 16*mmst1
-          + 16/9*mmst2
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t)
-       * (
-          + 128/9*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst1,1) * (
-          + 332/9*mmst1
-          - 16/9*mmst2
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst1,2)*sn2t * (
-          + 16/9*mmst1*mmst2/mt*mgl
-          - 8/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst1,2)*sn4t*cs2t * (
-          - 8/9*mmst1*mmst2/mt*mgl
-          + 8/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          + 32/9*mmst1*mmst2
-          - 32/3*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst1,2) * (
-          - 32/9*mmst1*mmst2
-          + 178/9*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst1,3)*sqr(cs2t) * (
-          + 16/9*sqr(mmst1)*mmst2
-          - 16/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst1,3) * (
-          - 16/9*sqr(mmst1)*mmst2
-          + 8/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst2,1)*sn2t * (
-          - 16/9*mmst1/mt*mgl
-          + 16*mmst2/mt*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst2,1)*sn4t*cs2t * (
-          + 8/9*mmst1/mt*mgl
-          + 8/9*mmst2/mt*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          + 16*mmst1
-          - 16/9*mmst2
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t)
-       * (
-          - 128/9*sqr(mmst1)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst2,1) * (
-          - 16/9*mmst1
-          + 332/9*mmst2
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst2,2)*sn2t * (
-          - 16/9*mmst1*mmst2/mt*mgl
-          + 8/9*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst2,2)*sn4t*cs2t * (
-          + 8/9*mmst1*mmst2/mt*mgl
-          - 8/9*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst2,2)*sqr(cs2t) * (
-          + 32/9*mmst1*mmst2
-          - 32/3*sqr(mmst2)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst2,2) * (
-          - 32/9*mmst1*mmst2
-          + 178/9*sqr(mmst2)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst2,3)*sqr(cs2t) * (
-          + 16/9*mmst1*sqr(mmst2)
-          - 16/9*pow(mmst2,3)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmst2,3) * (
-          - 16/9*mmst1*sqr(mmst2)
-          + 8/9*pow(mmst2,3)
-          )
-
-       + lnMglSq*lnMmu * (
-          + 36
-          )
-
-       + lnMglSq*den(mmgl - mmst1,1)*sn2t * (
-          - 8/3*mmsb1/mt*mgl
-          - 8/3*mmsb2/mt*mgl
-          - 176/3*mmst1/mt*mgl
-          - 8/9*mmst2/mt*mgl
-          + 128/3*mmsusy/mt*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmst1,1)*sn4t*cs2t * (
-          - 8/9*mmst1/mt*mgl
-          - 8/9*mmst2/mt*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          - 428/9*mmst1
-          + 16/9*mmst2
-          )
-
-       + lnMglSq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 796/9*sqr(mmst1)
-          )
-
-       + lnMglSq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1) * (
-          - 76/3*sqr(mmst1)
-          )
-
-       + lnMglSq*den(mmgl - mmst1,1) * (
-          + 2*mmsb1
-          + 2*mmsb2
-          + 290/9*mmst1
-          + 2/9*mmst2
-          - 16*mmsusy
-          )
-
-       + lnMglSq*den(mmgl - mmst1,2)*sn2t * (
-          - 8/3*mmsb1*mmst1/mt*mgl
-          - 8/3*mmsb2*mmst1/mt*mgl
-          - 8/9*mmst1*mmst2/mt*mgl
-          - 64/3*mmst1*mmsusy/mt*mgl
-          + 56/9*sqr(mmst1)/mt*mgl
-          + 32*sqr(mmsusy)/mt*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmst1,2)*sn4t*cs2t * (
-          - 8/9*mmst1*mmst2/mt*mgl
-          + 8/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          + 32/9*mmst1*mmst2
-          - 238/9*sqr(mmst1)
-          )
-
-       + lnMglSq*den(mmgl - mmst1,2)*den(mmst1 - mmst2,1) * (
-          - 8/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*den(mmgl - mmst1,2) * (
-          + 14/3*mmsb1*mmst1
-          + 14/3*mmsb2*mmst1
-          + 10/9*mmst1*mmst2
-          + 16/3*mmst1*mmsusy
-          - 290/9*sqr(mmst1)
-          - 24*sqr(mmsusy)
-          )
-
-       + lnMglSq*den(mmgl - mmst1,3)*sqr(cs2t) * (
-          + 16/9*sqr(mmst1)*mmst2
-          - 16/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*den(mmgl - mmst1,3) * (
-          + 8/3*mmsb1*sqr(mmst1)
-          + 8/3*mmsb2*sqr(mmst1)
-          - 32*mmst1*sqr(mmsusy)
-          + 8/9*sqr(mmst1)*mmst2
-          + 64/3*sqr(mmst1)*mmsusy
-          - 200/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*den(mmgl - mmst2,1)*sn2t * (
-          + 8/3*mmsb1/mt*mgl
-          + 8/3*mmsb2/mt*mgl
-          + 8/9*mmst1/mt*mgl
-          + 176/3*mmst2/mt*mgl
-          - 128/3*mmsusy/mt*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmst2,1)*sn4t*cs2t * (
-          + 8/9*mmst1/mt*mgl
-          + 8/9*mmst2/mt*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          + 812/9*mmst1
-          + 368/9*mmst2
-          )
-
-       + lnMglSq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 796/9*sqr(mmst1)
-          )
-
-       + lnMglSq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1) * (
-          + 76/3*sqr(mmst1)
-          )
-
-       + lnMglSq*den(mmgl - mmst2,1) * (
-          + 2*mmsb1
-          + 2*mmsb2
-          - 226/9*mmst1
-          + 62/9*mmst2
-          - 16*mmsusy
-          )
-
-       + lnMglSq*den(mmgl - mmst2,2)*sn2t * (
-          + 8/3*mmsb1*mmst2/mt*mgl
-          + 8/3*mmsb2*mmst2/mt*mgl
-          + 8/9*mmst1*mmst2/mt*mgl
-          + 64/3*mmst2*mmsusy/mt*mgl
-          - 56/9*sqr(mmst2)/mt*mgl
-          - 32*sqr(mmsusy)/mt*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmst2,2)*sn4t*cs2t * (
-          + 8/9*mmst1*mmst2/mt*mgl
-          - 8/9*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmst2,2)*sqr(cs2t) * (
-          + 32/9*mmst1*mmst2
-          - 238/9*sqr(mmst2)
-          )
-
-       + lnMglSq*den(mmgl - mmst2,2)*den(mmst1 - mmst2,1) * (
-          + 8/9*pow(mmst1,3)
-          )
-
-       + lnMglSq*den(mmgl - mmst2,2) * (
-          + 14/3*mmsb1*mmst2
-          + 14/3*mmsb2*mmst2
-          + 2/9*mmst1*mmst2
-          - 8/9*sqr(mmst1)
-          + 16/3*mmst2*mmsusy
-          - 298/9*sqr(mmst2)
-          - 24*sqr(mmsusy)
-          )
-
-       + lnMglSq*den(mmgl - mmst2,3)*sqr(cs2t) * (
-          + 16/9*mmst1*sqr(mmst2)
-          - 16/9*pow(mmst2,3)
-          )
-
-       + lnMglSq*den(mmgl - mmst2,3) * (
-          + 8/3*mmsb1*sqr(mmst2)
-          + 8/3*mmsb2*sqr(mmst2)
-          + 8/9*mmst1*sqr(mmst2)
-          - 32*mmst2*sqr(mmsusy)
-          + 64/3*sqr(mmst2)*mmsusy
-          - 200/9*pow(mmst2,3)
-          )
-
-       + lnMglSq * (
-          + 232/3
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmst1,1)*sn2t * (
-          + 2/3*mmsb1/mt*mgl
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmst1,1) * (
-          - 7/6*mmsb1
-          + 2/3*mmst1
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmst1,2)*sn2t * (
-          + 8/3*mmsb1*mmst1/mt*mgl
-          - 4/3*sqr(mmsb1)/mt*mgl
-          - 4/3*sqr(mmst1)/mt*mgl
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmst1,2) * (
-          - 4*mmsb1*sqr(mmst1
-          + mmsb1)
-          + 7/3*sqr(mmst1)
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmst1,3) * (
-          - 8/3*mmsb1*sqr(mmst1)
-          + 4/3*sqr(mmsb1)*mmst1
-          + 4/3*pow(mmst1,3)
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmst2,1)*sn2t * (
-          - 2/3*mmsb1/mt*mgl
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmst2,1) * (
-          - 7/6*mmsb1
-          + 2/3*mmst2
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmst2,2)*sn2t * (
-          - 8/3*mmsb1*mmst2/mt*mgl
-          + 4/3*sqr(mmsb1)/mt*mgl
-          + 4/3*sqr(mmst2)/mt*mgl
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmst2,2) * (
-          - 4*mmsb1*sqr(mmst2
-          + mmsb1)
-          + 7/3*sqr(mmst2)
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmst2,3) * (
-          - 8/3*mmsb1*sqr(mmst2)
-          + 4/3*sqr(mmsb1)*mmst2
-          + 4/3*pow(mmst2,3)
-          )
-
-       + sqr(lnMsbSq) * (
-          - 1/3
-          )
-
-       + lnMsbSq*lnMst1Sq*den(mmgl - mmst1,1) * (
-          + 4/3*mmsb1
-          )
-
-       + lnMsbSq*lnMst1Sq*den(mmgl - mmst1,2)*sn2t * (
-          - 4*mmsb1*mmst1/mt*mgl
-          + 8/3*sqr(mmsb1)/mt*mgl
-          )
-
-       + lnMsbSq*lnMst1Sq*den(mmgl - mmst1,2) * (
-          + 17/3*mmsb1*mmst1
-          - 2*sqr(mmsb1)
-          )
-
-       + lnMsbSq*lnMst1Sq*den(mmgl - mmst1,3) * (
-          + 4*mmsb1*sqr(mmst1)
-          - 8/3*sqr(mmsb1)*mmst1
-          )
-
-       + lnMsbSq*lnMst2Sq*den(mmgl - mmst2,1) * (
-          + 4/3*mmsb1
-          )
-
-       + lnMsbSq*lnMst2Sq*den(mmgl - mmst2,2)*sn2t * (
-          + 4*mmsb1*mmst2/mt*mgl
-          - 8/3*sqr(mmsb1)/mt*mgl
-          )
-
-       + lnMsbSq*lnMst2Sq*den(mmgl - mmst2,2) * (
-          + 17/3*mmsb1*mmst2
-          - 2*sqr(mmsb1)
-          )
-
-       + lnMsbSq*lnMst2Sq*den(mmgl - mmst2,3) * (
-          + 4*mmsb1*sqr(mmst2)
-          - 8/3*sqr(mmsb1)*mmst2
-          )
-
-       + lnMsbSq*lnMmt * (
-          - 2/3
-          )
-
-       + lnMsbSq*den(mmgl - mmst1,1)*sn2t * (
-          + 8/3*mmsb1/mt*mgl
-          )
-
-       + lnMsbSq*den(mmgl - mmst1,1) * (
-          + 2*mmst1
-          )
-
-       + lnMsbSq*den(mmgl - mmst1,2)*sn2t * (
-          + 4*sqr(mmsb1)/mt*mgl
-          - 4*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMsbSq*den(mmgl - mmst1,2) * (
-          + 4/3*mmsb1*mmst1
-          - 3*sqr(mmsb1)
-          + 7*sqr(mmst1)
-          )
-
-       + lnMsbSq*den(mmgl - mmst1,3) * (
-          - 4*sqr(mmsb1)*mmst1
-          + 4*pow(mmst1,3)
-          )
-
-       + lnMsbSq*den(mmgl - mmst2,1)*sn2t * (
-          - 8/3*mmsb1/mt*mgl
-          )
-
-       + lnMsbSq*den(mmgl - mmst2,1) * (
-          + 2*mmst2
-          )
-
-       + lnMsbSq*den(mmgl - mmst2,2)*sn2t * (
-          - 4*sqr(mmsb1)/mt*mgl
-          + 4*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMsbSq*den(mmgl - mmst2,2) * (
-          + 4/3*mmsb1*mmst2
-          - 3*sqr(mmsb1)
-          + 7*sqr(mmst2)
-          )
-
-       + lnMsbSq*den(mmgl - mmst2,3) * (
-          - 4*sqr(mmsb1)*mmst2
-          + 4*pow(mmst2,3)
-          )
-
-       + lnMsbSq * (
-          + 1/9
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmst1,1)*sn2t * (
-          + 2/3*mmsb2/mt*mgl
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmst1,1) * (
-          - 7/6*mmsb2
-          + 2/3*mmst1
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmst1,2)*sn2t * (
-          + 8/3*mmsb2*mmst1/mt*mgl
-          - 4/3*sqr(mmsb2)/mt*mgl
-          - 4/3*sqr(mmst1)/mt*mgl
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmst1,2) * (
-          - 4*mmsb2*sqr(mmst1
-          + mmsb2)
-          + 7/3*sqr(mmst1)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmst1,3) * (
-          - 8/3*mmsb2*sqr(mmst1)
-          + 4/3*sqr(mmsb2)*mmst1
-          + 4/3*pow(mmst1,3)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmst2,1)*sn2t * (
-          - 2/3*mmsb2/mt*mgl
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmst2,1) * (
-          - 7/6*mmsb2
-          + 2/3*mmst2
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmst2,2)*sn2t * (
-          - 8/3*mmsb2*mmst2/mt*mgl
-          + 4/3*sqr(mmsb2)/mt*mgl
-          + 4/3*sqr(mmst2)/mt*mgl
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmst2,2) * (
-          - 4*mmsb2*sqr(mmst2
-          + mmsb2)
-          + 7/3*sqr(mmst2)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmst2,3) * (
-          - 8/3*mmsb2*sqr(mmst2)
-          + 4/3*sqr(mmsb2)*mmst2
-          + 4/3*pow(mmst2,3)
-          )
-
-       + sqr(lnMsb2Sq) * (
-          - 1/3
-          )
-
-       + lnMsb2Sq*lnMst1Sq*den(mmgl - mmst1,1) * (
-          + 4/3*mmsb2
-          )
-
-       + lnMsb2Sq*lnMst1Sq*den(mmgl - mmst1,2)*sn2t * (
-          - 4*mmsb2*mmst1/mt*mgl
-          + 8/3*sqr(mmsb2)/mt*mgl
-          )
-
-       + lnMsb2Sq*lnMst1Sq*den(mmgl - mmst1,2) * (
-          + 17/3*mmsb2*mmst1
-          - 2*sqr(mmsb2)
-          )
-
-       + lnMsb2Sq*lnMst1Sq*den(mmgl - mmst1,3) * (
-          + 4*mmsb2*sqr(mmst1)
-          - 8/3*sqr(mmsb2)*mmst1
-          )
-
-       + lnMsb2Sq*lnMst2Sq*den(mmgl - mmst2,1) * (
-          + 4/3*mmsb2
-          )
-
-       + lnMsb2Sq*lnMst2Sq*den(mmgl - mmst2,2)*sn2t * (
-          + 4*mmsb2*mmst2/mt*mgl
-          - 8/3*sqr(mmsb2)/mt*mgl
-          )
-
-       + lnMsb2Sq*lnMst2Sq*den(mmgl - mmst2,2) * (
-          + 17/3*mmsb2*mmst2
-          - 2*sqr(mmsb2)
-          )
-
-       + lnMsb2Sq*lnMst2Sq*den(mmgl - mmst2,3) * (
-          + 4*mmsb2*sqr(mmst2)
-          - 8/3*sqr(mmsb2)*mmst2
-          )
-
-       + lnMsb2Sq*lnMmt * (
-          - 2/3
-          )
-
-       + lnMsb2Sq*den(mmgl - mmst1,1)*sn2t * (
-          + 8/3*mmsb2/mt*mgl
-          )
-
-       + lnMsb2Sq*den(mmgl - mmst1,1) * (
-          + 2*mmst1
-          )
-
-       + lnMsb2Sq*den(mmgl - mmst1,2)*sn2t * (
-          + 4*sqr(mmsb2)/mt*mgl
-          - 4*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMsb2Sq*den(mmgl - mmst1,2) * (
-          + 4/3*mmsb2*mmst1
-          - 3*sqr(mmsb2)
-          + 7*sqr(mmst1)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmst1,3) * (
-          - 4*sqr(mmsb2)*mmst1
-          + 4*pow(mmst1,3)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmst2,1)*sn2t * (
-          - 8/3*mmsb2/mt*mgl
-          )
-
-       + lnMsb2Sq*den(mmgl - mmst2,1) * (
-          + 2*mmst2
-          )
-
-       + lnMsb2Sq*den(mmgl - mmst2,2)*sn2t * (
-          - 4*sqr(mmsb2)/mt*mgl
-          + 4*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMsb2Sq*den(mmgl - mmst2,2) * (
-          + 4/3*mmsb2*mmst2
-          - 3*sqr(mmsb2)
-          + 7*sqr(mmst2)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmst2,3) * (
-          - 4*sqr(mmsb2)*mmst2
-          + 4*pow(mmst2,3)
-          )
-
-       + lnMsb2Sq * (
-          + 1/9
-          )
-
-       + lnMst1Sq*sn2t * (
-          + 280/9/mt*mgl
-          )
-
-       + lnMst1Sq*sqr(cs2t) * (
-          + 64/9
-          )
-
-       + sqr(lnMst1Sq)*sn2t * (
-          + 8/mt*mgl
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,1)*sn2t * (
-          - 2/9*mmst1/mt*mgl
-          - 4/9*mmst2/mt*mgl
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,1)*sn4t*cs2t * (
-          + 8/9*mmst1/mt*mgl
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          - 14/9*mmst1
-          - 11/9*mmst2
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sn4t*cs2t * (
-          - 16/9*sqr(mmst1)/mt*mgl
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 77/9*sqr(mmst1)
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1) * (
-          + 13/9*sqr(mmst1)
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,1) * (
-          - 2/3*mmsb1
-          - 2/3*mmsb2
-          + 419/18*mmst1
-          + mmst2
-          - 16/3*mmsusy
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,2)*sn2t * (
-          + 2*mmsb1*mmst1/mt*mgl
-          - 4/3*sqr(mmsb1)/mt*mgl
-          + 2*mmsb2*mmst1/mt*mgl
-          - 4/3*sqr(mmsb2)/mt*mgl
-          + 2*mmst1*mmst2/mt*mgl
-          + 16*mmst1*mmsusy/mt*mgl
-          - 86/9*sqr(mmst1)/mt*mgl
-          - 4/3*sqr(mmst2)/mt*mgl
-          - 32/3*sqr(mmsusy)/mt*mgl
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,2)*sn4t*cs2t * (
-          + 8/9*sqr(mmst1)/mt*mgl
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          - 26/9*mmst1*mmst2
-          - 85/18*sqr(mmst1)
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,2) * (
-          - 17/6*mmsb1*sqr(mmst1
-          + mmsb1)
-          - 17/6*mmsb2*sqr(mmst1
-          + mmsb2)
-          + 1/18*mmst1*mmst2
-          - 68/3*mmst1*mmsusy
-          + 92/3*sqr(sqr(mmst1)
-          + mmst2)
-          + 8*sqr(mmsusy)
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,3)*sn2t * (
-          - 8/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,3)*sqr(cs2t) * (
-          - 16/9*pow(mmst1,3)
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,3) * (
-          - 2*mmsb1*sqr(mmst1)
-          + 4/3*sqr(mmsb1)*mmst1
-          - 2*mmsb2*sqr(mmst1)
-          + 4/3*sqr(mmsb2)*mmst1
-          + 4/3*mmst1*sqr(mmst2)
-          + 32/3*mmst1*sqr(mmsusy)
-          - 2*sqr(mmst1)*mmst2
-          - 16*sqr(mmst1)*mmsusy
-          + 110/9*pow(mmst1,3)
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst1,4) * (
-          + 4/9*pow(mmst1,4)
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst2,1)*sn2t * (
-          - 2/3*mmst1/mt*mgl
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          - 13/9*mmst1
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 13/9*sqr(mmst1)
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1) * (
-          - 13/9*sqr(mmst1)
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst2,1) * (
-          + 17/18*mmst1
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmst2,2) * (
-          - 2/3*mmst1*mmst2
-          )
-
-       + sqr(lnMst1Sq)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 128/9*mmgl
-          - 64/9*mmst1
-          )
-
-       + sqr(lnMst1Sq) * (
-          + 41/9
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,1)*sn2t * (
-          - 8/9*mmst1/mt*mgl
-          + 8/3*mmst2/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,1)*sn4t*cs2t * (
-          - 16/9*mmst1/mt*mgl
-          - 8/9*mmst2/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          + 5/9*mmst1
-          + 38/9*mmst2
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sn2t
-       * (
-          + 8/3*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sn4t*
-      cs2t * (
-          + 16/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t)
-       * (
-          - 5/9*sqr(mmst1)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1) * (
-          + 17/9*sqr(mmst1)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,2)*sn2t
-       * (
-          - 16/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,2) * (
-          + 32/9*pow(mmst1,3)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,3) * (
-          - 16/9*pow(mmst1,4)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,1) * (
-          - 11/3*mmst1
-          - 34/9*mmst2
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,2)*sn2t * (
-          - 20/9*mmst1*mmst2/mt*mgl
-          - 8/9*sqr(mmst1)/mt*mgl
-          + 8/3*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,2)*sn4t*cs2t * (
-          - 8/9*mmst1*mmst2/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          + 28/3*mmst1*mmst2
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,2)*den(mmst1 - mmst2,1)*sn2t
-       * (
-          + 8/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,2)*den(mmst1 - mmst2,2) * (
-          + 8/9*pow(mmst1,4)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,2) * (
-          - 11/3*mmst1*mmst2
-          - 8/9*sqr(mmst1)
-          - 2*sqr(mmst2)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,3)*sqr(cs2t) * (
-          + 16/9*sqr(mmst1)*mmst2
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst1,3) * (
-          - 8/3*mmst1*sqr(mmst2)
-          + 20/9*sqr(mmst1)*mmst2
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,1)*sn2t * (
-          - 8/9*mmst1/mt*mgl
-          - 8/9*mmst2/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,1)*sn4t*cs2t * (
-          - 8/9*mmst1/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          + 11/9*mmst1
-          + 22/9*mmst2
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sn2t
-       * (
-          - 8/3*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sn4t*
-      cs2t * (
-          + 16/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t)
-       * (
-          + 5/9*sqr(mmst1)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1) * (
-          - 17/9*sqr(mmst1)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,2)*sn2t
-       * (
-          + 16/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,2) * (
-          - 32/9*pow(mmst1,3)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,3) * (
-          + 16/9*pow(mmst1,4)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,1) * (
-          + 17/9*mmst1
-          - 2/9*mmst2
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,2)*sn2t * (
-          - 4*mmst1*mmst2/mt*mgl
-          - 8/9*sqr(mmst1)/mt*mgl
-          + 8/3*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,2)*sn4t*cs2t * (
-          + 8/9*mmst1*mmst2/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,2)*sqr(cs2t) * (
-          + 32/9*mmst1*mmst2
-          + 52/9*sqr(mmst2)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,2)*den(mmst1 - mmst2,1)*sn2t
-       * (
-          + 8/9*pow(mmst1,3)/mt*mgl
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,2)*den(mmst1 - mmst2,1) * (
-          - 32/9*pow(mmst1,3)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,2)*den(mmst1 - mmst2,2) * (
-          + 8/9*pow(mmst1,4)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,2) * (
-          - 25/9*mmst1*mmst2
-          + 8/3*sqr(mmst1)
-          - 10/9*sqr(mmst2)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,3)*sqr(cs2t) * (
-          + 16/9*mmst1*sqr(mmst2)
-          )
-
-       + lnMst1Sq*lnMst2Sq*den(mmgl - mmst2,3) * (
-          - 28/9*mmst1*sqr(mmst2)
-          + 8/3*pow(mmst2,3)
-          )
-
-       + lnMst1Sq*lnMmsusy*den(mmgl - mmst1,1) * (
-          + 32/3*mmsusy
-          )
-
-       + lnMst1Sq*lnMmsusy*den(mmgl - mmst1,2)*sn2t * (
-          - 32*mmst1*mmsusy/mt*mgl
-          + 64/3*sqr(mmsusy)/mt*mgl
-          )
-
-       + lnMst1Sq*lnMmsusy*den(mmgl - mmst1,2) * (
-          + 136/3*mmst1*mmsusy
-          - 16*sqr(mmsusy)
-          )
-
-       + lnMst1Sq*lnMmsusy*den(mmgl - mmst1,3) * (
-          - 64/3*mmst1*sqr(mmsusy)
-          + 32*sqr(mmst1)*mmsusy
-          )
-
-       + lnMst1Sq*lnMmt*den(mmgl - mmst1,1)*sn2t * (
-          - 16/3*mmst1/mt*mgl
-          )
-
-       + lnMst1Sq*lnMmt*den(mmgl - mmst1,1) * (
-          + 16/3*mmst1
-          )
-
-       + lnMst1Sq*lnMmt*den(mmgl - mmst1,2) * (
-          + 8/3*sqr(mmst1)
-          )
-
-       + lnMst1Sq*lnMmt * (
-          - 2/3
-          )
-
-       + lnMst1Sq*lnMmu*sn2t * (
-          + 64/9/mt*mgl
-          )
-
-       + lnMst1Sq*lnMmu*sqr(cs2t) * (
-          + 64/9
-          )
-
-       + lnMst1Sq*lnMmu*den(mmgl - mmst1,1)*sn2t * (
-          + 16*mmst1/mt*mgl
-          - 16/9*mmst2/mt*mgl
-          )
-
-       + lnMst1Sq*lnMmu*den(mmgl - mmst1,1)*sn4t*cs2t * (
-          + 8/9*mmst1/mt*mgl
-          + 8/9*mmst2/mt*mgl
-          )
-
-       + lnMst1Sq*lnMmu*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          + 16*mmst1
-          - 16/9*mmst2
-          )
-
-       + lnMst1Sq*lnMmu*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t)
-       * (
-          - 128/9*sqr(mmst1)
-          )
-
-       + lnMst1Sq*lnMmu*den(mmgl - mmst1,1) * (
-          - 332/9*mmst1
-          + 16/9*mmst2
-          )
-
-       + lnMst1Sq*lnMmu*den(mmgl - mmst1,2)*sn2t * (
-          - 16/9*mmst1*mmst2/mt*mgl
-          + 8/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMst1Sq*lnMmu*den(mmgl - mmst1,2)*sn4t*cs2t * (
-          + 8/9*mmst1*mmst2/mt*mgl
-          - 8/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMst1Sq*lnMmu*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          - 32/9*mmst1*mmst2
-          + 32/3*sqr(mmst1)
-          )
-
-       + lnMst1Sq*lnMmu*den(mmgl - mmst1,2) * (
-          + 32/9*mmst1*mmst2
-          - 178/9*sqr(mmst1)
-          )
-
-       + lnMst1Sq*lnMmu*den(mmgl - mmst1,3)*sqr(cs2t) * (
-          - 16/9*sqr(mmst1)*mmst2
-          + 16/9*pow(mmst1,3)
-          )
-
-       + lnMst1Sq*lnMmu*den(mmgl - mmst1,3) * (
-          + 16/9*sqr(mmst1)*mmst2
-          - 8/9*pow(mmst1,3)
-          )
-
-       + lnMst1Sq*lnMmu*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 128/9*mmst1
-          )
-
-       + lnMst1Sq*lnMmu * (
-          - 128/9
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,1)*sn2t * (
-          + 172/3*mmst1/mt*mgl
-          - 28/9*mmst2/mt*mgl
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,1)*sn4t*cs2t * (
-          + 16/9*mmst1/mt*mgl
-          + 8/9*mmst2/mt*mgl
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          + 229/9*mmst1
-          - 49/9*mmst2
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sn2t * (
-          - 8/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 718/9*sqr(mmst1)
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1) * (
-          + 34/3*sqr(mmst1)
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,2) * (
-          - 8/9*pow(mmst1,3)
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,1) * (
-          - 2*mmsb1
-          - 2*mmsb2
-          - 13/3*mmst1
-          + 43/9*mmst2
-          - 16*mmsusy
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,2)*sn2t * (
-          + 8/3*mmsb1*mmst1/mt*mgl
-          - 4*sqr(mmsb1)/mt*mgl
-          + 8/3*mmsb2*mmst1/mt*mgl
-          - 4*sqr(mmsb2)/mt*mgl
-          + 8/9*mmst1*mmst2/mt*mgl
-          + 64/3*mmst1*mmsusy/mt*mgl
-          + 52/9*sqr(mmst1)/mt*mgl
-          - 4*sqr(mmst2)/mt*mgl
-          - 32*sqr(mmsusy)/mt*mgl
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,2)*sn4t*cs2t * (
-          + 8/9*mmst1*mmst2/mt*mgl
-          - 8/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          - 110/9*mmst1*mmst2
-          + 16*sqr(mmst1)
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,2)*den(mmst1 - mmst2,1) * (
-          + 8/9*pow(mmst1,3)
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,2) * (
-          - 6*mmsb1*mmst1
-          + 3*sqr(mmsb1)
-          - 6*mmsb2*mmst1
-          + 3*sqr(mmsb2)
-          + 56/9*mmst1*mmst2
-          - 48*mmst1*mmsusy
-          + 187/9*sqr(mmst1)
-          + 3*sqr(mmst2)
-          + 24*sqr(mmsusy)
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,3)*sqr(cs2t) * (
-          - 16/9*sqr(mmst1)*mmst2
-          + 16/9*pow(mmst1,3)
-          )
-
-       + lnMst1Sq*den(mmgl - mmst1,3) * (
-          - 8/3*mmsb1*sqr(mmst1)
-          + 4*sqr(mmsb1)*mmst1
-          - 8/3*mmsb2*sqr(mmst1)
-          + 4*sqr(mmsb2)*mmst1
-          + 4*mmst1*sqr(mmst2)
-          + 32*mmst1*sqr(mmsusy)
-          - 8/9*sqr(mmst1)*mmst2
-          - 64/3*sqr(mmst1)*mmsusy
-          + 92/9*pow(mmst1,3)
-          )
-
-       + lnMst1Sq*den(mmgl - mmst2,1)*sn2t * (
-          - 16/3*mmst1/mt*mgl
-          )
-
-       + lnMst1Sq*den(mmgl - mmst2,1)*sn4t*cs2t * (
-          + 8/9*mmst1/mt*mgl
-          )
-
-       + lnMst1Sq*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          - 6*mmst1
-          )
-
-       + lnMst1Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sn2t * (
-          + 8/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMst1Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 26/3*sqr(mmst1)
-          )
-
-       + lnMst1Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1) * (
-          - 34/3*sqr(mmst1)
-          )
-
-       + lnMst1Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,2) * (
-          + 8/9*pow(mmst1,3)
-          )
-
-       + lnMst1Sq*den(mmgl - mmst2,1) * (
-          + 52/9*mmst1
-          )
-
-       + lnMst1Sq*den(mmgl - mmst2,2)*sqr(cs2t) * (
-          + 16/9*mmst1*mmst2
-          )
-
-       + lnMst1Sq*den(mmgl - mmst2,2) * (
-          - 40/9*mmst1*mmst2
-          )
-
-       + lnMst1Sq*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 128/3*mmgl
-          - 640/9*mmst1
-          )
-
-       + lnMst1Sq * (
-          + 5/9
-          )
-
-       + lnMst2Sq*sn2t * (
-          - 280/9/mt*mgl
-          )
-
-       + lnMst2Sq*sqr(cs2t) * (
-          - 64
-          )
-
-       + sqr(lnMst2Sq)*sn2t * (
-          - 8/mt*mgl
-          )
-
-       + sqr(lnMst2Sq)*sqr(cs2t) * (
-          - 64/9
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst1,1)*sn2t * (
-          + 4/9*mmst1/mt*mgl
-          + 2/9*mmst2/mt*mgl
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          + 8/3*mmst1
-          - 11/9*mmst2
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 13/9*sqr(mmst1)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1) * (
-          + 13/9*sqr(mmst1)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst1,1) * (
-          - 14/9*mmst1
-          + 1/2*mmst2
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst1,2)*sn2t * (
-          + 8/3*mmst1*mmst2/mt*mgl
-          - 4/3*sqr(mmst1)/mt*mgl
-          - 4/3*sqr(mmst2)/mt*mgl
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          - 26/9*mmst1*mmst2
-          + 26/9*sqr(mmst1)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst1,2) * (
-          - 10/9*mmst1*mmst2
-          - 5/9*sqr(sqr(mmst1)
-          + mmst2)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst1,3) * (
-          + 4/3*mmst1*sqr(mmst2)
-          - 8/3*sqr(mmst1)*mmst2
-          + 4/3*pow(mmst1,3)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,1)*sn2t * (
-          + 2/3*mmst2/mt*mgl
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,1)*sn4t*cs2t * (
-          + 16/9*mmst1/mt*mgl
-          + 8/9*mmst2/mt*mgl
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          - 77/9*mmst1
-          - 34/3*mmst2
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sn4t*cs2t * (
-          - 16/9*sqr(mmst1)/mt*mgl
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 77/9*sqr(mmst1)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1) * (
-          - 13/9*sqr(mmst1)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,1) * (
-          - 2/3*mmsb1
-          - 2/3*mmsb2
-          + 13/9*mmst1
-          + 149/6*mmst2
-          - 16/3*mmsusy
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,2)*sn2t * (
-          - 2*mmsb1*mmst2/mt*mgl
-          + 4/3*sqr(mmsb1)/mt*mgl
-          - 2*mmsb2*mmst2/mt*mgl
-          + 4/3*sqr(mmsb2)/mt*mgl
-          + 2/3*mmst1*mmst2/mt*mgl
-          - 16*mmst2*mmsusy/mt*mgl
-          + 74/9*sqr(mmst2)/mt*mgl
-          + 32/3*sqr(mmsusy)/mt*mgl
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,2)*sn4t*cs2t * (
-          - 8/9*sqr(mmst2)/mt*mgl
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,2)*sqr(cs2t) * (
-          - 137/18*sqr(mmst2)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,2) * (
-          - 17/6*mmsb1*sqr(mmst2
-          + mmsb1)
-          - 17/6*mmsb2*sqr(mmst2
-          + mmsb2)
-          + 1/2*mmst1*mmst2
-          - 68/3*mmst2*mmsusy
-          + 281/9*sqr(mmst2)
-          + 8*sqr(mmsusy)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,3)*sn2t * (
-          + 8/9*pow(mmst2,3)/mt*mgl
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,3)*sqr(cs2t) * (
-          - 16/9*pow(mmst2,3)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,3) * (
-          - 2*mmsb1*sqr(mmst2)
-          + 4/3*sqr(mmsb1)*mmst2
-          - 2*mmsb2*sqr(mmst2)
-          + 4/3*sqr(mmsb2)*mmst2
-          + 2/3*mmst1*sqr(mmst2)
-          + 32/3*mmst2*sqr(mmsusy)
-          - 16*sqr(mmst2)*mmsusy
-          + 98/9*pow(mmst2,3)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmst2,4) * (
-          + 4/9*pow(mmst2,4)
-          )
-
-       + sqr(lnMst2Sq)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 128/9*mmgl
-          + 64/9*mmst1
-          )
-
-       + sqr(lnMst2Sq) * (
-          + 41/9
-          )
-
-       + lnMst2Sq*lnMmsusy*den(mmgl - mmst2,1) * (
-          + 32/3*mmsusy
-          )
-
-       + lnMst2Sq*lnMmsusy*den(mmgl - mmst2,2)*sn2t * (
-          + 32*mmst2*mmsusy/mt*mgl
-          - 64/3*sqr(mmsusy)/mt*mgl
-          )
-
-       + lnMst2Sq*lnMmsusy*den(mmgl - mmst2,2) * (
-          + 136/3*mmst2*mmsusy
-          - 16*sqr(mmsusy)
-          )
-
-       + lnMst2Sq*lnMmsusy*den(mmgl - mmst2,3) * (
-          - 64/3*mmst2*sqr(mmsusy)
-          + 32*sqr(mmst2)*mmsusy
-          )
-
-       + lnMst2Sq*lnMmt*den(mmgl - mmst2,1)*sn2t * (
-          + 16/3*mmst2/mt*mgl
-          )
-
-       + lnMst2Sq*lnMmt*den(mmgl - mmst2,1) * (
-          + 16/3*mmst2
-          )
-
-       + lnMst2Sq*lnMmt*den(mmgl - mmst2,2) * (
-          + 8/3*sqr(mmst2)
-          )
-
-       + lnMst2Sq*lnMmt * (
-          - 2/3
-          )
-
-       + lnMst2Sq*lnMmu*sn2t * (
-          - 64/9/mt*mgl
-          )
-
-       + lnMst2Sq*lnMmu*sqr(cs2t) * (
-          - 64/9
-          )
-
-       + lnMst2Sq*lnMmu*den(mmgl - mmst2,1)*sn2t * (
-          + 16/9*mmst1/mt*mgl
-          - 16*mmst2/mt*mgl
-          )
-
-       + lnMst2Sq*lnMmu*den(mmgl - mmst2,1)*sn4t*cs2t * (
-          - 8/9*mmst1/mt*mgl
-          - 8/9*mmst2/mt*mgl
-          )
-
-       + lnMst2Sq*lnMmu*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          - 16*mmst1
-          + 16/9*mmst2
-          )
-
-       + lnMst2Sq*lnMmu*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t)
-       * (
-          + 128/9*sqr(mmst1)
-          )
-
-       + lnMst2Sq*lnMmu*den(mmgl - mmst2,1) * (
-          + 16/9*mmst1
-          - 332/9*mmst2
-          )
-
-       + lnMst2Sq*lnMmu*den(mmgl - mmst2,2)*sn2t * (
-          + 16/9*mmst1*mmst2/mt*mgl
-          - 8/9*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMst2Sq*lnMmu*den(mmgl - mmst2,2)*sn4t*cs2t * (
-          - 8/9*mmst1*mmst2/mt*mgl
-          + 8/9*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMst2Sq*lnMmu*den(mmgl - mmst2,2)*sqr(cs2t) * (
-          - 32/9*mmst1*mmst2
-          + 32/3*sqr(mmst2)
-          )
-
-       + lnMst2Sq*lnMmu*den(mmgl - mmst2,2) * (
-          + 32/9*mmst1*mmst2
-          - 178/9*sqr(mmst2)
-          )
-
-       + lnMst2Sq*lnMmu*den(mmgl - mmst2,3)*sqr(cs2t) * (
-          - 16/9*mmst1*sqr(mmst2)
-          + 16/9*pow(mmst2,3)
-          )
-
-       + lnMst2Sq*lnMmu*den(mmgl - mmst2,3) * (
-          + 16/9*mmst1*sqr(mmst2)
-          - 8/9*pow(mmst2,3)
-          )
-
-       + lnMst2Sq*lnMmu*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 128/9*mmst1
-          )
-
-       + lnMst2Sq*lnMmu * (
-          - 128/9
-          )
-
-       + lnMst2Sq*den(mmgl - mmst1,1)*sn2t * (
-          + 4/9*mmst1/mt*mgl
-          + 52/9*mmst2/mt*mgl
-          )
-
-       + lnMst2Sq*den(mmgl - mmst1,1)*sn4t*cs2t * (
-          - 8/9*mmst2/mt*mgl
-          )
-
-       + lnMst2Sq*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          + 37/3*mmst1
-          + 19/3*mmst2
-          )
-
-       + lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sn2t * (
-          + 8/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 26/3*sqr(mmst1)
-          )
-
-       + lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,1) * (
-          + 14*sqr(mmst1)
-          )
-
-       + lnMst2Sq*den(mmgl - mmst1,1)*den(mmst1 - mmst2,2) * (
-          + 8/9*pow(mmst1,3)
-          )
-
-       + lnMst2Sq*den(mmgl - mmst1,1) * (
-          - 137/9*mmst1
-          - 23/3*mmst2
-          )
-
-       + lnMst2Sq*den(mmgl - mmst1,2)*sn2t * (
-          - 4*sqr(mmst1)/mt*mgl
-          + 4*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMst2Sq*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          + 94/9*mmst1*mmst2
-          + 26/3*sqr(mmst1)
-          )
-
-       + lnMst2Sq*den(mmgl - mmst1,2) * (
-          - 82/9*mmst1*mmst2
-          - 5/3*sqr(mmst1)
-          - 3*sqr(mmst2)
-          )
-
-       + lnMst2Sq*den(mmgl - mmst1,3) * (
-          - 4*mmst1*sqr(mmst2)
-          + 4*pow(mmst1,3)
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,1)*sn2t * (
-          + 8/3*mmst1/mt*mgl
-          - 520/9*mmst2/mt*mgl
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,1)*sn4t*cs2t * (
-          - 8/9*mmst1/mt*mgl
-          - 16/9*mmst2/mt*mgl
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          - 734/9*mmst1
-          - 152/3*mmst2
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sn2t * (
-          - 8/9*sqr(mmst1)/mt*mgl
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 718/9*sqr(mmst1)
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,1) * (
-          - 14*sqr(mmst1)
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,1)*den(mmst1 - mmst2,2) * (
-          - 8/9*pow(mmst1,3)
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,1) * (
-          - 2*mmsb1
-          - 2*mmsb2
-          + 50/3*mmst1
-          + 52/9*mmst2
-          - 16*mmsusy
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,2)*sn2t * (
-          - 8/3*mmsb1*mmst2/mt*mgl
-          + 4*sqr(mmsb1)/mt*mgl
-          - 8/3*mmsb2*mmst2/mt*mgl
-          + 4*sqr(mmsb2)/mt*mgl
-          - 8/9*mmst1*mmst2/mt*mgl
-          - 64/3*mmst2*mmsusy/mt*mgl
-          - 16/9*sqr(mmst2)/mt*mgl
-          + 32*sqr(mmsusy)/mt*mgl
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,2)*sn4t*cs2t * (
-          - 8/9*mmst1*mmst2/mt*mgl
-          + 8/9*sqr(mmst2)/mt*mgl
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,2)*sqr(cs2t) * (
-          - 32/9*mmst1*mmst2
-          + 74/3*sqr(mmst2)
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,2)*den(mmst1 - mmst2,1) * (
-          - 8/9*pow(mmst1,3)
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,2) * (
-          - 6*mmsb1*mmst2
-          + 3*sqr(mmsb1)
-          - 6*mmsb2*mmst2
-          + 3*sqr(mmsb2)
-          + 22/9*mmst1*mmst2
-          + 8/9*sqr(mmst1)
-          - 48*mmst2*mmsusy
-          + 20*sqr(mmst2)
-          + 24*sqr(mmsusy)
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,3)*sqr(cs2t) * (
-          - 16/9*mmst1*sqr(mmst2)
-          + 16/9*pow(mmst2,3)
-          )
-
-       + lnMst2Sq*den(mmgl - mmst2,3) * (
-          - 8/3*mmsb1*sqr(mmst2)
-          + 4*sqr(mmsb1)*mmst2
-          - 8/3*mmsb2*sqr(mmst2)
-          + 4*sqr(mmsb2)*mmst2
-          - 8/9*mmst1*sqr(mmst2)
-          + 32*mmst2*sqr(mmsusy)
-          - 64/3*sqr(mmst2)*mmsusy
-          + 128/9*pow(mmst2,3)
-          )
-
-       + lnMst2Sq*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 128/3*mmgl
-          + 640/9*mmst1
-          )
-
-       + lnMst2Sq * (
-          + 5/9
-          )
-
-       + sqr(lnMmsusy)*den(mmgl - mmst1,1)*sn2t * (
-          + 16/3*mmsusy/mt*mgl
-          )
-
-       + sqr(lnMmsusy)*den(mmgl - mmst1,1) * (
-          - 4*mmsusy
-          )
-
-       + sqr(lnMmsusy)*den(mmgl - mmst1,2) * (
-          - 16/3*mmst1*mmsusy
-          )
-
-       + sqr(lnMmsusy)*den(mmgl - mmst2,1)*sn2t * (
-          - 16/3*mmsusy/mt*mgl
-          )
-
-       + sqr(lnMmsusy)*den(mmgl - mmst2,1) * (
-          - 4*mmsusy
-          )
-
-       + sqr(lnMmsusy)*den(mmgl - mmst2,2) * (
-          - 16/3*mmst2*mmsusy
-          )
-
-       + sqr(lnMmsusy) * (
-          + 8/3
-          )
-
-       + lnMmsusy*lnMmt * (
-          - 16/3
-          )
-
-       + lnMmsusy*den(mmgl - mmst1,1)*sn2t * (
-          - 128/3*mmsusy/mt*mgl
-          )
-
-       + lnMmsusy*den(mmgl - mmst1,1) * (
-          + 32*mmsusy
-          )
-
-       + lnMmsusy*den(mmgl - mmst1,2) * (
-          + 128/3*mmst1*mmsusy
-          )
-
-       + lnMmsusy*den(mmgl - mmst2,1)*sn2t * (
-          + 128/3*mmsusy/mt*mgl
-          )
-
-       + lnMmsusy*den(mmgl - mmst2,1) * (
-          + 32*mmsusy
-          )
-
-       + lnMmsusy*den(mmgl - mmst2,2) * (
-          + 128/3*mmst2*mmsusy
-          )
-
-       + lnMmsusy * (
-          + 152/9
-          )
-
-       + lnMmt*lnMmu * (
-          + 64/3
-          )
-
-       + lnMmt*den(mmgl - mmst1,1) * (
-          + 8/3*mmst1
-          )
-
-       + lnMmt*den(mmgl - mmst2,1) * (
-          + 8/3*mmst2
-          )
-
-       + lnMmt * (
-          + 8
-          )
-
-       + lnMmu*sqr(cs2t) * (
-          + 128/9
-          )
-
-       + sqr(lnMmu) * (
-          - 130/9
-          )
-
-       + lnMmu*den(mmgl - mmst1,1)*sn2t * (
-          + 8/9*mmst1/mt*mgl
-          - 16/9*mmst2/mt*mgl
-          )
-
-       + lnMmu*den(mmgl - mmst1,1)*sn4t*cs2t * (
-          - 8/9*mmst1/mt*mgl
-          + 8/9*mmst2/mt*mgl
-          )
-
-       + lnMmu*den(mmgl - mmst1,1)*sqr(cs2t) * (
-          + 88/9*mmst1
-          - 8/3*mmst2
-          )
-
-       + lnMmu*den(mmgl - mmst1,1) * (
-          - 58/3*mmst1
-          + 8/3*mmst2
-          )
-
-       + lnMmu*den(mmgl - mmst1,2)*sqr(cs2t) * (
-          - 16/9*mmst1*mmst2
-          + 16/9*sqr(mmst1)
-          )
-
-       + lnMmu*den(mmgl - mmst1,2) * (
-          + 16/9*mmst1*mmst2
-          - 8/9*sqr(mmst1)
-          )
-
-       + lnMmu*den(mmgl - mmst2,1)*sn2t * (
-          + 16/9*mmst1/mt*mgl
-          - 8/9*mmst2/mt*mgl
-          )
-
-       + lnMmu*den(mmgl - mmst2,1)*sn4t*cs2t * (
-          - 8/9*mmst1/mt*mgl
-          + 8/9*mmst2/mt*mgl
-          )
-
-       + lnMmu*den(mmgl - mmst2,1)*sqr(cs2t) * (
-          - 8/3*mmst1
-          + 88/9*mmst2
-          )
-
-       + lnMmu*den(mmgl - mmst2,1) * (
-          + 8/3*mmst1
-          - 58/3*mmst2
-          )
-
-       + lnMmu*den(mmgl - mmst2,2)*sqr(cs2t) * (
-          - 16/9*mmst1*mmst2
-          + 16/9*sqr(mmst2)
-          )
-
-       + lnMmu*den(mmgl - mmst2,2) * (
-          + 16/9*mmst1*mmst2
-          - 8/9*sqr(mmst2)
-          )
-
-       + lnMmu * (
-          - 932/9
-          )
-
-       + den(mmgl - mmst1,1)*sn2t * (
-          + 4/3*mmsb1/mt*mgl*zt2
-          + 8*mmsb1/mt*mgl
-          + 4/3*mmsb2/mt*mgl*zt2
-          + 8*mmsb2/mt*mgl
-          + 88/9*mmst1/mt*mgl*zt2
-          + 676/9*mmst1/mt*mgl
-          + 4/3*mmst2/mt*mgl*zt2
-          + 56/9*mmst2/mt*mgl
-          + 32/3*mmsusy/mt*mgl*zt2
-          + 64*mmsusy/mt*mgl
-          )
-
-       + den(mmgl - mmst1,1)*sn4t*cs2t * (
-          - 8/9*mmst1/mt*mgl
-          + 8/9*mmst2/mt*mgl
-          )
-
-       + den(mmgl - mmst1,1)*sqr(cs2t) * (
-          + 41/9*mmst1*zt2
-          + 439/9*mmst1
-          - 8/3*mmst2
-          )
-
-       + den(mmgl - mmst1,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          - 20*sqr(mmst1)*zt2
-          - 140*sqr(mmst1)
-          )
-
-       + den(mmgl - mmst1,1)*den(mmst1 - mmst2,1) * (
-          + 20/3*sqr(mmst1)*zt2
-          + 428/9*sqr(mmst1)
-          )
-
-       + den(mmgl - mmst1,1) * (
-          - mmsb1*zt2
-          - 6*mmsb1
-          - mmsb2*zt2
-          - 6*mmsb2
-          + 50/9*mmst1*zt2
-          + 61/9*mmst1
-          - mmst2*zt2
-          - 10/3*mmst2
-          - 8*mmsusy*zt2
-          - 48*mmsusy
-          )
-
-       + den(mmgl - mmst1,2)*sqr(cs2t) * (
-          - 16/9*mmst1*mmst2
-          + 16/9*sqr(mmst1)
-          )
-
-       + den(mmgl - mmst1,2) * (
-          - 4/3*mmsb1*mmst1*zt2
-          - 8*mmsb1*mmst1
-          - 4/3*mmsb2*mmst1*zt2
-          - 8*mmsb2*mmst1
-          - 4/3*mmst1*mmst2*zt2
-          - 56/9*mmst1*mmst2
-          - 32/3*mmst1*mmsusy*zt2
-          - 64*mmst1*mmsusy
-          + 44/3*sqr(mmst1)*zt2
-          + 868/9*sqr(mmst1)
-          )
-
-       + den(mmgl - mmst1,3) * (
-          + 16/3*pow(mmst1,3)*zt2
-          + 112/3*pow(mmst1,3)
-          )
-
-       + den(mmgl - mmst2,1)*sn2t * (
-          - 4/3*mmsb1/mt*mgl*zt2
-          - 8*mmsb1/mt*mgl
-          - 4/3*mmsb2/mt*mgl*zt2
-          - 8*mmsb2/mt*mgl
-          - 4/3*mmst1/mt*mgl*zt2
-          - 56/9*mmst1/mt*mgl
-          - 88/9*mmst2/mt*mgl*zt2
-          - 676/9*mmst2/mt*mgl
-          - 32/3*mmsusy/mt*mgl*zt2
-          - 64*mmsusy/mt*mgl
-          )
-
-       + den(mmgl - mmst2,1)*sn4t*cs2t * (
-          - 8/9*mmst1/mt*mgl
-          + 8/9*mmst2/mt*mgl
-          )
-
-       + den(mmgl - mmst2,1)*sqr(cs2t) * (
-          - 20*mmst1*zt2
-          - 428/3*mmst1
-          - 139/9*mmst2*zt2
-          - 821/9*mmst2
-          )
-
-       + den(mmgl - mmst2,1)*den(mmst1 - mmst2,1)*sqr(cs2t) * (
-          + 20*sqr(mmst1)*zt2
-          + 140*sqr(mmst1)
-          )
-
-       + den(mmgl - mmst2,1)*den(mmst1 - mmst2,1) * (
-          - 20/3*sqr(mmst1)*zt2
-          - 428/9*sqr(mmst1)
-          )
-
-       + den(mmgl - mmst2,1) * (
-          - mmsb1*zt2
-          - 6*mmsb1
-          - mmsb2*zt2
-          - 6*mmsb2
-          + 17/3*mmst1*zt2
-          + 398/9*mmst1
-          + 110/9*mmst2*zt2
-          + 163/3*mmst2
-          - 8*mmsusy*zt2
-          - 48*mmsusy
-          )
-
-       + den(mmgl - mmst2,2)*sqr(cs2t) * (
-          - 16/9*mmst1*mmst2
-          + 16/9*sqr(mmst2)
-          )
-
-       + den(mmgl - mmst2,2) * (
-          - 4/3*mmsb1*mmst2*zt2
-          - 8*mmsb1*mmst2
-          - 4/3*mmsb2*mmst2*zt2
-          - 8*mmsb2*mmst2
-          - 4/3*mmst1*mmst2*zt2
-          - 56/9*mmst1*mmst2
-          - 32/3*mmst2*mmsusy*zt2
-          - 64*mmst2*mmsusy
-          + 44/3*sqr(mmst2)*zt2
-          + 868/9*sqr(mmst2)
-          )
-
-       + den(mmgl - mmst2,3) * (
-          + 16/3*pow(mmst2,3)*zt2
-          + 112/3*pow(mmst2,3)
-          )
-
-       - 77/2
-          + 8/9*zt2
-         ;  
-
-  return resmt;
+
+/// Mix 3rd family up
+  ls1tt = rot2d(thetat) * ls1tt * rot2d(-thetat);
+  ls1bb = rot2d(thetab) * ls1bb * rot2d(-thetab);
+  ls1tautau = rot2d(thetatau) * ls1tautau * rot2d(-thetatau);
+
+  int i, j; for (i=1; i<=2; i++) {
+    for (j=1; j<=2; j++) {
+      stops = stops + 3.0 * sqr(ls1tt(i, j)) * 
+	b0c(p, tree.mu(i, 3), tree.mu(j, 3), q);
+      sbots = sbots + 3.0 * sqr(ls1bb(i, j)) * 
+	b0c(p, tree.md(i, 3), tree.md(j, 3), q);
+      staus = staus +  sqr(ls1tautau(i, j)) * 
+	b0c(p, tree.me(i, 3), tree.me(j, 3), q);
+    }}
+
+  /// selectron couplings to s1 Higgs state: neglect Yukawas + mixing
+  double ls1eeLL = g * mz * geL * cosb / costhDrbar;
+  double ls1eeRR = g * mz * geR * cosb / costhDrbar;
+  double ls1ddLL = g * mz * gdL * cosb / costhDrbar;
+  double ls1ddRR = g * mz * gdR * cosb / costhDrbar;
+  double ls1uuLL = g * mz * guL * cosb / costhDrbar;
+  double ls1uuRR = g * mz * guR * cosb / costhDrbar;
+
+  int k; 
+  for (k=1; k<=2; k++) {
+    sups = sups + 
+      3.0 * sqr(ls1uuLL) * 
+      b0c(p, tree.mu(1, k), tree.mu(1, k), q) +
+      + 3.0 * sqr(ls1uuRR) * 
+      b0c(p, tree.mu(2, k), tree.mu(2, k), q);
+    sdowns = sdowns + 
+      3.0 * sqr(ls1ddLL) * 
+      b0c(p, tree.md(1, k), tree.md(1, k), q) +
+      + 3.0 * sqr(ls1ddRR) * 
+      b0c(p, tree.md(2, k), tree.md(2, k), q);
+    sleps = sleps + 
+      sqr(ls1eeLL) * 
+      b0c(p, tree.me(1, k), tree.me(1, k), q) +
+      + sqr(ls1eeRR) * 
+      b0c(p, tree.me(2, k), tree.me(2, k), q);
+    }  
+
+  sneutrinos = sneutrinos + 
+    sqr(g) / (2.0 * cw2DRbar) * gnuL * 
+    (a0(tree.msnu(1), q) + a0(tree.msnu(2), q) + 
+     a0(tree.msnu(3), q)) +
+    sqr(g * mz / sqrt(cw2DRbar) * gnuL * cosb) * 
+    (b0c(p, tree.msnu(1), tree.msnu(1), q) +
+     b0c(p, tree.msnu(2), tree.msnu(2), q) +
+     b0c(p, tree.msnu(3), tree.msnu(3), q));
+
+  Complex sfermions = sups  + sdowns  + sleps  + stops  + sbots  + staus  + sneutrinos;
+   return sfermions;
+}
+
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis1s2Sfermions(double p, double q,  DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const {
+  drBarPars tree(displayDrBarPars()); 
+  double    thetat  = tree.thetat ;
+  double    thetab  = tree.thetab;
+  double    thetatau= tree.thetatau;
+  double    mz      = displayMzRun();
+  double    g       = displayGaugeCoupling(2);
+  double    thetaWDRbar = asin(calcSinthdrbar());
+  double    costhDrbar  = cos(thetaWDRbar);
+  double cosb = cos(atan(displayTanb())), sinb = sin(atan(displayTanb()));
+
+   /// Mix 3rd family up
+  ls1tt = rot2d(thetat) * ls1tt * rot2d(-thetat);
+  ls1bb = rot2d(thetab) * ls1bb * rot2d(-thetab);
+  ls1tautau = rot2d(thetatau) * ls1tautau * rot2d(-thetatau);
+ 
+  ls2tt = rot2d(thetat) * ls2tt * rot2d(-thetat);
+  ls2bb = rot2d(thetab) * ls2bb * rot2d(-thetab);
+  ls2tautau = rot2d(thetatau) * ls2tautau * rot2d(-thetatau);
+  
+  Complex sfermions = 0.0;
+  int i, j; for (i=1; i<=2; i++)
+    for (j=1; j<=2; j++) {
+      sfermions = sfermions + 3.0 * ls1tt(i, j) * ls2tt(i, j) *
+	b0c(p, tree.mu(i, 3), tree.mu(j, 3), q);
+      sfermions = sfermions + 3.0 * ls1bb(i, j) * ls2bb(i, j) * 
+	b0c(p, tree.md(i, 3), tree.md(j, 3), q);
+      sfermions = sfermions + ls1tautau(i, j) * ls2tautau(i, j) * 
+	b0c(p, tree.me(i, 3), tree.me(j, 3), q);
+    }
+    
+  /// sneutrinos
+  double l1 = g * mz / costhDrbar * cosb * gnuL, 
+    l2 = -g * mz / costhDrbar * gnuL * sinb; 
+  sfermions = sfermions +
+    l1 * l2 * (b0c(p, tree.msnu(1), tree.msnu(1), q) +
+	       b0c(p, tree.msnu(2), tree.msnu(2), q) +
+	       b0c(p, tree.msnu(3), tree.msnu(3), q));
+
+  /// selectron couplings to s1 Higgs state: neglect Yukawas + mixing
+  double ls1uuLL = g * mz * guL * cosb / costhDrbar;
+  double ls1uuRR = g * mz * guR * cosb / costhDrbar;
+  double ls1eeLL = g * mz * geL * cosb / costhDrbar;
+  double ls1eeRR = g * mz * geR * cosb / costhDrbar;
+  double ls1ddLL = g * mz * gdL * cosb / costhDrbar;
+  double ls1ddRR = g * mz * gdR * cosb / costhDrbar;
+  /// couplings to s2 Higgs state: neglect Yukawas + mixing
+  double ls2uuLL = -g * mz * guL * sinb / costhDrbar;
+  double ls2uuRR = -g * mz * guR * sinb / costhDrbar;
+  double ls2eeLL = -g * mz * geL * sinb / costhDrbar;
+  double ls2eeRR = -g * mz * geR * sinb / costhDrbar;
+  double ls2ddLL = -g * mz * gdL * sinb / costhDrbar;
+  double ls2ddRR = -g * mz * gdR * sinb / costhDrbar;
+
+  int k; 
+  for (k=1; k<=2; k++) {
+    sfermions = sfermions + 3.0 * ls1uuLL * ls2uuLL *
+      b0c(p, tree.mu(1, k), tree.mu(1, k), q) +
+      + 3.0 * ls1uuRR * ls2uuRR *
+      b0c(p, tree.mu(2, k), tree.mu(2, k), q);
+    sfermions = sfermions + 3.0 * ls1ddLL * ls2ddLL *
+      b0c(p, tree.md(1, k), tree.md(1, k), q) +
+      + 3.0 * ls1ddRR * ls2ddRR *
+      b0c(p, tree.md(2, k), tree.md(2, k), q);
+    sfermions = sfermions + ls1eeLL * ls2eeLL * 
+      b0c(p, tree.me(1, k), tree.me(1, k), q) +
+      + ls1eeRR * ls2eeRR * 
+      b0c(p, tree.me(2, k), tree.me(2, k), q);
+    }  
+
+  return sfermions;
+}
+
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis2s2Sfermions(double p, double q, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const {
+  drBarPars tree(displayDrBarPars()); 
+  double    thetat  = tree.thetat ;
+  double    thetab  = tree.thetab;
+  double    thetatau= tree.thetatau;
+  double    st      = sin(thetat) ;
+  double    sb      = sin(thetab) ;
+  double    stau    = sin(thetatau);
+  double    ct      = cos(thetat) ;
+  double    cb      = cos(thetab) ;
+  double    ctau    = cos(thetatau);
+  double    msbot1  = tree.md(1, 3);
+  double    msbot2  = tree.md(2, 3);
+  double    mstau1  = tree.me(1, 3);
+  double    mstau2  = tree.me(2, 3);
+  double    mstop1  = tree.mu(1, 3);
+  double    mstop2  = tree.mu(2, 3);
+  double    mz      = displayMzRun();
+  double    g       = displayGaugeCoupling(2);
+  double    thetaWDRbar = asin(calcSinthdrbar());
+  double    costhDrbar  = cos(thetaWDRbar);
+  double    cw2DRbar    = sqr(cos(thetaWDRbar));
+  double  ht = tree.ht;
+  double sinb = sin(atan(displayTanb()));
+
+
+   /// stop contribution
+  Complex sfermions = 3.0 * sqr(ht) * (a0(mstop1, q) + a0(mstop2, q));
+  sfermions = sfermions - 3.0 * sqr(g) / (2.0 * cw2DRbar) *
+    (guL * (sqr(ct) * a0(mstop1, q) + sqr(st) * a0(mstop2, q)) +
+     guR * (sqr(st) * a0(mstop1, q) + sqr(ct) * a0(mstop2, q)));
+ 
+  /// sbottom contribution
+  sfermions = sfermions - 3.0 * sqr(g) / (2.0 * cw2DRbar) *
+    (gdL * (sqr(cb) * a0(msbot1, q) + sqr(sb) * a0(msbot2, q)) +
+     gdR * (sqr(sb) * a0(msbot1, q) + sqr(cb) * a0(msbot2, q)));
+
+  //stau
+  sfermions = sfermions - sqr(g) / (2.0 * cw2DRbar) *
+    (geL * (sqr(ctau) * a0(mstau1, q) + sqr(stau) * a0(mstau2, q)) +
+     geR * (sqr(stau) * a0(mstau1, q) + sqr(ctau) * a0(mstau2, q)));
+
+  /// first two families of sparticles
+  int fam; for(fam=1; fam<=2; fam++) 
+    sfermions = sfermions - 3.0 * sqr(g) / (2.0 * cw2DRbar) *
+      (guL * a0(tree.mu(1, fam), q) + 
+       guR * a0(tree.mu(2, fam), q) +
+       gdL * a0(tree.md(1, fam), q) + 
+       gdR * a0(tree.md(2, fam), q)) - sqr(g) / (2.0 * cw2DRbar) * 
+      (geL * a0(tree.me(1, fam), q) + 
+       geR * a0(tree.me(2, fam), q)) -
+      sqr(g)  / (2.0 * cw2DRbar) * gnuL *
+      (a0(tree.msnu(fam), q));
+  sfermions = sfermions -
+     sqr(g)  / (2.0 * cw2DRbar) * gnuL *
+      (a0(tree.msnu(3), q));
+
+  /// Mix 3rd family up
+  ls2tt = rot2d(thetat) * ls2tt * rot2d(-thetat);
+  ls2bb = rot2d(thetab) * ls2bb * rot2d(-thetab);
+  ls2tautau = rot2d(thetatau) * ls2tautau * rot2d(-thetatau);
+
+  for (int i=1; i<=2; i++)
+    for (int j=1; j<=2; j++) {
+      /// stop 
+      sfermions = sfermions + 3.0 * sqr(ls2tt(i, j)) * 
+	b0c(p, tree.mu(i, 3), tree.mu(j, 3), q);
+      /// sbottom
+      sfermions = sfermions + 3.0 * sqr(ls2bb(i, j)) * 
+	b0c(p, tree.md(i, 3), tree.md(j, 3), q);
+      /// stay
+      sfermions = sfermions + sqr(ls2tautau(i, j)) * 
+	b0c(p, tree.me(i, 3), tree.me(j, 3), q);
+    }
+
+  /// couplings to s2 Higgs state: neglect Yukawas + mixing
+  double ls2uuLL = -g * mz * guL * sinb / costhDrbar;
+  double ls2uuRR = -g * mz * guR * sinb / costhDrbar;
+  double ls2eeLL = -g * mz * geL * sinb / costhDrbar;
+  double ls2eeRR = -g * mz * geR * sinb / costhDrbar;
+  double ls2ddLL = -g * mz * gdL * sinb / costhDrbar;
+  double ls2ddRR = -g * mz * gdR * sinb / costhDrbar;
+
+  int k; 
+  for (k=1; k<=2; k++) {
+    sfermions = sfermions + 3.0 * sqr(ls2uuLL) * 
+      b0c(p, tree.mu(1, k), tree.mu(1, k), q) +
+      + 3.0 * sqr(ls2uuRR) * 
+      b0c(p, tree.mu(2, k), tree.mu(2, k), q);
+    sfermions = sfermions + 3.0 * sqr(ls2ddLL) * 
+      b0c(p, tree.md(1, k), tree.md(1, k), q) +
+      + 3.0 * sqr(ls2ddRR) * 
+      b0(p, tree.md(2, k), tree.md(2, k), q);
+    sfermions = sfermions + sqr(ls2eeLL) * 
+      b0c(p, tree.me(1, k), tree.me(1, k), q) +
+      + sqr(ls2eeRR) * 
+      b0c(p, tree.me(2, k), tree.me(2, k), q);
+    }  
+
+  sfermions = sfermions +
+    sqr(g * mz * gnuL * sinb) / cw2DRbar *
+    (b0c(p, tree.msnu(1), tree.msnu(1), q) +
+     b0c(p, tree.msnu(2), tree.msnu(2), q) +
+     b0c(p, tree.msnu(3), tree.msnu(3), q));
+
+return sfermions;
+}
+
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis1s1Fermions(double p, double q) const {
+ /// fermions: 3rd family only for now
+   double hb = displayDrBarPars().hb, htau = displayDrBarPars().htau;
+   double    mtau    = displayDrBarPars().mtau;
+   double    mb      = displayDrBarPars().mb;
+   Complex fermions = 3.0 * sqr(hb) *
+    ((sqr(p) - 4.0 * sqr(mb)) * 
+     b0c(p, mb, mb, q) - 2.0 * a0(mb, q));
+  
+  fermions = fermions + sqr(htau) *
+    ((sqr(p) - 4.0 * sqr(mtau)) * b0c(p, mtau, mtau, q) - 
+     2.0 * a0(mtau, q));
+
+  return fermions;
+}
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis2s2Fermions(double p, double q) const {
+ /// fermions: 3rd family only for now
+   double mt =  displayDrBarPars().mt,  ht = displayDrBarPars().ht;
+   Complex fermions = 3.0 * sqr(ht) *
+    ((sqr(p) - 4.0 * sqr(mt)) * 
+     b0c(p, mt, mt, q) - 2.0 * a0(mt, q));
+ return fermions;
+}
+
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis1s1Higgs(double p, double q) const {
+  
+  double    thetaWDRbar = asin(calcSinthdrbar());
+  double    costhDrbar  = cos(thetaWDRbar);
+  double    cw2DRbar    = sqr(cos(thetaWDRbar));
+  double    sw2DRbar    = 1.0 - cw2DRbar;
+  double    alpha   = displayDrBarPars().thetaH;
+  double    calpha2 = sqr(cos(alpha)), salpha2 = sqr(sin(alpha)), 
+     s2alpha = sin(2.0 * alpha), c2alpha = cos(2.0 * alpha);
+  double    mz      = displayMzRun();
+  double    g       = displayGaugeCoupling(2);
+  double    mHc     = displayDrBarPars().mHpm;
+  double    mA      = displayDrBarPars().mA0(1);
+  double beta = atan(displayTanb());
+  double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta), 
+     sinb = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+
+  Complex higgs = sqr(g) * 0.25 *
+    (sinb2 * (2.0 * ffnc(p, mHc, displayMwRun(), q) + 
+	      ffnc(p, mA, mz, q) / cw2DRbar) +
+     cosb2 * (2.0 * ffnc(p, displayMwRun(), displayMwRun(), q)  + 
+	      ffnc(p, mz, mz, q) / cw2DRbar)) +
+    1.75 * sqr(g) * cosb2 * 
+    (2.0 * sqr(displayMwRun()) * b0(p, displayMwRun(), displayMwRun(), q) + 
+     sqr(mz) * b0(p, mz, mz, q) / cw2DRbar) +
+    sqr(g) * (2.0 * a0(displayMwRun(), q) + a0(mz, q) / cw2DRbar);
+
+  /// Trilinear Higgs couplings in basis H h G A: have assumed the couplings
+  /// are symmetric (ie hHs1 = Hhs1)
+  DoubleMatrix hhs1(4, 4);
+  hhs1(1, 1) = cosb * (3.0 * calpha2 - salpha2) - sinb * s2alpha;
+  hhs1(2, 2) = cosb * (3.0 * salpha2 - calpha2) + sinb * s2alpha;
+  hhs1(1, 2) = -2.0 * cosb * s2alpha - sinb * c2alpha;
+  hhs1(2, 1) = hhs1(1, 2);
+  hhs1(3, 3) = cos2b * cosb;
+  hhs1(4, 4) = -cos2b * cosb;
+  hhs1(3, 4) = -sin2b * cosb; hhs1(4, 3) = hhs1(3, 4);
+  hhs1 = hhs1 * (g * mz / (2.0 * costhDrbar));
+
+  /// Quadrilinear Higgs couplings
+  DoubleVector hhs1s1(4);
+  hhs1s1(1) = 3.0 * calpha2 - salpha2;
+  hhs1s1(2) = 3.0 * salpha2 - calpha2;
+  hhs1s1(3) = cos2b; hhs1s1(4) = -cos2b;
+  hhs1s1 = hhs1s1 * (sqr(g) * 0.25 / (sqr(costhDrbar)));
+
+  /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
+  DoubleVector higgsm(4), higgsc(2);
+  DoubleVector dnu(4), dnd(4), cn(4);
+  assignHiggs(higgsm, higgsc, dnu, dnd, cn, beta);
+
+  for (int i=1; i<=4; i++) {
+    for (int j=1; j<=4; j++) {
+      higgs = higgs + 0.5 * sqr(hhs1(i, j)) * b0c(p, higgsm(i), higgsm(j), q);
+      ///      cout << "higgs(" << i << "," << j << ")=" << higgs;
+    }
+    higgs = higgs + 0.5 * hhs1s1(i) * a0(higgsm(i), q);
+    ///      cout << "higgs(" << i << "," << j << ")=" << higgs;
+  }
+
+  ///  cout << hhs1 << hhs1s1 << higgsm;
+
+  /// Basis (G+ H+, G- H-)
+  DoubleMatrix hphps1(2, 2);
+  hphps1(1, 1) = cos2b * cosb;
+  hphps1(2, 2) = -cos2b * cosb + 2.0 * cw2DRbar * cosb;
+  hphps1(1, 2) = -sin2b * cosb + cw2DRbar * sinb; 
+  hphps1(2, 1) = hphps1(1, 2);
+  hphps1 = hphps1 * (g * mz * 0.5 / costhDrbar);
+ 
+  /// (G+ H+)
+  DoubleVector hphps1s1(2);
+  hphps1s1(1) = cw2DRbar + sw2DRbar * cos2b;
+  hphps1s1(2) = cw2DRbar - sw2DRbar * cos2b;
+  hphps1s1 = hphps1s1 * (sqr(g) * 0.25 / cw2DRbar);
+
+  for (int i=1; i<=2; i++) {
+    for (int j=1; j<=2; j++) 
+      higgs = higgs + sqr(hphps1(i, j)) * b0c(p, higgsc(i), higgsc(j), q);
+    higgs = higgs + hphps1s1(i) * a0(higgsc(i), q);
+  }
+
+  return higgs;
+}
+
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis1s2Higgs(double p, double q) const {
+
+ double    thetaWDRbar = asin(calcSinthdrbar());
+  double    costhDrbar  = cos(thetaWDRbar);
+  double    cw2DRbar    = sqr(cos(thetaWDRbar));
+  double    alpha   = displayDrBarPars().thetaH;
+  double    calpha2 = sqr(cos(alpha)), salpha2 = sqr(sin(alpha)), 
+     s2alpha = sin(2.0 * alpha), c2alpha = cos(2.0 * alpha);
+  double    mz      = displayMzRun();
+  double    g       = displayGaugeCoupling(2);
+  double    mHc     = displayDrBarPars().mHpm;
+  double    mA      = displayDrBarPars().mA0(1);
+  double beta = atan(displayTanb());
+  double cosb = cos(beta), cos2b = cos(2.0 * beta), 
+     sinb = sin(beta), sin2b = sin(2.0 * beta);
+
+  Complex higgs = sqr(g) * 0.25 * sinb * cosb *
+    (2.0 * ffnc(p, displayMwRun(), displayMwRun(), q) -2.0 * ffnc(p, mHc, displayMwRun(), q) +
+     (ffnc(p, mz, mz, q) - ffnc(p, mA, mz, q)) / cw2DRbar +
+     7.0 * (2.0 * sqr(displayMwRun()) * b0c(p, displayMwRun(), displayMwRun(), q) + 
+	    sqr(mz) * b0c(p, mz, mz, q) / cw2DRbar)); 
+  
+  /// Trilinear Higgs couplings in basis H h G A: have assumed the couplings
+  /// are symmetric (ie hHs1 = Hhs1)
+  DoubleMatrix hhs1(4, 4);
+  hhs1(1, 1) = cosb * (3.0 * calpha2 - salpha2) - sinb * s2alpha;
+  hhs1(2, 2) = cosb * (3.0 * salpha2 - calpha2) + sinb * s2alpha;
+  hhs1(1, 2) = -2.0 * cosb * s2alpha - sinb * c2alpha;
+  hhs1(2, 1) = hhs1(1, 2);
+  hhs1(3, 3) = cos2b * cosb;
+  hhs1(4, 4) = -cos2b * cosb;
+  hhs1(3, 4) = -sin2b * cosb; hhs1(4, 3) = hhs1(3, 4);
+  hhs1 = hhs1 * (g * mz / (2.0 * costhDrbar));
+  /// Trilinear Higgs couplings in basis H h G A: have assumed the couplings
+  /// are symmetric (ie hHs2 = Hhs2)
+  DoubleMatrix hhs2(4, 4);
+  hhs2(1, 1) = sinb * (3.0 * salpha2 - calpha2) - cosb * s2alpha;
+  hhs2(2, 2) = sinb * (3.0 * calpha2 - salpha2) + cosb * s2alpha;
+  hhs2(1, 2) = 2.0 * sinb * s2alpha - cosb * c2alpha;
+  hhs2(2, 1) = hhs2(1, 2);
+  hhs2(3, 3) = -cos2b * sinb;
+  hhs2(4, 4) = cos2b * sinb;
+  hhs2(3, 4) = sin2b * sinb; hhs2(4, 3) = hhs2(3, 4);
+  hhs2 = hhs2 * (g * mz / (2.0 * costhDrbar));
+
+  /// Quadrilinear Higgs couplings
+  DoubleVector hhs1s2(4);
+  hhs1s2(1) = -s2alpha;
+  hhs1s2(2) = s2alpha;
+  hhs1s2 = hhs1s2 * (sqr(g) * 0.25 / (sqr(costhDrbar)));
+
+  ///  cout << "alpha=" << alpha << " g=" << g << " " << gp << " cw" << costhDrbar << " " << displayTanb();
+
+  /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
+  DoubleVector higgsm(4), higgsc(2);
+  assignHiggs(higgsm, higgsc);
+
+  Complex trilinear = 0.;
+  Complex quartic = 0., quarticNeut = 0.;
+
+  for (int i=1; i<=4; i++) {
+    for (int j=1; j<=4; j++) {
+      higgs = higgs + 0.5 * hhs1(i, j) * hhs2(i, j) * 
+	b0c(p, higgsm(i), higgsm(j), q);
+        trilinear = trilinear + 0.5 * hhs1(i, j) * hhs2(i, j) * 
+	  b0c(p, higgsm(i), higgsm(j), q);
+    }
+    higgs = higgs + 0.5 * hhs1s2(i) * a0(higgsm(i), q);
+    quarticNeut = quarticNeut + 0.5 * hhs1s2(i) * a0(higgsm(i), q);
+  }
+
+  DoubleMatrix hphps2(2, 2);
+  hphps2(1, 1) = -cos2b * sinb;
+  hphps2(2, 2) = cos2b * sinb + 2.0 * cw2DRbar * sinb;
+  hphps2(1, 2) = sin2b * sinb - cw2DRbar * cosb; 
+  hphps2(2, 1) = hphps2(1, 2);
+  hphps2 = hphps2 * (g * mz * 0.5 / costhDrbar);
+  DoubleMatrix hphps1(2, 2);
+  hphps1(1, 1) = cos2b * cosb;
+  hphps1(2, 2) = -cos2b * cosb + 2.0 * cw2DRbar * cosb;
+  hphps1(1, 2) = -sin2b * cosb + cw2DRbar * sinb; 
+  hphps1(2, 1) = hphps1(1, 2);
+  hphps1 = hphps1 * (g * mz * 0.5 / costhDrbar);
+
+  DoubleVector hphps1s2(2);
+  hphps1s2(1) = - cw2DRbar * sin2b;
+  hphps1s2(2) = cw2DRbar * sin2b;
+  hphps1s2 = hphps1s2 * (sqr(g) * 0.25 / cw2DRbar);
+
+  for (int i=1; i<=2; i++) {
+    for (int j=1; j<=2; j++) {
+      higgs = higgs + hphps1(i, j) * hphps2(i, j) 
+	* b0c(p, higgsc(i), higgsc(j), q);
+        trilinear = trilinear + 
+      hphps1(i, j) * hphps2(i, j) 
+	  * b0c(p, higgsc(i), higgsc(j), q);
+    }
+    higgs = higgs + hphps1s2(i) * a0(higgsc(i), q);
+    quartic = quartic + hphps1s2(i) * a0(higgsc(i), q);
+  }
+
+  return higgs;
+}
+
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis2s2Higgs(double p, double q) const {
+double    thetaWDRbar = asin(calcSinthdrbar());
+  double    costhDrbar  = cos(thetaWDRbar);
+  double    cw2DRbar    = sqr(cos(thetaWDRbar));
+  double    sw2DRbar    = 1.0 - cw2DRbar;
+  double    alpha   = displayDrBarPars().thetaH;
+  double    calpha2 = sqr(cos(alpha)), salpha2 = sqr(sin(alpha)), 
+     s2alpha = sin(2.0 * alpha), c2alpha = cos(2.0 * alpha);
+  double    mz      = displayMzRun();
+  double    g       = displayGaugeCoupling(2);
+  double    mHc     = displayDrBarPars().mHpm;
+  double    mA      = displayDrBarPars().mA0(1);
+  double beta = atan(displayTanb());
+  double cosb = cos(beta), cosb2 = sqr(cosb), cos2b = cos(2.0 * beta), 
+     sinb = sin(beta), sinb2 = sqr(sinb), sin2b = sin(2.0 * beta);
+ Complex higgs = sqr(g) * 0.25 *
+    (cosb2 * (2.0 * ffnc(p, mHc, displayMwRun(), q) + 
+	      ffnc(p, mA, mz, q) / cw2DRbar) +
+     sinb2 * (2.0 * ffnc(p, displayMwRun(), displayMwRun(), q) + 
+	      ffnc(p, mz, mz, q) / cw2DRbar)) +
+    1.75 * sqr(g) * sinb2 * 
+    (2.0 * sqr(displayMwRun()) * b0c(p, displayMwRun(), displayMwRun(), q) + 
+     sqr(mz) * b0c(p, mz, mz, q) / cw2DRbar) +
+    sqr(g) * (2.0 * a0(displayMwRun(), q) + a0(mz, q) / cw2DRbar);
+
+  Complex quartic = 0., trilinear = 0.;
+ 
+  /// Trilinear Higgs couplings in basis H h G A: have assumed the couplings
+  /// are symmetric (ie hHs2 = Hhs2)
+  DoubleMatrix hhs2(4, 4);
+  hhs2(1, 1) = sinb * (3.0 * salpha2 - calpha2) - cosb * s2alpha;
+  hhs2(2, 2) = sinb * (3.0 * calpha2 - salpha2) + cosb * s2alpha;
+  hhs2(1, 2) = 2.0 * sinb * s2alpha - cosb * c2alpha;
+  hhs2(2, 1) = hhs2(1, 2);
+  hhs2(3, 3) = -cos2b * sinb;
+  hhs2(4, 4) = cos2b * sinb;
+  hhs2(3, 4) = sin2b * sinb; hhs2(4, 3) = hhs2(3, 4);
+  hhs2 = hhs2 * (g * mz / (2.0 * costhDrbar));
+
+  /// Quadrilinear Higgs couplings
+  DoubleVector hhs2s2(4);
+  hhs2s2(1) = 3.0 * salpha2 - calpha2;
+  hhs2s2(2) = 3.0 * calpha2 - salpha2;
+  hhs2s2(3) = -cos2b; hhs2s2(4) = cos2b;
+  hhs2s2 = hhs2s2 * (sqr(g) * 0.25 / (sqr(costhDrbar)));
+
+  /// define Higgs vector in 't-Hooft Feynman gauge, and couplings:
+  DoubleVector higgsm(4), higgsc(2);
+  assignHiggs(higgsm, higgsc);
+
+  for (int i=1; i<=4; i++) {
+    for (int j=1; j<=4; j++) {
+      higgs = higgs + 0.5 * sqr(hhs2(i, j)) * b0c(p, higgsm(i), higgsm(j), q);
+      trilinear = trilinear + 
+	0.5 * sqr(hhs2(i, j)) * b0c(p, higgsm(i), higgsm(j), q);
+    }
+    higgs = higgs + 0.5 * hhs2s2(i) * a0(higgsm(i), q);
+    quartic = quartic + 0.5 * hhs2s2(i) * a0(higgsm(i), q);
+  }
+
+  DoubleMatrix hphps2(2, 2);
+  hphps2(1, 1) = -cos2b * sinb;
+  hphps2(2, 2) = cos2b * sinb + 2.0 * cw2DRbar * sinb;
+  hphps2(1, 2) = sin2b * sinb - cw2DRbar * cosb; 
+  hphps2(2, 1) = hphps2(1, 2);
+  hphps2 = hphps2 * (g * mz * 0.5 / costhDrbar);
+
+  DoubleVector hphps2s2(2);
+  hphps2s2(1) = cw2DRbar - sw2DRbar * cos2b;
+  hphps2s2(2) = cw2DRbar + sw2DRbar * cos2b;
+  hphps2s2 = hphps2s2 * (sqr(g) * 0.25 / cw2DRbar);
+
+  for (int i=1; i<=2; i++) {
+    for (int j=1; j<=2; j++) {
+      higgs = higgs + sqr(hphps2(i, j)) * b0c(p, higgsc(i), higgsc(j), q);
+      trilinear = trilinear + sqr(hphps2(i, j)) * 
+	b0c(p, higgsc(i), higgsc(j), q);
+    }
+    higgs = higgs + hphps2s2(i) * a0(higgsc(i), q);
+    quartic = quartic + hphps2s2(i) * a0(higgsc(i), q);
+  }
+return higgs;
+}
+
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis1s1Neutralinos(double p, double q) const {
+  double    g       = displayGaugeCoupling(2);
+  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
+  Complex neutralinos = 0.0;
+
+  DoubleMatrix aPsi(4, 4);
+  ComplexMatrix aChi(4, 4), bChi(4, 4);
+  ComplexMatrix n(displayDrBarPars().nBpmz);
+  DoubleVector mneut(displayDrBarPars().mnBpmz);
+ 
+
+  aPsi(1, 3) = -gp * 0.5; 
+  aPsi(2, 3) = g * 0.5; 
+  aPsi.symmetrise();
+  aChi = n.complexConjugate() * aPsi * n.hermitianConjugate();
+  bChi = n * aPsi * n.transpose();
+ 
+  ComplexMatrix fChiChis1s1(4, 4), gChiChis1s1(4, 4);
+  for(int i=1; i<=4; i++)
+    for (int j=1; j<=4; j++) {
+      fChiChis1s1(i, j) = sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod());
+      gChiChis1s1(i, j) = (bChi(i, j).conj() * aChi(i, j) + 
+			   aChi(i, j).conj() * bChi(i, j));
+      neutralinos = neutralinos + 0.5 * 
+	(fChiChis1s1(i, j) * gfnc(p, mneut(i), mneut(j), q) - 2.0 *
+	 gChiChis1s1(i, j) * mneut(i) * mneut(j) * 
+	 b0c(p, mneut(i), mneut(j), q));
+    }
+
+  return neutralinos;
+}
+
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis1s2Neutralinos(double p, double q) const {
+  double    g       = displayGaugeCoupling(2);
+  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
+  Complex neutralinos = 0.0;
+
+  DoubleMatrix aPsi1(4, 4);
+  ComplexMatrix aChi1(4, 4), bChi1(4, 4);
+  ComplexMatrix n(displayDrBarPars().nBpmz);
+  DoubleVector mneut(displayDrBarPars().mnBpmz);
+ 
+  aPsi1(1, 3) = -gp * 0.5; 
+  aPsi1(2, 3) = g * 0.5; 
+  aPsi1.symmetrise();
+  aChi1 = n.complexConjugate() * aPsi1 * n.hermitianConjugate();
+  bChi1 = n * aPsi1 * n.transpose();
+  DoubleMatrix aPsi2(4, 4);
+  ComplexMatrix aChi2(4, 4), bChi2(4, 4);
+  aPsi2(1, 4) = gp * 0.5; 
+  aPsi2(2, 4) = -g * 0.5; 
+  aPsi2.symmetrise();
+  aChi2 = n.complexConjugate() * aPsi2 * n.hermitianConjugate();
+  bChi2 = n * aPsi2 * n.transpose();
+
+  ComplexMatrix fChiChis1s2(4, 4), gChiChis1s2(4, 4);
+  for(int i=1; i<=4; i++)
+    for (int j=1; j<=4; j++) {
+      fChiChis1s2(i, j) = (aChi1(i, j).conj() * aChi2(i, j) + 
+	bChi1(i, j).conj() * bChi2(i, j));
+      gChiChis1s2(i, j) = (bChi1(i, j).conj() * aChi2(i, j) + 
+	aChi1(i, j).conj() * bChi2(i, j));
+      neutralinos = neutralinos + 0.5 * 
+	(fChiChis1s2(i, j) * gfnc(p, mneut(i), mneut(j), q) - 2.0 *
+	 gChiChis1s2(i, j) * mneut(i) * mneut(j) * 
+	 b0c(p, mneut(i), mneut(j), q));
+    }
+
+ return neutralinos;
+}
+
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis2s2Neutralinos(double p, double q) const {
+  double    g       = displayGaugeCoupling(2);
+  double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
+/// Neutralino contribution
+  Complex neutralinos = 0.0;
+
+  DoubleMatrix aPsi(4, 4);
+  ComplexMatrix aChi(4, 4), bChi(4, 4);
+  ComplexMatrix n(displayDrBarPars().nBpmz);
+  DoubleVector mneut(displayDrBarPars().mnBpmz);
+  
+  aPsi(1, 4) = gp * 0.5; 
+  aPsi(2, 4) = -g * 0.5; 
+  aPsi.symmetrise();
+  aChi = n.complexConjugate() * aPsi * n.hermitianConjugate();
+  bChi = n * aPsi * n.transpose();
+
+  ComplexMatrix fChiChis2s2(4, 4), gChiChis2s2(4, 4);
+  for(int i=1; i<=4; i++)
+    for (int j=1; j<=4; j++) {
+      fChiChis2s2(i, j) = sqr(aChi(i, j).mod()) + sqr(bChi(i, j).mod());
+      gChiChis2s2(i, j) = (bChi(i, j).conj() * aChi(i, j) + 
+	aChi(i, j).conj() * bChi(i, j));
+      neutralinos = neutralinos + 0.5 * 
+	(fChiChis2s2(i, j) * gfnc(p, mneut(i), mneut(j), q) - 2.0 *
+	 gChiChis2s2(i, j) * mneut(i) * mneut(j) * 
+	 b0c(p, mneut(i), mneut(j), q));
+    }
+
+  return neutralinos;
+}
+
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis1s1Charginos(double p, double q) const {
+  Complex chargino = 0.0;
+  double g = displayGaugeCoupling(2);
+  ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
+  DoubleVector mch(displayDrBarPars().mchBpmz); 
+  DoubleMatrix aPsic(2, 2);
+  aPsic(1, 2) = g / root2; 
+  ComplexMatrix aChic(2, 2), bChic(2, 2);
+  ComplexMatrix fChiChis1s1(2, 2), gChiChis1s1(2, 2);
+  aChic = v.complexConjugate() * aPsic * u.hermitianConjugate();
+  bChic = u * aPsic.transpose() * v.transpose();
+  for(int i=1; i<=2; i++)
+    for (int j=1; j<=2; j++) {
+      fChiChis1s1(i, j) = sqr(aChic(i, j).mod()) + sqr(bChic(i, j).mod());
+      gChiChis1s1(i, j) = (bChic(i, j).conj() * aChic(i, j) + 
+	aChic(i, j).conj() * bChic(i, j));
+      chargino = chargino + 
+	(fChiChis1s1(i, j) * gfnc(p, mch(i), mch(j), q) - 2.0 *
+	 gChiChis1s1(i, j) * mch(i) * mch(j) * 
+	 b0c(p, mch(i), mch(j), q));
+    }
+  
+  return chargino;
+}
+
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis1s2Charginos(double p, double q) const {
+  double g = displayGaugeCoupling(2);
+  Complex chargino = 0.0;
+  ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
+  DoubleVector mch(displayDrBarPars().mchBpmz); 
+
+  DoubleMatrix aPsic1(2, 2), aPsic2(2, 2);
+  aPsic1(1, 2) = g / root2; 
+  ComplexMatrix aChic1(2, 2), bChic1(2, 2);
+  ComplexMatrix aChic2(2, 2), bChic2(2, 2);
+  aChic1 = v.complexConjugate() * aPsic1 * u.hermitianConjugate();
+  bChic1 = u * aPsic1.transpose() * v.transpose();
+  aPsic2(2, 1) = g / root2;
+  aChic2 = v.complexConjugate() * aPsic2 * u.hermitianConjugate();
+  bChic2 = u * aPsic2.transpose() * v.transpose();
+  ComplexMatrix fChiChis1s2(2, 2), gChiChis1s2(2, 2);
+  for(int i=1; i<=2; i++)
+    for (int j=1; j<=2; j++) {
+      fChiChis1s2(i, j) = (aChic1(i, j).conj() * aChic2(i, j) + 
+	bChic1(i, j).conj() * bChic2(i, j));
+      gChiChis1s2(i, j) = (bChic1(i, j).conj() * aChic2(i ,j) + 
+	aChic1(i, j).conj() * bChic2(i, j));
+      chargino = chargino + 
+	(fChiChis1s2(i, j) * gfnc(p, mch(i), mch(j), q) - 2.0 *
+	 gChiChis1s2(i, j) * mch(i) * mch(j) * 
+	 b0c(p, mch(i), mch(j), q));
+    }
+
+ return chargino;
+}
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis2s2Charginos(double p, double q) const {
+  Complex chargino = 0.0;
+  double g = displayGaugeCoupling(2);
+  ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
+  DoubleVector mch(displayDrBarPars().mchBpmz); 
+  DoubleMatrix aPsic(2, 2);
+  aPsic(2, 1) = g / root2;
+  ComplexMatrix aChic(2, 2), bChic(2, 2);
+  aChic = v.complexConjugate() * aPsic * u.hermitianConjugate();
+  bChic = u * aPsic.transpose() * v.transpose();
+  ComplexMatrix fChiChis2s2(2, 2), gChiChis2s2(2, 2);
+  for(int i=1; i<=2; i++)
+    for (int j=1; j<=2; j++) {
+      fChiChis2s2(i, j) = sqr(aChic(i, j).mod()) + sqr(bChic(i, j).mod());
+      gChiChis2s2(i, j) = (bChic(i, j).conj() * aChic(i, j) + 
+	aChic(i, j).conj() * bChic(i, j));
+      chargino = chargino + 
+	(fChiChis2s2(i, j) * gfnc(p, mch(i), mch(j), q) - 2.0 *
+	 gChiChis2s2(i, j) * mch(i) * mch(j) * 
+	 b0c(p, mch(i), mch(j), q));
+    }
+
+ return chargino;
 }
 
 
 template<class SoftPars>
-double Softsusy<SoftPars>::twoLpMb() const {
-  const double zt2 = sqr(PI) / 6.;
-  double mmsb1 = sqr(displayDrBarPars().md(1, 3));
-  double mmsb2 = sqr(displayDrBarPars().md(2, 3));
-  double mmst1 = sqr(displayDrBarPars().mu(1, 3));
-  double mmst2 = sqr(displayDrBarPars().mu(2, 3));
-  double mgl = displayGaugino(3);
-  double mmgl = sqr(mgl);
-  double mt = displayDrBarPars().mt;
-  double mmt = sqr(mt);
-  double mb = displayDrBarPars().mb;
-  double mmb = sqr(mb);
-  double csb = cos(displayDrBarPars().thetab), 
-    cs2b = cos(displayDrBarPars().thetab * 2.), 
-    cs4b = cos(4 * displayDrBarPars().thetab);
-  double snb = sin(displayDrBarPars().thetab), 
-    sn2b = sin(displayDrBarPars().thetab * 2.), 
-    sn4b = sin(4 * displayDrBarPars().thetab);
-  double cst = cos(displayDrBarPars().thetat), 
-    cs2t = cos(displayDrBarPars().thetat * 2.), 
-    cs4t = cos(4 * displayDrBarPars().thetat);
-  double snt = sin(displayDrBarPars().thetat), 
-    sn2t = sin(displayDrBarPars().thetat * 2.), 
-    sn4t = sin(4 * displayDrBarPars().thetat);
-  double mmu = sqr(displayMu());
-
-  /// average of first 2 generations squark mass
-  double msq = 0.125 * (displayDrBarPars().mu(1, 1) + 
-			displayDrBarPars().mu(2, 1) + 
-			displayDrBarPars().md(1, 1) + 
-			displayDrBarPars().md(2, 1) + 		       
-			displayDrBarPars().mu(1, 2) + 
-			displayDrBarPars().mu(2, 2) + 
-			displayDrBarPars().md(1, 2) + 
-			displayDrBarPars().md(2, 2));
-  double mmsusy = sqr(msq);
-
-  double lnMglSq = log(mmgl);
-  double lnMsbSq = log(mmsb1);
-  double lnMsb2Sq = log(mmsb2);
-  double lnMst1Sq = log(mmst1);
-  double lnMst2Sq = log(mmst2);
-  double lnMmsusy = log(mmsusy);
-  double lnMmt = log(mmt);
-  double lnMmb = log(mmb);
-  double lnMmu = log(mmu);
-
-  cout << "# " << den(mmgl - mmsb1,1) << " " <<        + den(mmgl - mmsb2,3) * (
-          + 16/3*pow(mmsb2,3)*zt2
-          + 112/3*pow(mmsb2,3)
-          )
-       << " ";
-
-  double resmb =
-
-       + sqr(cs2b) * (
-          - 640/9
-          - 128/9*zt2
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmsb1,1)*sn2b * (
-          + 32/3/mb*mmsusy*mgl
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmsb1,1) * (
-          + 16/3*mmsb1
-          - 8*mmsusy
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmsb1,2)*sn2b * (
-          + 32/3/mb*mmsb1*mmsusy*mgl
-          - 32/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmsb1,2) * (
-          - 56/3*mmsb1*mmsusy
-          + 56/3*sqr(mmsb1)
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmsb1,3) * (
-          - 32/3*sqr(mmsb1)*mmsusy
-          + 32/3*pow(mmsb1,3)
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmsb2,1)*sn2b * (
-          - 32/3/mb*mmsusy*mgl
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmsb2,1) * (
-          + 16/3*mmsb2
-          - 8*mmsusy
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmsb2,2)*sn2b * (
-          - 32/3/mb*mmsb2*mmsusy*mgl
-          + 32/3/mb*sqr(mmsb2)*mgl
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmsb2,2) * (
-          - 56/3*mmsb2*mmsusy
-          + 56/3*sqr(mmsb2)
-          )
-
-       + fin(mmgl,mmsusy)*den(mmgl - mmsb2,3) * (
-          - 32/3*sqr(mmsb2)*mmsusy
-          + 32/3*pow(mmsb2,3)
-          )
-
-       + fin(mmgl,mmsusy) * (
-          - 16/3
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb1,1)*sn2b * (
-          + 88/9/mb*mmsb1*mgl
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          + 5/3*mmsb1
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 154/9*sqr(mmsb1)
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1) * (
-          + 34/9*sqr(mmsb1)
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb1,1) * (
-          + 22/9*mmsb1
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb1,2) * (
-          + 12*sqr(mmsb1)
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb1,3) * (
-          + 16/3*pow(mmsb1,3)
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb2,1)*sn2b * (
-          - 16/9/mb*mmsb1*mgl
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          - 5/3*mmsb1
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 26/9*sqr(mmsb1)
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1) * (
-          - 34/9*sqr(mmsb1)
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb2,1) * (
-          + 16/9*mmsb1
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb2,2)*sn2b * (
-          + 4/3/mb*mmsb1*mmsb2*mgl
-          - 4/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          + 26/9*mmsb1*mmsb2
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb2,2) * (
-          - 17/9*mmsb1*sqr(mmsb2
-          - mmsb1)
-          )
-
-       + fin(mmsb1,mmgl)*den(mmgl - mmsb2,3) * (
-          + 4/3*mmsb1*sqr(mmsb2)
-          - 4/3*sqr(mmsb1)*mmsb2
-          )
-
-       + fin(mmsb1,mmgl)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 128/9*mmsb1
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb1,1)*sn2b * (
-          - 4/9/mb*mmsb1*mgl
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          - 11/9*mmsb1
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1) * (
-          - 8/9*sqr(mmsb1)
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb1,1) * (
-          + mmsb1
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb1,2)*sn2b * (
-          - 4/3/mb*mmsb1*mmsb2*mgl
-          + 4/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          - 26/9*sqr(mmsb1)
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb1,2) * (
-          + mmsb1*mmsb2
-          + 5/9*sqr(mmsb1)
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb1,3) * (
-          + 4/3*sqr(mmsb1)*mmsb2
-          - 4/3*pow(mmsb1,3)
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb2,1)*sn2b * (
-          + 4/9/mb*mmsb1*mgl
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          - 11/9*mmsb1
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1) * (
-          + 8/9*sqr(mmsb1)
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb2,1) * (
-          + 1/9*mmsb1
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb2,2)*sn2b * (
-          - 4/3/mb*mmsb1*mmsb2*mgl
-          + 4/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          - 26/9*mmsb1*mmsb2
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb2,2) * (
-          + 5/9*mmsb1*sqr(mmsb2
-          + mmsb1)
-          )
-
-       + fin(mmsb1,mmsb2)*den(mmgl - mmsb2,3) * (
-          - 4/3*mmsb1*sqr(mmsb2)
-          + 4/3*sqr(mmsb1)*mmsb2
-          )
-
-       + fin(mmsb1,mmst1)*den(mmgl - mmsb1,1) * (
-          - 2/3*mmsb1
-          )
-
-       + fin(mmsb1,mmst1)*den(mmgl - mmsb1,2)*sn2b * (
-          - 4/3/mb*mmsb1*mmst1*mgl
-          + 4/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + fin(mmsb1,mmst1)*den(mmgl - mmsb1,2) * (
-          + mmsb1*mmst1
-          - 7/3*sqr(mmsb1)
-          )
-
-       + fin(mmsb1,mmst1)*den(mmgl - mmsb1,3) * (
-          + 4/3*sqr(mmsb1)*mmst1
-          - 4/3*pow(mmsb1,3)
-          )
-
-       + fin(mmsb1,mmst2)*den(mmgl - mmsb1,1) * (
-          - 2/3*mmsb1
-          )
-
-       + fin(mmsb1,mmst2)*den(mmgl - mmsb1,2)*sn2b * (
-          - 4/3/mb*mmsb1*mmst2*mgl
-          + 4/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + fin(mmsb1,mmst2)*den(mmgl - mmsb1,2) * (
-          + mmsb1*mmst2
-          - 7/3*sqr(mmsb1)
-          )
-
-       + fin(mmsb1,mmst2)*den(mmgl - mmsb1,3) * (
-          + 4/3*sqr(mmsb1)*mmst2
-          - 4/3*pow(mmsb1,3)
-          )
-
-       + fin(mmsb1,mmsusy)*den(mmgl - mmsb1,1) * (
-          - 16/3*mmsb1
-          )
-
-       + fin(mmsb1,mmsusy)*den(mmgl - mmsb1,2)*sn2b * (
-          - 32/3/mb*mmsb1*mmsusy*mgl
-          + 32/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + fin(mmsb1,mmsusy)*den(mmgl - mmsb1,2) * (
-          + 8*mmsb1*mmsusy
-          - 56/3*sqr(mmsb1)
-          )
-
-       + fin(mmsb1,mmsusy)*den(mmgl - mmsb1,3) * (
-          + 32/3*sqr(mmsb1)*mmsusy
-          - 32/3*pow(mmsb1,3)
-          )
-
-       + fin(mmsb2,mmgl)*sqr(cs2b) * (
-          - 128/9
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb1,1)*sn2b * (
-          + 16/9/mb*mmsb2*mgl
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          + 26/9*mmsb1
-          + 11/9*mmsb2
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 26/9*sqr(mmsb1)
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1) * (
-          + 34/9*sqr(mmsb1)
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb1,1) * (
-          - 34/9*mmsb1
-          - 2*mmsb2
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb1,2)*sn2b * (
-          - 4/3/mb*mmsb1*mmsb2*mgl
-          + 4/3/mb*sqr(mmsb2)*mgl
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          + 26/9*mmsb1*mmsb2
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb1,2) * (
-          - 17/9*mmsb1*sqr(mmsb2
-          - mmsb2)
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb1,3) * (
-          - 4/3*mmsb1*sqr(mmsb2)
-          + 4/3*sqr(mmsb1)*mmsb2
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb2,1)*sn2b * (
-          - 88/9/mb*mmsb2*mgl
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          - 154/9*mmsb1
-          - 139/9*mmsb2
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 154/9*sqr(mmsb1)
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1) * (
-          - 34/9*sqr(mmsb1)
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb2,1) * (
-          + 34/9*mmsb1
-          + 56/9*mmsb2
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb2,2) * (
-          + 12*sqr(mmsb2)
-          )
-
-       + fin(mmsb2,mmgl)*den(mmgl - mmsb2,3) * (
-          + 16/3*pow(mmsb2,3)
-          )
-
-       + fin(mmsb2,mmgl)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 128/9*mmsb1
-          )
-
-       + fin(mmsb2,mmst1)*den(mmgl - mmsb2,1) * (
-          - 2/3*mmsb2
-          )
-
-       + fin(mmsb2,mmst1)*den(mmgl - mmsb2,2)*sn2b * (
-          + 4/3/mb*mmsb2*mmst1*mgl
-          - 4/3/mb*sqr(mmsb2)*mgl
-          )
-
-       + fin(mmsb2,mmst1)*den(mmgl - mmsb2,2) * (
-          + mmsb2*mmst1
-          - 7/3*sqr(mmsb2)
-          )
-
-       + fin(mmsb2,mmst1)*den(mmgl - mmsb2,3) * (
-          + 4/3*sqr(mmsb2)*mmst1
-          - 4/3*pow(mmsb2,3)
-          )
-
-       + fin(mmsb2,mmst2)*den(mmgl - mmsb2,1) * (
-          - 2/3*mmsb2
-          )
-
-       + fin(mmsb2,mmst2)*den(mmgl - mmsb2,2)*sn2b * (
-          + 4/3/mb*mmsb2*mmst2*mgl
-          - 4/3/mb*sqr(mmsb2)*mgl
-          )
-
-       + fin(mmsb2,mmst2)*den(mmgl - mmsb2,2) * (
-          + mmsb2*mmst2
-          - 7/3*sqr(mmsb2)
-          )
-
-       + fin(mmsb2,mmst2)*den(mmgl - mmsb2,3) * (
-          + 4/3*sqr(mmsb2)*mmst2
-          - 4/3*pow(mmsb2,3)
-          )
-
-       + fin(mmsb2,mmsusy)*den(mmgl - mmsb2,1) * (
-          - 16/3*mmsb2
-          )
-
-       + fin(mmsb2,mmsusy)*den(mmgl - mmsb2,2)*sn2b * (
-          + 32/3/mb*mmsb2*mmsusy*mgl
-          - 32/3/mb*sqr(mmsb2)*mgl
-          )
-
-       + fin(mmsb2,mmsusy)*den(mmgl - mmsb2,2) * (
-          + 8*mmsb2*mmsusy
-          - 56/3*sqr(mmsb2)
-          )
-
-       + fin(mmsb2,mmsusy)*den(mmgl - mmsb2,3) * (
-          + 32/3*sqr(mmsb2)*mmsusy
-          - 32/3*pow(mmsb2,3)
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmsb1,1)*sn2b * (
-          + 4/3/mb*mmst1*mgl
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmsb1,1) * (
-          - 1/3*mmst1
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmsb1,2)*sn2b * (
-          - 4/3/mb*mmsb1*mmst1*mgl
-          + 4/3/mb*sqr(mmst1)*mgl
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmsb1,2) * (
-          + mmsb1*sqr(mmst1
-          - mmst1)
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmsb1,3) * (
-          - 4/3*mmsb1*sqr(mmst1)
-          + 4/3*sqr(mmsb1)*mmst1
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmsb2,1)*sn2b * (
-          - 4/3/mb*mmst1*mgl
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmsb2,1) * (
-          - 1/3*mmst1
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmsb2,2)*sn2b * (
-          + 4/3/mb*mmsb2*mmst1*mgl
-          - 4/3/mb*sqr(mmst1)*mgl
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmsb2,2) * (
-          + mmsb2*sqr(mmst1
-          - mmst1)
-          )
-
-       + fin(mmst1,mmgl)*den(mmgl - mmsb2,3) * (
-          - 4/3*mmsb2*sqr(mmst1)
-          + 4/3*sqr(mmsb2)*mmst1
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmsb1,1)*sn2b * (
-          + 4/3/mb*mmst2*mgl
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmsb1,1) * (
-          - 1/3*mmst2
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmsb1,2)*sn2b * (
-          - 4/3/mb*mmsb1*mmst2*mgl
-          + 4/3/mb*sqr(mmst2)*mgl
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmsb1,2) * (
-          + mmsb1*sqr(mmst2
-          - mmst2)
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmsb1,3) * (
-          - 4/3*mmsb1*sqr(mmst2)
-          + 4/3*sqr(mmsb1)*mmst2
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmsb2,1)*sn2b * (
-          - 4/3/mb*mmst2*mgl
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmsb2,1) * (
-          - 1/3*mmst2
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmsb2,2)*sn2b * (
-          + 4/3/mb*mmsb2*mmst2*mgl
-          - 4/3/mb*sqr(mmst2)*mgl
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmsb2,2) * (
-          + mmsb2*sqr(mmst2
-          - mmst2)
-          )
-
-       + fin(mmst2,mmgl)*den(mmgl - mmsb2,3) * (
-          - 4/3*mmsb2*sqr(mmst2)
-          + 4/3*sqr(mmsb2)*mmst2
-          )
-
-       + lnMmb*lnMglSq*den(mmgl - mmsb1,1)*sn2b * (
-          + 16/3/mb*mmsb1*mgl
-          )
-
-       + lnMmb*lnMglSq*den(mmgl - mmsb1,1) * (
-          - 16/3*mmsb1
-          )
-
-       + lnMmb*lnMglSq*den(mmgl - mmsb1,2) * (
-          - 8/3*sqr(mmsb1)
-          )
-
-       + lnMmb*lnMglSq*den(mmgl - mmsb2,1)*sn2b * (
-          - 16/3/mb*mmsb2*mgl
-          )
-
-       + lnMmb*lnMglSq*den(mmgl - mmsb2,1) * (
-          - 16/3*mmsb2
-          )
-
-       + lnMmb*lnMglSq*den(mmgl - mmsb2,2) * (
-          - 8/3*sqr(mmsb2)
-          )
-
-       + lnMmb*lnMglSq * (
-          - 40/3
-          )
-
-       + lnMmb*lnMsbSq*den(mmgl - mmsb1,1)*sn2b * (
-          - 16/3/mb*mmsb1*mgl
-          )
-
-       + lnMmb*lnMsbSq*den(mmgl - mmsb1,1) * (
-          + 16/3*mmsb1
-          )
-
-       + lnMmb*lnMsbSq*den(mmgl - mmsb1,2) * (
-          + 8/3*sqr(mmsb1)
-          )
-
-       + lnMmb*lnMsbSq * (
-          - 2/3
-          )
-
-       + lnMmb*lnMsb2Sq*den(mmgl - mmsb2,1)*sn2b * (
-          + 16/3/mb*mmsb2*mgl
-          )
-
-       + lnMmb*lnMsb2Sq*den(mmgl - mmsb2,1) * (
-          + 16/3*mmsb2
-          )
-
-       + lnMmb*lnMsb2Sq*den(mmgl - mmsb2,2) * (
-          + 8/3*sqr(mmsb2)
-          )
-
-       + lnMmb*lnMsb2Sq * (
-          - 2/3
-          )
-
-       + lnMmb*lnMst1Sq * (
-          - 2/3
-          )
-
-       + lnMmb*lnMst2Sq * (
-          - 2/3
-          )
-
-       + lnMmb*lnMmsusy * (
-          - 16/3
-          )
-
-       + lnMmb*lnMmu * (
-          + 64/3
-          )
-
-       + lnMmb*den(mmgl - mmsb1,1) * (
-          + 8/3*mmsb1
-          )
-
-       + lnMmb*den(mmgl - mmsb2,1) * (
-          + 8/3*mmsb2
-          )
-
-       + lnMmb * (
-          + 8
-          )
-
-       + lnMglSq*sqr(cs2b) * (
-          + 128/3
-          )
-
-       + sqr(lnMglSq)*sqr(cs2b) * (
-          - 64/9
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,1)*sn2b * (
-          + 10/mb*mmsb1*mgl
-          + 2/3/mb*mmsb2*mgl
-          + 2/3/mb*mmst1*mgl
-          + 2/3/mb*mmst2*mgl
-          + 16/3/mb*mmsusy*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          + 53/3*mmsb1
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sn2b * (
-          + 8/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 223/9*sqr(mmsb1)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1) * (
-          + 43/9*sqr(mmsb1)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,2)*sn2b * (
-          - 16/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,2) * (
-          + 32/9*pow(mmsb1,3)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,3) * (
-          - 16/9*pow(mmsb1,4)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,1) * (
-          - 73/6*mmsb1
-          - 1/2*mmsb2
-          - 1/2*mmst1
-          - 1/2*mmst2
-          + 4/3*mmsusy
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,2)*sn2b * (
-          + 2/3/mb*mmsb1*mmsb2*mgl
-          + 2/3/mb*mmsb1*mmst1*mgl
-          + 2/3/mb*mmsb1*mmst2*mgl
-          - 16/mb*mmsb1*mmsusy*mgl
-          - 122/9/mb*sqr(mmsb1)*mgl
-          + 32/3/mb*sqr(mmsusy)*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          + 53/6*sqr(mmsb1)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,2)*den(mmsb1 - mmsb2,1)*sn2b * (
-          + 8/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,2)*den(mmsb1 - mmsb2,2) * (
-          + 8/9*pow(mmsb1,4)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,2) * (
-          - 7/6*mmsb1*mmsb2
-          - 7/6*mmsb1*mmst1
-          - 7/6*mmsb1*mmst2
-          + 52/3*mmsb1*mmsusy
-          + 151/9*sqr(mmsb1)
-          - 8*sqr(mmsusy)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,3)*sn2b * (
-          - 8/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,3) * (
-          - 32/3*mmsb1*sqr(mmsusy)
-          - 2/3*sqr(mmsb1)*mmsb2
-          - 2/3*sqr(mmsb1)*mmst1
-          - 2/3*sqr(mmsb1)*mmst2
-          + 16*sqr(mmsb1)*mmsusy
-          + 46/3*pow(mmsb1,3)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb1,4) * (
-          + 4/9*pow(mmsb1,4)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,1)*sn2b * (
-          + 2/9/mb*mmsb1*mgl
-          - 98/9/mb*mmsb2*mgl
-          - 2/3/mb*mmst1*mgl
-          - 2/3/mb*mmst2*mgl
-          - 16/3/mb*mmsusy*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          - 223/9*mmsb1
-          - 64/9*mmsb2
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sn2b * (
-          - 8/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 223/9*sqr(mmsb1)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1) * (
-          - 43/9*sqr(mmsb1)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,2)*sn2b * (
-          + 16/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,2) * (
-          - 32/9*pow(mmsb1,3)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,3) * (
-          + 16/9*pow(mmsb1,4)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,1) * (
-          + 109/18*mmsb1
-          - 101/18*mmsb2
-          - 1/2*mmst1
-          - 1/2*mmst2
-          + 4/3*mmsusy
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,2)*sn2b * (
-          - 14/9/mb*mmsb1*mmsb2*mgl
-          - 8/9/mb*sqr(mmsb1)*mgl
-          - 2/3/mb*mmsb2*mmst1*mgl
-          - 2/3/mb*mmsb2*mmst2*mgl
-          + 16/mb*mmsb2*mmsusy*mgl
-          + 38/3/mb*sqr(mmsb2)*mgl
-          - 32/3/mb*sqr(mmsusy)*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          + 53/6*sqr(mmsb2)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,1)*sn2b * (
-          + 8/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,1) * (
-          - 32/9*pow(mmsb1,3)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,2) * (
-          + 8/9*pow(mmsb1,4)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,2) * (
-          + 11/18*mmsb1*mmsb2
-          + 8/3*sqr(mmsb1)
-          - 7/6*mmsb2*mmst1
-          - 7/6*mmsb2*mmst2
-          + 52/3*mmsb2*mmsusy
-          + 53/3*sqr(mmsb2)
-          - 8*sqr(mmsusy)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,3)*sn2b * (
-          + 8/9/mb*pow(mmsb2,3)*mgl
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,3) * (
-          - 2/3*mmsb1*sqr(mmsb2)
-          - 32/3*mmsb2*sqr(mmsusy)
-          - 2/3*sqr(mmsb2)*mmst1
-          - 2/3*sqr(mmsb2)*mmst2
-          + 16*sqr(mmsb2)*mmsusy
-          + 46/3*pow(mmsb2,3)
-          )
-
-       + sqr(lnMglSq)*den(mmgl - mmsb2,4) * (
-          + 4/9*pow(mmsb2,4)
-          )
-
-       + sqr(lnMglSq) * (
-          - 166/9
-          )
-
-       + lnMglSq*lnMsbSq*sn2b * (
-          - 208/9/mb*mgl
-          )
-
-       + lnMglSq*lnMsbSq*sqr(cs2b) * (
-          - 64/9
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,1)*sn2b * (
-          - 28/3/mb*mmsb1*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,1)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          - 121/9*mmsb1
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sn2b
-       * (
-          - 8/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sn4b*
-      cs2b * (
-          + 16/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b)
-       * (
-          + 287/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1) * (
-          - 43/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,2)*sn2b
-       * (
-          + 16/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,2) * (
-          - 32/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,3) * (
-          + 16/9*pow(mmsb1,4)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,1) * (
-          - 34/3*mmsb1
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,2)*sn2b * (
-          + 172/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,2)*sn4b*cs2b * (
-          - 8/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          - 11/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,2)*den(mmsb1 - mmsb2,1)*sn2b
-       * (
-          - 8/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,2)*den(mmsb1 - mmsb2,2) * (
-          - 8/9*pow(mmsb1,4)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,2) * (
-          - 130/3*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,3)*sn2b * (
-          + 16/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,3)*sqr(cs2b) * (
-          + 16/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,3) * (
-          - 212/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb1,4) * (
-          - 8/9*pow(mmsb1,4)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,1)*sn2b * (
-          + 20/9/mb*mmsb1*mgl
-          + 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,1)*sn4b*cs2b * (
-          + 8/9/mb*mmsb1*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          + 5/3*mmsb1
-          - 22/9*mmsb2
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sn2b
-       * (
-          + 8/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sn4b*
-      cs2b * (
-          - 16/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b)
-       * (
-          - 31/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1) * (
-          + 43/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,2)*sn2b
-       * (
-          - 16/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,2) * (
-          + 32/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,3) * (
-          - 16/9*pow(mmsb1,4)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,1) * (
-          - 34/9*mmsb1
-          + 2/9*mmsb2
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,2)*sn2b * (
-          + 4/mb*mmsb1*mmsb2*mgl
-          + 8/9/mb*sqr(mmsb1)*mgl
-          - 8/3/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,2)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mmsb2*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          - 32/9*mmsb1*mmsb2
-          - 52/9*sqr(mmsb2)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,1)*sn2b
-       * (
-          - 8/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,1) * (
-          + 32/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,2) * (
-          - 8/9*pow(mmsb1,4)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,2) * (
-          + 37/9*mmsb1*mmsb2
-          - 8/3*sqr(mmsb1)
-          + 10/9*sqr(mmsb2)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,3)*sqr(cs2b) * (
-          - 16/9*mmsb1*sqr(mmsb2)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmgl - mmsb2,3) * (
-          + 28/9*mmsb1*sqr(mmsb2)
-          - 8/3*pow(mmsb2,3)
-          )
-
-       + lnMglSq*lnMsbSq*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 256/9*mmgl
-          + 256/9*mmsb1
-          )
-
-       + lnMglSq*lnMsbSq * (
-          + 52/9
-          )
-
-       + lnMglSq*lnMsb2Sq*sn2b * (
-          + 208/9/mb*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*sqr(cs2b) * (
-          + 64/3
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,1)*sn2b * (
-          - 28/9/mb*mmsb2*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,1)*sn4b*cs2b * (
-          + 16/9/mb*mmsb1*mgl
-          + 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          - 53/9*mmsb1
-          - 16/9*mmsb2
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sn2b
-       * (
-          - 8/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sn4b*
-      cs2b * (
-          - 16/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b)
-       * (
-          + 31/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1) * (
-          - 43/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,2)*sn2b
-       * (
-          + 16/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,2) * (
-          - 32/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,3) * (
-          + 16/9*pow(mmsb1,4)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,1) * (
-          + 61/9*mmsb1
-          + 25/9*mmsb2
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,2)*sn2b * (
-          - 28/9/mb*mmsb1*mmsb2*mgl
-          + 32/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,2)*sn4b*cs2b * (
-          + 8/9/mb*mmsb1*mmsb2*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          - 32/9*mmsb1*mmsb2
-          - 52/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,2)*den(mmsb1 - mmsb2,1)*sn2b
-       * (
-          - 8/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,2)*den(mmsb1 - mmsb2,2) * (
-          - 8/9*pow(mmsb1,4)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,2) * (
-          + 53/9*mmsb1*mmsb2
-          + 2*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,3)*sqr(cs2b) * (
-          - 16/9*sqr(mmsb1)*mmsb2
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb1,3) * (
-          + 28/9*sqr(mmsb1)*mmsb2
-          - 8/3*pow(mmsb1,3)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,1)*sn2b * (
-          - 8/9/mb*mmsb1*mgl
-          + 92/9/mb*mmsb2*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,1)*sn4b*cs2b * (
-          - 16/9/mb*mmsb1*mgl
-          - 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          + 287/9*mmsb1
-          + 166/9*mmsb2
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sn2b
-       * (
-          + 8/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sn4b*
-      cs2b * (
-          + 16/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b)
-       * (
-          - 287/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1) * (
-          + 43/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,2)*sn2b
-       * (
-          - 16/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,2) * (
-          + 32/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,3) * (
-          - 16/9*pow(mmsb1,4)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,1) * (
-          - 59/9*mmsb1
-          - 161/9*mmsb2
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,2)*sn2b * (
-          + 8/9/mb*mmsb1*mmsb2*mgl
-          + 8/9/mb*sqr(mmsb1)*mgl
-          - 164/9/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,2)*sn4b*cs2b * (
-          + 8/9/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          - 11/9*sqr(mmsb2)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,1)*sn2b
-       * (
-          - 8/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,1) * (
-          + 32/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,2) * (
-          - 8/9*pow(mmsb1,4)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,2) * (
-          - 16/9*mmsb1*mmsb2
-          - 8/3*sqr(mmsb1)
-          - 398/9*sqr(mmsb2)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,3)*sn2b * (
-          - 16/9/mb*pow(mmsb2,3)*mgl
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,3)*sqr(cs2b) * (
-          + 16/9*pow(mmsb2,3)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,3) * (
-          - 212/9*pow(mmsb2,3)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmgl - mmsb2,4) * (
-          - 8/9*pow(mmsb2,4)
-          )
-
-       + lnMglSq*lnMsb2Sq*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 256/9*mmgl
-          - 256/9*mmsb1
-          )
-
-       + lnMglSq*lnMsb2Sq * (
-          + 52/9
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmsb1,1)*sn2b * (
-          - 4/3/mb*mmst1*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmsb1,1) * (
-          - 4/3*mmsb1
-          + mmst1
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmsb1,2)*sn2b * (
-          - 4/3/mb*mmsb1*mmst1*mgl
-          + 8/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmsb1,2) * (
-          + 7/3*mmsb1*mmst1
-          - 14/3*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmsb1,3) * (
-          + 4/3*sqr(mmsb1)*mmst1
-          - 8/3*pow(mmsb1,3)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmsb2,1)*sn2b * (
-          + 4/3/mb*mmst1*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmsb2,1) * (
-          - 4/3*mmsb2
-          + mmst1
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmsb2,2)*sn2b * (
-          + 4/3/mb*mmsb2*mmst1*mgl
-          - 8/3/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmsb2,2) * (
-          + 7/3*mmsb2*mmst1
-          - 14/3*sqr(mmsb2)
-          )
-
-       + lnMglSq*lnMst1Sq*den(mmgl - mmsb2,3) * (
-          + 4/3*sqr(mmsb2)*mmst1
-          - 8/3*pow(mmsb2,3)
-          )
-
-       + lnMglSq*lnMst1Sq * (
-          + 4/3
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmsb1,1)*sn2b * (
-          - 4/3/mb*mmst2*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmsb1,1) * (
-          - 4/3*mmsb1
-          + mmst2
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmsb1,2)*sn2b * (
-          - 4/3/mb*mmsb1*mmst2*mgl
-          + 8/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmsb1,2) * (
-          + 7/3*mmsb1*mmst2
-          - 14/3*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmsb1,3) * (
-          + 4/3*sqr(mmsb1)*mmst2
-          - 8/3*pow(mmsb1,3)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmsb2,1)*sn2b * (
-          + 4/3/mb*mmst2*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmsb2,1) * (
-          - 4/3*mmsb2
-          + mmst2
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmsb2,2)*sn2b * (
-          + 4/3/mb*mmsb2*mmst2*mgl
-          - 8/3/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmsb2,2) * (
-          + 7/3*mmsb2*mmst2
-          - 14/3*sqr(mmsb2)
-          )
-
-       + lnMglSq*lnMst2Sq*den(mmgl - mmsb2,3) * (
-          + 4/3*sqr(mmsb2)*mmst2
-          - 8/3*pow(mmsb2,3)
-          )
-
-       + lnMglSq*lnMst2Sq * (
-          + 4/3
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmsb1,1)*sn2b * (
-          - 32/3/mb*mmsusy*mgl
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmsb1,1) * (
-          - 8/3*mmsusy
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmsb1,2)*sn2b * (
-          + 32/mb*mmsb1*mmsusy*mgl
-          - 64/3/mb*sqr(mmsusy)*mgl
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmsb1,2) * (
-          - 104/3*mmsb1*mmsusy
-          + 16*sqr(mmsusy)
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmsb1,3) * (
-          + 64/3*mmsb1*sqr(mmsusy)
-          - 32*sqr(mmsb1)*mmsusy
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmsb2,1)*sn2b * (
-          + 32/3/mb*mmsusy*mgl
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmsb2,1) * (
-          - 8/3*mmsusy
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmsb2,2)*sn2b * (
-          - 32/mb*mmsb2*mmsusy*mgl
-          + 64/3/mb*sqr(mmsusy)*mgl
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmsb2,2) * (
-          - 104/3*mmsb2*mmsusy
-          + 16*sqr(mmsusy)
-          )
-
-       + lnMglSq*lnMmsusy*den(mmgl - mmsb2,3) * (
-          + 64/3*mmsb2*sqr(mmsusy)
-          - 32*sqr(mmsb2)*mmsusy
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb1,1)*sn2b * (
-          - 16/mb*mmsb1*mgl
-          + 16/9/mb*mmsb2*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb1,1)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mgl
-          - 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          - 16*mmsb1
-          + 16/9*mmsb2
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b)
-       * (
-          + 128/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb1,1) * (
-          + 332/9*mmsb1
-          - 16/9*mmsb2
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb1,2)*sn2b * (
-          + 16/9/mb*mmsb1*mmsb2*mgl
-          - 8/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb1,2)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mmsb2*mgl
-          + 8/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          + 32/9*mmsb1*mmsb2
-          - 32/3*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb1,2) * (
-          - 32/9*mmsb1*mmsb2
-          + 178/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb1,3)*sqr(cs2b) * (
-          + 16/9*sqr(mmsb1)*mmsb2
-          - 16/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb1,3) * (
-          - 16/9*sqr(mmsb1)*mmsb2
-          + 8/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb2,1)*sn2b * (
-          - 16/9/mb*mmsb1*mgl
-          + 16/mb*mmsb2*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb2,1)*sn4b*cs2b * (
-          + 8/9/mb*mmsb1*mgl
-          + 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          + 16*mmsb1
-          - 16/9*mmsb2
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b)
-       * (
-          - 128/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb2,1) * (
-          - 16/9*mmsb1
-          + 332/9*mmsb2
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb2,2)*sn2b * (
-          - 16/9/mb*mmsb1*mmsb2*mgl
-          + 8/9/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb2,2)*sn4b*cs2b * (
-          + 8/9/mb*mmsb1*mmsb2*mgl
-          - 8/9/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          + 32/9*mmsb1*mmsb2
-          - 32/3*sqr(mmsb2)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb2,2) * (
-          - 32/9*mmsb1*mmsb2
-          + 178/9*sqr(mmsb2)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb2,3)*sqr(cs2b) * (
-          + 16/9*mmsb1*sqr(mmsb2)
-          - 16/9*pow(mmsb2,3)
-          )
-
-       + lnMglSq*lnMmu*den(mmgl - mmsb2,3) * (
-          - 16/9*mmsb1*sqr(mmsb2)
-          + 8/9*pow(mmsb2,3)
-          )
-
-       + lnMglSq*lnMmu * (
-          + 36
-          )
-
-       + lnMglSq*den(mmgl - mmsb1,1)*sn2b * (
-          - 176/3/mb*mmsb1*mgl
-          - 8/9/mb*mmsb2*mgl
-          - 8/3/mb*mmst1*mgl
-          - 8/3/mb*mmst2*mgl
-          + 128/3/mb*mmsusy*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmsb1,1)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mgl
-          - 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          - 428/9*mmsb1
-          + 16/9*mmsb2
-          )
-
-       + lnMglSq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 796/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1) * (
-          - 76/3*sqr(mmsb1)
-          )
-
-       + lnMglSq*den(mmgl - mmsb1,1) * (
-          + 290/9*mmsb1
-          + 2/9*mmsb2
-          + 2*mmst1
-          + 2*mmst2
-          - 16*mmsusy
-          )
-
-       + lnMglSq*den(mmgl - mmsb1,2)*sn2b * (
-          - 8/9/mb*mmsb1*mmsb2*mgl
-          - 8/3/mb*mmsb1*mmst1*mgl
-          - 8/3/mb*mmsb1*mmst2*mgl
-          - 64/3/mb*mmsb1*mmsusy*mgl
-          + 56/9/mb*sqr(mmsb1)*mgl
-          + 32/mb*sqr(mmsusy)*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmsb1,2)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mmsb2*mgl
-          + 8/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          + 32/9*mmsb1*mmsb2
-          - 238/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*den(mmgl - mmsb1,2)*den(mmsb1 - mmsb2,1) * (
-          - 8/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*den(mmgl - mmsb1,2) * (
-          + 10/9*mmsb1*mmsb2
-          + 14/3*mmsb1*mmst1
-          + 14/3*mmsb1*mmst2
-          + 16/3*mmsb1*mmsusy
-          - 290/9*sqr(mmsb1)
-          - 24*sqr(mmsusy)
-          )
-
-       + lnMglSq*den(mmgl - mmsb1,3)*sqr(cs2b) * (
-          + 16/9*sqr(mmsb1)*mmsb2
-          - 16/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*den(mmgl - mmsb1,3) * (
-          - 32*mmsb1*sqr(mmsusy)
-          + 8/9*sqr(mmsb1)*mmsb2
-          + 8/3*sqr(mmsb1)*mmst1
-          + 8/3*sqr(mmsb1)*mmst2
-          + 64/3*sqr(mmsb1)*mmsusy
-          - 200/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*den(mmgl - mmsb2,1)*sn2b * (
-          + 8/9/mb*mmsb1*mgl
-          + 176/3/mb*mmsb2*mgl
-          + 8/3/mb*mmst1*mgl
-          + 8/3/mb*mmst2*mgl
-          - 128/3/mb*mmsusy*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmsb2,1)*sn4b*cs2b * (
-          + 8/9/mb*mmsb1*mgl
-          + 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          + 812/9*mmsb1
-          + 368/9*mmsb2
-          )
-
-       + lnMglSq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 796/9*sqr(mmsb1)
-          )
-
-       + lnMglSq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1) * (
-          + 76/3*sqr(mmsb1)
-          )
-
-       + lnMglSq*den(mmgl - mmsb2,1) * (
-          - 226/9*mmsb1
-          + 62/9*mmsb2
-          + 2*mmst1
-          + 2*mmst2
-          - 16*mmsusy
-          )
-
-       + lnMglSq*den(mmgl - mmsb2,2)*sn2b * (
-          + 8/9/mb*mmsb1*mmsb2*mgl
-          + 8/3/mb*mmsb2*mmst1*mgl
-          + 8/3/mb*mmsb2*mmst2*mgl
-          + 64/3/mb*mmsb2*mmsusy*mgl
-          - 56/9/mb*sqr(mmsb2)*mgl
-          - 32/mb*sqr(mmsusy)*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmsb2,2)*sn4b*cs2b * (
-          + 8/9/mb*mmsb1*mmsb2*mgl
-          - 8/9/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMglSq*den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          + 32/9*mmsb1*mmsb2
-          - 238/9*sqr(mmsb2)
-          )
-
-       + lnMglSq*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,1) * (
-          + 8/9*pow(mmsb1,3)
-          )
-
-       + lnMglSq*den(mmgl - mmsb2,2) * (
-          + 2/9*mmsb1*mmsb2
-          - 8/9*sqr(mmsb1)
-          + 14/3*mmsb2*mmst1
-          + 14/3*mmsb2*mmst2
-          + 16/3*mmsb2*mmsusy
-          - 298/9*sqr(mmsb2)
-          - 24*sqr(mmsusy)
-          )
-
-       + lnMglSq*den(mmgl - mmsb2,3)*sqr(cs2b) * (
-          + 16/9*mmsb1*sqr(mmsb2)
-          - 16/9*pow(mmsb2,3)
-          )
-
-       + lnMglSq*den(mmgl - mmsb2,3) * (
-          + 8/9*mmsb1*sqr(mmsb2)
-          - 32*mmsb2*sqr(mmsusy)
-          + 8/3*sqr(mmsb2)*mmst1
-          + 8/3*sqr(mmsb2)*mmst2
-          + 64/3*sqr(mmsb2)*mmsusy
-          - 200/9*pow(mmsb2,3)
-          )
-
-       + lnMglSq * (
-          + 232/3
-          )
-
-       + lnMsbSq*sn2b * (
-          + 280/9/mb*mgl
-          )
-
-       + lnMsbSq*sqr(cs2b) * (
-          + 64/9
-          )
-
-       + sqr(lnMsbSq)*sn2b * (
-          + 8/mb*mgl
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,1)*sn2b * (
-          - 2/9/mb*mmsb1*mgl
-          - 4/9/mb*mmsb2*mgl
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,1)*sn4b*cs2b * (
-          + 8/9/mb*mmsb1*mgl
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          - 14/9*mmsb1
-          - 11/9*mmsb2
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sn4b*cs2b * (
-          - 16/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 77/9*sqr(mmsb1)
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1) * (
-          + 13/9*sqr(mmsb1)
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,1) * (
-          + 419/18*mmsb1
-          + mmsb2
-          - 2/3*mmst1
-          - 2/3*mmst2
-          - 16/3*mmsusy
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,2)*sn2b * (
-          + 2/mb*mmsb1*mmsb2*mgl
-          + 2/mb*mmsb1*mmst1*mgl
-          + 2/mb*mmsb1*mmst2*mgl
-          + 16/mb*mmsb1*mmsusy*mgl
-          - 86/9/mb*sqr(mmsb1)*mgl
-          - 4/3/mb*sqr(mmsb2)*mgl
-          - 4/3/mb*sqr(mmst1)*mgl
-          - 4/3/mb*sqr(mmst2)*mgl
-          - 32/3/mb*sqr(mmsusy)*mgl
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,2)*sn4b*cs2b * (
-          + 8/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          - 26/9*mmsb1*mmsb2
-          - 85/18*sqr(mmsb1)
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,2) * (
-          + 1/18*mmsb1*mmsb2
-          - 17/6*mmsb1*mmst1
-          - 17/6*mmsb1*mmst2
-          - 68/3*mmsb1*mmsusy
-          + 92/3*sqr(sqr(sqr(sqr(mmsb1)
-          + mmsb2)
-          + mmst1)
-          + mmst2)
-          + 8*sqr(mmsusy)
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,3)*sn2b * (
-          - 8/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,3)*sqr(cs2b) * (
-          - 16/9*pow(mmsb1,3)
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,3) * (
-          + 4/3*mmsb1*sqr(mmsb2)
-          + 4/3*mmsb1*sqr(mmst1)
-          + 4/3*mmsb1*sqr(mmst2)
-          + 32/3*mmsb1*sqr(mmsusy)
-          - 2*sqr(mmsb1)*mmsb2
-          - 2*sqr(mmsb1)*mmst1
-          - 2*sqr(mmsb1)*mmst2
-          - 16*sqr(mmsb1)*mmsusy
-          + 110/9*pow(mmsb1,3)
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb1,4) * (
-          + 4/9*pow(mmsb1,4)
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb2,1)*sn2b * (
-          - 2/3/mb*mmsb1*mgl
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          - 13/9*mmsb1
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 13/9*sqr(mmsb1)
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1) * (
-          - 13/9*sqr(mmsb1)
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb2,1) * (
-          + 17/18*mmsb1
-          )
-
-       + sqr(lnMsbSq)*den(mmgl - mmsb2,2) * (
-          - 2/3*mmsb1*mmsb2
-          )
-
-       + sqr(lnMsbSq)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 128/9*mmgl
-          - 64/9*mmsb1
-          )
-
-       + sqr(lnMsbSq) * (
-          + 41/9
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,1)*sn2b * (
-          - 8/9/mb*mmsb1*mgl
-          + 8/3/mb*mmsb2*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,1)*sn4b*cs2b * (
-          - 16/9/mb*mmsb1*mgl
-          - 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          + 5/9*mmsb1
-          + 38/9*mmsb2
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sn2b
-       * (
-          + 8/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sn4b*
-      cs2b * (
-          + 16/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b)
-       * (
-          - 5/9*sqr(mmsb1)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1) * (
-          + 17/9*sqr(mmsb1)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,2)*sn2b
-       * (
-          - 16/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,2) * (
-          + 32/9*pow(mmsb1,3)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,3) * (
-          - 16/9*pow(mmsb1,4)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,1) * (
-          - 11/3*mmsb1
-          - 34/9*mmsb2
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,2)*sn2b * (
-          - 20/9/mb*mmsb1*mmsb2*mgl
-          - 8/9/mb*sqr(mmsb1)*mgl
-          + 8/3/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,2)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mmsb2*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          + 28/3*mmsb1*mmsb2
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,2)*den(mmsb1 - mmsb2,1)*sn2b
-       * (
-          + 8/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,2)*den(mmsb1 - mmsb2,2) * (
-          + 8/9*pow(mmsb1,4)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,2) * (
-          - 11/3*mmsb1*mmsb2
-          - 8/9*sqr(mmsb1)
-          - 2*sqr(mmsb2)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,3)*sqr(cs2b) * (
-          + 16/9*sqr(mmsb1)*mmsb2
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb1,3) * (
-          - 8/3*mmsb1*sqr(mmsb2)
-          + 20/9*sqr(mmsb1)*mmsb2
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,1)*sn2b * (
-          - 8/9/mb*mmsb1*mgl
-          - 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,1)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          + 11/9*mmsb1
-          + 22/9*mmsb2
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sn2b
-       * (
-          - 8/3/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sn4b*
-      cs2b * (
-          + 16/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b)
-       * (
-          + 5/9*sqr(mmsb1)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1) * (
-          - 17/9*sqr(mmsb1)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,2)*sn2b
-       * (
-          + 16/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,2) * (
-          - 32/9*pow(mmsb1,3)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,3) * (
-          + 16/9*pow(mmsb1,4)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,1) * (
-          + 17/9*mmsb1
-          - 2/9*mmsb2
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,2)*sn2b * (
-          - 4/mb*mmsb1*mmsb2*mgl
-          - 8/9/mb*sqr(mmsb1)*mgl
-          + 8/3/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,2)*sn4b*cs2b * (
-          + 8/9/mb*mmsb1*mmsb2*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          + 32/9*mmsb1*mmsb2
-          + 52/9*sqr(mmsb2)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,1)*sn2b
-       * (
-          + 8/9/mb*pow(mmsb1,3)*mgl
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,1) * (
-          - 32/9*pow(mmsb1,3)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,2) * (
-          + 8/9*pow(mmsb1,4)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,2) * (
-          - 25/9*mmsb1*mmsb2
-          + 8/3*sqr(mmsb1)
-          - 10/9*sqr(mmsb2)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,3)*sqr(cs2b) * (
-          + 16/9*mmsb1*sqr(mmsb2)
-          )
-
-       + lnMsbSq*lnMsb2Sq*den(mmgl - mmsb2,3) * (
-          - 28/9*mmsb1*sqr(mmsb2)
-          + 8/3*pow(mmsb2,3)
-          )
-
-       + lnMsbSq*lnMst1Sq*den(mmgl - mmsb1,1) * (
-          + 4/3*mmst1
-          )
-
-       + lnMsbSq*lnMst1Sq*den(mmgl - mmsb1,2)*sn2b * (
-          - 4/mb*mmsb1*mmst1*mgl
-          + 8/3/mb*sqr(mmst1)*mgl
-          )
-
-       + lnMsbSq*lnMst1Sq*den(mmgl - mmsb1,2) * (
-          + 17/3*mmsb1*mmst1
-          - 2*sqr(mmst1)
-          )
-
-       + lnMsbSq*lnMst1Sq*den(mmgl - mmsb1,3) * (
-          - 8/3*mmsb1*sqr(mmst1)
-          + 4*sqr(mmsb1)*mmst1
-          )
-
-       + lnMsbSq*lnMst2Sq*den(mmgl - mmsb1,1) * (
-          + 4/3*mmst2
-          )
-
-       + lnMsbSq*lnMst2Sq*den(mmgl - mmsb1,2)*sn2b * (
-          - 4/mb*mmsb1*mmst2*mgl
-          + 8/3/mb*sqr(mmst2)*mgl
-          )
-
-       + lnMsbSq*lnMst2Sq*den(mmgl - mmsb1,2) * (
-          + 17/3*mmsb1*mmst2
-          - 2*sqr(mmst2)
-          )
-
-       + lnMsbSq*lnMst2Sq*den(mmgl - mmsb1,3) * (
-          - 8/3*mmsb1*sqr(mmst2)
-          + 4*sqr(mmsb1)*mmst2
-          )
-
-       + lnMsbSq*lnMmsusy*den(mmgl - mmsb1,1) * (
-          + 32/3*mmsusy
-          )
-
-       + lnMsbSq*lnMmsusy*den(mmgl - mmsb1,2)*sn2b * (
-          - 32/mb*mmsb1*mmsusy*mgl
-          + 64/3/mb*sqr(mmsusy)*mgl
-          )
-
-       + lnMsbSq*lnMmsusy*den(mmgl - mmsb1,2) * (
-          + 136/3*mmsb1*mmsusy
-          - 16*sqr(mmsusy)
-          )
-
-       + lnMsbSq*lnMmsusy*den(mmgl - mmsb1,3) * (
-          - 64/3*mmsb1*sqr(mmsusy)
-          + 32*sqr(mmsb1)*mmsusy
-          )
-
-       + lnMsbSq*lnMmu*sn2b * (
-          + 64/9/mb*mgl
-          )
-
-       + lnMsbSq*lnMmu*sqr(cs2b) * (
-          + 64/9
-          )
-
-       + lnMsbSq*lnMmu*den(mmgl - mmsb1,1)*sn2b * (
-          + 16/mb*mmsb1*mgl
-          - 16/9/mb*mmsb2*mgl
-          )
-
-       + lnMsbSq*lnMmu*den(mmgl - mmsb1,1)*sn4b*cs2b * (
-          + 8/9/mb*mmsb1*mgl
-          + 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMsbSq*lnMmu*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          + 16*mmsb1
-          - 16/9*mmsb2
-          )
-
-       + lnMsbSq*lnMmu*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b)
-       * (
-          - 128/9*sqr(mmsb1)
-          )
-
-       + lnMsbSq*lnMmu*den(mmgl - mmsb1,1) * (
-          - 332/9*mmsb1
-          + 16/9*mmsb2
-          )
-
-       + lnMsbSq*lnMmu*den(mmgl - mmsb1,2)*sn2b * (
-          - 16/9/mb*mmsb1*mmsb2*mgl
-          + 8/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMsbSq*lnMmu*den(mmgl - mmsb1,2)*sn4b*cs2b * (
-          + 8/9/mb*mmsb1*mmsb2*mgl
-          - 8/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMsbSq*lnMmu*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          - 32/9*mmsb1*mmsb2
-          + 32/3*sqr(mmsb1)
-          )
-
-       + lnMsbSq*lnMmu*den(mmgl - mmsb1,2) * (
-          + 32/9*mmsb1*mmsb2
-          - 178/9*sqr(mmsb1)
-          )
-
-       + lnMsbSq*lnMmu*den(mmgl - mmsb1,3)*sqr(cs2b) * (
-          - 16/9*sqr(mmsb1)*mmsb2
-          + 16/9*pow(mmsb1,3)
-          )
-
-       + lnMsbSq*lnMmu*den(mmgl - mmsb1,3) * (
-          + 16/9*sqr(mmsb1)*mmsb2
-          - 8/9*pow(mmsb1,3)
-          )
-
-       + lnMsbSq*lnMmu*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 128/9*mmsb1
-          )
-
-       + lnMsbSq*lnMmu * (
-          - 128/9
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,1)*sn2b * (
-          + 172/3/mb*mmsb1*mgl
-          - 28/9/mb*mmsb2*mgl
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,1)*sn4b*cs2b * (
-          + 16/9/mb*mmsb1*mgl
-          + 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          + 229/9*mmsb1
-          - 49/9*mmsb2
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sn2b * (
-          - 8/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 718/9*sqr(mmsb1)
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1) * (
-          + 34/3*sqr(mmsb1)
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,2) * (
-          - 8/9*pow(mmsb1,3)
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,1) * (
-          - 13/3*mmsb1
-          + 43/9*mmsb2
-          - 2*mmst1
-          - 2*mmst2
-          - 16*mmsusy
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,2)*sn2b * (
-          + 8/9/mb*mmsb1*mmsb2*mgl
-          + 8/3/mb*mmsb1*mmst1*mgl
-          + 8/3/mb*mmsb1*mmst2*mgl
-          + 64/3/mb*mmsb1*mmsusy*mgl
-          + 52/9/mb*sqr(mmsb1)*mgl
-          - 4/mb*sqr(mmsb2)*mgl
-          - 4/mb*sqr(mmst1)*mgl
-          - 4/mb*sqr(mmst2)*mgl
-          - 32/mb*sqr(mmsusy)*mgl
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,2)*sn4b*cs2b * (
-          + 8/9/mb*mmsb1*mmsb2*mgl
-          - 8/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          - 110/9*mmsb1*mmsb2
-          + 16*sqr(mmsb1)
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,2)*den(mmsb1 - mmsb2,1) * (
-          + 8/9*pow(mmsb1,3)
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,2) * (
-          + 56/9*mmsb1*mmsb2
-          - 6*mmsb1*mmst1
-          - 6*mmsb1*mmst2
-          - 48*mmsb1*mmsusy
-          + 187/9*sqr(mmsb1)
-          + 3*sqr(mmsb2)
-          + 3*sqr(mmst1)
-          + 3*sqr(mmst2)
-          + 24*sqr(mmsusy)
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,3)*sqr(cs2b) * (
-          - 16/9*sqr(mmsb1)*mmsb2
-          + 16/9*pow(mmsb1,3)
-          )
-
-       + lnMsbSq*den(mmgl - mmsb1,3) * (
-          + 4*mmsb1*sqr(mmsb2)
-          + 4*mmsb1*sqr(mmst1)
-          + 4*mmsb1*sqr(mmst2)
-          + 32*mmsb1*sqr(mmsusy)
-          - 8/9*sqr(mmsb1)*mmsb2
-          - 8/3*sqr(mmsb1)*mmst1
-          - 8/3*sqr(mmsb1)*mmst2
-          - 64/3*sqr(mmsb1)*mmsusy
-          + 92/9*pow(mmsb1,3)
-          )
-
-       + lnMsbSq*den(mmgl - mmsb2,1)*sn2b * (
-          - 16/3/mb*mmsb1*mgl
-          )
-
-       + lnMsbSq*den(mmgl - mmsb2,1)*sn4b*cs2b * (
-          + 8/9/mb*mmsb1*mgl
-          )
-
-       + lnMsbSq*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          - 6*mmsb1
-          )
-
-       + lnMsbSq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sn2b * (
-          + 8/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMsbSq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 26/3*sqr(mmsb1)
-          )
-
-       + lnMsbSq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1) * (
-          - 34/3*sqr(mmsb1)
-          )
-
-       + lnMsbSq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,2) * (
-          + 8/9*pow(mmsb1,3)
-          )
-
-       + lnMsbSq*den(mmgl - mmsb2,1) * (
-          + 52/9*mmsb1
-          )
-
-       + lnMsbSq*den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          + 16/9*mmsb1*mmsb2
-          )
-
-       + lnMsbSq*den(mmgl - mmsb2,2) * (
-          - 40/9*mmsb1*mmsb2
-          )
-
-       + lnMsbSq*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 128/3*mmgl
-          - 640/9*mmsb1
-          )
-
-       + lnMsbSq * (
-          + 5/9
-          )
-
-       + lnMsb2Sq*sn2b * (
-          - 280/9/mb*mgl
-          )
-
-       + lnMsb2Sq*sqr(cs2b) * (
-          - 64
-          )
-
-       + sqr(lnMsb2Sq)*sn2b * (
-          - 8/mb*mgl
-          )
-
-       + sqr(lnMsb2Sq)*sqr(cs2b) * (
-          - 64/9
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb1,1)*sn2b * (
-          + 4/9/mb*mmsb1*mgl
-          + 2/9/mb*mmsb2*mgl
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          + 8/3*mmsb1
-          - 11/9*mmsb2
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 13/9*sqr(mmsb1)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1) * (
-          + 13/9*sqr(mmsb1)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb1,1) * (
-          - 14/9*mmsb1
-          + 1/2*mmsb2
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb1,2)*sn2b * (
-          + 8/3/mb*mmsb1*mmsb2*mgl
-          - 4/3/mb*sqr(mmsb1)*mgl
-          - 4/3/mb*sqr(mmsb2)*mgl
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          - 26/9*mmsb1*mmsb2
-          + 26/9*sqr(mmsb1)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb1,2) * (
-          - 10/9*mmsb1*mmsb2
-          - 5/9*sqr(sqr(mmsb1)
-          + mmsb2)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb1,3) * (
-          + 4/3*mmsb1*sqr(mmsb2)
-          - 8/3*sqr(mmsb1)*mmsb2
-          + 4/3*pow(mmsb1,3)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,1)*sn2b * (
-          + 2/3/mb*mmsb2*mgl
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,1)*sn4b*cs2b * (
-          + 16/9/mb*mmsb1*mgl
-          + 8/9/mb*mmsb2*mgl
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          - 77/9*mmsb1
-          - 34/3*mmsb2
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sn4b*cs2b * (
-          - 16/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 77/9*sqr(mmsb1)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1) * (
-          - 13/9*sqr(mmsb1)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,1) * (
-          + 13/9*mmsb1
-          + 149/6*mmsb2
-          - 2/3*mmst1
-          - 2/3*mmst2
-          - 16/3*mmsusy
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,2)*sn2b * (
-          + 2/3/mb*mmsb1*mmsb2*mgl
-          - 2/mb*mmsb2*mmst1*mgl
-          - 2/mb*mmsb2*mmst2*mgl
-          - 16/mb*mmsb2*mmsusy*mgl
-          + 74/9/mb*sqr(mmsb2)*mgl
-          + 4/3/mb*sqr(mmst1)*mgl
-          + 4/3/mb*sqr(mmst2)*mgl
-          + 32/3/mb*sqr(mmsusy)*mgl
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,2)*sn4b*cs2b * (
-          - 8/9/mb*sqr(mmsb2)*mgl
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          - 137/18*sqr(mmsb2)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,2) * (
-          + 1/2*mmsb1*mmsb2
-          - 17/6*mmsb2*mmst1
-          - 17/6*mmsb2*mmst2
-          - 68/3*mmsb2*mmsusy
-          + 281/9*sqr(sqr(sqr(mmsb2)
-          + mmst1)
-          + mmst2)
-          + 8*sqr(mmsusy)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,3)*sn2b * (
-          + 8/9/mb*pow(mmsb2,3)*mgl
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,3)*sqr(cs2b) * (
-          - 16/9*pow(mmsb2,3)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,3) * (
-          + 2/3*mmsb1*sqr(mmsb2)
-          + 4/3*mmsb2*sqr(mmst1)
-          + 4/3*mmsb2*sqr(mmst2)
-          + 32/3*mmsb2*sqr(mmsusy)
-          - 2*sqr(mmsb2)*mmst1
-          - 2*sqr(mmsb2)*mmst2
-          - 16*sqr(mmsb2)*mmsusy
-          + 98/9*pow(mmsb2,3)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmgl - mmsb2,4) * (
-          + 4/9*pow(mmsb2,4)
-          )
-
-       + sqr(lnMsb2Sq)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 128/9*mmgl
-          + 64/9*mmsb1
-          )
-
-       + sqr(lnMsb2Sq) * (
-          + 41/9
-          )
-
-       + lnMsb2Sq*lnMst1Sq*den(mmgl - mmsb2,1) * (
-          + 4/3*mmst1
-          )
-
-       + lnMsb2Sq*lnMst1Sq*den(mmgl - mmsb2,2)*sn2b * (
-          + 4/mb*mmsb2*mmst1*mgl
-          - 8/3/mb*sqr(mmst1)*mgl
-          )
-
-       + lnMsb2Sq*lnMst1Sq*den(mmgl - mmsb2,2) * (
-          + 17/3*mmsb2*mmst1
-          - 2*sqr(mmst1)
-          )
-
-       + lnMsb2Sq*lnMst1Sq*den(mmgl - mmsb2,3) * (
-          - 8/3*mmsb2*sqr(mmst1)
-          + 4*sqr(mmsb2)*mmst1
-          )
-
-       + lnMsb2Sq*lnMst2Sq*den(mmgl - mmsb2,1) * (
-          + 4/3*mmst2
-          )
-
-       + lnMsb2Sq*lnMst2Sq*den(mmgl - mmsb2,2)*sn2b * (
-          + 4/mb*mmsb2*mmst2*mgl
-          - 8/3/mb*sqr(mmst2)*mgl
-          )
-
-       + lnMsb2Sq*lnMst2Sq*den(mmgl - mmsb2,2) * (
-          + 17/3*mmsb2*mmst2
-          - 2*sqr(mmst2)
-          )
-
-       + lnMsb2Sq*lnMst2Sq*den(mmgl - mmsb2,3) * (
-          - 8/3*mmsb2*sqr(mmst2)
-          + 4*sqr(mmsb2)*mmst2
-          )
-
-       + lnMsb2Sq*lnMmsusy*den(mmgl - mmsb2,1) * (
-          + 32/3*mmsusy
-          )
-
-       + lnMsb2Sq*lnMmsusy*den(mmgl - mmsb2,2)*sn2b * (
-          + 32/mb*mmsb2*mmsusy*mgl
-          - 64/3/mb*sqr(mmsusy)*mgl
-          )
-
-       + lnMsb2Sq*lnMmsusy*den(mmgl - mmsb2,2) * (
-          + 136/3*mmsb2*mmsusy
-          - 16*sqr(mmsusy)
-          )
-
-       + lnMsb2Sq*lnMmsusy*den(mmgl - mmsb2,3) * (
-          - 64/3*mmsb2*sqr(mmsusy)
-          + 32*sqr(mmsb2)*mmsusy
-          )
-
-       + lnMsb2Sq*lnMmu*sn2b * (
-          - 64/9/mb*mgl
-          )
-
-       + lnMsb2Sq*lnMmu*sqr(cs2b) * (
-          - 64/9
-          )
-
-       + lnMsb2Sq*lnMmu*den(mmgl - mmsb2,1)*sn2b * (
-          + 16/9/mb*mmsb1*mgl
-          - 16/mb*mmsb2*mgl
-          )
-
-       + lnMsb2Sq*lnMmu*den(mmgl - mmsb2,1)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mgl
-          - 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMsb2Sq*lnMmu*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          - 16*mmsb1
-          + 16/9*mmsb2
-          )
-
-       + lnMsb2Sq*lnMmu*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b)
-       * (
-          + 128/9*sqr(mmsb1)
-          )
-
-       + lnMsb2Sq*lnMmu*den(mmgl - mmsb2,1) * (
-          + 16/9*mmsb1
-          - 332/9*mmsb2
-          )
-
-       + lnMsb2Sq*lnMmu*den(mmgl - mmsb2,2)*sn2b * (
-          + 16/9/mb*mmsb1*mmsb2*mgl
-          - 8/9/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMsb2Sq*lnMmu*den(mmgl - mmsb2,2)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mmsb2*mgl
-          + 8/9/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMsb2Sq*lnMmu*den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          - 32/9*mmsb1*mmsb2
-          + 32/3*sqr(mmsb2)
-          )
-
-       + lnMsb2Sq*lnMmu*den(mmgl - mmsb2,2) * (
-          + 32/9*mmsb1*mmsb2
-          - 178/9*sqr(mmsb2)
-          )
-
-       + lnMsb2Sq*lnMmu*den(mmgl - mmsb2,3)*sqr(cs2b) * (
-          - 16/9*mmsb1*sqr(mmsb2)
-          + 16/9*pow(mmsb2,3)
-          )
-
-       + lnMsb2Sq*lnMmu*den(mmgl - mmsb2,3) * (
-          + 16/9*mmsb1*sqr(mmsb2)
-          - 8/9*pow(mmsb2,3)
-          )
-
-       + lnMsb2Sq*lnMmu*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 128/9*mmsb1
-          )
-
-       + lnMsb2Sq*lnMmu * (
-          - 128/9
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb1,1)*sn2b * (
-          + 4/9/mb*mmsb1*mgl
-          + 52/9/mb*mmsb2*mgl
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb1,1)*sn4b*cs2b * (
-          - 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          + 37/3*mmsb1
-          + 19/3*mmsb2
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sn2b * (
-          + 8/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 26/3*sqr(mmsb1)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1) * (
-          + 14*sqr(mmsb1)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,2) * (
-          + 8/9*pow(mmsb1,3)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb1,1) * (
-          - 137/9*mmsb1
-          - 23/3*mmsb2
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb1,2)*sn2b * (
-          - 4/mb*sqr(mmsb1)*mgl
-          + 4/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          + 94/9*mmsb1*mmsb2
-          + 26/3*sqr(mmsb1)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb1,2) * (
-          - 82/9*mmsb1*mmsb2
-          - 5/3*sqr(mmsb1)
-          - 3*sqr(mmsb2)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb1,3) * (
-          - 4*mmsb1*sqr(mmsb2)
-          + 4*pow(mmsb1,3)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,1)*sn2b * (
-          + 8/3/mb*mmsb1*mgl
-          - 520/9/mb*mmsb2*mgl
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,1)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mgl
-          - 16/9/mb*mmsb2*mgl
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          - 734/9*mmsb1
-          - 152/3*mmsb2
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sn2b * (
-          - 8/9/mb*sqr(mmsb1)*mgl
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 718/9*sqr(mmsb1)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1) * (
-          - 14*sqr(mmsb1)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,2) * (
-          - 8/9*pow(mmsb1,3)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,1) * (
-          + 50/3*mmsb1
-          + 52/9*mmsb2
-          - 2*mmst1
-          - 2*mmst2
-          - 16*mmsusy
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,2)*sn2b * (
-          - 8/9/mb*mmsb1*mmsb2*mgl
-          - 8/3/mb*mmsb2*mmst1*mgl
-          - 8/3/mb*mmsb2*mmst2*mgl
-          - 64/3/mb*mmsb2*mmsusy*mgl
-          - 16/9/mb*sqr(mmsb2)*mgl
-          + 4/mb*sqr(mmst1)*mgl
-          + 4/mb*sqr(mmst2)*mgl
-          + 32/mb*sqr(mmsusy)*mgl
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,2)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mmsb2*mgl
-          + 8/9/mb*sqr(mmsb2)*mgl
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          - 32/9*mmsb1*mmsb2
-          + 74/3*sqr(mmsb2)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,2)*den(mmsb1 - mmsb2,1) * (
-          - 8/9*pow(mmsb1,3)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,2) * (
-          + 22/9*mmsb1*mmsb2
-          + 8/9*sqr(mmsb1)
-          - 6*mmsb2*mmst1
-          - 6*mmsb2*mmst2
-          - 48*mmsb2*mmsusy
-          + 20*sqr(mmsb2)
-          + 3*sqr(mmst1)
-          + 3*sqr(mmst2)
-          + 24*sqr(mmsusy)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,3)*sqr(cs2b) * (
-          - 16/9*mmsb1*sqr(mmsb2)
-          + 16/9*pow(mmsb2,3)
-          )
-
-       + lnMsb2Sq*den(mmgl - mmsb2,3) * (
-          - 8/9*mmsb1*sqr(mmsb2)
-          + 4*mmsb2*sqr(mmst1)
-          + 4*mmsb2*sqr(mmst2)
-          + 32*mmsb2*sqr(mmsusy)
-          - 8/3*sqr(mmsb2)*mmst1
-          - 8/3*sqr(mmsb2)*mmst2
-          - 64/3*sqr(mmsb2)*mmsusy
-          + 128/9*pow(mmsb2,3)
-          )
-
-       + lnMsb2Sq*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 128/3*mmgl
-          + 640/9*mmsb1
-          )
-
-       + lnMsb2Sq * (
-          + 5/9
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmsb1,1)*sn2b * (
-          + 2/3/mb*mmst1*mgl
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmsb1,1) * (
-          + 2/3*mmsb1
-          - 7/6*mmst1
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmsb1,2)*sn2b * (
-          + 8/3/mb*mmsb1*mmst1*mgl
-          - 4/3/mb*sqr(mmsb1)*mgl
-          - 4/3/mb*sqr(mmst1)*mgl
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmsb1,2) * (
-          - 4*mmsb1*mmst1
-          + 7/3*sqr(sqr(mmsb1)
-          + mmst1)
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmsb1,3) * (
-          + 4/3*mmsb1*sqr(mmst1)
-          - 8/3*sqr(mmsb1)*mmst1
-          + 4/3*pow(mmsb1,3)
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmsb2,1)*sn2b * (
-          - 2/3/mb*mmst1*mgl
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmsb2,1) * (
-          + 2/3*mmsb2
-          - 7/6*mmst1
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmsb2,2)*sn2b * (
-          - 8/3/mb*mmsb2*mmst1*mgl
-          + 4/3/mb*sqr(mmsb2)*mgl
-          + 4/3/mb*sqr(mmst1)*mgl
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmsb2,2) * (
-          - 4*mmsb2*mmst1
-          + 7/3*sqr(sqr(mmsb2)
-          + mmst1)
-          )
-
-       + sqr(lnMst1Sq)*den(mmgl - mmsb2,3) * (
-          + 4/3*mmsb2*sqr(mmst1)
-          - 8/3*sqr(mmsb2)*mmst1
-          + 4/3*pow(mmsb2,3)
-          )
-
-       + sqr(lnMst1Sq) * (
-          - 1/3
-          )
-
-       + lnMst1Sq*den(mmgl - mmsb1,1)*sn2b * (
-          + 8/3/mb*mmst1*mgl
-          )
-
-       + lnMst1Sq*den(mmgl - mmsb1,1) * (
-          + 2*mmsb1
-          )
-
-       + lnMst1Sq*den(mmgl - mmsb1,2)*sn2b * (
-          - 4/mb*sqr(mmsb1)*mgl
-          + 4/mb*sqr(mmst1)*mgl
-          )
-
-       + lnMst1Sq*den(mmgl - mmsb1,2) * (
-          + 4/3*mmsb1*mmst1
-          + 7*sqr(mmsb1)
-          - 3*sqr(mmst1)
-          )
-
-       + lnMst1Sq*den(mmgl - mmsb1,3) * (
-          - 4*mmsb1*sqr(mmst1)
-          + 4*pow(mmsb1,3)
-          )
-
-       + lnMst1Sq*den(mmgl - mmsb2,1)*sn2b * (
-          - 8/3/mb*mmst1*mgl
-          )
-
-       + lnMst1Sq*den(mmgl - mmsb2,1) * (
-          + 2*mmsb2
-          )
-
-       + lnMst1Sq*den(mmgl - mmsb2,2)*sn2b * (
-          + 4/mb*sqr(mmsb2)*mgl
-          - 4/mb*sqr(mmst1)*mgl
-          )
-
-       + lnMst1Sq*den(mmgl - mmsb2,2) * (
-          + 4/3*mmsb2*mmst1
-          + 7*sqr(mmsb2)
-          - 3*sqr(mmst1)
-          )
-
-       + lnMst1Sq*den(mmgl - mmsb2,3) * (
-          - 4*mmsb2*sqr(mmst1)
-          + 4*pow(mmsb2,3)
-          )
-
-       + lnMst1Sq * (
-          + 1/9
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmsb1,1)*sn2b * (
-          + 2/3/mb*mmst2*mgl
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmsb1,1) * (
-          + 2/3*mmsb1
-          - 7/6*mmst2
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmsb1,2)*sn2b * (
-          + 8/3/mb*mmsb1*mmst2*mgl
-          - 4/3/mb*sqr(mmsb1)*mgl
-          - 4/3/mb*sqr(mmst2)*mgl
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmsb1,2) * (
-          - 4*mmsb1*mmst2
-          + 7/3*sqr(sqr(mmsb1)
-          + mmst2)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmsb1,3) * (
-          + 4/3*mmsb1*sqr(mmst2)
-          - 8/3*sqr(mmsb1)*mmst2
-          + 4/3*pow(mmsb1,3)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmsb2,1)*sn2b * (
-          - 2/3/mb*mmst2*mgl
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmsb2,1) * (
-          + 2/3*mmsb2
-          - 7/6*mmst2
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmsb2,2)*sn2b * (
-          - 8/3/mb*mmsb2*mmst2*mgl
-          + 4/3/mb*sqr(mmsb2)*mgl
-          + 4/3/mb*sqr(mmst2)*mgl
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmsb2,2) * (
-          - 4*mmsb2*mmst2
-          + 7/3*sqr(sqr(mmsb2)
-          + mmst2)
-          )
-
-       + sqr(lnMst2Sq)*den(mmgl - mmsb2,3) * (
-          + 4/3*mmsb2*sqr(mmst2)
-          - 8/3*sqr(mmsb2)*mmst2
-          + 4/3*pow(mmsb2,3)
-          )
-
-       + sqr(lnMst2Sq) * (
-          - 1/3
-          )
-
-       + lnMst2Sq*den(mmgl - mmsb1,1)*sn2b * (
-          + 8/3/mb*mmst2*mgl
-          )
-
-       + lnMst2Sq*den(mmgl - mmsb1,1) * (
-          + 2*mmsb1
-          )
-
-       + lnMst2Sq*den(mmgl - mmsb1,2)*sn2b * (
-          - 4/mb*sqr(mmsb1)*mgl
-          + 4/mb*sqr(mmst2)*mgl
-          )
-
-       + lnMst2Sq*den(mmgl - mmsb1,2) * (
-          + 4/3*mmsb1*mmst2
-          + 7*sqr(mmsb1)
-          - 3*sqr(mmst2)
-          )
-
-       + lnMst2Sq*den(mmgl - mmsb1,3) * (
-          - 4*mmsb1*sqr(mmst2)
-          + 4*pow(mmsb1,3)
-          )
-
-       + lnMst2Sq*den(mmgl - mmsb2,1)*sn2b * (
-          - 8/3/mb*mmst2*mgl
-          )
-
-       + lnMst2Sq*den(mmgl - mmsb2,1) * (
-          + 2*mmsb2
-          )
-
-       + lnMst2Sq*den(mmgl - mmsb2,2)*sn2b * (
-          + 4/mb*sqr(mmsb2)*mgl
-          - 4/mb*sqr(mmst2)*mgl
-          )
-
-       + lnMst2Sq*den(mmgl - mmsb2,2) * (
-          + 4/3*mmsb2*mmst2
-          + 7*sqr(mmsb2)
-          - 3*sqr(mmst2)
-          )
-
-       + lnMst2Sq*den(mmgl - mmsb2,3) * (
-          - 4*mmsb2*sqr(mmst2)
-          + 4*pow(mmsb2,3)
-          )
-
-       + lnMst2Sq * (
-          + 1/9
-          )
-
-       + sqr(lnMmsusy)*den(mmgl - mmsb1,1)*sn2b * (
-          + 16/3/mb*mmsusy*mgl
-          )
-
-       + sqr(lnMmsusy)*den(mmgl - mmsb1,1) * (
-          - 4*mmsusy
-          )
-
-       + sqr(lnMmsusy)*den(mmgl - mmsb1,2) * (
-          - 16/3*mmsb1*mmsusy
-          )
-
-       + sqr(lnMmsusy)*den(mmgl - mmsb2,1)*sn2b * (
-          - 16/3/mb*mmsusy*mgl
-          )
-
-       + sqr(lnMmsusy)*den(mmgl - mmsb2,1) * (
-          - 4*mmsusy
-          )
-
-       + sqr(lnMmsusy)*den(mmgl - mmsb2,2) * (
-          - 16/3*mmsb2*mmsusy
-          )
-
-       + sqr(lnMmsusy) * (
-          + 8/3
-          )
-
-       + lnMmsusy*den(mmgl - mmsb1,1)*sn2b * (
-          - 128/3/mb*mmsusy*mgl
-          )
-
-       + lnMmsusy*den(mmgl - mmsb1,1) * (
-          + 32*mmsusy
-          )
-
-       + lnMmsusy*den(mmgl - mmsb1,2) * (
-          + 128/3*mmsb1*mmsusy
-          )
-
-       + lnMmsusy*den(mmgl - mmsb2,1)*sn2b * (
-          + 128/3/mb*mmsusy*mgl
-          )
-
-       + lnMmsusy*den(mmgl - mmsb2,1) * (
-          + 32*mmsusy
-          )
-
-       + lnMmsusy*den(mmgl - mmsb2,2) * (
-          + 128/3*mmsb2*mmsusy
-          )
-
-       + lnMmsusy * (
-          + 152/9
-          )
-
-       + lnMmu*sqr(cs2b) * (
-          + 128/9
-          )
-
-       + sqr(lnMmu) * (
-          - 130/9
-          )
-
-       + lnMmu*den(mmgl - mmsb1,1)*sn2b * (
-          + 8/9/mb*mmsb1*mgl
-          - 16/9/mb*mmsb2*mgl
-          )
-
-       + lnMmu*den(mmgl - mmsb1,1)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mgl
-          + 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMmu*den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          + 88/9*mmsb1
-          - 8/3*mmsb2
-          )
-
-       + lnMmu*den(mmgl - mmsb1,1) * (
-          - 58/3*mmsb1
-          + 8/3*mmsb2
-          )
-
-       + lnMmu*den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          - 16/9*mmsb1*mmsb2
-          + 16/9*sqr(mmsb1)
-          )
-
-       + lnMmu*den(mmgl - mmsb1,2) * (
-          + 16/9*mmsb1*mmsb2
-          - 8/9*sqr(mmsb1)
-          )
-
-       + lnMmu*den(mmgl - mmsb2,1)*sn2b * (
-          + 16/9/mb*mmsb1*mgl
-          - 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMmu*den(mmgl - mmsb2,1)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mgl
-          + 8/9/mb*mmsb2*mgl
-          )
-
-       + lnMmu*den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          - 8/3*mmsb1
-          + 88/9*mmsb2
-          )
-
-       + lnMmu*den(mmgl - mmsb2,1) * (
-          + 8/3*mmsb1
-          - 58/3*mmsb2
-          )
-
-       + lnMmu*den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          - 16/9*mmsb1*mmsb2
-          + 16/9*sqr(mmsb2)
-          )
-
-       + lnMmu*den(mmgl - mmsb2,2) * (
-          + 16/9*mmsb1*mmsb2
-          - 8/9*sqr(mmsb2)
-          )
-
-       + lnMmu * (
-          - 932/9
-          )
-
-       + den(mmgl - mmsb1,1)*sn2b * (
-          + 88/9/mb*mmsb1*mgl*zt2
-          + 676/9/mb*mmsb1*mgl
-          + 4/3/mb*mmsb2*mgl*zt2
-          + 56/9/mb*mmsb2*mgl
-          + 4/3/mb*mmst1*mgl*zt2
-          + 8/mb*mmst1*mgl
-          + 4/3/mb*mmst2*mgl*zt2
-          + 8/mb*mmst2*mgl
-          + 32/3/mb*mmsusy*mgl*zt2
-          + 64/mb*mmsusy*mgl
-          )
-
-       + den(mmgl - mmsb1,1)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mgl
-          + 8/9/mb*mmsb2*mgl
-          )
-
-       + den(mmgl - mmsb1,1)*sqr(cs2b) * (
-          + 41/9*mmsb1*zt2
-          + 439/9*mmsb1
-          - 8/3*mmsb2
-          )
-
-       + den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          - 20*sqr(mmsb1)*zt2
-          - 140*sqr(mmsb1)
-          )
-
-       + den(mmgl - mmsb1,1)*den(mmsb1 - mmsb2,1) * (
-          + 20/3*sqr(mmsb1)*zt2
-          + 428/9*sqr(mmsb1)
-          )
-
-       + den(mmgl - mmsb1,1) * (
-          + 50/9*mmsb1*zt2
-          + 61/9*mmsb1
-          - mmsb2*zt2
-          - 10/3*mmsb2
-          - mmst1*zt2
-          - 6*mmst1
-          - mmst2*zt2
-          - 6*mmst2
-          - 8*mmsusy*zt2
-          - 48*mmsusy
-          )
-
-       + den(mmgl - mmsb1,2)*sqr(cs2b) * (
-          - 16/9*mmsb1*mmsb2
-          + 16/9*sqr(mmsb1)
-          )
-
-       + den(mmgl - mmsb1,2) * (
-          - 4/3*mmsb1*mmsb2*zt2
-          - 56/9*mmsb1*mmsb2
-          - 4/3*mmsb1*mmst1*zt2
-          - 8*mmsb1*mmst1
-          - 4/3*mmsb1*mmst2*zt2
-          - 8*mmsb1*mmst2
-          - 32/3*mmsb1*mmsusy*zt2
-          - 64*mmsb1*mmsusy
-          + 44/3*sqr(mmsb1)*zt2
-          + 868/9*sqr(mmsb1)
-          )
-
-       + den(mmgl - mmsb1,3) * (
-          + 16/3*pow(mmsb1,3)*zt2
-          + 112/3*pow(mmsb1,3)
-          )
-
-       + den(mmgl - mmsb2,1)*sn2b * (
-          - 4/3/mb*mmsb1*mgl*zt2
-          - 56/9/mb*mmsb1*mgl
-          - 88/9/mb*mmsb2*mgl*zt2
-          - 676/9/mb*mmsb2*mgl
-          - 4/3/mb*mmst1*mgl*zt2
-          - 8/mb*mmst1*mgl
-          - 4/3/mb*mmst2*mgl*zt2
-          - 8/mb*mmst2*mgl
-          - 32/3/mb*mmsusy*mgl*zt2
-          - 64/mb*mmsusy*mgl
-          )
-
-       + den(mmgl - mmsb2,1)*sn4b*cs2b * (
-          - 8/9/mb*mmsb1*mgl
-          + 8/9/mb*mmsb2*mgl
-          )
-
-       + den(mmgl - mmsb2,1)*sqr(cs2b) * (
-          - 20*mmsb1*zt2
-          - 428/3*mmsb1
-          - 139/9*mmsb2*zt2
-          - 821/9*mmsb2
-          )
-
-       + den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1)*sqr(cs2b) * (
-          + 20*sqr(mmsb1)*zt2
-          + 140*sqr(mmsb1)
-          )
-
-       + den(mmgl - mmsb2,1)*den(mmsb1 - mmsb2,1) * (
-          - 20/3*sqr(mmsb1)*zt2
-          - 428/9*sqr(mmsb1)
-          )
-
-       + den(mmgl - mmsb2,1) * (
-          + 17/3*mmsb1*zt2
-          + 398/9*mmsb1
-          + 110/9*mmsb2*zt2
-          + 163/3*mmsb2
-          - mmst1*zt2
-          - 6*mmst1
-          - mmst2*zt2
-          - 6*mmst2
-          - 8*mmsusy*zt2
-          - 48*mmsusy
-          )
-
-       + den(mmgl - mmsb2,2)*sqr(cs2b) * (
-          - 16/9*mmsb1*mmsb2
-          + 16/9*sqr(mmsb2)
-          )
-
-       + den(mmgl - mmsb2,2) * (
-          - 4/3*mmsb1*mmsb2*zt2
-          - 56/9*mmsb1*mmsb2
-          - 4/3*mmsb2*mmst1*zt2
-          - 8*mmsb2*mmst1
-          - 4/3*mmsb2*mmst2*zt2
-          - 8*mmsb2*mmst2
-          - 32/3*mmsb2*mmsusy*zt2
-          - 64*mmsb2*mmsusy
-          + 44/3*sqr(mmsb2)*zt2
-          + 868/9*sqr(mmsb2)
-          )
-
-       + den(mmgl - mmsb2,3) * (
-          + 16/3*pow(mmsb2,3)*zt2
-          + 112/3*pow(mmsb2,3)
-          )
-
-       - 77/2
-          + 8/9*zt2
-         ;
-
-  return resmb;
-  }*/
+Complex Softsusy<SoftPars>::pis1s1(double p, double q) const {
+  drBarPars tree(displayDrBarPars());
+  double    beta    = atan(displayTanb());
+  double    mb      = tree.mb;
+  double    hb      = tree.hb;
+  double    thetaWDRbar = asin(calcSinthdrbar());
+  double    costhDrbar  = cos(thetaWDRbar);
+  double    smu     = -displaySusyMu(); /// minus sign taken into acct here!
+  double    mz      = displayMzRun();
+  double    g       = displayGaugeCoupling(2);
+  double cosb = cos(beta);
+  double gmzOcthW = g * mz / costhDrbar;
+  //PA: get fermion contribution
+  Complex fermions = pis1s1Fermions(p, q);
+  // sfermion couplings to s1 Higgs state
+  DoubleMatrix ls1tt(2, 2), ls1bb(2, 2), ls1tautau(2, 2);
+  H1SfSfCouplings(ls1tt, ls1bb, ls1tautau, gmzOcthW, smu, cosb, root2*mb/hb);
+  //PA: get sfermion contribution
+  Complex sfermions = pis1s1Sfermions(p, q, ls1tt, ls1bb, ls1tautau);
+  //PA: get Higgs contribution
+  Complex higgs = pis1s1Higgs(p, q);
+  /// Neutralino contribution
+  Complex neutralinos = pis1s1Neutralinos(p, q);
+  /// Chargino contribution
+  Complex chargino = pis1s1Charginos(p, q);  
+
+  return 
+    (sfermions + 
+     fermions + higgs + neutralinos + chargino) / (16.0 * sqr(PI));
+}
+
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis1s2(double p, double q) const {
+  drBarPars tree(displayDrBarPars());
+
+  double    beta    = atan(displayTanb());
+  double    mb   =  tree.mb, hb   =  tree.hb; 
+  double    thetaWDRbar = asin(calcSinthdrbar());
+  double    costhDrbar  = cos(thetaWDRbar);
+  double    smu     = -displaySusyMu(); /// minus sign taken into acct here!
+  double    g       = displayGaugeCoupling(2);
+  double cosb = cos(beta), sinb = sin(beta);
+  double  mz = displayMzRun();
+  // sfermion couplings to s1 Higgs state
+  DoubleMatrix ls1tt(2, 2), ls1bb(2, 2), ls1tautau(2, 2);
+  double gmzOcthW = g * mz / costhDrbar;
+  H1SfSfCouplings(ls1tt, ls1bb, ls1tautau, gmzOcthW, smu, cosb, root2*mb/hb);
+  /// sfermion couplings to s2 Higgs state
+  DoubleMatrix ls2tt(2, 2), ls2bb(2, 2), ls2tautau(2, 2);
+  H2SfSfCouplings(ls2tt, ls2bb, ls2tautau, gmzOcthW, smu, sinb);
+  //PA: get sfermion contribution
+  Complex sfermions = pis1s2Sfermions(p, q, ls1tt, ls1bb, ls1tautau, ls2tt, 
+				      ls2bb, ls2tautau);
+  //PA: get Higgs contribution
+  Complex higgs = pis1s2Higgs(p, q);
+  /// Neutralino contribution
+  Complex neutralinos = pis1s2Neutralinos(p, q); 
+  /// Chargino contribution
+  Complex chargino = pis1s2Charginos(p, q);  
+
+  return (sfermions + higgs + neutralinos + chargino) 
+    / (16.0 * sqr(PI));
+}
+
+/// checked 28.10.02
+template<class SoftPars>
+Complex Softsusy<SoftPars>::pis2s2(double p, double q) const {
+  drBarPars tree(displayDrBarPars());
+  double beta = atan(displayTanb());
+  double thetaWDRbar = asin(calcSinthdrbar());
+  double costhDrbar = cos(thetaWDRbar);
+  double smu = -displaySusyMu(); /// minus sign taken into acct here!
+  double g = displayGaugeCoupling(2);
+  double sinb = sin(beta);
+  double mz = displayMzRun();
+  double gmzOcthW = g * mz / costhDrbar;
+  
+  Complex fermions = pis2s2Fermions(p, q);
+  /// sfermion couplings to s2 Higgs state
+  DoubleMatrix ls2tt(2, 2), ls2bb(2, 2), ls2tautau(2, 2);
+  H2SfSfCouplings(ls2tt, ls2bb, ls2tautau, gmzOcthW, smu, sinb);
+  Complex sfermions = pis2s2Sfermions(p, q, ls2tt, ls2bb, ls2tautau);
+  Complex higgs = pis2s2Higgs(p, q);
+  Complex neutralinos = pis2s2Neutralinos(p, q); 
+  Complex chargino = pis2s2Charginos(p, q);   
+
+  return (fermions + sfermions + higgs + neutralinos + chargino) 
+    / (16.0 * sqr(PI));
+}
+
+template<class SoftPars>
+bool Softsusy<SoftPars>::higgs(int accuracy, double piwwtMS,
+                               double /* pizztMS */) {
+
+  double tanb = displayTanb();
+  double beta = atan(tanb);
+  double sinb = sin(beta), cosb = cos(beta);
+  double sinb2 = sqr(sinb), cosb2 = sqr(cosb), mzPole = displayMz(), 
+    mzRun2 = sqr(displayMzRun());
+  double mApole = physpars.mA0(1); /// physical value
+  ///  double mApole2 = sqr(mApole);
+
+  /// There'll be trouble if B has the opp sign to mu. This isn't really
+  /// tree-level since it includes some one loops correrctions, namely
+  /// tadpoles and Z loops 
+  /*  double mAsq =  (displayMh2Squared() - displayTadpole2Ms() - 
+		  displayMh1Squared() + displayTadpole1Ms()) / 
+		  cos(2.0 * beta) - mzRun2; */
+  double mAsq = displayM3Squared() / (sinb * cosb);
+
+  DoubleMatrix mHtree(2, 2);
+  mHtree(1, 1) = mAsq * sinb2 + mzRun2 * cosb2;
+  mHtree(1, 2) = - sinb * cosb * (mAsq + mzRun2); 
+  mHtree(2, 2) = mAsq * cosb2 + mzRun2 * sinb2; 
+  mHtree(2, 1) = mHtree(1 ,2); 
+
+  ComplexMatrix mhAtmh(mHtree), mhAtmH(mHtree), mhAt0(mHtree);
+  ComplexMatrix sigmaMh(2, 2), sigmaMH(2, 2), sigma0(2, 2);
+
+  double q = displayMu(), p;     
+  double p2s = 0.0, p2w = 0.0, p2b = 0.0, p2tau = 0.0, dMA = 0.;
+  /// radiative corrections:
+  if (accuracy > 0) {
+    /// one-loop radiative corrections included in sigma
+    p = physpars.mh0(1);
+    sigmaMh(1, 1) = pis1s1(p, q); 
+    sigmaMh(1, 2) = pis1s2(p, q); 
+    sigmaMh(2, 2) = pis2s2(p, q); 
+
+    p = physpars.mh0(2);
+    sigmaMH(1, 1) = pis1s1(p, q); 
+    sigmaMH(1, 2) = pis1s2(p, q); 
+    sigmaMH(2, 2) = pis2s2(p, q);
+
+    p = 0.;
+    sigma0(1, 1) = pis1s1(p, q); 
+    sigma0(1, 2) = pis1s2(p, q); 
+    sigma0(2, 2) = pis2s2(p, q);
+
+    if (numHiggsMassLoops > 1) {
+      double s11s = 0., s22s = 0., s12s = 0., 
+	gstrong = displayGaugeCoupling(3), 
+	rmtsq = sqr(forLoops.mt), scalesq = sqr(displayMu()), 
+	vev2 = sqr(displayHvev()), tbeta = displayTanb(), 
+	amu = -displaySusyMu(), mg = displayGaugino(3);
+      
+      double sxt = sin(forLoops.thetat), 
+	cxt = cos(forLoops.thetat);
+      double mst1sq = sqr(forLoops.mu(1, 3)), 
+	mst2sq = sqr(forLoops.mu(2, 3));
+      /// two-loop Higgs corrections: alpha_s alpha_b
+      double sxb = sin(forLoops.thetab), 
+      cxb = cos(forLoops.thetab);
+      double msb1sq = sqr(forLoops.md(1, 3)), 
+	msb2sq = sqr(forLoops.md(2, 3));
+      double cotbeta = 1.0 / tbeta;
+      double rmbsq = sqr(forLoops.mb);
+
+      double s11b = 0.0, s12b = 0.0, s22b = 0.0;
+      double s11tau = 0.0, s12tau = 0.0, s22tau = 0.0;
+      double s11w = 0.0, s22w = 0.0, s12w = 0.0;
+      int kkk = 0; /// chooses DR-bar scheme from slavich et al
+
+      double fmasq = fabs(mAsq);
+      /// two-loop Higgs corrections: alpha_s alpha_t, alpha_s alpha_b and
+      /// alpha_b^2, alpha_t*2, alpha_b alpha_t
+      dszhiggs_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, &amu, 
+        	&tbeta, &vev2, &gstrong, &kkk, &s11s, &s22s, &s12s);
+      dszodd_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq, &amu,
+              &tbeta, &vev2, &gstrong, &p2s); 
+      dszhiggs_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq, &amu, 
+        	&cotbeta, &vev2, &gstrong, &kkk, &s22b, &s11b, &s12b);
+      dszodd_(&rmbsq, &mg, &msb1sq, &msb2sq, &sxb, &cxb, &scalesq, &amu,
+              &cotbeta, &vev2, &gstrong, &p2b); 
+      ddshiggs_(&rmtsq, &rmbsq, &fmasq, &mst1sq, &mst2sq, &msb1sq, &msb2sq, 
+              &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, &s11w, 
+      	      &s12w, &s22w);
+      ddsodd_(&rmtsq, &rmbsq, &fmasq, &mst1sq, &mst2sq, &msb1sq, &msb2sq, 
+              &sxt, &cxt, &sxb, &cxb, &scalesq, &amu, &tanb, &vev2, 
+      	      &p2w);
+       
+      /// In hep-ph/0406277 found the lambda_tau^2 and lambda_tau lambda_b
+      /// corrections to be negligible. Have commented them here for
+      /// calculational efficiency. Uncomment to see their effect.
+      double sintau = sin(forLoops.thetatau),
+	costau = cos(forLoops.thetatau);
+      double rmtausq = sqr(forLoops.mtau);
+      int OS = 0;
+      double mstau1sq = sqr(forLoops.me(1, 3)), 
+	mstau2sq = sqr(forLoops.me(2, 3));
+      double msnusq = sqr(forLoops.msnu(3));
+      tausqhiggs_(&rmtausq, &fmasq, &msnusq, &mstau1sq, &mstau2sq, &sintau,
+        	  &costau, &scalesq, &amu, &tanb, &vev2, &OS, &s11tau, 
+        	  &s22tau, &s12tau);
+      tausqodd_(&rmtausq, &fmasq, &msnusq, &mstau1sq, &mstau2sq, &sintau,
+        	&costau, &scalesq, &amu, &tanb, &vev2, &p2tau);
+      
+      sigmaMh(1, 1) = sigmaMh(1, 1) - s11s - s11w - s11b - s11tau;
+      sigmaMH(1, 1) = sigmaMH(1, 1) - s11s - s11w - s11b - s11tau;
+      sigma0(1, 1)  =  sigma0(1, 1) - s11s - s11w - s11b - s11tau;
+      sigmaMh(1, 2) = sigmaMh(1, 2) - s12s - s12w - s12b - s12tau;
+      sigmaMH(1, 2) = sigmaMH(1, 2) - s12s - s12w - s12b - s12tau;
+      sigma0(1, 2)  =  sigma0(1, 2) - s12s - s12w - s12b - s12tau;
+      sigmaMh(2, 2) = sigmaMh(2, 2) - s22s - s22w - s22b - s22tau;
+      sigmaMH(2, 2) = sigmaMH(2, 2) - s22s - s22w - s22b - s22tau;
+      sigma0(2, 2)  =  sigma0(2, 2) - s22s - s22w - s22b - s22tau;
+    }
+    /// DEBUG: is this still true? NO: not for neutralino/chargino parts.
+    /// you need PIs2s1 separately, unfortunately.
+    sigmaMh(2, 1) = sigmaMh(1, 2);
+    sigmaMH(2, 1) = sigmaMH(1, 2);
+    sigma0(2, 1)  =  sigma0(1, 2);
+    /*
+      As the calculation stands without the two-loop terms, BPMZ have
+      obviously organised PI_Sij (CP-even loop corrections) so that their pole
+      masses come out correctly to one-loop order, hence there is no need to
+      add any one-loop self energies of the PI^AA terms to DMA. Secondly, the
+      one loop terms involving mA in the PI_Sij are not proportional to either
+      alpha_s, alpha_t or alpha_b. So, within PI_Sij(1 loop), if I consider
+      the 2-loop order difference due to not using mA(pole), it will be (some
+      other coupling) x (either alpha_s OR alpha_t OR alpha_b) ie it will not
+      be of order alpha_s alpha_t, alpha_b alpha_s or alpha_t^2, thus
+      remaining consistent with your two-loop terms. They have also performed
+      the calculation where their stuff "adds on" to the 1-loop BPMZ stuff. 
+      The tadpoles therefore appear only as 1-loop pieces, except where
+      minimisation conditions are explicitly used (in the calculation of mA)
+     */
+    dMA = p2s + p2w + p2b + p2tau;
+    mhAtmh(1, 1) = mHtree(1, 1) + t1OV1Ms1loop + dMA * sqr(sin(beta));
+    mhAtmh(1, 2) = mHtree(1, 2) - dMA * sin(beta) * cos(beta);
+    mhAtmh(2, 2) = mHtree(2, 2) + t2OV2Ms1loop + dMA * sqr(cos(beta));
+    mhAtmh(2, 1) = mhAtmh(1 ,2);
+    mhAtmh = mhAtmh - sigmaMh;
+
+    mhAtmH(1, 1) = mHtree(1, 1) + t1OV1Ms1loop + dMA * sqr(sin(beta));
+    mhAtmH(1, 2) = mHtree(1, 2) - dMA * sin(beta) * cos(beta);
+    mhAtmH(2, 2) = mHtree(2, 2) + t2OV2Ms1loop + dMA * sqr(cos(beta));
+    mhAtmH(2, 1) = mhAtmH(1 ,2);
+    mhAtmH = mhAtmH - sigmaMH;
+
+    mhAt0(1, 1)  = mHtree(1, 1) + t1OV1Ms1loop + dMA * sqr(sin(beta));
+    mhAt0(1, 2)  = mHtree(1, 2) - dMA * sin(beta) * cos(beta);
+    mhAt0(2, 2)  = mHtree(2, 2) + t2OV2Ms1loop + dMA * sqr(cos(beta));
+    mhAt0(2, 1)  = mhAt0(1 ,2);
+    mhAt0        = mhAt0 - sigma0;
+  }
+
+  ComplexVector tempc(2);  
+  ComplexMatrix u(2, 2), v(2, 2);
+  double err = mhAtmh.diagonaliseSym2by2(u, tempc);
+  if (err > EPSTOL) {
+    ostringstream ii;
+    ii << "In MssmSoftsusy::higgs. mh matrix " << mhAtmh 
+       << " inaccurately diagonalised. tol=" << err << endl;
+    throw ii.str();
+  }
+  /// We pick up the real parts of the eigenvalues for the masses
+  DoubleVector temp(2); temp(1) = tempc(1).real(); temp(2) = tempc(2).real();
+  
+  bool h0Htachyon = false;
+  if (temp(1) < 0.0 || temp(2) < 0.0) {
+    h0Htachyon = true;
+    if (PRINTOUT > 2) cout << " h0/H tachyon: m^2=" << temp;
+  }
+  temp = temp.apply(ccbSqrt);
+
+  /// If certain DRbar ratios are large, they can cause massive higher order
+  /// corrections in the higgs mass, making it have O(1) uncertainties. 
+  /// In these cases, you should switch to an OS calculation (eg by using
+  /// FEYNHIGGS) for the Higgs mass (but there are other points at high
+  /// tan beta where the DRbar scheme does better).
+  double mstop1 = minimum(displayDrBarPars().mu(1, 3), 
+			  displayDrBarPars().mu(2, 3));
+  double mgluino = displayGaugino(3);
+  if (sqr(mgluino / mstop1) > (16.0 * sqr(PI)) ||
+      sqr(displayMu() / mstop1) > (16.0 * sqr(PI))) 
+    flagInaccurateHiggsMass(true);
+
+  /// Because mhAt0 is defined in the p^2=0 limit, it should be real
+  DoubleMatrix aa(2, 2);
+  for (int i=1; i<=2; i++) 
+    for (int j=1; j<=2; j++)
+      aa(i, j) = mhAt0(i, j).real();
+  double theta = 0.;
+  DoubleVector temp2(2); temp2 = aa.sym2by2(theta);  
+    
+  /// Definitions are such that theta should diagonalise the matrix like
+  /// O = [ cos  sin ]
+  ///     [-sin  cos ] 
+  /// and
+  /// O m O^T = [ m2^2      ]
+  ///           [      m1^2 ]
+  /// where m1 < m2, therefore if they come out in the wrong order, 
+  /// add pi/2 onto theta.
+  if (temp2(2) > temp2(1)) theta = theta + PI * 0.5; 
+
+  physpars.thetaH = theta; /// theta defined for p=mh  
+  int i; double littleMh = temp.apply(fabs).min(i);
+
+  err = mhAtmH.diagonaliseSym2by2(v, tempc);
+  if (err > EPSTOL) {
+    ostringstream ii;
+    ii << "In MssmSoftsusy::higgs. mH matrix " << mhAtmh 
+       << " inaccurately diagonalised. tol=" << err << endl;
+    throw ii.str();
+  }
+
+  if (tempc(1).real() < 0.0 && tempc(2).real() < 0.0) {
+    h0Htachyon = true;
+    if (PRINTOUT > 2) cout << " h0/H tachyon: m^2=" << temp;
+  }
+  temp(1) = tempc(1).real(); temp(2) = tempc(2).real();
+  temp = temp.apply(ccbSqrt);
+  double bigMh = temp.max();
+
+  double piaa = piAA(mApole, displayMu()); 
+  //  double piaa = piAA(displayDrBarPars().mA0, displayMu());
+  double poleMasq = (displayMh2Squared() - displayMh1Squared() )
+    / cos(2.0 * beta) - sqr(mzPole);
+  
+  if (accuracy > 0) {
+      poleMasq = 
+	(displayMh2Squared() - displayTadpole2Ms() - 
+	 displayMh1Squared() + displayTadpole1Ms()) / 
+	cos(2.0 * beta) - mzRun2 - piaa +
+	sqr(sin(beta)) * t1OV1Ms1loop + sqr(cos(beta)) *
+	t2OV2Ms1loop + dMA;
+    }
+
+  double pihphm = piHpHm(physpars.mHpm, displayMu());
+
+  double poleMhcSq = poleMasq + sqr(displayMw()) + piaa + piwwtMS - pihphm;
+
+  //PA:  below is the rearranged approach to calculating charged and cpodd Higgs used for comaprisons vs nmssmsoftsusy.cpp.   This leaves the initial accuracy == 0 calculation changed and while the actual calculation for accuarcy > 0 is unchanged this alters the final result for charged Higgs due to the numerical precion of the Higgs iteration. 
+  /* ------------------------------------------------------------------------*/
+  // double piaa = 0.0; 
+  // if(accuracy > 0) piaa = piAA(mApole, displayMu()); 
+  // //  double piaa = piAA(displayDrBarPars().mA0(1), displayMu());
+  // double poleMasq = (displayMh2Squared()-  displayTadpole2Ms() 
+  // 		     - displayMh1Squared()  + displayTadpole1Ms())
+  //   / cos(2.0 * beta) -  sqr(displayMz());
+
+  // if (accuracy > 0) {
+  //   poleMasq = 
+  //     (displayMh2Squared() - displayTadpole2Ms() - 
+  //      displayMh1Squared() + displayTadpole1Ms()) / 
+  //     cos(2.0 * beta) - mzRun2 - piaa +
+  //       sqr(sin(beta)) * t1OV1Ms1loop + sqr(cos(beta)) *
+  //     t2OV2Ms1loop + dMA;
+  // }
+  
+  // double pihphm = 0.0;
+  // if(accuracy > 0) pihphm = piHpHm(physpars.mHpm, displayMu()); 
+  // // double poleMhcSq = poleMasq + sqr(displayMw()) + piaa + piwwtMS - pihphm;
+  // double poleMasq2 = poleMasq;
+  // if (accuracy > 0) {
+  //   poleMasq2 = 
+  //     (displayMh2Squared() - displayTadpole2Ms() - 
+  //      displayMh1Squared() + displayTadpole1Ms()) / 
+  //     cos(2.0 * beta) - mzRun2 - piaa +
+  //       sqr(sin(beta)) * t1OV1Ms1loop + sqr(cos(beta)) *
+  //     t2OV2Ms1loop;
+  // }
+
+  // double poleMhcSq = poleMasq2 + sqr(displayMw()) + piaa + piwwtMS - pihphm;
+  /*-------------------------------------------------------------------------*/
+
+  physpars.mh0(1) = littleMh;
+  physpars.mA0(1) = ccbSqrt(poleMasq);
+  physpars.mh0(2) = bigMh;
+  physpars.mHpm = ccbSqrt(poleMhcSq);
+
+  if (poleMhcSq > 0. && poleMasq > 0. && !h0Htachyon) return false;
+  else {
+    if (PRINTOUT) cout << " mA(phys)^2=" << poleMasq  
+		       << " mHc(phys)^2=" << poleMhcSq 
+		       << " but may be first iteration" << endl;
+    return true;
+  }
+}
 
 #endif
+

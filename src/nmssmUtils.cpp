@@ -517,7 +517,7 @@ void amsbBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 }
 
 /// LCT: Difference between two NMSSM SOFTSUSY objects in and out: EWSB terms only
-double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries) {
+double sumTol(const Softsusy<SoftParsNmssm> & in, const Softsusy<SoftParsNmssm> & out, int numTries) {
   DoubleVector sT(37);
   sumTol(in.displayDrBarPars(), out.displayDrBarPars(), sT);
   /// The predicted value of MZ^2 is an absolute measure of how close to a
@@ -535,5 +535,9 @@ double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, int numTries)
 
   return sT.max();
 }
-
-} // namespace softsusy
+  
+  /// explicit template instantiations
+  template class Softsusy<SoftParsNmssm>;
+  template class SoftPars<NmssmSusy, nmsBrevity>;
+  
+} ///< namespace softsusy

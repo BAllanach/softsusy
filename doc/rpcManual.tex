@@ -715,6 +715,11 @@ The QCD coupling is input as $\alpha_s(M_Z)^{\overline{MS}}$ and
 is modified by gluino, squark and top loops as in
 eqs.~(2),(3) of BMPZ in order to obtain the MSSM $\overline{DR}$ value. 
 
+$\overline{DR}$ masses are used for all particles in loops in \SOFTSUSY, except
+for $M_{A^0}$ when calculating gauge and Yukawa couplings at $M_Z$. At some
+points in parameter space, the running mass is tachyonic at $M_Z$, whereas the
+pole mass is normal. Using the pole mass at $M_Z$ circumvents this problem.
+
 \subsection{MSSM Renormalisation}
 
 All soft breaking and SUSY parameters are then evolved to the scale
@@ -892,7 +897,8 @@ m_{H^0}$~\cite{Degrassi:2001yf,Brignole:2001jy,Brignole:2002bz,Dedes:2003km}.
 All one-loop corrections are included in
 the determination of the charged Higgs pole mass.
 Every Higgs mass is determined at an external momentum scale equal to its
-pole mass. 
+pole mass. $\alpha$ is determined in the limit $p^2=0$ (at $p^2=m_h^2$, the
+CP-even Higgs mass squared matrix is complex symmetric).
 
 Finally, the running MSSM parameters are evolved back down to $M_Z$.
 The whole process is iterated as shown in figure~\ref{fig:algorithm}, until the
@@ -1018,6 +1024,7 @@ unphysical point.}
   \begin{tabular}{ll}
     general option & description \\
     \hline
+    \code{--tol=<value>} & numerical convergence precision \\
     \code{--mbmb=<value>} & bottom mass $m_b^{\overline{MS}}(m_b)$ \\
     \code{--mt=<value>} & top mass $m_t^\text{pole}$ \\
     \code{--alpha\_s=<value>} & strong coupling $\alpha_s^{\overline{MS}}(M_Z)$ \\
@@ -1158,6 +1165,12 @@ space report tachyons only in the
 early iterations of the algorithm depicted in Fig.~\ref{fig:algorithm},
  and such points may
 be physically fine if there are no further problems reported. 
+
+In the standard SLHA input format, a parameter 
+\code{12}~in \code{Block MODSEL} fixes the maximum scale of printing out the
+running parameters, $Q_{max}$. \SOFTSUSY~has an additional option to the usual SLHA
+definition: if the parameter is set to \code{-1.000000}, then the GUT scale is
+taken for $Q_{max}$.
 
 If \code{softpoint.x}~is used {\em without}\/ the SLHA interface, default
 Standard Model inputs are used from the files \code{def.h} and \code{lowe.h}.

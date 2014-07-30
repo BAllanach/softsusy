@@ -4936,12 +4936,11 @@ c     phi function from eq. (A4)
       
       double precision x,y,z,delt
       
-      if  (y==z) then
-         delt = x**2 - 2d0*(x*y + x*z )
-      else
+      if(y .ne. z) then
          delt = x**2 + y**2 + z**2 - 2d0*(x*y + x*z + y*z)
-      endif
-      
+      else
+         delt = x*(x - 4d0*y)
+      endif     
       return
       end
       

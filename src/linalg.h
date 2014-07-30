@@ -357,7 +357,7 @@ public:
   /// therefore \f$ W = U^T A V \f$.
   double diagonalise(DoubleMatrix & u, DoubleMatrix & v, DoubleVector & w) const;
   /// For SYMMETRIC MATRICES ONLY!
-  /// \f$ A = V.W.V^T \f$ where W is a matrix of the eigenvalue therefore 
+  /// \f$ A = V.W.V^T \f$ where W is a vector of the eigenvalues therefore 
   /// \f$ W = V^T A V \f$. 
   double diagonaliseSym(DoubleMatrix & v, DoubleVector & w) const;
   double diagonaliseSym(ComplexMatrix & v, DoubleVector & w) const;
@@ -535,6 +535,8 @@ public:
   int displayEnd() const { return end; }///< displays end of dimension
   const ComplexVector & display() const { return *this; }///< displays whole vector
 
+
+
   /// Changes the length of a vector - copies as many elements of old one as
   /// possible, and fills any extra up with zeroes
   void setEnd(int e);
@@ -699,15 +701,55 @@ public:
   ComplexMatrix transpose() const;
   ComplexMatrix hermitianConjugate() const;
   ComplexMatrix complexConjugate() const;
+  /// Real part of matrix
+  DoubleMatrix real() const;
+  /// Imaginary part of matrix
+  DoubleMatrix imag() const;
   
   /*
    *  NUMERICAL DIAGONALIZATION ROUTINES ETC.
-   */
-
+   */ 
+  /// Measures how far from Hermitian your matrix is
+  double nonHermiticity() const;
   /// Fills in lower bottom half of a square matrix copying the top right
   void symmetrise();
   /// Returns the sum of the modulus of the difference of each element
   double compare(const ComplexMatrix & a) const;
+  /// This should only be applied to Hermitian matrices: makes a 2n x 2n real
+  /// matrix out of [ A -B ] ready for diagonalisation. It's especially not 
+  ///               [ B  A ] 
+  /// efficient for large matrices. 
+  DoubleMatrix makeHermitianRealForDiag() const;
+  /// For HERMITIAN MATRICES ONLY!
+  /// \f$ A = V W V^\dag \f$ where W is a matrix of the eigenvalues therefore
+  /// \f$ W = V^\dag A V \f$. The double output is an estimate of how accurate
+  /// the diagonalisation is.
+  double diagonaliseHerm(ComplexMatrix & v, DoubleVector & w) const;
+  /// For Complex Symmetric matrices only. Performs Takagi factorisation, ie
+  /// \f$ U^* A U^\dag = diag(\sigma_1, \sigma_2) \f$ for the 2 by 2 case.
+  /// w has eigenvalues and the double return is numerical error. The matrices
+  /// can  be singular.
+  double takagi(ComplexMatrix & v, ComplexVector & w) const;
+  /// For Complex Symmetric matrices only. Performs eigenvalue factorisation, ie
+  /// \f$ U A U^T = diag(\sigma_1, \sigma_2) \f$ for the 2 by 2 case.
+  /// w has eigenvalues and the double return is numerical error. The matrices
+  /// CANNOT be singular. From physics/0607103
+  double diagonaliseSym2by2(ComplexMatrix & v, ComplexVector & w) const;
+  /// For general non-singular complex matrices
+  /// \f$ W = U A V^\dag \f$, where \f$ W \f$ is a matrix of diagonal values.
+  /// The double output is an estimate of how accurate
+  /// the diagonalisation is. 
+  double diagonalise(ComplexMatrix & u, ComplexMatrix & v, DoubleVector & w) 
+    const;
+  /// Applies fn to every element
+  ComplexMatrix apply(Complex (*fn)(Complex)) const { 
+    ComplexMatrix a(rows, cols);
+    for (int i=1; i<=rows; i++)
+      for (int j=1; j<=rows; j++) 
+	a(i, j) = fn(display(i, j));
+      
+    return a;
+  }
 };
 
 /*

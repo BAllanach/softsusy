@@ -25,6 +25,10 @@
 #include "utils.h"
 #include "numerics.h"
 
+namespace softsusy {
+   extern template class Softsusy<SoftParsMssm>;
+}
+
 int main() {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
