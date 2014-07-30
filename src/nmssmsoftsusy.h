@@ -473,21 +473,21 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   virtual double calcRunMtNeutralinos() const;
   //PA: routine to calculate the DrBar running top mass from the pole mass
   // and full one loop self energy, with also two loop qcd included.
-  virtual double calcRunningMt();
+  //  virtual double calcRunningMt();
    //PA: routine to calculate the Higgs loop contributions to running Mb
   virtual double calcRunMbHiggs() const;
   //PA: routine to calculate the Neutralino loop contributions to running Mb
   virtual double calcRunMbNeutralinos() const;
   //  PA: routine to calculate the DrBar running bottom mass from the SM MS-bar 
   //bottom m and one loop self energy minus photon and gluon parts.
-  virtual double calcRunningMb() const;
+  //  virtual double calcRunningMb() const;
   //PA: routine to calculate the Higgs loop contributions to running Mtau
   virtual double calcRunMtauHiggs() const;
   //PA: routine to calculate the Neutralino loop contributions to running Mtau
   virtual double calcRunMtauNeutralinos(double mTauSMMZ) const;
   //  PA: routine to calculate the DrBar running tau mass from the SM MS-bar 
   //tau mass and one loop self energy minus photon parts.
-  virtual double calcRunningMtau() const;
+  // virtual double calcRunningMtau() const;
 
 
   NmssmSusy guessAtSusyMt(double tanb, DoubleVector nmpars, const QedQcd & oneset);
