@@ -7294,19 +7294,41 @@ void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2,
   double mAsq;
   mAsq = displayM3Squared() / (sin(beta) * cos(beta));
 
-  bool a0Tach = false;
-
+  /// What if the tree-level A^0 appears to be tachyonic?
   if (mAsq < 0.) {
-    if (!close(displayMu(), MZ, 1.0e-6)) flagTachyon(softsusy::A0); 
-    else a0Tach = true;
-    if (mAFlag == false) mAsq = ccbSqrt(mAsq); 
-    /// This may be  a bad idea in terms of convergence
-    else mAsq = fabs(mAsq);
+    /// If it's only at MZ, the point may be OK: here, we may use the pole
+    /// mass in loops, if necessary
+    if (close(displayMu(), MZ, 1.0e-6)) { 
+      if (altEwsb) mAsq = sqr(displayMaCond());
+      else {
+	double mApole = physpars.mA0(1); /// physical value
+	setDrBarPars(eg);
+      
+	double piaa = piAA(mApole, displayMu()); 
+	double t1Ov1 = doCalcTadpole1oneLoop(eg.mt, sinthDRbar), 
+	  t2Ov2 = doCalcTadpole2oneLoop(eg.mt, sinthDRbar); 
+	double poleMasq = 
+	  (displayMh2Squared() - t2Ov2 - 
+	   displayMh1Squared() + t1Ov1) / 
+	  cos(2.0 * beta) - mz2 - piaa +
+	  sqr(sin(beta)) * t1Ov1 + sqr(cos(beta)) * t2Ov2;
+	
+	mAsq = poleMasq;	
+      } ///< not alternative EWSB conditions
+    } ///< we are at MZ
+
+    /// If, after using the pole mass or whatever, we still have a problem, we
+    /// must flag a tachyon and do something to stop a proliferation of NANs
+    if (mAsq < 0.) { 
+      flagTachyon(A0); 
+      if (mAFlag == false) mAsq = EPSTOL; 
+      else mAsq = fabs(mAsq); ///< could cause a convergence problem
+    } ///< ma^2 still < 0
     
     if (PRINTOUT > 1) cout << " mA^2(tree)=" << mAsq << " since m3sq=" 
 			   << displayM3Squared() << " @ "<< displayMu() 
 			   << " " << endl; 
-  }
+  } ///< Initial mA^2 < 0
     
   DoubleMatrix mH(2, 2); 
   mH(1, 1) = mAsq * sqr(sin(beta)) + mz2 * sqr(cos(beta));
@@ -7325,27 +7347,6 @@ void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2,
   int pos;
   eg.mh0(1) = temp.min(pos); eg.mh0(2) = temp.max(); 
   // Previous solution: if we're at MZ, use the pole mA^2
-  if (close(displayMu(), MZ, 1.0e-6) && a0Tach) { 
-      double mApole = physpars.mA0(1); /// physical value
-      setDrBarPars(eg);
-      
-      double piaa = piAA(mApole, displayMu()); 
-      double t1Ov1 = doCalcTadpole1oneLoop(eg.mt, sinthDRbar), 
-      t2Ov2 = doCalcTadpole2oneLoop(eg.mt, sinthDRbar); 
-      double poleMasq = 
-	(displayMh2Squared() - t2Ov2 - 
-	 displayMh1Squared() + t1Ov1) / 
-	cos(2.0 * beta) - mz2 - piaa +
-	sqr(sin(beta)) * t1Ov1 + sqr(cos(beta)) * t2Ov2;
-      
-      mAsq = poleMasq;
-      
-      if (mAsq < 0.) { 
-	flagTachyon(A0); 
-	if (mAFlag == false) mAsq = ccbSqrt(mAsq); 
-	else mAsq = fabs(poleMasq); 
-      }
-  }
   
   eg.mA0(1) = sqrt(mAsq); 
   eg.mHpm = sqrt(mAsq + mw2);  
