@@ -2435,8 +2435,9 @@ double Softsusy<SoftPars>::calcRunMtCharginos() const {
 }
 ///  Formulae from hep-ph/9801365: checked but should be checked again!
 /// Implicitly calculates at the current scale.
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunningMt() {
+///  Formulae from hep-ph/9801365: checked but should be checked again!
+/// Implicitly calculates at the current scale.
+template<class SoftPars> double Softsusy<SoftPars>::calcRunningMt() {
   double mtpole  = dataSet.displayPoleMt();
   double resigmat = 0.0; 
   double qcd = 0.0, stopGluino = 0.0, higgs = 0.0; 
@@ -2459,6 +2460,9 @@ double Softsusy<SoftPars>::calcRunningMt() {
     
   resigmat = resigmat * mtpole / (16.0 * sqr(PI));  
 
+  bool ordinaryQcdCorrections = true;
+
+  /// Fixed by Ben: 28/7/14
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
   decoupling_corrections.dmt.one_loop = qcd + stopGluino + higgs + 
      neutralinos + charginoContribution;
@@ -2466,50 +2470,45 @@ double Softsusy<SoftPars>::calcRunningMt() {
   decoupling_corrections.dmt.one_loop /= (-16.0 * sqr(PI));  
 
   if (USE_TWO_LOOP_THRESHOLD) {
+    ordinaryQcdCorrections = false;
     bool & needcalc = decoupling_corrections.dmt.two_loop_needs_recalc; 
-    ///< flag: calculate corrections if 
+    /// flag: calculate corrections if the
     /// two-previous iterations gave different results
     using namespace GiNaC;
     if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) {  
-      	exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-	double dmtas2 =  decoupling_corrections.dmt.two_loop;
-	if (needcalc) {
-      		ex test = tquark_corrections::eval_tquark_twoloop_strong_pole(drbrp);
-		if (is_a<numeric>(test)) dmtas2 = ex_to<numeric>(test).to_double();
-		else { 
-			dout <<" Not numeric: 2loop pole t-quark " << endl;
-		}
-	//        if (close(dmtas2, decoupling_corrections.dmt.two_loop,TWOLOOP_NUM_THRESH)) needcalc = false; 
-	//	dout << " mt: storing" << endl;
-		decoupling_corrections.dmt.two_loop = dmtas2;
-	} else {
-		dout << " mt: no calculation " << endl;
-	}
-	/// back converion Mt -> mt(mu)
-	/// dmt_as2 is already properly normalized
-	/// ones need to normalize only 1-loop contribution
-	double dmtas = (qcd + stopGluino)/(16.0 * sqr(PI));
-	double dmt_MT = (dmtas2 - dmtas*dmtas);
-	resigmat -= mtpole*dmt_MT;
-	dout << "two-loop tquark strong pole contribution: " 
-		<< dmtas2 << endl
-		<< "two-loop total correction (Mt -> mt)" 
-		<< dmt_MT << endl;
-	}
-	
+      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+      double dmtas2 =  decoupling_corrections.dmt.two_loop;
+      if (needcalc) {
+	ex test = tquark_corrections::eval_tquark_twoloop_strong_pole(drbrp);
+	if (is_a<numeric>(test)) dmtas2 = ex_to<numeric>(test).to_double();
+	else dout <<" Not numeric: 2loop pole t-quark " << endl;
+	decoupling_corrections.dmt.two_loop = dmtas2;
+      } else dout << " mt: no calculation " << endl;
+
+      /// back converion Mt -> mt(mu)
+      /// dmt_as2 is already properly normalized
+      /// ones need to normalize only 1-loop contribution
+      double dmtas = (qcd + stopGluino)/(16.0 * sqr(PI));
+      double dmt_MT = (dmtas2 - dmtas*dmtas);
+      resigmat -= mtpole*dmt_MT;
+      dout << "two-loop tquark strong pole contribution: " 
+	   << dmtas2 << endl
+	   << "two-loop total correction (Mt -> mt)" 
+	   << dmt_MT << endl;
     }
-#else //COMPILE_FULL_SUSY_THRESHOLD
-   // 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
-   double mt = forLoops.mt;
-   double l = 2.0 * log(mt / displayMu());
-   double twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
-    (-0.538314 + 0.181534*l - 0.0379954*sqr(l));
-   resigmat = resigmat + mtpole*(twoLoopQcd / (16.0 * sqr(PI)));
-   //decoupling_corrections.dmt.two_loop = twoLoopQcd / (16.0 * sqr(PI)); 
+  } else ordinaryQcdCorrections = true;
 #endif
+  /// default without the higher order corrections: ordinary SQCD
+  if (ordinaryQcdCorrections) {
+    /// 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
+    double mt = forLoops.mt;
+    double l = 2.0 * log(mt / displayMu());
+    double twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
+       (-0.538314 + 0.181534*l - 0.0379954*sqr(l));
+    resigmat = resigmat + mtpole*(twoLoopQcd / (16.0 * sqr(PI)));
+  }
 
   return mtpole + resigmat;
-
 }
 
 template<class SoftPars>
@@ -7295,19 +7294,41 @@ void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2,
   double mAsq;
   mAsq = displayM3Squared() / (sin(beta) * cos(beta));
 
-  bool a0Tach = false;
-
+  /// What if the tree-level A^0 appears to be tachyonic?
   if (mAsq < 0.) {
-    if (!close(displayMu(), MZ, 1.0e-6)) flagTachyon(softsusy::A0); 
-    else a0Tach = true;
-    if (mAFlag == false) mAsq = ccbSqrt(mAsq); 
-    /// This may be  a bad idea in terms of convergence
-    else mAsq = fabs(mAsq);
+    /// If it's only at MZ, the point may be OK: here, we may use the pole
+    /// mass in loops, if necessary
+    if (close(displayMu(), MZ, 1.0e-6)) { 
+      if (altEwsb) mAsq = sqr(displayMaCond());
+      else {
+	double mApole = physpars.mA0(1); /// physical value
+	setDrBarPars(eg);
+      
+	double piaa = piAA(mApole, displayMu()); 
+	double t1Ov1 = doCalcTadpole1oneLoop(eg.mt, sinthDRbar), 
+	  t2Ov2 = doCalcTadpole2oneLoop(eg.mt, sinthDRbar); 
+	double poleMasq = 
+	  (displayMh2Squared() - t2Ov2 - 
+	   displayMh1Squared() + t1Ov1) / 
+	  cos(2.0 * beta) - mz2 - piaa +
+	  sqr(sin(beta)) * t1Ov1 + sqr(cos(beta)) * t2Ov2;
+	
+	mAsq = poleMasq;	
+      } ///< not alternative EWSB conditions
+    } ///< we are at MZ
+
+    /// If, after using the pole mass or whatever, we still have a problem, we
+    /// must flag a tachyon and do something to stop a proliferation of NANs
+    if (mAsq < 0.) { 
+      flagTachyon(A0); 
+      if (mAFlag == false) mAsq = EPSTOL; 
+      else mAsq = fabs(mAsq); ///< could cause a convergence problem
+    } ///< ma^2 still < 0
     
     if (PRINTOUT > 1) cout << " mA^2(tree)=" << mAsq << " since m3sq=" 
 			   << displayM3Squared() << " @ "<< displayMu() 
 			   << " " << endl; 
-  }
+  } ///< Initial mA^2 < 0
     
   DoubleMatrix mH(2, 2); 
   mH(1, 1) = mAsq * sqr(sin(beta)) + mz2 * sqr(cos(beta));
@@ -7326,27 +7347,6 @@ void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2,
   int pos;
   eg.mh0(1) = temp.min(pos); eg.mh0(2) = temp.max(); 
   // Previous solution: if we're at MZ, use the pole mA^2
-  if (close(displayMu(), MZ, 1.0e-6) && a0Tach) { 
-      double mApole = physpars.mA0(1); /// physical value
-      setDrBarPars(eg);
-      
-      double piaa = piAA(mApole, displayMu()); 
-      double t1Ov1 = doCalcTadpole1oneLoop(eg.mt, sinthDRbar), 
-      t2Ov2 = doCalcTadpole2oneLoop(eg.mt, sinthDRbar); 
-      double poleMasq = 
-	(displayMh2Squared() - t2Ov2 - 
-	 displayMh1Squared() + t1Ov1) / 
-	cos(2.0 * beta) - mz2 - piaa +
-	sqr(sin(beta)) * t1Ov1 + sqr(cos(beta)) * t2Ov2;
-      
-      mAsq = poleMasq;
-      
-      if (mAsq < 0.) { 
-	flagTachyon(A0); 
-	if (mAFlag == false) mAsq = ccbSqrt(mAsq); 
-	else mAsq = fabs(poleMasq); 
-      }
-  }
   
   eg.mA0(1) = sqrt(mAsq); 
   eg.mHpm = sqrt(mAsq + mw2);  
