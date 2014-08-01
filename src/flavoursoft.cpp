@@ -121,6 +121,12 @@ void flavourBcs(MssmSoftsusy & m,
       count++;
     }
 
+   msl2in.symmetrise();
+   msq2in.symmetrise();
+   msu2in.symmetrise();
+   msd2in.symmetrise();
+   mse2in.symmetrise();
+   
   m.setSoftMassMatrix(mLl, Ve * msl2in * Ve.transpose());
   m.setSoftMassMatrix(mEr, Ue * mse2in.transpose() * Ue.transpose());
   m.setSoftMassMatrix(mQl, Vd * msq2in * Vd.transpose());
@@ -1127,7 +1133,13 @@ void FlavourMssmSoftsusy::doSnu(double /* pizztMS */, int accuracy) {
   DoubleMatrix nuSqMix(3, 3);
   DoubleVector nuSqMasses(3);
   if (mNuSq.diagonaliseSym(nuSqMix, nuSqMasses) > EPSTOL) {
-    throw("WARNING:  sneutrino flavour diagonalisation bad accuracy\n");
+    ostringstream ii; 
+    ii << "WARNING:  sneutrino flavour diagonalisation bad accuracy\n";
+    ii.setf(ios::scientific, ios::floatfield);
+    ii.precision(6);
+    ii << "mNuSq=" << mNuSq << " on ";
+    ii << *this;
+    throw ii.str();
   }
   
   fv.nuSqMix = nuSqMix.transpose();
