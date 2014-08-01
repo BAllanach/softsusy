@@ -56,11 +56,12 @@ set label 2 "{/Symbol Ds}/{/Symbol s}" at 6,1.08
 set output "atlasScanDs.eps"
 splot "atlas_scan.dat" u ($1/1000):($2/1000):(($139-$135)/$139) notit w pm3d
 
-set xrange [0:3.1]
-set label 2 "{/Symbol D}{/Symbol W}_{CDM}h^2" at 3.05,1.08
+set xrange [0:6]
+set label 2 "{/Symbol D}{/Symbol W}_{CDM}h^2" at 6.05,1.1
 set title "{/Symbol m}>0, tan{/Symbol b}=50, A_0=0"
 set output "hiTbScanOm.eps"
-splot "deltaOm.dat" u ($1/1000):($2/1000):3 notit w pm3d
+#splot "deltaOm.dat" u ($1/1000):($2/1000):3 notit w pm3d
+splot "hiTb.dat" u ($1/1000):($2/1000):129 notit w pm3d
 unset label 2
 unset xrange
 
@@ -147,7 +148,7 @@ set label 4 "4000" at 4.2,0.43 tc rgb "white" font "Helvetica, 30" rotate by 280
 set output "atlasScanMq2.eps"
 plot "mq.data" notit w l lw 4 lc rgb "white"
 
-set xrange [0:3.1]
+set xrange [0:6]
 set yrange [0.1:1]
 set label 1 "0.10" at 0.4,0.3 tc rgb "green" font "Helvetica, 30" rotate by 280
 set label 2 "0.15" at 1.2,0.25 tc rgb "green" font "Helvetica, 30" rotate by 50
@@ -155,13 +156,15 @@ set label 3 ""
 set label 4 ""
 set output "hiTbScanOm2.eps"
 plot "omtb.data" notit w l lw 4 lc 2, \
-"ewsb3.data" notit w filledcurve y1=0.12 lc 0, \
+"ewsb3.data" notit w filledcurve y1=0.12 lc rgb "white", \
 "ewsb2.data" notit w filledcurve y1=0.12 lc 9
 unset xrange 
 unset yrange
 
 unset label 1
 unset label 2
+set xrange [0:6]
+set yrange [0:2]
 set output "atlasExcl.eps"
 plot "ATLAS_SUSY_MSUGRA_201308.txt" u ($1/1000):($2/1000) notit w l lw 16 lc 2 \
 lt 3
@@ -178,7 +181,7 @@ set ytics
 plot "tbScan1d.dat" u 4:146 tit "None" w l lc 3 lw 4, \
 "tbScan1d.dat" u 4:150 tit "{/Symbol D}All" w l lw 4 lc 1
 
-set label 1 "Allanach, Bednyakov, Ruiz de Austri, 2014" at 0,0.82 font \
+set label 1 "Allanach, Bednyakov, Ruiz de Austri, 2014" at 0,0.56 font \
 "Helvetica,12" 
 set output "tbScanDyt.eps"
 set ylabel "Y_t(M_{GUT})-Y_b(M_{GUT})"
@@ -210,4 +213,4 @@ splot "atlas_scan.dat" u ($1/1000):($2/1000):141 notit w pm3d
 set label 2 "{/Symbol Da}(All)" at 6,1.06
 set output "atlasScanDaAll.eps"
 splot "atlas_scan.dat" u ($1/1000):($2/1000):145 notit w pm3d
-!rm *.data
+#!rm *.data

@@ -646,7 +646,7 @@ int main(int argc, char *argv[]) {
     pars(1) = m0; pars(2) = m12; pars(3) = a0;
     bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
     
-    /// Switch off 3-loop RGEs etc
+    /// Switch off 3-loop RGEs etc 
     double omega2=asin(2.), msqAv2 = 0., cs = 0., dAs = 0., dY = 0., dYp = 0.;  
     USE_THREE_LOOP_RGE = false;   USE_TWO_LOOP_THRESHOLD = false;
     MssmSoftsusy twoLoop;
