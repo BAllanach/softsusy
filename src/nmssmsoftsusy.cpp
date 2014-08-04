@@ -8023,31 +8023,41 @@ double NmssmSoftsusy::calcRunMtNeutralinos() const {
 return neutralinos;
 }
 
-// double NmssmSoftsusy::calcRunningMt() {
-//   double mtpole   = displayDataSet().displayPoleMt();
-//   double resigmat = 0.0; 
-//   double qcd = 0.0, stopGluino = 0.0, higgs = 0.0; 
-//   //one and two loop qcd
-//   qcd = Softsusy<SoftParsNmssm>::calcRunMtQCD();
-//   resigmat = resigmat + qcd;
-//   /// stop/gluino correction 6% correction
-//   stopGluino = Softsusy<SoftParsNmssm>::calcRunMtStopGluino();
-//   resigmat = resigmat + stopGluino;
-//   /// rest are extra bits from Matchev et al: 2% corrections  
-//   //Higgs contribution
-//   higgs = calcRunMtHiggs();
-//   resigmat = resigmat + higgs;
-//   /// Neutralino contribution
-//   double neutralinos = calcRunMtNeutralinos();
-//   resigmat = resigmat + neutralinos;
-//   // Chargino contribution
-//   double charginoContribution = Softsusy<SoftParsNmssm>::calcRunMtCharginos();
-//   resigmat = resigmat + charginoContribution; 
+double NmssmSoftsusy::calcRunningMt2() {
+  double mtpole   = displayDataSet().displayPoleMt();
+  double resigmat = 0.0; 
+  double qcd = 0.0, stopGluino = 0.0, higgs = 0.0; 
+  //one and two loop qcd
+  qcd = Softsusy<SoftParsNmssm>::calcRunMtQCD();
+  resigmat = resigmat + qcd;
+  /// stop/gluino correction 6% correction
+  stopGluino = Softsusy<SoftParsNmssm>::calcRunMtStopGluino();
+  resigmat = resigmat + stopGluino;
+  /// rest are extra bits from Matchev et al: 2% corrections  
+  //Higgs contribution
+  higgs = calcRunMtHiggs();
+  resigmat = resigmat + higgs;
+  /// Neutralino contribution
+  double neutralinos = calcRunMtNeutralinos();
+  resigmat = resigmat + neutralinos;
+  // Chargino contribution
+  double charginoContribution = Softsusy<SoftParsNmssm>::calcRunMtCharginos();
+  resigmat = resigmat + charginoContribution; 
+  resigmat = resigmat * mtpole / (16.0 * sqr(PI));  
+  //I think rearrangements in calculation mean that two loop QCD corrections are not included in the qcd part so add the here.
+  bool ordinaryQcdCorrections = true; 
+  /// default without the higher order corrections: ordinary SQCD
+  if (ordinaryQcdCorrections) {
+    /// 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
+    double mt = displayDrBarPars().mt;
+    double l = 2.0 * log(mt / displayMu());
+    double twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
+       (-0.538314 + 0.181534*l - 0.0379954*sqr(l));
+    resigmat = resigmat + mtpole*(twoLoopQcd / (16.0 * sqr(PI)));
+  }
   
-//   resigmat = resigmat * mtpole / (16.0 * sqr(PI));  
-  
-//   return mtpole + resigmat;
-// }
+  return mtpole + resigmat;
+}
 
 double NmssmSoftsusy::calcRunMbHiggs() const {
   double mbMZ        = displayDataSet().displayMass(mBottom);
@@ -8164,34 +8174,34 @@ double NmssmSoftsusy::calcRunMbNeutralinos() const {
   return deltaNeutralino;
 }
 
-// double NmssmSoftsusy::calcRunningMb() const {
+double NmssmSoftsusy::calcRunningMb2() const {
   
-//   if (displayMu() != displayMz()) {
-//     ostringstream ii;
-//     ii << "Softsusy<SoftPars>::calcRunningMb called with mu=" <<
-//       displayMu() << '\n';
-//     throw ii.str();
-//   }
+  if (displayMu() != displayMz()) {
+    ostringstream ii;
+    ii << "Softsusy<SoftPars>::calcRunningMb called with mu=" <<
+      displayMu() << '\n';
+    throw ii.str();
+  }
   
-//   double mbMZ = displayDataSet().displayMass(mBottom);
-//   /// First convert mbMZ into DRbar value from hep-ph/9703293,0207126,9701308
-//   /// (SM gauge boson contributions)
-//   mbMZ = mbMZ * Softsusy<SoftParsNmssm>::calcRunMbDrBarConv(); 
+  double mbMZ = displayDataSet().displayMass(mBottom);
+  /// First convert mbMZ into DRbar value from hep-ph/9703293,0207126,9701308
+  /// (SM gauge boson contributions)
+  mbMZ = mbMZ * Softsusy<SoftParsNmssm>::calcRunMbDrBarConv(); 
   
-//   double deltaSquarkGluino = Softsusy<SoftParsNmssm>::calcRunMbSquarkGluino();
-//   //Chargino-squark loops
-//   double deltaSquarkChargino = Softsusy<SoftParsNmssm>::calcRunMbChargino();
-//   /// Higgs
-//   double deltaHiggs = calcRunMbHiggs();
-//   /// Neutralinos
-//   double deltaNeutralino = calcRunMbNeutralinos();
+  double deltaSquarkGluino = Softsusy<SoftParsNmssm>::calcRunMbSquarkGluino();
+  //Chargino-squark loops
+  double deltaSquarkChargino = Softsusy<SoftParsNmssm>::calcRunMbChargino();
+  /// Higgs
+  double deltaHiggs = calcRunMbHiggs();
+  /// Neutralinos
+  double deltaNeutralino = calcRunMbNeutralinos();
   
-//   /// it's NOT clear if this resummation is reliable in the full 1-loop scheme
-//   /// but it's at least valid to 1 loop. Warning though: if you add higher
-//   /// loops, you'll have to re-arrange.
-//   return mbMZ / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs
-// 		 + deltaNeutralino);
-// }
+  /// it's NOT clear if this resummation is reliable in the full 1-loop scheme
+  /// but it's at least valid to 1 loop. Warning though: if you add higher
+  /// loops, you'll have to re-arrange.
+  return mbMZ / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs
+		 + deltaNeutralino);
+}
 
 double NmssmSoftsusy::calcRunMtauHiggs() const {
   double mTauPole    = MTAU;
@@ -8305,20 +8315,20 @@ double NmssmSoftsusy::calcRunMtauNeutralinos(double mTauSMMZ) const {
   return sigmaNeutralino;
 }
 
-// double NmssmSoftsusy::calcRunningMtau() const {
-//   /// MSbar value
-//   double mTauSMMZ = displayDataSet().displayMass(mTau);
-//   /// conversion to DRbar
-//   mTauSMMZ = mTauSMMZ * Softsusy<SoftParsNmssm>::calcRunMtauDrBarConv();
-//   /// Chargino contribution  
-//   double sigmaChargino = Softsusy<SoftParsNmssm>::calcRunMtauCharginos(mTauSMMZ);
-//   /// Higgs
-//   double sigmaHiggs = calcRunMtauHiggs();
-//   /// Neutralinos
-//   double  sigmaNeutralino = calcRunMtauNeutralinos(mTauSMMZ);
+double NmssmSoftsusy::calcRunningMtau2() const {
+  /// MSbar value
+  double mTauSMMZ = displayDataSet().displayMass(mTau);
+  /// conversion to DRbar
+  mTauSMMZ = mTauSMMZ * Softsusy<SoftParsNmssm>::calcRunMtauDrBarConv();
+  /// Chargino contribution  
+  double sigmaChargino = Softsusy<SoftParsNmssm>::calcRunMtauCharginos(mTauSMMZ);
+  /// Higgs
+  double sigmaHiggs = calcRunMtauHiggs();
+  /// Neutralinos
+  double  sigmaNeutralino = calcRunMtauNeutralinos(mTauSMMZ);
   
-//   return mTauSMMZ * (1.0 + sigmaNeutralino + sigmaChargino + sigmaHiggs);
-// }
+  return mTauSMMZ * (1.0 + sigmaNeutralino + sigmaChargino + sigmaHiggs);
+}
 
 //PA: returns the mixing of Hu into h1
 double NmssmSoftsusy::h1s2Mix(){
