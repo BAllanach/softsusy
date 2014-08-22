@@ -1,18 +1,8 @@
+<li>  01/8/14 Corrected flavoured SLHA input: before, it would throw a problem
+if you only gave on element of the diagonal. Thanks to M Iskrzynski for
+noticing the bug.
 <li>  30/7/14 Corrected the A^0 tachyon fix at MZ back to a version where mh differs by 0.5 GeV. Previously, large corrections to MZ(MZ) resulted from the MA/MH loop, changing yt and therefore mh
 <li>  28/7/14 Fixed small yt bug when compiling but not using higher order corrections
 <li>  28/7/14 Hopefully fixed the MAC compilation problems. 
 <li>  24/7/14 When MA^2(MZ)<0, use MA(pole) internally within loops. Thanks to
 P Slavich.
-<li>  17/7/14 Added tolerance argument to softpoint.x
-<li>  16/7/14 Put in safety against trying to use higher order corrections without compiling them.
-<li>  16/7/14 Made delt() in two loop higgs routines more robust.
-<li>  3/7/14 Added muEff display method to NmssmSusy.
-<li>  2/7/14 Used extern templates to reduce compilation time. 
-<li>  1/7/14 Included the 1-loop imaginary parts into Higgs mixing matrix. They
-contribute at the two-loop level to the masses of the Higgs.
-<li> 20/6/13 EXTPAR setting of third family A parameters now doesn't fill in
-the others assuming universality. Thanks to F Staub.
-<li> 20/6/14 Added MODSEL 12=-1 printing running parameters out at MGUT option
-<li> 18/6/14 Major upgrade to allow the possibility of including <b>3-loop
-RGEs</b> and <b>some 2-loop threshold corrections</b> to gauge and Yukawa
-couplings. 

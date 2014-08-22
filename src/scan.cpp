@@ -25,6 +25,11 @@
 #include "utils.h"
 #include "numerics.h"
 
+bool testMuSqWrongSignOnlyProblem(sProblem a) {
+  if (!a.mgutOutOfBounds && !a.badConvergence && !a.irqfp && !a.noRhoConvergence && !a.noConvergence && !a.tachyon && !a.m3sq && !a.higgsUfb && !a.notGlobalMin && !a.nonperturbative && !a.noMuConvergence && !a.inaccurateHiggsMass && a.muSqWrongSign) return true;
+  else return false;
+}
+
 void printLineOut(double m0, double m12, double a0, double tanb, 
 		  MssmSoftsusy twoLoop, MssmSoftsusy twoLoopAs, 
 		  MssmSoftsusy & twoLoopMt, MssmSoftsusy & twoLoopMb, 
@@ -38,11 +43,15 @@ void printLineOut(double m0, double m12, double a0, double tanb,
 		  double dYMb, double dY3, double dYp, double dYpAs, 
 		  double dYpMt, double dYpMb, double dYp3) {
 
-  /// Any problems and get gnuplot to ignore the point
+  /// Any problems and get gnuplot to ignore the point unless it's only musq
+  /// wrong sign... 
   if (twoLoop.displayProblem().test() || 
-      threeLoop.displayProblem().test()) cout << "# ";
-
-	cout << m0                                                     ///< 1
+      threeLoop.displayProblem().test()) 
+    if (!testMuSqWrongSignOnlyProblem(twoLoop.displayProblem()) ||
+	!testMuSqWrongSignOnlyProblem(threeLoop.displayProblem()))
+      cout << "# ";
+  
+  cout << m0                                                     ///< 1
 	     << " " << m12                                             ///< 2
 	     << " " << a0                                              ///< 3
 	     << " " << tanb                                            ///< 4
@@ -646,7 +655,7 @@ int main(int argc, char *argv[]) {
     pars(1) = m0; pars(2) = m12; pars(3) = a0;
     bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
     
-    /// Switch off 3-loop RGEs etc
+    /// Switch off 3-loop RGEs etc 
     double omega2=asin(2.), msqAv2 = 0., cs = 0., dAs = 0., dY = 0., dYp = 0.;  
     USE_THREE_LOOP_RGE = false;   USE_TWO_LOOP_THRESHOLD = false;
     MssmSoftsusy twoLoop;
@@ -695,7 +704,7 @@ int main(int argc, char *argv[]) {
     getCmssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
 		     uni, omega3, msqAv3, cs3, dAs3, dY3, dYp3, m0, m12, a0); 
 
-    cout << "% omega_{CDM h^2}=" << omega3 << endl;
+    cout << "# omega_{CDM h^2}=" << omega3 << endl;
 
     /*    printLineOut(m0, m12, a0, tanb, twoLoop, twoLoopAs, twoLoopMt, 
 		 twoLoopMb, threeLoop, 

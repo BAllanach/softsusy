@@ -11,8 +11,8 @@ set table "mh.data"
 set cntrparam levels discrete 123,125,126,128
 splot "atlas_scan.dat" u ($1/1000):($2/1000):5 
 
-set xrange [0:3.5]
-set yrange [0.1:1]
+#set xrange [0:3.5]
+#set yrange [0.1:1]
 set table "omtb.data"
 set cntrparam levels discrete 0.10,0.15
 splot "hiTb.dat" u ($1/1000):($2/1000):129
