@@ -3166,9 +3166,9 @@ void SoftPars<Susy, Brevity>::minimalGmsb(int n5, double LAMBDA, double mMess,
 
   double f, g;
 
-  if(fabs(x) < epstol) {
+  if(fabs(x) < epstol) { /// hep-ph/9801271
     g = 1.0 + x*x/6.0 + sqr(x*x)/15.0;
-    f = 1.0 + x*x/36.0 + 11.0*sqr(x*x)/450.0;
+    f = 1.0 + x*x/36.0 - 11.0*sqr(x*x)/450.0;
   }
   else if(fabs(x-1.0) < 0.0001) {
     g  =  log(4.0);
