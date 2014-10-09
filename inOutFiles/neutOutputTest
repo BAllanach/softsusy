@@ -48,7 +48,7 @@ Block RVLAMLQDIN           # input LLE couplings at MGUT
 Block MASS                      # Mass spectrum
 # PDG code     mass             particle
         24     8.05052081e+01   # MW
-        25     1.13403552e+02   # CP even neutral scalar
+        25     1.13403520e+02   # CP even neutral scalar
         35     3.24219782e+02   # CP even neutral scalar
         36     3.24219782e+02   # CP odd neutral scalar
         37     1.59519291e+02   # charged scalar
@@ -64,13 +64,13 @@ Block MASS                      # Mass spectrum
    1000015     3.36592414e+02   # charged scalar
    2000011     3.46985269e+02   # charged scalar
    2000013     3.52592085e+02   # charged scalar
-   2000015     6.26132935e+02   # charged scalar
+   2000015     6.26132918e+02   # charged scalar
    1000012     3.35324868e+02   # CP even neutral scalar
    1000014     3.43214338e+02   # CP even neutral scalar
-   1000016     6.20736277e+02   # CP even neutral scalar
+   1000016     6.20736260e+02   # CP even neutral scalar
    1000017     3.35324868e+02   # CP odd neutral scalar
    1000018     3.43214338e+02   # CP odd neutral scalar
-   1000019     6.20736277e+02   # CP odd neutral scalar
+   1000019     6.20736260e+02   # CP odd neutral scalar
    1000001     9.72596225e+02   # ~d_1
    1000003     1.00167261e+03   # ~d_2
    1000005     1.00849848e+03   # ~d_3
@@ -559,49 +559,49 @@ Block RVLMIX  # charged higgs-slepton mixing matrix
   7 7    3.11753942e-08   # C_{77}
   7 8   -6.09072945e-07   # C_{78}
 Block RVHMIX  # CP-even neutral scalar mixing matrix 
-  1 1    5.34206935e-02   # curlyN_{11}
+  1 1    5.34206962e-02   # curlyN_{11}
   1 2    9.98572095e-01   # curlyN_{12}
-  1 3   -2.06946221e-06   # curlyN_{13}
-  1 4   -2.59556600e-07   # curlyN_{14}
-  1 5    3.18245062e-07   # curlyN_{15}
-  2 1    3.79552371e-05   # curlyN_{21}
-  2 2   -1.18147978e-06   # curlyN_{22}
-  2 3    5.62727000e-01   # curlyN_{23}
-  2 4   -2.56973236e-01   # curlyN_{24}
-  2 5    7.85686374e-01   # curlyN_{25}
-  3 1    7.29284459e-05   # curlyN_{31}
-  3 2   -2.30893458e-06   # curlyN_{32}
-  3 3    7.14335598e-01   # curlyN_{33}
-  3 4   -3.27151356e-01   # curlyN_{34}
-  3 5   -6.18624796e-01   # curlyN_{35}
-  4 1    5.17817902e-05   # curlyN_{41}
-  4 2   -1.67149248e-06   # curlyN_{42}
+  1 3   -2.06949130e-06   # curlyN_{13}
+  1 4   -2.59559513e-07   # curlyN_{14}
+  1 5    3.18249276e-07   # curlyN_{15}
+  2 1    3.79552400e-05   # curlyN_{21}
+  2 2   -1.18146769e-06   # curlyN_{22}
+  2 3    5.62727008e-01   # curlyN_{23}
+  2 4   -2.56973240e-01   # curlyN_{24}
+  2 5    7.85686367e-01   # curlyN_{25}
+  3 1    7.29284494e-05   # curlyN_{31}
+  3 2   -2.30891250e-06   # curlyN_{32}
+  3 3    7.14335592e-01   # curlyN_{33}
+  3 4   -3.27151353e-01   # curlyN_{34}
+  3 5   -6.18624805e-01   # curlyN_{35}
+  4 1    5.17817930e-05   # curlyN_{41}
+  4 2   -1.67147799e-06   # curlyN_{42}
   4 3    4.16008375e-01   # curlyN_{43}
   4 4    9.09360625e-01   # curlyN_{44}
   4 5   -5.31769536e-04   # curlyN_{45}
-  5 1    9.98572091e-01   # curlyN_{51}
-  5 2   -5.34206935e-02   # curlyN_{52}
-  5 3   -9.50206088e-05   # curlyN_{53}
-  5 4   -1.34815859e-05   # curlyN_{54}
-  5 5    1.53268528e-05   # curlyN_{55}
+  5 1    9.98572090e-01   # curlyN_{51}
+  5 2   -5.34206961e-02   # curlyN_{52}
+  5 3   -9.50206125e-05   # curlyN_{53}
+  5 4   -1.34815864e-05   # curlyN_{54}
+  5 5    1.53268534e-05   # curlyN_{55}
 Block RVAMIX  # CP-odd neutral scalar mixing matrix 
-  1 1    3.79708714e-05   # curlyN~_{11}
-  1 2    9.89640304e-07   # curlyN~_{12}
-  1 3    5.62727000e-01   # curlyN~_{13}
-  1 4   -2.56973236e-01   # curlyN~_{14}
-  1 5    7.85686374e-01   # curlyN~_{15}
-  2 1    7.29600572e-05   # curlyN~_{21}
-  2 2    1.92851379e-06   # curlyN~_{22}
-  2 3    7.14335598e-01   # curlyN~_{23}
-  2 4   -3.27151355e-01   # curlyN~_{24}
-  2 5   -6.18624796e-01   # curlyN~_{25}
-  3 1    5.18044576e-05   # curlyN~_{31}
-  3 2    1.40481927e-06   # curlyN~_{32}
+  1 1    3.79708726e-05   # curlyN~_{11}
+  1 2    9.89654566e-07   # curlyN~_{12}
+  1 3    5.62727008e-01   # curlyN~_{13}
+  1 4   -2.56973240e-01   # curlyN~_{14}
+  1 5    7.85686367e-01   # curlyN~_{15}
+  2 1    7.29600575e-05   # curlyN~_{21}
+  2 2    1.92853959e-06   # curlyN~_{22}
+  2 3    7.14335592e-01   # curlyN~_{23}
+  2 4   -3.27151353e-01   # curlyN~_{24}
+  2 5   -6.18624805e-01   # curlyN~_{25}
+  3 1    5.18044581e-05   # curlyN~_{31}
+  3 2    1.40483628e-06   # curlyN~_{32}
   3 3    4.16008375e-01   # curlyN~_{33}
   3 4    9.09360625e-01   # curlyN~_{34}
-  3 5   -5.31769525e-04   # curlyN~_{35}
+  3 5   -5.31769526e-04   # curlyN~_{35}
   4 1    9.98673839e-01   # curlyN~_{41}
-  4 2    5.14835365e-02   # curlyN~_{42}
-  4 3   -9.50399392e-05   # curlyN~_{43}
-  4 4   -1.34847698e-05   # curlyN~_{44}
-  4 5    1.53303522e-05   # curlyN~_{45}
+  4 2    5.14835391e-02   # curlyN~_{42}
+  4 3   -9.50399419e-05   # curlyN~_{43}
+  4 4   -1.34847701e-05   # curlyN~_{44}
+  4 5    1.53303526e-05   # curlyN~_{45}

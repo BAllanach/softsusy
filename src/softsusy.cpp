@@ -6535,14 +6535,25 @@ void Softsusy<SoftPars>::physical(int accuracy) {
   double mb = forLoops.mb;
   double mtau = forLoops.mtau;
 
-  /// Re-calculate the 1-loop tadpoles for the calculation
-  calcTadpole1Ms1loop(mt, sinthDRbarMS);  
-  calcTadpole2Ms1loop(mt, sinthDRbarMS); 
-
   doUpSquarks(mt, pizztMS, sinthDRbarMS, accuracy); 
   doDownSquarks(mb, pizztMS, sinthDRbarMS, accuracy, mt); 
   doChargedSleptons(mtau, pizztMS, sinthDRbarMS, accuracy); 
   doSnu(pizztMS, accuracy);
+
+  gluino(accuracy); 
+  charginos(accuracy, piwwtMS); 
+  neutralinos(accuracy, piwwtMS, pizztMS);
+
+  /// Re-calculate the 1-loop tadpoles for the calculation
+  /*  if (accuracy > 1) {
+    runto(displayDataSet().displayPoleMt());
+    calcDrBarPars(); mt = forLoops.mt;
+    sinthDRbarMS = calcSinthdrbar();
+    piwwtMS = sqr(displayMwRun()) - sqr(displayMw());
+    pizztMS = sqr(displayMzRun()) - sqr(displayMz());
+    calcTadpole1Ms1loop(mt, sinthDRbarMS);  
+    calcTadpole2Ms1loop(mt, sinthDRbarMS); 
+    } DEBUG: this is for later - might improve mh but perhaps MA will suffer */
   
   /// Charginos/neutralinos/higgs
   Softsusy<SoftPars> * ppp;
@@ -6585,11 +6596,7 @@ void Softsusy<SoftPars>::physical(int accuracy) {
   physpars.mA0(1) = ppp->displayPhys().mA0(1);
   physpars.mh0(2) = ppp->displayPhys().mh0(2);
   physpars.mHpm = ppp->displayPhys().mHpm;
- 
-  gluino(accuracy); 
-  charginos(accuracy, piwwtMS); 
-  neutralinos(accuracy, piwwtMS, pizztMS);
-}
+ }
 
 /// For a given trial value of the log of field H2, gives the value of the
 /// potential at the minimum. The following global variables must be set before
