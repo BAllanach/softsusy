@@ -83,11 +83,11 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 		double omega2Mt, double omega2Mb, double omega3, 
 		double msqAv2, double msqAvOdd, double msqAv2As, double msqAv2Mt, 
 		double msqAv2Mb, double msqAv3, double cs, double csOdd, double csAs, double csMt, double csMb, double cs3) {
-  cout << "\\begin{table}\n\\begin{center}\n\\begin{tabular}{|c|c|ccccccc|}"
-       << "\\hline\nThreshold & RGEs  & $m_h$  & $m_{\\tilde g}$ & "
+  cout << "\\begin{table}\n\\begin{center}\n\\begin{tabular}{|c|ccccccc|}"
+       << "\\hline\n  & $m_h$  & $m_{\\tilde g}$ & "
        << "$m_{{\\tilde q}}$ & $m_{\\chi_1^0}$  & $m_{\\chi_2^0}$ & "
        << "$m_{\\chi_3^0}$ & $m_{\\chi_4}^0$ \\\\ \\hline\n$Q$"
-       << "               & 2 & ";
+       << "               &  ";
   if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A\\\\\n"); else   printf("%5.1f & %4.0f & %4.0f & %4.0f & %4.0f & %4.0f &%4.0f\\\\\n",
 	 twoLoop.displayPhys().mh0(1), 
 	 twoLoop.displayPhys().mGluino, 
@@ -97,7 +97,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 fabs(twoLoop.displayPhys().mneut(3)), 
 	 fabs(twoLoop.displayPhys().mneut(4))
 	 );
-  cout << "$\\Delta_3$ & 3 & ";
+  cout << "$\\Delta_3$ &  ";
   if (omegaOdd != omegaOdd) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A\\\\\n"); else  printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
 	 oddLoop.displayPhys().mh0(1) - twoLoop.displayPhys().mh0(1), 
 	 oddLoop.displayPhys().mGluino - twoLoop.displayPhys().mGluino, 
@@ -111,7 +111,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 fabs(oddLoop.displayPhys().mneut(4)) - 
 	 fabs(twoLoop.displayPhys().mneut(4))
 	 ); 
-  cout << "$\\Delta \\alpha_s$  & 2 & ";
+  cout << "$\\Delta \\alpha_s$  &  ";
   if (omega2As!= omega2As) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
 	 twoLoopAs.displayPhys().mh0(1) - twoLoop.displayPhys().mh0(1), 
 	 twoLoopAs.displayPhys().mGluino - twoLoop.displayPhys().mGluino, 
@@ -125,7 +125,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 fabs(twoLoopAs.displayPhys().mneut(4)) - 
 	 fabs(twoLoop.displayPhys().mneut(4))
 	 );
-  cout << "$\\Delta m_t$      & 2 & ";
+  cout << "$\\Delta m_t$      & ";
   if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A  \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
 	 twoLoopMt.displayPhys().mh0(1) - twoLoop.displayPhys().mh0(1), 
 	 twoLoopMt.displayPhys().mGluino - twoLoop.displayPhys().mGluino, 
@@ -139,7 +139,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 fabs(twoLoopMt.displayPhys().mneut(4)) - 
 	 fabs(twoLoop.displayPhys().mneut(4))
 	 );
-  cout << "$\\Delta m_b, m_\\tau$& 2 & ";
+  cout << "$\\Delta m_b, m_\\tau$& ";
   if (omega2Mb != omega2Mb) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A  \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
 	 twoLoopMb.displayPhys().mh0(1) - twoLoop.displayPhys().mh0(1), 
 	 twoLoopMb.displayPhys().mGluino - twoLoop.displayPhys().mGluino, 
@@ -153,7 +153,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 fabs(twoLoopMb.displayPhys().mneut(4)) - 
 	 fabs(twoLoop.displayPhys().mneut(4))
 	 );
-  cout << "$\\Delta$ All      & 3 & ";
+  cout << "$\\Delta$ All      & ";
   if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
 	 threeLoop.displayPhys().mh0(1) - twoLoop.displayPhys().mh0(1), 
 	 threeLoop.displayPhys().mGluino - twoLoop.displayPhys().mGluino, 
@@ -168,10 +168,10 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 fabs(twoLoop.displayPhys().mneut(4))
 	 );
   cout << "\n%\n\\hline"
-       << "&& $m_{{\\tilde t}_L}$  & $m_{{\\tilde t}_R}$ &$m_{{\\tilde b}_L}$&"
+       << "& $m_{{\\tilde t}_L}$  & $m_{{\\tilde t}_R}$ &$m_{{\\tilde b}_L}$&"
        << "$m_{{\\tilde b}_R}$&$m_{{\\tilde \\tau}_L}$&$m_{{\\tilde \\tau}_R}$&"
        << "$m_{\\chi_1}^\\pm$ \\\\ \\hline\n"
-       << "None             & 2 &";
+       << "$Q$             & ";
   if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%4.0f & %4.0f & %4.0f & %4.0f & %4.0f & %4.0f &%4.0f\\\\\n",
 	 twoLoop.displayPhys().mu(1, 3), 
 	 twoLoop.displayPhys().mu(2, 3), 
@@ -181,7 +181,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 twoLoop.displayPhys().me(2, 3), 
 	 twoLoop.displayPhys().mch(1)
 	 );
-  cout << "$\\Delta_3$ & 3 & ";
+  cout << "$\\Delta_3$ & ";
   if (omegaOdd != omegaOdd) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
 	 oddLoop.displayPhys().mu(1, 3) - twoLoop.displayPhys().mu(1, 3), 
 	 oddLoop.displayPhys().mu(2, 3) - twoLoop.displayPhys().mu(2, 3), 
@@ -193,7 +193,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 fabs(twoLoop.displayPhys().mch(1))
 	 );
 
-  cout << "$\\Delta \\alpha_s$  & 2 & ";
+  cout << "$\\Delta \\alpha_s$  & ";
   if (omega2As != omega2As) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
 	 twoLoopAs.displayPhys().mu(1, 3) - twoLoop.displayPhys().mu(1, 3), 
 	 twoLoopAs.displayPhys().mu(2, 3) - twoLoop.displayPhys().mu(2, 3), 
@@ -204,7 +204,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 fabs(twoLoopAs.displayPhys().mch(1)) - 
 	 fabs(twoLoop.displayPhys().mch(1))
 	 );
-  cout << "$\\Delta m_t$      & 2 & ";
+  cout << "$\\Delta m_t$      & ";
   if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
 	 twoLoopMt.displayPhys().mu(1, 3) - twoLoop.displayPhys().mu(1, 3), 
 	 twoLoopMt.displayPhys().mu(2, 3) - twoLoop.displayPhys().mu(2, 3), 
@@ -215,7 +215,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 fabs(twoLoopMt.displayPhys().mch(1)) - 
 	 fabs(twoLoop.displayPhys().mch(1))
 	 );
-  cout << "$\\Delta m_b, m_\\tau$& 2 & ";
+  cout << "$\\Delta m_b, m_\\tau$& ";
   if (omega2Mb != omega2Mb) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
 	 twoLoopMb.displayPhys().mu(1, 3) - twoLoop.displayPhys().mu(1, 3), 
 	 twoLoopMb.displayPhys().mu(2, 3) - twoLoop.displayPhys().mu(2, 3), 
@@ -226,7 +226,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 fabs(twoLoopMb.displayPhys().mch(1)) - 
 	 fabs(twoLoop.displayPhys().mch(1))
 	 );
-  cout << "$\\Delta$ All      & 3 & ";
+  cout << "$\\Delta$ All      & ";
   if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f & %+5.1f &%+5.1f\\\\\n",
 	 threeLoop.displayPhys().mu(1, 3) - twoLoop.displayPhys().mu(1, 3), 
 	 threeLoop.displayPhys().mu(2, 3) - twoLoop.displayPhys().mu(2, 3), 
@@ -238,10 +238,10 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 fabs(twoLoop.displayPhys().mch(1))
 	 );
   cout << "\n%\n\\hline";
-  cout << "      &  & $g_3(M_{SUSY})$ & $Y_t(M_{SUSY})$ & "
+  cout << "      &   $g_3(M_{SUSY})$ & $Y_t(M_{SUSY})$ & "
        << " $Y_b(M_{SUSY})$ & $Y_\\tau(M_{SUSY})$  & $\\mu(M_{SUSY})$"
        << "    & $\\Omega_{CDM} h^2$ & $\\sigma_{SUSY}^{TOT}$\\\\ \\hline\n"
-       << " None                   & 2 & ";
+       << " $Q$                   & ";
 
   if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A &\\\\\n"); else printf("%5.3f & %5.3f & %5.3f & %5.3f & %4.0f & %5.2f & %5.1f\\\\\n",
 	 twoLoop.displayGaugeCoupling(3), 
@@ -251,7 +251,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 twoLoop.displaySusyMu(),
 											 omega2, cs
 	 );
-  cout << "$\\Delta_3$     & 3 & ";
+  cout << "$\\Delta_3$     &  ";
   if (omegaOdd != omegaOdd) printf("N/A & N/A & N/A & N/A & N/A & N/A &\\\\\n"); else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.2f & %+5.1f\\\\\n",
 	 oddLoop.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
 	 oddLoop.displayYukawaElement(YU, 3, 3) - 
@@ -265,7 +265,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 											     csOdd - cs
 	 );
 
-  cout << "$\\Delta \\alpha_s$  & 2 & ";
+  cout << "$\\Delta \\alpha_s$  & ";
   if (omega2As != omega2As) printf("N/A & N/A & N/A & N/A & N/A & N/A &\\\\\n"); else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.2f & %+5.1f\\\\\n",
 	 twoLoopAs.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
 	 twoLoopAs.displayYukawaElement(YU, 3, 3) - 
@@ -278,7 +278,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 											     omega2As - omega2,
 											     csAs - cs
 	 );
-  cout << "$\\Delta m_t$      & 2 & ";
+  cout << "$\\Delta m_t$      & ";
     if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A & N/A & N/A& N/A\\\\\n"); else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.2f & %+5.1f\\\\\n",
 	 twoLoopMt.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
 	 twoLoopMt.displayYukawaElement(YU, 3, 3) - 
@@ -290,7 +290,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 twoLoopMt.displaySusyMu() - twoLoop.displaySusyMu(),
 											       omega2Mt - omega2, csMt - cs
 	 );
-    cout << "$\\Delta m_b, m_\\tau$& 2 & ";
+    cout << "$\\Delta m_b, m_\\tau$& ";
     if (omega2Mb != omega2Mb) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A\\\\\n"); else printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.2f & %+5.1f\\\\\n",
 	 twoLoopMb.displayGaugeCoupling(3) - twoLoop.displayGaugeCoupling(3), 
 	 twoLoopMb.displayYukawaElement(YU, 3, 3) - 
@@ -302,7 +302,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 twoLoopMb.displaySusyMu() - twoLoop.displaySusyMu(),
 												omega2Mb - omega2, csMb - cs
 	 );
-    cout << "$\\Delta$ All      & 3 & ";
+    cout << "$\\Delta$ All      & ";
     //    if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A &
     //    \\\\\n"); else 
     printf("%+5.3f & %+5.3f & %+5.3f & %+5.3f & %+4.0f & %+5.2f &%+5.1f\\\\\n",
