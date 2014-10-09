@@ -26,10 +26,10 @@ Block EXTPAR               # scale of SUSY breaking BCs
 Block MASS                      # Mass spectrum
 # PDG code     mass             particle
         24     8.04030583e+01   # MW
-        25     1.15412395e+02   # h0
-        35     7.21764861e+02   # H0
-        36     7.21494416e+02   # A0
-        37     7.26199689e+02   # H+
+        25     1.15412339e+02   # h0
+        35     7.21764839e+02   # H0
+        36     7.21494395e+02   # A0
+        37     7.26199668e+02   # H+
    1000021     1.14713671e+03   # ~g
    1000022     2.04229798e+02   # ~neutralino(1)
    1000023     3.86196326e+02   # ~neutralino(2)
@@ -59,7 +59,7 @@ Block MASS                      # Mass spectrum
    2000013     2.29856651e+02   # ~mu_R
    2000015     3.62948122e+02   # ~stau_2
 Block alpha                     # Effective Higgs mixing parameter
-          -1.06904508e-01       # alpha - evaluated at p^2=0
+          -1.06904512e-01       # alpha - evaluated at p^2=0
 Block nmix                  # neutralino mixing matrix
   1  1     9.95883131e-01   # N_{1,1}
   1  2    -1.72871692e-02   # N_{1,2}
