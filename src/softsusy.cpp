@@ -6512,14 +6512,16 @@ void Softsusy<SoftPars>::treeSnu(double & mSnuSquared,
 }
 
 template<class SoftPars>
-void Softsusy<SoftPars>::calcHiggsAtScale(int accuracy, double mt, double sinthDRbarMS, double
+void Softsusy<SoftPars>::calcHiggsAtScale(int accuracy, double mt, 
+					  double sinthDRbarMS, double
 					  piwwtMS, double pizztMS, double q) {
   /// Higgs: potentially at a different scale
   Softsusy<SoftPars> ppp(*this);
   
-  /// Re-calculate the 1-loop tadpoles for the calculation
-  /* if (accuracy > 1) {
-    ppp.runto(displayDataSet().displayPoleMt());
+  /// Re-calculate the 1-loop tadpoles for the calculation if a different
+  /// renormalisation scale is required
+  if (accuracy > 1 && q > MZ) {
+    ppp.runto(q);
     ppp.calcDrBarPars(); mt = ppp.displayDrBarPars().mt;
     sinthDRbarMS = ppp.calcSinthdrbar();
     piwwtMS = sqr(ppp.displayMwRun()) - sqr(ppp.displayMw());
@@ -6527,9 +6529,8 @@ void Softsusy<SoftPars>::calcHiggsAtScale(int accuracy, double mt, double sinthD
     ppp.calcTadpole1Ms1loop(mt, sinthDRbarMS);  
     ppp.calcTadpole2Ms1loop(mt, sinthDRbarMS); 
     } 
-    DEBUG: this is for later - might improve mh but perhaps MA will suffer */
-
-  ppp.higgs(accuracy, piwwtMS, pizztMS);  /// DEBUG C version
+  
+  ppp.higgs(accuracy, piwwtMS, pizztMS);  
 
   const int maxHiggsIterations = 20;
   double currentAccuracy = 1.0;
@@ -6544,7 +6545,7 @@ void Softsusy<SoftPars>::calcHiggsAtScale(int accuracy, double mt, double sinthD
   /// TOLERANCE fractional accuracy
   int i = 1; while (i < maxHiggsIterations && accuracy > 0 && 
 		    currentAccuracy > TOLERANCE) {
-    /// DEBUG C version
+
     higgsTachyon = ppp.higgs(accuracy, piwwtMS, pizztMS); /// iterate 
 
     DoubleVector newHiggsMasses(4);
