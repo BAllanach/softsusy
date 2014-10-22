@@ -6543,31 +6543,31 @@ void Softsusy<SoftPars>::physical(int accuracy) {
   gluino(accuracy); 
   charginos(accuracy, piwwtMS); 
   neutralinos(accuracy, piwwtMS, pizztMS);
-
+  
+  /// Higgs: potentially at a different scale
+  Softsusy<SoftPars> ppp(*this);
+  
   /// Re-calculate the 1-loop tadpoles for the calculation
-  /*  if (accuracy > 1) {
-    runto(displayDataSet().displayPoleMt());
-    calcDrBarPars(); mt = forLoops.mt;
-    sinthDRbarMS = calcSinthdrbar();
-    piwwtMS = sqr(displayMwRun()) - sqr(displayMw());
-    pizztMS = sqr(displayMzRun()) - sqr(displayMz());
-    calcTadpole1Ms1loop(mt, sinthDRbarMS);  
-    calcTadpole2Ms1loop(mt, sinthDRbarMS); 
-    } DEBUG: this is for later - might improve mh but perhaps MA will suffer */
-  
-  /// Charginos/neutralinos/higgs
-  Softsusy<SoftPars> * ppp;
-  ppp = this;
-  
-  ppp->higgs(accuracy, piwwtMS, pizztMS);  /// DEBUG C version
+  /* if (accuracy > 1) {
+    ppp.runto(displayDataSet().displayPoleMt());
+    ppp.calcDrBarPars(); mt = ppp.displayDrBarPars().mt;
+    sinthDRbarMS = ppp.calcSinthdrbar();
+    piwwtMS = sqr(ppp.displayMwRun()) - sqr(ppp.displayMw());
+    pizztMS = sqr(ppp.displayMzRun()) - sqr(ppp.displayMz());
+    ppp.calcTadpole1Ms1loop(mt, sinthDRbarMS);  
+    ppp.calcTadpole2Ms1loop(mt, sinthDRbarMS); 
+    } 
+    DEBUG: this is for later - might improve mh but perhaps MA will suffer */
+
+  ppp.higgs(accuracy, piwwtMS, pizztMS);  /// DEBUG C version
 
   const int maxHiggsIterations = 20;
   double currentAccuracy = 1.0;
   DoubleVector oldHiggsMasses(4);
-  oldHiggsMasses(1) = ppp->displayPhys().mh0(1);   
-  oldHiggsMasses(2) = ppp->displayPhys().mA0(1);
-  oldHiggsMasses(3) = ppp->displayPhys().mh0(2);
-  oldHiggsMasses(4) = ppp->displayPhys().mHpm;
+  oldHiggsMasses(1) = ppp.displayPhys().mh0(1);   
+  oldHiggsMasses(2) = ppp.displayPhys().mA0(1);
+  oldHiggsMasses(3) = ppp.displayPhys().mh0(2);
+  oldHiggsMasses(4) = ppp.displayPhys().mHpm;
   bool higgsTachyon = false;
   /// Iterate Higgs calculation (unless accuracy=0, in which case we just need
   /// a rough calculation) until the Higgs masses all converge to better than
@@ -6575,13 +6575,13 @@ void Softsusy<SoftPars>::physical(int accuracy) {
   int i = 1; while (i < maxHiggsIterations && accuracy > 0 && 
 		    currentAccuracy > TOLERANCE) {
     /// DEBUG C version
-    higgsTachyon = ppp->higgs(accuracy, piwwtMS, pizztMS); /// iterate 
+    higgsTachyon = ppp.higgs(accuracy, piwwtMS, pizztMS); /// iterate 
 
     DoubleVector newHiggsMasses(4);
-    newHiggsMasses(1) = ppp->displayPhys().mh0(1);
-    newHiggsMasses(2) = ppp->displayPhys().mA0(1);
-    newHiggsMasses(3) = ppp->displayPhys().mh0(2);
-    newHiggsMasses(4) = ppp->displayPhys().mHpm;
+    newHiggsMasses(1) = ppp.displayPhys().mh0(1);
+    newHiggsMasses(2) = ppp.displayPhys().mA0(1);
+    newHiggsMasses(3) = ppp.displayPhys().mh0(2);
+    newHiggsMasses(4) = ppp.displayPhys().mHpm;
 
     currentAccuracy = oldHiggsMasses.compare(newHiggsMasses);
 
@@ -6592,10 +6592,11 @@ void Softsusy<SoftPars>::physical(int accuracy) {
 
   if (higgsTachyon) { flagTachyon(h0); flagTachyon(softsusy::A0); 
     flagTachyon(hpm); }
-  physpars.mh0(1) = ppp->displayPhys().mh0(1);
-  physpars.mA0(1) = ppp->displayPhys().mA0(1);
-  physpars.mh0(2) = ppp->displayPhys().mh0(2);
-  physpars.mHpm = ppp->displayPhys().mHpm;
+  physpars.mh0(1) = ppp.displayPhys().mh0(1);
+  physpars.mA0(1) = ppp.displayPhys().mA0(1);
+  physpars.mh0(2) = ppp.displayPhys().mh0(2);
+  physpars.mHpm   = ppp.displayPhys().mHpm;
+  physpars.thetaH = ppp.displayPhys().thetaH; 
  }
 
 /// For a given trial value of the log of field H2, gives the value of the
