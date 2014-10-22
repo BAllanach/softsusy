@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
 #else
 	  compilationProblem = true;
 	  cout << "Two-loop thresholds not compiled.\n";
-	  cout << "Please use the --enable-two-loop-susy-thresholds with the configure option.\n";
+	  cout << "Please use the --two-loop-susy-thresholds with the configure option.\n";
 	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
 #endif
 	}
