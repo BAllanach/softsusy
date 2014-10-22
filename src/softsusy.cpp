@@ -6511,39 +6511,9 @@ void Softsusy<SoftPars>::treeSnu(double & mSnuSquared,
       * c2b;
 }
 
-/// Organises calculation of physical quantities such as sparticle masses etc
-/// Call AT MSusy
 template<class SoftPars>
-void Softsusy<SoftPars>::physical(int accuracy) {
-  double sinthDRbarMS, piwwtMS, pizztMS;
-
-  calcDrBarPars();
-
-  if (accuracy == 0) {
-    sinthDRbarMS = 0.0;
-    piwwtMS = 0.0;
-    pizztMS = 0.0;
-  }
-  else {
-    sinthDRbarMS = calcSinthdrbar();
-    piwwtMS = sqr(displayMwRun()) - sqr(displayMw());
-    pizztMS = sqr(displayMzRun()) - sqr(displayMz());
-  }
-
-  /// Running masses at MSUSY
-  double mt = forLoops.mt;
-  double mb = forLoops.mb;
-  double mtau = forLoops.mtau;
-
-  doUpSquarks(mt, pizztMS, sinthDRbarMS, accuracy); 
-  doDownSquarks(mb, pizztMS, sinthDRbarMS, accuracy, mt); 
-  doChargedSleptons(mtau, pizztMS, sinthDRbarMS, accuracy); 
-  doSnu(pizztMS, accuracy);
-
-  gluino(accuracy); 
-  charginos(accuracy, piwwtMS); 
-  neutralinos(accuracy, piwwtMS, pizztMS);
-  
+void Softsusy<SoftPars>::calcHiggsAtScale(int accuracy, double mt, double sinthDRbarMS, double
+					  piwwtMS, double pizztMS, double q) {
   /// Higgs: potentially at a different scale
   Softsusy<SoftPars> ppp(*this);
   
@@ -6592,11 +6562,47 @@ void Softsusy<SoftPars>::physical(int accuracy) {
 
   if (higgsTachyon) { flagTachyon(h0); flagTachyon(softsusy::A0); 
     flagTachyon(hpm); }
+
   physpars.mh0(1) = ppp.displayPhys().mh0(1);
   physpars.mA0(1) = ppp.displayPhys().mA0(1);
   physpars.mh0(2) = ppp.displayPhys().mh0(2);
   physpars.mHpm   = ppp.displayPhys().mHpm;
   physpars.thetaH = ppp.displayPhys().thetaH; 
+}
+
+/// Organises calculation of physical quantities such as sparticle masses etc
+/// Call AT MSusy
+template<class SoftPars>
+void Softsusy<SoftPars>::physical(int accuracy) {
+  double sinthDRbarMS, piwwtMS, pizztMS;
+
+  calcDrBarPars();
+
+  if (accuracy == 0) {
+    sinthDRbarMS = 0.0;
+    piwwtMS = 0.0;
+    pizztMS = 0.0;
+  }
+  else {
+    sinthDRbarMS = calcSinthdrbar();
+    piwwtMS = sqr(displayMwRun()) - sqr(displayMw());
+    pizztMS = sqr(displayMzRun()) - sqr(displayMz());
+  }
+
+  /// Running masses at MSUSY
+  double mt = forLoops.mt;
+  double mb = forLoops.mb;
+  double mtau = forLoops.mtau;
+
+  doUpSquarks(mt, pizztMS, sinthDRbarMS, accuracy); 
+  doDownSquarks(mb, pizztMS, sinthDRbarMS, accuracy, mt); 
+  doChargedSleptons(mtau, pizztMS, sinthDRbarMS, accuracy); 
+  doSnu(pizztMS, accuracy);
+
+  gluino(accuracy); 
+  charginos(accuracy, piwwtMS); 
+  neutralinos(accuracy, piwwtMS, pizztMS);
+  calcHiggsAtScale(accuracy, mt, sinthDRbarMS, piwwtMS, pizztMS);
  }
 
 /// For a given trial value of the log of field H2, gives the value of the
