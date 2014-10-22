@@ -1036,6 +1036,8 @@ unphysical point.}
     \code{--mgut=unified} & define unification scale $M_X$ by $g_1(M_X)=g_2(M_X)$ \\
     \code{--mgut=msusy} & set unification scale to $M_\text{SUSY}$ \\
     \code{--mgut=<value>} & set unification scale to fixed value \\
+    \code{--higgsUncertainties} & provides an estimate of uncertainties in
+      Higgs masses\\
     \hline
   \end{tabular}
   \caption{General command line options for \code{softpoint.x} These variables
@@ -1046,7 +1048,6 @@ unphysical point.}
 Bracketed entries should be replaced by the desired numerical values, (in GeV
 if they are dimensionful). The program will provide output from one point in
 the CMSSM, mAMSB or mGMSB model. 
-
 
 For users that are not familiar with \code{C++}, we note that the executable
 interface allows the calculation at just one parameter point in SUSY breaking 
@@ -1080,6 +1081,7 @@ Block SOFTSUSY     # SOFTSUSY specific inputs
  12   <printSpectra>  # Prints spectrum even when point is theoretically
 excluded if=1
  13   <mAflag>        # If =0 (default), sets tachyonic mA=0, otherwise mA=sqrt(|mA|^2)
+ 21   <higgsUncert>   # If =1, provides an estimate of Higgs mass uncertainties
 \end{verbatim}
 \normalsize
 The fractional numerical precision on masses and couplings output by \SOFTSUSY~is better than \code{TOLERANCE}, which
@@ -1165,6 +1167,16 @@ space report tachyons only in the
 early iterations of the algorithm depicted in Fig.~\ref{fig:algorithm},
  and such points may
 be physically fine if there are no further problems reported. 
+
+\code{<higgsUncert>}~is by default set to \code{0}, but if it is set to
+\code{1}, then \SOFTSUSY~will estimate the approximate errors in each Higgs
+boson mass, in units of GeV. This is printed out at the bottom of the SLHA
+file in a comment. 
+The uncertainties are calculated as follows: For ten different values of
+renormalisation scale between $M_Z$ and $2 M_{SUSY}$, values of the
+physical Higgs masses are calculated. The uncertainty is estimated as the
+difference between the maximum Higgs mass calculated in this way and the
+minimum one. 
 
 In the standard SLHA input format, a parameter 
 \code{12}~in \code{Block MODSEL} fixes the maximum scale of printing out the

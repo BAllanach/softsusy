@@ -6512,9 +6512,10 @@ void Softsusy<SoftPars>::treeSnu(double & mSnuSquared,
 }
 
 template<class SoftPars>
-void Softsusy<SoftPars>::calcHiggsAtScale(int accuracy, double mt, 
-					  double sinthDRbarMS, double
-					  piwwtMS, double pizztMS, double q) {
+void Softsusy<SoftPars>::calcHiggsAtScale(int accuracy, double & mt, 
+					  double & sinthDRbarMS, double &
+					  piwwtMS, double & pizztMS, 
+					  double q) {
   /// Higgs: potentially at a different scale
   Softsusy<SoftPars> ppp(*this);
   
@@ -6603,6 +6604,7 @@ void Softsusy<SoftPars>::physical(int accuracy) {
   gluino(accuracy); 
   charginos(accuracy, piwwtMS); 
   neutralinos(accuracy, piwwtMS, pizztMS);
+
   calcHiggsAtScale(accuracy, mt, sinthDRbarMS, piwwtMS, pizztMS);
  }
 

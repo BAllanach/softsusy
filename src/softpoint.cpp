@@ -70,6 +70,7 @@ void errorCall() {
      "NMSSM example:\n"
      "  ./softpoint.x nmssm sugra --m0=125 --m12=200 --tanBeta=10 --a0=-300 \\\n"
      "     --lambda=0.1 --lambdaAtMsusy\n";
+  ii << "--higgsUncertainties gives an estimate of Higgs mass uncertainties\n";
   throw ii.str();
 }
 
@@ -80,7 +81,8 @@ int main(int argc, char *argv[]) {
   double lambdaW = 0., aCkm = 0., rhobar = 0., etabar = 0.;
   NMSSM_input nmssm_input; // NMSSM input parameters
 
-  bool flavourViolation = false, gutScaleOutput = false;
+  bool flavourViolation = false, gutScaleOutput = false, 
+    higgsUncertainties = false;
 
   int numPoints = 1;
 
@@ -148,6 +150,8 @@ int main(int argc, char *argv[]) {
 	  double mbIn = get_value(argv[i], "--mbmb=");
 	  oneset.setMbMb(mbIn);
 	}
+	else if (starts_with(argv[i],"--higgsUncertainties")) 
+	  higgsUncertainties = true;
 	else if (starts_with(argv[i],"--tol=")) 
 	  TOLERANCE = get_value(argv[i], "--tol=");
 	else if (starts_with(argv[i],"--mt=")) 
@@ -1193,6 +1197,11 @@ int main(int argc, char *argv[]) {
 		    break;
 		  }
 #endif
+		  case 21: {
+		    int num = int(d + EPSTOL);
+		    if (num > 0) higgsUncertainties = true;
+		    break;
+		  }
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "
@@ -1339,6 +1348,36 @@ int main(int argc, char *argv[]) {
 
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
+
+      if (higgsUncertainties) {
+	int numPts = 10;
+	DoubleVector mh(numPts), mH(numPts), mA(numPts), mHp(numPts);
+	double dmh = 0., dmH = 0., dmA = 0., dmHp = 0.;
+	double qMin = MZ, 
+	  qMax = 2.0 * r->displayMsusy();
+	for (int i = 0; i< numPts; i++) {
+	  MssmSoftsusy a(r->displaySoftsusy());
+	  double q = (qMax - qMin) * double(i) / double(numPts) + qMin;
+	  int accuracy = 3; 
+	  double mt = 0., sinth = 0., piww = 0., pizz = 0;
+	  a.calcHiggsAtScale(accuracy, mt, sinth, piww, pizz, q);
+	  if (!a.displayProblem().testSeriousProblem()) {
+	    mh.set(i+1, a.displayPhys().mh0(1));
+	    mH.set(i+1, a.displayPhys().mh0(2));
+	    mA.set(i+1, a.displayPhys().mA0(1));
+	    mHp.set(i+1, a.displayPhys().mHpm);
+	  }
+	 }
+	/// Try to add some fixed-order uncertainties to this
+        int p;
+	dmh  =  mh.max(p) -  mh.min(p);
+	dmA  =  mA.max(p) -  mA.min(p);
+	dmH  =  mH.max(p) -  mH.min(p);
+	dmHp = mHp.max(p) - mHp.min(p);
+	cout << "# Estimated Higgs uncertainties in GeV:\n# Dmh=" 
+	     << dmh << " DmH=" << dmH << " DmA=" << dmA 
+	     << " DmH+-=" << dmHp << endl;
+      }
       
       if (r->displayProblem().test()) {
 	cout << "# SOFTSUSY problem with point: " << r->displayProblem() 
