@@ -1350,14 +1350,15 @@ int main(int argc, char *argv[]) {
 				numPoints, ewsbBCscale);
 
       if (higgsUncertainties) {
-	int numPts = 10;
+	int numPts = 30;
 	DoubleVector mh(numPts), mH(numPts), mA(numPts), mHp(numPts);
 	double dmh = 0., dmH = 0., dmA = 0., dmHp = 0.;
-	double qMin = MZ, 
-	  qMax = 2.0 * r->displayMsusy();
+	double lnqMin = log(MZ), 
+	  lnqMax = log(2.0 * r->displayMsusy());
 	for (int i = 0; i< numPts; i++) {
 	  MssmSoftsusy a(r->displaySoftsusy());
-	  double q = (qMax - qMin) * double(i) / double(numPts) + qMin;
+	  double lnq = (lnqMax - lnqMin) * double(i) / double(numPts) + lnqMin;
+	  double q = exp(lnq);
 	  int accuracy = 3; 
 	  double mt = 0., sinth = 0., piww = 0., pizz = 0;
 	  a.calcHiggsAtScale(accuracy, mt, sinth, piww, pizz, q);

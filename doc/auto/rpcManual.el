@@ -35,6 +35,7 @@
      "bottomMass"
      "bench"
      "bench2"
+     "isawig"
      "sdecay"
      "pythia"
      "micromegas"
