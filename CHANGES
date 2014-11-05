@@ -1,4 +1,5 @@
-<li> 22/10/14 Option to estimate uncertainties in Higgs masses
+<li> 05/11/14 <pre>make programs</pre> will not make the documentation
+<li> 22/10/14 Option <pre>--higgsUncertainties</pre> to estimate uncertainties in Higgs masses
 <li> 16/09/14 Corrected small x spectrum of GMSB. Thanks to M Hussain
 <li>  01/8/14 Corrected flavoured SLHA input: before, it would throw a problem
 if you only gave on element of the diagonal. Thanks to M Iskrzynski for
