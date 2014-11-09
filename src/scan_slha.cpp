@@ -168,8 +168,8 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 fabs(twoLoop.displayPhys().mneut(4))
 	 );
   cout << "\n%\n\\hline"
-       << "& $m_{{\\tilde t}_L}$  & $m_{{\\tilde t}_R}$ &$m_{{\\tilde b}_L}$&"
-       << "$m_{{\\tilde b}_R}$&$m_{{\\tilde \\tau}_L}$&$m_{{\\tilde \\tau}_R}$&"
+       << "& $m_{{\\tilde t}_2}$  & $m_{{\\tilde t}_1}$ &$m_{{\\tilde b}_1}$&"
+       << "$m_{{\\tilde b}_2}$&$m_{{\\tilde \\tau}_2}$&$m_{{\\tilde \\tau}_1}$&"
        << "$m_{\\chi_1}^\\pm$ \\\\ \\hline\n"
        << "$Q$             & ";
   if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%4.0f & %4.0f & %4.0f & %4.0f & %4.0f & %4.0f &%4.0f\\\\\n",
