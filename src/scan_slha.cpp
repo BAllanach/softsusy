@@ -73,7 +73,7 @@ double doDarkMatter(DoubleVector & pars, double tanb, int sgnMu,
   if (!err) //throw("Problem in micromegas system call: \n");
     { fstream fin2(oFile, ios::in); fin2 >> omega; fin2.close(); }
   
-  //  remove(oFile); DEBUG
+  remove(oFile); // DEBUG
   return omega;
 }
 
@@ -1645,7 +1645,6 @@ int main(int argc, char *argv[]) {
       twoLoop.setMaCond(1580.); 
       getMssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mgutGuess, 
 		      uni, omega2, msqAv2, boundaryCondition, ewsbBCscale, cs);
-      //      cout << twoLoop;
 
       double csOdd = 0., omegaOdd = 0., msqAvOdd = 0.;
       USE_THREE_LOOP_RGE = true;   USE_TWO_LOOP_THRESHOLD = false;
@@ -1654,6 +1653,8 @@ int main(int argc, char *argv[]) {
       oddLoop.setMaCond(1580.); 
       getMssmAndOmega(oddLoop, pars, tanb, sgnMu, oneset, mgutGuess, 
 		      uni, omegaOdd, msqAvOdd, boundaryCondition, ewsbBCscale, csOdd);
+      
+      oddLoop.runto(MZ); cout << oddLoop; exit(1); ///< DEBUG
 
     /// Just 2-loop thresholds for strong coupling constant
       double omegaAs = asin(2.), msqAvAs = 0., csAs = 0.; mgutGuess = 2.5e3;
@@ -1662,10 +1663,9 @@ int main(int argc, char *argv[]) {
       twoLoopAs.setMaCond(1580.); 
       twoLoopAs.included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
       USE_TWO_LOOP_THRESHOLD = true;
-            getMssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mgutGuess, 
+      getMssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mgutGuess, 
 		      uni, omegaAs, msqAvAs, boundaryCondition, ewsbBCscale, 
 		      csAs); 
-      //      cout << twoLoopAs;
 
     /// Just 2-loop strong thresholds for mt
     USE_TWO_LOOP_THRESHOLD = false;
