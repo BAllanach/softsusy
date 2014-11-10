@@ -1,3 +1,4 @@
-<li> 05/11/14 <pre>make programs</pre> will not make the documentation
+<li> 10/11/14 Fixed bug that disabled QEWSB changes with SLHA pMSSM input. Thanks to L Nicoletta
+<li> 05/11/14 <pre>make programs</pre> will not make the documentation, only executables
 <li> 22/10/14 Option <pre>--higgsUncertainties</pre> to estimate uncertainties in Higgs masses
 <li> 16/09/14 Corrected small x spectrum of GMSB. Thanks to M Hussain

@@ -682,7 +682,6 @@ int main(int argc, char *argv[]) {
 		      if (fabs(d + 1.0) < EPSTOL) {
 			mgutGuess = 1.0e3;
 			ewsbBCscale = true;
-			QEWSB = 1.0;
 			if (gaugeUnification) 
 			  cout << "# Gauge unification ignored since pheno MSSM"
 			       << " assumes BC set at QEWSB\n"; 
