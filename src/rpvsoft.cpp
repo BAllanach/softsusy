@@ -1319,7 +1319,7 @@ void RpvSoftsusy::higgs(int accuracy, double piwwtMS, double pizztMS) {
   
   drBarPars forLoops(displayDrBarPars());
   sPhysical physpars(displayPhys());
-
+  
   double mA = forLoops.mhiggs(2);
   double poleMasq = (displayMh2Squared() - displayMh1Squared() )
     / cos(2.0 * beta) - sqr(mz);

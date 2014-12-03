@@ -13,7 +13,7 @@ Block SMINPUTS		     # Standard Model inputs
 Block MINPAR		     # Input parameters
     3   1.000000000e+01	     # tanb
 Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
-    1   1.000000000e-03      # Numerical precision: suggested range 10^(-3...-6)
+    1   1.000000000e-04      # Numerical precision: suggested range 10^(-3...-6)
     2   0.000000000e+00	     # Quark mixing parameter: see manual
     5   1.000000000e+00      # Include 2-loop scalar mass squared/trilinear RGEs
 #    19   1.000000000e+00      # 3-loop RGEs
@@ -27,7 +27,7 @@ Block EXTPAR          # non-universal SUSY breaking parameters
      12    0.000000000000000e+00         # Ab(MX)
      13    0.000000000000000e+00         # Atau(MX)
      23    2.500000000000000e+03         # mu(MX)
-     26    2.500000000000000e+03         # mA(pole)
+     26    1.580000000000000e+03         # mA(pole)
      31    2.500000000000000e+03         # meL(MX)
      32    2.500000000000000e+03         # mmuL(MX)
      33    2.500000000000000e+03         # mtauL(MX)

@@ -40,6 +40,12 @@ type (on a linux box)
 
 which should compile the code and run some sample commands. 
 
+If you have trouble with compilation because your machine cannot make the
+documentation (because, for example, it doesn't have LaTeX installed), instead
+of make you can just do 
+> make programs
+which will not try to install the manuals. 
+
 In order to compile with the  three-loop running with leading two-loop
 thresholds for the strong coupling constant and the third generation of
 fermions, replace the ./configure command above with

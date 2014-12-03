@@ -73,7 +73,8 @@ double doDarkMatter(DoubleVector & pars, double tanb, int sgnMu,
   if (!err) //throw("Problem in micromegas system call: \n");
     { fstream fin2(oFile, ios::in); fin2 >> omega; fin2.close(); }
   
-    remove(oFile); 
+  remove(oFile); 
+
   return omega;
 }
 
@@ -168,8 +169,8 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 	 fabs(twoLoop.displayPhys().mneut(4))
 	 );
   cout << "\n%\n\\hline"
-       << "& $m_{{\\tilde t}_L}$  & $m_{{\\tilde t}_R}$ &$m_{{\\tilde b}_L}$&"
-       << "$m_{{\\tilde b}_R}$&$m_{{\\tilde \\tau}_L}$&$m_{{\\tilde \\tau}_R}$&"
+       << "& $m_{{\\tilde t}_2}$  & $m_{{\\tilde t}_1}$ &$m_{{\\tilde b}_1}$&"
+       << "$m_{{\\tilde b}_2}$&$m_{{\\tilde \\tau}_2}$&$m_{{\\tilde \\tau}_1}$&"
        << "$m_{\\chi_1}^\\pm$ \\\\ \\hline\n"
        << "$Q$             & ";
   if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else   printf("%4.0f & %4.0f & %4.0f & %4.0f & %4.0f & %4.0f &%4.0f\\\\\n",
@@ -1657,6 +1658,7 @@ int main(int argc, char *argv[]) {
       oddLoop.useAlternativeEwsb(); oddLoop.setMuCond(2500.); 
       oddLoop.setMaCond(1580.); 
       getMssmAndOmega(oddLoop, pars, tanb, sgnMu, oneset, mgutGuess, 
+
 		      uni, omegaOdd, msqAvOdd, boundaryCondition, ewsbBCscale, 
 		      csOdd);
       //      cout << "oddLoop=" << oddLoop;
@@ -1685,43 +1687,42 @@ int main(int argc, char *argv[]) {
       getMssmAndOmega(twoLoopMt, pars, tanb, sgnMu, oneset, mgutGuess, 
 		      uni, omegaMt, msqAvMt, boundaryCondition, ewsbBCscale,
 		      csMt); 
-      //      cout << "twoLoopMt=" << twoLoopMt;    
+      //    cout << twoLoopMt;    
+    
+      /// Just 2-loop for mb,mtau
+      USE_TWO_LOOP_THRESHOLD = false;
+      double omegaMb = asin(2.), msqAvMb = 0., csMb = 0.; mgutGuess = 2.5e3;
+      MssmSoftsusy twoLoopMb; 
+      twoLoopMb.useAlternativeEwsb(); twoLoopMb.setMuCond(2500.); 
+      twoLoopMb.setMaCond(1580.); 
+      twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
+      twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
+      twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
+      USE_TWO_LOOP_THRESHOLD = true;
+      getMssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mgutGuess, 
+		      uni, omegaMb, msqAvMb, boundaryCondition, ewsbBCscale, 
+		      csMb); 
+      //    cout << "twoLoopMb=" << twoLoopMb;    
+
+      /// 3-loop etc ON
+      double omega3 = asin(2.), msqAv3 = 0., cs3 = 0.; mgutGuess = 2.5e3;
+      USE_THREE_LOOP_RGE = true; 
+      USE_TWO_LOOP_THRESHOLD = true; 
+      MssmSoftsusy threeLoop;
+      threeLoop.useAlternativeEwsb(); threeLoop.setMuCond(2500.); 
+      threeLoop.setMaCond(1580.); 
+      getMssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mgutGuess, 
+		      uni, omega3, msqAv3, boundaryCondition, ewsbBCscale, 
+		      cs3); 
       
-    /// Just 2-loop for mb,mtau
-    USE_TWO_LOOP_THRESHOLD = false;
-    double omegaMb = asin(2.), msqAvMb = 0., csMb = 0.; mgutGuess = 2.5e3;
-    MssmSoftsusy twoLoopMb; 
-    twoLoopMb.useAlternativeEwsb(); twoLoopMb.setMuCond(2500.); 
-    twoLoopMb.setMaCond(1580.); 
-    twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
-    twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
-    twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
-    USE_TWO_LOOP_THRESHOLD = true;
-    getMssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mgutGuess, 
-    		    uni, omegaMb, msqAvMb, boundaryCondition, ewsbBCscale, 
-    		    csMb); 
-    //    cout << "twoLoopMb=" << twoLoopMb;    
-
+      //    cout << "threeLoop=" << threeLoop;
       
-    /// 3-loop etc ON
-    double omega3 = asin(2.), msqAv3 = 0., cs3 = 0.; mgutGuess = 2.5e3;
-    USE_THREE_LOOP_RGE = true; 
-    USE_TWO_LOOP_THRESHOLD = true; 
-    MssmSoftsusy threeLoop;
-    threeLoop.useAlternativeEwsb(); threeLoop.setMuCond(2500.); 
-    threeLoop.setMaCond(1580.); 
-    getMssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mgutGuess, 
-		    uni, omega3, msqAv3, boundaryCondition, ewsbBCscale, 
-		    cs3); 
-
-    //    cout << "threeLoop=" << threeLoop;
-
-    writeTable(twoLoop, oddLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
-	       omega2, omegaOdd, omegaAs, omegaMt, omegaMb, omega3,
-	       msqAv2, msqAvOdd, msqAvAs, msqAvMt, msqAvMb, msqAv3, 
-	       cs, csOdd, csAs, csMt, csMb, cs3);
+      writeTable(twoLoop, oddLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
+		 omega2, omegaOdd, omegaAs, omegaMt, omegaMb, omega3,
+		 msqAv2, msqAvOdd, msqAvAs, msqAvMt, msqAvMb, msqAv3, 
+		 cs, csOdd, csAs, csMt, csMb, cs3);
     }
-    break;
+      break;
     case NMSSM: {
       nmssm_input.check_setup();
 

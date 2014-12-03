@@ -812,6 +812,10 @@ public:
   virtual void addNeutralinoLoop(double p, DoubleMatrix &);
   /// Calculates pole gluino mass to 1-loop SUSY corrections
   virtual void gluino(int accuracy);
+  /// Calculates Higgs masses at a renormalisation scale q. If q=0, the
+  /// standard SUSY scale is used.
+  void calcHiggsAtScale(int accuracy, double & mt, double & sinthDRbar, double & piwwtMS, 
+			double & pizztMS, double q = 0.);
   /// Calculates pole Higgs masses and mixings: full 1-loop SUSY corrections
   /// and 2-loop alpha_t (alpha_s + alpha_t) + alpha_s alpha_b effective
   /// potential corrections. 
