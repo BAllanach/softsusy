@@ -46,7 +46,7 @@ double getCrossSection(MssmSoftsusy & r, char * fileName, double m0, double m12,
   char buff[500];
   char fn[500];
   sprintf(fn, "/home/bca20/code/prospino/output_%d_%d_%d_%d",int(m0),int(m12),int(a0),int(tanb));
-  sprintf(buff, "cd /home/bca20/code/prospino; echo \"%d %d %d %d 14000.\" | ./crosssec | grep -v NAN > output_%d_%d_%d_%d",int(msq),int(mg),int(mt),1,int(m0),int(m12),int(a0),int(tanb));
+  sprintf(buff, "cd /home/bca20/code/prospino; echo \"%10.4f %10.4f %8.2f %d 14000.\" | ./crosssec | grep -v NAN > output_%d_%d_%d_%d",msq,mg,mt,1,int(m0),int(m12),int(a0),int(tanb));
   cout << buff << endl;
   int err = system(buff);
   double xs = 0.;
@@ -55,7 +55,7 @@ double getCrossSection(MssmSoftsusy & r, char * fileName, double m0, double m12,
   fstream fin(fn, ios::in); 
   fin >> xs;
   } else  cout << "CROSS SECTION ERROR\n" << xs;
-  remove(fn); //DEBUG
+  remove(fn); 
   
   return xs;
 }
@@ -66,14 +66,14 @@ double doDarkMatter(DoubleVector & pars, double tanb, int sgnMu,
   char oFile[500], buff[500];
   sprintf(oFile,"om_%d_%d_%d_%d_%d", int(m0), int(m12), int(a0), 
 	  int(tanb), int(sgnMu));
-  sprintf(buff,"../micromegas_3.6.9.2/MSSM/slha %s > %s",
+  sprintf(buff,"/home/bca20/code/micromegas_3.6.9.2/MSSM/slha %s > %s",
 	  fileName, oFile);
   int err = system(buff);
   double omega = 0.;
   if (!err) //throw("Problem in micromegas system call: \n");
     { fstream fin2(oFile, ios::in); fin2 >> omega; fin2.close(); }
   
-  //  remove(oFile); DEBUG
+    remove(oFile); 
   return omega;
 }
 
@@ -243,7 +243,7 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
        << "    & $\\Omega_{CDM} h^2$ & $\\sigma_{SUSY}^{TOT}$\\\\ \\hline\n"
        << " $Q$                   & ";
 
-  if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A &\\\\\n"); else printf("%5.3f & %5.3f & %5.3f & %5.3f & %4.0f & %5.2f & %5.1f\\\\\n",
+  if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A &\\\\\n"); else printf("%5.3f & %5.3f & %5.3f & %5.3f & %4.0f & %5.2f & %5.0f\\\\\n",
 	 twoLoop.displayGaugeCoupling(3), 
 	 twoLoop.displayYukawaElement(YU, 3, 3), 
 	 twoLoop.displayYukawaElement(YD, 3, 3), 
@@ -332,8 +332,6 @@ void getMssmAndOmega(MssmSoftsusy & r, DoubleVector & pars, const double tanb,
   r.fixedPointIteration(boundaryCondition, mGutGuess, pars, sgnMu, tanb, 
 			oneset, uni, ewsbBcScale); 
 
-  cout << "DEBUG 2\n";
-
   r.setData(oneset);
 
   /// Produces SLHA output file
@@ -352,7 +350,7 @@ void getMssmAndOmega(MssmSoftsusy & r, DoubleVector & pars, const double tanb,
 		     r.displayPhys().md(1, 1)) * 
     0.25;
   
-  //  remove(fileName); DEBUG
+  remove(fileName); 
   return;
 }
 
@@ -415,6 +413,7 @@ void errorCall() {
 }
 
 int main(int argc, char *argv[]) {
+
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
@@ -1649,7 +1648,8 @@ int main(int argc, char *argv[]) {
       twoLoop.setMaCond(1580.); 
       getMssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mgutGuess, 
 		      uni, omega2, msqAv2, boundaryCondition, ewsbBCscale, cs);
-      cout << "twoLoop=" << twoLoop << " omega2=" << omega2 << " cs=" << cs << endl;
+      //      cout << "twoLoop=" << twoLoop << " omega2=" << omega2 
+      //   << " cs=" << cs << endl;
 
       double csOdd = 0., omegaOdd = 0., msqAvOdd = 0.;
       USE_THREE_LOOP_RGE = true;   USE_TWO_LOOP_THRESHOLD = false;
@@ -1659,7 +1659,7 @@ int main(int argc, char *argv[]) {
       getMssmAndOmega(oddLoop, pars, tanb, sgnMu, oneset, mgutGuess, 
 		      uni, omegaOdd, msqAvOdd, boundaryCondition, ewsbBCscale, 
 		      csOdd);
-      cout << "oddLoop=" << oddLoop;
+      //      cout << "oddLoop=" << oddLoop;
 
       /// Just 2-loop thresholds for strong coupling constant
       double omegaAs = asin(2.), msqAvAs = 0., csAs = 0.; mgutGuess = 2.5e3;
@@ -1669,13 +1669,10 @@ int main(int argc, char *argv[]) {
       twoLoopAs.setMaCond(1580.); 
       twoLoopAs.included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
       USE_TWO_LOOP_THRESHOLD = true;
-
-      cout << "DEBUG 1\n";
-
       getMssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mgutGuess, 
 		      uni, omegaAs, msqAvAs, boundaryCondition, ewsbBCscale, 
 		      csAs); 
-      cout << "twoLoopAs=" << twoLoopAs;
+      //      cout << "twoLoopAs=" << twoLoopAs;
 
       /// Just 2-loop strong thresholds for mt
       USE_TWO_LOOP_THRESHOLD = false;
@@ -1688,8 +1685,8 @@ int main(int argc, char *argv[]) {
       getMssmAndOmega(twoLoopMt, pars, tanb, sgnMu, oneset, mgutGuess, 
 		      uni, omegaMt, msqAvMt, boundaryCondition, ewsbBCscale,
 		      csMt); 
-      cout << "twoLoopMt=" << twoLoopMt;    
-
+      //      cout << "twoLoopMt=" << twoLoopMt;    
+      
     /// Just 2-loop for mb,mtau
     USE_TWO_LOOP_THRESHOLD = false;
     double omegaMb = asin(2.), msqAvMb = 0., csMb = 0.; mgutGuess = 2.5e3;
@@ -1703,7 +1700,7 @@ int main(int argc, char *argv[]) {
     getMssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mgutGuess, 
     		    uni, omegaMb, msqAvMb, boundaryCondition, ewsbBCscale, 
     		    csMb); 
-    cout << "twoLoopMb=" << twoLoopMb;    
+    //    cout << "twoLoopMb=" << twoLoopMb;    
 
       
     /// 3-loop etc ON
@@ -1717,7 +1714,7 @@ int main(int argc, char *argv[]) {
 		    uni, omega3, msqAv3, boundaryCondition, ewsbBCscale, 
 		    cs3); 
 
-    cout << "threeLoop=" << threeLoop;
+    //    cout << "threeLoop=" << threeLoop;
 
     writeTable(twoLoop, oddLoop, twoLoopAs, twoLoopMt, twoLoopMb, threeLoop, 
 	       omega2, omegaOdd, omegaAs, omegaMt, omegaMb, omega3,

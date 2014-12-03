@@ -3,13 +3,13 @@
 Block MODSEL		     # Select model
     1    0		     # non universal
 Block SMINPUTS		     # Standard Model inputs
-    1	1.279340000e+02	     # alpha^(-1) SM MSbar(MZ)
+    1	1.279160000e+02	     # alpha^(-1) SM MSbar(MZ)
     2   1.166370000e-05	     # G_Fermi
     3   1.187000000e-01	     # alpha_s(MZ) SM MSbar
     4   9.118760000e+01	     # MZ(pole)
     5	4.180000000e+00	     # mb(mb) SM MSbar
     6   1.732000000e+02	     # mtop(pole)
-    7	1.777000000e+00	     # mtau(pole)
+    7	1.776900000e+00	     # mtau(pole)
 Block MINPAR		     # Input parameters
     3   1.000000000e+01	     # tanb
 Block SOFTSUSY               # Optional SOFTSUSY-specific parameters

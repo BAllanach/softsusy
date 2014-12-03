@@ -7053,7 +7053,7 @@ void Softsusy<SoftPars>::fixedPointIteration
     physical(0);
   
     setThresholds(3); setLoops(lpnum);
-    
+
     itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 
 		gaugeUnification, ewsbBCscale);
     

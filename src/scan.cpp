@@ -228,16 +228,17 @@ double getCrossSection(MssmSoftsusy & r, char * fileName, double m0, double m12,
 
   char buff[500];
   char fn[500];
-  sprintf(fn, "/home/allanach/code/prospino/output_%d_%d_%d_%d",int(m0),int(m12),int(a0),int(tanb));
-  sprintf(buff, "cd /home/allanach/code/prospino; echo \"%d %d %d %d 14000.\" | ./crosssec | grep -v NAN > output_%d_%d_%d_%d",int(msq),int(mg),int(mt),1,int(m0),int(m12),int(a0),int(tanb));
+  sprintf(fn, "/home/bca20/code/prospino/output_%d_%d_%d_%d",int(m0),int(m12),int(a0),int(tanb));
+  sprintf(buff, "cd /home/bca20/code/prospino; echo \"%10.4f %10.4f %8.2f %d 14000.\" | ./crosssec | grep -v NAN > output_%d_%d_%d_%d",msq,mg,mt,1,int(m0),int(m12),int(a0),int(tanb));
+  cout << buff << endl;
   int err = system(buff);
   double xs = 0.;
 
   if (!err) {
   fstream fin(fn, ios::in); 
   fin >> xs;
-  } else  cout << "CROSS SECTION ERROR\n";
-  //  remove(fn); DEBUG
+  } else  cout << "CROSS SECTION ERROR\n" << xs;
+  remove(fn); 
   
   return xs;
 }
@@ -557,28 +558,28 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
        << " & $M_{GUT}/10^{16}$ "
        << " & $1/\\alpha_{GUT}$  & & & \\\\ \\hline" 
        << " Q                   & ";
-  if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else printf("%5.1f & %5.1f & %5.3f & %5.3f & & & \\\\\n",
+  if (omega2 != omega2) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else printf("%5.1f & %5.2f & %5.3f & %5.3f & & & \\\\\n",
 	      omega2, cs,
 	      twoLoop.displayMxBC() * 1.0e-16,
 											      (4 * PI) / sqr(twoLoop.displayGaugeCoupling(1)));
 
   cout << "$\\Delta_3$   & ";
   if (omegaOdd != omegaOdd) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else 
-    printf("%+5.1f & %+5.1f & %+5.3f & %+5.3f & & & \\\\\n",
+    printf("%+5.1f & %+5.2f & %+5.3f & %+5.3f & & & \\\\\n",
 	   omegaOdd-omega2, csOdd-cs,
 	   (oddLoop.displayMxBC() -twoLoop.displayMxBC())* 1.0e-16,
 	   (4 * PI) / sqr(oddLoop.displayGaugeCoupling(1)) -
 	   (4 * PI) / sqr(twoLoop.displayGaugeCoupling(1)));
   
   cout << "$\\Delta \\alpha_s$   & ";
-  if (omega2As != omega2As) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else printf("%+5.1f & %+5.1f & %+5.3f & %+5.3f &  &  & \\\\\n",
+  if (omega2As != omega2As) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else printf("%+5.1f & %+5.2f & %+5.3f & %+5.3f &  &  & \\\\\n",
 	       omega2As - omega2, csAs - cs,
 	      (twoLoopAs.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16,
 	      (4 * PI) / sqr(twoLoopAs.displayGaugeCoupling(1)) - 
 	      (4 * PI) / sqr(twoLoop.displayGaugeCoupling(1)));
 
   cout << "$\\Delta m_t$   & ";
-  if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A & & & \\\\\n"); else printf("%+5.1f & %+5.1f & %+5.3f & %+5.3f & &  & \\\\\n",
+  if (omega2Mt != omega2Mt) printf("N/A & N/A & N/A & N/A & & & \\\\\n"); else printf("%+5.1f & %+5.2f & %+5.3f & %+5.3f & &  & \\\\\n",
 	      omega2Mt - omega2, csMt - cs,
 	      (twoLoopMt.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16,
 	      4 * PI / sqr(twoLoopMt.displayGaugeCoupling(1)) - 
@@ -586,14 +587,14 @@ void writeTable(MssmSoftsusy & twoLoop, MssmSoftsusy & oddLoop, MssmSoftsusy & t
 
   cout << "$\\Delta m_b,m_\\tau$   & ";
   if (omega2Mb != omega2Mb) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else 
-    printf("%+5.1f & %+5.1f & %+5.3f & %+5.3f &  &  & \\\\\n",
+    printf("%+5.1f & %+5.2f & %+5.3f & %+5.3f &  &  & \\\\\n",
 	   omega2Mb - omega2, csMb - cs,
 	   (twoLoopMb.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16,
 	   4 * PI / sqr(twoLoopMb.displayGaugeCoupling(1)) - 
 	   4 * PI / sqr(twoLoop.displayGaugeCoupling(1)));
   
   cout << "$\\Delta$ All   & ";
-  if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else printf("%+5.1f & %+5.1f & %+5.3f & %+5.3f &  &  & \\\\\n",
+  if (omega3 != omega3) printf("N/A & N/A & N/A & N/A & N/A & N/A & N/A \\\\\n"); else printf("%+5.1f & %+5.2f & %+5.3f & %+5.3f &  &  & \\\\\n",
 	      omega3 - omega2, cs3-cs,
 	      (threeLoop.displayMxBC() - twoLoop.displayMxBC()) * 1.0e-16,
 	      4 * PI / sqr(threeLoop.displayGaugeCoupling(1)) - 
