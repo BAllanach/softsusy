@@ -39,6 +39,7 @@ void errorCall() {
   ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
   ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
   ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
+  ii << "--higgsUncertainties gives an estimate of Higgs mass uncertainties\n";
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
   if (USE_TWO_LOOP_THRESHOLD) ii << "--two-loop-susy-thresholds switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
 #endif //COMPILE_FULL_SUSY_THRESHOLD
@@ -70,7 +71,7 @@ void errorCall() {
      "NMSSM example:\n"
      "  ./softpoint.x nmssm sugra --m0=125 --m12=200 --tanBeta=10 --a0=-300 \\\n"
      "     --lambda=0.1 --lambdaAtMsusy\n";
-  ii << "--higgsUncertainties gives an estimate of Higgs mass uncertainties\n";
+
   throw ii.str();
 }
 
