@@ -125,14 +125,9 @@ ostream & operator <<(ostream &st, const sProblem & p) {
   if (p.noRhoConvergence) st << "No rho convergence ";
   if (p.nonperturbative) st << "Non-perturbative ";
   if (p.noConvergence) st << "No convergence ";
-  if (p.tachyon) {
-    /*    switch (p.tachyonType) {
-          case selectron:
-    case smuon:
-      if (p.tachyonType == )
-      }*/
-    st << tachyonNames[p.tachyon] << " tachyon ";
-  }
+  if (p.tachyon) st << tachyonNames[p.tachyon] << " tachyon ";
+  if (p.tachyonWarning) st << tachyonNames[p.tachyonWarning] 
+			   << " is tree-level tachyon at MZ ";
   if (p.muSqWrongSign) st << "MuSqWrongsign ";
   if (p.m3sq) st << "m3sq-problem ";
   if (p.higgsUfb) st << "Higgs potential ufb ";
@@ -153,6 +148,7 @@ const sProblem & sProblem::operator=(const sProblem &s) {
   nonperturbative = s.nonperturbative;
   noConvergence = s.noConvergence;
   tachyon = s.tachyon;
+  tachyonWarning = s.tachyonWarning;
   muSqWrongSign = s.muSqWrongSign;
   higgsUfb = s.higgsUfb;
   notGlobalMin = s.notGlobalMin;

@@ -11,8 +11,8 @@ loops: 3        thresholds: 1
 1.500000e+01 1.062927e+02 3.798120e+02 4.465184e+02 6.772068e+02
 2.000000e+01 1.021991e+02 3.154237e+02 4.141741e+02 6.542042e+02
 2.500000e+01 9.469936e+01 2.605142e+02 3.834471e+02 6.265038e+02
-3.000000e+01 7.731611e+01 2.111425e+02 3.504857e+02 5.940859e+02
-3.500000e+01 [ h0 tachyon ]
-4.000000e+01 [ h0 tachyon ]
-4.500000e+01 [ h0 tachyon ]
-5.000000e+01 [ h0 tachyon ]
+3.000000e+01 7.731610e+01 2.111425e+02 3.504858e+02 5.940859e+02
+3.500000e+01 [ h0 tachyon h0 is tree-level tachyon at MZ ]
+4.000000e+01 [ h0 tachyon h0 is tree-level tachyon at MZ ]
+4.500000e+01 [ h0 tachyon h0 is tree-level tachyon at MZ ]
+5.000000e+01 [ h0 tachyon h0 is tree-level tachyon at MZ ]

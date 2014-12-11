@@ -73,6 +73,10 @@ struct sProblem {
   bool noRhoConvergence; ///< Couldn't calculate electroweak rho parameter
   bool noConvergence; ///< Iteration did not converge: not always serious
   tachyonType tachyon; ///< Tachyonic point
+  /// This only gets switched on if there is an imaginary tree-level
+  /// mass at MZ. SOFTSUSY's output might be slightly inaccurate in this case,
+  /// but it doesn't mean that the point is ruled out
+  tachyonType tachyonWarning; 
   bool muSqWrongSign; ///< mu^2 came out with wrong sign; no REWSB
   bool m3sq; ///< m3sq came out with wrong sign; no REWSB
   bool higgsUfb; ///< Higgs potential inconsistent with a good minimum
@@ -87,7 +91,7 @@ struct sProblem {
   {return (mgutOutOfBounds || irqfp || noConvergence || tachyon || 
 	   muSqWrongSign || higgsUfb || notGlobalMin || nonperturbative || 
 	   noRhoConvergence || noMuConvergence || m3sq || badConvergence || 
-	   inaccurateHiggsMass || problemThrown);}; 
+	   inaccurateHiggsMass || problemThrown || tachyonWarning);}; 
   /// Only returns true if there's a serious problem
   bool testSeriousProblem() const 
   {return (irqfp || tachyon || muSqWrongSign || higgsUfb || 
@@ -170,7 +174,8 @@ inline sPhysical::sPhysical(const sPhysical & s)
 inline sProblem::sProblem()
   : mgutOutOfBounds(false), badConvergence(false), 
     irqfp(false), noRhoConvergence(false), noConvergence(false),
-    tachyon(none), muSqWrongSign(false), m3sq(false), higgsUfb(false), 
+    tachyon(none), tachyonWarning(none),
+    muSqWrongSign(false), m3sq(false), higgsUfb(false), 
     notGlobalMin(false), nonperturbative(false), noMuConvergence(false),     
     inaccurateHiggsMass(false), problemThrown(false)
 {}
@@ -179,7 +184,8 @@ inline sProblem::sProblem(const sProblem & s)
   : mgutOutOfBounds(s.mgutOutOfBounds), badConvergence(s.badConvergence), 
     irqfp(s.irqfp), noRhoConvergence(s.noRhoConvergence), 
     noConvergence(s.noConvergence),
-    tachyon(s.tachyon), muSqWrongSign(s.muSqWrongSign), m3sq(s.m3sq),
+    tachyon(s.tachyon), tachyonWarning(s.tachyon),
+    muSqWrongSign(s.muSqWrongSign), m3sq(s.m3sq),
     higgsUfb(s.higgsUfb), notGlobalMin(s.notGlobalMin), 
     nonperturbative(s.nonperturbative), noMuConvergence(s.noMuConvergence), 
     inaccurateHiggsMass(s.inaccurateHiggsMass), problemThrown(s.problemThrown)

@@ -768,7 +768,7 @@ The full one-loop EWSB
 conditions at this scale are then employed to\footnote{Note that there is also
   an option to extract $m_{H_1}(M_{SUSY})$ and $m_{H_2}(M_{SUSY})$ from input
   $\mu(M_{SUSY})$ and  
-$m_A(\mbox{pole})$ values, see section~\protect\ref{sec:altewsb}.}
+$m_A(\mbox{pole})$ values, see section~\protect\ref{sec:mssmsoftsusy}.}
 calculate $m_3(M_{SUSY})$ and $\mu(M_{SUSY})$. $\mu(M_{SUSY})$ requires an iterative solution
 because the tadpoles depend upon the value of $\mu$ assumed.
 The symmetry breaking condition for $\mu$ can be phrased
@@ -1448,6 +1448,14 @@ the model. The model is ruled out.
 The \code{tachyon} variable labels if a scalar particle other than the Higgs
 has acquired a negative mass squared, when $M_Z^2<0$ or when 
 a pole Higgs masses is imaginary. The model is ruled out.
+\code{tachyonWarning}, on the other hand, denotes that a tree-level scalar
+mass squared has run to be negative at the renormalisation scale equal to
+$M_Z$. Since these tree-level masses are used in loops to calculate various
+other quantities (including the $Z-$boson mass) and fix gauge and Yukawa
+couplings, it is possible that the numerical predictions are somewhat
+inaccurate (\SOFTSUSY will use almost zero masses for these tachyons).
+So: the model is not necessarily ruled out, and the flag results in a warning.
+are used in loops to calculate 
 \code{tachyon} is of an enumerated type \code{tachyonType}, which relabels the
 integers $z \in (0,\ 17)$ to indicate which particle is a tachyon according to
 the rule
@@ -1462,7 +1470,7 @@ respectively.
 \item
 \code{noRhoConvergence}~is flagged when \SOFTSUSY~cannot calculate the $\rho$
 parameter and determine gauge couplings from data, typically because of
-tachyons or infinities that have crept into the calculation. The other
+infinities that have crept into the calculation. The other
 problems are serious enough to rule the model out.
 \item
 \code{higgsUfb}~and \code{bProblem}~indicate that the desired electroweak minimum is in fact a
@@ -1897,6 +1905,7 @@ data variable & flags \\ \hline
 \code{noRhoConvergence} & the $\rho$ iterative routine doesn't converge\\
 \code{noConvergence} & the main iteration routine doesn't converge \\ 
 \code{tachyon} & a non-Higgs scalar has negative mass squared \\
+\code{tachyonWarning} & a tree-level non-higgs imaginary mass at $M_Z$\\
 \code{muSqWrongSign} & $\mu^2$ from eq.~(\ref{mucond}) negative \\
 \code{m3sq} & $m_3^2$ from eq.~(\ref{Bcond}) has incorrect sign \\
 \code{higgsUfb} & eq.~(\ref{higgsufb}) is not satisfied\\
@@ -1907,7 +1916,8 @@ data variable & flags \\ \hline
 \code{problemThrown} & numerical exception occurred during run (infinities etc)\\
 \end{tabular}
 \caption{\label{table:probs}\code{sProblem} structure. All data variables are boolean values except for
-  \code{tachyon}, which is of type \code{tachyonType}. See
+  \code{tachyon}, which is of type \code{tachyonType}~and
+  \code{tachyonWarning}. See 
   Section~\protect\ref{sec:prob} for more details.}\end{center}\end{table}
 
 
@@ -2208,7 +2218,7 @@ This work has been partially supported by PPARC, STFC and the Aspen Center for
 Physics.
 We would like to thank
 A.~Djouadi, S.~Kraml and W. Porod 
-for help with detailed comparisons~\cite{comparison} with the codes
+for help with detailed comparisons~\cite{comparison} with 
 {\tt SUSPECT}, {\tt ISAJET} and {\tt SPHENO},
 S.~Akula, P.~Athron, M.~Baak, M.~Badziak, 
 G.~B\'elanger, F.~Borzumati, F.~Boudjema, F.~Brummer, M.~Catalan, A.~Casas, 

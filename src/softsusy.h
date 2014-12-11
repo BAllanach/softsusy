@@ -224,9 +224,14 @@ public:
   void flagNonperturbative(bool a) { problem.nonperturbative = a; };
   /// Flags a negative-mass squared scalar (really a CCB problem)
   void flagTachyon(tachyonType a) { 
-    problem.tachyon = a; 
-    if (PRINTOUT > 2) cout << tachyonNames[a] << " tachyon ";
+  /// Flags a negative-mass squared scalar at MZ (means that SOFTSUSY's output
+  /// is somewhat inaccurate, but the point may still be OK)
+    if (close(displayMu(), MZ, 1.0e-6)) problem.tachyonWarning = a; 
+    else { problem.tachyon = a; 
+      if (PRINTOUT > 2) cout << tachyonNames[a] << " tachyon ";
+    }
   };
+  void flagTachyonWarning(tachyonType a) { problem.tachyonWarning = a; }
   /// Flags problem with Higgs potential minimum
   void flagM3sq(bool a) { problem.m3sq = a; };
   /// Flags fact that calculation hasn't acheived required accuracy
@@ -246,7 +251,8 @@ public:
   void flagNotGlobalMin(bool a) { problem.notGlobalMin = a; };
   /// Sets all problems equal to either true or false (contained in a)
   void flagAllProblems(bool a, tachyonType b) { problem.irqfp = a; 
-    problem.tachyon = b; problem.m3sq = a; problem.badConvergence = a;
+    problem.tachyon = b; problem.tachyonWarning = b;
+    problem.m3sq = a; problem.badConvergence = a;
     problem.noConvergence = a; problem.higgsUfb = a; problem.notGlobalMin = a;
     problem.nonperturbative = a; problem.noRhoConvergence = a; 
     problem.noMuConvergence = a; problem.muSqWrongSign = a; 

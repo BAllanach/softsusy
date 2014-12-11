@@ -7194,15 +7194,15 @@ void Softsusy<SoftPars>::sparticleThresholdCorrections(double tb) {
   double piwwtMW = piWWT(displayMw(), displayMu(), true);
   
   if (piwwt0 + sqr(displayMw()) < 0.) {
-    flagTachyon(W);
+    flagTachyonWarning(W);
     piwwt0 = -sqr(displayMw()) + EPSTOL;
   }
   if (piwwtMW + sqr(displayMw()) < 0.) {
-    flagTachyon(W);
+    flagTachyonWarning(W);
     piwwtMW = -sqr(displayMw()) + EPSTOL;
   }
   if (pizztMZ + sqr(displayMz()) < 0.) {
-    flagTachyon(Z);
+    flagTachyonWarning(Z);
     pizztMZ = -sqr(displayMz()) + EPSTOL;
   }
 
@@ -9629,12 +9629,22 @@ void Softsusy<SoftPars>::spinfoSLHA(ostream & out) {
     out << "     3   # Warning: Higgs masses are very inaccurate at this point.\n";
   int posj = 0, posi = 0; double mass = 0.;
   int temp = lsp(mass, posi, posj);
+  if (displayProblem().tachyonWarning) 
+    out << "     3    # Warning: " 
+	<< tachyonNames[displayProblem().tachyonWarning] 
+	<< " is tree-level tachyon at MZ" << endl;
+  if (displayProblem().noConvergence)
+    out << "     3    # Warning: did not achieve desired precision. "
+	<< " Got " << displayFracDiff() << " instead of " << TOLERANCE << endl;
+  if (displayProblem().inaccurateHiggsMass)
+    out << "     3    # Warning: Higgs mass especially inaccurate due to large hierarchies"
+	<< " in spectrum" << endl;
   if (temp != 0 && temp != -1) {
-    out << "     3   # Warning: " << recogLsp(temp, posj);
+    out << "     3    # Warning: " << recogLsp(temp, posj);
     out << " LSP" << endl;
   }
   if (displayProblem().testSeriousProblem()) 
-    out << "     4   Point invalid: " << displayProblem() << endl;
+    out << "     4    # Point invalid: " << displayProblem() << endl;
 }
 
 template<class SoftPars>
