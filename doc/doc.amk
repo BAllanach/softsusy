@@ -23,7 +23,7 @@ DOCFILES = $(doc_DATA)
 #	doc/jheppub.sty \
 #	doc/elsarticle.cls doc/elsarticle-num.bst
 
-doc: $(doc_DATA)
+# doc: $(doc_DATA)
 
 doc/%.pdf: doc/%.tex
 	cd $(top_builddir)/doc;\
