@@ -1,5 +1,5 @@
 \documentclass[final,3p,times,pdflatex]{elsarticle}
-\usepackage{axodraw}
+%\usepackage{axodraw}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -22,7 +22,7 @@ DAMTP-2014-42\\
 IFIC/14-47
 \end{flushright}
 
-\title{Higher Order Corrections, the Higgs Mass and Unification in
+\title{Higher Order Corrections and Unification in
   the Minimal Supersymmetric Standard Model: {\tt SOFTSUSY3.5}}
 
 \author[damtp]{B.C.~Allanach}
@@ -43,8 +43,8 @@ IFIC/14-47
   threshold corrections on gauge and Yukawa
   unification: each being one loop higher order than 
   current public spectrum calculators. We also explore the effect of the
-  higher order terms on the lightest
-  CP even Higgs mass prediction, which is often 2-3 GeV. 
+  higher order terms (often 2-3 GeV) on the lightest
+  CP even Higgs mass prediction.
   We illustrate our results in the constrained minimal supersymmetric standard
   model. Neglecting threshold corrections at the grand unified scale, the
   discrepancy between the unification scale
@@ -89,7 +89,7 @@ MSSM
   CLN1.3.1}~(both freely obtainable from \verb|www.ginac.de|).\\
 {\em Typical running time:}\/ A minute per parameter point.\\
 {\em Nature of problem:}\/ Calculating supersymmetric particle spectrum and
-mixing parameters in the next-to-minimal minimal supersymmetric standard
+mixing parameters in the minimal supersymmetric standard
 model. The solution to the renormalisation group equations must be consistent
 with boundary conditions on supersymmetry breaking parameters, as
 well as the weak-scale boundary condition on gauge 
@@ -125,7 +125,7 @@ question of how its mass is
 stabilised with respect to quantum corrections, which are expected to be of
 order the largest fundamental mass scale divided by the 16$\pi^2$ loop factor.
 In particular, the Planck mass at $\sim 10^{19}$ GeV 
-corrections is expected to be the largest such relevant mass scale. 
+is expected to be the largest such relevant mass scale. 
 However, since a quantum field theoretic description of gravity does not
 exist it is possible, if not expected, that our effective field theory
 description breaks down and such huge corrections are absent
@@ -323,16 +323,16 @@ The effect of the three-loop RGEs upon the relative mass shifts
 of Snowmass (SPS) benchmark 
 points~\cite{Allanach:2002nj} were presented and studied in 
 Ref.~\cite{Jack:2004ch} 
-without the inclusion of the two-loop threshold effects. 
-The three-loop RGEs are enhanced by a large logarithm $\log M_{GUT}/M_Z$,
-which effectively promotes them to the size of a two-loop threshold effect. 
+without the inclusion of the two-loop threshold effects.
+We shall demonstrate that three-loop RGEs typically provide smaller effects
+than the two-loop threshold effects. 
 Thus the additional higher order terms that were included in
-Ref.~\cite{Jack:2004ch} were of the same size as other terms that were
+Ref.~\cite{Jack:2004ch} were of smaller size as compared to other terms that
+were 
 missing in the calculation. Effects upon sparticle mass predictions of around
 1-2$\%$ were typically found, although one point studied did have an 8$\%$
 difference in the light stop mass at the SPS5 point. 
-We go beyond this calculation by including the threshold effects, which are of
-the same order as the three-loop effects.
+We go beyond this calculation by including the two-loop thresholds.
 
 Subsequently, one of us performed~\cite{Bednyakov:2010ni} a preliminary study
 of the SPS 4 (CMSSM high
@@ -357,9 +357,24 @@ observed
 is a good estimator for the size of the theoretical uncertainty induced by
 such two-loop direct mass threshold contributions. We shall study these
 uncertainties and the induced uncertainties on other observables.
-Our Higgs mass prediction includes direct two-loop threshold effects of the
-same order as the ones that we have included, and so its accuracy is improved
-by the inclusion of higher orders. 
+For the CP-even Higgs masses we have the leading two-loop
+corrections implemented in \SOFTSUSY. However,
+\SOFTSUSY~still misses higher powers of logarithms of the form %$1/(16 \pi^2)$ 
+$\log(M_{SUSY}/m_t)$ coming either from the diagrams with massive SM
+particles, e.g., top quarks (if the renormalisation scale $Q$ is chosen to be  
+the stop mass scale $Q=M_{SUSY}=\sqrt{m_{{\tilde t}_1} m_{{\tilde t}_2}}$) or
+from those with sparticles  
+(if one uses $Q$ chosen at the top mass $m_t$ instead)%
+\footnote{These
+logarithms could be re-summed if we were to integrate in the particles
+one-by-one with  rising renormalisation scale, matching the effective field
+theories at each sparticle mass scale. Such a scheme would be very
+complicated, which is why is hasn't been attempted so far, although steps in
+this direction have
+started~\cite{Kunz:2014gya,Draper:2013oza,Bagnaschi:2014rsa}.}, and this fact
+induces an uncertainty on the prediction of the lightest CP-even Higgs mass
+that is larger than its experimental uncertainty.
+
 We go beyond the pioneering study Ref.~\cite{Bednyakov:2010ni} in the
 following ways: in section~\ref{sec:results}, we show case the effect of the
 higher order terms in a CMSSM  
@@ -395,18 +410,35 @@ achieved.
 
 Two-loop threshold effects
 are not included in the calculation of sparticle masses in any of the public
-programs, indeed most of them have not been calculated yet. This means that 
+programs, indeed most of them have not been calculated yet (with the notable
+exceptions of the squark and gluino
+masses~\cite{Martin:2005ch,Martin:2006ub}). This means that  
 we are missing some terms {\em of the same order}\/ as those that we include 
 in our higher order corrections for these quantities (for example, two-loop
 threshold corrections to squark and gluino masses). Thus we cannot claim to
-have included the accuracy of the sparticle mass predictions. 
-Differences in
-sparticle masses due to the higher order corrections do give an estimate of
+have increased the accuracy of the sparticle mass predictions. 
+Differences in sparticle masses due to the higher order corrections do give an
+estimate of 
 the size of the missing terms, however, and are therefore instructive. 
-Their inclusion is also a necessary step for the future when the two-loop
-sparticle mass threshold corrections are included. 
-{\tt SOFTSUSY} does contain the relevant higher order threshold
-corrections to the Higgs masses and so they are more accurately determined. 
+Their inclusion is also a necessary step for the future when the two and
+three-loop sparticle mass threshold corrections are included. 
+
+The tree-level lightest CP even Higgs mass is suppressed  
+$m_{h^0}<M_Z$ and the one-loop corrections (dominantly due to Yukawa
+interactions of the top squarks) are  
+larger than one would naively expect from formal perturbation theory, being
+numerically 
+of the same order of magnitude as the tree-level contributions. 
+A two-loop $\mathcal{O}(\alpha_s^2)$ correction to $m_t$ 
+can be seen to affect $m_{h^0}$
+through a two-loop correction to a one-loop effect, and is thus in total
+a three-loop effect. Its numerical effect on the prediction of $m_{h^0}$ is
+significant compared to the experimental uncertainties on the 125 GeV Higgs
+mass measurement. However, we are still missing other Feynman diagrammatic 
+$\mathcal{O}(\alpha_t \alpha_s^2)$ corrections to $m_{h^0}$ and so again, its
+inclusion does not improve the accuracy of the prediction, but instead it can
+be used to 
+estimate the size of the missing higher order pieces.
 
 In the next subsection, we shall examine two parameter points in detail
 before performing parameter scans to characterise more generally the size of
@@ -420,40 +452,28 @@ $m_b(m_b)=4.18$ GeV, the strong coupling in the $\overline{MS}$ scheme
 $\alpha_s(M_Z)=0.1187$ where the $Z^0$ boson pole mass is fixed to
 $M_Z=91.1876$ GeV, the Fermi decay constant of the muon $G_\mu=1.16637
 \times 10^{-5}$ GeV$^{-2}$, the fine structure constant in the $\overline{MS}$
-scheme $\alpha(M_Z)=1/127.916$ and the pole mass of the tau lepton
-$m_\tau=1.77699$ GeV. 
+scheme $\alpha(M_Z)=1/127.934$ and the pole mass of the tau lepton
+$m_\tau=1.7770$ GeV. 
 
 \subsection{Dissection of the higher order effects at 
   benchmark points}
-\input{tableOne}
-\caption{\label{tab:cmssm} Differences due to the highest order terms
-  (three-loop 
-  RGEs for gauge and Yukawa couplings and two-loop threshold corrections to
-  third family fermion masses and $g_3$) on various predicted quantities 
-  in the focus point of the CMSSM for $m_0=7240$ GeV, $M_{1/2}=800$ GeV,
-  $A_0=-6000$ GeV, $\tan \beta=50$, $\mu>0$.
-  We display massive quantities in units of GeV.
-  The first column details which higher order threshold corrections are
-  included: `None'   meaning that only those present in {\tt
-    SOFTSUSY3.4.1}~are included, `$\Delta \alpha_s$' meaning that the 2-loop
-  threshold corrections to $\alpha_s$ are also included. `$\Delta m_t$' means
-  that only the 2-loop threshold corrections to $m_t$ are included, whereas
-  $\Delta m_b, 
-  m_\tau$ means that only the two-loop threshold corrections to $m_t$ and
-  $m_b$ are included. `All' means that all available two-loop threshold
-  corrections to $\alpha_s$, $m_t$ and $m_b$ are included.
-  `N/A' means that electroweak
-  symmetry was not broken, and so reliable results cannot be reported. 
-  $m_{\tilde q}$ refers to the average mass of the squarks of the first two
-  families. 
-  The rows marked with a $\Delta$ show the {\em change} in
-  the prediction from the {\tt SOFTSUSY3.4.1} result
-  except for 
-  the columns labeled $\Delta \alpha$, $\Delta Y_{b\tau}$ or $\Delta
-  Y_{tb}$. The column labeled `RGEs' 
-  shows the number of loops used in the MSSM RGEs. The column headed
-  `$\sigma_{SUSY}^{TOT}$' shows the total cross-section in fb for the
-  production of   gluinos and squarks at a 14 TeV LHC.}
+In order to dissect the various higher order points we first define
+different approximations to the prediction as in Table~\ref{tab:approx}.
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|} \hline
+Name & RGEs & Quantity \\ \hline
+$Q$ & 2 & Standard {\tt SOFTSUSY3.5.1} calculation without higher orders \\
+$Q_3$ & 3 & Only 3-loop RGEs are included, not the 2-loop threshold corrections\\
+$Q_{\alpha_s}$ & 2 & Included 2-loop threshold corrections to $\alpha_s$\\
+$Q_{m_t}$ & 2 & Only the 2-loop threshold corrections to $m_t$ are included\\
+$Q_{m_b,m_\tau}$ &2 & Only the 2-loop threshold corrections to $m_{b}$ and
+$m_{\tau}$ are included\\
+$Q_\textrm{All}$ & 3& All higher order corrections\\
+\hline\end{tabular}
+\end{center}
+\caption{Different approximations for the calculation of a quantity $Q$. The
+  column headed `RGEs' labels the number of loops used in the MSSM RGEs.\label{tab:approx}}
 \end{table}
 In Table~\ref{tab:cmssm}, we show the effects of the higher order terms on a
 CMSSM parameter point that is in the high $\tan \beta$ focus point region:
@@ -461,8 +481,8 @@ CMSSM parameter point that is in the high $\tan \beta$ focus point region:
 $\tan \beta=50$, $\mu>0$) with 
 some rather attractive phenomenological properties: it has a high lightest CP
 even Higgs mass of 
-122.4 GeV, within $1\sigma$ of the experimental
-central value, once theoretical uncertainties (estimated to be around $\pm3$
+124.6 GeV, agreeing with the experimental
+central value~\cite{ATLAS-CONF-2013-014}, once theoretical uncertainties (estimated to be around $\pm 3$
 GeV~\cite{Allanach:2004rh}) 
 have been taken into account.
 It also has attractive dark matter properties: $\Omega_{CDM} h^2=0.122$ is
@@ -478,15 +498,43 @@ are roughly proportional to $\tan \beta \approx 1/\cos{\beta}$:
 Y_b(M_Z) = \frac{\sqrt{2}m_b(M_Z)}{v \cos \beta}, \qquad
 Y_\tau(M_Z) = \frac{\sqrt{2}m_\tau(M_Z)}{v \cos \beta}.
 \end{equation}
+\input{tableOne}
+\caption{\label{tab:cmssm} Differences due to the highest order terms
+  (three-loop 
+  RGEs for gauge and Yukawa couplings and two-loop threshold corrections to
+  third family fermion masses and $g_3$) on various predicted quantities 
+  in the focus point of the CMSSM for $m_0=7240$ GeV, $M_{1/2}=800$ GeV,
+  $A_0=-6000$ GeV, $\tan \beta=50$, $\mu>0$.
+  We display massive quantities in units of GeV.
+  The first column details which higher order threshold corrections are
+  included. For some quantity, we have defined $\Delta_3=Q_3-Q$,
+  $\Delta \alpha_s=Q_{\alpha_s}-Q$, $\Delta m_t=Q_{m_t}-Q$, 
+  $\Delta m_b, 
+  m_\tau=Q_{m_b m_\tau}-Q$ and $\Delta$ All$=Q_\textrm{All}-Q$ (see
+  Table~\ref{tab:approx}). 
+  `N/A' means that electroweak
+  symmetry was not broken, and so reliable results cannot be reported. 
+  $m_{\tilde q}$ refers to the average mass of the squarks of the first two
+  families. 
+The column headed
+  `$\sigma_{SUSY}^{TOT}$' shows the total cross-section in fb for the
+  production of   gluinos and squarks at a 14 TeV LHC.}
+\end{table}
 We split the various higher order corrections up in
 the table: the `base' calculation is taken to be {\tt
-  SOFTSUSY3.4.1}, which does not contain the higher order corrections. 
-% AVB
-We can see that the two-loop threshold corrections to the strong couplings $\Delta \alpha_s$ and top-quark mass $\Delta m_t$ are the most important ones. 
-It is worth mentioning that both  one- and two-loop contributions to $\Delta \alpha_s$ and $\Delta m_t$ (see., e.g., \cite{Pierce:1996zz,Bednyakov:2010ni}) are usually positive and tend to decrease the corresponding running parameters at the matching scale. 
+  SOFTSUSY3.5.1} without the higher order corrections. 
+By comparing the entries for $\Delta_3$ with entries in other rows, we see that
+three-loop RGE corrections on their own tend to induce smaller changes to the
+quantities listed in the table than the threshold corrections.
+We can see that the two-loop threshold corrections to the strong coupling
+$\alpha_s$ and top-quark mass $m_t$ are the most important ones.  
+It is worth mentioning that both two-loop contributions to
+$\alpha_s$ and $m_t$ (see., e.g., \cite{Pierce:1996zz,Bednyakov:2010ni}) 
+tend to decrease the corresponding running MSSM parameters
+at the matching scale.  
 % AVB
 We see that the row $\Delta m_t$, that includes two-loop threshold corrections
-to $m_t$ coming from strong SUSY QCD corrections only contains `N/A' entries,
+to $m_t$ coming from strong SUSY QCD interactions only contains `N/A' entries,
 indicating that the calculation failed in this approximation because
 electroweak symmetry was not broken successfully, as we now explain. 
 
@@ -525,8 +573,9 @@ The parameter point in Table~\ref{tab:cmssm}
 appears to agree with the experimental result on the Higgs
 mass (which, in the CMSSM at high masses, acts to a good approximation with
 identical couplings to the Standard Model Higgs)
-to within the one 1$\sigma$ level according to the {\tt SOFTSUSY3.4.1}
-calculation. However, one would discard the point based on the predicted value
+according to the standard {\tt SOFTSUSY3.5.1}
+calculation, bearing the $\pm 3$ GeV theoretical uncertainty in mind. However,
+one would discard the point based on the predicted value 
 of 53.2 for $\Omega_{CDM} h^2$, which disagrees with the cosmologically inferred
 value by hundreds of sigma. On the other hand, including all of the high order
 corrections (`$\Delta$ All'), we see that the Higgs mass prediction lowers
@@ -573,7 +622,7 @@ parameters, respectively.
 We use $s$ and $c$ for sine and cosine, so that
 $s_\beta\equiv\sin\beta,\ c_{\beta}\equiv\cos\beta$ and $s_W (c_W)$ is
 the sine (cosine) of the weak mixing angle. When $\mu \sim {\mathcal
-  O}\text{min}(M_1,\ M_2)$, 
+  O}(\text{min}(M_1,\ M_2))$, 
 the lightest mass eigenstate thus picks up a significant higgsino component, 
 which has enhanced annihilation into the channels mentioned above. At high
 $m_0$, other annihilation channels involving a $t-$channel scalar, are 
@@ -623,7 +672,7 @@ where $\Sigma_t(M_Z)$ represents the MSSM top quark mass threshold corrections
 (which include the strong threshold corrections).
 The two-loop threshold corrections to the bottom and tau Yukawa couplings 
 have an effect, particularly on $m_{\chi_3^0}$ and $m_{\chi_4^0}$ through
-$\mu$ in a similar way to the effect from $\Delta m_t$, as explained above.
+$\mu$ in a similar way to the effect due to $\Delta m_t$, as explained above.
 %
 In addition, the masses of heavy higgs bosons are shifted by about ten percent.
 It is due to the fact that the running mass of CP-odd neutral higgs $m_A$ 
@@ -643,7 +692,7 @@ tends to compensate
 that of $\Delta m_b$ \cite{Bednyakov:2010ni}.  
 The lightest sbottom mass undergoes a 1$\%$ relative change,
 whereas the other masses 
-are less affected by two loop contribution to $\Delta m_b$. 
+are less affected by two loop contribution to $m_b$. 
 
 The smaller $\Delta \alpha_s$ changes in the gluino and average squark masses
 lead to associated 
@@ -653,7 +702,9 @@ by the production of two gluinos and
 their subsequent decay, the squarks being too heavy to be produced with any
 appreciable cross-section. We calculate the next-to-leading order total QCD
 cross section for production at a 14 TeV LHC with {\tt
-  PROSPINO}~\cite{Beenakker:1996ed,Beenakker:1996ch}. We see that there is
+  PROSPINO}~\cite{Beenakker:1996ed,Beenakker:1996ch}. The relative statistical
+accuracy of this cross-section is $\pm 0.001$.
+We see that there is
 a large 30$\%$ increase due to the higher order effects modifying $\alpha_s$,
 which in turn changes the gluino mass. We emphasise again that the changes in
 the 
@@ -661,7 +712,7 @@ spectrum that we see as a result of the higher order corrections are
 indicative of the size of theoretical uncertainties in 
 each mass prediction, but that the results with the higher order corrections
 are only as accurate as those without them. 
-However, our results on Higgs mass predictions, Yukawa and gauge couplings and
+However, our results on Yukawa and gauge couplings and their
 unification {\em are} more accurate. 
 
 For brevity, we have defined 
@@ -686,46 +737,58 @@ our higher order corrections are taken into account.
   (three-loop 
   RGEs for gauge and Yukawa couplings and two-loop threshold corrections to
   third family fermion masses and $\alpha_s$) 
-  in the phenomenological MSSM point 1.6~\cite{AbdusSalam:2011fc}. The first
+  in a modified phenomenological MSSM point
+  1.6~\cite{AbdusSalam:2011fc}. $\tan \beta=10$, $A_t=-5$ TeV and most other
+  mass parameters are set to 2.5 TeV except for $M_3=960$ GeV, $M_1=800$ GeV 
+  and the first two generation squark masses being set to 960 GeV
+  (see text for more details).
+  The first
   column details which higher order threshold corrections are 
-  included: `None'   meaning that only those present in {\tt
-    SOFTSUSY3.4.1}~are included, `$\Delta \alpha_s$' meaning that the two-loop
-  threshold corrections to $\alpha_s$ are also included. `$\Delta m_t$' means
-  that only the two-loop threshold corrections to $m_t$ are included, whereas
+  included.   We display massive quantities in units of GeV.
+  For some quantity $Q$, $\Delta_3=Q_3-Q$,
+  $\Delta \alpha_s=Q_{\alpha_s}-Q$, $\Delta m_t=Q_{m_t}-Q$, 
   $\Delta m_b, 
-  m_\tau$ means that only the two-loop threshold corrections to $m_t$ and
-  $m_b$ are included. `All' means that all available two-loop threshold
-  corrections to $\alpha_s$, $m_t$ and $m_b$ are included.
+  m_\tau=Q_{m_b m_\tau}-Q$ and $\Delta$ All$=Q_\textrm{All}-Q$ (see
+  Table~\ref{tab:approx}). 
     $m_{\tilde q}$ refers to the average mass of the squarks of the first two
   families. 
   The rows marked with a $\Delta$ show the {\em change}\ with respect to
-  the {\tt SOFTSUSY3.4.1} prediction. The column
-  labeled `RGEs' 
-  shows the number of loops used in the MSSM RGEs. The column headed
+  the {\tt SOFTSUSY3.5.1} prediction. The column headed
   `$\sigma_{SUSY}^{TOT}$' shows the total cross-section in fb for the
   production of   gluinos and squarks at a 14 TeV LHC.}
 \end{table}
-We now wish to decouple the three-loop RGE effects from the two-loop threshold
+We now wish to decouple the "pure" three-loop RGE effects from the two-loop
+threshold 
 effects as far as possible while still giving a valid prediction for a point
 in MSSM parameter space. This can be achieved by studying the spectrum at a
 point in pMSSM parameter space, where supersymmetry
 breaking 
 boundary conditions are imposed already at the SUSY breaking scale, defined to 
 be $\sqrt{m_{{\tilde t}_1} m_{{\tilde t}_2}}$. We use the point pMSSM1.6 from
-Ref.~\cite{AbdusSalam:2011fc}, which is defined to have all scalar trilinear
+Ref.~\cite{AbdusSalam:2011fc}, which is defined to have $\tan\beta=10$, all scalar trilinear
 couplings set to 0, the tree-level first two generation squark masses, 
 and tree-level gluino masses all set to 960 GeV and a tree-level bino
-mass of 800 GeV. The tree-level wino mass $\mu$, the pseudo-scalar Higgs
-pole mass and all other tree-level squark and slepton masses are fixed to 2500
-GeV. The aim of using the pMSSM is to reduce the effects of the RGEs in order
+mass of 800 GeV. The tree-level wino mass $\mu$ and all other tree-level
+squark and slepton masses are fixed to 2500 
+GeV. We change the point however, the pseudo-scalar Higgs
+pole mass is fixed to $M_{A^0}=1580$ GeV: this provides efficient dark matter
+annihilation of two neutralinos (whose mass is approximately $M_{A^0}/2$).
+We also change the stop mixing parameter, setting it to be $A_t=-5$ TeV, which
+puts the prediction of the lightest CP even higgs mass to be near the
+experimental central value.
+The aim of using the pMSSM is to reduce the effects of the RGEs in order
 to study the threshold contributions more cleanly. However, we cannot
 eliminate RGE effects completely because there is still running between 
-$M_Z$ and $M_{SUSY} \sim 2.5$ TeV. However, these running effects are small,
+$M_Z$ and $M_{SUSY} \sim 2.5$ TeV. However, these running effects are relatively small,
 being of order 
-$1/(16 \pi^2) \log M_{SUSY}/M_Z$, i.e.\ not enhanced by large logarithms,
-unlike the CMSSM case above. 
-We see that the lightest CP-even Higgs mass prediction decreases by 1.6 GeV,
-mainly because of the  corrections to the top mass. The high order strong
+$1/(16 \pi^2) \log M_{SUSY}/M_Z$, 
+unlike the CMSSM case above with its large logarithms $1/(16\pi^2)\log
+M_{GUT}/M_Z \sim {\mathcal O}(1)$. 
+We see that the lightest CP-even Higgs mass prediction decreases by 1.5 GeV,
+mainly because of the  corrections to the top mass. 
+Three-loop RGEs appear unnecessary here, only inducing relative changes of
+order $10^{-4}$ in the predictions.
+The high order strong
 corrections to $\alpha_s$ reduce
 squark and gluino masses at the per-mille level, which will only have a very
 small effect on collider signatures. 
@@ -735,11 +798,9 @@ The sparticle mass predictions only change by a
 very small amount, which is contrary to the case of the focus-point CMSSM
 (which is 
 admittedly very sensitive to small changes in the top Yukawa coupling) that is
-shown in Table~\ref{tab:cmssm}. However, we shall show next that even for more
-generic CMSSM points, there are typically relative changes in the spectra of
-2-3$\%$. 
+shown in Table~\ref{tab:cmssm}. 
 The effect on the total 14 TeV LHC gluino/squark production cross-section is
-only  around the $2\%$ level or so.
+only  around the $1\%$ level or so.
 We conclude that in this point of the pMSSM, the higher order effects are not
 needed for collider studies except for those involving the lightest CP-even
 Higgs. We find it likely, where no input mass parameters are lighter
@@ -748,8 +809,12 @@ pMSSM because of sparticle decoupling in the corrections.
 However, to be sure of this conclusion, one should calculate the spectrum
 at any point in question including
 the higher order effects in order check. 
+We shall show next that even for more
+generic CMSSM points, there are typically relative changes in the spectra of
+2-3$\%$. 
 
 \subsection{CMSSM parameter scans}
+
 
 
 \begin{figure}
@@ -780,7 +845,7 @@ searches'~\cite{Aad:2014wea} with 20 fb$^{-1}$ of
 integrated luminosity.  
 We see in Fig.~\ref{fig:uni}a that exact gauge unification occurs, for
 $A=-2m_0$, $\mu>0$ and $\tan \beta=30$, at around $m_0=M_{1/2}\approx 4.5$ TeV
-in the CMSSM at the usual {\tt SOFTSUSY3.4.1} accuracy. However, including the
+in the CMSSM at the usual {\tt SOFTSUSY} accuracy. However, including the
 higher order terms, $\alpha_3(M_{GUT})$ 
 as predicted by data is around 0.001 times smaller than the other gauge
 couplings. Such a discrepancy may be explained within a more detailed GUT model
@@ -980,7 +1045,7 @@ obtained from scale dependence in the next-to-leading order result).
   change in the position of the border of successful electroweak symmetry
   breaking: the white  region 
   (and to the right) is ruled out for higher loop corrections, whereas
-  the lighter one is ruled out according to the standard {\tt SOFTSUSY3.4.1}
+  the lighter one is ruled out according to the standard {\tt SOFTSUSY}
   calculation.} 
 \end{figure}
 We next perform a scan at high $\tan \beta$, displaying a region where the
@@ -1018,16 +1083,31 @@ observations.
  and $\mathcal O(\alpha_s \alpha_{t,b})$ 
  corrections to $\alpha_s$, and $\mathcal O(\alpha_s^2)$, 
  $\mathcal O(\alpha_s \alpha_{t,b})$, $\mathcal O(\alpha_{t,b}^2)$, $\mathcal O(\alpha_t \alpha_b)$, and $\mathcal O(\alpha_{t,b} \alpha_\tau)$ corrections to
- $m_b$. $\mathcal O(\alpha_tau^2), \mathcal O(\alpha_{t,b} \alpha_\tau)$ 
- corrections to $m_\tau$ are also included. These corrections make higgs mass
- predictions and gauge and
+ $m_b$. $\mathcal O(\alpha_\tau^2), \mathcal O(\alpha_{t,b} \alpha_\tau)$ 
+ corrections to $m_\tau$ are also included. These corrections make gauge and
  Yukawa unification predictions more accurate. 
- We report up to a 3 GeV change in
- the prediction  of 
- the lightest CP even Higgs mass.
+ We report up to a 3 GeV  (usually {\em negative}) change in
+ the prediction  of  the lightest CP even Higgs mass, mostly due to
+ the reduction of the running top Yukawa coupling originating from the two-loop threshold correction
+ to the top quark mass.
+ It is interesting to mention that our result looks complementary to that obtained
+ by means of the {\tt H3M} package~\cite{Kunz:2014gya,Kant:2010tf,Feng:2013tvd} --
+ three-loop diagrammatic corrections $\mathcal{O}(\alpha_t \alpha_s^2)$ 
+ to the lightest Higgs mass are estimated to be of the same order but  {\em positive}.
+ %
+ The authors of {\tt H3M} took the $\mathcal{O}(\alpha_s^2)$ contribution to the running
+ top mass into account but used a very different setup\footnote{One- and two-loop corrections to the CP-even Higgs mass matrix
+	 are calculated by means of the {\tt FeynHiggs}
+         \cite{Hahn:2013ria,Borowka:2014wla} program.}. 
+     It would be instructive in the future to implement the leading
+     three-loop 
+    contribution \cite{Kant:2010tf,Martin:2007pg} to the lightest CP-even Higgs
+ boson mass in SOFTSUSY and cross-check 
+ results available in the literature.
+ 
  The inclusion of the higher order terms also gives a good estimate
  for the size of theoretical uncertainties in the sparticle mass predictions
- from higher order corrections. Some sparticle masses have larger 10$\%$
+ from higher order corrections. Some sparticle masses have 10$\%$
  uncertainties when running to and from the GUT scale, as in the CMSSM, where
  small threshold effects become amplified by sensitive renormalisation group
  running. On the other hand, in the pMSSM, where there is only running between
@@ -1064,15 +1144,15 @@ incorrectly. Ideally, the fit would be performed including a calculated
  future work will be to include these. We estimate that current uncertainties
  on the extreme focus point region are huge, and need to be decreased by the
  calculation and addition of these terms. 
- We note that currently, no other spectrum calculator contains our higher
- order terms, which help to improve the accuracy of the higgs mass
- prediction. There has been a tendency in the recent literature for some
+ We note that currently, no other publicly supported spectrum calculator
+ contains our higher 
+ order terms. There has been a tendency in the recent literature for some
  authors to increase the SUSY breaking mass scales to several tens of TeV, or
  even higher. 
  In this case, to get a $m_h$ prediction that is very accurate, the fixed
  order calculations employed in {\tt SOFTSUSY} could be subject to corrections
  of several GeV~\cite{Draper:2013oza,Bagnaschi:2014rsa}. For a more
- accurate prediction, log resummation 
+ accurate prediction, additional log re-summation 
  should be implemented: another important possible future direction for
  research. 
 
@@ -1091,7 +1171,11 @@ incorrectly. Ideally, the fit would be performed including a calculated
  with the help of TSIL \cite{Martin:2005qm} package~\cite{Martin:2005ch,Martin:2006ub}). 
  The corrections that we have included are necessary if such corrections are to
  increase the accuracy of sparticle mass predictions.  
-
+% In addition to this,  leading three-loop corrections \cite{Martin:2007pg,Kant:2010tf} to the
+% lightest CP-even Higgs boson could be incorporated to further reduce the
+% uncertainty of  the corresponding mass prediction.
+ 
+ 
  We have examined the effects of the higher order terms that we include
  upon apparent discrepancies in various predictions of unification at the GUT
  scale. We fix gauge and Yukawa couplings to data at $M_Z$, assuming some
@@ -1130,12 +1214,13 @@ origen de la Materia" (FPA2011-29678) and the ``Fenomenologia y Cosmologia de
 la Fisica mas alla del Modelo Estandar e lmplicaciones Experimentales en la
 era del LHC" (FPA2010-17747) MEC projects. BCA thanks the Cambridge SUSY
 working group for useful discussions.
+We thank P.~Slavich for helpful communication and
+suggestions and D.~Kunz and P.~Kant for communications 
+regarding the {\tt H3M} package. 
 AVB is immensely grateful to A.~Sheplyakov for providing 
-a code for dealing with {\tt GiNaC} archives. The work of AVB is supported
+a program for dealing with {\tt GiNaC} archives. The work of AVB is supported
 by the RFBR grants~12-12-02-00412-a,~14-02-00494-a, and the Russian President
-Grant~MK-1001.2014.2. We thank P Slavich for helpful communication and
-suggestions. 
-
+Grant~MK-1001.2014.2. 
 \appendix
 
 \section{Installation of the Increased Accuracy Mode}

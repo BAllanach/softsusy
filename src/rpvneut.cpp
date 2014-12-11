@@ -1551,15 +1551,14 @@ void RpvNeutrino::AnalyticDiagonalise
   DoubleMatrix TestMix2(size, size);
   
   /// Unit mixing matrix
-  for (int ii=1; ii<=size; ii++)
-    {
+  for (int ii=1; ii<=size; ii++) {
       TestMix0(ii, ii) = 1.;
     }
   
   /// Corrections of order (OffD/D) to the off diagonal entries
   for (int ii=1; ii<=size; ii++)
     for (int jj=1; jj<=size; jj++) {
-      if (ii != jj) {
+      if (ii != jj && fabs(TestD(jj,jj) - TestD(ii,ii)) > numberOfTheBeast) {
 	TestMix1(ii, jj) += TestOffD(ii, jj)/(TestD(jj, jj)-TestD(ii, ii));
       }
     }
@@ -1567,7 +1566,7 @@ void RpvNeutrino::AnalyticDiagonalise
   /// Corrections of order (OffD^2/D^2) to the diagonal entries
   for (int ii=1; ii<=size; ii++)
     for (int kk=1; kk<=size; kk++) {
-      if (kk != ii)
+      if (kk != ii && fabs(TestD(kk,kk) - TestD(ii,ii)) > numberOfTheBeast)
 	{
 	  TestMix2(ii, ii) += -0.5 * TestOffD(ii, kk) * TestOffD(kk, ii) /
 	    (TestD(ii, ii)-TestD(kk, kk))/(TestD(ii, ii)-TestD(kk, kk));
@@ -1578,7 +1577,9 @@ void RpvNeutrino::AnalyticDiagonalise
   for (int ii=1; ii<=size; ii++)
     for (int jj=1; jj<=size; jj++)
       for (int kk=1; kk<=size; kk++) {
-	if ((kk != jj) && (ii != jj)) {
+	if ((kk != jj) && (ii != jj) &&
+	    fabs(TestD(jj,jj) - TestD(ii,ii)) > numberOfTheBeast && 
+	    fabs(TestD(kk,kk) - TestD(ii,ii)) > numberOfTheBeast) {
 	  TestMix2(ii, jj) += TestOffD(ii, kk) * TestOffD(kk, jj) /
 	    (TestD(jj, jj)-TestD(kk, kk))/(TestD(jj, jj)-TestD(ii, ii));
 	}

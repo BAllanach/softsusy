@@ -50,7 +50,6 @@ softpoint_x_LDADD += lib2lthresh.la libmssmparam.la
 rpvsoftsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
 rpvneut_x_LDADD += lib2lthresh.la libmssmparam.la 
 
-
 endif
 
 pkginclude_HEADERS += \

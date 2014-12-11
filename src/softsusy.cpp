@@ -6511,6 +6511,67 @@ void Softsusy<SoftPars>::treeSnu(double & mSnuSquared,
       * c2b;
 }
 
+template<class SoftPars>
+void Softsusy<SoftPars>::calcHiggsAtScale(int accuracy, double & mt, 
+					  double & sinthDRbarMS, double &
+					  piwwtMS, double & pizztMS, 
+					  double q) {
+  /// Higgs: potentially at a different scale
+  Softsusy<SoftPars> ppp(*this);
+  
+  /// Re-calculate the 1-loop tadpoles for the calculation if a different
+  /// renormalisation scale is required
+  if (accuracy > 1 && q > MZ) {
+    ppp.runto(q);
+    ppp.calcDrBarPars(); mt = ppp.displayDrBarPars().mt;
+    sinthDRbarMS = ppp.calcSinthdrbar();
+    piwwtMS = sqr(ppp.displayMwRun()) - sqr(ppp.displayMw());
+    pizztMS = sqr(ppp.displayMzRun()) - sqr(ppp.displayMz());
+    ppp.calcTadpole1Ms1loop(mt, sinthDRbarMS);  
+    ppp.calcTadpole2Ms1loop(mt, sinthDRbarMS); 
+    } 
+  
+  ppp.higgs(accuracy, piwwtMS, pizztMS);  
+
+  const int maxHiggsIterations = 20;
+  double currentAccuracy = 1.0;
+  DoubleVector oldHiggsMasses(4);
+  oldHiggsMasses(1) = ppp.displayPhys().mh0(1);   
+  oldHiggsMasses(2) = ppp.displayPhys().mA0(1);
+  oldHiggsMasses(3) = ppp.displayPhys().mh0(2);
+  oldHiggsMasses(4) = ppp.displayPhys().mHpm;
+  bool higgsTachyon = false;
+  /// Iterate Higgs calculation (unless accuracy=0, in which case we just need
+  /// a rough calculation) until the Higgs masses all converge to better than
+  /// TOLERANCE fractional accuracy
+  int i = 1; while (i < maxHiggsIterations && accuracy > 0 && 
+		    currentAccuracy > TOLERANCE) {
+
+    higgsTachyon = ppp.higgs(accuracy, piwwtMS, pizztMS); /// iterate 
+
+    DoubleVector newHiggsMasses(4);
+    newHiggsMasses(1) = ppp.displayPhys().mh0(1);
+    newHiggsMasses(2) = ppp.displayPhys().mA0(1);
+    newHiggsMasses(3) = ppp.displayPhys().mh0(2);
+    newHiggsMasses(4) = ppp.displayPhys().mHpm;
+
+    currentAccuracy = oldHiggsMasses.compare(newHiggsMasses);
+
+    oldHiggsMasses = newHiggsMasses;
+
+    i++;
+  }
+
+  if (higgsTachyon) { flagTachyon(h0); flagTachyon(softsusy::A0); 
+    flagTachyon(hpm); }
+
+  physpars.mh0(1) = ppp.displayPhys().mh0(1);
+  physpars.mA0(1) = ppp.displayPhys().mA0(1);
+  physpars.mh0(2) = ppp.displayPhys().mh0(2);
+  physpars.mHpm   = ppp.displayPhys().mHpm;
+  physpars.thetaH = ppp.displayPhys().thetaH; 
+}
+
 /// Organises calculation of physical quantities such as sparticle masses etc
 /// Call AT MSusy
 template<class SoftPars>
@@ -6535,61 +6596,17 @@ void Softsusy<SoftPars>::physical(int accuracy) {
   double mb = forLoops.mb;
   double mtau = forLoops.mtau;
 
-  /// Re-calculate the 1-loop tadpoles for the calculation
-  calcTadpole1Ms1loop(mt, sinthDRbarMS);  
-  calcTadpole2Ms1loop(mt, sinthDRbarMS); 
-
   doUpSquarks(mt, pizztMS, sinthDRbarMS, accuracy); 
   doDownSquarks(mb, pizztMS, sinthDRbarMS, accuracy, mt); 
   doChargedSleptons(mtau, pizztMS, sinthDRbarMS, accuracy); 
   doSnu(pizztMS, accuracy);
-  
-  /// Charginos/neutralinos/higgs
-  Softsusy<SoftPars> * ppp;
-  ppp = this;
-  
-  ppp->higgs(accuracy, piwwtMS, pizztMS);  /// DEBUG C version
 
-  const int maxHiggsIterations = 20;
-  double currentAccuracy = 1.0;
-  DoubleVector oldHiggsMasses(4);
-  oldHiggsMasses(1) = ppp->displayPhys().mh0(1);   
-  oldHiggsMasses(2) = ppp->displayPhys().mA0(1);
-  oldHiggsMasses(3) = ppp->displayPhys().mh0(2);
-  oldHiggsMasses(4) = ppp->displayPhys().mHpm;
-  bool higgsTachyon = false;
-  /// Iterate Higgs calculation (unless accuracy=0, in which case we just need
-  /// a rough calculation) until the Higgs masses all converge to better than
-  /// TOLERANCE fractional accuracy
-  int i = 1; while (i < maxHiggsIterations && accuracy > 0 && 
-		    currentAccuracy > TOLERANCE) {
-    /// DEBUG C version
-    higgsTachyon = ppp->higgs(accuracy, piwwtMS, pizztMS); /// iterate 
-
-    DoubleVector newHiggsMasses(4);
-    newHiggsMasses(1) = ppp->displayPhys().mh0(1);
-    newHiggsMasses(2) = ppp->displayPhys().mA0(1);
-    newHiggsMasses(3) = ppp->displayPhys().mh0(2);
-    newHiggsMasses(4) = ppp->displayPhys().mHpm;
-
-    currentAccuracy = oldHiggsMasses.compare(newHiggsMasses);
-
-    oldHiggsMasses = newHiggsMasses;
-
-    i++;
-  }
-
-  if (higgsTachyon) { flagTachyon(h0); flagTachyon(softsusy::A0); 
-    flagTachyon(hpm); }
-  physpars.mh0(1) = ppp->displayPhys().mh0(1);
-  physpars.mA0(1) = ppp->displayPhys().mA0(1);
-  physpars.mh0(2) = ppp->displayPhys().mh0(2);
-  physpars.mHpm = ppp->displayPhys().mHpm;
- 
   gluino(accuracy); 
   charginos(accuracy, piwwtMS); 
   neutralinos(accuracy, piwwtMS, pizztMS);
-}
+
+  calcHiggsAtScale(accuracy, mt, sinthDRbarMS, piwwtMS, pizztMS);
+ }
 
 /// For a given trial value of the log of field H2, gives the value of the
 /// potential at the minimum. The following global variables must be set before
@@ -7053,7 +7070,7 @@ void Softsusy<SoftPars>::fixedPointIteration
     physical(0);
   
     setThresholds(3); setLoops(lpnum);
-    
+
     itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 
 		gaugeUnification, ewsbBCscale);
     
@@ -7177,15 +7194,15 @@ void Softsusy<SoftPars>::sparticleThresholdCorrections(double tb) {
   double piwwtMW = piWWT(displayMw(), displayMu(), true);
   
   if (piwwt0 + sqr(displayMw()) < 0.) {
-    flagTachyon(W);
+    flagTachyonWarning(W);
     piwwt0 = -sqr(displayMw()) + EPSTOL;
   }
   if (piwwtMW + sqr(displayMw()) < 0.) {
-    flagTachyon(W);
+    flagTachyonWarning(W);
     piwwtMW = -sqr(displayMw()) + EPSTOL;
   }
   if (pizztMZ + sqr(displayMz()) < 0.) {
-    flagTachyon(Z);
+    flagTachyonWarning(Z);
     pizztMZ = -sqr(displayMz()) + EPSTOL;
   }
 
@@ -9612,12 +9629,22 @@ void Softsusy<SoftPars>::spinfoSLHA(ostream & out) {
     out << "     3   # Warning: Higgs masses are very inaccurate at this point.\n";
   int posj = 0, posi = 0; double mass = 0.;
   int temp = lsp(mass, posi, posj);
+  if (displayProblem().tachyonWarning) 
+    out << "     3    # Warning: " 
+	<< tachyonNames[displayProblem().tachyonWarning] 
+	<< " is tree-level tachyon at MZ" << endl;
+  if (displayProblem().noConvergence)
+    out << "     3    # Warning: did not achieve desired precision. "
+	<< " Got " << displayFracDiff() << " instead of " << TOLERANCE << endl;
+  if (displayProblem().inaccurateHiggsMass)
+    out << "     3    # Warning: Higgs mass especially inaccurate due to large hierarchies"
+	<< " in spectrum" << endl;
   if (temp != 0 && temp != -1) {
-    out << "     3   # Warning: " << recogLsp(temp, posj);
+    out << "     3    # Warning: " << recogLsp(temp, posj);
     out << " LSP" << endl;
   }
   if (displayProblem().testSeriousProblem()) 
-    out << "     4   Point invalid: " << displayProblem() << endl;
+    out << "     4    # Point invalid: " << displayProblem() << endl;
 }
 
 template<class SoftPars>

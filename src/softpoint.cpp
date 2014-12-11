@@ -39,6 +39,7 @@ void errorCall() {
   ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
   ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
   ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
+  ii << "--higgsUncertainties gives an estimate of Higgs mass uncertainties\n";
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
   if (USE_TWO_LOOP_THRESHOLD) ii << "--two-loop-susy-thresholds switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
 #endif //COMPILE_FULL_SUSY_THRESHOLD
@@ -70,6 +71,7 @@ void errorCall() {
      "NMSSM example:\n"
      "  ./softpoint.x nmssm sugra --m0=125 --m12=200 --tanBeta=10 --a0=-300 \\\n"
      "     --lambda=0.1 --lambdaAtMsusy\n";
+
   throw ii.str();
 }
 
@@ -80,7 +82,8 @@ int main(int argc, char *argv[]) {
   double lambdaW = 0., aCkm = 0., rhobar = 0., etabar = 0.;
   NMSSM_input nmssm_input; // NMSSM input parameters
 
-  bool flavourViolation = false, gutScaleOutput = false;
+  bool flavourViolation = false, gutScaleOutput = false, 
+    higgsUncertainties = false;
 
   int numPoints = 1;
 
@@ -148,6 +151,8 @@ int main(int argc, char *argv[]) {
 	  double mbIn = get_value(argv[i], "--mbmb=");
 	  oneset.setMbMb(mbIn);
 	}
+	else if (starts_with(argv[i],"--higgsUncertainties")) 
+	  higgsUncertainties = true;
 	else if (starts_with(argv[i],"--tol=")) 
 	  TOLERANCE = get_value(argv[i], "--tol=");
 	else if (starts_with(argv[i],"--mt=")) 
@@ -171,7 +176,7 @@ int main(int argc, char *argv[]) {
 #else
 	  compilationProblem = true;
 	  cout << "Two-loop thresholds not compiled.\n";
-	  cout << "Please use the --enable-two-loop-susy-thresholds with the configure option.\n";
+	  cout << "Please use the --two-loop-susy-thresholds with the configure option.\n";
 	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
 #endif
 	}
@@ -678,7 +683,6 @@ int main(int argc, char *argv[]) {
 		      if (fabs(d + 1.0) < EPSTOL) {
 			mgutGuess = 1.0e3;
 			ewsbBCscale = true;
-			QEWSB = 1.0;
 			if (gaugeUnification) 
 			  cout << "# Gauge unification ignored since pheno MSSM"
 			       << " assumes BC set at QEWSB\n"; 
@@ -1193,6 +1197,11 @@ int main(int argc, char *argv[]) {
 		    break;
 		  }
 #endif
+		  case 21: {
+		    int num = int(d + EPSTOL);
+		    if (num > 0) higgsUncertainties = true;
+		    break;
+		  }
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "
@@ -1339,6 +1348,37 @@ int main(int argc, char *argv[]) {
 
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
+
+      if (higgsUncertainties) {
+	int numPts = 30;
+	DoubleVector mh(numPts), mH(numPts), mA(numPts), mHp(numPts);
+	double dmh = 0., dmH = 0., dmA = 0., dmHp = 0.;
+	double lnqMin = log(MZ), 
+	  lnqMax = log(2.0 * r->displayMsusy());
+	for (int i = 0; i< numPts; i++) {
+	  MssmSoftsusy a(r->displaySoftsusy());
+	  double lnq = (lnqMax - lnqMin) * double(i) / double(numPts) + lnqMin;
+	  double q = exp(lnq);
+	  int accuracy = 3; 
+	  double mt = 0., sinth = 0., piww = 0., pizz = 0;
+	  a.calcHiggsAtScale(accuracy, mt, sinth, piww, pizz, q);
+	  if (!a.displayProblem().testSeriousProblem()) {
+	    mh.set(i+1, a.displayPhys().mh0(1));
+	    mH.set(i+1, a.displayPhys().mh0(2));
+	    mA.set(i+1, a.displayPhys().mA0(1));
+	    mHp.set(i+1, a.displayPhys().mHpm);
+	  }
+	 }
+	/// Try to add some fixed-order uncertainties to this
+        int p;
+	dmh  =  mh.max(p) -  mh.min(p);
+	dmA  =  mA.max(p) -  mA.min(p);
+	dmH  =  mH.max(p) -  mH.min(p);
+	dmHp = mHp.max(p) - mHp.min(p);
+	cout << "# Estimated Higgs uncertainties in GeV:\n# Dmh=" 
+	     << dmh << " DmH=" << dmH << " DmA=" << dmA 
+	     << " DmH+-=" << dmHp << endl;
+      }
       
       if (r->displayProblem().test()) {
 	cout << "# SOFTSUSY problem with point: " << r->displayProblem() 

@@ -617,7 +617,7 @@ $e$, since that is already included in the QED calculation of the SM
 $m_b(M_Z)$).
 Both finite and leading logarithmic
 corrections are included.
-After the Standard Model $\overline{MS}$ bar of $m_\tau$ is converted to the
+After the Standard Model $\overline{MS}$ value of $m_\tau$ is converted to the
 $\overline{DR}$ value via
 \begin{equation}
 m_\tau(M_Z)^{\overline{DR}}_{SM} = m_\tau(M_Z)^{\overline{MS}}_{SM}
@@ -768,7 +768,7 @@ The full one-loop EWSB
 conditions at this scale are then employed to\footnote{Note that there is also
   an option to extract $m_{H_1}(M_{SUSY})$ and $m_{H_2}(M_{SUSY})$ from input
   $\mu(M_{SUSY})$ and  
-$m_A(\mbox{pole})$ values, see section~\protect\ref{sec:altewsb}.}
+$m_A(\mbox{pole})$ values, see section~\protect\ref{sec:mssmsoftsusy}.}
 calculate $m_3(M_{SUSY})$ and $\mu(M_{SUSY})$. $\mu(M_{SUSY})$ requires an iterative solution
 because the tadpoles depend upon the value of $\mu$ assumed.
 The symmetry breaking condition for $\mu$ can be phrased
@@ -1036,6 +1036,8 @@ unphysical point.}
     \code{--mgut=unified} & define unification scale $M_X$ by $g_1(M_X)=g_2(M_X)$ \\
     \code{--mgut=msusy} & set unification scale to $M_\text{SUSY}$ \\
     \code{--mgut=<value>} & set unification scale to fixed value \\
+    \code{--higgsUncertainties} & provides an estimate of uncertainties in
+      Higgs masses\\
     \hline
   \end{tabular}
   \caption{General command line options for \code{softpoint.x} These variables
@@ -1046,7 +1048,6 @@ unphysical point.}
 Bracketed entries should be replaced by the desired numerical values, (in GeV
 if they are dimensionful). The program will provide output from one point in
 the CMSSM, mAMSB or mGMSB model. 
-
 
 For users that are not familiar with \code{C++}, we note that the executable
 interface allows the calculation at just one parameter point in SUSY breaking 
@@ -1080,6 +1081,7 @@ Block SOFTSUSY     # SOFTSUSY specific inputs
  12   <printSpectra>  # Prints spectrum even when point is theoretically
 excluded if=1
  13   <mAflag>        # If =0 (default), sets tachyonic mA=0, otherwise mA=sqrt(|mA|^2)
+ 21   <higgsUncert>   # If =1, provides an estimate of Higgs mass uncertainties
 \end{verbatim}
 \normalsize
 The fractional numerical precision on masses and couplings output by \SOFTSUSY~is better than \code{TOLERANCE}, which
@@ -1165,6 +1167,17 @@ space report tachyons only in the
 early iterations of the algorithm depicted in Fig.~\ref{fig:algorithm},
  and such points may
 be physically fine if there are no further problems reported. 
+
+\code{<higgsUncert>}~is by default set to \code{0}, but if it is set to
+\code{1}, then \SOFTSUSY~will estimate the approximate errors in each Higgs
+boson mass, in units of GeV. This is printed out at the bottom of the SLHA
+file in a comment. 
+The uncertainties are calculated as follows: For 30 different values of
+renormalisation scale $Q$ between $M_Z$ and $2 M_{SUSY}$ (spaced equally in
+$\log Q$), values of the
+physical Higgs masses are calculated. The uncertainty is estimated as the
+difference between the maximum Higgs mass calculated in this way and the
+minimum one. 
 
 In the standard SLHA input format, a parameter 
 \code{12}~in \code{Block MODSEL} fixes the maximum scale of printing out the
@@ -1435,6 +1448,14 @@ the model. The model is ruled out.
 The \code{tachyon} variable labels if a scalar particle other than the Higgs
 has acquired a negative mass squared, when $M_Z^2<0$ or when 
 a pole Higgs masses is imaginary. The model is ruled out.
+\code{tachyonWarning}, on the other hand, denotes that a tree-level scalar
+mass squared has run to be negative at the renormalisation scale equal to
+$M_Z$. Since these tree-level masses are used in loops to calculate various
+other quantities (including the $Z-$boson mass) and fix gauge and Yukawa
+couplings, it is possible that the numerical predictions are somewhat
+inaccurate (\SOFTSUSY will use almost zero masses for these tachyons).
+So: the model is not necessarily ruled out, and the flag results in a warning.
+are used in loops to calculate 
 \code{tachyon} is of an enumerated type \code{tachyonType}, which relabels the
 integers $z \in (0,\ 17)$ to indicate which particle is a tachyon according to
 the rule
@@ -1449,7 +1470,7 @@ respectively.
 \item
 \code{noRhoConvergence}~is flagged when \SOFTSUSY~cannot calculate the $\rho$
 parameter and determine gauge couplings from data, typically because of
-tachyons or infinities that have crept into the calculation. The other
+infinities that have crept into the calculation. The other
 problems are serious enough to rule the model out.
 \item
 \code{higgsUfb}~and \code{bProblem}~indicate that the desired electroweak minimum is in fact a
@@ -1884,6 +1905,7 @@ data variable & flags \\ \hline
 \code{noRhoConvergence} & the $\rho$ iterative routine doesn't converge\\
 \code{noConvergence} & the main iteration routine doesn't converge \\ 
 \code{tachyon} & a non-Higgs scalar has negative mass squared \\
+\code{tachyonWarning} & a tree-level non-higgs imaginary mass at $M_Z$\\
 \code{muSqWrongSign} & $\mu^2$ from eq.~(\ref{mucond}) negative \\
 \code{m3sq} & $m_3^2$ from eq.~(\ref{Bcond}) has incorrect sign \\
 \code{higgsUfb} & eq.~(\ref{higgsufb}) is not satisfied\\
@@ -1894,7 +1916,8 @@ data variable & flags \\ \hline
 \code{problemThrown} & numerical exception occurred during run (infinities etc)\\
 \end{tabular}
 \caption{\label{table:probs}\code{sProblem} structure. All data variables are boolean values except for
-  \code{tachyon}, which is of type \code{tachyonType}. See
+  \code{tachyon}, which is of type \code{tachyonType}~and
+  \code{tachyonWarning}. See 
   Section~\protect\ref{sec:prob} for more details.}\end{center}\end{table}
 
 
@@ -2195,16 +2218,16 @@ This work has been partially supported by PPARC, STFC and the Aspen Center for
 Physics.
 We would like to thank
 A.~Djouadi, S.~Kraml and W. Porod 
-for help with detailed comparisons~\cite{comparison} with the codes
+for help with detailed comparisons~\cite{comparison} with 
 {\tt SUSPECT}, {\tt ISAJET} and {\tt SPHENO},
 S.~Akula, P.~Athron, M.~Baak, M.~Badziak, 
 G.~B\'elanger, F.~Borzumati, F.~Boudjema, F.~Brummer, M.~Catalan, A.~Casas, 
 M.~Eads, H.~Eberl, J.~Evans,
-M.~Hamer,
+M.~Hamer, M.~Hussain,
 J.~Hetherington, M.~Ibe, M.~Iskrzynski, J.~Kersten, S.~Knapen, S.~Kom,
 S.~Krippendorf, S.~Kulkarni, K.~Ishikawa, 
 R.~Lu, N.~Mahmoudi,  S.~Martin, P.~Meade,
-D.~Morrissey, B.~Petersen,
+D.~Morrissey, L.~Nicoletta, B.~Petersen,
 A.~Pukhov, M.~Ramage,
 R.~Ruiz de Austri, 
 S.~Sekmen, A.~Sheplyakov, D.~Shih, P.~Slavich, P.~Skands, J.~Smidt, 

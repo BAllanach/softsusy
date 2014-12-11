@@ -137,5 +137,6 @@
      "axodraw"
      "latex2e"
      "art10"
-     "article")))
+     "article"
+     "")))
 
