@@ -8,11 +8,9 @@
 
 */
 
+#include "softpars.h"
 
-#ifdef SOFTPARS_H
-
-template<class Susy, class Brevity>
-const SoftPars<Susy, Brevity> & SoftPars<Susy, Brevity>::operator=(const SoftPars<Susy, Brevity> & s) {
+const SoftParsMssm & SoftParsMssm::operator=(const SoftParsMssm & s) {
   if (this == &s) return *this;
   mGaugino = s.mGaugino;
   ua = s.ua;
@@ -27,15 +25,14 @@ const SoftPars<Susy, Brevity> & SoftPars<Susy, Brevity>::operator=(const SoftPar
   m3sq = s.m3sq;
   mH1sq = s.mH1sq;
   mH2sq = s.mH2sq;
-  setSusy(s.displaySusy());
+  setMssmSusy(s.displayMssmSusy());
   setMu(s.displayMu());
   setLoops(s.displayLoops());
   setThresholds(s.displayThresholds());
   return *this;
 }
 
-template<class Susy, class Brevity>
-const DoubleMatrix & SoftPars<Susy, Brevity>::displayTrilinear(trilinears k) const {
+const DoubleMatrix & SoftParsMssm::displayTrilinear(trilinears k) const {
   switch(k) {
   case UA: return ua; break;
   case DA: return da; break;
@@ -49,8 +46,7 @@ const DoubleMatrix & SoftPars<Susy, Brevity>::displayTrilinear(trilinears k) con
   }
 }
 
-template<class Susy, class Brevity>
-double SoftPars<Susy, Brevity>::displayTrilinear(trilinears k, int i, int j) 
+double SoftParsMssm::displayTrilinear(trilinears k, int i, int j) 
   const {
   switch(k) {
   case UA: return ua.display(i, j); break;
@@ -67,8 +63,7 @@ double SoftPars<Susy, Brevity>::displayTrilinear(trilinears k, int i, int j)
 
 // Will display zero if that's what the A term is regardless of what the
 // Yukawa coupling is (even if it's zero).
-template<class Susy, class Brevity>
-double SoftPars<Susy, Brevity>::displaySoftA(trilinears k, int i, int j) const {
+double SoftParsMssm::displaySoftA(trilinears k, int i, int j) const {
   double am = displayTrilinear(k, i, j);
   if (fabs(am) < EPSTOL) return 0.0;
   
@@ -84,8 +79,7 @@ double SoftPars<Susy, Brevity>::displaySoftA(trilinears k, int i, int j) const {
   return temp;
 }
 
-template<class Susy, class Brevity>
-const DoubleMatrix & SoftPars<Susy, Brevity>::displaySoftMassSquared(softMasses k) const {
+const DoubleMatrix & SoftParsMssm::displaySoftMassSquared(softMasses k) const {
   switch(k) {
   case mQl: return mQLsq; break;
   case mUr: return mURsq; break;
@@ -101,8 +95,7 @@ const DoubleMatrix & SoftPars<Susy, Brevity>::displaySoftMassSquared(softMasses 
   }
 }
 
-template<class Susy, class Brevity>
-double SoftPars<Susy, Brevity>::displaySoftMassSquared(softMasses k, int i, int j) 
+double SoftParsMssm::displaySoftMassSquared(softMasses k, int i, int j) 
   const {
   switch(k) {
   case mQl: return mQLsq.display(i, j); break;
@@ -119,9 +112,8 @@ double SoftPars<Susy, Brevity>::displaySoftMassSquared(softMasses k, int i, int 
   }
 }
 
-template<class Susy, class Brevity>
-const DoubleVector SoftPars<Susy, Brevity>::display() const {
-  DoubleVector y(Susy::display());
+const DoubleVector SoftParsMssm::display() const {
+  DoubleVector y(MssmSusy::display());
   y.setEnd(numSoftParsMssm);
   int i, j, k=numSusyPars;
   for (i=1; i<=3; i++) {
@@ -147,8 +139,7 @@ const DoubleVector SoftPars<Susy, Brevity>::display() const {
   return y;
 }
 
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::setSoftMassElement(softMasses k, int i, int j, 
+void SoftParsMssm::setSoftMassElement(softMasses k, int i, int j, 
 					  double f) { 
   switch(k) {
   case mQl: mQLsq(i, j) = f; break;
@@ -159,8 +150,7 @@ void SoftPars<Susy, Brevity>::setSoftMassElement(softMasses k, int i, int j,
   }
 }
 
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::setSoftMassMatrix(softMasses k, const DoubleMatrix & m) { 
+void SoftParsMssm::setSoftMassMatrix(softMasses k, const DoubleMatrix & m) { 
   switch(k) {
   case mQl: mQLsq = m; break;
   case mUr: mURsq = m; break;
@@ -170,8 +160,7 @@ void SoftPars<Susy, Brevity>::setSoftMassMatrix(softMasses k, const DoubleMatrix
   }
 }
 
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::setTrilinearMatrix(trilinears k, const DoubleMatrix & m) { 
+void SoftParsMssm::setTrilinearMatrix(trilinears k, const DoubleMatrix & m) { 
   switch(k) {
   case UA: ua = m; break;
   case DA: da = m; break;
@@ -179,8 +168,7 @@ void SoftPars<Susy, Brevity>::setTrilinearMatrix(trilinears k, const DoubleMatri
   }
 }
 
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::setTrilinearElement(trilinears k, int i, int j, 
+void SoftParsMssm::setTrilinearElement(trilinears k, int i, int j, 
 					  double m) { 
   switch(k) {
   case UA: ua(i, j) = m; break;
@@ -189,8 +177,7 @@ void SoftPars<Susy, Brevity>::setTrilinearElement(trilinears k, int i, int j,
   }
 }
 
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::setAllGauginos(const DoubleVector & v) { 
+void SoftParsMssm::setAllGauginos(const DoubleVector & v) { 
   if (v.displayStart() != 1 || v.displayEnd() !=3) {
     ostringstream ii;
     ii << "Initialising SoftPars::setAllGauginos with vector"
@@ -201,9 +188,8 @@ void SoftPars<Susy, Brevity>::setAllGauginos(const DoubleVector & v) {
 }
 
 
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::set(const DoubleVector & y) {
-  Susy::set(y);
+void SoftParsMssm::set(const DoubleVector & y) {
+  MssmSusy::set(y);
   int i, j, k=numSusyPars;
   for (i=1; i<=3; i++) {
     k++;
@@ -227,9 +213,8 @@ void SoftPars<Susy, Brevity>::set(const DoubleVector & y) {
   mH2sq = y.display(k+66);
 }
 
-template<class Susy, class Brevity>
-SoftPars<Susy, Brevity> SoftPars<Susy, Brevity>::beta2() const {
-  static Brevity a;
+SoftParsMssm SoftParsMssm::beta2() const {
+  static sBrevity a;
   return beta2(a);
 }
 
@@ -238,8 +223,7 @@ SoftPars<Susy, Brevity> SoftPars<Susy, Brevity>::beta2() const {
 // thresholds = 2 and SUSY params/gauge couplings are decoupled at sparticle
 // thresholds.
 // CHECKED: 24/05/02
-template<class Susy, class Brevity>
-SoftPars<Susy, Brevity> SoftPars<Susy, Brevity>::beta2(Brevity& a) const {
+SoftParsMssm SoftParsMssm::beta2(sBrevity& a) const {
 
   // Constants for gauge running
   static DoubleVector bBeta(3), cuBeta(3), cdBeta(3), ceBeta(3);
@@ -249,11 +233,11 @@ SoftPars<Susy, Brevity> SoftPars<Susy, Brevity>::beta2(Brevity& a) const {
     setBetas(babBeta, cuBeta, cdBeta, ceBeta, bBeta);
   
   // convert to beta functions
-  static Susy dsb;
+  static MssmSusy dsb;
   
   // calculate derivatives for full SUSY spectrum. Brevity calculations come
   // out encoded in a
-  dsb = Susy::beta(a);
+  dsb = MssmSusy::beta(a);
   
   // To keep this a const function: TIME SAVINGS
   DoubleMatrix &u1=a.u1, &d1=a.d1, &e1=a.e1;
@@ -2832,7 +2816,7 @@ dm3sq3=m3sq*(18.*d4T*e2T+e6T*(1+kz)+6.*e2T*(e4T+u2d2T)+18.*(d2T*(e4T+u2d2T)+u2d2
 #endif ///< COMPILE_THREE_LOOP_RGE
   }
 
-  SoftPars<Susy, Brevity> dsoft(dsb, dmG, dhu, dhd, dhe, dmq, dmu,
+  SoftParsMssm dsoft(dsb, dmG, dhu, dhd, dhe, dmq, dmu,
 		     dmd, dml, dme, dm3sq, dmH1sq, dmH2sq, 
 		     displayGravitino(), displayMu(),
 		     displayLoops(), displayThresholds());
@@ -2842,18 +2826,16 @@ dm3sq3=m3sq*(18.*d4T*e2T+e6T*(1+kz)+6.*e2T*(e4T+u2d2T)+18.*(d2T*(e4T+u2d2T)+u2d2
 
 // Outputs derivatives vector y[109] for SUSY parameters: interfaces to
 // integration routines
-template<class Susy, class Brevity>
-DoubleVector SoftPars<Susy, Brevity>::beta() const {
+DoubleVector SoftParsMssm::beta() const {
   // calculate the derivatives
-  static SoftPars<Susy, Brevity> dsoft; dsoft = beta2();
+  static SoftParsMssm dsoft; dsoft = beta2();
 
   return dsoft.display(); // convert to a long vector
 }
 
 // Outputs derivatives of anomalous dimensions, from which the running can be
 // derived. 
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
+void SoftParsMssm::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				  DoubleMatrix & gQQ, DoubleMatrix & gUU,
 				  DoubleMatrix & gDD, 
 				  double & gH1H1, double & gH2H2)  const {
@@ -2865,13 +2847,13 @@ void SoftPars<Susy, Brevity>::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & 
     setBetas(babBeta, cuBeta, cdBeta, ceBeta, bBeta);
   
   // For calculational brevity: 
-  static Brevity a;
+  static sBrevity a;
   // convert to beta functions
-  static Susy dsb;
+  static MssmSusy dsb;
   
   // calculate derivatives for full SUSY spectrum. Brevity calculations come
   // out encoded in a
-  dsb = Susy::beta(a);
+  dsb = MssmSusy::beta(a);
   
   static DoubleVector g1(3);
   g1 = displayGauge();
@@ -2917,8 +2899,7 @@ void SoftPars<Susy, Brevity>::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & 
 }
 
 // Gives the ytilde terms relevant for the soft mass running: CHECKED 23/5/02
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::yTildes(DoubleMatrix & yu, DoubleMatrix & yd, DoubleMatrix
+void SoftParsMssm::yTildes(DoubleMatrix & yu, DoubleMatrix & yd, DoubleMatrix
 			   &ye) const {
   ye = displaySoftMassSquared(mLl) * displayYukawaMatrix(YE) + 
     displayYukawaMatrix(YE) * displayMh1Squared() + 
@@ -2943,9 +2924,8 @@ void SoftPars<Susy, Brevity>::yTildes(DoubleMatrix & yu, DoubleMatrix & yd, Doub
    THE CURRENT STATE OF PLAY:
    Two loop additions are possible, but a pain.
    */
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::addAmsb(double maux) {
-  Susy run(displaySusy());
+void SoftParsMssm::addAmsb(double maux) {
+  MssmSusy run(displayMssmSusy());
   const double ONEO16pisq = 1.0 / (16. * sqr(PI));
   const double ONEO16pif = sqr(ONEO16pisq);
   double     g1   = run.displayGaugeCoupling(1), 
@@ -2953,8 +2933,8 @@ void SoftPars<Susy, Brevity>::addAmsb(double maux) {
     g3   = run.displayGaugeCoupling(3); 
 
   // For calculational brevity: 
-  static Brevity a;
-  static Susy dsb;
+  static sBrevity a;
+  static MssmSusy dsb;
   
   // calculate derivatives for full SUSY spectrum. Brevity calculations come
   // out encoded in a
@@ -3021,8 +3001,7 @@ void SoftPars<Susy, Brevity>::addAmsb(double maux) {
 }
 
 
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::u1R_PQflip() {
+void SoftParsMssm::u1R_PQflip() {
   setSusyMu(-displaySusyMu());
   mGaugino = -1. * mGaugino;
   ua = -1. * ua;
@@ -3032,16 +3011,14 @@ void SoftPars<Susy, Brevity>::u1R_PQflip() {
 
 // Reads in universal boundary conditions at the current scale:
 // m0, M1/2, A0, B and sign of mu
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::universal(double m0,  double m12,  double a0,  double mu,
+void SoftParsMssm::universal(double m0,  double m12,  double a0,  double mu,
 			      double m3sq) {
   standardSugra(m0, m12, a0);  
   setSusyMu(mu);
   setM3Squared(m3sq);
 }
 
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::universalScalars(double m0) {
+void SoftParsMssm::universalScalars(double m0) {
   // scalar masses
   DoubleMatrix ID(3, 3), mm0(3, 3);
   int i; for (i=1; i<=3; i++) ID(i, i) = 1.0;
@@ -3052,14 +3029,12 @@ void SoftPars<Susy, Brevity>::universalScalars(double m0) {
   setMh1Squared(sqr(m0)); setMh2Squared(sqr(m0));
 }
 
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::universalGauginos(double m12) {  
+void SoftParsMssm::universalGauginos(double m12) {  
   // gaugino masses
   int i; for (i=1; i<=3; i++) setGauginoMass(i, m12);
 }
 
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::universalTrilinears(double a0)  {  
+void SoftParsMssm::universalTrilinears(double a0)  {  
   // trilinears
   setTrilinearMatrix(UA, a0 * displayYukawaMatrix(YU)); 
   setTrilinearMatrix(DA, a0 * displayYukawaMatrix(YD));
@@ -3067,8 +3042,7 @@ void SoftPars<Susy, Brevity>::universalTrilinears(double a0)  {
 }
 
 // Input m0, NOT m0 squared.
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::standardSugra(double m0,  double m12, double a0) {
+void SoftParsMssm::standardSugra(double m0,  double m12, double a0) {
   /*  if (m0 < 0.0) {
     ostringstream ii;
     ii << "m0=" << m0 << " passed to universal boundary" <<
@@ -3082,8 +3056,7 @@ void SoftPars<Susy, Brevity>::standardSugra(double m0,  double m12, double a0) {
 
 #define HR "---------------------------------------------------------------\n"
 
-template<class Susy, class Brevity>
-ostream & operator <<(ostream &left, const SoftPars<Susy, Brevity> &s) {
+ostream & operator <<(ostream &left, const SoftParsMssm &s) {
   left << "SUSY breaking MSSM parameters at Q: " << s.displayMu() << endl;
   left << " UA" << s.displayTrilinear(UA) 
        << " UD" << s.displayTrilinear(DA) 
@@ -3096,14 +3069,13 @@ ostream & operator <<(ostream &left, const SoftPars<Susy, Brevity> &s) {
   left << "m3sq: " << s.displayM3Squared() << " mH1sq: " <<
     s.displayMh1Squared() << " mH2sq: " << s.displayMh2Squared() << '\n';
   left << "Gaugino masses" << s.displayGaugino();
-  left << s.displaySusy();
+  left << s.displayMssmSusy();
   return left;
 }
 
 #undef HR
 
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::inputSoftParsOnly() {
+void SoftParsMssm::inputSoftParsOnly() {
   string c;
 
   cin >> c >> c >> c >> c >> c;
@@ -3119,8 +3091,7 @@ void SoftPars<Susy, Brevity>::inputSoftParsOnly() {
   cin >> c >> mGaugino; 
 }
 
-template<class Susy, class Brevity>
-istream & operator >>(istream &left, SoftPars<Susy, Brevity> &s) {
+istream & operator >>(istream &left, SoftParsMssm &s) {
   string c;
 
   left >> c >> c >> c >> c >> c >> c >> c;
@@ -3148,15 +3119,14 @@ istream & operator >>(istream &left, SoftPars<Susy, Brevity> &s) {
   DoubleVector mg(3);
   left >> c >> mg; 
   s.setAllGauginos(mg);
-  Susy ss;
-  left >> ss;   s.setSusy(ss);
+  MssmSusy ss;
+  left >> ss;   s.setMssmSusy(ss);
   return left;
 }
 
 // Boundary conditions to be applied at messenger scale for Gauge mediated
 // SUSY breaking (see hep-ph/9703211 for example)
-template<class Susy, class Brevity>
-void SoftPars<Susy, Brevity>::minimalGmsb(int n5, double LAMBDA, double mMess, 
+void SoftParsMssm::minimalGmsb(int n5, double LAMBDA, double mMess, 
 			       double cgrav) {
 
 // Modified thresholds by JEL 1-26-04 to accomodate numerical infinities
@@ -3236,4 +3206,3 @@ void SoftPars<Susy, Brevity>::minimalGmsb(int n5, double LAMBDA, double mMess,
   universalTrilinears(0.0);
 }
 
-#endif

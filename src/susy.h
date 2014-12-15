@@ -96,7 +96,7 @@ public:
   /// sets object to be equal to another
   const MssmSusy & operator=(const MssmSusy & s);
   /// sets object to be equal to another
-  void setSusy(const MssmSusy &s);
+  void setMssmSusy(const MssmSusy &s);
 
   /// Sets DRbar running Higgs vev
   void setHvev(double h);
@@ -120,7 +120,7 @@ public:
   /// Returns DRbar running Higgs vev
   double displayHvev() const;
   /// Returns whole object as a const
-  inline const MssmSusy & displaySusy() const;
+  inline const MssmSusy & displayMssmSusy() const;
   /// Returns a single Yukawa matrix element
   double displayYukawaElement(yukawa, int, int) const;
   /// Returns a whole Yukawa matrix
@@ -225,7 +225,7 @@ void setBetasThreeLoop(Tensor &, DoubleMatrix &, DoubleMatrix &,
 
 #endif //COMPILE_THREE_LOOP_RGE 
 
-inline const MssmSusy & MssmSusy::displaySusy() const { return *this; }
+inline const MssmSusy & MssmSusy::displayMssmSusy() const { return *this; }
 
 inline void MssmSusy::setGaugeCoupling(int i, double f) { g(i) = f; }
 
