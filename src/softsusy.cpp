@@ -10,10 +10,9 @@
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
   ydR, yeL, yeR, ynuL;
 
-const MssmSoftsusy& MssmSoftsusy::operator=(const 
-							MssmSoftsusy& s) {
+const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   if (this == &s) return *this;
-  setSoftPars(s.displaySoftPars());
+  setSoftPars(s.displayMssmSoftPars());
   setAltEwsbMssm(s.displayAltEwsbMssm());
   physpars = s.physpars;
   problem = s.problem;
@@ -698,10 +697,6 @@ inline double ftCalc(double x) {
   return referenceMzsq;
 }
 
-double MssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars) {
-   throw "it1par not implemented for non-MSSM models";
-}
-
 /// Give it a GUT scale object consistent with rewsb
 /// and it'll return the fine tuning by varying m32, mu and m3sq at the high
 /// scale
@@ -802,18 +797,10 @@ inline DoubleVector MssmSoftsusy::fineTune
   return tempFineTuning;
 }
 
-/// Pass it an object and it'll return the fine tuning parameters
-DoubleVector MssmSoftsusy::fineTune
-(void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &),
- const DoubleVector  & bcPars, double mx, bool doTop) {
-   throw "fineTune not implemented for non-MSSM models";
-}
-
 /// Obtains solution of one-loop effective potential minimisation via iteration
 /// technique
 /// err is 1 if no iteration reached
 /// 2 if incorrect rewsb
-
 void MssmSoftsusy::iterateMu(double & muold, int sgnMu,
 			     double mt, int maxTries, double pizzMS,
 			     double sinthDRbar, double tol, int & err) {
@@ -2381,8 +2368,7 @@ double MssmSoftsusy::calcRunMtCharginos() const {
 }
 ///  Formulae from hep-ph/9801365: checked but should be checked again!
 /// Implicitly calculates at the current scale.
-///  Formulae from hep-ph/9801365: checked but should be checked again!
-/// Implicitly calculates at the current scale.
+double MssmSoftsusy::calcRunningMt() {
   double mtpole  = dataSet.displayPoleMt();
   double resigmat = 0.0; 
   double qcd = 0.0, stopGluino = 0.0, higgs = 0.0; 
@@ -6555,10 +6541,6 @@ inline double MssmSoftsusy::ufb3sl(double mx) {
   return Vmin;
 }
 
-double MssmSoftsusy::ufb3sl(double mx) {
-   throw "ufb3sl not implemented for non-MSSM models";
-}
-
 /// Does SUSY (and other) threshold corrections to alphaS
 /// Input alphas in MSbar and it returns it in DRbar scheme. 
 /// From hep-ph/9606211
@@ -6910,7 +6892,7 @@ void MssmSoftsusy::fixedPointIteration
     t.setLoops(lpnum); /// >= 2 loops should protect against ht Landau pole 
     t.runto(mxBC); 
    
-    setSusy(t);
+    setMssmSusy(t);
     /// Initial guess: B=0, 
     boundaryCondition(*this, pars);
 
@@ -6982,7 +6964,7 @@ void MssmSoftsusy::fixedPointIteration
 /// You should evaluate this at a scale MSusy average of stops.
 /// Depth of electroweak minimum: hep-ph/9507294. Bug-fixed 19/11/04
 double MssmSoftsusy::realMinMs() const {
-  MssmSusy temp(displaySusy());
+  MssmSusy temp(displayMssmSusy());
   temp.runto(calcMs(), TOLERANCE); 
   
   double beta = atan(temp.displayTanb());
@@ -10107,7 +10089,7 @@ static double mhTrue = 0.;
 const static double sigmaMh = 2.0;
 
 /// Fit to LEP2 Standard Model results
-inline double lep2Likelihood(double mh) {
+inline double softsusy::lep2Likelihood(double mh) {
   double minusTwoLnQ = 0.;
   /// the approximation to the LEP2 results in hep-ex/0508037 follows
   if (mh < 114.9) minusTwoLnQ = 718.12 - 6.25 * mh;
@@ -10144,7 +10126,8 @@ inline double lnLHiggs(double mh) {
 
   /// Runge-Kutta, f(b) = int^b0 I(x) dx, I is integrand => d f / db = I(b)
   /// odeint has a problem at f(0): therefore, define f'(b)=f(b)+1
-  integrateOdes(v, from, to, eps, guess, hmin, mhIntegrand, odeStepper); 
+  integrateOdes(v, from, to, eps, guess, hmin, softsusy::mhIntegrand, 
+		odeStepper); 
   
   if (v(1) < EPSTOL || fabs(v(1) - 1.0) < EPSTOL) return -numberOfTheBeast; 
   else return log((v(1) - 1.0) / (sqrt(2.0 * PI) * sigmaMh));
