@@ -10,7 +10,7 @@
 
 #include "softpars.h"
 
-const SoftParsMssm & SoftParsMssm::operator=(const SoftParsMssm & s) {
+const MssmSoftPars & MssmSoftPars::operator=(const MssmSoftPars & s) {
   if (this == &s) return *this;
   mGaugino = s.mGaugino;
   ua = s.ua;
@@ -32,7 +32,7 @@ const SoftParsMssm & SoftParsMssm::operator=(const SoftParsMssm & s) {
   return *this;
 }
 
-const DoubleMatrix & SoftParsMssm::displayTrilinear(trilinears k) const {
+const DoubleMatrix & MssmSoftPars::displayTrilinear(trilinears k) const {
   switch(k) {
   case UA: return ua; break;
   case DA: return da; break;
@@ -46,7 +46,7 @@ const DoubleMatrix & SoftParsMssm::displayTrilinear(trilinears k) const {
   }
 }
 
-double SoftParsMssm::displayTrilinear(trilinears k, int i, int j) 
+double MssmSoftPars::displayTrilinear(trilinears k, int i, int j) 
   const {
   switch(k) {
   case UA: return ua.display(i, j); break;
@@ -63,7 +63,7 @@ double SoftParsMssm::displayTrilinear(trilinears k, int i, int j)
 
 // Will display zero if that's what the A term is regardless of what the
 // Yukawa coupling is (even if it's zero).
-double SoftParsMssm::displaySoftA(trilinears k, int i, int j) const {
+double MssmSoftPars::displaySoftA(trilinears k, int i, int j) const {
   double am = displayTrilinear(k, i, j);
   if (fabs(am) < EPSTOL) return 0.0;
   
@@ -79,7 +79,7 @@ double SoftParsMssm::displaySoftA(trilinears k, int i, int j) const {
   return temp;
 }
 
-const DoubleMatrix & SoftParsMssm::displaySoftMassSquared(softMasses k) const {
+const DoubleMatrix & MssmSoftPars::displaySoftMassSquared(softMasses k) const {
   switch(k) {
   case mQl: return mQLsq; break;
   case mUr: return mURsq; break;
@@ -95,7 +95,7 @@ const DoubleMatrix & SoftParsMssm::displaySoftMassSquared(softMasses k) const {
   }
 }
 
-double SoftParsMssm::displaySoftMassSquared(softMasses k, int i, int j) 
+double MssmSoftPars::displaySoftMassSquared(softMasses k, int i, int j) 
   const {
   switch(k) {
   case mQl: return mQLsq.display(i, j); break;
@@ -112,7 +112,7 @@ double SoftParsMssm::displaySoftMassSquared(softMasses k, int i, int j)
   }
 }
 
-const DoubleVector SoftParsMssm::display() const {
+const DoubleVector MssmSoftPars::display() const {
   DoubleVector y(MssmSusy::display());
   y.setEnd(numSoftParsMssm);
   int i, j, k=numSusyPars;
@@ -139,7 +139,7 @@ const DoubleVector SoftParsMssm::display() const {
   return y;
 }
 
-void SoftParsMssm::setSoftMassElement(softMasses k, int i, int j, 
+void MssmSoftPars::setSoftMassElement(softMasses k, int i, int j, 
 					  double f) { 
   switch(k) {
   case mQl: mQLsq(i, j) = f; break;
@@ -150,7 +150,7 @@ void SoftParsMssm::setSoftMassElement(softMasses k, int i, int j,
   }
 }
 
-void SoftParsMssm::setSoftMassMatrix(softMasses k, const DoubleMatrix & m) { 
+void MssmSoftPars::setSoftMassMatrix(softMasses k, const DoubleMatrix & m) { 
   switch(k) {
   case mQl: mQLsq = m; break;
   case mUr: mURsq = m; break;
@@ -160,7 +160,7 @@ void SoftParsMssm::setSoftMassMatrix(softMasses k, const DoubleMatrix & m) {
   }
 }
 
-void SoftParsMssm::setTrilinearMatrix(trilinears k, const DoubleMatrix & m) { 
+void MssmSoftPars::setTrilinearMatrix(trilinears k, const DoubleMatrix & m) { 
   switch(k) {
   case UA: ua = m; break;
   case DA: da = m; break;
@@ -168,7 +168,7 @@ void SoftParsMssm::setTrilinearMatrix(trilinears k, const DoubleMatrix & m) {
   }
 }
 
-void SoftParsMssm::setTrilinearElement(trilinears k, int i, int j, 
+void MssmSoftPars::setTrilinearElement(trilinears k, int i, int j, 
 					  double m) { 
   switch(k) {
   case UA: ua(i, j) = m; break;
@@ -177,7 +177,7 @@ void SoftParsMssm::setTrilinearElement(trilinears k, int i, int j,
   }
 }
 
-void SoftParsMssm::setAllGauginos(const DoubleVector & v) { 
+void MssmSoftPars::setAllGauginos(const DoubleVector & v) { 
   if (v.displayStart() != 1 || v.displayEnd() !=3) {
     ostringstream ii;
     ii << "Initialising SoftPars::setAllGauginos with vector"
@@ -188,7 +188,7 @@ void SoftParsMssm::setAllGauginos(const DoubleVector & v) {
 }
 
 
-void SoftParsMssm::set(const DoubleVector & y) {
+void MssmSoftPars::set(const DoubleVector & y) {
   MssmSusy::set(y);
   int i, j, k=numSusyPars;
   for (i=1; i<=3; i++) {
@@ -213,7 +213,7 @@ void SoftParsMssm::set(const DoubleVector & y) {
   mH2sq = y.display(k+66);
 }
 
-SoftParsMssm SoftParsMssm::beta2() const {
+MssmSoftPars MssmSoftPars::beta2() const {
   static sBrevity a;
   return beta2(a);
 }
@@ -223,7 +223,7 @@ SoftParsMssm SoftParsMssm::beta2() const {
 // thresholds = 2 and SUSY params/gauge couplings are decoupled at sparticle
 // thresholds.
 // CHECKED: 24/05/02
-SoftParsMssm SoftParsMssm::beta2(sBrevity& a) const {
+MssmSoftPars MssmSoftPars::beta2(sBrevity& a) const {
 
   // Constants for gauge running
   static DoubleVector bBeta(3), cuBeta(3), cdBeta(3), ceBeta(3);
@@ -2816,7 +2816,7 @@ dm3sq3=m3sq*(18.*d4T*e2T+e6T*(1+kz)+6.*e2T*(e4T+u2d2T)+18.*(d2T*(e4T+u2d2T)+u2d2
 #endif ///< COMPILE_THREE_LOOP_RGE
   }
 
-  SoftParsMssm dsoft(dsb, dmG, dhu, dhd, dhe, dmq, dmu,
+  MssmSoftPars dsoft(dsb, dmG, dhu, dhd, dhe, dmq, dmu,
 		     dmd, dml, dme, dm3sq, dmH1sq, dmH2sq, 
 		     displayGravitino(), displayMu(),
 		     displayLoops(), displayThresholds());
@@ -2826,16 +2826,16 @@ dm3sq3=m3sq*(18.*d4T*e2T+e6T*(1+kz)+6.*e2T*(e4T+u2d2T)+18.*(d2T*(e4T+u2d2T)+u2d2
 
 // Outputs derivatives vector y[109] for SUSY parameters: interfaces to
 // integration routines
-DoubleVector SoftParsMssm::beta() const {
+DoubleVector MssmSoftPars::beta() const {
   // calculate the derivatives
-  static SoftParsMssm dsoft; dsoft = beta2();
+  static MssmSoftPars dsoft; dsoft = beta2();
 
   return dsoft.display(); // convert to a long vector
 }
 
 // Outputs derivatives of anomalous dimensions, from which the running can be
 // derived. 
-void SoftParsMssm::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
+void MssmSoftPars::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				  DoubleMatrix & gQQ, DoubleMatrix & gUU,
 				  DoubleMatrix & gDD, 
 				  double & gH1H1, double & gH2H2)  const {
@@ -2899,7 +2899,7 @@ void SoftParsMssm::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
 }
 
 // Gives the ytilde terms relevant for the soft mass running: CHECKED 23/5/02
-void SoftParsMssm::yTildes(DoubleMatrix & yu, DoubleMatrix & yd, DoubleMatrix
+void MssmSoftPars::yTildes(DoubleMatrix & yu, DoubleMatrix & yd, DoubleMatrix
 			   &ye) const {
   ye = displaySoftMassSquared(mLl) * displayYukawaMatrix(YE) + 
     displayYukawaMatrix(YE) * displayMh1Squared() + 
@@ -2924,7 +2924,7 @@ void SoftParsMssm::yTildes(DoubleMatrix & yu, DoubleMatrix & yd, DoubleMatrix
    THE CURRENT STATE OF PLAY:
    Two loop additions are possible, but a pain.
    */
-void SoftParsMssm::addAmsb(double maux) {
+void MssmSoftPars::addAmsb(double maux) {
   MssmSusy run(displayMssmSusy());
   const double ONEO16pisq = 1.0 / (16. * sqr(PI));
   const double ONEO16pif = sqr(ONEO16pisq);
@@ -3001,7 +3001,7 @@ void SoftParsMssm::addAmsb(double maux) {
 }
 
 
-void SoftParsMssm::u1R_PQflip() {
+void MssmSoftPars::u1R_PQflip() {
   setSusyMu(-displaySusyMu());
   mGaugino = -1. * mGaugino;
   ua = -1. * ua;
@@ -3011,14 +3011,14 @@ void SoftParsMssm::u1R_PQflip() {
 
 // Reads in universal boundary conditions at the current scale:
 // m0, M1/2, A0, B and sign of mu
-void SoftParsMssm::universal(double m0,  double m12,  double a0,  double mu,
+void MssmSoftPars::universal(double m0,  double m12,  double a0,  double mu,
 			      double m3sq) {
   standardSugra(m0, m12, a0);  
   setSusyMu(mu);
   setM3Squared(m3sq);
 }
 
-void SoftParsMssm::universalScalars(double m0) {
+void MssmSoftPars::universalScalars(double m0) {
   // scalar masses
   DoubleMatrix ID(3, 3), mm0(3, 3);
   int i; for (i=1; i<=3; i++) ID(i, i) = 1.0;
@@ -3029,12 +3029,12 @@ void SoftParsMssm::universalScalars(double m0) {
   setMh1Squared(sqr(m0)); setMh2Squared(sqr(m0));
 }
 
-void SoftParsMssm::universalGauginos(double m12) {  
+void MssmSoftPars::universalGauginos(double m12) {  
   // gaugino masses
   int i; for (i=1; i<=3; i++) setGauginoMass(i, m12);
 }
 
-void SoftParsMssm::universalTrilinears(double a0)  {  
+void MssmSoftPars::universalTrilinears(double a0)  {  
   // trilinears
   setTrilinearMatrix(UA, a0 * displayYukawaMatrix(YU)); 
   setTrilinearMatrix(DA, a0 * displayYukawaMatrix(YD));
@@ -3042,7 +3042,7 @@ void SoftParsMssm::universalTrilinears(double a0)  {
 }
 
 // Input m0, NOT m0 squared.
-void SoftParsMssm::standardSugra(double m0,  double m12, double a0) {
+void MssmSoftPars::standardSugra(double m0,  double m12, double a0) {
   /*  if (m0 < 0.0) {
     ostringstream ii;
     ii << "m0=" << m0 << " passed to universal boundary" <<
@@ -3056,7 +3056,7 @@ void SoftParsMssm::standardSugra(double m0,  double m12, double a0) {
 
 #define HR "---------------------------------------------------------------\n"
 
-ostream & operator <<(ostream &left, const SoftParsMssm &s) {
+ostream & operator <<(ostream &left, const MssmSoftPars &s) {
   left << "SUSY breaking MSSM parameters at Q: " << s.displayMu() << endl;
   left << " UA" << s.displayTrilinear(UA) 
        << " UD" << s.displayTrilinear(DA) 
@@ -3075,7 +3075,7 @@ ostream & operator <<(ostream &left, const SoftParsMssm &s) {
 
 #undef HR
 
-void SoftParsMssm::inputSoftParsOnly() {
+void MssmSoftPars::inputSoftParsOnly() {
   string c;
 
   cin >> c >> c >> c >> c >> c;
@@ -3091,7 +3091,7 @@ void SoftParsMssm::inputSoftParsOnly() {
   cin >> c >> mGaugino; 
 }
 
-istream & operator >>(istream &left, SoftParsMssm &s) {
+istream & operator >>(istream &left, MssmSoftPars &s) {
   string c;
 
   left >> c >> c >> c >> c >> c >> c >> c;
@@ -3126,7 +3126,7 @@ istream & operator >>(istream &left, SoftParsMssm &s) {
 
 // Boundary conditions to be applied at messenger scale for Gauge mediated
 // SUSY breaking (see hep-ph/9703211 for example)
-void SoftParsMssm::minimalGmsb(int n5, double LAMBDA, double mMess, 
+void MssmSoftPars::minimalGmsb(int n5, double LAMBDA, double mMess, 
 			       double cgrav) {
 
 // Modified thresholds by JEL 1-26-04 to accomodate numerical infinities

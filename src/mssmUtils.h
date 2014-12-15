@@ -13,6 +13,8 @@
 
 #include <iosfwd>
 #include <string>
+#include "utils.h"
+#include "softsusy.h"
 
 class DoubleVector;
 
@@ -20,12 +22,6 @@ namespace softsusy {
 
 struct sBrevity;
 class MssmSusy;
-
-template<class SoftPars> class Softsusy;
-template<class Susy, class Brevity> class SoftPars;
-
-typedef SoftPars<MssmSusy, sBrevity> SoftParsMssm;
-typedef Softsusy<SoftParsMssm> MssmSoftsusy;
 
 /// Allows user to specify a boundary condition where ALL SUSY breaking
 /// parameters are specified in inputParameters

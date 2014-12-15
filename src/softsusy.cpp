@@ -5,14 +5,13 @@
     Webpage: http://hepforge.cedar.ac.uk/softsusy/
 */
 
-#ifdef SOFTSUSY_H
+#include "softsusy.h"
 
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
   ydR, yeL, yeR, ynuL;
 
-template<class SoftPars>
-const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const 
-							Softsusy<SoftPars>& s) {
+const MssmSoftsusy& MssmSoftsusy::operator=(const 
+							MssmSoftsusy& s) {
   if (this == &s) return *this;
   setSoftPars(s.displaySoftPars());
   setAltEwsbMssm(s.displayAltEwsbMssm());
@@ -58,8 +57,7 @@ const Softsusy<SoftPars>& Softsusy<SoftPars>::operator=(const
 
 /// Returns mu from rewsb requirement. 
 /// returns 1 if there's a problem. Call at MSusy
-template<class SoftPars>
-int Softsusy<SoftPars>::rewsbMu(int sgnMu, double & mu) const {
+int MssmSoftsusy::rewsbMu(int sgnMu, double & mu) const {
   int flag = 0;
    if (abs(sgnMu) != 1) {
     ostringstream ii;     
@@ -83,8 +81,7 @@ int Softsusy<SoftPars>::rewsbMu(int sgnMu, double & mu) const {
 }
 
 /// returns 1 if mu < 1.0e-9
-template<class SoftPars>
-int Softsusy<SoftPars>::rewsbM3sq(double mu, double & m3sq) const {
+int MssmSoftsusy::rewsbM3sq(double mu, double & m3sq) const {
   int flag = 0;
 
   if (fabs(mu) < 1.0e-9) 
@@ -107,8 +104,7 @@ int Softsusy<SoftPars>::rewsbM3sq(double mu, double & m3sq) const {
 
 /// Predicts tan beta once mu and soft terms are predicted at low energy
 /// Useful for fine-tuning calculation. Call at MSusy only.
-template<class SoftPars>
-double Softsusy<SoftPars>::predTanb(double susyMu) const  {
+double MssmSoftsusy::predTanb(double susyMu) const  {
   if (susyMu < -6.e66) susyMu = displaySusyMu();
 
   double sin2t = 2.0 * displayM3Squared() / 
@@ -127,8 +123,7 @@ double Softsusy<SoftPars>::predTanb(double susyMu) const  {
 }
 
 
-template<class SoftPars>
-void Softsusy<SoftPars>::doTadpoles(double mt, double sinthDRbar) {
+void MssmSoftsusy::doTadpoles(double mt, double sinthDRbar) {
 
     calcTadpole1Ms1loop(mt, sinthDRbar);
     calcTadpole2Ms1loop(mt, sinthDRbar);
@@ -188,8 +183,7 @@ void Softsusy<SoftPars>::doTadpoles(double mt, double sinthDRbar) {
 
 //PA: fixes trilnear H1-sfermion-sfermion couplings 
 //for use in doCalcTadpole1oneLoop
-template<class SoftPars>
-void Softsusy<SoftPars>::H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, DoubleMatrix & lTauS1Lr, double gmzOcthW, double mu, double cosb, double v1) const{
+void MssmSoftsusy::H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr, DoubleMatrix & lTauS1Lr, double gmzOcthW, double mu, double cosb, double v1) const{
   double ht = displayDrBarPars().ht;  
   double hbsq = sqr(displayDrBarPars().hb); 
   double htausq = sqr(displayDrBarPars().htau);
@@ -214,8 +208,7 @@ void Softsusy<SoftPars>::H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & l
 
 //PA: fixes trilnear H1-sfermion-sfermion couplings 
 //for use in doCalcTadpole1oneLoop
-template<class SoftPars>
-void Softsusy<SoftPars>::H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr, DoubleMatrix & lTauS2Lr, double gmzOcthW, double mu, double sinb) const{
+void MssmSoftsusy::H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr, DoubleMatrix & lTauS2Lr, double gmzOcthW, double mu, double sinb) const{
   double hb = displayDrBarPars().hb;  
   double htsq = sqr(displayDrBarPars().ht); 
   double htau = displayDrBarPars().htau;
@@ -239,8 +232,7 @@ void Softsusy<SoftPars>::H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & l
 
 
 /// PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
-template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad1Sfermions(DoubleMatrix lTS1Lr, DoubleMatrix lBS1Lr, DoubleMatrix lTauS1Lr, double costhDRbar) const {
+double MssmSoftsusy::doCalcTad1Sfermions(DoubleMatrix lTS1Lr, DoubleMatrix lBS1Lr, DoubleMatrix lTauS1Lr, double costhDRbar) const {
   double g = displayGaugeCoupling(2), mz = displayMzRun();
   double tanb = displayTanb(), cosb = cos(atan(tanb));
   double q = displayMu(); 
@@ -308,8 +300,7 @@ double Softsusy<SoftPars>::doCalcTad1Sfermions(DoubleMatrix lTS1Lr, DoubleMatrix
  }
 
 /// PA: routine to calculate sfermiom contributions to (16 \pi^2) t1 / v1
-template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad2Sfermions(DoubleMatrix lTS2Lr, 
+double MssmSoftsusy::doCalcTad2Sfermions(DoubleMatrix lTS2Lr, 
 					       DoubleMatrix lBS2Lr, 
 					       DoubleMatrix lTauS2Lr, 
 					       double costhDRbar) const {
@@ -372,8 +363,7 @@ double Softsusy<SoftPars>::doCalcTad2Sfermions(DoubleMatrix lTS2Lr,
 }
 //PA: fixes trilnear H1-fermion-fermion couplings 
 //for use in doCalcTadpole1oneLoop  
-template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad1fermions(double q, double v1) const {
+double MssmSoftsusy::doCalcTad1fermions(double q, double v1) const {
   double mb = forLoops.mb;
   double mtau = forLoops.mtau;
   double hb = displayDrBarPars().hb, htau = forLoops.htau;
@@ -387,8 +377,7 @@ double Softsusy<SoftPars>::doCalcTad1fermions(double q, double v1) const {
 
 //PA: fixes trilnear H2-fermion-fermion couplings 
 //for use in doCalcTadpole1oneLoop  
-template<class SoftPars> 
-double Softsusy<SoftPars>::doCalcTad2fermions(double q) const {
+double MssmSoftsusy::doCalcTad2fermions(double q) const {
   double mtop = forLoops.mt, ht = displayDrBarPars().ht;
   /// top quark, ignore others - factor (10^-2)^3 down
   double fermions = - 6.0 * sqr(ht) * a0(mtop, q);
@@ -397,8 +386,7 @@ double Softsusy<SoftPars>::doCalcTad2fermions(double q) const {
 
 //one loop H1 tadpole contributions from Higgs bosons in the loops
 // Follwing BPMZ Goldstone bosons are not included in this.
-template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad1Higgs(double q, double costhDRbar2, 
+double MssmSoftsusy::doCalcTad1Higgs(double q, double costhDRbar2, 
                                            double g, double tanb) const {
   double mA = forLoops.mA0(1),  mh = forLoops.mh0(1), 
      mH0 = forLoops.mh0(2), mHp = forLoops.mHpm;
@@ -418,8 +406,7 @@ double Softsusy<SoftPars>::doCalcTad1Higgs(double q, double costhDRbar2,
 
 //one loop H2 tadpole contributions from Higgs bosons in the loops
 // Follwing BPMZ Goldstone bosons are not included in this.
-template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad2Higgs(double q, double costhDRbar2, 
+double MssmSoftsusy::doCalcTad2Higgs(double q, double costhDRbar2, 
                                            double g, double tanb) const {
     /// Higgs
   double alpha = forLoops.thetaH, sina2 = sqr(sin(alpha)), cosa2 = 1.0 -
@@ -439,8 +426,7 @@ double Softsusy<SoftPars>::doCalcTad2Higgs(double q, double costhDRbar2,
   
   return higgs;
 }
-template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad1Neutralinos(double q, double costhDRbar, 
+double MssmSoftsusy::doCalcTad1Neutralinos(double q, double costhDRbar, 
                                                  double g, double cosb) const {
   ComplexMatrix n(forLoops.nBpmz);
   DoubleVector mneut(forLoops.mnBpmz);
@@ -456,8 +442,7 @@ double Softsusy<SoftPars>::doCalcTad1Neutralinos(double q, double costhDRbar,
   return neutralinos;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad2Neutralinos(double q, double costhDRbar, 
+double MssmSoftsusy::doCalcTad2Neutralinos(double q, double costhDRbar, 
                                                  double g, double sinb) const {
   ComplexMatrix n(forLoops.nBpmz);
   DoubleVector mneut(forLoops.mnBpmz);
@@ -472,8 +457,7 @@ double Softsusy<SoftPars>::doCalcTad2Neutralinos(double q, double costhDRbar,
   return neutralinos;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad1Charginos(double q, double g, 
+double MssmSoftsusy::doCalcTad1Charginos(double q, double g, 
                                                 double cosb) const {
   ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz); 
@@ -485,8 +469,7 @@ double Softsusy<SoftPars>::doCalcTad1Charginos(double q, double g,
   return charginos;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad2Charginos(double q, double g, 
+double MssmSoftsusy::doCalcTad2Charginos(double q, double g, 
                                                 double sinb) const {
 ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz); 
   DoubleVector mch(forLoops.mchBpmz); 
@@ -499,8 +482,7 @@ ComplexMatrix u(forLoops.uBpmz), v(forLoops.vBpmz);
   return charginos;
  }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad1GaugeBosons(double q, double costhDRbar2, 
+double MssmSoftsusy::doCalcTad1GaugeBosons(double q, double costhDRbar2, 
                                                  double g, double tanb) const {
   double cos2b = cos(2.0 * atan(tanb));
   double mz = displayMzRun();
@@ -514,8 +496,7 @@ double Softsusy<SoftPars>::doCalcTad1GaugeBosons(double q, double costhDRbar2,
   return gaugeBosons;
 }
 
-  template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTad2GaugeBosons(double q, double costhDRbar2, 
+double MssmSoftsusy::doCalcTad2GaugeBosons(double q, double costhDRbar2, 
                                                  double g, double tanb) const {
   /// Weak bosons
   double cos2b = cos(2.0 * atan(tanb));
@@ -532,8 +513,7 @@ double Softsusy<SoftPars>::doCalcTad2GaugeBosons(double q, double costhDRbar2,
 /// From hep-ph/9606211's appendix. It should be done at MSusy to minimize the
 /// 1-loop contributions. Only call if you've calculated drbarpars.
 /// inputs are running top/bottom masses: call at MSusy only
-template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTadpole1oneLoop(double /* mt */, double sinthDRbar) {
+double MssmSoftsusy::doCalcTadpole1oneLoop(double /* mt */, double sinthDRbar) {
 
  if (forLoops.mu(1, 3) == 0.0 || forLoops.mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)
@@ -573,8 +553,7 @@ double Softsusy<SoftPars>::doCalcTadpole1oneLoop(double /* mt */, double sinthDR
 }
 
 /// checked
-template<class SoftPars>
-void Softsusy<SoftPars>::calcTadpole1Ms1loop(double mt, double sinthDRbar) { 
+void MssmSoftsusy::calcTadpole1Ms1loop(double mt, double sinthDRbar) { 
   t1OV1Ms1loop = doCalcTadpole1oneLoop(mt, sinthDRbar);
   if (testNan(t1OV1Ms1loop)) {
     t1OV1Ms1loop = 0.0;
@@ -582,8 +561,7 @@ void Softsusy<SoftPars>::calcTadpole1Ms1loop(double mt, double sinthDRbar) {
   }
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::displayMwRun() const {
+double MssmSoftsusy::displayMwRun() const {
   double costhDRbar = cos(asin(calcSinthdrbar()));
   return displayMzRun() * costhDRbar;
 }
@@ -591,8 +569,7 @@ double Softsusy<SoftPars>::displayMwRun() const {
 /// From hep-ph/9311269's appendix. It should be done at MSusy to minimize the
 /// 1-loop contributions. Only call if you've calculated physpars
 /// inputs are running top/bottom masses. Call at MSusy
-template<class SoftPars>
-double Softsusy<SoftPars>::doCalcTadpole2oneLoop(double /* mt */, double sinthDRbar) {
+double MssmSoftsusy::doCalcTadpole2oneLoop(double /* mt */, double sinthDRbar) {
 /// CHECKED
  if (forLoops.mu(1, 3) == 0.0 || forLoops.mu(2, 3) == 0.0) {
    if (PRINTOUT > 1)
@@ -624,8 +601,7 @@ double Softsusy<SoftPars>::doCalcTadpole2oneLoop(double /* mt */, double sinthDR
   return delta / (16.0 * sqr(PI));
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::calcTadpole2Ms1loop(double mt, double sinthDRbar) {/// CHECKED
+void MssmSoftsusy::calcTadpole2Ms1loop(double mt, double sinthDRbar) {/// CHECKED
   t2OV2Ms1loop = doCalcTadpole2oneLoop(mt, sinthDRbar); 
   if (testNan(t2OV2Ms1loop)) {
     flagNoMuConvergence(true);
@@ -636,8 +612,7 @@ void Softsusy<SoftPars>::calcTadpole2Ms1loop(double mt, double sinthDRbar) {/// 
 /// Apply at scale MSusy: checked 19.12.2000
 /// Displays PHYSICAL MZ, ie MZ(q) - piZz^T(q)
 /// Fixed pizztMS to resummed version 6/1/13
-template<class SoftPars>
-double Softsusy<SoftPars>::predMzsq(double & tanb, double muOld, double eps) {
+double MssmSoftsusy::predMzsq(double & tanb, double muOld, double eps) {
 
   if (fabs(displayTadpole1Ms()) < EPSTOL && 
       fabs(displayTadpole2Ms()) < EPSTOL) {
@@ -723,16 +698,14 @@ inline double ftCalc(double x) {
   return referenceMzsq;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::it1par(int numPar, const DoubleVector & bcPars) {
+double MssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars) {
    throw "it1par not implemented for non-MSSM models";
 }
 
 /// Give it a GUT scale object consistent with rewsb
 /// and it'll return the fine tuning by varying m32, mu and m3sq at the high
 /// scale
-template<>
-inline double Softsusy<SoftParsMssm>::it1par(int numPar, const DoubleVector & bcPars) {
+inline double MssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars) {
   
   double ftParameter = 0.0, err, h = 0.01;
   
@@ -794,9 +767,8 @@ inline double Softsusy<SoftParsMssm>::it1par(int numPar, const DoubleVector & bc
 }
 
 /// Pass it an object and it'll return the fine tuning parameters
-template<>
-inline DoubleVector Softsusy<SoftParsMssm>::fineTune
-(void (*boundaryCondition)(Softsusy<SoftParsMssm> &, const DoubleVector &),
+inline DoubleVector MssmSoftsusy::fineTune
+(void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &),
  const DoubleVector  & bcPars, double mx, bool doTop) {
 
   /// Stores running parameters in a vector
@@ -831,9 +803,8 @@ inline DoubleVector Softsusy<SoftParsMssm>::fineTune
 }
 
 /// Pass it an object and it'll return the fine tuning parameters
-template<class SoftPars>
-DoubleVector Softsusy<SoftPars>::fineTune
-(void (*boundaryCondition)(Softsusy<SoftPars> &, const DoubleVector &),
+DoubleVector MssmSoftsusy::fineTune
+(void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &),
  const DoubleVector  & bcPars, double mx, bool doTop) {
    throw "fineTune not implemented for non-MSSM models";
 }
@@ -843,8 +814,7 @@ DoubleVector Softsusy<SoftPars>::fineTune
 /// err is 1 if no iteration reached
 /// 2 if incorrect rewsb
 
-template<class SoftPars>
-void Softsusy<SoftPars>::iterateMu(double & muold, int sgnMu,
+void MssmSoftsusy::iterateMu(double & muold, int sgnMu,
 			     double mt, int maxTries, double pizzMS,
 			     double sinthDRbar, double tol, int & err) {
   static int numTries = 0;
@@ -916,8 +886,7 @@ void Softsusy<SoftPars>::iterateMu(double & muold, int sgnMu,
 }
 
 
-template<class SoftPars>
-void Softsusy<SoftPars>::alternativeEwsb(double mt) {
+void MssmSoftsusy::alternativeEwsb(double mt) {
   setSusyMu(displayMuCond());
   calcDrBarPars();
   double sinthDRbarMS = calcSinthdrbar();
@@ -997,14 +966,12 @@ void Softsusy<SoftPars>::alternativeEwsb(double mt) {
     flagHiggsufb(false);
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::treeLevelMuSq() {
+double MssmSoftsusy::treeLevelMuSq() {
   return (displayMh1Squared() - displayMh2Squared() * sqr(displayTanb())) / 
     (sqr(displayTanb()) - 1.0) - 0.5 * sqr(displayMz());
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::rewsbTreeLevel(int sgnMu) {
+void MssmSoftsusy::rewsbTreeLevel(int sgnMu) {
   if (altEwsb) {
     setSusyMu(displayMuCond());
     double newMh1sq, newMh2sq;
@@ -1047,8 +1014,7 @@ void Softsusy<SoftPars>::rewsbTreeLevel(int sgnMu) {
 /// Organises rewsb: call it at the low scale MS^2 = sqrt(0.5 * (mT1^2 +
 /// mT2^2)) is best, or below if it's decoupled from there. 
 /// Call with zero, or no mt if you want tree level
-template<class SoftPars>
-void Softsusy<SoftPars>::rewsb(int sgnMu, double mt, const DoubleVector & /* pars */,
+void MssmSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & /* pars */,
 			 double muOld, double eps) {
   if (altEwsb) {
     alternativeEwsb(mt);
@@ -1121,8 +1087,7 @@ inline void printShortInitialise() {
   }
 
 /// Prints mu, B and important spectral information
-template<class SoftPars>
-string Softsusy<SoftPars>::printShort() const {
+string MssmSoftsusy::printShort() const {
   
   ostringstream a;
   const double problemFlag = -1.0;
@@ -1160,8 +1125,7 @@ string Softsusy<SoftPars>::printShort() const {
   return a.str();
 }
 
-template<class SoftPars>
-string Softsusy<SoftPars>::printLong() {
+string MssmSoftsusy::printLong() {
   /// output:
   ///  1  2     3      4   5   6   7    8  9  10 11   12    13    
   /// mu  m3sq mH1sq mH2sq g1 g2 mt(mt) mh mA mH mH+ alphaH msnu3
@@ -1228,8 +1192,7 @@ string Softsusy<SoftPars>::printLong() {
 
 //PA: adds sfermion contribitions to the left right and scalar parts 
 //of the self energy
-template<class SoftPars>
-void Softsusy<SoftPars>::addChaLoopSfermion(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) const {
+void MssmSoftsusy::addChaLoopSfermion(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) const {
   double q = displayMu();
   double g = displayGaugeCoupling(2), 
     ht = displayDrBarPars().ht,
@@ -1358,8 +1321,7 @@ void Softsusy<SoftPars>::addChaLoopSfermion(double p, DoubleMatrix & sigmaL, Dou
 
 //PA: adds gauge boson contribitions to the left right and scalar parts 
 //of the chargino self energy
-template<class SoftPars>
-void Softsusy<SoftPars>::addChaLoopGauge(double /* p */, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS, DoubleMatrix b1pCha, DoubleMatrix b0pCha, DoubleMatrix b1pNeut, DoubleMatrix b0pNeut) const {
+void MssmSoftsusy::addChaLoopGauge(double /* p */, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS, DoubleMatrix b1pCha, DoubleMatrix b0pCha, DoubleMatrix b1pNeut, DoubleMatrix b0pNeut) const {
   double g = displayGaugeCoupling(2);
   double e = g * calcSinthdrbar();
   
@@ -1428,8 +1390,7 @@ void Softsusy<SoftPars>::addChaLoopGauge(double /* p */, DoubleMatrix & sigmaL, 
 
 //PA: adds gauge boson contribitions to the left right and scalar parts 
 //of the chargino self energy
-template<class SoftPars>
-void Softsusy<SoftPars>::addChaLoopHiggs(double /* p */, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS, DoubleMatrix b1pCha, DoubleMatrix b0pCha, DoubleMatrix b1pNeut, DoubleMatrix b0pNeut) const{
+void MssmSoftsusy::addChaLoopHiggs(double /* p */, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS, DoubleMatrix b1pCha, DoubleMatrix b0pCha, DoubleMatrix b1pNeut, DoubleMatrix b0pNeut) const{
   double g = displayGaugeCoupling(2), 
     gp = displayGaugeCoupling(1) * sqrt(0.6), 
     tanb = displayTanb();
@@ -1562,8 +1523,7 @@ void Softsusy<SoftPars>::addChaLoopHiggs(double /* p */, DoubleMatrix & sigmaL, 
       }
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addCharginoLoop(double p, DoubleMatrix & mass) {
+void MssmSoftsusy::addCharginoLoop(double p, DoubleMatrix & mass) {
   ///  double p = sqrt(forLoops.mchBpmz(1) * forLoops.mchBpmz(2)); 
   double mz = displayMzRun(), mw = displayMwRun(), q = displayMu();
   ComplexMatrix n(forLoops.nBpmz);
@@ -1611,8 +1571,7 @@ void Softsusy<SoftPars>::addCharginoLoop(double p, DoubleMatrix & mass) {
 }
 
 /// checked
-template<class SoftPars>
-void Softsusy<SoftPars>::charginos(int accuracy, double piwwtMS) {
+void MssmSoftsusy::charginos(int accuracy, double piwwtMS) {
   double tanb = displayTanb(), smu = displaySusyMu();
   DoubleMatrix mCh(2, 2);
   double m2 = displayGaugino(2); 
@@ -1645,15 +1604,13 @@ void Softsusy<SoftPars>::charginos(int accuracy, double piwwtMS) {
   physpars.mch(2) = sgn_mass * abs(mch2(2));
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::thet(double a, double b, double c) {
+double MssmSoftsusy::thet(double a, double b, double c) {
   double yy = maximum(sqr(a), sqr(b));
   yy = maximum(yy, sqr(c));
   return log(yy / sqr(displayMu()));
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addNeutLoopSfermion(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
+void MssmSoftsusy::addNeutLoopSfermion(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
   double    g        = displayGaugeCoupling(2);
   double    gp       = displayGaugeCoupling(1) * sqrt(0.6);
   double    ht       = displayDrBarPars().ht;
@@ -1806,8 +1763,7 @@ void Softsusy<SoftPars>::addNeutLoopSfermion(double p, DoubleMatrix & sigmaL, Do
       }
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::getNeutPassarinoVeltman(double p, double q, DoubleMatrix & b0fn, DoubleMatrix & b1fn) {
+void MssmSoftsusy::getNeutPassarinoVeltman(double p, double q, DoubleMatrix & b0fn, DoubleMatrix & b1fn) {
   drBarPars forLoops(displayDrBarPars());
   double    mz = displayMzRun(), mw = displayMwRun();
   DoubleVector mneut(forLoops.mnBpmz);
@@ -1842,8 +1798,7 @@ void Softsusy<SoftPars>::getNeutPassarinoVeltman(double p, double q, DoubleMatri
      }
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addNeutLoopGauge(double p, DoubleMatrix & sigmaL, 
+void MssmSoftsusy::addNeutLoopGauge(double p, DoubleMatrix & sigmaL, 
 DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
   double g = displayGaugeCoupling(2); 
   double q = displayMu();
@@ -1902,8 +1857,7 @@ DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
       }
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addNeutLoopHiggs(double p, DoubleMatrix & sigmaL, 
+void MssmSoftsusy::addNeutLoopHiggs(double p, DoubleMatrix & sigmaL, 
 DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
   double g    = displayGaugeCoupling(2);
   double gp   = displayGaugeCoupling(1) * sqrt(0.6);
@@ -2045,8 +1999,7 @@ DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) {
 	}
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addNeutralinoLoop(double p, DoubleMatrix & mass) {
+void MssmSoftsusy::addNeutralinoLoop(double p, DoubleMatrix & mass) {
 
   DoubleMatrix sigmaL(4, 4), sigmaR(4, 4), sigmaS(4, 4);
 
@@ -2068,8 +2021,7 @@ void Softsusy<SoftPars>::addNeutralinoLoop(double p, DoubleMatrix & mass) {
 
 
 /// mixNeut set to diagonal = mixNeut^T mNeutralino mixNeut: checked
-template<class SoftPars>
-void Softsusy<SoftPars>::neutralinos(int accuracy, double /* piwwtMS */,
+void MssmSoftsusy::neutralinos(int accuracy, double /* piwwtMS */,
                                      double /* pizztMS */) {
   double tanb = displayTanb();
   double cosb = cos(atan(tanb));
@@ -2131,8 +2083,7 @@ void Softsusy<SoftPars>::neutralinos(int accuracy, double /* piwwtMS */,
 /// One loop corrections to gluino pole mass: hep-ph/9606211
 /// BUG fixed to use g3 at current scale 8.1.2001
 /// Changed to resummed version 11.05.2001
-template<class SoftPars>
-void Softsusy<SoftPars>::gluino(int accuracy) {
+void MssmSoftsusy::gluino(int accuracy) {
 
   if (accuracy == 0) {
     physpars.mGluino = displayGaugino(3);
@@ -2183,8 +2134,7 @@ void Softsusy<SoftPars>::gluino(int accuracy) {
   physpars.mGluino = displayGaugino(3) * (1.0 + delta); 
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMtQCD() const {
+double MssmSoftsusy::calcRunMtQCD() const {
   double mt = forLoops.mt;
 /// 1 loop QCD only -- DRbar 10% correction
   double qcd = - (5.0 + 6.0 * log(displayMu() / mt)) * 4.0 *
@@ -2204,8 +2154,7 @@ double Softsusy<SoftPars>::calcRunMtQCD() const {
 
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMtStopGluino() const {
+double MssmSoftsusy::calcRunMtStopGluino() const {
   double    mstop1  = forLoops.mu(1,3);
   double    mstop2  = forLoops.mu(2,3);
   double    mg      = forLoops.mGluino; 
@@ -2257,8 +2206,7 @@ double Softsusy<SoftPars>::calcRunMtStopGluino() const {
 
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMtHiggs() const {
+double MssmSoftsusy::calcRunMtHiggs() const {
 
   double    mH      = forLoops.mh0(2); 
   double    alpha   = forLoops.thetaH ;
@@ -2306,8 +2254,7 @@ double Softsusy<SoftPars>::calcRunMtHiggs() const {
 
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMtNeutralinos() const {
+double MssmSoftsusy::calcRunMtNeutralinos() const {
 
   double    q       = displayMu();
   double    mtpole  = dataSet.displayPoleMt();
@@ -2374,8 +2321,7 @@ double Softsusy<SoftPars>::calcRunMtNeutralinos() const {
 
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMtCharginos() const {
+double MssmSoftsusy::calcRunMtCharginos() const {
   double    mtpole  = dataSet.displayPoleMt();
   double    q       = displayMu();
   double    ht      = forLoops.ht;
@@ -2437,7 +2383,6 @@ double Softsusy<SoftPars>::calcRunMtCharginos() const {
 /// Implicitly calculates at the current scale.
 ///  Formulae from hep-ph/9801365: checked but should be checked again!
 /// Implicitly calculates at the current scale.
-template<class SoftPars> double Softsusy<SoftPars>::calcRunningMt() {
   double mtpole  = dataSet.displayPoleMt();
   double resigmat = 0.0; 
   double qcd = 0.0, stopGluino = 0.0, higgs = 0.0; 
@@ -2511,8 +2456,7 @@ template<class SoftPars> double Softsusy<SoftPars>::calcRunningMt() {
   return mtpole + resigmat;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMbDrBarConv() const {
+double MssmSoftsusy::calcRunMbDrBarConv() const {
    double    g       = displayGaugeCoupling(2);
    double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
    double alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
@@ -2523,8 +2467,7 @@ double Softsusy<SoftPars>::calcRunMbDrBarConv() const {
    return conversion;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMbSquarkGluino() const {
+double MssmSoftsusy::calcRunMbSquarkGluino() const {
   double    msbot1  = displayDrBarPars().md(1,3);
   double    msbot2  = displayDrBarPars().md(2,3);
   double    mg      = displayDrBarPars().mGluino;
@@ -2551,8 +2494,7 @@ double Softsusy<SoftPars>::calcRunMbSquarkGluino() const {
 }
 
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMbChargino() const {
+double MssmSoftsusy::calcRunMbChargino() const {
   double mbMZ = dataSet.displayMass(mBottom);
   double p = mbMZ;
   double q = displayMu();
@@ -2618,8 +2560,7 @@ double Softsusy<SoftPars>::calcRunMbChargino() const {
 
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMbHiggs() const {
+double MssmSoftsusy::calcRunMbHiggs() const {
   double mbMZ = dataSet.displayMass(mBottom);
   double p = mbMZ;
   double q = displayMu();
@@ -2665,8 +2606,7 @@ double Softsusy<SoftPars>::calcRunMbHiggs() const {
   return deltaHiggs;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMbNeutralinos() const {
+double MssmSoftsusy::calcRunMbNeutralinos() const {
   double mbMZ = dataSet.displayMass(mBottom);
   double p = mbMZ;
   double q = displayMu();
@@ -2737,12 +2677,11 @@ return deltaNeutralino;
 }
 
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunningMb() {
+double MssmSoftsusy::calcRunningMb() {
 
   if (displayMu() != displayMz()) {
     ostringstream ii;
-    ii << "Softsusy<SoftPars>::calcRunningMb called with mu=" <<
+    ii << "MssmSoftsusy::calcRunningMb called with mu=" <<
       displayMu() << endl; 
     throw ii.str();
   }
@@ -2821,15 +2760,13 @@ double Softsusy<SoftPars>::calcRunningMb() {
   return mbMZ / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs
 		 + deltaNeutralino + dzetamb);
 }
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMtauDrBarConv() const {
+double MssmSoftsusy::calcRunMtauDrBarConv() const {
  double gp = displayGaugeCoupling(1) * sqrt(0.6);
  double conv = (1.0 - 3.0 * (sqr(gp) - sqr(displayGaugeCoupling(2))) / (128.0 * sqr(PI)));
  return conv;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMtauCharginos(double mTauSMMZ) const {
+double MssmSoftsusy::calcRunMtauCharginos(double mTauSMMZ) const {
    
   double g        = displayGaugeCoupling(2);
   double htau     = displayDrBarPars().htau;
@@ -2871,8 +2808,7 @@ double Softsusy<SoftPars>::calcRunMtauCharginos(double mTauSMMZ) const {
 
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMtauHiggs() const {
+double MssmSoftsusy::calcRunMtauHiggs() const {
   double mTauPole = MTAU;
   double p = mTauPole;
   double q = displayMu();
@@ -2907,8 +2843,7 @@ double Softsusy<SoftPars>::calcRunMtauHiggs() const {
   return sigmaHiggs;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunMtauNeutralinos(double mTauSMMZ) const {
+double MssmSoftsusy::calcRunMtauNeutralinos(double mTauSMMZ) const {
   double thetatau = displayDrBarPars().thetatau;
   double g        = displayGaugeCoupling(2);
   double gp       = displayGaugeCoupling(1) * sqrt(0.6);
@@ -2972,8 +2907,7 @@ double Softsusy<SoftPars>::calcRunMtauNeutralinos(double mTauSMMZ) const {
   return sigmaNeutralino;
 }
 /// Full BPMZ expression
-template<class SoftPars>
-double Softsusy<SoftPars>::calcRunningMtau() {
+double MssmSoftsusy::calcRunningMtau() {
   /// MSbar value
   double mTauSMMZ = displayDataSet().displayMass(mTau);
   // double mTauPole = MTAU;
@@ -3035,8 +2969,7 @@ double Softsusy<SoftPars>::calcRunningMtau() {
 
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::treeUpSquark(DoubleMatrix & mass, double mtrun, 
+void MssmSoftsusy::treeUpSquark(DoubleMatrix & mass, double mtrun, 
                                       double /* pizztMS */, double sinthDRbarMS,
                                       int family) { 
   const double cu = 2.0 / 3.0;
@@ -3064,8 +2997,7 @@ void Softsusy<SoftPars>::treeUpSquark(DoubleMatrix & mass, double mtrun,
 }
 
 /// Now these are calculated at the squark scale
-template<class SoftPars>
-void Softsusy<SoftPars>::addSquarkCorrection(DoubleMatrix & mass) {
+void MssmSoftsusy::addSquarkCorrection(DoubleMatrix & mass) {
 
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
@@ -3094,8 +3026,7 @@ void Softsusy<SoftPars>::addSquarkCorrection(DoubleMatrix & mass) {
     }  
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addSnuTauSfermion(double /* p */, double & /* stop */, double & sbottom) {
+void MssmSoftsusy::addSnuTauSfermion(double /* p */, double & /* stop */, double & sbottom) {
   double  thetatau  = forLoops.thetatau;
   double  ctau      = cos(thetatau);
   double  stau      = sin(thetatau);;
@@ -3109,8 +3040,7 @@ void Softsusy<SoftPars>::addSnuTauSfermion(double /* p */, double & /* stop */, 
     htausq * (sqr(stau) * a0(mstau(1), q) + sqr(ctau) * a0(mstau(2), q));
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::addSnuTauHiggs(double p, double & higgs) {
+double MssmSoftsusy::addSnuTauHiggs(double p, double & higgs) {
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
@@ -3201,8 +3131,7 @@ double Softsusy<SoftPars>::addSnuTauHiggs(double p, double & higgs) {
   return higgs;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::addSnuTauEweak(double p, double & electroweak) {
+double MssmSoftsusy::addSnuTauEweak(double p, double & electroweak) {
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
@@ -3285,8 +3214,7 @@ double Softsusy<SoftPars>::addSnuTauEweak(double p, double & electroweak) {
   return electroweak;
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addSnuTauGaugino(double p, double & chargino, double & neutralino) {
+void MssmSoftsusy::addSnuTauGaugino(double p, double & chargino, double & neutralino) {
   double    g	    = displayGaugeCoupling(2);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
   double    beta    = atan(displayTanb());
@@ -3352,8 +3280,7 @@ void Softsusy<SoftPars>::addSnuTauGaugino(double p, double & chargino, double & 
   }
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addSnuTauCorrection(double & mass) {
+void MssmSoftsusy::addSnuTauCorrection(double & mass) {
 
   /// No point adding radiative corrections to tachyonic particles
   if (mass < 0.0) { 
@@ -3385,8 +3312,7 @@ void Softsusy<SoftPars>::addSnuTauCorrection(double & mass) {
   mass = mass - piSq;	  
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::addSnuHiggs(double p, int family, double & higgs) {
+double MssmSoftsusy::addSnuHiggs(double p, int family, double & higgs) {
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
@@ -3466,8 +3392,7 @@ double Softsusy<SoftPars>::addSnuHiggs(double p, int family, double & higgs) {
   return higgs;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::addSnuEweak(double p, int family, double & electroweak) {
+double MssmSoftsusy::addSnuEweak(double p, int family, double & electroweak) {
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
@@ -3547,8 +3472,7 @@ double Softsusy<SoftPars>::addSnuEweak(double p, int family, double & electrowea
   return electroweak;
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addSnuGaugino(double p, int /* family */, double & chargino, double & neutralino) {
+void MssmSoftsusy::addSnuGaugino(double p, int /* family */, double & chargino, double & neutralino) {
   double    g	    = displayGaugeCoupling(2);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
   double    q       = displayMu();
@@ -3611,8 +3535,7 @@ void Softsusy<SoftPars>::addSnuGaugino(double p, int /* family */, double & char
 }
 
 /// Found+fixed bug 7/09/06. Thanks to J Kersten.
-template<class SoftPars>
-void Softsusy<SoftPars>::addSnuCorrection(double & mass, int family) {
+void MssmSoftsusy::addSnuCorrection(double & mass, int family) {
 
   /// No point adding radiative corrections to tachyonic particles
   if (mass < 0.0) { 
@@ -3641,8 +3564,7 @@ void Softsusy<SoftPars>::addSnuCorrection(double & mass, int family) {
   mass = mass - piSq;	  
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addStopQCD(double p, double mt, 
+DoubleMatrix MssmSoftsusy::addStopQCD(double p, double mt, 
 					     DoubleMatrix & strong) {
   double    mg      = forLoops.mGluino;
   double    thetat  = forLoops.thetat;
@@ -3668,8 +3590,7 @@ DoubleMatrix Softsusy<SoftPars>::addStopQCD(double p, double mt,
   return strong;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addStopStop(double /* p */, 
+DoubleMatrix MssmSoftsusy::addStopStop(double /* p */, 
 					      double /* mt */, 
 					      DoubleMatrix & stop) {
   double thetat     = forLoops.thetat, ct = cos(thetat), st = sin(thetat);
@@ -3687,8 +3608,7 @@ DoubleMatrix Softsusy<SoftPars>::addStopStop(double /* p */,
   return stop;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addStopSbottom(double /* p */, double /* mt */,
+DoubleMatrix MssmSoftsusy::addStopSbottom(double /* p */, double /* mt */,
                                                 DoubleMatrix & sbottom) {
   double thetab     = forLoops.thetab, cb = cos(thetab), sb = sin(thetab) ;
   double q          = displayMu();
@@ -3706,8 +3626,7 @@ DoubleMatrix Softsusy<SoftPars>::addStopSbottom(double /* p */, double /* mt */,
   return sbottom;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addStopHiggs(double p, double /* mt */,
+DoubleMatrix MssmSoftsusy::addStopHiggs(double p, double /* mt */,
                                               DoubleMatrix & higgs) {
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
@@ -3872,8 +3791,7 @@ DoubleMatrix Softsusy<SoftPars>::addStopHiggs(double p, double /* mt */,
   return higgs;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addStopEweak(double p, DoubleMatrix & electroweak) {
+DoubleMatrix MssmSoftsusy::addStopEweak(double p, DoubleMatrix & electroweak) {
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
@@ -4001,8 +3919,7 @@ DoubleMatrix Softsusy<SoftPars>::addStopEweak(double p, DoubleMatrix & electrowe
   return electroweak;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addStopNeutralino(double p, double mt, DoubleMatrix & neutralino) {
+DoubleMatrix MssmSoftsusy::addStopNeutralino(double p, double mt, DoubleMatrix & neutralino) {
   double q  = displayMu();
   double g  = displayGaugeCoupling(2);
   double gp = displayGaugeCoupling(1) * sqrt(0.6);
@@ -4063,8 +3980,7 @@ DoubleMatrix Softsusy<SoftPars>::addStopNeutralino(double p, double mt, DoubleMa
   return neutralino;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addStopChargino(double p, DoubleMatrix & chargino) {
+DoubleMatrix MssmSoftsusy::addStopChargino(double p, DoubleMatrix & chargino) {
   double g  = displayGaugeCoupling(2);
   double ht = forLoops.ht;
   double hb = forLoops.hb;
@@ -4124,8 +4040,7 @@ DoubleMatrix Softsusy<SoftPars>::addStopChargino(double p, DoubleMatrix & chargi
 }
 
 /// As in BPMZ appendix
-template<class SoftPars>
-void Softsusy<SoftPars>::addStopCorrection(double p, DoubleMatrix & mass, 
+void MssmSoftsusy::addStopCorrection(double p, DoubleMatrix & mass, 
 					   double mt) {
 
 /// No point adding radiative corrections to tachyonic particles
@@ -4164,8 +4079,7 @@ void Softsusy<SoftPars>::addStopCorrection(double p, DoubleMatrix & mass,
   mass = mass - piSq;	  
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::assignHiggs(DoubleVector & higgsm, DoubleVector & higgsc)
+void MssmSoftsusy::assignHiggs(DoubleVector & higgsm, DoubleVector & higgsc)
   const {
   drBarPars f(displayDrBarPars());
 
@@ -4177,8 +4091,7 @@ void Softsusy<SoftPars>::assignHiggs(DoubleVector & higgsm, DoubleVector & higgs
   higgsc(2) = f.mHpm;
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::assignHiggs(DoubleVector & higgsm, DoubleVector & higgsc, 
+void MssmSoftsusy::assignHiggs(DoubleVector & higgsm, DoubleVector & higgsc, 
 			       DoubleVector & dnu, DoubleVector & dnd, 
 			       DoubleVector & cn, double beta) const {
   double sinb = sin(beta), cosb = cos(beta);
@@ -4200,8 +4113,7 @@ void Softsusy<SoftPars>::assignHiggs(DoubleVector & higgsm, DoubleVector & higgs
 }
 
 /// some switches due to BPMZ's different conventions
-template<class SoftPars>
-void Softsusy<SoftPars>::assignHiggsSfermions(DoubleVector & higgsm, 
+void MssmSoftsusy::assignHiggsSfermions(DoubleVector & higgsm, 
 					DoubleVector & higgsc, 
 					DoubleVector & dnu, 
 					DoubleVector & dnd, 
@@ -4215,8 +4127,7 @@ void Softsusy<SoftPars>::assignHiggsSfermions(DoubleVector & higgsm,
   higgsc(2) = higgsc1;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSlepHiggs(double p1, double p2, int family, DoubleMatrix & higgs) {
+DoubleMatrix MssmSoftsusy::addSlepHiggs(double p1, double p2, int family, DoubleMatrix & higgs) {
   double    mz         = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
@@ -4303,8 +4214,7 @@ DoubleMatrix Softsusy<SoftPars>::addSlepHiggs(double p1, double p2, int family, 
   return higgs;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSlepEweak(double p1, double p2, int family, DoubleMatrix & electroweak) {
+DoubleMatrix MssmSoftsusy::addSlepEweak(double p1, double p2, int family, DoubleMatrix & electroweak) {
   double    mw         = displayMwRun();
   double    mz         = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
@@ -4406,8 +4316,7 @@ DoubleMatrix Softsusy<SoftPars>::addSlepEweak(double p1, double p2, int family, 
   return electroweak;
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addSlepGaugino(double p1, double p2, int /* family */, DoubleMatrix & chargino, DoubleMatrix & neutralino) {
+void MssmSoftsusy::addSlepGaugino(double p1, double p2, int /* family */, DoubleMatrix & chargino, DoubleMatrix & neutralino) {
   double    g	    = displayGaugeCoupling(2);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
   double    q       = displayMu();
@@ -4479,8 +4388,7 @@ void Softsusy<SoftPars>::addSlepGaugino(double p1, double p2, int /* family */, 
 }
 
 /// 16.09.05 checked. 
-template<class SoftPars>
-void Softsusy<SoftPars>::addSlepCorrection(DoubleMatrix & mass, int family) {
+void MssmSoftsusy::addSlepCorrection(DoubleMatrix & mass, int family) {
 
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
@@ -4515,8 +4423,7 @@ void Softsusy<SoftPars>::addSlepCorrection(DoubleMatrix & mass, int family) {
   mass = mass - piSq;	
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addStauSfermion(double /* p */, double /* mtau */, DoubleMatrix & stop, DoubleMatrix & sbottom) {
+void MssmSoftsusy::addStauSfermion(double /* p */, double /* mtau */, DoubleMatrix & stop, DoubleMatrix & sbottom) {
   double    thetab   = forLoops.thetab;
   double    thetatau = forLoops.thetatau;
   double    cb       = cos(thetab);
@@ -4548,8 +4455,7 @@ void Softsusy<SoftPars>::addStauSfermion(double /* p */, double /* mtau */, Doub
      + 3.0 * htau * hb * cb * sb * (a0(msbot(1), q) - a0(msbot(2), q));
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addStauHiggs(double p, double mtau, DoubleMatrix & higgs) {
+DoubleMatrix MssmSoftsusy::addStauHiggs(double p, double mtau, DoubleMatrix & higgs) {
   double    mz         = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
@@ -4672,8 +4578,7 @@ DoubleMatrix Softsusy<SoftPars>::addStauHiggs(double p, double mtau, DoubleMatri
   return higgs;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addStauEweak(double p, double /* mtau */, DoubleMatrix & electroweak) {
+DoubleMatrix MssmSoftsusy::addStauEweak(double p, double /* mtau */, DoubleMatrix & electroweak) {
   double    mw         = displayMwRun();
   double    mz         = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
@@ -4789,8 +4694,7 @@ DoubleMatrix Softsusy<SoftPars>::addStauEweak(double p, double /* mtau */, Doubl
   return electroweak;
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addStauGaugino(double p, double mtau, DoubleMatrix & chargino, DoubleMatrix & neutralino) {
+void MssmSoftsusy::addStauGaugino(double p, double mtau, DoubleMatrix & chargino, DoubleMatrix & neutralino) {
   double    g	    = displayGaugeCoupling(2);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6); 
   double    q       = displayMu();
@@ -4880,8 +4784,7 @@ void Softsusy<SoftPars>::addStauGaugino(double p, double mtau, DoubleMatrix & ch
 
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addStauCorrection(double p, DoubleMatrix & mass, 
+void MssmSoftsusy::addStauCorrection(double p, DoubleMatrix & mass, 
 				     double mtau) {
 
 /// No point adding radiative corrections to tachyonic particles
@@ -4915,8 +4818,7 @@ void Softsusy<SoftPars>::addStauCorrection(double p, DoubleMatrix & mass,
   mass = mass - piSq;	
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSdownQCD(double p1, double p2, int family, DoubleMatrix & strong) {
+DoubleMatrix MssmSoftsusy::addSdownQCD(double p1, double p2, int family, DoubleMatrix & strong) {
   double mg   = forLoops.mGluino;
   double q    = displayMu();
   double g3sq = sqr(displayGaugeCoupling(3));
@@ -4933,8 +4835,7 @@ DoubleMatrix Softsusy<SoftPars>::addSdownQCD(double p1, double p2, int family, D
   return strong;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSdownHiggs(double p1, double p2, int family, DoubleMatrix & higgs) {
+DoubleMatrix MssmSoftsusy::addSdownHiggs(double p1, double p2, int family, DoubleMatrix & higgs) {
   double mz         = displayMzRun();
   double sinthDrbar = calcSinthdrbar();
   double costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
@@ -5034,8 +4935,7 @@ DoubleMatrix Softsusy<SoftPars>::addSdownHiggs(double p1, double p2, int family,
   return higgs; 
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSdownEweak(double p1, double p2, int family, DoubleMatrix & electroweak) {
+DoubleMatrix MssmSoftsusy::addSdownEweak(double p1, double p2, int family, DoubleMatrix & electroweak) {
   double mw         = displayMwRun();
   double mz         = displayMzRun();
   double sinthDrbar = calcSinthdrbar();
@@ -5139,8 +5039,7 @@ DoubleMatrix Softsusy<SoftPars>::addSdownEweak(double p1, double p2, int family,
   return electroweak;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSdownNeutralino(double p1, double p2, int /* family */, DoubleMatrix & neutralino) {
+DoubleMatrix MssmSoftsusy::addSdownNeutralino(double p1, double p2, int /* family */, DoubleMatrix & neutralino) {
   double g  = displayGaugeCoupling(2);
   double gp = displayGaugeCoupling(1) * sqrt(0.6);
   double q  = displayMu();
@@ -5195,8 +5094,7 @@ DoubleMatrix Softsusy<SoftPars>::addSdownNeutralino(double p1, double p2, int /*
   return neutralino;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSdownChargino(double p1, double p2, int /* family */, DoubleMatrix & chargino) {
+DoubleMatrix MssmSoftsusy::addSdownChargino(double p1, double p2, int /* family */, DoubleMatrix & chargino) {
   double g = displayGaugeCoupling(2);
   double q = displayMu();
 
@@ -5242,8 +5140,7 @@ DoubleMatrix Softsusy<SoftPars>::addSdownChargino(double p1, double p2, int /* f
   return chargino;
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addSdownCorrection(DoubleMatrix & mass, int family) {
+void MssmSoftsusy::addSdownCorrection(DoubleMatrix & mass, int family) {
 
   /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
@@ -5279,8 +5176,7 @@ void Softsusy<SoftPars>::addSdownCorrection(DoubleMatrix & mass, int family) {
   mass = mass - piSq;	
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSbotQCD(double p, double /* mt */, DoubleMatrix & strong) {
+DoubleMatrix MssmSoftsusy::addSbotQCD(double p, double /* mt */, DoubleMatrix & strong) {
   double    thetab  = forLoops.thetab;
   double    cb      = cos(thetab);
   double    sb      = sin(thetab);
@@ -5305,8 +5201,7 @@ DoubleMatrix Softsusy<SoftPars>::addSbotQCD(double p, double /* mt */, DoubleMat
   return strong;
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::addSbotSfermion(double /* p */, double /* mt */, DoubleMatrix & stop, DoubleMatrix & sbottom) {
+void MssmSoftsusy::addSbotSfermion(double /* p */, double /* mt */, DoubleMatrix & stop, DoubleMatrix & sbottom) {
   double    thetat   = forLoops.thetat;
   double    thetab   = forLoops.thetab;
   double    thetatau = forLoops.thetatau;
@@ -5343,8 +5238,7 @@ void Softsusy<SoftPars>::addSbotSfermion(double /* p */, double /* mt */, Double
     hbsq * (sqr(ct) * a0(mstop(1), q) + sqr(st) * a0(mstop(2), q));
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSbotHiggs(double p, double mt, DoubleMatrix & higgs) {
+DoubleMatrix MssmSoftsusy::addSbotHiggs(double p, double mt, DoubleMatrix & higgs) {
   double    mz         = displayMzRun();
   double    sinthDrbar = calcSinthdrbar();
   double    costhDrbar = sqrt(1.0 - sqr(sinthDrbar));
@@ -5499,8 +5393,7 @@ DoubleMatrix Softsusy<SoftPars>::addSbotHiggs(double p, double mt, DoubleMatrix 
   return higgs;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSbotEweak(double p, DoubleMatrix & electroweak) {
+DoubleMatrix MssmSoftsusy::addSbotEweak(double p, DoubleMatrix & electroweak) {
   double    mz         = displayMzRun();
   double    mw         = displayMwRun();
   double    sinthDrbar = calcSinthdrbar();
@@ -5614,8 +5507,7 @@ DoubleMatrix Softsusy<SoftPars>::addSbotEweak(double p, DoubleMatrix & electrowe
   return electroweak;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSbotNeutralino(double p, double /* mt */, DoubleMatrix & neutralino) {
+DoubleMatrix MssmSoftsusy::addSbotNeutralino(double p, double /* mt */, DoubleMatrix & neutralino) {
   double g  = displayGaugeCoupling(2);
   double gp = displayGaugeCoupling(1) * sqrt(0.6);
   double hb = forLoops.hb;
@@ -5677,8 +5569,7 @@ DoubleMatrix Softsusy<SoftPars>::addSbotNeutralino(double p, double /* mt */, Do
   return neutralino;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSbotChargino(double p, double mt, DoubleMatrix & chargino) {
+DoubleMatrix MssmSoftsusy::addSbotChargino(double p, double mt, DoubleMatrix & chargino) {
   double g  = displayGaugeCoupling(2);
   double ht = forLoops.ht;
   double hb = forLoops.hb;
@@ -5736,8 +5627,7 @@ DoubleMatrix Softsusy<SoftPars>::addSbotChargino(double p, double mt, DoubleMatr
 }
 
 /// Checked 16.08.2005
-template<class SoftPars>
-void Softsusy<SoftPars>::addSbotCorrection(double p, DoubleMatrix & mass, double mt) {
+void MssmSoftsusy::addSbotCorrection(double p, DoubleMatrix & mass, double mt) {
 
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
@@ -5774,8 +5664,7 @@ void Softsusy<SoftPars>::addSbotCorrection(double p, DoubleMatrix & mass, double
   mass = mass - piSq;	
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSupQCD(double p1, double p2, int family, DoubleMatrix & strong) {
+DoubleMatrix MssmSoftsusy::addSupQCD(double p1, double p2, int family, DoubleMatrix & strong) {
   double g3sq = sqr(displayGaugeCoupling(3));
   double mg   = forLoops.mGluino;
   double q    = displayMu(); 
@@ -5793,8 +5682,7 @@ DoubleMatrix Softsusy<SoftPars>::addSupQCD(double p1, double p2, int family, Dou
   return strong;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSupHiggs(double p1, double p2, int family, DoubleMatrix & higgs) {
+DoubleMatrix MssmSoftsusy::addSupHiggs(double p1, double p2, int family, DoubleMatrix & higgs) {
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
@@ -5923,8 +5811,7 @@ DoubleMatrix Softsusy<SoftPars>::addSupHiggs(double p1, double p2, int family, D
   return higgs;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSupEweak(double p1, double p2, int family, DoubleMatrix & electroweak) {
+DoubleMatrix MssmSoftsusy::addSupEweak(double p1, double p2, int family, DoubleMatrix & electroweak) {
   double    sinthDrbar  = calcSinthdrbar();
   double    costhDrbar  = sqrt(1.0 - sqr(sinthDrbar));
   double    costhDrbar2 = 1.0 - sqr(sinthDrbar);
@@ -6043,8 +5930,7 @@ DoubleMatrix Softsusy<SoftPars>::addSupEweak(double p1, double p2, int family, D
   return electroweak;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSupNeutralino(double p1, double p2, int /* family */, DoubleMatrix & neutralino) {
+DoubleMatrix MssmSoftsusy::addSupNeutralino(double p1, double p2, int /* family */, DoubleMatrix & neutralino) {
   double q  = displayMu();
   double g  = displayGaugeCoupling(2);
   double gp = displayGaugeCoupling(1) * sqrt(0.6);
@@ -6100,8 +5986,7 @@ DoubleMatrix Softsusy<SoftPars>::addSupNeutralino(double p1, double p2, int /* f
   return neutralino;
 }
 
-template<class SoftPars>
-DoubleMatrix Softsusy<SoftPars>::addSupChargino(double p1, double p2, int /* family */, DoubleMatrix & chargino) {
+DoubleMatrix MssmSoftsusy::addSupChargino(double p1, double p2, int /* family */, DoubleMatrix & chargino) {
   double g  = displayGaugeCoupling(2);
   double q  = displayMu();
 
@@ -6154,8 +6039,7 @@ DoubleMatrix Softsusy<SoftPars>::addSupChargino(double p1, double p2, int /* fam
 }
 
 /// As in BPMZ appendix, INCLUDING weak boson loops.
-template<class SoftPars>
-void Softsusy<SoftPars>::addSupCorrection(DoubleMatrix & mass, int family) {
+void MssmSoftsusy::addSupCorrection(DoubleMatrix & mass, int family) {
 
 /// No point adding radiative corrections to tachyonic particles
   if (mass(1, 1) < 0.0 || mass(2, 2) < 0.0) { 
@@ -6193,8 +6077,7 @@ void Softsusy<SoftPars>::addSupCorrection(DoubleMatrix & mass, int family) {
   mass = mass - piSq;	  
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::doUpSquarks(double mt, double pizztMS, double sinthDRbarMS, int accuracy) { 
+void MssmSoftsusy::doUpSquarks(double mt, double pizztMS, double sinthDRbarMS, int accuracy) { 
 
   /// first two families are simpler
   int family; for (family = 1; family <= 2; family++) {
@@ -6266,8 +6149,7 @@ void Softsusy<SoftPars>::doUpSquarks(double mt, double pizztMS, double sinthDRba
   }
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::treeDownSquark(DoubleMatrix & mass, double mbrun, 
+void MssmSoftsusy::treeDownSquark(DoubleMatrix & mass, double mbrun, 
                                         double /* pizztMS */, double sinthDRbarMS,
                                         int family) {
   const double cd = 1.0 / 3.0;
@@ -6295,8 +6177,7 @@ void Softsusy<SoftPars>::treeDownSquark(DoubleMatrix & mass, double mbrun,
 }
 
 
-template<class SoftPars>
-void Softsusy<SoftPars>::doDownSquarks(double mb, double pizztMS, double
+void MssmSoftsusy::doDownSquarks(double mb, double pizztMS, double
 			    sinthDRbarMS, int accuracy, double mt) {
   int family; for (family = 1; family <= 2; family++) {
     
@@ -6369,8 +6250,7 @@ void Softsusy<SoftPars>::doDownSquarks(double mb, double pizztMS, double
     physpars.md(2, family) = heavySbotMass;
   }
 }
-template<class SoftPars>
-void Softsusy<SoftPars>::treeChargedSlepton(DoubleMatrix & mass, double mtaurun, 
+void MssmSoftsusy::treeChargedSlepton(DoubleMatrix & mass, double mtaurun, 
                                             double /* pizztMS */, double sinthDRbarMS,
                                             int family) {
   double mz2 = sqr(displayMzRun()), mtau2 = sqr(mtaurun);
@@ -6396,8 +6276,7 @@ void Softsusy<SoftPars>::treeChargedSlepton(DoubleMatrix & mass, double mtaurun,
   mass(2, 1) = mass(1, 2);
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::doChargedSleptons(double mtau, double pizztMS, double
+void MssmSoftsusy::doChargedSleptons(double mtau, double pizztMS, double
 			    sinthDRbarMS, int accuracy) {
   DoubleMatrix mSlepSquared(2, 2);
 
@@ -6486,8 +6365,7 @@ void Softsusy<SoftPars>::doChargedSleptons(double mtau, double pizztMS, double
   }
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::doSnu(double pizztMS, int accuracy) {
+void MssmSoftsusy::doSnu(double pizztMS, int accuracy) {
   double mSnuSquared;
   int family; for (family = 1; family <= 3; family++) {
     treeSnu(mSnuSquared, pizztMS, family);
@@ -6500,8 +6378,7 @@ void Softsusy<SoftPars>::doSnu(double pizztMS, int accuracy) {
   }
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::treeSnu(double & mSnuSquared,
+void MssmSoftsusy::treeSnu(double & mSnuSquared,
                                  double /* pizztMS */, int family) {
   double mz2 = sqr(displayMzRun());
   double beta = atan(displayTanb());
@@ -6511,13 +6388,12 @@ void Softsusy<SoftPars>::treeSnu(double & mSnuSquared,
       * c2b;
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::calcHiggsAtScale(int accuracy, double & mt, 
+void MssmSoftsusy::calcHiggsAtScale(int accuracy, double & mt, 
 					  double & sinthDRbarMS, double &
 					  piwwtMS, double & pizztMS, 
 					  double q) {
   /// Higgs: potentially at a different scale
-  Softsusy<SoftPars> ppp(*this);
+  MssmSoftsusy ppp(*this);
   
   /// Re-calculate the 1-loop tadpoles for the calculation if a different
   /// renormalisation scale is required
@@ -6574,8 +6450,7 @@ void Softsusy<SoftPars>::calcHiggsAtScale(int accuracy, double & mt,
 
 /// Organises calculation of physical quantities such as sparticle masses etc
 /// Call AT MSusy
-template<class SoftPars>
-void Softsusy<SoftPars>::physical(int accuracy) {
+void MssmSoftsusy::physical(int accuracy) {
   double sinthDRbarMS, piwwtMS, pizztMS;
 
   calcDrBarPars();
@@ -6655,8 +6530,7 @@ inline double minimufb3(double lnH2) {
 /// Input mx the scale up to which you search for minima
 /// Returns minimum value of potential along that direction
 /// Does ufbs truly properly but takes ages.
-template<>
-inline double Softsusy<SoftParsMssm>::ufb3sl(double mx) {
+inline double MssmSoftsusy::ufb3sl(double mx) {
 
   tempSoft1 = this;
 
@@ -6681,16 +6555,14 @@ inline double Softsusy<SoftParsMssm>::ufb3sl(double mx) {
   return Vmin;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::ufb3sl(double mx) {
+double MssmSoftsusy::ufb3sl(double mx) {
    throw "ufb3sl not implemented for non-MSSM models";
 }
 
 /// Does SUSY (and other) threshold corrections to alphaS
 /// Input alphas in MSbar and it returns it in DRbar scheme. 
 /// From hep-ph/9606211
-template<class SoftPars>
-double Softsusy<SoftPars>::qcdSusythresh(double alphasMSbar, double q) {
+double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
   drBarPars tree(displayDrBarPars());
   double mt = tree.mt;
 
@@ -6774,8 +6646,7 @@ double Softsusy<SoftPars>::qcdSusythresh(double alphasMSbar, double q) {
 /// Does SUSY (and other) threshold corrections to alphaEm - returns alpha in
 /// DRbar scheme at scale Q. From hep-ph/9606211. Input empirical value of
 /// alpha at MZ external momentum....
-template<class SoftPars>
-double Softsusy<SoftPars>::qedSusythresh(double alphaEm, double q) const {
+double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
 
   drBarPars tree(displayDrBarPars());
 
@@ -6816,8 +6687,7 @@ double Softsusy<SoftPars>::qedSusythresh(double alphaEm, double q) const {
 
 /// Returns lsp mass in mass and function return labels which particle is lsp:
 /// 0 is neutralino posi = #, posj = 0
-template<class SoftPars>
-int Softsusy<SoftPars>::lsp(double & mass, int & posi, int & posj) const {
+int MssmSoftsusy::lsp(double & mass, int & posi, int & posj) const {
   int temp = 0, pos1 = 0, pos2 = 0;
   sPhysical s(displayPhys());
   
@@ -6862,8 +6732,7 @@ int Softsusy<SoftPars>::lsp(double & mass, int & posi, int & posj) const {
   return temp;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::maxMass() const {
+double MssmSoftsusy::maxMass() const {
   int pos1, pos2;
   sPhysical s(displayPhys());
   
@@ -6897,8 +6766,7 @@ double Softsusy<SoftPars>::maxMass() const {
 }
 
 /// DRbar pars should be defined already for this
-template<class SoftPars>
-double Softsusy<SoftPars>::calcMs() const {
+double MssmSoftsusy::calcMs() const {
 
   drBarPars tree(displayDrBarPars());
 
@@ -6912,8 +6780,7 @@ double Softsusy<SoftPars>::calcMs() const {
 /// Provides the first guess at a SUSY object at mt, inputting tanb and oneset
 /// (should be at MZ) - it's very crude, doesn't take radiative corrections
 /// into account etc. 
-template<class SoftPars>
-MssmSusy Softsusy<SoftPars>::guessAtSusyMt(double tanb, const QedQcd & oneset) {
+MssmSusy MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
   /// This bit gives a guess at a SUSY object
   QedQcd leAtMt(oneset);
 
@@ -6974,16 +6841,15 @@ MssmSusy Softsusy<SoftPars>::guessAtSusyMt(double tanb, const QedQcd & oneset) {
 /// returns a ZERO object: no result is possible!
 /// Boundary condition is the theoretical condition on parameters at the high
 /// energy scale mx: the parameters themselves are contained within the vector.
-template<class SoftPars>
-void Softsusy<SoftPars>::fixedPointIteration
-(void (*boundaryCondition)(Softsusy<SoftPars> &, const DoubleVector &),
+void MssmSoftsusy::fixedPointIteration
+(void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &),
  double mxGuess, 
  const DoubleVector & pars, int sgnMu, double tanb, const QedQcd &
  oneset, bool gaugeUnification, bool ewsbBCscale) {
 
   try {
 
-    const static Softsusy<SoftPars> empty;
+    const static MssmSoftsusy empty;
   
     double muFirst = displaySusyMu(); /// Remember initial values
 
@@ -7019,7 +6885,7 @@ void Softsusy<SoftPars>::fixedPointIteration
     if (mxGuess > 0.0) 
       mxBC = mxGuess; 
     else {
-      string ii("Trying to use negative mx in Softsusy<SoftPars>::fixedPointIteration.\n");
+      string ii("Trying to use negative mx in MssmSoftsusy::fixedPointIteration.\n");
       ii = ii + "Now illegal! Use positive mx for first guess of mx.\n";
       throw ii;
     }
@@ -7115,8 +6981,7 @@ void Softsusy<SoftPars>::fixedPointIteration
 
 /// You should evaluate this at a scale MSusy average of stops.
 /// Depth of electroweak minimum: hep-ph/9507294. Bug-fixed 19/11/04
-template<class SoftPars>
-double Softsusy<SoftPars>::realMinMs() const {
+double MssmSoftsusy::realMinMs() const {
   MssmSusy temp(displaySusy());
   temp.runto(calcMs(), TOLERANCE); 
   
@@ -7128,8 +6993,7 @@ double Softsusy<SoftPars>::realMinMs() const {
 }
 
 /// Calculates sin theta at the current scale
-template<class SoftPars>
-double Softsusy<SoftPars>::calcSinthdrbar() const {
+double MssmSoftsusy::calcSinthdrbar() const {
 
   double sinth = displayGaugeCoupling(1) /
     sqrt(sqr(displayGaugeCoupling(1)) +
@@ -7139,8 +7003,7 @@ double Softsusy<SoftPars>::calcSinthdrbar() const {
 }
 
 //VEV at current scale, using an input value of Z self-energy
-template<class SoftPars>
-double Softsusy<SoftPars>::getVev(double pizzt) {
+double MssmSoftsusy::getVev(double pizzt) {
 
   double vsquared = 4.0 * (sqr(displayMz()) + pizzt) /
     (sqr(displayGaugeCoupling(2)) +
@@ -7155,8 +7018,7 @@ double Softsusy<SoftPars>::getVev(double pizzt) {
 }
 
 //VEV at current scale: calculates Z self energy first
-template<class SoftPars>
-double Softsusy<SoftPars>::getVev() {
+double MssmSoftsusy::getVev() {
   double pizzt = piZZT(displayMz(), displayMu());
   if (pizzt + sqr(displayMz()) < 0.) {
     pizzt = -displayMz() + EPSTOL;
@@ -7169,11 +7031,10 @@ double Softsusy<SoftPars>::getVev() {
 /// It'll set the important SUSY couplings: supposed to be applied at MZ
 /// You should set up an iteration here since Yuk's depend on top mass which
 /// depends on Yuk's etc. 
-template<class SoftPars>
-void Softsusy<SoftPars>::sparticleThresholdCorrections(double tb) {
+void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   double mz = displayMz();  if (displayMu() != mz) {
     ostringstream ii;
-    ii << "Called Softsusy<SoftPars>::sparticleThresholdCorrections "
+    ii << "Called MssmSoftsusy::sparticleThresholdCorrections "
        << "with scale" << displayMu() << endl;
     throw ii.str();
   }
@@ -7252,22 +7113,19 @@ void Softsusy<SoftPars>::sparticleThresholdCorrections(double tb) {
   setYukawaMatrix(YE, mLep * (root2 / (vev * cos(beta)))); 
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::displayMzRun() const { 
+double MssmSoftsusy::displayMzRun() const { 
   return displayHvev() * 0.5 * 
     sqrt(sqr(displayGaugeCoupling(2)) + 0.6 * sqr(displayGaugeCoupling(1)));
 } 
 
-template<class SoftPars>
-void Softsusy<SoftPars>::treeCharginos(DoubleMatrix & mCh, double beta, double mw) {
+void MssmSoftsusy::treeCharginos(DoubleMatrix & mCh, double beta, double mw) {
   mCh(1, 1) = displayGaugino(2);
   mCh(2, 1) = root2 * mw * cos(beta); 
   mCh(1, 2) = mCh(2, 1) * displayTanb();
   mCh(2, 2) = displaySusyMu();
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::treeNeutralinos(DoubleMatrix & mNeut, double beta, double mz, double mw, double sinthDRbar) {
+void MssmSoftsusy::treeNeutralinos(DoubleMatrix & mNeut, double beta, double mz, double mw, double sinthDRbar) {
   
   mNeut(1, 1) = displayGaugino(1);
   mNeut(2, 2) = displayGaugino(2);
@@ -7280,8 +7138,7 @@ void Softsusy<SoftPars>::treeNeutralinos(DoubleMatrix & mNeut, double beta, doub
   
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::calcDrBarGauginos(double beta, double mw, double mz, double sinth, drBarPars & eg) {
+void MssmSoftsusy::calcDrBarGauginos(double beta, double mw, double mz, double sinth, drBarPars & eg) {
   DoubleMatrix mCh(2, 2);   
   treeCharginos(mCh, beta, mw);
   eg.mch = mCh.asy2by2(eg.thetaL, eg.thetaR);
@@ -7298,8 +7155,7 @@ void Softsusy<SoftPars>::calcDrBarGauginos(double beta, double mw, double mz, do
 
   eg.mpzNeutralinos();
 }
-template<class SoftPars>
-void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2, 
+void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2, 
                                         double  sinthDRbar, 
 					drBarPars & eg) {
    if (eg.mt > 200. || eg.mt < 50.) {
@@ -7370,8 +7226,7 @@ void Softsusy<SoftPars>::calcDrBarHiggs(double beta, double mz2, double mw2,
 }
 
 //PA: sets the neutral current couplings
-template<class SoftPars>
-void Softsusy<SoftPars>::setNeutCurrCouplings(double sinthDRbar, double & sw2, 
+void MssmSoftsusy::setNeutCurrCouplings(double sinthDRbar, double & sw2, 
 					      double & guL, double & gdL, 
 					      double & geL, double & guR, 
 					      double & gdR, double & geR) {
@@ -7385,8 +7240,7 @@ void Softsusy<SoftPars>::setNeutCurrCouplings(double sinthDRbar, double & sw2,
 }
 
 //PA: sets the Yukawas and Trilinears
-template<class SoftPars>
-void Softsusy<SoftPars>::calcDRTrilinears(drBarPars & eg, double vev, double beta) {
+void MssmSoftsusy::calcDRTrilinears(drBarPars & eg, double vev, double beta) {
    if (MIXING > 0) {    
     DoubleMatrix diagUp(displayYukawaMatrix(YU)),
       diagDown(displayYukawaMatrix(YD)),
@@ -7433,8 +7287,7 @@ void Softsusy<SoftPars>::calcDRTrilinears(drBarPars & eg, double vev, double bet
 
 /// calculates masses all at tree-level in the DRbar scheme, useful for
 /// radiative corrections. 
-template<class SoftPars>
-void Softsusy<SoftPars>::calcDrBarPars() {
+void MssmSoftsusy::calcDrBarPars() {
   /// We want to set mu to be the one obtained from the tree-level Higgs
   /// potential for these purposes
   double savedMu = displaySusyMu();
@@ -7527,13 +7380,12 @@ void Softsusy<SoftPars>::calcDrBarPars() {
   setSusyMu(savedMu);
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::itLowsoft
+void MssmSoftsusy::itLowsoft
 (int maxTries, int sgnMu, double tol, double tanb, 
- void (*boundaryCondition)(Softsusy<SoftPars> &, const DoubleVector &), 
+ void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &), 
  const DoubleVector & pars, bool gaugeUnification, bool ewsbBCscale) {
 
-  static Softsusy<SoftPars> old;
+  static MssmSoftsusy old;
   static double oldMu = 0.;
   static int numTries = 0;
   double mz = displayMz();
@@ -7710,7 +7562,7 @@ void Softsusy<SoftPars>::itLowsoft
       flagProblemThrown(true);
       if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to MZ\n"; 
       if (PRINTOUT > 1) printObj();
-      ///    old = Softsusy<SoftPars>();
+      ///    old = MssmSoftsusy();
       numTries = 0;
       return;
     }
@@ -7730,8 +7582,7 @@ void Softsusy<SoftPars>::itLowsoft
 
 
 /// Higgs contribution to the Transverse part of Z self-energy
-template<class SoftPars>
-double Softsusy<SoftPars>::piZZTHiggs(double p, double q, 
+double MssmSoftsusy::piZZTHiggs(double p, double q, 
 				      double thetaWDRbar) const {
   double    alpha   = displayDrBarPars().thetaH ;
   double    beta    = atan(displayTanb());
@@ -7771,8 +7622,7 @@ double Softsusy<SoftPars>::piZZTHiggs(double p, double q,
 }
 
 /// sfermion contribution to the Transverse part of Z self-energy
-template<class SoftPars>
-double Softsusy<SoftPars>::piZZTsfermions(double p, double q) const {
+double MssmSoftsusy::piZZTsfermions(double p, double q) const {
   double    thetat = displayDrBarPars().thetat ;
   double    thetab = displayDrBarPars().thetab;
   double    thetatau= displayDrBarPars().thetatau ;
@@ -7870,8 +7720,7 @@ double Softsusy<SoftPars>::piZZTsfermions(double p, double q) const {
 }
 
 /// fermion contribution to the Transverse part of Z self-energy: 
-template<class SoftPars>
-double Softsusy<SoftPars>::piZZTfermions(double p, double q, bool usePoleMt) const {
+double MssmSoftsusy::piZZTfermions(double p, double q, bool usePoleMt) const {
   /// fermions: these are valid at MZ
   double    mtop =  displayDrBarPars().mt;
   /// We utilise pole mt for these corrections (which the 2-loop Standard Model
@@ -7911,8 +7760,7 @@ double Softsusy<SoftPars>::piZZTfermions(double p, double q, bool usePoleMt) con
   return quarks;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::piZZTNeutralinos(double p, double q, 
+double MssmSoftsusy::piZZTNeutralinos(double p, double q, 
 					    double thetaWDRbar) const {
   
   double    cw2DRbar    = sqr(cos(thetaWDRbar));
@@ -7942,8 +7790,7 @@ double Softsusy<SoftPars>::piZZTNeutralinos(double p, double q,
   return neutralinos;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::piZZTCharginos(double p, double q, double thetaWDRbar) const {
+double MssmSoftsusy::piZZTCharginos(double p, double q, double thetaWDRbar) const {
  
   double    cw2DRbar    = sqr(cos(thetaWDRbar));
   double    g       = displayGaugeCoupling(2);
@@ -7973,8 +7820,7 @@ double Softsusy<SoftPars>::piZZTCharginos(double p, double q, double thetaWDRbar
 
 }
 /// Transverse part of Z self-energy: has been checked
-template<class SoftPars>
-double Softsusy<SoftPars>::piZZT(double p, double q, bool usePoleMt) const {
+double MssmSoftsusy::piZZT(double p, double q, bool usePoleMt) const {
   
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    cw2DRbar    = sqr(cos(thetaWDRbar));
@@ -7999,8 +7845,7 @@ double Softsusy<SoftPars>::piZZT(double p, double q, bool usePoleMt) const {
 }
 
 
-template<class SoftPars>
-double Softsusy<SoftPars>::piWWTHiggs(double p, double q, double thetaWDRbar) const {
+double MssmSoftsusy::piWWTHiggs(double p, double q, double thetaWDRbar) const {
   double    beta      = atan(displayTanb());
   double    alpha     = displayDrBarPars().thetaH ;
   double    cw2DRbar  = sqr(cos(thetaWDRbar));
@@ -8035,8 +7880,7 @@ double Softsusy<SoftPars>::piWWTHiggs(double p, double q, double thetaWDRbar) co
   return higgs;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::piWWTfermions(double p, double q, bool usePoleMt) const {
+double MssmSoftsusy::piWWTfermions(double p, double q, bool usePoleMt) const {
  double    mtop =  displayDrBarPars().mt;
   /// We utilise pole mt for these corrections (which the 2-loop Standard Model
   /// pieces assume)
@@ -8059,8 +7903,7 @@ double Softsusy<SoftPars>::piWWTfermions(double p, double q, bool usePoleMt) con
  return fermions;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::piWWTsfermions(double p, double q) const {
+double MssmSoftsusy::piWWTsfermions(double p, double q) const {
   
   double    thetat = displayDrBarPars().thetat ;
   double    thetab = displayDrBarPars().thetab;
@@ -8101,8 +7944,7 @@ double Softsusy<SoftPars>::piWWTsfermions(double p, double q) const {
   return sfermions;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::piWWTgauginos(double p, double q,
+double MssmSoftsusy::piWWTgauginos(double p, double q,
                                          double /* thetaWDRbar */) const {
   double    g       = displayGaugeCoupling(2);
   ComplexMatrix aPsi0PsicW(4, 2), bPsi0PsicW(4, 2), aChi0ChicW(4, 2),
@@ -8140,8 +7982,7 @@ return gauginos;
 
 /// W propagator to 1 loop in MSSM 
 /// It's all been checked
-template<class SoftPars>
-double Softsusy<SoftPars>::piWWT(double p, double q, bool usePoleMt) const {
+double MssmSoftsusy::piWWT(double p, double q, bool usePoleMt) const {
 
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    g       = displayGaugeCoupling(2);
@@ -8161,8 +8002,7 @@ double Softsusy<SoftPars>::piWWT(double p, double q, bool usePoleMt) const {
 
 
 /// LCT: Returns trilinear neutralino-chargino-hpm coupling in unrotated basis
-template<class SoftPars>
-void Softsusy<SoftPars>::getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, ComplexMatrix & /* apph2 */, ComplexMatrix & /* bpph1 */, ComplexMatrix & bpph2) const {
+void MssmSoftsusy::getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, ComplexMatrix & /* apph2 */, ComplexMatrix & /* bpph1 */, ComplexMatrix & bpph2) const {
   double gp = sqrt(0.6) * displayGaugeCoupling(1);
   double g = displayGaugeCoupling(2);
 
@@ -8175,8 +8015,7 @@ void Softsusy<SoftPars>::getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, Com
 }
 
 /// LCT: Returns fermion contributions to charged Higgs self-energy
-template<class SoftPars>
-double Softsusy<SoftPars>::piHpHmFermions(double p, double q) const {
+double MssmSoftsusy::piHpHmFermions(double p, double q) const {
   /// fermions: 3rd family only for now
   drBarPars tree(displayDrBarPars());
   double    ht      = tree.ht;
@@ -8197,8 +8036,7 @@ double Softsusy<SoftPars>::piHpHmFermions(double p, double q) const {
 }
 
 /// LCT: Returns sfermion contributions to charged Higgs self-energy
-template<class SoftPars>
-double Softsusy<SoftPars>::piHpHmSfermions(double p, double q, double mu) const {
+double MssmSoftsusy::piHpHmSfermions(double p, double q, double mu) const {
   drBarPars tree(displayDrBarPars());
   double    ht          = tree.ht;
   double    hb          = tree.hb;
@@ -8312,8 +8150,7 @@ double Softsusy<SoftPars>::piHpHmSfermions(double p, double q, double mu) const 
 }
 
 /// LCT: Returns pure gauge contributions to charged Higgs self-energy
-template<class SoftPars>
-double Softsusy<SoftPars>::piHpHmGauge(double /* p */, double q) const {
+double MssmSoftsusy::piHpHmGauge(double /* p */, double q) const {
   drBarPars tree(displayDrBarPars());
   double    mz          = displayMzRun();
   double    thetaWDRbar = asin(calcSinthdrbar());
@@ -8329,8 +8166,7 @@ double Softsusy<SoftPars>::piHpHmGauge(double /* p */, double q) const {
 }
 
 /// LCT: Returns Higgs contributions to charged Higgs self-energy
-template<class SoftPars>
-double Softsusy<SoftPars>::piHpHmHiggs(double p, double q) const {
+double MssmSoftsusy::piHpHmHiggs(double p, double q) const {
   drBarPars tree(displayDrBarPars());
   double    alpha       = tree.thetaH;
   double    mz          = displayMzRun();
@@ -8397,8 +8233,7 @@ double Softsusy<SoftPars>::piHpHmHiggs(double p, double q) const {
 
 /// LCT: Returns neutralino-chargino contributions to charged Higgs 
 /// self-energy
-template<class SoftPars>
-double Softsusy<SoftPars>::piHpHmGauginos(double p, double q) const {
+double MssmSoftsusy::piHpHmGauginos(double p, double q) const {
   drBarPars tree(displayDrBarPars());
   double    beta    = atan(displayTanb());
   double    cosb    = cos(beta);
@@ -8429,8 +8264,7 @@ double Softsusy<SoftPars>::piHpHmGauginos(double p, double q) const {
 }
 
 /// LCT: Charged Higgs self-energy 
-template<class SoftPars>
-double Softsusy<SoftPars>::piHpHm(double p, double q) const {
+double MssmSoftsusy::piHpHm(double p, double q) const {
   double mu = -displaySusyMu(); ///<< LCT: Note minus sign. Consistent with 
   /// SOFTSUSY
 
@@ -8452,8 +8286,7 @@ double Softsusy<SoftPars>::piHpHm(double p, double q) const {
 }
 
 
-template<class SoftPars>
-double Softsusy<SoftPars>::piAA(double p, double q) const {/// checked 30.07.03
+double MssmSoftsusy::piAA(double p, double q) const {/// checked 30.07.03
   drBarPars tree(displayDrBarPars());
 
  if (tree.mu(1, 3) == 0.0 || tree.mu(2, 3) == 0.0) {
@@ -8774,8 +8607,7 @@ double Softsusy<SoftPars>::piAA(double p, double q) const {/// checked 30.07.03
 }
 
 
-template<class SoftPars>
-double Softsusy<SoftPars>::piZGT(double p, double q) const { ///! checked 7/6/6
+double MssmSoftsusy::piZGT(double p, double q) const { ///! checked 7/6/6
   drBarPars tree(displayDrBarPars());
   double alphaMsbar = dataSet.displayAlpha(ALPHA);
   double alphaDrbar = qedSusythresh(alphaMsbar, displayMu());
@@ -8908,10 +8740,9 @@ inline double gEff(double x) {
 }
 
 
-template<class SoftPars>
-double Softsusy<SoftPars>::sinSqThetaEff() {
+double MssmSoftsusy::sinSqThetaEff() {
   if (displayMu() != MZ) {
-    throw("Should call Softsusy<SoftPars>::sinSqThetaEff() at MZ only\n");
+    throw("Should call MssmSoftsusy::sinSqThetaEff() at MZ only\n");
   }
   double kl = 0.;
  
@@ -8937,8 +8768,7 @@ double Softsusy<SoftPars>::sinSqThetaEff() {
 }
 
 /// outrho, outsin represent the DRbar values
-template<class SoftPars>
-double Softsusy<SoftPars>::deltaVb(double outrho, double outsin, 
+double MssmSoftsusy::deltaVb(double outrho, double outsin, 
                                    double alphaDRbar, double /* pizztMZ */) const {
   drBarPars tree(displayDrBarPars());
 
@@ -9115,13 +8945,11 @@ double Softsusy<SoftPars>::deltaVb(double outrho, double outsin,
 }
 
 //PA: returns the mixing of Hu into between h1 
-template<class SoftPars>
-double Softsusy<SoftPars>::h1s2Mix(){					    
+double MssmSoftsusy::h1s2Mix(){					    
    return cos(displayDrBarPars().thetaH);
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::dRho(double outrho, double outsin, double alphaDRbar, 
+double MssmSoftsusy::dRho(double outrho, double outsin, double alphaDRbar, 
 			     double pizztMZ, double piwwtMW) {
   double mz = displayMz();
   drBarPars tree(displayDrBarPars());
@@ -9147,8 +8975,7 @@ double Softsusy<SoftPars>::dRho(double outrho, double outsin, double alphaDRbar,
   return deltaRho;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::dR(double outrho, double outsin, double alphaDRbar,
+double MssmSoftsusy::dR(double outrho, double outsin, double alphaDRbar,
 			   double pizztMZ, double piwwt0) {
   drBarPars tree(displayDrBarPars());
 
@@ -9183,8 +9010,7 @@ double Softsusy<SoftPars>::dR(double outrho, double outsin, double alphaDRbar,
 /// Checked 20.11.00
 /// Flags noconvergence if there's trouble...then don't believe outrho and
 /// outsin produced - they are fudged!
-template<class SoftPars>
-void Softsusy<SoftPars>::rhohat(double & outrho, double & outsin, double alphaDRbar,
+void MssmSoftsusy::rhohat(double & outrho, double & outsin, double alphaDRbar,
 			  double pizztMZ, double piwwt0, double piwwtMW, 
 			  double tol, int maxTries) {
 
@@ -9193,7 +9019,7 @@ void Softsusy<SoftPars>::rhohat(double & outrho, double & outsin, double alphaDR
   double mz = displayMz();
   if (displayMu() != mz) {
     ostringstream ii;   
-    ii << "Called Softsusy<SoftPars>::rhohat "
+    ii << "Called MssmSoftsusy::rhohat "
        << "with scale" << displayMu() << endl;
     throw ii.str();
   }
@@ -9254,18 +9080,16 @@ void Softsusy<SoftPars>::rhohat(double & outrho, double & outsin, double alphaDR
   rhohat(outrho, outsin, alphaDRbar, pizztMZ, piwwt0, piwwtMW, tol, maxTries);
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::methodBoundaryCondition(const DoubleVector & /* pars */) {
+void MssmSoftsusy::methodBoundaryCondition(const DoubleVector & /* pars */) {
   ostringstream ii;
-  ii << "Should only use Softsusy<SoftPars>::methodBoundaryCondition in derived"
+  ii << "Should only use MssmSoftsusy::methodBoundaryCondition in derived"
      << " objects.\n";
   throw ii.str();
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::rpvSet(const DoubleVector & /* parameters */) {
+void MssmSoftsusy::rpvSet(const DoubleVector & /* parameters */) {
   ostringstream ii;
-  ii << "Should only use Softsusy<SoftPars>::rpvSet in derived"
+  ii << "Should only use MssmSoftsusy::rpvSet in derived"
      << " objects.\n";
   throw ii.str();
 }
@@ -9349,8 +9173,7 @@ inline double ssmqcd(double dm, double dq, double mtopPole) {
 /// certain tree-level relations between masses that are broken by SOFTSUSY's
 /// higher accuracy. The differences get large for high tan beta around 50, at
 /// around 10 they're typically only a percent.
-template<class SoftPars>
-void Softsusy<SoftPars>::isajetNumbers764 
+void MssmSoftsusy::isajetNumbers764 
 (double & mtopPole, double & mGPole, double & smu, double & mA, double & tanb, 
  double & mq1l, double & mdr, double & mur, double & meL, double & meR, 
  double & mql3, double & mdr3, double & mur3, double &  mtauL, 
@@ -9360,7 +9183,7 @@ void Softsusy<SoftPars>::isajetNumbers764
   const {
 
   /// Store a copy of the current object
-  Softsusy<SoftPars> store(*this);
+  MssmSoftsusy store(*this);
 
   /// Run to MSUSY 
   store.runto(displayMsusy(), TOLERANCE * 0.01);
@@ -9495,8 +9318,7 @@ void Softsusy<SoftPars>::isajetNumbers764
 
 /// First name input is the name of an OUTPUT file from ssrun, the second name
 /// is the name of the interface file for INPUT to ssrun
-template<class SoftPars>
-void Softsusy<SoftPars>::ssrunInterface764(const char fname [80], 
+void MssmSoftsusy::ssrunInterface764(const char fname [80], 
 					   const char softfname [80]) 
   const {
   fstream softOutput(softfname, ios::out);
@@ -9506,8 +9328,7 @@ void Softsusy<SoftPars>::ssrunInterface764(const char fname [80],
   softOutput.close();
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::ssrunInterface764Inside(const char fname [80], 
+void MssmSoftsusy::ssrunInterface764Inside(const char fname [80], 
 					   fstream & softOutput) 
   const { 
 
@@ -9545,8 +9366,7 @@ void Softsusy<SoftPars>::ssrunInterface764Inside(const char fname [80],
   else softOutput << "/" << endl;
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::isawigInterface764(const char herwigInputFile [80], 
+void MssmSoftsusy::isawigInterface764(const char herwigInputFile [80], 
 				      const char isajetOutputFile [80],
 				      const char softOutputFile [80])  
   const {
@@ -9563,8 +9383,7 @@ void Softsusy<SoftPars>::isawigInterface764(const char herwigInputFile [80],
 }
 
 /// For input into isajet parameter file called fname
-template<class SoftPars>
-void Softsusy<SoftPars>::isajetInterface764(const char fname[80]) const {
+void MssmSoftsusy::isajetInterface764(const char fname[80]) const {
 
   fstream softOutput(fname, ios::out);
 
@@ -9605,8 +9424,7 @@ void Softsusy<SoftPars>::isajetInterface764(const char fname[80]) const {
   softOutput.close();
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::headerSLHA(ostream & out) {
+void MssmSoftsusy::headerSLHA(ostream & out) {
 
   out.setf(ios::scientific, ios::floatfield);
   out.precision(8);
@@ -9616,8 +9434,7 @@ void Softsusy<SoftPars>::headerSLHA(ostream & out) {
   out << " hep-ph/0104145\n";
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::spinfoSLHA(ostream & out) {
+void MssmSoftsusy::spinfoSLHA(ostream & out) {
   out << "Block SPINFO          # Program information\n"
       << "     1    SOFTSUSY    # spectrum calculator\n";
   out << "     2    " << SOFTSUSY_VERSION << "       # version number\n";
@@ -9647,8 +9464,7 @@ void Softsusy<SoftPars>::spinfoSLHA(ostream & out) {
     out << "     4    # Point invalid: " << displayProblem() << endl;
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
+void MssmSoftsusy::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
   out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
 #ifdef COMPILE_THREE_LOOP_RGE
@@ -9675,16 +9491,14 @@ void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
 #endif
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::higgsMSLHA(ostream & out) {
+void MssmSoftsusy::higgsMSLHA(ostream & out) {
   out << "        25    "; printRow(out, displayPhys().mh0(1)); out << "   # h0\n";
   out << "        35    "; printRow(out, displayPhys().mh0(2)); out << "   # H0\n";
   out << "        36    "; printRow(out, displayPhys().mA0(1)); out << "   # A0\n";
   out << "        37    "; printRow(out, displayPhys().mHpm); out << "   # H+\n";
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::neutralinoCharginoMSLHA(ostream & out) {
+void MssmSoftsusy::neutralinoCharginoMSLHA(ostream & out) {
   sPhysical s(displayPhys());
 
   out << "   1000022    "; printRow(out, s.mneut(1)); 
@@ -9699,8 +9513,7 @@ void Softsusy<SoftPars>::neutralinoCharginoMSLHA(ostream & out) {
   out << "   1000037    "; printRow(out, fabs(s.mch(2))); out << "   # ~chargino(2)\n";
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::massSLHA(ostream & out) {
+void MssmSoftsusy::massSLHA(ostream & out) {
   sPhysical s(displayPhys());
 
   out << "Block MASS                      # Mass spectrum\n";
@@ -9718,8 +9531,7 @@ void Softsusy<SoftPars>::massSLHA(ostream & out) {
   sfermionsSLHA(out);
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::sfermionsSLHA(ostream & out) {
+void MssmSoftsusy::sfermionsSLHA(ostream & out) {
   sPhysical s(displayPhys());
 
   out << "   1000001    "; printRow(out, s.md(1, 1)); out << "   # ~d_L\n";
@@ -9751,16 +9563,14 @@ void Softsusy<SoftPars>::sfermionsSLHA(ostream & out) {
   out << "   # ~stau_2\n";
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::alphaSLHA(ostream & out) {
+void MssmSoftsusy::alphaSLHA(ostream & out) {
   out << "Block alpha                   " << 
     "  # Effective Higgs mixing parameter\n";
   out << "          "; printRow(out, displayPhys().thetaH);        
   out << "       # alpha - evaluated at p^2=0\n";
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::neutralinoMixingSLHA(ostream & out) {
+void MssmSoftsusy::neutralinoMixingSLHA(ostream & out) {
   const sPhysical s(displayPhys());
 
   out << "Block nmix                  # neutralino mixing matrix\n";
@@ -9774,8 +9584,7 @@ void Softsusy<SoftPars>::neutralinoMixingSLHA(ostream & out) {
   }
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::inomixingSLHA(ostream & out) {
+void MssmSoftsusy::inomixingSLHA(ostream & out) {
   sPhysical s(displayPhys());
   int i, j;
 
@@ -9808,8 +9617,7 @@ void Softsusy<SoftPars>::inomixingSLHA(ostream & out) {
 
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::modselSLHA(ostream & out, const char model[]) {
+void MssmSoftsusy::modselSLHA(ostream & out, const char model[]) {
   out << "Block MODSEL  # Select model\n";
   int modsel = 0;
   if (!strcmp(model, "sugra")) modsel = 1;
@@ -9820,8 +9628,7 @@ void Softsusy<SoftPars>::modselSLHA(ostream & out, const char model[]) {
 							    /// accord codes
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::sfermionmixSLHA(ostream & out) {
+void MssmSoftsusy::sfermionmixSLHA(ostream & out) {
     sPhysical s(displayPhys());
     DoubleMatrix m(2, 2);
     out << "Block stopmix               # stop mixing matrix\n";
@@ -9853,8 +9660,7 @@ void Softsusy<SoftPars>::sfermionmixSLHA(ostream & out) {
       }
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::gaugeSLHA(ostream & out) {
+void MssmSoftsusy::gaugeSLHA(ostream & out) {
   double gp = displayGaugeCoupling(1) * sqrt(0.6);
   out << "Block gauge Q= " << displayMu() << "  # SM gauge couplings\n";
   out << "     1     " << gp << "   # g'(Q)MSSM DRbar"
@@ -9865,8 +9671,7 @@ void Softsusy<SoftPars>::gaugeSLHA(ostream & out) {
       << endl;   
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::yukawasSLHA(ostream & out) {
+void MssmSoftsusy::yukawasSLHA(ostream & out) {
       out << "Block yu Q= " << displayMu() << "  \n"
 	  << "  3  3     " << displayYukawaElement(YU, 3, 3) 
 	  << "   # Yt(Q)MSSM DRbar" << endl;
@@ -9878,8 +9683,7 @@ void Softsusy<SoftPars>::yukawasSLHA(ostream & out) {
 	  << "   # Ytau(Q)MSSM DRbar" << endl;
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::hmixSLHA(ostream & out) {
+void MssmSoftsusy::hmixSLHA(ostream & out) {
   out << "Block hmix Q= " << displayMu() << 
     " # Higgs mixing parameters\n";
   out << "     1    "; printRow(out, displaySusyMu()); 
@@ -9894,8 +9698,7 @@ void Softsusy<SoftPars>::hmixSLHA(ostream & out) {
   out << "    # mA^2(Q)MSSM DRbar\n";
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::msoftSLHA(ostream & out) {
+void MssmSoftsusy::msoftSLHA(ostream & out) {
       out << "Block msoft Q= " << displayMu() 
 	  << "  # MSSM DRbar SUSY breaking parameters\n"; 
       int i;
@@ -9964,8 +9767,7 @@ void Softsusy<SoftPars>::msoftSLHA(ostream & out) {
       out << "      # Atau(Q)MSSM DRbar" << endl;   
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::drbarSLHA(ostream & out, int numPoints, double qMax, int n) {
+void MssmSoftsusy::drbarSLHA(ostream & out, int numPoints, double qMax, int n) {
   /// Starting non-essential information. The following decides what scale to
   /// output the running parameters at. It depends upon what qMax is and how
   /// many points the user has requested.
@@ -9999,8 +9801,7 @@ void Softsusy<SoftPars>::drbarSLHA(ostream & out, int numPoints, double qMax, in
   msoftSLHA(out);
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::sminputsSLHA(ostream & out) {
+void MssmSoftsusy::sminputsSLHA(ostream & out) {
   QedQcd d(displayDataSet());
   out << "Block SMINPUTS             # Standard Model inputs\n";
   out << "     1   "; printRow(out, 1.0 / d.displayAlpha(ALPHA)); 
@@ -10016,8 +9817,7 @@ void Softsusy<SoftPars>::sminputsSLHA(ostream & out) {
   out << "   # Mtau(pole)\n";
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::extparSLHA(ostream & out, 
+void MssmSoftsusy::extparSLHA(ostream & out, 
                                     const DoubleVector & pars,
                                     bool ewsbBCscale) {
   out << "Block EXTPAR               # non-universal SUSY breaking parameters\n";
@@ -10086,8 +9886,7 @@ void Softsusy<SoftPars>::extparSLHA(ostream & out,
   out << "  # mbR(MX)" << endl;    
 }
 
-template<class SoftPars>
-void Softsusy<SoftPars>::minparSLHA(ostream & out, const char model [], 
+void MssmSoftsusy::minparSLHA(ostream & out, const char model [], 
 			      const DoubleVector & pars, double tanb, 
 			      int sgnMu, 
 			      bool ewsbBCscale) {
@@ -10148,8 +9947,7 @@ void Softsusy<SoftPars>::minparSLHA(ostream & out, const char model [],
   }
 }
  
-template<class SoftPars>
-void Softsusy<SoftPars>::slha1(ostream & out, const char model[], 
+void MssmSoftsusy::slha1(ostream & out, const char model[], 
 			 const DoubleVector & pars, 
 			 int sgnMu, double tanb, 
 			 double qMax, 
@@ -10160,8 +9958,7 @@ void Softsusy<SoftPars>::slha1(ostream & out, const char model[],
 }
 
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
-template<class SoftPars>
-void Softsusy<SoftPars>::lesHouchesAccordOutput(ostream & out, const char model[], 
+void MssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[], 
 					  const DoubleVector & pars, 
 					  int sgnMu, double tanb, 
 					  double qMax, 
@@ -10199,8 +9996,7 @@ void Softsusy<SoftPars>::lesHouchesAccordOutput(ostream & out, const char model[
 
 /// Returns nlsp mass in mass and function return labels which particle is nlsp:
 /// 0 is neutralino posi = #, posj = 0
-template<class SoftPars>
-int Softsusy<SoftPars>::nlsp(double & mass, int & posi, int & posj) const {
+int MssmSoftsusy::nlsp(double & mass, int & posi, int & posj) const {
   int temp = 0, ntemp, lsppos1, lsppos2, nlsppos1, nlsppos2, pos1, pos2;
   sPhysical s(displayPhys());
   
@@ -10356,8 +10152,7 @@ inline double lnLHiggs(double mh) {
 
 
 /// checked 22/04/06
-template<class SoftPars>
-double Softsusy<SoftPars>::smPredictionMW() const {
+double MssmSoftsusy::smPredictionMW() const {
   double mh = displayPhys().mh0(1);
 
   double dH = log(mh / 100.);
@@ -10385,8 +10180,7 @@ double Softsusy<SoftPars>::smPredictionMW() const {
   return ans;
 }
 
-template<class SoftPars>
-double Softsusy<SoftPars>::twoLoopGm2(double amu1Loop) const {
+double MssmSoftsusy::twoLoopGm2(double amu1Loop) const {
 
   double alpha = displayDataSet().displayAlpha(ALPHA);
   double mMu   = displayDataSet().displayMass(mMuon);
@@ -10504,24 +10298,21 @@ double Softsusy<SoftPars>::twoLoopGm2(double amu1Loop) const {
 }
 
 /// Again, another dummy - useful in alternative EWSB conditions sometimes
-template<class SoftPars>
- void Softsusy<SoftPars>::setEwsbConditions(const DoubleVector & inputs) {
+ void MssmSoftsusy::setEwsbConditions(const DoubleVector & inputs) {
    setMuCond(inputs.display(1));
    setMaCond(inputs.display(2));
  }
 
 
 /// input diagonal matrices and it'll give you back mixed ones
-template<class SoftPars>
-void Softsusy<SoftPars>::doQuarkMixing(DoubleMatrix & /* mDon */,
+void MssmSoftsusy::doQuarkMixing(DoubleMatrix & /* mDon */,
                                        DoubleMatrix & /* mUpq */) {
   /// This is a dummy routine - MIXING is ignored in this object (it's all
   /// done in FLAVOURMSSMSOFTSUSY these days).
 }
 
 /// Complex versions of Higgs loop corrections
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis1s1Sfermions(double p, double q, DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau) const {
+Complex MssmSoftsusy::pis1s1Sfermions(double p, double q, DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau) const {
   drBarPars tree(displayDrBarPars()); 
   double hb = tree.hb, htau = tree.htau;
   double    thetat  = tree.thetat ;
@@ -10632,8 +10423,7 @@ Complex Softsusy<SoftPars>::pis1s1Sfermions(double p, double q, DoubleMatrix ls1
    return sfermions;
 }
 
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis1s2Sfermions(double p, double q,  DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const {
+Complex MssmSoftsusy::pis1s2Sfermions(double p, double q,  DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const {
   drBarPars tree(displayDrBarPars()); 
   double    thetat  = tree.thetat ;
   double    thetab  = tree.thetab;
@@ -10706,8 +10496,7 @@ Complex Softsusy<SoftPars>::pis1s2Sfermions(double p, double q,  DoubleMatrix ls
   return sfermions;
 }
 
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis2s2Sfermions(double p, double q, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const {
+Complex MssmSoftsusy::pis2s2Sfermions(double p, double q, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const {
   drBarPars tree(displayDrBarPars()); 
   double    thetat  = tree.thetat ;
   double    thetab  = tree.thetab;
@@ -10815,8 +10604,7 @@ Complex Softsusy<SoftPars>::pis2s2Sfermions(double p, double q, DoubleMatrix ls2
 return sfermions;
 }
 
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis1s1Fermions(double p, double q) const {
+Complex MssmSoftsusy::pis1s1Fermions(double p, double q) const {
  /// fermions: 3rd family only for now
    double hb = displayDrBarPars().hb, htau = displayDrBarPars().htau;
    double    mtau    = displayDrBarPars().mtau;
@@ -10831,8 +10619,7 @@ Complex Softsusy<SoftPars>::pis1s1Fermions(double p, double q) const {
 
   return fermions;
 }
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis2s2Fermions(double p, double q) const {
+Complex MssmSoftsusy::pis2s2Fermions(double p, double q) const {
  /// fermions: 3rd family only for now
    double mt =  displayDrBarPars().mt,  ht = displayDrBarPars().ht;
    Complex fermions = 3.0 * sqr(ht) *
@@ -10841,8 +10628,7 @@ Complex Softsusy<SoftPars>::pis2s2Fermions(double p, double q) const {
  return fermions;
 }
 
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis1s1Higgs(double p, double q) const {
+Complex MssmSoftsusy::pis1s1Higgs(double p, double q) const {
   
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    costhDrbar  = cos(thetaWDRbar);
@@ -10927,8 +10713,7 @@ Complex Softsusy<SoftPars>::pis1s1Higgs(double p, double q) const {
   return higgs;
 }
 
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis1s2Higgs(double p, double q) const {
+Complex MssmSoftsusy::pis1s2Higgs(double p, double q) const {
 
  double    thetaWDRbar = asin(calcSinthdrbar());
   double    costhDrbar  = cos(thetaWDRbar);
@@ -11032,8 +10817,7 @@ Complex Softsusy<SoftPars>::pis1s2Higgs(double p, double q) const {
   return higgs;
 }
 
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis2s2Higgs(double p, double q) const {
+Complex MssmSoftsusy::pis2s2Higgs(double p, double q) const {
 double    thetaWDRbar = asin(calcSinthdrbar());
   double    costhDrbar  = cos(thetaWDRbar);
   double    cw2DRbar    = sqr(cos(thetaWDRbar));
@@ -11117,8 +10901,7 @@ double    thetaWDRbar = asin(calcSinthdrbar());
 return higgs;
 }
 
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis1s1Neutralinos(double p, double q) const {
+Complex MssmSoftsusy::pis1s1Neutralinos(double p, double q) const {
   double    g       = displayGaugeCoupling(2);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
   Complex neutralinos = 0.0;
@@ -11150,8 +10933,7 @@ Complex Softsusy<SoftPars>::pis1s1Neutralinos(double p, double q) const {
   return neutralinos;
 }
 
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis1s2Neutralinos(double p, double q) const {
+Complex MssmSoftsusy::pis1s2Neutralinos(double p, double q) const {
   double    g       = displayGaugeCoupling(2);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
   Complex neutralinos = 0.0;
@@ -11190,8 +10972,7 @@ Complex Softsusy<SoftPars>::pis1s2Neutralinos(double p, double q) const {
  return neutralinos;
 }
 
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis2s2Neutralinos(double p, double q) const {
+Complex MssmSoftsusy::pis2s2Neutralinos(double p, double q) const {
   double    g       = displayGaugeCoupling(2);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
 /// Neutralino contribution
@@ -11223,8 +11004,7 @@ Complex Softsusy<SoftPars>::pis2s2Neutralinos(double p, double q) const {
   return neutralinos;
 }
 
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis1s1Charginos(double p, double q) const {
+Complex MssmSoftsusy::pis1s1Charginos(double p, double q) const {
   Complex chargino = 0.0;
   double g = displayGaugeCoupling(2);
   ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
@@ -11249,8 +11029,7 @@ Complex Softsusy<SoftPars>::pis1s1Charginos(double p, double q) const {
   return chargino;
 }
 
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis1s2Charginos(double p, double q) const {
+Complex MssmSoftsusy::pis1s2Charginos(double p, double q) const {
   double g = displayGaugeCoupling(2);
   Complex chargino = 0.0;
   ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
@@ -11280,8 +11059,8 @@ Complex Softsusy<SoftPars>::pis1s2Charginos(double p, double q) const {
 
  return chargino;
 }
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis2s2Charginos(double p, double q) const {
+
+Complex MssmSoftsusy::pis2s2Charginos(double p, double q) const {
   Complex chargino = 0.0;
   double g = displayGaugeCoupling(2);
   ComplexMatrix u(displayDrBarPars().uBpmz), v(displayDrBarPars().vBpmz); 
@@ -11307,8 +11086,7 @@ Complex Softsusy<SoftPars>::pis2s2Charginos(double p, double q) const {
 }
 
 
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis1s1(double p, double q) const {
+Complex MssmSoftsusy::pis1s1(double p, double q) const {
   drBarPars tree(displayDrBarPars());
   double    beta    = atan(displayTanb());
   double    mb      = tree.mb;
@@ -11339,8 +11117,7 @@ Complex Softsusy<SoftPars>::pis1s1(double p, double q) const {
      fermions + higgs + neutralinos + chargino) / (16.0 * sqr(PI));
 }
 
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis1s2(double p, double q) const {
+Complex MssmSoftsusy::pis1s2(double p, double q) const {
   drBarPars tree(displayDrBarPars());
 
   double    beta    = atan(displayTanb());
@@ -11373,8 +11150,7 @@ Complex Softsusy<SoftPars>::pis1s2(double p, double q) const {
 }
 
 /// checked 28.10.02
-template<class SoftPars>
-Complex Softsusy<SoftPars>::pis2s2(double p, double q) const {
+Complex MssmSoftsusy::pis2s2(double p, double q) const {
   drBarPars tree(displayDrBarPars());
   double beta = atan(displayTanb());
   double thetaWDRbar = asin(calcSinthdrbar());
@@ -11398,8 +11174,7 @@ Complex Softsusy<SoftPars>::pis2s2(double p, double q) const {
     / (16.0 * sqr(PI));
 }
 
-template<class SoftPars>
-bool Softsusy<SoftPars>::higgs(int accuracy, double piwwtMS,
+bool MssmSoftsusy::higgs(int accuracy, double piwwtMS,
                                double /* pizztMS */) {
 
   double tanb = displayTanb();
@@ -11689,5 +11464,4 @@ bool Softsusy<SoftPars>::higgs(int accuracy, double piwwtMS,
   }
 }
 
-#endif
 

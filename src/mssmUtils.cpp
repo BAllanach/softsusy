@@ -1,8 +1,6 @@
 
-#include "utils.h"
-#include "mssmUtils.h"
-#include "softsusy.h"
 
+#include "mssmUtils.h"
 #include <iostream>
 
 namespace softsusy {
@@ -24,30 +22,30 @@ double sw2 = 1.0 - sqr(MW / MZ),
   ynuL = -1.0;
 
 void generalBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
-  MssmSusy s; SoftParsMssm r;
+  MssmSusy s; MssmSoftPars r;
   double m3sq = m.displayM3Squared();
-  s = m.displaySusy();
+  s = m.displayMssmSusy();
   r.set(inputParameters);
   r.setM3Squared(m3sq);
   m.setSoftPars(r);
-  m.setSusy(s);
+  m.setMssmSusy(s);
 
   return;
 }
 
 /// This one doesn't overwrite mh1sq or mh2sq at the high scale
 void generalBcs2(MssmSoftsusy & m, const DoubleVector & inputParameters) {
-  MssmSusy s; SoftParsMssm r;
+  MssmSusy s; MssmSoftPars r;
   double mh1sq = m.displayMh1Squared();
   double mh2sq = m.displayMh2Squared();
   double m3sq = m.displayM3Squared();
-  s = m.displaySusy();
+  s = m.displayMssmSusy();
   r.set(inputParameters);
   r.setMh1Squared(mh1sq);
   r.setMh2Squared(mh2sq);
   r.setM3Squared(m3sq);
   m.setSoftPars(r);
-  m.setSusy(s);
+  m.setMssmSusy(s);
 
   return;
 }
@@ -420,7 +418,7 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
        << " Predicted MZ: " << sqrt(s.displayPredMzSq()) << endl;
   left << "Data set:\n" << s.displayDataSet();
   left << HR << endl;
-  left << s.displaySoftPars();
+  left << s.displayMssmSoftPars();
   left << "t1/v1(MS)=" << s.displayTadpole1Ms()
        << " t2/v2(MS)=" << s.displayTadpole2Ms() << endl;
   left << HR << "\nPhysical MSSM parameters:\n";
@@ -443,9 +441,5 @@ ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
 
   return left;
 }
-
-// explicit template instantiations
-template class Softsusy<SoftParsMssm>;
-template class SoftPars<MssmSusy, sBrevity>;
 
 } // namespace softsusy
