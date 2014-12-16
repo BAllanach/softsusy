@@ -22,8 +22,7 @@ class DoubleVector;
 namespace softsusy {
 
 /// Describes a set of parameters and RGEs in general. 
-class RGE
-{
+class RGE {
 private:
   double mu; ///< Renormalisation scale
   int numPars; ///< Number of parameters

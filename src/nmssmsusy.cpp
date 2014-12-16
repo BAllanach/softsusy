@@ -125,14 +125,14 @@ ostream & operator <<(ostream &left, const NmssmSusy &s) {
   return left;
 }
 
-void NmssmSusy::setSusy(const NmssmSusy & s) {
-  MssmSusy::setSusy(s);
-  setLambda(s.displayLambda());
-  setKappa(s.displayKappa());
-  setSvev(s.displaySvev());
-  setMupr(s.displayMupr());
-  setXiF(s.displayXiF());
-}
+  void NmssmSusy::setSusy(const NmssmSusy & s) {
+    MssmSusy::setMssmSusy(s);
+    setLambda(s.displayLambda());
+    setKappa(s.displayKappa());
+    setSvev(s.displaySvev());
+    setMupr(s.displayMupr());
+    setXiF(s.displayXiF());
+  }
 
 istream & operator >>(istream &left, NmssmSusy &s) {
   MssmSusy ms;

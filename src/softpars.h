@@ -30,7 +30,7 @@ typedef enum {UA=1, DA, EA} trilinears;
 const static int numSoftParsMssm = 78 + numSusyPars;
 
 /// Soft SUSY breaking parameters and beta functions.
-class MssmSoftPars: public MssmSusy {
+class MssmSoftPars {
 private:
   DoubleVector mGaugino; ///< Gaugino masses, see ::beta for definitions
   DoubleMatrix ua, da, ea; ///< Trilinear soft terms..
@@ -42,27 +42,11 @@ private:
   double m3sq, mH1sq, mH2sq; 
   double m32;         ///< Gravitino mass
 public:
-  using MssmSusy::setPars;
-  using MssmSusy::setMu;
-  using MssmSusy::setLoops;
-  using MssmSusy::setThresholds;
-  using MssmSusy::setMssmSusy;
-  using MssmSusy::setSusyMu;
-  using MssmSusy::displayGaugeCoupling;
-  using MssmSusy::displayYukawaElement;
-  using MssmSusy::displayYukawaMatrix;
-  using MssmSusy::displayLoops;
-  using MssmSusy::displaySusyMu;
-  using MssmSusy::displayMssmSusy;
-  using MssmSusy::displayMu;
-  using MssmSusy::displayThresholds;
-  using MssmSusy::displayGauge;
-
   /// Default constructor fills object with zeroes
   MssmSoftPars();
   /// Constructor fills SUSY conserving parts with another object, all
   /// SUSY breaking parameters set to zero
-  MssmSoftPars(const MssmSusy &);
+  //  MssmSoftPars(const MssmSusy &);
   /// Constructor sets all parameters equal to those in another object
   MssmSoftPars(const MssmSoftPars &);
   /// Sets all parameters equal to those in another object
@@ -73,12 +57,12 @@ public:
   /// \f$m_D^2\f$=mDr, \f$m_L^2\f$=mLl, \f$m_E^2\f$=mEr, \f$ m_3^2\f$=m3sq,
   /// \f$m_{H_1}^2\f$=mH1sq, \f$m_{H_2}^2\f$=mH2sq, mu parameter, number of
   /// loops=l, and threshold parameter=t
-  MssmSoftPars(const MssmSusy & s, const DoubleVector & mG, const
+  MssmSoftPars(const DoubleVector & mG, const
 	       DoubleMatrix & aU, const DoubleMatrix & aD, const DoubleMatrix
 	       & aE, const DoubleMatrix & mQl, const DoubleMatrix & mUr, const
 	       DoubleMatrix & mDr, const DoubleMatrix & mLl, const
 	       DoubleMatrix & mEr, double m3sq, double mH1sq, double mH2sq,
-	       double mGravitino, double mu, int l, int t);
+	       double mGravitino);
 
   /// Returns whole object as a const
   const MssmSoftPars & displayMssmSoftPars() const { return *this; }
@@ -86,8 +70,6 @@ public:
   const DoubleMatrix & displayTrilinear(trilinears) const;
   /// Return a trilinear element
   double displayTrilinear(trilinears, int i, int j) const;
-  /// Return a trilinear element in "SUGRA style"
-  double displaySoftA(trilinears, int, int) const;
   /// Return a soft mass squared matrix
   const DoubleMatrix & displaySoftMassSquared(softMasses) const;
   /// Return a soft mass squared element
@@ -99,8 +81,6 @@ public:
   double displayMh2Squared() const;    ///< Return \f$m_{H_2}^2\f$=mH2sq
   DoubleVector displayGaugino() const; ///< Return \f$M_{G_i}\f$
   double displayGaugino(int i) const;  ///< Return \f$M_{G_i}\f$
-  /// Return contents of object in a vector: for RG evolution
-  virtual const DoubleVector display() const; 
   
   /// Sets gravitino mass
   void setM32(double);
@@ -121,58 +101,17 @@ public:
   void setM3Squared(double);  ///< Sets \f$ m_3^2\f$
   void setMh1Squared(double); ///< Sets \f$ m_{H_1}^2\f$
   void setMh2Squared(double); ///< Sets \f$ m_{H_2}^2\f$
-  /// Sets total set of RGE parameters equal to elements of a vector
-  void set(const DoubleVector &);
-  //  void setSusy(const Susy &);
 
-  /// Returns double vector containing numerical beta functions of parameters
-  DoubleVector beta() const; 
-  /// Returns numerical beta functions of parameters  
-  MssmSoftPars beta2() const;
-  /// Returns numerical beta functions of parameters and Brevity
-  MssmSoftPars beta2(sBrevity&) const;
-  /// Returns derivatives of anomalous dimensions of fields with respect to
-  /// renormalisation scale in MSSM for: RH leptons, LH leptons, LH quarks, RH
-  /// up quarks, RH down quarks, H1 and H2 respectively
-  void anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
-		      DoubleMatrix & gQQ, DoubleMatrix & gUU,
-		      DoubleMatrix & gDD, 
-		      double & gH1H1, double & gH2H2) const;
-  /// Ytilde quantities are for calculational brevity in beta functions.
-  void yTildes(DoubleMatrix & yu, DoubleMatrix & yd, DoubleMatrix &ye) const;
-  
-  /// Reads in universal boundary conditions at the current scale:
-  /// m0, M1/2, A0, B-parameter and mu
-  void universal(double m0,  double m12,  double a0,  double mu,
-		 double m3sq);
-  /// Give it a SUSY object and a value of M3/2, and it will return a soft
-  /// object with AMSB soft breaking terms. Note that the sleptons will be
-  /// tachyonic, ie nothing has been done to fix that problem.
-  /// Note that in the following, we are neglecting all Yukawa couplings except
-  /// that of the third family.
-  void addAmsb(double m32);
-  /// This flips the signs of various parameters (including mu) with no
-  /// physical effect - apparently, through a U(1)_{R-PQ} transformation. See
-  /// hep-ph/0312378 
-  void u1R_PQflip();
   /// Reads in universal boundary conditions at the current scale: m0, M1/2, A0
   void standardSugra(double m0,  double m12, double a0);
   /// Sets all flavour-diagonal SUSY breaking scalar masses to m0
   void universalScalars(double m0);
   /// Sets all flavour-diagonal SUSY breaking gaugino masses to m12
   void universalGauginos(double m12);
-  /// Sets all SUSY breaking trilinear couplings to a0
-  void universalTrilinears(double a0);
-  /// Boundary conditions to be applied at messenger scale for Gauge mediated
-  /// SUSY breaking (see hep-ph/9703211 for example), n5 is the number of
-  /// 5-plets, mMess is the messenger scale and lambda is the GMSB scale
-  void minimalGmsb(int n5, double LAMBDA, double mMess, double cgrav);  
 
   /// Reads in soft SUSY breaking parameters from a file
   void inputSoftParsOnly();
 };
-
-  //typedef SoftPars<MssmSusy, sBrevity> MssmSoftPars;
 
 /// Formatted ouput of whole object
 //template<class Susy, class Brevity>
@@ -182,19 +121,12 @@ ostream & operator <<(ostream &left, const MssmSoftPars &s);
 istream & operator >>(istream &left, MssmSoftPars &s);
 
 MssmSoftPars::MssmSoftPars()
-  : MssmSusy(), mGaugino(3), ua(3, 3), da(3, 3), ea(3, 3),
+  : mGaugino(3), ua(3, 3), da(3, 3), ea(3, 3),
   mQLsq(3, 3), mURsq(3, 3), mDRsq(3, 3), mLLsq(3, 3), mSEsq(3, 3), m3sq(0.0),
-  mH1sq(0.0), mH2sq(0.0), m32(1.e19) {      
-  
-  setPars(numSoftParsMssm);
-  setMu(0.0);
-  setLoops(0);
-  setThresholds(0);
-}
+  mH1sq(0.0), mH2sq(0.0), m32(1.e19) {}
 
 MssmSoftPars::MssmSoftPars(const MssmSoftPars & s)
-  : MssmSusy(s.displayMssmSusy()),
-  mGaugino(s.displayGaugino()), ua(s.displayTrilinear(UA)),
+  : mGaugino(s.displayGaugino()), ua(s.displayTrilinear(UA)),
   da(s.displayTrilinear(DA)), ea(s.displayTrilinear(EA)),
   mQLsq(s.displaySoftMassSquared(mQl)), 
   mURsq(s.displaySoftMassSquared(mUr)), 
@@ -202,38 +134,17 @@ MssmSoftPars::MssmSoftPars(const MssmSoftPars & s)
   mLLsq(s.displaySoftMassSquared(mLl)),
   mSEsq(s.displaySoftMassSquared(mEr)), 
   m3sq(s.displayM3Squared()), mH1sq(s.displayMh1Squared()),
-  mH2sq(s.displayMh2Squared()), m32(s.displayGravitino()) {
-  
-  setPars(numSoftParsMssm);
-  setMu(s.displayMu()); 
-  setLoops(s.displayLoops());
-  setThresholds(s.displayThresholds());
-}
-
-MssmSoftPars::MssmSoftPars(const MssmSusy &s)
-  : MssmSusy(s), mGaugino(3), ua(3, 3), da(3, 3), ea(3, 3),
-    mQLsq(3, 3), mURsq(3, 3), mDRsq(3, 3), mLLsq(3, 3), mSEsq(3, 3), m3sq(0.0),
-    mH1sq(0.0),  mH2sq(0.0), m32(1.e19) { 
-      setPars(numSoftParsMssm);
-      setMu(s.displayMu()); 
-      setLoops(s.displayLoops());
-      setThresholds(s.displayThresholds());
-}
+  mH2sq(s.displayMh2Squared()), m32(s.displayGravitino()) {}
 
 MssmSoftPars::MssmSoftPars
-(const MssmSusy & s, const DoubleVector & mG, const
+(const DoubleVector & mG, const
  DoubleMatrix & aU, const DoubleMatrix & aD, const DoubleMatrix & aE, const
  DoubleMatrix & mQl, const DoubleMatrix & mUr, const DoubleMatrix & mDr, const
  DoubleMatrix & mLl, const DoubleMatrix & mEr, double m3sqn, double mH1sq,
- double mH2sq, double mg, double mu, int l, int t)
-  : MssmSusy(s), mGaugino(mG), ua(aU), da(aD), ea(aE),
+ double mH2sq, double mg)
+  : mGaugino(mG), ua(aU), da(aD), ea(aE),
     mQLsq(mQl), mURsq(mUr), mDRsq(mDr), mLLsq(mLl), mSEsq(mEr), m3sq(m3sqn),
-    mH1sq(mH1sq), mH2sq(mH2sq), m32(mg) {
-      setPars(numSoftParsMssm);
-      setMu(mu);
-      setLoops(l);
-      setThresholds(t);
-}
+    mH1sq(mH1sq), mH2sq(mH2sq), m32(mg) {}
   
   double MssmSoftPars::displayM3Squared() const { return m3sq; }
   
