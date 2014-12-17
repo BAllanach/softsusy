@@ -27,8 +27,7 @@ namespace softsusy {
 const static int numSoftParsNmssm = 83 + numNMssmPars;
 
 /// Soft SUSY breaking parameters and beta functions.
-class SoftParsNmssm: public MssmSoftPars
-{
+class SoftParsNmssm: public MssmSoftPars {
 private:
   // NMSSM Trilinear soft terms not present in MSSM
   double alambda, akappa;

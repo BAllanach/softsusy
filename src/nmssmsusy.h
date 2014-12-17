@@ -52,8 +52,7 @@ inline nmsBrevity::nmsBrevity(const nmsBrevity &s)
 
 
 /// Contains all supersymmetric RPC-MSSM parameters and RGEs
-class NmssmSusy: public MssmSusy
-{
+class NmssmSusy: public MssmSusy {
 private:
   /// new nmssm parameters, lambda, kappa appearing as superpotential
   /// terms, lambda S H_u H_d and \frac{1}{3} kappa S^3 and sVev is

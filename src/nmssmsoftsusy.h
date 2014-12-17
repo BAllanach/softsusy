@@ -37,7 +37,7 @@ namespace softsusy {
 /* std::istream & operator >>(std::istream &left, NmssmSoftsusy &s);\ */
 
 /// Contains all supersymmetric NMSSM parameters, incorporating R_p NMSSM
-class NmssmSoftsusy: public Softsusy<SoftParsNmssm> {
+  class NmssmSoftsusy: public NmssmSusy, public SoftParsNmssm {
 private:
   
    double tSOVSMs;  ///< New Nmssm DRbar tadpole(MSusy): incl 2 loops
@@ -59,7 +59,9 @@ public:
   /// is the number of loops used for RG evolution, t is the thresholds
   /// accuracy parameter, mg is the gravitino mass, hv is the Higgs VEV
   /// parameter.
-  NmssmSoftsusy(const SoftParsNmssm & s, const sPhysical & sp, double mu, int l, int t, double hv);
+    NmssmSoftsusy(const NmssmSusy & ss, const SoftParsNmssm & s, 
+		  const sPhysical & sp, double mu, 
+		int l, int t, double hv);
   /// Set all data in the object equal to another
   const NmssmSoftsusy & operator=(const NmssmSoftsusy & s);
   
@@ -566,47 +568,37 @@ virtual  void treeChargedSlepton(DoubleMatrix & mass, double mTrun, double pizzt
   virtual void spinfoSLHA(ostream & out);
 };
 
-inline NmssmSoftsusy::NmssmSoftsusy()
-                     : Softsusy<SoftParsNmssm>(), tSOVSMs(0.0), tSOVSMs1loop(0.0)  {}
+  inline NmssmSoftsusy::NmssmSoftsusy()
+    : NmssmSusy(), SoftParsNmssm(), tSOVSMs(0.0), tSOVSMs1loop(0.0)  {}
 
-
-inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSoftsusy & s)
-		     : Softsusy<SoftParsNmssm>(s),
-                     tSOVSMs(s.tSOVSMs), tSOVSMs1loop(s.tSOVSMs1loop)  {
-   
-   setPars(121);   
-}
-
-
-inline NmssmSoftsusy::NmssmSoftsusy(const MssmSoftsusy & s)
-		     : Softsusy<SoftParsNmssm>(s),
-                     tSOVSMs(0), tSOVSMs1loop(0)  {
-   setPars(121);   
-}
-
-
+  inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSoftsusy & s)
+    : NmssmSusy(), SoftParsNmssm (s), tSOVSMs(s.tSOVSMs), 
+      tSOVSMs1loop(s.tSOVSMs1loop)  {
+    setPars(121);   
+  }
+  
 inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSusy &s)
-                     : Softsusy<SoftParsNmssm>(s),tSOVSMs(0.0), tSOVSMs1loop(0.0)  {
+  : NmssmSusy(s), SoftParsNmssm(),tSOVSMs(0.0), tSOVSMs1loop(0.0)  {
   setPars(121);
 }
 
+  inline NmssmSoftsusy::NmssmSoftsusy
+  (const NmssmSusy & ss, const SoftParsNmssm & s, const sPhysical & sp, 
+   double mu, int l, int t, double hv): NmssmSusy(ss), 
+					SoftParsNmssm(s), 
+					tSOVSMs(0.0), tSOVSMs1loop(0.0)  {
+    setPars(121);
+    setLoops(l);
+    setThresholds(t);
+    setHvev(hv);
+  }
 
-inline NmssmSoftsusy::NmssmSoftsusy
-(const SoftParsNmssm & s, const sPhysical & sp, double mu, int l, int t,
- double hv): Softsusy<SoftParsNmssm>(s, sp, mu, l, t, hv),tSOVSMs(0.0), tSOVSMs1loop(0.0)  {
- setPars(121);
+  inline double NmssmSoftsusy::displayTadpoleSMs() const { return tSOVSMs; }
+
+  inline double NmssmSoftsusy::displayTadpoleSMs1loop() const { 
+    return tSOVSMs1loop;  
+  }
   
-}
-
-
-inline double NmssmSoftsusy::displayTadpoleSMs() const {
-  return tSOVSMs; 
-}
-
-inline double NmssmSoftsusy::displayTadpoleSMs1loop() const {
-  return tSOVSMs1loop; 
-}
-
 } /// namespace softsusy
 
 #endif

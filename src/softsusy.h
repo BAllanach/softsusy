@@ -111,46 +111,6 @@ namespace softsusy {
     double mxBC;        ///< Scale at which SUSY breaking boundary conditions set
     
   public:
-    /*  using MssmSoftPars::set;
-	using MssmSoftPars::setPars;
-	using MssmSoftPars::setSoftPars;
-	using MssmSoftPars::setMu;
-	using MssmSoftPars::setLoops;
-	using MssmSoftPars::setThresholds;
-	using MssmSoftPars::setMssmSusy;
-	using MssmSoftPars::setSusyMu;
-	using MssmSoftPars::setHvev;
-	using MssmSoftPars::setMh1Squared;
-	using MssmSoftPars::setMh2Squared;
-	using MssmSoftPars::setM3Squared;
-	using MssmSoftPars::setM32;
-	using MssmSoftPars::setTanb;
-	using MssmSoftPars::setGaugeCoupling;
-	using MssmSoftPars::setYukawaMatrix;
-	using MssmSoftPars::setYukawaElement;
-	using MssmSoftPars::display;
-	using MssmSoftPars::displayGaugeCoupling;
-	using MssmSoftPars::displayYukawaElement;
-	using MssmSoftPars::displayYukawaMatrix;
-	using MssmSoftPars::displayLoops;
-	using MssmSoftPars::displaySusyMu;
-	using MssmSoftPars::displayMssmSusy;
-	using MssmSoftPars::displayMu;
-	using MssmSoftPars::displayThresholds;
-	using MssmSoftPars::displayGauge;
-	using MssmSoftPars::displayMh1Squared;
-	using MssmSoftPars::displayMh2Squared;
-	using MssmSoftPars::displayM3Squared;
-	using MssmSoftPars::displayTanb;
-	using MssmSoftPars::displayHvev;
-	using MssmSoftPars::displayGaugino;
-	using MssmSoftPars::displaySoftMassSquared;
-	using MssmSoftPars::displaySoftA;
-	using MssmSoftPars::displayGravitino;
-	using MssmSoftPars::displayTrilinear;
-	using MssmSoftPars::run;
-	using MssmSoftPars::runto;*/
-    
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
     /// Public field :: only for informational purpose	
     SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 

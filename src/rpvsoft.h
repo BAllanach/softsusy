@@ -161,9 +161,11 @@ public:
   /// of squares of sneutrino VEVs
   double calculateM3sq(const DoubleVector & sneutrinoVevs,
 		       double snuSq, double v1, double v2);
-  virtual DoubleVector calculateSneutrinoVevs(const DoubleVector & sneutrinoVevs,
-				      double tol,
-				      double snuSq, double v1, double v2);
+  virtual DoubleVector calculateSneutrinoVevs(const DoubleVector & 
+					      sneutrinoVevs,
+					      double tol,
+					      double snuSq, double v1, 
+					      double v2);
   /// Input a set of values for sneutrino VEVs and it returns a more accurate
   /// set - the next step in the iteration. 
   void rotateAwayVevs(DoubleVector & snVevs);

@@ -17,7 +17,7 @@ extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
 
 const NmssmSoftsusy & NmssmSoftsusy::operator=(const NmssmSoftsusy & s) {
   if (this == &s) return *this;
-  Softsusy<SoftParsNmssm>::operator=(s);
+  NmssmSoftsusy::operator=(s);
   tSOVSMs = s.tSOVSMs;
   tSOVSMs1loop = s.tSOVSMs1loop;
   return *this;
@@ -26,7 +26,7 @@ const NmssmSoftsusy & NmssmSoftsusy::operator=(const NmssmSoftsusy & s) {
 
  /// PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.
 void NmssmSoftsusy::printall() const {
-   cout << "At scale " << displayMu() << '\n';
+  cout << "At scale " << displayMu() << '\n';
   cout << "mH1 = " << displayPhys().mh0(1) << '\n';
   cout << "mH2 = " << displayPhys().mh0(2) << '\n';
   cout << "mH3 = " << displayPhys().mh0(3) << '\n';
@@ -268,7 +268,7 @@ void NmssmSoftsusy::H1SfSfCouplings(DoubleMatrix & lTS1Lr, DoubleMatrix & lBS1Lr
    /// PA: Add extra NMSSM coupling.
   /// PA: minus sign since mu = - displaySusyMu for BPMZ conventions here.
   double    mueff   = mu - lam * s / root2;
-  Softsusy<SoftParsNmssm>::H1SfSfCouplings(lTS1Lr, lBS1Lr, lTauS1Lr, gmzOcthW, mueff, cosb, v1);
+  NmssmSoftsusy::H1SfSfCouplings(lTS1Lr, lBS1Lr, lTauS1Lr, gmzOcthW, mueff, cosb, v1);
 }
 
    /// PA: obtains NMSSM H2-sfermion-sfermion couplings
@@ -282,7 +282,7 @@ void NmssmSoftsusy::H2SfSfCouplings(DoubleMatrix & lTS2Lr, DoubleMatrix & lBS2Lr
    /// PA: Add extra NMSSM coupling.
   /// PA: minus sign since mu = - displaySusyMu for BPMZ conventions here.
   double    mueff   = mu - lam * s / root2;
-  Softsusy<SoftParsNmssm>::H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mueff, sinb);
+  NmssmSoftsusy::H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mueff, sinb);
 }
 
 
@@ -676,14 +676,14 @@ double NmssmSoftsusy::doCalcTadpole1oneLoop(double /* mt */, double sinthDRbar) 
 
   const double gmzOcthW =  g * mz / costhDRbar;
   double costhDRbar2 = sqr(costhDRbar);
-  double fermions = Softsusy<SoftParsNmssm>::doCalcTad1fermions(q, v1);
+  double fermions = NmssmSoftsusy::doCalcTad1fermions(q, v1);
   /// PA: stop, sbottom, stau, couplings in the left right basis
   ///  will be stored in these matrices
   DoubleMatrix lTS1Lr(2, 2), lBS1Lr(2, 2), lTauS1Lr(2, 2);
   H1SfSfCouplings(lTS1Lr, lBS1Lr, lTauS1Lr, gmzOcthW, mu, cosb, v1);
 
   /// PA: Now we take these couplings and obtain sfermion contributions
-  double sfermions = Softsusy<SoftParsNmssm>::doCalcTad1Sfermions(lTS1Lr, lBS1Lr, lTauS1Lr, costhDRbar);
+  double sfermions = NmssmSoftsusy::doCalcTad1Sfermions(lTS1Lr, lBS1Lr, lTauS1Lr, costhDRbar);
   /// PA: Higgs contributions, including goldstone bosons
   double higgs = doCalcTad1Higgs(q, costhDRbar, g, tanb);
   /// Neutralinos
@@ -717,12 +717,12 @@ double NmssmSoftsusy::doCalcTadpole2oneLoop(double /* mt */, double sinthDRbar) 
     mu = -displaySusyMu(), q = displayMu(),
     mz = displayMzRun();
   const double gmzOcthW =  g * mz / costhDRbar;
-  double fermions = Softsusy<SoftParsNmssm>::doCalcTad2fermions(q);
+  double fermions = NmssmSoftsusy::doCalcTad2fermions(q);
   /// Sfermion couplings
   DoubleMatrix lTS2Lr(2, 2),  lBS2Lr(2, 2),  lTauS2Lr(2, 2);
   H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mu, sinb);
   /// PA: Now we take these couplings and obtain sfermion contributions
-  double sfermions =  Softsusy<SoftParsNmssm>::doCalcTad2Sfermions(lTS2Lr, lBS2Lr, lTauS2Lr, costhDRbar);
+  double sfermions =  NmssmSoftsusy::doCalcTad2Sfermions(lTS2Lr, lBS2Lr, lTauS2Lr, costhDRbar);
   /// PA: Higgs contributions, including goldstone bosons
   double  higgs = doCalcTad2Higgs(q, costhDRbar, g, tanb);
   double neutralinos = doCalcTad2Neutralinos(q, costhDRbar, g, sinb);
@@ -802,7 +802,7 @@ void NmssmSoftsusy::treeUpSquark(DoubleMatrix & mass, double mtrun,
 				int family) {
   /// PA: only modification is to add lambda * s / root to mu
   double lam = displayLambda(), svev = displaySvev(), tanb = displayTanb();
-  Softsusy<SoftParsNmssm>::treeUpSquark(mass, mtrun, pizztMS, sinthDRbarMS, family);
+  NmssmSoftsusy::treeUpSquark(mass, mtrun, pizztMS, sinthDRbarMS, family);
   if (family == 3){
      mass(1, 2) = mass(1, 2) -  mtrun * lam * svev / (root2 * tanb);
      mass(2, 1) = mass(1, 2);
@@ -817,7 +817,7 @@ void NmssmSoftsusy::treeDownSquark(DoubleMatrix & mass, double mbrun,
 				int family) {
   /// PA: only modification is to add lambda * s / root to mu
   double lam = displayLambda(), svev = displaySvev(), tanb = displayTanb();
-  Softsusy<SoftParsNmssm>::treeDownSquark(mass, mbrun, pizztMS, sinthDRbarMS, family);
+  NmssmSoftsusy::treeDownSquark(mass, mbrun, pizztMS, sinthDRbarMS, family);
   if (family == 3){
      mass(1, 2) = mass(1, 2) -  mbrun * lam * svev * tanb / (root2);
      mass(2, 1) = mass(1, 2);
@@ -830,7 +830,7 @@ void NmssmSoftsusy::treeChargedSlepton(DoubleMatrix & mass, double mtaurun,
 				int family) {
    /// PA: only modification is to add lambda * s / root to mu
    double lam = displayLambda(), svev = displaySvev(), tanb = displayTanb();
-  Softsusy<SoftParsNmssm>::treeChargedSlepton(mass, mtaurun, pizztMS, sinthDRbarMS, family);
+  NmssmSoftsusy::treeChargedSlepton(mass, mtaurun, pizztMS, sinthDRbarMS, family);
   if (family == 3) {
      mass(1, 2) = mass(1, 2) -  mtaurun * lam * svev * tanb / (root2);
      mass(2, 1) = mass(1, 2);
@@ -847,7 +847,7 @@ void NmssmSoftsusy::treeChargedSlepton(DoubleMatrix & mass, double mtaurun,
 void NmssmSoftsusy::treeCharginos(DoubleMatrix & mass, double beta, double mw) {
   double lam = displayLambda(), svev = displaySvev();
 
-  Softsusy<SoftParsNmssm>::treeCharginos(mass, beta, mw);
+  NmssmSoftsusy::treeCharginos(mass, beta, mw);
   mass(2, 2) = mass(2, 2) + lam * svev / root2;
 }
 
@@ -859,7 +859,7 @@ void NmssmSoftsusy::treeNeutralinos(DoubleMatrix & mass, double beta, double mz,
   double vev = displayHvev(), svev = displaySvev();
 
   /// Call MSSM 4 x4 neutralino mass matrix
-  Softsusy<SoftParsNmssm>::treeNeutralinos(mass, beta, mz, mw, sinthDRbar);
+  NmssmSoftsusy::treeNeutralinos(mass, beta, mz, mw, sinthDRbar);
 
   /// Fill remaining values
   mass(3, 4) = mass(3, 4) - lam * svev / root2;
@@ -1121,8 +1121,8 @@ void NmssmSoftsusy::calcDrBarPars() {
   double mz = displayMzRun(), mz2 = sqr(mz);
   double pizzt = sqr(mz) - sqr(mzPole);
   double vev = displayHvev();
-  Softsusy<SoftParsNmssm>::setNeutCurrCouplings(sinthDRbar, sw2, guL, gdL, geL, guR, gdR, geR);
-  Softsusy<SoftParsNmssm>::calcDRTrilinears(eg, vev, beta);
+  NmssmSoftsusy::setNeutCurrCouplings(sinthDRbar, sw2, guL, gdL, geL, guR, gdR, geR);
+  NmssmSoftsusy::calcDRTrilinears(eg, vev, beta);
   eg.mGluino = displayGaugino(3);
   DoubleVector mSq(2);
   int family; for(family = 1; family <= 3; family++) {
@@ -7476,7 +7476,7 @@ void NmssmSoftsusy::getNeutralinoCharginoHpmCoup(ComplexMatrix & apph1, ComplexM
   double lam = displayLambda();
 
   /// Call MSSM couplings
-  Softsusy<SoftParsNmssm>::getNeutralinoCharginoHpmCoup(apph1, apph2, bpph1, bpph2);
+  NmssmSoftsusy::getNeutralinoCharginoHpmCoup(apph1, apph2, bpph1, bpph2);
 
   /// Fill remaining NMSSM values
   apph2(5, 2) = - lam;
@@ -8541,7 +8541,7 @@ void NmssmSoftsusy::itLowsoft
 NmssmSusy NmssmSoftsusy::guessAtSusyMt(double tanb, DoubleVector nmpars, const QedQcd & oneset) {
    
    /// PA: Most of the work is already done by the MSSM
-   NmssmSusy t(Softsusy<SoftParsNmssm>::guessAtSusyMt(tanb, oneset));
+   NmssmSusy t(NmssmSoftsusy::guessAtSusyMt(tanb, oneset));
    /// PA: now we just add our new nmssm parameters. 
    //Only lambda directly affects the running of the MSSM Yukawas 
    /// at one loop and only kappa additionally at two loop.
@@ -8716,7 +8716,7 @@ void NmssmSoftsusy::lowOrg
 }
 
 void NmssmSoftsusy::modselSLHA(ostream & out, const char model[], double qMax) {
-  Softsusy<SoftParsNmssm>::modselSLHA(out, model);
+  NmssmSoftsusy::modselSLHA(out, model);
   out << "     3    1   # NMSSM\n";
 
   if (softsusy::NMSSMTools) {
@@ -8826,7 +8826,7 @@ void NmssmSoftsusy::higgsMSLHA(ostream & out) {
 void NmssmSoftsusy::neutralinoCharginoMSLHA(ostream & out) {
   sPhysical s(displayPhys());
 
-  Softsusy<SoftParsNmssm>::neutralinoCharginoMSLHA(out);
+  NmssmSoftsusy::neutralinoCharginoMSLHA(out);
   out << "   1000045    "; printRow(out, s.mneut(5));
   out << "   # ~neutralino(5)\n";
 }
@@ -8918,7 +8918,7 @@ void NmssmSoftsusy::nmssmrunSLHA(ostream& out, const char* blockName) {
 }
 
 void NmssmSoftsusy::drbarSLHA(ostream& out, int numPoints, double qMax, int n) {
-   Softsusy<SoftParsNmssm>::drbarSLHA(out, numPoints, qMax, n);
+   NmssmSoftsusy::drbarSLHA(out, numPoints, qMax, n);
    nmssmrunSLHA(out);
 }
 
@@ -9079,13 +9079,13 @@ void NmssmSoftsusy::extranmssmtoolsSLHA(ostream& out) {
 
 void NmssmSoftsusy::softsusySLHA(ostream& out)
 {
-  Softsusy<SoftParsNmssm>::softsusySLHA(out);
+  NmssmSoftsusy::softsusySLHA(out);
   out << "# Z3 = " << softsusy::Z3
       << ", SoftHiggsOut = " << softsusy::SoftHiggsOut << '\n';
 }
 
 void NmssmSoftsusy::spinfoSLHA(ostream& out) {
-  Softsusy<SoftParsNmssm>::spinfoSLHA(out);
+  NmssmSoftsusy::spinfoSLHA(out);
   if (displayProblem().notGlobalMin)
     out << "     3   # Warning: Not in global min of Higgs potential\n";
 }
