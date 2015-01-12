@@ -727,6 +727,7 @@ int main(int argc, char *argv[]) {
                            }
                         }
   		      } else if ((61 <= i && i <= 70) || i == 24) {
+			if (pars.displayEnd() < 56) pars.setEnd(56);
                         switch (i) {
                         case 24:
                            nmssm_input.set(NMSSM_input::BmuOverCosBetaSinBeta, d);
