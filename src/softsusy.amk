@@ -81,4 +81,5 @@ src/two_loop_thresholds/gs_corrections.hpp \
 src/two_loop_thresholds/tau_corrections.cpp.in \
 src/two_loop_thresholds/tau_corrections.hpp \
 src/two_loop_thresholds/tquark_corrections.cpp.in \
-src/two_loop_thresholds/tquark_corrections.hpp
+src/two_loop_thresholds/tquark_corrections.hpp \
+src/nmh_slhainp.f
