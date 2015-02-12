@@ -10,7 +10,8 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 AUTOMAKE_OPTIONS = subdir-objects
 
 include src/softsusy.amk
-include doc/doc.amk
+# Not making docs in official tag
+#include doc/doc.amk
 if COMPILE_FULL_SUSY_THRESHOLD
 else
 include inOutFiles/inOut.amk
