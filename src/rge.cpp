@@ -14,6 +14,18 @@ namespace softsusy {
 
 static RGE * tempRge;
 
+  const Approx & Approx::operator=(const Approx & a) {
+    if (this == &a) return *this;
+    loops = a.displayLoops();
+    thresholds = a.displayThresholds();
+    return *this;
+  }
+
+  Approx::Approx(const Approx & a)
+    : loops(a.displayLoops()), thresholds(a.displayThresholds()) {
+}
+
+
 // runto/run functions return >0 if there's a problem with the running
 int RGE::runto(double x2, double eps) {
   double tol;

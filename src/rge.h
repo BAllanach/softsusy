@@ -19,18 +19,40 @@ class DoubleVector;
 #include "linalg.h"
 #include "numerics.h"
 
+/// Gives the level of approximation: number of loops and number of thresholds
 namespace softsusy {
+  class Approx {
+  private: 
+    int loops; ///< To what order does the RG evolution run
+    int thresholds; ///< Threshold flag: not always used
+  public: 
+    Approx(): loops(0), thresholds(0) {};
+    virtual ~Approx() {};
+
+    inline const Approx & displayApprox() const { return *this; }
+    const Approx & operator=(const Approx &);
+    Approx(const Approx & a);
+
+    /// Set number of loops used
+    void setLoops(int l) { loops = l; };
+    /// Set level of threshold approximation used. It's typically used in the
+    /// beta functions or boundary conditions.
+    void setThresholds(int t) { thresholds = t; };
+    
+    /// Return number of loops
+    int displayLoops() const { return loops; };
+    /// Return level of threshold approximation
+    int displayThresholds() const { return thresholds; };  
+  };
 
 /// Describes a set of parameters and RGEs in general. 
 class RGE {
 private:
   double mu; ///< Renormalisation scale
   int numPars; ///< Number of parameters
-  int loops; ///< To what order does the RG evolution run
-  int thresholds; ///< Threshold flag: not always used
 public:
   /// Default constructor fills data with zeroes
-  RGE(): mu(0.0), numPars(0), loops(0), thresholds(0) {};
+  RGE(): mu(0.0), numPars(0) {};
   virtual ~RGE() {};
   
   /// Sets renormalisation scale to e
@@ -40,20 +62,11 @@ public:
   virtual void setmu(double f) { setMu(f); };
   /// Set number of parameters in RGE object
   void setPars(int i) { numPars = i; };
-  /// Set number of loops used
-  void setLoops(int l) { loops = l; };
-  /// Set level of threshold approximation used. It's typically used in the
-  /// beta functions or boundary conditions.
-  void setThresholds(int t) { thresholds = t; };
 
   /// Return renomalisation scale
   double displayMu() const { return mu; };
-  /// Return number of loops
-  int displayLoops() const { return loops; };
   /// Return number of parameters
   int howMany() const { return numPars; };
-  /// Return level of threshold approximation
-  int displayThresholds() const { return thresholds; };  
   /// Displays all RGE parameters in a double vector. Obligatory function for
   /// derived classes.
   virtual const DoubleVector display() const = 0;
