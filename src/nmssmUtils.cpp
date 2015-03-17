@@ -363,7 +363,7 @@ void NmssmSugraNoSoftHiggsMassBcs(NmssmSoftsusy & m, const DoubleVector & inputP
 void generalNmssmBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   NmssmSusy s; SoftParsNmssm r;
   s = m.displaySusy();
-  r.set(inputParameters);
+  m.set(inputParameters);
 
   if (Z3 == false) {
     double m3sq = m.displayM3Squared();
@@ -388,7 +388,7 @@ void generalNmssmBcs2(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   double mSsq = m.displayMsSquared();
   double m3sq = m.displayM3Squared();
   s = m.displaySusy();
-  r.set(inputParameters);
+  m.set(inputParameters);
   r.setMh1Squared(mh1sq);
   r.setMh2Squared(mh2sq);
   r.setM3Squared(m3sq);
@@ -537,7 +537,7 @@ double sumTol(const Softsusy<SoftParsNmssm> & in, const Softsusy<SoftParsNmssm> 
 }
   
   /// explicit template instantiations
-  template class Softsusy<SoftParsNmssm>;
-  template class SoftPars<NmssmSusy, nmsBrevity>;
+//  template class Softsusy<SoftParsNmssm>;
+//  template class SoftPars<NmssmSusy, nmsBrevity>;
   
 } ///< namespace softsusy

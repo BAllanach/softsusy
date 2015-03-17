@@ -1,4 +1,3 @@
-
 /** \file nmssmsusy.h
    - Project:     Next-to-Minimal SOFTSUSY
    - Author: Ben Allanach, Peter Athron, Lewis Tunstall, Alexander Voigt,
@@ -6,7 +5,8 @@
    - Manual: http://arxiv.org/abs/1311.7659
    - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
 
-   \brief nMssmSusy contains all NMSSM SUSY couplings and tan beta, as
+   \brief NmssmSusyLite NMSSM SUSY couplings and tan beta.
+   NmssmSusy contains all NMSSM SUSY couplings and tan beta, as
    well as their beta functions
 */
 
@@ -49,10 +49,9 @@ inline nmsBrevity::nmsBrevity(const nmsBrevity &s)
    : sBrevity(s)
    , lsq(s.lsq), ksq(s.ksq), l4(s.l4), k4(s.k4)
 {}
-
-
-/// Contains all supersymmetric RPC-MSSM parameters and RGEs
-class NmssmSusy: public MssmSusy {
+  
+/// Contains only RPC-NMSSM parameters 
+class NmssmSusyLite {
 private:
   /// new nmssm parameters, lambda, kappa appearing as superpotential
   /// terms, lambda S H_u H_d and \frac{1}{3} kappa S^3 and sVev is
@@ -64,6 +63,56 @@ private:
   /// S^2
   double xiF, mupr;
 
+public:
+  NmssmSusyLite(); ///< Constructor fills object with zeroes by default
+  /// Constructor sets object to be equal to another
+  NmssmSusyLite(const NmssmSusyLite &);
+  /// PA: Constructor given Yukawa matrices u,d,e, gauge couplings v, mu
+  /// parameter=m, tan beta=tb, lambda, kappa, mupr, xiF,
+  // number of loops in
+  /// RG evolution l and thresholds parameter t
+  NmssmSusyLite(double s, double lambda, double kappa, double xiF, 
+		double mupr);
+  
+  inline const NmssmSusyLite & displayNmssmSusyLite() const;
+  
+  virtual ~NmssmSusyLite(); ///< Default destructor
+
+  /// sets object to be equal to another
+  const NmssmSusyLite & operator=(const NmssmSusyLite & s);
+
+  /// sets DRbar running singlet vev.
+  void setSvev(double s);
+  /// sets the \lambda S H_u H_d coupling
+  void setLambda(double);
+  /// sets the \frac{1}{3} \kappa S^3 coupling
+  void setKappa(double);
+  /// sets the \frac{1}{2} mupr S^2 coupling
+  void setMupr(double);
+   /// sets the xiF S coupling
+  void setXiF(double);
+
+  /// returns DRbar running Singlet Higgs vev
+  double displaySvev() const;
+  /// returns superpotential parameter lambda
+  double displayLambda() const;
+  /// returns superpotential parameter lambda
+  double displayKappa() const;
+  /// returns mupr superpotential parameter
+  double displayMupr() const;
+  /// returns xiF superpotential parameter
+  double displayXiF() const;
+  /// Returns all parameters as elements of a vector
+  const DoubleVector display() const;
+};
+
+  const NmssmSusyLite & NmssmSusyLite::displayNmssmSusyLite() const { 
+    return *this; 
+  }
+  
+/// Contains all supersymmetric RPC-MSSM parameters and RGEs
+class NmssmSusy: public MssmSusy, public NmssmSusyLite {
+private:
 public:
   NmssmSusy(); ///< Constructor fills object with zeroes by default
   /// Constructor sets object to be equal to another
@@ -88,33 +137,13 @@ public:
   /// sets object to be equal to another
   void setSusy(const NmssmSusy &s);
 
-  /// sets DRbar running singlet vev.
-  void setSvev(double s);
   /// Copies MSSM Yukawa matrices and gauge couplings from s only
   void setSomePars(const NmssmSusy & s);
-  /// sets the \lambda S H_u H_d coupling
-  void setLambda(double);
-  /// sets the \frac{1}{3} \kappa S^3 coupling
-  void setKappa(double);
-  /// sets the \frac{1}{2} mupr S^2 coupling
-  void setMupr(double);
-   /// sets the xiF S coupling
-  void setXiF(double);
   /// Sets all RGE parameters to elements of vector
   void set(const DoubleVector &);
 
-  /// returns DRbar running Singlet Higgs vev
-  double displaySvev() const;
   /// Returns whole object as a const
   inline const NmssmSusy & displaySusy() const;
-  /// returns superpotential parameter lambda
-  double displayLambda() const;
-  /// returns superpotential parameter lambda
-  double displayKappa() const;
-  /// returns mupr superpotential parameter
-  double displayMupr() const;
-  /// returns xiF superpotential parameter
-  double displayXiF() const;
   /// Returns all parameters as elements of a vector
   const DoubleVector display() const;
   /// Returns the effective mu parameter
@@ -158,6 +187,7 @@ public:
 			  nmsBrevity & a) const;
 };
 
+
 /// Formatted output
 ostream & operator <<(ostream &, const NmssmSusy &);
 
@@ -174,20 +204,20 @@ void setBetaLambda(DoubleVector&);
 
 inline const NmssmSusy & NmssmSusy::displaySusy() const { return *this; }
 
-inline double NmssmSusy::displaySvev() const { return sVev; }
+inline double NmssmSusyLite::displaySvev() const { return sVev; }
 
-inline void NmssmSusy::setSvev(double h) { sVev = h; }
-inline void NmssmSusy::setMupr(double f) { mupr = f; }
-inline void NmssmSusy::setXiF(double z) { xiF = z; }
+inline void NmssmSusyLite::setSvev(double h) { sVev = h; }
+inline void NmssmSusyLite::setMupr(double f) { mupr = f; }
+inline void NmssmSusyLite::setXiF(double z) { xiF = z; }
 
-inline void NmssmSusy::setLambda(double l) { lambda = l; }
-inline void NmssmSusy::setKappa(double k) { kappa = k; }
+inline void NmssmSusyLite::setLambda(double l) { lambda = l; }
+inline void NmssmSusyLite::setKappa(double k) { kappa = k; }
 
-inline double NmssmSusy::displayMupr() const { return mupr; }
-inline double NmssmSusy::displayXiF() const { return xiF; }
-inline double NmssmSusy::displayLambda() const { return lambda; }
-inline double NmssmSusy::displayKappa() const { return kappa; }
+inline double NmssmSusyLite::displayMupr() const { return mupr; }
+inline double NmssmSusyLite::displayXiF() const { return xiF; }
+inline double NmssmSusyLite::displayLambda() const { return lambda; }
+inline double NmssmSusyLite::displayKappa() const { return kappa; }
 
-} // namespace softsusy
+} ///< namespace softsusy
 
 #endif

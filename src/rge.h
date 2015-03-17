@@ -26,7 +26,7 @@ namespace softsusy {
     int loops; ///< To what order does the RG evolution run
     int thresholds; ///< Threshold flag: not always used
   public: 
-    Approx(): loops(0), thresholds(0) {};
+    Approx(): loops(2), thresholds(0) {};
     virtual ~Approx() {};
 
     inline const Approx & displayApprox() const { return *this; }

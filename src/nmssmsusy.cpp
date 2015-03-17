@@ -35,23 +35,19 @@ void nmsBrevity::calculate(const DoubleMatrix & yu, const DoubleMatrix & yd,
 
 
 NmssmSusy::NmssmSusy()
-   : MssmSusy()
-   , lambda(0.0), kappa(0.0), sVev(0.0), xiF(0.0), mupr(0.0)
-{
-    setPars(numNMssmPars);
+  : MssmSusy(), NmssmSusyLite() {
+  setPars(numNMssmPars);
 }
 
 NmssmSusy::NmssmSusy(const NmssmSusy &s)
-   : MssmSusy(s)
-   , lambda(s.lambda), kappa(s.kappa), sVev(s.sVev), xiF(s.xiF), mupr(s.mupr)
-{
-    setPars(numNMssmPars);
+  : MssmSusy(s), NmssmSusyLite(s.displaySvev(), s.displayLambda(), 
+			       s.displayKappa(), s.displayXiF(), 
+			       s.displayMupr()) {
+  setPars(numNMssmPars);
 }
 
 NmssmSusy::NmssmSusy(const MssmSusy &m)
-   : MssmSusy(m)
-   , lambda(0), kappa(0), sVev(0), xiF(0), mupr(0)
-{
+  : MssmSusy(m), NmssmSusyLite() {
     setPars(numNMssmPars);
 }
 
@@ -60,19 +56,25 @@ NmssmSusy::NmssmSusy(const DoubleMatrix & u, const DoubleMatrix & d, const
 		     DoubleMatrix & e, const DoubleVector & v, double m,
 		     double tb, double MU, int l, int t, double hv, double sv,
                      double lam, double kap, double mpr, double z)
-   : MssmSusy(u, d, e, v, m, tb, MU, l, t, hv)
-   , lambda(lam), kappa(kap), sVev(sv), xiF(z), mupr(mpr)
-{
-    setPars(numNMssmPars);
+  : MssmSusy(u, d, e, v, m, tb, MU, l, t, hv), 
+    NmssmSusyLite(sv, lam, kap, z, mpr) {
+  setPars(numNMssmPars);
 }
 
 
-NmssmSusy::~NmssmSusy() {
-}
+NmssmSusy::~NmssmSusy() {}
+NmssmSusyLite::~NmssmSusyLite() {}
 
 const NmssmSusy & NmssmSusy::operator=(const NmssmSusy & s) {
   if (this == &s) return *this;
   MssmSusy::operator=(s);
+  NmssmSusyLite::operator=(s.displayNmssmSusyLite());
+
+  return *this;
+}
+
+const NmssmSusyLite & NmssmSusyLite::operator=(const NmssmSusyLite & s) {
+  if (this == &s) return *this;
   sVev = s.sVev;
   lambda = s.lambda;
   kappa = s.kappa;
@@ -95,22 +97,22 @@ const DoubleVector NmssmSusy::display() const {
   DoubleVector y(MssmSusy::display());
   assert(y.displayStart() == 1 && y.displayEnd() == numSusyPars);
   y.setEnd(numNMssmPars);
-  y(34) = sVev;
-  y(35) = lambda;
-  y(36) = kappa;
-  y(37) = mupr;
-  y(38) = xiF;
+  y(34) = displaySvev();
+  y(35) = displayLambda();
+  y(36) = displayKappa();
+  y(37) = displayMupr();
+  y(38) = displayXiF();
   return y;
 }
 
 void NmssmSusy::set(const DoubleVector & y) {
   assert(y.displayEnd() - y.displayStart() + 1 >= numNMssmPars);
   MssmSusy::set(y);
-  sVev = y.display(34);
-  lambda = y.display(35);
-  kappa = y.display(36);
-  mupr = y.display(37);
-  xiF = y.display(38);
+  setSvev(y.display(34));
+  setLambda(y.display(35));
+  setKappa(y.display(36));
+  setMupr(y.display(37));
+  setXiF(y.display(38));
 }
 
 ostream & operator <<(ostream &left, const NmssmSusy &s) {
@@ -182,11 +184,11 @@ NmssmSusy NmssmSusy::beta(nmsBrevity & a) const {
   du = u1 * (gUU + gH2H2) + gQQ * u1;
   dd = d1 * (gDD + gH1H1) + gQQ * d1;
   de = e1 * (gEE + gH1H1) + gLL * e1;
-  dl = lambda * (gH1H1 + gH2H2 + gSS);
-  dk = kappa * (3.0 * gSS);
+  dl = displayLambda() * (gH1H1 + gH2H2 + gSS);
+  dk = displayKappa() * (3.0 * gSS);
   dmu = displaySusyMu() * (gH1H1 + gH2H2);
-  dmupr = 2.0 * mupr * gSS;
-  dz = xiF * gSS;
+  dmupr = 2.0 * displayMupr() * gSS;
+  dz = displayXiF() * gSS;
 
   // Following is from hep-ph/9308335: scalar H anomalous dimensions (as
   // opposed to the chiral superfield one - see hep-ph/0111209).
@@ -223,7 +225,7 @@ NmssmSusy NmssmSusy::beta(nmsBrevity & a) const {
   double dHvev = displayHvev() *
     (cosb2 * (-sH1H1 + feynman * oneLoop) +
      sinb2 * (-sH2H2 + feynman * oneLoop));
-  double dSvev = - sVev * oneLoop * 2 * (lsq + ksq);
+  double dSvev = - displaySvev() * oneLoop * 2 * (lsq + ksq);
 
   if (displayLoops() > 1) {
     /// Two-loop pieces
@@ -231,7 +233,7 @@ NmssmSusy NmssmSusy::beta(nmsBrevity & a) const {
     dHvev = dHvev - displayHvev() * twolp * (cosb2 * (3.0 * ddT + eeT) +
 				    sinb2 * 3.0 * uuT + lsq) * feynman
                   + displayHvev() * twolp * 4.5 * g4(2);
-    dSvev = dSvev + sVev * twolp * (8 * k4 + 8 * ksq * lsq
+    dSvev = dSvev + displaySvev() * twolp * (8 * k4 + 8 * ksq * lsq
             + 2 * lsq * (-2 * feynman + 2 * lsq + 3 * ddT + eeT + 3 * uuT));
   }
 
@@ -338,7 +340,7 @@ void NmssmSusy::anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
   a.calculate(displayYukawaMatrix(YU).display(),
               displayYukawaMatrix(YD).display(),
               displayYukawaMatrix(YE).display(),
-              displayGauge().display(), lambda, kappa);
+              displayGauge().display(), displayLambda(), displayKappa());
 
   // For calculational brevity
   double &uuT = a.uuT, &ddT = a.ddT, &eeT = a.eeT, &lsq = a.lsq;

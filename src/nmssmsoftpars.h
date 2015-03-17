@@ -26,14 +26,41 @@ namespace softsusy {
 /// PA: Number of parameters contained in the NMSSM RGEs (5 more soft paraemeters than the MSSM).
 const static int numSoftParsNmssm = 83 + numNMssmPars;
 
-/// Soft SUSY breaking parameters and beta functions.
-class SoftParsNmssm: public MssmSoftPars {
-private:
+  class SoftParsNmssmLite {
+  private:
   // NMSSM Trilinear soft terms not present in MSSM
   double alambda, akappa;
   // NMSSM soft breaking masses \f$ m_S^2 |S|^2 + \frac{1}{2}m{'2}_S S^2 + \xiS S + h.c. \f$ repectively.
   double mSsq, mSpsq, xiS;
+  public:
+  /// Default constructor fills object with zeroes
+    SoftParsNmssmLite();
+    SoftParsNmssmLite(const SoftParsNmssmLite & s);
+    const SoftParsNmssmLite & operator=(const SoftParsNmssmLite & s);
+    SoftParsNmssmLite();
+    
+    const SoftParsNmssmLite & displaySoftParsNmssmLite() const { return *this; }
+    //PA: Return trilinear soft mass $a_\lambda S H_u H_d$
+    double displayTrialambda() const;
+    //PA: Return trillinear soft mass $a_\kappa S S S$
+    double displayTriakappa() const;
+    double displayMsSquared() const; ///< Return \f$m_{S}^2\f$=mSsq
+    double displayMspSquared() const; ///< Return \f$m_{S'}^2\f$=mSpsq
+    double displayXiS() const; ///< Return xiS i.e \f$xiS S\f$
+    
+    //PA: Set trilinear SUSY breaking parameter alambda
+    void setTrialambda(double al);
+    //PA: Set trilinear SUSY breaking parameter akappa
+    void setTriakappa(double ak);
+    void setMsSquared(double); //PA: <sets soft scalar mass \f$m_S^2 |S|^2\f$
+    void setMspSquared(double); //PA: <sets soft scalar mass \f$m_S^2 S^2\f$
+    void setXiS(double); //PA: <sets soft breaking \f$ xiS S\f$
 
+  }
+
+/// Soft SUSY breaking parameters and beta functions.
+    class SoftParsNmssm: SoftParsNmssmLite {
+private:
 public:
   /// Default constructor fills object with zeroes
   SoftParsNmssm();
@@ -64,30 +91,16 @@ public:
   /// Returns whole object as a const
   const SoftParsNmssm & displaySoftPars() const;
 
-  //PA: Return trilinear soft mass $a_\lambda S H_u H_d$
-  double displayTrialambda() const;
-  //PA: Return trillinear soft mass $a_\kappa S S S$
-  double displayTriakappa() const;
   //PA: Return trilinear soft mass in "SUGRA style" $ \lambda A_\lambda S H_u H_d$
   //  double displaySoftAlambda() const;
   //PA: Return trillinear soft mass in "SUGRA style" $\kappa A_\kappa S S S$
   //  double displaySoftAkappa() const;
 
-  double displayMsSquared() const; ///< Return \f$m_{S}^2\f$=mSsq
-  double displayMspSquared() const; ///< Return \f$m_{S'}^2\f$=mSpsq
-  double displayXiS() const; ///< Return xiS i.e \f$xiS S\f$
   /// Return contents of object in a vector: for RG evolution
   //  virtual const DoubleVector display() const;
 
   /// Sets whole thing equal to another object
   void setSoftPars(SoftParsNmssm const &);
-  //PA: Set trilinear SUSY breaking parameter alambda
-  void setTrialambda(double al);
-  //PA: Set trilinear SUSY breaking parameter akappa
-  void setTriakappa(double ak);
-  void setMsSquared(double); //PA: <sets soft scalar mass \f$m_S^2 |S|^2\f$
-  void setMspSquared(double); //PA: <sets soft scalar mass \f$m_S^2 S^2\f$
-  void setXiS(double); //PA: <sets soft breaking \f$ xiS S\f$
   /// Sets total set of RGE parameters equal to elements of a vector
   //  void set(const DoubleVector &);
   //  void setSusy(const NmssmSusy &);
