@@ -70,7 +70,7 @@ namespace softsusy {
     : MssmSusy(u, d, e, v, m, tb, hv) { 
     setPars(numSusyPars);
     setMu(MU); 
-    setApprox(l, t);
+    setMssmApprox(l, t);
   }
   
   const MssmSusy & MssmSusy::operator=(const MssmSusy & s) {
@@ -201,8 +201,8 @@ namespace softsusy {
     left << "g1: " << s.displayGaugeCoupling(1) << " g2: " <<
       s.displayGaugeCoupling(2) << " g3: " << 
       s.displayGaugeCoupling(3) << endl; 
-    left << "thresholds: " << s.displayApprox().displayThresholds() 
-	 << " #loops: " << s.displayApprox().displayLoops() << '\n';
+    left << "thresholds: " << s.displayMssmApprox().displayThresholds() 
+	 << " #loops: " << s.displayMssmApprox().displayLoops() << '\n';
     return left;
   }
   
@@ -218,7 +218,7 @@ namespace softsusy {
   
   void MssmSusyRGE::setMssmSusyRGE(const MssmSusyRGE & s) {
     setMssmSusy(s);
-    setApprox(s.displayApprox());
+    setMssmApprox(s.displayMssmApprox());
     setMu(s.displayMu());
   }
   
@@ -240,7 +240,7 @@ namespace softsusy {
     s.setGaugeCoupling(1, g1);
     s.setGaugeCoupling(2, g2);
     s.setGaugeCoupling(3, g3);
-    s.setApprox(loops, thresh);
+    s.setMssmApprox(loops, thresh);
     s.setSusyMu(smu);
     s.setMu(mu);
     return left;
@@ -297,7 +297,7 @@ namespace softsusy {
     double sH2H2 = oneLoop * 3.0 * uuT;
     
     const static double twolp = 4.010149318236068e-5; /// 1/(16 pi^2)^2
-    if (displayApprox().displayLoops() > 1) {
+    if (displayMssmApprox().displayLoops() > 1) {
       const double g4terms = 1.035 * g4(1) + 0.45 * gsq(1) * gsq(2) +
 	5.875 * g4(2);
       sH1H1 = sH1H1 + twolp * 
@@ -315,7 +315,7 @@ namespace softsusy {
     double dHvev = hVev * 
       (cosb2 * (-sH1H1 + feynman * oneLoop) + 
        sinb2 * (-sH2H2 + feynman * oneLoop)); 
-    if (displayApprox().displayLoops() > 1) {
+    if (displayMssmApprox().displayLoops() > 1) {
       /// Two-loop pieces
       dt = dt + displayTanb() * twolp * (3.0 * ddT + eeT - 3.0 * uuT) * feynman;
       dHvev = dHvev - hVev * twolp * (cosb2 * (3.0 * ddT + eeT) +
@@ -512,7 +512,7 @@ namespace softsusy {
     DoubleVector &gsq=a.gsq, &g3=a.g3;
     
     /// 1 loop contributions: 
-    if (displayApprox().displayLoops() > 0) {
+    if (displayMssmApprox().displayLoops() > 0) {
       static const double oneO16Pisq = 1.0 / (16.0 * sqr(PI)); 
       
       getOneLpAnom(gEE, gLL, gQQ, gDD, gUU, gH1H1, gH2H2, a);
@@ -520,7 +520,7 @@ namespace softsusy {
     } 
     
     /// 2 loop contributions:  
-    if (displayApprox().displayLoops() > 1) { 
+    if (displayMssmApprox().displayLoops() > 1) { 
       getTwoLpAnom(gEE, gLL, gQQ, gDD, gUU, gH1H1, gH2H2, a); 
       
       const static double twolp = 4.010149318236068e-5; 
@@ -531,7 +531,7 @@ namespace softsusy {
     
 #ifdef COMPILE_THREE_LOOP_RGE
     /// 3 loop contributions:
-    if (displayApprox().displayLoops() > 2) {
+    if (displayMssmApprox().displayLoops() > 2) {
       //DoubleVector & g4 = a.g4;
       DoubleMatrix &u2t = a.u2t, &d2t = a.d2t, &e2t = a.e2t;
       double uuTsq = uuT * uuT, ddTsq = ddT * ddT, eeTsq = eeT * eeT;

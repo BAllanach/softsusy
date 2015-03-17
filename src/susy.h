@@ -98,7 +98,8 @@ namespace softsusy {
     const MssmSusy & operator=(const MssmSusy & s);
     /// sets object to be equal to another
     void setMssmSusy(const MssmSusy &s);
-    
+
+    void setMssmLoops(double l) { mssmSusyApprox.setLoops(l); };
     /// Sets DRbar running Higgs vev
     void setHvev(double h);
     /// Copies Yukawa matrices and gauge couplings from s only
@@ -118,9 +119,10 @@ namespace softsusy {
     /// Sets all RGE parameters to elements of vector
     void set(const DoubleVector &);
     /// Set loops/thresholds
-    void setApprox(int l, int t); 
-    void setApprox(const Approx & a) { mssmSusyApprox = a; };
+    void setMssmApprox(int l, int t); 
+    void setMssmApprox(const Approx & a) { mssmSusyApprox = a; };
     
+    int displayMssmLoops() const { return mssmSusyApprox.displayLoops(); };
     /// Returns DRbar running Higgs vev
     double displayHvev() const;
     /// Returns whole object as a const
@@ -139,7 +141,7 @@ namespace softsusy {
     double displayTanb() const;
     /// Returns all parameters as elements of a vector
     const DoubleVector display() const;
-    Approx displayApprox() const { return mssmSusyApprox; };
+    Approx displayMssmApprox() const { return mssmSusyApprox; };
     
     /// outputs object QedQcd & r valid at 1 GeV from SUSY data at mt, from
     /// diagonal elements of Yukawa couplings and Higgs VEV vev. 
@@ -209,7 +211,7 @@ namespace softsusy {
 			    sBrevity & a) const; 
   };
   
-  void MssmSusy::setApprox(int l, int t) { 
+  void MssmSusy::setMssmApprox(int l, int t) { 
     mssmSusyApprox.setLoops(l); 
     mssmSusyApprox.setThresholds(t);
   }
