@@ -75,7 +75,7 @@ namespace softsusy {
   /// Contains all supersymmetric RPC-MSSM parameters 
   class MssmSusy {
   private:
-    /// NUmber of loops and thresholds
+    /// Number of loops and thresholds
     Approx mssmSusyApprox;
     DoubleMatrix u, d, e; ///< Yukawa matrices for ups, downs and leptons
     DoubleVector g; ///< Gauge couplings in GUT normalisation (for g1)
