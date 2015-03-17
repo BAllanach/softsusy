@@ -32,6 +32,7 @@ namespace softsusy {
     inline const Approx & displayApprox() const { return *this; }
     const Approx & operator=(const Approx &);
     Approx(const Approx & a);
+    Approx(int l, int t); 
 
     /// Set number of loops used
     void setLoops(int l) { loops = l; };
