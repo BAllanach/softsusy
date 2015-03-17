@@ -6883,7 +6883,7 @@ MssmSusy MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
   
   t.setHvev(vev);
 
-  t.setMu(oneset.displayPoleMt());   
+  //  t.setMu(oneset.displayPoleMt());   
   
   return t;
 }
@@ -6951,7 +6951,8 @@ void MssmSoftsusy::fixedPointIteration
     int maxtries = 100; 
     double tol = TOLERANCE;
     
-    MssmSusy t(guessAtSusyMt(tanb, oneset));
+    MssmSusy u(guessAtSusyMt(tanb, oneset));
+    MssmSusyRGE t(u);
     // default SoftSusy loop number
     int lpnum = 2;
 
@@ -6960,7 +6961,7 @@ void MssmSoftsusy::fixedPointIteration
     //dout << lpnum << "-loop RGE's enabled" << endl;
 #endif
 
-    t.setLoops(lpnum); /// >= 2 loops should protect against ht Landau pole 
+    t.setMssmLoops(lpnum); /// >= 2 loops should protect against ht Landau pole 
     t.runto(mxBC); 
    
     setMssmSusy(t);
@@ -7035,7 +7036,7 @@ void MssmSoftsusy::fixedPointIteration
 /// You should evaluate this at a scale MSusy average of stops.
 /// Depth of electroweak minimum: hep-ph/9507294. Bug-fixed 19/11/04
 double MssmSoftsusy::realMinMs() const {
-  MssmSusy temp(displayMssmSusy());
+  MssmSusyRGE temp(displayMssmSusy());
   temp.runto(calcMs(), TOLERANCE); 
   
   double beta = atan(temp.displayTanb());

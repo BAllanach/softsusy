@@ -116,11 +116,10 @@ namespace softsusy {
     void setSusyMu(double);
     /// Sets tan beta
     void setTanb(double); 
-    /// Sets all RGE parameters to elements of vector
-    void set(const DoubleVector &);
     /// Set loops/thresholds
     void setMssmApprox(int l, int t); 
     void setMssmApprox(const Approx & a) { mssmSusyApprox = a; };
+    void set(const DoubleVector &);
     
     int displayMssmLoops() const { return mssmSusyApprox.displayLoops(); };
     /// Returns DRbar running Higgs vev
@@ -139,9 +138,10 @@ namespace softsusy {
     double displaySusyMu() const;
     /// Returns tan beta
     double displayTanb() const;
+    Approx displayMssmApprox() const { return mssmSusyApprox; };
+    /// Calculate beta functions of SUSY preserving parameters of RPC MSSM
     /// Returns all parameters as elements of a vector
     const DoubleVector display() const;
-    Approx displayMssmApprox() const { return mssmSusyApprox; };
     
     /// outputs object QedQcd & r valid at 1 GeV from SUSY data at mt, from
     /// diagonal elements of Yukawa couplings and Higgs VEV vev. 
@@ -167,6 +167,7 @@ namespace softsusy {
     void diagQuarkBasis(DoubleMatrix & vdl, DoubleMatrix & vdr, 
 			DoubleMatrix & vul, DoubleMatrix & vur) const;
     MssmSusy beta(sBrevity &) const;
+
     /// Outputs one-loop anomlous dimensions gii given matrix inputs.
     /// for RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1 and H2
     /// respectively. Note that we use the convention (for matrices in terms of
@@ -221,8 +222,9 @@ namespace softsusy {
   private:
   public:
     MssmSusyRGE(); ///< Constructor fills object with zeroes by default
-    /// Constructor sets object to be equal to another
+    /// Constructors set object to be equal to another
     MssmSusyRGE(const MssmSusyRGE &); 
+    MssmSusyRGE(const MssmSusy &); 
     /// Constructor given Yukawa matrices u,d,e, gauge couplings v, mu
     /// parameter=m, tan beta=tb, renormalisation scale MU, number of loops in
     /// RG evolution l and thresholds parameter t
@@ -235,14 +237,17 @@ namespace softsusy {
     const MssmSusyRGE & operator=(const MssmSusyRGE & s);
     /// sets object to be equal to another
     void setMssmSusyRGE(const MssmSusyRGE &s);
+    /// Sets all RGE parameters to elements of vector
+    void set(const DoubleVector &);
     
     /// Returns whole object as a const
     inline const MssmSusy & displayMssmSusyRGE() const;
-    
     /// Calculate beta functions of SUSY preserving parameters of RPC MSSM
     DoubleVector beta() const;
     /// Calculate beta functions of SUSY preserving parameters of RPC MSSM
-    
+    /// Returns all parameters as elements of a vector
+    const DoubleVector display() const;
+   
   };
   
   

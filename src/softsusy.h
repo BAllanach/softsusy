@@ -78,7 +78,8 @@ namespace softsusy {
   };
   
   /// Contains all supersymmetric MSSM parameters, incorporating R_p MSSM
-  class MssmSoftsusy: public MssmSusy, public MssmSoftPars, public AltEwsbMssm {
+  class MssmSoftsusy: public MssmSusy, public MssmSoftPars, public AltEwsbMssm,
+		      public RGE, public Approx {
     /// Includes 
     /// - Soft terms
     /// - DRbar masses
@@ -122,7 +123,7 @@ namespace softsusy {
     /// Default constructor fills object with zeroes
     MssmSoftsusy();
     /// Constructor sets SUSY parameters only from another object
-    MssmSoftsusy(const MssmSusy &);
+    MssmSoftsusy(const MssmSusyRGE &);
     /// Constructor copies another object
     
     MssmSoftsusy(const MssmSoftsusy &);
@@ -1277,15 +1278,14 @@ namespace softsusy {
   std::istream& operator>>(std::istream& left, MssmSoftsusy& s);
   
   MssmSoftsusy::MssmSoftsusy()
-    : MssmSusy(), MssmSoftPars(), AltEwsbMssm(), physpars(), forLoops(), 
+    : MssmSusy(), MssmSoftPars(), AltEwsbMssm(), Approx(), 
+      physpars(), forLoops(), 
       problem(), msusy(0.0), minV(6.66e66), 
       mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false), 
       predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), 
       t2OV2Ms1loop(0.), mxBC(mxDefault) { 
     setPars(110);
     setMu(0.0);
-    setLoops(0);
-    setThresholds(0);
     
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
     decoupling_corrections.das.one_loop = 0;
@@ -1320,6 +1320,7 @@ namespace softsusy {
     : MssmSusy(s.displayMssmSusy()),
       MssmSoftPars(s.displayMssmSoftPars()), 
       AltEwsbMssm(s.displayAltEwsbMssm()), 
+      Approx(s.MssmSoftsusy::displayApprox()),
       physpars(s.displayPhys()), 
       forLoops(s.displayDrBarPars()), 
       problem(s.problem), msusy(s.msusy), minV(s.minV), 
@@ -1332,8 +1333,6 @@ namespace softsusy {
     
     setPars(110);
     setMu(s.displayMu()); 
-    setLoops(s.displayLoops());
-    setThresholds(s.displayThresholds());
     
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
     decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop ; 
@@ -1354,16 +1353,14 @@ namespace softsusy {
     
   }
   
-  MssmSoftsusy::MssmSoftsusy(const MssmSusy &s)
-    : MssmSusy(s), MssmSoftPars(), AltEwsbMssm(), 
+  MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
+    : MssmSusy(s), MssmSoftPars(), AltEwsbMssm(), Approx(s.displayMssmApprox()),
       physpars(), forLoops(), problem(), 
       msusy(0.0), minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), 
       setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
       t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), mxBC(mxDefault) { 
     setPars(110);
     setMu(s.displayMu()); 
-    setLoops(s.displayLoops());
-    setThresholds(s.displayThresholds());
     
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
     decoupling_corrections.das.one_loop = 0;
@@ -1396,7 +1393,7 @@ namespace softsusy {
   (const MssmSusy & ss, const MssmSoftPars & s, const sPhysical & sp, 
    double mu, int l, int t, 
    double hv) 
-    : MssmSusy(ss), MssmSoftPars(s), AltEwsbMssm(), physpars(sp), 
+    : MssmSusy(ss), MssmSoftPars(s), AltEwsbMssm(), Approx(l, t), physpars(sp), 
       forLoops(), problem(), msusy(0.0),
       minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), 
       altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
@@ -1404,8 +1401,7 @@ namespace softsusy {
     setHvev(hv);
     setPars(110);
     setMu(mu);
-    setLoops(l);
-    setThresholds(t);
+
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
     decoupling_corrections.das.one_loop = 0;
     decoupling_corrections.das.two_loop = 0;

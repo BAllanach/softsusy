@@ -52,6 +52,13 @@ namespace softsusy {
   MssmSusy::MssmSusy(const MssmSusy &s)
     : mssmSusyApprox(s.mssmSusyApprox), u(s.u), d(s.d), e(s.e), g(s.g), smu(s.smu), 
       tanb(s.tanb), hVev(s.hVev) {}
+
+  MssmSusyRGE::MssmSusyRGE(const MssmSusy &s)
+    : MssmSusy(s) {
+    setMu(0.);
+    setPars(numSusyPars);
+    setMssmApprox(s.displayMssmApprox());
+  }
   
   MssmSusyRGE::MssmSusyRGE(const MssmSusyRGE &s)
     : MssmSusy(s.displayMssmSusy()) { 
@@ -149,6 +156,10 @@ namespace softsusy {
     }
   }
   
+  const DoubleVector MssmSusyRGE::display() const { 
+    return MssmSusy::display(); 
+  }
+
   const DoubleVector MssmSusy::display() const {
     DoubleVector y(numSusyPars);
     int i, j, k=0;
@@ -162,7 +173,7 @@ namespace softsusy {
     k=27;
     for (i=1; i<=3; i++) {
       k++;
-      y(k) = g.display(i);
+      y(k) = displayGaugeCoupling(i);
     }
     y(31) = displaySusyMu();
     y(32) = displayTanb();
@@ -170,23 +181,25 @@ namespace softsusy {
     return y;
   }
   
+  void MssmSusyRGE::set(const DoubleVector & y) { MssmSusy::set(y); } 
+
   void MssmSusy::set(const DoubleVector & y) {
     int i, j, k=0;
     for (i=1; i<=3; i++)    
       for (j=1; j<=3; j++){
 	k++;
-	u(i, j) = y.display(k);
-	d(i, j) = y.display(k+9);
-	e(i, j) = y.display(k+18);
+	setYukawaElement(YU, i, j, y.display(k));
+	setYukawaElement(YD, i, j, y.display(k+9));
+	setYukawaElement(YE, i, j, y.display(k+18));
       }
     k=27;
     for (i=1; i<=3; i++) {
       k++;
-      g(i) = y.display(k);
+      setGaugeCoupling(i, y.display(k));
     }
-    smu = y.display(31);
-    tanb = y.display(32);
-    hVev = y.display(33);
+    setSusyMu(y.display(31));
+    setTanb(y.display(32));
+    setHvev(y.display(33));
   }
   
   double MssmSusy::displayTanb() const { return tanb; }
@@ -579,7 +592,7 @@ namespace softsusy {
     static sBrevity a;
     
     /// calculate the derivatives
-    static MssmSusy ds;
+    static MssmSusyRGE ds;
     
     ds = MssmSusy::beta(a);
     
