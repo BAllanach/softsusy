@@ -25,7 +25,7 @@ static RGE * tempRge;
     : loops(a.displayLoops()), thresholds(a.displayThresholds()) {}
 
   Approx::Approx(int l, int t) 
-    : loop(l), thresholds(t) {}
+    : loops(l), thresholds(t) {}
   
 // runto/run functions return >0 if there's a problem with the running
 int RGE::runto(double x2, double eps) {

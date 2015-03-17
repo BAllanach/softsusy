@@ -68,6 +68,7 @@ public:
   double displayMu() const { return mu; };
   /// Return number of parameters
   int howMany() const { return numPars; };
+  inline const RGE & displayRGE() const { return *this; }
   /// Displays all RGE parameters in a double vector. Obligatory function for
   /// derived classes.
   virtual const DoubleVector display() const = 0;
