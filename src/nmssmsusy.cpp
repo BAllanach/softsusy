@@ -35,16 +35,16 @@ namespace softsusy {
   
   
   NmssmSusyRGE::NmssmSusyRGE()
-    : NmssmSusyLite() {
+    : NmssmSusy() {
     setPars(numNMssmPars);
   }
   
-  NmssmSusyLite::NmssmSusyLite(double s, double l, double k, double z, 
+  NmssmSusy::NmssmSusy(double s, double l, double k, double z, 
 			       double m) 
     : lambda(l), kappa(k), sVev(s), xiF(z), mupr(m) {}
   
   NmssmSusyRGE::NmssmSusyRGE(const NmssmSusyRGE &s)
-    : NmssmSusyLite(s.displaySvev(), s.displayLambda(), 
+    : NmssmSusy(s.displaySvev(), s.displayLambda(), 
 		    s.displayKappa(), s.displayXiF(), 
 		    s.displayMupr()) {
     setSusy(s.displayMssmSusy());
@@ -52,7 +52,7 @@ namespace softsusy {
   }
   
   NmssmSusyRGE::NmssmSusyRGE(const MssmSusy &m)
-    : NmssmSusyLite() {
+    : NmssmSusy() {
     setSusy(m);
     setPars(numNMssmPars);
   }
@@ -64,7 +64,7 @@ namespace softsusy {
 			     double tb, double MU, int l, int t, double hv, 
 			     double sv,
 			     double lam, double kap, double mpr, double z)
-    : NmssmSusyLite(u, d, e, v, m, tb, hv, sv, lam, kap, z, mpr) {
+    : NmssmSusy(u, d, e, v, m, tb, hv, l, t, sv, lam, kap, z, mpr) {
     setPars(numNMssmPars);
     setMu(MU);
     setNmssmApprox(l, t);
@@ -72,17 +72,17 @@ namespace softsusy {
   
   
   NmssmSusyRGE::~NmssmSusyRGE() {}
-  NmssmSusyLite::~NmssmSusyLite() {}
+  NmssmSusy::~NmssmSusy() {}
   
   const NmssmSusyRGE & NmssmSusyRGE::operator=(const NmssmSusyRGE & s) {
     if (this == &s) return *this;
     MssmSusy::operator=(s);
-    NmssmSusyLite::operator=(s.displayNmssmSusyLite());
+    NmssmSusy::operator=(s.displayNmssmSusy());
     
     return *this;
   }
   
-  const NmssmSusyLite & NmssmSusyLite::operator=(const NmssmSusyLite & s) {
+  const NmssmSusy & NmssmSusy::operator=(const NmssmSusy & s) {
     if (this == &s) return *this;
     sVev = s.sVev;
     lambda = s.lambda;
@@ -103,18 +103,19 @@ namespace softsusy {
     MssmSusy::setSomePars(s);
   }
   
-  NmssmSusyLite::NmssmSusyLite()
+  NmssmSusy::NmssmSusy()
     :  MssmSusy(), nmssmSusyApprox() {}
   
-  NmssmSusyLite::NmssmSusyLite(const DoubleMatrix & u,
-			       const DoubleMatrix & d, const
-			       DoubleMatrix & e, const DoubleVector & v, 
-			       double m,
-			       double tb,  double hv, double sv,
-			       double lam, double kap, double z, 
-			       double mup)
+  NmssmSusy::NmssmSusy(const DoubleMatrix & u,
+		       const DoubleMatrix & d, const
+		       DoubleMatrix & e, const DoubleVector & v, 
+		       double m,
+		       double tb,  double hv, int l, int t, double sv,
+		       double lam, double kap, double z, 
+		       double mup)
     : MssmSusy(u, d, e, v, m, tb, hv), nmssmSusyApprox(), lambda(lam), 
       kappa(kap), xiF(z), mupr(mup) {
+    setNmssmApprox(l, t);
   }
   
   const DoubleVector NmssmSusyRGE::display() const {
@@ -181,7 +182,7 @@ namespace softsusy {
   // EXCEPT for the sign of smu, which is opposite. These equations are also
   // valid for W=  - LL Y^E H1 ER - QL Y^D H1 DR + QL Y^U H2 UR + smu H2 H1, the
   // New SOFTSUSY convention
-  NmssmSusyRGE NmssmSusyRGE::beta(nmsBrevity & a) const {
+  NmssmSusy NmssmSusy::beta(nmsBrevity & a) const {
     // Wave function renormalisations: convention for g**(i, j) is that i is the
     // LOWER index and j the upper in our paper hep-ph/9902251
     static DoubleMatrix gEE(3, 3), gLL(3, 3), gQQ(3, 3), gDD(3, 3),
@@ -266,10 +267,10 @@ namespace softsusy {
     }
     
     // Contains all susy derivatives:
-    NmssmSusyRGE ds(du, dd, de, dg, dmu, dt, displayMu(), 
-		    displayNmssmSusyApprox().displayLoops(),
-		    displayNmssmSusyApprox().displayThresholds(), dHvev, 
-		    dSvev, dl, dk, dmupr, dz);
+    NmssmSusy ds(du, dd, de, dg, dmu, dt, 
+		 displayNmssmSusyApprox().displayLoops(),
+		 displayNmssmSusyApprox().displayThresholds(), dHvev, 
+		 dSvev, dl, dk, dmupr, dz);
     
     return ds;
   }
@@ -290,7 +291,7 @@ namespace softsusy {
   // gamma^Li_Lj = M_ij for LH fields and
   // gamma^Rj_Ri = M_ij for RH fields (since they are really the complex
   // conjugates of the RH fields): CHECKED 23/5/02
-  void NmssmSusyRGE::getOneLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
+  void NmssmSusy::getOneLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				  DoubleMatrix & gQQ, DoubleMatrix & gDD,
 				  DoubleMatrix & gUU, double & gH1H1, double &
 				  gH2H2, double & gSS, nmsBrevity & a) const {
@@ -308,7 +309,7 @@ namespace softsusy {
   // adds two-loop anomalous dimension contribution to gii given matrix inputs
   // g^Li_Lj = m_{ij} for LH fields
   // g^Ei_Ej = m_{ji} for RH fields CHECKED: 23/5/02
-  void NmssmSusyRGE::getTwoLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
+  void NmssmSusy::getTwoLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				  DoubleMatrix & gQQ, DoubleMatrix & gDD,
 				  DoubleMatrix & gUU, double & gH1H1, double &
 				  gH2H2, double & gSS, nmsBrevity & a) const {
@@ -354,12 +355,12 @@ namespace softsusy {
   
   // Outputs wave function renormalisation for SUSY parameters and gauge beta
   // functions up to 2 loops.
-  void NmssmSusyRGE::anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
-					DoubleMatrix & gQQ, DoubleMatrix & gUU,
-					DoubleMatrix & gDD, DoubleVector & dg,
-					double & gH1H1, double & gH2H2,
-					double & gSS,
-					nmsBrevity & a)  const {
+  void NmssmSusy::anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
+				     DoubleMatrix & gQQ, DoubleMatrix & gUU,
+				     DoubleMatrix & gDD, DoubleVector & dg,
+				     double & gH1H1, double & gH2H2,
+				     double & gSS,
+				     nmsBrevity & a)  const {
     // Constants for gauge running
     static DoubleVector bBeta(3), cuBeta(3), cdBeta(3), ceBeta(3), clBeta(3);
     static DoubleMatrix babBeta(3, 3);
@@ -400,7 +401,7 @@ namespace softsusy {
     // calculate the derivatives
     static NmssmSusyRGE ds;
     
-    ds = beta(a);
+    ds = NmssmSusy::beta(a);
     
     return ds.display(); // convert to a long vector
   }

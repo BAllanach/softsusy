@@ -5,7 +5,7 @@
     - Manual: http://arxiv.org/abs/1311.7659
     - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
     
-    \brief NmssmSusyLite NMSSM SUSY couplings and tan beta.
+    \brief NmssmSusy NMSSM SUSY couplings and tan beta.
     NmssmSusy contains all NMSSM SUSY couplings and tan beta, as
     well as their beta functions
 */
@@ -51,7 +51,7 @@ namespace softsusy {
   {}
   
   /// Contains only RPC-NMSSM parameters 
-  class NmssmSusyLite: public MssmSusy {
+  class NmssmSusy: public MssmSusy {
   private:
     Approx nmssmSusyApprox; ///< Number of loops and thresholds
     /// new nmssm parameters, lambda, kappa appearing as superpotential
@@ -65,28 +65,28 @@ namespace softsusy {
     double xiF, mupr;
     
   public:
-    NmssmSusyLite(); ///< Constructor fills object with zeroes by default
+    NmssmSusy(); ///< Constructor fills object with zeroes by default
     /// Constructor sets object to be equal to another
-    NmssmSusyLite(const NmssmSusyLite &);
+    NmssmSusy(const NmssmSusy &);
     /// PA: Constructor given Yukawa matrices u,d,e, gauge couplings v, mu
     /// parameter=m, tan beta=tb, lambda, kappa, mupr, xiF,
     // number of loops in
     /// RG evolution l and thresholds parameter t
-    NmssmSusyLite(const DoubleMatrix & u,
-		  const DoubleMatrix & d, const
-		  DoubleMatrix & e, const DoubleVector & v, double m,
-		  double tb,  double hv, double sv,
-		  double lambda, double kappa, double xiF, 
-		  double mupr);
-    NmssmSusyLite(double sv, double lambda, double kappa, double xiF, 
+    NmssmSusy(const DoubleMatrix & u,
+	      const DoubleMatrix & d, 
+	      const DoubleMatrix & e, const DoubleVector & v, double m,
+	      double tb,  double hv, int l, int t, double sv,
+	      double lambda, double kappa, double xiF, 
+	      double mupr);
+    NmssmSusy(double sv, double lambda, double kappa, double xiF, 
 		  double mupr);
     
-    inline const NmssmSusyLite & displayNmssmSusyLite() const;
+    inline const NmssmSusy & displayNmssmSusy() const;
     
-    virtual ~NmssmSusyLite(); ///< Default destructor
+    virtual ~NmssmSusy(); ///< Default destructor
     
     /// sets object to be equal to another
-    const NmssmSusyLite & operator=(const NmssmSusyLite & s);
+    const NmssmSusy & operator=(const NmssmSusy & s);
     
     /// sets DRbar running singlet vev.
     void setSvev(double s);
@@ -118,14 +118,51 @@ namespace softsusy {
     double displayXiF() const;
     /// Returns all parameters as elements of a vector
     const DoubleVector display() const;
+
+    /// Calculate beta functions of SUSY preserving parameters of RPC MSSM
+    NmssmSusy beta(nmsBrevity &) const;
+    /// Outputs one-loop anomlous dimensions gii given matrix inputs.
+    /// for RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1 and H2
+    /// respectively. Note that we use the convention (for matrices in terms of
+    /// gamma's): gamma^Li_Lj = M_ij for LH fields and
+    /// gamma^Rj_Ri = M_ij for RH fields (since they are really the complex
+    /// conjugates of the RH fields). a should already be defined.
+    void getOneLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
+		      DoubleMatrix & gQQ, DoubleMatrix & gDD,
+		      DoubleMatrix & gUU, double & gH1H1, double &
+		      gH2H2, double & gSS, nmsBrevity & a) const;
+    /// Outputs two-loop anomlous dimensions gii given matrix inputs.
+    /// for RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1 and H2
+    /// respectively. Note that we use the convention (for matrices in terms of
+    /// gamma's): gamma^Li_Lj = M_ij for LH fields and
+    /// gamma^Rj_Ri = M_ij for RH fields (since they are really the complex
+    /// conjugates of the RH fields). a should already be defined.
+    void getTwoLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
+		      DoubleMatrix & gQQ, DoubleMatrix & gDD,
+		      DoubleMatrix & gUU, double & gH1H1, double &
+		      gH2H2, double & gSS, nmsBrevity & a) const;
+    /// Outputs wave function renormalisation for SUSY parameters and gauge beta
+    /// functions up to 2 loops. Also calculates and outputs a.
+    /// IO parameters: RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1
+    /// and H2 respectively.
+    /// g^Li_Lj = m_{ij} for LH fields
+    /// g^Ei_Ej = m_{ji} for RH fields
+    void anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
+			    DoubleMatrix & gQQ, DoubleMatrix & gUU,
+			    DoubleMatrix & gDD, DoubleVector & dg,
+			    double & gH1H1, double & gH2H2, double & gSS,
+			    nmsBrevity & a) const;
+    /// Returns the effective mu parameter
+    double displayMuEff() const { return displaySusyMu() + 
+	displayLambda() * displaySvev() / sqrt(2.0); };
   };
   
-  const NmssmSusyLite & NmssmSusyLite::displayNmssmSusyLite() const { 
+  const NmssmSusy & NmssmSusy::displayNmssmSusy() const { 
     return *this; 
   }
   
   /// Contains all supersymmetric RPC-MSSM parameters and RGEs
-  class NmssmSusyRGE: public RGE, public NmssmSusyLite {
+  class NmssmSusyRGE: public RGE, public NmssmSusy {
   private:
   public:
     NmssmSusyRGE(); ///< Constructor fills object with zeroes by default
@@ -160,45 +197,9 @@ namespace softsusy {
     inline const NmssmSusyRGE & displaySusy() const;
     /// Returns all parameters as elements of a vector
     const DoubleVector display() const;
-    /// Returns the effective mu parameter
-    double displayMuEff() const { return displaySusyMu() + 
-	displayLambda() * displaySvev() / sqrt(2.0); };
     
     /// Calculate beta functions of SUSY preserving parameters of RPC MSSM
     DoubleVector beta() const;
-    /// Calculate beta functions of SUSY preserving parameters of RPC MSSM
-    NmssmSusyRGE beta(nmsBrevity &) const;
-    /// Outputs one-loop anomlous dimensions gii given matrix inputs.
-    /// for RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1 and H2
-    /// respectively. Note that we use the convention (for matrices in terms of
-    /// gamma's): gamma^Li_Lj = M_ij for LH fields and
-    /// gamma^Rj_Ri = M_ij for RH fields (since they are really the complex
-    /// conjugates of the RH fields). a should already be defined.
-    void getOneLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
-		      DoubleMatrix & gQQ, DoubleMatrix & gDD,
-		      DoubleMatrix & gUU, double & gH1H1, double &
-		      gH2H2, double & gSS, nmsBrevity & a) const;
-    /// Outputs two-loop anomlous dimensions gii given matrix inputs.
-    /// for RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1 and H2
-    /// respectively. Note that we use the convention (for matrices in terms of
-    /// gamma's): gamma^Li_Lj = M_ij for LH fields and
-    /// gamma^Rj_Ri = M_ij for RH fields (since they are really the complex
-    /// conjugates of the RH fields). a should already be defined.
-    void getTwoLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
-		      DoubleMatrix & gQQ, DoubleMatrix & gDD,
-		      DoubleMatrix & gUU, double & gH1H1, double &
-		      gH2H2, double & gSS, nmsBrevity & a) const;
-    /// Outputs wave function renormalisation for SUSY parameters and gauge beta
-    /// functions up to 2 loops. Also calculates and outputs a.
-    /// IO parameters: RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1
-    /// and H2 respectively.
-    /// g^Li_Lj = m_{ij} for LH fields
-    /// g^Ei_Ej = m_{ji} for RH fields
-    void anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
-			    DoubleMatrix & gQQ, DoubleMatrix & gUU,
-			    DoubleMatrix & gDD, DoubleVector & dg,
-			    double & gH1H1, double & gH2H2, double & gSS,
-			    nmsBrevity & a) const;
   };
   
   
@@ -220,19 +221,19 @@ namespace softsusy {
     return *this; 
   }
   
-  inline double NmssmSusyLite::displaySvev() const { return sVev; }
+  inline double NmssmSusy::displaySvev() const { return sVev; }
   
-  inline void NmssmSusyLite::setSvev(double h) { sVev = h; }
-  inline void NmssmSusyLite::setMupr(double f) { mupr = f; }
-  inline void NmssmSusyLite::setXiF(double z) { xiF = z; }
+  inline void NmssmSusy::setSvev(double h) { sVev = h; }
+  inline void NmssmSusy::setMupr(double f) { mupr = f; }
+  inline void NmssmSusy::setXiF(double z) { xiF = z; }
   
-  inline void NmssmSusyLite::setLambda(double l) { lambda = l; }
-  inline void NmssmSusyLite::setKappa(double k) { kappa = k; }
+  inline void NmssmSusy::setLambda(double l) { lambda = l; }
+  inline void NmssmSusy::setKappa(double k) { kappa = k; }
   
-  inline double NmssmSusyLite::displayMupr() const { return mupr; }
-  inline double NmssmSusyLite::displayXiF() const { return xiF; }
-  inline double NmssmSusyLite::displayLambda() const { return lambda; }
-  inline double NmssmSusyLite::displayKappa() const { return kappa; }
+  inline double NmssmSusy::displayMupr() const { return mupr; }
+  inline double NmssmSusy::displayXiF() const { return xiF; }
+  inline double NmssmSusy::displayLambda() const { return lambda; }
+  inline double NmssmSusy::displayKappa() const { return kappa; }
   
 } ///< namespace softsusy
 
