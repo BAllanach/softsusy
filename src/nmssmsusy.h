@@ -105,6 +105,9 @@ namespace softsusy {
     
     
     int displayNmssmLoops() const { return nmssmSusyApprox.displayLoops(); };
+    int displayNmssmThresholds() const { 
+      return nmssmSusyApprox.displayThresholds(); 
+    };
     Approx displayNmssmSusyApprox() const { return nmssmSusyApprox; };
     /// returns DRbar running Singlet Higgs vev
     double displaySvev() const;
