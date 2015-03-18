@@ -306,23 +306,6 @@ namespace softsusy {
       }
     }
 #endif
- 
-    /// Returns double vector containing numerical beta functions of parameters
-    DoubleVector beta() const; 
-    /// Returns numerical beta functions of parameters  
-    MssmSoftsusy beta2() const;
-    /// Returns numerical beta functions of parameters and Brevity
-    MssmSoftsusy beta2(sBrevity&) const;
-  /// Returns derivatives of anomalous dimensions of fields with respect to
-  /// renormalisation scale in MSSM for: RH leptons, LH leptons, LH quarks, RH
-  /// up quarks, RH down quarks, H1 and H2 respectively
-  void anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
-		      DoubleMatrix & gQQ, DoubleMatrix & gUU,
-		      DoubleMatrix & gDD, 
-		      double & gH1H1, double & gH2H2) const;
-  /// Ytilde quantities are for calculational brevity in beta functions.
-  void yTildes(DoubleMatrix & yu, DoubleMatrix & yd, DoubleMatrix &ye) const;
-  
    
     ///  sets fracDiff, needed for access by NmssmSoftsusy methods
     void setFracDiff(double fD) { fracDiff = fD; };
@@ -1487,27 +1470,6 @@ namespace softsusy {
   /// function used for calculating sin theta_eff
   double fEff(double x);
   
-  /// Reads in universal boundary conditions at the current scale:
-  /// m0, M1/2, A0, B-parameter and mu
-  void universal(double m0,  double m12,  double a0,  double mu,
-  		 double m3sq);
-  /// Give it a SUSY object and a value of M3/2, and it will return a soft
-  /// object with AMSB soft breaking terms. Note that the sleptons will be
-  /// tachyonic, ie nothing has been done to fix that problem.
-  /// Note that in the following, we are neglecting all Yukawa couplings except
-  /// that of the third family.
-  void addAmsb(double m32);
-  /// This flips the signs of various parameters (including mu) with no
-  /// physical effect - apparently, through a U(1)_{R-PQ} transformation. See
-  /// hep-ph/0312378 
-  void u1R_PQflip();
-  /// Sets all SUSY breaking trilinear couplings to a0
-  void universalTrilinears(double a0);
-  /// Boundary conditions to be applied at messenger scale for Gauge mediated
-  /// SUSY breaking (see hep-ph/9703211 for example), n5 is the number of
-  /// 5-plets, mMess is the messenger scale and lambda is the GMSB scale
-  void minimalGmsb(int n5, double LAMBDA, double mMess, double cgrav);  
-
   /// parameterisation of LEP2 likelihood for Standard Model higgs mass
   double lep2Likelihood(double mh);
   /// integrand for 2 GeV Gaussian theory error for SM higgs likelihood from 
