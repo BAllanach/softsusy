@@ -267,14 +267,13 @@ namespace softsusy {
   /// is the superpotential. Consistent with Allanach, Dedes, Dreiner
   /// hep-ph/9902251 and Barger, Berger and Ohmann hep-ph/9209232, 9311269
   /// EXCEPT for the sign of smu, which is opposite. These equations are also
-  /// valid for W=  - LL Y^E H1 ER - QL Y^D H1 DR + QL Y^U H2 UR + smu H2 H1, the
-  /// new SOFTSUSY convention
+  /// valid for W=  - LL Y^E H1 ER - QL Y^D H1 DR + QL Y^U H2 UR + smu H2 H1, 
+  /// the new SOFTSUSY convention
   MssmSusy MssmSusy::beta(sBrevity & a) const {
-    /// Wave function renormalisations: convention for g**(i, j) is that i is the
-    /// LOWER index and j the upper in our paper hep-ph/9902251
+    /// Wave function renormalisations: convention for g**(i, j) 
+    /// is that i is the LOWER index and j the upper in our paper hep-ph/9902251
     static DoubleMatrix gEE(3, 3), gLL(3, 3), gQQ(3, 3), gDD(3, 3), 
       gUU(3, 3);
-    
     
     double gH1H1=0.0, gH2H2=0.0;
     static DoubleVector dg(1,3);

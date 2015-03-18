@@ -30,7 +30,7 @@ namespace softsusy {
   const static int numSoftParsMssm = 78 + numSusyPars;
   
   /// Soft SUSY breaking parameters and beta functions.
-  class MssmSoftPars: public MssmSusy {
+  class MssmSoftPars {
   private:
     DoubleVector mGaugino; ///< Gaugino masses, see ::beta for definitions
     DoubleMatrix ua, da, ea; ///< Trilinear soft terms..
@@ -81,6 +81,9 @@ namespace softsusy {
     double displayMh2Squared() const;    ///< Return \f$m_{H_2}^2\f$=mH2sq
     DoubleVector displayGaugino() const; ///< Return \f$M_{G_i}\f$
     double displayGaugino(int i) const;  ///< Return \f$M_{G_i}\f$
+    /// Calculate beta functions of parameters of RPC MSSM
+    /// Returns all parameters as elements of a vector
+    const DoubleVector display() const;
     
     /// Sets gravitino mass
     void setM32(double);
@@ -103,42 +106,45 @@ namespace softsusy {
     void setMh2Squared(double); ///< Sets \f$ m_{H_2}^2\f$
     
     /// Returns double vector containing numerical beta functions of parameters
-    DoubleVector beta() const; 
+    DoubleVector beta(const MssmSusy &) const; 
     /// Returns numerical beta functions of parameters  
-    MssmSoftPars beta2() const;
+    MssmSoftPars beta2(const MssmSusy & xx) const;
     /// Returns numerical beta functions of parameters and Brevity
-    MssmSoftPars beta2(sBrevity&) const;
+    MssmSoftPars beta2(const MssmSusy & xx, sBrevity& a) const;
     /// Returns derivatives of anomalous dimensions of fields with respect to
     /// renormalisation scale in MSSM for: RH leptons, LH leptons, LH quarks, RH
     /// up quarks, RH down quarks, H1 and H2 respectively
-    void anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
+    void anomalousDeriv(const MssmSusy & xx, DoubleMatrix & gEE, 
+			DoubleMatrix & gLL,
 			DoubleMatrix & gQQ, DoubleMatrix & gUU,
 			DoubleMatrix & gDD, 
 			double & gH1H1, double & gH2H2) const;
     /// Ytilde quantities are for calculational brevity in beta functions.
-    void yTildes(DoubleMatrix & yu, DoubleMatrix & yd, DoubleMatrix &ye) const;
+    void yTildes(const MssmSusy & xx, 
+		 DoubleMatrix & yu, DoubleMatrix & yd, DoubleMatrix &ye) const;
     /// This flips the signs of various parameters (including mu) with no
     /// physical effect - apparently, through a U(1)_{R-PQ} transformation. See
     /// hep-ph/0312378 
-    void u1R_PQflip();
+    void u1R_PQflip(MssmSusy & s);
     /// Reads in universal boundary conditions at the current scale:
     /// m0, M1/2, A0, B-parameter and mu
-    void universal(double m0,  double m12,  double a0,  double mu,
+    void universal(MssmSusy & s, double m0,  double m12,  double a0,  double mu,
 		   double m3sq);
     /// Give it a SUSY object and a value of M3/2, and it will return a soft
     /// object with AMSB soft breaking terms. Note that the sleptons will be
     /// tachyonic, ie nothing has been done to fix that problem.
     /// Note that in the following, we are neglecting all Yukawa couplings except
     /// that of the third family.
-    void addAmsb(double m32);
+    void addAmsb(const MssmSusy &, double m32);
     /// Sets all SUSY breaking trilinear couplings to a0
-    void universalTrilinears(double a0);
+    void universalTrilinears(const MssmSusy & a, double a0);
     /// Boundary conditions to be applied at messenger scale for Gauge mediated
     /// SUSY breaking (see hep-ph/9703211 for example), n5 is the number of
     /// 5-plets, mMess is the messenger scale and lambda is the GMSB scale
-    void minimalGmsb(int n5, double LAMBDA, double mMess, double cgrav);  
+    void minimalGmsb(const MssmSusy & xx, int n5, double LAMBDA, 
+		     double mMess, double cgrav);  
     /// Reads in universal boundary conditions at the current scale: m0, M1/2, A0
-    void standardSugra(double m0,  double m12, double a0);
+    void standardSugra(const MssmSusy & xx, double m0,  double m12, double a0);
     /// Sets all flavour-diagonal SUSY breaking scalar masses to m0
     void universalScalars(double m0);
     /// Sets all flavour-diagonal SUSY breaking gaugino masses to m12

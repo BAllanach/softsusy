@@ -138,9 +138,10 @@ void MssmSoftPars::setAllGauginos(const DoubleVector & v) {
   mGaugino = v; 
 }
 
-MssmSoftPars MssmSoftPars::beta2() const {
+
+MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx) const {
   static sBrevity a;
-  return beta2(a);
+  return beta2(xx, a);
 }
 
 // Outputs derivatives (DRbar scheme) in the form of dsoft
@@ -148,7 +149,7 @@ MssmSoftPars MssmSoftPars::beta2() const {
 // thresholds = 2 and SUSY params/gauge couplings are decoupled at sparticle
 // thresholds.
 // CHECKED: 24/05/02
-MssmSoftPars MssmSoftPars::beta2(sBrevity& a) const {
+MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
   
   // Constants for gauge running
   static DoubleVector bBeta(3), cuBeta(3), cdBeta(3), ceBeta(3);
@@ -162,7 +163,7 @@ MssmSoftPars MssmSoftPars::beta2(sBrevity& a) const {
   
   // calculate derivatives for full SUSY spectrum. Brevity calculations come
   // out encoded in a
-  dsb = MssmSusy::beta(a);
+  dsb = xx.beta(a);
   
   // To keep this a const function: TIME SAVINGS
   DoubleMatrix &u1=a.u1, &d1=a.d1, &e1=a.e1;
@@ -207,7 +208,7 @@ MssmSoftPars MssmSoftPars::beta2(sBrevity& a) const {
   static DoubleMatrix dhu(3, 3), dhd(3, 3), dhe(3, 3);
   
   const double ONEO16Pisq = 1.0 / (16.0 * sqr(PI));
-  if (displayMssmApprox().displayLoops() > 0) {
+  if (xx.displayMssmApprox().displayLoops() > 0) {
     const static double sixteenO3 = 16.0 / 3.0, oneO15 = 1.0 /
       15.0;
     
@@ -215,7 +216,7 @@ MssmSoftPars MssmSoftPars::beta2(sBrevity& a) const {
     
     double curlyS = mH2sq - mH1sq + mqT - mlT - 2.0 * muT + mdT + meT;
     
-    dm3sq = 2.0 * displaySusyMu() * (0.6 * gsqM(1) + 3.0 * gsqM(2) + 
+    dm3sq = 2.0 * xx.displaySusyMu() * (0.6 * gsqM(1) + 3.0 * gsqM(2) + 
 				     3.0 * huuT  +  3.0 * hddT + heeT) 
       + m3sq * (3.0 * uuT + 3.0 * ddT + eeT - 0.6 * gsq(1) - 3.0 * gsq(2));
     
@@ -289,7 +290,7 @@ MssmSoftPars MssmSoftPars::beta2(sBrevity& a) const {
   // two-loop contributions. I got these from hep-ph/9311340. WIth respect to
   // their notation, the Yukawas and h's are TRANSPOSED. Gaugino masses are
   // identical, as are soft masses. B(mV) = mu(BBO) B(BBO)
-  if (displayMssmApprox().displayLoops() > 1) {
+  if (xx.displayMssmApprox().displayLoops() > 1) {
     static DoubleVector dmG2(1, 3);
     static DoubleMatrix dmq2(3, 3), dmu2(3, 3), dmd2(3, 3), dme2(3, 3), 
       dml2(3, 3);
@@ -305,10 +306,12 @@ MssmSoftPars MssmSoftPars::beta2(sBrevity& a) const {
     double md3 = displaySoftMassSquared(mDr, 3, 3);
     double ml3 = displaySoftMassSquared(mLl, 3, 3);
     double me3 = displaySoftMassSquared(mEr, 3, 3);
-    double ht = displayYukawaElement(YU, 3, 3), ht2 = sqr(ht), ht4 = sqr(ht2);
-    double htau = displayYukawaElement(YE, 3, 3), htau2 = sqr(htau), 
+    double ht = xx.displayYukawaElement(YU, 3, 3), ht2 = sqr(ht), 
+      ht4 = sqr(ht2);
+    double htau = xx.displayYukawaElement(YE, 3, 3), htau2 = sqr(htau), 
       htau4 = sqr(htau2);
-    double hb = displayYukawaElement(YD, 3, 3), hb2 = sqr(hb), hb4 = sqr(hb2);
+    double hb = xx.displayYukawaElement(YD, 3, 3), hb2 = sqr(hb), 
+      hb4 = sqr(hb2);
     double Ut = displayTrilinear(UA, 3, 3), Ut2 = sqr(Ut);
     double Ub = displayTrilinear(DA, 3, 3), Ub2 = sqr(Ub);
     double Utau = displayTrilinear(EA, 3, 3), Utau2 = sqr(Utau);
@@ -806,7 +809,7 @@ MssmSoftPars MssmSoftPars::beta2(sBrevity& a) const {
 	 (16.0 * gsq(3) - 0.4 * gsq(1)) * ddT + 
 	 1.2 * gsq(1) * eeT + 7.5 * g4(2) + 1.8 * gsq(1) * gsq(2) + 
 	 207. / 50. * g4(1)) +
-	displaySusyMu() * 
+	xx.displaySusyMu() * 
 	(-12.0 * (3.0 * Ut * ht * ht2 + 3.0 * Ub * hb * hb2 + Ut * hb2 * ht +
 		  Ub * ht2 * hb + Utau * htau2 * htau) +
 	 (32.0 * gsq(3) + 1.6 * gsq(1)) * huuT + 
@@ -892,7 +895,7 @@ MssmSoftPars MssmSoftPars::beta2(sBrevity& a) const {
 	 (16.0 * gsq(3) - 0.4 * gsq(1)) * ddT + 
 	 1.2 * gsq(1) * eeT + 7.5 * g4(2) + 1.8 * gsq(1) * gsq(2) + 
 	 207. / 50. * g4(1)) +
-	displaySusyMu() * 
+	xx.displaySusyMu() * 
 	(-12.0 * (3.0 * hut * u2 * u1 + 3.0 * hdt * d2 * d1 + hut * d2 * u1 +
 		  hdt * u2 * d1 + het * e2 * e1).trace() +
 	 (32.0 * gsq(3) + 1.6 * gsq(1)) * huuT + 
@@ -910,7 +913,7 @@ MssmSoftPars MssmSoftPars::beta2(sBrevity& a) const {
     dmH2sq = dmH2sq + dmH2sq2 * oneO16Pif;
     
 #ifdef COMPILE_THREE_LOOP_RGE
-    if (displayMssmApprox().displayLoops() > 2) {
+    if (xx.displayMssmApprox().displayLoops() > 2) {
       
       const static double threelp = 2.53945672191370e-7; // 1/(16 pi^2)^3
       const static double kz = 7.21234141895757; // 6 Zeta(3)
@@ -926,7 +929,7 @@ MssmSoftPars MssmSoftPars::beta2(sBrevity& a) const {
       double a13 = a12*gsq(1), a23 = a22*gsq(2),   a33 = a32*gsq(3);   
       
       double dmH2sq3, dmH1sq3, dm3sq3, dM13, dM23, dM33;
-      double smu_ = displaySusyMu();
+      double smu_ = xx.displaySusyMu();
       
       // three-loop contribution 3rd family approximation
       if (MIXING < 0) {
@@ -2751,16 +2754,43 @@ dm3sq3=m3sq*(18.*d4T*e2T+e6T*(1+kz)+6.*e2T*(e4T+u2d2T)+18.*(d2T*(e4T+u2d2T)+u2d2
 
 // Outputs derivatives vector y[109] for SUSY parameters: interfaces to
 // integration routines
-DoubleVector MssmSoftPars::beta() const {
+DoubleVector MssmSoftPars::beta(const MssmSusy & xx) const {
   // calculate the derivatives
-  static MssmSoftPars dsoft; dsoft = beta2();
+  static MssmSoftPars dsoft; dsoft = beta2(xx);
   
   return dsoft.display(); // convert to a long vector
+}
+const DoubleVector MssmSoftPars::display() const {
+  DoubleVector y(numSoftParsMssm);
+  //  y.setEnd(numSoftParsMssm);
+  int i, j, k=numSusyPars;
+  for (i=1; i<=3; i++) {
+    k++;
+    y(k) = displayGaugino(i);
+  }
+  
+  for (i=1; i<=3; i++)    
+    for (j=1; j<=3; j++) {
+      k++;
+      y(k) = displayTrilinear(UA, i, j);
+      y(k+9) = displayTrilinear(DA, i, j);
+      y(k+18) = displayTrilinear(EA, i, j);
+      y(k+27) = displaySoftMassSquared(mQl, i, j);
+      y(k+36) = displaySoftMassSquared(mUr, i, j);
+      y(k+45) = displaySoftMassSquared(mDr, i, j);
+      y(k+54) = displaySoftMassSquared(mLl, i, j);
+      y(k+63) = displaySoftMassSquared(mEr, i, j);
+    }
+  y(k+64) = m3sq;
+  y(k+65) = mH1sq;
+  y(k+66) = mH2sq;
+  return y;
 }
 
 // Outputs derivatives of anomalous dimensions, from which the running can be
 // derived. 
-void MssmSoftPars::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
+void MssmSoftPars::anomalousDeriv(const MssmSusy & xx, DoubleMatrix & gEE, 
+				  DoubleMatrix & gLL,
 				  DoubleMatrix & gQQ, DoubleMatrix & gUU,
 				  DoubleMatrix & gDD, 
 				  double & gH1H1, double & gH2H2)  const {
@@ -2778,10 +2808,10 @@ void MssmSoftPars::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
   
   // calculate derivatives for full SUSY spectrum. Brevity calculations come
   // out encoded in a
-  dsb = MssmSusy::beta(a);
+  dsb = xx.MssmSusy::beta(a);
   
   static DoubleVector g1(3);
-  g1 = displayGauge();
+  g1 = xx.displayGauge();
   
   // To keep this a const function: TIME SAVINGS
   DoubleMatrix &dt=a.dt, &ut=a.ut, &et=a.et;      
@@ -2799,7 +2829,7 @@ void MssmSoftPars::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
     heeT = (he * et).trace(); 
   gsqM = gsq * displayGaugino(); 
   
-  if (displayMssmApprox().displayLoops() > 0) { // CHECKED: agrees with our conventions
+  if (xx.displayMssmApprox().displayLoops() > 0) { // CHECKED: agrees with our conventions
     const static double eightO3 = 8.0 / 3.0, oneO30 = 1.0 / 30.0;
     gLL = - (he * et + 0.3 * gsqM(1) + 1.5 * gsqM(2));
     gEE = - (2.0 * (et * he) + 1.2 * gsqM(1));
@@ -2824,19 +2854,20 @@ void MssmSoftPars::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
 }
 
 // Gives the ytilde terms relevant for the soft mass running: CHECKED 23/5/02
-void MssmSoftPars::yTildes(DoubleMatrix & yu, DoubleMatrix & yd, DoubleMatrix
+void MssmSoftPars::yTildes(const MssmSusy & xx, DoubleMatrix & yu, 
+			   DoubleMatrix & yd, DoubleMatrix
 			   &ye) const {
-  ye = displaySoftMassSquared(mLl) * displayYukawaMatrix(YE) + 
-    displayYukawaMatrix(YE) * displayMh1Squared() + 
-    displayYukawaMatrix(YE) * displaySoftMassSquared(mEr);
+  ye = displaySoftMassSquared(mLl) * xx.displayYukawaMatrix(YE) + 
+    xx.displayYukawaMatrix(YE) * displayMh1Squared() + 
+    xx.displayYukawaMatrix(YE) * displaySoftMassSquared(mEr);
   
-  yd = displaySoftMassSquared(mQl) * displayYukawaMatrix(YD) + 
-    displayYukawaMatrix(YD) * displayMh1Squared() + 
-    displayYukawaMatrix(YD) * displaySoftMassSquared(mDr);
+  yd = displaySoftMassSquared(mQl) * xx.displayYukawaMatrix(YD) + 
+    xx.displayYukawaMatrix(YD) * displayMh1Squared() + 
+    xx.displayYukawaMatrix(YD) * displaySoftMassSquared(mDr);
   
-  yu = displaySoftMassSquared(mQl) * displayYukawaMatrix(YU) + 
-    displayYukawaMatrix(YU) * displayMh2Squared() + 
-    displayYukawaMatrix(YU) * displaySoftMassSquared(mUr);
+  yu = displaySoftMassSquared(mQl) * xx.displayYukawaMatrix(YU) + 
+    xx.displayYukawaMatrix(YU) * displayMh2Squared() + 
+    xx.displayYukawaMatrix(YU) * displaySoftMassSquared(mUr);
 }
 
 
@@ -2851,8 +2882,7 @@ void MssmSoftPars::yTildes(DoubleMatrix & yu, DoubleMatrix & yd, DoubleMatrix
    THE CURRENT STATE OF PLAY:
    Two loop additions are possible, but a pain.
 */
-void MssmSoftPars::addAmsb(double maux) {
-  MssmSusy run(displayMssmSusy());
+void MssmSoftPars::addAmsb(const MssmSusy & run, double maux) {
   const double ONEO16pisq = 1.0 / (16. * sqr(PI));
   const double ONEO16pif = sqr(ONEO16pisq);
   double     g1   = run.displayGaugeCoupling(1), 
@@ -2873,40 +2903,40 @@ void MssmSoftPars::addAmsb(double maux) {
     (ONEO16pif * (-11. / 50. * sqr(sqr(g1)) - 1.5 * sqr(sqr(g2)) + 
 		  8.0 * sqr(sqr(g3))) +
      ONEO16pisq * 0.5 *  
-     (dsb.displayYukawaMatrix(YD) * displayYukawaMatrix(YD).transpose() +
-      displayYukawaMatrix(YD) * dsb.displayYukawaMatrix(YD).transpose() +
-      displayYukawaMatrix(YU) * dsb.displayYukawaMatrix(YU).transpose() +
-      dsb.displayYukawaMatrix(YU) * displayYukawaMatrix(YU).transpose()));
+     (dsb.displayYukawaMatrix(YD) * run.displayYukawaMatrix(YD).transpose() +
+      run.displayYukawaMatrix(YD) * dsb.displayYukawaMatrix(YD).transpose() +
+      run.displayYukawaMatrix(YU) * dsb.displayYukawaMatrix(YU).transpose() +
+      dsb.displayYukawaMatrix(YU) * run.displayYukawaMatrix(YU).transpose()));
   mLLsq = mLLsq + sqr(maux) * 
     (ONEO16pif * (-99. / 50. * sqr(sqr(g1)) - 1.5 * sqr(sqr(g2))) + 
      ONEO16pisq * 0.5 * 
-     (dsb.displayYukawaMatrix(YE) * displayYukawaMatrix(YE).transpose() +
-      displayYukawaMatrix(YE) * dsb.displayYukawaMatrix(YE).transpose())); 
+     (dsb.displayYukawaMatrix(YE) * run.displayYukawaMatrix(YE).transpose() +
+      run.displayYukawaMatrix(YE) * dsb.displayYukawaMatrix(YE).transpose())); 
   mURsq = mURsq + sqr(maux) * 
     (ONEO16pif * (-88. / 25. * sqr(sqr(g1)) + 8 * sqr(sqr(g3))) + 
      ONEO16pisq * 
-     (dsb.displayYukawaMatrix(YU).transpose() * displayYukawaMatrix(YU) +
-      displayYukawaMatrix(YU).transpose() * dsb.displayYukawaMatrix(YU)));
+     (dsb.displayYukawaMatrix(YU).transpose() * run.displayYukawaMatrix(YU) +
+      run.displayYukawaMatrix(YU).transpose() * dsb.displayYukawaMatrix(YU)));
   mDRsq = mDRsq + sqr(maux) * 
     (ONEO16pif * (-22. / 25. * sqr(sqr(g1)) + 8 * sqr(sqr(g3))) + 
      ONEO16pisq * 
-     (dsb.displayYukawaMatrix(YD).transpose() * displayYukawaMatrix(YD) +
-      displayYukawaMatrix(YD).transpose() * dsb.displayYukawaMatrix(YD)));
+     (dsb.displayYukawaMatrix(YD).transpose() * run.displayYukawaMatrix(YD) +
+      run.displayYukawaMatrix(YD).transpose() * dsb.displayYukawaMatrix(YD)));
   mSEsq = mSEsq + sqr(maux) * 
     (ONEO16pif * (-198. / 25. * sqr(sqr(g1))) + 
      ONEO16pisq * 
-     (dsb.displayYukawaMatrix(YE).transpose() * displayYukawaMatrix(YE) +
-      displayYukawaMatrix(YE).transpose() * dsb.displayYukawaMatrix(YE)));
+     (dsb.displayYukawaMatrix(YE).transpose() * run.displayYukawaMatrix(YE) +
+      run.displayYukawaMatrix(YE).transpose() * dsb.displayYukawaMatrix(YE)));
   mH1sq = mH1sq + sqr(maux) * 
     (ONEO16pif * (-99. / 50. * sqr(sqr(g1)) - 1.5 * sqr(sqr(g2))) + 
      ONEO16pisq * (3.0 * (dsb.displayYukawaMatrix(YD) *
-			  displayYukawaMatrix(YD).transpose()).trace() 
+			  run.displayYukawaMatrix(YD).transpose()).trace() 
 		   + (dsb.displayYukawaMatrix(YE) * 
-		      displayYukawaMatrix(YE).transpose()).trace()));
+		      run.displayYukawaMatrix(YE).transpose()).trace()));
   mH2sq = mH2sq + sqr(maux) * 
     (ONEO16pif * (-99. / 50. * sqr(sqr(g1)) - 1.5 * sqr(sqr(g2))) + 
      ONEO16pisq * (3.0 * (dsb.displayYukawaMatrix(YU) * 
-			  displayYukawaMatrix(YU).transpose()).trace()));
+			  run.displayYukawaMatrix(YU).transpose()).trace()));
   
   // AMSB spectrum
   DoubleVector amsbGaugino(3);
@@ -2928,8 +2958,8 @@ void MssmSoftPars::addAmsb(double maux) {
 }
 
 
-void MssmSoftPars::u1R_PQflip() {
-  setSusyMu(-displaySusyMu());
+void MssmSoftPars::u1R_PQflip(MssmSusy & s) {
+  s.setSusyMu(-s.displaySusyMu());
   mGaugino = -1. * mGaugino;
   ua = -1. * ua;
   da = -1. * da;
@@ -2938,10 +2968,10 @@ void MssmSoftPars::u1R_PQflip() {
 
 // Reads in universal boundary conditions at the current scale:
 // m0, M1/2, A0, B and sign of mu
-void MssmSoftPars::universal(double m0,  double m12,  double a0,  double mu,
-			     double m3sq) {
-  standardSugra(m0, m12, a0);  
-  setSusyMu(mu);
+void MssmSoftPars::universal(MssmSusy & xx, double m0,  double m12,  
+			     double a0,  double mu, double m3sq) {
+  standardSugra(xx, m0, m12, a0);  
+  xx.setSusyMu(mu);
   setM3Squared(m3sq);
 }
 
@@ -2961,18 +2991,19 @@ void MssmSoftPars::universalGauginos(double m12) {
   int i; for (i=1; i<=3; i++) setGauginoMass(i, m12);
 }
 
-void MssmSoftPars::universalTrilinears(double a0)  {  
+void MssmSoftPars::universalTrilinears(const MssmSusy & a, double a0)  {  
   // trilinears
-  setTrilinearMatrix(UA, a0 * displayYukawaMatrix(YU)); 
-  setTrilinearMatrix(DA, a0 * displayYukawaMatrix(YD));
-  setTrilinearMatrix(EA, a0 * displayYukawaMatrix(YE));
+  setTrilinearMatrix(UA, a0 * a.displayYukawaMatrix(YU)); 
+  setTrilinearMatrix(DA, a0 * a.displayYukawaMatrix(YD));
+  setTrilinearMatrix(EA, a0 * a.displayYukawaMatrix(YE));
 } 
 
 // Input m0, NOT m0 squared.
-void MssmSoftPars::standardSugra(double m0,  double m12, double a0) {
+void MssmSoftPars::standardSugra(const MssmSusy & a, double m0,  double m12, 
+				 double a0) {
   universalScalars(m0);
   universalGauginos(m12);
-  universalTrilinears(a0);
+  universalTrilinears(a, a0);
 }
 
 #define HR "---------------------------------------------------------------\n"
@@ -3043,8 +3074,8 @@ istream & operator >>(istream &left, MssmSoftPars &s) {
 
 // Boundary conditions to be applied at messenger scale for Gauge mediated
 // SUSY breaking (see hep-ph/9703211 for example)
-void MssmSoftPars::minimalGmsb(int n5, double LAMBDA, double mMess, 
-			       double cgrav) {
+void MssmSoftPars::minimalGmsb(const MssmSusy & xx, int n5, double LAMBDA, 
+			       double mMess, double cgrav) {
   
   // Modified thresholds by JEL 1-26-04 to accomodate numerical infinities
   
@@ -3079,16 +3110,16 @@ void MssmSoftPars::minimalGmsb(int n5, double LAMBDA, double mMess,
   /// since these equations are for L=-M/2 gaugino gaugino. See hep-ph/9801271:
   /// BCA 27/7/12
   double m1, m2, m3;
-  m1 = n5d * sqr(displayGaugeCoupling(1)) / (16.0 * sqr(PI)) * LAMBDA * g; 
-  m2 = n5d * sqr(displayGaugeCoupling(2)) / (16.0 * sqr(PI)) * LAMBDA * g; 
-  m3 = n5d * sqr(displayGaugeCoupling(3)) / (16.0 * sqr(PI)) * LAMBDA * g; 
+  m1 = n5d * sqr(xx.displayGaugeCoupling(1)) / (16.0 * sqr(PI)) * LAMBDA * g; 
+  m2 = n5d * sqr(xx.displayGaugeCoupling(2)) / (16.0 * sqr(PI)) * LAMBDA * g; 
+  m3 = n5d * sqr(xx.displayGaugeCoupling(3)) / (16.0 * sqr(PI)) * LAMBDA * g; 
   setGauginoMass(1, m1);   setGauginoMass(2, m2);   setGauginoMass(3, m3);
   
   setM32(2.37e-19 * LAMBDA * mMess * cgrav);
   
-  double g1f = sqr(sqr(displayGaugeCoupling(1)));
-  double g2f = sqr(sqr(displayGaugeCoupling(2)));
-  double g3f = sqr(sqr(displayGaugeCoupling(3)));
+  double g1f = sqr(sqr(xx.displayGaugeCoupling(1)));
+  double g2f = sqr(sqr(xx.displayGaugeCoupling(2)));
+  double g3f = sqr(sqr(xx.displayGaugeCoupling(3)));
   
   double mursq, mdrsq, mersq, mqlsq, mllsq;
   mursq = 2.0 * f * sqr(LAMBDA) * n5d * 
@@ -3120,5 +3151,5 @@ void MssmSoftPars::minimalGmsb(int n5, double LAMBDA, double mMess,
   setMh2Squared(mllsq);
   setSoftMassMatrix(mEr, mersq * id);
   
-  universalTrilinears(0.0);
+  universalTrilinears(xx, 0.0);
 }
