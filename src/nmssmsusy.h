@@ -49,11 +49,10 @@ namespace softsusy {
     : sBrevity(s)
     , lsq(s.lsq), ksq(s.ksq), l4(s.l4), k4(s.k4)
   {}
-  
-  /// Contains only RPC-NMSSM parameters 
-  class NmssmSusy: public MssmSusy {
+
+  /// Contains NMSSM only part of RPC SUSY parameters
+  class NmssmSusyPars {
   private:
-    Approx nmssmSusyApprox; ///< Number of loops and thresholds
     /// new nmssm parameters, lambda, kappa appearing as superpotential
     /// terms, lambda S H_u H_d and \frac{1}{3} kappa S^3 and sVev is
     /// the vev of the singlet superfield defined by sVev = \sqrt{2}<S>.
@@ -63,7 +62,45 @@ namespace softsusy {
     /// They appear in superpotential terms xiF S and \frac{1}{2} mupr
     /// S^2
     double xiF, mupr;
-    
+  public:
+    NmssmSusyPars(); ///< Constructor fills object with zeroes by default
+    NmssmSusyPars(const NmssmSusyPars & );
+    NmssmSusyPars(double sv, double lambda, double kappa, double xiF, 
+		  double mupr);
+    const NmssmSusyPars & operator=(const NmssmSusyPars & s);
+    virtual ~NmssmSusyPars() {};
+
+    /// sets DRbar running singlet vev.
+    void setSvev(double s) { sVev = s; };
+    /// sets the \lambda S H_u H_d coupling
+    void setLambda(double l) { lambda = l; };
+    /// sets the \frac{1}{3} \kappa S^3 coupling
+    void setKappa(double k) { kappa = k; };
+    /// sets the \frac{1}{2} mupr S^2 coupling
+    void setMupr(double m) { mupr = m; };
+    /// sets the xiF S coupling
+    void setXiF(double x) { xiF = x; };
+    /// sets the whole object
+    void setNmssmSusyPars(const NmssmSusyPars &s);
+
+    /// returns DRbar running Singlet Higgs vev
+    double displaySvev() const { return sVev; };
+    /// returns superpotential parameter lambda
+    double displayLambda() const { return lambda; };
+    /// returns superpotential parameter lambda
+    double displayKappa() const { return kappa; };
+    /// returns mupr superpotential parameter
+    double displayMupr() const { return mupr; };
+    /// returns xiF superpotential parameter
+    double displayXiF() const { return xiF; };
+    /// returns whole object
+    const NmssmSusyPars & displayNmssmSusyPars() const { return *this; };
+  };
+  
+  /// Contains only RPC-NMSSM parameters 
+  class NmssmSusy: public MssmSusy, public NmssmSusyPars {
+  private:
+    Approx nmssmSusyApprox; ///< Number of loops and thresholds
   public:
     NmssmSusy(); ///< Constructor fills object with zeroes by default
     /// Constructor sets object to be equal to another
@@ -78,26 +115,16 @@ namespace softsusy {
 	      double tb,  double hv, int l, int t, double sv,
 	      double lambda, double kappa, double xiF, 
 	      double mupr);
-    NmssmSusy(double sv, double lambda, double kappa, double xiF, 
-		  double mupr);
+    NmssmSusy(double lambda, double kappa, double sv, double xiF, 
+	      double mupr);
     
-    inline const NmssmSusy & displayNmssmSusy() const;
+    inline const NmssmSusy & displayNmssmSusy() const { return *this; };
     
     virtual ~NmssmSusy(); ///< Default destructor
     
     /// sets object to be equal to another
     const NmssmSusy & operator=(const NmssmSusy & s);
     
-    /// sets DRbar running singlet vev.
-    void setSvev(double s);
-    /// sets the \lambda S H_u H_d coupling
-    void setLambda(double);
-    /// sets the \frac{1}{3} \kappa S^3 coupling
-    void setKappa(double);
-    /// sets the \frac{1}{2} mupr S^2 coupling
-    void setMupr(double);
-    /// sets the xiF S coupling
-    void setXiF(double);
     void setNmssmLoops(double l) { nmssmSusyApprox.setLoops(l); };
     void setNmssmApprox(int l, int t) { nmssmSusyApprox.setLoops(l); 
       nmssmSusyApprox.setThresholds(t); }; 
@@ -109,16 +136,6 @@ namespace softsusy {
       return nmssmSusyApprox.displayThresholds(); 
     };
     Approx displayNmssmSusyApprox() const { return nmssmSusyApprox; };
-    /// returns DRbar running Singlet Higgs vev
-    double displaySvev() const;
-    /// returns superpotential parameter lambda
-    double displayLambda() const;
-    /// returns superpotential parameter lambda
-    double displayKappa() const;
-    /// returns mupr superpotential parameter
-    double displayMupr() const;
-    /// returns xiF superpotential parameter
-    double displayXiF() const;
     /// Returns all parameters as elements of a vector
     const DoubleVector display() const;
 
@@ -159,10 +176,6 @@ namespace softsusy {
     double displayMuEff() const { return displaySusyMu() + 
 	displayLambda() * displaySvev() / sqrt(2.0); };
   };
-  
-  const NmssmSusy & NmssmSusy::displayNmssmSusy() const { 
-    return *this; 
-  }
   
   /// Contains all supersymmetric RPC-MSSM parameters and RGEs
   class NmssmSusyRGE: public RGE, public NmssmSusy {
@@ -223,21 +236,7 @@ namespace softsusy {
   inline const NmssmSusyRGE & NmssmSusyRGE::displaySusy() const { 
     return *this; 
   }
-  
-  inline double NmssmSusy::displaySvev() const { return sVev; }
-  
-  inline void NmssmSusy::setSvev(double h) { sVev = h; }
-  inline void NmssmSusy::setMupr(double f) { mupr = f; }
-  inline void NmssmSusy::setXiF(double z) { xiF = z; }
-  
-  inline void NmssmSusy::setLambda(double l) { lambda = l; }
-  inline void NmssmSusy::setKappa(double k) { kappa = k; }
-  
-  inline double NmssmSusy::displayMupr() const { return mupr; }
-  inline double NmssmSusy::displayXiF() const { return xiF; }
-  inline double NmssmSusy::displayLambda() const { return lambda; }
-  inline double NmssmSusy::displayKappa() const { return kappa; }
-  
+    
 } ///< namespace softsusy
 
 #endif

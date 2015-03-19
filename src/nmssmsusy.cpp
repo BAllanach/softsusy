@@ -33,6 +33,38 @@ namespace softsusy {
     l4 = lsq * lsq; k4 = ksq * ksq;
   }
   
+  NmssmSusyPars::NmssmSusyPars()
+    : lambda(0.), kappa(0.), sVev(0.), xiF(0.), mupr(0.) {}
+
+  NmssmSusyPars::NmssmSusyPars(const NmssmSusyPars & s) {
+    lambda = s.displayLambda();
+    kappa  = s.displayKappa();
+    sVev   = s.displaySvev();
+    xiF    = s.displayXiF();
+    mupr   = s.displayMupr();
+  }
+
+  NmssmSusyPars::NmssmSusyPars(double l, double k, double s, double x, double m)
+    : lambda(l), kappa(k), sVev(s), xiF(x), mupr(m) {}
+
+  const NmssmSusyPars & NmssmSusyPars::operator=(const NmssmSusyPars &s) {
+    if (this == &s) return *this;
+    lambda = s.displayLambda();
+    kappa  = s.displayKappa();
+    sVev   = s.displaySvev();
+    xiF    = s.displayXiF();
+    mupr   = s.displayMupr();
+    return *this;
+  }
+
+  void NmssmSusyPars::setNmssmSusyPars(const NmssmSusyPars &s) {
+    sVev   = s.displaySvev();
+    lambda = s.displayLambda();
+    kappa  = s.displayKappa();
+    mupr   = s.displayMupr();
+    xiF    = s.displayXiF();
+  }
+
   
   NmssmSusyRGE::NmssmSusyRGE()
     : NmssmSusy() {
@@ -41,12 +73,10 @@ namespace softsusy {
   
   NmssmSusy::NmssmSusy(double s, double l, double k, double z, 
 			       double m) 
-    : lambda(l), kappa(k), sVev(s), xiF(z), mupr(m) {}
+    : NmssmSusyPars(l, k, s, z, m) {}
   
   NmssmSusyRGE::NmssmSusyRGE(const NmssmSusyRGE &s)
-    : NmssmSusy(s.displaySvev(), s.displayLambda(), 
-		    s.displayKappa(), s.displayXiF(), 
-		    s.displayMupr()) {
+    : NmssmSusy(s.displayNmssmSusy()) {
     setSusy(s.displayMssmSusy());
     setPars(numNMssmPars);
   }
@@ -84,11 +114,12 @@ namespace softsusy {
   
   const NmssmSusy & NmssmSusy::operator=(const NmssmSusy & s) {
     if (this == &s) return *this;
-    sVev = s.sVev;
-    lambda = s.lambda;
-    kappa = s.kappa;
-    mupr = s.mupr;
-    xiF = s.xiF;
+    setNmssmSusyPars(s.displayNmssmSusyPars());
+    setSvev(s.displaySvev());
+    setLambda(s.displayLambda());
+    setKappa(s.displayKappa());
+    setMupr(s.displayMupr());
+    setXiF(s.displayXiF());
     nmssmSusyApprox = s.displayNmssmSusyApprox();
     return *this;
   }
@@ -113,8 +144,7 @@ namespace softsusy {
 		       double tb,  double hv, int l, int t, double sv,
 		       double lam, double kap, double z, 
 		       double mup)
-    : MssmSusy(u, d, e, v, m, tb, hv), nmssmSusyApprox(), lambda(lam), 
-      kappa(kap), xiF(z), mupr(mup) {
+    : MssmSusy(u, d, e, v, m, tb, hv), NmssmSusyPars(lam, kap, sv, z, mup) {
     setNmssmApprox(l, t);
   }
   
