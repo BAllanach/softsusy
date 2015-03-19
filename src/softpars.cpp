@@ -90,6 +90,30 @@ double MssmSoftPars::displaySoftMassSquared(softMasses k, int i, int j)
   }
 }
 
+void MssmSoftPars::set(const DoubleVector & y) {
+  int i, j, k=numSusyPars;
+  for (i=1; i<=3; i++) {
+    k++;
+    mGaugino(i) = y.display(k);
+  }
+  
+  for (i=1; i<=3; i++)
+    for (j=1; j<=3; j++) {
+      k++;
+      ua(i, j) = y.display(k);
+      da(i, j) = y.display(k+9);
+      ea(i, j) = y.display(k+18);
+      mQLsq(i, j) = y.display(k+27);
+      mURsq(i, j) = y.display(k+36);
+      mDRsq(i, j) = y.display(k+45);
+      mLLsq(i, j) = y.display(k+54);
+      mSEsq(i, j) = y.display(k+63);
+    }
+  m3sq = y.display(k+64);
+  mH1sq = y.display(k+65);
+  mH2sq = y.display(k+66);
+}
+
 void MssmSoftPars::setSoftMassElement(softMasses k, int i, int j, 
 				      double f) { 
   switch(k) {

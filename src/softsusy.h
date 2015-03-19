@@ -79,7 +79,7 @@ namespace softsusy {
   
   /// Contains all supersymmetric MSSM parameters, incorporating R_p MSSM
   class MssmSoftsusy: public MssmSusy, public MssmSoftPars, public AltEwsbMssm,
-		      public RGE, public Approx {
+		      public Approx, public RGE {
     /// Includes 
     /// - Soft terms
     /// - DRbar masses
@@ -109,7 +109,7 @@ namespace softsusy {
     void setT2OV2Ms(double t2) { t2OV2Ms = t2; } 
     void setT1OV1Ms1loop(double t1) { t1OV1Ms1loop = t1; }
     void setT2OV2Ms1loop(double t2) { t2OV2Ms1loop = t2; }
-    double mxBC;        ///< Scale at which SUSY breaking boundary conditions set
+    double mxBC; ///< Scale at which SUSY breaking boundary conditions set
     
   public:
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
@@ -140,7 +140,7 @@ namespace softsusy {
     
     /// Return contents of object in a vector: for RG evolution
     virtual const DoubleVector display() const; 
-
+    
     /// Displays whole object as a const
     inline const MssmSoftsusy & displayMssmSoft() const;
     
@@ -156,7 +156,7 @@ namespace softsusy {
     inline const QedQcd & displayDataSet() const;
     /// Return a trilinear element in "SUGRA style"
     double displaySoftA(trilinears, int, int) const;
-
+    
     /// Displays iteration accuracy attained 
     inline double displayFracDiff() const { return fracDiff; }; 
     double displayMinpot() const;    ///< Returns minimum of Higgs potential
@@ -248,7 +248,7 @@ namespace softsusy {
     void setPredMzSq(double a) { predMzSq = a; }
     /// Sets total set of RGE parameters equal to elements of a vector
     void set(const DoubleVector &);
-
+    
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
     /// Switch 2-loop threshold \f$O(\alpha_s^2), O(\alpha_s \alpha_b),
     /// O(\alpha_s \alpha_t) \f$ corrections to
@@ -306,7 +306,12 @@ namespace softsusy {
       }
     }
 #endif
-   
+    
+    /// Returns double vector containing numerical beta functions of parameters
+    DoubleVector beta() const { 
+      return MssmSoftPars::beta(displayMssmSusy());
+    }; 
+    
     ///  sets fracDiff, needed for access by NmssmSoftsusy methods
     void setFracDiff(double fD) { fracDiff = fD; };
     ///  fixes trilnear H1-sfermion-sfermion couplings 
@@ -1384,7 +1389,7 @@ namespace softsusy {
     setHvev(hv);
     setPars(110);
     setMu(mu);
-
+    
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
     decoupling_corrections.das.one_loop = 0;
     decoupling_corrections.das.two_loop = 0;
@@ -1478,7 +1483,23 @@ namespace softsusy {
   /// integrates LEP2 likelihood for SM higgs with 2 GeV Gaussian error, returns
   /// the log likelihood
   double lnLHiggs(double mh);
-  } //</ namespace softsusy
+  
+  /*  class MssmSoftsusyRGE: public RGE {
+  private:
+  public:
+    MssmSoftsusyRGE();
+    MssmSoftsusyRGE(const MssmSoftsusy RGE &);
+    const MssmSoftsusyRGE & operator=(const MssmSoftsusyRGE & s);
+    /// Sets total set of RGE parameters equal to elements of a vector
+    void set(const DoubleVector &);
+    /// Return contents of object in a vector: for RG evolution
+    virtual const DoubleVector display() const; 
+    DoubleVector beta(const MssmSusy &) const { return MssmSoftsusy::beta(); }; 
+    };*/
+    
+} //</ namespace softsusy
+
+
 
 #endif
 

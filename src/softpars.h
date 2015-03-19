@@ -104,7 +104,9 @@ namespace softsusy {
     void setM3Squared(double);  ///< Sets \f$ m_3^2\f$
     void setMh1Squared(double); ///< Sets \f$ m_{H_1}^2\f$
     void setMh2Squared(double); ///< Sets \f$ m_{H_2}^2\f$
-    
+    /// Sets all SUSY breaking parameters only - not SUSY ones
+    void set(const DoubleVector & y);
+
     /// Returns double vector containing numerical beta functions of parameters
     DoubleVector beta(const MssmSusy &) const; 
     /// Returns numerical beta functions of parameters  
