@@ -71,7 +71,8 @@ namespace softsusy {
 				   double & gH1H1, double & gH2H2,
 				   double & gSS, nmsBrevity & a);
   /// beta functions
-  NmssmSusy beta(nmsBrevity & a, const MssmSusy & s, const NmssmSusyPars & n);
+  NmssmSusy betaNmssmSusy(nmsBrevity & a, const MssmSusy & s, 
+			  const NmssmSusyPars & n);
   /// Outputs beta function coefficients for MSSM gauge coupling evolution in
   /// arguments.
   void nmsetBetas(DoubleMatrix &, DoubleVector  &, DoubleVector  &, DoubleVector
@@ -160,8 +161,6 @@ namespace softsusy {
       anomalousDimensionNmssmSusy(s, displayNmssmSusyPars(), gEE, gLL, gQQ, gUU,
 				  gDD, dg, gH1H1, gH2H2, gSS, a);
     };
-    /// Calculate beta functions of SUSY preserving parameters of RPC NMSSM
-    NmssmSusyPars beta(nmsBrevity & a, const MssmSusy & s) const;
   }; ///< end of NmssmSusyPars
 
   /// Contains all SUSY RPC-NMSSM parameters but is not an RGE object

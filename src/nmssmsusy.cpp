@@ -139,8 +139,8 @@ namespace softsusy {
   // EXCEPT for the sign of smu, which is opposite. These equations are also
   // valid for W=  - LL Y^E H1 ER - QL Y^D H1 DR + QL Y^U H2 UR + smu H2 H1, the
   // New SOFTSUSY convention
-  NmssmSusy beta(nmsBrevity & a, const MssmSusy & s, 
-		 const NmssmSusyPars & n) {
+  NmssmSusy betaNmssmSusy(nmsBrevity & a, const MssmSusy & s, 
+			  const NmssmSusyPars & n) {
     // Wave function renormalisations: convention for g**(i, j) is that i is the
     // LOWER index and j the upper in our paper hep-ph/9902251
     static DoubleMatrix gEE(3, 3), gLL(3, 3), gQQ(3, 3), gDD(3, 3),
@@ -334,6 +334,10 @@ namespace softsusy {
 			       gH2H2, double & gSS, nmsBrevity & a) const {
     MssmSusy::getTwoLpAnom(gEE, gLL, gQQ, gDD, gUU, gH1H1, gH2H2, a);
     addTwoLpAnomNmssm(gEE, gLL, gQQ, gDD, gUU, gH1H1, gH2H2, gSS, a);
+  }
+
+  NmssmSusy NmssmSusy::beta(nmsBrevity & a) const {
+    return betaNmssmSusy(a, displayMssmSusy(), displayNmssmSusyPars());
   }
   /** end of NmssmSusy **/
 
