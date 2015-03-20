@@ -15,9 +15,8 @@
 
 #include "susy.h"
 
-namespace softsusy {
-  
-  // with the 5 new nmssm parameters we now have 38 in total
+namespace softsusy {  
+  /// with the 5 new nmssm parameters we now have 38 in total
   const static int numNMssmPars = numSusyPars + 5;
   
   /// Contains data needed in beta function calculation to make it faster
@@ -38,7 +37,7 @@ namespace softsusy {
     void calculate(const DoubleMatrix & yu, const DoubleMatrix & yd, const
 		   DoubleMatrix & ye, const DoubleVector & g,
 		   const double & lam, const double & kap);
-  };
+  }; 
   
   inline nmsBrevity::nmsBrevity()
     : sBrevity()
@@ -49,8 +48,39 @@ namespace softsusy {
     : sBrevity(s)
     , lsq(s.lsq), ksq(s.ksq), l4(s.l4), k4(s.k4)
   {}
+  /** end of nmsBrevity **/
 
-  /// Contains NMSSM only part of RPC SUSY parameters
+  /** Start of functions used in the RGEs **/
+  class NmssmSusyPars; class NmssmSusy;
+  /// Adds NMSSM one loop pieces onto the wave function renomalisation
+  void addOneLpAnomNmssm(double & gH1H1, double & gH2H2, double & gSS, 
+			 double lambda, double kappa);
+  /// Adds NMSSM two loop pieces onto the wave function renomalisation. a
+  /// should be calculated before it is called. 
+  void addTwoLpAnomNmssm(DoubleMatrix & gEE, DoubleMatrix & gLL,
+			 DoubleMatrix & gQQ, DoubleMatrix & gDD,
+			 DoubleMatrix & gUU, double & gH1H1, double &
+			 gH2H2, double & gSS, nmsBrevity & a);
+  /// Organises the calculation of the NMSSM+MSSM pieces of the anomalous 
+  /// dimensions
+  void anomalousDimensionNmssmSusy(const MssmSusy & s, const NmssmSusyPars & n,
+				   DoubleMatrix & gEE, 
+				   DoubleMatrix & gLL,DoubleMatrix & gQQ, 
+				   DoubleMatrix & gUU,
+				   DoubleMatrix & gDD, DoubleVector & dg, 
+				   double & gH1H1, double & gH2H2,
+				   double & gSS, nmsBrevity & a);
+  /// beta functions
+  NmssmSusy beta(nmsBrevity & a, const MssmSusy & s, const NmssmSusyPars & n);
+  /// Outputs beta function coefficients for MSSM gauge coupling evolution in
+  /// arguments.
+  void nmsetBetas(DoubleMatrix &, DoubleVector  &, DoubleVector  &, DoubleVector
+		  &, DoubleVector  &, DoubleVector  & );
+  /// Outputs beta function coefficients for lambda.
+  void setBetaLambda(DoubleVector&);
+  /** end of RGE functions **/
+
+  /// Contains NMSSM-only part of RPC SUSY parameters
   class NmssmSusyPars {
   private:
     /// new nmssm parameters, lambda, kappa appearing as superpotential
@@ -95,9 +125,46 @@ namespace softsusy {
     double displayXiF() const { return xiF; };
     /// returns whole object
     const NmssmSusyPars & displayNmssmSusyPars() const { return *this; };
-  };
-  
-  /// Contains only RPC-NMSSM parameters 
+
+    /// Outputs one-loop anomalous dimensions gii given matrix inputs.
+    /// for RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1 and H2
+    /// respectively. Note that we use the convention (for matrices in terms of
+    /// gamma's): gamma^Li_Lj = M_ij for LH fields and
+    /// gamma^Rj_Ri = M_ij for RH fields (since they are really the complex
+    /// conjugates of the RH fields). a should already be defined.
+    void getOneLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
+		      DoubleMatrix & gQQ, DoubleMatrix & gDD,
+		      DoubleMatrix & gUU, double & gH1H1, double &
+		      gH2H2, double & gSS, nmsBrevity & a, int loops) const;
+    /// Outputs two-loop anomlous dimensions gii given matrix inputs.
+    /// for RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1 and H2
+    /// respectively. Note that we use the convention (for matrices in terms of
+    /// gamma's): gamma^Li_Lj = M_ij for LH fields and
+    /// gamma^Rj_Ri = M_ij for RH fields (since they are really the complex
+    /// conjugates of the RH fields). a should already be defined.
+    void getTwoLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
+		      DoubleMatrix & gQQ, DoubleMatrix & gDD,
+		      DoubleMatrix & gUU, double & gH1H1, double &
+		      gH2H2, double & gSS, nmsBrevity & a, int loops) const;
+    /// Outputs wave function renormalisation for SUSY parameters and gauge beta
+    /// functions up to 2 loops. Also calculates and outputs a.
+    /// IO parameters: RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1
+    /// and H2 respectively.
+    /// g^Li_Lj = m_{ij} for LH fields
+    /// g^Ei_Ej = m_{ji} for RH fields
+    void anomalousDimension
+    (const MssmSusy & s, DoubleMatrix & gEE, DoubleMatrix & gLL,
+     DoubleMatrix & gQQ, DoubleMatrix & gUU, DoubleMatrix & gDD, 
+     DoubleVector & dg, double & gH1H1, double & gH2H2, double & gSS, 
+     nmsBrevity & a, int loops)  const {
+      anomalousDimensionNmssmSusy(s, displayNmssmSusyPars(), gEE, gLL, gQQ, gUU,
+				  gDD, dg, gH1H1, gH2H2, gSS, a);
+    };
+    /// Calculate beta functions of SUSY preserving parameters of RPC NMSSM
+    NmssmSusyPars beta(nmsBrevity & a, const MssmSusy & s) const;
+  }; ///< end of NmssmSusyPars
+
+  /// Contains all SUSY RPC-NMSSM parameters but is not an RGE object
   class NmssmSusy: public MssmSusy, public NmssmSusyPars {
   private:
     Approx nmssmSusyApprox; ///< Number of loops and thresholds
@@ -129,7 +196,6 @@ namespace softsusy {
     void setNmssmApprox(int l, int t) { nmssmSusyApprox.setLoops(l); 
       nmssmSusyApprox.setThresholds(t); }; 
     void setNmssmApprox(const Approx & a) { nmssmSusyApprox = a; };
-    
     
     int displayNmssmLoops() const { return nmssmSusyApprox.displayLoops(); };
     int displayNmssmThresholds() const { 
@@ -167,17 +233,12 @@ namespace softsusy {
     /// and H2 respectively.
     /// g^Li_Lj = m_{ij} for LH fields
     /// g^Ei_Ej = m_{ji} for RH fields
-    void anomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
-			    DoubleMatrix & gQQ, DoubleMatrix & gUU,
-			    DoubleMatrix & gDD, DoubleVector & dg,
-			    double & gH1H1, double & gH2H2, double & gSS,
-			    nmsBrevity & a) const;
     /// Returns the effective mu parameter
     double displayMuEff() const { return displaySusyMu() + 
 	displayLambda() * displaySvev() / sqrt(2.0); };
-  };
+  }; ///< end of NmssmSusy
   
-  /// Contains all supersymmetric RPC-MSSM parameters and RGEs
+  /// Contains all supersymmetric RPC-MSSM parameters and is an RGE
   class NmssmSusyRGE: public RGE, public NmssmSusy {
   private:
   public:
@@ -210,13 +271,13 @@ namespace softsusy {
     void set(const DoubleVector &);
     
     /// Returns whole object as a const
-    inline const NmssmSusyRGE & displaySusy() const;
+    inline const NmssmSusyRGE & displaySusy() const { return *this; };
     /// Returns all parameters as elements of a vector
     const DoubleVector display() const;
     
     /// Calculate beta functions of SUSY preserving parameters of RPC MSSM
     DoubleVector beta() const;
-  };
+  }; ///< end of NmssmSusyRGE
   
   
   /// Formatted output
@@ -225,18 +286,6 @@ namespace softsusy {
   /// Formatted input
   istream & operator >>(istream &left, NmssmSusyRGE &s);
   
-  /// Outputs beta function coefficients for MSSM gauge coupling evolution in
-  /// arguments.
-  void nmsetBetas(DoubleMatrix &, DoubleVector  &, DoubleVector  &, DoubleVector
-		  &, DoubleVector  &, DoubleVector  & );
-  
-  /// Outputs beta function coefficients for lambda.
-  void setBetaLambda(DoubleVector&);
-  
-  inline const NmssmSusyRGE & NmssmSusyRGE::displaySusy() const { 
-    return *this; 
-  }
-    
 } ///< namespace softsusy
 
 #endif
