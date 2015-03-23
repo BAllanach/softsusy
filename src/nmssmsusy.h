@@ -113,7 +113,7 @@ namespace softsusy {
     void setXiF(double x) { xiF = x; };
     /// sets the whole object
     void setNmssmSusyPars(const NmssmSusyPars &s);
-    void set(const DoubleVector & y);
+    void setNmssmSusyPars(const DoubleVector & y);
 
     /// returns DRbar running Singlet Higgs vev
     double displaySvev() const { return sVev; };
@@ -264,12 +264,11 @@ namespace softsusy {
     const NmssmSusyRGE & operator=(const MssmSusy & s);
     /// sets object to be equal to another
     void setSusy(const NmssmSusyRGE &s);
+    void set(const DoubleVector & y);
     
     /// Copies MSSM Yukawa matrices and gauge couplings from s only
     void setSomePars(const NmssmSusyRGE & s);
-    /// Sets all RGE parameters to elements of vector
-    void set(const DoubleVector &);
-    
+
     /// Returns whole object as a const
     inline const NmssmSusyRGE & displaySusy() const { return *this; };
     /// Returns all parameters as elements of a vector

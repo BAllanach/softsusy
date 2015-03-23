@@ -582,7 +582,7 @@ namespace softsusy {
   }
   
   void SoftParsNmssm::set(const DoubleVector & y, NmssmSusyPars & n) {
-    n.set(y);
+    n.setNmssmSusyPars(y);
     int k=numNMssmPars + 12;
     /*     for (i=1; i<=3; i++) {
 	   k++;

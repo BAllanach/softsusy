@@ -304,8 +304,10 @@ void NmssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   double a0 = inputParameters.display(3);
 
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
-  /// trilinear scalar coupling to be a0
-  m.standardSugra(m0, m12, a0);
+  /// trilinear scalar coupling to be a
+  m.SoftParsNmssm::standardSugra(m0, m12, a0, m.displayNmssmSusy(), 
+				 m.displayMssmSoftPars());
+  m.MssmSoftPars::standardSugra(m0, m12, a0);
 }
 
 //PA: msugra bcs in the mssm limit of the general nmssm
