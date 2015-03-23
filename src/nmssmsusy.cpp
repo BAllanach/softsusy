@@ -278,6 +278,14 @@ namespace softsusy {
     mupr   = s.displayMupr();
     xiF    = s.displayXiF();
   }
+
+  void NmssmSusyPars::set(const DoubleVector & y) {
+    setSvev(y.display(34));
+    setLambda(y.display(35));
+    setKappa(y.display(36));
+    setMupr(y.display(37));
+    setXiF(y.display(38));
+  }
   /** end of NmssmSusyPars **/
 
   /** start of NmssmSusy **/
@@ -410,11 +418,7 @@ namespace softsusy {
   void NmssmSusyRGE::set(const DoubleVector & y) {
     assert(y.displayEnd() - y.displayStart() + 1 >= numNMssmPars);
     MssmSusy::set(y);
-    setSvev(y.display(34));
-    setLambda(y.display(35));
-    setKappa(y.display(36));
-    setMupr(y.display(37));
-    setXiF(y.display(38));
+    NmssmSusy::set(y);
   }
   
   ostream & operator <<(ostream &left, const NmssmSusyRGE &s) {

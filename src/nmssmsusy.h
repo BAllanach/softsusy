@@ -113,6 +113,7 @@ namespace softsusy {
     void setXiF(double x) { xiF = x; };
     /// sets the whole object
     void setNmssmSusyPars(const NmssmSusyPars &s);
+    void set(const DoubleVector & y);
 
     /// returns DRbar running Singlet Higgs vev
     double displaySvev() const { return sVev; };

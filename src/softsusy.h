@@ -309,7 +309,7 @@ namespace softsusy {
     
     /// Returns double vector containing numerical beta functions of parameters
     DoubleVector beta() const { 
-      return MssmSoftPars::beta(displayMssmSusy());
+      return MssmSoftPars::beta(displayMssmSusy()); 
     }; 
     
     ///  sets fracDiff, needed for access by NmssmSoftsusy methods
