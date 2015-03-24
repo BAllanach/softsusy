@@ -46,7 +46,7 @@ ostream & operator <<(ostream &left, const RpvSoftsusy & r) {
 }
 
 const DoubleVector RpvSoftsusy::display() const {
-  DoubleVector parameters(SoftParsMssm::display());
+  DoubleVector parameters(MssmSoftPars::display());
   int k = parameters.displayEnd() + 1;
   parameters.setEnd(numRpvSoftPars);
   RpvSusyPars::display(parameters, k); 
@@ -298,7 +298,7 @@ RpvSoftsusy RpvSoftsusy::beta2() const {
   const Tensor &her = displayHr(LE), &hur = displayHr(LU), hdr = displayHr(LD);
 
   RpvSoftsusy dR;
-  dR.setSoftPars(SoftParsMssm::beta2());
+  dR.setSoftPars(MssmSoftPars::beta2(displayMssmSusy()));
 
   // Supersymmetric coupling renormalisation first:
   // Extract RPC anomalous dimension part
@@ -342,8 +342,8 @@ RpvSoftsusy RpvSoftsusy::beta2() const {
 
   double g1H1H1, g1H2H2;
   g1H1H1 = 0.0; g1H2H2 = 0.0;
-  SoftParsMssm::anomalousDeriv(g1EE, g1LL, g1QQ, g1UU, g1DD, g1H1H1,
-				   g1H2H2);
+  MssmSoftPars::anomalousDeriv(displayMssmSusy(), g1EE, g1LL, g1QQ, g1UU, 
+			       g1DD, g1H1H1, g1H2H2);
 
   DoubleMatrix g1LLtot(3, 3), g1EEtot(3, 3), g1QQtot(3, 3), 
     g1DDtot(3, 3), g1UUtot(3, 3); 
@@ -359,7 +359,7 @@ RpvSoftsusy RpvSoftsusy::beta2() const {
   rpvyTildes(yeTildeRpv, ydTildeRpv, leTilde, ldTilde, luTilde);
   DoubleMatrix yeTilde(3, 3), ydTilde(3, 3), yuTilde(3, 3);
   DoubleMatrix yeTildeRpc(3, 3), ydTildeRpc(3, 3), yuTildeRpc(3, 3);
-  SoftParsMssm::yTildes(yuTildeRpc, ydTildeRpc, yeTildeRpc);
+  MssmSoftPars::yTildes(displayMssmSusy(), yuTildeRpc, ydTildeRpc, yeTildeRpc);
   yeTilde = (yeTildeRpv + yeTildeRpc);
   ydTilde = (ydTildeRpv + ydTildeRpc);
 
@@ -757,7 +757,7 @@ DoubleVector RpvSoftsusy::calculateSneutrinoVevs
 
 // You must set SUSY RPV parameters before this
 void RpvSoftsusy::standardSugra(double m0,  double m12, double a0) {
-  SoftParsMssm::standardSugra(m0, m12, a0);
+  MssmSoftPars::standardSugra(displayMssmSusy(), m0, m12, a0);
   //setHr(LU, a0 * displayLambda(LU));
   //setHr(LD, a0 * displayLambda(LD));
   //setHr(LE, a0 * displayLambda(LE));
@@ -1918,7 +1918,7 @@ void rpvSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   double m12 = inputParameters.display(2);
   double a0 = inputParameters.display(3);
 
-  m.SoftParsMssm::standardSugra(m0, m12, a0);
+  m.MssmSoftPars::standardSugra(m.displayMssmSusy(), m0, m12, a0);
 
   /// only set the rest if the input parameters if we're not fixing them at MZ
   if (!susyRpvBCatMSUSY) m.rpvSet(inputParameters);
@@ -1932,9 +1932,9 @@ void rpvAmsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   double m32 = inputParameters.display(1);
   double m0 = inputParameters.display(2);
 
-  m.SoftParsMssm::standardSugra(m0, 0, 0);
+  m.MssmSoftPars::standardSugra(m.displayMssmSusy(), m0, 0, 0);
   
-  m.addAmsb(m32);
+  m.addAmsb(m.displayMssmSusy(), m32);
 
   if (!susyRpvBCatMSUSY) m.rpvSet(inputParameters);
 
@@ -1947,7 +1947,7 @@ void rpvGmsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   double lambda = inputParameters.display(3);
   double cgrav = inputParameters.display(4);
 
-  m.minimalGmsb(n5, lambda, mMess, cgrav);
+  m.minimalGmsb(m.displayMssmSusy(), n5, lambda, mMess, cgrav);
   if (!susyRpvBCatMSUSY) m.rpvSet(inputParameters);
 
   return;

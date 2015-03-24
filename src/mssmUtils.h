@@ -14,6 +14,9 @@
 #include <iosfwd>
 #include <string>
 #include "utils.h"
+#include "susy.h"
+#include "softpars.h"
+#include "softsusy.h"
 
 class DoubleVector;
 

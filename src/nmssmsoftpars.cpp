@@ -729,7 +729,8 @@ namespace softsusy {
 				    const MssmSoftPars & msoft) {
     universalScalars(m0);
     //    universalGauginos(m12);
-    SoftParsNmssm::universalTrilinears(a0, n);
+    SoftParsNmssm::universalTrilinears
+      (a0, NmssmSusy(m.displayMssmSusy(), n.displayNmssmSusyPars()));
     if (!Z3) {
       //universal bilinears
       const double susyMu = m.displaySusyMu();

@@ -10,7 +10,7 @@
 
 namespace softsusy {
 
-extern template class Softsusy<SoftParsMssm>;
+  //extern template class MssmSoftsusy;
 
 extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL, 
   ydR, yeL, yeR, ynuL;
@@ -134,7 +134,7 @@ void flavourBcs(MssmSoftsusy & m,
   m.setSoftMassMatrix(mDr, Ud * msd2in.transpose() * Ud.transpose());
 
   /// This sets the trilinears with any universal ones set
-  m.universalTrilinears(inputParameters.display(62));
+  m.universalTrilinears(m.displayMssmSusy(), inputParameters.display(62));
 
   /// This overwrites (in the CKM basis) any of trilinears we need to
   /// First, must transform to SCKM basis

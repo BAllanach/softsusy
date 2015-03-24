@@ -98,7 +98,7 @@ namespace softsusy {
     /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
     /// trilinear scalar coupling to be a0
     ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
-    m.standardSugra(m0, m12, a0);
+    m.standardSugra(m.displayMssmSusy(), m0, m12, a0);
     
     return;
   }
@@ -112,7 +112,7 @@ namespace softsusy {
     /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
     /// trilinear scalar coupling to be a0
     ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
-    m.standardSugra(m0, m12, a0);
+    m.standardSugra(m.displayMssmSusy(), m0, m12, a0);
     m.setMh1Squared(mH * mH); m.setMh2Squared(mH * mH);
     
     return;
@@ -128,7 +128,7 @@ namespace softsusy {
     /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
     /// trilinear scalar coupling to be a0
     ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
-    m.standardSugra(m0, m12, a0);
+    m.standardSugra(m.displayMssmSusy(), m0, m12, a0);
     m.setMh1Squared(mH1 * mH1); m.setMh2Squared(mH2 * mH2);
     
     return;
@@ -139,8 +139,8 @@ namespace softsusy {
     double m32 = inputParameters.display(1);
     double m0 = inputParameters.display(2);
     
-    m.standardSugra(m0, 0., 0.);
-    m.addAmsb(m32);
+    m.standardSugra(m.displayMssmSusy(), m0, 0., 0.);
+    m.addAmsb(m.displayMssmSusy(), m32);
     return;
   }
   
@@ -149,7 +149,7 @@ namespace softsusy {
     double m12 = inputParameters.display(1) * sqrt(3.);
     double a0  = -inputParameters.display(1) * sqrt(3.);
     
-    m.standardSugra(m0, m12, a0);
+    m.standardSugra(m.displayMssmSusy(), m0, m12, a0);
     
     return;
   }
@@ -160,7 +160,7 @@ namespace softsusy {
     double LAMBDA = inputParameters.display(3);
     double cgrav = inputParameters.display(4);
     
-    m.minimalGmsb(n5, LAMBDA, mMess, cgrav);
+    m.minimalGmsb(m.displayMssmSusy(), n5, LAMBDA, mMess, cgrav);
     
     return;
   }
@@ -178,7 +178,7 @@ namespace softsusy {
     /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
     /// trilinear scalar coupling to be a0
     ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
-    m.standardSugra(m0, m12, a0);
+    m.standardSugra(m.displayMssmSusy(), m0, m12, a0);
     
     m.setGauginoMass(2, inputParameters.display(4));
     m.setGauginoMass(3, inputParameters.display(5));
@@ -255,7 +255,7 @@ namespace softsusy {
     m.setSoftMassMatrix(mLl, mllsq * id);
     m.setSoftMassMatrix(mEr, mersq * id);
     
-    m.universalTrilinears(0.0);
+    m.universalTrilinears(m.displayMssmSusy(), 0.0);
     DoubleVector pars(2); ///< encodes EWSB BC
     pars(1) = muOm2 * m2;
     pars(2) = mAOm2 * m2;

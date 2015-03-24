@@ -1039,8 +1039,10 @@ namespace softsusy {
     /// Prints a list of all sparticle/Higgs masses to standard output
     string printLong();
     
-    /// Prints whols object to standard output
-    virtual void printObj() { cout << *this; };
+    /// Prints whole object to standard output
+    virtual void printObj() { 
+      cout << this->displayMssmSusy() << this->displayMssmSoftPars(); 
+    };
     
     /// log(max(a^2, b^2, c^2) / Q^2)
     double thet(double a, double b, double c = 0.0);
