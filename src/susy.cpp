@@ -259,7 +259,10 @@ namespace softsusy {
     return left;
   }
   
-  
+void MssmSusy::setMssmApprox(int l, int t) { 
+    mssmSusyApprox.setLoops(l); 
+    mssmSusyApprox.setThresholds(t);
+  }
   
   /// Outputs derivatives (DRbar scheme) in the form of ds. a contains the
   /// matrices calculated that are handy for computation.

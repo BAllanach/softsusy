@@ -19,7 +19,7 @@
 #include "utils.h"
 #include "rge.h"
 //rruiz
-#include "tensor.h"
+//#include "tensor.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -118,7 +118,7 @@ namespace softsusy {
     void setTanb(double); 
     /// Set loops/thresholds
     void setMssmApprox(int l, int t); 
-    void setMssmApprox(const Approx & a) { mssmSusyApprox = a; };
+    inline void setMssmApprox(const Approx & a) { mssmSusyApprox = a; };
     void set(const DoubleVector &);
     
     int displayMssmLoops() const { return mssmSusyApprox.displayLoops(); };
@@ -211,11 +211,6 @@ namespace softsusy {
 			    double & gH1H1, double & gH2H2, 
 			    sBrevity & a) const; 
   };
-  
-  void MssmSusy::setMssmApprox(int l, int t) { 
-    mssmSusyApprox.setLoops(l); 
-    mssmSusyApprox.setThresholds(t);
-  }
   
   /// Contains all supersymmetric RPC-MSSM parameters 
   class MssmSusyRGE: public RGE, public MssmSusy {

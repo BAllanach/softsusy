@@ -55,6 +55,192 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   return *this;
 }
 
+  MssmSoftsusy::MssmSoftsusy()
+    : MssmSusy(), MssmSoftPars(), AltEwsbMssm(), Approx(), 
+      physpars(), forLoops(), 
+      problem(), msusy(0.0), minV(6.66e66), 
+      mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false), 
+      predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), 
+      t2OV2Ms1loop(0.), mxBC(mxDefault) { 
+    setPars(110);
+    setMu(0.0);
+    
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+    decoupling_corrections.das.one_loop = 0;
+    decoupling_corrections.das.two_loop = 0;
+    
+    decoupling_corrections.dmb.one_loop = 0;
+    decoupling_corrections.dmb.two_loop = 0;
+    
+    decoupling_corrections.dmt.one_loop = 0;
+    decoupling_corrections.dmt.two_loop = 0;
+    
+    decoupling_corrections.dmtau.one_loop = 0;
+    decoupling_corrections.dmtau.two_loop = 0;
+    
+    if (USE_TWO_LOOP_THRESHOLD) {
+      included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
+	ENABLE_TWO_LOOP_AS_AS_YUK | 
+	ENABLE_TWO_LOOP_MB_AS | 
+	ENABLE_TWO_LOOP_MB_YUK |
+	ENABLE_TWO_LOOP_MTAU_YUK;
+    } else {
+      included_thresholds = 0;
+    }
+    
+    
+    
+#endif
+  }
+  
+  
+  MssmSoftsusy::MssmSoftsusy(const MssmSoftsusy & s)
+    : MssmSusy(s.displayMssmSusy()),
+      MssmSoftPars(s.displayMssmSoftPars()), 
+      AltEwsbMssm(s.displayAltEwsbMssm()), 
+      Approx(s.MssmSoftsusy::displayApprox()),
+      physpars(s.displayPhys()), 
+      forLoops(s.displayDrBarPars()), 
+      problem(s.problem), msusy(s.msusy), minV(s.minV), 
+      mw(s.mw), dataSet(s.displayDataSet()), fracDiff(s.displayFracDiff()), 
+      setTbAtMX(s.displaySetTbAtMX()), 
+      altEwsb(s.displayAltEwsb()), predMzSq(s.displayPredMzSq()), 
+      t1OV1Ms(s.displayTadpole1Ms()), t2OV2Ms(s.displayTadpole2Ms()), 
+      t1OV1Ms1loop(s.displayTadpole1Ms1loop()), 
+      t2OV2Ms1loop(s.displayTadpole2Ms1loop()), mxBC(s.displayMxBC()) {
+    
+    setPars(110);
+    setMu(s.displayMu()); 
+    
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+    decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop ; 
+    decoupling_corrections.das.two_loop = s.decoupling_corrections.das.two_loop ; 
+    
+    decoupling_corrections.dmb.one_loop = s.decoupling_corrections.dmb.one_loop ; 
+    decoupling_corrections.dmb.two_loop = s.decoupling_corrections.dmb.two_loop ; 
+    
+    decoupling_corrections.dmt.one_loop = s.decoupling_corrections.dmt.one_loop ; 
+    decoupling_corrections.dmt.two_loop = s.decoupling_corrections.dmt.two_loop ; 
+    
+    decoupling_corrections.dmtau.one_loop = s.decoupling_corrections.dmtau.one_loop ; 
+    decoupling_corrections.dmtau.two_loop = s.decoupling_corrections.dmtau.two_loop ; 
+    /// Public field :: included thresholds
+    included_thresholds = s.included_thresholds;
+    
+#endif //COMPILE_FULL_SUSY_THRESHOLD
+    
+  }
+  
+  MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
+    : MssmSusy(s), MssmSoftPars(), AltEwsbMssm(), Approx(s.displayMssmApprox()),
+      physpars(), forLoops(), problem(), 
+      msusy(0.0), minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), 
+      setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
+      t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), mxBC(mxDefault) { 
+    setPars(110);
+    setMu(s.displayMu()); 
+    
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+    decoupling_corrections.das.one_loop = 0;
+    decoupling_corrections.das.two_loop = 0;
+    
+    decoupling_corrections.dmb.one_loop = 0;
+    decoupling_corrections.dmb.two_loop = 0;
+    
+    decoupling_corrections.dmt.one_loop = 0;
+    decoupling_corrections.dmt.two_loop = 0;
+    
+    decoupling_corrections.dmtau.one_loop = 0;
+    decoupling_corrections.dmtau.two_loop = 0;
+    /// Public field :: included thresholds
+    if (USE_TWO_LOOP_THRESHOLD) {
+      included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
+	ENABLE_TWO_LOOP_AS_AS_YUK | 
+	ENABLE_TWO_LOOP_MB_AS | 
+	ENABLE_TWO_LOOP_MB_YUK |
+	ENABLE_TWO_LOOP_MTAU_YUK;
+    } else {
+      included_thresholds = 0;
+    }
+    
+#endif //COMPILE_FULL_SUSY_THRESHOLD
+  }
+  
+  
+  MssmSoftsusy::MssmSoftsusy
+  (const MssmSusy & ss, const MssmSoftPars & s, const sPhysical & sp, 
+   double mu, int l, int t, 
+   double hv) 
+    : MssmSusy(ss), MssmSoftPars(s), AltEwsbMssm(), Approx(l, t), physpars(sp), 
+      forLoops(), problem(), msusy(0.0),
+      minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), 
+      altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
+      t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), mxBC(mxDefault) {
+    setHvev(hv);
+    setPars(110);
+    setMu(mu);
+    
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+    decoupling_corrections.das.one_loop = 0;
+    decoupling_corrections.das.two_loop = 0;
+    
+    decoupling_corrections.dmb.one_loop = 0;
+    decoupling_corrections.dmb.two_loop = 0;
+    
+    decoupling_corrections.dmt.one_loop = 0;
+    decoupling_corrections.dmt.two_loop = 0;
+    
+    decoupling_corrections.dmtau.one_loop = 0;
+    decoupling_corrections.dmtau.two_loop = 0;
+    /// Public field :: included thresholds
+    if (USE_TWO_LOOP_THRESHOLD) {
+      included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
+	ENABLE_TWO_LOOP_AS_AS_YUK | 
+	ENABLE_TWO_LOOP_MB_AS | 
+	ENABLE_TWO_LOOP_MB_YUK |
+	ENABLE_TWO_LOOP_MTAU_YUK;
+    } else {
+      included_thresholds = 0;
+    }
+#endif
+  }
+  
+  const MssmSoftsusy & MssmSoftsusy::displayMssmSoft() const { return *this; }
+  
+  const QedQcd & MssmSoftsusy::displayDataSet() const { return dataSet; }
+  
+  const sPhysical & MssmSoftsusy::displayPhys() const { return physpars; }
+  
+  const drBarPars & MssmSoftsusy::displayDrBarPars() const { 
+    return forLoops; 
+  }
+  
+  double MssmSoftsusy::displayMinpot() const { return minV; } 
+  double MssmSoftsusy::displayMsusy() const { return msusy; } 
+  double MssmSoftsusy::displayMw() const { return mw; } 
+  
+  double MssmSoftsusy::displayTadpole1Ms() const {
+    return t1OV1Ms; 
+  }
+  
+  double MssmSoftsusy::displayTadpole2Ms() const {
+    return t2OV2Ms; 
+  }
+  
+  double MssmSoftsusy::displayTadpole1Ms1loop() const {
+    return t1OV1Ms1loop; 
+  }
+  
+  double MssmSoftsusy::displayTadpole2Ms1loop() const {
+    return t2OV2Ms1loop; 
+  }
+  
+  void MssmSoftsusy::setMinpot(double f) { minV = f; }
+  void MssmSoftsusy::setMsusy(double f) { msusy = f; }
+  void MssmSoftsusy::setMw(double f) { mw = f; }
+  void MssmSoftsusy::doUfb3(double mgut) { setMinpot(ufb3sl(mgut) -
+						     realMinMs()); } 
+
 /// Returns mu from rewsb requirement. 
 /// returns 1 if there's a problem. Call at MSusy
 int MssmSoftsusy::rewsbMu(int sgnMu, double & mu) const {
@@ -693,7 +879,7 @@ double MssmSoftsusy::displaySoftA(trilinears k, int i, int j) const {
   return temp;
 }
 
-inline double ftCalc(double x) {
+ double ftCalc(double x) {
   /// Stores running parameters in a vector
   DoubleVector storeObject(tempSoft1->display());
   double initialMu = tempSoft1->displayMu();
@@ -751,7 +937,7 @@ inline double ftCalc(double x) {
 /// Give it a GUT scale object consistent with rewsb
 /// and it'll return the fine tuning by varying m32, mu and m3sq at the high
 /// scale
-inline double MssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars) {
+ double MssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars) {
   
   double ftParameter = 0.0, err, h = 0.01;
   
@@ -813,7 +999,7 @@ inline double MssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars) {
 }
 
 /// Pass it an object and it'll return the fine tuning parameters
-inline DoubleVector MssmSoftsusy::fineTune
+ DoubleVector MssmSoftsusy::fineTune
 (void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &),
  const DoubleVector  & bcPars, double mx, bool doTop) {
   
@@ -1115,7 +1301,7 @@ void MssmSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & /* pars */,
 /// lightest tau sneutrino, lightest sbottom, down squark, up squark and
 /// selectron masses, minimum of potential (if calculated) and fine-tuning
 /// parameter (if passed)
-inline void printShortInitialise() {
+ void printShortInitialise() {
   cout <<
     "     mu     " << "   m3sq     " << 
     "   mstau1   " << "   msbott   " << "  mstop1    " <<
@@ -6524,7 +6710,7 @@ void MssmSoftsusy::physical(int accuracy) {
 /// potential at the minimum. The following global variables must be set before
 /// it is called:
 static double unificationScale, minTol;
-inline double minimufb3(double lnH2) {
+ double minimufb3(double lnH2) {
   
   /// Save initial parameters
   double initialMu = tempSoft1->displayMu();
@@ -6567,7 +6753,7 @@ inline double minimufb3(double lnH2) {
 /// Input mx the scale up to which you search for minima
 /// Returns minimum value of potential along that direction
 /// Does ufbs truly properly but takes ages.
-inline double MssmSoftsusy::ufb3sl(double mx) {
+ double MssmSoftsusy::ufb3sl(double mx) {
   
   tempSoft1 = this;
   
@@ -8740,7 +8926,7 @@ double MssmSoftsusy::piZGT(double p, double q) const { ///! checked 7/6/6
   return ans * e * g / (16.0 * sqr(PI) * cos(thetaWDRbar)); 
 } 
 
-inline double rho2(double r) {/// checked 
+ double rho2(double r) {/// checked 
   if (r <= 1.9)
     return 19.0 - 16.5 * r + 43.0 * sqr(r) / 12.0 + 7.0 / 120.0 * sqr(r) * r -
       PI * sqrt(r) * (4.0 - 1.5 * r + 3.0 / 32.0 * sqr(r) + sqr(r) * r /
@@ -8760,14 +8946,14 @@ inline double rho2(double r) {/// checked
   }
 }
 
-inline double fEff(double x) {
+ double fEff(double x) {
   double arg = 1.0 / (1.0 + x);
   return 2.0 / x + 3.5 - (3.0 + 2.0 / x) * log(x) +
     sqr(1.0 + 1.0 / x) * 
     (2.0 * dilog(arg) - sqr(PI) / 3.0 + sqr(log(1.0 + x)));
 }
 
-inline double gEff(double x) {
+ double gEff(double x) {
   double y = sqrt(x / (4.0 - x));
   return (1.0 / x + 0.5) * (atan(y) / y - 1.0) + 9.0 / 8.0 + 0.5 / x -
     (1.0 + 0.5 / x) * 4.0 / x * sqr(atan(y));
@@ -9130,7 +9316,7 @@ void MssmSoftsusy::rpvSet(const DoubleVector & /* parameters */) {
 
 /// isajet routine for getting alpha_s - only used here for getting numbers
 /// from isawig interface
-inline double sualfs(double qsq, double alam4, double tmass) {
+ double sualfs(double qsq, double alam4, double tmass) {
   double anf = 6.0, bmass = 5.0, alam = 0.1, alam5 = 0.1, b0 = 0.;
   double alamsq = 0., b1 = 0., b2 = 0., x = 0., tt = 0., t = 0., sualfs = 0.;
   if (qsq < 4.0 * sqr(bmass)) {
@@ -9164,7 +9350,7 @@ inline double sualfs(double qsq, double alam4, double tmass) {
 }
 
 /// another function which mimics Isajet's handling of quark masses
-inline double ssmqcd(double dm, double dq, double mtopPole) {      
+ double ssmqcd(double dm, double dq, double mtopPole) {      
   double dlam4=0.177;
   double dqbt=10.;
   double dqtp=2*mtopPole;
@@ -10141,7 +10327,7 @@ static double mhTrue = 0.;
 const static double sigmaMh = 2.0;
 
 /// Fit to LEP2 Standard Model results
-inline double softsusy::lep2Likelihood(double mh) {
+ double softsusy::lep2Likelihood(double mh) {
   double minusTwoLnQ = 0.;
   /// the approximation to the LEP2 results in hep-ex/0508037 follows
   if (mh < 114.9) minusTwoLnQ = 718.12 - 6.25 * mh;
@@ -10152,7 +10338,7 @@ inline double softsusy::lep2Likelihood(double mh) {
 
 /// smears the likelihood curve for a Standard Model Higgs mass with a 3 GeV
 /// Gaussian theoretical error
-inline DoubleVector mhIntegrand(double mh, const DoubleVector & /* y */) {
+ DoubleVector mhIntegrand(double mh, const DoubleVector & /* y */) {
   DoubleVector dydx(1);
   dydx(1) = lep2Likelihood(mh) * 
     exp(-sqr(mhTrue - mh) / (2.0 * sqr(sigmaMh))) ;
@@ -10160,8 +10346,15 @@ inline DoubleVector mhIntegrand(double mh, const DoubleVector & /* y */) {
   return dydx;
 }
 
+double ccbSqrt(double f){ return sqrt(fabs(f)); }
+
+double signedSqrt(double f){ return f<0 ? -ccbSqrt(f) : ccbSqrt(f); }
+
+double signedSqr(double f){ if (f > 0.) return sqr(f); 
+  else return -sqr(f); }
+
 /// returns the smeared log likelihood coming from LEP2 Higgs mass bounds
-inline double lnLHiggs(double mh) {
+ double lnLHiggs(double mh) {
   if (mh > 130.) return 0.;
   /// error code
   if (mh < EPSTOL) return -numberOfTheBeast;

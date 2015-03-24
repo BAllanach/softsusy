@@ -65,16 +65,16 @@ namespace softsusy {
     /// 2 is mu(mInput) and tan beta
     double mAcond, muCond; ///< user set conditions on mA and mu at M_SUSY
   public:
-    inline void setAltEwsb(double ma, double mu) { mAcond = ma; muCond = mu; };
-    inline void setAltEwsbMssm(const AltEwsbMssm & s) { *this = s; };
+     void setAltEwsb(double ma, double mu) { mAcond = ma; muCond = mu; };
+     void setAltEwsbMssm(const AltEwsbMssm & s) { *this = s; };
     
-    //  inline int displayConditionStyle() { return conditionStyle; };
-    inline double displayMaCond() const { return mAcond; };
-    inline double displayMuCond() const { return muCond; };
-    inline const AltEwsbMssm & displayAltEwsbMssm() const { return *this; };
+    //   int displayConditionStyle() { return conditionStyle; };
+     double displayMaCond() const { return mAcond; };
+     double displayMuCond() const { return muCond; };
+     const AltEwsbMssm & displayAltEwsbMssm() const { return *this; };
     
-    inline void setMaCond(double maInput) { mAcond = maInput;  };
-    inline void setMuCond(double muInput) { muCond = muInput;  };
+     void setMaCond(double maInput) { mAcond = maInput;  };
+     void setMuCond(double muInput) { muCond = muInput;  };
   };
   
   /// Contains all supersymmetric MSSM parameters, incorporating R_p MSSM
@@ -142,23 +142,23 @@ namespace softsusy {
     virtual const DoubleVector display() const; 
     
     /// Displays whole object as a const
-    inline const MssmSoftsusy & displayMssmSoft() const;
+     const MssmSoftsusy & displayMssmSoft() const;
     
     /// Displays physical parameters only
-    inline const sPhysical & displayPhys() const;
+     const sPhysical & displayPhys() const;
     
     /// Displays tree-level masses and mixings of sparticles and third
     /// generation fermions
-    inline const drBarPars & displayDrBarPars() const;
+     const drBarPars & displayDrBarPars() const;
     /// Returns any problem flags associated with the object
     const sProblem & displayProblem() const {return problem; };
     /// Gives the low energy Standard Model data set used for the object
-    inline const QedQcd & displayDataSet() const;
+     const QedQcd & displayDataSet() const;
     /// Return a trilinear element in "SUGRA style"
     double displaySoftA(trilinears, int, int) const;
     
     /// Displays iteration accuracy attained 
-    inline double displayFracDiff() const { return fracDiff; }; 
+     double displayFracDiff() const { return fracDiff; }; 
     double displayMinpot() const;    ///< Returns minimum of Higgs potential
     double displayMsusy() const; ///< Returns Higgs minimisation scale
     double displayMw() const; ///< Returns predicted pole MW
@@ -1267,202 +1267,16 @@ namespace softsusy {
   
   std::istream& operator>>(std::istream& left, MssmSoftsusy& s);
   
-  MssmSoftsusy::MssmSoftsusy()
-    : MssmSusy(), MssmSoftPars(), AltEwsbMssm(), Approx(), 
-      physpars(), forLoops(), 
-      problem(), msusy(0.0), minV(6.66e66), 
-      mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false), 
-      predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), 
-      t2OV2Ms1loop(0.), mxBC(mxDefault) { 
-    setPars(110);
-    setMu(0.0);
-    
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
-    decoupling_corrections.das.one_loop = 0;
-    decoupling_corrections.das.two_loop = 0;
-    
-    decoupling_corrections.dmb.one_loop = 0;
-    decoupling_corrections.dmb.two_loop = 0;
-    
-    decoupling_corrections.dmt.one_loop = 0;
-    decoupling_corrections.dmt.two_loop = 0;
-    
-    decoupling_corrections.dmtau.one_loop = 0;
-    decoupling_corrections.dmtau.two_loop = 0;
-    
-    if (USE_TWO_LOOP_THRESHOLD) {
-      included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
-	ENABLE_TWO_LOOP_AS_AS_YUK | 
-	ENABLE_TWO_LOOP_MB_AS | 
-	ENABLE_TWO_LOOP_MB_YUK |
-	ENABLE_TWO_LOOP_MTAU_YUK;
-    } else {
-      included_thresholds = 0;
-    }
-    
-    
-    
-#endif
-  }
-  
-  
-  MssmSoftsusy::MssmSoftsusy(const MssmSoftsusy & s)
-    : MssmSusy(s.displayMssmSusy()),
-      MssmSoftPars(s.displayMssmSoftPars()), 
-      AltEwsbMssm(s.displayAltEwsbMssm()), 
-      Approx(s.MssmSoftsusy::displayApprox()),
-      physpars(s.displayPhys()), 
-      forLoops(s.displayDrBarPars()), 
-      problem(s.problem), msusy(s.msusy), minV(s.minV), 
-      mw(s.mw), dataSet(s.displayDataSet()), fracDiff(s.displayFracDiff()), 
-      setTbAtMX(s.displaySetTbAtMX()), 
-      altEwsb(s.displayAltEwsb()), predMzSq(s.displayPredMzSq()), 
-      t1OV1Ms(s.displayTadpole1Ms()), t2OV2Ms(s.displayTadpole2Ms()), 
-      t1OV1Ms1loop(s.displayTadpole1Ms1loop()), 
-      t2OV2Ms1loop(s.displayTadpole2Ms1loop()), mxBC(s.displayMxBC()) {
-    
-    setPars(110);
-    setMu(s.displayMu()); 
-    
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
-    decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop ; 
-    decoupling_corrections.das.two_loop = s.decoupling_corrections.das.two_loop ; 
-    
-    decoupling_corrections.dmb.one_loop = s.decoupling_corrections.dmb.one_loop ; 
-    decoupling_corrections.dmb.two_loop = s.decoupling_corrections.dmb.two_loop ; 
-    
-    decoupling_corrections.dmt.one_loop = s.decoupling_corrections.dmt.one_loop ; 
-    decoupling_corrections.dmt.two_loop = s.decoupling_corrections.dmt.two_loop ; 
-    
-    decoupling_corrections.dmtau.one_loop = s.decoupling_corrections.dmtau.one_loop ; 
-    decoupling_corrections.dmtau.two_loop = s.decoupling_corrections.dmtau.two_loop ; 
-    /// Public field :: included thresholds
-    included_thresholds = s.included_thresholds;
-    
-#endif //COMPILE_FULL_SUSY_THRESHOLD
-    
-  }
-  
-  MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
-    : MssmSusy(s), MssmSoftPars(), AltEwsbMssm(), Approx(s.displayMssmApprox()),
-      physpars(), forLoops(), problem(), 
-      msusy(0.0), minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), 
-      setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
-      t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), mxBC(mxDefault) { 
-    setPars(110);
-    setMu(s.displayMu()); 
-    
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
-    decoupling_corrections.das.one_loop = 0;
-    decoupling_corrections.das.two_loop = 0;
-    
-    decoupling_corrections.dmb.one_loop = 0;
-    decoupling_corrections.dmb.two_loop = 0;
-    
-    decoupling_corrections.dmt.one_loop = 0;
-    decoupling_corrections.dmt.two_loop = 0;
-    
-    decoupling_corrections.dmtau.one_loop = 0;
-    decoupling_corrections.dmtau.two_loop = 0;
-    /// Public field :: included thresholds
-    if (USE_TWO_LOOP_THRESHOLD) {
-      included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
-	ENABLE_TWO_LOOP_AS_AS_YUK | 
-	ENABLE_TWO_LOOP_MB_AS | 
-	ENABLE_TWO_LOOP_MB_YUK |
-	ENABLE_TWO_LOOP_MTAU_YUK;
-    } else {
-      included_thresholds = 0;
-    }
-    
-#endif //COMPILE_FULL_SUSY_THRESHOLD
-  }
-  
-  
-  MssmSoftsusy::MssmSoftsusy
-  (const MssmSusy & ss, const MssmSoftPars & s, const sPhysical & sp, 
-   double mu, int l, int t, 
-   double hv) 
-    : MssmSusy(ss), MssmSoftPars(s), AltEwsbMssm(), Approx(l, t), physpars(sp), 
-      forLoops(), problem(), msusy(0.0),
-      minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), 
-      altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
-      t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), mxBC(mxDefault) {
-    setHvev(hv);
-    setPars(110);
-    setMu(mu);
-    
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
-    decoupling_corrections.das.one_loop = 0;
-    decoupling_corrections.das.two_loop = 0;
-    
-    decoupling_corrections.dmb.one_loop = 0;
-    decoupling_corrections.dmb.two_loop = 0;
-    
-    decoupling_corrections.dmt.one_loop = 0;
-    decoupling_corrections.dmt.two_loop = 0;
-    
-    decoupling_corrections.dmtau.one_loop = 0;
-    decoupling_corrections.dmtau.two_loop = 0;
-    /// Public field :: included thresholds
-    if (USE_TWO_LOOP_THRESHOLD) {
-      included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
-	ENABLE_TWO_LOOP_AS_AS_YUK | 
-	ENABLE_TWO_LOOP_MB_AS | 
-	ENABLE_TWO_LOOP_MB_YUK |
-	ENABLE_TWO_LOOP_MTAU_YUK;
-    } else {
-      included_thresholds = 0;
-    }
-#endif
-  }
-  
-  const MssmSoftsusy & MssmSoftsusy::displayMssmSoft() const { return *this; }
-  
-  const QedQcd & MssmSoftsusy::displayDataSet() const { return dataSet; }
-  
-  const sPhysical & MssmSoftsusy::displayPhys() const { return physpars; }
-  
-  const drBarPars & MssmSoftsusy::displayDrBarPars() const { 
-    return forLoops; 
-  }
-  
-  double MssmSoftsusy::displayMinpot() const { return minV; } 
-  double MssmSoftsusy::displayMsusy() const { return msusy; } 
-  double MssmSoftsusy::displayMw() const { return mw; } 
-  
-  double MssmSoftsusy::displayTadpole1Ms() const {
-    return t1OV1Ms; 
-  }
-  
-  double MssmSoftsusy::displayTadpole2Ms() const {
-    return t2OV2Ms; 
-  }
-  
-  double MssmSoftsusy::displayTadpole1Ms1loop() const {
-    return t1OV1Ms1loop; 
-  }
-  
-  double MssmSoftsusy::displayTadpole2Ms1loop() const {
-    return t2OV2Ms1loop; 
-  }
-  
-  void MssmSoftsusy::setMinpot(double f) { minV = f; }
-  void MssmSoftsusy::setMsusy(double f) { msusy = f; }
-  void MssmSoftsusy::setMw(double f) { mw = f; }
-  void MssmSoftsusy::doUfb3(double mgut) { setMinpot(ufb3sl(mgut) -
-						     realMinMs()); } 
   /// Prints out header line for print-short output
   void printShortInitialise();
   /// returns the square root of the absolute value of the argument
   // returns sqrt(f) for f>0 
-  inline double ccbSqrt(double f){ return sqrt(fabs(f)); }
+  double ccbSqrt(double f);
   /// returns the square root of the absolute value of the argument
   // returns sqrt(f) for f>0 or -sqrt(|f|) for f<0
-  inline double signedSqrt(double f){ return f<0 ? -ccbSqrt(f) : ccbSqrt(f); }
+  double signedSqrt(double f);
   /// returns f * f * sign(f)
-  inline double signedSqr(double f){ if (f > 0.) return sqr(f); 
-    else return -sqr(f); }
+  double signedSqr(double f);
   /// Two-loop Standard Model corrections to rho parameter
   double rho2(double r);
   

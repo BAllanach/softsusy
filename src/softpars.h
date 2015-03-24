@@ -163,55 +163,6 @@ namespace softsusy {
   //template<class Susy, class Brevity>
   istream & operator >>(istream &left, MssmSoftPars &s);
   
-  MssmSoftPars::MssmSoftPars()
-    : mGaugino(3), ua(3, 3), da(3, 3), ea(3, 3),
-      mQLsq(3, 3), mURsq(3, 3), mDRsq(3, 3), mLLsq(3, 3), mSEsq(3, 3), m3sq(0.0),
-      mH1sq(0.0), mH2sq(0.0), m32(1.e19) {}
-  
-  MssmSoftPars::MssmSoftPars(const MssmSoftPars & s)
-    : mGaugino(s.displayGaugino()), ua(s.displayTrilinear(UA)),
-      da(s.displayTrilinear(DA)), ea(s.displayTrilinear(EA)),
-      mQLsq(s.displaySoftMassSquared(mQl)), 
-      mURsq(s.displaySoftMassSquared(mUr)), 
-      mDRsq(s.displaySoftMassSquared(mDr)),
-      mLLsq(s.displaySoftMassSquared(mLl)),
-      mSEsq(s.displaySoftMassSquared(mEr)), 
-      m3sq(s.displayM3Squared()), mH1sq(s.displayMh1Squared()),
-      mH2sq(s.displayMh2Squared()), m32(s.displayGravitino()) {}
-  
-  MssmSoftPars::MssmSoftPars
-  (const DoubleVector & mG, const
-   DoubleMatrix & aU, const DoubleMatrix & aD, const DoubleMatrix & aE, const
-   DoubleMatrix & mQl, const DoubleMatrix & mUr, const DoubleMatrix & mDr, const
-   DoubleMatrix & mLl, const DoubleMatrix & mEr, double m3sqn, double mH1sq,
-   double mH2sq, double mg)
-    : mGaugino(mG), ua(aU), da(aD), ea(aE),
-      mQLsq(mQl), mURsq(mUr), mDRsq(mDr), mLLsq(mLl), mSEsq(mEr), m3sq(m3sqn),
-      mH1sq(mH1sq), mH2sq(mH2sq), m32(mg) {}
-  
-  double MssmSoftPars::displayM3Squared() const { return m3sq; }
-  
-  double MssmSoftPars::displayMh1Squared() const { return mH1sq; }
-  
-  double MssmSoftPars::displayMh2Squared() const { return mH2sq; }
-  
-  DoubleVector MssmSoftPars::displayGaugino() const { return mGaugino; }
-  
-  double MssmSoftPars::displayGaugino(int i) const { return mGaugino.display(i); }
-  
-  double MssmSoftPars::displayGravitino() const { return m32; }
-  
-  void MssmSoftPars::setGauginoMass(int i, double f) { mGaugino(i) = f; }
-  
-  void MssmSoftPars::setM3Squared(double f) { m3sq = f; }
-  
-  void MssmSoftPars::setMh1Squared(double f) { mH1sq = f; }
-  
-  void MssmSoftPars::setMh2Squared(double f) { mH2sq = f; }
-  
-  void MssmSoftPars::setSoftPars(MssmSoftPars const & s) { *this = s; }
-  
-  void MssmSoftPars::setM32(double a) { m32 = a; }
   
 } // namespace softsusy
 
