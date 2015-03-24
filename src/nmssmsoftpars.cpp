@@ -725,15 +725,16 @@ namespace softsusy {
   
   //PA: for fully constrained models.
   void SoftParsNmssm::standardSugra(double m0, double m12, double a0, 
-				    const NmssmSusy & n, const MssmSoftPars & m) {
+				    const NmssmSusyPars & n, const MssmSusy & m,
+				    const MssmSoftPars & msoft) {
     universalScalars(m0);
     //    universalGauginos(m12);
-    universalTrilinears(a0, n);
+    SoftParsNmssm::universalTrilinears(a0, n);
     if (!Z3) {
       //universal bilinears
-      const double susyMu = n.displaySusyMu();
+      const double susyMu = m.displaySusyMu();
       if (!close(susyMu, 0.0, EPSTOL))
-	setMspSquared(m.displayM3Squared() * n.displayMupr() / susyMu);
+	setMspSquared(msoft.displayM3Squared() * n.displayMupr() / susyMu);
     }
   }
   

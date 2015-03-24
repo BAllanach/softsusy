@@ -119,8 +119,9 @@ namespace softsusy {
     void addAmsb(double maux, const NmssmSusy & Nms, MssmSoftPars & m);
     /// Reads in universal boundary conditions at the current scale:
     /// m0, M1/2, A
-    void standardSugra(double m0, double m12, double a0, const NmssmSusy & n,
-		       const MssmSoftPars & m);
+    void standardSugra(double m0, double m12, double a0, 
+		       const NmssmSusyPars & n, const MssmSusy & m,
+		       const MssmSoftPars & msoft);
     /// Reads in universal boundary conditions at the current scale: 
     /// m0, M1/2, A, mS, Al and Ak
     void standardsemiSugra(double m0,  double m12, double a0, double Al, 

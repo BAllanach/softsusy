@@ -23,6 +23,13 @@ namespace softsusy {
     return *this;
   }
   
+  void NmssmSoftsusy::set(const DoubleVector & y) {
+    NmssmSusyPars n;
+    SoftParsNmssm::set(y, n);
+    n.setNmssmSusyPars(y);
+    setNmssmSusyPars(n);
+    MssmSoftsusy::set(y);
+  }
   
   /// PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.
   void NmssmSoftsusy::printall() const {
@@ -8539,19 +8546,20 @@ namespace softsusy {
   /// Provides the first guess at a SUSY object at mt, inputting tanb and oneset
   /// (should be at MZ) - it's very crude, doesn't take radiative corrections
   /// into account etc. 
-  NmssmSusy NmssmSoftsusy::guessAtSusyMt(double tanb, DoubleVector & nmpars, 
+  NmssmSusy NmssmSoftsusy::guessAtSusyMt(double tanb, 
+					 const DoubleVector & nmpars, 
 					 const QedQcd & oneset) {
     
     /// PA: Most of the work is already done by the MSSM
-    NmssmSusy t(MssmSoftSusy::guessAtSusyMt(tanb, oneset));
+    NmssmSusy t; t.setMssmSusy(MssmSoftsusy::guessAtSusyMt(tanb, oneset));
     /// PA: now we just add our new nmssm parameters. 
     //Only lambda directly affects the running of the MSSM Yukawas 
     /// at one loop and only kappa additionally at two loop.
-    t.setLambda(nmpars(1));
-    t.setKappa(nmpars(2));
-    t.setSvev(nmpars(3));
-    t.setXiF(nmpars(4));       
-    t.setMupr(nmpars(5));
+    t.setLambda(nmpars.display(1));
+    t.setKappa(nmpars.display(2));
+    t.setSvev(nmpars.display(3));
+    t.setXiF(nmpars.display(4));       
+    t.setMupr(nmpars.display(5));
     return t;
   }
   
@@ -8605,10 +8613,10 @@ namespace softsusy {
       int maxtries = 100;//int(-log(TOLERANCE) / log(10.0) * 10);
       double tol = TOLERANCE;
       
-      NmssmSusy t(guessAtSusyMt(tanb, nmpars, oneset));
-      t.setLoops(2); /// 2 loops should protect against ht Landau pole 
+      NmssmSusyRGE t(guessAtSusyMt(tanb, nmpars, oneset));
+      t.setNmssmLoops(2); /// 2 loops should protect against ht Landau pole 
       t.runto(mxBC); 
-      setSusy(t);
+      setNmssmSusy(t);
       
       /// Initial guess: B=0, mu=1st parameter, need better guesses
       boundaryCondition(*this, pars);
@@ -8717,8 +8725,9 @@ namespace softsusy {
     }
   }
   
-  void NmssmSoftsusy::modselSLHA(ostream & out, const char model[], double qMax) {
-    NmssmSoftsusy::modselSLHA(out, model);
+  void NmssmSoftsusy::modselSLHA(ostream & out, const char model[], 
+				 double qMax) {
+    MssmSoftsusy::modselSLHA(out, model);
     out << "     3    1   # NMSSM\n";
     
     if (softsusy::NMSSMTools) {

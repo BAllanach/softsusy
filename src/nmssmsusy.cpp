@@ -306,8 +306,11 @@ namespace softsusy {
   }
 
   NmssmSusy::NmssmSusy()
-    :  MssmSusy(), nmssmSusyApprox() {}
+    :  MssmSusy(), NmssmSusyPars(), nmssmSusyApprox() {}
   
+  NmssmSusy::NmssmSusy(const MssmSusy & m, const NmssmSusyPars & nsp) 
+    : MssmSusy(m), NmssmSusyPars(nsp), nmssmSusyApprox(m.displayMssmApprox()) {}
+
   NmssmSusy::NmssmSusy(const DoubleMatrix & u,
 		       const DoubleMatrix & d, const
 		       DoubleMatrix & e, const DoubleVector & v, 

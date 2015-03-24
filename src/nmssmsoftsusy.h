@@ -74,6 +74,9 @@ namespace softsusy {
     double displaySoftAlambda() const {
       return SoftParsNmssm::displaySoftAkappa(displayLambda()); 
     };
+    NmssmSusy displayNmssmSusy() const {
+      return NmssmSusy(displayMssmSusy(), displayNmssmSusyPars());
+    }
 
     /// PA: obtains NMSSM P1-sfermion-sfermion couplings 
     //for 3rd generation sfermions
@@ -274,6 +277,12 @@ namespace softsusy {
     void calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, 
 			drBarPars & eg);
     
+    void set(const DoubleVector & y);
+    void setNmssmSusy(const NmssmSusy & n) {
+      setMssmSusy(n.displayMssmSusy()); 
+      setNmssmSusyPars(n.displayNmssmSusyPars());
+    }
+
     /// LCT: Returns Higgs potential at minimum. Inputs: {v1,v2,s}=Higgs vevs from
     /// EWSB conditions, {mHu2,mHd2,mSsq}=soft masses calculated at scale mu.
     double VhAtMin(double v1, double v2, double s, double mHu2, double mHd2, double mSsq); 
@@ -490,7 +499,7 @@ namespace softsusy {
     /// Mtau
     virtual double calcRunMtauNeutralinos(double mTauSMMZ) const;
     
-    NmssmSusy guessAtSusyMt(double tanb, DoubleVector & nmpars, 
+    NmssmSusy guessAtSusyMt(double tanb, const DoubleVector & nmpars, 
 			    const QedQcd & oneset);
     
     double predTanb(double muSusy = -6.66e66) const;

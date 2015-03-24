@@ -172,6 +172,7 @@ namespace softsusy {
     NmssmSusy(); ///< Constructor fills object with zeroes by default
     /// Constructor sets object to be equal to another
     NmssmSusy(const NmssmSusy &);
+    NmssmSusy(const MssmSusy & m, const NmssmSusyPars & nsp);
     /// PA: Constructor given Yukawa matrices u,d,e, gauge couplings v, mu
     /// parameter=m, tan beta=tb, lambda, kappa, mupr, xiF,
     // number of loops in
@@ -196,7 +197,12 @@ namespace softsusy {
     void setNmssmApprox(int l, int t) { nmssmSusyApprox.setLoops(l); 
       nmssmSusyApprox.setThresholds(t); }; 
     void setNmssmApprox(const Approx & a) { nmssmSusyApprox = a; };
-    
+    void setNmssmSusy(const NmssmSusy & y) { 
+      setNmssmApprox(y.displayNmssmSusyApprox()); 
+      setMssmSusy(y.displayMssmSusy());
+      setNmssmSusyPars(y.displayNmssmSusyPars());
+    };    
+
     int displayNmssmLoops() const { return nmssmSusyApprox.displayLoops(); };
     int displayNmssmThresholds() const { 
       return nmssmSusyApprox.displayThresholds(); 
