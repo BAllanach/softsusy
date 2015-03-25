@@ -2007,3 +2007,19 @@ void rsolv(const DoubleMatrix & a, int n, const DoubleVector & d,
 	  b(i)=(b(i) - sum) / d(i);
 	}
 }
+
+double ccbSqrt(double f) { return sqrt(fabs(f)); }
+
+double signedSqrt(double f){ return f<0 ? -ccbSqrt(double(f)) : ccbSqrt(double(f)); }
+
+double signedSqr(double f){ if (f > 0.) return sqr(f); 
+  else return -sqr(f); }
+
+  /// returns the square root of the absolute value of the argument
+  // returns sqrt(f) for f>0 
+  double ccbSqrt(double f);
+  /// returns the square root of the absolute value of the argument
+  // returns sqrt(f) for f>0 or -sqrt(|f|) for f<0
+  double signedSqrt(double f);
+  /// returns f * f * sign(f)
+  double signedSqr(double f);

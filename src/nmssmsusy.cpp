@@ -311,6 +311,10 @@ namespace softsusy {
   NmssmSusy::NmssmSusy(const MssmSusy & m, const NmssmSusyPars & nsp) 
     : MssmSusy(m), NmssmSusyPars(nsp), nmssmSusyApprox(m.displayMssmApprox()) {}
 
+  NmssmSusy::NmssmSusy(const NmssmSusy & n)
+    : MssmSusy(n.displayMssmSusy()), NmssmSusyPars(n.displayNmssmSusyPars()),
+      nmssmSusyApprox(n.displayNmssmSusyApprox()) {}
+
   NmssmSusy::NmssmSusy(const DoubleMatrix & u,
 		       const DoubleMatrix & d, const
 		       DoubleMatrix & e, const DoubleVector & v, 
@@ -406,16 +410,22 @@ namespace softsusy {
     MssmSusy::setSomePars(s);
   }
     
-  const DoubleVector NmssmSusyRGE::display() const {
+  const DoubleVector NmssmSusy::display() const {
     DoubleVector y(MssmSusy::display());
     assert(y.displayStart() == 1 && y.displayEnd() == numSusyPars);
     y.setEnd(numNMssmPars);
+    
     y(34) = displaySvev();
     y(35) = displayLambda();
     y(36) = displayKappa();
     y(37) = displayMupr();
     y(38) = displayXiF();
+    
     return y;
+  }
+
+  const DoubleVector NmssmSusyRGE::display() const {
+    return NmssmSusy::display();
   }
   
   void NmssmSusyRGE::set(const DoubleVector & y) {

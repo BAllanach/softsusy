@@ -1269,14 +1269,6 @@ namespace softsusy {
   
   /// Prints out header line for print-short output
   void printShortInitialise();
-  /// returns the square root of the absolute value of the argument
-  // returns sqrt(f) for f>0 
-  double ccbSqrt(double f);
-  /// returns the square root of the absolute value of the argument
-  // returns sqrt(f) for f>0 or -sqrt(|f|) for f<0
-  double signedSqrt(double f);
-  /// returns f * f * sign(f)
-  double signedSqr(double f);
   /// Two-loop Standard Model corrections to rho parameter
   double rho2(double r);
   
@@ -1313,7 +1305,7 @@ namespace softsusy {
     DoubleVector beta(const MssmSusy &) const { return MssmSoftsusy::beta(); }; 
     };*/
     
-} //</ namespace softsusy
+} ///< namespace softsusy
 
 
 

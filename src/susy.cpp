@@ -204,16 +204,22 @@ namespace softsusy {
   
   double MssmSusy::displayTanb() const { return tanb; }
   
-  ostream & operator <<(ostream &left, const MssmSusyRGE &s) {
-    left << "Supersymmetric parameters at Q: " << s.displayMu() << endl;
+  ostream & operator <<(ostream &left, const MssmSusy &s) {
     left << " Y^U" << s.displayYukawaMatrix(YU) << " Y^D" <<
       s.displayYukawaMatrix(YD) << " Y^E" << s.displayYukawaMatrix(YE);
     left << "higgs VEV: " << s.displayHvev() 
-	 << " tan beta: " << s.displayTanb() << " smu: " << s.displaySusyMu() << 
+	 << " tan beta: " << s.displayTanb() 
+	 << " smu: " << s.displaySusyMu() << 
       "\n";
     left << "g1: " << s.displayGaugeCoupling(1) << " g2: " <<
       s.displayGaugeCoupling(2) << " g3: " << 
       s.displayGaugeCoupling(3) << endl; 
+    return left;
+  }
+  
+  ostream & operator <<(ostream &left, const MssmSusyRGE &s) {
+    left << "Supersymmetric parameters at Q: " << s.displayMu() << endl;
+    left << s.displayMssmSusy();
     left << "thresholds: " << s.displayMssmApprox().displayThresholds() 
 	 << " #loops: " << s.displayMssmApprox().displayLoops() << '\n';
     return left;
@@ -235,16 +241,13 @@ namespace softsusy {
     setMu(s.displayMu());
   }
   
-  istream & operator >>(istream &left, MssmSusyRGE &s) {
+  istream & operator >>(istream &left, MssmSusy &s) {
     string c;
     DoubleMatrix u(3, 3), d(3, 3), e(3, 3);
     double g1, g2, g3, smu, mu, tanb, hv;
-    int loops, thresh;
-    left >> c >> c >> c >> c >> mu;
     left >> c >> u >> c >> d >> c >> e >> c >> c >> hv;
     left >> c >> c >> tanb >> c >> smu;
     left >> c >> g1 >> c >> g2 >> c >> g3;
-    left >> c >> thresh >> c >> loops;
     s.setYukawaMatrix(YU, u);
     s.setYukawaMatrix(YD, d);
     s.setYukawaMatrix(YE, e);
@@ -253,8 +256,17 @@ namespace softsusy {
     s.setGaugeCoupling(1, g1);
     s.setGaugeCoupling(2, g2);
     s.setGaugeCoupling(3, g3);
-    s.setMssmApprox(loops, thresh);
     s.setSusyMu(smu);
+    return left;
+  }
+
+  istream & operator >>(istream &left, MssmSusyRGE &s) {
+    string c;
+    int loops, thresh;
+    double mu;
+    left >> c >> c >> c >> c >> mu;
+    left >> c >> thresh >> c >> loops;
+    s.setMssmApprox(loops, thresh);
     s.setMu(mu);
     return left;
   }

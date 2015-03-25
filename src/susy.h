@@ -249,8 +249,10 @@ namespace softsusy {
   
   /// Formatted output
   ostream & operator <<(ostream &, const MssmSusy &);
+  ostream & operator <<(ostream &, const MssmSusyRGE &);
   /// Formatted input
   istream & operator >>(istream &left, MssmSusy &s);
+  istream & operator >>(istream &left, MssmSusyRGE &s);
   /// Outputs beta function coefficients for MSSM gauge coupling evolution in
   /// arguments. 
   void setBetas(DoubleMatrix &, DoubleVector  &, DoubleVector  &, DoubleVector

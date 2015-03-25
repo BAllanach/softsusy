@@ -12,8 +12,8 @@ namespace softsusy {
 
   //extern template class MssmSoftsusy;
 
-extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL, 
-  ydR, yeL, yeR, ynuL;
+  extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL, 
+    ydR, yeL, yeR, ynuL;
 
 const FlavourMssmSoftsusy & 
 FlavourMssmSoftsusy::operator=(const FlavourMssmSoftsusy & s) {

@@ -75,6 +75,12 @@ namespace softsusy {
   /// Default: use SOFTSUSY conventions for masses of sparticles in loops, ie
   /// tree-level masses computed with the 2-loop Higgs potential
   bool sphenoMassConv = false;
+  /// Some parameters used in the computation
+  double sw2 = 1.0 - MW * MW / (MZ * MZ), gnuL = 0.5, 
+    guL = 0.5 - 2.0 * sw2 / 3.0,
+    gdL = -0.5 + sw2 / 3.0, geL = -0.5 + sw2, guR = 2.0 * sw2 / 3.0,
+    gdR = -sw2 / 3.0, geR = -sw2, yuL = 1.0 / 3.0, yuR = -4.0 / 3.0,
+    ydL = 1.0 / 3.0, ydR = 2.0 / 3.0, yeL = -1.0, yeR = 2.0, ynuL = -1.0;
 
 #ifdef COMPILE_THREE_LOOP_RGE
   /// Controls the use of MSSM three-loop RGEs

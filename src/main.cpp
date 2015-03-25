@@ -13,21 +13,9 @@
        <tan beta>      <mh0>     <mA0>    <mH0>     <mH+/->
 */
 
-#include <iostream>
-#include "mycomplex.h"
-#include "def.h"
-#include "linalg.h"
-#include "lowe.h"
-#include "rge.h"
-#include "softsusy.h"
-#include "softpars.h"
-#include "susy.h"
-#include "utils.h"
-#include "numerics.h"
+#include "main.h"
 
-namespace softsusy {
-   extern template class Softsusy<SoftParsMssm>;
-}
+using namespace softsusy;
 
 int main() {
   /// Sets up exception handling

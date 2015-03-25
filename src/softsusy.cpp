@@ -7,8 +7,9 @@
 
 #include "softsusy.h"
 
-extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
-  ydR, yeL, yeR, ynuL;
+namespace softsusy {
+  extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
+    ydR, yeL, yeR, ynuL;
 
 const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   if (this == &s) return *this;
@@ -2478,6 +2479,8 @@ double MssmSoftsusy::calcRunMtHiggs() const {
   
 }
 
+
+
 double MssmSoftsusy::calcRunMtNeutralinos() const {
   
   double    q       = displayMu();
@@ -2829,75 +2832,7 @@ double MssmSoftsusy::calcRunMbHiggs() const {
   return deltaHiggs;
 }
 
-double MssmSoftsusy::calcRunMbNeutralinos() const {
-  double mbMZ = dataSet.displayMass(mBottom);
-  double p = mbMZ;
-  double q = displayMu();
-  double thetab  = displayDrBarPars().thetab;
-  double g       = displayGaugeCoupling(2);
-  double gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double hb      = displayDrBarPars().hb;
-  double mbMSSM  = displayDrBarPars().mb;
-  ComplexMatrix n(displayDrBarPars().nBpmz);
-  DoubleVector mneut(displayDrBarPars().mnBpmz);
-  DoubleVector aPsi0Bsbotr(4), bPsi0Bsbotr(4), aPsi0Bsbotl(4),
-    bPsi0Bsbotl(4); 
-  
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
-  if (MB_DECOUPLING) {
-    p = 0;
-  };
-#endif
-  
-  aPsi0Bsbotr(1) = gp / (root2 * 3.0) * 2.0;
-  bPsi0Bsbotl(1) = gp / (root2 * 3.0);
-  bPsi0Bsbotl(2) = -root2 * g * 0.5;
-  aPsi0Bsbotl(3) = hb;
-  bPsi0Bsbotr(3) = hb;
-  
-  ComplexVector aChi0Bsbotl(4), bChi0Bsbotl(4), aChi0Bsbotr(4),
-    bChi0Bsbotr(4);
-  
-  double deltaNeutralino = 0.;
-  aChi0Bsbotl = n.complexConjugate() * aPsi0Bsbotl;
-  bChi0Bsbotl = n * bPsi0Bsbotl;
-  aChi0Bsbotr = n.complexConjugate() * aPsi0Bsbotr;
-  bChi0Bsbotr = n * bPsi0Bsbotr;
-  
-  ComplexMatrix aNeutBsbot(4, 2), bNeutBsbot(4, 2);
-  DoubleMatrix fNeutBsbot(4, 2), gNeutBsbot(4, 2), 
-    neutralinoContribution(4, 2);
-  int i, j; DoubleMatrix O(2, 2); ComplexVector tt(2), t1(2), t2(2);
-  O = rot2d(thetab);
-  for (i=1; i<=4; i++) {
-    tt(1) = aChi0Bsbotl(i); tt(2) = aChi0Bsbotr(i);      
-    t1 = O * tt;
-    
-    tt(1) = bChi0Bsbotl(i); tt(2) = bChi0Bsbotr(i);      
-    t2 = O * tt;    
-    for (j=1; j<=2; j++) {
-      aNeutBsbot(i, j) = t1(j);
-      bNeutBsbot(i, j) = t2(j);
-      /// functions of couplings needed for loops
-      fNeutBsbot(i, j) = sqr(aNeutBsbot(i, j).mod()) + 
-	sqr(bNeutBsbot(i, j).mod());
-      
-      gNeutBsbot(i, j) = 2.0 * 
-	(aNeutBsbot(i, j) * bNeutBsbot(i, j).conj()).real(); 
-      
-      neutralinoContribution(i, j) = (fNeutBsbot(i, j) * 
-				      b1(p, mneut(i), displayDrBarPars().md(j, 3), q) + 
-				      gNeutBsbot(i, j) * mneut(i) /  mbMSSM *  
-				      b0(p, mneut(i), displayDrBarPars().md(j, 3), q)) * 0.5;
-      
-      deltaNeutralino = deltaNeutralino + neutralinoContribution(i, j);
-    }
-  }
-  
-  deltaNeutralino = -deltaNeutralino / (16.0 * sqr(PI));
-  
-  return deltaNeutralino; 
-}
+
 
 
 double MssmSoftsusy::calcRunningMb() {
@@ -2983,6 +2918,9 @@ double MssmSoftsusy::calcRunningMb() {
   return mbMZ / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs
 		 + deltaNeutralino + dzetamb);
 }
+
+
+
 double MssmSoftsusy::calcRunMtauDrBarConv() const {
   double gp = displayGaugeCoupling(1) * sqrt(0.6);
   double conv = (1.0 - 3.0 * (sqr(gp) - sqr(displayGaugeCoupling(2))) / (128.0 * sqr(PI)));
@@ -5006,6 +4944,8 @@ void MssmSoftsusy::addStauGaugino(double p, double mtau, DoubleMatrix & chargino
   }
   
 }
+
+
 
 void MssmSoftsusy::addStauCorrection(double p, DoubleMatrix & mass, 
 				     double mtau) {
@@ -10327,7 +10267,7 @@ static double mhTrue = 0.;
 const static double sigmaMh = 2.0;
 
 /// Fit to LEP2 Standard Model results
- double softsusy::lep2Likelihood(double mh) {
+  double lep2Likelihood(double mh) {
   double minusTwoLnQ = 0.;
   /// the approximation to the LEP2 results in hep-ex/0508037 follows
   if (mh < 114.9) minusTwoLnQ = 718.12 - 6.25 * mh;
@@ -10345,13 +10285,6 @@ const static double sigmaMh = 2.0;
   
   return dydx;
 }
-
-double ccbSqrt(double f){ return sqrt(fabs(f)); }
-
-double signedSqrt(double f){ return f<0 ? -ccbSqrt(f) : ccbSqrt(f); }
-
-double signedSqr(double f){ if (f > 0.) return sqr(f); 
-  else return -sqr(f); }
 
 /// returns the smeared log likelihood coming from LEP2 Higgs mass bounds
  double lnLHiggs(double mh) {
@@ -10371,7 +10304,7 @@ double signedSqr(double f){ if (f > 0.) return sqr(f);
   
   /// Runge-Kutta, f(b) = int^b0 I(x) dx, I is integrand => d f / db = I(b)
   /// odeint has a problem at f(0): therefore, define f'(b)=f(b)+1
-  integrateOdes(v, from, to, eps, guess, hmin, softsusy::mhIntegrand, 
+  integrateOdes(v, from, to, eps, guess, hmin, mhIntegrand, 
 		odeStepper); 
   
   if (v(1) < EPSTOL || fabs(v(1) - 1.0) < EPSTOL) return -numberOfTheBeast; 
@@ -11691,5 +11624,75 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS,
     return true;
   }
 }
+  
+double softsusy::MssmSoftsusy::calcRunMbNeutralinos() const {
+  double mbMZ = dataSet.displayMass(mBottom);
+  double p = mbMZ;
+  double q = displayMu();
+  double thetab  = displayDrBarPars().thetab;
+  double g       = displayGaugeCoupling(2);
+  double gp      = displayGaugeCoupling(1) * sqrt(0.6);
+  double hb      = displayDrBarPars().hb;
+  double mbMSSM  = displayDrBarPars().mb;
+  ComplexMatrix n(displayDrBarPars().nBpmz);
+  DoubleVector mneut(displayDrBarPars().mnBpmz);
+  DoubleVector aPsi0Bsbotr(4), bPsi0Bsbotr(4), aPsi0Bsbotl(4),
+    bPsi0Bsbotl(4); 
+  
+#ifdef COMPILE_FULL_SUSY_THRESHOLD
+  if (MB_DECOUPLING) p = 0;
+#endif
+  
+  aPsi0Bsbotr(1) = gp / (root2 * 3.0) * 2.0;
+  bPsi0Bsbotl(1) = gp / (root2 * 3.0);
+  bPsi0Bsbotl(2) = -root2 * g * 0.5;
+  aPsi0Bsbotl(3) = hb;
+  bPsi0Bsbotr(3) = hb;
+  
+  ComplexVector aChi0Bsbotl(4), bChi0Bsbotl(4), aChi0Bsbotr(4),
+    bChi0Bsbotr(4);
+  
+  double deltaNeutralino = 0.;
+  aChi0Bsbotl = n.complexConjugate() * aPsi0Bsbotl;
+  bChi0Bsbotl = n * bPsi0Bsbotl;
+  aChi0Bsbotr = n.complexConjugate() * aPsi0Bsbotr;
+  bChi0Bsbotr = n * bPsi0Bsbotr;
+  
+  ComplexMatrix aNeutBsbot(4, 2), bNeutBsbot(4, 2);
+  DoubleMatrix fNeutBsbot(4, 2), gNeutBsbot(4, 2), 
+    neutralinoContribution(4, 2);
+  int i, j; DoubleMatrix O(2, 2); ComplexVector tt(2), t1(2), t2(2);
+  O = rot2d(thetab);
+  for (i=1; i<=4; i++) {
+    tt(1) = aChi0Bsbotl(i); tt(2) = aChi0Bsbotr(i);      
+    t1 = O * tt;
+    
+    tt(1) = bChi0Bsbotl(i); tt(2) = bChi0Bsbotr(i);      
+    t2 = O * tt;    
+    for (j=1; j<=2; j++) {
+      aNeutBsbot(i, j) = t1(j);
+      bNeutBsbot(i, j) = t2(j);
+      /// functions of couplings needed for loops
+      fNeutBsbot(i, j) = sqr(aNeutBsbot(i, j).mod()) + 
+	sqr(bNeutBsbot(i, j).mod());
+      
+      gNeutBsbot(i, j) = 2.0 * 
+	(aNeutBsbot(i, j) * bNeutBsbot(i, j).conj()).real(); 
+      
+      neutralinoContribution(i, j) = (fNeutBsbot(i, j) * 
+				      b1(p, mneut(i), 
+					 displayDrBarPars().md(j, 3), q) + 
+				      gNeutBsbot(i, j) * mneut(i) /  mbMSSM *  
+				      b0(p, mneut(i), 
+					 displayDrBarPars().md(j, 3), q)) * 0.5;
+      
+      deltaNeutralino = deltaNeutralino + neutralinoContribution(i, j);
+    }
+  }
+  
+  deltaNeutralino = -deltaNeutralino / (16.0 * sqr(PI));
+  
+  return deltaNeutralino; 
+}
 
-
+} ///< namespace softsusy

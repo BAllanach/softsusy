@@ -10,6 +10,8 @@
 
 #include "softpars.h"
 
+namespace softsusy {
+
   MssmSoftPars::MssmSoftPars()
     : mGaugino(3), ua(3, 3), da(3, 3), ea(3, 3),
       mQLsq(3, 3), mURsq(3, 3), mDRsq(3, 3), mLLsq(3, 3), mSEsq(3, 3), 
@@ -2835,6 +2837,7 @@ DoubleVector MssmSoftPars::beta(const MssmSusy & xx) const {
   
   return dsoft.display(); // convert to a long vector
 }
+
 const DoubleVector MssmSoftPars::display() const {
   DoubleVector y(numSoftParsMssm);
   //  y.setEnd(numSoftParsMssm);
@@ -3227,4 +3230,5 @@ void MssmSoftPars::minimalGmsb(const MssmSusy & xx, int n5, double LAMBDA,
   setSoftMassMatrix(mEr, mersq * id);
   
   universalTrilinears(xx, 0.0);
+}
 }

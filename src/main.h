@@ -50,17 +50,16 @@
  */
 
 #include <iostream>
-#include <mycomplex.h>
-#include <def.h>
-#include <linalg.h>
-#include <lowe.h>
-#include <rge.h>
-#include <softsusy.h>
-#include <softpars.h>
-#include <susy.h>
-#include <utils.h>
-#include <numerics.h>
-#include <rpvsoft.h>
+#include "mycomplex.h"
+#include "def.h"
+#include "linalg.h"
+#include "lowe.h"
+#include "rge.h"
+#include "softsusy.h"
+#include "softpars.h"
+#include "susy.h"
+#include "utils.h"
+#include "numerics.h"
 using namespace softsusy;
 
 namespace NR {
