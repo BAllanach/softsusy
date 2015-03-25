@@ -2833,7 +2833,8 @@ dm3sq3=m3sq*(18.*d4T*e2T+e6T*(1+kz)+6.*e2T*(e4T+u2d2T)+18.*(d2T*(e4T+u2d2T)+u2d2
 // integration routines
 DoubleVector MssmSoftPars::beta(const MssmSusy & xx) const {
   // calculate the derivatives
-  static MssmSoftPars dsoft; dsoft = beta2(xx);
+  static MssmSoftPars dsoft; 
+  dsoft = beta2(xx);
   
   return dsoft.display(); // convert to a long vector
 }

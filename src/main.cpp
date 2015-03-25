@@ -53,6 +53,8 @@ int main() {
   /// Print out header line
   cout << "# tan beta   mh           mA           mH0          mH+-\n";
 
+  //  PRINTOUT = 3; ///< DEBUG
+
   int i; 
   /// Set limits of tan beta scan
   double startTanb = 3.0, endTanb = 50.0;
@@ -64,6 +66,7 @@ int main() {
 
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r; 
+
     DoubleVector pars(3); 
     pars(1) = m0; pars(2) = m12; pars(3) = a0;
     bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)

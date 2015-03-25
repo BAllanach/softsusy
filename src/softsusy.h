@@ -309,7 +309,11 @@ namespace softsusy {
     
     /// Returns double vector containing numerical beta functions of parameters
     DoubleVector beta() const { 
-      return MssmSoftPars::beta(displayMssmSusy()); 
+      sBrevity a;
+      DoubleVector y(MssmSusy::beta(a).display());
+      DoubleVector x(MssmSoftPars::beta(displayMssmSusy())); 
+      int i; for (i=1; i<=y.displayEnd(); i++) x(i) = y(i);
+      return x;
     }; 
     
     ///  sets fracDiff, needed for access by NmssmSoftsusy methods
@@ -1262,9 +1266,9 @@ namespace softsusy {
     /// oneset (should be at MZ) - it's very crude, doesn't take radiative
     /// corrections into account etc. oneset provides low energy data and
     /// tanb=tan beta 
-    virtual MssmSusy guessAtSusyMt(double tanb, const QedQcd & oneset);
+    virtual MssmSusyRGE guessAtSusyMt(double tanb, const QedQcd & oneset);
   };
-  
+ 
   std::istream& operator>>(std::istream& left, MssmSoftsusy& s);
   
   /// Prints out header line for print-short output

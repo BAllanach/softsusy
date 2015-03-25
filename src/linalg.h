@@ -248,8 +248,6 @@ public:
   explicit DoubleMatrix(const DoubleVector &v);  
   ~DoubleMatrix() {}
 
-
-
   /// this is the only required operator to make this class work with ETs
   template<class E>
   DoubleMatrix & operator=(const MatXpr<double,E> & x) {

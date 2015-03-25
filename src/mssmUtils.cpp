@@ -402,7 +402,8 @@ namespace softsusy {
 	 << " Predicted MZ: " << sqrt(s.displayPredMzSq()) << endl;
     left << "Data set:\n" << s.displayDataSet();
     left << HR << endl;
-    left << s.displayMssmSoftPars();
+    left << "At Q=" << s.displayMu() << endl;
+    left << s.displayMssmSoftPars() << s.displayMssmSusy();
     left << "t1/v1(MS)=" << s.displayTadpole1Ms()
 	 << " t2/v2(MS)=" << s.displayTadpole2Ms() << endl;
     left << HR << "\nPhysical MSSM parameters:\n";

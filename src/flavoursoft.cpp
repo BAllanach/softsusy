@@ -1431,7 +1431,7 @@ void FlavourMssmSoftsusy::calcDrBarPars() {
   return;
 }
 
-MssmSusy FlavourMssmSoftsusy::guessAtSusyMt(double tanb, 
+MssmSusyRGE FlavourMssmSoftsusy::guessAtSusyMt(double tanb, 
 					    const QedQcd & oneset) { 
 
   // This bit gives a guess at a SUSY object

@@ -6939,7 +6939,7 @@ double MssmSoftsusy::calcMs() const {
 /// Provides the first guess at a SUSY object at mt, inputting tanb and oneset
 /// (should be at MZ) - it's very crude, doesn't take radiative corrections
 /// into account etc. 
-MssmSusy MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
+MssmSusyRGE MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
   /// This bit gives a guess at a SUSY object
   QedQcd leAtMt(oneset);
   
@@ -6948,7 +6948,7 @@ MssmSusy MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
   /// Gauge couplings at mt
   a = leAtMt.getGaugeMu(oneset.displayPoleMt(), sinth2);
   
-  MssmSusy t; 
+  MssmSusyRGE t; 
   t.setTanb(tanb);
   double beta = atan(tanb);
   
@@ -6989,7 +6989,7 @@ MssmSusy MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
   
   t.setHvev(vev);
   
-  //  t.setMu(oneset.displayPoleMt());   
+  t.setMu(oneset.displayPoleMt());   
   
   return t;
 }
@@ -7057,8 +7057,8 @@ void MssmSoftsusy::fixedPointIteration
     int maxtries = 100; 
     double tol = TOLERANCE;
     
-    MssmSusy u(guessAtSusyMt(tanb, oneset));
-    MssmSusyRGE t(u);
+    MssmSusyRGE t(guessAtSusyMt(tanb, oneset));
+
     // default SoftSusy loop number
     int lpnum = 2;
     
@@ -7630,8 +7630,13 @@ void MssmSoftsusy::itLowsoft
       /// Equal gauge couplings: let them and their derivatives set the boundary
       /// condition scale -- linear approximation
       mxBC = mxBC * exp((displayGaugeCoupling(2) - displayGaugeCoupling(1))
-			/ (a.displayGaugeCoupling(1) - a.displayGaugeCoupling(2)));
-      
+			/ (a.displayGaugeCoupling(1) - 
+			   a.displayGaugeCoupling(2)));
+
+      /*      cout << "MX=" << mxBC << " g1(MX)=" << displayGaugeCoupling(1)
+	   << " g2(MX)=" << displayGaugeCoupling(2) << "betas" << a; ///< DEBUG
+	   cout << *this; exit(0);*/
+
       /// if mx is too high/low, will likely get non-perturbative problems
       if (mxBC < 1.0e4) {
 	mxBC = 1.0e4;
