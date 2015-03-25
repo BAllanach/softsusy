@@ -35,7 +35,7 @@
     If you use the three-loop RGEs or two-loop threshold corrections, please 
     cite [1] and<br>
     [5] <a href="http://arxiv.org/abs/arXiv:1407.6130">B.C. Allanach, A. 
-    Bednyakov and R. Ruiz, arXiv:1407.6130</a>
+    Bednyakov and R. Ruiz, Comput. Phys. Commun. (2015) 192, arXiv:1407.6130</a>
 
     \section documentation Documentation
     These web-pages contain the documentation of the latest SOFTSUSY code.
