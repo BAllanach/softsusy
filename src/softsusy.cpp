@@ -7071,8 +7071,11 @@ void MssmSoftsusy::fixedPointIteration
     t.runto(mxBC); 
 
     setMssmSusy(t); setMu(t.displayMu());
+
     /// Initial guess: B=0, 
     boundaryCondition(*this, pars);
+
+    /// got nonzero gauge here
 
     if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
       setSusyMu(sgnMu * MZ);
@@ -7089,14 +7092,16 @@ void MssmSoftsusy::fixedPointIteration
       }
     }
 
+    //    cout << "1" << *this;///< DEBUG
+
     run(mxBC, mz);
 
+    //    cout << "2" << *this; exit(0);///< DEBUG
+
     if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
-    
+
     physical(0);
 
-    /// By here, they are different
-    
     setThresholds(3); setLoops(lpnum);
     
     itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 

@@ -28,29 +28,34 @@ const RpvSoftsusy & RpvSoftsusy::operator = (const RpvSoftsusy &s) {
 
 ostream & operator <<(ostream &left, const RpvSoftsusy & r) {
 
-  left << HR;
-  left << "neutr(al)ino parameters at Q=" << r.displayMu() << endl;
-  left << "tree-level m_nu " << r.displayNeutrinoMasses();
-  left << "sneutrino Vevs at Q=" << r.displayMsusy() << " "
+  left << r.displayMssmSoft();
+  left << "sneutrino Vevs at Q: " << r.displayMsusy() << " "
        << r.displaySneutrinoVevs();
+  left << "RPV parameters at Q: " << r.displayMu() << endl;
+  left << "tree-level m_nu " << r.displayNeutrinoMasses();
   left << "tree-level neutral fermion mixing " << r.displayNeutralMixing();
   left << "tree-level charged fermion mixing U" << r.displayUch();
   left << "tree-level charged fermion mixing V" << r.displayVch();
-  left << "RPV soft breaking parameters at Q=" << r.displayMu() << endl;
+  left << "RPV soft breaking parameters" << endl;
   left << r.displayRpvSoft();
-  left << HR;
-  left << "RPV supersymmetric parameters at Q=" << r.displayMu() << endl;
+  left << HR << endl;
+  left << "RPV supersymmetric parameters" << endl;
   left << r.displayRpvSusy();
-  left << r.displayMssmSoft();
   return left;
 }
 
 const DoubleVector RpvSoftsusy::display() const {
+  DoubleVector ss(MssmSusy::display());
+
   DoubleVector parameters(MssmSoftPars::display());
   int k = parameters.displayEnd() + 1;
   parameters.setEnd(numRpvSoftPars);
   RpvSusyPars::display(parameters, k); 
   RpvSoftPars::display(parameters, k); 
+  /// find a more economical way with ks
+  for (k=1; k<=ss.displayEnd(); k++) parameters(k) = ss.display(k);
+
+  //  cout << "DEBUG: displaying " << *this << " in " << parameters; 
   return parameters;
 }
 
@@ -187,6 +192,7 @@ void RpvSoftsusy::set(const DoubleVector & v) {
 }
 
 DoubleVector RpvSoftsusy::beta() const {
+  //  cout << "in beta fn (DEBUG) of " << *this;///< DEBUG
   return (RpvSoftsusy::beta2()).display();
 }
 
@@ -217,7 +223,7 @@ void RpvSoftsusy::rpvAnomalousDimension(DoubleMatrix & gEE, DoubleMatrix & gLL,
       gUU = oneO16Pisq * matrixify(lu1.transpose(), lu1);
       // Convention for this is that it's L on top: 
       gH1L = oneO16Pisq * (3.0 *(ld1 * d1).trace(2) + 
-			   (le1 * e1).trace(2)); // DEBUG +1 orig
+			   (le1 * e1).trace(2)); 
     }
 }
 
@@ -309,6 +315,8 @@ RpvSoftsusy RpvSoftsusy::beta2() const {
   double gH1H1, gH2H2;
   gH1H1 = 0.0; gH2H2 = 0.0;
   MssmSusy::anomalousDimension(gEE, gLL, gQQ, gUU, gDD, dg, gH1H1, gH2H2, a);
+
+  dR.setMssmSusy(MssmSusy::beta(a));
 
   // The RPV bits of anomalous dimensions
   DoubleMatrix gLLrpv(3, 3), gEErpv(3, 3), gQQrpv(3, 3), gDDrpv(3, 3),
