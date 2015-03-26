@@ -81,9 +81,10 @@ namespace softsusy {
     double displayMh2Squared() const;    ///< Return \f$m_{H_2}^2\f$=mH2sq
     DoubleVector displayGaugino() const; ///< Return \f$M_{G_i}\f$
     double displayGaugino(int i) const;  ///< Return \f$M_{G_i}\f$
-    /// Calculate beta functions of parameters of RPC MSSM
-    /// Returns all parameters as elements of a vector
-    const DoubleVector display() const;
+    /// Obligatory function that outputs contents in v, k is incremented on
+    /// output by the number of inputs. 
+    void display(DoubleVector & v, int & k) const;
+    const DoubleVector display2() const;
     
     /// Sets gravitino mass
     void setM32(double);

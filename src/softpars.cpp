@@ -167,6 +167,32 @@ void MssmSoftPars::set(const DoubleVector & y) {
   mH2sq = y.display(k+66);
 }
 
+  void MssmSoftPars::display(DoubleVector & y, int & k) const {
+    k--; 
+    int i, j;
+  for (i=1; i<=3; i++) {
+    k++;
+    y(k) = displayGaugino(i);
+  }
+  
+  for (i=1; i<=3; i++)    
+    for (j=1; j<=3; j++) {
+      k++;
+      y(k) = displayTrilinear(UA, i, j);
+      y(k+9) = displayTrilinear(DA, i, j);
+      y(k+18) = displayTrilinear(EA, i, j);
+      y(k+27) = displaySoftMassSquared(mQl, i, j);
+      y(k+36) = displaySoftMassSquared(mUr, i, j);
+      y(k+45) = displaySoftMassSquared(mDr, i, j);
+      y(k+54) = displaySoftMassSquared(mLl, i, j);
+      y(k+63) = displaySoftMassSquared(mEr, i, j);
+    }
+  y(k+64) = m3sq;
+  y(k+65) = mH1sq;
+  y(k+66) = mH2sq;
+  return;
+  }
+
 void MssmSoftPars::setSoftMassElement(softMasses k, int i, int j, 
 				      double f) { 
   switch(k) {
@@ -2836,33 +2862,13 @@ DoubleVector MssmSoftPars::beta(const MssmSusy & xx) const {
   static MssmSoftPars dsoft; 
   dsoft = beta2(xx);
   
-  return dsoft.display(); // convert to a long vector
+  return dsoft.display2(); // convert to a long vector
 }
 
-const DoubleVector MssmSoftPars::display() const {
+const DoubleVector MssmSoftPars::display2() const {
   DoubleVector y(numSoftParsMssm);
-  //  y.setEnd(numSoftParsMssm);
-  int i, j, k=numSusyPars;
-  for (i=1; i<=3; i++) {
-    k++;
-    y(k) = displayGaugino(i);
-  }
-  
-  for (i=1; i<=3; i++)    
-    for (j=1; j<=3; j++) {
-      k++;
-      y(k) = displayTrilinear(UA, i, j);
-      y(k+9) = displayTrilinear(DA, i, j);
-      y(k+18) = displayTrilinear(EA, i, j);
-      y(k+27) = displaySoftMassSquared(mQl, i, j);
-      y(k+36) = displaySoftMassSquared(mUr, i, j);
-      y(k+45) = displaySoftMassSquared(mDr, i, j);
-      y(k+54) = displaySoftMassSquared(mLl, i, j);
-      y(k+63) = displaySoftMassSquared(mEr, i, j);
-    }
-  y(k+64) = m3sq;
-  y(k+65) = mH1sq;
-  y(k+66) = mH2sq;
+  int k = numSusyPars + 1;
+  display(y, k);
   return y;
 }
 

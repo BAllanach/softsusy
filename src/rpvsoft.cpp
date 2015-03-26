@@ -45,11 +45,12 @@ ostream & operator <<(ostream &left, const RpvSoftsusy & r) {
 }
 
 const DoubleVector RpvSoftsusy::display() const {
+
   DoubleVector ss(MssmSusy::display());
 
-  DoubleVector parameters(MssmSoftPars::display());
+  DoubleVector parameters(MssmSoftPars::display2());
   int k = parameters.displayEnd() + 1;
-  parameters.setEnd(numRpvSoftPars);
+   parameters.setEnd(numRpvSoftPars);
   RpvSusyPars::display(parameters, k); 
   RpvSoftPars::display(parameters, k); 
   /// find a more economical way with ks
