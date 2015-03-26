@@ -275,7 +275,7 @@ MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
     heeT = (he * et).trace(); 
   mG = displayGaugino(); msq = mG * mG; gsqM = gsq * mG; gMsq = gsq * msq;
   
-  double mH2sq = displayMh2Squared(), mH1sq = displayMh2Squared(), 
+  double mH2sq = displayMh2Squared(), mH1sq = displayMh1Squared(), 
     m3sq = displayM3Squared();
   
   // derivatives of soft parameters
@@ -293,6 +293,9 @@ MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
     
     double curlyS = mH2sq - mH1sq + mqT - mlT - 2.0 * muT + mdT + meT;
     
+    //    cout << "cS: " << mH2sq << " " << -mH1sq << " " << mqT << " " << -mlT 
+    //	 << " " << -2.0 * muT << " " << mdT << " " << meT << " "; ///< DEBUG
+
     dm3sq = 2.0 * xx.displaySusyMu() * (0.6 * gsqM(1) + 3.0 * gsqM(2) + 
 				     3.0 * huuT  +  3.0 * hddT + heeT) 
       + m3sq * (3.0 * uuT + 3.0 * ddT + eeT - 0.6 * gsq(1) - 3.0 * gsq(2));
@@ -305,7 +308,12 @@ MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
     dmH2sq = 2.0 * 
       (0.3 * gsq(1) * curlyS - 0.6 * gMsq(1) - 3.0 * gMsq(2) +
        3.0 * (mH2sq * uuT + (u2 * mq).trace() + (u2t * mu).trace() + huT));
-    
+
+    /*    cout << "terms: " << 0.3 * gsq(1) * curlyS << " " << - 0.6 * gMsq(1)
+	 << " " << - 3.0 * gMsq(2) << " " << mH2sq * uuT << " " 
+	 << (u2 * mq).trace() << " " << (u2t * mu).trace() << " " 
+	 << huT << " "; ///< DEBUG
+    */
     dmq = 2.0 *
       (0.1 * gsq(1) * curlyS - oneO15 * gMsq(1) - 3.0 * gMsq(2) -
        sixteenO3 * gMsq(3) +
@@ -987,6 +995,8 @@ MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
     dmG = dmG + dmG2 * oneO16Pif;
     dm3sq = dm3sq + dm3sq2 * oneO16Pif;
     dmH1sq = dmH1sq + dmH1sq2 * oneO16Pif;
+    //    cout << "dmH2sq(1 loop)=" << dmH2sq 
+    //	 << " dmH2sq(2 loop)=" << dmH2sq2 * oneO16Pif << endl; ///< DEBUG
     dmH2sq = dmH2sq + dmH2sq2 * oneO16Pif;
     
 #ifdef COMPILE_THREE_LOOP_RGE

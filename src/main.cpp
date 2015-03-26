@@ -23,7 +23,7 @@ int main() {
 
   try {
  /// Sets format of output: 6 decimal places
-  outputCharacteristics(6);
+  outputCharacteristics(16);
 
   cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
        << " test program, Ben Allanach 2002\n";
@@ -52,8 +52,6 @@ int main() {
 
   /// Print out header line
   cout << "# tan beta   mh           mA           mH0          mH+-\n";
-
-  //  PRINTOUT = 3; ///< DEBUG
 
   int i; 
   /// Set limits of tan beta scan

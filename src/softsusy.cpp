@@ -7070,10 +7070,10 @@ void MssmSoftsusy::fixedPointIteration
     t.setMssmLoops(lpnum); /// >= 2 loops should protect against ht Landau pole 
     t.runto(mxBC); 
     
-    setMssmSusy(t);
+    setMssmSusy(t); setMu(t.displayMu());
     /// Initial guess: B=0, 
     boundaryCondition(*this, pars);
-    
+
     if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
       setSusyMu(sgnMu * MZ);
       setM3Squared(1.0e6);
@@ -7088,12 +7088,14 @@ void MssmSoftsusy::fixedPointIteration
 	setM3Squared(muFirst); 
       }
     }
-    
+
     run(mxBC, mz);
-    
+
     if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
     
     physical(0);
+
+    /// By here, they are different
     
     setThresholds(3); setLoops(lpnum);
     
@@ -7632,11 +7634,7 @@ void MssmSoftsusy::itLowsoft
       mxBC = mxBC * exp((displayGaugeCoupling(2) - displayGaugeCoupling(1))
 			/ (a.displayGaugeCoupling(1) - 
 			   a.displayGaugeCoupling(2)));
-
-      /*      cout << "MX=" << mxBC << " g1(MX)=" << displayGaugeCoupling(1)
-	   << " g2(MX)=" << displayGaugeCoupling(2) << "betas" << a; ///< DEBUG
-	   cout << *this; exit(0);*/
-
+      
       /// if mx is too high/low, will likely get non-perturbative problems
       if (mxBC < 1.0e4) {
 	mxBC = 1.0e4;
