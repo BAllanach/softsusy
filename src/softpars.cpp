@@ -190,6 +190,7 @@ void MssmSoftPars::set(const DoubleVector & y) {
   y(k+64) = m3sq;
   y(k+65) = mH1sq;
   y(k+66) = mH2sq;
+  k = k + 67;
   return;
   }
 

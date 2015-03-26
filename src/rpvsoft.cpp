@@ -46,17 +46,13 @@ ostream & operator <<(ostream &left, const RpvSoftsusy & r) {
 
 const DoubleVector RpvSoftsusy::display() const {
 
-  DoubleVector ss(MssmSusy::display());
-  DoubleVector parameters(MssmSoftPars::display2());
-
-  int k = numSoftParsMssm + 1;
-  parameters.setEnd(numRpvSoftPars);
+  DoubleVector parameters(MssmSusy::display());
+  int k = numSusyPars + 1;
+  parameters.setEnd(numRpvSoftPars);  
+  MssmSoftPars::display(parameters, k);
   RpvSusyPars::display(parameters, k); 
   RpvSoftPars::display(parameters, k); 
-  /// find a more economical way with ks
-  for (k=1; k<=ss.displayEnd(); k++) parameters(k) = ss.display(k);
 
-  //  cout << "DEBUG: displaying " << *this << " in " << parameters; 
   return parameters;
 }
 
