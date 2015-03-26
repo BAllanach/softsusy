@@ -1442,7 +1442,7 @@ MssmSusyRGE FlavourMssmSoftsusy::guessAtSusyMt(double tanb,
   // Gauge couplings at mt
   a = leAtMt.getGaugeMu(oneset.displayPoleMt(), sinth2);
   
-  MssmSusy t(MssmSoftsusy::guessAtSusyMt(tanb, oneset));
+  MssmSusyRGE t(MssmSoftsusy::guessAtSusyMt(tanb, oneset));
   DoubleMatrix yu(t.displayYukawaMatrix(YU)), yd(t.displayYukawaMatrix(YD)); 
   
   doQuarkMixing(yd, yu);

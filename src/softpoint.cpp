@@ -73,6 +73,7 @@ void errorCall() {
 }
 
 int main(int argc, char *argv[]) {
+
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
