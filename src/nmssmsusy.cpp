@@ -63,7 +63,7 @@ namespace softsusy {
       static const double oneO16Pisq = 1.0 / (16.0 * sqr(PI));
       s.getOneLpAnom(gEE, gLL, gQQ, gDD, gUU, gH1H1, gH2H2, a);
       addOneLpAnomNmssm(gH1H1, gH2H2, gSS, lam, kap);
-      dg = dg + oneO16Pisq * g3 * bBeta;
+      dg = oneO16Pisq * g3 * bBeta;
     }
     
     if (s.displayMssmLoops() > 1) {
@@ -78,7 +78,7 @@ namespace softsusy {
 
   void addOneLpAnomNmssm(double & gH1H1, double & gH2H2, double & gSS, 
 			 double lambda, double kappa) {
-    const double ksq = sqr(kappa), lsq = sqr(kappa);
+    const double ksq = sqr(kappa), lsq = sqr(lambda);
     static const double oneO16Pisq = 1.0 / (16.0 * sqr(PI));
     
     gH1H1 += oneO16Pisq * lsq;
@@ -170,6 +170,7 @@ namespace softsusy {
     de = e1 * (gEE + gH1H1) + gLL * e1;
     dl = n.displayLambda() * (gH1H1 + gH2H2 + gSS);
     dk = n.displayKappa() * (3.0 * gSS);
+
     dmu = s.displaySusyMu() * (gH1H1 + gH2H2);
     dmupr = 2.0 * n.displayMupr() * gSS;
     dz = n.displayXiF() * gSS;
@@ -224,12 +225,12 @@ namespace softsusy {
 				 (-2 * feynman + 2 * lsq + 3 * ddT + eeT + 
 				  3.0 * uuT));
     }
-    
+   
     // Contains all susy derivatives:
-    NmssmSusy ds(du, dd, de, dg, dmu, dt, 
+    NmssmSusy ds(du, dd, de, dg, dmu, dt, dHvev, 
 		 s.displayMssmLoops(),
-		 s.displayMssmApprox().displayThresholds(), dHvev, 
-		 dSvev, dl, dk, dmupr, dz);
+		 s.displayMssmApprox().displayThresholds(), 
+		 dSvev, dl, dk, dz, dmupr);
     
     return ds;
   }
@@ -259,7 +260,8 @@ namespace softsusy {
   }
 
   NmssmSusyPars::NmssmSusyPars(double l, double k, double s, double x, double m)
-    : lambda(l), kappa(k), sVev(s), xiF(x), mupr(m) {}
+    : lambda(l), kappa(k), sVev(s), xiF(x), mupr(m) {
+  }
 
   const NmssmSusyPars & NmssmSusyPars::operator=(const NmssmSusyPars &s) {
     if (this == &s) return *this;
@@ -325,6 +327,9 @@ namespace softsusy {
     : MssmSusy(u, d, e, v, m, tb, hv), NmssmSusyPars(lam, kap, sv, z, mup) {
     setNmssmApprox(l, t);
   }
+
+  //  NmssmSusy::NmssmSusy(const NmssmSusyRGE & nms)
+  //    : MssmSusy(nms.displayMssmSusy()) {}
 
   // outputs one-loop anomlous dimensions gii given matrix inputs
   // Note that we use the convention (for matrices in terms of gamma's)
@@ -393,16 +398,17 @@ namespace softsusy {
   
   const NmssmSusyRGE & NmssmSusyRGE::operator=(const NmssmSusyRGE & s) {
     if (this == &s) return *this;
-    MssmSusy::operator=(s);
+    MssmSusy::operator=(s.displayMssmSusy());
     NmssmSusy::operator=(s.displayNmssmSusy());
     
     return *this;
   }
   
   
-  const NmssmSusyRGE & NmssmSusyRGE::operator=(const MssmSusy & s) {
+  const NmssmSusyRGE & NmssmSusyRGE::operator=(const NmssmSusy & s) {
     setMssmSusy(s);
-    MssmSusy::operator=(s);
+    NmssmSusy::operator=(s);
+
     return *this;
   }
   
@@ -410,16 +416,20 @@ namespace softsusy {
     MssmSusy::setSomePars(s);
   }
     
+  void NmssmSusyPars::display(DoubleVector & y, int k) const {
+    y(k) = displaySvev(); k++;
+    y(k) = displayLambda(); k++;
+    y(k) = displayKappa(); k++;
+    y(k) = displayMupr(); k++;
+    y(k) = displayXiF(); k++;
+  }
+
   const DoubleVector NmssmSusy::display() const {
     DoubleVector y(MssmSusy::display());
     assert(y.displayStart() == 1 && y.displayEnd() == numSusyPars);
     y.setEnd(numNMssmPars);
-    
-    y(34) = displaySvev();
-    y(35) = displayLambda();
-    y(36) = displayKappa();
-    y(37) = displayMupr();
-    y(38) = displayXiF();
+    int k = 34; 
+    NmssmSusyPars::display(y, k);
     
     return y;
   }
@@ -434,15 +444,25 @@ namespace softsusy {
     NmssmSusy::setNmssmSusyPars(y);
   }
   
-  ostream & operator <<(ostream &left, const NmssmSusyRGE &s) {
-    left << static_cast<MssmSusy>(s)
-	 << "singlet VEV: " << s.displaySvev()
+  ostream & operator <<(ostream &left, const NmssmSusyPars &s) {
+    left << "singlet VEV: " << s.displaySvev()
 	 << " lambda: " << s.displayLambda()
-	 << " kappa: " << s.displayKappa()
-	 << " smu: " << s.displaySusyMu()
+	 << " kappa: " << s.displayKappa() << endl
 	 << " mupr: " << s.displayMupr()
 	 << " xiF: " << s.displayXiF()
 	 << '\n';
+    return left;
+  }
+
+  ostream & operator <<(ostream &left, const NmssmSusy &s) {
+    left << s.displayMssmSusy()
+	 << s.displayNmssmSusyPars();
+    return left;
+  }
+
+  ostream & operator <<(ostream &left, const NmssmSusyRGE &s) {
+    left << "NMSSM SUSY parameters at Q: " << s.displayMu() << endl
+	 << s.displayNmssmSusy();
     return left;
   }
   
@@ -477,7 +497,7 @@ namespace softsusy {
     static NmssmSusyRGE ds;
     
     ds = NmssmSusy::beta(a);
-    
+
     return ds.display(); // convert to a long vector
   }
   /** end of NmssmSusyRGE **/

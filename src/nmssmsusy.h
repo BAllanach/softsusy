@@ -127,6 +127,8 @@ namespace softsusy {
     double displayXiF() const { return xiF; };
     /// returns whole object
     const NmssmSusyPars & displayNmssmSusyPars() const { return *this; };
+    /// whole object in a vector y, starting at index k
+    void display(DoubleVector & y, int k) const; 
 
     /// Outputs one-loop anomalous dimensions gii given matrix inputs.
     /// for RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1 and H2
@@ -185,6 +187,7 @@ namespace softsusy {
 	      double mupr);
     NmssmSusy(double lambda, double kappa, double sv, double xiF, 
 	      double mupr);
+    //    NmssmSusy(const NmssmSusyRGE & nms);
     
     inline const NmssmSusy & displayNmssmSusy() const { return *this; };
     
@@ -267,7 +270,7 @@ namespace softsusy {
     /// sets object to be equal to another
     const NmssmSusyRGE & operator=(const NmssmSusyRGE & s);
     /// set the MssmSusy part
-    const NmssmSusyRGE & operator=(const MssmSusy & s);
+    const NmssmSusyRGE & operator=(const NmssmSusy & s);
     /// sets object to be equal to another
     void setSusy(const NmssmSusyRGE &s);
     void set(const DoubleVector & y);
@@ -287,6 +290,8 @@ namespace softsusy {
   
   /// Formatted output
   ostream & operator <<(ostream &, const NmssmSusyRGE &);
+  ostream & operator <<(ostream &, const NmssmSusy &);
+  ostream & operator <<(ostream &, const NmssmSusyPars &);
   
   /// Formatted input
   istream & operator >>(istream &left, NmssmSusyRGE &s);

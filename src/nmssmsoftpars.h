@@ -29,7 +29,7 @@ namespace softsusy {
 
   /** start of RGE functions **/
   /// Returns beta functions to NMSSM soft parameters (only)
-  class SoftParsNmssm;
+  class SoftParsNmssm; class NmssmSoftsusy;
   void addBetaSoftParsNmssm
   (nmsBrevity & a, const NmssmSusyPars & n, const MssmSusy & m, 
    const MssmSoftPars & msoft, const SoftParsNmssm & nsoft, DoubleVector & dmG, 
@@ -54,17 +54,12 @@ namespace softsusy {
     /// Default constructor fills object with zeroes
     SoftParsNmssm()
       : alambda(0.0), akappa(0.0), mSsq(0.0), mSpsq(0.0), xiS(0.0) {};
-    SoftParsNmssm(const SoftParsNmssm & s);
-    /*    SoftParsNmssm(const DoubleVector & mG, const
-		  DoubleMatrix & aU, const DoubleMatrix & aD, 
-		  const DoubleMatrix & aE,
-		  const double & aL, const double & aK, 
-		  const DoubleMatrix & mQl,
-		  const DoubleMatrix & mUr, const DoubleMatrix & mDr, const
-		  DoubleMatrix & mLl, const DoubleMatrix & mEr, 
-		  double m3sqn, double mH1sq,
-		  double mH2sq, double mSsq, double mSpsq, double xiS,
-		  double mg, int l, int t);*/
+    SoftParsNmssm(const SoftParsNmssm & s)
+    : alambda(s.displayTrialambda()), akappa(s.displayTriakappa()), 
+      mSsq(s.displayMsSquared()), mSpsq(s.displayMspSquared()), 
+      xiS(s.displayXiS()) {};
+    SoftParsNmssm(double al, double ak, double ms, double msp, double x)
+      : alambda(al), akappa(ak), mSsq(ms), mSpsq(msp), xiS(x) {}
     const SoftParsNmssm & operator=(const SoftParsNmssm & s);
     
     const SoftParsNmssm & displaySoftParsNmssm() const { return *this; }
@@ -87,7 +82,9 @@ namespace softsusy {
     /// Whole object output in a doublevector
     const DoubleVector display(const NmssmSusy & n, const MssmSoftPars & s) 
       const;
-        
+    /// Increments k and fills the DoubleVector with entries
+    void display(DoubleVector & y, int & k) const;
+
     /// PA: Set trilinear SUSY breaking parameter alambda
     void setTrialambda(double al) { alambda = al; };
     /// PA: Set trilinear SUSY breaking parameter akappa
@@ -102,18 +99,18 @@ namespace softsusy {
     void set(const DoubleVector &, NmssmSusyPars & n);    
 
     /// Returns numerical beta functions of parameters and Brevity
-    SoftParsNmssm beta2(nmsBrevity&, const NmssmSusy & betaNmssmSusy,
-			const MssmSoftPars & betaMssmSoftPars) const;
+    /*    SoftParsNmssm beta2(nmsBrevity&, const NmssmSusy & betaNmssmSusy,
+	  const MssmSoftPars & betaMssmSoftPars) const;*/
     /// Returns double vector containing numerical beta functions of parameters
     //    DoubleVector beta() const;
 
     /// Returns derivatives of anomalous dimensions of fields with respect to
     /// renormalisation scale in MSSM for: RH leptons, LH leptons, LH quarks, RH
     /// up quarks, RH down quarks, H1 and H2 respectively
-    /*    void anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
+    void anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
 			DoubleMatrix & gQQ, DoubleMatrix & gUU,
 			DoubleMatrix & gDD,
-			double & gH1H1, double & gH2H2, double & gSS) const;*/
+			double & gH1H1, double & gH2H2, double & gSS) const;
     
     /// adds NMSSM amsb contribution to soft masses.
     void addAmsb(double maux, const NmssmSusy & Nms, MssmSoftPars & m);
@@ -199,6 +196,7 @@ namespace softsusy {
   
   /// Formatted ouput of whole object
   ostream & operator <<(ostream &left, const SoftParsNmssmRGE &s);
+  ostream & operator <<(ostream &left, const SoftParsNmssm &s);
   /// Formatted input of whole object
   istream & operator >>(istream &left, SoftParsNmssmRGE &s);
   

@@ -109,6 +109,8 @@ void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters)
 double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, 
 	      int numTries);
 
+  ostream & operator << (ostream & left, const NmssmSoftsusy & s);
+
 } // namespace softsusy
 
 #endif

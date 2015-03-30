@@ -9,7 +9,6 @@
 #include "nmssmsoftpars.h"
 
 namespace softsusy {
-
   /** start of RGE functions **/
   /// Outputs derivatives (DRbar scheme) in the form of dsoft
   /// thresholds = 0 and NOTHING is decoupled.
@@ -583,7 +582,7 @@ namespace softsusy {
   
   void SoftParsNmssm::set(const DoubleVector & y, NmssmSusyPars & n) {
     n.setNmssmSusyPars(y);
-    int k=numNMssmPars + 12;
+   int k=numNMssmPars + 12;
     /*     for (i=1; i<=3; i++) {
 	   k++;
 	   setGauginoMass(i, y.display(k));
@@ -618,7 +617,6 @@ namespace softsusy {
     
     SoftParsNmssm base(betaNmssmSusy, betaMssmSoftPars);
     
-    
     const double m3sq = displayM3Squared();
     const double mH1sq = displayMh1Squared();
     const double mH2sq = displayMh2Squared();
@@ -631,14 +629,19 @@ namespace softsusy {
     static DoubleMatrix dhu(3, 3), dhd(3, 3), dhe(3, 3);
     static double dhlam=0, dhkap=0;
     
+    addBetaSoftParsNmssm(a, displayNmssmSusyPars(), displayMssmSusy(), 
+			 displayMssmSoftPars(), displaySoftParsNmssm(), 
+			 dmG, dmH1sq, dmH2sq, dm3sq, dmSsq, dmSpsq, dxiS,
+			 dmq, dmu, dmd, dme, dml, dhu, dhd, dhe, dhlam, dhkap);
     
     SoftParsNmssm dsoft(dmG, dhu, dhd, dhe, dhlam, dhkap, dmq, dmu,
 			dmd, dml, dme, dm3sq, dmH1sq, dmH2sq, dmSsq, 
 			dmSpsq, dxiS, displayGravitino(), 
 			displayNmssmLoops(), displayNmssmThresholds());
     return dsoft;
-    }
+    }*/
   
+  /*
   /// Outputs derivatives vector y[109] for SUSY parameters: interfaces to
   /// integration routines
   DoubleVector SoftParsNmssm::beta() const {
@@ -652,9 +655,9 @@ namespace softsusy {
   /// derived.
   /*  void SoftParsNmssm::anomalousDeriv(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				     DoubleMatrix & gQQ, DoubleMatrix & gUU,
-				     DoubleMatrix & gDD,
-				     double & gH1H1, double & gH2H2, 
-				     double & gSS)  const {
+				       DoubleMatrix & gDD,
+				       double & gH1H1, double & gH2H2, 
+				       double & gSS)  const {
     MssmSoftPars::anomalousDeriv(displayMssmSusy(),
 				 gEE, gLL, gQQ, gUU, gDD,  gH1H1, gH2H2);
     gSS = 0.0;
@@ -745,7 +748,7 @@ namespace softsusy {
   void SoftParsNmssm::standardsemiSugra
   (double m0, double m12, double a0, double Al, double Ak, const NmssmSusy & n,
    const MssmSoftPars & m, double mS) {
-    semiuniversalScalars(m0);
+    //    semiuniversalScalars(m0);
     //    universalGauginos(m12);
     semiuniversalTrilinears(a0, Al, Ak, n);
     //In the Z3 violating case we can still have mS as a parameter
@@ -759,25 +762,13 @@ namespace softsusy {
   }
   
   ostream & operator <<(ostream &left, const SoftParsNmssm &s) {
-    ///    left << "SUSY breaking NMSSM parameters at Q: " << s.NmssmSusy::displayMun() << '\n';
-    /*    left << " UA" << s.displayTrilinear(UA)
-	 << " UD" << s.displayTrilinear(DA)
-	 << " UE" << s.displayTrilinear(EA);*/
     left << " alambda: " << s.displayTrialambda()
 	 << " akappa: " << s.displayTriakappa();
-    /*    left << " mQLsq" << s.displaySoftMassSquared(mQl)
-	 << " mURsq" << s.displaySoftMassSquared(mUr)
-	 << " mDRsq" << s.displaySoftMassSquared(mDr)
-	 << " mLLsq" << s.displaySoftMassSquared(mLl)
-	 << " mSEsq" << s.displaySoftMassSquared(mEr);*/
-    left  /* << " m3sq: " << s.displayM3Squared()
-	 << mH1sq: " << s.displayMh1Squared()
-	 << " mH2sq: " << s.displayMh2Squared() */
-	 << " mSsq: "  << s.displayMsSquared()
+    left << " mSsq: "  << s.displayMsSquared()
 	 << " mSPsq: "  << s.displayMspSquared()
 	 << " xiS: "  << s.displayXiS()
 	 << '\n';
-    //    left << "Gaugino masses" << s.displayGaugino();
+
     return left;
   }
   

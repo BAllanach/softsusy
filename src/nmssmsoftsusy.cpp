@@ -17,7 +17,9 @@ namespace softsusy {
   
   const NmssmSoftsusy & NmssmSoftsusy::operator=(const NmssmSoftsusy & s) {
     if (this == &s) return *this;
-    NmssmSoftsusy::operator=(s);
+    setNmssmSusyPars(s.displayNmssmSusyPars());
+    setSoftParsNmssm(s.displaySoftParsNmssm());
+    setSoftsusy(s.displaySoftsusy());
     tSOVSMs = s.tSOVSMs;
     tSOVSMs1loop = s.tSOVSMs1loop;
     return *this;
@@ -31,6 +33,69 @@ namespace softsusy {
     MssmSoftsusy::set(y);
   }
   
+  DoubleVector NmssmSoftsusy::beta() const {
+    return NmssmSoftsusy::beta2().display();
+  }
+
+  NmssmSoftsusy NmssmSoftsusy::beta2() const {
+    nmsBrevity a;
+
+    /// derivatives of soft parameters
+    static DoubleVector dmG(1, 3);
+    static double dmH1sq, dmH2sq, dm3sq;
+    static double dmSsq=0, dmSpsq=0, dxiS=0;
+    static DoubleMatrix dmq(3, 3), dmu(3, 3), dmd(3, 3), dme(3, 3), dml(3, 3);
+    static DoubleMatrix dhu(3, 3), dhd(3, 3), dhe(3, 3);
+    static double dhlam=0, dhkap=0;
+
+    NmssmSusy nms(betaNmssmSusy(a, displayMssmSusy(), displayNmssmSusyPars()));
+    MssmSoftPars ms(displayMssmSoftPars().beta2(displayMssmSusy()));
+    MssmSoftsusy mm(nms.displayMssmSusy(), ms, displayPhys(), 
+		    displayMu(), displayMssmLoops(), 
+		    displayApprox().displayThresholds(), 
+		    displayMssmSusy().displayHvev());
+    NmssmSusy nn(displayMssmSusy(), nms);
+
+    dmH1sq = ms.displayMh1Squared();
+    dmH2sq = ms.displayMh2Squared();
+    dm3sq = ms.displayM3Squared();
+    dmq = ms.displaySoftMassSquared(mQl);
+    dmu = ms.displaySoftMassSquared(mUr);
+    dmd = ms.displaySoftMassSquared(mDr);
+    dme = ms.displaySoftMassSquared(mEr);
+    dml = ms.displaySoftMassSquared(mLl);
+    dhu = ms.displayTrilinear(UA);
+    dhd = ms.displayTrilinear(DA);
+    dhe = ms.displayTrilinear(EA);
+    addBetaSoftParsNmssm(a, displayNmssmSusyPars(), displayMssmSusy(), 
+			 displayMssmSoftPars(), displaySoftParsNmssm(), 
+			 dmG, dmH1sq, dmH2sq, dm3sq, dmSsq, dmSpsq, dxiS,
+			 dmq, dmu, dmd, dme, dml, dhu, dhd, dhe, dhlam, dhkap);
+    
+    mm.setMh1Squared(dmH1sq);
+    mm.setMh2Squared(dmH2sq);
+    mm.setM3Squared(dm3sq);
+    mm.setSoftMassMatrix(mQl, dmq);
+    mm.setSoftMassMatrix(mUr, dmu);
+    mm.setSoftMassMatrix(mDr, dmd);
+    mm.setSoftMassMatrix(mLl, dml);
+    mm.setSoftMassMatrix(mEr, dme);
+    mm.setTrilinearMatrix(UA, dhu);
+    mm.setTrilinearMatrix(DA, dhd);
+    mm.setTrilinearMatrix(EA, dhe);
+    dhu = ms.displayTrilinear(UA);
+    dhd = ms.displayTrilinear(DA);
+    dhe = ms.displayTrilinear(EA);
+
+    SoftParsNmssm spn(dhlam, dhkap, dmSsq, dmSpsq, dxiS);
+
+    return NmssmSoftsusy(nms, spn, mm);
+  }
+
+  const DoubleVector NmssmSoftsusy::display() const {
+    return SoftParsNmssm::display(displayNmssmSusy(), displayMssmSoftPars());
+  }
+
   /// PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.
   void NmssmSoftsusy::printall() const {
     cout << "At scale " << displayMu() << '\n';
@@ -275,7 +340,8 @@ namespace softsusy {
     /// PA: Add extra NMSSM coupling.
     /// PA: minus sign since mu = - displaySusyMu for BPMZ conventions here.
     double    mueff   = mu - lam * s / root2;
-    NmssmSoftsusy::H1SfSfCouplings(lTS1Lr, lBS1Lr, lTauS1Lr, gmzOcthW, mueff, cosb, v1);
+    MssmSoftsusy::H1SfSfCouplings(lTS1Lr, lBS1Lr, lTauS1Lr, gmzOcthW, mueff, 
+				  cosb, v1);
   }
   
   /// PA: obtains NMSSM H2-sfermion-sfermion couplings
@@ -289,7 +355,7 @@ namespace softsusy {
     /// PA: Add extra NMSSM coupling.
     /// PA: minus sign since mu = - displaySusyMu for BPMZ conventions here.
     double    mueff   = mu - lam * s / root2;
-    NmssmSoftsusy::H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mueff, sinb);
+    MssmSoftsusy::H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mueff, sinb);
   }
   
   
@@ -809,7 +875,7 @@ namespace softsusy {
 				   int family) {
     /// PA: only modification is to add lambda * s / root to mu
     double lam = displayLambda(), svev = displaySvev(), tanb = displayTanb();
-    NmssmSoftsusy::treeUpSquark(mass, mtrun, pizztMS, sinthDRbarMS, family);
+    MssmSoftsusy::treeUpSquark(mass, mtrun, pizztMS, sinthDRbarMS, family);
     if (family == 3){
       mass(1, 2) = mass(1, 2) -  mtrun * lam * svev / (root2 * tanb);
       mass(2, 1) = mass(1, 2);
@@ -824,7 +890,7 @@ namespace softsusy {
 				     int family) {
     /// PA: only modification is to add lambda * s / root to mu
     double lam = displayLambda(), svev = displaySvev(), tanb = displayTanb();
-    NmssmSoftsusy::treeDownSquark(mass, mbrun, pizztMS, sinthDRbarMS, family);
+    MssmSoftsusy::treeDownSquark(mass, mbrun, pizztMS, sinthDRbarMS, family);
     if (family == 3){
       mass(1, 2) = mass(1, 2) -  mbrun * lam * svev * tanb / (root2);
       mass(2, 1) = mass(1, 2);
@@ -837,7 +903,8 @@ namespace softsusy {
 					 int family) {
     /// PA: only modification is to add lambda * s / root to mu
     double lam = displayLambda(), svev = displaySvev(), tanb = displayTanb();
-    NmssmSoftsusy::treeChargedSlepton(mass, mtaurun, pizztMS, sinthDRbarMS, family);
+    MssmSoftsusy::treeChargedSlepton(mass, mtaurun, pizztMS, sinthDRbarMS, 
+				     family);
     if (family == 3) {
       mass(1, 2) = mass(1, 2) -  mtaurun * lam * svev * tanb / (root2);
       mass(2, 1) = mass(1, 2);
@@ -854,7 +921,7 @@ namespace softsusy {
   void NmssmSoftsusy::treeCharginos(DoubleMatrix & mass, double beta, double mw) {
     double lam = displayLambda(), svev = displaySvev();
     
-    NmssmSoftsusy::treeCharginos(mass, beta, mw);
+    MssmSoftsusy::treeCharginos(mass, beta, mw);
     mass(2, 2) = mass(2, 2) + lam * svev / root2;
   }
   
@@ -866,7 +933,7 @@ namespace softsusy {
     double vev = displayHvev(), svev = displaySvev();
     
     /// Call MSSM 4 x4 neutralino mass matrix
-    NmssmSoftsusy::treeNeutralinos(mass, beta, mz, mw, sinthDRbar);
+    MssmSoftsusy::treeNeutralinos(mass, beta, mz, mw, sinthDRbar);
     
     /// Fill remaining values
     mass(3, 4) = mass(3, 4) - lam * svev / root2;
@@ -1128,7 +1195,8 @@ namespace softsusy {
     double mz = displayMzRun(), mz2 = sqr(mz);
     double pizzt = sqr(mz) - sqr(mzPole);
     double vev = displayHvev();
-    NmssmSoftsusy::setNeutCurrCouplings(sinthDRbar, sw2, guL, gdL, geL, guR, gdR, geR);
+    NmssmSoftsusy::setNeutCurrCouplings(sinthDRbar, sw2, guL, gdL, geL, 
+					guR, gdR, geR);
     NmssmSoftsusy::calcDRTrilinears(eg, vev, beta);
     eg.mGluino = displayGaugino(3);
     DoubleVector mSq(2);
@@ -7483,7 +7551,7 @@ namespace softsusy {
     double lam = displayLambda();
     
     /// Call MSSM couplings
-    NmssmSoftsusy::getNeutralinoCharginoHpmCoup(apph1, apph2, bpph1, bpph2);
+    MssmSoftsusy::getNeutralinoCharginoHpmCoup(apph1, apph2, bpph1, bpph2);
     
     /// Fill remaining NMSSM values
     apph2(5, 2) = - lam;
@@ -8546,14 +8614,16 @@ namespace softsusy {
   /// Provides the first guess at a SUSY object at mt, inputting tanb and oneset
   /// (should be at MZ) - it's very crude, doesn't take radiative corrections
   /// into account etc. 
-  NmssmSusy NmssmSoftsusy::guessAtSusyMt(double tanb, 
-					 const DoubleVector & nmpars, 
-					 const QedQcd & oneset) {
+  NmssmSusyRGE NmssmSoftsusy::guessAtSusyMt(double tanb, 
+					    const DoubleVector & nmpars, 
+					    const QedQcd & oneset) {
     
     /// PA: Most of the work is already done by the MSSM
-    NmssmSusy t; t.setMssmSusy(MssmSoftsusy::guessAtSusyMt(tanb, oneset));
+    NmssmSusyRGE t; 
+    t.setMssmSusy(MssmSoftsusy::guessAtSusyMt(tanb, oneset).displayMssmSusy());
+    t.setMu(oneset.displayPoleMt());
     /// PA: now we just add our new nmssm parameters. 
-    //Only lambda directly affects the running of the MSSM Yukawas 
+    /// Only lambda directly affects the running of the MSSM Yukawas 
     /// at one loop and only kappa additionally at two loop.
     t.setLambda(nmpars.display(1));
     t.setKappa(nmpars.display(2));
@@ -8571,18 +8641,18 @@ namespace softsusy {
    int sgnMu, double tanb, const QedQcd & oneset, bool gaugeUnification, 
    bool ewsbBCscale) {
     
-    
     if (Z3) {
       if (PRINTOUT && !close(nmpars(4), 0.0, EPSTOL))
-	cout << "WARNING: you set Z3 == true and xiF != 0, xiF will be ignored\n";
+	cout << "WARNING: you set Z3 == true and xiF != 0, "
+	     << "xiF will be ignored\n";
       if (PRINTOUT && !close(nmpars(5), 0.0, EPSTOL))
-	cout << "WARNING: you set Z3 == true and mu' != 0, mu' will be ignored\n";
+	cout << "WARNING: you set Z3 == true and mu' != 0, "
+	     << "mu' will be ignored\n";
       setXiF(0.0);
       setMupr(0.0);
     }
     
     try {
-      
       double muFirst = displaySusyMu(); /// Remember initial value
       
       const static NmssmSoftsusy empty;
@@ -8612,14 +8682,17 @@ namespace softsusy {
       /// LCT: Changed maxtries to match softsusy.cpp 8/8/13
       int maxtries = 100;//int(-log(TOLERANCE) / log(10.0) * 10);
       double tol = TOLERANCE;
-      
+
       NmssmSusyRGE t(guessAtSusyMt(tanb, nmpars, oneset));
+
       t.setNmssmLoops(2); /// 2 loops should protect against ht Landau pole 
       t.runto(mxBC); 
-      setNmssmSusy(t);
-      
+
+      setNmssmSusy(t.displayNmssmSusy()); setMu(t.displayMu());
+
       /// Initial guess: B=0, mu=1st parameter, need better guesses
       boundaryCondition(*this, pars);
+
       if(softsusy::GUTlambda) setLambda(nmpars(1));
       if (softsusy::GUTkappa && (!softsusy::Z3 || softsusy::SoftHiggsOut))
 	setKappa(nmpars(2));
@@ -8646,13 +8719,15 @@ namespace softsusy {
 	setSusyMu(muFirst);
 	setM3Squared(muFirst); 
       }
-      
+
       run(mxBC, mz);
-      
+
+      cout << *this; exit(0); ///< DEBUG
+
       if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
-      
+
       physical(0);
-      
+
       setThresholds(3); setLoops(2);
       
       /// PA: itLowsoft to be added along with the rest of lowOrg

@@ -74,6 +74,7 @@ public:
   virtual const DoubleVector display() const = 0;
   /// Sets all parameters in an RGE object to the contents of s. It's an
   /// obligatory function for a derived class.
+
   virtual void set(const DoubleVector & s) = 0;
   /// Beta functions - all RGE objects must have them.
   virtual DoubleVector beta() const = 0;

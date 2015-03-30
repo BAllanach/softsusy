@@ -61,8 +61,7 @@ namespace softsusy {
     /// accuracy parameter, mg is the gravitino mass, hv is the Higgs VEV
     /// parameter.
     NmssmSoftsusy(const NmssmSusyPars & ss, const SoftParsNmssm & s, 
-		  const MssmSoftsusy & sp, double mu, 
-		  int l, int t, double hv);
+		  const MssmSoftsusy & sp);
     /// Set all data in the object equal to another
     const NmssmSoftsusy & operator=(const NmssmSoftsusy & s);
     
@@ -277,6 +276,12 @@ namespace softsusy {
     void calcDrBarHiggs(double beta, double mz2, double mw2, double sinthDRbar, 
 			drBarPars & eg);
     
+    /// Beta functions of NMSSM
+    DoubleVector beta() const;
+    /// Beta functions of NMSSM
+    NmssmSoftsusy beta2() const;
+    const DoubleVector display() const;
+
     void set(const DoubleVector & y);
     void setNmssmSusy(const NmssmSusy & n) {
       setMssmSusy(n.displayMssmSusy()); 
@@ -499,7 +504,7 @@ namespace softsusy {
     /// Mtau
     virtual double calcRunMtauNeutralinos(double mTauSMMZ) const;
     
-    NmssmSusy guessAtSusyMt(double tanb, const DoubleVector & nmpars, 
+    NmssmSusyRGE guessAtSusyMt(double tanb, const DoubleVector & nmpars, 
 			    const QedQcd & oneset);
     
     double predTanb(double muSusy = -6.66e66) const;
@@ -529,7 +534,9 @@ namespace softsusy {
 		const QedQcd & oneset, bool gaugeUnification, 
 		bool ewsbBCscale =  false); 
     
-    /// PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.    
+    /// PA: A print method used in development.  I find it useful and 
+    /// easier to read than couting the normal display function or 
+    /// calling printlong etc.    
     void printall() const;
     
     /// Outputs with Les Houches accord conventions to standard output.
@@ -608,13 +615,10 @@ namespace softsusy {
   
   inline NmssmSoftsusy::NmssmSoftsusy
   (const NmssmSusyPars & ss, const SoftParsNmssm & s, 
-   const MssmSoftsusy & sp, 
-   double mu, int l, int t, double hv): NmssmSusyPars(ss), 
+   const MssmSoftsusy & sp): NmssmSusyPars(ss), 
 					SoftParsNmssm(s), MssmSoftsusy(sp),
 					tSOVSMs(0.0), tSOVSMs1loop(0.0)  {
     setPars(121);
-    MssmSusy::setMssmApprox(l, t);
-    setHvev(hv);
   }
   
   inline double NmssmSoftsusy::displayTadpoleSMs() const { return tSOVSMs; }

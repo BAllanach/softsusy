@@ -126,6 +126,12 @@ void NMSSM_input::check_ewsb_output_parameters() const {
    }
 }
 
+  ostream & operator << (ostream & left, const NmssmSoftsusy & s) {
+    left << s.displayNmssmSusyPars() 
+	 << s.displaySoftParsNmssm()
+	 << s.displaySoftsusy();
+  }
+
 std::ostream& operator<<(std::ostream& lhs, const NMSSM_input& rhs) {
    for (unsigned i = 0; i < NMSSM_input::NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++) {
       if (rhs.is_set(static_cast<NMSSM_input::NMSSM_parameters>(i))) {
@@ -319,6 +325,7 @@ void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
+  m.MssmSoftsusy::standardSugra(m.displayMssmSusy(), m0, m12, a0);
   m.standardsemiSugra(m0, m12, a0, 0.0, 1e-15, m.displayNmssmSusy(), 
 		      m.displayMssmSoftPars());
   m.setMspSquared(1e6);
@@ -337,7 +344,9 @@ void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
-  m.standardsemiSugra(m0, m12, a0, Al, Ak, m.displayNmssmSusy(), m.displayMssmSoftPars());
+  m.MssmSoftPars::standardSugra(m.displayMssmSusy(), m0, m12, a0);
+  m.standardsemiSugra(m0, m12, a0, Al, Ak, m.displayNmssmSusy(), 
+		      m.displayMssmSoftPars(), 0.);
 }
 
 /// NMSSM Msugra, without setting the soft Higgs masses

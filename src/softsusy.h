@@ -98,7 +98,8 @@ namespace softsusy {
     double mw;          ///< Pole W mass prediction
     QedQcd dataSet;     ///< contains low energy data on quark masses etc
     double fracDiff;    ///< fractional difference to last iteration
-    bool setTbAtMX;     ///< flag: do we set tan beta at the SUSY breaking scale?
+    bool setTbAtMX;     ///< flag: do we set tan beta at the SUSY breaking 
+                        ///< scale?
     bool altEwsb;       ///< flag: do we set mu, mA at the SUSY breaking scale?
     double predMzSq;    ///< predicted Z mass squared after iteration
     double t1OV1Ms, t2OV2Ms;  ///< DRbar tadpoles(MSusy): incl 2 loops
@@ -1056,8 +1057,8 @@ namespace softsusy {
     /// oneset should be at MZ and contains the SM data to fit the model to.
     /// If the running comes into difficulty, eg if a Landau pole is reached, it
     /// returns a ZERO object: no result is possible!
-    /// Boundary condition is the theoretical condition on parameters at the high
-    /// energy scale mx: the parameters themselves are contained within the
+    /// Boundary condition is the theoretical condition on parameters at the 
+    /// high energy scale mx: the parameters themselves are contained within the
     /// vector. IO parameters:
     /// sgnMu is the desired sign of mu: + or - 1. If mu is 0, mu is set
     /// initially as a boundary condition. tanb = desired value of DR bar tan
@@ -1089,8 +1090,8 @@ namespace softsusy {
     }; 
     
     /// Main iteration routine: 
-    /// Boundary condition is the theoretical condition on parameters at the high
-    /// energy scale mx: the parameters themselves are contained within the
+    /// Boundary condition is the theoretical condition on parameters at the 
+    /// high energy scale mx: the parameters themselves are contained within the
     /// vector. IO parameters:  
     /// maxTries is the maximum number of iterations allowed, mx is the GUT
     /// scale (negative if you require gauge unification),
@@ -1116,7 +1117,8 @@ namespace softsusy {
     
     /// Works out how best to fit the isajet numbers to the spectrum.
     /// There are problems with the Higgs and sbottoms because ISAJET assumes
-    /// certain tree-level relations between masses that are broken by SOFTSUSY's
+    /// certain tree-level relations between masses that are broken by 
+    //// SOFTSUSY's
     /// higher accuracy. The differences get large for high tan beta around 50,
     /// at around 10 they're typically only a percent.
     /// Output parameters: mtopPole is the pole mass of the top quark, mGPole is
@@ -1295,20 +1297,6 @@ namespace softsusy {
   /// integrates LEP2 likelihood for SM higgs with 2 GeV Gaussian error, returns
   /// the log likelihood
   double lnLHiggs(double mh);
-  
-  /*  class MssmSoftsusyRGE: public RGE {
-  private:
-  public:
-    MssmSoftsusyRGE();
-    MssmSoftsusyRGE(const MssmSoftsusy RGE &);
-    const MssmSoftsusyRGE & operator=(const MssmSoftsusyRGE & s);
-    /// Sets total set of RGE parameters equal to elements of a vector
-    void set(const DoubleVector &);
-    /// Return contents of object in a vector: for RG evolution
-    virtual const DoubleVector display() const; 
-    DoubleVector beta(const MssmSusy &) const { return MssmSoftsusy::beta(); }; 
-    };*/
-    
 } ///< namespace softsusy
 
 
