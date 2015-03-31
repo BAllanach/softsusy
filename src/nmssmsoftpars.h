@@ -80,8 +80,7 @@ namespace softsusy {
     /// \f$\kappa A_\kappa S S S\f$
     double displaySoftAkappa(double ka) const;
     /// Whole object output in a doublevector
-    const DoubleVector display(const NmssmSusy & n, const MssmSoftPars & s) 
-      const;
+    //    const DoubleVector display(const NmssmSusy & n, const MssmSoftPars & s)       const;
     /// Increments k and fills the DoubleVector with entries
     void display(DoubleVector & y, int & k) const;
 
@@ -96,7 +95,8 @@ namespace softsusy {
     /// PA: Sets soft breaking \f$ xiS S\f$
     void setXiS(double f) { xiS = f; }; 
     void setSoftParsNmssm(SoftParsNmssm const & s) { *this = s; }
-    void set(const DoubleVector &, NmssmSusyPars & n);    
+    //    void set(const DoubleVector &);    
+    void set(const DoubleVector &, int & k);    
 
     /// Returns numerical beta functions of parameters and Brevity
     /*    SoftParsNmssm beta2(nmsBrevity&, const NmssmSusy & betaNmssmSusy,
@@ -177,17 +177,13 @@ namespace softsusy {
     const SoftParsNmssmRGE & displaySoftPars() const;
         
     /// Return contents of object in a vector: for RG evolution
-    //  virtual const DoubleVector display() const;
+    //const DoubleVector display() const;
     
     /// Sets whole thing equal to another object
     void setSoftPars(SoftParsNmssmRGE const &);
+
     /// Sets total set of RGE parameters equal to elements of a vector
-    void set(const DoubleVector & y) { 
-      NmssmSusyPars s;
-      SoftParsNmssm::set(y, s); 
-      setNmssmSusyPars(s);
-      MssmSusy::set(y);
-    }
+    void set(const DoubleVector & y);
     //  void setSusy(const NmssmSusy &);
     
     /// Returns double vector containing numerical beta functions of parameters

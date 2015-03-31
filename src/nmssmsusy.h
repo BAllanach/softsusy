@@ -114,6 +114,7 @@ namespace softsusy {
     /// sets the whole object
     void setNmssmSusyPars(const NmssmSusyPars &s);
     void setNmssmSusyPars(const DoubleVector & y);
+    void set(const DoubleVector & y, int & k);
 
     /// returns DRbar running Singlet Higgs vev
     double displaySvev() const { return sVev; };
@@ -128,7 +129,7 @@ namespace softsusy {
     /// returns whole object
     const NmssmSusyPars & displayNmssmSusyPars() const { return *this; };
     /// whole object in a vector y, starting at index k
-    void display(DoubleVector & y, int k) const; 
+    void display(DoubleVector & y, int & k) const; 
 
     /// Outputs one-loop anomalous dimensions gii given matrix inputs.
     /// for RH leptons, LH leptons, LH quarks, RH downs, RH ups, H1 and H2
@@ -214,6 +215,7 @@ namespace softsusy {
     /// Returns all parameters as elements of a vector
     const DoubleVector display() const;
 
+    void set(const DoubleVector & y, int & k);
     /// Calculate beta functions of SUSY preserving parameters of RPC MSSM
     NmssmSusy beta(nmsBrevity &) const;
     /// Outputs one-loop anomlous dimensions gii given matrix inputs.
@@ -273,7 +275,7 @@ namespace softsusy {
     const NmssmSusyRGE & operator=(const NmssmSusy & s);
     /// sets object to be equal to another
     void setSusy(const NmssmSusyRGE &s);
-    void set(const DoubleVector & y);
+    void set(const DoubleVector &y);
     
     /// Copies MSSM Yukawa matrices and gauge couplings from s only
     void setSomePars(const NmssmSusyRGE & s);

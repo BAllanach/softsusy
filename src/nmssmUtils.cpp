@@ -374,10 +374,11 @@ void NmssmSugraNoSoftHiggsMassBcs(NmssmSoftsusy & m, const DoubleVector & inputP
 }
 
 void generalNmssmBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
-  NmssmSusy s, t; SoftParsNmssm r; MssmSoftPars ms;
+  NmssmSusy s; SoftParsNmssm r; MssmSoftPars ms;
   s = m.displayNmssmSusy(); ///< save this so it's not overwritten
-  r.set(inputParameters, t);
-  ms.set(inputParameters);
+  int k = 1;
+  ms.set(inputParameters); k = numSoftParsMssm + 1;
+  r.set(inputParameters, k);
 
   if (Z3 == false) {
     double m3sq = m.displayM3Squared();

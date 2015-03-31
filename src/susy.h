@@ -120,6 +120,7 @@ namespace softsusy {
     void setMssmApprox(int l, int t); 
     inline void setMssmApprox(const Approx & a) { mssmSusyApprox = a; };
     void set(const DoubleVector &);
+    void set(const DoubleVector &, int & k);
     
     int displayMssmLoops() const { return mssmSusyApprox.displayLoops(); };
     /// Returns DRbar running Higgs vev

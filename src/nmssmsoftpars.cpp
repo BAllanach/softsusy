@@ -57,6 +57,9 @@ namespace softsusy {
       &me = msoft.displaySoftMassSquared(mEr);
     static DoubleVector mG(1, 3);
     static DoubleVector msq(1, 3), gsqM(1, 3), gMsq(1, 3);
+
+    cout << msoft; ///< DEBUG
+    exit(0);
     
     hut = hu.transpose(); hdt = hd.transpose(); het = he.transpose();
     hu2 = hu * hut; hd2 = hd * hdt; he2 = he * het;
@@ -109,10 +112,20 @@ namespace softsusy {
       
       dhe = dhe + (lsq * he + 2.0 * lam * hlam * e1) * ONEO16Pisq;
       
+      cout << "dhlam=" << dhlam; ///< DEBUG
+
       dhlam += (Ytr + 4.0 * lsq + 2.0 * ksq
 	       - 0.6 * gsq(1) - 3.0 * gsq(2)) * hlam
 	+ lam * ( 2.0 * aYtr  + 8.0 * hlam * lam
 		  + 4.0 * hkap * kap + 1.2 * gsqM(1) + 6.0 * gsqM(2) );
+
+      cout << " dhlam(1L)=" << dhlam << " " << (Ytr + 4.0 * lsq + 2.0 * ksq
+	       - 0.6 * gsq(1) - 3.0 * gsq(2)) * hlam << endl
+	   << lam * ( 2.0 * aYtr  + 8.0 * hlam * lam
+		      + 4.0 * hkap * kap + 1.2 * gsqM(1) + 6.0 * gsqM(2) ) 
+	   << " 1=" << 2.0 * aYtr  << " 2="<<  8.0 * hlam * lam << " 3=" << 
+	4.0 * hkap * kap  << " 4=" << 1.2 * gsqM(1) <<" 5=" << 6.0 * gsqM(2);
+      ///< DEBUG
 
       dhkap += 18.0 * hkap * ksq + 12.0 * lam * kap * hlam
 	+ 6.0 * hkap * lsq;
@@ -527,6 +540,22 @@ namespace softsusy {
     return *this;
   }
   
+  void SoftParsNmssm::display(DoubleVector & y, int & k) const {
+    y(k) = mSsq; k++;
+    y(k) = mSpsq; k++;
+    y(k) = xiS; k++;
+    y(k) = alambda; k++;
+    y(k) = akappa; k++;
+  }
+
+  void SoftParsNmssm::set(const DoubleVector & y, int & k) {
+    mSsq = y(k); k++;
+    mSpsq = y(k); k++;
+    xiS = y(k); k++;
+    alambda = y(k); k++;
+    akappa = y(k); k++;
+  }
+
   double SoftParsNmssm::displaySoftAlambda(double lam) const {
     if (fabs(lam) < 1.0e-100) {
       ostringstream ii;
@@ -546,7 +575,7 @@ namespace softsusy {
     else return displayTriakappa() / kap;
   }
   
-  const DoubleVector SoftParsNmssm::display
+  /*  const DoubleVector SoftParsNmssm::display
   (const NmssmSusy & n, const MssmSoftPars & s) const {
     DoubleVector y(n.display());
     y.setEnd(numSoftParsNmssm);
@@ -579,11 +608,11 @@ namespace softsusy {
     
     return y;
   }
-  
-  void SoftParsNmssm::set(const DoubleVector & y, NmssmSusyPars & n) {
+  */  
+  /*  void SoftParsNmssm::set(const DoubleVector & y) {
     n.setNmssmSusyPars(y);
-   int k=numNMssmPars + 12;
-    /*     for (i=1; i<=3; i++) {
+    int k=numNMssmPars + 12;
+         for (i=1; i<=3; i++) {
 	   k++;
 	   setGauginoMass(i, y.display(k));
 	   }
@@ -602,13 +631,13 @@ namespace softsusy {
 	   }
 	   setM3Squared(y.display(k+64));
 	   setMh1Squared(y.display(k+65));
-	   setMh2Squared(y.display(k+66));*/
-    mSsq = y.display(k+67);
+	   setMh2Squared(y.display(k+66));
+  mSsq = y.display(k+67);
     mSpsq = y.display(k+68);
     xiS = y.display(k+69);
     alambda =  y.display(k+70);
     akappa = y.display(k+71);
-  }
+  }*/
   
   
   /*  SoftParsNmssm SoftParsNmssm::beta2
@@ -704,7 +733,7 @@ namespace softsusy {
   //PA: for fully constrained models
   void SoftParsNmssm::universalScalars(double m0) {
     //    SoftParsNmssm::universalScalars(m0);
-    setMsSquared(sqr(m0));
+    //    setMsSquared(sqr(m0));
   }
   
   /// PA: for semi constrained models

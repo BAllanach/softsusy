@@ -184,7 +184,12 @@ namespace softsusy {
   void MssmSusyRGE::set(const DoubleVector & y) { MssmSusy::set(y); } 
 
   void MssmSusy::set(const DoubleVector & y) {
-    int i, j, k=0;
+    int k = 1; set(y, k);
+  }
+
+  void MssmSusy::set(const DoubleVector & y, int & k) {
+    k--;
+    int i, j;
     for (i=1; i<=3; i++)    
       for (j=1; j<=3; j++){
 	k++;
@@ -200,6 +205,7 @@ namespace softsusy {
     setSusyMu(y.display(31));
     setTanb(y.display(32));
     setHvev(y.display(33));
+    k = 33;
   }
   
   double MssmSusy::displayTanb() const { return tanb; }

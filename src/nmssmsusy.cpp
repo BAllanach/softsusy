@@ -416,12 +416,24 @@ namespace softsusy {
     MssmSusy::setSomePars(s);
   }
     
-  void NmssmSusyPars::display(DoubleVector & y, int k) const {
+  void NmssmSusyPars::display(DoubleVector & y, int & k) const {
     y(k) = displaySvev(); k++;
     y(k) = displayLambda(); k++;
     y(k) = displayKappa(); k++;
     y(k) = displayMupr(); k++;
     y(k) = displayXiF(); k++;
+  }
+
+  void NmssmSusyPars::set(const DoubleVector & y, int & k) {
+    setSvev(y.display(k)); k++;
+    setLambda(y.display(k)); k++;
+    setKappa(y.display(k)); k++;
+    setMupr(y.display(k)); k++;
+    setXiF(y.display(k)); k++;
+  }
+
+  void NmssmSusyRGE::set(const DoubleVector &y) { 
+    int k = 1; NmssmSusy::set(y, k);
   }
 
   const DoubleVector NmssmSusy::display() const {
@@ -438,10 +450,10 @@ namespace softsusy {
     return NmssmSusy::display();
   }
   
-  void NmssmSusyRGE::set(const DoubleVector & y) {
+  void NmssmSusy::set(const DoubleVector & y, int & k) {
     assert(y.displayEnd() - y.displayStart() + 1 >= numNMssmPars);
-    MssmSusy::set(y);
-    NmssmSusy::setNmssmSusyPars(y);
+    MssmSusy::set(y, k); k++;
+    NmssmSusyPars::set(y, k);
   }
   
   ostream & operator <<(ostream &left, const NmssmSusyPars &s) {

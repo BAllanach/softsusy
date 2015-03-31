@@ -26,11 +26,10 @@ namespace softsusy {
   }
   
   void NmssmSoftsusy::set(const DoubleVector & y) {
-    NmssmSusyPars n;
-    SoftParsNmssm::set(y, n);
-    n.setNmssmSusyPars(y);
-    setNmssmSusyPars(n);
     MssmSoftsusy::set(y);
+    int k = numSoftParsMssm + 1;
+    NmssmSusyPars::set(y, k);
+    SoftParsNmssm::set(y, k);
   }
   
   DoubleVector NmssmSoftsusy::beta() const {
@@ -67,6 +66,7 @@ namespace softsusy {
     dhu = ms.displayTrilinear(UA);
     dhd = ms.displayTrilinear(DA);
     dhe = ms.displayTrilinear(EA);
+
     addBetaSoftParsNmssm(a, displayNmssmSusyPars(), displayMssmSusy(), 
 			 displayMssmSoftPars(), displaySoftParsNmssm(), 
 			 dmG, dmH1sq, dmH2sq, dm3sq, dmSsq, dmSpsq, dxiS,
@@ -93,7 +93,12 @@ namespace softsusy {
   }
 
   const DoubleVector NmssmSoftsusy::display() const {
-    return SoftParsNmssm::display(displayNmssmSusy(), displayMssmSoftPars());
+    DoubleVector y(MssmSoftsusy::display());
+    y.setEnd(numNMssmPars);
+    int k = y.displayEnd() + 1;
+    NmssmSusyPars::display(y, k);
+    SoftParsNmssm::display(y, k);
+    return y;
   }
 
   /// PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.
@@ -8686,9 +8691,16 @@ namespace softsusy {
       NmssmSusyRGE t(guessAtSusyMt(tanb, nmpars, oneset));
 
       t.setNmssmLoops(2); /// 2 loops should protect against ht Landau pole 
+
+      cout << "1" << t;
+
       t.runto(mxBC); 
 
+      cout << "2" << t; exit(0);///< DEBUG
+
       setNmssmSusy(t.displayNmssmSusy()); setMu(t.displayMu());
+
+
 
       /// Initial guess: B=0, mu=1st parameter, need better guesses
       boundaryCondition(*this, pars);
@@ -8720,9 +8732,19 @@ namespace softsusy {
 	setM3Squared(muFirst); 
       }
 
+      cout << this->display();
+      this->set(this->display());
+      cout << "Compared to: " << *this; exit(0);
+      /*      SoftParsNmssm xx(displaySoftParsNmssm());
+      cout << xx; ///< DEBUG
+      int k = 1;
+      DoubleVector y(xx.display(displayNmssmSusy(), k));
+      cout << y;
+      xx.set(y);
+      cout << xx; exit(0);
+      */
       run(mxBC, mz);
 
-      cout << *this; exit(0); ///< DEBUG
 
       if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
 
