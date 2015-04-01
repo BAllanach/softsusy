@@ -1589,18 +1589,22 @@ contained within each of the higher level objects that we now describe.
 \GBox(200,200)(0,0){0.9}
 \ArrowLine(70,180)(30,130)
 \ArrowLine(70,180)(120,160)
-\ArrowLine(120,160)(120,120)
-\ArrowLine(120,130)(120,70)
-\ArrowLine(120,100)(120,40)
-\ArrowLine(120,70)(120,20)
-\ArrowLine(50,40)(120,70)
+\ArrowLine(120,120)(120,20)
+\ArrowLine(50,40)(120,120)
 \SetPFont{Teletype}{10}
 \put(0,0){\framebox(200,200){}}
+\ArrowLine(140,180)(120,160)
+\ArrowLine(65,180)(100,120)
+\ArrowLine(50,100)(120,120)
+\ArrowLine(180,180)(140,120)
+\ArrowLine(160,80)(120,120)
 \BText(70,180){RGE}
 \BText(30,130){QedQcd}
-\BText(120,160){MssmSusy}
-\B2Text(120,120){SoftPars<MssmSusy>}{=SoftParsMssm}
-\B2Text(120,70){SoftSusy<SoftParsMssm>}{=MssmSoftsusy}
+\BText(160,180){MssmSusy}
+\BText(120,160){MssmSusyRGE}
+\BText(50,100){MssmSoftPars}
+\BText(120,120){MssmSoftsusy}
+\BText(160,80){Approx}
 \BText(120,20){FlavourMssmSoftsusy}
 \BText(50,40){AltEwsbMssm}
 \end{picture}
@@ -1681,11 +1685,6 @@ data variable & & methods \\ \hline
 & (GeV) &  \code{displayMu} \\ \hline
 \code{int numpars} & number of scale dependent & \code{setPars} \\
  & parameters & \code{howMany} \\ \hline
-\code{int loops} & accuracy of RGE & \code{setLoops} \\
- & & \code{displayLoops} \\ \hline
-\code{int thresholds} & accuracy level of threshold &
-\code{setThresholds} \\  & computation & \code{displayThresholds}\\
- & & \\
 method & \multicolumn{2}{l}{function} \\ \hline
 \code{DoubleVector display()} & \multicolumn{2}{l}{displays all running
 parameters (*)} \\ 
@@ -1697,6 +1696,28 @@ running parameters (*)} \\
 \code{mu}} \\ 
 \end{tabular}\caption{\label{tab:rge} Abstract \code{RGE} class. (*) indicates that derived objects {\em must}\/
 contain these methods (see text). }\end{center}\end{table}
+
+\subsection{\code{Approx}~Class}
+
+\begin{table}\begin{center}
+\begin{tabular}{lll} 
+data variable & & methods \\ \hline
+\code{int loops} & accuracy of RGE & \code{setLoops} \\
+ & & \code{displayLoops} \\ \hline
+\code{int thresholds} & accuracy level of threshold &
+\code{setThresholds} \\  & computation & \code{displayThresholds}\\
+\hline
+\end{tabular}
+\caption{\label{tab:approx} \code{Approx} class.}
+\end{center}
+\end{table}
+\code{Approx}~objects are for groups of couplings and masses that have
+renormalisation group equations and have a number of loops
+\code{loops}~that RGEs are calculated at, and an integer
+\code{thresholds}~specifying 
+which terms to include in any threshold computations (usually the higher the
+integer the more corrections are included). We show the class' relevant
+parameters and methods in Table~\ref{tab:approx}.
 
 \subsection{\code{QedQcd}~Class}
 
@@ -1739,6 +1760,8 @@ and gauge couplings at $M_Z$.
 %
 \begin{table}\begin{center}\begin{tabular}{lll} 
 data variable & & methods \\ \hline
+\code{Approx mssmSusyApprox} & loops/thresholds & \code{setMssmApprox} \\
+ & & \code{displayMssmApprox} \\ \hline
 \code{DoubleMatrix u, d, e}  & Yukawa
 couplings & \code{setYukawaElement} \\ 
 $(Y_U)_{ij}, (Y_D)_{ij}, (Y_E)_{ij}$&(3 by 3 matrix) &

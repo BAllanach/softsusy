@@ -158,10 +158,8 @@ namespace softsusy {
   };
   
   /// Formatted ouput of whole object
-  //template<class Susy, class Brevity>
   ostream & operator <<(ostream &left, const MssmSoftPars &s);
   /// Formatted input of whole object
-  //template<class Susy, class Brevity>
   istream & operator >>(istream &left, MssmSoftPars &s);
   
   
