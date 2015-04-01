@@ -729,7 +729,7 @@ namespace softsusy {
   //PA: for fully constrained models
   void SoftParsNmssm::universalScalars(double m0) {
     //    SoftParsNmssm::universalScalars(m0);
-    //    setMsSquared(sqr(m0));
+    setMsSquared(sqr(m0));
   }
   
   /// PA: for semi constrained models
