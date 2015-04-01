@@ -71,7 +71,7 @@ namespace softsusy {
       return SoftParsNmssm::displaySoftAkappa(displayKappa()); 
     };
     double displaySoftAlambda() const {
-      return SoftParsNmssm::displaySoftAkappa(displayLambda()); 
+      return SoftParsNmssm::displaySoftAlambda(displayLambda()); 
     };
     NmssmSusy displayNmssmSusy() const {
       return NmssmSusy(displayMssmSusy(), displayNmssmSusyPars());
