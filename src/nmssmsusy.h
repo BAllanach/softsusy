@@ -216,6 +216,7 @@ namespace softsusy {
     const DoubleVector display() const;
 
     void set(const DoubleVector & y, int & k);
+    void set(const DoubleVector & y);
     /// Calculate beta functions of SUSY preserving parameters of RPC MSSM
     NmssmSusy beta(nmsBrevity &) const;
     /// Outputs one-loop anomlous dimensions gii given matrix inputs.

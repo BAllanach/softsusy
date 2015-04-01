@@ -142,14 +142,15 @@ int odeStepper(DoubleVector & y, const DoubleVector & dydx, double *x, double
   for (;;) {
     rungeKuttaStep(y, dydx, *x, h, ytemp, yerr, derivs);
     errmax = 0.0;
+
     for (i = 1; i<= n;i++) errmax = maximum(errmax, fabs(yerr(i) / yscal(i)));
     errmax  /= eps;
+
     if (errmax <= 1.0) break;
     htemp = SAFETY * h * pow(errmax, PSHRNK);
     h = (h >= 0.0 ? maximum(htemp ,0.1 * h) : minimum(htemp, 0.1 * h));
     xnew = (*x) + h;
-    if (xnew == *x) 
-      {
+    if (xnew == *x) {
 	if (PRINTOUT) {
 	cout << "At x = " << *x;
 	cout << ",stepsize underflow in odeStepper" << flush << endl;
@@ -206,7 +207,7 @@ void rungeKuttaStep(const DoubleVector & y, const DoubleVector & dydx,
   for (i = 1; i<= n; i++)
     yout(i) = y.display(i) + h * (c1 * dydx.display(i) + c3 * ak3(i) + c4 *
 				  ak4(i) + c6 * ak6(i));
-  for (i = 1; i<= n; i++)
+  for (i = 1; i<= n; i++) 
     yerr(i) = h * (dc1 * dydx.display(i) + dc3 * ak3(i) + 
 		   dc4 * ak4(i) + dc5 * ak5(i) + dc6 * ak6(i));
 }

@@ -211,7 +211,7 @@ namespace softsusy {
     double dHvev = s.displayHvev() *
       (cosb2 * (-sH1H1 + feynman * oneLoop) +
        sinb2 * (-sH2H2 + feynman * oneLoop));
-    double dSvev = - n.displaySvev() * oneLoop * 2 * (lsq + ksq);
+    double dSvev = - n.displaySvev() * oneLoop * 2.0 * (lsq + ksq);
     
     if (s.displayMssmLoops() > 1) {
       /// Two-loop pieces
@@ -456,6 +456,9 @@ namespace softsusy {
     NmssmSusyPars::set(y, k);
   }
   
+  void NmssmSusy::set(const DoubleVector & y) { int k =1;
+    set(y, k); }
+
   ostream & operator <<(ostream &left, const NmssmSusyPars &s) {
     left << "singlet VEV: " << s.displaySvev()
 	 << " lambda: " << s.displayLambda()

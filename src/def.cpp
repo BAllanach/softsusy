@@ -15,7 +15,7 @@ namespace softsusy {
   int MIXING = 1, PRINTOUT = 0;
   /// fractional accuracy required - may need to make smaller for accurate
   /// neutrino masses
-  double TOLERANCE = 1.0e-4;
+  double TOLERANCE = 1.0e-6;
   /// decay constant of muon
   double GMU = 1.16637e-5; 
   /// there are two possible conventions: if QEWSB > MZ, its value is assumed

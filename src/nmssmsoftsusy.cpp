@@ -25,12 +25,44 @@ namespace softsusy {
     return *this;
   }
   
-  void NmssmSoftsusy::set(const DoubleVector & y) {
+  /*  void NmssmSoftsusy::set(const DoubleVector & y) {
     MssmSoftsusy::set(y);
     int k = numSoftParsMssm + 1;
     NmssmSusyPars::set(y, k);
     SoftParsNmssm::set(y, k);
+    }*/
+
+void NmssmSoftsusy::set(const DoubleVector & y) {
+  int k=1;MssmSusy::set(y, k); k++;
+    NmssmSusyPars::set(y, k);
+    int i, j; k=numNMssmPars;
+  for (i=1; i<=3; i++) {
+    k++;
+    setGauginoMass(i, y.display(k));
   }
+
+  for (i=1; i<=3; i++)
+    for (j=1; j<=3; j++) {
+      k++;
+      setTrilinearElement(UA, i, j, y.display(k));
+      setTrilinearElement(DA, i, j, y.display(k+9));
+      setTrilinearElement(EA, i, j, y.display(k+18));
+      setSoftMassElement(mQl, i, j, y.display(k+27));
+      setSoftMassElement(mUr, i, j, y.display(k+36));
+      setSoftMassElement(mDr, i, j, y.display(k+45));
+      setSoftMassElement(mLl, i, j, y.display(k+54));
+      setSoftMassElement(mEr, i, j, y.display(k+63));
+    }
+  setM3Squared(y.display(k+64));
+  setMh1Squared(y.display(k+65));
+  setMh2Squared(y.display(k+66));
+  setMsSquared(y.display(k+67));
+  setMspSquared(y.display(k+68));
+  setXiS(y.display(k+69));
+  setTrialambda(y.display(k+70));
+  setTriakappa(y.display(k+71));
+}
+
   
   DoubleVector NmssmSoftsusy::beta() const {
     return NmssmSoftsusy::beta2().display();
@@ -42,17 +74,19 @@ namespace softsusy {
     /// derivatives of soft parameters
     static DoubleVector dmG(1, 3);
     static double dmH1sq, dmH2sq, dm3sq;
-    static double dmSsq=0, dmSpsq=0, dxiS=0;
+    static double dmSsq, dmSpsq, dxiS;
     static DoubleMatrix dmq(3, 3), dmu(3, 3), dmd(3, 3), dme(3, 3), dml(3, 3);
     static DoubleMatrix dhu(3, 3), dhd(3, 3), dhe(3, 3);
-    static double dhlam=0, dhkap=0;
+    static double dhlam, dhkap;
+
+    dmSsq = 0.; dmSpsq = 0.; dxiS = 0.; dhlam = 0.; dhkap = 0.;
 
     NmssmSusy nms(betaNmssmSusy(a, displayMssmSusy(), displayNmssmSusyPars()));
     MssmSoftPars ms(displayMssmSoftPars().beta2(displayMssmSusy()));
     MssmSoftsusy mm(nms.displayMssmSusy(), ms, displayPhys(), 
 		    displayMu(), displayMssmLoops(), 
 		    displayApprox().displayThresholds(), 
-		    displayMssmSusy().displayHvev());
+		    nms.displayHvev());
     NmssmSusy nn(displayMssmSusy(), nms);
 
     dmG = ms.displayGaugino();
@@ -91,18 +125,53 @@ namespace softsusy {
 
     SoftParsNmssm spn(dhlam, dhkap, dmSsq, dmSpsq, dxiS);
 
-    cout << NmssmSoftsusy(nms, spn, mm); exit(0); ///< DEBUG
+    NmssmSoftsusy trial(nms, spn, mm);
 
-    return NmssmSoftsusy(nms, spn, mm);
+    return trial;
   }
 
-  const DoubleVector NmssmSoftsusy::display() const {
+  /*  const DoubleVector NmssmSoftsusy::display() const {
     DoubleVector y(MssmSoftsusy::display());
     int k = y.displayEnd() + 1;
     y.setEnd(numNMssmPars + 83);
     NmssmSusyPars::display(y, k);
     SoftParsNmssm::display(y, k);
     return y;
+    }*/
+  const DoubleVector NmssmSoftsusy::display() const {
+    DoubleVector y(MssmSusy::display());
+    y.setEnd(numSoftParsNmssm);
+    int k = 34; 
+    NmssmSusyPars::display(y, k);
+
+    int i, j; k=numNMssmPars;
+    for (i=1; i<=3; i++) {
+      k++;
+      y(k) = displayGaugino(i);
+    }
+    
+  for (i=1; i<=3; i++)
+    for (j=1; j<=3; j++) {
+      k++;
+      y(k) = displayTrilinear(UA, i, j);
+      y(k+9) = displayTrilinear(DA, i, j);
+      y(k+18) = displayTrilinear(EA, i, j);
+      y(k+27) = displaySoftMassSquared(mQl, i, j);
+      y(k+36) = displaySoftMassSquared(mUr, i, j);
+      y(k+45) = displaySoftMassSquared(mDr, i, j);
+      y(k+54) = displaySoftMassSquared(mLl, i, j);
+      y(k+63) = displaySoftMassSquared(mEr, i, j);
+    }
+  y(k+64) = displayM3Squared();
+  y(k+65) = displayMh1Squared();
+  y(k+66) = displayMh2Squared();
+  y(k+67) = displayMsSquared();
+  y(k+68) = displayMspSquared();
+  y(k+69) = displayXiS();
+  y(k+70) = displayTrialambda();
+  y(k+71) = displayTriakappa();
+
+  return y;
   }
 
   /// PA: A print method used in development.  I find it useful and easier to read than couting the normal display function or calling printlong etc.
@@ -8730,23 +8799,12 @@ namespace softsusy {
 	setM3Squared(muFirst); 
       }
 
-      /// OK to here - objects exactly the same
-      /*      SoftParsNmssm xx(displaySoftParsNmssm());
-      cout << xx; ///< DEBUG
-      int k = 1;
-      DoubleVector y(xx.display(displayNmssmSusy(), k));
-      cout << y;
-      xx.set(y);
-      cout << xx; exit(0);
-      */
       run(mxBC, mz);
 
       if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
 
       physical(0);
 
-      setThresholds(3); setLoops(2);
-      
       /// PA: itLowsoft to be added along with the rest of lowOrg
       itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 
 		nmpars, gaugeUnification, ewsbBCscale);

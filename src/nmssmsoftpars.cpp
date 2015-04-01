@@ -109,7 +109,7 @@ namespace softsusy {
       
       dhe = dhe + (lsq * he + 2.0 * lam * hlam * e1) * ONEO16Pisq;
       
-      dhlam += (Ytr + 4.0 * lsq + 2.0 * ksq
+      dhlam = (Ytr + 4.0 * lsq + 2.0 * ksq
 	       - 0.6 * gsq(1) - 3.0 * gsq(2)) * hlam
 	+ lam * ( 2.0 * aYtr  + 8.0 * hlam * lam
 		  + 4.0 * hkap * kap + 1.2 * gsqM(1) + 6.0 * gsqM(2) );
@@ -120,13 +120,14 @@ namespace softsusy {
 		      + 4.0 * hkap * kap + 1.2 * gsqM(1) + 6.0 * gsqM(2) ) 
 	   << " 1=" << 2.0 * aYtr  << " 2="<<  8.0 * hlam * lam << " 3=" << 
 	4.0 * hkap * kap  << " 4=" << 1.2 * gsqM(1) <<" 5=" << 6.0 * gsqM(2);
-      ///< DEBUG
       */
-      dhkap += 18.0 * hkap * ksq + 12.0 * lam * kap * hlam
+      ///< DEBUG
+
+      dhkap = 18.0 * hkap * ksq + 12.0 * lam * kap * hlam
 	+ 6.0 * hkap * lsq;
       
       //tadpole
-      dxiS += 2.0 * xiS * (lsq +  ksq)
+      dxiS = 2.0 * xiS * (lsq +  ksq)
 	+ 2.0 * mupr * (2.0 * lam * m3sq + kap * mSpsq)
 	+ 4.0 * xiF * (lam * hlam + kap * hkap)
 	+ 4.0 * lam * smu * (mH2sq + mH1sq) + 4.0 * kap * mupr * mSsq
