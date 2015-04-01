@@ -6,10 +6,6 @@
 
 using namespace softsusy;
 
-namespace softsusy {
-   extern template class Softsusy<SoftParsNmssm>;
-}
-
 int main() {
 
   /// Sets format of output: 6 decimal places
@@ -58,8 +54,8 @@ int main() {
      NmssmSoftsusy n;
 
      try {
-       n.lowOrg(SemiMsugraBcs, mGutGuess, pars, nmpars, sgnMu, tanb,
-                oneset, uni);
+       n.NmssmSoftsusy::lowOrg(SemiMsugraBcs, mGutGuess, pars, nmpars, 
+			       sgnMu, tanb, oneset, uni);
      } catch (const std::string& error) {
        n.flagProblemThrown(true);
      } catch (const char* error) {

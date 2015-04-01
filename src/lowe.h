@@ -52,15 +52,14 @@ typedef enum {ALPHA=1, ALPHAS} leGauge;
 DoubleVector gaugeDerivs(double, const DoubleVector &);
 
 /// Quark and lepton masses and gauge couplings in QEDxQCD effective theory
-class QedQcd: public RGE 
-{
-private:
-  DoubleVector a;   ///< gauge couplings
-  DoubleVector mf;  ///< fermion running masses
-  double mtPole, mbPole; ///< pole masses of third family quarks
-  double mbMb; ///< mb(mb) in the MSbar scheme with only QCD corrections
-  double mtauPole; ///< tau pole mass
-
+  class QedQcd: public RGE, public Approx {
+  private:
+    DoubleVector a;   ///< gauge couplings
+    DoubleVector mf;  ///< fermion running masses
+    double mtPole, mbPole; ///< pole masses of third family quarks
+    double mbMb; ///< mb(mb) in the MSbar scheme with only QCD corrections
+    double mtauPole; ///< tau pole mass
+    
 public:
   QedQcd(); ///< Initialises with default values defined in lowe.h
   QedQcd(const QedQcd &); ///< Initialises object with another
@@ -148,12 +147,11 @@ double getAsmt(double mtop, double alphasMz);
 double getRunMtFromMz(double poleMt, double asMZ);
 
 inline QedQcd::QedQcd(const QedQcd &m)
-  : RGE(), a(m.a), mf(m.mf), mtPole(m.mtPole), mbPole(m.mbPole), mbMb(m.mbMb), 
+  : RGE(), Approx(m.displayApprox()), a(m.a), mf(m.mf), mtPole(m.mtPole), 
+    mbPole(m.mbPole), mbMb(m.mbMb), 
     mtauPole(m.mtauPole) { 
   setPars(11); 
   setMu(m.displayMu());
-  setLoops(m.displayLoops());
-  setThresholds(m.displayThresholds());
 }
 
 /// Returns diagonal fermion mass matrices given input object r

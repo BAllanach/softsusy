@@ -1,5 +1,5 @@
 TESTOUTPUT = inOutFiles/slha2Output inOutFiles/lesHouchesOutput inOutFiles/rpvHouchesOutput \
-inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output inOutFiles/lesHouchesOutput
+inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output
 
 INPUTFILES = inOutFiles/slha2Input inOutFiles/rpvHouchesInput \
 inOutFiles/nmssmSLHAZ3Input inOutFiles/nmssmSLHAnoZ3Input \

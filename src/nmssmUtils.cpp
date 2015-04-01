@@ -126,7 +126,14 @@ void NMSSM_input::check_ewsb_output_parameters() const {
    }
 }
 
-std::ostream& operator<<(std::ostream& lhs, const NMSSM_input& rhs) {
+  ostream & operator << (ostream & left, const NmssmSoftsusy & s) {
+    left << s.displaySoftsusy()
+	 << s.displayNmssmSusyPars() 
+	 << s.displaySoftParsNmssm();	 
+    return left;
+  }
+
+  std::ostream& operator<<(std::ostream& lhs, const NMSSM_input& rhs) {
    for (unsigned i = 0; i < NMSSM_input::NUMBER_OF_NMSSM_INPUT_PARAMETERS; i++) {
       if (rhs.is_set(static_cast<NMSSM_input::NMSSM_parameters>(i))) {
          lhs << rhs.parameter_names[i] << " = "
@@ -304,8 +311,11 @@ void NmssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   double a0 = inputParameters.display(3);
 
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
-  /// trilinear scalar coupling to be a0
-  m.standardSugra(m0, m12, a0);
+  /// trilinear scalar coupling to be a
+  m.SoftParsNmssm::standardSugra(m0, m12, a0, m.displayNmssmSusyPars(), 
+				 m.displayMssmSusy(),
+				 m.displayMssmSoftPars());
+  m.MssmSoftPars::standardSugra(m.displayMssmSoft(), m0, m12, a0);
 }
 
 //PA: msugra bcs in the mssm limit of the general nmssm
@@ -316,7 +326,9 @@ void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
-  m.standardsemiSugra(m0, m12, a0, 0.0, 1e-15);
+  m.MssmSoftsusy::standardSugra(m.displayMssmSusy(), m0, m12, a0);
+  m.standardsemiSugra(m0, m12, a0, 0.0, 1e-15, m.displayNmssmSusy(), 
+		      m.displayMssmSoftPars());
   m.setMspSquared(1e6);
 }
 
@@ -333,7 +345,9 @@ void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
-  m.standardsemiSugra(m0, m12, a0, Al, Ak);
+  m.MssmSoftPars::standardSugra(m.displayMssmSusy(), m0, m12, a0);
+  m.standardsemiSugra(m0, m12, a0, Al, Ak, m.displayNmssmSusy(), 
+		      m.displayMssmSoftPars(), 0.);
 }
 
 /// NMSSM Msugra, without setting the soft Higgs masses
@@ -361,40 +375,45 @@ void NmssmSugraNoSoftHiggsMassBcs(NmssmSoftsusy & m, const DoubleVector & inputP
 }
 
 void generalNmssmBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
-  NmssmSusy s; SoftParsNmssm r;
-  s = m.displaySusy();
-  r.set(inputParameters);
+  NmssmSusy s; SoftParsNmssm r; MssmSoftPars ms;
+  s = m.displayNmssmSusy(); ///< save this so it's not overwritten
+  int k = 1;
+  ms.set(inputParameters); k = numSoftParsMssm + 1;
+  r.set(inputParameters, k);
 
   if (Z3 == false) {
     double m3sq = m.displayM3Squared();
     double XiS = m.displayXiS();
-    r.setM3Squared(m3sq);
+    ms.setM3Squared(m3sq);
     r.setXiS(XiS);
   } else {
     double mSsq = m.displayMsSquared();
     r.setMsSquared(mSsq);
   }
 
-  m.setSoftPars(r);
-  m.setSusy(s);
+  m.SoftParsNmssm::setSoftParsNmssm(r);
+  m.setNmssmSusyPars(s.displayNmssmSusyPars());
+  m.setMssmSusy(s.displayMssmSusy());
+  m.setSoftPars(ms);
 }
 
 
 /// This one doesn't overwrite mh1sq or mh2sq at the high scale.  For cases where the soft scalar Higgs masses are set in EWSB.
 void generalNmssmBcs2(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
-  NmssmSusy s; SoftParsNmssm r;
+  NmssmSusy s(m.displayNmssmSusy()); //SoftParsNmssm r;
   double mh1sq = m.displayMh1Squared();
   double mh2sq = m.displayMh2Squared();
   double mSsq = m.displayMsSquared();
   double m3sq = m.displayM3Squared();
-  s = m.displaySusy();
-  r.set(inputParameters);
-  r.setMh1Squared(mh1sq);
-  r.setMh2Squared(mh2sq);
-  r.setM3Squared(m3sq);
-  r.setMsSquared(mSsq);
-  m.setSoftPars(r);
-  m.setSusy(s);
+  //  s = m.displayNmssmSusy();
+  m.set(inputParameters);
+  m.setMh1Squared(mh1sq);
+  m.setMh2Squared(mh2sq);
+  m.setM3Squared(m3sq);
+  m.setMsSquared(mSsq);
+  //  m.setSoftPars(r);
+  m.setNmssmSusyPars(s.displayNmssmSusyPars());
+  m.setMssmSusy(s.displayMssmSusy());
 }
 
 void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
@@ -473,7 +492,8 @@ void nuhmINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be A0
   ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
-  m.standardsemiSugra(m0, m12, A0, Al, Ak);
+  m.standardsemiSugra(m0, m12, A0, Al, Ak, m.displayNmssmSusy(), 
+		      m.displayMssmSoftPars());
 
   m.setMh1Squared(mH * mH); m.setMh2Squared(mH * mH);
   m.setMsSquared(mH * mH);
@@ -495,7 +515,8 @@ void nuhmIINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
      mS = inputParameters.display(6);
   double Al = inputParameters.display(5);
   double Ak = inputParameters.display(6);
-  m.standardsemiSugra(m0, m12, A0, Al, Ak);
+  m.standardsemiSugra(m0, m12, A0, Al, Ak, m.displayNmssmSusy(), 
+		      m.displayMssmSoftPars());
 
   m.setMh1Squared(mH1 * mH1); m.setMh2Squared(mH2 * mH2);
   if (Z3 == false)
@@ -512,12 +533,18 @@ void amsbBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   double m32 = inputParameters.display(1);
   double m0 = inputParameters.display(2);
 
-  m.standardSugra(m0, 0., 0.);
-  m.addAmsb(m32);
+  m.MssmSoftPars::standardSugra(m.displayMssmSusy(), m0, 0., 0.);
+  m.SoftParsNmssm::standardSugra(m0, 0., 0., m.displayNmssmSusyPars(), 
+				 m.displayMssmSusy(), m.displayMssmSoftPars());
+  m.MssmSoftPars::addAmsb(m.displayMssmSusy(), m32);
+  MssmSoftPars ms(m.displayMssmSoftPars());
+  m.SoftParsNmssm::addAmsb(m32, m.displayNmssmSusy(), ms);
+  m.setSoftPars(ms);
 }
 
 /// LCT: Difference between two NMSSM SOFTSUSY objects in and out: EWSB terms only
-double sumTol(const Softsusy<SoftParsNmssm> & in, const Softsusy<SoftParsNmssm> & out, int numTries) {
+double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, 
+	      int numTries) {
   DoubleVector sT(37);
   sumTol(in.displayDrBarPars(), out.displayDrBarPars(), sT);
   /// The predicted value of MZ^2 is an absolute measure of how close to a
@@ -537,7 +564,7 @@ double sumTol(const Softsusy<SoftParsNmssm> & in, const Softsusy<SoftParsNmssm> 
 }
   
   /// explicit template instantiations
-  template class Softsusy<SoftParsNmssm>;
-  template class SoftPars<NmssmSusy, nmsBrevity>;
+//  template class Softsusy<SoftParsNmssm>;
+//  template class SoftPars<NmssmSusy, nmsBrevity>;
   
 } ///< namespace softsusy

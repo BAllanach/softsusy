@@ -25,6 +25,7 @@
 #include "rpvsusypars.h"
 #include "lowe.h"
 #include "rpvsoft.h"
+#include "numerics.h"
 
 namespace softsusy {
 

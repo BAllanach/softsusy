@@ -15,12 +15,12 @@
 #include <string>
 
 #include "linalg.h"
+#include "mssmUtils.h"
 
 namespace softsusy {
 
 class NmssmSoftsusy;
 class SoftParsNmssm;
-template <class SoftPars> class Softsusy;
 
 /// class for NMSSM input parameters
 class NMSSM_input {
@@ -103,10 +103,15 @@ void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
 
 void NmssmSugraNoSoftHiggsMassBcs(NmssmSoftsusy&, const DoubleVector&);
 
-void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
+  void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
 
 /// Calculates fractional difference in Drbar masses between in and out
-double sumTol(const Softsusy<SoftParsNmssm> & in, const Softsusy<SoftParsNmssm> & out, int numTries);
+  double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, 
+		int numTries);
+
+  ostream & operator << (ostream & left, const NmssmSoftsusy & s);
+
+  void generalNmssmBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
 
 } // namespace softsusy
 

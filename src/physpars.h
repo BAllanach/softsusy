@@ -199,7 +199,7 @@ inline sProblem::sProblem(const sProblem & s)
 double sTfn(double sTins, double sTouts);
 
 /// LCT: Calculates fractional difference in Drbar masses between a and b
-class drBarPars;
+// class drBarPars;
 class DoubleVector;
 void sumTol(const softsusy::drBarPars & a, const softsusy::drBarPars & b, DoubleVector & sT);
 
