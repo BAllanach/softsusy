@@ -1706,7 +1706,6 @@ data variable & & methods \\ \hline
  & & \code{displayLoops} \\ \hline
 \code{int thresholds} & accuracy level of threshold &
 \code{setThresholds} \\  & computation & \code{displayThresholds}\\
-\hline
 \end{tabular}
 \caption{\label{tab:approx} \code{Approx} class.}
 \end{center}
@@ -1798,6 +1797,8 @@ The operators \code{<<}, \code{>>} have been overloaded to write or read a
 the data variables and important methods contained in the class. For the
 Yukawa and gauge couplings, methods exist to either set (or display) one
 element or a whole matrix or vector of them.
+Another object, \code{MssmSusyRGE}~is also available, which is an
+\code{RGE}~object and therefore can be run to different scales.
 
 \subsection{\code{SoftParsMssm}~Class\label{sec:softie}}
 The operators \code{<<}, \code{>>} have been overloaded to write or read a
