@@ -58,9 +58,6 @@ namespace softsusy {
     static DoubleVector mG(1, 3);
     static DoubleVector msq(1, 3), gsqM(1, 3), gMsq(1, 3);
 
-    cout << msoft; ///< DEBUG
-    exit(0);
-    
     hut = hu.transpose(); hdt = hd.transpose(); het = he.transpose();
     hu2 = hu * hut; hd2 = hd * hdt; he2 = he * het;
     const double huT = hu2.trace(), hdT = hd2.trace(), heT = he2.trace();
@@ -112,21 +109,19 @@ namespace softsusy {
       
       dhe = dhe + (lsq * he + 2.0 * lam * hlam * e1) * ONEO16Pisq;
       
-      cout << "dhlam=" << dhlam; ///< DEBUG
-
       dhlam += (Ytr + 4.0 * lsq + 2.0 * ksq
 	       - 0.6 * gsq(1) - 3.0 * gsq(2)) * hlam
 	+ lam * ( 2.0 * aYtr  + 8.0 * hlam * lam
 		  + 4.0 * hkap * kap + 1.2 * gsqM(1) + 6.0 * gsqM(2) );
 
-      cout << " dhlam(1L)=" << dhlam << " " << (Ytr + 4.0 * lsq + 2.0 * ksq
+      /*      cout << " dhlam(1L)=" << dhlam << " " << (Ytr + 4.0 * lsq + 2.0 * ksq
 	       - 0.6 * gsq(1) - 3.0 * gsq(2)) * hlam << endl
 	   << lam * ( 2.0 * aYtr  + 8.0 * hlam * lam
 		      + 4.0 * hkap * kap + 1.2 * gsqM(1) + 6.0 * gsqM(2) ) 
 	   << " 1=" << 2.0 * aYtr  << " 2="<<  8.0 * hlam * lam << " 3=" << 
 	4.0 * hkap * kap  << " 4=" << 1.2 * gsqM(1) <<" 5=" << 6.0 * gsqM(2);
       ///< DEBUG
-
+      */
       dhkap += 18.0 * hkap * ksq + 12.0 * lam * kap * hlam
 	+ 6.0 * hkap * lsq;
       
@@ -792,7 +787,7 @@ namespace softsusy {
   
   ostream & operator <<(ostream &left, const SoftParsNmssm &s) {
     left << " alambda: " << s.displayTrialambda()
-	 << " akappa: " << s.displayTriakappa();
+	 << " akappa: " << s.displayTriakappa() << endl;
     left << " mSsq: "  << s.displayMsSquared()
 	 << " mSPsq: "  << s.displayMspSquared()
 	 << " xiS: "  << s.displayXiS()

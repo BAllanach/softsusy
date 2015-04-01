@@ -55,6 +55,7 @@ namespace softsusy {
 		    displayMssmSusy().displayHvev());
     NmssmSusy nn(displayMssmSusy(), nms);
 
+    dmG = ms.displayGaugino();
     dmH1sq = ms.displayMh1Squared();
     dmH2sq = ms.displayMh2Squared();
     dm3sq = ms.displayM3Squared();
@@ -83,19 +84,22 @@ namespace softsusy {
     mm.setTrilinearMatrix(UA, dhu);
     mm.setTrilinearMatrix(DA, dhd);
     mm.setTrilinearMatrix(EA, dhe);
-    dhu = ms.displayTrilinear(UA);
-    dhd = ms.displayTrilinear(DA);
-    dhe = ms.displayTrilinear(EA);
+    mm.setTrilinearMatrix(UA, dhu);
+    mm.setTrilinearMatrix(DA, dhd);
+    mm.setTrilinearMatrix(EA, dhe);
+    mm.setAllGauginos(dmG);
 
     SoftParsNmssm spn(dhlam, dhkap, dmSsq, dmSpsq, dxiS);
+
+    cout << NmssmSoftsusy(nms, spn, mm); exit(0); ///< DEBUG
 
     return NmssmSoftsusy(nms, spn, mm);
   }
 
   const DoubleVector NmssmSoftsusy::display() const {
     DoubleVector y(MssmSoftsusy::display());
-    y.setEnd(numNMssmPars);
     int k = y.displayEnd() + 1;
+    y.setEnd(numNMssmPars + 83);
     NmssmSusyPars::display(y, k);
     SoftParsNmssm::display(y, k);
     return y;
@@ -8692,15 +8696,9 @@ namespace softsusy {
 
       t.setNmssmLoops(2); /// 2 loops should protect against ht Landau pole 
 
-      cout << "1" << t;
-
       t.runto(mxBC); 
 
-      cout << "2" << t; exit(0);///< DEBUG
-
       setNmssmSusy(t.displayNmssmSusy()); setMu(t.displayMu());
-
-
 
       /// Initial guess: B=0, mu=1st parameter, need better guesses
       boundaryCondition(*this, pars);
@@ -8732,9 +8730,7 @@ namespace softsusy {
 	setM3Squared(muFirst); 
       }
 
-      cout << this->display();
-      this->set(this->display());
-      cout << "Compared to: " << *this; exit(0);
+      /// OK to here - objects exactly the same
       /*      SoftParsNmssm xx(displaySoftParsNmssm());
       cout << xx; ///< DEBUG
       int k = 1;
@@ -8744,7 +8740,6 @@ namespace softsusy {
       cout << xx; exit(0);
       */
       run(mxBC, mz);
-
 
       if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
 
