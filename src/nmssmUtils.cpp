@@ -130,6 +130,7 @@ void NMSSM_input::check_ewsb_output_parameters() const {
     left << s.displaySoftsusy()
 	 << s.displayNmssmSusyPars() 
 	 << s.displaySoftParsNmssm();	 
+    return left;
   }
 
   std::ostream& operator<<(std::ostream& lhs, const NMSSM_input& rhs) {
