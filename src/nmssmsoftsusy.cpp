@@ -8987,7 +8987,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
   void NmssmSoftsusy::neutralinoCharginoMSLHA(ostream & out) {
     sPhysical s(displayPhys());
     
-    NmssmSoftsusy::neutralinoCharginoMSLHA(out);
+    MssmSoftsusy::neutralinoCharginoMSLHA(out);
     out << "   1000045    "; printRow(out, s.mneut(5));
     out << "   # ~neutralino(5)\n";
   }
@@ -9079,7 +9079,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
   }
   
   void NmssmSoftsusy::drbarSLHA(ostream& out, int numPoints, double qMax, int n) {
-    NmssmSoftsusy::drbarSLHA(out, numPoints, qMax, n);
+    MssmSoftsusy::drbarSLHA(out, numPoints, qMax, n);
     nmssmrunSLHA(out);
   }
   
@@ -9240,13 +9240,13 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
   
   void NmssmSoftsusy::softsusySLHA(ostream& out)
   {
-    NmssmSoftsusy::softsusySLHA(out);
+    MssmSoftsusy::softsusySLHA(out);
     out << "# Z3 = " << softsusy::Z3
 	<< ", SoftHiggsOut = " << softsusy::SoftHiggsOut << '\n';
   }
   
   void NmssmSoftsusy::spinfoSLHA(ostream& out) {
-    NmssmSoftsusy::spinfoSLHA(out);
+    MssmSoftsusy::spinfoSLHA(out);
     if (displayProblem().notGlobalMin)
       out << "     3   # Warning: Not in global min of Higgs potential\n";
   }
