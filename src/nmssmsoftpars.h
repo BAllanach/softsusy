@@ -47,7 +47,7 @@ namespace softsusy {
     /// NMSSM Trilinear soft terms not present in MSSM
     double alambda, akappa;
     /// NMSSM soft breaking masses 
-    /// \f$ m_S^2 |S|^2 + \frac{1}{2}m{'2}_S S^2 + \xiS S + h.c. \f$ 
+    /// \f$ m_S^2 |S|^2 + \frac{1}{2}m{'2}_S S^2 + \xi_S S + h.c. \f$ 
     /// repectively.
     double mSsq, mSpsq, xiS;
   public:
