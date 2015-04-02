@@ -10,10 +10,10 @@
 
 namespace softsusy {
 
-extern template class Softsusy<SoftParsMssm>;
+  //extern template class MssmSoftsusy;
 
-extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL, 
-  ydR, yeL, yeR, ynuL;
+  extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL, 
+    ydR, yeL, yeR, ynuL;
 
 const FlavourMssmSoftsusy & 
 FlavourMssmSoftsusy::operator=(const FlavourMssmSoftsusy & s) {
@@ -134,7 +134,7 @@ void flavourBcs(MssmSoftsusy & m,
   m.setSoftMassMatrix(mDr, Ud * msd2in.transpose() * Ud.transpose());
 
   /// This sets the trilinears with any universal ones set
-  m.universalTrilinears(inputParameters.display(62));
+  m.universalTrilinears(m.displayMssmSusy(), inputParameters.display(62));
 
   /// This overwrites (in the CKM basis) any of trilinears we need to
   /// First, must transform to SCKM basis
@@ -1431,7 +1431,7 @@ void FlavourMssmSoftsusy::calcDrBarPars() {
   return;
 }
 
-MssmSusy FlavourMssmSoftsusy::guessAtSusyMt(double tanb, 
+MssmSusyRGE FlavourMssmSoftsusy::guessAtSusyMt(double tanb, 
 					    const QedQcd & oneset) { 
 
   // This bit gives a guess at a SUSY object
@@ -1442,7 +1442,7 @@ MssmSusy FlavourMssmSoftsusy::guessAtSusyMt(double tanb,
   // Gauge couplings at mt
   a = leAtMt.getGaugeMu(oneset.displayPoleMt(), sinth2);
   
-  MssmSusy t(MssmSoftsusy::guessAtSusyMt(tanb, oneset));
+  MssmSusyRGE t(MssmSoftsusy::guessAtSusyMt(tanb, oneset));
   DoubleMatrix yu(t.displayYukawaMatrix(YU)), yd(t.displayYukawaMatrix(YD)); 
   
   doQuarkMixing(yd, yu);

@@ -14,6 +14,19 @@ namespace softsusy {
 
 static RGE * tempRge;
 
+  const Approx & Approx::operator=(const Approx & a) {
+    if (this == &a) return *this;
+    loops = a.displayLoops();
+    thresholds = a.displayThresholds();
+    return *this;
+  }
+
+  Approx::Approx(const Approx & a)
+    : loops(a.displayLoops()), thresholds(a.displayThresholds()) {}
+
+  Approx::Approx(int l, int t) 
+    : loops(l), thresholds(t) {}
+  
 // runto/run functions return >0 if there's a problem with the running
 int RGE::runto(double x2, double eps) {
   double tol;
@@ -44,7 +57,6 @@ int RGE::run(double x1, double x2, double eps) {
 // Runge-Kutte user defined routine: given log renorm scale x and the dependent
 // variables y of an RGE, will calculate the derivitives dydx.
 DoubleVector allDerivs(double x, const DoubleVector & y) {
-  //  cout << " x=" << exp(x) << " y=" << y; // DEBUG
   tempRge->setMu(exp(x));
   tempRge->set(y);
   return tempRge->beta();

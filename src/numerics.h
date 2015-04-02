@@ -307,5 +307,15 @@ void rotate(DoubleMatrix & r, DoubleMatrix & qt, int n, int i, float a,
 	    float b);
 void rsolv(const DoubleMatrix & a, int n, const DoubleVector & d, 
 	   DoubleVector & b);
+
+  /// returns the square root of the absolute value of the argument
+  // returns sqrt(f) for f>0 
+  double ccbSqrt(double f);
+  /// returns the square root of the absolute value of the argument
+  // returns sqrt(f) for f>0 or -sqrt(|f|) for f<0
+  double signedSqrt(double f);
+  /// returns f * f * sign(f)
+  double signedSqr(double f);
+
 #endif
 

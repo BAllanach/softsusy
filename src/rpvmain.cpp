@@ -50,6 +50,7 @@ int main() {
     /// assumption and the numerical accuracy of the solution
     cerr << "Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
          << TOLERANCE << endl << oneset << endl;
+
     /// set parameters
     double tanb = 10.;
     int sgnMu = 1;
@@ -58,7 +59,7 @@ int main() {
     
     /// number of points for scan
     const int numPoints = 20; 
-    
+
     /// parameter region
     double Start = 0. , End = 0.4;
     
@@ -79,7 +80,7 @@ int main() {
       
       /// output parameters into double vector pars used by lowOrg
       kw.rpvDisplay(pars);
-      
+
       /// generate spectrum in RpvSoftsusy object kw
       kw.lowOrg(rpvSugraBcs, mgutGuess, pars, sgnMu,
                 tanb, oneset, gaugeUnification, ewsbBCscale);

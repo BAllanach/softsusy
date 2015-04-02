@@ -205,7 +205,7 @@ public:
   /// Provides the first guess at a SUSY object at mt, inputting tanb and
   /// oneset (should be at MZ) - it's very crude, doesn't take radiative
   /// corrections into account etc. 
-  virtual MssmSusy guessAtSusyMt(double tanb, const QedQcd & oneset);
+  virtual MssmSusyRGE guessAtSusyMt(double tanb, const QedQcd & oneset);
 
   /// Sets lepton flavour mixed sparticles
   /// virtual void sparticleThresholdCorrections(double tb);

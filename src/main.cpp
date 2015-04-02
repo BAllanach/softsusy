@@ -13,21 +13,9 @@
        <tan beta>      <mh0>     <mA0>    <mH0>     <mH+/->
 */
 
-#include <iostream>
-#include "mycomplex.h"
-#include "def.h"
-#include "linalg.h"
-#include "lowe.h"
-#include "rge.h"
-#include "softsusy.h"
-#include "softpars.h"
-#include "susy.h"
-#include "utils.h"
-#include "numerics.h"
+#include "main.h"
 
-namespace softsusy {
-   extern template class Softsusy<SoftParsMssm>;
-}
+using namespace softsusy;
 
 int main() {
   /// Sets up exception handling
@@ -35,7 +23,7 @@ int main() {
 
   try {
  /// Sets format of output: 6 decimal places
-  outputCharacteristics(6);
+  outputCharacteristics(16);
 
   cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
        << " test program, Ben Allanach 2002\n";
@@ -76,6 +64,7 @@ int main() {
 
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r; 
+
     DoubleVector pars(3); 
     pars(1) = m0; pars(2) = m12; pars(3) = a0;
     bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)

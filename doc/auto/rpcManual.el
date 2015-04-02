@@ -81,6 +81,7 @@
      "sec:objects"
      "fig:objstruc"
      "tab:rge"
+     "tab:approx"
      "tab:qedqcd"
      "scaley"
      "sec:mssmsusy"
