@@ -98,12 +98,6 @@ namespace softsusy {
     //    void set(const DoubleVector &);    
     void set(const DoubleVector &, int & k);    
 
-    /// Returns numerical beta functions of parameters and Brevity
-    /*    SoftParsNmssm beta2(nmsBrevity&, const NmssmSusy & betaNmssmSusy,
-	  const MssmSoftPars & betaMssmSoftPars) const;*/
-    /// Returns double vector containing numerical beta functions of parameters
-    //    DoubleVector beta() const;
-
     /// Returns derivatives of anomalous dimensions of fields with respect to
     /// renormalisation scale in MSSM for: RH leptons, LH leptons, LH quarks, RH
     /// up quarks, RH down quarks, H1 and H2 respectively
@@ -140,102 +134,7 @@ namespace softsusy {
     void inputSoftParsOnly();
   };
   
-  /// Soft SUSY breaking parameters and beta functions.
-  /// NB It is NOT clear you need this: delete if possible
-  class SoftParsNmssmRGE: public RGE, public SoftParsNmssm, 
-			  public NmssmSusy, public MssmSoftPars {
-  private:
-  public:
-    /// Default constructor fills object with zeroes
-    SoftParsNmssmRGE();
-    /// Constructor fills SUSY conserving parts with another object, all
-    /// SUSY breaking parameters set to zero
-    //  SoftParsNmssmRGE(const NmssmSusy &);
-    /// Constructor sets all parameters equal to those in another object
-    SoftParsNmssmRGE(const SoftParsNmssmRGE &);
-    /// Constructor sets all parameters equal to those in the base class
-    //  SoftParsNmssmRGE(const SoftParsNmssmRGE &);
-    /// Sets all parameters equal to those in another object
-    const SoftParsNmssmRGE & operator=(const SoftParsNmssmRGE & s);
-    /// Constructor sets RPC SUSY parameters to s, gaugino masses to mG,
-    /// trilinears to aU, aD, aE for au, ad, ae
-    /// trilnears respectively,  \f$m_Q^2\f$=mQl, \f$m_U^2\f$=mUr,
-    /// \f$m_D^2\f$=mDr, \f$m_L^2\f$=mLl, \f$m_E^2\f$=mEr, \f$ m_3^2\f$=m3sq,
-    /// \f$m_{H_1}^2\f$=mH1sq, \f$m_{H_2}^2\f$=mH2sq, mu parameter, number of
-    /// loops=l, and threshold parameter=t
-    SoftParsNmssmRGE(const DoubleVector & mG, const
-		     DoubleMatrix & aU, const DoubleMatrix & aD, 
-		     const DoubleMatrix & aE, const double & alambda,
-		     const double & akappa, const DoubleMatrix & mQl, 
-		     const DoubleMatrix & mUr, const DoubleMatrix & mDr, 
-		     const DoubleMatrix & mLl, const DoubleMatrix & mEr, 
-		     double m3sq, double mH1sq, double mH2sq,
-		     double mSsq, double mSpsq, double xiS,
-		     double mGravitino, int l, int t);
-    
-    /// Returns whole object as a const
-    const SoftParsNmssmRGE & displaySoftPars() const;
-        
-    /// Return contents of object in a vector: for RG evolution
-    //const DoubleVector display() const;
-    
-    /// Sets whole thing equal to another object
-    void setSoftPars(SoftParsNmssmRGE const &);
-
-    /// Sets total set of RGE parameters equal to elements of a vector
-    void set(const DoubleVector & y);
-    //  void setSusy(const NmssmSusy &);
-    
-    /// Returns double vector containing numerical beta functions of parameters
-    DoubleVector beta() const;
-  };
-  
-  /// Formatted ouput of whole object
-  ostream & operator <<(ostream &left, const SoftParsNmssmRGE &s);
   ostream & operator <<(ostream &left, const SoftParsNmssm &s);
-  /// Formatted input of whole object
-  istream & operator >>(istream &left, SoftParsNmssmRGE &s);
-  
- 
-
-  inline SoftParsNmssmRGE::SoftParsNmssmRGE()
-    : SoftParsNmssm() {}
-  
-  inline SoftParsNmssmRGE::SoftParsNmssmRGE(const SoftParsNmssmRGE & s)
-    : SoftParsNmssm(s.displaySoftParsNmssm()) {}
-  
-
-  /*  inline SoftParsNmssmRGE::SoftParsNmssmRGE(const NmssmSusy &s)
-    : SoftParsNmssmRGE(s), alambda(0.0), akappa(0.0),
-      mSsq(0.0), mSpsq(0.0), xiS(0.0) {
-    setLoops(s.displayLoops());
-    setThresholds(s.displayThresholds());
-    }*/
-  
-  /*  inline SoftParsNmssm::SoftParsNmssm
-  (const DoubleVector & mG, const DoubleMatrix & aU, const DoubleMatrix & aD, 
-   const DoubleMatrix & aE, const double & aL, const double & aK, 
-   const DoubleMatrix & mQl, const DoubleMatrix & mUr, 
-   const DoubleMatrix & mDr, const DoubleMatrix & mLl, 
-   const DoubleMatrix & mEr, double m3sqn, double mH1sq,
-   double mH2sq, double mSsq, double mSpsq, double xiS,
-   double mg, int l, int t)
-    : MssmSoftPars(mG, aU, aD, aE, mQl, mUr, mDr, mLl, mEr, m3sqn, mH1sq, 
-		   mH2sq, mg), alambda(aL), akappa(aK), mSsq(mSsq), 
-		   mSpsq(mSpsq), xiS(xiS) { setNmssmApprox(l, t); }*/
-
-  /*  inline SoftParsNmssmRGE::SoftParsNmssmRGE(const DoubleVector & mG, const
-   DoubleMatrix & aU, const DoubleMatrix & aD, const DoubleMatrix & aE,
-   const double & aL, const double & aK, const DoubleMatrix & mQl,
-   const DoubleMatrix & mUr, const DoubleMatrix & mDr, const
-   DoubleMatrix & mLl, const DoubleMatrix & mEr, double m3sqn, double mH1sq,
-   double mH2sq, double mSsq, double mSpsq, double xiS,
-					    double mg, int l, int t)
-    : SoftParsNmssm(mG, aU, aD, aE, aL, aK, mQl, mUr, mDr, mLl, mEr, 
-		    m3sqn, mH1sq, mH2sq, mSsq, mSpsq, xiS, mg, l, t) {
-		    }*/
-  
-    
 } // namespace softsusy
 
 #endif
