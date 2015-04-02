@@ -974,26 +974,28 @@ the technical documentation on the \SOFTSUSY~web-site.
 \begin{center}
 \begin{picture}(215,200)(-30,0)
 \GBox(200,200)(-30,0){0.9}
-\ArrowLine(100,180)(50,130)
-\ArrowLine(100,180)(150,130)
-\ArrowLine(150,130)(150,100)
-\ArrowLine(150,100)(150,70)
-\ArrowLine(150,70)(50,100)
+\ArrowLine(60,180)(20,130)
+\ArrowLine(60,180)(150,190)
+\ArrowLine(150,160)(150,190)
+\ArrowLine(60,180)(150,130)
+\ArrowLine(150,100)(150,130)
+\ArrowLine(150,130)(50,100)
+\ArrowLine(150,160)(150,130)
+\ArrowLine(70,150)(150,130)
 \ArrowLine(50,100)(50,70)
 \ArrowLine(50,30)(50,70)
 \ArrowLine(150,30)(50,70)
 \SetPFont{Teletype}{10}
-%  \put(-30,0){\framebox(230,200){}}
-\BText(100,180){RGE}
-\BText(50,130){QedQcd}
-\BText(150,130){MssmSusy}
-%\BText(50,100){RpvSusyPars}
+\BText(70,150){Approx}
+\BText(60,180){RGE}
+\BText(150,190){MssmSusyRGE}
+\BText(20,130){QedQcd}
+\BText(150,160){MssmSusy}
 \BText(50,30){RpvSoftPars}
-%\BText(50,70){RpvSoftsusy}
 \BText(40,100){FlavourMssmSoftsusy}
 \BText(30,70){RpvSoftsusy}
 \BText(150,100){SoftParsMssm}
-\BText(150,70){MssmSoftsusy}
+\BText(150,130){MssmSoftsusy}
 \BText(150,30){RpvSusyPars}
 \end{picture}
 \end{center}
@@ -1030,8 +1032,9 @@ classes to different renormalisation scales (their beta functions). The other
 objects 
 displayed in figure~\ref{fig:objstruc} are particular instances of
 \code{RGE}, and therefore inherit from it. \code{QedQcd}, \code{MssmSusy},
-\code{SoftParsMssm} and \code{MssmSoftsusy}~objects encode the $R_p$ part of the
-MSSM and its SM input data~\cite{Allanach:2001kg}.
+\code{SoftParsMssm}, \code{MssmSoftsusy} and \code{Approx}~objects encode the
+$R_p$ part of the 
+MSSM and its SM input data, along with the level of approximation of the calculation~\cite{Allanach:2001kg}. 
 \code{RpvSusyPars} contains all of the supersymmetric $\rpv$ couplings contained
 within  Eq.~(\ref{superpot1}). 
 \code{RpvSoftPars}~contains the $\rpv$ soft supersymmetry breaking parameters

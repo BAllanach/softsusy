@@ -64,11 +64,12 @@
     (TeX-run-style-hooks
      "color"
      "axodraw"
+     ""
      "latex2e"
      "elsarticle10"
      "elsarticle"
-     "pdflatex"
-     "final"
+     "times"
      "3p"
-     "times")))
+     "final"
+     "pdflatex")))
 
