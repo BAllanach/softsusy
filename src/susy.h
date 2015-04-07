@@ -18,8 +18,7 @@
 #include "lowe.h"
 #include "utils.h"
 #include "rge.h"
-//rruiz
-//#include "tensor.h"
+#include "tensor.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

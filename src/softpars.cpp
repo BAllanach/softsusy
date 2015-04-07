@@ -1068,10 +1068,10 @@ MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
 	double md3 = displaySoftMassSquared(mDr, 3, 3);
 	double ml3 = displaySoftMassSquared(mLl, 3, 3);
 	double me3 = displaySoftMassSquared(mEr, 3, 3);
-	double ht = displayYukawaElement(YU, 3, 3), ht2 = sqr(ht), ht3 = ht2*ht, ht4 = sqr(ht2), ht5 = ht4*ht, ht6 = ht2*ht4;
-	double htau = displayYukawaElement(YE, 3, 3), htau2 = sqr(htau), htau3 = htau2*htau,
+	double ht = xx.displayYukawaElement(YU, 3, 3), ht2 = sqr(ht), ht3 = ht2*ht, ht4 = sqr(ht2), ht5 = ht4*ht, ht6 = ht2*ht4;
+	double htau = xx.displayYukawaElement(YE, 3, 3), htau2 = sqr(htau), htau3 = htau2*htau,
 	  htau4 = sqr(htau2), htau5=htau4*htau, htau6 = htau2*htau4;
-	double hb = displayYukawaElement(YD, 3, 3), hb2 = sqr(hb), hb3 = hb2*hb, hb4 = sqr(hb2), hb5 = hb4*hb, hb6 = hb2*hb4;
+	double hb = xx.displayYukawaElement(YD, 3, 3), hb2 = sqr(hb), hb3 = hb2*hb, hb4 = sqr(hb2), hb5 = hb4*hb, hb6 = hb2*hb4;
 	double Ut = displayTrilinear(UA, 3, 3), Ut2 = sqr(Ut);
 	double Ub = displayTrilinear(DA, 3, 3), Ub2 = sqr(Ub);
 	double Utau = displayTrilinear(EA, 3, 3), Utau2 = sqr(Utau);

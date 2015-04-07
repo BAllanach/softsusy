@@ -38,9 +38,9 @@
 
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
 #include <ginac/ginac.h>
-
+namespace softsusy { class MssmSoftsusy; }
 namespace SoftSusy_helpers_ {
-  GiNaC::exmap drBarPars_exmap(const softsusy::MssmSoftsusy & );
+  GiNaC::exmap drBarPars_exmap(const softsusy::MssmSoftsusy &);
 }
 
 #include "two_loop_thresholds/softsusy_exmap.hpp"
@@ -1297,11 +1297,10 @@ namespace softsusy {
   /// integrates LEP2 likelihood for SM higgs with 2 GeV Gaussian error, returns
   /// the log likelihood
   double lnLHiggs(double mh);
+
 } ///< namespace softsusy
 
-
-
-#endif
+#endif ///< SOFTSUSY_H
 
 
 

@@ -1,2 +1,2 @@
-<li> 1/4/15 Major revision to object structure to remove templates from MssmSoftsusy type objects. This results in much faster compilation times.
+<li> 7/4/15 Fixed compilation issues with higher accuracy mode
 
