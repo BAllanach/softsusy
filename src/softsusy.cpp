@@ -7070,6 +7070,8 @@ void MssmSoftsusy::fixedPointIteration
     t.setMssmLoops(lpnum); /// >= 2 loops should protect against ht Landau pole 
     t.runto(mxBC); 
 
+    // it's OK to here
+
     setMssmSusy(t); setMu(t.displayMu());
 
     /// Initial guess: B=0, 
@@ -7092,11 +7094,7 @@ void MssmSoftsusy::fixedPointIteration
       }
     }
 
-    //    cout << "1" << *this;///< DEBUG
-
     run(mxBC, mz);
-
-    //    cout << "2" << *this; exit(0);///< DEBUG
 
     if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
 

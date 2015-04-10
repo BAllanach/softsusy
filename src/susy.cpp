@@ -239,6 +239,7 @@ namespace softsusy {
     setTanb(s.displayTanb());
     setSusyMu(s.displaySusyMu());
     setAllGauge(s.displayGauge());
+    setMssmLoops(s.displayMssmLoops());
   }
   
   void MssmSusyRGE::setMssmSusyRGE(const MssmSusyRGE & s) {
@@ -250,7 +251,7 @@ namespace softsusy {
   istream & operator >>(istream &left, MssmSusy &s) {
     string c;
     DoubleMatrix u(3, 3), d(3, 3), e(3, 3);
-    double g1, g2, g3, smu, mu, tanb, hv;
+    double g1, g2, g3, smu, tanb, hv;
     left >> c >> u >> c >> d >> c >> e >> c >> c >> hv;
     left >> c >> c >> tanb >> c >> smu;
     left >> c >> g1 >> c >> g2 >> c >> g3;
