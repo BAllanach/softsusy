@@ -239,6 +239,7 @@ namespace softsusy {
     setTanb(s.displayTanb());
     setSusyMu(s.displaySusyMu());
     setAllGauge(s.displayGauge());
+    setMssmLoops(s.displayMssmLoops());
   }
   
   void MssmSusyRGE::setMssmSusyRGE(const MssmSusyRGE & s) {
