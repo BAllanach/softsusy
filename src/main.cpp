@@ -23,7 +23,7 @@ int main() {
 
   try {
  /// Sets format of output: 6 decimal places
-  outputCharacteristics(16);
+  outputCharacteristics(6);
 
   cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
        << " test program, Ben Allanach 2002\n";
