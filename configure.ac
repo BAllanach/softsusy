@@ -45,7 +45,7 @@ AC_ARG_ENABLE([three-loop-rge-compilation],
 
 AC_ARG_ENABLE([full-susy-threshold-compilation], 
                AC_HELP_STRING([--enable-full-susy-threshold-compilation],[Compile two-loop SUSY thresholds to the third generation fermionic Yukawa couplings and the strong gauge coupling]),
-             [AC_DEFINE([COMPILE_FULL_SUSY_THRESHOLD],[1],[Compile leading two-loop SUSY threshold corrections to fermionic third generation Yukawa couplings]),
+             [AC_DEFINE([COMPILE_FULL_SUSY_THRESHOLD],[1],[Compile leading two-loop SUSY threshold corrections to fermionic third generation Yukawa couplings])
               case "${enableval}" in
               yes) full_susy_threshold_compilation=true ;;
               no)  full_susy_threshold_compilation=false ;;
@@ -56,7 +56,7 @@ AM_CONDITIONAL(COMPILE_FULL_SUSY_THRESHOLD, [test x$full_susy_threshold_compilat
 
 AC_ARG_ENABLE([looptools], 
                AC_HELP_STRING([--enable-looptools],[Looptools evaluation of Pasarino-Veltman functions]),
-             [AC_DEFINE([LOOPTOOLS],[1],[Looptools evaluation of Pasarino-Veltman functions]),
+             [AC_DEFINE([LOOPTOOLS],[1],[Looptools evaluation of Pasarino-Veltman functions])
               case "${enableval}" in
               yes) looptools_compilation=true ;;
               no)  looptools_compilation=false ;;
