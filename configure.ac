@@ -28,6 +28,12 @@ if test x"$CXX" = x; then
  AC_MSG_ERROR([could not find C++ compiler])
 fi
 
+AC_PROG_CC
+
+if test x"$CC" = x; then
+ AC_MSG_ERROR([could not find CC compiler])
+fi
+
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
@@ -41,7 +47,7 @@ AC_PROG_LIBTOOL
 
 AC_ARG_ENABLE([three-loop-rge-compilation], 
                AC_HELP_STRING([--enable-three-loop-rge-compilation],[Compile three-loop RGEs]), 
- 	      AC_DEFINE([COMPILE_THREE_LOOP_RGE],[1],[Complile 3-loop RGE]),[])
+ 	      AC_DEFINE([COMPILE_THREE_LOOP_RGE],[1],[Compile 3-loop RGE]),[])
 
 AC_ARG_ENABLE([full-susy-threshold-compilation], 
                AC_HELP_STRING([--enable-full-susy-threshold-compilation],[Compile two-loop SUSY thresholds to the third generation fermionic Yukawa couplings and the strong gauge coupling]),
@@ -53,6 +59,17 @@ AC_ARG_ENABLE([full-susy-threshold-compilation],
               esac],[full_susy_threshold_compilation=false])
 
 AM_CONDITIONAL(COMPILE_FULL_SUSY_THRESHOLD, [test x$full_susy_threshold_compilation = xtrue])
+
+#dnl
+AC_ARG_ENABLE([higher-loop-compilation], 
+               AC_HELP_STRING([--enable-higher-loop-compilation],[Compile higher-loop corrections]), 
+ 	      [AC_DEFINE([COMPILE_HIGHER_LOOP],[1],[Compile higher loop])
+              case "${enableval}" in
+              yes) higher_loop_compilation=true ;;
+              no)  higher_loop_compilation=false ;;
+              *) AC_MSG_ERROR([bad value ${enableval} for --enable-higher_loop_compilation]) ;;
+              esac],[higher_loop_compilation=false])
+AM_CONDITIONAL(COMPILE_HIGHER_LOOP, [test x$higher_loop_compilation = xtrue])
 
 AC_ARG_ENABLE([looptools], 
                AC_HELP_STRING([--enable-looptools],[Looptools evaluation of Pasarino-Veltman functions]),
