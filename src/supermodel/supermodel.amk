@@ -1,0 +1,9 @@
+# library that stores all the calculation procedures for two-loop decoupling
+
+lib_LTLIBRARIES += libsupermodel.la
+
+libsupermodel_la_SOURCES = \
+src/supermodel/supermodel-v0.1/betas.c src/supermodel/supermodel-v0.1/linalg_herm.c src/supermodel/supermodel-v0.1/RGrun.c src/supermodel/supermodel-v0.1/tqli.c src/supermodel/supermodel-v0.1/V2_FFS.c src/supermodel/supermodel-v0.1/V2_SSS.c src/supermodel/supermodel-v0.1/V2_VVS.c src/supermodel/supermodel-v0.1/effpot.c src/supermodel/supermodel-v0.1/rk6_RG.c   src/supermodel/supermodel-v0.1/tred2.c src/supermodel/supermodel-v0.1/V2_FFV.c   src/supermodel/supermodel-v0.1/V2_SSV.c src/supermodel/supermodel-v0.1/vacuum.c src/supermodel/supermodel-v0.1/functions.c src/supermodel/supermodel-v0.1/minimization.c src/supermodel/supermodel-v0.1/se_gluino.c src/supermodel/supermodel-v0.1/tree_couplings.c src/supermodel/supermodel-v0.1/V2_gauge.c src/supermodel/supermodel-v0.1/V2_strong.c src/supermodel/supermodel-v0.1/linalg_comp.c src/supermodel/supermodel-v0.1/pm_gluino.c src/supermodel/supermodel-v0.1/self_fermion.c  src/supermodel/supermodel-v0.1/tree_masses.c src/supermodel/supermodel-v0.1/V2_SS.c src/supermodel/supermodel-v0.1/V2_VS.c src/supermodel/supermodel-v0.1/higherorder.c
+
+pkginclude_HEADERS += \
+src/supermodel/supermodel-v0.1/self_fermion.h src/supermodel/supermodel-v0.1/sumo_build.h src/supermodel/supermodel-v0.1/sumo_linalg.h src/supermodel/supermodel-v0.1/sumo_smdata.h src/supermodel/supermodel-v0.1/supermodel.h src/supermodel/supermodel-v0.1/tsil.h

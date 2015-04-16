@@ -33,7 +33,8 @@ int main() {
        << TOLERANCE << endl << oneset << endl;
 
   /// Print out header line
-  cout << "# tan beta   mh(1)        mh(2)        mA(1)        mH+-\n";
+  cout << "# tan beta   mh(1)        mh(2)        mA(1)        mA(2)"
+       << "        mH+-\n";
 
   /// Set limits of tan beta scan
   double startTanb = 5.0, endTanb = 55.0;
@@ -68,6 +69,7 @@ int main() {
              << n.displayPhys().mh0(1) << ' '
              << n.displayPhys().mh0(2) << ' '
              << n.displayPhys().mA0(1) << ' '
+             << n.displayPhys().mA0(2) << ' '
              << n.displayPhys().mHpm << '\n';
      } else {
         cout << tanb << ' ' << n.displayProblem() << '\n';

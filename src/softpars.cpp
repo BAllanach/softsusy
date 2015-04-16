@@ -3224,8 +3224,6 @@ void MssmSoftPars::minimalGmsb(const MssmSusy & xx, int n5, double LAMBDA,
     (                  0.75 * g2f + 0.6 * 0.25 * g1f) 
     / sqr(16.0 * sqr(PI));
   
-  // You need Higgs masses too!
-  
   DoubleMatrix id(3, 3);
   id(1, 1) = 1.0; id(2, 2) = 1.0; id(3, 3) = 1.0;
   

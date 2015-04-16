@@ -6644,6 +6644,53 @@ void MssmSoftsusy::physical(int accuracy) {
   neutralinos(accuracy, piwwtMS, pizztMS);
   
   calcHiggsAtScale(accuracy, mt, sinthDRbarMS, piwwtMS, pizztMS);
+
+  /// This part of the code adds higher loop corrections to gluino masses etc
+  /// from Steve Martin et al
+#ifdef COMPILE_HIGHER_LOOP
+  if(accuracy != 0 ) {
+   supermodel smodel;
+
+   smodel.vd = displayHvev() * cos(atan(displayTanb()));
+   smodel.vu = displayHvev() * sin(atan(displayTanb()));
+
+   // We should apply dictionary here
+   // check
+   smodel.g =  displayGaugeCoupling(1);
+   smodel.g3 = displayGaugeCoupling(3);
+   smodel.ytop = displayYukawaElement(YU, 3, 3);
+   smodel.ybot = displayYukawaElement(YD, 3, 3);
+   smodel.ytau = displayYukawaElement(YE, 3, 3);
+   smodel.m1 = displayGaugino(1);
+   smodel.m2 = displayGaugino(2);
+   smodel.m3 = displayGaugino(3);
+   //check
+   smodel.atop = displaySoftA(UA, 3, 3);
+   smodel.abot = displaySoftA(DA, 3, 3);
+   smodel.atau = displaySoftA(EA, 3, 3);
+
+   for(int i=0; i<3; i++) {
+    smodel.m2Q[i] = displaySoftMassSquared(mQl,i+1,i+1);
+    smodel.m2u[i] = displaySoftMassSquared(mUr,i+1,i+1);
+    smodel.m2d[i] = displaySoftMassSquared(mDr,i+1,i+1);
+    smodel.m2L[i] = displaySoftMassSquared(mLl,i+1,i+1);
+    smodel.m2e[i] = displaySoftMassSquared(mEr,i+1,i+1);
+   }
+
+   smodel.m2Hu = displayMh2Squared();
+   smodel.m2Hd = displayMh1Squared();
+   smodel.mu = displayMu();
+   smodel.b = displayM3Squared();
+
+   smodel.Q = displayMu();
+
+   higherorder(smodel);  
+
+   //Set the outputs 
+   physpars.mGluino = smodel.mgluino;
+   //cout <<  physpars.mGluino << endl;
+  }
+#endif ///< COMPILE_HIGHER_ORDERS
 }
 
 /// For a given trial value of the log of field H2, gives the value of the
@@ -9642,19 +9689,24 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
   if (!USE_TWO_LOOP_THRESHOLD) out << "off\n";
   else {
     if (included_thresholds>0) out << "on"; else out << "off";
-    out << "\n# 2-loop t-quark O(a_s^2) thresholds are ";
+    out << "\n# 2-loop t-quark O(a_s^2) threshold corrections to gauge and Yukawa couplings are ";
     if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) out << "on"; else out << "off";  
-    out << "\n# 2-loop b-quark O(a_s^2) thresholds are "; 
+    out << "\n# 2-loop b-quark O(a_s^2) threshold corrections to gauge and Yukawa couplings are "; 
     if (included_thresholds & ENABLE_TWO_LOOP_MB_AS) out << "on"; else out << "off";
-    out << "\n# 2-loop b-quark O(a_s y^2) and O(y^4) thresholds are ";
+    out << "\n# 2-loop b-quark O(a_s y^2) and O(y^4) threshold corrections to gauge and Yukawa couplings are ";
     if (included_thresholds & ENABLE_TWO_LOOP_MB_YUK) out << "on"; else out << "off"; 
-    out << "\n# 2-loop tau-lepton  O(y^4) thresholds are ";
+    out << "\n# 2-loop tau-lepton  O(y^4) threshold corrections to gauge and Yukawa couplings are ";
     if (included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK) out << "on"; else out << "off"; 
-    out << "\n# 2-loop a_s  O(a_s^2) and O(a_s y^2) thresholds are ";
+    out << "\n# 2-loop a_s  O(a_s^2) and O(a_s y^2) threshold corrections to gauge and Yukawa couplings are ";
     if (included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK) out << "on"; else out << "off";
     out << endl;
   }
 #endif
+#ifdef COMPILE_HIGHER_LOOPS
+  out << "# 2-loop computation of sparticle mass thresholds switched ";
+  if (USE_HIGHER_LOOPS) out << "on" << endl;
+  else out << "off" << endl;
+#endif  
 }
 
 void MssmSoftsusy::higgsMSLHA(ostream & out) {

@@ -34,6 +34,11 @@
 #include "twoloophiggs.h"
 #include "mssmUtils.h"
 
+#ifdef COMPILE_HIGHER_LOOP
+//#include "supermodel/supermodel-v0.1/supermodel.h"
+#include "higher_order.h"
+#endif
+
 #define HR "----------------------------------------------------------"
 
 #ifdef COMPILE_FULL_SUSY_THRESHOLD
@@ -51,7 +56,7 @@ namespace SoftSusy_helpers_ {
 #include "two_loop_thresholds/gs_corrections.hpp"
 #include "two_loop_thresholds/dec_cor_helper.hpp"
 
-#endif //COMPILE_FULL_SUSY_THRESHOLD
+#endif ///< COMPILE_FULL_SUSY_THRESHOLD
 
 namespace softsusy {
   
@@ -724,7 +729,7 @@ namespace softsusy {
     virtual double calcRunMbNeutralinos() const;
     /// Applies approximate 1-loop SUSY corrections to mb(MZ) in order to
     /// return the DRbar running value
-    //rruiz: remove const
+    // rruiz: remove const
     virtual double calcRunningMb();
     /*
    /// Calculates top Yukawa coupling, supply Higgs vev parameter at current

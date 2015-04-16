@@ -68,6 +68,23 @@ rpvneut_x_LDADD += lib2lthresh.la libmssmparam.la
 
 endif
 
+
+if COMPILE_HIGHER_LOOP
+
+include src/supermodel/tsil.amk
+include src/supermodel/supermodel.amk
+
+softsusy_x_LDADD += libsupermodel.la libtsil.la 
+
+softsusy_nmssm_x_LDADD += libsupermodel.la libtsil.la 
+
+softpoint_x_LDADD += libsupermodel.la libtsil.la 
+
+rpvsoftsusy_x_LDADD += libsupermodel.la libtsil.la 
+rpvneut_x_LDADD += libsupermodel.la libtsil.la 
+
+endif
+
 pkginclude_HEADERS += \
 $(addprefix src/, \
 def.h main.h numerics.h \
@@ -85,7 +102,7 @@ libsoft_la_SOURCES = \
 src/def.cpp src/linalg.cpp src/lowe.cpp src/numerics.cpp  src/rpvneut.cpp \
 src/physpars.cpp src/rge.cpp src/nmssm2loop.f src/dilogwrap.f src/softsusy.cpp\
  src/nmssmsoftsusy.cpp src/nmssmsusy.cpp src/nmssmsoftpars.cpp src/nmssmUtils.cpp \
-src/softpars.cpp src/susy.cpp src/utils.cpp src/mssmUtils.cpp \
+src/susy.cpp src/utils.cpp src/mssmUtils.cpp src/softpars.cpp \
 src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twoloophiggs.f
 
 libsoft_la_LDFLAGS = @FLIBS@
