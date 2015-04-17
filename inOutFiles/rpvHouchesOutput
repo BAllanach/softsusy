@@ -52,7 +52,7 @@ Block MASS                      # Mass spectrum
         35     3.21044663e+02   # CP even neutral scalar
         36     3.21044663e+02   # CP odd neutral scalar
         37     1.87893512e+02   # charged scalar
-   1000021     1.16777829e+03   # ~g
+   1000021     1.14813133e+03   # ~g
    1000022     2.05521326e+02   # ~neutralino(1)
    1000023     3.87790862e+02   # ~neutralino(2)
    1000024     3.87859641e+02   # ~chargino(1)

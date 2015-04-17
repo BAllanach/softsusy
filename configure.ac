@@ -45,10 +45,18 @@ AC_F77_LIBRARY_LDFLAGS
 ## If you want shared libraries, configure with --enable-shared
 AC_PROG_LIBTOOL
 
+## Use three-loop RGEs for superpotential parameters and gauge couplings
 AC_ARG_ENABLE([three-loop-rge-compilation], 
-               AC_HELP_STRING([--enable-three-loop-rge-compilation],[Compile three-loop SUSY RGEs]), 
- 	      AC_DEFINE([COMPILE_THREE_LOOP_RGE],[1],[Compile 3-loop RGE]),[])
+               AC_HELP_STRING([--enable-three-loop-rge-compilation],[Compile three-loop RGEs for SUSY parameters]), 
+ 	      [AC_DEFINE([COMPILE_THREE_LOOP_RGE],[1],[Compile 3-loop RGE for SUSY parameters]) case "${enableval}" in
+              yes) three_loop_rge_compilation=true ;;
+              no)  three_loop_rge_compilation=false ;;
+              *) AC_MSG_ERROR([bad value ${enableval} for --enable-three_loop_rge_compilation]) ;;
+              esac],[three_loop_rge_compilation=false])
+AM_CONDITIONAL(COMPILE_THREE_LOOP_RGE, [test x$three_loop_rge_compilation = xtrue])
 
+## Switch on two-loop threshold corrections to third family Yukawa couplings 
+## and strong gauge coupling 
 AC_ARG_ENABLE([full-susy-threshold-compilation], 
                AC_HELP_STRING([--enable-full-susy-threshold-compilation],[Compile two-loop SUSY thresholds to the third generation fermionic Yukawa couplings and the strong gauge coupling]),
              [AC_DEFINE([COMPILE_FULL_SUSY_THRESHOLD],[1],[Compile leading two-loop SUSY threshold corrections to fermionic third generation Yukawa couplings])
@@ -57,10 +65,9 @@ AC_ARG_ENABLE([full-susy-threshold-compilation],
               no)  full_susy_threshold_compilation=false ;;
               *) AC_MSG_ERROR([bad value ${enableval} for --enable-full_susy_threshold_compilation]) ;;
               esac],[full_susy_threshold_compilation=false])
-
 AM_CONDITIONAL(COMPILE_FULL_SUSY_THRESHOLD, [test x$full_susy_threshold_compilation = xtrue])
 
-#dnl
+#dnl Switch on 2-loop sparticle mass corrections
 AC_ARG_ENABLE([higher-loop-compilation], 
                AC_HELP_STRING([--enable-higher-loop-compilation],[Compile higher-loop corrections to mgluino]), 
  	      [AC_DEFINE([COMPILE_HIGHER_LOOP],[1],[Compile higher loop])
@@ -71,6 +78,7 @@ AC_ARG_ENABLE([higher-loop-compilation],
               esac],[higher_loop_compilation=false])
 AM_CONDITIONAL(COMPILE_HIGHER_LOOP, [test x$higher_loop_compilation = xtrue])
 
+# Use looptools instead of SOFTSUSY's built in 1-loop functions
 AC_ARG_ENABLE([looptools], 
                AC_HELP_STRING([--enable-looptools],[Looptools evaluation of Pasarino-Veltman functions]),
              [AC_DEFINE([LOOPTOOLS],[1],[Looptools evaluation of Pasarino-Veltman functions])
@@ -79,7 +87,6 @@ AC_ARG_ENABLE([looptools],
               no)  looptools_compilation=false ;;
               *) AC_MSG_ERROR([bad value ${enableval} for --enable-looptools]) ;;
               esac],[looptools_compilation=false])
-
 AM_CONDITIONAL(LOOPTOOLS, [test x$looptools_compilation = xtrue])
 
 AC_ARG_ENABLE([debug], 
