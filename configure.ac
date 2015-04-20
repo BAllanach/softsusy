@@ -68,15 +68,15 @@ AC_ARG_ENABLE([two-loop-gauge-yukawa-compilation],
 AM_CONDITIONAL(COMPILE_FULL_SUSY_THRESHOLD, [test x$two_loop_gauge_yukawa_compilation = xtrue])
 
 #dnl Switch on 2-loop sparticle mass corrections
-AC_ARG_ENABLE([higher-loop-compilation], 
-               AC_HELP_STRING([--enable-higher-loop-compilation],[Compile higher-loop corrections to mgluino]), 
+AC_ARG_ENABLE([two-loop-sparticle-mass-compilation], 
+               AC_HELP_STRING([--enable-two-loop-sparticle-mass-compilation],[Compile higher-loop corrections to mgluino]), 
  	      [AC_DEFINE([COMPILE_HIGHER_LOOP],[1],[Compile higher loop])
               case "${enableval}" in
-              yes) higher_loop_compilation=true ;;
-              no)  higher_loop_compilation=false ;;
-              *) AC_MSG_ERROR([bad value ${enableval} for --enable-higher_loop_compilation]) ;;
-              esac],[higher_loop_compilation=false])
-AM_CONDITIONAL(COMPILE_HIGHER_LOOP, [test x$higher_loop_compilation = xtrue])
+              yes) two_loop_sparticle_mass_compilation=true ;;
+              no)  two_loop_sparticle_mass_compilation=false ;;
+              *) AC_MSG_ERROR([bad value ${enableval} for --enable-two_loop_sparticle_mass_compilation]) ;;
+              esac],[two_loop_sparticle_mass_compilation=false])
+AM_CONDITIONAL(COMPILE_HIGHER_LOOP, [test x$two_loop_sparticle_mass_compilation = xtrue])
 
 # Use looptools instead of SOFTSUSY's built in 1-loop functions
 AC_ARG_ENABLE([looptools], 
@@ -105,7 +105,7 @@ if test x"$enable_two_loop_gauge_yukawa_compilation" = x"yes"; then
  CPPFLAGS="$CPPFLAGS $CLN_CFLAGS $GINAC_CFLAGS"
 fi
 # TSIL for 2-loop sparticle mass functions
-if test x"$higher_loop_compilation" = x"yes"; then
+if test x"$two_loop_sparticle_mass_compilation" = x"yes"; then
  PKG_CHECK_MODULES([TSIL], tsil >= 1.2.1)
 
  LIBS="$LIBS $TSIL_LIBS"
@@ -124,4 +124,4 @@ AC_OUTPUT
 # GINAC_LIBS="-L/usr/local/lib -lginac" GINAC_CFLAGS="-I/usr/local/include" CLN_LIBS="-L/usr/local/lib -lcln" CLN_CFLAGS="-I/usr/local/include" ./configure --enable-two-loop-gauge-yukawa-compilation --enable-three-loop-rge-compilation
 
 # For TSIL
-# TSIL_LIB="-L/usr/lib -ltsil" TSIL_CFLAGS="-I/usr/include" ./configure --enable-higher-loop-compilation
+# TSIL_LIB="-L/usr/lib -ltsil" TSIL_CFLAGS="-I/usr/include" ./configure --enable-two-loop-sparticle-mass-compilation
