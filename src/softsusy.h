@@ -41,7 +41,7 @@
 
 #define HR "----------------------------------------------------------"
 
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 #include <ginac/ginac.h>
 namespace softsusy { class MssmSoftsusy; }
 namespace SoftSusy_helpers_ {
@@ -56,7 +56,7 @@ namespace SoftSusy_helpers_ {
 #include "two_loop_thresholds/gs_corrections.hpp"
 #include "two_loop_thresholds/dec_cor_helper.hpp"
 
-#endif ///< COMPILE_FULL_SUSY_THRESHOLD
+#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
 namespace softsusy {
   
@@ -118,12 +118,12 @@ namespace softsusy {
     double mxBC; ///< Scale at which SUSY breaking boundary conditions set
     
   public:
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
     /// Public field :: only for informational purpose	
     SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
     /// Flags allowing to choose which two-loop thresholds have to be included
     int included_thresholds; 
-#endif ///< COMPILE_FULL_SUSY_THRESHOLD
+#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
     
     //  void (*boundaryCondition)(Softsusy &, const DoubleVector &);
     /// Default constructor fills object with zeroes
@@ -255,7 +255,7 @@ namespace softsusy {
     /// Sets total set of RGE parameters equal to elements of a vector
     void set(const DoubleVector &);
     
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
     /// Switch 2-loop threshold \f$O(\alpha_s^2), O(\alpha_s \alpha_b),
     /// O(\alpha_s \alpha_t) \f$ corrections to
     /// \f$\alpha_s\f$ ON/OFF 

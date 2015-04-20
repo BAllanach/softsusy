@@ -87,7 +87,7 @@ namespace softsusy {
   bool USE_THREE_LOOP_RGE = false;
 #endif
   
-#ifdef COMPILE_FULL_SUSY_THRESHOLD 
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA 
 
   /// Threshold to prevent the re-evaluation of two-loop leading SUSY thresholds
   /// corrections. By default we set it to 10%. 
@@ -101,6 +101,6 @@ namespace softsusy {
   /// is expected to be of O((mb/MSUSY)^2), which we can formally neglect.
   bool MB_DECOUPLING = false;
 
-#endif //COMPILE_FULL_SUSY_THRESHOLD
+#endif //COMPILE_TWO_LOOP_GAUGE_YUKAWA
 }
 /// end of global variable declaration

@@ -59,13 +59,13 @@ AM_CONDITIONAL(COMPILE_THREE_LOOP_RGE, [test x$three_loop_rge_compilation = xtru
 ## and strong gauge coupling 
 AC_ARG_ENABLE([two-loop-gauge-yukawa-compilation], 
                AC_HELP_STRING([--enable-two-loop-gauge-yukawa-compilation],[Compile two-loop SUSY thresholds to the third generation fermionic Yukawa couplings and the strong gauge coupling]),
-             [AC_DEFINE([COMPILE_FULL_SUSY_THRESHOLD],[1],[Compile leading two-loop SUSY threshold corrections to fermionic third generation Yukawa couplings])
+             [AC_DEFINE([COMPILE_TWO_LOOP_GAUGE_YUKAWA],[1],[Compile leading two-loop SUSY threshold corrections to fermionic third generation Yukawa couplings])
               case "${enableval}" in
               yes) two_loop_gauge_yukawa_compilation=true ;;
               no)  two_loop_gauge_yukawa_compilation=false ;;
               *) AC_MSG_ERROR([bad value ${enableval} for --enable-two_loop_gauge_yukawa_compilation]) ;;
               esac],[two_loop_gauge_yukawa_compilation=false])
-AM_CONDITIONAL(COMPILE_FULL_SUSY_THRESHOLD, [test x$two_loop_gauge_yukawa_compilation = xtrue])
+AM_CONDITIONAL(COMPILE_TWO_LOOP_GAUGE_YUKAWA, [test x$two_loop_gauge_yukawa_compilation = xtrue])
 
 #dnl Switch on 2-loop sparticle mass corrections
 AC_ARG_ENABLE([two-loop-sparticle-mass-compilation], 

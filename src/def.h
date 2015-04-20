@@ -107,7 +107,7 @@ namespace softsusy{
   extern bool USE_THREE_LOOP_RGE;
 #endif
 
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   /// Threshold to prevent the re-evaluation of two-loop leading SUSY 
   /// thresholds corrections
   extern double TWOLOOP_NUM_THRESH;

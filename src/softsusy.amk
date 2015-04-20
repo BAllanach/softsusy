@@ -31,7 +31,7 @@ rpvsoftsusy_x_LDADD += -looptools
 rpvneut_x_LDADD += -looptools
 endif
 
-if COMPILE_FULL_SUSY_THRESHOLD
+if COMPILE_TWO_LOOP_GAUGE_YUKAWA
 CPPFLAGS += -I$(srcdir)/src
 include src/two_loop_thresholds/mssmparam.amk
 include src/two_loop_thresholds/two_loop_th.amk

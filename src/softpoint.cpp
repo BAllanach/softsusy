@@ -37,9 +37,9 @@ void errorCall() {
   ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
   ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
   ii << "--higgsUncertainties gives an estimate of Higgs mass uncertainties\n";
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   if (USE_TWO_LOOP_THRESHOLD) ii << "--two-loop-susy-thresholds switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
-#endif //COMPILE_FULL_SUSY_THRESHOLD
+#endif //COMPILE_TWO_LOOP_GAUGE_YUKAWA
 #ifdef COMPILE_THREE_LOOP_RGE
   if (USE_THREE_LOOP_RGE) ii << "--three-loop-rges switches on 3-loop RGEs\n";
 #endif //COMPILE_THREE_LOOP_RGE
@@ -168,7 +168,7 @@ int main(int argc, char *argv[]) {
 	else if (starts_with(argv[i], "--mgut=")) 
 	  mgutGuess = mgutCheck(argv[i], gaugeUnification, ewsbBCscale); 
 	else if (starts_with(argv[i], "--disable-two-loop-susy-thresholds")) {
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 	  USE_TWO_LOOP_THRESHOLD = false;
 	  m.setAllTwoLoopThresholds(false);
 #else
@@ -179,7 +179,7 @@ int main(int argc, char *argv[]) {
 #endif
 	}
 	else if (starts_with(argv[i], "--two-loop-susy-thresholds")) {
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 	  USE_TWO_LOOP_THRESHOLD = true;
 	  m.setAllTwoLoopThresholds(true);
 #else
@@ -1174,7 +1174,7 @@ int main(int argc, char *argv[]) {
 		    break;			     
 		  }
 #endif
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 		  case 20: {
                     int num = int(d + EPSTOL);
 		    // AVB: can be set to just 1 Turn on all thresholds

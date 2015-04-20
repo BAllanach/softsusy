@@ -11,7 +11,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 include src/softsusy.amk
 include doc/doc.amk
-if COMPILE_FULL_SUSY_THRESHOLD
+if COMPILE_TWO_LOOP_GAUGE_YUKAWA
 else
 include inOutFiles/inOut.amk
 endif
