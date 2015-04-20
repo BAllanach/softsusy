@@ -6647,7 +6647,7 @@ void MssmSoftsusy::physical(int accuracy) {
 
   /// This part of the code adds higher loop corrections to gluino masses etc
   /// from Steve Martin et al
-#ifdef COMPILE_HIGHER_LOOP
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   if(accuracy != 0 ) {
    supermodel smodel;
 
@@ -9702,7 +9702,7 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
     out << endl;
   }
 #endif
-#ifdef COMPILE_HIGHER_LOOPS
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASSS
   out << "# 2-loop computation of sparticle mass thresholds switched ";
   if (USE_HIGHER_LOOPS) out << "on" << endl;
   else out << "off" << endl;

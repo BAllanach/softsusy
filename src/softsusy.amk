@@ -50,7 +50,7 @@ scansusy_slha_x_LDADD = libsoft.la
 scansusy_slha_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
 scansusy_slha_x_LDADD += lib2lthresh.la libmssmparam.la  
 
-if COMPILE_HIGHER_LOOP
+if COMPILE_TWO_LOOP_SPARTICLE_MASS
 scansusy_x_LDADD       += libsupermodel.la libtsil.la 
 scansusy_slha_x_LDADD  += libsupermodel.la libtsil.la 
 endif
@@ -67,7 +67,7 @@ rpvneut_x_LDADD += lib2lthresh.la libmssmparam.la
 endif
 
 
-if COMPILE_HIGHER_LOOP
+if COMPILE_TWO_LOOP_SPARTICLE_MASS
 include src/supermodel/tsil.amk
 include src/supermodel/supermodel.amk
 softsusy_x_LDADD       += libsupermodel.la libtsil.la 

@@ -34,7 +34,7 @@
 #include "twoloophiggs.h"
 #include "mssmUtils.h"
 
-#ifdef COMPILE_HIGHER_LOOP
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 //#include "supermodel/supermodel-v0.1/supermodel.h"
 #include "higher_order.h"
 #endif

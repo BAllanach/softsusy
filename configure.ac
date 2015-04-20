@@ -70,13 +70,13 @@ AM_CONDITIONAL(COMPILE_TWO_LOOP_GAUGE_YUKAWA, [test x$two_loop_gauge_yukawa_comp
 #dnl Switch on 2-loop sparticle mass corrections
 AC_ARG_ENABLE([two-loop-sparticle-mass-compilation], 
                AC_HELP_STRING([--enable-two-loop-sparticle-mass-compilation],[Compile higher-loop corrections to mgluino]), 
- 	      [AC_DEFINE([COMPILE_HIGHER_LOOP],[1],[Compile higher loop])
+ 	      [AC_DEFINE([COMPILE_TWO_LOOP_SPARTICLE_MASS],[1],[Compile higher loop])
               case "${enableval}" in
               yes) two_loop_sparticle_mass_compilation=true ;;
               no)  two_loop_sparticle_mass_compilation=false ;;
               *) AC_MSG_ERROR([bad value ${enableval} for --enable-two_loop_sparticle_mass_compilation]) ;;
               esac],[two_loop_sparticle_mass_compilation=false])
-AM_CONDITIONAL(COMPILE_HIGHER_LOOP, [test x$two_loop_sparticle_mass_compilation = xtrue])
+AM_CONDITIONAL(COMPILE_TWO_LOOP_SPARTICLE_MASS, [test x$two_loop_sparticle_mass_compilation = xtrue])
 
 # Use looptools instead of SOFTSUSY's built in 1-loop functions
 AC_ARG_ENABLE([looptools], 
