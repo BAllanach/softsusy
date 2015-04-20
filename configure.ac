@@ -57,15 +57,15 @@ AM_CONDITIONAL(COMPILE_THREE_LOOP_RGE, [test x$three_loop_rge_compilation = xtru
 
 ## Switch on two-loop threshold corrections to third family Yukawa couplings 
 ## and strong gauge coupling 
-AC_ARG_ENABLE([full-susy-threshold-compilation], 
-               AC_HELP_STRING([--enable-full-susy-threshold-compilation],[Compile two-loop SUSY thresholds to the third generation fermionic Yukawa couplings and the strong gauge coupling]),
+AC_ARG_ENABLE([two-loop-gauge-yukawa-compilation], 
+               AC_HELP_STRING([--enable-two-loop-gauge-yukawa-compilation],[Compile two-loop SUSY thresholds to the third generation fermionic Yukawa couplings and the strong gauge coupling]),
              [AC_DEFINE([COMPILE_FULL_SUSY_THRESHOLD],[1],[Compile leading two-loop SUSY threshold corrections to fermionic third generation Yukawa couplings])
               case "${enableval}" in
-              yes) full_susy_threshold_compilation=true ;;
-              no)  full_susy_threshold_compilation=false ;;
-              *) AC_MSG_ERROR([bad value ${enableval} for --enable-full_susy_threshold_compilation]) ;;
-              esac],[full_susy_threshold_compilation=false])
-AM_CONDITIONAL(COMPILE_FULL_SUSY_THRESHOLD, [test x$full_susy_threshold_compilation = xtrue])
+              yes) two_loop_gauge_yukawa_compilation=true ;;
+              no)  two_loop_gauge_yukawa_compilation=false ;;
+              *) AC_MSG_ERROR([bad value ${enableval} for --enable-two_loop_gauge_yukawa_compilation]) ;;
+              esac],[two_loop_gauge_yukawa_compilation=false])
+AM_CONDITIONAL(COMPILE_FULL_SUSY_THRESHOLD, [test x$two_loop_gauge_yukawa_compilation = xtrue])
 
 #dnl Switch on 2-loop sparticle mass corrections
 AC_ARG_ENABLE([higher-loop-compilation], 
@@ -97,7 +97,7 @@ AC_ARG_ENABLE([debug],
 #AG_PATH_AUTOOPTS([5.17], [], [AC_MSG_ERROR([No suitable version of AutoGen could be found])])
 
 # GiNaC/cln for two-loop decoupling corrections
-if test x"$enable_full_susy_threshold_compilation" = x"yes"; then
+if test x"$enable_two_loop_gauge_yukawa_compilation" = x"yes"; then
  PKG_CHECK_MODULES([CLN], cln >= 1.3.1)  
  PKG_CHECK_MODULES([GINAC], ginac >= 1.3.5)  
 
@@ -121,7 +121,7 @@ AC_OUTPUT
 # To run with looptools, run: ./configure --enable-looptools CPPFLAGS=-I/home/bca20/code/looptools/LoopTools/install/include LDFLAGS=-L/home/bca20/code/looptools/LoopTools/install/lib/ and add -looptools to src/softsusy.amk libs
 
 # For GINAC/CLN
-# GINAC_LIBS="-L/usr/local/lib -lginac" GINAC_CFLAGS="-I/usr/local/include" CLN_LIBS="-L/usr/local/lib -lcln" CLN_CFLAGS="-I/usr/local/include" ./configure --enable-full-susy-threshold-compilation --enable-three-loop-rge-compilation
+# GINAC_LIBS="-L/usr/local/lib -lginac" GINAC_CFLAGS="-I/usr/local/include" CLN_LIBS="-L/usr/local/lib -lcln" CLN_CFLAGS="-I/usr/local/include" ./configure --enable-two-loop-gauge-yukawa-compilation --enable-three-loop-rge-compilation
 
 # For TSIL
 # TSIL_LIB="-L/usr/lib -ltsil" TSIL_CFLAGS="-I/usr/include" ./configure --enable-higher-loop-compilation
