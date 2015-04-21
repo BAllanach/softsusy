@@ -1220,12 +1220,21 @@ int main(int argc, char *argv[]) {
 		    } else cout << "WARNING: incorrect setting for SOFTSUSY Block 20 (should be an integer number in range 0,...,31)\n";
 		    break;
 		  }
-#endif
+#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
 		  case 21: {
 		    int num = int(d + EPSTOL);
 		    if (num > 0) higgsUncertainties = true;
 		    break;
 		  }
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+		  case 22: {
+		    int num = int(d + EPSTOL);
+		    if (num > 0) USE_TWO_LOOP_SPARTICLE_MASS = true;
+		    else if (num == 0) USE_TWO_LOOP_SPARTICLE_MASS = false;
+		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 22 (should be a positive semi-definite\n";
+		    break;
+		  }
+#endif
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "

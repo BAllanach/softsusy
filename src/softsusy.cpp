@@ -6648,7 +6648,7 @@ void MssmSoftsusy::physical(int accuracy) {
   /// This part of the code adds higher loop corrections to gluino masses etc
   /// from Steve Martin et al
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
-  if(accuracy != 0 ) {
+  if(accuracy != 0 && USE_TWO_LOOP_SPARTICLE_MASS) {
    supermodel smodel;
 
    smodel.vd = displayHvev() * cos(atan(displayTanb()));
