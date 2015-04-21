@@ -29,7 +29,8 @@ doc/%.pdf: doc/%.tex
 	cd $(top_builddir)/doc;\
 	latex $(*F).tex ; bibtex $(*F); latex $(*F).tex; latex $(*F).tex ;\
 	dvips -f $(*F) > $(*F).ps ;\
-	ps2pdf $(*F).ps
+	ps2pdf $(*F).ps; \
+	rm anc/*-eps-converted*
 
 doc/threeLoop.tex: doc/tableOne.tex doc/tableTwo.tex doc/threeLoop.bib
 

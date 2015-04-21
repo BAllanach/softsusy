@@ -1235,7 +1235,7 @@ Two compilation arguments to the {\tt ./configure}~command are provided:
 \begin{itemize}
 	\item[] \verb|--enable-three-loop-rge-compilation| - compile three-loop RGEs in the MSSM\footnote{ {\tt GiNaC} and {\tt CLN} are not required 
 		for three-loop RGEs.}
-	\item[] \verb|--enable-full-susy-threshold-compilation| - compile
+	\item[] \verb|--enable-two-loop-gauge-yukawa-compilation| - compile
           additional two-loop threshold corrections to the third generation
           Yukawa couplings and the strong coupling constant.
 \end{itemize}
@@ -1244,7 +1244,7 @@ should be first installed, then
 the program should be
 compiled, via:
 \begin{verbatim}
-> ./configure --enable-three-loop-rge-compilation --enable-full-susy-threshold-compilation
+> ./configure --enable-three-loop-rge-compilation --enable-two-loop-gauge-yukawa-compilation
 > make
 \end{verbatim}
 
@@ -1288,14 +1288,14 @@ One can run this executable from command line arguments, but the higher order
 corrections will be, by default, switched off. One may switch all of the
 higher order corrections on with 
 the arguments 
-\verb|--three-loop-rges --two-loop-susy-thresholds|
+\verb|--three-loop-rges --two-loop-gauge-yukawa|
 (provided they have
 been compiled as specified above).
 Thus, in order to produce the spectrum detailed in the $\Delta(\mbox{all})$
 row of Table~\ref{tab:cmssm}, one may use the command with {\tt SOFTSUSY3.5.1}:
 {\small\begin{verbatim}
 ./softpoint.x sugra --tol=1.0e-5 --m0=7240 --m12=800 --a0=-6000 --tanBeta=50 --sgnMu=1 --mt=173.2 
---alpha_s=0.1187 --mbmb=4.18 --two-loop-susy-thresholds --three-loop-rges 
+--alpha_s=0.1187 --mbmb=4.18 --two-loop-gauge-yukawa --three-loop-rges 
 \end{verbatim}\normalsize}
 For the calculation
 of the spectrum of single points in parameter space, one could alternatively use the
