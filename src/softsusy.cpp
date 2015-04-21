@@ -79,7 +79,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     decoupling_corrections.dmtau.one_loop = 0;
     decoupling_corrections.dmtau.two_loop = 0;
     
-    if (USE_TWO_LOOP_THRESHOLD) {
+    if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
 	ENABLE_TWO_LOOP_AS_AS_YUK | 
 	ENABLE_TWO_LOOP_MB_AS | 
@@ -154,7 +154,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     decoupling_corrections.dmtau.one_loop = 0;
     decoupling_corrections.dmtau.two_loop = 0;
     /// Public field :: included thresholds
-    if (USE_TWO_LOOP_THRESHOLD) {
+    if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
 	ENABLE_TWO_LOOP_AS_AS_YUK | 
 	ENABLE_TWO_LOOP_MB_AS | 
@@ -194,7 +194,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     decoupling_corrections.dmtau.one_loop = 0;
     decoupling_corrections.dmtau.two_loop = 0;
     /// Public field :: included thresholds
-    if (USE_TWO_LOOP_THRESHOLD) {
+    if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
 	ENABLE_TWO_LOOP_AS_AS_YUK | 
 	ENABLE_TWO_LOOP_MB_AS | 
@@ -2640,7 +2640,7 @@ double MssmSoftsusy::calcRunningMt() {
   
   decoupling_corrections.dmt.one_loop /= (-16.0 * sqr(PI));  
   
-  if (USE_TWO_LOOP_THRESHOLD) {
+  if (USE_TWO_LOOP_GAUGE_YUKAWA) {
     ordinaryQcdCorrections = false;
     bool & needcalc = decoupling_corrections.dmt.two_loop_needs_recalc; 
     /// flag: calculate corrections if the
@@ -2865,7 +2865,7 @@ double MssmSoftsusy::calcRunningMb() {
   
   // AVB: this also include top quark contribution (decoupling)!
   
-  if (USE_TWO_LOOP_THRESHOLD) {
+  if (USE_TWO_LOOP_GAUGE_YUKAWA) {
     
     bool & needcalc = decoupling_corrections.dmb.two_loop_needs_recalc; 
     // flag: calculate corrections if two-previous iterations gave different results
@@ -3088,7 +3088,7 @@ double MssmSoftsusy::calcRunningMtau() {
   
   decoupling_corrections.dmtau.one_loop = -dzetamtau;
   
-  if (USE_TWO_LOOP_THRESHOLD) {
+  if (USE_TWO_LOOP_GAUGE_YUKAWA) {
     // flag: calculate corrections if two-previous iterations gave different results
     bool & needcalc = decoupling_corrections.dmtau.two_loop_needs_recalc;  
     using namespace GiNaC;
@@ -6806,7 +6806,7 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
   
   decoupling_corrections.das.one_loop = -deltaAlphas;	
   
-  if (USE_TWO_LOOP_THRESHOLD) {
+  if (USE_TWO_LOOP_GAUGE_YUKAWA) {
     
     if ((included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK)) {
       using namespace GiNaC;
@@ -9686,7 +9686,7 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
 #endif
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   out << ". 2-loop Yukawa/g3 thresholds are ";
-  if (!USE_TWO_LOOP_THRESHOLD) out << "off\n";
+  if (!USE_TWO_LOOP_GAUGE_YUKAWA) out << "off\n";
   else {
     if (included_thresholds>0) out << "on"; else out << "off";
     out << "\n# 2-loop t-quark O(a_s^2) threshold corrections to gauge and Yukawa couplings are ";

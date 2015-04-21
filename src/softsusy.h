@@ -262,7 +262,7 @@ namespace softsusy {
     void setTwoLoopAlphasThresholds(bool sw) {
       if (sw) {
 	included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
-	USE_TWO_LOOP_THRESHOLD = true;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
       }
       else included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
     }
@@ -271,7 +271,7 @@ namespace softsusy {
     void setTwoLoopMtThresholds(bool sw) {
       if (sw) {
 	included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
-	USE_TWO_LOOP_THRESHOLD = true;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
       }
       else included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
     }
@@ -285,7 +285,7 @@ namespace softsusy {
 	included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
 	included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
 	included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
-	USE_TWO_LOOP_THRESHOLD = true;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
       }
       else {
 	included_thresholds &= ENABLE_TWO_LOOP_MB_AS;
@@ -300,7 +300,7 @@ namespace softsusy {
 	included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
 	included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
 	included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
-	USE_TWO_LOOP_THRESHOLD = true;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
       }
       else {
 	included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
@@ -308,7 +308,7 @@ namespace softsusy {
 	included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
 	included_thresholds &= ENABLE_TWO_LOOP_MB_YUK;
 	included_thresholds &= ENABLE_TWO_LOOP_MTAU_YUK;
-	USE_TWO_LOOP_THRESHOLD = false;
+	USE_TWO_LOOP_GAUGE_YUKAWA = false;
       }
     }
 #endif

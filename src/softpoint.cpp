@@ -172,7 +172,7 @@ int main(int argc, char *argv[]) {
 	  mgutGuess = mgutCheck(argv[i], gaugeUnification, ewsbBCscale); 
 	else if (starts_with(argv[i], "--disable-two-loop-susy-thresholds")) {
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-	  USE_TWO_LOOP_THRESHOLD = false;
+	  USE_TWO_LOOP_GAUGE_YUKAWA = false;
 	  m.setAllTwoLoopThresholds(false);
 #else
 	  compilationProblem = true;
@@ -183,7 +183,7 @@ int main(int argc, char *argv[]) {
 	}
 	else if (starts_with(argv[i], "--two-loop-gauge-yukawa")) {
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-	  USE_TWO_LOOP_THRESHOLD = true;
+	  USE_TWO_LOOP_GAUGE_YUKAWA = true;
 	  m.setAllTwoLoopThresholds(true);
 #else
 	  compilationProblem = true;
@@ -1206,7 +1206,7 @@ int main(int argc, char *argv[]) {
 		    //      can be set to 1 + 2 * ( flags for included thresholds)
 		    //      to have a finer control over included thresholds
 		    if (num > 0) {
-		      USE_TWO_LOOP_THRESHOLD = true;
+		      USE_TWO_LOOP_GAUGE_YUKAWA = true;
 		      r->included_thresholds = (num & 
 						    (ENABLE_TWO_LOOP_AS_AS_YUK | 
 						     ENABLE_TWO_LOOP_MT_AS | 
@@ -1215,7 +1215,7 @@ int main(int argc, char *argv[]) {
 						     ENABLE_TWO_LOOP_MTAU_YUK));
 				   
 		    } else if (num == 0) { 
-		      USE_TWO_LOOP_THRESHOLD = false;  
+		      USE_TWO_LOOP_GAUGE_YUKAWA = false;  
 		      r->included_thresholds = 0; 
 		    } else cout << "WARNING: incorrect setting for SOFTSUSY Block 20 (should be an integer number in range 0,...,31)\n";
 		    break;

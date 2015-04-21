@@ -113,7 +113,7 @@ namespace softsusy{
   extern double TWOLOOP_NUM_THRESH;
   /// Includes the evaluation of leading two-loop thresholds corrections
   /// to the strong coupling constant and to the third family of fermion masses 
-  extern bool USE_TWO_LOOP_THRESHOLD; 
+  extern bool USE_TWO_LOOP_GAUGE_YUKAWA; 
   /// just implements decoupling procedure "consistently" for
   /// the case of b-quark mass. It requires the external momentum to be zero. 
   /// However, the difference between the p^2 = 0 and p^2 = mb^2 cases

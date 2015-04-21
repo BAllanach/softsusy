@@ -740,13 +740,13 @@ int main(int argc, char *argv[]) {
     
     /// Switch off 3-loop RGEs etc 
     double omega2=asin(2.), msqAv2 = 0., cs = 0., dAs = 0., dY = 0., dYp = 0.;  
-    USE_THREE_LOOP_RGE = false;   USE_TWO_LOOP_THRESHOLD = false;
+    USE_THREE_LOOP_RGE = false;   USE_TWO_LOOP_GAUGE_YUKAWA = false;
     MssmSoftsusy twoLoop;
     getCmssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
 		     uni, omega2, msqAv2, cs, dAs, dY, dYp, m0, m12, a0);
 
     double omegaOdd=asin(2.), msqAvOdd = 0., csOdd = 0., dAsOdd = 0., dYOdd = 0., dYpOdd = 0.;  
-    USE_THREE_LOOP_RGE = true;   USE_TWO_LOOP_THRESHOLD = false;
+    USE_THREE_LOOP_RGE = true;   USE_TWO_LOOP_GAUGE_YUKAWA = false;
     MssmSoftsusy oddLoop;
     getCmssmAndOmega(oddLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
 		     uni, omegaOdd, msqAvOdd, csOdd, dAsOdd, dYOdd, dYpOdd, m0, m12, a0);
@@ -757,30 +757,30 @@ int main(int argc, char *argv[]) {
     USE_THREE_LOOP_RGE = false;
     MssmSoftsusy twoLoopAs; 
     twoLoopAs.included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
-    USE_TWO_LOOP_THRESHOLD = true;
+    USE_TWO_LOOP_GAUGE_YUKAWA = true;
     getCmssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mGutGuess, 
     		     uni, omegaAs, msqAvAs, csAs, dAsAs, dYAs, dYpAs, m0, m12, 
 		     a0); 
 
     /// Just 2-loop strong thresholds for mt
-    USE_TWO_LOOP_THRESHOLD = false;
+    USE_TWO_LOOP_GAUGE_YUKAWA = false;
     double omegaMt = asin(2.), msqAvMt = 0., csMt = 0., dAsMt = 0., 
       dYMt = 0., dYpMt = 0.; mGutGuess = 2.e16;
     MssmSoftsusy twoLoopMt; 
     twoLoopMt.included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
-    USE_TWO_LOOP_THRESHOLD = true;
+    USE_TWO_LOOP_GAUGE_YUKAWA = true;
     getCmssmAndOmega(twoLoopMt, pars, tanb, sgnMu, oneset, mGutGuess, 
     		     uni, omegaMt, msqAvMt, csMt, dAsMt, dYMt, dYpMt, m0, m12, a0); 
 
     /// Just 2-loop for mb,mtau
-    USE_TWO_LOOP_THRESHOLD = false;
+    USE_TWO_LOOP_GAUGE_YUKAWA = false;
     double omegaMb = asin(2.), msqAvMb = 0., csMb = 0., dAsMb = 0., 
       dYMb = 0., dYpMb = 0.; mGutGuess = 2.e16;
     MssmSoftsusy twoLoopMb; 
     twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
     twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
     twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
-    USE_TWO_LOOP_THRESHOLD = true;
+    USE_TWO_LOOP_GAUGE_YUKAWA = true;
     getCmssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mGutGuess, 
     		     uni, omegaMb, msqAvMb, csMb, dAsMb,
     		     dYMb, dYpMb, m0, m12, a0); 
@@ -789,7 +789,7 @@ int main(int argc, char *argv[]) {
     double omega3 = asin(2.), msqAv3 = 0., cs3 = 0., dAs3 = 0., 
       dY3 = 0., dYp3 = 0.; mGutGuess = 2.0e16;
     USE_THREE_LOOP_RGE = true;
-    USE_TWO_LOOP_THRESHOLD = true;
+    USE_TWO_LOOP_GAUGE_YUKAWA = true;
     MssmSoftsusy threeLoop;
     getCmssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
 		     uni, omega3, msqAv3, cs3, dAs3, dY3, dYp3, m0, m12, a0); 
@@ -825,7 +825,7 @@ int main(int argc, char *argv[]) {
     /// Switch off 3-loop RGEs etc
     double omega2=0., msqAv2 = 0., cs = 0., dAs = 0., 
       dY = 0., dYp = 0.;  
-    USE_THREE_LOOP_RGE = true;   USE_TWO_LOOP_THRESHOLD = true;
+    USE_THREE_LOOP_RGE = true;   USE_TWO_LOOP_GAUGE_YUKAWA = true;
     MssmSoftsusy twoLoop;
     getCmssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
 		     uni, omega2, msqAv2, cs, dAs, dY, dYp, m0, m12, a0);
@@ -858,7 +858,7 @@ int main(int argc, char *argv[]) {
 	/// Switch off 3-loop RGEs etc
 	double omega2=asin(2.), msqAv2 = 0., cs = 0., dA = 0.,
 	  dY = 0., dYp = 0.;  
-	USE_THREE_LOOP_RGE = false;   USE_TWO_LOOP_THRESHOLD = false;
+	USE_THREE_LOOP_RGE = false;   USE_TWO_LOOP_GAUGE_YUKAWA = false;
 	MssmSoftsusy twoLoop;
 	getCmssmAndOmega(twoLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
 			 uni, omega2, msqAv2, cs, dA, dY, dYp, m0, m12, a0);
@@ -868,30 +868,30 @@ int main(int argc, char *argv[]) {
 	  dYAs = 0, dYpAs = 0.; mGutGuess = 2.e16; 
 	MssmSoftsusy twoLoopAs; 
 	twoLoopAs.included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
-	USE_TWO_LOOP_THRESHOLD = true;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
 	getCmssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mGutGuess, 
 			 uni, omegaAs, msqAvAs, csAs, dAAs, dYAs, dYpAs, m0, m12, a0); 
     
 	/// Just 2-loop strong thresholds for mt
-	USE_TWO_LOOP_THRESHOLD = false;
+	USE_TWO_LOOP_GAUGE_YUKAWA = false;
 	double omegaMt = asin(2.), msqAvMt = 0., csMt = 0., dAMt = 0., 
 	  dYMt = 0, dYpMt = 0.; mGutGuess = 2.e16;
 	MssmSoftsusy twoLoopMt; 
 	twoLoopMt.included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
-	USE_TWO_LOOP_THRESHOLD = true;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
 	getCmssmAndOmega(twoLoopMt, pars, tanb, sgnMu, oneset, mGutGuess, 
 			 uni, omegaMt, msqAvMt, csMt, dAMt, 
 	  dYMt, dYpMt, m0, m12, a0); 
 	
 	/// Just 2-loop for mb,mtau
-	USE_TWO_LOOP_THRESHOLD = false;
+	USE_TWO_LOOP_GAUGE_YUKAWA = false;
 	double omegaMb = asin(2.), msqAvMb = 0., csMb = 0., dAMb = 0., 
 	  dYMb = 0, dYpMb = 0.; mGutGuess = 2.e16;
 	MssmSoftsusy twoLoopMb; 
 	twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
 	twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
 	twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
-	USE_TWO_LOOP_THRESHOLD = true;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
 	getCmssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mGutGuess, 
 			 uni, omegaMb, msqAvMb, csMb, dAMb, 
 	  dYMb, dYpMb, m0, m12, a0); 
@@ -900,7 +900,7 @@ int main(int argc, char *argv[]) {
 	double omega3 = asin(2.), msqAv3 = 0., cs3 = 0., dA3 = 0., 
 	  dY3 = 0., dYp3 = 0.; mGutGuess = 2.0e16;
 	USE_THREE_LOOP_RGE = true;
-	USE_TWO_LOOP_THRESHOLD = true;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
 	MssmSoftsusy threeLoop;
 	getCmssmAndOmega(threeLoop, pars, tanb, sgnMu, oneset, mGutGuess, 
 			 uni, omega3, msqAv3, cs3, dA3, 
