@@ -38,11 +38,14 @@ void errorCall() {
   ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
   ii << "--higgsUncertainties gives an estimate of Higgs mass uncertainties\n";
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  if (USE_TWO_LOOP_THRESHOLD) ii << "--two-loop-susy-thresholds switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
-#endif //COMPILE_TWO_LOOP_GAUGE_YUKAWA
+  ii << "--two-loop-gauge-yukawa switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
+#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
 #ifdef COMPILE_THREE_LOOP_RGE
-  if (USE_THREE_LOOP_RGE) ii << "--three-loop-rges switches on 3-loop RGEs\n";
-#endif //COMPILE_THREE_LOOP_RGE
+  ii << "--three-loop-rges switches on 3-loop RGEs\n";
+#endif ///< COMPILE_THREE_LOOP_RGE
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+  ii << "--two-loop-sparticle-mass switches on various 2 loop sparticle mass thresholds\n";
+#endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
   ii << "--mgut=unified sets the scale at which SUSY breaking terms are set to the GUT\n";
   ii << "scale where g1=g2. --mgut=<value> sets it to a fixed scale, ";
   ii << "whereas --mgut=msusy\nsets it to MSUSY\n\n";
@@ -174,11 +177,11 @@ int main(int argc, char *argv[]) {
 #else
 	  compilationProblem = true;
 	  cout << "Two-loop thresholds not compiled.\n";
-	  cout << "Please use the --two-loop-susy-thresholds with the configure option.\n";
+	  cout << "Please use the --two-loop-gauge-yukawa with the configure option.\n";
 	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
 #endif
 	}
-	else if (starts_with(argv[i], "--two-loop-susy-thresholds")) {
+	else if (starts_with(argv[i], "--two-loop-gauge-yukawa")) {
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 	  USE_TWO_LOOP_THRESHOLD = true;
 	  m.setAllTwoLoopThresholds(true);
@@ -194,8 +197,8 @@ int main(int argc, char *argv[]) {
 	  USE_THREE_LOOP_RGE = false;
 #else
 	  compilationProblem = true;
-	  cout << "Two-loop thresholds not compiled.\n";
-	  cout << "Please use the --enable-two-loop-susy-thresholds with ./configure\n";
+	  cout << "Three-loop RGEs for SUSY parameters not compiled.\n";
+	  cout << "Please use the --enable-three-loop-rges with ./configure\n";
 	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
 #endif
 	}
@@ -208,6 +211,28 @@ int main(int argc, char *argv[]) {
 	  cout << "Please use the --enable-three-loop-rges with ./configure\n";
 #endif
 	}
+
+
+	else if (starts_with(argv[i], "--disable-two-loop-sparticle-mass")) {
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+	  USE_TWO_LOOP_SPARTICLE_MASS = false;
+#else
+	  compilationProblem = true;
+	  cout << "Two-loop thresholds for sparticles not compiled.\n";
+	  cout << "Please use the --enable-two-loop-susy-thresholds with ./configure\n";
+#endif
+	}
+	else if (starts_with(argv[i], "--two-loop-sparticle-mass")) {
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+	  USE_TWO_LOOP_SPARTICLE_MASS = true;
+#else
+	  compilationProblem = true;
+	  cout << "Three-loop RGEs not compiled.\n";
+	  cout << "Please use the --enable-two-loop-sparticle-mass with ./configure\n";
+#endif
+	}
+
+
 	else if (starts_with(argv[i], "--QEWSB=")) 
 	  QEWSB = get_value(argv[i], "--QEWSB=");
       }

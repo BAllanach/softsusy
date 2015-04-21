@@ -128,6 +128,11 @@ namespace softsusy{
   };    
 
 #endif
+
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+  /// Various two-loop thresholds, eg 2-loop QCD corrections to m_gluino
+  extern bool USE_TWO_LOOP_SPARTICLE_MASS;
+#endif
   
 }
 
