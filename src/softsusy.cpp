@@ -2396,37 +2396,39 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
      (b0(p, mg, mstop1, q) - 
       b0(p, mg, mstop2, q)));
     
-  /*
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+  if (USE_TWO_LOOP_GAUGE_YUKAWA == false || included_thresholds % 2 == 0) {
+#endif
   /// 2 loop QCD involving MSSM sparticles -- hep-ph/0210258, in the
   /// approximation that all squarks and the gluino 
   /// have mass mSUSY: a few per mille error induced at SPS1a.
   double twoLoopMssm = 0.0;
-  if (includeTwoLoopMssmCorrectionsToMt) {
-    const static double cf = 4.0 / 3.0, ca = 3.0;
-    /// colour weighted average mass scale of squarks and gluino
-    double m = (3.0 * (forLoops.mu(1, 3) + forLoops.mu(2, 3) + 
-		       forLoops.mu(1, 2) + forLoops.mu(2, 2) + 
-		       forLoops.mu(1, 1) + forLoops.mu(2, 1) + 
-		       forLoops.md(1, 3) + forLoops.md(2, 3) + 
-		       forLoops.md(1, 2) + forLoops.md(2, 2) + 
-		       forLoops.md(1, 1) + forLoops.md(2, 1)) +
-		8.0 * mg) / 44.0;
-    double aq = displaySoftA(UA, 3, 3) - displaySusyMu() / displayTanb();
-    double logMoQsq = 2.0 * log(m / q);
-    twoLoopMssm = -cf * sqr(sqr(displayGaugeCoupling(3))) / 
-      (16.0 * sqr(PI)) *
-      (47.0 / 3.0 + 20.0 * logMoQsq + 12.0 * logMoQsq * log(m / mt) +
-       cf * (23.0 / 24.0 - 13.0 / 6.0 * logMoQsq + 0.5 * sqr(logMoQsq) -
-	     6.0 * logMoQsq * log(mt / q)) + 
-       ca * (175.0 / 72.0 + 41.0 / 6.0 * logMoQsq - 0.5 * sqr(logMoQsq) -
-	     4.0 * logMoQsq * log(mt / q)) +
-       aq / m * (-4.0 - 8.0 * logMoQsq) + 
-       cf * aq / m * (7.0 / 3.0 - 11.0 / 3.0 * logMoQsq + 6.0 * log(mt / q)) +
-       ca * aq / m * (-8.0 / 3.0 + 4.0 * logMoQsq));
-  }
-  stopGluino += stopLoopMssm;
-  */
-  
+  const static double cf = 4.0 / 3.0, ca = 3.0;
+  /// colour weighted average mass scale of squarks and gluino
+  double m = (3.0 * (forLoops.mu(1, 3) + forLoops.mu(2, 3) + 
+		     forLoops.mu(1, 2) + forLoops.mu(2, 2) + 
+		     forLoops.mu(1, 1) + forLoops.mu(2, 1) + 
+		     forLoops.md(1, 3) + forLoops.md(2, 3) + 
+		     forLoops.md(1, 2) + forLoops.md(2, 2) + 
+		     forLoops.md(1, 1) + forLoops.md(2, 1)) +
+	      8.0 * mg) / 44.0;
+  double aq = displaySoftA(UA, 3, 3) - displaySusyMu() / displayTanb();
+  double logMoQsq = 2.0 * log(m / q);
+  twoLoopMssm = -cf * sqr(sqr(displayGaugeCoupling(3))) / 
+    (16.0 * sqr(PI)) *
+    (47.0 / 3.0 + 20.0 * logMoQsq + 12.0 * logMoQsq * log(m / mt) +
+     cf * (23.0 / 24.0 - 13.0 / 6.0 * logMoQsq + 0.5 * sqr(logMoQsq) -
+	   6.0 * logMoQsq * log(mt / q)) + 
+     ca * (175.0 / 72.0 + 41.0 / 6.0 * logMoQsq - 0.5 * sqr(logMoQsq) -
+	   4.0 * logMoQsq * log(mt / q)) +
+     aq / m * (-4.0 - 8.0 * logMoQsq) + 
+     cf * aq / m * (7.0 / 3.0 - 11.0 / 3.0 * logMoQsq + 6.0 * log(mt / q)) +
+     ca * aq / m * (-8.0 / 3.0 + 4.0 * logMoQsq));
+  stopGluino += twoLoopMssm;
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+    }
+#endif  
+
   return stopGluino;
 }
 
