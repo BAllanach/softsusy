@@ -69,9 +69,6 @@ namespace softsusy {
   bool printDEBUG = false;
   /// random number seed
   long idummySave = -22;
-  /// Default is to not include 2-loop MSSM corrections in degenerate
-  /// gluino/squark mass limit 
-  bool includeTwoLoopMssmCorrectionsToMt = false;
   /// Default: use SOFTSUSY conventions for masses of sparticles in loops, ie
   /// tree-level masses computed with the 2-loop Higgs potential
   bool sphenoMassConv = false;

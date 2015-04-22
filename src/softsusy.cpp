@@ -2395,9 +2395,8 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
      sin(2.0 * thetat) * mg / mtpole * //PA: should be running mass?
      (b0(p, mg, mstop1, q) - 
       b0(p, mg, mstop2, q)));
-  
-  
-  
+    
+  /*
   /// 2 loop QCD involving MSSM sparticles -- hep-ph/0210258, in the
   /// approximation that all squarks and the gluino 
   /// have mass mSUSY: a few per mille error induced at SPS1a.
@@ -2425,10 +2424,10 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
        cf * aq / m * (7.0 / 3.0 - 11.0 / 3.0 * logMoQsq + 6.0 * log(mt / q)) +
        ca * aq / m * (-8.0 / 3.0 + 4.0 * logMoQsq));
   }
+  stopGluino += stopLoopMssm;
+  */
   
-  
-  return stopGluino + twoLoopMssm;
-  
+  return stopGluino;
 }
 
 double MssmSoftsusy::calcRunMtHiggs() const {
