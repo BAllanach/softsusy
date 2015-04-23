@@ -2395,7 +2395,6 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
      (b0(p, mg, mstop1, q) - 
       b0(p, mg, mstop2, q)));
 
-  /*    
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   if (USE_TWO_LOOP_GAUGE_YUKAWA == false || included_thresholds % 2 == 0) {
 #endif
@@ -2429,7 +2428,7 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
     }
 #endif  
-  */
+
   return stopGluino;
 }
 

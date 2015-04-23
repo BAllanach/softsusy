@@ -45,7 +45,6 @@ Block RVLAMLQDIN           # input LLE couplings at MGUT
   3 3 3  -3.50000000e-05   # lambda'_{333}
 # SOFTSUSY-specific non SLHA information:
 # MIXING=1 Desired accuracy=1.00000000e-04 Achieved accuracy=2.44341808e-05
-# 3-loop RGE corrections are off. 2-loop Yukawa/g3 thresholds are off
 Block MASS                      # Mass spectrum
 # PDG code     mass             particle
         24     8.05052081e+01   # MW
