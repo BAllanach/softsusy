@@ -22,6 +22,9 @@ Block SOFTSUSY               # SOFTSUSY specific inputs
     2   2.000000000e+00      # up-quark mixing (=1) or down (=2)
     5   1.000000000E+00      # 2-loop running
     3   0.000000000E+00	     # printout
+#   19   1.000000000e+00      # Include 3-loop SUSY RGEs
+#   20   1.000000000e+00      # Include 2-loop gauge/Yukawa thresholds
+#   22   1.000000000e+00      # Include 2-loop sparticle mass thresholds
 Block VCKMIN		      # input parameters for CKM matrix
     1   2.272000000e-01      # lambda
     2   8.180000000e-01      # A

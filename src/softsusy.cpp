@@ -2387,7 +2387,6 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
   double    mtpole  = dataSet.displayPoleMt();
   double p = mtpole;
   double q = displayMu();
-  double mt = forLoops.mt;
   /// stop/gluino correction 6% correction
   double  stopGluino = 4.0 * sqr(displayGaugeCoupling(3)) / 3.0 *
     (b1(p, mg, mstop1, q) + 
@@ -2395,10 +2394,12 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
      sin(2.0 * thetat) * mg / mtpole * //PA: should be running mass?
      (b0(p, mg, mstop1, q) - 
       b0(p, mg, mstop2, q)));
-    
+
+  /*    
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   if (USE_TWO_LOOP_GAUGE_YUKAWA == false || included_thresholds % 2 == 0) {
 #endif
+  double mt = forLoops.mt;
   /// 2 loop QCD involving MSSM sparticles -- hep-ph/0210258, in the
   /// approximation that all squarks and the gluino 
   /// have mass mSUSY: a few per mille error induced at SPS1a.
@@ -2428,7 +2429,7 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
     }
 #endif  
-
+  */
   return stopGluino;
 }
 
@@ -6680,7 +6681,7 @@ void MssmSoftsusy::physical(int accuracy) {
 
    smodel.m2Hu = displayMh2Squared();
    smodel.m2Hd = displayMh1Squared();
-   smodel.mu = displayMu();
+   smodel.mu = displaySusyMu();
    smodel.b = displayM3Squared();
 
    smodel.Q = displayMu();
@@ -6694,7 +6695,7 @@ void MssmSoftsusy::physical(int accuracy) {
 #endif ///< COMPILE_HIGHER_ORDERS
 }
 
-/// For a given trial value of the log of field H2, gives the value of the
+  /// For a given trial value of the log of field H2, gives the value of the
 /// potential at the minimum. The following global variables must be set before
 /// it is called:
 static double unificationScale, minTol;

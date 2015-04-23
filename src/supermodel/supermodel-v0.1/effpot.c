@@ -58,9 +58,9 @@ void SUMO_Minimize_Veff (int loop_order)
   
   PowellMin (q, xi, ndim, ftol, &iter, &fret, potfunc);
 
-  printf("Minimizing effective potential (Powell)...\n");
-  printf("Minimum at (vu,vd) = (%Lf, %Lf)\tFunc = %Le\n", q[0], q[1], fret);
-  printf("We did %d iterations\n", iter);
+  /* printf("Minimizing effective potential (Powell)...\n"); */
+  /* printf("Minimum at (vu,vd) = (%Lf, %Lf)\tFunc = %Le\n", q[0], q[1], fret); */
+  /* printf("We did %d iterations\n", iter); */
 
   vu = TSIL_FABS(q[0]);
   vd = TSIL_FABS(q[1]);
@@ -104,6 +104,7 @@ void SUMO_Minimize_Veff (int loop_order)
 
   /* ===== End of test with simplex method ===== */
 
+  return;
 }
 
 /* ------------------------------------------------------------------ */

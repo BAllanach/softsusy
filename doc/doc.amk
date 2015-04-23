@@ -25,12 +25,14 @@ DOCFILES = $(doc_DATA)
 
 doc: $(doc_DATA)
 
+doc/threeLoop.pdf: doc/threeLoop.tex
+	cd $(top_builddir)/doc;\
+	pdflatex threeLoop.tex ; bibtex threeLoop; pdflatex threeLoop.tex; pdflatex threeLoop.tex ;\
+	rm -f doc/anc/*-eps_conv*
+
 doc/%.pdf: doc/%.tex
 	cd $(top_builddir)/doc;\
-	latex $(*F).tex ; bibtex $(*F); latex $(*F).tex; latex $(*F).tex ;\
-	dvips -f $(*F) > $(*F).ps ;\
-	ps2pdf $(*F).ps; \
-	rm anc/*-eps-converted*
+	pdflatex $(*F).tex ; bibtex $(*F); pdflatex $(*F).tex; pdflatex $(*F).tex 
 
 doc/threeLoop.tex: doc/tableOne.tex doc/tableTwo.tex doc/threeLoop.bib
 

@@ -4,6 +4,7 @@
    renormalization scales. */
 
 #include "supermodel.h"
+#include "supermodel_defs.h"
 #include "../../higher_order.h"
 
 void higherorder (supermodel *smodel)
@@ -110,7 +111,8 @@ void higherorder (supermodel *smodel)
   */
 
   //Check this
-  LambdaVacuum = 0.L;
+  /* DGR can safely be ignored */
+  /* LambdaVacuum = 0.L; */
 
   tanbeta = vu/vd;
 
@@ -118,21 +120,17 @@ void higherorder (supermodel *smodel)
   SUMO_Tree_Masses ();
   SUMO_Tree_Couplings ();
 
-  /* Set benchmark model: */
-  //SUMO_SetTestModel ();
-
-  /* Minimize 2-loop Veff, just for fun (vevs are already correct in
-     benchmark model): */
-  //SUMO_Minimize_Veff (2);
-
-  /* This is the gluino running mass at the reference scale Q: */
-  //printf("%Lf\n", SUMO_SQRT(m2_gluino));
+  /* Minimize 2-loop Veff, to set correct vu,vd,tanbeta: */
+  /* printf("Before minimizing (vu, vd) = (%Lf, %Lf)\n", vu, vd); */
+  SUMO_Minimize_Veff (2);
+  /* printf("After minimizing  (vu, vd) = (%Lf, %Lf)\n", vu, vd); */
 
   // For debugging purposes
-  //  SUMO_GluinoPole (1);
-  //    printf("One-loop gluino mass: %Lf \n",SUMO_SQRT(M2_gluino));
+  printf("Tree-level gluino mass: %Lf \n",SUMO_SQRT(M2_gluino));
+  SUMO_GluinoPole (1);
+  printf("One-loop gluino mass:   %Lf \n",SUMO_SQRT(M2_gluino));
   SUMO_GluinoPole (2);
-  //    printf("Two-loop gluino mass: %Lf \n", SUMO_SQRT(M2_gluino));
+  printf("Two-loop gluino mass:   %Lf \n", SUMO_SQRT(M2_gluino));
 
 #ifdef TSIL_SIZE_DOUBLE
   smodel->mgluino = SUMO_SQRT(M2_gluino);

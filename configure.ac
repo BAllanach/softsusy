@@ -104,13 +104,17 @@ if test x"$enable_two_loop_gauge_yukawa_compilation" = x"yes"; then
  LIBS="$LIBS $CLN_LIBS $GINAC_LIBS"
  CPPFLAGS="$CPPFLAGS $CLN_CFLAGS $GINAC_CFLAGS"
 fi
-# TSIL for 2-loop sparticle mass functions
-if test x"$two_loop_sparticle_mass_compilation" = x"yes"; then
- PKG_CHECK_MODULES([TSIL], tsil >= 1.2.1)
 
- LIBS="$LIBS $TSIL_LIBS"
- CPPFLAGS="$CPPFLAGS TSIL_CFLAGS"
-fi
+# TSIL for 2-loop sparticle mass functions. But at the moment we are including 
+# it, so no worries.
+#if test x"$two_loop_sparticle_mass_compilation" = x"yes"; then
+# PKG_CHECK_MODULES([TSIL], tsil >= 1.2.1)
+#
+# LIBS="$LIBS $TSIL_LIBS"
+# CPPFLAGS="$CPPFLAGS TSIL_CFLAGS"
+#fi
+# For TSIL
+# TSIL_LIB="-L/usr/lib -ltsil" TSIL_CFLAGS="-I/usr/include" ./configure --enable-two-loop-sparticle-mass-compilation
 
 AC_SUBST(FLIBS)
 
@@ -123,5 +127,3 @@ AC_OUTPUT
 # For GINAC/CLN
 # GINAC_LIBS="-L/usr/local/lib -lginac" GINAC_CFLAGS="-I/usr/local/include" CLN_LIBS="-L/usr/local/lib -lcln" CLN_CFLAGS="-I/usr/local/include" ./configure --enable-two-loop-gauge-yukawa-compilation --enable-three-loop-rge-compilation
 
-# For TSIL
-# TSIL_LIB="-L/usr/lib -ltsil" TSIL_CFLAGS="-I/usr/include" ./configure --enable-two-loop-sparticle-mass-compilation
