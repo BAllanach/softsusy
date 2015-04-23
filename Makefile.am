@@ -11,10 +11,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 include src/softsusy.amk
 include doc/doc.amk
-if COMPILE_TWO_LOOP_GAUGE_YUKAWA
-else
 include inOutFiles/inOut.amk
-endif
 
 dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh \
 Makefile.nmssmtools CHANGES GUIDELINES COPYING $(DOCFILES) 
