@@ -13,6 +13,9 @@ dnl === disable debug symbols by default =====
 if test "x$CXXFLAGS" = "x"; then
     CXXFLAGS="-O2 -Wall"
 fi
+if test "x$CFLAGS" = "x"; then
+    CFLAGS="-O2 -Wall"
+fi
 if test "x$FFLAGS" = "x"; then
     FFLAGS="-O2 -Wall"
 fi
@@ -26,6 +29,13 @@ AC_PROG_CXX
 
 if test x"$CXX" = x; then
  AC_MSG_ERROR([could not find C++ compiler])
+fi
+
+#check whether the C compiler is an Apple one
+$CC -v &>ver
+a=`grep -m 1 -o 'apple' ver`
+if test "$a" = "apple"; then
+  CFLAGS="-O0 -Wall"
 fi
 
 AC_PROG_CC
