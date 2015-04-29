@@ -87,7 +87,7 @@ lowe.h mycomplex.h rge.h softsusy.h \
 utils.h mssmUtils.h rpvsoft.h rpvsusypars.h \
 tensor.h rpvmain.h flavoursoft.h \
 xpr-base.h xpr-matrix.h xpr-vector.h rpvneut.h \
-nmssmsusy.h nmssmsoftpars.h  \
+nmssmsusy.h nmssmsoftpars.h higher_order.h \
 nmssmsoftsusy.h nmssmUtils.h)
 
 libsoft_la_SOURCES = \

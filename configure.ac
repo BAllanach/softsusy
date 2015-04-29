@@ -31,17 +31,17 @@ if test x"$CXX" = x; then
  AC_MSG_ERROR([could not find C++ compiler])
 fi
 
+AC_PROG_CC
+
+if test x"$CC" = x; then
+ AC_MSG_ERROR([could not find CC compiler])
+fi
+
 #check whether the C compiler is an Apple one
 $CC -v &>ver
 a=`grep -m 1 -o 'apple' ver`
 if test "$a" = "apple"; then
   CFLAGS="-O0 -Wall"
-fi
-
-AC_PROG_CC
-
-if test x"$CC" = x; then
- AC_MSG_ERROR([could not find CC compiler])
 fi
 
 AC_PROG_INSTALL
