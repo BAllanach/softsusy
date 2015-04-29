@@ -1,8 +1,8 @@
-# SOFTSUSY3.6.1 SLHA compliant output
+# SOFTSUSY3.7.0 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    3.6.1       # version number
+     2    3.7.0       # version number
 Block MODSEL  # Select model
      1    1   # sugra
      3    1   # NMSSM
@@ -27,6 +27,7 @@ Block EXTPAR               # scale of SUSY breaking BCs
      0    2.71398356e+16   # MX scale
 # SOFTSUSY-specific non SLHA information:
 # MIXING=2 Desired accuracy=1.00000000e-04 Achieved accuracy=9.27376096e-05
+# 3-loop RGE corrections are off. 2-loop Yukawa/g3 thresholds are off
 # Z3 = 0, SoftHiggsOut = 0
 Block MASS                      # Mass spectrum
 # PDG code     mass             particle
