@@ -227,11 +227,10 @@ int main(int argc, char *argv[]) {
 	  USE_TWO_LOOP_SPARTICLE_MASS = true;
 #else
 	  compilationProblem = true;
-	  cout << "Three-loop RGEs not compiled.\n";
+	  cout << "Two-loop sparticle masses not compiled.\n";
 	  cout << "Please use the --enable-two-loop-sparticle-mass with ./configure\n";
 #endif
 	}
-
 
 	else if (starts_with(argv[i], "--QEWSB=")) 
 	  QEWSB = get_value(argv[i], "--QEWSB=");
