@@ -10154,6 +10154,8 @@ void MssmSoftsusy::minparSLHA(ostream & out, const char model [],
   else 
     if (!strcmp(model, "nonUniversal")) 
       extparSLHA(out, pars, ewsbBCscale);
+    else if (!strcmp(model, "cmsDilep")) 
+            extparSLHA(out, pars, ewsbBCscale);
     else {
       ostringstream ii;
       ii << "Attempting to use SUSY Les Houches Accord for model " 

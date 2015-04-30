@@ -2,7 +2,7 @@
 
 lib_LTLIBRARIES += libsoft.la 
 
-bin_PROGRAMS += softsusy.x \
+bin_PROGRAMS += cmsdilep.x softsusy.x \
                 softsusy-nmssm.x \
                 softpoint.x \
                 rpvsoftsusy.x \
@@ -10,6 +10,9 @@ bin_PROGRAMS += softsusy.x \
 
 softsusy_x_SOURCES = src/main.cpp 
 softsusy_x_LDADD = libsoft.la 
+
+cmsdilep_x_SOURCES = src/cmsdilep.cpp 
+cmsdilep_x_LDADD = libsoft.la 
 
 softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp 
 softsusy_nmssm_x_LDADD = libsoft.la
