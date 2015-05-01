@@ -10155,11 +10155,18 @@ void MssmSoftsusy::minparSLHA(ostream & out, const char model [],
     if (!strcmp(model, "nonUniversal")) 
       extparSLHA(out, pars, ewsbBCscale);
     else if (!strcmp(model, "cmsDilep")) {
-      cout << "     1    "; printRow(out, pars.display(1)); cout << " # M1\n";
-      cout << "     2    "; printRow(out, pars.display(2)); cout << " # M2\n";
-      cout << "     4    "; printRow(out, pars.display(3)); cout << " # m~lR(in)\n";
-      cout << "     5    "; printRow(out, pars.display(4)); cout << " # m~q(in)\n";
-      cout << "     6    "; printRow(out, pars.display(5)); cout << " # m~lL(in)\n";
+      out << "     1    "; printRow(out, pars.display(1)); cout << " # M1\n";
+      out << "     2    "; printRow(out, pars.display(2)); cout << " # M2\n";
+      out << "     4    "; printRow(out, pars.display(3)); cout << " # m~lR(in)\n";
+      out << "     5    "; printRow(out, pars.display(4)); cout << " # m~q(in)\n";
+      out << "     6    "; printRow(out, pars.display(5)); cout << " # m~lL(in)\n";
+      out << "Block EXTPAR               # non-universal SUSY breaking parameters\n";
+  if (ewsbBCscale) 
+    out << "     0    -1.00000000e+00  # Set MX=MSUSY\n";
+  else {
+    out << "     0    "; printRow(out, mxBC); out << "  # MX scale\n";
+  }
+
     }
     else {
       ostringstream ii;
