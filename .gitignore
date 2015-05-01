@@ -28,6 +28,7 @@ rpvsoftsusy.x
 softpoint.x
 softsusy.x
 scansusy.x
+cmsdilep.x
 scansusy_slha.x
 softsusy-nmssm.x
 aclocal.m4
