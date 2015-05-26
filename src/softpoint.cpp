@@ -693,6 +693,7 @@ int main(int argc, char *argv[]) {
 			pars.setEnd(49);
 		      pars(i) = d;
 		      r->setSetTbAtMX(true);
+		      nmssm.setSetTbAtMX(true);
 		    } 
 		    else if (i == 23 || i == 26) {
 		      r->useAlternativeEwsb(); 

@@ -1,3 +1,2 @@
-<li> 7/4/15 Fixed compilation issues with higher accuracy mode: thanks to D Kunz for reporting it
-
-
+<li> 26/5/15 Bug-fixed input of tan beta scale in NMSSM in SLHA format
+<li> 23/5/15 Bug-fixed one-loop Higgs mass corrections in NMSSM
