@@ -1,3 +1,5 @@
+<li> 26/5/15 Bug-fixed input of tan beta scale in NMSSM in SLHA format
+<li> 23/5/15 Bug-fixed one-loop Higgs mass corrections in NMSSM
 <li> 23/4/15 If higher orders are NOT used, SOFTSUSY will use approximate higher orders now for the top Yukawa. Some percent level changes to masses happen.
 <li> 21/4/15 Higher order options re-named for arguments of softpoint.x and configure
 <li> 16/4/15 Upgrade: added 2-loop sparticle mass corrections (two-loop gluino done).
