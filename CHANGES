@@ -1,3 +1,4 @@
+<li> 29/5/15 Use exact field combination mixture for mA(1) in 2-loop tadpoles and protect against nans in pseudoscalar NMSSM calculations
 <li> 26/5/15 Bug-fixed input of tan beta scale in NMSSM in SLHA format
 <li> 23/5/15 Bug-fixed one-loop Higgs mass corrections in NMSSM
 <li> 23/4/15 If higher orders are NOT used, SOFTSUSY will use approximate higher orders now for the top Yukawa. Some percent level changes to masses happen.

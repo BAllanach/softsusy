@@ -287,31 +287,39 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     double t2OV2 = displayTadpole2Ms1loop();
     double tSOVS = displayTadpoleSMs1loop();
     
-    /// / tachyons tend to screw up this, so only calculate if we don't have them
+    /// tachyons tend to screw up this, so only calculate if we don't have them
     if (numRewsbLoops > 1 && displayProblem().tachyon == none) {
       
       double lam = displayLambda(), s = displaySvev();
       const drBarPars& forLoops = displayDrBarPars();
+      double tanb = displayTanb();
+      double cb = cos(atan(tanb)), sb = sin(atan(tanb));
+      double kap = displayKappa();
+      double mupr = displayMupr();
+      double alam = displayTrialambda();
+      double m3sq = displayM3Squared();
+      double xiF = displayXiF();
+      double m3sqeff = m3sq  + lam * (mupr * s / root2 + xiF)
+     + alam * s / root2  +   0.5 * lam * kap * sqr(s);
+
+      double MAeffsq =  m3sqeff / (sb * cb);
       /// add the two-loop terms, prepare inputs
       double s1s = 0., s2s = 0., s1t = 0., s2t = 0.,
-	gs = displayGaugeCoupling(3),
-	rmtsq = sqr(forLoops.mt), 
-	scalesq = sqr(displayMu()), vev = displayHvev(),
-	vev2 = sqr(vev), tanb = displayTanb(), 
-	amu = - lam * s / root2, mg = displayGaugino(3), 
-	mAsq = sqr(forLoops.mA0(1)); 
+         gs = displayGaugeCoupling(3),
+         rmtsq = sqr(forLoops.mt), 
+         scalesq = sqr(displayMu()), 
+         vev = displayHvev(), vev2 = sqr(vev),  
+         amu = - lam * s / root2, mg = displayGaugino(3), 
+         mAsq = MAeffsq;
       
       double sxt = sin(forLoops.thetat), cxt = cos(forLoops.thetat);
       double mst1sq = sqr(forLoops.mu(1, 3)), 
 	mst2sq = sqr(forLoops.mu(2, 3));
       /// two-loop Higgs corrections: alpha_s alpha_b
-      double sxb = sin(forLoops.thetab), 
-	cxb = cos(forLoops.thetab);
-      double sintau = sin(forLoops.thetatau), 
-	costau = cos(forLoops.thetatau);
+      double sxb = sin(forLoops.thetab), cxb = cos(forLoops.thetab);
+      double sintau = sin(forLoops.thetatau), costau = cos(forLoops.thetatau);
       double msnusq = sqr(forLoops.msnu(3));
-      double msb1sq = sqr(forLoops.md(1, 3)), 
-	msb2sq = sqr(forLoops.md(2, 3));
+      double msb1sq = sqr(forLoops.md(1, 3)), msb2sq = sqr(forLoops.md(2, 3));
       double mstau1sq = sqr(forLoops.me(1, 3)), 
 	mstau2sq = sqr(forLoops.me(2, 3));
       double cotbeta = 1.0 / tanb;
@@ -4158,7 +4166,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     double vev = displayHvev(), vev2 = sqr(vev);
     double m3sqeff = m3sq  + lam * (mupr * svev / root2 + xiF)
       + alam * svev / root2  +   0.5 * lam * kap * sqr(svev);
-    double MAeffsq =  m3sqeff / (sb * cb); ;
+    double MAeffsq =  m3sqeff / (sb * cb); 
     /// PA: initialise CP even mass matrix in (Hd, Hu, S) basis
     /// CP odd Higgs mass matrices mPpr in (Hd, Hu, S) basis 
     //and mP2 in roatated basis (A, S) -- goldstone boson removed    
@@ -4297,8 +4305,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 	/// PA: Add alpha_tau^2 and alpha_tau alpha_b from mssm two loop parts  
 	DMS[0][0] = DMS[0][0] + s11tau + sqr(sb) * p2tau;
 	DMS[0][1] = DMS[0][1] + s12tau - sb * cb * p2tau;
-	DMS[1][1] = DMS[1][1] + s22tau + sqr(cb) * p2tau;
-	
+	DMS[1][1] = DMS[1][1] + s22tau + sqr(cb) * p2tau;	
 	/// LCT: Add O(y_t^4 + y_t^2y_b^2 + y_b^4) from mssm two loop parts
 	DMP[0][0] = DMP[0][0] + sqr(sb) * p2w;
 	DMP[0][1] = DMP[0][1] + sb * cb * p2w;
@@ -4307,10 +4314,27 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 	DMP[0][0] = DMP[0][0] + sqr(sb) * p2tau;
 	DMP[0][1] = DMP[0][1] + sb * cb * p2tau;
 	DMP[1][1] = DMP[1][1] + sqr(cb) * p2tau;
+        bool nan_problem = false;
+        for(int i=0; i<=2; i++){
+           for(int j=0; j<=2; j++){
+              if(testNan(DMP[i][j])) {
+                 /// reset two-loop contrinution with nan
+                DMP[i][j] = 0;
+                nan_problem = true;
+              }
+             if(testNan(DMS[i][j])) {
+                /// reset two-loop contrinution with nan
+                DMS[i][j] = 0;
+                nan_problem = true;
+             }
+           }     
+        }
 	
-	
-	
-	
+        if(nan_problem == true)  {
+           flagInaccurateHiggsMass(true);
+           if (PRINTOUT > 1) cout << "2-loop Higgs masses are nans\n";
+        }
+
 	/// PA: Now add two loop parts to the full one loop self energy
 	sigmaMH1(1, 1) = sigmaMH1(1, 1) - DMS[0][0]; 
 	sigmaMH1(1, 2) = sigmaMH1(1, 2) - DMS[0][1]; 
