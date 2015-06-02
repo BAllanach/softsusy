@@ -224,6 +224,8 @@ namespace softsusy {
       problem.inaccurateHiggsMass = b; problem.mgutOutOfBounds = a; }
     /// Flags a numerical exception eg number too big/small
     void flagProblemThrown(bool a) { problem.problemThrown = a; }
+    /// Sets all problem flags 
+    void setProblem(const sProblem a) { problem = a; }
     
     /// Sets whole object equal to another  
     void setSoftsusy(const MssmSoftsusy & s) { *this = s; };

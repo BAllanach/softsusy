@@ -7107,7 +7107,7 @@ void MssmSoftsusy::fixedPointIteration
     
     if (displayProblem().nonperturbative 
 	|| displayProblem().higgsUfb || displayProblem().tachyon 
-	|| displayProblem().noRhoConvergence)
+	|| displayProblem().noRhoConvergence || displayProblem().problemThrown)
       return;
     
     runto(maximum(displayMsusy(), mz));
@@ -7563,6 +7563,7 @@ void MssmSoftsusy::itLowsoft
   
   if (numTries - 1 > maxTries) {/// Iterating too long: bail out
     flagNoConvergence(true);
+    setProblem(old.displayProblem());
     if (PRINTOUT) cout << "itLowsoft reached maxtries\n"; 
     numTries = 0; 
     return;
@@ -7700,6 +7701,7 @@ void MssmSoftsusy::itLowsoft
     // All problems should be reset since only the ones of the final iteration
     // should count (sometimes problems disappear). This can mean that problems
     // only show up as no rho convergence....
+    old.setProblem(displayProblem());
     tachyonType nil(none);
     flagAllProblems(false, nil);
     
