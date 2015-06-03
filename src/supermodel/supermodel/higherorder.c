@@ -122,15 +122,31 @@ void higherorder (supermodel *smodel)
 
   /* Minimize 2-loop Veff, to set correct vu,vd,tanbeta: */
   /* printf("Before minimizing (vu, vd) = (%Lf, %Lf)\n", vu, vd); */
-  /// DEBUG  SUMO_Minimize_Veff (2);
+  /// DEBUG  SUMO_Minimize_Veff (2); switch back on!!!
   /* printf("After minimizing  (vu, vd) = (%Lf, %Lf)\n", vu, vd); */
 
-  // For debugging purposes
+  // For debugging purposes, we print
+  SUMO_GluinoPole (0);
   printf("Tree-level gluino mass: %Lf \n",SUMO_SQRT(M2_gluino));
   SUMO_GluinoPole (1);
   printf("One-loop gluino mass:   %Lf \n",SUMO_SQRT(M2_gluino));
   SUMO_GluinoPole (2);
   printf("Two-loop gluino mass:   %Lf \n", SUMO_SQRT(M2_gluino));
+
+  int which = 1;
+  int loops = 2;
+  printf("Loops=%i \n",loops);
+  SUMO_StopPole (which, loops);
+  SUMO_SbotPole (which, loops);
+  SUMO_SuLPole (which, loops);
+  SUMO_SuRPole (which, loops);
+  SUMO_SdLPole (which, loops);
+  SUMO_SdRPole (which, loops);
+  
+  SUMO_h0Pole (loops);
+  SUMO_H0Pole (loops);
+  SUMO_G0Pole (loops);
+  SUMO_A0Pole (loops);
 
 #ifdef TSIL_SIZE_DOUBLE
   smodel->mgluino = SUMO_SQRT(M2_gluino);

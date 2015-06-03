@@ -6652,12 +6652,11 @@ void MssmSoftsusy::physical(int accuracy) {
   if(accuracy != 0 && USE_TWO_LOOP_SPARTICLE_MASS) {
    supermodel smodel;
 
-   smodel.vd = displayHvev() * cos(atan(displayTanb()));
-   smodel.vu = displayHvev() * sin(atan(displayTanb()));
+   smodel.vd = displayHvev() * cos(atan(displayTanb())) / sqrt(2.0);
+   smodel.vu = displayHvev() * sin(atan(displayTanb())) / sqrt(2.0);
 
    // We should apply dictionary here
-   // check
-   smodel.g =  displayGaugeCoupling(1);
+   smodel.g =  sqrt(0.6) * displayGaugeCoupling(1);
    smodel.g3 = displayGaugeCoupling(3);
    smodel.ytop = displayYukawaElement(YU, 3, 3);
    smodel.ybot = displayYukawaElement(YD, 3, 3);
@@ -6665,10 +6664,9 @@ void MssmSoftsusy::physical(int accuracy) {
    smodel.m1 = displayGaugino(1);
    smodel.m2 = displayGaugino(2);
    smodel.m3 = displayGaugino(3);
-   //check
-   smodel.atop = displaySoftA(UA, 3, 3);
-   smodel.abot = displaySoftA(DA, 3, 3);
-   smodel.atau = displaySoftA(EA, 3, 3);
+   smodel.atop = displaySoftA(UA, 3, 3) * smodel.ytop;
+   smodel.abot = displaySoftA(DA, 3, 3) * smodel.ybot;
+   smodel.atau = displaySoftA(EA, 3, 3) * smodel.ytau;
 
    for(int i=0; i<3; i++) {
     smodel.m2Q[i] = displaySoftMassSquared(mQl,i+1,i+1);

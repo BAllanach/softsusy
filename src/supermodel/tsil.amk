@@ -38,4 +38,4 @@ src/supermodel/tsil/setbold.c
 
 
 pkginclude_HEADERS += \
-src/supermodel/tsil/internal.h src/supermodel/tsil/tsil_fortran.h src/supermodel/tsil/tsil_global.h src/supermodel/tsil/tsil_names.h src/supermodel/tsil/tsil_testparams.h src/supermodel/tsil/tsil_build.h src/supermodel/tsil/tsil_funcs.h src/supermodel/tsil/tsil.h src/supermodel/tsil/tsil_params.h
+src/supermodel/tsil/internal.h src/supermodel/tsil/tsil_fortran.h src/supermodel/tsil/tsil_global.h src/supermodel/tsil/tsil_names.h src/supermodel/tsil/tsil_testparams.h src/supermodel/tsil/tsil_funcs.h src/supermodel/tsil/tsil.h src/supermodel/tsil/tsil_params.h
