@@ -4,20 +4,16 @@
 #include <float.h>
 #include "tsil.h"
 
-/* Dilog is the main function, TSIL_Dilog is a user API wrapper for it. */
-TSIL_COMPLEX Dilog (TSIL_COMPLEX);
-TSIL_COMPLEX TSIL_Dilog (TSIL_COMPLEX);
+TSIL_REAL TSIL_dilog_real           (TSIL_REAL);
+TSIL_REAL TSIL_dilog_series_real    (TSIL_REAL);
+TSIL_REAL TSIL_dilog_largeabs_real  (TSIL_REAL);
+TSIL_REAL TSIL_dilog_neg_real       (TSIL_REAL);
+TSIL_REAL TSIL_dilog_CLZseries_real (TSIL_REAL);
 
-TSIL_REAL dilog_real           (TSIL_REAL);
-TSIL_REAL dilog_series_real    (TSIL_REAL);
-TSIL_REAL dilog_largeabs_real  (TSIL_REAL);
-TSIL_REAL dilog_neg_real       (TSIL_REAL);
-TSIL_REAL dilog_CLZseries_real (TSIL_REAL);
-
-int dilog_series_complex    (TSIL_REAL, TSIL_REAL, TSIL_REAL *, TSIL_REAL *);
-int dilog_largeabs_complex  (TSIL_REAL, TSIL_REAL, TSIL_REAL *, TSIL_REAL *);
-int dilog_neg_complex       (TSIL_REAL, TSIL_REAL, TSIL_REAL *, TSIL_REAL *);
-int dilog_CLZseries_complex (TSIL_REAL, TSIL_REAL, TSIL_REAL *, TSIL_REAL *);
+int TSIL_dilog_series_complex    (TSIL_REAL, TSIL_REAL, TSIL_REAL *, TSIL_REAL *);
+int TSIL_dilog_largeabs_complex  (TSIL_REAL, TSIL_REAL, TSIL_REAL *, TSIL_REAL *);
+int TSIL_dilog_neg_complex       (TSIL_REAL, TSIL_REAL, TSIL_REAL *, TSIL_REAL *);
+int TSIL_dilog_CLZseries_complex (TSIL_REAL, TSIL_REAL, TSIL_REAL *, TSIL_REAL *);
 
 static TSIL_REAL zeta2L    = 1.64493406684822643647241516665L;
 static TSIL_REAL M_PI_LONG = 3.14159265358979323846264338328L;
@@ -64,15 +60,9 @@ TSIL_REAL CLZcoeffs[] = {
 static TSIL_REAL dilog_crossover_high = 160.L;
 static TSIL_REAL dilog_crossover_low  = 0.04L;
 
-/* A wrapper for the API: */
-TSIL_COMPLEX TSIL_Dilog (TSIL_COMPLEX z)
-{
-  return Dilog (z);
-}
-
 /* ************************************************************** */
 
-TSIL_REAL dilog_real (TSIL_REAL x)
+TSIL_REAL TSIL_dilog_real (TSIL_REAL x)
 {
   TSIL_REAL xsquared = x * x;
 
@@ -81,13 +71,13 @@ TSIL_REAL dilog_real (TSIL_REAL x)
   else if (x == 0.0L)
     return 0.0L;
   else if (xsquared < dilog_crossover_low)
-    return dilog_series_real (x);
+    return TSIL_dilog_series_real (x);
   else if (xsquared > dilog_crossover_high)
-    return dilog_largeabs_real (x);
+    return TSIL_dilog_largeabs_real (x);
   else if (x < 0.0L) 
-    return dilog_neg_real (x);
+    return TSIL_dilog_neg_real (x);
   else
-    return dilog_CLZseries_real (x);
+    return TSIL_dilog_CLZseries_real (x);
 }
 
 /* ************************************************************** */
@@ -96,7 +86,7 @@ TSIL_REAL dilog_real (TSIL_REAL x)
    |x|^2 < smallcrossover.
 */
 
-TSIL_REAL dilog_series_real (TSIL_REAL x)
+TSIL_REAL TSIL_dilog_series_real (TSIL_REAL x)
 {
   TSIL_REAL xsquared = x * x;
   TSIL_REAL xcubed, xtothek;
@@ -134,7 +124,7 @@ TSIL_REAL dilog_series_real (TSIL_REAL x)
    called here for |x| > largecrossover.
 */
 
-TSIL_REAL dilog_largeabs_real (TSIL_REAL x)
+TSIL_REAL TSIL_dilog_largeabs_real (TSIL_REAL x)
 {
   TSIL_REAL logminusx_re;
   TSIL_REAL t1, t2;
@@ -143,7 +133,7 @@ TSIL_REAL dilog_largeabs_real (TSIL_REAL x)
   TSIL_REAL result;
 
   logminusx_re = 0.5L * TSIL_LOG (xsquared);
-  t1 = dilog_series_real (xinv);
+  t1 = TSIL_dilog_series_real (xinv);
   t2 = 0.5L * (logminusx_re * logminusx_re);
   result = -t1 - t2;
 
@@ -164,7 +154,7 @@ TSIL_REAL dilog_largeabs_real (TSIL_REAL x)
    x < 0.
 */
 
-TSIL_REAL dilog_CLZseries_real (TSIL_REAL x)
+TSIL_REAL TSIL_dilog_CLZseries_real (TSIL_REAL x)
 {
   TSIL_REAL u, usquared, ucubed, ufifth;
   TSIL_REAL logminusu_re;
@@ -210,12 +200,12 @@ TSIL_REAL dilog_CLZseries_real (TSIL_REAL x)
 
 /* ************************************************************** */
 /* 
-   We use dilog_neg_real to avoid having to use the CLZ series for 
+   We use TSIL_dilog_neg_real to avoid having to use the CLZ series for 
    x < 0, where it converges more slowly. It implements the identity:
    Li2(z) = Li2 (z/(z-1)) + ...
 */
 
-TSIL_REAL dilog_neg_real (TSIL_REAL x)
+TSIL_REAL TSIL_dilog_neg_real (TSIL_REAL x)
 {
   TSIL_REAL t1, t2, t3, t4, t5;
   TSIL_REAL log1minusx_re;
@@ -229,14 +219,14 @@ TSIL_REAL dilog_neg_real (TSIL_REAL x)
     t3 += 3.L*zeta2L;
 
   t4 = x / (x - 1.L);
-  t5 = dilog_CLZseries_real (t4);
+  t5 = TSIL_dilog_CLZseries_real (t4);
 
   return t3 - t5;
 }
 
 /* ************************************************************** */
 
-TSIL_COMPLEX Dilog (TSIL_COMPLEX z)
+TSIL_COMPLEX TSIL_Dilog (TSIL_COMPLEX z)
 {
   TSIL_REAL z_re;
   TSIL_REAL z_im;
@@ -250,20 +240,20 @@ TSIL_COMPLEX Dilog (TSIL_COMPLEX z)
   /* First trap the case of real z. */
   if (z_im == 0.0L)
     {
-      res_re = dilog_real (z_re);
+      res_re = TSIL_dilog_real (z_re);
       if (z_re > 1.0L)
         res_im = -M_PI_LONG * TSIL_LOG (z_re);
       else
         res_im = 0.0L;
     }
   else if (absz2 < dilog_crossover_low)
-    dilog_series_complex (z_re, z_im, &res_re, &res_im);
+    TSIL_dilog_series_complex (z_re, z_im, &res_re, &res_im);
   else if (absz2 > dilog_crossover_high)
-    dilog_largeabs_complex (z_re, z_im, &res_re, &res_im);
+    TSIL_dilog_largeabs_complex (z_re, z_im, &res_re, &res_im);
   else if (z_re < 0)
-    dilog_neg_complex (z_re, z_im, &res_re, &res_im);
+    TSIL_dilog_neg_complex (z_re, z_im, &res_re, &res_im);
   else
-    dilog_CLZseries_complex (z_re, z_im, &res_re, &res_im);
+    TSIL_dilog_CLZseries_complex (z_re, z_im, &res_re, &res_im);
   
   return res_re + I*res_im;
 }
@@ -272,7 +262,7 @@ TSIL_COMPLEX Dilog (TSIL_COMPLEX z)
 /* Assumes |z| < 1, and will only be called here for |z| < 0.2    */
 
 int 
-dilog_series_complex (TSIL_REAL z_re,
+TSIL_dilog_series_complex (TSIL_REAL z_re,
 		      TSIL_REAL z_im, 
 		      TSIL_REAL *result_re,
 		      TSIL_REAL *result_im)
@@ -333,7 +323,7 @@ dilog_series_complex (TSIL_REAL z_re,
 */
 
 int
-dilog_largeabs_complex (TSIL_REAL z_re,
+TSIL_dilog_largeabs_complex (TSIL_REAL z_re,
 			TSIL_REAL z_im, 
 			TSIL_REAL *result_re,
 			TSIL_REAL *result_im)
@@ -348,7 +338,7 @@ dilog_largeabs_complex (TSIL_REAL z_re,
   zin_re = z_re / zabs2;
   zin_im = -z_im / zabs2;
 
-  dilog_series_complex (zin_re, zin_im, &t1_re, &t1_im);
+  TSIL_dilog_series_complex (zin_re, zin_im, &t1_re, &t1_im);
 
   *result_re = -t1_re + 0.5L * (logminusz_im * logminusz_im -
 				logminusz_re * logminusz_re) - zeta2L;
@@ -361,7 +351,7 @@ dilog_largeabs_complex (TSIL_REAL z_re,
 /* ************************************************************** */
 
 int
-dilog_neg_complex (TSIL_REAL z_re,
+TSIL_dilog_neg_complex (TSIL_REAL z_re,
 		   TSIL_REAL z_im,
 		   TSIL_REAL *result_re,
 		   TSIL_REAL *result_im)
@@ -377,7 +367,7 @@ dilog_neg_complex (TSIL_REAL z_re,
   t3_im = -log1minusz_re * log1minusz_im;
   t4_re = 1.L + (z_re - 1.L) / t2;
   t4_im = -z_im / t2;
-  dilog_CLZseries_complex (t4_re, t4_im, &t5_re, &t5_im);
+  TSIL_dilog_CLZseries_complex (t4_re, t4_im, &t5_re, &t5_im);
 
   *result_re = t3_re - t5_re;
   *result_im = t3_im - t5_im;
@@ -386,10 +376,10 @@ dilog_neg_complex (TSIL_REAL z_re,
 }
 
 /* ************************************************************** */
-/* See earlier comment for dilog_CLZseries_real. */
+/* See earlier comment for TSIL_dilog_CLZseries_real. */
 
 int
-dilog_CLZseries_complex (TSIL_REAL z_re,
+TSIL_dilog_CLZseries_complex (TSIL_REAL z_re,
 			 TSIL_REAL z_im, 
 			 TSIL_REAL *result_re,
 			 TSIL_REAL *result_im)

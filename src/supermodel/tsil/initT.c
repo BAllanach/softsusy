@@ -4,7 +4,7 @@
 
 /* **************************************************************** */
 
-void ConstructT (TSIL_TTYPE *t,
+void TSIL_ConstructT (TSIL_TTYPE *t,
 		 int n,
 		 TSIL_REAL x,
 		 TSIL_REAL y,
@@ -20,18 +20,18 @@ void ConstructT (TSIL_TTYPE *t,
   t->arg[1] = y;
   t->arg[2] = z;
 
-  Ay = A(y, qq);
-  Az = A(z, qq);
-  Ax = A(x, qq);
-  Deltaxyz = Delta(x,y,z);
+  Ay = TSIL_A(y, qq);
+  Az = TSIL_A(z, qq);
+  Ax = TSIL_A(x, qq);
+  Deltaxyz = TSIL_Delta(x,y,z);
 
   sqrtx = TSIL_SQRT(x);
   sqrty = TSIL_SQRT(y);
   sqrtz = TSIL_SQRT(z);
 
-  alphax = Alpha (x, qq);
-  alphay = Alpha (y, qq);
-  alphaz = Alpha (z, qq);
+  alphax = TSIL_Alpha (x, qq);
+  alphay = TSIL_Alpha (y, qq);
+  alphaz = TSIL_Alpha (z, qq);
 
   /* If first argument vanishes, disable evolution by setting everything to 0.*/
   if (x < TSIL_TOL) {

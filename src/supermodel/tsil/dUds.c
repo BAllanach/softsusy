@@ -4,7 +4,7 @@
 
 /* **************************************************************** */
 
-TSIL_COMPLEX dUds (TSIL_UTYPE U, TSIL_COMPLEX s)
+TSIL_COMPLEX TSIL_dUds (TSIL_UTYPE U, TSIL_COMPLEX s)
 {
   TSIL_COMPLEX temp, num_th, num_ps, result;
   

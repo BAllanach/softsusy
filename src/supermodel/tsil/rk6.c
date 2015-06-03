@@ -1,5 +1,5 @@
 /* ****************************************************************
-   rk6 (also rk6STU and rk6ST)
+   TSIL_rk6 (also TSIL_rk6STU and TSIL_rk6ST)
    ===========================
 
    Implements a 6-stage, 5th-order Cash-Karp-Fehlberg Runge-Kutta
@@ -18,7 +18,7 @@
    Otherwise, the step is rejected, unless force_step == 1.
 
    Provided it finds the step size to be small enough, OR the argument
-   force_step==1, then rk6 will return 1 and:
+   force_step==1, then TSIL_rk6 will return 1 and:
 
      if RKmode=0, then *RKindvar=s is incremented by an amount
      *RKdelta.
@@ -31,15 +31,15 @@
    The dependent variables and their derivatives in *foo are also
    updated in preparation for the next step.
 
-   If the step size needs to be decreased, then rk6 will return 0, and
+   If the step size needs to be decreased, then TSIL_rk6 will return 0, and
    not increment the independent variable and not change the dependent
    variables or their derivatives.
 
-   rk6 also replaces *RKdelta with an estimate of the optimal step
+   TSIL_rk6 also replaces *RKdelta with an estimate of the optimal step
    size, regardless of whether that is going to be a retry of this
    step if it failed, or the next step if this one passed. But, it
    never tries to increase or decrease the step size by more than a
-   factor of 2. And, the calling function Integrate() can and will
+   factor of 2. And, the calling function TSIL_Integrate() can and will
    reject the suggested step size if it gets to be too small or too
    large.
 
@@ -97,13 +97,13 @@
 
 /* **************************************************************** */
 
-int rk6 (TSIL_DATA    *foo, 
-         TSIL_COMPLEX *RKindvar,
-         TSIL_COMPLEX *RKdelta,
-         TSIL_REAL    sthresh,
-         int          RKmode,
-         TSIL_REAL    precision_goal, 
-         int          force_step)
+int TSIL_rk6 (TSIL_DATA    *foo, 
+	      TSIL_COMPLEX *RKindvar,
+	      TSIL_COMPLEX *RKdelta,
+	      TSIL_REAL    sthresh,
+	      int          RKmode,
+	      TSIL_REAL    precision_goal, 
+	      int          force_step)
 {
   static TSIL_COMPLEX startingB[2], startingS[2], startingT[6];
   static TSIL_COMPLEX startingU[4], startingM;
@@ -200,16 +200,16 @@ int rk6 (TSIL_DATA    *foo,
 
   /* Fill up k2 arrays: */
   for (i=0; i<2; i++) {
-    k2B[i] = ds * dBds (foo->B[i], s);
-    k2S[i] = ds * dSds (foo->S[i], s);
+    k2B[i] = ds * TSIL_dBds_rk (foo->B[i], s);
+    k2S[i] = ds * TSIL_dSds (foo->S[i], s);
   }
   for (i=0; i<6; i++)
-    k2T[i] = ds * dTds (foo->T[i], s);
+    k2T[i] = ds * TSIL_dTds (foo->T[i], s);
 
   for (i=0; i<4; i++)
-    k2U[i] = ds * dUds (foo->U[i], s);
+    k2U[i] = ds * TSIL_dUds (foo->U[i], s);
 
-  k2M = ds * dsMds (foo->M, s);
+  k2M = ds * TSIL_dsMds (foo->M, s);
 
   /* BEGIN STAGE 3. */
 
@@ -246,16 +246,16 @@ int rk6 (TSIL_DATA    *foo,
 
   /* Fill up k3 arrays: */
   for (i=0; i<2; i++) {
-    k3B[i] = ds * dBds (foo->B[i] , s);
-    k3S[i] = ds * dSds (foo->S[i] , s);
+    k3B[i] = ds * TSIL_dBds_rk (foo->B[i] , s);
+    k3S[i] = ds * TSIL_dSds (foo->S[i] , s);
   }
   for (i=0; i<6; i++)
-    k3T[i] = ds * dTds (foo->T[i] , s);
+    k3T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   for (i=0; i<4; i++)
-    k3U[i] = ds * dUds (foo->U[i] , s);
+    k3U[i] = ds * TSIL_dUds (foo->U[i] , s);
 
-  k3M = ds * dsMds (foo->M , s);
+  k3M = ds * TSIL_dsMds (foo->M , s);
 
   /* BEGIN STAGE 4. */
 
@@ -297,16 +297,16 @@ int rk6 (TSIL_DATA    *foo,
 
   /* Fill up k4 arrays: */
   for (i=0; i<2; i++) {
-    k4B[i] = ds * dBds (foo->B[i] , s);
-    k4S[i] = ds * dSds (foo->S[i] , s);
+    k4B[i] = ds * TSIL_dBds_rk (foo->B[i] , s);
+    k4S[i] = ds * TSIL_dSds (foo->S[i] , s);
   }
   for (i=0; i<6; i++)
-    k4T[i] = ds * dTds (foo->T[i] , s);
+    k4T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   for (i=0; i<4; i++)
-    k4U[i] = ds * dUds (foo->U[i] , s);
+    k4U[i] = ds * TSIL_dUds (foo->U[i] , s);
 
-  k4M = ds * dsMds (foo->M , s);
+  k4M = ds * TSIL_dsMds (foo->M , s);
 
   /* BEGIN STAGE 5. */
 
@@ -353,16 +353,16 @@ int rk6 (TSIL_DATA    *foo,
 
   /* Fill up k5 arrays: */
   for (i=0; i<2; i++) {
-    k5B[i] = ds * dBds (foo->B[i] , s);
-    k5S[i] = ds * dSds (foo->S[i] , s);
+    k5B[i] = ds * TSIL_dBds_rk (foo->B[i] , s);
+    k5S[i] = ds * TSIL_dSds (foo->S[i] , s);
   }
   for (i=0; i<6; i++)
-    k5T[i] = ds * dTds (foo->T[i] , s);
+    k5T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   for (i=0; i<4; i++)
-    k5U[i] = ds * dUds (foo->U[i] , s);
+    k5U[i] = ds * TSIL_dUds (foo->U[i] , s);
 
-  k5M = ds * dsMds (foo->M , s);
+  k5M = ds * TSIL_dsMds (foo->M , s);
 
   /* BEGIN STAGE 6. */
 
@@ -415,16 +415,16 @@ int rk6 (TSIL_DATA    *foo,
 
   /* Fill up k6 arrays: */
   for (i=0; i<2; i++) {
-    k6B[i] = ds * dBds (foo->B[i] , s);
-    k6S[i] = ds * dSds (foo->S[i] , s);
+    k6B[i] = ds * TSIL_dBds_rk (foo->B[i] , s);
+    k6S[i] = ds * TSIL_dSds (foo->S[i] , s);
   }
   for (i=0; i<6; i++)
-    k6T[i] = ds * dTds (foo->T[i] , s);
+    k6T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   for (i=0; i<4; i++)
-    k6U[i] = ds * dUds (foo->U[i] , s);
+    k6U[i] = ds * TSIL_dUds (foo->U[i] , s);
 
-  k6M = ds * dsMds (foo->M , s);
+  k6M = ds * TSIL_dsMds (foo->M , s);
 
   /* DONE WITH STAGES. */
 
@@ -527,7 +527,7 @@ int rk6 (TSIL_DATA    *foo,
   /* If this step was forced, and the error was very large, and we're near 
      a threshold, then we're just not going to do any better so it is time 
      to bail out. Then the status returned is -1, which lets the calling 
-     program Integrate know that it should stop immediately. */
+     program TSIL_Integrate know that it should stop immediately. */
 
   if ((1 == force_step) && (maxerr > max_allowed_error) && (1 == RKmode) &&
       (TSIL_CABS(*RKindvar) > 15))
@@ -573,16 +573,16 @@ int rk6 (TSIL_DATA    *foo,
 
     /* Set derivatives for next step */
     for (i=0; i<2; i++) {
-      foo->B[i].deriv = dBds (foo->B[i], s);
-      foo->S[i].deriv = dSds (foo->S[i], s);
+      foo->B[i].deriv = TSIL_dBds_rk (foo->B[i], s);
+      foo->S[i].deriv = TSIL_dSds (foo->S[i], s);
     }
     for (i=0; i<6; i++)
-      foo->T[i].deriv = dTds (foo->T[i], s);
+      foo->T[i].deriv = TSIL_dTds (foo->T[i], s);
 
     for (i=0; i<4; i++)
-      foo->U[i].deriv = dUds (foo->U[i], s);
+      foo->U[i].deriv = TSIL_dUds (foo->U[i], s);
 
-    foo->M.deriv = dsMds (foo->M, s);
+    foo->M.deriv = TSIL_dsMds (foo->M, s);
   }
   else {
     /* Set data back to original values, and don't touch the
@@ -615,7 +615,7 @@ int rk6 (TSIL_DATA    *foo,
   if(TSIL_CABS(next_step_size) < 0.5L*TSIL_CABS(*RKdelta))
     next_step_size = 0.5L* (*RKdelta);
 
-  /* Recommend the new step size to the calling function Integrate (). */
+  /* Recommend the new step size to the calling function TSIL_Integrate (). */
   *RKdelta = next_step_size;
 
   return status;
@@ -625,13 +625,13 @@ int rk6 (TSIL_DATA    *foo,
 /* **************************************************************** */
 /* This version takes a RK step for the STU case.                   */
 
-int rk6_STU (TSIL_DATA   *foo, 
-	    TSIL_COMPLEX *RKindvar,
-	    TSIL_COMPLEX *RKdelta,
-	    TSIL_REAL    sthresh,
-	    int          RKmode,
-	    TSIL_REAL    precision_goal, 
-	    int          force_step)
+int TSIL_rk6_STU (TSIL_DATA   *foo, 
+		  TSIL_COMPLEX *RKindvar,
+		  TSIL_COMPLEX *RKdelta,
+		  TSIL_REAL    sthresh,
+		  int          RKmode,
+		  TSIL_REAL    precision_goal, 
+		  int          force_step)
 {
   static TSIL_COMPLEX startingS, startingT[6];
   static TSIL_COMPLEX startingU;
@@ -709,10 +709,10 @@ int rk6_STU (TSIL_DATA   *foo,
   foo->U[whichU].value = startingU + ButchCKFa21 * k1U;
 
   /* Fill up k2 arrays: */
-  k2S = ds * dSds (foo->S[whichS], s);
+  k2S = ds * TSIL_dSds (foo->S[whichS], s);
   for (i=1; i<6; i+=2)
-    k2T[i] = ds * dTds (foo->T[i], s);
-  k2U = ds * dUds (foo->U[whichU], s);
+    k2T[i] = ds * TSIL_dTds (foo->T[i], s);
+  k2U = ds * TSIL_dUds (foo->U[whichU], s);
 
   /* BEGIN STAGE 3. */
 
@@ -740,12 +740,12 @@ int rk6_STU (TSIL_DATA   *foo,
                                  + ButchCKFa32 * k2U;
 
   /* Fill up k3 arrays: */
-  k3S = ds * dSds (foo->S[whichS] , s);
+  k3S = ds * TSIL_dSds (foo->S[whichS] , s);
 
   for (i=1; i<6; i+=2)
-    k3T[i] = ds * dTds (foo->T[i] , s);
+    k3T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
-  k3U = ds * dUds (foo->U[whichU] , s);
+  k3U = ds * TSIL_dUds (foo->U[whichU] , s);
 
   /* BEGIN STAGE 4. */
 
@@ -776,10 +776,10 @@ int rk6_STU (TSIL_DATA   *foo,
                                  + ButchCKFa43 * k3U;
 
   /* Fill up k4 arrays: */
-  k4S = ds * dSds (foo->S[whichS] , s);
+  k4S = ds * TSIL_dSds (foo->S[whichS] , s);
   for (i=1; i<6; i+=2)
-    k4T[i] = ds * dTds (foo->T[i] , s);
-  k4U = ds * dUds (foo->U[whichU] , s);
+    k4T[i] = ds * TSIL_dTds (foo->T[i] , s);
+  k4U = ds * TSIL_dUds (foo->U[whichU] , s);
 
   /* BEGIN STAGE 5. */
 
@@ -813,10 +813,10 @@ int rk6_STU (TSIL_DATA   *foo,
                                 + ButchCKFa54 * k4U;
 
   /* Fill up k5 arrays: */
-  k5S = ds * dSds (foo->S[whichS] , s);
+  k5S = ds * TSIL_dSds (foo->S[whichS] , s);
   for (i=1; i<6; i+=2)
-    k5T[i] = ds * dTds (foo->T[i] , s);
-  k5U = ds * dUds (foo->U[whichU] , s);
+    k5T[i] = ds * TSIL_dTds (foo->T[i] , s);
+  k5U = ds * TSIL_dUds (foo->U[whichU] , s);
 
   /* BEGIN STAGE 6. */
 
@@ -853,10 +853,10 @@ int rk6_STU (TSIL_DATA   *foo,
                                    + ButchCKFa65 * k5U;
 
   /* Fill up k6 arrays: */
-  k6S = ds * dSds (foo->S[whichS] , s);
+  k6S = ds * TSIL_dSds (foo->S[whichS] , s);
   for (i=1; i<6; i+=2)
-    k6T[i] = ds * dTds (foo->T[i] , s);
-  k6U = ds * dUds (foo->U[whichU] , s);
+    k6T[i] = ds * TSIL_dTds (foo->T[i] , s);
+  k6U = ds * TSIL_dUds (foo->U[whichU] , s);
 
   /* DONE WITH STAGES. */
 
@@ -917,7 +917,7 @@ int rk6_STU (TSIL_DATA   *foo,
   /* If this step was forced, and the error was very large, and we're
      near a threshold, then we're just not going to do any better so
      it is time to bail out. Then the status returned is -1, which
-     lets the calling program Integrate know that it should stop
+     lets the calling program TSIL_Integrate know that it should stop
      immediately. */
 
   if ((1 == force_step) && (maxerr > max_allowed_error) && (1 == RKmode) &&
@@ -958,12 +958,12 @@ int rk6_STU (TSIL_DATA   *foo,
       }
       
       /* Set derivatives for next step */
-      foo->S[whichS].deriv = dSds (foo->S[whichS], s);
+      foo->S[whichS].deriv = TSIL_dSds (foo->S[whichS], s);
       
       for (i=1; i<6; i+=2)
-	foo->T[i].deriv = dTds (foo->T[i], s);
+	foo->T[i].deriv = TSIL_dTds (foo->T[i], s);
       
-      foo->U[whichU].deriv = dUds (foo->U[whichU], s);
+      foo->U[whichU].deriv = TSIL_dUds (foo->U[whichU], s);
     }
   else {
     /* Set data back to original values, and don't touch the
@@ -991,7 +991,7 @@ int rk6_STU (TSIL_DATA   *foo,
   if(TSIL_CABS(next_step_size) < 0.5L*TSIL_CABS(*RKdelta))
     next_step_size = 0.5L* (*RKdelta);
 
-  /* Recommend the new step size to the calling function Integrate (). */
+  /* Recommend the new step size to the calling function TSIL_Integrate (). */
   *RKdelta = next_step_size;
 
   return status;
@@ -1001,13 +1001,13 @@ int rk6_STU (TSIL_DATA   *foo,
 /* **************************************************************** */
 /* This version takes a RK step for the ST case.                    */
 
-int rk6_ST (TSIL_DATA *foo, 
-	   TSIL_COMPLEX *RKindvar,
-	   TSIL_COMPLEX *RKdelta,
-	   TSIL_REAL sthresh,
-	   int RKmode,
-	   TSIL_REAL precision_goal, 
-	   int force_step)
+int TSIL_rk6_ST (TSIL_DATA *foo, 
+		 TSIL_COMPLEX *RKindvar,
+		 TSIL_COMPLEX *RKdelta,
+		 TSIL_REAL sthresh,
+		 int RKmode,
+		 TSIL_REAL precision_goal, 
+		 int force_step)
 {
   static TSIL_COMPLEX startingS, startingT[6];
   TSIL_COMPLEX k1S, k2S, k3S, k4S, k5S, k6S;
@@ -1076,9 +1076,9 @@ int rk6_ST (TSIL_DATA *foo,
     foo->T[i].value = startingT[i] + ButchCKFa21 * k1T[i];
 
   /* Fill up k2 arrays: */
-  k2S = ds * dSds (foo->S[whichS], s);
+  k2S = ds * TSIL_dSds (foo->S[whichS], s);
   for (i=1; i<6; i+=2)
-    k2T[i] = ds * dTds (foo->T[i], s);
+    k2T[i] = ds * TSIL_dTds (foo->T[i], s);
 
   /* BEGIN STAGE 3. */
 
@@ -1103,9 +1103,9 @@ int rk6_ST (TSIL_DATA *foo,
                                    + ButchCKFa32 * k2T[i];
 
   /* Fill up k3 arrays: */
-  k3S = ds * dSds (foo->S[whichS] , s);
+  k3S = ds * TSIL_dSds (foo->S[whichS] , s);
   for (i=1; i<6; i+=2)
-    k3T[i] = ds * dTds (foo->T[i] , s);
+    k3T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   /* BEGIN STAGE 4. */
 
@@ -1132,9 +1132,9 @@ int rk6_ST (TSIL_DATA *foo,
                                    + ButchCKFa43 * k3T[i];
 
   /* Fill up k4 arrays: */
-  k4S = ds * dSds (foo->S[whichS] , s);
+  k4S = ds * TSIL_dSds (foo->S[whichS] , s);
   for (i=1; i<6; i+=2)
-    k4T[i] = ds * dTds (foo->T[i] , s);
+    k4T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   /* BEGIN STAGE 5. */
 
@@ -1163,9 +1163,9 @@ int rk6_ST (TSIL_DATA *foo,
                                    + ButchCKFa54 * k4T[i];
 
   /* Fill up k5 arrays: */
-  k5S = ds * dSds (foo->S[whichS] , s);
+  k5S = ds * TSIL_dSds (foo->S[whichS] , s);
   for (i=1; i<6; i+=2)
-    k5T[i] = ds * dTds (foo->T[i] , s);
+    k5T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   /* BEGIN STAGE 6. */
 
@@ -1196,9 +1196,9 @@ int rk6_ST (TSIL_DATA *foo,
                                    + ButchCKFa65 * k5T[i];
 
   /* Fill up k6 arrays: */
-  k6S = ds * dSds (foo->S[whichS] , s);
+  k6S = ds * TSIL_dSds (foo->S[whichS] , s);
   for (i=1; i<6; i+=2)
-    k6T[i] = ds * dTds (foo->T[i] , s);
+    k6T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   /* DONE WITH STAGES. */
 
@@ -1245,7 +1245,7 @@ int rk6_ST (TSIL_DATA *foo,
   /* If this step was forced, and the error was very large, and we're
      near a threshold, then we're just not going to do any better so
      it is time to bail out. Then the status returned is -1, which
-     lets the calling program Integrate know that it should stop
+     lets the calling program TSIL_Integrate know that it should stop
      immediately. */
 
   if ((1 == force_step) && (maxerr > max_allowed_error) && (1 == RKmode) &&
@@ -1285,10 +1285,10 @@ int rk6_ST (TSIL_DATA *foo,
       }
       
       /* Set derivatives for next step */
-      foo->S[whichS].deriv = dSds (foo->S[whichS], s);
+      foo->S[whichS].deriv = TSIL_dSds (foo->S[whichS], s);
       
       for (i=1; i<6; i+=2)
-	foo->T[i].deriv = dTds (foo->T[i], s);
+	foo->T[i].deriv = TSIL_dTds (foo->T[i], s);
     }
   else {
     /* Set data back to original values, and don't touch the
@@ -1315,7 +1315,7 @@ int rk6_ST (TSIL_DATA *foo,
   if(TSIL_CABS(next_step_size) < 0.5L*TSIL_CABS(*RKdelta))
     next_step_size = 0.5L* (*RKdelta);
 
-  /* Recommend the new step size to the calling function Integrate (). */
+  /* Recommend the new step size to the calling function TSIL_Integrate (). */
   *RKdelta = next_step_size;
 
   return status;

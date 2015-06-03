@@ -68,7 +68,7 @@ TSIL is available from:
        http://www.niu.edu/spmartin/TSIL
        http://faculty.otterbein.edu/drobertson/TSIL
 
-Version number: 1.21
+Version number: 1.2
 
 
 ************************************************************************

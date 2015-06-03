@@ -3,7 +3,7 @@
 #include "internal.h"
 
 /* ************************************************************** */
-/* A wrapper for the user API:                                    */
+/* This function is defined in hep-ph/0307101 eq. (2.21)          */
 
 int TSIL_Tbaranalytic (TSIL_REAL X,
 		       TSIL_REAL Y,
@@ -12,27 +12,17 @@ int TSIL_Tbaranalytic (TSIL_REAL X,
 		       TSIL_REAL QQ,
 		       TSIL_COMPLEX *result)
 {
-  return Tbaranalytic (X, Y, Z, S, QQ, result);
-}
-
-/* ************************************************************** */
-/* This function is defined in hep-ph/0307101 eq. (2.21)          */
-
-int Tbaranalytic (TSIL_REAL X,
-		  TSIL_REAL Y,
-		  TSIL_REAL Z, 
-                  TSIL_COMPLEX S,
-		  TSIL_REAL QQ,
-		  TSIL_COMPLEX *result)
-{
   TSIL_REAL tmp;
   int success = 1;
   
   if (Y < Z) {tmp = Z; Z = Y; Y = tmp;}
 
-  if (X < TSIL_TOL) *result = Tbar0xy(Y,Z,S,QQ);
-  else if (Z < TSIL_TOL) *result = Tx0y(X,Y,S,QQ) + TSIL_LOG(X/QQ)*B(0,Y,S,QQ);
-  else success = 0;
+  if (X < TSIL_TOL) 
+    *result = TSIL_Tbar0xy(Y,Z,S,QQ);
+  else if (Z < TSIL_TOL) 
+    *result = TSIL_Tx0y(X,Y,S,QQ) + TSIL_LOG(X/QQ)*TSIL_B(0,Y,S,QQ);
+  else 
+    success = 0;
 
   return success;
 }
@@ -40,7 +30,8 @@ int Tbaranalytic (TSIL_REAL X,
 /* ************************************************************** */
 /* hep-ph/0307101 eq. (6.18)                                      */
 
-TSIL_COMPLEX Tbar0xy (TSIL_REAL X, TSIL_REAL Y, TSIL_COMPLEX S, TSIL_REAL QQ)
+TSIL_COMPLEX TSIL_Tbar0xy (TSIL_REAL X, TSIL_REAL Y, 
+			   TSIL_COMPLEX S, TSIL_REAL QQ)
 {
   TSIL_COMPLEX sqDeltaSXY, tp, tm, log1mtp, log1mtq;
   TSIL_REAL    AX, AY, lnbarX, lnbarY, Sthresh, lnbarS, logXoverY, temp;
@@ -48,8 +39,8 @@ TSIL_COMPLEX Tbar0xy (TSIL_REAL X, TSIL_REAL Y, TSIL_COMPLEX S, TSIL_REAL QQ)
 
   if (X < Y) {temp = Y; Y = X; X = temp;}
 
-  if (X < TSIL_TOL) return Tbar000 (S, QQ);
-  if (Y < TSIL_TOL) return Tbar00x (X, S, QQ);
+  if (X < TSIL_TOL) return TSIL_Tbar000 (S, QQ);
+  if (Y < TSIL_TOL) return TSIL_Tbar00x (X, S, QQ);
 
   if (TSIL_CABS(S) < TSIL_TOL) {
     onemYoX = 1.0L - Y/X;
@@ -58,7 +49,7 @@ TSIL_COMPLEX Tbar0xy (TSIL_REAL X, TSIL_REAL Y, TSIL_COMPLEX S, TSIL_REAL QQ)
     if (onemYoX > 0.01) {
       AX = X*lnbarX-X;
       AY = Y*TSIL_LOG(Y/QQ)-Y;
-      return ((X+Y)*I20xy(X,Y,QQ) + 2.0L*(AX-Y)*(AY-X) + 
+      return ((X+Y)*TSIL_I20xy(X,Y,QQ) + 2.0L*(AX-Y)*(AY-X) + 
 	      X*X + Y*Y)/((X-Y)*(X-Y));
     } 
     else {
@@ -91,7 +82,7 @@ TSIL_COMPLEX Tbar0xy (TSIL_REAL X, TSIL_REAL Y, TSIL_COMPLEX S, TSIL_REAL QQ)
     Sthresh = X+Y+2.0L*TSIL_SQRT(X*Y);
     lnbarS = TSIL_LOG(Sthresh/QQ);
 
-    return (2.0L*(Y-X)*Dilog(TSIL_CSQRT(Y/Sthresh))/Sthresh +
+    return (2.0L*(Y-X)*TSIL_Dilog(TSIL_CSQRT(Y/Sthresh))/Sthresh +
 	    (-Sthresh + 0.5L*lnbarX*lnbarX*(Y-Sthresh) 
 	     + 0.5L*lnbarY*lnbarY*(X-Sthresh) 
 	     + 0.5L*lnbarS*lnbarS*(Y-X) + lnbarX*(Sthresh+X-Y) 
@@ -99,8 +90,8 @@ TSIL_COMPLEX Tbar0xy (TSIL_REAL X, TSIL_REAL Y, TSIL_COMPLEX S, TSIL_REAL QQ)
 	     + (8.L*X + 4.L*Y - 12.L*Sthresh)*Zeta2)/(2.0L*Sthresh));        
   }
 
-  S = AddIeps(S);
-  sqDeltaSXY = TSIL_CSQRT(Delta (S, X, Y));
+  S = TSIL_AddIeps(S);
+  sqDeltaSXY = TSIL_CSQRT(TSIL_Delta (S, X, Y));
 
   tm = (X - Y + S - sqDeltaSXY) / (2.0L * X);
   tp = (X - Y + S + sqDeltaSXY) / (2.0L * X);
@@ -108,9 +99,9 @@ TSIL_COMPLEX Tbar0xy (TSIL_REAL X, TSIL_REAL Y, TSIL_COMPLEX S, TSIL_REAL QQ)
   log1mtq = TSIL_CLOG((1.0L - tm)*X/sqDeltaSXY);
   logXoverY = lnbarX - lnbarY;
 
-  return ( ( (Y-X-sqDeltaSXY)*Dilog(tp)
-	     + (Y-X+sqDeltaSXY)*Dilog(tm)
-	     + 2.0L*sqDeltaSXY*Dilog(X*(tp-1.0L)/sqDeltaSXY)
+  return ( ( (Y-X-sqDeltaSXY)*TSIL_Dilog(tp)
+	     + (Y-X+sqDeltaSXY)*TSIL_Dilog(tm)
+	     + 2.0L*sqDeltaSXY*TSIL_Dilog(X*(tp-1.0L)/sqDeltaSXY)
 	     + (S-X +2.0L*sqDeltaSXY)*log1mtp*log1mtp
 	     + sqDeltaSXY*log1mtq*log1mtq
 	     + 4.0L*sqDeltaSXY*log1mtq*log1mtp
@@ -118,22 +109,22 @@ TSIL_COMPLEX Tbar0xy (TSIL_REAL X, TSIL_REAL Y, TSIL_COMPLEX S, TSIL_REAL QQ)
 	     - 2.0L*sqDeltaSXY*logXoverY*TSIL_CLOG(sqDeltaSXY/X)
 	     + 0.5L*(lnbarX-1.0L)*(S*(1.0L-lnbarY) + (Y-X)*logXoverY)
 	     + sqDeltaSXY*(2.0L*Zeta2 -1.5L*lnbarX*lnbarX +0.5L*lnbarX
-			   + 2.5L*lnbarX*lnbarY -lnbarY*lnbarY - 0.5L*lnbarY))/S);
+		  + 2.5L*lnbarX*lnbarY -lnbarY*lnbarY - 0.5L*lnbarY))/S);
 }
 
 /* ******************************************************************* */
 /* hep-ph/0307101 eq. (6.10)                                           */
 
-TSIL_COMPLEX Tbar000 (TSIL_COMPLEX S, TSIL_REAL QQ)
+TSIL_COMPLEX TSIL_Tbar000 (TSIL_COMPLEX S, TSIL_REAL QQ)
 {
   TSIL_COMPLEX lnbarmS;
 
   if (TSIL_CABS(S) < TSIL_TOL) {
-     TSIL_Warn("Tbar000", "Tbar(0,0,0) is undefined at s=0."); 
+     TSIL_Warn("TSIL_Tbar000", "Tbar(0,0,0) is undefined at s=0."); 
      return TSIL_Infinity;
   }
 
-  S = AddIeps(S);
+  S = TSIL_AddIeps(S);
   lnbarmS = TSIL_CLOG(-S/QQ);
   return -0.5L*lnbarmS*lnbarmS + lnbarmS - 0.5L; 
 }
@@ -141,12 +132,12 @@ TSIL_COMPLEX Tbar000 (TSIL_COMPLEX S, TSIL_REAL QQ)
 /* ******************************************************************* */
 /* hep-ph/0307101 eq. (6.19)                                           */
 
-TSIL_COMPLEX Tbar00x (TSIL_REAL X, TSIL_COMPLEX S, TSIL_REAL QQ)
+TSIL_COMPLEX TSIL_Tbar00x (TSIL_REAL X, TSIL_COMPLEX S, TSIL_REAL QQ)
 {
   TSIL_COMPLEX log1mSoX;
   TSIL_REAL    lnbarX;  
 
-  if (X < TSIL_TOL) return Tbar000 (S, QQ);
+  if (X < TSIL_TOL) return TSIL_Tbar000 (S, QQ);
 
   lnbarX = TSIL_LOG(X/QQ); 
 
@@ -156,8 +147,8 @@ TSIL_COMPLEX Tbar00x (TSIL_REAL X, TSIL_COMPLEX S, TSIL_REAL QQ)
   if (TSIL_CABS (1.0L - S/X) < 10.0L*TSIL_TOL) 
     return (-0.5L -2.0L*Zeta2 + lnbarX - 0.5L*lnbarX*lnbarX);
 
-  S = AddIeps(S);
+  S = TSIL_AddIeps(S);
   log1mSoX = TSIL_CLOG(1.0L - S/X);
-  return (-Dilog(S/X) -0.5L - Zeta2 + lnbarX - 0.5L*lnbarX*lnbarX
+  return (-TSIL_Dilog(S/X) -0.5L - Zeta2 + lnbarX - 0.5L*lnbarX*lnbarX
 	  + (1.0L - X/S)*log1mSoX*(1.0L -lnbarX - log1mSoX));
 }

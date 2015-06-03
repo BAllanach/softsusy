@@ -4,15 +4,13 @@
 #include <float.h>
 #include "internal.h"
 
-/* Trilog is the main function, TSIL_Trilog is a user API wrapper for it. */
-TSIL_COMPLEX TSIL_Trilog (TSIL_COMPLEX);
-TSIL_COMPLEX Trilog (TSIL_COMPLEX); 
-TSIL_COMPLEX Trilogoutofunitdisk (TSIL_COMPLEX);
-TSIL_COMPLEX Trilogunitdisk (TSIL_COMPLEX);
-TSIL_COMPLEX TrilogCLZseries (TSIL_COMPLEX);
-TSIL_COMPLEX Trilogseries (TSIL_COMPLEX);
-TSIL_COMPLEX TrilogregionA (TSIL_COMPLEX);
-TSIL_COMPLEX TrilogregionB (TSIL_COMPLEX);
+/* Local routines: */
+TSIL_COMPLEX TSIL_Trilogoutofunitdisk (TSIL_COMPLEX);
+TSIL_COMPLEX TSIL_Trilogunitdisk (TSIL_COMPLEX);
+TSIL_COMPLEX TSIL_TrilogCLZseries (TSIL_COMPLEX);
+TSIL_COMPLEX TSIL_Trilogseries (TSIL_COMPLEX);
+TSIL_COMPLEX TSIL_TrilogregionA (TSIL_COMPLEX);
+TSIL_COMPLEX TSIL_TrilogregionB (TSIL_COMPLEX);
 
 TSIL_COMPLEX cZeta2 = 1.644934066848226436472415166646025189219L;
 TSIL_COMPLEX cZeta3 = 1.202056903159594285399738161511449990765L;
@@ -59,28 +57,28 @@ TSIL_COMPLEX CLZcoeffs_trilog[] = {
 };
 
 /* A wrapper for the API: */
-TSIL_COMPLEX TSIL_Trilog (TSIL_COMPLEX z)
-{
-  return Trilog (z);
-}
+/* TSIL_COMPLEX TSIL_Trilog (TSIL_COMPLEX z) */
+/* { */
+/*   return TSIL_Trilog (z); */
+/* } */
 
 /* ************************************************************** */
 
-TSIL_COMPLEX Trilog (TSIL_COMPLEX z)
+TSIL_COMPLEX TSIL_Trilog (TSIL_COMPLEX z)
 {
   TSIL_COMPLEX result;
   
   if (TSIL_CABS(z) > 1.0L)
-    result = Trilogoutofunitdisk (z);
+    result = TSIL_Trilogoutofunitdisk (z);
   else
-    result = Trilogunitdisk (z);
+    result = TSIL_Trilogunitdisk (z);
 
   return result;
 }
 
 /* ************************************************************** */
 
-TSIL_COMPLEX Trilogoutofunitdisk (TSIL_COMPLEX z)
+TSIL_COMPLEX TSIL_Trilogoutofunitdisk (TSIL_COMPLEX z)
 {
   TSIL_COMPLEX result;
   TSIL_COMPLEX logminusz = TSIL_CLOG(-z);
@@ -88,7 +86,7 @@ TSIL_COMPLEX Trilogoutofunitdisk (TSIL_COMPLEX z)
   if (TSIL_CREAL(z) > 1.0L && TSIL_CIMAG((complex double) z) == 0.0)
     logminusz = I * PI_longdouble + TSIL_CLOG(TSIL_CREAL (z));
 
-  result = Trilogunitdisk (1.0L/z) -
+  result = TSIL_Trilogunitdisk (1.0L/z) -
     logminusz*(cZeta2 + logminusz*logminusz/6.0L);
 
   return result;
@@ -96,7 +94,7 @@ TSIL_COMPLEX Trilogoutofunitdisk (TSIL_COMPLEX z)
 
 /* ************************************************************** */
 
-TSIL_COMPLEX Trilogunitdisk (TSIL_COMPLEX z)
+TSIL_COMPLEX TSIL_Trilogunitdisk (TSIL_COMPLEX z)
 {
   TSIL_COMPLEX result;
   TSIL_REAL rez = TSIL_CREAL (z);
@@ -108,15 +106,15 @@ TSIL_COMPLEX Trilogunitdisk (TSIL_COMPLEX z)
   else if (TSIL_CABS(z) < 2.0L * TSIL_TOL)
     result = 0.0L;
   else if (TSIL_CABS(TSIL_CLOG(z)) < trilog_CLZseries_radius)
-    result = TrilogCLZseries (z);
+    result = TSIL_TrilogCLZseries (z);
   else if (absz <= trilog_powerseries_radius)
-    result = Trilogseries (z);
+    result = TSIL_Trilogseries (z);
   else if (rez <= 0.0L)
-    result = TrilogregionA (z);
+    result = TSIL_TrilogregionA (z);
   else if (rez <= absimz)
-    result = TrilogregionB (z);
+    result = TSIL_TrilogregionB (z);
   else {
-    TSIL_Warn("Trilogunitdisk", "trilog function yielding undefined result.");
+    TSIL_Warn("TSIL_Trilogunitdisk", "trilog function yielding undefined result.");
     result = TSIL_Infinity;
   }
 
@@ -131,7 +129,7 @@ TSIL_COMPLEX Trilogunitdisk (TSIL_COMPLEX z)
    problem for real z > 1, but here it is only used within the unit
    disk anyway. */
 
-TSIL_COMPLEX TrilogCLZseries(TSIL_COMPLEX z)
+TSIL_COMPLEX TSIL_TrilogCLZseries(TSIL_COMPLEX z)
 {
   TSIL_COMPLEX logz, logzsquared, logztothek, term;
   TSIL_COMPLEX first6terms, remainingterms, result;
@@ -159,7 +157,7 @@ TSIL_COMPLEX TrilogCLZseries(TSIL_COMPLEX z)
       if (TSIL_FABS (term) < accuracygoal) 
 	break;
       if (j == 24)
-        TSIL_Warn("TrilogCLZseries", "trilog CLZ series converging too slowly.");
+        TSIL_Warn("TSIL_TrilogCLZseries", "trilog CLZ series converging too slowly.");
     }
 
   result = remainingterms + first6terms;
@@ -169,7 +167,7 @@ TSIL_COMPLEX TrilogCLZseries(TSIL_COMPLEX z)
 
 /* ************************************************************** */
 
-TSIL_COMPLEX Trilogseries (TSIL_COMPLEX z)
+TSIL_COMPLEX TSIL_Trilogseries (TSIL_COMPLEX z)
 {
   TSIL_REAL absz = TSIL_CABS (z);
   TSIL_REAL logepsilon = TSIL_LOG (TSIL_TOL);
@@ -204,13 +202,13 @@ TSIL_COMPLEX Trilogseries (TSIL_COMPLEX z)
 
 /* ************************************************************** */
 
-TSIL_COMPLEX TrilogregionA (TSIL_COMPLEX z)
+TSIL_COMPLEX TSIL_TrilogregionA (TSIL_COMPLEX z)
 {
   TSIL_COMPLEX result;
   TSIL_COMPLEX log1minusz = TSIL_CLOG (1.0L - z);
   TSIL_COMPLEX logminusz = TSIL_CLOG (-z);
 
-  result = -Trilogunitdisk(1.0L/(1.0L - z)) - Trilogunitdisk (z/(z - 1.0L)) 
+  result = -TSIL_Trilogunitdisk(1.0L/(1.0L - z)) - TSIL_Trilogunitdisk (z/(z - 1.0L)) 
            + log1minusz*(log1minusz*log1minusz/3.0L -
 	     0.5L*logminusz*log1minusz - cZeta2) + cZeta3;
 
@@ -219,11 +217,11 @@ TSIL_COMPLEX TrilogregionA (TSIL_COMPLEX z)
 
 /* ************************************************************** */
 
-TSIL_COMPLEX TrilogregionB (TSIL_COMPLEX z)
+TSIL_COMPLEX TSIL_TrilogregionB (TSIL_COMPLEX z)
 {
   TSIL_COMPLEX result;
 
-  result = 0.25L * Trilogunitdisk (z * z) - Trilogunitdisk (-z);
+  result = 0.25L * TSIL_Trilogunitdisk (z * z) - TSIL_Trilogunitdisk (-z);
 
   return result;
 }

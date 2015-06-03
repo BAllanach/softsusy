@@ -1,0 +1,84 @@
+Notes on Using TSIL Functions with C++
+==========================
+
+It is possible to call TSIL functions from C++ code.  The header file
+
+tsil_cpp.h
+
+should be included in any C++ source files that make use of TSIL
+functions.  This file is equivalent to the usual tsil.h, but with
+additional definitions to streamline interoperation with C++.
+
+Care should be taken that C++ type sizes match those used in TSIL.
+For example, if TSIL was compiled with -DTSIL_SIZE_LONG (so that real
+variables are long double and complexes are long double complex), then
+you must use
+
+std::complex<long double>
+
+for the corresponding C++ variables.  A simple way to achieve this is
+to compile your C++ code with the usual TSIL macro:
+
+-DTSIL_SIZE_LONG
+
+or
+
+-DTSIL_SIZE_DOUBLE
+
+(the former is the default).  This will set the macros
+
+TSIL_REAL
+TSIL_COMPLEXCPP
+
+to the approriate types.  Note that macro TSIL_COMPLEX retains its
+definition as the appropriate C complex type, i.e., double _Complex or
+long double _Complex.
+
+The one real subtlety has to do with compatibility of the C complex
+type and C++ std::complex<>, for example when a TSIL function returns
+a TSIL_COMPLEX and the result is to be stored in a std::complex<> of
+approporiate size, or when a TSIL function takes a complex value as an
+argument.  Despite that the two complex types are supposed to be byte
+equivalent, a straight assignment of this type does not work as
+expected for all compilers.
+
+However, the relevant standards guarantee that *pointers* to either
+type will be correctly interpreted in any context.  Hence it is
+neccesary to add "wrapper" code around such TSIL function calls, so
+that complex values (either return values or arguments) are referred
+to via pointers.
+
+What this means for the user is that the TSIL functions all have
+C++-specific versions that can be called with C++ types as arguments
+and will return C++ types.  The names of these are the same as the
+corresponding TSIL functions, with a trailing underscore.  Thus the C
+function
+
+TSIL_GetFunction (...)
+
+becomes
+
+TSIL_GetFunction_ (...) 
+
+when called from C++, etc.  *All* functions in the user API have been
+supplied with such wrappers, even though not all functions really need
+them; this is so that users need not remember which functions are
+"special."
+
+All these definitions appear at the end of tsil_cpp.h, should you wish
+to examine them.
+
+The sample code
+
+scalarpole.cpp
+
+shows all this in action.  After building TSIL, it can be compiled as, e.g.,
+
+g++ scalarpole.cpp -L. -ltsil
+
+In this C++ source code, note the
+* inclusion of tsil_cpp.h;
+* declaration of pi1, etc., as TSIL_COMPLEXCPP, which will default to
+  std::complex<long double>;
+* use of the C++-specific calls to TSIL_A_, TSIL_B_,
+  TSIL_GetFunction_, etc.

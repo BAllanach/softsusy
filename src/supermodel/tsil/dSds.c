@@ -4,7 +4,7 @@
 
 /* ******************************************************************* */
 
-TSIL_COMPLEX dSds (TSIL_STYPE S, TSIL_COMPLEX s)
+TSIL_COMPLEX TSIL_dSds (TSIL_STYPE S, TSIL_COMPLEX s)
 {
   return (S.value + 
 	  S.arg[0] * *(S.tval[0]) + 

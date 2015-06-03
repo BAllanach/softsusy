@@ -4,7 +4,7 @@
 
 /* **************************************************************** */
 
-void ConstructV (TSIL_VTYPE *V,
+void TSIL_ConstructV (TSIL_VTYPE *V,
 		 int n,
 		 TSIL_REAL z,
 		 TSIL_REAL x,

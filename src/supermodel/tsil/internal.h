@@ -4,7 +4,6 @@
 #include "tsil_global.h" /* Misc. global objects */
 #include "tsil_funcs.h"  /* Contains remaining functions */
 #include "tsil_params.h" /* Parameters, e.g. for integration */
-#include "tsil_build.h"  /* TSIL version number */
 #include <fcntl.h>
 #include <unistd.h>
 

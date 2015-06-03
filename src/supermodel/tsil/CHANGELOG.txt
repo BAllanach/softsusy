@@ -1,23 +1,53 @@
+May xx, 2015 Version 1.22
+-------------------------
+
+* For convenience, function identifier strings that are permutations
+  of the standard strings, matching the symmetries of the basis
+  functions, are now allowed.  Thus for example, one can access
+  U(z,x,y,v) by specifying either "Uzxyv" or "Uzxvy" in a call to
+  TSIL_GetFunction, since the U functions are symmetric under
+  interchange of their last two arguments.  Likewise, any of "Suxv",
+  "Sxuv", "Suvx", "Svux", "Sxvu", or "Svxu" will return the function
+  S(u,x,v) (symmetric under interchange of any of its arguments).
+
+* All internal function names now preceded by TSIL_, to avoid
+  collisions with user-defined entities.
+
+* TSIL_GetFunction(), TSIL_GetBoldFunctio(), TSIL_GetData(), and
+  TSIL_GetBoldData() now issue a fatal error (rather than a warning)
+  if an invalid function identifier is supplied, or if a function is
+  requested from an unevaluated TSIL_DATA struct.
+
+* Fixed problem that could arise in TSIL_M0x0y0() when s is equal to x
+  or y.
+
+* Added utilites to make TSIL more easily callable from C++ (details
+  in NotesOnC++.txt).
+
+* Added function TSIL_NumFuncs (const char *which) to user API.  Takes
+  arg "M", "U" etc. and returns the number of basis functions of
+  that type.
+
+
 September 3, 2014 Version 1.21
-------------------------
+------------------------------
 
-* Changed generic.c to fix problems that occurred for small s in cases 
-  where s=0 is a threshold. Thanks to Stefano Di Vita for pointing out the
-  problem.
-
+* Changed generic.c to fix problems that occurred for small s in cases
+  where s=0 is a threshold. Thanks to Stefano Di Vita for pointing out
+  the problem.
 
 June 1, 2014 Version 1.2
 ------------------------
 
 * Added code in function U0xyz(), located in file analyticU.c, to trap
-  cases that could evaluate to incorrect branches of CLOG. This problem was 
-  noticed on recent systems running Ubuntu 12.04, Ubuntu 14.04, and 
-  OpenSuse 13.1 with gcc. Thanks to Stefano Di Vita for pointing out the 
-  problem.
+  cases that could evaluate to incorrect branches of CLOG. This
+  problem was noticed on recent systems running Ubuntu 12.04, Ubuntu
+  14.04, and OpenSuse 13.1 with gcc. Thanks to Stefano Di Vita for
+  pointing out the problem.
 
 * Added the TSIL_RESULT struct, plus the manipulation utilities
   TSIL_CopyResult and TSIL_PermuteResult. See the end of section 5.2
-  and Appendix C of the preprint 
+  and Appendix C of the preprint
   http://arxiv.org/abs/hep-ph/0501132 for more information.
 
 * Updated TSIL_A, TSIL_Ap (new function), TSIL_I2, I20xy, and I200x to
@@ -36,14 +66,15 @@ June 1, 2014 Version 1.2
 
 * Fixed printfs lacking format strings in testprog.c.
 
-* Makefile updates: -lm moved to end of $(LIBS); thanks to Filippo Sala
-  for pointing out the issue. Antiquated entries for gcc under Mac OS X 
-  deleted. 
+* Makefile updates: -lm moved to end of $(LIBS); thanks to Filippo
+  Sala for pointing out the issue. Antiquated entries for gcc under
+  Mac OS X deleted.
 
-* Deleted obsolete remarks about long doubles in Mac OS X from ISSUES.txt.
+* Deleted obsolete remarks about long doubles in Mac OS X from
+  ISSUES.txt.
 
-* Added to ISSUES.txt a mention of a problem encountered on a system with 
-  Red Hat 4.1.2-52 and gcc 4.1.2.
+* Added to ISSUES.txt a mention of a problem encountered on a system
+  with Red Hat 4.1.2-52 and gcc 4.1.2.
   
 
 November 1, 2006 Version 1.1 

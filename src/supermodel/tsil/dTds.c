@@ -4,7 +4,7 @@
 
 /* **************************************************************** */
 
-TSIL_COMPLEX dTds (TSIL_TTYPE T, TSIL_COMPLEX s)
+TSIL_COMPLEX TSIL_dTds (TSIL_TTYPE T, TSIL_COMPLEX s)
 {
   int i;
   TSIL_COMPLEX result = 0.0L;

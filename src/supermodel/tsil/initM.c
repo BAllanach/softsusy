@@ -4,7 +4,7 @@
 
 /* ***************************************************************** */
 
-void Case0 (TSIL_MTYPE *foo, TSIL_REAL qq)
+void TSIL_Case0 (TSIL_MTYPE *foo, TSIL_REAL qq)
 {
   TSIL_REAL x, y, z, u, v;
   TSIL_REAL Ax, Ay, Az, Au, Av;
@@ -21,21 +21,21 @@ void Case0 (TSIL_MTYPE *foo, TSIL_REAL qq)
   u = foo->arg[3];
   v = foo->arg[4];
 
-  Ax = A(x, qq);
-  Ay = A(y, qq);
-  Az = A(z, qq);
-  Au = A(u, qq);
-  Av = A(v, qq);
+  Ax = TSIL_A(x, qq);
+  Ay = TSIL_A(y, qq);
+  Az = TSIL_A(z, qq);
+  Au = TSIL_A(u, qq);
+  Av = TSIL_A(v, qq);
 
   sqrtx = TSIL_SQRT(x);
   sqrty = TSIL_SQRT(y);
   sqrtz = TSIL_SQRT(z);
   sqrtu = TSIL_SQRT(u);
 
-  Aosqx = Alpha(x, qq);
-  Aosqy = Alpha(y, qq);
-  Aosqz = Alpha(z, qq);
-  Aosqu = Alpha(u, qq);
+  Aosqx = TSIL_Alpha(x, qq);
+  Aosqy = TSIL_Alpha(y, qq);
+  Aosqz = TSIL_Alpha(z, qq);
+  Aosqu = TSIL_Alpha(u, qq);
 
   foo->adenom[2] = v;
   foo->adenom[1] = -u*v + v*v - u*x - v*x + u*y - v*y - v*z + x*z - y*z;
@@ -67,7 +67,7 @@ void Case0 (TSIL_MTYPE *foo, TSIL_REAL qq)
   foo->bMS[1] = -2*(foo->bMU[0][1] + foo->bMU[2][1]);
   foo->bMS[2] = -2*(foo->bMU[1][0] + foo->bMU[3][0]);
   foo->bMS[3] = -2*(foo->bMU[1][1] + foo->bMU[3][1]);
-  foo->cMSconst = -0.5L*(I2(x,y,v,qq) + I2(z,u,v,qq));
+  foo->cMSconst = -0.5L*(TSIL_I2(x,y,v,qq) + TSIL_I2(z,u,v,qq));
 
   foo->aMT[0]   = x*(2*v + z - u);
   foo->bMT[0][0] = -3*x*foo->bMU[0][0] -(2*x + z)*foo->bMU[2][0];
@@ -128,7 +128,7 @@ void Case0 (TSIL_MTYPE *foo, TSIL_REAL qq)
 
 /* ***************************************************************** */
 
-void Case1a (TSIL_MTYPE *foo, TSIL_REAL qq)
+void TSIL_Case1a (TSIL_MTYPE *foo, TSIL_REAL qq)
 {
   TSIL_REAL x, y, z, u, v;
   TSIL_REAL Ax, Ay, Az, Au, Av;
@@ -145,17 +145,17 @@ void Case1a (TSIL_MTYPE *foo, TSIL_REAL qq)
   u = foo->arg[3];
   v = foo->arg[4];
 
-  Ax = A(x, qq);
-  Ay = A(y, qq);
-  Az = A(z, qq);
-  Au = A(u, qq);
-  Av = A(v, qq);
+  Ax = TSIL_A(x, qq);
+  Ay = TSIL_A(y, qq);
+  Az = TSIL_A(z, qq);
+  Au = TSIL_A(u, qq);
+  Av = TSIL_A(v, qq);
 
-  Aosqx = Alpha(x, qq);
-  Aosqy = Alpha(y, qq);
-  Aosqz = Alpha(z, qq);
-  Aosqu = Alpha(u, qq);
-  Aosqv = Alpha(v, qq);
+  Aosqx = TSIL_Alpha(x, qq);
+  Aosqy = TSIL_Alpha(y, qq);
+  Aosqz = TSIL_Alpha(z, qq);
+  Aosqu = TSIL_Alpha(u, qq);
+  Aosqv = TSIL_Alpha(v, qq);
 
   sqrtx = TSIL_SQRT(x);
   sqrty = TSIL_SQRT(y);
@@ -192,7 +192,7 @@ void Case1a (TSIL_MTYPE *foo, TSIL_REAL qq)
   foo->bMS[1] = sqrtx - sqrtz;
   foo->bMS[2] = sqrty + sqrtu;
   foo->bMS[3] = sqrty - sqrtu;
-  foo->cMSconst = -0.5L*(I2(x,y,v,qq) + I2(z,u,v,qq));
+  foo->cMSconst = -0.5L*(TSIL_I2(x,y,v,qq) + TSIL_I2(z,u,v,qq));
 
   foo->aMT[0]   = 0.L;
   foo->bMT[0][0] = sqrtx*(x + z/2 + 3*sqrtx*sqrtz/2);
@@ -252,7 +252,7 @@ void Case1a (TSIL_MTYPE *foo, TSIL_REAL qq)
 
 /* ***************************************************************** */
 
-void Case1b (TSIL_MTYPE *foo, TSIL_REAL qq)
+void TSIL_Case1b (TSIL_MTYPE *foo, TSIL_REAL qq)
 {
   TSIL_REAL x, y, z, u, v;
   TSIL_REAL Ax, Ay, Az, Au, Av;
@@ -269,17 +269,17 @@ void Case1b (TSIL_MTYPE *foo, TSIL_REAL qq)
   u = foo->arg[3];
   v = foo->arg[4];
 
-  Ax = A(x, qq);
-  Ay = A(y, qq);
-  Az = A(z, qq);
-  Au = A(u, qq);
-  Av = A(v, qq);
+  Ax = TSIL_A(x, qq);
+  Ay = TSIL_A(y, qq);
+  Az = TSIL_A(z, qq);
+  Au = TSIL_A(u, qq);
+  Av = TSIL_A(v, qq);
 
-  Aosqx = Alpha(x, qq);
-  Aosqy = Alpha(y, qq);
-  Aosqz = Alpha(z, qq);
-  Aosqu = Alpha(u, qq);
-  Aosqv = Alpha(v, qq);
+  Aosqx = TSIL_Alpha(x, qq);
+  Aosqy = TSIL_Alpha(y, qq);
+  Aosqz = TSIL_Alpha(z, qq);
+  Aosqu = TSIL_Alpha(u, qq);
+  Aosqv = TSIL_Alpha(v, qq);
 
   sqrtx = TSIL_SQRT(x);
   sqrty = TSIL_SQRT(y);
@@ -316,7 +316,7 @@ void Case1b (TSIL_MTYPE *foo, TSIL_REAL qq)
   foo->bMS[1] = sqrtz - sqrtx;
   foo->bMS[2] = sqrtu + sqrty;
   foo->bMS[3] = sqrtu - sqrty;
-  foo->cMSconst = -0.5L*(I2(x,y,v,qq) + I2(z,u,v,qq));
+  foo->cMSconst = -0.5L*(TSIL_I2(x,y,v,qq) + TSIL_I2(z,u,v,qq));
 
   foo->aMT[0] = 0.L;
   foo->bMT[0][0] = sqrtx*(x + z/2 + 3*sqrtx*sqrtz/2);
@@ -376,7 +376,7 @@ void Case1b (TSIL_MTYPE *foo, TSIL_REAL qq)
 
 /* ***************************************************************** */
 
-void Case2a (TSIL_MTYPE *foo, TSIL_REAL qq)
+void TSIL_Case2a (TSIL_MTYPE *foo, TSIL_REAL qq)
 {
   TSIL_REAL x, y, z, u, v;
   TSIL_REAL Ay, Au, Av;
@@ -393,12 +393,12 @@ void Case2a (TSIL_MTYPE *foo, TSIL_REAL qq)
   u = foo->arg[3];
   v = foo->arg[4];
 
-  Ay = A(y, qq);
-  Au = A(u, qq);
-  Av = A(v, qq);
+  Ay = TSIL_A(y, qq);
+  Au = TSIL_A(u, qq);
+  Av = TSIL_A(v, qq);
 
-  Aosqy = Alpha(y, qq);
-  Aosqu = Alpha(u, qq);
+  Aosqy = TSIL_Alpha(y, qq);
+  Aosqu = TSIL_Alpha(u, qq);
 
   sqrty = TSIL_SQRT(y);
   sqrtu = TSIL_SQRT(u);
@@ -432,7 +432,7 @@ void Case2a (TSIL_MTYPE *foo, TSIL_REAL qq)
   foo->bMS[1] = 0.L;
   foo->bMS[2] = v + sqrtu*sqrty;
   foo->bMS[3] = v - sqrtu*sqrty;
-  foo->cMSconst = -0.5L*(I2(x,y,v,qq) + I2(z,u,v,qq));
+  foo->cMSconst = -0.5L*(TSIL_I2(x,y,v,qq) + TSIL_I2(z,u,v,qq));
 
   foo->aMT[0] = 0.L;
   foo->bMT[0][0] = 0.L;
@@ -488,7 +488,7 @@ void Case2a (TSIL_MTYPE *foo, TSIL_REAL qq)
 
 /* ***************************************************************** */
 
-void Case2b (TSIL_MTYPE *foo, TSIL_REAL qq)
+void TSIL_Case2b (TSIL_MTYPE *foo, TSIL_REAL qq)
 {
   TSIL_REAL x, y, z, u, v;
   TSIL_REAL Ax, Az, Av;
@@ -505,12 +505,12 @@ void Case2b (TSIL_MTYPE *foo, TSIL_REAL qq)
   u = foo->arg[3];
   v = foo->arg[4];
 
-  Ax = A(x, qq);
-  Az = A(z, qq);
-  Av = A(v, qq);
+  Ax = TSIL_A(x, qq);
+  Az = TSIL_A(z, qq);
+  Av = TSIL_A(v, qq);
 
-  Aosqx = Alpha(x, qq);
-  Aosqz = Alpha(z, qq);
+  Aosqx = TSIL_Alpha(x, qq);
+  Aosqz = TSIL_Alpha(z, qq);
 
   sqrtx = TSIL_SQRT(x);
   sqrtz = TSIL_SQRT(z);
@@ -544,7 +544,7 @@ void Case2b (TSIL_MTYPE *foo, TSIL_REAL qq)
   foo->bMS[1] = v - sqrtz*sqrtx;
   foo->bMS[2] = 0.L;
   foo->bMS[3] = 0.L;
-  foo->cMSconst = -0.5L*(I2(x,y,v,qq) + I2(z,u,v,qq));
+  foo->cMSconst = -0.5L*(TSIL_I2(x,y,v,qq) + TSIL_I2(z,u,v,qq));
 
   foo->aMT[0] = 0.L;
   foo->bMT[0][0] = sqrtx*(2*sqrtx + sqrtz)*(v + sqrtx*sqrtz)/2;
@@ -600,7 +600,7 @@ void Case2b (TSIL_MTYPE *foo, TSIL_REAL qq)
 
 /* ***************************************************************** */
 
-void Case3 (TSIL_MTYPE *foo, TSIL_REAL qq)
+void TSIL_Case3 (TSIL_MTYPE *foo, TSIL_REAL qq)
 {
   TSIL_REAL x, y, z, u, v;
   TSIL_REAL Ax, Ay, Av;
@@ -615,9 +615,9 @@ void Case3 (TSIL_MTYPE *foo, TSIL_REAL qq)
   u = foo->arg[3];
   v = foo->arg[4];
 
-  Ax = A(x, qq);
-  Ay = A(y, qq);
-  Av = A(v, qq);
+  Ax = TSIL_A(x, qq);
+  Ay = TSIL_A(y, qq);
+  Av = TSIL_A(v, qq);
 
   foo->adenom[2] = 0.L;
   foo->adenom[1] = v;
@@ -648,7 +648,7 @@ void Case3 (TSIL_MTYPE *foo, TSIL_REAL qq)
   foo->bMS[1] = 0.L;
   foo->bMS[2] = (v - x + y);
   foo->bMS[3] = 0.L;
-  foo->cMSconst = -0.5L*(I2(x,y,v,qq) + I2(z,u,v,qq));
+  foo->cMSconst = -0.5L*(TSIL_I2(x,y,v,qq) + TSIL_I2(z,u,v,qq));
 
   foo->aMT[0] = 0.L;
   foo->bMT[0][0] = 3*x*(v + x - y);
@@ -704,7 +704,7 @@ void Case3 (TSIL_MTYPE *foo, TSIL_REAL qq)
 
 /* ***************************************************************** */
 
-int ConstructM (TSIL_MTYPE *m,
+int TSIL_ConstructM (TSIL_MTYPE *m,
 		TSIL_REAL x,
 		TSIL_REAL y, 
 		TSIL_REAL z,
@@ -718,33 +718,33 @@ int ConstructM (TSIL_MTYPE *m,
   m->arg[3] = u;
   m->arg[4] = v;
 
-  m->THxz = Th2(x, z);
-  m->THyu = Th2(y, u);
-  m->PSxz = Ps2(x, z);
-  m->PSyu = Ps2(y, u);
+  m->THxz = TSIL_Th2(x, z);
+  m->THyu = TSIL_Th2(y, u);
+  m->PSxz = TSIL_Ps2(x, z);
+  m->PSyu = TSIL_Ps2(y, u);
 
-  if (TSIL_FABS(v - Th2(x, y)) < TSIL_TOL) {
-    Case1a (m, qq);
+  if (TSIL_FABS(v - TSIL_Th2(x, y)) < TSIL_TOL) {
+    TSIL_Case1a (m, qq);
     return 1;
   }
-  else if (TSIL_FABS(v - Th2(z, u)) < TSIL_TOL) {
-    Case1b (m, qq);
+  else if (TSIL_FABS(v - TSIL_Th2(z, u)) < TSIL_TOL) {
+    TSIL_Case1b (m, qq);
     return 1;
   }
   else if (x < TSIL_TOL && z < TSIL_TOL) {
-    Case2a (m, qq);
+    TSIL_Case2a (m, qq);
     return 2;
   }
   else if (y < TSIL_TOL && u < TSIL_TOL) {
-    Case2b (m, qq);
+    TSIL_Case2b (m, qq);
     return 2;
   }
   else if (TSIL_FABS(x - z) < TSIL_TOL && TSIL_FABS(y - u) < TSIL_TOL) {
-    Case3 (m, qq);
+    TSIL_Case3 (m, qq);
     return 3;
   }
   else {
-    Case0 (m, qq);
+    TSIL_Case0 (m, qq);
     return 0;
   }
 }

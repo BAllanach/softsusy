@@ -4,37 +4,9 @@
 #include "internal.h"
 
 /* ***************************************************************** */
-/* Wrappers for the user API functions:                              */
-
-TSIL_COMPLEX TSIL_I2 (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z, TSIL_REAL QQ)
-{
-  return I2 (X, Y, Z, QQ);
-}
-
-TSIL_COMPLEX TSIL_I2p (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z, TSIL_REAL QQ)
-{
-  return I2p (X, Y, Z, QQ);
-}
-
-TSIL_COMPLEX TSIL_I2p2 (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z, TSIL_REAL QQ)
-{
-  return I2p2 (X, Y, Z, QQ);
-}
-
-TSIL_COMPLEX TSIL_I2pp (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z, TSIL_REAL QQ)
-{
-  return I2pp (X, Y, Z, QQ);
-}
-
-TSIL_COMPLEX TSIL_I2p3 (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z, TSIL_REAL QQ)
-{
-  return I2p3 (X, Y, Z, QQ);
-}
-
-/* ***************************************************************** */
 /* Modified in v1.2 to allow negative squared mass arg.              */
 
-TSIL_COMPLEX I2 (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z, TSIL_REAL QQ)
+TSIL_COMPLEX TSIL_I2 (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z, TSIL_REAL QQ)
 {
   TSIL_COMPLEX sqDeltaXYZ, rp, rm, xiXYZ;
   TSIL_COMPLEX lnbarX, lnbarY, lnbarZ;
@@ -45,13 +17,13 @@ TSIL_COMPLEX I2 (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z, TSIL_REAL QQ)
   if (X < Y) {tmp = Y; Y = X; X = tmp;}
  
   absX = TSIL_FABS(X);
-  if (absX < TSIL_TOL) return I20xy (Y, Z, QQ);
+  if (absX < TSIL_TOL) return TSIL_I20xy (Y, Z, QQ);
 
   absY = TSIL_FABS(Y);
-  if (absY < TSIL_TOL) return I20xy (X, Z, QQ);
+  if (absY < TSIL_TOL) return TSIL_I20xy (X, Z, QQ);
 
   absZ = TSIL_FABS(Z);
-  if (absZ < TSIL_TOL) return I20xy (X, Y, QQ);
+  if (absZ < TSIL_TOL) return TSIL_I20xy (X, Y, QQ);
 
   lnbarX = TSIL_LOG(absX/QQ);
   lnbarY = TSIL_LOG(absY/QQ);
@@ -77,18 +49,18 @@ TSIL_COMPLEX I2 (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z, TSIL_REAL QQ)
 /* ***************************************************************** */
 /* Modified in v1.2 to allow negative squared mass arg.              */
 
-TSIL_COMPLEX I20xy (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL QQ)
+TSIL_COMPLEX TSIL_I20xy (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL QQ)
 {
   TSIL_COMPLEX lnbarX, lnbarY;
   TSIL_REAL absX, absY;
   
   absX = TSIL_FABS(X);
   if (absX < TSIL_TOL)
-    return I200x (Y,QQ);
+    return TSIL_I200x (Y,QQ);
 
   absY = TSIL_FABS(Y);
   if (absY < TSIL_TOL)
-    return I200x (X,QQ);
+    return TSIL_I200x (X,QQ);
 
   /* DGR This line appears to be a bug... */
 /*   if (X < Y) {tmp = Y; Y = X; X = tmp;} */
@@ -112,7 +84,7 @@ TSIL_COMPLEX I20xy (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL QQ)
 /* ***************************************************************** */
 /* Modified in v1.2 to allow negative squared mass arg.              */
 
-TSIL_COMPLEX I200x (TSIL_REAL X,  TSIL_REAL QQ)
+TSIL_COMPLEX TSIL_I200x (TSIL_REAL X,  TSIL_REAL QQ)
 {
   TSIL_COMPLEX lnbarX;
   TSIL_REAL absX;
@@ -129,7 +101,7 @@ TSIL_COMPLEX I200x (TSIL_REAL X,  TSIL_REAL QQ)
 /* I2p is the derivative of I2 with respect to its first argument:
    I(x',y,z) */
 
-TSIL_COMPLEX I2p (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
+TSIL_COMPLEX TSIL_I2p (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 {
   TSIL_REAL Deltaxyz, Ax, Ay, Az, tmp, sqrtx, sqrty, sqrtz;
   TSIL_REAL onemyox, onemyox2, onemyox3, onemyox4, onemyox5;
@@ -141,13 +113,13 @@ TSIL_COMPLEX I2p (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
     return TSIL_Infinity;
   }
 
-  Ax = A(x,QQ);
-  Ay = A(y,QQ);
+  Ax = TSIL_A(x,QQ);
+  Ay = TSIL_A(y,QQ);
 
   if (z/(x+y) < TSIL_TOL) {
     onemyox = 1.0L - y/x;
     if (TSIL_FABS(onemyox) > 0.01) 
-      return ((I20xy(x,y,QQ) + x + y - Ax - Ay + Ax*Ay/x)/(x - y));
+      return ((TSIL_I20xy(x,y,QQ) + x + y - Ax - Ay + Ax*Ay/x)/(x - y));
 
     onemyox2 = onemyox*onemyox;
     onemyox3 = onemyox*onemyox2;
@@ -160,8 +132,8 @@ TSIL_COMPLEX I2p (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 	    - onemyox5*onemyox4/81 - onemyox5*onemyox5/100.0L);
   }
 
-  Az = A(z,QQ);
-  Deltaxyz = Delta(x,y,z);
+  Az = TSIL_A(z,QQ);
+  Deltaxyz = TSIL_Delta(x,y,z);
 
   if (TSIL_FABS(Deltaxyz/(x*x + y*y)) < TSIL_TOL) {
     sqrtx = TSIL_SQRT(x);
@@ -174,7 +146,7 @@ TSIL_COMPLEX I2p (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 	    +0.5L*(x*Ay*Az - y*Ax*Az - z*Ax*Ay)/(x*y*z));
   }
   else
-    return (((x-y-z)*I2(x,y,z,QQ) + (x-y+z)*Ax*Ay/x 
+    return (((x-y-z)*TSIL_I2(x,y,z,QQ) + (x-y+z)*Ax*Ay/x 
 	     + (x+y-z)*Ax*Az/x -2.0L*Ay*Az 
 	     + (y+z-x)*(Ax+Ay+Az) + x*x - (y+z)*(y+z))/Deltaxyz);
 }
@@ -183,7 +155,7 @@ TSIL_COMPLEX I2p (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 /* I2p2 gives the second derivative of I2 with respect to its first   */
 /* argument: I(x'',y,z).                                              */
 
-TSIL_COMPLEX I2p2 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
+TSIL_COMPLEX TSIL_I2p2 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 {
   TSIL_REAL tmp;
 
@@ -194,9 +166,9 @@ TSIL_COMPLEX I2p2 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
   
   if (y < z) {tmp = y; y = z; z = tmp;}
   if (y > x)
-    return xI2p2(y,x,z,QQ)/x;
+    return TSIL_xI2p2(y,x,z,QQ)/x;
   else
-    return xI2p2(x,y,z,QQ)/x;
+    return TSIL_xI2p2(x,y,z,QQ)/x;
 }
 
 
@@ -204,7 +176,7 @@ TSIL_COMPLEX I2p2 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 /* The following function is useful because it is symmetric under     */
 /* interchange of x,y,z.                                              */
 
-TSIL_COMPLEX xI2p2 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
+TSIL_COMPLEX TSIL_xI2p2 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 {
   TSIL_REAL Ax, Ay, Az, tmp, Deltaxyz, onemyox;
   TSIL_REAL onemyox2, onemyox3, onemyox4, onemyox5;
@@ -215,14 +187,14 @@ TSIL_COMPLEX xI2p2 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
   if (y < z) {tmp = y; y = z; z = tmp;}
 
   if (x < TSIL_TOL) {
-    TSIL_Warn("xI2p2", "x I(x'',y,z) is undefined for x = y = z = 0.");
+    TSIL_Warn("TSIL_xI2p2", "x I(x'',y,z) is undefined for x = y = z = 0.");
     return TSIL_Infinity;
   }
 
   if (z/x < TSIL_TOL) {
     onemyox = 1.0L - y/x;
     if (TSIL_FABS(onemyox) > 0.01)
-      return (A(x,QQ)-A(y,QQ))/(y-x);
+      return (TSIL_A(x,QQ)-TSIL_A(y,QQ))/(y-x);
 
     onemyox2 = onemyox*onemyox;
     onemyox3 = onemyox*onemyox2;
@@ -235,10 +207,10 @@ TSIL_COMPLEX xI2p2 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 	    + onemyox5*onemyox4/90.0L + onemyox5*onemyox5/110.0L); 
   }
 
-  Ax = A(x,QQ);
-  Ay = A(y,QQ);
-  Az = A(z,QQ);
-  Deltaxyz = Delta(x,y,z);
+  Ax = TSIL_A(x,QQ);
+  Ay = TSIL_A(y,QQ);
+  Az = TSIL_A(z,QQ);
+  Deltaxyz = TSIL_Delta(x,y,z);
 
   if (TSIL_FABS(Deltaxyz/(x*x)) < TSIL_TOL)
     return ((Az/TSIL_SQRT(x*y) + Ay/TSIL_SQRT(x*z) 
@@ -259,7 +231,7 @@ TSIL_COMPLEX xI2p2 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 	   Ay*(x3 - 3.L*x2*y + 3.L*x*y2 - y3 - x2*z + 2.L*x*y*z 
 	       + 3.L*y2*z - x*z2 - 3.L*y*z2 + z3) +
 	   Ax*(-x3 + 3.L*x2*y - 3.L*x*y2 + y3 + 3.L*x2*z + 2.L*x*y*z 
-	       - y2*z - 3.L*x*z2 - y*z2 + z3) - 4.L*x*y*z*I2(x, y, z, QQ))/
+	       - y2*z - 3.L*x*z2 - y*z2 + z3) - 4.L*x*y*z*TSIL_I2(x, y, z, QQ))/
           (Deltaxyz*Deltaxyz));
 }
 
@@ -267,7 +239,7 @@ TSIL_COMPLEX xI2p2 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 /* I2pp is the derivative of I2p with respect to its second argument: */
 /* I(x',y',z)                                                         */
 
-TSIL_COMPLEX I2pp (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
+TSIL_COMPLEX TSIL_I2pp (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 {
   TSIL_REAL Ax, Ay, Az, tmp, Deltaxyz, onemyox;
   TSIL_REAL onemyox2, onemyox3, onemyox4, onemyox5;
@@ -296,10 +268,10 @@ TSIL_COMPLEX I2pp (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 	    + onemyox5*onemyox4/10.0L + onemyox5*onemyox5/11.0L)/x;  
   }
 
-  Ax = A(x,QQ);
-  Ay = A(y,QQ);
-  Az = A(z,QQ);
-  Deltaxyz = Delta(x,y,z);
+  Ax = TSIL_A(x,QQ);
+  Ay = TSIL_A(y,QQ);
+  Az = TSIL_A(z,QQ);
+  Deltaxyz = TSIL_Delta(x,y,z);
   
   if (TSIL_FABS(Deltaxyz/(x*x + z*z)) < TSIL_TOL) {
     return ((1.0L + 0.5L*(Az-Ax-3.0L*Ay)/y + (Ax-Ay)/TSIL_SQRT(y*z) 
@@ -321,7 +293,7 @@ TSIL_COMPLEX I2pp (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 		   + 3.0L*y2*z + 3.0L*x*z2 - y*z2 - z3) 
 	   + Ax*y*(x3 - 3.0L*x2*y + 3.0L*x*y2 - y3 - 3.0L*x2*z - 4.0L*x*y*z 
 		   + 3.0L*y2*z + x*z2 - 3.0L*y*z2 + z3) 
-	   + 2.0L*x*xpymz*y*z*I2(x, y, z, QQ))/(x*y*Deltaxyz*Deltaxyz));
+	   + 2.0L*x*xpymz*y*z*TSIL_I2(x, y, z, QQ))/(x*y*Deltaxyz*Deltaxyz));
 }
 
 
@@ -329,7 +301,7 @@ TSIL_COMPLEX I2pp (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 /* Third derivative of I2 with respect to its first argument:         */
 /*   I(x''',y,z)                                                      */
 
-TSIL_COMPLEX I2p3 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
+TSIL_COMPLEX TSIL_I2p3 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 {
   TSIL_REAL Ax, Ay, Az, tmp, Deltaxyz;
   TSIL_REAL onemyox, onemyox2, onemyox3, onemyox4, onemyox5;
@@ -343,8 +315,8 @@ TSIL_COMPLEX I2p3 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 
   if (y < z) {tmp = y; y = z; z = tmp;}
 
-  Ax = A(x,QQ);
-  Ay = A(y,QQ);
+  Ax = TSIL_A(x,QQ);
+  Ay = TSIL_A(y,QQ);
 
   if (z/x < TSIL_TOL) {
     onemyox = 1.0L - y/x;
@@ -363,8 +335,8 @@ TSIL_COMPLEX I2p3 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 	     - onemyox5*onemyox5/60.L)/(x*x));
   }
 
-  Az = A(z,QQ);
-  Deltaxyz = Delta(x,y,z);
+  Az = TSIL_A(z,QQ);
+  Deltaxyz = TSIL_Delta(x,y,z);
 
   if (TSIL_FABS(Deltaxyz/(x*x + y*y)) < TSIL_TOL) {
     sqrtx = TSIL_SQRT(x);
@@ -396,7 +368,7 @@ TSIL_COMPLEX I2p3 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 	    + 6.L*x*y2*z - 8.L*y3*z - 3.L*xm1*y4*z + 5.L*x3*(y + z) 
 	    - 10.L*x2*z2 + 6.L*x*y*z2 - 22.L*y2*z2 + 2.L*xm1*y3*z2 
 	    - 6.L*Ay*Az*(x2 + y2 + 2.L*y*z - 2.L*x*(y + z) + z2) 
-	    + 12.L*I2(x,y,z,QQ)*(x*y*z - y2*z - y*z2) 
+	    + 12.L*TSIL_I2(x,y,z,QQ)*(x*y*z - y2*z - y*z2) 
 	    + 6.L*Ax*Az*(x*y - 2.L*y2 + xm1*(y3 - y*z2)) 
 	    + 10.L*x*z3 - 8.L*y*z3 + 2.L*xm1*y2*z3 
 	    + 6.L*Ax*Ay*(x*z - 2.L*z2 + xm1*(-y2*z + z3)) 

@@ -4,7 +4,7 @@
 
 /* **************************************************************** */
 
-void ConstructU (TSIL_UTYPE *u,
+void TSIL_ConstructU (TSIL_UTYPE *u,
 		 int n,
 		 TSIL_REAL z,
 		 TSIL_REAL x,
@@ -43,8 +43,8 @@ void ConstructU (TSIL_UTYPE *u,
   }
 
   /* Denominator factors */
-  u->den_th = Th2(z, x);
-  u->den_ps = Ps2(z, x);
+  u->den_th = TSIL_Th2(z, x);
+  u->den_ps = TSIL_Ps2(z, x);
 
   /* Numerator factors: */
   u->cU_th = u->den_th/2.0L;
@@ -59,7 +59,7 @@ void ConstructU (TSIL_UTYPE *u,
   u->cT2 = v/2.0L;
   u->cT3 = y/2.0L;
 
-  u->con = 0.5L*(z - A(z, qq) + y - A(y, qq) + v - A(v, qq) -I2(x, y, v, qq));
+  u->con = 0.5L*(z - TSIL_A(z, qq) + y - TSIL_A(y, qq) + v - TSIL_A(v, qq) -TSIL_I2(x, y, v, qq));
 
   return;
 }

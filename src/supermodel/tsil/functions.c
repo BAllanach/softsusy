@@ -6,14 +6,14 @@
 /* ******************************************************************* */
 /* Implements Eq. 2.29 of hep-ph/0307101                               */
 
-TSIL_COMPLEX Delta (TSIL_COMPLEX a, TSIL_COMPLEX b, TSIL_COMPLEX c)
+TSIL_COMPLEX TSIL_Delta (TSIL_COMPLEX a, TSIL_COMPLEX b, TSIL_COMPLEX c)
 {
   return a*a + b*b + c*c - 2.0L*a*b - 2.0L*a*c - 2.0L*b*c;
 }
 
 /* ******************************************************************* */
 
-TSIL_REAL MaxAbs (TSIL_REAL *z, int n)
+TSIL_REAL TSIL_MaxAbs (TSIL_REAL *z, int n)
 {
   TSIL_REAL test, res = TSIL_FABS(*z);
   while (n > 1) {
@@ -27,7 +27,7 @@ TSIL_REAL MaxAbs (TSIL_REAL *z, int n)
 
 /* ******************************************************************* */
 
-TSIL_REAL MinAbs (TSIL_REAL *z, int n)
+TSIL_REAL TSIL_MinAbs (TSIL_REAL *z, int n)
 {
   TSIL_REAL test, res = TSIL_FABS(*z);
   while (n > 1) {
@@ -41,7 +41,7 @@ TSIL_REAL MinAbs (TSIL_REAL *z, int n)
 
 /* ******************************************************************* */
 
-TSIL_COMPLEX AddIeps (TSIL_COMPLEX S)
+TSIL_COMPLEX TSIL_AddIeps (TSIL_COMPLEX S)
 {
   if (TSIL_FABS(TSIL_CIMAG(S))/TSIL_CABS(S) < TSIL_TOL)
     return TSIL_CREAL(S) + TSIL_CABS(S)*I*TSIL_TOL*TSIL_TOL;
@@ -51,7 +51,7 @@ TSIL_COMPLEX AddIeps (TSIL_COMPLEX S)
 
 /* ******************************************************************* */
 
-TSIL_COMPLEX EtaBranch (TSIL_COMPLEX z1, TSIL_COMPLEX z2)
+TSIL_COMPLEX TSIL_EtaBranch (TSIL_COMPLEX z1, TSIL_COMPLEX z2)
 {
   return TSIL_CLOG(z1*z2) - TSIL_CLOG(z1) - TSIL_CLOG(z2);
 }
@@ -64,7 +64,9 @@ TSIL_COMPLEX EtaBranch (TSIL_COMPLEX z1, TSIL_COMPLEX z2)
   thresholds.
 */
 
-int NearThreshold (TSIL_DATA *foo, TSIL_REAL *sthresh, TSIL_REAL mindistance)
+int TSIL_NearThreshold (TSIL_DATA *foo,
+			TSIL_REAL *sthresh,
+			TSIL_REAL mindistance)
 {
   TSIL_REAL distance;
   int i;
@@ -85,7 +87,7 @@ int NearThreshold (TSIL_DATA *foo, TSIL_REAL *sthresh, TSIL_REAL mindistance)
 
 /* ******************************************************************* */
 
-void ScaleData (TSIL_DATA *foo, TSIL_REAL sfac)
+void TSIL_ScaleData (TSIL_DATA *foo, TSIL_REAL sfac)
 {
   TSIL_REAL sfToThe[5];
   TSIL_REAL extrascalefac1, extrascalefac2;
@@ -221,7 +223,7 @@ void ScaleData (TSIL_DATA *foo, TSIL_REAL sfac)
 /* ******************************************************************* */
 /* Scales all momenta by the largest of x,y,z,u,v,s                    */
 
-void Rescale (TSIL_DATA *foo)
+void TSIL_Rescale (TSIL_DATA *foo)
 {
   TSIL_REAL tmp[6], sf;
   int n = 0;
@@ -239,7 +241,7 @@ void Rescale (TSIL_DATA *foo)
   else if (foo->whichFns == STU ) n = 5;
   else if (foo->whichFns == ST  ) n = 4;
 
-  sf = MaxAbs(tmp, n);
+  sf = TSIL_MaxAbs(tmp, n);
   /* End original code */
 
 
@@ -273,9 +275,9 @@ void Rescale (TSIL_DATA *foo)
 /*   } */
 
   /* Determine the scaling factor */
-/*   sf = TSIL_EXP(0.5L*(TSIL_LOG(MaxAbs(tmp, n)) + TSIL_LOG(MinAbs(tmp, n)))); */
+/*   sf = TSIL_EXP(0.5L*(TSIL_LOG(TSIL_MaxAbs(tmp, n)) + TSIL_LOG(TSIL_MinAbs(tmp, n)))); */
 
-  ScaleData (foo, sf);
+  TSIL_ScaleData (foo, sf);
 
   return;
 }
@@ -283,14 +285,14 @@ void Rescale (TSIL_DATA *foo)
 /* ******************************************************************* */
 /* Undoes any rescaling                                                */
 
-void Unscale (TSIL_DATA *foo)
+void TSIL_Unscale (TSIL_DATA *foo)
 {
   TSIL_REAL sf;
 
   /* Determine the "unscaling" factor */
   sf = 1.0L/(foo->scaleFac);
 
-  ScaleData (foo, sf);
+  TSIL_ScaleData (foo, sf);
   foo->scaleFac = 1.0L;
 
   return;
@@ -311,6 +313,64 @@ void TSIL_PrintInfo (void)
   return;
 }
 
+
+/* ******************************************************************* */
+/* Check input function identifier for sanity */
+
+int TSIL_ValidIdentifier (const char* which)
+{ 
+#include "tsil_names.h"
+
+  int i,j;
+
+  if (!strcmp(which, "M")) return YES;
+
+  for (i=0; i<NUM_U_FUNCS; i++)
+    for (j=0; j<NUM_U_PERMS; j++)
+      if (!strcmp(which, uname[i][j])) return YES;
+
+  for (i=0; i<NUM_T_FUNCS; i++)
+    for (j=0; j<NUM_T_PERMS; j++)
+      if (!strcmp(which, tname[i][j])) return YES;
+
+  for (i=0; i<NUM_S_FUNCS; i++)
+    for (j=0; j<NUM_S_PERMS; j++)
+      if (!strcmp(which, sname[i][j])) return YES;
+
+  for (i=0; i<NUM_B_FUNCS; i++)
+    for (j=0; j<NUM_B_PERMS; j++)
+      if (!strcmp(which, bname[i][j])) return YES;
+
+  for (i=0; i<NUM_V_FUNCS; i++)
+    for (j=0; j<NUM_V_PERMS; j++)
+      if (!strcmp(which, vname[i][j])) return YES;
+
+  for (i=0; i<NUM_T_FUNCS; i++)
+    for (j=0; j<NUM_T_PERMS; j++)
+      if (!strcmp(which, tbarname[i][j])) return YES;
+
+  /* If we get here the identifier is invalid: */
+  return NO;
+}
+/* ******************************************************************* */
+/* Check input function identifier for sanity */
+
+int TSIL_NumFuncs (const char* which)
+{ 
+  char funcname[] = "TSIL_NumFuncs";
+
+  if (!strcmp(which, "M")) return 1;
+  else if (!strcmp(which, "U")) return NUM_U_FUNCS;
+  else if (!strcmp(which, "V")) return NUM_V_FUNCS;
+  else if (!strcmp(which, "T")) return NUM_T_FUNCS;
+  else if (!strcmp(which, "S")) return NUM_S_FUNCS;
+  else if (!strcmp(which, "B")) return NUM_B_FUNCS;
+
+  /* If we get here the identifier is invalid: */
+  else TSIL_Error (funcname, "Invalid identifier specified.", 99);
+  return 0; /* Never get this but suppresses the compiler warning... */
+}
+
 /* ******************************************************************* */
 /* Extract function values from the data object to an array            */
 
@@ -318,14 +378,8 @@ int TSIL_GetData (TSIL_DATA    *foo,
 		  const char   *which, 
 		  TSIL_COMPLEX *val)
 {
-  /* Below is cut and pasted directly from tsil_names.h */
-  const char *uname[] = {"Uzxyv","Uuyxv","Uxzuv","Uyuzv"};
-  const char *tname[] = {"Tvyz", "Tuxv", "Tyzv", "Txuv", "Tzyv", "Tvxu"};
-  const char *sname[] = {"Svyz", "Suxv"};
-  const char *bname[] = {"Bxz", "Byu"};
-  const char *vname[] = {"Vzxyv","Vuyxv","Vxzuv","Vyuzv"};
-  const char *tbarname[] = {"TBARvyz", "TBARuxv", "TBARyzv",
-			    "TBARxuv", "TBARzyv", "TBARvxu"};
+#include "tsil_names.h"
+
   int i;
   int retval = 1;
   char funcname[] = "TSIL_GetData";
@@ -334,14 +388,12 @@ int TSIL_GetData (TSIL_DATA    *foo,
 
   strcpy (errmsg, errmsg0);
 
-  if (foo->status == UNEVALUATED) {
-    TSIL_Warn (funcname, "This case has not been evaluated!");
-    return 0;
-  }
+  /* Changed from Warn to Error in v1.22 */
+  if (foo->status == UNEVALUATED)
+    TSIL_Error (funcname, "This case has not been evaluated!", 22);
 
   /* DGR - Only makes sense to extract Bs using this function for
      cases other than STUM */
-
   if (foo->whichFns == STUM) {
     if (!strcmp(which, "M")) {
       if (TSIL_IsInfinite (*val = foo->M.value))
@@ -350,48 +402,47 @@ int TSIL_GetData (TSIL_DATA    *foo,
     else if (!strcmp(which, "U")) {
       for (i=0; i<NUM_U_FUNCS; i++)
 	if (TSIL_IsInfinite (val[i] = foo->U[i].value)) {
-	  TSIL_Warn (funcname, strncat (errmsg, uname[i], 5));	  
+	  TSIL_Warn (funcname, strncat (errmsg, uname[i][0], 5));	  
 	  strcpy (errmsg, errmsg0);
 	}
     }
     else if (!strcmp(which, "T")) {
       for (i=0; i<NUM_T_FUNCS; i++)
 	if (TSIL_IsInfinite (val[i] = foo->T[i].value)) {
-	  TSIL_Warn (funcname, strncat (errmsg, tname[i], 4));
+	  TSIL_Warn (funcname, strncat (errmsg, tname[i][0], 4));
 	  strcpy (errmsg, errmsg0);
 	}
     }
     else if (!strcmp(which, "S")) {
       for (i=0; i<NUM_S_FUNCS; i++)
 	if (TSIL_IsInfinite (val[i] = foo->S[i].value)) {
-	  TSIL_Warn (funcname, strncat (errmsg, sname[i], 4));
+	  TSIL_Warn (funcname, strncat (errmsg, sname[i][0], 4));
 	  strcpy (errmsg, errmsg0);
 	}
     }
     else if (!strcmp(which, "B")) {
       for (i=0; i<NUM_B_FUNCS; i++)
 	if (TSIL_IsInfinite (val[i] = foo->B[i].value)) {
-	  TSIL_Warn (funcname, strncat (errmsg, bname[i], 3));
+	  TSIL_Warn (funcname, strncat (errmsg, bname[i][0], 3));
 	  strcpy (errmsg, errmsg0);
 	}
     }
     else if (!strcmp(which, "V")) {
       for (i=0; i<NUM_V_FUNCS; i++)
 	if (TSIL_IsInfinite (val[i] = foo->V[i].value)) {
-	  TSIL_Warn (funcname, strncat (errmsg, vname[i], 5));
+	  TSIL_Warn (funcname, strncat (errmsg, vname[i][0], 5));
 	  strcpy (errmsg, errmsg0);
 	}
     }
     else if (!strcmp(which, "TBAR")) {
       for (i=0; i<NUM_T_FUNCS; i++)
 	if (TSIL_IsInfinite (val[i] = foo->Tbar[i].value)) {
-	  TSIL_Warn (funcname, strncat (errmsg, tbarname[i], 7));
+	  TSIL_Warn (funcname, strncat (errmsg, tbarname[i][0], 7));
 	  strcpy (errmsg, errmsg0);
 	}
     }
     else {
-      TSIL_Error (funcname, "Invalid identifier", 1);
-      retval = 0;
+      TSIL_Error (funcname, "Invalid identifier specified.", 111);
     }
   }
   else {
@@ -399,13 +450,13 @@ int TSIL_GetData (TSIL_DATA    *foo,
     if (!strcmp(which, "B")) {
       for (i=0; i<NUM_B_FUNCS; i++)
 	if (TSIL_IsInfinite (val[i] = foo->B[i].value)) {
-	  TSIL_Warn (funcname, strncat (errmsg, bname[i], 3));
+	  TSIL_Warn (funcname, strncat (errmsg, bname[i][0], 3));
 	  strcpy (errmsg, errmsg0);
 	}
     }
     else {
       TSIL_Error (funcname,
-	"Can only use this to extract B functions in subsidiary cases.", 1);
+		  "Can only use this to extract B functions in subsidiary cases.", 1);
       retval = 1;
     }
   }
@@ -420,11 +471,7 @@ int TSIL_GetBoldData (TSIL_DATA    *foo,
 		      const char   *which,
 		      TSIL_COMPLEX val[][3])
 {
-  /* Below is cut and pasted directly from tsil_names.h */
-  const char *uname[] = {"Uzxyv","Uuyxv","Uxzuv","Uyuzv"};
-  const char *tname[] = {"Tvyz", "Tuxv", "Tyzv", "Txuv", "Tzyv", "Tvxu"};
-  const char *sname[] = {"Svyz", "Suxv"};
-  const char *vname[] = {"Vzxyv","Vuyxv","Vxzuv","Vyuzv"};
+#include "tsil_names.h"
 
   int i, j;
   int retval = 1;
@@ -432,10 +479,8 @@ int TSIL_GetBoldData (TSIL_DATA    *foo,
   char errmsg0[45] = "Function not defined for these parameters: ";
   char errmsg[55];
 
-  if (foo->status == UNEVALUATED) {
-    TSIL_Warn (funcname, "This case has not been evaluated!");
-    return 0;
-  }
+  if (foo->status == UNEVALUATED)
+    TSIL_Error (funcname, "This case has not been evaluated!", 22);
 
   /* Again, only get the whole array for the Bs if STU or ST... */
   if (foo->whichFns == STUM) {
@@ -443,7 +488,7 @@ int TSIL_GetBoldData (TSIL_DATA    *foo,
       for (i=0; i<NUM_U_FUNCS; i++)
 	for (j=0; j<3; j++)
 	  if (TSIL_IsInfinite (val[i][j] = foo->U[i].bold[j])) {
-	    TSIL_Warn (funcname, strncat (errmsg, uname[i], 5));
+	    TSIL_Warn (funcname, strncat (errmsg, uname[i][0], 5));
 	    strcpy (errmsg, errmsg0);
 	  }
     }
@@ -451,7 +496,7 @@ int TSIL_GetBoldData (TSIL_DATA    *foo,
       for (i=0; i<NUM_V_FUNCS; i++)
 	for (j=0; j<3; j++)
 	  if (TSIL_IsInfinite (val[i][j] = foo->V[i].bold[j])) {
-	    TSIL_Warn (funcname, strncat (errmsg, vname[i], 5));
+	    TSIL_Warn (funcname, strncat (errmsg, vname[i][0], 5));
 	    strcpy (errmsg, errmsg0);
 	  }
     }
@@ -459,7 +504,7 @@ int TSIL_GetBoldData (TSIL_DATA    *foo,
       for (i=0; i<NUM_T_FUNCS; i++)
 	for (j=0; j<3; j++)
 	  if (TSIL_IsInfinite (val[i][j] = foo->T[i].bold[j])) {
-	    TSIL_Warn (funcname, strncat (errmsg, tname[i], 4));
+	    TSIL_Warn (funcname, strncat (errmsg, tname[i][0], 4));
 	    strcpy (errmsg, errmsg0);
 	  }
     }
@@ -467,12 +512,12 @@ int TSIL_GetBoldData (TSIL_DATA    *foo,
       for (i=0; i<NUM_S_FUNCS; i++)
 	for (j=0; j<3; j++)
 	  if (TSIL_IsInfinite (val[i][j] = foo->S[i].bold[j])) {
-	    TSIL_Warn (funcname, strncat (errmsg, sname[i], 4));
+	    TSIL_Warn (funcname, strncat (errmsg, sname[i][0], 4));
 	    strcpy (errmsg, errmsg0);
 	  }
     }
     else {
-      TSIL_Error (funcname, "Invalid identifier", 1);
+      TSIL_Error (funcname, "Invalid identifier specified.", 1);
       retval = 0;
     }
   }
@@ -490,139 +535,135 @@ int TSIL_GetBoldData (TSIL_DATA    *foo,
 
 TSIL_COMPLEX TSIL_GetFunction (TSIL_DATA *foo, const char *which)
 {
-  /* Below is cut and pasted directly from tsil_names.h */
-  const char *uname[] = {"Uzxyv","Uuyxv","Uxzuv","Uyuzv"};
-  const char *tname[] = {"Tvyz", "Tuxv", "Tyzv", "Txuv", "Tzyv", "Tvxu"};
-  const char *sname[] = {"Svyz", "Suxv"};
-  const char *bname[] = {"Bxz", "Byu"};
-  const char *vname[] = {"Vzxyv","Vuyxv","Vxzuv","Vyuzv"};
-  const char *tbarname[] = {"TBARvyz", "TBARuxv", "TBARyzv", 
-                            "TBARxuv", "TBARzyv", "TBARvxu"};
-  int i;
+#include "tsil_names.h"
+
+  int i,j;
+  int match = NO;
+
   TSIL_COMPLEX result = (TSIL_COMPLEX) 0.0;
   char funcname[] = "TSIL_GetFunction";
   char errmsg[55] = "Function not defined for these parameters: ";
 
-  /* Check evaluation status: */
-  if (foo->status == UNEVALUATED) {
-    TSIL_Warn (funcname, "This case has not yet been evaluated!");
-    return result;
-  }
+  if (!TSIL_ValidIdentifier (which))
+    TSIL_Error (funcname, "Invalid function identifier specified.", 23);
+
+  if (foo->status == UNEVALUATED)
+    TSIL_Error (funcname, "This case has not yet been evaluated!", 22);
 
   /* For simplicity, do evaluation cases separately */
   if (foo->whichFns == STUM) {
     if (!strncmp(which, "M", 1)) {
       result = foo->M.value;
-/*       return foo->M.value; */
     }
     else if (!strncmp(which, "U", 1)) {
       for (i=0; i<NUM_U_FUNCS; i++)
-	if (!strcmp(which, uname[i]))
-	  result = foo->U[i].value;
-/* 	  return foo->U[i].value; */
+	for (j=0; j<NUM_U_PERMS; j++)
+	  if (!strcmp(which, uname[i][j]))
+	    result = foo->U[i].value;
     }
     else if (!strncmp(which, "TBAR", 4)) {
       for (i=0; i<NUM_T_FUNCS; i++)
-	if (!strcmp(which, tbarname[i]))
-	  result = foo->Tbar[i].value;
-/* 	  return foo->Tbar[i].value; */
+	for (j=0; j<NUM_T_PERMS; j++)
+	  if (!strcmp(which, tbarname[i][j]))
+	    result = foo->Tbar[i].value;
     }
     else if (!strncmp(which, "T", 1)) {
       for (i=0; i<NUM_T_FUNCS; i++)
-	if (!strcmp(which, tname[i]))
-	  result = foo->T[i].value;
-/* 	  return foo->T[i].value; */
+	for (j=0; j<NUM_T_PERMS; j++)
+	  if (!strcmp(which, tname[i][j]))
+	    result = foo->T[i].value;
     }
     else if (!strncmp(which, "S", 1)) {
       for (i=0; i<NUM_S_FUNCS; i++)
-	if (!strcmp(which, sname[i]))
-	  result = foo->S[i].value;
-/* 	  return foo->S[i].value; */
+	for (j=0; j<NUM_S_PERMS; j++)
+	  if (!strcmp(which, sname[i][j]))
+	    result = foo->S[i].value;
     }
     else if (!strncmp(which, "B", 1)) {
       for (i=0; i<NUM_B_FUNCS; i++)
-	if (!strcmp(which, bname[i]))
-	  result = foo->B[i].value;
-/* 	  return foo->B[i].value; */
+	for (j=0; j<NUM_B_PERMS; j++)
+	  if (!strcmp(which, bname[i][j]))
+	    result = foo->B[i].value;
     }
     else if (!strncmp(which, "V", 1)) {
       for (i=0; i<NUM_V_FUNCS; i++)
-	if (!strcmp(which, vname[i]))
-	  result = foo->V[i].value;
-/* 	  return foo->V[i].value; */
+	for (j=0; j<NUM_V_PERMS; j++)
+	  if (!strcmp(which, vname[i][j]))
+	    result = foo->V[i].value;
     }
     else {
-      /* If we get here the identifier was not recognized: */
-      TSIL_Error (funcname, "Invalid identifier", 1);
-      return (TSIL_COMPLEX) 0.0;
+      /* This can't ever happen... */
+      TSIL_Error (funcname, "Invalid identifier specified.", 1);
     }
   }
   else if (foo->whichFns == STU) {
 
-    if (!strcmp(which, uname[xzuv]))
-      result = foo->U[xzuv].value;
-/* 	  return foo->U[xzuv].value; */
-
+    if (!strncmp(which, "U", 1)) {
+      for (j=0; j<NUM_U_PERMS; j++)
+	if (!strcmp(which, uname[xzuv][j]))
+	  result = foo->U[xzuv].value;
+    }
     else if (!strncmp(which, "TBAR", 4)) {
       for (i=1; i<NUM_T_FUNCS; i+=2)
-	if (!strcmp(which, tbarname[i]))
-	  result = foo->Tbar[i].value;
-/* 	  return foo->Tbar[i].value; */
+	for (j=0; j<NUM_T_PERMS; j++)
+	  if (!strcmp(which, tbarname[i][j]))
+	    result = foo->Tbar[i].value;
     }
     else if (!strncmp(which, "T", 1)) {
       for (i=1; i<NUM_T_FUNCS; i+=2)
-	if (!strcmp(which, tname[i]))
-	  result = foo->T[i].value;
-/* 	  return foo->T[i].value; */
+	for (j=0; j<NUM_T_PERMS; j++)
+	  if (!strcmp(which, tname[i][j]))
+	    result = foo->T[i].value;
     }
-    else if (!strcmp(which, sname[uxv]))
-      result = foo->S[uxv].value;
-/*       return foo->S[uxv].value; */
-
+    else if (!strncmp(which, "S", 1)) {
+      for (j=0; j<NUM_S_PERMS; j++)
+	if (!strcmp(which, sname[uxv][j]))
+	  result = foo->S[uxv].value;
+    }
     else if (!strncmp(which, "B", 1)) {
       for (i=0; i<NUM_B_FUNCS; i++)
-	if (!strcmp(which, bname[i]))
-	  result = foo->B[i].value;
-/* 	  return foo->B[i].value; */
+	for (j=0; j<NUM_B_PERMS; j++)
+	  if (!strcmp(which, bname[i][j]))
+	    result = foo->B[i].value;
     }
-    else if (!strcmp(which, vname[xzuv]))
-      result = foo->V[xzuv].value;
-/* 	  return foo->V[xzuv].value; */
-
+    else if (!strncmp(which, "V", 1)) {
+      for (j=0; j<NUM_V_PERMS; j++)
+	if (!strcmp(which, vname[xzuv][j]))
+	  result = foo->V[xzuv].value;
+    }
     else {
-      /* If we get here the identifier was not recognized or was wrong: */
-      TSIL_Error (funcname, "Invalid identifier for this case", 1);
-      result = (TSIL_COMPLEX) 0.0;
+      /* Invalid identifier for this case: */
+      TSIL_Error (funcname, "Invalid identifier for STU evaluation.", 1);
     }
   }
   else if (foo->whichFns == ST) {
     
     if (!strncmp(which, "TBAR", 4)) {
       for (i=1; i<NUM_T_FUNCS; i+=2)
-	if (!strcmp(which, tbarname[i]))
-	  result = foo->Tbar[i].value;
-/* 	  return foo->Tbar[i].value; */
+	for (j=0; j<NUM_T_PERMS; j++)
+	  if (!strcmp(which, tbarname[i][j]))
+	    result = foo->Tbar[i].value;
     }
     else if (!strncmp(which, "T", 1)) {
       for (i=1; i<NUM_T_FUNCS; i+=2)
-	if (!strcmp(which, tname[i]))
-	  result = foo->T[i].value;
-/* 	  return foo->T[i].value; */
+	for (j=0; j<NUM_T_PERMS; j++)
+	  if (!strcmp(which, tname[i][j]))
+	    result = foo->T[i].value;
     }
-    else if (!strcmp(which, sname[uxv]))
-      result = foo->S[uxv].value;
-/*       return foo->S[uxv].value; */
-
+    else if (!strncmp(which, "S", 1)) {
+      for (j=0; j<NUM_S_PERMS; j++)
+	if (!strcmp(which, sname[uxv][j]))
+	  result = foo->S[uxv].value;
+    }
     else if (!strncmp(which, "B", 1)) {
       for (i=0; i<NUM_B_FUNCS; i++)
-	if (!strcmp(which, bname[i]))
-	  result = foo->B[i].value;
-/* 	  return foo->B[i].value; */
+	for (j=0; j<NUM_B_PERMS; j++)
+	  if (!strcmp(which, bname[i][j]))
+	    result = foo->B[i].value;
     }
     else {
-      /* If we get here the identifier was not recognized or was wrong: */
-      TSIL_Error ("TSIL_GetFunction", "Invalid identifier for this case", 1);
-      result = (TSIL_COMPLEX) 0.0;
+      /* Wrong identifier for this subsidiary case: */
+      TSIL_Error ("TSIL_GetFunction", "Invalid identifier for ST evaluation.", 1);
     }
   }
 
@@ -639,25 +680,22 @@ TSIL_COMPLEX TSIL_GetBoldFunction (TSIL_DATA  *foo,
 				   const char *which,
 				   int        n)
 {
-  /* Below is cut and pasted directly from tsil_names.h */
-  const char *uname[] = {"Uzxyv","Uuyxv","Uxzuv","Uyuzv"};
-  const char *tname[] = {"Tvyz", "Tuxv", "Tyzv", "Txuv", "Tzyv", "Tvxu"};
-  const char *sname[] = {"Svyz", "Suxv"};
-  const char *vname[] = {"Vzxyv","Vuyxv","Vxzuv","Vyuzv"};
-  int i;
+#include "tsil_names.h"
+
+  int i,j;
   TSIL_COMPLEX result = (TSIL_COMPLEX) 0.0;
   char funcname[] = "TSIL_GetBoldFunction";
   char errmsg[55] = "Function not defined for these parameters: ";
 
   /* Check inputs and evaluation status: */
-  if (n<0 || n>2) {
-    TSIL_Error (funcname, "Invalid power specified, must be 0,1, or 2.", 1);
-    return result;
-  }
-  if (foo->status == UNEVALUATED) {
-    TSIL_Warn (funcname, "This case has not been evaluated!");
-    return result;
-  }
+  if (n<0 || n>2)
+    TSIL_Error (funcname, "Invalid power specified, must be 0,1, or 2.", 24);
+
+  if (!TSIL_ValidIdentifier (which))
+    TSIL_Error (funcname, "Invalid function identifier specified.", 23);
+
+  if (foo->status == UNEVALUATED)
+    TSIL_Error (funcname, "This case has not been evaluated!", 22);
 
   /* Again, branch on evaluation case */
 
@@ -665,77 +703,78 @@ TSIL_COMPLEX TSIL_GetBoldFunction (TSIL_DATA  *foo,
     /* Find and return appropriate value: */
     if (!strncmp(which, "U", 1)) {
       for (i=0; i<NUM_U_FUNCS; i++)
-	if (!strcmp(which, uname[i]))
-	  result = foo->U[i].bold[n];
-/* 	  return foo->U[i].bold[n]; */
+	for (j=0; j<NUM_U_PERMS; j++)
+	  if (!strcmp(which, uname[i][j]))
+	    result = foo->U[i].bold[n];
     }
     else if (!strncmp(which, "T", 1)) {
       for (i=0; i<NUM_T_FUNCS; i++)
-	if (!strcmp(which, tname[i]))
-	  result = foo->T[i].bold[n];
-/* 	  return foo->T[i].bold[n]; */
+	for (j=0; j<NUM_T_PERMS; j++)
+	  if (!strcmp(which, tname[i][j]))
+	    result = foo->T[i].bold[n];
     }
     else if (!strncmp(which, "S", 1)) {
       for (i=0; i<NUM_S_FUNCS; i++)
-	if (!strcmp(which, sname[i]))
-	  result = foo->S[i].bold[n];
-/* 	  return foo->S[i].bold[n]; */
+	for (j=0; j<NUM_S_PERMS; j++)
+	  if (!strcmp(which, sname[i][j]))
+	    result = foo->S[i].bold[n];
     }
     else if (!strncmp(which, "V", 1)) {
       for (i=0; i<NUM_V_FUNCS; i++)
-	if (!strcmp(which, vname[i]))
-	  result = foo->V[i].bold[n];
-/* 	  return foo->V[i].bold[n]; */
+	for (j=0; j<NUM_V_PERMS; j++)
+	  if (!strcmp(which, vname[i][j]))
+	    result = foo->V[i].bold[n];
     }
     else {
-      /* If we get here the identifier was not recognized: */
+      /* This should never happen: */
       TSIL_Error (funcname, "Invalid identifier for this case", 1);
-      result = (TSIL_COMPLEX) 0.0;
     }
   }
   else if (foo->whichFns == STU) {
     
     /* Find and return appropriate value: */
-    if (!strcmp(which, uname[xzuv]))
-      result = foo->U[xzuv].bold[n];
-/*       return foo->U[xzuv].bold[n]; */
-
+    if (!strncmp(which, "U", 1)) {
+      for (j=0; j<NUM_U_PERMS; j++)
+	if (!strcmp(which, uname[xzuv][j]))
+	  result = foo->U[xzuv].bold[n];
+    }
     else if (!strncmp(which, "T", 1)) {
       for (i=1; i<NUM_T_FUNCS; i+=2)
-	if (!strcmp(which, tname[i]))
-	  result = foo->T[i].bold[n];
-/* 	  return foo->T[i].bold[n]; */
+	for (j=0; j<NUM_T_PERMS; j++)
+	  if (!strcmp(which, tname[i][j]))
+	    result = foo->T[i].bold[n];
     }
-    else if (!strcmp(which, sname[uxv]))
-      result = foo->S[uxv].bold[n];
-/*       return foo->S[uxv].bold[n]; */
-
-    else if (!strcmp(which, vname[xzuv]))
-      result = foo->V[xzuv].bold[n];
-/*       return foo->V[xzuv].bold[n]; */
-    
+    else if (!strncmp(which, "S", 1)) {
+      for (j=0; j<NUM_S_PERMS; j++)
+	if (!strcmp(which, sname[uxv][j]))
+	  result = foo->S[uxv].bold[n];
+    }
+    else if (!strncmp(which, "V", 1)) {
+      for (j=0; j<NUM_V_PERMS; j++)
+	if (!strcmp(which, vname[xzuv][j]))
+	  result = foo->V[xzuv].bold[n];
+    }
     else {
-      /* If we get here the identifier was not recognized: */
-      TSIL_Error (funcname, "Invalid identifier for this case.", 1);
-      result = (TSIL_COMPLEX) 0.0;
+      /* Invalid identifier for this case */
+      TSIL_Error (funcname, "Invalid identifier for STU evaluation.", 1);
     }
   }
   else if (foo->whichFns == ST) {
 
     if (!strncmp(which, "T", 1)) {
       for (i=1; i<NUM_T_FUNCS; i+=2)
-	if (!strcmp(which, tname[i]))
-	  result = foo->T[i].bold[n];
-/* 	  return foo->T[i].bold[n]; */
+	for (j=0; j<NUM_T_PERMS; j++)
+	  if (!strcmp(which, tname[i][j]))
+	    result = foo->T[i].bold[n];
     }
-    else if (!strcmp(which, sname[uxv]))
-      result = foo->S[uxv].bold[n];
-/*       return foo->S[uxv].bold[n]; */
-
+    else if (!strncmp(which, "S", 1)) {
+      for (j=0; j<NUM_S_PERMS; j++)
+	if (!strcmp(which, sname[uxv][j]))
+	  result = foo->S[uxv].bold[n];
+    }
     else {
       /* If we get here the identifier was not recognized: */
-      TSIL_Error (funcname, "Invalid identifier for this case.", 1);
-      result = (TSIL_COMPLEX) 0.0;
+      TSIL_Error (funcname, "Invalid identifier for ST evaluation.", 1);
     }
   }
 
@@ -770,7 +809,7 @@ int TSIL_IsInfinite (TSIL_COMPLEX z)
 
 void TSIL_cprintf (TSIL_COMPLEX z)
 {
-  cfprintf (stdout, (double complex) z);
+  TSIL_cfprintf (stdout, (double complex) z);
   return;
 }
 
@@ -779,14 +818,14 @@ void TSIL_cprintf (TSIL_COMPLEX z)
 
 void TSIL_cprintfM (TSIL_COMPLEX z)
 {
-  cfprintfM (stdout, (double complex) z);
+  TSIL_cfprintfM (stdout, (double complex) z);
   return;
 }
 
 /* ******************************************************************* */
 /* Generic printing of complexes                                       */
 
-void cfprintf (FILE *fp, double complex z)
+void TSIL_cfprintf (FILE *fp, double complex z)
 {
   if (TSIL_IsInfinite (z))
     fprintf(fp, " ComplexInfinity");
@@ -799,7 +838,7 @@ void cfprintf (FILE *fp, double complex z)
 /* ******************************************************************* */
 /* Mathematica-compatible printing of complexes                        */
 
-void cfprintfM (FILE *fp, double complex z)
+void TSIL_cfprintfM (FILE *fp, double complex z)
 {
   if (TSIL_IsInfinite (z))
     fprintf(fp, " ComplexInfinity");
@@ -871,32 +910,32 @@ void TSIL_WriteData (FILE *fp, TSIL_DATA *foo)
 
     fprintf(fp, "\n");
     for (j=0; j<4; j++) {
-      fprintf(fp, "%s    = ",uname[j]);
+      fprintf(fp, "%s    = ",uname[j][0]);
       TSIL_cprintf(foo->U[j].value); fprintf(fp, "\n");
     }
     fprintf(fp, "\n");
     for (j=0; j<6; j++) {
-      fprintf(fp, "%s     = ",tname[j]);
+      fprintf(fp, "%s     = ",tname[j][0]);
       TSIL_cprintf(foo->T[j].value); fprintf(fp, "\n");
     }
     fprintf(fp, "\n");
     for (j=0; j<2; j++) {
-      fprintf(fp, "%s     = ",sname[j]);
+      fprintf(fp, "%s     = ",sname[j][0]);
       TSIL_cprintf(foo->S[j].value); fprintf(fp, "\n");
     }
     fprintf(fp, "\n");
     for (j=0; j<2; j++) {
-      fprintf(fp, "%s      = ",bname[j]);
+      fprintf(fp, "%s      = ",bname[j][0]);
       TSIL_cprintf(foo->B[j].value); fprintf(fp, "\n");
     }
     fprintf(fp, "\n");
     for (j=0; j<4; j++) {
-      fprintf(fp, "%s    = ",vname[j]);
+      fprintf(fp, "%s    = ",vname[j][0]);
       TSIL_cprintf(foo->V[j].value); fprintf(fp, "\n");
     }
     fprintf(fp, "\n");
     for (j=0; j<6; j++) {
-      fprintf(fp, "%s  = ",tbarname[j]);
+      fprintf(fp, "%s  = ",tbarname[j][0]);
       TSIL_cprintf(foo->Tbar[j].value); fprintf(fp, "\n");
     }
     fprintf(fp, "\n");
@@ -931,29 +970,29 @@ void TSIL_WriteData (FILE *fp, TSIL_DATA *foo)
   else if (foo->whichFns == STU) {
 
     fprintf(fp, "\n");
-    fprintf(fp, "%s    = ",uname[xzuv]);
+    fprintf(fp, "%s    = ",uname[xzuv][0]);
     TSIL_cprintf(foo->U[xzuv].value); fprintf(fp, "\n");
 
     fprintf(fp, "\n");
     for (j=1; j<6; j+=2) {
-      fprintf(fp, "%s     = ",tname[j]);
+      fprintf(fp, "%s     = ",tname[j][0]);
       TSIL_cprintf(foo->T[j].value); fprintf(fp, "\n");
     }
     fprintf(fp, "\n");
-    fprintf(fp, "%s     = ",sname[uxv]);
+    fprintf(fp, "%s     = ",sname[uxv][0]);
     TSIL_cprintf(foo->S[uxv].value); fprintf(fp, "\n");
 
     fprintf(fp, "\n");
-    fprintf(fp, "%s      = ",bname[xz]);
+    fprintf(fp, "%s      = ",bname[xz][0]);
     TSIL_cprintf(foo->B[xz].value); fprintf(fp, "\n");
 
     fprintf(fp, "\n");
-    fprintf(fp, "%s    = ",vname[xzuv]);
+    fprintf(fp, "%s    = ",vname[xzuv][0]);
     TSIL_cprintf(foo->V[xzuv].value); fprintf(fp, "\n");
 
     fprintf(fp, "\n");
     for (j=1; j<6; j+=2) {
-      fprintf(fp, "%s  = ",tbarname[j]);
+      fprintf(fp, "%s  = ",tbarname[j][0]);
       TSIL_cprintf(foo->Tbar[j].value); fprintf(fp, "\n");
     }
     fprintf(fp, "\n");
@@ -983,19 +1022,18 @@ void TSIL_WriteData (FILE *fp, TSIL_DATA *foo)
 
     fprintf(fp, "\n");
     for (j=1; j<6; j+=2) {
-      fprintf(fp, "%s     = ",tname[j]);
+      fprintf(fp, "%s     = ",tname[j][0]);
       TSIL_cprintf(foo->T[j].value); fprintf(fp, "\n");
     }
     fprintf(fp, "\n");
-    fprintf(fp, "%s     = ",sname[uxv]);
+    fprintf(fp, "%s     = ",sname[uxv][0]);
     TSIL_cprintf(foo->S[uxv].value); fprintf(fp, "\n");
 
     fprintf(fp, "\n");
     for (j=1; j<6; j+=2) {
-      fprintf(fp, "%s  = ",tbarname[j]);
+      fprintf(fp, "%s  = ",tbarname[j][0]);
       TSIL_cprintf(foo->Tbar[j].value); fprintf(fp, "\n");
     }
-
     fprintf(fp, "\n");
     for (j=1; j<6; j+=2) {
       for (k=0; k<3; k++) {
@@ -1046,32 +1084,32 @@ void TSIL_WriteDataM (FILE *fp, TSIL_DATA *foo)
     
     fprintf(fp, "\n");
     for (j=0; j<4; j++) {
-      fprintf(fp, "%s    = ",uname[j]);
+      fprintf(fp, "%s    = ",uname[j][0]);
       TSIL_cprintfM(foo->U[j].value); fprintf(fp, ";\n");
     }
     fprintf(fp, "\n");
     for (j=0; j<6; j++) {
-      fprintf(fp, "%s     = ",tname[j]);
+      fprintf(fp, "%s     = ",tname[j][0]);
       TSIL_cprintfM(foo->T[j].value); fprintf(fp, ";\n");
     }
     fprintf(fp, "\n");
     for (j=0; j<2; j++) {
-      fprintf(fp, "%s     = ",sname[j]);
+      fprintf(fp, "%s     = ",sname[j][0]);
       TSIL_cprintfM(foo->S[j].value); fprintf(fp, ";\n");
     }
     fprintf(fp, "\n");
     for (j=0; j<2; j++) {
-      fprintf(fp, "%s      = ",bname[j]);
+      fprintf(fp, "%s      = ",bname[j][0]);
       TSIL_cprintfM(foo->B[j].value); fprintf(fp, ";\n");
     }
     fprintf(fp, "\n");
     for (j=0; j<4; j++) {
-      fprintf(fp, "%s    = ",vname[j]);
+      fprintf(fp, "%s    = ",vname[j][0]);
       TSIL_cprintfM(foo->V[j].value); fprintf(fp, ";\n");
     }
     fprintf(fp, "\n");
     for (j=0; j<6; j++) {
-      fprintf(fp, "%s  = ",tbarname[j]);
+      fprintf(fp, "%s  = ",tbarname[j][0]);
       TSIL_cprintfM(foo->Tbar[j].value); fprintf(fp, ";\n");
     }
     fprintf(fp, "\n");
@@ -1106,29 +1144,30 @@ void TSIL_WriteDataM (FILE *fp, TSIL_DATA *foo)
   else if (foo->whichFns == STU) {
 
     fprintf(fp, "\n");
-    fprintf(fp, "%s    = ",uname[xzuv]);
+
+    fprintf(fp, "%s    = ",uname[xzuv][0]);
     TSIL_cprintfM(foo->U[xzuv].value); fprintf(fp, ";\n");
 
     fprintf(fp, "\n");
     for (j=1; j<6; j+=2) {
-      fprintf(fp, "%s     = ",tname[j]);
+      fprintf(fp, "%s     = ",tname[j][0]);
       TSIL_cprintfM(foo->T[j].value); fprintf(fp, ";\n");
     }
     fprintf(fp, "\n");
-    fprintf(fp, "%s     = ",sname[uxv]);
+    fprintf(fp, "%s     = ",sname[uxv][0]);
     TSIL_cprintfM(foo->S[uxv].value); fprintf(fp, ";\n");
 
     fprintf(fp, "\n");
-    fprintf(fp, "%s      = ",bname[xz]);
+    fprintf(fp, "%s      = ",bname[xz][0]);
     TSIL_cprintfM(foo->B[xz].value); fprintf(fp, ";\n");
 
     fprintf(fp, "\n");
-    fprintf(fp, "%s    = ",vname[xzuv]);
+    fprintf(fp, "%s    = ",vname[xzuv][0]);
     TSIL_cprintfM(foo->V[xzuv].value); fprintf(fp, ";\n");
 
     fprintf(fp, "\n");
     for (j=1; j<6; j+=2) {
-      fprintf(fp, "%s  = ",tbarname[j]);
+      fprintf(fp, "%s  = ",tbarname[j][0]);
       TSIL_cprintfM(foo->Tbar[j].value); fprintf(fp, ";\n");
     }
     fprintf(fp, "\n");
@@ -1158,20 +1197,19 @@ void TSIL_WriteDataM (FILE *fp, TSIL_DATA *foo)
 
     fprintf(fp, "\n");
     for (j=1; j<6; j+=2) {
-      fprintf(fp, "%s     = ",tname[j]);
+      fprintf(fp, "%s     = ",tname[j][0]);
       TSIL_cprintfM(foo->T[j].value); fprintf(fp, ";\n");
     }
     fprintf(fp, "\n");
-    fprintf(fp, "%s     = ",sname[uxv]);
+    fprintf(fp, "%s     = ",sname[uxv][0]);
     TSIL_cprintfM(foo->S[uxv].value); fprintf(fp, ";\n");
 
     fprintf(fp, "\n");
     for (j=1; j<6; j+=2) {
-      fprintf(fp, "%s  = ",tbarname[j]);
+      fprintf(fp, "%s  = ",tbarname[j][0]);
       TSIL_cprintfM(foo->Tbar[j].value); fprintf(fp, ";\n");
     }
 
-    fprintf(fp, "\n");
     for (j=1; j<6; j+=2) {
       for (k=0; k<3; k++) {
 	fprintf(fp, "%s   = ",ttname[j][k]);
@@ -1184,14 +1222,13 @@ void TSIL_WriteDataM (FILE *fp, TSIL_DATA *foo)
       TSIL_cprintfM(foo->S[uxv].bold[k]); fprintf(fp, ";\n");
     }
   }
-
   return;
 }
 
 /* ******************************************************************* */
 /* Two body threshold */
 
-TSIL_REAL Th2 (TSIL_REAL x, TSIL_REAL y)
+TSIL_REAL TSIL_Th2 (TSIL_REAL x, TSIL_REAL y)
 {
   return TSIL_POW(TSIL_SQRT(x) + TSIL_SQRT(y), 2);
 }
@@ -1199,7 +1236,7 @@ TSIL_REAL Th2 (TSIL_REAL x, TSIL_REAL y)
 /* ******************************************************************* */
 /* Two body pseudo-threshold */
 
-TSIL_REAL Ps2 (TSIL_REAL x, TSIL_REAL y)
+TSIL_REAL TSIL_Ps2 (TSIL_REAL x, TSIL_REAL y)
 {
   /* DGR - added */
   if (TSIL_FABS(x - y) < TSIL_TOL)
@@ -1209,12 +1246,12 @@ TSIL_REAL Ps2 (TSIL_REAL x, TSIL_REAL y)
 }
 
 /* ******************************************************************* */
-/* Alpha \equiv A(x)/Sqrt[x] */
+/* TSIL_Alpha \equiv TSIL_A(x)/Sqrt[x] */
 
-TSIL_REAL Alpha (TSIL_REAL x, TSIL_REAL qq)
+TSIL_REAL TSIL_Alpha (TSIL_REAL x, TSIL_REAL qq)
 {
   if (x > TSIL_TOL)
-    return A(x, qq)/TSIL_SQRT(x);
+    return TSIL_A(x, qq)/TSIL_SQRT(x);
   else
     return 0.0L;
 }
@@ -1254,7 +1291,7 @@ void TSIL_PrintStatus (TSIL_DATA *foo)
 /* Returns true/false indicating whether these parameters correspond   */
 /* to the "unnatural" threshold case.                                  */
 
-int UnnaturalCase (TSIL_DATA *foo)
+int TSIL_UnnaturalCase (TSIL_DATA *foo)
 {
   TSIL_REAL x, y, z, u, v;
   TSIL_COMPLEX s;
@@ -1268,14 +1305,14 @@ int UnnaturalCase (TSIL_DATA *foo)
   v = foo->v;
   s = foo->s;
 
-  if (x+TSIL_FABS(y-v)+TSIL_FABS(y-Th2(z,u))+TSIL_CABS(s-z) < cutoff ||
-      x+TSIL_FABS(y-v)+TSIL_FABS(y-Ps2(z,u))+TSIL_CABS(s-z) < cutoff ||
-      y+TSIL_FABS(x-v)+TSIL_FABS(x-Th2(u,z))+TSIL_CABS(s-u) < cutoff ||
-      y+TSIL_FABS(x-v)+TSIL_FABS(x-Ps2(u,z))+TSIL_CABS(s-u) < cutoff ||
-      z+TSIL_FABS(u-v)+TSIL_FABS(u-Th2(x,y))+TSIL_CABS(s-x) < cutoff ||
-      z+TSIL_FABS(u-v)+TSIL_FABS(u-Ps2(x,y))+TSIL_CABS(s-x) < cutoff ||
-      u+TSIL_FABS(z-v)+TSIL_FABS(z-Th2(y,x))+TSIL_CABS(s-y) < cutoff ||
-      u+TSIL_FABS(z-v)+TSIL_FABS(z-Ps2(y,x))+TSIL_CABS(s-y) < cutoff)
+  if (x+TSIL_FABS(y-v)+TSIL_FABS(y-TSIL_Th2(z,u))+TSIL_CABS(s-z) < cutoff ||
+      x+TSIL_FABS(y-v)+TSIL_FABS(y-TSIL_Ps2(z,u))+TSIL_CABS(s-z) < cutoff ||
+      y+TSIL_FABS(x-v)+TSIL_FABS(x-TSIL_Th2(u,z))+TSIL_CABS(s-u) < cutoff ||
+      y+TSIL_FABS(x-v)+TSIL_FABS(x-TSIL_Ps2(u,z))+TSIL_CABS(s-u) < cutoff ||
+      z+TSIL_FABS(u-v)+TSIL_FABS(u-TSIL_Th2(x,y))+TSIL_CABS(s-x) < cutoff ||
+      z+TSIL_FABS(u-v)+TSIL_FABS(u-TSIL_Ps2(x,y))+TSIL_CABS(s-x) < cutoff ||
+      u+TSIL_FABS(z-v)+TSIL_FABS(z-TSIL_Th2(y,x))+TSIL_CABS(s-y) < cutoff ||
+      u+TSIL_FABS(z-v)+TSIL_FABS(z-TSIL_Ps2(y,x))+TSIL_CABS(s-y) < cutoff)
     return 1;
   else
     return 0;
@@ -1290,9 +1327,11 @@ void TSIL_PrintVersion (void)
 }
 
 /* ******************************************************************* */
+/* Prints error message, stack trace, and exits. */
+
 #include <execinfo.h>
 
-void TSIL_Error (char *func, char *msg, int val)
+void TSIL_Error (const char *func, const char *msg, int val)
 {
   void *callstack[128];
   int i, frames = backtrace(callstack, 128);
@@ -1309,7 +1348,7 @@ void TSIL_Error (char *func, char *msg, int val)
 
 /* ******************************************************************* */
 
-void TSIL_Warn (char *func, char *msg)
+void TSIL_Warn (const char *func, const char *msg)
 {
   if (printWarns) {
     fprintf (stderr, "WARNING (%s): %s\n", func, msg);
@@ -1321,7 +1360,7 @@ void TSIL_Warn (char *func, char *msg)
 /* ******************************************************************* */
 /* Currently disabled! */
 
-void TSIL_Info (char *msg)
+void TSIL_Info (const char *msg)
 {
 /*   fprintf(stderr, "INFO: ");  */
 /*   fprintf(stderr, msg);  */
@@ -1332,7 +1371,7 @@ void TSIL_Info (char *msg)
 
 /* **************************************************************** */
 
-void CheckConsistent (TSIL_COMPLEX arg1, TSIL_COMPLEX arg2)     
+void TSIL_CheckConsistent (TSIL_COMPLEX arg1, TSIL_COMPLEX arg2)     
 {
   /* If they're both nan, that's OK. */
 /*   if ((isnan (TSIL_CREAL (arg1)) || isnan (TSIL_CIMAG (arg1)) ) &&  */

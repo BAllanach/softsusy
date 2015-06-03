@@ -23,7 +23,7 @@ enum { FAIL, WARN, PASS };
 
 /* **************************************************************** */
 
-void SkipLine (FILE * foo)
+void TSIL_SkipLine (FILE * foo)
 {
   int s;
 
@@ -118,7 +118,7 @@ void TSIL_Compare (const char   *name,
 
 /* **************************************************************** */
 
-TSIL_REAL GetReal ()
+TSIL_REAL TSIL_GetReal ()
 {
   TSIL_REAL val;
 
@@ -135,7 +135,7 @@ TSIL_REAL GetReal ()
 
 /* **************************************************************** */
 
-TSIL_COMPLEX GetComplex ()
+TSIL_COMPLEX TSIL_GetComplex ()
 {
   TSIL_COMPLEX val;
   TSIL_REAL    im;
@@ -166,7 +166,7 @@ TSIL_COMPLEX GetComplex ()
 
 /* ******************************************************************* */
 
-void swapR (TSIL_REAL * px, TSIL_REAL * py)
+void TSIL_SwapR (TSIL_REAL * px, TSIL_REAL * py)
 {
   TSIL_REAL temp;
 
@@ -175,7 +175,7 @@ void swapR (TSIL_REAL * px, TSIL_REAL * py)
 
 /* ******************************************************************* */
 
-void swapC (TSIL_COMPLEX * px, TSIL_COMPLEX * py)
+void TSIL_SwapC (TSIL_COMPLEX * px, TSIL_COMPLEX * py)
 {
   TSIL_COMPLEX temp;
 
@@ -184,90 +184,90 @@ void swapC (TSIL_COMPLEX * px, TSIL_COMPLEX * py)
 
 /* ******************************************************************* */
 
-void Permuteresults (TSIL_DATA * foo, int p)
+void TSIL_PermuteResults (TSIL_DATA * foo, int p)
 {
   int i;
 
   if (1 == p)
     {
-      swapR (&(foo->x), &(foo->y));
-      swapR (&(foo->z), &(foo->u));
-      swapC (&(foo->B[xz].value), &(foo->B[yu].value));
-      swapC (&(foo->S[vyz].value), &(foo->S[uxv].value));
-      swapC (&(foo->T[vyz].value), &(foo->T[vxu].value));
-      swapC (&(foo->T[uxv].value), &(foo->T[zyv].value));
-      swapC (&(foo->T[xuv].value), &(foo->T[yzv].value));
-      swapC (&(foo->Tbar[vyz].value), &(foo->Tbar[vxu].value));
-      swapC (&(foo->Tbar[uxv].value), &(foo->Tbar[zyv].value));
-      swapC (&(foo->Tbar[xuv].value), &(foo->Tbar[yzv].value));
-      swapC (&(foo->U[zxyv].value), &(foo->U[uyxv].value));
-      swapC (&(foo->U[xzuv].value), &(foo->U[yuzv].value));
-      swapC (&(foo->V[zxyv].value), &(foo->V[uyxv].value));
-      swapC (&(foo->V[xzuv].value), &(foo->V[yuzv].value));
+      TSIL_SwapR (&(foo->x), &(foo->y));
+      TSIL_SwapR (&(foo->z), &(foo->u));
+      TSIL_SwapC (&(foo->B[xz].value), &(foo->B[yu].value));
+      TSIL_SwapC (&(foo->S[vyz].value), &(foo->S[uxv].value));
+      TSIL_SwapC (&(foo->T[vyz].value), &(foo->T[vxu].value));
+      TSIL_SwapC (&(foo->T[uxv].value), &(foo->T[zyv].value));
+      TSIL_SwapC (&(foo->T[xuv].value), &(foo->T[yzv].value));
+      TSIL_SwapC (&(foo->Tbar[vyz].value), &(foo->Tbar[vxu].value));
+      TSIL_SwapC (&(foo->Tbar[uxv].value), &(foo->Tbar[zyv].value));
+      TSIL_SwapC (&(foo->Tbar[xuv].value), &(foo->Tbar[yzv].value));
+      TSIL_SwapC (&(foo->U[zxyv].value), &(foo->U[uyxv].value));
+      TSIL_SwapC (&(foo->U[xzuv].value), &(foo->U[yuzv].value));
+      TSIL_SwapC (&(foo->V[zxyv].value), &(foo->V[uyxv].value));
+      TSIL_SwapC (&(foo->V[xzuv].value), &(foo->V[yuzv].value));
 
       for (i = 0; i < 3; i++)
 	{
-	  swapC (&(foo->S[vyz].bold[i]), &(foo->S[uxv].bold[i]));
-	  swapC (&(foo->T[vyz].bold[i]), &(foo->T[vxu].bold[i]));
-	  swapC (&(foo->T[uxv].bold[i]), &(foo->T[zyv].bold[i]));
-	  swapC (&(foo->T[xuv].bold[i]), &(foo->T[yzv].bold[i]));
-	  swapC (&(foo->U[zxyv].bold[i]), &(foo->U[uyxv].bold[i]));
-	  swapC (&(foo->U[xzuv].bold[i]), &(foo->U[yuzv].bold[i]));
-	  swapC (&(foo->V[zxyv].bold[i]), &(foo->V[uyxv].bold[i]));
-	  swapC (&(foo->V[xzuv].bold[i]), &(foo->V[yuzv].bold[i]));
+	  TSIL_SwapC (&(foo->S[vyz].bold[i]), &(foo->S[uxv].bold[i]));
+	  TSIL_SwapC (&(foo->T[vyz].bold[i]), &(foo->T[vxu].bold[i]));
+	  TSIL_SwapC (&(foo->T[uxv].bold[i]), &(foo->T[zyv].bold[i]));
+	  TSIL_SwapC (&(foo->T[xuv].bold[i]), &(foo->T[yzv].bold[i]));
+	  TSIL_SwapC (&(foo->U[zxyv].bold[i]), &(foo->U[uyxv].bold[i]));
+	  TSIL_SwapC (&(foo->U[xzuv].bold[i]), &(foo->U[yuzv].bold[i]));
+	  TSIL_SwapC (&(foo->V[zxyv].bold[i]), &(foo->V[uyxv].bold[i]));
+	  TSIL_SwapC (&(foo->V[xzuv].bold[i]), &(foo->V[yuzv].bold[i]));
 	}
     }
 
   if (2 == p)
     {
-      swapR (&(foo->x), &(foo->z));
-      swapR (&(foo->y), &(foo->u));
-      swapC (&(foo->S[vyz].value), &(foo->S[uxv].value));
-      swapC (&(foo->T[vyz].value), &(foo->T[vxu].value));
-      swapC (&(foo->T[uxv].value), &(foo->T[yzv].value));
-      swapC (&(foo->T[xuv].value), &(foo->T[zyv].value));
-      swapC (&(foo->Tbar[vyz].value), &(foo->Tbar[vxu].value));
-      swapC (&(foo->Tbar[uxv].value), &(foo->Tbar[yzv].value));
-      swapC (&(foo->Tbar[xuv].value), &(foo->Tbar[zyv].value));
-      swapC (&(foo->U[zxyv].value), &(foo->U[xzuv].value));
-      swapC (&(foo->U[uyxv].value), &(foo->U[yuzv].value));
-      swapC (&(foo->V[zxyv].value), &(foo->V[xzuv].value));
-      swapC (&(foo->V[uyxv].value), &(foo->V[yuzv].value));
+      TSIL_SwapR (&(foo->x), &(foo->z));
+      TSIL_SwapR (&(foo->y), &(foo->u));
+      TSIL_SwapC (&(foo->S[vyz].value), &(foo->S[uxv].value));
+      TSIL_SwapC (&(foo->T[vyz].value), &(foo->T[vxu].value));
+      TSIL_SwapC (&(foo->T[uxv].value), &(foo->T[yzv].value));
+      TSIL_SwapC (&(foo->T[xuv].value), &(foo->T[zyv].value));
+      TSIL_SwapC (&(foo->Tbar[vyz].value), &(foo->Tbar[vxu].value));
+      TSIL_SwapC (&(foo->Tbar[uxv].value), &(foo->Tbar[yzv].value));
+      TSIL_SwapC (&(foo->Tbar[xuv].value), &(foo->Tbar[zyv].value));
+      TSIL_SwapC (&(foo->U[zxyv].value), &(foo->U[xzuv].value));
+      TSIL_SwapC (&(foo->U[uyxv].value), &(foo->U[yuzv].value));
+      TSIL_SwapC (&(foo->V[zxyv].value), &(foo->V[xzuv].value));
+      TSIL_SwapC (&(foo->V[uyxv].value), &(foo->V[yuzv].value));
 
       for (i = 0; i < 3; i++)
 	{
-	  swapC (&(foo->S[vyz].bold[i]), &(foo->S[uxv].bold[i]));
-	  swapC (&(foo->T[vyz].bold[i]), &(foo->T[vxu].bold[i]));
-	  swapC (&(foo->T[uxv].bold[i]), &(foo->T[yzv].bold[i]));
-	  swapC (&(foo->T[xuv].bold[i]), &(foo->T[zyv].bold[i]));
-	  swapC (&(foo->U[zxyv].bold[i]), &(foo->U[xzuv].bold[i]));
-	  swapC (&(foo->U[uyxv].bold[i]), &(foo->U[yuzv].bold[i]));
-	  swapC (&(foo->V[zxyv].bold[i]), &(foo->V[xzuv].bold[i]));
-	  swapC (&(foo->V[uyxv].bold[i]), &(foo->V[yuzv].bold[i]));
+	  TSIL_SwapC (&(foo->S[vyz].bold[i]), &(foo->S[uxv].bold[i]));
+	  TSIL_SwapC (&(foo->T[vyz].bold[i]), &(foo->T[vxu].bold[i]));
+	  TSIL_SwapC (&(foo->T[uxv].bold[i]), &(foo->T[yzv].bold[i]));
+	  TSIL_SwapC (&(foo->T[xuv].bold[i]), &(foo->T[zyv].bold[i]));
+	  TSIL_SwapC (&(foo->U[zxyv].bold[i]), &(foo->U[xzuv].bold[i]));
+	  TSIL_SwapC (&(foo->U[uyxv].bold[i]), &(foo->U[yuzv].bold[i]));
+	  TSIL_SwapC (&(foo->V[zxyv].bold[i]), &(foo->V[xzuv].bold[i]));
+	  TSIL_SwapC (&(foo->V[uyxv].bold[i]), &(foo->V[yuzv].bold[i]));
 	}
     }
 
   if (3 == p)
     {
-      swapR (&(foo->x), &(foo->u));
-      swapR (&(foo->y), &(foo->z));
-      swapC (&(foo->B[xz].value), &(foo->B[yu].value));
-      swapC (&(foo->T[uxv].value), &(foo->T[xuv].value));
-      swapC (&(foo->T[zyv].value), &(foo->T[yzv].value));
-      swapC (&(foo->Tbar[uxv].value), &(foo->Tbar[xuv].value));
-      swapC (&(foo->Tbar[zyv].value), &(foo->Tbar[yzv].value));
-      swapC (&(foo->U[zxyv].value), &(foo->U[yuzv].value));
-      swapC (&(foo->U[xzuv].value), &(foo->U[uyxv].value));
-      swapC (&(foo->V[zxyv].value), &(foo->V[yuzv].value));
-      swapC (&(foo->V[xzuv].value), &(foo->V[uyxv].value));
+      TSIL_SwapR (&(foo->x), &(foo->u));
+      TSIL_SwapR (&(foo->y), &(foo->z));
+      TSIL_SwapC (&(foo->B[xz].value), &(foo->B[yu].value));
+      TSIL_SwapC (&(foo->T[uxv].value), &(foo->T[xuv].value));
+      TSIL_SwapC (&(foo->T[zyv].value), &(foo->T[yzv].value));
+      TSIL_SwapC (&(foo->Tbar[uxv].value), &(foo->Tbar[xuv].value));
+      TSIL_SwapC (&(foo->Tbar[zyv].value), &(foo->Tbar[yzv].value));
+      TSIL_SwapC (&(foo->U[zxyv].value), &(foo->U[yuzv].value));
+      TSIL_SwapC (&(foo->U[xzuv].value), &(foo->U[uyxv].value));
+      TSIL_SwapC (&(foo->V[zxyv].value), &(foo->V[yuzv].value));
+      TSIL_SwapC (&(foo->V[xzuv].value), &(foo->V[uyxv].value));
       for (i = 0; i < 3; i++)
 	{
-	  swapC (&(foo->T[uxv].bold[i]), &(foo->T[xuv].bold[i]));
-	  swapC (&(foo->T[zyv].bold[i]), &(foo->T[yzv].bold[i]));
-	  swapC (&(foo->U[zxyv].bold[i]), &(foo->U[yuzv].bold[i]));
-	  swapC (&(foo->U[xzuv].bold[i]), &(foo->U[uyxv].bold[i]));
-	  swapC (&(foo->V[zxyv].bold[i]), &(foo->V[yuzv].bold[i]));
-	  swapC (&(foo->V[xzuv].bold[i]), &(foo->V[uyxv].bold[i]));
+	  TSIL_SwapC (&(foo->T[uxv].bold[i]), &(foo->T[xuv].bold[i]));
+	  TSIL_SwapC (&(foo->T[zyv].bold[i]), &(foo->T[yzv].bold[i]));
+	  TSIL_SwapC (&(foo->U[zxyv].bold[i]), &(foo->U[yuzv].bold[i]));
+	  TSIL_SwapC (&(foo->U[xzuv].bold[i]), &(foo->U[uyxv].bold[i]));
+	  TSIL_SwapC (&(foo->V[zxyv].bold[i]), &(foo->V[yuzv].bold[i]));
+	  TSIL_SwapC (&(foo->V[xzuv].bold[i]), &(foo->V[uyxv].bold[i]));
 	}
     }
 
@@ -330,19 +330,19 @@ int main (int argc, char *argv[])
 
       /* Skip any lines starting with '(' (comments): */
       while ((c = fgetc (fp)) == '(')
-	SkipLine (fp);
+	TSIL_SkipLine (fp);
 
       /* Put back the last character after we find a non-comment line */
       ungetc ((int) c, fp);
 
       /* Read in parameters */
-      xx = x = GetReal ();
-      yy = y = GetReal ();
-      zz = z = GetReal ();
-      uu = u = GetReal ();
-      vv = v = GetReal ();
-      s  = GetReal ();
-      qq = GetReal ();
+      xx = x = TSIL_GetReal ();
+      yy = y = TSIL_GetReal ();
+      zz = z = TSIL_GetReal ();
+      uu = u = TSIL_GetReal ();
+      vv = v = TSIL_GetReal ();
+      s  = TSIL_GetReal ();
+      qq = TSIL_GetReal ();
 
       /* Calculate everything... */
 #if defined(TSIL_TEST_STU)
@@ -361,136 +361,136 @@ int main (int argc, char *argv[])
       /* ...and test results: */
 
 #if defined(TSIL_TEST_STU)
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
       /* U */
       for (j = 2; j < 4; j+=2)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Uvalue[j] = result.U[j].value;
-	  TSIL_Compare (uname[j], val, Uvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+	  TSIL_Compare (uname[j][0], val, Uvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 	  tally[foo]++;
 	}
-      CheckConsistent (Uvalue[2], TSIL_GetFunction(&result,"Uxzuv"));
+      TSIL_CheckConsistent (Uvalue[2], TSIL_GetFunction(&result,"Uxzuv"));
 
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
       /* T */
       for (j = 1; j < 6; j+=2)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Tvalue[j] = result.T[j].value;
-	  TSIL_Compare (tname[j], val, Tvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+	  TSIL_Compare (tname[j][0], val, Tvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 	  tally[foo]++;
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	}
-      CheckConsistent (Tvalue[1], TSIL_GetFunction(&result,"Tuxv"));
-      CheckConsistent (Tvalue[3], TSIL_GetFunction(&result,"Txuv"));
-      CheckConsistent (Tvalue[5], TSIL_GetFunction(&result,"Tvxu"));
+      TSIL_CheckConsistent (Tvalue[1], TSIL_GetFunction(&result,"Tuxv"));
+      TSIL_CheckConsistent (Tvalue[3], TSIL_GetFunction(&result,"Txuv"));
+      TSIL_CheckConsistent (Tvalue[5], TSIL_GetFunction(&result,"Tvxu"));
 
       /* S */
       for (j = 1; j < 2; j+=2)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Svalue[j] = result.S[j].value;
-	  TSIL_Compare (sname[j], val, Svalue[j], TSIL_PASS, TSIL_WARN, &foo);
+	  TSIL_Compare (sname[j][0], val, Svalue[j], TSIL_PASS, TSIL_WARN, &foo);
 	  tally[foo]++;
 	}
-      CheckConsistent (Svalue[1], TSIL_GetFunction(&result,"Suxv"));
+      TSIL_CheckConsistent (Svalue[1], TSIL_GetFunction(&result,"Suxv"));
 
       /* B */
       for (j = 0; j < 2; j+=2)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Bvalue[j] = result.B[j].value;
-	  TSIL_Compare (bname[j], val, Bvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+	  TSIL_Compare (bname[j][0], val, Bvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 	  tally[foo]++;
 	}
-      CheckConsistent (Bvalue[0], TSIL_GetFunction(&result,"Bxz"));
+      TSIL_CheckConsistent (Bvalue[0], TSIL_GetFunction(&result,"Bxz"));
 
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
       /* V */
       for (j = 2; j < 4; j+=2)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Vvalue[j] = result.V[j].value;
-	  TSIL_Compare (vname[j], val, Vvalue[j], TSIL_PASS_V, TSIL_WARN_V, &foo);
+	  TSIL_Compare (vname[j][0], val, Vvalue[j], TSIL_PASS_V, TSIL_WARN_V, &foo);
 	  tally[foo]++;
 	}
-      CheckConsistent (Vvalue[2], TSIL_GetFunction(&result,"Vxzuv"));
-      val = GetComplex ();
+      TSIL_CheckConsistent (Vvalue[2], TSIL_GetFunction(&result,"Vxzuv"));
+      val = TSIL_GetComplex ();
 
       /* Tbar */
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
       for (j = 1; j < 6; j+=2)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Tbarvalue[j] = result.Tbar[j].value;
-	  TSIL_Compare (tbarname[j], val, Tbarvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+	  TSIL_Compare (tbarname[j][0], val, Tbarvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 	  tally[foo]++;
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	}
 
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
       /* UU */
       for (j = 2; j < 4; j+=2)
 	{
 	  for (k = 0; k < 3; k++)
 	    {
-	      val = GetComplex ();
+	      val = TSIL_GetComplex ();
 	      UUvalue[j][k] = result.U[j].bold[k];
 	      TSIL_Compare (uuname[j][k], val, UUvalue[j][k], TSIL_PASS, TSIL_WARN, &foo);
 	      tally[foo]++;
 	    }
 	}
 
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
       /* VV */
       for (j = 2; j < 4; j+=2)
 	{
 	  for (k = 0; k < 3; k++)
 	    {
-	      val = GetComplex ();
+	      val = TSIL_GetComplex ();
 	      VVvalue[j][k] = result.V[j].bold[k];
 	      TSIL_Compare (vvname[j][k], val, VVvalue[j][k], TSIL_PASS_V, TSIL_WARN_V, &foo);
 	      tally[foo]++;
 	    }
 	}
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
 
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
       /* TT */
       for (j = 1; j < 6; j+=2)
 	{
 	  for (k = 0; k < 3; k++)
 	    {
-	      val = GetComplex ();
+	      val = TSIL_GetComplex ();
 	      TTvalue[j][k] = result.T[j].bold[k];
 	      TSIL_Compare (ttname[j][k], val, TTvalue[j][k], TSIL_PASS, TSIL_WARN, &foo);
 	      tally[foo]++;
 	    }
-	  val = GetComplex ();
-	  val = GetComplex ();
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
+	  val = TSIL_GetComplex ();
+	  val = TSIL_GetComplex ();
 	}
 
       /* SS */
@@ -498,125 +498,125 @@ int main (int argc, char *argv[])
 	{
 	  for (k = 0; k < 3; k++)
 	    {
-	      val = GetComplex ();
+	      val = TSIL_GetComplex ();
 	      SSvalue[j][k] = result.S[j].bold[k];
 	      TSIL_Compare (ssname[j][k], val, SSvalue[j][k], TSIL_PASS, TSIL_WARN, &foo);
 	      tally[foo]++;
 	    }
 	}
 #elif defined(TSIL_TEST_ST)
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
       /* U */
       for (j = 2; j < 4; j+=2)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	}
 
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
       /* T */
       for (j = 1; j < 6; j+=2)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Tvalue[j] = result.T[j].value;
-	  TSIL_Compare (tname[j], val, Tvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+	  TSIL_Compare (tname[j][0], val, Tvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 	  tally[foo]++;
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	}
-      CheckConsistent (Tvalue[1], TSIL_GetFunction(&result,"Tuxv"));
-      CheckConsistent (Tvalue[3], TSIL_GetFunction(&result,"Txuv"));
-      CheckConsistent (Tvalue[5], TSIL_GetFunction(&result,"Tvxu"));
+      TSIL_CheckConsistent (Tvalue[1], TSIL_GetFunction(&result,"Tuxv"));
+      TSIL_CheckConsistent (Tvalue[3], TSIL_GetFunction(&result,"Txuv"));
+      TSIL_CheckConsistent (Tvalue[5], TSIL_GetFunction(&result,"Tvxu"));
 
       /* S */
       for (j = 1; j < 2; j+=2)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Svalue[j] = result.S[j].value;
-	  TSIL_Compare (sname[j], val, Svalue[j], TSIL_PASS, TSIL_WARN, &foo);
+	  TSIL_Compare (sname[j][0], val, Svalue[j], TSIL_PASS, TSIL_WARN, &foo);
 	  tally[foo]++;
 	}
-      CheckConsistent (Svalue[1], TSIL_GetFunction(&result,"Suxv"));
+      TSIL_CheckConsistent (Svalue[1], TSIL_GetFunction(&result,"Suxv"));
 
       /* B */
       for (j = 0; j < 2; j+=2)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	}
 
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
       /* V */
       for (j = 2; j < 4; j+=2)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	}
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
 
       /* Tbar */
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
       for (j = 1; j < 6; j+=2)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Tbarvalue[j] = result.Tbar[j].value;
-	  TSIL_Compare (tbarname[j], val, Tbarvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+	  TSIL_Compare (tbarname[j][0], val, Tbarvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 	  tally[foo]++;
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	}
 
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
       /* UU */
       for (j = 2; j < 4; j+=2)
 	{
 	  for (k = 0; k < 3; k++)
 	    {
-	      val = GetComplex ();
+	      val = TSIL_GetComplex ();
 	    }
 	}
 
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
       /* VV */
       for (j = 2; j < 4; j+=2)
 	{
 	  for (k = 0; k < 3; k++)
 	    {
-	      val = GetComplex ();
+	      val = TSIL_GetComplex ();
 	    }
 	}
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
 
-      val = GetComplex ();
-      val = GetComplex ();
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
+      val = TSIL_GetComplex ();
       /* TT */
       for (j = 1; j < 6; j+=2)
 	{
 	  for (k = 0; k < 3; k++)
 	    {
-	      val = GetComplex ();
+	      val = TSIL_GetComplex ();
 	      TTvalue[j][k] = result.T[j].bold[k];
 	      TSIL_Compare (ttname[j][k], val, TTvalue[j][k], TSIL_PASS, TSIL_WARN, &foo);
 	      tally[foo]++;
 	    }
-	  val = GetComplex ();
-	  val = GetComplex ();
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
+	  val = TSIL_GetComplex ();
+	  val = TSIL_GetComplex ();
 	}
 
       /* SS */
@@ -624,7 +624,7 @@ int main (int argc, char *argv[])
 	{
 	  for (k = 0; k < 3; k++)
 	    {
-	      val = GetComplex ();
+	      val = TSIL_GetComplex ();
 	      SSvalue[j][k] = result.S[j].bold[k];
 	      TSIL_Compare (ssname[j][k], val, SSvalue[j][k], TSIL_PASS, TSIL_WARN, &foo);
 	      tally[foo]++;
@@ -632,81 +632,81 @@ int main (int argc, char *argv[])
 	}
 #else
       /* M */
-      val = GetComplex ();
+      val = TSIL_GetComplex ();
       Mvalue = result.M.value;
-      CheckConsistent (Mvalue, TSIL_GetFunction(&result,"M"));
+      TSIL_CheckConsistent (Mvalue, TSIL_GetFunction(&result,"M"));
       TSIL_Compare ("M", val, Mvalue, TSIL_PASS, TSIL_WARN, &foo);
       tally[foo]++;
 
       /* U */
       for (j = 0; j < 4; j++)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Uvalue[j] = result.U[j].value;
-	  TSIL_Compare (uname[j], val, Uvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+	  TSIL_Compare (uname[j][0], val, Uvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 	  tally[foo]++;
 	}
-      CheckConsistent (Uvalue[0], TSIL_GetFunction(&result,"Uzxyv"));
-      CheckConsistent (Uvalue[1], TSIL_GetFunction(&result,"Uuyxv"));
-      CheckConsistent (Uvalue[2], TSIL_GetFunction(&result,"Uxzuv"));
-      CheckConsistent (Uvalue[3], TSIL_GetFunction(&result,"Uyuzv"));
+      TSIL_CheckConsistent (Uvalue[0], TSIL_GetFunction(&result,"Uzxyv"));
+      TSIL_CheckConsistent (Uvalue[1], TSIL_GetFunction(&result,"Uuyxv"));
+      TSIL_CheckConsistent (Uvalue[2], TSIL_GetFunction(&result,"Uxzuv"));
+      TSIL_CheckConsistent (Uvalue[3], TSIL_GetFunction(&result,"Uyuzv"));
 
       /* T */
       for (j = 0; j < 6; j++)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Tvalue[j] = result.T[j].value;
-	  TSIL_Compare (tname[j], val, Tvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+	  TSIL_Compare (tname[j][0], val, Tvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 	  tally[foo]++;
 	}
-      CheckConsistent (Tvalue[0], TSIL_GetFunction(&result,"Tvyz"));
-      CheckConsistent (Tvalue[1], TSIL_GetFunction(&result,"Tuxv"));
-      CheckConsistent (Tvalue[2], TSIL_GetFunction(&result,"Tyzv"));
-      CheckConsistent (Tvalue[3], TSIL_GetFunction(&result,"Txuv"));
-      CheckConsistent (Tvalue[4], TSIL_GetFunction(&result,"Tzyv"));
-      CheckConsistent (Tvalue[5], TSIL_GetFunction(&result,"Tvxu"));
+      TSIL_CheckConsistent (Tvalue[0], TSIL_GetFunction(&result,"Tvyz"));
+      TSIL_CheckConsistent (Tvalue[1], TSIL_GetFunction(&result,"Tuxv"));
+      TSIL_CheckConsistent (Tvalue[2], TSIL_GetFunction(&result,"Tyzv"));
+      TSIL_CheckConsistent (Tvalue[3], TSIL_GetFunction(&result,"Txuv"));
+      TSIL_CheckConsistent (Tvalue[4], TSIL_GetFunction(&result,"Tzyv"));
+      TSIL_CheckConsistent (Tvalue[5], TSIL_GetFunction(&result,"Tvxu"));
 
       /* S */
       for (j = 0; j < 2; j++)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Svalue[j] = result.S[j].value;
-	  TSIL_Compare (sname[j], val, Svalue[j], TSIL_PASS, TSIL_WARN, &foo);
+	  TSIL_Compare (sname[j][0], val, Svalue[j], TSIL_PASS, TSIL_WARN, &foo);
 	  tally[foo]++;
 	}
-      CheckConsistent (Svalue[0], TSIL_GetFunction(&result,"Svyz"));
-      CheckConsistent (Svalue[1], TSIL_GetFunction(&result,"Suxv"));
+      TSIL_CheckConsistent (Svalue[0], TSIL_GetFunction(&result,"Svyz"));
+      TSIL_CheckConsistent (Svalue[1], TSIL_GetFunction(&result,"Suxv"));
 
       /* B */
       for (j = 0; j < 2; j++)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Bvalue[j] = result.B[j].value;
-	  TSIL_Compare (bname[j], val, Bvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+	  TSIL_Compare (bname[j][0], val, Bvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 	  tally[foo]++;
 	}
-      CheckConsistent (Bvalue[0], TSIL_GetFunction(&result,"Bxz"));
-      CheckConsistent (Bvalue[1], TSIL_GetFunction(&result,"Byu"));
+      TSIL_CheckConsistent (Bvalue[0], TSIL_GetFunction(&result,"Bxz"));
+      TSIL_CheckConsistent (Bvalue[1], TSIL_GetFunction(&result,"Byu"));
 
       /* V */
       for (j = 0; j < 4; j++)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Vvalue[j] = result.V[j].value;
-	  TSIL_Compare (vname[j], val, Vvalue[j], TSIL_PASS_V, TSIL_WARN_V, &foo);
+	  TSIL_Compare (vname[j][0], val, Vvalue[j], TSIL_PASS_V, TSIL_WARN_V, &foo);
 	  tally[foo]++;
 	}
-      CheckConsistent (Vvalue[0], TSIL_GetFunction(&result,"Vzxyv"));
-      CheckConsistent (Vvalue[1], TSIL_GetFunction(&result,"Vuyxv"));
-      CheckConsistent (Vvalue[2], TSIL_GetFunction(&result,"Vxzuv"));
-      CheckConsistent (Vvalue[3], TSIL_GetFunction(&result,"Vyuzv"));
+      TSIL_CheckConsistent (Vvalue[0], TSIL_GetFunction(&result,"Vzxyv"));
+      TSIL_CheckConsistent (Vvalue[1], TSIL_GetFunction(&result,"Vuyxv"));
+      TSIL_CheckConsistent (Vvalue[2], TSIL_GetFunction(&result,"Vxzuv"));
+      TSIL_CheckConsistent (Vvalue[3], TSIL_GetFunction(&result,"Vyuzv"));
 
       /* Tbar */
       for (j = 0; j < 6; j++)
 	{
-	  val = GetComplex ();
+	  val = TSIL_GetComplex ();
 	  Tbarvalue[j] = result.Tbar[j].value;
-	  TSIL_Compare (tbarname[j], val, Tbarvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+	  TSIL_Compare (tbarname[j][0], val, Tbarvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 	  tally[foo]++;
 	}
 
@@ -715,7 +715,7 @@ int main (int argc, char *argv[])
 	{
 	  for (k = 0; k < 3; k++)
 	    {
-	      val = GetComplex ();
+	      val = TSIL_GetComplex ();
 	      UUvalue[j][k] = result.U[j].bold[k];
 	      TSIL_Compare (uuname[j][k], val, UUvalue[j][k], TSIL_PASS, TSIL_WARN, &foo);
 	      tally[foo]++;
@@ -727,7 +727,7 @@ int main (int argc, char *argv[])
 	{
 	  for (k = 0; k < 3; k++)
 	    {
-	      val = GetComplex ();
+	      val = TSIL_GetComplex ();
 	      VVvalue[j][k] = result.V[j].bold[k];
 	      TSIL_Compare (vvname[j][k], val, VVvalue[j][k], TSIL_PASS_V, TSIL_WARN_V, &foo);
 	      tally[foo]++;
@@ -739,7 +739,7 @@ int main (int argc, char *argv[])
 	{
 	  for (k = 0; k < 3; k++)
 	    {
-	      val = GetComplex ();
+	      val = TSIL_GetComplex ();
 	      TTvalue[j][k] = result.T[j].bold[k];
 	      TSIL_Compare (ttname[j][k], val, TTvalue[j][k], TSIL_PASS, TSIL_WARN, &foo);
 	      tally[foo]++;
@@ -751,7 +751,7 @@ int main (int argc, char *argv[])
 	{
 	  for (k = 0; k < 3; k++)
 	    {
-	      val = GetComplex ();
+	      val = TSIL_GetComplex ();
 	      SSvalue[j][k] = result.S[j].bold[k];
 	      TSIL_Compare (ssname[j][k], val, SSvalue[j][k], TSIL_PASS, TSIL_WARN, &foo);
 	      tally[foo]++;
@@ -797,27 +797,27 @@ int main (int argc, char *argv[])
 
 	      if (1 == p)
 		{
-		  swapR (&x, &y);
-		  swapR (&z, &u);
+		  TSIL_SwapR (&x, &y);
+		  TSIL_SwapR (&z, &u);
 		}
 
 	      if (2 == p)
 		{
-		  swapR (&x, &z);
-		  swapR (&y, &u);
+		  TSIL_SwapR (&x, &z);
+		  TSIL_SwapR (&y, &u);
 		}
 
 	      if (3 == p)
 		{
-		  swapR (&x, &u);
-		  swapR (&y, &z);
+		  TSIL_SwapR (&x, &u);
+		  TSIL_SwapR (&y, &z);
 		}
 
 	      /* Calculate everything... */
 	      TSIL_SetParameters (&result, x, y, z, u, v, qq);
 	      TSIL_Evaluate (&result, s);
 
-	      Permuteresults (&result, p);
+	      TSIL_PermuteResults (&result, p);
 
 	      printf ("\nTest %d, permutation %d (", i, p);
 	      printf ("%s", argv[i]);
@@ -835,7 +835,7 @@ int main (int argc, char *argv[])
 	      for (j = 0; j < 4; j++)
 		{
 		  val = result.U[j].value;
-		  TSIL_Compare (uname[j], val, Uvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+		  TSIL_Compare (uname[j][0], val, Uvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 		  tally[foo]++;
 		}
 
@@ -843,7 +843,7 @@ int main (int argc, char *argv[])
 	      for (j = 0; j < 6; j++)
 		{
 		  val = result.T[j].value;
-		  TSIL_Compare (tname[j], val, Tvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+		  TSIL_Compare (tname[j][0], val, Tvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 		  tally[foo]++;
 		}
 
@@ -851,7 +851,7 @@ int main (int argc, char *argv[])
 	      for (j = 0; j < 2; j++)
 		{
 		  val = result.S[j].value;
-		  TSIL_Compare (sname[j], val, Svalue[j], TSIL_PASS, TSIL_WARN, &foo);
+		  TSIL_Compare (sname[j][0], val, Svalue[j], TSIL_PASS, TSIL_WARN, &foo);
 		  tally[foo]++;
 		}
 
@@ -859,7 +859,7 @@ int main (int argc, char *argv[])
 	      for (j = 0; j < 2; j++)
 		{
 		  val = result.B[j].value;
-		  TSIL_Compare (bname[j], val, Bvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+		  TSIL_Compare (bname[j][0], val, Bvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 		  tally[foo]++;
 		}
 
@@ -867,7 +867,7 @@ int main (int argc, char *argv[])
 	      for (j = 0; j < 4; j++)
 		{
 		  val = result.V[j].value;
-		  TSIL_Compare (vname[j], val, Vvalue[j], TSIL_PASS_V, TSIL_WARN_V, &foo);
+		  TSIL_Compare (vname[j][0], val, Vvalue[j], TSIL_PASS_V, TSIL_WARN_V, &foo);
 		  tally[foo]++;
 		}
 
@@ -875,7 +875,7 @@ int main (int argc, char *argv[])
 	      for (j = 0; j < 6; j++)
 		{
 		  val = result.Tbar[j].value;
-		  TSIL_Compare (tbarname[j], val, Tbarvalue[j], TSIL_PASS, TSIL_WARN, &foo);
+		  TSIL_Compare (tbarname[j][0], val, Tbarvalue[j], TSIL_PASS, TSIL_WARN, &foo);
 		  tally[foo]++;
 		}
 
@@ -960,7 +960,7 @@ int main (int argc, char *argv[])
 
 	      if (p == 4)
 		{
-		  swapR (&x, &v);
+		  TSIL_SwapR (&x, &v);
 		  permU = 1;
 		  permT11 = 1;
 		  permT12 = 1;
@@ -972,7 +972,7 @@ int main (int argc, char *argv[])
 		}
 	      if (p == 5)
 		{
-		  swapR (&y, &v);
+		  TSIL_SwapR (&y, &v);
 		  permU = 0;
 		  permT11 = 0;
 		  permT12 = 2;
@@ -984,7 +984,7 @@ int main (int argc, char *argv[])
 		}
 	      if (p == 6)
 		{
-		  swapR (&z, &v);
+		  TSIL_SwapR (&z, &v);
 		  permU = 3;
 		  permT11 = 0;
 		  permT12 = 4;
@@ -996,7 +996,7 @@ int main (int argc, char *argv[])
 		}
 	      if (p == 7)
 		{
-		  swapR (&u, &v);
+		  TSIL_SwapR (&u, &v);
 		  permU = 2;
 		  permT11 = 1;
 		  permT12 = 5;
@@ -1026,7 +1026,7 @@ int main (int argc, char *argv[])
 		  val = Uvalue[j];
 		  if (j == permU)
 		    {
-		      TSIL_Compare (uname[j], val, result.U[j].value, TSIL_PASS, TSIL_WARN, &foo);
+		      TSIL_Compare (uname[j][0], val, result.U[j].value, TSIL_PASS, TSIL_WARN, &foo);
 		      tally[foo]++;
 		    }
 		}
@@ -1037,19 +1037,19 @@ int main (int argc, char *argv[])
 		  val = Tvalue[j];
 		  if (j == permT11)
 		    {
-		      TSIL_Compare (tname[j], val, result.T[permT12].value,
+		      TSIL_Compare (tname[j][0], val, result.T[permT12].value,
                                  TSIL_PASS, TSIL_WARN, &foo);
 		      tally[foo]++;
 		    }
 		  if (j == permT21)
 		    {
-		      TSIL_Compare (tname[j], val, result.T[permT22].value,
+		      TSIL_Compare (tname[j][0], val, result.T[permT22].value,
 				 TSIL_PASS, TSIL_WARN, &foo);
 		      tally[foo]++;
 		    }
 		  if (j == permT31)
 		    {
-		      TSIL_Compare (tname[j], val, result.T[permT32].value,
+		      TSIL_Compare (tname[j][0], val, result.T[permT32].value,
 				 TSIL_PASS, TSIL_WARN, &foo);
 		      tally[foo]++;
 		    }
@@ -1061,7 +1061,7 @@ int main (int argc, char *argv[])
 		  val = Svalue[j];
 		  if (j == permS)
 		    {
-		      TSIL_Compare (sname[j], val, result.S[j].value, 
+		      TSIL_Compare (sname[j][0], val, result.S[j].value, 
                                     TSIL_PASS, TSIL_WARN, &foo);
 		      tally[foo]++;
 		    }
@@ -1073,7 +1073,7 @@ int main (int argc, char *argv[])
 		  val = Vvalue[j];
 		  if (j == permU)
 		    {
-		      TSIL_Compare (vname[j], val, result.V[j].value, 
+		      TSIL_Compare (vname[j][0], val, result.V[j].value, 
                                     TSIL_PASS_V, TSIL_WARN_V, &foo);
 		      tally[foo]++;
 		    }
@@ -1085,19 +1085,19 @@ int main (int argc, char *argv[])
 		  val = Tbarvalue[j];
 		  if (j == permT11)
 		    {
-		      TSIL_Compare (tbarname[j], val, result.Tbar[permT12].value,
+		      TSIL_Compare (tbarname[j][0], val, result.Tbar[permT12].value,
 				 TSIL_PASS, TSIL_WARN, &foo);
 		      tally[foo]++;
 		    }
 		  if (j == permT21)
 		    {
-		      TSIL_Compare (tbarname[j], val, result.Tbar[permT22].value,
+		      TSIL_Compare (tbarname[j][0], val, result.Tbar[permT22].value,
 				 TSIL_PASS, TSIL_WARN, &foo);
 		      tally[foo]++;
 		    }
 		  if (j == permT31)
 		    {
-		      TSIL_Compare (tbarname[j], val, result.Tbar[permT32].value,
+		      TSIL_Compare (tbarname[j][0], val, result.Tbar[permT32].value,
 				 TSIL_PASS, TSIL_WARN, &foo);
 		      tally[foo]++;
 		    }

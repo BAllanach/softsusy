@@ -8,10 +8,11 @@
 
 #include "internal.h"
 #include "tsil_params.h"
+int printWarns = YES;
 
 /* **************************************************************** */
 
-void Construct (TSIL_DATA *foo)
+void TSIL_Construct (TSIL_DATA *foo)
 {
   int i, j;
 
@@ -109,13 +110,13 @@ int TSIL_SetParameters (TSIL_DATA *foo,
 
   /* Set up data object if necessary */
   /* if (foo->isAligned != YES) */
-  Construct (foo);
+  TSIL_Construct (foo);
   printWarns = YES;
 
   /* DGR - STUM evaluation */
   foo->whichFns = STUM;
-  foo->RKstepper6 = &rk6;
-  foo->RKstepper5 = &rk5;
+  foo->RKstepper6 = &TSIL_rk6;
+  foo->RKstepper5 = &TSIL_rk5;
 
   /* Set values in the data object */
   foo->x  = x;
@@ -133,7 +134,7 @@ int TSIL_SetParameters (TSIL_DATA *foo,
   foo->threshold[1] = TSIL_POW(TSIL_SQRT(y) + TSIL_SQRT(u), 2);
   foo->threshold[2] = TSIL_POW(TSIL_SQRT(x) + TSIL_SQRT(u) + TSIL_SQRT(v), 2);
   foo->threshold[3] = TSIL_POW(TSIL_SQRT(y) + TSIL_SQRT(z) + TSIL_SQRT(v), 2);
-  foo->threshMin    = MinAbs (foo->threshold, 4);
+  foo->threshMin    = TSIL_MinAbs (foo->threshold, 4);
   foo->nThresh = 4;
 
   /* ...and pseudo-thresholds: */
@@ -145,34 +146,34 @@ int TSIL_SetParameters (TSIL_DATA *foo,
   foo->pseudoThreshold[5] = TSIL_POW(TSIL_SQRT(y) + TSIL_SQRT(z) - TSIL_SQRT(v), 2);
   foo->pseudoThreshold[6] = TSIL_POW(TSIL_SQRT(y) - TSIL_SQRT(z) + TSIL_SQRT(v), 2);
   foo->pseudoThreshold[7] = TSIL_POW(TSIL_SQRT(y) - TSIL_SQRT(z) - TSIL_SQRT(v), 2);
-  foo->psThreshMin        = MinAbs (foo->pseudoThreshold, 8);
+  foo->psThreshMin        = TSIL_MinAbs (foo->pseudoThreshold, 8);
   foo->nPthresh = 8;
 
   /* Set values in all sub-objects: */
-  ConstructB (&(foo->B[xz]), x, z, qq);
-  ConstructB (&(foo->B[yu]), y, u, qq);
+  TSIL_ConstructB (&(foo->B[xz]), x, z, qq);
+  TSIL_ConstructB (&(foo->B[yu]), y, u, qq);
 
-  ConstructS (&(foo->S[vyz]), vyz, v, y, z, qq);
-  ConstructS (&(foo->S[uxv]), uxv, u, x, v, qq);
+  TSIL_ConstructS (&(foo->S[vyz]), vyz, v, y, z, qq);
+  TSIL_ConstructS (&(foo->S[uxv]), uxv, u, x, v, qq);
 
-  ConstructT (&(foo->T[vyz]), vyz, v, y, z, qq);
-  ConstructT (&(foo->T[uxv]), uxv, u, x, v, qq);
-  ConstructT (&(foo->T[yzv]), yzv, y, z, v, qq);
-  ConstructT (&(foo->T[xuv]), xuv, x, u, v, qq);
-  ConstructT (&(foo->T[zyv]), zyv, z, y, v, qq);
-  ConstructT (&(foo->T[vxu]), vxu, v, x, u, qq);
+  TSIL_ConstructT (&(foo->T[vyz]), vyz, v, y, z, qq);
+  TSIL_ConstructT (&(foo->T[uxv]), uxv, u, x, v, qq);
+  TSIL_ConstructT (&(foo->T[yzv]), yzv, y, z, v, qq);
+  TSIL_ConstructT (&(foo->T[xuv]), xuv, x, u, v, qq);
+  TSIL_ConstructT (&(foo->T[zyv]), zyv, z, y, v, qq);
+  TSIL_ConstructT (&(foo->T[vxu]), vxu, v, x, u, qq);
 
-  ConstructU (&(foo->U[zxyv]), zxyv, z, x, y, v, qq);
-  ConstructU (&(foo->U[uyxv]), uyxv, u, y, x, v, qq);
-  ConstructU (&(foo->U[xzuv]), xzuv, x, z, u, v, qq);
-  ConstructU (&(foo->U[yuzv]), yuzv, y, u, z, v, qq);
+  TSIL_ConstructU (&(foo->U[zxyv]), zxyv, z, x, y, v, qq);
+  TSIL_ConstructU (&(foo->U[uyxv]), uyxv, u, y, x, v, qq);
+  TSIL_ConstructU (&(foo->U[xzuv]), xzuv, x, z, u, v, qq);
+  TSIL_ConstructU (&(foo->U[yuzv]), yuzv, y, u, z, v, qq);
 
-  ConstructV (&(foo->V[zxyv]), zxyv, z, x, y, v, qq);
-  ConstructV (&(foo->V[uyxv]), uyxv, u, y, x, v, qq);
-  ConstructV (&(foo->V[xzuv]), xzuv, x, z, u, v, qq);
-  ConstructV (&(foo->V[yuzv]), yuzv, y, u, z, v, qq);
+  TSIL_ConstructV (&(foo->V[zxyv]), zxyv, z, x, y, v, qq);
+  TSIL_ConstructV (&(foo->V[uyxv]), uyxv, u, y, x, v, qq);
+  TSIL_ConstructV (&(foo->V[xzuv]), xzuv, x, z, u, v, qq);
+  TSIL_ConstructV (&(foo->V[yuzv]), yuzv, y, u, z, v, qq);
 
-  mtype = ConstructM (&(foo->M), x, y, z, u, v, qq);
+  mtype = TSIL_ConstructM (&(foo->M), x, y, z, u, v, qq);
 
   /* Set Runge-Kutta step-size parameter parameters.  */
   /* These can be reset by calling TSIL_ResetStepSizeParams */
@@ -189,7 +190,6 @@ int TSIL_SetParameters (TSIL_DATA *foo,
   return 0;
 }
 
-/* DGR -- NEW from here down */
 /* **************************************************************** */
 /* Sets parameters (x,y,z,u,v,qq) for the case STU and updates all  */
 /* sub-objects and evolution coefficients.                          */
@@ -222,11 +222,11 @@ int TSIL_SetParametersSTU (TSIL_DATA *foo,
 
   /* Set up data object if necessary */
   /* if (foo->isAligned != YES) */
-  Construct (foo);
+  TSIL_Construct (foo);
 
   foo->whichFns = STU;
-  foo->RKstepper6 = &rk6_STU;
-  foo->RKstepper5 = &rk5_STU;
+  foo->RKstepper6 = &TSIL_rk6_STU;
+  foo->RKstepper5 = &TSIL_rk5_STU;
 
   /* Set values in the data object */
   /* DGR -- leave y undefined, or set to nan or something? */
@@ -237,7 +237,6 @@ int TSIL_SetParametersSTU (TSIL_DATA *foo,
   foo->v  = v;
   foo->qq = qq;
 
-
   /* Set default scale factor */
   foo->scaleFac = 1.0L;
 
@@ -246,7 +245,7 @@ int TSIL_SetParametersSTU (TSIL_DATA *foo,
 /*   foo->threshold[1] = TSIL_POW(TSIL_SQRT(y) + TSIL_SQRT(u), 2); */
   foo->threshold[1] = TSIL_POW(TSIL_SQRT(x) + TSIL_SQRT(u) + TSIL_SQRT(v), 2);
 /*   foo->threshold[3] = TSIL_POW(TSIL_SQRT(y) + TSIL_SQRT(z) + TSIL_SQRT(v), 2); */
-  foo->threshMin    = MinAbs (foo->threshold, 2);
+  foo->threshMin    = TSIL_MinAbs (foo->threshold, 2);
   foo->nThresh = 2;
 
   /* ...and pseudo-thresholds: */
@@ -258,34 +257,34 @@ int TSIL_SetParametersSTU (TSIL_DATA *foo,
 /*   foo->pseudoThreshold[5] = TSIL_POW(TSIL_SQRT(y) + TSIL_SQRT(z) - TSIL_SQRT(v), 2); */
 /*   foo->pseudoThreshold[6] = TSIL_POW(TSIL_SQRT(y) - TSIL_SQRT(z) + TSIL_SQRT(v), 2); */
 /*   foo->pseudoThreshold[7] = TSIL_POW(TSIL_SQRT(y) - TSIL_SQRT(z) - TSIL_SQRT(v), 2); */
-  foo->psThreshMin        = MinAbs (foo->pseudoThreshold, 4);
+  foo->psThreshMin        = TSIL_MinAbs (foo->pseudoThreshold, 4);
   foo->nPthresh = 4;
 
   /* Set values in all sub-objects: */
-/*   ConstructB (&(foo->B[xz]), x, z, qq); */
-/*   ConstructB (&(foo->B[yu]), y, u, qq); */
+/*   TSIL_ConstructB (&(foo->B[xz]), x, z, qq); */
+/*   TSIL_ConstructB (&(foo->B[yu]), y, u, qq); */
 
-/*   ConstructS (&(foo->S[vyz]), vyz, v, y, z, qq); */
-  ConstructS (&(foo->S[uxv]), uxv, u, x, v, qq);
+/*   TSIL_ConstructS (&(foo->S[vyz]), vyz, v, y, z, qq); */
+  TSIL_ConstructS (&(foo->S[uxv]), uxv, u, x, v, qq);
 
-/*   ConstructT (&(foo->T[vyz]), vyz, v, y, z, qq); */
-  ConstructT (&(foo->T[uxv]), uxv, u, x, v, qq);
-/*   ConstructT (&(foo->T[yzv]), yzv, y, z, v, qq); */
-  ConstructT (&(foo->T[xuv]), xuv, x, u, v, qq);
-/*   ConstructT (&(foo->T[zyv]), zyv, z, y, v, qq); */
-  ConstructT (&(foo->T[vxu]), vxu, v, x, u, qq);
+/*   TSIL_ConstructT (&(foo->T[vyz]), vyz, v, y, z, qq); */
+  TSIL_ConstructT (&(foo->T[uxv]), uxv, u, x, v, qq);
+/*   TSIL_ConstructT (&(foo->T[yzv]), yzv, y, z, v, qq); */
+  TSIL_ConstructT (&(foo->T[xuv]), xuv, x, u, v, qq);
+/*   TSIL_ConstructT (&(foo->T[zyv]), zyv, z, y, v, qq); */
+  TSIL_ConstructT (&(foo->T[vxu]), vxu, v, x, u, qq);
 
-/*   ConstructU (&(foo->U[zxyv]), zxyv, z, x, y, v, qq); */
-/*   ConstructU (&(foo->U[uyxv]), uyxv, u, y, x, v, qq); */
-  ConstructU (&(foo->U[xzuv]), xzuv, x, z, u, v, qq);
-/*   ConstructU (&(foo->U[yuzv]), yuzv, y, u, z, v, qq); */
+/*   TSIL_ConstructU (&(foo->U[zxyv]), zxyv, z, x, y, v, qq); */
+/*   TSIL_ConstructU (&(foo->U[uyxv]), uyxv, u, y, x, v, qq); */
+  TSIL_ConstructU (&(foo->U[xzuv]), xzuv, x, z, u, v, qq);
+/*   TSIL_ConstructU (&(foo->U[yuzv]), yuzv, y, u, z, v, qq); */
 
-/*   ConstructV (&(foo->V[zxyv]), zxyv, z, x, y, v, qq); */
-/*   ConstructV (&(foo->V[uyxv]), uyxv, u, y, x, v, qq); */
-  ConstructV (&(foo->V[xzuv]), xzuv, x, z, u, v, qq);
-/*   ConstructV (&(foo->V[yuzv]), yuzv, y, u, z, v, qq); */
+/*   TSIL_ConstructV (&(foo->V[zxyv]), zxyv, z, x, y, v, qq); */
+/*   TSIL_ConstructV (&(foo->V[uyxv]), uyxv, u, y, x, v, qq); */
+  TSIL_ConstructV (&(foo->V[xzuv]), xzuv, x, z, u, v, qq);
+/*   TSIL_ConstructV (&(foo->V[yuzv]), yuzv, y, u, z, v, qq); */
 
-/*   mtype = ConstructM (&(foo->M), x, y, z, u, v, qq); */
+/*   mtype = TSIL_ConstructM (&(foo->M), x, y, z, u, v, qq); */
 
   /* Set Runge-Kutta step-size parameter parameters.  */
   /* These can be reset by calling TSIL_ResetStepSizeParams */
@@ -332,11 +331,11 @@ int TSIL_SetParametersST (TSIL_DATA *foo,
 
   /* Set up data object if necessary */
   /* if (foo->isAligned != YES) */
-  Construct (foo);
+  TSIL_Construct (foo);
 
   foo->whichFns = ST;
-  foo->RKstepper6 = &rk6_ST;
-  foo->RKstepper5 = &rk5_ST;
+  foo->RKstepper6 = &TSIL_rk6_ST;
+  foo->RKstepper5 = &TSIL_rk5_ST;
 
   /* Set values in the data object */
   /* DGR -- leave y,z undefined, or set to nan or something? */
@@ -367,34 +366,34 @@ int TSIL_SetParametersST (TSIL_DATA *foo,
 /*   foo->pseudoThreshold[5] = TSIL_POW(TSIL_SQRT(y) + TSIL_SQRT(z) - TSIL_SQRT(v), 2); */
 /*   foo->pseudoThreshold[6] = TSIL_POW(TSIL_SQRT(y) - TSIL_SQRT(z) + TSIL_SQRT(v), 2); */
 /*   foo->pseudoThreshold[7] = TSIL_POW(TSIL_SQRT(y) - TSIL_SQRT(z) - TSIL_SQRT(v), 2); */
-  foo->psThreshMin        = MinAbs (foo->pseudoThreshold, 3);
+  foo->psThreshMin        = TSIL_MinAbs (foo->pseudoThreshold, 3);
   foo->nPthresh = 3;
 
   /* Set values in all sub-objects: */
-/*   ConstructB (&(foo->B[xz]), x, z, qq); */
-/*   ConstructB (&(foo->B[yu]), y, u, qq); */
+/*   TSIL_ConstructB (&(foo->B[xz]), x, z, qq); */
+/*   TSIL_ConstructB (&(foo->B[yu]), y, u, qq); */
 
-/*   ConstructS (&(foo->S[vyz]), vyz, v, y, z, qq); */
-  ConstructS (&(foo->S[uxv]), uxv, u, x, v, qq);
+/*   TSIL_ConstructS (&(foo->S[vyz]), vyz, v, y, z, qq); */
+  TSIL_ConstructS (&(foo->S[uxv]), uxv, u, x, v, qq);
 
-/*   ConstructT (&(foo->T[vyz]), vyz, v, y, z, qq); */
-  ConstructT (&(foo->T[uxv]), uxv, u, x, v, qq);
-/*   ConstructT (&(foo->T[yzv]), yzv, y, z, v, qq); */
-  ConstructT (&(foo->T[xuv]), xuv, x, u, v, qq);
-/*   ConstructT (&(foo->T[zyv]), zyv, z, y, v, qq); */
-  ConstructT (&(foo->T[vxu]), vxu, v, x, u, qq);
+/*   TSIL_ConstructT (&(foo->T[vyz]), vyz, v, y, z, qq); */
+  TSIL_ConstructT (&(foo->T[uxv]), uxv, u, x, v, qq);
+/*   TSIL_ConstructT (&(foo->T[yzv]), yzv, y, z, v, qq); */
+  TSIL_ConstructT (&(foo->T[xuv]), xuv, x, u, v, qq);
+/*   TSIL_ConstructT (&(foo->T[zyv]), zyv, z, y, v, qq); */
+  TSIL_ConstructT (&(foo->T[vxu]), vxu, v, x, u, qq);
 
-/*   ConstructU (&(foo->U[zxyv]), zxyv, z, x, y, v, qq); */
-/*   ConstructU (&(foo->U[uyxv]), uyxv, u, y, x, v, qq); */
-/*   ConstructU (&(foo->U[xzuv]), xzuv, x, z, u, v, qq); */
-/*   ConstructU (&(foo->U[yuzv]), yuzv, y, u, z, v, qq); */
+/*   TSIL_ConstructU (&(foo->U[zxyv]), zxyv, z, x, y, v, qq); */
+/*   TSIL_ConstructU (&(foo->U[uyxv]), uyxv, u, y, x, v, qq); */
+/*   TSIL_ConstructU (&(foo->U[xzuv]), xzuv, x, z, u, v, qq); */
+/*   TSIL_ConstructU (&(foo->U[yuzv]), yuzv, y, u, z, v, qq); */
 
-/*   ConstructV (&(foo->V[zxyv]), zxyv, z, x, y, v, qq); */
-/*   ConstructV (&(foo->V[uyxv]), uyxv, u, y, x, v, qq); */
-/*   ConstructV (&(foo->V[xzuv]), xzuv, x, z, u, v, qq); */
-/*   ConstructV (&(foo->V[yuzv]), yuzv, y, u, z, v, qq); */
+/*   TSIL_ConstructV (&(foo->V[zxyv]), zxyv, z, x, y, v, qq); */
+/*   TSIL_ConstructV (&(foo->V[uyxv]), uyxv, u, y, x, v, qq); */
+/*   TSIL_ConstructV (&(foo->V[xzuv]), xzuv, x, z, u, v, qq); */
+/*   TSIL_ConstructV (&(foo->V[yuzv]), yuzv, y, u, z, v, qq); */
 
-/*   mtype = ConstructM (&(foo->M), x, y, z, u, v, qq); */
+/*   mtype = TSIL_ConstructM (&(foo->M), x, y, z, u, v, qq); */
 
   /* Set Runge-Kutta step-size parameter parameters.  */
   /* These can be reset by calling TSIL_ResetStepSizeParams */

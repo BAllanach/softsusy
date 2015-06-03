@@ -7,7 +7,7 @@
 
   This code can be made more efficient by removing terms in the code
   involving coefficient a[i,j] that are 0. However, efficiency is not
-  a big concern, because the function rk5 should only be called once
+  a big concern, because the function TSIL_rk5 should only be called once
   in each run. So all of the 0 coefficients are left in as a nod to
   generality.
 
@@ -22,9 +22,9 @@
   a major speed hit, and because they are not needed (since this is
   ONLY to be used for the last step!)
 
-  NOTE: do NOT call rk4 AFTER calling rk5, because rk4 expects the
-  derivatives to be up-to-date in the struct, and rk5 doesn't update
-  them!  It is permitted to call rk5 repeatedly as a test, because rk5
+  NOTE: do NOT call rk4 AFTER calling TSIL_rk5, because rk4 expects the
+  derivatives to be up-to-date in the struct, and TSIL_rk5 doesn't update
+  them!  It is permitted to call TSIL_rk5 repeatedly as a test, because TSIL_rk5
   doesn't assume that the derivatives in the struct are updated. But
   that would be needlessly inefficient.  */
 
@@ -55,11 +55,11 @@
 
 /* **************************************************************** */
 
-void rk5 (TSIL_DATA *foo, 
-          TSIL_COMPLEX *RKindvar,
-	  TSIL_COMPLEX RKdelta,
-          TSIL_REAL sthresh,
-          int RKmode)
+void TSIL_rk5 (TSIL_DATA *foo, 
+	       TSIL_COMPLEX *RKindvar,
+	       TSIL_COMPLEX RKdelta,
+	       TSIL_REAL sthresh,
+	       int RKmode)
 {
   static TSIL_COMPLEX k1B[2], k2B[2], k3B[2], k4B[2], k5B[2];
   static TSIL_COMPLEX k1S[2], k2S[2], k3S[2], k4S[2], k5S[2];
@@ -97,16 +97,16 @@ void rk5 (TSIL_DATA *foo,
 
   /* Fill up k1 arrays: */
   for (i=0; i<2; i++) {
-    k1B[i] = ds * dBds (foo->B[i], s);
-    k1S[i] = ds * dSds (foo->S[i], s);
+    k1B[i] = ds * TSIL_dBds_rk (foo->B[i], s);
+    k1S[i] = ds * TSIL_dSds (foo->S[i], s);
   }
   for (i=0; i<6; i++)
-    k1T[i] = ds * dTds (foo->T[i], s);
+    k1T[i] = ds * TSIL_dTds (foo->T[i], s);
 
   for (i=0; i<4; i++)
-    k1U[i] = ds * dUds (foo->U[i], s);
+    k1U[i] = ds * TSIL_dUds (foo->U[i], s);
 
-  k1M = ds * dsMds (foo->M, s);
+  k1M = ds * TSIL_dsMds (foo->M, s);
 
   /* Update independent variable. */
   if (0 == RKmode) {
@@ -132,16 +132,16 @@ void rk5 (TSIL_DATA *foo,
 
   /* Fill up k2 arrays: */
   for (i=0; i<2; i++) {
-    k2B[i] = ds * dBds (foo->B[i], s);
-    k2S[i] = ds * dSds (foo->S[i], s);
+    k2B[i] = ds * TSIL_dBds_rk (foo->B[i], s);
+    k2S[i] = ds * TSIL_dSds (foo->S[i], s);
   }
   for (i=0; i<6; i++)
-    k2T[i] = ds * dTds (foo->T[i], s);
+    k2T[i] = ds * TSIL_dTds (foo->T[i], s);
 
   for (i=0; i<4; i++)
-    k2U[i] = ds * dUds (foo->U[i], s);
+    k2U[i] = ds * TSIL_dUds (foo->U[i], s);
 
-  k2M = ds * dsMds (foo->M, s);
+  k2M = ds * TSIL_dsMds (foo->M, s);
 
   /* Update independent variabl. */
   if (0 == RKmode) {
@@ -172,16 +172,16 @@ void rk5 (TSIL_DATA *foo,
 
   /* Fill up k3 arrays: */
   for (i=0; i<2; i++) {
-    k3B[i] = ds * dBds (foo->B[i] , s);
-    k3S[i] = ds * dSds (foo->S[i] , s);
+    k3B[i] = ds * TSIL_dBds_rk (foo->B[i] , s);
+    k3S[i] = ds * TSIL_dSds (foo->S[i] , s);
   }
   for (i=0; i<6; i++)
-    k3T[i] = ds * dTds (foo->T[i] , s);
+    k3T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   for (i=0; i<4; i++)
-    k3U[i] = ds * dUds (foo->U[i] , s);
+    k3U[i] = ds * TSIL_dUds (foo->U[i] , s);
 
-  k3M = ds * dsMds (foo->M , s);
+  k3M = ds * TSIL_dsMds (foo->M , s);
 
   /* Update independent variable. */
   if (0 == RKmode) {
@@ -217,16 +217,16 @@ void rk5 (TSIL_DATA *foo,
 
   /* Fill up k4 arrays: */
   for (i=0; i<2; i++) {
-    k4B[i] = ds * dBds (foo->B[i] , s);
-    k4S[i] = ds * dSds (foo->S[i] , s);
+    k4B[i] = ds * TSIL_dBds_rk (foo->B[i] , s);
+    k4S[i] = ds * TSIL_dSds (foo->S[i] , s);
   }
   for (i=0; i<6; i++)
-    k4T[i] = ds * dTds (foo->T[i] , s);
+    k4T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   for (i=0; i<4; i++)
-    k4U[i] = ds * dUds (foo->U[i] , s);
+    k4U[i] = ds * TSIL_dUds (foo->U[i] , s);
 
-  k4M = ds * dsMds (foo->M , s);
+  k4M = ds * TSIL_dsMds (foo->M , s);
 
   /* Update independent variable. */
   if (0 == RKmode) {
@@ -267,16 +267,16 @@ void rk5 (TSIL_DATA *foo,
 
   /* Fill up k5 arrays: */
   for (i=0; i<2; i++) {
-    k5B[i] = ds * dBds (foo->B[i] , s);
-    k5S[i] = ds * dSds (foo->S[i] , s);
+    k5B[i] = ds * TSIL_dBds_rk (foo->B[i] , s);
+    k5S[i] = ds * TSIL_dSds (foo->S[i] , s);
   }
   for (i=0; i<6; i++)
-    k5T[i] = ds * dTds (foo->T[i] , s);
+    k5T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   for (i=0; i<4; i++)
-    k5U[i] = ds * dUds (foo->U[i] , s);
+    k5U[i] = ds * TSIL_dUds (foo->U[i] , s);
 
-  k5M = ds * dsMds (foo->M , s);
+  k5M = ds * TSIL_dsMds (foo->M , s);
 
   /* Increment data values */
   for (i=0; i<2; i++) {
@@ -315,11 +315,11 @@ void rk5 (TSIL_DATA *foo,
 /* **************************************************************** */
 /* This versions take a RK step for the STU case.                   */
 
-void rk5_STU (TSIL_DATA    *foo, 
-	      TSIL_COMPLEX *RKindvar,
-	      TSIL_COMPLEX RKdelta,
-	      TSIL_REAL    sthresh,
-	      int          RKmode)
+void TSIL_rk5_STU (TSIL_DATA    *foo, 
+		   TSIL_COMPLEX *RKindvar,
+		   TSIL_COMPLEX RKdelta,
+		   TSIL_REAL    sthresh,
+		   int          RKmode)
 {
   static TSIL_COMPLEX k1S, k2S, k3S, k4S, k5S;
   static TSIL_COMPLEX k1T[6], k2T[6], k3T[6], k4T[6], k5T[6];
@@ -352,10 +352,10 @@ void rk5_STU (TSIL_DATA    *foo,
   startingU = (foo->U[whichU].value);
 
   /* Fill up k1 arrays: */
-  k1S = ds * dSds (foo->S[whichS], s);
+  k1S = ds * TSIL_dSds (foo->S[whichS], s);
   for (i=1; i<6; i+=2)
-    k1T[i] = ds * dTds (foo->T[i], s);
-  k1U = ds * dUds (foo->U[whichU], s);
+    k1T[i] = ds * TSIL_dTds (foo->T[i], s);
+  k1U = ds * TSIL_dUds (foo->U[whichU], s);
 
   /* Update independent variable. */
   if (0 == RKmode) {
@@ -373,10 +373,10 @@ void rk5_STU (TSIL_DATA    *foo,
   foo->U[whichU].value = startingU + Butchera21 * k1U;
 
   /* Fill up k2 arrays: */
-  k2S = ds * dSds (foo->S[whichS], s);
+  k2S = ds * TSIL_dSds (foo->S[whichS], s);
   for (i=1; i<6; i+=2)
-    k2T[i] = ds * dTds (foo->T[i], s);
-  k2U = ds * dUds (foo->U[whichU], s);
+    k2T[i] = ds * TSIL_dTds (foo->T[i], s);
+  k2U = ds * TSIL_dUds (foo->U[whichU], s);
 
   /* Update independent variabl. */
   if (0 == RKmode) {
@@ -399,12 +399,12 @@ void rk5_STU (TSIL_DATA    *foo,
                                    + Butchera32 * k2U;
 
   /* Fill up k3 arrays: */
-  k3S = ds * dSds (foo->S[whichS] , s);
+  k3S = ds * TSIL_dSds (foo->S[whichS] , s);
 
   for (i=1; i<6; i+=2)
-    k3T[i] = ds * dTds (foo->T[i] , s);
+    k3T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
-  k3U = ds * dUds (foo->U[whichU] , s);
+  k3U = ds * TSIL_dUds (foo->U[whichU] , s);
 
   /* Update independent variable. */
   if (0 == RKmode) {
@@ -429,10 +429,10 @@ void rk5_STU (TSIL_DATA    *foo,
                                    + Butchera43 * k3U;
 
   /* Fill up k4 arrays: */
-  k4S = ds * dSds (foo->S[whichS] , s);
+  k4S = ds * TSIL_dSds (foo->S[whichS] , s);
   for (i=1; i<6; i+=2)
-    k4T[i] = ds * dTds (foo->T[i] , s);
-  k4U = ds * dUds (foo->U[whichU] , s);
+    k4T[i] = ds * TSIL_dTds (foo->T[i] , s);
+  k4U = ds * TSIL_dUds (foo->U[whichU] , s);
 
   /* Update independent variable. */
   if (0 == RKmode) {
@@ -460,10 +460,10 @@ void rk5_STU (TSIL_DATA    *foo,
                                    + Butchera54 * k4U;
 
   /* Fill up k5 arrays: */
-  k5S = ds * dSds (foo->S[whichS] , s);
+  k5S = ds * TSIL_dSds (foo->S[whichS] , s);
   for (i=1; i<6; i+=2)
-    k5T[i] = ds * dTds (foo->T[i] , s);
-  k5U = ds * dUds (foo->U[whichU] , s);
+    k5T[i] = ds * TSIL_dTds (foo->T[i] , s);
+  k5U = ds * TSIL_dUds (foo->U[whichU] , s);
 
   /* Increment data values */
   foo->S[whichS].value =   startingS
@@ -492,11 +492,11 @@ void rk5_STU (TSIL_DATA    *foo,
 /* **************************************************************** */
 /* This versions take a RK step for the ST case.                    */
 
-void rk5_ST (TSIL_DATA *foo, 
-	     TSIL_COMPLEX *RKindvar,
-	     TSIL_COMPLEX RKdelta,
-	     TSIL_REAL sthresh,
-	     int RKmode)
+void TSIL_rk5_ST (TSIL_DATA *foo, 
+		  TSIL_COMPLEX *RKindvar,
+		  TSIL_COMPLEX RKdelta,
+		  TSIL_REAL sthresh,
+		  int RKmode)
 {
   static TSIL_COMPLEX k1S, k2S, k3S, k4S, k5S;
   static TSIL_COMPLEX k1T[6], k2T[6], k3T[6], k4T[6], k5T[6];
@@ -521,9 +521,9 @@ void rk5_ST (TSIL_DATA *foo,
     startingT[i] = (foo->T[i].value);
 
   /* Fill up k1 arrays: */
-  k1S = ds * dSds (foo->S[whichS], s);
+  k1S = ds * TSIL_dSds (foo->S[whichS], s);
   for (i=1; i<6; i+=2)
-    k1T[i] = ds * dTds (foo->T[i], s);
+    k1T[i] = ds * TSIL_dTds (foo->T[i], s);
 
   /* Update independent variable. */
   if (0 == RKmode) {
@@ -540,9 +540,9 @@ void rk5_ST (TSIL_DATA *foo,
     foo->T[i].value = startingT[i] + Butchera21 * k1T[i];
 
   /* Fill up k2 arrays: */
-  k2S = ds * dSds (foo->S[whichS], s);
+  k2S = ds * TSIL_dSds (foo->S[whichS], s);
   for (i=1; i<6; i+=2)
-    k2T[i] = ds * dTds (foo->T[i], s);
+    k2T[i] = ds * TSIL_dTds (foo->T[i], s);
 
   /* Update independent variabl. */
   if (0 == RKmode) {
@@ -562,9 +562,9 @@ void rk5_ST (TSIL_DATA *foo,
                                    + Butchera32 * k2T[i];
 
   /* Fill up k3 arrays: */
-  k3S = ds * dSds (foo->S[whichS] , s);
+  k3S = ds * TSIL_dSds (foo->S[whichS] , s);
   for (i=1; i<6; i+=2)
-    k3T[i] = ds * dTds (foo->T[i] , s);
+    k3T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   /* Update independent variable. */
   if (0 == RKmode) {
@@ -585,9 +585,9 @@ void rk5_ST (TSIL_DATA *foo,
                                    + Butchera43 * k3T[i];
 
   /* Fill up k4 arrays: */
-  k4S = ds * dSds (foo->S[whichS] , s);
+  k4S = ds * TSIL_dSds (foo->S[whichS] , s);
   for (i=1; i<6; i+=2)
-    k4T[i] = ds * dTds (foo->T[i] , s);
+    k4T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   /* Update independent variable. */
   if (0 == RKmode) {
@@ -610,9 +610,9 @@ void rk5_ST (TSIL_DATA *foo,
                                    + Butchera54 * k4T[i];
 
   /* Fill up k5 arrays: */
-  k5S = ds * dSds (foo->S[whichS] , s);
+  k5S = ds * TSIL_dSds (foo->S[whichS] , s);
   for (i=1; i<6; i+=2)
-    k5T[i] = ds * dTds (foo->T[i] , s);
+    k5T[i] = ds * TSIL_dTds (foo->T[i] , s);
 
   /* Increment data values */
   foo->S[whichS].value =   startingS

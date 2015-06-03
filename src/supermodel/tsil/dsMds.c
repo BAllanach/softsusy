@@ -4,7 +4,7 @@
 
 /* ******************************************************************* */
 
-TSIL_COMPLEX dsMds (TSIL_MTYPE m, TSIL_COMPLEX s)
+TSIL_COMPLEX TSIL_dsMds (TSIL_MTYPE m, TSIL_COMPLEX s)
 {
   TSIL_COMPLEX res;
   int i;

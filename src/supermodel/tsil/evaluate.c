@@ -15,7 +15,7 @@ int TSIL_Evaluate (TSIL_DATA *foo, TSIL_REAL s)
 
   if (foo->isInitialized != YES)
     TSIL_Error("TSIL_Evaluate",
-	       "You must first set parameter values using SetParams!", 3);
+	       "You must first set parameter values using TSIL_SetParams!", 3);
 
   /* Set s value in foo */
   foo->s = s;
@@ -27,18 +27,18 @@ int TSIL_Evaluate (TSIL_DATA *foo, TSIL_REAL s)
   printWarns = NO;
 
   if (foo->whichFns == STUM)
-    isAnalytic = Manalytic (foo->x, foo->y, foo->z, foo->u, foo->v, 
-			    foo->s, &(foo->M.value));
+    isAnalytic = TSIL_Manalytic (foo->x, foo->y, foo->z, foo->u, foo->v, 
+				 foo->s, &(foo->M.value));
   else if (foo->whichFns == STU)
-    isAnalytic = Uanalytic (foo->x, foo->z, foo->u, foo->v, 
-			    foo->s, foo->qq, &(foo->U[xzuv].value));
+    isAnalytic = TSIL_Uanalytic (foo->x, foo->z, foo->u, foo->v, 
+				 foo->s, foo->qq, &(foo->U[xzuv].value));
   else if (foo->whichFns == ST) {
-    isAnalytic = Tanalytic (foo->x, foo->u, foo->v, 
-			    foo->s, foo->qq, &(foo->T[xuv].value));
-    isAnalytic *= Tanalytic (foo->u, foo->x, foo->v, 
-			    foo->s, foo->qq, &(foo->T[uxv].value));
-    isAnalytic *= Tanalytic (foo->v, foo->x, foo->u, 
-			    foo->s, foo->qq, &(foo->T[vxu].value));
+    isAnalytic = TSIL_Tanalytic (foo->x, foo->u, foo->v, 
+				 foo->s, foo->qq, &(foo->T[xuv].value));
+    isAnalytic *= TSIL_Tanalytic (foo->u, foo->x, foo->v, 
+				  foo->s, foo->qq, &(foo->T[uxv].value));
+    isAnalytic *= TSIL_Tanalytic (foo->v, foo->x, foo->u, 
+				  foo->s, foo->qq, &(foo->T[vxu].value));
   }
   else
     TSIL_Error ("TSIL_Evaluate",
@@ -48,9 +48,9 @@ int TSIL_Evaluate (TSIL_DATA *foo, TSIL_REAL s)
 /*   printWarns = YES; */
 
   if (isAnalytic == TRUE) {
-    if (0 == CaseSpecial (foo)) 
+    if (0 == TSIL_CaseSpecial (foo)) 
       TSIL_Error("TSIL_Evaluate",
-		 "This can't happen! CaseSpecial returned 0 when isAnalytic is TRUE.", 1);
+		 "This can't happen! TSIL_CaseSpecial returned 0 when isAnalytic is TRUE.", 1);
     /* ...and we are finished in this case */
     foo->status = ANALYTIC;
   }
@@ -60,36 +60,36 @@ int TSIL_Evaluate (TSIL_DATA *foo, TSIL_REAL s)
     x0 = foo->x; y0 = foo->y; z0 = foo->z; u0 = foo->u; 
     v0 = foo->v; s0 = s; qq0 = foo->qq;
 
-    Rescale (foo);
+    TSIL_Rescale (foo);
 
     /* Check if this is the "unnatural" threshold case */
-    if (UnnaturalCase (foo))
+    if (TSIL_UnnaturalCase (foo))
       TSIL_Warn ("TSIL_Evaluate",
 		 "'Unnatural' threshold case! Expect reduced accuracy.");
 
     /* Generic evaluation */
-    CaseGeneric (foo);
+    TSIL_CaseGeneric (foo);
 
     if (1 == REDOANALYTIC) {
       /*
-	The following line puts in the analytic results for B, and
-	if available, S,T,U. But leaving it out allows debugging of
-	the RK evaluation of analytic B,S,T,U cases, which is quite
-	useful for now.
+	The following line puts in the analytic results for B, and if
+	available, S,T,U. But leaving it out allows debugging of the
+	RK evaluation of analytic B,S,T,U cases, which is quite useful
+	for now.
       */
-      CaseSpecial (foo);
+      TSIL_CaseSpecial (foo);
     }
 
     /* Undo rescaling */
-    Unscale (foo);
+    TSIL_Unscale (foo);
     foo->x = x0; foo->y = y0; foo->z = z0; foo->u = u0; 
     foo->v = v0; s = s0; foo->qq = qq0;
   }
 
   /* Set additional functions: */
-  SetTbar (foo);
-  SetV (foo);
-  SetBold (foo);
+  TSIL_SetTbar (foo);
+  TSIL_SetV (foo);
+  TSIL_SetBold (foo);
 
 /*   if (foo->whichFns == STU) */
 /*     foo->B[xz].value = B(foo->x, foo->z, foo->s, foo->qq); */

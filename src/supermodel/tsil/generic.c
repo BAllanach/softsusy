@@ -5,7 +5,7 @@
       
 /* ******************************************************************* */
      
-int MaxSteps (TSIL_DATA *foo, TSIL_COMPLEX z)
+int TSIL_MaxSteps (TSIL_DATA *foo, TSIL_COMPLEX z)
 {
   return (foo->nStepsMaxCon 
           + floor((double) (TSIL_CABS(z) * foo->nStepsMaxVar)));
@@ -13,7 +13,7 @@ int MaxSteps (TSIL_DATA *foo, TSIL_COMPLEX z)
 
 /* **************************************************************** */
 
-void InitialValue (TSIL_DATA *foo, TSIL_COMPLEX sinit)
+void TSIL_InitialValue (TSIL_DATA *foo, TSIL_COMPLEX sinit)
 {
   TSIL_REAL x, y, z, u, v, qq;
 
@@ -27,42 +27,40 @@ void InitialValue (TSIL_DATA *foo, TSIL_COMPLEX sinit)
 
   /* DGR - Could probably reorganize this for greater clarity */
   if (foo->whichFns == STUM) {
-    foo->B[xz].deriv = BprimeAtZero (x, z, qq);
-    foo->B[xz].value = BAtZero (x, z, qq) + sinit * foo->B[xz].deriv;
-    foo->B[yu].deriv = BprimeAtZero (y, u, qq);
-    foo->B[yu].value = BAtZero (y, u, qq) + sinit * foo->B[yu].deriv;
+    foo->B[xz].deriv = TSIL_BprimeAtZero (x, z, qq);
+    foo->B[xz].value = TSIL_BAtZero (x, z, qq) + sinit * foo->B[xz].deriv;
+    foo->B[yu].deriv = TSIL_BprimeAtZero (y, u, qq);
+    foo->B[yu].value = TSIL_BAtZero (y, u, qq) + sinit * foo->B[yu].deriv;
   }
 
   if (foo->whichFns == STUM) {
-    foo->S[vyz].deriv = SprimeAtZero (v, y, z, qq);
-    foo->S[vyz].value = SAtZero (v, y, z, qq) + sinit * foo->S[vyz].deriv;
+    foo->S[vyz].deriv = TSIL_SprimeAtZero (v, y, z, qq);
+    foo->S[vyz].value = TSIL_SAtZero (v, y, z, qq) + sinit * foo->S[vyz].deriv;
   }
-  foo->S[uxv].deriv = SprimeAtZero (u, x, v, qq);
-  foo->S[uxv].value = SAtZero (u, x, v, qq) + sinit * foo->S[uxv].deriv;
+  foo->S[uxv].deriv = TSIL_SprimeAtZero (u, x, v, qq);
+  foo->S[uxv].value = TSIL_SAtZero (u, x, v, qq) + sinit * foo->S[uxv].deriv;
 
   /* We can set the T's to zero and disable their running if the first
      arg is zero, since they are TSIL_Infinity in this case, and don't
      enter into the running of other functions: */
 
-
   if (v > TSIL_TOL) {
     if (foo->whichFns == STUM) {
-      foo->T[vyz].deriv = TprimeAtZero (v, y, z, qq);
-      foo->T[vyz].value = TAtZero (v, y, z, qq) + sinit * foo->T[vyz].deriv;
+      foo->T[vyz].deriv = TSIL_TprimeAtZero (v, y, z, qq);
+      foo->T[vyz].value = TSIL_TAtZero (v, y, z, qq) + sinit * foo->T[vyz].deriv;
     }
-    foo->T[vxu].deriv = TprimeAtZero (v, x, u, qq);
-    foo->T[vxu].value = TAtZero (v, x, u, qq) + sinit * foo->T[vxu].deriv;
+    foo->T[vxu].deriv = TSIL_TprimeAtZero (v, x, u, qq);
+    foo->T[vxu].value = TSIL_TAtZero (v, x, u, qq) + sinit * foo->T[vxu].deriv;
   }
   else {
     foo->T[vyz].value = foo->T[vxu].value = 
       foo->T[vyz].deriv = foo->T[vxu].deriv = 0.0 + 0.0*I;
   }
 
-
   if (foo->whichFns == STUM) {
     if (y > TSIL_TOL) {
-      foo->T[yzv].deriv = TprimeAtZero (y, z, v, qq);
-      foo->T[yzv].value = TAtZero (y, z, v, qq) + sinit * foo->T[yzv].deriv;
+      foo->T[yzv].deriv = TSIL_TprimeAtZero (y, z, v, qq);
+      foo->T[yzv].value = TSIL_TAtZero (y, z, v, qq) + sinit * foo->T[yzv].deriv;
     }
     else {
       foo->T[yzv].value = 
@@ -72,8 +70,8 @@ void InitialValue (TSIL_DATA *foo, TSIL_COMPLEX sinit)
 
   if (foo->whichFns == STUM) {
     if (z > TSIL_TOL) {
-      foo->T[zyv].deriv = TprimeAtZero (z, y, v, qq);
-      foo->T[zyv].value = TAtZero (z, y, v, qq) + sinit * foo->T[zyv].deriv;
+      foo->T[zyv].deriv = TSIL_TprimeAtZero (z, y, v, qq);
+      foo->T[zyv].value = TSIL_TAtZero (z, y, v, qq) + sinit * foo->T[zyv].deriv;
     }
     else {
       foo->T[zyv].value = 
@@ -82,8 +80,8 @@ void InitialValue (TSIL_DATA *foo, TSIL_COMPLEX sinit)
   }
 
   if (u > TSIL_TOL) {
-    foo->T[uxv].deriv = TprimeAtZero (u, x, v, qq);
-    foo->T[uxv].value = TAtZero (u, x, v, qq) + sinit * foo->T[uxv].deriv;
+    foo->T[uxv].deriv = TSIL_TprimeAtZero (u, x, v, qq);
+    foo->T[uxv].value = TSIL_TAtZero (u, x, v, qq) + sinit * foo->T[uxv].deriv;
   }
   else {
     foo->T[uxv].value = 
@@ -91,8 +89,8 @@ void InitialValue (TSIL_DATA *foo, TSIL_COMPLEX sinit)
   }
 
   if (x > TSIL_TOL) {
-    foo->T[xuv].deriv = TprimeAtZero (x, u, v, qq);
-    foo->T[xuv].value = TAtZero (x, u, v, qq) + sinit * foo->T[xuv].deriv;
+    foo->T[xuv].deriv = TSIL_TprimeAtZero (x, u, v, qq);
+    foo->T[xuv].value = TSIL_TAtZero (x, u, v, qq) + sinit * foo->T[xuv].deriv;
   }
   else {
     foo->T[xuv].value = 
@@ -106,8 +104,8 @@ void InitialValue (TSIL_DATA *foo, TSIL_COMPLEX sinit)
 
   if (foo->whichFns == STUM) {
     if (x > TSIL_TOL) {
-      foo->U[zxyv].deriv = UprimeAtZero (z, x, y, v, qq);
-      foo->U[zxyv].value = UAtZero (z, x, y, v, qq) + sinit * foo->U[zxyv].deriv;
+      foo->U[zxyv].deriv = TSIL_UprimeAtZero (z, x, y, v, qq);
+      foo->U[zxyv].value = TSIL_UAtZero (z, x, y, v, qq) + sinit * foo->U[zxyv].deriv;
     }
     else {
       foo->U[zxyv].value = 
@@ -115,8 +113,8 @@ void InitialValue (TSIL_DATA *foo, TSIL_COMPLEX sinit)
     }
 
     if (y > TSIL_TOL) {
-      foo->U[uyxv].deriv = UprimeAtZero (u, y, x, v, qq);
-      foo->U[uyxv].value = UAtZero (u, y, x, v, qq) + sinit * foo->U[uyxv].deriv;
+      foo->U[uyxv].deriv = TSIL_UprimeAtZero (u, y, x, v, qq);
+      foo->U[uyxv].value = TSIL_UAtZero (u, y, x, v, qq) + sinit * foo->U[uyxv].deriv;
     }
     else {
       foo->U[uyxv].value = 
@@ -126,8 +124,8 @@ void InitialValue (TSIL_DATA *foo, TSIL_COMPLEX sinit)
 
   if (foo->whichFns != ST) {
     if (z > TSIL_TOL) {
-      foo->U[xzuv].deriv = UprimeAtZero (x, z, u, v, qq);
-      foo->U[xzuv].value = UAtZero (x, z, u, v, qq) + sinit * foo->U[xzuv].deriv;
+      foo->U[xzuv].deriv = TSIL_UprimeAtZero (x, z, u, v, qq);
+      foo->U[xzuv].value = TSIL_UAtZero (x, z, u, v, qq) + sinit * foo->U[xzuv].deriv;
     }
     else {
       foo->U[xzuv].value = 
@@ -137,16 +135,16 @@ void InitialValue (TSIL_DATA *foo, TSIL_COMPLEX sinit)
 
   if (foo->whichFns == STUM) {
     if (u > TSIL_TOL) {
-      foo->U[yuzv].deriv = UprimeAtZero (y, u, z, v, qq);
-      foo->U[yuzv].value = UAtZero (y, u, z, v, qq) + sinit * foo->U[yuzv].deriv;
+      foo->U[yuzv].deriv = TSIL_UprimeAtZero (y, u, z, v, qq);
+      foo->U[yuzv].value = TSIL_UAtZero (y, u, z, v, qq) + sinit * foo->U[yuzv].deriv;
     }
     else {
       foo->U[yuzv].value = 
 	foo->U[yuzv].deriv = 0.0 + 0.0*I;
     }
 
-    foo->M.deriv = sMprimeAtZero (x, y, z, u, v);
-    foo->M.value = sMAtZero (x, y, z, u, v) + sinit * foo->M.deriv;
+    foo->M.deriv = TSIL_sMprimeAtZero (x, y, z, u, v);
+    foo->M.value = TSIL_sMAtZero (x, y, z, u, v) + sinit * foo->M.deriv;
   }
 
   return;
@@ -155,7 +153,7 @@ void InitialValue (TSIL_DATA *foo, TSIL_COMPLEX sinit)
 /* **************************************************************** */
 /* Designed to be used only for very small but non-zero sinit.      */
 
-void InitialValueThreshAt0 (TSIL_DATA *foo, TSIL_COMPLEX sinit)
+void TSIL_InitialValueThreshAt0 (TSIL_DATA *foo, TSIL_COMPLEX sinit)
 {
   TSIL_REAL x, y, z, u, v, qq;
   TSIL_COMPLEX rinit;
@@ -177,13 +175,13 @@ void InitialValueThreshAt0 (TSIL_DATA *foo, TSIL_COMPLEX sinit)
   }
   else {
     if (foo->whichFns == STUM) {
-      foo->B[xz].value   = BAtZero (x, z, qq);
+      foo->B[xz].value   = TSIL_BAtZero (x, z, qq);
       foo->B[xz].deriv   = 0.0L;
-      foo->U[zxyv].value = UAtZero (z, x, y, v, qq);
+      foo->U[zxyv].value = TSIL_UAtZero (z, x, y, v, qq);
       foo->U[zxyv].deriv = 0.0L;
     }
     if (foo->whichFns != ST) {
-      foo->U[xzuv].value = UAtZero (x, z, u, v, qq);
+      foo->U[xzuv].value = TSIL_UAtZero (x, z, u, v, qq);
       foo->U[xzuv].deriv = 0.0L;
     }
   }
@@ -194,11 +192,11 @@ void InitialValueThreshAt0 (TSIL_DATA *foo, TSIL_COMPLEX sinit)
       foo->B[yu].deriv   = -1.0L/sinit;    
     }
     else { 
-      foo->B[yu].value   = BAtZero (y, u, qq);
+      foo->B[yu].value   = TSIL_BAtZero (y, u, qq);
       foo->B[yu].deriv   = 0.0L;
-      foo->U[yuzv].value = UAtZero (y, u, z, v, qq);
+      foo->U[yuzv].value = TSIL_UAtZero (y, u, z, v, qq);
       foo->U[yuzv].deriv = 0.0L;
-      foo->U[uyxv].value = UAtZero (u, y, x, v, qq);
+      foo->U[uyxv].value = TSIL_UAtZero (u, y, x, v, qq);
       foo->U[uyxv].deriv = 0.0L;
     }
   }
@@ -209,11 +207,11 @@ void InitialValueThreshAt0 (TSIL_DATA *foo, TSIL_COMPLEX sinit)
     foo->S[uxv].deriv = 1.125L - 0.5L*rinit;
   }
   else {
-    foo->S[uxv].value = SAtZero (u, x, v, qq);
-    foo->S[uxv].deriv = SprimeAtZero (u, x, v, qq);
-    foo->T[uxv].value = TAtZero (u, x, v, qq);
-    foo->T[xuv].value = TAtZero (x, u, v, qq);
-    foo->T[vxu].value = TAtZero (v, x, u, qq);
+    foo->S[uxv].value = TSIL_SAtZero (u, x, v, qq);
+    foo->S[uxv].deriv = TSIL_SprimeAtZero (u, x, v, qq);
+    foo->T[uxv].value = TSIL_TAtZero (u, x, v, qq);
+    foo->T[xuv].value = TSIL_TAtZero (x, u, v, qq);
+    foo->T[vxu].value = TSIL_TAtZero (v, x, u, qq);
   }
 
   if (foo->whichFns == STUM) {
@@ -222,11 +220,11 @@ void InitialValueThreshAt0 (TSIL_DATA *foo, TSIL_COMPLEX sinit)
       foo->S[vyz].deriv = 1.125L - 0.5L*rinit;
     }
     else {
-      foo->S[vyz].value = SAtZero (v, y, z, qq);
-      foo->S[vyz].deriv = SprimeAtZero (v, y, z, qq);
-      foo->T[vyz].value = TAtZero (v, y, z, qq);
-      foo->T[yzv].value = TAtZero (y, z, v, qq);
-      foo->T[zyv].value = TAtZero (z, y, v, qq);
+      foo->S[vyz].value = TSIL_SAtZero (v, y, z, qq);
+      foo->S[vyz].deriv = TSIL_SprimeAtZero (v, y, z, qq);
+      foo->T[vyz].value = TSIL_TAtZero (v, y, z, qq);
+      foo->T[yzv].value = TSIL_TAtZero (y, z, v, qq);
+      foo->T[zyv].value = TSIL_TAtZero (z, y, v, qq);
     }
   }
 
@@ -321,12 +319,12 @@ void InitialValueThreshAt0 (TSIL_DATA *foo, TSIL_COMPLEX sinit)
    The first guess stepsize is (t1 - t0)/TSIL_nStepsStart 
 */
 
-int Integrate (TSIL_DATA    *foo,
-               TSIL_COMPLEX t0,
-               TSIL_COMPLEX t1,
-               int          max_steps,
-               int          intmode,
-               TSIL_REAL    sthresh)
+int TSIL_Integrate (TSIL_DATA    *foo,
+		    TSIL_COMPLEX t0,
+		    TSIL_COMPLEX t1,
+		    int          max_steps,
+		    int          intmode,
+		    TSIL_REAL    sthresh)
 {
   TSIL_COMPLEX t, dt;
   TSIL_REAL pre_error = foo->precisionGoal;
@@ -395,7 +393,7 @@ int Integrate (TSIL_DATA    *foo,
 /* **************************************************************** */
 /* Handling of all generic (i.e. non-analytic) cases.               */
 
-void CaseGeneric (TSIL_DATA *foo)
+void TSIL_CaseGeneric (TSIL_DATA *foo)
 {
   TSIL_COMPLEX sInit, sFinal, rInit, rFinal, imDisp;
   TSIL_REAL    sthresh;
@@ -412,16 +410,16 @@ void CaseGeneric (TSIL_DATA *foo)
   if (threshMin < TSIL_TOL) {
     TSIL_Info("There is a threshold at s=0.");
     sInit = I*SINIT;
-    InitialValueThreshAt0 (foo, sInit);
+    TSIL_InitialValueThreshAt0 (foo, sInit);
   }
   else if (threshMin < THRESH_CUTOFF) {
     TSIL_Info("There is a threshold close to, but not at, s=0.");
     sInit = -SINIT;
-    InitialValue (foo, sInit);
+    TSIL_InitialValue (foo, sInit);
   }
   else {
     sInit = 0.L + 0.L*I;
-    InitialValue (foo, 0.0L + 0.0L*I);
+    TSIL_InitialValue (foo, 0.0L + 0.0L*I);
   }
 
   /* Find the point nearest s=0 that could give problems: */
@@ -449,14 +447,14 @@ void CaseGeneric (TSIL_DATA *foo)
       if (temp > TSIL_TOL) rFinal = TSIL_CLOG(temp);
       else if (temp < -TSIL_TOL) rFinal = TSIL_CLOG(-temp) - I*PI;
       else rFinal = TSIL_CLOG(0.001L*TSIL_EPSILON) - I*0.5L*PI;
-      Integrate (foo, rInit, rFinal, MaxSteps(foo,rFinal-rInit), 3, 0.0L);
+      TSIL_Integrate (foo, rInit, rFinal, TSIL_MaxSteps(foo,rFinal-rInit), 3, 0.0L);
     }
     else
-      Integrate (foo, sInit, sFinal, MaxSteps(foo,sFinal-sInit), 0, 0.0L);
+      TSIL_Integrate (foo, sInit, sFinal, TSIL_MaxSteps(foo,sFinal-sInit), 0, 0.0L);
 
     sInit  = sFinal;
     sFinal = (TSIL_COMPLEX) s;
-    Integrate (foo, sInit, sFinal, MaxSteps(foo, sFinal-sInit), 1, 0.0L);
+    TSIL_Integrate (foo, sInit, sFinal, TSIL_MaxSteps(foo, sFinal-sInit), 1, 0.0L);
 
     /* Set status value */
     foo->status = REAXIS;
@@ -475,21 +473,21 @@ void CaseGeneric (TSIL_DATA *foo)
       TSIL_Info("Using ln(-s/qq) as independent variable for first leg of contour.");
       rInit  = TSIL_CLOG(-sInit/qq);
       rFinal = TSIL_CLOG(-sFinal/qq);
-      Integrate (foo, rInit, rFinal, MaxSteps(foo,rFinal-rInit), 3, 0.0L);
+      TSIL_Integrate (foo, rInit, rFinal, TSIL_MaxSteps(foo,rFinal-rInit), 3, 0.0L);
     }
-    else Integrate (foo, sInit, sFinal, MaxSteps(foo,sFinal - sInit), 0, 0.0L);
+    else TSIL_Integrate (foo, sInit, sFinal, TSIL_MaxSteps(foo,sFinal - sInit), 0, 0.0L);
 
     sInit  = sFinal;
     sFinal = s + imDisp;
-    Integrate (foo, sInit, sFinal, MaxSteps(foo,sFinal - sInit), 0, 0.0L);
+    TSIL_Integrate (foo, sInit, sFinal, TSIL_MaxSteps(foo,sFinal - sInit), 0, 0.0L);
 
     sInit  = sFinal;
     sFinal = s;
-    if (NearThreshold (foo, &sthresh, THRESH_CUTOFF) == YES) {
+    if (TSIL_NearThreshold (foo, &sthresh, THRESH_CUTOFF) == YES) {
       if (TSIL_CABS(sthresh) < TSIL_TOL) {
         rInit  = TSIL_CLOG(-sInit/qq);
         rFinal = TSIL_CLOG(-sFinal/qq - I*TSIL_EPSILON);
-        Integrate (foo, rInit, rFinal, MaxSteps(foo,rFinal-rInit), 3, 0.0L);
+        TSIL_Integrate (foo, rInit, rFinal, TSIL_MaxSteps(foo,rFinal-rInit), 3, 0.0L);
       }
       else {
         TSIL_Info("Using near-threshold stepper for final leg of contour.");
@@ -498,11 +496,11 @@ void CaseGeneric (TSIL_DATA *foo)
         if (temp > TSIL_TOL) rFinal = TSIL_CLOG(temp);
         else if (temp < -TSIL_TOL) rFinal = TSIL_CLOG(-temp) - I*PI;
         else rFinal = TSIL_CLOG(0.001L*TSIL_EPSILON) - I*0.5L*PI;
-        Integrate (foo, rInit, rFinal, MaxSteps(foo,rFinal - rInit), 2, sthresh);
+        TSIL_Integrate (foo, rInit, rFinal, TSIL_MaxSteps(foo,rFinal - rInit), 2, sthresh);
       }
     }
     else 
-      Integrate (foo, sInit, sFinal, MaxSteps(foo,sFinal - sInit), 1, 0.0L);
+      TSIL_Integrate (foo, sInit, sFinal, TSIL_MaxSteps(foo,sFinal - sInit), 1, 0.0L);
 
     /* Set status value */
     foo->status = CONTOUR;
@@ -512,7 +510,7 @@ void CaseGeneric (TSIL_DATA *foo)
      it, if necessary: */
   if ((foo->x < TSIL_TOL) || (foo->y < TSIL_TOL) ||
       (foo->z < TSIL_TOL) || (foo->u < TSIL_TOL))
-    CorrectUs (foo);
+    TSIL_CorrectUs (foo);
 
   /* Finally, convert s*M to M */
   foo->M.value /= s;

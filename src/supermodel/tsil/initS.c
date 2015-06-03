@@ -4,7 +4,7 @@
 
 /* ***************************************************************** */
 
-void ConstructS (TSIL_STYPE *s,
+void TSIL_ConstructS (TSIL_STYPE *s,
 		 int n,
 		 TSIL_REAL x,
 		 TSIL_REAL y,
@@ -16,7 +16,7 @@ void ConstructS (TSIL_STYPE *s,
   s->arg[1] = y;
   s->arg[2] = z;
 
-  s->S_c = x + y + z - A(x,qq) - A(y,qq) - A(z,qq);
+  s->S_c = x + y + z - TSIL_A(x,qq) - TSIL_A(y,qq) - TSIL_A(z,qq);
 
   return;
 }

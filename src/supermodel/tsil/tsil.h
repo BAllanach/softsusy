@@ -1,10 +1,12 @@
-/* TSIL v1.21 */
+/* TSIL v1.3 */
 
 /* General header file for the user API and all TSIL types.  This file
    must be included in all applications of TSIL.  */
 
 #ifndef TSIL_H
 #define TSIL_H
+
+#define TSIL_VERSION "1.3"
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,47 +22,47 @@ extern "C" {
 
 #if defined(TSIL_SIZE_DOUBLE)
 
-typedef double         TSIL_REAL;
-typedef double complex TSIL_COMPLEX;
-#define TSIL_EXP       exp
-#define TSIL_CEXP      cexp
-#define TSIL_LOG       log
-#define TSIL_CLOG      clog
-#define TSIL_FABS      fabs
-#define TSIL_CABS      cabs
-#define TSIL_SQRT      sqrt
-#define TSIL_CSQRT     csqrt
-#define TSIL_POW       pow
-#define TSIL_CPOW      cpow
-#define TSIL_ATAN      atan
-#define TSIL_ATAN2     atan2
-#define TSIL_CREAL     creal
-#define TSIL_CIMAG     cimag
-#define TSIL_CONJ      conj
-#define TSIL_EPSILON   DBL_EPSILON
-#define TSIL_TOL       100.0*DBL_EPSILON
+typedef double          TSIL_REAL;
+typedef double _Complex TSIL_COMPLEX;
+#define TSIL_EXP        exp
+#define TSIL_CEXP       cexp
+#define TSIL_LOG        log
+#define TSIL_CLOG       clog
+#define TSIL_FABS       fabs
+#define TSIL_CABS       cabs
+#define TSIL_SQRT       sqrt
+#define TSIL_CSQRT      csqrt
+#define TSIL_POW        pow
+#define TSIL_CPOW       cpow
+#define TSIL_ATAN       atan
+#define TSIL_ATAN2      atan2
+#define TSIL_CREAL      creal
+#define TSIL_CIMAG      cimag
+#define TSIL_CONJ       conj
+#define TSIL_EPSILON    DBL_EPSILON
+#define TSIL_TOL        100.0*DBL_EPSILON
 
 #else   /* Assume LONG if we get here: */
 
-typedef long double         TSIL_REAL;
-typedef long double complex TSIL_COMPLEX;
-#define TSIL_EXP            expl
-#define TSIL_CEXP           cexpl
-#define TSIL_LOG            logl
-#define TSIL_CLOG           clogl
-#define TSIL_FABS           fabsl
-#define TSIL_CABS           cabsl
-#define TSIL_SQRT           sqrtl
-#define TSIL_CSQRT          csqrtl
-#define TSIL_POW            powl
-#define TSIL_CPOW           cpowl
-#define TSIL_ATAN           atanl
-#define TSIL_ATAN2          atan2l
-#define TSIL_CREAL          creall
-#define TSIL_CIMAG          cimagl
-#define TSIL_CONJ           conjl
-#define TSIL_EPSILON        LDBL_EPSILON
-#define TSIL_TOL            1000.0L*LDBL_EPSILON
+typedef long double          TSIL_REAL;
+typedef long double _Complex TSIL_COMPLEX;
+#define TSIL_EXP             expl
+#define TSIL_CEXP            cexpl
+#define TSIL_LOG             logl
+#define TSIL_CLOG            clogl
+#define TSIL_FABS            fabsl
+#define TSIL_CABS            cabsl
+#define TSIL_SQRT            sqrtl
+#define TSIL_CSQRT           csqrtl
+#define TSIL_POW             powl
+#define TSIL_CPOW            cpowl
+#define TSIL_ATAN            atanl
+#define TSIL_ATAN2           atan2l
+#define TSIL_CREAL           creall
+#define TSIL_CIMAG           cimagl
+#define TSIL_CONJ            conjl
+#define TSIL_EPSILON         LDBL_EPSILON
+#define TSIL_TOL             1000.0L*LDBL_EPSILON
 
 #endif /* End selection of basic floating point data size. */
 
@@ -291,7 +293,7 @@ typedef struct TSIL_Result TSIL_RESULT;
 enum {NOSWAP, XYandZU, XZandYU, XUandYZ};
 
 /* Toggle to control printing of warning messages */
-int printWarns;
+extern int printWarns;
 
 /* === Prototypes for functions in the user API: === */
 
@@ -308,6 +310,7 @@ int TSIL_GetData (TSIL_DATA *, const char *, TSIL_COMPLEX *);
 int TSIL_GetBoldData (TSIL_DATA *, const char *, TSIL_COMPLEX [][3]);
 TSIL_COMPLEX TSIL_GetFunction (TSIL_DATA *, const char *);
 TSIL_COMPLEX TSIL_GetBoldFunction (TSIL_DATA *, const char *, int);
+int TSIL_NumFuncs (const char *);
 
 /* I/O and related functions: */
 void TSIL_PrintStatus (TSIL_DATA *);
@@ -317,10 +320,10 @@ void TSIL_PrintDataM  (TSIL_DATA *);
 void TSIL_WriteDataM  (FILE *, TSIL_DATA *);
 void TSIL_cprintf     (TSIL_COMPLEX);
 void TSIL_cprintfM    (TSIL_COMPLEX);
-void TSIL_Error       (char *, char *, int);
-void TSIL_Warn        (char *, char *);
+void TSIL_Error       (const char *, const char *, int);
+void TSIL_Warn        (const char *, const char *);
 void TSIL_PrintInfo   (void);
-void TSIL_Info        (char *);
+void TSIL_Info        (const char *);
 
 /* Utilities: */
 int  TSIL_CopyResult (TSIL_DATA *, TSIL_RESULT *);
