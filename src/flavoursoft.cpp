@@ -703,6 +703,12 @@ void FlavourMssmSoftsusy::lesHouchesAccordOutput(ostream & out,
 						 int numPoints, 
 						 bool ewsbBCscale) {
 
+  if (forceSlha1 == true) {
+    MssmSoftsusy::lesHouchesAccordOutput(out, model, pars, sgnMu, tanb, qMax, 
+				       numPoints, ewsbBCscale);
+    return;
+  }
+
   int nn = out.precision();
   headerSLHA(out);
   spinfoSLHA(out);
@@ -714,6 +720,8 @@ void FlavourMssmSoftsusy::lesHouchesAccordOutput(ostream & out,
   if (!displayProblem().testSeriousProblem() || printRuledOutSpectra) {
     massSLHA(out);
     alphaSLHA(out);
+    runto(displayMsusy());
+    calcDrBarPars();
     inomixingSLHA(out);
     sfermionmixSLHA(out);
     int n = 0; while (n < numPoints) {

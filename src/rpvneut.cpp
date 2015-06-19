@@ -3041,7 +3041,7 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
 					 bool ewsbBCscale) {
   if (forceSlha1) {
     RpvSoftsusy::slha1(cout, model, pars, sgnMu, tanb, 
-		       qMax, numPoints);
+		       qMax, numPoints, ewsbBCscale);
     return;
   }
   int nn = out.precision();
@@ -3105,6 +3105,8 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
 
   if (!displayProblem().testSeriousProblem() || printRuledOutSpectra) {
     rr.massSLHA(out);
+    rr.runto(displayMsusy());
+    rr.calcDrBarPars();
     rr.inomixingSLHA(out);
     if (susyRpvBCatMSUSY) { 
       rr.runto(rr.displayMsusy()); rr.rpvSet(pars); 

@@ -565,8 +565,6 @@ namespace softsusy {
     virtual void higgsMSLHA(ostream & out);
     /// neutralino and charigno part of mass block of SLHA
     virtual void neutralinoCharginoMSLHA(ostream & out);
-    /// nmnmix block output of SLHA
-    virtual void neutralinoMixingSLHA(ostream & out);
     /// CP even mixing matrix NMHMIX block of SLHA
     void nmhmixSLHA(ostream&);
     /// CP odd mixing matrix NMHMIX block of SLHA

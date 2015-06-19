@@ -6241,7 +6241,8 @@ void MssmSoftsusy::addSupCorrection(DoubleMatrix & mass, int family) {
   mass = mass - piSq;	  
 }
 
-void MssmSoftsusy::doUpSquarks(double mt, double pizztMS, double sinthDRbarMS, int accuracy) { 
+void MssmSoftsusy::doUpSquarks(double mt, double pizztMS, double sinthDRbarMS,
+			       int accuracy) { 
   
   /// first two families are simpler
   int family; for (family = 1; family <= 2; family++) {
@@ -6268,6 +6269,7 @@ void MssmSoftsusy::doUpSquarks(double mt, double pizztMS, double sinthDRbarMS, i
   
   DoubleMatrix a(2, 2);
   treeUpSquark(a, mt, pizztMS, sinthDRbarMS, family);
+
   DoubleMatrix mStopSquared(a), mStopSquared2(a);
   mStopSquared2 = mStopSquared; /// StopSquared2 is now tree-level
   
@@ -6385,7 +6387,7 @@ void MssmSoftsusy::doDownSquarks(double mb, double pizztMS, double
   /// with the LIGHT sbottom as the external momentum
   DoubleVector physicalSbotMassesSquared(mSbotSquared.sym2by2(theta));
   physpars.thetab = theta;
-  
+
   /// Check for tachyonic sbottoms
   if (minimum(physicalSbotMassesSquared(1), physicalSbotMassesSquared(2))
       < 0.0 || minimum(physicalSbotMassesSquared2(1), 
@@ -6486,6 +6488,7 @@ void MssmSoftsusy::doChargedSleptons(double mtau, double pizztMS, double
   /// do third family
   family = 3; 
   treeChargedSlepton(mSlepSquared, mtau, pizztMS, sinthDRbarMS, family);
+
   DoubleMatrix mSlepSquared2(mSlepSquared);
   
   if (accuracy > 0) {
@@ -6499,8 +6502,8 @@ void MssmSoftsusy::doChargedSleptons(double mtau, double pizztMS, double
   double theta;
   DoubleVector physicalStauMassesSquared2(mSlepSquared2.sym2by2(theta));
   DoubleVector physicalStauMassesSquared(mSlepSquared.sym2by2(theta));
-  physpars.thetatau = theta; /// theta is calculated at p=mstau1
-  
+  physpars.thetatau = theta;
+
   if (physicalStauMassesSquared(1) < 0.0 || physicalStauMassesSquared(2) < 0.0
       ||  physicalStauMassesSquared2(1) < 0.0 || 
       physicalStauMassesSquared2(2) < 0.0) {
@@ -7349,7 +7352,8 @@ void MssmSoftsusy::treeNeutralinos(DoubleMatrix & mNeut, double beta, double mz,
   
 }
 
-void MssmSoftsusy::calcDrBarGauginos(double beta, double mw, double mz, double sinth, drBarPars & eg) {
+void MssmSoftsusy::calcDrBarGauginos(double beta, double mw, double mz, 
+				     double sinth, drBarPars & eg) {
   DoubleMatrix mCh(2, 2);   
   treeCharginos(mCh, beta, mw);
   eg.mch = mCh.asy2by2(eg.thetaL, eg.thetaR);
@@ -9790,9 +9794,10 @@ void MssmSoftsusy::alphaSLHA(ostream & out) {
 }
 
 void MssmSoftsusy::neutralinoMixingSLHA(ostream & out) {
-  const sPhysical s(displayPhys());
+  const sPhysical s(displayDrBarPars());
   
-  out << "Block nmix                  # neutralino mixing matrix\n";
+  out << "Block nmix                  # neutralino mixing matrix Q=" <<
+    displayMu() << endl;
   const int rank = s.mneut.displayEnd();
   for (int i = 1; i <= rank; i++) {
     for (int j = 1; j <= rank; j++) {
@@ -9804,7 +9809,7 @@ void MssmSoftsusy::neutralinoMixingSLHA(ostream & out) {
 }
 
 void MssmSoftsusy::inomixingSLHA(ostream & out) {
-  sPhysical s(displayPhys());
+  sPhysical s(displayDrBarPars());
   int i, j;
   
   neutralinoMixingSLHA(out);
@@ -9820,14 +9825,16 @@ void MssmSoftsusy::inomixingSLHA(ostream & out) {
   }
   
   i = 1;
-  out << "Block Umix                  # chargino U mixing matrix \n";
+  out << "Block Umix                  # chargino U mixing matrix";
+  out << "  at Q=" << displayMu() << "\n";
   for (i=1; i<=2; i++)
     for (j=1; j<=2; j++) {
       out << "  " << i << "  " << j << "    "; printRow(out, u(i, j));
       out << "   # U_{" << i << "," << j << "}\n";      
     }
   
-  out << "Block Vmix                  # chargino V mixing matrix \n";
+  out << "Block Vmix                  # chargino V mixing matrix";
+  out << "  at Q=" << displayMu() << "\n";
   for (i=1; i<=2; i++)
     for (j=1; j<=2; j++) {
       out << "  " << i << "  " << j << "    "; printRow(out, v(i, j));
@@ -9848,9 +9855,10 @@ void MssmSoftsusy::modselSLHA(ostream & out, const char model[]) {
 }
 
 void MssmSoftsusy::sfermionmixSLHA(ostream & out) {
-  sPhysical s(displayPhys());
+  sPhysical s(displayDrBarPars());
   DoubleMatrix m(2, 2);
-  out << "Block stopmix               # stop mixing matrix\n";
+  out << "Block stopmix               # stop mixing matrix";
+  out << " at Q=" << displayMu() << "\n";
   if (s.mu(1, 3) < s.mu(2, 3)) m = rot2d(s.thetat);
   else m = rot2dTwist(s.thetat);
   int i, j; 
@@ -9860,7 +9868,8 @@ void MssmSoftsusy::sfermionmixSLHA(ostream & out) {
       out << "   # F_{" << i << j << "}" << endl;
     }
   
-  out << "Block sbotmix               # sbottom mixing matrix\n";
+  out << "Block sbotmix               # sbottom mixing matrix";
+  out << " at Q=" << displayMu() << "\n";
   if (s.md(1, 3) < s.md(2, 3)) m = rot2d(s.thetab);
   else m = rot2dTwist(s.thetab);
   for (i=1; i<=2; i++)
@@ -9869,7 +9878,8 @@ void MssmSoftsusy::sfermionmixSLHA(ostream & out) {
       out << "   # F_{" << i << j << "}" << endl;
     }
   
-  out << "Block staumix               # stau mixing matrix\n";
+  out << "Block staumix               # stau mixing matrix";
+  out << " at Q=" << displayMu() << "\n";
   if (s.me(1, 3) < s.me(2, 3)) m = rot2d(s.thetatau);
   else m = rot2dTwist(s.thetatau);
   for (i=1; i<=2; i++)
@@ -10180,16 +10190,6 @@ void MssmSoftsusy::minparSLHA(ostream & out, const char model [],
   }
 }
 
-void MssmSoftsusy::slha1(ostream & out, const char model[], 
-			 const DoubleVector & pars, 
-			 int sgnMu, double tanb, 
-			 double qMax, 
-			 int numPoints, 
-			 bool ewsbBCscale) {
-  lesHouchesAccordOutput(out, model, pars, sgnMu, tanb, qMax, numPoints, 
-			 ewsbBCscale);
-}
-
 /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
 void MssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[], 
 					  const DoubleVector & pars, 
@@ -10197,11 +10197,6 @@ void MssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
 					  double qMax, 
 					  int numPoints, 
 					  bool ewsbBCscale) {
-  if (forceSlha1 == true) {
-    slha1(out, model, pars, sgnMu, tanb, qMax, numPoints, 
-	  ewsbBCscale);
-    return;
-  }
   int nn = out.precision();
   headerSLHA(out);
   spinfoSLHA(out);
@@ -10213,6 +10208,8 @@ void MssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],
   if (!displayProblem().testSeriousProblem() || printRuledOutSpectra) {
     massSLHA(out);
     alphaSLHA(out);
+    runto(displayMsusy());
+    calcDrBarPars();
     inomixingSLHA(out);
     sfermionmixSLHA(out);
     

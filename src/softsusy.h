@@ -1176,9 +1176,9 @@ namespace softsusy {
 					int sgnMu, double tanb, double qMax, 
 					int numPoints, 
 					bool ewsbBCscale);
-    void slha1(ostream & out, const char model[], const DoubleVector & pars, 
+    /*    void slha1(ostream & out, const char model[], const DoubleVector & pars, 
 	       int sgnMu, double tanb, double qMax, int numPoints, 
-	       bool ewsbBCscale);
+	       bool ewsbBCscale);*/
     /// Normally, this is just a dummy function that is un-used. But sometimes,
     /// it can be used to re-set electroweak symmetry breaking conditions,
     /// depending on the value of inputs at the GUT scale. 
