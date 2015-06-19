@@ -1,3 +1,4 @@
+<li> 19/6/15 Made sfermion mixing in SLHA output the *tree-level* mixing at MSUSY: better defined theoretically and more useful
 <li> 02/5/15 Better error trapping after bail-out of main iteration. Thanks to P Millet
 <li> 29/5/15 Use exact field combination mixture for mA(1) in 2-loop tadpoles and protect against nans in pseudoscalar NMSSM calculations
 <li> 26/5/15 Bug-fixed input of tan beta scale in NMSSM in SLHA format
