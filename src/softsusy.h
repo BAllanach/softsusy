@@ -822,9 +822,12 @@ namespace softsusy {
     /// required sign (+/- 1). Returns 1 if mu^2<0, indicating an inconsistent
     /// minimum 
     virtual int rewsbMu(int sgnMu, double & mu) const;
-    /// Tree-level REWSB calculation, returning m3sq at correct value consistent
+    /// REWSB calculation, returning m3sq at correct value consistent
     /// with mu
     virtual int rewsbM3sq(double, double &) const;
+    /// Tree-level REWSB calculation, returning m3sq at correct value consistent
+    /// with mu
+    int rewsbM3sqTree(double, double &) const;
     /// Fixes mH1^2 and mH2^2 in order to get muCond and mAcond correct
     void alternativeEwsb(double mt);
     /// Organises high accuracy rewsb: call it at the low scale M_{SUSY}

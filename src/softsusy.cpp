@@ -244,7 +244,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
 
 /// Returns mu from rewsb requirement. 
 /// returns 1 if there's a problem. Call at MSusy
-int MssmSoftsusy::rewsbMu(int sgnMu, double & mu) const {
+int MssmSoftsusy::rewsbMu(int sgnMu, double & mupar) const {
   int flag = 0;
   if (abs(sgnMu) != 1) {
     ostringstream ii;     
@@ -259,30 +259,50 @@ int MssmSoftsusy::rewsbMu(int sgnMu, double & mu) const {
     / (tanb2 - 1.0) - 0.5 * sqr(displayMz());
   
   if (musq < 0.0) {
-    mu = sgnMu * sqrt(fabs(musq)); flag = 1; /// mu has incorrect sign
+    mupar = sgnMu * sqrt(fabs(musq)); flag = 1; /// mu has incorrect sign
   }
   else
-    mu = sgnMu * sqrt(musq); 
+    mupar = sgnMu * sqrt(musq); 
   
   return flag;
 }
 
 /// returns 1 if mu < 1.0e-9
-int MssmSoftsusy::rewsbM3sq(double mu, double & m3sq) const {
+int MssmSoftsusy::rewsbM3sq(double mu, double & m3squared) const {
   int flag = 0;
   
   if (fabs(mu) < 1.0e-9) 
-    { flag = 1; m3sq = 0.0; }
+    { flag = 1; m3squared = 0.0; }
   else
-    m3sq =  0.5 * 
+    m3squared =  0.5 * 
       (displayMh1Squared() + displayMh2Squared() - displayTadpole2Ms() -
        displayTadpole1Ms() + 2.0 * sqr(mu)) * 
       sin(2 * atan(displayTanb()));
   
   /// Following means no good rewsb
-  if (m3sq < 0.0) flag = 1;
-  else if (testNan(m3sq)) {
-    flag = 1; m3sq = EPSTOL;
+  if (m3squared < 0.0) flag = 1;
+  else if (testNan(m3squared)) {
+    flag = 1; m3squared = EPSTOL;
+  }
+  
+  return flag;
+}
+
+/// returns 1 if mu < 1.0e-9
+int MssmSoftsusy::rewsbM3sqTree(double mupar, double & m3squared) const {
+  int flag = 0;
+  
+  if (fabs(mupar) < 1.0e-9) 
+    { flag = 1; m3squared = 0.0; }
+  else
+    m3squared =  0.5 * 
+      (displayMh1Squared() + displayMh2Squared() + 2.0 * sqr(mupar)) * 
+      sin(2.0 * atan(displayTanb()));
+  
+  /// Following means no good rewsb
+  if (m3squared < 0.0) flag = 1;
+  else if (testNan(m3squared)) {
+    flag = 1; m3squared = EPSTOL;
   }
   
   return flag;
@@ -6653,44 +6673,53 @@ void MssmSoftsusy::physical(int accuracy) {
   /// from Steve Martin et al
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   if(accuracy != 0 && USE_TWO_LOOP_SPARTICLE_MASS) {
-   supermodel smodel;
+    /// Need to extract the mu and M3squared we would get from minimising the
+    /// tree-level Higgs potential
+    double muTree = 0., m3SqTree = 0.;
+    int sgnMu = 0;
+    if (displaySusyMu() > 0.) sgnMu = 1; else sgnMu = -1; 
+    rewsbMu(sgnMu, muTree);
+    rewsbM3sqTree(muTree, m3SqTree);
+    
+    supermodel smodel;
 
-   smodel.vd = displayHvev() * cos(atan(displayTanb())) / sqrt(2.0);
-   smodel.vu = displayHvev() * sin(atan(displayTanb())) / sqrt(2.0);
+    smodel.vd = displayHvev() * cos(atan(displayTanb()));
+    smodel.vu = displayHvev() * sin(atan(displayTanb()));
+    
+    // We should apply dictionary here
+    smodel.gp =  sqrt(0.6) * displayGaugeCoupling(1);
+    smodel.g  = displayGaugeCoupling(2);
+    smodel.g3 = displayGaugeCoupling(3);
+    smodel.ytop = displayYukawaElement(YU, 3, 3);
+    smodel.ybot = displayYukawaElement(YD, 3, 3);
+    smodel.ytau = displayYukawaElement(YE, 3, 3);
+    smodel.m1 = displayGaugino(1);
+    smodel.m2 = displayGaugino(2);
+    smodel.m3 = displayGaugino(3);
+    smodel.atop = displaySoftA(UA, 3, 3) * smodel.ytop;
+    smodel.abot = displaySoftA(DA, 3, 3) * smodel.ybot;
+    smodel.atau = displaySoftA(EA, 3, 3) * smodel.ytau;
+    
+    for(int i=0; i<3; i++) {
+      smodel.m2Q[i] = displaySoftMassSquared(mQl,i+1,i+1);
+      smodel.m2u[i] = displaySoftMassSquared(mUr,i+1,i+1);
+      smodel.m2d[i] = displaySoftMassSquared(mDr,i+1,i+1);
+      smodel.m2L[i] = displaySoftMassSquared(mLl,i+1,i+1);
+      smodel.m2e[i] = displaySoftMassSquared(mEr,i+1,i+1);
+    }
+    
+    smodel.m2Hu = displayMh2Squared();
+    smodel.m2Hd = displayMh1Squared();
+    smodel.mu = muTree;
+    smodel.b = m3SqTree;
+    smodel.Q = displayMu();
 
-   // We should apply dictionary here
-   smodel.g =  sqrt(0.6) * displayGaugeCoupling(1);
-   smodel.g3 = displayGaugeCoupling(3);
-   smodel.ytop = displayYukawaElement(YU, 3, 3);
-   smodel.ybot = displayYukawaElement(YD, 3, 3);
-   smodel.ytau = displayYukawaElement(YE, 3, 3);
-   smodel.m1 = displayGaugino(1);
-   smodel.m2 = displayGaugino(2);
-   smodel.m3 = displayGaugino(3);
-   smodel.atop = displaySoftA(UA, 3, 3) * smodel.ytop;
-   smodel.abot = displaySoftA(DA, 3, 3) * smodel.ybot;
-   smodel.atau = displaySoftA(EA, 3, 3) * smodel.ytau;
-
-   for(int i=0; i<3; i++) {
-    smodel.m2Q[i] = displaySoftMassSquared(mQl,i+1,i+1);
-    smodel.m2u[i] = displaySoftMassSquared(mUr,i+1,i+1);
-    smodel.m2d[i] = displaySoftMassSquared(mDr,i+1,i+1);
-    smodel.m2L[i] = displaySoftMassSquared(mLl,i+1,i+1);
-    smodel.m2e[i] = displaySoftMassSquared(mEr,i+1,i+1);
-   }
-
-   smodel.m2Hu = displayMh2Squared();
-   smodel.m2Hd = displayMh1Squared();
-   smodel.mu = displaySusyMu();
-   smodel.b = displayM3Squared();
-
-   smodel.Q = displayMu();
-
-   higherorder(smodel);  
-
-   //Set the outputs 
-   physpars.mGluino = smodel.mgluino;
-   //cout <<  physpars.mGluino << endl;
+    /// C
+    higherorder(smodel);  
+    
+    //Set the outputs 
+    physpars.mGluino = smodel.mgluino;
+    //cout <<  physpars.mGluino << endl;
   }
 #endif ///< COMPILE_HIGHER_ORDERS
 }

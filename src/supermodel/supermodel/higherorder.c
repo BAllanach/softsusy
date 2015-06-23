@@ -116,14 +116,34 @@ void higherorder (supermodel *smodel)
 
   tanbeta = vu/vd;
 
+  /// DEBUG: Ben has added for checking
+  TSIL_REAL m2Ztree, mztree;
+  TSIL_REAL cos2bet;
+  TSIL_REAL primer818;
+  TSIL_REAL primer819;
+  // Following uses normalization where VEV is about 175 GeV
+  vu = vu/sqrt(2.);
+  vd = vd/sqrt(2.);
+
+  m2Ztree = (g*g + gp*gp)*(vu*vu + vd*vd)/2.0;
+  mztree = sqrt(m2Ztree);
+  cos2bet = (vd*vd - vu*vu)/(vd*vd + vu*vu);
+  primer818 = TSIL_CREAL(m2Hu + mu*mu - b*vd/vu - m2Ztree*cos2bet/2.0);
+  primer819 = TSIL_CREAL(m2Hd + mu*mu - b*vu/vd + m2Ztree*cos2bet/2.0);
+  printf("Primer eq. (8.1.8) = %Lf\n", primer818);
+  printf("Primer eq. (8.1.9) = %Lf\n", primer819);
+  printf("Primer eq. (8.1.8)/mu^2 = %Lf\n", primer818/(mu*mu));
+  printf("Primer eq. (8.1.9)/mu^2 = %Lf\n", primer819/(mu*mu));
+  /// end of DEBUG
+
   SUMO_Update ();
   SUMO_Tree_Masses ();
   SUMO_Tree_Couplings ();
 
   /* Minimize 2-loop Veff, to set correct vu,vd,tanbeta: */
-  /* printf("Before minimizing (vu, vd) = (%Lf, %Lf)\n", vu, vd); */
-  /// DEBUG  SUMO_Minimize_Veff (2); switch back on!!!
-  /* printf("After minimizing  (vu, vd) = (%Lf, %Lf)\n", vu, vd); */
+  /*  printf("Before minimizing (vu, vd) = (%Lf, %Lf)\n", vu, vd); 
+  SUMO_Minimize_Veff (0); 
+  printf("After minimizing  (vu, vd) = (%Lf, %Lf)\n", vu, vd); */
 
   // For debugging purposes, we print
   SUMO_GluinoPole (0);

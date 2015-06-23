@@ -783,7 +783,7 @@ int main(int argc, char *argv[]) {
                            break;
                         }
                       } else {
-                        cout << "WARNING: did not understand parameter " 
+                        cout << "# WARNING: did not understand parameter " 
                              << i << " in non-flavoured EXTPAR inputs\n";
                       }
 		    } else {
