@@ -526,30 +526,31 @@ The masses and mixings of MSSM super particles are then calculated at tree-level
 order by using the SUSY  parameters (and $m_3$) calculated at $M_Z$.
 \begin{figure}\begin{center}
 \label{fig:algorithm}
-\begin{picture}(323,210)
-\put(10,0){\makebox(280,10)[c]{\fbox{Calculate Higgs and
-      sparticle pole masses. Run to $M_Z$.}}}
-%\put(150,36.5){\vector(0,-1){23}}
-\put(10,40){\makebox(280,10)[c]{\fbox{Run to $M_Z$.}}}
-\put(150,76.5){\vector(0,-1){23}}
-\put(10,160){\makebox(280,10)[c]{\fbox{Run to $M_X$. Apply soft SUSY breaking
-boundary condition.}}}
-\put(150,116.5){\vector(0,-1){23}}
-\put(10,80){\makebox(280,10)[c]{\fbox{EWSB, iterative solution of $\mu$}}}
-\put(150,156){\vector(0,-1){23}}
-\put(10,120){\makebox(280,10)[c]{\fbox{Run to $M_{SUSY}$.}}}
-\DashLine(115,125)(0,125){5}
-\DashLine(0,125)(0,5){5}
-\DashLine(0,5)(12,5){5}
-\put(10,5){\vector(1,0){2}}
-\put(20,130){convergence}
-\put(150,196){\vector(0,-1){23}}
-\put(10,200){\makebox(280,10)[c]{\fbox{SUSY radiative corrections to
-$g_i(M_Z)$, $h_{t,b,\tau}(M_Z)$.}}}
-\put(183,45){\line(1,0){140}}
-\put(323,45){\line(0,1){160}}
-\put(323,205){\vector(-1,0){40}}
-\end{picture}
+\includegraphics[width=300pt]{alg.eps}
+% \begin{picture}(323,210)
+% \put(10,0){\makebox(280,10)[c]{\fbox{Calculate Higgs and
+%       sparticle pole masses. Run to $M_Z$.}}}
+% %\put(150,36.5){\vector(0,-1){23}}
+% \put(10,40){\makebox(280,10)[c]{\fbox{Run to $M_Z$.}}}
+% \put(150,76.5){\vector(0,-1){23}}
+% \put(10,160){\makebox(280,10)[c]{\fbox{Run to $M_X$. Apply soft SUSY breaking
+% boundary condition.}}}
+% \put(150,116.5){\vector(0,-1){23}}
+% \put(10,80){\makebox(280,10)[c]{\fbox{EWSB, iterative solution of $\mu$}}}
+% \put(150,156){\vector(0,-1){23}}
+% \put(10,120){\makebox(280,10)[c]{\fbox{Run to $M_{SUSY}$.}}}
+% \DashLine(115,125)(0,125){5}
+% \DashLine(0,125)(0,5){5}
+% \DashLine(0,5)(12,5){5}
+% \put(10,5){\vector(1,0){2}}
+% \put(20,130){convergence}
+% \put(150,196){\vector(0,-1){23}}
+% \put(10,200){\makebox(280,10)[c]{\fbox{SUSY radiative corrections to
+% $g_i(M_Z)$, $h_{t,b,\tau}(M_Z)$.}}}
+% \put(183,45){\line(1,0){140}}
+% \put(323,45){\line(0,1){160}}
+% \put(323,205){\vector(-1,0){40}}
+% \end{picture}
 \caption{Fixed point iteration algorithm used to calculate the SUSY
   spectrum. Each step 
 (represented by a box) is detailed in the text. The initial step is the
@@ -764,7 +765,7 @@ $M_Z$ is the pole $Z$ mass and
 $\Pi_{ZZ}^T$ is the transverse $Z$ self-energy. $v$ is renormalised with
 two-loop MSSM RGEs to the scale $M_{SUSY}$, along with the other MSSM
 parameters.  
-The full one-loop EWSB
+The full one-loop (plus leading two-loop, see below) EWSB
 conditions at this scale are then employed to\footnote{Note that there is also
   an option to extract $m_{H_1}(M_{SUSY})$ and $m_{H_2}(M_{SUSY})$ from input
   $\mu(M_{SUSY})$ and  
@@ -777,7 +778,7 @@ as~\cite{Pierce:1997zz}
 \mu^2(M_{SUSY}) =
 \frac{m_{\bar{H}_1}^2(M_{SUSY}) -  m_{\bar{H}_2}^2(M_{SUSY}) \tan^2
   \beta(M_{SUSY})}{\tan^2 \beta(M_{SUSY}) - 1} 
-- \frac{1}{2} M_{\bar Z}^2
+- \frac{1}{2} M_{\bar Z}^2(M_{SUSY})
 \label{mucond} 
 \end{equation}
 where $m_{\bar{H}_i}^2 = m_{H_i}^2 - t_i/v_i$, $M_{\bar Z}^2(M_{SUSY}) = M_Z^2 +
@@ -969,7 +970,8 @@ file (e.g.\ \code{lesHouchesInput}, as provided in the standard distribution)
 that specifies the input parameters. The user may then run the code with 
 \small\begin{verbatim}
 ./softpoint.x leshouches < lesHouchesInput
-\end{verbatim}\normalsize
+\end{verbatim}
+\normalsize
 The output will also be in
 SLHA format. Such output can be used for input into other programs  
 which subscribe to the accord, such as \code{SDECAY}~\cite{sdecay},
@@ -1582,29 +1584,30 @@ contained within each of the higher level objects that we now describe.
 \subsection{General Structure}
 
 \begin{figure}\begin{center}
-\begin{picture}(200,200)
-\GBox(200,200)(0,0){0.9}
-\ArrowLine(70,180)(30,130)
-\ArrowLine(70,180)(120,160)
-\ArrowLine(120,120)(120,20)
-\ArrowLine(50,40)(120,120)
-\SetPFont{Teletype}{10}
-\put(0,0){\framebox(200,200){}}
-\ArrowLine(140,180)(120,160)
-\ArrowLine(65,180)(100,120)
-\ArrowLine(50,100)(120,120)
-\ArrowLine(180,180)(140,120)
-\ArrowLine(160,80)(120,120)
-\BText(70,180){RGE}
-\BText(30,130){QedQcd}
-\BText(160,180){MssmSusy}
-\BText(120,160){MssmSusyRGE}
-\BText(50,100){MssmSoftPars}
-\BText(120,120){MssmSoftsusy}
-\BText(160,80){Approx}
-\BText(120,20){FlavourMssmSoftsusy}
-\BText(50,40){AltEwsbMssm}
-\end{picture}
+\includegraphics[width=200pt]{rpcobj.eps}
+% \begin{picture}(200,200)
+% \GBox(200,200)(0,0){0.9}
+% \ArrowLine(70,180)(30,130)
+% \ArrowLine(70,180)(120,160)
+% \ArrowLine(120,120)(120,20)
+% \ArrowLine(50,40)(120,120)
+% \SetPFont{Teletype}{10}
+% \put(0,0){\framebox(200,200){}}
+% \ArrowLine(140,180)(120,160)
+% \ArrowLine(65,180)(100,120)
+% \ArrowLine(50,100)(120,120)
+% \ArrowLine(180,180)(140,120)
+% \ArrowLine(160,80)(120,120)
+% \BText(70,180){RGE}
+% \BText(30,130){QedQcd}
+% \BText(160,180){MssmSusy}
+% \BText(120,160){MssmSusyRGE}
+% \BText(50,100){MssmSoftPars}
+% \BText(120,120){MssmSoftsusy}
+% \BText(160,80){Approx}
+% \BText(120,20){FlavourMssmSoftsusy}
+% \BText(50,40){AltEwsbMssm}
+% \end{picture}
 \caption{ \label{fig:objstruc} Heuristic high-level object structure of \SOFTSUSY\@. Inheritance is
 displayed by the arrows and a type definition by the equals
 sign.}\end{center}\end{figure} 
