@@ -12,7 +12,7 @@ Block MODSEL  # Select model
     12    4.49424035e+02   # parameter output scale
 =======
     12    4.52388688e+02   # parameter output scale
->>>>>>> 825a76e... Better error trapping after bail-out of main iteration
+>>>>>>> ca4cb75... Use exact field combination mixture for mA(1) in 2-loop tadpoles and protect against nans in pseudoscalar NMSSM calculations
 Block SMINPUTS             # Standard Model inputs
      1    1.27918000e+02   # alpha_em^(-1)(MZ) SM MSbar
      2    1.16639000e-05   # G_Fermi
@@ -35,6 +35,7 @@ Block EXTPAR               # scale of SUSY breaking BCs
 # Z3 = 1, SoftHiggsOut = 0
 Block MASS                      # Mass spectrum
 # PDG code     mass             particle
+<<<<<<< HEAD
         24     8.03931974e+01   # MW
         25     1.06797805e+02   # h0(1)
         35     4.41190438e+02   # h0(2)
@@ -71,6 +72,74 @@ Block MASS                      # Mass spectrum
    2000011     4.08715271e+02   # ~e_R
    2000013     4.08687944e+02   # ~mu_R
    2000015     4.23750812e+02   # ~stau_2
+=======
+        24     8.03773763e+01   # MW
+        25     1.06125535e+02   # h0(1)
+        35     4.59247521e+02   # h0(2)
+        45     5.13839234e+02   # h0(3)
+        36     4.75604904e+02   # A0(1)
+        46     5.17641351e+02   # A0(2)
+        37     5.19730937e+02   # H+
+   1000021     5.19588443e+02   # ~g
+   1000022     7.72505525e+01   # ~neutralino(1)
+   1000023     1.43487499e+02   # ~neutralino(2)
+   1000024     1.42956744e+02   # ~chargino(1)
+   1000025    -3.24121687e+02   # ~neutralino(3)
+   1000035     3.40827378e+02   # ~neutralino(4)
+   1000037     3.42809886e+02   # ~chargino(2)
+   1000045     5.37617401e+02   # ~neutralino(5)
+   1000001     6.01605473e+02   # ~d_L
+   1000002     5.96553841e+02   # ~u_L
+   1000003     6.01602903e+02   # ~s_L
+   1000004     5.96551249e+02   # ~c_L
+   1000005     5.18173700e+02   # ~b_1
+   1000006     3.80037374e+02   # ~t_1
+=======
+     0    2.70752299e+16   # MX scale
+# SOFTSUSY-specific non SLHA information:
+# MIXING=2 Desired accuracy=1.00000000e-04 Achieved accuracy=8.54611717e-05
+# Z3 = 1, SoftHiggsOut = 0
+Block MASS                      # Mass spectrum
+# PDG code     mass             particle
+        24     8.03773762e+01   # MW
+        25     1.06125536e+02   # h0(1)
+        35     4.59250884e+02   # h0(2)
+        45     5.13846134e+02   # h0(3)
+        36     4.75607043e+02   # A0(1)
+        46     5.17647660e+02   # A0(2)
+        37     5.19737813e+02   # H+
+   1000021     5.19588438e+02   # ~g
+   1000022     7.72506054e+01   # ~neutralino(1)
+   1000023     1.43487727e+02   # ~neutralino(2)
+   1000024     1.42956991e+02   # ~chargino(1)
+   1000025    -3.24124150e+02   # ~neutralino(3)
+   1000035     3.40829570e+02   # ~neutralino(4)
+   1000037     3.42812089e+02   # ~chargino(2)
+   1000045     5.37620675e+02   # ~neutralino(5)
+   1000001     6.01605469e+02   # ~d_L
+   1000002     5.96553836e+02   # ~u_L
+   1000003     6.01602898e+02   # ~s_L
+   1000004     5.96551244e+02   # ~c_L
+   1000005     5.18173714e+02   # ~b_1
+   1000006     3.80037398e+02   # ~t_1
+>>>>>>> ca4cb75... Use exact field combination mixture for mA(1) in 2-loop tadpoles and protect against nans in pseudoscalar NMSSM calculations
+   1000011     4.22929541e+02   # ~e_L
+   1000012     4.15128925e+02   # ~nue_L
+   1000013     4.22932700e+02   # ~mu_L
+   1000014     4.15121257e+02   # ~numu_L
+<<<<<<< HEAD
+   1000015     4.00955026e+02   # ~stau_1
+   1000016     4.12825295e+02   # ~nu_tau_L
+   2000001     5.88855745e+02   # ~d_R
+   2000002     5.88251682e+02   # ~u_R
+   2000003     5.88853069e+02   # ~s_R
+   2000004     5.88249063e+02   # ~c_R
+   2000005     5.84774305e+02   # ~b_2
+   2000006     5.79369362e+02   # ~t_2
+   2000011     4.08716921e+02   # ~e_R
+   2000013     4.08690389e+02   # ~mu_R
+   2000015     4.23561763e+02   # ~stau_2
+>>>>>>> 4852b88... Bug-fixed input of tan beta scale in NMSSM in SLHA format
 Block NMHmix                # CP even Higgs mixing matrix
   1  1     1.06823758e-01   # S_{1,1}
   1  2     9.92679974e-01   # S_{1,2}
@@ -194,37 +263,6 @@ Block NMSSMRUN Q= 4.49424035e+02   # NMSSM specific DRbar parameters
      4    -2.87928207e+02      # Akappa(Q)
      5     3.26933619e+02      # lambda*<S>(Q)
 =======
-     0    2.70752299e+16   # MX scale
-# SOFTSUSY-specific non SLHA information:
-# MIXING=2 Desired accuracy=1.00000000e-04 Achieved accuracy=8.54611717e-05
-# Z3 = 1, SoftHiggsOut = 0
-Block MASS                      # Mass spectrum
-# PDG code     mass             particle
-        24     8.03773762e+01   # MW
-        25     1.06125536e+02   # h0(1)
-        35     4.59250884e+02   # h0(2)
-        45     5.13846134e+02   # h0(3)
-        36     4.75607043e+02   # A0(1)
-        46     5.17647660e+02   # A0(2)
-        37     5.19737813e+02   # H+
-   1000021     5.19588438e+02   # ~g
-   1000022     7.72506054e+01   # ~neutralino(1)
-   1000023     1.43487727e+02   # ~neutralino(2)
-   1000024     1.42956991e+02   # ~chargino(1)
-   1000025    -3.24124150e+02   # ~neutralino(3)
-   1000035     3.40829570e+02   # ~neutralino(4)
-   1000037     3.42812089e+02   # ~chargino(2)
-   1000045     5.37620675e+02   # ~neutralino(5)
-   1000001     6.01605469e+02   # ~d_L
-   1000002     5.96553836e+02   # ~u_L
-   1000003     6.01602898e+02   # ~s_L
-   1000004     5.96551244e+02   # ~c_L
-   1000005     5.18173714e+02   # ~b_1
-   1000006     3.80037398e+02   # ~t_1
-   1000011     4.22929541e+02   # ~e_L
-   1000012     4.15128925e+02   # ~nue_L
-   1000013     4.22932700e+02   # ~mu_L
-   1000014     4.15121257e+02   # ~numu_L
    1000015     4.00954988e+02   # ~stau_1
    1000016     4.12825296e+02   # ~nu_tau_L
    2000001     5.88855740e+02   # ~d_R
@@ -358,7 +396,7 @@ Block NMSSMRUN Q= 4.52388688e+02   # NMSSM specific DRbar parameters
      3    -1.81456142e+02      # Alambda(Q)
      4    -2.86744517e+02      # Akappa(Q)
      5     3.14943219e+02      # lambda*<S>(Q)
->>>>>>> 825a76e... Better error trapping after bail-out of main iteration
+>>>>>>> ca4cb75... Use exact field combination mixture for mA(1) in 2-loop tadpoles and protect against nans in pseudoscalar NMSSM calculations
      6     0.00000000e+00      # xiF(Q)
      7     0.00000000e+00      # xiS(Q)
      8     0.00000000e+00      # mu'(Q)
@@ -377,4 +415,4 @@ Block smumix               # smuon mixing matrix
   1  2     9.99622743e-01   # F_{12}
   2  1     9.99622743e-01   # F_{21}
   2  2    -2.74658395e-02   # F_{22}
->>>>>>> 825a76e... Better error trapping after bail-out of main iteration
+>>>>>>> ca4cb75... Use exact field combination mixture for mA(1) in 2-loop tadpoles and protect against nans in pseudoscalar NMSSM calculations
