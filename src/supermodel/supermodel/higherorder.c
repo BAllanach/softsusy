@@ -125,6 +125,15 @@ void higherorder (supermodel *smodel)
   vu = vu/sqrt(2.);
   vd = vd/sqrt(2.);
 
+  printf("Softsusy (vu, vd, tanbeta) = (%Lf, %Lf, %Lf)\n", vu, vd, tanbeta);
+  SUMO_Update ();
+  SUMO_Tree_Masses ();
+  SUMO_Tree_Couplings ();
+  printf("Supermodel 0-loop (vu, vd) = (%Lf, %Lf)\n", vu, vd);
+  SUMO_Minimize_Veff (1);
+  printf("Supermodel 1-loop (vu, vd) = (%Lf, %Lf)\n", vu, vd);
+  SUMO_Minimize_Veff (2);
+  printf("Supermodel 2-loop (vu, vd) = (%Lf, %Lf)\n", vu, vd);
   m2Ztree = (g*g + gp*gp)*(vu*vu + vd*vd)/2.0;
   mztree = sqrt(m2Ztree);
   cos2bet = (vd*vd - vu*vu)/(vd*vd + vu*vu);
@@ -134,6 +143,7 @@ void higherorder (supermodel *smodel)
   printf("Primer eq. (8.1.9) = %Lf\n", primer819);
   printf("Primer eq. (8.1.8)/mu^2 = %Lf\n", primer818/(mu*mu));
   printf("Primer eq. (8.1.9)/mu^2 = %Lf\n", primer819/(mu*mu));
+
   /// end of DEBUG
 
   SUMO_Update ();

@@ -256,7 +256,7 @@ int MssmSoftsusy::rewsbMu(int sgnMu, double & mupar) const {
   
   /// Tree-level relation
   double musq = (mH1sq - mH2sq * tanb2) 
-    / (tanb2 - 1.0) - 0.5 * sqr(displayMz());
+    / (tanb2 - 1.0) - 0.5 * sqr(displayMzRun());
   
   if (musq < 0.0) {
     mupar = sgnMu * sqrt(fabs(musq)); flag = 1; /// mu has incorrect sign
@@ -1213,7 +1213,7 @@ void MssmSoftsusy::alternativeEwsb(double mt) {
 
 double MssmSoftsusy::treeLevelMuSq() {
   return (displayMh1Squared() - displayMh2Squared() * sqr(displayTanb())) / 
-    (sqr(displayTanb()) - 1.0) - 0.5 * sqr(displayMz());
+    (sqr(displayTanb()) - 1.0) - 0.5 * sqr(displayMzRun());
 }
 
 void MssmSoftsusy::rewsbTreeLevel(int sgnMu) {
@@ -6712,9 +6712,27 @@ void MssmSoftsusy::physical(int accuracy) {
     smodel.m2Hd = displayMh1Squared();
     smodel.mu = muTree;
     smodel.b = m3SqTree;
+
     smodel.Q = displayMu();
 
+    cout << "In SOFTSUSY. (8.1.6) LHS=" << (sqr(smodel.vu) + sqr(smodel.vd))*0.5
+	 << " RHS=" 
+	 << 2.0 * sqr(displayMzRun()) / (sqr(smodel.g) + sqr(smodel.gp)) 
+	 << endl;
+    cout << "tanb=" << displayTanb() << endl;
+
+    /// This is dV/dHu^0
+    cout << "This should be zero to minimise TREE-level Higgs potential: " <<
+      2.0 * smodel.vu / sqrt(2.) * (sqr(smodel.mu) + smodel.m2Hu) - 
+      smodel.b * smodel.vd * sqrt(2.) + 0.25 * (sqr(smodel.g) + sqr(smodel.gp))
+      * (sqr(smodel.vu) - sqr(smodel.vd)) / sqrt(2.) * smodel.vu << endl;
+    cout << "This should also be zero to minimise TREE-level Higgs potential: " <<
+      2.0 * smodel.vd / sqrt(2.) * (sqr(smodel.mu) + smodel.m2Hd) - 
+      smodel.b * smodel.vu * sqrt(2.) - 0.25 * (sqr(smodel.g) + sqr(smodel.gp))
+      * (sqr(smodel.vu) - sqr(smodel.vd)) / sqrt(2.) * smodel.vd << endl;
+
     /// C
+    cout << "In supermodel.\n";
     higherorder(smodel);  
     
     //Set the outputs 
