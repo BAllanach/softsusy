@@ -412,10 +412,8 @@ int main(int argc, char *argv[]) {
 		      modelIdent = "sugra";
 		      break;
 		    case 2: 
-		      if (!flavourViolation) {
-			boundaryCondition = &gmsbBcs; 
-			pars.setEnd(4); 
-		      } 
+		      pars.setEnd(4); 
+		      boundaryCondition = &gmsbBcs; 
 		      modelIdent = "gmsb";
 		      break;
 		    case 3: 		    
@@ -479,7 +477,8 @@ int main(int argc, char *argv[]) {
                              " not supported in the NMSSM\n";
                        } else {
                           r = &k; flavourViolation = true;
-                          if (boundaryCondition != & amsbBcs) {
+                          if (boundaryCondition != & amsbBcs && 
+			      boundaryCondition != & gmsbBcs) {
                              pars.setEnd(64); boundaryCondition = &flavourBcs;
                           }
                        }
