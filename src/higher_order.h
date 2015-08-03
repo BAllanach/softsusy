@@ -9,6 +9,7 @@ typedef struct{
   double m2Q[3], m2u[3], m2d[3], m2L[3], m2e[3]; 
   //Outputs
   double mgluino;
+  double mstop1, mstop2, msbot1, msbot2, muL, mdL, mcL, msL, muR, mdR, mcR, msR;
 } supermodel;
 
 #ifdef __cplusplus

@@ -6715,7 +6715,7 @@ void MssmSoftsusy::physical(int accuracy) {
 
     smodel.Q = displayMu();
 
-    cout << "In SOFTSUSY. (8.1.6) LHS=" << (sqr(smodel.vu) + sqr(smodel.vd))*0.5
+    /*    cout << "In SOFTSUSY. (8.1.6) LHS=" << (sqr(smodel.vu) + sqr(smodel.vd))*0.5
 	 << " RHS=" 
 	 << 2.0 * sqr(displayMzRun()) / (sqr(smodel.g) + sqr(smodel.gp)) 
 	 << endl;
@@ -6733,11 +6733,23 @@ void MssmSoftsusy::physical(int accuracy) {
 
     /// C
     cout << "In supermodel.\n";
+    */
     higherorder(smodel);  
     
     //Set the outputs 
-    physpars.mGluino = smodel.mgluino;
-    //cout <<  physpars.mGluino << endl;
+    physpars.mGluino   = smodel.mgluino;
+    physpars.mu(2, 3)  = smodel.mstop2;
+    physpars.mu(1, 3)  = smodel.mstop1;
+    physpars.md(2, 3)  = smodel.msbot2;
+    physpars.md(1, 3)  = smodel.msbot1;
+    physpars.mu(1, 1)  = smodel.muL;
+    physpars.mu(2, 1)  = smodel.muR;
+    physpars.mu(1, 2)  = smodel.mcL;
+    physpars.mu(2, 2)  = smodel.mcR;
+    physpars.md(1, 1)  = smodel.mdL;
+    physpars.md(2, 1)  = smodel.mdR;
+    physpars.md(1, 2)  = smodel.msL;
+    physpars.md(2, 2)  = smodel.msR;
   }
 #endif ///< COMPILE_HIGHER_ORDERS
 }

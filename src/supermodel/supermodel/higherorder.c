@@ -77,73 +77,35 @@ void higherorder (supermodel *smodel)
   Q =  (long double) smodel->Q; 
 #endif 
 
-
-  /* Transfering information */
-  /*
-  vu = 172.L;
-  vd = 17.2L;
-  gp = 0.36L;
-  g = 0.65L;
-  g3 = 1.06L;
-  ytop = 0.90L;
-  ybot = 0.13L;
-  ytau = 0.10L;
-  M1 = 150.L;
-  M2 = 280.L;
-  M3 = 800.L;
-  atop = -600.L;
-  abot = -150.L;
-  atau = -40.L;
-  m2Q[1] = m2Q[0] = 780.L*780.L;
-  m2u[1] = m2u[0] = 740.L*740.L;
-  m2d[1] = m2d[0] = 735.L*735.L;
-  m2L[1] = m2L[0] = 280.L*280.L;
-  m2e[1] = m2e[0] = 200.L*200.L;
-  m2Q[2] = 700.L*700.L;
-  m2u[2] = 580.L*580.L;
-  m2d[2] = 725.L*725.L;
-  m2L[2] = 270.L*270.L;
-  m2e[2] = 195.L*195.L;
-  m2Hu = -500.L*500.L;
-  m2Hd = 270.L*270.L;
-  mu = 504.1811202L;
-  b = 33937.10367865087L;
-  */
-
-  //Check this
-  /* DGR can safely be ignored */
-  /* LambdaVacuum = 0.L; */
-
   tanbeta = vu/vd;
 
   /// DEBUG: Ben has added for checking
-  TSIL_REAL m2Ztree, mztree;
-  TSIL_REAL cos2bet;
-  TSIL_REAL primer818;
-  TSIL_REAL primer819;
+  //  TSIL_REAL m2Ztree, mztree;
+  //  TSIL_REAL cos2bet;
+  //  TSIL_REAL primer818;
+  //  TSIL_REAL primer819;
   // Following uses normalization where VEV is about 175 GeV
-  vu = vu/sqrt(2.);
-  vd = vd/sqrt(2.);
+  //  vu = vu/sqrt(2.);
+  //  vd = vd/sqrt(2.);
 
-  printf("Softsusy (vu, vd, tanbeta) = (%Lf, %Lf, %Lf)\n", vu, vd, tanbeta);
-  SUMO_Update ();
-  SUMO_Tree_Masses ();
-  SUMO_Tree_Couplings ();
-  printf("Supermodel 0-loop (vu, vd) = (%Lf, %Lf)\n", vu, vd);
-  SUMO_Minimize_Veff (1);
-  printf("Supermodel 1-loop (vu, vd) = (%Lf, %Lf)\n", vu, vd);
-  SUMO_Minimize_Veff (2);
-  printf("Supermodel 2-loop (vu, vd) = (%Lf, %Lf)\n", vu, vd);
-  m2Ztree = (g*g + gp*gp)*(vu*vu + vd*vd)/2.0;
-  mztree = sqrt(m2Ztree);
-  cos2bet = (vd*vd - vu*vu)/(vd*vd + vu*vu);
-  primer818 = TSIL_CREAL(m2Hu + mu*mu - b*vd/vu - m2Ztree*cos2bet/2.0);
-  primer819 = TSIL_CREAL(m2Hd + mu*mu - b*vu/vd + m2Ztree*cos2bet/2.0);
-  printf("Primer eq. (8.1.8) = %Lf\n", primer818);
-  printf("Primer eq. (8.1.9) = %Lf\n", primer819);
-  printf("Primer eq. (8.1.8)/mu^2 = %Lf\n", primer818/(mu*mu));
-  printf("Primer eq. (8.1.9)/mu^2 = %Lf\n", primer819/(mu*mu));
-
+  //  printf("Softsusy (vu, vd, tanbeta) = (%Lf, %Lf, %Lf)\n", vu, vd, tanbeta);
+  //  SUMO_Update ();
+  //  SUMO_Tree_Masses ();
+  //  SUMO_Tree_Couplings ();
+  //  printf("Supermodel 0-loop (vu, vd) = (%Lf, %Lf)\n", vu, vd);
+  //  SUMO_Minimize_Veff (1);
+  //  printf("Supermodel 1-loop (vu, vd) = (%Lf, %Lf)\n", vu, vd);
+  //  SUMO_Minimize_Veff (2);
+  //  printf("Supermodel 2-loop (vu, vd) = (%Lf, %Lf)\n", vu, vd);
+  //  m2Ztree = (g*g + gp*gp)*(vu*vu + vd*vd)/2.0;
+  //  mztree = sqrt(m2Ztree);
+  //  cos2bet = (vd*vd - vu*vu)/(vd*vd + vu*vu);
+  //  primer818 = TSIL_CREAL(m2Hu + mu*mu - b*vd/vu - m2Ztree*cos2bet/2.0);
+  //  primer819 = TSIL_CREAL(m2Hd + mu*mu - b*vu/vd + m2Ztree*cos2bet/2.0);
+  //  printf("Primer eq. (8.1.8) = %Lf\n", primer818);
+  //  printf("Primer eq. (8.1.9) = %Lf\n", primer819);
+  //  printf("Primer eq. (8.1.8)/mu^2 = %Lf\n", primer818/(mu*mu));
+  //  printf("Primer eq. (8.1.9)/mu^2 = %Lf\n", primer819/(mu*mu));
   /// end of DEBUG
 
   SUMO_Update ();
@@ -156,32 +118,94 @@ void higherorder (supermodel *smodel)
   printf("After minimizing  (vu, vd) = (%Lf, %Lf)\n", vu, vd); */
 
   // For debugging purposes, we print
-  SUMO_GluinoPole (0);
-  printf("Tree-level gluino mass: %Lf \n",SUMO_SQRT(M2_gluino));
-  SUMO_GluinoPole (1);
-  printf("One-loop gluino mass:   %Lf \n",SUMO_SQRT(M2_gluino));
+  //  SUMO_GluinoPole (0);
+  //  printf("Tree-level gluino mass: %Lf \n",SUMO_SQRT(M2_gluino));
+  //  SUMO_GluinoPole (1);
+  //  printf("One-loop gluino mass:   %Lf \n",SUMO_SQRT(M2_gluino));
   SUMO_GluinoPole (2);
-  printf("Two-loop gluino mass:   %Lf \n", SUMO_SQRT(M2_gluino));
+  //  printf("Two-loop gluino mass:   %Lf \n", SUMO_SQRT(M2_gluino));
 
-  int which = 1;
-  int loops = 2;
-  printf("Loops=%i \n",loops);
-  SUMO_StopPole (which, loops);
-  SUMO_SbotPole (which, loops);
-  SUMO_SuLPole (which, loops);
-  SUMO_SuRPole (which, loops);
-  SUMO_SdLPole (which, loops);
-  SUMO_SdRPole (which, loops);
-  
-  SUMO_h0Pole (loops);
-  SUMO_H0Pole (loops);
-  SUMO_G0Pole (loops);
-  SUMO_A0Pole (loops);
+  int which = 0;  int loops = 2;
+  for (which = 0; which < 2; which++) {
+    /*    loops = 1;
+    SUMO_StopPole (which, loops);
+    printf("Loops=%i Which=%i stop mass:     %Lf
+    \n",loops,which,SUMO_SQRT(M2_stop[which]));
+    loops = 2;
+    */
+    SUMO_StopPole (which, loops);
+    //    printf("Loops=%i Which=%i stop mass:     %Lf \n",loops,which,SUMO_SQRT(M2_stop[which]));
+
+    /*    loops = 1;
+    SUMO_SbotPole (which, loops);
+    printf("Loops=%i Which=%i sbot mass:     %Lf \n",loops,which,SUMO_SQRT(M2_sbot[which]));
+    loops = 2;*/
+    SUMO_SbotPole (which, loops);
+    //    printf("Loops=%i Which=%i sbot mass:     %Lf \n",loops,which,SUMO_SQRT(M2_sbot[which]));
+
+    /*    loops = 1;
+    SUMO_SuLPole (which, loops);
+    printf("Loops=%i Which=%i suL mass:     %Lf \n",loops,which,SUMO_SQRT(M2_suL[which]));
+    loops = 2;*/
+    SUMO_SuLPole (which, loops);
+    //    printf("Loops=%i Which=%i suL mass:     %Lf \n",loops,which,SUMO_SQRT(M2_suL[which]));
+
+    /*    loops = 1;
+    SUMO_SuRPole (which, loops);
+    printf("Loops=%i Which=%i suR mass:     %Lf \n",loops,which,SUMO_SQRT(M2_suR[which]));
+    loops = 2; */
+    SUMO_SuRPole (which, loops);
+    //    printf("Loops=%i Which=%i suR mass:     %Lf \n",loops,which,SUMO_SQRT(M2_suR[which]));
+
+    /*loops = 1;
+     SUMO_SdLPole (which, loops);
+    printf("Loops=%i Which=%i sdL mass:     %Lf \n",loops,which,SUMO_SQRT(M2_sdL[which]));
+    loops = 2; */
+    SUMO_SdLPole (which, loops);
+    //    printf("Loops=%i Which=%i sdL mass:     %Lf \n",loops,which,SUMO_SQRT(M2_sdL[which]));
+
+    /*    loops = 1;
+    SUMO_SdRPole (which, loops);
+    printf("Loops=%i Which=%i sdR mass:     %Lf
+    \n",loops,which,SUMO_SQRT(M2_sdR[which])); 
+    loops = 2;*/
+    SUMO_SdRPole (which, loops);
+    //    printf("Loops=%i Which=%i sdR mass:     %Lf \n",loops,which,SUMO_SQRT(M2_sdR[which]));
+  }
+
+  /*  SUMO_h0Pole (loops);
+      SUMO_H0Pole (loops);
+      SUMO_G0Pole (loops);
+      SUMO_A0Pole (loops); */
 
 #ifdef TSIL_SIZE_DOUBLE
   smodel->mgluino = SUMO_SQRT(M2_gluino);
+  smodel->mstop1  = SUMO_SQRT(M2_stop[0]);
+  smodel->mstop2  = SUMO_SQRT(M2_stop[1]);
+  smodel->msbot1  = SUMO_SQRT(M2_sbot[0]);
+  smodel->msbot2  = SUMO_SQRT(M2_sbot[1]);
+  smodel->muL     = SUMO_SQRT(M2_suL[0]);
+  smodel->mcL     = SUMO_SQRT(M2_suL[1]);
+  smodel->mdL     = SUMO_SQRT(M2_sdL[0]);
+  smodel->msL     = SUMO_SQRT(M2_sdL[1]);
+  smodel->muR     = SUMO_SQRT(M2_suR[0]);
+  smodel->mcR     = SUMO_SQRT(M2_suR[1]);
+  smodel->mdR     = SUMO_SQRT(M2_sdR[0]);
+  smodel->msR     = SUMO_SQRT(M2_sdR[1]);
 #else
   smodel->mgluino = (double) SUMO_SQRT(M2_gluino);
+  smodel->mstop1  = (double) SUMO_SQRT(M2_stop[0]);
+  smodel->mstop2  = (double) SUMO_SQRT(M2_stop[1]);
+  smodel->msbot1  = (double) SUMO_SQRT(M2_sbot[0]);
+  smodel->msbot2  = (double) SUMO_SQRT(M2_sbot[1]);
+  smodel->muL     = (double) SUMO_SQRT(M2_suL[0]);
+  smodel->mcL     = (double) SUMO_SQRT(M2_suL[1]);
+  smodel->mdL     = (double) SUMO_SQRT(M2_sdL[0]);
+  smodel->msL     = (double) SUMO_SQRT(M2_sdL[1]);
+  smodel->muR     = (double) SUMO_SQRT(M2_suR[0]);
+  smodel->mcR     = (double) SUMO_SQRT(M2_suR[1]);
+  smodel->mdR     = (double) SUMO_SQRT(M2_sdR[0]);
+  smodel->msR     = (double) SUMO_SQRT(M2_sdR[1]);
 #endif
 
 }
