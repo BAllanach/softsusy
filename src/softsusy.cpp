@@ -6683,8 +6683,8 @@ void MssmSoftsusy::physical(int accuracy) {
     
     supermodel smodel;
 
-    smodel.vd = displayHvev() * cos(atan(displayTanb()));
-    smodel.vu = displayHvev() * sin(atan(displayTanb()));
+    smodel.vd = displayHvev() * cos(atan(displayTanb())) / sqrt(2.0);
+    smodel.vu = displayHvev() * sin(atan(displayTanb())) / sqrt(2.0);
     
     // We should apply dictionary here
     smodel.gp =  sqrt(0.6) * displayGaugeCoupling(1);
@@ -6738,10 +6738,23 @@ void MssmSoftsusy::physical(int accuracy) {
     
     //Set the outputs 
     physpars.mGluino   = smodel.mgluino;
-    physpars.mu(2, 3)  = smodel.mstop2;
-    physpars.mu(1, 3)  = smodel.mstop1;
-    physpars.md(2, 3)  = smodel.msbot2;
-    physpars.md(1, 3)  = smodel.msbot1;
+    /// For third family sparticles, we must keep the same mass ordering as
+    /// SOFTSUSY
+    if (physpars.mu(2, 3) > physpars.mu(1, 3)) {
+      physpars.mu(2, 3)  = smodel.mstop2;
+      physpars.mu(1, 3)  = smodel.mstop1;
+    } else {
+      physpars.mu(2, 3)  = smodel.mstop1;
+      physpars.mu(1, 3)  = smodel.mstop2;
+    }
+    if (physpars.md(2, 3) > physpars.md(1, 3)) {
+      physpars.md(2, 3)  = smodel.msbot2;
+      physpars.md(1, 3)  = smodel.msbot1;
+    } else {
+      physpars.md(2, 3)  = smodel.msbot1;
+      physpars.md(1, 3)  = smodel.msbot2;
+    }
+
     physpars.mu(1, 1)  = smodel.muL;
     physpars.mu(2, 1)  = smodel.muR;
     physpars.mu(1, 2)  = smodel.mcL;

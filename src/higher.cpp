@@ -29,11 +29,13 @@ int main(int argc, char *argv[]) {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
+  TOLERANCE = 1.0e-4;
+
   try {
     /// Sets format of output: 6 decimal places
-    outputCharacteristics(6);
+    outputCharacteristics(9);
 
-    double m12 = 1000., m0 = 0., m0Overm12 = 0., a0 = 0., tanb = 10.;
+    double m12 = 1000., m0 = 0., m0Overm12 = 0., a0 = -500., tanb = 10.;
 
     int sgnMu = 1;      ///< sign of mu parameter 
     
@@ -41,7 +43,8 @@ int main(int argc, char *argv[]) {
 
     /// most important Standard Model inputs: you may change these and recompile
     double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
-    double lowRatio = 0.1, highRatio = 4.1;
+    double lowRatio = 0.1, highRatio = 4.0;
+    // double lowRatio = 0.7817552, highRatio = 0.7817581;
     oneset.setAlpha(ALPHAS, alphasMZ);
     oneset.setPoleMt(mtop);
     oneset.setMbMb(mbmb);    
@@ -51,7 +54,7 @@ int main(int argc, char *argv[]) {
 
     DoubleVector pars(3); 
     bool uni = true, ewsbBCscale = false; double mGutGuess = 1.e16;
-    int numPoints = 50;
+    int numPoints = 100;
     int i; for (i=0; i<=numPoints; i++) {
       r = MssmSoftsusy(); ho = MssmSoftsusy();
       
@@ -70,13 +73,46 @@ int main(int argc, char *argv[]) {
 		ewsbBCscale);
       
       if (r.displayProblem().test()) cout << "# ";
-      cout << m0Overm12 << " " << r.displayPhys().mGluino << " " 
-	   << ho.displayPhys().mGluino << " " 
-	   << r.displayPhys().mu(1, 1) << " " 
-	   << ho.displayPhys().mu(1, 1) << " " 
-	   << r.displayPhys().mu(1, 3) << " " 
-	   << r.displayPhys().mu(2, 3) << endl;
+      cout << m0Overm12 << " "                 // 1
+	   << r.displayPhys().mGluino << " "   // 2
+	   << ho.displayPhys().mGluino << " "  // 3
+	   << r.displayPhys().mu(1, 1) << " "  // 4
+	   << ho.displayPhys().mu(1, 1) << " " // 5
+	   << r.displayPhys().mu(1, 3) << " "  // 6
+	   << ho.displayPhys().mu(1, 3) << " " // 7
+	   << r.displayPhys().mu(2, 3) << " "  // 8
+	   << ho.displayPhys().mu(2, 3) << " " // 9
+	   << r.displayPhys().md(1, 1) << " "  // 10
+	   << ho.displayPhys().md(1, 1) << " " // 11
+	   << r.displayPhys().md(1, 3) << " "  // 12
+	   << ho.displayPhys().md(1, 3) << " " // 13
+	   << r.displayPhys().mu(2, 1) << " "  // 14
+	   << ho.displayPhys().mu(2, 1) << " " // 15
+	   << r.displayPhys().md(2, 1) << " "  // 16
+	   << ho.displayPhys().md(2, 1) << " " // 17
+	   << r.displayPhys().md(2, 3) << " "  // 18
+	   << ho.displayPhys().md(2, 3) << " ";// 19
+
+      r.runto(r.displayMsusy());
+      r.calcDrBarPars();
+      cout << r.displayDrBarPars().mGluino  << " " // 20
+	   << r.displayDrBarPars().mu(1, 1) << " " // 21
+	   << r.displayDrBarPars().mu(1, 3) << " " // 22
+	   << r.displayDrBarPars().mu(2, 3) << " " // 23
+	   << r.displayDrBarPars().md(1, 1) << " " // 24
+	   << r.displayDrBarPars().md(1, 3) << " " // 25
+	   << r.displayDrBarPars().mu(2, 1) << " " // 26
+	   << r.displayDrBarPars().md(2, 1) << " " // 27
+	   << r.displayDrBarPars().md(2, 3) << " " // 28
+	   << r.displayDrBarPars().mt       << " " // 29
+	   << r.displayDrBarPars().mneut(1) << " " // 30
+	   << r.displayDrBarPars().mneut(2) << " " // 31
+	   << r.displayDrBarPars().mneut(3) << " " // 32
+	   << r.displayDrBarPars().mneut(4) << " ";// 33
+
       if (r.displayProblem().test()) cout << " " << r.displayProblem();      
+      cout << endl;
+      //      cout << r.displayDrBarPars(); exit(0);
     }
   }
   catch(const string & a) { cout << a; return -1; }
