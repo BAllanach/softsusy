@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
     /// Sets format of output: 6 decimal places
     outputCharacteristics(9);
 
-    double m12 = 1000., m0 = 0., m0Overm12 = 0., a0 = -500., tanb = 10.;
+    double m12 = 1000., m0 = 0., m0Overm12 = 0., a0 = 0., tanb = 10.;
 
     int sgnMu = 1;      ///< sign of mu parameter 
     

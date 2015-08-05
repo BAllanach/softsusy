@@ -6673,14 +6673,6 @@ void MssmSoftsusy::physical(int accuracy) {
   /// from Steve Martin et al
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   if(accuracy != 0 && USE_TWO_LOOP_SPARTICLE_MASS) {
-    /// Need to extract the mu and M3squared we would get from minimising the
-    /// tree-level Higgs potential
-    double muTree = 0., m3SqTree = 0.;
-    int sgnMu = 0;
-    if (displaySusyMu() > 0.) sgnMu = 1; else sgnMu = -1; 
-    rewsbMu(sgnMu, muTree);
-    rewsbM3sqTree(muTree, m3SqTree);
-    
     supermodel smodel;
 
     smodel.vd = displayHvev() * cos(atan(displayTanb())) / sqrt(2.0);
@@ -6710,8 +6702,8 @@ void MssmSoftsusy::physical(int accuracy) {
     
     smodel.m2Hu = displayMh2Squared();
     smodel.m2Hd = displayMh1Squared();
-    smodel.mu = muTree;
-    smodel.b = m3SqTree;
+    smodel.mu = displaySusyMu();
+    smodel.b = displayM3Squared();
 
     smodel.Q = displayMu();
 
