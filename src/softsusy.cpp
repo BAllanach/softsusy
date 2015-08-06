@@ -9772,9 +9772,9 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
     out << endl;
   }
 #endif
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASSS
-  out << "# 2-loop computation of sparticle mass thresholds switched ";
-  if (USE_HIGHER_LOOPS) out << "on" << endl;
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+  out << "# 2-loop computation of sparticle mass thresholds are ";
+  if (USE_TWO_LOOP_SPARTICLE_MASS) out << "on" << endl;
   else out << "off" << endl;
 #endif  
 }

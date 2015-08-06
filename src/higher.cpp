@@ -29,9 +29,6 @@ int main(int argc, char *argv[]) {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
-  USE_TWO_LOOP_GAUGE_YUKAWA = true;
-  USE_THREE_LOOP_RGE = true;
-
   TOLERANCE = 1.0e-4;
 
   try {
@@ -53,33 +50,35 @@ int main(int argc, char *argv[]) {
     oneset.setMbMb(mbmb);    
     oneset.toMz();      ///< Runs SM fermion masses to MZ
     
-    MssmSoftsusy r, ho; 
-    /// Switch on the full accuracy
-    r.included_thresholds = 31; ho.included_thresholds = 31;
 
     DoubleVector pars(3); 
     bool uni = true, ewsbBCscale = false; double mGutGuess = 1.e16;
     int numPoints = 100;
     int i; for (i=0; i<=numPoints; i++) {
-      r = MssmSoftsusy(); ho = MssmSoftsusy();
+      USE_TWO_LOOP_SPARTICLE_MASS = false;
+      USE_TWO_LOOP_GAUGE_YUKAWA = true;
+      USE_THREE_LOOP_RGE = true;
+
+      MssmSoftsusy r; 
       
       m0Overm12 = lowRatio + 
 	(highRatio - lowRatio) / double(numPoints) * double(i);
       m0 = m0Overm12 * m12;
       pars(1) = m0; pars(2) = m12; pars(3) = a0; 
-      
-      /// Calculate the spectrum
-      USE_TWO_LOOP_SPARTICLE_MASS = false;
+      /// Calculate the 
       r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni, 
 	       ewsbBCscale);
       const char* modelIdent = "sugra"; double qMax = 0.;
       r.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax, 
-			       numPoints, ewsbBCscale);
-
+			       0, ewsbBCscale);
+      
+      MssmSoftsusy ho;
       USE_TWO_LOOP_SPARTICLE_MASS = true;
       ho.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni, 
 		ewsbBCscale);
-      
+      ho.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax, 
+			       0, ewsbBCscale);
+      exit(0);
       if (r.displayProblem().test()) cout << "# ";
       cout << m0Overm12 << " "                 // 1
 	   << r.displayPhys().mGluino << " "   // 2
