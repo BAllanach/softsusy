@@ -1207,12 +1207,12 @@ int main(int argc, char *argv[]) {
 		    if (num > 0) {
 		      USE_TWO_LOOP_GAUGE_YUKAWA = true;
 		      r->included_thresholds = (num & 
-						    (ENABLE_TWO_LOOP_AS_AS_YUK | 
-						     ENABLE_TWO_LOOP_MT_AS | 
-						     ENABLE_TWO_LOOP_MB_AS | 
-						     ENABLE_TWO_LOOP_MB_YUK | 
-						     ENABLE_TWO_LOOP_MTAU_YUK));
-				   
+						(ENABLE_TWO_LOOP_AS_AS_YUK | 
+						 ENABLE_TWO_LOOP_MT_AS | 
+						 ENABLE_TWO_LOOP_MB_AS | 
+						 ENABLE_TWO_LOOP_MB_YUK | 
+						 ENABLE_TWO_LOOP_MTAU_YUK));
+		      
 		    } else if (num == 0) { 
 		      USE_TWO_LOOP_GAUGE_YUKAWA = false;  
 		      r->included_thresholds = 0; 

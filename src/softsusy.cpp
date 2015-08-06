@@ -7133,7 +7133,8 @@ void MssmSoftsusy::fixedPointIteration
     
     // keep it  
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    SoftSusy_helpers_::decoupling_corrections_t d_coupl = decoupling_corrections;
+    SoftSusy_helpers_::decoupling_corrections_t d_coupl = 
+      decoupling_corrections;
     int enabled_thresholds = included_thresholds;
 #endif
     
