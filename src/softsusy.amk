@@ -43,6 +43,8 @@ include src/two_loop_thresholds/mssmparam.amk
 include src/two_loop_thresholds/two_loop_th.amk
 softsusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
 softsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
+higher_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
+higher_x_LDADD += lib2lthresh.la libmssmparam.la 
 
 if COMPILE_THREE_LOOP_RGE
 bin_PROGRAMS += scansusy.x 
