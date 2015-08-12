@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 
     /// most important Standard Model inputs: you may change these and recompile
     double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
-    double lowRatio = 0.1, highRatio = 4.0;
+    double lowRatio = 0.1, highRatio = 5.0;
     // double lowRatio = 0.7817552, highRatio = 0.7817581;
     oneset.setAlpha(ALPHAS, alphasMZ);
     oneset.setPoleMt(mtop);
@@ -68,17 +68,18 @@ int main(int argc, char *argv[]) {
       /// Calculate the 
       r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni, 
 	       ewsbBCscale);
-      const char* modelIdent = "sugra"; double qMax = 0.;
-      r.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax, 
-			       0, ewsbBCscale);
+      //      const char* modelIdent = "sugra"; 
+      //double qMax = 0.;
+      //      r.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax, 
+      //			       0, ewsbBCscale);
       
       MssmSoftsusy ho;
       USE_TWO_LOOP_SPARTICLE_MASS = true;
       ho.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni, 
 		ewsbBCscale);
-      ho.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax, 
-			       0, ewsbBCscale);
-      exit(0);
+      //      ho.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax, 
+      //			       0, ewsbBCscale);
+
       if (r.displayProblem().test()) cout << "# ";
       cout << m0Overm12 << " "                 // 1
 	   << r.displayPhys().mGluino << " "   // 2
@@ -119,7 +120,8 @@ int main(int argc, char *argv[]) {
 
       if (r.displayProblem().test()) cout << " " << r.displayProblem();      
       cout << endl;
-      //      cout << r.displayDrBarPars(); exit(0);
+      //      cout << r.displayDrBarPars(); 
+      //      exit(0);
     }
   }
   catch(const string & a) { cout << a; return -1; }
