@@ -4146,9 +4146,85 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     
     charginos(accuracy, piwwtMS, phys); 
     neutralinos(accuracy, piwwtMS, pizztMS, phys);
-    /// PA: now set these values from NMSSM routines
-    setPhys(phys);
-    gluino(accuracy); 
+
+  /// This part of the code adds higher loop corrections to gluino masses etc
+  /// from Steve Martin et al
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+  if(accuracy != 0 && USE_TWO_LOOP_SPARTICLE_MASS) {
+    supermodel smodel;
+
+    smodel.vd = displayHvev() * cos(atan(displayTanb())) / sqrt(2.0);
+    smodel.vu = displayHvev() * sin(atan(displayTanb())) / sqrt(2.0);
+    
+    // We should apply dictionary here
+    smodel.gp =  sqrt(0.6) * displayGaugeCoupling(1);
+    smodel.g  = displayGaugeCoupling(2);
+    smodel.g3 = displayGaugeCoupling(3);
+    smodel.ytop = displayYukawaElement(YU, 3, 3);
+    smodel.ybot = displayYukawaElement(YD, 3, 3);
+    smodel.ytau = displayYukawaElement(YE, 3, 3);
+    smodel.m1 = displayGaugino(1);
+    smodel.m2 = displayGaugino(2);
+    smodel.m3 = displayGaugino(3);
+    smodel.atop = displaySoftA(UA, 3, 3) * smodel.ytop;
+    smodel.abot = displaySoftA(DA, 3, 3) * smodel.ybot;
+    smodel.atau = displaySoftA(EA, 3, 3) * smodel.ytau;
+    
+    for(int i=0; i<3; i++) {
+      smodel.m2Q[i] = displaySoftMassSquared(mQl,i+1,i+1);
+      smodel.m2u[i] = displaySoftMassSquared(mUr,i+1,i+1);
+      smodel.m2d[i] = displaySoftMassSquared(mDr,i+1,i+1);
+      smodel.m2L[i] = displaySoftMassSquared(mLl,i+1,i+1);
+      smodel.m2e[i] = displaySoftMassSquared(mEr,i+1,i+1);
+    }
+    
+    smodel.m2Hu = displayMh2Squared();
+    smodel.m2Hd = displayMh1Squared();
+    smodel.mu = displaySusyMu();
+    smodel.b = displayM3Squared();
+
+    smodel.Q = displayMu();
+
+    higherorder(smodel);  
+    
+    //Set the outputs 
+    phys.mGluino   = smodel.mgluino;
+    /// For third family sparticles, we must keep the same mass ordering as
+    /// SOFTSUSY
+    if (phys.mu(2, 3) > phys.mu(1, 3)) {
+      phys.mu(2, 3)  = smodel.mstop2;
+      phys.mu(1, 3)  = smodel.mstop1;
+    } else {
+      phys.mu(2, 3)  = smodel.mstop1;
+      phys.mu(1, 3)  = smodel.mstop2;
+    }
+    if (phys.md(2, 3) > phys.md(1, 3)) {
+      phys.md(2, 3)  = smodel.msbot2;
+      phys.md(1, 3)  = smodel.msbot1;
+    } else {
+      phys.md(2, 3)  = smodel.msbot1;
+      phys.md(1, 3)  = smodel.msbot2;
+    }
+
+    phys.mu(1, 1)  = smodel.muL;
+    phys.mu(2, 1)  = smodel.muR;
+    phys.mu(1, 2)  = smodel.mcL;
+    phys.mu(2, 2)  = smodel.mcR;
+    phys.md(1, 1)  = smodel.mdL;
+    phys.md(2, 1)  = smodel.mdR;
+    phys.md(1, 2)  = smodel.msL;
+    phys.md(2, 2)  = smodel.msR;
+  }
+#endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
+  setPhys(phys);
+  /// PA: now set these values from NMSSM routines
+#ifndef COMPILE_TWO_LOOP_SPARTICLE_MASS
+  gluino(accuracy); 
+#else
+  if(accuracy == 0 || !USE_TWO_LOOP_SPARTICLE_MASS) {
+    gluino(accuracy);
+  }
+#endif
   }
   
   /// PA: Higgs routine for NMSSM

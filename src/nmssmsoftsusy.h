@@ -31,6 +31,11 @@
 #include "nmssmUtils.h"
 #include <cassert>
 
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+//#include "supermodel/supermodel-v0.1/supermodel.h"
+#include "higher_order.h"
+#endif
+
 namespace softsusy {
   
   /* class NmssmSoftsusy;  */
