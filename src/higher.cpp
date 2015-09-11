@@ -25,13 +25,88 @@
 #include "utils.h"
 #include "numerics.h"
 
-int main(int argc, char *argv[]) {
-  /// Sets up exception handling
-  signal(SIGFPE, FPE_ExceptionHandler); 
+/// NLLFAST version
+void getCrossSection(MssmSoftsusy & r, double m0, double m12, double a0, 
+		     double tanb, double & xsGG, double & xsSG, double & xsSS,
+		     double & xsSB, double & xsTB) {
+  double mg = r.displayPhys().mGluino;
+  double mt1 = minimum(r.displayPhys().mu(1, 3), r.displayPhys().mu(2, 3));
+  double mq  = (r.displayPhys().mu(1, 1) + r.displayPhys().md(1, 1) +
+		r.displayPhys().mu(1, 2) + r.displayPhys().md(1, 2)) * 0.25;
 
-  TOLERANCE = 1.0e-4;
+  char buff[500];
+  sprintf(buff, "cd /home/bca20/code/nllfast-3.0-13TeV; ./nllfast13 gg mstw %f %f > output 2> err; ./nllfast13 sg mstw %f %f >> output 2>> err; ./nllfast13 ss mstw %f %f >> output 2>> err; ./nllfast13 sb mstw %f %f >> output 2>> err; ./nllfast13 st mstw %f >> output 2>> err",mq,mg,mq,mg,mq,mg,mq,mg,mt1);
+  //  cout << buff << endl;
+  int err = system(buff);
+  xsGG = 0.; xsSG = 0.; xsSS = 0.; xsSB = 0.; xsTB = 0.;
 
-  try {
+  char c[500];
+  char fn[500];
+  sprintf(fn, "/home/bca20/code/nllfast-3.0-13TeV/output");
+  if (!err) {
+    fstream fin(fn, ios::in); 
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> xsGG >> c >> c >> c >> c >> c >> c >> c >> c >> c;
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> xsSG >> c >> c >> c >> c >> c >> c >> c >> c >> c;
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> xsSS >> c >> c >> c >> c >> c >> c >> c >> c >> c;
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> xsSB >> c >> c >> c >> c >> c >> c >> c >> c >> c;
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> xsTB >> c >> c >> c >> c >> c >> c >> c >> c >> c;
+    fin.close();
+  } else  cout << "CROSS SECTION ERROR\n" << xsGG;
+   
+  return;
+}
+
+/* PROSPINO VERSION
+void getCrossSection(MssmSoftsusy & r, double m0, double m12, double a0, 
+		     double tanb, double & xsGG, double & xsSG, double & xsSS,
+		     double & xsSB, double & xsTB) {
+  /// First, make a SLHA file
+  DoubleVector pars(3); 
+  pars(1) = m0; pars(2) = m12; pars(3) = a0;
+  bool ewsbBCscale = false; int sgnMu = 1;
+  const char* modelIdent = "sugra"; 
+  double qMax = 0.;
+  char fileName[500];
+  sprintf(fileName,"/home/bca20/code/prospino2.1/prospino.in.les_houches");
+  fstream fout(fileName, ios::out);
+  fout.setf(ios::scientific, ios::floatfield);
+  r.lesHouchesAccordOutput(fout, modelIdent, pars, sgnMu, tanb, qMax, 
+			   0, ewsbBCscale);
+  fout.close();
+
+  char buff[500];
+  sprintf(buff, "cd /home/bca20/code/prospino2.1; ./prospino_2.run > output 2> err");
+  //     cout << buff << endl;
+  int err = system(buff);
+  xsGG = 0.; xsSG = 0.; xsSS = 0.; xsSB = 0.; xsTB = 0.;
+
+  char c[500];
+  char fn[500];
+  sprintf(fn, "/home/bca20/code/prospino2.1/prospino.dat");
+  if (!err) {
+    fstream fin(fn, ios::in); 
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> xsGG >> c >> c >> c >> c;
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> xsSG >> c >> c >> c >> c;
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> xsSS >> c >> c >> c >> c;
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> xsSB >> c >> c >> c >> c;
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> xsTB >> c >> c >> c >> c;
+    fin.close();
+  } else  cout << "CROSS SECTION ERROR\n" << xsGG;
+   
+  return;
+}
+*/
+void doScan(double lowRatio, double highRatio, int numPoints) {
     /// Sets format of output: 6 decimal places
     outputCharacteristics(9);
 
@@ -43,8 +118,7 @@ int main(int argc, char *argv[]) {
 
     /// most important Standard Model inputs: you may change these and recompile
     double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
-    double lowRatio = 0.1, highRatio = 5.0;
-    // double lowRatio = 0.7817552, highRatio = 0.7817581;
+     // double lowRatio = 0.7817552, highRatio = 0.7817581;
     oneset.setAlpha(ALPHAS, alphasMZ);
     oneset.setPoleMt(mtop);
     oneset.setMbMb(mbmb);    
@@ -53,11 +127,10 @@ int main(int argc, char *argv[]) {
 
     DoubleVector pars(3); 
     bool uni = true, ewsbBCscale = false; double mGutGuess = 1.e16;
-    int numPoints = 100;
     int i; for (i=0; i<=numPoints; i++) {
       USE_TWO_LOOP_SPARTICLE_MASS = false;
-      USE_TWO_LOOP_GAUGE_YUKAWA = true;
-      USE_THREE_LOOP_RGE = true;
+      USE_TWO_LOOP_GAUGE_YUKAWA = false;
+      USE_THREE_LOOP_RGE = false;
 
       MssmSoftsusy r; 
       
@@ -68,10 +141,6 @@ int main(int argc, char *argv[]) {
       /// Calculate the 
       r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni, 
 	       ewsbBCscale);
-      //      const char* modelIdent = "sugra"; 
-      //double qMax = 0.;
-      //      r.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax, 
-      //			       0, ewsbBCscale);
       
       MssmSoftsusy ho;
       USE_TWO_LOOP_SPARTICLE_MASS = true;
@@ -118,11 +187,61 @@ int main(int argc, char *argv[]) {
 	   << r.displayDrBarPars().mneut(3) << " " // 32
 	   << r.displayDrBarPars().mneut(4) << " ";// 33
 
+      /// calculate 13 TeV cross-sections
+      double xsGG, xsSG, xsSS, xsSB, xsTB;
+      double xsGGho, xsSGho, xsSSho, xsSBho, xsTBho;
+      getCrossSection(r, m0, m12, a0, tanb, xsGG, xsSG, xsSS, xsSB, xsTB);
+      getCrossSection(ho, m0, m12, a0, tanb, xsGGho, xsSGho, xsSSho, xsSBho, 
+		      xsTBho);
+      cout 
+	<< xsGG << " "   // 34
+	<< xsGGho << " " // 35
+	<< xsSG << " "   // 36
+	<< xsSGho << " " // 37
+	<< xsSS << " "   // 38
+	<< xsSSho << " " // 39
+	<< xsSB << " "   // 40
+	<< xsSBho << " " // 41
+	<< xsTB << " "   // 42
+	<< xsTBho;       // 43
+
       if (r.displayProblem().test()) cout << " " << r.displayProblem();      
       cout << endl;
       //      cout << r.displayDrBarPars(); 
       //      exit(0);
     }
+}
+
+int main(int argc, char *argv[]) {
+  /*  double xsGG,xsSG,xsSS,xsSB,xsTB;   char c[500];  char fn[500];
+  sprintf(fn, "output");
+    fstream fin(fn, ios::in); 
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> xsGG >> c >> c >> c >> c >> c >> c >> c >> c >> c;
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> xsSG >> c >> c >> c >> c >> c >> c >> c >> c >> c;
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> xsSS >> c >> c >> c >> c >> c >> c >> c >> c >> c;
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> xsSB >> c >> c >> c >> c >> c >> c >> c >> c >> c;
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> xsTB >> c >> c >> c >> c >> c >> c >> c >> c >> c;
+	cout << xsGG << " " << xsSG << " " << xsSS << " " << xsSB << " "<< xsTB << endl;*/
+  /// Sets up exception handling
+  signal(SIGFPE, FPE_ExceptionHandler); 
+
+  TOLERANCE = 1.0e-4;
+  try {
+    doScan(0.1, 1.96, 20);
+    doScan(1.96, 1.9786, 10);
+    doScan(1.9786, 1.9825, 10);
+    doScan(1.9825, 2.03, 10);
+    doScan(2.03, 3.2, 10);
   }
   catch(const string & a) { cout << a; return -1; }
   catch(const char * a) { cout << a; return -1; }
