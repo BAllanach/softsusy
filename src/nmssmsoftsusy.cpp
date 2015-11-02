@@ -3778,6 +3778,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
   double nmssmFtCalc(double x) {
     /// Stores running parameters in a vector
     DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
     drBarPars saveDrBar(tempSoft1->displayDrBarPars());
 
     if (PRINTOUT > 1) cout << '#';
@@ -3805,6 +3806,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
                            << " tanb=" << predTanb << '\n';
 
     /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
     tempSoft1->set(storeObject);
     tempSoft1->setDrBarPars(saveDrBar);
 
@@ -3823,6 +3825,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     /// Stores running parameters in a vector
     DoubleVector storeObject(display());
+    double initialMu = displayMu();
     sPhysical savePhys(displayPhys());
 
     ftFunctionality = numPar;
@@ -3857,6 +3860,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
        return numberOfTheBeast;
 
     /// Restore initial parameters at correct scale
+    setMu(initialMu);
     set(storeObject);
     setPhys(savePhys);
 
@@ -3871,6 +3875,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     /// Stores running parameters in a vector
     DoubleVector storeObject(display());
+    double initialMu = displayMu();
     sPhysical savePhys(displayPhys());
 
     runto(mx);
@@ -3888,6 +3893,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
 
     /// Restore initial parameters at correct scale
+    setMu(initialMu);
     set(storeObject);
     setPhys(savePhys);
 
