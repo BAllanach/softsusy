@@ -3787,6 +3787,41 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       ftPars(ftFunctionality) = x;
       ftBoundaryCondition(*tempSoft1, ftPars);
       if (PRINTOUT > 1) cout << 'p' << ftFunctionality << '=';
+    } else if (ftFunctionality == ftPars.displayEnd() + 1) {
+      if (SoftHiggsOut) {
+        tempSoft1->setMh1Squared(x);
+        if (PRINTOUT > 1) cout << "mH1Sq= ";
+      } else if (Z3) {
+        /// DH: this mirrors the MSSM case, but is not really sensible
+        /// and will be replaced shortly
+        tempSoft1->setSvev(x);
+        if (PRINTOUT > 1) cout << "Svev= ";
+      } else {
+        tempSoft1->setSusyMu(x);
+        if (PRINTOUT > 1) cout << "mu= ";
+      }
+    } else if (ftFunctionality == ftPars.displayEnd() + 2) {
+      if (SoftHiggsOut) {
+        tempSoft1->setMh2Squared(x);
+        if (PRINTOUT > 1) cout << "mH2Sq= ";
+      } else if (Z3) {
+        tempSoft1->setKappa(x);
+        if (PRINTOUT > 1) cout << "kappa= ";
+      } else {
+        tempSoft1->setM3Squared(x);
+        if (PRINTOUT > 1) cout << "m3sq= ";
+      }
+    } else if (ftFunctionality == ftPars.displayEnd() + 3) {
+      if (SoftHiggsOut || Z3) {
+        tempSoft1->setMsSquared(x);
+        if (PRINTOUT > 1) cout << "mSsq= ";
+      } else {
+        tempSoft1->setXiS(x);
+        if (PRINTOUT > 1) cout << "xiS= ";
+      }
+    } else if (ftFunctionality == ftPars.displayEnd() + 4) {
+      tempSoft1->setYukawaElement(YU, 3, 3, x);
+      if (PRINTOUT > 1) cout << "ht= ";
     } else {
       ostringstream ii;
       ii << "NmssmSoftsusy:nmssmFtCalc called with incorrect functionality=" <<
@@ -3835,6 +3870,30 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     /// Sets starting value to calculate derivative from
     if (numPar > 0 && numPar <= bcPars.displayEnd()) {
       x = bcPars.display(numPar); h = 0.01 * x;
+    } else if (numPar == bcPars.displayEnd() + 1) {
+      if (SoftHiggsOut) {
+        x = displayMh1Squared(); h = 0.01 * x;
+      } else if (Z3) {
+        x = displaySvev(); h = 0.01 * x;
+      } else {
+        x = displaySusyMu(); h = 0.01 * x;
+      }
+    } else if (numPar == bcPars.displayEnd() + 2) {
+      if (SoftHiggsOut) {
+        x = displayMh2Squared(); h = 0.01 * x;
+      } else if (Z3) {
+        x = displayKappa(); h = 0.0005 * x;
+      } else {
+        x = displayM3Squared(); h = 0.01 * x;
+      }
+    } else if (numPar == bcPars.displayEnd() + 3) {
+      if (SoftHiggsOut || Z3) {
+        x = displayMsSquared(); h = 0.01 * x;
+      } else {
+        x = displayXiS(); h = 0.01 * x;
+      }
+    } else if (numPar == bcPars.displayEnd() + 4) {
+      x = displayYukawaElement(YU, 3, 3); h = x * 0.0005;
     } else {
       ostringstream ii;
       ii << "it1par called with functionality " << ftFunctionality <<
@@ -3869,7 +3928,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
   /// DH: computes the Barbieri-Giudice fine tuning sensitivities for the
   /// given boundary condition parameters
-   DoubleVector NmssmSoftsusy::fineTune
+  DoubleVector NmssmSoftsusy::fineTune
 (void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &),
  const DoubleVector & bcPars, double mx, bool doTop) {
 
