@@ -3834,6 +3834,13 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     tempSoft1->calcDrBarPars();
     tempSoft1->runto(tempSoft1->calcMs());
 
+    const double mt = tempSoft1->displayDrBarPars().mt;
+    const double sinthDRbar = tempSoft1->calcSinthdrbar();
+    /// We miss two-loop terms in our calculation of fine-tuning...
+    tempSoft1->calcTadpole2Ms1loop(mt, sinthDRbar);
+    tempSoft1->calcTadpole2Ms1loop(mt, sinthDRbar);
+    tempSoft1->calcTadpoleSMs1loop(mt, sinthDRbar);
+
     double predTanb = 0.;
     double referenceMzsq = tempSoft1->predMzsq(predTanb);
 
