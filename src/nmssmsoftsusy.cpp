@@ -3829,13 +3829,13 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       throw ii.str();
     }
 
-    double referenceMzsq;
-    double predTanb;
-
+    // at this point we need to update the VEVs and Z boson pole mass
     tempSoft1->runto(tempSoft1->calcMs());
     tempSoft1->calcDrBarPars();
     tempSoft1->runto(tempSoft1->calcMs());
 
+    double predTanb = 0.;
+    double referenceMzsq = tempSoft1->predMzsq(predTanb);
 
     if (PRINTOUT > 1) cout << x << " MZ=" << sqrt(fabs(referenceMzsq))
                            << " tanb=" << predTanb << '\n';
