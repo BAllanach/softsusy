@@ -3765,12 +3765,134 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       rewsbXiS(xiS);
       setXiS(xiS);
     }
-    
-    
-    
   }
-  
-  
+
+  /// DH: used to get useful information into nmssmFtCalc
+  static NmssmSoftsusy *tempSoft1;
+  static int ftFunctionality;
+  static DoubleVector ftPars(3);
+  static void (*ftBoundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
+
+  /// DH: returns the Z boson mass as required for Barbieri-Giudice tuning
+  /// measure
+  double nmssmFtCalc(double x) {
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    if (ftFunctionality <= ftPars.displayEnd()) {
+      ftPars(ftFunctionality) = x;
+      ftBoundaryCondition(*tempSoft1, ftPars);
+      if (PRINTOUT > 1) cout << 'p' << ftFunctionality << '=';
+    } else {
+      ostringstream ii;
+      ii << "NmssmSoftsusy:nmssmFtCalc called with incorrect functionality=" <<
+         ftFunctionality << '\n';
+      throw ii.str();
+    }
+
+    double referenceMzsq;
+    double predTanb;
+
+    tempSoft1->runto(tempSoft1->calcMs());
+    tempSoft1->calcDrBarPars();
+    tempSoft1->runto(tempSoft1->calcMs());
+
+
+    if (PRINTOUT > 1) cout << x << " MZ=" << sqrt(fabs(referenceMzsq))
+                           << " tanb=" << predTanb << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceMzsq;
+  }
+
+  /// DH: computes the Barbieri-Giudice fine tuning for the given parameter
+  /// by varying the parameter at the GUT scale
+  double NmssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars) {
+
+    double ftParameter = 0.0;
+    double err = 0.0;
+    double h = 0.01;
+
+    tempSoft1 = this;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(display());
+    sPhysical savePhys(displayPhys());
+
+    ftFunctionality = numPar;
+
+    double x;
+
+    /// Sets starting value to calculate derivative from
+    if (numPar > 0 && numPar <= bcPars.displayEnd()) {
+      x = bcPars.display(numPar); h = 0.01 * x;
+    } else {
+      ostringstream ii;
+      ii << "it1par called with functionality " << ftFunctionality <<
+         " out of range.\n";
+      throw ii.str();
+    }
+
+    ftPars.setEnd(bcPars.displayEnd()); ftPars = bcPars;
+
+    double derivative;
+    if (fabs(x) < 1.0e-10) {
+       ftParameter = 0.0; derivative = 0.0; err = 0.0;
+    } else {
+       derivative = calcDerivative(nmssmFtCalc, x, h, &err);
+       ftParameter = x * derivative / sqr(displayMz());
+    }
+
+    if (PRINTOUT > 1)
+       cout << "derivative=" << derivative << " error=" << err << '\n';
+
+    /// High error: if can't find a derivative, error comes back with 1.0e30
+    if (ftParameter > TOLERANCE && fabs(err / derivative) > 1.0)
+       return numberOfTheBeast;
+
+    /// Restore initial parameters at correct scale
+    set(storeObject);
+    setPhys(savePhys);
+
+    return fabs(ftParameter);
+  }
+
+  /// DH: computes the Barbieri-Giudice fine tuning sensitivities for the
+  /// given boundary condition parameters
+   DoubleVector NmssmSoftsusy::fineTune
+(void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &),
+ const DoubleVector & bcPars, double mx, bool doTop) {
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(display());
+    sPhysical savePhys(displayPhys());
+
+    runto(mx);
+
+    ftBoundaryCondition = boundaryCondition;
+
+    int numPars = bcPars.displayEnd();
+
+    DoubleVector tempFineTuning(numPars);
+
+    for (int i = 1; i <= numPars; ++i) {
+       tempFineTuning(i) = it1par(i, bcPars);
+       /// flag problem FT calculation with NaN
+       if (tempFineTuning(i) > 1.0e66) tempFineTuning(i) = asin(2.);
+    }
+
+    /// Restore initial parameters at correct scale
+    set(storeObject);
+    setPhys(savePhys);
+
+    return tempFineTuning;
+  }
   
   
   /// Obtains solution of one-loop effective potential minimisation via iteration

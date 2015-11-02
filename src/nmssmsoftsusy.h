@@ -509,7 +509,22 @@ namespace softsusy {
     
     double predTanb(double muSusy = -6.66e66) const;
     double predMzsq(double & tanb, double muOld = -6.66e66, double eps = 0.);
-    
+    /// DH: calculates fine-tuning for soft parameters, using the
+    /// Barbieri-Giudice measure.
+    /// IO parameters: bcPars should be a vector giving the high-scale SUSY
+    /// breaking boundary condition parameters, MX is the high-scale,
+    /// boundaryCondition is the user-supplied function that sets the SUSY
+    /// breaking BCs.
+    /// If doTop is true, it also calculates the fine tuning associated with
+    /// the top Yukawa coupling.
+    DoubleVector fineTune(void (*boundaryCondition)(NmssmSoftsusy &,
+                                                    const DoubleVector &),
+                          const DoubleVector & bcPars, double MX,
+                          bool doTop = false);
+    /// DH: computes the Barbieri-Giudice fine tuning sensitivity for
+    /// the single parameter specified by numPar.
+    double it1par(int numPar, const DoubleVector & bcPars);
+
     /// Main iteration routine: 
     /// Boundary condition is the theoretical condition on parameters at the high
     /// energy scale mx: the parameters themselves are contained within the
