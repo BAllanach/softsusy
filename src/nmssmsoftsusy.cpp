@@ -3882,7 +3882,8 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     ftBoundaryCondition = boundaryCondition;
 
-    int numPars = bcPars.displayEnd();
+    int numPars = bcPars.displayEnd() + 3;
+    if (doTop) numPars++;
 
     DoubleVector tempFineTuning(numPars);
 
