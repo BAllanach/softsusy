@@ -509,6 +509,12 @@ namespace softsusy {
     
     double predTanb(double muSusy = -6.66e66) const;
     double predMzsq(double & tanb, double muOld = -6.66e66, double eps = 0.);
+
+    /// DH: returns the values of the tree-level EWSB conditions
+    double ewsbCondition1TreeLevel() const;
+    double ewsbCondition2TreeLevel() const;
+    double ewsbConditionSTreeLevel() const;
+
     /// DH: calculates fine-tuning for soft parameters, using the
     /// Barbieri-Giudice measure.
     /// IO parameters: bcPars should be a vector giving the high-scale SUSY

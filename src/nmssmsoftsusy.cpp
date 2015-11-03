@@ -3767,11 +3767,124 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
   }
 
+  /// DH: return the values of the EWSB conditions
+  double NmssmSoftsusy::ewsbCondition1TreeLevel() const {
+    const double vev = displayHvev();
+    const double svev = displaySvev();
+    const double tb = displayTanb();
+    const double vd = vev * cos(atan(tb));
+    const double vu = vev * sin(atan(tb));
+    const double mH1Sq = displayMh1Squared();
+    const double g1 = displayGaugeCoupling(1);
+    const double g2 = displayGaugeCoupling(2);
+    const double kap = displayKappa();
+    const double lam = displayLambda();
+    const double alam = displayTrialambda();
+    const double mupr = displayMupr();
+
+    const double muEff = displaySusyMu() + lam * svev / root2;
+    const double beff = alam + kap * svev / root2;
+    const double m3SqHat = displayM3Squared() + lam *
+       (mupr * svev / root2 + displayXiF());
+    const double m3SqEff = lam * svev * beff / root2 + m3SqHat;
+
+    double result = mH1Sq + 0.125 * (sqr(g2) + 0.6 * sqr(g1)) *
+       (sqr(vd) - sqr(vu)) + 0.5 * sqr(lam) * sqr(vu) - m3SqEff
+       * tb + sqr(muEff);
+
+    return result;
+  }
+
+  double NmssmSoftsusy::ewsbCondition2TreeLevel() const {
+    const double vev = displayHvev();
+    const double svev = displaySvev();
+    const double tb = displayTanb();
+    const double vd = vev * cos(atan(tb));
+    const double vu = vev * sin(atan(tb));
+    const double mH2Sq = displayMh2Squared();
+    const double g1 = displayGaugeCoupling(1);
+    const double g2 = displayGaugeCoupling(2);
+    const double kap = displayKappa();
+    const double lam = displayLambda();
+    const double alam = displayTrialambda();
+    const double mupr = displayMupr();
+
+    const double muEff = displaySusyMu() + lam * svev / root2;
+    const double beff = alam + kap * svev / root2;
+    const double m3SqHat = displayM3Squared() + lam *
+       (mupr * svev / root2 + displayXiF());
+    const double m3SqEff = lam * svev * beff / root2 + m3SqHat;
+
+    double result = mH2Sq - 0.125 * (sqr(g2) + 0.6 * sqr(g1)) *
+       (sqr(vd) - sqr(vu)) + 0.5 * sqr(lam) * sqr(vd) - m3SqEff
+       / tb + sqr(muEff);
+
+    return result;
+  }
+
+  double NmssmSoftsusy::ewsbConditionSTreeLevel() const {
+    const double vev = displayHvev();
+    const double svev = displaySvev();
+    const double tb = displayTanb();
+    const double vd = vev * cos(atan(tb));
+    const double vu = vev * sin(atan(tb));
+    const double kap = displayKappa();
+    const double akap = displayTriakappa();
+    const double lam = displayLambda();
+    const double alam = displayTrialambda();
+    const double mupr = displayMupr();
+    const double xiF = displayXiF();
+    const double mSSq = displayMsSquared();
+    const double mSpSq = displayMspSquared();
+
+    double result = mSSq + sqr(kap) * sqr(svev) + 0.5 * sqr(lam)
+       * sqr(vev) - kap * lam * vd * vu - lam * alam * vd * vu /
+       (root2 * svev) + kap * akap * svev + mSpSq + sqr(mupr)
+       - 2.0 * kap * xiF + 3.0 * kap * svev * mupr;
+
+    return result;
+  }
+
   /// DH: used to get useful information into nmssmFtCalc
+  /// @todo remove reliance on global variables
   static NmssmSoftsusy *tempSoft1;
+  static NmssmSoftsusy *ewsbSoft;
   static int ftFunctionality;
   static DoubleVector ftPars(3);
   static void (*ftBoundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
+
+  /// DH: returns the values of the EWSB conditions for the given
+  /// values of the VEVs
+  void ewsbConditions(const DoubleVector & vevs, DoubleVector & values) {
+    /// Save old VEVs
+    const double oldHvev = ewsbSoft->displayHvev();
+    const double oldTanb = ewsbSoft->displayTanb();
+    const double oldSvev = ewsbSoft->displaySvev();
+
+    ewsbSoft->setHvev(vevs(1));
+    ewsbSoft->setTanb(vevs(2));
+    ewsbSoft->setSvev(vevs(3));
+
+    values(1) = ewsbSoft->ewsbCondition1TreeLevel();
+    values(2) = ewsbSoft->ewsbCondition2TreeLevel();
+    values(3) = ewsbSoft->ewsbConditionSTreeLevel();
+
+    if (numRewsbLoops > 0) {
+      ewsbSoft->calcDrBarPars();
+      const double mt = ewsbSoft->displayDrBarPars().mt;
+      const double sinthDRbar = ewsbSoft->calcSinthdrbar();
+      ewsbSoft->doTadpoles(mt, sinthDRbar);
+
+      values(1) -= ewsbSoft->displayTadpole1Ms();
+      values(2) -= ewsbSoft->displayTadpole2Ms();
+      values(3) -= ewsbSoft->displayTadpoleSMs();
+    }
+
+    /// Restore saved values
+    ewsbSoft->setHvev(oldHvev);
+    ewsbSoft->setTanb(oldTanb);
+    ewsbSoft->setSvev(oldSvev);
+  }
 
   /// DH: returns the Z boson mass as required for Barbieri-Giudice tuning
   /// measure
