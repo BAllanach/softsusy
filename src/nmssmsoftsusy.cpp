@@ -3783,10 +3783,10 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     const double mupr = displayMupr();
 
     const double muEff = displaySusyMu() + lam * svev / root2;
-    const double beff = alam + kap * svev / root2;
+    const double beff = alam + lam * kap * svev / root2;
     const double m3SqHat = displayM3Squared() + lam *
        (mupr * svev / root2 + displayXiF());
-    const double m3SqEff = lam * svev * beff / root2 + m3SqHat;
+    const double m3SqEff = svev * beff / root2 + m3SqHat;
 
     double result = mH1Sq + 0.125 * (sqr(g2) + 0.6 * sqr(g1)) *
        (sqr(vd) - sqr(vu)) + 0.5 * sqr(lam) * sqr(vu) - m3SqEff
@@ -3810,10 +3810,10 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     const double mupr = displayMupr();
 
     const double muEff = displaySusyMu() + lam * svev / root2;
-    const double beff = alam + kap * svev / root2;
+    const double beff = alam + lam * kap * svev / root2;
     const double m3SqHat = displayM3Squared() + lam *
        (mupr * svev / root2 + displayXiF());
-    const double m3SqEff = lam * svev * beff / root2 + m3SqHat;
+    const double m3SqEff = svev * beff / root2 + m3SqHat;
 
     double result = mH2Sq - 0.125 * (sqr(g2) + 0.6 * sqr(g1)) *
        (sqr(vd) - sqr(vu)) + 0.5 * sqr(lam) * sqr(vd) - m3SqEff
@@ -3838,8 +3838,8 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     const double mSpSq = displayMspSquared();
 
     double result = mSSq + sqr(kap) * sqr(svev) + 0.5 * sqr(lam)
-       * sqr(vev) - kap * lam * vd * vu - lam * alam * vd * vu /
-       (root2 * svev) + kap * akap * svev + mSpSq + sqr(mupr)
+       * sqr(vev) - kap * lam * vd * vu - alam * vd * vu /
+       (root2 * svev) + akap * svev + mSpSq + sqr(mupr)
        - 2.0 * kap * xiF + 3.0 * kap * svev * mupr;
 
     return result;
