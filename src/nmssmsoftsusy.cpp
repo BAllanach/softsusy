@@ -3832,15 +3832,20 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     const double akap = displayTriakappa();
     const double lam = displayLambda();
     const double alam = displayTrialambda();
+    const double smu = displaySusyMu();
     const double mupr = displayMupr();
     const double xiF = displayXiF();
+    const double xiS = displayXiS();
     const double mSSq = displayMsSquared();
     const double mSpSq = displayMspSquared();
 
-    double result = mSSq + sqr(kap) * sqr(svev) + 0.5 * sqr(lam)
-       * sqr(vev) - kap * lam * vd * vu - alam * vd * vu /
-       (root2 * svev) + akap * svev + mSpSq + sqr(mupr)
-       - 2.0 * kap * xiF + 3.0 * kap * svev * mupr;
+    double result = mSSq + mSpSq + sqr(kap) * sqr(svev)
+       + 0.5 * sqr(lam) * sqr(vev) - kap * lam * vd * vu
+       - alam * vd * vu / (root2 * svev) + akap * svev / root2
+       + sqr(mupr) + lam * smu * sqr(vev) / (root2 * svev)
+       + 3.0 * kap * mupr * svev / root2 + 2.0 * kap * xiF
+       - lam * mupr * vd * vu / (root2 * svev) +
+       (root2 / svev) * (mupr * xiF + xiS);
 
     return result;
   }
