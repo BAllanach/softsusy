@@ -3859,22 +3859,41 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
   /// DH: returns the values of the EWSB conditions for the given
   /// values of the VEVs
-  void NmssmSoftsusy::ewsbConditions(DoubleVector & values) {
+  void NmssmSoftsusy::ewsbConditions(DoubleVector & values) const {
 
     values(1) = ewsbCondition1TreeLevel();
     values(2) = ewsbCondition2TreeLevel();
     values(3) = ewsbConditionSTreeLevel();
 
     if (numRewsbLoops > 0) {
-      calcDrBarPars();
-      const double mt = displayDrBarPars().mt;
-      const double sinthDRbar = calcSinthdrbar();
-      doTadpoles(mt, sinthDRbar);
-
       values(1) -= displayTadpole1Ms();
       values(2) -= displayTadpole2Ms();
       values(3) -= displayTadpoleSMs();
     }
+  }
+
+  int NmssmSoftsusy::ewsbConditions(const DoubleVector & vevs, void* params,
+                     DoubleVector & values) {
+
+    NmssmSoftsusy* model = static_cast<NmssmSoftsusy*>(params);
+
+    model->setHvev(vevs(1));
+    model->setTanb(vevs(2));
+    model->setSvev(vevs(3));
+
+    if (numRewsbLoops > 0) {
+      model->calcDrBarPars();
+      const double mt = model->displayDrBarPars().mt;
+      const double sinthDRbar = model->calcSinthdrbar();
+      model->doTadpoles(mt, sinthDRbar);
+    }
+
+    model->ewsbConditions(values);
+
+    const int error = testNan(values(1)) && testNan(values(2))
+       && testNan(values(3));
+
+    return error;
   }
 
   /// DH: returns the Z boson mass as required for Barbieri-Giudice tuning

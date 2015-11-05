@@ -45,7 +45,13 @@ namespace softsusy {
     double tSOVSMs1loop; ///<New Nmssm DRbar tadpole(MSusy): excl 2 loops
     /// LCT: Returns logarithm factor from one-loop effective potential
     double looplog(double mass) const;
-    
+
+    /// DH: returns the values of the EWSB conditions for the given VEV
+    /// values.  The additional parameters must contain a pointer to
+    /// the model.
+    static int ewsbConditions(const DoubleVector & vevs, void* params,
+                              DoubleVector & values);
+
   public:
     //  void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
     /// Default constructor fills object with zeroes
@@ -514,8 +520,10 @@ namespace softsusy {
     double ewsbCondition1TreeLevel() const;
     double ewsbCondition2TreeLevel() const;
     double ewsbConditionSTreeLevel() const;
-    /// DH: returns the EWSB conditions at the current EWSB loop order
-    void ewsbConditions(DoubleVector & values);
+    /// DH: returns the EWSB conditions at the current EWSB loop order.
+    /// Note that this uses the current values of the tadpoles, i.e. it
+    /// does not calculate or recalculate them.
+    void ewsbConditions(DoubleVector & values) const;
 
     /// DH: calculates fine-tuning for soft parameters, using the
     /// Barbieri-Giudice measure.
