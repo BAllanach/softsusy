@@ -3896,6 +3896,27 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return error;
   }
 
+  /// DH: solves the EWSB conditions for the Higgs and singlet VEVs
+  void NmssmSoftsusy::iterateVevs(DoubleVector & vevs, int & err) {
+    /// Stores running parameters in a vector
+    DoubleVector storedObject(display());
+    const double initialMu = displayMu();
+    const drBarPars savedDrBarPars(displayDrBarPars());
+
+    /// Initial guess
+    vevs(1) = displayHvev();
+    vevs(2) = displayTanb();
+    vevs(3) = displaySvev();
+
+    bool error = newt(vevs, ewsbConditions, this);
+    err = error ? 1 : 0;
+
+    /// Restore initial parameters at correct scale
+    setMu(initialMu);
+    set(storedObject);
+    setDrBarPars(savedDrBarPars);
+  }
+
   /// DH: returns the Z boson mass as required for Barbieri-Giudice tuning
   /// measure
   double nmssmFtCalc(double x) {

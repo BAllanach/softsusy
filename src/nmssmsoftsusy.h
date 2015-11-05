@@ -524,6 +524,8 @@ namespace softsusy {
     /// Note that this uses the current values of the tadpoles, i.e. it
     /// does not calculate or recalculate them.
     void ewsbConditions(DoubleVector & values) const;
+    /// DH: solves the EWSB conditions for the Higgs and singlet VEVs
+    void iterateVevs(DoubleVector & vevs, int & err);
 
     /// DH: calculates fine-tuning for soft parameters, using the
     /// Barbieri-Giudice measure.
