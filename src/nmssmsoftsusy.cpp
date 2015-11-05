@@ -4026,10 +4026,6 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
   /// by varying the parameter at the GUT scale
   double NmssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars) {
 
-    double ftParameter = 0.0;
-    double err = 0.0;
-    double h = 0.01;
-
     tempSoft1 = this;
 
     /// Stores running parameters in a vector
@@ -4039,7 +4035,8 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     ftFunctionality = numPar;
 
-    double x;
+    double h = 0.01;
+    double x = 0.;
 
     /// Sets starting value to calculate derivative from
     if (numPar > 0 && numPar <= bcPars.displayEnd()) {
@@ -4085,10 +4082,10 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     ftPars.setEnd(bcPars.displayEnd()); ftPars = bcPars;
 
-    double derivative;
-    if (fabs(x) < 1.0e-10) {
-       ftParameter = 0.0; derivative = 0.0; err = 0.0;
-    } else {
+    double ftParameter = 0.;
+    double err = 0.;
+    double derivative = 0.;
+    if (fabs(x) > 1.0e-10) {
        derivative = calcDerivative(nmssmFtCalc, x, h, &err);
        ftParameter = x * derivative / sqr(displayMz());
     }
@@ -4096,7 +4093,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     if (PRINTOUT > 1)
        cout << "derivative=" << derivative << " error=" << err << '\n';
 
-    /// High error: if can't find a derivative, error comes back with 1.0e30
+    /// High error flag
     if (ftParameter > TOLERANCE && fabs(err / derivative) > 1.0)
        return numberOfTheBeast;
 
