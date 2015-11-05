@@ -3980,20 +3980,36 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       throw ii.str();
     }
 
-    // at this point we need to update the VEVs and Z boson pole mass
-    tempSoft1->runto(tempSoft1->calcMs());
-    tempSoft1->calcDrBarPars();
+    /// Recalculate Higgs and singlet VEVs
     tempSoft1->runto(tempSoft1->calcMs());
 
+    DoubleVector vevs(3);
+    vevs(1) = tempSoft1->displayHvev();
+    vevs(2) = tempSoft1->displayTanb();
+    vevs(3) = tempSoft1->displaySvev();
+
+    int error = 0;
+    tempSoft1->iterateVevs(vevs, error);
+
+    if (error != 0) {
+      if (PRINTOUT > 0) {
+        cout << "Warning: could not solve for VEVs\n";
+      }
+    }
+
+    tempSoft1->setHvev(vevs(1));
+    tempSoft1->setTanb(vevs(2));
+    tempSoft1->setSvev(vevs(3));
+
+    tempSoft1->calcDrBarPars();
     const double mt = tempSoft1->displayDrBarPars().mt;
     const double sinthDRbar = tempSoft1->calcSinthdrbar();
-    /// We miss two-loop terms in our calculation of fine-tuning...
-    tempSoft1->calcTadpole2Ms1loop(mt, sinthDRbar);
-    tempSoft1->calcTadpole2Ms1loop(mt, sinthDRbar);
-    tempSoft1->calcTadpoleSMs1loop(mt, sinthDRbar);
+    tempSoft1->doTadpoles(mt, sinthDRbar);
 
-    double predTanb = 0.;
-    double referenceMzsq = tempSoft1->predMzsq(predTanb);
+    const double predTanb = tempSoft1->displayTanb();
+    const double referenceMzsq = sqr(tempSoft1->displayMzRun())
+       - tempSoft1->piZZT(tempSoft1->displayMzRun(),
+                          tempSoft1->displayMu());
 
     if (PRINTOUT > 1) cout << x << " MZ=" << sqrt(fabs(referenceMzsq))
                            << " tanb=" << predTanb << '\n';
