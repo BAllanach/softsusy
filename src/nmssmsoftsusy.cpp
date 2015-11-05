@@ -3853,42 +3853,28 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
   /// DH: used to get useful information into nmssmFtCalc
   /// @todo remove reliance on global variables
   static NmssmSoftsusy *tempSoft1;
-  static NmssmSoftsusy *ewsbSoft;
   static int ftFunctionality;
   static DoubleVector ftPars(3);
   static void (*ftBoundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
 
   /// DH: returns the values of the EWSB conditions for the given
   /// values of the VEVs
-  void ewsbConditions(const DoubleVector & vevs, DoubleVector & values) {
-    /// Save old VEVs
-    const double oldHvev = ewsbSoft->displayHvev();
-    const double oldTanb = ewsbSoft->displayTanb();
-    const double oldSvev = ewsbSoft->displaySvev();
+  void NmssmSoftsusy::ewsbConditions(DoubleVector & values) {
 
-    ewsbSoft->setHvev(vevs(1));
-    ewsbSoft->setTanb(vevs(2));
-    ewsbSoft->setSvev(vevs(3));
-
-    values(1) = ewsbSoft->ewsbCondition1TreeLevel();
-    values(2) = ewsbSoft->ewsbCondition2TreeLevel();
-    values(3) = ewsbSoft->ewsbConditionSTreeLevel();
+    values(1) = ewsbCondition1TreeLevel();
+    values(2) = ewsbCondition2TreeLevel();
+    values(3) = ewsbConditionSTreeLevel();
 
     if (numRewsbLoops > 0) {
-      ewsbSoft->calcDrBarPars();
-      const double mt = ewsbSoft->displayDrBarPars().mt;
-      const double sinthDRbar = ewsbSoft->calcSinthdrbar();
-      ewsbSoft->doTadpoles(mt, sinthDRbar);
+      calcDrBarPars();
+      const double mt = displayDrBarPars().mt;
+      const double sinthDRbar = calcSinthdrbar();
+      doTadpoles(mt, sinthDRbar);
 
-      values(1) -= ewsbSoft->displayTadpole1Ms();
-      values(2) -= ewsbSoft->displayTadpole2Ms();
-      values(3) -= ewsbSoft->displayTadpoleSMs();
+      values(1) -= displayTadpole1Ms();
+      values(2) -= displayTadpole2Ms();
+      values(3) -= displayTadpoleSMs();
     }
-
-    /// Restore saved values
-    ewsbSoft->setHvev(oldHvev);
-    ewsbSoft->setTanb(oldTanb);
-    ewsbSoft->setSvev(oldSvev);
   }
 
   /// DH: returns the Z boson mass as required for Barbieri-Giudice tuning

@@ -514,6 +514,8 @@ namespace softsusy {
     double ewsbCondition1TreeLevel() const;
     double ewsbCondition2TreeLevel() const;
     double ewsbConditionSTreeLevel() const;
+    /// DH: returns the EWSB conditions at the current EWSB loop order
+    void ewsbConditions(DoubleVector & values);
 
     /// DH: calculates fine-tuning for soft parameters, using the
     /// Barbieri-Giudice measure.
