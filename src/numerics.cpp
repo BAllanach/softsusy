@@ -1498,7 +1498,7 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc) {
 
 /// You will need to clear this lot up....
 DoubleMatrix fdjac(int n, DoubleVector x, const DoubleVector & fvec,
-           void (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+           int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
            void* params) {
   double EPS = maximum(TOLERANCE, 1.0e-4);
   int i,j;
@@ -1522,7 +1522,7 @@ DoubleMatrix fdjac(int n, DoubleVector x, const DoubleVector & fvec,
 bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
 	    DoubleVector & p, 
 	    DoubleVector & x, double & f, double stpmax, 
-	    void (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+	    int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
 	    DoubleVector & fvec, void* params) {
   double ALF = TOLERANCE;
   double TOLX = TOLERANCE * 1.0e-3;
@@ -1661,7 +1661,7 @@ void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
 
 /// More work can be done on this: get rid of int n and in subfunctions too
 bool newt(DoubleVector & x, 
-	  void (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+	  int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
           void* params) {
   bool err = false; 
   const int MAXITS = 200;    ///< max iterations
@@ -1774,7 +1774,7 @@ DoubleVector testDerivs(double /* x */, const DoubleVector & y) {
   }*/
   
 void broydn(DoubleVector x, int & check, 
-	    void (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+	    int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
             void* params) {
   const int MAXITS = 200;
   double TOLF =  TOLERANCE;

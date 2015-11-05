@@ -258,14 +258,14 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc);
 /// point to be evaluated, fvec is the vector of function values at the point,
 /// and  vecfunc(n, x, f) is the Jacobian array
 void fdjac(int n, DoubleVector x, const DoubleVector & fvec, DoubleMatrix & df,
-	   void (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+	   int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
            void* params = NULL);
 /// These are experimental things for trying the shooting method - returns
 /// F.F/2 evaluated at x. Boolean value on return is error flag
 bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
 	    DoubleVector & p, 
 	    DoubleVector & x, double & f, double stpmax, 
-	    void (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+	    int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
 	    DoubleVector & fvec, void* params = NULL);
 /* allocate an int vector with subscript range v[nl..nh] */
 int *ivector(long nl, long nh);
@@ -279,7 +279,7 @@ void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b);
 /// (df/dx=0). The length of x should be equal to the number of parameters to
 /// vary AND the number of constraints ie the length of the vector in vecfunc.
 bool newt(DoubleVector & x, 
-	  void (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+	  int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
           void* params = NULL);
 /// calculates the n-vector y, given freely specifiable values v(1..n2) at x1
 void load(float x, const DoubleVector & v, DoubleVector & y);
