@@ -3850,13 +3850,6 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return result;
   }
 
-  /// DH: used to get useful information into nmssmFtCalc
-  /// @todo remove reliance on global variables
-  static NmssmSoftsusy *tempSoft1;
-  static int ftFunctionality;
-  static DoubleVector ftPars(3);
-  static void (*ftBoundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
-
   /// DH: returns the values of the EWSB conditions for the given
   /// values of the VEVs
   void NmssmSoftsusy::ewsbConditions(DoubleVector & values) const {
@@ -3916,6 +3909,13 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     set(storedObject);
     setDrBarPars(savedDrBarPars);
   }
+
+  /// DH: used to get useful information into nmssmFtCalc
+  /// @todo remove reliance on global variables
+  static NmssmSoftsusy *tempSoft1;
+  static int ftFunctionality;
+  static DoubleVector ftPars(3);
+  static void (*ftBoundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
 
   /// DH: returns the Z boson mass as required for Barbieri-Giudice tuning
   /// measure
