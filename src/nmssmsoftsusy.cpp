@@ -3980,7 +3980,9 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       throw ii.str();
     }
 
-    /// Recalculate Higgs and singlet VEVs
+    /// Recalculate Higgs and singlet VEVs.
+    /// @todo resolve scale ambiguity here - in MSSM we recalculate the
+    /// SUSY scale and run to the new scale
     const double susyScale = tempSoft1->calcMs();
     tempSoft1->runto(susyScale);
 
