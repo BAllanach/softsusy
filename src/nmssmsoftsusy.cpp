@@ -3901,6 +3901,8 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     vevs(2) = displayTanb();
     vevs(3) = displaySvev();
 
+    /// @todo this uses the calculation of the DR-bar Higgs masses
+    /// after imposing EWSB.  Check that this is not inconsistent.
     bool error = newt(vevs, ewsbConditions, this);
     err = error ? 1 : 0;
 
