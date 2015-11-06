@@ -4094,7 +4094,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     /// High error flag
     if (ftParameter > TOLERANCE && fabs(err / derivative) > 1.0)
-       return numberOfTheBeast;
+       return -numberOfTheBeast;
 
     /// Restore initial parameters at correct scale
     setMu(initialMu);
@@ -4135,7 +4135,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     for (int i = 1; i <= numPars; ++i) {
        tempFineTuning(i) = it1par(i, bcPars, tuningPars);
        /// flag problem FT calculation with NaN
-       if (tempFineTuning(i) > 1.0e66) tempFineTuning(i) = asin(2.);
+       if (tempFineTuning(i) < -1.0e66) tempFineTuning(i) = asin(2.);
     }
 
     /// Restore initial parameters at correct scale
