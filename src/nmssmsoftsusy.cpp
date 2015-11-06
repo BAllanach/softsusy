@@ -4122,6 +4122,9 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     double initialMu = displayMu();
     sPhysical savePhys(displayPhys());
 
+    /// The fine tuning calculation is done at the SUSY scale
+    runto(calcMs());
+
     /// Compute the reference value of MZ (i.e. the computed mass
     /// for this point)
     const double mz2 = sqr(displayMzRun())
