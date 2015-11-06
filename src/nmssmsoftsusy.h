@@ -52,6 +52,26 @@ namespace softsusy {
     static int ewsbConditions(const DoubleVector & vevs, void* params,
                               DoubleVector & values);
 
+    /// DH: contains parameters required for fine tuning calculation
+    struct FineTuningPars {
+      NmssmSoftsusy* model;
+      int ftFunctionality;
+      DoubleVector ftPars;
+      void (*ftBoundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
+
+      FineTuningPars()
+        : model(0), ftFunctionality(0), ftPars(3), ftBoundaryCondition(0)
+          {}
+    };
+
+    /// DH: computes the predicted Z mass for the fine tuning calculation
+    static double nmssmFtCalc(double x, void* parameters);
+
+    /// DH: computes the Barbieri-Giudice fine tuning sensitivity for
+    /// the single parameter specified by numPar.
+    double it1par(int numPar, const DoubleVector & bcPars,
+                  FineTuningPars & tuningPars);
+
   public:
     //  void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
     /// Default constructor fills object with zeroes
@@ -539,9 +559,6 @@ namespace softsusy {
                                                     const DoubleVector &),
                           const DoubleVector & bcPars, double MX,
                           bool doTop = false);
-    /// DH: computes the Barbieri-Giudice fine tuning sensitivity for
-    /// the single parameter specified by numPar.
-    double it1par(int numPar, const DoubleVector & bcPars);
 
     /// Main iteration routine: 
     /// Boundary condition is the theoretical condition on parameters at the high

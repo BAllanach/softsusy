@@ -3910,16 +3910,16 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     setDrBarPars(savedDrBarPars);
   }
 
-  /// DH: used to get useful information into nmssmFtCalc
-  /// @todo remove reliance on global variables
-  static NmssmSoftsusy *tempSoft1;
-  static int ftFunctionality;
-  static DoubleVector ftPars(3);
-  static void (*ftBoundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
-
   /// DH: returns the Z boson mass as required for Barbieri-Giudice tuning
   /// measure
-  double nmssmFtCalc(double x) {
+  double NmssmSoftsusy::nmssmFtCalc(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+
     /// Stores running parameters in a vector
     DoubleVector storeObject(tempSoft1->display());
     double initialMu = tempSoft1->displayMu();
@@ -3929,7 +3929,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     if (ftFunctionality <= ftPars.displayEnd()) {
       ftPars(ftFunctionality) = x;
-      ftBoundaryCondition(*tempSoft1, ftPars);
+      tuningPars->ftBoundaryCondition(*tempSoft1, ftPars);
       if (PRINTOUT > 1) cout << 'p' << ftFunctionality << '=';
     } else if (ftFunctionality == ftPars.displayEnd() + 1) {
       if (SoftHiggsOut) {
@@ -3981,7 +3981,8 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
 
     /// Recalculate Higgs and singlet VEVs
-    tempSoft1->runto(tempSoft1->calcMs());
+    const double susyScale = tempSoft1->calcMs();
+    tempSoft1->runto(susyScale);
 
     DoubleVector vevs(3);
     vevs(1) = tempSoft1->displayHvev();
@@ -4008,8 +4009,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     const double predTanb = tempSoft1->displayTanb();
     const double referenceMzsq = sqr(tempSoft1->displayMzRun())
-       - tempSoft1->piZZT(tempSoft1->displayMzRun(),
-                          tempSoft1->displayMu());
+       - tempSoft1->piZZT(tempSoft1->displayMzRun(), susyScale);
 
     if (PRINTOUT > 1) cout << x << " MZ=" << sqrt(fabs(referenceMzsq))
                            << " tanb=" << predTanb << '\n';
@@ -4024,16 +4024,13 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
   /// DH: computes the Barbieri-Giudice fine tuning for the given parameter
   /// by varying the parameter at the GUT scale
-  double NmssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars) {
-
-    tempSoft1 = this;
+  double NmssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars,
+                               FineTuningPars & tuningPars) {
 
     /// Stores running parameters in a vector
     DoubleVector storeObject(display());
     double initialMu = displayMu();
     sPhysical savePhys(displayPhys());
-
-    ftFunctionality = numPar;
 
     double h = 0.01;
     double x = 0.;
@@ -4068,25 +4065,27 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     } else if (numPar == bcPars.displayEnd() + 4) {
       if (Z3) {
         ostringstream ii;
-        ii << "it1par called with functionality " << ftFunctionality <<
+        ii << "it1par called with functionality " << numPar <<
            " out of range for Z3-NMSSM.\n";
         throw ii.str();
       }
       x = displayYukawaElement(YU, 3, 3); h = 0.0005 * x;
     } else {
       ostringstream ii;
-      ii << "it1par called with functionality " << ftFunctionality <<
+      ii << "it1par called with functionality " << numPar <<
          " out of range.\n";
       throw ii.str();
     }
 
-    ftPars.setEnd(bcPars.displayEnd()); ftPars = bcPars;
+    tuningPars.ftFunctionality = numPar;
+    tuningPars.ftPars.setEnd(bcPars.displayEnd());
+    tuningPars.ftPars = bcPars;
 
     double ftParameter = 0.;
     double err = 0.;
     double derivative = 0.;
     if (fabs(x) > 1.0e-10) {
-       derivative = calcDerivative(nmssmFtCalc, x, h, &err);
+       derivative = calcDerivative(nmssmFtCalc, x, h, &err, &tuningPars);
        ftParameter = x * derivative / sqr(displayMz());
     }
 
@@ -4118,7 +4117,10 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     runto(mx);
 
-    ftBoundaryCondition = boundaryCondition;
+    FineTuningPars tuningPars;
+
+    tuningPars.model = this;
+    tuningPars.ftBoundaryCondition = boundaryCondition;
 
     int numPars = bcPars.displayEnd();
     if (Z3) {
@@ -4131,7 +4133,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     DoubleVector tempFineTuning(numPars);
 
     for (int i = 1; i <= numPars; ++i) {
-       tempFineTuning(i) = it1par(i, bcPars);
+       tempFineTuning(i) = it1par(i, bcPars, tuningPars);
        /// flag problem FT calculation with NaN
        if (tempFineTuning(i) > 1.0e66) tempFineTuning(i) = asin(2.);
     }
