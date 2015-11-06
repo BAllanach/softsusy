@@ -65,6 +65,11 @@ int integrateOdes(DoubleVector & ystart, double x1, double x2, double eps,
 double calcDerivative(double (*func)(double), 
 		     double x, double h, double *err);
 
+/// DH: overloaded version allowing to pass additional parameters to the
+/// function
+double calcDerivative(double (*func)(double, void*),
+                      double x, double h, double* err, void* params = NULL);
+
 /// f is user-defined function, minimum value returned in xmin. Based on a
 /// golden section search
 double findMinimum(double ax, double bx, double cx, double (*f)(double),

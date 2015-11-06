@@ -247,6 +247,41 @@ double calcDerivative(double (*func)(double), double x, double h, double
   return ans;
 }
 
+double calcDerivative(double (*func)(double, void*), double x, double h, double
+		      *err, void* params){
+  const double CON = 1.4, CON2 = CON * CON, BIG = 1.0e30, 
+    SAFE = 2.0; 
+  const int NTAB = 10;
+  
+  int i, j;
+  double errt, fac, hh, ans = 0.0;
+  
+  if (h == 0.0) throw "h must be nonzero in numerics.cpp:calcDerivative";
+
+
+  DoubleMatrix a(NTAB, NTAB);
+  hh = h;
+  a(1, 1) = ((*func)(x + hh, params) - (*func)(x - hh, params)) / (2.0 * hh);
+  *err = BIG;
+  for (i=2; i<=NTAB; i++) {
+    hh /= CON;
+    a(1, i) = ((*func)(x + hh, params) - (*func)(x - hh, params)) / (2.0 * hh);
+    fac = CON2;
+    for (j=2; j<=i; j++) {
+      a(j, i) = (a(j-1, i) * fac - a(j-1, i-1)) / (fac - 1.0);
+      fac = CON2 * fac;
+      errt = maximum(fabs(a(j, i) - a(j-1, i)), fabs(a(j, i) - a(j-1, i-1)));
+      if (errt <= *err) {
+	*err = errt;
+	ans = a(j, i);
+      }
+    }
+    if (fabs(a(i, i) - a(i-1, i-1)) >= SAFE * (*err)) break;
+  }
+
+  return ans;
+}
+
 inline void shft2(double & a, double & b, double c) { a = b; b = c; }
 
 inline void shft3(double & a, double & b, double & c, double d) { 
