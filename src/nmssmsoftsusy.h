@@ -55,12 +55,14 @@ namespace softsusy {
     /// DH: contains parameters required for fine tuning calculation
     struct FineTuningPars {
       NmssmSoftsusy* model;
+      double mzSqr;
       int ftFunctionality;
       DoubleVector ftPars;
       void (*ftBoundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
 
       FineTuningPars()
-        : model(0), ftFunctionality(0), ftPars(3), ftBoundaryCondition(0)
+        : model(0), mzSqr(0.), ftFunctionality(0),
+          ftPars(3), ftBoundaryCondition(0)
           {}
     };
 

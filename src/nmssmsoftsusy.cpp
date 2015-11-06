@@ -4091,7 +4091,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     double derivative = 0.;
     if (fabs(x) > 1.0e-10) {
       derivative = calcDerivative(nmssmFtCalc, x, h, &err, &tuningPars);
-      ftParameter = x * derivative / sqr(displayMz());
+      ftParameter = x * derivative / tuningPars.mzSqr;
     }
 
     if (PRINTOUT > 1)
@@ -4122,11 +4122,17 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     double initialMu = displayMu();
     sPhysical savePhys(displayPhys());
 
+    /// Compute the reference value of MZ (i.e. the computed mass
+    /// for this point)
+    const double mz2 = sqr(displayMzRun())
+       - piZZT(displayMzRun(), displayMu());
+
     runto(mx);
 
     FineTuningPars tuningPars;
 
     tuningPars.model = this;
+    tuningPars.mzSqr = mz2;
     tuningPars.ftBoundaryCondition = boundaryCondition;
 
     int numPars = bcPars.displayEnd();
