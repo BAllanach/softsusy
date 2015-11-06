@@ -4031,6 +4031,8 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     DoubleVector storeObject(display());
     double initialMu = displayMu();
     sPhysical savePhys(displayPhys());
+    /// Save existing error flags so that they can be reset
+    sProblem savedProblems(displayProblem());
 
     double h = 0.01;
     double x = 0.;
@@ -4080,28 +4082,31 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     tuningPars.ftFunctionality = numPar;
     tuningPars.ftPars.setEnd(bcPars.displayEnd());
     tuningPars.ftPars = bcPars;
+    tuningPars.model->setProblem(sProblem());
 
     double ftParameter = 0.;
     double err = 0.;
     double derivative = 0.;
     if (fabs(x) > 1.0e-10) {
-       derivative = calcDerivative(nmssmFtCalc, x, h, &err, &tuningPars);
-       ftParameter = x * derivative / sqr(displayMz());
+      derivative = calcDerivative(nmssmFtCalc, x, h, &err, &tuningPars);
+      ftParameter = x * derivative / sqr(displayMz());
     }
 
     if (PRINTOUT > 1)
-       cout << "derivative=" << derivative << " error=" << err << '\n';
+      cout << "derivative=" << derivative << " error=" << err << '\n';
 
-    /// High error flag
-    if (ftParameter > TOLERANCE && fabs(err / derivative) > 1.0)
-       return -numberOfTheBeast;
+    /// Check for errors
+    const bool has_error
+       = (ftParameter > TOLERANCE && fabs(err / derivative) > 1.0)
+       || (tuningPars.model->displayProblem().test());
 
     /// Restore initial parameters at correct scale
     setMu(initialMu);
     set(storeObject);
     setPhys(savePhys);
+    setProblem(savedProblems);
 
-    return fabs(ftParameter);
+    return has_error ? -numberOfTheBeast : fabs(ftParameter);
   }
 
   /// DH: computes the Barbieri-Giudice fine tuning sensitivities for the
