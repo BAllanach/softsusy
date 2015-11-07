@@ -4026,6 +4026,110 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return referenceMzsq;
   }
 
+  double NmssmSoftsusy::calcTanb(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    if (ftFunctionality <= ftPars.displayEnd()) {
+      ftPars(ftFunctionality) = x;
+      tuningPars->ftBoundaryCondition(*tempSoft1, ftPars);
+      if (PRINTOUT > 1) cout << 'p' << ftFunctionality << '=';
+    } else if (ftFunctionality == ftPars.displayEnd() + 1) {
+      if (SoftHiggsOut) {
+        tempSoft1->setMh1Squared(x);
+        if (PRINTOUT > 1) cout << "mH1Sq= ";
+      } else if (Z3) {
+        tempSoft1->setKappa(x);
+        if (PRINTOUT > 1) cout << "kappa= ";
+      } else {
+        tempSoft1->setSusyMu(x);
+        if (PRINTOUT > 1) cout << "mu= ";
+      }
+    } else if (ftFunctionality == ftPars.displayEnd() + 2) {
+      if (SoftHiggsOut) {
+        tempSoft1->setMh2Squared(x);
+        if (PRINTOUT > 1) cout << "mH2Sq= ";
+      } else if (Z3) {
+        tempSoft1->setMsSquared(x);
+        if (PRINTOUT > 1) cout << "mSsq= ";
+      } else {
+        tempSoft1->setM3Squared(x);
+        if (PRINTOUT > 1) cout << "m3sq= ";
+      }
+    } else if (ftFunctionality == ftPars.displayEnd() + 3) {
+      if (SoftHiggsOut) {
+        tempSoft1->setMsSquared(x);
+        if (PRINTOUT > 1) cout << "mSsq= ";
+      } else if (Z3) {
+        tempSoft1->setYukawaElement(YU, 3, 3, x);
+        if (PRINTOUT > 1) cout << "ht= ";
+      } else {
+        tempSoft1->setXiS(x);
+        if (PRINTOUT > 1) cout << "xiS= ";
+      }
+    } else if (ftFunctionality == ftPars.displayEnd() + 4) {
+      if (Z3) {
+        ostringstream ii;
+        ii << "NmssmSoftsusy:calcMzsq called with incorrect functionality="
+           << ftFunctionality << '\n';
+        throw ii.str();
+      }
+      tempSoft1->setYukawaElement(YU, 3, 3, x);
+      if (PRINTOUT > 1) cout << "ht= ";
+    } else {
+      ostringstream ii;
+      ii << "NmssmSoftsusy:calcMzsq called with incorrect functionality=" <<
+         ftFunctionality << '\n';
+      throw ii.str();
+    }
+
+    /// Recalculate Higgs and singlet VEVs.
+    /// @todo resolve scale ambiguity here - in MSSM we recalculate the
+    /// SUSY scale and run to the new scale
+    const double susyScale = tempSoft1->calcMs();
+    tempSoft1->runto(susyScale);
+
+    DoubleVector vevs(3);
+    vevs(1) = tempSoft1->displayHvev();
+    vevs(2) = tempSoft1->displayTanb();
+    vevs(3) = tempSoft1->displaySvev();
+
+    int error = 0;
+    tempSoft1->iterateVevs(vevs, error);
+
+    if (error != 0) {
+      if (PRINTOUT > 0) {
+        cout << "Warning: could not solve for VEVs\n";
+      }
+    }
+
+    tempSoft1->setHvev(vevs(1));
+    tempSoft1->setTanb(vevs(2));
+    tempSoft1->setSvev(vevs(3));
+
+    const double referenceTanb = tempSoft1->displayTanb();
+
+    if (PRINTOUT > 1) cout << x << " tanb=" << referenceTanb << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceTanb;
+  }
+
   /// DH: computes the Barbieri-Giudice fine tuning for the given parameter
   /// by varying the parameter at the GUT scale
   double NmssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars,
