@@ -3914,7 +3914,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
   /// DH: returns the Z boson mass as required for Barbieri-Giudice tuning
   /// measure
-  double NmssmSoftsusy::nmssmFtCalc(double x, void* parameters) {
+  double NmssmSoftsusy::calcMzsq(double x, void* parameters) {
 
     FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
 
@@ -3969,7 +3969,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     } else if (ftFunctionality == ftPars.displayEnd() + 4) {
       if (Z3) {
         ostringstream ii;
-        ii << "NmssmSoftsusy:nmssmFtCalc called with incorrect functionality="
+        ii << "NmssmSoftsusy:calcMzsq called with incorrect functionality="
            << ftFunctionality << '\n';
         throw ii.str();
       }
@@ -3977,7 +3977,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       if (PRINTOUT > 1) cout << "ht= ";
     } else {
       ostringstream ii;
-      ii << "NmssmSoftsusy:nmssmFtCalc called with incorrect functionality=" <<
+      ii << "NmssmSoftsusy:calcMzsq called with incorrect functionality=" <<
          ftFunctionality << '\n';
       throw ii.str();
     }
@@ -4092,7 +4092,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     double err = 0.;
     double derivative = 0.;
     if (fabs(x) > 1.0e-10) {
-      derivative = calcDerivative(nmssmFtCalc, x, h, &err, &tuningPars);
+      derivative = calcDerivative(calcMzsq, x, h, &err, &tuningPars);
       ftParameter = x * derivative / tuningPars.mzSqr;
     }
 

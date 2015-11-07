@@ -67,7 +67,7 @@ namespace softsusy {
     };
 
     /// DH: computes the predicted Z mass for the fine tuning calculation
-    static double nmssmFtCalc(double x, void* parameters);
+    static double calcMzsq(double x, void* parameters);
 
     /// DH: computes the Barbieri-Giudice fine tuning sensitivity for
     /// the single parameter specified by numPar.
