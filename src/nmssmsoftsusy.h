@@ -564,6 +564,11 @@ namespace softsusy {
                           const DoubleVector & bcPars, double MX,
                           bool doTop = false);
 
+    /// DH: calculates the fine-tuning Jacobian, as described in
+    /// arXiv:1312.4150 [hep-ph].  This version of the function computes
+    /// the inverse of the Jacobian determinant.
+    double fineTuningJacobian(double MX, bool doTop = false);
+
     /// Main iteration routine: 
     /// Boundary condition is the theoretical condition on parameters at the high
     /// energy scale mx: the parameters themselves are contained within the

@@ -4267,7 +4267,35 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     return tempFineTuning;
   }
-  
+
+  double NmssmSoftsusy::fineTuningJacobian(double MX, bool doTop) {
+    /// Stores running parameters in a vector
+    DoubleVector savedObject(display());
+    double savedMu = displayMu();
+    sPhysical savedPhys(displayPhys());
+
+    DoubleMatrix jacMatrix(3,3);
+
+    if (doTop) {
+      jacMatrix.resize(4,4);
+    }
+
+    double jac = jacMatrix.determinant();
+
+    /// Check for non-zero determinant
+    if (fabs(jac) < EPSTOL) {
+      jac = numberOfTheBeast;
+    } else {
+      jac = 1.0 / jac;
+    }
+
+    /// Restore initial parameters at correct scale
+    setMu(savedMu);
+    set(savedObject);
+    setPhys(savedPhys);
+
+    return jac;
+  }
   
   /// Obtains solution of one-loop effective potential minimisation via iteration
   /// technique
