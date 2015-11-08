@@ -4111,9 +4111,10 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     double x = 0.;
 
     /// Sets starting value to calculate derivative from
-    if (numPar > 0 && numPar <= bcPars.displayEnd()) {
+    const int numBcPars = bcPars.displayEnd();
+    if (numPar > 0 && numPar <= numBcPars) {
       x = bcPars.display(numPar); h = 0.01 * x;
-    } else if (numPar == bcPars.displayEnd() + 1) {
+    } else if (numPar == numBcPars + 1) {
       if (SoftHiggsOut) {
         x = displayMh1Squared(); h = 0.01 * x;
       } else if (Z3) {
@@ -4121,7 +4122,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       } else {
         x = displaySusyMu(); h = 0.01 * x;
       }
-    } else if (numPar == bcPars.displayEnd() + 2) {
+    } else if (numPar == numBcPars + 2) {
       if (SoftHiggsOut) {
         x = displayMh2Squared(); h = 0.01 * x;
       } else if (Z3) {
@@ -4129,7 +4130,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       } else {
         x = displayM3Squared(); h = 0.01 * x;
       }
-    } else if (numPar == bcPars.displayEnd() + 3) {
+    } else if (numPar == numBcPars + 3) {
       if (SoftHiggsOut) {
         x = displayMsSquared(); h = 0.01 * x;
       } else if (Z3) {
@@ -4137,7 +4138,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       } else {
         x = displayXiS(); h = 0.01 * x;
       }
-    } else if (numPar == bcPars.displayEnd() + 4) {
+    } else if (numPar == numBcPars + 4) {
       if (Z3) {
         ostringstream ii;
         ii << "it1par called with functionality " << numPar <<
@@ -4153,7 +4154,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
 
     tuningPars.ftFunctionality = numPar;
-    tuningPars.ftPars.setEnd(bcPars.displayEnd());
+    tuningPars.ftPars.setEnd(numBcPars);
     tuningPars.ftPars = bcPars;
     tuningPars.model->setProblem(sProblem());
 
