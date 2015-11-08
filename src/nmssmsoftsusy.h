@@ -80,6 +80,8 @@ namespace softsusy {
     /// the single parameter specified by numPar.
     double it1par(int numPar, const DoubleVector & bcPars,
                   FineTuningPars & tuningPars);
+    /// DH: boundary condition used in Jacobian calculation
+    static void jacobianHighScaleBc(NmssmSoftsusy &, const DoubleVector &);
 
   public:
     //  void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &);

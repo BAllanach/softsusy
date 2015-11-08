@@ -4234,6 +4234,28 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return tempFineTuning;
   }
 
+  /// DH: boundary condition used in Jacobian calculation
+  void NmssmSoftsusy::jacobianHighScaleBc(NmssmSoftsusy & model,
+                                          const DoubleVector & bcPars) {
+     if (SoftHiggsOut) {
+       model.setMh1Squared(bcPars(1));
+       model.setMh2Squared(bcPars(2));
+       model.setMsSquared(bcPars(3));
+     } else if (Z3) {
+       model.setLambda(bcPars(1));
+       model.setKappa(bcPars(2));
+       model.setMsSquared(bcPars(3));
+     } else {
+       model.setSusyMu(bcPars(1));
+       model.setM3Squared(bcPars(2));
+       model.setXiS(bcPars(3));
+     }
+
+     if (bcPars.displayEnd() == 4) {
+       model.setYukawaElement(YU, 3, 3, bcPars(4));
+     }
+  }
+
   double NmssmSoftsusy::fineTuningJacobian(double MX, bool doTop) {
     /// Stores running parameters in a vector
     DoubleVector savedObject(display());
