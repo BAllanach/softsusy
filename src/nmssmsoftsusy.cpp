@@ -3912,6 +3912,69 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     setDrBarPars(savedDrBarPars);
   }
 
+  void NmssmSoftsusy::setParInBoundaryCondition
+(double x, int ftFunctionality,
+ void (*ftBoundaryCondition)(NmssmSoftsusy &, const DoubleVector &),
+ DoubleVector & ftPars) {
+
+    const int numFtPars = ftPars.displayEnd();
+
+    if (ftFunctionality <= numFtPars) {
+      ftPars(ftFunctionality) = x;
+      ftBoundaryCondition(*this, ftPars);
+      if (PRINTOUT > 1) cout << 'p' << ftFunctionality << "= " << x << ' ';
+    } else if (ftFunctionality == numFtPars + 1) {
+      if (SoftHiggsOut) {
+        setMh1Squared(x);
+        if (PRINTOUT > 1) cout << "mH1Sq= " << x << ' ';
+      } else if (Z3) {
+        setKappa(x);
+        if (PRINTOUT > 1) cout << "kappa= " << x << ' ';
+      } else {
+        setSusyMu(x);
+        if (PRINTOUT > 1) cout << "mu= " << x << ' ';
+      }
+    } else if (ftFunctionality == numFtPars + 2) {
+      if (SoftHiggsOut) {
+        setMh2Squared(x);
+        if (PRINTOUT > 1) cout << "mH2Sq= " << x << ' ';
+      } else if (Z3) {
+        setMsSquared(x);
+        if (PRINTOUT > 1) cout << "mSsq= " << x << ' ';
+      } else {
+        setM3Squared(x);
+        if (PRINTOUT > 1) cout << "m3sq= " << x << ' ';
+      }
+    } else if (ftFunctionality == numFtPars + 3) {
+      if (SoftHiggsOut) {
+        setMsSquared(x);
+        if (PRINTOUT > 1) cout << "mSsq= " << x << ' ';
+      } else if (Z3) {
+        setYukawaElement(YU, 3, 3, x);
+        if (PRINTOUT > 1) cout << "ht= " << x << ' ';
+      } else {
+        setXiS(x);
+        if (PRINTOUT > 1) cout << "xiS= " << x << ' ';
+      }
+    } else if (ftFunctionality == numFtPars + 4) {
+      if (Z3) {
+        ostringstream ii;
+        ii << "NmssmSoftsusy:setParInBoundaryCondition "
+           << "called with incorrect functionality="
+           << ftFunctionality << '\n';
+        throw ii.str();
+      }
+      setYukawaElement(YU, 3, 3, x);
+      if (PRINTOUT > 1) cout << "ht= " << x << ' ';
+    } else {
+      ostringstream ii;
+      ii << "NmssmSoftsusy:setParInBoundaryCondition "
+         << "called with incorrect functionality=" <<
+         ftFunctionality << '\n';
+      throw ii.str();
+    }
+  }
+
   /// DH: returns the Z boson mass as required for Barbieri-Giudice tuning
   /// measure
   double NmssmSoftsusy::calcMzsq(double x, void* parameters) {
@@ -3929,58 +3992,9 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     if (PRINTOUT > 1) cout << '#';
 
-    if (ftFunctionality <= ftPars.displayEnd()) {
-      ftPars(ftFunctionality) = x;
-      tuningPars->ftBoundaryCondition(*tempSoft1, ftPars);
-      if (PRINTOUT > 1) cout << 'p' << ftFunctionality << '=';
-    } else if (ftFunctionality == ftPars.displayEnd() + 1) {
-      if (SoftHiggsOut) {
-        tempSoft1->setMh1Squared(x);
-        if (PRINTOUT > 1) cout << "mH1Sq= ";
-      } else if (Z3) {
-        tempSoft1->setKappa(x);
-        if (PRINTOUT > 1) cout << "kappa= ";
-      } else {
-        tempSoft1->setSusyMu(x);
-        if (PRINTOUT > 1) cout << "mu= ";
-      }
-    } else if (ftFunctionality == ftPars.displayEnd() + 2) {
-      if (SoftHiggsOut) {
-        tempSoft1->setMh2Squared(x);
-        if (PRINTOUT > 1) cout << "mH2Sq= ";
-      } else if (Z3) {
-        tempSoft1->setMsSquared(x);
-        if (PRINTOUT > 1) cout << "mSsq= ";
-      } else {
-        tempSoft1->setM3Squared(x);
-        if (PRINTOUT > 1) cout << "m3sq= ";
-      }
-    } else if (ftFunctionality == ftPars.displayEnd() + 3) {
-      if (SoftHiggsOut) {
-        tempSoft1->setMsSquared(x);
-        if (PRINTOUT > 1) cout << "mSsq= ";
-      } else if (Z3) {
-        tempSoft1->setYukawaElement(YU, 3, 3, x);
-        if (PRINTOUT > 1) cout << "ht= ";
-      } else {
-        tempSoft1->setXiS(x);
-        if (PRINTOUT > 1) cout << "xiS= ";
-      }
-    } else if (ftFunctionality == ftPars.displayEnd() + 4) {
-      if (Z3) {
-        ostringstream ii;
-        ii << "NmssmSoftsusy:calcMzsq called with incorrect functionality="
-           << ftFunctionality << '\n';
-        throw ii.str();
-      }
-      tempSoft1->setYukawaElement(YU, 3, 3, x);
-      if (PRINTOUT > 1) cout << "ht= ";
-    } else {
-      ostringstream ii;
-      ii << "NmssmSoftsusy:calcMzsq called with incorrect functionality=" <<
-         ftFunctionality << '\n';
-      throw ii.str();
-    }
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
 
     /// Recalculate Higgs and singlet VEVs.
     /// @todo resolve scale ambiguity here - in MSSM we recalculate the
@@ -4041,58 +4055,9 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     if (PRINTOUT > 1) cout << '#';
 
-    if (ftFunctionality <= ftPars.displayEnd()) {
-      ftPars(ftFunctionality) = x;
-      tuningPars->ftBoundaryCondition(*tempSoft1, ftPars);
-      if (PRINTOUT > 1) cout << 'p' << ftFunctionality << '=';
-    } else if (ftFunctionality == ftPars.displayEnd() + 1) {
-      if (SoftHiggsOut) {
-        tempSoft1->setMh1Squared(x);
-        if (PRINTOUT > 1) cout << "mH1Sq= ";
-      } else if (Z3) {
-        tempSoft1->setKappa(x);
-        if (PRINTOUT > 1) cout << "kappa= ";
-      } else {
-        tempSoft1->setSusyMu(x);
-        if (PRINTOUT > 1) cout << "mu= ";
-      }
-    } else if (ftFunctionality == ftPars.displayEnd() + 2) {
-      if (SoftHiggsOut) {
-        tempSoft1->setMh2Squared(x);
-        if (PRINTOUT > 1) cout << "mH2Sq= ";
-      } else if (Z3) {
-        tempSoft1->setMsSquared(x);
-        if (PRINTOUT > 1) cout << "mSsq= ";
-      } else {
-        tempSoft1->setM3Squared(x);
-        if (PRINTOUT > 1) cout << "m3sq= ";
-      }
-    } else if (ftFunctionality == ftPars.displayEnd() + 3) {
-      if (SoftHiggsOut) {
-        tempSoft1->setMsSquared(x);
-        if (PRINTOUT > 1) cout << "mSsq= ";
-      } else if (Z3) {
-        tempSoft1->setYukawaElement(YU, 3, 3, x);
-        if (PRINTOUT > 1) cout << "ht= ";
-      } else {
-        tempSoft1->setXiS(x);
-        if (PRINTOUT > 1) cout << "xiS= ";
-      }
-    } else if (ftFunctionality == ftPars.displayEnd() + 4) {
-      if (Z3) {
-        ostringstream ii;
-        ii << "NmssmSoftsusy:calcMzsq called with incorrect functionality="
-           << ftFunctionality << '\n';
-        throw ii.str();
-      }
-      tempSoft1->setYukawaElement(YU, 3, 3, x);
-      if (PRINTOUT > 1) cout << "ht= ";
-    } else {
-      ostringstream ii;
-      ii << "NmssmSoftsusy:calcMzsq called with incorrect functionality=" <<
-         ftFunctionality << '\n';
-      throw ii.str();
-    }
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
 
     /// Recalculate Higgs and singlet VEVs.
     /// @todo resolve scale ambiguity here - in MSSM we recalculate the

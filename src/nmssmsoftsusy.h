@@ -66,6 +66,11 @@ namespace softsusy {
           {}
     };
 
+    /// DH: used to set parameters in tuning calculation
+    void setParInBoundaryCondition(double x, int ftFunctionality,
+                                   void (*ftBC)(NmssmSoftsusy &,
+                                                const DoubleVector &),
+                                   DoubleVector & ftPars);
     /// DH: computes the predicted Z mass for the fine tuning calculation
     static double calcMzsq(double x, void* parameters);
     /// DH: computes the predicted value of tan(beta)
