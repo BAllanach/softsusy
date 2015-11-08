@@ -4256,16 +4256,29 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
      }
   }
 
-  double NmssmSoftsusy::fineTuningJacobian(double MX, bool doTop) {
+  double NmssmSoftsusy::fineTuningJacobian(double mx, bool doTop) {
     /// Stores running parameters in a vector
     DoubleVector savedObject(display());
     double savedMu = displayMu();
     sPhysical savedPhys(displayPhys());
 
-    DoubleMatrix jacMatrix(3,3);
+    runto(mx);
 
-    if (doTop) {
-      jacMatrix.resize(4,4);
+    const int numPars = doTop ? 3 : 4;
+
+    DoubleMatrix jacMatrix(numPars,numPars);
+
+    FineTuningPars tuningPars;
+
+    tuningPars.model = this;
+    tuningPars.ftBoundaryCondition = jacobianHighScaleBc;
+
+    for (int i = 1; i <= numPars; ++i) {
+      DoubleVector currentRow(numPars);
+
+       for (int j = 1; j <= numPars; ++j) {
+         jacMatrix(i, j) = currentRow(j);
+       }
     }
 
     double jac = jacMatrix.determinant();
