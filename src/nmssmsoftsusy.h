@@ -91,13 +91,32 @@ namespace softsusy {
     double calcMzsqDerivative(int numPar, double x, double h,
                               const DoubleVector & bcPars,
                               FineTuningPars & tuningPars);
-    /// DH: computes the derivative of tan beta with respect to the single
+    /// DH: computes the derivative of tan(beta) with respect to the single
     /// parameter specified by numPar.
     double calcTanbDerivative(int numPar, double x, double h,
                               const DoubleVector & bcPars,
                               FineTuningPars & tuningPars);
+    /// DH: computes the derivative of s with respect to the single
+    /// parameter specified by numPar.
+    double calcSvevDerivative(int numPar, double x, double h,
+                              const DoubleVector & bcPars,
+                              FineTuningPars & tuningPars);
+    /// DH: computes the derivative of Lambda at the SUSY scale with respect
+    /// to the single parameter specified by numPar.
+    double calcLambdaDerivative(int numPar, double x, double h,
+                                const DoubleVector & bcPars,
+                                FineTuningPars & tuningPars);
+    /// DH: computes the derivative of the (running) top mass with respect
+    /// to the single parameter specified by numPar.
+    double calcMtsqDerivative(int numPar, double x, double h,
+                              const DoubleVector & bcPars,
+                              FineTuningPars & tuningPars);
     /// DH: boundary condition used in Jacobian calculation
     static void jacobianHighScaleBc(NmssmSoftsusy &, const DoubleVector &);
+    /// DH: calculates a single row in the Jacobian matrix
+    void calculateJacobianRow(int numPar, const DoubleVector & bcPars,
+                              FineTuningPars & tuningPars,
+                              DoubleVector & row);
 
   public:
     //  void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
@@ -589,8 +608,19 @@ namespace softsusy {
 
     /// DH: calculates the fine-tuning Jacobian, as described in
     /// arXiv:1312.4150 [hep-ph].  This version of the function computes
-    /// the inverse of the Jacobian determinant.
-    double fineTuningJacobian(double MX, bool doTop = false);
+    /// the inverse of the Jacobian matrix, and returns the inverse of the
+    /// computed matrix (i.e. the Jacobian determinant).
+    double fineTuningJacobian(void (*boundaryCondition)(NmssmSoftsusy &,
+                                                        const DoubleVector &),
+                              const DoubleVector & bcPars, double MX,
+                              bool doTop = false);
+
+    /// DH: calculates the tuning measure \Delta_J defined in
+    /// arXiv:1312.4150 [hep-ph].
+    double calcDeltaJ(void (*boundaryCondition)(NmssmSoftsusy &,
+                                                const DoubleVector &),
+                      const DoubleVector & bcPars, double MX,
+                      bool doTop = false);
 
     /// Main iteration routine: 
     /// Boundary condition is the theoretical condition on parameters at the high

@@ -4285,15 +4285,31 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
   double NmssmSoftsusy::calcMzsqDerivative(int numPar, double x, double h,
                                            const DoubleVector & bcPars,
                                            FineTuningPars & tuningPars) {
-
     return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcMzsq);
   }
 
   double NmssmSoftsusy::calcTanbDerivative(int numPar, double x, double h,
                                            const DoubleVector & bcPars,
                                            FineTuningPars & tuningPars) {
-
     return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcTanb);
+  }
+
+  double NmssmSoftsusy::calcSvevDerivative(int numPar, double x, double h,
+                                             const DoubleVector & bcPars,
+                                             FineTuningPars & tuningPars) {
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcSvev);
+  }
+
+  double NmssmSoftsusy::calcLambdaDerivative(int numPar, double x, double h,
+                                             const DoubleVector & bcPars,
+                                             FineTuningPars & tuningPars) {
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcLowScaleLambda);
+  }
+
+  double NmssmSoftsusy::calcMtsqDerivative(int numPar, double x, double h,
+                                             const DoubleVector & bcPars,
+                                             FineTuningPars & tuningPars) {
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcMtsq);
   }
 
   /// DH: computes the Barbieri-Giudice fine tuning sensitivities for the
@@ -4378,6 +4394,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       }
       tempFineTuning(i) = calcMzsqDerivative(i, parValue, stepSize,
                                              bcPars, tuningPars);
+
       /// flag problem FT calculation with NaN
       if (tempFineTuning(i) < -1.0e66) {
         tempFineTuning(i) = asin(2.);
@@ -4397,26 +4414,53 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
   /// DH: boundary condition used in Jacobian calculation
   void NmssmSoftsusy::jacobianHighScaleBc(NmssmSoftsusy & model,
                                           const DoubleVector & bcPars) {
-     if (SoftHiggsOut) {
-       model.setMh1Squared(bcPars(1));
-       model.setMh2Squared(bcPars(2));
-       model.setMsSquared(bcPars(3));
-     } else if (Z3) {
-       model.setLambda(bcPars(1));
-       model.setKappa(bcPars(2));
-       model.setMsSquared(bcPars(3));
-     } else {
-       model.setSusyMu(bcPars(1));
-       model.setM3Squared(bcPars(2));
-       model.setXiS(bcPars(3));
-     }
+    if (SoftHiggsOut) {
+      model.setMh1Squared(bcPars(1));
+      model.setMh2Squared(bcPars(2));
+      model.setMsSquared(bcPars(3));
+    } else if (Z3) {
+      model.setLambda(bcPars(1));
+      model.setKappa(bcPars(2));
+      model.setMsSquared(bcPars(3));
+    } else {
+      model.setSusyMu(bcPars(1));
+      model.setM3Squared(bcPars(2));
+      model.setXiS(bcPars(3));
+    }
 
-     if (bcPars.displayEnd() == 4) {
-       model.setYukawaElement(YU, 3, 3, bcPars(4));
-     }
+    // @todo this sets only the Yukawa element, whereas it might
+    // also be desirable to update the trilinear as well
+    if (bcPars.displayEnd() == 4) {
+      model.setYukawaElement(YU, 3, 3, bcPars(4));
+    }
   }
 
-  double NmssmSoftsusy::fineTuningJacobian(double mx, bool doTop) {
+  void NmssmSoftsusy::calculateJacobianRow(int numPar, const DoubleVector & bcPars,
+                                           FineTuningPars & tuningPars,
+                                           DoubleVector & row) {
+
+    double x = bcPars.display(numPar);
+    double h = 0.01 * x;
+    if ((Z3 && numPar < 3) || numPar > 3) {
+       h = 0.0005 * x;
+    }
+
+    row(1) = calcMzsqDerivative(numPar, x, h, bcPars, tuningPars);
+    row(2) = calcTanbDerivative(numPar, x, h, bcPars, tuningPars);
+    if (Z3) {
+      row(3) = calcLambdaDerivative(numPar, x, h, bcPars, tuningPars);
+    } else {
+      row(3) = calcSvevDerivative(numPar, x, h, bcPars, tuningPars);
+    }
+    if (row.displayEnd() > 3) {
+      row(4) = calcMtsqDerivative(numPar, x, h, bcPars, tuningPars);
+    }
+  }
+
+  double NmssmSoftsusy::fineTuningJacobian
+(void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &),
+ const DoubleVector & bcPars, double mx, bool doTop) {
+
     /// Stores running parameters in a vector
     DoubleVector savedObject(display());
     double savedMu = displayMu();
@@ -4424,7 +4468,30 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     runto(mx);
 
-    const int numPars = doTop ? 3 : 4;
+    /// Apply boundary condition
+    boundaryCondition(*this, bcPars);
+
+    const int numPars = doTop ? 4 : 3;
+
+    /// Extract values of high-scale parameters to vary
+    DoubleVector jacPars(numPars);
+
+    if (SoftHiggsOut) {
+      jacPars(1) = displayMh1Squared();
+      jacPars(2) = displayMh2Squared();
+      jacPars(3) = displayMsSquared();
+    } else if (Z3) {
+      jacPars(1) = displayLambda();
+      jacPars(2) = displayKappa();
+      jacPars(3) = displayMsSquared();
+    } else {
+      jacPars(1) = displaySusyMu();
+      jacPars(2) = displayM3Squared();
+      jacPars(3) = displayXiS();
+    }
+    if (numPars == 4) {
+      jacPars(4) = displayYukawaElement(YU, 3, 3);
+    }
 
     DoubleMatrix jacMatrix(numPars,numPars);
 
@@ -4436,9 +4503,11 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     for (int i = 1; i <= numPars; ++i) {
       DoubleVector currentRow(numPars);
 
-       for (int j = 1; j <= numPars; ++j) {
-         jacMatrix(i, j) = currentRow(j);
-       }
+      calculateJacobianRow(i, jacPars, tuningPars, currentRow);
+
+      for (int j = 1; j <= numPars; ++j) {
+        jacMatrix(i, j) = currentRow(j);
+      }
     }
 
     double jac = jacMatrix.determinant();
@@ -4457,7 +4526,57 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     return jac;
   }
-  
+
+  double NmssmSoftsusy::calcDeltaJ(void (*boundaryCondition)(NmssmSoftsusy &,
+                                                             const DoubleVector &),
+                                   const DoubleVector & bcPars, double mx,
+                                   bool doTop) {
+    /// Stores running parameters in a vector
+    DoubleVector savedObject(display());
+    double savedMu = displayMu();
+    sPhysical savedPhys(displayPhys());
+
+    runto(calcMs());
+    calcDrBarPars();
+
+    const double mz2 = sqr(displayMzRun())
+       - piZZT(displayMzRun(), displayMu());
+    const double tb = displayTanb();
+    double denominator = mz2 * tb;
+    if (Z3) {
+      denominator *= displayLambda();
+    } else {
+      denominator *= displaySvev();
+    }
+    if (doTop) {
+      denominator *= displayDrBarPars().mt;
+    }
+
+    runto(mx);
+
+    double numerator;
+    if (SoftHiggsOut) {
+      numerator = displayMh1Squared() * displayMh2Squared() * displayMsSquared();
+    } else if (Z3) {
+      numerator = displayLambda() * displayKappa() * displayMsSquared();
+    } else {
+      numerator = displaySusyMu() * displayM3Squared() * displayXiS();
+    }
+    if (doTop) {
+       numerator *= displayYukawaElement(YU, 3, 3);
+    }
+
+    const double determinant
+       = fineTuningJacobian(boundaryCondition, bcPars, mx, doTop);
+
+    /// Restore initial parameters at correct scale
+    setMu(savedMu);
+    set(savedObject);
+    setPhys(savedPhys);
+
+    return fabs(numerator / (denominator * determinant));
+  }
+
   /// Obtains solution of one-loop effective potential minimisation via iteration
   /// technique
   /// err is 1 if no iteration reached
