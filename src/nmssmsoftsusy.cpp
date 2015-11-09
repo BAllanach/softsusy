@@ -4097,8 +4097,9 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
   /// DH: computes the Barbieri-Giudice fine tuning for the given parameter
   /// by varying the parameter at the GUT scale
-  double NmssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars,
-                               FineTuningPars & tuningPars) {
+  double NmssmSoftsusy::calcMzsqDerivative(int numPar, double x, double h,
+                                           const DoubleVector & bcPars,
+                                           FineTuningPars & tuningPars) {
 
     /// Stores running parameters in a vector
     DoubleVector storeObject(display());
@@ -4107,63 +4108,15 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     /// Save existing error flags so that they can be reset
     sProblem savedProblems(displayProblem());
 
-    double h = 0.01;
-    double x = 0.;
-
-    /// Sets starting value to calculate derivative from
-    const int numBcPars = bcPars.displayEnd();
-    if (numPar > 0 && numPar <= numBcPars) {
-      x = bcPars.display(numPar); h = 0.01 * x;
-    } else if (numPar == numBcPars + 1) {
-      if (SoftHiggsOut) {
-        x = displayMh1Squared(); h = 0.01 * x;
-      } else if (Z3) {
-        x = displayKappa(); h = 0.0005 * x;
-      } else {
-        x = displaySusyMu(); h = 0.01 * x;
-      }
-    } else if (numPar == numBcPars + 2) {
-      if (SoftHiggsOut) {
-        x = displayMh2Squared(); h = 0.01 * x;
-      } else if (Z3) {
-        x = displayMsSquared(); h = 0.01 * x;
-      } else {
-        x = displayM3Squared(); h = 0.01 * x;
-      }
-    } else if (numPar == numBcPars + 3) {
-      if (SoftHiggsOut) {
-        x = displayMsSquared(); h = 0.01 * x;
-      } else if (Z3) {
-         x = displayYukawaElement(YU, 3, 3); h = 0.0005 * x;
-      } else {
-        x = displayXiS(); h = 0.01 * x;
-      }
-    } else if (numPar == numBcPars + 4) {
-      if (Z3) {
-        ostringstream ii;
-        ii << "it1par called with functionality " << numPar <<
-           " out of range for Z3-NMSSM.\n";
-        throw ii.str();
-      }
-      x = displayYukawaElement(YU, 3, 3); h = 0.0005 * x;
-    } else {
-      ostringstream ii;
-      ii << "it1par called with functionality " << numPar <<
-         " out of range.\n";
-      throw ii.str();
-    }
-
     tuningPars.ftFunctionality = numPar;
-    tuningPars.ftPars.setEnd(numBcPars);
+    tuningPars.ftPars.setEnd(bcPars.displayEnd());
     tuningPars.ftPars = bcPars;
     tuningPars.model->setProblem(sProblem());
 
-    double ftParameter = 0.;
     double err = 0.;
     double derivative = 0.;
     if (fabs(x) > 1.0e-10) {
       derivative = calcDerivative(calcMzsq, x, h, &err, &tuningPars);
-      ftParameter = x * derivative / tuningPars.mzSqr;
     }
 
     if (PRINTOUT > 1)
@@ -4171,7 +4124,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     /// Check for errors
     const bool has_error
-       = (ftParameter > TOLERANCE && fabs(err / derivative) > 1.0)
+       = (fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0)
        || (tuningPars.model->displayProblem().test());
 
     /// Restore initial parameters at correct scale
@@ -4180,7 +4133,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     setPhys(savePhys);
     setProblem(savedProblems);
 
-    return has_error ? -numberOfTheBeast : fabs(ftParameter);
+    return has_error ? -numberOfTheBeast : derivative;
   }
 
   /// DH: computes the Barbieri-Giudice fine tuning sensitivities for the
@@ -4207,10 +4160,10 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     FineTuningPars tuningPars;
 
     tuningPars.model = this;
-    tuningPars.mzSqr = mz2;
     tuningPars.ftBoundaryCondition = boundaryCondition;
 
-    int numPars = bcPars.displayEnd();
+    const int numBcPars = bcPars.displayEnd();
+    int numPars = numBcPars;
     if (Z3) {
        numPars += 2;
     } else {
@@ -4221,9 +4174,56 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     DoubleVector tempFineTuning(numPars);
 
     for (int i = 1; i <= numPars; ++i) {
-       tempFineTuning(i) = it1par(i, bcPars, tuningPars);
-       /// flag problem FT calculation with NaN
-       if (tempFineTuning(i) < -1.0e66) tempFineTuning(i) = asin(2.);
+      double stepSize = 0.01;
+      double parValue = 0.;
+      if (i == numBcPars + 1) {
+        if (SoftHiggsOut) {
+          parValue = displayMh1Squared();
+          stepSize = 0.01 * parValue;
+        } else if (Z3) {
+          parValue = displayKappa();
+          stepSize = 0.0005 * parValue;
+        } else {
+          parValue = displaySusyMu();
+          stepSize = 0.01 * parValue;
+        }
+      } else if (i == numBcPars + 2) {
+        if (SoftHiggsOut) {
+          parValue = displayMh2Squared();
+          stepSize = 0.01 * parValue;
+        } else if (Z3) {
+          parValue = displayMsSquared();
+          stepSize = 0.01 * parValue;
+        } else {
+          parValue = displayM3Squared();
+          stepSize = 0.01 * parValue;
+        }
+      } else if (i == numBcPars + 3) {
+        if (SoftHiggsOut) {
+          parValue = displayMsSquared();
+          stepSize = 0.01 * parValue;
+        } else if (Z3) {
+          parValue = displayYukawaElement(YU, 3, 3);
+          stepSize = 0.0005 * parValue;
+        } else {
+          parValue = displayXiS();
+          stepSize = 0.01 * parValue;
+        }
+      } else if (i == numBcPars + 4) {
+        parValue = displayYukawaElement(YU, 3, 3);
+        stepSize = 0.0005 * parValue;
+      } else {
+        parValue = bcPars.display(i);
+        stepSize = 0.01 * parValue;
+      }
+      tempFineTuning(i) = calcMzsqDerivative(i, parValue, stepSize,
+                                             bcPars, tuningPars);
+      /// flag problem FT calculation with NaN
+      if (tempFineTuning(i) < -1.0e66) {
+        tempFineTuning(i) = asin(2.);
+      } else {
+        tempFineTuning(i) = fabs(parValue * tempFineTuning(i) / mz2);
+      }
     }
 
     /// Restore initial parameters at correct scale

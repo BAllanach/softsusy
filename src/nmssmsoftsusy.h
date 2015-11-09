@@ -55,13 +55,12 @@ namespace softsusy {
     /// DH: contains parameters required for fine tuning calculation
     struct FineTuningPars {
       NmssmSoftsusy* model;
-      double mzSqr;
       int ftFunctionality;
       DoubleVector ftPars;
       void (*ftBoundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
 
       FineTuningPars()
-        : model(0), mzSqr(0.), ftFunctionality(0),
+        : model(0), ftFunctionality(0),
           ftPars(3), ftBoundaryCondition(0)
           {}
     };
@@ -76,10 +75,11 @@ namespace softsusy {
     /// DH: computes the predicted value of tan(beta)
     static double calcTanb(double x, void* parameters);
 
-    /// DH: computes the Barbieri-Giudice fine tuning sensitivity for
-    /// the single parameter specified by numPar.
-    double it1par(int numPar, const DoubleVector & bcPars,
-                  FineTuningPars & tuningPars);
+    /// DH: computes the derivative of MZ with respect to the single
+    /// parameter specified by numPar.
+    double calcMzsqDerivative(int numPar, double x, double h,
+                              const DoubleVector & bcPars,
+                              FineTuningPars & tuningPars);
     /// DH: boundary condition used in Jacobian calculation
     static void jacobianHighScaleBc(NmssmSoftsusy &, const DoubleVector &);
 
