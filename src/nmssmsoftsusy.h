@@ -86,6 +86,11 @@ namespace softsusy {
     double calcMzsqDerivative(int numPar, double x, double h,
                               const DoubleVector & bcPars,
                               FineTuningPars & tuningPars);
+    /// DH: computes the derivative of tan beta with respect to the single
+    /// parameter specified by numPar.
+    double calcTanbDerivative(int numPar, double x, double h,
+                              const DoubleVector & bcPars,
+                              FineTuningPars & tuningPars);
     /// DH: boundary condition used in Jacobian calculation
     static void jacobianHighScaleBc(NmssmSoftsusy &, const DoubleVector &);
 

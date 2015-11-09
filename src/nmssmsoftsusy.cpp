@@ -4134,13 +4134,18 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return has_error ? -numberOfTheBeast : derivative;
   }
 
-  /// DH: computes the Barbieri-Giudice fine tuning for the given parameter
-  /// by varying the parameter at the GUT scale
   double NmssmSoftsusy::calcMzsqDerivative(int numPar, double x, double h,
                                            const DoubleVector & bcPars,
                                            FineTuningPars & tuningPars) {
 
     return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcMzsq);
+  }
+
+  double NmssmSoftsusy::calcTanbDerivative(int numPar, double x, double h,
+                                           const DoubleVector & bcPars,
+                                           FineTuningPars & tuningPars) {
+
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcTanb);
   }
 
   /// DH: computes the Barbieri-Giudice fine tuning sensitivities for the
