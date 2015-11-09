@@ -4510,6 +4510,10 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       }
     }
 
+    if (inverseJacobian.displayRows() != jacMatrix.displayRows()) {
+      inverseJacobian.resize(jacMatrix.displayRows(), jacMatrix.displayCols());
+    }
+    inverseJacobian = jacMatrix;
     double jac = jacMatrix.determinant();
 
     /// Check for non-zero determinant

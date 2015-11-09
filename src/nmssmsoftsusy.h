@@ -46,6 +46,9 @@ namespace softsusy {
     /// LCT: Returns logarithm factor from one-loop effective potential
     double looplog(double mass) const;
 
+    /// DH: matrices used in Jacobian fine tuning calculation
+    DoubleMatrix inverseJacobian;
+
     /// DH: returns the values of the EWSB conditions for the given VEV
     /// values.  The additional parameters must contain a pointer to
     /// the model.
@@ -622,6 +625,11 @@ namespace softsusy {
                       const DoubleVector & bcPars, double MX,
                       bool doTop = false);
 
+    /// DH: returns the matrix computed by fineTuningJacobian, e.g.
+    /// J = d(M_Z^2, \tan\beta, \lambda) / d(\lambda_0, \kappa_0, m_S0^2)
+    /// for the Z3-conserving NMSSM
+    DoubleMatrix displayInverseJacobian() const;
+
     /// Main iteration routine: 
     /// Boundary condition is the theoretical condition on parameters at the high
     /// energy scale mx: the parameters themselves are contained within the
@@ -707,21 +715,22 @@ namespace softsusy {
   
   inline NmssmSoftsusy::NmssmSoftsusy()
     : NmssmSusyPars(), SoftParsNmssm(), MssmSoftsusy(), tSOVSMs(0.0), 
-      tSOVSMs1loop(0.0)  {}
+      tSOVSMs1loop(0.0), inverseJacobian(3,3)  {}
   
   inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSoftsusy & s)
     : NmssmSusyPars(s.displayNmssmSusyPars()), 
       SoftParsNmssm(s.displaySoftParsNmssm()), 
       MssmSoftsusy(s.displayMssmSoft()),
       tSOVSMs(s.tSOVSMs), 
-      tSOVSMs1loop(s.tSOVSMs1loop)  {
+      tSOVSMs1loop(s.tSOVSMs1loop),
+      inverseJacobian(3,3) {
     setPars(121);   
   }
   
   inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSusy &s)
     : NmssmSusyPars(s.displayNmssmSusy()), SoftParsNmssm(), 
       MssmSoftsusy(s.MssmSusy::displayMssmSusy()), tSOVSMs(0.0), 
-      tSOVSMs1loop(0.0)  {
+      tSOVSMs1loop(0.0), inverseJacobian(3,3)  {
     setPars(121);
   }
   
@@ -729,7 +738,8 @@ namespace softsusy {
   (const NmssmSusyPars & ss, const SoftParsNmssm & s, 
    const MssmSoftsusy & sp): NmssmSusyPars(ss), 
 					SoftParsNmssm(s), MssmSoftsusy(sp),
-					tSOVSMs(0.0), tSOVSMs1loop(0.0)  {
+                                        tSOVSMs(0.0), tSOVSMs1loop(0.0),
+                                        inverseJacobian(3,3)  {
     setPars(121);
   }
   
@@ -737,6 +747,10 @@ namespace softsusy {
   
   inline double NmssmSoftsusy::displayTadpoleSMs1loop() const { 
     return tSOVSMs1loop;  
+  }
+
+  inline DoubleMatrix NmssmSoftsusy::displayInverseJacobian() const {
+    return inverseJacobian;
   }
   
 } /// namespace softsusy
