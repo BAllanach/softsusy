@@ -4095,6 +4095,154 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return referenceTanb;
   }
 
+  double NmssmSoftsusy::calcSvev(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
+
+    /// Recalculate Higgs and singlet VEVs.
+    /// @todo resolve scale ambiguity here - in MSSM we recalculate the
+    /// SUSY scale and run to the new scale
+    const double susyScale = tempSoft1->calcMs();
+    tempSoft1->runto(susyScale);
+
+    DoubleVector vevs(3);
+    vevs(1) = tempSoft1->displayHvev();
+    vevs(2) = tempSoft1->displayTanb();
+    vevs(3) = tempSoft1->displaySvev();
+
+    int error = 0;
+    tempSoft1->iterateVevs(vevs, error);
+
+    if (error != 0) {
+      if (PRINTOUT > 0) {
+        cout << "Warning: could not solve for VEVs\n";
+      }
+    }
+
+    tempSoft1->setHvev(vevs(1));
+    tempSoft1->setTanb(vevs(2));
+    tempSoft1->setSvev(vevs(3));
+
+    const double referenceSvev = tempSoft1->displaySvev();
+
+    if (PRINTOUT > 1) cout << x << " Svev=" << referenceSvev << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceSvev;
+  }
+
+  double NmssmSoftsusy::calcLowScaleLambda(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
+
+    const double susyScale = tempSoft1->calcMs();
+    tempSoft1->runto(susyScale);
+
+    const double referenceLambda = tempSoft1->displayLambda();
+
+    if (PRINTOUT > 1) cout << x << " Lambda=" << referenceLambda << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceLambda;
+  }
+
+  double NmssmSoftsusy::calcMtsq(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
+
+    /// Recalculate Higgs and singlet VEVs.
+    /// @todo resolve scale ambiguity here - in MSSM we recalculate the
+    /// SUSY scale and run to the new scale
+    const double susyScale = tempSoft1->calcMs();
+    tempSoft1->runto(susyScale);
+
+    DoubleVector vevs(3);
+    vevs(1) = tempSoft1->displayHvev();
+    vevs(2) = tempSoft1->displayTanb();
+    vevs(3) = tempSoft1->displaySvev();
+
+    int error = 0;
+    tempSoft1->iterateVevs(vevs, error);
+
+    if (error != 0) {
+      if (PRINTOUT > 0) {
+        cout << "Warning: could not solve for VEVs\n";
+      }
+    }
+
+    tempSoft1->setHvev(vevs(1));
+    tempSoft1->setTanb(vevs(2));
+    tempSoft1->setSvev(vevs(3));
+
+    tempSoft1->calcDrBarPars();
+
+    /// @todo currently this is the running mass, should the pole mass
+    /// be used instead?
+    const double referenceMtsq = tempSoft1->displayDrBarPars().mt;
+
+    if (PRINTOUT > 1) cout << x << " mt=" << referenceMtsq << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceMtsq;
+  }
+
   double NmssmSoftsusy::calcTuningDerivative(int numPar, double x, double h,
                                              const DoubleVector & bcPars,
                                              FineTuningPars & tuningPars,

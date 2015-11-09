@@ -74,7 +74,12 @@ namespace softsusy {
     static double calcMzsq(double x, void* parameters);
     /// DH: computes the predicted value of tan(beta)
     static double calcTanb(double x, void* parameters);
-
+    /// DH: computes the predicted value of s
+    static double calcSvev(double x, void* parameters);
+    /// DH: computes the predicted value of Lambda at the SUSY scale
+    static double calcLowScaleLambda(double x, void* parameters);
+    /// DH: computes the predicted value of the running top mass
+    static double calcMtsq(double x, void* parameters);
     /// DH: computes the derivative of the parameter calculated by
     /// paramFunc with respect to the parameter specified by numPar
     double calcTuningDerivative(int numPar, double x, double h,
