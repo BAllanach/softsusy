@@ -75,6 +75,12 @@ namespace softsusy {
     /// DH: computes the predicted value of tan(beta)
     static double calcTanb(double x, void* parameters);
 
+    /// DH: computes the derivative of the parameter calculated by
+    /// paramFunc with respect to the parameter specified by numPar
+    double calcTuningDerivative(int numPar, double x, double h,
+                                const DoubleVector & bcPars,
+                                FineTuningPars & tuningPars,
+                                double (*paramFunc)(double, void*));
     /// DH: computes the derivative of MZ with respect to the single
     /// parameter specified by numPar.
     double calcMzsqDerivative(int numPar, double x, double h,

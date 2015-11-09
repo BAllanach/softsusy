@@ -4095,12 +4095,10 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return referenceTanb;
   }
 
-  /// DH: computes the Barbieri-Giudice fine tuning for the given parameter
-  /// by varying the parameter at the GUT scale
-  double NmssmSoftsusy::calcMzsqDerivative(int numPar, double x, double h,
-                                           const DoubleVector & bcPars,
-                                           FineTuningPars & tuningPars) {
-
+  double NmssmSoftsusy::calcTuningDerivative(int numPar, double x, double h,
+                                             const DoubleVector & bcPars,
+                                             FineTuningPars & tuningPars,
+                                             double (*paramFunc)(double, void*)) {
     /// Stores running parameters in a vector
     DoubleVector storeObject(display());
     double initialMu = displayMu();
@@ -4116,7 +4114,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     double err = 0.;
     double derivative = 0.;
     if (fabs(x) > 1.0e-10) {
-      derivative = calcDerivative(calcMzsq, x, h, &err, &tuningPars);
+      derivative = calcDerivative(paramFunc, x, h, &err, &tuningPars);
     }
 
     if (PRINTOUT > 1)
@@ -4134,6 +4132,15 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     setProblem(savedProblems);
 
     return has_error ? -numberOfTheBeast : derivative;
+  }
+
+  /// DH: computes the Barbieri-Giudice fine tuning for the given parameter
+  /// by varying the parameter at the GUT scale
+  double NmssmSoftsusy::calcMzsqDerivative(int numPar, double x, double h,
+                                           const DoubleVector & bcPars,
+                                           FineTuningPars & tuningPars) {
+
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcMzsq);
   }
 
   /// DH: computes the Barbieri-Giudice fine tuning sensitivities for the
