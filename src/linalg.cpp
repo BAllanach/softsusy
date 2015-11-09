@@ -1692,6 +1692,21 @@ double DoubleMatrix::determinant() const {
        - elmt(1,2) * (elmt(2,1) * elmt(3,3) - elmt(2,3) * elmt(3,1))
        + elmt(1,3) * (elmt(2,1) * elmt(3,2) - elmt(2,2) * elmt(3,1));
     return ans;
+  } else if (rows == 4 && cols == 4) {
+    const double minor11 = elmt(2,2) * (elmt(3,3) * elmt(4,4) - elmt(3,4) * elmt(4,3))
+       - elmt(2,3) * (elmt(3,2) * elmt(4,4) - elmt(3,4) * elmt(4,2))
+       + elmt(2,4) * (elmt(3,2) * elmt(4,3) - elmt(3,3) * elmt(4,2));
+    const double minor12 = elmt(2,1) * (elmt(3,3) * elmt(4,4) - elmt(3,4) * elmt(4,3))
+       - elmt(2,3) * (elmt(3,1) * elmt(4,4) - elmt(3,4) * elmt(4,1))
+       + elmt(2,4) * (elmt(3,1) * elmt(4,3) - elmt(3,3) * elmt(4,1));
+    const double minor13 = elmt(2,1) * (elmt(3,2) * elmt(4,4) - elmt(3,4) * elmt(4,2))
+       - elmt(2,2) * (elmt(3,1) * elmt(4,4) - elmt(3,4) * elmt(4,1))
+       + elmt(2,4) * (elmt(3,1) * elmt(4,2) - elmt(3,2) * elmt(4,1));
+    const double minor14 = elmt(2,1) * (elmt(3,2) * elmt(4,3) - elmt(3,3) * elmt(4,2))
+       - elmt(2,2) * (elmt(3,1) * elmt(4,3) - elmt(3,3) * elmt(4,1))
+       + elmt(2,3) * (elmt(3,1) * elmt(4,2) - elmt(3,2) * elmt(4,1));
+    return elmt(1,1) * minor11 - elmt(1,2) * minor12 + elmt(1,3) * minor13
+       - elmt(1,4) * minor14;
   }
   double ans = 1.;
   const DoubleMatrix lu(this->ludcmp(ans));
