@@ -63,11 +63,12 @@ namespace softsusy {
       NmssmSoftsusy* model;
       int ftFunctionality;
       DoubleVector ftPars;
+      double mx;
       void (*ftBoundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
 
       FineTuningPars()
         : model(0), ftFunctionality(0),
-          ftPars(3), ftBoundaryCondition(0)
+          ftPars(3), mx(0.), ftBoundaryCondition(0)
           {}
     };
 
@@ -76,6 +77,12 @@ namespace softsusy {
                                    void (*ftBC)(NmssmSoftsusy &,
                                                 const DoubleVector &),
                                    DoubleVector & ftPars);
+
+    /// DH: sets the Higgs VEV consistent with the given squared Z mass
+    void setMzsq(double mz2);
+    /// DH: sets the top Yukawa consistent with the given squared top mass
+    void setMtsq(double mt2);
+
     /// DH: computes the predicted Z mass at the current scale
     static double calcMzsq(double x, void* parameters);
     /// DH: computes the predicted value of tan(beta) at the current scale
@@ -94,6 +101,30 @@ namespace softsusy {
     /// DH: computes the predicted value of the running top mass
     /// at the SUSY scale
     static double calcLowScaleMtsq(double x, void* parameters);
+    /// DH: calculates the predicted value of mH1Sq for the given
+    /// set of output parameters
+    static double calcMh1Squared(double x, void* parameters);
+    /// DH: calculates the predicted value of mH2Sq for the given
+    /// set of output parameters
+    static double calcMh2Squared(double x, void* parameters);
+    /// DH: calculates the predicted value of mSsq for the given
+    /// set of output parameters
+    static double calcMsSquared(double x, void* parameters);
+    /// DH: calculates the predicted value of Kappa for the given
+    /// set of output parameters
+    static double calcKappa(double x, void* parameters);
+    /// DH: calculates the predicted value of Mu for the given
+    /// set of output parameters
+    static double calcSusyMu(double x, void* parameters);
+    /// DH: calculates the predicted value of m3sq for the given
+    /// set of output parameters
+    static double calcM3Squared(double x, void* parameters);
+    /// DH: calculates the predicted value of XiS for the given
+    /// set of output parameters
+    static double calcXiS(double x, void* parameters);
+    /// DH: calculates the predicted value of the top Yukawa for the given
+    /// set of output parameters
+    static double calcYt(double x, void* parameters);
     /// DH: computes the predicted value of mH1Sq at the SUSY scale
     static double calcLowScaleMh1Squared(double x, void* parameters);
     /// DH: computes the predicted value of mH2Sq at the SUSY scale
@@ -112,6 +143,24 @@ namespace softsusy {
     static double calcLowScaleXiS(double x, void* parameters);
     /// DH: computes the predicted value of the top Yukawa at the SUSY scale
     static double calcLowScaleYt(double x, void* parameters);
+    /// DH: computes the predicted value of mH1Sq at the high-scale
+    static double calcHighScaleMh1Squared(double x, void* parameters);
+    /// DH: computes the predicted value of mH2Sq at the high-scale
+    static double calcHighScaleMh2Squared(double x, void* parameters);
+    /// DH: computes the predicted value of mSsq at the high-scale
+    static double calcHighScaleMsSquared(double x, void* parameters);
+    /// DH: computes the predicted value of Lambda at the high-scale
+    static double calcHighScaleLambda(double x, void* parameters);
+    /// DH: computes the predicted value of Kappa at the high-scale
+    static double calcHighScaleKappa(double x, void* parameters);
+    /// DH: computes the predicted value of Mu at the high-scale
+    static double calcHighScaleSusyMu(double x, void* parameters);
+    /// DH: computes the predicted value of m3sq at the high-scale
+    static double calcHighScaleM3Squared(double x, void* parameters);
+    /// DH: computes the predicted value of XiS at the high-scale
+    static double calcHighScaleXiS(double x, void* parameters);
+    /// DH: computes the predicted value of the top Yukawa at the high-scale
+    static double calcHighScaleYt(double x, void* parameters);
 
     /// DH: computes the derivative of the parameter calculated by
     /// paramFunc with respect to the parameter specified by numPar
@@ -159,6 +208,46 @@ namespace softsusy {
     double calcLowScaleMtsqDerivative(int numPar, double x, double h,
                                       const DoubleVector & bcPars,
                                       FineTuningPars & tuningPars);
+    /// DH: computes the derivative of mH1sq at the SUSY scale with respect
+    /// to the sinle output parameter specified by numPar
+    double calcMh1SquaredDerivative(int numPar, double x, double h,
+                                    const DoubleVector & bcPars,
+                                    FineTuningPars & tuningPars);
+    /// DH: computes the derivative of mH2sq at the SUSY scale with respect
+    /// to the sinle output parameter specified by numPar
+    double calcMh2SquaredDerivative(int numPar, double x, double h,
+                                    const DoubleVector & bcPars,
+                                    FineTuningPars & tuningPars);
+    /// DH: computes the derivative of mSsq at the SUSY scale with respect
+    /// to the sinle output parameter specified by numPar
+    double calcMsSquaredDerivative(int numPar, double x, double h,
+                                   const DoubleVector & bcPars,
+                                   FineTuningPars & tuningPars);
+    /// DH: computes the derivative of Kappa at the SUSY scale with respect
+    /// to the sinle output parameter specified by numPar
+    double calcKappaDerivative(int numPar, double x, double h,
+                               const DoubleVector & bcPars,
+                               FineTuningPars & tuningPars);
+    /// DH: computes the derivative of Mu at the SUSY scale with respect
+    /// to the sinle output parameter specified by numPar
+    double calcSusyMuDerivative(int numPar, double x, double h,
+                                const DoubleVector & bcPars,
+                                FineTuningPars & tuningPars);
+    /// DH: computes the derivative of m3sq at the SUSY scale with respect
+    /// to the sinle output parameter specified by numPar
+    double calcM3SquaredDerivative(int numPar, double x, double h,
+                                   const DoubleVector & bcPars,
+                                   FineTuningPars & tuningPars);
+    /// DH: computes the derivative of XiS at the SUSY scale with respect
+    /// to the sinle output parameter specified by numPar
+    double calcXiSDerivative(int numPar, double x, double h,
+                             const DoubleVector & bcPars,
+                             FineTuningPars & tuningPars);
+    /// DH: computes the derivative of the top Yukawa at the SUSY scale with respect
+    /// to the sinle output parameter specified by numPar
+    double calcYtDerivative(int numPar, double x, double h,
+                             const DoubleVector & bcPars,
+                             FineTuningPars & tuningPars);
     /// DH: computes the derivative of mH1Sq at the SUSY scale with respect
     /// to the single parameter specified by numPar at the high-scale
     double calcLowScaleMh1SquaredDerivative(int numPar, double x, double h,
@@ -204,10 +293,64 @@ namespace softsusy {
     double calcLowScaleYtDerivative(int numPar, double x, double h,
                                     const DoubleVector & bcPars,
                                     FineTuningPars & tuningPars);
+    /// DH: computes the derivative of mH1Sq at the high-scale with respect
+    /// to the single parameter specified by numPar at the SUSY scale
+    double calcHighScaleMh1SquaredDerivative(int numPar, double x, double h,
+                                             const DoubleVector & bcPars,
+                                             FineTuningPars & tuningPars);
+    /// DH: computes the derivative of mH2Sq at the high-scale with respect
+    /// to the single parameter specified by numPar at the  SUSY scale
+    double calcHighScaleMh2SquaredDerivative(int numPar, double x, double h,
+                                             const DoubleVector & bcPars,
+                                             FineTuningPars & tuningPars);
+    /// DH: computes the derivative of mSsq at the high-scale with respect
+    /// to the single parameter specified by numPar at the SUSY scale
+    double calcHighScaleMsSquaredDerivative(int numPar, double x, double h,
+                                            const DoubleVector & bcPars,
+                                            FineTuningPars & tuningPars);
+    /// DH: computes the derivative of Lambda at the high-scale with respect
+    /// to the single parameter specified by numPar at the SUSY scale
+    double calcHighScaleLambdaDerivative(int numPar, double x, double h,
+                                         const DoubleVector & bcPars,
+                                         FineTuningPars & tuningPars);
+    /// DH: computes the derivative of Kappa at the high-scale with respect
+    /// to the single parameter specified by numPar at the SUSY scale
+    double calcHighScaleKappaDerivative(int numPar, double x, double h,
+                                        const DoubleVector & bcPars,
+                                        FineTuningPars & tuningPars);
+    /// DH: computes the derivative of Mu at the high-scale with respect
+    /// to the single parameter specified by numPar at the SUSY scale
+    double calcHighScaleSusyMuDerivative(int numPar, double x, double h,
+                                         const DoubleVector & bcPars,
+                                         FineTuningPars & tuningPars);
+    /// DH: computes the derivative of m3sq at the high-scale with respect
+    /// to the single parameter specified by numPar at the  SUSY scale
+    double calcHighScaleM3SquaredDerivative(int numPar, double x, double h,
+                                            const DoubleVector & bcPars,
+                                            FineTuningPars & tuningPars);
+    /// DH: computes the derivative of XiS at the high-scale with respect
+    /// to the single parameter specified by numPar at the SUSY scale
+    double calcHighScaleXiSDerivative(int numPar, double x, double h,
+                                      const DoubleVector & bcPars,
+                                      FineTuningPars & tuningPars);
+    /// DH: computes the derivative of the top Yukawa at the high-scale with respect
+    /// to the single parameter specified by numPar at the SUSY scale
+    double calcHighScaleYtDerivative(int numPar, double x, double h,
+                                     const DoubleVector & bcPars,
+                                     FineTuningPars & tuningPars);
 
     /// DH: boundary condition used in Jacobian calculation
     static void jacobianBc(NmssmSoftsusy &, const DoubleVector &);
 
+    /// DH: calculates a single row in the low-scale Jacobian
+    void calculateLowScaleJacobianRow(int numPar, const DoubleVector & bcPars,
+                                      FineTuningPars & tuningPars,
+                                      DoubleVector & row);
+    /// DH: calculates a single row in the high-scale Jacobian
+    void calculateHighScaleJacobianRow(int numPar, const DoubleVector & bcPars,
+                                       double mx,
+                                       FineTuningPars & tuningPars,
+                                       DoubleVector & row);
     /// DH: calculates a single row in the low-scale inverse Jacobian
     void calculateLowScaleInverseJacobianRow(int numPar, const DoubleVector & bcPars,
                                              FineTuningPars & tuningPars,
@@ -216,6 +359,12 @@ namespace softsusy {
     void calculateHighScaleInverseJacobianRow(int numPar, const DoubleVector & bcPars,
                                               FineTuningPars & tuningPars,
                                               DoubleVector & row);
+    /// DH: calculates the Jacobian matrix associated with the change of
+    /// variables at the SUSY scale
+    double calcLowScaleJacobian(bool doTop);
+    /// DH: calculates the Jacobian matrix associated with the change
+    /// of variables to high-scale parameters
+    double calcHighScaleJacobian(double mx, bool doTop);
     /// DH: calculates the (inverse) Jacobian matrix associated with the change of
     /// variables at the SUSY scale
     double calcLowScaleInverseJacobian(bool doTop);
@@ -710,6 +859,13 @@ namespace softsusy {
                                                     const DoubleVector &),
                           const DoubleVector & bcPars, double MX,
                           bool doTop = false);
+
+    /// DH: calculates the fine-tuning Jacobian, as described in
+    /// arXiv:1312.4150 [hep-ph].
+    double fineTuningJacobian(void (*boundaryCondition)(NmssmSoftsusy &,
+                                                        const DoubleVector &),
+                              const DoubleVector & bcPars, double MX,
+                              bool doTop = false);
 
     /// DH: calculates the fine-tuning Jacobian, as described in
     /// arXiv:1312.4150 [hep-ph].  This version of the function computes

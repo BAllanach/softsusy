@@ -3916,6 +3916,50 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     setDrBarPars(savedDrBarPars);
   }
 
+  /// @todo throw an error for negative squared masses
+  void NmssmSoftsusy::setMzsq(double mz2) {
+
+    /// Initial guess
+    const double g1 = displayGaugeCoupling(1);
+    const double g2 = displayGaugeCoupling(2);
+    const double gbarSq = sqr(g2) + 0.6 * sqr(g1);
+    double vSq = 4.0 * mz2 / gbarSq;
+
+    /// Then iterate to solve for v
+    bool converged = false;
+    const double sinthDRbar = calcSinthdrbar();
+    const double scale = displayMu();
+    while (!converged) {
+      setHvev(sqrt(vSq));
+
+      calcDrBarPars();
+      const double mt = displayDrBarPars().mt;
+      doTadpoles(mt, sinthDRbar);
+
+      const double mzRun = displayMzRun();
+      const double pizzT = piZZT(mzRun, scale);
+
+      const double vSqNext = 4.0 * (mz2 + pizzT) / gbarSq;
+
+      const double diff = 1.0 - minimum(fabs(vSq), fabs(vSqNext)) /
+         maximum(fabs(vSq), fabs(vSqNext));
+
+      if (diff < TOLERANCE) converged = true;
+
+      vSq = vSqNext;
+    }
+
+    setHvev(sqrt(vSq));
+  }
+
+  void NmssmSoftsusy::setMtsq(double mt2) {
+    const double v = displayHvev();
+    const double tb = displayTanb();
+    const double yt = root2 * sqrt(mt2) / (v * sin(atan(tb)));
+
+    setYukawaElement(YU, 3, 3, yt);
+  }
+
   void NmssmSoftsusy::setParInBoundaryCondition
 (double x, int ftFunctionality,
  void (*ftBoundaryCondition)(NmssmSoftsusy &, const DoubleVector &),
@@ -4032,12 +4076,10 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     const double sinthDRbar = tempSoft1->calcSinthdrbar();
     tempSoft1->doTadpoles(mt, sinthDRbar);
 
-    const double predTanb = tempSoft1->displayTanb();
     const double referenceMzsq = sqr(tempSoft1->displayMzRun())
        - tempSoft1->piZZT(tempSoft1->displayMzRun(), susyScale);
 
-    if (PRINTOUT > 1) cout << x << " MZ=" << sqrt(fabs(referenceMzsq))
-                           << " tanb=" << predTanb << '\n';
+    if (PRINTOUT > 1) cout << "MZ=" << sqrt(fabs(referenceMzsq)) << '\n';
 
     /// Restore initial parameters at correct scale
     tempSoft1->setMu(initialMu);
@@ -4092,7 +4134,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     const double referenceTanb = tempSoft1->displayTanb();
 
-    if (PRINTOUT > 1) cout << x << " tanb=" << referenceTanb << '\n';
+    if (PRINTOUT > 1) cout << "tanb=" << referenceTanb << '\n';
 
     /// Restore initial parameters at correct scale
     tempSoft1->setMu(initialMu);
@@ -4147,7 +4189,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     const double referenceSvev = tempSoft1->displaySvev();
 
-    if (PRINTOUT > 1) cout << x << " Svev=" << referenceSvev << '\n';
+    if (PRINTOUT > 1) cout << "Svev=" << referenceSvev << '\n';
 
     /// Restore initial parameters at correct scale
     tempSoft1->setMu(initialMu);
@@ -4206,7 +4248,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     /// be used instead?
     const double referenceMtsq = tempSoft1->displayDrBarPars().mt;
 
-    if (PRINTOUT > 1) cout << x << " mt=" << referenceMtsq << '\n';
+    if (PRINTOUT > 1) cout << "mt=" << referenceMtsq << '\n';
 
     /// Restore initial parameters at correct scale
     tempSoft1->setMu(initialMu);
@@ -4265,8 +4307,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     const double referenceMzsq = sqr(tempSoft1->displayMzRun())
        - tempSoft1->piZZT(tempSoft1->displayMzRun(), susyScale);
 
-    if (PRINTOUT > 1) cout << x << " MZ=" << sqrt(fabs(referenceMzsq))
-                           << '\n';
+    if (PRINTOUT > 1) cout << "MZ=" << sqrt(fabs(referenceMzsq)) << '\n';
 
     /// Restore initial parameters at correct scale
     tempSoft1->setMu(initialMu);
@@ -4316,7 +4357,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     const double referenceTanb = tempSoft1->displayTanb();
 
-    if (PRINTOUT > 1) cout << x << " tanb=" << referenceTanb << '\n';
+    if (PRINTOUT > 1) cout << "tanb=" << referenceTanb << '\n';
 
     /// Restore initial parameters at correct scale
     tempSoft1->setMu(initialMu);
@@ -4366,7 +4407,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     const double referenceSvev = tempSoft1->displaySvev();
 
-    if (PRINTOUT > 1) cout << x << " Svev=" << referenceSvev << '\n';
+    if (PRINTOUT > 1) cout << "Svev=" << referenceSvev << '\n';
 
     /// Restore initial parameters at correct scale
     tempSoft1->setMu(initialMu);
@@ -4420,7 +4461,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     /// be used instead?
     const double referenceMtsq = tempSoft1->displayDrBarPars().mt;
 
-    if (PRINTOUT > 1) cout << x << " mt=" << referenceMtsq << '\n';
+    if (PRINTOUT > 1) cout << "mt=" << referenceMtsq << '\n';
 
     /// Restore initial parameters at correct scale
     tempSoft1->setMu(initialMu);
@@ -4428,6 +4469,511 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     tempSoft1->setDrBarPars(saveDrBar);
 
     return referenceMtsq;
+  }
+
+  /// DH: calculates the model parameters as a result of variations
+  /// in the outputs
+  double NmssmSoftsusy::calcMh1Squared(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    switch (ftFunctionality) {
+    case 1: {
+      tempSoft1->setMzsq(x);
+      if (PRINTOUT > 1) cout << "mz2= " << x << ' ';
+      break;
+    }
+    case 2: {
+      tempSoft1->setTanb(x);
+      if (PRINTOUT > 1) cout << "tanb= " << x << ' ';
+      break;
+    }
+    case 3: {
+      if (Z3) {
+        tempSoft1->setLambda(x);
+        if (PRINTOUT > 1) cout << "lambda= " << x << ' ';
+      } else {
+        tempSoft1->setSvev(x);
+        if (PRINTOUT > 1) cout << "s= " << x << ' ';
+      }
+      break;
+    }
+    case 4: {
+      tempSoft1->setMtsq(x);
+      if (PRINTOUT > 1) cout << "mt2= " << x << ' ';
+      break;
+    }
+    }
+
+    tempSoft1->calcDrBarPars();
+    const double muEff = (Z3 ? tempSoft1->displayLambda() * tempSoft1->displaySvev() / root2
+                          : tempSoft1->displaySusyMu());
+    const int sgnMu = muEff < 0. ? -1 : 1;
+    /// @todo check that this works and is consistent with
+    /// the Newton iteration used going the other way
+    if (SoftHiggsOut)
+      tempSoft1->rewsb(sgnMu, tempSoft1->displayDrBarPars().mt);
+
+    const double referenceMh1Sq = tempSoft1->displayMh1Squared();
+
+    if (PRINTOUT > 1) cout << "mH1Sq=" << referenceMh1Sq << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceMh1Sq;
+  }
+
+  double NmssmSoftsusy::calcMh2Squared(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    switch (ftFunctionality) {
+    case 1: {
+      tempSoft1->setMzsq(x);
+      if (PRINTOUT > 1) cout << "mz2= " << x << ' ';
+      break;
+    }
+    case 2: {
+      tempSoft1->setTanb(x);
+      if (PRINTOUT > 1) cout << "tanb= " << x << ' ';
+      break;
+    }
+    case 3: {
+      if (Z3) {
+        tempSoft1->setLambda(x);
+        if (PRINTOUT > 1) cout << "lambda= " << x << ' ';
+      } else {
+        tempSoft1->setSvev(x);
+        if (PRINTOUT > 1) cout << "s= " << x << ' ';
+      }
+      break;
+    }
+    case 4: {
+      tempSoft1->setMtsq(x);
+      if (PRINTOUT > 1) cout << "mt2= " << x << ' ';
+      break;
+    }
+    }
+
+    tempSoft1->calcDrBarPars();
+    const double muEff = (Z3 ? tempSoft1->displayLambda() * tempSoft1->displaySvev() / root2
+                          : tempSoft1->displaySusyMu());
+    const int sgnMu = muEff < 0. ? -1 : 1;
+    /// @todo check that this works and is consistent with
+    /// the Newton iteration used going the other way
+    if (SoftHiggsOut)
+      tempSoft1->rewsb(sgnMu, tempSoft1->displayDrBarPars().mt);
+
+    const double referenceMh2Sq = tempSoft1->displayMh2Squared();
+
+    if (PRINTOUT > 1) cout << "mH2Sq=" << referenceMh2Sq << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceMh2Sq;
+  }
+
+  double NmssmSoftsusy::calcMsSquared(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    switch (ftFunctionality) {
+    case 1: {
+      tempSoft1->setMzsq(x);
+      if (PRINTOUT > 1) cout << "mz2= " << x << ' ';
+      break;
+    }
+    case 2: {
+      tempSoft1->setTanb(x);
+      if (PRINTOUT > 1) cout << "tanb= " << x << ' ';
+      break;
+    }
+    case 3: {
+      if (Z3) {
+        tempSoft1->setLambda(x);
+        if (PRINTOUT > 1) cout << "lambda= " << x << ' ';
+      } else {
+        tempSoft1->setSvev(x);
+        if (PRINTOUT > 1) cout << "s= " << x << ' ';
+      }
+      break;
+    }
+    case 4: {
+      tempSoft1->setMtsq(x);
+      if (PRINTOUT > 1) cout << "mt2= " << x << ' ';
+      break;
+    }
+    }
+
+    tempSoft1->calcDrBarPars();
+    const double muEff = (Z3 ? tempSoft1->displayLambda() * tempSoft1->displaySvev() / root2
+                          : tempSoft1->displaySusyMu());
+    const int sgnMu = muEff < 0. ? -1 : 1;
+    /// @todo check that this works and is consistent with
+    /// the Newton iteration used going the other way
+    if (Z3 || SoftHiggsOut)
+      tempSoft1->rewsb(sgnMu, tempSoft1->displayDrBarPars().mt);
+
+    const double referenceMsSq = tempSoft1->displayMsSquared();
+
+    if (PRINTOUT > 1) cout << "mSsq=" << referenceMsSq << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceMsSq;
+  }
+
+  double NmssmSoftsusy::calcKappa(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    switch (ftFunctionality) {
+    case 1: {
+      tempSoft1->setMzsq(x);
+      if (PRINTOUT > 1) cout << "mz2= " << x << ' ';
+      break;
+    }
+    case 2: {
+      tempSoft1->setTanb(x);
+      if (PRINTOUT > 1) cout << "tanb= " << x << ' ';
+      break;
+    }
+    case 3: {
+      if (Z3) {
+        tempSoft1->setLambda(x);
+        if (PRINTOUT > 1) cout << "lambda= " << x << ' ';
+      } else {
+        tempSoft1->setSvev(x);
+        if (PRINTOUT > 1) cout << "s= " << x << ' ';
+      }
+      break;
+    }
+    case 4: {
+      tempSoft1->setMtsq(x);
+      if (PRINTOUT > 1) cout << "mt2= " << x << ' ';
+      break;
+    }
+    }
+
+    tempSoft1->calcDrBarPars();
+    const double muEff = (Z3 ? tempSoft1->displayLambda() * tempSoft1->displaySvev() / root2
+                          : tempSoft1->displaySusyMu());
+    const int sgnMu = muEff < 0. ? -1 : 1;
+    /// @todo check that this works and is consistent with
+    /// the Newton iteration used going the other way
+    if (Z3)
+      tempSoft1->rewsb(sgnMu, tempSoft1->displayDrBarPars().mt);
+
+    const double referenceKappa = tempSoft1->displayKappa();
+
+    if (PRINTOUT > 1) cout << "Kappa=" << referenceKappa << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceKappa;
+  }
+
+  double NmssmSoftsusy::calcSusyMu(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    switch (ftFunctionality) {
+    case 1: {
+      tempSoft1->setMzsq(x);
+      if (PRINTOUT > 1) cout << "mz2= " << x << ' ';
+      break;
+    }
+    case 2: {
+      tempSoft1->setTanb(x);
+      if (PRINTOUT > 1) cout << "tanb= " << x << ' ';
+      break;
+    }
+    case 3: {
+      if (Z3) {
+        tempSoft1->setLambda(x);
+        if (PRINTOUT > 1) cout << "lambda= " << x << ' ';
+      } else {
+        tempSoft1->setSvev(x);
+        if (PRINTOUT > 1) cout << "s= " << x << ' ';
+      }
+      break;
+    }
+    case 4: {
+      tempSoft1->setMtsq(x);
+      if (PRINTOUT > 1) cout << "mt2= " << x << ' ';
+      break;
+    }
+    }
+
+    tempSoft1->calcDrBarPars();
+    const double muEff = (Z3 ? tempSoft1->displayLambda() * tempSoft1->displaySvev() / root2
+                          : tempSoft1->displaySusyMu());
+    const int sgnMu = muEff < 0. ? -1 : 1;
+    /// @todo check that this works and is consistent with
+    /// the Newton iteration used going the other way
+    if (!Z3 && !SoftHiggsOut)
+      tempSoft1->rewsb(sgnMu, tempSoft1->displayDrBarPars().mt);
+
+    const double referenceSusyMu = tempSoft1->displaySusyMu();
+
+    if (PRINTOUT > 1) cout << "mu=" << referenceSusyMu << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceSusyMu;
+  }
+
+  double NmssmSoftsusy::calcM3Squared(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    switch (ftFunctionality) {
+    case 1: {
+      tempSoft1->setMzsq(x);
+      if (PRINTOUT > 1) cout << "mz2= " << x << ' ';
+      break;
+    }
+    case 2: {
+      tempSoft1->setTanb(x);
+      if (PRINTOUT > 1) cout << "tanb= " << x << ' ';
+      break;
+    }
+    case 3: {
+      if (Z3) {
+        tempSoft1->setLambda(x);
+        if (PRINTOUT > 1) cout << "lambda= " << x << ' ';
+      } else {
+        tempSoft1->setSvev(x);
+        if (PRINTOUT > 1) cout << "s= " << x << ' ';
+      }
+      break;
+    }
+    case 4: {
+      tempSoft1->setMtsq(x);
+      if (PRINTOUT > 1) cout << "mt2= " << x << ' ';
+      break;
+    }
+    }
+
+    tempSoft1->calcDrBarPars();
+    const double muEff = (Z3 ? tempSoft1->displayLambda() * tempSoft1->displaySvev() / root2
+                          : tempSoft1->displaySusyMu());
+    const int sgnMu = muEff < 0. ? -1 : 1;
+    /// @todo check that this works and is consistent with
+    /// the Newton iteration used going the other way
+    if (!Z3 && !SoftHiggsOut)
+      tempSoft1->rewsb(sgnMu, tempSoft1->displayDrBarPars().mt);
+
+    const double referenceM3Sq = tempSoft1->displayM3Squared();
+
+    if (PRINTOUT > 1) cout << "m3sq=" << referenceM3Sq << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceM3Sq;
+  }
+
+  double NmssmSoftsusy::calcXiS(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    switch (ftFunctionality) {
+    case 1: {
+      tempSoft1->setMzsq(x);
+      if (PRINTOUT > 1) cout << "mz2= " << x << ' ';
+      break;
+    }
+    case 2: {
+      tempSoft1->setTanb(x);
+      if (PRINTOUT > 1) cout << "tanb= " << x << ' ';
+      break;
+    }
+    case 3: {
+      if (Z3) {
+        tempSoft1->setLambda(x);
+        if (PRINTOUT > 1) cout << "lambda= " << x << ' ';
+      } else {
+        tempSoft1->setSvev(x);
+        if (PRINTOUT > 1) cout << "s= " << x << ' ';
+      }
+      break;
+    }
+    case 4: {
+      tempSoft1->setMtsq(x);
+      if (PRINTOUT > 1) cout << "mt2= " << x << ' ';
+      break;
+    }
+    }
+
+    tempSoft1->calcDrBarPars();
+    const double muEff = (Z3 ? tempSoft1->displayLambda() * tempSoft1->displaySvev() / root2
+                          : tempSoft1->displaySusyMu());
+    const int sgnMu = muEff < 0. ? -1 : 1;
+    /// @todo check that this works and is consistent with
+    /// the Newton iteration used going the other way
+    if (!Z3 && !SoftHiggsOut)
+      tempSoft1->rewsb(sgnMu, tempSoft1->displayDrBarPars().mt);
+
+    const double referenceXiS = tempSoft1->displayXiS();
+
+    if (PRINTOUT > 1) cout << "xiS=" << referenceXiS << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceXiS;
+  }
+
+  double NmssmSoftsusy::calcYt(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    switch (ftFunctionality) {
+    case 1: {
+      tempSoft1->setMzsq(x);
+      if (PRINTOUT > 1) cout << "mz2= " << x << ' ';
+      break;
+    }
+    case 2: {
+      tempSoft1->setTanb(x);
+      if (PRINTOUT > 1) cout << "tanb= " << x << ' ';
+      break;
+    }
+    case 3: {
+      if (Z3) {
+        tempSoft1->setLambda(x);
+        if (PRINTOUT > 1) cout << "lambda= " << x << ' ';
+      } else {
+        tempSoft1->setSvev(x);
+        if (PRINTOUT > 1) cout << "s= " << x << ' ';
+      }
+      break;
+    }
+    case 4: {
+      tempSoft1->setMtsq(x);
+      if (PRINTOUT > 1) cout << "mt2= " << x << ' ';
+      break;
+    }
+    }
+
+    const double referenceYt = tempSoft1->displayYukawaElement(YU, 3, 3);
+
+    if (PRINTOUT > 1) cout << "ht=" << referenceYt << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceYt;
   }
 
   /// DH: calculates the derivative of the low-scale model parameter
@@ -4738,6 +5284,314 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return referenceYt;
   }
 
+  /// DH: calculates the derivative of the high-scale model parameter
+  /// with respect to variations in the low-scale model parameters
+  double NmssmSoftsusy::calcHighScaleMh1Squared(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+    const double mx = tuningPars->mx;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
+
+    tempSoft1->runto(mx);
+
+    const double referenceMh1Sq = tempSoft1->displayMh1Squared();
+
+    if (PRINTOUT > 1) cout << x << " mH1Sq=" << referenceMh1Sq << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceMh1Sq;
+  }
+
+  double NmssmSoftsusy::calcHighScaleMh2Squared(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+    const double mx = tuningPars->mx;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
+
+    tempSoft1->runto(mx);
+
+    const double referenceMh2Sq = tempSoft1->displayMh2Squared();
+
+    if (PRINTOUT > 1) cout << x << " mH2Sq=" << referenceMh2Sq << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceMh2Sq;
+  }
+
+  double NmssmSoftsusy::calcHighScaleMsSquared(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+    const double mx = tuningPars->mx;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
+
+    tempSoft1->runto(mx);
+
+    const double referenceMsSq = tempSoft1->displayMsSquared();
+
+    if (PRINTOUT > 1) cout << x << " mSsq=" << referenceMsSq << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceMsSq;
+  }
+
+  double NmssmSoftsusy::calcHighScaleLambda(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+    const double mx = tuningPars->mx;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
+
+    tempSoft1->runto(mx);
+
+    const double referenceLambda = tempSoft1->displayLambda();
+
+    if (PRINTOUT > 1) cout << x << " Lambda=" << referenceLambda << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceLambda;
+  }
+
+  double NmssmSoftsusy::calcHighScaleKappa(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+    const double mx = tuningPars->mx;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
+
+    tempSoft1->runto(mx);
+
+    const double referenceKappa = tempSoft1->displayKappa();
+
+    if (PRINTOUT > 1) cout << x << " Kappa=" << referenceKappa << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceKappa;
+  }
+
+  double NmssmSoftsusy::calcHighScaleSusyMu(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+    const double mx = tuningPars->mx;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
+
+    tempSoft1->runto(mx);
+
+    const double referenceSusyMu = tempSoft1->displaySusyMu();
+
+    if (PRINTOUT > 1) cout << x << " mu=" << referenceSusyMu << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceSusyMu;
+  }
+
+  double NmssmSoftsusy::calcHighScaleM3Squared(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+    const double mx = tuningPars->mx;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
+
+    tempSoft1->runto(mx);
+
+    const double referenceM3Sq = tempSoft1->displayM3Squared();
+
+    if (PRINTOUT > 1) cout << x << " m3sq=" << referenceM3Sq << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceM3Sq;
+  }
+
+  double NmssmSoftsusy::calcHighScaleXiS(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+    const double mx = tuningPars->mx;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
+
+    tempSoft1->runto(mx);
+
+    const double referenceXiS = tempSoft1->displayXiS();
+
+    if (PRINTOUT > 1) cout << x << " xiS=" << referenceXiS << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceXiS;
+  }
+
+  double NmssmSoftsusy::calcHighScaleYt(double x, void* parameters) {
+
+    FineTuningPars* tuningPars = static_cast<FineTuningPars*>(parameters);
+
+    NmssmSoftsusy* tempSoft1 = tuningPars->model;
+    const int ftFunctionality = tuningPars->ftFunctionality;
+    DoubleVector ftPars = tuningPars->ftPars;
+    const double mx = tuningPars->mx;
+
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(tempSoft1->display());
+    double initialMu = tempSoft1->displayMu();
+    drBarPars saveDrBar(tempSoft1->displayDrBarPars());
+
+    if (PRINTOUT > 1) cout << '#';
+
+    tempSoft1->setParInBoundaryCondition(x, ftFunctionality,
+                                         tuningPars->ftBoundaryCondition,
+                                         ftPars);
+
+    tempSoft1->runto(mx);
+
+    const double referenceYt = tempSoft1->displayYukawaElement(YU, 3, 3);
+
+    if (PRINTOUT > 1) cout << x << " ht=" << referenceYt << '\n';
+
+    /// Restore initial parameters at correct scale
+    tempSoft1->setMu(initialMu);
+    tempSoft1->set(storeObject);
+    tempSoft1->setDrBarPars(saveDrBar);
+
+    return referenceYt;
+  }
+
   double NmssmSoftsusy::calcTuningDerivative(int numPar, double x, double h,
                                              const DoubleVector & bcPars,
                                              FineTuningPars & tuningPars,
@@ -4829,6 +5683,56 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcMtsq);
   }
 
+  /// DH: calculates the derivatives of the model parameters with respect
+  /// to the output parameters
+  double NmssmSoftsusy::calcMh1SquaredDerivative(int numPar, double x, double h,
+                                                 const DoubleVector & bcPars,
+                                                 FineTuningPars & tuningPars) {
+     return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcMh1Squared);
+  }
+
+  double NmssmSoftsusy::calcMh2SquaredDerivative(int numPar, double x, double h,
+                                                 const DoubleVector & bcPars,
+                                                 FineTuningPars & tuningPars) {
+     return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcMh2Squared);
+  }
+
+  double NmssmSoftsusy::calcMsSquaredDerivative(int numPar, double x, double h,
+                                                const DoubleVector & bcPars,
+                                                FineTuningPars & tuningPars) {
+     return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcMsSquared);
+  }
+
+  double NmssmSoftsusy::calcKappaDerivative(int numPar, double x, double h,
+                                            const DoubleVector & bcPars,
+                                            FineTuningPars & tuningPars) {
+     return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcKappa);
+  }
+
+  double NmssmSoftsusy::calcSusyMuDerivative(int numPar, double x, double h,
+                                             const DoubleVector & bcPars,
+                                             FineTuningPars & tuningPars) {
+     return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcSusyMu);
+  }
+
+  double NmssmSoftsusy::calcM3SquaredDerivative(int numPar, double x, double h,
+                                                const DoubleVector & bcPars,
+                                                FineTuningPars & tuningPars) {
+     return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcM3Squared);
+  }
+
+  double NmssmSoftsusy::calcXiSDerivative(int numPar, double x, double h,
+                                          const DoubleVector & bcPars,
+                                          FineTuningPars & tuningPars) {
+     return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcXiS);
+  }
+
+  double NmssmSoftsusy::calcYtDerivative(int numPar, double x, double h,
+                                         const DoubleVector & bcPars,
+                                         FineTuningPars & tuningPars) {
+     return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcYt);
+  }
+
   /// DH: calculates the derivative of the low-scale parameters
   /// with respect to variations at the high-scale
   double NmssmSoftsusy::calcLowScaleMh1SquaredDerivative(int numPar, double x, double h,
@@ -4883,6 +5787,61 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
                                                   const DoubleVector & bcPars,
                                                   FineTuningPars & tuningPars) {
     return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcLowScaleYt);
+  }
+  /// DH: calculates the derivative of the high-scale parameters
+  /// with respect to variations at the low-scale
+  double NmssmSoftsusy::calcHighScaleMh1SquaredDerivative(int numPar, double x, double h,
+                                                         const DoubleVector & bcPars,
+                                                         FineTuningPars & tuningPars) {
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcHighScaleMh1Squared);
+  }
+
+  double NmssmSoftsusy::calcHighScaleMh2SquaredDerivative(int numPar, double x, double h,
+                                                         const DoubleVector & bcPars,
+                                                         FineTuningPars & tuningPars) {
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcHighScaleMh2Squared);
+  }
+
+  double NmssmSoftsusy::calcHighScaleMsSquaredDerivative(int numPar, double x, double h,
+                                                        const DoubleVector & bcPars,
+                                                        FineTuningPars & tuningPars) {
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcHighScaleMsSquared);
+  }
+
+  double NmssmSoftsusy::calcHighScaleLambdaDerivative(int numPar, double x, double h,
+                                                     const DoubleVector & bcPars,
+                                                     FineTuningPars & tuningPars) {
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcHighScaleLambda);
+  }
+
+  double NmssmSoftsusy::calcHighScaleKappaDerivative(int numPar, double x, double h,
+                                                    const DoubleVector & bcPars,
+                                                    FineTuningPars & tuningPars) {
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcHighScaleKappa);
+  }
+
+  double NmssmSoftsusy::calcHighScaleSusyMuDerivative(int numPar, double x, double h,
+                                                     const DoubleVector & bcPars,
+                                                     FineTuningPars & tuningPars) {
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcHighScaleSusyMu);
+  }
+
+  double NmssmSoftsusy::calcHighScaleM3SquaredDerivative(int numPar, double x, double h,
+                                                        const DoubleVector & bcPars,
+                                                        FineTuningPars & tuningPars) {
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcHighScaleM3Squared);
+  }
+
+  double NmssmSoftsusy::calcHighScaleXiSDerivative(int numPar, double x, double h,
+                                                  const DoubleVector & bcPars,
+                                                  FineTuningPars & tuningPars) {
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcHighScaleXiS);
+  }
+
+   double NmssmSoftsusy::calcHighScaleYtDerivative(int numPar, double x, double h,
+                                                  const DoubleVector & bcPars,
+                                                  FineTuningPars & tuningPars) {
+    return calcTuningDerivative(numPar, x, h, bcPars, tuningPars, calcHighScaleYt);
   }
 
   /// DH: computes the Barbieri-Giudice fine tuning sensitivities for the
@@ -5006,6 +5965,232 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     if (bcPars.displayEnd() == 4) {
       model.setYukawaElement(YU, 3, 3, bcPars(4));
     }
+  }
+
+  void NmssmSoftsusy::calculateLowScaleJacobianRow(int numPar,
+                                                   const DoubleVector & bcPars,
+                                                   FineTuningPars & tuningPars,
+                                                   DoubleVector & row) {
+    const double x = bcPars.display(numPar);
+    double h = 0.01 * x;
+    if (Z3 && numPar == 3) {
+      h = 0.0005 * x;
+    }
+
+    if (SoftHiggsOut) {
+      row(1) = calcMh1SquaredDerivative(numPar, x, h, bcPars, tuningPars);
+      row(2) = calcMh2SquaredDerivative(numPar, x, h, bcPars, tuningPars);
+      row(3) = calcMsSquaredDerivative(numPar, x, h, bcPars, tuningPars);
+    } else if (Z3) {
+      if (numPar == 3) {
+        row(1) = 1.0;
+        row(2) = 0.0;
+        row(3) = 0.0;
+      } else {
+        row(1) = 0.0;
+        row(2) = calcKappaDerivative(numPar, x, h, bcPars, tuningPars);
+        row(3) = calcMsSquaredDerivative(numPar, x, h, bcPars, tuningPars);
+      }
+    } else {
+       row(1) = calcSusyMuDerivative(numPar, x, h, bcPars, tuningPars);
+       row(2) = calcM3SquaredDerivative(numPar, x, h, bcPars, tuningPars);
+       row(3) = calcXiSDerivative(numPar, x, h, bcPars, tuningPars);
+    }
+    if (row.displayEnd() > 3) {
+      if (Z3 && numPar == 3) {
+        row(4) = 0.;
+      } else {
+        row(4) = calcYtDerivative(numPar, x, h, bcPars, tuningPars);
+      }
+    }
+  }
+
+  void NmssmSoftsusy::calculateHighScaleJacobianRow(int numPar,
+                                                    const DoubleVector & bcPars,
+                                                    double mx,
+                                                    FineTuningPars & tuningPars,
+                                                    DoubleVector & row) {
+
+    const double x = bcPars.display(numPar);
+    double h = 0.01 * x;
+    if ((Z3 && numPar < 3) || numPar > 3) {
+      h = 0.0005 * x;
+    }
+
+    if (SoftHiggsOut) {
+      row(1) = calcHighScaleMh1SquaredDerivative(numPar, x, h, bcPars, tuningPars);
+      row(2) = calcHighScaleMh2SquaredDerivative(numPar, x, h, bcPars, tuningPars);
+      row(3) = calcHighScaleMsSquaredDerivative(numPar, x, h, bcPars, tuningPars);
+    } else if (Z3) {
+      row(1) = calcHighScaleLambdaDerivative(numPar, x, h, bcPars, tuningPars);
+      row(2) = calcHighScaleKappaDerivative(numPar, x, h, bcPars, tuningPars);
+      row(3) = calcHighScaleMsSquaredDerivative(numPar, x, h, bcPars, tuningPars);
+    } else {
+      row(1) = calcHighScaleSusyMuDerivative(numPar, x, h, bcPars, tuningPars);
+      row(2) = calcHighScaleM3SquaredDerivative(numPar, x, h, bcPars, tuningPars);
+      row(3) = calcHighScaleXiSDerivative(numPar, x, h, bcPars, tuningPars);
+    }
+    if (row.displayEnd() > 3) {
+      row(4) = calcHighScaleYtDerivative(numPar, x, h, bcPars, tuningPars);
+    }
+  }
+
+  double NmssmSoftsusy::calcLowScaleJacobian(bool doTop) {
+
+    /// Stores running parameters in a vector
+    DoubleVector savedObject(display());
+    double savedMu = displayMu();
+    sPhysical savedPhys(displayPhys());
+
+    /// Low-scale Jacobian is calculated at the SUSY scale
+    runto(calcMs());
+    calcDrBarPars();
+
+    const int numPars = doTop ? 4 : 3;
+
+    DoubleVector jacPars(numPars);
+
+    /// @note using the pole mass here complicates
+    /// things, because we must iteratively solve
+    /// this expression to get the VEV
+    const double mz2 = sqr(displayMzRun())
+       - piZZT(displayMzRun(), displayMu());
+    const double tb = displayTanb();
+
+    /// Get low-energy parameter values
+    jacPars(1) = mz2;
+    jacPars(2) = tb;
+    if (Z3) {
+      jacPars(3) = displayLambda();
+    } else {
+      jacPars(3) = displaySvev();
+    }
+    if (numPars == 4) {
+      jacPars(4) = sqr(displayDrBarPars().mt);
+    }
+
+    DoubleMatrix jacLowScaleMatrix(numPars,numPars);
+
+    FineTuningPars tuningPars;
+
+    tuningPars.model = this;
+    tuningPars.ftBoundaryCondition = jacobianBc;
+
+    for (int i = 1; i <= numPars; ++i) {
+      DoubleVector currentRow(numPars);
+      calculateLowScaleJacobianRow(i, jacPars, tuningPars, currentRow);
+      for (int j = 1; j <= numPars; ++j) {
+        jacLowScaleMatrix(i, j) = currentRow(j);
+      }
+    }
+
+    /// Save calculated matrix
+    if (lowScaleJacobian.displayRows() != numPars
+        && lowScaleJacobian.displayCols() != numPars) {
+      lowScaleJacobian.resize(numPars, numPars);
+    }
+    lowScaleJacobian = jacLowScaleMatrix;
+
+    /// Restore initial parameters at correct scale
+    setMu(savedMu);
+    set(savedObject);
+    setPhys(savedPhys);
+
+    return jacLowScaleMatrix.determinant();
+  }
+
+  double NmssmSoftsusy::calcHighScaleJacobian(double mx, bool doTop) {
+
+    /// Stores running parameters in a vector
+    DoubleVector savedObject(display());
+    double savedMu = displayMu();
+    sPhysical savedPhys(displayPhys());
+
+    /// High-scale Jacobian is calculated at SUSY scale
+    runto(calcMs());
+
+    const int numPars = doTop ? 4 : 3;
+
+    DoubleVector jacPars(numPars);
+
+    /// Get low-energy parameter values
+    if (SoftHiggsOut) {
+      jacPars(1) = displayMh1Squared();
+      jacPars(2) = displayMh2Squared();
+      jacPars(3) = displayMsSquared();
+    } else if (Z3) {
+      jacPars(1) = displayLambda();
+      jacPars(2) = displayKappa();
+      jacPars(3) = displayMsSquared();
+    } else {
+      jacPars(1) = displaySusyMu();
+      jacPars(2) = displayM3Squared();
+      jacPars(3) = displayXiS();
+    }
+    if (numPars == 4) {
+      jacPars(4) = displayYukawaElement(YU, 3, 3);
+    }
+
+    DoubleMatrix jacHighScaleMatrix(numPars,numPars);
+
+    FineTuningPars tuningPars;
+
+    tuningPars.model = this;
+    tuningPars.ftBoundaryCondition = jacobianBc;
+    tuningPars.mx = mx;
+
+    for (int i = 1; i <= numPars; ++i) {
+      DoubleVector currentRow(numPars);
+      calculateHighScaleJacobianRow(i, jacPars, mx, tuningPars, currentRow);
+      for (int j = 1; j <= numPars; ++j) {
+        jacHighScaleMatrix(i, j) = currentRow(j);
+      }
+    }
+
+    /// Save calculated matrix
+    if (highScaleJacobian.displayRows() != numPars
+        && highScaleJacobian.displayCols() != numPars) {
+      highScaleJacobian.resize(numPars, numPars);
+    }
+    highScaleJacobian = jacHighScaleMatrix;
+
+    /// Restore initial parameters at correct scale
+    setMu(savedMu);
+    set(savedObject);
+    setPhys(savedPhys);
+
+    return jacHighScaleMatrix.determinant();
+  }
+
+  double NmssmSoftsusy::fineTuningJacobian
+(void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &),
+ const DoubleVector & bcPars, double mx, bool doTop) {
+
+    /// Stores running parameters in a vector
+    DoubleVector savedObject(display());
+    double savedMu = displayMu();
+    sPhysical savedPhys(displayPhys());
+
+    runto(mx);
+
+    /// Apply boundary condition
+    /// @todo should the SUSY scale be recalculated here?
+    boundaryCondition(*this, bcPars);
+
+    /// Calculate high-scale Jacobian
+    double jacRG = calcHighScaleJacobian(mx, doTop);
+
+    /// Calculate low-scale Jacobian
+    double jacLowScale = calcLowScaleJacobian(doTop);
+
+    double jac = jacLowScale * jacRG;
+
+    /// Restore initial parameters at correct scale
+    setMu(savedMu);
+    set(savedObject);
+    setPhys(savedPhys);
+
+    return jac;
   }
 
   void NmssmSoftsusy::calculateLowScaleInverseJacobianRow(int numPar,
@@ -5134,7 +6319,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return jacLowScaleMatrix.determinant();
   }
 
-   double NmssmSoftsusy::calcHighScaleInverseJacobian(double mx, bool doTop) {
+  double NmssmSoftsusy::calcHighScaleInverseJacobian(double mx, bool doTop) {
 
     /// Stores running parameters in a vector
     DoubleVector savedObject(display());
@@ -5172,6 +6357,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     tuningPars.model = this;
     tuningPars.ftBoundaryCondition = jacobianBc;
+    tuningPars.mx = mx;
 
     for (int i = 1; i <= numPars; ++i) {
       DoubleVector currentRow(numPars);
@@ -5267,14 +6453,14 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
 
     const double determinant
-       = fineTuningInverseJacobian(boundaryCondition, bcPars, mx, doTop);
+       = fineTuningJacobian(boundaryCondition, bcPars, mx, doTop);
 
     /// Restore initial parameters at correct scale
     setMu(savedMu);
     set(savedObject);
     setPhys(savedPhys);
 
-    return fabs(numerator * determinant / denominator);
+    return fabs(numerator / (denominator * determinant));
   }
 
   /// Obtains solution of one-loop effective potential minimisation via iteration
