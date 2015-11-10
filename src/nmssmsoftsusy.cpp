@@ -6435,7 +6435,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       denominator *= displaySvev();
     }
     if (doTop) {
-      denominator *= displayDrBarPars().mt;
+      denominator *= sqr(displayDrBarPars().mt);
     }
 
     runto(mx);
