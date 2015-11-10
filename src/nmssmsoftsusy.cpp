@@ -22,6 +22,8 @@ namespace softsusy {
     setSoftsusy(s.displaySoftsusy());
     tSOVSMs = s.tSOVSMs;
     tSOVSMs1loop = s.tSOVSMs1loop;
+    inverseLowScaleJacobian = s.inverseLowScaleJacobian;
+    inverseHighScaleJacobian = s.inverseHighScaleJacobian;
     return *this;
   }
   
@@ -5115,6 +5117,13 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       }
     }
 
+    /// Save calculated matrix
+    if (inverseLowScaleJacobian.displayRows() != numPars
+        && inverseLowScaleJacobian.displayCols() != numPars) {
+      inverseLowScaleJacobian.resize(numPars, numPars);
+    }
+    inverseLowScaleJacobian = jacLowScaleMatrix;
+
     double jac = jacLowScaleMatrix.determinant();
 
     /// Check for non-zero determinant
@@ -5179,6 +5188,13 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
         jacHighScaleMatrix(i, j) = currentRow(j);
       }
     }
+
+    /// Save calculated matrix
+    if (inverseHighScaleJacobian.displayRows() != numPars
+        && inverseHighScaleJacobian.displayCols() != numPars) {
+      inverseHighScaleJacobian.resize(numPars, numPars);
+    }
+    inverseHighScaleJacobian = jacHighScaleMatrix;
 
     double jac = jacHighScaleMatrix.determinant();
 
