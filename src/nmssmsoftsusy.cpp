@@ -22,8 +22,10 @@ namespace softsusy {
     setSoftsusy(s.displaySoftsusy());
     tSOVSMs = s.tSOVSMs;
     tSOVSMs1loop = s.tSOVSMs1loop;
-    inverseLowScaleJacobian = s.inverseLowScaleJacobian;
+    highScaleJacobian = s.highScaleJacobian;
+    lowScaleJacobian = s.lowScaleJacobian;
     inverseHighScaleJacobian = s.inverseHighScaleJacobian;
+    inverseLowScaleJacobian = s.inverseLowScaleJacobian;
     return *this;
   }
   
