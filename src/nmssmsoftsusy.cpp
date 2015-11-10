@@ -5214,7 +5214,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return jac;
   }
 
-  double NmssmSoftsusy::fineTuningJacobian
+  double NmssmSoftsusy::fineTuningInverseJacobian
 (void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &),
  const DoubleVector & bcPars, double mx, bool doTop) {
 
@@ -5285,7 +5285,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
 
     const double determinant
-       = fineTuningJacobian(boundaryCondition, bcPars, mx, doTop);
+       = fineTuningInverseJacobian(boundaryCondition, bcPars, mx, doTop);
 
     /// Restore initial parameters at correct scale
     setMu(savedMu);

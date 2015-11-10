@@ -713,10 +713,10 @@ namespace softsusy {
     /// arXiv:1312.4150 [hep-ph].  This version of the function computes
     /// the inverse of the Jacobian matrix, and returns the inverse of the
     /// computed matrix (i.e. the Jacobian determinant).
-    double fineTuningJacobian(void (*boundaryCondition)(NmssmSoftsusy &,
+    double fineTuningInverseJacobian(void (*boundaryCondition)(NmssmSoftsusy &,
                                                         const DoubleVector &),
-                              const DoubleVector & bcPars, double MX,
-                              bool doTop = false);
+                                     const DoubleVector & bcPars, double MX,
+                                     bool doTop = false);
 
     /// DH: calculates the tuning measure \Delta_J defined in
     /// arXiv:1312.4150 [hep-ph].
