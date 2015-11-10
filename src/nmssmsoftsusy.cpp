@@ -6453,14 +6453,14 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
 
     const double determinant
-       = fineTuningJacobian(boundaryCondition, bcPars, mx, doTop);
+       = fineTuningInverseJacobian(boundaryCondition, bcPars, mx, doTop);
 
     /// Restore initial parameters at correct scale
     setMu(savedMu);
     set(savedObject);
     setPhys(savedPhys);
 
-    return fabs(numerator / (denominator * determinant));
+    return fabs(numerator * determinant / (denominator));
   }
 
   /// Obtains solution of one-loop effective potential minimisation via iteration
