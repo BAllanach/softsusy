@@ -206,20 +206,20 @@ namespace softsusy {
     /// DH: boundary condition used in Jacobian calculation
     static void jacobianBc(NmssmSoftsusy &, const DoubleVector &);
 
-    /// DH: calculates a single row in the low-scale Jacobian
-    void calculateLowScaleJacobianRow(int numPar, const DoubleVector & bcPars,
-                                      FineTuningPars & tuningPars,
-                                      DoubleVector & row);
-    /// DH: calculates a single row in the high-scale Jacobian
-    void calculateHighScaleJacobianRow(int numPar, const DoubleVector & bcPars,
-                                      FineTuningPars & tuningPars,
-                                      DoubleVector & row);
-    /// DH: calculates the Jacobian matrix associated with the change of
+    /// DH: calculates a single row in the low-scale inverse Jacobian
+    void calculateLowScaleInverseJacobianRow(int numPar, const DoubleVector & bcPars,
+                                             FineTuningPars & tuningPars,
+                                             DoubleVector & row);
+    /// DH: calculates a single row in the high-scale inverse Jacobian
+    void calculateHighScaleInverseJacobianRow(int numPar, const DoubleVector & bcPars,
+                                              FineTuningPars & tuningPars,
+                                              DoubleVector & row);
+    /// DH: calculates the (inverse) Jacobian matrix associated with the change of
     /// variables at the SUSY scale
-    double calcLowScaleJacobian(bool doTop);
-    /// DH: calculates the Jacobian matrix associated with the change
+    double calcLowScaleInverseJacobian(bool doTop);
+    /// DH: calculates the (inverse) Jacobian matrix associated with the change
     /// of variables to high-scale parameters
-    double calcHighScaleJacobian(double mx, bool doTop);
+    double calcHighScaleInverseJacobian(double mx, bool doTop);
 
   public:
     //  void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &);

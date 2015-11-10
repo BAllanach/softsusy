@@ -5006,10 +5006,10 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
   }
 
-  void NmssmSoftsusy::calculateLowScaleJacobianRow(int numPar,
-                                                    const DoubleVector & bcPars,
-                                                    FineTuningPars & tuningPars,
-                                                    DoubleVector & row) {
+  void NmssmSoftsusy::calculateLowScaleInverseJacobianRow(int numPar,
+                                                          const DoubleVector & bcPars,
+                                                          FineTuningPars & tuningPars,
+                                                          DoubleVector & row) {
 
     const double x = bcPars.display(numPar);
     double h = 0.01 * x;
@@ -5041,10 +5041,10 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
   }
 
-  void NmssmSoftsusy::calculateHighScaleJacobianRow(int numPar,
-                                                    const DoubleVector & bcPars,
-                                                    FineTuningPars & tuningPars,
-                                                    DoubleVector & row) {
+  void NmssmSoftsusy::calculateHighScaleInverseJacobianRow(int numPar,
+                                                           const DoubleVector & bcPars,
+                                                           FineTuningPars & tuningPars,
+                                                           DoubleVector & row) {
 
     const double x = bcPars.display(numPar);
     double h = 0.01 * x;
@@ -5070,7 +5070,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
   }
 
-  double NmssmSoftsusy::calcLowScaleJacobian(bool doTop) {
+  double NmssmSoftsusy::calcLowScaleInverseJacobian(bool doTop) {
 
     /// Stores running parameters in a vector
     DoubleVector savedObject(display());
@@ -5111,7 +5111,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     for (int i = 1; i <= numPars; ++i) {
       DoubleVector currentRow(numPars);
-      calculateLowScaleJacobianRow(i, jacPars, tuningPars, currentRow);
+      calculateLowScaleInverseJacobianRow(i, jacPars, tuningPars, currentRow);
       for (int j = 1; j <= numPars; ++j) {
         jacLowScaleMatrix(i, j) = currentRow(j);
       }
@@ -5124,25 +5124,15 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
     inverseLowScaleJacobian = jacLowScaleMatrix;
 
-    double jac = jacLowScaleMatrix.determinant();
-
-    /// Check for non-zero determinant
-    /// @todo better error checking is needed here
-    if (fabs(jac) < EPSTOL) {
-      jac = numberOfTheBeast;
-    } else {
-      jac = 1.0 / jac;
-    }
-
     /// Restore initial parameters at correct scale
     setMu(savedMu);
     set(savedObject);
     setPhys(savedPhys);
 
-    return jac;
+    return jacLowScaleMatrix.determinant();
   }
 
-   double NmssmSoftsusy::calcHighScaleJacobian(double mx, bool doTop) {
+   double NmssmSoftsusy::calcHighScaleInverseJacobian(double mx, bool doTop) {
 
     /// Stores running parameters in a vector
     DoubleVector savedObject(display());
@@ -5183,7 +5173,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     for (int i = 1; i <= numPars; ++i) {
       DoubleVector currentRow(numPars);
-      calculateHighScaleJacobianRow(i, jacPars, tuningPars, currentRow);
+      calculateHighScaleInverseJacobianRow(i, jacPars, tuningPars, currentRow);
       for (int j = 1; j <= numPars; ++j) {
         jacHighScaleMatrix(i, j) = currentRow(j);
       }
@@ -5196,22 +5186,12 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
     inverseHighScaleJacobian = jacHighScaleMatrix;
 
-    double jac = jacHighScaleMatrix.determinant();
-
-    /// Check for non-zero determinant
-    /// @todo better error checking is needed here
-    if (fabs(jac) < EPSTOL) {
-      jac = numberOfTheBeast;
-    } else {
-      jac = 1.0 / jac;
-    }
-
     /// Restore initial parameters at correct scale
     setMu(savedMu);
     set(savedObject);
     setPhys(savedPhys);
 
-    return jac;
+    return jacHighScaleMatrix.determinant();
   }
 
   double NmssmSoftsusy::fineTuningInverseJacobian
@@ -5230,10 +5210,10 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     boundaryCondition(*this, bcPars);
 
     /// Calculate high-scale Jacobian
-    double jacRG = calcHighScaleJacobian(mx, doTop);
+    double jacRG = calcHighScaleInverseJacobian(mx, doTop);
 
     /// Calculate low-scale Jacobian
-    double jacLowScale = calcLowScaleJacobian(doTop);
+    double jacLowScale = calcLowScaleInverseJacobian(doTop);
 
     double jac = jacLowScale * jacRG;
 
@@ -5292,7 +5272,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     set(savedObject);
     setPhys(savedPhys);
 
-    return fabs(numerator / (denominator * determinant));
+    return fabs(numerator * determinant / denominator);
   }
 
   /// Obtains solution of one-loop effective potential minimisation via iteration
