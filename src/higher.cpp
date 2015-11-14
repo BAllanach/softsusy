@@ -25,6 +25,9 @@
 #include "utils.h"
 #include "numerics.h"
 
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+#ifdef COMPILE_THREE_LOOP_RGE
+
 /// NLLFAST version
 void getCrossSection(MssmSoftsusy & r, double m0, double m12, double a0, 
 		     double tanb, double & xsGG, double & xsSG, double & xsSS,
@@ -212,6 +215,10 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
     }
 }
 
+#endif
+#endif
+
+
 int main(int argc, char *argv[]) {
   /*  double xsGG,xsSG,xsSS,xsSB,xsTB;   char c[500];  char fn[500];
   sprintf(fn, "output");
@@ -237,11 +244,15 @@ int main(int argc, char *argv[]) {
 
   TOLERANCE = 1.0e-4;
   try {
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+#ifdef COMPILE_THREE_LOOP_RGE
     doScan(0.1, 1.96, 20);
     doScan(1.96, 1.9786, 10);
     doScan(1.9786, 1.9825, 10);
     doScan(1.9825, 2.03, 10);
     doScan(2.03, 3.2, 10);
+#endif 
+#endif
   }
   catch(const string & a) { cout << a; return -1; }
   catch(const char * a) { cout << a; return -1; }
@@ -249,3 +260,4 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
+

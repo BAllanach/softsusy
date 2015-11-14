@@ -2,7 +2,7 @@
 
 lib_LTLIBRARIES += libsoft.la 
 
-bin_PROGRAMS += cmsdilep.x higher.x softsusy.x \
+bin_PROGRAMS += cmsdilep.x softsusy.x \
                 softsusy-nmssm.x \
                 softpoint.x \
                 rpvsoftsusy.x \
@@ -47,7 +47,7 @@ higher_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp
 higher_x_LDADD += lib2lthresh.la libmssmparam.la 
 
 if COMPILE_THREE_LOOP_RGE
-bin_PROGRAMS += scansusy.x 
+bin_PROGRAMS += scansusy.x higher.x 
 scansusy_x_SOURCES = src/scan.cpp 
 scansusy_x_LDADD = libsoft.la  
 scansusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 

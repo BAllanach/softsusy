@@ -9072,7 +9072,8 @@ double MssmSoftsusy::deltaVb(double outrho, double outsin,
   
   double deltaVbSm = outrho * alphaDRbar / (4.0 * PI * sqr(outsin)) *
     (6.0 + log(cw2) / sw2 * 
-     (3.5 - 2.5 * sw2 - sqr(outsin) * (5.0 - 1.5 * cw2 / sqr(outcos))));
+     (3.5 - 2.5 * sw2 - sqr(outsin) * (5.0 - 1.5 * cw2 / sqr(outcos)))
+     - 4. * log(sqr(displayMz()/q)));
   
   DoubleVector bPsi0NuNul(dimN), bPsicNuSell(2);
   DoubleVector bPsi0ESell(dimN), aPsicESnul(2);
