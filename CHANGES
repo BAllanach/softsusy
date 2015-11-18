@@ -1,4 +1,5 @@
-<li> 17/11/15 Fixed unprotected config.h in src/softpars.h
+<li> 18/11/15 Fixed QED beta function between MW and MZ: thanks to A Voigt
+<li> 17/11/15 Fixed unprotected config.h in src/softpars.h Thanks to S Ajeet
 <li> 14/8/15 Added 2-loop corrections to gluino/squark masses in the NMSSM
 <li> 14/7/15 Fixed flavoured GMSB SLHA control: thanks to R Franceschini
 <li> 19/6/15 Made sfermion mixing in SLHA output the *tree-level* mixing at MSUSY: better defined theoretically and more useful
