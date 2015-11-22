@@ -266,12 +266,22 @@ namespace softsusy {
       }
 
       // save calculated matrix
-      if (invJacRGFlow.displayRows() != numPars
-          || invJacRGFlow.displayCols() != numPars) {
-        invJacRGFlow.resize(numPars, numPars);
+      // convention: inverse refers to case where transformation
+      // is from high-scale to low-scale parameters
+      if (startScale > endScale) {
+        if (invJacRGFlow.displayRows() != numPars
+            || invJacRGFlow.displayCols() != numPars) {
+          invJacRGFlow.resize(numPars, numPars);
+        }
+        invJacRGFlow = jac;
+      } else {
+        if (jacRGFlow.displayRows() != numPars
+            || jacRGFlow.displayCols() != numPars) {
+          jacRGFlow.resize(numPars, numPars);
+        }
+        jacRGFlow = jac;
       }
-      invJacRGFlow = jac;
-      cout << jac << '\n';
+
       rgDet = jac.determinant();
 
       model->setMu(scale);
