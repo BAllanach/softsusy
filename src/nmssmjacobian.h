@@ -48,6 +48,11 @@ namespace softsusy {
       NmssmSoftsusy* model;
       Parameters independent;
       Parameters dependent;
+      DoubleVector outputs;
+
+      EWSBPars()
+        : model(0), independent(Mzsq), dependent(Lambda), outputs(3)
+        {}
     };
 
     struct RGFlowPars {
@@ -60,8 +65,13 @@ namespace softsusy {
     static double calcRunningParameter(double x, void* parameters);
     double calcRGDerivative(Parameters dep, Parameters indep, double toScale);
     double calcRGFlowJacobian(double startScale, double endScale, bool doTop);
+    static int ewsbOutputErrors(const DoubleVector & guess, void* parameters,
+                                DoubleVector & errors);
+    static void fixEWSBOutputs(EWSBPars* pars, int & err);
+    static double calcEWSBParameter(double x, void* parameters);
     static double calcEWSBOutput(double x, void* parameters);
-    double calcEWSBDerivative(Parameters dep, Parameters indep);
+    double calcEWSBOutputDerivative(Parameters dep, Parameters indep);
+    double calcEWSBParameterDerivative(Parameters dep, Parameters indep, bool doTop);
     double calcEWSBJacobian(bool doTop);
     double calcInverseEWSBJacobian(bool doTop);
   };

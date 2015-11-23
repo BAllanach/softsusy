@@ -492,7 +492,214 @@ namespace softsusy {
     return output;
   }
 
-  double NmssmJacobian::calcEWSBDerivative(Parameters dep, Parameters indep) {
+  int NmssmJacobian::ewsbOutputErrors(const DoubleVector & guess,
+                                      void* parameters,
+                                      DoubleVector & errors) {
+    EWSBPars* pars = static_cast<EWSBPars*>(parameters);
+
+    NmssmSoftsusy* m = pars->model;
+    const DoubleVector outputs = pars->outputs;
+    const int numOutputs = outputs.displayEnd();
+
+    if (SoftHiggsOut) {
+      m->setMh1Squared(guess(1));
+      m->setMh2Squared(guess(2));
+      m->setMsSquared(guess(3));
+    } else if (Z3) {
+      m->setLambda(guess(1));
+      m->setKappa(guess(2));
+      m->setMsSquared(guess(3));
+    } else {
+      m->setSusyMu(guess(1));
+      m->setM3Squared(guess(2));
+      m->setXiS(guess(3));
+    }
+    if (numOutputs > 3) {
+      m->setYukawaElement(YU, 3, 3, guess(4));
+    }
+
+    DoubleVector vevs(3);
+    vevs(1) = m->displayHvev();
+    vevs(2) = m->displayTanb();
+    vevs(3) = m->displaySvev();
+
+    int error = 0;
+    m->iterateVevs(vevs, error);
+
+    m->setHvev(vevs(1));
+    m->setTanb(vevs(2));
+    m->setSvev(vevs(3));
+
+    if (Z3 && !SoftHiggsOut) {
+      errors(1) = sqr(calcMzPole(m)) - outputs(1);
+      errors(2) = m->displayTanb() - outputs(2);
+      errors(3) = m->displayLambda() - outputs(3);
+    } else {
+      errors(1) = sqr(calcMzPole(m)) - outputs(1);
+      errors(2) = m->displayTanb() - outputs(2);
+      errors(3) = m->displaySvev() - outputs(3);
+    }
+
+    error = error && testNan(errors(1)) && testNan(errors(2))
+      && testNan(errors(3));
+
+    if (numOutputs > 3) {
+      errors(4) = sqr(calcMtPole(m)) - outputs(4);
+      error = error && testNan(errors(4));
+    }
+
+    return error;
+  }
+
+  void NmssmJacobian::fixEWSBOutputs(EWSBPars* pars, int & err) {
+
+    NmssmSoftsusy* m = pars->model;
+    const int numOutputs = pars->outputs.displayEnd();
+    // initial guess
+    DoubleVector guess(numOutputs);
+    if (SoftHiggsOut) {
+      guess(1) = m->displayMh1Squared();
+      guess(2) = m->displayMh2Squared();
+      guess(3) = m->displayMsSquared();
+    } else if (Z3) {
+      guess(1) = m->displayLambda();
+      guess(2) = m->displayKappa();
+      guess(3) = m->displayMsSquared();
+    } else {
+      guess(1) = m->displaySusyMu();
+      guess(2) = m->displayM3Squared();
+      guess(3) = m->displayXiS();
+    }
+    if (numOutputs > 3) {
+      guess(4) = m->displayYukawaElement(YU, 3, 3);
+    }
+
+    bool error = newt(guess, ewsbOutputErrors, pars);
+    err = error ? 1 : 0;
+  }
+
+  double NmssmJacobian::calcEWSBParameter(double x, void* parameters) {
+    EWSBPars* pars = static_cast<EWSBPars*>(parameters);
+
+    NmssmSoftsusy* tempModel = pars->model;
+    Parameters independent = pars->independent;
+    Parameters dependent = pars->dependent;
+
+    const DoubleVector savedPars(tempModel->display());
+    const double startScale = tempModel->displayMu();
+    const drBarPars savedDrBarPars(tempModel->displayDrBarPars());
+    const DoubleVector savedOutputs(pars->outputs);
+
+    if (PRINTOUT > 1) cout << '#';
+
+    switch (independent) {
+    case Lambda: {
+      pars->outputs(3) = x;
+      if (PRINTOUT > 1) cout << "lambda= " << x << ' ';
+      break;
+    }
+    case Mzsq: {
+      pars->outputs(1) = x;
+      if (PRINTOUT > 1) cout << "MZ= " << sqrt(x) << ' ';
+      break;
+    }
+    case Tanb: {
+      pars->outputs(2) = x;
+      if (PRINTOUT > 1) cout << "tanb= " << x << ' ';
+      break;
+    }
+    case Svev: {
+      pars->outputs(3) = x;
+      if (PRINTOUT > 1) cout << "Svev= " << x << ' ';
+      break;
+    }
+    case Mtsq: {
+      pars->outputs(4) = x;
+      if (PRINTOUT > 1) cout << "MT= " << sqrt(x) << ' ';
+      break;
+    }
+    default: {
+      ostringstream ii;
+      ii << "NmssmJacobian:calcEWSBParameter called with incorrect"
+         << " independent parameter " << independent << '\n';
+      throw ii.str();
+    }
+    }
+
+    int error = 0;
+    fixEWSBOutputs(pars, error);
+
+    // @todo better error handling
+    if (error != 0) {
+      if (PRINTOUT > 0) {
+        cout << "Warning: could not set EWSB outputs\n";
+      }
+    }
+
+    double output;
+    switch (dependent) {
+    case Lambda: {
+      output = tempModel->displayLambda();
+      if (PRINTOUT > 1) cout << "lambda= " << output << ' ';
+      break;
+    }
+    case Kappa: {
+      output = tempModel->displayKappa();
+      if (PRINTOUT > 1) cout << "kappa= " << output << ' ';
+      break;
+    }
+    case SMu: {
+      output = tempModel->displaySusyMu();
+      if (PRINTOUT > 1) cout << "mu= " << output << ' ';
+      break;
+    }
+    case M3Sq: {
+      output = tempModel->displayM3Squared();
+      if (PRINTOUT > 1) cout << "m3sq= " << output << ' ';
+      break;
+    }
+    case XiS: {
+      output = tempModel->displayXiS();
+      if (PRINTOUT > 1) cout << "xiS= " << output << ' ';
+      break;
+    }
+    case Mh1Sq: {
+      output = tempModel->displayMh1Squared();
+      if (PRINTOUT > 1) cout << "mH1Sq= " << output << ' ';
+      break;
+    }
+    case Mh2Sq: {
+      output = tempModel->displayMh2Squared();
+      if (PRINTOUT > 1) cout << "mH2Sq= " << output << ' ';
+      break;
+    }
+    case MsSq: {
+      output = tempModel->displayMsSquared();
+      if (PRINTOUT > 1) cout << "mSsq= " << output << ' ';
+      break;
+    }
+    case Yt: {
+      output = tempModel->displayYukawaElement(YU, 3, 3);
+      if (PRINTOUT > 1) cout << "ht= " << output << ' ';
+      break;
+    }
+    default: {
+      ostringstream ii;
+      ii << "NmssmJacobian:calcEWSBParameter called with incorrect"
+         << " dependent parameter " << dependent << '\n';
+      throw ii.str();
+    }
+    }
+
+    tempModel->setMu(startScale);
+    tempModel->set(savedPars);
+    tempModel->setDrBarPars(savedDrBarPars);
+    pars->outputs = savedOutputs;
+
+    return output;
+  }
+
+  double NmssmJacobian::calcEWSBOutputDerivative(Parameters dep, Parameters indep) {
     double derivative = 0.;
 
     if (model) {
@@ -547,7 +754,7 @@ namespace softsusy {
       }
       default: {
         ostringstream ii;
-        ii << "NmssmJacobian:calcEWSBDerivative called with incorrect"
+        ii << "NmssmJacobian:calcEWSBOutputDerivative called with incorrect"
            << " independent parameter " << indep << '\n';
         throw ii.str();
       }
@@ -575,11 +782,145 @@ namespace softsusy {
     return derivative;
   }
 
+  double NmssmJacobian::calcEWSBParameterDerivative(Parameters dep, Parameters indep, bool doTop) {
+    double derivative = 0.;
+
+    if (model) {
+      double x = 0.;
+      double h = 0.01;
+
+      const int numOutputs = doTop ? 4 : 3;
+      DoubleVector outputs(numOutputs);
+      outputs(1) = sqr(calcMzPole(model));
+      outputs(2) = model->displayTanb();
+      outputs(3) = (Z3 && !SoftHiggsOut) ? model->displayLambda() :
+        model->displaySvev();
+      if (numOutputs > 3) outputs(4) = sqr(calcMtPole(model));
+
+      switch (indep) {
+      case Lambda: {
+        x = outputs(3);
+        h = 0.0005 * x;
+        break;
+      }
+      case Mzsq: {
+        x = outputs(1);
+        h = 0.01 * x;
+        break;
+      }
+      case Tanb: {
+        x = outputs(2);
+        h = 0.001 * x;
+        break;
+      }
+      case Svev: {
+        x = outputs(3);
+        h = 0.01 * x;
+        break;
+      }
+      case Mtsq: {
+        x = outputs(4);
+        h = 0.01 * x;
+        break;
+      }
+      default: {
+        ostringstream ii;
+        ii << "NmssmJacobian:calcEWSBParameterDerivative called with incorrect"
+           << " independent parameter " << indep << '\n';
+        throw ii.str();
+      }
+      }
+
+      EWSBPars pars;
+      pars.model = model;
+      pars.independent = indep;
+      pars.dependent = dep;
+      pars.outputs = outputs;
+
+      double err = 0.;
+      if (fabs(x) > 1.0e-10) {
+        derivative = calcDerivative(calcEWSBParameter, x, h, &err, &pars);
+      }
+
+      if (PRINTOUT > 1)
+        cout << "derivative=" << derivative << " error=" << err << '\n';
+
+      const bool has_error
+        = fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0;
+
+      if (has_error) derivative = -numberOfTheBeast;
+    }
+
+    return derivative;
+  }
+
   double NmssmJacobian::calcEWSBJacobian(bool doTop) {
     double ewsbDet = 0.;
 
     if (model) {
+      const DoubleVector savedPars(model->display());
+      const double scale = model->displayMu();
+      const drBarPars savedDrBarPars(model->displayDrBarPars());
 
+      const int numPars = doTop ? 4 : 3;
+
+      DoubleMatrix jac(numPars, numPars);
+
+      vector<Parameters> indepPars;
+
+      if (Z3 && !SoftHiggsOut) {
+        indepPars.push_back(Mzsq);
+        indepPars.push_back(Tanb);
+        indepPars.push_back(Lambda);
+      } else {
+        indepPars.push_back(Mzsq);
+        indepPars.push_back(Tanb);
+        indepPars.push_back(Svev);
+      }
+      if (doTop) indepPars.push_back(Mtsq);
+
+      for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
+        if (SoftHiggsOut) {
+          jac(i + 1, 1) = calcEWSBParameterDerivative(Mh1Sq, indepPars[i], doTop);
+          jac(i + 1, 2) = calcEWSBParameterDerivative(Mh2Sq, indepPars[i], doTop);
+          jac(i + 1, 3) = calcEWSBParameterDerivative(MsSq, indepPars[i], doTop);
+        } else if (Z3) {
+          if (indepPars[i] == Lambda) {
+            jac(i + 1, 1) = 1.;
+            jac(i + 1, 2) = 0.;
+            jac(i + 1, 3) = 0.;
+          } else {
+            jac(i + 1, 1) = 0.;
+            jac(i + 1, 1) = calcEWSBParameterDerivative(Lambda, indepPars[i], doTop);
+            jac(i + 1, 2) = calcEWSBParameterDerivative(Kappa, indepPars[i], doTop);
+            jac(i + 1, 3) = calcEWSBParameterDerivative(MsSq, indepPars[i], doTop);
+          }
+        } else {
+          jac(i + 1, 1) = calcEWSBParameterDerivative(SMu, indepPars[i], doTop);
+          jac(i + 1, 2) = calcEWSBParameterDerivative(M3Sq, indepPars[i], doTop);
+          jac(i + 1, 3) = calcEWSBParameterDerivative(XiS, indepPars[i], doTop);
+        }
+        if (doTop) {
+          if ((Z3 && !SoftHiggsOut) && indepPars[i] == Lambda) {
+            jac(i + 1, 4) = 0.;
+          } else {
+            jac(i + 1, 4) = calcEWSBParameterDerivative(Yt, indepPars[i], doTop);
+          }
+        }
+      }
+
+      // save calculated matrix
+      if (jacEWSB.displayRows() != numPars
+          || jacEWSB.displayCols() != numPars) {
+        jacEWSB.resize(numPars, numPars);
+      }
+      jacEWSB = jac;
+
+      ewsbDet = jac.determinant();
+
+      model->setMu(scale);
+      model->set(savedPars);
+      model->setDrBarPars(savedDrBarPars);
     }
 
     return ewsbDet;
@@ -621,20 +962,20 @@ namespace softsusy {
             jac(i + 1, 2) = 0.;
             jac(i + 1, 3) = 1.;
           } else {
-            jac(i + 1, 1) = calcEWSBDerivative(Mzsq, indepPars[i]);
-            jac(i + 1, 2) = calcEWSBDerivative(Tanb, indepPars[i]);
+            jac(i + 1, 1) = calcEWSBOutputDerivative(Mzsq, indepPars[i]);
+            jac(i + 1, 2) = calcEWSBOutputDerivative(Tanb, indepPars[i]);
             jac(i + 1, 3) = 0.;
           }
         } else {
-          jac(i + 1, 1) = calcEWSBDerivative(Mzsq, indepPars[i]);
-          jac(i + 1, 2) = calcEWSBDerivative(Tanb, indepPars[i]);
-          jac(i + 1, 3) = calcEWSBDerivative(Svev, indepPars[i]);
+          jac(i + 1, 1) = calcEWSBOutputDerivative(Mzsq, indepPars[i]);
+          jac(i + 1, 2) = calcEWSBOutputDerivative(Tanb, indepPars[i]);
+          jac(i + 1, 3) = calcEWSBOutputDerivative(Svev, indepPars[i]);
         }
         if (doTop) {
           if ((Z3 && !SoftHiggsOut) && indepPars[i] == Lambda) {
             jac(i + 1, 4) = 0.;
           } else {
-            jac(i + 1, 4) = calcEWSBDerivative(Mtsq, indepPars[i]);
+            jac(i + 1, 4) = calcEWSBOutputDerivative(Mtsq, indepPars[i]);
           }
         }
       }
