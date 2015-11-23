@@ -41,8 +41,14 @@ namespace softsusy {
     DoubleMatrix invJacEWSB;
 
     // helper functions getting pole Z and top mass
-    double calcMzPole() const;
-    double calcMtPole();
+    static double calcMzPole(NmssmSoftsusy*);
+    static double calcMtPole(NmssmSoftsusy*);
+
+    struct EWSBPars {
+      NmssmSoftsusy* model;
+      Parameters independent;
+      Parameters dependent;
+    };
 
     struct RGFlowPars {
       NmssmSoftsusy* model;
@@ -54,6 +60,8 @@ namespace softsusy {
     static double calcRunningParameter(double x, void* parameters);
     double calcRGDerivative(Parameters dep, Parameters indep, double toScale);
     double calcRGFlowJacobian(double startScale, double endScale, bool doTop);
+    static double calcEWSBOutput(double x, void* parameters);
+    double calcEWSBDerivative(Parameters dep, Parameters indep);
     double calcEWSBJacobian(bool doTop);
     double calcInverseEWSBJacobian(bool doTop);
   };
