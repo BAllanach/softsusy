@@ -1,3 +1,4 @@
+<li> 23/11/15 Fixed SPINFO warnings' format in SLHA output
 <li> 18/11/15 Fixed QED beta function between MW and MZ: thanks to A Voigt
 <li> 17/11/15 Fixed unprotected config.h in src/softpars.h Thanks to S Ajeet
 <li> 14/8/15 Added 2-loop corrections to gluino/squark masses in the NMSSM

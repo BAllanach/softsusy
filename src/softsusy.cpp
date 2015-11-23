@@ -9731,21 +9731,22 @@ void MssmSoftsusy::spinfoSLHA(ostream & out) {
   int posj = 0, posi = 0; double mass = 0.;
   int temp = lsp(mass, posi, posj);
   if (displayProblem().tachyonWarning) 
-    out << "     3    # Warning: " 
+    out << "     3    " 
 	<< tachyonNames[displayProblem().tachyonWarning] 
-	<< " is tree-level tachyon at MZ" << endl;
+	<< " is tree-level tachyon at MZ # Warning" << endl;
   if (displayProblem().noConvergence)
-    out << "     3    # Warning: did not achieve desired precision. "
-	<< " Got " << displayFracDiff() << " instead of " << TOLERANCE << endl;
+    out << "     3    did not achieve desired precision. "
+	<< " Got " << displayFracDiff() << " instead of " << TOLERANCE 
+	<< " # Warning" << endl;
   if (displayProblem().inaccurateHiggsMass)
-    out << "     3    # Warning: Higgs mass especially inaccurate due to large hierarchies"
-	<< " in spectrum" << endl;
+    out << "     3    Higgs mass especially inaccurate due to large hierarchies"
+	<< " in spectrum # Warning" << endl;
   if (temp != 0 && temp != -1) {
-    out << "     3    # Warning: " << recogLsp(temp, posj);
-    out << " LSP" << endl;
+    out << "     3    " << recogLsp(temp, posj);
+    out << " LSP # Warning" << endl;
   }
   if (displayProblem().testSeriousProblem()) 
-    out << "     4    # Point invalid: " << displayProblem() << endl;
+    out << "     4    " << displayProblem() << " # Point invalid" << endl;
 }
 
 void MssmSoftsusy::softsusySLHA(ostream & out) {
