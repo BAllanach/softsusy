@@ -19,6 +19,9 @@ namespace softsusy {
     explicit NmssmJacobian(NmssmSoftsusy* m);
     virtual ~NmssmJacobian();
 
+    void setUseRunningMassesFlag(bool flag) { useRunningMasses = flag; }
+    bool displayUseRunningMassesFlag() const { return useRunningMasses; }
+
     DoubleMatrix displayRGFlowJacobian() const { return jacRGFlow; }
     DoubleMatrix displayEWSBJacobian() const { return jacEWSB; }
     DoubleMatrix displayInverseRGFlowJacobian() const { return invJacRGFlow; }
@@ -39,19 +42,22 @@ namespace softsusy {
     DoubleMatrix jacEWSB;
     DoubleMatrix invJacRGFlow;
     DoubleMatrix invJacEWSB;
+    bool useRunningMasses;
 
     // helper functions getting pole Z and top mass
-    static double calcMzPole(NmssmSoftsusy*);
-    static double calcMtPole(NmssmSoftsusy*);
+    static double calcMz(NmssmSoftsusy* m, bool getRunningMass = false);
+    static double calcMt(NmssmSoftsusy* m, bool getRunningMass = false);
 
     struct EWSBPars {
       NmssmSoftsusy* model;
       Parameters independent;
       Parameters dependent;
       DoubleVector outputs;
+      bool useRunningMasses;
 
       EWSBPars()
-        : model(0), independent(Mzsq), dependent(Lambda), outputs(3)
+        : model(0), independent(Mzsq), dependent(Lambda),
+          outputs(3), useRunningMasses(false)
         {}
     };
 
