@@ -72,7 +72,7 @@ TSIL_COMPLEX pi20_sdR (int i, int j, TSIL_REAL s)
     term += PsdR[i][k] * PsdR[k][j] *
       W_SSFF (m2_sdR[k],m2_sdR[k],0.0L,m2_gluino,Q2);
 
-  /* NOTE m_up = 0 for up != top */
+  /* NOTE m_q = 0 for q != top */
 
   /* for (k=0; k<2; k++) */
   /*   for (m=0; m<2; m++) { */
@@ -352,7 +352,7 @@ TSIL_COMPLEX pi21tilde_sdR (int i, TSIL_REAL s)
   TSIL_CopyResult (&bar, &gaak);
   Gtilde_SSFF (&gaak, &gSSFF, &gSSff);
 
-  /* NOTE 0.0L = 0 for up != top */
+  /* NOTE mq = 0 for q != top */
   result += Cq*CG*(gFF + gSSFF 
 		   /* - NsdR[i][i]*0.0L*m_gluino*(gff + gSSff) */
 		   );

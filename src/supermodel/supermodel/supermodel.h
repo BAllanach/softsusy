@@ -15,12 +15,14 @@
 #include "tsil.h"
 #include "sumo_build.h"  /* Version information */
 #include "sumo_linalg.h" /* Defns for linear algebra routines */
+#include "sumo_params.h"
 
 /* Possibly useful enums: */
 enum {FALSE, TRUE}; /* Also present in tsil_global.h */
 enum {NO, YES};     /* Also present in tsil_global.h */
 enum {UNSET, SET};
 enum {UNEVALUATED, EVALUATED};
+enum {GLUINO=2, SQUARK};
 
 /* Size codes */
 enum {LONG_DOUBLE, DOUBLE};
@@ -288,7 +290,6 @@ extern TSIL_COMPLEX lambda0staustauc[4][2][2];
 /* DGR this is the same as lambda0snusnuc[] above, but... */
 extern TSIL_COMPLEX lambda0snutausnutauc[4];
 
-/* DGR - added (code in SUMO_Tree_SSSS_Couplings) */
 /* Neutral Higgs-neutral Higgs-sfermion-sfermion 4-point couplings
    hep-ph/0405022, eqs. (2.47)-(2.50). */
 extern TSIL_REAL    lambda00suLsuLc[4][4];
@@ -311,9 +312,8 @@ extern TSIL_REAL    lambdapseLsnuc[2];
 extern TSIL_COMPLEX lambdapsbotstopc[2][2][2];
 extern TSIL_COMPLEX lambdapstausnutauc[2][2];
 
-/* DGR - Added charged Higgs-neutral Higgs-sfermion-antisfermion
-     couplings, hep-ph/0405022 eqs. (2.63)-(2.65). */
-/* (Code computing these added to SUMO_Tree_SSSS_Couplings.) */
+/* Charged Higgs-neutral Higgs-sfermion-antisfermion couplings,
+   hep-ph/0405022 eqs. (2.63)-(2.65). */
 extern TSIL_COMPLEX lambda0psbotstopc[4][2][2][2];
 extern TSIL_COMPLEX lambda0pstausnutauc[4][2][2];
 extern TSIL_COMPLEX lambda0psdLsuLc[4][2];
@@ -323,9 +323,8 @@ extern TSIL_COMPLEX lambda0pseLsnuc[4][2];
    also include compex conjugates, as these are occasionally
    needed. */
 
-/* DGR - Added couplings of pairs of charged Higgses to sfermions
-   hep-ph/0405022 eqs. (2.55)-(2.59). */
-/* (Code computing these added to SUMO_Tree_SSSS_Couplings.) */
+/* Couplings of pairs of charged Higgses to sfermions hep-ph/0405022
+   eqs. (2.55)-(2.59). */
 extern TSIL_COMPLEX lambdapmstopstopc[2][2][2][2];
 extern TSIL_COMPLEX lambdapmsbotsbotc[2][2][2][2];
 extern TSIL_COMPLEX lambdapmstaustauc[2][2][2][2];
@@ -339,7 +338,6 @@ extern TSIL_COMPLEX lambdapmseLseLc[2][2];
 extern TSIL_COMPLEX lambdapmseRseRc[2][2];
 /* (Again some copies at the end here...) */
 
-/* DGR - Added (code in SUMO_Tree_FFS_Couplings) */
 /* Couplings of 3rd-generation fermions to neutral and
    charged Higgs scalars hep-ph/0405022 eqs. (2.1)-(2.6).  */
 extern TSIL_COMPLEX Yttcphi[4], conYttcphi[4];
@@ -365,17 +363,12 @@ extern TSIL_COMPLEX lambdastaustaucsnutausnutauc[2][2];
 extern TSIL_COMPLEX lambdastopsbotcsbotstopc[2][2][2][2];
 extern TSIL_COMPLEX lambdastausnutaucsnutaustauc[2][2];
 
-/* DGR added 3/12/13 -- last one? */
-/*   extern TSIL_COMPLEX lambdastopsbotcstausnutauc[2][2][2]; */
-
 /* These are related to the above, but perhaps we want separate
    copies? If so there are others we could also include... */
 
 extern TSIL_COMPLEX lambdasbotstopcstopsbotc[2][2][2][2];
 extern TSIL_COMPLEX lambdasnutaustaucstausnutauc[2][2];
 /*   extern TSIL_COMPLEX staustaucsbtsbotc[2][2][2][2]; */
-
-/* DGR -- end of added items. */
 
 /* Couplings of sfermions to neutralinos and fermions hep-ph/0405022
    eqs. (2.7)-(2.19). */
@@ -441,39 +434,7 @@ extern TSIL_COMPLEX gZZstopstopc[2][2];
 extern TSIL_COMPLEX gZZsbotsbotc[2][2];
 extern TSIL_COMPLEX gZZstaustauc[2][2];
 
-/* Effective potential (hep-ph/0206136). */
-extern TSIL_COMPLEX Veff;
-
-/* First and second derivatives of the tree, one-loop and two-loop
-   effective potential: */
-extern TSIL_REAL dVdvd[3], dVdvu[3], d2Vdvd2[3], d2Vdvu2[3], d2Vdvuvd[3];
-
-/* Errors and warnings */
-/* int  nErrs, nWarns; */
-/* int  errCode[10], warnCode[10]; */
-
-/* SUSY breaking parameter inputs */
-
-/* mSUGRA models (note we already have tanbetaMZ): */
-/* SUMO_REAL    m_zero, m_12; */
-/* SUMO_COMPLEX A_zero, phasemu; */
-
-/* Additional for GMSB models: */
-/* extern TSIL_REAL lambda, M_mess, N_5, C_grav; */
-
-/* Additional for AMSB models: */
-/* extern TSIL_REAL m_32; */
-
-/* Status code for the above */
-/* int HasSUSYBreakingInputs; */
-
-/* Loop order used for effective potential evaluation. */
-extern int Veff_loop_order;
-
-/* DGR added 6/10 */
-/* SUMO_REAL mtau_MB_MS; */
-/* SUMO_REAL mbot_MZ_MS; */
-/* SUMO_REAL mtau_MZ_MS; */
+extern int interp;
 
 /* -------------------------------------------------------------------- */
 /* -------------------------------------------------------------------- */
@@ -518,58 +479,8 @@ int SUMO_RGrun_gauge_Yukawas_VEVs (TSIL_REAL, int);
 int SUMO_RGrun_gYv (SUMO_REAL, int);
 int SUMO_RGrun_new (int,int,void**,void**,int(*)(),SUMO_REAL,int);
 
-/* In V2_FFS.c: */
-SUMO_COMPLEX SUMO_V2_FFS (void);
-
-/* In V2_FFV.c: */
-SUMO_COMPLEX SUMO_V2_FFV (void);
-
-/* In V2_SS.c: */
-SUMO_COMPLEX SUMO_V2_SS (void);
-
-/* In V2_SSS.c: */
-SUMO_COMPLEX SUMO_V2_SSS (void);
-
-/* In V2_SSV.c: */
-SUMO_COMPLEX SUMO_V2_SSV (void);
-
-/* In V2_VS.c: */
-SUMO_COMPLEX SUMO_V2_VS (void);
-
-/* In V2_VVS.c: */
-SUMO_COMPLEX SUMO_V2_VVS (void);
-
-/* In V2_gauge.c: */
-SUMO_COMPLEX SUMO_V2_gauge (void);
-
-/* In V2_strong.c: */
-SUMO_COMPLEX SUMO_V2_strong (void);
-
-/* In V_FI.c: */
-SUMO_COMPLEX SUMO_V_field_independent (void);
-
-/* In V_derivs.c: */
-int SUMO_V_derivs_numerical (int, TSIL_REAL, TSIL_REAL);
-int SUMO_V_firstderivs_numerical (int, TSIL_REAL, TSIL_REAL);
-int SUMO_Vtree_derivs (void);
-
 /* In betas.c: */
 int SUMO_Betas (int);
-
-/* In effpot.c: */
-SUMO_COMPLEX SUMO_Veff (SUMO_REAL, SUMO_REAL, int);
-int SUMO_Evaluate_Veff (int);
-int SUMO_Find_b_and_mu (int, SUMO_COMPLEX);
-SUMO_COMPLEX SUMO_V_tree (void); 
-SUMO_COMPLEX SUMO_V_oneloop (void); 
-SUMO_COMPLEX SUMO_V_twoloop (void); 
-void SUMO_Minimize_Veff (int);
-
-/* In findVEVs.c: */
-/* SUMO_COMPLEX PI_V_VS (SUMO_REAL, SUMO_REAL, SUMO_REAL); */
-/* SUMO_COMPLEX PI_Z_WW (SUMO_REAL, SUMO_REAL, SUMO_REAL); */
-/* SUMO_COMPLEX Pi_1_T_ZZ (void); */
-int SUMO_FindVEVs (void);
 
 /* In functions.c: */
 char *SUMO_Name (void);
@@ -582,51 +493,10 @@ void SUMO_Error (char *, char *, int);
 void SUMO_Warn (char *, char *);
 TSIL_COMPLEX SUMO_Ap (TSIL_REAL, TSIL_REAL);
 int SUMO_FPCompare (TSIL_REAL, TSIL_REAL);
-
-/* In io.c: */
-/* int SUMO_Read_SLHA (char *); */
-/* int SUMO_Write_SLHA (char *); */
-/* int SUMO_Write_Cform (char *); */
-/* int SUMO_Copy_model (void); */
-/* int FindNextDataLine (FILE *);  */
-/* int FormatError (char *); */
-/* int GetWord (FILE *, char *); */
-/* int GoToNextBlock (FILE *); */
-/* int MakeLowerCase (char *); */
-/* int ReadBlockMINPAR (FILE *); */
-/* int ReadBlockMODSEL (FILE *); */
-/* int ReadBlockSMINPUTS (FILE *); */
-/* int SUMO_LoadSLHAModel (char *); */
-/* int SUMO_PrintPoleMassSLHA (FILE *, int); */
-/* int SUMO_PrintSLHABlockAD (FILE *); */
-/* int SUMO_PrintSLHABlockAE (FILE *); */
-/* int SUMO_PrintSLHABlockALPHA (FILE *); */
-/* int SUMO_PrintSLHABlockAU (FILE *); */
-/* int SUMO_PrintSLHABlockEXTPAR (FILE *); */
-/* int SUMO_PrintSLHABlockGAUGE (FILE *); */
-/* int SUMO_PrintSLHABlockHMIX (FILE *); */
-/* int SUMO_PrintSLHABlockMASS (FILE *); */
-/* int SUMO_PrintSLHABlockMINPAR (FILE *); */
-/* int SUMO_PrintSLHABlockMODSEL (FILE *); */
-/* int SUMO_PrintSLHABlockMSOFT (FILE *); */
-/* int SUMO_PrintSLHABlockNMIX (FILE *); */
-/* int SUMO_PrintSLHABlockSBOTMIX (FILE *); */
-/* int SUMO_PrintSLHABlockSMINPUTS (FILE *); */
-/* int SUMO_PrintSLHABlockSPINFO (FILE *); */
-/* int SUMO_PrintSLHABlockSTAUMIX (FILE *); */
-/* int SUMO_PrintSLHABlockSTOPMIX (FILE *); */
-/* int SUMO_PrintSLHABlockUMIX (FILE *); */
-/* int SUMO_PrintSLHABlockVMIX (FILE *); */
-/* int SUMO_PrintSLHABlockYD (FILE *); */
-/* int SUMO_PrintSLHABlockYE (FILE *); */
-/* int SUMO_PrintSLHABlockYU (FILE *); */
-/* int SUMO_PrintSLHAFrontMatter (FILE *); */
-/* int SUMO_PrintSLHAInput (FILE *); */
-/* int SUMO_WriteSLHAInput (char *); */
-/* int SkipRestOfLine (FILE *); */
-/* int SkipWhiteSpace (FILE *); */
-/* void SUMO_PrintResult (TSIL_RESULT *); */
-/* void SUMO_WriteTSILResult (FILE *, TSIL_RESULT *); */
+TSIL_COMPLEX SUMO_GetFunction (TSIL_DATA *, const char *, int);
+TSIL_COMPLEX SUMO_GetFunctionR (TSIL_RESULT *, const char *, int);
+TSIL_COMPLEX SUMO_Bp (TSIL_REAL,TSIL_REAL,TSIL_COMPLEX,TSIL_REAL,int);
+TSIL_COMPLEX SUMO_dBds (TSIL_REAL,TSIL_REAL,TSIL_COMPLEX,TSIL_REAL,int);
 
 /* In linalg_comp.c: */
 int SUMO_DiagonalizeComp (SUMO_COMPLEX *, int, SUMO_EIGEN_COMP *);
@@ -636,75 +506,19 @@ int SUMO_AreEigenvectorsTheSame (int, int);
 int SUMO_DiagonalizeHerm (SUMO_COMPLEX *, int, SUMO_EIGEN_HERM *);
 void SUMO_SwapEigenvectors (int, int);
 
-/* In minimization.c: */
-void PowellMin (TSIL_REAL [], TSIL_REAL **, int, TSIL_REAL, int *, TSIL_REAL *, TSIL_REAL (*)(TSIL_REAL []));
-/* void SimplexMin (TSIL_REAL **, TSIL_REAL [], int, TSIL_REAL, TSIL_REAL (*)(TSIL_REAL []), int *); */
-
-/* In pm_charginos.c: */
-/* int SUMO_CharginoPole (int, int); */
-
-/* In pm_chiggs.c: */
-/* int SUMO_ChargedHiggsPole (int, int); */
-
 /* In pm_gluino.c: */
 /* SUMO_COMPLEX pi1tilde_gluino (int); */
 /* SUMO_COMPLEX pi2tilde_gluino (int); */
-int SUMO_GluinoPole (int);
-
-/* In pm_neutralinos.c: */
-/* int SUMO_NeutralinoPole (int, int); */
-
-/* In pm_nhiggs.c: */
-/* SUMO_COMPLEX NHiggsSE1 (int, int, SUMO_REAL); */
-/* SUMO_COMPLEX Pi1_phi0 (int, int, SUMO_REAL); */
-/* SUMO_COMPLEX Pi2QCD_phi0 (int, int, SUMO_REAL); */
-/* int SUMO_NeutralHiggsPole (int, int); */
-/* int SUMO_NeutralHiggsPoleEPA (int, int); */
-int SUMO_h0Pole (float); 
-int SUMO_H0Pole (int); 
-int SUMO_G0Pole (int); 
-int SUMO_A0Pole (int); 
+int SUMO_GluinoPole (int, int);
 
 /* In pm_squarks.c: */
 int SUMO_SbotPole (int, int);
 int SUMO_StopPole (int, int);
+int SUMO_StopPoleTest (int, int);
 int SUMO_SuLPole (int, int);
 int SUMO_SuRPole (int, int);
 int SUMO_SdLPole (int, int);
 int SUMO_SdRPole (int, int);
-
-/* In pm_topbottau.c: */
-/* int SUMO_BotPole (int); */
-/* int SUMO_TauPole (int); */
-/* int SUMO_TopPole (int); */
-
-/* In pm_wz.c: */
-/* SUMO_COMPLEX PI_V_VS (SUMO_REAL, SUMO_REAL, SUMO_REAL); */
-/* SUMO_COMPLEX PI_W_ZW (SUMO_REAL, SUMO_REAL, SUMO_REAL); */
-/* SUMO_COMPLEX PI_Z_WW (SUMO_REAL, SUMO_REAL, SUMO_REAL); */
-/* SUMO_COMPLEX Pi_1_T_WW (int); */
-/* SUMO_COMPLEX Pi_1_T_ZZ (int); */
-/* int SUMO_WPole (int); */
-/* int SUMO_ZPole (int); */
-
-/* In printout.c: */
-/* int SUMO_PrintInfo_ALL (void); */
-/* int SUMO_PrintInfo_MGUT (void); */
-/* int SUMO_PrintInfo_MZ (void); */
-/* int SUMO_print_ChargedHiggsMasses (void); */
-/* int SUMO_print_CharginoMasses (void); */
-/* int SUMO_print_GluinoMass (void); */
-/* int SUMO_print_NeutralHiggsMasses (void); */
-/* int SUMO_print_NeutralinoMasses (void); */
-/* int SUMO_print_SbotMasses (void); */
-/* int SUMO_print_SleptonMasses (void); */
-/* int SUMO_print_SquarkMasses (void); */
-/* int SUMO_print_StauMasses (void); */
-/* int SUMO_print_StopMasses (void); */
-/* int SUMO_print_TopBotTauMasses (void); */
-/* int SUMO_print_VEVs (void); */
-/* int SUMO_print_Yukawas (void); */
-/* int SUMO_print_gauge (void); */
 
 /* In rk6_RG.c: */
 int RG_rk6 (TSIL_REAL *, int, int);
@@ -737,28 +551,6 @@ int SUMO_Tree_Neutralinos (void);
 int SUMO_Tree_Sfermions (void);
 int SUMO_Tree_TopBotTau (void);
 int SUMO_Tree_WZ (void);
-
-/* In vacuum.c : */
-TSIL_COMPLEX SUMO_OneLoopVacuum (TSIL_REAL, TSIL_REAL);
-TSIL_COMPLEX SUMO_Fvac_SSS (TSIL_REAL, TSIL_REAL, TSIL_REAL, TSIL_REAL);
-TSIL_COMPLEX SUMO_Fvac_SS  (TSIL_REAL, TSIL_REAL, TSIL_REAL);
-TSIL_COMPLEX SUMO_Fvac_FFS (TSIL_REAL, TSIL_REAL, TSIL_REAL, TSIL_REAL);
-TSIL_COMPLEX SUMO_Fvac_ffS (TSIL_REAL, TSIL_REAL, TSIL_REAL, TSIL_REAL);
-TSIL_COMPLEX SUMO_Fvac_SSV (TSIL_REAL, TSIL_REAL, TSIL_REAL, TSIL_REAL);
-TSIL_COMPLEX SUMO_Fvac_VS  (TSIL_REAL, TSIL_REAL, TSIL_REAL);
-TSIL_COMPLEX SUMO_Fvac_VVS (TSIL_REAL, TSIL_REAL, TSIL_REAL, TSIL_REAL);
-TSIL_COMPLEX SUMO_Fvac_FFV (TSIL_REAL, TSIL_REAL, TSIL_REAL, TSIL_REAL);
-TSIL_COMPLEX SUMO_Fvac_ffV (TSIL_REAL, TSIL_REAL, TSIL_REAL, TSIL_REAL);
-TSIL_COMPLEX SUMO_Fvac_gauge (TSIL_REAL, TSIL_REAL, TSIL_REAL, TSIL_REAL);
-
-/* In se_phi0.c */
-SUMO_COMPLEX pi1_phi0 (int i, int j, SUMO_REAL s);
-SUMO_COMPLEX Pi1_phi0 (int i, int j, SUMO_REAL s);
-SUMO_COMPLEX pi1_phi0_X (int i, int j, SUMO_REAL s);
-SUMO_COMPLEX pi2QCD_phi0 (int i, int j, SUMO_REAL s);
-SUMO_COMPLEX pi2nonQCD_phi0 (int i, int j, SUMO_REAL s);
-SUMO_COMPLEX Pi2QCD_phi0 (int i, int j, SUMO_REAL s);
-SUMO_COMPLEX Pi2nonQCD_phi0 (int i, int j, SUMO_REAL s);
 
 #ifdef __cplusplus
 }

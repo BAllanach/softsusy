@@ -674,6 +674,77 @@ TSIL_COMPLEX TSIL_GetFunction (TSIL_DATA *foo, const char *which)
 }
 
 /* ******************************************************************* */
+/* Extract a single function value from a TSIL_RESULT.                 */
+
+TSIL_COMPLEX TSIL_GetFunctionR (TSIL_RESULT *foo, const char *which)
+{
+#include "tsil_names.h"
+
+  int i,j;
+  int match = NO;
+
+  TSIL_COMPLEX result = (TSIL_COMPLEX) 0.0;
+  char funcname[] = "TSIL_GetFunctionR";
+  char errmsg[55] = "Function not defined for these parameters: ";
+
+  if (!TSIL_ValidIdentifier (which))
+    TSIL_Error (funcname, "Invalid function identifier specified.", 23);
+
+  /* if (foo->status == UNEVALUATED) */
+  /*   TSIL_Error (funcname, "This case has not yet been evaluated!", 22); */
+
+  /* For simplicity, do evaluation cases separately */
+  if (!strncmp(which, "M", 1)) {
+    result = foo->M;
+  }
+  else if (!strncmp(which, "U", 1)) {
+    for (i=0; i<NUM_U_FUNCS; i++)
+      for (j=0; j<NUM_U_PERMS; j++)
+	if (!strcmp(which, uname[i][j]))
+	  result = foo->U[i];
+  }
+  else if (!strncmp(which, "TBAR", 4)) {
+    for (i=0; i<NUM_T_FUNCS; i++)
+      for (j=0; j<NUM_T_PERMS; j++)
+  	if (!strcmp(which, tbarname[i][j]))
+  	  result = foo->TBAR[i];
+  }
+  else if (!strncmp(which, "T", 1)) {
+    for (i=0; i<NUM_T_FUNCS; i++)
+      for (j=0; j<NUM_T_PERMS; j++)
+	if (!strcmp(which, tname[i][j]))
+	  result = foo->T[i];
+  }
+  else if (!strncmp(which, "S", 1)) {
+    for (i=0; i<NUM_S_FUNCS; i++)
+      for (j=0; j<NUM_S_PERMS; j++)
+	if (!strcmp(which, sname[i][j]))
+	  result = foo->S[i];
+  }
+  else if (!strncmp(which, "B", 1)) {
+    for (i=0; i<NUM_B_FUNCS; i++)
+      for (j=0; j<NUM_B_PERMS; j++)
+	if (!strcmp(which, bname[i][j]))
+	  result = foo->B[i];
+  }
+  else if (!strncmp(which, "V", 1)) {
+    for (i=0; i<NUM_V_FUNCS; i++)
+      for (j=0; j<NUM_V_PERMS; j++)
+	if (!strcmp(which, vname[i][j]))
+	  result = foo->V[i];
+  }
+  else {
+    /* This can't ever happen... */
+    TSIL_Error (funcname, "Invalid identifier specified.", 1);
+  }
+
+  if (TSIL_IsInfinite (result))
+    TSIL_Warn (funcname, strncat (errmsg, which, 7));
+
+  return result;
+}
+
+/* ******************************************************************* */
 /* Extract a single "bold" function value from the data object         */
 
 TSIL_COMPLEX TSIL_GetBoldFunction (TSIL_DATA  *foo,
@@ -783,6 +854,7 @@ TSIL_COMPLEX TSIL_GetBoldFunction (TSIL_DATA  *foo,
 
   return result;
 }
+
 
 /* ******************************************************************* */
 /* Returns true/false indicating if z is TSIL_Infinity               */
@@ -1348,9 +1420,25 @@ void TSIL_Error (const char *func, const char *msg, int val)
 
 /* ******************************************************************* */
 
+void TSIL_WarnsOn (void)
+{
+  printWarns = YES;
+  return;
+}
+
+/* ******************************************************************* */
+
+void TSIL_WarnsOff (void)
+{
+  printWarns = NO;
+  return;
+}
+
+/* ******************************************************************* */
+
 void TSIL_Warn (const char *func, const char *msg)
 {
-  if (printWarns) {
+  if (printWarns == YES) {
     fprintf (stderr, "WARNING (%s): %s\n", func, msg);
     fflush (stderr);
   }

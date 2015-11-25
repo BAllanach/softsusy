@@ -366,14 +366,6 @@ TSIL_COMPLEX gZZstopstopc[2][2];
 TSIL_COMPLEX gZZsbotsbotc[2][2];
 TSIL_COMPLEX gZZstaustauc[2][2];
 
-/* Effective potential (hep-ph/0206136). */
-TSIL_COMPLEX Veff;
-
-/* First and second derivatives of the tree, one-loop and two-loop
-   effective potential: */
-TSIL_REAL dVdvd[3], dVdvu[3], d2Vdvd2[3], d2Vdvu2[3], d2Vdvuvd[3];
-
-/* Loop order used for effective potential evaluation. */
-int Veff_loop_order;
+int interp = YES;
 
 #endif /* supermodel_defs.h */

@@ -1,3 +1,4 @@
+<li> 25/11/15 Got Steve's interpolation into the code and it compiles
 <li> 23/11/15 Fixed SPINFO warnings' format in SLHA output. Thanks to A Buckley
 <li> 18/11/15 Fixed QED beta function between MW and MZ: thanks to A Voigt
 <li> 17/11/15 Fixed unprotected config.h in src/softpars.h Thanks to S Ajeet

@@ -152,7 +152,6 @@ TSIL_COMPLEX pi1_stop (int i, int j, TSIL_REAL s)
   phip0tmp = m2_phip[0];
   m2_phip[0] = 0.0L;
 
-  /* DGR this term gives rise to kink in M_stop[1] around 608 GeV */
   /* charged Higgs loops */
   for (n=0; n<2; n++) {
   for (k=0; k<2; k++) {
@@ -201,56 +200,8 @@ TSIL_COMPLEX pi1_stop (int i, int j, TSIL_REAL s)
              A_S (m2_stop[k], Q2);
   }
 
-  /* Now redo the 4-sfermion part in a slightly different way. */
-/*
-  result4X = 0.0L;
-
-  for (k=0; k<2; k++) {
-    result4X += (3.0L * lambdastopstopcstopstopc[i][j][k][k] +
-                      lambdastopstopcstopstopc[i][k][k][j]) * 
-              A_S (m2_stop[k], Q2);
-
-    result4X += (3.0L * lambdastopstopcsbotsbotc[i][j][k][k] + 
-               lambdastopsbotcsbotstopc[i][k][k][j]) * 
-              A_S (m2_sbot[k], Q2);
-  }
-
-  for (k=0; k<2; k++) {
-    sumx3 += 3.0L * A_S (m2_suL[k], Q2) - 3.0L * A_S (m2_sdL[k], Q2) 
-             + A_S (m2_snu[k], Q2) - A_S (m2_seL[k], Q2) 
-             - Lstau[k] * Lstauc[k] * A_S (m2_stau[k], Q2);
-  }
-
-  sumx3 += A_S (m2_snu[2], Q2);
-
-  sumx3 *= 0.5L;
-
-  result4X += 0.5L * g2 * Lstop[i] * Lstopc[j] * sumx3;
-
-  for (k=0; k<2; k++) {
-    sumxp += 3.0L * (A_S (m2_suL[k], Q2) + A_S (m2_sdL[k], Q2))/6.0L 
-             - 0.5L * (A_S (m2_snu[k], Q2) + A_S (m2_seL[k], Q2)) 
-             - 3.0L * (2.0L/3.0L) * A_S (m2_suR[k], Q2) 
-             + 3.0L * (1.0L/3.0L) * A_S (m2_sdR[k], Q2)
-             + A_S (m2_seR[k], Q2)         
-             + (-0.5L * Lstau[k] * Lstauc[k] + Rstau[k] * Rstauc[k]) * 
-             A_S (m2_stau[k], Q2);
-  }
-
-  sumxp += -0.5L * A_S (m2_snu[2], Q2);
-
-  result4X += gp2 * (Lstop[i] * Lstopc[j]/6.0L - 
-            (2.0L/3.0L) * Rstop[i] * Rstopc[j]) * sumxp;
-
-  printf("result4 = %.8f\n", (double) result4);
-  printf("result4X = %.8f\n", (double) result4X);
-*/
-
   result += result4;
   result += QCDresult;
-
-  /* FOR TESTING ONLY: */
-  /* result = QCDresult; */
 
   return (result);
 }
@@ -265,10 +216,7 @@ TSIL_COMPLEX pi1_sbot (int i, int j, TSIL_REAL s)
   TSIL_COMPLEX BFF, Bff;
   TSIL_COMPLEX QCDresult = 0.0L;
   TSIL_COMPLEX result = 0.0L;
-  /* TSIL_COMPLEX sumx3 = 0.0L; */
-  /* TSIL_COMPLEX sumxp = 0.0L; */
   TSIL_COMPLEX result4;
-  /* TSIL_COMPLEX result4X; */
 
   TSIL_REAL phi02tmp, phip0tmp;
 
@@ -355,7 +303,6 @@ TSIL_COMPLEX pi1_sbot (int i, int j, TSIL_REAL s)
   phip0tmp = m2_phip[0];
   m2_phip[0] = 0.0L;
 
-  /* DGR this term gives rise to kink in M_bot[1] around 1014 GeV */
   /* charged Higgs loops */
   for (n=0; n<2; n++) {
   for (k=0; k<2; k++) {
@@ -390,16 +337,8 @@ TSIL_COMPLEX pi1_sbot (int i, int j, TSIL_REAL s)
                A_S (m2_stau[k], Q2);
   }
 
-  /* result4 += g2 * 0.25L * Lsbot[i] * Lsbotc[j] * sumX (); */
-  /* Original had this: (looks correct, I think) */
   result4 += -g2 * 0.25L * Lsbot[i] * Lsbotc[j] * sumX ();
 
-  /* This line differs form original:-2.0L in last term was missing,
-     presumably just 2/3 <-> -1/3 for top <-> bot */
-  /* result4 += gp2 * (Lsbot[i] * Lsbotc[j]/6.0L - 2.0L/3.0L * Rsbot[i] * Rsbotc[j]) *  */
-  /*            sumXP (); */
-
-  /* This was the original: */
   result4 += gp2 * (Lsbot[i] * Lsbotc[j]/6.0L + Rsbot[i] * Rsbotc[j]/3.0) *
              sumXP ();
 
@@ -410,63 +349,11 @@ TSIL_COMPLEX pi1_sbot (int i, int j, TSIL_REAL s)
     result4 += (g2/2.0L) * Lsbot[i] * Lsbotc[j] * 
                Lstop[k] * Lstopc[k] * A_S (m2_stop[k], Q2);
 
-    /* again, a difference: -2/3 was +1/3 before; seems to make sense */
-    /* result4 += gp2 *  */
-    /*          (Lsbot[i] * Lsbotc[k]/6.0L -2.0L/3.0L * Rsbot[i] * Rsbotc[k]) * */
-    /*          (Lsbot[k] * Lsbotc[j]/6.0L -2.0L/3.0L * Rsbot[k] * Rsbotc[j]) * */
-    /*          A_S (m2_sbot[k], Q2); */
-
-    /* This was the original: */
     result4 += gp2 *
              (Lsbot[i] * Lsbotc[k]/6.0L + Rsbot[i] * Rsbotc[k]/3.0L) *
              (Lsbot[k] * Lsbotc[j]/6.0L + Rsbot[k] * Rsbotc[j]/3.0L) *
              A_S (m2_sbot[k], Q2);
   }
-
-  /* Now redo the 4-sfermion part in a slightly different way. */
-/*
-  result4X = 0.0L;
-
-  for (k=0; k<2; k++) {
-    result4X += (3.0L * lambdastopstopcstopstopc[i][j][k][k] +
-                      lambdastopstopcstopstopc[i][k][k][j]) * 
-              A_S (m2_stop[k], Q2);
-
-    result4X += (3.0L * lambdastopstopcsbotsbotc[i][j][k][k] + 
-               lambdastopsbotcsbotstopc[i][k][k][j]) * 
-              A_S (m2_sbot[k], Q2);
-  }
-
-  for (k=0; k<2; k++) {
-    sumx3 += 3.0L * A_S (m2_suL[k], Q2) - 3.0L * A_S (m2_sdL[k], Q2) 
-             + A_S (m2_snu[k], Q2) - A_S (m2_seL[k], Q2) 
-             - Lstau[k] * Lstauc[k] * A_S (m2_stau[k], Q2);
-  }
-
-  sumx3 += A_S (m2_snu[2], Q2);
-
-  sumx3 *= 0.5L;
-
-  result4X += 0.5L * g2 * Lstop[i] * Lstopc[j] * sumx3;
-
-  for (k=0; k<2; k++) {
-    sumxp += 3.0L * (A_S (m2_suL[k], Q2) + A_S (m2_sdL[k], Q2))/6.0L 
-             - 0.5L * (A_S (m2_snu[k], Q2) + A_S (m2_seL[k], Q2)) 
-             - 3.0L * (2.0L/3.0L) * A_S (m2_suR[k], Q2) 
-             + 3.0L * (1.0L/3.0L) * A_S (m2_sdR[k], Q2)
-             + A_S (m2_seR[k], Q2)         
-             + (-0.5L * Lstau[k] * Lstauc[k] + Rstau[k] * Rstauc[k]) * 
-             A_S (m2_stau[k], Q2);
-  }
-
-  sumxp += -0.5L * A_S (m2_snu[2], Q2);
-
-  result4X += gp2 * (Lstop[i] * Lstopc[j]/6.0L - 
-            (2.0L/3.0L) * Rstop[i] * Rstopc[j]) * sumxp;
-
-  printf("result4 = %.8f\n", (double) result4);
-  printf("result4X = %.8f\n", (double) result4X);
-*/
 
   result += result4;
   result += QCDresult;
@@ -484,10 +371,7 @@ TSIL_COMPLEX pi1_sbot_orig (int i, int j, TSIL_REAL s)
   TSIL_COMPLEX BFF, Bff;
   TSIL_COMPLEX QCDresult = 0.0L;
   TSIL_COMPLEX result = 0.0L;
-  /* TSIL_COMPLEX sumx3 = 0.0L; */
-  /* TSIL_COMPLEX sumxp = 0.0L; */
   TSIL_COMPLEX result4;
-  /* TSIL_COMPLEX result4X; */
 
   /* First do QCD part from hep-ph/0502168 eq. (4.7).   */
   for (k=0; k<2; k++) {
@@ -561,7 +445,6 @@ TSIL_COMPLEX pi1_sbot_orig (int i, int j, TSIL_REAL s)
     result += 0.5L * lambda00sbotsbotc[n][n][i][j] * A_S (m2_phi0[n], Q2);
   }
 
-  /* DGR this term gives rise to kink in M_sbot[0] around 1014 GeV */
   /* charged Higgs loops */
   for (n=0; n<2; n++) {
   for (k=0; k<2; k++) {
@@ -609,50 +492,6 @@ TSIL_COMPLEX pi1_sbot_orig (int i, int j, TSIL_REAL s)
              (Lsbot[k] * Lsbotc[j]/6.0L + Rsbot[k] * Rsbotc[j]/3.0L) *
              A_S (m2_sbot[k], Q2);
   }
-
-  /* Now redo the 4-sfermion part in a slightly different way. */
-/*
-  result4X = 0.0L;
-
-  for (k=0; k<2; k++) {
-    result4X += (3.0L * lambdasbotsbotcsbotsbotc[i][j][k][k] +
-                        lambdasbotsbotcsbotsbotc[i][k][k][j]) *
-                A_S (M2_sbot[k], Q2);
-
-    result4X += (3.0L * lambdastopstopcsbotsbotc[k][k][i][j] +
-                        lambdastopsbotcsbotstopc[k][j][i][k]) *
-                A_S (M2_stop[k], Q2);
-    result4X += lambdasbotsbotcstaustauc[i][j][k][k] *
-                A_S (M2_stau[k], Q2);
-  }
-
- for (k=0; k<2; k++) {
-    sumx3 += 3.0L * A_S (M2_suL[k], Q2) - 3.0L * A_S (M2_sdL[k], Q2)
-             + A_S (M2_snu[k], Q2) - A_S (M2_seL[k], Q2);
-  }
-
-  sumx3 += A_S (M2_snu[2], Q2);
-
-  sumx3 *= 0.5L;
-
-  result4X += -0.5L * g2 * Lsbot[i] * Lsbotc[j] * sumx3;
-
-  for (k=0; k<2; k++) {
-    sumxp += 3.0L * (A_S (M2_suL[k], Q2) + A_S (M2_sdL[k], Q2))/6.0L
-             - 0.5L * (A_S (M2_snu[k], Q2) + A_S (M2_seL[k], Q2))
-             - 3.0L * (2.0L/3.0L) * A_S (M2_suR[k], Q2)
-             + 3.0L * (1.0L/3.0L) * A_S (M2_sdR[k], Q2)
-             + A_S (M2_seR[k], Q2);
-  }
-
-  sumxp += -0.5L * A_S (M2_snu[2], Q2);
-
-  result4X += gp2 * (Lsbot[i] * Lsbotc[j]/6.0L +
-                     Rsbot[i] * Rsbotc[j]/3.0L) * sumxp;
-
-  printf("result4 = %.8f\n", (double) result4);
-  printf("result4X = %.8f\n", (double) result4X);
-*/
 
   result += result4;
   result += QCDresult;

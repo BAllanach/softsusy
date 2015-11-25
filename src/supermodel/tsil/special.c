@@ -8,6 +8,7 @@ int TSIL_CaseSpecial (TSIL_DATA *foo)
 {
   TSIL_REAL x, y, z, u, v, s, qq;
   int success = 1;
+  int tmpWarns;
 
   TSIL_Info("SPECIAL CASE");
 
@@ -21,6 +22,7 @@ int TSIL_CaseSpecial (TSIL_DATA *foo)
   qq = foo->qq;
 
   /* Temporarily disable WARNs */
+  tmpWarns = printWarns;
   printWarns = NO;
 
   if (foo->whichFns == STUM) {
@@ -61,8 +63,8 @@ int TSIL_CaseSpecial (TSIL_DATA *foo)
     success *= TSIL_Tanalytic (u, x, v, s, qq, &(foo->T[uxv].value));
   }
 
-  /* Restore warnings */
-  printWarns = YES;
+  /* Restore previous warnings setting: */
+  printWarns = tmpWarns;
 
   return success;
 }

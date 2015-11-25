@@ -154,7 +154,7 @@ TSIL_COMPLEX TSIL_TrilogCLZseries(TSIL_COMPLEX z)
       logztothek = logztothek*logzsquared;
       term = CLZcoeffs_trilog[j]*logztothek;
       remainingterms += term;
-      if (TSIL_FABS (term) < accuracygoal) 
+      if (TSIL_CABS (term) < accuracygoal) 
 	break;
       if (j == 24)
         TSIL_Warn("TSIL_TrilogCLZseries", "trilog CLZ series converging too slowly.");

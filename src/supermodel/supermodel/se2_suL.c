@@ -352,7 +352,7 @@ TSIL_COMPLEX pi21tilde_suL (int i, TSIL_REAL s)
   TSIL_CopyResult (&bar, &gaak);
   Gtilde_SSFF (&gaak, &gSSFF, &gSSff);
 
-  /* NOTE 0.0L = 0 for up != top */
+  /* NOTE m_q = 0 for up != top */
   result += Cq*CG*(gFF + gSSFF 
 		   /* - NsuL[i][i]*0.0L*m_gluino*(gff + gSSff) */
 		   );

@@ -27,8 +27,6 @@ void SetPandNstop ()
     for (j=0; j<2; j++) {
       Pstop[i][j] = Lstop[i]*Lstopc[j] - Rstop[i]*Rstopc[j];
       Nstop[i][j] = Lstop[i]*Rstopc[j] + Rstop[i]*Lstopc[j];
-      /* printf("Pstop[%d][%d] = ", i,j);TSIL_cprintf(Pstop[i][j]);printf("\n"); */
-      /* printf("Nstop[%d][%d] = ", i,j);TSIL_cprintf(Nstop[i][j]);printf("\n"); */
     }
 
   arePandNstopSet = YES;
@@ -303,6 +301,49 @@ TSIL_COMPLEX pi20_stop (int i, int j, TSIL_REAL s)
 
 /* -------------------------------------------------------------- */
 /* -------------------------------------------------------------- */
+/* 0502168 eq. (4.9) */
+
+TSIL_COMPLEX pi21_stop (int i, int j, TSIL_REAL s) 
+{
+  int k;
+  TSIL_COMPLEX result = 0.0L;
+  TSIL_DATA bar;
+  TSIL_RESULT gaak;
+  TSIL_COMPLEX gFF,gff;
+  TSIL_COMPLEX gSSFF,gSSff;
+
+  if (arePandNstopSet == NO) SetPandNstop ();
+
+  TSIL_SetParameters (&bar,m2_top,m2_top,m2_gluino,m2_gluino,0.0L,Q2);
+  TSIL_Evaluate (&bar, s);
+  TSIL_CopyResult (&bar, &gaak); 
+  G_FF (&gaak, &gFF, &gff);
+
+  TSIL_SetParameters (&bar,0.0L,m2_gluino,m2_stop[i],m2_top,m2_gluino,Q2);
+  TSIL_Evaluate (&bar, s);
+  TSIL_CopyResult (&bar, &gaak);
+  Gtilde_SSFF (&gaak, &gSSFF, &gSSff);
+
+  result += Cq*CG*(gFF + gSSFF - Nstop[i][i]*m_top*m_gluino*(gff + gSSff));
+
+  TSIL_SetParameters (&bar,0.0L,m2_top,m2_stop[i],m2_gluino,m2_top,Q2);
+  TSIL_Evaluate (&bar, s);
+  TSIL_CopyResult (&bar, &gaak);
+  Gtilde_SSFF (&gaak, &gSSFF, &gSSff);
+
+  result += (2.0L*Cq - CG)*Cq*(gSSFF - Nstop[i][i]*m_top*m_gluino*gSSff);
+
+  for (k=0; k<2; k++)
+    result += Cq * Cq * Pstop[i][k] * Pstop[k][i] *
+      (G_S(m2_stop[k],Q2) + Gtilde_SSS(m2_stop[i],m2_stop[k],Q2));
+
+  result *= g3*g3*g3*g3;
+
+  return result;
+}
+
+/* -------------------------------------------------------------- */
+/* -------------------------------------------------------------- */
 /* Eq. (4.9), tilde version (i.e., with j=i and tilded versions of
    G_SSS, G_SSFF, and G_SSff). 
 
@@ -328,9 +369,6 @@ TSIL_COMPLEX pi21tilde_stop (int i, TSIL_REAL s)
   TSIL_SetParameters (&bar,0.0L,m2_gluino,m2_stop[i],m2_top,m2_gluino,Q2);
   TSIL_Evaluate (&bar, s);
   TSIL_CopyResult (&bar, &gaak);
-  /* TSIL_SetParameters (&bar,0.0L,m2_gluino,m2_top,m2_stop[i],m2_gluino,Q2); */
-  /* TSIL_Evaluate (&bar, s); */
-  /* TSIL_CopyResult (&bar, &gaak2); */
   Gtilde_SSFF (&gaak, &gSSFF, &gSSff);
 
   result += Cq*CG*(gFF + gSSFF - Nstop[i][i]*m_top*m_gluino*(gff + gSSff));
@@ -338,9 +376,6 @@ TSIL_COMPLEX pi21tilde_stop (int i, TSIL_REAL s)
   TSIL_SetParameters (&bar,0.0L,m2_top,m2_stop[i],m2_gluino,m2_top,Q2);
   TSIL_Evaluate (&bar, s);
   TSIL_CopyResult (&bar, &gaak);
-  /* TSIL_SetParameters (&bar,0.0L,m2_top,m2_gluino,m2_stop[i],m2_top,Q2); */
-  /* TSIL_Evaluate (&bar, s); */
-  /* TSIL_CopyResult (&bar, &gaak2); */
   Gtilde_SSFF (&gaak, &gSSFF, &gSSff);
 
   result += (2.0L*Cq - CG)*Cq*(gSSFF - Nstop[i][i]*m_top*m_gluino*gSSff);
@@ -381,13 +416,6 @@ TSIL_COMPLEX pi22tilde_stop (int i, TSIL_REAL s)
           + F4tilde(m2_stop[i], m2_suR[r], Q2)
           + F4tilde(m2_stop[i], m2_sdL[r], Q2)
           + F4tilde(m2_stop[i], m2_sdR[r], Q2);
-
-  /* printf("F1     = ");TSIL_cprintf(F1tilde(m2_stop[i], Q2));printf("\n"); */
-  /* printf("F2     = ");TSIL_cprintf(F2tilde(m2_stop[i], Q2));printf("\n"); */
-  /* printf("F3g    = ");TSIL_cprintf(F3tilde(m2_stop[i], m2_gluino, Q2));printf("\n"); */
-  /* printf("F3t    = ");TSIL_cprintf(2.0L*F3tilde(m2_stop[i],m2_top,Q2));printf("\n"); */
-  /* printf("F3rest = ");TSIL_cprintf(10.0L*F3tilde(m2_stop[i],0.0,Q2));printf("\n"); */
-  /* printf("F4     = ");TSIL_cprintf(term);printf("\n"); */
 
   /* Final assembly: */
   result += Iq*term;

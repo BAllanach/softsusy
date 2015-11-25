@@ -1,4 +1,16 @@
-May xx, 2015 Version 1.22
+October 2015 Version 1.31
+----------------------
+
+* Added TSIL_FetGunctionR, which is the same as TSIL_GetFunction
+  except it extracts from a TSIL_RESULT * rather than a TSIL_Data *.
+  (Add other extraction routines later?)
+
+* Corrected type mismatches involving FABS, CABS with the other type
+  argument.
+
+
+
+June 11, 2015 Version 1.3
 -------------------------
 
 * For convenience, function identifier strings that are permutations
@@ -8,7 +20,7 @@ May xx, 2015 Version 1.22
   TSIL_GetFunction, since the U functions are symmetric under
   interchange of their last two arguments.  Likewise, any of "Suxv",
   "Sxuv", "Suvx", "Svux", "Sxvu", or "Svxu" will return the function
-  S(u,x,v) (symmetric under interchange of any of its arguments).
+  S(u,x,v) (symmetric under interchange of any of its arguments), etc.
 
 * All internal function names now preceded by TSIL_, to avoid
   collisions with user-defined entities.
@@ -18,15 +30,27 @@ May xx, 2015 Version 1.22
   if an invalid function identifier is supplied, or if a function is
   requested from an unevaluated TSIL_DATA struct.
 
+* Added functions TSIL_WarnsOn() and TSIL_WarnsOff(), which toggle
+  printing of warning messages on and off, to user API.  Selection
+  remains in effect until changed by the other of these functions, or
+  until the variable printWarns is changed directly by the user.  Note
+  that, as before, a call to TSIL_Evaluate() never generates warnings
+  for undefined functions; these are issued only when users try to
+  access such functions via TSIL_GetFunction(), etc.  But if
+  TSIL_WarnsOff() has been called, warnings are not issued even in
+  this case.
+
 * Fixed problem that could arise in TSIL_M0x0y0() when s is equal to x
   or y.
 
 * Added utilites to make TSIL more easily callable from C++ (details
-  in NotesOnC++.txt).
+  in README.txt).
 
 * Added function TSIL_NumFuncs (const char *which) to user API.  Takes
-  arg "M", "U" etc. and returns the number of basis functions of
-  that type.
+  arg "M", "U" etc. and returns the number of basis functions of that
+  type.
+
+*  Header file tsil_build.h deprecated.
 
 
 September 3, 2014 Version 1.21
@@ -35,6 +59,7 @@ September 3, 2014 Version 1.21
 * Changed generic.c to fix problems that occurred for small s in cases
   where s=0 is a threshold. Thanks to Stefano Di Vita for pointing out
   the problem.
+
 
 June 1, 2014 Version 1.2
 ------------------------

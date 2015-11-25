@@ -125,8 +125,8 @@ int TSIL_rk6 (TSIL_DATA    *foo,
   TSIL_REAL Sscale[2];
   int status = 0; 
 
-  Sscale[0] = TSIL_CABS(foo->s) + (foo->v) + (foo->y) + (foo->z);
-  Sscale[1] = TSIL_CABS(foo->s) + (foo->v) + (foo->x) + (foo->u);
+  Sscale[0] = TSIL_FABS(foo->s) + (foo->v) + (foo->y) + (foo->z);
+  Sscale[1] = TSIL_FABS(foo->s) + (foo->v) + (foo->x) + (foo->u);
 
   /* Relate s, ds to the independent variable. */
   if (0 == RKmode) {
@@ -659,7 +659,7 @@ int TSIL_rk6_STU (TSIL_DATA   *foo,
 
 /*   Sscale[0] = TSIL_CABS(foo->s) + (foo->v) + (foo->y) + (foo->z); */
 
-  Sscale = TSIL_CABS(foo->s) + (foo->v) + (foo->x) + (foo->u);
+  Sscale = TSIL_FABS(foo->s) + (foo->v) + (foo->x) + (foo->u);
 
   /* Relate s, ds to the independent variable. */
   if (0 == RKmode) {
@@ -1029,7 +1029,7 @@ int TSIL_rk6_ST (TSIL_DATA *foo,
 
 /*   Sscale[0] = TSIL_CABS(foo->s) + (foo->v) + (foo->y) + (foo->z); */
 
-  Sscale = TSIL_CABS(foo->s) + (foo->v) + (foo->x) + (foo->u);
+  Sscale = TSIL_FABS(foo->s) + (foo->v) + (foo->x) + (foo->u);
 
   /* Relate s, ds to the independent variable. */
   if (0 == RKmode) {

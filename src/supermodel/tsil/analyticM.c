@@ -303,7 +303,7 @@ TSIL_COMPLEX TSIL_M0xy0yAtx (TSIL_REAL X, TSIL_REAL Y)
   TSIL_COMPLEX r, logr, rm1, sqrtr, logrm1;
 
   if (Y < TSIL_TOL) return TSIL_M000x0 (X, X);
-  if (TSIL_CABS(1.0L - X/Y) < 10.0*TSIL_TOL) return TSIL_M0xx0xAtx (X);
+  if (TSIL_FABS(1.0L - X/Y) < 10.0*TSIL_TOL) return TSIL_M0xx0xAtx (X);
   if (X < TSIL_TOL) {
     TSIL_Warn("TSIL_M0xy0yAtx", "M(0,y,x,0,y) is undefined for s=x=0.");
     return TSIL_Infinity;
@@ -331,7 +331,7 @@ TSIL_COMPLEX TSIL_M0yy0xAtx (TSIL_REAL X, TSIL_REAL Y)
   TSIL_COMPLEX r, logr, rm1, rp1, logrm1, logrp1, log2;
 
   if (Y < TSIL_TOL) return TSIL_M0000x (X, X);
-  if (TSIL_CABS(1.0L - X/Y) < 10.0*TSIL_TOL) return TSIL_M0xx0xAtx (X);
+  if (TSIL_FABS(1.0L - X/Y) < 10.0*TSIL_TOL) return TSIL_M0xx0xAtx (X);
   if (X < TSIL_TOL) return TSIL_M0xx00 (Y, 0.0L);
 
   r = -TSIL_AddIeps(-Y/X);

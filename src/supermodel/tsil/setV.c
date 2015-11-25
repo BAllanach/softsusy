@@ -262,9 +262,9 @@ void TSIL_SetV (TSIL_DATA *foo)
       /* This might be an analytic case even if the M integral wasn't! */
       {
 	vcase = 0;
-	if (TSIL_CABS(1.0L - (u + v + 2.0L*TSIL_SQRT(u*v))/z ) < TSIL_TOL)
+	if (TSIL_FABS(1.0L - (u + v + 2.0L*TSIL_SQRT(u*v))/z ) < TSIL_TOL)
 	  vcase = 1;
-	if (TSIL_CABS(1.0L - (u + v - 2.0L*TSIL_SQRT(u*v))/z ) < TSIL_TOL)
+	if (TSIL_FABS(1.0L - (u + v - 2.0L*TSIL_SQRT(u*v))/z ) < TSIL_TOL)
 	  vcase = 2;
 	if (TSIL_CABS((s-TSIL_Ps2(x,z))/(x*x + z*z)) < TSIL_TOL)
 	  vcase +=3;
@@ -287,9 +287,9 @@ void TSIL_SetV (TSIL_DATA *foo)
     else if (0 == TSIL_Vanalytic(y,u,z,v,s,qq,&(foo->V[yuzv].value)))
       { 
 	vcase = 0;
-	if (TSIL_CABS(1.0L - (z + v + 2.0L*TSIL_SQRT(z*v))/u ) < TSIL_TOL)
+	if (TSIL_FABS(1.0L - (z + v + 2.0L*TSIL_SQRT(z*v))/u ) < TSIL_TOL)
 	  vcase = 1;
-	if (TSIL_CABS(1.0L - (z + v - 2.0L*TSIL_SQRT(z*v))/u ) < TSIL_TOL)
+	if (TSIL_FABS(1.0L - (z + v - 2.0L*TSIL_SQRT(z*v))/u ) < TSIL_TOL)
 	  vcase = 2;
 	if (TSIL_CABS((s-TSIL_Ps2(y,u))/(y*y + u*u)) < TSIL_TOL)
 	  vcase +=3;
@@ -312,9 +312,9 @@ void TSIL_SetV (TSIL_DATA *foo)
     else if (0 == TSIL_Vanalytic(z,x,y,v,s,qq,&(foo->V[zxyv].value)))
       {
 	vcase = 0;
-	if (TSIL_CABS(1.0L - (y + v + 2.0L*TSIL_SQRT(y*v))/x ) < TSIL_TOL)
+	if (TSIL_FABS(1.0L - (y + v + 2.0L*TSIL_SQRT(y*v))/x ) < TSIL_TOL)
 	  vcase = 1;
-	if (TSIL_CABS(1.0L - (y + v - 2.0L*TSIL_SQRT(y*v))/x ) < TSIL_TOL)
+	if (TSIL_FABS(1.0L - (y + v - 2.0L*TSIL_SQRT(y*v))/x ) < TSIL_TOL)
 	  vcase = 2;
 	if (TSIL_CABS((s-TSIL_Ps2(x,z))/(x*x + z*z)) < TSIL_TOL)
 	  vcase +=3;
@@ -337,9 +337,9 @@ void TSIL_SetV (TSIL_DATA *foo)
     else if (0 == TSIL_Vanalytic(u,y,x,v,s,qq,&(foo->V[uyxv].value)))
       { 
 	vcase = 0;
-	if (TSIL_CABS(1.0L - (x + v + 2.0L*TSIL_SQRT(x*v))/y ) < TSIL_TOL)
+	if (TSIL_FABS(1.0L - (x + v + 2.0L*TSIL_SQRT(x*v))/y ) < TSIL_TOL)
 	  vcase = 1;
-	if (TSIL_CABS(1.0L - (x + v - 2.0L*TSIL_SQRT(x*v))/y ) < TSIL_TOL)
+	if (TSIL_FABS(1.0L - (x + v - 2.0L*TSIL_SQRT(x*v))/y ) < TSIL_TOL)
 	  vcase = 2;
 	if (TSIL_CABS((s-TSIL_Ps2(y,u))/(y*y + u*u)) < TSIL_TOL)
 	  vcase +=3;
@@ -384,9 +384,9 @@ void TSIL_SetV (TSIL_DATA *foo)
       /* This might be an analytic case even if the M integral wasn't! */
       {
 	vcase = 0;
-	if (TSIL_CABS(1.0L - (u + v + 2.0L*TSIL_SQRT(u*v))/z ) < TSIL_TOL)
+	if (TSIL_FABS(1.0L - (u + v + 2.0L*TSIL_SQRT(u*v))/z ) < TSIL_TOL)
 	  vcase = 1;
-	if (TSIL_CABS(1.0L - (u + v - 2.0L*TSIL_SQRT(u*v))/z ) < TSIL_TOL)
+	if (TSIL_FABS(1.0L - (u + v - 2.0L*TSIL_SQRT(u*v))/z ) < TSIL_TOL)
 	  vcase = 2;
 	if (TSIL_CABS((s-TSIL_Ps2(x,z))/(x*x + z*z)) < TSIL_TOL)
 	  vcase +=3;

@@ -1,14 +1,15 @@
 /*
   Initialization (pointer alignment) in general data struct.
 
-  (This is everything that is independent of the values of the
-  arguments; everything that does depend on x,y,z,u,v,qq is set in
-  TSIL_SetParameters below.)
+  This is everything that is independent of the values of the
+  arguments; everything that *does* depend on x,y,z,u,v,qq is set in
+  TSIL_SetParameters below.
 */
 
 #include "internal.h"
 #include "tsil_params.h"
 int printWarns = YES;
+/* FILE *warnfile, *errfile; */
 
 /* **************************************************************** */
 
@@ -71,7 +72,7 @@ void TSIL_Construct (TSIL_DATA *foo)
   for (i=0; i<4; i++)
     foo->M.uval[i] = &(foo->U[MrefU[i]].value);
 
-  foo->isAligned = TRUE;
+  foo->isAligned = YES;
 
   return;
 }
@@ -111,9 +112,9 @@ int TSIL_SetParameters (TSIL_DATA *foo,
   /* Set up data object if necessary */
   /* if (foo->isAligned != YES) */
   TSIL_Construct (foo);
-  printWarns = YES;
+  /* printWarns = YES; */
 
-  /* DGR - STUM evaluation */
+  /* STUM evaluation */
   foo->whichFns = STUM;
   foo->RKstepper6 = &TSIL_rk6;
   foo->RKstepper5 = &TSIL_rk5;

@@ -294,6 +294,7 @@ enum {NOSWAP, XYandZU, XZandYU, XUandYZ};
 
 /* Toggle to control printing of warning messages */
 extern int printWarns;
+/* extern FILE *warnfile, *errfile; */
 
 /* === Prototypes for functions in the user API: === */
 
@@ -309,6 +310,7 @@ int TSIL_GetStatus (TSIL_DATA *);
 int TSIL_GetData (TSIL_DATA *, const char *, TSIL_COMPLEX *);
 int TSIL_GetBoldData (TSIL_DATA *, const char *, TSIL_COMPLEX [][3]);
 TSIL_COMPLEX TSIL_GetFunction (TSIL_DATA *, const char *);
+TSIL_COMPLEX TSIL_GetFunctionR (TSIL_RESULT *, const char *);
 TSIL_COMPLEX TSIL_GetBoldFunction (TSIL_DATA *, const char *, int);
 int TSIL_NumFuncs (const char *);
 
@@ -322,6 +324,8 @@ void TSIL_cprintf     (TSIL_COMPLEX);
 void TSIL_cprintfM    (TSIL_COMPLEX);
 void TSIL_Error       (const char *, const char *, int);
 void TSIL_Warn        (const char *, const char *);
+void TSIL_WarnsOn     (void);
+void TSIL_WarnsOff    (void);
 void TSIL_PrintInfo   (void);
 void TSIL_Info        (const char *);
 

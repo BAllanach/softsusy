@@ -331,9 +331,6 @@ TSIL_COMPLEX pi21tilde_sbot (int i, TSIL_REAL s)
   TSIL_SetParameters (&bar,0.0L,m2_gluino,m2_sbot[i],m2_bot,m2_gluino,Q2);
   TSIL_Evaluate (&bar, s);
   TSIL_CopyResult (&bar, &gaak);
-  /* TSIL_SetParameters (&bar,0.0L,m2_gluino,m2_bot,m2_sbot[i],m2_gluino,Q2); */
-  /* TSIL_Evaluate (&bar, s); */
-  /* TSIL_CopyResult (&bar, &gaak2); */
   Gtilde_SSFF (&gaak, &gSSFF, &gSSff);
 
   /* NOTE m_bot = 0 for bot != top */
@@ -344,9 +341,6 @@ TSIL_COMPLEX pi21tilde_sbot (int i, TSIL_REAL s)
   TSIL_SetParameters (&bar,0.0L,m2_bot,m2_sbot[i],m2_gluino,m2_bot,Q2);
   TSIL_Evaluate (&bar, s);
   TSIL_CopyResult (&bar, &gaak);
-  /* TSIL_SetParameters (&bar,0.0L,m2_bot,m2_gluino,m2_sbot[i],m2_bot,Q2); */
-  /* TSIL_Evaluate (&bar, s); */
-  /* TSIL_CopyResult (&bar, &gaak2); */
   Gtilde_SSFF (&gaak, &gSSFF, &gSSff);
 
   result += (2.0L*Cq - CG)*Cq*(gSSFF

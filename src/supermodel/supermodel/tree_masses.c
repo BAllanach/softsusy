@@ -21,23 +21,6 @@ int SUMO_Tree_Masses ()
   SUMO_Tree_Gluino ();
   are_tree_masses_updated = 1;
 
-  /// Addition by BCA 4/9/15
-  /// Check to see if gluino-> top + stop is a problem
-  
-  TSIL_REAL delta = (m_gluino - m_top - SUMO_SQRT(m2_stop[0])) / m_gluino;
-  TSIL_REAL delta2 = (m_gluino - m_top - SUMO_SQRT(m2_stop[1])) / m_gluino;
-  //  printf("%Lf %Lf ",delta,delta2);
-  /*  TSIL_REAL tol = 0.0;
-  if (delta < tol && delta >= 0.) {
-    m2_stop[0] = ((m_gluino - m_top) * (1. + tol))
-      * ((m_gluino - m_top) * 1.001);
-  }
-  else if (delta > -tol && delta <0.) {
-    m2_stop[0] = ((m_gluino - m_top) * (1 - tol))
-      * ((m_gluino - m_top) * 0.999);
-      }*/
-  /// End of BCA additions
-
   return 0;
 }
 
@@ -326,6 +309,7 @@ int SUMO_Tree_Sfermions ()
     m2_seL[i] = m2L[i] + DseL;
     m2_seR[i] = m2e[i] + DseR;
   }
+
   return 0;
 }
 

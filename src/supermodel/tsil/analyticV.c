@@ -27,7 +27,7 @@ int TSIL_Vanalytic (TSIL_REAL X,
       else
 	*result = 0.5L*TSIL_I2p2 (X, Z, U, QQ);
     }
-  else if ((X < TSIL_TOL) && (TSIL_FABS(TSIL_Delta(Y,Z,U))/(Y*Y+Z*Z+U*U) > TSIL_TOL))
+  else if ((X < TSIL_TOL) && (TSIL_CABS(TSIL_Delta(Y,Z,U))/(Y*Y+Z*Z+U*U) > TSIL_TOL))
     {
       *result = TSIL_V0xyz(Y, Z, U, S, QQ);
     }

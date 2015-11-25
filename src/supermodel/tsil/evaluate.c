@@ -12,6 +12,7 @@ int TSIL_Evaluate (TSIL_DATA *foo, TSIL_REAL s)
   int status = 1;
   int isAnalytic = 0;
   TSIL_REAL x0, y0, z0, u0, v0, s0, qq0;
+  int tmpWarns;
 
   if (foo->isInitialized != YES)
     TSIL_Error("TSIL_Evaluate",
@@ -24,6 +25,7 @@ int TSIL_Evaluate (TSIL_DATA *foo, TSIL_REAL s)
      case that requires Runge-Kutta evaluation: */
 
   /* Temporarily disable WARNs */
+  tmpWarns = printWarns;
   printWarns = NO;
 
   if (foo->whichFns == STUM)
@@ -95,7 +97,7 @@ int TSIL_Evaluate (TSIL_DATA *foo, TSIL_REAL s)
 /*     foo->B[xz].value = B(foo->x, foo->z, foo->s, foo->qq); */
 
   /* Restore warnings */
-  printWarns = YES;
+  printWarns = tmpWarns;
 
   /* Implement status codes eventually */
   return status;

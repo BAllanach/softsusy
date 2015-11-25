@@ -38,7 +38,7 @@ SUMO_COMPLEX B_SS (SUMO_REAL x, SUMO_REAL y, SUMO_REAL s, SUMO_REAL qq)
 
 SUMO_COMPLEX B_SpS (SUMO_REAL x, SUMO_REAL y, SUMO_REAL s, SUMO_REAL qq)
 {
-  return -TSIL_Bp (x, y, s, qq);
+  return -SUMO_Bp (x, y, s, qq, interp);
 }
 
 /* ---------------------------------------------------------------- */
@@ -69,7 +69,7 @@ int bFpF (TSIL_REAL x, TSIL_REAL y, TSIL_REAL s, TSIL_REAL qq,
   TSIL_COMPLEX Bxys, Bxpys; 
 
   Bxys = TSIL_B(x,y,s,qq);
-  Bxpys = TSIL_Bp(x,y,s,qq);
+  Bxpys = SUMO_Bp(x,y,s,qq,interp);
 
   *BFpF = (x + y - s)*Bxpys + Bxys - TSIL_Ap(x,qq);
   *Bfpf = 2.0L * Bxpys;
@@ -132,15 +132,15 @@ SUMO_COMPLEX B_SpV (SUMO_REAL x,SUMO_REAL y,TSIL_REAL s,TSIL_REAL qq)
   if (TSIL_FABS(s/(x+y+s+qq)) < 100.0*TSIL_TOL) return(0.0L);
   
   if (TSIL_FABS(y/(x+y+s)) < 100.0*TSIL_TOL) 
-    return (3.0L * ((x+s) * TSIL_Bp(x,0,s,qq) + TSIL_B(x,0,s,qq) + 
+    return (3.0L * ((x+s) * SUMO_Bp(x,0,s,qq,interp) + TSIL_B(x,0,s,qq) + 
              TSIL_Ap(x,qq))); 
   
   if (TSIL_FABS((x-s)/(x+y+s)) < 100.0*TSIL_TOL)
-    return ( (4.0L*x - y)*TSIL_Bp(x,y,s,qq) + 2.0L*TSIL_B(x,y,s,qq)
+    return ( (4.0L*x - y)*SUMO_Bp(x,y,s,qq,interp) + 2.0L*TSIL_B(x,y,s,qq)
              + TSIL_Ap(x,qq) + TSIL_A(y,qq)/y);
 
-  return ((2.0L*x - y + 2.0L*s)*TSIL_Bp(x,y,s,qq) + 2.0L*TSIL_B(x,y,s,qq) 
-             + (x - s)*(x - s)*(TSIL_CREAL(TSIL_Bp(x,0,s,qq)) - TSIL_Bp(x,y,s,qq))/y
+  return ((2.0L*x - y + 2.0L*s)*SUMO_Bp(x,y,s,qq,interp) + 2.0L*TSIL_B(x,y,s,qq) 
+	  + (x - s)*(x - s)*(TSIL_CREAL(SUMO_Bp(x,0,s,qq,interp)) - SUMO_Bp(x,y,s,qq,interp))/y
              + 2.0L*(x - s)*(TSIL_CREAL(TSIL_B(x,0,s,qq)) - TSIL_B(x,y,s,qq))/y
              + TSIL_Ap(x,qq) + TSIL_A(y,qq)/y);
 }
@@ -155,7 +155,7 @@ SUMO_COMPLEX B_SVp (SUMO_REAL x,SUMO_REAL y,TSIL_REAL s,TSIL_REAL qq)
 
   if (TSIL_FABS(s/(x+y+s+qq)) < TSIL_TOL) result = 0.0L;
   
-  result = (2.0L*x - y + 2.0L*s - (x - s)*(x - s)/y)*TSIL_Bp(y,x,s,qq) 
+  result = (2.0L*x - y + 2.0L*s - (x - s)*(x - s)/y)*SUMO_Bp(y,x,s,qq,interp) 
            + ((x - s)*(x - s)/(y*y) - 1.0) * TSIL_B(x,y,s,qq) 
            - ((x - s)*(x - s)/(y*y)) * TSIL_CREAL(TSIL_B(x,0,s,qq))
            + (x-s)/y - TSIL_Ap (y,qq);
@@ -231,10 +231,10 @@ SUMO_COMPLEX B_VpV (SUMO_REAL x, SUMO_REAL y, TSIL_REAL s, TSIL_REAL qq)
   {
     result = (y * TSIL_Ap (x,qq) + TSIL_A(y,qq)
               -2.0 * (s-x) * TSIL_CREAL(TSIL_B(0,x,s,qq))
-              + (s-x) * (s-x) * TSIL_CREAL(TSIL_Bp(x,0,s,qq))
+              + (s-x) * (s-x) * TSIL_CREAL(SUMO_Bp(x,0,s,qq,interp))
               + (2.0 * s - 2.0 * x - 10.0 * y) * TSIL_B(x,y,s,qq)
               + (-s*s + 2*s*x - x*x + 2*s*y - 10*x*y - y*y) 
-	      * TSIL_Bp(x,y,s,qq))/(4.0L * x * y)
+	      * SUMO_Bp(x,y,s,qq,interp))/(4.0L * x * y)
               - (y * TSIL_A(x,qq) + x * TSIL_A(y,qq) 
              - s * s * TSIL_CREAL(TSIL_B(0,0,s,qq))
              + (s-y) * (s-y) * TSIL_CREAL(TSIL_B(0,y,s,qq))
@@ -245,7 +245,7 @@ SUMO_COMPLEX B_VpV (SUMO_REAL x, SUMO_REAL y, TSIL_REAL s, TSIL_REAL qq)
   else if (TSIL_FABS(x/(x+y+s)) > 100.0 * TSIL_TOL) {
     result = 0.75L * (x + s * (TSIL_CREAL(TSIL_B(0,0,s,qq)) 
 			       - TSIL_B(0,x,s,qq)) +
-             x * (s - 3.0 * x) * TSIL_Bp(x,0,s,qq))/(x*x);
+		      x * (s - 3.0 * x) * SUMO_Bp(x,0,s,qq,interp))/(x*x);
   } 
   else result = 1.0L/0.0L; /* Don't have x=0 case, probably don't need. */
 
@@ -269,7 +269,9 @@ void G_FF (TSIL_RESULT *r, TSIL_COMPLEX *gFF, TSIL_COMPLEX *gff)
   SUMO_COMPLEX Vxyy0, Vyxx0;
   SUMO_COMPLEX S0xy, Tx0y, Ty0x, Tbarx0y;
   SUMO_COMPLEX Bxy, Bxpy, Bxyp, Ax, Ay;
+  SUMO_COMPLEX Mplus, Mminus;
   TSIL_REAL x, y, s, qq;
+  TSIL_REAL delta;
   char funcname[] = "G_FF";
   int check;
 
@@ -285,11 +287,21 @@ void G_FF (TSIL_RESULT *r, TSIL_COMPLEX *gFF, TSIL_COMPLEX *gff)
   s = r->s;
   qq = r->qq;
 
-  Mxxyy0 = r->M;
+  /* Test for threshold case and if yes, do minimal interpolation: */
+  delta = s/TSIL_POW(TSIL_SQRT(x)+TSIL_SQRT(y),2) - 1.0L;
+
+  if (TSIL_FABS(delta) < THRESH_TOL) {
+    TSIL_Manalytic (x,x,y,y,0,s*(1.0L - THRESH_TOL), &Mminus);
+    TSIL_Manalytic (x,x,y,y,0,s*(1.0L + THRESH_TOL), &Mplus);
+    Mxxyy0 = 0.5L*(1.0L + delta/THRESH_TOL)*Mplus + 
+             0.5L*(1.0L - delta/THRESH_TOL)*Mminus;
+  } else
+    Mxxyy0 = r->M;
+
   Uxyy0 = r->U[xzuv];
   Uyxx0 = r->U[uyxv];
-  Vxyy0 = r->V[xzuv];
-  Vyxx0 = r->V[uyxv];
+  Vxyy0 = SUMO_GetFunctionR (r, "Vxzuv", interp);
+  Vyxx0 = SUMO_GetFunctionR (r, "Vuyxv", interp);
 
   S0xy = r->S[uxv];
   Tx0y = r->T[xuv];
@@ -299,8 +311,8 @@ void G_FF (TSIL_RESULT *r, TSIL_COMPLEX *gFF, TSIL_COMPLEX *gff)
   Bxy = r->B[xz];
   Ax = TSIL_A (x, qq);
   Ay = TSIL_A (y, qq);
-  Bxpy = TSIL_Bp (x, y, s, qq);
-  Bxyp = TSIL_Bp (y, x, s, qq);
+  Bxpy = SUMO_Bp (x, y, s, qq, interp);
+  Bxyp = SUMO_Bp (y, x, s, qq, interp);
 
   if ((TSIL_FABS(x) > TSIL_TOL) && (TSIL_FABS(y) > TSIL_TOL)) {
     /* x and y are both nonzero: */
@@ -398,14 +410,16 @@ void G_SS (TSIL_RESULT *r,TSIL_COMPLEX *gSS)
   Mxxyy0 = r->M;
   Uxyy0 = r->U[xzuv];
   Uyxx0 = r->U[uyxv];
-  Vxyy0 = r->V[xzuv];
-  Vyxx0 = r->V[uyxv];
+  Vxyy0 = SUMO_GetFunctionR (r, "Vxzuv", interp);
+  Vyxx0 = SUMO_GetFunctionR (r, "Vuyxv", interp);
+  /* Vxyy0 = r->V[xzuv]; */
+  /* Vyxx0 = r->V[uyxv]; */
 
   Bxy = r->B[xz];
   Ax = TSIL_A (x, qq);
   Ay = TSIL_A (y, qq);
-  Bxpy = TSIL_Bp (x, y, s, qq);
-  Bxyp = TSIL_Bp (y, x, s, qq);
+  Bxpy = SUMO_Bp (x, y, s, qq, interp);
+  Bxyp = SUMO_Bp (y, x, s, qq, interp);
 
   *gSS = 2.0L*(x + y - s)*Mxxyy0 + 4.0L*y*Vxyy0 + 4.0L*x*Vyxx0
     - 4.0L*Uxyy0 - 4.0L*Uyxx0 - Ay*Bxyp - Ax*Bxpy + Bxy*Bxy;
@@ -635,9 +649,10 @@ void V_FFFFS (TSIL_RESULT  *r1, TSIL_RESULT  *r2,
   else {
     /* y = z (y = z = 0 has some special features below) */
 
-    Vxyuv = r2->V[xzuv];
+    Vxyuv = SUMO_GetFunctionR (r2, "Vxzuv", interp);
+    /* Vxyuv = r2->V[xzuv]; */
     Ipyuv = TSIL_I2p (y,u,v,qq);
-    Bxyp = TSIL_Bp (y,x,s,qq);
+    Bxyp = SUMO_Bp (y,x,s,qq,interp);
 
     *vffffS = -2.0L*(-Vxyuv);
     *vfFfFS = (y + u - v)*Vxyuv - Uxyuv + (Av - Au)*Bxyp;
@@ -662,7 +677,7 @@ void V_FFFFS (TSIL_RESULT  *r1, TSIL_RESULT  *r2,
 		 (Au-Av)*((s-x-y)*Bxyp - Bxy + TSIL_CLOG(y/qq)))/2.0L;
     }
     else {
-      Bxyp = TSIL_Bp (x,0,s,qq);
+      Bxyp = SUMO_Bp (x,0,s,qq,interp);
       *vFFFFS = ((u-v)*(x-s)*Vbar (r1) + (s-x-u+v)*Uxyuv + Sxuv
 		 + Iyuv)/2.0L + (Au-Av)*(s*Bxyp + Ax/x);
     }
@@ -740,7 +755,7 @@ void V_SSSSS (TSIL_RESULT *r1,
     TSIL_Error ("V_SSSSS", "Wrong data arguments", 12);
 
   if (TSIL_FABS(y - z) < TSIL_TOL) 
-    *vSSSSS = -(r1->V[xzuv]);
+    *vSSSSS = -SUMO_GetFunctionR (r1, "Vxzuv", interp);
   else
     *vSSSSS = (r2->U[xzuv] - (r1->U[xzuv]))/(y - z);
 
@@ -797,8 +812,9 @@ void V_SSSFF (TSIL_RESULT *r1,TSIL_RESULT *r2,
   }
   else {
 
-    Vxyuv = r2->V[xzuv];
-    Bxyp = TSIL_Bp(z,x,s,qq);
+    Vxyuv = SUMO_GetFunctionR (r2, "Vxzuv", interp);
+    /* Vxyuv = r2->V[xzuv]; */
+    Bxyp = SUMO_Bp(z,x,s,qq,interp);
 
     *vSSSFF = (u+v-z) * Vxyuv + Uxyuv + (Au+Av) * Bxyp;
     *vSSSff = 2.0L * Vxyuv;
@@ -827,7 +843,7 @@ TSIL_COMPLEX Y_SSSS (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z,
 		     TSIL_REAL u, TSIL_REAL s, TSIL_REAL qq)
 {
   if (TSIL_FABS(z - y) < TSIL_TOL)
-    return -TSIL_A(u, qq)*TSIL_Bp(y,x,s,qq);
+    return -TSIL_A(u, qq)*SUMO_Bp(y,x,s,qq,interp);
   else
     return TSIL_A(u, qq)*(TSIL_B(x,z,s,qq)-TSIL_B(x,y,s,qq))/(y - z);
 }
@@ -997,12 +1013,13 @@ void V_SSSSV (TSIL_RESULT *foo, TSIL_COMPLEX *vSSSSV)
   s = foo->s;
   qq = foo->qq;
 
-  vxyy0 = foo->V[xzuv];
+  vxyy0 = SUMO_GetFunctionR (foo, "Vxzuv", interp);
+  /* vxyy0 = foo->V[xzuv]; */
   uxyy0 = foo->U[xzuv];
   tbar0xy = foo->TBAR[vxu];
 
   *vSSSSV = 4.0L*y*vxyy0 - 2.0L*uxyy0
-    - TSIL_A(y,qq)*TSIL_Bp(y,x,s,qq) + tbar0xy;
+    - TSIL_A(y,qq)*SUMO_Bp(y,x,s,qq,interp) + tbar0xy;
 
   return;
 }
@@ -1028,15 +1045,10 @@ TSIL_COMPLEX V_VSSSS (TSIL_REAL y, TSIL_REAL z, TSIL_REAL u, TSIL_REAL v,
       - 3.0L*((z + s)*u0zuv + TSIL_I2(z,u,v,qq))/(z - y);
   }
   else {
-    /* printf("CHECK:\n"); */
-    /* printf("m2_stop[0] = %Lf\n", y); */
-    /* printf("m2_gluino  = %Lf\n", u); */
-    /* printf("m2_top     = %Lf\n", v); */
-
     TSIL_SetParameters (&foo, 0.0L, y, y, u, v, qq);
     TSIL_Evaluate (&foo, s);
     u0yuv = foo.U[xzuv].value;
-    v0yuv = TSIL_GetFunction (&foo, "Vxzuv");
+    v0yuv = SUMO_GetFunction (&foo, "Vxzuv", interp);
     /* v0yuv = foo.V[xzuv].value; */
 
     return 3.0L*((y + s)*v0yuv - u0yuv) - 3.0L*TSIL_I2p(y,u,v,qq);
@@ -1208,7 +1220,7 @@ void Gtilde_SSSS (TSIL_RESULT *foo,
     + 4.0L*ux0zz + 2.0L*uzyzx + 4.0L*tbar0yz - 4.0L*s0yz/x
     - 2.0L*y*ty0z/x + (2.0L - 2.0L*z/x)*tz0y
     + 2.0L*TSIL_I2(x,y,z,qq)/x + 3.0L*TSIL_I2p(x,y,z,qq)
-    + z*(3.0L*lnbarz - 7.0L)*TSIL_Bp(z,y,s,qq)
+    + z*(3.0L*lnbarz - 7.0L)*SUMO_Bp(z,y,s,qq,interp)
     + 2.0L*(lnbarx + lnbarz - 8.0L)*TSIL_B(y,z,s,qq)
     + (2.0L*y*lnbary + 2.0L*z*lnbarz - 7.L*x/2.L - 4.L*y - 4.L*z)/x
     ;
@@ -1239,7 +1251,7 @@ void Gtilde_SSFF (TSIL_RESULT *foo, TSIL_COMPLEX *gSSFF, TSIL_COMPLEX *gSSff)
   TSIL_REAL x,y,z,s,qq,lnbarx,lnbary,lnbarz;
   TSIL_COMPLEX m0zxyz,ux0zz,uzyzx,tbar0yz,tz0y,ty0z,s0yz,sxzz,gtildeSSSS;
   TSIL_COMPLEX Ax,Ay,Az,b0z,b0y;
-  char funcname[] = "Gtilde_SSFF";
+  /* char funcname[] = "Gtilde_SSFF"; */
 
   x = foo->z;
   y = foo->u;
@@ -1279,9 +1291,8 @@ void Gtilde_SSFF (TSIL_RESULT *foo, TSIL_COMPLEX *gSSFF, TSIL_COMPLEX *gSSff)
 
     /* The TSIL_RESULT foo has the correct args already for this call */
     Gtilde_SSSS (foo, &gtildeSSSS);
-    /* printf("Back from Gtilde_SSSS: g~SSSS = ");TSIL_cprintf(gtildeSSSS);printf("\n"); */
 
-    *gSSff = -2.0L*gtildeSSSS + 6.0L*z*TSIL_Bp(z,y,s,qq)*(1.0L - lnbarz);
+    *gSSff = -2.0L*gtildeSSSS + 6.0L*z*SUMO_Bp(z,y,s,qq,interp)*(1.0L - lnbarz);
 
     *gSSFF = 4.0L*((x - y)*(x - y) - z*z)*m0zxyz
       + 4.0L*(x - y - z)*ux0zz 
@@ -1292,7 +1303,7 @@ void Gtilde_SSFF (TSIL_RESULT *foo, TSIL_COMPLEX *gSSFF, TSIL_COMPLEX *gSSff)
       + (4.0L*(y + z)/x - 1.0L)*s0yz
       + 2.0L*sxzz + 3.0L*(x - y - z)*TSIL_I2p(x,y,z,qq)
       + (1.0L - 2.0L*(y + z)/x)*TSIL_I2(x,y,z,qq) 
-      + 2.0L*(x - y - z)*z*(3.0L*lnbarz - 5.0L)*TSIL_Bp(z,y,s,qq)
+      + 2.0L*(x - y - z)*z*(3.0L*lnbarz - 5.0L)*SUMO_Bp(z,y,s,qq,interp)
       + (15.0L*y + 17.0L*z - 7.0L*x - 2.0L*(x + y + z)*lnbarx 
 	 + (x - y - 3.0L*z)*lnbarz)*TSIL_B(y,z,s,qq)
       + 3.0L*lnbarx*(y*lnbary - y + z*lnbarz - z)
@@ -1413,7 +1424,7 @@ TSIL_COMPLEX F4tilde (TSIL_REAL x, TSIL_REAL y, TSIL_REAL qq)
 
 TSIL_COMPLEX BpFF (TSIL_REAL x, TSIL_REAL y, TSIL_REAL s, TSIL_REAL qq)
 {
-  return (x + y - s)*TSIL_dBds(x,y,s,qq) - TSIL_B(x,y,s,qq);
+  return (x + y - s)*SUMO_dBds(x,y,s,qq,interp) - TSIL_B(x,y,s,qq);
 }
 
 /* ---------------------------------------------------------------- */
@@ -1421,5 +1432,5 @@ TSIL_COMPLEX BpFF (TSIL_REAL x, TSIL_REAL y, TSIL_REAL s, TSIL_REAL qq)
 
 TSIL_COMPLEX Bpff (TSIL_REAL x, TSIL_REAL y, TSIL_REAL s, TSIL_REAL qq)
 {
-  return 2.0L*TSIL_dBds(x,y,s,qq);
+  return 2.0L*SUMO_dBds(x,y,s,qq,interp);
 }

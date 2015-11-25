@@ -13,13 +13,13 @@
 int bFS (TSIL_REAL x, TSIL_REAL y, TSIL_REAL s, TSIL_REAL qq, 
 	 TSIL_COMPLEX *BFS, TSIL_COMPLEX *BfS)
 {
-  *BFS = ((y-x-s)*TSIL_B(x,y,s,qq) -TSIL_A(x,qq) +TSIL_A(y,qq))/2.L;
+  *BFS = ((y-x-s)*TSIL_B(x,y,s,qq) - TSIL_A(x,qq) + TSIL_A(y,qq))/2.L;
 
   if ((x/(y+s)) > TSIL_TOL) {
-      *BfS = -TSIL_B(x,y,s,qq);
+    *BfS = -TSIL_B(x,y,s,qq);
   }
   else {
-    *BfS = 0.L;
+    *BfS = 0.0L + 0.0L*I;
   }
   return 0;
 }
@@ -37,16 +37,16 @@ int bpFS (TSIL_REAL x, TSIL_REAL y, TSIL_REAL s, TSIL_REAL qq,
     }
   else
     {  
-      *BpFS = ((y-x-s)*TSIL_dBds(x,y,s,qq) - TSIL_B(x,y,s,qq))/2.L;
+      *BpFS = ((y-x-s)*SUMO_dBds(x,y,s,qq,interp) - TSIL_B(x,y,s,qq))/2.L;
     }
 
   if ((x/(y+s)) > TSIL_TOL)
     {
-      *BpfS = -TSIL_dBds(x,y,s,qq);
+      *BpfS = -SUMO_dBds(x,y,s,qq,interp);
     }
   else 
     {
-      *BpfS = 0.L;    
+      *BpfS = 0.L + 0.0L*I;   
     }
   
   return 0;
@@ -190,7 +190,7 @@ int yFSSS (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL u,
 
   if(TSIL_FABS((y-z)/(y+z)) < TSIL_TOL) 
     {
-      Bxyp = TSIL_Bp (y,x,s,qq);
+      Bxyp = SUMO_Bp (y,x,s,qq,interp);
 
       if (((x/(s+y)) < TSIL_TOL) && (TSIL_FABS((y-s)/(y+s)) < TSIL_TOL))
 	{
@@ -263,7 +263,7 @@ int vFSSSS (TSIL_DATA *input_data1,
 
   if (TSIL_FABS((x-u)/(x+u)) < TSIL_TOL)
     {
-      Vzxyv = TSIL_GetFunction(input_data1, "Vzxyv");
+      Vzxyv = SUMO_GetFunction(input_data1, "Vzxyv", interp);
       Ipxyv = TSIL_I2p (x,y,v,qq);
       
       if (((z/(x+s)) < TSIL_TOL) && (TSIL_FABS((x-s)/(x+s)) < TSIL_TOL))
@@ -381,12 +381,12 @@ int vSFFFS (TSIL_DATA *input_data1, TSIL_DATA *input_data2, int swapmode,
       if ((z/s) > TSIL_TOL) {
 
 	if (0 == swapmode) {
-	  Vxzuv = TSIL_GetFunction(input_data1, "Vxzuv");
+	  Vxzuv = SUMO_GetFunction(input_data1, "Vxzuv", interp);
 	} else {
-	  Vxzuv = TSIL_GetFunction(input_data1, "Vuyxv");
+	  Vxzuv = SUMO_GetFunction(input_data1, "Vuyxv", interp);
 	}
 	Ipzuv = TSIL_I2p (z,u,v,qq);
-	Bpzx = TSIL_Bp (z,x,s,qq);
+	Bpzx = SUMO_Bp (z,x,s,qq,interp);
 	
 	*VSFFFS = ((Av - Au)*(Bpzx*(s - x + z) + 1.L + Bxz + Az/z) +
 		   - Suxv + (Ipzuv - Vxzuv*(s - x + z))*(v + z - u) + 
@@ -490,7 +490,6 @@ int vFSSFF (TSIL_DATA *input_data1, TSIL_DATA *input_data2,
             TSIL_COMPLEX *VfSSFF, TSIL_COMPLEX *VfSSff)
 {
   TSIL_COMPLEX Uzxyv, Svyz, Bxz, Bpxz, Ax, Ay, Au, Av;
-  /* TSIL_COMPLEX Uzxyv, Svyz, Bxz, Bpxz, Ax, Ay, Az, Au, Av; */
   TSIL_COMPLEX Vzxyv, Ipxyv, Uzuyv, Ixyv, Iuyv, Buz;
   TSIL_REAL x, y, z, u, v, s, qq;
   int check;
@@ -544,9 +543,9 @@ int vFSSFF (TSIL_DATA *input_data1, TSIL_DATA *input_data2,
 
   if (TSIL_FABS((x-u)/(x+u)) < TSIL_TOL)
     {    
-      Vzxyv = TSIL_GetFunction(input_data1, "Vzxyv");
+      Vzxyv = SUMO_GetFunction(input_data1, "Vzxyv", interp);
       Ipxyv = TSIL_I2p (x,y,v,qq);
-      Bpxz = TSIL_Bp (x,z,s,qq);
+      Bpxz = SUMO_Bp (x,z,s,qq,interp);
 
       if (((z/(x+s)) < TSIL_TOL) && (TSIL_FABS((x-s)/(x+s)) < TSIL_TOL))
 	{
@@ -607,13 +606,26 @@ int f1f4 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL qq,
           TSIL_COMPLEX *resultf1, TSIL_COMPLEX *resultf4)
 {
   TSIL_COMPLEX Myyzz0, Uz000, S0yz, Tbar0yz, Ty0z, Tz0y, Byzp, Byz, Ay, Az;
+  TSIL_COMPLEX Mplus, Mminus;
+  TSIL_REAL delta;
 
-  TSIL_Manalytic(y,y,z,z,0,x, &Myyzz0);
+  /* Test for threshold case and if yes, interpolate: */
+  delta = x/TSIL_POW(TSIL_SQRT(y)+TSIL_SQRT(z),2) - 1.0L;
+
+  if (TSIL_FABS(delta) < THRESH_TOL) {
+    TSIL_Manalytic(y,y,z,z,0,x*(1.0L - THRESH_TOL), &Mminus);
+    TSIL_Manalytic(y,y,z,z,0,x*(1.0L + THRESH_TOL), &Mplus);
+    Myyzz0 = 0.5L*(1.0L + delta/THRESH_TOL)*Mplus + 
+             0.5L*(1.0L - delta/THRESH_TOL)*Mminus;
+  }
+  else
+    TSIL_Manalytic(y,y,z,z,0,x, &Myyzz0);
+
   TSIL_Sanalytic(0,y,z,x,qq, &S0yz); 
   TSIL_Tanalytic(z,0,y,x,qq, &Tz0y); 
   TSIL_Tbaranalytic(0,y,z,x,qq, &Tbar0yz);
   Byz = TSIL_B (y,z,x,qq);
-  Byzp = TSIL_Bp (z,y,x,qq);
+  Byzp = SUMO_Bp (z,y,x,qq,interp);
   Ay = TSIL_A (y,qq); 
   Az = TSIL_A (z,qq); 
 
@@ -674,13 +686,14 @@ int f2f3f5f6 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL qq,
   TSIL_COMPLEX M0yxzy, M0zxyz, Ux0yy, Ux0zz, Uyzxy, Uzyxz, Uz000;
   TSIL_COMPLEX S0yz, Sxyy, Sxzz, Ty0z, Tz0y, Tbar0yz;
   TSIL_COMPLEX Byz, Byzp, Ax, Ay, Az, Ixyz, Ipxyz;
+  /* TSIL_COMPLEX Mplus, Mminus; */
 
   TSIL_Sanalytic(0,y,z,x,qq, &S0yz); 
   TSIL_Tanalytic(z,0,y,x,qq, &Tz0y); 
   TSIL_Tanalytic(y,0,z,x,qq, &Ty0z); 
   TSIL_Tbaranalytic(0,y,z,x,qq, &Tbar0yz);
   Byz = TSIL_B (y,z,x,qq);
-  Byzp = TSIL_Bp (z,y,x,qq);
+  Byzp = SUMO_Bp (z,y,x,qq,interp);
   Ax = TSIL_A (x,qq); 
   Ay = TSIL_A (y,qq); 
   Az = TSIL_A (z,qq); 

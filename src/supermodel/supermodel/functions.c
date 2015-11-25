@@ -168,15 +168,6 @@ void SUMO_Error (char *func, char *msg, int code)
 /* ------------------------------------------------------------------ */
 /* ------------------------------------------------------------------ */
 
-/* int SUMO_Delta (int i, int j) */
-/* { */
-/*   if (i == j) return 1; */
-/*   else return 0; */
-/* } */
-
-/* ------------------------------------------------------------------ */
-/* ------------------------------------------------------------------ */
-
 TSIL_REAL SUMO_AbsSq (TSIL_COMPLEX z)
 {
   return (TSIL_REAL) (z * TSIL_CONJ(z));
@@ -480,6 +471,9 @@ int SUMO_SetTestModel3 (void)
 /* ------------------------------------------------------------------ */
 /* For experimentation at this stage. Parameters from Softsusy program
    main.cpp, via printout in higherorder.c.
+
+   MSUGRA model with:
+   m12 = 500, a0 = 0, tanbeta = 10, m0 = 125
 */
 
 int SUMO_SetTestModel4 (void) 
@@ -530,6 +524,175 @@ int SUMO_SetTestModel4 (void)
   return 0;
 }
 
+/* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+/* Works the same as TSIL_GetFunction if interp == NO. Threshold
+   interpolation performed for V functions when interp == YES. */
 
+TSIL_COMPLEX SUMO_GetFunction (TSIL_DATA *foo, const char *which, 
+			       int interp)
+{
+  TSIL_REAL arg1, arg2, delta, snew;
+  TSIL_COMPLEX Vplus, Vminus;
+  TSIL_DATA gaak;
 
+  /* This is cut and pasted from tsil_names.h: */
+  const char *vname[4][2] = {{"Vzxyv","Vzxvy"},
+			     {"Vuyxv","Vuyvx"},
+			     {"Vxzuv","Vxzvu"},
+			     {"Vyuzv","Vyuvz"}};
 
+  /* If no interp requested, or not a V function, just return the
+     usual thing: */
+  if (interp == NO || strncmp (which, "V", 1) != 0)
+    return TSIL_GetFunction (foo, which);
+
+  /* Check for a threshold case: */
+  if (   !strcmp(which, vname[0][0]) || !strcmp(which, vname[0][1])
+      || !strcmp(which, vname[2][0]) || !strcmp(which, vname[2][1])) {
+    arg1 = foo->z; arg2 = foo->x;
+  }
+  else if (   !strcmp(which, vname[1][0]) || !strcmp(which, vname[1][1])
+           || !strcmp(which, vname[3][0]) || !strcmp(which, vname[3][1])) {
+    arg1 = foo->u; arg2 = foo->y;
+  }
+  else {
+    printf("This can never happen!!!\n"); exit(234);
+  }
+
+  delta = foo->s/TSIL_POW(TSIL_SQRT(arg1)+TSIL_SQRT(arg2),2) - 1.0L;
+
+  if (TSIL_FABS(delta) > THRESH_TOL)
+    return TSIL_GetFunction (foo, which);
+
+  /* If we get here we interpolate: */
+  TSIL_SetParameters (&gaak, foo->x, foo->y, foo->z, foo->u, foo->v, foo->qq);
+  snew = (1.0L + THRESH_TOL)*(foo->s);
+
+  TSIL_Evaluate (&gaak, snew);
+  Vplus = TSIL_GetFunction (&gaak, which);
+
+  snew = (1.0L - THRESH_TOL)*(foo->s);
+  TSIL_Evaluate (&gaak, snew);
+  Vminus = TSIL_GetFunction (&gaak, which);
+
+  return 0.5L*(1.0L + delta/THRESH_TOL)*Vplus + 
+         0.5L*(1.0L - delta/THRESH_TOL)*Vminus;
+}
+
+/* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+/* Works the same as TSIL_GetFunctionR if interp == NO. Threshold
+   interpolation performed for V functions when interp == YES. */
+
+/* Takes a TSIL_RESULT * as first arg, rather than TSIL_DATA *. */
+
+TSIL_COMPLEX SUMO_GetFunctionR (TSIL_RESULT *foo, const char *which, 
+				int interp)
+{
+  TSIL_REAL arg1, arg2, delta, snew;
+  TSIL_COMPLEX Vplus, Vminus;
+  TSIL_DATA gaak;
+
+  /* This is cut and pasted from tsil_names.h: */
+  const char *vname[4][2] = {{"Vzxyv","Vzxvy"},
+			     {"Vuyxv","Vuyvx"},
+			     {"Vxzuv","Vxzvu"},
+			     {"Vyuzv","Vyuvz"}};
+
+  /* If no interp requested, or not a V function, just return the
+     usual thing: */
+  if (interp == NO || strncmp (which, "V", 1) != 0)
+    return TSIL_GetFunctionR (foo, which);
+
+  /* Check for a threshold case: */
+  if (   !strcmp(which, vname[0][0]) || !strcmp(which, vname[0][1])
+      || !strcmp(which, vname[2][0]) || !strcmp(which, vname[2][1])) {
+    arg1 = foo->z; arg2 = foo->x;
+  }
+  else if (   !strcmp(which, vname[1][0]) || !strcmp(which, vname[1][1])
+           || !strcmp(which, vname[3][0]) || !strcmp(which, vname[3][1])) {
+    arg1 = foo->u; arg2 = foo->y;
+  }
+  else {
+    printf("This can never happen!!!\n"); exit(234);
+  }
+
+  delta = foo->s/TSIL_POW(TSIL_SQRT(arg1)+TSIL_SQRT(arg2),2) - 1.0L;
+
+  if (TSIL_FABS(delta) > THRESH_TOL)
+    return TSIL_GetFunctionR (foo, which);
+
+  /* If we get here we interpolate: */
+  TSIL_SetParameters (&gaak, foo->x, foo->y, foo->z, foo->u, foo->v, foo->qq);
+  snew = (1.0L + THRESH_TOL)*(foo->s);
+  TSIL_Evaluate (&gaak, snew);
+  Vplus = TSIL_GetFunction (&gaak, which);
+
+  snew = (1.0L - THRESH_TOL)*(foo->s);
+  TSIL_Evaluate (&gaak, snew);
+  Vminus = TSIL_GetFunction (&gaak, which);
+
+  return 0.5L*(1.0L + delta/THRESH_TOL)*Vplus + 
+         0.5L*(1.0L - delta/THRESH_TOL)*Vminus;
+}
+
+/* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+
+TSIL_COMPLEX SUMO_Bp (TSIL_REAL x,
+		      TSIL_REAL y,
+		      TSIL_COMPLEX s,
+		      TSIL_REAL qq,
+		      int interp)
+{
+  TSIL_COMPLEX snew, Bpplus, Bpminus;
+  TSIL_REAL delta;
+
+  if (interp == NO) return TSIL_Bp (x,y,s,qq);
+
+  delta = TSIL_CABS(s)/TSIL_POW(TSIL_SQRT(x)+TSIL_SQRT(y), 2) - 1.0L;
+
+  if (TSIL_FABS(delta) > THRESH_TOL)
+    return TSIL_Bp (x,y,s,qq);
+
+  /* If we get here we interpolate: */
+  snew = (1.0L + THRESH_TOL)*s;
+  Bpplus = TSIL_Bp (x,y,snew,qq);
+
+  snew = (1.0L - THRESH_TOL)*s;
+  Bpminus = TSIL_Bp (x,y,snew,qq);
+
+  return 0.5L*(1.0L + delta/THRESH_TOL)*Bpplus + 
+         0.5L*(1.0L - delta/THRESH_TOL)*Bpminus;
+}
+
+/* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+
+TSIL_COMPLEX SUMO_dBds (TSIL_REAL x,
+			TSIL_REAL y,
+			TSIL_COMPLEX s,
+			TSIL_REAL qq,
+			int interp)
+{
+  TSIL_COMPLEX snew, dBdsplus, dBdsminus;
+  TSIL_REAL delta;
+
+  if (interp == NO) return TSIL_dBds (x,y,s,qq);
+
+  delta = TSIL_CABS(s)/TSIL_POW(TSIL_SQRT(x)+TSIL_SQRT(y), 2) - 1.0L;
+
+  if (TSIL_FABS(delta) > THRESH_TOL)
+    return TSIL_dBds (x,y,s,qq);
+
+  /* If we get here we interpolate: */
+  snew = (1.0L + THRESH_TOL)*s;
+  dBdsplus = TSIL_dBds (x,y,snew,qq);
+
+  snew = (1.0L - THRESH_TOL)*s;
+  dBdsminus = TSIL_dBds (x,y,snew,qq);
+
+  return 0.5L*(1.0L + delta/THRESH_TOL)*dBdsplus + 
+         0.5L*(1.0L - delta/THRESH_TOL)*dBdsminus;
+}

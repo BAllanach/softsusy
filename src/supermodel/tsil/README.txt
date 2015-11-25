@@ -17,7 +17,8 @@ II.  Building TSIL
 III. Using TSIL
 IV.  The TSIL API
 V.   Numerical Integration in TSIL
-VI.  Using TSIL with Fortran
+VI.  Using TSIL with C++
+VII. Using TSIL with Fortran
 
 
 ************************************************************************
@@ -68,7 +69,7 @@ TSIL is available from:
        http://www.niu.edu/spmartin/TSIL
        http://faculty.otterbein.edu/drobertson/TSIL
 
-Version number: 1.2
+Version number: 1.3
 
 
 ************************************************************************
@@ -93,10 +94,10 @@ To compile TSIL, edit the Makefile and choose:
 
    Simply uncomment the line for the type you wish.  (If neither flag
    is given, LONG is selected.)  LONG is strongly recommended on
-   systems where it is available.  (However, the gcc currently available for 
-   Mac OS X will not work with LONG.) There is a speed penalty due to 
-   the use of long double intrinsic functions, but it is minor and execution 
-   times are in any case low (less than one second) on modern hardware.
+   systems where it is available.  There is a speed penalty due to the
+   use of long double intrinsic functions, but it is minor and
+   execution times are in any case low (less than one second) on
+   modern hardware.
 
    In your own programs that use TSIL, you may declare variables as
 
@@ -168,13 +169,14 @@ The end product intended for the user consists of the files:
 
        tsil.tst	     Test program (see below for details)
 
-In addition, the file
+In addition, the files
 
+       tsil_cpp.h
        tsil_fort.inc
 
-may be useful if you are planning to call TSIL from Fortran.  See
-section VII of this document for additional information on using TSIL
-with Fortran.
+may be useful if you are planning to call TSIL from C++ or Fortran,
+respectively.  See section VII-VIII of this document for additional
+information on using TSIL with these langauges.
 
 It is strongly recommended that you run the test program after
 compiling TSIL, to insure that correct results are being obtained.
@@ -233,9 +235,9 @@ The make command also produces the executable
        tsil
 
 which implements the most basic TSIL calculation: it takes as
-command-line arguments x, y, z, u, v, s, and Q^2 and prints the values
-of all integral functions together with timing and other information.
-As an example,
+command-line arguments x, y, z, u, v, s, and Q^2, in that order, and
+prints the values of all integral functions together with timing and
+other information.  As an example,
 
        ./tsil 1 2 3 4 5 10 1
 
@@ -265,7 +267,7 @@ To use TSIL functions in your code, you must:
 
         -I<inc_dir>
 
-   will generically be necessary.  See the compiler man pages on your
+   will generally be necessary.  See the compiler man pages on your
    system for further details.
 
    Some potentially useful constants are also defined in the file
@@ -576,6 +578,10 @@ to set the relevant squared mass and renormalization scale parameters.
    will generate an error message.  Instead, TSIL_GetFunction should
    be used to extract results.
 
+   A fatal error results if an invalid function identifier is
+   specified, or if an attempt is made to extract functions from an
+   unevaluted TSIL_DATA struct.
+
 ---------------------------------------------------------------------
 
 5. void TSIL_GetBoldData (TSIL_DATA *foo,
@@ -602,6 +608,10 @@ to set the relevant squared mass and renormalization scale parameters.
    will generate an error message.  Instead, TSIL_GetBoldFunction
    should be used to extract results.
 
+   A fatal error results if an invalid function identifier is
+   specified, or if an attempt is made to extract functions from an
+   unevaluted TSIL_DATA struct.
+
 ---------------------------------------------------------------------
 
 6. TSIL_COMPLEX TSIL_GetFunction (TSIL_DATA *foo, const char *str)
@@ -623,10 +633,24 @@ to set the relevant squared mass and renormalization scale parameters.
    ...
    tyzv = TSIL_GetFunction (&foo, "Tyzv");
 
-   Note that where there is only a single function of a given type
-   available, only the first character in the specification string is
-   relevant.  For example, for STU evaluation the single U-type function
-   Uxzuv can be extracted using "Uxzuv" or "U".
+   Note that function identifier strings that are permutations of the
+   ones shown are also allowed, if they match the symmetries of the
+   basis functions.  For example, the U functions are symmetric under
+   interchange of their last two arguments: U(z,x,y,v) = U(z,x,v,y).
+   This function can be accessed using the ideintifier string "Uzxvy"
+   in addition to "Uzxyv".  Likewise, any of the strings "Suxv",
+   "Sxuv", "Suvx", "Svux", "Sxvu", or "Svxu" will return the function
+   S(u,x,v) (symmetric under interchange of any of its arguments),
+   etc.
+
+   Note also that where there is only a single function of a given
+   type available, only the first character in the specification
+   string is relevant.  For example, for STU evaluation the single
+   U-type function Uxzuv can be extracted using "Uxzuv" or "U".
+
+   A fatal error results if an invalid function identifier is
+   specified, or if an attempt is made to extract a function from an
+   unevaluted TSIL_DATA struct.
 
 ---------------------------------------------------------------------
 
@@ -645,6 +669,8 @@ to set the relevant squared mass and renormalization scale parameters.
 	 "Svyz", "Suxv",
 	 "Bxz", or "Byu"
 
+   (or permutations matching the symmetries of the basis functions).
+
    Example:
    ========
    TSIL_DATA foo;
@@ -657,6 +683,10 @@ to set the relevant squared mass and renormalization scale parameters.
    available, only the first character in the specification string is
    relevant.  E.g., for STU evaluation the single U-type function
    Uxzuv can be extracted using "Uxzuv" or "U".
+
+   A fatal error results if an invalid function identifier is
+   specified, or if an attempt is made to extract a function from an
+   unevaluted TSIL_DATA struct.
 
 ---------------------------------------------------------------------
 
@@ -802,6 +832,22 @@ Utilities
    Prints the current version of TSIL to stdout.
 
 ---------------------------------------------------------------------
+
+6. void TSIL_WarnsOff (void)
+
+   Disables warning messages, for example when one tries to access an
+   undefined function with TSIL_GetFunction, TSIL_GetBoldFunction,
+   TSIL_GetData, or TSIL_GetBoldData.  Error messages cannot be
+   disabled.
+
+---------------------------------------------------------------------
+
+7. void TSIL_WarnsOn (void)
+
+   Enables warning messages, for example when one tries to access an
+   undefined function with TSIL_GetFunction, TSIL_GetBoldFunction,
+   TSIL_GetData, or TSIL_GetBoldData.  This is the default setting.
+
 
 Analytic Cases
 ==============
@@ -1143,7 +1189,97 @@ speed is an overriding concern.
 
 
 ************************************************************************
-VI. Using TSIL with Fortran
+VI. Using TSIL with C++
+************************************************************************
+
+It is possible to call TSIL functions from C++ code.  The header file
+
+tsil_cpp.h
+
+should be included in any C++ source files that make use of TSIL
+functions.  This file is equivalent to the usual tsil.h, but with
+additional definitions to streamline interoperation with C++.
+
+Care should be taken that C++ type sizes match those used in TSIL.
+For example, if TSIL was compiled with -DTSIL_SIZE_LONG (so that real
+variables are long double and complexes are long double complex), then
+you must use
+
+std::complex<long double>
+
+for the corresponding C++ variables.  A simple way to achieve this is
+to compile your C++ code with the usual TSIL macro:
+
+-DTSIL_SIZE_LONG
+
+or
+
+-DTSIL_SIZE_DOUBLE
+
+(the former is the default).  This will set the macros
+
+TSIL_REAL
+TSIL_COMPLEXCPP
+
+to the approriate types.  Note that macro TSIL_COMPLEX retains its
+definition as the appropriate C complex type, i.e., double _Complex or
+long double _Complex.
+
+The one real subtlety has to do with compatibility of the C complex
+type and C++ std::complex<>, for example when a TSIL function returns
+a TSIL_COMPLEX and the result is to be stored in a std::complex<> of
+appropriate size, or when a TSIL function takes a complex value as an
+argument.  Despite that the two complex types are supposed to be byte
+equivalent, a straight assignment of this type does not work as
+expected for all compilers.
+
+However, the relevant standards guarantee that *pointers* to either
+type will be correctly interpreted in any context.  Hence it is
+necessary to add "wrapper" code around such TSIL function calls, so
+that complex values (either return values or arguments) are referred
+to via pointers.
+
+What this means for the user is that the TSIL functions all have
+C++-specific versions that can be called with C++ types as arguments
+and will return C++ types.  The names of these are the same as the
+corresponding TSIL functions, with a trailing underscore.  Thus the C
+function
+
+TSIL_GetFunction (...)
+
+becomes
+
+TSIL_GetFunction_ (...) 
+
+when called from C++, etc.  *All* functions in the user API have been
+supplied with such wrappers, even though not all functions really need
+them; this is so that users need not remember which functions have
+special names.
+
+All these definitions appear at the end of tsil_cpp.h, should you wish
+to examine them.
+
+The sample code
+
+scalarpole.cpp
+
+shows all this in action.  After building TSIL, it can be compiled as, e.g.,
+
+g++ scalarpole.cpp -L. -ltsil
+
+In this C++ source code, note the
+* inclusion of tsil_cpp.h;
+* declaration of pi1, etc., as TSIL_COMPLEXCPP, which will default to
+  std::complex<long double>;
+* use of the C++-specific calls to TSIL_A_, TSIL_B_,
+  TSIL_GetFunction_, etc.
+
+Please alert the authors if you encounter any issues using TSLI with
+C++ code!
+
+
+************************************************************************
+VII. Using TSIL with Fortran
 ************************************************************************
 
 It is possible to use TSIL with Fortran, and some basic utilities for

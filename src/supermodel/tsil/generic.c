@@ -484,7 +484,7 @@ void TSIL_CaseGeneric (TSIL_DATA *foo)
     sInit  = sFinal;
     sFinal = s;
     if (TSIL_NearThreshold (foo, &sthresh, THRESH_CUTOFF) == YES) {
-      if (TSIL_CABS(sthresh) < TSIL_TOL) {
+      if (TSIL_FABS(sthresh) < TSIL_TOL) {
         rInit  = TSIL_CLOG(-sInit/qq);
         rFinal = TSIL_CLOG(-sFinal/qq - I*TSIL_EPSILON);
         TSIL_Integrate (foo, rInit, rFinal, TSIL_MaxSteps(foo,rFinal-rInit), 3, 0.0L);
