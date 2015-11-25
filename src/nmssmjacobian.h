@@ -22,6 +22,10 @@ namespace softsusy {
     void setUseRunningMassesFlag(bool flag) { useRunningMasses = flag; }
     bool displayUseRunningMassesFlag() const { return useRunningMasses; }
 
+    // helper functions getting pole Z and top mass
+    static double calcMz(NmssmSoftsusy* m, bool getRunningMass = false);
+    static double calcMt(NmssmSoftsusy* m, bool getRunningMass = false);
+
     DoubleMatrix displayRGFlowJacobian() const { return jacRGFlow; }
     DoubleMatrix displayEWSBJacobian() const { return jacEWSB; }
     DoubleMatrix displayInverseRGFlowJacobian() const { return invJacRGFlow; }
@@ -43,10 +47,6 @@ namespace softsusy {
     DoubleMatrix invJacRGFlow;
     DoubleMatrix invJacEWSB;
     bool useRunningMasses;
-
-    // helper functions getting pole Z and top mass
-    static double calcMz(NmssmSoftsusy* m, bool getRunningMass = false);
-    static double calcMt(NmssmSoftsusy* m, bool getRunningMass = false);
 
     struct EWSBPars {
       NmssmSoftsusy* model;
