@@ -597,9 +597,9 @@ void MssmSusy::setMssmApprox(int l, int t) {
 		      + (duBeta * gsq) * uuT + (ddBeta * gsq) * ddT 
 		      + (deBeta * gsq) * eeT + euBeta * uuTsq 
 		      + edBeta * ddTsq + eeBeta * eeTsq  
-		      + euBeta * (u2t*u2t).trace() 
-		      + edBeta * (d2t*d2t).trace()
-		      + eeBeta * (e2t*e2t).trace()
+		      + fuBeta * (u2t*u2t).trace()
+		      + fdBeta * (d2t*d2t).trace()
+		      + feBeta * (e2t*e2t).trace()
 		      + gudBeta * (u2t*d2t).trace()
 		      + gdeBeta * ddT * eeT) * threelp;
       
