@@ -1337,9 +1337,6 @@ int main(int argc, char *argv[]) {
 	  boundaryCondition = &rpvGmsbBcs;
 	else if (boundaryCondition == &extendedSugraBcs) {
 	  boundaryCondition = &rpvExtendedSugraBcs;
-	}
-	else if (boundaryCondition == &extendedSugraBcs) {
-	  boundaryCondition = &rpvExtendedSugraBcs;
 	  kw.useAlternativeEwsb();
 	}
 	else {
