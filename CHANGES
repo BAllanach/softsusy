@@ -1,3 +1,4 @@
+<li> 3/12/15 Bug fixed in 3-loop anomalous dimension of H2. Thanks to A Voigt
 <li> 3/12/15 Bug fixed in 3-loop gauge beta functions. Thanks to A Voigt
 <li> 25/11/15 Got Steve's interpolation into the code and it compiles
 <li> 23/11/15 Fixed SPINFO warnings' format in SLHA output. Thanks to A Buckley

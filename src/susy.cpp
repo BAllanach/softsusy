@@ -750,7 +750,7 @@ void MssmSusy::setMssmApprox(int l, int t) {
       
       DoubleMatrix u2tu2t = u2t*u2t; double u2tu2tT = u2tu2t.trace(); 
       double u2tu2tu2tT = (u2tu2t*u2t).trace(); 
-      double u2tu2td2tT = (u2tu2t*u2t).trace(); 
+      double u2tu2td2tT = (u2tu2t*d2t).trace();
       
       DoubleMatrix d2td2t = d2t*d2t; double d2td2tT = d2td2t.trace(); 
       double d2td2td2tT = (d2td2t*d2t).trace();
