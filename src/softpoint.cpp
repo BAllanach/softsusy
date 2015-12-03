@@ -1018,7 +1018,7 @@ int main(int argc, char *argv[]) {
 		    kw.setLambda(LU, i, j, k, d);
 		  }
 		}
-		else if (block == "RVTIN") {
+		else if (block == "RVTLLEIN") {
 		  int i,j,k; double d; kk >> i >> j >> k >> d;
 		  if((i > 0 && i <=  3) || (j > 0 && j <=  3) || 
 		     (k > 0 && k <=  3)) {
@@ -1030,7 +1030,7 @@ int main(int argc, char *argv[]) {
 			 << block << ": ignoring it\n"; break;
 		  }
 		}
-		else if (block == "RVTPIN") {
+		else if (block == "RVTLQDIN") {
 		  int i,j,k; double d; kk >> i >> j >> k >> d;
 		  if((i > 0 && i <=  3) || (j > 0 && j <=  3) || 
 		     (k > 0 && k <=  3)) {
@@ -1042,7 +1042,7 @@ int main(int argc, char *argv[]) {
 			 << block << ": ignoring it\n"; break;
 		  }
 		}
-		else if (block == "RVTPPIN") {
+		else if (block == "RVTUDDIN") {
 		  int i,j,k; double d; kk >> i >> j >> k >> d;
 		  if((i > 0 && i <=  3) || (j > 0 && j <=  3) ||
 		     (k > 0 && k <=  3)) {

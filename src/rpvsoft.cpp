@@ -1458,7 +1458,7 @@ void RpvSoftsusy::drbarRpv(ostream & out) {
       }
   
   //output RPV trilinear soft-breaking terms
-  out << "Block RVT Q= " << displayMu() <<  " # R-Parity violating LLE soft terms \n";
+  out << "Block RVTLLE Q= " << displayMu() <<  " # R-Parity violating LLE soft terms \n";
   for (i=1; i<=3; i++)
     for (j=1; j<=3; j++) 
       for (k=1; k<=3; k++){
@@ -1466,7 +1466,7 @@ void RpvSoftsusy::drbarRpv(ostream & out) {
 	printRow(out, displayHr(LE).display(k,i,j));
 	out << "   # T_{" << i << j << k << "}\n";      
       }
-  out << "Block RVTP Q= " << displayMu() <<  " # R-Parity violating LQD soft terms \n";
+  out << "Block RVTLQD Q= " << displayMu() <<  " # R-Parity violating LQD soft terms \n";
   for (i=1; i<=3; i++)
     for (j=1; j<=3; j++) 
       for (k=1; k<=3; k++){
@@ -1475,7 +1475,7 @@ void RpvSoftsusy::drbarRpv(ostream & out) {
 	out << "   # T'_{" << i << j << k << "}\n";      
       }
   
-  out << "Block RVTPP Q= " << displayMu() <<  " # R-Parity violating UDD soft terms \n";
+  out << "Block RVTUDD Q= " << displayMu() <<  " # R-Parity violating UDD soft terms \n";
   for (i=1; i<=3; i++)
     for (j=1; j<=3; j++) 
       for (k=1; k<=3; k++){
