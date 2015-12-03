@@ -10125,9 +10125,9 @@ void MssmSoftsusy::extparSLHA(ostream & out,
   
   int i;
   for (i=1; i<=3; i++) {
-    out << "     " << i << "    "; 
+    out << "      " << i << "    "; 
     printRow(out, pars.display(i)); 
-    out << "  # M_" << i << "(MX)" << endl;      
+    out << " # M_" << i << "(MX)" << endl;      
   }
   out << "     11   "; printRow(out, pars.display(11)) ; 
   out << "  # At(MX)" << endl;    
