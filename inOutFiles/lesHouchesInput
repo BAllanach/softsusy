@@ -22,4 +22,4 @@ Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
     5   1.000000000e+00      # Include 2-loop scalar mass squared/trilinear RGEs
 #   19   1.000000000e+00      # Include 3-loop SUSY RGEs
 #   20   1.000000000e+00      # Include 2-loop gauge/Yukawa thresholds
-#   22   1.000000000e+00      # Include 2-loop sparticle mass thresholds
+   22   1.000000000e+00      # Include 2-loop sparticle mass thresholds

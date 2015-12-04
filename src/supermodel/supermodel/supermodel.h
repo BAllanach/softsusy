@@ -12,7 +12,7 @@
 #include <strings.h>
 
 /* Local headers: */
-#include "tsil.h"
+#include "../tsil/tsil.h"
 #include "sumo_build.h"  /* Version information */
 #include "sumo_linalg.h" /* Defns for linear algebra routines */
 #include "sumo_params.h"

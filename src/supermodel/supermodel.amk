@@ -36,4 +36,5 @@ src/supermodel/supermodel/sumo_params.h \
 src/supermodel/supermodel/sumo_smdata.h \
 src/supermodel/supermodel/sumo_squarks.h \
 src/supermodel/supermodel/supermodel_defs.h \
-src/supermodel/supermodel/supermodel.h   
+src/supermodel/supermodel/supermodel.h \
+src/supermodel/tsil/tsil.h 
