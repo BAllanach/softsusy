@@ -44,7 +44,9 @@ void higherorder (supermodel *smodel)
   mu = smodel->mu; 
   b = smodel->b; 
   //renormalization scale
-  Q =  smodel->Q; 
+  Q =  smodel->Q;
+  // DGR added:
+  M_top = smodel->mtop;
 #else
   vu = (long double) smodel->vu; 
   vd = (long double) smodel->vd;
@@ -75,7 +77,9 @@ void higherorder (supermodel *smodel)
   b = (long double) smodel->b; 
   //renormalization scale  
   Q =  (long double) smodel->Q; 
-#endif 
+  // DGR added:
+  M_top = (long double) smodel->mtop;
+#endif
 
   tanbeta = vu/vd;
 
@@ -117,13 +121,9 @@ void higherorder (supermodel *smodel)
   SUMO_Minimize_Veff (0); 
   printf("After minimizing  (vu, vd) = (%Lf, %Lf)\n", vu, vd); */
 
-  // For debugging purposes, we print
-  //  SUMO_GluinoPole (0);
-  //  printf("Tree-level gluino mass: %Lf \n",SUMO_SQRT(M2_gluino));
-  //  SUMO_GluinoPole (1);
-  //  printf("One-loop gluino mass:   %Lf \n",SUMO_SQRT(M2_gluino));
-  SUMO_GluinoPole (2, 1);
-  //  printf("Two-loop gluino mass:   %Lf \n", SUMO_SQRT(M2_gluino));
+  // DGR top pole mass needs to be set before gluino calculation:
+  // M_top = 173.5;
+  M2_top = M_top * M_top;
 
   int which = 0;  int loops = 2;
   for (which = 0; which < 2; which++) {
@@ -172,6 +172,17 @@ void higherorder (supermodel *smodel)
     SUMO_SdRPole (which, loops);
     //    printf("Loops=%i Which=%i sdR mass:     %Lf \n",loops,which,SUMO_SQRT(M2_sdR[which]));
   }
+
+  // DGR Moved this *after* top and squark pole mass calculation
+  // (necessary when expanding gluino around pole masses).
+  // For debugging purposes, we print
+  // SUMO_GluinoPole (0,1);
+  // printf("Tree-level gluino mass: %Lf \n",SUMO_SQRT(M2_gluino));
+  // SUMO_GluinoPole (1,1);
+  // printf("One-loop gluino mass:   %Lf \n",SUMO_SQRT(M2_gluino));
+  SUMO_GluinoPole (2, 1);
+  // printf("Two-loop gluino mass:   %Lf \n", SUMO_SQRT(M2_gluino));
+
 
   /*  SUMO_h0Pole (loops);
       SUMO_H0Pole (loops);
