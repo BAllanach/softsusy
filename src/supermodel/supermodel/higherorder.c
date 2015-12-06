@@ -178,11 +178,16 @@ void higherorder (supermodel *smodel)
   // For debugging purposes, we print
   // SUMO_GluinoPole (0,1);
   // printf("Tree-level gluino mass: %Lf \n",SUMO_SQRT(M2_gluino));
-  // SUMO_GluinoPole (1,1);
-  // printf("One-loop gluino mass:   %Lf \n",SUMO_SQRT(M2_gluino));
+  //  SUMO_GluinoPole (1, 1);
+  //  printf("One-loop gluino mass 0:   %Lf \n",SUMO_SQRT(M2_gluino));
+  SUMO_GluinoPole (2, 0);
+  /*  printf("Two-loop gluino mass 0:   %Lf \n",SUMO_SQRT(M2_gluino));
   SUMO_GluinoPole (2, 1);
+  printf("Two-loop gluino mass 1:   %Lf \n",SUMO_SQRT(M2_gluino));
+  SUMO_GluinoPole (2, 2);
+  printf("Two-loop gluino mass 2:   %Lf \n",SUMO_SQRT(M2_gluino));
   // printf("Two-loop gluino mass:   %Lf \n", SUMO_SQRT(M2_gluino));
-
+  exit(0);*/
 
   /*  SUMO_h0Pole (loops);
       SUMO_H0Pole (loops);

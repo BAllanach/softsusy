@@ -246,11 +246,11 @@ int main(int argc, char *argv[]) {
   try {
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 #ifdef COMPILE_THREE_LOOP_RGE
-    doScan(0.1, 1.96, 20);
-    doScan(1.96, 1.9786, 10);
-    doScan(1.9786, 1.9825, 10);
-    doScan(1.9825, 2.03, 10);
-    doScan(2.03, 3.2, 10);
+    doScan(0.1, 3.2, 20);
+    //    doScan(1.96, 1.9786, 10);
+    //    doScan(1.9786, 1.9825, 10);
+    //    doScan(1.9825, 2.03, 10);
+    //    doScan(2.03, 3.2, 10);
 #endif 
 #endif
   }
