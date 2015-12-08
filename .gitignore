@@ -23,6 +23,7 @@ config.status
 *.*~
 gaugeUn.x
 libtool
+higher.x
 rpvneut.x
 rpvsoftsusy.x
 softpoint.x
