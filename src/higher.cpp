@@ -210,8 +210,6 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
 
       if (r.displayProblem().test()) cout << " " << r.displayProblem();      
       cout << endl;
-      //      cout << r.displayDrBarPars(); 
-      //      exit(0);
     }
 }
 
@@ -220,25 +218,6 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
 
 
 int main(int argc, char *argv[]) {
-  /*  double xsGG,xsSG,xsSS,xsSB,xsTB;   char c[500];  char fn[500];
-  sprintf(fn, "output");
-    fstream fin(fn, ios::in); 
-    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> xsGG >> c >> c >> c >> c >> c >> c >> c >> c >> c;
-    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> xsSG >> c >> c >> c >> c >> c >> c >> c >> c >> c;
-    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> xsSS >> c >> c >> c >> c >> c >> c >> c >> c >> c;
-    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> xsSB >> c >> c >> c >> c >> c >> c >> c >> c >> c;
-    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> xsTB >> c >> c >> c >> c >> c >> c >> c >> c >> c;
-	cout << xsGG << " " << xsSG << " " << xsSS << " " << xsSB << " "<< xsTB << endl;*/
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
@@ -246,7 +225,7 @@ int main(int argc, char *argv[]) {
   try {
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 #ifdef COMPILE_THREE_LOOP_RGE
-    doScan(0.1, 3.2, 20);
+    doScan(0.1, 4.5, 20);
     //    doScan(1.96, 1.9786, 10);
     //    doScan(1.9786, 1.9825, 10);
     //    doScan(1.9825, 2.03, 10);
