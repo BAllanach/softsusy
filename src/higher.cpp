@@ -69,46 +69,6 @@ void getCrossSection(MssmSoftsusy & r, double m0, double m12, double a0,
   return;
 }
 
-/* PROSPINO VERSION
-void getCrossSection(MssmSoftsusy & r, double m0, double m12, double a0, 
-		     double tanb, double & xsGG, double & xsSG, double & xsSS,
-		     double & xsSB, double & xsTB) {
-  /// First, make a SLHA file
-  DoubleVector pars(3); 
-  pars(1) = m0; pars(2) = m12; pars(3) = a0;
-  bool ewsbBCscale = false; int sgnMu = 1;
-  const char* modelIdent = "sugra"; 
-  double qMax = 0.;
-  char fileName[500];
-  sprintf(fileName,"/home/bca20/code/prospino2.1/prospino.in.les_houches");
-  fstream fout(fileName, ios::out);
-  fout.setf(ios::scientific, ios::floatfield);
-  r.lesHouchesAccordOutput(fout, modelIdent, pars, sgnMu, tanb, qMax, 
-			   0, ewsbBCscale);
-  fout.close();
-
-  char buff[500];
-  sprintf(buff, "cd /home/bca20/code/prospino2.1; ./prospino_2.run > output 2> err");
-  //     cout << buff << endl;
-  int err = system(buff);
-  xsGG = 0.; xsSG = 0.; xsSS = 0.; xsSB = 0.; xsTB = 0.;
-
-  char c[500];
-  char fn[500];
-  sprintf(fn, "/home/bca20/code/prospino2.1/prospino.dat");
-  if (!err) {
-    fstream fin(fn, ios::in); 
-    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> xsGG >> c >> c >> c >> c;
-    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> xsSG >> c >> c >> c >> c;
-    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> xsSS >> c >> c >> c >> c;
-    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> xsSB >> c >> c >> c >> c;
-    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> xsTB >> c >> c >> c >> c;
-    fin.close();
-  } else  cout << "CROSS SECTION ERROR\n" << xsGG;
-   
-  return;
-}
-*/
 void doScan(double lowRatio, double highRatio, int numPoints) {
     /// Sets format of output: 6 decimal places
     outputCharacteristics(9);
