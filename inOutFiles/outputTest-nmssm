@@ -1,0 +1,18 @@
+# Low energy data in SOFTSUSY: MIXING=1 TOLERANCE=1.000000e-04
+mU: 1.374977e-03  mC: 6.250138e-01  mt: 1.658566e+02  mt^pole: 1.735000e+02
+mD: 2.734023e-03  mS: 5.986071e-02  mB: 2.850828e+00  mb(mb):  4.180000e+00
+mE: 5.026563e-04  mM: 1.039334e-01  mT: 1.751547e+00  mb^pole: 4.940237e+00
+aE: 1.279160e+02  aS: 1.187000e-01   Q: 9.118760e+01  mT^pole: 1.776990e+00
+loops: 3        thresholds: 1
+
+# tan beta   mh(1)        mh(2)        mA(1)        mA(2)        mH+-
+5.000000e+00 1.065534e+02 7.140562e+02 5.848866e+02 7.217679e+02 7.252890e+02
+1.000000e+01 1.080071e+02 5.006636e+02 5.003800e+02 6.808265e+02 6.855522e+02
+1.500000e+01 1.063274e+02 4.065491e+02 4.588926e+02 6.588502e+02 6.643410e+02
+2.000000e+01 1.034578e+02 3.411658e+02 4.273409e+02 6.341084e+02 6.406961e+02
+2.500000e+01 9.845472e+01 2.846262e+02 3.974529e+02 6.041403e+02 6.120070e+02
+3.000000e+01 8.783533e+01 2.317540e+02 3.656914e+02 5.683792e+02 5.778365e+02
+3.500000e+01 [ No convergence h0 tachyon Not in global min of Higgs potential ]
+4.000000e+01 [ h0 tachyon h0 is tree-level tachyon at MZ ]
+4.500000e+01 [ h0 tachyon h0 is tree-level tachyon at MZ ]
+5.000000e+01 [ h0 tachyon h0 is tree-level tachyon at MZ ]
