@@ -1576,10 +1576,7 @@ void rpvExtendedSugraBcs(MssmSoftsusy & m,
 			 const DoubleVector & inputParameters) { 
   extendedSugraBcs(m, inputParameters);
 
-  cout << "DEBUG 5 " << susyRpvBCatMSUSY << " " << m;
-
   if (!susyRpvBCatMSUSY) m.rpvSet(inputParameters);  
-  cout << "DEBUG 1" << inputParameters << m;
 }
 
 // Transforms all parameters into a new basis where sneutrino vevs are zero:

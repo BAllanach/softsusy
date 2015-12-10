@@ -97,8 +97,7 @@ int main(int argc, char *argv[]) {
   void (*nmssmBoundaryCondition)(NmssmSoftsusy&, const DoubleVector&) = NmssmMsugraBcs;
 
   QedQcd oneset;
-  MssmSoftsusy m; FlavourMssmSoftsusy k;
-  NmssmSoftsusy nmssm;
+  MssmSoftsusy m; FlavourMssmSoftsusy k; NmssmSoftsusy nmssm;
   k.setInitialData(oneset);
   MssmSoftsusy * r = &m; 
   RpvNeutrino kw; bool RPVflag = false;
@@ -458,7 +457,10 @@ int main(int argc, char *argv[]) {
 		    switch(i) {
 		    case 0: RPVflag = false;
 		      break;
-		    case 1: RPVflag = true;
+		    case 1: {
+		      RPVflag = true;
+		      r = &kw; 
+		    }
 		      break;
 		    default:
 		      ostringstream ii;
@@ -589,7 +591,7 @@ int main(int argc, char *argv[]) {
 			gaugeUnification = false; break;
 		      case 8: pars(5) = d; break;
 		      case 9: pars(6) = d; m.useAlternativeEwsb(); 
-			kw.useAlternativeEwsb();
+			kw.useAlternativeEwsb(); 
 			break;
 		      case 10: desiredMh = d; break;
 		      default: 
@@ -719,18 +721,22 @@ int main(int argc, char *argv[]) {
 		      nmssm.setSetTbAtMX(true);
 		    } 
 		    else if (i == 23 || i == 26) {
-		      r->useAlternativeEwsb(); 
+		      m.useAlternativeEwsb();
+		      k.useAlternativeEwsb();
 		      if (i == 23) {
                          r->setMuCond(d); r->setSusyMu(d);
+                         k.setMuCond(d); k.setSusyMu(d);
                          if (susy_model == NMSSM) {
                            if (pars.displayEnd() < 56) pars.setEnd(56);
                            nmssm_input.set(NMSSM_input::mu, d);
                            pars(54) = d;
                          }
                       }
-		      if (i == 26) r->setMaCond(d); 
+		      if (i == 26) {
+			r->setMaCond(d); k.setMaCond(d);
+		      }
 		    }
-		    else if (!flavourViolation) {
+		    else if (!flavourViolation || RPVflag) {
 		      if ((i > 0 && i <=  3) || (i >= 11 && i <= 13) || 
 			  (i >= 21 && i <= 23) || (i == 26 || i == 25) 
 			  || (i >= 31 && i <= 36) || 
@@ -1325,10 +1331,11 @@ int main(int argc, char *argv[]) {
       }
 
       if (RPVflag) {
+	kw.setNumRpcBcs(pars.displayEnd());
 	kw.rpvDisplay(pars);
 	kw.setFlavourSoftsusy(k);
 	r = &kw;
-	
+
 	if (boundaryCondition == &sugraBcs) 
 	  boundaryCondition = &rpvSugraBcs;
 	else if (boundaryCondition == &amsbBcs) 
