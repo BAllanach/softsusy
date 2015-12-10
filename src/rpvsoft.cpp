@@ -57,7 +57,7 @@ const DoubleVector RpvSoftsusy::display() const {
 }
 
 void RpvSoftsusy::rpvDisplay(DoubleVector & parameters) const {
-  int i, j, k, pos = displayNumRpcBcs();
+  int i, j, k, pos = displayNumRpcBcs() + 1;
   parameters.setEnd(pos+102);
 
   for (i=1; i<=3; i++)
@@ -116,7 +116,7 @@ void RpvSoftsusy::rpvDisplay(DoubleVector & parameters) const {
 }
 
 void RpvSoftsusy::rpvSet(const DoubleVector & parameters){
-  int i, j, k, pos = displayNumRpcBcs();
+  int i, j, k, pos = displayNumRpcBcs() + 1;
 
   for (i=1; i<=3; i++)
     for (j=1; j<=3; j++) 
@@ -562,7 +562,7 @@ static double mz, sinthDRbarMS;
 void RpvSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars, 
 			double muOld, double eps) {
   /// Set the RPV couplings here if we need to: currently only works with
-  /// CMSSM 
+  /// CMSSM  
   if (susyRpvBCatMSUSY) RpvSoftsusy::rpvSet(pars);
 
   if (displayAltEwsb()) {
@@ -570,29 +570,29 @@ void RpvSoftsusy::rewsb(int sgnMu, double mt, const DoubleVector & pars,
     return;
   } else {
 
-  // Initial values to be iterated
+    // Initial values to be iterated
     MssmSoftsusy::rewsbTreeLevel(sgnMu);
     double mu = displaySusyMu(), m3sq = displayM3Squared();
     
     sinthDRbarMS = calcSinthdrbar();
-  calcTadpole1Ms1loop(mt, sinthDRbarMS);  
-  calcTadpole2Ms1loop(mt, sinthDRbarMS); 
-  double pizztMS = piZZT(displayMz(), displayMu());
-  setHvev(getVev(pizztMS)); 
-  mz = sqrt(sqr(displayMz()) + piZZT(displayMz(), displayMu()));
+    calcTadpole1Ms1loop(mt, sinthDRbarMS);  
+    calcTadpole2Ms1loop(mt, sinthDRbarMS); 
+    double pizztMS = piZZT(displayMz(), displayMu());
+    setHvev(getVev(pizztMS)); 
+    mz = sqrt(sqr(displayMz()) + piZZT(displayMz(), displayMu()));
 
-  int maxTries = 400; 
-  double tol = maximum(TOLERANCE * 1.0e-4, 1.0e-14);
-
-  DoubleVector sneutrinoVevs(3);
-
-  int numTries = 0;
-  iterateRewsb(mu, m3sq, sneutrinoVevs, sgnMu, numTries, maxTries, tol, mt, 
-	       muOld, eps);
-
-  if (PRINTOUT > 2) cout << "VEVs" << sneutrinoVevs;
-  //  check(sneutrinoVevs);
-  setSneutrinoVevs(sneutrinoVevs);
+    int maxTries = 400; 
+    double tol = maximum(TOLERANCE * 1.0e-4, 1.0e-14);
+    
+    DoubleVector sneutrinoVevs(3);
+    
+    int numTries = 0;
+    iterateRewsb(mu, m3sq, sneutrinoVevs, sgnMu, numTries, maxTries, tol, mt, 
+		 muOld, eps);
+    
+    if (PRINTOUT > 2) cout << "VEVs" << sneutrinoVevs;
+    //  check(sneutrinoVevs);
+    setSneutrinoVevs(sneutrinoVevs);
   }
 }
 
@@ -1576,7 +1576,10 @@ void rpvExtendedSugraBcs(MssmSoftsusy & m,
 			 const DoubleVector & inputParameters) { 
   extendedSugraBcs(m, inputParameters);
 
+  cout << "DEBUG 5 " << susyRpvBCatMSUSY << " " << m;
+
   if (!susyRpvBCatMSUSY) m.rpvSet(inputParameters);  
+  cout << "DEBUG 1" << inputParameters << m;
 }
 
 // Transforms all parameters into a new basis where sneutrino vevs are zero:
