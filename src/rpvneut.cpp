@@ -3069,7 +3069,8 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
   m(3) = displayPhys().msnu(1);
   m(4) = displayPhys().msnu(2);
   m(5) = displayPhys().msnu(3);
-  DoubleVector newCpEvens(m.sort());
+  //  DoubleVector newCpEvens(m.sort());
+  DoubleVector newCpEvens(m);
   sPhysical s(rr.displayPhys());
   s.mh0(1) = newCpEvens(1); s.mh0(2) = newCpEvens(2); 
   s.msnu(1) = newCpEvens(3); s.msnu(2) = newCpEvens(4); 
@@ -3081,7 +3082,8 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
   m(4) = displayPhys().msnu(3);
   m(5) = 6.66e66; /// goldstone boson in last place
 
-  DoubleVector newCpOdds(m.sort());
+  //  DoubleVector newCpOdds(m.sort());
+  DoubleVector newCpOdds(m);
   s.mA0(1) = newCpOdds(1);
   s.msnu(1) = newCpOdds(2); 
   s.msnu(2) = newCpOdds(3);
@@ -3096,7 +3098,8 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
   m(5) = displayPhys().me(2, 1);
   m(6) = displayPhys().me(2, 2);
   m(7) = displayPhys().me(2, 3);
-  DoubleVector chSc(m.sort());
+  //  DoubleVector chSc(m.sort());
+  DoubleVector chSc(m);
   s.mHpm = chSc(1);
   s.me(1, 1) = chSc(2);   s.me(1, 2) = chSc(3);   s.me(1, 3) = chSc(4);
   s.me(2, 1) = chSc(5);   s.me(2, 2) = chSc(6);   s.me(2, 3) = chSc(7);
