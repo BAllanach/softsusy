@@ -349,7 +349,19 @@ namespace softsusy {
       // save calculated matrix
       // convention: inverse refers to case where transformation
       // is from high-scale to low-scale parameters
-      if (startScale > endScale) {
+      if (startScale == endScale) {
+        if (invJacRGFlow.displayRows() != numPars
+            || invJacRGFlow.displayCols() != numPars) {
+          invJacRGFlow.resize(numPars, numPars);
+        }
+        invJacRGFlow = jac;
+
+        if (jacRGFlow.displayRows() != numPars
+            || jacRGFlow.displayCols() != numPars) {
+          jacRGFlow.resize(numPars, numPars);
+        }
+        jacRGFlow = jac;
+      } else if (startScale > endScale) {
         if (invJacRGFlow.displayRows() != numPars
             || invJacRGFlow.displayCols() != numPars) {
           invJacRGFlow.resize(numPars, numPars);
