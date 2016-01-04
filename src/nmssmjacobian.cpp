@@ -57,19 +57,22 @@ namespace softsusy {
         tempData.setPoleMt(mtrun);
         m->setData(tempData);
 
-        const double qcd = m->calcRunMtQCD();
         const double stopGluino = m->calcRunMtStopGluino();
         const double higgs = m->calcRunMtHiggs();
         const double neutralinos = m->calcRunMtNeutralinos();
         const double charginos = m->calcRunMtCharginos();
 
-        double resigmat = mtrun * (qcd + stopGluino + higgs + neutralinos
+        double resigmat = mtrun * (stopGluino + higgs + neutralinos
                                    + charginos) / (16.0 * sqr(PI));
 
+        const double g3Sq = sqr(m->displayGaugeCoupling(3));
         const double logMtSqOverQSq = 2.0 * log(mtrun / scale);
-        const double twoLoopQCD = sqr(sqr(m->displayGaugeCoupling(3))) *
-          (-0.538314 + 0.181534*logMtSqOverQSq - 0.0379954*sqr(logMtSqOverQSq));
-        resigmat += mtrun * twoLoopQCD / (16.0 * sqr(PI));
+        const double oneLoopQCD = 4.0 * g3Sq * (5.0 - 3.0 * logMtSqOverQSq)
+          / (3.0 * 16.0 * sqr(PI));
+        const double twoLoopQCD = sqr(g3Sq) * (0.005191204615668296
+          - 0.0032883224409535764 * logMtSqOverQSq + 0.0008822328500119351 *
+          sqr(logMtSqOverQSq));
+        resigmat -= mtrun * (oneLoopQCD + twoLoopQCD);
 
         mtpole = mtrun - resigmat;
 
