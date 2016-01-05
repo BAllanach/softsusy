@@ -552,6 +552,7 @@ namespace softsusy {
     m->setHvev(vevs(1));
     m->setTanb(vevs(2));
     m->setSvev(vevs(3));
+    m->calcDrBarPars();
 
     if (Z3 && !SoftHiggsOut) {
       errors(1) = sqr(calcMz(m, pars->useRunningMasses)) - outputs(1);
