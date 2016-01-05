@@ -664,47 +664,47 @@ namespace softsusy {
     switch (dependent) {
     case Lambda: {
       output = tempModel->displayLambda();
-      if (PRINTOUT > 1) cout << "lambda= " << output << ' ';
+      if (PRINTOUT > 1) cout << "lambda= " << output << '\n';
       break;
     }
     case Kappa: {
       output = tempModel->displayKappa();
-      if (PRINTOUT > 1) cout << "kappa= " << output << ' ';
+      if (PRINTOUT > 1) cout << "kappa= " << output << '\n';
       break;
     }
     case SMu: {
       output = tempModel->displaySusyMu();
-      if (PRINTOUT > 1) cout << "mu= " << output << ' ';
+      if (PRINTOUT > 1) cout << "mu= " << output << '\n';
       break;
     }
     case M3Sq: {
       output = tempModel->displayM3Squared();
-      if (PRINTOUT > 1) cout << "m3sq= " << output << ' ';
+      if (PRINTOUT > 1) cout << "m3sq= " << output << '\n';
       break;
     }
     case XiS: {
       output = tempModel->displayXiS();
-      if (PRINTOUT > 1) cout << "xiS= " << output << ' ';
+      if (PRINTOUT > 1) cout << "xiS= " << output << '\n';
       break;
     }
     case Mh1Sq: {
       output = tempModel->displayMh1Squared();
-      if (PRINTOUT > 1) cout << "mH1Sq= " << output << ' ';
+      if (PRINTOUT > 1) cout << "mH1Sq= " << output << '\n';
       break;
     }
     case Mh2Sq: {
       output = tempModel->displayMh2Squared();
-      if (PRINTOUT > 1) cout << "mH2Sq= " << output << ' ';
+      if (PRINTOUT > 1) cout << "mH2Sq= " << output << '\n';
       break;
     }
     case MsSq: {
       output = tempModel->displayMsSquared();
-      if (PRINTOUT > 1) cout << "mSsq= " << output << ' ';
+      if (PRINTOUT > 1) cout << "mSsq= " << output << '\n';
       break;
     }
     case Yt: {
       output = tempModel->displayYukawaElement(YU, 3, 3);
-      if (PRINTOUT > 1) cout << "ht= " << output << ' ';
+      if (PRINTOUT > 1) cout << "ht= " << output << '\n';
       break;
     }
     default: {
