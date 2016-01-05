@@ -915,7 +915,6 @@ namespace softsusy {
             jac(i + 1, 3) = 0.;
           } else {
             jac(i + 1, 1) = 0.;
-            jac(i + 1, 1) = calcEWSBParameterDerivative(Lambda, indepPars[i], doTop);
             jac(i + 1, 2) = calcEWSBParameterDerivative(Kappa, indepPars[i], doTop);
             jac(i + 1, 3) = calcEWSBParameterDerivative(MsSq, indepPars[i], doTop);
           }
