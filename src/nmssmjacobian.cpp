@@ -24,11 +24,12 @@ namespace softsusy {
     double mzpole = 0.;
 
     if (m) {
-      const double scale = m->displayMu();
       const double mzrun = m->displayMzRun();
       if (getRunningMass) {
         mzpole = mzrun;
       } else {
+        const double scale = m->displayMu();
+
         // @note currently this is using the given pole top mass, not the
         // running mass, check impact
         const double pizzt = m->piZZT(mzrun, scale);
@@ -552,6 +553,7 @@ namespace softsusy {
     m->setHvev(vevs(1));
     m->setTanb(vevs(2));
     m->setSvev(vevs(3));
+
     m->calcDrBarPars();
 
     if (Z3 && !SoftHiggsOut) {
@@ -559,7 +561,7 @@ namespace softsusy {
       errors(2) = m->displayTanb() - outputs(2);
       errors(3) = m->displayLambda() - outputs(3);
     } else {
-      errors(1) = sqr(calcMz(m)) - outputs(1);
+      errors(1) = sqr(calcMz(m, pars->useRunningMasses)) - outputs(1);
       errors(2) = m->displayTanb() - outputs(2);
       errors(3) = m->displaySvev() - outputs(3);
     }
