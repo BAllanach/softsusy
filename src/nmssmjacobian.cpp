@@ -278,6 +278,9 @@ namespace softsusy {
       }
       }
 
+      volatile const double temp = x + h;
+      h = temp - x;
+
       RGFlowPars pars;
       pars.model = model;
       pars.independent = indep;
@@ -786,6 +789,9 @@ namespace softsusy {
       }
       }
 
+      volatile const double temp = x + h;
+      h = temp - x;
+
       EWSBPars pars;
       pars.model = model;
       pars.independent = indep;
@@ -857,6 +863,9 @@ namespace softsusy {
         throw ii.str();
       }
       }
+
+      volatile const double temp = x + h;
+      h = temp - x;
 
       EWSBPars pars;
       pars.model = model;
