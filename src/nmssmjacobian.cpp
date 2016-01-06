@@ -790,6 +790,7 @@ namespace softsusy {
       pars.model = model;
       pars.independent = indep;
       pars.dependent = dep;
+      pars.useRunningMasses = useRunningMasses;
 
       double err = 0.;
       if (fabs(x) > 1.0e-10) {
