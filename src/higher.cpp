@@ -28,6 +28,8 @@
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 #ifdef COMPILE_THREE_LOOP_RGE
 
+bool treeLevelGluino = false;
+
 /// NLLFAST version
 void getCrossSection(MssmSoftsusy & r, double m0, double m12, double a0, 
 		     double tanb, double & xsGG, double & xsSG, double & xsSS,
@@ -69,6 +71,50 @@ void getCrossSection(MssmSoftsusy & r, double m0, double m12, double a0,
   return;
 }
 
+void scaleVariation() {
+    /// Sets format of output: 6 decimal places
+    outputCharacteristics(9);
+
+    double m12 = 1000., m0 = 1000., a0 = 0., tanb = 10.;
+
+    int sgnMu = 1;      ///< sign of mu parameter 
+    
+    QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
+
+    /// most important Standard Model inputs: you may change these and recompile
+    double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
+     // double lowRatio = 0.7817552, highRatio = 0.7817581;
+    oneset.setAlpha(ALPHAS, alphasMZ);
+    oneset.setPoleMt(mtop);
+    oneset.setMbMb(mbmb);    
+    oneset.toMz();      ///< Runs SM fermion masses to MZ
+    
+    double qewsbStart = 0.5, qewsbEnd = 2.; int numPoints = 20;
+    for (int i=0; i<=numPoints; i++) {
+      double qewsb = (qewsbEnd - qewsbStart) / double(numPoints) * double(i) + 
+	qewsbStart; 
+      QEWSB = qewsb;
+      DoubleVector pars(3); 
+      bool uni = true, ewsbBCscale = false; double mGutGuess = 1.e16;
+      
+      pars(1) = m0; pars(2) = m12; pars(3) = a0; 
+      /// Calculate the spectrum
+      MssmSoftsusy r;
+      r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni, 
+	       ewsbBCscale);
+      if (treeLevelGluino) {
+	r.runto(r.displayMsusy());
+	sPhysical aa = r.displayPhys();
+	aa.mGluino = r.displayGaugino(3);
+	r.setPhys(aa);
+      }
+      cout << qewsb << " " << r.displayMsusy() << " "  
+	   << r.displayPhys().mGluino << " # " 
+	   << r.displayProblem() << endl;
+    }    
+    cout << endl << endl;
+}
+
 void doScan(double lowRatio, double highRatio, int numPoints) {
     /// Sets format of output: 6 decimal places
     outputCharacteristics(9);
@@ -86,7 +132,6 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
     oneset.setPoleMt(mtop);
     oneset.setMbMb(mbmb);    
     oneset.toMz();      ///< Runs SM fermion masses to MZ
-    
 
     DoubleVector pars(3); 
     bool uni = true, ewsbBCscale = false; double mGutGuess = 1.e16;
@@ -101,7 +146,7 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
 	(highRatio - lowRatio) / double(numPoints) * double(i);
       m0 = m0Overm12 * m12;
       pars(1) = m0; pars(2) = m12; pars(3) = a0; 
-      /// Calculate the 
+      /// Calculate the spectrum
       r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni, 
 	       ewsbBCscale);
       
@@ -185,11 +230,21 @@ int main(int argc, char *argv[]) {
   try {
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 #ifdef COMPILE_THREE_LOOP_RGE
-    doScan(0.1, 4.5, 20);
-    //    doScan(1.96, 1.9786, 10);
-    //    doScan(1.9786, 1.9825, 10);
-    //    doScan(1.9825, 2.03, 10);
-    //    doScan(2.03, 3.2, 10);
+    doScan(0.1, 4.5, 20); cout << endl << endl;
+
+    treeLevelGluino = true;
+    USE_TWO_LOOP_SPARTICLE_MASS = false; 
+    scaleVariation(); 
+    treeLevelGluino = false;
+    USE_TWO_LOOP_SPARTICLE_MASS = false;
+    scaleVariation(); 
+    USE_TWO_LOOP_SPARTICLE_MASS = true;
+    expandAroundGluinoPole = 0;
+    scaleVariation(); 
+    expandAroundGluinoPole = 1;
+    scaleVariation(); 
+    expandAroundGluinoPole = 2;
+    scaleVariation(); 
 #endif 
 #endif
   }
