@@ -28,6 +28,13 @@ namespace softsusy {
     /// \return true if running masses are used instead of pole masses
     bool displayUseRunningMassesFlag() const { return useRunningMasses; }
 
+    /// \brief Resets the error status to false.
+    void resetError() { hasError = false; }
+
+    /// \brief Displays whether an error occurred during the calculation.
+    /// \return true if an error occurred
+    bool displayError() const { return hasError; }
+
     /// \brief Displays the Jacobian for transforming from high- to low-scale
     /// parameters.
     /// \return the Jacobian matrix of derivatives for the transformation
@@ -78,6 +85,7 @@ namespace softsusy {
     DoubleMatrix jacEWSB;
     DoubleMatrix invJacRGFlow;
     DoubleMatrix invJacEWSB;
+    bool hasError;
     bool useRunningMasses;
 
     struct EWSBPars {

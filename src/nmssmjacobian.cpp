@@ -16,7 +16,8 @@ namespace softsusy {
 
   NmssmJacobian::NmssmJacobian(NmssmSoftsusy* m)
      : model(m), jacRGFlow(3,3), jacEWSB(3,3)
-     , invJacRGFlow(3,3), invJacEWSB(3,3), useRunningMasses(false) {
+     , invJacRGFlow(3,3), invJacEWSB(3,3), hasError(false)
+     , useRunningMasses(false) {
   }
 
   NmssmJacobian::~NmssmJacobian() {}
@@ -300,7 +301,10 @@ namespace softsusy {
       const bool has_error
         = fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0;
 
-      if (has_error) derivative = -numberOfTheBeast;
+      if (has_error) {
+        derivative = -numberOfTheBeast;
+        hasError = true;
+      }
     }
 
     return derivative;
@@ -468,7 +472,6 @@ namespace softsusy {
     int error = 0;
     tempModel->iterateVevs(vevs, error);
 
-    // @todo better error handling
     if (error != 0) {
       if (PRINTOUT > 0) {
         cout << "Warning: could not solve for VEVs\n";
@@ -554,6 +557,12 @@ namespace softsusy {
 
     int error = 0;
     m->iterateVevs(vevs, error);
+
+    if (error != 0) {
+      if (PRINTOUT > 0) {
+        cout << "Warning: could not solve for VEVs\n";
+      }
+    }
 
     m->setHvev(vevs(1));
     m->setTanb(vevs(2));
@@ -660,10 +669,9 @@ namespace softsusy {
     int error = 0;
     fixEWSBOutputs(pars, error);
 
-    // @todo better error handling
     if (error != 0) {
       if (PRINTOUT > 0) {
-        cout << "Warning: could not set EWSB outputs\n";
+        cout << "Warning: could not solve for VEVs\n";
       }
     }
 
@@ -811,7 +819,10 @@ namespace softsusy {
       const bool has_error
         = fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0;
 
-      if (has_error) derivative = -numberOfTheBeast;
+      if (has_error) {
+        derivative = -numberOfTheBeast;
+        hasError = true;
+      }
     }
 
     return derivative;
@@ -887,7 +898,10 @@ namespace softsusy {
       const bool has_error
         = fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0;
 
-      if (has_error) derivative = -numberOfTheBeast;
+      if (has_error) {
+        derivative = -numberOfTheBeast;
+        hasError = true;
+      }
     }
 
     return derivative;
