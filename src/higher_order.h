@@ -12,6 +12,7 @@ typedef struct{
   //Outputs
   double mgluino;
   double mstop1, mstop2, msbot1, msbot2, muL, mdL, mcL, msL, muR, mdR, mcR, msR;
+  int expandAroundGluinoPole;
 } supermodel;
 
 #ifdef __cplusplus

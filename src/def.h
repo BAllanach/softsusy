@@ -130,6 +130,10 @@ namespace softsusy{
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   /// Various two-loop thresholds, eg 2-loop QCD corrections to m_gluino
   extern bool USE_TWO_LOOP_SPARTICLE_MASS;
+  /// If = 0, no expansion for gluino. If = 1, expand around gluino and squark
+  /// pole masses. If = 2, expand only around gluino pole mass rather than the
+  /// tree-level mass and iterate. 1 and 2 are a little slower. 
+  extern int expandAroundGluinoPole;
 #endif
   
 }
