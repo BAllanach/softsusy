@@ -1239,6 +1239,12 @@ int main(int argc, char *argv[]) {
 		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 22 (should be a positive semi-definite\n";
 		    break;
 		  }
+		  case 23: {
+		    int num = int(d + EPSTOL);
+		    if (num >= 0 && num <=2) expandAroundGluinoPole = num;
+		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 0 and 2 inclusive)\n";
+		    break;
+		  }
 #endif
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
