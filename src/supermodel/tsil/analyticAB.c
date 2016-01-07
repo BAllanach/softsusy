@@ -4,7 +4,7 @@
 
 /* ******************************************************************* */
 /* Implements Eq. 2.10 of hep-ph/0307101                               */
-/* Modified in v1.2 to accept negative squared mass arg                */
+/* Fixed in v1.32 to work properly with negative squared mass args.    */
 
 TSIL_COMPLEX TSIL_A (TSIL_REAL x, TSIL_REAL qq)
 {
@@ -12,11 +12,12 @@ TSIL_COMPLEX TSIL_A (TSIL_REAL x, TSIL_REAL qq)
     return 0.0;
   if (x > 0)
     return (x * (TSIL_LOG(x/qq) - 1.));
-  return (x * (TSIL_LOG(-x/qq) - 1. + I*PI));
+  return (x * (TSIL_LOG(-x/qq) - 1. - I*PI));
 }
 
 /* ******************************************************************* */
 /* A'(x), added to TSIL API in v1.2                                    */
+/* Fixed in v1.32 to work properly with negative squared mass args.    */
 
 TSIL_COMPLEX TSIL_Ap (TSIL_REAL x, TSIL_REAL qq)
 {
@@ -24,7 +25,7 @@ TSIL_COMPLEX TSIL_Ap (TSIL_REAL x, TSIL_REAL qq)
     return 0.0;
   if (x > 0) 
     return (TSIL_LOG(x/qq));  
-  return (TSIL_LOG(-x/qq) + I*PI);
+  return (TSIL_LOG(-x/qq) - I*PI);
 }
 
 /* ******************************************************************** */
@@ -53,12 +54,8 @@ TSIL_COMPLEX TSIL_B (TSIL_REAL X, TSIL_REAL Y, TSIL_COMPLEX S, TSIL_REAL QQ)
   if (TSIL_FABS (Y) < TSIL_TOL)
     return TSIL_B0x(X,S,QQ);
 
-  if (TSIL_CABS (S) < TSIL_TOL) {
-    if (TSIL_FABS (1.0L - Y/X) > 0.0L)
-      return (1.0L + (Y*TSIL_LOG(Y/QQ) - X*TSIL_LOG(X/QQ))/(X-Y));
-    else 
-      return (-TSIL_LOG (X/QQ));
-  }
+  if (TSIL_CABS (S) < TSIL_TOL) 
+    return TSIL_BAtZero (X, Y, QQ);
 
   S = TSIL_AddIeps(S);   
   sqDeltaSXY = TSIL_CSQRT(TSIL_Delta(S, X, Y));
@@ -281,25 +278,10 @@ TSIL_COMPLEX TSIL_Beps (TSIL_REAL X, TSIL_REAL Y, TSIL_COMPLEX S, TSIL_REAL QQ)
   t3 = (-S + X + Y + sqrtdeltasxy)/(2.0L*X);
   t4 = (-S + X + Y - sqrtdeltasxy)/(2.0L*X);
 
-/*   printf("\ns = ");TSIL_cprintf(S);printf("\n"); */
-/*   printf("x = %Lf\n", X); */
-/*   printf("y = %Lf\n", Y); */
-/*   printf("sqrtdeltasxy = ");TSIL_cprintf(sqrtdeltasxy);printf("\n"); */
-
-/*   printf("\nt1    = ");TSIL_cprintf(t1);printf("\n"); */
-/*   printf("t2    = ");TSIL_cprintf(t2);printf("\n"); */
-/*   printf("t3    = ");TSIL_cprintf(t3);printf("\n"); */
-/*   printf("t4    = ");TSIL_cprintf(t4);printf("\n"); */
-  
   logt1 = TSIL_CLOG(t1);
   logt2 = TSIL_CLOG(t2);
   logt3 = TSIL_CLOG(t3);
   logt4 = TSIL_CLOG(t4);
-
-/*   printf("\nlogt1 = ");TSIL_cprintf(logt1);printf("\n"); */
-/*   printf("logt2 = ");TSIL_cprintf(logt2);printf("\n"); */
-/*   printf("logt3 = ");TSIL_cprintf(logt3);printf("\n"); */
-/*   printf("logt4 = ");TSIL_cprintf(logt4);printf("\n"); */
 
   log1mt1 = TSIL_CLOG(1.0L - t1);
   log1mt2 = TSIL_CLOG(1.0L - t2);
@@ -318,7 +300,7 @@ TSIL_COMPLEX TSIL_BAtZero (TSIL_REAL x, TSIL_REAL y, TSIL_REAL qq)
   if (TSIL_FABS(x - y) > TSIL_TOL)
     return (TSIL_A(y,qq) - TSIL_A(x,qq))/(x - y);
   else  
-    return -TSIL_A(x,qq)/x - 1.0L;
+    return -TSIL_Ap(x,qq);
 }
     
 /* **************************************************************** */
