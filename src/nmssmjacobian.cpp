@@ -1,5 +1,7 @@
 // -*- mode: c++; c-basic-offset: 2; -*-
 /** \file nmssmjacobian.cpp
+
+    \brief Implementation of routines for calculating Jacobian fine-tuning.
  */
 
 #include "def.h"
@@ -1033,7 +1035,38 @@ namespace softsusy {
     return ewsbDet;
   }
 
-  double NmssmJacobian::calcFTJacobian(double mx, bool doTop) {
+  /// The Jacobian calculated is of the form \f$ J^{-1} = |
+  /// \partial O / \partial p | \f$.  The transformation is done
+  /// in two stages.  In the first, the observables at the
+  /// current scale are traded for the parameters at this
+  /// scale using the EWSB conditions.  The Jacobian matrix for
+  /// this transformation can be accessed afterwards using
+  /// displayInverseEWSBJacobian().  Then, the parameters
+  /// at this scale are transformed to parameters at the
+  /// scale \c mx using the RGEs.  The Jacobian matrix for this
+  /// transformation may be accessed by calling
+  /// displayInverseRGFlowJacobian().
+  ///
+  /// The sets of observables \f$\{O\}\f$ and parameters
+  /// \f$\{p\}\f$ are selected using the global flags softsusy::Z3
+  /// and softsusy::SoftHiggsOut.  If softsusy::SoftHiggsOut is true,
+  /// the parameters used are the soft Higgs masses at the scale
+  /// \c mx, \f$\{ m_{H_1,0}^2, m_{H_2,0}^2, m_{S_0}^2\} \f$, and
+  /// the observables are \f$\{M_Z^2, \tan\beta, s\}\f$, irrespective
+  /// of the value of softsusy::Z3.  If softsusy::SoftHiggsOut is false
+  /// and softsusy::Z3 is true, the parameters are taken to be
+  /// \f$\{\lambda_0, \kappa_0, m_{S_0}^2\}\f$ at \c mx.  The
+  /// observables in this case are \f$\{M_Z^2, \tan\beta,
+  /// \lambda\}\f$.  If both flags are false, the parameters
+  /// used are \f$\{\mu_0, m_{3_0}^2, \xi_{S_0}\}\f$ and the set of observables
+  /// is \f$\{M_Z^2, \tan\beta, s\}\f$.
+  ///
+  /// If \c doTop is true, the top Yukawa \f$y_t\f$ will also be included
+  /// in the set of parameters, and \f$M_t^2\f$ in the set of observables.
+  /// Whether \f$M_Z^2\f$ and \f$M_t^2\f$ are taken to be the pole or
+  /// running masses may be set by calling setUseRunningMassesFlag()
+  /// with the appropriate flag.  By default the pole masses are used.
+  double NmssmJacobian::calcFTInverseJacobian(double mx, bool doTop) {
     double determinant = 0.;
 
     if (model) {
@@ -1041,8 +1074,8 @@ namespace softsusy {
       const double scale = model->displayMu();
       const sPhysical savedPhys(model->displayPhys());
 
-      const double rgDet = calcRGFlowJacobian(scale, mx, doTop);
-      const double ewsbDet = calcEWSBJacobian(doTop);
+      const double rgDet = calcRGFlowJacobian(mx, scale, doTop);
+      const double ewsbDet = calcInverseEWSBJacobian(doTop);
 
       determinant = ewsbDet * rgDet;
 
@@ -1054,7 +1087,26 @@ namespace softsusy {
     return determinant;
   }
 
-  double NmssmJacobian::calcFTInverseJacobian(double mx, bool doTop) {
+  /// The Jacobian calculated is of the form \f$ J = |
+  /// \partial p / \partial O | \f$.  The transformation,
+  /// which is the inverse of that calculated by
+  /// calcFTInverseJacobian(), is done in two stages.  In the
+  /// first, the parameters at the scale \c mx are transformed
+  /// to parameters \f$\{q\}\f$ at the current scale using the
+  /// RGEs.  The Jacobian matrix for this
+  /// transformation may be accessed afterwards by calling
+  /// displayRGFlowJacobian().  Then the parameters
+  /// \f$\{q\}\f$ are traded for the observables at the same
+  /// scale using the EWSB conditions.  The Jacobian matrix for
+  /// this second transformation can be accessed using
+  /// displayEWSBJacobian().
+  ///
+  /// The selection of the sets of observables and parameters
+  /// is based on the global flags softsusy::Z3 and
+  /// softsusy::SoftHiggsOut, and is the same as is used in
+  /// calcFTInverseJacobian().  The effect of \c doTop is
+  /// the same as for calcFTInverseJacobian() as well.
+  double NmssmJacobian::calcFTJacobian(double mx, bool doTop) {
     double determinant = 0.;
 
     if (model) {
@@ -1062,8 +1114,8 @@ namespace softsusy {
       const double scale = model->displayMu();
       const sPhysical savedPhys(model->displayPhys());
 
-      const double rgDet = calcRGFlowJacobian(mx, scale, doTop);
-      const double ewsbDet = calcInverseEWSBJacobian(doTop);
+      const double rgDet = calcRGFlowJacobian(scale, mx, doTop);
+      const double ewsbDet = calcEWSBJacobian(doTop);
 
       determinant = ewsbDet * rgDet;
 

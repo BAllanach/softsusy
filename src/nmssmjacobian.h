@@ -1,7 +1,7 @@
 /* -*- mode: c++; c-basic-offset: 2; -*- */
 /** \file nmssmjacobian.h
 
-    \brief provides routines for calculating Jacobian fine tuning
+    \brief Provides routines for calculating Jacobian fine-tuning.
  */
 
 #ifndef NMSSMJACOBIAN_H
@@ -13,34 +13,66 @@ namespace softsusy {
 
   class NmssmSoftsusy;
 
+  /// \brief Class for calculating Jacobian fine-tuning measure.
   class NmssmJacobian {
   public:
 
     explicit NmssmJacobian(NmssmSoftsusy* m);
     virtual ~NmssmJacobian();
 
+    /// \brief Sets whether to use running or pole masses in derivatives.
+    /// \param[in] flag if true, use running masses instead of pole masses
     void setUseRunningMassesFlag(bool flag) { useRunningMasses = flag; }
+
+    /// \brief Displays whether running or pole masses are being used.
+    /// \return true if running masses are used instead of pole masses
     bool displayUseRunningMassesFlag() const { return useRunningMasses; }
 
-    // helper functions getting pole Z and top mass
+    /// \brief Displays the Jacobian for transforming from high- to low-scale
+    /// parameters.
+    /// \return the Jacobian matrix of derivatives for the transformation
+    DoubleMatrix displayRGFlowJacobian() const { return jacRGFlow; }
+
+    /// \brief Displays the Jacobian for transforming low-scale parameters
+    /// to observables.
+    /// \return the Jacobian matrix of derivatives for the transformation
+    DoubleMatrix displayEWSBJacobian() const { return jacEWSB; }
+
+    /// \brief Displays the Jacobian for transforming from low- to high-scale
+    /// parameters.
+    /// \return the Jacobian matrix of derivatives for the transformation
+    DoubleMatrix displayInverseRGFlowJacobian() const { return invJacRGFlow; }
+
+    /// \brief Displays the Jacobian for transforming observables to
+    /// low-scale parameters.
+    /// \return the Jacobian matrix of derivatives for the transformation
+    DoubleMatrix displayInverseEWSBJacobian() const { return invJacEWSB; }
+
+    /// \brief Calculates the Jacobian transforming parameters to observables.
+    /// \param[in] mx the scale at which the input parameters are defined
+    /// \param[in] doTop if true, include the top Yukawa in the Jacobian
+    /// \return the value of the Jacobian
+    double calcFTJacobian(double mx, bool doTop = false);
+
+    /// \brief Calculates the Jacobian transforming observables to parameters.
+    /// \param[in] mx the scale at which the input parameters are defined
+    /// \param[in] doTop if true, include the top Yukawa in the Jacobian
+    /// \return the value of the Jacobian
+    double calcFTInverseJacobian(double mx, bool doTop = false);
+
+    /// \brief Calculates the fine-tuning using the Jacobian measure.
+    /// \param[in] mx the scale at which the input parameters are defined
+    /// \param[in] doTop if true, include the top Yukawa in the Jacobian
+    /// \return the value of the fine-tuning
+    double calcDeltaJ(double mx, bool doTop = false);
+
     static double calcMz(NmssmSoftsusy* m, bool getRunningMass = false);
     static double calcMt(NmssmSoftsusy* m, bool getRunningMass = false);
 
-    DoubleMatrix displayRGFlowJacobian() const { return jacRGFlow; }
-    DoubleMatrix displayEWSBJacobian() const { return jacEWSB; }
-    DoubleMatrix displayInverseRGFlowJacobian() const { return invJacRGFlow; }
-    DoubleMatrix displayInverseEWSBJacobian() const { return invJacEWSB; }
-
-    double calcFTJacobian(double mx, bool doTop = false);
-    double calcFTInverseJacobian(double mx, bool doTop = false);
-    double calcDeltaJ(double mx, bool doTop = false);
-
   private:
-    // used for derivatives
     enum Parameters { Mzsq, Tanb, Svev, Mtsq, Lambda, Kappa,
                       SMu, M3Sq, XiS, Mh1Sq, Mh2Sq, MsSq, Yt };
 
-    // @note have model as member (pointer/reference?) or not?
     NmssmSoftsusy* model;
     DoubleMatrix jacRGFlow;
     DoubleMatrix jacEWSB;
