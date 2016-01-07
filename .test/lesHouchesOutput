@@ -24,7 +24,7 @@ Block EXTPAR               # scale of SUSY breaking BCs
 # SOFTSUSY-specific non SLHA information:
 # MIXING=0 Desired accuracy=1.00000000e-03 Achieved accuracy=6.13070734e-04
 # 3-loop RGE corrections are off. 2-loop Yukawa/g3 thresholds are off
-# 2-loop computation of sparticle mass thresholds are on
+# 2-loop computation of sparticle mass thresholds are off
 Block MASS                      # Mass spectrum
 # PDG code     mass             particle
         24     8.03820348e+01   # MW
@@ -32,31 +32,31 @@ Block MASS                      # Mass spectrum
         35     7.06427230e+02   # H0
         36     7.06144027e+02   # A0
         37     7.10951397e+02   # H+
-   1000021     1.16443279e+03   # ~g
+   1000021     1.14698355e+03   # ~g
    1000022     2.04042203e+02   # ~neutralino(1)
    1000023     3.85036268e+02   # ~neutralino(2)
    1000024     3.85032078e+02   # ~chargino(1)
    1000025    -6.22696943e+02   # ~neutralino(3)
    1000035     6.37200770e+02   # ~neutralino(4)
    1000037     6.37471237e+02   # ~chargino(2)
-   1000001     1.06298249e+03   # ~d_L
-   1000002     1.05985874e+03   # ~u_L
-   1000003     1.06297991e+03   # ~s_L
-   1000004     1.05985615e+03   # ~c_L
-   1000005     9.75753447e+02   # ~b_1
-   1000006     8.15294012e+02   # ~t_1
+   1000001     1.05537303e+03   # ~d_L
+   1000002     1.05252984e+03   # ~u_L
+   1000003     1.05537045e+03   # ~s_L
+   1000004     1.05252725e+03   # ~c_L
+   1000005     9.68325426e+02   # ~b_1
+   1000006     8.08689563e+02   # ~t_1
    1000011     3.61720844e+02   # ~e_L
    1000012     3.52802456e+02   # ~nue_L
    1000013     3.61717574e+02   # ~mu_L
    1000014     3.52799106e+02   # ~numu_L
    1000015     2.22830385e+02   # ~stau_1
    1000016     3.51634343e+02   # ~nu_tau_L
-   2000001     1.01736939e+03   # ~d_R
-   2000002     1.02095659e+03   # ~u_R
-   2000003     1.01736669e+03   # ~s_R
-   2000004     1.02095383e+03   # ~c_R
-   2000005     1.01425901e+03   # ~b_2
-   2000006     1.02198191e+03   # ~t_2
+   2000001     1.01078624e+03   # ~d_R
+   2000002     1.01410613e+03   # ~u_R
+   2000003     1.01078354e+03   # ~s_R
+   2000004     1.01410337e+03   # ~c_R
+   2000005     1.00752855e+03   # ~b_2
+   2000006     1.01371195e+03   # ~t_2
    2000011     2.29839586e+02   # ~e_R
    2000013     2.29829139e+02   # ~mu_R
    2000015     3.62784242e+02   # ~stau_2
