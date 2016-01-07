@@ -560,20 +560,20 @@ namespace softsusy {
     m->calcDrBarPars();
 
     if (Z3 && !SoftHiggsOut) {
-      errors(1) = sqr(calcMz(m, pars->useRunningMasses)) - outputs(1);
-      errors(2) = m->displayTanb() - outputs(2);
-      errors(3) = m->displayLambda() - outputs(3);
+      errors(1) = 1.0 - (sqr(calcMz(m, pars->useRunningMasses)) / outputs(1));
+      errors(2) = 1.0 - (m->displayTanb() / outputs(2));
+      errors(3) = 1.0 - (m->displayLambda() / outputs(3));
     } else {
-      errors(1) = sqr(calcMz(m, pars->useRunningMasses)) - outputs(1);
-      errors(2) = m->displayTanb() - outputs(2);
-      errors(3) = m->displaySvev() - outputs(3);
+      errors(1) = 1.0 - (sqr(calcMz(m, pars->useRunningMasses)) / outputs(1));
+      errors(2) = 1.0 - (m->displayTanb() / outputs(2));
+      errors(3) = 1.0 - (m->displaySvev() / outputs(3));
     }
 
     error = error && testNan(errors(1)) && testNan(errors(2))
       && testNan(errors(3));
 
     if (numOutputs > 3) {
-      errors(4) = sqr(calcMt(m, pars->useRunningMasses)) - outputs(4);
+      errors(4) = 1.0 - (sqr(calcMt(m, pars->useRunningMasses)) / outputs(4));
       error = error && testNan(errors(4));
     }
 
