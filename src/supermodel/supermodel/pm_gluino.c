@@ -9,7 +9,6 @@
 
 /* Self energy functions defined in se_gluino.c: */
 SUMO_COMPLEX pi1tilde_gluino (void);
-SUMO_COMPLEX pi1tilde_top (void);
 SUMO_COMPLEX dpi1tildedM2_gluino (void);
 SUMO_COMPLEX dpi1tildedM2_top (void);
 SUMO_COMPLEX dpi1tildedM2_stop (int);
@@ -19,6 +18,9 @@ SUMO_COMPLEX dpi1tildedM2_suR (int);
 SUMO_COMPLEX dpi1tildedM2_sdL (int);
 SUMO_COMPLEX dpi1tildedM2_sdR (int);
 SUMO_COMPLEX pi2tilde_gluino (void);
+
+/* Self energy function defined in se_top.c: */
+SUMO_COMPLEX pi1tilde_top (void);
 
 /* Self energy functions defined in se1_squarks.c: */
 SUMO_COMPLEX pi1_stop (int, int, TSIL_REAL);
@@ -58,7 +60,6 @@ int SUMO_GluinoPole (int loop_order, int expand_around_pole)
   TSIL_REAL m2_gluino_saf = m2_gluino; /* Save lagrangian mass^2, restore later */
   TSIL_REAL m2_top_saf, m_top_saf, m2_stop_saf[2], m2_sbot_saf[2];
   TSIL_REAL m2_suL_saf[2], m2_suR_saf[2], m2_sdL_saf[2], m2_sdR_saf[2];
-  TSIL_REAL m2_phi0_saf[4], m2_phip_saf[2];
   int i, iter, retval = -1;
   /* char funcname[] = "GluinoPole"; */
 
@@ -75,12 +76,7 @@ int SUMO_GluinoPole (int loop_order, int expand_around_pole)
       m2_suR_saf[i] = m2_suR[i];
       m2_sdL_saf[i] = m2_sdL[i];
       m2_sdR_saf[i] = m2_sdR[i];
-      
-      m2_phip_saf[i] = m2_phip[i];
     }
-    for (i=0; i<4; i++)
-      m2_phi0_saf[i] = m2_phi0[i];
-
     m2_top_saf = m2_top;
     m_top_saf = m_top;
   }
@@ -140,12 +136,8 @@ int SUMO_GluinoPole (int loop_order, int expand_around_pole)
       m2_sdL[i] = M2_sdL[i];
       m2_sdR[i] = M2_sdR[i];
     }
-    m2_top = M2_top;
     m_top = M_top;
-
-    /* m2_phi0[0] = M2_phi0[0]; */
-    /* m2_phi0[2] = M2_phi0[2]; */
-    /* m2_phip[0] = M2_phip[0]; */
+    m2_top = M2_top;
 
     for (iter = 0; iter < MAXITERS; iter++) {
 
@@ -167,17 +159,17 @@ int SUMO_GluinoPole (int loop_order, int expand_around_pole)
 
       /* Note that the squark self energy functions do not include
 	 SUMO_oneloopfactor!  Should standardize this eventually... */
-      for (i=0; i<2; i++) 
-	cm2_result += SUMO_oneloopfactor * ( 
-	 - TSIL_CREAL(pi1_stop (i, i, m2_gluino)) * dpi1tildedM2_stop (i)
-	 - TSIL_CREAL(pi1_sbot (i, i, m2_gluino)) * dpi1tildedM2_sbot (i)
-	 - TSIL_CREAL(pi1_suL (i, m2_gluino)) * dpi1tildedM2_suL (i)
-	 - TSIL_CREAL(pi1_suR (i, m2_gluino)) * dpi1tildedM2_suR (i)
-	 - TSIL_CREAL(pi1_sdL (i, m2_gluino)) * dpi1tildedM2_sdL (i)
-	 - TSIL_CREAL(pi1_sdR (i, m2_gluino)) * dpi1tildedM2_sdR (i)
-					     );
+      for (i=0; i<2; i++)
+        cm2_result += SUMO_oneloopfactor * (
+         - TSIL_CREAL(pi1_stop (i, i, m2_stop[i])) * dpi1tildedM2_stop (i)
+      	 - TSIL_CREAL(pi1_sbot (i, i, m2_sbot[i])) * dpi1tildedM2_sbot (i)
+      	 - TSIL_CREAL(pi1_suL (i, m2_suL[i])) * dpi1tildedM2_suL (i)
+      	 - TSIL_CREAL(pi1_suR (i, m2_suR[i])) * dpi1tildedM2_suR (i)
+      	 - TSIL_CREAL(pi1_sdL (i, m2_sdL[i])) * dpi1tildedM2_sdL (i)
+      	 - TSIL_CREAL(pi1_sdR (i, m2_sdR[i])) * dpi1tildedM2_sdR (i)
+      					    );
 
-      cm2_result += - TSIL_CREAL(pi1tilde_top()) * dpi1tildedM2_top ();
+      cm2_result += -TSIL_CREAL(pi1tilde_top()) * dpi1tildedM2_top ();
 
       /* For next iteration, set tree mass to real part of current pole mass. */
       m2_gluino = TSIL_CREAL (cm2_result);
@@ -208,12 +200,7 @@ int SUMO_GluinoPole (int loop_order, int expand_around_pole)
       m2_suR[i] = m2_suR_saf[i];
       m2_sdL[i] = m2_sdL_saf[i];
       m2_sdR[i] = m2_sdR_saf[i];
-
-      m2_phip[i] = m2_phip_saf[i];
     }
-    for (i=0; i<4; i++)
-      m2_phi0_saf[i] = m2_phi0[i];
-
     m2_top = m2_top_saf;
     m_top = m_top_saf;
   }

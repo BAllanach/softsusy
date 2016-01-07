@@ -125,10 +125,10 @@ TSIL_COMPLEX dpi1tildedM2_top (void)
 
   for (j=0; j<2; j++) {
     lrfac = 4.0L*TSIL_CREAL(Lstop[j]*Rstopc[j]);
-    result = 
-      (m2_top - m2_stop[j] - m2_gluino + lrfac*m_top*m_gluino)
+    result += 
+      (m2_stop[j] - m2_top - m2_gluino + lrfac*m_top*m_gluino)
       *SUMO_Bp (m2_top, m2_stop[j], m2_gluino, Q2, interp)
-      + TSIL_B (m2_top, m2_stop[j], m2_gluino, Q2) 
+      - TSIL_B (m2_top, m2_stop[j], m2_gluino, Q2) 
       - TSIL_Ap (m2_top, Q2)
       ;
   }
@@ -149,10 +149,10 @@ TSIL_COMPLEX dpi1tildedM2_stop (int j)
 
   lrfac = 4.0L*TSIL_CREAL(Lstop[j]*Rstopc[j]);
   result = 
-    (m2_top - m2_stop[j] - m2_gluino + lrfac*m_top*m_gluino)
+    (m2_stop[j] - m2_top - m2_gluino + lrfac*m_top*m_gluino)
     *SUMO_Bp (m2_stop[j], m2_top, m2_gluino, Q2, interp)
-    - TSIL_B (m2_top, m2_stop[j], m2_gluino, Q2) 
-    - TSIL_Ap (m2_stop[j], Q2)
+    + TSIL_B (m2_top, m2_stop[j], m2_gluino, Q2) 
+    + TSIL_Ap (m2_stop[j], Q2)
     ;
 
   result *= 2.0L*Iq*SUMO_oneloopfactor*g3*g3;
@@ -168,9 +168,9 @@ TSIL_COMPLEX dpi1tildedM2_stop (int j)
 TSIL_COMPLEX dpi1tildedM2_sbot (int j)
 {
   TSIL_COMPLEX result =
-    (- m2_sbot[j] - m2_gluino)*SUMO_Bp (m2_sbot[j], 0.0L, m2_gluino, Q2, interp)
-    - TSIL_B (0.0L, m2_sbot[j], m2_gluino, Q2) 
-    - TSIL_Ap (m2_sbot[j], Q2)
+    (m2_sbot[j] - m2_gluino)*SUMO_Bp (m2_sbot[j], 0.0L, m2_gluino, Q2, interp)
+    + TSIL_B (0.0L, m2_sbot[j], m2_gluino, Q2) 
+    + TSIL_Ap (m2_sbot[j], Q2)
     ;
 
   result *= 2.0L*Iq*SUMO_oneloopfactor*g3*g3;
@@ -186,9 +186,9 @@ TSIL_COMPLEX dpi1tildedM2_sbot (int j)
 TSIL_COMPLEX dpi1tildedM2_suL (int j)
 {
   TSIL_COMPLEX result =
-    (- m2_suL[j] - m2_gluino)*SUMO_Bp (m2_suL[j], 0.0L, m2_gluino, Q2, interp)
-    - TSIL_B (0.0L, m2_suL[j], m2_gluino, Q2) 
-    - TSIL_Ap (m2_suL[j], Q2)
+    (m2_suL[j] - m2_gluino)*SUMO_Bp (m2_suL[j], 0.0L, m2_gluino, Q2, interp)
+    + TSIL_B (0.0L, m2_suL[j], m2_gluino, Q2) 
+    + TSIL_Ap (m2_suL[j], Q2)
     ;
 
   result *= 2.0L*Iq*SUMO_oneloopfactor*g3*g3;
@@ -204,9 +204,9 @@ TSIL_COMPLEX dpi1tildedM2_suL (int j)
 TSIL_COMPLEX dpi1tildedM2_suR (int j)
 {
   TSIL_COMPLEX result =
-    (- m2_suR[j] - m2_gluino)*SUMO_Bp (m2_suR[j], 0.0L, m2_gluino, Q2, interp)
-    - TSIL_B (0.0L, m2_suR[j], m2_gluino, Q2) 
-    - TSIL_Ap (m2_suR[j], Q2)
+    (m2_suR[j] - m2_gluino)*SUMO_Bp (m2_suR[j], 0.0L, m2_gluino, Q2, interp)
+    + TSIL_B (0.0L, m2_suR[j], m2_gluino, Q2) 
+    + TSIL_Ap (m2_suR[j], Q2)
     ;
 
   result *= 2.0L*Iq*SUMO_oneloopfactor*g3*g3;
@@ -222,9 +222,9 @@ TSIL_COMPLEX dpi1tildedM2_suR (int j)
 TSIL_COMPLEX dpi1tildedM2_sdL (int j)
 {
   TSIL_COMPLEX result =
-    (- m2_sdL[j] - m2_gluino)*SUMO_Bp (m2_sdL[j], 0.0L, m2_gluino, Q2, interp)
-    - TSIL_B (0.0L, m2_sdL[j], m2_gluino, Q2) 
-    - TSIL_Ap (m2_sdL[j], Q2)
+    (m2_sdL[j] - m2_gluino)*SUMO_Bp (m2_sdL[j], 0.0L, m2_gluino, Q2, interp)
+    + TSIL_B (0.0L, m2_sdL[j], m2_gluino, Q2) 
+    + TSIL_Ap (m2_sdL[j], Q2)
     ;
 
   result *= 2.0L*Iq*SUMO_oneloopfactor*g3*g3;
@@ -240,9 +240,9 @@ TSIL_COMPLEX dpi1tildedM2_sdL (int j)
 TSIL_COMPLEX dpi1tildedM2_sdR (int j)
 {
   TSIL_COMPLEX result =
-    (- m2_sdR[j] - m2_gluino)*SUMO_Bp (m2_sdR[j], 0.0L, m2_gluino, Q2, interp)
-    - TSIL_B (0.0L, m2_sdR[j], m2_gluino, Q2) 
-    - TSIL_Ap (m2_sdR[j], Q2)
+    (m2_sdR[j] - m2_gluino)*SUMO_Bp (m2_sdR[j], 0.0L, m2_gluino, Q2, interp)
+    + TSIL_B (0.0L, m2_sdR[j], m2_gluino, Q2) 
+    + TSIL_Ap (m2_sdR[j], Q2)
     ;
 
   result *= 2.0L*Iq*SUMO_oneloopfactor*g3*g3;

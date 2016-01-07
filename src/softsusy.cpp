@@ -6709,6 +6709,7 @@ void MssmSoftsusy::physical(int accuracy) {
 
     // DGR added:
     smodel.mtop = PMTOP;
+    smodel.mh0 = displayPhys().mh0(1);
 
     /*    cout << "In SOFTSUSY. (8.1.6) LHS=" << (sqr(smodel.vu) + sqr(smodel.vd))*0.5
 	 << " RHS=" 

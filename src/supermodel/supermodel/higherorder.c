@@ -13,7 +13,7 @@ void higherorder (supermodel *smodel)
   int i;
 
   /* Disable annoying warning messages */
-  fclose (stderr);
+  TSIL_WarnsOff ();
 
 #ifdef TSIL_SIZE_DOUBLE
   vu = smodel->vu; 
@@ -121,9 +121,21 @@ void higherorder (supermodel *smodel)
   SUMO_Minimize_Veff (0); 
   printf("After minimizing  (vu, vd) = (%Lf, %Lf)\n", vu, vd); */
 
-  // DGR top pole mass needs to be set before gluino calculation:
-  // M_top = 173.5;
+  // Top pole mass needs to be set before gluino calculation:
   M2_top = M_top * M_top;
+
+  // DGRDGR Also set lightest Higgs and Goldstones to correct pole
+  // masses, in case these have gone negative or are otherwise wonky.
+  // Note this has to be done *after* SUMO_Tree_masses () is called!
+  // Light Higgs is the pole mass^2 calculated by SOFTSUSY:
+  m2_phi0[0] = (smodel->mh0) * (smodel->mh0);
+
+  /* Could also just use this for simplicity: */
+  /* m2_phi0[0] = 125.L*125.L; */
+
+  // Exact Goldstone pole masses:
+  m2_phi0[2] = m2_phip[0] = 0.0L;
+  // DGRDGR end of additions
 
   int which = 0;  int loops = 2;
   for (which = 0; which < 2; which++) {
@@ -178,16 +190,11 @@ void higherorder (supermodel *smodel)
   // For debugging purposes, we print
   // SUMO_GluinoPole (0,1);
   // printf("Tree-level gluino mass: %Lf \n",SUMO_SQRT(M2_gluino));
-  //  SUMO_GluinoPole (1, 1);
-  //  printf("One-loop gluino mass 0:   %Lf \n",SUMO_SQRT(M2_gluino));
-  SUMO_GluinoPole (2, 0);
-  /*  printf("Two-loop gluino mass 0:   %Lf \n",SUMO_SQRT(M2_gluino));
+  // SUMO_GluinoPole (1,1);
+  // printf("One-loop gluino mass:   %Lf \n",SUMO_SQRT(M2_gluino));
   SUMO_GluinoPole (2, 1);
-  printf("Two-loop gluino mass 1:   %Lf \n",SUMO_SQRT(M2_gluino));
-  SUMO_GluinoPole (2, 2);
-  printf("Two-loop gluino mass 2:   %Lf \n",SUMO_SQRT(M2_gluino));
   // printf("Two-loop gluino mass:   %Lf \n", SUMO_SQRT(M2_gluino));
-  exit(0);*/
+
 
   /*  SUMO_h0Pole (loops);
       SUMO_H0Pole (loops);
