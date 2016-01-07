@@ -614,8 +614,13 @@ namespace softsusy {
       guess(4) = m->displayYukawaElement(YU, 3, 3);
     }
 
+    const double oldTol = TOLERANCE;
+    TOLERANCE *= 1.0e-3;
+
     bool error = newt(guess, ewsbOutputErrors, pars);
     err = error ? 1 : 0;
+
+    TOLERANCE = oldTol;
   }
 
   double NmssmJacobian::calcEWSBParameter(double x, void* parameters) {
