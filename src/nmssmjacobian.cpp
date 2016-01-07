@@ -1194,4 +1194,16 @@ namespace softsusy {
     return tuning;
   }
 
+  void NmssmJacobian::tuningSLHA(ostream & out, double deltaJ, double mx) {
+    const double scale = model ? model->displayMu() : 0.;
+    out << "Block FINETUNINGJAC Q= " << scale
+        << "  # Jacobian fine-tuning\n";
+    if (hasError) {
+      out << "# Warning: error encountered in fine-tuning calculation!\n";
+    }
+    out << "     1    " << deltaJ << "   # Delta_J\n";
+    out << "     2    " << hasError << "   # error status\n";
+    out << "     3    " << mx << "   # MX\n";
+  }
+
 } /// namespace softsusy

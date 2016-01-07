@@ -73,6 +73,12 @@ namespace softsusy {
     /// \return the value of the fine-tuning
     double calcDeltaJ(double mx, bool doTop = false);
 
+    /// \brief Print fine-tuning results as an SLHA block
+    /// \param[in] out the stream to print to
+    /// \param[in] deltaJ the fine-tuning
+    /// \param[in] mx the scale at which the input parameters are defined
+    void tuningSLHA(ostream & out, double deltaJ, double mx);
+
     static double calcMz(NmssmSoftsusy* m, bool getRunningMass = false);
     static double calcMt(NmssmSoftsusy* m, bool getRunningMass = false);
 
