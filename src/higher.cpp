@@ -1,16 +1,19 @@
 
 /** 
    Project:     SOFTSUSY 
-   File:        main.cpp
+   File:        higher.cpp
    Author:      Ben Allanach 
    Manual:      B.C. Allanach,hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
                 B.C. Allanach, M.A. Bernhardt, arXiv:0903.1805, Comp. Phys. 
 		Commun. 181 (2010) 232-245
    Webpage:     http://allanach.home.cern.ch/allanach/softsusy.html
-   Description: main calling program example: performs a scan of tan beta 
-   (starting at CMSSM10.1.1) and prints out Higgs masses as a result in
-   the format
-       <tan beta>      <mh0>     <mA0>    <mH0>     <mH+/->
+   Description: main calling program to be put in src/ in the softsusy
+                directory. It produces data listed in "twoLoop.dat"
+		illustrating the size of two-loop contributions to gluino and
+		squark masses. You'll need to install nllfast in some
+		directory and change the reference to
+		/home/bca20/code/nllfast-3.0-13TeV to the directory you've
+		placed it in. The executable will be called "higher.x".
 */
 
 #include <iostream>
@@ -24,9 +27,6 @@
 #include "susy.h"
 #include "utils.h"
 #include "numerics.h"
-
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-#ifdef COMPILE_THREE_LOOP_RGE
 
 bool treeLevelGluino = false;
 
@@ -116,6 +116,9 @@ void scaleVariation() {
 }
 
 void doScan(double lowRatio, double highRatio, int numPoints) {
+  cout << "# Data file for plots\n";
+  cout << "# m0/M12        m_gl(1-loop)    m_gl(2-loop)    muL(1-loop)     muL(2-loop)     mt1(1-loop)     mt1(2-loop)     mt2(1-loop)     mt2(2-loop)     mdL(1-loop)     mdL(2-loop)     mb1(1-loop)     mb1(2-loop)     muR(1-loop)     muR(2-loop)     muR(1-loop)     muR(2-loop)     mb2(1-loop)     mb2(2-loop)     M3(MSUSY)       muL(MSUSY)      mtL(MSUSY)      mtR(MSUSY)      mdL(MSUSY)      mbL(MSUSY)      muR(MSUSY)      mdR(MSUSY)      mbR(MSUSY)      mt(MSUSY)       mneut1(MSUSY)   mneut2(MSUSY)   mneut3(MSUSY)    mneut4(MSUSY)   gg(1-loop)      gg(2-loop)      sg(1-loop)      sg(2-loop)      ss(1-loop)      ss(2-loop)      sb(1-loop)      sb(2-loop)      tb(1-loop)      tb(2-loop)\n";
+
     /// Sets format of output: 6 decimal places
     outputCharacteristics(9);
 
@@ -127,7 +130,6 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
 
     /// most important Standard Model inputs: you may change these and recompile
     double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
-     // double lowRatio = 0.7817552, highRatio = 0.7817581;
     oneset.setAlpha(ALPHAS, alphasMZ);
     oneset.setPoleMt(mtop);
     oneset.setMbMb(mbmb);    
@@ -218,35 +220,33 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
     }
 }
 
-#endif
-#endif
-
-
 int main(int argc, char *argv[]) {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
   TOLERANCE = 1.0e-4;
   try {
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-#ifdef COMPILE_THREE_LOOP_RGE
     doScan(0.1, 4.5, 20); cout << endl << endl;
 
+    cout << "# Q/MSUSY       Q/GeV           M3(Q)\n";
     treeLevelGluino = true;
     USE_TWO_LOOP_SPARTICLE_MASS = false; 
     scaleVariation(); 
     treeLevelGluino = false;
     USE_TWO_LOOP_SPARTICLE_MASS = false;
+    cout << "# 1-loop result\n# Q/MSUSY       Q/GeV           mgluinopole\n";
+
     scaleVariation(); 
     USE_TWO_LOOP_SPARTICLE_MASS = true;
     expandAroundGluinoPole = 0;
+    cout << "# 2-loop result: no expansion\n# Q/MSUSY       Q/GeV           mgluinopole\n";
     scaleVariation(); 
     expandAroundGluinoPole = 1;
+    cout << "# 2-loop result: full expansion\n# Q/MSUSY       Q/GeV           mgluinopole\n";
     scaleVariation(); 
     expandAroundGluinoPole = 2;
+    cout << "# 2-loop result: gluino expansion\n# Q/MSUSY       Q/GeV           mgluinopole\n";
     scaleVariation(); 
-#endif 
-#endif
   }
   catch(const string & a) { cout << a; return -1; }
   catch(const char * a) { cout << a; return -1; }
