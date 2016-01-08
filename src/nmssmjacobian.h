@@ -14,6 +14,35 @@ namespace softsusy {
   class NmssmSoftsusy;
 
   /// \brief Class for calculating Jacobian fine-tuning measure.
+  ///
+  /// This class provides methods for calculating the Jacobian
+  /// fine-tuning measure as defined in arXiv:1312.4150,
+  /// \f$\Delta_J = | \partial O_j / \partial p_i |\f$, where
+  /// \f$\{O_j\}\f$ refers to a set of observables and
+  /// \f$\{p_i\}\f$ to a set of model parameters, and \f$ \partial
+  /// O_j / \partial p_i\f$ is the Jacobian for the transformation
+  /// from the observables to the parameters.
+  ///
+  /// The sets \f$\{O_j\}\f$ and \f$\{p_i\}\f$ used depend on
+  /// the global flags softsusy::Z3 and softsusy::SoftHiggsOut.
+  /// If softsusy::SoftHiggsOut is true, the parameters used are
+  /// the soft Higgs masses at an input scale \c mx, \f$\{ m_{H_1,0}^2,
+  /// m_{H_2,0}^2, m_{S_0}^2\} \f$, and the observables are
+  /// \f$\{M_Z^2, \tan\beta, s\}\f$, irrespective of the value of
+  /// softsusy::Z3.  If softsusy::SoftHiggsOut is false and
+  /// softsusy::Z3 is true, the parameters are taken to be
+  /// \f$\{\lambda_0, \kappa_0, m_{S_0}^2\}\f$ at \c mx.  The
+  /// observables in this case are \f$\{M_Z^2, \tan\beta,
+  /// \lambda\}\f$.  If both flags are false, the parameters
+  /// used are \f$\{\mu_0, m_{3_0}^2, \xi_{S_0}\}\f$ and the set of
+  /// observables is \f$\{M_Z^2, \tan\beta, s\}\f$.
+  ///
+  /// The top Yukawa \f$y_t\f$ can be included in the set of parameters,
+  /// and \f$M_t^2\f$ in the set of observables, by calling
+  /// setIncludeTopFlag() with the desired flag.  Whether \f$M_Z^2\f$
+  /// and \f$M_t^2\f$ are taken to be the pole or running masses may be
+  /// set by calling setUseRunningMassesFlag() with the appropriate flag.
+  /// By default the pole masses are used.
   class NmssmJacobian {
   public:
 

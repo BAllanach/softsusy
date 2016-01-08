@@ -22,10 +22,21 @@ namespace softsusy {
 
   NmssmJacobian::~NmssmJacobian() {}
 
+  /// Calculates the fine-tuning for the model, using the Jacobian
+  /// measure.  The parameters are taken to be defined at the input
+  /// scale \c mx obtained from a call to \c model.displayMxBC(),
+  /// while the observables are calculated at the current scale
+  /// returned by \c model.displayMu().  The Jacobian matrix is
+  /// calculated by calling calcFTInverseJacobian() internally, and
+  /// can be accessed after the calculation.
+  /// \see calcFTInverseJacobian(NmssmSoftsusy&)
   double NmssmJacobian::calcDeltaJ(NmssmSoftsusy& model) {
     return calcDeltaJ(model, model.displayMxBC());
   }
 
+  /// Calculates the fine-tuning as in calcDeltaJ(NmssmSoftsusy& model),
+  /// but with \c mx set to the given value instead of that returned by
+  /// \c model.displayMxBC().
   double NmssmJacobian::calcDeltaJ(NmssmSoftsusy& model, double mx) {
 
     const DoubleVector savedPars(model.display());
@@ -72,43 +83,22 @@ namespace softsusy {
   /// Calculates the Jacobian of the form \f$ J^{-1} = |
   /// \partial O / \partial p | \f$.  The transformation is done
   /// in two stages.  In the first, the observables at the
-  /// current scale, obtained from displayMu(), are traded for
+  /// current scale, obtained from \c model.displayMu(), are traded for
   /// the parameters at this scale using the EWSB conditions.
   /// The Jacobian matrix for this transformation can be
   /// accessed afterwards using displayInverseEWSBJacobian().
   /// Then, the parameters at this scale are transformed to
   /// parameters at the scale \c mx, obtained from calling
-  /// displayMxBC(), using the RGEs.  The Jacobian matrix for
+  /// \c model.displayMxBC(), using the RGEs.  The Jacobian matrix for
   /// this transformation may be accessed by calling
   /// displayInverseRGFlowJacobian().
-  ///
-  /// The sets of observables \f$\{O\}\f$ and parameters
-  /// \f$\{p\}\f$ are selected using the global flags softsusy::Z3
-  /// and softsusy::SoftHiggsOut.  If softsusy::SoftHiggsOut is true,
-  /// the parameters used are the soft Higgs masses at the scale
-  /// \c mx, \f$\{ m_{H_1,0}^2, m_{H_2,0}^2, m_{S_0}^2\} \f$, and
-  /// the observables are \f$\{M_Z^2, \tan\beta, s\}\f$, irrespective
-  /// of the value of softsusy::Z3.  If softsusy::SoftHiggsOut is false
-  /// and softsusy::Z3 is true, the parameters are taken to be
-  /// \f$\{\lambda_0, \kappa_0, m_{S_0}^2\}\f$ at \c mx.  The
-  /// observables in this case are \f$\{M_Z^2, \tan\beta,
-  /// \lambda\}\f$.  If both flags are false, the parameters
-  /// used are \f$\{\mu_0, m_{3_0}^2, \xi_{S_0}\}\f$ and the set of
-  /// observables is \f$\{M_Z^2, \tan\beta, s\}\f$.
-  ///
-  /// The top Yukawa \f$y_t\f$ can be included in the set of parameters,
-  /// and \f$M_t^2\f$ in the set of observables, by calling
-  /// setIncludeTopFlag() with the desired flag.  Whether \f$M_Z^2\f$
-  /// and \f$M_t^2\f$ are taken to be the pole or running masses may be
-  /// set by calling setUseRunningMassesFlag() with the appropriate flag.
-  /// By default the pole masses are used.
   double NmssmJacobian::calcFTInverseJacobian(NmssmSoftsusy& model) {
     return calcFTInverseJacobian(model, model.displayMxBC());
   }
 
   /// Calculates the Jacobian as in calcFTInverseJacobian(NmssmSoftsusy& model),
   /// but with \c mx set to the given value instead of that returned by
-  /// displayMxBC().
+  /// \c model.displayMxBC().
   double NmssmJacobian::calcFTInverseJacobian(NmssmSoftsusy& model, double mx) {
 
     const DoubleVector savedPars(model.display());
@@ -130,8 +120,8 @@ namespace softsusy {
   /// which is the inverse of that calculated by
   /// calcFTInverseJacobian(), is done in two stages.  In the
   /// first, the parameters at the input scale \c mx, obtained
-  /// from a call to displayMxBC(), are transformed to parameters
-  /// \f$\{q\}\f$ at the current scale, obtained from displayMu(),
+  /// from a call to \c model.displayMxBC(), are transformed to parameters
+  /// \f$\{q\}\f$ at the current scale, obtained from \c model.displayMu(),
   /// using the RGEs.  The Jacobian matrix for this
   /// transformation may be accessed afterwards by calling
   /// displayRGFlowJacobian().  Then the parameters
@@ -139,18 +129,13 @@ namespace softsusy {
   /// scale using the EWSB conditions.  The Jacobian matrix for
   /// this second transformation can be accessed using
   /// displayEWSBJacobian().
-  ///
-  /// The selection of the sets of observables and parameters
-  /// is based on the global flags softsusy::Z3 and
-  /// softsusy::SoftHiggsOut, and is the same as is used in
-  /// calcFTInverseJacobian().
   double NmssmJacobian::calcFTJacobian(NmssmSoftsusy& model) {
     return calcFTJacobian(model, model.displayMxBC());
   }
 
   /// Calculates the Jacobian as in calcFTJacobian(NmssmSoftsusy& model),
   /// but with \c mx set to the given value instead of that returned by
-  /// displayMxBC().
+  /// \c model.displayMxBC().
   double NmssmJacobian::calcFTJacobian(NmssmSoftsusy& model, double mx) {
 
     const DoubleVector savedPars(model.display());
