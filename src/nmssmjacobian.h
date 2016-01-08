@@ -125,9 +125,6 @@ namespace softsusy {
     /// \return the value of the fine-tuning
     double calcDeltaJ(NmssmSoftsusy& model, double mx);
 
-    static double calcMz(NmssmSoftsusy* m, bool getRunningMass = false);
-    static double calcMt(NmssmSoftsusy* m, bool getRunningMass = false);
-
   private:
     enum Parameters { Mzsq, Tanb, Svev, Mtsq, Lambda, Kappa,
                       SMu, M3Sq, XiS, Mh1Sq, Mh2Sq, MsSq, Yt };
@@ -159,6 +156,9 @@ namespace softsusy {
       Parameters dependent;
       double toScale;
     };
+
+    static double calcMz(NmssmSoftsusy& model, bool getRunningMass = false);
+    static double calcMt(NmssmSoftsusy& model, bool getRunningMass = false);
 
     static double calcRunningParameter(double x, void* parameters);
     double calcRGDerivative(NmssmSoftsusy& model, Parameters dep,

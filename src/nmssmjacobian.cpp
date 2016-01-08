@@ -45,7 +45,7 @@ namespace softsusy {
 
     const double determinant = calcFTInverseJacobian(model, mx);
 
-    const double mz2 = sqr(calcMz(&model, useRunningMasses));
+    const double mz2 = sqr(calcMz(model, useRunningMasses));
     const double tb = model.displayTanb();
 
     double denominator = mz2 * tb;
@@ -55,7 +55,7 @@ namespace softsusy {
       denominator *= model.displaySvev();
     }
     if (includeTop) {
-      denominator *= sqr(calcMt(&model, useRunningMasses));
+      denominator *= sqr(calcMt(model, useRunningMasses));
     }
 
     model.runto(mx);
@@ -153,68 +153,58 @@ namespace softsusy {
   }
 
   // @todo make sure this is consistent (e.g. is scale dependence right?)
-  double NmssmJacobian::calcMz(NmssmSoftsusy* m, bool getRunningMass) {
-    double mzpole = 0.;
+  double NmssmJacobian::calcMz(NmssmSoftsusy& model, bool getRunningMass) {
 
-    if (m) {
-      const double mzrun = m->displayMzRun();
-      if (getRunningMass) {
-        mzpole = mzrun;
-      } else {
-        const double scale = m->displayMu();
+    double mz = model.displayMzRun();
+    if (!getRunningMass) {
+      const double scale = model.displayMu();
 
-        // @note currently this is using the given pole top mass, not the
-        // running mass, check impact
-        const double pizzt = m->piZZT(mzrun, scale);
+      // @note currently this is using the given pole top mass, not the
+      // running mass, check impact
+      const double pizzt = model.piZZT(mz, scale);
 
-        mzpole = sqrt(fabs(sqr(mzrun) - pizzt));
-      }
+      mz = sqrt(fabs(sqr(mz) - pizzt));
     }
 
-    return mzpole;
+    return mz;
   }
 
   // @todo make sure this is consistent (e.g. is scale dependence right?)
-  double NmssmJacobian::calcMt(NmssmSoftsusy* m, bool getRunningMass) {
-    double mtpole = 0.;
+  double NmssmJacobian::calcMt(NmssmSoftsusy& model, bool getRunningMass) {
 
-    if (m) {
-      const double mtrun = m->displayDrBarPars().mt;
-      if (getRunningMass) {
-        mtpole = mtrun;
-      } else {
-        const double scale = m->displayMu();
+    double mt = model.displayDrBarPars().mt;
+    if (!getRunningMass) {
+      const double scale = model.displayMu();
 
-        // workaround hard-coded external momentum dependence
-        QedQcd savedData(m->displayDataSet());
-        QedQcd tempData;
-        tempData.setPoleMt(mtrun);
-        m->setData(tempData);
+      // workaround hard-coded external momentum dependence
+      QedQcd savedData(model.displayDataSet());
+      QedQcd tempData;
+      tempData.setPoleMt(mt);
+      model.setData(tempData);
 
-        const double stopGluino = m->calcRunMtStopGluino();
-        const double higgs = m->calcRunMtHiggs();
-        const double neutralinos = m->calcRunMtNeutralinos();
-        const double charginos = m->calcRunMtCharginos();
+      const double stopGluino = model.calcRunMtStopGluino();
+      const double higgs = model.calcRunMtHiggs();
+      const double neutralinos = model.calcRunMtNeutralinos();
+      const double charginos = model.calcRunMtCharginos();
 
-        double resigmat = mtrun * (stopGluino + higgs + neutralinos
-                                   + charginos) / (16.0 * sqr(PI));
+      double resigmat = mt * (stopGluino + higgs + neutralinos
+                              + charginos) / (16.0 * sqr(PI));
 
-        const double g3Sq = sqr(m->displayGaugeCoupling(3));
-        const double logMtSqOverQSq = 2.0 * log(mtrun / scale);
-        const double oneLoopQCD = 4.0 * g3Sq * (5.0 - 3.0 * logMtSqOverQSq)
-          / (3.0 * 16.0 * sqr(PI));
-        const double twoLoopQCD = sqr(g3Sq) * (0.005191204615668296
-          - 0.0032883224409535764 * logMtSqOverQSq + 0.0008822328500119351 *
-          sqr(logMtSqOverQSq));
-        resigmat -= mtrun * (oneLoopQCD + twoLoopQCD);
+      const double g3Sq = sqr(model.displayGaugeCoupling(3));
+      const double logMtSqOverQSq = 2.0 * log(mt / scale);
+      const double oneLoopQCD = 4.0 * g3Sq * (5.0 - 3.0 * logMtSqOverQSq)
+        / (3.0 * 16.0 * sqr(PI));
+      const double twoLoopQCD = sqr(g3Sq) * (0.005191204615668296
+        - 0.0032883224409535764 * logMtSqOverQSq + 0.0008822328500119351
+        * sqr(logMtSqOverQSq));
+      resigmat -= mt * (oneLoopQCD + twoLoopQCD);
 
-        mtpole = mtrun - resigmat;
+      mt -= resigmat;
 
-        m->setData(savedData);
-      }
+      model.setData(savedData);
     }
 
-    return mtpole;
+    return mt;
   }
 
   double NmssmJacobian::calcRunningParameter(double x, void* parameters) {
@@ -613,7 +603,7 @@ namespace softsusy {
     double output;
     switch (dependent) {
     case Mzsq: {
-      output = sqr(calcMz(tempModel, pars->useRunningMasses));
+      output = sqr(calcMz(*tempModel, pars->useRunningMasses));
       if (PRINTOUT > 1) cout << "MZ=" << sqrt(output) << '\n';
       break;
     }
@@ -628,7 +618,7 @@ namespace softsusy {
       break;
     }
     case Mtsq: {
-      output = sqr(calcMt(tempModel, pars->useRunningMasses));
+      output = sqr(calcMt(*tempModel, pars->useRunningMasses));
       if (PRINTOUT > 1) cout << "MT=" << sqrt(output) << '\n';
       break;
     }
@@ -694,11 +684,11 @@ namespace softsusy {
     m->calcDrBarPars();
 
     if (Z3 && !SoftHiggsOut) {
-      errors(1) = 1.0 - (sqr(calcMz(m, pars->useRunningMasses)) / outputs(1));
+      errors(1) = 1.0 - (sqr(calcMz(*m, pars->useRunningMasses)) / outputs(1));
       errors(2) = 1.0 - (m->displayTanb() / outputs(2));
       errors(3) = 1.0 - (m->displayLambda() / outputs(3));
     } else {
-      errors(1) = 1.0 - (sqr(calcMz(m, pars->useRunningMasses)) / outputs(1));
+      errors(1) = 1.0 - (sqr(calcMz(*m, pars->useRunningMasses)) / outputs(1));
       errors(2) = 1.0 - (m->displayTanb() / outputs(2));
       errors(3) = 1.0 - (m->displaySvev() / outputs(3));
     }
@@ -707,7 +697,7 @@ namespace softsusy {
       && testNan(errors(3));
 
     if (numOutputs > 3) {
-      errors(4) = 1.0 - (sqr(calcMt(m, pars->useRunningMasses)) / outputs(4));
+      errors(4) = 1.0 - (sqr(calcMt(*m, pars->useRunningMasses)) / outputs(4));
       error = error && testNan(errors(4));
     }
 
@@ -963,11 +953,11 @@ namespace softsusy {
 
     const int numOutputs = includeTop ? 4 : 3;
     DoubleVector outputs(numOutputs);
-    outputs(1) = sqr(calcMz(&model, useRunningMasses));
+    outputs(1) = sqr(calcMz(model, useRunningMasses));
     outputs(2) = model.displayTanb();
     outputs(3) = (Z3 && !SoftHiggsOut) ? model.displayLambda() :
       model.displaySvev();
-    if (numOutputs > 3) outputs(4) = sqr(calcMt(&model, useRunningMasses));
+    if (numOutputs > 3) outputs(4) = sqr(calcMt(model, useRunningMasses));
 
     switch (indep) {
     case Lambda: {
