@@ -1053,6 +1053,16 @@ namespace softsusy {
     return ewsbDet;
   }
 
+  double NmssmJacobian::calcFTInverseJacobian() {
+    double determinant = 0.;
+
+    if (model) {
+      determinant = calcFTInverseJacobian(model->displayMxBC());
+    }
+
+    return determinant;
+  }
+
   /// The Jacobian calculated is of the form \f$ J^{-1} = |
   /// \partial O / \partial p | \f$.  The transformation is done
   /// in two stages.  In the first, the observables at the
@@ -1106,6 +1116,16 @@ namespace softsusy {
     return determinant;
   }
 
+  double NmssmJacobian::calcFTJacobian() {
+    double determinant = 0.;
+
+    if (model) {
+      determinant = calcFTJacobian(model->displayMxBC());
+    }
+
+    return determinant;
+  }
+
   /// The Jacobian calculated is of the form \f$ J = |
   /// \partial p / \partial O | \f$.  The transformation,
   /// which is the inverse of that calculated by
@@ -1143,6 +1163,16 @@ namespace softsusy {
     }
 
     return determinant;
+  }
+
+  double NmssmJacobian::calcDeltaJ() {
+    double tuning = 0.;
+
+    if (model) {
+      tuning = calcDeltaJ(model->displayMxBC());
+    }
+
+    return tuning;
   }
 
   double NmssmJacobian::calcDeltaJ(double mx) {

@@ -64,14 +64,26 @@ namespace softsusy {
     DoubleMatrix displayInverseEWSBJacobian() const { return invJacEWSB; }
 
     /// \brief Calculates the Jacobian transforming parameters to observables.
+    /// \return the value of the Jacobian
+    double calcFTJacobian();
+
+    /// \brief Calculates the Jacobian transforming parameters to observables.
     /// \param[in] mx the scale at which the input parameters are defined
     /// \return the value of the Jacobian
     double calcFTJacobian(double mx);
 
     /// \brief Calculates the Jacobian transforming observables to parameters.
+    /// \return the value of the Jacobian
+    double calcFTInverseJacobian();
+
+    /// \brief Calculates the Jacobian transforming observables to parameters.
     /// \param[in] mx the scale at which the input parameters are defined
     /// \return the value of the Jacobian
     double calcFTInverseJacobian(double mx);
+
+    /// \brief Calculates the fine-tuning using the Jacobian measure.
+    /// \return the value of the fine-tuning
+    double calcDeltaJ();
 
     /// \brief Calculates the fine-tuning using the Jacobian measure.
     /// \param[in] mx the scale at which the input parameters are defined
