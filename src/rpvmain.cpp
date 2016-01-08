@@ -5,6 +5,7 @@
    Authors:     B.C. Allanach, Markus Bernhardt 
    Manual:      B.C. Allanach and M.A. Bernhardt, CPC 181 (2010) 232, 
                 arXiv:0903.1805  and
+		B.C. Allanach,hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
    Webpage:     http://projects.hepforge.org/softsusy/
    Description: main calling program example:
                 - scanning CMSSM10.1 with one varying RPV coupling

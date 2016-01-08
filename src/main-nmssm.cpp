@@ -1,3 +1,14 @@
+/** \file main-nmssm.cpp
+   - Project:     SOFTSUSY 
+   - Author:      Ben Allanach    
+   - Manual:      B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and 
+   A. Williams, Comput. Phys. Comm. 185 (2014) 2322, arXiv:1311.7659;
+   B.C. Allanach, hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305; 
+
+   \brief a main C++ program to calculate Higgs masses as a function of tan
+   beta in the NMSSM
+*/
+
 #include <iostream>
 #include "def.h"
 #include "linalg.h"

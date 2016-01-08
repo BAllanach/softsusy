@@ -3,7 +3,7 @@
    Project:     SOFTSUSY 
    File:        main.cpp
    Author:      Ben Allanach 
-   Manual:      B.C. Allanach,hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
+   Manual:      B.C. Allanach, hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
                 B.C. Allanach, M.A. Bernhardt, arXiv:0903.1805, Comp. Phys. 
 		Commun. 181 (2010) 232-245
    Webpage:     http://allanach.home.cern.ch/allanach/softsusy.html

@@ -2,10 +2,9 @@
 /** 
    Project:     SOFTSUSY 
    File:        higher.cpp
-   Author:      Ben Allanach 
-   Manual:      B.C. Allanach,hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
-                B.C. Allanach, M.A. Bernhardt, arXiv:0903.1805, Comp. Phys. 
-		Commun. 181 (2010) 232-245
+   Author:      B.C. Allanach, S. Martin, D. Robertson and R. Ruiz de Austri
+   Manual:      B.C. Allanach, S. Martin, D. Robertson and R. Ruiz de Austri, 
+                arXiv:16??.?????
    Webpage:     http://allanach.home.cern.ch/allanach/softsusy.html
    Description: main calling program to be put in src/ in the softsusy
                 directory. It produces data listed in "twoLoop.dat"
@@ -13,7 +12,8 @@
 		squark masses. You'll need to install nllfast in some
 		directory and change the reference to
 		/home/bca20/code/nllfast-3.0-13TeV to the directory you've
-		placed it in. The executable will be called "higher.x".
+		placed it in. The executable will be called "higher.x" and
+		takes no arguments.
 */
 
 #include <iostream>
