@@ -14,8 +14,8 @@
 
 namespace softsusy {
 
-  NmssmJacobian::NmssmJacobian(NmssmSoftsusy* m, bool doTop)
-     : model(m), jacRGFlow(3,3), jacEWSB(3,3)
+  NmssmJacobian::NmssmJacobian(bool doTop)
+     : jacRGFlow(3,3), jacEWSB(3,3)
      , invJacRGFlow(3,3), invJacEWSB(3,3)
      , includeTop(doTop), useRunningMasses(false), hasError(false) {
   }
@@ -219,181 +219,175 @@ namespace softsusy {
     return output;
   }
 
-  double NmssmJacobian::calcRGDerivative(Parameters dep, Parameters indep,
+  double NmssmJacobian::calcRGDerivative(NmssmSoftsusy& model,
+                                         Parameters dep, Parameters indep,
                                          double toScale) {
+
+    double x = 0.;
+    double h = 0.01;
+
+    switch (indep) {
+    case Lambda: {
+      x = model.displayLambda();
+      h = 0.0005 * x;
+      break;
+    }
+    case Kappa: {
+      x = model.displayKappa();
+      h = 0.0005 * x;
+      break;
+    }
+    case SMu: {
+      x = model.displaySusyMu();
+      h = 0.01 * x;
+      break;
+    }
+    case M3Sq: {
+      x = model.displayM3Squared();
+      h = 0.01 * x;
+      break;
+    }
+    case XiS: {
+      x = model.displayXiS();
+      h = 0.01 * x;
+      break;
+    }
+    case Mh1Sq: {
+      x = model.displayMh1Squared();
+      h = 0.01 * x;
+      break;
+    }
+    case Mh2Sq: {
+      x = model.displayMh2Squared();
+      h = 0.01 * x;
+      break;
+    }
+    case MsSq: {
+      x = model.displayMsSquared();
+      h = 0.01 * x;
+      break;
+    }
+    case Yt: {
+      x = model.displayYukawaElement(YU, 3, 3);
+      h = 0.0005 * x;
+      break;
+    }
+    default: {
+      ostringstream ii;
+      ii << "NmssmJacobian:calcRGDerivative called with incorrect"
+         << " independent parameter " << indep << '\n';
+      throw ii.str();
+    }
+    }
+
+    volatile const double temp = x + h;
+    h = temp - x;
+
+    RGFlowPars pars;
+    pars.model = &model;
+    pars.independent = indep;
+    pars.dependent = dep;
+    pars.toScale = toScale;
+
     double derivative = 0.;
+    double err = 0.;
+    if (fabs(x) > 1.0e-10) {
+      derivative = calcDerivative(calcRunningParameter, x, h, &err, &pars);
+    }
 
-    if (model) {
-      double x = 0.;
-      double h = 0.01;
+    if (PRINTOUT > 1)
+      cout << "derivative=" << derivative << " error=" << err << '\n';
 
-      switch (indep) {
-      case Lambda: {
-        x = model->displayLambda();
-        h = 0.0005 * x;
-        break;
-      }
-      case Kappa: {
-        x = model->displayKappa();
-        h = 0.0005 * x;
-        break;
-      }
-      case SMu: {
-        x = model->displaySusyMu();
-        h = 0.01 * x;
-        break;
-      }
-      case M3Sq: {
-        x = model->displayM3Squared();
-        h = 0.01 * x;
-        break;
-      }
-      case XiS: {
-        x = model->displayXiS();
-        h = 0.01 * x;
-        break;
-      }
-      case Mh1Sq: {
-        x = model->displayMh1Squared();
-        h = 0.01 * x;
-        break;
-      }
-      case Mh2Sq: {
-        x = model->displayMh2Squared();
-        h = 0.01 * x;
-        break;
-      }
-      case MsSq: {
-        x = model->displayMsSquared();
-        h = 0.01 * x;
-        break;
-      }
-      case Yt: {
-        x = model->displayYukawaElement(YU, 3, 3);
-        h = 0.0005 * x;
-        break;
-      }
-      default: {
-        ostringstream ii;
-        ii << "NmssmJacobian:calcRGDerivative called with incorrect"
-           << " independent parameter " << indep << '\n';
-        throw ii.str();
-      }
-      }
+    const bool has_error
+      = fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0;
 
-      volatile const double temp = x + h;
-      h = temp - x;
-
-      RGFlowPars pars;
-      pars.model = model;
-      pars.independent = indep;
-      pars.dependent = dep;
-      pars.toScale = toScale;
-
-      double err = 0.;
-      if (fabs(x) > 1.0e-10) {
-        derivative = calcDerivative(calcRunningParameter, x, h, &err, &pars);
-      }
-
-      if (PRINTOUT > 1)
-        cout << "derivative=" << derivative << " error=" << err << '\n';
-
-      const bool has_error
-        = fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0;
-
-      if (has_error) {
-        derivative = -numberOfTheBeast;
-        hasError = true;
-      }
+    if (has_error) {
+      derivative = -numberOfTheBeast;
+      hasError = true;
     }
 
     return derivative;
   }
 
-  double NmssmJacobian::calcRGFlowJacobian(double startScale, double endScale) {
-    double rgDet = 0.;
+  double NmssmJacobian::calcRGFlowJacobian(NmssmSoftsusy& model,
+                                           double startScale, double endScale) {
+    const DoubleVector savedPars(model.display());
+    const double scale = model.displayMu();
 
-    if (model) {
-      const DoubleVector savedPars(model->display());
-      const double scale = model->displayMu();
+    model.runto(startScale);
 
-      model->runto(startScale);
+    const int numPars = includeTop ? 4 : 3;
 
-      const int numPars = includeTop ? 4 : 3;
+    DoubleMatrix jac(numPars, numPars);
 
-      DoubleMatrix jac(numPars, numPars);
+    vector<Parameters> indepPars;
 
-      vector<Parameters> indepPars;
+    if (SoftHiggsOut) {
+      indepPars.push_back(Mh1Sq);
+      indepPars.push_back(Mh2Sq);
+      indepPars.push_back(MsSq);
+    } else if (Z3) {
+      indepPars.push_back(Lambda);
+      indepPars.push_back(Kappa);
+      indepPars.push_back(MsSq);
+    } else {
+      indepPars.push_back(SMu);
+      indepPars.push_back(M3Sq);
+      indepPars.push_back(XiS);
+    }
+    if (includeTop) indepPars.push_back(Yt);
 
+    for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
       if (SoftHiggsOut) {
-        indepPars.push_back(Mh1Sq);
-        indepPars.push_back(Mh2Sq);
-        indepPars.push_back(MsSq);
+        jac(i + 1, 1) = calcRGDerivative(model, Mh1Sq, indepPars[i], endScale);
+        jac(i + 1, 2) = calcRGDerivative(model, Mh2Sq, indepPars[i], endScale);
+        jac(i + 1, 3) = calcRGDerivative(model, MsSq, indepPars[i], endScale);
       } else if (Z3) {
-        indepPars.push_back(Lambda);
-        indepPars.push_back(Kappa);
-        indepPars.push_back(MsSq);
+        jac(i + 1, 1) = calcRGDerivative(model, Lambda, indepPars[i], endScale);
+        jac(i + 1, 2) = calcRGDerivative(model, Kappa, indepPars[i], endScale);
+        jac(i + 1, 3) = calcRGDerivative(model, MsSq, indepPars[i], endScale);
       } else {
-        indepPars.push_back(SMu);
-        indepPars.push_back(M3Sq);
-        indepPars.push_back(XiS);
+        jac(i + 1, 1) = calcRGDerivative(model, SMu, indepPars[i], endScale);
+        jac(i + 1, 2) = calcRGDerivative(model, M3Sq, indepPars[i], endScale);
+        jac(i + 1, 3) = calcRGDerivative(model, XiS, indepPars[i], endScale);
       }
-      if (includeTop) indepPars.push_back(Yt);
-
-      for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
-        if (SoftHiggsOut) {
-          jac(i + 1, 1) = calcRGDerivative(Mh1Sq, indepPars[i], endScale);
-          jac(i + 1, 2) = calcRGDerivative(Mh2Sq, indepPars[i], endScale);
-          jac(i + 1, 3) = calcRGDerivative(MsSq, indepPars[i], endScale);
-        } else if (Z3) {
-          jac(i + 1, 1) = calcRGDerivative(Lambda, indepPars[i], endScale);
-          jac(i + 1, 2) = calcRGDerivative(Kappa, indepPars[i], endScale);
-          jac(i + 1, 3) = calcRGDerivative(MsSq, indepPars[i], endScale);
-        } else {
-          jac(i + 1, 1) = calcRGDerivative(SMu, indepPars[i], endScale);
-          jac(i + 1, 2) = calcRGDerivative(M3Sq, indepPars[i], endScale);
-          jac(i + 1, 3) = calcRGDerivative(XiS, indepPars[i], endScale);
-        }
-        if (includeTop)
-          jac(i + 1, 4) = calcRGDerivative(Yt, indepPars[i], endScale);
-      }
-
-      // save calculated matrix
-      // convention: inverse refers to case where transformation
-      // is from high-scale to low-scale parameters
-      if (startScale == endScale) {
-        if (invJacRGFlow.displayRows() != numPars
-            || invJacRGFlow.displayCols() != numPars) {
-          invJacRGFlow.resize(numPars, numPars);
-        }
-        invJacRGFlow = jac;
-
-        if (jacRGFlow.displayRows() != numPars
-            || jacRGFlow.displayCols() != numPars) {
-          jacRGFlow.resize(numPars, numPars);
-        }
-        jacRGFlow = jac;
-      } else if (startScale > endScale) {
-        if (invJacRGFlow.displayRows() != numPars
-            || invJacRGFlow.displayCols() != numPars) {
-          invJacRGFlow.resize(numPars, numPars);
-        }
-        invJacRGFlow = jac;
-      } else {
-        if (jacRGFlow.displayRows() != numPars
-            || jacRGFlow.displayCols() != numPars) {
-          jacRGFlow.resize(numPars, numPars);
-        }
-        jacRGFlow = jac;
-      }
-
-      rgDet = jac.determinant();
-
-      model->setMu(scale);
-      model->set(savedPars);
+      if (includeTop)
+        jac(i + 1, 4) = calcRGDerivative(model, Yt, indepPars[i], endScale);
     }
 
-    return rgDet;
+    // save calculated matrix
+    // convention: inverse refers to case where transformation
+    // is from high-scale to low-scale parameters
+    if (startScale == endScale) {
+      if (invJacRGFlow.displayRows() != numPars
+          || invJacRGFlow.displayCols() != numPars) {
+        invJacRGFlow.resize(numPars, numPars);
+      }
+      invJacRGFlow = jac;
+
+      if (jacRGFlow.displayRows() != numPars
+          || jacRGFlow.displayCols() != numPars) {
+        jacRGFlow.resize(numPars, numPars);
+      }
+      jacRGFlow = jac;
+    } else if (startScale > endScale) {
+      if (invJacRGFlow.displayRows() != numPars
+          || invJacRGFlow.displayCols() != numPars) {
+        invJacRGFlow.resize(numPars, numPars);
+      }
+      invJacRGFlow = jac;
+    } else {
+      if (jacRGFlow.displayRows() != numPars
+          || jacRGFlow.displayCols() != numPars) {
+        jacRGFlow.resize(numPars, numPars);
+      }
+      jacRGFlow = jac;
+    }
+
+    model.setMu(scale);
+    model.set(savedPars);
+
+    return jac.determinant();
   }
 
   double NmssmJacobian::calcEWSBOutput(double x, void* parameters) {
@@ -742,337 +736,316 @@ namespace softsusy {
     return output;
   }
 
-  double NmssmJacobian::calcEWSBOutputDerivative(Parameters dep, Parameters indep) {
+  double NmssmJacobian::calcEWSBOutputDerivative(
+    NmssmSoftsusy& model, Parameters dep, Parameters indep) {
+
+    double x = 0.;
+    double h = 0.01;
+
+    switch (indep) {
+    case Lambda: {
+      x = model.displayLambda();
+      h = 0.0005 * x;
+      break;
+    }
+    case Kappa: {
+      x = model.displayKappa();
+      h = 0.0005 * x;
+      break;
+    }
+    case SMu: {
+      x = model.displaySusyMu();
+      h = 0.01 * x;
+      break;
+    }
+    case M3Sq: {
+      x = model.displayM3Squared();
+      h = 0.01 * x;
+      break;
+    }
+    case XiS: {
+      x = model.displayXiS();
+      h = 0.01 * x;
+      break;
+    }
+    case Mh1Sq: {
+      x = model.displayMh1Squared();
+      h = 0.01 * x;
+      break;
+    }
+    case Mh2Sq: {
+      x = model.displayMh2Squared();
+      h = 0.01 * x;
+      break;
+    }
+    case MsSq: {
+      x = model.displayMsSquared();
+      h = 0.01 * x;
+      break;
+    }
+    case Yt: {
+      x = model.displayYukawaElement(YU, 3, 3);
+      h = 0.0005 * x;
+      break;
+    }
+    default: {
+      ostringstream ii;
+      ii << "NmssmJacobian:calcEWSBOutputDerivative called with incorrect"
+         << " independent parameter " << indep << '\n';
+      throw ii.str();
+    }
+    }
+
+    volatile const double temp = x + h;
+    h = temp - x;
+
+    EWSBPars pars;
+    pars.model = &model;
+    pars.independent = indep;
+    pars.dependent = dep;
+    pars.useRunningMasses = useRunningMasses;
+
     double derivative = 0.;
+    double err = 0.;
+    if (fabs(x) > 1.0e-10) {
+      derivative = calcDerivative(calcEWSBOutput, x, h, &err, &pars);
+    }
 
-    if (model) {
-      double x = 0.;
-      double h = 0.01;
+    if (PRINTOUT > 1)
+      cout << "derivative=" << derivative << " error=" << err << '\n';
 
-      switch (indep) {
-      case Lambda: {
-        x = model->displayLambda();
-        h = 0.0005 * x;
-        break;
-      }
-      case Kappa: {
-        x = model->displayKappa();
-        h = 0.0005 * x;
-        break;
-      }
-      case SMu: {
-        x = model->displaySusyMu();
-        h = 0.01 * x;
-        break;
-      }
-      case M3Sq: {
-        x = model->displayM3Squared();
-        h = 0.01 * x;
-        break;
-      }
-      case XiS: {
-        x = model->displayXiS();
-        h = 0.01 * x;
-        break;
-      }
-      case Mh1Sq: {
-        x = model->displayMh1Squared();
-        h = 0.01 * x;
-        break;
-      }
-      case Mh2Sq: {
-        x = model->displayMh2Squared();
-        h = 0.01 * x;
-        break;
-      }
-      case MsSq: {
-        x = model->displayMsSquared();
-        h = 0.01 * x;
-        break;
-      }
-      case Yt: {
-        x = model->displayYukawaElement(YU, 3, 3);
-        h = 0.0005 * x;
-        break;
-      }
-      default: {
-        ostringstream ii;
-        ii << "NmssmJacobian:calcEWSBOutputDerivative called with incorrect"
-           << " independent parameter " << indep << '\n';
-        throw ii.str();
-      }
-      }
+    const bool has_error
+      = fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0;
 
-      volatile const double temp = x + h;
-      h = temp - x;
-
-      EWSBPars pars;
-      pars.model = model;
-      pars.independent = indep;
-      pars.dependent = dep;
-      pars.useRunningMasses = useRunningMasses;
-
-      double err = 0.;
-      if (fabs(x) > 1.0e-10) {
-        derivative = calcDerivative(calcEWSBOutput, x, h, &err, &pars);
-      }
-
-      if (PRINTOUT > 1)
-        cout << "derivative=" << derivative << " error=" << err << '\n';
-
-      const bool has_error
-        = fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0;
-
-      if (has_error) {
-        derivative = -numberOfTheBeast;
-        hasError = true;
-      }
+    if (has_error) {
+      derivative = -numberOfTheBeast;
+      hasError = true;
     }
 
     return derivative;
   }
 
-  double NmssmJacobian::calcEWSBParameterDerivative(Parameters dep, Parameters indep) {
+  double NmssmJacobian::calcEWSBParameterDerivative(
+    NmssmSoftsusy& model, Parameters dep, Parameters indep) {
+
+    double x = 0.;
+    double h = 0.01;
+
+    const int numOutputs = includeTop ? 4 : 3;
+    DoubleVector outputs(numOutputs);
+    outputs(1) = sqr(calcMz(&model, useRunningMasses));
+    outputs(2) = model.displayTanb();
+    outputs(3) = (Z3 && !SoftHiggsOut) ? model.displayLambda() :
+      model.displaySvev();
+    if (numOutputs > 3) outputs(4) = sqr(calcMt(&model, useRunningMasses));
+
+    switch (indep) {
+    case Lambda: {
+      x = outputs(3);
+      h = 0.0005 * x;
+      break;
+    }
+    case Mzsq: {
+      x = outputs(1);
+      h = 0.01 * x;
+      break;
+    }
+    case Tanb: {
+      x = outputs(2);
+      h = 0.001 * x;
+      break;
+    }
+    case Svev: {
+      x = outputs(3);
+      h = 0.01 * x;
+      break;
+    }
+    case Mtsq: {
+      x = outputs(4);
+      h = 0.01 * x;
+      break;
+    }
+    default: {
+      ostringstream ii;
+      ii << "NmssmJacobian:calcEWSBParameterDerivative called with incorrect"
+         << " independent parameter " << indep << '\n';
+      throw ii.str();
+    }
+    }
+
+    volatile const double temp = x + h;
+    h = temp - x;
+
+    EWSBPars pars;
+    pars.model = &model;
+    pars.independent = indep;
+    pars.dependent = dep;
+    pars.outputs = outputs;
+    pars.useRunningMasses = useRunningMasses;
+
     double derivative = 0.;
+    double err = 0.;
+    if (fabs(x) > 1.0e-10) {
+      derivative = calcDerivative(calcEWSBParameter, x, h, &err, &pars);
+    }
 
-    if (model) {
-      double x = 0.;
-      double h = 0.01;
+    if (PRINTOUT > 1)
+      cout << "derivative=" << derivative << " error=" << err << '\n';
 
-      const int numOutputs = includeTop ? 4 : 3;
-      DoubleVector outputs(numOutputs);
-      outputs(1) = sqr(calcMz(model, useRunningMasses));
-      outputs(2) = model->displayTanb();
-      outputs(3) = (Z3 && !SoftHiggsOut) ? model->displayLambda() :
-        model->displaySvev();
-      if (numOutputs > 3) outputs(4) = sqr(calcMt(model, useRunningMasses));
+    const bool has_error
+      = fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0;
 
-      switch (indep) {
-      case Lambda: {
-        x = outputs(3);
-        h = 0.0005 * x;
-        break;
-      }
-      case Mzsq: {
-        x = outputs(1);
-        h = 0.01 * x;
-        break;
-      }
-      case Tanb: {
-        x = outputs(2);
-        h = 0.001 * x;
-        break;
-      }
-      case Svev: {
-        x = outputs(3);
-        h = 0.01 * x;
-        break;
-      }
-      case Mtsq: {
-        x = outputs(4);
-        h = 0.01 * x;
-        break;
-      }
-      default: {
-        ostringstream ii;
-        ii << "NmssmJacobian:calcEWSBParameterDerivative called with incorrect"
-           << " independent parameter " << indep << '\n';
-        throw ii.str();
-      }
-      }
-
-      volatile const double temp = x + h;
-      h = temp - x;
-
-      EWSBPars pars;
-      pars.model = model;
-      pars.independent = indep;
-      pars.dependent = dep;
-      pars.outputs = outputs;
-      pars.useRunningMasses = useRunningMasses;
-
-      double err = 0.;
-      if (fabs(x) > 1.0e-10) {
-        derivative = calcDerivative(calcEWSBParameter, x, h, &err, &pars);
-      }
-
-      if (PRINTOUT > 1)
-        cout << "derivative=" << derivative << " error=" << err << '\n';
-
-      const bool has_error
-        = fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0;
-
-      if (has_error) {
-        derivative = -numberOfTheBeast;
-        hasError = true;
-      }
+    if (has_error) {
+      derivative = -numberOfTheBeast;
+      hasError = true;
     }
 
     return derivative;
   }
 
-  double NmssmJacobian::calcEWSBJacobian() {
-    double ewsbDet = 0.;
+  double NmssmJacobian::calcEWSBJacobian(NmssmSoftsusy& model) {
 
-    if (model) {
-      const DoubleVector savedPars(model->display());
-      const double scale = model->displayMu();
-      const drBarPars savedDrBarPars(model->displayDrBarPars());
+    const DoubleVector savedPars(model.display());
+    const double scale = model.displayMu();
+    const drBarPars savedDrBarPars(model.displayDrBarPars());
 
-      const int numPars = includeTop ? 4 : 3;
+    const int numPars = includeTop ? 4 : 3;
 
-      DoubleMatrix jac(numPars, numPars);
+    DoubleMatrix jac(numPars, numPars);
 
-      vector<Parameters> indepPars;
+    vector<Parameters> indepPars;
 
-      if (Z3 && !SoftHiggsOut) {
-        indepPars.push_back(Mzsq);
-        indepPars.push_back(Tanb);
-        indepPars.push_back(Lambda);
-      } else {
-        indepPars.push_back(Mzsq);
-        indepPars.push_back(Tanb);
-        indepPars.push_back(Svev);
-      }
-      if (includeTop) indepPars.push_back(Mtsq);
-
-      for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
-        if (SoftHiggsOut) {
-          jac(i + 1, 1) = calcEWSBParameterDerivative(Mh1Sq, indepPars[i]);
-          jac(i + 1, 2) = calcEWSBParameterDerivative(Mh2Sq, indepPars[i]);
-          jac(i + 1, 3) = calcEWSBParameterDerivative(MsSq, indepPars[i]);
-        } else if (Z3) {
-          if (indepPars[i] == Lambda) {
-            jac(i + 1, 1) = 1.;
-            jac(i + 1, 2) = 0.;
-            jac(i + 1, 3) = 0.;
-          } else {
-            jac(i + 1, 1) = 0.;
-            jac(i + 1, 2) = calcEWSBParameterDerivative(Kappa, indepPars[i]);
-            jac(i + 1, 3) = calcEWSBParameterDerivative(MsSq, indepPars[i]);
-          }
-        } else {
-          jac(i + 1, 1) = calcEWSBParameterDerivative(SMu, indepPars[i]);
-          jac(i + 1, 2) = calcEWSBParameterDerivative(M3Sq, indepPars[i]);
-          jac(i + 1, 3) = calcEWSBParameterDerivative(XiS, indepPars[i]);
-        }
-        if (includeTop) {
-          if ((Z3 && !SoftHiggsOut) && indepPars[i] == Lambda) {
-            jac(i + 1, 4) = 0.;
-          } else {
-            jac(i + 1, 4) = calcEWSBParameterDerivative(Yt, indepPars[i]);
-          }
-        }
-      }
-
-      // save calculated matrix
-      if (jacEWSB.displayRows() != numPars
-          || jacEWSB.displayCols() != numPars) {
-        jacEWSB.resize(numPars, numPars);
-      }
-      jacEWSB = jac;
-
-      ewsbDet = jac.determinant();
-
-      model->setMu(scale);
-      model->set(savedPars);
-      model->setDrBarPars(savedDrBarPars);
+    if (Z3 && !SoftHiggsOut) {
+      indepPars.push_back(Mzsq);
+      indepPars.push_back(Tanb);
+      indepPars.push_back(Lambda);
+    } else {
+      indepPars.push_back(Mzsq);
+      indepPars.push_back(Tanb);
+      indepPars.push_back(Svev);
     }
+    if (includeTop) indepPars.push_back(Mtsq);
 
-    return ewsbDet;
-  }
-
-  double NmssmJacobian::calcInverseEWSBJacobian() {
-    double ewsbDet = 0.;
-
-    if (model) {
-      const DoubleVector savedPars(model->display());
-      const double scale = model->displayMu();
-      const drBarPars savedDrBarPars(model->displayDrBarPars());
-
-      const int numPars = includeTop ? 4 : 3;
-
-      DoubleMatrix jac(numPars, numPars);
-
-      vector<Parameters> indepPars;
-
+    for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
       if (SoftHiggsOut) {
-        indepPars.push_back(Mh1Sq);
-        indepPars.push_back(Mh2Sq);
-        indepPars.push_back(MsSq);
+        jac(i + 1, 1) = calcEWSBParameterDerivative(model, Mh1Sq, indepPars[i]);
+        jac(i + 1, 2) = calcEWSBParameterDerivative(model, Mh2Sq, indepPars[i]);
+        jac(i + 1, 3) = calcEWSBParameterDerivative(model, MsSq, indepPars[i]);
       } else if (Z3) {
-        indepPars.push_back(Lambda);
-        indepPars.push_back(Kappa);
-        indepPars.push_back(MsSq);
-      } else {
-        indepPars.push_back(SMu);
-        indepPars.push_back(M3Sq);
-        indepPars.push_back(XiS);
-      }
-      if (includeTop) indepPars.push_back(Yt);
-
-      for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
-        if (Z3 && !SoftHiggsOut) {
-          if (indepPars[i] == Lambda) {
-            jac(i + 1, 1) = 0.;
-            jac(i + 1, 2) = 0.;
-            jac(i + 1, 3) = 1.;
-          } else {
-            jac(i + 1, 1) = calcEWSBOutputDerivative(Mzsq, indepPars[i]);
-            jac(i + 1, 2) = calcEWSBOutputDerivative(Tanb, indepPars[i]);
-            jac(i + 1, 3) = 0.;
-          }
+        if (indepPars[i] == Lambda) {
+          jac(i + 1, 1) = 1.;
+          jac(i + 1, 2) = 0.;
+          jac(i + 1, 3) = 0.;
         } else {
-          jac(i + 1, 1) = calcEWSBOutputDerivative(Mzsq, indepPars[i]);
-          jac(i + 1, 2) = calcEWSBOutputDerivative(Tanb, indepPars[i]);
-          jac(i + 1, 3) = calcEWSBOutputDerivative(Svev, indepPars[i]);
+          jac(i + 1, 1) = 0.;
+          jac(i + 1, 2) = calcEWSBParameterDerivative(model, Kappa, indepPars[i]);
+          jac(i + 1, 3) = calcEWSBParameterDerivative(model, MsSq, indepPars[i]);
         }
-        if (includeTop) {
-          if ((Z3 && !SoftHiggsOut) && indepPars[i] == Lambda) {
-            jac(i + 1, 4) = 0.;
-          } else {
-            jac(i + 1, 4) = calcEWSBOutputDerivative(Mtsq, indepPars[i]);
-          }
+      } else {
+        jac(i + 1, 1) = calcEWSBParameterDerivative(model, SMu, indepPars[i]);
+        jac(i + 1, 2) = calcEWSBParameterDerivative(model, M3Sq, indepPars[i]);
+        jac(i + 1, 3) = calcEWSBParameterDerivative(model, XiS, indepPars[i]);
+      }
+      if (includeTop) {
+        if ((Z3 && !SoftHiggsOut) && indepPars[i] == Lambda) {
+          jac(i + 1, 4) = 0.;
+        } else {
+          jac(i + 1, 4) = calcEWSBParameterDerivative(model, Yt, indepPars[i]);
         }
       }
-
-      // save calculated matrix
-      if (invJacEWSB.displayRows() != numPars
-          || invJacEWSB.displayCols() != numPars) {
-        invJacEWSB.resize(numPars, numPars);
-      }
-      invJacEWSB = jac;
-
-      ewsbDet = jac.determinant();
-
-      model->setMu(scale);
-      model->set(savedPars);
-      model->setDrBarPars(savedDrBarPars);
     }
 
-    return ewsbDet;
+    // save calculated matrix
+    if (jacEWSB.displayRows() != numPars
+        || jacEWSB.displayCols() != numPars) {
+      jacEWSB.resize(numPars, numPars);
+    }
+    jacEWSB = jac;
+
+    model.setMu(scale);
+    model.set(savedPars);
+    model.setDrBarPars(savedDrBarPars);
+
+    return jac.determinant();
   }
 
-  double NmssmJacobian::calcFTInverseJacobian() {
-    double determinant = 0.;
+  double NmssmJacobian::calcInverseEWSBJacobian(NmssmSoftsusy& model) {
 
-    if (model) {
-      determinant = calcFTInverseJacobian(model->displayMxBC());
+    const DoubleVector savedPars(model.display());
+    const double scale = model.displayMu();
+    const drBarPars savedDrBarPars(model.displayDrBarPars());
+
+    const int numPars = includeTop ? 4 : 3;
+
+    DoubleMatrix jac(numPars, numPars);
+
+    vector<Parameters> indepPars;
+
+    if (SoftHiggsOut) {
+      indepPars.push_back(Mh1Sq);
+      indepPars.push_back(Mh2Sq);
+      indepPars.push_back(MsSq);
+    } else if (Z3) {
+      indepPars.push_back(Lambda);
+      indepPars.push_back(Kappa);
+      indepPars.push_back(MsSq);
+    } else {
+      indepPars.push_back(SMu);
+      indepPars.push_back(M3Sq);
+      indepPars.push_back(XiS);
+    }
+    if (includeTop) indepPars.push_back(Yt);
+
+    for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
+      if (Z3 && !SoftHiggsOut) {
+        if (indepPars[i] == Lambda) {
+          jac(i + 1, 1) = 0.;
+          jac(i + 1, 2) = 0.;
+          jac(i + 1, 3) = 1.;
+        } else {
+          jac(i + 1, 1) = calcEWSBOutputDerivative(model, Mzsq, indepPars[i]);
+          jac(i + 1, 2) = calcEWSBOutputDerivative(model, Tanb, indepPars[i]);
+          jac(i + 1, 3) = 0.;
+        }
+      } else {
+        jac(i + 1, 1) = calcEWSBOutputDerivative(model, Mzsq, indepPars[i]);
+        jac(i + 1, 2) = calcEWSBOutputDerivative(model, Tanb, indepPars[i]);
+        jac(i + 1, 3) = calcEWSBOutputDerivative(model, Svev, indepPars[i]);
+      }
+      if (includeTop) {
+        if ((Z3 && !SoftHiggsOut) && indepPars[i] == Lambda) {
+          jac(i + 1, 4) = 0.;
+        } else {
+          jac(i + 1, 4) = calcEWSBOutputDerivative(model, Mtsq, indepPars[i]);
+        }
+      }
     }
 
-    return determinant;
+    // save calculated matrix
+    if (invJacEWSB.displayRows() != numPars
+        || invJacEWSB.displayCols() != numPars) {
+      invJacEWSB.resize(numPars, numPars);
+    }
+    invJacEWSB = jac;
+
+    model.setMu(scale);
+    model.set(savedPars);
+    model.setDrBarPars(savedDrBarPars);
+
+    return jac.determinant();
   }
 
   /// The Jacobian calculated is of the form \f$ J^{-1} = |
   /// \partial O / \partial p | \f$.  The transformation is done
   /// in two stages.  In the first, the observables at the
-  /// current scale are traded for the parameters at this
-  /// scale using the EWSB conditions.  The Jacobian matrix for
-  /// this transformation can be accessed afterwards using
-  /// displayInverseEWSBJacobian().  Then, the parameters
-  /// at this scale are transformed to parameters at the
-  /// scale \c mx using the RGEs.  The Jacobian matrix for this
-  /// transformation may be accessed by calling
+  /// current scale, obtained from displayMu(), are traded for
+  /// the parameters at this scale using the EWSB conditions.
+  /// The Jacobian matrix for this transformation can be
+  /// accessed afterwards using displayInverseEWSBJacobian().
+  /// Then, the parameters at this scale are transformed to
+  /// parameters at the scale \c mx, obtained from calling
+  /// displayMxBC(), using the RGEs.  The Jacobian matrix for
+  /// this transformation may be accessed by calling
   /// displayInverseRGFlowJacobian().
   ///
   /// The sets of observables \f$\{O\}\f$ and parameters
@@ -1095,44 +1068,37 @@ namespace softsusy {
   /// and \f$M_t^2\f$ are taken to be the pole or running masses may be
   /// set by calling setUseRunningMassesFlag() with the appropriate flag.
   /// By default the pole masses are used.
-  double NmssmJacobian::calcFTInverseJacobian(double mx) {
-    double determinant = 0.;
-
-    if (model) {
-      const DoubleVector savedPars(model->display());
-      const double scale = model->displayMu();
-      const sPhysical savedPhys(model->displayPhys());
-
-      const double rgDet = calcRGFlowJacobian(mx, scale);
-      const double ewsbDet = calcInverseEWSBJacobian();
-
-      determinant = ewsbDet * rgDet;
-
-      model->setMu(scale);
-      model->set(savedPars);
-      model->setPhys(savedPhys);
-    }
-
-    return determinant;
+  double NmssmJacobian::calcFTInverseJacobian(NmssmSoftsusy& model) {
+    return calcFTInverseJacobian(model, model.displayMxBC());
   }
 
-  double NmssmJacobian::calcFTJacobian() {
-    double determinant = 0.;
+  /// Calculates the Jacobian as for calcFTInverseJacobian(NmssmSoftsusy& model),
+  /// but with \c mx set to the given value instead of that returned by
+  /// displayMxBC().
+  double NmssmJacobian::calcFTInverseJacobian(NmssmSoftsusy& model, double mx) {
 
-    if (model) {
-      determinant = calcFTJacobian(model->displayMxBC());
-    }
+    const DoubleVector savedPars(model.display());
+    const double scale = model.displayMu();
+    const sPhysical savedPhys(model.displayPhys());
 
-    return determinant;
+    const double rgDet = calcRGFlowJacobian(model, mx, scale);
+    const double ewsbDet = calcInverseEWSBJacobian(model);
+
+    model.setMu(scale);
+    model.set(savedPars);
+    model.setPhys(savedPhys);
+
+    return ewsbDet * rgDet;
   }
 
   /// The Jacobian calculated is of the form \f$ J = |
   /// \partial p / \partial O | \f$.  The transformation,
   /// which is the inverse of that calculated by
   /// calcFTInverseJacobian(), is done in two stages.  In the
-  /// first, the parameters at the scale \c mx are transformed
-  /// to parameters \f$\{q\}\f$ at the current scale using the
-  /// RGEs.  The Jacobian matrix for this
+  /// first, the parameters at the input scale \c mx, obtained
+  /// from a call to displayMxBC(), are transformed to parameters
+  /// \f$\{q\}\f$ at the current scale, obtained from displayMu(),
+  /// using the RGEs.  The Jacobian matrix for this
   /// transformation may be accessed afterwards by calling
   /// displayRGFlowJacobian().  Then the parameters
   /// \f$\{q\}\f$ are traded for the observables at the same
@@ -1144,95 +1110,74 @@ namespace softsusy {
   /// is based on the global flags softsusy::Z3 and
   /// softsusy::SoftHiggsOut, and is the same as is used in
   /// calcFTInverseJacobian().
-  double NmssmJacobian::calcFTJacobian(double mx) {
-    double determinant = 0.;
-
-    if (model) {
-      const DoubleVector savedPars(model->display());
-      const double scale = model->displayMu();
-      const sPhysical savedPhys(model->displayPhys());
-
-      const double rgDet = calcRGFlowJacobian(scale, mx);
-      const double ewsbDet = calcEWSBJacobian();
-
-      determinant = ewsbDet * rgDet;
-
-      model->setMu(scale);
-      model->set(savedPars);
-      model->setPhys(savedPhys);
-    }
-
-    return determinant;
+  double NmssmJacobian::calcFTJacobian(NmssmSoftsusy& model) {
+    return calcFTJacobian(model, model.displayMxBC());
   }
 
-  double NmssmJacobian::calcDeltaJ() {
-    double tuning = 0.;
+  /// Calculates the Jacobian as for calcFTJacobian(NmssmSoftsusy& model),
+  /// but with \c mx set to the given value instead of that returned by
+  /// displayMxBC().
+  double NmssmJacobian::calcFTJacobian(NmssmSoftsusy& model, double mx) {
 
-    if (model) {
-      tuning = calcDeltaJ(model->displayMxBC());
-    }
+    const DoubleVector savedPars(model.display());
+    const double scale = model.displayMu();
+    const sPhysical savedPhys(model.displayPhys());
 
-    return tuning;
+    const double rgDet = calcRGFlowJacobian(model, scale, mx);
+    const double ewsbDet = calcEWSBJacobian(model);
+
+    model.setMu(scale);
+    model.set(savedPars);
+    model.setPhys(savedPhys);
+
+    return ewsbDet * rgDet;
   }
 
-  double NmssmJacobian::calcDeltaJ(double mx) {
-
-    double tuning = 0.;
-
-    if (model) {
-      const DoubleVector savedPars(model->display());
-      const double scale = model->displayMu();
-      const sPhysical savedPhys(model->displayPhys());
-
-      const double determinant = calcFTInverseJacobian(mx);
-
-      const double mz2 = sqr(calcMz(model, useRunningMasses));
-      const double tb = model->displayTanb();
-      const double mt2 = sqr(calcMt(model, useRunningMasses));
-
-      double denominator = mz2 * tb;
-      if (Z3) {
-        denominator *= model->displayLambda();
-      } else {
-        denominator *= model->displaySvev();
-      }
-      if (includeTop) denominator *= mt2;
-
-      model->runto(mx);
-
-      double numerator;
-      if (SoftHiggsOut) {
-        numerator = model->displayMh1Squared() * model->displayMh2Squared()
-          * model->displayMsSquared();
-      } else if (Z3) {
-        numerator = model->displayLambda() * model->displayKappa()
-          * model->displayMsSquared();
-      } else {
-        numerator = model->displaySusyMu() * model->displayM3Squared()
-          * model->displayXiS();
-      }
-      if (includeTop) numerator *= model->displayYukawaElement(YU, 3, 3);
-
-      model->setMu(scale);
-      model->set(savedPars);
-      model->setPhys(savedPhys);
-
-      tuning = fabs(numerator * determinant / denominator);
-    }
-
-    return tuning;
+  double NmssmJacobian::calcDeltaJ(NmssmSoftsusy& model) {
+    return calcDeltaJ(model, model.displayMxBC());
   }
 
-  void NmssmJacobian::tuningSLHA(ostream & out, double deltaJ, double mx) {
-    const double scale = model ? model->displayMu() : 0.;
-    out << "Block FINETUNINGJAC Q= " << scale
-        << "  # Jacobian fine-tuning\n";
-    if (hasError) {
-      out << "# Warning: error encountered in fine-tuning calculation!\n";
+  double NmssmJacobian::calcDeltaJ(NmssmSoftsusy& model, double mx) {
+
+    const DoubleVector savedPars(model.display());
+    const double scale = model.displayMu();
+    const sPhysical savedPhys(model.displayPhys());
+
+    const double determinant = calcFTInverseJacobian(model, mx);
+
+    const double mz2 = sqr(calcMz(&model, useRunningMasses));
+    const double tb = model.displayTanb();
+
+    double denominator = mz2 * tb;
+    if (Z3) {
+      denominator *= model.displayLambda();
+    } else {
+      denominator *= model.displaySvev();
     }
-    out << "     1    " << deltaJ << "   # Delta_J\n";
-    out << "     2    " << hasError << "   # error status\n";
-    out << "     3    " << mx << "   # MX\n";
+    if (includeTop) {
+      denominator *= sqr(calcMt(&model, useRunningMasses));
+    }
+
+    model.runto(mx);
+
+    double numerator;
+    if (SoftHiggsOut) {
+      numerator = model.displayMh1Squared() * model.displayMh2Squared()
+        * model.displayMsSquared();
+    } else if (Z3) {
+      numerator = model.displayLambda() * model.displayKappa()
+        * model.displayMsSquared();
+    } else {
+      numerator = model.displaySusyMu() * model.displayM3Squared()
+        * model.displayXiS();
+    }
+    if (includeTop) numerator *= model.displayYukawaElement(YU, 3, 3);
+
+    model.setMu(scale);
+    model.set(savedPars);
+    model.setPhys(savedPhys);
+
+    return fabs(numerator * determinant / denominator);
   }
 
 } /// namespace softsusy

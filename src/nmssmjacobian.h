@@ -17,7 +17,7 @@ namespace softsusy {
   class NmssmJacobian {
   public:
 
-    explicit NmssmJacobian(NmssmSoftsusy* m, bool doTop = false);
+    explicit NmssmJacobian(bool doTop = false);
     virtual ~NmssmJacobian();
 
     /// \brief Displays whether the top Yukawa is included in the tuning.
@@ -64,37 +64,37 @@ namespace softsusy {
     DoubleMatrix displayInverseEWSBJacobian() const { return invJacEWSB; }
 
     /// \brief Calculates the Jacobian transforming parameters to observables.
+    /// \param[in] model the model to calculate the Jacobian for
     /// \return the value of the Jacobian
-    double calcFTJacobian();
+    double calcFTJacobian(NmssmSoftsusy& model);
 
     /// \brief Calculates the Jacobian transforming parameters to observables.
+    /// \param[in] model the model to calculate the Jacobian for
     /// \param[in] mx the scale at which the input parameters are defined
     /// \return the value of the Jacobian
-    double calcFTJacobian(double mx);
+    double calcFTJacobian(NmssmSoftsusy& model, double mx);
 
     /// \brief Calculates the Jacobian transforming observables to parameters.
+    /// \param[in] model the model to calculate the Jacobian for
     /// \return the value of the Jacobian
-    double calcFTInverseJacobian();
+    double calcFTInverseJacobian(NmssmSoftsusy& model);
 
     /// \brief Calculates the Jacobian transforming observables to parameters.
+    /// \param[in] model the model to calculate the Jacobian for
     /// \param[in] mx the scale at which the input parameters are defined
     /// \return the value of the Jacobian
-    double calcFTInverseJacobian(double mx);
+    double calcFTInverseJacobian(NmssmSoftsusy& model, double mx);
 
     /// \brief Calculates the fine-tuning using the Jacobian measure.
+    /// \param[in] model the model to calculate the fine-tuning for
     /// \return the value of the fine-tuning
-    double calcDeltaJ();
+    double calcDeltaJ(NmssmSoftsusy& model);
 
     /// \brief Calculates the fine-tuning using the Jacobian measure.
+    /// \param[in] model the model to calculate the fine-tuning for
     /// \param[in] mx the scale at which the input parameters are defined
     /// \return the value of the fine-tuning
-    double calcDeltaJ(double mx);
-
-    /// \brief Print fine-tuning results as an SLHA block
-    /// \param[in] out the stream to print to
-    /// \param[in] deltaJ the fine-tuning
-    /// \param[in] mx the scale at which the input parameters are defined
-    void tuningSLHA(ostream & out, double deltaJ, double mx);
+    double calcDeltaJ(NmssmSoftsusy& model, double mx);
 
     static double calcMz(NmssmSoftsusy* m, bool getRunningMass = false);
     static double calcMt(NmssmSoftsusy* m, bool getRunningMass = false);
@@ -103,7 +103,6 @@ namespace softsusy {
     enum Parameters { Mzsq, Tanb, Svev, Mtsq, Lambda, Kappa,
                       SMu, M3Sq, XiS, Mh1Sq, Mh2Sq, MsSq, Yt };
 
-    NmssmSoftsusy* model;
     DoubleMatrix jacRGFlow;
     DoubleMatrix jacEWSB;
     DoubleMatrix invJacRGFlow;
@@ -133,17 +132,21 @@ namespace softsusy {
     };
 
     static double calcRunningParameter(double x, void* parameters);
-    double calcRGDerivative(Parameters dep, Parameters indep, double toScale);
-    double calcRGFlowJacobian(double startScale, double endScale);
+    double calcRGDerivative(NmssmSoftsusy& model, Parameters dep,
+                            Parameters indep, double toScale);
+    double calcRGFlowJacobian(NmssmSoftsusy& model, double startScale,
+                              double endScale);
     static int ewsbOutputErrors(const DoubleVector & guess, void* parameters,
                                 DoubleVector & errors);
     static void fixEWSBOutputs(EWSBPars* pars, int & err);
     static double calcEWSBParameter(double x, void* parameters);
     static double calcEWSBOutput(double x, void* parameters);
-    double calcEWSBOutputDerivative(Parameters dep, Parameters indep);
-    double calcEWSBParameterDerivative(Parameters dep, Parameters indep);
-    double calcEWSBJacobian();
-    double calcInverseEWSBJacobian();
+    double calcEWSBOutputDerivative(NmssmSoftsusy& model, Parameters dep,
+                                    Parameters indep);
+    double calcEWSBParameterDerivative(NmssmSoftsusy& model, Parameters dep,
+                                       Parameters indep);
+    double calcEWSBJacobian(NmssmSoftsusy& model);
+    double calcInverseEWSBJacobian(NmssmSoftsusy& model);
   };
 
 } /// namespace softsusy
