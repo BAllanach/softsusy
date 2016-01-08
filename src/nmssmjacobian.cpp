@@ -14,10 +14,10 @@
 
 namespace softsusy {
 
-  NmssmJacobian::NmssmJacobian(NmssmSoftsusy* m)
+  NmssmJacobian::NmssmJacobian(NmssmSoftsusy* m, bool doTop)
      : model(m), jacRGFlow(3,3), jacEWSB(3,3)
-     , invJacRGFlow(3,3), invJacEWSB(3,3), hasError(false)
-     , useRunningMasses(false) {
+     , invJacRGFlow(3,3), invJacEWSB(3,3)
+     , includeTop(doTop), useRunningMasses(false), hasError(false) {
   }
 
   NmssmJacobian::~NmssmJacobian() {}
@@ -310,8 +310,7 @@ namespace softsusy {
     return derivative;
   }
 
-  double NmssmJacobian::calcRGFlowJacobian(double startScale, double endScale,
-                                           bool doTop) {
+  double NmssmJacobian::calcRGFlowJacobian(double startScale, double endScale) {
     double rgDet = 0.;
 
     if (model) {
@@ -320,7 +319,7 @@ namespace softsusy {
 
       model->runto(startScale);
 
-      const int numPars = doTop ? 4 : 3;
+      const int numPars = includeTop ? 4 : 3;
 
       DoubleMatrix jac(numPars, numPars);
 
@@ -339,7 +338,7 @@ namespace softsusy {
         indepPars.push_back(M3Sq);
         indepPars.push_back(XiS);
       }
-      if (doTop) indepPars.push_back(Yt);
+      if (includeTop) indepPars.push_back(Yt);
 
       for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
         if (SoftHiggsOut) {
@@ -355,7 +354,7 @@ namespace softsusy {
           jac(i + 1, 2) = calcRGDerivative(M3Sq, indepPars[i], endScale);
           jac(i + 1, 3) = calcRGDerivative(XiS, indepPars[i], endScale);
         }
-        if (doTop)
+        if (includeTop)
           jac(i + 1, 4) = calcRGDerivative(Yt, indepPars[i], endScale);
       }
 
@@ -833,14 +832,14 @@ namespace softsusy {
     return derivative;
   }
 
-  double NmssmJacobian::calcEWSBParameterDerivative(Parameters dep, Parameters indep, bool doTop) {
+  double NmssmJacobian::calcEWSBParameterDerivative(Parameters dep, Parameters indep) {
     double derivative = 0.;
 
     if (model) {
       double x = 0.;
       double h = 0.01;
 
-      const int numOutputs = doTop ? 4 : 3;
+      const int numOutputs = includeTop ? 4 : 3;
       DoubleVector outputs(numOutputs);
       outputs(1) = sqr(calcMz(model, useRunningMasses));
       outputs(2) = model->displayTanb();
@@ -912,7 +911,7 @@ namespace softsusy {
     return derivative;
   }
 
-  double NmssmJacobian::calcEWSBJacobian(bool doTop) {
+  double NmssmJacobian::calcEWSBJacobian() {
     double ewsbDet = 0.;
 
     if (model) {
@@ -920,7 +919,7 @@ namespace softsusy {
       const double scale = model->displayMu();
       const drBarPars savedDrBarPars(model->displayDrBarPars());
 
-      const int numPars = doTop ? 4 : 3;
+      const int numPars = includeTop ? 4 : 3;
 
       DoubleMatrix jac(numPars, numPars);
 
@@ -935,13 +934,13 @@ namespace softsusy {
         indepPars.push_back(Tanb);
         indepPars.push_back(Svev);
       }
-      if (doTop) indepPars.push_back(Mtsq);
+      if (includeTop) indepPars.push_back(Mtsq);
 
       for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
         if (SoftHiggsOut) {
-          jac(i + 1, 1) = calcEWSBParameterDerivative(Mh1Sq, indepPars[i], doTop);
-          jac(i + 1, 2) = calcEWSBParameterDerivative(Mh2Sq, indepPars[i], doTop);
-          jac(i + 1, 3) = calcEWSBParameterDerivative(MsSq, indepPars[i], doTop);
+          jac(i + 1, 1) = calcEWSBParameterDerivative(Mh1Sq, indepPars[i]);
+          jac(i + 1, 2) = calcEWSBParameterDerivative(Mh2Sq, indepPars[i]);
+          jac(i + 1, 3) = calcEWSBParameterDerivative(MsSq, indepPars[i]);
         } else if (Z3) {
           if (indepPars[i] == Lambda) {
             jac(i + 1, 1) = 1.;
@@ -949,19 +948,19 @@ namespace softsusy {
             jac(i + 1, 3) = 0.;
           } else {
             jac(i + 1, 1) = 0.;
-            jac(i + 1, 2) = calcEWSBParameterDerivative(Kappa, indepPars[i], doTop);
-            jac(i + 1, 3) = calcEWSBParameterDerivative(MsSq, indepPars[i], doTop);
+            jac(i + 1, 2) = calcEWSBParameterDerivative(Kappa, indepPars[i]);
+            jac(i + 1, 3) = calcEWSBParameterDerivative(MsSq, indepPars[i]);
           }
         } else {
-          jac(i + 1, 1) = calcEWSBParameterDerivative(SMu, indepPars[i], doTop);
-          jac(i + 1, 2) = calcEWSBParameterDerivative(M3Sq, indepPars[i], doTop);
-          jac(i + 1, 3) = calcEWSBParameterDerivative(XiS, indepPars[i], doTop);
+          jac(i + 1, 1) = calcEWSBParameterDerivative(SMu, indepPars[i]);
+          jac(i + 1, 2) = calcEWSBParameterDerivative(M3Sq, indepPars[i]);
+          jac(i + 1, 3) = calcEWSBParameterDerivative(XiS, indepPars[i]);
         }
-        if (doTop) {
+        if (includeTop) {
           if ((Z3 && !SoftHiggsOut) && indepPars[i] == Lambda) {
             jac(i + 1, 4) = 0.;
           } else {
-            jac(i + 1, 4) = calcEWSBParameterDerivative(Yt, indepPars[i], doTop);
+            jac(i + 1, 4) = calcEWSBParameterDerivative(Yt, indepPars[i]);
           }
         }
       }
@@ -983,7 +982,7 @@ namespace softsusy {
     return ewsbDet;
   }
 
-  double NmssmJacobian::calcInverseEWSBJacobian(bool doTop) {
+  double NmssmJacobian::calcInverseEWSBJacobian() {
     double ewsbDet = 0.;
 
     if (model) {
@@ -991,7 +990,7 @@ namespace softsusy {
       const double scale = model->displayMu();
       const drBarPars savedDrBarPars(model->displayDrBarPars());
 
-      const int numPars = doTop ? 4 : 3;
+      const int numPars = includeTop ? 4 : 3;
 
       DoubleMatrix jac(numPars, numPars);
 
@@ -1010,7 +1009,7 @@ namespace softsusy {
         indepPars.push_back(M3Sq);
         indepPars.push_back(XiS);
       }
-      if (doTop) indepPars.push_back(Yt);
+      if (includeTop) indepPars.push_back(Yt);
 
       for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
         if (Z3 && !SoftHiggsOut) {
@@ -1028,7 +1027,7 @@ namespace softsusy {
           jac(i + 1, 2) = calcEWSBOutputDerivative(Tanb, indepPars[i]);
           jac(i + 1, 3) = calcEWSBOutputDerivative(Svev, indepPars[i]);
         }
-        if (doTop) {
+        if (includeTop) {
           if ((Z3 && !SoftHiggsOut) && indepPars[i] == Lambda) {
             jac(i + 1, 4) = 0.;
           } else {
@@ -1077,15 +1076,16 @@ namespace softsusy {
   /// \f$\{\lambda_0, \kappa_0, m_{S_0}^2\}\f$ at \c mx.  The
   /// observables in this case are \f$\{M_Z^2, \tan\beta,
   /// \lambda\}\f$.  If both flags are false, the parameters
-  /// used are \f$\{\mu_0, m_{3_0}^2, \xi_{S_0}\}\f$ and the set of observables
-  /// is \f$\{M_Z^2, \tan\beta, s\}\f$.
+  /// used are \f$\{\mu_0, m_{3_0}^2, \xi_{S_0}\}\f$ and the set of
+  /// observables is \f$\{M_Z^2, \tan\beta, s\}\f$.
   ///
-  /// If \c doTop is true, the top Yukawa \f$y_t\f$ will also be included
-  /// in the set of parameters, and \f$M_t^2\f$ in the set of observables.
-  /// Whether \f$M_Z^2\f$ and \f$M_t^2\f$ are taken to be the pole or
-  /// running masses may be set by calling setUseRunningMassesFlag()
-  /// with the appropriate flag.  By default the pole masses are used.
-  double NmssmJacobian::calcFTInverseJacobian(double mx, bool doTop) {
+  /// The top Yukawa \f$y_t\f$ can be included in the set of parameters,
+  /// and \f$M_t^2\f$ in the set of observables, by calling
+  /// setIncludeTopFlag() with the desired flag.  Whether \f$M_Z^2\f$
+  /// and \f$M_t^2\f$ are taken to be the pole or running masses may be
+  /// set by calling setUseRunningMassesFlag() with the appropriate flag.
+  /// By default the pole masses are used.
+  double NmssmJacobian::calcFTInverseJacobian(double mx) {
     double determinant = 0.;
 
     if (model) {
@@ -1093,8 +1093,8 @@ namespace softsusy {
       const double scale = model->displayMu();
       const sPhysical savedPhys(model->displayPhys());
 
-      const double rgDet = calcRGFlowJacobian(mx, scale, doTop);
-      const double ewsbDet = calcInverseEWSBJacobian(doTop);
+      const double rgDet = calcRGFlowJacobian(mx, scale);
+      const double ewsbDet = calcInverseEWSBJacobian();
 
       determinant = ewsbDet * rgDet;
 
@@ -1123,9 +1123,8 @@ namespace softsusy {
   /// The selection of the sets of observables and parameters
   /// is based on the global flags softsusy::Z3 and
   /// softsusy::SoftHiggsOut, and is the same as is used in
-  /// calcFTInverseJacobian().  The effect of \c doTop is
-  /// the same as for calcFTInverseJacobian() as well.
-  double NmssmJacobian::calcFTJacobian(double mx, bool doTop) {
+  /// calcFTInverseJacobian().
+  double NmssmJacobian::calcFTJacobian(double mx) {
     double determinant = 0.;
 
     if (model) {
@@ -1133,8 +1132,8 @@ namespace softsusy {
       const double scale = model->displayMu();
       const sPhysical savedPhys(model->displayPhys());
 
-      const double rgDet = calcRGFlowJacobian(scale, mx, doTop);
-      const double ewsbDet = calcEWSBJacobian(doTop);
+      const double rgDet = calcRGFlowJacobian(scale, mx);
+      const double ewsbDet = calcEWSBJacobian();
 
       determinant = ewsbDet * rgDet;
 
@@ -1146,7 +1145,7 @@ namespace softsusy {
     return determinant;
   }
 
-  double NmssmJacobian::calcDeltaJ(double mx, bool doTop) {
+  double NmssmJacobian::calcDeltaJ(double mx) {
 
     double tuning = 0.;
 
@@ -1155,7 +1154,7 @@ namespace softsusy {
       const double scale = model->displayMu();
       const sPhysical savedPhys(model->displayPhys());
 
-      const double determinant = calcFTInverseJacobian(mx, doTop);
+      const double determinant = calcFTInverseJacobian(mx);
 
       const double mz2 = sqr(calcMz(model, useRunningMasses));
       const double tb = model->displayTanb();
@@ -1167,7 +1166,7 @@ namespace softsusy {
       } else {
         denominator *= model->displaySvev();
       }
-      if (doTop) denominator *= mt2;
+      if (includeTop) denominator *= mt2;
 
       model->runto(mx);
 
@@ -1182,7 +1181,7 @@ namespace softsusy {
         numerator = model->displaySusyMu() * model->displayM3Squared()
           * model->displayXiS();
       }
-      if (doTop) numerator *= model->displayYukawaElement(YU, 3, 3);
+      if (includeTop) numerator *= model->displayYukawaElement(YU, 3, 3);
 
       model->setMu(scale);
       model->set(savedPars);

@@ -17,16 +17,24 @@ namespace softsusy {
   class NmssmJacobian {
   public:
 
-    explicit NmssmJacobian(NmssmSoftsusy* m);
+    explicit NmssmJacobian(NmssmSoftsusy* m, bool doTop = false);
     virtual ~NmssmJacobian();
 
-    /// \brief Sets whether to use running or pole masses in derivatives.
-    /// \param[in] flag if true, use running masses instead of pole masses
-    void setUseRunningMassesFlag(bool flag) { useRunningMasses = flag; }
+    /// \brief Displays whether the top Yukawa is included in the tuning.
+    /// \return true if the top Yukawa is included
+    bool displayIncludeTopFlag() const { return includeTop; }
+
+    /// \brief Sets whether to include top Yukawa derivatives
+    /// \param[in] flag if true, include top Yukawa
+    void setIncludeTopFlag(bool flag) { includeTop = flag; }
 
     /// \brief Displays whether running or pole masses are being used.
     /// \return true if running masses are used instead of pole masses
     bool displayUseRunningMassesFlag() const { return useRunningMasses; }
+
+    /// \brief Sets whether to use running or pole masses in derivatives.
+    /// \param[in] flag if true, use running masses instead of pole masses
+    void setUseRunningMassesFlag(bool flag) { useRunningMasses = flag; }
 
     /// \brief Resets the error status to false.
     void resetError() { hasError = false; }
@@ -57,21 +65,18 @@ namespace softsusy {
 
     /// \brief Calculates the Jacobian transforming parameters to observables.
     /// \param[in] mx the scale at which the input parameters are defined
-    /// \param[in] doTop if true, include the top Yukawa in the Jacobian
     /// \return the value of the Jacobian
-    double calcFTJacobian(double mx, bool doTop = false);
+    double calcFTJacobian(double mx);
 
     /// \brief Calculates the Jacobian transforming observables to parameters.
     /// \param[in] mx the scale at which the input parameters are defined
-    /// \param[in] doTop if true, include the top Yukawa in the Jacobian
     /// \return the value of the Jacobian
-    double calcFTInverseJacobian(double mx, bool doTop = false);
+    double calcFTInverseJacobian(double mx);
 
     /// \brief Calculates the fine-tuning using the Jacobian measure.
     /// \param[in] mx the scale at which the input parameters are defined
-    /// \param[in] doTop if true, include the top Yukawa in the Jacobian
     /// \return the value of the fine-tuning
-    double calcDeltaJ(double mx, bool doTop = false);
+    double calcDeltaJ(double mx);
 
     /// \brief Print fine-tuning results as an SLHA block
     /// \param[in] out the stream to print to
@@ -91,8 +96,9 @@ namespace softsusy {
     DoubleMatrix jacEWSB;
     DoubleMatrix invJacRGFlow;
     DoubleMatrix invJacEWSB;
-    bool hasError;
+    bool includeTop;
     bool useRunningMasses;
+    bool hasError;
 
     struct EWSBPars {
       NmssmSoftsusy* model;
@@ -116,16 +122,16 @@ namespace softsusy {
 
     static double calcRunningParameter(double x, void* parameters);
     double calcRGDerivative(Parameters dep, Parameters indep, double toScale);
-    double calcRGFlowJacobian(double startScale, double endScale, bool doTop);
+    double calcRGFlowJacobian(double startScale, double endScale);
     static int ewsbOutputErrors(const DoubleVector & guess, void* parameters,
                                 DoubleVector & errors);
     static void fixEWSBOutputs(EWSBPars* pars, int & err);
     static double calcEWSBParameter(double x, void* parameters);
     static double calcEWSBOutput(double x, void* parameters);
     double calcEWSBOutputDerivative(Parameters dep, Parameters indep);
-    double calcEWSBParameterDerivative(Parameters dep, Parameters indep, bool doTop);
-    double calcEWSBJacobian(bool doTop);
-    double calcInverseEWSBJacobian(bool doTop);
+    double calcEWSBParameterDerivative(Parameters dep, Parameters indep);
+    double calcEWSBJacobian();
+    double calcInverseEWSBJacobian();
   };
 
 } /// namespace softsusy
