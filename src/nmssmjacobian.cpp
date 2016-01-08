@@ -22,6 +22,151 @@ namespace softsusy {
 
   NmssmJacobian::~NmssmJacobian() {}
 
+  double NmssmJacobian::calcDeltaJ(NmssmSoftsusy& model) {
+    return calcDeltaJ(model, model.displayMxBC());
+  }
+
+  double NmssmJacobian::calcDeltaJ(NmssmSoftsusy& model, double mx) {
+
+    const DoubleVector savedPars(model.display());
+    const double scale = model.displayMu();
+    const sPhysical savedPhys(model.displayPhys());
+
+    const double determinant = calcFTInverseJacobian(model, mx);
+
+    const double mz2 = sqr(calcMz(&model, useRunningMasses));
+    const double tb = model.displayTanb();
+
+    double denominator = mz2 * tb;
+    if (Z3) {
+      denominator *= model.displayLambda();
+    } else {
+      denominator *= model.displaySvev();
+    }
+    if (includeTop) {
+      denominator *= sqr(calcMt(&model, useRunningMasses));
+    }
+
+    model.runto(mx);
+
+    double numerator;
+    if (SoftHiggsOut) {
+      numerator = model.displayMh1Squared() * model.displayMh2Squared()
+        * model.displayMsSquared();
+    } else if (Z3) {
+      numerator = model.displayLambda() * model.displayKappa()
+        * model.displayMsSquared();
+    } else {
+      numerator = model.displaySusyMu() * model.displayM3Squared()
+        * model.displayXiS();
+    }
+    if (includeTop) numerator *= model.displayYukawaElement(YU, 3, 3);
+
+    model.setMu(scale);
+    model.set(savedPars);
+    model.setPhys(savedPhys);
+
+    return fabs(numerator * determinant / denominator);
+  }
+
+  /// Calculates the Jacobian of the form \f$ J^{-1} = |
+  /// \partial O / \partial p | \f$.  The transformation is done
+  /// in two stages.  In the first, the observables at the
+  /// current scale, obtained from displayMu(), are traded for
+  /// the parameters at this scale using the EWSB conditions.
+  /// The Jacobian matrix for this transformation can be
+  /// accessed afterwards using displayInverseEWSBJacobian().
+  /// Then, the parameters at this scale are transformed to
+  /// parameters at the scale \c mx, obtained from calling
+  /// displayMxBC(), using the RGEs.  The Jacobian matrix for
+  /// this transformation may be accessed by calling
+  /// displayInverseRGFlowJacobian().
+  ///
+  /// The sets of observables \f$\{O\}\f$ and parameters
+  /// \f$\{p\}\f$ are selected using the global flags softsusy::Z3
+  /// and softsusy::SoftHiggsOut.  If softsusy::SoftHiggsOut is true,
+  /// the parameters used are the soft Higgs masses at the scale
+  /// \c mx, \f$\{ m_{H_1,0}^2, m_{H_2,0}^2, m_{S_0}^2\} \f$, and
+  /// the observables are \f$\{M_Z^2, \tan\beta, s\}\f$, irrespective
+  /// of the value of softsusy::Z3.  If softsusy::SoftHiggsOut is false
+  /// and softsusy::Z3 is true, the parameters are taken to be
+  /// \f$\{\lambda_0, \kappa_0, m_{S_0}^2\}\f$ at \c mx.  The
+  /// observables in this case are \f$\{M_Z^2, \tan\beta,
+  /// \lambda\}\f$.  If both flags are false, the parameters
+  /// used are \f$\{\mu_0, m_{3_0}^2, \xi_{S_0}\}\f$ and the set of
+  /// observables is \f$\{M_Z^2, \tan\beta, s\}\f$.
+  ///
+  /// The top Yukawa \f$y_t\f$ can be included in the set of parameters,
+  /// and \f$M_t^2\f$ in the set of observables, by calling
+  /// setIncludeTopFlag() with the desired flag.  Whether \f$M_Z^2\f$
+  /// and \f$M_t^2\f$ are taken to be the pole or running masses may be
+  /// set by calling setUseRunningMassesFlag() with the appropriate flag.
+  /// By default the pole masses are used.
+  double NmssmJacobian::calcFTInverseJacobian(NmssmSoftsusy& model) {
+    return calcFTInverseJacobian(model, model.displayMxBC());
+  }
+
+  /// Calculates the Jacobian as in calcFTInverseJacobian(NmssmSoftsusy& model),
+  /// but with \c mx set to the given value instead of that returned by
+  /// displayMxBC().
+  double NmssmJacobian::calcFTInverseJacobian(NmssmSoftsusy& model, double mx) {
+
+    const DoubleVector savedPars(model.display());
+    const double scale = model.displayMu();
+    const sPhysical savedPhys(model.displayPhys());
+
+    const double rgDet = calcRGFlowJacobian(model, mx, scale);
+    const double ewsbDet = calcInverseEWSBJacobian(model);
+
+    model.setMu(scale);
+    model.set(savedPars);
+    model.setPhys(savedPhys);
+
+    return ewsbDet * rgDet;
+  }
+
+  /// Calculates the Jacobian of the form \f$ J = |
+  /// \partial p / \partial O | \f$.  The transformation,
+  /// which is the inverse of that calculated by
+  /// calcFTInverseJacobian(), is done in two stages.  In the
+  /// first, the parameters at the input scale \c mx, obtained
+  /// from a call to displayMxBC(), are transformed to parameters
+  /// \f$\{q\}\f$ at the current scale, obtained from displayMu(),
+  /// using the RGEs.  The Jacobian matrix for this
+  /// transformation may be accessed afterwards by calling
+  /// displayRGFlowJacobian().  Then the parameters
+  /// \f$\{q\}\f$ are traded for the observables at the same
+  /// scale using the EWSB conditions.  The Jacobian matrix for
+  /// this second transformation can be accessed using
+  /// displayEWSBJacobian().
+  ///
+  /// The selection of the sets of observables and parameters
+  /// is based on the global flags softsusy::Z3 and
+  /// softsusy::SoftHiggsOut, and is the same as is used in
+  /// calcFTInverseJacobian().
+  double NmssmJacobian::calcFTJacobian(NmssmSoftsusy& model) {
+    return calcFTJacobian(model, model.displayMxBC());
+  }
+
+  /// Calculates the Jacobian as in calcFTJacobian(NmssmSoftsusy& model),
+  /// but with \c mx set to the given value instead of that returned by
+  /// displayMxBC().
+  double NmssmJacobian::calcFTJacobian(NmssmSoftsusy& model, double mx) {
+
+    const DoubleVector savedPars(model.display());
+    const double scale = model.displayMu();
+    const sPhysical savedPhys(model.displayPhys());
+
+    const double rgDet = calcRGFlowJacobian(model, scale, mx);
+    const double ewsbDet = calcEWSBJacobian(model);
+
+    model.setMu(scale);
+    model.set(savedPars);
+    model.setPhys(savedPhys);
+
+    return ewsbDet * rgDet;
+  }
+
   // @todo make sure this is consistent (e.g. is scale dependence right?)
   double NmssmJacobian::calcMz(NmssmSoftsusy* m, bool getRunningMass) {
     double mzpole = 0.;
@@ -1033,151 +1178,6 @@ namespace softsusy {
     model.setDrBarPars(savedDrBarPars);
 
     return jac.determinant();
-  }
-
-  /// The Jacobian calculated is of the form \f$ J^{-1} = |
-  /// \partial O / \partial p | \f$.  The transformation is done
-  /// in two stages.  In the first, the observables at the
-  /// current scale, obtained from displayMu(), are traded for
-  /// the parameters at this scale using the EWSB conditions.
-  /// The Jacobian matrix for this transformation can be
-  /// accessed afterwards using displayInverseEWSBJacobian().
-  /// Then, the parameters at this scale are transformed to
-  /// parameters at the scale \c mx, obtained from calling
-  /// displayMxBC(), using the RGEs.  The Jacobian matrix for
-  /// this transformation may be accessed by calling
-  /// displayInverseRGFlowJacobian().
-  ///
-  /// The sets of observables \f$\{O\}\f$ and parameters
-  /// \f$\{p\}\f$ are selected using the global flags softsusy::Z3
-  /// and softsusy::SoftHiggsOut.  If softsusy::SoftHiggsOut is true,
-  /// the parameters used are the soft Higgs masses at the scale
-  /// \c mx, \f$\{ m_{H_1,0}^2, m_{H_2,0}^2, m_{S_0}^2\} \f$, and
-  /// the observables are \f$\{M_Z^2, \tan\beta, s\}\f$, irrespective
-  /// of the value of softsusy::Z3.  If softsusy::SoftHiggsOut is false
-  /// and softsusy::Z3 is true, the parameters are taken to be
-  /// \f$\{\lambda_0, \kappa_0, m_{S_0}^2\}\f$ at \c mx.  The
-  /// observables in this case are \f$\{M_Z^2, \tan\beta,
-  /// \lambda\}\f$.  If both flags are false, the parameters
-  /// used are \f$\{\mu_0, m_{3_0}^2, \xi_{S_0}\}\f$ and the set of
-  /// observables is \f$\{M_Z^2, \tan\beta, s\}\f$.
-  ///
-  /// The top Yukawa \f$y_t\f$ can be included in the set of parameters,
-  /// and \f$M_t^2\f$ in the set of observables, by calling
-  /// setIncludeTopFlag() with the desired flag.  Whether \f$M_Z^2\f$
-  /// and \f$M_t^2\f$ are taken to be the pole or running masses may be
-  /// set by calling setUseRunningMassesFlag() with the appropriate flag.
-  /// By default the pole masses are used.
-  double NmssmJacobian::calcFTInverseJacobian(NmssmSoftsusy& model) {
-    return calcFTInverseJacobian(model, model.displayMxBC());
-  }
-
-  /// Calculates the Jacobian as for calcFTInverseJacobian(NmssmSoftsusy& model),
-  /// but with \c mx set to the given value instead of that returned by
-  /// displayMxBC().
-  double NmssmJacobian::calcFTInverseJacobian(NmssmSoftsusy& model, double mx) {
-
-    const DoubleVector savedPars(model.display());
-    const double scale = model.displayMu();
-    const sPhysical savedPhys(model.displayPhys());
-
-    const double rgDet = calcRGFlowJacobian(model, mx, scale);
-    const double ewsbDet = calcInverseEWSBJacobian(model);
-
-    model.setMu(scale);
-    model.set(savedPars);
-    model.setPhys(savedPhys);
-
-    return ewsbDet * rgDet;
-  }
-
-  /// The Jacobian calculated is of the form \f$ J = |
-  /// \partial p / \partial O | \f$.  The transformation,
-  /// which is the inverse of that calculated by
-  /// calcFTInverseJacobian(), is done in two stages.  In the
-  /// first, the parameters at the input scale \c mx, obtained
-  /// from a call to displayMxBC(), are transformed to parameters
-  /// \f$\{q\}\f$ at the current scale, obtained from displayMu(),
-  /// using the RGEs.  The Jacobian matrix for this
-  /// transformation may be accessed afterwards by calling
-  /// displayRGFlowJacobian().  Then the parameters
-  /// \f$\{q\}\f$ are traded for the observables at the same
-  /// scale using the EWSB conditions.  The Jacobian matrix for
-  /// this second transformation can be accessed using
-  /// displayEWSBJacobian().
-  ///
-  /// The selection of the sets of observables and parameters
-  /// is based on the global flags softsusy::Z3 and
-  /// softsusy::SoftHiggsOut, and is the same as is used in
-  /// calcFTInverseJacobian().
-  double NmssmJacobian::calcFTJacobian(NmssmSoftsusy& model) {
-    return calcFTJacobian(model, model.displayMxBC());
-  }
-
-  /// Calculates the Jacobian as for calcFTJacobian(NmssmSoftsusy& model),
-  /// but with \c mx set to the given value instead of that returned by
-  /// displayMxBC().
-  double NmssmJacobian::calcFTJacobian(NmssmSoftsusy& model, double mx) {
-
-    const DoubleVector savedPars(model.display());
-    const double scale = model.displayMu();
-    const sPhysical savedPhys(model.displayPhys());
-
-    const double rgDet = calcRGFlowJacobian(model, scale, mx);
-    const double ewsbDet = calcEWSBJacobian(model);
-
-    model.setMu(scale);
-    model.set(savedPars);
-    model.setPhys(savedPhys);
-
-    return ewsbDet * rgDet;
-  }
-
-  double NmssmJacobian::calcDeltaJ(NmssmSoftsusy& model) {
-    return calcDeltaJ(model, model.displayMxBC());
-  }
-
-  double NmssmJacobian::calcDeltaJ(NmssmSoftsusy& model, double mx) {
-
-    const DoubleVector savedPars(model.display());
-    const double scale = model.displayMu();
-    const sPhysical savedPhys(model.displayPhys());
-
-    const double determinant = calcFTInverseJacobian(model, mx);
-
-    const double mz2 = sqr(calcMz(&model, useRunningMasses));
-    const double tb = model.displayTanb();
-
-    double denominator = mz2 * tb;
-    if (Z3) {
-      denominator *= model.displayLambda();
-    } else {
-      denominator *= model.displaySvev();
-    }
-    if (includeTop) {
-      denominator *= sqr(calcMt(&model, useRunningMasses));
-    }
-
-    model.runto(mx);
-
-    double numerator;
-    if (SoftHiggsOut) {
-      numerator = model.displayMh1Squared() * model.displayMh2Squared()
-        * model.displayMsSquared();
-    } else if (Z3) {
-      numerator = model.displayLambda() * model.displayKappa()
-        * model.displayMsSquared();
-    } else {
-      numerator = model.displaySusyMu() * model.displayM3Squared()
-        * model.displayXiS();
-    }
-    if (includeTop) numerator *= model.displayYukawaElement(YU, 3, 3);
-
-    model.setMu(scale);
-    model.set(savedPars);
-    model.setPhys(savedPhys);
-
-    return fabs(numerator * determinant / denominator);
   }
 
 } /// namespace softsusy
