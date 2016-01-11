@@ -182,22 +182,21 @@ namespace softsusy {
       tempData.setPoleMt(mt);
       model.setData(tempData);
 
+      const double oneLoopQCD = model.calcRunMtQCD();
       const double stopGluino = model.calcRunMtStopGluino();
       const double higgs = model.calcRunMtHiggs();
       const double neutralinos = model.calcRunMtNeutralinos();
       const double charginos = model.calcRunMtCharginos();
 
       double resigmat = mt * (stopGluino + higgs + neutralinos
-                              + charginos) / (16.0 * sqr(PI));
+                              + charginos + oneLoopQCD) / (16.0 * sqr(PI));
 
       const double g3Sq = sqr(model.displayGaugeCoupling(3));
       const double logMtSqOverQSq = 2.0 * log(mt / scale);
-      const double oneLoopQCD = 4.0 * g3Sq * (5.0 - 3.0 * logMtSqOverQSq)
-        / (3.0 * 16.0 * sqr(PI));
       const double twoLoopQCD = sqr(g3Sq) * (0.005191204615668296
         - 0.0032883224409535764 * logMtSqOverQSq + 0.0008822328500119351
         * sqr(logMtSqOverQSq));
-      resigmat -= mt * (oneLoopQCD + twoLoopQCD);
+      resigmat -= mt * twoLoopQCD;
 
       mt -= resigmat;
 
