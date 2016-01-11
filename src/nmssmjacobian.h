@@ -1,4 +1,3 @@
-/* -*- mode: c++; c-basic-offset: 2; -*- */
 /** \file nmssmjacobian.h
 
     \brief Provides routines for calculating Jacobian fine-tuning.
