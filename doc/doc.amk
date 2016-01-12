@@ -8,8 +8,8 @@ doc_DATA = doc/rpcManual.pdf \
 
 DOCFILES = $(doc_DATA)
 
-#EXTRA_DIST += doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
-#	   doc/nmssmManual.pdf doc/threeLoop.pdf
+EXTRA_DIST += doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
+	   doc/nmssmManual.pdf doc/threeLoop.pdf
 #        doc/anc/*.eps \
 #	doc/rpcManual.tex \
 #	doc/rpvManual.tex \
@@ -25,13 +25,16 @@ DOCFILES = $(doc_DATA)
 
 # doc: $(doc_DATA)
 
+#doc/threeLoop.pdf: doc/threeLoop.tex
+#	cd $(top_builddir)/doc;\
+#	pdflatex threeLoop.tex ; bibtex threeLoop; pdflatex threeLoop.tex; pdflatex threeLoop.tex ;\
+#	rm -f doc/anc/*-eps_conv*
+
 doc/%.pdf: doc/%.tex
 	cd $(top_builddir)/doc;\
-	latex $(*F).tex ; bibtex $(*F); latex $(*F).tex; latex $(*F).tex ;\
-	dvips -f $(*F) > $(*F).ps ;\
-	ps2pdf $(*F).ps
+	pdflatex $(*F).tex ; bibtex $(*F); pdflatex $(*F).tex; pdflatex $(*F).tex 
 
-doc/threeLoop.tex: doc/tableOne.tex doc/tableTwo.tex doc/threeLoop.bib
+#doc/threeLoop.tex: doc/tableOne.tex doc/tableTwo.tex doc/threeLoop.bib
 
 clean-local:
 	-rm -f doc/*.log doc/*.spl doc/*.aux doc/*.dvi doc/*.ps doc/*.toc doc/*.out doc/*.pdf

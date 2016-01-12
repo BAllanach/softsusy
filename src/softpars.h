@@ -11,13 +11,16 @@
 #ifndef SOFTPARS_H
 #define SOFTPARS_H
 
+
+#ifdef HAVE_CONFIG_H
+ #include <config.h>
+#endif
 #include <cmath>
 #include "susy.h"
 #include "def.h"
 #include "linalg.h"
 #include "utils.h"
 #include "numerics.h"
-#include <config.h>
 
 namespace softsusy {
   

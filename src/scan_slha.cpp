@@ -379,9 +379,9 @@ void errorCall() {
   ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
   ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
   ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value>\n";
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
-  if (USE_TWO_LOOP_THRESHOLD) ii << "--disable-full_susy_threshold disables the 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
-#endif //COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+  if (USE_TWO_LOOP_GAUGE_YUKAWA) ii << "--disable-full_susy_threshold disables the 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
+#endif //COMPILE_TWO_LOOP_GAUGE_YUKAWA
 #ifdef COMPILE_THREE_LOOP_RGE
   if (USE_THREE_LOOP_RGE) ii << "--disable-three_loop disables 3-loop corrections RGEs\n";
 #endif //COMPILE_THREE_LOOP_RGE
@@ -499,9 +499,9 @@ int main(int argc, char *argv[]) {
 	  sgnMu = get_valuei(argv[i], "--sgnMu=");
 	else if (starts_with(argv[i], "--mgut=")) 
 	  mgutGuess = mgutCheck(argv[i], gaugeUnification, ewsbBCscale); 
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 	else if (starts_with(argv[i], "--disable-full_susy_threshold"))
-	  USE_TWO_LOOP_THRESHOLD = false;
+	  USE_TWO_LOOP_GAUGE_YUKAWA = false;
 #endif
 #ifdef COMPILE_THREE_LOOP_RGE
 	else if (starts_with(argv[i], "--disable-three_loop_rge"))
@@ -1473,14 +1473,14 @@ int main(int argc, char *argv[]) {
 		    break;			     
 		  }
 #endif
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 		  case 20: {
                     int num = int(d + EPSTOL);
 		    // AVB: can be set to just 1 Turn on all thresholds
 		    //      can be set to 1 + 2 * ( flags for included thresholds)
 		    //      to have a finer control over included thresholds
 		    if (num % 2 == 1) {
-		      USE_TWO_LOOP_THRESHOLD = true;
+		      USE_TWO_LOOP_GAUGE_YUKAWA = true;
 		      if (num == 1) 
 			r->included_thresholds = (ENABLE_TWO_LOOP_AS_AS_YUK |
 						  ENABLE_TWO_LOOP_MT_AS | 
@@ -1495,7 +1495,7 @@ int main(int argc, char *argv[]) {
 						   ENABLE_TWO_LOOP_MB_YUK | 
 						   ENABLE_TWO_LOOP_MTAU_YUK));
 				   
-		    } else if (num == 0) USE_TWO_LOOP_THRESHOLD = false;
+		    } else if (num == 0) USE_TWO_LOOP_GAUGE_YUKAWA = false;
 		    else cout << "WARNING: incorrect setting for SOFTSUSY Block 20 (should be 0 or 1)\n";
 		    break;
 		  }
@@ -1643,7 +1643,7 @@ int main(int argc, char *argv[]) {
       /// Switch off 3-loop RGEs etc
       double cs = 0.;
       double omega2=asin(2.), msqAv2 = 0.;  bool uni = gaugeUnification;
-      USE_THREE_LOOP_RGE = false;   USE_TWO_LOOP_THRESHOLD = false;
+      USE_THREE_LOOP_RGE = false;   USE_TWO_LOOP_GAUGE_YUKAWA = false;
       MssmSoftsusy twoLoop;
       twoLoop.useAlternativeEwsb(); twoLoop.setMuCond(2500.); 
       twoLoop.setMaCond(1580.); 
@@ -1653,7 +1653,7 @@ int main(int argc, char *argv[]) {
       //   << " cs=" << cs << endl;
 
       double csOdd = 0., omegaOdd = 0., msqAvOdd = 0.;
-      USE_THREE_LOOP_RGE = true;   USE_TWO_LOOP_THRESHOLD = false;
+      USE_THREE_LOOP_RGE = true;   USE_TWO_LOOP_GAUGE_YUKAWA = false;
       MssmSoftsusy oddLoop;
       oddLoop.useAlternativeEwsb(); oddLoop.setMuCond(2500.); 
       oddLoop.setMaCond(1580.); 
@@ -1670,27 +1670,27 @@ int main(int argc, char *argv[]) {
       twoLoopAs.useAlternativeEwsb(); twoLoopAs.setMuCond(2500.); 
       twoLoopAs.setMaCond(1580.); 
       twoLoopAs.included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
-      USE_TWO_LOOP_THRESHOLD = true;
+      USE_TWO_LOOP_GAUGE_YUKAWA = true;
       getMssmAndOmega(twoLoopAs, pars, tanb, sgnMu, oneset, mgutGuess, 
 		      uni, omegaAs, msqAvAs, boundaryCondition, ewsbBCscale, 
 		      csAs); 
       //      cout << "twoLoopAs=" << twoLoopAs;
 
       /// Just 2-loop strong thresholds for mt
-      USE_TWO_LOOP_THRESHOLD = false;
+      USE_TWO_LOOP_GAUGE_YUKAWA = false;
       double omegaMt = asin(2.), msqAvMt = 0., csMt = 0.; mgutGuess = 2.5e3;
       MssmSoftsusy twoLoopMt; 
       twoLoopMt.useAlternativeEwsb(); twoLoopMt.setMuCond(2500.); 
       twoLoopMt.setMaCond(1580.); 
       twoLoopMt.included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
-      USE_TWO_LOOP_THRESHOLD = true;
+      USE_TWO_LOOP_GAUGE_YUKAWA = true;
       getMssmAndOmega(twoLoopMt, pars, tanb, sgnMu, oneset, mgutGuess, 
 		      uni, omegaMt, msqAvMt, boundaryCondition, ewsbBCscale,
 		      csMt); 
       //    cout << twoLoopMt;    
     
       /// Just 2-loop for mb,mtau
-      USE_TWO_LOOP_THRESHOLD = false;
+      USE_TWO_LOOP_GAUGE_YUKAWA = false;
       double omegaMb = asin(2.), msqAvMb = 0., csMb = 0.; mgutGuess = 2.5e3;
       MssmSoftsusy twoLoopMb; 
       twoLoopMb.useAlternativeEwsb(); twoLoopMb.setMuCond(2500.); 
@@ -1698,7 +1698,7 @@ int main(int argc, char *argv[]) {
       twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
       twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
       twoLoopMb.included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
-      USE_TWO_LOOP_THRESHOLD = true;
+      USE_TWO_LOOP_GAUGE_YUKAWA = true;
       getMssmAndOmega(twoLoopMb, pars, tanb, sgnMu, oneset, mgutGuess, 
 		      uni, omegaMb, msqAvMb, boundaryCondition, ewsbBCscale, 
 		      csMb); 
@@ -1707,7 +1707,7 @@ int main(int argc, char *argv[]) {
       /// 3-loop etc ON
       double omega3 = asin(2.), msqAv3 = 0., cs3 = 0.; mgutGuess = 2.5e3;
       USE_THREE_LOOP_RGE = true; 
-      USE_TWO_LOOP_THRESHOLD = true; 
+      USE_TWO_LOOP_GAUGE_YUKAWA = true; 
       MssmSoftsusy threeLoop;
       threeLoop.useAlternativeEwsb(); threeLoop.setMuCond(2500.); 
       threeLoop.setMaCond(1580.); 

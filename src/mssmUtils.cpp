@@ -1,5 +1,4 @@
 
-
 #include "mssmUtils.h"
 #include <iostream>
 
@@ -394,9 +393,9 @@ namespace softsusy {
   
   ostream & operator <<(ostream &left, const MssmSoftsusy &s) {
     left << HR << endl;
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
     left << "Included higher-order thresholds=" << s.included_thresholds << endl;
-#endif ///< COMPILE_FULL_SUSY_THRESHOLD
+#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
     left << "Gravitino mass M3/2: " << s.displayGravitino() << endl;
     left << "Msusy: " << s.displayMsusy() << " MW: " << s.displayMw()
 	 << " Predicted MZ: " << sqrt(s.displayPredMzSq()) << endl;

@@ -1,0 +1,40 @@
+# library that stores all the calculation procedures for two-loop decoupling
+
+lib_LTLIBRARIES += libsupermodel.la
+
+libsupermodel_la_SOURCES = src/supermodel/supermodel/betas.c \
+src/supermodel/supermodel/functions.c \
+src/supermodel/supermodel/higherorder.c \
+src/supermodel/supermodel/linalg_comp.c \
+src/supermodel/supermodel/linalg_herm.c \
+src/supermodel/supermodel/pm_gluino.c   \
+src/supermodel/supermodel/pm_squarks.c  \
+src/supermodel/supermodel/RGrun.c       \
+src/supermodel/supermodel/rk6_RG.c      \
+src/supermodel/supermodel/se1_squarks.c \
+src/supermodel/supermodel/se2_sbot.c    \
+src/supermodel/supermodel/se2_sdL.c     \
+src/supermodel/supermodel/se2_sdR.c     \
+src/supermodel/supermodel/se2_stop.c    \
+src/supermodel/supermodel/se2_suL.c     \
+src/supermodel/supermodel/se2_suR.c     \
+src/supermodel/supermodel/se_gluino.c   \
+src/supermodel/supermodel/self_fermion.c \
+src/supermodel/supermodel/self_scalar.c \
+src/supermodel/supermodel/se_top.c      \
+src/supermodel/supermodel/tqli.c        \
+src/supermodel/supermodel/tred2.c         \
+src/supermodel/supermodel/tree_couplings.c  \
+src/supermodel/supermodel/tree_masses.c     
+
+
+pkginclude_HEADERS += src/supermodel/supermodel/self_fermion.h \
+src/supermodel/supermodel/self_scalar.h \
+src/supermodel/supermodel/sumo_build.h  \
+src/supermodel/supermodel/sumo_linalg.h \
+src/supermodel/supermodel/sumo_params.h \
+src/supermodel/supermodel/sumo_smdata.h \
+src/supermodel/supermodel/sumo_squarks.h \
+src/supermodel/supermodel/supermodel_defs.h \
+src/supermodel/supermodel/supermodel.h \
+src/supermodel/tsil/tsil.h 

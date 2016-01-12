@@ -1,4 +1,4 @@
-\documentclass[final,3p,times,pdflatex]{elsarticle}
+\documentclass[final,3p,times]{elsarticle}
 \usepackage{axodraw}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -598,32 +598,33 @@ treated as outputs from the EWSB conditions (section~\ref{ewsb}).
 
 \begin{figure}
 \begin{center}
-\begin{picture}(323,245)
-\put(10,0){\makebox(280,10)[c]{\fbox{7.\ Calculate Higgs and
-      sparticle pole masses at $M_{SUSY}$. Run to $M_Z$.}}}
-\put(10,40){\makebox(280,10)[c]{\fbox{6.\ Run to $M_Z$.}}}
-\put(150,76.5){\vector(0,-1){23}}
-\put(10,80){\makebox(280,10)[c]{\fbox{5.\ Run to $M_X$. Apply soft breaking
-and NMSSM SUSY boundary conditions.}}}
-\put(150,116.5){\vector(0,-1){23}}
-\put(10,120){\makebox(280,10)[c]{\fbox{4.\ EWSB with iterative solution for $\mu_\textrm{eff}$, outputs $\{s,\kappa,m_S\}$ in $\mathbb{Z}_3$-NMSSM and $\{\mu, m_3^2, \xi_S \}$ in $\Zv$-NMSSM.}}}
-\put(150,156){\vector(0,-1){23}}
-\put(10,160){\makebox(280,10)[c]{\fbox{3.\ Run to $M_{SUSY}$.}}}
-\put(30,170){convergence}
-\DashLine(110,165)(-70,165){5}
-\DashLine(-70,165)(-70,5){5}
-\DashLine(-70,5)(10,5){5}
-\put(10,5){\vector(1,0){2}}
-\put(150,197){\vector(0,-1){24}}
-\put(150,239){\vector(0,-1){26}}
-\put(60,245){\fbox{1.\ SUSY radiative corrections to
-$g_i(M_Z)$.}}
-\put(10,200){\makebox(280,10)[c]{\fbox{2.SUSY radiative corrections to
-$h_{t,b,\tau}(M_Z)$.}}} 
-\put(182,45){\line(1,0){190}}
-\put(371,45){\line(0,1){200}}
-\put(371,245){\vector(-1,0){143}}
-\end{picture}
+\includegraphics[width=350pt]{nmssmalg.eps}
+% \begin{picture}(323,245)
+% \put(10,0){\makebox(280,10)[c]{\fbox{7.\ Calculate Higgs and
+%       sparticle pole masses at $M_{SUSY}$. Run to $M_Z$.}}}
+% \put(10,40){\makebox(280,10)[c]{\fbox{6.\ Run to $M_Z$.}}}
+% \put(150,76.5){\vector(0,-1){23}}
+% \put(10,80){\makebox(280,10)[c]{\fbox{5.\ Run to $M_X$. Apply soft breaking
+% and NMSSM SUSY boundary conditions.}}}
+% \put(150,116.5){\vector(0,-1){23}}
+% \put(10,120){\makebox(280,10)[c]{\fbox{4.\ EWSB with iterative solution for $\mu_\textrm{eff}$, outputs $\{s,\kappa,m_S\}$ in $\mathbb{Z}_3$-NMSSM and $\{\mu, m_3^2, \xi_S \}$ in $\Zv$-NMSSM.}}}
+% \put(150,156){\vector(0,-1){23}}
+% \put(10,160){\makebox(280,10)[c]{\fbox{3.\ Run to $M_{SUSY}$.}}}
+% \put(30,170){convergence}
+% \DashLine(110,165)(-70,165){5}
+% \DashLine(-70,165)(-70,5){5}
+% \DashLine(-70,5)(10,5){5}
+% \put(10,5){\vector(1,0){2}}
+% \put(150,197){\vector(0,-1){24}}
+% \put(150,239){\vector(0,-1){26}}
+% \put(60,245){\fbox{1.\ SUSY radiative corrections to
+% $g_i(M_Z)$.}}
+% \put(10,200){\makebox(280,10)[c]{\fbox{2.SUSY radiative corrections to
+% $h_{t,b,\tau}(M_Z)$.}}} 
+% \put(182,45){\line(1,0){190}}
+% \put(371,45){\line(0,1){200}}
+% \put(371,245){\vector(-1,0){143}}
+% \end{picture}
 \end{center}
 \caption{Iterative algorithm used to calculate the NMSSM spectrum. 
 The initial step is the
@@ -1047,31 +1048,32 @@ mentioned here, but there are many others within the program itself.
 
 \begin{figure}
   \begin{center}
-\begin{picture}(330,220)(-15,80)
-\GBox(330,220)(-30,80){0.9}
-\ArrowLine(60,180)(20,130)
-\ArrowLine(60,180)(150,190)
-\ArrowLine(150,160)(150,190)
-\ArrowLine(60,180)(150,130)
-\ArrowLine(150,100)(150,130)
-\ArrowLine(150,160)(150,130)
-\ArrowLine(70,150)(150,130)
-\ArrowLine(250,190)(150,190)
-\ArrowLine(250,190)(250,160)
-\ArrowLine(150,130)(250,160)
-\ArrowLine(250,130)(250,160)
-\SetPFont{Teletype}{10}
-\BText(70,150){Approx}
-\BText(60,180){RGE}
-\BText(150,190){NmssmSusyRGE}
-\BText(20,130){QedQcd}
-\BText(150,160){MssmSusy}
-\BText(150,100){SoftParsMssm}
-\BText(150,130){MssmSoftsusy}
-\BText(250,190){NmssmSusyPars}
-\BText(250,160){NmssmSoftsusy}
-\BText(250,130){SoftParsNmssm}
-\end{picture}
+\includegraphics[width=345pt]{nmssmobj.eps}
+% \begin{picture}(330,220)(-15,80)
+% \GBox(330,220)(-30,80){0.9}
+% \ArrowLine(60,180)(20,130)
+% \ArrowLine(60,180)(150,190)
+% \ArrowLine(150,160)(150,190)
+% \ArrowLine(60,180)(150,130)
+% \ArrowLine(150,100)(150,130)
+% \ArrowLine(150,160)(150,130)
+% \ArrowLine(70,150)(150,130)
+% \ArrowLine(250,190)(150,190)
+% \ArrowLine(250,190)(250,160)
+% \ArrowLine(150,130)(250,160)
+% \ArrowLine(250,130)(250,160)
+% \SetPFont{Teletype}{10}
+% \BText(70,150){Approx}
+% \BText(60,180){RGE}
+% \BText(150,190){NmssmSusyRGE}
+% \BText(20,130){QedQcd}
+% \BText(150,160){MssmSusy}
+% \BText(150,100){SoftParsMssm}
+% \BText(150,130){MssmSoftsusy}
+% \BText(250,190){NmssmSusyPars}
+% \BText(250,160){NmssmSoftsusy}
+% \BText(250,130){SoftParsNmssm}
+% \end{picture}
 \end{center}
 \caption{Heuristic NMSSM high-level object structure of
   \SOFTSUSY\@. Inheritance is 

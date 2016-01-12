@@ -4,7 +4,8 @@
    File:        rpvmain.cpp
    Authors:     B.C. Allanach, Steve Kom and Marja Hanussek
    Manual:      B.C. Allanach, M. Hanussek and S. Kom, Comput. Phys. Commun. 
-                183 (2012) 785, arXiv:1109.3735
+                183 (2012) 785, arXiv:1109.3735 and
+		B.C. Allanach,hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
    Webpage:     http://projects.hepforge.org/softsusy/
    Description: main calling program example:
 		calculates neutrino masses for a certain RPV point

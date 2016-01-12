@@ -1,4 +1,10 @@
-<li> 02/5/15 Better error trapping after bail-out of main iteration. Thanks to P Millet
-<li> 29/5/15 Use exact field combination mixture for mA(1) in 2-loop tadpoles and protect against nans in pseudoscalar NMSSM calculations
-<li> 26/5/15 Bug-fixed input of tan beta scale in NMSSM in SLHA format
-<li> 23/5/15 Bug-fixed one-loop Higgs mass corrections in NMSSM
+<li> 12/1/15 <b>New major version</b>: 2-loop SUSY QCD corrections to squark
+and gluino masses
+<li> 3/12/15 Re-named RPV inputs for soft terms to fit SLHA2 conventions and bug-fixed some 3-loop SUSY beta functions (thanks to A Voigt)
+<li> 25/11/15 Got Steve's interpolation into the code and it compiles
+<li> 23/11/15 Fixed SPINFO warnings' format in SLHA output. Thanks to A Buckley
+<li> 18/11/15 Fixed QED beta function between MW and MZ: thanks to A Voigt
+<li> 17/11/15 Fixed unprotected config.h in src/softpars.h Thanks to S Ajeet
+<li> 14/8/15 Added 2-loop corrections to gluino/squark masses in the NMSSM
+<li> 14/7/15 Fixed flavoured GMSB SLHA control: thanks to R Franceschini
+<li> 19/6/15 Made sfermion mixing in SLHA output the *tree-level* mixing at MSUSY: better defined theoretically and more useful

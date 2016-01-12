@@ -69,9 +69,6 @@ namespace softsusy {
   bool printDEBUG = false;
   /// random number seed
   long idummySave = -22;
-  /// Default is to not include 2-loop MSSM corrections in degenerate
-  /// gluino/squark mass limit 
-  bool includeTwoLoopMssmCorrectionsToMt = false;
   /// Default: use SOFTSUSY conventions for masses of sparticles in loops, ie
   /// tree-level masses computed with the 2-loop Higgs potential
   bool sphenoMassConv = false;
@@ -87,20 +84,26 @@ namespace softsusy {
   bool USE_THREE_LOOP_RGE = false;
 #endif
   
-#ifdef COMPILE_FULL_SUSY_THRESHOLD 
-
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA 
   /// Threshold to prevent the re-evaluation of two-loop leading SUSY thresholds
   /// corrections. By default we set it to 10%. 
   double TWOLOOP_NUM_THRESH = 0.1;
   /// Includes the evaluation of leading two-loop thresholds corrections
   /// to the strong coupling constant and to the third family of fermion masses 
-  bool USE_TWO_LOOP_THRESHOLD = false;
+  bool USE_TWO_LOOP_GAUGE_YUKAWA = false;
   /// just implements decoupling procedure "consistently" for
   /// the case of b-quark mass. It requires the external momentum to be zero. 
   /// However, the difference between the p^2 = 0 and p^2 = mb^2 cases
   /// is expected to be of O((mb/MSUSY)^2), which we can formally neglect.
   bool MB_DECOUPLING = false;
+#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
-#endif //COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+  /// Various two-loop thresholds, eg 2-loop QCD corrections to m_gluino
+  bool USE_TWO_LOOP_SPARTICLE_MASS = false;
+  /// Default: expand around gluino and squark pole masses
+  int expandAroundGluinoPole = 1;
+#endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
+
 }
 /// end of global variable declaration

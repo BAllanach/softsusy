@@ -37,12 +37,15 @@ void errorCall() {
   ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
   ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
   ii << "--higgsUncertainties gives an estimate of Higgs mass uncertainties\n";
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
-  if (USE_TWO_LOOP_THRESHOLD) ii << "--two-loop-susy-thresholds switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
-#endif //COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+  ii << "--two-loop-gauge-yukawa switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
+#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
 #ifdef COMPILE_THREE_LOOP_RGE
-  if (USE_THREE_LOOP_RGE) ii << "--three-loop-rges switches on 3-loop RGEs\n";
-#endif //COMPILE_THREE_LOOP_RGE
+  ii << "--three-loop-rges switches on 3-loop RGEs\n";
+#endif ///< COMPILE_THREE_LOOP_RGE
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+  ii << "--two-loop-sparticle-mass switches on various 2 loop sparticle mass thresholds\n";
+#endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
   ii << "--mgut=unified sets the scale at which SUSY breaking terms are set to the GUT\n";
   ii << "scale where g1=g2. --mgut=<value> sets it to a fixed scale, ";
   ii << "whereas --mgut=msusy\nsets it to MSUSY\n\n";
@@ -94,8 +97,7 @@ int main(int argc, char *argv[]) {
   void (*nmssmBoundaryCondition)(NmssmSoftsusy&, const DoubleVector&) = NmssmMsugraBcs;
 
   QedQcd oneset;
-  MssmSoftsusy m; FlavourMssmSoftsusy k;
-  NmssmSoftsusy nmssm;
+  MssmSoftsusy m; FlavourMssmSoftsusy k; NmssmSoftsusy nmssm;
   k.setInitialData(oneset);
   MssmSoftsusy * r = &m; 
   RpvNeutrino kw; bool RPVflag = false;
@@ -168,19 +170,19 @@ int main(int argc, char *argv[]) {
 	else if (starts_with(argv[i], "--mgut=")) 
 	  mgutGuess = mgutCheck(argv[i], gaugeUnification, ewsbBCscale); 
 	else if (starts_with(argv[i], "--disable-two-loop-susy-thresholds")) {
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
-	  USE_TWO_LOOP_THRESHOLD = false;
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+	  USE_TWO_LOOP_GAUGE_YUKAWA = false;
 	  m.setAllTwoLoopThresholds(false);
 #else
 	  compilationProblem = true;
 	  cout << "Two-loop thresholds not compiled.\n";
-	  cout << "Please use the --two-loop-susy-thresholds with the configure option.\n";
+	  cout << "Please use the --two-loop-gauge-yukawa with the configure option.\n";
 	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
 #endif
 	}
-	else if (starts_with(argv[i], "--two-loop-susy-thresholds")) {
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
-	  USE_TWO_LOOP_THRESHOLD = true;
+	else if (starts_with(argv[i], "--two-loop-gauge-yukawa")) {
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+	  USE_TWO_LOOP_GAUGE_YUKAWA = true;
 	  m.setAllTwoLoopThresholds(true);
 #else
 	  compilationProblem = true;
@@ -194,8 +196,8 @@ int main(int argc, char *argv[]) {
 	  USE_THREE_LOOP_RGE = false;
 #else
 	  compilationProblem = true;
-	  cout << "Two-loop thresholds not compiled.\n";
-	  cout << "Please use the --enable-two-loop-susy-thresholds with ./configure\n";
+	  cout << "Three-loop RGEs for SUSY parameters not compiled.\n";
+	  cout << "Please use the --enable-three-loop-rges with ./configure\n";
 	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
 #endif
 	}
@@ -208,6 +210,27 @@ int main(int argc, char *argv[]) {
 	  cout << "Please use the --enable-three-loop-rges with ./configure\n";
 #endif
 	}
+
+
+	else if (starts_with(argv[i], "--disable-two-loop-sparticle-mass")) {
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+	  USE_TWO_LOOP_SPARTICLE_MASS = false;
+#else
+	  compilationProblem = true;
+	  cout << "Two-loop thresholds for sparticles not compiled.\n";
+	  cout << "Please use the --enable-two-loop-susy-thresholds with ./configure\n";
+#endif
+	}
+	else if (starts_with(argv[i], "--two-loop-sparticle-mass")) {
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+	  USE_TWO_LOOP_SPARTICLE_MASS = true;
+#else
+	  compilationProblem = true;
+	  cout << "Two-loop sparticle masses not compiled.\n";
+	  cout << "Please use the --enable-two-loop-sparticle-mass with ./configure\n";
+#endif
+	}
+
 	else if (starts_with(argv[i], "--QEWSB=")) 
 	  QEWSB = get_value(argv[i], "--QEWSB=");
       }
@@ -388,10 +411,8 @@ int main(int argc, char *argv[]) {
 		      modelIdent = "sugra";
 		      break;
 		    case 2: 
-		      if (!flavourViolation) {
-			boundaryCondition = &gmsbBcs; 
-			pars.setEnd(4); 
-		      } 
+		      pars.setEnd(4); 
+		      boundaryCondition = &gmsbBcs; 
 		      modelIdent = "gmsb";
 		      break;
 		    case 3: 		    
@@ -436,7 +457,10 @@ int main(int argc, char *argv[]) {
 		    switch(i) {
 		    case 0: RPVflag = false;
 		      break;
-		    case 1: RPVflag = true;
+		    case 1: {
+		      RPVflag = true;
+		      r = &kw; 
+		    }
 		      break;
 		    default:
 		      ostringstream ii;
@@ -455,7 +479,8 @@ int main(int argc, char *argv[]) {
                              " not supported in the NMSSM\n";
                        } else {
                           r = &k; flavourViolation = true;
-                          if (boundaryCondition != & amsbBcs) {
+                          if (boundaryCondition != & amsbBcs && 
+			      boundaryCondition != & gmsbBcs) {
                              pars.setEnd(64); boundaryCondition = &flavourBcs;
                           }
                        }
@@ -566,7 +591,7 @@ int main(int argc, char *argv[]) {
 			gaugeUnification = false; break;
 		      case 8: pars(5) = d; break;
 		      case 9: pars(6) = d; m.useAlternativeEwsb(); 
-			kw.useAlternativeEwsb();
+			kw.useAlternativeEwsb(); 
 			break;
 		      case 10: desiredMh = d; break;
 		      default: 
@@ -696,18 +721,22 @@ int main(int argc, char *argv[]) {
 		      nmssm.setSetTbAtMX(true);
 		    } 
 		    else if (i == 23 || i == 26) {
-		      r->useAlternativeEwsb(); 
+		      m.useAlternativeEwsb();
+		      k.useAlternativeEwsb();
 		      if (i == 23) {
                          r->setMuCond(d); r->setSusyMu(d);
+                         k.setMuCond(d); k.setSusyMu(d);
                          if (susy_model == NMSSM) {
                            if (pars.displayEnd() < 56) pars.setEnd(56);
                            nmssm_input.set(NMSSM_input::mu, d);
                            pars(54) = d;
                          }
                       }
-		      if (i == 26) r->setMaCond(d); 
+		      if (i == 26) {
+			r->setMaCond(d); k.setMaCond(d);
+		      }
 		    }
-		    else if (!flavourViolation) {
+		    else if (!flavourViolation || RPVflag) {
 		      if ((i > 0 && i <=  3) || (i >= 11 && i <= 13) || 
 			  (i >= 21 && i <= 23) || (i == 26 || i == 25) 
 			  || (i >= 31 && i <= 36) || 
@@ -759,7 +788,7 @@ int main(int argc, char *argv[]) {
                            break;
                         }
                       } else {
-                        cout << "WARNING: did not understand parameter " 
+                        cout << "# WARNING: did not understand parameter " 
                              << i << " in non-flavoured EXTPAR inputs\n";
                       }
 		    } else {
@@ -995,7 +1024,7 @@ int main(int argc, char *argv[]) {
 		    kw.setLambda(LU, i, j, k, d);
 		  }
 		}
-		else if (block == "RVTIN") {
+		else if (block == "RVTLLEIN") {
 		  int i,j,k; double d; kk >> i >> j >> k >> d;
 		  if((i > 0 && i <=  3) || (j > 0 && j <=  3) || 
 		     (k > 0 && k <=  3)) {
@@ -1007,7 +1036,7 @@ int main(int argc, char *argv[]) {
 			 << block << ": ignoring it\n"; break;
 		  }
 		}
-		else if (block == "RVTPIN") {
+		else if (block == "RVTLQDIN") {
 		  int i,j,k; double d; kk >> i >> j >> k >> d;
 		  if((i > 0 && i <=  3) || (j > 0 && j <=  3) || 
 		     (k > 0 && k <=  3)) {
@@ -1019,7 +1048,7 @@ int main(int argc, char *argv[]) {
 			 << block << ": ignoring it\n"; break;
 		  }
 		}
-		else if (block == "RVTPPIN") {
+		else if (block == "RVTUDDIN") {
 		  int i,j,k; double d; kk >> i >> j >> k >> d;
 		  if((i > 0 && i <=  3) || (j > 0 && j <=  3) ||
 		     (k > 0 && k <=  3)) {
@@ -1175,33 +1204,48 @@ int main(int argc, char *argv[]) {
 		    break;			     
 		  }
 #endif
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 		  case 20: {
                     int num = int(d + EPSTOL);
 		    // AVB: can be set to just 1 Turn on all thresholds
 		    //      can be set to 1 + 2 * ( flags for included thresholds)
 		    //      to have a finer control over included thresholds
 		    if (num > 0) {
-		      USE_TWO_LOOP_THRESHOLD = true;
+		      USE_TWO_LOOP_GAUGE_YUKAWA = true;
 		      r->included_thresholds = (num & 
-						    (ENABLE_TWO_LOOP_AS_AS_YUK | 
-						     ENABLE_TWO_LOOP_MT_AS | 
-						     ENABLE_TWO_LOOP_MB_AS | 
-						     ENABLE_TWO_LOOP_MB_YUK | 
-						     ENABLE_TWO_LOOP_MTAU_YUK));
-				   
+						(ENABLE_TWO_LOOP_AS_AS_YUK | 
+						 ENABLE_TWO_LOOP_MT_AS | 
+						 ENABLE_TWO_LOOP_MB_AS | 
+						 ENABLE_TWO_LOOP_MB_YUK | 
+						 ENABLE_TWO_LOOP_MTAU_YUK));
+		      
 		    } else if (num == 0) { 
-		      USE_TWO_LOOP_THRESHOLD = false;  
+		      USE_TWO_LOOP_GAUGE_YUKAWA = false;  
 		      r->included_thresholds = 0; 
 		    } else cout << "WARNING: incorrect setting for SOFTSUSY Block 20 (should be an integer number in range 0,...,31)\n";
 		    break;
 		  }
-#endif
+#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
 		  case 21: {
 		    int num = int(d + EPSTOL);
 		    if (num > 0) higgsUncertainties = true;
 		    break;
 		  }
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+		  case 22: {
+		    int num = int(d + EPSTOL);
+		    if (num > 0) USE_TWO_LOOP_SPARTICLE_MASS = true;
+		    else if (num == 0) USE_TWO_LOOP_SPARTICLE_MASS = false;
+		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 22 (should be a positive semi-definite\n";
+		    break;
+		  }
+		  case 23: {
+		    int num = int(d + EPSTOL);
+		    if (num >= 0 && num <=2) expandAroundGluinoPole = num;
+		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 0 and 2 inclusive)\n";
+		    break;
+		  }
+#endif
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "
@@ -1293,19 +1337,17 @@ int main(int argc, char *argv[]) {
       }
 
       if (RPVflag) {
+	kw.setNumRpcBcs(pars.displayEnd());
 	kw.rpvDisplay(pars);
 	kw.setFlavourSoftsusy(k);
 	r = &kw;
-	
+
 	if (boundaryCondition == &sugraBcs) 
 	  boundaryCondition = &rpvSugraBcs;
 	else if (boundaryCondition == &amsbBcs) 
 	  boundaryCondition = &rpvAmsbBcs;
 	else if (boundaryCondition == &gmsbBcs) 
 	  boundaryCondition = &rpvGmsbBcs;
-	else if (boundaryCondition == &extendedSugraBcs) {
-	  boundaryCondition = &rpvExtendedSugraBcs;
-	}
 	else if (boundaryCondition == &extendedSugraBcs) {
 	  boundaryCondition = &rpvExtendedSugraBcs;
 	  kw.useAlternativeEwsb();

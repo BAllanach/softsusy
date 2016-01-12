@@ -32,10 +32,15 @@
     [4] <a href="http://xxx.soton.ac.uk/abs/1109.3735">B.C. Allanach,
     M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012) 785,
     arXiv:1109.3735</a>.<p>
-    If you use the three-loop RGEs or two-loop threshold corrections, please 
-    cite [1] and<br>
+    If you use the three-loop RGEs or two-loop threshold corrections to Yukawa
+    and gauge couplings, please cite [1] and<br>
     [5] <a href="http://arxiv.org/abs/arXiv:1407.6130">B.C. Allanach, A. 
-    Bednyakov and R. Ruiz, Comput. Phys. Commun. (2015) 192, arXiv:1407.6130</a>
+    Bednyakov and R. Ruiz, Comput. Phys. Commun. (2015) 192,
+    arXiv:1407.6130</a><br>
+    For two-loop SUSY QCD corrections to squark and gluino pole masses, please
+    cite [1] and<br>
+    [6] <a href="http://arxiv.org/abs/arXiv:16??.?????">B.C. Allanach,
+    S. Martin, D. Robertson and R. Ruiz de Austri, arXiv:16??.?????</a>.
 
     \section documentation Documentation
     These web-pages contain the documentation of the latest SOFTSUSY code.

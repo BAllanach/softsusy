@@ -597,9 +597,9 @@ void MssmSusy::setMssmApprox(int l, int t) {
 		      + (duBeta * gsq) * uuT + (ddBeta * gsq) * ddT 
 		      + (deBeta * gsq) * eeT + euBeta * uuTsq 
 		      + edBeta * ddTsq + eeBeta * eeTsq  
-		      + euBeta * (u2t*u2t).trace() 
-		      + edBeta * (d2t*d2t).trace()
-		      + eeBeta * (e2t*e2t).trace()
+		      + fuBeta * (u2t*u2t).trace()
+		      + fdBeta * (d2t*d2t).trace()
+		      + feBeta * (e2t*e2t).trace()
 		      + gudBeta * (u2t*d2t).trace()
 		      + gdeBeta * ddT * eeT) * threelp;
       
@@ -750,7 +750,7 @@ void MssmSusy::setMssmApprox(int l, int t) {
       
       DoubleMatrix u2tu2t = u2t*u2t; double u2tu2tT = u2tu2t.trace(); 
       double u2tu2tu2tT = (u2tu2t*u2t).trace(); 
-      double u2tu2td2tT = (u2tu2t*u2t).trace(); 
+      double u2tu2td2tT = (u2tu2t*d2t).trace();
       
       DoubleMatrix d2td2t = d2t*d2t; double d2td2tT = d2td2t.trace(); 
       double d2td2td2tT = (d2td2t*d2t).trace();

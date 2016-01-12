@@ -31,6 +31,11 @@
 #include "nmssmUtils.h"
 #include <cassert>
 
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+//#include "supermodel/supermodel-v0.1/supermodel.h"
+#include "higher_order.h"
+#endif
+
 namespace softsusy {
   
   /* class NmssmSoftsusy;  */
@@ -565,8 +570,6 @@ namespace softsusy {
     virtual void higgsMSLHA(ostream & out);
     /// neutralino and charigno part of mass block of SLHA
     virtual void neutralinoCharginoMSLHA(ostream & out);
-    /// nmnmix block output of SLHA
-    virtual void neutralinoMixingSLHA(ostream & out);
     /// CP even mixing matrix NMHMIX block of SLHA
     void nmhmixSLHA(ostream&);
     /// CP odd mixing matrix NMHMIX block of SLHA

@@ -23,11 +23,13 @@ config.status
 *.*~
 gaugeUn.x
 libtool
+higher.x
 rpvneut.x
 rpvsoftsusy.x
 softpoint.x
 softsusy.x
 scansusy.x
+cmsdilep.x
 scansusy_slha.x
 softsusy-nmssm.x
 aclocal.m4
@@ -44,3 +46,5 @@ src/two_loop_thresholds/gs_corrections.cpp
 src/two_loop_thresholds/tau_corrections.cpp
 src/two_loop_thresholds/tquark_corrections.cpp
 softsusy_nmssmtools.x
+doc/anc/*-eps-converted-*
+src/supermodel/supermodel/libtsil.a

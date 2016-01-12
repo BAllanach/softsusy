@@ -1,3 +1,14 @@
+/** \file main-nmssm.cpp
+   - Project:     SOFTSUSY 
+   - Author:      Ben Allanach    
+   - Manual:      B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and 
+   A. Williams, Comput. Phys. Comm. 185 (2014) 2322, arXiv:1311.7659;
+   B.C. Allanach, hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305; 
+
+   \brief a main C++ program to calculate Higgs masses as a function of tan
+   beta in the NMSSM
+*/
+
 #include <iostream>
 #include "def.h"
 #include "linalg.h"
@@ -33,7 +44,8 @@ int main() {
        << TOLERANCE << endl << oneset << endl;
 
   /// Print out header line
-  cout << "# tan beta   mh(1)        mh(2)        mA(1)        mH+-\n";
+  cout << "# tan beta   mh(1)        mh(2)        mA(1)        mA(2)"
+       << "        mH+-\n";
 
   /// Set limits of tan beta scan
   double startTanb = 5.0, endTanb = 55.0;
@@ -68,6 +80,7 @@ int main() {
              << n.displayPhys().mh0(1) << ' '
              << n.displayPhys().mh0(2) << ' '
              << n.displayPhys().mA0(1) << ' '
+             << n.displayPhys().mA0(2) << ' '
              << n.displayPhys().mHpm << '\n';
      } else {
         cout << tanb << ' ' << n.displayProblem() << '\n';

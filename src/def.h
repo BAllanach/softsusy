@@ -18,7 +18,7 @@
 
 #include <cmath>
 namespace softsusy{
-  const char SOFTSUSY_VERSION[] = "3.6.2";
+  const char SOFTSUSY_VERSION[] = "3.7.0";
   /// uncomment if you want checking of vector/matrices bounds: slows code
   /// down. It also now checks over/underflows in matrix multiplication etc
   /// #define ARRAY_BOUNDS_CHECKING 
@@ -99,21 +99,19 @@ namespace softsusy{
   /// A handy global variable for random number generator
   extern long idummySave;
   extern int numTry;
-  /// Include eq (62) from hep-ph/0210268: degenerate gluino/squark mass limit
-  extern bool includeTwoLoopMssmCorrectionsToMt;
 
 #ifdef COMPILE_THREE_LOOP_RGE
   /// Controls the use of MSSM three-loop RGEs
   extern bool USE_THREE_LOOP_RGE;
 #endif
 
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   /// Threshold to prevent the re-evaluation of two-loop leading SUSY 
   /// thresholds corrections
   extern double TWOLOOP_NUM_THRESH;
   /// Includes the evaluation of leading two-loop thresholds corrections
   /// to the strong coupling constant and to the third family of fermion masses 
-  extern bool USE_TWO_LOOP_THRESHOLD; 
+  extern bool USE_TWO_LOOP_GAUGE_YUKAWA; 
   /// just implements decoupling procedure "consistently" for
   /// the case of b-quark mass. It requires the external momentum to be zero. 
   /// However, the difference between the p^2 = 0 and p^2 = mb^2 cases
@@ -127,6 +125,15 @@ namespace softsusy{
 	 ENABLE_TWO_LOOP_MTAU_YUK = 0x10    
   };    
 
+#endif
+
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+  /// Various two-loop thresholds, eg 2-loop QCD corrections to m_gluino
+  extern bool USE_TWO_LOOP_SPARTICLE_MASS;
+  /// If = 0, no expansion for gluino. If = 1, expand around gluino and squark
+  /// pole masses. If = 2, expand only around gluino pole mass rather than the
+  /// tree-level mass and iterate. 1 and 2 are a little slower. 
+  extern int expandAroundGluinoPole;
 #endif
   
 }

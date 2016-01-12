@@ -12,8 +12,6 @@
 //#include <softsusy.h>
 
 namespace SoftSusy_helpers_ {
-
-
 //using namespace GiNaC;
 
  /// Return GiNac exmap with MSSM (Yukawa Model) parameters

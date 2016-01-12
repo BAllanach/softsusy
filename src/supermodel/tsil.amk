@@ -1,0 +1,41 @@
+# library that stores all the calculation procedures for two-loop decoupling
+
+lib_LTLIBRARIES += libtsil.la
+
+libtsil_la_SOURCES = \
+src/supermodel/tsil/initialize.c \
+src/supermodel/tsil/evaluate.c \
+src/supermodel/tsil/fevaluate.c \
+src/supermodel/tsil/generic.c \
+src/supermodel/tsil/rk6.c \
+src/supermodel/tsil/rk5.c \
+src/supermodel/tsil/functions.c \
+src/supermodel/tsil/dilog.c \
+src/supermodel/tsil/trilog.c \
+src/supermodel/tsil/dBds.c \
+src/supermodel/tsil/dSds.c \
+src/supermodel/tsil/dTds.c \
+src/supermodel/tsil/dUds.c \
+src/supermodel/tsil/dsMds.c \
+src/supermodel/tsil/initB.c \
+src/supermodel/tsil/initS.c \
+src/supermodel/tsil/initT.c \
+src/supermodel/tsil/initU.c \
+src/supermodel/tsil/initV.c \
+src/supermodel/tsil/initM.c \
+src/supermodel/tsil/special.c \
+src/supermodel/tsil/analyticAB.c \
+src/supermodel/tsil/analyticI.c \
+src/supermodel/tsil/analyticS.c \
+src/supermodel/tsil/analyticT.c \
+src/supermodel/tsil/analyticTbar.c \
+src/supermodel/tsil/analyticU.c \
+src/supermodel/tsil/analyticV.c \
+src/supermodel/tsil/analyticM.c \
+src/supermodel/tsil/setTbar.c \
+src/supermodel/tsil/setV.c \
+src/supermodel/tsil/setbold.c
+
+
+pkginclude_HEADERS += \
+src/supermodel/tsil/internal.h src/supermodel/tsil/tsil_fortran.h src/supermodel/tsil/tsil_global.h src/supermodel/tsil/tsil_names.h src/supermodel/tsil/tsil_testparams.h src/supermodel/tsil/tsil_funcs.h src/supermodel/tsil/tsil.h src/supermodel/tsil/tsil_params.h

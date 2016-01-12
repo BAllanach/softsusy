@@ -19,4 +19,16 @@ Block MINPAR		     # Input parameters
 Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
     1   1.000000000e-03      # Numerical precision: suggested range 10^(-3...-6)
     2   0.000000000e+00	     # Quark mixing parameter: see manual
+    3   0.000000000e+00	     # Additional verbose output?
+    4   1.000000000e+00	     # Change electroweak symmetry breaking scale?
     5   1.000000000e+00      # Include 2-loop scalar mass squared/trilinear RGEs
+    6   1.000000000e-04	     # Numerical precision
+    7	2.000000000e+00	     # Number of loops in Higgs mass computation
+   10	0.000000000e+00	     # Force it to SLHA***1*** output?
+   11	1.000000000e+19	     # Gravitino mass
+   12   0.000000000e+00	     # Print spectrum even when point disallowed
+   13	0.000000000e+00	     # Set a tachyonic A^0 to zero mass
+#   19   0.000000000e+00      # Include 3-loop SUSY RGEs
+#   20   0.000000000e+00      # Include 2-loop gauge/Yukawa thresholds
+#   22   0.000000000e+00      # Include 2-loop sparticle mass thresholds
+   23   0.000000000e+00	     # No expansion of 2-loop gluino terms

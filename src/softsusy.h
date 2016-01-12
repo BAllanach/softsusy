@@ -34,9 +34,14 @@
 #include "twoloophiggs.h"
 #include "mssmUtils.h"
 
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+//#include "supermodel/supermodel-v0.1/supermodel.h"
+#include "higher_order.h"
+#endif
+
 #define HR "----------------------------------------------------------"
 
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 #include <ginac/ginac.h>
 namespace softsusy { class MssmSoftsusy; }
 namespace SoftSusy_helpers_ {
@@ -51,7 +56,7 @@ namespace SoftSusy_helpers_ {
 #include "two_loop_thresholds/gs_corrections.hpp"
 #include "two_loop_thresholds/dec_cor_helper.hpp"
 
-#endif //COMPILE_FULL_SUSY_THRESHOLD
+#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
 namespace softsusy {
   
@@ -113,12 +118,12 @@ namespace softsusy {
     double mxBC; ///< Scale at which SUSY breaking boundary conditions set
     
   public:
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
     /// Public field :: only for informational purpose	
     SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
     /// Flags allowing to choose which two-loop thresholds have to be included
     int included_thresholds; 
-#endif ///< COMPILE_FULL_SUSY_THRESHOLD
+#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
     
     //  void (*boundaryCondition)(Softsusy &, const DoubleVector &);
     /// Default constructor fills object with zeroes
@@ -252,14 +257,14 @@ namespace softsusy {
     /// Sets total set of RGE parameters equal to elements of a vector
     void set(const DoubleVector &);
     
-#ifdef COMPILE_FULL_SUSY_THRESHOLD
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
     /// Switch 2-loop threshold \f$O(\alpha_s^2), O(\alpha_s \alpha_b),
     /// O(\alpha_s \alpha_t) \f$ corrections to
     /// \f$\alpha_s\f$ ON/OFF 
     void setTwoLoopAlphasThresholds(bool sw) {
       if (sw) {
 	included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
-	USE_TWO_LOOP_THRESHOLD = true;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
       }
       else included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
     }
@@ -268,7 +273,7 @@ namespace softsusy {
     void setTwoLoopMtThresholds(bool sw) {
       if (sw) {
 	included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
-	USE_TWO_LOOP_THRESHOLD = true;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
       }
       else included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
     }
@@ -282,7 +287,7 @@ namespace softsusy {
 	included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
 	included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
 	included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
-	USE_TWO_LOOP_THRESHOLD = true;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
       }
       else {
 	included_thresholds &= ENABLE_TWO_LOOP_MB_AS;
@@ -297,7 +302,7 @@ namespace softsusy {
 	included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
 	included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
 	included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
-	USE_TWO_LOOP_THRESHOLD = true;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
       }
       else {
 	included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
@@ -305,7 +310,7 @@ namespace softsusy {
 	included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
 	included_thresholds &= ENABLE_TWO_LOOP_MB_YUK;
 	included_thresholds &= ENABLE_TWO_LOOP_MTAU_YUK;
-	USE_TWO_LOOP_THRESHOLD = false;
+	USE_TWO_LOOP_GAUGE_YUKAWA = false;
       }
     }
 #endif
@@ -726,7 +731,7 @@ namespace softsusy {
     virtual double calcRunMbNeutralinos() const;
     /// Applies approximate 1-loop SUSY corrections to mb(MZ) in order to
     /// return the DRbar running value
-    //rruiz: remove const
+    // rruiz: remove const
     virtual double calcRunningMb();
     /*
    /// Calculates top Yukawa coupling, supply Higgs vev parameter at current
@@ -798,8 +803,8 @@ namespace softsusy {
     virtual void gluino(int accuracy);
     /// Calculates Higgs masses at a renormalisation scale q. If q=0, the
     /// standard SUSY scale is used.
-    void calcHiggsAtScale(int accuracy, double & mt, double & sinthDRbar, double & piwwtMS, 
-			  double & pizztMS, double q = 0.);
+    void calcHiggsAtScale(int accuracy, double & mt, double & sinthDRbar, 
+			  double & piwwtMS, double & pizztMS, double q = 0.);
     /// Calculates pole Higgs masses and mixings: full 1-loop SUSY corrections
     /// and 2-loop alpha_t (alpha_s + alpha_t) + alpha_s alpha_b effective
     /// potential corrections. 
@@ -817,9 +822,12 @@ namespace softsusy {
     /// required sign (+/- 1). Returns 1 if mu^2<0, indicating an inconsistent
     /// minimum 
     virtual int rewsbMu(int sgnMu, double & mu) const;
-    /// Tree-level REWSB calculation, returning m3sq at correct value consistent
+    /// REWSB calculation, returning m3sq at correct value consistent
     /// with mu
     virtual int rewsbM3sq(double, double &) const;
+    /// Tree-level REWSB calculation, returning m3sq at correct value consistent
+    /// with mu
+    int rewsbM3sqTree(double, double &) const;
     /// Fixes mH1^2 and mH2^2 in order to get muCond and mAcond correct
     void alternativeEwsb(double mt);
     /// Organises high accuracy rewsb: call it at the low scale M_{SUSY}
@@ -1171,9 +1179,9 @@ namespace softsusy {
 					int sgnMu, double tanb, double qMax, 
 					int numPoints, 
 					bool ewsbBCscale);
-    void slha1(ostream & out, const char model[], const DoubleVector & pars, 
+    /*    void slha1(ostream & out, const char model[], const DoubleVector & pars, 
 	       int sgnMu, double tanb, double qMax, int numPoints, 
-	       bool ewsbBCscale);
+	       bool ewsbBCscale);*/
     /// Normally, this is just a dummy function that is un-used. But sometimes,
     /// it can be used to re-set electroweak symmetry breaking conditions,
     /// depending on the value of inputs at the GUT scale. 
