@@ -9780,8 +9780,13 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
   }
 #endif
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
-  out << "# 2-loop computation of sparticle mass thresholds are ";
-  if (USE_TWO_LOOP_SPARTICLE_MASS) out << "on" << endl;
+  out << "# 2-loop SUSY QCD computation of squark/gluino pole masses are ";
+  if (USE_TWO_LOOP_SPARTICLE_MASS) {
+    out << "on.\n";
+    if (expandAroundGluinoPole == 0) out << "# No expansion around pole masses.\n";
+    if (expandAroundGluinoPole == 1) out << "# Expansion around gluino and squark pole masses.\n";    
+    if (expandAroundGluinoPole == 2) out << "# Expansion around gluino pole mass.\n";    
+  }
   else out << "off" << endl;
 #endif  
 }

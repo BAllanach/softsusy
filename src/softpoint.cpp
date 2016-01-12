@@ -44,7 +44,7 @@ void errorCall() {
   ii << "--three-loop-rges switches on 3-loop RGEs\n";
 #endif ///< COMPILE_THREE_LOOP_RGE
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
-  ii << "--two-loop-sparticle-mass switches on various 2 loop sparticle mass thresholds\n";
+  ii << "--two-loop-sparticle-mass=n switches on various 2 loop sparticle mass thresholds\nn=0, 1 or 2 for no expansion, expansion around gluino and squark pole masses or\nexpansion around gluino pole, respectively.\n";
 #endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
   ii << "--mgut=unified sets the scale at which SUSY breaking terms are set to the GUT\n";
   ii << "scale where g1=g2. --mgut=<value> sets it to a fixed scale, ";
@@ -221,9 +221,11 @@ int main(int argc, char *argv[]) {
 	  cout << "Please use the --enable-two-loop-susy-thresholds with ./configure\n";
 #endif
 	}
-	else if (starts_with(argv[i], "--two-loop-sparticle-mass")) {
+	else if (starts_with(argv[i], "--two-loop-sparticle-mass=")) {
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 	  USE_TWO_LOOP_SPARTICLE_MASS = true;
+	  expandAroundGluinoPole = 
+	    get_value(argv[i], "--two-loop-sparticle-mass=");
 #else
 	  compilationProblem = true;
 	  cout << "Two-loop sparticle masses not compiled.\n";
