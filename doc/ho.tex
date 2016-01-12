@@ -1,0 +1,524 @@
+\documentclass[final,3p,times,pdflatex]{elsarticle}
+%\usepackage{axodraw}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{color} 
+
+\newcommand\beq{\begin{eqnarray}}
+\newcommand\eeq{\end{eqnarray}}
+
+
+% beginning of macros
+\def\SOFTSUSY{{\tt SOFTSUSY}}
+\def\code#1{{\tt #1}}
+
+\journal{Computer Physics Communications}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\begin{flushright}
+DAMTP-2015-??\\
+IFIC/??
+\end{flushright}
+
+\title{The Inclusion of Two-Loop ${\mathcal{O}}(\alpha_s^2/(16 \pi^2))$
+  Corrections to Gluino and Squark 
+    Pole Masses in the Minimal and Next-to-Minimal Supersymmetric Standard Model: {\tt       SOFTSUSY3.7}}
+
+\author[damtp]{B.C.~Allanach}
+\cortext[cor1]{Corresponding author}
+\author[illinois,fnal]{Stephen~P.~Martin}
+\author[otterbein]{David~G.~Robertson}
+\author[valencia]{Roberto~Ruiz~de~Austri\corref{cor1}}
+\ead{rruiz@ific.uv.es}
+
+\address[damtp]{DAMTP, CMS, University of Cambridge, Wilberforce road,
+  Cambridge, CB3  0WA, United Kingdom}
+\address[illinois]{Department of Physics, Northern Illinois University, DeKalb, IL 60115, United States of America}
+\address[fnal]{Fermi National Accelerator Laboratory, P.O. Box 500, Batavia IL 60510, United States of America}
+\address[otterbein]{Department of Physics, Otterbein University, Westerville,
+  OH 43081, United States of America}
+  \address[valencia]{Instituto de F\'i­sica Corpuscular, IFIC-UV/CSIC, E-46980
+  Paterna, Spain}  
+\begin{abstract}
+We describe an extension of the {\tt SOFTSUSY} spectrum calculator to include
+two loop $\mathcal{O}(\alpha_s^2)$ corrections to gluino and squark pole
+masses, either in the minimal supersymmetric standard model (MSSM) or the
+next-to-minimal supersymmetric standard model (NMSSM). This document
+provides an overview of the program and acts as a manual for the
+new version of {\tt SOFTSUSY}, which includes the increase in accuracy in
+squark and gluino pole mass predictions. 
+\end{abstract}
+
+\begin{keyword}
+gluino, squark, MSSM, NMSSM
+\PACS 12.60.Jv
+\PACS 14.80.Ly
+\end{keyword}
+\end{frontmatter}
+
+\section{Program Summary}
+\noindent{\em Program title:} \SOFTSUSY{} \\
+{\em Program obtainable   from:} {\tt http://softsusy.hepforge.org/} \\
+{\em Distribution format:}\/ tar.gz \\
+%%DGR added C
+{\em Programming language:} {\tt C++}, {\tt fortran}, {\tt C} \\
+{\em Computer:}\/ Personal computer. \\
+{\em Operating system:}\/ Tested on Linux 3.4.6 \\
+{\em Word size:}\/ 64 bits. \\
+{\em External routines:}\/ None \\
+{\em Typical running time:}\/ 15 seconds per parameter point. \\
+{\em Nature of problem:}\/ Calculating supersymmetric particle spectrum, 
+mixing parameters and couplings in the MSSM or the NMSSM. The solution to
+the renormalisation group equations must be consistent 
+with theoretical boundary conditions on supersymmetry breaking parameters, as
+well as a weak-scale boundary condition on gauge 
+couplings, Yukawa couplings and the Higgs potential parameters. \\
+{\em Solution method:}\/ Nested fixed point iteration.  \\
+{\em Restrictions:} \SOFTSUSY~will provide a solution only in the
+perturbative regime and it
+assumes that all couplings of the model are real
+(i.e.\ $CP-$conserving). If the parameter point under investigation is
+non-physical for some reason (for example because the electroweak potential
+does not have an acceptable minimum), \SOFTSUSY{} returns an error message.
+The higher order corrections included are for the 
+MSSM ($R-$parity conserving or violating) or the real $R-$parity conserving
+NMSSM only. \\
+{\em CPC Classification:} 11.1 and 11.6. \\
+{\em Does the new version supersede the previous version?:} Yes. \\
+{\em Reasons for the new version:} It is desirable to improve the accuracy of
+the squark and gluinos mass predictions, since they strongly affect
+supersymmetric particle production cross-sections at colliders.  \\
+{\em Summary of revisions:} 
+The calculation of the squark and gluino pole masses is extended to be of
+next-to-next-to leading order, i.e.\ including terms up to ${\mathcal
+  O}(g_s^4/(16 \pi^2)^2)$.
+
+\section{Introduction}
+
+Near the beginning of LHC Run II at 13 TeV centre of mass collision energy,
+hopes are high for the discovery of new physics. A much-studied and
+long-awaited framework for new physics, namely weak-scale superymmetry, is being
+searched for in many different channels. In the several prominent explicit
+models of 
+supersymmetry breaking meditaion, the best chance of observing the production
+and subsequent decay of supersymmetric particles is via squark and/or gluino
+production. Squarks and gluinos tend to have the largest
+production cross-sections among the sparticles and Higgs bosons of the MSSM,
+because they may be produced by tree-level strong interactions, as opposed to
+smaller electroweak cross sections relevant for the other superparticles. 
+In $R-$parity conserving supersymmetry (popular because of its
+apparently viable dark matter candidate), squark and/or gluino production
+may result in a signal of an excess of highly energetic jets in conjunction
+with large missing 
+transverse momentum with respect to Standard Model predictions. This classic
+LHC signature was searched for at LHC Run I 
+at 7 and 8 TeV centre of mass energy, but no significant excess above Standard
+Model backgrounds was observed. 
+Jets plus missing transverse momentum channels then provided the strongest
+constraints 
+in the constrained minimal supersymmetric standard model, for instance
+(CMSSM), along with many other models of supersymmetry breaking mediation.
+
+The higher collision energy at Run II allows for new MSSM parameter space to
+be explored. In the event of a discovery of the production of supersymmetric
+particles, one will want to first interpret their signals correctly, and then
+make inferences about the superymmetry breaking parameters. In order to do
+this with a greater accuracy, we must use higher orders in perturbation
+theory. Of particular interest is the connection between the supersymmetric
+masses of the squarks and gluinos and the experimental observables (functions
+of jet and missing momenta). The experimental observables may be used to infer
+{\em pole} (or kinematic) masses of the supersymmetric particles, which may
+then be connected via perturbation theory to the more fundamental
+supersymmetry breaking parameters in the Lagrangian. These could then be used
+to test the underlying supersymmetry breaking mediation
+mechanism~\cite{Allanach:2004ud,Allanach:2004ed}.
+Conversely, if no significant signal for supersymmetry is to be found at the
+LHC, we shall want to interpret the excluded parameter space in terms of the
+fundamental supersymmetry breaking parameters. Again, this connection is
+sensitive (for identical reasons to the discovery case) to the order in
+perturbation theory which is used. In the most easily accessible channels at
+the LHC (squark/gluino production), it is useful therefore to use higher
+orders in the QCD gauge coupling, since this is the largest relevant expansion
+parameter. 
+
+State-of-the art publicly available NMSSM or MSSM spectrum generators such as
+{\tt ISAJET}~\cite{Paige:2003mg}, {\tt FlexibleSUSY}~\cite{Athron:2014yba},
+{\tt NMSPEC}~\cite{Ellwanger:2006rn}, {\tt 
+  SUSPECT}~\cite{Djouadi:2002ze}, {\tt SARAH}~\cite{Staub:2008uz}, 
+{\tt SPHENO}~\cite{Porod:2003um}, {\tt SUSEFLAV}~\cite{Chowdhury:2011zr} or
+previous versions of {\tt 
+  SOFTSUSY}~\cite{Allanach:2001kg}, 
+ do not have
+the complete 
+${\mathcal{O}}(\alpha_s^2/(16 \pi^2))$ two-loop corrections to gluino and
+squark masses included, despite their being calculated and presented in the
+literature~\cite{Martin:2005ch,Martin:2005eg,Martin:2006ub}. Here, we describe
+their inclusion into the MSSM  
+spectrum calculation in the popular {\tt SOFTSUSY} program, making them
+publicly available for the first time. As we emphasised above, we expect them
+to be useful in increasing the accuracy of inference from data of
+supersymmetry breaking in the squark and gluino sectors. 
+
+The paper proceeds as follows: in the next section, the higher order terms
+that are included are briefly reviewed. We
+then provide an example of their effect on a line through CMSSM
+space. After a summary, the appendices contain technical information on how to
+compile and run {\tt SOFTSUSY} including the higher order terms. 
+
+\section{Higher Order Terms  \label{sec:results}} 
+
+Two-loop contributions to fermion pole masses in gauge theories were
+calculated in Ref.~\cite{Martin:2005ch} and these results are specialised to
+compute the gluino pole mass. Depending upon the ratio $m_{\tilde
+  q}/m_{\tilde g}$, a two-loop correction of up to several percent was
+found.
+On the other hand, Ref.~\cite{Martin:2005eg} calculated the two-loop
+contributions to scalar masses from gauge theory
+and these results are
+specialised to the two-loop squark masses, where corrections up to
+about one percent were noted. 
+The version of {\tt SOFTSUSY} described here now contains these
+computations~\cite{Martin:2005ch,Martin:2005eg}. 
+A library for computing two-loop self-energy integrals, {\tt
+TSIL}~\cite{Martin:2005qm} is included within the {\tt SOFTSUSY}
+distribution: there is no need to download it separately.
+
+In addition, the gluino result has been improved by expanding the self energy functions around the gluino, 
+squark, and top quark pole masses, as described in Ref.~\cite{Martin:2006ub}. This requires iteration to 
+determine the gluino pole mass, and hence is slower than simply evaluating the self-energy functions with 
+the lagrangian mass parameters, but the accuracy of the calculation is improved 
+significantly~\cite{Martin:2006ub}.  We did not implement this improvement for the squarks since the effect is less significant, and 
+the necessary iteration would be much slower.
+
+
+
+\subsection{Kinky Masses}
+In implementing these 2-loop pole masses, we encountered an interesting issue that
+does not seem to have been noted before, as far as we know. Consider the self-energy
+and pole mass of a particle $Z$ that has a three-point coupling to particles $X$ and $Y$.
+Let the tree-level squared masses of these particles by $z$, $x$, and $y$ respectively.
+If $z$ happens to be close to the threshold value 
+$(\sqrt{x}+\sqrt{y})^2$, then the computed 2-loop pole mass of $Z$ will have 
+a singularity proportional to
+\beq
+1/\sqrt{-\delta - i \epsilon}
+\eeq
+where $\epsilon$ is infinitesimal and positive, and
+\beq
+z = (\sqrt{x}+\sqrt{y})^2 (1 + \delta) .
+\eeq
+The reason for this can be understood from the sequence of
+Feynman diagrams shown in Figure \ref{fig:kinks}. After reduction to basis integrals,
+the result of Figure \ref{fig:kinks}(b) contains terms proportional to $V(x,y,u,v)$ and
+$B(x,y')$, in the notation of refs.~\cite{Martin:2003qz,Martin:2005qm}. (Here the prime represents a derivative with respect 
+to the corresponding argument, and the external momentum invariant is $s=z$.)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[!tb]
+\centering
+\includegraphics[width=12.0cm,angle=0]{kink_fig.eps}
+\caption{\label{fig:kinks}
+Feynman diagrams for the self-energy of a particle that couples to
+two lighter particles. The dark blobs in (b) and (c) represent 1-loop subdiagrams.
+Near threshold, diagrams (b) and (c) have $1/(-\delta)^{1/2}$ and $1/(-\delta)^{3/2}$
+singularities, respectively, where $s = (\sqrt{x}+\sqrt{y})^2(1 + \delta)$, with
+$x$ and $y$ the squared masses of the internal particles.
+}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Then, for example, one can evaluate:
+\beq
+B(x,y') \Big |_{s = (\sqrt{x} + \sqrt{y})^2(1 + \delta)} &=&
+-\frac{\pi (x/y)^{1/4}}{(\sqrt{x}+\sqrt{y})^2 \sqrt{-\delta - i \epsilon}}
++ \ldots .
+\eeq
+We have found that in general such singularities do not cancel in the 2-loop pole mass
+calculation. This includes e.g. the pole mass of the gluino, where we checked that there are singularities in the pole mass as one varies the top mass and one of the stop masses very close to the 2-body decay threshold. We have also checked that this behavior occurs
+in a simple toy model involving only three massive scalar particles. 
+
+This singular behavior might be quite surprising, because the pole mass is
+supposed to be an observable, and therefore ought to be free of divergences of any kind.
+The resolution is that, similar to problems with infrared divergences, the singularity
+is an artifact of truncating perturbation theory. The 3-loop diagram of Figure 
+\ref{fig:kinks}(c) will diverge 
+like $1/(-\delta)^{3/2}$, and similar diagrams of loop order 
+$L$ will diverge like $(-\delta)^{L-3/2}$. 
+These contributions can presumably be resummed to 
+give a result that is well-behaved as $\delta \rightarrow 0$, although proving
+that is beyond the 
+scope of the present paper.
+
+Note that the above singularity behavior is not tied to the presence, or even existence, of massless gauge bosons. However, if massless gauge bosons are present, then there is another, less severe, type of singular threshold behavior, due to 
+the Feynman diagram shown in Figure \ref{fig:kinks2}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[!tb]
+\centering
+\includegraphics[width=4.0cm,angle=0]{kink_fig2.eps}
+\caption{\label{fig:kinks2}
+Feynman diagrams for the self-energy of a particle that couples to
+two lighter particles, each of which couples to a massless gauge boson. 
+Near threshold, this diagram has a $\ln(-\delta)$ singularity, where 
+$s = (\sqrt{x}+\sqrt{y})^2(1 + \delta)$, with
+$x$ and $y$ the squared masses of the internal particles.}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+In the notation of refs.~\cite{Martin:2003qz,Martin:2005qm}, 
+this arises due to the near-threshold dependence of the corresponding 
+self-energy basis integral:
+\beq
+M(x,x,y,y,0) \Big |_{s = (\sqrt{x} + \sqrt{y})^2(1 + \delta)} &=&
+-\frac{2\pi^2}{(\sqrt{x}+\sqrt{y})^2} \ln(-\delta - i \epsilon)
++ \ldots .
+\eeq 
+Again, the singularity in the computed 2-loop pole mass
+is an artifact of the truncation of perturbation theory, and would presumably be removed
+by a resummation including all diagrams with $2,3,4,\ldots$ massless gauge bosons exchanged between particles $X$ and $Y$.
+
+Note that it requires some bad luck to encounter these threshold 
+singularity problems in 
+practice, as there is
+no good reason why the tree-level masses should be tuned to the high 
+precision necessary to make the problem numerically significant. Nevertheless, it could
+lead to an apparent small\footnote{Note that this kink in the computed pole mass is 
+actually infinitely large as $\delta\rightarrow 0$, but in practice it is confined to an 
+extremely small region in any scan with reasonable increments in masses, 
+because of the 2-loop suppression factor. Therefore, it will always appear to be finite.} 
+``kink" in the computed pole mass if one performs a scan over models by varying the 
+input masses. To avoid this possibility, in our code we test for small $\delta$, and 
+then replace the offending 2-loop self-energy basis integrals $B(x,y')$
+and $V(x,y,u,v)$ 
+and $M(x,x,y,y,0)$
+by values interpolated from slightly
+larger and smaller values of the external momentum invariant. 
+Explicitly, if $\delta<t$ (we choose $t=10^{-3}$ in the current
+version), the integral in question $I(s)$ is 
+replaced by 
+\begin{equation}
+I(s) \approx \frac{1}{2} \left(1 + \frac{\delta}{t}\right) I\left( [1+t]s\right) + 
+\frac{1}{2} \left(1 - \frac{\delta}{t}\right) I\left( [1-t]s\right).
+\end{equation}
+This provides a
+pole mass 
+that varies continuously  in scans of input masses near thresholds, and the
+difference between our value and the value one would obtain by a proper
+resummation should be small. 
+
+
+
+\begin{figure}
+\unitlength=\textwidth
+\begin{picture}(1,0.45)(0,0)
+\put(-0.05,0){\includegraphics[width=0.65 \textwidth]{twoLp}}
+\put(0.45,0){\includegraphics[width=0.65 \textwidth]{crossSec}}
+\put(0.3,0){(a)}
+\put(0.8,0){(b)}
+\end{picture}
+\caption{\label{fig:dm} Effect of the higher order terms on sparticle pole
+  masses and total  production cross-sections for a
+  line in CMSSM space with $M_{1/2}=1$ TeV, $A_0=0$, $\tan \beta=10$ and
+  $\mu>0$.  In (a), $\Delta(m)=m^\textrm{2 loop} / m^\textrm{1
+    loop} - 1$, where
+$m^\textrm{2 loop}$ is the pole mass calculated including the
+${\mathcal{O}}(\alpha_s^2/(16 \pi^2))$ terms whereas 
+$m^\textrm{1 loop}$ is the pole mass calculated at one-loop order. 
+In (b), $\Delta(\sigma)=\sigma^\textrm{2 loop} / \sigma^\textrm{1
+    loop} - 1$, where
+$\sigma^\textrm{2 loop}$ is the 13 TeV LHC production cross-section calculated 
+including the 
+${\mathcal{O}}(\alpha_s^2/(16 \pi^2))$ terms in pole masses whereas 
+$\sigma^\textrm{1 loop}$ is the 13 TeV LHC production cross-section calculated
+at with one-loop pole masses. `gg' refers to di-gluino production, `qg' to
+squark/gluino, `qq' to squark-squark, `qqbar' to squark-antisquark, and
+`ttbar' to stop-antistop production.
+\label{fig:reldiff}
+}
+\end{figure}
+\subsection{Illustration of Results}
+We now illustrate the effect of the ${\mathcal{O}}(\alpha_s^2/(16 \pi^2))$
+corrections to gluino and squark pole masses, taking the constrained minimal
+supersymmetric standard model (CMSSM) pattern of MSSM supersymmetry breaking
+Lagrangian terms. In the CMSSM, at the gauge unification scale $\sim {\mathcal
+  O}(10^{16}) \textrm{~GeV}$ the gaugino masses are set equal to $M_{1/2}$,
+the scalar masses are set to a universal flavour diagonal mass $m_0$ and the
+soft supersymmetry breaking trilinear scalar couplings are set equal to a
+massive parameter $A_0$ times the relevant Yukawa coupling. Here, for
+illustration, we set $M_{1/2}=1$ TeV, $A_0=0$, the ratio of the MSSM's two
+Higgs vacuum expectation values $\tan \beta=10$ and the sign of the Higgs
+superpotential parameter term $\mu$ to be positive. We then allow $m_0$ to
+vary, and plot the relative difference caused by the new higher order terms in
+ Fig.~\ref{fig:reldiff}a. 
+For this illustration, we have {\em not} 
+included two-loop corrections to gauge and
+Yukawa couplings and three-loop renormalisation group equations for the
+superpotential parameters~\cite{Allanach:2014nba}, although with them, the
+results are qualitatively similar.
+The overall message from the figure is that differences of percent level order
+in the
+pole masses of gluinos and squarks arise from the higher order corrections. 
+In the Fig.~\ref{fig:reldiff}a, the plot does not extend to larger values of
+$m_0/M_{1/2}$ because there is no 
+phenomenologically acceptable electroweak symmetry breaking there (the
+superpotential $\mu$ term becomes imaginary at the minimum of the potential,
+indicating a saddle point). 
+The rough size of the two-loop correction is consistent with that
+estimated in the
+previous literature~\cite{Martin:2005ch,Martin:2005eg,Martin:2006ub}.
+In Fig.~\ref{fig:reldiff}b, we show the concomitant effect on the various
+next-to-leading order
+sparticle production cross-sections at the 13 TeV LHC by 
+using {\tt
+  NLL-Fast3.0}~\cite{Beenakker:2011fu,Beenakker:2010nq,Beenakker:1997ut,Beenakker:2011fu,Beenakker:2009ha,Kulesza:2009kq,Kulesza:2008jb,Beenakker:1996ch}. {\tt
+  NLL-Fast3.0} calculates at the next-to-leading order in supersymmetric QCD,
+with next-to-leading 
+logarithm re-summation. However, its output is
+only accurate at the per-mille level, and since in $\Delta(\sigma)$ we are
+cancelling two cross-sections which only differ at the 10$\%$ level, we
+obtain uncertainties at the 
+1$\%$ level, responsible for the apparent scatter of the points in the figure. 
+Nonetheless, we see that the change in the gluino mass due to 
+next-to-next-to leading order (NNLO) effects
+leads to a large 13-16$\%$ reduction in the production cross-section. 
+Other sparticle production cross-section modes shown decrease by more than
+5$\%$, thus accounting for these NNLO effects is important in reducing the
+theoretical uncertainties. Some of the curves stop when $m_0/M_{1/2}>2.2$
+because {\tt NLL-Fast3.0} considers the production cross-sections to be too
+small to be relevant, and so returns zeroes. 
+
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{gluinoApprox.eps}
+\includegraphics[width=0.5\textwidth]{gluinoZoom.eps}
+\caption{\label{fig:gluino} Scale dependence of the gluino pole mass
+  prediction for the CMSSM and $m_0=M_{1/2}=1$ TeV, $A_0=0$, $\tan \beta=10$
+  and $\mu>0$ and various different approximations. The right-hand panel is
+  simply a zoom of the left-hand panel.}
+\end{figure}
+In Fig.~\ref{fig:gluino}, we illustrate the scale dependence of the gluino
+pole mass approximation by varying the scale at which the mass is calculated
+by a factor of 2 around $M_{SUSY}=\sqrt{m_{{\tilde t}_1} m_{{\tilde t}_2}}$. We
+  see the expected reduced scale dependence as the loop order goes
+  successively higher than tree-level. We also see that the 2-loop calculation
+  of the gluino mass that is expanded around the squark and gluino pole masses
+  (`full expansion') displays less scale dependence than the case where the
+  gluino mass is expanded around only the gluino pole mass. This latter case
+  displays less scale dependence than the case where one performs no
+  expansion, instead using the gluino running mass. Thus, we agree with the
+  previous literature that suggested that the perturbation expansion is made
+  more convergent by expanding around pole masses rather than around the
+  running masses. 
+
+\section{Summary and Conclusions}
+Two-loop ${\mathcal{O}}(\alpha_s^2/(16 \pi^2))$ are now included in the public
+release of {\tt \small SOFTSUSY}, and so are available for use. We have
+demonstrated that along a typical line in CMSSM space, they are responsible
+for around $\mathcal{O}(1\%)$ relative changes in the squark and gluino
+masses, which will change their various production cross-sections by around
+$5-16\%$. This source of theoretical error can now be taken into account and 
+consequently reduced by using the new version of {\tt SOFTSUSY}. In turn, the
+connection between measurements and various Lagrangian parameters (in
+particular, soft supersymmetry breaking sparticle mass parameters) is made
+more accurate. Thus, fits of the MSSM or NMSSM to cosmological and collider
+have a smaller associated theoretical error (as would studies of the
+unification of sparticle masses were there to be a discovery and subsequent
+measurement of sparticles).
+Other increases in MSSM or NMSSM mass prediction accuracy await future work:
+Higgs mass predictions, gauginos and sleptons, for instance. 
+
+\section*{Acknowledgments}
+This work has been partially supported by STFC grant 
+ST/L000385/1. We thank the Cambridge SUSY working group for helpful
+discussions. 
+%% DGR added:
+DGR acknowledges the support of the Ohio Supercomputer Center.
+\appendix
+
+\section{Installation of the Increased Accuracy Mode}
+\label{sec:install}
+
+In order to make {\tt \small SOFTSUSY} use the higher order corrections
+described in the present paper, the code containing them must be both compiled
+{\em and}\/ a run-time flag should be set to ensure their employment in the
+spectrum calculation. 
+A compilation argument to the {\tt ./configure}~command is provided in order
+to compile the necessary code to include the higher order corrections:
+\begin{verbatim}
+--enable-two-loop-sparticle-mass-compilation
+\end{verbatim}
+We have included a global boolean variable which controls the higher order
+corrections  at run time (provided that the program has already been compiled
+with  the higher order corrections included):
+\begin{quote}
+ \verb|bool USE_TWO_LOOP_SPARTICLE_MASS|  - if \code{true}, the 
+          $\mathcal{O}(\alpha_s^2)$ corrections are included 
+          (corresponds to the \code{SOFTSUSY Block} parameter \code{22} in the
+          {\tt SOFTSUSY} block of the SUSY Les Houches Accord input). 
+\end{quote}
+By default, the higher order corrections are switched off
+(the boolean value is set to {\tt false}), unless the user sets it in
+their main program, or in the input parameters (see~\ref{sec:run}). 
+One can choose to include the two-loop $\mathcal{O}(\alpha_s^2)$ corrections
+to gluino and squark pole masses independently of whether one includes
+two-loop corrections to the extracted MSSM value of $\alpha_s(M_Z)$ or
+three-loop MSSM renormalisation group equations, as
+described in Ref.~\cite{Allanach:2014nba}.
+        
+To summarise, installation is completed by executing the following commands
+\begin{verbatim}
+> ./configure --enable-two-loop-sparticle-mass-compilation
+> make
+\end{verbatim}
+We remind the reader that the two-loop corrections discussed here are
+available for use either in the MSSM (with or without $R-$parity
+violation)~\cite{Allanach:2009bv} or 
+in the NMSSM~\cite{Allanach:2013kza}.
+
+\section{Running \SOFTSUSY~in the Increased Accuracy Mode}  
+\label{sec:run}
+
+\SOFTSUSY~produces an executable called \code{softpoint.x}. 
+One can run this executable from command line arguments, but the higher order
+corrections will be, by default, switched off. One may switch the two-loop
+$\mathcal{O}(\alpha_s^2)$ corrections described in the present paper on with
+the argument 
+\verb|--two-loop-sparticle-mass|.
+
+For example: 
+{\small\begin{verbatim}
+./softpoint.x sugra --tol=1.0e-5 --m0=250 --m12=100 --a0=-100 --tanBeta=10 --sgnMu=1 --two-loop-sparticle-mass
+\end{verbatim}\normalsize}
+For the calculation
+of the spectrum of single points in parameter space, one could alternatively use the
+SUSY Les Houches Accord (SLHA)~\cite{Skands:2003cj,Allanach:2008qq}
+input/output 
+option. The user must provide a file (e.g.\ the example file included
+in the \SOFTSUSY~distribution
+\code{inOutFiles/lesHouchesInput}) which specifies the model dependent input
+parameters. The program may then be run with
+\small
+\begin{verbatim}
+ ./softpoint.x leshouches < inOutFiles/lesHouchesInput
+\end{verbatim}
+\normalsize
+
+One can change whether the higher order corrections are switched on 
+(provided they have been compiled by
+setting the correct \verb|./configure| flag as described above)
+with
+\code{SOFTSUSY Block} parameter 22 and the two-loop gluino expansion
+approximation with parameter 23:
+\begin{verbatim}
+Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
+   22   1.000000000e+00      # Include 2-loop terms in gluino/squark masses 
+                             # (default of 0 to disable)
+   23   1.000000000e+00      # sets expandAroundGluinoPole parameter (default 1)
+\end{verbatim}
+Parameter 23 is equal to the integer global variable
+\code{expandAroundGluinoPole},  which
+expands the two-loop computation of the gluino mass around the
+gluino and squark masses if it is set to \code{1}, around only the gluino mass
+if set to \code{2} and performs no expansion if it is set to \code{0}.
+\bibliography{ho}
+\bibliographystyle{elsarticle-num}
+\end{document}

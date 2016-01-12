@@ -28,6 +28,8 @@
 #include "utils.h"
 #include "numerics.h"
 
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+
 bool treeLevelGluino = false;
 
 /// NLLFAST version
@@ -139,8 +141,6 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
     bool uni = true, ewsbBCscale = false; double mGutGuess = 1.e16;
     int i; for (i=0; i<=numPoints; i++) {
       USE_TWO_LOOP_SPARTICLE_MASS = false;
-      USE_TWO_LOOP_GAUGE_YUKAWA = false;
-      USE_THREE_LOOP_RGE = false;
 
       MssmSoftsusy r; 
       
@@ -219,8 +219,10 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
       cout << endl;
     }
 }
+#endif
 
 int main(int argc, char *argv[]) {
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
@@ -247,11 +249,15 @@ int main(int argc, char *argv[]) {
     expandAroundGluinoPole = 2;
     cout << "# 2-loop result: gluino expansion\n# Q/MSUSY       Q/GeV           mgluinopole\n";
     scaleVariation(); 
+
   }
   catch(const string & a) { cout << a; return -1; }
   catch(const char * a) { cout << a; return -1; }
   catch(...) { cout << "Unknown type of exception caught.\n"; return -1; }
-
+#else
+  cout << "Error: you must do ./configure --enable-two-loop-sparticle-mass-compilation before making this program\n";
+#endif
   return 0;
 }
+
 
