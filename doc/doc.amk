@@ -4,7 +4,8 @@ doc_DATA = doc/rpcManual.pdf \
            doc/rpvManual.pdf \
            doc/neutManual.pdf \
 	   doc/nmssmManual.pdf \
-	   doc/threeLoop.pdf
+	   doc/threeLoop.pdf \
+	   doc/ho.pdf
 
 DOCFILES = $(doc_DATA)
 
