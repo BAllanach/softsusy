@@ -29,22 +29,21 @@ Quick Installation
 ------------------
 
 Download the gzipped tarball, from the SOFTSUSY homepage 
-http://projects.hepforge.org/softsusy/ for instance softsusy-3.5.0.tar.gz. Then,
+http://projects.hepforge.org/softsusy/ for instance softsusy-3.7.0.tar.gz. Then,
 type (on a linux box)
 
-> tar -xvzf softsusy-3.5.0.tar.gz
-> cd softsusy-3.5.0
-> ./configure
+> tar -xvzf softsusy-3.7.0.tar.gz
+> cd softsusy-3.7.0
+> ./configure 
 > make
-> make install
-
 which should compile the code and run some sample commands. 
 
-If you have trouble with compilation because your machine cannot make the
-documentation (because, for example, it doesn't have LaTeX installed), instead
-of make you can just do 
-> make programs
-which will not try to install the manuals. 
+To compile 2-loop SUSY QCD corrections to squark and gluino pole masses, do
+instead: 
+> tar -xvzf softsusy-3.7.0.tar.gz
+> cd softsusy-3.7.0
+> ./configure --enable-two-loop-sparticle-mass-compilation
+> make
 
 In order to compile with the  three-loop running with leading two-loop
 thresholds for the strong coupling constant and the third generation of

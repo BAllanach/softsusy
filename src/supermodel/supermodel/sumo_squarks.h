@@ -3,7 +3,7 @@
 #ifndef SUMO_SQUARKS_H
 #define SUMO_SQUARKS_H
 
-#include "tsil.h"
+#include "../tsil/tsil.h"
 
 /* Functions defined in se1_squark.c: */
 TSIL_COMPLEX pi1_stop (int, int, TSIL_REAL);
