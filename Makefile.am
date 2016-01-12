@@ -21,7 +21,8 @@ doc_DATA = doc/rpcManual.pdf \
            doc/rpvManual.pdf \
            doc/neutManual.pdf \
 	   doc/nmssmManual.pdf \
-	   doc/threeLoop.pdf
+	   doc/threeLoop.pdf \
+	   doc/ho.pdf
 
 dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh \
 Makefile.nmssmtools CHANGES GUIDELINES COPYING $(doc_DATA) 
