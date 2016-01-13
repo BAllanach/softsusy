@@ -486,10 +486,17 @@ the argument
 
 For example: 
 {\small\begin{verbatim}
-./softpoint.x sugra --tol=1.0e-5 --m0=250 --m12=100 --a0=-100 --tanBeta=10 --sgnMu=1 --two-loop-sparticle-mass
+./softpoint.x sugra --tol=1.0e-5 --m0=250 --m12=100 --a0=-100 --tanBeta=10 --sgnMu=1 \
+--two-loop-sparticle-mass=<expandAroundGluinoPole>
 \end{verbatim}\normalsize}
+The variable \code{expandAroundGluinoPole}
+expands the two-loop computation of the gluino mass around the
+gluino and squark masses if it is set to \code{1}, around only the gluino mass
+if set to \code{2} and performs no expansion if it is set to \code{0}.
+
 For the calculation
-of the spectrum of single points in parameter space, one could alternatively use the
+of the spectrum of single points in parameter space, one could alternatively
+use the 
 SUSY Les Houches Accord (SLHA)~\cite{Skands:2003cj,Allanach:2008qq}
 input/output 
 option. The user must provide a file (e.g.\ the example file included
@@ -515,10 +522,7 @@ Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
    23   1.000000000e+00      # sets expandAroundGluinoPole parameter (default 1)
 \end{verbatim}
 Parameter 23 is equal to the integer global variable
-\code{expandAroundGluinoPole},  which
-expands the two-loop computation of the gluino mass around the
-gluino and squark masses if it is set to \code{1}, around only the gluino mass
-if set to \code{2} and performs no expansion if it is set to \code{0}.
+\code{expandAroundGluinoPole}.
 \bibliography{ho}
 \bibliographystyle{elsarticle-num}
 \end{document}
