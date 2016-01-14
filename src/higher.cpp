@@ -163,6 +163,15 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
 		ewsbBCscale);
       //      ho.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax, 
       //			       0, ewsbBCscale);
+      
+      double mst1_1loop = minimum(r.displayPhys().mu(2, 3), 
+				  r.displayPhys().mu(1, 3));
+      double mst1_2loop = minimum(ho.displayPhys().mu(2, 3), 
+				  ho.displayPhys().mu(1, 3));
+      double mst2_1loop = maximum(r.displayPhys().mu(2, 3), 
+				  r.displayPhys().mu(1, 3));
+      double mst2_2loop = maximum(ho.displayPhys().mu(2, 3), 
+				  ho.displayPhys().mu(1, 3));
 
       if (r.displayProblem().test()) cout << "# ";
       cout << m0Overm12 << " "                 // 1
@@ -174,9 +183,9 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
 	   << ho.displayPhys().mu(1, 1)/r.displayPhys().mu(1, 1)-1 << " " // 7
 	   << r.displayPhys().mu(2, 3) << " "  // 8
 	   << ho.displayPhys().mu(2, 3) << " " // 9
-	   << ho.displayPhys().mu(2, 3)/r.displayPhys().mu(2, 3)-1 << " " // 10
-	   << r.displayPhys().mu(1, 3) << " "  // 11
-	   << ho.displayPhys().mu(1, 3) << " " // 12
+	   << mst1_2loop / mst1_1loop - 1. << " " // 10
+	   << mst2_1loop << " "  // 11
+	   << mst2_2loop << " " // 12
 	   << r.displayPhys().md(1, 1) << " "  // 13
 	   << ho.displayPhys().md(1, 1) << " " // 14
 	   << r.displayPhys().md(1, 3) << " "  // 15
@@ -239,24 +248,21 @@ int main(int argc, char *argv[]) {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
-  TOLERANCE = 1.0e-4;
+  TOLERANCE = 1.0e-5;
   try {
-/* This is what is currently in Figure 3 of the present paper.
-*/
-    doScan(0.1, 4.5, 20); cout << endl << endl;
+    /* This is what is currently in Figure 3 of the present paper.*/
+    //   doScan(0.1, 3.3, 20); cout << endl << endl; 
 
 /* A higher resolution scan. Use this for the paper instead? 
-   Much slower of course...
-    doScan(0.1, 3.3, 320); cout << endl << endl;
-*/
+   Much slower of course...*/
+   doScan(0.1, 3.3, 320); cout << endl << endl;
 
 /* These should agree at the point m0/mhalf = 1.76, but they all give different
-   results for delta(mstop1)/mstop1 there! Bug??!?
+   results for delta(mstop1)/mstop1 there! Bug??!? 
     doScan(0.16, 1.76, 16); cout << endl << endl;
     doScan(1.60, 1.76, 16); cout << endl << endl;
     doScan(1.66, 1.76, 10); cout << endl << endl;
-    doScan(1.72, 1.76, 2); cout << endl << endl;
-*/
+    doScan(1.72, 1.76, 2); cout << endl << endl;*/
 
     cout << "# Figure 4, tree-level gluino mass\n";
     cout << "# Q/MSUSY       Q/GeV           M3(Q)\n";
