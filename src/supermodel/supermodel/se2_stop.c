@@ -47,7 +47,10 @@ TSIL_COMPLEX pi20_stop (int i, int j, TSIL_REAL s)
   TSIL_COMPLEX mFFFFS, mFFffS, mFfFfS, mFffFS, mffffS;
   TSIL_COMPLEX sSSS;
 
+/* SPM Jan. 14 2016. Apparently this should be NO sometimes, but isn't.
   if (arePandNstopSet == NO) SetPandNstop ();
+*/
+  SetPandNstop ();
 
   /* 0502168 eq. (4.8), term by term: */
   for (k=0; k<2; k++)
@@ -312,7 +315,10 @@ TSIL_COMPLEX pi21_stop (int i, int j, TSIL_REAL s)
   TSIL_COMPLEX gFF,gff;
   TSIL_COMPLEX gSSFF,gSSff;
 
+/* SPM Jan. 14 2016. Apparently this should be NO sometimes, but isn't.
   if (arePandNstopSet == NO) SetPandNstop ();
+*/
+  SetPandNstop ();
 
   TSIL_SetParameters (&bar,m2_top,m2_top,m2_gluino,m2_gluino,0.0L,Q2);
   TSIL_Evaluate (&bar, s);
@@ -359,7 +365,10 @@ TSIL_COMPLEX pi21tilde_stop (int i, TSIL_REAL s)
   TSIL_COMPLEX gFF,gff;
   TSIL_COMPLEX gSSFF,gSSff;
 
+/* SPM Jan. 14 2016. Apparently this should be NO sometimes, but isn't.
   if (arePandNstopSet == NO) SetPandNstop ();
+*/
+  SetPandNstop ();
 
   TSIL_SetParameters (&bar,m2_top,m2_top,m2_gluino,m2_gluino,0.0L,Q2);
   TSIL_Evaluate (&bar, s);
@@ -430,8 +439,11 @@ TSIL_COMPLEX pi22tilde_stop (int i, TSIL_REAL s)
 
 TSIL_COMPLEX pi20tilde_stop (int i, TSIL_REAL s) 
 {
+/* SPM Jan. 14 2016. Apparently this should be NO sometimes, but isn't.
   if (arePandNstopSet == NO) SetPandNstop ();
-  
+*/
+  SetPandNstop ();
+
   return pi20_stop(i, i, s)
     + pi1_stop(i, i, s)*2.0L*g3*g3*Cq*(BpFF(m2_top,m2_gluino,s,Q2)
      - Nstop[i][i]*m_top*m_gluino*Bpff(m2_top,m2_gluino,s,Q2));
