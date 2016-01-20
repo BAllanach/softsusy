@@ -52,29 +52,33 @@ void getCrossSection(MssmSoftsusy & r, double m0, double m12, double a0,
   int err = system(buff);
   xsGG = 0.; xsSG = 0.; xsSS = 0.; xsSB = 0.; xsTB = 0.;
 
-  char c[500];
-  char fn[500];
-  sprintf(fn, "/home/code/bca20/nllfast-3.1-13TeV/output");
+  string c;
   if (!err) {
-    fstream fin(fn, ios::in); 
-  // Following lines corrected Jan. 15 2016 by SPM, to give NLL+NLO 
-  // cross-sections. Previously, xsGG, xsSG, xsSS, and xsSB were 
-  // all NLO only, and xsTB was d_mu+.
+    //    fstream fin(fn, ios::in); 
+    fstream fin("/home/bca20/code/nllfast-3.1-13TeV/output", ios::in); 
+    // Following lines corrected Jan. 15 2016 by SPM, to give NLL+NLO 
+    // cross-sections. Previously, xsGG, xsSG, xsSS, and xsSB were 
+    // all NLO only, and xsTB was d_mu+.
+    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c
+    	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
+	>> c >> c >> c >> c >> c >> xsGG >> c >> c >> c >> c >> c >> c 
+	>> c >> c;
     fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
 	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> c >> xsGG >> c >> c >> c >> c >> c >> c >> c >> c;
+	>> c >> c >> c >> c >> c >> xsSG >> c >> c >> c >> c >> c >> c 
+	>> c >> c;
     fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
 	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> c >> xsSG >> c >> c >> c >> c >> c >> c >> c >> c;
+	>> c >> c >> c >> c >> c >> xsSS >> c >> c >> c >> c >> c >> c 
+	>> c >> c;
     fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
 	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> c >> xsSS >> c >> c >> c >> c >> c >> c >> c >> c;
+	>> c >> c >> c >> c >> c >> xsSB >> c >> c >> c >> c >> c >> c 
+	>> c >> c;
     fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
 	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> c >> xsSB >> c >> c >> c >> c >> c >> c >> c >> c;
-    fin >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c 
-	>> c >> c >> c >> xsTB >> c >> c >> c >> c >> c >> c >> c >> c >> c >> c;
+	>> c >> c >> c >> xsTB >> c >> c >> c >> c >> c >> c >> c >> c
+	>> c >> c;
     fin.close();
 
   } else  cout << "CROSS SECTION ERROR\n" << xsGG;
@@ -86,6 +90,7 @@ void getCrossSection(MssmSoftsusy & r, double m0, double m12, double a0,
   cout << "ss " << xsSS << "\n";   
   cout << "sb " << xsSB << "\n";   
   cout << "tb " << xsTB << "\n\n";   
+  exit(0);
   */
 
   return;
