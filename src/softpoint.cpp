@@ -44,7 +44,9 @@ void errorCall() {
   ii << "--three-loop-rges switches on 3-loop RGEs\n";
 #endif ///< COMPILE_THREE_LOOP_RGE
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
-  ii << "--two-loop-sparticle-mass=n switches on various 2 loop sparticle mass thresholds\nn=0, 1 or 2 for no expansion, expansion around gluino and squark pole masses or\nexpansion around gluino pole, respectively.\n";
+  ii << "--two-loop-sparticle-masses switches on SUSYQCD two-loop corrections to squark\n and gluino pole masses.\n";
+  ii << "--two-loop-sparticle-mass-method=<n> chooses the expansion of these terms:\n";
+  ii << "1=expansion around gluino pole mass only or 2=expand around\ngluino and squark pole masses.\n";
 #endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
   ii << "--mgut=unified sets the scale at which SUSY breaking terms are set to the GUT\n";
   ii << "scale where g1=g2. --mgut=<value> sets it to a fixed scale, ";
@@ -221,18 +223,23 @@ int main(int argc, char *argv[]) {
 	  cout << "Please use the --enable-two-loop-susy-thresholds with ./configure\n";
 #endif
 	}
-	else if (starts_with(argv[i], "--two-loop-sparticle-mass=")) {
+	else if (starts_with(argv[i], "--two-loop-sparticle-masses")) {
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 	  USE_TWO_LOOP_SPARTICLE_MASS = true;
-	  expandAroundGluinoPole = 
-	    get_value(argv[i], "--two-loop-sparticle-mass=");
 #else
 	  compilationProblem = true;
 	  cout << "Two-loop sparticle masses not compiled.\n";
 	  cout << "Please use the --enable-two-loop-sparticle-mass with ./configure\n";
 #endif
 	}
-
+	else if (starts_with(argv[i], "--two-loop-sparticle-mass-method="))
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+	  expandAroundGluinoPole = get_value(argv[i], "--two-loop-sparticle-mass-method=");
+#else
+	  compilationProblem = true;
+	  cout << "Two-loop sparticle masses not compiled.\n";
+	  cout << "Please use the --enable-two-loop-sparticle-mass with ./configure\n";
+#endif
 	else if (starts_with(argv[i], "--QEWSB=")) 
 	  QEWSB = get_value(argv[i], "--QEWSB=");
       }
@@ -1243,8 +1250,8 @@ int main(int argc, char *argv[]) {
 		  }
 		  case 23: {
 		    int num = int(d + EPSTOL);
-		    if (num >= 0 && num <=2) expandAroundGluinoPole = num;
-		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 0 and 2 inclusive)\n";
+		    if (num > 0 && num <=3) expandAroundGluinoPole = num;
+		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 0 and 2 inclusive)\n";		    
 		    break;
 		  }
 #endif
@@ -1377,7 +1384,7 @@ int main(int argc, char *argv[]) {
       }
       
       oneset.toMz();
-      
+
     switch (susy_model) {
     case MSSM:
       r->fixedPointIteration(boundaryCondition, mgutGuess, pars, sgnMu, tanb, 

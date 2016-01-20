@@ -1,4 +1,4 @@
-# WARNING: Don't understand data input 23 0.000000e+00 in block SOFTSUSY: ignoring it
+#WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 0 and 2 inclusive)
 # SOFTSUSY3.7.0 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 Block SPINFO          # Program information
@@ -24,6 +24,7 @@ Block EXTPAR               # scale of SUSY breaking BCs
      0    1.87810179e+16   # MX scale
 # SOFTSUSY-specific non SLHA information:
 # MIXING=0 Desired accuracy=1.00000000e-03 Achieved accuracy=6.13070734e-04
+# 2-loop SUSY QCD computation of squark/gluino pole masses are off
 Block MASS                      # Mass spectrum
 # PDG code     mass             particle
         24     8.03820348e+01   # MW

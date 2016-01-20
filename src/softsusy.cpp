@@ -6675,7 +6675,10 @@ void MssmSoftsusy::physical(int accuracy) {
   if(accuracy != 0 && USE_TWO_LOOP_SPARTICLE_MASS) {
     supermodel smodel;
 
-    smodel.expandAroundGluinoPole = expandAroundGluinoPole;
+    if (expandAroundGluinoPole == 1) smodel.expandAroundGluinoPole = 0;
+    if (expandAroundGluinoPole == 2) smodel.expandAroundGluinoPole = 2;    
+    if (expandAroundGluinoPole == 3) smodel.expandAroundGluinoPole = 1;    
+    smodel.expandAroundGluinoPole = expandAroundGluinoPole - 1;
     smodel.vd = displayHvev() * cos(atan(displayTanb())) / sqrt(2.0);
     smodel.vu = displayHvev() * sin(atan(displayTanb())) / sqrt(2.0);
     

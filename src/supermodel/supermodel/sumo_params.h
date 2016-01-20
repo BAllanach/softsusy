@@ -4,6 +4,6 @@
 #define _SUMO_PARAMS_H_
 
 /* Tolerance controlling interpolation in threshod cases. */
-#define THRESH_TOL 0.01L
+#define THRESH_TOL 0.04L
 
 #endif

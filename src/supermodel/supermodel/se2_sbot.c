@@ -14,7 +14,7 @@ TSIL_COMPLEX Pi1_sbot (int, int, TSIL_REAL);
 
 /* Used in multiple routines below */
 TSIL_COMPLEX Psbot[2][2], Nsbot[2][2];
-int arePandNsbotSet = NO;
+/* int arePandNsbotSet = NO; */
 
 /* -------------------------------------------------------------- */
 /* -------------------------------------------------------------- */
@@ -30,7 +30,7 @@ void SetPandNsbot ()
       /* printf("Psbot[%d][%d] = ", i,j);TSIL_cprintf(Psbot[i][j]);printf("\n"); */
       /* printf("Nsbot[%d][%d] = ", i,j);TSIL_cprintf(Nsbot[i][j]);printf("\n"); */
     }
-  arePandNsbotSet = YES;
+  /* arePandNsbotSet = YES; */
 }
 
 /* -------------------------------------------------------------- */
@@ -48,7 +48,10 @@ TSIL_COMPLEX pi20_sbot (int i, int j, TSIL_REAL s)
   TSIL_COMPLEX mFFFFS, mFFffS, mFfFfS, mFffFS, mffffS;
   TSIL_COMPLEX sSSS;
 
+/* SPM Jan. 14 2016. Apparently this should be NO sometimes, but isn't.
   if (arePandNsbotSet == NO) SetPandNsbot ();
+*/
+  SetPandNsbot ();
 
   /* 0502168 eq. (4.8), term by term: */
   for (k=0; k<2; k++)
@@ -321,7 +324,10 @@ TSIL_COMPLEX pi21tilde_sbot (int i, TSIL_REAL s)
   TSIL_COMPLEX gFF,gff;
   TSIL_COMPLEX gSSFF,gSSff;
 
+/* SPM Jan. 14 2016. Apparently this should be NO sometimes, but isn't.
   if (arePandNsbotSet == NO) SetPandNsbot ();
+*/
+  SetPandNsbot ();
 
   TSIL_SetParameters (&bar,m2_bot,m2_bot,m2_gluino,m2_gluino,0.0L,Q2);
   TSIL_Evaluate (&bar, s);
@@ -397,7 +403,10 @@ TSIL_COMPLEX pi22tilde_sbot (int i, TSIL_REAL s)
 
 TSIL_COMPLEX pi20tilde_sbot (int i, TSIL_REAL s) 
 {
+/* SPM Jan. 14 2016. Apparently this should be NO sometimes, but isn't.
   if (arePandNsbotSet == NO) SetPandNsbot ();
+*/
+  SetPandNsbot ();
 
   return pi20_sbot (i, i, s) 
     + pi1_sbot (i, i, s) * 2.0L * g3 * g3 * Cq * (BpFF(m2_bot,m2_gluino,s,Q2) 

@@ -45,6 +45,7 @@ Block RVLAMLQDIN           # input LLE couplings at MGUT
   3 3 3  -3.50000000e-05   # lambda'_{333}
 # SOFTSUSY-specific non SLHA information:
 # MIXING=1 Desired accuracy=1.00000000e-04 Achieved accuracy=1.94300020e-05
+# 2-loop SUSY QCD computation of squark/gluino pole masses are off
 Block MASS                      # Mass spectrum
 # PDG code     mass             particle
         24     8.04716108e+01   # MW

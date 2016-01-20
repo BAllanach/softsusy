@@ -5,7 +5,7 @@
 
 #include "supermodel.h"
 #define MAXITERS 10
-#define ITERTOL  1.e-4
+#define ITERTOL  1.e-5
 
 /* Self energy functions defined in se_gluino.c: */
 SUMO_COMPLEX pi1tilde_gluino (void);
