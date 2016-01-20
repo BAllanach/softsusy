@@ -14,7 +14,7 @@ TSIL_COMPLEX Pi1_sbot (int, int, TSIL_REAL);
 
 /* Used in multiple routines below */
 TSIL_COMPLEX Psbot[2][2], Nsbot[2][2];
-int arePandNsbotSet = NO;
+/* int arePandNsbotSet = NO; */
 
 /* -------------------------------------------------------------- */
 /* -------------------------------------------------------------- */
@@ -30,7 +30,7 @@ void SetPandNsbot ()
       /* printf("Psbot[%d][%d] = ", i,j);TSIL_cprintf(Psbot[i][j]);printf("\n"); */
       /* printf("Nsbot[%d][%d] = ", i,j);TSIL_cprintf(Nsbot[i][j]);printf("\n"); */
     }
-  arePandNsbotSet = YES;
+  /* arePandNsbotSet = YES; */
 }
 
 /* -------------------------------------------------------------- */

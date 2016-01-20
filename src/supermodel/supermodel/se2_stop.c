@@ -14,7 +14,7 @@ TSIL_COMPLEX Pi1_stop (int, int, TSIL_REAL);
 
 /* Used in multiple routines below */
 TSIL_COMPLEX Pstop[2][2], Nstop[2][2];
-int arePandNstopSet = NO;
+/* int arePandNstopSet = NO; */
 
 /* -------------------------------------------------------------- */
 /* -------------------------------------------------------------- */
@@ -29,7 +29,7 @@ void SetPandNstop ()
       Nstop[i][j] = Lstop[i]*Rstopc[j] + Rstop[i]*Lstopc[j];
     }
 
-  arePandNstopSet = YES;
+  /* arePandNstopSet = YES; */
 }
 
 /* -------------------------------------------------------------- */
