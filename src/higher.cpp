@@ -15,7 +15,7 @@
                 cross-sections at the 13 TeV LHC. You will need to install 
                 NLL-fast (google it) in some directory, and compile it to get 
                 an executable which you should call nllfast13. Then change 
-                the (two) references to /home/bca20/code/nllfast-3.1-13TeV 
+                the variable fullPathToNllFast just
                 below to point to the directory you've placed nllfast13 in. 
 */
 
@@ -33,6 +33,9 @@
 
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 
+/// Change this variable to the location in your code of nllfast
+const char * fullPathToNllFast = "/home/bca20/code/nllfast-3.1-13TeV/";
+
 bool treeLevelGluino = false;
 
 /// NLLFAST version
@@ -46,9 +49,9 @@ void getCrossSection(MssmSoftsusy & r, double m0, double m12, double a0,
 
   char buff[500];
 
-  sprintf(buff, "cd /home/bca20/code/nllfast-3.1-13TeV/; ./nllfast13 gg mstw %f %f > output 2> err; ./nllfast13 sg mstw %f %f >> output 2>> err; ./nllfast13 ss mstw %f %f >> output 2>> err; ./nllfast13 sb mstw %f %f >> output 2>> err; ./nllfast13 st mstw %f >> output 2>> err",mq,mg,mq,mg,mq,mg,mq,mg,mt1);
+  sprintf(buff, "cd %s; ./nllfast13 gg mstw %f %f > output 2> err; ./nllfast13 sg mstw %f %f >> output 2>> err; ./nllfast13 ss mstw %f %f >> output 2>> err; ./nllfast13 sb mstw %f %f >> output 2>> err; ./nllfast13 st mstw %f >> output 2>> err",fullPathToNllFast,mq,mg,mq,mg,mq,mg,mq,mg,mt1);
 
-  //  cout << buff << endl;
+  //  cout << buff << endl; exit(0)
   int err = system(buff);
   xsGG = 0.; xsSG = 0.; xsSS = 0.; xsSB = 0.; xsTB = 0.;
 
