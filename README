@@ -110,7 +110,7 @@ Block SOFTSUSY           # SOFTSUSY specific inputs
  20   <gyThresholds>     # If>0, switch on gauge/Yukawa two-loop thresholds (see manual [5] for details). 
                            If=31, they all are switched on (default 0 to disable).
  22    <2-loop squark/gluino>   # Include 2-loop terms in gluino/squark masses (default of 0 to disable)
- 23    <expandAroundGluinoPole> # sets expandAroundGluinoPole parameter (default 1)
+ 23    <expandAroundGluinoPole> # sets expandAroundGluinoPole parameter (default 3)
 
 HIGH ORDERS MODE
 ----------------

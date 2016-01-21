@@ -6678,7 +6678,7 @@ void MssmSoftsusy::physical(int accuracy) {
     if (expandAroundGluinoPole == 1) smodel.expandAroundGluinoPole = 0;
     if (expandAroundGluinoPole == 2) smodel.expandAroundGluinoPole = 2;    
     if (expandAroundGluinoPole == 3) smodel.expandAroundGluinoPole = 1;    
-    smodel.expandAroundGluinoPole = expandAroundGluinoPole - 1;
+
     smodel.vd = displayHvev() * cos(atan(displayTanb())) / sqrt(2.0);
     smodel.vu = displayHvev() * sin(atan(displayTanb())) / sqrt(2.0);
     
@@ -9786,9 +9786,9 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
   out << "# 2-loop SUSY QCD computation of squark/gluino pole masses are ";
   if (USE_TWO_LOOP_SPARTICLE_MASS) {
     out << "on.\n";
-    if (expandAroundGluinoPole == 0) out << "# No expansion around pole masses.\n";
-    if (expandAroundGluinoPole == 1) out << "# Expansion around gluino and squark pole masses.\n";    
+    if (expandAroundGluinoPole == 1) out << "# No expansion around pole masses.\n";
     if (expandAroundGluinoPole == 2) out << "# Expansion around gluino pole mass.\n";    
+    if (expandAroundGluinoPole == 3) out << "# Expansion around gluino and squark pole masses.\n";    
   }
   else out << "off" << endl;
 #endif  
