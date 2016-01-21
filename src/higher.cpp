@@ -57,8 +57,8 @@ void getCrossSection(MssmSoftsusy & r, double m0, double m12, double a0,
 
   string c;
   if (!err) {
-    //    fstream fin(fn, ios::in); 
-    fstream fin("/home/bca20/code/nllfast-3.1-13TeV/output", ios::in); 
+    char fn[500]; sprintf(fn,"%s/output",fullPathToNllFast);
+    fstream fin(fn, ios::in); 
     // Following lines corrected Jan. 15 2016 by SPM, to give NLL+NLO 
     // cross-sections. Previously, xsGG, xsSG, xsSS, and xsSB were 
     // all NLO only, and xsTB was d_mu+.
