@@ -51,7 +51,6 @@ void getCrossSection(MssmSoftsusy & r, double m0, double m12, double a0,
 
   sprintf(buff, "cd %s; ./nllfast13 gg mstw %f %f > output 2> err; ./nllfast13 sg mstw %f %f >> output 2>> err; ./nllfast13 ss mstw %f %f >> output 2>> err; ./nllfast13 sb mstw %f %f >> output 2>> err; ./nllfast13 st mstw %f >> output 2>> err",fullPathToNllFast,mq,mg,mq,mg,mq,mg,mq,mg,mt1);
 
-  //  cout << buff << endl; exit(0)
   int err = system(buff);
   xsGG = 0.; xsSG = 0.; xsSS = 0.; xsSB = 0.; xsTB = 0.;
 
@@ -161,7 +160,7 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
 
     /// Sets format of output: 6 decimal places
     outputCharacteristics(9);
-    expandAroundGluinoPole = 1;
+    expandAroundGluinoPole = 3;
 
     double m12 = 1000., m0 = 0., m0Overm12 = 0., a0 = -2000., tanb = 10.;
 
@@ -293,7 +292,7 @@ int main(int argc, char *argv[]) {
 
     treeLevelGluino = false;
     USE_TWO_LOOP_SPARTICLE_MASS = true;
-    expandAroundGluinoPole = 1;
+    expandAroundGluinoPole = 3;
     cout << "\n# Figure 4, 2-loop pole masses, gluino re-expanded about both gluino and squark\n";
     scaleVariation(); 
 
@@ -305,7 +304,7 @@ int main(int argc, char *argv[]) {
 
     treeLevelGluino = false;
     USE_TWO_LOOP_SPARTICLE_MASS = true;
-    expandAroundGluinoPole = 0;
+    expandAroundGluinoPole = 1;
     cout << "\n# Figure 4, 2-loop pole masses, no re-expansion\n";
     scaleVariation(); 
   }

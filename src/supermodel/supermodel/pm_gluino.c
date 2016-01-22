@@ -35,16 +35,18 @@ SUMO_COMPLEX pi1_sdR (int, TSIL_REAL);
 
 /* Evaluates gluino pole mass at specified loop order.  
 
-   If expand_around_pole == NO (or 0) then lagrangian masses are used
-   everywhere.
-
-   If expand_around_pole == YES (or 1) then we expand around both
-   gluino and squark pole masses and iterate unttil the relative
-   change in cabs(m2) from one iteration to the next ie less than
-   ITERTOL.  Note that squark pole masses must be evaluated first!
+   If expand_around_pole == NONE (or 1) then lagrangian masses are
+   used everywhere.
 
    If expand_around_pole == GLUINO (or 2) then the self energy is
-   expanded around gluino pole mass only.
+   expanded around gluino pole mass only, and iterated until the
+   relative change in cabs(m2) from one iteration to the next is less
+   than ITERTOL.
+
+   If expand_around_pole == FULL (or 3) then we expand around gluino,
+   squark, and top quark pole masses and iterate until the relative
+   change in cabs(m2) from one iteration to the next ie less than
+   ITERTOL.  Note that squark and top pole masses must be set first!
 
    The return value is:
      * 0 for evaluation with lagrangian masses.
@@ -67,7 +69,7 @@ int SUMO_GluinoPole (int loop_order, int expand_around_pole)
 
   /* If expanding around pole masses, save lagrangian masses, restore
      later... */
-  if (expand_around_pole == YES) {
+  if (expand_around_pole == FULL) {
 
     for (i=0; i<2; i++) {
       m2_stop_saf[i] = m2_stop[i];
@@ -84,7 +86,7 @@ int SUMO_GluinoPole (int loop_order, int expand_around_pole)
   /* Tree mass^2 is the starting value in any case: */
   cm2_result = m2_gluino;
 
-  if (expand_around_pole == NO || loop_order < 2) {
+  if (expand_around_pole == NONE || loop_order < 2) {
 
     if (loop_order > 0)
       cm2_result += pi1tilde_gluino ();
@@ -188,11 +190,11 @@ int SUMO_GluinoPole (int loop_order, int expand_around_pole)
   M_gluino = TSIL_SQRT(M2_gluino);
 
   /* Put back correct tree values if we changed them: */
-  if (expand_around_pole) {
+  if (expand_around_pole != NONE) {
     m2_gluino = m2_gluino_saf;
     m_gluino = TSIL_SQRT(m2_gluino);
   }
-  if (expand_around_pole == YES) {
+  if (expand_around_pole == FULL) {
     for (i=0; i<2; i++) {
       m2_stop[i] = m2_stop_saf[i];
       m2_sbot[i] = m2_sbot_saf[i];

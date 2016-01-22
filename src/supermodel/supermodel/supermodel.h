@@ -22,7 +22,8 @@ enum {FALSE, TRUE}; /* Also present in tsil_global.h */
 enum {NO, YES};     /* Also present in tsil_global.h */
 enum {UNSET, SET};
 enum {UNEVALUATED, EVALUATED};
-enum {GLUINO=2, SQUARK};
+/* For gluino mass re-expansion; codes match SOFTSUSY: */
+enum {NONE=1, GLUINO, FULL};
 
 /* Size codes */
 enum {LONG_DOUBLE, DOUBLE};
