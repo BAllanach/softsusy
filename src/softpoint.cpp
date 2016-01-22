@@ -232,7 +232,7 @@ int main(int argc, char *argv[]) {
 	  cout << "Please use the --enable-two-loop-sparticle-mass with ./configure\n";
 #endif
 	}
-	else if (starts_with(argv[i], "--two-loop-sparticle-mass-method="))
+	else if (starts_with(argv[i], "--two-loop-sparticle-mass-method=")) {
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 	  expandAroundGluinoPole = get_value(argv[i], "--two-loop-sparticle-mass-method=");
 #else
@@ -240,8 +240,9 @@ int main(int argc, char *argv[]) {
 	  cout << "Two-loop sparticle masses not compiled.\n";
 	  cout << "Please use the --enable-two-loop-sparticle-mass with ./configure\n";
 #endif
-	else if (starts_with(argv[i], "--QEWSB=")) 
-	  QEWSB = get_value(argv[i], "--QEWSB=");
+	}
+	  else if (starts_with(argv[i], "--QEWSB=")) 
+	    QEWSB = get_value(argv[i], "--QEWSB=");
       }
       if (compilationProblem) exit(-1);
       if (tanb < 1.5 || tanb > 70.) {
