@@ -1,4 +1,4 @@
-#WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 0 and 2 inclusive)
+#WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 1 and 3 inclusive)
 # SOFTSUSY3.7.0 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 Block SPINFO          # Program information
