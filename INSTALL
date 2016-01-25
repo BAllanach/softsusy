@@ -37,6 +37,8 @@ type (on a linux box)
 > ./configure 
 > make
 which should compile the code and run some sample commands. 
+If you have problems, try doing 
+> autoreconf -vif && ./configure && make
 
 To compile 2-loop SUSY QCD corrections to squark and gluino pole masses, do
 instead: 

@@ -1252,7 +1252,7 @@ int main(int argc, char *argv[]) {
 		  case 23: {
 		    int num = int(d + EPSTOL);
 		    if (num > 0 && num <=3) expandAroundGluinoPole = num;
-		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 0 and 2 inclusive)\n";		    
+		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 1 and 3 inclusive)\n";		    
 		    break;
 		  }
 #endif

@@ -2740,10 +2740,12 @@ ostream & operator <<(ostream &left, const RpvNeutrino & r) {
   cout << " tan^2(t12)=" << sqr(tan(t12)) << endl;
 
   cout << " dm^2(solar)=" << 1.0e18 * (sqr(r.displayPhysNuMasses().display(1)) - 
-				       sqr(r.displayPhysNuMasses().display(2))) << "eV^2" << endl;
-  cout << " dm^2(atm)=" << 1.0e18 * sqr(r.displayPhysNuMasses().display(1)) << endl;
+				       sqr(r.displayPhysNuMasses().display(2))) 
+       << " eV^2" << endl;
+  cout << " dm^2(atm)=" << 1.0e18 * sqr(r.displayPhysNuMasses().display(1)) 
+       << " eV^2" << endl;
 
-  left << HR;
+  left << HR << endl;
 
   return left;
 }
