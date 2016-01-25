@@ -40,7 +40,6 @@ IFIC/??
   Cambridge, CB3  0WA, United Kingdom}
 \address[illinois]{Department of Physics, Northern Illinois University, DeKalb, IL 60115, United States of America
 }
-%\address[fnal]{Fermi National Accelerator Laboratory, P.O. Box 500, Batavia IL 60510, %United States of America}
 \address[otterbein]{Department of Physics, Otterbein University, Westerville,
   OH 43081, United States of America}
   \address[valencia]{Instituto de F\'i­sica Corpuscular, IFIC-UV/CSIC, E-46980
@@ -79,7 +78,7 @@ Mac OS X 10.7.5
 {\em External routines:}\/ None \\
 {\em Typical running time:}\/ 15 seconds per parameter point. \\
 {\em Nature of problem:}\/ Calculating supersymmetric particle spectrum, 
-mixing parameters and couplings in the MSSM or the NMSSM. The solution to
+mixing parameters and couplings in the MSSM or the NMSSM\@. The solution to
 the renormalisation group equations must be consistent 
 with theoretical boundary conditions on supersymmetry breaking parameters, as
 well as a weak-scale boundary condition on gauge 
@@ -94,12 +93,12 @@ does not have an acceptable minimum), \SOFTSUSY{} returns an error message.
 The higher order corrections included are for the 
 MSSM ($R-$parity conserving or violating) or the real $R-$parity conserving
 NMSSM only. \\
-{\em CPC Classification:} 11.1 and 11.6. \\
-{\em Does the new version supersede the previous version?:} Yes. \\
-{\em Reasons for the new version:} It is desirable to improve the accuracy of
+{\em CPC Classification:}\/ 11.1 and 11.6. \\
+{\em Does the new version supersede the previous version?:}\/ Yes. \\
+{\em Reasons for the new version:}\/ It is desirable to improve the accuracy of
 the squark and gluinos mass predictions, since they strongly affect
 supersymmetric particle production cross-sections at colliders.  \\
-{\em Summary of revisions:} 
+{\em Summary of revisions:}\/
 The calculation of the squark and gluino pole masses is extended to be of
 next-to-next-to leading order in SUSYQCD, i.e.\ including terms up to ${\mathcal
   O}(g_s^4/(16 \pi^2)^2)$.
@@ -138,7 +137,7 @@ this with a greater accuracy, we must use higher orders in perturbation
 theory. Of particular interest is the connection between the supersymmetric
 masses of the squarks and gluinos and the experimental observables (functions
 of jet and missing momenta). The experimental observables may be used to infer
-{\em pole} (or kinematic) masses of the supersymmetric particles, which may
+{\em pole}\/ (or kinematic) masses of the supersymmetric particles, which may
 then be connected via perturbation theory to the more fundamental
 supersymmetry breaking parameters in the Lagrangian. These could then be used
 to test the underlying supersymmetry breaking mediation
@@ -195,7 +194,7 @@ The version of {\tt SOFTSUSY} described here now contains these
 computations~\cite{Martin:2005ch,Martin:2005eg}. 
 A library for computing two-loop self-energy integrals, {\tt
 TSIL}~\cite{Martin:2005qm}, is included within the {\tt SOFTSUSY}
-distribution: there is no need to download it separately.
+distribution; there is no need to download it separately.
 
 In addition, the gluino result has been improved by re-expanding the gluino 
 self-energy function squared mass arguments around the gluino, squark, and top quark pole masses, as described in Ref.~\cite{Martin:2006ub}. This requires iteration to 
@@ -225,11 +224,11 @@ a singularity proportional to
 \eeq
 where $\epsilon$ is infinitesimal and positive, and
 \beq
-z = (\sqrt{x}+\sqrt{y})^2 (1 + \delta) .
+z = (\sqrt{x}+\sqrt{y})^2 (1 + \delta).
 \eeq
 The reason for this can be understood from the sequence of
-Feynman diagrams shown in Figure \ref{fig:kinks}. After reduction to basis integrals,
-the result of Figure \ref{fig:kinks}(b) contains terms proportional to $V(x,y,u,v)$ and
+Feynman diagrams shown in Figure~\ref{fig:kinks}. After reduction to basis integrals,
+the result of Figure~\ref{fig:kinks}(b) contains terms proportional to $V(x,y,u,v)$ and
 $B(x,y')$, in the notation of refs.~\cite{Martin:2003qz,Martin:2005qm}. (Here the prime represents a derivative with respect 
 to the corresponding argument, and the external momentum invariant is $s=z$.)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -249,11 +248,11 @@ Then, for example, one can evaluate:
 \beq
 B(x,y') \Big |_{s = (\sqrt{x} + \sqrt{y})^2(1 + \delta)} &=&
 -\frac{\pi (x/y)^{1/4}}{(\sqrt{x}+\sqrt{y})^2 \sqrt{-\delta - i \epsilon}}
-+ \ldots .
++ \ldots~.
 \eeq
 We have found that in general such singularities do not cancel within the fixed-order
 2-loop pole mass
-calculation. This includes e.g. the pole mass of the gluino, where we checked that there are singularities in the pole mass as one varies the top mass and one of the stop masses very close to the 2-body decay threshold. 
+calculation. This includes e.g.\ the pole mass of the gluino, where we checked that there are singularities in the pole mass as one varies the top mass and one of the stop masses very close to the 2-body decay threshold. 
 Similarly, there are singularities in the 2-loop pole masses of the top squarks, 
 in each case when the top mass and the gluino happen to be very close to the 2-body decay thresholds. 
 We have also checked that this behavior occurs
@@ -262,8 +261,8 @@ in a simple toy model involving only three massive scalar particles.
 This singular behavior might be quite surprising, because the pole mass is
 supposed to be an observable, and therefore ought to be free of divergences of any kind.
 The resolution is that, similar to problems with infrared divergences, the singularity
-is an artifact of truncating perturbation theory. The 3-loop diagram of Figure 
-\ref{fig:kinks}(c) will diverge 
+is an artifact of truncating perturbation theory. The 3-loop diagram of
+Figure~\ref{fig:kinks}(c) will diverge  
 like $1/(-\delta)^{3/2}$, and similar diagrams of loop order 
 $L$ will diverge like $1/(-\delta)^{L-3/2}$. 
 These contributions can presumably be resummed to 
@@ -274,7 +273,7 @@ scope of the present paper.
 The above singularity behavior is not tied to the presence 
 of massless gauge bosons. However, if massless gauge bosons are present, 
 then there is another, less severe, type of singular threshold behavior, due to 
-the Feynman diagram shown in Figure \ref{fig:kinks2}.
+the Feynman diagram shown in Figure~\ref{fig:kinks2}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[!tb]
 \centering
@@ -293,7 +292,7 @@ self-energy basis integral:
 \beq
 M(x,x,y,y,0) \Big |_{s = (\sqrt{x} + \sqrt{y})^2(1 + \delta)} &=&
 -\frac{2\pi^2}{(\sqrt{x}+\sqrt{y})^2} \ln(-\delta - i \epsilon)
-+ \ldots .
++ \ldots~.
 \eeq 
 Again, the singularity in the computed 2-loop pole mass
 is an artifact of the truncation of perturbation theory, and would presumably be removed
@@ -320,7 +319,7 @@ Explicitly, if $\delta<t$ (we choose
 $t=0.04$
 in the current version 
 of SOFTSUSY, with the value controlled by the quantity \code{THRESH\_TOL} in
-\code{src/supermodel/supermodel/sumo\_params.h}, 
+\code{src/supermodel/supermodel/sumo\_params.h}), 
 the integral in question $I(s)$ is 
 replaced by 
 \begin{equation}
@@ -336,13 +335,6 @@ resummation should be small.
 
 
 \begin{figure}[!t]
-%\unitlength=\textwidth
-%\begin{picture}(1,0.45)(0,0)
-%\put(-0.05,0){\includegraphics[width=0.65 \textwidth]{twoLp}}
-%\put(0.45,0){\includegraphics[width=0.65 \textwidth]{crossSec}}
-%\put(0.3,0){(a)}
-%\put(0.8,0){(b)}
-%\end{picture}
 \includegraphics[width=0.495\textwidth]{deltam.eps}
 \includegraphics[width=0.495\textwidth]{deltasigma.eps}
 \caption{\label{fig:m0scan} 
@@ -380,7 +372,7 @@ Higgs vacuum expectation values $\tan \beta=10$ and the sign of the Higgs
 superpotential parameter term $\mu$ to be positive. We then allow $m_0$ to
 vary, and plot the relative difference caused by the new higher order terms in
  Fig.~\ref{fig:reldiff}a. 
-For this illustration, we have {\em not} 
+For this illustration, we have {\em not}\/
 included two-loop corrections to gauge and
 Yukawa couplings and three-loop renormalisation group equations for the
 superpotential parameters~\cite{Allanach:2014nba}, although with them, the
@@ -398,7 +390,7 @@ estimated in the
 previous literature~\cite{Martin:2005ch,Martin:2005eg,Martin:2006ub}.
 Note that there are wiggles in the $\tilde g$, $\tilde t_1$, and $\tilde t_2$ curves,
 near $m_0/M_{1/2} = 1.35$, $2.9$, and $1.9$, respectively. These are the remnants of
-the instabilities mentioned in section \ref{subsec:kinky} after smoothing by the interpolation procedure described there, with $t=0.04$. 
+the instabilities mentioned in section~\ref{subsec:kinky} after smoothing by the interpolation procedure described there, with $t=0.04$. 
 These correspond to the thresholds for the
 decays $\tilde g \rightarrow t \tilde t_1$ and
 $\tilde t_1 \rightarrow t \tilde g$ and $\tilde t_2 \rightarrow t \tilde g$, respectively. 
@@ -595,7 +587,7 @@ found in the \code{src/} directory of the SOFTSUSY distribution. Running
 which runs without arguments or flags. 
 This program illustrates the implementation of the 2-loop 
 SUSYQCD pole masses, and in particular outputs all of the 
-data used in Figures \ref{fig:m0scan} and \ref{fig:Qdep} above. The 
+data used in Figures~\ref{fig:m0scan} and~\ref{fig:Qdep} above. The 
 file \code{higher.cpp} and the output of \code{higher.x} (called \code{twoLoop.dat})
 are also found as ancillary electronic files with the {\tt arXiv} submission for this article.
 
