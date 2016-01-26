@@ -40,7 +40,7 @@
     For two-loop SUSY QCD corrections to squark and gluino pole masses, please
     cite [1] and<br>
     [6] <a href="http://arxiv.org/abs/arXiv:16??.?????">B.C. Allanach,
-    S. Martin, D. Robertson and R. Ruiz de Austri, arXiv:16??.?????</a>.
+    S. Martin, D. Robertson and R. Ruiz de Austri, arXiv:1601.06657</a>.
 
     \section documentation Documentation
     These web-pages contain the documentation of the latest SOFTSUSY code.
