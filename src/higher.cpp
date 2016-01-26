@@ -3,7 +3,7 @@
    File:        higher.cpp
    Author:      B.C. Allanach, S. Martin, D. Robertson and R. Ruiz de Austri
    Manual:      B.C. Allanach, S. Martin, D. Robertson and R. Ruiz de Austri, 
-                arXiv:16??.?????
+                arXiv:1601.06657
    Webpage:     http://allanach.home.cern.ch/allanach/softsusy.html
    Description: main calling program to be put in src/ in the softsusy
                 directory. Running make will produce an executable called
