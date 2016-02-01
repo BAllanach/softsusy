@@ -9157,10 +9157,8 @@ double MssmSoftsusy::deltaVb(double outrho, double outsin,
   aPsi0PsicW(4, 2) = g / root2;		     
   bPsi0PsicW(3, 2) = -g / root2;		     
   
-  /// These ought to be in physpars
-  aChi0ChicW = n.complexConjugate() * aPsi0PsicW * v.transpose();
-  bChi0ChicW = n * bPsi0PsicW * u.hermitianConjugate();
-  
+  aChi0ChicW = n * aPsi0PsicW * v.hermitianConjugate();
+  bChi0ChicW = n.complexConjugate() * bPsi0PsicW * u.transpose();
   Complex deltaVE = 0.0;
   int j; for(i=1; i<=2; i++)
 	   for(j=1; j<=dimN; j++) {
