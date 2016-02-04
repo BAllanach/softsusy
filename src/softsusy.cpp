@@ -10355,50 +10355,63 @@ int MssmSoftsusy::nlsp(double & mass, int & posi, int & posj) const {
     minmass = lightest; lsppos1 = pos1; lsppos2 = 0; temp = 6;}
   else if (lightest < nminmass){
     nminmass = lightest; nlsppos1 = pos1; nlsppos2 = 0; ntemp = 6;}
-  
-  
+
+  /// gravitino -1
+  lightest = displayGravitino();
+  if (lightest < minmass) { 
+    nminmass = minmass; nlsppos1 = lsppos1; nlsppos2 = lsppos2; ntemp=temp;
+    minmass = lightest; lsppos1 = pos1; lsppos2 = 0; temp = -1;}
+  else if (lightest < nminmass){
+    nminmass = lightest; nlsppos1 = pos1; nlsppos2 = 0; ntemp = -1;}
+    
   /// check that nlsp is not the next-to-lightest in the group of the lsp
   double nlightest;
   
   switch (temp){
     /// neutralinos
-  case 0: {
+  case 0: 
     nlightest = s.mneut.apply(fabs).nmin(pos1);
     if (nlightest < nminmass) { 
       nminmass = nlightest; nlsppos1 = pos1; nlsppos2 = 0; ntemp = 0;}
-  }
+    break;
     /// up squarks 1
-  case 1: {
+  case 1: 
     nlightest = s.mu.apply(fabs).nmin(pos1, pos2);
     if (nlightest < nminmass) { 
       nminmass = nlightest; nlsppos1 = pos1; nlsppos2 = pos2; ntemp = 1;}
-  }
+    break;
     /// down squarks 2
-  case 2: {
+  case 2: 
     nlightest = s.md.apply(fabs).nmin(pos1, pos2);
     if (nlightest < nminmass) { 
       nminmass = nlightest; nlsppos1 = pos1; nlsppos2 = pos2; ntemp = 2;}
-  }
+    break;
     /// sleptons 3
-  case 3: {
+  case 3: 
     nlightest = s.me.apply(fabs).nmin(pos1, pos2);
     if (nlightest < nminmass){
       nminmass = nlightest; nlsppos1 = pos1; nlsppos2 = pos2; ntemp = 3;}
-  }
+    break;
     /// charginos 4
-  case 4: {
+  case 4: 
     nlightest = s.mch.apply(fabs).nmin(pos1);
     if (nlightest < nminmass){
       nminmass = nlightest; nlsppos1 = pos1; nlsppos2 = 0; ntemp = 4;}
-  }
+    break;
     /// sneutrinos 5
-  case 5: {
+  case 5: 
     nlightest = s.msnu.apply(fabs).nmin(pos1);
     if (nlightest < nminmass){
       nminmass = nlightest; nlsppos1 = pos1; nlsppos2 = 0; ntemp = 5;}
+    break;
+    /// gluino 6 -- there is only one gluino mass
+  case 6: break;
+    /// gravitino -1
+  case -1: break;
+  default: {
+    throw("Shouldn't have found a non-existent NLSP code\n");
+    break;
   }
-    /// gluino 6
-    /// there is only one gluino mass
   }
   
   mass = nminmass;
