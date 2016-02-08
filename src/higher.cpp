@@ -19,17 +19,7 @@
                 below to point to the directory you've placed nllfast13 in. 
 */
 
-#include <iostream>
-#include "mycomplex.h"
-#include "def.h"
-#include "linalg.h"
-#include "lowe.h"
-#include "rge.h"
-#include "softsusy.h"
-#include "softpars.h"
-#include "susy.h"
-#include "utils.h"
-#include "numerics.h"
+#include "higher.h"
 
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 
