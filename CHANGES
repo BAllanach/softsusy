@@ -1,3 +1,4 @@
-<li> 8/02/16 higher.x now compiles when all higher order corrections have been compiled
-<li> 4/02/16 Bug-fix identifying NLSP when gravitinos are light: Thanks to T Cridge
-<li> 1/02/16 Small bug fix in piWWT: chargino W contribution
+<li> 13/02/16 Fixes to IR limits of 3 and 4-point loop functions. Thanks to P Athron and A Voigt
+<li> 08/02/16 higher.x now compiles when all higher order corrections have been compiled
+<li> 04/02/16 Bug-fix identifying NLSP when gravitinos are light: Thanks to T Cridge
+<li> 01/02/16 Small bug fix in piWWT: chargino W contribution. Tiny effect

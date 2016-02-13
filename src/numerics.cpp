@@ -736,9 +736,18 @@ double d0(double m1, double m2, double m3, double m4) {
   if (close(m1, m2, EPSTOL)) {
     double m2sq = sqr(m2), m3sq = sqr(m3), m4sq = sqr(m4);
 
-    if (close(m2, m3, EPSTOL) && close(m2, m4, EPSTOL)) 
+    if (close(m2,0.,EPSTOL)) {
+       // d0 is undefined for m1 == m2 == 0
+       return 0.;
+    } else if (close(m3,0.,EPSTOL)) {
+       return (-sqr(m2) + sqr(m4) - sqr(m2) * log(sqr(m4/m2)))/
+          sqr(m2 * sqr(m2) - m2 * sqr(m4));
+    } else if (close(m4,0.,EPSTOL)) {
+       return (-sqr(m2) + sqr(m3) - sqr(m2) * log(sqr(m3/m2)))/
+          sqr(m2 * sqr(m2) - m2 * sqr(m3));
+    } else if (close(m2, m3, EPSTOL) && close(m2, m4, EPSTOL)) {
       return 1.0 / (6.0 * sqr(m2sq));
-    else if (close(m2, m3, EPSTOL)) {
+    } else if (close(m2, m3, EPSTOL)) {
       return (sqr(m2sq) - sqr(m4sq) + 2.0 * m4sq * m2sq * log(m4sq / m2sq)) / 
 	(2.0 * m2sq * sqr(m2sq - m4sq) * (m2sq - m4sq));
     } else if (close(m2, m4, EPSTOL)) {
@@ -761,7 +770,7 @@ double d0(double m1, double m2, double m3, double m4) {
 double d27(double m1, double m2, double m3, double m4) {// checked
 
   if (close(m1, m2, EPSTOL)) {
-    double m1n = m1 + TOLERANCE * 0.01;
+    const double m1n = m1 + TOLERANCE * 0.01;
     return (sqr(m1n) * c0(m1n, m3, m4) - sqr(m2) * c0(m2, m3, m4)) 
       / (4.0 * (sqr(m1n) - sqr(m2)));
   }
@@ -779,34 +788,58 @@ double c0(double m1, double m2, double m3) {
   double c0l = C0(psq, psq, psq, m1*m1, m2*m2, m3*m3).real();
 #endif
 
-  double ans;
+  double ans = 0.;
 
-  if (close(m2, m3, EPSTOL)) {
+  if (close(m1,0.,EPSTOL) && close(m2,0.,EPSTOL) && close(m3,0.,EPSTOL)) {
+     // c0 is undefined for m1 == m2 == m3 == 0
+     ans = 0.;
+  } else if (close(m2,0.,EPSTOL) && close(m3,0.,EPSTOL)) {
+     // c0 is undefined for m2 == m3 == 0
+     ans = 0.;
+  } else if (close(m1,0.,EPSTOL) && close(m3,0.,EPSTOL)) {
+     // c0 is undefined for m1 == m3 == 0
+     ans = 0.;
+  } else if (close(m1,0.,EPSTOL) && close(m2,0.,EPSTOL)) {
+     // c0 is undefined for m1 == m2 == 0
+     ans= 0.;
+  } else if (close(m1,0.,EPSTOL)) {
+     if (close(m2,m3,EPSTOL)) {
+        ans = -1./sqr(m2);
+     } else {
+        ans = (-log(sqr(m2)) + log(sqr(m3)))/(sqr(m2) - sqr(m3));
+     }
+  } else if (close(m2,0.,EPSTOL)) {
+     if (close(m1,m3,EPSTOL)) {
+        ans = -1./sqr(m1);
+     } else {
+        ans = log(sqr(m3/m1))/(sqr(m1) - sqr(m3));
+     }
+  } else if (close(m3,0.,EPSTOL)) {
+     if (close(m1,m2,EPSTOL)) {
+        ans = -1./sqr(m1);
+     } else {
+        ans = log(sqr(m2/m1))/(sqr(m1) - sqr(m2));
+     }
+  } else if (close(m2, m3, EPSTOL)) {
     if (close(m1, m2, EPSTOL)) {
       ans = ( - 0.5 / sqr(m2) ); // checked 14.10.02
-    }
-    else {
+    } else {
       ans = ( sqr(m1) / sqr(sqr(m1)-sqr(m2) ) * log(sqr(m2)/sqr(m1))
                + 1.0 / (sqr(m1) - sqr(m2)) ) ; // checked 14.10.02
     }
+  } else if (close(m1, m2, EPSTOL)) {
+     ans = ( - ( 1.0 + sqr(m3) / (sqr(m2)-sqr(m3)) * log(sqr(m3)/sqr(m2)) )
+             / (sqr(m2)-sqr(m3)) ) ; // checked 14.10.02
+  } else if (close(m1, m3, EPSTOL)) {
+     ans = ( - (1.0 + sqr(m2) / (sqr(m3)-sqr(m2)) * log(sqr(m2)/sqr(m3)))
+             / (sqr(m3)-sqr(m2)) ); // checked 14.10.02
+  } else {
+     ans = (1.0 / (sqr(m2) - sqr(m3)) *
+            (sqr(m2) / (sqr(m1) - sqr(m2)) *
+             log(sqr(m2) / sqr(m1)) -
+             sqr(m3) / (sqr(m1) - sqr(m3)) *
+             log(sqr(m3) / sqr(m1))) );
   }
-  else
-    if (close(m1, m2, EPSTOL)) {
-      ans = ( - ( 1.0 + sqr(m3) / (sqr(m2)-sqr(m3)) * log(sqr(m3)/sqr(m2)) )
-               / (sqr(m2)-sqr(m3)) ) ; // checked 14.10.02
-    }
-    else
-      if (close(m1, m3, EPSTOL)) {
-        ans = ( - (1.0 + sqr(m2) / (sqr(m3)-sqr(m2)) * log(sqr(m2)/sqr(m3))) 
-                 / (sqr(m3)-sqr(m2)) ); // checked 14.10.02
-      }
-      else {
-	ans = (1.0 / (sqr(m2) - sqr(m3)) * 
-		   (sqr(m2) / (sqr(m1) - sqr(m2)) *
-		    log(sqr(m2) / sqr(m1)) -
-		    sqr(m3) / (sqr(m1) - sqr(m3)) *
-		    log(sqr(m3) / sqr(m1))) );
-      }
 
 #ifdef USE_LOOPTOOLS
   if (!close(c0l, ans, 1.0e-3)) {
