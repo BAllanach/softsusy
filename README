@@ -118,7 +118,7 @@ If the 2-loop SUSY QCD corrections to squark and gluino masses are required, do
 > ./configure --enable-two-loop-sparticle-mass-compilation
 > make 
 An example point using the higher order terms can be run with, for example,
-> ./softpoint.x sugra --tol=1.0e-4 --m0=1000 --m12=1000 --a0=0 --tanBeta=10 --sgnMu=1 --two-loop-sparticle-mass=1
+> ./softpoint.x sugra --tol=1.0e-4 --m0=1000 --m12=1000 --a0=0 --tanBeta=10 --sgnMu=1 --two-loop-sparticle-masses --two-loop-sparticle-mass-method=1
 
 HIGH ACCURACY MODE
 ------------------
