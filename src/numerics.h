@@ -26,6 +26,10 @@
 #endif
 using namespace softsusy;
 
+/// adaptive Gaussian one dimensional integration of f(x) between a and b to
+/// precision eps
+double dgauss(double (*f)(double x), double a, double b, double eps);
+
 /// calculate root(1+x), where x<<1 accurately
 double accurateSqrt1Plusx(double x);
 

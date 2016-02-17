@@ -9,6 +9,68 @@
 
 #include "numerics.h"
 
+ 
+double dgauss(double (*f)(double x), double a, double b, double eps) {
+  static DoubleVector w(12), x(12);
+  /// set the initial values if they are uninitialised
+  if (w(1) < 1.0e-5) {
+    w(1)  =    0.1012285362903762591525313543;
+    w(2)  =    0.2223810344533744705443559944;
+    w(3)  =    0.3137066458778872873379622020;
+    w(4)  =    0.3626837833783619829651504493;
+    w(5)  =    0.0271524594117540948517805725;
+    w(6)  =    0.0622535239386478928628438370;
+    w(7)  =    0.0951585116824927848099251076;
+    w(8)  =    0.1246289712555338720524762822;
+    w(9)  =    0.1495959888165767320815017305;
+    w(10) =    0.1691565193950025381893120790;
+    w(11) =    0.1826034150449235888667636680;
+    w(12) =    0.1894506104550684962853967232;
+    x(1)  =    0.9602898564975362316835608686;
+    x(2)  =    0.7966664774136267395915539365;
+    x(3)  =    0.5255324099163289858177390492;
+    x(4)  =    0.1834346424956498049394761424;
+    x(5)  =    0.9894009349916499325961541735;
+    x(6)  =    0.9445750230732325760779884155;
+    x(7)  =    0.8656312023878317438804678977;
+    x(8)  =    0.7554044083550030338951011948;
+    x(9)  =    0.6178762444026437484466717640; 
+    x(10)  =   0.4580167776572273863424194430;
+    x(11)  =   0.2816035507792589132304605015;
+    x(12)  =   0.0950125098376374401853193354;
+  }
+  const double constant = 1.0e-25;
+  double delta = constant * abs(a - b);
+  double dgauss = 0.;
+  double aa = a;
+ lab5: double y = b - aa;
+  if (abs(y) <= delta) return dgauss;
+ lab2: double bb = aa + y;
+  double c1 = 0.5 * (aa + bb);
+  double c2 = c1 - aa;
+  double s8 = 0.;
+  double s16 = 0.;
+  for (int i=1; i<=4; i++) {
+    double u = x(i) * c2;
+    s8 = s8 + w(i) * (f(c1 + u) + f(c1 - u));
+  }
+  for (int i=5; i<=12; i++) {
+    double u = x(i) * c2;
+    s16 = s16 + w(i) * (f(c1 + u) + f(c1 - u));
+  }
+  s8 = s8 * c2;
+  s16 = s16 * c2;
+  if (abs(s16 - s8) > eps * (1. + abs(s16))) goto lab4;
+  dgauss = dgauss + s16;
+  aa = bb;
+  goto lab5;
+ lab4: y = 0.5 * y;
+  if (abs(y) > delta) goto lab2;
+  throw("Too high accuracy required in numerics.cpp:dgauss\n");
+  return dgauss;
+}
+
+
 double accurateSqrt1Plusx(double x) {
   if (x > 1.) return sqrt(1.0 + x);
   
