@@ -370,54 +370,20 @@ Complex fnfn(double x) {
   const static Complex iEpsilon(0.0, TOLERANCE * 1.0e-20);
   
   double xn = 1.0;
-  int i; for (i=1; i<=nInt; i++) xn = xn * x;
+  int i; for (i=1; i<=nInt; i++) xn *= x;
   return xn * 
     log( ((1 - x) * sqr(m1Int) + x * sqr(m2Int) - x * (1 - x) *
 	  sqr(pInt) - iEpsilon)
 	 / sqr(mtInt));
 }
 
-DoubleVector dilogarg(double t, const DoubleVector & /* y */) {
-
-  const double eps = TOLERANCE * 1.0e-20;
-
-  DoubleVector dydx(1);
-  dydx(1) = -log(fabs(1 - t + eps)) / (t + eps);
-
-  return dydx;
-}
-
-/*
-double dilog(double x) {
-  // Set global variables so that integration function can access them
-  double from = 0.0, to = x, guess = 0.1, hmin = TOLERANCE * 1.0e-5;
-
-  DoubleVector v(1); 
-  double eps = TOLERANCE * 1.0e-5;
-  v(1) = 1.0; 
-
-  // Runge-Kutta, f(b) = int^b0 I(x) dx, I is integrand => d f / db = I(b)
-  // odeint has a problem at f(0): therefore, define f'(b)=f(b)+1
-  integrateOdes(v, from, to, eps, guess, hmin, dilogarg, odeStepper); 
-  
-  return v(1) - 1.0;
-}
-*/
-
-// Returns real part of integral
 double bIntegral(int n1, double p, double m1, double m2, double mt) {
   // Set global variables so that integration function can access them
   nInt = n1; pInt = p; m1Int = m1; m2Int = m2; mtInt = mt;
-  double from = 0.0, to = 1.0, guess = 0.1, hmin = TOLERANCE * 1.0e-5;
-  
-  DoubleVector v(1); double eps = TOLERANCE * 1.0e-3;
-  v(1) = 1.0; 
+  double from = 0.0, to = 1.0, hmin = TOLERANCE * 1.0e-5;
 
-  // Runge-Kutta, f(b) = int^b0 I(x) dx, I is integrand => d f / db = I(b)
-  // odeint has a problem at f(0): therefore, define f'(b)=f(b)+1
-  integrateOdes(v, from, to, eps, guess, hmin, dd, odeStepper); 
-  
-  return v(1) - 1.0;
+  double ans = dgauss(integrandThreshbnr, from, to, hmin);
+  return -ans;
 }
 
 double fB(const Complex & a) {

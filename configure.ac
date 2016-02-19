@@ -132,7 +132,7 @@ AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
 
-# To run with looptools, run: ./configure --enable-looptools CPPFLAGS=-I/home/bca20/code/looptools/LoopTools/install/include LDFLAGS=-L/home/bca20/code/looptools/LoopTools/install/lib/ and add -looptools to src/softsusy.amk libs
+# To run with looptools, run: ./configure --enable-looptools CPPFLAGS=-I/home/bca20/code/LoopTools/x86_64-Linux/include LDFLAGS=-L/home/bca20/code/LoopTools/x86_64-Linux/lib64
 
 # For GINAC/CLN
 # GINAC_LIBS="-L/usr/local/lib -lginac" GINAC_CFLAGS="-I/usr/local/include" CLN_LIBS="-L/usr/local/lib -lcln" CLN_CFLAGS="-I/usr/local/include" ./configure --enable-two-loop-gauge-yukawa-compilation --enable-three-loop-rge-compilation
