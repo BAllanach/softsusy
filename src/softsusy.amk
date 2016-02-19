@@ -31,11 +31,11 @@ rpvneut_x_SOURCES = src/rpvneutmain.cpp
 rpvneut_x_LDADD = libsoft.la 
 
 if LOOPTOOLS
-softsusy_x_LDADD += -looptools
-softsusy_nmssm_x_LDADD += -looptools
-softpoint_x_LDADD += -looptools
-rpvsoftsusy_x_LDADD += -looptools
-rpvneut_x_LDADD += -looptools
+softsusy_x_LDADD += -looptools -lgfortran
+softsusy_nmssm_x_LDADD += -looptools -lgfortran
+softpoint_x_LDADD += -looptools -lgfortran
+rpvsoftsusy_x_LDADD += -looptools -lgfortran
+rpvneut_x_LDADD += -looptools -lgfortran
 endif
 
 if COMPILE_TWO_LOOP_GAUGE_YUKAWA
