@@ -46,12 +46,6 @@ namespace softsusy {
     /// LCT: Returns logarithm factor from one-loop effective potential
     double looplog(double mass) const;
 
-    /// DH: returns the values of the EWSB conditions for the given VEV
-    /// values.  The additional parameters must contain a pointer to
-    /// the model.
-    static int ewsbConditions(const DoubleVector & vevs, void* params,
-                              DoubleVector & values);
-
     /// DH: contains parameters required for fine tuning calculation
     struct FineTuningPars {
       NmssmSoftsusy* model;

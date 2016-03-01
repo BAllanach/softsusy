@@ -7,6 +7,12 @@
 
 #include "nmssmsoftsusy.h"
 
+#ifdef ENABLE_GSL
+#include <gsl/gsl_multiroots.h>
+#endif
+
+#include <limits>
+
 #ifdef NMSSMSOFTSUSY_H
 
 namespace softsusy {
@@ -3865,8 +3871,43 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
   }
 
-  int NmssmSoftsusy::ewsbConditions(const DoubleVector & vevs, void* params,
-                     DoubleVector & values) {
+namespace {
+#ifdef ENABLE_GSL
+  int calcEWSBConditions(const gsl_vector* vevs, void* params,
+                         gsl_vector* values) {
+    if (testNan(gsl_vector_get(vevs, 0)) || testNan(gsl_vector_get(vevs, 1))
+        || testNan(gsl_vector_get(vevs, 2))) {
+      gsl_vector_set_all(values, std::numeric_limits<double>::max());
+      return GSL_EDOM;
+    }
+
+    NmssmSoftsusy* model = static_cast<NmssmSoftsusy*>(params);
+
+    model->setHvev(gsl_vector_get(vevs, 0));
+    model->setTanb(gsl_vector_get(vevs, 1));
+    model->setSvev(gsl_vector_get(vevs, 2));
+
+    if (numRewsbLoops > 0) {
+       model->calcDrBarPars();
+       const double mt = model->displayDrBarPars().mt;
+      const double sinthDRbar = model->calcSinthdrbar();
+      model->doTadpoles(mt, sinthDRbar);
+    }
+
+    DoubleVector ewsbValues(3);
+    model->ewsbConditions(ewsbValues);
+
+    for (std::size_t i = 0; i < 3; ++i)
+       gsl_vector_set(values, i, ewsbValues(i+1));
+
+    const int error = testNan(ewsbValues(1)) || testNan(ewsbValues(2))
+       || testNan(ewsbValues(3));
+
+    return error ? GSL_EDOM : GSL_SUCCESS;
+  }
+#else
+  int calcEWSBConditions(const DoubleVector & vevs, void* params,
+                         DoubleVector & values) {
 
     NmssmSoftsusy* model = static_cast<NmssmSoftsusy*>(params);
 
@@ -3883,11 +3924,13 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     model->ewsbConditions(values);
 
-    const int error = testNan(values(1)) && testNan(values(2))
-       && testNan(values(3));
+    const int error = testNan(values(1)) || testNan(values(2))
+       || testNan(values(3));
 
     return error;
   }
+#endif
+}
 
   /// DH: solves the EWSB conditions for the Higgs and singlet VEVs
   void NmssmSoftsusy::iterateVevs(DoubleVector & vevs, int & err) {
@@ -3901,9 +3944,80 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     vevs(2) = displayTanb();
     vevs(3) = displaySvev();
 
+    bool error;
+#ifdef ENABLE_GSL
+    const double precision = 1.0e-3 * TOLERANCE;
+    const std::size_t max_iters = 200;
+
+    const gsl_multiroot_fsolver_type* solvers[2]
+       = { gsl_multiroot_fsolver_hybrids, gsl_multiroot_fsolver_broyden };
+
+    const std::size_t number_of_solvers = sizeof(solvers)/sizeof(*solvers);
+
+    gsl_vector* x = gsl_vector_alloc(3);
+    if (!x) {
+      std::ostringstream ii;
+      ii << "Error: could not allocate gsl_vector\n";
+      throw ii.str();
+    }
+
+    gsl_vector_set(x, 0, vevs(1));
+    gsl_vector_set(x, 1, vevs(2));
+    gsl_vector_set(x, 2, vevs(3));
+
+    gsl_multiroot_function func = {&calcEWSBConditions, 3, this};
+
+#ifndef DEBUG
+    gsl_set_error_handler_off();
+#endif
+
+    for (std::size_t i = 0; i < number_of_solvers; ++i) {
+      gsl_multiroot_fsolver* solver
+         = gsl_multiroot_fsolver_alloc(solvers[i], 3);
+
+      if (!solver) {
+        gsl_vector_free(x);
+        std::ostringstream ii;
+        ii << "Error: could not allocate gsl_multiroot_fsolver: "
+           << gsl_multiroot_fsolver_name(solver) << '\n';
+        throw ii.str();
+      }
+
+      gsl_multiroot_fsolver_set(solver, &func, x);
+
+      int status;
+      std::size_t iter = 0;
+      do {
+        ++iter;
+        status = gsl_multiroot_fsolver_iterate(solver);
+
+        if (status)
+          break;
+
+        status = gsl_multiroot_test_residual(solver->f, precision);
+      } while (status == GSL_CONTINUE && iter < max_iters);
+
+      vevs(1) = gsl_vector_get(solver->x, 0);
+      vevs(2) = gsl_vector_get(solver->x, 1);
+      vevs(3) = gsl_vector_get(solver->x, 2);
+
+      gsl_multiroot_fsolver_free(solver);
+
+      if (status == GSL_SUCCESS) {
+        error = false;
+        break;
+      } else {
+        error = true;
+      }
+    }
+
+    gsl_vector_free(x);
+#else
     /// @todo this uses the calculation of the DR-bar Higgs masses
     /// after imposing EWSB.  Check that this is not inconsistent.
-    bool error = newt(vevs, ewsbConditions, this);
+    error = newt(vevs, calcEWSBConditions, this);
+#endif
+
     err = error ? 1 : 0;
 
     /// Restore initial parameters at correct scale
