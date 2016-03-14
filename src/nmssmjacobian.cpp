@@ -587,7 +587,7 @@ namespace softsusy {
     vevs(3) = tempModel->displaySvev();
 
     int error = 0;
-    tempModel->iterateVevs(vevs, error);
+    tempModel->predVevs(vevs, error);
 
     if (error != 0) {
       if (PRINTOUT > 0) {
@@ -673,7 +673,7 @@ namespace softsusy {
     vevs(3) = m->displaySvev();
 
     int error = 0;
-    m->iterateVevs(vevs, error);
+    m->predVevs(vevs, error);
 
     if (error != 0) {
       if (PRINTOUT > 0) {

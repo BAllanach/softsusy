@@ -3933,7 +3933,7 @@ namespace {
 }
 
   /// DH: solves the EWSB conditions for the Higgs and singlet VEVs
-  void NmssmSoftsusy::iterateVevs(DoubleVector & vevs, int & err) {
+  void NmssmSoftsusy::predVevs(DoubleVector & vevs, int & err) {
     /// Stores running parameters in a vector
     DoubleVector storedObject(display());
     const double initialMu = displayMu();
@@ -4108,7 +4108,7 @@ namespace {
     vevs(3) = tempSoft1->displaySvev();
 
     int error = 0;
-    tempSoft1->iterateVevs(vevs, error);
+    tempSoft1->predVevs(vevs, error);
 
     if (error != 0) {
       if (PRINTOUT > 0) {
