@@ -164,8 +164,6 @@ namespace softsusy {
     if (!getRunningMass) {
       const double scale = model.displayMu();
 
-      // @note currently this is using the given pole top mass, not the
-      // running mass, check impact
       const double pizzt = model.piZZT(mz, scale);
 
       mz = sqrt(fabs(sqr(mz) - pizzt));
