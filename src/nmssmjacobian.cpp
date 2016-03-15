@@ -632,7 +632,7 @@ namespace softsusy {
 
     if (error != 0) {
       if (PRINTOUT > 0) {
-        cout << "Warning: could not solve for VEVs\n";
+        cout << "# Warning: could not solve for VEVs\n";
       }
     }
 
@@ -728,7 +728,7 @@ namespace softsusy {
 
     if (error != 0) {
       if (PRINTOUT > 0) {
-        cout << "Warning: could not solve for VEVs\n";
+        cout << "# Warning: could not solve for VEVs\n";
       }
     }
 
@@ -844,7 +844,7 @@ namespace softsusy {
 
     if (error != 0) {
       if (PRINTOUT > 0) {
-        cout << "Warning: could not solve for VEVs\n";
+        cout << "# Warning: could not solve for VEVs\n";
       }
     }
 
