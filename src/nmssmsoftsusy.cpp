@@ -3884,13 +3884,17 @@ namespace {
 
     NmssmSoftsusy* model = static_cast<NmssmSoftsusy*>(params);
 
-    model->setHvev(gsl_vector_get(vevs, 0));
-    model->setTanb(gsl_vector_get(vevs, 1));
-    model->setSvev(gsl_vector_get(vevs, 2));
+    const double current_vd = gsl_vector_get(vevs, 0);
+    const double current_vu = gsl_vector_get(vevs, 1);
+    const double current_vs = gsl_vector_get(vevs, 2);
+
+    model->setHvev(sqrt(sqr(current_vd) + sqr(current_vu)));
+    model->setTanb(current_vu / current_vd);
+    model->setSvev(current_vs);
 
     if (numRewsbLoops > 0) {
-       model->calcDrBarPars();
-       const double mt = model->displayDrBarPars().mt;
+      model->calcDrBarPars();
+      const double mt = model->displayDrBarPars().mt;
       const double sinthDRbar = model->calcSinthdrbar();
       model->doTadpoles(mt, sinthDRbar);
     }
@@ -3962,9 +3966,13 @@ namespace {
       throw ii.str();
     }
 
-    gsl_vector_set(x, 0, vevs(1));
-    gsl_vector_set(x, 1, vevs(2));
-    gsl_vector_set(x, 2, vevs(3));
+    const double initial_vd = vevs(1) * cos(atan(vevs(2)));
+    const double initial_vu = vevs(1) * sin(atan(vevs(2)));
+    const double initial_vs = vevs(3);
+
+    gsl_vector_set(x, 0, initial_vd);
+    gsl_vector_set(x, 1, initial_vu);
+    gsl_vector_set(x, 2, initial_vs);
 
     gsl_multiroot_function func = {&calcEWSBConditions, 3, this};
 
@@ -3992,9 +4000,9 @@ namespace {
       if (PRINTOUT > 2) {
         cout << "# Starting iteration with solver " << i << '\n'
              << "# Initial guess:\n"
-             << "#\tv = " << gsl_vector_get(solver->x, 0) << ", "
-             << "tanb = " << gsl_vector_get(solver->x, 1) << ", "
-             << "Svev = " << gsl_vector_get(solver->x, 2) << "\n"
+             << "#\tv = " << displayHvev() << ", "
+             << "tanb = " << displayTanb() << ", "
+             << "Svev = " << displaySvev() << "\n"
              << "#\tf1 = " << gsl_vector_get(solver->f, 0) << ", "
              << "f2 = " << gsl_vector_get(solver->f, 1) << ", "
              << "f3 = " << gsl_vector_get(solver->f, 2) << '\n';
@@ -4006,9 +4014,9 @@ namespace {
 
         if (PRINTOUT > 2) {
           cout << "# Iteration " << iter << ":\n"
-               << "#\tv = " << gsl_vector_get(solver->x, 0) << ", "
-               << "tanb = " << gsl_vector_get(solver->x, 1) << ", "
-               << "Svev = " << gsl_vector_get(solver->x, 2) << "\n"
+               << "#\tv = " << displayHvev() << ", "
+               << "tanb = " << displayTanb() << ", "
+               << "Svev = " << displaySvev() << "\n"
                << "#\tf1 = " << gsl_vector_get(solver->f, 0) << ", "
                << "f2 = " << gsl_vector_get(solver->f, 1) << ", "
                << "f3 = " << gsl_vector_get(solver->f, 2) << '\n';
@@ -4025,11 +4033,15 @@ namespace {
              << gsl_strerror(status) << '\n';
       }
 
-      vevs(1) = gsl_vector_get(solver->x, 0);
-      vevs(2) = gsl_vector_get(solver->x, 1);
-      vevs(3) = gsl_vector_get(solver->x, 2);
+      const double found_vd = gsl_vector_get(solver->x, 0);
+      const double found_vu = gsl_vector_get(solver->x, 1);
+      const double found_vs = gsl_vector_get(solver->x, 2);
 
-      gsl_multiroot_fsolver_free(solver);
+      vevs(1) = sqrt(sqr(found_vd) + sqr(found_vu));
+      vevs(2) = found_vu / found_vd;
+      vevs(3) = found_vs;
+
+     gsl_multiroot_fsolver_free(solver);
 
       if (status == GSL_SUCCESS) {
         error = false;
