@@ -12,7 +12,7 @@
 
 #include <vector>
 
-#ifdef ENABLE_GSL_DERIVS
+#ifdef ENABLE_GSL
 #include <gsl/gsl_deriv.h>
 #endif
 
