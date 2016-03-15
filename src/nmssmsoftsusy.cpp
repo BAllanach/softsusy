@@ -8,6 +8,7 @@
 #include "nmssmsoftsusy.h"
 
 #ifdef ENABLE_GSL
+#include <gsl/gsl_deriv.h>
 #include <gsl/gsl_multiroots.h>
 #endif
 
@@ -4199,7 +4200,15 @@ namespace {
     if (fabs(x) < 1.0e-10) {
       ftParameter = 0.; derivative = 0.; err = 0.;
     } else {
+#ifdef ENABLE_GSL
+      gsl_function func;
+      func.function = &calcMzsq;
+      func.params = &tuningPars;
+
+      gsl_deriv_central(&func, x, h, &derivative, &err);
+#else
       derivative = calcDerivative(calcMzsq, x, h, &err, &tuningPars);
+#endif
       ftParameter = x * derivative / tuningPars.mzSqr;
     }
 
