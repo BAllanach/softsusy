@@ -21,7 +21,8 @@ namespace softsusy {
   NmssmJacobian::NmssmJacobian(bool doTop)
      : jacRGFlow(3,3), jacEWSB(3,3)
      , invJacRGFlow(3,3), invJacEWSB(3,3)
-     , includeTop(doTop), useRunningMasses(false), hasError(false) {
+     , includeTop(doTop), useRunningMasses(false)
+     , useSugraTrilinears(false), hasError(false) {
   }
 
   NmssmJacobian::~NmssmJacobian() {}
@@ -229,11 +230,19 @@ namespace softsusy {
 
     switch (independent) {
     case Lambda: {
+      if (pars->useSugraTrilinears) {
+        const double Alambda = tempModel->displaySoftAlambda();
+        tempModel->setTrialambda(x * Alambda);
+      }
       tempModel->setLambda(x);
       if (PRINTOUT > 1) cout << "lambda= " << x << ' ';
       break;
     }
     case Kappa: {
+      if (pars->useSugraTrilinears) {
+        const double Akappa = tempModel->displaySoftAkappa();
+        tempModel->setTriakappa(x * Akappa);
+      }
       tempModel->setKappa(x);
       if (PRINTOUT > 1) cout << "kappa= " << x << ' ';
       break;
@@ -269,6 +278,10 @@ namespace softsusy {
       break;
     }
     case Yt: {
+      if (pars->useSugraTrilinears) {
+        const double At = tempModel->displaySoftA(UA, 3, 3);
+        tempModel->setTrilinearElement(UA, 3, 3, x * At);
+      }
       tempModel->setYukawaElement(YU, 3, 3, x);
       if (PRINTOUT > 1) cout << "ht= " << x << ' ';
       break;
@@ -415,6 +428,7 @@ namespace softsusy {
     pars.independent = indep;
     pars.dependent = dep;
     pars.toScale = toScale;
+    pars.useSugraTrilinears = useSugraTrilinears;
 
     double derivative = 0.;
     double err = 0.;
@@ -544,11 +558,19 @@ namespace softsusy {
 
     switch (independent) {
     case Lambda: {
+      if (pars->useSugraTrilinears) {
+        const double Alambda = tempModel->displaySoftAlambda();
+        tempModel->setTrialambda(x * Alambda);
+      }
       tempModel->setLambda(x);
       if (PRINTOUT > 1) cout << "lambda= " << x << ' ';
       break;
     }
     case Kappa: {
+      if (pars->useSugraTrilinears) {
+        const double Akappa = tempModel->displaySoftAkappa();
+        tempModel->setTriakappa(x * Akappa);
+      }
       tempModel->setKappa(x);
       if (PRINTOUT > 1) cout << "kappa= " << x << ' ';
       break;
@@ -584,6 +606,10 @@ namespace softsusy {
       break;
     }
     case Yt: {
+      if (pars->useSugraTrilinears) {
+        const double At = tempModel->displaySoftA(UA, 3, 3);
+        tempModel->setTrilinearElement(UA, 3, 3, x * At);
+      }
       tempModel->setYukawaElement(YU, 3, 3, x);
       if (PRINTOUT > 1) cout << "ht= " << x << ' ';
       break;
@@ -670,6 +696,12 @@ namespace softsusy {
       m->setMh2Squared(guess(2));
       m->setMsSquared(guess(3));
     } else if (Z3) {
+      if (pars->useSugraTrilinears) {
+        const double Alambda = m->displaySoftAlambda();
+        const double Akappa = m->displaySoftAkappa();
+        m->setTrialambda(guess(1) * Alambda);
+        m->setTriakappa(guess(2) * Akappa);
+      }
       m->setLambda(guess(1));
       m->setKappa(guess(2));
       m->setMsSquared(guess(3));
@@ -679,6 +711,10 @@ namespace softsusy {
       m->setXiS(guess(3));
     }
     if (numOutputs > 3) {
+      if (pars->useSugraTrilinears) {
+        const double At = m->displaySoftA(UA, 3, 3);
+        m->setTrilinearElement(UA, 3, 3, guess(4) * At);
+      }
       m->setYukawaElement(YU, 3, 3, guess(4));
     }
 
@@ -943,6 +979,7 @@ namespace softsusy {
     pars.independent = indep;
     pars.dependent = dep;
     pars.useRunningMasses = useRunningMasses;
+    pars.useSugraTrilinears = useSugraTrilinears;
 
     double derivative = 0.;
     double err = 0.;
@@ -1033,6 +1070,7 @@ namespace softsusy {
     pars.dependent = dep;
     pars.outputs = outputs;
     pars.useRunningMasses = useRunningMasses;
+    pars.useSugraTrilinears = useSugraTrilinears;
 
     double derivative = 0.;
     double err = 0.;

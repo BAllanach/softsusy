@@ -42,6 +42,17 @@ namespace softsusy {
   /// and \f$M_t^2\f$ are taken to be the pole or running masses may be
   /// set by calling setUseRunningMassesFlag() with the appropriate flag.
   /// By default the pole masses are used.
+  ///
+  /// The treatment of the soft SUSY breaking trilinears can be modified
+  /// using the setUseSugraTrilinearsFlag routine.  If set to true, the
+  /// independent parameters are taken to be the capital \f$A\f$ trilinears,
+  /// e.g. \f$A_\lambda = a_\lambda / \lambda\f$.  In this case, it is
+  /// the quantity \f$A\f$ that is held fixed in partial derivatives, rather
+  /// than the quantity \f$a\f$.  If this flag is false, the trilinears
+  /// \f$a\f$ are treated as independent of the corresponding coupling, and
+  /// are held fixed in the partial derivatives.  By default this flag is
+  /// false, i.e. the \f$a\f$ couplings are taken to be the independent
+  /// parameters.
   class NmssmJacobian {
   public:
 
@@ -63,6 +74,14 @@ namespace softsusy {
     /// \brief Sets whether to use running or pole masses in derivatives.
     /// \param[in] flag if true, use running masses instead of pole masses
     void setUseRunningMassesFlag(bool flag) { useRunningMasses = flag; }
+
+    /// \brief Displays whether SUGRA style trilinears are assumed
+    /// \return true if SUGRA style trilinears are being assumed
+    bool displayUseSugraTrilinearsFlag() const { return useSugraTrilinears; }
+
+    /// \brief Sets whether to assume SUGRA style trilinears
+    /// \param[in] flag if true, assume SUGRA style trilinears
+    void setUseSugraTrilinearsFlag(bool flag) { useSugraTrilinears = flag; }
 
     /// \brief Resets the error status to false.
     void resetError() { hasError = false; }
@@ -134,6 +153,7 @@ namespace softsusy {
     DoubleMatrix invJacEWSB;
     bool includeTop;
     bool useRunningMasses;
+    bool useSugraTrilinears;
     bool hasError;
 
     struct EWSBPars {
@@ -142,10 +162,12 @@ namespace softsusy {
       Parameters dependent;
       DoubleVector outputs;
       bool useRunningMasses;
+      bool useSugraTrilinears;
 
       EWSBPars()
         : model(0), independent(Mzsq), dependent(Lambda),
-          outputs(3), useRunningMasses(false)
+          outputs(3), useRunningMasses(false),
+          useSugraTrilinears(false)
         {}
     };
 
@@ -154,6 +176,7 @@ namespace softsusy {
       Parameters independent;
       Parameters dependent;
       double toScale;
+      bool useSugraTrilinears;
     };
 
     static double calcMz(NmssmSoftsusy& model, bool getRunningMass = false);
