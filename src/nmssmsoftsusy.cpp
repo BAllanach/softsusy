@@ -4191,6 +4191,9 @@ namespace {
       throw ii.str();
     }
 
+    volatile const double temp = x + h;
+    h = temp - x;
+
     tuningPars.ftPars.setEnd(bcPars.displayEnd());
     tuningPars.ftPars = bcPars;
 
