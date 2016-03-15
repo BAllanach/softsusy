@@ -3988,15 +3988,42 @@ namespace {
 
       int status;
       std::size_t iter = 0;
+
+      if (PRINTOUT > 1) {
+        cout << "# Starting iteration with solver " << i << '\n'
+             << "# Initial guess:\n"
+             << "#\tv = " << gsl_vector_get(solver->x, 0) << ", "
+             << "tanb = " << gsl_vector_get(solver->x, 1) << ", "
+             << "Svev = " << gsl_vector_get(solver->x, 2) << "\n"
+             << "#\tf1 = " << gsl_vector_get(solver->f, 0) << ", "
+             << "f2 = " << gsl_vector_get(solver->f, 1) << ", "
+             << "f3 = " << gsl_vector_get(solver->f, 2) << '\n';
+      }
+
       do {
         ++iter;
         status = gsl_multiroot_fsolver_iterate(solver);
+
+        if (PRINTOUT > 1) {
+          cout << "# Iteration " << iter << ":\n"
+               << "#\tv = " << gsl_vector_get(solver->x, 0) << ", "
+               << "tanb = " << gsl_vector_get(solver->x, 1) << ", "
+               << "Svev = " << gsl_vector_get(solver->x, 2) << "\n"
+               << "#\tf1 = " << gsl_vector_get(solver->f, 0) << ", "
+               << "f2 = " << gsl_vector_get(solver->f, 1) << ", "
+               << "f3 = " << gsl_vector_get(solver->f, 2) << '\n';
+        }
 
         if (status)
           break;
 
         status = gsl_multiroot_test_residual(solver->f, precision);
       } while (status == GSL_CONTINUE && iter < max_iters);
+
+      if (PRINTOUT > 1) {
+        cout << "# Solver " << i << " finished with status: "
+             << gsl_strerror(status) << '\n';
+      }
 
       vevs(1) = gsl_vector_get(solver->x, 0);
       vevs(2) = gsl_vector_get(solver->x, 1);
