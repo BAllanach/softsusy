@@ -3,6 +3,7 @@
     \brief Implementation of routines for calculating Jacobian fine-tuning.
  */
 
+#include "config.h"
 #include "def.h"
 #include "nmssmjacobian.h"
 #include "nmssmsoftsusy.h"
@@ -10,6 +11,10 @@
 #include "utils.h"
 
 #include <vector>
+
+#ifdef ENABLE_GSL_DERIVS
+#include <gsl/gsl_deriv.h>
+#endif
 
 namespace softsusy {
 
@@ -413,15 +418,27 @@ namespace softsusy {
 
     double derivative = 0.;
     double err = 0.;
+
+#ifdef ENABLE_GSL
+    gsl_function func;
+    func.function = &calcRunningParameter;
+    func.params = &pars;
+
+    gsl_deriv_central(&func, x, h, &derivative, &err);
+#else
     if (fabs(x) > 1.0e-10) {
       derivative = calcDerivative(calcRunningParameter, x, h, &err, &pars);
     }
+#endif
 
     if (PRINTOUT > 1)
       cout << "derivative=" << derivative << " error=" << err << '\n';
 
-    const bool has_error
-      = fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0;
+    bool has_error = false;
+    if (fabs(x) > 1.0e-10 &&
+        (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+      has_error = fabs(err / derivative) > 1.0;
+    }
 
     if (has_error) {
       derivative = -numberOfTheBeast;
@@ -929,15 +946,27 @@ namespace softsusy {
 
     double derivative = 0.;
     double err = 0.;
+
+#ifdef ENABLE_GSL
+    gsl_function func;
+    func.function = &calcEWSBOutput;
+    func.params = &pars;
+
+    gsl_deriv_central(&func, x, h, &derivative, &err);
+#else
     if (fabs(x) > 1.0e-10) {
       derivative = calcDerivative(calcEWSBOutput, x, h, &err, &pars);
     }
+#endif
 
     if (PRINTOUT > 1)
       cout << "derivative=" << derivative << " error=" << err << '\n';
 
-    const bool has_error
-      = fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0;
+    bool has_error = false;
+    if (fabs(x) > 1.0e-10 &&
+        (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+      has_error = fabs(err / derivative) > 1.0;
+    }
 
     if (has_error) {
       derivative = -numberOfTheBeast;
@@ -1007,15 +1036,27 @@ namespace softsusy {
 
     double derivative = 0.;
     double err = 0.;
+
+#ifdef ENABLE_GSL
+    gsl_function func;
+    func.function = &calcEWSBParameter;
+    func.params = &pars;
+
+    gsl_deriv_central(&func, x, h, &derivative, &err);
+#else
     if (fabs(x) > 1.0e-10) {
       derivative = calcDerivative(calcEWSBParameter, x, h, &err, &pars);
     }
+#endif
 
     if (PRINTOUT > 1)
       cout << "derivative=" << derivative << " error=" << err << '\n';
 
-    const bool has_error
-      = fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0;
+    bool has_error = false;
+    if (fabs(x) > 1.0e-10 &&
+        (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+      has_error = fabs(err / derivative) > 1.0;
+    }
 
     if (has_error) {
       derivative = -numberOfTheBeast;

@@ -80,7 +80,7 @@ AS_IF([test "x$enable_gsl" = "xyes"],
                 [AC_MSG_ERROR([libgslcblas not found, but required for enabling GSL])])
    AC_CHECK_LIB([gsl],[gsl_blas_dgemm],[],
                 [AC_MSG_ERROR([libgsl not found, but required for enabling GSL])])
-   AC_CHECK_HEADER([gsl/gsl_multiroots.h],[],
+   AC_CHECK_HEADERS([gsl/gsl_multiroots.h gsl/gsl_deriv.h],[],
                    [AC_MSG_ERROR([GSL must be installed to use GSL routines])], [])
    AC_DEFINE([ENABLE_GSL],[1],[Enable GSL routines])]
 )
