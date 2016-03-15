@@ -111,37 +111,37 @@ namespace softsusy {
     DoubleMatrix displayInverseEWSBJacobian() const { return invJacEWSB; }
 
     /// \brief Calculates the Jacobian transforming parameters to observables.
-    /// \param[in] model the model to calculate the Jacobian for
+    /// \param[in] m the model to calculate the Jacobian for
     /// \return the value of the Jacobian
-    double calcFTJacobian(NmssmSoftsusy& model);
+    double calcFTJacobian(const NmssmSoftsusy& m);
 
     /// \brief Calculates the Jacobian transforming parameters to observables.
-    /// \param[in] model the model to calculate the Jacobian for
+    /// \param[in] m the model to calculate the Jacobian for
     /// \param[in] mx the scale at which the input parameters are defined
     /// \return the value of the Jacobian
-    double calcFTJacobian(NmssmSoftsusy& model, double mx);
+    double calcFTJacobian(const NmssmSoftsusy& m, double mx);
 
     /// \brief Calculates the Jacobian transforming observables to parameters.
-    /// \param[in] model the model to calculate the Jacobian for
+    /// \param[in] m the model to calculate the Jacobian for
     /// \return the value of the Jacobian
-    double calcFTInverseJacobian(NmssmSoftsusy& model);
+    double calcFTInverseJacobian(const NmssmSoftsusy& m);
 
     /// \brief Calculates the Jacobian transforming observables to parameters.
-    /// \param[in] model the model to calculate the Jacobian for
+    /// \param[in] m the model to calculate the Jacobian for
     /// \param[in] mx the scale at which the input parameters are defined
     /// \return the value of the Jacobian
-    double calcFTInverseJacobian(NmssmSoftsusy& model, double mx);
+    double calcFTInverseJacobian(const NmssmSoftsusy& m, double mx);
 
     /// \brief Calculates the fine-tuning using the Jacobian measure.
-    /// \param[in] model the model to calculate the fine-tuning for
+    /// \param[in] m the model to calculate the fine-tuning for
     /// \return the value of the fine-tuning
-    double calcDeltaJ(NmssmSoftsusy& model);
+    double calcDeltaJ(const NmssmSoftsusy& m);
 
     /// \brief Calculates the fine-tuning using the Jacobian measure.
-    /// \param[in] model the model to calculate the fine-tuning for
+    /// \param[in] m the model to calculate the fine-tuning for
     /// \param[in] mx the scale at which the input parameters are defined
     /// \return the value of the fine-tuning
-    double calcDeltaJ(NmssmSoftsusy& model, double mx);
+    double calcDeltaJ(const NmssmSoftsusy& m, double mx);
 
   private:
     enum Parameters { Mzsq, Tanb, Svev, Mtsq, Lambda, Kappa,

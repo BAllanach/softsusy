@@ -30,24 +30,21 @@ namespace softsusy {
 
   /// Calculates the fine-tuning for the model, using the Jacobian
   /// measure.  The parameters are taken to be defined at the input
-  /// scale \c mx obtained from a call to \c model.displayMxBC(),
+  /// scale \c mx obtained from a call to \c m.displayMxBC(),
   /// while the observables are calculated at the SUSY scale
-  /// returned by \c model.calcMs().  The Jacobian matrix is
+  /// returned by \c m.calcMs().  The Jacobian matrix is
   /// calculated by calling calcFTInverseJacobian() internally, and
   /// can be accessed after the calculation.
-  /// \see calcFTInverseJacobian(NmssmSoftsusy&)
-  double NmssmJacobian::calcDeltaJ(NmssmSoftsusy& model) {
-    return calcDeltaJ(model, model.displayMxBC());
+  /// \see calcFTInverseJacobian(const NmssmSoftsusy&)
+  double NmssmJacobian::calcDeltaJ(const NmssmSoftsusy& m) {
+    return calcDeltaJ(m, m.displayMxBC());
   }
 
-  /// Calculates the fine-tuning as in calcDeltaJ(NmssmSoftsusy& model),
+  /// Calculates the fine-tuning as in calcDeltaJ(const NmssmSoftsusy& m),
   /// but with \c mx set to the given value instead of that returned by
-  /// \c model.displayMxBC().
-  double NmssmJacobian::calcDeltaJ(NmssmSoftsusy& model, double mx) {
-
-    const DoubleVector savedPars(model.display());
-    const double scale = model.displayMu();
-    const sPhysical savedPhys(model.displayPhys());
+  /// \c m.displayMxBC().
+  double NmssmJacobian::calcDeltaJ(const NmssmSoftsusy& m, double mx) {
+    NmssmSoftsusy model(m);
 
     model.runto(model.calcMs());
 
@@ -81,46 +78,35 @@ namespace softsusy {
     }
     if (includeTop) numerator *= model.displayYukawaElement(YU, 3, 3);
 
-    model.setMu(scale);
-    model.set(savedPars);
-    model.setPhys(savedPhys);
-
     return fabs(numerator * determinant / denominator);
   }
 
   /// Calculates the Jacobian of the form \f$ J^{-1} = |
   /// \partial O / \partial p | \f$.  The transformation is done
   /// in two stages.  In the first, the observables at the
-  /// SUSY scale, obtained from \c model.calcMs(), are traded for
+  /// SUSY scale, obtained from \c m.calcMs(), are traded for
   /// the parameters at this scale using the EWSB conditions.
   /// The Jacobian matrix for this transformation can be
   /// accessed afterwards using displayInverseEWSBJacobian().
   /// Then, the parameters at this scale are transformed to
   /// parameters at the scale \c mx, obtained from calling
-  /// \c model.displayMxBC(), using the RGEs.  The Jacobian matrix for
+  /// \c m.displayMxBC(), using the RGEs.  The Jacobian matrix for
   /// this transformation may be accessed by calling
   /// displayInverseRGFlowJacobian().
-  double NmssmJacobian::calcFTInverseJacobian(NmssmSoftsusy& model) {
-    return calcFTInverseJacobian(model, model.displayMxBC());
+  double NmssmJacobian::calcFTInverseJacobian(const NmssmSoftsusy& m) {
+    return calcFTInverseJacobian(m, m.displayMxBC());
   }
 
-  /// Calculates the Jacobian as in calcFTInverseJacobian(NmssmSoftsusy& model),
-  /// but with \c mx set to the given value instead of that returned by
-  /// \c model.displayMxBC().
-  double NmssmJacobian::calcFTInverseJacobian(NmssmSoftsusy& model, double mx) {
-
-    const DoubleVector savedPars(model.display());
-    const double scale = model.displayMu();
-    const sPhysical savedPhys(model.displayPhys());
+  /// Calculates the Jacobian as in
+  /// calcFTInverseJacobian(const NmssmSoftsusy& m), but with \c mx set to
+  /// the given value instead of that returned by \c m.displayMxBC().
+  double NmssmJacobian::calcFTInverseJacobian(const NmssmSoftsusy& m, double mx) {
+    NmssmSoftsusy model(m);
 
     model.runto(model.calcMs());
 
     const double rgDet = calcRGFlowJacobian(model, mx, model.displayMu());
     const double ewsbDet = calcInverseEWSBJacobian(model);
-
-    model.setMu(scale);
-    model.set(savedPars);
-    model.setPhys(savedPhys);
 
     return ewsbDet * rgDet;
   }
@@ -130,8 +116,8 @@ namespace softsusy {
   /// which is the inverse of that calculated by
   /// calcFTInverseJacobian(), is done in two stages.  In the
   /// first, the parameters at the input scale \c mx, obtained
-  /// from a call to \c model.displayMxBC(), are transformed to parameters
-  /// \f$\{q\}\f$ at the SUSY scale, obtained from \c model.calcMs(),
+  /// from a call to \c m.displayMxBC(), are transformed to parameters
+  /// \f$\{q\}\f$ at the SUSY scale, obtained from \c m.calcMs(),
   /// using the RGEs.  The Jacobian matrix for this
   /// transformation may be accessed afterwards by calling
   /// displayRGFlowJacobian().  Then the parameters
@@ -139,27 +125,20 @@ namespace softsusy {
   /// scale using the EWSB conditions.  The Jacobian matrix for
   /// this second transformation can be accessed using
   /// displayEWSBJacobian().
-  double NmssmJacobian::calcFTJacobian(NmssmSoftsusy& model) {
-    return calcFTJacobian(model, model.displayMxBC());
+  double NmssmJacobian::calcFTJacobian(const NmssmSoftsusy& m) {
+    return calcFTJacobian(m, m.displayMxBC());
   }
 
-  /// Calculates the Jacobian as in calcFTJacobian(NmssmSoftsusy& model),
+  /// Calculates the Jacobian as in calcFTJacobian(const NmssmSoftsusy& m),
   /// but with \c mx set to the given value instead of that returned by
-  /// \c model.displayMxBC().
-  double NmssmJacobian::calcFTJacobian(NmssmSoftsusy& model, double mx) {
-
-    const DoubleVector savedPars(model.display());
-    const double scale = model.displayMu();
-    const sPhysical savedPhys(model.displayPhys());
+  /// \c m.displayMxBC().
+  double NmssmJacobian::calcFTJacobian(const NmssmSoftsusy& m, double mx) {
+    NmssmSoftsusy model(m);
 
     model.runto(model.calcMs());
 
     const double rgDet = calcRGFlowJacobian(model, model.displayMu(), mx);
     const double ewsbDet = calcEWSBJacobian(model);
-
-    model.setMu(scale);
-    model.set(savedPars);
-    model.setPhys(savedPhys);
 
     return ewsbDet * rgDet;
   }
