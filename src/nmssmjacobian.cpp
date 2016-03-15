@@ -48,6 +48,11 @@ namespace softsusy {
 
     model.runto(model.calcMs());
 
+    model.calcDrBarPars();
+    const double mtrun = model.displayDrBarPars().mt;
+    const double sinthDRbar = model.calcSinthdrbar();
+    model.doTadpoles(mtrun, sinthDRbar);
+
     const double determinant = calcFTInverseJacobian(model, mx);
 
     const double mz2 = sqr(calcMz(model, useRunningMasses));
