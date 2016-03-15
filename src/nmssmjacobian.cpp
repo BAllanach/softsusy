@@ -580,7 +580,6 @@ namespace softsusy {
     Parameters dependent = pars->dependent;
 
     const DoubleVector savedPars(tempModel->display());
-    const double startScale = tempModel->displayMu();
     const drBarPars savedDrBarPars(tempModel->displayDrBarPars());
 
     ostringstream msg;
@@ -707,7 +706,6 @@ namespace softsusy {
 
     if (PRINTOUT > 1) cout << msg.str();
 
-    tempModel->setMu(startScale);
     tempModel->set(savedPars);
     tempModel->setDrBarPars(savedDrBarPars);
 
@@ -1279,10 +1277,6 @@ namespace softsusy {
 
   double NmssmJacobian::calcInverseEWSBJacobian(NmssmSoftsusy& model) {
 
-    const DoubleVector savedPars(model.display());
-    const double scale = model.displayMu();
-    const drBarPars savedDrBarPars(model.displayDrBarPars());
-
     const int numPars = includeTop ? 4 : 3;
 
     DoubleMatrix jac(numPars, numPars);
@@ -1335,10 +1329,6 @@ namespace softsusy {
       invJacEWSB.resize(numPars, numPars);
     }
     invJacEWSB = jac;
-
-    model.setMu(scale);
-    model.set(savedPars);
-    model.setDrBarPars(savedDrBarPars);
 
     return jac.determinant();
   }
