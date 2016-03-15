@@ -3989,7 +3989,7 @@ namespace {
       int status;
       std::size_t iter = 0;
 
-      if (PRINTOUT > 1) {
+      if (PRINTOUT > 2) {
         cout << "# Starting iteration with solver " << i << '\n'
              << "# Initial guess:\n"
              << "#\tv = " << gsl_vector_get(solver->x, 0) << ", "
@@ -4004,7 +4004,7 @@ namespace {
         ++iter;
         status = gsl_multiroot_fsolver_iterate(solver);
 
-        if (PRINTOUT > 1) {
+        if (PRINTOUT > 2) {
           cout << "# Iteration " << iter << ":\n"
                << "#\tv = " << gsl_vector_get(solver->x, 0) << ", "
                << "tanb = " << gsl_vector_get(solver->x, 1) << ", "
@@ -4020,7 +4020,7 @@ namespace {
         status = gsl_multiroot_test_residual(solver->f, precision);
       } while (status == GSL_CONTINUE && iter < max_iters);
 
-      if (PRINTOUT > 1) {
+      if (PRINTOUT > 2) {
         cout << "# Solver " << i << " finished with status: "
              << gsl_strerror(status) << '\n';
       }
