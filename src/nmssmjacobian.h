@@ -57,7 +57,7 @@ namespace softsusy {
   public:
 
     explicit NmssmJacobian(bool doTop = false);
-    virtual ~NmssmJacobian();
+    ~NmssmJacobian();
 
     /// \brief Displays whether the top Yukawa is included in the tuning.
     /// \return true if the top Yukawa is included
