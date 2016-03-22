@@ -4255,6 +4255,7 @@ namespace {
     double err = 0.;
     double derivative = 0.;
     double ftParameter = 0.;
+    bool has_error = false;
     if (fabs(x) < 1.0e-10) {
       ftParameter = 0.; derivative = 0.; err = 0.;
     } else {
@@ -4264,19 +4265,47 @@ namespace {
       func.params = &tuningPars;
 
       gsl_deriv_central(&func, x, h, &derivative, &err);
+
+      if (fabs(x) > 1.0e-10 &&
+          (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+        has_error = fabs(err / derivative) > 1.0
+          || tuningPars.model->displayProblem().test();
+      }
+
+      if (has_error) {
+        tuningPars.model->setProblem(sProblem());
+
+        gsl_deriv_forward(&func, x, h, &derivative, &err);
+
+        if (fabs(x) > 1.0e-10 &&
+            (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+          has_error = fabs(err / derivative) > 1.0
+            || tuningPars.model->displayProblem().test();
+        }
+
+        if (has_error) {
+          tuningPars.model->setProblem(sProblem());
+
+          gsl_deriv_backward(&func, x, h, &derivative, &err);
+
+          if (fabs(x) > 1.0e-10 &&
+              (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+            has_error = fabs(err / derivative) > 1.0
+              || tuningPars.model->displayProblem().test();
+          }
+        }
+      }
 #else
       derivative = calcDerivative(calcMzsq, x, h, &err, &tuningPars);
+
+      has_error = (fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0)
+        || (tuningPars.model->displayProblem().test());
 #endif
       ftParameter = x * derivative / tuningPars.mzSqr;
     }
 
     if (PRINTOUT > 1)
       cout << "derivative=" << derivative << " error=" << err << '\n';
-
-    /// Check for errors
-    const bool has_error
-       = (fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0)
-       || (tuningPars.model->displayProblem().test());
 
     /// Restore initial parameters at correct scale
     setMu(initialMu);
