@@ -424,17 +424,53 @@ namespace softsusy {
     double derivative = 0.;
     double err = 0.;
 
+    bool has_error = false;
+
 #ifdef ENABLE_GSL
     gsl_function func;
     func.function = &calcRunningParameter;
     func.params = &pars;
 
     gsl_deriv_central(&func, x, h, &derivative, &err);
+
+    if (fabs(x) > 1.0e-10 &&
+        (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+      has_error = fabs(err / derivative) > 1.0;
+    }
+
+    if (has_error) {
+      // attempt to use a forward or backward difference in
+      // case we are at a boundary at parameter space
+      gsl_deriv_forward(&func, x, h, &derivative, &err);
+
+      if (fabs(x) > 1.0e-10 &&
+          (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+        has_error = fabs(err / derivative) > 1.0;
+      }
+
+      if (has_error) {
+        gsl_deriv_backward(&func, x, h, &derivative, &err);
+
+        if (fabs(x) > 1.0e-10 &&
+            (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+          has_error = fabs(err / derivative) > 1.0;
+        }
+      }
+    }
 #else
     if (fabs(x) > 1.0e-10) {
       derivative = calcDerivative(calcRunningParameter, x, h, &err, &pars);
+
+      if (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10) {
+        has_error = fabs(err / derivative) > 1.0;
+      }
     }
 #endif
+
+    if (has_error) {
+      derivative = -numberOfTheBeast;
+      hasError = true;
+    }
 
     if (PRINTOUT > 1) {
       const double scale = model.displayMu();
@@ -480,17 +516,6 @@ namespace softsusy {
 
       msg << derivative << " error=" << err << '\n';
       cout << msg.str();
-    }
-
-    bool has_error = false;
-    if (fabs(x) > 1.0e-10 &&
-        (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
-      has_error = fabs(err / derivative) > 1.0;
-    }
-
-    if (has_error) {
-      derivative = -numberOfTheBeast;
-      hasError = true;
     }
 
     return derivative;
@@ -1040,17 +1065,53 @@ namespace softsusy {
     double derivative = 0.;
     double err = 0.;
 
+    bool has_error = false;
+
 #ifdef ENABLE_GSL
     gsl_function func;
     func.function = &calcEWSBOutput;
     func.params = &pars;
 
     gsl_deriv_central(&func, x, h, &derivative, &err);
+
+    if (fabs(x) > 1.0e-10 &&
+        (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+      has_error = fabs(err / derivative) > 1.0;
+    }
+
+    if (has_error) {
+      // attempt to use a forward or backward difference in
+      // case we are at a boundary at parameter space
+      gsl_deriv_forward(&func, x, h, &derivative, &err);
+
+      if (fabs(x) > 1.0e-10 &&
+          (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+        has_error = fabs(err / derivative) > 1.0;
+      }
+
+      if (has_error) {
+        gsl_deriv_backward(&func, x, h, &derivative, &err);
+
+        if (fabs(x) > 1.0e-10 &&
+            (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+          has_error = fabs(err / derivative) > 1.0;
+        }
+      }
+    }
 #else
     if (fabs(x) > 1.0e-10) {
       derivative = calcDerivative(calcEWSBOutput, x, h, &err, &pars);
+
+      if (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10) {
+        has_error = fabs(err / derivative) > 1.0;
+      }
     }
 #endif
+
+    if (has_error) {
+      derivative = -numberOfTheBeast;
+      hasError = true;
+    }
 
     if (PRINTOUT > 1) {
       ostringstream msg;
@@ -1088,17 +1149,6 @@ namespace softsusy {
       }
       msg << derivative << " error=" << err << '\n';
       cout << msg.str();
-    }
-
-    bool has_error = false;
-    if (fabs(x) > 1.0e-10 &&
-        (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
-      has_error = fabs(err / derivative) > 1.0;
-    }
-
-    if (has_error) {
-      derivative = -numberOfTheBeast;
-      hasError = true;
     }
 
     return derivative;
@@ -1170,17 +1220,53 @@ namespace softsusy {
     double derivative = 0.;
     double err = 0.;
 
+    bool has_error = false;
+
 #ifdef ENABLE_GSL
     gsl_function func;
     func.function = &calcEWSBParameter;
     func.params = &pars;
 
     gsl_deriv_central(&func, x, h, &derivative, &err);
+
+    if (fabs(x) > 1.0e-10 &&
+        (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+      has_error = fabs(err / derivative) > 1.0;
+    }
+
+    if (has_error) {
+      // attempt to use a forward or backward difference in
+      // case we are at a boundary at parameter space
+      gsl_deriv_forward(&func, x, h, &derivative, &err);
+
+      if (fabs(x) > 1.0e-10 &&
+          (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+        has_error = fabs(err / derivative) > 1.0;
+      }
+
+      if (has_error) {
+        gsl_deriv_backward(&func, x, h, &derivative, &err);
+
+        if (fabs(x) > 1.0e-10 &&
+            (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+          has_error = fabs(err / derivative) > 1.0;
+        }
+      }
+    }
 #else
     if (fabs(x) > 1.0e-10) {
       derivative = calcDerivative(calcEWSBParameter, x, h, &err, &pars);
+
+      if (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10) {
+        has_error = fabs(err / derivative) > 1.0;
+      }
     }
 #endif
+
+    if (has_error) {
+      derivative = -numberOfTheBeast;
+      hasError = true;
+    }
 
     if (PRINTOUT > 1) {
       ostringstream msg;
@@ -1220,17 +1306,6 @@ namespace softsusy {
 
       msg << derivative << " error= " << err << '\n';
       cout << msg.str();
-    }
-
-    bool has_error = false;
-    if (fabs(x) > 1.0e-10 &&
-        (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
-      has_error = fabs(err / derivative) > 1.0;
-    }
-
-    if (has_error) {
-      derivative = -numberOfTheBeast;
-      hasError = true;
     }
 
     return derivative;
