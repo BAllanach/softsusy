@@ -4257,11 +4257,12 @@ namespace {
     double derivative = 0.;
     double ftParameter = 0.;
     double ftError = 0.;
-    bool has_error = false;
     if (fabs(x) < 1.0e-10) {
       ftParameter = 0.; derivative = 0.; err = 0.;
     } else {
 #ifdef ENABLE_GSL
+      bool has_error = false;
+
       gsl_function func;
       func.function = &calcMzsq;
       func.params = &tuningPars;
@@ -4290,18 +4291,17 @@ namespace {
 
           gsl_deriv_backward(&func, x, h, &derivative, &err);
 
-          if (fabs(x) > 1.0e-10 &&
-              (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
-            has_error = fabs(err / derivative) > 1.0
-              || tuningPars.model->displayProblem().test();
+          if (tuningPars.model->displayProblem().test()) {
+            err = fabs(derivative);
           }
         }
       }
 #else
       derivative = calcDerivative(calcMzsq, x, h, &err, &tuningPars);
 
-      has_error = (fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0)
-        || (tuningPars.model->displayProblem().test());
+      if (tuningPars.model->displayProblem().test()) {
+        err = fabs(derivative);
+      }
 #endif
       ftParameter = fabs(x * derivative / tuningPars.mzSqr);
       ftError = fabs(x * err / tuningPars.mzSqr);
@@ -4315,8 +4315,6 @@ namespace {
     set(storeObject);
     setPhys(savePhys);
     setProblem(savedProblems);
-
-    if (has_error) ftParameter = -numberOfTheBeast;
 
     return std::pair<double,double>(ftParameter, ftError);
   }
@@ -4363,8 +4361,6 @@ namespace {
       const std::pair<double,double> result = it1par(i, bcPars, tuningPars);
       tempFineTuning(i,1) = result.first;
       tempFineTuning(i,2) = result.second;
-      /// flag problem FT calculation with NaN
-      if (tempFineTuning(i,1) < -1.0e66) tempFineTuning(i,1) = asin(2.);
     }
 
     /// Restore initial parameters at correct scale
