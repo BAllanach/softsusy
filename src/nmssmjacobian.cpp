@@ -23,6 +23,8 @@ namespace softsusy {
   NmssmJacobian::NmssmJacobian(bool doTop)
      : jacRGFlow(3,3), jacEWSB(3,3)
      , invJacRGFlow(3,3), invJacEWSB(3,3)
+     , jacRGFlowErrors(3,3), jacEWSBErrors(3,3)
+     , invJacRGFlowErrors(3,3), invJacEWSBErrors(3,3)
      , includeTop(doTop), useRunningMasses(false)
      , useSugraTrilinears(false), hasError(false) {
   }
@@ -346,9 +348,8 @@ namespace softsusy {
     return output;
   }
 
-  double NmssmJacobian::calcRGDerivative(NmssmSoftsusy& model,
-                                         Parameters dep, Parameters indep,
-                                         double toScale) {
+  std::pair<double,double> NmssmJacobian::calcRGDerivative(
+    NmssmSoftsusy& model, Parameters dep, Parameters indep, double toScale) {
 
     double x = 0.;
     double h = 0.01;
@@ -518,7 +519,7 @@ namespace softsusy {
       cout << msg.str();
     }
 
-    return derivative;
+    return std::pair<double,double>(derivative, err);
   }
 
   double NmssmJacobian::calcRGFlowJacobian(NmssmSoftsusy& model,
@@ -531,8 +532,9 @@ namespace softsusy {
     const int numPars = includeTop ? 4 : 3;
 
     DoubleMatrix jac(numPars, numPars);
+    DoubleMatrix jacErrors(numPars, numPars);
 
-    vector<Parameters> indepPars;
+    std::vector<Parameters> indepPars;
 
     if (SoftHiggsOut) {
       indepPars.push_back(Mh1Sq);
@@ -550,21 +552,49 @@ namespace softsusy {
     if (includeTop) indepPars.push_back(Yt);
 
     for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
+      std::pair<double,double> result;
       if (SoftHiggsOut) {
-        jac(i + 1, 1) = calcRGDerivative(model, Mh1Sq, indepPars[i], endScale);
-        jac(i + 1, 2) = calcRGDerivative(model, Mh2Sq, indepPars[i], endScale);
-        jac(i + 1, 3) = calcRGDerivative(model, MsSq, indepPars[i], endScale);
+        result = calcRGDerivative(model, Mh1Sq, indepPars[i], endScale);
+        jac(i + 1, 1) = result.first;
+        jacErrors(i + 1, 1) = result.second;
+
+        result = calcRGDerivative(model, Mh2Sq, indepPars[i], endScale);
+        jac(i + 1, 2) = result.first;
+        jacErrors(i + 1, 2) = result.second;
+
+        result = calcRGDerivative(model, MsSq, indepPars[i], endScale);
+        jac(i + 1, 3) = result.first;
+        jacErrors(i + 1, 3) = result.second;
       } else if (Z3) {
-        jac(i + 1, 1) = calcRGDerivative(model, Lambda, indepPars[i], endScale);
-        jac(i + 1, 2) = calcRGDerivative(model, Kappa, indepPars[i], endScale);
-        jac(i + 1, 3) = calcRGDerivative(model, MsSq, indepPars[i], endScale);
+        result = calcRGDerivative(model, Lambda, indepPars[i], endScale);
+        jac(i + 1, 1) = result.first;
+        jacErrors(i + 1, 1) = result.second;
+
+        result = calcRGDerivative(model, Kappa, indepPars[i], endScale);
+        jac(i + 1, 2) = result.first;
+        jacErrors(i + 1, 2) = result.second;
+
+        result = calcRGDerivative(model, MsSq, indepPars[i], endScale);
+        jac(i + 1, 3) = result.first;
+        jacErrors(i + 1, 3) = result.second;
       } else {
-        jac(i + 1, 1) = calcRGDerivative(model, SMu, indepPars[i], endScale);
-        jac(i + 1, 2) = calcRGDerivative(model, M3Sq, indepPars[i], endScale);
-        jac(i + 1, 3) = calcRGDerivative(model, XiS, indepPars[i], endScale);
+        result = calcRGDerivative(model, SMu, indepPars[i], endScale);
+        jac(i + 1, 1) = result.first;
+        jacErrors(i + 1, 1) = result.second;
+
+        result = calcRGDerivative(model, M3Sq, indepPars[i], endScale);
+        jac(i + 1, 2) = result.first;
+        jacErrors(i + 1, 2) = result.second;
+
+        result = calcRGDerivative(model, XiS, indepPars[i], endScale);
+        jac(i + 1, 3) = result.first;
+        jacErrors(i + 1, 3) = result.second;
       }
-      if (includeTop)
-        jac(i + 1, 4) = calcRGDerivative(model, Yt, indepPars[i], endScale);
+      if (includeTop) {
+        result = calcRGDerivative(model, Yt, indepPars[i], endScale);
+        jac(i + 1, 4) = result.first;
+        jacErrors(i + 1, 4) = result.second;
+      }
     }
 
     // save calculated matrix
@@ -577,23 +607,47 @@ namespace softsusy {
       }
       invJacRGFlow = jac;
 
+      if (invJacRGFlowErrors.displayRows() != numPars
+          || invJacRGFlowErrors.displayCols() != numPars) {
+        invJacRGFlowErrors.resize(numPars, numPars);
+      }
+      invJacRGFlowErrors = jacErrors;
+
       if (jacRGFlow.displayRows() != numPars
           || jacRGFlow.displayCols() != numPars) {
         jacRGFlow.resize(numPars, numPars);
       }
       jacRGFlow = jac;
+
+      if (jacRGFlowErrors.displayRows() != numPars
+          || jacRGFlowErrors.displayCols() != numPars) {
+        jacRGFlowErrors.resize(numPars, numPars);
+      }
+      jacRGFlowErrors = jacErrors;
     } else if (startScale > endScale) {
       if (invJacRGFlow.displayRows() != numPars
           || invJacRGFlow.displayCols() != numPars) {
         invJacRGFlow.resize(numPars, numPars);
       }
       invJacRGFlow = jac;
+
+      if (invJacRGFlowErrors.displayRows() != numPars
+          || invJacRGFlowErrors.displayCols() != numPars) {
+        invJacRGFlowErrors.resize(numPars, numPars);
+      }
+      invJacRGFlowErrors = jacErrors;
     } else {
       if (jacRGFlow.displayRows() != numPars
           || jacRGFlow.displayCols() != numPars) {
         jacRGFlow.resize(numPars, numPars);
       }
       jacRGFlow = jac;
+
+      if (jacRGFlowErrors.displayRows() != numPars
+          || jacRGFlowErrors.displayCols() != numPars) {
+        jacRGFlowErrors.resize(numPars, numPars);
+      }
+      jacRGFlowErrors = jacErrors;
     }
 
     model.setMu(scale);
@@ -988,7 +1042,7 @@ namespace softsusy {
     return output;
   }
 
-  double NmssmJacobian::calcEWSBOutputDerivative(
+  std::pair<double,double> NmssmJacobian::calcEWSBOutputDerivative(
     NmssmSoftsusy& model, Parameters dep, Parameters indep) {
 
     double x = 0.;
@@ -1151,10 +1205,10 @@ namespace softsusy {
       cout << msg.str();
     }
 
-    return derivative;
+    return std::pair<double,double>(derivative, err);
   }
 
-  double NmssmJacobian::calcEWSBParameterDerivative(
+  std::pair<double,double> NmssmJacobian::calcEWSBParameterDerivative(
     NmssmSoftsusy& model, Parameters dep, Parameters indep) {
 
     const int numOutputs = includeTop ? 4 : 3;
@@ -1308,7 +1362,7 @@ namespace softsusy {
       cout << msg.str();
     }
 
-    return derivative;
+    return std::pair<double,double>(derivative, err);
   }
 
   double NmssmJacobian::calcEWSBJacobian(NmssmSoftsusy& model) {
@@ -1320,8 +1374,9 @@ namespace softsusy {
     const int numPars = includeTop ? 4 : 3;
 
     DoubleMatrix jac(numPars, numPars);
+    DoubleMatrix jacErrors(numPars, numPars);
 
-    vector<Parameters> indepPars;
+    std::vector<Parameters> indepPars;
 
     if (Z3 && !SoftHiggsOut) {
       indepPars.push_back(Mzsq);
@@ -1335,30 +1390,60 @@ namespace softsusy {
     if (includeTop) indepPars.push_back(Mtsq);
 
     for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
+      std::pair<double,double> result;
       if (SoftHiggsOut) {
-        jac(i + 1, 1) = calcEWSBParameterDerivative(model, Mh1Sq, indepPars[i]);
-        jac(i + 1, 2) = calcEWSBParameterDerivative(model, Mh2Sq, indepPars[i]);
-        jac(i + 1, 3) = calcEWSBParameterDerivative(model, MsSq, indepPars[i]);
+        result = calcEWSBParameterDerivative(model, Mh1Sq, indepPars[i]);
+        jac(i + 1, 1) = result.first;
+        jacErrors(i + 1, 1) = result.second;
+
+        result = calcEWSBParameterDerivative(model, Mh2Sq, indepPars[i]);
+        jac(i + 1, 2) = result.first;
+        jacErrors(i + 1, 2) = result.second;
+
+        result = calcEWSBParameterDerivative(model, MsSq, indepPars[i]);
+        jac(i + 1, 3) = result.first;
+        jacErrors(i + 1, 3) = result.second;
       } else if (Z3) {
         if (indepPars[i] == Lambda) {
           jac(i + 1, 1) = 1.;
+          jacErrors(i + 1, 1) = 0.;
           jac(i + 1, 2) = 0.;
+          jacErrors(i + 1, 2) = 0.;
           jac(i + 1, 3) = 0.;
+          jacErrors(i + 1, 3) = 0.;
         } else {
           jac(i + 1, 1) = 0.;
-          jac(i + 1, 2) = calcEWSBParameterDerivative(model, Kappa, indepPars[i]);
-          jac(i + 1, 3) = calcEWSBParameterDerivative(model, MsSq, indepPars[i]);
+          jacErrors(i + 1, 1) = 0.;
+
+          result = calcEWSBParameterDerivative(model, Kappa, indepPars[i]);
+          jac(i + 1, 2) = result.first;
+          jacErrors(i + 1, 2) = result.second;
+
+          result = calcEWSBParameterDerivative(model, MsSq, indepPars[i]);
+          jac(i + 1, 3) = result.first;
+          jacErrors(i + 1, 3) = result.second;
         }
       } else {
-        jac(i + 1, 1) = calcEWSBParameterDerivative(model, SMu, indepPars[i]);
-        jac(i + 1, 2) = calcEWSBParameterDerivative(model, M3Sq, indepPars[i]);
-        jac(i + 1, 3) = calcEWSBParameterDerivative(model, XiS, indepPars[i]);
+        result = calcEWSBParameterDerivative(model, SMu, indepPars[i]);
+        jac(i + 1, 1) = result.first;
+        jacErrors(i + 1, 1) = result.second;
+
+        result = calcEWSBParameterDerivative(model, M3Sq, indepPars[i]);
+        jac(i + 1, 2) = result.first;
+        jacErrors(i + 1, 2) = result.second;
+
+        result = calcEWSBParameterDerivative(model, XiS, indepPars[i]);
+        jac(i + 1, 3) = result.first;
+        jacErrors(i + 1, 3) = result.second;
       }
       if (includeTop) {
         if ((Z3 && !SoftHiggsOut) && indepPars[i] == Lambda) {
           jac(i + 1, 4) = 0.;
+          jacErrors(i + 1, 4) = 0.;
         } else {
-          jac(i + 1, 4) = calcEWSBParameterDerivative(model, Yt, indepPars[i]);
+          result = calcEWSBParameterDerivative(model, Yt, indepPars[i]);
+          jac(i + 1, 4) = result.first;
+          jacErrors(i + 1, 4) = result.second;
         }
       }
     }
@@ -1369,6 +1454,12 @@ namespace softsusy {
       jacEWSB.resize(numPars, numPars);
     }
     jacEWSB = jac;
+
+    if (jacEWSBErrors.displayRows() != numPars
+        || jacEWSBErrors.displayCols() != numPars) {
+      jacEWSBErrors.resize(numPars, numPars);
+    }
+    jacEWSBErrors = jacErrors;
 
     model.setMu(scale);
     model.set(savedPars);
@@ -1382,8 +1473,9 @@ namespace softsusy {
     const int numPars = includeTop ? 4 : 3;
 
     DoubleMatrix jac(numPars, numPars);
+    DoubleMatrix jacErrors(numPars, numPars);
 
-    vector<Parameters> indepPars;
+    std::vector<Parameters> indepPars;
 
     if (SoftHiggsOut) {
       indepPars.push_back(Mh1Sq);
@@ -1401,26 +1493,48 @@ namespace softsusy {
     if (includeTop) indepPars.push_back(Yt);
 
     for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
+      std::pair<double,double> result;
       if (Z3 && !SoftHiggsOut) {
         if (indepPars[i] == Lambda) {
           jac(i + 1, 1) = 0.;
+          jacErrors(i + 1, 1) = 0.;
           jac(i + 1, 2) = 0.;
+          jacErrors(i + 1, 2) = 0.;
           jac(i + 1, 3) = 1.;
+          jacErrors(i + 1, 3) = 0.;
         } else {
-          jac(i + 1, 1) = calcEWSBOutputDerivative(model, Mzsq, indepPars[i]);
-          jac(i + 1, 2) = calcEWSBOutputDerivative(model, Tanb, indepPars[i]);
+          result = calcEWSBOutputDerivative(model, Mzsq, indepPars[i]);
+          jac(i + 1, 1) = result.first;
+          jacErrors(i + 1, 1) = result.second;
+
+          result = calcEWSBOutputDerivative(model, Tanb, indepPars[i]);
+          jac(i + 1, 2) = result.first;
+          jacErrors(i + 1, 2) = result.second;
+
           jac(i + 1, 3) = 0.;
+          jacErrors(i + 1, 3) = 0.;
         }
       } else {
-        jac(i + 1, 1) = calcEWSBOutputDerivative(model, Mzsq, indepPars[i]);
-        jac(i + 1, 2) = calcEWSBOutputDerivative(model, Tanb, indepPars[i]);
-        jac(i + 1, 3) = calcEWSBOutputDerivative(model, Svev, indepPars[i]);
+        result = calcEWSBOutputDerivative(model, Mzsq, indepPars[i]);
+        jac(i + 1, 1) = result.first;
+        jacErrors(i + 1, 1) = result.second;
+
+        result = calcEWSBOutputDerivative(model, Tanb, indepPars[i]);
+        jac(i + 1, 2) = result.first;
+        jacErrors(i + 1, 2) = result.second;
+
+        result = calcEWSBOutputDerivative(model, Svev, indepPars[i]);
+        jac(i + 1, 3) = result.first;
+        jacErrors(i + 1, 3) = result.second;
       }
       if (includeTop) {
         if ((Z3 && !SoftHiggsOut) && indepPars[i] == Lambda) {
           jac(i + 1, 4) = 0.;
+          jacErrors(i + 1, 4) = 0.;
         } else {
-          jac(i + 1, 4) = calcEWSBOutputDerivative(model, Mtsq, indepPars[i]);
+          result = calcEWSBOutputDerivative(model, Mtsq, indepPars[i]);
+          jac(i + 1, 4) = result.first;
+          jacErrors(i + 1, 4) = result.second;
         }
       }
     }
@@ -1431,6 +1545,12 @@ namespace softsusy {
       invJacEWSB.resize(numPars, numPars);
     }
     invJacEWSB = jac;
+
+    if (invJacEWSBErrors.displayRows() != numPars
+        || invJacEWSBErrors.displayCols() != numPars) {
+      invJacEWSBErrors.resize(numPars, numPars);
+    }
+    invJacEWSBErrors = jacErrors;
 
     return jac.determinant();
   }

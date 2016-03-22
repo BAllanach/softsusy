@@ -8,6 +8,8 @@
 
 #include "linalg.h"
 
+#include <utility>
+
 namespace softsusy {
 
   class NmssmSoftsusy;
@@ -95,20 +97,44 @@ namespace softsusy {
     /// \return the Jacobian matrix of derivatives for the transformation
     DoubleMatrix displayRGFlowJacobian() const { return jacRGFlow; }
 
+    /// \brief Displays the error in the Jacobian for transforming from high-
+    /// to low-scale parameters.
+    /// \return the absolute error on the Jacobian matrix
+    DoubleMatrix displayRGFlowJacobianErrors() const { return jacRGFlowErrors; }
+
     /// \brief Displays the Jacobian for transforming low-scale parameters
     /// to observables.
     /// \return the Jacobian matrix of derivatives for the transformation
     DoubleMatrix displayEWSBJacobian() const { return jacEWSB; }
+
+    /// \brief Displays the error in the Jacobian for transforming low-scale
+    /// parameters to observables.
+    /// \return the absolute error on the Jacobian matrix
+    DoubleMatrix displayEWSBJacobianErrors() const { return jacEWSBErrors; }
 
     /// \brief Displays the Jacobian for transforming from low- to high-scale
     /// parameters.
     /// \return the Jacobian matrix of derivatives for the transformation
     DoubleMatrix displayInverseRGFlowJacobian() const { return invJacRGFlow; }
 
+    /// \brief Displays the error in the Jacobian for transforming from low-
+    /// to high-scale parameters.
+    /// \return the absolute error on the Jacobian matrix
+    DoubleMatrix displayInverseRGFlowJacobianErrors() const {
+      return invJacRGFlowErrors;
+    }
+
     /// \brief Displays the Jacobian for transforming observables to
     /// low-scale parameters.
     /// \return the Jacobian matrix of derivatives for the transformation
     DoubleMatrix displayInverseEWSBJacobian() const { return invJacEWSB; }
+
+    /// \brief Displays the error in the Jacobian for transforming observables
+    /// to low-scale parameters.
+    /// \return the absolute error on the Jacobian matrix
+    DoubleMatrix displayInverseEWSBJacobianErrors() const {
+      return invJacEWSBErrors;
+    }
 
     /// \brief Calculates the Jacobian transforming parameters to observables.
     /// \param[in] m the model to calculate the Jacobian for
@@ -151,6 +177,12 @@ namespace softsusy {
     DoubleMatrix jacEWSB;
     DoubleMatrix invJacRGFlow;
     DoubleMatrix invJacEWSB;
+
+    DoubleMatrix jacRGFlowErrors;
+    DoubleMatrix jacEWSBErrors;
+    DoubleMatrix invJacRGFlowErrors;
+    DoubleMatrix invJacEWSBErrors;
+
     bool includeTop;
     bool useRunningMasses;
     bool useSugraTrilinears;
@@ -183,8 +215,9 @@ namespace softsusy {
     static double calcMt(NmssmSoftsusy& model, bool getRunningMass = false);
 
     static double calcRunningParameter(double x, void* parameters);
-    double calcRGDerivative(NmssmSoftsusy& model, Parameters dep,
-                            Parameters indep, double toScale);
+    std::pair<double,double> calcRGDerivative(NmssmSoftsusy& model,
+                                              Parameters dep, Parameters indep,
+                                              double toScale);
     double calcRGFlowJacobian(NmssmSoftsusy& model, double startScale,
                               double endScale);
     static int ewsbOutputErrors(const DoubleVector & guess, void* parameters,
@@ -192,10 +225,12 @@ namespace softsusy {
     static void fixEWSBOutputs(EWSBPars* pars, int & err);
     static double calcEWSBParameter(double x, void* parameters);
     static double calcEWSBOutput(double x, void* parameters);
-    double calcEWSBOutputDerivative(NmssmSoftsusy& model, Parameters dep,
-                                    Parameters indep);
-    double calcEWSBParameterDerivative(NmssmSoftsusy& model, Parameters dep,
-                                       Parameters indep);
+    std::pair<double,double> calcEWSBOutputDerivative(NmssmSoftsusy& model,
+                                                      Parameters dep,
+                                                      Parameters indep);
+    std::pair<double,double> calcEWSBParameterDerivative(NmssmSoftsusy& model,
+                                                         Parameters dep,
+                                                         Parameters indep);
     double calcEWSBJacobian(NmssmSoftsusy& model);
     double calcInverseEWSBJacobian(NmssmSoftsusy& model);
   };
