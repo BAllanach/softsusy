@@ -3884,6 +3884,10 @@ namespace {
 
     NmssmSoftsusy* model = static_cast<NmssmSoftsusy*>(params);
 
+    // reset problems to avoid skipping tadpole calculation
+    const sProblem savedProblems(model->displayProblem());
+    model->setProblem(sProblem());
+
     const double current_vd = gsl_vector_get(vevs, 0);
     const double current_vu = gsl_vector_get(vevs, 1);
     const double current_vs = gsl_vector_get(vevs, 2);
@@ -3902,6 +3906,8 @@ namespace {
     DoubleVector ewsbValues(3);
     model->ewsbConditions(ewsbValues);
 
+    model->setProblem(savedProblems);
+
     for (std::size_t i = 0; i < 3; ++i)
        gsl_vector_set(values, i, ewsbValues(i+1));
 
@@ -3916,6 +3922,10 @@ namespace {
 
     NmssmSoftsusy* model = static_cast<NmssmSoftsusy*>(params);
 
+    // reset problems to avoid skipping tadpole calculation
+    const sProblem savedProblems(model->displayProblem());
+    model->setProblem(sProblem());
+
     model->setHvev(vevs(1));
     model->setTanb(vevs(2));
     model->setSvev(vevs(3));
@@ -3928,6 +3938,8 @@ namespace {
     }
 
     model->ewsbConditions(values);
+
+    model->setProblem(savedProblems);
 
     const int error = testNan(values(1)) || testNan(values(2))
        || testNan(values(3));

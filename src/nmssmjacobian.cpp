@@ -581,6 +581,10 @@ namespace softsusy {
 
     const DoubleVector savedPars(tempModel->display());
     const drBarPars savedDrBarPars(tempModel->displayDrBarPars());
+    // reset problems to avoid subsequent iterations skipping
+    // calculating tadpoles
+    const sProblem savedProblems(tempModel->displayProblem());
+    tempModel->setProblem(sProblem());
 
     ostringstream msg;
     if (PRINTOUT > 1) msg << "# ";
@@ -708,6 +712,7 @@ namespace softsusy {
 
     tempModel->set(savedPars);
     tempModel->setDrBarPars(savedDrBarPars);
+    tempModel->setProblem(savedProblems);
 
     return output;
   }
@@ -832,6 +837,10 @@ namespace softsusy {
     const double startScale = tempModel->displayMu();
     const drBarPars savedDrBarPars(tempModel->displayDrBarPars());
     const DoubleVector savedOutputs(pars->outputs);
+    // reset problems to avoid subsequent iterations skipping
+    // calculating tadpoles
+    const sProblem savedProblems(tempModel->displayProblem());
+    tempModel->setProblem(sProblem());
 
     ostringstream msg;
     if (PRINTOUT > 1) msg << "# ";
@@ -939,6 +948,7 @@ namespace softsusy {
     tempModel->setMu(startScale);
     tempModel->set(savedPars);
     tempModel->setDrBarPars(savedDrBarPars);
+    tempModel->setProblem(savedProblems);
     pars->outputs = savedOutputs;
 
     return output;
