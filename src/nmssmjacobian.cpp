@@ -11,6 +11,7 @@
 #include "utils.h"
 
 #include <iostream>
+#include <limits>
 #include <vector>
 
 #ifdef ENABLE_GSL
@@ -406,6 +407,10 @@ namespace softsusy {
     }
     }
 
+#ifdef ENABLE_GSL
+    h = sqrt(std::numeric_limits<double>::epsilon()) * maximum(fabs(x), 1.0);
+#endif
+
     volatile const double temp = x + h;
     h = temp - x;
 
@@ -654,6 +659,10 @@ namespace softsusy {
       throw ii.str();
     }
     }
+
+    tempModel->calcDrBarPars();
+    tempModel->doTadpoles(tempModel->displayDrBarPars().mt,
+                          tempModel->calcSinthdrbar());
 
     DoubleVector vevs(3);
     vevs(1) = tempModel->displayHvev();
@@ -1014,6 +1023,10 @@ namespace softsusy {
     }
     }
 
+#ifdef ENABLE_GSL
+    h = sqrt(std::numeric_limits<double>::epsilon()) * maximum(fabs(x), 1.0);
+#endif
+
     volatile const double temp = x + h;
     h = temp - x;
 
@@ -1094,9 +1107,6 @@ namespace softsusy {
   double NmssmJacobian::calcEWSBParameterDerivative(
     NmssmSoftsusy& model, Parameters dep, Parameters indep) {
 
-    double x = 0.;
-    double h = 0.01;
-
     const int numOutputs = includeTop ? 4 : 3;
     DoubleVector outputs(numOutputs);
     outputs(1) = sqr(calcMz(model, useRunningMasses));
@@ -1104,6 +1114,9 @@ namespace softsusy {
     outputs(3) = (Z3 && !SoftHiggsOut) ? model.displayLambda() :
       model.displaySvev();
     if (numOutputs > 3) outputs(4) = sqr(calcMt(model, useRunningMasses));
+
+    double x = 0.;
+    double h = 0.01;
 
     switch (indep) {
     case Lambda: {
@@ -1138,6 +1151,10 @@ namespace softsusy {
       throw ii.str();
     }
     }
+
+#ifdef ENABLE_GSL
+    h = sqrt(std::numeric_limits<double>::epsilon()) * maximum(fabs(x), 1.0);
+#endif
 
     volatile const double temp = x + h;
     h = temp - x;

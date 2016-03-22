@@ -4203,8 +4203,8 @@ namespace {
     tuningPars.ftFunctionality = numPar;
     tuningPars.model->setProblem(sProblem());
 
-    double h = 0.01;
     double x = 0.;
+    double h = 0.01;
 
     const int numBcPars = bcPars.displayEnd();
     if (numPar > 0 && numPar <= numBcPars) {
@@ -4241,6 +4241,10 @@ namespace {
          << " out of range.\n";
       throw ii.str();
     }
+
+#ifdef ENABLE_GSL
+    h = sqrt(std::numeric_limits<double>::epsilon()) * maximum(fabs(x), 1.0);
+#endif
 
     volatile const double temp = x + h;
     h = temp - x;
