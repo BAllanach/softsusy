@@ -7,8 +7,6 @@ AC_CONFIG_AUX_DIR([Config])
 AC_CONFIG_HEADERS([Config/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-dnl Put default fortran compiler for this variable
-F77=gfortran
 dnl === disable debug symbols by default =====
 if test "x$CXXFLAGS" = "x"; then
     CXXFLAGS="-O2 -Wall"
