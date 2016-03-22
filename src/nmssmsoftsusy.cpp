@@ -4092,45 +4092,46 @@ namespace {
     double initialMu = tempSoft1->displayMu();
     drBarPars saveDrBar(tempSoft1->displayDrBarPars());
 
-    if (PRINTOUT > 1) cout << '#';
+    ostringstream msg;
+    if (PRINTOUT > 1) msg << "# ";
 
     const int numFtPars = ftPars.displayEnd();
     if (ftFunctionality <= numFtPars) {
       ftPars(ftFunctionality) = x;
       tuningPars->ftBoundaryCondition(*tempSoft1, ftPars);
-      if (PRINTOUT > 1) cout << 'p' << ftFunctionality << "= " << x << ' ';
+      if (PRINTOUT > 1) msg << 'p' << ftFunctionality << " = " << x << ", ";
     } else if (ftFunctionality == numFtPars + 1) {
       if (SoftHiggsOut) {
         tempSoft1->setMh1Squared(x);
-        if (PRINTOUT > 1) cout << "mH1Sq= " << x << ' ';
+        if (PRINTOUT > 1) msg << "mH1Sq = " << x << ", ";
       } else if (Z3) {
         tempSoft1->setKappa(x);
-        if (PRINTOUT > 1) cout << "kappa= " << x << ' ';
+        if (PRINTOUT > 1) msg << "kappa = " << x << ", ";
       } else {
         tempSoft1->setSusyMu(x);
-        if (PRINTOUT > 1) cout << "mu= " << x << ' ';
+        if (PRINTOUT > 1) msg << "mu = " << x << ", ";
       }
     } else if (ftFunctionality == numFtPars + 2) {
       if (SoftHiggsOut) {
         tempSoft1->setMh2Squared(x);
-        if (PRINTOUT > 1) cout << "mH2Sq= " << x << ' ';
+        if (PRINTOUT > 1) msg << "mH2Sq = " << x << ", ";
       } else if (Z3) {
         tempSoft1->setMsSquared(x);
-        if (PRINTOUT > 1) cout << "mSsq= " << x << ' ';
+        if (PRINTOUT > 1) msg << "mSsq = " << x << ", ";
       } else {
         tempSoft1->setM3Squared(x);
-        if (PRINTOUT > 1) cout << "m3sq= " << x << ' ';
+        if (PRINTOUT > 1) msg << "m3sq = " << x << ", ";
       }
     } else if (ftFunctionality == numFtPars + 3) {
       if (SoftHiggsOut) {
         tempSoft1->setMsSquared(x);
-        if (PRINTOUT > 1) cout << "mSsq= " << x << ' ';
+        if (PRINTOUT > 1) msg << "mSsq = " << x << ", ";
       } else if (Z3) {
         tempSoft1->setYukawaElement(YU, 3, 3, x);
-        if (PRINTOUT > 1) cout << "ht= " << x << ' ';
+        if (PRINTOUT > 1) msg << "ht = " << x << ", ";
       } else {
         tempSoft1->setXiS(x);
-        if (PRINTOUT > 1) cout << "xiS= " << x << ' ';
+        if (PRINTOUT > 1) msg << "xiS = " << x << ", ";
       }
     } else if (ftFunctionality == numFtPars + 4) {
       if (Z3) {
@@ -4140,7 +4141,7 @@ namespace {
         throw ii.str();
       }
       tempSoft1->setYukawaElement(YU, 3, 3, x);
-      if (PRINTOUT > 1) cout << "ht= " << x << ' ';
+      if (PRINTOUT > 1) msg << "ht = " << x << ", ";
     } else {
       ostringstream ii;
       ii << "NmssmSoftsusy:calcMzsq called with incorrect functionality=" <<
@@ -4164,7 +4165,7 @@ namespace {
 
     if (error != 0) {
       if (PRINTOUT > 0) {
-        cout << "Warning: could not solve for VEVs\n";
+        cout << "# Warning: could not solve for VEVs\n";
       }
     }
 
@@ -4180,8 +4181,11 @@ namespace {
     const double referenceMzsq = sqr(tempSoft1->displayMzRun())
        - tempSoft1->piZZT(tempSoft1->displayMzRun(), susyScale);
 
-    if (PRINTOUT > 1) cout << "MZ=" << sqrt(fabs(referenceMzsq))
-                           << " tanb=" << tempSoft1->displayTanb() << '\n';
+    if (PRINTOUT > 1) {
+      msg << "MZ = " << sqrt(fabs(referenceMzsq))
+          << ", tanb = " << tempSoft1->displayTanb() << '\n';
+      std::cout << msg.str();
+    }
 
     /// Restore initial parameters at correct scale
     tempSoft1->setMu(initialMu);
@@ -4204,38 +4208,52 @@ namespace {
     tuningPars.ftFunctionality = numPar;
     tuningPars.model->setProblem(sProblem());
 
+    ostringstream msg;
+    if (PRINTOUT > 1) msg << "# derivative[dMZsq/d";
+
     double x = 0.;
     double h = 0.01;
 
     const int numBcPars = bcPars.displayEnd();
     if (numPar > 0 && numPar <= numBcPars) {
       x = bcPars.display(numPar); h = 0.01 * x;
+      if (PRINTOUT > 1) msg << "p" << numPar << "] = ";
     } else if (numPar == numBcPars + 1) {
       if (SoftHiggsOut) {
         x = displayMh1Squared(); h = 0.01 * x;
+        if (PRINTOUT > 1) msg << "mH1Sq] = ";
       } else if (Z3) {
         x = displayKappa(); h = 0.0005 * x;
+        if (PRINTOUT > 1) msg << "kappa] = ";
       } else {
         x = displaySusyMu(); h = 0.01 * x;
+        if (PRINTOUT > 1) msg << "mu] = ";
       }
     } else if (numPar == numBcPars + 2) {
       if (SoftHiggsOut) {
         x = displayMh2Squared(); h = 0.01 * x;
+        if (PRINTOUT > 1) msg << "mH2Sq] = ";
       } else if (Z3) {
         x = displayMsSquared(); h = 0.01 * x;
+        if (PRINTOUT > 1) msg << "mSsq] = ";
       } else {
         x = displayM3Squared(); h = 0.01 * x;
+        if (PRINTOUT > 1) msg << "m3sq] = ";
       }
     } else if (numPar == numBcPars + 3) {
       if (SoftHiggsOut) {
         x = displayMsSquared(); h = 0.01 * x;
+        if (PRINTOUT > 1) msg << "mSsq] = ";
       } else if (Z3) {
         x = displayYukawaElement(YU, 3, 3); h = 0.0005 * x;
+        if (PRINTOUT > 1) msg << "ht] = ";
       } else {
         x = displayXiS(); h = 0.01 * x;
+        if (PRINTOUT > 1) msg << "xiS] = ";
       }
     } else if (numPar == numBcPars + 4) {
       x = displayYukawaElement(YU, 3, 3); h = 0.0005 * x;
+      if (PRINTOUT > 1) msg << "ht] = ";
     } else {
       ostringstream ii;
       ii << "it1par called with functionality " << tuningPars.ftFunctionality
@@ -4307,8 +4325,10 @@ namespace {
       ftError = fabs(x * err / tuningPars.mzSqr);
     }
 
-    if (PRINTOUT > 1)
-      cout << "derivative=" << derivative << " error=" << err << '\n';
+    if (PRINTOUT > 1) {
+      msg << derivative << ", error = " << err << '\n';
+      std::cout << msg.str();
+    }
 
     /// Restore initial parameters at correct scale
     setMu(initialMu);

@@ -211,7 +211,7 @@ namespace softsusy {
     const double startScale = tempModel->displayMu();
 
     ostringstream msg;
-    if (PRINTOUT > 1) msg << "# Qstart= " << startScale << ' ';
+    if (PRINTOUT > 1) msg << "# Qstart = " << startScale << ", ";
 
     switch (independent) {
     case Lambda: {
@@ -220,7 +220,7 @@ namespace softsusy {
         tempModel->setTrialambda(x * Alambda);
       }
       tempModel->setLambda(x);
-      if (PRINTOUT > 1) msg << "lambda= " << x << ' ';
+      if (PRINTOUT > 1) msg << "lambda = " << x << ", ";
       break;
     }
     case Kappa: {
@@ -229,37 +229,37 @@ namespace softsusy {
         tempModel->setTriakappa(x * Akappa);
       }
       tempModel->setKappa(x);
-      if (PRINTOUT > 1) msg << "kappa= " << x << ' ';
+      if (PRINTOUT > 1) msg << "kappa = " << x << ", ";
       break;
     }
     case SMu: {
       tempModel->setSusyMu(x);
-      if (PRINTOUT > 1) msg << "mu= " << x << ' ';
+      if (PRINTOUT > 1) msg << "mu = " << x << ", ";
       break;
     }
     case M3Sq: {
       tempModel->setM3Squared(x);
-      if (PRINTOUT > 1) msg << "m3sq= " << x << ' ';
+      if (PRINTOUT > 1) msg << "m3sq = " << x << ", ";
       break;
     }
     case XiS: {
       tempModel->setXiS(x);
-      if (PRINTOUT > 1) msg << "xiS= " << x << ' ';
+      if (PRINTOUT > 1) msg << "xiS = " << x << ", ";
       break;
     }
     case Mh1Sq: {
       tempModel->setMh1Squared(x);
-      if (PRINTOUT > 1) msg << "mH1Sq= " << x << ' ';
+      if (PRINTOUT > 1) msg << "mH1Sq = " << x << ", ";
       break;
     }
     case Mh2Sq: {
       tempModel->setMh2Squared(x);
-      if (PRINTOUT > 1) msg << "mH2Sq= " << x << ' ';
+      if (PRINTOUT > 1) msg << "mH2Sq = " << x << ", ";
       break;
     }
     case MsSq: {
       tempModel->setMsSquared(x);
-      if (PRINTOUT > 1) msg << "mSsq= " << x << ' ';
+      if (PRINTOUT > 1) msg << "mSsq = " << x << ", ";
       break;
     }
     case Yt: {
@@ -268,7 +268,7 @@ namespace softsusy {
         tempModel->setTrilinearElement(UA, 3, 3, x * At);
       }
       tempModel->setYukawaElement(YU, 3, 3, x);
-      if (PRINTOUT > 1) msg << "ht= " << x << ' ';
+      if (PRINTOUT > 1) msg << "ht = " << x << ", ";
       break;
     }
     default: {
@@ -281,53 +281,53 @@ namespace softsusy {
 
     tempModel->runto(endScale);
 
-    if (PRINTOUT > 1) msg << "Qend= " << endScale << ' ';
+    if (PRINTOUT > 1) msg << "Qend = " << endScale << ", ";
 
     double output;
     switch (dependent) {
     case Lambda: {
       output = tempModel->displayLambda();
-      if (PRINTOUT > 1) msg << "lambda= " << output << '\n';
+      if (PRINTOUT > 1) msg << "lambda = " << output << '\n';
       break;
     }
     case Kappa: {
       output = tempModel->displayKappa();
-      if (PRINTOUT > 1) msg << "kappa= " << output << '\n';
+      if (PRINTOUT > 1) msg << "kappa = " << output << '\n';
       break;
     }
     case SMu: {
       output = tempModel->displaySusyMu();
-      if (PRINTOUT > 1) msg << "mu= " << output << '\n';
+      if (PRINTOUT > 1) msg << "mu = " << output << '\n';
       break;
     }
     case M3Sq: {
       output = tempModel->displayM3Squared();
-      if (PRINTOUT > 1) msg << "m3sq= " << output << '\n';
+      if (PRINTOUT > 1) msg << "m3sq = " << output << '\n';
       break;
     }
     case XiS: {
       output = tempModel->displayXiS();
-      if (PRINTOUT > 1) msg << "xiS= " << output << '\n';
+      if (PRINTOUT > 1) msg << "xiS = " << output << '\n';
       break;
     }
     case Mh1Sq: {
       output = tempModel->displayMh1Squared();
-      if (PRINTOUT > 1) msg << "mH1Sq= " << output << '\n';
+      if (PRINTOUT > 1) msg << "mH1Sq = " << output << '\n';
       break;
     }
     case Mh2Sq: {
       output = tempModel->displayMh2Squared();
-      if (PRINTOUT > 1) msg << "mH2Sq= " << output << '\n';
+      if (PRINTOUT > 1) msg << "mH2Sq = " << output << '\n';
       break;
     }
     case MsSq: {
       output = tempModel->displayMsSquared();
-      if (PRINTOUT > 1) msg << "mSsq= " << output << '\n';
+      if (PRINTOUT > 1) msg << "mSsq = " << output << '\n';
       break;
     }
     case Yt: {
       output = tempModel->displayYukawaElement(YU, 3, 3);
-      if (PRINTOUT > 1) msg << "ht= " << output << '\n';
+      if (PRINTOUT > 1) msg << "ht = " << output << '\n';
       break;
     }
     default: {
@@ -497,15 +497,15 @@ namespace softsusy {
       }
 
       switch (indep) {
-      case Lambda: msg << "lambda(Q=" << scale << ")]= "; break;
-      case Kappa: msg << "kappa(Q=" << scale << ")]= "; break;
-      case SMu: msg << "mu(Q=" << scale << ")]= "; break;
-      case M3Sq: msg << "m3sq(Q=" << scale << ")]= "; break;
-      case XiS: msg << "xiS(Q=" << scale << ")]= "; break;
-      case Mh1Sq: msg << "mH1Sq(Q=" << scale << ")]= "; break;
-      case Mh2Sq: msg << "mH2Sq(Q=" << scale << ")]= "; break;
-      case MsSq: msg << "mSsq(Q=" << scale << ")]= "; break;
-      case Yt: msg << "ht(Q=" << scale << ")]= "; break;
+      case Lambda: msg << "lambda(Q=" << scale << ")] = "; break;
+      case Kappa: msg << "kappa(Q=" << scale << ")] = "; break;
+      case SMu: msg << "mu(Q=" << scale << ")] = "; break;
+      case M3Sq: msg << "m3sq(Q=" << scale << ")] = "; break;
+      case XiS: msg << "xiS(Q=" << scale << ")] = "; break;
+      case Mh1Sq: msg << "mH1Sq(Q=" << scale << ")] = "; break;
+      case Mh2Sq: msg << "mH2Sq(Q=" << scale << ")] = "; break;
+      case MsSq: msg << "mSsq(Q=" << scale << ")] = "; break;
+      case Yt: msg << "ht(Q=" << scale << ")] = "; break;
       default: {
         ostringstream ii;
         ii << "NmssmJacobian:calcRGDerivative called with incorrect"
@@ -514,7 +514,7 @@ namespace softsusy {
       }
       }
 
-      msg << derivative << " error=" << err << '\n';
+      msg << derivative << ", error = " << err << '\n';
       cout << msg.str();
     }
 
@@ -626,7 +626,7 @@ namespace softsusy {
         tempModel->setTrialambda(x * Alambda);
       }
       tempModel->setLambda(x);
-      if (PRINTOUT > 1) msg << "lambda= " << x << ' ';
+      if (PRINTOUT > 1) msg << "lambda = " << x << ", ";
       break;
     }
     case Kappa: {
@@ -635,37 +635,37 @@ namespace softsusy {
         tempModel->setTriakappa(x * Akappa);
       }
       tempModel->setKappa(x);
-      if (PRINTOUT > 1) msg << "kappa= " << x << ' ';
+      if (PRINTOUT > 1) msg << "kappa = " << x << ", ";
       break;
     }
     case SMu: {
       tempModel->setSusyMu(x);
-      if (PRINTOUT > 1) msg << "mu= " << x << ' ';
+      if (PRINTOUT > 1) msg << "mu = " << x << ", ";
       break;
     }
     case M3Sq: {
       tempModel->setM3Squared(x);
-      if (PRINTOUT > 1) msg << "m3sq= " << x << ' ';
+      if (PRINTOUT > 1) msg << "m3sq = " << x << ", ";
       break;
     }
     case XiS: {
       tempModel->setXiS(x);
-      if (PRINTOUT > 1) msg << "xiS= " << x << ' ';
+      if (PRINTOUT > 1) msg << "xiS = " << x << ", ";
       break;
     }
     case Mh1Sq: {
       tempModel->setMh1Squared(x);
-      if (PRINTOUT > 1) msg << "mH1Sq= " << x << ' ';
+      if (PRINTOUT > 1) msg << "mH1Sq = " << x << ", ";
       break;
     }
     case Mh2Sq: {
       tempModel->setMh2Squared(x);
-      if (PRINTOUT > 1) msg << "mH2Sq= " << x << ' ';
+      if (PRINTOUT > 1) msg << "mH2Sq = " << x << ", ";
       break;
     }
     case MsSq: {
       tempModel->setMsSquared(x);
-      if (PRINTOUT > 1) msg << "mSsq= " << x << ' ';
+      if (PRINTOUT > 1) msg << "mSsq = " << x << ", ";
       break;
     }
     case Yt: {
@@ -674,7 +674,7 @@ namespace softsusy {
         tempModel->setTrilinearElement(UA, 3, 3, x * At);
       }
       tempModel->setYukawaElement(YU, 3, 3, x);
-      if (PRINTOUT > 1) msg << "ht= " << x << ' ';
+      if (PRINTOUT > 1) msg << "ht = " << x << ", ";
       break;
     }
     default: {
@@ -716,22 +716,22 @@ namespace softsusy {
     switch (dependent) {
     case Mzsq: {
       output = sqr(calcMz(*tempModel, pars->useRunningMasses));
-      if (PRINTOUT > 1) msg << "MZ=" << sqrt(output) << '\n';
+      if (PRINTOUT > 1) msg << "MZ = " << sqrt(output) << '\n';
       break;
     }
     case Tanb: {
       output = tempModel->displayTanb();
-      if (PRINTOUT > 1) msg << "tanb=" << output << '\n';
+      if (PRINTOUT > 1) msg << "tanb = " << output << '\n';
       break;
     }
     case Svev: {
       output = tempModel->displaySvev();
-      if (PRINTOUT > 1) msg << "Svev=" << output << '\n';
+      if (PRINTOUT > 1) msg << "Svev = " << output << '\n';
       break;
     }
     case Mtsq: {
       output = sqr(calcMt(*tempModel, pars->useRunningMasses));
-      if (PRINTOUT > 1) msg << "MT=" << sqrt(output) << '\n';
+      if (PRINTOUT > 1) msg << "MT = " << sqrt(output) << '\n';
       break;
     }
     default: {
@@ -882,27 +882,27 @@ namespace softsusy {
     switch (independent) {
     case Lambda: {
       pars->outputs(3) = x;
-      if (PRINTOUT > 1) msg << "lambda= " << x << ' ';
+      if (PRINTOUT > 1) msg << "lambda = " << x << ", ";
       break;
     }
     case Mzsq: {
       pars->outputs(1) = x;
-      if (PRINTOUT > 1) msg << "MZ= " << sqrt(x) << ' ';
+      if (PRINTOUT > 1) msg << "MZ = " << sqrt(x) << ", ";
       break;
     }
     case Tanb: {
       pars->outputs(2) = x;
-      if (PRINTOUT > 1) msg << "tanb= " << x << ' ';
+      if (PRINTOUT > 1) msg << "tanb = " << x << ", ";
       break;
     }
     case Svev: {
       pars->outputs(3) = x;
-      if (PRINTOUT > 1) msg << "Svev= " << x << ' ';
+      if (PRINTOUT > 1) msg << "Svev = " << x << ", ";
       break;
     }
     case Mtsq: {
       pars->outputs(4) = x;
-      if (PRINTOUT > 1) msg << "MT= " << sqrt(x) << ' ';
+      if (PRINTOUT > 1) msg << "MT = " << sqrt(x) << ", ";
       break;
     }
     default: {
@@ -926,47 +926,47 @@ namespace softsusy {
     switch (dependent) {
     case Lambda: {
       output = tempModel->displayLambda();
-      if (PRINTOUT > 1) msg << "lambda= " << output << '\n';
+      if (PRINTOUT > 1) msg << "lambda = " << output << '\n';
       break;
     }
     case Kappa: {
       output = tempModel->displayKappa();
-      if (PRINTOUT > 1) msg << "kappa= " << output << '\n';
+      if (PRINTOUT > 1) msg << "kappa = " << output << '\n';
       break;
     }
     case SMu: {
       output = tempModel->displaySusyMu();
-      if (PRINTOUT > 1) msg << "mu= " << output << '\n';
+      if (PRINTOUT > 1) msg << "mu = " << output << '\n';
       break;
     }
     case M3Sq: {
       output = tempModel->displayM3Squared();
-      if (PRINTOUT > 1) msg << "m3sq= " << output << '\n';
+      if (PRINTOUT > 1) msg << "m3sq = " << output << '\n';
       break;
     }
     case XiS: {
       output = tempModel->displayXiS();
-      if (PRINTOUT > 1) msg << "xiS= " << output << '\n';
+      if (PRINTOUT > 1) msg << "xiS = " << output << '\n';
       break;
     }
     case Mh1Sq: {
       output = tempModel->displayMh1Squared();
-      if (PRINTOUT > 1) msg << "mH1Sq= " << output << '\n';
+      if (PRINTOUT > 1) msg << "mH1Sq = " << output << '\n';
       break;
     }
     case Mh2Sq: {
       output = tempModel->displayMh2Squared();
-      if (PRINTOUT > 1) msg << "mH2Sq= " << output << '\n';
+      if (PRINTOUT > 1) msg << "mH2Sq = " << output << '\n';
       break;
     }
     case MsSq: {
       output = tempModel->displayMsSquared();
-      if (PRINTOUT > 1) msg << "mSsq= " << output << '\n';
+      if (PRINTOUT > 1) msg << "mSsq = " << output << '\n';
       break;
     }
     case Yt: {
       output = tempModel->displayYukawaElement(YU, 3, 3);
-      if (PRINTOUT > 1) msg << "ht= " << output << '\n';
+      if (PRINTOUT > 1) msg << "ht = " << output << '\n';
       break;
     }
     default: {
@@ -1131,15 +1131,15 @@ namespace softsusy {
       }
 
       switch (indep) {
-      case Lambda: msg << "lambda]= "; break;
-      case Kappa: msg << "kappa]= "; break;
-      case SMu: msg << "mu]= "; break;
-      case M3Sq: msg << "m3sq]= "; break;
-      case XiS: msg << "xiS]= "; break;
-      case Mh1Sq: msg << "mH1Sq]="; break;
-      case Mh2Sq: msg << "mH2Sq]="; break;
-      case MsSq: msg << "mSsq]="; break;
-      case Yt: msg << "ht]="; break;
+      case Lambda: msg << "lambda] = "; break;
+      case Kappa: msg << "kappa] = "; break;
+      case SMu: msg << "mu] = "; break;
+      case M3Sq: msg << "m3sq] = "; break;
+      case XiS: msg << "xiS] = "; break;
+      case Mh1Sq: msg << "mH1Sq] = "; break;
+      case Mh2Sq: msg << "mH2Sq] = "; break;
+      case MsSq: msg << "mSsq] = "; break;
+      case Yt: msg << "ht] = "; break;
       default: {
         ostringstream ii;
         ii << "NmssmJacobian:calcEWSBOutputDerivative called with incorrect"
@@ -1147,7 +1147,7 @@ namespace softsusy {
         throw ii.str();
       }
       }
-      msg << derivative << " error=" << err << '\n';
+      msg << derivative << ", error = " << err << '\n';
       cout << msg.str();
     }
 
@@ -1291,11 +1291,11 @@ namespace softsusy {
       }
 
       switch (indep) {
-      case Lambda: msg << "lambda]= "; break;
-      case Mzsq: msg << "MZsq]= "; break;
-      case Tanb: msg << "tanb]= "; break;
-      case Svev: msg << "Svev]= "; break;
-      case Mtsq: msg << "MTsq]= "; break;
+      case Lambda: msg << "lambda] = "; break;
+      case Mzsq: msg << "MZsq] = "; break;
+      case Tanb: msg << "tanb] = "; break;
+      case Svev: msg << "Svev] = "; break;
+      case Mtsq: msg << "MTsq] = "; break;
       default: {
         ostringstream ii;
         ii << "NmssmJacobian:calcEWSBParameterDerivative called with incorrect"
@@ -1304,7 +1304,7 @@ namespace softsusy {
       }
       }
 
-      msg << derivative << " error= " << err << '\n';
+      msg << derivative << ", error = " << err << '\n';
       cout << msg.str();
     }
 
