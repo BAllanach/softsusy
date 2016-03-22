@@ -19,6 +19,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cmath>
+#include <utility>
 #include "def.h"
 #include "utils.h"
 #include "numerics.h"
@@ -64,9 +65,10 @@ namespace softsusy {
     static double calcMzsq(double x, void* parameters);
 
     /// DH: computes the fine tuning sensitivity for the parameter
-    /// specified by numpar
-    double it1par(int numPar, const DoubleVector & bcPars,
-                  FineTuningPars & tuningPars);
+    /// specified by numpar, returning a pair containing the sensitivity
+    /// in the first element and the estimated absolute error in the second
+    std::pair<double,double> it1par(int numPar, const DoubleVector & bcPars,
+                                    FineTuningPars & tuningPars);
 
   public:
     //  void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &);
@@ -552,7 +554,9 @@ namespace softsusy {
     /// breaking BCs.
     /// If doTop is true, it also calculates the fine tuning associated with
     /// the top Yukawa coupling.
-    DoubleVector fineTune(void (*boundaryCondition)(NmssmSoftsusy &,
+    /// Returns a matrix in which the first column contains the calculated
+    /// fine tunings, and the second contains the estimated errors on each.
+    DoubleMatrix fineTune(void (*boundaryCondition)(NmssmSoftsusy &,
                                                     const DoubleVector &),
                           const DoubleVector & bcPars, double MX,
                           bool doTop = false);

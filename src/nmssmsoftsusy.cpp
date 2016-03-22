@@ -4191,8 +4191,9 @@ namespace {
     return referenceMzsq;
   }
 
-  double NmssmSoftsusy::it1par(int numPar, const DoubleVector & bcPars,
-                               FineTuningPars & tuningPars) {
+  std::pair<double,double> NmssmSoftsusy::it1par(int numPar,
+                                                 const DoubleVector & bcPars,
+                                                 FineTuningPars & tuningPars) {
     /// Stores running parameters in a vector
     DoubleVector storeObject(display());
     double initialMu = displayMu();
@@ -4255,6 +4256,7 @@ namespace {
     double err = 0.;
     double derivative = 0.;
     double ftParameter = 0.;
+    double ftError = 0.;
     bool has_error = false;
     if (fabs(x) < 1.0e-10) {
       ftParameter = 0.; derivative = 0.; err = 0.;
@@ -4301,7 +4303,8 @@ namespace {
       has_error = (fabs(x) > 1.0e-10 && fabs(err / derivative) > 1.0)
         || (tuningPars.model->displayProblem().test());
 #endif
-      ftParameter = x * derivative / tuningPars.mzSqr;
+      ftParameter = fabs(x * derivative / tuningPars.mzSqr);
+      ftError = fabs(x * err / tuningPars.mzSqr);
     }
 
     if (PRINTOUT > 1)
@@ -4313,12 +4316,14 @@ namespace {
     setPhys(savePhys);
     setProblem(savedProblems);
 
-    return has_error ? -numberOfTheBeast : fabs(ftParameter);
+    if (has_error) ftParameter = -numberOfTheBeast;
+
+    return std::pair<double,double>(ftParameter, ftError);
   }
 
   /// DH: computes the Barbieri-Giudice fine tuning sensitivities for the
   /// given boundary condition parameters
-  DoubleVector NmssmSoftsusy::fineTune
+  DoubleMatrix NmssmSoftsusy::fineTune
 (void (*boundaryCondition)(NmssmSoftsusy &, const DoubleVector &),
  const DoubleVector & bcPars, double mx, bool doTop) {
 
@@ -4352,12 +4357,14 @@ namespace {
     }
     if (doTop) numPars++;
 
-    DoubleVector tempFineTuning(numPars);
+    DoubleMatrix tempFineTuning(numPars, 2);
 
     for (int i = 1; i <= numPars; ++i) {
-      tempFineTuning(i) = it1par(i, bcPars, tuningPars);
+      const std::pair<double,double> result = it1par(i, bcPars, tuningPars);
+      tempFineTuning(i,1) = result.first;
+      tempFineTuning(i,2) = result.second;
       /// flag problem FT calculation with NaN
-      if (tempFineTuning(i) < -1.0e66) tempFineTuning(i) = asin(2.);
+      if (tempFineTuning(i,1) < -1.0e66) tempFineTuning(i,1) = asin(2.);
     }
 
     /// Restore initial parameters at correct scale
