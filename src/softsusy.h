@@ -119,9 +119,9 @@ namespace softsusy {
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
     /// Public field :: only for informational purpose	
     SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
-    /// Flags allowing to choose which two-loop thresholds have to be included
-    int included_thresholds; 
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
+    /// Flag allowing to choose which two-loop thresholds have to be included
+    int included_thresholds; 
     
     //  void (*boundaryCondition)(Softsusy &, const DoubleVector &);
     /// Default constructor fills object with zeroes
