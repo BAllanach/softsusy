@@ -89,8 +89,6 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       included_thresholds = 0;
     }
     
-    
-    
 #endif
   }
   
@@ -9756,11 +9754,8 @@ void MssmSoftsusy::spinfoSLHA(ostream & out) {
 void MssmSoftsusy::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
   out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
-#ifdef COMPILE_THREE_LOOP_RGE
   out << "# 3-loop RGE corrections are ";
   if (displayLoops() == 3) out << "on"; else out << "off";
-#endif
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   out << ". 2-loop Yukawa/g3 thresholds are ";
   if (!USE_TWO_LOOP_GAUGE_YUKAWA) out << "off\n";
   else {
@@ -9777,7 +9772,6 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
     if (included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK) out << "on"; else out << "off";
     out << endl;
   }
-#endif
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   out << "# 2-loop SUSY QCD computation of squark/gluino pole masses are ";
   if (USE_TWO_LOOP_SPARTICLE_MASS) {

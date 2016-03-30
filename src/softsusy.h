@@ -47,7 +47,6 @@ namespace softsusy { class MssmSoftsusy; }
 namespace SoftSusy_helpers_ {
   GiNaC::exmap drBarPars_exmap(const softsusy::MssmSoftsusy &);
 }
-
 #include "two_loop_thresholds/softsusy_exmap.hpp"
 #include "two_loop_thresholds/mssmparam.hpp"
 #include "two_loop_thresholds/tau_corrections.hpp"
@@ -55,7 +54,6 @@ namespace SoftSusy_helpers_ {
 #include "two_loop_thresholds/tquark_corrections.hpp"
 #include "two_loop_thresholds/gs_corrections.hpp"
 #include "two_loop_thresholds/dec_cor_helper.hpp"
-
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
 namespace softsusy {
