@@ -35,7 +35,7 @@ const double MTAU = 1.77699; ///< default pole lepton mass from PDG
 const double ALPHASMZ = 0.1184; ///< default running value from PDG
 const double ALPHAMZ = 1.0 / 127.916; ///< default running alpha(MZ) from PDG
 
-  const double PMTOP = 173.5; ///< PDG 2012
+const double PMTOP = 173.5; ///< PDG 2012
 const double PMBOTTOM = 4.9; ///< default pole mass from PDG
 /// default central values of CKM matrix elements from PDG 2006 in radians
 const double THETA12CKM = 0.229206; ///< From Vus/Vud in global CKM fit, PDG

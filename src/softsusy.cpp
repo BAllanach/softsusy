@@ -6679,29 +6679,9 @@ void MssmSoftsusy::physical(int accuracy) {
 
     smodel.Q = displayMu();
 
-    // DGR added:
-    smodel.mtop = PMTOP;
+    smodel.mtop = displayDataSet().displayPoleMt();
     smodel.mh0 = displayPhys().mh0(1);
 
-    /*    cout << "In SOFTSUSY. (8.1.6) LHS=" << (sqr(smodel.vu) + sqr(smodel.vd))*0.5
-	 << " RHS=" 
-	 << 2.0 * sqr(displayMzRun()) / (sqr(smodel.g) + sqr(smodel.gp)) 
-	 << endl;
-    cout << "tanb=" << displayTanb() << endl;
-
-    /// This is dV/dHu^0
-    cout << "This should be zero to minimise TREE-level Higgs potential: " <<
-      2.0 * smodel.vu / sqrt(2.) * (sqr(smodel.mu) + smodel.m2Hu) - 
-      smodel.b * smodel.vd * sqrt(2.) + 0.25 * (sqr(smodel.g) + sqr(smodel.gp))
-      * (sqr(smodel.vu) - sqr(smodel.vd)) / sqrt(2.) * smodel.vu << endl;
-    cout << "This should also be zero to minimise TREE-level Higgs potential: " <<
-      2.0 * smodel.vd / sqrt(2.) * (sqr(smodel.mu) + smodel.m2Hd) - 
-      smodel.b * smodel.vu * sqrt(2.) - 0.25 * (sqr(smodel.g) + sqr(smodel.gp))
-      * (sqr(smodel.vu) - sqr(smodel.vd)) / sqrt(2.) * smodel.vd << endl;
-
-    /// C
-    cout << "In supermodel.\n";
-    */
     higherorder(smodel);  
     
     //Set the outputs 
@@ -9720,7 +9700,6 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
     if (included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK) out << "on"; else out << "off";
     out << endl;
   }
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   out << "# 2-loop SUSY QCD computation of squark/gluino pole masses are ";
   if (USE_TWO_LOOP_SPARTICLE_MASS) {
     out << "on.\n";
@@ -9729,7 +9708,6 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
     if (expandAroundGluinoPole == 3) out << "# Expansion around gluino and squark pole masses.\n";    
   }
   else out << "off" << endl;
-#endif  
 }
 
 void MssmSoftsusy::higgsMSLHA(ostream & out) {
