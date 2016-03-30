@@ -39,20 +39,8 @@ softsusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp
 softsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
 
 if COMPILE_THREE_LOOP_RGE
-bin_PROGRAMS += scansusy.x 
-scansusy_x_SOURCES = src/scan.cpp 
-scansusy_x_LDADD = libsoft.la  
-scansusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
-scansusy_x_LDADD += lib2lthresh.la libmssmparam.la  
-bin_PROGRAMS += scansusy_slha.x 
-scansusy_slha_x_SOURCES = src/scan_slha.cpp 
-scansusy_slha_x_LDADD = libsoft.la  
-scansusy_slha_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
-scansusy_slha_x_LDADD += lib2lthresh.la libmssmparam.la  
 
 if COMPILE_TWO_LOOP_SPARTICLE_MASS
-scansusy_x_LDADD       += libsupermodel.la libtsil.la 
-scansusy_slha_x_LDADD  += libsupermodel.la libtsil.la 
 bin_PROGRAMS += higher.x 
 higher_x_SOURCES = src/higher.cpp 
 higher_x_LDADD = libsoft.la  
