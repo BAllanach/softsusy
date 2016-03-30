@@ -94,12 +94,10 @@ namespace softsusy {
   /// is expected to be of O((mb/MSUSY)^2), which we can formally neglect.
   bool MB_DECOUPLING = false;
 
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   /// Various two-loop thresholds, eg 2-loop QCD corrections to m_gluino
   bool USE_TWO_LOOP_SPARTICLE_MASS = false;
   /// Default: expand around gluino and squark pole masses
   int expandAroundGluinoPole = 3;
-#endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
 
 }
 /// end of global variable declaration
