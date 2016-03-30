@@ -2,7 +2,7 @@
 
 lib_LTLIBRARIES += libsoft.la 
 
-bin_PROGRAMS += cmsdilep.x softsusy.x \
+bin_PROGRAMS += softsusy.x \
                 softsusy-nmssm.x \
                 softpoint.x \
                 rpvsoftsusy.x \
@@ -10,9 +10,6 @@ bin_PROGRAMS += cmsdilep.x softsusy.x \
 
 softsusy_x_SOURCES = src/main.cpp 
 softsusy_x_LDADD = libsoft.la 
-
-cmsdilep_x_SOURCES = src/cmsdilep.cpp 
-cmsdilep_x_LDADD = libsoft.la 
 
 softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp 
 softsusy_nmssm_x_LDADD = libsoft.la
@@ -72,7 +69,6 @@ softpoint_x_LDADD += lib2lthresh.la libmssmparam.la
 
 rpvsoftsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
 rpvneut_x_LDADD     += lib2lthresh.la libmssmparam.la 
-cmsdilep_x_LDADD    += lib2lthresh.la libmssmparam.la 
 endif
 
 
@@ -84,7 +80,6 @@ softsusy_nmssm_x_LDADD += libsupermodel.la libtsil.la
 softpoint_x_LDADD      += libsupermodel.la libtsil.la 
 rpvsoftsusy_x_LDADD    += libsupermodel.la libtsil.la 
 rpvneut_x_LDADD        += libsupermodel.la libtsil.la 
-cmsdilep_x_LDADD       += libsupermodel.la libtsil.la 
 endif
 
 pkginclude_HEADERS += \
