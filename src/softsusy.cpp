@@ -7056,9 +7056,9 @@ void MssmSoftsusy::fixedPointIteration
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
     SoftSusy_helpers_::decoupling_corrections_t d_coupl = 
       decoupling_corrections;
-    int enabled_thresholds = included_thresholds;
 #endif
-    
+    int enabled_thresholds = included_thresholds;    
+
     setSoftsusy(empty); /// Always starts from an empty object
     /// These are things that are re-written by the new initialisation
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
