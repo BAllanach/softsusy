@@ -10565,8 +10565,56 @@ void MssmSoftsusy::setEwsbConditions(const DoubleVector & inputs) {
   setMaCond(inputs.display(2));
 }
 
+  void MssmSoftsusy::setTwoLoopAlphasThresholds(bool sw) {
+    if (sw) {
+      included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
+      }
+      else included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
+  }
 
-/// input diagonal matrices and it'll give you back mixed ones
+  void MssmSoftsusy::setTwoLoopMtThresholds(bool sw) {
+      if (sw) {
+	included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
+      }
+      else included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
+    }
+
+  void MssmSoftsusy::setTwoLoopMbMtauThresholds(bool sw) {
+      if (sw) {
+	included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
+	included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
+	included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
+      }
+      else {
+	included_thresholds &= ENABLE_TWO_LOOP_MB_AS;
+	included_thresholds &= ENABLE_TWO_LOOP_MB_YUK;
+	included_thresholds &= ENABLE_TWO_LOOP_MTAU_YUK;
+      }
+    }
+
+  void MssmSoftsusy::setAllTwoLoopThresholds(bool sw) {
+      if (sw) {
+	included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
+	included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
+	included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
+	included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
+	included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
+      }
+      else {
+	included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
+	included_thresholds &= ENABLE_TWO_LOOP_MB_AS;
+	included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
+	included_thresholds &= ENABLE_TWO_LOOP_MB_YUK;
+	included_thresholds &= ENABLE_TWO_LOOP_MTAU_YUK;
+	USE_TWO_LOOP_GAUGE_YUKAWA = false;
+      }
+    }
+
+  /// input diagonal matrices and it'll give you back mixed ones
 void MssmSoftsusy::doQuarkMixing(DoubleMatrix & /* mDon */,
 				 DoubleMatrix & /* mUpq */) {
   /// This is a dummy routine - MIXING is ignored in this object (it's all
