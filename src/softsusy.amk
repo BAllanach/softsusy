@@ -39,7 +39,6 @@ softsusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp
 softsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
 
 if COMPILE_THREE_LOOP_RGE
-
 if COMPILE_TWO_LOOP_SPARTICLE_MASS
 bin_PROGRAMS += higher.x 
 higher_x_SOURCES = src/higher.cpp 
