@@ -9765,15 +9765,15 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
   if (!USE_TWO_LOOP_GAUGE_YUKAWA) out << "off\n";
   else {
     if (included_thresholds>0) out << "on"; else out << "off";
-    out << "\n# 2-loop t-quark O(a_s^2) threshold corrections to gauge and Yukawa couplings are ";
+    out << "\n# 2-loop O(a_s^2) threshold corrections to mt are ";
     if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) out << "on"; else out << "off";  
-    out << "\n# 2-loop b-quark O(a_s^2) threshold corrections to gauge and Yukawa couplings are "; 
+    out << "\n# 2-loop O(a_s^2) threshold corrections mb are "; 
     if (included_thresholds & ENABLE_TWO_LOOP_MB_AS) out << "on"; else out << "off";
-    out << "\n# 2-loop b-quark O(a_s y^2) and O(y^4) threshold corrections to gauge and Yukawa couplings are ";
+    out << "\n# 2-loop O(a_s y^2) and O(y^4) threshold corrections to mb are ";
     if (included_thresholds & ENABLE_TWO_LOOP_MB_YUK) out << "on"; else out << "off"; 
-    out << "\n# 2-loop tau-lepton  O(y^4) threshold corrections to gauge and Yukawa couplings are ";
+    out << "\n# 2-loop O(y^4) threshold corrections to mtau are ";
     if (included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK) out << "on"; else out << "off"; 
-    out << "\n# 2-loop a_s  O(a_s^2) and O(a_s y^2) threshold corrections to gauge and Yukawa couplings are ";
+    out << "\n# 2-loop O(a_s^2) and O(a_s y^2) threshold corrections to a_s are ";
     if (included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK) out << "on"; else out << "off";
     out << endl;
   }
