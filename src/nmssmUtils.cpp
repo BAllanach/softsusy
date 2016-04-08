@@ -128,8 +128,8 @@ void NMSSM_input::check_ewsb_output_parameters() const {
 
   ostream & operator << (ostream & left, const NmssmSoftsusy & s) {
     left << s.displaySoftsusy()
-	 << s.displayNmssmSusyPars() 
-	 << s.displaySoftParsNmssm();	 
+	 << s.displayNmssmSusyPars()
+	 << s.displaySoftParsNmssm();
     return left;
   }
 
@@ -312,7 +312,7 @@ void NmssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a
-  m.SoftParsNmssm::standardSugra(m0, m12, a0, m.displayNmssmSusyPars(), 
+  m.SoftParsNmssm::standardSugra(m0, m12, a0, m.displayNmssmSusyPars(),
 				 m.displayMssmSusy(),
 				 m.displayMssmSoftPars());
   m.MssmSoftPars::standardSugra(m.displayMssmSoft(), m0, m12, a0);
@@ -327,7 +327,7 @@ void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
   m.MssmSoftsusy::standardSugra(m.displayMssmSusy(), m0, m12, a0);
-  m.standardsemiSugra(m0, m12, a0, 0.0, 1e-15, m.displayNmssmSusy(), 
+  m.standardsemiSugra(m0, m12, a0, 0.0, 1e-15, m.displayNmssmSusy(),
 		      m.displayMssmSoftPars());
   m.setMspSquared(1e6);
 }
@@ -346,7 +346,7 @@ void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
   m.MssmSoftPars::standardSugra(m.displayMssmSusy(), m0, m12, a0);
-  m.standardsemiSugra(m0, m12, a0, Al, Ak, m.displayNmssmSusy(), 
+  m.standardsemiSugra(m0, m12, a0, Al, Ak, m.displayNmssmSusy(),
 		      m.displayMssmSoftPars(), 0.);
 }
 
@@ -492,7 +492,7 @@ void nuhmINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be A0
   ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
-  m.standardsemiSugra(m0, m12, A0, Al, Ak, m.displayNmssmSusy(), 
+  m.standardsemiSugra(m0, m12, A0, Al, Ak, m.displayNmssmSusy(),
 		      m.displayMssmSoftPars());
 
   m.setMh1Squared(mH * mH); m.setMh2Squared(mH * mH);
@@ -515,7 +515,7 @@ void nuhmIINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
      mS = inputParameters.display(6);
   double Al = inputParameters.display(5);
   double Ak = inputParameters.display(6);
-  m.standardsemiSugra(m0, m12, A0, Al, Ak, m.displayNmssmSusy(), 
+  m.standardsemiSugra(m0, m12, A0, Al, Ak, m.displayNmssmSusy(),
 		      m.displayMssmSoftPars());
 
   m.setMh1Squared(mH1 * mH1); m.setMh2Squared(mH2 * mH2);
@@ -534,7 +534,7 @@ void amsbBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   double m0 = inputParameters.display(2);
 
   m.MssmSoftPars::standardSugra(m.displayMssmSusy(), m0, 0., 0.);
-  m.SoftParsNmssm::standardSugra(m0, 0., 0., m.displayNmssmSusyPars(), 
+  m.SoftParsNmssm::standardSugra(m0, 0., 0., m.displayNmssmSusyPars(),
 				 m.displayMssmSusy(), m.displayMssmSoftPars());
   m.MssmSoftPars::addAmsb(m.displayMssmSusy(), m32);
   MssmSoftPars ms(m.displayMssmSoftPars());
@@ -543,7 +543,7 @@ void amsbBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 }
 
 /// LCT: Difference between two NMSSM SOFTSUSY objects in and out: EWSB terms only
-double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, 
+double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out,
 	      int numTries) {
   DoubleVector sT(37);
   sumTol(in.displayDrBarPars(), out.displayDrBarPars(), sT);
@@ -562,9 +562,139 @@ double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out,
 
   return sT.max();
 }
-  
+
+/// DH: Calculates coefficients in semi-analytic solution for m_{H_u}^2
+/// for MSUGRA BCs
+DoubleVector calcMh2SqNmssmMsugraCoeffs(const NmssmSoftsusy & m, double scale) {
+  NmssmSoftsusy model(m);
+  const double mx = model.displayMxBC();
+  model.runto(mx);
+
+  const DoubleVector savedPars(model.display());
+
+  DoubleVector coeffs(4);
+
+  // coefficient of M_0^2, M_{1/2}^2 and A_0^2
+  for (int i = 1; i <= 3; ++i) {
+    DoubleVector inputs(3);
+    inputs(i) = 1.0;
+
+    NmssmMsugraBcs(model, inputs);
+
+    model.runto(scale);
+
+    coeffs(i) = model.displayMh2Squared();
+
+    model.set(savedPars);
+    model.setMu(mx);
+  }
+
+  // coefficient of M_{1/2} A_0
+  DoubleVector crossTermInputs(3);
+  crossTermInputs(1) = 0.0;
+  crossTermInputs(2) = 1.0;
+  crossTermInputs(3) = 1.0;
+
+  NmssmMsugraBcs(model, crossTermInputs);
+
+  model.runto(scale);
+
+  coeffs(4) = model.displayMh2Squared() - coeffs(2) - coeffs(3);
+
+  return coeffs;
+}
+
+/// DH: Calculates coefficients in semi-analytic solution for m_{H_u}^2
+/// for semi-MSUGRA BCs
+DoubleVector calcMh2SqSemiMsugraCoeffs(const NmssmSoftsusy & m, double scale) {
+  NmssmSoftsusy model(m);
+  const double mx = model.displayMxBC();
+
+  model.runto(mx);
+
+  const DoubleVector savedPars(model.display());
+
+  DoubleVector coeffs(12);
+
+  // coefficients of M_0^2, M_{1/2}^2, A_0^2, A_\lambda^2
+  // and A_\kappa^2
+  for (int i = 1; i <= 5; ++i) {
+    DoubleVector inputs(5);
+    inputs(i) = 1.0;
+
+    SemiMsugraBcs(model, inputs);
+    model.setMsSquared(0.);
+
+    model.runto(scale);
+
+    coeffs(i) = model.displayMh2Squared();
+
+    model.set(savedPars);
+    model.setMu(mx);
+  }
+
+  // coefficient of m_S^2
+  DoubleVector ms2Inputs(5);
+  SemiMsugraBcs(model, ms2Inputs);
+  model.setMsSquared(1.);
+
+  model.runto(scale);
+
+  coeffs(6) = model.displayMh2Squared();
+
+  model.set(savedPars);
+  model.setMu(mx);
+
+  // coefficients of cross-terms involving gaugino mass
+  // and trilinears:
+  // M_{1/2} times trilinear
+  for (int i = 3; i <= 5; ++i) {
+    DoubleVector m12TrilinearInputs(5);
+    m12TrilinearInputs(2) = 1.0;
+    m12TrilinearInputs(i) = 1.0;
+
+    SemiMsugraBcs(model, m12TrilinearInputs);
+    model.setMsSquared(0.);
+
+    model.runto(scale);
+
+    coeffs(i + 4) = model.displayMh2Squared() - coeffs(2) - coeffs(i);
+
+    model.set(savedPars);
+    model.setMu(mx);
+  }
+
+  // A_0 times trilinear
+  for (int i = 4; i <= 5; ++i) {
+    DoubleVector a0TrilinearInputs(5);
+    a0TrilinearInputs(3) = 1.0;
+    a0TrilinearInputs(i) = 1.0;
+
+    SemiMsugraBcs(model, a0TrilinearInputs);
+    model.setMsSquared(0.);
+
+    model.runto(scale);
+
+    coeffs(i + 6) = model.displayMh2Squared() - coeffs(3) - coeffs(i);
+  }
+
+  // A_\lambda times A_\kappa
+  DoubleVector alamakapInputs(5);
+  alamakapInputs(4) = 1.0;
+  alamakapInputs(5) = 1.0;
+
+  SemiMsugraBcs(model, alamakapInputs);
+  model.setMsSquared(0.);
+
+  model.runto(scale);
+
+  coeffs(12) = model.displayMh2Squared() - coeffs(4) - coeffs(5);
+
+  return coeffs;
+}
+
   /// explicit template instantiations
 //  template class Softsusy<SoftParsNmssm>;
 //  template class SoftPars<NmssmSusy, nmsBrevity>;
-  
+
 } ///< namespace softsusy
