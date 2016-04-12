@@ -35,7 +35,6 @@
 #include "mssmUtils.h"
 
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
-//#include "supermodel/supermodel-v0.1/supermodel.h"
 #include "higher_order.h"
 #endif
 
@@ -117,7 +116,6 @@ namespace softsusy {
     
   public:
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    /// Public field :: only for informational purpose	
     SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
     /// Flag allowing to choose which two-loop thresholds have to be included

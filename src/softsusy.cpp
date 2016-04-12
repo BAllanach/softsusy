@@ -2851,7 +2851,8 @@ double MssmSoftsusy::calcRunningMb() {
   
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   
-  decoupling_corrections.dmb.one_loop = deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino;
+  decoupling_corrections.dmb.one_loop = deltaSquarkGluino + 
+    deltaSquarkChargino + deltaHiggs + deltaNeutralino;
   
   // AVB: this also include top quark contribution (decoupling)!
   
@@ -2865,39 +2866,21 @@ double MssmSoftsusy::calcRunningMb() {
       exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
       
       if ((included_thresholds & ENABLE_TWO_LOOP_MB_AS)) {
-	//	dout << "Strong mb?" << needcalc << endl;
 	ex test = bquark_corrections::eval_bquark_twoloop_strong_dec(drbrp);
 	if (is_a<numeric>(test))
 	  dzetamb += ex_to<numeric>(test).to_double();
-	//	dout << "two-loop bquark strong decoupling constant: " 
-	//	     << test << endl;
-	
       }
       if ((included_thresholds & ENABLE_TWO_LOOP_MB_YUK)) {
-	//	dout << "Yukawa mb?" << needcalc << endl;
 	ex test = bquark_corrections::eval_bquark_twoloop_yukawa_dec(drbrp);
 	if (is_a<numeric>(test))
 	  dzetamb += ex_to<numeric>(test).to_double();
-	//	dout << "two-loop bquark yukawa decoupling constant: " 
-	//	     << test << endl;
       }
-      //      dout << "Checking: " << dzetamb << " vs " << decoupling_corrections.dmb.two_loop << endl;
-      if (close(dzetamb, decoupling_corrections.dmb.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false; 
-      //      dout << "mb: storing" << endl;
+      if (close(dzetamb, decoupling_corrections.dmb.two_loop, 
+		TWOLOOP_NUM_THRESH)) needcalc = false; 
       decoupling_corrections.dmb.two_loop = dzetamb;
     } else {
       dzetamb = decoupling_corrections.dmb.two_loop;
-      //      dout << "mb: No calculation" << endl;
     }
-    //    dout << "Checking: " << dzetamb << " vs " << decoupling_corrections.dmb.two_loop << endl;
-    //dout <<" Mb dec (sq-gl): " << deltaSquarkGluino << endl;
-    //dout <<" Mb dec (sq-cha): " << deltaSquarkChargino << endl;
-    //dout <<" Mb dec (higgs): " << deltaHiggs << endl;
-    //dout <<" Mb dec (neut): " << deltaNeutralino << endl;
-    //    dout << " Mb 1-loop dec: " << decoupling_corrections.dmb.one_loop << endl;
-    //    dout << " Mb 2-loop dec: " << decoupling_corrections.dmb.two_loop << endl;
-    //    dout << " mb=" << mbMZ / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino + dzetamb) << endl;
-    //    dout << " mb_expanded=" << mbMZ * (1.0 - deltaSquarkGluino - deltaSquarkChargino - deltaHiggs - deltaNeutralino + sqr(deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino)- dzetamb) << endl;
   }
   
 #endif
@@ -6815,23 +6798,14 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
   	double dgs2 = ex_to<numeric>(test).to_double();
 	dgs2 = 2.0*dgs2; 
 	decoupling_corrections.das.two_loop = dgs2;
-	//	dout << "two-loop alpha_s: " << dgs2 << endl;
 	dalpha_2 = deltaAlphas*deltaAlphas/4.0 + dgs2;
-	//	dout << "two-loop alpha_s contribution: " << dalpha_2 << endl;
       }
-      /*      else {
-        dout << " Not numeric: 2loop gs " << test << endl;
-	}*/
     }
     
-    /*    dout << " alpha_S (MZ) correction ressumed w/o 2l: " << 1 / (1.0 - deltaAlphas ) <<  endl;
-	  dout << " alpha_S (MZ) correction ressumed w 2l: " << 1 / (1.0 - deltaAlphas + dalpha_2 ) <<  endl;*/
   }
 #endif // COMPILE_TWO_LOOP_GAUGE_YUKAWA
   
   const double alphasDRbar_post = alphasMSbar / (1.0 - deltaAlphas + dalpha_2);
-  
-  //  if ((included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK)) dout<< " alpha_S (MZ) after: " << alphasDRbar_post << endl;
   
   return alphasDRbar_post;
 }
