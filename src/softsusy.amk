@@ -2,21 +2,14 @@
 
 lib_LTLIBRARIES += libsoft.la 
 
-bin_PROGRAMS += cmsdilep.x softsusy.x \
+bin_PROGRAMS += softsusy.x \
                 softsusy-nmssm.x \
                 softpoint.x \
                 rpvsoftsusy.x \
-                rpvneut.x \
-		higher.x
+                rpvneut.x
 
 softsusy_x_SOURCES = src/main.cpp 
 softsusy_x_LDADD = libsoft.la 
-
-higher_x_SOURCES = src/higher.cpp 
-higher_x_LDADD = libsoft.la 
-
-cmsdilep_x_SOURCES = src/cmsdilep.cpp 
-cmsdilep_x_LDADD = libsoft.la 
 
 softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp 
 softsusy_nmssm_x_LDADD = libsoft.la
@@ -31,11 +24,11 @@ rpvneut_x_SOURCES = src/rpvneutmain.cpp
 rpvneut_x_LDADD = libsoft.la 
 
 if LOOPTOOLS
-softsusy_x_LDADD += -looptools
-softsusy_nmssm_x_LDADD += -looptools
-softpoint_x_LDADD += -looptools
-rpvsoftsusy_x_LDADD += -looptools
-rpvneut_x_LDADD += -looptools
+softsusy_x_LDADD += -looptools -lgfortran
+softsusy_nmssm_x_LDADD += -looptools -lgfortran
+softpoint_x_LDADD += -looptools -lgfortran
+rpvsoftsusy_x_LDADD += -looptools -lgfortran
+rpvneut_x_LDADD += -looptools -lgfortran
 endif
 
 if COMPILE_TWO_LOOP_GAUGE_YUKAWA
@@ -44,26 +37,16 @@ include src/two_loop_thresholds/mssmparam.amk
 include src/two_loop_thresholds/two_loop_th.amk
 softsusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
 softsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
-higher_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
-higher_x_LDADD += lib2lthresh.la libmssmparam.la 
 
 if COMPILE_THREE_LOOP_RGE
-bin_PROGRAMS += scansusy.x 
-scansusy_x_SOURCES = src/scan.cpp 
-scansusy_x_LDADD = libsoft.la  
-scansusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
-scansusy_x_LDADD += lib2lthresh.la libmssmparam.la  
-bin_PROGRAMS += scansusy_slha.x 
-scansusy_slha_x_SOURCES = src/scan_slha.cpp 
-scansusy_slha_x_LDADD = libsoft.la  
-scansusy_slha_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
-scansusy_slha_x_LDADD += lib2lthresh.la libmssmparam.la  
-
 if COMPILE_TWO_LOOP_SPARTICLE_MASS
-scansusy_x_LDADD       += libsupermodel.la libtsil.la 
-scansusy_slha_x_LDADD  += libsupermodel.la libtsil.la 
-endif
-endif 
+bin_PROGRAMS += higher.x 
+higher_x_SOURCES = src/higher.cpp 
+higher_x_LDADD = libsoft.la  
+higher_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
+higher_x_LDADD += lib2lthresh.la libmssmparam.la libsupermodel.la libtsil.la 
+endif COMPILE_TWO_LOOP_SPARTICLE_MASS
+endif COMPILE_THREE_LOOP_RGE
 
 softsusy_nmssm_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
 softsusy_nmssm_x_LDADD += lib2lthresh.la libmssmparam.la 
@@ -73,8 +56,6 @@ softpoint_x_LDADD += lib2lthresh.la libmssmparam.la
 
 rpvsoftsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
 rpvneut_x_LDADD     += lib2lthresh.la libmssmparam.la 
-cmsdilep_x_LDADD    += lib2lthresh.la libmssmparam.la 
-higher_x_LDADD    += lib2lthresh.la libmssmparam.la 
 endif
 
 
@@ -86,8 +67,6 @@ softsusy_nmssm_x_LDADD += libsupermodel.la libtsil.la
 softpoint_x_LDADD      += libsupermodel.la libtsil.la 
 rpvsoftsusy_x_LDADD    += libsupermodel.la libtsil.la 
 rpvneut_x_LDADD        += libsupermodel.la libtsil.la 
-cmsdilep_x_LDADD       += libsupermodel.la libtsil.la 
-higher_x_LDADD       += libsupermodel.la libtsil.la 
 endif
 
 pkginclude_HEADERS += \

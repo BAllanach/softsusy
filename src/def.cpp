@@ -79,12 +79,9 @@ namespace softsusy {
     gdR = -sw2 / 3.0, geR = -sw2, yuL = 1.0 / 3.0, yuR = -4.0 / 3.0,
     ydL = 1.0 / 3.0, ydR = 2.0 / 3.0, yeL = -1.0, yeR = 2.0, ynuL = -1.0;
 
-#ifdef COMPILE_THREE_LOOP_RGE
   /// Controls the use of MSSM three-loop RGEs
   bool USE_THREE_LOOP_RGE = false;
-#endif
   
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA 
   /// Threshold to prevent the re-evaluation of two-loop leading SUSY thresholds
   /// corrections. By default we set it to 10%. 
   double TWOLOOP_NUM_THRESH = 0.1;
@@ -96,14 +93,11 @@ namespace softsusy {
   /// However, the difference between the p^2 = 0 and p^2 = mb^2 cases
   /// is expected to be of O((mb/MSUSY)^2), which we can formally neglect.
   bool MB_DECOUPLING = false;
-#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   /// Various two-loop thresholds, eg 2-loop QCD corrections to m_gluino
   bool USE_TWO_LOOP_SPARTICLE_MASS = false;
   /// Default: expand around gluino and squark pole masses
   int expandAroundGluinoPole = 3;
-#endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
 
 }
 /// end of global variable declaration

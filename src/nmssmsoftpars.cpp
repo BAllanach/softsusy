@@ -559,7 +559,7 @@ namespace softsusy {
   }
   
   double SoftParsNmssm::displaySoftAkappa(double kap) const {
-    if (kap < 1.0e-100) {
+    if (fabs(kap) < 1.0e-100) {
       ostringstream ii;
       ii << "WARNING: asking for SoftParsNmssm::displaySoftAkappa() where "
 	 << "Yukawa coupling is " << kap << '\n';

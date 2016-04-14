@@ -9,6 +9,68 @@
 
 #include "numerics.h"
 
+ 
+double dgauss(double (*f)(double x), double a, double b, double eps) {
+  static DoubleVector w(12), x(12);
+  /// set the initial values if they are uninitialised
+  if (w(1) < 1.0e-5) {
+    w(1)  =    0.1012285362903762591525313543;
+    w(2)  =    0.2223810344533744705443559944;
+    w(3)  =    0.3137066458778872873379622020;
+    w(4)  =    0.3626837833783619829651504493;
+    w(5)  =    0.0271524594117540948517805725;
+    w(6)  =    0.0622535239386478928628438370;
+    w(7)  =    0.0951585116824927848099251076;
+    w(8)  =    0.1246289712555338720524762822;
+    w(9)  =    0.1495959888165767320815017305;
+    w(10) =    0.1691565193950025381893120790;
+    w(11) =    0.1826034150449235888667636680;
+    w(12) =    0.1894506104550684962853967232;
+    x(1)  =    0.9602898564975362316835608686;
+    x(2)  =    0.7966664774136267395915539365;
+    x(3)  =    0.5255324099163289858177390492;
+    x(4)  =    0.1834346424956498049394761424;
+    x(5)  =    0.9894009349916499325961541735;
+    x(6)  =    0.9445750230732325760779884155;
+    x(7)  =    0.8656312023878317438804678977;
+    x(8)  =    0.7554044083550030338951011948;
+    x(9)  =    0.6178762444026437484466717640; 
+    x(10)  =   0.4580167776572273863424194430;
+    x(11)  =   0.2816035507792589132304605015;
+    x(12)  =   0.0950125098376374401853193354;
+  }
+  const double constant = 1.0e-25;
+  double delta = constant * abs(a - b);
+  double dgauss = 0.;
+  double aa = a;
+ lab5: double y = b - aa;
+  if (abs(y) <= delta) return dgauss;
+ lab2: double bb = aa + y;
+  double c1 = 0.5 * (aa + bb);
+  double c2 = c1 - aa;
+  double s8 = 0.;
+  double s16 = 0.;
+  for (int i=1; i<=4; i++) {
+    double u = x(i) * c2;
+    s8 = s8 + w(i) * (f(c1 + u) + f(c1 - u));
+  }
+  for (int i=5; i<=12; i++) {
+    double u = x(i) * c2;
+    s16 = s16 + w(i) * (f(c1 + u) + f(c1 - u));
+  }
+  s8 = s8 * c2;
+  s16 = s16 * c2;
+  if (abs(s16 - s8) > eps * (1. + abs(s16))) goto lab4;
+  dgauss = dgauss + s16;
+  aa = bb;
+  goto lab5;
+ lab4: y = 0.5 * y;
+  if (abs(y) > delta) goto lab2;
+  throw("Too high accuracy required in numerics.cpp:dgauss\n");
+  return dgauss;
+}
+
+
 double accurateSqrt1Plusx(double x) {
   if (x > 1.) return sqrt(1.0 + x);
   
@@ -308,54 +370,20 @@ Complex fnfn(double x) {
   const static Complex iEpsilon(0.0, TOLERANCE * 1.0e-20);
   
   double xn = 1.0;
-  int i; for (i=1; i<=nInt; i++) xn = xn * x;
+  int i; for (i=1; i<=nInt; i++) xn *= x;
   return xn * 
     log( ((1 - x) * sqr(m1Int) + x * sqr(m2Int) - x * (1 - x) *
 	  sqr(pInt) - iEpsilon)
 	 / sqr(mtInt));
 }
 
-DoubleVector dilogarg(double t, const DoubleVector & /* y */) {
-
-  const double eps = TOLERANCE * 1.0e-20;
-
-  DoubleVector dydx(1);
-  dydx(1) = -log(fabs(1 - t + eps)) / (t + eps);
-
-  return dydx;
-}
-
-/*
-double dilog(double x) {
-  // Set global variables so that integration function can access them
-  double from = 0.0, to = x, guess = 0.1, hmin = TOLERANCE * 1.0e-5;
-
-  DoubleVector v(1); 
-  double eps = TOLERANCE * 1.0e-5;
-  v(1) = 1.0; 
-
-  // Runge-Kutta, f(b) = int^b0 I(x) dx, I is integrand => d f / db = I(b)
-  // odeint has a problem at f(0): therefore, define f'(b)=f(b)+1
-  integrateOdes(v, from, to, eps, guess, hmin, dilogarg, odeStepper); 
-  
-  return v(1) - 1.0;
-}
-*/
-
-// Returns real part of integral
 double bIntegral(int n1, double p, double m1, double m2, double mt) {
   // Set global variables so that integration function can access them
   nInt = n1; pInt = p; m1Int = m1; m2Int = m2; mtInt = mt;
-  double from = 0.0, to = 1.0, guess = 0.1, hmin = TOLERANCE * 1.0e-5;
-  
-  DoubleVector v(1); double eps = TOLERANCE * 1.0e-3;
-  v(1) = 1.0; 
+  double from = 0.0, to = 1.0, hmin = TOLERANCE * 1.0e-5;
 
-  // Runge-Kutta, f(b) = int^b0 I(x) dx, I is integrand => d f / db = I(b)
-  // odeint has a problem at f(0): therefore, define f'(b)=f(b)+1
-  integrateOdes(v, from, to, eps, guess, hmin, dd, odeStepper); 
-  
-  return v(1) - 1.0;
+  double ans = dgauss(integrandThreshbnr, from, to, hmin);
+  return -ans;
 }
 
 double fB(const Complex & a) {
@@ -736,9 +764,18 @@ double d0(double m1, double m2, double m3, double m4) {
   if (close(m1, m2, EPSTOL)) {
     double m2sq = sqr(m2), m3sq = sqr(m3), m4sq = sqr(m4);
 
-    if (close(m2, m3, EPSTOL) && close(m2, m4, EPSTOL)) 
+    if (close(m2,0.,EPSTOL)) {
+       // d0 is undefined for m1 == m2 == 0
+       return 0.;
+    } else if (close(m3,0.,EPSTOL)) {
+       return (-sqr(m2) + sqr(m4) - sqr(m2) * log(sqr(m4/m2)))/
+          sqr(m2 * sqr(m2) - m2 * sqr(m4));
+    } else if (close(m4,0.,EPSTOL)) {
+       return (-sqr(m2) + sqr(m3) - sqr(m2) * log(sqr(m3/m2)))/
+          sqr(m2 * sqr(m2) - m2 * sqr(m3));
+    } else if (close(m2, m3, EPSTOL) && close(m2, m4, EPSTOL)) {
       return 1.0 / (6.0 * sqr(m2sq));
-    else if (close(m2, m3, EPSTOL)) {
+    } else if (close(m2, m3, EPSTOL)) {
       return (sqr(m2sq) - sqr(m4sq) + 2.0 * m4sq * m2sq * log(m4sq / m2sq)) / 
 	(2.0 * m2sq * sqr(m2sq - m4sq) * (m2sq - m4sq));
     } else if (close(m2, m4, EPSTOL)) {
@@ -761,7 +798,7 @@ double d0(double m1, double m2, double m3, double m4) {
 double d27(double m1, double m2, double m3, double m4) {// checked
 
   if (close(m1, m2, EPSTOL)) {
-    double m1n = m1 + TOLERANCE * 0.01;
+    const double m1n = m1 + TOLERANCE * 0.01;
     return (sqr(m1n) * c0(m1n, m3, m4) - sqr(m2) * c0(m2, m3, m4)) 
       / (4.0 * (sqr(m1n) - sqr(m2)));
   }
@@ -779,34 +816,58 @@ double c0(double m1, double m2, double m3) {
   double c0l = C0(psq, psq, psq, m1*m1, m2*m2, m3*m3).real();
 #endif
 
-  double ans;
+  double ans = 0.;
 
-  if (close(m2, m3, EPSTOL)) {
+  if (close(m1,0.,EPSTOL) && close(m2,0.,EPSTOL) && close(m3,0.,EPSTOL)) {
+     // c0 is undefined for m1 == m2 == m3 == 0
+     ans = 0.;
+  } else if (close(m2,0.,EPSTOL) && close(m3,0.,EPSTOL)) {
+     // c0 is undefined for m2 == m3 == 0
+     ans = 0.;
+  } else if (close(m1,0.,EPSTOL) && close(m3,0.,EPSTOL)) {
+     // c0 is undefined for m1 == m3 == 0
+     ans = 0.;
+  } else if (close(m1,0.,EPSTOL) && close(m2,0.,EPSTOL)) {
+     // c0 is undefined for m1 == m2 == 0
+     ans= 0.;
+  } else if (close(m1,0.,EPSTOL)) {
+     if (close(m2,m3,EPSTOL)) {
+        ans = -1./sqr(m2);
+     } else {
+        ans = (-log(sqr(m2)) + log(sqr(m3)))/(sqr(m2) - sqr(m3));
+     }
+  } else if (close(m2,0.,EPSTOL)) {
+     if (close(m1,m3,EPSTOL)) {
+        ans = -1./sqr(m1);
+     } else {
+        ans = log(sqr(m3/m1))/(sqr(m1) - sqr(m3));
+     }
+  } else if (close(m3,0.,EPSTOL)) {
+     if (close(m1,m2,EPSTOL)) {
+        ans = -1./sqr(m1);
+     } else {
+        ans = log(sqr(m2/m1))/(sqr(m1) - sqr(m2));
+     }
+  } else if (close(m2, m3, EPSTOL)) {
     if (close(m1, m2, EPSTOL)) {
       ans = ( - 0.5 / sqr(m2) ); // checked 14.10.02
-    }
-    else {
+    } else {
       ans = ( sqr(m1) / sqr(sqr(m1)-sqr(m2) ) * log(sqr(m2)/sqr(m1))
                + 1.0 / (sqr(m1) - sqr(m2)) ) ; // checked 14.10.02
     }
+  } else if (close(m1, m2, EPSTOL)) {
+     ans = ( - ( 1.0 + sqr(m3) / (sqr(m2)-sqr(m3)) * log(sqr(m3)/sqr(m2)) )
+             / (sqr(m2)-sqr(m3)) ) ; // checked 14.10.02
+  } else if (close(m1, m3, EPSTOL)) {
+     ans = ( - (1.0 + sqr(m2) / (sqr(m3)-sqr(m2)) * log(sqr(m2)/sqr(m3)))
+             / (sqr(m3)-sqr(m2)) ); // checked 14.10.02
+  } else {
+     ans = (1.0 / (sqr(m2) - sqr(m3)) *
+            (sqr(m2) / (sqr(m1) - sqr(m2)) *
+             log(sqr(m2) / sqr(m1)) -
+             sqr(m3) / (sqr(m1) - sqr(m3)) *
+             log(sqr(m3) / sqr(m1))) );
   }
-  else
-    if (close(m1, m2, EPSTOL)) {
-      ans = ( - ( 1.0 + sqr(m3) / (sqr(m2)-sqr(m3)) * log(sqr(m3)/sqr(m2)) )
-               / (sqr(m2)-sqr(m3)) ) ; // checked 14.10.02
-    }
-    else
-      if (close(m1, m3, EPSTOL)) {
-        ans = ( - (1.0 + sqr(m2) / (sqr(m3)-sqr(m2)) * log(sqr(m2)/sqr(m3))) 
-                 / (sqr(m3)-sqr(m2)) ); // checked 14.10.02
-      }
-      else {
-	ans = (1.0 / (sqr(m2) - sqr(m3)) * 
-		   (sqr(m2) / (sqr(m1) - sqr(m2)) *
-		    log(sqr(m2) / sqr(m1)) -
-		    sqr(m3) / (sqr(m1) - sqr(m3)) *
-		    log(sqr(m3) / sqr(m1))) );
-      }
 
 #ifdef USE_LOOPTOOLS
   if (!close(c0l, ans, 1.0e-3)) {

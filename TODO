@@ -1,3 +1,3 @@
 1. (IMPORTANT): change SLHA to contain tree-level mixings defined at MSUSY
 2. Add first two family terms to other things, eg tadpoles etc. 
-
+3. Get rid of all stupid preprocessor commands to do with the higher loops

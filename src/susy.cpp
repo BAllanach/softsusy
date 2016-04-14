@@ -604,7 +604,7 @@ void MssmSusy::setMssmApprox(int l, int t) {
 		      + gdeBeta * ddT * eeT) * threelp;
       
     }
-#endif //COMPILE_THREE_LOOP_RGE
+#endif ///< COMPILE_THREE_LOOP_RGE
   }
   
   // Outputs derivatives vector y[n] for SUSY parameters: interfaces to
@@ -1218,5 +1218,5 @@ void MssmSusy::setMssmApprox(int l, int t) {
       
     } /// third family approximation 
   }
-#endif ///COMPILE_THREE_LOOP_RGE
+#endif /// COMPILE_THREE_LOOP_RGE
 } /// namespace softsusy

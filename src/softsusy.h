@@ -35,7 +35,6 @@
 #include "mssmUtils.h"
 
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
-//#include "supermodel/supermodel-v0.1/supermodel.h"
 #include "higher_order.h"
 #endif
 
@@ -47,7 +46,6 @@ namespace softsusy { class MssmSoftsusy; }
 namespace SoftSusy_helpers_ {
   GiNaC::exmap drBarPars_exmap(const softsusy::MssmSoftsusy &);
 }
-
 #include "two_loop_thresholds/softsusy_exmap.hpp"
 #include "two_loop_thresholds/mssmparam.hpp"
 #include "two_loop_thresholds/tau_corrections.hpp"
@@ -55,7 +53,6 @@ namespace SoftSusy_helpers_ {
 #include "two_loop_thresholds/tquark_corrections.hpp"
 #include "two_loop_thresholds/gs_corrections.hpp"
 #include "two_loop_thresholds/dec_cor_helper.hpp"
-
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
 namespace softsusy {
@@ -119,11 +116,10 @@ namespace softsusy {
     
   public:
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    /// Public field :: only for informational purpose	
     SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
-    /// Flags allowing to choose which two-loop thresholds have to be included
-    int included_thresholds; 
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
+    /// Flag allowing to choose which two-loop thresholds have to be included
+    int included_thresholds; 
     
     //  void (*boundaryCondition)(Softsusy &, const DoubleVector &);
     /// Default constructor fills object with zeroes
@@ -238,7 +234,8 @@ namespace softsusy {
     void setData(const QedQcd & r) { dataSet = r; };
     /// Sets potential value at minimum of Higgs potential
     void setMinpot(double);
-    /// Sets scale of Higgs potential minimisation and sparticle mass calculation
+    /// Sets scale of Higgs potential minimisation and sparticle mass 
+    /// calculation
     void setMsusy(double);
     /// sets pole MW prediction
     void setMw(double);
@@ -257,63 +254,19 @@ namespace softsusy {
     /// Sets total set of RGE parameters equal to elements of a vector
     void set(const DoubleVector &);
     
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
     /// Switch 2-loop threshold \f$O(\alpha_s^2), O(\alpha_s \alpha_b),
-    /// O(\alpha_s \alpha_t) \f$ corrections to
-    /// \f$\alpha_s\f$ ON/OFF 
-    void setTwoLoopAlphasThresholds(bool sw) {
-      if (sw) {
-	included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
-	USE_TWO_LOOP_GAUGE_YUKAWA = true;
-      }
-      else included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
-    }
+    /// O(\alpha_s \alpha_t) \f$ corrections to \f$\alpha_s\f$ 
+    void setTwoLoopAlphasThresholds(bool sw);
     /// Switch 2-loop threshold \f$ O(\alpha_s^2) \f$ corrections to top mass 
-    /// ON/OFF
-    void setTwoLoopMtThresholds(bool sw) {
-      if (sw) {
-	included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
-	USE_TWO_LOOP_GAUGE_YUKAWA = true;
-      }
-      else included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
-    }
+    void setTwoLoopMtThresholds(bool sw);
     /// Switch 2-loop threshold \f$O(\alpha_s^2), O(\alpha_t^2), O(\alpha_b^2),
     /// O(\alpha_\tau^2), O(\alpha_s \alpha_b), O(\alpha_\tau \alpha_b)
     /// O(\alpha_s \alpha_t) \f$ corrections to
-    /// \f$ m_b \f$ and \f$ O(\alpha_\tau^2), O(\alpha_t \alpha_\tau), O(\alpha_t
-    /// \alpha_b) \f$ corrections to \f$ m_\tau \f$ ON/OFF 
-    void setTwoLoopMbMtauThresholds(bool sw) {
-      if (sw) {
-	included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
-	included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
-	included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
-	USE_TWO_LOOP_GAUGE_YUKAWA = true;
-      }
-      else {
-	included_thresholds &= ENABLE_TWO_LOOP_MB_AS;
-	included_thresholds &= ENABLE_TWO_LOOP_MB_YUK;
-	included_thresholds &= ENABLE_TWO_LOOP_MTAU_YUK;
-      }
-    }
-    void setAllTwoLoopThresholds(bool sw) {
-      if (sw) {
-	included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
-	included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
-	included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
-	included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
-	included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
-	USE_TWO_LOOP_GAUGE_YUKAWA = true;
-      }
-      else {
-	included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
-	included_thresholds &= ENABLE_TWO_LOOP_MB_AS;
-	included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
-	included_thresholds &= ENABLE_TWO_LOOP_MB_YUK;
-	included_thresholds &= ENABLE_TWO_LOOP_MTAU_YUK;
-	USE_TWO_LOOP_GAUGE_YUKAWA = false;
-      }
-    }
-#endif
+    /// \f$ m_b \f$ and \f$ O(\alpha_\tau^2), O(\alpha_t \alpha_\tau), 
+    /// O(\alpha_t \alpha_b) \f$ corrections to \f$ m_\tau \f$ ON/OFF 
+    void setTwoLoopMbMtauThresholds(bool sw);
+    /// Switch all two-loop thresholds to gauge-Yukawa couplings
+    void setAllTwoLoopThresholds(bool sw);
     
     /// Returns double vector containing numerical beta functions of parameters
     DoubleVector beta() const { 

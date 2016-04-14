@@ -48,10 +48,8 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   
   decoupling_corrections.dmtau.one_loop = s.decoupling_corrections.dmtau.one_loop ; 
   decoupling_corrections.dmtau.two_loop = s.decoupling_corrections.dmtau.two_loop ; 
-  /// Public field :: included thresholds
-  included_thresholds = s.included_thresholds;
-  
 #endif //COMPILE_TWO_LOOP_GAUGE_YUKAWA
+  included_thresholds = s.included_thresholds;
   
   return *this;
 }
@@ -78,20 +76,15 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     
     decoupling_corrections.dmtau.one_loop = 0;
     decoupling_corrections.dmtau.two_loop = 0;
-    
+#endif
     if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
 	ENABLE_TWO_LOOP_AS_AS_YUK | 
 	ENABLE_TWO_LOOP_MB_AS | 
 	ENABLE_TWO_LOOP_MB_YUK |
 	ENABLE_TWO_LOOP_MTAU_YUK;
-    } else {
-      included_thresholds = 0;
-    }
+    } else included_thresholds = 0;
     
-    
-    
-#endif
   }
   
   
@@ -125,11 +118,8 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     
     decoupling_corrections.dmtau.one_loop = s.decoupling_corrections.dmtau.one_loop ; 
     decoupling_corrections.dmtau.two_loop = s.decoupling_corrections.dmtau.two_loop ; 
-    /// Public field :: included thresholds
-    included_thresholds = s.included_thresholds;
-    
 #endif //COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    
+    included_thresholds = s.included_thresholds;
   }
   
   MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
@@ -153,18 +143,15 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     
     decoupling_corrections.dmtau.one_loop = 0;
     decoupling_corrections.dmtau.two_loop = 0;
-    /// Public field :: included thresholds
+    
+#endif //COMPILE_TWO_LOOP_GAUGE_YUKAWA
     if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
 	ENABLE_TWO_LOOP_AS_AS_YUK | 
 	ENABLE_TWO_LOOP_MB_AS | 
 	ENABLE_TWO_LOOP_MB_YUK |
 	ENABLE_TWO_LOOP_MTAU_YUK;
-    } else {
-      included_thresholds = 0;
-    }
-    
-#endif //COMPILE_TWO_LOOP_GAUGE_YUKAWA
+    } else included_thresholds = 0;
   }
   
   
@@ -193,17 +180,14 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     
     decoupling_corrections.dmtau.one_loop = 0;
     decoupling_corrections.dmtau.two_loop = 0;
-    /// Public field :: included thresholds
+#endif
     if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
 	ENABLE_TWO_LOOP_AS_AS_YUK | 
 	ENABLE_TWO_LOOP_MB_AS | 
 	ENABLE_TWO_LOOP_MB_YUK |
 	ENABLE_TWO_LOOP_MTAU_YUK;
-    } else {
-      included_thresholds = 0;
-    }
-#endif
+    } else included_thresholds = 0;
   }
   
   const MssmSoftsusy & MssmSoftsusy::displayMssmSoft() const { return *this; }
@@ -2415,9 +2399,8 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
      (b0(p, mg, mstop1, q) - 
       b0(p, mg, mstop2, q)));
 
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+  /* This is defunct now with new corrections
   if (USE_TWO_LOOP_GAUGE_YUKAWA == false || included_thresholds % 2 == 0) {
-#endif
   double mt = forLoops.mt;
   /// 2 loop QCD involving MSSM sparticles -- hep-ph/0210258, in the
   /// approximation that all squarks and the gluino 
@@ -2445,9 +2428,7 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
      cf * aq / m * (7.0 / 3.0 - 11.0 / 3.0 * logMoQsq + 6.0 * log(mt / q)) +
      ca * aq / m * (-8.0 / 3.0 + 4.0 * logMoQsq));
   stopGluino += twoLoopMssm;
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    }
-#endif  
+  } */
 
   return stopGluino;
 }
@@ -2683,10 +2664,10 @@ double MssmSoftsusy::calcRunningMt() {
       double dmtas = (qcd + stopGluino)/(16.0 * sqr(PI));
       double dmt_MT = (dmtas2 - dmtas*dmtas);
       resigmat -= mtpole*dmt_MT;
-      dout << "two-loop tquark strong pole contribution: " 
+      /*      dout << "two-loop tquark strong pole contribution: " 
 	   << dmtas2 << endl
 	   << "two-loop total correction (Mt -> mt)" 
-	   << dmt_MT << endl;
+	   << dmt_MT << endl;*/
     }
   } else ordinaryQcdCorrections = true;
 #endif
@@ -2724,11 +2705,7 @@ double MssmSoftsusy::calcRunMbSquarkGluino() const {
   double p = mbMZ;
   double mbMSSM  = displayDrBarPars().mb;
   
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  if (MB_DECOUPLING) {
-    p = 0;
-  };
-#endif
+  if (MB_DECOUPLING) { p = 0; };
   
   double deltaSquarkGluino = - alphasMZ / (3.0 * PI) *
     (b1(p, mg, msbot1, displayMu()) + 
@@ -2751,11 +2728,7 @@ double MssmSoftsusy::calcRunMbChargino() const {
   DoubleVector bPsicBstopl(2), bPsicBstopr(2), 
     aPsicBstopl(2), aPsicBstopr(2); 
   
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  if (MB_DECOUPLING) {
-    p = 0;
-  };
-#endif
+  if (MB_DECOUPLING) p = 0;
   
   aPsicBstopl(1) = g;
   aPsicBstopr(2) = -displayDrBarPars().ht;
@@ -2830,11 +2803,7 @@ double MssmSoftsusy::calcRunMbHiggs() const {
   double  cw2DRbar    = sqr(cos(thetaWDRbar));
   double g  = displayGaugeCoupling(2);
   
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  if (MB_DECOUPLING) {
-    p = 0;
-  };
-#endif
+  if (MB_DECOUPLING) p = 0.;
   
   deltaHiggs = 0.5 * sqr(hb) * 
     (sqr(ca) * (b1(p, mb, mH, q) + b0(p, mb, mH, q)) + 
@@ -2882,7 +2851,8 @@ double MssmSoftsusy::calcRunningMb() {
   
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   
-  decoupling_corrections.dmb.one_loop = deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino;
+  decoupling_corrections.dmb.one_loop = deltaSquarkGluino + 
+    deltaSquarkChargino + deltaHiggs + deltaNeutralino;
   
   // AVB: this also include top quark contribution (decoupling)!
   
@@ -2896,39 +2866,21 @@ double MssmSoftsusy::calcRunningMb() {
       exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
       
       if ((included_thresholds & ENABLE_TWO_LOOP_MB_AS)) {
-	dout << "Strong mb?" << needcalc << endl;
 	ex test = bquark_corrections::eval_bquark_twoloop_strong_dec(drbrp);
 	if (is_a<numeric>(test))
 	  dzetamb += ex_to<numeric>(test).to_double();
-	dout << "two-loop bquark strong decoupling constant: " 
-	     << test << endl;
-	
       }
       if ((included_thresholds & ENABLE_TWO_LOOP_MB_YUK)) {
-	dout << "Yukawa mb?" << needcalc << endl;
 	ex test = bquark_corrections::eval_bquark_twoloop_yukawa_dec(drbrp);
 	if (is_a<numeric>(test))
 	  dzetamb += ex_to<numeric>(test).to_double();
-	dout << "two-loop bquark yukawa decoupling constant: " 
-	     << test << endl;
       }
-      dout << "Checking: " << dzetamb << " vs " << decoupling_corrections.dmb.two_loop << endl;
-      if (close(dzetamb, decoupling_corrections.dmb.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false; 
-      dout << "mb: storing" << endl;
+      if (close(dzetamb, decoupling_corrections.dmb.two_loop, 
+		TWOLOOP_NUM_THRESH)) needcalc = false; 
       decoupling_corrections.dmb.two_loop = dzetamb;
     } else {
       dzetamb = decoupling_corrections.dmb.two_loop;
-      dout << "mb: No calculation" << endl;
     }
-    dout << "Checking: " << dzetamb << " vs " << decoupling_corrections.dmb.two_loop << endl;
-    //dout <<" Mb dec (sq-gl): " << deltaSquarkGluino << endl;
-    //dout <<" Mb dec (sq-cha): " << deltaSquarkChargino << endl;
-    //dout <<" Mb dec (higgs): " << deltaHiggs << endl;
-    //dout <<" Mb dec (neut): " << deltaNeutralino << endl;
-    dout << " Mb 1-loop dec: " << decoupling_corrections.dmb.one_loop << endl;
-    dout << " Mb 2-loop dec: " << decoupling_corrections.dmb.two_loop << endl;
-    dout << " mb=" << mbMZ / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino + dzetamb) << endl;
-    dout << " mb_expanded=" << mbMZ * (1.0 - deltaSquarkGluino - deltaSquarkChargino - deltaHiggs - deltaNeutralino + sqr(deltaSquarkGluino + deltaSquarkChargino + deltaHiggs + deltaNeutralino)- dzetamb) << endl;
   }
   
 #endif
@@ -3076,10 +3028,11 @@ double MssmSoftsusy::calcRunMtauNeutralinos(double mTauSMMZ) const {
       gNeutTauStau(i, j) = 2.0 * 
 	(aNeutTauStau(i, j) * bNeutTauStau(i, j).conj()).real(); 
       
-      neutralinoContribution(i, j) = (fNeutTauStau(i, j) * 
-				      b1(p, mneut(i), displayDrBarPars().me(j, 3), q) + 
-				      gNeutTauStau(i, j) * mneut(i) /  mTauSMMZ *  
-				      b0(p, mneut(i), displayDrBarPars().me(j, 3), q)) * 0.5;
+      neutralinoContribution(i, j) = 
+	(fNeutTauStau(i, j) * 
+	 b1(p, mneut(i), displayDrBarPars().me(j, 3), q) + 
+	 gNeutTauStau(i, j) * mneut(i) /  mTauSMMZ *  
+	 b0(p, mneut(i), displayDrBarPars().me(j, 3), q)) * 0.5;
       
       sigmaNeutralino = sigmaNeutralino + neutralinoContribution(i, j);
     }
@@ -3110,7 +3063,8 @@ double MssmSoftsusy::calcRunningMtau() {
   decoupling_corrections.dmtau.one_loop = -dzetamtau;
   
   if (USE_TWO_LOOP_GAUGE_YUKAWA) {
-    // flag: calculate corrections if two-previous iterations gave different results
+    // flag: calculate corrections if two-previous iterations gave different
+    // results 
     bool & needcalc = decoupling_corrections.dmtau.two_loop_needs_recalc;  
     using namespace GiNaC;
     if ((included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
@@ -3119,36 +3073,17 @@ double MssmSoftsusy::calcRunningMtau() {
       if (needcalc) {
 	ex test = tau_corrections::eval_tau_twoloop_yukawa_dec(drbrp);
 	if (is_a<numeric>(test)) dzmtau2 = ex_to<numeric>(test).to_double();
-	else { 
-	  dout <<" Not numeric: 2loop  tau-lepton " << endl;
-	}
-	// if (close(dzmtau2, decoupling_corrections.dmtau.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false;
-	// dout << " mtau: storing" << endl;
+	else dout <<" Not numeric: 2loop  tau-lepton " << endl;
 	decoupling_corrections.dmtau.two_loop = dzmtau2;
 	
-      } else {
-	dout << "mtau: No calculation" << endl;
-      }
+      } 
       dzetamtau2 = -dzetamtau*dzetamtau + dzmtau2;
-      dout << "one-loop tau-lepton decoupling constant: " << dzetamtau << endl;
-      dout << "two-loop tau-lepton yukawa decoupling constant: " << dzmtau2 << endl;
-      dout << "two-loop tau-lepton yukawa decoupling constant, expanded: " << dzetamtau2 << endl;
     }
   }
-  
-  /// old calculation of tau mass
-  /**  double delta = sqr(displayGaugeCoupling(2)) / (16 * sqr(PI)) *
-       (-displaySusyMu()) * displayGaugino(2) * displayTanb() /
-       (sqr(displaySusyMu()) - sqr(displayGaugino(2))) *
-       (b0(mTauPole, displayGaugino(2), 
-       displayDrBarPars().msnu(3), displayMu()) -
-       b0(mTauPole, -displaySusyMu(), displayDrBarPars().msnu(3), displayMu()));*/
-  
-  /// From hep-ph/9912516
 #endif
   
-  return mTauSMMZ * (1.0 + sigmaNeutralino + sigmaChargino + sigmaHiggs - dzetamtau2);
-  
+  return mTauSMMZ * 
+    (1.0 + sigmaNeutralino + sigmaChargino + sigmaHiggs - dzetamtau2);
 }
 
 void MssmSoftsusy::treeUpSquark(DoubleMatrix & mass, double mtrun, 
@@ -6709,29 +6644,9 @@ void MssmSoftsusy::physical(int accuracy) {
 
     smodel.Q = displayMu();
 
-    // DGR added:
-    smodel.mtop = PMTOP;
+    smodel.mtop = displayDataSet().displayPoleMt();
     smodel.mh0 = displayPhys().mh0(1);
 
-    /*    cout << "In SOFTSUSY. (8.1.6) LHS=" << (sqr(smodel.vu) + sqr(smodel.vd))*0.5
-	 << " RHS=" 
-	 << 2.0 * sqr(displayMzRun()) / (sqr(smodel.g) + sqr(smodel.gp)) 
-	 << endl;
-    cout << "tanb=" << displayTanb() << endl;
-
-    /// This is dV/dHu^0
-    cout << "This should be zero to minimise TREE-level Higgs potential: " <<
-      2.0 * smodel.vu / sqrt(2.) * (sqr(smodel.mu) + smodel.m2Hu) - 
-      smodel.b * smodel.vd * sqrt(2.) + 0.25 * (sqr(smodel.g) + sqr(smodel.gp))
-      * (sqr(smodel.vu) - sqr(smodel.vd)) / sqrt(2.) * smodel.vu << endl;
-    cout << "This should also be zero to minimise TREE-level Higgs potential: " <<
-      2.0 * smodel.vd / sqrt(2.) * (sqr(smodel.mu) + smodel.m2Hd) - 
-      smodel.b * smodel.vu * sqrt(2.) - 0.25 * (sqr(smodel.g) + sqr(smodel.gp))
-      * (sqr(smodel.vu) - sqr(smodel.vd)) / sqrt(2.) * smodel.vd << endl;
-
-    /// C
-    cout << "In supermodel.\n";
-    */
     higherorder(smodel);  
     
     //Set the outputs 
@@ -6762,7 +6677,7 @@ void MssmSoftsusy::physical(int accuracy) {
     physpars.md(1, 2)  = smodel.msL;
     physpars.md(2, 2)  = smodel.msR;
   }
-#endif ///< COMPILE_HIGHER_ORDERS
+#endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
 }
 
   /// For a given trial value of the log of field H2, gives the value of the
@@ -6844,22 +6759,6 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
   drBarPars tree(displayDrBarPars());
   double mt = tree.mt;
   
-  /*
-    #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    // AVB: FIXME: alphasMSbar in righthand side should not appear 
-    //
-    double alphasDRbar_prev = 0.;
-    
-    if (getenv("ALPHAS_MSBAR")!=NULL) {
-    alphasDRbar_prev = alphasMSbar;
-    }
-    else alphasDRbar_prev = sqr(displayGaugeCoupling(3))/(4.0 * PI);
-    
-    //dout<<" alpha_S difference: " << (alphasDRbar_prev - alphasMSbar)/alphasMSbar*100 << " %" <<  endl;
-    
-    #endif
-  */
-  
   double deltaAlphas = alphasMSbar / (2.0 * PI) *
     (0.5 - 2.0 / 3.0 * log(mt / q) - 
      2.0 * log(fabs(tree.mGluino) / q));
@@ -6873,9 +6772,7 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
   
   double dalpha_2 = 0.;
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  //dout << "one-loop alpha_s contribution: " 
-  //		<< -deltaAlphas << endl;
-  
+
   decoupling_corrections.das.one_loop = -deltaAlphas;	
   
   if (USE_TWO_LOOP_GAUGE_YUKAWA) {
@@ -6888,37 +6785,16 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
   	double dgs2 = ex_to<numeric>(test).to_double();
 	dgs2 = 2.0*dgs2; 
 	decoupling_corrections.das.two_loop = dgs2;
-	dout << "two-loop alpha_s: " << dgs2 << endl;
-	// g_MS = g_DR ( 1 + dz1 + dz2)
-	// a_sMZ = a_sDR (1 + 2 dz1 + dz1^2 + 2 dz2)	
-	// expressing dz1 in terms of dzas1  = -2 dz1 (Allanach convention) 
-	// a_sMZ = a_sDR (1 - dzas1 + (-dzas1)^2/4 + 2 dz2)
-	// was	double dalpha_2 = deltaAlphas*deltaAlphas + 2.0*dgs2*alphasMSbar*alphasMSbar / (16.0 * PI * PI);
 	dalpha_2 = deltaAlphas*deltaAlphas/4.0 + dgs2;
-	dout << "two-loop alpha_s contribution: " << dalpha_2 << endl;
-      }
-      else {
-        dout << " Not numeric: 2loop gs " << test << endl;
       }
     }
-    
-    //dout << " alpha_S (MZ) before: " << alphasDRbar_prev <<  endl);
-    dout << " alpha_S (MZ) correction ressumed w/o 2l: " << 1 / (1.0 - deltaAlphas ) <<  endl;
-    dout << " alpha_S (MZ) correction ressumed w 2l: " << 1 / (1.0 - deltaAlphas + dalpha_2 ) <<  endl;
     
   }
 #endif // COMPILE_TWO_LOOP_GAUGE_YUKAWA
   
   const double alphasDRbar_post = alphasMSbar / (1.0 - deltaAlphas + dalpha_2);
   
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  if ((included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK)) dout<< " alpha_S (MZ) after: " << alphasDRbar_post << endl;
-#endif 
-  
   return alphasDRbar_post;
-  
-  //return alphasMSbar / (1.0 - deltaAlphas); 
-  
 }
 
 /// Does SUSY (and other) threshold corrections to alphaEm - returns alpha in
@@ -7141,15 +7017,15 @@ void MssmSoftsusy::fixedPointIteration
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
     SoftSusy_helpers_::decoupling_corrections_t d_coupl = 
       decoupling_corrections;
-    int enabled_thresholds = included_thresholds;
 #endif
-    
+    int enabled_thresholds = included_thresholds;    
+
     setSoftsusy(empty); /// Always starts from an empty object
     /// These are things that are re-written by the new initialisation
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
     decoupling_corrections = d_coupl;
-    included_thresholds = enabled_thresholds;
 #endif
+    included_thresholds = enabled_thresholds;
     setSetTbAtMX(setTbAtMXflag); 
     if (altFlag) useAlternativeEwsb();
     setData(oneset); 
@@ -7182,15 +7058,10 @@ void MssmSoftsusy::fixedPointIteration
     // default SoftSusy loop number
     int lpnum = 2;
     
-#ifdef COMPILE_THREE_LOOP_RGE
     if (USE_THREE_LOOP_RGE) lpnum = 3; 
-    //dout << lpnum << "-loop RGE's enabled" << endl;
-#endif
     
     t.setMssmLoops(lpnum); /// >= 2 loops should protect against ht Landau pole 
     t.runto(mxBC); 
-
-    // it's OK to here
 
     setMssmSusy(t); setMu(t.displayMu());
 
@@ -9157,10 +9028,8 @@ double MssmSoftsusy::deltaVb(double outrho, double outsin,
   aPsi0PsicW(4, 2) = g / root2;		     
   bPsi0PsicW(3, 2) = -g / root2;		     
   
-  /// These ought to be in physpars
-  aChi0ChicW = n.complexConjugate() * aPsi0PsicW * v.transpose();
-  bChi0ChicW = n * bPsi0PsicW * u.hermitianConjugate();
-  
+  aChi0ChicW = n * aPsi0PsicW * v.hermitianConjugate();
+  bChi0ChicW = n.complexConjugate() * bPsi0PsicW * u.transpose();
   Complex deltaVE = 0.0;
   int j; for(i=1; i<=2; i++)
 	   for(j=1; j<=dimN; j++) {
@@ -9758,29 +9627,24 @@ void MssmSoftsusy::spinfoSLHA(ostream & out) {
 void MssmSoftsusy::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
   out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
-#ifdef COMPILE_THREE_LOOP_RGE
   out << "# 3-loop RGE corrections are ";
   if (displayLoops() == 3) out << "on"; else out << "off";
-#endif
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   out << ". 2-loop Yukawa/g3 thresholds are ";
   if (!USE_TWO_LOOP_GAUGE_YUKAWA) out << "off\n";
   else {
     if (included_thresholds>0) out << "on"; else out << "off";
-    out << "\n# 2-loop t-quark O(a_s^2) threshold corrections to gauge and Yukawa couplings are ";
+    out << "\n# 2-loop O(a_s^2) threshold corrections to mt are ";
     if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) out << "on"; else out << "off";  
-    out << "\n# 2-loop b-quark O(a_s^2) threshold corrections to gauge and Yukawa couplings are "; 
+    out << "\n# 2-loop O(a_s^2) threshold corrections mb are "; 
     if (included_thresholds & ENABLE_TWO_LOOP_MB_AS) out << "on"; else out << "off";
-    out << "\n# 2-loop b-quark O(a_s y^2) and O(y^4) threshold corrections to gauge and Yukawa couplings are ";
+    out << "\n# 2-loop O(a_s y^2) and O(y^4) threshold corrections to mb are ";
     if (included_thresholds & ENABLE_TWO_LOOP_MB_YUK) out << "on"; else out << "off"; 
-    out << "\n# 2-loop tau-lepton  O(y^4) threshold corrections to gauge and Yukawa couplings are ";
+    out << "\n# 2-loop O(y^4) threshold corrections to mtau are ";
     if (included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK) out << "on"; else out << "off"; 
-    out << "\n# 2-loop a_s  O(a_s^2) and O(a_s y^2) threshold corrections to gauge and Yukawa couplings are ";
+    out << "\n# 2-loop O(a_s^2) and O(a_s y^2) threshold corrections to a_s are ";
     if (included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK) out << "on"; else out << "off";
     out << endl;
   }
-#endif
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   out << "# 2-loop SUSY QCD computation of squark/gluino pole masses are ";
   if (USE_TWO_LOOP_SPARTICLE_MASS) {
     out << "on.\n";
@@ -9789,7 +9653,6 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
     if (expandAroundGluinoPole == 3) out << "# Expansion around gluino and squark pole masses.\n";    
   }
   else out << "off" << endl;
-#endif  
 }
 
 void MssmSoftsusy::higgsMSLHA(ostream & out) {
@@ -10357,50 +10220,63 @@ int MssmSoftsusy::nlsp(double & mass, int & posi, int & posj) const {
     minmass = lightest; lsppos1 = pos1; lsppos2 = 0; temp = 6;}
   else if (lightest < nminmass){
     nminmass = lightest; nlsppos1 = pos1; nlsppos2 = 0; ntemp = 6;}
-  
-  
+
+  /// gravitino -1
+  lightest = displayGravitino();
+  if (lightest < minmass) { 
+    nminmass = minmass; nlsppos1 = lsppos1; nlsppos2 = lsppos2; ntemp=temp;
+    minmass = lightest; lsppos1 = pos1; lsppos2 = 0; temp = -1;}
+  else if (lightest < nminmass){
+    nminmass = lightest; nlsppos1 = pos1; nlsppos2 = 0; ntemp = -1;}
+    
   /// check that nlsp is not the next-to-lightest in the group of the lsp
   double nlightest;
   
   switch (temp){
     /// neutralinos
-  case 0: {
+  case 0: 
     nlightest = s.mneut.apply(fabs).nmin(pos1);
     if (nlightest < nminmass) { 
       nminmass = nlightest; nlsppos1 = pos1; nlsppos2 = 0; ntemp = 0;}
-  }
+    break;
     /// up squarks 1
-  case 1: {
+  case 1: 
     nlightest = s.mu.apply(fabs).nmin(pos1, pos2);
     if (nlightest < nminmass) { 
       nminmass = nlightest; nlsppos1 = pos1; nlsppos2 = pos2; ntemp = 1;}
-  }
+    break;
     /// down squarks 2
-  case 2: {
+  case 2: 
     nlightest = s.md.apply(fabs).nmin(pos1, pos2);
     if (nlightest < nminmass) { 
       nminmass = nlightest; nlsppos1 = pos1; nlsppos2 = pos2; ntemp = 2;}
-  }
+    break;
     /// sleptons 3
-  case 3: {
+  case 3: 
     nlightest = s.me.apply(fabs).nmin(pos1, pos2);
     if (nlightest < nminmass){
       nminmass = nlightest; nlsppos1 = pos1; nlsppos2 = pos2; ntemp = 3;}
-  }
+    break;
     /// charginos 4
-  case 4: {
+  case 4: 
     nlightest = s.mch.apply(fabs).nmin(pos1);
     if (nlightest < nminmass){
       nminmass = nlightest; nlsppos1 = pos1; nlsppos2 = 0; ntemp = 4;}
-  }
+    break;
     /// sneutrinos 5
-  case 5: {
+  case 5: 
     nlightest = s.msnu.apply(fabs).nmin(pos1);
     if (nlightest < nminmass){
       nminmass = nlightest; nlsppos1 = pos1; nlsppos2 = 0; ntemp = 5;}
+    break;
+    /// gluino 6 -- there is only one gluino mass
+  case 6: break;
+    /// gravitino -1
+  case -1: break;
+  default: {
+    throw("Shouldn't have found a non-existent NLSP code\n");
+    break;
   }
-    /// gluino 6
-    /// there is only one gluino mass
   }
   
   mass = nminmass;
@@ -10612,8 +10488,56 @@ void MssmSoftsusy::setEwsbConditions(const DoubleVector & inputs) {
   setMaCond(inputs.display(2));
 }
 
+  void MssmSoftsusy::setTwoLoopAlphasThresholds(bool sw) {
+    if (sw) {
+      included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
+      }
+      else included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
+  }
 
-/// input diagonal matrices and it'll give you back mixed ones
+  void MssmSoftsusy::setTwoLoopMtThresholds(bool sw) {
+      if (sw) {
+	included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
+      }
+      else included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
+    }
+
+  void MssmSoftsusy::setTwoLoopMbMtauThresholds(bool sw) {
+      if (sw) {
+	included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
+	included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
+	included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
+      }
+      else {
+	included_thresholds &= ENABLE_TWO_LOOP_MB_AS;
+	included_thresholds &= ENABLE_TWO_LOOP_MB_YUK;
+	included_thresholds &= ENABLE_TWO_LOOP_MTAU_YUK;
+      }
+    }
+
+  void MssmSoftsusy::setAllTwoLoopThresholds(bool sw) {
+      if (sw) {
+	included_thresholds |= ENABLE_TWO_LOOP_AS_AS_YUK;
+	included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
+	included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
+	included_thresholds |= ENABLE_TWO_LOOP_MB_YUK;
+	included_thresholds |= ENABLE_TWO_LOOP_MTAU_YUK;
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
+      }
+      else {
+	included_thresholds &= ENABLE_TWO_LOOP_AS_AS_YUK;
+	included_thresholds &= ENABLE_TWO_LOOP_MB_AS;
+	included_thresholds &= ENABLE_TWO_LOOP_MT_AS;
+	included_thresholds &= ENABLE_TWO_LOOP_MB_YUK;
+	included_thresholds &= ENABLE_TWO_LOOP_MTAU_YUK;
+	USE_TWO_LOOP_GAUGE_YUKAWA = false;
+      }
+    }
+
+  /// input diagonal matrices and it'll give you back mixed ones
 void MssmSoftsusy::doQuarkMixing(DoubleMatrix & /* mDon */,
 				 DoubleMatrix & /* mUpq */) {
   /// This is a dummy routine - MIXING is ignored in this object (it's all
@@ -11787,10 +11711,8 @@ double softsusy::MssmSoftsusy::calcRunMbNeutralinos() const {
   DoubleVector aPsi0Bsbotr(4), bPsi0Bsbotr(4), aPsi0Bsbotl(4),
     bPsi0Bsbotl(4); 
   
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   if (MB_DECOUPLING) p = 0;
-#endif
-  
+
   aPsi0Bsbotr(1) = gp / (root2 * 3.0) * 2.0;
   bPsi0Bsbotl(1) = gp / (root2 * 3.0);
   bPsi0Bsbotl(2) = -root2 * g * 0.5;
