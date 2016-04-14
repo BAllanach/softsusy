@@ -3028,10 +3028,11 @@ double MssmSoftsusy::calcRunMtauNeutralinos(double mTauSMMZ) const {
       gNeutTauStau(i, j) = 2.0 * 
 	(aNeutTauStau(i, j) * bNeutTauStau(i, j).conj()).real(); 
       
-      neutralinoContribution(i, j) = (fNeutTauStau(i, j) * 
-				      b1(p, mneut(i), displayDrBarPars().me(j, 3), q) + 
-				      gNeutTauStau(i, j) * mneut(i) /  mTauSMMZ *  
-				      b0(p, mneut(i), displayDrBarPars().me(j, 3), q)) * 0.5;
+      neutralinoContribution(i, j) = 
+	(fNeutTauStau(i, j) * 
+	 b1(p, mneut(i), displayDrBarPars().me(j, 3), q) + 
+	 gNeutTauStau(i, j) * mneut(i) /  mTauSMMZ *  
+	 b0(p, mneut(i), displayDrBarPars().me(j, 3), q)) * 0.5;
       
       sigmaNeutralino = sigmaNeutralino + neutralinoContribution(i, j);
     }
@@ -3062,7 +3063,8 @@ double MssmSoftsusy::calcRunningMtau() {
   decoupling_corrections.dmtau.one_loop = -dzetamtau;
   
   if (USE_TWO_LOOP_GAUGE_YUKAWA) {
-    // flag: calculate corrections if two-previous iterations gave different results
+    // flag: calculate corrections if two-previous iterations gave different
+    // results 
     bool & needcalc = decoupling_corrections.dmtau.two_loop_needs_recalc;  
     using namespace GiNaC;
     if ((included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
@@ -3072,31 +3074,16 @@ double MssmSoftsusy::calcRunningMtau() {
 	ex test = tau_corrections::eval_tau_twoloop_yukawa_dec(drbrp);
 	if (is_a<numeric>(test)) dzmtau2 = ex_to<numeric>(test).to_double();
 	else dout <<" Not numeric: 2loop  tau-lepton " << endl;
-	// if (close(dzmtau2, decoupling_corrections.dmtau.two_loop, TWOLOOP_NUM_THRESH)) needcalc = false;
-	// dout << " mtau: storing" << endl;
 	decoupling_corrections.dmtau.two_loop = dzmtau2;
 	
-      } // else dout << "mtau: No calculation" << endl;
+      } 
       dzetamtau2 = -dzetamtau*dzetamtau + dzmtau2;
-      /*      dout << "one-loop tau-lepton decoupling constant: " << dzetamtau << endl;
-      dout << "two-loop tau-lepton yukawa decoupling constant: " << dzmtau2 << endl;
-      dout << "two-loop tau-lepton yukawa decoupling constant, expanded: " << dzetamtau2 << endl;*/
     }
   }
-  
-  /// old calculation of tau mass
-  /**  double delta = sqr(displayGaugeCoupling(2)) / (16 * sqr(PI)) *
-       (-displaySusyMu()) * displayGaugino(2) * displayTanb() /
-       (sqr(displaySusyMu()) - sqr(displayGaugino(2))) *
-       (b0(mTauPole, displayGaugino(2), 
-       displayDrBarPars().msnu(3), displayMu()) -
-       b0(mTauPole, -displaySusyMu(), displayDrBarPars().msnu(3), displayMu()));*/
-  
-  /// From hep-ph/9912516
 #endif
   
-  return mTauSMMZ * (1.0 + sigmaNeutralino + sigmaChargino + sigmaHiggs - dzetamtau2);
-  
+  return mTauSMMZ * 
+    (1.0 + sigmaNeutralino + sigmaChargino + sigmaHiggs - dzetamtau2);
 }
 
 void MssmSoftsusy::treeUpSquark(DoubleMatrix & mass, double mtrun, 
