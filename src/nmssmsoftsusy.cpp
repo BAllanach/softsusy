@@ -4105,8 +4105,8 @@ namespace {
         tempSoft1->setMh1Squared(x);
         if (PRINTOUT > 1) msg << "mH1Sq = " << x << ", ";
       } else if (Z3) {
-        tempSoft1->setKappa(x);
-        if (PRINTOUT > 1) msg << "kappa = " << x << ", ";
+        tempSoft1->setLambda(x);
+        if (PRINTOUT > 1) msg << "lambda = " << x << ", ";
       } else {
         tempSoft1->setSusyMu(x);
         if (PRINTOUT > 1) msg << "mu = " << x << ", ";
@@ -4116,30 +4116,21 @@ namespace {
         tempSoft1->setMh2Squared(x);
         if (PRINTOUT > 1) msg << "mH2Sq = " << x << ", ";
       } else if (Z3) {
-        tempSoft1->setMsSquared(x);
-        if (PRINTOUT > 1) msg << "mSsq = " << x << ", ";
+        tempSoft1->setKappa(x);
+        if (PRINTOUT > 1) msg << "kappa = " << x << ", ";
       } else {
         tempSoft1->setM3Squared(x);
         if (PRINTOUT > 1) msg << "m3sq = " << x << ", ";
       }
     } else if (ftFunctionality == numFtPars + 3) {
-      if (SoftHiggsOut) {
+      if (SoftHiggsOut || Z3) {
         tempSoft1->setMsSquared(x);
         if (PRINTOUT > 1) msg << "mSsq = " << x << ", ";
-      } else if (Z3) {
-        tempSoft1->setYukawaElement(YU, 3, 3, x);
-        if (PRINTOUT > 1) msg << "ht = " << x << ", ";
       } else {
         tempSoft1->setXiS(x);
         if (PRINTOUT > 1) msg << "xiS = " << x << ", ";
       }
     } else if (ftFunctionality == numFtPars + 4) {
-      if (Z3) {
-        ostringstream ii;
-        ii << "NmssmSoftsusy:calcMzsq called with incorrect functionality="
-           << ftFunctionality << '\n';
-        throw ii.str();
-      }
       tempSoft1->setYukawaElement(YU, 3, 3, x);
       if (PRINTOUT > 1) msg << "ht = " << x << ", ";
     } else {
@@ -4223,8 +4214,8 @@ namespace {
         x = displayMh1Squared(); h = 0.01 * x;
         if (PRINTOUT > 1) msg << "mH1Sq] = ";
       } else if (Z3) {
-        x = displayKappa(); h = 0.0005 * x;
-        if (PRINTOUT > 1) msg << "kappa] = ";
+         x = displayLambda(); h = 0.0005 * x;
+         if (PRINTOUT > 1) msg << "lambda] = ";
       } else {
         x = displaySusyMu(); h = 0.01 * x;
         if (PRINTOUT > 1) msg << "mu] = ";
@@ -4234,19 +4225,16 @@ namespace {
         x = displayMh2Squared(); h = 0.01 * x;
         if (PRINTOUT > 1) msg << "mH2Sq] = ";
       } else if (Z3) {
-        x = displayMsSquared(); h = 0.01 * x;
-        if (PRINTOUT > 1) msg << "mSsq] = ";
+        x = displayKappa(); h = 0.0005 * x;
+        if (PRINTOUT > 1) msg << "kappa] = ";
       } else {
         x = displayM3Squared(); h = 0.01 * x;
         if (PRINTOUT > 1) msg << "m3sq] = ";
       }
     } else if (numPar == numBcPars + 3) {
-      if (SoftHiggsOut) {
+      if (SoftHiggsOut || Z3) {
         x = displayMsSquared(); h = 0.01 * x;
         if (PRINTOUT > 1) msg << "mSsq] = ";
-      } else if (Z3) {
-        x = displayYukawaElement(YU, 3, 3); h = 0.0005 * x;
-        if (PRINTOUT > 1) msg << "ht] = ";
       } else {
         x = displayXiS(); h = 0.01 * x;
         if (PRINTOUT > 1) msg << "xiS] = ";
@@ -4367,12 +4355,7 @@ namespace {
     tuningPars.mzSqr = mz2;
 
     const int numBcPars = bcPars.displayEnd();
-    int numPars = numBcPars;
-    if (Z3) {
-       numPars += 2;
-    } else {
-       numPars += 3;
-    }
+    int numPars = numBcPars + 3;
     if (doTop) numPars++;
 
     DoubleMatrix tempFineTuning(numPars, 2);
