@@ -1,6 +1,3 @@
-<li> 23/03/16 kappa < 0 displaySoftAkappa() gave an error when it shouldn't. Thanks to P Athron and A Voigt
-<li> 13/02/16 Fixes to IR limits of 3 and 4-point loop functions. Thanks to P Athron and A Voigt
-<li> 08/02/16 higher.x now compiles when all higher order corrections have been compiled
-<li> 04/02/16 Bug-fix identifying NLSP when gravitinos are light: Thanks to T Cridge
-<li> 01/02/16 Small bug fix in piWWT: chargino W contribution. Tiny effect
+<li> 19/04/16 Fixed Feynman rule in calculation of delta v_b introduced in 3.7.0: usually makes no difference, but for odd points it can change mh0 by 1.5 GeV. Thanks to P Slavich
+
 
