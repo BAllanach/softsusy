@@ -1,2 +1,2 @@
-<li> 19/04/16 Fixed Feynman rule in calculation of delta v_b introduced in 3.7.0: usually makes no difference, but for odd points it can change mh0 by 1.5 GeV. Thanks to P Slavich
+<li>10/05/16: Interpolated b1 p->0 limit so there are no discontinuities. Thanks to P Athron and A Voigt
 

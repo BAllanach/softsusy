@@ -576,13 +576,17 @@ double b1(double p, double m1, double m2, double q) {
 	   * b0(p, m1, m2, q)) / (2.0 * sqr(p)); 
   } else if (fabs(m1) > 1.0e-15 && !close(m1, m2, EPSTOL) 
 	     && fabs(m2) > 1.0e-15) { ///< checked
-    double Mmax2 = maximum(sqr(m1) , sqr(m2)), x = sqr(m2 / m1);
-    ans = 0.5 * (-log(Mmax2 / sqr(q)) + 0.5 + 1.0 / (1.0 - x) + log(x) /
-		 sqr(1.0 - x) - theta(1.0 - x) * log(x)); ///< checked
-    ans = 0.5 * (1. + log(sqr(q) / sqr(m2)) + 
-		 sqr(sqr(m1) / (sqr(m1) - sqr(m2))) * log(sqr(m2) / sqr(m1)) +
-		 0.5 * (sqr(m1) + sqr(m2)) / (sqr(m1) - sqr(m2))
-		 );
+    const double p2 = sqr(p);
+    const double m12 = sqr(m1) , m22 = sqr(m2);
+    const double m14 = sqr(m12), m24 = sqr(m22);
+    const double m16 = m12*m14 , m26 = m22*m24;
+    const double m18 = sqr(m14), m28 = sqr(m24);
+    ans = (3*m14 - 4*m12*m22 + m24 - 4*m14*log(m1/m2))/(4.*sqr(m12 - m22))
+       + (p2*(4*pow(m12 - m22,3)*
+             (2*m14 + 5*m12*m22 - m24) +
+             (3*m18 + 44*m16*m22 - 36*m14*m24 - 12*m12*m26 + m28)*p2
+             - 24*m14*m22*(2*sqr(m12 - m22) + (2*m12 + 3*m22)*p2)*log(m1/m2)))/
+       (24.*pow(m12 - m22,6)) - log(m2/q);
   } else {
     ans = bIntegral(1, p, m1, m2, q); 
   }
