@@ -581,12 +581,14 @@ double b1(double p, double m1, double m2, double q) {
     const double m14 = sqr(m12), m24 = sqr(m22);
     const double m16 = m12*m14 , m26 = m22*m24;
     const double m18 = sqr(m14), m28 = sqr(m24);
-    ans = (3*m14 - 4*m12*m22 + m24 - 4*m14*log(m1/m2))/(4.*sqr(m12 - m22))
-       + (p2*(4*pow(m12 - m22,3)*
+    ans = (3*m14 - 4*m12*m22 + m24 - 2*m14*log(m12/m22)) 
+      / (4.*sqr(m12 - m22))
+      + (p2*(4*pow(m12 - m22,3)*
              (2*m14 + 5*m12*m22 - m24) +
-             (3*m18 + 44*m16*m22 - 36*m14*m24 - 12*m12*m26 + m28)*p2
-             - 24*m14*m22*(2*sqr(m12 - m22) + (2*m12 + 3*m22)*p2)*log(m1/m2)))/
-       (24.*pow(m12 - m22,6)) - log(m2/q);
+	     (3*m18 + 44*m16*m22 - 36*m14*m24 - 12*m12*m26 + m28)*p2
+	     - 12*m14*m22*
+	     (2*sqr(m12 - m22) + (2*m12 + 3*m22)*p2)*log(m12/m22))) /
+      (24.*pow(m12 - m22,6)) - log(m2/q);
   } else {
     ans = bIntegral(1, p, m1, m2, q); 
   }
