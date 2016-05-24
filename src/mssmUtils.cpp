@@ -429,6 +429,45 @@ namespace softsusy {
     return left;
   }
 
+  DoubleVector calcMh1SqSugraCoeffs(const MssmSoftsusy & m, double scale) {
+    MssmSoftsusy model(m);
+    const double mx = model.displayMxBC();
+    model.runto(mx);
+
+    const DoubleVector savedPars(model.display());
+
+    DoubleVector coeffs(4);
+
+    // coefficient of M_0^2, M_{1/2}^2 and A_0^2
+    for (int i = 1; i <= 3; ++i) {
+      DoubleVector inputs(3);
+      inputs(i) = 1.0;
+
+      sugraBcs(model, inputs);
+
+      model.runto(scale);
+
+      coeffs(i) = model.displayMh1Squared();
+
+      model.set(savedPars);
+      model.setMu(mx);
+    }
+
+    // coefficient of M_{1/2} A_0
+    DoubleVector crossTermInputs(3);
+    crossTermInputs(1) = 0.0;
+    crossTermInputs(2) = 1.0;
+    crossTermInputs(3) = 1.0;
+
+    sugraBcs(model, crossTermInputs);
+
+    model.runto(scale);
+
+    coeffs(4) = model.displayMh1Squared() - coeffs(2) - coeffs(3);
+
+    return coeffs;
+  }
+
   DoubleVector calcMh2SqSugraCoeffs(const MssmSoftsusy & m, double scale) {
     MssmSoftsusy model(m);
     const double mx = model.displayMxBC();

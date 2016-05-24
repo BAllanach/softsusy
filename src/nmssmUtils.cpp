@@ -563,6 +563,136 @@ double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out,
   return sT.max();
 }
 
+/// DH: Calculates coefficients in semi-analytic solution for m_{H_d}^2
+/// for MSUGRA BCs
+DoubleVector calcMh1SqNmssmMsugraCoeffs(const NmssmSoftsusy & m, double scale) {
+  NmssmSoftsusy model(m);
+  const double mx = model.displayMxBC();
+  model.runto(mx);
+
+  const DoubleVector savedPars(model.display());
+
+  DoubleVector coeffs(4);
+
+  // coefficient of M_0^2, M_{1/2}^2 and A_0^2
+  for (int i = 1; i <= 3; ++i) {
+    DoubleVector inputs(3);
+    inputs(i) = 1.0;
+
+    NmssmMsugraBcs(model, inputs);
+
+    model.runto(scale);
+
+    coeffs(i) = model.displayMh1Squared();
+
+    model.set(savedPars);
+    model.setMu(mx);
+  }
+
+  // coefficient of M_{1/2} A_0
+  DoubleVector crossTermInputs(3);
+  crossTermInputs(1) = 0.0;
+  crossTermInputs(2) = 1.0;
+  crossTermInputs(3) = 1.0;
+
+  NmssmMsugraBcs(model, crossTermInputs);
+
+  model.runto(scale);
+
+  coeffs(4) = model.displayMh1Squared() - coeffs(2) - coeffs(3);
+
+  return coeffs;
+}
+
+/// DH: Calculates coefficients in semi-analytic solution for m_{H_d}^2
+/// for semi-MSUGRA BCs
+DoubleVector calcMh1SqSemiMsugraCoeffs(const NmssmSoftsusy & m, double scale) {
+  NmssmSoftsusy model(m);
+  const double mx = model.displayMxBC();
+
+  model.runto(mx);
+
+  const DoubleVector savedPars(model.display());
+
+  DoubleVector coeffs(12);
+
+  // coefficients of M_0^2, M_{1/2}^2, A_0^2, A_\lambda^2
+  // and A_\kappa^2
+  for (int i = 1; i <= 5; ++i) {
+    DoubleVector inputs(5);
+    inputs(i) = 1.0;
+
+    SemiMsugraBcs(model, inputs);
+    model.setMsSquared(0.);
+
+    model.runto(scale);
+
+    coeffs(i) = model.displayMh1Squared();
+
+    model.set(savedPars);
+    model.setMu(mx);
+  }
+
+  // coefficient of m_S^2
+  DoubleVector ms2Inputs(5);
+  SemiMsugraBcs(model, ms2Inputs);
+  model.setMsSquared(1.);
+
+  model.runto(scale);
+
+  coeffs(6) = model.displayMh1Squared();
+
+  model.set(savedPars);
+  model.setMu(mx);
+
+  // coefficients of cross-terms involving gaugino mass
+  // and trilinears:
+  // M_{1/2} times trilinear
+  for (int i = 3; i <= 5; ++i) {
+    DoubleVector m12TrilinearInputs(5);
+    m12TrilinearInputs(2) = 1.0;
+    m12TrilinearInputs(i) = 1.0;
+
+    SemiMsugraBcs(model, m12TrilinearInputs);
+    model.setMsSquared(0.);
+
+    model.runto(scale);
+
+    coeffs(i + 4) = model.displayMh1Squared() - coeffs(2) - coeffs(i);
+
+    model.set(savedPars);
+    model.setMu(mx);
+  }
+
+  // A_0 times trilinear
+  for (int i = 4; i <= 5; ++i) {
+    DoubleVector a0TrilinearInputs(5);
+    a0TrilinearInputs(3) = 1.0;
+    a0TrilinearInputs(i) = 1.0;
+
+    SemiMsugraBcs(model, a0TrilinearInputs);
+    model.setMsSquared(0.);
+
+    model.runto(scale);
+
+    coeffs(i + 6) = model.displayMh1Squared() - coeffs(3) - coeffs(i);
+  }
+
+  // A_\lambda times A_\kappa
+  DoubleVector alamakapInputs(5);
+  alamakapInputs(4) = 1.0;
+  alamakapInputs(5) = 1.0;
+
+  SemiMsugraBcs(model, alamakapInputs);
+  model.setMsSquared(0.);
+
+  model.runto(scale);
+
+  coeffs(12) = model.displayMh1Squared() - coeffs(4) - coeffs(5);
+
+  return coeffs;
+}
+
 /// DH: Calculates coefficients in semi-analytic solution for m_{H_u}^2
 /// for MSUGRA BCs
 DoubleVector calcMh2SqNmssmMsugraCoeffs(const NmssmSoftsusy & m, double scale) {
