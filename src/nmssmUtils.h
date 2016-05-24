@@ -127,7 +127,7 @@ void NmssmSugraNoSoftHiggsMassBcs(NmssmSoftsusy&, const DoubleVector&);
   /// A_0 A_\kappa, A_\lambda A_\kappa. The high-scale
   /// is taken to be given by m.displayMxBC().
   DoubleVector calcMh1SqSemiMsugraCoeffs(const NmssmSoftsusy & m, double scale);
-  
+
   /// Calculates coefficients in semi-analytic solution for up-type
   /// soft Higgs mass for MSUGRA boundary conditions at the given scale,
   /// in the order M_0^2, M_{1/2}^2, A_0^2, M_{1/2} A_0 (see Eq. (14)
