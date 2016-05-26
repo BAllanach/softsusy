@@ -217,7 +217,7 @@ namespace softsusy {
     static double calcRunningParameter(double x, void* parameters);
     std::pair<double,double> calcRGDerivative(NmssmSoftsusy& model,
                                               Parameters dep, Parameters indep,
-                                              double toScale);
+                                              double toScale) const;
     double calcRGFlowJacobian(NmssmSoftsusy& model, double startScale,
                               double endScale);
     static int ewsbOutputErrors(const DoubleVector & guess, void* parameters,
@@ -227,12 +227,15 @@ namespace softsusy {
     static double calcEWSBOutput(double x, void* parameters);
     std::pair<double,double> calcEWSBOutputDerivative(NmssmSoftsusy& model,
                                                       Parameters dep,
-                                                      Parameters indep);
+                                                      Parameters indep) const;
     std::pair<double,double> calcEWSBParameterDerivative(NmssmSoftsusy& model,
                                                          Parameters dep,
-                                                         Parameters indep);
+                                                         Parameters indep) const;
     double calcEWSBJacobian(NmssmSoftsusy& model);
     double calcInverseEWSBJacobian(NmssmSoftsusy& model);
+
+    bool checkDerivativeErrors(DoubleMatrix& derivs, const DoubleMatrix& errors,
+                               const std::vector<double>& paramValues) const;
   };
 
 } /// namespace softsusy

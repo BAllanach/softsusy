@@ -349,7 +349,7 @@ namespace softsusy {
   }
 
   std::pair<double,double> NmssmJacobian::calcRGDerivative(
-    NmssmSoftsusy& model, Parameters dep, Parameters indep, double toScale) {
+    NmssmSoftsusy& model, Parameters dep, Parameters indep, double toScale) const {
 
     double x = 0.;
     double h = 0.01;
@@ -470,7 +470,6 @@ namespace softsusy {
 
     if (has_error) {
       derivative = -numberOfTheBeast;
-      hasError = true;
     }
 
     if (PRINTOUT > 1) {
@@ -535,21 +534,37 @@ namespace softsusy {
     DoubleMatrix jacErrors(numPars, numPars);
 
     std::vector<Parameters> indepPars;
+    std::vector<double> paramValues;
 
     if (SoftHiggsOut) {
       indepPars.push_back(Mh1Sq);
       indepPars.push_back(Mh2Sq);
       indepPars.push_back(MsSq);
+
+      paramValues.push_back(model.displayMh1Squared());
+      paramValues.push_back(model.displayMh2Squared());
+      paramValues.push_back(model.displayMsSquared());
     } else if (Z3) {
       indepPars.push_back(Lambda);
       indepPars.push_back(Kappa);
       indepPars.push_back(MsSq);
+
+      paramValues.push_back(model.displayLambda());
+      paramValues.push_back(model.displayKappa());
+      paramValues.push_back(model.displayMsSquared());
     } else {
       indepPars.push_back(SMu);
       indepPars.push_back(M3Sq);
       indepPars.push_back(XiS);
+
+      paramValues.push_back(model.displaySusyMu());
+      paramValues.push_back(model.displayM3Squared());
+      paramValues.push_back(model.displayXiS());
     }
-    if (includeTop) indepPars.push_back(Yt);
+    if (includeTop) {
+      indepPars.push_back(Yt);
+      paramValues.push_back(model.displayYukawaElement(YU, 3, 3));
+    }
 
     for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
       std::pair<double,double> result;
@@ -596,6 +611,9 @@ namespace softsusy {
         jacErrors(i + 1, 4) = result.second;
       }
     }
+
+    // check for errors
+    hasError = checkDerivativeErrors(jac, jacErrors, paramValues);
 
     // save calculated matrix
     // convention: inverse refers to case where transformation
@@ -1043,7 +1061,7 @@ namespace softsusy {
   }
 
   std::pair<double,double> NmssmJacobian::calcEWSBOutputDerivative(
-    NmssmSoftsusy& model, Parameters dep, Parameters indep) {
+    NmssmSoftsusy& model, Parameters dep, Parameters indep) const {
 
     double x = 0.;
     double h = 0.01;
@@ -1164,7 +1182,6 @@ namespace softsusy {
 
     if (has_error) {
       derivative = -numberOfTheBeast;
-      hasError = true;
     }
 
     if (PRINTOUT > 1) {
@@ -1209,7 +1226,7 @@ namespace softsusy {
   }
 
   std::pair<double,double> NmssmJacobian::calcEWSBParameterDerivative(
-    NmssmSoftsusy& model, Parameters dep, Parameters indep) {
+    NmssmSoftsusy& model, Parameters dep, Parameters indep) const {
 
     const int numOutputs = includeTop ? 4 : 3;
     DoubleVector outputs(numOutputs);
@@ -1319,7 +1336,6 @@ namespace softsusy {
 
     if (has_error) {
       derivative = -numberOfTheBeast;
-      hasError = true;
     }
 
     if (PRINTOUT > 1) {
@@ -1377,17 +1393,29 @@ namespace softsusy {
     DoubleMatrix jacErrors(numPars, numPars);
 
     std::vector<Parameters> indepPars;
+    std::vector<double> paramValues;
 
     if (Z3 && !SoftHiggsOut) {
       indepPars.push_back(Mzsq);
       indepPars.push_back(Tanb);
       indepPars.push_back(Lambda);
+
+      paramValues.push_back(sqr(calcMz(model, useRunningMasses)));
+      paramValues.push_back(model.displayTanb());
+      paramValues.push_back(model.displayLambda());
     } else {
       indepPars.push_back(Mzsq);
       indepPars.push_back(Tanb);
       indepPars.push_back(Svev);
+
+      paramValues.push_back(sqr(calcMz(model, useRunningMasses)));
+      paramValues.push_back(model.displayTanb());
+      paramValues.push_back(model.displaySvev());
     }
-    if (includeTop) indepPars.push_back(Mtsq);
+    if (includeTop) {
+      indepPars.push_back(Mtsq);
+      paramValues.push_back(sqr(calcMt(model, useRunningMasses)));
+    }
 
     for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
       std::pair<double,double> result;
@@ -1448,6 +1476,9 @@ namespace softsusy {
       }
     }
 
+    // check for errors
+    hasError = checkDerivativeErrors(jac, jacErrors, paramValues);
+
     // save calculated matrix
     if (jacEWSB.displayRows() != numPars
         || jacEWSB.displayCols() != numPars) {
@@ -1476,21 +1507,37 @@ namespace softsusy {
     DoubleMatrix jacErrors(numPars, numPars);
 
     std::vector<Parameters> indepPars;
+    std::vector<double> paramValues;
 
     if (SoftHiggsOut) {
       indepPars.push_back(Mh1Sq);
       indepPars.push_back(Mh2Sq);
       indepPars.push_back(MsSq);
+
+      paramValues.push_back(model.displayMh1Squared());
+      paramValues.push_back(model.displayMh2Squared());
+      paramValues.push_back(model.displayMsSquared());
     } else if (Z3) {
       indepPars.push_back(Lambda);
       indepPars.push_back(Kappa);
       indepPars.push_back(MsSq);
+
+      paramValues.push_back(model.displayLambda());
+      paramValues.push_back(model.displayKappa());
+      paramValues.push_back(model.displayMsSquared());
     } else {
       indepPars.push_back(SMu);
       indepPars.push_back(M3Sq);
       indepPars.push_back(XiS);
+
+      paramValues.push_back(model.displaySusyMu());
+      paramValues.push_back(model.displayM3Squared());
+      paramValues.push_back(model.displayXiS());
     }
-    if (includeTop) indepPars.push_back(Yt);
+    if (includeTop) {
+      indepPars.push_back(Yt);
+      paramValues.push_back(model.displayYukawaElement(YU, 3, 3));
+    }
 
     for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
       std::pair<double,double> result;
@@ -1539,6 +1586,9 @@ namespace softsusy {
       }
     }
 
+    // check for errors
+    hasError = checkDerivativeErrors(jac, jacErrors, paramValues);
+
     // save calculated matrix
     if (invJacEWSB.displayRows() != numPars
         || invJacEWSB.displayCols() != numPars) {
@@ -1553,6 +1603,27 @@ namespace softsusy {
     invJacEWSBErrors = jacErrors;
 
     return jac.determinant();
+  }
+
+  bool NmssmJacobian::checkDerivativeErrors(
+     DoubleMatrix& derivs, const DoubleMatrix& errors,
+     const std::vector<double>& paramValues) const {
+    bool error = false;
+    const int numDependent = derivs.displayCols();
+    for (int i = 0, numPars = paramValues.size(); i < numPars; ++i) {
+      if (fabs(paramValues[i]) <= 1.0e-10)
+        continue;
+      for (int j = 0; j < numDependent; ++j) {
+        if (fabs(derivs(i + 1, j + 1)) > 1.0e-10
+            || fabs(errors(i + 1, j + 1)) > 1.0e-10) {
+          if (fabs(errors(i + 1, j + 1) / derivs(i + 1, j + 1)) > 1.0) {
+            error = true;
+            derivs(i + 1, j + 1) = -numberOfTheBeast;
+          }
+        }
+      }
+    }
+    return error;
   }
 
 } /// namespace softsusy
