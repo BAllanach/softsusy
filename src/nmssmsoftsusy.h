@@ -32,6 +32,14 @@
 #include "nmssmUtils.h"
 #include <cassert>
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef ENABLE_THREADS
+#include <mutex>
+#endif
+
 namespace softsusy {
   
   /* class NmssmSoftsusy;  */
@@ -41,7 +49,9 @@ namespace softsusy {
   class NmssmSoftsusy: public NmssmSusyPars, public SoftParsNmssm,
 		       public MssmSoftsusy {
   private:
-    
+#ifdef ENABLE_THREADS
+    static std::mutex mtx_fortran;
+#endif
     double tSOVSMs;  ///< New Nmssm DRbar tadpole(MSusy): incl 2 loops
     double tSOVSMs1loop; ///<New Nmssm DRbar tadpole(MSusy): excl 2 loops
     /// LCT: Returns logarithm factor from one-loop effective potential

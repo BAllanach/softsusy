@@ -6,6 +6,7 @@
 #ifndef NMSSMJACOBIAN_H
 #define NMSSMJACOBIAN_H
 
+#include "nmssmsoftsusy.h"
 #include "linalg.h"
 
 #include <utility>
@@ -225,7 +226,7 @@ namespace softsusy {
     static void fixEWSBOutputs(EWSBPars* pars, int & err);
     static double calcEWSBParameter(double x, void* parameters);
     static double calcEWSBOutput(double x, void* parameters);
-    std::pair<double,double> calcEWSBOutputDerivative(NmssmSoftsusy& model,
+    std::pair<double,double> calcEWSBOutputDerivative(NmssmSoftsusy model,
                                                       Parameters dep,
                                                       Parameters indep) const;
     std::pair<double,double> calcEWSBParameterDerivative(NmssmSoftsusy& model,
@@ -236,6 +237,29 @@ namespace softsusy {
 
     bool checkDerivativeErrors(DoubleMatrix& derivs, const DoubleMatrix& errors,
                                const std::vector<double>& paramValues) const;
+
+    // helper class for multithreading
+    struct EWSB_derivative_task {
+      typedef std::pair<double,double>(NmssmJacobian::*Memfun_t)(
+         NmssmSoftsusy, Parameters, Parameters) const;
+
+      NmssmJacobian* jacobian;
+      NmssmSoftsusy* model;
+      Parameters dep;
+      Parameters indep;
+      Memfun_t fun;
+
+      EWSB_derivative_task(NmssmJacobian* jac_, NmssmSoftsusy* model_,
+                           Parameters dep_, Parameters indep_, Memfun_t fun_)
+        : jacobian(jac_), model(model_), dep(dep_), indep(indep_)
+        , fun(fun_)
+        {}
+
+      void operator()(std::pair<double,double>* result) {
+         *result = (jacobian->*fun)(*model, dep, indep);
+      }
+    };
+
   };
 
 } /// namespace softsusy
