@@ -6,7 +6,7 @@ bin_PROGRAMS += softsusy.x \
                 softsusy-nmssm.x \
                 softpoint.x \
                 rpvsoftsusy.x \
-                rpvneut.x
+                rpvneut.x 
 
 softsusy_x_SOURCES = src/main.cpp 
 softsusy_x_LDADD = libsoft.la 
@@ -29,7 +29,20 @@ softsusy_nmssm_x_LDADD += -looptools -lgfortran
 softpoint_x_LDADD += -looptools -lgfortran
 rpvsoftsusy_x_LDADD += -looptools -lgfortran
 rpvneut_x_LDADD += -looptools -lgfortran
-endif
+endif LOOPTOOLS
+
+if COMPILE_TWO_LOOP_SPARTICLE_MASS
+bin_PROGRAMS += higher.x 
+higher_x_SOURCES = src/higher.cpp 
+higher_x_LDADD = libsoft.la libsupermodel.la libtsil.la
+include src/supermodel/tsil.amk
+include src/supermodel/supermodel.amk
+softsusy_x_LDADD       += libsupermodel.la libtsil.la 
+softsusy_nmssm_x_LDADD += libsupermodel.la libtsil.la 
+softpoint_x_LDADD      += libsupermodel.la libtsil.la 
+rpvsoftsusy_x_LDADD    += libsupermodel.la libtsil.la 
+rpvneut_x_LDADD        += libsupermodel.la libtsil.la 
+endif COMPILE_TWO_LOOP_SPARTICLE_MASS
 
 if COMPILE_TWO_LOOP_GAUGE_YUKAWA
 CPPFLAGS += -I$(srcdir)/src
@@ -37,16 +50,10 @@ include src/two_loop_thresholds/mssmparam.amk
 include src/two_loop_thresholds/two_loop_th.amk
 softsusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
 softsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
-
-if COMPILE_THREE_LOOP_RGE
 if COMPILE_TWO_LOOP_SPARTICLE_MASS
-bin_PROGRAMS += higher.x 
-higher_x_SOURCES = src/higher.cpp 
-higher_x_LDADD = libsoft.la  
 higher_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
-higher_x_LDADD += lib2lthresh.la libmssmparam.la libsupermodel.la libtsil.la 
+higher_x_LDADD += lib2lthresh.la libmssmparam.la 
 endif COMPILE_TWO_LOOP_SPARTICLE_MASS
-endif COMPILE_THREE_LOOP_RGE
 
 softsusy_nmssm_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
 softsusy_nmssm_x_LDADD += lib2lthresh.la libmssmparam.la 
@@ -56,20 +63,9 @@ softpoint_x_LDADD += lib2lthresh.la libmssmparam.la
 
 rpvsoftsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
 rpvneut_x_LDADD     += lib2lthresh.la libmssmparam.la 
-endif
+endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
-
-if COMPILE_TWO_LOOP_SPARTICLE_MASS
-include src/supermodel/tsil.amk
-include src/supermodel/supermodel.amk
-softsusy_x_LDADD       += libsupermodel.la libtsil.la 
-softsusy_nmssm_x_LDADD += libsupermodel.la libtsil.la 
-softpoint_x_LDADD      += libsupermodel.la libtsil.la 
-rpvsoftsusy_x_LDADD    += libsupermodel.la libtsil.la 
-rpvneut_x_LDADD        += libsupermodel.la libtsil.la 
-endif
-
-pkginclude_HEADERS += \
+pkg include_HEADERS += \
 $(addprefix src/, \
 def.h main.h numerics.h \
 softpars.h susy.h linalg.h \

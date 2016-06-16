@@ -146,13 +146,14 @@ void scaleVariation() {
     cout << endl << endl;
 }
 
-void doScan(double lowRatio, double highRatio, int numPoints, int numNum) {
+void doScan(double lowRatio, double highRatio, int numPoints, double m12, 
+	    int numNum) {
 
     /// Sets format of output: 6 decimal places
     outputCharacteristics(9);
     expandAroundGluinoPole = 3;
 
-    double m12 = 1000., m0 = 0., m0Overm12 = 0., a0 = -2000., tanb = 10.;
+    double m0 = 0., m0Overm12 = 0., a0 = -2000., tanb = 10.;
 
     int sgnMu = 1;      ///< sign of mu parameter 
     
@@ -304,10 +305,8 @@ int main(int argc, char *argv[]) {
   catch(const string & a) { cout << a; return -1; }
   catch(const char * a) { cout << a; return -1; }
   catch(...) { cout << "Unknown type of exception caught.\n"; return -1; }
-#else
-  cout << "Error: you must do ./configure --enable-two-loop-sparticle-mass-compilation before making this program\n";
-#endif
+
   return 0;
 }
-
+#endif ///< TWO_LOOP_SPARTICLE_MASS
 
