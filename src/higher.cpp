@@ -146,7 +146,7 @@ void scaleVariation() {
     cout << endl << endl;
 }
 
-void doScan(double lowRatio, double highRatio, int numPoints) {
+void doScan(double lowRatio, double highRatio, int numPoints, int numNum) {
 
     /// Sets format of output: 6 decimal places
     outputCharacteristics(9);
@@ -165,8 +165,10 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
     oneset.setMbMb(mbmb);    
     oneset.toMz();      ///< Runs SM fermion masses to MZ
 
-   cout << "# Figure 3(a) is columns 4, 7, 10, and 13 vs. column 1.\n";
-   cout << "# Figure 3(b) is columns 40, 43, 46, 49, and 52 vs. column 1.\n";
+    cout << "# Figure " << numNum 
+	 << "(a) is columns 4, 7, 10, and 13 vs. column 1.\n";
+    cout << "# Figure " << numNum 
+	 << "(b) is columns 40, 43, 46, 49, and 52 vs. column 1.\n";
    cout << "# m12 = " << m12 << ", A0 = " << a0 << ", tanBeta = " << tanb << "\n";
    cout << "# alphasMZ = " << alphasMZ << ", Mt = " << mtop << ", mb(mb) = " << mbmb << "\n";
    cout << "# m0/M12        m_gl(1-loop)    m_gl(2-loop)    delta(m_gl)     muL(1-loop)     muL(2-loop)     delta(muL)      mt1(1-loop)     mt1(2-loop)     delta(mt1)      mt2(1-loop)     mt2(2-loop)     mdL(1-loop)     mdL(2-loop)     mb1(1-loop)     mb1(2-loop)     muR(1-loop)     muR(2-loop)     muR(1-loop)     muR(2-loop)     mb2(1-loop)     mb2(2-loop)     M3(MSUSY)       muL(MSUSY)      mtL(MSUSY)      mtR(MSUSY)      mdL(MSUSY)      mbL(MSUSY)      muR(MSUSY)      mdR(MSUSY)      mbR(MSUSY)      mt(MSUSY)       mneut1(MSUSY)   mneut2(MSUSY)   mneut3(MSUSY)    mneut4(MSUSY)   gg(1-loop)      gg(2-loop)      delta(gg)        sg(1-loop)      sg(2-loop)      delta(sg)        ss(1-loop)      ss(2-loop)      delta(ss)        sb(1-loop)      sb(2-loop)      delta(sb)        tb(1-loop)      tb(2-loop)      delta(tb)\n";
@@ -273,29 +275,30 @@ int main(int argc, char *argv[]) {
   try {
     cout << "# Data file for plots\n\n";
 
-    doScan(0.1, 4.4, 430); cout << endl << endl;
+    doScan(0.1, 4.4, 430, 600.,  3); cout << endl << endl;
+    doScan(0.1, 4.4, 430, 1000., 4); cout << endl << endl;
 
     treeLevelGluino = false;
     USE_TWO_LOOP_SPARTICLE_MASS = false;
-    cout << "\n# Figure 4, 1-loop pole masses\n";
+    cout << "\n# Figure 5, 1-loop pole masses\n";
     scaleVariation(); 
 
     treeLevelGluino = false;
     USE_TWO_LOOP_SPARTICLE_MASS = true;
     expandAroundGluinoPole = 3;
-    cout << "\n# Figure 4, 2-loop pole masses, gluino re-expanded about both gluino and squark\n";
+    cout << "\n# Figure 5, 2-loop pole masses, gluino re-expanded about both gluino and squark\n";
     scaleVariation(); 
 
     treeLevelGluino = false;
     USE_TWO_LOOP_SPARTICLE_MASS = true;
     expandAroundGluinoPole = 2;
-    cout << "\n# Figure 4, 2-loop pole masses, gluino re-expanded about gluino only\n";
+    cout << "\n# Figure 5, 2-loop pole masses, gluino re-expanded about gluino only\n";
     scaleVariation(); 
 
     treeLevelGluino = false;
     USE_TWO_LOOP_SPARTICLE_MASS = true;
     expandAroundGluinoPole = 1;
-    cout << "\n# Figure 4, 2-loop pole masses, no re-expansion\n";
+    cout << "\n# Figure 5, 2-loop pole masses, no re-expansion\n";
     scaleVariation(); 
   }
   catch(const string & a) { cout << a; return -1; }
