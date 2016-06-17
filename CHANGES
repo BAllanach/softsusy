@@ -1,2 +1,2 @@
-<li>10/05/16: Interpolated b1 p->0 limit so there are no discontinuities. Thanks to P Athron and A Voigt
+<li>17/06/16: Fixed makefile in softsusy.amk
 
