@@ -65,7 +65,7 @@ rpvsoftsusy_x_LDADD += lib2lthresh.la libmssmparam.la
 rpvneut_x_LDADD     += lib2lthresh.la libmssmparam.la 
 endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
-pkg include_HEADERS += \
+pkginclude_HEADERS += \
 $(addprefix src/, \
 def.h main.h numerics.h \
 softpars.h susy.h linalg.h \
