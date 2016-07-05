@@ -1,4 +1,5 @@
 
+
 /** \file softpoint.cpp
     - Project:     SOFTSUSY 
    - Authors:     Ben Allanach, Markus Bernhardt 
@@ -319,7 +320,7 @@ int main(int argc, char *argv[]) {
 	  else if (starts_with(argv[i], "--m32=")) 
 	    m32 = get_value(argv[i], "--m32=");
 	}
-	pars(1) = m0; pars(2) = m32; 
+	pars(1) = m32; pars(2) = m0; 
 	if (m32 < 1.0e3) {
 	  ostringstream ii; 
 	  ii << "m32=" << m32 
