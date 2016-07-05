@@ -1,4 +1,5 @@
 <li>05/07/16: M32 and m0 entries in command line input fixed for AMSB - thanks
 to M Dolan
+<li>06/07/16: Patch for numerical stability of B1 function. Thanks to A Voigt
 
 
