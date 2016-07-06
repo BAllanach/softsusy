@@ -1,5 +1,7 @@
 <li>05/07/16: M32 and m0 entries in command line input fixed for AMSB - thanks
 to M Dolan
-<li>06/07/16: Patch for numerical stability of B1 function. Thanks to A Voigt
+<li>06/07/16: Patch for numerical stability of B1 function. Thanks to A
+Voigt. 
+<li>06/07/16: Approximate 2-loop QCD corrections to top mass included when the full ones are not compiled to provide backwards compatibility with 3.7.0 or earlier. This was accidentally *switched off* in 3.7.1. It can make a huge difference to the location of the focus point or higgsino LSP region. 
 
 
