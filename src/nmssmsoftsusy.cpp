@@ -38,6 +38,8 @@ namespace softsusy {
     setSoftsusy(s.displaySoftsusy());
     tSOVSMs = s.tSOVSMs;
     tSOVSMs1loop = s.tSOVSMs1loop;
+    drbarHiggsAccuracy = s.drbarHiggsAccuracy;
+    physHiggsAccuracy = s.physHiggsAccuracy;
     return *this;
   }
 
@@ -1242,11 +1244,12 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     /// Mass basis (H1, H2, H3) is ordered in increasing mass mH1 < mH2 < mH3
     DoubleVector mhsq(3);
     DoubleMatrix mixh(3,3);
-    if (mS.diagonaliseSym(mixh, mhsq) > TOLERANCE *
+    drbarHiggsAccuracy = mS.diagonaliseSym(mixh, mhsq);
+    if (drbarHiggsAccuracy > TOLERANCE *
         1.0e-3) {
-      ostringstream ii;
-      ii << "accuracy bad in CP-even Higgs diagonalisation"<< flush;
-      throw ii.str();
+      if (PRINTOUT >1)
+        cout << "accuracy bad in CP-even Higgs diagonalisation\n";
+      flagInaccurateHiggsMass(true);
     }
 
     if (mhsq(1) < 0. || mhsq(2) < 0. || mhsq(3) < 0.) {
@@ -5044,12 +5047,12 @@ namespace {
     /// LCT: NMSSM Higgs states.  CP-even first
     DoubleVector temp(3);
     DoubleMatrix mixHiggsLoops(3, 3);
-
-    if (mhAtmH1.diagonaliseSym(mixHiggsLoops, temp) > TOLERANCE *
+    physHiggsAccuracy = mhAtmH1.diagonaliseSym(mixHiggsLoops, temp); 
+    if (physHiggsAccuracy > TOLERANCE *
         1.0e-3) {
-      ostringstream ii;
-      ii << "accuracy bad in CP-even Higgs diagonalisation"<< flush;
-      throw ii.str();
+      if (PRINTOUT > 1)
+        cout << "accuracy bad in CP-even Higgs diagonalisation\n";
+      flagInaccurateHiggsMass(true);
     }
 
 
@@ -5070,11 +5073,12 @@ namespace {
       }
     }
 
-    if (mhAtmH2.diagonaliseSym(mixHiggsLoops, temp) > TOLERANCE *
+    physHiggsAccuracy = mhAtmH2.diagonaliseSym(mixHiggsLoops, temp);
+    if (physHiggsAccuracy > TOLERANCE *
         1.0e-3) {
-      ostringstream ii;
-      ii << "accuracy bad in CP-even Higgs diagonalisation"<< flush;
-      throw ii.str();
+      if (PRINTOUT > 1)
+        cout << "accuracy bad in CP-even Higgs diagonalisation\n";
+      flagInaccurateHiggsMass(true);
     }
 
     if ((temp(1) < 0.0 && temp(2) < 0.0) || (temp(1) < 0.0 && temp(3) < 0.0) ||
@@ -5093,11 +5097,12 @@ namespace {
       }
     }
 
-    if (mhAtmH3.diagonaliseSym(mixHiggsLoops, temp) > TOLERANCE *
+    physHiggsAccuracy = mhAtmH3.diagonaliseSym(mixHiggsLoops, temp);
+    if (physHiggsAccuracy > TOLERANCE *
         1.0e-3) {
-      ostringstream ii;
-      ii << "accuracy bad in CP-even Higgs diagonalisation"<< flush;
-      throw ii.str();
+      if (PRINTOUT > 1)
+        cout << "accuracy bad in CP-even Higgs diagonalisation\n";
+      flagInaccurateHiggsMass(true);
     }
 
 
