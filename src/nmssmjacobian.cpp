@@ -1079,7 +1079,7 @@ namespace softsusy {
   }
 
   std::pair<double,double> NmssmJacobian::calcEWSBOutputDerivative(
-    NmssmSoftsusy model, Parameters dep, Parameters indep) {
+    NmssmSoftsusy& model, Parameters dep, Parameters indep) {
 
     double x = 0.;
     double h = 0.01;
