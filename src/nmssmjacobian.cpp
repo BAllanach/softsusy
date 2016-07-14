@@ -30,7 +30,10 @@ namespace softsusy {
      , jacRGFlowErrors(3,3), jacEWSBErrors(3,3)
      , invJacRGFlowErrors(3,3), invJacEWSBErrors(3,3)
      , includeTop(doTop), useRunningMasses(false)
-     , useSugraTrilinears(false), hasError(false) {
+     , useSugraTrilinears(false), hasError(false)
+     , failedVevIterationWarning(false)
+     , inaccurateHiggsMassWarning(false)
+     , worstCaseHiggsAccuracy(0.) {
   }
 
   NmssmJacobian::~NmssmJacobian() {}
@@ -774,6 +777,7 @@ namespace softsusy {
     tempModel->predVevs(vevs, error);
 
     if (error != 0) {
+      pars->failedVevIteration = true;
       if (PRINTOUT > 0) {
         cout << "# Warning: could not solve for VEVs\n";
       }
@@ -787,6 +791,12 @@ namespace softsusy {
     const double mtrun = tempModel->displayDrBarPars().mt;
     const double sinthDRbar = tempModel->calcSinthdrbar();
     tempModel->doTadpoles(mtrun, sinthDRbar);
+
+    if (tempModel->displayProblem().inaccurateHiggsMass) {
+      pars->inaccurateHiggsMass = true;
+      if (tempModel->displayDrBarHiggsAccuracy() > pars->higgsMassAccuracy)
+        pars->higgsMassAccuracy = tempModel->displayDrBarHiggsAccuracy();
+    }
 
     double output;
     switch (dependent) {
@@ -872,6 +882,7 @@ namespace softsusy {
     m->predVevs(vevs, error);
 
     if (error != 0) {
+      pars->failedVevIteration = true;
       if (PRINTOUT > 0) {
         cout << "# Warning: could not solve for VEVs\n";
       }
@@ -882,6 +893,12 @@ namespace softsusy {
     m->setSvev(vevs(3));
 
     m->calcDrBarPars();
+
+    if (m->displayProblem().inaccurateHiggsMass) {
+      pars->inaccurateHiggsMass = true;
+      if (m->displayDrBarHiggsAccuracy() > pars->higgsMassAccuracy)
+        pars->higgsMassAccuracy = m->displayDrBarHiggsAccuracy();
+    }
 
     if (Z3 && !SoftHiggsOut) {
       errors(1) = 1.0 - (sqr(calcMz(*m, pars->useRunningMasses)) / outputs(1));
@@ -993,6 +1010,7 @@ namespace softsusy {
     fixEWSBOutputs(pars, error);
 
     if (error != 0) {
+      pars->failedVevIteration = true;
       if (PRINTOUT > 0) {
         cout << "# Warning: could not solve for VEVs\n";
       }
@@ -1065,7 +1083,7 @@ namespace softsusy {
   }
 
   std::pair<double,double> NmssmJacobian::calcEWSBOutputDerivative(
-    NmssmSoftsusy model, Parameters dep, Parameters indep) const {
+    NmssmSoftsusy model, Parameters dep, Parameters indep) {
 
     double x = 0.;
     double h = 0.01;
@@ -1188,6 +1206,11 @@ namespace softsusy {
       derivative = -numberOfTheBeast;
     }
 
+    failedVevIterationWarning = pars.failedVevIteration;
+    inaccurateHiggsMassWarning = pars.inaccurateHiggsMass;
+    if (pars.higgsMassAccuracy > worstCaseHiggsAccuracy)
+      worstCaseHiggsAccuracy = pars.higgsMassAccuracy;
+
     if (PRINTOUT > 1) {
       ostringstream msg;
       msg << "# derivative[d";
@@ -1230,7 +1253,7 @@ namespace softsusy {
   }
 
   std::pair<double,double> NmssmJacobian::calcEWSBParameterDerivative(
-    NmssmSoftsusy& model, Parameters dep, Parameters indep) const {
+    NmssmSoftsusy& model, Parameters dep, Parameters indep) {
 
     const int numOutputs = includeTop ? 4 : 3;
     DoubleVector outputs(numOutputs);
@@ -1342,6 +1365,11 @@ namespace softsusy {
       derivative = -numberOfTheBeast;
     }
 
+    failedVevIterationWarning = pars.failedVevIteration;
+    inaccurateHiggsMassWarning = pars.inaccurateHiggsMass;
+    if (pars.higgsMassAccuracy > worstCaseHiggsAccuracy)
+      worstCaseHiggsAccuracy = pars.higgsMassAccuracy;
+
     if (PRINTOUT > 1) {
       ostringstream msg;
       msg << "# derivative[d";
@@ -1392,6 +1420,11 @@ namespace softsusy {
     const drBarPars savedDrBarPars(model.displayDrBarPars());
 
     const int numPars = includeTop ? 4 : 3;
+
+    // reset warnings on each call
+    failedVevIterationWarning = false;
+    inaccurateHiggsMassWarning = false;
+    worstCaseHiggsAccuracy = 0.;
 
     DoubleMatrix jac(numPars, numPars);
     DoubleMatrix jacErrors(numPars, numPars);
@@ -1506,6 +1539,11 @@ namespace softsusy {
   double NmssmJacobian::calcInverseEWSBJacobian(NmssmSoftsusy& model) {
 
     const int numPars = includeTop ? 4 : 3;
+
+    // reset warnings on each call
+    failedVevIterationWarning = false;
+    inaccurateHiggsMassWarning = false;
+    worstCaseHiggsAccuracy = 0.;
 
     DoubleMatrix jac(numPars, numPars);
     DoubleMatrix jacErrors(numPars, numPars);

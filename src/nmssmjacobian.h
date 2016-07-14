@@ -93,6 +93,35 @@ namespace softsusy {
     /// \return true if an error occurred
     bool displayError() const { return hasError; }
 
+    /// \brief Resets the warning status to false
+    void resetWarnings() {
+      failedVevIterationWarning = false;
+      inaccurateHiggsMassWarning = false;
+    }
+
+    /// \brief Displays whether a warning was flagged during the calculation.
+    /// \return true if a warning was flagged
+    bool displayWarning() const {
+      return failedVevIterationWarning || inaccurateHiggsMassWarning; }
+
+    /// \brief Displays whether the VEV iteration failed
+    /// \return true if the VEV iteration failed
+    bool displayFailedVevIterationWarning() const {
+      return failedVevIterationWarning;
+    }
+
+    /// \brief Displays whether an inaccurate Higgs mass was encountered
+    /// \return true if an inaccurate Higgs mass was flagged
+    bool displayInaccurateHiggsMassWarning() const {
+      return inaccurateHiggsMassWarning;
+    }
+
+    /// \brief Returns the worst achieved accuracy for the Higgs masses
+    /// \return the worst case accuracy for the Higgs masses
+    double displayWorstCaseHiggsAccuracy() const {
+      return worstCaseHiggsAccuracy;
+    }
+
     /// \brief Displays the Jacobian for transforming from high- to low-scale
     /// parameters.
     /// \return the Jacobian matrix of derivatives for the transformation
@@ -188,7 +217,11 @@ namespace softsusy {
     bool useRunningMasses;
     bool useSugraTrilinears;
     bool hasError;
+    bool failedVevIterationWarning;
+    bool inaccurateHiggsMassWarning;
 
+    double worstCaseHiggsAccuracy;
+    
     struct EWSBPars {
       NmssmSoftsusy* model;
       Parameters independent;
@@ -196,11 +229,15 @@ namespace softsusy {
       DoubleVector outputs;
       bool useRunningMasses;
       bool useSugraTrilinears;
+      bool failedVevIteration;
+      bool inaccurateHiggsMass;
+      double higgsMassAccuracy;
 
       EWSBPars()
         : model(0), independent(Mzsq), dependent(Lambda),
           outputs(3), useRunningMasses(false),
-          useSugraTrilinears(false)
+          useSugraTrilinears(false), failedVevIteration(false),
+          inaccurateHiggsMass(false), higgsMassAccuracy(0.)
         {}
     };
 
@@ -228,10 +265,10 @@ namespace softsusy {
     static double calcEWSBOutput(double x, void* parameters);
     std::pair<double,double> calcEWSBOutputDerivative(NmssmSoftsusy model,
                                                       Parameters dep,
-                                                      Parameters indep) const;
+                                                      Parameters indep);
     std::pair<double,double> calcEWSBParameterDerivative(NmssmSoftsusy& model,
                                                          Parameters dep,
-                                                         Parameters indep) const;
+                                                         Parameters indep);
     double calcEWSBJacobian(NmssmSoftsusy& model);
     double calcInverseEWSBJacobian(NmssmSoftsusy& model);
 
