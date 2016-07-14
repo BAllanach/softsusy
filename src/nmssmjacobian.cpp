@@ -18,10 +18,6 @@
 #include <gsl/gsl_deriv.h>
 #endif
 
-#ifdef ENABLE_THREADS
-#include <thread>
-#endif
-
 namespace softsusy {
 
   NmssmJacobian::NmssmJacobian(bool doTop)
@@ -1581,135 +1577,7 @@ namespace softsusy {
       paramValues.push_back(model.displayYukawaElement(YU, 3, 3));
     }
 
-    const int numIndep = indepPars.size();
-
-#ifdef ENABLE_THREADS
-    std::vector<EWSB_derivative_task> tasks;
-    for (int i = 0; i < numIndep; ++i) {
-      if (Z3 && !SoftHiggsOut) {
-        if (indepPars[i] != Lambda) {
-          tasks.push_back(
-             EWSB_derivative_task(this, &model, Mzsq, indepPars[i],
-                                  &NmssmJacobian::calcEWSBOutputDerivative));
-          tasks.push_back(
-             EWSB_derivative_task(this, &model, Tanb, indepPars[i],
-                                  &NmssmJacobian::calcEWSBOutputDerivative));
-        }
-      } else {
-        tasks.push_back(
-           EWSB_derivative_task(this, &model, Mzsq, indepPars[i],
-                                &NmssmJacobian::calcEWSBOutputDerivative));
-        tasks.push_back(
-           EWSB_derivative_task(this, &model, Tanb, indepPars[i],
-                                &NmssmJacobian::calcEWSBOutputDerivative));
-        tasks.push_back(
-           EWSB_derivative_task(this, &model, Svev, indepPars[i],
-                                &NmssmJacobian::calcEWSBOutputDerivative));
-      }
-      if (includeTop) {
-        if ((Z3 && !SoftHiggsOut) && indepPars[i] != Lambda) {
-           tasks.push_back(
-              EWSB_derivative_task(this, &model, Mtsq, indepPars[i],
-                                   &NmssmJacobian::calcEWSBOutputDerivative));
-        }
-      }
-    }
-
-    std::size_t num_threads = tasks.size();
-    std::vector<std::pair<double,double> > results(num_threads);
-    std::vector<std::thread> threads(num_threads);
-
-    for (std::size_t i = 0; i < num_threads; ++i) {
-      threads[i] = std::thread(tasks[i], &results[i]);
-    }
-    for (std::size_t i = 0; i < num_threads; ++i) {
-      threads[i].join();
-    }
-
-    // fill results matrix
-    for (int i = 0; i < numIndep; ++i) {
-      if (Z3 && !SoftHiggsOut) {
-        if (indepPars[i] == Lambda) {
-          jac(i + 1, 1) = 0.;
-          jacErrors(i + 1, 1) = 0.;
-          jac(i + 1, 2) = 0.;
-          jacErrors(i + 1, 2) = 0.;
-          jac(i + 1, 3) = 1.;
-          jacErrors(i + 1, 3) = 0.;
-          if (includeTop) {
-            jac(i + 1, 4) = 0.;
-            jacErrors(i + 1, 4) = 0.;
-          }
-        } else {
-          jac(i + 1, 3) = 0.;
-          jacErrors(i + 1, 3) = 0.;
-          for (std::size_t j = 0; j < num_threads; ++j) {
-            if (indepPars[i] == tasks[j].indep) {
-              switch (tasks[j].dep) {
-              case Mzsq: {
-                jac(i + 1, 1) = results[j].first;
-                jacErrors(i + 1, 1) = results[j].second;
-                break;
-              }
-              case Tanb: {
-                jac(i + 1, 2) = results[j].first;
-                jacErrors(i + 1, 2) = results[j].second;
-                break;
-              }
-              case Mtsq: {
-                jac(i + 1, 4) = results[j].first;
-                jacErrors(i + 1, 4) = results[j].second;
-                break;
-              }
-              default: {
-                ostringstream ii;
-                ii << "NmssmJacobian:calcInverseEWSBJacobian "
-                   << "called with incorrect"
-                   << " dependent parameter " << tasks[j].dep << '\n';
-                throw ii.str();
-              }
-              }
-            }
-          }
-        }
-      } else {
-        for (std::size_t j = 0; j < num_threads; ++j) {
-          if (indepPars[i] == tasks[j].indep) {
-            switch (tasks[j].dep) {
-            case Mzsq: {
-              jac(i + 1, 1) = results[j].first;
-              jacErrors(i + 1, 1) = results[j].second;
-              break;
-            }
-            case Tanb: {
-              jac(i + 1, 2) = results[j].first;
-              jacErrors(i + 1, 2) = results[j].second;
-              break;
-            }
-            case Svev: {
-              jac(i + 1, 3) = results[j].first;
-              jacErrors(i + 1, 3) = results[j].second;
-              break;
-            }
-            case Mtsq: {
-              jac(i + 1, 4) = results[j].first;
-              jacErrors(i + 1, 4) = results[j].second;
-              break;
-            }
-            default: {
-              ostringstream ii;
-              ii << "NmssmJacobian:calcInverseEWSBJacobian "
-                 << "called with incorrect"
-                 << " dependent parameter " << tasks[j].dep << '\n';
-              throw ii.str();
-            }
-            }
-          }
-        }
-      }
-    }
-#else
-    for (int i = 0; i < numIndep; ++i) {
+    for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
       std::pair<double,double> result;
       if (Z3 && !SoftHiggsOut) {
         if (indepPars[i] == Lambda) {
@@ -1755,7 +1623,6 @@ namespace softsusy {
         }
       }
     }
-#endif
 
     // check for errors
     hasError = checkDerivativeErrors(jac, jacErrors, paramValues);

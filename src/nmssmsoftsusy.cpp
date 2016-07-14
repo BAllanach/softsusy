@@ -18,15 +18,6 @@
 
 namespace softsusy {
 
-#ifdef ENABLE_THREADS
-   std::mutex NmssmSoftsusy::mtx_fortran;
-   #define LOCK_MUTEX() mtx_fortran.lock()
-   #define UNLOCK_MUTEX() mtx_fortran.unlock()
-#else
-   #define LOCK_MUTEX()
-   #define UNLOCK_MUTEX()
-#endif
-
   extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
     ydR, yeL, yeR, ynuL;
 
@@ -345,8 +336,6 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       double rmtausq = sqr(forLoops.mtau);
       double s1b = 0.0, s2b = 0.0, s1tau = 0.0, s2tau = 0.0;
 
-      LOCK_MUTEX();
-
       ewsb2loop_(&rmtsq, &mg, &mst1sq, &mst2sq, &sxt, &cxt, &scalesq,
                  &amu, &tanb, &vev2, &gs, &s1s, &s2s);
       ddstad_(&rmtsq, &rmbsq, &mAsq, &mst1sq, &mst2sq, &msb1sq, &msb2sq,
@@ -356,8 +345,6 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
                  &amu, &cotbeta, &vev2, &gs, &s2b, &s1b);
       tausqtad_(&rmtausq, &mAsq, &msnusq, &mstau1sq, &mstau2sq, &sintau,
                 &costau, &scalesq, &amu, &tanb, &vev2, &s1tau, &s2tau);
-
-      UNLOCK_MUTEX();
 
       /// rescale T1 to get TS
       double sss = s1s * vev * cos(atan(tanb)) / s;
@@ -4864,9 +4851,6 @@ namespace {
         double svevS = svev / root2;
 
         int loop = 2;
-
-        LOCK_MUTEX();
-
         /// PA: get alpha_s alpha_t pieces
         effpot_(&loop, &rmt, &mg, &mst1sq, &mst2sq, &sxt, &cxt,
                 &scalesq, &tanb, &vevS, &lamS, &svevS, &as, &DMS, &DMP);
@@ -4917,8 +4901,6 @@ namespace {
                     &s22tau, &s12tau);
         tausqodd_(&rmtausq, &fmasq, &msnusq, &mstau1sq, &mstau2sq, &sintau,
                   &costau, &scalesq, &amu, &tanb, &vev2, &p2tau);
-
-        UNLOCK_MUTEX();
 
         /// PA: Add O(y_t^4 + y_t^2y_b^2 + y_b^4) from mssm two loop parts
         DMS[0][0] = DMS[0][0] + s11w + sqr(sb) * p2w;

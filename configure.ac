@@ -85,22 +85,6 @@ AS_IF([test "x$enable_gsl" = "xyes"],
 
 AM_CONDITIONAL([ENABLE_GSL], [test "x$enable_gsl" = "xyes"])
 
-AC_ARG_ENABLE([threads],
-              AC_HELP_STRING([--enable-threads],[enable experimental multithreading (default: no)]),
-	      [],[enable_threads=no])
-
-AS_IF([test "x$enable_threads" = "xyes"],
-      [AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
-       AC_CHECK_HEADERS([thread],[],[AC_MSG_ERROR([C++ thread header must be available])])
-       AX_PTHREAD([AC_DEFINE([ENABLE_THREADS],[1],
-                             [Enable multithreading])
-                   CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"],
-		  [AC_MSG_ERROR([libpthread must be installed to enable multithreading])])
-      ]
-)
-
-AM_CONDITIONAL([ENABLE_THREADS], [test "x$enable_threads" = "xyes"])
-
 #Autogen
 #AG_PATH_AUTOOPTS([5.17], [], [AC_MSG_ERROR([No suitable version of AutoGen could be found])])
 
