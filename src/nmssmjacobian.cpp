@@ -790,7 +790,8 @@ namespace softsusy {
 
     if (tempModel->displayProblem().inaccurateHiggsMass) {
       pars->inaccurateHiggsMass = true;
-      if (tempModel->displayDrBarHiggsAccuracy() > pars->higgsMassAccuracy)
+      if (fabs(tempModel->displayDrBarHiggsAccuracy())
+          > fabs(pars->higgsMassAccuracy))
         pars->higgsMassAccuracy = tempModel->displayDrBarHiggsAccuracy();
     }
 
@@ -892,7 +893,7 @@ namespace softsusy {
 
     if (m->displayProblem().inaccurateHiggsMass) {
       pars->inaccurateHiggsMass = true;
-      if (m->displayDrBarHiggsAccuracy() > pars->higgsMassAccuracy)
+      if (fabs(m->displayDrBarHiggsAccuracy()) > fabs(pars->higgsMassAccuracy))
         pars->higgsMassAccuracy = m->displayDrBarHiggsAccuracy();
     }
 
@@ -1204,7 +1205,7 @@ namespace softsusy {
 
     failedVevIterationWarning = pars.failedVevIteration;
     inaccurateHiggsMassWarning = pars.inaccurateHiggsMass;
-    if (pars.higgsMassAccuracy > worstCaseHiggsAccuracy)
+    if (fabs(pars.higgsMassAccuracy) > fabs(worstCaseHiggsAccuracy))
       worstCaseHiggsAccuracy = pars.higgsMassAccuracy;
 
     if (PRINTOUT > 1) {
@@ -1363,7 +1364,7 @@ namespace softsusy {
 
     failedVevIterationWarning = pars.failedVevIteration;
     inaccurateHiggsMassWarning = pars.inaccurateHiggsMass;
-    if (pars.higgsMassAccuracy > worstCaseHiggsAccuracy)
+    if (fabs(pars.higgsMassAccuracy) > fabs(worstCaseHiggsAccuracy))
       worstCaseHiggsAccuracy = pars.higgsMassAccuracy;
 
     if (PRINTOUT > 1) {
