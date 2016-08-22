@@ -2402,7 +2402,6 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
   /* This is defunct now if new corrections are used but they are provided for
      backward compatibility with 3.7.0 or before */
 #ifndef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  cout << "in here\n";
   double mt = forLoops.mt;
   /// 2 loop QCD involving MSSM sparticles -- hep-ph/0210258, in the
   /// approximation that all squarks and the gluino 

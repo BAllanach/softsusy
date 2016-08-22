@@ -67,6 +67,7 @@ endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
 pkginclude_HEADERS += \
 $(addprefix src/, \
+decays.h \
 def.h main.h numerics.h \
 softpars.h susy.h linalg.h \
 physpars.h softpoint.h twoloophiggs.h \
@@ -79,6 +80,7 @@ nmssmsusy.h nmssmsoftpars.h higher_order.h \
 nmssmsoftsusy.h nmssmUtils.h)
 
 libsoft_la_SOURCES = \
+src/decays.cpp \
 src/def.cpp src/linalg.cpp src/lowe.cpp src/numerics.cpp  src/rpvneut.cpp \
 src/physpars.cpp src/rge.cpp src/nmssm2loop.f src/dilogwrap.f src/softsusy.cpp\
  src/nmssmsoftsusy.cpp src/nmssmsusy.cpp src/nmssmsoftpars.cpp src/nmssmUtils.cpp \

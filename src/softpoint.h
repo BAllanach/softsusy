@@ -17,6 +17,7 @@
 #include "lowe.h"
 #include "rge.h"
 #include "softsusy.h"
+#include "decays.h"
 /// extern template class Softsusy<SoftPars<MssmSusy, sBrevity> >;
 #include "flavoursoft.h"
 #include "nmssmsoftsusy.h"

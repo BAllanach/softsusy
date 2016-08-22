@@ -1,6 +1,6 @@
 /** \file decays.h
    - Project:     SOFTSUSY 
-   - Author:      Ben Allanach 
+   - Author:      Tom Cridge, Ben Allanach
    - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
    - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
 
@@ -48,7 +48,7 @@ class Particle {
 
 void calculateDecays(MssmSoftsusy * r);
 
-static MssmSoftsusy *useInDGauss;
+//static MssmSoftsusy *useInDGauss;
 
 double fdgauss(double x);
 

@@ -1,3 +1,11 @@
+/** \file decays.cpp
+   Project:     SOFTSUSY 
+   Author:      Tom Cridge, Ben Allanach
+   Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
+   Webpage:     http://hepforge.cedar.ac.uk/softsusy/
+
+*/
+
 #include "decays.h"
 #include <iostream>
 #include <cstring>
@@ -16,11 +24,11 @@ static DoubleMatrix NeutMIX(NeutMIXdim,NeutMIXdim);
 
 
 void calculateDecays(MssmSoftsusy * r) {
-  cout << "In calculateDecays\n";
+  //  cout << "In calculateDecays\n";
   /// see physpars.h and see softsusy.h
   ///Output the parameter values we use in Calculating the Decays
   
- ///for now just input parameters here by hand to be the same as in Susyhit
+  ///for now just input parameters here by hand to be the same as in Susyhit
   // sPhysical changeparams = r->displayPhys();
   // ///changeparams.thetaL = 1.868; ///In Susyhit sinthetaL is given by aldo(1,1) and costhetaL by aldo(1,2), thetaL is gammaL in Tata and Baer
   // ///changeparams.thetaR = 1.77134; ///In Susyhit sinthetaR is given by alup(1,1), costhetaR by alup(1,2), thetaR is gammaR in Tata and Baer
@@ -76,8 +84,8 @@ void calculateDecays(MssmSoftsusy * r) {
   // double gs = r->displayGaugeCoupling(3);
   // double gp= r->displayGaugeCoupling(1); 
   // double g = r->displayGaugeCoupling(2);
-  cout << "g= " << g << " sinth= " << sinth << " e= " << e << endl;
-  cout << "From Softsusy at Msusy: g= " << g << " gp= " << gp << endl;
+  //  cout << "g= " << g << " sinth= " << sinth << " e= " << e << endl;
+  //  cout << "From Softsusy at Msusy: g= " << g << " gp= " << gp << endl;
   double alphas = pow(gs,2)/(4*PI);
   double tanthetaW = gp/g;
 
@@ -87,7 +95,7 @@ void calculateDecays(MssmSoftsusy * r) {
   ///cout << "gaugecoupling1 = " << gaugecoupling1 << " gaugecoupling2 = " << gaugecoupling2 << " gaugecoupling3 = "<< gaugecoupling3 << endl;
 
   double alphaEm = pow(e,2)/(4*PI);
-  cout << "alphaEm= " << alphaEm << endl;
+  //  cout << "alphaEm= " << alphaEm << endl;
   r->runto(r->displayMsusy());
 
   ///Switch on or off 1->3 decays
@@ -96,14 +104,14 @@ void calculateDecays(MssmSoftsusy * r) {
 
   double mGluino = r->displayPhys().mGluino; DoubleVector mneut(r->displayPhys().mneut); DoubleMatrix mUpSquark(r->displayPhys().mu);  double thetaH = r->displayPhys().thetaH; double thetaA0 = r->displayPhys().thetaA0;  DoubleVector mch(r->displayPhys().mch); DoubleVector mh0(r->displayPhys().mh0); DoubleVector mA0(r->displayPhys().mA0);  double mHpm = r->displayPhys().mHpm; DoubleVector msnu(r->displayPhys().msnu); DoubleMatrix mixNeut(r->displayPhys().mixNeut);
  double thetaL = r->displayPhys().thetaL; double thetaR = r->displayPhys().thetaR; double thetat = r->displayPhys().thetat; double thetab = r->displayPhys().thetab; double thetatau = r->displayPhys().thetatau;  double thetamu = r->displayPhys().thetamu; DoubleMatrix mu(r->displayPhys().mu); DoubleMatrix md(r->displayPhys().md); DoubleMatrix me(r->displayPhys().me); DoubleMatrix mixh0(r->displayPhys().mixh0); double mwSoftSusy = r->displayMwRun(); double mz = r->displayMzRun(); double polemw = r->displayMw();
-  cout << "mwSoftSusy=" << mwSoftSusy << endl; ///mwSoftSusy is basically the running mass - use it as such after testing finished against susyhit
+ //  cout << "mwSoftSusy=" << mwSoftSusy << endl; ///mwSoftSusy is basically the running mass - use it as such after testing finished against susyhit
 
     
  double tanbeta = r->displayTanb();
  double beta = atan(tanbeta);
  double alpha =r->displayDrBarPars().thetaH;
   
- cout << "alpha= " << alpha <<  endl;
+ // cout << "alpha= " << alpha <<  endl;
  double thetaL2 = -thetaL + PI/2;
  double thetaR2 = -thetaR + PI/2;
  double runmw = mwSoftSusy;
@@ -111,7 +119,7 @@ void calculateDecays(MssmSoftsusy * r) {
  ///For SPheno-decays.cpp comparison8 I generated the following spectrum from SPheno for comparison, good for +ve chargino mass to +ve neutralino mass decays tests
  /// mh0(1) = 1.19315484E+02; mh0(2) = 2.50008898E+03; mA0(1) = 2.50000000E+03; mHpm = 2.50167358E+03; md(1,1) = 3.64140215E+03; md(2,1) = 3.64005402E+03; mu(1,1) = 3.64068782E+03; mu(2,1) = 3.64053312E+03;  md(1,2) = 3.64141970E+03; md(2,2) = 3.64003730E+03; mu(1,2) = 3.64069087E+03; mu(2,2) = 3.64053137E+03; md(1,3) = 2.52147047E+03; md(2,3) = 2.54817360E+03; mu(1,3) = 2.54080722E+03; mu(2,3) = 2.55762580E+03; me(1,1) = 2.50275305E+03; me(2,1) = 2.50012299E+03; msnu(1) = 2.50114240E+03; me(1,2) = 2.50285055E+03; me(2,2) = 2.50002765E+03; msnu(2) = 2.50114262E+03; me(1,3) = 2.49277211E+03; me(2,3) = 2.51026851E+03; msnu(3) = 2.50120537E+03; mGluino = 3.56740536E+02; mneut(1) = 2.33158827E+03; mneut(2) = 2.49409892E+03; mneut(3) = -2.50992058E+03; mneut(4) = 2.56079166E+03; mch(1) = 2.33239475E+03; mch(2) = 2.53005164E+03; alpha = -1.03618490E-01; beta = atan(9.65109965E+00);  thetat = 0.506439382; thetab = 1.055081728; thetatau = 0.856042152; mixNeut(1,1) = 5.64791921E-02; mixNeut(1,2) = -9.44618090E-01; mixNeut(1,3) = 2.35558325E-01; mixNeut(1,4) = -2.21402440E-01; mixNeut(2,1) = 7.10061772E-01; mixNeut(2,2) = 2.65545663E-01; mixNeut(2,3) = 4.62105332E-01; mixNeut(2,4) = -4.60170015E-01; mixNeut(3,1) = 5.59875489E-03; mixNeut(3,2) = -1.02069150E-02; mixNeut(3,3) = -7.06946824E-01; mixNeut(3,4) = -7.07170886E-01; mixNeut(4,1) = -7.01848299E-01; mixNeut(4,2) = 1.92556443E-01; mixNeut(4,3) = 4.80829623E-01; mixNeut(4,4) = -4.89013145E-01; thetaL2 = 1.900124617; thetaR2 = 1.879710652;
 
-  cout << "g = " << g << endl;
+ /*  cout << "g = " << g << endl;
   cout << "gp = " << gp << endl;
   cout << "gs = " << gs << endl;
   cout << "mh0(1) = " << mh0(1) << endl;
@@ -169,7 +177,7 @@ void calculateDecays(MssmSoftsusy * r) {
   cout << "mixNeut(4,4) = " << mixNeut(4,4) << endl;
   cout << "thetaL2 = " << -thetaL + PI/2 << endl;
   cout << "thetaR2 = " << -thetaR + PI/2 << endl;
-
+ */
 
 
   ///Must ensure the masses of the stop1, stop2, sbottom1, sbottom2, stau1, stau2 are hierarchical:
@@ -198,78 +206,78 @@ void calculateDecays(MssmSoftsusy * r) {
   int gravonoff = 0; ///a gravitino switch, by default it's off (0), it's turned on (1) a few lines below if the gravitino is the LSP as then decays to it are important, if it's not the LSP decays to it are unimportant as they are Planck suppressed.
   double MPlreduced = 2.4e18;
   ///double MPlreduced = MPLANCK/pow(8*PI,0.5);
-  cout << "MPlreduced = " << MPlreduced << endl;
-  cout << "mgravitino = " << mgravitino << endl;
+  /*  cout << "MPlreduced = " << MPlreduced << endl;
+      cout << "mgravitino = " << mgravitino << endl;*/
   int posi = 0, posj = 0;
   double m = mgravitino;
   double LSP = r->lsp(m, posi, posj); 
   LSP = -1; ///Temporary set to gravitino
   if (LSP == -1) {
-    cout << "LSP IS A GRAVITINO" << endl;
+    //    cout << "LSP IS A GRAVITINO" << endl;
     gravonoff = 1;
   }
     if( LSP == 0) {
-    cout << "LSP is neutralino" << endl;
+      //    cout << "LSP is neutralino" << endl;
     gravonoff = 0;
   }
   else if (LSP == 1) {
-    cout << "LSP is up squark" << endl;
+    //    cout << "LSP is up squark" << endl;
     gravonoff = 0;
   }
   else if (LSP == 2) {
-    cout << "LSP is down squark" << endl;
+    //    cout << "LSP is down squark" << endl;
     gravonoff = 0;
   }
   else if (LSP == 3) {
-    cout << "LSP is slepton" << endl;
+    //    cout << "LSP is slepton" << endl;
     gravonoff = 0;
   }
   else if (LSP == 4) {
-    cout << "LSP is chargino" << endl;
+    //    cout << "LSP is chargino" << endl;
     gravonoff = 0;
   }
   else if (LSP == 5) {
-    cout << "LSP is sneutrino" << endl;
+    //    cout << "LSP is sneutrino" << endl;
     gravonoff = 0;
   }
   else if (LSP == 6) {
-    cout << "LSP is gluino" << endl;
+    //    cout << "LSP is gluino" << endl;
     gravonoff = 0;
   }
-  cout << "mgravitino = " << mgravitino << endl;
+    //  cout << "mgravitino = " << mgravitino << endl;
   int NLSP = 0; /// default position
   int neutNLSP = 1, upsquNLSP= 1, downsquNLSP = 1, slepNLSP = 1, chargNLSP = 1, snuNLSP = 1, gluNLSP = 1; ///Default position is 1 so all SUSY dedcays to LSP gravitino considered unless you only want the NLSP decays to gravitino decays, then if below section uncommentedit sets all but NLSP switch to 0.
   
   ///Using the nlsp function from softsusy.cpp, Returns a label which says which particle is NLSP, 0 means NLSP is neutralino, 1=up squark, 2=down squark, 3=sleptons, 4=charginos, 5=sneutrinos, 6=gluino. Uncomment this if you only want the NLSP decays to the LSP gravitino to be considered, note one potential issue with this is particles only slightly heavier than the NLSP may still have only the decay to the LSPgravitino available and this function doesn't take account of this. If this section below is commented all SUSY decays to the LSP gravitino are considered and then they are not output if there BRs are less than 10^-15
   NLSP = r->nlsp(m, posi, posj); 
   NLSP = 0; ///Temporarily set to neutralino
-  cout << "NLSP = " << NLSP << endl;
+  //  cout << "NLSP = " << NLSP << endl;
   if( NLSP == 0) {
-    cout << "NLSP is neutralino" << endl;
+    //    cout << "NLSP is neutralino" << endl;
     upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0;
   }
   else if (NLSP == 1) {
-    cout << "NLSP is up squark" << endl;
+    //    cout << "NLSP is up squark" << endl;
     neutNLSP = 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0;
   }
   else if (NLSP == 2) {
-    cout << "NLSP is down squark" << endl;
+    //    cout << "NLSP is down squark" << endl;
     neutNLSP = 0, upsquNLSP= 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0;
   }
   else if (NLSP == 3) {
-    cout << "NLSP is slepton" << endl;
+    //    cout << "NLSP is slepton" << endl;
     neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0;
   }
   else if (NLSP == 4) {
-    cout << "NLSP is chargino - WARNING chargino NLSP decays to gravitino LSP not included in program!" << endl;
+    //    cout << "NLSP is chargino - WARNING chargino NLSP decays to gravitino LSP not included in program!" << endl;
     neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0, gluNLSP = 0;
   }
   else if (NLSP == 5) {
-    cout << "NLSP is sneutrino" << endl;
+    //    cout << "NLSP is sneutrino" << endl;
     neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, gluNLSP = 0;
   }
   else if (NLSP == 6) {
-    cout << "NLSP is gluino" << endl;
+    //    cout << "NLSP is gluino" << endl;
     neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0;
   }
   else { neutNLSP = 1, upsquNLSP= 1, downsquNLSP = 1, slepNLSP = 1, chargNLSP = 1, snuNLSP = 1, gluNLSP = 1;} ///Default position is to consdier all SUSY particle decays to LSP gravitino
@@ -294,10 +302,10 @@ void calculateDecays(MssmSoftsusy * r) {
  
  
  ///cout << alpha << " " << ALPHAMZ << " " << alphas << " " << ALPHASMZ << " " << ALPHASMZ2 << endl;
- cout << "beta=" << beta << endl;
+  /* cout << "beta=" << beta << endl;
  cout << "mup=" << MUP << " mdown=" << MDOWN << endl;
  cout << "melectron=" << MELECTRON << " mmuon=" << MMUON << endl;
-
+  */
  
   ///Use Softsusy to run gs to different scales - can be used for h,H,A decays to gg.
   ///MssmSoftsusy copy(*r);
@@ -321,9 +329,9 @@ void calculateDecays(MssmSoftsusy * r) {
  double alphasatmh = alphasrun(mh0(1), mz, alphasatmz); 
  double alphasatmH = alphasrun(mh0(2), mz, alphasatmz);
  double alphasatmA = alphasrun(mA0(1), mz, alphasatmz);
- cout << "alphasatmh= " << alphasatmh << endl;
+ /* cout << "alphasatmh= " << alphasatmh << endl;
  cout << "alphasatmH= " << alphasatmH << endl;
- cout << "alphasatmA= " << alphasatmA << endl;
+ cout << "alphasatmA= " << alphasatmA << endl;*/
  double g3atmh0 = pow(4*PI*alphasatmh,0.5);
  double g3atmH0 = pow(4*PI*alphasatmH,0.5);
  double g3atmA0 = pow(4*PI*alphasatmA,0.5);
@@ -340,10 +348,10 @@ void calculateDecays(MssmSoftsusy * r) {
 
  
  ///Let's output the various values being used to help with debugging
- cout << "mg=" << mGluino << endl; cout << "mneut=" << mneut << endl;  cout << "mu=" << mUpSquark << endl;  cout << "thetaH="<< thetaH << endl;  cout << "thetaA0="<< thetaA0 << endl;  cout << "mch=" << mch << endl;
+ /* cout << "mg=" << mGluino << endl; cout << "mneut=" << mneut << endl;  cout << "mu=" << mUpSquark << endl;  cout << "thetaH="<< thetaH << endl;  cout << "thetaA0="<< thetaA0 << endl;  cout << "mch=" << mch << endl;
  /// DoubleVector mneut(r->displayPhys().mneut);
  cout << "mneut=" << mneut << endl;  cout << "mh0=" << mh0 << endl;  cout << "mA0=" << mA0 << endl;  cout << "mHpm=" << mHpm << endl;  cout << "msnu=" << msnu << endl;  cout << "mixNeut=" << mixNeut << endl;  cout << "thetaL=" << thetaL << endl;  cout << "thetaR=" << thetaR << endl;  cout << "thetat=" << thetat << endl;  cout << "thetab=" << thetab << endl;  cout << "thetatau=" << thetatau << endl;  cout << "thetamu=" << thetamu << endl;  cout << "mu=" << mu << endl;  cout << "md=" << md << endl;  cout << "me=" << me << endl;  cout << "mixh0=" << mixh0 << endl;  cout << "g=" << g << endl; cout << "gp=" << gp << endl; cout << "gs=" << gs << endl; cout << "mz=" << mz << endl;  cout << "runmw=" << runmw << endl; cout << "polemw=" << polemw << endl;   cout << "msupL=" << mu(1,1) << endl;  cout << "mup=" << MUP << endl;  cout << "MTOP=" << MTOP << " MBOTTOM=" << MBOTTOM << " MTAU= " << MTAU <<  endl; cout << "thetaL2= " << thetaL2 << endl; cout << "thetaR2= " << thetaR2 << endl;
-
+ */
    
  ///Let's try to get the top and bottom running masses as these are used in SUSYHIT
   r->calcDrBarPars();
@@ -351,14 +359,14 @@ void calculateDecays(MssmSoftsusy * r) {
   double runmt = r->displayDrBarPars().mt;
   double runmtau = r->displayDrBarPars().mtau;
  
-  cout << "runmb = " << runmb << " runmt = " << runmt << " runmtau = " << runmtau << endl;
+  //  cout << "runmb = " << runmb << " runmt = " << runmt << " runmtau = " << runmtau << endl;
   
   double runmc = pow(2,0.5)*polemw*sin(beta)*r->displayYukawaMatrix(YU)(2,2)/g;
   double runms = pow(2,0.5)*polemw*cos(beta)*r->displayYukawaMatrix(YD)(2,2)/g;
-  cout << "runmc = " << runmc << " runms = " << runms << endl; ///Useful in the 1->3 neuti -> neutj c/s cbar/sbar decays
+  //  cout << "runmc = " << runmc << " runms = " << runms << endl; ///Useful in the 1->3 neuti -> neutj c/s cbar/sbar decays
   double runmd = pow(2,0.5)*polemw*cos(beta)*r->displayYukawaMatrix(YD)(1,1)/g;
   double runmu = pow(2,0.5)*polemw*sin(beta)*r->displayYukawaMatrix(YU)(1,1)/g;
-  cout << "runmu = " << runmu << " runmd = " << runmd << endl;  ///Useful in the 1->3 neuti -> neutj u/d ubar/dbar decays
+  //  cout << "runmu = " << runmu << " runmd = " << runmd << endl;  ///Useful in the 1->3 neuti -> neutj u/d ubar/dbar decays
   
   ///Need trilinear couplings, these are in softpars.h
   ///DoubleMatrix aU, aD, aE; // as in softpars.h
@@ -369,7 +377,7 @@ void calculateDecays(MssmSoftsusy * r) {
 
  
   ///double Au = 0, Ad = 0, Ac = 0, As = 0, Ae = 0; ///these are the values susyhit assumes I think!!!!!!!! CHECK THIS!
-  cout << " Au = " << Au << " Ad = " << Ad << " Ac = " << Ac << " As = " << As << " Ae = " << Ae <<  endl;
+  /*  cout << " Au = " << Au << " Ad = " << Ad << " Ac = " << Ac << " As = " << As << " Ae = " << Ae <<  endl;
   cout << " At = " << At << " Ab= " << Ab << " Atau= " << Atau << " greekmu= " << greekmu << endl;
 
   cout << "mu=" << MUP << " md=" << MDOWN << " mc=" << MCHARM << " ms=" << MSTRANGE << " mt=" << MTOP << " mb=" << MBOTTOM << endl;
@@ -378,7 +386,7 @@ void calculateDecays(MssmSoftsusy * r) {
   cout << "mstop1=" << mu(1,3) << " mstop2=" <<mu(2,3) << " msbottom1=" << md(1,3) << " msbottom2=" << md(2,3) << endl;
   cout << "mGluino=" << mGluino << endl;
   cout << "GF= " << GMU << endl;
-
+  */
 
   // r->calcDrBarPars();    ///calculates the DR bar couplings including rephased ones
   // r->displayDrBarPars().nBpmz; ///is the re-phased "N" matrix
@@ -392,9 +400,9 @@ void calculateDecays(MssmSoftsusy * r) {
  DoubleMatrix YUU(3,3), YDD(3,3), YEE(3,3);
 
  YUU = r->displayYukawaMatrix(YU); YDD = r->displayYukawaMatrix(YD); YEE = r->displayYukawaMatrix(YE);
- cout << "YUU= " << YUU << endl;
+ /* cout << "YUU= " << YUU << endl;
  cout << "YDD= " << YDD << endl;
- cout << "YEE= " << YEE << endl;
+ cout << "YEE= " << YEE << endl;*/
 
  DoubleMatrix u(3, 3), v(3, 3), vul(3,3), vur(3,3), vdl(3,3), vdr(3,3), vel(3,3), ver(3,3);
  DoubleVector ydDiag(3), yuDiag(3), yeDiag(3);
@@ -416,7 +424,7 @@ void calculateDecays(MssmSoftsusy * r) {
  }
  ///cout << "I3= " << I3 << endl;
 
- cout << "vul= " << vul << endl;
+ /* cout << "vul= " << vul << endl;
  cout << "vur= " << vur << endl;
  cout << "vdl= " << vdl << endl;
  cout << "vdr= " << vdr << endl;
@@ -426,15 +434,15 @@ void calculateDecays(MssmSoftsusy * r) {
  cout << "yuDiag= " << yuDiag << endl;
  cout << "ydDiag= " << ydDiag << endl;
  cout << "yeDiag= " << yeDiag << endl;
- 
+ */
  ///Form hermitian conjugate of vdl - only need to transpose as must be real as taken Yukawa matrices as real:
  DoubleMatrix vdlT = vdl.transpose();
  
 
  DoubleMatrix VCKM = vul*vdlT;
 
- cout << "CKM Matrix formed from the Yukawa matrices: " << endl;
- cout << VCKM << endl;
+ /* cout << "CKM Matrix formed from the Yukawa matrices: " << endl;
+    cout << VCKM << endl;*/
 
  DoubleMatrix Vu(3,3), Uu(3,3), yu(3,3), Vd(3,3), Ud(3,3), yd(3,3), Ve(3,3), Ue(3,3), ye(3,3);
 
@@ -480,9 +488,9 @@ void calculateDecays(MssmSoftsusy * r) {
  double fe = g*MELECTRON/(pow(2,0.5)*polemw*cos(beta));
  double fmu = g*MMUON/(pow(2,0.5)*polemw*cos(beta));
  double ftau = g*MTAU/(pow(2,0.5)*polemw*cos(beta));
- cout << "fu= " << fu << "   fd= " << fd << "   fc= " << fc << "   fs= " << fs << "   ft= " << ft << endl;
+ /* cout << "fu= " << fu << "   fd= " << fd << "   fc= " << fc << "   fs= " << fs << "   ft= " << ft << endl;
  cout << "fb= " << fb << "   fe= " << fe << "   fmu= " << fmu << "   ftau= " << ftau << endl;
-
+ */
   ///Define Particle PDG codes
 
   double PDGdown = 1, PDGup = 2, PDGstrange = 3, PDGcharm = 4, PDGbottom = 5, PDGtop = 6;
@@ -1374,7 +1382,7 @@ void calculateDecays(MssmSoftsusy * r) {
   double area = 0;
   fp = fdgauss;
   area = dgauss(fp,0,1,0.01);
-  cout << "area = " << area << endl;
+  //  cout << "area = " << area << endl;
   //cout << fdgauss(2) << endl;
 
   ///Initialise NeutMIX before using it in the integrals
@@ -1384,10 +1392,10 @@ void calculateDecays(MssmSoftsusy * r) {
     }
   }
 
-  cout << "NeutMIX: " << NeutMIX<< endl;
+  //  cout << "NeutMIX: " << NeutMIX<< endl;
 
   NeutMIX = mixNeut;
-  cout << "NeutMIX: " << NeutMIX << endl;
+  //  cout << "NeutMIX: " << NeutMIX << endl;
   g1 = g; g2 = gp; alphamix = alpha; betavac = beta;
   ///Calling gpsitilda with m1 =mGluino, m2 = muL, m3 = muL, m4 = mZ1, mq = mt
   //mGluino = 650; ///Reduce mGluino slightly as otherwise the 1->2 decay of mglu -> mst1 + mt is available
@@ -1510,7 +1518,7 @@ void calculateDecays(MssmSoftsusy * r) {
 
   ///for (mGluino = 1000; mGluino <=2000; mGluino = mGluino + 50) {
 
-    cout << "mGluino = " << mGluino << endl;
+  //    cout << "mGluino = " << mGluino << endl;
   
  /// Now need to calculate the partial decays of the gluino
   double gluinoamplitudeupantisupL = 0, gluinoamplitudeupantisupR = 0, gluinoamplitudeantiupsupL = 0, gluinoamplitudeantiupsupR = 0;
@@ -2986,7 +2994,7 @@ ParticleSmuonL.Array_Decays[6][0] = PDGmuon; ParticleSmuonL.Array_Decays[6][1] =
  ///Stau1 decays
 
  double stau1amplitudetauneutralinoZ1, stau1amplitudetauneutralinoZ2, stau1amplitudetauneutralinoZ3, stau1amplitudetauneutralinoZ4, stau1amplitudetauneutrinocharginoW1, stau1amplitudetauneutrinocharginoW2, stau1amplitudetausneutrinoHminus, stau1amplitudesnustauWboson, stau1amplitudetaugravitino;
- cout << "mstau1 = " << me(1,3) << endl;
+ // cout << "mstau1 = " << me(1,3) << endl;
  
  stau1amplitudetauneutralinoZ1 = stauamplitudedecaytauneutralino (me(1,3), MTAU, mneut(1), g, gp, runmw, mixNeut, thetatau, beta, 1, 1);
  stau1amplitudetauneutralinoZ2 = stauamplitudedecaytauneutralino (me(1,3), MTAU, mneut(2), g, gp, runmw, mixNeut, thetatau, beta, 1, 2);
@@ -3054,7 +3062,7 @@ ParticleStau1.Array_Decays[8][0] = PDGtau; ParticleStau1.Array_Decays[8][1] = PD
 
  double stau2amplitudetauneutralinoZ1, stau2amplitudetauneutralinoZ2, stau2amplitudetauneutralinoZ3, stau2amplitudetauneutralinoZ4, stau2amplitudetauneutrinocharginoW1, stau2amplitudetauneutrinocharginoW2, stau2amplitudestausneutrinoHminus, stau2amplitudestausneutrinoWboson, stau2amplitudestau1Zboson, stau2amplitudestau1h, stau2amplitudestau1H, stau2amplitudestau1A, stau2amplitudetaugravitino;
  
- cout << "mstau2 = " << me(2,3) << endl;
+ // cout << "mstau2 = " << me(2,3) << endl;
  
  stau2amplitudetauneutralinoZ1 = stauamplitudedecaytauneutralino (me(2,3), MTAU, mneut(1), g, gp, runmw, mixNeut, thetatau, beta, 2, 1);
  stau2amplitudetauneutralinoZ2 = stauamplitudedecaytauneutralino (me(2,3), MTAU, mneut(2), g, gp, runmw, mixNeut, thetatau, beta, 2, 2);
@@ -5342,7 +5350,7 @@ double gluinoamplitudedecay (double m1, double m2, double m3, double alphastrong
 double gluinoamplitudedecaymix (double m1, double m2, double m3, double alphastrong, double squarkmix, double theta) {
   double squareratio, squareplus, squareminus, amplitudeW=0, squareratiomix1, squareratiomix2;
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    cout << "fabs(m3) + fabs(m2) - fabs(m1) = " << fabs(m3) + fabs(m2) - fabs(m1) << endl;
+    //    cout << "fabs(m3) + fabs(m2) - fabs(m1) = " << fabs(m3) + fabs(m2) - fabs(m1) << endl;
       ///  cout << "Decay not allowed as outgoing states heavier than incoming states" << endl;
       amplitudeW = 0;
     }
@@ -6819,8 +6827,8 @@ double charginoamplitudedecayquarksquarkmix (double m1, double m2, double m3, do
   DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, int torb);
   
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    cout << "Final product states heavier than initial states - decay not allowed" << endl;
-    cout << "This is because m1= " << m1 << " m2= " << m2 << " m3= " << m3 << endl;
+    //    cout << "Final product states heavier than initial states - decay not allowed" << endl;
+    //    cout << "This is because m1= " << m1 << " m2= " << m2 << " m3= " << m3 << endl;
     amplitudeW = 0;
   }
 
@@ -7364,7 +7372,7 @@ double neutralinoamplitudedecaysquark3quarkmix (double m1, double m2, double m3,
 {
   double amplitudeW, squareplus, squareminus, masscombo1, masscombo2, lambda, fq=0, alphatilda=0, betatilda=0, a=0, b=0;
 
-  cout << "masses: " << m1 << " " << m2 << " " << m3 << endl;
+  //  cout << "masses: " << m1 << " " << m2 << " " << m3 << endl;
 
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     ///cout << "Final product states heavier than initial states - decay not allowed" << endl;
@@ -7588,7 +7596,7 @@ double neutralinoamplitudedecayneutralinoZboson (double m1, double m2, double m3
   
   double amplitudeW, squareplus, squareminus, squarecombo1=0, squarecombo2=0, lambda, Wij=0;
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    cout << "Final product states heavier than initial states - decay not allowed" << endl;
+    //    cout << "Final product states heavier than initial states - decay not allowed" << endl;
     amplitudeW = 0;
   }
   
@@ -11492,7 +11500,7 @@ double gluinoamplitudedecaygravitino (double m1, double mgrav, double MPlreduced
 double squarkamplitudedecaygravitino(double m1, double mgrav, double mquark, double MPlreduced, int gravonoff, int squNLSP) /// Function that calculates the decays to gravitinos of squark if int gravonoff == 1, otherwise decays to gravitinos are off
 {
   double amplitudeW = 0;
-  cout << "squNLSP = " << squNLSP << endl;
+  //  cout << "squNLSP = " << squNLSP << endl;
   if (squNLSP == 0) { amplitudeW = 0;}
   else if (squNLSP == 1) {
     if(gravonoff == 0) { amplitudeW=0;}
@@ -15288,9 +15296,8 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
 
 
 
-
-double gluinoamplitudedecaydgaussneutralinobbbarorig (double mgluino, double msb1, double msb2, double mneutralino, double mb, double mWboson, double g, double gp, double thetab, double beta, double alphas, DoubleMatrix mixNeut, double runmb, int neutralino, int onetothree) ///calculates PW for gluino -> neutralino + q qbar pair where q are b so third gen
-{
+///calculates PW for gluino -> neutralino + q qbar pair where q are b so third gen
+double gluinoamplitudedecaydgaussneutralinobbbarorig (double mgluino, double msb1, double msb2, double mneutralino, double mb, double mWboson, double g, double gp, double thetab, double beta, double alphas, DoubleMatrix mixNeut, double runmb, int neutralino, int onetothree) {
   double amplitudeW=0, Gammasb1=0, Gammasb2=0, Gammasb1sb2=0, GammaLLsb1=0, GammaRRsb1=0, GammaL1R1sb1=0, GammaL1R2sb1=0, GammaLLsb2=0, GammaRRsb2=0, GammaL1R1sb2=0, GammaLLsb1sb2=0, GammaRRsb1sb2=0, GammaRLsb1sb2=0, GammaL2R2sb1=0, GammaL2R1sb1=0, GammaL2R2sb2=0, GammaL2R1sb2=0, GammaL1R2sb2=0, GammaLRsb1sb2=0;
   double AbZ=0, BbZ=0, sb1alpha1=0, sb1beta1=0, sb1alpha2=0, sb1beta2=0, sb2alpha1=0, sb2alpha2=0, sb2beta1=0, sb2beta2=0, fb=0, from=0, upper=0;
 
@@ -17360,9 +17367,9 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       coupHpmcharneutL = (g*cos(thetaR2)*mixNeut(ineutralino,4) - sin(thetaR2)/(pow(2,0.5))*(gp*mixNeut(ineutralino,1)+g*mixNeut(ineutralino,2)));
       coupHpmcharneutR = (g*cos(thetaL2)*mixNeut(ineutralino,3) + sin(thetaL2)/(pow(2,0.5))*(gp*mixNeut(ineutralino,1)+g*mixNeut(ineutralino,2)));
     }
-    cout << "masses: " << mneutralinoi << " " << mcharginoj << " " << mf << " " << mfp << endl;
-    cout << "charneutWcoupL = " << charneutWcoupL << endl;
-    cout << "charneutWcoupR = " << charneutWcoupR << endl;
+    /*    cout << "masses: " << mneutralinoi << " " << mcharginoj << " " << mf << " " << mfp << endl;
+//    cout << "charneutWcoupL = " << charneutWcoupL << endl;
+//    cout << "charneutWcoupR = " << charneutWcoupR << endl;*/
     // cout << "Xij = " << Xij << endl;
     // cout << "Yij = " << Yij << endl;
 
@@ -17406,12 +17413,12 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       sf2alpha1Ziu = ri*rc*fu*mixNeut(ineutralino,4)*cos(thetaqp) + AZiu*sin(thetaqp);
       sf2beta1Ziu = -BZiu*cos(thetaqp)*rj*-rc*ri + fu*mixNeut(ineutralino,4)*sin(thetaqp);
    
-      cout << "sf1beta1Ziu = " << sf1beta1Ziu << endl;
+      /*      cout << "sf1beta1Ziu = " << sf1beta1Ziu << endl;
       cout << "first term: " << fu*mixNeut(ineutralino,4)*cos(thetaqp) << endl;
       cout << "second term: " << BZiu*sin(thetaqp) << endl;
       cout << "fu= " << fu << " cos(thetaqp) = " << cos(thetaqp) << endl;
       cout << "BZiu = " << BZiu << " sin(thetaqp) = " << sin(thetaqp) << endl;
-              
+      */      
 
       AZid = g/(pow(2,0.5))*(mixNeut(ineutralino,2)) + gp/(3*pow(2,0.5))*(-mixNeut(ineutralino,1));
       BZid = (2./3)*gp/(pow(2,0.5))*(mixNeut(ineutralino,1));
@@ -17471,34 +17478,34 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << "runmq = " << runmq << " runmqp = " << runmqp << endl;
 
     ///GammaHpm
-    cout << "coupHpmcharneutL = " << coupHpmcharneutL << endl;
+    /*    cout << "coupHpmcharneutL = " << coupHpmcharneutL << endl;
     cout << "coupHpmcharneutR = " << coupHpmcharneutR << endl;
     cout << "sin(beta) = " << sin(beta) << endl;
     cout << "cos(beta) = " << cos(beta) << endl;
     cout << "yukawas: "<< endl;
     cout << "fu = " << fu << endl;
     cout << "fd = " << fd << endl;
-
+    */
     double coupcombo1Hpm1 = 0, coupcombo2Hpm1 = 0, coupcombo3Hpm1 = 0, coupcombo4Hpm1 = 0, int1Wpm = 0, int2Wpm = 0, int3Wpm = 0, int4Wpm = 0;
     double coupcombo1Hpm2 = 0, coupcombo2Hpm2 = 0, coupcombo3Hpm2 = 0, coupcombo4Hpm2 = 0, int1Hpm = 0, int2Hpm = 0, int3Hpm = 0, int4Hpm = 0;
     cout.precision(12);
     ///Hpm1 contribution (W+ goldstone):
     coupHpm1charneutL = coupHpmcharneutL*sin(beta);
     coupHpm1charneutR = coupHpmcharneutR*-cos(beta);
-    cout << "coupHpm1charneutL = " << coupHpm1charneutL << endl;
-    cout << "coupHpm1charneutR = " << coupHpm1charneutR << endl;
+    //    cout << "coupHpm1charneutL = " << coupHpm1charneutL << endl;
+    //    cout << "coupHpm1charneutR = " << coupHpm1charneutR << endl;
     coupHpm1ffpu = fu*sin(beta);
     coupHpm1ffpd = fd*-cos(beta);
-    cout << "coupHpm1ffpu = " << coupHpm1ffpu << endl;
-    cout << "coupHpm1ffpd = " << coupHpm1ffpd << endl;
+    //    cout << "coupHpm1ffpu = " << coupHpm1ffpu << endl;
+    //    cout << "coupHpm1ffpd = " << coupHpm1ffpd << endl;
     coupcombo1Hpm1 = pow(coupHpm1charneutL,2) + pow(coupHpm1charneutR,2);
     coupcombo2Hpm1 = coupHpm1charneutL*coupHpm1charneutR*ri;
     coupcombo3Hpm1 = pow(coupHpm1ffpu,2) + pow(coupHpm1ffpd,2);
     coupcombo4Hpm1 = coupHpm1ffpu*coupHpm1ffpd;
-    cout << "coupcombo1Hpm1 = " << coupcombo1Hpm1 << endl;
+    /*    cout << "coupcombo1Hpm1 = " << coupcombo1Hpm1 << endl;
     cout << "coupcombo2Hpm1 = " << coupcombo2Hpm1 << endl;
     cout << "coupcombo3Hpm1 = " << coupcombo3Hpm1 << endl;
-    cout << "coupcombo4Hpm1 = " << coupcombo4Hpm1 << endl; 
+    cout << "coupcombo4Hpm1 = " << coupcombo4Hpm1 << endl; */
     
     // mfp = 0.095; ///SET BY HAND FOR A COMPARISON WITH SPHENO
     m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mWboson;
@@ -17510,20 +17517,20 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     ///Hpm2 contribution (Actual Hpm):
     coupHpm2charneutL = coupHpmcharneutL*cos(beta);
     coupHpm2charneutR = coupHpmcharneutR*sin(beta);
-    cout << "coupHpm2charneutL = " << coupHpm2charneutL << endl;
-    cout << "coupHpm2charneutR = " << coupHpm2charneutR << endl;
+    //    cout << "coupHpm2charneutL = " << coupHpm2charneutL << endl;
+    //    cout << "coupHpm2charneutR = " << coupHpm2charneutR << endl;
     coupHpm2ffpu = fu*cos(beta);
     coupHpm2ffpd = fd*sin(beta);
-    cout << "coupHpm2ffpu = " << coupHpm2ffpu << endl;
-    cout << "coupHpm2ffpd = " << coupHpm2ffpd << endl;
+    //    cout << "coupHpm2ffpu = " << coupHpm2ffpu << endl;
+    //    cout << "coupHpm2ffpd = " << coupHpm2ffpd << endl;
     coupcombo1Hpm2 = pow(coupHpm2charneutL,2) + pow(coupHpm2charneutR,2);
     coupcombo2Hpm2 = coupHpm2charneutL*coupHpm2charneutR*ri;
     coupcombo3Hpm2 = pow(coupHpm2ffpu,2) + pow(coupHpm2ffpd,2);
     coupcombo4Hpm2 = coupHpm2ffpu*coupHpm2ffpd;
-    cout << "coupcombo1Hpm2 = " << coupcombo1Hpm2 << endl;
+    /*    cout << "coupcombo1Hpm2 = " << coupcombo1Hpm2 << endl;
     cout << "coupcombo2Hpm2 = " << coupcombo2Hpm2 << endl;
     cout << "coupcombo3Hpm2 = " << coupcombo3Hpm2 << endl;
-    cout << "coupcombo4Hpm2 = " << coupcombo4Hpm2 << endl; 
+    cout << "coupcombo4Hpm2 = " << coupcombo4Hpm2 << endl; */
 
     m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mHP;
     int1Hpm = 2*fabs(m1)*dgauss(gneuticharjffpHpm1dgauss,from,to,accuracy);
@@ -17532,7 +17539,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int4Hpm = 2*fabs(m1)*dgauss(gneuticharjffpHpm4dgauss,from,to,accuracy);  
 
     cout.precision(16);
-    cout << "Integrals for Hpm1 (W+ goldstone:) " << endl;
+    /*    cout << "Integrals for Hpm1 (W+ goldstone:) " << endl;
     cout << "int1Wpm = " << int1Wpm << endl;
     cout << "int2Wpm = " << int2Wpm << endl;
     cout << "int3Wpm = " << int3Wpm << endl;
@@ -17543,29 +17550,29 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << "int2Hpm = " << int2Hpm << endl;
     cout << "int3Hpm = " << int3Hpm << endl;
     cout << "int4Hpm = " << int4Hpm << endl;
-
+    */
     cout.precision(25);
-    cout << "Hpm1 (W goldstone contribution) term by term: " << endl;
+    /*    cout << "Hpm1 (W goldstone contribution) term by term: " << endl;
     cout << coupcombo1Hpm1*coupcombo3Hpm1*int4Wpm << endl;
     cout << 4*coupcombo1Hpm1*coupcombo4Hpm1*int3Wpm*-mf*mfp << endl;
     cout << 4*coupcombo2Hpm1*coupcombo3Hpm1*int2Wpm*fabs(mneutralinoi)*fabs(mcharginoj)*rj << endl;
     cout << 16*coupcombo2Hpm1*coupcombo4Hpm1*int1Wpm*-mf*mfp*fabs(mneutralinoi)*fabs(mcharginoj)*rj << endl;
-
+    */
     Gammagoldstone = coupcombo1Hpm1*coupcombo3Hpm1*int4Wpm - 4*coupcombo1Hpm1*coupcombo4Hpm1*int3Wpm*mf*mfp + 4*coupcombo2Hpm1*coupcombo3Hpm1*int2Wpm*fabs(mneutralinoi)*fabs(mcharginoj)*rj - 16*coupcombo2Hpm1*coupcombo4Hpm1*int1Wpm*mf*mfp*fabs(mneutralinoi)*fabs(mcharginoj)*rj;
 
-    cout << "Hpm2 (Actual Hpm contribution) term by term: " << endl;
+    /*    cout << "Hpm2 (Actual Hpm contribution) term by term: " << endl;
     cout << coupcombo1Hpm2*coupcombo3Hpm2*int4Hpm << endl;
     cout << 4*coupcombo1Hpm2*coupcombo4Hpm2*int3Hpm*-mf*mfp << endl;
     cout << 4*coupcombo2Hpm2*coupcombo3Hpm2*int2Hpm*fabs(mneutralinoi)*fabs(mcharginoj)*rj << endl;
     cout << 16*coupcombo2Hpm2*coupcombo4Hpm2*int1Hpm*-mf*mfp*fabs(mneutralinoi)*fabs(mcharginoj)*rj << endl;
-
+    */
     GammaHpm = coupcombo1Hpm2*coupcombo3Hpm2*int4Hpm - 4*coupcombo1Hpm2*coupcombo4Hpm2*int3Hpm*mf*mfp + 4*coupcombo2Hpm2*coupcombo3Hpm2*int2Hpm*fabs(mneutralinoi)*fabs(mcharginoj)*rj - 16*coupcombo2Hpm2*coupcombo4Hpm2*int1Hpm*mf*mfp*fabs(mneutralinoi)*fabs(mcharginoj)*rj;
 
 
 
     ///Sfp Sfp diagonal (Remember fp is u-type fermion)
     cout.precision(12);
-    cout << "sf1alpha1Ziu = " << sf1alpha1Ziu << endl;
+    /*    cout << "sf1alpha1Ziu = " << sf1alpha1Ziu << endl;
     cout << "Pieces of sf1alpha1Ziu: " << endl;
     cout << "AZiu*cos(thetaqp) = " << AZiu*cos(thetaqp) << " -yuk*v(i,4)*sin(thetaqp) = " << - fu*mixNeut(ineutralino,4)*sin(thetaqp) << endl;
     cout << "AZiu = " << AZiu << endl;
@@ -17593,7 +17600,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << "second term = " << BZid*sin(thetaq) << endl;
     cout << "BZid = " << BZid << " sin(thetaq) = " << sin(thetaq) << endl;
 
-    cout << "sf2beta1Zid = " << sf2beta1Zid << endl;
+    cout << "sf2beta1Zid = " << sf2beta1Zid << endl;*/
     double alphasfp1char = 0, betasfp1char = 0, alphasf1char = 0, betasf1char = 0, alphasfp2char = 0, betasfp2char = 0, alphasf2char = 0, betasf2char = 0;
 
     // thetaqp = 0.182002275;
@@ -17623,7 +17630,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
 
 
-    cout << "alphasfp1char = " << alphasfp1char << endl;
+    /*    cout << "alphasfp1char = " << alphasfp1char << endl;
     cout << "betasfp1char = " << betasfp1char << endl;
     cout << "-fd = " << -fd << endl;
     cout << "cos(thetaL2) = " << cos(thetaL2) << endl;
@@ -17654,7 +17661,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << scientific << "GammaW = " << GammaW << endl;
     cout << scientific << "Gammagoldstone = " << Gammagoldstone << endl;
     cout << scientific << "GammaHpm = " << GammaHpm << endl;
-
+    */
 
     
     double coupcombo1sfp1 = 0, coupcombo2sfp1 = 0, coupcombo3sfp1 = 0, coupcombo4sfp1 = 0;
@@ -17662,12 +17669,12 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     coupcombo2sfp1 = -sf1alpha1Ziu*sf1beta1Ziu*ri;
     coupcombo3sfp1 = pow(alphasfp1char,2) + pow(betasfp1char,2);
     coupcombo4sfp1 = -alphasfp1char*betasfp1char;
-    cout << "Coup combos for sfp 1: " << endl;
+    /*    cout << "Coup combos for sfp 1: " << endl;
     cout << "coupcombo1sfp1 = " << coupcombo1sfp1 << endl;
     cout << "coupcombo2sfp1 = " << coupcombo2sfp1 << endl;
     cout << "coupcombo3sfp1 = " << coupcombo3sfp1 << endl;
     cout << "coupcombo4sfp1 = " << coupcombo4sfp1 << endl;
-
+    */
     double Eupper = 0;
     Eupper = 1/(2*fabs(mneutralinoi))*(pow(mneutralinoi,2) + pow(mfp,2) - pow(mf,2) - pow(mcharginoj,2) -2*mf*fabs(mcharginoj));
     // cout << "Eupper = " << Eupper << endl;
@@ -17678,7 +17685,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int3sfp1 = 2*fabs(m1)*dgauss(gneuticharjffpHpm3dgauss,mfp,Eupper,accuracy);
     int4sfp1 = 2*fabs(m1)*dgauss(gneuticharjffpHpm4dgauss,mfp,Eupper,accuracy);
     cout.precision(18);
-    cout << "Integrals for sfp1: " << endl;
+    /*    cout << "Integrals for sfp1: " << endl;
     cout << "int1sfp1 = " << int1sfp1 << endl;
     cout << "int2sfp1 = " << int2sfp1 << endl;
     cout << "int3sfp1 = " << int3sfp1 << endl;
@@ -17688,7 +17695,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << 4*coupcombo1sfp1*coupcombo4sfp1*-mf*fabs(mcharginoj)*int3sfp1*rc << endl;
     cout << 4*coupcombo2sfp1*coupcombo3sfp1*fabs(mneutralinoi)*mfp*int2sfp1*rc << endl;
     cout << 16*coupcombo2sfp1*coupcombo4sfp1*fabs(mneutralinoi)*mfp*-mf*fabs(mcharginoj)*int1sfp1 << endl;
-
+    */
     Gammasfp1 = coupcombo1sfp1*coupcombo3sfp1*int4sfp1 + 4*coupcombo1sfp1*coupcombo4sfp1*-mf*fabs(mcharginoj)*int3sfp1*rc + 4*coupcombo2sfp1*coupcombo3sfp1*fabs(mneutralinoi)*mfp*int2sfp1*rc + 16*coupcombo2sfp1*coupcombo4sfp1*fabs(mneutralinoi)*mfp*-mf*fabs(mcharginoj)*int1sfp1;
     cout << scientific << "Gammasfp1 = " << Gammasfp1 << endl;
 
@@ -17710,7 +17717,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int3sfp2 = 2*fabs(m1)*dgauss(gneuticharjffpHpm3dgauss,mfp,Eupper,accuracy);
     int4sfp2 = 2*fabs(m1)*dgauss(gneuticharjffpHpm4dgauss,mfp,Eupper,accuracy);
     cout.precision(22);
-    cout << "Integrals for sfp2: " << endl;
+    /*    cout << "Integrals for sfp2: " << endl;
     cout << "int1sfp2 = " << int1sfp2 << endl;
     cout << "int2sfp2 = " << int2sfp2 << endl;
     cout << "int3sfp2 = " << int3sfp2 << endl;
@@ -17720,9 +17727,9 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << 4*coupcombo1sfp2*coupcombo4sfp2*-mf*fabs(mcharginoj)*int3sfp2*rc << endl;
     cout << 4*coupcombo2sfp2*coupcombo3sfp2*fabs(mneutralinoi)*mfp*int2sfp2*rc << endl;
     cout << 16*coupcombo2sfp2*coupcombo4sfp2*fabs(mneutralinoi)*mfp*-mf*fabs(mcharginoj)*int1sfp2 << endl;
-
+    */
     Gammasfp2 = coupcombo1sfp2*coupcombo3sfp2*int4sfp2 + 4*coupcombo1sfp2*coupcombo4sfp2*-mf*fabs(mcharginoj)*int3sfp2*rc + 4*coupcombo2sfp2*coupcombo3sfp2*fabs(mneutralinoi)*mfp*int2sfp2*rc + 16*coupcombo2sfp2*coupcombo4sfp2*fabs(mneutralinoi)*mfp*-mf*fabs(mcharginoj)*int1sfp2;
-    cout << scientific << "Gammasfp2 = " << Gammasfp2 << endl;
+    //    cout << scientific << "Gammasfp2 = " << Gammasfp2 << endl;
 
     ///Sf Sf diagonal
     double coupcombo1sf1 = 0, coupcombo2sf1 = 0, coupcombo3sf1 = 0, coupcombo4sf1 = 0;
@@ -17730,12 +17737,12 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     coupcombo2sf1 = -sf1alpha1Zid*sf1beta1Zid;
     coupcombo3sf1 = pow(alphasf1char,2) + pow(betasf1char,2);
     coupcombo4sf1 = -alphasf1char*betasf1char*rj;
-    cout << "Coup combos for sf 1: " << endl;
+    /*    cout << "Coup combos for sf 1: " << endl;
     cout << "coupcombo1sf1 = " << coupcombo1sf1 << endl;
     cout << "coupcombo2sf1 = " << coupcombo2sf1 << endl;
     cout << "coupcombo3sf1 = " << coupcombo3sf1 << endl;
     cout << "coupcombo4sf1 = " << coupcombo4sf1 << endl;
-
+    */
     double Eupper2 = 0;
     Eupper2 = 1/(2*fabs(mneutralinoi))*(pow(mneutralinoi,2) + pow(mf,2) - pow(mfp,2) - pow(mcharginoj,2) -2*mfp*fabs(mcharginoj));
     double int1sf1 = 0, int2sf1 = 0, int3sf1 = 0, int4sf1 = 0;
@@ -17745,12 +17752,12 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int3sf1 = 2*fabs(m1)*dgauss(gneuticharjffpHpm3dgauss,mf,Eupper2,accuracy);
     int4sf1 = 2*fabs(m1)*dgauss(gneuticharjffpHpm4dgauss,mf,Eupper2,accuracy);
     cout.precision(18);
-    cout << "Integrals for sf1: " << endl;
+    /*    cout << "Integrals for sf1: " << endl;
     cout << "int1sf1 = " << int1sf1 << endl;
     cout << "int2sf1 = " << int2sf1 << endl;
     cout << "int3sf1 = " << int3sf1 << endl;
     cout << "int4sf1 = " << int4sf1 << endl;
-
+    */
     
     cout << "term by term for sf1: " << endl;
     cout << coupcombo1sf1*coupcombo3sf1*int4sf1 << endl;
@@ -17759,40 +17766,40 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << 16*coupcombo2sf1*coupcombo4sf1*fabs(mneutralinoi)*mf*-mfp*fabs(mcharginoj)*int1sf1*rj << endl;
 
     Gammasf1 = coupcombo1sf1*coupcombo3sf1*int4sf1 + 4*coupcombo1sf1*coupcombo4sf1*-mfp*fabs(mcharginoj)*int3sf1*rc*rj + 4*coupcombo2sf1*coupcombo3sf1*fabs(mneutralinoi)*mf*int2sf1*rc + 16*coupcombo2sf1*coupcombo4sf1*fabs(mneutralinoi)*mf*-mfp*fabs(mcharginoj)*rj*int1sf1;
-    cout << scientific << "Gammasf1 = " << Gammasf1 << endl;
+    //    cout << scientific << "Gammasf1 = " << Gammasf1 << endl;
 
     double coupcombo1sf2 = 0, coupcombo2sf2 = 0, coupcombo3sf2 = 0, coupcombo4sf2 = 0;
     coupcombo1sf2 = pow(sf2alpha1Zid,2) + pow(sf2beta1Zid,2);
     coupcombo2sf2 = sf2alpha1Zid*sf2beta1Zid;
     coupcombo3sf2 = pow(alphasf2char,2) + pow(betasf2char,2);
     coupcombo4sf2 = alphasf2char*betasf2char*rc;
-    cout << "Coup combos for sf 2: " << endl;
+    /*    cout << "Coup combos for sf 2: " << endl;
     cout << "coupcombo1sf2 = " << coupcombo1sf2 << endl;
     cout << "coupcombo2sf2 = " << coupcombo2sf2 << endl;
     cout << "coupcombo3sf2 = " << coupcombo3sf2 << endl;
     cout << "coupcombo4sf2 = " << coupcombo4sf2 << endl;
-
+    */
     double int1sf2 = 0, int2sf2 = 0, int3sf2 = 0, int4sf2 = 0;
     m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msf2;
     int1sf2 = 2*fabs(m1)*dgauss(gneuticharjffpHpm1dgauss,mf,Eupper2,accuracy);
     int2sf2 = 2*fabs(m1)*dgauss(gneuticharjffpHpm2dgauss,mf,Eupper2,accuracy);
     int3sf2 = 2*fabs(m1)*dgauss(gneuticharjffpHpm3dgauss,mf,Eupper2,accuracy);
     int4sf2 = 2*fabs(m1)*dgauss(gneuticharjffpHpm4dgauss,mf,Eupper2,accuracy);
-    cout.precision(26);
+    /*    cout.precision(26);
     cout << "Integrals for sf2: " << endl;
     cout << "int1sf2 = " << int1sf2 << endl;
     cout << "int2sf2 = " << int2sf2 << endl;
     cout << "int3sf2 = " << int3sf2 << endl;
     cout << "int4sf2 = " << int4sf2 << endl;
-
+    
     cout << "term by term for sf2: " << endl;
     cout << coupcombo1sf2*coupcombo3sf2*int4sf2 << endl;
     cout << 4*coupcombo1sf2*coupcombo4sf2*-fabs(mcharginoj)*mfp*int3sf2*rc << endl;
     cout << 4*coupcombo2sf2*coupcombo3sf2*fabs(mneutralinoi)*mf*int2sf2*rc << endl;
     cout << 16*coupcombo2sf2*coupcombo4sf2*fabs(mneutralinoi)*mf*-mfp*fabs(mcharginoj)*int1sf2 << endl;
-
+    */
     Gammasf2 = coupcombo1sf2*coupcombo3sf2*int4sf2 + 4*coupcombo1sf2*coupcombo4sf2*-mfp*fabs(mcharginoj)*int3sf2*rc + 4*coupcombo2sf2*coupcombo3sf2*fabs(mneutralinoi)*mf*int2sf2*rc + 16*coupcombo2sf2*coupcombo4sf2*fabs(mneutralinoi)*mf*-mfp*fabs(mcharginoj)*int1sf2;
-    cout << scientific << "Gammasf2 = " << Gammasf2 << endl;
+    //    cout << scientific << "Gammasf2 = " << Gammasf2 << endl;
 
     ///Sf - Sf interference
     double coupcombo1sf1sf2 = 0, coupcombo2sf1sf2 = 0, coupcombo3sf1sf2 = 0, coupcombo4sf1sf2 = 0;
@@ -17801,12 +17808,12 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     coupcombo3sf1sf2 = (betasf1char*-betasf2char + alphasf1char*alphasf2char);
     coupcombo4sf1sf2 = (-alphasf1char*-betasf2char - betasf1char*alphasf2char)*rj*rc;
 
-    cout << "Coupling combos for sf1 sf2 interference: " << endl;
+    //    cout << "Coupling combos for sf1 sf2 interference: " << endl;
     cout.precision(12);
-    cout << coupcombo1sf1sf2 << endl;
+    /*    cout << coupcombo1sf1sf2 << endl;
     cout << coupcombo2sf1sf2 << endl;
     cout << coupcombo3sf1sf2 << endl;
-    cout << coupcombo4sf1sf2 << endl;
+    cout << coupcombo4sf1sf2 << endl;*/
 
     double int1sf1sf2 = 0, int2sf1sf2 = 0, int3sf1sf2 = 0, int4sf1sf2 = 0;
     m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msf1, m6 = msf2;
@@ -17815,7 +17822,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int3sf1sf2 = 2*fabs(m1)*dgauss(gneuticharjffp3sf1sf2dgauss,mf,Eupper2,accuracy);
     int4sf1sf2 = 2*fabs(m1)*dgauss(gneuticharjffp4sf1sf2dgauss,mf,Eupper2,accuracy);
     
-    cout << "Integrals for sf1 sf2 interference: " << endl;
+    /*    cout << "Integrals for sf1 sf2 interference: " << endl;
     cout.precision(20);
     cout << int1sf1sf2 << endl;
     cout << int2sf1sf2 << endl;
@@ -17827,7 +17834,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << 2*coupcombo1sf1sf2*coupcombo4sf1sf2*mfp*-fabs(mcharginoj)*int3sf1sf2*rc << endl;
     cout << 2*coupcombo2sf1sf2*coupcombo3sf1sf2*fabs(mneutralinoi)*mf*int2sf1sf2*rc << endl;
     cout << 4*coupcombo2sf1sf2*coupcombo4sf1sf2*fabs(mneutralinoi)*mf*-fabs(mcharginoj)*mfp*int1sf1sf2 << endl;
-
+    */
     Gammasf1sf2 = 2*(coupcombo1sf1sf2*coupcombo3sf1sf2*int4sf1sf2 + 2*coupcombo1sf1sf2*coupcombo4sf1sf2*mfp*-fabs(mcharginoj)*int3sf1sf2 + 2*coupcombo2sf1sf2*coupcombo3sf1sf2*fabs(mneutralinoi)*mf*int2sf1sf2 + 4*coupcombo2sf1sf2*coupcombo4sf1sf2*fabs(mneutralinoi)*mf*-fabs(mcharginoj)*mfp*int1sf1sf2);
     cout << scientific << "Gammasf1sf2 = " << Gammasf1sf2 << endl;
 
@@ -17853,7 +17860,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
 
 
-    cout << "Coupling combos for sfp 1 sf 2 interference: " << endl;
+    /*    cout << "Coupling combos for sfp 1 sf 2 interference: " << endl;
     cout << coupcombo1sfp1sf2 << endl;
     cout << coupcombo2sfp1sf2 << endl;
     cout << coupcombo3sfp1sf2 << endl;
@@ -17863,7 +17870,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << coupcombo5sfp1sf2 << endl;
     cout << coupcombo6sfp1sf2 << endl;
     cout << coupcombo7sfp1sf2 << endl;
-    cout << coupcombo8sfp1sf2 << endl;
+    cout << coupcombo8sfp1sf2 << endl;*/
 
     double int1sfp1sf2 = 0, int2sfp1sf2 = 0, int3sfp1sf2 = 0, int4sfp1sf2 = 0, int5sfp1sf2 = 0, int6sfp1sf2 = 0, int7sfp1sf2 = 0, int8sfp1sf2 = 0;
     m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msfp1, m6 = msf2;
@@ -17876,7 +17883,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int7sfp1sf2 = 2*fabs(m1)*dgauss(gneuticharjffp7sfp1sf2dgauss,mfp,Eupper,accuracy);
     int8sfp1sf2 = 2*fabs(m1)*dgauss(gneuticharjffp8sfp1sf2dgauss,mfp,Eupper,accuracy);
 
-    cout << "Integrals for sfp 1 sf 2 interference: " << endl;
+    /*    cout << "Integrals for sfp 1 sf 2 interference: " << endl;
     cout << int1sfp1sf2 << endl;
     cout << int2sfp1sf2 << endl;
     cout << int3sfp1sf2 << endl;
@@ -17896,7 +17903,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << coupcombo6sfp1sf2*int6sfp1sf2 << endl;
     cout << coupcombo7sfp1sf2*int7sfp1sf2 << endl;
     cout << coupcombo8sfp1sf2*int8sfp1sf2 << endl;
-
+    */
     Gammasfp1sf2 = coupcombo1sfp1sf2*int1sfp1sf2 + coupcombo2sfp1sf2*int2sfp1sf2 + coupcombo3sfp1sf2*int3sfp1sf2 + coupcombo4sfp1sf2*int4sfp1sf2 + coupcombo5sfp1sf2*int5sfp1sf2 + coupcombo6sfp1sf2*int6sfp1sf2 + coupcombo7sfp1sf2*int7sfp1sf2 + coupcombo8sfp1sf2*int8sfp1sf2;
     cout << scientific << "Gammasfp1sf2 = " << Gammasfp1sf2 << endl;
 
@@ -17921,7 +17928,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     
 
-    cout << "Coupling combos for sfp 1 sf 1 interference: " << endl;
+    /*    cout << "Coupling combos for sfp 1 sf 1 interference: " << endl;
     cout << coupcombo1sfp1sf1 << endl;
     cout << coupcombo2sfp1sf1 << endl;
     cout << coupcombo3sfp1sf1 << endl;
@@ -17930,7 +17937,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << coupcombo6sfp1sf1 << endl;
     cout << coupcombo7sfp1sf1 << endl;
     cout << coupcombo8sfp1sf1 << endl;
-
+    */
     double int1sfp1sf1 = 0, int2sfp1sf1 = 0, int3sfp1sf1 = 0, int4sfp1sf1 = 0, int5sfp1sf1 = 0, int6sfp1sf1 = 0, int7sfp1sf1 = 0, int8sfp1sf1 = 0;
     m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msfp1, m6 = msf1;
     int1sfp1sf1 = 2*fabs(m1)*dgauss(gneuticharjffp1sfp1sf2dgauss,mfp,Eupper,accuracy);
@@ -17942,7 +17949,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int7sfp1sf1 = 2*fabs(m1)*dgauss(gneuticharjffp7sfp1sf2dgauss,mfp,Eupper,accuracy);
     int8sfp1sf1 = 2*fabs(m1)*dgauss(gneuticharjffp8sfp1sf2dgauss,mfp,Eupper,accuracy);
 
-    cout << "Integrals for sfp 1 sf 1 interference: " << endl;
+    /*    cout << "Integrals for sfp 1 sf 1 interference: " << endl;
     cout << int1sfp1sf1 << endl;
     cout << int2sfp1sf1 << endl;
     cout << int3sfp1sf1 << endl;
@@ -17962,9 +17969,9 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << coupcombo6sfp1sf1*int6sfp1sf1 << endl;
     cout << coupcombo7sfp1sf1*int7sfp1sf1 << endl;
     cout << coupcombo8sfp1sf1*int8sfp1sf1 << endl;
-
+    */
     Gammasfp1sf1 = coupcombo1sfp1sf1*int1sfp1sf1 + coupcombo2sfp1sf1*int2sfp1sf1 + coupcombo3sfp1sf1*int3sfp1sf1 + coupcombo4sfp1sf1*int4sfp1sf1 + coupcombo5sfp1sf1*int5sfp1sf1 + coupcombo6sfp1sf1*int6sfp1sf1 + coupcombo7sfp1sf1*int7sfp1sf1 + coupcombo8sfp1sf1*int8sfp1sf1;
-    cout << scientific << "Gammasfp1sf1 = " << Gammasfp1sf1 << endl;
+    //    cout << scientific << "Gammasfp1sf1 = " << Gammasfp1sf1 << endl;
 
 
     ///Sfp 2 Sf 2 interference
@@ -17993,7 +18000,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     
       
 
-    cout << "Coupling combos for sfp 2 sf 2 interference: " << endl;
+    /*    cout << "Coupling combos for sfp 2 sf 2 interference: " << endl;
     cout << coupcombo1sfp2sf2 << endl;
     cout << "first term: " << 0.5*-sf2alpha1Ziu*sf2beta1Zid*betasfp2char*alphasf2char << " second term: " << 0.5*-sf2beta1Ziu*sf2alpha1Zid*alphasfp2char*betasf2char << endl;
     cout << coupcombo2sfp2sf2 << endl;
@@ -18003,7 +18010,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << coupcombo6sfp2sf2 << endl;
     cout << coupcombo7sfp2sf2 << endl;
     cout << coupcombo8sfp2sf2 << endl;
-
+    */
     double int1sfp2sf2 = 0, int2sfp2sf2 = 0, int3sfp2sf2 = 0, int4sfp2sf2 = 0, int5sfp2sf2 = 0, int6sfp2sf2 = 0, int7sfp2sf2 = 0, int8sfp2sf2 = 0;
     m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msfp2, m6 = msf2;
     int1sfp2sf2 = 2*fabs(m1)*dgauss(gneuticharjffp1sfp1sf2dgauss,mfp,Eupper,accuracy);
@@ -18015,7 +18022,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int7sfp2sf2 = 2*fabs(m1)*dgauss(gneuticharjffp7sfp1sf2dgauss,mfp,Eupper,accuracy);
     int8sfp2sf2 = 2*fabs(m1)*dgauss(gneuticharjffp8sfp1sf2dgauss,mfp,Eupper,accuracy);
 
-    cout << "Integrals for sfp 2 sf 2 interference: " << endl;
+    /*    cout << "Integrals for sfp 2 sf 2 interference: " << endl;
     cout << int1sfp2sf2 << endl;
     cout << int2sfp2sf2 << endl;
     cout << int3sfp2sf2 << endl;
@@ -18035,9 +18042,9 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << coupcombo6sfp2sf2*int6sfp2sf2 << endl;
     cout << coupcombo7sfp2sf2*int7sfp2sf2 << endl;
     cout << coupcombo8sfp2sf2*int8sfp2sf2 << endl;
-
+    */
     Gammasfp2sf2 = coupcombo1sfp2sf2*int1sfp2sf2 + coupcombo2sfp2sf2*int2sfp2sf2 + coupcombo3sfp2sf2*int3sfp2sf2 + coupcombo4sfp2sf2*int4sfp2sf2 + coupcombo5sfp2sf2*int5sfp2sf2 + coupcombo6sfp2sf2*int6sfp2sf2 + coupcombo7sfp2sf2*int7sfp2sf2 + coupcombo8sfp2sf2*int8sfp2sf2;
-    cout << scientific << "Gammasfp2sf2 = " << Gammasfp2sf2 << endl;
+    //    cout << scientific << "Gammasfp2sf2 = " << Gammasfp2sf2 << endl;
 
 
     ///Sfp 2 Sf 1 interference
@@ -18064,7 +18071,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       coupcombo7sfp2sf1 = fabs(mcharginoj)*mf*(-alphasfp2char*betasf1char*sf2alpha1Ziu*sf1alpha1Zid - betasfp2char*alphasf1char*sf2beta1Ziu*sf1beta1Zid);
     }
 
-    cout << "Coupling combos for sfp 2 sf 1 interference: " << endl;
+    /*    cout << "Coupling combos for sfp 2 sf 1 interference: " << endl;
     cout << coupcombo1sfp2sf1 << endl;
     cout << coupcombo2sfp2sf1 << endl;
     cout << coupcombo3sfp2sf1 << endl;
@@ -18073,7 +18080,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << coupcombo6sfp2sf1 << endl;
     cout << coupcombo7sfp2sf1 << endl;
     cout << coupcombo8sfp2sf1 << endl;
-
+    */
     double int1sfp2sf1 = 0, int2sfp2sf1 = 0, int3sfp2sf1 = 0, int4sfp2sf1 = 0, int5sfp2sf1 = 0, int6sfp2sf1 = 0, int7sfp2sf1 = 0, int8sfp2sf1 = 0;
     m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msfp2, m6 = msf1;
     int1sfp2sf1 = 2*fabs(m1)*dgauss(gneuticharjffp1sfp1sf2dgauss,mfp,Eupper,accuracy);
@@ -18085,7 +18092,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int7sfp2sf1 = 2*fabs(m1)*dgauss(gneuticharjffp7sfp1sf2dgauss,mfp,Eupper,accuracy);
     int8sfp2sf1 = 2*fabs(m1)*dgauss(gneuticharjffp8sfp1sf2dgauss,mfp,Eupper,accuracy);
 
-    cout << "Integrals for sfp 2 sf 1 interference: " << endl;
+    /*    cout << "Integrals for sfp 2 sf 1 interference: " << endl;
     cout << int1sfp2sf1 << endl;
     cout << int2sfp2sf1 << endl;
     cout << int3sfp2sf1 << endl;
@@ -18105,7 +18112,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << coupcombo6sfp2sf1*int6sfp2sf1 << endl;
     cout << coupcombo7sfp2sf1*int7sfp2sf1 << endl;
     cout << coupcombo8sfp2sf1*int8sfp2sf1 << endl;
-
+    */
     Gammasfp2sf1 = coupcombo1sfp2sf1*int1sfp2sf1 + coupcombo2sfp2sf1*int2sfp2sf1 + coupcombo3sfp2sf1*int3sfp2sf1 + coupcombo4sfp2sf1*int4sfp2sf1 + coupcombo5sfp2sf1*int5sfp2sf1 + coupcombo6sfp2sf1*int6sfp2sf1 + coupcombo7sfp2sf1*int7sfp2sf1 + coupcombo8sfp2sf1*int8sfp2sf1;
     cout << scientific << "Gammasfp2sf1 = " << Gammasfp2sf1 << endl;
 
@@ -18117,14 +18124,14 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     coupcombo3WHpm = (charneutWcoupR*coupHpm2charneutR + charneutWcoupL*coupHpm2charneutL)*g/(pow(2,0.5))*-coupHpm2ffpd*fabs(mcharginoj)*-mf*rc;
     coupcombo4WHpm = (charneutWcoupL*coupHpm2charneutR + charneutWcoupR*coupHpm2charneutL)*-g/(pow(2,0.5))*coupHpm2ffpu*fabs(mneutralinoi)*mfp*ri*rc*rj;
     
-    cout << "Coupling combos for W Hpm interference: " << endl;
+    /*    cout << "Coupling combos for W Hpm interference: " << endl;
     cout.precision(12);
     cout << coupcombo1WHpm << endl;
     cout << coupcombo2WHpm << endl;
     cout << coupcombo3WHpm << endl;
     cout << coupcombo4WHpm << endl;
     cout << "1 first bit: " << charneutWcoupR*coupHpmcharneutR << " 1 second bit: " << charneutWcoupL*coupHpmcharneutL << " 1 third bit: " << -g/(pow(2,0.5))*coupHpm1ffpu << " 1 postfactor: " << fabs(mcharginoj)*mfp << endl;
-
+    */
     double int1WHpm = 0, int2WHpm = 0, int3WHpm = 0, int4WHpm = 0;
     double Eupper3 = 0;
     Eupper3 = 1/(2*fabs(mneutralinoi))*(pow(mneutralinoi,2) + pow(mcharginoj,2) - pow(mf,2) - pow(mfp,2) - 2*mf*mfp);
@@ -18134,7 +18141,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int3WHpm = 2*fabs(m1)*dgauss(gneuticharjffp3WHpmdgauss,fabs(mcharginoj), Eupper3, accuracy);
     int4WHpm = 2*fabs(m1)*dgauss(gneuticharjffp4WHpmdgauss,fabs(mcharginoj), Eupper3, accuracy);
 
-    cout << "Integrals for W Hpm interference: " << endl;
+    /*    cout << "Integrals for W Hpm interference: " << endl;
     cout << int1WHpm << endl;
     cout << int2WHpm << endl;
     cout << int3WHpm << endl;
@@ -18146,7 +18153,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << coupcombo2WHpm*int2WHpm << endl;
     cout << coupcombo3WHpm*int3WHpm << endl;
     cout << coupcombo4WHpm*int4WHpm << endl;
-
+    */
     GammaWHpm = coupcombo1WHpm*int1WHpm + coupcombo2WHpm*int2WHpm + coupcombo3WHpm*int3WHpm + coupcombo4WHpm*int4WHpm;
     cout << scientific << "GammaWHpm = " << GammaWHpm << endl;
 
@@ -18157,13 +18164,13 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     coupcombo3Wg = (charneutWcoupR*coupHpm1charneutR + charneutWcoupL*coupHpm1charneutL)*g/(pow(2,0.5))*-coupHpm1ffpd*fabs(mcharginoj)*-mf*rc;
     coupcombo4Wg = (charneutWcoupL*coupHpm1charneutR + charneutWcoupR*coupHpm1charneutL)*-g/(pow(2,0.5))*coupHpm1ffpu*fabs(mneutralinoi)*mfp*ri*rc*rj;
     
-    cout << "Coupling combos for W goldstone interference: " << endl;
+    /*    cout << "Coupling combos for W goldstone interference: " << endl;
     cout.precision(12);
     cout << coupcombo1Wg << endl;
     cout << coupcombo2Wg << endl;
     cout << coupcombo3Wg << endl;
     cout << coupcombo4Wg << endl;
-
+    */
     double int1Wg = 0, int2Wg = 0, int3Wg = 0, int4Wg = 0;
     Eupper3 = 1/(2*fabs(mneutralinoi))*(pow(mneutralinoi,2) + pow(mcharginoj,2) - pow(mf,2) - pow(mfp,2) - 2*mf*mfp);
     m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mWboson, m6 = mWboson;
@@ -18172,7 +18179,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int3Wg = 2*fabs(m1)*dgauss(gneuticharjffp3WHpmdgauss,fabs(mcharginoj), Eupper3, accuracy);
     int4Wg = 2*fabs(m1)*dgauss(gneuticharjffp4WHpmdgauss,fabs(mcharginoj), Eupper3, accuracy);
 
-    cout << "Integrals for W goldstone interference: " << endl;
+    /*    cout << "Integrals for W goldstone interference: " << endl;
     cout << int1Wg << endl;
     cout << int2Wg << endl;
     cout << int3Wg << endl;
@@ -18184,7 +18191,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     cout << coupcombo2Wg*int2Wg << endl;
     cout << coupcombo3Wg*int3Wg << endl;
     cout << coupcombo4Wg*int4Wg << endl;
-
+    */
     GammaWgoldstone = coupcombo1Wg*int1Wg + coupcombo2Wg*int2Wg + coupcombo3Wg*int3Wg + coupcombo4Wg*int4Wg;
     cout << scientific << "GammaWgoldstone = " << GammaWgoldstone << endl;
 
@@ -18447,13 +18454,13 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     coupcombo3Hg = coupHpm1ffpu*coupHpm2ffpu + coupHpm1ffpd*coupHpm2ffpd;
     coupcombo4Hg = coupHpm1ffpd*coupHpm2ffpu + coupHpm1ffpu*coupHpm2ffpd;
 
-    cout << "Coupling combos for H+ goldstone interference:" << endl;
+    /*    cout << "Coupling combos for H+ goldstone interference:" << endl;
     cout << "coupcombo1Hg = " << coupcombo1Hg << endl;
     cout << "first term = " << coupHpm1charneutL*coupHpm2charneutL << "second term = " << coupHpm1charneutR*coupHpm2charneutR << endl;
     cout << "coupcombo2Hg = " << coupcombo2Hg << endl;
     cout << "coupcombo3Hg = " << coupcombo3Hg << endl;
     cout << "coupcombo4Hg = " << coupcombo4Hg << endl;
-
+    */
     double int1Hg = 0, int2Hg = 0, int3Hg = 0, int4Hg = 0;
     m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mWboson, m6 = mHP;
     int1Hg = 2*fabs(m1)*dgauss(gneuticharjffpHg1dgauss,fabs(mcharginoj),Eupper3,accuracy);
