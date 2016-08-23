@@ -4,11 +4,11 @@ in here
 in here
 in here
 in here
-# SOFTSUSY3.7.3 SLHA compliant output
+# SOFTSUSY3.7.4 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    3.7.3       # version number
+     2    3.7.4       # version number
 Block MODSEL  # Select model
      1    1   # sugra
      3    1   # NMSSM
