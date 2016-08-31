@@ -42,7 +42,7 @@ namespace softsusy {
 			  inputParameters.display(11));
     m.setTrilinearElement(DA, 3, 3, m.displayYukawaElement(YD, 3, 3) *
 			  inputParameters.display(12));
-    m.setTrilinearElement(EA, 3, 3, m.displayYukawaElement(YD, 3, 3) *
+    m.setTrilinearElement(EA, 3, 3, m.displayYukawaElement(YE, 3, 3) *
 			  inputParameters.display(13));
     m.setTrilinearElement(UA, 1, 1, 0.);
     m.setTrilinearElement(DA, 1, 1, 0.);
