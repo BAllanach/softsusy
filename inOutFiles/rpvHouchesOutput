@@ -611,6 +611,7 @@ Block RVAMIX  # CP-odd neutral scalar mixing matrix
   4 3    4.10782871e-01   # curlyN~_{43}
   4 4    9.11733053e-01   # curlyN~_{44}
   4 5   -5.13434531e-04   # curlyN~_{45}
+In calculateDecays
 #     PDG         Width             
 DECAY 1000021     2.01541247e+01   # gluino decays
 #     PW                BR                NDA      PDG1        PDG2        PDG3       

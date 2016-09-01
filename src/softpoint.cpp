@@ -1447,6 +1447,7 @@ int main(int argc, char *argv[]) {
                    tanb, oneset, gaugeUnification, ewsbBCscale);
       nmssm.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,
                                    numPoints, ewsbBCscale);
+      //      calculateDecaysNmssm(nmssm);
       if (nmssm.displayProblem().test()) {
          cout << "# SOFTSUSY problem with NMSSM point: "
               << nmssm.displayProblem() << endl;

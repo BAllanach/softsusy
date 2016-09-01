@@ -339,6 +339,7 @@ Block msoft Q= 8.87781164e+02 # MSSM DRbar SUSY breaking parameters
      3     1.11785737e+03     # M_3(Q)
     21     1.09415433e+05     # mH1^2(Q)
     22    -3.52900850e+05     # mH2^2(Q)
+In calculateDecays
 #     PDG         Width             
 DECAY 1000021     1.92446323e+01   # gluino decays
 #     PW                BR                NDA      PDG1        PDG2        PDG3       

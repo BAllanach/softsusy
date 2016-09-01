@@ -22,9 +22,17 @@ static int neutralinoj = 0, neutralinoi = 0, AorhorH = 0;
 static double accuracy = 0.01; ///Accuracy of numerical integration in 1->3 decays
 static DoubleMatrix NeutMIX(NeutMIXdim,NeutMIXdim);
 
+void calculateDecaysNmssm(const NmssmSoftsusy & r) {
+  cout << "Trying NMSSM stuff\n";
+  cout << r.displayTrialambda() << endl;
+  MssmSoftsusy t = r.displayMssmSoft();
+  MssmSoftsusy *p = &t;
+  //calculateDecays(p);
+  cout << *p; exit(0);
+}
 
 void calculateDecays(MssmSoftsusy * r) {
-  //  cout << "In calculateDecays\n";
+  cout << "In calculateDecays\n";
   /// see physpars.h and see softsusy.h
   ///Output the parameter values we use in Calculating the Decays
   

@@ -11,6 +11,7 @@
 #ifndef DECAYS_H
 #define DECAYS_H
 
+#include "nmssmsoftsusy.h"
 #include "softsusy.h"
 //#include "Particle.h"
 #include "physpars.h"
@@ -47,6 +48,7 @@ class Particle {
 };
 
 void calculateDecays(MssmSoftsusy * r);
+void calculateDecaysNmssm(const NmssmSoftsusy & r);
 
 //static MssmSoftsusy *useInDGauss;
 
