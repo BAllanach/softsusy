@@ -47,7 +47,8 @@ class Particle {
   vector<string> Array_Comments;
 };
 
-void calculateDecays(MssmSoftsusy * r);
+void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm,
+		     bool nmssmIsIt);
 void calculateDecaysNmssm(const NmssmSoftsusy & r);
 
 //static MssmSoftsusy *useInDGauss;

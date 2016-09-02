@@ -25,14 +25,17 @@ static DoubleMatrix NeutMIX(NeutMIXdim,NeutMIXdim);
 void calculateDecaysNmssm(const NmssmSoftsusy & r) {
   cout << "Trying NMSSM stuff\n";
   cout << r.displayTrialambda() << endl;
-  MssmSoftsusy t = r.displayMssmSoft();
-  MssmSoftsusy *p = &t;
-  //calculateDecays(p);
-  cout << *p; exit(0);
 }
 
-void calculateDecays(MssmSoftsusy * r) {
+void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIsIt) { 
   cout << "In calculateDecays\n";
+
+  if (nmssmIsIt) {
+      cout << "Trying NMSSM stuff\n";
+      cout << nmssm.displayTrialambda() << endl;
+  exit(0);
+  }
+
   /// see physpars.h and see softsusy.h
   ///Output the parameter values we use in Calculating the Decays
   
