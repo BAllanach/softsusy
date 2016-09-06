@@ -50,3 +50,4 @@ doc/anc/*-eps-converted-*
 src/supermodel/supermodel/libtsil.a
 ver
 make.nmssmtools
+softsusy-*.tar.gz
