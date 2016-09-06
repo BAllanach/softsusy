@@ -1,0 +1,119 @@
+\documentclass[final,3p,times,pdflatex]{elsarticle}
+%\usepackage{axodraw}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{color} 
+\definecolor{Red}{cmyk}{0,1,1,0}
+\definecolor{Blue}{cmyk}{1,0.75,0,0}
+
+\newcommand\beq{\begin{eqnarray}}
+\newcommand\eeq{\end{eqnarray}}
+
+
+% beginning of macros
+\def\SOFTSUSY{{\tt SOFTSUSY}}
+\def\code#1{{\tt #1}}
+
+\journal{Computer Physics Communications}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\begin{flushright}
+DAMTP-2016-??\\
+\end{flushright}
+
+\title{The Calculation of Sparticle Decays in Minimal and Next-to-Minimal Supersymmetric Standard Models: {\tt SOFTSUSY4.0}}
+
+\author[damtp]{B.C.~Allanach}
+\cortext[cor1]{Corresponding author}
+\author[damtp]{T.~Cridge}
+\ead{T.Cridge@damtp.cam.ac.uk}
+\address[damtp]{DAMTP, CMS, University of Cambridge, Wilberforce road,
+  Cambridge, CB3  0WA, United Kingdom}
+\begin{abstract}
+We describe a major extension of the {\tt SOFTSUSY} spectrum calculator to
+include 
+the calculation of the decays of branching ratios and lifetimes of sparticles
+into lighter 
+sparticles, covering in the next-to-minimal supersymmetric standard model as
+well as the minimal supersymmetric standard model.
+This document
+provides an overview of the program and acts as a manual for the
+new version of {\tt SOFTSUSY}, which includes the calculation of sparticle
+decays. 
+\end{abstract}
+
+\begin{keyword}
+MSSM, NMSSM, branching ratio, lifetime
+\PACS 12.60.Jv
+\PACS 14.80.Ly
+\end{keyword}
+\end{frontmatter}
+
+\section{Program Summary}
+\noindent{\em Program title:} \SOFTSUSY{} \\
+{\em Program obtainable   from:} {\tt http://softsusy.hepforge.org/} \\
+{\em Distribution format:}\/ tar.gz \\
+{\em Programming language:} {\tt C++}, {\tt fortran} \\
+{\em Computer:}\/ Personal computer. \\
+{\em Operating system:}\/ Tested on Linux 4.4.0-36-generic, Linux 3.13.0-93-generic
+\\
+{\em Word size:}\/ 64 bits. \\
+{\em External routines:}\/ None \\
+{\em Typical running time:}\/ 0.1-1 seconds per parameter point. \\
+{\em Nature of problem:}\/ Calculating supersymmetric particle decays in the
+MSSM or the NMSSM\@, given the parameters and spectrum which has already been
+calculated by \SOFTSUSY{}, which has already solved the renormalisation group
+eqations for a two-boundary problem (i.e.\ phenomenological constraints at the
+weak 
+scale and a theoretical boundary condition on soft supersymmetry breaking
+terms at a high scale). \\
+{\em Solution method:}\/ Analytic expressions for tree-level 2 body decays and
+numerical integration for 3 body and loop-level decays.\\
+{\em Restrictions:} \SOFTSUSY~will provide a solution only in the
+perturbative regime and it
+assumes that all couplings of the model are real
+(i.e.\ $CP-$conserving). If the parameter point under investigation is
+non-physical for some reason (for example because the electroweak potential
+does not have an acceptable minimum), \SOFTSUSY{} returns an error message.
+The higher order corrections included are for the 
+MSSM ($R-$parity conserving or violating) or the real $R-$parity conserving
+NMSSM only. \\
+{\em CPC Classification:}\/ 11.1 and 11.6. \\
+{\em Does the new version supersede the previous version?:}\/ Yes. \\
+{\em Reasons for the new version:}\/ Significantly extended functionality. The
+decay rates and branching ratios of sparticles are particularly useful for
+collider searches. Also, we believe that there is not enough competition and
+consequent checks and balances for decays in the next-to-minimal
+supersymmetric standard model.\\
+{\em Summary of revisions:}\/
+Addition of the calculation of sparticle decays. 
+All 2- and important 3-body tree-level
+decays, including phenomenologically important loop-level decays
+
+\section{Introduction}
+
+\cite{Allanach:2001kg,Allanach:2013kza,Allanach:2009bv,Allanach:2011de,Allanach:2014nba,Allanach:2016rxd}
+
+\section*{Acknowledgments}
+This work has been partially supported by STFC HEP Consolidated grant 
+ST/L000385/1. We thank the Cambridge SUSY working group for helpful
+discussions. 
+
+\appendix
+
+\section{Running \SOFTSUSY~to Calculate Sparticle Decays As Well As the Spectrum}  
+\label{sec:run}
+
+\SOFTSUSY~produces an executable called \code{softpoint.x}. 
+
+\section{Expressions Used For Partial Widths}
+
+
+
+\bibliography{decays}
+\bibliographystyle{elsarticle-num}
+\end{document}
