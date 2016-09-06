@@ -6,4 +6,4 @@ Voigt.
 <li>23/08/16: Error fixed in trilinear leptonic couplings in extendedSugraBCs
 in mssmUtils.cpp. Thanks to E Bagnaschi
 <li>31/08/16: Fixed error in NMSSMTools decays introduced in 3.7.0
-
+<li>06/09/16: Added flags to softpoint.x in order to calculate decays in R-parity conserving MSSM or NMSSM. In the SLHA, use SOFTSUSY BLOCK 0 (set to 1) to switch on decay calculation. If using inputs as set on the command line, use the argument --decays. By default, SOFTSUSY won't calculate the decays.

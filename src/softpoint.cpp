@@ -35,9 +35,10 @@ void errorCall() {
   ii << "./softpoint.x amsb [mAMSB parameters] [other options]\n";
   ii << "./softpoint.x gmsb [mGMSB parameters] [other options]\n";
   ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
-  ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
-  ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
+  ii << "[other options]: --decays calculates the decays for NMSSM/MSSM\n";
   ii << "--higgsUncertainties gives an estimate of Higgs mass uncertainties\n";
+  ii << "--mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
+  ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   ii << "--two-loop-gauge-yukawa switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
@@ -79,7 +80,8 @@ void errorCall() {
 }
 
 int main(int argc, char *argv[]) {
-
+  bool calculateDecaysFlag = false;
+  
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
@@ -156,6 +158,8 @@ int main(int argc, char *argv[]) {
 	}
 	else if (starts_with(argv[i],"--higgsUncertainties")) 
 	  higgsUncertainties = true;
+	else if (starts_with(argv[i],"--decays"))
+	  calculateDecaysFlag = true;
 	else if (starts_with(argv[i],"--tol=")) 
 	  TOLERANCE = get_value(argv[i], "--tol=");
 	else if (starts_with(argv[i],"--mt=")) 
@@ -1113,6 +1117,8 @@ int main(int argc, char *argv[]) {
 		else if (block == "SOFTSUSY") {
 		  int i; double d; kk >> i >> d;
 		  switch(i) {
+		  case 0: if (int(d) > 0) calculateDecaysFlag = true;
+		    break;
 		  case 1: TOLERANCE = d; break;
 		  case 2: 
 		    MIXING = int(d); 
@@ -1401,7 +1407,7 @@ int main(int argc, char *argv[]) {
 
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
-      calculateDecays(r, nmssm, false);
+      if (calculateDecaysFlag) calculateDecays(r, nmssm, false);
       if (higgsUncertainties) {
 	int numPts = 30;
 	DoubleVector mh(numPts), mH(numPts), mA(numPts), mHp(numPts);
@@ -1447,7 +1453,7 @@ int main(int argc, char *argv[]) {
                    tanb, oneset, gaugeUnification, ewsbBCscale);
       nmssm.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,
                                    numPoints, ewsbBCscale);
-      calculateDecays(r, nmssm, true);
+      if (calculateDecaysFlag) calculateDecays(r, nmssm, true);
       if (nmssm.displayProblem().test()) {
          cout << "# SOFTSUSY problem with NMSSM point: "
               << nmssm.displayProblem() << endl;

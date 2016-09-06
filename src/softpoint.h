@@ -31,8 +31,6 @@
 #include "rpvneut.h"
 using namespace softsusy;
 
-
-
 /// string routine for options
 bool starts_with(const std::string& str,
 		 const std::string& prefix) {
