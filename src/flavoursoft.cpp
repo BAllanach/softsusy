@@ -1234,6 +1234,37 @@ istream & operator >>(istream & left, flavourPhysical &s) {
   return left;
 }
 
+DoubleMatrix extractFlavourSubMatrix(const DoubleMatrix& M, int gen)
+{
+   DoubleMatrix MnoFV(2,2);
+   MnoFV(1,1) = M(gen,gen);
+   MnoFV(1,2) = M(gen,gen+3);
+   MnoFV(2,1) = M(gen+3,gen);
+   MnoFV(2,2) = M(gen+3,gen+3);
+   return MnoFV;
+}
+
+DoubleVector extractFlavourSubVector(const DoubleVector& v, int gen)
+{
+   DoubleVector vnoFV(2);
+   vnoFV(1) = v(gen);
+   vnoFV(2) = v(gen+3);
+   return vnoFV;
+}
+
+std::pair<DoubleVector, double> extractFlavour(
+   const DoubleVector& m, const DoubleMatrix& Z, int gen)
+{
+   const DoubleVector mnoFV(extractFlavourSubVector(m, gen));
+   const DoubleMatrix ZnoFV(extractFlavourSubMatrix(Z, gen));
+   const DoubleVector mordered(mnoFV.sort());
+   const double theta = asin(ZnoFV(1,2));
+
+   return std::pair<DoubleVector, double>(mordered, theta);
+}
+
+
+  
 // calculates masses all at tree-level in the DRbar scheme, useful for
 // radiative corrections. 
 void FlavourMssmSoftsusy::calcDrBarPars() {
@@ -1369,28 +1400,30 @@ void FlavourMssmSoftsusy::calcDrBarPars() {
   drBarPars s(displayDrBarPars());
   int b1Pos = 0, t1Pos = 0, tau1Pos = 0;
   for(i=1; i<=3; i++) {
+     {
+        const std::pair<DoubleVector,double> msu =
+           extractFlavour(uSqMasses, uSqMixT.transpose(), i);
+        s.mu(1,i) = msu.first(1);
+        s.mu(2,i) = msu.first(2);
+        if (i == 3) s.thetat = msu.second;
+     }
 
-    uSqMixT.displayRow(i).max(j); 
-    s.mu(1, i) = uSqMasses(j);
-    if (i == 3) t1Pos = j;
-    uSqMixT.displayRow(i+3).max(j); 
-    s.mu(2, i) = uSqMasses(j);
+     {
+        const std::pair<DoubleVector,double> msd =
+           extractFlavour(dSqMasses, dSqMixT.transpose(), i);
+        s.md(1,i) = msd.first(1);
+        s.md(2,i) = msd.first(2);
+        if (i == 3) s.thetab = msd.second;
+     }
 
-    dSqMixT.displayRow(i).max(j); 
-    s.md(1, i) = dSqMasses(j);
-    if (i == 3) b1Pos = j;
-    dSqMixT.displayRow(i+3).max(j); 
-    s.md(2, i) = dSqMasses(j);
-
-    eSqMixT.displayRow(i).max(j); 
-    s.me(1, i) = eSqMasses(j);
-    if (i == 3) tau1Pos = j;
-    eSqMixT.displayRow(i+3).max(j); 
-    s.me(2, i) = eSqMasses(j);
+     {
+        const std::pair<DoubleVector,double> mse =
+           extractFlavour(eSqMasses, eSqMixT.transpose(), i);
+        s.me(1,i) = mse.first(1);
+        s.me(2,i) = mse.first(2);
+        if (i == 3) s.thetatau = mse.second;
+     }
   }
-  s.thetat   = asin(uSqMixT(6, t1Pos));
-  s.thetab   = asin(dSqMixT(6, b1Pos));
-  s.thetatau = asin(eSqMixT(6, tau1Pos));
 
   DoubleMatrix uMns(displayMns());
   DoubleMatrix mNuSq(uMns.transpose() * Ve.transpose() * 

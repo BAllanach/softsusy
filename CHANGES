@@ -6,4 +6,4 @@ Voigt.
 <li>23/08/16: Error fixed in trilinear leptonic couplings in extendedSugraBCs
 in mssmUtils.cpp. Thanks to E Bagnaschi
 <li>31/08/16: Fixed error in NMSSMTools decays introduced in 3.7.0
-
+<li>03/11/16: Eigenvalue assignment for squark masses sometimes wrong in flavoured version. Thanks to A Voigt
