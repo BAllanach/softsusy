@@ -98,13 +98,15 @@ public:
   /// Changes the length of a vector - copies as many elements of old one as
   /// possible, and fills any extra up with zeroes
   void setEnd(int e);
-
+  /// returns absolute of vector
+  DoubleVector abs() const { return DoubleVector(std::abs(x), start, end); }
 
   double norm() const;
   /// applies fn to every element in a vector
   DoubleVector apply(double (*fn)(double)) const { 
     return DoubleVector(x.apply(fn),start,end); 
   }
+  
   double nmin(int & p) const;
   double max() const { return x.max(); }///< maximum element in vector
 
@@ -120,8 +122,11 @@ public:
   }
 
   double min(int & p) const;///< minimum element in vector
+
+  /// returns absolute maximum
+  double absmax(int & p) const { return abs().max(p); }
   /// Returns sum of absolute values of all elements
-  double sumElements() const { return abs(x).sum(); }  
+  double sumElements() const { return std::abs(x).sum(); }  
   std::size_t size() const { return x.size(); }
   
   void swap(int i, int j); ///< swaps ith and jth elements of a vector
@@ -798,5 +803,6 @@ inline Complex ComplexMatrix::display(int i, int j) const {
 #endif
   return elmt(i,j); 
 }  
+
 
 #endif
