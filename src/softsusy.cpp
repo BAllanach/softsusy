@@ -2399,8 +2399,9 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
      (b0(p, mg, mstop1, q) - 
       b0(p, mg, mstop2, q)));
 
-  /* This is defunct now with new corrections
-  if (USE_TWO_LOOP_GAUGE_YUKAWA == false || included_thresholds % 2 == 0) {
+  /* This is defunct now if new corrections are used but they are provided for
+     backward compatibility with 3.7.0 or before */
+#ifndef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   double mt = forLoops.mt;
   /// 2 loop QCD involving MSSM sparticles -- hep-ph/0210258, in the
   /// approximation that all squarks and the gluino 
@@ -2428,7 +2429,7 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
      cf * aq / m * (7.0 / 3.0 - 11.0 / 3.0 * logMoQsq + 6.0 * log(mt / q)) +
      ca * aq / m * (-8.0 / 3.0 + 4.0 * logMoQsq));
   stopGluino += twoLoopMssm;
-  } */
+#endif
 
   return stopGluino;
 }
