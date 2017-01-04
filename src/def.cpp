@@ -82,6 +82,8 @@ namespace softsusy {
   double minBR = 1.0e-6;
   /// Default: calculate three-body decays
   bool threeBodyDecays = true;
+  /// Default: don't output partial widths in decays
+  bool outputPartialWidths = false;
   
   /// Controls the use of MSSM three-loop RGEs
   bool USE_THREE_LOOP_RGE = false;
