@@ -99,7 +99,11 @@ namespace softsusy{
   /// A handy global variable for random number generator
   extern long idummySave;
   extern int numTry;
-
+  /// minimum branching ratio that will get printed out
+  extern double minBR;
+  /// If false, don't calculate the three-body decays
+  extern bool threeBodyDecays;
+  
   /// Controls the use of MSSM three-loop RGEs
   extern bool USE_THREE_LOOP_RGE;
 

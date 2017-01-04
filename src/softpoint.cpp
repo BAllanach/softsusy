@@ -36,6 +36,8 @@ void errorCall() {
   ii << "./softpoint.x gmsb [mGMSB parameters] [other options]\n";
   ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
   ii << "[other options]: --decays calculates the decays for NMSSM/MSSM\n";
+  ii << "--minBR=<value> sets the minimum branching ratio printed\n";
+  ii << "--dontCalculateThreeBody switches the 3-body decay width calculations off\n";
   ii << "--higgsUncertainties gives an estimate of Higgs mass uncertainties\n";
   ii << "--mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
   ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
@@ -160,6 +162,10 @@ int main(int argc, char *argv[]) {
 	  higgsUncertainties = true;
 	else if (starts_with(argv[i],"--decays"))
 	  calculateDecaysFlag = true;
+	else if (starts_with(argv[i],"--minBR="))
+	  minBR = get_value(argv[i], "--minBR=");
+	else if (starts_with(argv[i],"--dontCalculateThreeBody"))
+	  threeBodyDecays = false;
 	else if (starts_with(argv[i],"--tol=")) 
 	  TOLERANCE = get_value(argv[i], "--tol=");
 	else if (starts_with(argv[i],"--mt=")) 
@@ -1263,6 +1269,18 @@ int main(int argc, char *argv[]) {
 		    break;
 		  }
 #endif
+		  case 24: {
+		    if (d < 1. && d > 0.) minBR = d;
+		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 24 (should be between 0 and 1)\n";
+		    break;
+		  }
+		  case 25: {
+		    int num = int(d + EPSTOL);
+		    if (num == 0) threeBodyDecays = false;
+		    else if (num == 1) threeBodyDecays = true;
+		    else cout << "#WARNING incorrect setting for SOFTSUSY Block 25 (should be either 0 or 1)\n";
+		    break;
+		  }
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "

@@ -22,7 +22,7 @@
 \begin{frontmatter}
 
 \begin{flushright}
-DAMTP-2016-??\\
+DAMTP-2017-??\\
 \end{flushright}
 
 \title{The Calculation of Sparticle Decays in Minimal and Next-to-Minimal Supersymmetric Standard Models: {\tt SOFTSUSY4.0}}
@@ -38,12 +38,14 @@ We describe a major extension of the {\tt SOFTSUSY} spectrum calculator to
 include 
 the calculation of the decays of branching ratios and lifetimes of sparticles
 into lighter 
-sparticles, covering in the next-to-minimal supersymmetric standard model as
-well as the minimal supersymmetric standard model.
+sparticles, covering  the next-to-minimal supersymmetric standard model
+(NMSSM) as 
+well as the minimal supersymmetric standard model (MSSM).
 This document
-provides an overview of the program and acts as a manual for the
+acts as a manual for the
 new version of {\tt SOFTSUSY}, which includes the calculation of sparticle
-decays. 
+decays. We collect explicit expressions for the various partial widths in the
+appendix. 
 \end{abstract}
 
 \begin{keyword}
@@ -64,39 +66,41 @@ MSSM, NMSSM, branching ratio, lifetime
 {\em Word size:}\/ 64 bits. \\
 {\em External routines:}\/ None \\
 {\em Typical running time:}\/ 0.1-1 seconds per parameter point. \\
-{\em Nature of problem:}\/ Calculating supersymmetric particle decays in the
+{\em Nature of problem:}\/ Calculating supersymmetric particle partial decay
+widths in the 
 MSSM or the NMSSM\@, given the parameters and spectrum which has already been
-calculated by \SOFTSUSY{}, which has already solved the renormalisation group
-eqations for a two-boundary problem (i.e.\ phenomenological constraints at the
-weak 
-scale and a theoretical boundary condition on soft supersymmetry breaking
-terms at a high scale). \\
+calculated by \SOFTSUSY{}. \\
 {\em Solution method:}\/ Analytic expressions for tree-level 2 body decays and
-numerical integration for 3 body and loop-level decays.\\
-{\em Restrictions:} \SOFTSUSY~will provide a solution only in the
-perturbative regime and it
-assumes that all couplings of the model are real
-(i.e.\ $CP-$conserving). If the parameter point under investigation is
-non-physical for some reason (for example because the electroweak potential
-does not have an acceptable minimum), \SOFTSUSY{} returns an error message.
-The higher order corrections included are for the 
-MSSM ($R-$parity conserving or violating) or the real $R-$parity conserving
+one-dimensional numerical integration for 3 body and loop-level decays.\\
+{\em Restrictions:} Decays are only calculated in the real $R-$parity conserving
+MSSM  or the real $R-$parity conserving
 NMSSM only. \\
 {\em CPC Classification:}\/ 11.1 and 11.6. \\
 {\em Does the new version supersede the previous version?:}\/ Yes. \\
 {\em Reasons for the new version:}\/ Significantly extended functionality. The
 decay rates and branching ratios of sparticles are particularly useful for
-collider searches. Also, we believe that there is not enough competition and
-consequent checks and balances for decays in the next-to-minimal
-supersymmetric standard model.\\
+collider searches. Decays calculated in the NMSSM will be a particularly
+useful check of the other programs in the literature.\\
 {\em Summary of revisions:}\/
 Addition of the calculation of sparticle decays. 
-All 2- and important 3-body tree-level
-decays, including phenomenologically important loop-level decays
+All 2-body and important 3-body tree-level
+decays, including phenomenologically important loop-level decays (notably,
+higgs decays to $gg$ and $\gamma \gamma$). Loop corrections are added to higgs
+decays to $q \bar q$ for quarks $q$ of any flavour.
 
 \section{Introduction}
 
 \cite{Allanach:2001kg,Allanach:2013kza,Allanach:2009bv,Allanach:2011de,Allanach:2014nba,Allanach:2016rxd}
+
+\section{Conventions and Method}
+{\em Tom: Please set up conventions for use later in the appendix. You can use
+any specified in the other SOFTSUSY manuals, provided you explicitly refer to
+them, saying that's what you're using.}
+
+For two body decay modes, partial widths are explicitly coded in order to
+provide fast evaluation. For three body decay modes, the phase space integral
+has been reduced to a one-dimensional integral analytically, which is then
+performed using adaptive Gaussian numerical integration~\cite{numRec}.
 
 \section*{Acknowledgments}
 This work has been partially supported by STFC HEP Consolidated grant 
@@ -105,12 +109,91 @@ discussions.
 
 \appendix
 
-\section{Running \SOFTSUSY~to Calculate Sparticle Decays As Well As the Spectrum}  
+\section{Running \SOFTSUSY~to Calculate Sparticle Decays}  
 \label{sec:run}
 
-\SOFTSUSY~produces an executable called \code{softpoint.x}. 
+\SOFTSUSY~produces an executable called \code{softpoint.x}. It can be run by
+the command
+\begin{verbatim}
+./softpoint.x leshouches < inOutFiles/lesHouchesInput
+\end{verbatim}
+where the file \code{inOutFiles/lesHouchesInput}~contains an ASCII file
+for input
+prepared in SUSY Les Houches Accord (SLHA)~\cite{Skands:2003cj} or
+SLHA2~\cite{Allanach:2008qq} format. 
+A \code{SOFTSUSY}-specific \code{Block}~of the SLHA input file is provided in
+the case that decays are required:
+\begin{verbatim}
+Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
+    0   1.000000000e+00      # Calculate decays in output (only for RPC (N)MSSM)
+\end{verbatim}
+If this block is absent, or if the numerical value is instead
+\code{0.000000000e+00}, then decays will not be calculated. 
+Other input options are available for changing the behaviour of the program as
+regards sparticle decays:
+\begin{verbatim}
+Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
+   24   1.000000000e-06      # If decay BR is below this number, don't output
+   25   1.000000000e+00	     # If set to 0, don't calculate 3-body decays (1=default)
+\end{verbatim}
+Thus, parameter \code{24}~under this block sets the smallest decay branching
+ratio that will be output (the default is, as listed, $10^{-6}$) whereas 
+parameter \code{25}~can be used to instruct \code{SOFTSUSY}~not to calculate
+the 3-body modes, which are more computationally intensive, requiring
+numerical integration. 
 
-\section{Expressions Used For Partial Widths}
+If command-line input is required (see
+Refs.~\cite{Allanach:2001kg,Allanach:2013kza} 
+for a full description), the user can use the argument 
+\code{--decays}~to tell \SOFTSUSY~to perform the decay calculation. 
+The command line argument \code{--minBR=<value>}~tells SOFTSUSY which minimum
+branching ratio to print out in each decay table (where \code{<value>} is
+replaced by a numerical value between \code{0}~and \code{1}), whereas the
+command line argument \code{--dontCalculateThreeBody}~tells SOFTSUSY {\em
+  not}\/ to calculate the 3-body decays of sparticles in order to save time. 
+
+\section{Sample Output}
+The output comes in the standard SLHA/SLHA2
+format~\cite{Skands:2003cj,Allanach:2008qq}. A sample of the part relevant for
+decays is shown here:
+{\small
+\begin{verbatim}
+#     PDG         Width             
+DECAY 1000021     1.93499813e+01   # gluino decays
+#     PW                BR                NDA      PDG1        PDG2        PDG3       
+      3.02052144e-01    1.56099450e-02      2     1          -1000001     0         # ~g -> d ~d_L*
+      3.02052144e-01    1.56099450e-02      2    -1           1000001     0         # ~g -> db ~d_L
+      6.40860115e-01    3.31194178e-02      2     1          -2000001     0         # ~g -> d ~d_R*
+      6.40860115e-01    3.31194178e-02      2    -1           2000001     0         # ~g -> db ~d_R
+      3.20263354e-01    1.65510937e-02      2     2          -1000002     0         # ~g -> u ~u_L*
+      3.20263354e-01    1.65510937e-02      2    -2           1000002     0         # ~g -> ub ~u_L
+      6.11876735e-01    3.16215672e-02      2     2          -2000002     0         # ~g -> u ~u_R*
+      6.11876735e-01    3.16215672e-02      2    -2           2000002     0         # ~g -> ub ~u_R
+      3.02068273e-01    1.56107786e-02      2     3          -1000003     0         # ~g -> s ~s_L*
+      3.02068273e-01    1.56107786e-02      2    -3           1000003     0         # ~g -> sb ~s_L
+      6.40883736e-01    3.31206386e-02      2     3          -2000003     0         # ~g -> s ~s_R*
+      6.40883736e-01    3.31206386e-02      2    -3           2000003     0         # ~g -> sb ~s_R
+      3.20253636e-01    1.65505915e-02      2     4          -1000004     0         # ~g -> c ~c_L*
+      3.20253636e-01    1.65505915e-02      2    -4           1000004     0         # ~g -> cb ~c_L
+      6.11875992e-01    3.16215288e-02      2     4          -2000004     0         # ~g -> c ~c_R*
+      6.11875992e-01    3.16215288e-02      2    -4           2000004     0         # ~g -> cb ~c_R
+      1.04760821e+00    5.41400117e-02      2     5          -1000005     0         # ~g -> b ~b_1*
+      1.04760821e+00    5.41400117e-02      2    -5           1000005     0         # ~g -> bb ~b_1
+      6.79062885e-01    3.50937231e-02      2     5          -2000005     0         # ~g -> b ~b_2*
+      6.79062885e-01    3.50937231e-02      2    -5           2000005     0         # ~g -> bb ~b_2
+      4.19818556e+00    2.16960704e-01      2     6          -1000006     0         # ~g -> t ~t_1*
+      4.19818556e+00    2.16960704e-01      2    -6           1000006     0         # ~g -> tb ~t_1
+      [ ... ]
+\end{verbatim}}
+In concordance with SLHA conventions, the widths/partial widths
+(\code{PW}) are output 
+in units 
+of GeV. \code{NDA}~lists the number of daughter particles, \code{PDGi}~the
+Particle Data Group~(PDG) code of daughter \code{i} (Section 43 of
+Ref.~\cite{Olive:2016xmw}). 
+The comment at the end of each line after \code{\#}~lists the decay
+mode for easy perusal by the eye.
+\section{Explicit Expressions Used For Partial Widths}
 
 
 
