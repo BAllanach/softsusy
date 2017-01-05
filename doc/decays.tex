@@ -25,7 +25,7 @@
 DAMTP-2017-??\\
 \end{flushright}
 
-\title{The Calculation of Sparticle Decays in Minimal and Next-to-Minimal Supersymmetric Standard Models: {\tt SOFTSUSY4.0}}
+\title{The Calculation of Sparticle and Higgs Decays in the Minimal and Next-to-Minimal Supersymmetric Standard Models: {\tt SOFTSUSY4.0}}
 
 \author[damtp]{B.C.~Allanach}
 \cortext[cor1]{Corresponding author}
@@ -82,17 +82,101 @@ decay rates and branching ratios of sparticles are particularly useful for
 collider searches. Decays calculated in the NMSSM will be a particularly
 useful check of the other programs in the literature.\\
 {\em Summary of revisions:}\/
-Addition of the calculation of sparticle decays. 
+Addition of the calculation of sparticle and Higgs decays. 
 All 2-body and important 3-body tree-level
 decays, including phenomenologically important loop-level decays (notably,
-higgs decays to $gg$ and $\gamma \gamma$). Loop corrections are added to higgs
+higgs decays to $gg$ and $\gamma \gamma$). Next-to-leading order corrections
+are added to higgs 
 decays to $q \bar q$ for quarks $q$ of any flavour.
 
 \section{Introduction}
+The phenomenology of simple supersymmetric extensions of the Standard Model
+has become something of an industry in particle physics of late. The potential
+of such models to explain the technical hierarchy problem (i.e.\ the relative
+smallness of the Higgs mass as compared to the Planck or gauge unification
+scale) has motivated its study. The models have potential implications for
+cosmology as well as for collider physics. Several different computationally
+tools are necessary for the study of the models'
+phenomenology~\cite{Allanach:2008zn}. The initial step is a calculation of the
+supersymmetric spectrum, as well as particle couplings. This is the step 
+that the computer program \SOFTSUSY~has previously performed, in the
+$R-$parity conserving MSSM~\cite{Allanach:2001kg}, the $R-$parity conserving
+NMSSM~\cite{Allanach:2013kza} and the $R-$parity violating
+MSSM~\cite{Allanach:2009bv}. By adding higher order corrections, the program
+has been extended~\cite{Allanach:2011de} to calculate neutrino masses and
+mixings in the presence of lepton number violation. Further non-trivial
+additions of higher order corrections result in increased precision for the
+gauge 
+and Yukawa couplings~\cite{Allanach:2014nba} and the squark and gluino pole
+masses~\cite{Allanach:2016rxd}. Other publicly available computer programs
+exist which perform the task of computing the supersymmetric spectrum: for the
+MSSM, there is \code{FLEXIBLESUSY}~\cite{Athron:2014yba}, 
+\code{ISASUSY}~\cite{Paige:2003mg}, \code{SUSEFLAV},
+\code{SUSPECT}~\cite{Djouadi:2002ze}
+and \code{sPHENO}~\cite{Porod:2003um}. In the NMSSM, there is only one
+stand-alone dedicated tool for spectrum calculation:
+\code{NMSSMTools}~\cite{Ellwanger:2004xm,Ellwanger:2006rn}, whereas the
+\code{SARAH}~\cite{Staub:2008uz} framework can be combined with
+\code{FLEXIBLESUSY} or \code{sPHENO} in order to calculate the spectrum. 
+The plethora of computer programs is useful: some of them use different
+approximations and extend to different models. Even the programs having the
+same apparent approximations differ in their numerical output because the
+higher order corrections not included are implicitly different: both for the
+sparticle spectrum~\cite{Allanach:2003jw} and the Higgs
+masses~\cite{Allanach:2004rh,Staub:2015aea,deFlorian:2016spz}. Thus, the size of
+differences between the programs for observables calculated at the same order
+or approximation serve as an rough estimate of the size of higher order
+corrections. In some cases, different approximations are used and these can
+help elucidate 
 
-\cite{Allanach:2001kg,Allanach:2013kza,Allanach:2009bv,Allanach:2011de,Allanach:2014nba,Allanach:2016rxd}
+In order to provide predictions for future sparticle and higgs searches at
+colliders, or indeed in order to interpret searches there in terms 
+of the MSSM and NMSSM, a cross-section estimate is required, as well as 
+simulations of collisions are required in order to
+estimate acceptances and efficiencies. For simulations, estimates of the
+various decay partial widths for the sparticles and Higgs
+particles are required. Some Monte-Carlo event generators perform this task in
+the MSSM, for example \code{PYTHIA}~\cite{Sjostrand:2014zea} or
+\code{HERWIG7}~\cite{Bahr:2008pv}, but 
+there also exist dedicated tools like
+\code{SUSYHIT}~\cite{Djouadi:2006bz} or \code{HDECAY}~\cite{Djouadi:1997yw} and
+\code{FeynHiggs}~\cite{Heinemeyer:1998yj} (the latter two
+specialising in the 
+Higgs boson decays). \code{sPHENO}~also contains a decay
+calculation for the MSSM. In the NMSSM however, the options for calculating
+sparticle and 
+Higgs decays are rather slim: \code{NMSSMTools}~being the only stand-alone
+option. Previous versions of \code{SOFTSUSY}~contained an interface to
+\code{NMSSMTools}~so that the NMSSM spectrum and couplings could then be fed
+into the program in order to predict sparticle and Higgs boson partial decay
+widths. 
 
-\section{Conventions and Method}
+The present paper describes a significant extension in functionality in
+\code{SOFTSUSY}: to calculate and output the various partial widths for the
+decays of sparticles and Higgs bosons in the MSSM and in the NMSSM. 
+Emphasis has been placed on speed of execution, preferring to perform as much
+of the calculation analytically as is practicable. 
+We hope
+that this addition of functionality to \code{SOFTSUSY}~will facilitate
+collider studies of sparticle and supersymmetric 
+Higgs searches: both through the study of differences with the other programs
+as an estimate of the size of theoretical uncertainty in the prediction, and 
+through a fast and unified computation. 
+
+The rest of the paper is organised as follows: in Section~\ref{sec:conv}, we 
+specify the conventions used in this paper and give some details about the
+method of computation. Next, in section~\ref{sec:comp}, we provide a few
+examples of comparison tests 
+with a couple of other publicly available tools for the MSSM and the NMSSM,
+before summing up in Section~\ref{sec:sum}. We show how to run the program and
+provide explicit flags for controlling its behaviour in
+Appendix~\ref{sec:run}, providing some sample output in
+Appendix~\ref{sec:out}. 
+We provide explicit formulae for
+the partial widths in Appendix~\ref{sec:exp}: these have not been collected
+together in one reference before. 
+
+\subsection{Conventions and Method \label{sec:conv}}
 {\em Tom: Please set up conventions for use later in the appendix. You can use
 any specified in the other SOFTSUSY manuals, provided you explicitly refer to
 them, saying that's what you're using.}
@@ -102,6 +186,34 @@ provide fast evaluation. For three body decay modes, the phase space integral
 has been reduced to a one-dimensional integral analytically, which is then
 performed using adaptive Gaussian numerical integration~\cite{numRec}.
 
+
+
+\section{Comparison with SUSYHIT and NMSSMTools \label{sec:comp}}
+
+We performed specific and fairly extensive tests for particular benchmark
+points with \code{sPHENO} and ~\code{SUSYHIT}. {\em Tom, please describe here
+  something about how these tests were performed, stating the level of
+  agreement etc}.
+
+{\em Tom: then, we want a few example results to show, I guess.}
+
+\section{Summary \label{sec:sum}}
+The fast automated computation of the spectrum and decays of particles in the
+MSSM and the NMSSM is now possible all within \code{SOFTSUSY}, and they are
+necessary steps in the simulation of collider signatures, required for both
+the prediction and interpretation of the collider signatures. The inclusion
+of sparticle and Higgs decay partial widths and should aid in estimating 
+theoretical uncertainties, particularly in regard to decays in the NMSSM,
+where there are few other publicly available tools. 
+\code{SOFTSUSY}~has been routinely used by the ATLAS and CMS experiments to
+interpret their searches for supersymmetric particles, and so having the
+decays calculated within the same package as the spectrum should be easier. 
+The usual SLHA and SLHA2
+conventions for input and output have been followed in order to facilitate
+`joining up' \code{SOFTSUSY}~with other observable calculating programs in a
+bug-free manner, for example programs that perform Monte-Carlo event
+simulation. 
+
 \section*{Acknowledgments}
 This work has been partially supported by STFC HEP Consolidated grant 
 ST/L000385/1. We thank the Cambridge SUSY working group for helpful
@@ -109,8 +221,8 @@ discussions.
 
 \appendix
 
-\section{Running \SOFTSUSY~to Calculate Sparticle Decays}  
-\label{sec:run}
+\section{Running \SOFTSUSY~to Calculate Sparticle Decays  
+\label{sec:run}}
 
 \SOFTSUSY~produces an executable called \code{softpoint.x}. It can be run by
 the command
@@ -152,7 +264,7 @@ replaced by a numerical value between \code{0}~and \code{1}), whereas the
 command line argument \code{--dontCalculateThreeBody}~tells SOFTSUSY {\em
   not}\/ to calculate the 3-body decays of sparticles in order to save time. 
 
-\section{Sample Output}
+\section{Sample Output \label{sec:out}}
 The output comes in the standard SLHA/SLHA2
 format~\cite{Skands:2003cj,Allanach:2008qq}. A sample of the part relevant for
 decays is shown here:
@@ -183,7 +295,7 @@ DECAY 1000021     1.93499813e+01   # gluino decays
       6.79062885e-01    3.50937231e-02      2    -5           2000005     0         # ~g -> bb ~b_2
       4.19818556e+00    2.16960704e-01      2     6          -1000006     0         # ~g -> t ~t_1*
       4.19818556e+00    2.16960704e-01      2    -6           1000006     0         # ~g -> tb ~t_1
-      [ ... ]
+[ ... ]
 \end{verbatim}}
 In concordance with SLHA conventions, the widths/partial widths
 (\code{PW}) are output 
@@ -194,7 +306,7 @@ Particle Data Group~(PDG) code of daughter \code{i} (Section 43 of
 Ref.~\cite{Olive:2016xmw}). 
 The comment at the end of each line after \code{\#}~lists the decay
 mode for easy perusal by the eye.
-\section{Explicit Expressions Used For Partial Widths}
+\section{Explicit Expressions Used For Partial Widths \label{sec:exp}}
 
 
 
