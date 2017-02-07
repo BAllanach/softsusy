@@ -6584,11 +6584,13 @@ c             running (DRbar) parameters, evaluated at the scale Q.
 
 c     ADDED by BEN: guards against NANs when sin theta is zero!
       if (dabs(st).lt.1.0d-10) then
-         if (st.ge.0.0d0) st=1.0d-10
-         else 
+         if (st.ge.0.0d0) then
+            st=1.0d-10
+         else
             st=-1.0d-10
          endif
-         ct = sqrt(1.d0-st*st)
+      endif
+      ct = sqrt(1.d0-st*st)
 c     end of addition by BEN 13/6/12
       
       s2t = 2d0*ct*st

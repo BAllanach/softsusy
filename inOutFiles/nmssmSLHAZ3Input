@@ -33,6 +33,8 @@ Block SOFTSUSY               # SOFTSUSY specific inputs
 #   19   1.000000000e+00      # Include 3-loop SUSY RGEs
 #   20   1.000000000e+00      # Include 2-loop gauge/Yukawa thresholds
 #   22   1.000000000e+00      # Include 2-loop sparticle mass thresholds
+   24   1.000000000e-06      # If decay BR is below this number, don't output
+   25   1.000000000e+00	     # If set to 0, don't calculate 3-body decays (1=default)
 Block VCKMIN                 # input parameters for CKM matrix
     1   2.272000000e-01      # lambda
     2   8.180000000e-01      # A

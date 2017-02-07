@@ -9398,7 +9398,21 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     }
     out.precision(nn);
   }
-  
+
+    MssmSoftsusy NmssmSoftsusy::convertToMssm() const {
+    MssmSoftsusy r;
+    r = displayMssmSoft();
+    /// We need to re-do the Higgs sector and re-do the neutralino sector
+    r.runto(r.displayMsusy()); int accuracy = 3;
+    sPhysical a(r.displayPhys());
+    a.mh0.setEnd(2); a.mixh0 = DoubleMatrix(2, 2);
+    a.mneut.setEnd(4); a.mixNeut = DoubleMatrix(4, 4);
+    
+    r.physical(accuracy);
+    
+    return r;
+  };
+
 } /// namespace softsusy
 
 #endif

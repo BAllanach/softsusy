@@ -82,6 +82,8 @@ namespace softsusy {
       return NmssmSusy(displayMssmSusy(), displayNmssmSusyPars());
     }
 
+    MssmSoftsusy convertToMssm() const;
+    
     /// PA: obtains NMSSM P1-sfermion-sfermion couplings 
     //for 3rd generation sfermions
     void  P1SfSfCouplings(DoubleMatrix & lTP1Lr, DoubleMatrix & lBP1Lr, 
