@@ -117,7 +117,7 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
 
    double runmt = 0, runmb = 0, runmtau = 0, runmc =0, runms = 0, runmd = 0, runmu = 0, runmel = 0, runmmu = 0, Au = 0, Ad = 0, Ac = 0, As =0, At =0, Ab =0, Atau = 0, Ae =0, Amu =0, mueff=0;
 
-   double alphasAtMA = 0, alphaAtMA = 0, mbAtMA = 0, mtAtMA = 0, mcAtMA = 0, msAtMA = 0, alphasAtMH = 0, alphaAtMH = 0, mbAtMH = 0, mtAtMH = 0, mcAtMH = 0, msAtMH = 0, alphasAtMh = 0, alphaAtMh = 0, mbAtMh = 0, mtAtMh = 0, mcAtMh = 0, msAtMh = 0, alphasAtMA2 = 0, alphaAtMA2 = 0, mbAtMA2 = 0, mtAtMA2 = 0, mcAtMA2 = 0, alphasAtMH3 = 0, alphaAtMH3 = 0, mbAtMH3 = 0, mtAtMH3 = 0, mcAtMH3 = 0, msAtMH3 = 0; ///For running couplings and masses for higgs 1-loop decays
+   double alphasAtMA = 0, alphaAtMA = 0, mbAtMA = 0, mtAtMA = 0, mcAtMA = 0, msAtMA = 0, alphasAtMH = 0, alphaAtMH = 0, mbAtMH = 0, mtAtMH = 0, mcAtMH = 0, msAtMH = 0, alphasAtMh = 0, alphaAtMh = 0, mbAtMh = 0, mtAtMh = 0, mcAtMh = 0, msAtMh = 0, alphasAtMA2 = 0, alphaAtMA2 = 0, mbAtMA2 = 0, mtAtMA2 = 0, mcAtMA2 = 0, alphasAtMH3 = 0, alphaAtMH3 = 0, mbAtMH3 = 0, mtAtMH3 = 0, mcAtMH3 = 0; ///For running couplings and masses for higgs 1-loop decays
    double g3atmh0 = 0, g3atmH0 = 0, g3atmA0 = 0;
    double mt = 0, mb = 0, mc = 0, ms = 0, mup = 0, mdo = 0, mel = 0, mmu = 0, mtau = 0; ///Quark pole masses for general use
 
@@ -286,7 +286,6 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
  mbAtMH3 = pow(2,0.5)*nmssmrun.displayMwRun()*cos(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YD)(3,3)/nmssmrun.displayGaugeCoupling(2);
  mtAtMH3 = pow(2,0.5)*nmssmrun.displayMwRun()*sin(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YU)(3,3)/nmssmrun.displayGaugeCoupling(2);
  mcAtMH3 = pow(2,0.5)*nmssmrun.displayMwRun()*sin(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YU)(2,2)/nmssmrun.displayGaugeCoupling(2);
- msAtMH3 = pow(2,0.5)*nmssmrun.displayMwRun()*cos(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YD)(2,2)/nmssmrun.displayGaugeCoupling(2);
 
  nmssmrun.runto(nmssmrun.displayPhys().mA0(1));
  alphasAtMA =  pow(nmssmrun.displayGaugeCoupling(3),2)/(4*PI);
@@ -1242,14 +1241,6 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
   ParticleNeutralino5.total_width = 0.0;
   ParticleNeutralino5.two_width = 0.0;
   ParticleNeutralino5.three_width = 0.0;
-
-  
-  ///TEST OF DGAUSS
-
-  double (*fp) (double);
-  double area = 0;
-  fp = fdgauss;
-  area = dgauss(fp,0,1,0.01);
 
   ///Initialise NeutMIX before using it in the integrals
   for (int i = 1; i<=NeutMIXdim; i++) {
@@ -8751,7 +8742,7 @@ double higgsAamplitudedecayhiggsHZboson (double m1, double m2, double m3, double
 
 double higgsAamplitudedecayhiggshorHZbosonNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double thetaA, DoubleMatrix CPEMix, int pseudoscalar, int higgs) ///m2 must be Z mass
 {
-  double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, costhetaW=0;
+  double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
   
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
@@ -8761,8 +8752,6 @@ double higgsAamplitudedecayhiggshorHZbosonNMSSM (double m1, double m2, double m3
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
-    
-    costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
     
     if (pseudoscalar == 1 && higgs == 1) {
       coupling = (CPEMix(1,1)*cos(beta) - CPEMix(1,2)*sin(beta))*cos(thetaA);
@@ -11026,7 +11015,7 @@ double higgsesamplitudedecaygluongluontotal(double m1, double g, double gs, doub
 ///Function for QCD corrections to h->gg
 DoubleVector hggQCDcorrections(double amplitudeW, double alphas, int Nf, char higgs, double prefactor, double SMtotr, double SMtoti, double sqtotr, double sqtoti)
 {
-  double amplitudeinit = 0, amplitudeafterFQCD = 0, amplitudefromSQCD = 0, amplitude = 0, hggstargcc = 0, hggstargbb = 0;
+  double amplitudeafterFQCD = 0, amplitudefromSQCD = 0, amplitude = 0, hggstargcc = 0, hggstargbb = 0;
   double fermionQCDcorrections(double amplitudeW, double alphasnow, double alphasprev, int Nf, char higgs);
   double susyQCDcorrections(double prefactor, double alphas, double totr, double toti, double sqtotr, double sqtoti);
   DoubleVector Returns(3);
@@ -11283,7 +11272,7 @@ DoubleVector higgsH3amplitudedecayVVNMSSM(double m1, double mWboson, double mZbo
 
 double higgsesamplitudedecayZbosonphotontotal(double m1, double mZboson, double g, double gprime, double alphaEmrun, double polemw, double runmw, double alpha, double beta, double mtop, double mbottom, double mcharm, double mstrange, double mstop1, double mstop2, double msbottom1, double msbottom2, double mHplus, double thetat, double thetab, double greekmu, double Atop, double Abottom, char higgstype) /// function that calculates the partial width for h->Z gamma at 1-loop (forbidden at tree-level)
 {
-  double prefactor=0, sinthetaW=0, Itr=0, Iti=0, Ibr=0, Ibi=0, Icr=0, Ici=0, Isr=0, Isi=0, IWr=0, IWi=0, IHpr=0, IHpi=0, matelemmodsquare=0, amplitudeW=0;
+  double prefactor=0, Itr=0, Iti=0, Ibr=0, Ibi=0, Icr=0, Ici=0, Isr=0, Isi=0, IWr=0, IWi=0, IHpr=0, IHpi=0, matelemmodsquare=0, amplitudeW=0;
  
   if (m1 < mZboson) {
     amplitudeW = 0;
@@ -11312,7 +11301,6 @@ double higgsesamplitudedecayZbosonphotontotal(double m1, double mZboson, double 
      DoubleVector matelemsum(2);
      matelemsum(1) = Itr + Ibr + Icr + Isr + IWr + IHpr;
      matelemsum(2) = Iti + Ibi + Ici + Isi + IWi + IHpi;
-     sinthetaW = pow(pow(gprime,2)/(pow(g,2)+pow(gprime,2)),0.5);
      prefactor = pow(m1,3)/(64*pow(PI,3))*pow(1-pow(mZboson/m1,2),3)*GFosqrt2*pow(alphaEmrun,2);
          
      matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
@@ -15050,7 +15038,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
 
   else{
 
-    double GammaW = 0, GammaHpm = 0, Gammagoldstone = 0, Gammasfp1 = 0, Gammasfp2 = 0, Gammasf1 = 0, Gammasf2 = 0, Gammasf1sf2 = 0, Gammasfp1sf1 = 0, Gammasfp1sf2 = 0, Gammasfp2sf1 = 0, Gammasfp2sf2 = 0, GammaWHpm = 0, GammaWgoldstone = 0, GammaWSfp1 = 0, GammaWSfp2 = 0, GammaWSf1 = 0, GammaWSf2 = 0, GammaHgoldstone = 0, Gammagsfp1 = 0, Gammagsfp2 = 0, GammaHpmsfp1 = 0, GammaHpmsfp2 = 0, Gammagsf1 = 0, Gammagsf2 = 0, GammaHpmsf1 = 0, GammaHpmsf2 = 0, Gammasfpsfp = 0;
+    double GammaW = 0, GammaHpm = 0, Gammagoldstone = 0, Gammasfp1 = 0, Gammasfp2 = 0, Gammasf1 = 0, Gammasf2 = 0, Gammasfp1sf1 = 0, Gammasfp1sf2 = 0, Gammasfp2sf1 = 0, Gammasfp2sf2 = 0, GammaWHpm = 0, GammaWgoldstone = 0, GammaWSfp1 = 0, GammaWSfp2 = 0, GammaWSf1 = 0, GammaWSf2 = 0, GammaHgoldstone = 0, Gammagsfp1 = 0, Gammagsfp2 = 0, GammaHpmsfp1 = 0, GammaHpmsfp2 = 0, Gammagsf1 = 0, Gammagsf2 = 0, GammaHpmsf1 = 0, GammaHpmsf2 = 0, Gammasfpsfp = 0;
 
     double charneutWcoupL = 0, charneutWcoupR = 0, coupHpmcharneutL = 0, coupHpmcharneutR = 0, coupHpm1charneutL = 0, coupHpm1charneutR = 0, coupHpm2charneutL = 0, coupHpm2charneutR = 0, fd = 0, fu = 0, coupHpm1ffpd = 0, coupHpm1ffpu = 0, coupHpm2ffpd = 0, coupHpm2ffpu = 0;
     
@@ -15058,7 +15046,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
 
     fu = g*runmqp/(pow(2,0.5)*sin(beta)*mWboson); ///Just usual yukawa for up type
     fd = g*runmq/(pow(2,0.5)*cos(beta)*mWboson); ///Just usual yukawa for down type
-
     double ri = 0, rj = 0, rc = 0;
     if (mneutralinoi >= 0) { ri = 1;}
     else if (mneutralinoi < 0) { ri = -1;} ///correction factor for negative masses
@@ -15278,24 +15265,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
 
     Gammasf2 = coupcombo1sf2*coupcombo3sf2*int4sf2 + 4*coupcombo1sf2*coupcombo4sf2*-mfp*fabs(mcharginoj)*int3sf2*rc + 4*coupcombo2sf2*coupcombo3sf2*fabs(mneutralinoi)*mf*int2sf2*rc + 16*coupcombo2sf2*coupcombo4sf2*fabs(mneutralinoi)*mf*-mfp*fabs(mcharginoj)*int1sf2;
 
-    ///Sf - Sf interference
-    double coupcombo1sf1sf2 = 0, coupcombo2sf1sf2 = 0, coupcombo3sf1sf2 = 0, coupcombo4sf1sf2 = 0;
-    coupcombo1sf1sf2 = (sf1alpha1Zid*-sf2alpha1Zid + sf1beta1Zid*sf2beta1Zid)*rj*-rc*ri;
-    coupcombo2sf1sf2 = (-sf1beta1Zid*-sf2alpha1Zid - sf1alpha1Zid*sf2beta1Zid)*ri*rj*-rc;
-    coupcombo3sf1sf2 = (betasf1char*-betasf2char + alphasf1char*alphasf2char);
-    coupcombo4sf1sf2 = (-alphasf1char*-betasf2char - betasf1char*alphasf2char)*rj*rc;
-
-    cout.precision(12);
-
-    double int1sf1sf2 = 0, int2sf1sf2 = 0, int3sf1sf2 = 0, int4sf1sf2 = 0;
     m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msf1, m6 = msf2;
-    int1sf1sf2 = 2*fabs(m1)*dgauss(gneuticharjffp1sf1sf2dgauss,mf,Eupper2,accuracy);
-    int2sf1sf2 = 2*fabs(m1)*dgauss(gneuticharjffp2sf1sf2dgauss,mf,Eupper2,accuracy);
-    int3sf1sf2 = 2*fabs(m1)*dgauss(gneuticharjffp3sf1sf2dgauss,mf,Eupper2,accuracy);
-    int4sf1sf2 = 2*fabs(m1)*dgauss(gneuticharjffp4sf1sf2dgauss,mf,Eupper2,accuracy);
-
-    Gammasf1sf2 = 2*(coupcombo1sf1sf2*coupcombo3sf1sf2*int4sf1sf2 + 2*coupcombo1sf1sf2*coupcombo4sf1sf2*mfp*-fabs(mcharginoj)*int3sf1sf2 + 2*coupcombo2sf1sf2*coupcombo3sf1sf2*fabs(mneutralinoi)*mf*int2sf1sf2 + 4*coupcombo2sf1sf2*coupcombo4sf1sf2*fabs(mneutralinoi)*mf*-fabs(mcharginoj)*mfp*int1sf1sf2);
-
     ///Sfp t sf u interference
     ///Sfp 1 sf 2
     
@@ -16073,8 +16043,6 @@ double higgsAamplitudedecaygammagammaNMSSM (double m1, double g, double gprime, 
   matelemsum(1) = Itr + Ibr + Icr + Itaur + Ichar1r + Ichar2r;
   matelemsum(2) = Iti + Ibi + Ici + Itaui + Ichar1i + Ichar2i;
 
-  double alphaEmcalc = 0;
-  alphaEmcalc = pow(g*gprime/(pow(pow(g,2)+pow(gprime,2),0.5)),2)/(4*PI);
   prefactor = (GFosqrt2*pow(alpha,2))/(32*pow(PI,3))*pow(m1,3);
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
@@ -16114,8 +16082,6 @@ double higgsAamplitudedecaygluongluonNMSSM (double m1, double g, double gs, doub
   matelemsum(1) = Itr + Ibr + Icr;
   matelemsum(2) = Iti + Ibi + Ici;
 
-  double alphascalc = 0;
-  alphascalc = pow(gs,2)/(4*PI);
   prefactor = GFosqrt2*pow(alphas,2)/(16*pow(PI,3))*pow(m1,3);
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
@@ -16183,8 +16149,6 @@ double higgsAamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
   matelemsum(1) = Itr + Ibr + Icr + Ichar1r + Ichar2r;
   matelemsum(2) = Iti + Ibi + Ici + Ichar1i + Ichar2i;
 
-  double alphaEmcalc = 0;
-  alphaEmcalc = pow(g*sinthW,2)/(4*PI);
   prefactor = pow(g,2)*pow(m1,3)*pow(alpha,2)/(512*pow(PI,3)*pow(mWboson,2))*pow((1-pow(mZboson/m1,2)),3);
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
@@ -16207,8 +16171,6 @@ double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double m
   double kintr = 0, kinbr = 0, kincr = 0, kintaur = 0, kinWr = 0, kinHpmr = 0, kinch1r = 0, kinch2r = 0, kinscLr = 0, kinscRr = 0, kinssLr = 0, kinssRr = 0, kinst1r = 0, kinst2r = 0, kinsb1r = 0, kinsb2r = 0, kinsmuLr = 0, kinsmuRr = 0, kinstau1r = 0, kinstau2r = 0;
   double kinti = 0, kinbi = 0, kinci = 0, kintaui = 0, kinWi = 0, kinHpmi = 0, kinch1i = 0, kinch2i = 0, kinscLi = 0, kinscRi = 0, kinssLi = 0, kinssRi = 0, kinst1i = 0, kinst2i = 0, kinsb1i = 0, kinsb2i = 0, kinsmuLi = 0, kinsmuRi = 0, kinstau1i = 0, kinstau2i = 0;
   double Itr = 0, Icr = 0, Ibr = 0, Itaur = 0, Ichar1r = 0, Ichar2r = 0, IWr = 0, IHpmr = 0, Iti = 0, Ici = 0, Ibi = 0, Itaui = 0, Ichar1i = 0, Ichar2i = 0, IWi = 0, IHpmi = 0, IscLr = 0, IscRr = 0, IssLr = 0, IssRr = 0, IsmuLr = 0, IsmuRr = 0, IscLi = 0, IscRi = 0, IssLi = 0, IssRi = 0, IsmuLi = 0, IsmuRi = 0, Ist1r = 0, Ist2r = 0, Isb1r = 0, Isb2r = 0, Istau1r = 0, Istau2r = 0, Ist1i = 0, Ist2i = 0, Isb1i = 0, Isb2i = 0, Istau1i = 0, Istau2i = 0;
-  double sinthW = 0;
-  sinthW = gp/(pow(pow(g,2)+pow(gp,2),0.5));
 
   DoubleVector foftau(double mpart, double mcomp); ///CF(CA) in NMSSMTools
 
@@ -16274,9 +16236,6 @@ double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double m
   matelemsum(1) = Itr + Ibr + Icr + Itaur + Ichar1r + Ichar2r + IWr + IHpmr + IscLr + IscRr + IssLr + IssRr + IsmuLr + IsmuRr + Ist1r + Ist2r + Isb1r + Isb2r + Istau1r + Istau2r;
   matelemsum(2) = Iti + Ibi + Ici + Itaui + Ichar1i + Ichar2i + IWi + IHpmi + IscLi + IscRi + IssLi + IssRi + IsmuLi + IsmuRi + Ist1i + Ist2i + Isb1i + Isb2i + Istau1i + Istau2i;
 
-  double alphaEmcalc = 0;
-  alphaEmcalc = pow(g*sinthW,2)/(4*PI);
-
   prefactor = GFosqrt2/(4*PI)*pow(m1,3)/2*pow(alpha/PI,2)/16;
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
@@ -16293,7 +16252,7 @@ double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double m
 
 double higgsCPevenamplitudedecaygluongluonNMSSM(double m1, double mtop, double mbottom, double mcharm, double mWboson, double mscharmL, double mscharmR, double mstop1, double mstop2, double msstrangeL, double msstrangeR, double msbottom1, double msbottom2, double msupL, double msupR, double msdownL, double msdownR, double runmt, double runmb, DoubleMatrix CPEMix, double beta, double g, double gp, double gs, double alphas, double thetat, double thetab, double thetaL, double thetaR, double At, double Ab, double mu, double mueff, double lam, double kappa, double Alambda, int higgs, bool QCD)
 {
-  double amplitudeW = 0, prefactor = 0, couplingt = 0, couplingb = 0, couplingc = 0, couplingscL = 0, couplingscR = 0, couplingst1 = 0, couplingst2 = 0, couplingssL = 0, couplingssR = 0, couplingsb1 = 0, couplingsb2 = 0, couplingsmuL = 0, couplingsmuR = 0, couplingstau1 = 0, couplingstau2 = 0, couplingsuL = 0, couplingsuR = 0, couplingsdL = 0, couplingsdR = 0;
+  double amplitudeW = 0, prefactor = 0, couplingt = 0, couplingb = 0, couplingc = 0, couplingscL = 0, couplingscR = 0, couplingst1 = 0, couplingst2 = 0, couplingssL = 0, couplingssR = 0, couplingsb1 = 0, couplingsb2 = 0, couplingsuL = 0, couplingsuR = 0, couplingsdL = 0, couplingsdR = 0;
   double ft = 0, fb = 0;
   DoubleVector tfoftau(3), bfoftau(3), cfoftau(3), taufoftau(3), Wfoftau(3), Hpmfoftau(3), ch1foftau(3), ch2foftau(3), scLfoftau(3), scRfoftau(3), ssLfoftau(3), ssRfoftau(3), st1foftau(3), st2foftau(3), sb1foftau(3), sb2foftau(3), stau1foftau(3), stau2foftau(3), suLfoftau(3), suRfoftau(3), sdLfoftau(3), sdRfoftau(3);
 
@@ -16366,9 +16325,6 @@ double higgsCPevenamplitudedecaygluongluonNMSSM(double m1, double mtop, double m
   }
   matelemsum(1) = Itr + Ibr + Icr + IscLr + IscRr + IssLr + IssRr + IsuLr + IsuRr + IsdLr + IsdRr + Ist1r + Ist2r + Isb1r + Isb2r;
   matelemsum(2) = Iti + Ibi + Ici + IscLi + IscRi + IssLi + IssRi + IsuLi + IsuRi + IsdLi + IsdRi + Ist1i + Ist2i + Isb1i + Isb2i;
-
-  double alphascalc = 0;
-  alphascalc = pow(gs,2)/(4*PI);
 
   prefactor =  GFosqrt2*1/(4*PI)*pow(m1,3)/2*pow(alphas/PI,2)/8;
 
@@ -16936,9 +16892,11 @@ double stau2amplitudedecaystau1CPevenhiggsNMSSM (double mstau2, double mstau1, d
 }
 
 
-double stau2amplitudedecaystau1CPoddhiggsNMSSM (double mstau2, double mstau1, double ma, double mtau, double thetatau, DoubleMatrix CPOMix, double beta, double mWboson, double g , double Atau, double mueff, double lam, int higgs) 
-{
-  double amplitudeW = 0, coupling = 0, prefactor = 0, lambda = 0, squareplus = 0, squareminus = 0, ftau = 0, hvev1 = 0, hvev2 = 0, ALR = 0;
+double stau2amplitudedecaystau1CPoddhiggsNMSSM
+(double mstau2, double mstau1, double ma, double mtau, double thetatau,
+ DoubleMatrix CPOMix, double beta, double mWboson, double g , double Atau,
+ double mueff, double lam, int higgs) {
+  double amplitudeW = 0, coupling = 0, prefactor = 0, lambda = 0, squareplus = 0, squareminus = 0, ftau = 0, hvev1 = 0, ALR = 0;
   if(mstau2 < mstau1 + ma) {
     amplitudeW = 0;
   }
@@ -16949,7 +16907,6 @@ double stau2amplitudedecaystau1CPoddhiggsNMSSM (double mstau2, double mstau1, do
     lambda = pow(squareplus*squareminus,0.5);
     ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
     hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
-    hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
     ALR = -(ftau/pow(2,0.5))*(Atau*CPOMix(higgs,2) + mueff*CPOMix(higgs,1) + lam*hvev1*CPOMix(higgs,3));
     coupling = (pow(cos(thetatau),2)-pow(sin(thetatau),2))*ALR;
     amplitudeW = prefactor*lambda*pow(coupling,2);
