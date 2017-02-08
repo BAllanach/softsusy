@@ -6499,7 +6499,7 @@ double squark2amplitudedecaycharginoW2mix (double m1, double m2, double m3, doub
   return amplitudeW;
 }
 
-double squarkLamplitudedecayneutralino (double m1, double m2, double m3, double g, double gprime,  DoubleMatrix mixNeut, int neutralino, int uord ) ///neutralino takes values of 1, 2, 3, or 4 and denotes which neutralino mass eigenstate we decay into, uord takes value 1 for up quarks (or charm quarks) and -1 for down quarks (or strange quarks) in order to change the sign of the g*neutralinomixingmatrix[2][element] in AqZ accordingly
+double squarkLamplitudedecayneutralino (double m1, double m2, double m3, double g, double gprime,  DoubleMatrix & mixNeut, int neutralino, int uord ) ///neutralino takes values of 1, 2, 3, or 4 and denotes which neutralino mass eigenstate we decay into, uord takes value 1 for up quarks (or charm quarks) and -1 for down quarks (or strange quarks) in order to change the sign of the g*neutralinomixingmatrix[2][element] in AqZ accordingly
 {
   double squareplus, squareminus, squareratio, AqZ, lambda, amplitudeW;
 	if (fabs(m1) < fabs(m2) +fabs(m3)) {
@@ -6516,7 +6516,7 @@ double squarkLamplitudedecayneutralino (double m1, double m2, double m3, double 
 	return amplitudeW;
 }
 
-double squarkRamplitudedecayneutralino (double m1, double m2, double m3, double g, double gprime, DoubleMatrix mixNeut, int neutralino, int uord ) ///neutralino takes values of 1, 2, 3, or 4 and denotes which neutralino mass eigenstate we decay into, uord takes value 1 for up quarks (or charm quarks) and -1 for down quarks (or strange quarks) in order to change the sign and magnitude of the coefficient BqZ accordingly
+double squarkRamplitudedecayneutralino (double m1, double m2, double m3, double g, double gprime, DoubleMatrix & mixNeut, int neutralino, int uord ) ///neutralino takes values of 1, 2, 3, or 4 and denotes which neutralino mass eigenstate we decay into, uord takes value 1 for up quarks (or charm quarks) and -1 for down quarks (or strange quarks) in order to change the sign and magnitude of the coefficient BqZ accordingly
 {
   double squareplus, squareminus, squareratio, BqZ, uordchanger=0, lambda, amplitudeW;
 	if (fabs(m1) < fabs(m2) +fabs(m3)) {
@@ -6537,7 +6537,7 @@ double squarkRamplitudedecayneutralino (double m1, double m2, double m3, double 
 }
 
 
-double squark1amplitudedecayneutralinomix (double m1, double m2, double m3, double g, double gprime, double theta, double beta, double mWboson, DoubleMatrix mixNeut, double runmt, double runmb, int neutralino, int uord) ///neutralino takes values of 1, 2, 3, or 4 and denotes which neutralino mass eigenstate we decay into, uord takes value 1 for top quarks and -1 for bottom quarks in order to change the sign of the g*neutralinomixingmatrix[2][element] in AqZ accordingly, 
+double squark1amplitudedecayneutralinomix (double m1, double m2, double m3, double g, double gprime, double theta, double beta, double mWboson, DoubleMatrix & mixNeut, double runmt, double runmb, int neutralino, int uord) ///neutralino takes values of 1, 2, 3, or 4 and denotes which neutralino mass eigenstate we decay into, uord takes value 1 for top quarks and -1 for bottom quarks in order to change the sign of the g*neutralinomixingmatrix[2][element] in AqZ accordingly, 
 {
   double squareplus, squareminus, AqZ=0, BqZ=0, fq=0, neutelem=0, modasquared, modbsquared, combo1, combo2, lambda, amplitudeW; ///fq is the fermion Yukawa coupling - see pg 143 of Tata and Baer, neutelem ensures the third row of the neutralinomixingmatrix is selected for up type squarks and the fourth row is selected for down type squarks
   vector <double> a(2), b(2);
@@ -6584,7 +6584,7 @@ double squark1amplitudedecayneutralinomix (double m1, double m2, double m3, doub
   return amplitudeW;
 }
 
-double squark2amplitudedecayneutralinomix (double m1, double m2, double m3, double g, double gprime, double theta, double beta, double mWboson, DoubleMatrix mixNeut, double runmt, double runmb, int neutralino, int uord) ///neutralino takes values of 1, 2, 3, or 4 and denotes which neutralino mass eigenstate we decay into, uord takes value 1 for top quarks and -1 for bottom quarks in order to change the sign of the g*neutralinomixingmatrix[2][element] in AqZ accordingly, uordchanger changes the sign and magnitude of the coefficient of BqZ depending on if you have an up or down type squark
+double squark2amplitudedecayneutralinomix (double m1, double m2, double m3, double g, double gprime, double theta, double beta, double mWboson, DoubleMatrix & mixNeut, double runmt, double runmb, int neutralino, int uord) ///neutralino takes values of 1, 2, 3, or 4 and denotes which neutralino mass eigenstate we decay into, uord takes value 1 for top quarks and -1 for bottom quarks in order to change the sign of the g*neutralinomixingmatrix[2][element] in AqZ accordingly, uordchanger changes the sign and magnitude of the coefficient of BqZ depending on if you have an up or down type squark
 {
   double squareplus, squareminus,  AqZ, BqZ, uordchanger=0, fq=0, neutelem=0, areal, aimag, breal, bimag, modasquared, modbsquared, lambda, amplitudeW; ///fq is the fermion Yukawa coupling - see pg 143 of Tata and Baer, neutelem ensures the third row of the neutralinomixingmatrix is selected for up type squarks and the fourth row is selected for down type squarks
   ///complex<double> a,b; // NEED TO RELOOK THROUGH ALL THIS AS COMPLEX NUMBERS NOT WORKING PROPERLY
@@ -6620,7 +6620,7 @@ double squark2amplitudedecayneutralinomix (double m1, double m2, double m3, doub
   return amplitudeW;
 }
 
-double teststop1amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix mixNeut, double g, double gp, double runmt, int neutralino) {
+double teststop1amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmt, int neutralino) {
   double amplitudeW, squareplus, squareminus, lambda, ft, modasquared, modbsquared;
   vector <double> AtZ(2), BtZ(2), a(2), b(2);
 
@@ -6669,7 +6669,7 @@ double teststop1amplitudedecayneutralinomix (double m1, double m2, double m3, do
 }
 
 
-double teststop2amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix mixNeut, double g, double gp, double runmt, int neutralino) {
+double teststop2amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmt, int neutralino) {
   double amplitudeW, squareplus, squareminus, lambda, ft, modasquared, modbsquared;
   vector <double> AtZ(2), BtZ(2), a(2), b(2);
 
@@ -6719,7 +6719,7 @@ double teststop2amplitudedecayneutralinomix (double m1, double m2, double m3, do
 
 }
 
-double testsbottom1amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix mixNeut, double g, double gp, double runmb, int neutralino) {
+double testsbottom1amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmb, int neutralino) {
   double amplitudeW, squareplus, squareminus, lambda, fb, modasquared, modbsquared;
   vector <double> AbZ(2), BbZ(2), a(2), b(2);
 
@@ -6769,7 +6769,7 @@ double testsbottom1amplitudedecayneutralinomix (double m1, double m2, double m3,
 }
 
 
-double testsbottom2amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix mixNeut, double g, double gp, double runmb, int neutralino) {
+double testsbottom2amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmb, int neutralino) {
   double amplitudeW, squareplus, squareminus, lambda, fb, modasquared, modbsquared;
   vector <double> AbZ(2), BbZ(2), a(2), b(2);
 
@@ -6817,7 +6817,7 @@ double testsbottom2amplitudedecayneutralinomix (double m1, double m2, double m3,
 }
 
            
-double testmederivedstop1amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix mixNeut, double g, double gp, double runmt, int neutralino) {
+double testmederivedstop1amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmt, int neutralino) {
   double amplitudeW, squareplus, squareminus, squareratio, lambda, ft, modalphatildasquared, modbetatildasquared;
   vector <double> AtZ(2), BtZ(2), alphatilda(2), betatilda(2), alphabetadagger(2), betaalphadagger(2);
 
@@ -6872,7 +6872,7 @@ double testmederivedstop1amplitudedecayneutralinomix (double m1, double m2, doub
   
 }
 
-double testrealsquark3amplitudedecayneutralino (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix mixNeut, double g, double gp, double runmq, int squark , int oneortwo,  int neutralino) {
+double testrealsquark3amplitudedecayneutralino (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmq, int squark , int oneortwo,  int neutralino) {
 
   double amplitudeW, squareplus, squareminus, lambda, fq=0, alphatilda=0, betatilda=0, a=0, b=0;
   
@@ -7130,7 +7130,7 @@ double squark32amplitudedecaysquark3Zboson (double m1, double m2, double m3, dou
   return amplitudeW;
 }
 
-double sleptonamplitudedecayleptonneutralino (double m1, double m2, double m3, double g, double gp, DoubleMatrix mixNeut, char LorR, int neutralino) {
+double sleptonamplitudedecayleptonneutralino (double m1, double m2, double m3, double g, double gp, DoubleMatrix & mixNeut, char LorR, int neutralino) {
   double amplitudeW, squareplus, squareminus, squareratio, lambda, A, B, C;  
 
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
@@ -7160,7 +7160,7 @@ double sleptonamplitudedecayleptonneutralino (double m1, double m2, double m3, d
 }
 
 
-double sneutrinoamplitudedecayneutrinoneutralino (double m1, double m2, double m3, double g, double gp, DoubleMatrix mixNeut, int neutralino) {
+double sneutrinoamplitudedecayneutrinoneutralino (double m1, double m2, double m3, double g, double gp, DoubleMatrix & mixNeut, int neutralino) {
   double amplitudeW, squareplus, squareminus, squareratio, lambda, A;  
 
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
@@ -7208,7 +7208,7 @@ double sleptonamplitudedecaychargino (double m1, double m2, double m3, double g,
 }
 
       
-double stauamplitudedecaytauneutralino (double m1, double m2, double m3, double g, double gp, double mWboson, DoubleMatrix mixNeut, double theta, double beta, int oneortwo, int neutralino) {
+double stauamplitudedecaytauneutralino (double m1, double m2, double m3, double g, double gp, double mWboson, DoubleMatrix & mixNeut, double theta, double beta, int oneortwo, int neutralino) {
   double amplitudeW, squareplus, squareminus, lambda, ftau, alphatilda=0, betatilda=0, a, b;  
 
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
@@ -7240,7 +7240,7 @@ double stauamplitudedecaytauneutralino (double m1, double m2, double m3, double 
   return amplitudeW;
 }
 
-double stausneutrinoamplitudedecaytauneutrinoneutralino (double m1, double m2, double m3, double g, double gp, DoubleMatrix mixNeut, int neutralino) {
+double stausneutrinoamplitudedecaytauneutrinoneutralino (double m1, double m2, double m3, double g, double gp, DoubleMatrix & mixNeut, int neutralino) {
   double amplitudeW, squareplus, squareminus, squareratio, lambda, A;  
 
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
@@ -7628,7 +7628,7 @@ double charginoamplitudedecaystaunutau (double m1, double m2, double m3, double 
 
 
 
-double charginoamplitudedecayWbosonneutralino (double m1, double m2, double m3, double g, double thetaL, double thetaR, DoubleMatrix mixNeut, int chargino, int neutralino) ///m2 must be Wboson mass
+double charginoamplitudedecayWbosonneutralino (double m1, double m2, double m3, double g, double thetaL, double thetaR, DoubleMatrix & mixNeut, int chargino, int neutralino) ///m2 must be Wboson mass
 
 {
   double amplitudeW, squareplus, squareminus, squarecombo1, squarecombo2, lambda, X=0, Y=0;
@@ -7660,7 +7660,7 @@ double charginoamplitudedecayWbosonneutralino (double m1, double m2, double m3, 
 }
 
 
-double charginoamplitudedecayHminusneutralino (double m1, double m2, double m3, double g, double gp, double thetaL, double thetaR, double beta, DoubleMatrix mixNeut, int chargino, int neutralino) ///m2 must be Hminus mass
+double charginoamplitudedecayHminusneutralino (double m1, double m2, double m3, double g, double gp, double thetaL, double thetaR, double beta, DoubleMatrix & mixNeut, int chargino, int neutralino) ///m2 must be Hminus mass
 
 {
   double amplitudeW, squareplus, squareminus, lambda, squarecombo1, A1=0, A2=0, A3=0, A4=0, a=0, b=0;
@@ -7766,7 +7766,7 @@ double chargino2amplitudedecaychargino1neutHiggs (double m1, double m2, double m
 }
 
 
-double neutralinoamplitudedecayquarksquarkLorR (double m1, double m2, double m3, double g, double gp, DoubleMatrix mixNeut, int uordtype , char LorR, int neutralino) ///m2 must be quark mass
+double neutralinoamplitudedecayquarksquarkLorR (double m1, double m2, double m3, double g, double gp, DoubleMatrix & mixNeut, int uordtype , char LorR, int neutralino) ///m2 must be quark mass
 
 {
   double amplitudeW, squareplus, squareminus, lambda, alteredsquareratio, A=0, B=0, C=0;
@@ -7810,7 +7810,7 @@ double neutralinoamplitudedecayquarksquarkLorR (double m1, double m2, double m3,
 
 	  
 
-double neutralinoamplitudedecayleptonsleptonLorR (double m1, double m2, double m3, double g, double gp, DoubleMatrix mixNeut, char LorR, int neutralino) ///m2 must be lepton mass
+double neutralinoamplitudedecayleptonsleptonLorR (double m1, double m2, double m3, double g, double gp, DoubleMatrix & mixNeut, char LorR, int neutralino) ///m2 must be lepton mass
   
 {
   double amplitudeW, squareplus, squareminus, lambda, alteredsquareratio, A=0, B=0, C=0;
@@ -7845,7 +7845,7 @@ double neutralinoamplitudedecayleptonsleptonLorR (double m1, double m2, double m
 
 
 
-double neutralinoamplitudedecayneutrinosneutrinoL (double m1, double m2, double m3, double g, double gp, DoubleMatrix mixNeut, int neutralino) ///m2 must be neutrino mass (i.e. 0)
+double neutralinoamplitudedecayneutrinosneutrinoL (double m1, double m2, double m3, double g, double gp, DoubleMatrix & mixNeut, int neutralino) ///m2 must be neutrino mass (i.e. 0)
 
 {
   double amplitudeW, squareplus, squareminus, lambda, alteredsquareratio, A=0;
@@ -7871,7 +7871,7 @@ double neutralinoamplitudedecayneutrinosneutrinoL (double m1, double m2, double 
 
 
 
-double neutralinoamplitudedecaysquark3quarkmix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix mixNeut, double g, double gp, double runmq, int squark , int oneortwo,  int neutralino) /// m2 must be quark mass
+double neutralinoamplitudedecaysquark3quarkmix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmq, int squark , int oneortwo,  int neutralino) /// m2 must be quark mass
 {
   double amplitudeW, squareplus, squareminus, masscombo1, masscombo2, lambda, fq=0, alphatilda=0, betatilda=0, a=0, b=0;
 
@@ -7935,7 +7935,7 @@ double neutralinoamplitudedecaysquark3quarkmix (double m1, double m2, double m3,
 
 
 
-double neutralinoamplitudedecaystautau (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix mixNeut, double g, double gp, int oneortwo,  int neutralino) /// m2 must be tau (i.e. lepton) mass
+double neutralinoamplitudedecaystautau (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, int oneortwo,  int neutralino) /// m2 must be tau (i.e. lepton) mass
 {
 
   double amplitudeW, squareplus, squareminus, lambda, ftau=0, alphatilda=0, betatilda=0, a=0, b=0, factor1=0, factor2=0;
@@ -7977,7 +7977,7 @@ double neutralinoamplitudedecaystautau (double m1, double m2, double m3, double 
 
 
 
-double neutralinoamplitudedecaycharginoWboson (double m1, double m2, double m3, double g, double thetaL, double thetaR, DoubleMatrix mixNeut, int neutralino,  int chargino) /// m2 must be W boson mass (expect to be pole mass 80.4...), neutralino is i in T&B whilst chargino is j
+double neutralinoamplitudedecaycharginoWboson (double m1, double m2, double m3, double g, double thetaL, double thetaR, DoubleMatrix & mixNeut, int neutralino,  int chargino) /// m2 must be W boson mass (expect to be pole mass 80.4...), neutralino is i in T&B whilst chargino is j
 {
 
   double amplitudeW, squareplus, squareminus, squarecombo1=0, squarecombo2=0, lambda, X=0, Y=0;
@@ -8011,7 +8011,7 @@ double neutralinoamplitudedecaycharginoWboson (double m1, double m2, double m3, 
 }
 
 
-double neutralinoamplitudedecaycharginoHplus (double m1, double m2, double m3, double g, double gp, double beta, double thetaL, double thetaR, DoubleMatrix mixNeut, int neutralino,  int chargino) /// m2 must be Hplus mass, neutralino is i in T&B whilst chargino is j
+double neutralinoamplitudedecaycharginoHplus (double m1, double m2, double m3, double g, double gp, double beta, double thetaL, double thetaR, DoubleMatrix & mixNeut, int neutralino,  int chargino) /// m2 must be Hplus mass, neutralino is i in T&B whilst chargino is j
 {
   
   double amplitudeW, squareplus, squareminus, squarecombo1=0, lambda, A1=0, A2=0, A3=0, A4=0,a=0, b=0;
@@ -8049,7 +8049,7 @@ double neutralinoamplitudedecaycharginoHplus (double m1, double m2, double m3, d
 }
 
 
-double neutralinoamplitudedecayneutralinoZboson (double m1, double m2, double m3, double g, double gp, DoubleMatrix mixNeut, int ineutralino,  int fneutralino) /// m2 must be Z mass, ineutralino is i in T&B whilst fneutralino is j
+double neutralinoamplitudedecayneutralinoZboson (double m1, double m2, double m3, double g, double gp, DoubleMatrix & mixNeut, int ineutralino,  int fneutralino) /// m2 must be Z mass, ineutralino is i in T&B whilst fneutralino is j
 {
   
   double amplitudeW, squareplus, squareminus, squarecombo1=0, squarecombo2=0, lambda, Wij=0;
@@ -8074,7 +8074,7 @@ double neutralinoamplitudedecayneutralinoZboson (double m1, double m2, double m3
 }
 
       
-double neutralinoamplitudedecayneutralinoneutHiggs (double m1, double m2, double m3, double g, double gp, DoubleMatrix mixNeut, double mixingangle, int ineutralino,  int fneutralino, char phi) /// m2 must be phi mass, ineutralino is i in T&B whilst fneutralino is j
+double neutralinoamplitudedecayneutralinoneutHiggs (double m1, double m2, double m3, double g, double gp, DoubleMatrix & mixNeut, double mixingangle, int ineutralino,  int fneutralino, char phi) /// m2 must be phi mass, ineutralino is i in T&B whilst fneutralino is j
 {
 
   double amplitudeW=0, squareplus, squareminus, squarecombo=0, lambda, Xij=0, Xji=0;
@@ -8113,7 +8113,7 @@ double neutralinoamplitudedecayneutralinoneutHiggs (double m1, double m2, double
   }
   return amplitudeW;
 }
-double higgslorHamplitudedecayquarkantiquark (double m1, double m2, double g, double alpha, double beta, double mWboson, int uord, char lorH, DoubleMatrix CPEMix, bool NMSSMmodel, bool QCD, double alphas) /// uord indicates if it's an up type quark (1) or down type quark (0) to choose which trig functions to act on the mixing angles (which parts of the mixing matrices), and int lorH tells the program if it's a light higgs (l) or heavy higgs (H) decaying in order to change the trig functions acting on the mixing angles; note can also use this formula for decays of higgs to leptons as these are in this sense down-type
+double higgslorHamplitudedecayquarkantiquark (double m1, double m2, double g, double alpha, double beta, double mWboson, int uord, char lorH, DoubleMatrix & CPEMix, bool NMSSMmodel, bool QCD, double alphas) /// uord indicates if it's an up type quark (1) or down type quark (0) to choose which trig functions to act on the mixing angles (which parts of the mixing matrices), and int lorH tells the program if it's a light higgs (l) or heavy higgs (H) decaying in order to change the trig functions acting on the mixing angles; note can also use this formula for decays of higgs to leptons as these are in this sense down-type
 {
 
   double amplitudeW=0, squarecombo1=0, angular=0;
@@ -8249,7 +8249,7 @@ double higgsCPoddamplitudedecayqqbarQCDcorrections (double amplitude, double alp
   return amplitudeW;
 }
 
-double higgsAamplitudedecayquarkantiquarkNMSSM (double m1, double m2, double beta, DoubleMatrix CPOMix, int uord, int higgs, bool QCD, double alphas) /// uord indicates if it's an up type quark (1) or down type quark (0) to choose which trig functions to act on the mixing angles (which parts of the mixing matrices), note can also use this formula for decays of higgs to leptons as these are in this sense down-type
+double higgsAamplitudedecayquarkantiquarkNMSSM (double m1, double m2, double beta, DoubleMatrix & CPOMix, int uord, int higgs, bool QCD, double alphas) /// uord indicates if it's an up type quark (1) or down type quark (0) to choose which trig functions to act on the mixing angles (which parts of the mixing matrices), note can also use this formula for decays of higgs to leptons as these are in this sense down-type
 {
 
   double amplitudeW=0, squarecombo1=0, angular=0;
@@ -8286,7 +8286,7 @@ double higgsAamplitudedecayquarkantiquarkNMSSM (double m1, double m2, double bet
 }
 
 
-double higgsphiamplitudedecayneutralinoneutralino (double m1, double m2, double m3, double g, double tanthetaW, double mixingangle, DoubleMatrix mixNeut, int ineutralino, int fneutralino, char phi) /// phi tells it whether a "h", "H" or "A" is decaying 
+double higgsphiamplitudedecayneutralinoneutralino (double m1, double m2, double m3, double g, double tanthetaW, double mixingangle, DoubleMatrix & mixNeut, int ineutralino, int fneutralino, char phi) /// phi tells it whether a "h", "H" or "A" is decaying 
 {
 
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, Xij=0, Xji=0;
@@ -8342,7 +8342,7 @@ double higgsphiamplitudedecayneutralinoneutralino (double m1, double m2, double 
      
 
 
-double higgsAamplitudedecayneutralinoneutralinoNMSSM (double m1, double m2, double m3, double g, double tanthetaW, double lam, double kappa, DoubleMatrix CPOMix, DoubleMatrix mixNeut, int ineutralino, int jneutralino, int pseudoscalar)
+double higgsAamplitudedecayneutralinoneutralinoNMSSM (double m1, double m2, double m3, double g, double tanthetaW, double lam, double kappa, DoubleMatrix & CPOMix, DoubleMatrix & mixNeut, int ineutralino, int jneutralino, int pseudoscalar)
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, delta = 0;
   
@@ -8419,7 +8419,7 @@ double higgsphiamplitudedecaysamechargino (double m1, double m2, double g, doubl
 }
 
 
-double higgsphiamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, double thetaL, double thetaR, double lam, DoubleMatrix CPEMix, int chargino, int higgs)
+double higgsphiamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, double thetaL, double thetaR, double lam, DoubleMatrix & CPEMix, int chargino, int higgs)
 {
 
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
@@ -8448,7 +8448,7 @@ double higgsphiamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, 
 }
 
 
-double higgsAamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, double thetaL, double thetaR, double alpha, double lam, DoubleMatrix CPOMix, int chargino, int pseudoscalar)
+double higgsAamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, double thetaL, double thetaR, double alpha, double lam, DoubleMatrix & CPOMix, int chargino, int pseudoscalar)
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, S=0;
 
@@ -8474,7 +8474,7 @@ double higgsAamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, do
   return amplitudeW;
 }
 
-double higgsphiamplitudedecaydiffcharginoNMSSM (double m1, double m2, double m3, double g, double thetaL, double thetaR, double lam, DoubleMatrix CPEMix, int higgs)
+double higgsphiamplitudedecaydiffcharginoNMSSM (double m1, double m2, double m3, double g, double thetaL, double thetaR, double lam, DoubleMatrix & CPEMix, int higgs)
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling1=0, coupling2=0;
   
@@ -8537,7 +8537,7 @@ double higgsphiamplitudedecaydifchargino (double m1, double m2, double m3, doubl
   return amplitudeW; 
 };
 
-double higgsAamplitudedecaydifcharginoNMSSM (double m1, double m2, double m3, double g, double thetaL, double thetaR, double alpha, double lam, DoubleMatrix CPOMix, int pseudoscalar)
+double higgsAamplitudedecaydifcharginoNMSSM (double m1, double m2, double m3, double g, double thetaL, double thetaR, double alpha, double lam, DoubleMatrix & CPOMix, int pseudoscalar)
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, C1 = 0, C2 = 0;
     
@@ -8740,7 +8740,7 @@ double higgsAamplitudedecayhiggsHZboson (double m1, double m2, double m3, double
 }
 
 
-double higgsAamplitudedecayhiggshorHZbosonNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double thetaA, DoubleMatrix CPEMix, int pseudoscalar, int higgs) ///m2 must be Z mass
+double higgsAamplitudedecayhiggshorHZbosonNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double thetaA, DoubleMatrix & CPEMix, int pseudoscalar, int higgs) ///m2 must be Z mass
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
   
@@ -8818,7 +8818,7 @@ double higgshamplitudedecay2squarksamehand (double m1, double m2, double m3, dou
 }
 
 
-double higgshamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mq, DoubleMatrix CPEMix, int sq)
+double higgshamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mq, DoubleMatrix & CPEMix, int sq)
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
     
@@ -8853,7 +8853,7 @@ double higgshamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3
   return amplitudeW;
 }
 
-double higgshamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mq, DoubleMatrix CPEMix, int sl)
+double higgshamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mq, DoubleMatrix & CPEMix, int sl)
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
     
@@ -8885,7 +8885,7 @@ double higgshamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m
   return amplitudeW;
 }
 
-double higgsHamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mq, DoubleMatrix CPEMix, int sl)
+double higgsHamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mq, DoubleMatrix & CPEMix, int sl)
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
     
@@ -8917,7 +8917,7 @@ double higgsHamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m
   return amplitudeW;
 }
 
-double higgsH3amplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mq, DoubleMatrix CPEMix, int sl)
+double higgsH3amplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mq, DoubleMatrix & CPEMix, int sl)
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
     
@@ -8983,7 +8983,7 @@ double higgshamplitudedecay2squarkdiffhand (double m1, double m2, double m3, dou
 }
 
 
-double higgshamplitudedecay2squarkdiffhandNMSSM (double m1, double m2, double m3, double g, double alpha, double beta, double mWboson,double mq, double Aq, double mueff, double lam, DoubleMatrix CPEMix, int sq, int higgs)
+double higgshamplitudedecay2squarkdiffhandNMSSM (double m1, double m2, double m3, double g, double alpha, double beta, double mWboson,double mq, double Aq, double mueff, double lam, DoubleMatrix & CPEMix, int sq, int higgs)
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
     
@@ -9051,7 +9051,7 @@ double higgsHamplitudedecay2squarksamehand (double m1, double m2, double m3, dou
 }
 
 
-double higgsHamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mq, DoubleMatrix CPEMix, int sq)
+double higgsHamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mq, DoubleMatrix & CPEMix, int sq)
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
     
@@ -9086,7 +9086,7 @@ double higgsHamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3
   return amplitudeW;
 }
 
-double higgsH3amplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mq, DoubleMatrix CPEMix, int sq)
+double higgsH3amplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mq, DoubleMatrix & CPEMix, int sq)
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
     
@@ -10043,7 +10043,7 @@ double higgsAamplitudedecaysfermions (double m1, double m2, double m3, double g,
 }
 
 
-double higgsAamplitudedecaysfermionsNMSSM (double m1, double m2, double m3, double g, double mWboson, double mf, double Asf, double beta, double lam, double mueff, DoubleMatrix CPOMix, char uord, int pseudoscalar) ///mf here should be runmf and mWboson should be runmw
+double higgsAamplitudedecaysfermionsNMSSM (double m1, double m2, double m3, double g, double mWboson, double mf, double Asf, double beta, double lam, double mueff, DoubleMatrix & CPOMix, char uord, int pseudoscalar) ///mf here should be runmf and mWboson should be runmw
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, fq = 0;  
 
@@ -10072,7 +10072,7 @@ double higgsAamplitudedecaysfermionsNMSSM (double m1, double m2, double m3, doub
 }
 
 
-double higgsHplusamplitudedecayquarkantiquark (double m1, double m2, double m3, double g, double mWboson, double beta, DoubleMatrix VCKM, int quark, int antiquark) ///calculates partial width for H+ ->quark1 antiquark2, this is the same as H- -> antiquark1 quark2, note the up type quark (quark1) is m2, the down type quark (quark2) is m3, the int quark is 1,2,3 (u,c,t) and int antiquark is 1,2,3 (d,s,b) then this selects VCKM matrix element VCKM(quark, antiquark)
+double higgsHplusamplitudedecayquarkantiquark (double m1, double m2, double m3, double g, double mWboson, double beta, DoubleMatrix & VCKM, int quark, int antiquark) ///calculates partial width for H+ ->quark1 antiquark2, this is the same as H- -> antiquark1 quark2, note the up type quark (quark1) is m2, the down type quark (quark2) is m3, the int quark is 1,2,3 (u,c,t) and int antiquark is 1,2,3 (d,s,b) then this selects VCKM matrix element VCKM(quark, antiquark)
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, massbetacombination=0, CKM=0;  
 
@@ -10096,7 +10096,7 @@ double higgsHplusamplitudedecayquarkantiquark (double m1, double m2, double m3, 
 
 
 
-double higgsHplusamplitudedecayneutralinochargino (double m1, double m2, double m3, double g, double gp, double beta, double thetaL, double thetaR, DoubleMatrix mixNeut, int neutralino,  int chargino) /// Calculates the partial width for decays of the charged H+ higgs to a neutralino and a chragino Wtilda+ where neutralino is j in T&B whilst chargino is i
+double higgsHplusamplitudedecayneutralinochargino (double m1, double m2, double m3, double g, double gp, double beta, double thetaL, double thetaR, DoubleMatrix & mixNeut, int neutralino,  int chargino) /// Calculates the partial width for decays of the charged H+ higgs to a neutralino and a chragino Wtilda+ where neutralino is j in T&B whilst chargino is i
 {
   
   double amplitudeW, squareplus, squareminus, lambda, A1=0, A2=0, A3=0, A4=0,a=0, b=0;
@@ -10134,7 +10134,7 @@ double higgsHplusamplitudedecayneutralinochargino (double m1, double m2, double 
 
 
 
-double higgsHplusamplitudedecayneutralinocharginosusyhitway (double m1, double m2, double m3, double g, double gp, double beta, double thetaL, double thetaR, DoubleMatrix mixNeut, int neutralino,  int chargino) /// neutralino is j in T&B whilst chargino is i
+double higgsHplusamplitudedecayneutralinocharginosusyhitway (double m1, double m2, double m3, double g, double gp, double beta, double thetaL, double thetaR, DoubleMatrix & mixNeut, int neutralino,  int chargino) /// neutralino is j in T&B whilst chargino is i
 {
   
   double amplitudeW, squareplus, squareminus, lambda; ///A1=0, A2=0, A3=0, A4=0,a=0, b=0;
@@ -11057,7 +11057,7 @@ double susyQCDcorrections(double prefactor, double alphas, double SMtotr, double
   return amplitude;
 }
 
-double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp, double beta, double alpha, char Vtype, DoubleMatrix CPEMix, bool nmssmIsIt, int higgs) ///Function that calculates higgs to VV* to Vff'bar. Formula derived as in Marciano and Keung, massless fermion limit and zero W width considered.
+double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp, double beta, double alpha, char Vtype, DoubleMatrix & CPEMix, bool nmssmIsIt, int higgs) ///Function that calculates higgs to VV* to Vff'bar. Formula derived as in Marciano and Keung, massless fermion limit and zero W width considered.
 {
   double prefactor=0, epsilon=0, integrals=0, a=0, b=0, c=0, coupling = 0, amplitudeW=0;
   double sin2thetaW = pow(gp,2)/(pow(g,2)+pow(gp,2));
@@ -11096,13 +11096,13 @@ double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp,
   return amplitudeW;
 }
 
-DoubleVector higgshamplitudedecayVV(double m1, double mWboson, double mZboson, double g, double gp, double alpha, double beta, char Vtype, DoubleMatrix CPEMix, bool nmssmIsIt) ///Function that calculates the Heavy Higgs decays to two vector bosons, both on-shell or one off-shell
+DoubleVector higgshamplitudedecayVV(double m1, double mWboson, double mZboson, double g, double gp, double alpha, double beta, char Vtype, DoubleMatrix & CPEMix, bool nmssmIsIt) ///Function that calculates the Heavy Higgs decays to two vector bosons, both on-shell or one off-shell
 {
   DoubleVector Returns(2);
   for (int i=1; i<=2; i++) {
     Returns(i) = 0;
   }
-  double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp, double beta, double alpha, char Vtype, DoubleMatrix CPEMix, bool nmssmIsIt, int higgs);
+  double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp, double beta, double alpha, char Vtype, DoubleMatrix & CPEMix, bool nmssmIsIt, int higgs);
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, prefactor=0, m2=0, m3=0, massratio=0, coupling = 0;
   if (Vtype == 'W')
     {
@@ -11154,13 +11154,13 @@ DoubleVector higgshamplitudedecayVV(double m1, double mWboson, double mZboson, d
 }
  
 
-DoubleVector higgsHamplitudedecayVV(double m1, double mWboson, double mZboson, double g, double gp, double alpha, double beta, char Vtype, DoubleMatrix CPEMix, bool nmssmIsIt) ///Function that calculates the Heavy Higgs decays to two vector bosons, assuming both are on-shell.
+DoubleVector higgsHamplitudedecayVV(double m1, double mWboson, double mZboson, double g, double gp, double alpha, double beta, char Vtype, DoubleMatrix & CPEMix, bool nmssmIsIt) ///Function that calculates the Heavy Higgs decays to two vector bosons, assuming both are on-shell.
 {
   DoubleVector Returns(2);
   for (int i=1; i<=2; i++) {
     Returns(i) = 0;
   }
-  double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp, double beta, double alpha, char Vtype , DoubleMatrix CPEMix, bool nmssmIsIt, int higgs);
+  double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp, double beta, double alpha, char Vtype , DoubleMatrix & CPEMix, bool nmssmIsIt, int higgs);
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, prefactor=0, m2=0, m3=0, massratio=0, coupling = 0;
   if (Vtype == 'W')
     {
@@ -11211,13 +11211,13 @@ DoubleVector higgsHamplitudedecayVV(double m1, double mWboson, double mZboson, d
    return Returns;
 }
 
-DoubleVector higgsH3amplitudedecayVVNMSSM(double m1, double mWboson, double mZboson, double g, double gp, double alpha, double beta, char Vtype, DoubleMatrix CPEMix, bool nmssmIsIt) ///Function that calculates the Heavy Higgs decays to two vector bosons, assuming both are on-shell.
+DoubleVector higgsH3amplitudedecayVVNMSSM(double m1, double mWboson, double mZboson, double g, double gp, double alpha, double beta, char Vtype, DoubleMatrix & CPEMix, bool nmssmIsIt) ///Function that calculates the Heavy Higgs decays to two vector bosons, assuming both are on-shell.
 {
   DoubleVector Returns(2);
   for (int i=1; i<=2; i++) {
     Returns(i) = 0;
   }
-  double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp, double beta, double alpha, char Vtype , DoubleMatrix CPEMix, bool nmssmIsIt, int higgs);
+  double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp, double beta, double alpha, char Vtype , DoubleMatrix & CPEMix, bool nmssmIsIt, int higgs);
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, prefactor=0, m2=0, m3=0, massratio=0, coupling = 0;
   if (Vtype == 'W')
     {
@@ -11494,7 +11494,7 @@ double squarkamplitudedecaygravitino(double m1, double mgrav, double mquark, dou
   return amplitudeW;
 }
 
-double neutralinoamplitudedecayphotongravitino(double m1, double mgrav, double MPlreduced, DoubleMatrix mixNeut, double g, double gp, int neutralino, int gravonoff, int neutNLSP)  /// Function that calculates the decays to gravitino and photon of a neutralino if int gravonoff == 1, otherwise decays to gravitinos are off
+double neutralinoamplitudedecayphotongravitino(double m1, double mgrav, double MPlreduced, DoubleMatrix & mixNeut, double g, double gp, int neutralino, int gravonoff, int neutNLSP)  /// Function that calculates the decays to gravitino and photon of a neutralino if int gravonoff == 1, otherwise decays to gravitinos are off
 {
   double amplitudeW = 0, coupling = 0, costhetaW = 0, sinthetaW = 0;
   if (neutNLSP == 0) { amplitudeW =0;}
@@ -11510,7 +11510,7 @@ double neutralinoamplitudedecayphotongravitino(double m1, double mgrav, double M
   return amplitudeW;
 }
 
-double neutralinoamplitudedecayZgravitino(double m1, double mZ, double mgrav, double MPlreduced, DoubleMatrix mixNeut, double g, double gp, double beta, int neutralino, int gravonoff, int neutNLSP)  /// Function that calculates the decays to gravitino and Z boson of a neutralino if int gravonoff == 1, otherwise decays to gravitinos are off
+double neutralinoamplitudedecayZgravitino(double m1, double mZ, double mgrav, double MPlreduced, DoubleMatrix & mixNeut, double g, double gp, double beta, int neutralino, int gravonoff, int neutNLSP)  /// Function that calculates the decays to gravitino and Z boson of a neutralino if int gravonoff == 1, otherwise decays to gravitinos are off
 {
   double amplitudeW = 0, coupling = 0, costhetaW = 0, sinthetaW = 0;
   if (neutNLSP == 0 || fabs(m1) < mZ + mgrav) { amplitudeW = 0;}
@@ -11527,7 +11527,7 @@ double neutralinoamplitudedecayZgravitino(double m1, double mZ, double mgrav, do
   return amplitudeW;
 }
 
-double neutralinoamplitudedecayphigravitino(double m1, double mphi, double mgrav, double MPlreduced, DoubleMatrix mixNeut, double alpha, double beta, int neutralino, int gravonoff, char phi, int neutNLSP)  /// Function that calculates the decays to gravitino and Z boson of a neutralino if int gravonoff == 1, otherwise decays to gravitinos are off
+double neutralinoamplitudedecayphigravitino(double m1, double mphi, double mgrav, double MPlreduced, DoubleMatrix & mixNeut, double alpha, double beta, int neutralino, int gravonoff, char phi, int neutNLSP)  /// Function that calculates the decays to gravitino and Z boson of a neutralino if int gravonoff == 1, otherwise decays to gravitinos are off
 {
   double amplitudeW = 0, coupling = 0;
   if (neutNLSP == 0 || fabs(m1) < mphi) { amplitudeW = 0;}
@@ -12173,12 +12173,12 @@ double gZintegral(double m1, double m2, double mz, double mf, double E) ///the i
   return gZintegral;
 }
 
-double hHintegral (double m1, double m2, double mf, double mh, double mH, double fromE, double toE, double stepE, double g, double gp, double alpha, DoubleMatrix mixNeut, int neutralinoi, int neutralinoj) ///integral required for the squared hH exchange contribution to the neutralinoj -> neutralinoi + f + fbar 1->3 decay
+double hHintegral (double m1, double m2, double mf, double mh, double mH, double fromE, double toE, double stepE, double g, double gp, double alpha, DoubleMatrix & mixNeut, int neutralinoi, int neutralinoj) ///integral required for the squared hH exchange contribution to the neutralinoj -> neutralinoi + f + fbar 1->3 decay
  {
    double f=0, Area=0, E=0;
    double mid=0, end=0;
    double fmid=0, fend=0;
-   double ghHintegral(double m1, double m2, double mf, double mh, double mH, double g, double gp, double alpha, int neutralinoi, int neutralinoj, DoubleMatrix mixNeut, double E);
+   double ghHintegral(double m1, double m2, double mf, double mh, double mH, double g, double gp, double alpha, int neutralinoi, int neutralinoj, DoubleMatrix & mixNeut, double E);
    for(E=fromE; E+stepE<toE; E= E+stepE) {
      f = ghHintegral(m1, m2, mf, mh, mH, g, gp, alpha, neutralinoi, neutralinoj, mixNeut, E);
      end = E + stepE;
@@ -12190,7 +12190,7 @@ double hHintegral (double m1, double m2, double mf, double mh, double mH, double
    return Area;
  }
 
-double ghHintegral(double m1, double m2, double mf, double mh, double mH, double g, double gp, double alpha, int neutralinoi, int neutralinoj, DoubleMatrix mixNeut, double E) ///the integrand in the hHintegral integral
+double ghHintegral(double m1, double m2, double mf, double mh, double mH, double g, double gp, double alpha, int neutralinoi, int neutralinoj, DoubleMatrix & mixNeut, double E) ///the integrand in the hHintegral integral
  {
    double ghHintegral = 0, B=0, Bf=0, D=0, F=0, G=0, Xijh=0, XijH=0, Xjih=0, XjiH=0, H=0;
    B = 4*pow(mf,2)/(pow(m1,2)+pow(m2,2)-2*E*fabs(m1));
@@ -12345,23 +12345,18 @@ void OutputYesPWs(ostream & cout, Particle & P, double BRTol) ///Outputs the dec
  }
 
 
-///dgauss integrands for numerical integration of phase space in 1->3 decays
-
-/// Make sure you have set useInDGauss before calling this function
 double fdgauss(double x) {
-  //cout << "USEINDGAUSS" << useInDGauss->displayPhys().mGluino << endl;
   return x * x;
 }
 
 double gpsitildadgauss(double Et) {
   double gpsitildadgauss = 0, pt = 0, squareplus = 0, squareminus = 0, lambda = 0, A = 0;
-  ///cout << "m1 = " << m1 << " m2 = " << m2 << " m3 = " << m3 << " m4 = " << m4 << " mq = " << mq << endl;
   A = pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et;
   pt = pow(pow(Et,2)-pow(mq,2),0.5);
   squareplus = A - pow(fabs(m4)+mq,2);
   squareminus = A - pow(fabs(m4)-mq,2);
-  if (squareplus <0) ///this can happen erronesouly at very end of range due to finite precision used, squareplus should actually then be very very small and +ve
-    { squareplus = 0;} /// set to zero to avoid nan problem in lambda, note that given squareplus very very very small anyway here this should not affect the accuracy of the integral
+  if (squareplus <0) ///< this can happen erronesouly at very end of range due to finite precision used, squareplus should actually then be very very small and +ve
+    { squareplus = 0;} ///< set to zero to avoid nan problem in lambda, note that given squareplus very very very small anyway here this should not affect the accuracy of the integral
   lambda = pow(squareplus*squareminus,0.5);
   gpsitildadgauss = pow(PI,2)*fabs(m1)*pt*Et*lambda/(A)*(pow(m1,2)-pow(m4,2)-2*fabs(m1)*Et)/((A-pow(m2,2))*(A-pow(m3,2)));
 
@@ -14112,7 +14107,7 @@ double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, doub
 
 
 
-double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (double mgluino, double mneutralino, double msqL, double msqR, double mquark, double g, double gp, DoubleMatrix mixNeut, double alphas, char uord, int neut, bool onetothree)/// m1 is mgluino, m2 is neutralinoi mass, m3 is sqL mass, m4 is sqR mass, m5 is quark mass but assumed zero in calculation here, just used to check allowed for now; char uord tells us if the quark is u type 'u' or d type 'd', int neut tells us which neutralino it is
+double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (double mgluino, double mneutralino, double msqL, double msqR, double mquark, double g, double gp, DoubleMatrix & mixNeut, double alphas, char uord, int neut, bool onetothree)/// m1 is mgluino, m2 is neutralinoi mass, m3 is sqL mass, m4 is sqR mass, m5 is quark mass but assumed zero in calculation here, just used to check allowed for now; char uord tells us if the quark is u type 'u' or d type 'd', int neut tells us which neutralino it is
 {
   double amplitudeW=0, phiL=0, phiR=0, psiL=0, psiR=0, A = 0, B = 0, from = 0, upper = 0;
   int i = neut;
@@ -14162,7 +14157,7 @@ double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (double mgluino, do
 
 
 
-double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, double mst2, double mneutralino, double mt, double mWboson, double g, double gp, double thetat, double beta, double alphas, DoubleMatrix mixNeut, double runmt, int neutralino, bool onetothree, char torb) ///calculates PW for gluino -> neutralino + q qbar pair where q are t 
+double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, double mst2, double mneutralino, double mt, double mWboson, double g, double gp, double thetat, double beta, double alphas, DoubleMatrix & mixNeut, double runmt, int neutralino, bool onetothree, char torb) ///calculates PW for gluino -> neutralino + q qbar pair where q are t 
 {
   double amplitudeW=0, Gammast1=0, Gammast2=0, Gammast1st2=0;
   double AtZ=0, BtZ=0, ft=0, from=0, upper=0;
@@ -14467,7 +14462,7 @@ double gluinoamplitudedecaydgausschartbbar (double mgluino, double mst1, double 
 }
 
 
-double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, double msf1, double msf2, double mZboson, double mhiggsl, double mhiggsH, double mhiggsA, double mneutralinoj, double mf, double alphas, double thetaq, double mWboson, double g, double gp, double alpha, double beta, double runmq, DoubleMatrix mixNeut, int ineutralino, int jneutralino, bool onetothree, char uordornuorl)
+double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, double msf1, double msf2, double mZboson, double mhiggsl, double mhiggsH, double mhiggsA, double mneutralinoj, double mf, double alphas, double thetaq, double mWboson, double g, double gp, double alpha, double beta, double runmq, DoubleMatrix & mixNeut, int ineutralino, int jneutralino, bool onetothree, char uordornuorl)
 {
   double GammaZ = 0, Gammahsf1 = 0, Gammahsf2 = 0, GammaHsf1 = 0, GammaHsf2 = 0, GammaAsf1 = 0, GammaAsf2 = 0, GammaZsf1 = 0, GammaZsf2 = 0, amplitudeW = 0;
 
@@ -15027,7 +15022,7 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
   return amplitudeW;
 }
 
-double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double msfp1, double msfp2, double msf1, double msf2, double mWboson, double mHP, double mcharginoj, double mfp, double mf, double thetaqp, double thetaq, double g, double gp, double alpha, double beta, double thetaL2, double thetaR2, double runmqp, double runmq, DoubleMatrix mixNeut, int ineutralino, int jchargino, bool onetothree, char qorl, char norc) {
+double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double msfp1, double msfp2, double msf1, double msf2, double mWboson, double mHP, double mcharginoj, double mfp, double mf, double thetaqp, double thetaq, double g, double gp, double alpha, double beta, double thetaL2, double thetaR2, double runmqp, double runmq, DoubleMatrix & mixNeut, int ineutralino, int jchargino, bool onetothree, char qorl, char norc) {
   
   double amplitudeW = 0;
 
@@ -16009,7 +16004,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
 
 
 
-double higgsAamplitudedecaygammagammaNMSSM (double m1, double g, double gprime, double alpha, double mWboson, DoubleMatrix CPOMix, double beta, double mtop, double mbottom, double mcharm, double mtau, double mch1, double mch2, double thetaL, double thetaR, double lam, int higgs)
+double higgsAamplitudedecaygammagammaNMSSM (double m1, double g, double gprime, double alpha, double mWboson, DoubleMatrix & CPOMix, double beta, double mtop, double mbottom, double mcharm, double mtau, double mch1, double mch2, double thetaL, double thetaR, double lam, int higgs)
 {
   double prefactor=0, Itr=0, Iti=0, Ibr = 0, Ibi = 0, Icr = 0, Ici = 0, Itaur = 0, Itaui = 0, Ichar1r = 0, Ichar1i = 0, Ichar2r = 0, Ichar2i = 0, couplingt = 0, couplingb = 0, couplingc = 0, couplingtau = 0, couplingch1 = 0, couplingch2 = 0, kintr = 0, kinti = 0, kinbr =0, kinbi = 0, kincr = 0, kinci = 0, kintaur = 0, kintaui = 0, kinch1r = 0, kinch1i = 0, kinch2r = 0, kinch2i = 0, matelemmodsquare=0, amplitudeW=0;
 
@@ -16053,7 +16048,7 @@ double higgsAamplitudedecaygammagammaNMSSM (double m1, double g, double gprime, 
 }
 
 
-double higgsAamplitudedecaygluongluonNMSSM (double m1, double g, double gs, double alphas, double mWboson, DoubleMatrix CPOMix, double beta, double mtop, double mbottom, double mcharm, double lam, int higgs, bool QCD)
+double higgsAamplitudedecaygluongluonNMSSM (double m1, double g, double gs, double alphas, double mWboson, DoubleMatrix & CPOMix, double beta, double mtop, double mbottom, double mcharm, double lam, int higgs, bool QCD)
 {
   double prefactor=0, Itr=0, Iti=0, Ibr = 0, Ibi = 0, Icr = 0, Ici = 0, couplingt = 0, couplingb = 0, couplingc = 0, kintr = 0, kinti = 0, kinbr =0, kinbi = 0, kincr = 0, kinci = 0, matelemmodsquare=0, amplitudeW=0;
 
@@ -16111,7 +16106,7 @@ double higgsAamplitudedecaygluongluonNMSSM (double m1, double g, double gs, doub
 }
 
 
-double higgsAamplitudedecayZgammaNMSSM (double m1, double g, double gp, double alpha, double mWboson, double mZboson, DoubleMatrix CPOMix, double beta, double mtop, double mbottom, double mcharm, double mch1, double mch2, double thetaL, double thetaR, double lam, int higgs)
+double higgsAamplitudedecayZgammaNMSSM (double m1, double g, double gp, double alpha, double mWboson, double mZboson, DoubleMatrix & CPOMix, double beta, double mtop, double mbottom, double mcharm, double mch1, double mch2, double thetaL, double thetaR, double lam, int higgs)
 {
   double prefactor=0, Itr=0, Iti=0, Ibr = 0, Ibi = 0, Icr = 0, Ici = 0, Ichar1r = 0, Ichar1i = 0, Ichar2r = 0, Ichar2i = 0, couplingt = 0, couplingb = 0, couplingc = 0, couplingch1 =0, couplingch2 = 0, kintr = 0, kinti = 0, kinbr =0, kinbi = 0, kincr = 0, kinci = 0, kinch1r = 0, kinch1i = 0, kinch2r = 0, kinch2i = 0, matelemmodsquare=0, amplitudeW=0;
   double sin2thW = 0, sinthW = 0, costhW = 0;
@@ -16159,7 +16154,7 @@ double higgsAamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
 }
 
 
-double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double mbottom, double mcharm, double mtau, double mWboson, double mHpm, double mchar1, double mchar2, double mscharmL, double mscharmR, double mstop1, double mstop2, double msstrangeL, double msstrangeR, double msbottom1, double msbottom2, double msmuonL, double msmuonR, double mstau1, double mstau2, DoubleMatrix CPEMix, double beta, double g, double gp, double alpha, double thetat, double thetab, double thetatau, double thetaL, double thetaR, double At, double Ab, double Atau, double mu, double mueff, double lam, double kappa, double Alambda, int higgs)
+double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double mbottom, double mcharm, double mtau, double mWboson, double mHpm, double mchar1, double mchar2, double mscharmL, double mscharmR, double mstop1, double mstop2, double msstrangeL, double msstrangeR, double msbottom1, double msbottom2, double msmuonL, double msmuonR, double mstau1, double mstau2, DoubleMatrix & CPEMix, double beta, double g, double gp, double alpha, double thetat, double thetab, double thetatau, double thetaL, double thetaR, double At, double Ab, double Atau, double mu, double mueff, double lam, double kappa, double Alambda, int higgs)
 {
   double amplitudeW = 0, prefactor = 0, couplingt = 0, couplingb = 0, couplingc = 0, couplingtau = 0, couplingW = 0, couplingHpm = 0, couplingch1 = 0, couplingch2 = 0, couplingscL = 0, couplingscR = 0, couplingst1 = 0, couplingst2 = 0, couplingssL = 0, couplingssR = 0, couplingsb1 = 0, couplingsb2 = 0, couplingsmuL = 0, couplingsmuR = 0, couplingstau1 = 0, couplingstau2 = 0;
   double ft = 0, fb = 0, ftau = 0;
@@ -16250,7 +16245,7 @@ double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double m
 
 
 
-double higgsCPevenamplitudedecaygluongluonNMSSM(double m1, double mtop, double mbottom, double mcharm, double mWboson, double mscharmL, double mscharmR, double mstop1, double mstop2, double msstrangeL, double msstrangeR, double msbottom1, double msbottom2, double msupL, double msupR, double msdownL, double msdownR, double runmt, double runmb, DoubleMatrix CPEMix, double beta, double g, double gp, double gs, double alphas, double thetat, double thetab, double thetaL, double thetaR, double At, double Ab, double mu, double mueff, double lam, double kappa, double Alambda, int higgs, bool QCD)
+double higgsCPevenamplitudedecaygluongluonNMSSM(double m1, double mtop, double mbottom, double mcharm, double mWboson, double mscharmL, double mscharmR, double mstop1, double mstop2, double msstrangeL, double msstrangeR, double msbottom1, double msbottom2, double msupL, double msupR, double msdownL, double msdownR, double runmt, double runmb, DoubleMatrix & CPEMix, double beta, double g, double gp, double gs, double alphas, double thetat, double thetab, double thetaL, double thetaR, double At, double Ab, double mu, double mueff, double lam, double kappa, double Alambda, int higgs, bool QCD)
 {
   double amplitudeW = 0, prefactor = 0, couplingt = 0, couplingb = 0, couplingc = 0, couplingscL = 0, couplingscR = 0, couplingst1 = 0, couplingst2 = 0, couplingssL = 0, couplingssR = 0, couplingsb1 = 0, couplingsb2 = 0, couplingsuL = 0, couplingsuR = 0, couplingsdL = 0, couplingsdR = 0;
   double ft = 0, fb = 0;
@@ -16358,7 +16353,7 @@ double higgsCPevenamplitudedecaygluongluonNMSSM(double m1, double mtop, double m
 }
 
 
-double higgshamplitudedecayZgammaNMSSM (double m1, double g, double gp, double alpha, double mWboson, double mZboson, double mHpm, DoubleMatrix CPEMix, double beta, double mtop, double mbottom, double mcharm, double mch1, double mch2, double thetaL, double thetaR, double lam, double kappa, double Alambda, double greekmu, double mueff, int higgs)
+double higgshamplitudedecayZgammaNMSSM (double m1, double g, double gp, double alpha, double mWboson, double mZboson, double mHpm, DoubleMatrix & CPEMix, double beta, double mtop, double mbottom, double mcharm, double mch1, double mch2, double thetaL, double thetaR, double lam, double kappa, double Alambda, double greekmu, double mueff, int higgs)
 {
   double prefactor=0, Itr=0, Iti=0, Ibr = 0, Ibi = 0, Icr = 0, Ici = 0, Ichar1r = 0, Ichar1i = 0, Ichar2r = 0, Ichar2i = 0, IWr = 0, IWi = 0, IHpmr = 0, IHpmi = 0, couplingt = 0, couplingb = 0, couplingc = 0, couplingch1 =0, couplingch2 = 0, couplingW = 0, couplingHpm = 0, kintr = 0, kinti = 0, kinbr =0, kinbi = 0, kincr = 0, kinci = 0, kinch1r = 0, kinch1i = 0, kinch2r = 0, kinch2i = 0, kinWr = 0, kinWi = 0, kinHpmr = 0, kinHpmi = 0, matelemmodsquare=0, amplitudeW=0;
   double sin2thW = 0, sinthW = 0, costhW = 0;
@@ -16439,7 +16434,7 @@ double higgshamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
 
  
 
-double higgshamplitudedecayneutineutjNMSSM (double m1, double mneuti, double mneutj, double g, double gp, DoubleMatrix CPEMix, DoubleMatrix mixNeut, double lam, double kappa, int neuti, int neutj, int higgs) 
+double higgshamplitudedecayneutineutjNMSSM (double m1, double mneuti, double mneutj, double g, double gp, DoubleMatrix & CPEMix, DoubleMatrix & mixNeut, double lam, double kappa, int neuti, int neutj, int higgs) 
 {
   double amplitudeW = 0;
   double coupling = 0, squareplus = 0, squareminus = 0, lambda = 0, factor = 0;
@@ -16489,7 +16484,7 @@ double higgsAamplitudedecayHpmWboson(double m1, double mWboson, double mHpm, dou
 }
 
 
-double CPEhCPOACPOACoupling  (DoubleMatrix CPEMix, DoubleMatrix CPOMix, int higgs, int pseudoscalar1, int pseudoscalar2, int j, int k, int l)
+double CPEhCPOACPOACoupling  (DoubleMatrix & CPEMix, DoubleMatrix & CPOMix, int higgs, int pseudoscalar1, int pseudoscalar2, int j, int k, int l)
 {
   double coupling = 0;
   coupling = CPEMix(higgs,j)*(CPOMix(pseudoscalar1,k)*CPOMix(pseudoscalar2,l) + CPOMix(pseudoscalar1,l)*CPOMix(pseudoscalar2,k));
@@ -16497,7 +16492,7 @@ double CPEhCPOACPOACoupling  (DoubleMatrix CPEMix, DoubleMatrix CPOMix, int higg
 }
 
 
-double higgsCPevenamplitudedecayAANMSSM(double m1, double mA1, double mA2, double mWboson, double runmt, double runmb, double g, double gp, double beta, DoubleMatrix CPEMix, DoubleMatrix CPOMix, double lam, double kappa, double Alambda, double Akappa, double mueff, int higgs, int pseudoscalar1, int pseudoscalar2) 
+double higgsCPevenamplitudedecayAANMSSM(double m1, double mA1, double mA2, double mWboson, double runmt, double runmb, double g, double gp, double beta, DoubleMatrix & CPEMix, DoubleMatrix & CPOMix, double lam, double kappa, double Alambda, double Akappa, double mueff, int higgs, int pseudoscalar1, int pseudoscalar2) 
 {
   double amplitudeW = 0;
   if (fabs(m1) < fabs(mA1) + fabs(mA2)) {
@@ -16505,7 +16500,7 @@ double higgsCPevenamplitudedecayAANMSSM(double m1, double mA1, double mA2, doubl
   }
   else {
     double squareplus = 0, squareminus = 0, lambda = 0, hvev1 = 0, hvev2 = 0, prefactor = 0, coupling = 0;
-    double CPEhCPOACPOACoupling (DoubleMatrix CPEMix, DoubleMatrix CPOMix, int higgs, int pseudoscalar1, int pseudoscalar2, int j, int k, int l);
+    double CPEhCPOACPOACoupling (DoubleMatrix & CPEMix, DoubleMatrix & CPOMix, int higgs, int pseudoscalar1, int pseudoscalar2, int j, int k, int l);
     squareplus = 1 - pow(mA1/m1 + mA2/m1,2);
     squareminus = 1 - pow(mA1/m1 - mA2/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
@@ -16523,7 +16518,7 @@ double higgsCPevenamplitudedecayAANMSSM(double m1, double mA1, double mA2, doubl
 }
     
 
-double higgsCPevenamplitudedecaypseudoscalarZNMSSM (double m1, double mA, double mZboson, double g, double gp, double beta, DoubleMatrix CPEMix, DoubleMatrix CPOMix, int higgs, int pseudoscalar) 
+double higgsCPevenamplitudedecaypseudoscalarZNMSSM (double m1, double mA, double mZboson, double g, double gp, double beta, DoubleMatrix & CPEMix, DoubleMatrix & CPOMix, int higgs, int pseudoscalar) 
 {
   double amplitudeW = 0;
   if (m1 < mA + mZboson) { amplitudeW = 0;}
@@ -16540,7 +16535,7 @@ double higgsCPevenamplitudedecaypseudoscalarZNMSSM (double m1, double mA, double
 }
 
 
-double higgsCPevenamplitudedecayHpHmNMSSM (double m1, double mHpm, double mWboson,  double g, double gp, double mtop, double mbottom, double beta, double lam, double mueff, double kappa, double Alambda, DoubleMatrix CPEMix, int higgs)
+double higgsCPevenamplitudedecayHpHmNMSSM (double m1, double mHpm, double mWboson,  double g, double gp, double mtop, double mbottom, double beta, double lam, double mueff, double kappa, double Alambda, DoubleMatrix & CPEMix, int higgs)
 {
   double amplitudeW = 0;
   if (m1 < 2*mHpm) {amplitudeW = 0;}
@@ -16555,20 +16550,20 @@ double higgsCPevenamplitudedecayHpHmNMSSM (double m1, double mHpm, double mWboso
   return amplitudeW;
 }
 
-double hHH3Couplings(DoubleMatrix CPEMix, int higgsno, int higgs1, int higgs2, int x, int y, int z) {
+double hHH3Couplings(DoubleMatrix & CPEMix, int higgsno, int higgs1, int higgs2, int x, int y, int z) {
   double coupling = 0;
   coupling = CPEMix(higgsno,x)*CPEMix(higgs1,y)*CPEMix(higgs2,z) + CPEMix(higgsno,x)*CPEMix(higgs2,y)*CPEMix(higgs1,z) + CPEMix(higgs1,x)*CPEMix(higgsno,y)*CPEMix(higgs2,z) + CPEMix(higgs1,x)*CPEMix(higgsno,z)*CPEMix(higgs2,y) + CPEMix(higgs2,x)*CPEMix(higgsno,y)*CPEMix(higgs1,z) + CPEMix(higgs2,x)*CPEMix(higgs1,y)*CPEMix(higgsno,z);
 
   return coupling;
 }
 
-double higgsCPevenamplitudedecayhhorhHorHHNMSSM(double m1, double mh1, double mh2, double g, double gp, double mWboson, double mtop, double mbottom, double beta, double lam, double Alambda, double kappa, double Akappa, double mueff, DoubleMatrix CPEMix, DoubleMatrix CPOMix, int higgs1, int higgs2, int starthiggs)
+double higgsCPevenamplitudedecayhhorhHorHHNMSSM(double m1, double mh1, double mh2, double g, double gp, double mWboson, double mtop, double mbottom, double beta, double lam, double Alambda, double kappa, double Akappa, double mueff, DoubleMatrix & CPEMix, DoubleMatrix & CPOMix, int higgs1, int higgs2, int starthiggs)
 {
   double amplitudeW = 0;
   if(m1 < mh1 + mh2) {amplitudeW = 0;}
   else {
     double squareplus = 0, squareminus = 0, lambda = 0, prefactor = 0, coupling = 0, deltah1h2 = 0, hvev1 = 0, hvev2 = 0;
-    double hHH3Couplings(DoubleMatrix CPEMix, int higgsno, int higgs1, int higgs2, int x, int y, int z);
+    double hHH3Couplings(DoubleMatrix & CPEMix, int higgsno, int higgs1, int higgs2, int x, int y, int z);
     squareplus = 1 - pow(mh1/m1+mh2/m1,2);
     squareminus = 1 - pow(mh1/m1-mh2/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
@@ -16587,7 +16582,7 @@ double higgsCPevenamplitudedecayhhorhHorHHNMSSM(double m1, double mh1, double mh
 
 
 
-double higgsA2amplitudedecayA1CPevenNMSSM(double m1, double mA1, double mh, double mWboson, double runmt, double runmb, double g, double gp, double beta, DoubleMatrix CPEMix, DoubleMatrix CPOMix, double lam, double kappa, double Alambda, double Akappa, double mueff, int higgs) 
+double higgsA2amplitudedecayA1CPevenNMSSM(double m1, double mA1, double mh, double mWboson, double runmt, double runmb, double g, double gp, double beta, DoubleMatrix & CPEMix, DoubleMatrix & CPOMix, double lam, double kappa, double Alambda, double Akappa, double mueff, int higgs) 
 {
   double amplitudeW = 0;
   if (fabs(m1) < fabs(mA1) + fabs(mh)) {
@@ -16595,7 +16590,7 @@ double higgsA2amplitudedecayA1CPevenNMSSM(double m1, double mA1, double mh, doub
   }
   else {
     double squareplus = 0, squareminus = 0, lambda = 0, hvev1 = 0, hvev2 = 0, prefactor = 0, coupling = 0;
-    double CPEhCPOACPOACoupling (DoubleMatrix CPEMix, DoubleMatrix CPOMix, int higgs, int pseudoscalar1, int pseudoscalar2, int j, int k, int l);
+    double CPEhCPOACPOACoupling (DoubleMatrix & CPEMix, DoubleMatrix & CPOMix, int higgs, int pseudoscalar1, int pseudoscalar2, int j, int k, int l);
     squareplus = 1 - pow(mA1/m1 + mh/m1,2);
     squareminus = 1 - pow(mA1/m1 - mh/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
@@ -16613,7 +16608,7 @@ coupling = (pow(g,2)+pow(gp,2))/(4*pow(2,0.5))*(hvev1*(CPEhCPOACPOACoupling(CPEM
 }
 
 
-double higgsCPevenamplitudedecayWHpmNMSSM (double m1, double mWboson, double mHpm, double beta, double g, DoubleMatrix CPEMix, int higgs)
+double higgsCPevenamplitudedecayWHpmNMSSM (double m1, double mWboson, double mHpm, double beta, double g, DoubleMatrix & CPEMix, int higgs)
 {
   double amplitudeW = 0;
   if (m1 < mWboson + mHpm) {amplitudeW = 0;}
@@ -16629,7 +16624,7 @@ double higgsCPevenamplitudedecayWHpmNMSSM (double m1, double mWboson, double mHp
 }
 
 
-double higgsCPevenamplitudedecaystopistopiNMSSM (double m1, double mstopi, double thetat, double runmt, double g, double gp, double mWboson, double beta, DoubleMatrix CPEMix, double At, double mueff, double lam, int stop, int higgs) 
+double higgsCPevenamplitudedecaystopistopiNMSSM (double m1, double mstopi, double thetat, double runmt, double g, double gp, double mWboson, double beta, DoubleMatrix & CPEMix, double At, double mueff, double lam, int stop, int higgs) 
 {
   double amplitudeW = 0;
   if (m1 < 2*mstopi) { amplitudeW = 0;}
@@ -16656,7 +16651,7 @@ double higgsCPevenamplitudedecaystopistopiNMSSM (double m1, double mstopi, doubl
 }
 
 
-double higgsCPevenamplitudedecaystopistopjNMSSM (double m1, double mstopi, double mstopj, double thetat, double runmt, double g, double gp, double mWboson, double beta, DoubleMatrix CPEMix, double At, double mueff, double lam, int higgs) 
+double higgsCPevenamplitudedecaystopistopjNMSSM (double m1, double mstopi, double mstopj, double thetat, double runmt, double g, double gp, double mWboson, double beta, DoubleMatrix & CPEMix, double At, double mueff, double lam, int higgs) 
 {
   double amplitudeW = 0;
   if (m1 < mstopi+mstopj) { amplitudeW = 0;}
@@ -16677,7 +16672,7 @@ double higgsCPevenamplitudedecaystopistopjNMSSM (double m1, double mstopi, doubl
 }
 
 
-double higgsCPevenamplitudedecaysbottomisbottomiNMSSM (double m1, double msbottomi, double thetab, double runmb, double g, double gp, double mWboson, double beta, DoubleMatrix CPEMix, double Ab, double mueff, double lam, int sbottom, int higgs) 
+double higgsCPevenamplitudedecaysbottomisbottomiNMSSM (double m1, double msbottomi, double thetab, double runmb, double g, double gp, double mWboson, double beta, DoubleMatrix & CPEMix, double Ab, double mueff, double lam, int sbottom, int higgs) 
 {
   double amplitudeW = 0;
   if (m1 < 2*msbottomi) { amplitudeW = 0;}
@@ -16704,7 +16699,7 @@ double higgsCPevenamplitudedecaysbottomisbottomiNMSSM (double m1, double msbotto
 }
 
 
-double higgsCPevenamplitudedecaysbottomisbottomjNMSSM (double m1, double msbottomi, double msbottomj, double thetab, double runmb, double g, double gp, double mWboson, double beta, DoubleMatrix CPEMix, double Ab, double mueff, double lam, int higgs) 
+double higgsCPevenamplitudedecaysbottomisbottomjNMSSM (double m1, double msbottomi, double msbottomj, double thetab, double runmb, double g, double gp, double mWboson, double beta, DoubleMatrix & CPEMix, double Ab, double mueff, double lam, int higgs) 
 {
   double amplitudeW = 0;
   if (m1 < msbottomi+msbottomj) { amplitudeW = 0;}
@@ -16725,7 +16720,7 @@ double higgsCPevenamplitudedecaysbottomisbottomjNMSSM (double m1, double msbotto
 }
 
 
-double higgsCPevenamplitudedecaystauistauiNMSSM (double m1, double mstaui, double thetatau, double runmtau, double g, double gp, double mWboson, double beta, DoubleMatrix CPEMix, double Atau, double mueff, double lam, int stau, int higgs) 
+double higgsCPevenamplitudedecaystauistauiNMSSM (double m1, double mstaui, double thetatau, double runmtau, double g, double gp, double mWboson, double beta, DoubleMatrix & CPEMix, double Atau, double mueff, double lam, int stau, int higgs) 
 {
   double amplitudeW = 0;
   if (m1 < 2*mstaui) { amplitudeW = 0;}
@@ -16752,7 +16747,7 @@ double higgsCPevenamplitudedecaystauistauiNMSSM (double m1, double mstaui, doubl
 }
 
 
-double higgsCPevenamplitudedecaystauistaujNMSSM (double m1, double mstaui, double mstauj, double thetatau, double runmtau, double g, double gp, double mWboson, double beta, DoubleMatrix CPEMix, double Atau, double mueff, double lam, int higgs) 
+double higgsCPevenamplitudedecaystauistaujNMSSM (double m1, double mstaui, double mstauj, double thetatau, double runmtau, double g, double gp, double mWboson, double beta, DoubleMatrix & CPEMix, double Atau, double mueff, double lam, int higgs) 
 {
   double amplitudeW = 0;
   if (m1 < mstaui+mstauj) { amplitudeW = 0;}
@@ -16773,7 +16768,7 @@ double higgsCPevenamplitudedecaystauistaujNMSSM (double m1, double mstaui, doubl
 }
 
 
-double stop2amplitudedecaystop1CPevenhiggsNMSSM (double mst2, double mst1, double mh, double mt , double thetat, DoubleMatrix CPEMix, double beta, double mWboson, double g, double gp, double At, double mueff, double lam, int higgs) 
+double stop2amplitudedecaystop1CPevenhiggsNMSSM (double mst2, double mst1, double mh, double mt , double thetat, DoubleMatrix & CPEMix, double beta, double mWboson, double g, double gp, double At, double mueff, double lam, int higgs) 
 {
   double amplitudeW = 0, coupling = 0, prefactor = 0, lambda = 0, squareplus = 0, squareminus = 0, ft = 0, hvev1 = 0, hvev2 = 0, CL = 0, CR = 0, CLR = 0;
   if(mst2 < mst1 + mh) {
@@ -16797,7 +16792,7 @@ double stop2amplitudedecaystop1CPevenhiggsNMSSM (double mst2, double mst1, doubl
 }
     
 
-double stop2amplitudedecaystop1CPoddhiggsNMSSM (double mst2, double mst1, double ma, double mt , double thetat, DoubleMatrix CPOMix, double beta, double mWboson, double g , double At, double mueff, double lam, int higgs) 
+double stop2amplitudedecaystop1CPoddhiggsNMSSM (double mst2, double mst1, double ma, double mt , double thetat, DoubleMatrix & CPOMix, double beta, double mWboson, double g , double At, double mueff, double lam, int higgs) 
 {
   double amplitudeW = 0, coupling = 0, prefactor = 0, lambda = 0, squareplus = 0, squareminus = 0, ft = 0, hvev2 = 0, ALR = 0;
   if(mst2 < mst1 + ma) {
@@ -16819,7 +16814,7 @@ double stop2amplitudedecaystop1CPoddhiggsNMSSM (double mst2, double mst1, double
 }
 
 
-double sbottom2amplitudedecaysbottom1CPevenhiggsNMSSM (double msb2, double msb1, double mh, double mb , double thetab, DoubleMatrix CPEMix, double beta, double mWboson, double g, double gp, double Ab, double mueff, double lam, int higgs) 
+double sbottom2amplitudedecaysbottom1CPevenhiggsNMSSM (double msb2, double msb1, double mh, double mb , double thetab, DoubleMatrix & CPEMix, double beta, double mWboson, double g, double gp, double Ab, double mueff, double lam, int higgs) 
 {
   double amplitudeW = 0, coupling = 0, prefactor = 0, lambda = 0, squareplus = 0, squareminus = 0, fb = 0, hvev1 = 0, hvev2 = 0, CL = 0, CR = 0, CLR = 0;
   if(msb2 < msb1 + mh) {
@@ -16844,7 +16839,7 @@ double sbottom2amplitudedecaysbottom1CPevenhiggsNMSSM (double msb2, double msb1,
 }
 
 
-double sbottom2amplitudedecaysbottom1CPoddhiggsNMSSM (double msb2, double msb1, double ma, double mb , double thetab, DoubleMatrix CPOMix, double beta, double mWboson, double g , double Ab, double mueff, double lam, int higgs) 
+double sbottom2amplitudedecaysbottom1CPoddhiggsNMSSM (double msb2, double msb1, double ma, double mb , double thetab, DoubleMatrix & CPOMix, double beta, double mWboson, double g , double Ab, double mueff, double lam, int higgs) 
 {
   double amplitudeW = 0, coupling = 0, prefactor = 0, lambda = 0, squareplus = 0, squareminus = 0, fb = 0, hvev1 = 0, ALR = 0;
   if(msb2 < msb1 + ma) {
@@ -16866,7 +16861,7 @@ double sbottom2amplitudedecaysbottom1CPoddhiggsNMSSM (double msb2, double msb1, 
 }
 
 
-double stau2amplitudedecaystau1CPevenhiggsNMSSM (double mstau2, double mstau1, double mh, double mtau, double thetatau, DoubleMatrix CPEMix, double beta, double mWboson, double g, double gp, double Atau, double mueff, double lam, int higgs) 
+double stau2amplitudedecaystau1CPevenhiggsNMSSM (double mstau2, double mstau1, double mh, double mtau, double thetatau, DoubleMatrix & CPEMix, double beta, double mWboson, double g, double gp, double Atau, double mueff, double lam, int higgs) 
 {
   double amplitudeW = 0, coupling = 0, prefactor = 0, lambda = 0, squareplus = 0, squareminus = 0, ftau = 0, hvev1 = 0, hvev2 = 0, CL = 0, CR = 0, CLR = 0;
   if(mstau2 < mstau1 + mh) {
@@ -16894,7 +16889,7 @@ double stau2amplitudedecaystau1CPevenhiggsNMSSM (double mstau2, double mstau1, d
 
 double stau2amplitudedecaystau1CPoddhiggsNMSSM
 (double mstau2, double mstau1, double ma, double mtau, double thetatau,
- DoubleMatrix CPOMix, double beta, double mWboson, double g , double Atau,
+ DoubleMatrix & CPOMix, double beta, double mWboson, double g , double Atau,
  double mueff, double lam, int higgs) {
   double amplitudeW = 0, coupling = 0, prefactor = 0, lambda = 0, squareplus = 0, squareminus = 0, ftau = 0, hvev1 = 0, ALR = 0;
   if(mstau2 < mstau1 + ma) {
@@ -16916,7 +16911,7 @@ double stau2amplitudedecaystau1CPoddhiggsNMSSM
 }
 
 
-double chargino2amplitudedecaychargino1CPevenhiggsNMSSM (double mchar2, double mchar1, double mh, double g, double lam, double thetaL, double thetaR, DoubleMatrix CPEMix, int higgs) 
+double chargino2amplitudedecaychargino1CPevenhiggsNMSSM (double mchar2, double mchar1, double mh, double g, double lam, double thetaL, double thetaR, DoubleMatrix & CPEMix, int higgs) 
 {
   double amplitudeW = 0, lambda = 0, squareplus = 0, squareminus = 0, coupling1 = 0, coupling2 = 0, coupling = 0, prefactor = 0;
   if (fabs(mchar2) < fabs(mchar1) + mh) {
@@ -16936,7 +16931,7 @@ double chargino2amplitudedecaychargino1CPevenhiggsNMSSM (double mchar2, double m
 }
 
  
-double chargino2amplitudedecaychargino1CPoddhiggsNMSSM (double mchar2, double mchar1, double mA, double g, double lam, double thetaL, double thetaR, DoubleMatrix CPOMix, int higgs) 
+double chargino2amplitudedecaychargino1CPoddhiggsNMSSM (double mchar2, double mchar1, double mA, double g, double lam, double thetaL, double thetaR, DoubleMatrix & CPOMix, int higgs) 
 {
   double amplitudeW = 0, lambda = 0, squareplus = 0, squareminus = 0, C1 = 0, C2 = 0, coupling = 0, prefactor = 0;
   if (fabs(mchar2) < fabs(mchar1) + mA) {
@@ -16957,7 +16952,7 @@ double chargino2amplitudedecaychargino1CPoddhiggsNMSSM (double mchar2, double mc
 } 
 
 
-double neutralinoamplitudedecaycharginoWNMSSM (double mneut, double mchar, double mWboson, double g, double thetaL, double thetaR, DoubleMatrix mixNeut, int neutralino, int chargino) 
+double neutralinoamplitudedecaycharginoWNMSSM (double mneut, double mchar, double mWboson, double g, double thetaL, double thetaR, DoubleMatrix & mixNeut, int neutralino, int chargino) 
 {
   double amplitudeW = 0, squareplus = 0, squareminus = 0, lambda = 0, coupleL = 0, coupleR = 0, coupling = 0, prefactor = 0, V2 = 0, V1 = 0, U2 = 0, U1 = 0;
   if (fabs(mneut) < fabs(mchar) + mWboson) {
@@ -16989,7 +16984,7 @@ double neutralinoamplitudedecaycharginoWNMSSM (double mneut, double mchar, doubl
 }
     
 
-double neutralinoamplitudedecayneutralinoZNMSSM (double mneuti, double mneutj, double mZboson, double g, double gp, DoubleMatrix mixNeut, int neutralinoi, int neutralinoj)
+double neutralinoamplitudedecayneutralinoZNMSSM (double mneuti, double mneutj, double mZboson, double g, double gp, DoubleMatrix & mixNeut, int neutralinoi, int neutralinoj)
 {
   double amplitudeW = 0, prefactor = 0, lambda = 0, squareplus = 0, squareminus = 0, costhetaW = 0, coupleZL = 0, coupleZR = 0, coupling = 0;
   if (fabs(mneuti) < fabs(mneutj) + mZboson) { 
@@ -17014,7 +17009,7 @@ double neutralinoamplitudedecayneutralinoZNMSSM (double mneuti, double mneutj, d
 }
 
 
-double neutralinoamplitudecharginoHpmNMSSM (double mneut, double mchar, double mHp, double g, double gp, double beta, double thetaL, double thetaR, double lam, DoubleMatrix mixNeut, int neutralino, int chargino)
+double neutralinoamplitudecharginoHpmNMSSM (double mneut, double mchar, double mHp, double g, double gp, double beta, double thetaL, double thetaR, double lam, DoubleMatrix & mixNeut, int neutralino, int chargino)
 {
   double amplitudeW = 0, prefactor = 0, lambda = 0, squareplus = 0, squareminus = 0, coupHpZiWjL = 0, coupHpZiWjR = 0, coupling = 0, V1 = 0, V2 = 0, U1 = 0, U2 = 0;
   if (fabs(mneut) < fabs(mchar) + mHp) {
@@ -17044,7 +17039,7 @@ double neutralinoamplitudecharginoHpmNMSSM (double mneut, double mchar, double m
 }
 
 
-double neutralinoamplitudedecayneutralinoCPevenhiggsNMSSM (double mneuti, double mneutj, double mhiggs, double g, double gp, double lam, double kappa, DoubleMatrix mixNeut, DoubleMatrix CPEMix, int neutralinoi, int neutralinoj, int higgs) 
+double neutralinoamplitudedecayneutralinoCPevenhiggsNMSSM (double mneuti, double mneutj, double mhiggs, double g, double gp, double lam, double kappa, DoubleMatrix & mixNeut, DoubleMatrix & CPEMix, int neutralinoi, int neutralinoj, int higgs) 
 {
   double amplitudeW = 0, prefactor = 0, squareplus = 0, squareminus = 0, lambda = 0, coupling = 0, coupHZiZj = 0;
   if (fabs(mneuti) < fabs(mneutj) + mhiggs) {
@@ -17067,7 +17062,7 @@ double neutralinoamplitudedecayneutralinoCPevenhiggsNMSSM (double mneuti, double
 }
     
 
-double neutralinoamplitudedecayneutralinoCPoddhiggsNMSSM (double mneuti, double mneutj, double ma, double g, double gp, double lam, double kappa, DoubleMatrix mixNeut, DoubleMatrix CPOMix, int neuti, int neutj, int higgsa) 
+double neutralinoamplitudedecayneutralinoCPoddhiggsNMSSM (double mneuti, double mneutj, double ma, double g, double gp, double lam, double kappa, DoubleMatrix & mixNeut, DoubleMatrix & CPOMix, int neuti, int neutj, int higgsa) 
 {
   double amplitudeW = 0, lambda = 0, squareplus = 0, squareminus = 0, prefactor = 0, coupling = 0, coupAZiZj = 0;
   if (fabs(mneuti) < fabs(mneutj) + ma) {
@@ -17089,7 +17084,7 @@ double neutralinoamplitudedecayneutralinoCPoddhiggsNMSSM (double mneuti, double 
 }
     
 
-double neutralinoamplitudedecaysfermionfermionfirst2genNMSSM (double mneut, double msf, double mf, double g, double gp, DoubleMatrix mixNeut, int neut, char type, char LorR) ///type indicates type of fermion, 'u' for up type quark, 'd' for down type quark, 'l' for charged lepton, 'n' for neutrino, note ignoring yukawa of fermion here as first 2 gen
+double neutralinoamplitudedecaysfermionfermionfirst2genNMSSM (double mneut, double msf, double mf, double g, double gp, DoubleMatrix & mixNeut, int neut, char type, char LorR) ///type indicates type of fermion, 'u' for up type quark, 'd' for down type quark, 'l' for charged lepton, 'n' for neutrino, note ignoring yukawa of fermion here as first 2 gen
 {
   double amplitudeW = 0, prefactor = 0, lambda = 0, squareplus = 0, squareminus = 0, costhetaW = 0, sinthetaW = 0, coup1 = 0, coup2 = 0, coupling = 0, q = 0, N = 0;
   DoubleVector c(5);
@@ -17148,7 +17143,7 @@ double neutralinoamplitudedecaysfermionfermionfirst2genNMSSM (double mneut, doub
 }
       
   
-double neutralinoamplitudestoptopNMSSM (double mneut, double mst, double mt, double g, double gp, double thetat, double beta, double mWboson, DoubleMatrix mixNeut, double runmt, int neut, int stop) 
+double neutralinoamplitudestoptopNMSSM (double mneut, double mst, double mt, double g, double gp, double thetat, double beta, double mWboson, DoubleMatrix & mixNeut, double runmt, int neut, int stop) 
 {
   double amplitudeW = 0, squareplus = 0, squareminus = 0, lambda = 0, prefactor = 0, ft = 0, coup1 = 0, coup2 = 0, sinthetaW = 0, costhetaW = 0;
   DoubleVector c(5);
@@ -17184,7 +17179,7 @@ double neutralinoamplitudestoptopNMSSM (double mneut, double mst, double mt, dou
   return amplitudeW;
 }
 
-double neutralinoamplitudesbottombottomNMSSM (double mneut, double msb, double mb, double g, double gp, double thetab, double beta, double mWboson, DoubleMatrix mixNeut, double runmb, int neut, int sbottom) 
+double neutralinoamplitudesbottombottomNMSSM (double mneut, double msb, double mb, double g, double gp, double thetab, double beta, double mWboson, DoubleMatrix & mixNeut, double runmb, int neut, int sbottom) 
 {
   double amplitudeW = 0, squareplus = 0, squareminus = 0, lambda = 0, prefactor = 0, fb = 0, coup1 = 0, coup2 = 0, sinthetaW = 0, costhetaW = 0;
   DoubleVector c(5);
@@ -17221,7 +17216,7 @@ double neutralinoamplitudesbottombottomNMSSM (double mneut, double msb, double m
 }
 
 
-double neutralinoamplitudestautauNMSSM (double mneut, double mstau, double mtau, double g, double gp, double thetatau, double beta, double mWboson, DoubleMatrix mixNeut, double runmtau, int neut, int stau) 
+double neutralinoamplitudestautauNMSSM (double mneut, double mstau, double mtau, double g, double gp, double thetatau, double beta, double mWboson, DoubleMatrix & mixNeut, double runmtau, int neut, int stau) 
 {
   double amplitudeW = 0, squareplus = 0, squareminus = 0, lambda = 0, prefactor = 0, ftau = 0, coup1 = 0, coup2 = 0, sinthetaW = 0, costhetaW = 0;
   DoubleVector c(5);
@@ -17258,7 +17253,7 @@ double neutralinoamplitudestautauNMSSM (double mneut, double mstau, double mtau,
 }
 
 
-double neutralinoamplitudestauneutrinotauneutrinoNMSSM (double mneut, double mstaunu, double mtaunu, double g, double gp, DoubleMatrix mixNeut, int neut) 
+double neutralinoamplitudestauneutrinotauneutrinoNMSSM (double mneut, double mstaunu, double mtaunu, double g, double gp, DoubleMatrix & mixNeut, int neut) 
 {
   double amplitudeW = 0, squareplus = 0, squareminus = 0, lambda = 0, prefactor = 0, coup1 = 0, costhetaW = 0, sinthetaW = 0;
   DoubleVector c(5);
@@ -17284,7 +17279,7 @@ double neutralinoamplitudestauneutrinotauneutrinoNMSSM (double mneut, double mst
 }
 
 
-double squarkamplitudedecayquarkneutralinoNMSSM (double m1, double mq, double mneut, double g, double gp, DoubleMatrix mixNeut, char uord, char LorR, int neut) 
+double squarkamplitudedecayquarkneutralinoNMSSM (double m1, double mq, double mneut, double g, double gp, DoubleMatrix & mixNeut, char uord, char LorR, int neut) 
 {
   double amplitudeW = 0;
   if (m1 < mq + fabs(mneut)) { amplitudeW = 0;}
@@ -17329,7 +17324,7 @@ double squarkamplitudedecayquarkneutralinoNMSSM (double m1, double mq, double mn
 }
 
     
-double sleptonamplitudedecayleptonneutralinoNMSSM (double m1, double ml, double mneut, double g, double gp, DoubleMatrix mixNeut, char uord, char LorR, int neut) 
+double sleptonamplitudedecayleptonneutralinoNMSSM (double m1, double ml, double mneut, double g, double gp, DoubleMatrix & mixNeut, char uord, char LorR, int neut) 
 {
   double amplitudeW = 0;
   if (m1 < ml + fabs(mneut)) { amplitudeW = 0;}
@@ -17372,7 +17367,7 @@ double sleptonamplitudedecayleptonneutralinoNMSSM (double m1, double ml, double 
   return amplitudeW;
 }
 
-double stopamplitudedecaytopneutralinoNMSSM (double m1, double mt, double mneut, double g, double gp, double thetat, DoubleMatrix mixNeut, double runmt, double mWboson, double beta, int stop, int neut)
+double stopamplitudedecaytopneutralinoNMSSM (double m1, double mt, double mneut, double g, double gp, double thetat, DoubleMatrix & mixNeut, double runmt, double mWboson, double beta, int stop, int neut)
 {
   double amplitudeW = 0;
   if (m1 < mt + fabs(mneut)) { amplitudeW = 0;}
@@ -17413,7 +17408,7 @@ double stopamplitudedecaytopneutralinoNMSSM (double m1, double mt, double mneut,
 }
 
 
-double sbottomamplitudedecaybottomneutralinoNMSSM (double m1, double mb, double mneut, double g, double gp, double thetab, DoubleMatrix mixNeut, double runmb, double mWboson, double beta, int sbottom, int neut)
+double sbottomamplitudedecaybottomneutralinoNMSSM (double m1, double mb, double mneut, double g, double gp, double thetab, DoubleMatrix & mixNeut, double runmb, double mWboson, double beta, int sbottom, int neut)
 {
   double amplitudeW = 0;
   if (m1 < mb + fabs(mneut)) { amplitudeW = 0;}
@@ -17453,7 +17448,7 @@ double sbottomamplitudedecaybottomneutralinoNMSSM (double m1, double mb, double 
 }
 
 
-double stauamplitudedecaytauneutralinoNMSSM (double m1, double mtau, double mneut, double g, double gp, double thetatau, DoubleMatrix mixNeut, double runmtau, double mWboson, double beta, int stau, int neut)
+double stauamplitudedecaytauneutralinoNMSSM (double m1, double mtau, double mneut, double g, double gp, double thetatau, DoubleMatrix & mixNeut, double runmtau, double mWboson, double beta, int stau, int neut)
 {
   double amplitudeW = 0;
   if (m1 < mtau + fabs(mneut)) { amplitudeW = 0;}
@@ -17494,7 +17489,7 @@ double stauamplitudedecaytauneutralinoNMSSM (double m1, double mtau, double mneu
 }
 
 
-double charginoiamplitudedecayneutralinojHpmNMSSM (double mchar, double mneut, double mHpm, double g, double gp, double thetaL, double thetaR, double beta, DoubleMatrix mixNeut, double lam, int chargino, int neut)
+double charginoiamplitudedecayneutralinojHpmNMSSM (double mchar, double mneut, double mHpm, double g, double gp, double thetaL, double thetaR, double beta, DoubleMatrix & mixNeut, double lam, int chargino, int neut)
 {
   double amplitudeW = 0;
   if (fabs(mchar) < fabs(mneut) + mHpm) { amplitudeW = 0;}
@@ -17522,7 +17517,7 @@ double charginoiamplitudedecayneutralinojHpmNMSSM (double mchar, double mneut, d
 }
 
 
-double charginoiamplitudedecayneutralinojWNMSSM (double mchar, double mneut, double mWboson, double g, double gp, double thetaL, double thetaR, DoubleMatrix mixNeut, int chargino, int neut) 
+double charginoiamplitudedecayneutralinojWNMSSM (double mchar, double mneut, double mWboson, double g, double gp, double thetaL, double thetaR, DoubleMatrix & mixNeut, int chargino, int neut) 
 {
   double amplitudeW = 0, squareplus = 0, squareminus = 0, lambda = 0, coupleL = 0, coupleR = 0, coupling = 0, prefactor = 0, V2 = 0, V1 = 0, U2 = 0, U1 = 0;
   if (fabs(mchar) < fabs(mneut) + mWboson) {
@@ -17553,7 +17548,7 @@ double charginoiamplitudedecayneutralinojWNMSSM (double mchar, double mneut, dou
 }
 
 
-double HpmamplitudecharginojneutralinoiNMSSM (double mHp, double mchar, double mneut, double g, double gp, double beta, double thetaL, double thetaR, double lam, DoubleMatrix mixNeut, int neutralino, int chargino)
+double HpmamplitudecharginojneutralinoiNMSSM (double mHp, double mchar, double mneut, double g, double gp, double beta, double thetaL, double thetaR, double lam, DoubleMatrix & mixNeut, int neutralino, int chargino)
 {
   double amplitudeW = 0, prefactor = 0, lambda = 0, squareplus = 0, squareminus = 0, coupHpZiWjL = 0, coupHpZiWjR = 0, coupling = 0, V1 = 0, V2 = 0, U1 = 0, U2 = 0;
 
@@ -17587,7 +17582,7 @@ double HpmamplitudecharginojneutralinoiNMSSM (double mHp, double mchar, double m
   return amplitudeW;
 }
 
-double snutauamplitudedecaynutauneutralinoNMSSM (double m1, double mneut, double g, double gp, DoubleMatrix mixNeut, int neutralino)
+double snutauamplitudedecaynutauneutralinoNMSSM (double m1, double mneut, double g, double gp, DoubleMatrix & mixNeut, int neutralino)
 {
   double amplitudeW = 0, prefactor = 0, lambda = 0, squareplus = 0, squareminus = 0, coup = 0, costhetaW = 0, sinthetaW = 0, c2 = 0; ///c2 is c(2) from above formulae
   if (m1 < fabs(mneut)) { amplitudeW = 0;}
