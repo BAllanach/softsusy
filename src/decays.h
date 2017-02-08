@@ -13,7 +13,6 @@
 
 #include "nmssmsoftsusy.h"
 #include "softsusy.h"
-//#include "Particle.h"
 #include "physpars.h"
 #include "lowe.h"
 #include "softpars.h"
@@ -322,9 +321,9 @@ double squarkLamplitudedecayneutralino
   double G8integralsum(double m1, double m2, double m3, double m4, double mt, double mb, double min, double max, double Nsteps, int adaptive, double approx);
   
   double Jintegralsum(double m1, double m2, double msf, double mphi, double mf, double min, double max, double Nsteps, double approx, int adaptive, int AorhorH);
- 
-double hHintegral (double m1, double m2, double mf, double mh, double mH, double fromE, double toE, double stepE, double g, double gp, double alpha, DoubleMatrix & mixNeut, int neutralinoi, int neutralinoj); ///<
-																										///hHintegral
+double ghHintegral(double m1, double m2, double mf, double mh, double mH, double g, double gp, double alpha, int neutralinoi, int neutralinoj, DoubleMatrix & mixNeut, double E); 
+double hHintegral (double m1, double m2, double mf, double mh, double mH, double fromE, double toE, double stepE, double g, double gp, double alpha, DoubleMatrix & mixNeut, int neutralinoi, int neutralinoj);
+										///Hintegral
 																										///only done via usual method (not via a separate integrating function compute_areai) as can't pass a DoubleMatrix & in a function pointer
 
 

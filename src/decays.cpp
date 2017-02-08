@@ -15,12 +15,14 @@
 #include <complex>
 
 using namespace std;
-
-static double m1 = 0.,m2 = 0.,m3 = 0.,m4 = 0.,mq = 0.,m5 = 0.,m6 = 0., m7 = 0., m8 = 0., MZboson = 0., MWboson = 0., mh = 0., mH = 0., mA = 0., mphi = 0., g1 = 0., g2 = 0., alphamix = 0., betavac = 0.;
+static double m1 = 0.,m2 = 0.,m3 = 0.,m4 = 0.,mq = 0.,m5 = 0.,m6 = 0.,
+  m7 = 0., m8 = 0., MZboson = 0., MWboson = 0., mh = 0., mH = 0.,
+  mA = 0., mphi = 0., g1 = 0., g2 = 0., alphamix = 0., betavac = 0.;
 const int NeutMIXdim = 4;
 const double GFosqrt2 = GMU/pow(2,0.5);
 static int neutralinoj = 0, neutralinoi = 0, AorhorH = 0;
-static double accuracy = 0.01; ///Accuracy of numerical integration in 1->3 decays
+/// Accuracy of numerical integration in 1->3 decays
+static double accuracy = 0.01; 
 static DoubleMatrix NeutMIX(NeutMIXdim,NeutMIXdim);
 
 
@@ -11102,7 +11104,6 @@ DoubleVector higgshamplitudedecayVV(double m1, double mWboson, double mZboson, d
   for (int i=1; i<=2; i++) {
     Returns(i) = 0;
   }
-  double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp, double beta, double alpha, char Vtype, DoubleMatrix & CPEMix, bool nmssmIsIt, int higgs);
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, prefactor=0, m2=0, m3=0, massratio=0, coupling = 0;
   if (Vtype == 'W')
     {
@@ -12178,7 +12179,7 @@ double hHintegral (double m1, double m2, double mf, double mh, double mH, double
    double f=0, Area=0, E=0;
    double mid=0, end=0;
    double fmid=0, fend=0;
-   double ghHintegral(double m1, double m2, double mf, double mh, double mH, double g, double gp, double alpha, int neutralinoi, int neutralinoj, DoubleMatrix & mixNeut, double E);
+
    for(E=fromE; E+stepE<toE; E= E+stepE) {
      f = ghHintegral(m1, m2, mf, mh, mH, g, gp, alpha, neutralinoi, neutralinoj, mixNeut, E);
      end = E + stepE;
@@ -16500,7 +16501,6 @@ double higgsCPevenamplitudedecayAANMSSM(double m1, double mA1, double mA2, doubl
   }
   else {
     double squareplus = 0, squareminus = 0, lambda = 0, hvev1 = 0, hvev2 = 0, prefactor = 0, coupling = 0;
-    double CPEhCPOACPOACoupling (DoubleMatrix & CPEMix, DoubleMatrix & CPOMix, int higgs, int pseudoscalar1, int pseudoscalar2, int j, int k, int l);
     squareplus = 1 - pow(mA1/m1 + mA2/m1,2);
     squareminus = 1 - pow(mA1/m1 - mA2/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
@@ -16563,7 +16563,6 @@ double higgsCPevenamplitudedecayhhorhHorHHNMSSM(double m1, double mh1, double mh
   if(m1 < mh1 + mh2) {amplitudeW = 0;}
   else {
     double squareplus = 0, squareminus = 0, lambda = 0, prefactor = 0, coupling = 0, deltah1h2 = 0, hvev1 = 0, hvev2 = 0;
-    double hHH3Couplings(DoubleMatrix & CPEMix, int higgsno, int higgs1, int higgs2, int x, int y, int z);
     squareplus = 1 - pow(mh1/m1+mh2/m1,2);
     squareminus = 1 - pow(mh1/m1-mh2/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
@@ -16590,7 +16589,6 @@ double higgsA2amplitudedecayA1CPevenNMSSM(double m1, double mA1, double mh, doub
   }
   else {
     double squareplus = 0, squareminus = 0, lambda = 0, hvev1 = 0, hvev2 = 0, prefactor = 0, coupling = 0;
-    double CPEhCPOACPOACoupling (DoubleMatrix & CPEMix, DoubleMatrix & CPOMix, int higgs, int pseudoscalar1, int pseudoscalar2, int j, int k, int l);
     squareplus = 1 - pow(mA1/m1 + mh/m1,2);
     squareminus = 1 - pow(mA1/m1 - mh/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
