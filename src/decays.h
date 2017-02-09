@@ -29,7 +29,10 @@
 
 using namespace std;
 
-///Calculate Decays does all decay table calculations and outputs
+/// Approximate accuracy with which 3 body decays are calculated
+const double accuracy = 0.01; 
+
+/// Calculate Decays does all decay table calculations and outputs
 void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm,
 		     bool nmssmIsIt);
 
@@ -200,7 +203,9 @@ double squarkLamplitudedecayneutralino
   double snutauamplitudedecaynutauneutralinoNMSSM (double m1, double mneut, double g, double gp, DoubleMatrix & mixNeut, int neutralino);
 
   double higgsesamplitudedecayZbosonphotontotal(double m1, double mZboson, double g, double gprime, double alphaEmrun, double polemw, double runmw, double alpha, double beta, double mtop, double mbottom, double mcharm, double mstrange, double mstop1, double mstop2, double msbottom1, double msbottom2, double mHplus, double thetat, double thetab, double greekmu, double Atop, double Abottom, char higgstype);
-  double gluinoamplitudedecay1to3neutfirsttwogen (double m1, double m2, double m3, double m4, double m5, double g, double gp, DoubleMatrix & mixNeut, double alphas, char uord, int neut, int Nsteps, int adaptive, bool onetothree, double approx);
+double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, double mchargino, double mquark, double mquarkp, double msqL, double msqpL, double g, double thetaL, double thetaR, double alphas, int charg, bool onetothree);
+/// BEN
+double gluinoamplitudedecay1to3neutfirsttwogen (double m1, double m2, double m3, double m4, double m5, double g, double gp, DoubleMatrix & mixNeut, double alphas, char uord, int neut, int Nsteps, int adaptive, bool onetothree, double approx);
   double gluinoamplitudedecay1to3charfirsttwogen (double m1, double m2, double m3, double m4, double m5, double m6, double g, double thetaL, double thetaR, double alphas, int charg, int Nsteps, int adaptive, bool onetothree, double approx);
   double gluinoamplitudedecay1to3neutttbar (double m1, double m2, double m3, double m4, double m5, double mw, double g, double gp, double thetat, double beta,double alphas, DoubleMatrix & mixNeut, double runmq, int neutralino, int Nsteps, int adaptive, bool onetothree, double approx);
   double gluinoamplitudedecay1to3neutbbbar (double m1, double m2, double m3, double m4, double m5, double mw, double g, double gp, double thetab, double beta,double alphas, DoubleMatrix & mixNeut, double runmq, int neutralino, int Nsteps, int adaptive, bool onetothree, double approx);
@@ -312,7 +317,6 @@ double hHintegral (double m1, double m2, double mf, double mh, double mH, double
 
 
   ///1 to 3 decay functions calling dgauss
-  double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, double mchargino, double mquark, double mquarkp, double msqL, double msqpL, double g, double thetaL, double thetaR, double alphas, int charg, bool onetothree);
   double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (double mgluino, double mneutralino, double msqL, double msqR, double mquark, double g, double gp, DoubleMatrix & mixNeut, double alphas, char uord, int neut, bool onetothree);
   double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, double mst2, double mneutralino, double mt, double mWboson, double g, double gp, double thetat, double beta, double alphas, DoubleMatrix & mixNeut, double runmt, int neutralino, bool onetothree, char torb);
   // double gluinoamplitudedecaydgaussneutralinobbbarorig(double mgluino, double msb1, double msb2, double mneutralino, double mb, double mWboson, double g, double gp, double thetab, double beta, double alphas, DoubleMatrix & mixNeut, double runmb, int neutralino, bool onetothree);

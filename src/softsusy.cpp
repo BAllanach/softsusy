@@ -232,7 +232,8 @@ int MssmSoftsusy::rewsbMu(int sgnMu, double & mupar) const {
   int flag = 0;
   if (abs(sgnMu) != 1) {
     ostringstream ii;     
-    ii << "Error: sign mu = " << sgnMu << "\n";
+    ii << "In MssmSoftsusy::rewsbMu (softsusy.cpp), Error: sign mu = "
+       << sgnMu << "\n";
     throw ii.str();
   }
   double mH1sq = displayMh1Squared(), mH2sq = displayMh2Squared(), tanb =
