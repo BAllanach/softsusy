@@ -67,7 +67,7 @@ endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
 pkginclude_HEADERS += \
 $(addprefix src/, \
-decays.h \
+decays.h particle.h \
 def.h main.h numerics.h \
 softpars.h susy.h linalg.h \
 physpars.h softpoint.h twoloophiggs.h \
