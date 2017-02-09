@@ -19,6 +19,7 @@
 #include "softsusy.h"
 #include "flavoursoft.h"
 #include "susy.h"
+#include "particle.h"
 #include <iostream>
 #include <cstring>
 #include <stdlib.h>
@@ -27,24 +28,6 @@
 #include <vector>
 
 using namespace std;
-
-/// Particle class definition
-class Particle {
- public:
-  string name;
-  double mass;
-  double PDG;
-  double No_of_Decays;
-  double No_1to2_Decays;
-  double No_1to3_Decays;
-  double No_grav_Decays;
-  double No_NMSSM_Decays;
-  double total_width;
-  double two_width;
-  double three_width;
-  vector<vector<double> > Array_Decays;
-  vector<string> Array_Comments;
-};
 
 ///Calculate Decays does all decay table calculations and outputs
 void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm,
