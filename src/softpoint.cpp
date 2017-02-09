@@ -1283,6 +1283,13 @@ int main(int argc, char *argv[]) {
 		    else cout << "#WARNING incorrect setting for SOFTSUSY Block 25 (should be either 0 or 1)\n";
 		    break;
 		  }
+		  case 26: {
+		    int num = int(d + EPSTOL);
+		    if (num == 0) outputPartialWidths = false;
+		    else if (num == 1) outputPartialWidths = true;
+		    else cout << "#WARNING incorrect setting for SOFTSUSY Block 26 (should be either 0 or 1)\n";
+		    break;
+		  }
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "
