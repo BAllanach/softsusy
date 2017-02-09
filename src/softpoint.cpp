@@ -162,6 +162,8 @@ int main(int argc, char *argv[]) {
 	  higgsUncertainties = true;
 	else if (starts_with(argv[i],"--decays"))
 	  calculateDecaysFlag = true;
+	else if (starts_with(argv[i],"--outputPartialWidths"))
+	  outputPartialWidths = true;
 	else if (starts_with(argv[i],"--minBR="))
 	  minBR = get_value(argv[i], "--minBR=");
 	else if (starts_with(argv[i],"--dontCalculateThreeBody"))
