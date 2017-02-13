@@ -38,6 +38,7 @@ void errorCall() {
   ii << "[other options]: --decays calculates the decays for NMSSM/MSSM\n";
   ii << "--minBR=<value> sets the minimum branching ratio printed\n";
   ii << "--dontCalculateThreeBody switches the 3-body decay width calculations off\n";
+  ii << "--outputPartialWidths outputs the partial widths themselves in the comments\n";
   ii << "--higgsUncertainties gives an estimate of Higgs mass uncertainties\n";
   ii << "--mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
   ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";

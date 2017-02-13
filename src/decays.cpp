@@ -8523,7 +8523,6 @@ double higgshamplitudedecayAA (double m1, double m2, double g, double gp, double
     coupling = g*mWboson/(4*pow(costhetaW,2))*sin(beta+alpha)*cos(2*beta);
     
     amplitudeW = pow(coupling,2)/(8*PI*fabs(m1))*lambda;
-    cout << endl;
   }
   return amplitudeW;
 }
@@ -12212,7 +12211,9 @@ double gAintegral(double m1, double m2, double mz, double mA, double mf, double 
 }
 
 
-double gZsfintegral(double m1, double m2, double msf, double mf, double mz, double s) ///the integrand in the Zsfintegral integral
+///the integrand in the Zsfintegral integral
+double gZsfintegral(double m1, double m2, double msf, double mf, double mz,
+		    double s) 
 {
   double gZsfintegral = 0, EQ=0, Q=0, Qprime=0, musquared=0, B=0, C=0, D=0, F=0, G=0, H=0;
   EQ = (s + pow(m1,2)-pow(m2,2))/(2*m1);

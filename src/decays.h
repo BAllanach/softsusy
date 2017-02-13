@@ -279,12 +279,6 @@ double gluinoamplitudedecay1to3neutfirsttwogen (double m1, double m2, double m3,
   void OutputYesPWs(ostream & cout, Particle & P, double BRTol);
 
   ///Integral calculating functions for 1->3 decays
-
-  double compute_area7(double (*funcp)(double, double, double, double, double, double), double lo, double hi, double Nsteps, int adaptive, double approx, double m1, double m2, double msf, double mf, double mz);
-  double compute_area6(double (*funcp)(double, double, double, double, double), double lo, double hi, double Nsteps, int adaptive, double approx, double m1, double m2, double m3, double m4);
-  double compute_area8(double (*funcp)(double, double, double, double, double, double, double), double lo, double hi, double Nsteps, int adaptive, double approx, double m1, double m2, double m3, double m4, double m5, double m6);
-  double compute_area71(double (*funcp)(double, double, double, double, double, double, int), double lo, double hi, double Nsteps, int adaptive, double approx, double m1, double m2, double m3, double m4, double m5, int AorhorH);
-
   double Zsfintegralsum(double m1, double m2, double msf, double mf, double mz, double min, double max, double Nsteps, int adaptive, double approx);
   double Aintegralsum(double m1, double m2, double mz, double mA, double mf, double min, double max, double Nsteps, int adaptive, double approx);
   double G3integralsum(double m1, double m2, double m3, double mt, double mb, double min, double max, double Nsteps, int adaptive, double approx);
