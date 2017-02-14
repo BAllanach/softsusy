@@ -1004,16 +1004,33 @@ double MssmSoftsusy::displaySoftA(trilinears k, int i, int j) const {
   return fabs(ftParameter);
 }
 
-/// Pass it an object and it'll return the fine tuning parameters
- DoubleVector MssmSoftsusy::fineTune
-(void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &),
- const DoubleVector  & bcPars, double mx, bool doTop) {
-  
-  /// Stores running parameters in a vector
-  DoubleVector storeObject(display());
-  double initialMu = displayMu();
-  sPhysical savePhys(displayPhys());
-  
+  double MssmSoftsusy::deltaEW() const {
+    MssmSoftsusy a(*this);
+    a.runto(a.displayMsusy());
+    double tanb =a.displayTanb();
+
+    /// In order, cHu, cHd, cMu, cSigmaHu, cSigmaHd
+    DoubleVector ci(5);
+    ci(1) = fabs(displayMh2Squared() * sqr(tanb) / (sqr(tanb) - 1.));
+    ci(2) = fabs(displayMh1Squared() / (sqr(tanb - 1.)));
+    ci(3) = sqr(displaySusyMu());
+    ci(4) = fabs(displayTadpole2Ms() * sqr(tanb) / (sqr(tanb) - 1.));
+    ci(5) = fabs(displayTadpole1Ms() / (sqr(tanb) - 1.));
+    double delta = ci.max() * 2.0 / sqr(MZ);
+    return delta;
+  }
+
+ 
+  /// Pass it an object and it'll return the fine tuning parameters
+  DoubleVector MssmSoftsusy::fineTune
+  (void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &),
+   const DoubleVector  & bcPars, double mx, bool doTop) {
+    
+    /// Stores running parameters in a vector
+    DoubleVector storeObject(display());
+    double initialMu = displayMu();
+    sPhysical savePhys(displayPhys());
+    
   runto(mx);
   
   ftBoundaryCondition = boundaryCondition;
