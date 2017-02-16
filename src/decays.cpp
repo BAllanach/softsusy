@@ -21,6 +21,7 @@ static double m1 = 0.,m2 = 0.,m3 = 0.,m4 = 0.,mq = 0.,m5 = 0.,m6 = 0.,
   mA = 0., mphi = 0., g1 = 0., g2 = 0., alphamix = 0., betavac = 0.;
 const int NeutMIXdim = 4;
 const double GFosqrt2 = GMU/pow(2,0.5);
+const double checkAgainstNeg = 1.0e-9;
 static int neutralinoj = 0, neutralinoi = 0, AorhorH = 0;
 /// Accuracy of numerical integration in 1->3 decays
 static DoubleMatrix NeutMIX(NeutMIXdim,NeutMIXdim);
@@ -35,7 +36,7 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
   
   ///Switch on or off 1->3 decays
   bool onetothree = threeBodyDecays; ///Turns on 1->3 decays, reads this in from input file, default is true
-  
+
   ///BR Tolerance
   double BRTol = minBR; ///BRs less than this are not output
   
@@ -104,7 +105,7 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
        mixNeut(i,j) = 0;
      }
    }
-   
+
    double tanbeta = 0;
    double beta = 0;
    double alpha = 0;
@@ -173,7 +174,7 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
  
    mGluino = nmssmrun.displayPhys().mGluino; mneut = nmssmrun.displayPhys().mneut; mch = nmssmrun.displayPhys().mch; mh0 = nmssmrun.displayPhys().mh0; mA0 = nmssmrun.displayPhys().mA0; mHpm = nmssmrun.displayPhys().mHpm; msnu = nmssmrun.displayPhys().msnu; mixNeut = nmssmrun.displayPhys().mixNeut.transpose();
    thetaL = nmssmrun.displayPhys().thetaL; thetaR = nmssmrun.displayPhys().thetaR; mu = nmssmrun.displayPhys().mu; md = nmssmrun.displayPhys().md; me = nmssmrun.displayPhys().me; DoubleMatrix mixh0(nmssmrun.displayPhys().mixh0); mwSoftSusy = nmssmrun.displayMwRun(); runmz = nmssmrun.displayMzRun(); polemw = nmssmrun.displayMw(); polemz = nmssmrun.displayMz();
-
+ 
 
    tanbeta = nmssmrun.displayTanb();
    beta = atan(tanbeta);
@@ -317,7 +318,7 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
  g3atmH0 = pow(4*PI*alphasAtMH,0.5);
  g3atmA0 = pow(4*PI*alphasAtMA,0.5);
 
-  }
+ }
   else if (nmssmIsIt == false) {  ///MSSM
 
     r->runto(r->displayMsusy()); ///Run to Msusy scale to extract parameters
@@ -476,28 +477,29 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
   if (LSP == -1)     gravonoff = 1; ///< LSP is a gravitino
   else if( LSP > -1 && LSP < 7) gravonoff = 0; ///< LSP is not a gravitino
      int NLSP = 0; ///default position
-     int neutNLSP = 1, upsquNLSP= 1, downsquNLSP = 1, slepNLSP = 1, chargNLSP = 1, snuNLSP = 1, gluNLSP = 1; ///Default position is 1 so all SUSY dedcays to LSP gravitino considered unless you only want the NLSP decays to gravitino decays, then if below section uncommentedit sets all but NLSP switch to 0.
+///Default position is 1 so all SUSY dedcays to LSP gravitino considered unless you only want the NLSP decays to gravitino decays, then if below section uncommented it sets all but NLSP switch to 0.     
+     int neutNLSP = 1, upsquNLSP= 1, downsquNLSP = 1, slepNLSP = 1, snuNLSP = 1, gluNLSP = 1; 
   
   ///Using the nlsp function from softsusy.cpp, Returns a label which says which particle is NLSP, 0 means NLSP is neutralino, 1=up squark, 2=down squark, 3=sleptons, 4=charginos, 5=sneutrinos, 6=gluino. Uncomment this if you only want the NLSP decays to the LSP gravitino to be considered, note one potential issue with this is particles only slightly heavier than the NLSP may still have only the decay to the LSPgravitino available and this function doesn't take account of this. If this section below is commented all SUSY decays to the LSP gravitino are considered and then they are not output if there BRs are less than 10^-15
   NLSP = r->nlsp(m, posi, posj); 
   // NLSP = 0; /// Temporarily set to neutralino
-  neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0; /// For scans
+  neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0, gluNLSP = 0; /// For scans
    // cout << "NLSP = " << NLSP << endl;
   if( NLSP == 0) {
     //    cout << "NLSP is neutralino" << endl;
-    upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0;
+    upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0, gluNLSP = 0;
   }
   else if (NLSP == 1) {
     //    cout << "NLSP is up squark" << endl;
-    neutNLSP = 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0;
+    neutNLSP = 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0, gluNLSP = 0;
   }
   else if (NLSP == 2) {
     //    cout << "NLSP is down squark" << endl;
-    neutNLSP = 0, upsquNLSP= 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0;
+    neutNLSP = 0, upsquNLSP= 0, slepNLSP = 0,  snuNLSP = 0, gluNLSP = 0;
   }
   else if (NLSP == 3) {
     //    cout << "NLSP is slepton" << endl;
-    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0;
+    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, snuNLSP = 0, gluNLSP = 0;
   }
   else if (NLSP == 4) {
     //    cout << "NLSP is chargino - WARNING chargino NLSP decays to gravitino LSP not included in program!" << endl;
@@ -505,13 +507,13 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
   }
   else if (NLSP == 5) {
     //    cout << "NLSP is sneutrino" << endl;
-    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, gluNLSP = 0;
+    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, gluNLSP = 0;
   }
   else if (NLSP == 6) {
     //    cout << "NLSP is gluino" << endl;
-    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0;
+    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0;
   }
-  else { neutNLSP = 1, upsquNLSP= 1, downsquNLSP = 1, slepNLSP = 1, chargNLSP = 1, snuNLSP = 1, gluNLSP = 1;} ///Default position is to consdier all SUSY particle decays to LSP gravitino
+  else { neutNLSP = 1, upsquNLSP= 1, downsquNLSP = 1, slepNLSP = 1, snuNLSP = 1, gluNLSP = 1;} ///Default position is to consdier all SUSY particle decays to LSP gravitino
   
  ///Obtaining the CKM Matrix from Yukawa Matrices:
  DoubleMatrix YUU(3,3), YDD(3,3), YEE(3,3);
@@ -559,7 +561,7 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
   double PDGA2 = 46, PDGH3 = 45, PDGneutralino5 = 1000045;
 
   double MCH1=mch(1), MCH2=mch(2);
-  
+
 
   /// Create object ParticleGluino of class Particle
   Particle ParticleGluino;
@@ -1072,7 +1074,7 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
   Particlehiggsl.No_1to2_Decays = 68;
   Particlehiggsl.No_1to3_Decays = 2;
   Particlehiggsl.No_grav_Decays = 0;
-  Particlehiggsl.No_NMSSM_Decays = 11;
+  Particlehiggsl.No_NMSSM_Decays = 9;
   Particlehiggsl.No_of_Decays = Particlehiggsl.No_1to2_Decays + Particlehiggsl.No_1to3_Decays + Particlehiggsl.No_grav_Decays + Particlehiggsl.No_NMSSM_Decays;
   Particlehiggsl.Array_Decays.resize(Particlehiggsl.No_of_Decays);
   for (int i = 0; i < Particlehiggsl.No_of_Decays; i++)
@@ -1090,7 +1092,7 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
   ParticleHiggsH.No_1to2_Decays = 70;
   ParticleHiggsH.No_1to3_Decays = 2;
   ParticleHiggsH.No_grav_Decays = 0;
-  ParticleHiggsH.No_NMSSM_Decays = 11;
+  ParticleHiggsH.No_NMSSM_Decays = 9;
   ParticleHiggsH.No_of_Decays = ParticleHiggsH.No_1to2_Decays + ParticleHiggsH.No_1to3_Decays + ParticleHiggsH.No_grav_Decays + ParticleHiggsH.No_NMSSM_Decays;
   ParticleHiggsH.Array_Decays.resize(ParticleHiggsH.No_of_Decays);
   for (int i = 0; i < ParticleHiggsH.No_of_Decays; i++)
@@ -1184,7 +1186,7 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
   ParticleNeutralino5.No_1to3_Decays = 0; ///1->3 decays not included in NMSSM, only in MSSM
   ParticleNeutralino5.No_grav_Decays = 0; ///Decays to gravitinos not included in NMSSM, only in MSSM
   if (nmssmIsIt == false) { ParticleNeutralino5.No_NMSSM_Decays = 0;}
-  else if (nmssmIsIt == true) { ParticleNeutralino5.No_NMSSM_Decays = 75;} ///(Extra/changed decays due to NMSSM - all decays are NMSSM of course for neut5 but this is to match up with description for neut1-4)
+  else if (nmssmIsIt == true) { ParticleNeutralino5.No_NMSSM_Decays = 74;} 
   ParticleNeutralino5.No_of_Decays = ParticleNeutralino5.No_1to2_Decays + ParticleNeutralino5.No_1to3_Decays + ParticleNeutralino5.No_grav_Decays + ParticleNeutralino5.No_NMSSM_Decays;
   ParticleNeutralino5.Array_Decays.resize(ParticleNeutralino5.No_of_Decays);
   for (int i = 0; i < ParticleNeutralino5.No_of_Decays; i++)
@@ -1327,14 +1329,14 @@ void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIs
  ParticleGluino.Array_Decays[38][0] = PDGneutralino2;ParticleGluino.Array_Decays[38][1] = PDGstrange; ParticleGluino.Array_Decays[38][4] = -PDGstrange; ParticleGluino.Array_Decays[38][2] = gluinoamplitudeneut2ssbar; ParticleGluino.Array_Decays[38][3] = 3; ParticleGluino.Array_Comments[38] = "# ~g -> ~Z2 s sb";
  ParticleGluino.Array_Decays[39][0] = PDGneutralino3;ParticleGluino.Array_Decays[39][1] = PDGstrange; ParticleGluino.Array_Decays[39][4] = -PDGstrange; ParticleGluino.Array_Decays[39][2] = gluinoamplitudeneut3ssbar; ParticleGluino.Array_Decays[39][3] = 3; ParticleGluino.Array_Comments[39] = "# ~g -> ~Z3 s sb";
  ParticleGluino.Array_Decays[40][0] = PDGneutralino4;ParticleGluino.Array_Decays[40][1] = PDGstrange; ParticleGluino.Array_Decays[40][4] = -PDGstrange; ParticleGluino.Array_Decays[40][2] = gluinoamplitudeneut4ssbar; ParticleGluino.Array_Decays[40][3] = 3; ParticleGluino.Array_Comments[40] = "# ~g -> ~Z4 s sb";
- ParticleGluino.Array_Decays[41][0] = PDGchargino1;ParticleGluino.Array_Decays[41][1] = PDGup; ParticleGluino.Array_Decays[41][4] = -PDGdown; ParticleGluino.Array_Decays[41][2] = gluinoamplitudechar1udbar; ParticleGluino.Array_Decays[41][3] = 3; ParticleGluino.Array_Comments[41] = "# ~g -> ~W1+ u db";
- ParticleGluino.Array_Decays[42][0] = -PDGchargino1;ParticleGluino.Array_Decays[42][1] = PDGdown; ParticleGluino.Array_Decays[42][4] = -PDGup; ParticleGluino.Array_Decays[42][2] = gluinoamplitudechar1udbar; ParticleGluino.Array_Decays[42][3] = 3; ParticleGluino.Array_Comments[42] = "# ~g -> ~W1- ub d";
- ParticleGluino.Array_Decays[43][0] = PDGchargino1;ParticleGluino.Array_Decays[43][1] = PDGcharm; ParticleGluino.Array_Decays[43][4] = -PDGstrange; ParticleGluino.Array_Decays[43][2] = gluinoamplitudechar1csbar; ParticleGluino.Array_Decays[43][3] = 3; ParticleGluino.Array_Comments[43] = "# ~g -> ~W1+ c sb";
- ParticleGluino.Array_Decays[44][0] = -PDGchargino1;ParticleGluino.Array_Decays[44][1] = PDGstrange; ParticleGluino.Array_Decays[44][4] = -PDGcharm; ParticleGluino.Array_Decays[44][2] = gluinoamplitudechar1csbar; ParticleGluino.Array_Decays[44][3] = 3; ParticleGluino.Array_Comments[44] = "# ~g -> ~W1- cb s";
- ParticleGluino.Array_Decays[45][0] = PDGchargino2;ParticleGluino.Array_Decays[45][1] = PDGup; ParticleGluino.Array_Decays[45][4] = -PDGdown; ParticleGluino.Array_Decays[45][2] = gluinoamplitudechar2udbar; ParticleGluino.Array_Decays[45][3] = 3; ParticleGluino.Array_Comments[45] = "# ~g -> ~W2+ u db";
- ParticleGluino.Array_Decays[46][0] = -PDGchargino2;ParticleGluino.Array_Decays[46][1] = PDGdown; ParticleGluino.Array_Decays[46][4] = -PDGup; ParticleGluino.Array_Decays[46][2] = gluinoamplitudechar2udbar; ParticleGluino.Array_Decays[46][3] = 3; ParticleGluino.Array_Comments[46] = "# ~g -> ~W2- ub d";
- ParticleGluino.Array_Decays[47][0] = PDGchargino2;ParticleGluino.Array_Decays[47][1] = PDGcharm; ParticleGluino.Array_Decays[47][4] = -PDGstrange; ParticleGluino.Array_Decays[47][2] = gluinoamplitudechar2csbar; ParticleGluino.Array_Decays[47][3] = 3; ParticleGluino.Array_Comments[47] = "# ~g -> ~W2+ c sb";
- ParticleGluino.Array_Decays[48][0] = -PDGchargino2;ParticleGluino.Array_Decays[48][1] = PDGstrange; ParticleGluino.Array_Decays[48][4] = -PDGcharm; ParticleGluino.Array_Decays[48][2] = gluinoamplitudechar2csbar; ParticleGluino.Array_Decays[48][3] = 3; ParticleGluino.Array_Comments[48] = "# ~g -> ~W2- cb s";  
+ ParticleGluino.Array_Decays[41][0] = PDGchargino1;ParticleGluino.Array_Decays[41][1] = PDGup; ParticleGluino.Array_Decays[41][4] = -PDGdown; ParticleGluino.Array_Decays[41][2] = gluinoamplitudechar1udbar; ParticleGluino.Array_Decays[41][3] = 3; ParticleGluino.Array_Comments[41] = "# ~g -> ~W1- u db";
+ ParticleGluino.Array_Decays[42][0] = -PDGchargino1;ParticleGluino.Array_Decays[42][1] = PDGdown; ParticleGluino.Array_Decays[42][4] = -PDGup; ParticleGluino.Array_Decays[42][2] = gluinoamplitudechar1udbar; ParticleGluino.Array_Decays[42][3] = 3; ParticleGluino.Array_Comments[42] = "# ~g -> ~W1+ ub d";
+ ParticleGluino.Array_Decays[43][0] = PDGchargino1;ParticleGluino.Array_Decays[43][1] = PDGcharm; ParticleGluino.Array_Decays[43][4] = -PDGstrange; ParticleGluino.Array_Decays[43][2] = gluinoamplitudechar1csbar; ParticleGluino.Array_Decays[43][3] = 3; ParticleGluino.Array_Comments[43] = "# ~g -> ~W1- c sb";
+ ParticleGluino.Array_Decays[44][0] = -PDGchargino1;ParticleGluino.Array_Decays[44][1] = PDGstrange; ParticleGluino.Array_Decays[44][4] = -PDGcharm; ParticleGluino.Array_Decays[44][2] = gluinoamplitudechar1csbar; ParticleGluino.Array_Decays[44][3] = 3; ParticleGluino.Array_Comments[44] = "# ~g -> ~W1+ cb s";
+ ParticleGluino.Array_Decays[45][0] = PDGchargino2;ParticleGluino.Array_Decays[45][1] = PDGup; ParticleGluino.Array_Decays[45][4] = -PDGdown; ParticleGluino.Array_Decays[45][2] = gluinoamplitudechar2udbar; ParticleGluino.Array_Decays[45][3] = 3; ParticleGluino.Array_Comments[45] = "# ~g -> ~W2- u db";
+ ParticleGluino.Array_Decays[46][0] = -PDGchargino2;ParticleGluino.Array_Decays[46][1] = PDGdown; ParticleGluino.Array_Decays[46][4] = -PDGup; ParticleGluino.Array_Decays[46][2] = gluinoamplitudechar2udbar; ParticleGluino.Array_Decays[46][3] = 3; ParticleGluino.Array_Comments[46] = "# ~g -> ~W2+ ub d";
+ ParticleGluino.Array_Decays[47][0] = PDGchargino2;ParticleGluino.Array_Decays[47][1] = PDGcharm; ParticleGluino.Array_Decays[47][4] = -PDGstrange; ParticleGluino.Array_Decays[47][2] = gluinoamplitudechar2csbar; ParticleGluino.Array_Decays[47][3] = 3; ParticleGluino.Array_Comments[47] = "# ~g -> ~W2- c sb";
+ ParticleGluino.Array_Decays[48][0] = -PDGchargino2;ParticleGluino.Array_Decays[48][1] = PDGstrange; ParticleGluino.Array_Decays[48][4] = -PDGcharm; ParticleGluino.Array_Decays[48][2] = gluinoamplitudechar2csbar; ParticleGluino.Array_Decays[48][3] = 3; ParticleGluino.Array_Comments[48] = "# ~g -> ~W2+ cb s";  
  ParticleGluino.Array_Decays[49][0] = PDGneutralino1; ParticleGluino.Array_Decays[49][1] = PDGtop; ParticleGluino.Array_Decays[49][4] = -PDGtop;  ParticleGluino.Array_Decays[49][2] = gluinoamplitudeneut1ttbar;  ParticleGluino.Array_Decays[49][3] = 3; ParticleGluino.Array_Comments[49] = "# ~g -> ~Z1 t tb";
  ParticleGluino.Array_Decays[50][0] = PDGneutralino2; ParticleGluino.Array_Decays[50][1] = PDGtop; ParticleGluino.Array_Decays[50][4] = -PDGtop;  ParticleGluino.Array_Decays[50][2] = gluinoamplitudeneut2ttbar;  ParticleGluino.Array_Decays[50][3] = 3; ParticleGluino.Array_Comments[50] = "# ~g -> ~Z2 t tb";
  ParticleGluino.Array_Decays[51][0] = PDGneutralino3; ParticleGluino.Array_Decays[51][1] = PDGtop; ParticleGluino.Array_Decays[51][4] = -PDGtop;  ParticleGluino.Array_Decays[51][2] = gluinoamplitudeneut3ttbar;  ParticleGluino.Array_Decays[51][3] = 3; ParticleGluino.Array_Comments[51] = "# ~g -> ~Z3 t tb";
@@ -1352,8 +1354,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  ParticleGluino.two_width = 0;
  ParticleGluino.three_width = 0;
 
-  if (gluNLSP == 1) { Gluino_No_1to2_Decays = ParticleGluino.No_1to2_Decays + ParticleGluino.No_grav_Decays;}
-  else {Gluino_No_1to2_Decays = ParticleGluino.No_1to2_Decays;}
+  Gluino_No_1to2_Decays = ParticleGluino.No_1to2_Decays + ParticleGluino.No_grav_Decays;
    
  for (int j = 0; j<Gluino_No_1to2_Decays; j++) {
    ParticleGluino.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -1425,8 +1426,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 
  double SdownL_No_1to2_Decays = 0;
 
- if (downsquNLSP == 1) { SdownL_No_1to2_Decays = ParticleSdownL.No_1to2_Decays + ParticleSdownL.No_grav_Decays + ParticleSdownL.No_NMSSM_Decays;}
- else {SdownL_No_1to2_Decays = ParticleSdownL.No_1to2_Decays + ParticleSdownL.No_NMSSM_Decays;}
+ SdownL_No_1to2_Decays = ParticleSdownL.No_1to2_Decays + ParticleSdownL.No_grav_Decays + ParticleSdownL.No_NMSSM_Decays;
  
  for (int j = 0; j<SdownL_No_1to2_Decays; j++) {
    ParticleSdownL.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -1456,7 +1456,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSdownL, BRTol);}
  else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSdownL, BRTol);}
 
- } 
+ }
 
   
   ///SdownR Decays
@@ -1494,8 +1494,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 
  double SdownR_No_1to2_Decays = 0;
 
- if (downsquNLSP == 1) { SdownR_No_1to2_Decays = ParticleSdownR.No_1to2_Decays + ParticleSdownR.No_grav_Decays + ParticleSdownR.No_NMSSM_Decays;}
- else {SdownR_No_1to2_Decays = ParticleSdownR.No_1to2_Decays + ParticleSdownR.No_NMSSM_Decays;}
+ SdownR_No_1to2_Decays = ParticleSdownR.No_1to2_Decays + ParticleSdownR.No_grav_Decays + ParticleSdownR.No_NMSSM_Decays;
  
  for (int j = 0; j<SdownR_No_1to2_Decays; j++) {
    ParticleSdownR.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -1553,22 +1552,21 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    supLamplitudeupneutralinoZ4 = squarkamplitudedecayquarkneutralinoNMSSM (mu(1,1), mup, mneut(4), g, gp, mixNeut, 'u', 'L', 4);
    supLamplitudeupneutralinoZ5 = squarkamplitudedecayquarkneutralinoNMSSM (mu(1,1), mup, mneut(5), g, gp, mixNeut, 'u', 'L', 5);
  }
-
+  
  ParticleSupL.Array_Decays[0][0] = PDGup; ParticleSupL.Array_Decays[0][1] = PDGgluino; ParticleSupL.Array_Decays[0][2] = supLamplitudegluinoup; ParticleSupL.Array_Decays[0][3] = 2; ParticleSupL.Array_Comments[0] = "# ~u_L -> u ~g";
- ParticleSupL.Array_Decays[1][0] = PDGdown; ParticleSupL.Array_Decays[1][1] = PDGchargino1; ParticleSupL.Array_Decays[1][2] = supLamplitudecharginoW1down; ParticleSupL.Array_Decays[1][3] = 2; ParticleSupL.Array_Comments[1] = "# ~u_L -> d ~chi_1+";
- ParticleSupL.Array_Decays[2][0] = PDGdown; ParticleSupL.Array_Decays[2][1] = PDGchargino2; ParticleSupL.Array_Decays[2][2] = supLamplitudecharginoW2down; ParticleSupL.Array_Decays[2][3] = 2; ParticleSupL.Array_Comments[2] = "# ~u_L -> d ~chi_2+";
+ ParticleSupL.Array_Decays[1][0] = PDGdown; ParticleSupL.Array_Decays[1][1] = PDGchargino1; ParticleSupL.Array_Decays[1][2] = supLamplitudecharginoW1down; ParticleSupL.Array_Decays[1][3] = 2; ParticleSupL.Array_Comments[1] = "# ~u_L -> d ~chi_1+"; 
+ ParticleSupL.Array_Decays[2][0] = PDGdown; ParticleSupL.Array_Decays[2][1] = PDGchargino2; ParticleSupL.Array_Decays[2][2] = supLamplitudecharginoW2down; ParticleSupL.Array_Decays[2][3] = 2; ParticleSupL.Array_Comments[2] = "# ~u_L -> d ~chi_2+"; 
  ParticleSupL.Array_Decays[3][0] = PDGup; ParticleSupL.Array_Decays[3][1] = PDGneutralino1; ParticleSupL.Array_Decays[3][2] = supLamplitudeupneutralinoZ1; ParticleSupL.Array_Decays[3][3] = 2; ParticleSupL.Array_Comments[3] = "# ~u_L -> u ~chi_10";
  ParticleSupL.Array_Decays[4][0] = PDGup; ParticleSupL.Array_Decays[4][1] = PDGneutralino2; ParticleSupL.Array_Decays[4][2] = supLamplitudeupneutralinoZ2; ParticleSupL.Array_Decays[4][3] = 2; ParticleSupL.Array_Comments[4] = "# ~u_L -> u ~chi_20";
  ParticleSupL.Array_Decays[5][0] = PDGup; ParticleSupL.Array_Decays[5][1] = PDGneutralino3; ParticleSupL.Array_Decays[5][2] = supLamplitudeupneutralinoZ3; ParticleSupL.Array_Decays[5][3] = 2; ParticleSupL.Array_Comments[5] = "# ~u_L -> u ~chi_30";
  ParticleSupL.Array_Decays[6][0] = PDGup; ParticleSupL.Array_Decays[6][1] = PDGneutralino4; ParticleSupL.Array_Decays[6][2] = supLamplitudeupneutralinoZ4; ParticleSupL.Array_Decays[6][3] = 2; ParticleSupL.Array_Comments[6] = "# ~u_L -> u ~chi_40";
  ParticleSupL.Array_Decays[7][0] = PDGup; ParticleSupL.Array_Decays[7][1] = PDGneutralino5; ParticleSupL.Array_Decays[7][2] = supLamplitudeupneutralinoZ5; ParticleSupL.Array_Decays[7][3] = 2; ParticleSupL.Array_Comments[7] = "# ~u_L -> u ~chi_50";
-
+  
  ParticleSupL.Array_Decays[8][0] = PDGup; ParticleSupL.Array_Decays[8][1] = PDGgravitino; ParticleSupL.Array_Decays[8][2] = supLamplitudeupgravitino; ParticleSupL.Array_Decays[8][3] = 2; ParticleSupL.Array_Comments[8] = "# ~u_L -> u ~G";
-
+  
  double SupL_No_1to2_Decays = 0;
-
- if (upsquNLSP == 1) { SupL_No_1to2_Decays = ParticleSupL.No_1to2_Decays + ParticleSupL.No_grav_Decays + ParticleSupL.No_NMSSM_Decays;}
- else {SupL_No_1to2_Decays = ParticleSupL.No_1to2_Decays + ParticleSupL.No_NMSSM_Decays;}
+ 
+ SupL_No_1to2_Decays = ParticleSupL.No_1to2_Decays + ParticleSupL.No_grav_Decays + ParticleSupL.No_NMSSM_Decays;
  
  for (int j = 0; j<SupL_No_1to2_Decays; j++) {
    ParticleSupL.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -1580,7 +1578,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  for (int j=SupL_No_1to2_Decays; j<ParticleSupL.No_of_Decays; j++) {
    ParticleSupL.three_width = ParticleSupL.three_width + ParticleSupL.Array_Decays[j][2];
  }
- 
+   
  if ( ParticleSupL.three_width != ParticleSupL.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
      cout << "# Three body decays give nan for supL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
@@ -1599,6 +1597,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSupL, BRTol);}
 
   }
+
+
 
 
  ///SupR Decays
@@ -1637,8 +1637,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 
  double SupR_No_1to2_Decays = 0;
 
- if (upsquNLSP == 1) { SupR_No_1to2_Decays = ParticleSupR.No_1to2_Decays + ParticleSupR.No_grav_Decays + ParticleSupR.No_NMSSM_Decays;}
- else {SupR_No_1to2_Decays = ParticleSupR.No_1to2_Decays + ParticleSupR.No_NMSSM_Decays;}
+ SupR_No_1to2_Decays = ParticleSupR.No_1to2_Decays + ParticleSupR.No_grav_Decays + ParticleSupR.No_NMSSM_Decays;
+
  
  for (int j = 0; j<SupR_No_1to2_Decays; j++) {
    ParticleSupR.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -1710,8 +1710,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 
 double SstrangeL_No_1to2_Decays = 0;
 
- if (downsquNLSP == 1) { SstrangeL_No_1to2_Decays = ParticleSstrangeL.No_1to2_Decays + ParticleSstrangeL.No_grav_Decays + ParticleSstrangeL.No_NMSSM_Decays;}
- else {SstrangeL_No_1to2_Decays = ParticleSstrangeL.No_1to2_Decays + ParticleSstrangeL.No_NMSSM_Decays;}
+ SstrangeL_No_1to2_Decays = ParticleSstrangeL.No_1to2_Decays + ParticleSstrangeL.No_grav_Decays + ParticleSstrangeL.No_NMSSM_Decays;
  
  for (int j = 0; j<SstrangeL_No_1to2_Decays; j++) {
    ParticleSstrangeL.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -1780,8 +1779,7 @@ double SstrangeL_No_1to2_Decays = 0;
 
 double SstrangeR_No_1to2_Decays = 0;
 
- if (downsquNLSP == 1) { SstrangeR_No_1to2_Decays = ParticleSstrangeR.No_1to2_Decays + ParticleSstrangeR.No_grav_Decays + ParticleSstrangeR.No_NMSSM_Decays;}
- else {SstrangeR_No_1to2_Decays = ParticleSstrangeR.No_1to2_Decays + ParticleSstrangeR.No_NMSSM_Decays;}
+ SstrangeR_No_1to2_Decays = ParticleSstrangeR.No_1to2_Decays + ParticleSstrangeR.No_grav_Decays + ParticleSstrangeR.No_NMSSM_Decays;
  
  for (int j = 0; j<SstrangeR_No_1to2_Decays; j++) {
    ParticleSstrangeR.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -1854,8 +1852,7 @@ double SstrangeR_No_1to2_Decays = 0;
 
  double ScharmL_No_1to2_Decays = 0;
 
- if (upsquNLSP == 1) { ScharmL_No_1to2_Decays = ParticleScharmL.No_1to2_Decays + ParticleScharmL.No_grav_Decays + ParticleScharmL.No_NMSSM_Decays;}
- else {ScharmL_No_1to2_Decays = ParticleScharmL.No_1to2_Decays + ParticleScharmL.No_NMSSM_Decays;}
+ ScharmL_No_1to2_Decays = ParticleScharmL.No_1to2_Decays + ParticleScharmL.No_grav_Decays + ParticleScharmL.No_NMSSM_Decays;
  
  for (int j = 0; j<ScharmL_No_1to2_Decays; j++) {
    ParticleScharmL.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -1922,8 +1919,7 @@ double SstrangeR_No_1to2_Decays = 0;
 
  double ScharmR_No_1to2_Decays = 0;
 
- if (upsquNLSP == 1) { ScharmR_No_1to2_Decays = ParticleScharmR.No_1to2_Decays + ParticleScharmR.No_grav_Decays + ParticleScharmR.No_NMSSM_Decays;}
- else {ScharmR_No_1to2_Decays = ParticleScharmR.No_1to2_Decays + ParticleScharmR.No_NMSSM_Decays;}
+ ScharmR_No_1to2_Decays = ParticleScharmR.No_1to2_Decays + ParticleScharmR.No_grav_Decays + ParticleScharmR.No_NMSSM_Decays;
  
  for (int j = 0; j<ScharmR_No_1to2_Decays; j++) {
    ParticleScharmR.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -2004,8 +2000,7 @@ double SstrangeR_No_1to2_Decays = 0;
 
  double Sbottom1_No_1to2_Decays = 0;
 
- if (downsquNLSP == 1) { Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_grav_Decays + ParticleSbottom1.No_NMSSM_Decays;}
- else {Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_NMSSM_Decays;}
+Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_grav_Decays + ParticleSbottom1.No_NMSSM_Decays;
  
  for (int j = 0; j<Sbottom1_No_1to2_Decays; j++) {
    ParticleSbottom1.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -2103,9 +2098,7 @@ double SstrangeR_No_1to2_Decays = 0;
  ParticleSbottom2.Array_Decays[18][0] = PDGA2; ParticleSbottom2.Array_Decays[18][1] = PDGsbottom1; ParticleSbottom2.Array_Decays[18][2] = sbottom2amplitudeA2sbottom1; ParticleSbottom2.Array_Decays[18][3] = 2; ParticleSbottom2.Array_Comments[18] = "# ~b_2 -> A2 ~b_1"; 
  double Sbottom2_No_1to2_Decays = 0;
 
- if (downsquNLSP == 1) { Sbottom2_No_1to2_Decays = ParticleSbottom2.No_1to2_Decays + ParticleSbottom2.No_grav_Decays;}
- else {Sbottom2_No_1to2_Decays = ParticleSbottom2.No_1to2_Decays;}
- if (nmssmIsIt == true) {Sbottom2_No_1to2_Decays = Sbottom2_No_1to2_Decays + ParticleSbottom2.No_NMSSM_Decays;}
+ Sbottom2_No_1to2_Decays = ParticleSbottom2.No_1to2_Decays + ParticleSbottom2.No_grav_Decays + ParticleSbottom2.No_NMSSM_Decays;
 
  for (int j = 0; j<Sbottom2_No_1to2_Decays; j++) {
    ParticleSbottom2.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -2190,8 +2183,7 @@ double SstrangeR_No_1to2_Decays = 0;
 
  double Stop1_No_1to2_Decays = 0;
 
- if (upsquNLSP == 1) { Stop1_No_1to2_Decays = ParticleStop1.No_1to2_Decays + ParticleStop1.No_grav_Decays + ParticleStop1.No_NMSSM_Decays;}
- else {Stop1_No_1to2_Decays = ParticleStop1.No_1to2_Decays + ParticleStop1.No_NMSSM_Decays;}
+ Stop1_No_1to2_Decays = ParticleStop1.No_1to2_Decays + ParticleStop1.No_grav_Decays + ParticleStop1.No_NMSSM_Decays;
  
  for (int j = 0; j<Stop1_No_1to2_Decays; j++) {
    ParticleStop1.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -2290,8 +2282,7 @@ double SstrangeR_No_1to2_Decays = 0;
  
  double Stop2_No_1to2_Decays = 0;
 
- if (upsquNLSP == 1) { Stop2_No_1to2_Decays = ParticleStop2.No_1to2_Decays + ParticleStop2.No_grav_Decays + ParticleStop2.No_NMSSM_Decays;}
- else {Stop2_No_1to2_Decays = ParticleStop2.No_1to2_Decays + ParticleStop2.No_NMSSM_Decays;}
+ Stop2_No_1to2_Decays = ParticleStop2.No_1to2_Decays + ParticleStop2.No_grav_Decays + ParticleStop2.No_NMSSM_Decays;
 
  for (int j = 0; j<Stop2_No_1to2_Decays; j++) {
    ParticleStop2.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -2366,8 +2357,7 @@ double SstrangeR_No_1to2_Decays = 0;
 
  double SelectronL_No_1to2_Decays = 0;
 
- if (slepNLSP == 1) { SelectronL_No_1to2_Decays = ParticleSelectronL.No_1to2_Decays + ParticleSelectronL.No_grav_Decays + ParticleSelectronL.No_NMSSM_Decays;}
- else {SelectronL_No_1to2_Decays = ParticleSelectronL.No_1to2_Decays + ParticleSelectronL.No_NMSSM_Decays;}
+ SelectronL_No_1to2_Decays = ParticleSelectronL.No_1to2_Decays + ParticleSelectronL.No_grav_Decays + ParticleSelectronL.No_NMSSM_Decays;
  
  for (int j = 0; j<SelectronL_No_1to2_Decays; j++) {
    ParticleSelectronL.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -2426,16 +2416,15 @@ double SstrangeR_No_1to2_Decays = 0;
  ParticleSelectronR.Array_Decays[0][0] = PDGelectron; ParticleSelectronR.Array_Decays[0][1] = PDGneutralino1; ParticleSelectronR.Array_Decays[0][2] = selectronRamplitudeeneutralinoZ1; ParticleSelectronR.Array_Decays[0][3] = 2; ParticleSelectronR.Array_Comments[0] = "# ~e_R -> e- ~chi_10";
  ParticleSelectronR.Array_Decays[1][0] = PDGelectron; ParticleSelectronR.Array_Decays[1][1] = PDGneutralino2; ParticleSelectronR.Array_Decays[1][2] = selectronRamplitudeeneutralinoZ2; ParticleSelectronR.Array_Decays[1][3] = 2; ParticleSelectronR.Array_Comments[1] = "# ~e_R -> e- ~chi_20";
  ParticleSelectronR.Array_Decays[2][0] = PDGelectron; ParticleSelectronR.Array_Decays[2][1] = PDGneutralino3; ParticleSelectronR.Array_Decays[2][2] = selectronRamplitudeeneutralinoZ3; ParticleSelectronR.Array_Decays[2][3] = 2; ParticleSelectronR.Array_Comments[2] = "# ~e_R -> e- ~chi_30";
- ParticleSelectronR.Array_Decays[3][0] = PDGelectron; ParticleSelectronR.Array_Decays[3][1] = PDGneutralino4; ParticleSelectronR.Array_Decays[3][2] = selectronRamplitudeeneutralinoZ4; ParticleSelectronL.Array_Decays[3][3] = 2; ParticleSelectronR.Array_Comments[3] = "# ~e_R -> e- ~chi_40";
- ParticleSelectronR.Array_Decays[4][0] = PDGelectron; ParticleSelectronR.Array_Decays[4][1] = PDGneutralino5; ParticleSelectronR.Array_Decays[4][2] = selectronRamplitudeeneutralinoZ5; ParticleSelectronL.Array_Decays[4][3] = 2; ParticleSelectronR.Array_Comments[4] = "# ~e_R -> e- ~chi_50";
+ ParticleSelectronR.Array_Decays[3][0] = PDGelectron; ParticleSelectronR.Array_Decays[3][1] = PDGneutralino4; ParticleSelectronR.Array_Decays[3][2] = selectronRamplitudeeneutralinoZ4; ParticleSelectronR.Array_Decays[3][3] = 2; ParticleSelectronR.Array_Comments[3] = "# ~e_R -> e- ~chi_40";
+ ParticleSelectronR.Array_Decays[4][0] = PDGelectron; ParticleSelectronR.Array_Decays[4][1] = PDGneutralino5; ParticleSelectronR.Array_Decays[4][2] = selectronRamplitudeeneutralinoZ5; ParticleSelectronR.Array_Decays[4][3] = 2; ParticleSelectronR.Array_Comments[4] = "# ~e_R -> e- ~chi_50";
  
 
- ParticleSelectronR.Array_Decays[5][0] = PDGelectron; ParticleSelectronR.Array_Decays[5][1] = PDGgravitino; ParticleSelectronR.Array_Decays[5][2] = selectronRamplitudeelectrongravitino; ParticleSelectronL.Array_Decays[5][3] = 2; ParticleSelectronR.Array_Comments[5] = "# ~e_R -> e- ~G";
+ ParticleSelectronR.Array_Decays[5][0] = PDGelectron; ParticleSelectronR.Array_Decays[5][1] = PDGgravitino; ParticleSelectronR.Array_Decays[5][2] = selectronRamplitudeelectrongravitino; ParticleSelectronR.Array_Decays[5][3] = 2; ParticleSelectronR.Array_Comments[5] = "# ~e_R -> e- ~G";
 
  double SelectronR_No_1to2_Decays = 0;
 
- if (slepNLSP == 1) { SelectronR_No_1to2_Decays = ParticleSelectronR.No_1to2_Decays + ParticleSelectronR.No_grav_Decays + ParticleSelectronR.No_NMSSM_Decays;}
- else {SelectronR_No_1to2_Decays = ParticleSelectronR.No_1to2_Decays + ParticleSelectronR.No_NMSSM_Decays;}
+ SelectronR_No_1to2_Decays = ParticleSelectronR.No_1to2_Decays + ParticleSelectronR.No_grav_Decays + ParticleSelectronR.No_NMSSM_Decays;
  
  for (int j = 0; j<SelectronR_No_1to2_Decays; j++) {
    ParticleSelectronR.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -2507,8 +2496,7 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
 
  double SmuonL_No_1to2_Decays = 0;
 
- if (slepNLSP == 1) { SmuonL_No_1to2_Decays = ParticleSmuonL.No_1to2_Decays + ParticleSmuonL.No_grav_Decays + ParticleSmuonL.No_NMSSM_Decays;}
- else {SmuonL_No_1to2_Decays = ParticleSmuonL.No_1to2_Decays + ParticleSmuonL.No_NMSSM_Decays;}
+ SmuonL_No_1to2_Decays = ParticleSmuonL.No_1to2_Decays + ParticleSmuonL.No_grav_Decays + ParticleSmuonL.No_NMSSM_Decays;
  
  for (int j = 0; j<SmuonL_No_1to2_Decays; j++) {
    ParticleSmuonL.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -2573,8 +2561,7 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  
  double SmuonR_No_1to2_Decays = 0;
 
- if (slepNLSP == 1) { SmuonR_No_1to2_Decays = ParticleSmuonR.No_1to2_Decays + ParticleSmuonR.No_grav_Decays + ParticleSmuonR.No_NMSSM_Decays;}
- else {SmuonR_No_1to2_Decays = ParticleSmuonR.No_1to2_Decays + ParticleSmuonR.No_NMSSM_Decays;}
+ SmuonR_No_1to2_Decays = ParticleSmuonR.No_1to2_Decays + ParticleSmuonR.No_grav_Decays + ParticleSmuonR.No_NMSSM_Decays;
  
  for (int j = 0; j<SmuonR_No_1to2_Decays; j++) {
    ParticleSmuonR.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -2645,8 +2632,7 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
 
   double Snue_No_1to2_Decays = 0;
 
- if (snuNLSP == 1) { Snue_No_1to2_Decays = ParticleSnue.No_1to2_Decays + ParticleSnue.No_grav_Decays + ParticleSnue.No_NMSSM_Decays;}
- else {Snue_No_1to2_Decays = ParticleSnue.No_1to2_Decays + ParticleSnue.No_NMSSM_Decays;}
+  Snue_No_1to2_Decays = ParticleSnue.No_1to2_Decays + ParticleSnue.No_grav_Decays + ParticleSnue.No_NMSSM_Decays;
  
  for (int j = 0; j<Snue_No_1to2_Decays; j++) {
    ParticleSnue.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -2719,8 +2705,7 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
 
  double Snumu_No_1to2_Decays = 0;
 
- if (snuNLSP == 1) { Snumu_No_1to2_Decays = ParticleSnumu.No_1to2_Decays + ParticleSnumu.No_grav_Decays + ParticleSnumu.No_NMSSM_Decays;}
- else {Snumu_No_1to2_Decays = ParticleSnumu.No_1to2_Decays  + ParticleSnumu.No_NMSSM_Decays;}
+ Snumu_No_1to2_Decays = ParticleSnumu.No_1to2_Decays + ParticleSnumu.No_grav_Decays + ParticleSnumu.No_NMSSM_Decays;
  
  for (int j = 0; j<Snumu_No_1to2_Decays; j++) {
    ParticleSnumu.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -2797,8 +2782,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  
  double Stau1_No_1to2_Decays = 0;
 
- if (slepNLSP == 1) { Stau1_No_1to2_Decays = ParticleStau1.No_1to2_Decays + ParticleStau1.No_grav_Decays + ParticleStau1.No_NMSSM_Decays;}
- else {Stau1_No_1to2_Decays = ParticleStau1.No_1to2_Decays + ParticleStau1.No_NMSSM_Decays;}
+ Stau1_No_1to2_Decays = ParticleStau1.No_1to2_Decays + ParticleStau1.No_grav_Decays + ParticleStau1.No_NMSSM_Decays;
  
  for (int j = 0; j<Stau1_No_1to2_Decays; j++) {
    ParticleStau1.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -2888,8 +2872,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
 
  double Stau2_No_1to2_Decays = 0;
 
- if (slepNLSP == 1) { Stau2_No_1to2_Decays = ParticleStau2.No_1to2_Decays + ParticleStau2.No_grav_Decays + ParticleStau2.No_NMSSM_Decays;}
- else {Stau2_No_1to2_Decays = ParticleStau2.No_1to2_Decays + ParticleStau2.No_NMSSM_Decays;}
+ Stau2_No_1to2_Decays = ParticleStau2.No_1to2_Decays + ParticleStau2.No_grav_Decays + ParticleStau2.No_NMSSM_Decays;
 
  for (int j = 0; j<Stau2_No_1to2_Decays; j++) {
    ParticleStau2.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -2969,8 +2952,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
 
  double Snutau_No_1to2_Decays = 0;
 
- if (snuNLSP == 1) { Snutau_No_1to2_Decays = ParticleSnutau.No_1to2_Decays + ParticleSnutau.No_grav_Decays + ParticleSnutau.No_NMSSM_Decays;}
- else {Snutau_No_1to2_Decays = ParticleSnutau.No_1to2_Decays + ParticleSnutau.No_NMSSM_Decays;}
+ Snutau_No_1to2_Decays = ParticleSnutau.No_1to2_Decays + ParticleSnutau.No_grav_Decays + ParticleSnutau.No_NMSSM_Decays;
  
  for (int j = 0; j<Snutau_No_1to2_Decays; j++) {
    ParticleSnutau.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -3123,8 +3105,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  
  double Chargino1_No_1to2_Decays = 0;
 
- if (chargNLSP == 1) { Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.No_grav_Decays + ParticleChargino1.No_NMSSM_Decays;}
- else {Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.No_NMSSM_Decays;}
+Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.No_grav_Decays + ParticleChargino1.No_NMSSM_Decays;
  
  for (int j = 0; j<Chargino1_No_1to2_Decays; j++) {
    ParticleChargino1.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -3291,8 +3272,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
 
  double Chargino2_No_1to2_Decays = 0;
 
- if (chargNLSP == 1) { Chargino2_No_1to2_Decays = ParticleChargino2.No_1to2_Decays + ParticleChargino2.No_grav_Decays + ParticleChargino2.No_NMSSM_Decays;}
- else {Chargino2_No_1to2_Decays = ParticleChargino2.No_1to2_Decays + ParticleChargino2.No_NMSSM_Decays;}
+ Chargino2_No_1to2_Decays = ParticleChargino2.No_1to2_Decays + ParticleChargino2.No_grav_Decays + ParticleChargino2.No_NMSSM_Decays;
  
  for (int j = 0; j<Chargino2_No_1to2_Decays; j++) {
    ParticleChargino2.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -3542,8 +3522,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
 
    double Neut1_No_1to2_Decays = 0;
 
-  if (neutNLSP == 1) { Neut1_No_1to2_Decays = ParticleNeutralino1.No_1to2_Decays + ParticleNeutralino1.No_grav_Decays;}
-  else { Neut1_No_1to2_Decays = ParticleNeutralino1.No_1to2_Decays;}
+   Neut1_No_1to2_Decays = ParticleNeutralino1.No_1to2_Decays + ParticleNeutralino1.No_grav_Decays;
    
  for (int j = 0; j<Neut1_No_1to2_Decays; j++) {
    ParticleNeutralino1.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -3846,8 +3825,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
   
   double Neut2_No_1to2_Decays = 0;
 
-  if (neutNLSP == 1) { Neut2_No_1to2_Decays = ParticleNeutralino2.No_1to2_Decays + ParticleNeutralino2.No_grav_Decays + ParticleNeutralino2.No_NMSSM_Decays;}
-  else { Neut2_No_1to2_Decays = ParticleNeutralino2.No_1to2_Decays+ParticleNeutralino2.No_NMSSM_Decays;}
+  Neut2_No_1to2_Decays = ParticleNeutralino2.No_1to2_Decays + ParticleNeutralino2.No_grav_Decays + ParticleNeutralino2.No_NMSSM_Decays;
    
  for (int j = 0; j<Neut2_No_1to2_Decays; j++) {
    ParticleNeutralino2.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -4178,8 +4156,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
 
   double Neut3_No_1to2_Decays = 0;
 
-  if (neutNLSP == 1) { Neut3_No_1to2_Decays = ParticleNeutralino3.No_1to2_Decays + ParticleNeutralino3.No_grav_Decays + ParticleNeutralino3.No_NMSSM_Decays;}
-  else { Neut3_No_1to2_Decays = ParticleNeutralino3.No_1to2_Decays + ParticleNeutralino3.No_NMSSM_Decays;}
+ Neut3_No_1to2_Decays = ParticleNeutralino3.No_1to2_Decays + ParticleNeutralino3.No_grav_Decays + ParticleNeutralino3.No_NMSSM_Decays;
    
  for (int j = 0; j<Neut3_No_1to2_Decays; j++) {
    ParticleNeutralino3.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -4545,8 +4522,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
 
   double Neut4_No_1to2_Decays = 0;
 
-  if (neutNLSP == 1) { Neut4_No_1to2_Decays = ParticleNeutralino4.No_1to2_Decays + ParticleNeutralino4.No_grav_Decays  + ParticleNeutralino4.No_NMSSM_Decays;}
-  else { Neut4_No_1to2_Decays = ParticleNeutralino4.No_1to2_Decays + ParticleNeutralino4.No_NMSSM_Decays;}
+  Neut4_No_1to2_Decays = ParticleNeutralino4.No_1to2_Decays + ParticleNeutralino4.No_grav_Decays  + ParticleNeutralino4.No_NMSSM_Decays;
    
  for (int j = 0; j<Neut4_No_1to2_Decays; j++) {
    ParticleNeutralino4.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -4748,8 +4724,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
 
    double Neut5_No_1to2_Decays = 0;
 
-   if (neutNLSP == 1) { Neut5_No_1to2_Decays = ParticleNeutralino5.No_1to2_Decays + ParticleNeutralino5.No_grav_Decays + ParticleNeutralino5.No_NMSSM_Decays;} ///Note no grav decays included for neut5 ever as none included in NMSSM
-  else { Neut5_No_1to2_Decays = ParticleNeutralino5.No_1to2_Decays + ParticleNeutralino5.No_NMSSM_Decays;}
+   Neut5_No_1to2_Decays = ParticleNeutralino5.No_1to2_Decays + ParticleNeutralino5.No_grav_Decays + ParticleNeutralino5.No_NMSSM_Decays;
    
  for (int j = 0; j<Neut5_No_1to2_Decays; j++) {
    ParticleNeutralino5.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -4781,7 +4756,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
    }
    else{}
 
-   }
+ }
 
 ///Higgs decays
 
@@ -4974,7 +4949,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  string h0WWcomment, h0ZZcomment;
  if (h0WWcommentcode == 1) {
    h0WWcomment = "# h -> WW* -> W f f'bar";
-   h0WWNDA = 3;
+   h0WWNDA = 2; ///So read into other programs, e.g. PYTHIA, correctly
  }
  else if(h0WWcommentcode == 2) {
    h0WWcomment = "# h -> W+ W-";
@@ -4983,7 +4958,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  h0ZZcommentcode = higgshamplitudedecayVV(mh0(1), polemw, polemz, g, gp, alpha, beta, 'Z', CPEMix, nmssmIsIt)(2);
  if (h0ZZcommentcode == 1) {
    h0ZZcomment = "# h -> ZZ* -> Z f f'bar";
-   h0ZZNDA = 3;
+   h0ZZNDA = 2; ///So read into other programs, e.g. PYTHIA, correctly
  }
  else if(h0ZZcommentcode == 2) {
    h0ZZcomment = "# h -> Z Z";
@@ -5073,7 +5048,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
 
  double higgsl_No_1to2_Decays = 0;
  
- higgsl_No_1to2_Decays = Particlehiggsl.No_1to2_Decays + Particlehiggsl.No_NMSSM_Decays;; /// As higgs NLSP decays to gravitinos unimportant as dominated by higgs to diphoton/digluon so not included any higgs to gravitino decays
+ higgsl_No_1to2_Decays = Particlehiggsl.No_1to2_Decays + Particlehiggsl.No_NMSSM_Decays; /// As higgs NLSP decays to gravitinos unimportant as dominated by higgs to diphoton/digluon so not included any higgs to gravitino decays
    
  for (int j = 0; j<higgsl_No_1to2_Decays; j++) {
    Particlehiggsl.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -5294,7 +5269,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  string H0WWcomment, H0ZZcomment;
  if (H0WWcommentcode == 1) {
    H0WWcomment = "# H -> WW* -> W f f'bar";
-   H0WWNDA = 3;
+   H0WWNDA = 2; ///So read into other programs, e.g. PYTHIA, correctly
  }
  else if(H0WWcommentcode == 2) {
    H0WWcomment = "# H -> W+ W-";
@@ -5304,7 +5279,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  H0ZZcommentcode = higgsHamplitudedecayVV(mh0(2), polemw, polemz, g, gp, alpha, beta, 'Z', CPEMix, nmssmIsIt)(2);
  if (H0ZZcommentcode == 1) {
    H0ZZcomment = "# H -> ZZ* -> Z f f'bar";
-   H0ZZNDA = 3;
+   H0ZZNDA = 2; ///So read into other programs, e.g. PYTHIA, correctly
  }
  else if(H0ZZcommentcode == 2) {
    H0ZZcomment = "# H -> Z Z";
@@ -5429,14 +5404,15 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  }
  else{}
 
-if (nmssmIsIt == true) {
+
+ if (nmssmIsIt == true) {
 
    ///higgsH3 decays
 
-  double H03amplitudeuantiu=0, H03amplitudedantid=0, H03amplitudesantis=0, H03amplitudecantic=0, H03amplitudebantib=0, H03amplitudetantit=0, H03amplitudeeantie=0, H03amplitudemuantimu=0, H03amplitudetauantitau=0, H03amplitudeneutZ1neutZ1=0, H03amplitudeneutZ1neutZ2=0, H03amplitudeneutZ1neutZ3=0, H03amplitudeneutZ1neutZ4=0, H03amplitudeneutZ2neutZ2=0, H03amplitudeneutZ2neutZ3=0, H03amplitudeneutZ2neutZ4=0, H03amplitudeneutZ3neutZ3=0, H03amplitudeneutZ3neutZ4=0, H03amplitudeneutZ4neutZ4=0, H03amplitudecharW1charW1=0, H03amplitudecharW1charW2=0, H03amplitudecharW2charW2=0, H03amplitudeh0h0=0, H03amplitudehiggsAhiggsA=0, H03amplitudeHplusHminus=0, H03amplitudehiggsAZboson=0, H03amplitudesupLantisupL=0, H03amplitudesupLantisupR=0, H03amplitudesupRantisupL=0, H03amplitudesupRantisupR=0, H03amplitudesdownLantisdownL=0, H03amplitudesdownLantisdownR=0, H03amplitudesdownRantisdownL=0, H03amplitudesdownRantisdownR=0, H03amplitudescharmLantischarmL=0, H03amplitudescharmLantischarmR=0, H03amplitudescharmRantischarmL=0, H03amplitudescharmRantischarmR=0, H03amplitudesstrangeLantisstrangeL=0, H03amplitudesstrangeLantisstrangeR=0, H03amplitudesstrangeRantisstrangeL=0, H03amplitudesstrangeRantisstrangeR=0, H03amplitudesnueLantisnueL=0, H03amplitudeselectronLantiselectronL=0, H03amplitudeselectronRantiselectronR=0, H03amplitudeselectronLantiselectronR=0, H03amplitudeselectronRantiselectronL=0, H03amplitudesnumuLantisnumuL=0, H03amplitudesnutauLantisnutauL=0, H03amplitudesmuonLantismuonL=0, H03amplitudesmuonRantismuonR=0, H03amplitudesmuonLantismuonR=0, H03amplitudesmuonRantismuonL=0, H03amplitudestau1antistau1=0, H03amplitudestau2antistau2=0, H03amplitudestau1antistau2=0, H03amplitudestau2antistau1=0, H03amplitudestop1antistop1=0, H03amplitudestop1antistop2=0, H03amplitudestop2antistop1=0, H03amplitudestop2antistop2=0, H03amplitudesbottom1antisbottom1=0, H03amplitudesbottom1antisbottom2=0, H03amplitudesbottom2antisbottom1=0, H03amplitudesbottom2antisbottom2=0, H03amplitudegluongluon=0, H03amplitudegammagamma=0, H03amplitudeZgamma=0, H03amplitudeneutZ1neutZ5 = 0, H03amplitudeneutZ2neutZ5 = 0, H03amplitudeneutZ3neutZ5 = 0, H03amplitudeneutZ4neutZ5 = 0, H03amplitudeneutZ5neutZ5 = 0, H03amplitudeWW = 0, H03amplitudeZZ = 0, H03amplitudehiggsAhiggsA2 = 0, H03amplitudehiggsA2higgsA = 0, H03amplitudehiggsA2higgsA2 = 0, H03amplitudehiggsA2Zboson = 0, H03amplitudeh0H0 = 0, H03amplitudeH0H0 = 0, H03amplitudeWHpm = 0;
-
-  if (flagH3 == 1) {
-
+   double H03amplitudeuantiu=0, H03amplitudedantid=0, H03amplitudesantis=0, H03amplitudecantic=0, H03amplitudebantib=0, H03amplitudetantit=0, H03amplitudeeantie=0, H03amplitudemuantimu=0, H03amplitudetauantitau=0, H03amplitudeneutZ1neutZ1=0, H03amplitudeneutZ1neutZ2=0, H03amplitudeneutZ1neutZ3=0, H03amplitudeneutZ1neutZ4=0, H03amplitudeneutZ2neutZ2=0, H03amplitudeneutZ2neutZ3=0, H03amplitudeneutZ2neutZ4=0, H03amplitudeneutZ3neutZ3=0, H03amplitudeneutZ3neutZ4=0, H03amplitudeneutZ4neutZ4=0, H03amplitudecharW1charW1=0, H03amplitudecharW1charW2=0, H03amplitudecharW2charW2=0, H03amplitudeh0h0=0, H03amplitudehiggsAhiggsA=0, H03amplitudeHplusHminus=0, H03amplitudehiggsAZboson=0, H03amplitudesupLantisupL=0, H03amplitudesupLantisupR=0, H03amplitudesupRantisupL=0, H03amplitudesupRantisupR=0, H03amplitudesdownLantisdownL=0, H03amplitudesdownLantisdownR=0, H03amplitudesdownRantisdownL=0, H03amplitudesdownRantisdownR=0, H03amplitudescharmLantischarmL=0, H03amplitudescharmLantischarmR=0, H03amplitudescharmRantischarmL=0, H03amplitudescharmRantischarmR=0, H03amplitudesstrangeLantisstrangeL=0, H03amplitudesstrangeLantisstrangeR=0, H03amplitudesstrangeRantisstrangeL=0, H03amplitudesstrangeRantisstrangeR=0, H03amplitudesnueLantisnueL=0, H03amplitudeselectronLantiselectronL=0, H03amplitudeselectronRantiselectronR=0, H03amplitudeselectronLantiselectronR=0, H03amplitudeselectronRantiselectronL=0, H03amplitudesnumuLantisnumuL=0, H03amplitudesnutauLantisnutauL=0, H03amplitudesmuonLantismuonL=0, H03amplitudesmuonRantismuonR=0, H03amplitudesmuonLantismuonR=0, H03amplitudesmuonRantismuonL=0, H03amplitudestau1antistau1=0, H03amplitudestau2antistau2=0, H03amplitudestau1antistau2=0, H03amplitudestau2antistau1=0, H03amplitudestop1antistop1=0, H03amplitudestop1antistop2=0, H03amplitudestop2antistop1=0, H03amplitudestop2antistop2=0, H03amplitudesbottom1antisbottom1=0, H03amplitudesbottom1antisbottom2=0, H03amplitudesbottom2antisbottom1=0, H03amplitudesbottom2antisbottom2=0, H03amplitudegluongluon=0, H03amplitudegammagamma=0, H03amplitudeZgamma=0, H03amplitudeneutZ1neutZ5 = 0, H03amplitudeneutZ2neutZ5 = 0, H03amplitudeneutZ3neutZ5 = 0, H03amplitudeneutZ4neutZ5 = 0, H03amplitudeneutZ5neutZ5 = 0, H03amplitudeWW = 0, H03amplitudeZZ = 0, H03amplitudehiggsAhiggsA2 = 0, H03amplitudehiggsA2higgsA = 0, H03amplitudehiggsA2higgsA2 = 0, H03amplitudehiggsA2Zboson = 0, H03amplitudeh0H0 = 0, H03amplitudeH0H0 = 0, H03amplitudeWHpm = 0;
+ 
+   if (flagH3 == 1) {
+   
     if (QCDcorr == false) {
       H03amplitudecantic = higgslorHamplitudedecayquarkantiquark (mh0(3), runmc, g, alpha, beta, runmw, 1, 'M', CPEMix, nmssmIsIt, QCDcorr, alphasAtMH3);
       H03amplitudesantis = higgslorHamplitudedecayquarkantiquark (mh0(3), runms, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, QCDcorr, alphasAtMH3);
@@ -5451,10 +5427,10 @@ if (nmssmIsIt == true) {
       H03amplitudetantit = higgslorHamplitudedecayquarkantiquark (mh0(3), mtPole, g, alpha, beta, runmw, 1, 'M', CPEMix, nmssmIsIt, QCDcorr, alphasAtMH3); ///don't use runmt here as closer to answer with corrections with usual mass
    ///QCD Corrections not included for u or d quarks as the correction formulae not valid for these
     }
-
-      H03amplitudeeantie = higgslorHamplitudedecayquarkantiquark (mh0(3), runmel, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, false, alphasAtMH3)/3; ///0 as leptons are like down-type quarks, divide by 3 as No of colours is 1 for leptons cf 3 for quarks
-      H03amplitudemuantimu = higgslorHamplitudedecayquarkantiquark (mh0(3), runmmu, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, false, alphasAtMH3)/3;
-      H03amplitudetauantitau = higgslorHamplitudedecayquarkantiquark (mh0(3), runmtau, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, false, alphasAtMH3)/3;
+   
+    H03amplitudeeantie = higgslorHamplitudedecayquarkantiquark (mh0(3), runmel, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, false, alphasAtMH3)/3; ///0 as leptons are like down-type quarks, divide by 3 as No of colours is 1 for leptons cf 3 for quarks
+    H03amplitudemuantimu = higgslorHamplitudedecayquarkantiquark (mh0(3), runmmu, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, false, alphasAtMH3)/3;
+    H03amplitudetauantitau = higgslorHamplitudedecayquarkantiquark (mh0(3), runmtau, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, false, alphasAtMH3)/3;
   
  H03amplitudesupLantisupL = higgsH3amplitudedecay2squarksamehandNMSSM (mh0(3), mu(1,1), mu(1,1), g, gp, alpha, beta, runmw, runmu, CPEMix, 1);
  H03amplitudesupRantisupR = higgsH3amplitudedecay2squarksamehandNMSSM (mh0(3), mu(2,1), mu(2,1), g, gp, alpha, beta, runmw, runmu, CPEMix, 3);
@@ -5464,7 +5440,7 @@ if (nmssmIsIt == true) {
  H03amplitudescharmRantischarmR = higgsH3amplitudedecay2squarksamehandNMSSM (mh0(3), mu(2,2), mu(2,2), g, gp, alpha, beta, runmw, runmc, CPEMix, 3);
  H03amplitudesstrangeLantisstrangeL = higgsH3amplitudedecay2squarksamehandNMSSM (mh0(3), md(2,1), md(2,1), g, gp, alpha, beta, runmw, runms, CPEMix, 2);
  H03amplitudesstrangeRantisstrangeR = higgsH3amplitudedecay2squarksamehandNMSSM (mh0(3), md(2,2), md(2,2), g, gp, alpha, beta, runmw, runms, CPEMix, 4);
-
+   
  H03amplitudesnueLantisnueL = higgsH3amplitudedecay2sleptonsamehandNMSSM (mh0(3), msnu(1), msnu(1), g, gp, alpha, beta, runmw, 0, CPEMix, 1);
  H03amplitudeselectronLantiselectronL = higgsH3amplitudedecay2sleptonsamehandNMSSM (mh0(3), me(1,1), me(1,1), g, gp, alpha, beta, runmw, runmel, CPEMix, 2);
  H03amplitudeselectronRantiselectronR = higgsH3amplitudedecay2sleptonsamehandNMSSM (mh0(3), me(2,1), me(2,1), g, gp, alpha, beta, runmw, runmel, CPEMix, 3);
@@ -5521,7 +5497,7 @@ if (nmssmIsIt == true) {
  H03amplitudeneutZ4neutZ4 = higgshamplitudedecayneutineutjNMSSM (mh0(3), mneut(4), mneut(4), g, gp, CPEMix, mixNeut, lam, kappa, 4, 4, 3);
  H03amplitudeneutZ4neutZ5 = higgshamplitudedecayneutineutjNMSSM (mh0(3), mneut(4), mneut(5), g, gp, CPEMix, mixNeut, lam, kappa, 4, 5, 3);
  H03amplitudeneutZ5neutZ5 = higgshamplitudedecayneutineutjNMSSM (mh0(3), mneut(5), mneut(5), g, gp, CPEMix, mixNeut, lam, kappa, 5, 5, 3);
-
+   
  H03amplitudehiggsAhiggsA = higgsCPevenamplitudedecayAANMSSM(mh0(3), mA0(1), mA0(1), runmw, runmt, runmb, g, gp, beta, CPEMix, CPOMix, lam, kappa, Alambda, Akappa, mueff, 3, 1, 1);
  H03amplitudehiggsAhiggsA2 = higgsCPevenamplitudedecayAANMSSM(mh0(3), mA0(1), mA0(2), runmw, runmt, runmb, g, gp, beta, CPEMix, CPOMix, lam, kappa, Alambda, Akappa, mueff, 3, 1, 2);
  H03amplitudehiggsA2higgsA = H03amplitudehiggsAhiggsA2;
@@ -5545,7 +5521,7 @@ if (nmssmIsIt == true) {
  string H03WWcomment, H03ZZcomment;
  if (H03WWcommentcode == 1) {
    H03WWcomment = "# H3 -> WW* -> W f f'bar";
-   H03WWNDA = 3;
+   H03WWNDA = 2; ///So read into other programs, e.g. PYTHIA, correctly
  }
  else if(H03WWcommentcode == 2) {
    H03WWcomment = "# H3 -> W+ W-";
@@ -5554,13 +5530,13 @@ if (nmssmIsIt == true) {
  H03ZZcommentcode = higgsH3amplitudedecayVVNMSSM(mh0(3), polemw, polemz, g, gp, alpha, beta, 'Z', CPEMix, nmssmIsIt)(2);
  if (H03ZZcommentcode == 1) {
    H03ZZcomment = "# H3 -> ZZ* -> Z f f'bar";
-   H03ZZNDA = 3;
+   H03ZZNDA = 2; ///So read into other programs, e.g. PYTHIA, correctly
  }
  else if(H03ZZcommentcode == 2) {
    H03ZZcomment = "# H3 -> Z Z";
-   H03ZZNDA = 2;
+   H03ZZNDA = 2; 
  }
-
+   
 
  ParticleHiggsH3.Array_Decays[0][0] = PDGup; ParticleHiggsH3.Array_Decays[0][1] = -PDGup; ParticleHiggsH3.Array_Decays[0][2] = H03amplitudeuantiu; ParticleHiggsH3.Array_Decays[0][3] = 2; ParticleHiggsH3.Array_Comments[0] = "# H3 -> u ub";
  ParticleHiggsH3.Array_Decays[1][0] = PDGdown; ParticleHiggsH3.Array_Decays[1][1] = -PDGdown; ParticleHiggsH3.Array_Decays[1][2] = H03amplitudedantid; ParticleHiggsH3.Array_Decays[1][3] = 2; ParticleHiggsH3.Array_Comments[1] = "# H3 -> d db";
@@ -5582,7 +5558,7 @@ if (nmssmIsIt == true) {
  ParticleHiggsH3.Array_Decays[16][0] = PDGneutralino3; ParticleHiggsH3.Array_Decays[16][1] = PDGneutralino3; ParticleHiggsH3.Array_Decays[16][2] = H03amplitudeneutZ3neutZ3; ParticleHiggsH3.Array_Decays[16][3] = 2; ParticleHiggsH3.Array_Comments[16] = "# H3 -> ~chi_30 ~chi_30";
  ParticleHiggsH3.Array_Decays[17][0] = PDGneutralino3; ParticleHiggsH3.Array_Decays[17][1] = PDGneutralino4; ParticleHiggsH3.Array_Decays[17][2] = H03amplitudeneutZ3neutZ4; ParticleHiggsH3.Array_Decays[17][3] = 2; ParticleHiggsH3.Array_Comments[17] = "# H3 -> ~chi_30 ~chi_40";
  ParticleHiggsH3.Array_Decays[18][0] = PDGneutralino4; ParticleHiggsH3.Array_Decays[18][1] = PDGneutralino4; ParticleHiggsH3.Array_Decays[18][2] = H03amplitudeneutZ4neutZ4; ParticleHiggsH3.Array_Decays[18][3] = 2; ParticleHiggsH3.Array_Comments[18] = "# H3 -> ~chi_40 ~chi_40";
-
+   
  ParticleHiggsH3.Array_Decays[19][0] = PDGchargino1; ParticleHiggsH3.Array_Decays[19][1] = -PDGchargino1; ParticleHiggsH3.Array_Decays[19][2] = H03amplitudecharW1charW1; ParticleHiggsH3.Array_Decays[19][3] = 2; ParticleHiggsH3.Array_Comments[19] = "# H3 -> ~chi_1+ ~chi_1-";
  ParticleHiggsH3.Array_Decays[20][0] = PDGchargino2; ParticleHiggsH3.Array_Decays[20][1] = -PDGchargino2; ParticleHiggsH3.Array_Decays[20][2] = H03amplitudecharW2charW2; ParticleHiggsH3.Array_Decays[20][3] = 2; ParticleHiggsH3.Array_Comments[20] = "# H3 -> ~chi_2+ ~chi_2-";
  ParticleHiggsH3.Array_Decays[21][0] = PDGchargino1; ParticleHiggsH3.Array_Decays[21][1] = -PDGchargino2; ParticleHiggsH3.Array_Decays[21][2] = H03amplitudecharW1charW2; ParticleHiggsH3.Array_Decays[21][3] = 2; ParticleHiggsH3.Array_Comments[21] = "# H3 -> ~chi_1+ ~chi_2-";
@@ -5653,7 +5629,7 @@ if (nmssmIsIt == true) {
  ParticleHiggsH3.Array_Decays[81][0] = PDGh0; ParticleHiggsH3.Array_Decays[81][1] = PDGH0; ParticleHiggsH3.Array_Decays[81][2] = H03amplitudeh0H0; ParticleHiggsH3.Array_Decays[81][3] = 2; ParticleHiggsH3.Array_Comments[81] = "# H3 -> h H";
  ParticleHiggsH3.Array_Decays[82][0] = PDGH0; ParticleHiggsH3.Array_Decays[82][1] = PDGH0; ParticleHiggsH3.Array_Decays[82][2] = H03amplitudeH0H0; ParticleHiggsH3.Array_Decays[82][3] = 2; ParticleHiggsH3.Array_Comments[82] = "# H3 -> H H";
  ParticleHiggsH3.Array_Decays[83][0] = PDGHplus; ParticleHiggsH3.Array_Decays[83][1] = -PDGWplus; ParticleHiggsH3.Array_Decays[83][2] = H03amplitudeWHpm; ParticleHiggsH3.Array_Decays[83][3] = 2; ParticleHiggsH3.Array_Comments[83] = "# H3 -> H+ W- (or H- W+)";
-
+   
  double HiggsH3_No_1to2_Decays = 0;
  
  HiggsH3_No_1to2_Decays = ParticleHiggsH3.No_1to2_Decays + ParticleHiggsH3.No_NMSSM_Decays; 
@@ -5672,7 +5648,7 @@ if (nmssmIsIt == true) {
  for(int j=0; j<ParticleHiggsH3.No_of_Decays; j++) {
    ParticleHiggsH3.Array_Decays[j][4] = 0;
  }
-
+   
  /// Note no need for test for nans here as the higgs 1 -> 3 decay formulae are all purely analytic algebraic expressions, therefore no numerical integration is involved so we can't get nans.
 
     ParticleHiggsH3.total_width = ParticleHiggsH3.two_width + ParticleHiggsH3.three_width;
@@ -5684,19 +5660,18 @@ if (nmssmIsIt == true) {
 
   if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleHiggsH3, BRTol);}
   else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleHiggsH3, BRTol);}
-
- }
-
+  
+   }
  }
 
 
 ///higgsA decays
 
- double A0amplitudeuantiu=0, A0amplitudedantid=0, A0amplitudesantis=0, A0amplitudecantic=0, A0amplitudebantib=0, A0amplitudetantit=0, A0amplitudeeantie=0, A0amplitudemuantimu=0, A0amplitudetauantitau=0, A0amplitudeneutZ1neutZ1=0, A0amplitudeneutZ1neutZ2=0, A0amplitudeneutZ1neutZ3=0, A0amplitudeneutZ1neutZ4=0, A0amplitudeneutZ2neutZ2=0, A0amplitudeneutZ2neutZ3=0, A0amplitudeneutZ2neutZ4=0, A0amplitudeneutZ3neutZ3=0, A0amplitudeneutZ3neutZ4=0, A0amplitudeneutZ4neutZ4=0, A0amplitudecharW1charW1=0, A0amplitudecharW1charW2=0, A0amplitudecharW2charW2=0, A0amplitudehiggshZboson=0, A0amplitudehiggsHZboson=0, A0amplitudesupLantisupR=0, A0amplitudesupRantisupL=0, A0amplitudesdownLantisdownR=0, A0amplitudesdownRantisdownL=0, A0amplitudescharmLantischarmR=0, A0amplitudescharmRantischarmL=0, A0amplitudesstrangeLantisstrangeR=0, A0amplitudesstrangeRantisstrangeL=0, A0amplitudestop1antistop2=0, A0amplitudestop2antistop1=0, A0amplitudesbottom1antisbottom2=0, A0amplitudesbottom2antisbottom1=0, A0amplitudeselectronLselectronR=0, A0amplitudeselectronRselectronL=0, A0amplitudesmuonLsmuonR=0, A0amplitudesmuonRsmuonL=0, A0amplitudestau1stau2=0, A0amplitudestau2stau1=0, A0amplitudegluongluon=0, A0amplitudegammagamma=0, A0amplitudeZgamma=0, A0amplitudeWHpm=0;
+double A0amplitudeuantiu=0, A0amplitudedantid=0, A0amplitudesantis=0, A0amplitudecantic=0, A0amplitudebantib=0, A0amplitudetantit=0, A0amplitudeeantie=0, A0amplitudemuantimu=0, A0amplitudetauantitau=0, A0amplitudeneutZ1neutZ1=0, A0amplitudeneutZ1neutZ2=0, A0amplitudeneutZ1neutZ3=0, A0amplitudeneutZ1neutZ4=0, A0amplitudeneutZ2neutZ2=0, A0amplitudeneutZ2neutZ3=0, A0amplitudeneutZ2neutZ4=0, A0amplitudeneutZ3neutZ3=0, A0amplitudeneutZ3neutZ4=0, A0amplitudeneutZ4neutZ4=0, A0amplitudecharW1charW1=0, A0amplitudecharW1charW2=0, A0amplitudecharW2charW2=0, A0amplitudehiggshZboson=0, A0amplitudehiggsHZboson=0, A0amplitudesupLantisupR=0, A0amplitudesupRantisupL=0, A0amplitudesdownLantisdownR=0, A0amplitudesdownRantisdownL=0, A0amplitudescharmLantischarmR=0, A0amplitudescharmRantischarmL=0, A0amplitudesstrangeLantisstrangeR=0, A0amplitudesstrangeRantisstrangeL=0, A0amplitudestop1antistop2=0, A0amplitudestop2antistop1=0, A0amplitudesbottom1antisbottom2=0, A0amplitudesbottom2antisbottom1=0, A0amplitudeselectronLselectronR=0, A0amplitudeselectronRselectronL=0, A0amplitudesmuonLsmuonR=0, A0amplitudesmuonRsmuonL=0, A0amplitudestau1stau2=0, A0amplitudestau2stau1=0, A0amplitudegluongluon=0, A0amplitudegammagamma=0, A0amplitudeZgamma=0, A0amplitudeWHpm=0;
 
- double A0amplitudeneutZ1neutZ5=0, A0amplitudeneutZ2neutZ5=0, A0amplitudeneutZ3neutZ5=0, A0amplitudeneutZ4neutZ5=0, A0amplitudeneutZ5neutZ5=0, A0amplitudehiggsH3Zboson=0;
+double A0amplitudeneutZ1neutZ5=0, A0amplitudeneutZ2neutZ5=0, A0amplitudeneutZ3neutZ5=0, A0amplitudeneutZ4neutZ5=0, A0amplitudeneutZ5neutZ5=0, A0amplitudehiggsH3Zboson=0;
 
- if (flagA1 == 1) {
+if (flagA1 == 1) {
    
    if (nmssmIsIt == false) {
 
@@ -5759,7 +5734,7 @@ if (nmssmIsIt == true) {
    
    A0amplitudeWHpm = higgsAamplitudedecayHpmWboson(mA0(1), polemw, mHpm, g, thetaA, 1, nmssmIsIt);
 
- }
+   }
 
  ///Section of code to multiply by relevant prefactors in NMSSM:
  else if (nmssmIsIt == true){ ///NMSSM so need to modify by elements of pseudoscalar mixing matrix
@@ -5826,14 +5801,14 @@ if (nmssmIsIt == true) {
    A0amplitudegammagamma = higgsAamplitudedecaygammagammaNMSSM (mA0(1), g, gp, alphaAtMA, runmw, CPOMix, beta, mtAtMA, mbAtMA, mcAtMA, runmtau, mch(1), mch(2), thetaL2, thetaR2, lam, 1);
    A0amplitudegluongluon = higgsAamplitudedecaygluongluonNMSSM (mA0(1), g, gs, alphasAtMA, runmw, CPOMix, beta, mtPole, mbPole, mcpole, lam, 1, QCDcorr);
    A0amplitudeZgamma = higgsAamplitudedecayZgammaNMSSM (mA0(1), g, gp, alphaAtMA, runmw, polemz, CPOMix, beta,mtAtMA, mbAtMA, mcAtMA, mch(1), mch(2), thetaL2, thetaR2, lam, 1);
-
+ 
    A0amplitudeWHpm = higgsAamplitudedecayHpmWboson(mA0(1), polemw, mHpm, g, thetaA, 1, nmssmIsIt);
  }
 
  ParticleHiggsA.Array_Decays[0][0] = PDGup; ParticleHiggsA.Array_Decays[0][1] = -PDGup; ParticleHiggsA.Array_Decays[0][2] = A0amplitudeuantiu; ParticleHiggsA.Array_Decays[0][3] = 2; ParticleHiggsA.Array_Comments[0] = "# A -> u ub";
  ParticleHiggsA.Array_Decays[1][0] = PDGdown; ParticleHiggsA.Array_Decays[1][1] = -PDGdown; ParticleHiggsA.Array_Decays[1][2] = A0amplitudedantid; ParticleHiggsA.Array_Decays[1][3] = 2; ParticleHiggsA.Array_Comments[1] = "# A -> d db";
  ParticleHiggsA.Array_Decays[2][0] = PDGcharm; ParticleHiggsA.Array_Decays[2][1] = -PDGcharm; ParticleHiggsA.Array_Decays[2][2] = A0amplitudecantic; ParticleHiggsA.Array_Decays[2][3] = 2; ParticleHiggsA.Array_Comments[2] = "# A -> c cb";
- ParticleHiggsA.Array_Decays[3][0] = PDGstrange; ParticleHiggsA.Array_Decays[3][1] = -PDGstrange; ParticleHiggsA.Array_Decays[3][2] = A0amplitudesantis; ParticleHiggsH.Array_Decays[3][3] = 2; ParticleHiggsA.Array_Comments[3] = "# A -> s sb";
+ ParticleHiggsA.Array_Decays[3][0] = PDGstrange; ParticleHiggsA.Array_Decays[3][1] = -PDGstrange; ParticleHiggsA.Array_Decays[3][2] = A0amplitudesantis; ParticleHiggsA.Array_Decays[3][3] = 2; ParticleHiggsA.Array_Comments[3] = "# A -> s sb";
  ParticleHiggsA.Array_Decays[4][0] = PDGbottom; ParticleHiggsA.Array_Decays[4][1] = -PDGbottom; ParticleHiggsA.Array_Decays[4][2] = A0amplitudebantib; ParticleHiggsA.Array_Decays[4][3] = 2; ParticleHiggsA.Array_Comments[4] = "# A -> b bb";
  ParticleHiggsA.Array_Decays[5][0] = PDGtop; ParticleHiggsA.Array_Decays[5][1] = -PDGtop; ParticleHiggsA.Array_Decays[5][2] = A0amplitudetantit; ParticleHiggsA.Array_Decays[5][3] = 2; ParticleHiggsA.Array_Comments[5] = "# A -> t tb";
  ParticleHiggsA.Array_Decays[6][0] = PDGelectron; ParticleHiggsA.Array_Decays[6][1] = -PDGelectron; ParticleHiggsA.Array_Decays[6][2] = A0amplitudeeantie; ParticleHiggsA.Array_Decays[6][3] = 2; ParticleHiggsA.Array_Comments[6] = "# A -> e- e+";
@@ -5874,7 +5849,7 @@ if (nmssmIsIt == true) {
  ParticleHiggsA.Array_Decays[41][0] = PDGstau1; ParticleHiggsA.Array_Decays[41][1] = PDGstau2; ParticleHiggsA.Array_Decays[41][2] = A0amplitudestau1stau2; ParticleHiggsA.Array_Decays[41][3] = 2; ParticleHiggsA.Array_Comments[41] = "# A-> ~tau_1- ~tau_2+";
  ParticleHiggsA.Array_Decays[42][0] = PDGstau2; ParticleHiggsA.Array_Decays[42][1] = PDGstau1; ParticleHiggsA.Array_Decays[42][2] = A0amplitudestau2stau1; ParticleHiggsA.Array_Decays[42][3] = 2; ParticleHiggsA.Array_Comments[42] = "# A-> ~tau_2- ~tau_1+";
  ParticleHiggsA.Array_Decays[43][0] = PDGphoton; ParticleHiggsA.Array_Decays[43][1] = PDGphoton; ParticleHiggsA.Array_Decays[43][2] = A0amplitudegammagamma; ParticleHiggsA.Array_Decays[43][3] = 2; ParticleHiggsA.Array_Comments[43] = "# A-> gamma gamma";
- ParticleHiggsA.Array_Decays[44][0] = PDGgluon; ParticleHiggsA.Array_Decays[44][1] = PDGgluon; ParticleHiggsA.Array_Decays[44][2] = A0amplitudegluongluon; ParticleHiggsA.Array_Decays[44][3] = 2; ParticleHiggsA.Array_Comments[44] = "# A-> gluon gluon";
+ ParticleHiggsA.Array_Decays[44][0] = PDGgluon; ParticleHiggsA.Array_Decays[44][1] = PDGgluon; ParticleHiggsA.Array_Decays[44][2] = A0amplitudegluongluon; ParticleHiggsA.Array_Decays[44][3] = 2; ParticleHiggsA.Array_Comments[44] = "# A -> gluon gluon";
  ParticleHiggsA.Array_Decays[45][0] = PDGZboson; ParticleHiggsA.Array_Decays[45][1] = PDGphoton; ParticleHiggsA.Array_Decays[45][2] = A0amplitudeZgamma; ParticleHiggsA.Array_Decays[45][3] = 2; ParticleHiggsA.Array_Comments[45] = "# A -> Z gamma"; 
  ParticleHiggsA.Array_Decays[46][0] = PDGWplus; ParticleHiggsA.Array_Decays[46][1] = -PDGHplus; ParticleHiggsA.Array_Decays[46][2] = A0amplitudeWHpm*2; ParticleHiggsA.Array_Decays[46][3] = 2; ParticleHiggsA.Array_Comments[46] = "# A -> W+ H- (includes W- H+)"; ///*2 so includes A -> W- H+
 
@@ -5885,13 +5860,12 @@ if (nmssmIsIt == true) {
  ParticleHiggsA.Array_Decays[51][0] = PDGneutralino1; ParticleHiggsA.Array_Decays[51][1] = PDGneutralino5; ParticleHiggsA.Array_Decays[51][2] = A0amplitudeneutZ5neutZ5; ParticleHiggsA.Array_Decays[51][3] = 2; ParticleHiggsA.Array_Comments[51] = "# A -> ~chi_50 ~chi_50";
  ParticleHiggsA.Array_Decays[52][0] = PDGZboson; ParticleHiggsA.Array_Decays[52][1] = PDGH3; ParticleHiggsA.Array_Decays[52][2] = A0amplitudehiggsH3Zboson; ParticleHiggsA.Array_Decays[52][3] = 2; ParticleHiggsA.Array_Comments[52] = "# A -> H3 Z";
  
-
+ 
 
  double HiggsA_No_1to2_Decays = 0;
  
  HiggsA_No_1to2_Decays = ParticleHiggsA.No_1to2_Decays + ParticleHiggsA.No_NMSSM_Decays; /// As higgsA can't be NLSP as heavier than higgsl
- 
- 
+  
  
  for (int j = 0; j<HiggsA_No_1to2_Decays; j++) {
    ParticleHiggsA.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -5907,22 +5881,22 @@ if (nmssmIsIt == true) {
  for(int j=0; j<ParticleHiggsA.No_of_Decays; j++) {
    ParticleHiggsA.Array_Decays[j][4] = 0;
  }
-
  
  ParticleHiggsA.total_width = ParticleHiggsA.two_width + ParticleHiggsA.three_width;
-  
    
-  for (int i =0; i<ParticleHiggsA.No_of_Decays; i++) {
-     ParticleHiggsA.Array_Decays[i][5]= ParticleHiggsA.Array_Decays[i][2]/ParticleHiggsA.total_width;
-   } 
+ for (int i =0; i<ParticleHiggsA.No_of_Decays; i++) {
+   ParticleHiggsA.Array_Decays[i][5]= ParticleHiggsA.Array_Decays[i][2]/ParticleHiggsA.total_width;
+ } 
 
-  if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleHiggsA, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleHiggsA, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleHiggsA, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleHiggsA, BRTol);}
 
  }
 
- ///NMSSM Pseudoscalar2 decays:
- if(nmssmIsIt == true && flagA2 == 1) { ///NMSSM
+
+
+ ///NMSSM Pseudoscalar2 (A2) decays:
+ if(nmssmIsIt == true) { ///NMSSM
    double A02amplitudeuantiu=0, A02amplitudedantid=0, A02amplitudesantis=0, A02amplitudecantic=0, A02amplitudebantib=0, A02amplitudetantit=0, A02amplitudeeantie=0, A02amplitudemuantimu=0, A02amplitudetauantitau=0, A02amplitudeneutZ1neutZ1=0, A02amplitudeneutZ1neutZ2=0, A02amplitudeneutZ1neutZ3=0, A02amplitudeneutZ1neutZ4=0, A02amplitudeneutZ2neutZ2=0, A02amplitudeneutZ2neutZ3=0, A02amplitudeneutZ2neutZ4=0, A02amplitudeneutZ3neutZ3=0, A02amplitudeneutZ3neutZ4=0, A02amplitudeneutZ4neutZ4=0, A02amplitudecharW1charW1=0, A02amplitudecharW1charW2=0, A02amplitudecharW2charW2=0, A02amplitudehiggshZboson=0, A02amplitudehiggsHZboson=0, A02amplitudesupLantisupR=0, A02amplitudesupRantisupL=0, A02amplitudesdownLantisdownR=0, A02amplitudesdownRantisdownL=0, A02amplitudescharmLantischarmR=0, A02amplitudescharmRantischarmL=0, A02amplitudesstrangeLantisstrangeR=0, A02amplitudesstrangeRantisstrangeL=0, A02amplitudestop1antistop2=0, A02amplitudestop2antistop1=0, A02amplitudesbottom1antisbottom2=0, A02amplitudesbottom2antisbottom1=0, A02amplitudeselectronLselectronR=0, A02amplitudeselectronRselectronL=0, A02amplitudesmuonLsmuonR=0, A02amplitudesmuonRsmuonL=0, A02amplitudestau1stau2=0, A02amplitudestau2stau1=0, A02amplitudegluongluon=0, A02amplitudegammagamma=0, A02amplitudeZgamma=0, A02amplitudeWHpm=0;
 
    double A02amplitudeneutZ1neutZ5=0, A02amplitudeneutZ2neutZ5=0, A02amplitudeneutZ3neutZ5=0, A02amplitudeneutZ4neutZ5=0, A02amplitudeneutZ5neutZ5=0, A02amplitudehiggsH3Zboson=0, A02amplitudehiggshA0=0, A02amplitudehiggsHA0=0, A02amplitudehiggsH3A0=0;
@@ -6260,8 +6234,8 @@ if (nmssmIsIt == true) {
  }
 }
 
-
 /// Function to calculate the gluino decay amplitudes
+
 double gluinoamplitudedecay (double m1, double m2, double m3, double alphastrong) {
   double squareratio, squareplus, squareminus, amplitudeW;
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
@@ -10261,6 +10235,8 @@ double higgsesamplitudedecaygammagammatotal(double m1, double g, double gprime, 
   matelemsum(1) = Itr + Ist1r + Ist2r + Ibr + Isb1r + Isb2r + Icr + Itaur + Istau1r + Istau2r + IWr + IHpmr + Ichar1r + Ichar2r;
   matelemsum(2) = Iti + Ist1i + Ist2i + Ibi + Isb1i + Isb2i + Ici + Itaui + Istau1i + Istau2i + IWi + IHpmi + Ichar1i + Ichar2i;
   
+  prefactor = GFosqrt2*pow(alphaEmrun,2)*pow(m1,3)/(128*pow(PI,3));
+
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
   amplitudeW = prefactor*matelemmodsquare;
      
@@ -12292,7 +12268,7 @@ void OutputNoPWs(ostream & cout, Particle & P, double BRTol) ///Outputs the deca
    cout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
    cout.precision(7);
    if (P.three_width/P.total_width < BRTol) {
-     cout << left << setw(6) << "#" << setw(18) << "BR" << setw(6) << "NDA" << setw(12) << left << "PDG1" << setw(12) << " PDG2" << endl;
+     cout << left << setw(6) << "#" << setw(18) << "BR" << setw(6) << "NDA" << setw(12) << left << "PDG1" << setw(12) << " PDG2" << setw(30) << "Comments" << "    " << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
 	 cout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3];  printRowPDG(cout, P.Array_Decays[k][0]); cout << "   "; printRowPDG(cout, P.Array_Decays[k][1]); cout << "   " << left << setprecision(0) << setw(15) << P.Array_Comments[k] << endl;
@@ -12300,10 +12276,10 @@ void OutputNoPWs(ostream & cout, Particle & P, double BRTol) ///Outputs the deca
      }
    }
    else {
-     cout << left << setw(6) << "#" << setw(18) << "PW" << setw(18) << "BR" << setw(8) << "NDA" << setw(12) << left << " PDG1" << setw(12) << " PDG2" << setw(12) << " PDG3 " << endl;
+     cout << left << setw(6) << "#" << setw(18) << "BR" << setw(8) << "NDA" << setw(12) << left << " PDG1" << setw(12) << " PDG2" << setw(12) << " PDG3 " << setw(30) << "Comments" << "     " << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
-	 cout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][2] << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << " " << P.Array_Decays[k][3] << setw(4) << " ";  printRowPDG(cout, P.Array_Decays[k][0]); cout << "    "; printRowPDG(cout,P.Array_Decays[k][1]); cout << "    "; printRowPDG(cout,P.Array_Decays[k][4]); cout << "   " << left << setprecision(0) << setw(15) << P.Array_Comments[k] << endl;
+	 cout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(cout, P.Array_Decays[k][0]); cout << "    "; printRowPDG(cout,P.Array_Decays[k][1]); cout << "    "; printRowPDG(cout,P.Array_Decays[k][4]); cout << "   " << left << setprecision(0) << setw(25) << P.Array_Comments[k] << endl;
        }
      }
    }
@@ -12317,7 +12293,7 @@ void OutputYesPWs(ostream & cout, Particle & P, double BRTol) ///Outputs the dec
    cout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
    cout.precision(7);
 
-   if (P.three_width/P.total_width < BRTol) {
+   if (P.three_width/P.total_width < BRTol || P.three_width == 0) {
      cout << left << setw(6) << "# " << setw(20) << "BR " << setw(6) << "NDA " << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(30) << "Comments" << "    " << setw(18) << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
@@ -12327,10 +12303,10 @@ void OutputYesPWs(ostream & cout, Particle & P, double BRTol) ///Outputs the dec
      cout << "#" << endl; 
    }
    else {
-     cout << left << setw(6) << "# " << setw(20) << "BR" << setw(6) << "NDA" << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(12) << "PDG3" << setw(30) << "Comments" << "    " << setw(18) << "PW" << endl;
+     cout << left << setw(6) << "# " << setw(20) << "BR" << setw(6) << "NDA" << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(12) << "PDG3" << setw(35) << "Comments" << "      " << setw(28) << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
-     	 cout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << " " << P.Array_Decays[k][3] << setw(4) << " ";  printRowPDG(cout, P.Array_Decays[k][0]); cout << "    "; printRowPDG(cout,P.Array_Decays[k][1]); cout << "    "; printRowPDG(cout,P.Array_Decays[k][4]); cout << "   " << left << setprecision(0) << setw(30) << P.Array_Comments[k] << "    "<< setw(18) << scientific << setprecision(8) << P.Array_Decays[k][2] << endl;
+     	 cout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(8) << fixed << " " << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(cout, P.Array_Decays[k][0]); cout << "    "; printRowPDG(cout,P.Array_Decays[k][1]); cout << "    "; printRowPDG(cout,P.Array_Decays[k][4]); cout << "   " << left << setprecision(0) << setw(38) << P.Array_Comments[k] << "    "<< setw(18) << scientific << setprecision(8) << P.Array_Decays[k][2] << endl;
        }
      }
      cout << "#" << endl; 
@@ -12407,7 +12383,7 @@ double gchidgauss (double Et) {
   A = pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et;
   squareplus = A - pow((m4 + mq),2);
   squareminus = A - pow((m4 - mq),2);
-  if (squareplus < 0 && fabs(squareplus) < 1e-10) {
+  if (squareplus < 0 && fabs(squareplus) < checkAgainstNeg) {
     squareplus = 0; ///avoid numerical error giving a negative and hence a nan for lambda at upper boundary of integration range
   }
   lambda = pow(squareplus*squareminus,0.5);
@@ -12442,7 +12418,7 @@ double gXdgauss (double Et)
   pt = pow(pow(Et,2) - pow(mq,2),0.5);
   squareplus = A - pow((m4 + mq),2);
   squareminus = A - pow((m4 - mq),2);
-  if (squareplus < 0 && fabs(squareplus) < 1e-10) {
+  if (squareplus < 0 && fabs(squareplus) < checkAgainstNeg) {
     squareplus = 0; ///avoid numerical error giving a negative and hence a nan for lambda at upper boundary of integration range
   }
   lambda = pow(squareplus*squareminus,0.5);
@@ -12669,6 +12645,9 @@ double gneutineutjffZ1dgauss(double s) ///m1 = mneuti, m4 = mneutj, mq = mf, MZb
   double Z1dgauss = 0, lambda1 = 0, lambda2 = 0, squareplus1 = 0, squareminus1 = 0;
   squareplus1 = s - pow(fabs(m1)+fabs(m4),2);
   squareminus1 = s - pow(fabs(m1)-fabs(m4),2);
+  if (squareminus1 > 0 && fabs(squareminus1) < checkAgainstNeg) { 
+    squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
+  }
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
   Z1dgauss = 1/(3*pow(s,2)*pow(s-pow(MZboson,2),2))*(-2*pow(s,4) + (pow(m1,2) + pow(m4,2) + 2*pow(mq,2))*pow(s,3) + (pow(pow(m1,2)-pow(m4,2),2) - 2*(pow(m1,2)+pow(m4,2))*2*pow(mq,2))*pow(s,2) + 2*pow(mq,2)*pow(pow(m1,2)-pow(m4,2),2)*s)*1/s*lambda1*lambda2;
@@ -12680,6 +12659,9 @@ double gneutineutjffZ2dgauss(double s)
   double Z2dgauss = 0, lambda1 = 0, lambda2 = 0, squareplus1 = 0, squareminus1 = 0;
   squareplus1 = s - pow(fabs(m1)+fabs(m4),2);
   squareminus1 = s - pow(fabs(m1)-fabs(m4),2);
+  if (squareminus1 > 0 && fabs(squareminus1) < checkAgainstNeg) { 
+    squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
+  }
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
   Z2dgauss = 1/(s*pow(s-pow(MZboson,2),2))*lambda1*lambda2*(s-2*pow(mq,2));
@@ -12691,6 +12673,9 @@ double gneutineutjffZ3dgauss(double s)
   double Z3dgauss = 0, lambda1 = 0, lambda2 = 0, squareplus1 = 0, squareminus1 = 0;
   squareplus1 = s - pow(fabs(m1)+fabs(m4),2);
   squareminus1 = s - pow(fabs(m1)-fabs(m4),2);
+  if (squareminus1 > 0 && fabs(squareminus1) < checkAgainstNeg) { 
+    squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
+  }
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
   Z3dgauss = 1/(s*pow(s-pow(MZboson,2),2))*lambda1*lambda2*(-s+pow(m1,2)+pow(m4,2));
@@ -12702,6 +12687,9 @@ double gneutineutjffZ4dgauss(double s)
   double Z4dgauss = 0, lambda1 = 0, lambda2 = 0, squareplus1 = 0, squareminus1 = 0;
   squareplus1 = s - pow(fabs(m1)+fabs(m4),2);
   squareminus1 = s - pow(fabs(m1)-fabs(m4),2);
+  if (squareminus1 > 0 && fabs(squareminus1) < checkAgainstNeg) { 
+    squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
+  }
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
   Z4dgauss = 1/(s*pow(s-pow(MZboson,2),2))*lambda1*lambda2;
@@ -14091,7 +14079,12 @@ double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (double mgluino, do
 	psiR = dgauss(gpsitildadgauss,from,upper,accuracy)*1/(pow(PI,2)*m1);
 	phiR = dgauss(gphitildadgauss,from,upper,accuracy)*1/(pow(PI,2)*m1);
 
-	amplitudeW = alphas/(8*pow(PI,2))*(pow(A,2)*(psiL + phiL) + pow(B,2)*(psiR + phiR));
+	if ((mneutralino > 0 && mgluino > 0) || (mneutralino < 0 && mgluino < 0)) {
+	  amplitudeW = alphas/(8*pow(PI,2))*(pow(A,2)*(psiL + phiL) + pow(B,2)*(psiR + phiR));
+	}
+	else if ((mneutralino < 0 || mgluino < 0) && mneutralino*mgluino<0) {
+	  amplitudeW = alphas/(8*pow(PI,2))*(pow(A,2)*(psiL - phiL) + pow(B,2)*(psiR - phiR));
+	}
 
       }
     }
@@ -14186,6 +14179,9 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
     
     if (torb == 't') {
 
+      AtZ = g/(pow(2,0.5))*(-mixNeut(neutralino,2)) + gp/(3*pow(2,0.5))*(-mixNeut(neutralino,1));
+      BtZ = (4./3)*gp/(pow(2,0.5))*(-mixNeut(neutralino,1));
+
       if (mneutralino >=0) {
 	ast1alpha1 = Complex(AtZ*cos(thetat) - ft*mixNeut(neutralino,4)*sin(thetat),0.0);
 	ast1beta1 = Complex(ft*mixNeut(neutralino,4)*cos(thetat) + BtZ*sin(thetat),0.0);
@@ -14206,6 +14202,9 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
     }
 
     else if (torb == 'b') {
+
+      AtZ = g/(pow(2,0.5))*(mixNeut(neutralino,2)) + gp/(3*pow(2,0.5))*(-mixNeut(neutralino,1));
+      BtZ = (2./3)*gp/(pow(2,0.5))*(mixNeut(neutralino,1));
 
       if (mneutralino >=0) {
 	ast1alpha1 = Complex(AtZ*cos(thetat) - ft*mixNeut(neutralino,3)*sin(thetat),0.0);
@@ -17541,4 +17540,6 @@ double snutauamplitudedecaynutauneutralinoNMSSM (double m1, double mneut, double
   }
   return amplitudeW;
 }
+
+
 
