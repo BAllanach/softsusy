@@ -35,9 +35,13 @@ void errorCall() {
   ii << "./softpoint.x amsb [mAMSB parameters] [other options]\n";
   ii << "./softpoint.x gmsb [mGMSB parameters] [other options]\n";
   ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
-  ii << "[other options]: --mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
-  ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
+  ii << "[other options]: --decays calculates the decays for NMSSM/MSSM\n";
+  ii << "--minBR=<value> sets the minimum branching ratio printed\n";
+  ii << "--dontCalculateThreeBody switches the 3-body decay width calculations off\n";
+  ii << "--outputPartialWidths outputs the partial widths themselves in the comments\n";
   ii << "--higgsUncertainties gives an estimate of Higgs mass uncertainties\n";
+  ii << "--mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
+  ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   ii << "--two-loop-gauge-yukawa switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
@@ -79,7 +83,8 @@ void errorCall() {
 }
 
 int main(int argc, char *argv[]) {
-
+  bool calculateDecaysFlag = false;
+  
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
@@ -156,6 +161,14 @@ int main(int argc, char *argv[]) {
 	}
 	else if (starts_with(argv[i],"--higgsUncertainties")) 
 	  higgsUncertainties = true;
+	else if (starts_with(argv[i],"--decays"))
+	  calculateDecaysFlag = true;
+	else if (starts_with(argv[i],"--outputPartialWidths"))
+	  outputPartialWidths = true;
+	else if (starts_with(argv[i],"--minBR="))
+	  minBR = get_value(argv[i], "--minBR=");
+	else if (starts_with(argv[i],"--dontCalculateThreeBody"))
+	  threeBodyDecays = false;
 	else if (starts_with(argv[i],"--tol=")) 
 	  TOLERANCE = get_value(argv[i], "--tol=");
 	else if (starts_with(argv[i],"--mt=")) 
@@ -1113,6 +1126,8 @@ int main(int argc, char *argv[]) {
 		else if (block == "SOFTSUSY") {
 		  int i; double d; kk >> i >> d;
 		  switch(i) {
+		  case 0: if (int(d) > 0) calculateDecaysFlag = true;
+		    break;
 		  case 1: TOLERANCE = d; break;
 		  case 2: 
 		    MIXING = int(d); 
@@ -1257,6 +1272,25 @@ int main(int argc, char *argv[]) {
 		    break;
 		  }
 #endif
+		  case 24: {
+		    if (d < 1. && d > 0.) minBR = d;
+		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 24 (should be between 0 and 1)\n";
+		    break;
+		  }
+		  case 25: {
+		    int num = int(d + EPSTOL);
+		    if (num == 0) threeBodyDecays = false;
+		    else if (num == 1) threeBodyDecays = true;
+		    else cout << "#WARNING incorrect setting for SOFTSUSY Block 25 (should be either 0 or 1)\n";
+		    break;
+		  }
+		  case 26: {
+		    int num = int(d + EPSTOL);
+		    if (num == 0) outputPartialWidths = false;
+		    else if (num == 1) outputPartialWidths = true;
+		    else cout << "#WARNING incorrect setting for SOFTSUSY Block 26 (should be either 0 or 1)\n";
+		    break;
+		  }
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "
@@ -1401,7 +1435,7 @@ int main(int argc, char *argv[]) {
 
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
-
+      if (calculateDecaysFlag) calculateDecays(r, nmssm, false);
       if (higgsUncertainties) {
 	int numPts = 30;
 	DoubleVector mh(numPts), mH(numPts), mA(numPts), mHp(numPts);
@@ -1447,6 +1481,7 @@ int main(int argc, char *argv[]) {
                    tanb, oneset, gaugeUnification, ewsbBCscale);
       nmssm.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,
                                    numPoints, ewsbBCscale);
+      if (calculateDecaysFlag) calculateDecays(r, nmssm, true);
       if (nmssm.displayProblem().test()) {
          cout << "# SOFTSUSY problem with NMSSM point: "
               << nmssm.displayProblem() << endl;

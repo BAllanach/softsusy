@@ -78,7 +78,13 @@ namespace softsusy {
     gdL = -0.5 + sw2 / 3.0, geL = -0.5 + sw2, guR = 2.0 * sw2 / 3.0,
     gdR = -sw2 / 3.0, geR = -sw2, yuL = 1.0 / 3.0, yuR = -4.0 / 3.0,
     ydL = 1.0 / 3.0, ydR = 2.0 / 3.0, yeL = -1.0, yeR = 2.0, ynuL = -1.0;
-
+  /// Default: print out branching ratios bigger than \f$10^{-6}\f$
+  double minBR = 1.0e-6;
+  /// Default: calculate three-body decays
+  bool threeBodyDecays = true;
+  /// Default: don't output partial widths in decays
+  bool outputPartialWidths = false;
+  
   /// Controls the use of MSSM three-loop RGEs
   bool USE_THREE_LOOP_RGE = false;
   

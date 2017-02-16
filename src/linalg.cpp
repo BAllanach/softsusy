@@ -1624,30 +1624,30 @@ DoubleMatrix DoubleMatrix::ludcmp(double & d) const {
   DoubleMatrix a(*this);
   int n = displayCols();
   const double tiny = 1.e-20;
-  int i,imax,j,k;
+  int i, imax, j, k;
   float big,dum,sum,temp;
   DoubleVector vv(n);
   
   d = 1.0;
-  for (i=1;i<=n;i++) {
+  for (i=1; i<=n; i++) {
     big = 0.0;
-    for (j=1;j<=n;j++)
+    for (j=1; j<=n; j++)
       if ((temp = fabs(a.elmt(i, j))) > big) big = temp;
     if (big == 0.0) throw("Singular matrix in routine ludcmp\n");
-    vv(i) = 1.0/big;
+    vv(i) = 1.0 / big;
   }
 
-  for (j=1;j<=n;j++) {
-    for (i=1;i<j;i++) {
+  for (j=1; j<=n; j++) {
+    for (i=1; i<j; i++) {
       sum = a.elmt(i, j);
       for (k=1;k<i;k++) sum -= a.elmt(i, k) * a.elmt(k, j);
       a.elmt(i, j) = sum;
     }
 
     big = 0.0;
-    for (i=j;i<=n;i++) {
+    for (i=j; i<=n; i++) {
       sum = a.elmt(i, j);
-      for (k=1;k<j;k++)
+      for (k=1; k<j; k++)
 	sum -= a.elmt(i, k) * a.elmt(k, j);
       a.elmt(i, j) = sum;
       if ( (dum=vv(i) * fabs(sum)) >= big) {
@@ -1657,7 +1657,7 @@ DoubleMatrix DoubleMatrix::ludcmp(double & d) const {
     }
 
     if (j != imax) {
-      for (k=1;k<=n;k++) {
+      for (k=1; k<=n; k++) {
 	dum = a.elmt(imax, k);
 	a.elmt(imax, k) = a.elmt(j, k);
 	a.elmt(j, k) = dum;
@@ -1678,8 +1678,7 @@ DoubleMatrix DoubleMatrix::ludcmp(double & d) const {
   return a;
 }
 
-void DoubleMatrix::fillArray(double* array, unsigned offset) const
-{
+void DoubleMatrix::fillArray(double* array, unsigned offset) const {
    ::fillArray(x, array, offset);
 }
 

@@ -31,7 +31,7 @@ CLEANFILES += $(OUTPUTFILES) *.x
 
 .PHONY: doc test updateWeb install
 
-programs: softpoint.x rpvsoftsusy.x softsusy.x softsusy-nmssm.x higher.x rpvneut.x
+programs: softpoint.x rpvsoftsusy.x softsusy.x softsusy-nmssm.x rpvneut.x
 
 updateWeb: dist 
 	scp softsusy-${VERSION}.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; 

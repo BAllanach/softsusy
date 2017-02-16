@@ -21,21 +21,22 @@
 #include "linalg.h"
 #include "rge.h"
 
+/// PDG refers to 2016 values
 namespace softsusy {
-const double MUP = 2.4e-3; ///< default running quark mass from PDG
-const double MDOWN = 4.75e-3; ///< default running quark mass from PDG
-const double MSTRANGE = 0.104; ///< default running quark mass from PDG
-const double MCHARM = 1.27; ///< default running quark mass from PDG
+const double MUP = 2.2e-3; ///< default running quark mass from PDG at 2 GeV
+const double MDOWN = 4.7e-3; ///< default running quark mass from PDG at 2 GeV
+const double MSTRANGE = 0.096; ///< default running quark mass from PDG at 2 GeV
+const double MCHARM = 1.27; ///< default running quark mass from PDG at 2 GeV
 const double MBOTTOM = 4.18; ///< default running quark mass from PDG
 const double MTOP = 165.0; ///< default running quark mass from PDG
 /// default pole lepton mass from PDG
-const double MELECTRON = 5.10998902e-4; 
-const double MMUON = 1.05658357e-1; ///< default pole lepton mass from PDG
-const double MTAU = 1.77699; ///< default pole lepton mass from PDG
-const double ALPHASMZ = 0.1184; ///< default running value from PDG
-const double ALPHAMZ = 1.0 / 127.916; ///< default running alpha(MZ) from PDG
+const double MELECTRON = 5.109989461e-4; 
+const double MMUON = 1.0565835745e-1; ///< default pole lepton mass from PDG
+const double MTAU = 1.77686; ///< default pole lepton mass from PDG
+const double ALPHASMZ = 0.1181; ///< default running value from PDG
+const double ALPHAMZ = 1.0 / 127.950; ///< default running alpha(MZ) from PDG
 
-const double PMTOP = 173.5; ///< PDG 2012
+const double PMTOP = 173.21; ///< PDG 2014
 const double PMBOTTOM = 4.9; ///< default pole mass from PDG
 /// default central values of CKM matrix elements from PDG 2006 in radians
 const double THETA12CKM = 0.229206; ///< From Vus/Vud in global CKM fit, PDG
