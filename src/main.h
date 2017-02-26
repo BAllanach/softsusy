@@ -65,6 +65,8 @@
 #include "susy.h"
 #include "utils.h"
 #include "numerics.h"
+#include "nmssmsoftsusy.h"
+#include "decays.h"
 using namespace softsusy;
 
 namespace NR {

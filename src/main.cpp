@@ -25,11 +25,6 @@ int main() {
  /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
 
-  cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
-       << " test program, Ben Allanach 2002\n";
-  cerr << "If you use SOFTSUSY, please refer to B.C. Allanach,\n";
-  cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
-
   /// Parameters used: CMSSM parameters
   double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
   int sgnMu = 1;      ///< sign of mu parameter 
@@ -48,39 +43,51 @@ int main() {
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
   cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
-       << TOLERANCE << endl << oneset << endl;
-
-  /// Print out header line
-  cout << "# tan beta   mh           mA           mH0          mH+-\n";
+       << TOLERANCE << endl;
 
   int i; 
-  /// Set limits of tan beta scan
+  /// Set limits of random scan
+  double startM0 = 1000., endM0 = 4000.;
+  double startA0 = -4000., endA0 = 4000.;
+  double startM12 = 1000., endM12 = 4000.;  
   double startTanb = 3.0, endTanb = 50.0;
+  long idum = idummySave;    
   /// Cycle through different points in the scan
   for (i = 0; i<=numPoints; i++) {
-
-    tanb = (endTanb - startTanb) / double(numPoints) * double(i) +
+    sgnMu = -1;
+    tanb = (endTanb - startTanb) * ran1(idum) +
       startTanb; // set tan beta ready for the scan.
+    double a0 = (endA0 - startA0) * ran1(idum) +
+      startA0; // set tan beta ready for the scan.
+    double m0 = (endM0 - startM0) * ran1(idum) +
+      startM0; // set tan beta ready for the scan.
+    double m12 = (endM12 - startM12) * ran1(idum) +
+      startM12; // set tan beta ready for the scan.
 
+    cout << "# M0=" << m0 << " m12=" << m12 << " a0=" << a0 << " tanb=" << tanb << " ";
+    
     /// Preparation for calculation: set up object and input parameters
-    MssmSoftsusy r; 
-
+    MssmSoftsusy * r, m; 
+    r = &m;
+    
     DoubleVector pars(3); 
     pars(1) = m0; pars(2) = m12; pars(3) = a0;
     bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
+    threeBodyDecays = true;
     
     /// Calculate the spectrum
-    r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+    r->lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
 
     /// check the point in question is problem free: if so print the output
-    if (!r.displayProblem().test()) 
-      cout << tanb << " " << r.displayPhys().mh0(1) << " " 
-           << r.displayPhys().mA0(1) << " " 
-           << r.displayPhys().mh0(2) << " " 
-           << r.displayPhys().mHpm << endl;
+    if (!r->displayProblem().test()) {
+      NmssmSoftsusy a;
+      //      r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
+      //				numPoints, ewsbBCscale);
+      calculateDecays(cout, r, a, false);
+    }
     else
       /// print out what the problem(s) is(are)
-      cout << tanb << " " << r.displayProblem() << endl;
+      cout << "#" << r->displayProblem() << endl;
   }
   }
   catch(const string & a) { cout << a; return -1; }
