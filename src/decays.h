@@ -33,7 +33,8 @@ using namespace std;
 const double accuracy = 0.01; 
 
 /// Calculate Decays does all decay table calculations and outputs
-void calculateDecays(MssmSoftsusy * r, const NmssmSoftsusy & nmssm,
+void calculateDecays(ostream & out, MssmSoftsusy * r,
+		     const NmssmSoftsusy & nmssm, 
 		     bool nmssmIsIt);
 
 
