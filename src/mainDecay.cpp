@@ -96,9 +96,9 @@ int main() {
       
       /// now, you've got to pass the output through PYTHIA and work out if it
       /// works alright
-      char buff[500] = "mv tests ../pythia8186/examples/lesHouchesOutput; cd ../pythia8186/examples; rm pyOut; ./main24.exe > pyOut; cat pyOut | grep 'SLHA::readFile' >> ../../softsusy/pyErrors";
+      char buff[500] = "mv tests ../pythia8186/examples/lesHouchesOutput; cd ../pythia8186/examples; rm pyOut; ./main24.exe > pyOut; cat pyOut | grep 'SLHA::readFile' >> ../../softsusy/pyErrors; cd ../../softsusy";
       
-      if (system(buff)) throw("Problem: error in PYTHIA run\n");
+      if (system(buff)) throw("Problem: error in PYTHIA // run\n");
       exit(0);
     }
     else {
