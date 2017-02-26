@@ -30,7 +30,7 @@ int main() {
   /// Parameters used: CMSSM parameters
   double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
   int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 10; ///< number of scan points
+  int numPoints = 100; ///< number of scan points
 
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
 

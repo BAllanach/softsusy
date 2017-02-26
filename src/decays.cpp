@@ -12361,8 +12361,13 @@ double gchidgauss (double Et) {
   if (squareplus < 0 && fabs(squareplus) < checkAgainstNeg) {
     squareplus = 0; ///avoid numerical error giving a negative and hence a nan for lambda at upper boundary of integration range
   }
+  if (squareminus < 0 && fabs(squareminus) < checkAgainstNeg) {
+    squareminus = 0; ///avoid numerical error giving a negative and hence a nan for lambda at upper boundary of integration range
+  }
   lambda = pow(squareplus*squareminus,0.5);
   if (lambda != lambda) {
+    cout << "A=" << A << "squareplus=" << squareplus << " squareminus="
+	 << squareminus << " m1="<< m1 << " mq=" << mq << endl;
     throw("nan in lambda in gchidgauss\n");
   }
   pt = pow(pow(Et,2) - pow(mq,2),0.5);
