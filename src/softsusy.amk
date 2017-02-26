@@ -6,10 +6,13 @@ bin_PROGRAMS += softsusy.x \
                 softsusy-nmssm.x \
                 softpoint.x \
                 rpvsoftsusy.x \
-                rpvneut.x 
+                rpvneut.x testDecay.x
 
 softsusy_x_SOURCES = src/main.cpp 
 softsusy_x_LDADD = libsoft.la 
+
+testDecay_x_SOURCES = src/mainDecay.cpp 
+testDecay_x_LDADD = libsoft.la 
 
 softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp 
 softsusy_nmssm_x_LDADD = libsoft.la
@@ -68,7 +71,7 @@ endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
 pkginclude_HEADERS += \
 $(addprefix src/, \
 decays.h threeBodyDecays.h particle.h \
-def.h main.h numerics.h \
+def.h main.h mainDecay.h numerics.h \
 softpars.h susy.h linalg.h \
 physpars.h softpoint.h twoloophiggs.h \
 nmssm2loop.h dilogwrap.h \
