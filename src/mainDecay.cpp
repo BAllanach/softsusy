@@ -21,6 +21,8 @@ int main() {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
+  TOLERANCE = 1.0e-3;
+  
   try {
     /// Sets format of output: 6 decimal places
     outputCharacteristics(6);
@@ -28,7 +30,7 @@ int main() {
   /// Parameters used: CMSSM parameters
   double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
   int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 0; ///< number of scan points
+  int numPoints = 10; ///< number of scan points
 
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
 
@@ -96,10 +98,9 @@ int main() {
       
       /// now, you've got to pass the output through PYTHIA and work out if it
       /// works alright
-      char buff[500] = "mv tests ../pythia8186/examples/lesHouchesOutput; cd ../pythia8186/examples; rm pyOut; ./main24.exe > pyOut; cat pyOut | grep 'SLHA::readFile' >> ../../softsusy/pyErrors; cd ../../softsusy";
+      char buff[500] = "cp tests ../pythia8186/examples/lesHouchesOutput; cd ../pythia8186/examples; rm pyOut; ./main24.exe > pyOut; cat pyOut | grep 'SLHA::readFile' >> ../../softsusy/pyErrors; cd ../../softsusy";
       
       if (system(buff)) throw("Problem: error in PYTHIA // run\n");
-      exit(0);
     }
     else {
       /// print out what the problem(s) is(are)
