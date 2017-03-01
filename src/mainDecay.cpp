@@ -70,9 +70,6 @@ int main() {
     double m12 = (endM12 - startM12) * ran1(idum) +
       startM12; // set tan beta ready for the scan.
 
-    cout << "# M0=" << m0 << " m12=" << m12 << " a0=" << a0 << " tanb="
-	 << tanb << endl;
-    
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy * r, m; 
     r = &m;
@@ -90,9 +87,13 @@ int main() {
       NmssmSoftsusy a;
       const char* modelIdent = "sugra"; double qMax = 0.; int num = 1;
       bool ewsbBCscale = false;
-      fout.precision(10);
+
       r->lesHouchesAccordOutput(fout, modelIdent, pars, sgnMu, tanb, qMax,  
 				num, ewsbBCscale);
+      fout.precision(10);
+      fout << "# M0=" << m0 << " m12=" << m12 << " a0=" << a0 << " tanb="
+	 << tanb << endl;
+          
       calculateDecays(fout, r, a, false);
       fout.close();
       

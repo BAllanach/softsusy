@@ -10,9 +10,9 @@
 #include "def.h"
 
 /// global variable declaration
-/// no quark mixing (dominant third family approx), and no verbose output
 namespace softsusy {
-  int MIXING = 1, PRINTOUT = 0;
+/// no quark mixing (dominant third family approx), and no verbose output
+  int MIXING = -1, PRINTOUT = 0;
   /// fractional accuracy required - may need to make smaller for accurate
   /// neutrino masses
   double TOLERANCE = 1.0e-4;
