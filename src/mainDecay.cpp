@@ -88,13 +88,16 @@ int main() {
       const char* modelIdent = "sugra"; double qMax = 0.; int num = 1;
       bool ewsbBCscale = false;
 
-      r->lesHouchesAccordOutput(fout, modelIdent, pars, sgnMu, tanb, qMax,  
-				num, ewsbBCscale);
+      //      r->lesHouchesAccordOutput(fout, modelIdent, pars, sgnMu, tanb, qMax,  
+      //				num, ewsbBCscale);
+      r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
+				num, ewsbBCscale);      
       fout.precision(10);
       fout << "# M0=" << m0 << " m12=" << m12 << " a0=" << a0 << " tanb="
 	 << tanb << endl;
           
-      calculateDecays(fout, r, a, false);
+      //      calculateDecays(fout, r, a, false);
+      //      calculateDecays(r, a, false);      
       fout.close();
       
       /// now, you've got to pass the output through PYTHIA and work out if it
