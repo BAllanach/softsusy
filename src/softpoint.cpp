@@ -115,7 +115,9 @@ int main(int argc, char *argv[]) {
   softsusy::GUTmuPrime = true;
   softsusy::GUTxiF = true;
   softsusy::GUTsVev = true;
-
+  double m0 = 0., m12 = 0., a0 = 0., m32 = 0., mMess = 0., n5 = 0.,
+    LAMBDA = 0., cgrav = 1.;
+	
   try {
   if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
     cerr << "SOFTSUSY" << SOFTSUSY_VERSION << endl;
@@ -151,60 +153,66 @@ int main(int argc, char *argv[]) {
   const char* modelIdent = "";
 
   bool compilationProblem = false;
+
+  int badArg = 0;
   
   /// Non model specific options
   if (strcmp(argv[1], "leshouches")) {
-      for (int i = 2; i < argc; i++) {
-	if (starts_with(argv[i],"--mbmb=")) {
-	  double mbIn = get_value(argv[i], "--mbmb=");
-	  oneset.setMbMb(mbIn);
-	}
-	else if (starts_with(argv[i],"--higgsUncertainties")) 
-	  higgsUncertainties = true;
-	else if (starts_with(argv[i],"--decays"))
-	  calculateDecaysFlag = true;
-	else if (starts_with(argv[i],"--outputPartialWidths"))
-	  outputPartialWidths = true;
-	else if (starts_with(argv[i],"--minBR="))
-	  minBR = get_value(argv[i], "--minBR=");
-	else if (starts_with(argv[i],"--dontCalculateThreeBody"))
-	  threeBodyDecays = false;
-	else if (starts_with(argv[i],"--tol=")) 
-	  TOLERANCE = get_value(argv[i], "--tol=");
-	else if (starts_with(argv[i],"--mt=")) 
-	  oneset.setPoleMt(get_value(argv[i], "--mt="));
-	else if (starts_with(argv[i],"--alpha_s="))
-	  oneset.setAlpha(ALPHAS, get_value(argv[i], "--alpha_s="));      
-	else if (starts_with(argv[i],"--alpha_inverse="))
-	  oneset.setAlpha(ALPHA, 1.0 / get_value(argv[i],"--alpha_inverse="));
-	else if (starts_with(argv[i],"--RPV")) 
-	  RPVflag = true;
-	else if (starts_with(argv[i], "--tanBeta=")) 
-	  tanb = get_value(argv[i], "--tanBeta=");
-	else if (starts_with(argv[i], "--sgnMu=")) 
-	  sgnMu = get_valuei(argv[i], "--sgnMu=");
-	else if (starts_with(argv[i], "--mgut=")) 
-	  mgutGuess = mgutCheck(argv[i], gaugeUnification, ewsbBCscale); 
-	else if (starts_with(argv[i], "--disable-two-loop-susy-thresholds")) {
+    for (int i = 2; i < argc; i++) { ///< cycle through arguments
+      badArg = 0;
+      if (starts_with(argv[i],"--mbmb=")) {
+	double mbIn = get_value(argv[i], "--mbmb=");
+	oneset.setMbMb(mbIn);
+      }
+      else if (starts_with(argv[i],"--mtau=")) {
+	double mtauIn = get_value(argv[i], "--mtau=");
+	oneset.setPoleMtau(mtauIn);
+      } else if (starts_with(argv[i],"--higgsUncertainties")) 
+	higgsUncertainties = true;
+      else if (starts_with(argv[i],"--decays"))
+	calculateDecaysFlag = true;
+      else if (starts_with(argv[i],"--outputPartialWidths"))
+	outputPartialWidths = true;
+      else if (starts_with(argv[i],"--minBR="))
+	minBR = get_value(argv[i], "--minBR=");
+      else if (starts_with(argv[i],"--dontCalculateThreeBody"))
+	threeBodyDecays = false;
+      else if (starts_with(argv[i],"--tol=")) 
+	TOLERANCE = get_value(argv[i], "--tol=");
+      else if (starts_with(argv[i],"--mt=")) 
+	oneset.setPoleMt(get_value(argv[i], "--mt="));
+      else if (starts_with(argv[i],"--alpha_s="))
+	oneset.setAlpha(ALPHAS, get_value(argv[i], "--alpha_s="));      
+      else if (starts_with(argv[i],"--alpha_inverse="))
+	oneset.setAlpha(ALPHA, 1.0 / get_value(argv[i],"--alpha_inverse="));
+      else if (starts_with(argv[i],"--RPV")) 
+	RPVflag = true;
+      else if (starts_with(argv[i], "--tanBeta=")) 
+	tanb = get_value(argv[i], "--tanBeta=");
+      else if (starts_with(argv[i], "--sgnMu=")) 
+	sgnMu = get_valuei(argv[i], "--sgnMu=");
+      else if (starts_with(argv[i], "--mgut=")) 
+	mgutGuess = mgutCheck(argv[i], gaugeUnification, ewsbBCscale); 
+      else if (starts_with(argv[i], "--disable-two-loop-susy-thresholds")) {
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-	  USE_TWO_LOOP_GAUGE_YUKAWA = false;
-	  m.setAllTwoLoopThresholds(false);
+	USE_TWO_LOOP_GAUGE_YUKAWA = false;
+	m.setAllTwoLoopThresholds(false);
 #else
-	  compilationProblem = true;
-	  cout << "Two-loop thresholds not compiled.\n";
-	  cout << "Please use the --two-loop-gauge-yukawa with the configure option.\n";
-	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
+	compilationProblem = true;
+	cout << "Two-loop thresholds not compiled.\n";
+	cout << "Please use the --two-loop-gauge-yukawa with the configure option.\n";
+	cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
 #endif
-	}
-	else if (starts_with(argv[i], "--two-loop-gauge-yukawa")) {
+      }
+      else if (starts_with(argv[i], "--two-loop-gauge-yukawa")) {
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-	  USE_TWO_LOOP_GAUGE_YUKAWA = true;
-	  m.setAllTwoLoopThresholds(true);
+	USE_TWO_LOOP_GAUGE_YUKAWA = true;
+	m.setAllTwoLoopThresholds(true);
 #else
-	  compilationProblem = true;
-	  cout << "Two-loop thresholds not compiled.\n";
-	  cout << "Please use the --enable-two-loop-susy-thresholds with the configure option.\n";
-	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
+	compilationProblem = true;
+	cout << "Two-loop thresholds not compiled.\n";
+	cout << "Please use the --enable-two-loop-susy-thresholds with the configure option.\n";
+	cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
 #endif
 	}
 	else if (starts_with(argv[i], "--disable-three-loop-rges")) {
@@ -226,8 +234,6 @@ int main(int argc, char *argv[]) {
 	  cout << "Please use the --enable-three-loop-rges with ./configure\n";
 #endif
 	}
-
-
 	else if (starts_with(argv[i], "--disable-two-loop-sparticle-mass")) {
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 	  USE_TWO_LOOP_SPARTICLE_MASS = false;
@@ -257,18 +263,42 @@ int main(int argc, char *argv[]) {
 	}
 	  else if (starts_with(argv[i], "--QEWSB=")) 
 	    QEWSB = get_value(argv[i], "--QEWSB=");
-      }
-      if (compilationProblem) exit(-1);
-      if (tanb < 1.5 || tanb > 70.) {
-	ostringstream ii; 
-	ii << "tanBeta=" << tanb 
-	   << " in SUGRA input. The point will not yield a sensible answer\n";
-	throw ii.str();
-      }
+	  else if (starts_with(argv[i], "--m0="))
+	    { m0 = get_value(argv[i], "--m0="); }
+	  else if (starts_with(argv[i], "--m12=")) 
+	    { m12 = get_value(argv[i], "--m12="); }
+	  else if (starts_with(argv[i], "--a0="))
+	    { a0  = get_value(argv[i], "--a0="); }
+	  else if (starts_with(argv[i], "--m32=")) 
+	    { m32 = get_value(argv[i], "--m32="); }
+	  else if (starts_with(argv[i], "--n5="))
+	    n5 = get_value(argv[i], "--n5=");
+	  else if (starts_with(argv[i], "--mMess=")) { 
+	    gaugeUnification = false; 
+	    mMess = get_value(argv[i], "--mMess=");
+	    mgutGuess = mMess;
+	  }
+	  else if (starts_with(argv[i], "--LAMBDA=")) 
+	    { LAMBDA = get_value(argv[i], "--LAMBDA="); }
+	  else if (starts_with(argv[i], "--cgrav=")) 
+	    { cgrav = get_value(argv[i], "--cgrav="); }
+
+	  else badArg = i;
+      if (badArg != 0) cout << "Didn't understand argument " << argv[i] << endl;
+    } /// main arg loop
+
+
+    if (compilationProblem) exit(-1);
+    if (tanb < 1.5 || tanb > 70.) {
+      ostringstream ii; 
+      ii << "tanBeta=" << tanb 
+	 << " in SUGRA input. The point will not yield a sensible answer\n";
+      throw ii.str();
+    }
       
       /// Pass through to see if there are any RPV options
-      if (strcmp(argv[1], "nmssm")) {
-        for (int i = 2; i < argc; i++) {
+      if (strcmp(argv[1], "nmssm")) { 
+        for (int i = 2; i < argc; i++) { ///< nmssm loop through args
           if (starts_with(argv[i], "--lambda")) {
             if (i + 4 >= argc) {
               throw "ERROR: three indices and one value need to be provided"
@@ -280,11 +310,11 @@ int main(int argc, char *argv[]) {
             int k = int(atof(argv[i+3]));
             double d = atof(argv[i+4]);
             if (starts_with(argv[i], "--lambdaPP"))
-              kw.setLambda(LU, ii, j, k, d);
+              { kw.setLambda(LU, ii, j, k, d); }
             else if (starts_with(argv[i], "--lambdaP"))
-              kw.setLambda(LD, k, ii, j, d);
+              { kw.setLambda(LD, k, ii, j, d); }
             else if (starts_with(argv[i], "--lambda"))
-              kw.setLambda(LE, k, ii, j, d);
+              { kw.setLambda(LE, k, ii, j, d); }
           }
           if (starts_with(argv[i], "--kappa")) {
             if (i + 2 >= argc) {
@@ -296,7 +326,7 @@ int main(int argc, char *argv[]) {
             kw.setKappa(ii, d);
             RPVflag = true;
           }
-        }
+	} ///< going through nmssm arguments
       }
       
       /// Model specific options
@@ -304,14 +334,7 @@ int main(int argc, char *argv[]) {
 	cout << "# SOFTSUSY SUGRA calculation" << endl;
 	boundaryCondition = &sugraBcs;
 	modelIdent = "sugra";
-	double m0 = 0., m12 = 0., a0 = 0.;
-	for (int i = 2; i < argc; i++) {
-	  if (starts_with(argv[i], "--m0=")) m0 = get_value(argv[i], "--m0=");
-	  else if (starts_with(argv[i], "--m12=")) 
-	    m12 = get_value(argv[i], "--m12=");
-	  else if (starts_with(argv[i], "--a0="))
-	    a0  = get_value(argv[i], "--a0=");
-	}
+
 	pars(1) = m0; pars(2) = m12; pars(3) = a0;      
 	if (m12 < MZ) {
 	  ostringstream ii; 
@@ -326,13 +349,7 @@ int main(int argc, char *argv[]) {
 	cout << "# SOFTSUSY mAMSB calculation" << endl;
 	boundaryCondition = &amsbBcs;
 	modelIdent = "amsb";
-	double m0 = 0., m32 = 0.;
-	for (int i = 2; i < argc; i++) {
-	  if (starts_with(argv[i], "--m0=")) 
-	    m0 = get_value(argv[i], "--m0=");
-	  else if (starts_with(argv[i], "--m32=")) 
-	    m32 = get_value(argv[i], "--m32=");
-	}
+
 	pars(1) = m32; pars(2) = m0; 
 	if (m32 < 1.0e3) {
 	  ostringstream ii; 
@@ -347,20 +364,6 @@ int main(int argc, char *argv[]) {
 	cout << "# SOFTSUSY mGMSB calculation" << endl;
 	boundaryCondition = &gmsbBcs;
 	modelIdent = "gmsb";
-	double n5 = 0., mMess = 0., LAMBDA = 0., cgrav = 1.;
-	for (int i = 2; i < argc; i++) {
-	  if (starts_with(argv[i], "--n5=")) n5 = get_value(argv[i], "--n5=");
-	  else if (starts_with(argv[i], "--mMess=")) { 
-	    gaugeUnification = false; 
-	    mMess = get_value(argv[i], "--mMess=");
-	    mgutGuess = mMess;
-	  }
-	  else if (starts_with(argv[i], "--LAMBDA=")) 
-	    LAMBDA = get_value(argv[i], "--LAMBDA=");
-	  else if (starts_with(argv[i], "--cgrav=")) 
-	    cgrav = get_value(argv[i], "--cgrav=");
-	}
-	
 	pars.setEnd(4);
 	pars(1) = n5; pars(2) = mMess; pars(3) = LAMBDA; pars(4) = cgrav;
 	if (mMess < 1.0e3) {
@@ -383,15 +386,16 @@ int main(int argc, char *argv[]) {
 	     << " equal to 1 (you can use 1 as a default value).\n";
 	  throw ii.str();
 	}
-      }
-    }
-    if (!strcmp(argv[1], "nmssm")) {
+      } 
+  } ///< not leshouches file
+  if (!strcmp(argv[1], "nmssm")) {
       susy_model = NMSSM;
       NMSSM_command_line_parser nmssm_parser(&nmssm_input);
       nmssm_parser.parse(argc, argv);
       modelIdent = nmssm_parser.get_modelIdent();
       pars = nmssm_parser.get_pars();
-    }
+      badArg = 0; ///< Currently not checking NMSSM
+  }
     
   if (!strcmp(argv[1], "leshouches")) {
 	/// SLHA option "leshouches" used.
@@ -461,13 +465,13 @@ int main(int argc, char *argv[]) {
                   case 3: { int i; kk >> i;
                       switch(i) {
                       case 0: susy_model = MSSM; // default
-                         break;
+			break;
                       case 1: susy_model = NMSSM;
-                         if (flavourViolation) {
+			if (flavourViolation) {
                             flavourViolation = false;
                             cout << "# Warning: flavour violation is currtently"
                                " not supported in the NMSSM\n";
-                         }
+			}
                          break;
                       default:
                          ostringstream ii;
@@ -587,8 +591,8 @@ int main(int argc, char *argv[]) {
 		    case 2: // GMSB inputs
 		      switch(i) {
 		      case 1: pars(3) = d; break;
-		    case 2: pars(2) = d; mgutGuess = d;
-		      gaugeUnification = false; break;
+		      case 2: pars(2) = d; mgutGuess = d;
+			gaugeUnification = false; break;
 		      case 5: pars(1) = d; break;
 		      case 6: pars(4) = d; break;
 		      default: 
@@ -602,8 +606,8 @@ int main(int argc, char *argv[]) {
 		      case 2: pars(1) = d; break;
 		      default: 
 			ostringstream ii;
-		      ii << "Didn't understand AMSB input " << i << endl;
-		      break;
+			ii << "Didn't understand AMSB input " << i << endl;
+			break;
 		      } break;
 		    case 4: ///< split GMSB inputs 
 		      switch(i) {
@@ -625,8 +629,8 @@ int main(int argc, char *argv[]) {
 		      } break;
 		    default: 
 		      ostringstream ii;
-		    ii << "Didn't understand model input " << model << endl;
-		    break;
+		      ii << "Didn't understand model input " << model << endl;
+		      break;
 		    }
 		    break;
 		  }
@@ -634,7 +638,7 @@ int main(int argc, char *argv[]) {
 		// Adding non-minimal options. 
 		else if (block == "EXTPAR") {
                   int i; double d; kk >> i >> d;
-
+		  
                   // read extra NMSSM input parameters from EXTPAR
                   // (skipping NMSSM parameters if the MSSM was selected)
                   if (susy_model == MSSM) {
@@ -768,48 +772,49 @@ int main(int argc, char *argv[]) {
 			if (pars.displayEnd() < 49) pars.setEnd(49);
 			pars(i) = d;
                         if (susy_model == NMSSM) {
-                           if (pars.displayEnd() < 56) pars.setEnd(56);
-                           switch (i) {
-                           case 21: nmssm_input.set(NMSSM_input::mHd2, d); break;
-                           case 22: nmssm_input.set(NMSSM_input::mHu2, d); break;
-                           case 23:
-                             nmssm_input.set(NMSSM_input::mu, d);
-                             pars(54) = d;
-                             break;
-                           }
+			  if (pars.displayEnd() < 56) pars.setEnd(56);
+			  switch (i) {
+			  case 21: nmssm_input.set(NMSSM_input::mHd2, d); break;
+			  case 22: nmssm_input.set(NMSSM_input::mHu2, d); break;
+			  case 23:
+			    nmssm_input.set(NMSSM_input::mu, d);
+			    pars(54) = d;
+			    break;
+			  }
                         }
   		      } else if ((61 <= i && i <= 70) || i == 24) {
 			if (pars.displayEnd() < 56) pars.setEnd(56);
                         switch (i) {
                         case 24:
-                           nmssm_input.set(NMSSM_input::BmuOverCosBetaSinBeta, d);
-                           pars(55) = d;
-                           break;
+			  nmssm_input.set(NMSSM_input::BmuOverCosBetaSinBeta, d);
+			  pars(55) = d;
+			  break;
                         case 63:
-                           nmssm_input.set(NMSSM_input::Alambda, d);
-                           pars(50) = d;
-                           break;
+			  nmssm_input.set(NMSSM_input::Alambda, d);
+			  pars(50) = d;
+			  break;
                         case 64:
-                           nmssm_input.set(NMSSM_input::Akappa, d);
-                           pars(51) = d;
-                           break;
+			  nmssm_input.set(NMSSM_input::Akappa, d);
+			  pars(51) = d;
+			  break;
                         case 67:
-                           nmssm_input.set(NMSSM_input::xiS, d);
-                           pars(56) = d;
-                           break;
+			  nmssm_input.set(NMSSM_input::xiS, d);
+			  pars(56) = d;
+			  break;
                         case 69:
-                           nmssm_input.set(NMSSM_input::mPrimeS2, d);
-                           // setting pars(52) = B' = mS'^2 / mu'
-                           if (nmssm_input.is_set(NMSSM_input::muPrime)) {
-                              const double muPrime = nmssm_input.get(NMSSM_input::muPrime);
-                              if (!close(muPrime, 0.0, EPSTOL))
-                                 pars(52) = d / muPrime;
-                           }
-                           break;
+			  nmssm_input.set(NMSSM_input::mPrimeS2, d);
+			  // setting pars(52) = B' = mS'^2 / mu'
+			  if (nmssm_input.is_set(NMSSM_input::muPrime)) {
+			    const double muPrime =
+			      nmssm_input.get(NMSSM_input::muPrime);
+			    if (!close(muPrime, 0.0, EPSTOL))
+			      pars(52) = d / muPrime;
+			  }
+			  break;
                         case 70:
-                           nmssm_input.set(NMSSM_input::mS2, d);
-                           pars(53) = d;
-                           break;
+			  nmssm_input.set(NMSSM_input::mS2, d);
+			  pars(53) = d;
+			  break;
                         }
                       } else {
                         cout << "# WARNING: did not understand parameter " 
@@ -1300,17 +1305,16 @@ int main(int argc, char *argv[]) {
 		else {
 		  cout << "# WARNING: don't recognise block " << block 
 		       << ": ignoring all data in it" << endl;
-		}
-		// end if blocks
+		} // end if blocks
 	      
 	      } // end of data
 	    } // end of no-comment
             
-	} // end of file
+	  } // end of file
           
         }
 	else errorCall();
-      }
+  }
 
       /// prepare CKM angles
       if (flavourViolation || RPVflag) k.setAngles(lambdaW, aCkm, rhobar, 
