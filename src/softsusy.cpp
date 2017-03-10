@@ -9689,12 +9689,12 @@ void MssmSoftsusy::neutralinoCharginoMSLHA(ostream & out) {
   out << "   # ~neutralino(1)\n";
   out << "   1000023    "; printRow(out, s.mneut(2)); 
   out << "   # ~neutralino(2)\n";
-  out << "   1000024    "; printRow(out, s.mch(1)); out << "   # ~chargino(1)\n";
+  out << "   1000024    "; printRow(out, fabs(s.mch(1))); out << "   # ~chargino(1)\n";
   out << "   1000025    "; printRow(out, s.mneut(3));
   out << "   # ~neutralino(3)\n";
   out << "   1000035    "; printRow(out, s.mneut(4));
   out << "   # ~neutralino(4)\n";
-  out << "   1000037    "; printRow(out, s.mch(2)); out << "   # ~chargino(2)\n";
+  out << "   1000037    "; printRow(out, fabs(s.mch(2))); out << "   # ~chargino(2)\n";
 }
 
 void MssmSoftsusy::massSLHA(ostream & out) {
