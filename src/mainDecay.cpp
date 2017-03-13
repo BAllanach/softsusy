@@ -16,6 +16,9 @@
 #include "mainDecay.h"
 
 using namespace softsusy;
+/// switch on if you're trying to get it through PYTHIA; off otherwise
+const bool PYTHIA = true;
+const bool GMSB = true;
 
 int main() {
   /// Sets up exception handling
@@ -27,10 +30,11 @@ int main() {
     /// Sets format of output: 6 decimal places
     outputCharacteristics(6);
 
+    void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=sugraBcs;
   /// Parameters used: CMSSM parameters
   double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
   int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 1000; ///< number of scan points
+  int numPoints = 100; ///< number of scan points
 
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
 
@@ -48,7 +52,11 @@ int main() {
        << TOLERANCE << endl;
 
   int i; 
+
   /// Set limits of random scan
+  int startn5 = 1, endn5 = 5;
+  double startMmess = 1.0e5, endMmess = 1.0e6;
+  double startx = 0.01, endx = 0.99;
   double startM0 = 1000., endM0 = 4000.;
   double startA0 = -4000., endA0 = 4000.;
   double startM12 = 1000., endM12 = 4000.;  
@@ -69,6 +77,12 @@ int main() {
       startM0; // set tan beta ready for the scan.
     double m12 = (endM12 - startM12) * ran1(idum) +
       startM12; // set tan beta ready for the scan.
+    double mMess = (endMmess - startMmess) * ran1(idum) +
+      startMmess; // set mMess ready for the scan
+    int    n5 = (endn5 - startn5) * ran1(idum) +
+      startn5; // set n5 ready for the scan
+    double x = (endx - startx) * ran1(idum) + startx;
+    double lambda = x * mMess;
 
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy * r, m; 
@@ -77,33 +91,48 @@ int main() {
     DoubleVector pars(3); 
     pars(1) = m0; pars(2) = m12; pars(3) = a0;
     bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
+    const char* modelIdent = "sugra"; 
+
+    if (GMSB) {
+      uni = false; 
+      mGutGuess = mMess;
+      boundaryCondition = &gmsbBcs;
+      modelIdent = "gmsb";
+      pars.setEnd(4);
+      pars(1) = n5; pars(2) = mMess; pars(3) = lambda; pars(4) = 1.;
+    }
     threeBodyDecays = true;
-    
+
     /// Calculate the spectrum
-    r->lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+    r->lowOrg(boundaryCondition, mGutGuess, pars, sgnMu, tanb, oneset, uni);
 
     /// check the point in question is problem free: if so print the output
     if (!r->displayProblem().test()) {
       NmssmSoftsusy a;
-      const char* modelIdent = "sugra"; double qMax = 0.; int num = 1;
+      double qMax = 0.; int num = 1;
       bool ewsbBCscale = false;
 
-      //      r->lesHouchesAccordOutput(fout, modelIdent, pars, sgnMu, tanb, qMax,  
-      //				num, ewsbBCscale);
-      r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
-				num, ewsbBCscale);      
-      cout.precision(10);
+      if (PYTHIA) 
+	r->lesHouchesAccordOutput(fout, modelIdent, pars, sgnMu, tanb, qMax,  
+				  num, ewsbBCscale);
+      else {
+	r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
+				  num, ewsbBCscale);      
+	cout.precision(10);
+      }
       cout << "# M0=" << m0 << " m12=" << m12 << " a0=" << a0 << " tanb="
 	 << tanb << endl;
           
-      //      calculateDecays(fout, r, a, false);
-      calculateDecays(cout, r, a, false);      
+      if (PYTHIA) calculateDecays(fout, r, a, false);
+      else calculateDecays(cout, r, a, false);      
       
       /// now, you've got to pass the output through PYTHIA and work out if it
       /// works alright
-      /*      char buff[500] = "cp tests ../pythia8186/examples/lesHouchesOutput; cd ../pythia8186/examples; rm pyOut; ./main24.exe > pyOut; cat pyOut | grep 'SLHA::readFile' >> ../../softsusy/pyErrors; cd ../../softsusy";
+      if (PYTHIA) {
+	char buff[500] = "cp tests ../pythia8186/examples/lesHouchesOutput; cd ../pythia8186/examples; rm pyOut; ./main24.exe > pyOut; cat pyOut >> ../../softsusy/pyOut; cd ../../softsusy";
       
-	      if (system(buff)) throw("Problem: error in PYTHIA // run\n");*/
+	if (system(buff)) throw("Problem: error in PYTHIA // run\n");
+      }
     }
     else {
       /// print out what the problem(s) is(are)
