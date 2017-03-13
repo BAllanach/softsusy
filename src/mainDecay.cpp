@@ -92,19 +92,18 @@ int main() {
       //				num, ewsbBCscale);
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				num, ewsbBCscale);      
-      fout.precision(10);
-      fout << "# M0=" << m0 << " m12=" << m12 << " a0=" << a0 << " tanb="
+      cout.precision(10);
+      cout << "# M0=" << m0 << " m12=" << m12 << " a0=" << a0 << " tanb="
 	 << tanb << endl;
           
       //      calculateDecays(fout, r, a, false);
-      //      calculateDecays(r, a, false);      
-      fout.close();
+      calculateDecays(cout, r, a, false);      
       
       /// now, you've got to pass the output through PYTHIA and work out if it
       /// works alright
-      char buff[500] = "cp tests ../pythia8186/examples/lesHouchesOutput; cd ../pythia8186/examples; rm pyOut; ./main24.exe > pyOut; cat pyOut | grep 'SLHA::readFile' >> ../../softsusy/pyErrors; cd ../../softsusy";
+      /*      char buff[500] = "cp tests ../pythia8186/examples/lesHouchesOutput; cd ../pythia8186/examples; rm pyOut; ./main24.exe > pyOut; cat pyOut | grep 'SLHA::readFile' >> ../../softsusy/pyErrors; cd ../../softsusy";
       
-      if (system(buff)) throw("Problem: error in PYTHIA // run\n");
+	      if (system(buff)) throw("Problem: error in PYTHIA // run\n");*/
     }
     else {
       /// print out what the problem(s) is(are)

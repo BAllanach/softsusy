@@ -1439,8 +1439,8 @@ int main(int argc, char *argv[]) {
 
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
-      //      if (calculateDecaysFlag) calculateDecays(cout, r, nmssm, false);
-      if (calculateDecaysFlag) calculateDecays(r, nmssm, false);
+      if (calculateDecaysFlag) calculateDecays(cout, r, nmssm, false);
+      //    if (calculateDecaysFlag) calculateDecays(r, nmssm, false);
       if (higgsUncertainties) {
 	int numPts = 30;
 	DoubleVector mh(numPts), mH(numPts), mA(numPts), mHp(numPts);
@@ -1487,7 +1487,7 @@ int main(int argc, char *argv[]) {
       nmssm.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,
                                    numPoints, ewsbBCscale);
       //      if (calculateDecaysFlag) calculateDecays(cout, r, nmssm, true);
-      if (calculateDecaysFlag) calculateDecays(r, nmssm, true);
+      if (calculateDecaysFlag) calculateDecays(cout, r, nmssm, true);
       if (nmssm.displayProblem().test()) {
          cout << "# SOFTSUSY problem with NMSSM point: "
               << nmssm.displayProblem() << endl;
