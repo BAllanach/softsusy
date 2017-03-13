@@ -30,7 +30,7 @@ int main() {
   /// Parameters used: CMSSM parameters
   double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
   int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 100; ///< number of scan points
+  int numPoints = 1000; ///< number of scan points
 
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
 
@@ -60,7 +60,7 @@ int main() {
   
   /// Cycle through different points in the scan
   for (i = 0; i<=numPoints; i++) {
-    sgnMu = -1;
+    sgnMu = 1;
     tanb = (endTanb - startTanb) * ran1(idum) +
       startTanb; // set tan beta ready for the scan.
     double a0 = (endA0 - startA0) * ran1(idum) +
