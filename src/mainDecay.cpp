@@ -17,7 +17,7 @@
 
 using namespace softsusy;
 /// switch on if you're trying to get it through PYTHIA; off otherwise
-const bool PYTHIA = true;
+const bool PYTHIA = false;
 const bool GMSB = true;
 
 int main() {
@@ -69,6 +69,7 @@ int main() {
   /// Cycle through different points in the scan
   for (i = 0; i<=numPoints; i++) {
     sgnMu = 1;
+    
     tanb = (endTanb - startTanb) * ran1(idum) +
       startTanb; // set tan beta ready for the scan.
     double a0 = (endA0 - startA0) * ran1(idum) +
@@ -94,13 +95,17 @@ int main() {
     const char* modelIdent = "sugra"; 
 
     if (GMSB) {
+      cout << "# Mmess=" << mMess << " n5=" << n5 << "lambda = " << lambda << "tanbeta=" << tanb; 
       uni = false; 
       mGutGuess = mMess;
       boundaryCondition = &gmsbBcs;
       modelIdent = "gmsb";
       pars.setEnd(4);
       pars(1) = n5; pars(2) = mMess; pars(3) = lambda; pars(4) = 1.;
-    }
+    } else
+    cout << "# M0=" << m0 << " m12=" << m12 << " a0=" << a0 << " tanb="
+	 << tanb << endl;
+      
     threeBodyDecays = true;
 
     /// Calculate the spectrum
@@ -124,8 +129,6 @@ int main() {
 	cout.precision(10);
 
      }
-      cout << "# M0=" << m0 << " m12=" << m12 << " a0=" << a0 << " tanb="
-	 << tanb << endl;
           
       if (PYTHIA) calculateDecays(fout, r, a, false);
       else calculateDecays(cout, r, a, false);      
