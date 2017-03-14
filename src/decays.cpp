@@ -487,9 +487,6 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
 
   }
 
- 
-
-
   ///gravitino stuff
   double mgravitino = r->displayGravitino();
   // mgravitino = 5.92500000e-08; ///Doesn't affect functions lsp(m,posi,posj) or nlsp(m,posi,posj) therefore these will read out the lsp and nlsp incorrectly with these, just use to test gravitino decay formulae.
@@ -506,8 +503,9 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
   
   ///Using the nlsp function from softsusy.cpp, Returns a label which says which particle is NLSP, 0 means NLSP is neutralino, 1=up squark, 2=down squark, 3=sleptons, 4=charginos, 5=sneutrinos, 6=gluino. Uncomment this if you only want the NLSP decays to the LSP gravitino to be considered, note one potential issue with this is particles only slightly heavier than the NLSP may still have only the decay to the LSPgravitino available and this function doesn't take account of this. If this section below is commented all SUSY decays to the LSP gravitino are considered and then they are not output if there BRs are less than 10^-15
   NLSP = r->nlsp(m, posi, posj); 
+  // cout << "NLSP = " << NLSP << endl;
   // NLSP = 0; /// Temporarily set to neutralino
-  neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0; /// For scans
+  // neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0; /// For scans
    // cout << "NLSP = " << NLSP << endl;
   if( NLSP == 0) {
     //    cout << "NLSP is neutralino" << endl;
@@ -1406,7 +1404,16 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
   else {
     ParticleGluino.total_width = ParticleGluino.two_width + ParticleGluino.three_width;
   }
-   
+
+  if ( ParticleGluino.total_width != ParticleGluino.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleGluino.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleGluino.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in gluino total width \n");
+    }
+  
   for (int i =0; i<ParticleGluino.No_of_Decays; i++) {
      ParticleGluino.Array_Decays[i][5]= ParticleGluino.Array_Decays[i][2]/ParticleGluino.total_width;
    }
@@ -1478,7 +1485,16 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    }
  else {
    ParticleSdownL.total_width = ParticleSdownL.two_width + ParticleSdownL.three_width;
- }
+
+  if ( ParticleSdownL.total_width != ParticleSdownL.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSdownL.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleSdownL.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in sdownL total width \n");
+    }
+ 
  
  for (int i =0; i<ParticleSdownL.No_of_Decays; i++) {
    ParticleSdownL.Array_Decays[i][5]= ParticleSdownL.Array_Decays[i][2]/ParticleSdownL.total_width;
@@ -1548,7 +1564,17 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  else {
    ParticleSdownR.total_width = ParticleSdownR.two_width + ParticleSdownR.three_width;
  }
- 
+
+ if ( ParticleSdownR.total_width != ParticleSdownR.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSdownR.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleSdownR.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in sdownR total width \n");
+    }
+  
+  
  for (int i =0; i<ParticleSdownR.No_of_Decays; i++) {
    ParticleSdownR.Array_Decays[i][5]= ParticleSdownR.Array_Decays[i][2]/ParticleSdownR.total_width;
  }
@@ -1621,7 +1647,17 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  else {
    ParticleSupL.total_width = ParticleSupL.two_width + ParticleSupL.three_width;
  }
- 
+
+  if ( ParticleSupL.total_width != ParticleSupL.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSupL.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleSupL.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in supL total width \n");
+    }
+ }
+
  for (int i =0; i<ParticleSupL.No_of_Decays; i++) {
    ParticleSupL.Array_Decays[i][5]= ParticleSupL.Array_Decays[i][2]/ParticleSupL.total_width;
  }
@@ -1695,6 +1731,16 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSupR.total_width = ParticleSupR.two_width + ParticleSupR.three_width;
  }
  
+  if ( ParticleSupR.total_width != ParticleSupR.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSupR.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleSupR.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in supR total width \n");
+    }
+ 
+
  for (int i =0; i<ParticleSupR.No_of_Decays; i++) {
    ParticleSupR.Array_Decays[i][5]= ParticleSupR.Array_Decays[i][2]/ParticleSupR.total_width;
  }
@@ -1767,6 +1813,16 @@ double SstrangeL_No_1to2_Decays = 0;
  else {
    ParticleSstrangeL.total_width = ParticleSstrangeL.two_width + ParticleSstrangeL.three_width;
  }
+
+  if ( ParticleSstrangeL.total_width != ParticleSstrangeL.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSstrangeL.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleSstrangeL.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in sstrangeL total width \n");
+    }
+ 
  
  for (int i =0; i<ParticleSstrangeL.No_of_Decays; i++) {
    ParticleSstrangeL.Array_Decays[i][5]= ParticleSstrangeL.Array_Decays[i][2]/ParticleSstrangeL.total_width;
@@ -1837,6 +1893,16 @@ double SstrangeR_No_1to2_Decays = 0;
  else {
    ParticleSstrangeR.total_width = ParticleSstrangeR.two_width + ParticleSstrangeR.three_width;
  }
+
+  if ( ParticleSstrangeR.total_width != ParticleSstrangeR.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSstrangeR.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleSstrangeR.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in sstrangeR total width \n");
+    }
+ 
  
  for (int i =0; i<ParticleSstrangeR.No_of_Decays; i++) {
    ParticleSstrangeR.Array_Decays[i][5]= ParticleSstrangeR.Array_Decays[i][2]/ParticleSstrangeR.total_width;
@@ -1911,6 +1977,17 @@ double SstrangeR_No_1to2_Decays = 0;
  else {
    ParticleScharmL.total_width = ParticleScharmL.two_width + ParticleScharmL.three_width;
  }
+
+  if ( ParticleScharmL.total_width != ParticleScharmL.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleScharmL.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleScharmL.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in scharmL total width \n");
+    }
+ 
+
  
  for (int i =0; i<ParticleScharmL.No_of_Decays; i++) {
    ParticleScharmL.Array_Decays[i][5]= ParticleScharmL.Array_Decays[i][2]/ParticleScharmL.total_width;
@@ -1979,6 +2056,16 @@ double SstrangeR_No_1to2_Decays = 0;
  else {
    ParticleScharmR.total_width = ParticleScharmR.two_width + ParticleScharmL.three_width;
  }
+
+ if ( ParticleScharmR.total_width != ParticleScharmR.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleScharmR.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleScharmR.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in scharmR total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleScharmR.No_of_Decays; i++) {
    ParticleScharmR.Array_Decays[i][5]= ParticleScharmR.Array_Decays[i][2]/ParticleScharmR.total_width;
@@ -2060,6 +2147,16 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  else {
    ParticleSbottom1.total_width = ParticleSbottom1.two_width + ParticleSbottom1.three_width;
  }
+
+  if ( ParticleSbottom1.total_width != ParticleSbottom1.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSbottom1.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleSbottom1.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in sbottom1 total width \n");
+    }
+ 
  
  for (int i =0; i<ParticleSbottom1.No_of_Decays; i++) {
    ParticleSbottom1.Array_Decays[i][5]= ParticleSbottom1.Array_Decays[i][2]/ParticleSbottom1.total_width;
@@ -2159,6 +2256,16 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  else {
    ParticleSbottom2.total_width = ParticleSbottom2.two_width + ParticleSbottom2.three_width;
  }
+
+  if ( ParticleSbottom2.total_width != ParticleSbottom2.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSbottom2.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleSbottom2.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in sbottom2 total width \n");
+    }
+ 
  
  for (int i =0; i<ParticleSbottom2.No_of_Decays; i++) {
    ParticleSbottom2.Array_Decays[i][5]= ParticleSbottom2.Array_Decays[i][2]/ParticleSbottom2.total_width;
@@ -2245,6 +2352,16 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  else {
    ParticleStop1.total_width = ParticleStop1.two_width + ParticleStop1.three_width;
  }
+
+  if ( ParticleStop1.total_width != ParticleStop1.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleStop1.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleStop1.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in stop1 total width \n");
+    }
+ 
  
  for (int i =0; i<ParticleStop1.No_of_Decays; i++) {
    ParticleStop1.Array_Decays[i][5]= ParticleStop1.Array_Decays[i][2]/ParticleStop1.total_width;
@@ -2345,7 +2462,17 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  else {
    ParticleStop2.total_width = ParticleStop2.two_width + ParticleStop2.three_width;
  }
+
+ if ( ParticleStop2.total_width != ParticleStop2.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleStop2.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleStop2.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in stop2 total width \n");
+   }
  
+
  for (int i =0; i<ParticleStop2.No_of_Decays; i++) {
    ParticleStop2.Array_Decays[i][5]= ParticleStop2.Array_Decays[i][2]/ParticleStop2.total_width;
  }
@@ -2421,6 +2548,17 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  else {
    ParticleSelectronL.total_width = ParticleSelectronL.two_width + ParticleSelectronL.three_width;
  }
+
+
+ if ( ParticleSelectronL.total_width != ParticleSelectronL.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSelectronL.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleSelectronL.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in selectronL total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleSelectronL.No_of_Decays; i++) {
    ParticleSelectronL.Array_Decays[i][5]= ParticleSelectronL.Array_Decays[i][2]/ParticleSelectronL.total_width;
@@ -2489,6 +2627,16 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  else {
    ParticleSelectronR.total_width = ParticleSelectronR.two_width + ParticleSelectronR.three_width;
  }
+
+ if ( ParticleSelectronR.total_width != ParticleSelectronR.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSelectronR.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleSelectronR.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in selectronR total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleSelectronR.No_of_Decays; i++) {
    ParticleSelectronR.Array_Decays[i][5]= ParticleSelectronR.Array_Decays[i][2]/ParticleSelectronR.total_width;
@@ -2562,6 +2710,16 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  else {
    ParticleSmuonL.total_width = ParticleSmuonL.two_width + ParticleSmuonL.three_width;
  }
+
+ if ( ParticleSmuonL.total_width != ParticleSmuonL.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSmuonL.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleSmuonL.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in smuonL total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleSmuonL.No_of_Decays; i++) {
    ParticleSmuonL.Array_Decays[i][5]= ParticleSmuonL.Array_Decays[i][2]/ParticleSmuonL.total_width;
@@ -2628,6 +2786,16 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  else {
    ParticleSmuonR.total_width = ParticleSmuonR.two_width + ParticleSmuonR.three_width;
  }
+
+ if ( ParticleSmuonR.total_width != ParticleSmuonR.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSmuonR.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleSmuonR.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in smuonR total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleSmuonR.No_of_Decays; i++) {
    ParticleSmuonR.Array_Decays[i][5]= ParticleSmuonR.Array_Decays[i][2]/ParticleSmuonR.total_width;
@@ -2700,6 +2868,16 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  else {
    ParticleSnue.total_width = ParticleSnue.two_width + ParticleSnue.three_width;
  }
+
+ if ( ParticleSnue.total_width != ParticleSnue.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSnue.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleSnue.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in snue total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleSnue.No_of_Decays; i++) {
    ParticleSnue.Array_Decays[i][5]= ParticleSnue.Array_Decays[i][2]/ParticleSnue.total_width;
@@ -2774,7 +2952,17 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  else {
    ParticleSnumu.total_width = ParticleSnumu.two_width + ParticleSnumu.three_width;
  }
+
+ if ( ParticleSnumu.total_width != ParticleSnumu.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSnumu.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleSnumu.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in snumu total width \n");
+   }
  
+
  for (int i =0; i<ParticleSnumu.No_of_Decays; i++) {
    ParticleSnumu.Array_Decays[i][5]= ParticleSnumu.Array_Decays[i][2]/ParticleSnumu.total_width;
  }
@@ -2852,6 +3040,15 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  else {
    ParticleStau1.total_width = ParticleStau1.two_width + ParticleStau1.three_width;
  }
+ if ( ParticleStau1.total_width != ParticleStau1.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleStau1.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleStau1.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in stau1 total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleStau1.No_of_Decays; i++) {
    ParticleStau1.Array_Decays[i][5]= ParticleStau1.Array_Decays[i][2]/ParticleStau1.total_width;
@@ -2943,6 +3140,16 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  else {
    ParticleStau2.total_width = ParticleStau2.two_width + ParticleStau2.three_width;
  }
+
+ if ( ParticleStau2.total_width != ParticleStau2.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleStau2.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleStau2.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in stau2 total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleStau2.No_of_Decays; i++) {
    ParticleStau2.Array_Decays[i][5]= ParticleStau2.Array_Decays[i][2]/ParticleStau2.total_width;
@@ -3024,6 +3231,16 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  else {
    ParticleSnutau.total_width = ParticleSnutau.two_width + ParticleSnutau.three_width;
  }
+
+ if ( ParticleSnutau.total_width != ParticleSnutau.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSnutau.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleSnutau.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in snutau total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleSnutau.No_of_Decays; i++) {
    ParticleSnutau.Array_Decays[i][5]= ParticleSnutau.Array_Decays[i][2]/ParticleSnutau.total_width;
@@ -3179,6 +3396,16 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
  else {
    ParticleChargino1.total_width = ParticleChargino1.two_width + ParticleChargino1.three_width;
  }
+
+ if ( ParticleChargino1.total_width != ParticleChargino1.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleChargino1.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleChargino1.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in chargino1 total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleChargino1.No_of_Decays; i++) {
    ParticleChargino1.Array_Decays[i][5]= ParticleChargino1.Array_Decays[i][2]/ParticleChargino1.total_width;
@@ -3351,6 +3578,16 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    ParticleChargino2.total_width = ParticleChargino2.two_width + ParticleChargino2.three_width;
  }
  
+ if ( ParticleChargino2.total_width != ParticleChargino2.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleChargino2.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleChargino2.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in chargino2 total width \n");
+   }
+ 
+
  for (int i =0; i<ParticleChargino2.No_of_Decays; i++) {
    ParticleChargino2.Array_Decays[i][5]= ParticleChargino2.Array_Decays[i][2]/ParticleChargino2.total_width;
  }
@@ -3601,7 +3838,17 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   else {
     ParticleNeutralino1.total_width = ParticleNeutralino1.two_width + ParticleNeutralino1.three_width;
   }
-   
+
+  if ( ParticleNeutralino1.total_width != ParticleNeutralino1.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleNeutralino1.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleNeutralino1.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in Neutralino1 total width \n");
+    }
+ 
+
   for (int i =0; i<ParticleNeutralino1.No_of_Decays; i++) {
      ParticleNeutralino1.Array_Decays[i][5]= ParticleNeutralino1.Array_Decays[i][2]/ParticleNeutralino1.total_width;
    }
@@ -3905,6 +4152,16 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   else {
     ParticleNeutralino2.total_width = ParticleNeutralino2.two_width + ParticleNeutralino2.three_width;
   }
+  
+  if ( ParticleNeutralino2.total_width != ParticleNeutralino2.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleNeutralino2.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleNeutralino2.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in Neutralino2 total width \n");
+    }
+ 
    
   for (int i =0; i<ParticleNeutralino2.No_of_Decays; i++) {
      ParticleNeutralino2.Array_Decays[i][5]= ParticleNeutralino2.Array_Decays[i][2]/ParticleNeutralino2.total_width;
@@ -4238,6 +4495,16 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   else {
     ParticleNeutralino3.total_width = ParticleNeutralino3.two_width + ParticleNeutralino3.three_width;
   }
+  
+  if ( ParticleNeutralino3.total_width != ParticleNeutralino3.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleNeutralino3.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleNeutralino3.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in Neutralino3 total width \n");
+    }
+ 
    
   for (int i =0; i<ParticleNeutralino3.No_of_Decays; i++) {
      ParticleNeutralino3.Array_Decays[i][5]= ParticleNeutralino3.Array_Decays[i][2]/ParticleNeutralino3.total_width;
@@ -4609,6 +4876,16 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   else {
     ParticleNeutralino4.total_width = ParticleNeutralino4.two_width + ParticleNeutralino4.three_width;
   }
+
+  if ( ParticleNeutralino4.total_width != ParticleNeutralino4.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleNeutralino4.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleNeutralino4.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in Neutralino4 total width \n");
+    }
+ 
    
   for (int i =0; i<ParticleNeutralino4.No_of_Decays; i++) {
      ParticleNeutralino4.Array_Decays[i][5]= ParticleNeutralino4.Array_Decays[i][2]/ParticleNeutralino4.total_width;
@@ -4812,7 +5089,16 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   else {
     ParticleNeutralino5.total_width = ParticleNeutralino5.two_width + ParticleNeutralino5.three_width;
   }
-   
+
+  if ( ParticleNeutralino5.total_width != ParticleNeutralino5.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleNeutralino5.No_of_Decays; i++) {
+      //   cout << i << " " << ParticleNeutralino5.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in Neutralino5 total width \n");
+    }
+    
   for (int i =0; i<ParticleNeutralino5.No_of_Decays; i++) {
      ParticleNeutralino5.Array_Decays[i][5]= ParticleNeutralino5.Array_Decays[i][2]/ParticleNeutralino5.total_width;
    }
@@ -5137,6 +5423,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
  
     if ( Particlehiggsl.total_width != Particlehiggsl.total_width) /// Tests for a nan as only nans aren't equal to themselves
       {
+	errorflag = -1;
 	// for (int i = 0; i<Particlehiggsl.No_of_Decays; i++) {
 	//   cout << Particlehiggsl.Array_Decays[i][2] << endl;
 	// }
@@ -5234,7 +5521,6 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    H0amplitudecharW1charW2 = higgsphiamplitudedecaydifchargino (mh0(2), mch(1), mch(2), g, thetaL2, thetaR2, alpha, beta, 'H');
 
    H0amplitudegammagamma = higgsesamplitudedecaygammagammatotal(mh0(2), g, gp, alphaAtMH, runmw, polemw, alpha, beta, mtAtMH, mbAtMH, mcAtMH, runmtau, mHpm, mu(1,3), mu(2,3), md(1,3), md(2,3), me(1,3), me(2,3), mch(1), mch(2), thetaL, thetaR, thetat, thetab, thetatau, greekmu, At, Ab, Atau, 'H');
-   cout << "mcAtMH = " << mcAtMH << endl;
    H0amplitudegluongluon = higgsesamplitudedecaygluongluontotal(mh0(2), g, g3atmH0, gp, runmw, alpha, beta, mtPole, mbPole, mcpole, mu(1,3), mu(2,3), md(1,3), md(2,3), thetat, thetab, greekmu, At, Ab, mspole, mu(1,2), mu(2,2), md(1,2), md(2,2), Ac, As, runmu, runmd, mu(1,1), mu(2,1), md(1,1), md(2,1), Au, Ad, 'H', QCDcorr);
 
    H0amplitudeZgamma = higgsesamplitudedecayZbosonphotontotal(mh0(2), polemz, g, gp, alphaAtMH, polemw, runmw, alpha, beta, mtAtMH, mbAtMH, mcAtMH, msAtMH, mu(1,3), mu(2,3), md(1,3), md(2,3), mHpm, thetat, thetab, greekmu, At, Ab, 'H');
@@ -5470,9 +5756,10 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
 
  if ( ParticleHiggsH.total_width != ParticleHiggsH.total_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     for (int i = 0; i<ParticleHiggsH.No_of_Decays; i++) {
-       cout << i << " " << ParticleHiggsH.Array_Decays[i][2] << endl;
-     }	    
+     errorflag = -1;
+     // for (int i = 0; i<ParticleHiggsH.No_of_Decays; i++) {
+     //   cout << i << " " << ParticleHiggsH.Array_Decays[i][2] << endl;
+     // }	  
      throw( "nan in H0 (second heaviest higgs) total width \n");
    }
  
@@ -5739,6 +6026,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
 
  if ( ParticleHiggsH3.total_width != ParticleHiggsH3.total_width) /// Tests for a nan as only nans aren't equal to themselves
    {
+     errorflag = -1;
      // for (int i = 0; i<ParticleHiggsH3.No_of_Decays; i++) {
      //   cout << ParticleHiggsH3.Array_Decays[i][2] << endl;
      // }	    
@@ -5978,6 +6266,7 @@ if (flagA1 == 1) {
 
  if ( ParticleHiggsA.total_width != ParticleHiggsA.total_width) /// Tests for a nan as only nans aren't equal to themselves
    {
+     errorflag = -1;
      // for (int i = 0; i<ParticleHiggsA.No_of_Decays; i++) {
      //   cout << ParticleHiggsA.Array_Decays[i][2] << endl;
      // }	    
@@ -6169,6 +6458,7 @@ if (flagA1 == 1) {
 
  if ( ParticleHiggsA2.total_width != ParticleHiggsA2.total_width) /// Tests for a nan as only nans aren't equal to themselves
    {
+     errorflag = -1;
      // for (int i = 0; i<ParticleHiggsA2.No_of_Decays; i++) {
      //   cout << ParticleHiggsA2.Array_Decays[i][2] << endl;
      // }	    
@@ -6331,6 +6621,15 @@ if (flagA1 == 1) {
  
  ParticleHiggsplus.total_width = ParticleHiggsplus.two_width + ParticleHiggsplus.three_width;
     
+ if ( ParticleHiggsplus.total_width != ParticleHiggsplus.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleHiggsplus.No_of_Decays; i++) {
+     //   cout << ParticleHiggsplus.Array_Decays[i][2] << endl;
+     // }	    
+     throw( "nan in H+ total width \n");
+   }
+
  for (int i =0; i<ParticleHiggsplus.No_of_Decays; i++) {
    ParticleHiggsplus.Array_Decays[i][5]= ParticleHiggsplus.Array_Decays[i][2]/ParticleHiggsplus.total_width;
  } 
@@ -10353,7 +10652,6 @@ double higgsesamplitudedecaygammagammatotal(double m1, double g, double gprime, 
   Isb2i = higgsmatrixelementgammagammaviasbottoms (m1, msbottom1, msbottom2, mbottom, mtop, mWboson, thetab, g, gprime, alpha, beta, Atop, Abottom, greekmu, higgstype)(4);
   Icr = higgsmatrixelementgammagammaviacharms (m1, mcharm, alpha, beta, higgstype)(1);
   Ici = higgsmatrixelementgammagammaviacharms (m1, mcharm, alpha, beta, higgstype)(2);
-  cout << "mcharm = " << mcharm << endl;
   Itaur = higgsmatrixelementgammagammaviataus (m1, mtau, alpha, beta, higgstype)(1);
   Itaui = higgsmatrixelementgammagammaviataus (m1, mtau, alpha, beta, higgstype)(2);
   Istau1r = higgsmatrixelementgammagammaviastaus (m1, mstau1, mstau2, mtau, mWboson, thetatau, g, gprime, alpha, beta, greekmu, Atau, higgstype)(1);
@@ -10667,8 +10965,6 @@ DoubleVector higgsmatrixelementgammagammaviacharms (double m1, double mcharm, do
   }
     
   f = foftau(mcharm, m1);
-  cout << "mcharm = " << mcharm << endl;
-  cout << "f(1) = " << f(1) << " f(2) = " << f(2) << " f(3) = " << f(3) << endl;
   if (higgstype == 'h')
     {
       F1over2(1) = -2*f(3)*(1+(1-f(3))*f(1));
@@ -11911,14 +12207,14 @@ DoubleVector foftau(double mpart, double mcomp) ///f(tau) function for use in h-
     etap = 1 + pow(1-tau,0.5);
     etam = 1 - pow(1-tau,0.5);
     if (etap/etam < 0) {
-      cout << "log will give nan as etap/etam < 0" << endl;
+      cout << "#log will give nan as etap/etam < 0" << endl;
       // cout << "etap = " << etap << " etam = " << etam << endl;
       errorflag = -1;
     }
     if (etam == 0) {
-      cout << "will get inf as etam = 0 so etap/etam = inf" << endl;
-      cout << "tau = " << tau << " etam = " << etam << " etap = " << etap << endl;
-      cout << "mpart = " << mpart << " mcomp = " << mcomp << endl;
+      cout << "#will get inf as etam = 0 so etap/etam = inf" << endl;
+      // cout << "tau = " << tau << " etam = " << etam << " etap = " << etap << endl;
+      // cout << "mpart = " << mpart << " mcomp = " << mcomp << endl;
       errorflag = -1;
     }
     fr = -0.25*pow(log(etap/etam),2)+0.25*pow(PI,2);
