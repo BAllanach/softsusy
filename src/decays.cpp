@@ -28,14 +28,13 @@ static double errorflag = 0; /// 0 output if no issues, -1 if issues in calculat
 
 
 int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIsIt) { 
-  cout.precision(10);
   ///Phys theta angles, note should use drbar in decays
   double flaggluino = 1, flagsupL = 1, flagsupR = 1, flagsdownL = 1, flagsdownR = 1, flagscharmL = 1, flagscharmR = 1, flagsstrangeL = 1, flagsstrangeR = 1, flagstop1 = 1, flagstop2 = 1, flagsbottom1 = 1, flagsbottom2 = 1, flagselectronL = 1, flagselectronR = 1, flagsmuonL = 1, flagsmuonR = 1, flagstau1 = 1, flagstau2 = 1, flagsnueL = 1, flagsnumuL = 1, flagsnutauL = 1, flagneut1 = 1, flagneut2 = 1, flagneut3 = 1, flagneut4 = 1, flagneut5 = 1, flagchar1 = 1, flagchar2 = 1, flagh1 = 1, flagH2 = 1, flagH3 = 1, flagA1 = 1, flagA2 = 1, flagHpm = 1; ///< Flags to turn off decays, default 1 = on, 0 = off
 
   errorflag = 0; /// 0 output if no issues, -1 if issues in calculating decays
 
   bool QCDcorr = true; ///Turns on QCD corrections to h->gg and h->qq
-  
+
   ///Switch on or off 1->3 decays
   bool onetothree = threeBodyDecays; ///Turns on 1->3 decays, reads this in from input file, default is true
 
@@ -116,7 +115,8 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
 
    double runmt = 0, runmb = 0, runmtau = 0, runmc =0, runms = 0, runmd = 0, runmu = 0, runmel = 0, runmmu = 0, Au = 0, Ad = 0, Ac = 0, As =0, At =0, Ab =0, Atau = 0, Ae =0, Amu =0, mueff=0;
 
-   double alphasAtMA = 0, alphaAtMA = 0, mbAtMA = 0, mtAtMA = 0, mcAtMA = 0, msAtMA = 0, alphasAtMH = 0, alphaAtMH = 0, mbAtMH = 0, mtAtMH = 0, mcAtMH = 0, msAtMH = 0, alphasAtMh = 0, alphaAtMh = 0, mbAtMh = 0, mtAtMh = 0, mcAtMh = 0, msAtMh = 0, alphasAtMA2 = 0, alphaAtMA2 = 0, mbAtMA2 = 0, mtAtMA2 = 0, mcAtMA2 = 0, alphasAtMH3 = 0, alphaAtMH3 = 0, mbAtMH3 = 0, mtAtMH3 = 0, mcAtMH3 = 0, msAtMH3 = 0; //For running couplings and masses for higgs 1-loop decays
+   double alphasAtMA = 0, alphaAtMA = 0, mbAtMA = 0, mtAtMA = 0, mcAtMA = 0, msAtMA = 0, alphasAtMH = 0, alphaAtMH = 0, mbAtMH = 0, mtAtMH = 0, mcAtMH = 0, msAtMH = 0, alphasAtMh = 0, alphaAtMh = 0, mbAtMh = 0, mtAtMh = 0, mcAtMh = 0, msAtMh = 0, alphasAtMA2 = 0, alphaAtMA2 = 0, mbAtMA2 = 0, mtAtMA2 = 0, mcAtMA2 = 0, alphasAtMH3 = 0, alphaAtMH3 = 0, mbAtMH3 = 0, mtAtMH3 = 0, mcAtMH3 = 0; //For running couplings and masses for higgs 1-loop decays
+   // msAtMH3 = 0; 
    double g3atmh0 = 0, g3atmH0 = 0, g3atmA0 = 0;
    double mt = 0, mb = 0, mc = 0, ms = 0, mup = 0, mdo = 0, mel = 0, mmu = 0, mtau = 0; ///Quark pole masses for general use
 
@@ -125,11 +125,11 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
    ///Before running to scale 1000GeV take CPeven and CPodd higgs mixing matrices
 
    if(onetothree == true) {
-     cout << "# No 1to3 decays included in NMSSM - therefore onetothree set to false" << endl;
+     fout << "# No 1to3 decays included in NMSSM - therefore onetothree set to false" << endl;
    }
    onetothree = false;
 
-   // cout << "MSUSY = " << nmssm.displayMsusy() << endl;
+   // fout << "MSUSY = " << nmssm.displayMsusy() << endl;
 
    nmssmrun.runto(nmssm.displayMsusy()); ///Run to scale Msusy for parameter extraction
 
@@ -156,8 +156,7 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
    CPOMix2(1,2) = CPOMix(1,3);
    CPOMix2(2,2) = CPOMix(2,3);
    
-   // cout << "S = " << S << " CPEMix = " << CPEMix << " CPOMix = " << CPOMix << endl;
-
+   // fout << "S = " << S << " CPEMix = " << CPEMix << " CPOMix = " << CPOMix << endl;
 
    kappa = nmssmrun.displayKappa();
    lam = nmssmrun.displayLambda();
@@ -287,7 +286,7 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
  mbAtMH3 = pow(2,0.5)*nmssmrun.displayMwRun()*cos(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YD)(3,3)/nmssmrun.displayGaugeCoupling(2);
  mtAtMH3 = pow(2,0.5)*nmssmrun.displayMwRun()*sin(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YU)(3,3)/nmssmrun.displayGaugeCoupling(2);
  mcAtMH3 = pow(2,0.5)*nmssmrun.displayMwRun()*sin(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YU)(2,2)/nmssmrun.displayGaugeCoupling(2);
- msAtMH3 = pow(2,0.5)*nmssmrun.displayMwRun()*cos(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YD)(2,2)/nmssmrun.displayGaugeCoupling(2);
+ // msAtMH3 = pow(2,0.5)*nmssmrun.displayMwRun()*cos(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YD)(2,2)/nmssmrun.displayGaugeCoupling(2);
 
 
  nmssmrun.runto(nmssmrun.displayPhys().mA0(1));
@@ -308,10 +307,17 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
  msAtMH = pow(2,0.5)*nmssmrun.displayMwRun()*cos(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YD)(2,2)/nmssmrun.displayGaugeCoupling(2);
 
  ///If yukawa matrix elements are 0 then use a non-zero mass!
+ if (mbAtMH3 == 0) {mbAtMH3 = mb;}
+ if (mtAtMH3 == 0) {mtAtMH3 = mt;}
+ if (mcAtMH3 == 0) {mcAtMH3 = mc;}
+ // if (msAtMH3 == 0) {msAtMH3 = ms;}
  if (mbAtMH == 0) {mbAtMH = mb;}
  if (mtAtMH == 0) {mtAtMH = mt;}
  if (mcAtMH == 0) {mcAtMH = mc;}
  if (msAtMH == 0) {msAtMH = ms;}
+ if (mbAtMA2 == 0) {mbAtMA2 = mb;}
+ if (mtAtMA2 == 0) {mtAtMA2 = mt;}
+ if (mcAtMA2 == 0) {mcAtMA2 = mc;}
  if (mbAtMA == 0) {mbAtMA = mb;}
  if (mtAtMA == 0) {mtAtMA = mt;}
  if (mcAtMA == 0) {mcAtMA = mc;}
@@ -499,43 +505,42 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
   if (LSP == -1)     gravonoff = 1; ///< LSP is a gravitino
   else if( LSP > -1 && LSP < 7) gravonoff = 0; ///< LSP is not a gravitino
      int NLSP = 0; ///default position
-     int neutNLSP = 1, upsquNLSP= 1, downsquNLSP = 1, slepNLSP = 1, chargNLSP = 1, snuNLSP = 1, gluNLSP = 1; ///Default position is 1 so all SUSY dedcays to LSP gravitino considered unless you only want the NLSP decays to gravitino decays, then if below section uncommented it sets all but NLSP switch to 0.
+     int neutNLSP = 1, upsquNLSP= 1, downsquNLSP = 1, slepNLSP = 1, snuNLSP = 1, gluNLSP = 1; ///Default position is 1 so all SUSY dedcays to LSP gravitino considered unless you only want the NLSP decays to gravitino decays, then if below section uncommented it sets all but NLSP switch to 0.
   
-  ///Using the nlsp function from softsusy.cpp, Returns a label which says which particle is NLSP, 0 means NLSP is neutralino, 1=up squark, 2=down squark, 3=sleptons, 4=charginos, 5=sneutrinos, 6=gluino. Uncomment this if you only want the NLSP decays to the LSP gravitino to be considered, note one potential issue with this is particles only slightly heavier than the NLSP may still have only the decay to the LSPgravitino available and this function doesn't take account of this. If this section below is commented all SUSY decays to the LSP gravitino are considered and then they are not output if there BRs are less than 10^-15
+  ///Using the nlsp function from softsusy.cpp, Returns a label which says which particle is NLSP, 0 means NLSP is neutralino, 1=up squark, 2=down squark, 3=sleptons, 4=charginos, 5=sneutrinos, 6=gluino. Uncomment this if you only want the NLSP decays to the LSP gravitino to be considered, note one potential issue with this is particles only slightly heavier than the NLSP may still have only the decay to the LSPgravitino available and this function doesn't take account of this. If this section below is commented all SUSY decays to the LSP gravitino are considered and then they are not output if there BRs are less than BRTol
   NLSP = r->nlsp(m, posi, posj); 
-  // cout << "NLSP = " << NLSP << endl;
+  // fout << "NLSP = " << NLSP << endl;
   // NLSP = 0; /// Temporarily set to neutralino
-  // neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0; /// For scans
-   // cout << "NLSP = " << NLSP << endl;
+  // neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0, gluNLSP = 0; /// For scans
   if( NLSP == 0) {
-    //    cout << "NLSP is neutralino" << endl;
-    upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0;
+    //    fout << "NLSP is neutralino" << endl;
+    upsquNLSP= 0; downsquNLSP = 0; slepNLSP = 0; snuNLSP = 0; gluNLSP = 0;
   }
   else if (NLSP == 1) {
-    //    cout << "NLSP is up squark" << endl;
-    neutNLSP = 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0;
+    //    fout << "NLSP is up squark" << endl;
+    neutNLSP = 0; downsquNLSP = 0; slepNLSP = 0; snuNLSP = 0; gluNLSP = 0;
   }
   else if (NLSP == 2) {
-    //    cout << "NLSP is down squark" << endl;
-    neutNLSP = 0, upsquNLSP= 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0;
+    //    fout << "NLSP is down squark" << endl;
+    neutNLSP = 0; upsquNLSP= 0; slepNLSP = 0; snuNLSP = 0; gluNLSP = 0;
   }
   else if (NLSP == 3) {
-    //    cout << "NLSP is slepton" << endl;
-    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, chargNLSP = 0, snuNLSP = 0, gluNLSP = 0;
+    //    fout << "NLSP is slepton" << endl;
+    neutNLSP = 0; upsquNLSP= 0; downsquNLSP = 0; snuNLSP = 0; gluNLSP = 0;
   }
   else if (NLSP == 4) {
-    //    cout << "NLSP is chargino - WARNING chargino NLSP decays to gravitino LSP not included in program!" << endl;
-    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0, gluNLSP = 0;
+    //    fout << "NLSP is chargino - WARNING chargino NLSP decays to gravitino LSP not included in program!" << endl;
+    neutNLSP = 0; upsquNLSP= 0; downsquNLSP = 0; slepNLSP = 0; snuNLSP = 0; gluNLSP = 0;
   }
   else if (NLSP == 5) {
-    //    cout << "NLSP is sneutrino" << endl;
-    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, gluNLSP = 0;
+    //    fout << "NLSP is sneutrino" << endl;
+    neutNLSP = 0; upsquNLSP= 0; downsquNLSP = 0; slepNLSP = 0; gluNLSP = 0;
   }
   else if (NLSP == 6) {
-    //    cout << "NLSP is gluino" << endl;
-    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, chargNLSP = 0, snuNLSP = 0;
+    //    fout << "NLSP is gluino" << endl;
+    neutNLSP = 0; upsquNLSP= 0; downsquNLSP = 0; slepNLSP = 0; snuNLSP = 0;
   }
-  else { neutNLSP = 1, upsquNLSP= 1, downsquNLSP = 1, slepNLSP = 1, chargNLSP = 1, snuNLSP = 1, gluNLSP = 1;} ///Default position is to consdier all SUSY particle decays to LSP gravitino
+  else { neutNLSP = 1; upsquNLSP= 1; downsquNLSP = 1; slepNLSP = 1; snuNLSP = 1; gluNLSP = 1;} ///Default position is to consdier all SUSY particle decays to LSP gravitino
   
  ///Obtaining the CKM Matrix from Yukawa Matrices:
  DoubleMatrix YUU(3,3), YDD(3,3), YEE(3,3);
@@ -1396,7 +1401,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
   
   if ( ParticleGluino.three_width != ParticleGluino.three_width) /// Tests for a nan as only nans aren't equal to themselves
     {
-      cout << "# Three body decays give nan for gluino - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      fout << "# Three body decays give nan for gluino - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
       errorflag = -1;
       ParticleGluino.No_of_Decays = Gluino_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
       ParticleGluino.total_width = ParticleGluino.two_width;
@@ -1409,7 +1414,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleGluino.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleGluino.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleGluino.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in gluino total width \n");
     }
@@ -1418,8 +1423,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      ParticleGluino.Array_Decays[i][5]= ParticleGluino.Array_Decays[i][2]/ParticleGluino.total_width;
    }
 
-  if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleGluino, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleGluino, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleGluino, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleGluino, BRTol);}
   }
 
  
@@ -1478,7 +1483,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  
  if ( ParticleSdownL.three_width != ParticleSdownL.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for sdownL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for sdownL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSdownL.No_of_Decays = SdownL_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSdownL.total_width = ParticleSdownL.two_width;
@@ -1490,7 +1495,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleSdownL.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleSdownL.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleSdownL.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in sdownL total width \n");
     }
@@ -1500,8 +1505,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSdownL.Array_Decays[i][5]= ParticleSdownL.Array_Decays[i][2]/ParticleSdownL.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSdownL, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSdownL, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSdownL, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSdownL, BRTol);}
 
  }
 
@@ -1556,7 +1561,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  
  if ( ParticleSdownR.three_width != ParticleSdownR.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for sdownR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for sdownR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSdownR.No_of_Decays = SdownR_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSdownR.total_width = ParticleSdownR.two_width;
@@ -1569,7 +1574,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleSdownR.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleSdownR.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleSdownR.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in sdownR total width \n");
     }
@@ -1579,8 +1584,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSdownR.Array_Decays[i][5]= ParticleSdownR.Array_Decays[i][2]/ParticleSdownR.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSdownR, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSdownR, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSdownR, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSdownR, BRTol);}
 
   }
 
@@ -1639,7 +1644,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    
  if ( ParticleSupL.three_width != ParticleSupL.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for supL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for supL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSupL.No_of_Decays = SupL_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSupL.total_width = ParticleSupL.two_width;
@@ -1652,7 +1657,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleSupL.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleSupL.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleSupL.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in supL total width \n");
     }
@@ -1662,8 +1667,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSupL.Array_Decays[i][5]= ParticleSupL.Array_Decays[i][2]/ParticleSupL.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSupL, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSupL, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSupL, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSupL, BRTol);}
 
   }
 
@@ -1722,7 +1727,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  
  if ( ParticleSupR.three_width != ParticleSupR.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for supR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for supR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSupR.No_of_Decays = SupR_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSupR.total_width = ParticleSupR.two_width;
@@ -1735,7 +1740,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleSupR.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleSupR.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleSupR.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in supR total width \n");
     }
@@ -1744,8 +1749,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  for (int i =0; i<ParticleSupR.No_of_Decays; i++) {
    ParticleSupR.Array_Decays[i][5]= ParticleSupR.Array_Decays[i][2]/ParticleSupR.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSupR, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSupR, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSupR, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSupR, BRTol);}
 
  }
 
@@ -1805,7 +1810,7 @@ double SstrangeL_No_1to2_Decays = 0;
  
  if ( ParticleSstrangeL.three_width != ParticleSstrangeL.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for sstrangeL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for sstrangeL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSstrangeL.No_of_Decays = SstrangeL_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSstrangeL.total_width = ParticleSstrangeL.two_width;
@@ -1818,7 +1823,7 @@ double SstrangeL_No_1to2_Decays = 0;
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleSstrangeL.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleSstrangeL.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleSstrangeL.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in sstrangeL total width \n");
     }
@@ -1828,8 +1833,8 @@ double SstrangeL_No_1to2_Decays = 0;
    ParticleSstrangeL.Array_Decays[i][5]= ParticleSstrangeL.Array_Decays[i][2]/ParticleSstrangeL.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSstrangeL, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSstrangeL, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSstrangeL, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSstrangeL, BRTol);}
 
  }
 
@@ -1885,7 +1890,7 @@ double SstrangeR_No_1to2_Decays = 0;
  
  if ( ParticleSstrangeR.three_width != ParticleSstrangeR.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for sstrangeR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for sstrangeR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSstrangeR.No_of_Decays = SstrangeR_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSstrangeR.total_width = ParticleSstrangeR.two_width;
@@ -1898,7 +1903,7 @@ double SstrangeR_No_1to2_Decays = 0;
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleSstrangeR.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleSstrangeR.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleSstrangeR.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in sstrangeR total width \n");
     }
@@ -1908,8 +1913,8 @@ double SstrangeR_No_1to2_Decays = 0;
    ParticleSstrangeR.Array_Decays[i][5]= ParticleSstrangeR.Array_Decays[i][2]/ParticleSstrangeR.total_width;
  }
  
-  if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSstrangeR, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSstrangeR, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSstrangeR, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSstrangeR, BRTol);}
  }
 
 
@@ -1969,7 +1974,7 @@ double SstrangeR_No_1to2_Decays = 0;
  
  if ( ParticleScharmL.three_width != ParticleScharmL.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for scharmL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for scharmL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleScharmL.No_of_Decays = ScharmL_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleScharmL.total_width = ParticleScharmL.two_width;
@@ -1982,7 +1987,7 @@ double SstrangeR_No_1to2_Decays = 0;
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleScharmL.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleScharmL.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleScharmL.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in scharmL total width \n");
     }
@@ -1992,8 +1997,8 @@ double SstrangeR_No_1to2_Decays = 0;
  for (int i =0; i<ParticleScharmL.No_of_Decays; i++) {
    ParticleScharmL.Array_Decays[i][5]= ParticleScharmL.Array_Decays[i][2]/ParticleScharmL.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleScharmL, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleScharmL, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleScharmL, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleScharmL, BRTol);}
  }
 
 
@@ -2048,7 +2053,7 @@ double SstrangeR_No_1to2_Decays = 0;
  
  if ( ParticleScharmR.three_width != ParticleScharmR.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for scharmR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for scharmR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleScharmR.No_of_Decays = ScharmR_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleScharmR.total_width = ParticleScharmR.two_width;
@@ -2061,7 +2066,7 @@ double SstrangeR_No_1to2_Decays = 0;
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleScharmR.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleScharmR.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleScharmR.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in scharmR total width \n");
    }
@@ -2070,8 +2075,8 @@ double SstrangeR_No_1to2_Decays = 0;
  for (int i =0; i<ParticleScharmR.No_of_Decays; i++) {
    ParticleScharmR.Array_Decays[i][5]= ParticleScharmR.Array_Decays[i][2]/ParticleScharmR.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleScharmR, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleScharmR, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleScharmR, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleScharmR, BRTol);}
  }
 
 
@@ -2140,7 +2145,7 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  
  if ( ParticleSbottom1.three_width != ParticleSbottom1.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for sbottom1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for sbottom1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      ParticleSbottom1.No_of_Decays = Sbottom1_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSbottom1.total_width = ParticleSbottom1.two_width;
    }
@@ -2152,7 +2157,7 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleSbottom1.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleSbottom1.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleSbottom1.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in sbottom1 total width \n");
     }
@@ -2162,8 +2167,8 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
    ParticleSbottom1.Array_Decays[i][5]= ParticleSbottom1.Array_Decays[i][2]/ParticleSbottom1.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSbottom1, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSbottom1, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSbottom1, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSbottom1, BRTol);}
 
  }
 
@@ -2248,7 +2253,7 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  
  if ( ParticleSbottom2.three_width != ParticleSbottom2.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for sbottom2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for sbottom2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSbottom2.No_of_Decays = Sbottom2_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSbottom2.total_width = ParticleSbottom2.two_width;
@@ -2261,7 +2266,7 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleSbottom2.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleSbottom2.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleSbottom2.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in sbottom2 total width \n");
     }
@@ -2271,8 +2276,8 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
    ParticleSbottom2.Array_Decays[i][5]= ParticleSbottom2.Array_Decays[i][2]/ParticleSbottom2.total_width;
  }
  
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSbottom2, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSbottom2, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSbottom2, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSbottom2, BRTol);}
 
  }
 
@@ -2344,7 +2349,7 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  
  if ( ParticleStop1.three_width != ParticleStop1.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for stop1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for stop1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleStop1.No_of_Decays = Stop1_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleStop1.total_width = ParticleStop1.two_width;
@@ -2357,7 +2362,7 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleStop1.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleStop1.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleStop1.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in stop1 total width \n");
     }
@@ -2367,8 +2372,8 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
    ParticleStop1.Array_Decays[i][5]= ParticleStop1.Array_Decays[i][2]/ParticleStop1.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleStop1, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleStop1, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleStop1, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleStop1, BRTol);}
  }
 
 
@@ -2454,7 +2459,7 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  
  if ( ParticleStop2.three_width != ParticleStop2.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for stop2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for stop2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleStop2.No_of_Decays = Stop2_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleStop2.total_width = ParticleStop2.two_width;
@@ -2467,7 +2472,7 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleStop2.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleStop2.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleStop2.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in stop2 total width \n");
    }
@@ -2477,8 +2482,8 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
    ParticleStop2.Array_Decays[i][5]= ParticleStop2.Array_Decays[i][2]/ParticleStop2.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleStop2, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleStop2, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleStop2, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleStop2, BRTol);}
 
  }
 
@@ -2540,7 +2545,7 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  
  if ( ParticleSelectronL.three_width != ParticleSelectronL.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for selectronL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for selectronL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSelectronL.No_of_Decays = SelectronL_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSelectronL.total_width = ParticleSelectronL.two_width;
@@ -2554,7 +2559,7 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleSelectronL.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleSelectronL.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleSelectronL.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in selectronL total width \n");
    }
@@ -2564,8 +2569,8 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
    ParticleSelectronL.Array_Decays[i][5]= ParticleSelectronL.Array_Decays[i][2]/ParticleSelectronL.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSelectronL, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSelectronL, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSelectronL, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSelectronL, BRTol);}
 
  }
 
@@ -2619,7 +2624,7 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  
  if ( ParticleSelectronR.three_width != ParticleSelectronR.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for selectronR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for selectronR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSelectronR.No_of_Decays = SelectronR_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSelectronR.total_width = ParticleSelectronR.two_width;
@@ -2632,7 +2637,7 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleSelectronR.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleSelectronR.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleSelectronR.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in selectronR total width \n");
    }
@@ -2641,8 +2646,8 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  for (int i =0; i<ParticleSelectronR.No_of_Decays; i++) {
    ParticleSelectronR.Array_Decays[i][5]= ParticleSelectronR.Array_Decays[i][2]/ParticleSelectronR.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSelectronR, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSelectronR, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSelectronR, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSelectronR, BRTol);}
 
  }
 
@@ -2702,7 +2707,7 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  
  if ( ParticleSmuonL.three_width != ParticleSmuonL.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for smuonL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for smuonL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSmuonL.No_of_Decays = SmuonL_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSmuonL.total_width = ParticleSmuonL.two_width;
@@ -2715,7 +2720,7 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleSmuonL.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleSmuonL.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleSmuonL.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in smuonL total width \n");
    }
@@ -2724,8 +2729,8 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  for (int i =0; i<ParticleSmuonL.No_of_Decays; i++) {
    ParticleSmuonL.Array_Decays[i][5]= ParticleSmuonL.Array_Decays[i][2]/ParticleSmuonL.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSmuonL, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSmuonL, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSmuonL, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSmuonL, BRTol);}
 
  }
 
@@ -2778,7 +2783,7 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  
  if ( ParticleSmuonR.three_width != ParticleSmuonR.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for smuonR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for smuonR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSmuonR.No_of_Decays = SmuonR_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSmuonR.total_width = ParticleSmuonR.two_width;
@@ -2791,7 +2796,7 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleSmuonR.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleSmuonR.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleSmuonR.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in smuonR total width \n");
    }
@@ -2801,8 +2806,8 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
    ParticleSmuonR.Array_Decays[i][5]= ParticleSmuonR.Array_Decays[i][2]/ParticleSmuonR.total_width;
  }
  
- if (outputPartialWidths ==  false) {  OutputNoPWs(cout, ParticleSmuonR, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSmuonR, BRTol);}
+ if (outputPartialWidths ==  false) {  OutputNoPWs(fout, ParticleSmuonR, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSmuonR, BRTol);}
 
  }
 
@@ -2860,7 +2865,7 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  
  if ( ParticleSnue.three_width != ParticleSnue.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for snue - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for snue - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSnue.No_of_Decays = Snue_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSnue.total_width = ParticleSnue.two_width;
@@ -2873,7 +2878,7 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleSnue.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleSnue.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleSnue.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in snue total width \n");
    }
@@ -2883,8 +2888,8 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
    ParticleSnue.Array_Decays[i][5]= ParticleSnue.Array_Decays[i][2]/ParticleSnue.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSnue, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSnue, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSnue, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSnue, BRTol);}
 
  }
  else{}
@@ -2944,7 +2949,7 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  
  if ( ParticleSnumu.three_width != ParticleSnumu.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for snumu - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for snumu - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSnumu.No_of_Decays = Snumu_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSnumu.total_width = ParticleSnumu.two_width;
@@ -2957,7 +2962,7 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleSnumu.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleSnumu.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleSnumu.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in snumu total width \n");
    }
@@ -2967,8 +2972,8 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
    ParticleSnumu.Array_Decays[i][5]= ParticleSnumu.Array_Decays[i][2]/ParticleSnumu.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSnumu, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSnumu, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSnumu, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSnumu, BRTol);}
 
  }
  // else{}
@@ -3032,7 +3037,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  
  if ( ParticleStau1.three_width != ParticleStau1.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for stau1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for stau1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleStau1.No_of_Decays = Stau1_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleStau1.total_width = ParticleStau1.two_width;
@@ -3044,7 +3049,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleStau1.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleStau1.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleStau1.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in stau1 total width \n");
    }
@@ -3053,8 +3058,8 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  for (int i =0; i<ParticleStau1.No_of_Decays; i++) {
    ParticleStau1.Array_Decays[i][5]= ParticleStau1.Array_Decays[i][2]/ParticleStau1.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleStau1, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleStau1, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleStau1, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleStau1, BRTol);}
 
  }
 
@@ -3132,7 +3137,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  
  if ( ParticleStau2.three_width != ParticleStau2.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for stau2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for stau2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleStau2.No_of_Decays = Stau2_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleStau2.total_width = ParticleStau2.two_width;
@@ -3145,7 +3150,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleStau2.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleStau2.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleStau2.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in stau2 total width \n");
    }
@@ -3154,8 +3159,8 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  for (int i =0; i<ParticleStau2.No_of_Decays; i++) {
    ParticleStau2.Array_Decays[i][5]= ParticleStau2.Array_Decays[i][2]/ParticleStau2.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleStau2, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleStau2, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleStau2, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleStau2, BRTol);}
 
  }
 
@@ -3223,7 +3228,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  
  if ( ParticleSnutau.three_width != ParticleSnutau.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for snutau - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for snutau - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleSnutau.No_of_Decays = Snutau_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSnutau.total_width = ParticleSnutau.two_width;
@@ -3236,7 +3241,7 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleSnutau.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleSnutau.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleSnutau.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in snutau total width \n");
    }
@@ -3246,8 +3251,8 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
    ParticleSnutau.Array_Decays[i][5]= ParticleSnutau.Array_Decays[i][2]/ParticleSnutau.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleSnutau, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleSnutau, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSnutau, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSnutau, BRTol);}
 
  }
 
@@ -3388,7 +3393,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
  
  if ( ParticleChargino1.three_width != ParticleChargino1.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for chargino1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for chargino1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleChargino1.No_of_Decays = Chargino1_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleChargino1.total_width = ParticleChargino1.two_width;
@@ -3401,7 +3406,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleChargino1.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleChargino1.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleChargino1.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in chargino1 total width \n");
    }
@@ -3411,8 +3416,8 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    ParticleChargino1.Array_Decays[i][5]= ParticleChargino1.Array_Decays[i][2]/ParticleChargino1.total_width;
  }
  
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleChargino1, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleChargino1, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleChargino1, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleChargino1, BRTol);}
 
  }
 
@@ -3569,7 +3574,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
  
  if ( ParticleChargino2.three_width != ParticleChargino2.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     cout << "# Three body decays give nan for chargino2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for chargino2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleChargino2.No_of_Decays = Chargino2_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleChargino2.total_width = ParticleChargino2.two_width;
@@ -3582,7 +3587,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleChargino2.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleChargino2.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleChargino2.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in chargino2 total width \n");
    }
@@ -3592,8 +3597,8 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    ParticleChargino2.Array_Decays[i][5]= ParticleChargino2.Array_Decays[i][2]/ParticleChargino2.total_width;
  }
  
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleChargino2, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleChargino2, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleChargino2, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleChargino2, BRTol);}
 
  }
 
@@ -3830,7 +3835,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   
   if ( ParticleNeutralino1.three_width != ParticleNeutralino1.three_width) /// Tests for a nan as only nans aren't equal to themselves
     {
-      cout << "# Three body decays give nan for neutralino 1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      fout << "# Three body decays give nan for neutralino 1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
       errorflag = -1;
       ParticleNeutralino1.No_of_Decays = Neut1_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
       ParticleNeutralino1.total_width = ParticleNeutralino1.two_width;
@@ -3843,7 +3848,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleNeutralino1.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleNeutralino1.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleNeutralino1.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in Neutralino1 total width \n");
     }
@@ -3853,8 +3858,8 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
      ParticleNeutralino1.Array_Decays[i][5]= ParticleNeutralino1.Array_Decays[i][2]/ParticleNeutralino1.total_width;
    }
 
-  if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleNeutralino1, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleNeutralino1, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino1, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino1, BRTol);}
 
  }
 
@@ -4144,7 +4149,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   
   if ( ParticleNeutralino2.three_width != ParticleNeutralino2.three_width) /// Tests for a nan as only nans aren't equal to themselves
     {
-      cout << "# Three body decays give nan for neutralino 2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      fout << "# Three body decays give nan for neutralino 2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
       errorflag = -1;
       ParticleNeutralino2.No_of_Decays = Neut2_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
       ParticleNeutralino2.total_width = ParticleNeutralino2.two_width;
@@ -4157,7 +4162,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleNeutralino2.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleNeutralino2.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleNeutralino2.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in Neutralino2 total width \n");
     }
@@ -4167,8 +4172,8 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
      ParticleNeutralino2.Array_Decays[i][5]= ParticleNeutralino2.Array_Decays[i][2]/ParticleNeutralino2.total_width;
    }
 
-  if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleNeutralino2, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleNeutralino2, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino2, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino2, BRTol);}
  
 
  }
@@ -4487,7 +4492,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   
   if ( ParticleNeutralino3.three_width != ParticleNeutralino3.three_width) /// Tests for a nan as only nans aren't equal to themselves
     {
-      cout << "# Three body decays give nan for neutralino 3 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      fout << "# Three body decays give nan for neutralino 3 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
       errorflag = -1;
       ParticleNeutralino3.No_of_Decays = Neut3_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
       ParticleNeutralino3.total_width = ParticleNeutralino3.two_width;
@@ -4500,7 +4505,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleNeutralino3.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleNeutralino3.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleNeutralino3.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in Neutralino3 total width \n");
     }
@@ -4510,8 +4515,8 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
      ParticleNeutralino3.Array_Decays[i][5]= ParticleNeutralino3.Array_Decays[i][2]/ParticleNeutralino3.total_width;
    }
 
-  if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleNeutralino3, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleNeutralino3, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino3, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino3, BRTol);}
 
  }
  else{}
@@ -4868,7 +4873,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   
   if ( ParticleNeutralino4.three_width != ParticleNeutralino4.three_width) /// Tests for a nan as only nans aren't equal to themselves
     {
-      cout << "# Three body decays give nan for neutralino 4 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      fout << "# Three body decays give nan for neutralino 4 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
       errorflag = -1;
       ParticleNeutralino4.No_of_Decays = Neut4_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
       ParticleNeutralino4.total_width = ParticleNeutralino4.two_width;
@@ -4881,7 +4886,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleNeutralino4.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleNeutralino4.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleNeutralino4.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in Neutralino4 total width \n");
     }
@@ -4891,8 +4896,8 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
      ParticleNeutralino4.Array_Decays[i][5]= ParticleNeutralino4.Array_Decays[i][2]/ParticleNeutralino4.total_width;
    }
 
-  if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleNeutralino4, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleNeutralino4, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino4, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino4, BRTol);}
 
   cout.precision(10);
 
@@ -5081,7 +5086,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   
   if ( ParticleNeutralino5.three_width != ParticleNeutralino5.three_width) /// Tests for a nan as only nans aren't equal to themselves
     {
-      cout << "# Three body decays give nan for neutralino 5 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      fout << "# Three body decays give nan for neutralino 5 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
       errorflag = -1;
       ParticleNeutralino5.No_of_Decays = Neut5_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
       ParticleNeutralino5.total_width = ParticleNeutralino5.two_width;
@@ -5094,7 +5099,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
     {
       errorflag = -1;
       // for (int i = 0; i<ParticleNeutralino5.No_of_Decays; i++) {
-      //   cout << i << " " << ParticleNeutralino5.Array_Decays[i][2] << endl;
+      //   fout << i << " " << ParticleNeutralino5.Array_Decays[i][2] << endl;
       // }	  
       throw( "nan in Neutralino5 total width \n");
     }
@@ -5103,8 +5108,8 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
      ParticleNeutralino5.Array_Decays[i][5]= ParticleNeutralino5.Array_Decays[i][2]/ParticleNeutralino5.total_width;
    }
 
-  if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleNeutralino5, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleNeutralino5, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino5, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino5, BRTol);}
    }
    else{}
 
@@ -5425,7 +5430,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
       {
 	errorflag = -1;
 	// for (int i = 0; i<Particlehiggsl.No_of_Decays; i++) {
-	//   cout << Particlehiggsl.Array_Decays[i][2] << endl;
+	//   fout << Particlehiggsl.Array_Decays[i][2] << endl;
 	// }
 	
 	throw( "nan in lightest higgs total width \n");
@@ -5435,8 +5440,8 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
      Particlehiggsl.Array_Decays[i][5]= Particlehiggsl.Array_Decays[i][2]/Particlehiggsl.total_width;
    } 
 
-  if (outputPartialWidths == false) {  OutputNoPWs(cout, Particlehiggsl, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(cout, Particlehiggsl, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, Particlehiggsl, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, Particlehiggsl, BRTol);}
 
  }
  else{}
@@ -5758,7 +5763,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleHiggsH.No_of_Decays; i++) {
-     //   cout << i << " " << ParticleHiggsH.Array_Decays[i][2] << endl;
+     //   fout << i << " " << ParticleHiggsH.Array_Decays[i][2] << endl;
      // }	  
      throw( "nan in H0 (second heaviest higgs) total width \n");
    }
@@ -5767,8 +5772,8 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    ParticleHiggsH.Array_Decays[i][5]= ParticleHiggsH.Array_Decays[i][2]/ParticleHiggsH.total_width;
  } 
  
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleHiggsH, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleHiggsH, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsH, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsH, BRTol);}
 
  }
  else{}
@@ -6028,7 +6033,7 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleHiggsH3.No_of_Decays; i++) {
-     //   cout << ParticleHiggsH3.Array_Decays[i][2] << endl;
+     //   fout << ParticleHiggsH3.Array_Decays[i][2] << endl;
      // }	    
      throw( "nan in H03 heaviest higgs total width \n");
    }
@@ -6038,8 +6043,8 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
      ParticleHiggsH3.Array_Decays[i][5]= ParticleHiggsH3.Array_Decays[i][2]/ParticleHiggsH3.total_width;
    } 
 
-  if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleHiggsH3, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleHiggsH3, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsH3, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsH3, BRTol);}
   
    }
  }
@@ -6268,7 +6273,7 @@ if (flagA1 == 1) {
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleHiggsA.No_of_Decays; i++) {
-     //   cout << ParticleHiggsA.Array_Decays[i][2] << endl;
+     //   fout << ParticleHiggsA.Array_Decays[i][2] << endl;
      // }	    
      throw( "nan in A0 lightest pseudoscalar higgs total width \n");
    }
@@ -6277,8 +6282,8 @@ if (flagA1 == 1) {
    ParticleHiggsA.Array_Decays[i][5]= ParticleHiggsA.Array_Decays[i][2]/ParticleHiggsA.total_width;
  } 
 
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleHiggsA, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleHiggsA, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsA, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsA, BRTol);}
 
  }
 
@@ -6460,7 +6465,7 @@ if (flagA1 == 1) {
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleHiggsA2.No_of_Decays; i++) {
-     //   cout << ParticleHiggsA2.Array_Decays[i][2] << endl;
+     //   fout << ParticleHiggsA2.Array_Decays[i][2] << endl;
      // }	    
      throw( "nan in A02 heaviest pseudoscalar higgs total width \n");
    }
@@ -6470,8 +6475,8 @@ if (flagA1 == 1) {
      ParticleHiggsA2.Array_Decays[i][5]= ParticleHiggsA2.Array_Decays[i][2]/ParticleHiggsA2.total_width;
    } 
 
-   if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleHiggsA2, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleHiggsA2, BRTol);}
+   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsA2, BRTol);}
+   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsA2, BRTol);}
 
    }
 
@@ -6484,8 +6489,6 @@ if (flagA1 == 1) {
  double Hplusamplitudeupdown=0, Hplusamplitudecharmstrange=0, Hplusamplitudetopbottom=0, Hplusamplitudeelectronelectronneutrino=0, Hplusamplitudemuonmuonneutrino=0, Hplusamplitudetautauneutrino=0, Hplusamplitudeupstrange=0, Hplusamplitudeupbottom=0, Hplusamplitudecharmdown=0, Hplusamplitudecharmbottom=0, Hplusamplitudetopdown=0, Hplusamplitudetopstrange=0, HplusamplitudeneutZ1charW1=0, HplusamplitudeneutZ1charW2=0, HplusamplitudeneutZ2charW1=0, HplusamplitudeneutZ2charW2=0, HplusamplitudeneutZ3charW1=0, HplusamplitudeneutZ3charW2=0, HplusamplitudeneutZ4charW1=0, HplusamplitudeneutZ4charW2=0, HplusamplitudehW=0, HplusamplitudesupLsdownL=0, HplusamplitudesupRsdownL=0, HplusamplitudesupLsdownR=0, HplusamplitudesupRsdownR=0, HplusamplitudescharmLsstrangeL=0, HplusamplitudescharmLsstrangeR=0, HplusamplitudescharmRsstrangeL=0, HplusamplitudescharmRsstrangeR=0, Hplusamplitudestop1sbottom1=0, Hplusamplitudestop1sbottom2=0, Hplusamplitudestop2sbottom1=0, Hplusamplitudestop2sbottom2=0, HplusamplitudeselectronLsnue=0, HplusamplitudeselectronRsnue=0, HplusamplitudesmuonLsnumu=0, HplusamplitudesmuonRsnumu=0, Hplusamplitudestau1snutau=0, Hplusamplitudestau2snutau=0; ///note Hplus -> H W is kinematically forbidden if we take tree-level mass formulae in the MSSM
 
  double HplusamplitudeWH = 0, HplusamplitudeWH3 = 0, HplusamplitudeWA = 0, HplusamplitudeWA2 = 0, HplusamplitudeneutZ5charW1 = 0, HplusamplitudeneutZ5charW2 = 0;///for NMSSM
-
- // mHpm = 1000;
 
  if (flagHpm == 1) {
  
@@ -6625,7 +6628,7 @@ if (flagA1 == 1) {
    {
      errorflag = -1;
      // for (int i = 0; i<ParticleHiggsplus.No_of_Decays; i++) {
-     //   cout << ParticleHiggsplus.Array_Decays[i][2] << endl;
+     //   fout << ParticleHiggsplus.Array_Decays[i][2] << endl;
      // }	    
      throw( "nan in H+ total width \n");
    }
@@ -6634,8 +6637,8 @@ if (flagA1 == 1) {
    ParticleHiggsplus.Array_Decays[i][5]= ParticleHiggsplus.Array_Decays[i][2]/ParticleHiggsplus.total_width;
  } 
  
- if (outputPartialWidths == false) {  OutputNoPWs(cout, ParticleHiggsplus, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(cout, ParticleHiggsplus, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsplus, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsplus, BRTol);}
   
 
  }
@@ -12396,54 +12399,52 @@ void printRowPDG(ostream & cout, double x) {
 }
 
 
-void OutputNoPWs(ostream & cout, Particle & P, double BRTol) ///Outputs the decay table into the leshouchesOutput file with no PWs (partial widths) given, just branching ratios
+void OutputNoPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the decay table into the leshouchesOutput file with no PWs (partial widths) given, just branching ratios
  {
-   cout << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
-   cout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
-   cout.precision(7);
+   fout << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
+   fout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
    if (P.three_width/P.total_width < BRTol) {
-     cout << left << setw(6) << "#" << setw(18) << "BR" << setw(6) << "NDA" << setw(12) << left << "PDG1" << setw(12) << " PDG2" << setw(30) << "Comments" << "    " << endl;
+     fout << left << setw(6) << "#" << setw(18) << "BR" << setw(6) << "NDA" << setw(12) << left << "PDG1" << setw(12) << " PDG2" << setw(30) << "Comments" << "    " << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
-	 cout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3];  printRowPDG(cout, P.Array_Decays[k][0]); cout << "   "; printRowPDG(cout, P.Array_Decays[k][1]); cout << "   " << left << setprecision(0) << setw(15) << P.Array_Comments[k] << endl;
+	 fout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3];  printRowPDG(fout, P.Array_Decays[k][0]); fout << "   "; printRowPDG(fout, P.Array_Decays[k][1]); fout << "   " << left << setprecision(0) << setw(15) << P.Array_Comments[k] << endl;
        }
      }
    }
    else {
-     cout << left << setw(6) << "#" << setw(18) << "BR" << setw(8) << "NDA" << setw(12) << left << " PDG1" << setw(12) << " PDG2" << setw(12) << " PDG3 " << setw(30) << "Comments" << "     " << endl;
+     fout << left << setw(6) << "#" << setw(18) << "BR" << setw(8) << "NDA" << setw(12) << left << " PDG1" << setw(12) << " PDG2" << setw(12) << " PDG3 " << setw(30) << "Comments" << "     " << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
-	 cout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(cout, P.Array_Decays[k][0]); cout << "    "; printRowPDG(cout,P.Array_Decays[k][1]); cout << "    "; printRowPDG(cout,P.Array_Decays[k][4]); cout << "   " << left << setprecision(0) << setw(25) << P.Array_Comments[k] << endl;
+	 fout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(25) << P.Array_Comments[k] << endl;
        }
      }
    }
-   cout << "#" << endl;
+   fout << "#" << endl;
  }
 
 
-void OutputYesPWs(ostream & cout, Particle & P, double BRTol) ///Outputs the decay table into the leshouchesOutput file with PWs (partial widths) given after the comments column so as not to affect SLHA form
+void OutputYesPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the decay table into the leshouchesOutput file with PWs (partial widths) given after the comments column so as not to affect SLHA form
  {
-   cout << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
-   cout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
-   cout.precision(7);
+   fout << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
+   fout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
 
    if (P.three_width/P.total_width < BRTol || P.three_width == 0) {
-     cout << left << setw(6) << "# " << setw(20) << "BR " << setw(6) << "NDA " << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(30) << "Comments" << "    " << setw(18) << "PW" << endl;
+     fout << left << setw(6) << "# " << setw(20) << "BR " << setw(6) << "NDA " << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(30) << "Comments" << "    " << setw(18) << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
-     	 cout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << " " << P.Array_Decays[k][3] << setw(4) << " ";  printRowPDG(cout, P.Array_Decays[k][0]); cout << "    "; printRowPDG(cout,P.Array_Decays[k][1]); cout << "    "; cout << left << setprecision(0) << setw(30) << P.Array_Comments[k] << "    " << scientific << setprecision(8) << setw(18) << P.Array_Decays[k][2] << endl;
+     	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << " " << P.Array_Decays[k][3] << setw(4) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; fout << left << setprecision(0) << setw(30) << P.Array_Comments[k] << "    " << scientific << setprecision(8) << setw(18) << P.Array_Decays[k][2] << endl;
        }
      }
-     cout << "#" << endl; 
+     fout << "#" << endl; 
    }
    else {
-     cout << left << setw(6) << "# " << setw(20) << "BR" << setw(6) << "NDA" << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(12) << "PDG3" << setw(35) << "Comments" << "      " << setw(28) << "PW" << endl;
+     fout << left << setw(6) << "# " << setw(20) << "BR" << setw(6) << "NDA" << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(12) << "PDG3" << setw(35) << "Comments" << "      " << setw(28) << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
-     	 cout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(8) << fixed << " " << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(cout, P.Array_Decays[k][0]); cout << "    "; printRowPDG(cout,P.Array_Decays[k][1]); cout << "    "; printRowPDG(cout,P.Array_Decays[k][4]); cout << "   " << left << setprecision(0) << setw(38) << P.Array_Comments[k] << "    "<< setw(18) << scientific << setprecision(8) << P.Array_Decays[k][2] << endl;
+     	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(8) << fixed << " " << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(38) << P.Array_Comments[k] << "    "<< setw(18) << scientific << setprecision(8) << P.Array_Decays[k][2] << endl;
        }
      }
-     cout << "#" << endl; 
+     fout << "#" << endl; 
    }
  }
 

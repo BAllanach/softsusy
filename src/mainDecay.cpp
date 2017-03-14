@@ -107,25 +107,29 @@ int main() {
     r->lowOrg(boundaryCondition, mGutGuess, pars, sgnMu, tanb, oneset, uni);
 
     /// check the point in question is problem free: if so print the output
-    if (!r->displayProblem().test()) {
+    //    if (!r->displayProblem().test())
+    {
       NmssmSoftsusy a;
       double qMax = 0.; int num = 1;
       bool ewsbBCscale = false;
 
-      if (PYTHIA) 
+      if (PYTHIA) {
 	r->lesHouchesAccordOutput(fout, modelIdent, pars, sgnMu, tanb, qMax,  
 				  num, ewsbBCscale);
+      	fout.precision(10);
+      }
       else {
 	r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				  num, ewsbBCscale);      
 	cout.precision(10);
-      }
+
+     }
       cout << "# M0=" << m0 << " m12=" << m12 << " a0=" << a0 << " tanb="
 	 << tanb << endl;
           
       if (PYTHIA) calculateDecays(fout, r, a, false);
       else calculateDecays(cout, r, a, false);      
-      
+
       /// now, you've got to pass the output through PYTHIA and work out if it
       /// works alright
       if (PYTHIA) {
@@ -134,7 +138,7 @@ int main() {
 	if (system(buff)) throw("Problem: error in PYTHIA // run\n");
       }
     }
-    else {
+    {
       /// print out what the problem(s) is(are)
       fout << "#" << r->displayProblem() << endl;
       fout.close();
