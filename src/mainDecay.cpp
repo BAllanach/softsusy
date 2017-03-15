@@ -112,8 +112,7 @@ int main() {
     r->lowOrg(boundaryCondition, mGutGuess, pars, sgnMu, tanb, oneset, uni);
 
     /// check the point in question is problem free: if so print the output
-    //    if (!r->displayProblem().test())
-    {
+    if (!r->displayProblem().testSeriousProblem()) {
       NmssmSoftsusy a;
       double qMax = 0.; int num = 1;
       bool ewsbBCscale = false;

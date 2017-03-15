@@ -68,7 +68,7 @@ namespace softsusy {
   /// default is that developer-level debugging printout flag is OFF
   bool printDEBUG = false;
   /// random number seed
-  long idummySave = -21;
+  long idummySave = -22;
   /// Default: use SOFTSUSY conventions for masses of sparticles in loops, ie
   /// tree-level masses computed with the 2-loop Higgs potential
   bool sphenoMassConv = false;
