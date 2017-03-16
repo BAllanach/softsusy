@@ -209,6 +209,8 @@ void NMSSM_command_line_parser::parse(int argc, char* argv[]) {
          nmssm_input->set(NMSSM_input::mPrimeS2, get_value(argv[i], "--mPrimeS2="));
       else if (starts_with(argv[i], "--mS2="))
          nmssm_input->set(NMSSM_input::mS2, get_value(argv[i], "--mS2="));
+      else if (strcmp(argv[i], "--decays") == 0)
+	softsusy::calcDecays = true;
       else
          throw std::string("# Error: unknown NMSSM command line option: ")
             + argv[i] + '\n';

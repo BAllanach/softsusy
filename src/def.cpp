@@ -84,6 +84,8 @@ namespace softsusy {
   bool threeBodyDecays = true;
   /// Default: don't output partial widths in decays
   bool outputPartialWidths = false;
+  /// Default: don't calculate decays
+  bool calcDecays = false;
   
   /// Controls the use of MSSM three-loop RGEs
   bool USE_THREE_LOOP_RGE = false;

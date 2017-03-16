@@ -83,8 +83,6 @@ void errorCall() {
 }
 
 int main(int argc, char *argv[]) {
-  bool calculateDecaysFlag = false;
-  
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
@@ -170,7 +168,7 @@ int main(int argc, char *argv[]) {
       } else if (starts_with(argv[i],"--higgsUncertainties")) 
 	higgsUncertainties = true;
       else if (starts_with(argv[i],"--decays"))
-	calculateDecaysFlag = true;
+	calcDecays = true;
       else if (starts_with(argv[i],"--outputPartialWidths"))
 	outputPartialWidths = true;
       else if (starts_with(argv[i],"--minBR="))
@@ -282,9 +280,9 @@ int main(int argc, char *argv[]) {
 	    { LAMBDA = get_value(argv[i], "--LAMBDA="); }
 	  else if (starts_with(argv[i], "--cgrav=")) 
 	    { cgrav = get_value(argv[i], "--cgrav="); }
-
 	  else badArg = i;
-      if (badArg != 0) cout << "Didn't understand argument " << argv[i] << endl;
+      if (badArg != 0 && strcmp(argv[1], "nmssm"))
+	cout << "Didn't understand argument " << argv[i] << endl;
     } /// main arg loop
 
 
@@ -1131,7 +1129,7 @@ int main(int argc, char *argv[]) {
 		else if (block == "SOFTSUSY") {
 		  int i; double d; kk >> i >> d;
 		  switch(i) {
-		  case 0: if (int(d) > 0) calculateDecaysFlag = true;
+		  case 0: if (int(d) > 0) calcDecays = true;
 		    break;
 		  case 1: TOLERANCE = d; break;
 		  case 2: 
@@ -1439,8 +1437,8 @@ int main(int argc, char *argv[]) {
 
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
-      if (calculateDecaysFlag) calculateDecays(cout, r, nmssm, false);
-      //    if (calculateDecaysFlag) calculateDecays(r, nmssm, false);
+      if (calcDecays) calculateDecays(cout, r, nmssm, false);
+      //    if (calcDecays) calculateDecays(r, nmssm, false);
       if (higgsUncertainties) {
 	int numPts = 30;
 	DoubleVector mh(numPts), mH(numPts), mA(numPts), mHp(numPts);
@@ -1486,8 +1484,8 @@ int main(int argc, char *argv[]) {
                    tanb, oneset, gaugeUnification, ewsbBCscale);
       nmssm.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,
                                    numPoints, ewsbBCscale);
-      //      if (calculateDecaysFlag) calculateDecays(cout, r, nmssm, true);
-      if (calculateDecaysFlag) calculateDecays(cout, r, nmssm, true);
+
+      if (calcDecays) calculateDecays(cout, r, nmssm, true);
       if (nmssm.displayProblem().test()) {
          cout << "# SOFTSUSY problem with NMSSM point: "
               << nmssm.displayProblem() << endl;
