@@ -105,6 +105,8 @@ namespace softsusy{
   extern bool threeBodyDecays;
   /// If true, output partial widths of decays in SLHA comments
   extern bool outputPartialWidths;
+  /// If true, calculate decays
+  extern bool calcDecays;
   
   /// Controls the use of MSSM three-loop RGEs
   extern bool USE_THREE_LOOP_RGE;

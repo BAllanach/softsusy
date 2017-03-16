@@ -21,25 +21,33 @@ static double m1 = 0.,m2 = 0.,m3 = 0.,m4 = 0.,mq = 0.,m5 = 0.,m6 = 0.,
   mA = 0., mphi = 0., g1 = 0., g2 = 0., alphamix = 0., betavac = 0.;
 const int NeutMIXdim = 4;
 const double GFosqrt2 = GMU/pow(2,0.5);
-const double checkAgainstNeg = 1.0e-9;
 static int neutralinoj = 0, neutralinoi = 0, AorhorH = 0;
 /// Accuracy of numerical integration in 1->3 decays
 static DoubleMatrix NeutMIX(NeutMIXdim,NeutMIXdim);
+static double errorflag = 0; /// 0 output if no issues, -1 if issues in calculating decays
 
-void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIsIt) { 
-  out.precision(10);
-  ///Phys theta angles, note should use drbar in decays
+int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIsIt) { 
+
+  /// If there is a serious problem with the point, return an error code and /// warning
+  if (
+      (!nmssmIsIt && r->displayProblem().testSeriousProblem()) ||
+      (nmssmIsIt && nmssm.displayProblem().testSeriousProblem())
+      ) {
+    fout << "# Not calculating decays: serious problem with point\n";
+    return -1;
+  }
+
   double flaggluino = 1, flagsupL = 1, flagsupR = 1, flagsdownL = 1, flagsdownR = 1, flagscharmL = 1, flagscharmR = 1, flagsstrangeL = 1, flagsstrangeR = 1, flagstop1 = 1, flagstop2 = 1, flagsbottom1 = 1, flagsbottom2 = 1, flagselectronL = 1, flagselectronR = 1, flagsmuonL = 1, flagsmuonR = 1, flagstau1 = 1, flagstau2 = 1, flagsnueL = 1, flagsnumuL = 1, flagsnutauL = 1, flagneut1 = 1, flagneut2 = 1, flagneut3 = 1, flagneut4 = 1, flagneut5 = 1, flagchar1 = 1, flagchar2 = 1, flagh1 = 1, flagH2 = 1, flagH3 = 1, flagA1 = 1, flagA2 = 1, flagHpm = 1; ///< Flags to turn off decays, default 1 = on, 0 = off
 
+  errorflag = 0; /// 0 output if no issues, -1 if issues in calculating decays
+
   bool QCDcorr = true; ///Turns on QCD corrections to h->gg and h->qq
-  
+
   ///Switch on or off 1->3 decays
   bool onetothree = threeBodyDecays; ///Turns on 1->3 decays, reads this in from input file, default is true
 
   ///BR Tolerance
   double BRTol = minBR; ///BRs less than this are not output
-  
-  // BRTol = 1e-20; ///set temporarily
     
   NmssmSoftsusy nmssmrun = nmssm; ///Do this as nmssm is a const to ensure it can't be changed here (e.g. if run in RPV mode where NMSSM is not included don't want this to change NMSSM), copy to nmssmrun to allow me to run it to 1000GeV, the scales that SPheno had it's parameters at.
 
@@ -115,7 +123,8 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
 
    double runmt = 0, runmb = 0, runmtau = 0, runmc =0, runms = 0, runmd = 0, runmu = 0, runmel = 0, runmmu = 0, Au = 0, Ad = 0, Ac = 0, As =0, At =0, Ab =0, Atau = 0, Ae =0, Amu =0, mueff=0;
 
-   double alphasAtMA = 0, alphaAtMA = 0, mbAtMA = 0, mtAtMA = 0, mcAtMA = 0, msAtMA = 0, alphasAtMH = 0, alphaAtMH = 0, mbAtMH = 0, mtAtMH = 0, mcAtMH = 0, msAtMH = 0, alphasAtMh = 0, alphaAtMh = 0, mbAtMh = 0, mtAtMh = 0, mcAtMh = 0, msAtMh = 0, alphasAtMA2 = 0, alphaAtMA2 = 0, mbAtMA2 = 0, mtAtMA2 = 0, mcAtMA2 = 0, alphasAtMH3 = 0, alphaAtMH3 = 0, mbAtMH3 = 0, mtAtMH3 = 0, mcAtMH3 = 0; ///For running couplings and masses for higgs 1-loop decays
+   double alphasAtMA = 0, alphaAtMA = 0, mbAtMA = 0, mtAtMA = 0, mcAtMA = 0, msAtMA = 0, alphasAtMH = 0, alphaAtMH = 0, mbAtMH = 0, mtAtMH = 0, mcAtMH = 0, msAtMH = 0, alphasAtMh = 0, alphaAtMh = 0, mbAtMh = 0, mtAtMh = 0, mcAtMh = 0, msAtMh = 0, alphasAtMA2 = 0, alphaAtMA2 = 0, mbAtMA2 = 0, mtAtMA2 = 0, mcAtMA2 = 0, alphasAtMH3 = 0, alphaAtMH3 = 0, mbAtMH3 = 0, mtAtMH3 = 0, mcAtMH3 = 0; //For running couplings and masses for higgs 1-loop decays
+   // msAtMH3 = 0; 
    double g3atmh0 = 0, g3atmH0 = 0, g3atmA0 = 0;
    double mt = 0, mb = 0, mc = 0, ms = 0, mup = 0, mdo = 0, mel = 0, mmu = 0, mtau = 0; ///Quark pole masses for general use
 
@@ -124,18 +133,26 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
    ///Before running to scale 1000GeV take CPeven and CPodd higgs mixing matrices
 
    if(onetothree == true) {
-     out << "# No 1to3 decays included in NMSSM - therefore onetothree set to false" << endl;
+     fout << "# No 1to3 decays included in NMSSM - therefore onetothree set to false" << endl;
    }
    onetothree = false;
 
-   nmssmrun.runto(nmssm.displayMz()); ///Run to EW scale as this is where NMSSMTools has CPeven and CPodd mixing matrices
+   // fout << "MSUSY = " << nmssm.displayMsusy() << endl;
+
+   nmssmrun.runto(nmssm.displayMsusy()); ///Run to scale Msusy for parameter extraction
+
+   nmssmrun.calcDrBarPars();
+
+   S = nmssmrun.displayDrBarPars().mixh0; /// CP even higgs 3x3 mixing matrix as from softsusy
+
+   CPEMix(1,1) = S(1,2); CPEMix(2,1) = S(2,2); CPEMix(1,2) = S(1,1); CPEMix(2,2) = S(2,1); CPEMix(3,1) = S(3,2); CPEMix(3,2) = S(3,1); CPEMix(1,3) = S(1,3); CPEMix(2,3) = S(2,3); CPEMix(3,3) = S(3,3);
 
    tanbeta = nmssmrun.displayTanb();
    beta = atan(tanbeta);
    thetaA = nmssmrun.displayDrBarPars().thetaA0; ///CP odd higgses mixing angle
 
    Ptemp(1,1) = -cos(beta), Ptemp(1,2) = sin(beta), Ptemp(1,3) = 0;
-   Ptemp(2,1) = sin(beta)*cos(thetaA); Ptemp(2,2) = cos(beta)*cos(thetaA); Ptemp(2,3) = sin(beta);
+   Ptemp(2,1) = sin(beta)*cos(thetaA); Ptemp(2,2) = cos(beta)*cos(thetaA); Ptemp(2,3) = sin(thetaA);
    Ptemp(3,1) = sin(beta)*sin(thetaA); Ptemp(3,2) = cos(beta)*sin(thetaA); Ptemp(3,3) = -cos(thetaA);
   
    CPOMix(1,1) = Ptemp(2,2); CPOMix(1,2) = Ptemp(2,1); CPOMix(1,3) = Ptemp(2,3);
@@ -146,15 +163,8 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
    CPOMix2(2,1) = CPOMix(2,1)/sin(beta);
    CPOMix2(1,2) = CPOMix(1,3);
    CPOMix2(2,2) = CPOMix(2,3);
-
-   S = nmssmrun.displayDrBarPars().mixh0; /// CP even higgs 3x3 mixing matrix as from softsusy
-
-   CPEMix(1,1) = S(1,2); CPEMix(2,1) = S(2,2); CPEMix(1,2) = S(1,1); CPEMix(2,2) = S(2,1); CPEMix(3,1) = S(3,2); CPEMix(3,2) = S(3,1); CPEMix(1,3) = S(1,3); CPEMix(2,3) = S(2,3); CPEMix(3,3) = S(3,3);
    
-   thetaA = nmssmrun.displayDrBarPars().thetaA0; ///CP odd higgses mixing angle
-
-   // nmssmrun.runto(1000); ///Run to scale 1000GeV for parameter extraction
-   nmssmrun.runto(nmssm.displayMsusy()); ///Run to scale Msusy for parameter extraction
+   // fout << "S = " << S << " CPEMix = " << CPEMix << " CPOMix = " << CPOMix << endl;
 
    kappa = nmssmrun.displayKappa();
    lam = nmssmrun.displayLambda();
@@ -169,7 +179,6 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
    tanthetaW = gp/g;
    //   alphaEm = pow(e,2)/(4*PI);
 
-   // nmssmrun.runto(1000); ///Run to scale 1000GeV for parameter extraction
  
    mGluino = nmssmrun.displayPhys().mGluino; mneut = nmssmrun.displayPhys().mneut; mch = nmssmrun.displayPhys().mch; mh0 = nmssmrun.displayPhys().mh0; mA0 = nmssmrun.displayPhys().mA0; mHpm = nmssmrun.displayPhys().mHpm; msnu = nmssmrun.displayPhys().msnu; mixNeut = nmssmrun.displayPhys().mixNeut.transpose();
    thetaL = nmssmrun.displayPhys().thetaL; thetaR = nmssmrun.displayPhys().thetaR; mu = nmssmrun.displayPhys().mu; md = nmssmrun.displayPhys().md; me = nmssmrun.displayPhys().me; DoubleMatrix mixh0(nmssmrun.displayPhys().mixh0); mwSoftSusy = nmssmrun.displayMwRun(); runmz = nmssmrun.displayMzRun(); polemw = nmssmrun.displayMw(); polemz = nmssmrun.displayMz();
@@ -269,6 +278,7 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
  g3atmH0 = pow(4*PI*alphasatmH,0.5);
  g3atmA0 = pow(4*PI*alphasatmA,0.5);
 
+
   ///Or run fully: - WHAT IS ACTUALLY USED:
  nmssmrun.runto(nmssmrun.displayPhys().mA0(2));
  alphasAtMA2 =  pow(nmssmrun.displayGaugeCoupling(3),2)/(4*PI);
@@ -284,6 +294,8 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
  mbAtMH3 = pow(2,0.5)*nmssmrun.displayMwRun()*cos(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YD)(3,3)/nmssmrun.displayGaugeCoupling(2);
  mtAtMH3 = pow(2,0.5)*nmssmrun.displayMwRun()*sin(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YU)(3,3)/nmssmrun.displayGaugeCoupling(2);
  mcAtMH3 = pow(2,0.5)*nmssmrun.displayMwRun()*sin(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YU)(2,2)/nmssmrun.displayGaugeCoupling(2);
+ // msAtMH3 = pow(2,0.5)*nmssmrun.displayMwRun()*cos(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YD)(2,2)/nmssmrun.displayGaugeCoupling(2);
+
 
  nmssmrun.runto(nmssmrun.displayPhys().mA0(1));
  alphasAtMA =  pow(nmssmrun.displayGaugeCoupling(3),2)/(4*PI);
@@ -301,6 +313,23 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
  mtAtMH = pow(2,0.5)*nmssmrun.displayMwRun()*sin(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YU)(3,3)/nmssmrun.displayGaugeCoupling(2);
  mcAtMH = pow(2,0.5)*nmssmrun.displayMwRun()*sin(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YU)(2,2)/nmssmrun.displayGaugeCoupling(2);
  msAtMH = pow(2,0.5)*nmssmrun.displayMwRun()*cos(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YD)(2,2)/nmssmrun.displayGaugeCoupling(2);
+
+ ///If yukawa matrix elements are 0 then use a non-zero mass!
+ if (mbAtMH3 == 0) {mbAtMH3 = mb;}
+ if (mtAtMH3 == 0) {mtAtMH3 = mt;}
+ if (mcAtMH3 == 0) {mcAtMH3 = mc;}
+ // if (msAtMH3 == 0) {msAtMH3 = ms;}
+ if (mbAtMH == 0) {mbAtMH = mb;}
+ if (mtAtMH == 0) {mtAtMH = mt;}
+ if (mcAtMH == 0) {mcAtMH = mc;}
+ if (msAtMH == 0) {msAtMH = ms;}
+ if (mbAtMA2 == 0) {mbAtMA2 = mb;}
+ if (mtAtMA2 == 0) {mtAtMA2 = mt;}
+ if (mcAtMA2 == 0) {mcAtMA2 = mc;}
+ if (mbAtMA == 0) {mbAtMA = mb;}
+ if (mtAtMA == 0) {mtAtMA = mt;}
+ if (mcAtMA == 0) {mcAtMA = mc;}
+ if (msAtMA == 0) {msAtMA = ms;}
 
 ///For mh should not use full susy running as susy not around this scale, instead use SM running as in QeDQcD object defined in lowe.h:
  QedQcd a(nmssmrun.displayDataSet());
@@ -338,6 +367,7 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
    
  thetaL2 = -thetaL + PI/2;
  thetaR2 = -thetaR + PI/2;
+
  runmw = mwSoftSusy;
 
   if (mu(1,3) <= mu(2,3)) {
@@ -444,6 +474,16 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
  mcAtMH = pow(2,0.5)*polemw*sin(beta)*r->displayYukawaMatrix(YU)(2,2)/r->displayGaugeCoupling(2);
  msAtMH = pow(2,0.5)*polemw*cos(beta)*r->displayYukawaMatrix(YD)(2,2)/r->displayGaugeCoupling(2);
 
+ ///If yukawa matrix elements are 0 then use a non-zero mass!
+ if (mbAtMH == 0) {mbAtMH = mb;}
+ if (mtAtMH == 0) {mtAtMH = mt;}
+ if (mcAtMH == 0) {mcAtMH = mc;}
+ if (msAtMH == 0) {msAtMH = ms;}
+ if (mbAtMA == 0) {mbAtMA = mb;}
+ if (mtAtMA == 0) {mtAtMA = mt;}
+ if (mcAtMA == 0) {mcAtMA = mc;}
+ if (msAtMA == 0) {msAtMA = ms;}
+
  ///For mh should not use full susy running as susy not around this scale, instead use SM running as in QeDQcD object defined in lowe.h:
  QedQcd a(r->displayDataSet());
 
@@ -459,16 +499,13 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
  g3atmH0 = pow(4*PI*alphasAtMH,0.5);
  g3atmA0 = pow(4*PI*alphasAtMA,0.5);
 
-
   }
-
 
   ///gravitino stuff
   double mgravitino = r->displayGravitino();
   // mgravitino = 5.92500000e-08; ///Doesn't affect functions lsp(m,posi,posj) or nlsp(m,posi,posj) therefore these will read out the lsp and nlsp incorrectly with these, just use to test gravitino decay formulae.
   int gravonoff = 0; ///a gravitino switch, by default it's off (0), it's turned on (1) a few lines below if the gravitino is the LSP as then decays to it are important, if it's not the LSP decays to it are unimportant as they are Planck suppressed.
   double MPlreduced = 2.4e18;
-  ///double MPlreduced = MPLANCK/pow(8*PI,0.5);
   int posi = 0, posj = 0;
   double m = mgravitino;
   double LSP = r->lsp(m, posi, posj); 
@@ -476,43 +513,43 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
   if (LSP == -1)     gravonoff = 1; ///< LSP is a gravitino
   else if( LSP > -1 && LSP < 7) gravonoff = 0; ///< LSP is not a gravitino
      int NLSP = 0; ///default position
-///Default position is 1 so all SUSY dedcays to LSP gravitino considered unless you only want the NLSP decays to gravitino decays, then if below section uncommented it sets all but NLSP switch to 0.     
-     int neutNLSP = 1, upsquNLSP= 1, downsquNLSP = 1, slepNLSP = 1, snuNLSP = 1, gluNLSP = 1; 
+     int neutNLSP = 1, upsquNLSP= 1, downsquNLSP = 1, slepNLSP = 1, snuNLSP = 1, gluNLSP = 1; ///Default position is 1 so all SUSY dedcays to LSP gravitino considered unless you only want the NLSP decays to gravitino decays, then if below section uncommented it sets all but NLSP switch to 0.
   
-  ///Using the nlsp function from softsusy.cpp, Returns a label which says which particle is NLSP, 0 means NLSP is neutralino, 1=up squark, 2=down squark, 3=sleptons, 4=charginos, 5=sneutrinos, 6=gluino. Uncomment this if you only want the NLSP decays to the LSP gravitino to be considered, note one potential issue with this is particles only slightly heavier than the NLSP may still have only the decay to the LSPgravitino available and this function doesn't take account of this. If this section below is commented all SUSY decays to the LSP gravitino are considered and then they are not output if there BRs are less than 10^-15
+  ///Using the nlsp function from softsusy.cpp, Returns a label which says which particle is NLSP, 0 means NLSP is neutralino, 1=up squark, 2=down squark, 3=sleptons, 4=charginos, 5=sneutrinos, 6=gluino. Uncomment this if you only want the NLSP decays to the LSP gravitino to be considered, note one potential issue with this is particles only slightly heavier than the NLSP may still have only the decay to the LSPgravitino available and this function doesn't take account of this. If this section below is commented all SUSY decays to the LSP gravitino are considered and then they are not output if there BRs are less than BRTol
   NLSP = r->nlsp(m, posi, posj); 
+  // fout << "NLSP = " << NLSP << endl;
   // NLSP = 0; /// Temporarily set to neutralino
-  neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0, gluNLSP = 0; /// For scans
-   // out << "NLSP = " << NLSP << endl;
+
+  // neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0, gluNLSP = 0; /// For scans
   if( NLSP == 0) {
-    //    out << "NLSP is neutralino" << endl;
-    upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0, gluNLSP = 0;
+    //    fout << "NLSP is neutralino" << endl;
+    upsquNLSP= 0; downsquNLSP = 0; slepNLSP = 0; snuNLSP = 0; gluNLSP = 0;
   }
   else if (NLSP == 1) {
-    //    out << "NLSP is up squark" << endl;
-    neutNLSP = 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0, gluNLSP = 0;
+    //    fout << "NLSP is up squark" << endl;
+    neutNLSP = 0; downsquNLSP = 0; slepNLSP = 0; snuNLSP = 0; gluNLSP = 0;
   }
   else if (NLSP == 2) {
-    //    out << "NLSP is down squark" << endl;
-    neutNLSP = 0, upsquNLSP= 0, slepNLSP = 0,  snuNLSP = 0, gluNLSP = 0;
+    //    fout << "NLSP is down squark" << endl;
+    neutNLSP = 0; upsquNLSP= 0; slepNLSP = 0; snuNLSP = 0; gluNLSP = 0;
   }
   else if (NLSP == 3) {
-    //    out << "NLSP is slepton" << endl;
-    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, snuNLSP = 0, gluNLSP = 0;
+    //    fout << "NLSP is slepton" << endl;
+    neutNLSP = 0; upsquNLSP= 0; downsquNLSP = 0; snuNLSP = 0; gluNLSP = 0;
   }
   else if (NLSP == 4) {
-    //    out << "NLSP is chargino - WARNING chargino NLSP decays to gravitino LSP not included in program!" << endl;
-    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0, gluNLSP = 0;
+    //    fout << "NLSP is chargino - WARNING chargino NLSP decays to gravitino LSP not included in program!" << endl;
+    neutNLSP = 0; upsquNLSP= 0; downsquNLSP = 0; slepNLSP = 0; snuNLSP = 0; gluNLSP = 0;
   }
   else if (NLSP == 5) {
-    //    out << "NLSP is sneutrino" << endl;
-    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, gluNLSP = 0;
+    //    fout << "NLSP is sneutrino" << endl;
+    neutNLSP = 0; upsquNLSP= 0; downsquNLSP = 0; slepNLSP = 0; gluNLSP = 0;
   }
   else if (NLSP == 6) {
-    //    out << "NLSP is gluino" << endl;
-    neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0;
+    //    fout << "NLSP is gluino" << endl;
+    neutNLSP = 0; upsquNLSP= 0; downsquNLSP = 0; slepNLSP = 0; snuNLSP = 0;
   }
-  else { neutNLSP = 1, upsquNLSP= 1, downsquNLSP = 1, slepNLSP = 1, snuNLSP = 1, gluNLSP = 1;} ///Default position is to consdier all SUSY particle decays to LSP gravitino
+  else { neutNLSP = 1; upsquNLSP= 1; downsquNLSP = 1; slepNLSP = 1; snuNLSP = 1; gluNLSP = 1;} ///Default position is to consdier all SUSY particle decays to LSP gravitino
   
  ///Obtaining the CKM Matrix from Yukawa Matrices:
  DoubleMatrix YUU(3,3), YDD(3,3), YEE(3,3);
@@ -546,6 +583,8 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
 
  DoubleMatrix Vu(3,3), Uu(3,3), yu(3,3), Vd(3,3), Ud(3,3), yd(3,3), Ve(3,3), Ue(3,3), ye(3,3);
 
+
+
   ///Define Particle PDG codes
   double PDGdown = 1, PDGup = 2, PDGstrange = 3, PDGcharm = 4, PDGbottom = 5, PDGtop = 6;
   double PDGelectron = 11, PDGnuelectron = 12, PDGmuon = 13, PDGnumuon = 14, PDGtau = 15, PDGnutau = 16, PDGgluon = 21, PDGphoton = 22, PDGZboson = 23, PDGWplus = 24, PDGh0 = 25, PDGH0 = 35, PDGA0 = 36, PDGHplus = 37;
@@ -560,6 +599,9 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
   double PDGA2 = 46, PDGH3 = 45, PDGneutralino5 = 1000045;
 
   double MCH1=mch(1), MCH2=mch(2);
+
+  ///TEMPORARILY MAKE MCH1 -ve
+  // MCH1 = -mch(1);
 
 
   /// Create object ParticleGluino of class Particle
@@ -1166,7 +1208,7 @@ void calculateDecays(ostream & out, MssmSoftsusy * r, const NmssmSoftsusy & nmss
   ParticleHiggsH3.No_1to3_Decays = 2;
   ParticleHiggsH3.No_grav_Decays = 0;
   if (nmssmIsIt == false) { ParticleHiggsH3.No_NMSSM_Decays = 0;}
-  else if (nmssmIsIt == true) { ParticleHiggsH3.No_NMSSM_Decays = 82;}
+  else if (nmssmIsIt == true) { ParticleHiggsH3.No_NMSSM_Decays = 81;}
   ParticleHiggsH3.No_of_Decays = ParticleHiggsH3.No_1to2_Decays + ParticleHiggsH3.No_1to3_Decays + ParticleHiggsH3.No_grav_Decays  + ParticleHiggsH3.No_NMSSM_Decays;
   ParticleHiggsH3.Array_Decays.resize(ParticleHiggsH3.No_of_Decays);
   for (int i = 0; i < ParticleHiggsH3.No_of_Decays; i++)
@@ -1368,20 +1410,30 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
   
   if ( ParticleGluino.three_width != ParticleGluino.three_width) /// Tests for a nan as only nans aren't equal to themselves
     {
-      out << "# Three body decays give nan for gluino - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      fout << "# Three body decays give nan for gluino - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      errorflag = -1;
       ParticleGluino.No_of_Decays = Gluino_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
       ParticleGluino.total_width = ParticleGluino.two_width;
     }
   else {
     ParticleGluino.total_width = ParticleGluino.two_width + ParticleGluino.three_width;
   }
-   
+
+  if ( ParticleGluino.total_width != ParticleGluino.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleGluino.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleGluino.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in gluino total width \n");
+    }
+  
   for (int i =0; i<ParticleGluino.No_of_Decays; i++) {
      ParticleGluino.Array_Decays[i][5]= ParticleGluino.Array_Decays[i][2]/ParticleGluino.total_width;
    }
 
-  if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleGluino, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleGluino, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleGluino, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleGluino, BRTol);}
   }
 
  
@@ -1440,21 +1492,29 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  
  if ( ParticleSdownL.three_width != ParticleSdownL.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for sdownL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for sdownL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSdownL.No_of_Decays = SdownL_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSdownL.total_width = ParticleSdownL.two_width;
    }
  else {
    ParticleSdownL.total_width = ParticleSdownL.two_width + ParticleSdownL.three_width;
- }
+
+  if ( ParticleSdownL.total_width != ParticleSdownL.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSdownL.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleSdownL.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in sdownL total width \n");
+    }
+ 
  
  for (int i =0; i<ParticleSdownL.No_of_Decays; i++) {
    ParticleSdownL.Array_Decays[i][5]= ParticleSdownL.Array_Decays[i][2]/ParticleSdownL.total_width;
  }
-
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSdownL, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSdownL, BRTol);}
-
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSdownL, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSdownL, BRTol);}
  }
 
   
@@ -1508,21 +1568,31 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  
  if ( ParticleSdownR.three_width != ParticleSdownR.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for sdownR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for sdownR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSdownR.No_of_Decays = SdownR_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSdownR.total_width = ParticleSdownR.two_width;
    }
  else {
    ParticleSdownR.total_width = ParticleSdownR.two_width + ParticleSdownR.three_width;
  }
- 
+
+ if ( ParticleSdownR.total_width != ParticleSdownR.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSdownR.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleSdownR.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in sdownR total width \n");
+    }
+  
+  
  for (int i =0; i<ParticleSdownR.No_of_Decays; i++) {
    ParticleSdownR.Array_Decays[i][5]= ParticleSdownR.Array_Decays[i][2]/ParticleSdownR.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSdownR, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSdownR, BRTol);}
-
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSdownR, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSdownR, BRTol);}
   }
 
 
@@ -1580,20 +1650,31 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    
  if ( ParticleSupL.three_width != ParticleSupL.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for supL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for supL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSupL.No_of_Decays = SupL_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSupL.total_width = ParticleSupL.two_width;
    }
  else {
    ParticleSupL.total_width = ParticleSupL.two_width + ParticleSupL.three_width;
  }
- 
+
+  if ( ParticleSupL.total_width != ParticleSupL.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSupL.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleSupL.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in supL total width \n");
+    }
+ }
+
  for (int i =0; i<ParticleSupL.No_of_Decays; i++) {
    ParticleSupL.Array_Decays[i][5]= ParticleSupL.Array_Decays[i][2]/ParticleSupL.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSupL, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSupL, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSupL, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSupL, BRTol);}
 
   }
 
@@ -1652,7 +1733,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  
  if ( ParticleSupR.three_width != ParticleSupR.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for supR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for supR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSupR.No_of_Decays = SupR_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSupR.total_width = ParticleSupR.two_width;
    }
@@ -1660,11 +1742,21 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSupR.total_width = ParticleSupR.two_width + ParticleSupR.three_width;
  }
  
+  if ( ParticleSupR.total_width != ParticleSupR.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSupR.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleSupR.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in supR total width \n");
+    }
+ 
+
  for (int i =0; i<ParticleSupR.No_of_Decays; i++) {
    ParticleSupR.Array_Decays[i][5]= ParticleSupR.Array_Decays[i][2]/ParticleSupR.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSupR, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSupR, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSupR, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSupR, BRTol);}
 
  }
 
@@ -1724,20 +1816,31 @@ double SstrangeL_No_1to2_Decays = 0;
  
  if ( ParticleSstrangeL.three_width != ParticleSstrangeL.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for sstrangeL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for sstrangeL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSstrangeL.No_of_Decays = SstrangeL_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSstrangeL.total_width = ParticleSstrangeL.two_width;
    }
  else {
    ParticleSstrangeL.total_width = ParticleSstrangeL.two_width + ParticleSstrangeL.three_width;
  }
+
+  if ( ParticleSstrangeL.total_width != ParticleSstrangeL.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSstrangeL.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleSstrangeL.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in sstrangeL total width \n");
+    }
+ 
  
  for (int i =0; i<ParticleSstrangeL.No_of_Decays; i++) {
    ParticleSstrangeL.Array_Decays[i][5]= ParticleSstrangeL.Array_Decays[i][2]/ParticleSstrangeL.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSstrangeL, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSstrangeL, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSstrangeL, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSstrangeL, BRTol);}
 
  }
 
@@ -1793,20 +1896,31 @@ double SstrangeR_No_1to2_Decays = 0;
  
  if ( ParticleSstrangeR.three_width != ParticleSstrangeR.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for sstrangeR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for sstrangeR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSstrangeR.No_of_Decays = SstrangeR_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSstrangeR.total_width = ParticleSstrangeR.two_width;
    }
  else {
    ParticleSstrangeR.total_width = ParticleSstrangeR.two_width + ParticleSstrangeR.three_width;
  }
+
+  if ( ParticleSstrangeR.total_width != ParticleSstrangeR.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSstrangeR.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleSstrangeR.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in sstrangeR total width \n");
+    }
+ 
  
  for (int i =0; i<ParticleSstrangeR.No_of_Decays; i++) {
    ParticleSstrangeR.Array_Decays[i][5]= ParticleSstrangeR.Array_Decays[i][2]/ParticleSstrangeR.total_width;
  }
  
-  if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSstrangeR, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSstrangeR, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSstrangeR, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSstrangeR, BRTol);}
  }
 
 
@@ -1866,19 +1980,31 @@ double SstrangeR_No_1to2_Decays = 0;
  
  if ( ParticleScharmL.three_width != ParticleScharmL.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for scharmL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for scharmL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleScharmL.No_of_Decays = ScharmL_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleScharmL.total_width = ParticleScharmL.two_width;
    }
  else {
    ParticleScharmL.total_width = ParticleScharmL.two_width + ParticleScharmL.three_width;
  }
+
+  if ( ParticleScharmL.total_width != ParticleScharmL.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleScharmL.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleScharmL.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in scharmL total width \n");
+    }
+ 
+
  
  for (int i =0; i<ParticleScharmL.No_of_Decays; i++) {
    ParticleScharmL.Array_Decays[i][5]= ParticleScharmL.Array_Decays[i][2]/ParticleScharmL.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleScharmL, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleScharmL, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleScharmL, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleScharmL, BRTol);}
  }
 
 
@@ -1933,19 +2059,30 @@ double SstrangeR_No_1to2_Decays = 0;
  
  if ( ParticleScharmR.three_width != ParticleScharmR.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for scharmR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for scharmR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleScharmR.No_of_Decays = ScharmR_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleScharmR.total_width = ParticleScharmR.two_width;
    }
  else {
    ParticleScharmR.total_width = ParticleScharmR.two_width + ParticleScharmL.three_width;
  }
+
+ if ( ParticleScharmR.total_width != ParticleScharmR.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleScharmR.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleScharmR.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in scharmR total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleScharmR.No_of_Decays; i++) {
    ParticleScharmR.Array_Decays[i][5]= ParticleScharmR.Array_Decays[i][2]/ParticleScharmR.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleScharmR, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleScharmR, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleScharmR, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleScharmR, BRTol);}
  }
 
 
@@ -1961,10 +2098,10 @@ double SstrangeR_No_1to2_Decays = 0;
  sbottom1amplitudetopcharginoW1 = squark1amplitudedecaycharginoW1mix (md(1,3), mt, MCH1, g, thetaL2, thetaR2, thetab, beta, runmw, runmt, runmb, 2);
  sbottom1amplitudetopcharginoW2 = squark1amplitudedecaycharginoW2mix (md(1,3), mt, MCH2, g, thetaL2, thetaR2, thetab, beta, runmw, runmt, runmb, 2);
  if (nmssmIsIt == false) {
-   sbottom1amplitudebottomneutralinoZ1 = testrealsquark3amplitudedecayneutralino (md(1,3), mb, mneut(1), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 1, 1);
-   sbottom1amplitudebottomneutralinoZ2 = testrealsquark3amplitudedecayneutralino (md(1,3), mb, mneut(2), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 1, 2);
-   sbottom1amplitudebottomneutralinoZ3 = testrealsquark3amplitudedecayneutralino (md(1,3), mb, mneut(3), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 1, 3);
-   sbottom1amplitudebottomneutralinoZ4 = testrealsquark3amplitudedecayneutralino (md(1,3), mb, mneut(4), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 1, 4);
+   sbottom1amplitudebottomneutralinoZ1 = squark3amplitudedecayneutralino (md(1,3), mb, mneut(1), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 1, 1);
+   sbottom1amplitudebottomneutralinoZ2 = squark3amplitudedecayneutralino (md(1,3), mb, mneut(2), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 1, 2);
+   sbottom1amplitudebottomneutralinoZ3 = squark3amplitudedecayneutralino (md(1,3), mb, mneut(3), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 1, 3);
+   sbottom1amplitudebottomneutralinoZ4 = squark3amplitudedecayneutralino (md(1,3), mb, mneut(4), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 1, 4);
    sbottom1amplitudebottomgravitino = squarkamplitudedecaygravitino(md(1,3), mgravitino, mb, MPlreduced, gravonoff, downsquNLSP);
  }
  else if (nmssmIsIt == true) {
@@ -2014,20 +2151,30 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  
  if ( ParticleSbottom1.three_width != ParticleSbottom1.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for sbottom1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for sbottom1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      ParticleSbottom1.No_of_Decays = Sbottom1_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSbottom1.total_width = ParticleSbottom1.two_width;
    }
  else {
    ParticleSbottom1.total_width = ParticleSbottom1.two_width + ParticleSbottom1.three_width;
  }
+
+  if ( ParticleSbottom1.total_width != ParticleSbottom1.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSbottom1.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleSbottom1.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in sbottom1 total width \n");
+    }
+ 
  
  for (int i =0; i<ParticleSbottom1.No_of_Decays; i++) {
    ParticleSbottom1.Array_Decays[i][5]= ParticleSbottom1.Array_Decays[i][2]/ParticleSbottom1.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSbottom1, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSbottom1, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSbottom1, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSbottom1, BRTol);}
 
  }
 
@@ -2043,10 +2190,10 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  sbottom2amplitudegluinobottom =  squarkamplitudedecaygluinomix (md(2,3), mb, mGluino, alphas, 2, thetab);
  sbottom2amplitudetopcharginoW1 = squark2amplitudedecaycharginoW1mix (md(2,3), mt, MCH1, g, thetaL2, thetaR2, thetab, beta, runmw, runmt, runmb,2);
  sbottom2amplitudetopcharginoW2 = squark2amplitudedecaycharginoW2mix (md(2,3), mt, MCH2, g, thetaL2, thetaR2, thetab, beta, runmw, runmt, runmb,2); 
- sbottom2amplitudebottomneutralinoZ1 = testrealsquark3amplitudedecayneutralino (md(2,3), mb, mneut(1), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 2, 1);
- sbottom2amplitudebottomneutralinoZ2 = testrealsquark3amplitudedecayneutralino (md(2,3), mb, mneut(2), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 2, 2);
- sbottom2amplitudebottomneutralinoZ3 = testrealsquark3amplitudedecayneutralino (md(2,3), mb, mneut(3), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 2, 3);
- sbottom2amplitudebottomneutralinoZ4 = testrealsquark3amplitudedecayneutralino (md(2,3), mb, mneut(4), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 2, 4);
+ sbottom2amplitudebottomneutralinoZ1 = squark3amplitudedecayneutralino (md(2,3), mb, mneut(1), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 2, 1);
+ sbottom2amplitudebottomneutralinoZ2 = squark3amplitudedecayneutralino (md(2,3), mb, mneut(2), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 2, 2);
+ sbottom2amplitudebottomneutralinoZ3 = squark3amplitudedecayneutralino (md(2,3), mb, mneut(3), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 2, 3);
+ sbottom2amplitudebottomneutralinoZ4 = squark3amplitudedecayneutralino (md(2,3), mb, mneut(4), runmw, thetab, beta, mixNeut, g, gp, runmb, 2, 2, 4);
  sbottom2amplitudeWbosonstop1 = squark3amplitudedecaysquark3Wboson (md(2,3), polemw, mu(1,3), g, thetat, thetab, 2, 2, 1, 1);
  sbottom2amplitudeWbosonstop2 = squark3amplitudedecaysquark3Wboson (md(2,3), polemw, mu(2,3), g, thetat, thetab, 2, 2, 1, 2);
  sbottom2amplitudeHminusstop1 = squark3amplitudedecaychargedHiggssquark3 (md(2,3), mHpm, mu(1,3), g, runmw, beta, thetat, thetab, greekmu, At, Ab, runmt, runmb, 1, 2);
@@ -2112,20 +2259,31 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  
  if ( ParticleSbottom2.three_width != ParticleSbottom2.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for sbottom2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for sbottom2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSbottom2.No_of_Decays = Sbottom2_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSbottom2.total_width = ParticleSbottom2.two_width;
    }
  else {
    ParticleSbottom2.total_width = ParticleSbottom2.two_width + ParticleSbottom2.three_width;
  }
+
+  if ( ParticleSbottom2.total_width != ParticleSbottom2.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleSbottom2.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleSbottom2.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in sbottom2 total width \n");
+    }
+ 
  
  for (int i =0; i<ParticleSbottom2.No_of_Decays; i++) {
    ParticleSbottom2.Array_Decays[i][5]= ParticleSbottom2.Array_Decays[i][2]/ParticleSbottom2.total_width;
  }
  
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSbottom2, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSbottom2, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSbottom2, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSbottom2, BRTol);}
 
  }
 
@@ -2142,10 +2300,10 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  stop1amplitudebottomcharginoW1 = squark1amplitudedecaycharginoW1mix (mu(1,3), mb, MCH1, g, thetaL2, thetaR2, thetat, beta, runmw, runmt, runmb, 1);
  stop1amplitudebottomcharginoW2 = squark1amplitudedecaycharginoW2mix (mu(1,3), mb, MCH2, g, thetaL2, thetaR2, thetat, beta, runmw, runmt, runmb, 1);
  if (nmssmIsIt == false) {
-   stop1amplitudetopneutralinoZ1 = testrealsquark3amplitudedecayneutralino (mu(1,3), mt, mneut(1), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 1, 1);
-   stop1amplitudetopneutralinoZ2 = testrealsquark3amplitudedecayneutralino (mu(1,3), mt, mneut(2), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 1, 2);
-   stop1amplitudetopneutralinoZ3 = testrealsquark3amplitudedecayneutralino (mu(1,3), mt, mneut(3), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 1, 3);
-   stop1amplitudetopneutralinoZ4 = testrealsquark3amplitudedecayneutralino (mu(1,3), mt, mneut(4), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 1, 4);
+   stop1amplitudetopneutralinoZ1 = squark3amplitudedecayneutralino (mu(1,3), mt, mneut(1), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 1, 1);
+   stop1amplitudetopneutralinoZ2 = squark3amplitudedecayneutralino (mu(1,3), mt, mneut(2), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 1, 2);
+   stop1amplitudetopneutralinoZ3 = squark3amplitudedecayneutralino (mu(1,3), mt, mneut(3), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 1, 3);
+   stop1amplitudetopneutralinoZ4 = squark3amplitudedecayneutralino (mu(1,3), mt, mneut(4), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 1, 4);
    stop1amplitudetopgravitino = squarkamplitudedecaygravitino(mu(1,3), mgravitino, mt, MPlreduced, gravonoff, upsquNLSP);
  }
  else if (nmssmIsIt == true) {
@@ -2197,20 +2355,31 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  
  if ( ParticleStop1.three_width != ParticleStop1.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for stop1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for stop1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleStop1.No_of_Decays = Stop1_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleStop1.total_width = ParticleStop1.two_width;
    }
  else {
    ParticleStop1.total_width = ParticleStop1.two_width + ParticleStop1.three_width;
  }
+
+  if ( ParticleStop1.total_width != ParticleStop1.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleStop1.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleStop1.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in stop1 total width \n");
+    }
+ 
  
  for (int i =0; i<ParticleStop1.No_of_Decays; i++) {
    ParticleStop1.Array_Decays[i][5]= ParticleStop1.Array_Decays[i][2]/ParticleStop1.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleStop1, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleStop1, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleStop1, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleStop1, BRTol);}
  }
 
 
@@ -2237,10 +2406,10 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
    stop2amplitudehstop1 = squark32amplitudedecayneutralHiggssquark3 (mu(2,3), mh0(1), mu(1,3), g, gp, runmw, beta, alpha, thetat, thetab, greekmu, At, Ab, runmt, runmb, 1, 'h');
    stop2amplitudeHstop1 = squark32amplitudedecayneutralHiggssquark3 (mu(2,3), mh0(2), mu(1,3), g, gp, runmw, beta, alpha, thetat, thetab, greekmu, At, Ab, runmt, runmb, 1, 'H'); 
    stop2amplitudeAstop1 = squark32amplitudedecayneutralHiggssquark3 (mu(2,3), mA0(1), mu(1,3), g, gp, runmw, beta, alpha, thetat, thetab, greekmu, At, Ab, runmt, runmb, 1, 'A');
- stop2amplitudetopneutralinoZ1 = testrealsquark3amplitudedecayneutralino (mu(2,3), mt, mneut(1), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 2, 1);
- stop2amplitudetopneutralinoZ2 = testrealsquark3amplitudedecayneutralino (mu(2,3), mt, mneut(2), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 2, 2);
- stop2amplitudetopneutralinoZ3 = testrealsquark3amplitudedecayneutralino (mu(2,3), mt, mneut(3), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 2, 3);
- stop2amplitudetopneutralinoZ4 = testrealsquark3amplitudedecayneutralino (mu(2,3), mt, mneut(4), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 2, 4);
+ stop2amplitudetopneutralinoZ1 = squark3amplitudedecayneutralino (mu(2,3), mt, mneut(1), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 2, 1);
+ stop2amplitudetopneutralinoZ2 = squark3amplitudedecayneutralino (mu(2,3), mt, mneut(2), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 2, 2);
+ stop2amplitudetopneutralinoZ3 = squark3amplitudedecayneutralino (mu(2,3), mt, mneut(3), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 2, 3);
+ stop2amplitudetopneutralinoZ4 = squark3amplitudedecayneutralino (mu(2,3), mt, mneut(4), runmw, thetat, beta, mixNeut, g, gp, runmt, 1, 2, 4);
  stop2amplitudetopgravitino =squarkamplitudedecaygravitino(mu(2,3), mgravitino, mt, MPlreduced, gravonoff, upsquNLSP);
  }
  else if (nmssmIsIt == true) {
@@ -2296,20 +2465,31 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  
  if ( ParticleStop2.three_width != ParticleStop2.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for stop2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for stop2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleStop2.No_of_Decays = Stop2_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleStop2.total_width = ParticleStop2.two_width;
    }
  else {
    ParticleStop2.total_width = ParticleStop2.two_width + ParticleStop2.three_width;
  }
+
+ if ( ParticleStop2.total_width != ParticleStop2.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleStop2.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleStop2.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in stop2 total width \n");
+   }
  
+
  for (int i =0; i<ParticleStop2.No_of_Decays; i++) {
    ParticleStop2.Array_Decays[i][5]= ParticleStop2.Array_Decays[i][2]/ParticleStop2.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleStop2, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleStop2, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleStop2, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleStop2, BRTol);}
 
  }
 
@@ -2371,20 +2551,32 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  
  if ( ParticleSelectronL.three_width != ParticleSelectronL.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for selectronL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for selectronL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSelectronL.No_of_Decays = SelectronL_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSelectronL.total_width = ParticleSelectronL.two_width;
    }
  else {
    ParticleSelectronL.total_width = ParticleSelectronL.two_width + ParticleSelectronL.three_width;
  }
+
+
+ if ( ParticleSelectronL.total_width != ParticleSelectronL.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSelectronL.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleSelectronL.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in selectronL total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleSelectronL.No_of_Decays; i++) {
    ParticleSelectronL.Array_Decays[i][5]= ParticleSelectronL.Array_Decays[i][2]/ParticleSelectronL.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSelectronL, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSelectronL, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSelectronL, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSelectronL, BRTol);}
 
  }
 
@@ -2438,19 +2630,30 @@ Sbottom1_No_1to2_Decays = ParticleSbottom1.No_1to2_Decays + ParticleSbottom1.No_
  
  if ( ParticleSelectronR.three_width != ParticleSelectronR.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for selectronR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for selectronR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSelectronR.No_of_Decays = SelectronR_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSelectronR.total_width = ParticleSelectronR.two_width;
    }
  else {
    ParticleSelectronR.total_width = ParticleSelectronR.two_width + ParticleSelectronR.three_width;
  }
+
+ if ( ParticleSelectronR.total_width != ParticleSelectronR.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSelectronR.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleSelectronR.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in selectronR total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleSelectronR.No_of_Decays; i++) {
    ParticleSelectronR.Array_Decays[i][5]= ParticleSelectronR.Array_Decays[i][2]/ParticleSelectronR.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSelectronR, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSelectronR, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSelectronR, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSelectronR, BRTol);}
 
  }
 
@@ -2510,19 +2713,30 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  
  if ( ParticleSmuonL.three_width != ParticleSmuonL.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for smuonL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for smuonL - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSmuonL.No_of_Decays = SmuonL_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSmuonL.total_width = ParticleSmuonL.two_width;
    }
  else {
    ParticleSmuonL.total_width = ParticleSmuonL.two_width + ParticleSmuonL.three_width;
  }
+
+ if ( ParticleSmuonL.total_width != ParticleSmuonL.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSmuonL.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleSmuonL.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in smuonL total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleSmuonL.No_of_Decays; i++) {
    ParticleSmuonL.Array_Decays[i][5]= ParticleSmuonL.Array_Decays[i][2]/ParticleSmuonL.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSmuonL, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSmuonL, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSmuonL, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSmuonL, BRTol);}
 
  }
 
@@ -2575,20 +2789,31 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  
  if ( ParticleSmuonR.three_width != ParticleSmuonR.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for smuonR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for smuonR - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSmuonR.No_of_Decays = SmuonR_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSmuonR.total_width = ParticleSmuonR.two_width;
    }
  else {
    ParticleSmuonR.total_width = ParticleSmuonR.two_width + ParticleSmuonR.three_width;
  }
+
+ if ( ParticleSmuonR.total_width != ParticleSmuonR.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSmuonR.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleSmuonR.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in smuonR total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleSmuonR.No_of_Decays; i++) {
    ParticleSmuonR.Array_Decays[i][5]= ParticleSmuonR.Array_Decays[i][2]/ParticleSmuonR.total_width;
  }
  
- if (outputPartialWidths ==  false) {  OutputNoPWs(out, ParticleSmuonR, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSmuonR, BRTol);}
+ if (outputPartialWidths ==  false) {  OutputNoPWs(fout, ParticleSmuonR, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSmuonR, BRTol);}
 
  }
 
@@ -2646,20 +2871,31 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  
  if ( ParticleSnue.three_width != ParticleSnue.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for snue - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for snue - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSnue.No_of_Decays = Snue_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSnue.total_width = ParticleSnue.two_width;
    }
  else {
    ParticleSnue.total_width = ParticleSnue.two_width + ParticleSnue.three_width;
  }
+
+ if ( ParticleSnue.total_width != ParticleSnue.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSnue.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleSnue.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in snue total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleSnue.No_of_Decays; i++) {
    ParticleSnue.Array_Decays[i][5]= ParticleSnue.Array_Decays[i][2]/ParticleSnue.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSnue, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSnue, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSnue, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSnue, BRTol);}
 
  }
  else{}
@@ -2719,20 +2955,31 @@ ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] =
  
  if ( ParticleSnumu.three_width != ParticleSnumu.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for snumu - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for snumu - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSnumu.No_of_Decays = Snumu_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSnumu.total_width = ParticleSnumu.two_width;
    }
  else {
    ParticleSnumu.total_width = ParticleSnumu.two_width + ParticleSnumu.three_width;
  }
+
+ if ( ParticleSnumu.total_width != ParticleSnumu.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSnumu.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleSnumu.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in snumu total width \n");
+   }
  
+
  for (int i =0; i<ParticleSnumu.No_of_Decays; i++) {
    ParticleSnumu.Array_Decays[i][5]= ParticleSnumu.Array_Decays[i][2]/ParticleSnumu.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSnumu, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSnumu, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSnumu, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSnumu, BRTol);}
 
  }
  // else{}
@@ -2796,19 +3043,29 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  
  if ( ParticleStau1.three_width != ParticleStau1.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for stau1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for stau1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleStau1.No_of_Decays = Stau1_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleStau1.total_width = ParticleStau1.two_width;
    }
  else {
    ParticleStau1.total_width = ParticleStau1.two_width + ParticleStau1.three_width;
  }
+ if ( ParticleStau1.total_width != ParticleStau1.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleStau1.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleStau1.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in stau1 total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleStau1.No_of_Decays; i++) {
    ParticleStau1.Array_Decays[i][5]= ParticleStau1.Array_Decays[i][2]/ParticleStau1.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleStau1, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleStau1, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleStau1, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleStau1, BRTol);}
 
  }
 
@@ -2886,19 +3143,30 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  
  if ( ParticleStau2.three_width != ParticleStau2.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for stau2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for stau2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleStau2.No_of_Decays = Stau2_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleStau2.total_width = ParticleStau2.two_width;
    }
  else {
    ParticleStau2.total_width = ParticleStau2.two_width + ParticleStau2.three_width;
  }
+
+ if ( ParticleStau2.total_width != ParticleStau2.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleStau2.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleStau2.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in stau2 total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleStau2.No_of_Decays; i++) {
    ParticleStau2.Array_Decays[i][5]= ParticleStau2.Array_Decays[i][2]/ParticleStau2.total_width;
  }
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleStau2, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleStau2, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleStau2, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleStau2, BRTol);}
 
  }
 
@@ -2966,20 +3234,31 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  
  if ( ParticleSnutau.three_width != ParticleSnutau.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for snutau - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for snutau - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleSnutau.No_of_Decays = Snutau_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleSnutau.total_width = ParticleSnutau.two_width;
    }
  else {
    ParticleSnutau.total_width = ParticleSnutau.two_width + ParticleSnutau.three_width;
  }
+
+ if ( ParticleSnutau.total_width != ParticleSnutau.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleSnutau.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleSnutau.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in snutau total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleSnutau.No_of_Decays; i++) {
    ParticleSnutau.Array_Decays[i][5]= ParticleSnutau.Array_Decays[i][2]/ParticleSnutau.total_width;
  }
 
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleSnutau, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleSnutau, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSnutau, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSnutau, BRTol);}
 
  }
 
@@ -3032,29 +3311,30 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
    chargino1amplitudeWbosonneutralinoZ5 = charginoiamplitudedecayneutralinojWNMSSM (MCH1, mneut(5), polemw, g, gp, thetaL2, thetaR2, mixNeut, 1, 5);
  }
  
- chargino1amplitudeneut1udbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mneut(1), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 1, 1, onetothree, 'q', 'c');
- chargino1amplitudeneut1csbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mneut(1), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 1, 1, onetothree, 'q', 'c');
- chargino1amplitudeneut1nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(1), 10000000000, me(1,1), me(2,1), runmw, mHpm, mneut(1), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 1, 1, onetothree, 'l', 'c');
- chargino1amplitudeneut1numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(2), 10000000000, me(1,2), me(2,2), runmw, mHpm, mneut(1), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 1, 1, onetothree, 'l', 'c');
- chargino1amplitudeneut1nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(3), 10000000000, me(1,3), me(2,3), runmw, mHpm, mneut(1), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 1, 1, onetothree, 'l', 'c');
- chargino1amplitudeneut2udbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mneut(2), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 2, 1, onetothree, 'q', 'c');
- chargino1amplitudeneut2csbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mneut(2), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 2, 1, onetothree, 'q', 'c');
- chargino1amplitudeneut2nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(1), 10000000000, me(1,1), me(2,1), runmw, mHpm, mneut(2), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 2, 1, onetothree, 'l', 'c');
- chargino1amplitudeneut2numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(2), 10000000000, me(1,2), me(2,2), runmw, mHpm, mneut(2), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 2, 1, onetothree, 'l', 'c');
- chargino1amplitudeneut2nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(3), 10000000000, me(1,3), me(2,3), runmw, mHpm, mneut(2), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 2, 1, onetothree, 'l', 'c');
- chargino1amplitudeneut3udbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mneut(3), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 3, 1, onetothree, 'q', 'c');
- chargino1amplitudeneut3csbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mneut(3), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 3, 1, onetothree, 'q', 'c');
- chargino1amplitudeneut3nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(1), 10000000000, me(1,1), me(2,1), runmw, mHpm, mneut(3), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 3, 1, onetothree, 'l', 'c');
- chargino1amplitudeneut3numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(2), 10000000000, me(1,2), me(2,2), runmw, mHpm, mneut(3), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 3, 1, onetothree, 'l', 'c');
- chargino1amplitudeneut3nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(3), 10000000000, me(1,3), me(2,3), runmw, mHpm, mneut(3), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 3, 1, onetothree, 'l', 'c');
- chargino1amplitudeneut4udbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mneut(4), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 4, 1, onetothree, 'q', 'c');
- chargino1amplitudeneut4csbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mneut(4), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 4, 1, onetothree, 'q', 'c');
- chargino1amplitudeneut4nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(1), 10000000000, me(1,1), me(2,1), runmw, mHpm, mneut(4), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 4, 1, onetothree, 'l', 'c');
- chargino1amplitudeneut4numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(2), 10000000000, me(1,2), me(2,2), runmw, mHpm, mneut(4), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 4, 1, onetothree, 'l', 'c');
- chargino1amplitudeneut4nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(3), 10000000000, me(1,3), me(2,3), runmw, mHpm, mneut(4), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 4, 1, onetothree, 'l', 'c');
+ chargino1amplitudeneut1udbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mneut(1), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 1, 1, onetothree, 'q', 'c');
+ chargino1amplitudeneut1csbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mneut(1), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 1, 1, onetothree, 'q', 'c');
+ chargino1amplitudeneut1nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(1), 10000000000, me(1,1), me(2,1), polemw, mHpm, mneut(1), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 1, 1, onetothree, 'l', 'c');
+ chargino1amplitudeneut1numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(2), 10000000000, me(1,2), me(2,2), polemw, mHpm, mneut(1), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 1, 1, onetothree, 'l', 'c');
+ chargino1amplitudeneut1nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(3), 10000000000, me(1,3), me(2,3), polemw, mHpm, mneut(1), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 1, 1, onetothree, 'l', 'c');
+ chargino1amplitudeneut2udbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mneut(2), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 2, 1, onetothree, 'q', 'c');
+ // chargino1amplitudeneut2udbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mneut(2), 0.0025, 0.005, 0.00001915892195, 0.00008426786, g, gp, alpha, beta, thetaL2, thetaR2, 0.001219, 0.00246, mixNeut, 2, 1, onetothree, 'q', 'c');
+ chargino1amplitudeneut2csbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mneut(2), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 2, 1, onetothree, 'q', 'c');
+ chargino1amplitudeneut2nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(1), 10000000000, me(1,1), me(2,1), polemw, mHpm, mneut(2), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 2, 1, onetothree, 'l', 'c');
+ chargino1amplitudeneut2numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(2), 10000000000, me(1,2), me(2,2), polemw, mHpm, mneut(2), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 2, 1, onetothree, 'l', 'c');
+ chargino1amplitudeneut2nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(3), 10000000000, me(1,3), me(2,3), polemw, mHpm, mneut(2), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 2, 1, onetothree, 'l', 'c');
+ chargino1amplitudeneut3udbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mneut(3), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 3, 1, onetothree, 'q', 'c');
+ chargino1amplitudeneut3csbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mneut(3), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 3, 1, onetothree, 'q', 'c');
+ chargino1amplitudeneut3nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(1), 10000000000, me(1,1), me(2,1), polemw, mHpm, mneut(3), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 3, 1, onetothree, 'l', 'c');
+ chargino1amplitudeneut3numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(2), 10000000000, me(1,2), me(2,2), polemw, mHpm, mneut(3), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 3, 1, onetothree, 'l', 'c');
+ chargino1amplitudeneut3nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(3), 10000000000, me(1,3), me(2,3), polemw, mHpm, mneut(3), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 3, 1, onetothree, 'l', 'c');
+ chargino1amplitudeneut4udbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mneut(4), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 4, 1, onetothree, 'q', 'c');
+ chargino1amplitudeneut4csbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mneut(4), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 4, 1, onetothree, 'q', 'c');
+ chargino1amplitudeneut4nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(1), 10000000000, me(1,1), me(2,1), polemw, mHpm, mneut(4), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 4, 1, onetothree, 'l', 'c');
+ chargino1amplitudeneut4numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(2), 10000000000, me(1,2), me(2,2), polemw, mHpm, mneut(4), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 4, 1, onetothree, 'l', 'c');
+ chargino1amplitudeneut4nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(3), 10000000000, me(1,3), me(2,3), polemw, mHpm, mneut(4), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 4, 1, onetothree, 'l', 'c');
 
  
- ParticleChargino1.Array_Decays[0][0] = -PDGdown; ParticleChargino1.Array_Decays[0][1] = PDGsupL; ParticleChargino1.Array_Decays[0][2] = chargino1amplitudesupLd; ParticleChargino1.Array_Decays[0][3] = 2; ParticleChargino1.Array_Comments[0] = "# ~chi_1+ -> db ~u_L";
+  ParticleChargino1.Array_Decays[0][0] = -PDGdown; ParticleChargino1.Array_Decays[0][1] = PDGsupL; ParticleChargino1.Array_Decays[0][2] = chargino1amplitudesupLd; ParticleChargino1.Array_Decays[0][3] = 2; ParticleChargino1.Array_Comments[0] = "# ~chi_1+ -> db ~u_L";
  ParticleChargino1.Array_Decays[1][0] = PDGup; ParticleChargino1.Array_Decays[1][1] = -PDGsdownL; ParticleChargino1.Array_Decays[1][2] = chargino1amplitudesdownLu; ParticleChargino1.Array_Decays[1][3] = 2; ParticleChargino1.Array_Comments[1] = "# ~chi_1+ -> u ~d_L*"; 
  ParticleChargino1.Array_Decays[2][0] = -PDGstrange; ParticleChargino1.Array_Decays[2][1] = PDGscharmL; ParticleChargino1.Array_Decays[2][2] = chargino1amplitudescharmLs; ParticleChargino1.Array_Decays[2][3] = 2; ParticleChargino1.Array_Comments[2] = "# ~chi_1+ -> sb ~s_L";
  ParticleChargino1.Array_Decays[3][0] = PDGcharm; ParticleChargino1.Array_Decays[3][1] = -PDGsstrangeL; ParticleChargino1.Array_Decays[3][2] = chargino1amplitudesstrangeLc; ParticleChargino1.Array_Decays[3][3] = 2; ParticleChargino1.Array_Comments[3] = "# ~chi_1+ -> c ~s_L*";
@@ -3078,29 +3358,30 @@ ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PD
  ParticleChargino1.Array_Decays[21][0] = PDGHplus; ParticleChargino1.Array_Decays[21][1] = PDGneutralino3; ParticleChargino1.Array_Decays[21][2] = chargino1amplitudeHminusneutralinoZ3; ParticleChargino1.Array_Decays[21][3] = 2; ParticleChargino1.Array_Comments[21] = "# ~chi_1+ -> H+ ~chi_30";
  ParticleChargino1.Array_Decays[22][0] = PDGHplus; ParticleChargino1.Array_Decays[22][1] = PDGneutralino4; ParticleChargino1.Array_Decays[22][2] = chargino1amplitudeHminusneutralinoZ4; ParticleChargino1.Array_Decays[22][3] = 2; ParticleChargino1.Array_Comments[22] = "# ~chi_1+ -> H+ ~chi_40";
 
- ParticleChargino1.Array_Decays[23][0] = PDGneutralino1; ParticleChargino1.Array_Decays[23][1] = PDGup; ParticleChargino1.Array_Decays[23][4] = -PDGdown; ParticleChargino1.Array_Decays[23][2] = chargino1amplitudeneut1udbar; ParticleChargino1.Array_Decays[23][3] = 3; ParticleChargino1.Array_Comments[23] = "# ~chi_1+ -> chi_10 u dbar";
- ParticleChargino1.Array_Decays[24][0] = PDGneutralino1; ParticleChargino1.Array_Decays[24][1] = PDGcharm; ParticleChargino1.Array_Decays[24][4] = -PDGstrange; ParticleChargino1.Array_Decays[24][2] = chargino1amplitudeneut1csbar; ParticleChargino1.Array_Decays[24][3] = 3; ParticleChargino1.Array_Comments[24] = "# ~chi_1+ -> chi_10 c sbar";
- ParticleChargino1.Array_Decays[25][0] = PDGneutralino1; ParticleChargino1.Array_Decays[25][1] = PDGnuelectron; ParticleChargino1.Array_Decays[25][4] = -PDGelectron; ParticleChargino1.Array_Decays[25][2] = chargino1amplitudeneut1nueebar; ParticleChargino1.Array_Decays[25][3] = 3; ParticleChargino1.Array_Comments[25] = "# ~chi_1+ -> chi_10 nu_e e+";
- ParticleChargino1.Array_Decays[26][0] = PDGneutralino1; ParticleChargino1.Array_Decays[26][1] = PDGnumuon; ParticleChargino1.Array_Decays[26][4] = -PDGmuon; ParticleChargino1.Array_Decays[26][2] = chargino1amplitudeneut1numumubar; ParticleChargino1.Array_Decays[26][3] = 3; ParticleChargino1.Array_Comments[26] = "# ~chi_1+ -> chi_10 nu_mu mu+";
- ParticleChargino1.Array_Decays[27][0] = PDGneutralino1; ParticleChargino1.Array_Decays[27][1] = PDGnutau; ParticleChargino1.Array_Decays[27][4] = -PDGtau; ParticleChargino1.Array_Decays[27][2] = chargino1amplitudeneut1nutautaubar; ParticleChargino1.Array_Decays[27][3] = 3; ParticleChargino1.Array_Comments[27] = "# ~chi_1+ -> chi_10 nu_tau tau+";
- ParticleChargino1.Array_Decays[28][0] = PDGneutralino2; ParticleChargino1.Array_Decays[28][1] = PDGup; ParticleChargino1.Array_Decays[28][4] = -PDGdown; ParticleChargino1.Array_Decays[28][2] = chargino1amplitudeneut2udbar; ParticleChargino1.Array_Decays[28][3] = 3; ParticleChargino1.Array_Comments[28] = "# ~chi_1+ -> chi_20 u dbar";
- ParticleChargino1.Array_Decays[29][0] = PDGneutralino2; ParticleChargino1.Array_Decays[29][1] = PDGcharm; ParticleChargino1.Array_Decays[29][4] = -PDGstrange; ParticleChargino1.Array_Decays[29][2] = chargino1amplitudeneut2csbar; ParticleChargino1.Array_Decays[29][3] = 3; ParticleChargino1.Array_Comments[29] = "# ~chi_1+ -> chi_20 c sbar";
- ParticleChargino1.Array_Decays[30][0] = PDGneutralino2; ParticleChargino1.Array_Decays[30][1] = PDGnuelectron; ParticleChargino1.Array_Decays[30][4] = -PDGelectron; ParticleChargino1.Array_Decays[30][2] = chargino1amplitudeneut2nueebar; ParticleChargino1.Array_Decays[30][3] = 3; ParticleChargino1.Array_Comments[30] = "# ~chi_1+ -> chi_20 nu_e e+";
- ParticleChargino1.Array_Decays[31][0] = PDGneutralino2; ParticleChargino1.Array_Decays[31][1] = PDGnumuon; ParticleChargino1.Array_Decays[31][4] = -PDGmuon; ParticleChargino1.Array_Decays[31][2] = chargino1amplitudeneut2numumubar; ParticleChargino1.Array_Decays[31][3] = 3; ParticleChargino1.Array_Comments[31] = "# ~chi_1+ -> chi_20 nu_mu mu+";
- ParticleChargino1.Array_Decays[32][0] = PDGneutralino2; ParticleChargino1.Array_Decays[32][1] = PDGnutau; ParticleChargino1.Array_Decays[32][4] = -PDGtau; ParticleChargino1.Array_Decays[32][2] = chargino1amplitudeneut2nutautaubar; ParticleChargino1.Array_Decays[32][3] = 3; ParticleChargino1.Array_Comments[32] = "# ~chi_1+ -> chi_20 nu_tau tau+";
- ParticleChargino1.Array_Decays[33][0] = PDGneutralino3; ParticleChargino1.Array_Decays[33][1] = PDGup; ParticleChargino1.Array_Decays[33][4] = -PDGdown; ParticleChargino1.Array_Decays[33][2] = chargino1amplitudeneut3udbar; ParticleChargino1.Array_Decays[33][3] = 3; ParticleChargino1.Array_Comments[33] = "# ~chi_1+ -> chi_30 u dbar";
- ParticleChargino1.Array_Decays[34][0] = PDGneutralino3; ParticleChargino1.Array_Decays[34][1] = PDGcharm; ParticleChargino1.Array_Decays[34][4] = -PDGstrange; ParticleChargino1.Array_Decays[34][2] = chargino1amplitudeneut3csbar; ParticleChargino1.Array_Decays[34][3] = 3; ParticleChargino1.Array_Comments[34] = "# ~chi_1+ -> chi_30 c sbar";
- ParticleChargino1.Array_Decays[35][0] = PDGneutralino3; ParticleChargino1.Array_Decays[35][1] = PDGnuelectron; ParticleChargino1.Array_Decays[35][4] = -PDGelectron; ParticleChargino1.Array_Decays[35][2] = chargino1amplitudeneut3nueebar; ParticleChargino1.Array_Decays[35][3] = 3; ParticleChargino1.Array_Comments[35] = "# ~chi_1+ -> chi_30 nu_e e+";
- ParticleChargino1.Array_Decays[36][0] = PDGneutralino3; ParticleChargino1.Array_Decays[36][1] = PDGnumuon; ParticleChargino1.Array_Decays[36][4] = -PDGmuon; ParticleChargino1.Array_Decays[36][2] = chargino1amplitudeneut3numumubar; ParticleChargino1.Array_Decays[36][3] = 3; ParticleChargino1.Array_Comments[36] = "# ~chi_1+ -> chi_30 nu_mu mu+";
- ParticleChargino1.Array_Decays[37][0] = PDGneutralino3; ParticleChargino1.Array_Decays[37][1] = PDGnutau; ParticleChargino1.Array_Decays[37][4] = -PDGtau; ParticleChargino1.Array_Decays[37][2] = chargino1amplitudeneut3nutautaubar; ParticleChargino1.Array_Decays[37][3] = 3; ParticleChargino1.Array_Comments[37] = "# ~chi_1+ -> chi_30 nu_tau tau+";
- ParticleChargino1.Array_Decays[38][0] = PDGneutralino4; ParticleChargino1.Array_Decays[38][1] = PDGup; ParticleChargino1.Array_Decays[38][4] = -PDGdown; ParticleChargino1.Array_Decays[38][2] = chargino1amplitudeneut4udbar; ParticleChargino1.Array_Decays[38][3] = 3; ParticleChargino1.Array_Comments[38] = "# ~chi_1+ -> chi_40 u dbar";
- ParticleChargino1.Array_Decays[39][0] = PDGneutralino4; ParticleChargino1.Array_Decays[39][1] = PDGcharm; ParticleChargino1.Array_Decays[39][4] = -PDGstrange; ParticleChargino1.Array_Decays[39][2] = chargino1amplitudeneut4csbar; ParticleChargino1.Array_Decays[39][3] = 3; ParticleChargino1.Array_Comments[39] = "# ~chi_1+ -> chi_40 c sbar";
- ParticleChargino1.Array_Decays[40][0] = PDGneutralino4; ParticleChargino1.Array_Decays[40][1] = PDGnuelectron; ParticleChargino1.Array_Decays[40][4] = -PDGelectron; ParticleChargino1.Array_Decays[40][2] = chargino1amplitudeneut4nueebar; ParticleChargino1.Array_Decays[40][3] = 3; ParticleChargino1.Array_Comments[40] = "# ~chi_1+ -> chi_40 nu_e e+";
- ParticleChargino1.Array_Decays[41][0] = PDGneutralino4; ParticleChargino1.Array_Decays[41][1] = PDGnumuon; ParticleChargino1.Array_Decays[41][4] = -PDGmuon; ParticleChargino1.Array_Decays[41][2] = chargino1amplitudeneut4numumubar; ParticleChargino1.Array_Decays[41][3] = 3; ParticleChargino1.Array_Comments[41] = "# ~chi_1+ -> chi_40 nu_mu mu+";
- ParticleChargino1.Array_Decays[42][0] = PDGneutralino4; ParticleChargino1.Array_Decays[42][1] = PDGnutau; ParticleChargino1.Array_Decays[42][4] = -PDGtau; ParticleChargino1.Array_Decays[42][2] = chargino1amplitudeneut4nutautaubar; ParticleChargino1.Array_Decays[42][3] = 3; ParticleChargino1.Array_Comments[42] = "# ~chi_1+ -> chi_40 nu_tau tau+";
+ ParticleChargino1.Array_Decays[23][0] = PDGHplus; ParticleChargino1.Array_Decays[23][1] = PDGneutralino5; ParticleChargino1.Array_Decays[23][2] = chargino1amplitudeHminusneutralinoZ5; ParticleChargino1.Array_Decays[23][3] = 2; ParticleChargino1.Array_Comments[23] = "# ~chi_1+ -> H+ ~chi_50";
+ ParticleChargino1.Array_Decays[24][0] = PDGWplus; ParticleChargino1.Array_Decays[24][1] = PDGneutralino5; ParticleChargino1.Array_Decays[24][2] = chargino1amplitudeWbosonneutralinoZ5; ParticleChargino1.Array_Decays[24][3] = 2; ParticleChargino1.Array_Comments[24] = "# ~chi_1+ -> W+ ~chi_50";
 
- ParticleChargino1.Array_Decays[43][0] = PDGHplus; ParticleChargino1.Array_Decays[43][1] = PDGneutralino5; ParticleChargino1.Array_Decays[43][2] = chargino1amplitudeHminusneutralinoZ5; ParticleChargino1.Array_Decays[43][3] = 2; ParticleChargino1.Array_Comments[43] = "# ~chi_1+ -> H+ ~chi_50";
- ParticleChargino1.Array_Decays[44][0] = PDGWplus; ParticleChargino1.Array_Decays[44][1] = PDGneutralino5; ParticleChargino1.Array_Decays[44][2] = chargino1amplitudeWbosonneutralinoZ5; ParticleChargino1.Array_Decays[44][3] = 2; ParticleChargino1.Array_Comments[44] = "# ~chi_1+ -> W+ ~chi_50";
+
+ ParticleChargino1.Array_Decays[25][0] = PDGneutralino1; ParticleChargino1.Array_Decays[25][1] = PDGup; ParticleChargino1.Array_Decays[25][4] = -PDGdown; ParticleChargino1.Array_Decays[25][2] = chargino1amplitudeneut1udbar; ParticleChargino1.Array_Decays[25][3] = 3; ParticleChargino1.Array_Comments[25] = "# ~chi_1+ -> chi_10 u dbar";
+ ParticleChargino1.Array_Decays[26][0] = PDGneutralino1; ParticleChargino1.Array_Decays[26][1] = PDGcharm; ParticleChargino1.Array_Decays[26][4] = -PDGstrange; ParticleChargino1.Array_Decays[26][2] = chargino1amplitudeneut1csbar; ParticleChargino1.Array_Decays[26][3] = 3; ParticleChargino1.Array_Comments[26] = "# ~chi_1+ -> chi_10 c sbar";
+ ParticleChargino1.Array_Decays[27][0] = PDGneutralino1; ParticleChargino1.Array_Decays[27][1] = PDGnuelectron; ParticleChargino1.Array_Decays[27][4] = -PDGelectron; ParticleChargino1.Array_Decays[27][2] = chargino1amplitudeneut1nueebar; ParticleChargino1.Array_Decays[27][3] = 3; ParticleChargino1.Array_Comments[27] = "# ~chi_1+ -> chi_10 nu_e e+";
+ ParticleChargino1.Array_Decays[28][0] = PDGneutralino1; ParticleChargino1.Array_Decays[28][1] = PDGnumuon; ParticleChargino1.Array_Decays[28][4] = -PDGmuon; ParticleChargino1.Array_Decays[28][2] = chargino1amplitudeneut1numumubar; ParticleChargino1.Array_Decays[28][3] = 3; ParticleChargino1.Array_Comments[28] = "# ~chi_1+ -> chi_10 nu_mu mu+";
+ ParticleChargino1.Array_Decays[29][0] = PDGneutralino1; ParticleChargino1.Array_Decays[29][1] = PDGnutau; ParticleChargino1.Array_Decays[29][4] = -PDGtau; ParticleChargino1.Array_Decays[29][2] = chargino1amplitudeneut1nutautaubar; ParticleChargino1.Array_Decays[29][3] = 3; ParticleChargino1.Array_Comments[29] = "# ~chi_1+ -> chi_10 nu_tau tau+";
+ ParticleChargino1.Array_Decays[30][0] = PDGneutralino2; ParticleChargino1.Array_Decays[30][1] = PDGup; ParticleChargino1.Array_Decays[30][4] = -PDGdown; ParticleChargino1.Array_Decays[30][2] = chargino1amplitudeneut2udbar; ParticleChargino1.Array_Decays[30][3] = 3; ParticleChargino1.Array_Comments[30] = "# ~chi_1+ -> chi_20 u dbar";
+ ParticleChargino1.Array_Decays[31][0] = PDGneutralino2; ParticleChargino1.Array_Decays[31][1] = PDGcharm; ParticleChargino1.Array_Decays[31][4] = -PDGstrange; ParticleChargino1.Array_Decays[31][2] = chargino1amplitudeneut2csbar; ParticleChargino1.Array_Decays[31][3] = 3; ParticleChargino1.Array_Comments[31] = "# ~chi_1+ -> chi_20 c sbar";
+ ParticleChargino1.Array_Decays[32][0] = PDGneutralino2; ParticleChargino1.Array_Decays[32][1] = PDGnuelectron; ParticleChargino1.Array_Decays[32][4] = -PDGelectron; ParticleChargino1.Array_Decays[32][2] = chargino1amplitudeneut2nueebar; ParticleChargino1.Array_Decays[32][3] = 3; ParticleChargino1.Array_Comments[32] = "# ~chi_1+ -> chi_20 nu_e e+";
+ ParticleChargino1.Array_Decays[33][0] = PDGneutralino2; ParticleChargino1.Array_Decays[33][1] = PDGnumuon; ParticleChargino1.Array_Decays[33][4] = -PDGmuon; ParticleChargino1.Array_Decays[33][2] = chargino1amplitudeneut2numumubar; ParticleChargino1.Array_Decays[33][3] = 3; ParticleChargino1.Array_Comments[33] = "# ~chi_1+ -> chi_20 nu_mu mu+";
+ ParticleChargino1.Array_Decays[34][0] = PDGneutralino2; ParticleChargino1.Array_Decays[34][1] = PDGnutau; ParticleChargino1.Array_Decays[34][4] = -PDGtau; ParticleChargino1.Array_Decays[34][2] = chargino1amplitudeneut2nutautaubar; ParticleChargino1.Array_Decays[34][3] = 3; ParticleChargino1.Array_Comments[34] = "# ~chi_1+ -> chi_20 nu_tau tau+";
+ ParticleChargino1.Array_Decays[35][0] = PDGneutralino3; ParticleChargino1.Array_Decays[35][1] = PDGup; ParticleChargino1.Array_Decays[35][4] = -PDGdown; ParticleChargino1.Array_Decays[35][2] = chargino1amplitudeneut3udbar; ParticleChargino1.Array_Decays[35][3] = 3; ParticleChargino1.Array_Comments[35] = "# ~chi_1+ -> chi_30 u dbar";
+ ParticleChargino1.Array_Decays[36][0] = PDGneutralino3; ParticleChargino1.Array_Decays[36][1] = PDGcharm; ParticleChargino1.Array_Decays[36][4] = -PDGstrange; ParticleChargino1.Array_Decays[36][2] = chargino1amplitudeneut3csbar; ParticleChargino1.Array_Decays[36][3] = 3; ParticleChargino1.Array_Comments[36] = "# ~chi_1+ -> chi_30 c sbar";
+ ParticleChargino1.Array_Decays[37][0] = PDGneutralino3; ParticleChargino1.Array_Decays[37][1] = PDGnuelectron; ParticleChargino1.Array_Decays[37][4] = -PDGelectron; ParticleChargino1.Array_Decays[37][2] = chargino1amplitudeneut3nueebar; ParticleChargino1.Array_Decays[37][3] = 3; ParticleChargino1.Array_Comments[37] = "# ~chi_1+ -> chi_30 nu_e e+";
+ ParticleChargino1.Array_Decays[38][0] = PDGneutralino3; ParticleChargino1.Array_Decays[38][1] = PDGnumuon; ParticleChargino1.Array_Decays[38][4] = -PDGmuon; ParticleChargino1.Array_Decays[38][2] = chargino1amplitudeneut3numumubar; ParticleChargino1.Array_Decays[38][3] = 3; ParticleChargino1.Array_Comments[38] = "# ~chi_1+ -> chi_30 nu_mu mu+";
+ ParticleChargino1.Array_Decays[39][0] = PDGneutralino3; ParticleChargino1.Array_Decays[39][1] = PDGnutau; ParticleChargino1.Array_Decays[39][4] = -PDGtau; ParticleChargino1.Array_Decays[39][2] = chargino1amplitudeneut3nutautaubar; ParticleChargino1.Array_Decays[39][3] = 3; ParticleChargino1.Array_Comments[39] = "# ~chi_1+ -> chi_30 nu_tau tau+";
+ ParticleChargino1.Array_Decays[40][0] = PDGneutralino4; ParticleChargino1.Array_Decays[40][1] = PDGup; ParticleChargino1.Array_Decays[40][4] = -PDGdown; ParticleChargino1.Array_Decays[40][2] = chargino1amplitudeneut4udbar; ParticleChargino1.Array_Decays[40][3] = 3; ParticleChargino1.Array_Comments[40] = "# ~chi_1+ -> chi_40 u dbar";
+ ParticleChargino1.Array_Decays[41][0] = PDGneutralino4; ParticleChargino1.Array_Decays[41][1] = PDGcharm; ParticleChargino1.Array_Decays[41][4] = -PDGstrange; ParticleChargino1.Array_Decays[41][2] = chargino1amplitudeneut4csbar; ParticleChargino1.Array_Decays[41][3] = 3; ParticleChargino1.Array_Comments[41] = "# ~chi_1+ -> chi_40 c sbar";
+ ParticleChargino1.Array_Decays[42][0] = PDGneutralino4; ParticleChargino1.Array_Decays[42][1] = PDGnuelectron; ParticleChargino1.Array_Decays[42][4] = -PDGelectron; ParticleChargino1.Array_Decays[42][2] = chargino1amplitudeneut4nueebar; ParticleChargino1.Array_Decays[42][3] = 3; ParticleChargino1.Array_Comments[42] = "# ~chi_1+ -> chi_40 nu_e e+";
+ ParticleChargino1.Array_Decays[43][0] = PDGneutralino4; ParticleChargino1.Array_Decays[43][1] = PDGnumuon; ParticleChargino1.Array_Decays[43][4] = -PDGmuon; ParticleChargino1.Array_Decays[43][2] = chargino1amplitudeneut4numumubar; ParticleChargino1.Array_Decays[43][3] = 3; ParticleChargino1.Array_Comments[43] = "# ~chi_1+ -> chi_40 nu_mu mu+";
+ ParticleChargino1.Array_Decays[44][0] = PDGneutralino4; ParticleChargino1.Array_Decays[44][1] = PDGnutau; ParticleChargino1.Array_Decays[44][4] = -PDGtau; ParticleChargino1.Array_Decays[44][2] = chargino1amplitudeneut4nutautaubar; ParticleChargino1.Array_Decays[44][3] = 3; ParticleChargino1.Array_Comments[44] = "# ~chi_1+ -> chi_40 nu_tau tau+";
  
  double Chargino1_No_1to2_Decays = 0;
 
@@ -3119,20 +3400,31 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
  
  if ( ParticleChargino1.three_width != ParticleChargino1.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for chargino1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for chargino1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleChargino1.No_of_Decays = Chargino1_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleChargino1.total_width = ParticleChargino1.two_width;
    }
  else {
    ParticleChargino1.total_width = ParticleChargino1.two_width + ParticleChargino1.three_width;
  }
+
+ if ( ParticleChargino1.total_width != ParticleChargino1.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleChargino1.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleChargino1.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in chargino1 total width \n");
+   }
+ 
  
  for (int i =0; i<ParticleChargino1.No_of_Decays; i++) {
    ParticleChargino1.Array_Decays[i][5]= ParticleChargino1.Array_Decays[i][2]/ParticleChargino1.total_width;
  }
  
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleChargino1, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleChargino1, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleChargino1, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleChargino1, BRTol);}
 
  }
 
@@ -3193,26 +3485,29 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    chargino2amplitudeWbosonneutralinoZ5 = charginoiamplitudedecayneutralinojWNMSSM (MCH2, mneut(5), polemw, g, gp, thetaL2, thetaR2, mixNeut, 2, 5);
  }
 
- chargino2amplitudeneut1udbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mneut(1), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 1, 2, onetothree, 'q', 'c');
- chargino2amplitudeneut1csbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mneut(1), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 1, 2, onetothree, 'q', 'c');
- chargino2amplitudeneut1nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(1), 0, me(1,1), me(2,1), runmw, mHpm, mneut(1), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 1, 2, onetothree, 'l', 'c');
- chargino2amplitudeneut1numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(2), 0, me(1,2), me(2,2), runmw, mHpm, mneut(1), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 1, 2, onetothree, 'l', 'c');
- chargino2amplitudeneut1nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(3), 0, me(1,3), me(2,3), runmw, mHpm, mneut(1), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 1, 2, onetothree, 'l', 'c');
- chargino2amplitudeneut2udbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mneut(2), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 2, 2, onetothree, 'q', 'c');
- chargino2amplitudeneut2csbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mneut(2), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 2, 2, onetothree, 'q', 'c');
- chargino2amplitudeneut2nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(1), 0, me(1,1), me(2,1), runmw, mHpm, mneut(2), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 2, 2, onetothree, 'l', 'c');
- chargino2amplitudeneut2numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(2), 0, me(1,2), me(2,2), runmw, mHpm, mneut(2), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 2, 2, onetothree, 'l', 'c');
- chargino2amplitudeneut2nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(3), 0, me(1,3), me(2,3), runmw, mHpm, mneut(2), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 2, 2, onetothree, 'l', 'c');
- chargino2amplitudeneut3udbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mneut(3), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 3, 2, onetothree, 'q', 'c');
- chargino2amplitudeneut3csbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mneut(3), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 3, 2, onetothree, 'q', 'c');
- chargino2amplitudeneut3nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(1), 0, me(1,1), me(2,1), runmw, mHpm, mneut(3), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 3, 2, onetothree, 'l', 'c');
- chargino2amplitudeneut3numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(2), 0, me(1,2), me(2,2), runmw, mHpm, mneut(3), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 3, 2, onetothree, 'l', 'c');
- chargino2amplitudeneut3nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(3), 0, me(1,3), me(2,3), runmw, mHpm, mneut(3), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 3, 2, onetothree, 'l', 'c');
- chargino2amplitudeneut4udbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mneut(4), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 4, 2, onetothree, 'q', 'c');
- chargino2amplitudeneut4csbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mneut(4), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 4, 2, onetothree, 'q', 'c');
- chargino2amplitudeneut4nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(1), 0, me(1,1), me(2,1), runmw, mHpm, mneut(4), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 4, 2, onetothree, 'l', 'c');
- chargino2amplitudeneut4numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(2), 0, me(1,2), me(2,2), runmw, mHpm, mneut(4), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 4, 2, onetothree, 'l', 'c');
- chargino2amplitudeneut4nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(3), 0, me(1,3), me(2,3), runmw, mHpm, mneut(4), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 4, 2, onetothree, 'l', 'c');
+ chargino2amplitudeneut1udbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mneut(1), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 1, 2, onetothree, 'q', 'c');
+ chargino2amplitudeneut1csbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mneut(1), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 1, 2, onetothree, 'q', 'c');
+ chargino2amplitudeneut1nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(1), 0, me(1,1), me(2,1), polemw, mHpm, mneut(1), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 1, 2, onetothree, 'l', 'c');
+ chargino2amplitudeneut1numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(2), 0, me(1,2), me(2,2), polemw, mHpm, mneut(1), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 1, 2, onetothree, 'l', 'c');
+ chargino2amplitudeneut1nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(3), 0, me(1,3), me(2,3), polemw, mHpm, mneut(1), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 1, 2, onetothree, 'l', 'c');
+ chargino2amplitudeneut2udbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mneut(2), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 2, 2, onetothree, 'q', 'c');
+ chargino2amplitudeneut2csbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mneut(2), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 2, 2, onetothree, 'q', 'c');
+ // chargino2amplitudeneut2csbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mneut(2), MCHARM, MSTRANGE, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 2, 2, onetothree, 'q', 'c');
+ chargino2amplitudeneut2nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(1), 0, me(1,1), me(2,1), polemw, mHpm, mneut(2), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 2, 2, onetothree, 'l', 'c');
+ chargino2amplitudeneut2numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(2), 0, me(1,2), me(2,2), polemw, mHpm, mneut(2), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 2, 2, onetothree, 'l', 'c');
+ chargino2amplitudeneut2nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(3), 0, me(1,3), me(2,3), polemw, mHpm, mneut(2), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 2, 2, onetothree, 'l', 'c');
+ // chargino2amplitudeneut3udbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mneut(3), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 3, 2, onetothree, 'q', 'c');
+ // chargino2amplitudeneut3csbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mneut(3), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 3, 2, onetothree, 'q', 'c');
+ chargino2amplitudeneut3csbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mneut(3), MCHARM, MSTRANGE, 0.0097374086, 0.00160, g, gp, alpha, beta, thetaL2, thetaR2, 0.61927, 0.046748, mixNeut, 3, 2, onetothree, 'q', 'c');
+ chargino2amplitudeneut3nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(1), 0, me(1,1), me(2,1), polemw, mHpm, mneut(3), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 3, 2, onetothree, 'l', 'c');
+ chargino2amplitudeneut3numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(2), 0, me(1,2), me(2,2), polemw, mHpm, mneut(3), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 3, 2, onetothree, 'l', 'c');
+ chargino2amplitudeneut3nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(3), 0, me(1,3), me(2,3), polemw, mHpm, mneut(3), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 3, 2, onetothree, 'l', 'c');
+ chargino2amplitudeneut4udbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mneut(4), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 4, 2, onetothree, 'q', 'c');
+ // chargino2amplitudeneut4csbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mneut(4), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 4, 2, onetothree, 'q', 'c');
+ chargino2amplitudeneut4csbar = neutralinoamplitudedecaycharginoffprimebar (MCH2, mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mneut(4), MCHARM, MSTRANGE, 0.0097374086, 0.00160, g, gp, alpha, beta, thetaL2, thetaR2, 0.61927, 0.046748, mixNeut, 4, 2, onetothree, 'q', 'c');
+ chargino2amplitudeneut4nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(1), 0, me(1,1), me(2,1), polemw, mHpm, mneut(4), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 4, 2, onetothree, 'l', 'c');
+ chargino2amplitudeneut4numumubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(2), 0, me(1,2), me(2,2), polemw, mHpm, mneut(4), 0, mmu, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 4, 2, onetothree, 'l', 'c');
+ chargino2amplitudeneut4nutautaubar = neutralinoamplitudedecaycharginoffprimebar (MCH2, msnu(3), 0, me(1,3), me(2,3), polemw, mHpm, mneut(4), 0, mtau, 0, thetatau-PI/2, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 4, 2, onetothree, 'l', 'c');
  
  ParticleChargino2.Array_Decays[0][0] = -PDGdown; ParticleChargino2.Array_Decays[0][1] = PDGsupL; ParticleChargino2.Array_Decays[0][2] = chargino2amplitudesupLd; ParticleChargino2.Array_Decays[0][3] = 2; ParticleChargino2.Array_Comments[0] = "# ~chi_2+ -> db ~u_L";
  ParticleChargino2.Array_Decays[1][0] = PDGup; ParticleChargino2.Array_Decays[1][1] = -PDGsdownL; ParticleChargino2.Array_Decays[1][2] = chargino2amplitudesdownLu; ParticleChargino2.Array_Decays[1][3] = 2; ParticleChargino2.Array_Comments[1] = "# ~chi_2+ -> u ~d_L*";
@@ -3242,32 +3537,36 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
  ParticleChargino2.Array_Decays[25][0] = PDGchargino1; ParticleChargino2.Array_Decays[25][1] = PDGH0; ParticleChargino2.Array_Decays[25][2] = chargino2amplitudechargino1H; ParticleChargino2.Array_Decays[25][3] = 2; ParticleChargino2.Array_Comments[25] = "# ~chi_2+ -> H ~chi_1+";
  ParticleChargino2.Array_Decays[26][0] = PDGchargino1; ParticleChargino2.Array_Decays[26][1] = PDGA0; ParticleChargino2.Array_Decays[26][2] = chargino2amplitudechargino1A; ParticleChargino2.Array_Decays[26][3] = 2; ParticleChargino2.Array_Comments[26] = "# ~chi_2+ -> A ~chi_1+";
 
+ ParticleChargino2.Array_Decays[27][0] = PDGHplus; ParticleChargino2.Array_Decays[27][1] = PDGneutralino5; ParticleChargino2.Array_Decays[27][2] = chargino2amplitudeHminusneutralinoZ5; ParticleChargino2.Array_Decays[27][3] = 2; ParticleChargino2.Array_Comments[27] = "# ~chi_2+ -> H+ ~chi_50";
+ ParticleChargino2.Array_Decays[28][0] = PDGWplus; ParticleChargino2.Array_Decays[28][1] = PDGneutralino5; ParticleChargino2.Array_Decays[28][2] = chargino2amplitudeWbosonneutralinoZ5; ParticleChargino2.Array_Decays[28][3] = 2; ParticleChargino2.Array_Comments[28] = "# ~chi_2+ -> W+ ~chi_50";
+
  ParticleChargino2.Array_Decays[27][0] = PDGchargino1; ParticleChargino2.Array_Decays[27][1] = PDGH3; ParticleChargino2.Array_Decays[27][4] = 0; ParticleChargino2.Array_Decays[27][2] = chargino2amplitudechargino1H3; ParticleChargino2.Array_Decays[27][3] = 2; ParticleChargino2.Array_Comments[27] = "# ~chi_2+ -> ~chi_1+ H3";
  ParticleChargino2.Array_Decays[28][0] = PDGchargino1; ParticleChargino2.Array_Decays[28][1] = PDGA2; ParticleChargino2.Array_Decays[28][4] = 0; ParticleChargino2.Array_Decays[28][2] = chargino2amplitudechargino1A2; ParticleChargino2.Array_Decays[28][3] = 2; ParticleChargino2.Array_Comments[28] = "# ~chi_2+ -> ~chi_1+ A2";
  
- ParticleChargino2.Array_Decays[29][0] = PDGneutralino1; ParticleChargino2.Array_Decays[29][1] = PDGup; ParticleChargino2.Array_Decays[29][4] = -PDGdown; ParticleChargino2.Array_Decays[29][2] = chargino2amplitudeneut1udbar; ParticleChargino2.Array_Decays[29][3] = 3; ParticleChargino2.Array_Comments[29] = "# ~chi_2+ -> ~chi_10 u dbar";
- ParticleChargino2.Array_Decays[30][0] = PDGneutralino1; ParticleChargino2.Array_Decays[30][1] = PDGcharm; ParticleChargino2.Array_Decays[30][4] = -PDGstrange; ParticleChargino2.Array_Decays[30][2] = chargino2amplitudeneut1csbar; ParticleChargino2.Array_Decays[30][3] = 3; ParticleChargino2.Array_Comments[30] = "# ~chi_2+ -> ~chi_10 c sbar";
- ParticleChargino2.Array_Decays[31][0] = PDGneutralino1; ParticleChargino2.Array_Decays[31][1] = PDGnuelectron; ParticleChargino2.Array_Decays[31][4] = -PDGelectron; ParticleChargino2.Array_Decays[31][2] = chargino2amplitudeneut1nueebar; ParticleChargino2.Array_Decays[31][3] = 3; ParticleChargino2.Array_Comments[31] = "# ~chi_2+ -> ~chi_10 nu_e e+";
- ParticleChargino2.Array_Decays[32][0] = PDGneutralino1; ParticleChargino2.Array_Decays[32][1] = PDGnumuon; ParticleChargino2.Array_Decays[32][4] = -PDGmuon; ParticleChargino2.Array_Decays[32][2] = chargino2amplitudeneut1numumubar; ParticleChargino2.Array_Decays[32][3] = 3; ParticleChargino2.Array_Comments[32] = "# ~chi_2+ -> ~chi_10 nu_mu mu+";
- ParticleChargino2.Array_Decays[33][0] = PDGneutralino1; ParticleChargino2.Array_Decays[33][1] = PDGnutau; ParticleChargino2.Array_Decays[33][4] = -PDGtau; ParticleChargino2.Array_Decays[33][2] = chargino2amplitudeneut1nutautaubar; ParticleChargino2.Array_Decays[33][3] = 3; ParticleChargino2.Array_Comments[33] = "# ~chi_2+ -> ~chi_10 nu_tau tau+";
- ParticleChargino2.Array_Decays[34][0] = PDGneutralino2; ParticleChargino2.Array_Decays[34][1] = PDGup; ParticleChargino2.Array_Decays[34][4] = -PDGdown; ParticleChargino2.Array_Decays[34][2] = chargino2amplitudeneut2udbar; ParticleChargino2.Array_Decays[34][3] = 3; ParticleChargino2.Array_Comments[34] = "# ~chi_2+ -> ~chi_20 u dbar";
- ParticleChargino2.Array_Decays[35][0] = PDGneutralino2; ParticleChargino2.Array_Decays[35][1] = PDGcharm; ParticleChargino2.Array_Decays[35][4] = -PDGstrange; ParticleChargino2.Array_Decays[35][2] = chargino2amplitudeneut2csbar; ParticleChargino2.Array_Decays[35][3] = 3; ParticleChargino2.Array_Comments[35] = "# ~chi_2+ -> ~chi_20 c sbar";
- ParticleChargino2.Array_Decays[36][0] = PDGneutralino2; ParticleChargino2.Array_Decays[36][1] = PDGnuelectron; ParticleChargino2.Array_Decays[36][4] = -PDGelectron; ParticleChargino2.Array_Decays[36][2] = chargino2amplitudeneut2nueebar; ParticleChargino2.Array_Decays[36][3] = 3; ParticleChargino2.Array_Comments[36] = "# ~chi_2+ -> ~chi_20 nu_e e+";
- ParticleChargino2.Array_Decays[37][0] = PDGneutralino2; ParticleChargino2.Array_Decays[37][1] = PDGnumuon; ParticleChargino2.Array_Decays[37][4] = -PDGmuon; ParticleChargino2.Array_Decays[37][2] = chargino2amplitudeneut2numumubar; ParticleChargino2.Array_Decays[37][3] = 3; ParticleChargino2.Array_Comments[37] = "# ~chi_2+ -> ~chi_20 nu_mu mu+";
- ParticleChargino2.Array_Decays[38][0] = PDGneutralino2; ParticleChargino2.Array_Decays[38][1] = PDGnutau; ParticleChargino2.Array_Decays[38][4] = -PDGtau; ParticleChargino2.Array_Decays[38][2] = chargino2amplitudeneut2nutautaubar; ParticleChargino2.Array_Decays[38][3] = 3; ParticleChargino2.Array_Comments[38] = "# ~chi_2+ -> ~chi_20 nu_tau tau+";
- ParticleChargino2.Array_Decays[39][0] = PDGneutralino3; ParticleChargino2.Array_Decays[39][1] = PDGup; ParticleChargino2.Array_Decays[39][4] = -PDGdown; ParticleChargino2.Array_Decays[39][2] = chargino2amplitudeneut3udbar; ParticleChargino2.Array_Decays[39][3] = 3; ParticleChargino2.Array_Comments[39] = "# ~chi_2+ -> ~chi_30 u dbar";
- ParticleChargino2.Array_Decays[40][0] = PDGneutralino3; ParticleChargino2.Array_Decays[40][1] = PDGcharm; ParticleChargino2.Array_Decays[40][4] = -PDGstrange; ParticleChargino2.Array_Decays[40][2] = chargino2amplitudeneut3csbar; ParticleChargino2.Array_Decays[40][3] = 3; ParticleChargino2.Array_Comments[40] = "# ~chi_2+ -> ~chi_30 c sbar";
- ParticleChargino2.Array_Decays[41][0] = PDGneutralino3; ParticleChargino2.Array_Decays[41][1] = PDGnuelectron; ParticleChargino2.Array_Decays[41][4] = -PDGelectron; ParticleChargino2.Array_Decays[41][2] = chargino2amplitudeneut3nueebar; ParticleChargino2.Array_Decays[41][3] = 3; ParticleChargino2.Array_Comments[41] = "# ~chi_2+ -> ~chi_30 nu_e e+";
- ParticleChargino2.Array_Decays[42][0] = PDGneutralino3; ParticleChargino2.Array_Decays[42][1] = PDGnumuon; ParticleChargino2.Array_Decays[42][4] = -PDGmuon; ParticleChargino2.Array_Decays[42][2] = chargino2amplitudeneut3numumubar; ParticleChargino2.Array_Decays[42][3] = 3; ParticleChargino2.Array_Comments[42] = "# ~chi_2+ -> ~chi_30 nu_mu mu+";
- ParticleChargino2.Array_Decays[43][0] = PDGneutralino3; ParticleChargino2.Array_Decays[43][1] = PDGnutau; ParticleChargino2.Array_Decays[43][4] = -PDGtau; ParticleChargino2.Array_Decays[43][2] = chargino2amplitudeneut3nutautaubar; ParticleChargino2.Array_Decays[43][3] = 3; ParticleChargino2.Array_Comments[43] = "# ~chi_2+ -> ~chi_30 nu_tau tau+";
- ParticleChargino2.Array_Decays[44][0] = PDGneutralino4; ParticleChargino2.Array_Decays[44][1] = PDGup; ParticleChargino2.Array_Decays[44][4] = -PDGdown; ParticleChargino2.Array_Decays[44][2] = chargino2amplitudeneut4udbar; ParticleChargino2.Array_Decays[44][3] = 3; ParticleChargino2.Array_Comments[44] = "# ~chi_2+ -> ~chi_40 u dbar";
- ParticleChargino2.Array_Decays[45][0] = PDGneutralino4; ParticleChargino2.Array_Decays[45][1] = PDGcharm; ParticleChargino2.Array_Decays[45][4] = -PDGstrange; ParticleChargino2.Array_Decays[45][2] = chargino2amplitudeneut4csbar; ParticleChargino2.Array_Decays[45][3] = 3; ParticleChargino2.Array_Comments[45] = "# ~chi_2+ -> ~chi_40 c sbar";
- ParticleChargino2.Array_Decays[46][0] = PDGneutralino4; ParticleChargino2.Array_Decays[46][1] = PDGnuelectron; ParticleChargino2.Array_Decays[46][4] = -PDGelectron; ParticleChargino2.Array_Decays[46][2] = chargino2amplitudeneut4nueebar; ParticleChargino2.Array_Decays[46][3] = 3; ParticleChargino2.Array_Comments[46] = "# ~chi_2+ -> ~chi_40 nu_e e+";
- ParticleChargino2.Array_Decays[47][0] = PDGneutralino4; ParticleChargino2.Array_Decays[47][1] = PDGnumuon; ParticleChargino2.Array_Decays[47][4] = -PDGmuon; ParticleChargino2.Array_Decays[47][2] = chargino2amplitudeneut4numumubar; ParticleChargino2.Array_Decays[47][3] = 3; ParticleChargino2.Array_Comments[47] = "# ~chi_2+ -> ~chi_40 nu_mu mu+";
- ParticleChargino2.Array_Decays[48][0] = PDGneutralino4; ParticleChargino2.Array_Decays[48][1] = PDGnutau; ParticleChargino2.Array_Decays[48][4] = -PDGtau; ParticleChargino2.Array_Decays[48][2] = chargino2amplitudeneut4nutautaubar; ParticleChargino2.Array_Decays[48][3] = 3; ParticleChargino2.Array_Comments[48] = "# ~chi_2+ -> ~chi_40 nu_tau tau+";
+  ParticleChargino2.Array_Decays[29][0] = PDGchargino1; ParticleChargino2.Array_Decays[29][1] = PDGH3; ParticleChargino2.Array_Decays[29][4] = 0; ParticleChargino2.Array_Decays[29][2] = chargino2amplitudechargino1H3; ParticleChargino2.Array_Decays[29][3] = 2; ParticleChargino2.Array_Comments[29] = "# ~chi_2+ -> ~chi_1+ H3";
+ ParticleChargino2.Array_Decays[30][0] = PDGchargino1; ParticleChargino2.Array_Decays[30][1] = PDGA2; ParticleChargino2.Array_Decays[30][4] = 0; ParticleChargino2.Array_Decays[30][2] = chargino2amplitudechargino1A2; ParticleChargino2.Array_Decays[30][3] = 2; ParticleChargino2.Array_Comments[30] = "# ~chi_2+ -> ~chi_1+ A2";
+ 
+ ParticleChargino2.Array_Decays[31][0] = PDGneutralino1; ParticleChargino2.Array_Decays[31][1] = PDGup; ParticleChargino2.Array_Decays[31][4] = -PDGdown; ParticleChargino2.Array_Decays[31][2] = chargino2amplitudeneut1udbar; ParticleChargino2.Array_Decays[31][3] = 3; ParticleChargino2.Array_Comments[31] = "# ~chi_2+ -> ~chi_10 u dbar";
+ ParticleChargino2.Array_Decays[32][0] = PDGneutralino1; ParticleChargino2.Array_Decays[32][1] = PDGcharm; ParticleChargino2.Array_Decays[32][4] = -PDGstrange; ParticleChargino2.Array_Decays[32][2] = chargino2amplitudeneut1csbar; ParticleChargino2.Array_Decays[32][3] = 3; ParticleChargino2.Array_Comments[32] = "# ~chi_2+ -> ~chi_10 c sbar";
+ ParticleChargino2.Array_Decays[33][0] = PDGneutralino1; ParticleChargino2.Array_Decays[33][1] = PDGnuelectron; ParticleChargino2.Array_Decays[33][4] = -PDGelectron; ParticleChargino2.Array_Decays[33][2] = chargino2amplitudeneut1nueebar; ParticleChargino2.Array_Decays[33][3] = 3; ParticleChargino2.Array_Comments[33] = "# ~chi_2+ -> ~chi_10 nu_e e+";
+ ParticleChargino2.Array_Decays[34][0] = PDGneutralino1; ParticleChargino2.Array_Decays[34][1] = PDGnumuon; ParticleChargino2.Array_Decays[34][4] = -PDGmuon; ParticleChargino2.Array_Decays[34][2] = chargino2amplitudeneut1numumubar; ParticleChargino2.Array_Decays[34][3] = 3; ParticleChargino2.Array_Comments[34] = "# ~chi_2+ -> ~chi_10 nu_mu mu+";
+ ParticleChargino2.Array_Decays[35][0] = PDGneutralino1; ParticleChargino2.Array_Decays[35][1] = PDGnutau; ParticleChargino2.Array_Decays[35][4] = -PDGtau; ParticleChargino2.Array_Decays[35][2] = chargino2amplitudeneut1nutautaubar; ParticleChargino2.Array_Decays[35][3] = 3; ParticleChargino2.Array_Comments[35] = "# ~chi_2+ -> ~chi_10 nu_tau tau+";
+ ParticleChargino2.Array_Decays[36][0] = PDGneutralino2; ParticleChargino2.Array_Decays[36][1] = PDGup; ParticleChargino2.Array_Decays[36][4] = -PDGdown; ParticleChargino2.Array_Decays[36][2] = chargino2amplitudeneut2udbar; ParticleChargino2.Array_Decays[36][3] = 3; ParticleChargino2.Array_Comments[36] = "# ~chi_2+ -> ~chi_20 u dbar";
+ ParticleChargino2.Array_Decays[37][0] = PDGneutralino2; ParticleChargino2.Array_Decays[37][1] = PDGcharm; ParticleChargino2.Array_Decays[37][4] = -PDGstrange; ParticleChargino2.Array_Decays[37][2] = chargino2amplitudeneut2csbar; ParticleChargino2.Array_Decays[37][3] = 3; ParticleChargino2.Array_Comments[37] = "# ~chi_2+ -> ~chi_20 c sbar";
+ ParticleChargino2.Array_Decays[38][0] = PDGneutralino2; ParticleChargino2.Array_Decays[38][1] = PDGnuelectron; ParticleChargino2.Array_Decays[38][4] = -PDGelectron; ParticleChargino2.Array_Decays[38][2] = chargino2amplitudeneut2nueebar; ParticleChargino2.Array_Decays[38][3] = 3; ParticleChargino2.Array_Comments[38] = "# ~chi_2+ -> ~chi_20 nu_e e+";
+ ParticleChargino2.Array_Decays[39][0] = PDGneutralino2; ParticleChargino2.Array_Decays[39][1] = PDGnumuon; ParticleChargino2.Array_Decays[39][4] = -PDGmuon; ParticleChargino2.Array_Decays[39][2] = chargino2amplitudeneut2numumubar; ParticleChargino2.Array_Decays[39][3] = 3; ParticleChargino2.Array_Comments[39] = "# ~chi_2+ -> ~chi_20 nu_mu mu+";
+ ParticleChargino2.Array_Decays[40][0] = PDGneutralino2; ParticleChargino2.Array_Decays[40][1] = PDGnutau; ParticleChargino2.Array_Decays[40][4] = -PDGtau; ParticleChargino2.Array_Decays[40][2] = chargino2amplitudeneut2nutautaubar; ParticleChargino2.Array_Decays[40][3] = 3; ParticleChargino2.Array_Comments[40] = "# ~chi_2+ -> ~chi_20 nu_tau tau+";
+ ParticleChargino2.Array_Decays[41][0] = PDGneutralino3; ParticleChargino2.Array_Decays[41][1] = PDGup; ParticleChargino2.Array_Decays[41][4] = -PDGdown; ParticleChargino2.Array_Decays[41][2] = chargino2amplitudeneut3udbar; ParticleChargino2.Array_Decays[41][3] = 3; ParticleChargino2.Array_Comments[41] = "# ~chi_2+ -> ~chi_30 u dbar";
+ ParticleChargino2.Array_Decays[42][0] = PDGneutralino3; ParticleChargino2.Array_Decays[42][1] = PDGcharm; ParticleChargino2.Array_Decays[42][4] = -PDGstrange; ParticleChargino2.Array_Decays[42][2] = chargino2amplitudeneut3csbar; ParticleChargino2.Array_Decays[42][3] = 3; ParticleChargino2.Array_Comments[42] = "# ~chi_2+ -> ~chi_30 c sbar";
+ ParticleChargino2.Array_Decays[43][0] = PDGneutralino3; ParticleChargino2.Array_Decays[43][1] = PDGnuelectron; ParticleChargino2.Array_Decays[43][4] = -PDGelectron; ParticleChargino2.Array_Decays[43][2] = chargino2amplitudeneut3nueebar; ParticleChargino2.Array_Decays[43][3] = 3; ParticleChargino2.Array_Comments[43] = "# ~chi_2+ -> ~chi_30 nu_e e+";
+ ParticleChargino2.Array_Decays[44][0] = PDGneutralino3; ParticleChargino2.Array_Decays[44][1] = PDGnumuon; ParticleChargino2.Array_Decays[44][4] = -PDGmuon; ParticleChargino2.Array_Decays[44][2] = chargino2amplitudeneut3numumubar; ParticleChargino2.Array_Decays[44][3] = 3; ParticleChargino2.Array_Comments[44] = "# ~chi_2+ -> ~chi_30 nu_mu mu+";
+ ParticleChargino2.Array_Decays[45][0] = PDGneutralino3; ParticleChargino2.Array_Decays[45][1] = PDGnutau; ParticleChargino2.Array_Decays[45][4] = -PDGtau; ParticleChargino2.Array_Decays[45][2] = chargino2amplitudeneut3nutautaubar; ParticleChargino2.Array_Decays[45][3] = 3; ParticleChargino2.Array_Comments[45] = "# ~chi_2+ -> ~chi_30 nu_tau tau+";
+ ParticleChargino2.Array_Decays[46][0] = PDGneutralino4; ParticleChargino2.Array_Decays[46][1] = PDGup; ParticleChargino2.Array_Decays[46][4] = -PDGdown; ParticleChargino2.Array_Decays[46][2] = chargino2amplitudeneut4udbar; ParticleChargino2.Array_Decays[46][3] = 3; ParticleChargino2.Array_Comments[46] = "# ~chi_2+ -> ~chi_40 u dbar";
+ ParticleChargino2.Array_Decays[47][0] = PDGneutralino4; ParticleChargino2.Array_Decays[47][1] = PDGcharm; ParticleChargino2.Array_Decays[47][4] = -PDGstrange; ParticleChargino2.Array_Decays[47][2] = chargino2amplitudeneut4csbar; ParticleChargino2.Array_Decays[47][3] = 3; ParticleChargino2.Array_Comments[47] = "# ~chi_2+ -> ~chi_40 c sbar";
+ ParticleChargino2.Array_Decays[48][0] = PDGneutralino4; ParticleChargino2.Array_Decays[48][1] = PDGnuelectron; ParticleChargino2.Array_Decays[48][4] = -PDGelectron; ParticleChargino2.Array_Decays[48][2] = chargino2amplitudeneut4nueebar; ParticleChargino2.Array_Decays[48][3] = 3; ParticleChargino2.Array_Comments[48] = "# ~chi_2+ -> ~chi_40 nu_e e+";
+ ParticleChargino2.Array_Decays[49][0] = PDGneutralino4; ParticleChargino2.Array_Decays[49][1] = PDGnumuon; ParticleChargino2.Array_Decays[49][4] = -PDGmuon; ParticleChargino2.Array_Decays[49][2] = chargino2amplitudeneut4numumubar; ParticleChargino2.Array_Decays[49][3] = 3; ParticleChargino2.Array_Comments[49] = "# ~chi_2+ -> ~chi_40 nu_mu mu+";
+ ParticleChargino2.Array_Decays[50][0] = PDGneutralino4; ParticleChargino2.Array_Decays[50][1] = PDGnutau; ParticleChargino2.Array_Decays[50][4] = -PDGtau; ParticleChargino2.Array_Decays[50][2] = chargino2amplitudeneut4nutautaubar; ParticleChargino2.Array_Decays[50][3] = 3; ParticleChargino2.Array_Comments[50] = "# ~chi_2+ -> ~chi_40 nu_tau tau+";
 
- ParticleChargino2.Array_Decays[49][0] = PDGHplus; ParticleChargino2.Array_Decays[49][1] = PDGneutralino5; ParticleChargino2.Array_Decays[49][2] = chargino2amplitudeHminusneutralinoZ5; ParticleChargino2.Array_Decays[49][3] = 2; ParticleChargino2.Array_Comments[49] = "# ~chi_2+ -> H+ ~chi_50";
- ParticleChargino2.Array_Decays[50][0] = PDGWplus; ParticleChargino2.Array_Decays[50][1] = PDGneutralino5; ParticleChargino2.Array_Decays[50][2] = chargino2amplitudeWbosonneutralinoZ5; ParticleChargino2.Array_Decays[50][3] = 2; ParticleChargino2.Array_Comments[50] = "# ~chi_2+ -> W+ ~chi_50";
 
  double Chargino2_No_1to2_Decays = 0;
 
@@ -3286,7 +3585,8 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
  
  if ( ParticleChargino2.three_width != ParticleChargino2.three_width) /// Tests for a nan as only nans aren't equal to themselves
    {
-     out << "# Three body decays give nan for chargino2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     fout << "# Three body decays give nan for chargino2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+     errorflag = -1;
      ParticleChargino2.No_of_Decays = Chargino2_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleChargino2.total_width = ParticleChargino2.two_width;
    }
@@ -3294,12 +3594,22 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    ParticleChargino2.total_width = ParticleChargino2.two_width + ParticleChargino2.three_width;
  }
  
+ if ( ParticleChargino2.total_width != ParticleChargino2.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleChargino2.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleChargino2.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in chargino2 total width \n");
+   }
+ 
+
  for (int i =0; i<ParticleChargino2.No_of_Decays; i++) {
    ParticleChargino2.Array_Decays[i][5]= ParticleChargino2.Array_Decays[i][2]/ParticleChargino2.total_width;
  }
  
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleChargino2, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleChargino2, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleChargino2, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleChargino2, BRTol);}
 
  }
 
@@ -3366,16 +3676,16 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
      neutralino1amplitudeHminuscharginoW1 = neutralino1amplitudeHpluscharginoW1;
      neutralino1amplitudeHminuscharginoW2 = neutralino1amplitudeHpluscharginoW2;
      
-     neutralino1amplitudechargino1udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mch(1), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 1, 1, onetothree, 'q', 'n');
-     neutralino1amplitudechargino1csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mch(1), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 1, 1, onetothree, 'q', 'n');
-     neutralino1amplitudechargino1enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), me(1,1), me(2,1), msnu(1), 100000000000, runmw, mHpm, mch(1), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 1, 1, onetothree, 'l', 'n');
-     neutralino1amplitudechargino1munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), me(1,2), me(2,2), msnu(2), 100000000000, runmw, mHpm, mch(1), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 1, 1, onetothree, 'l', 'n');
-     neutralino1amplitudechargino1taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), me(1,3), me(2,3), msnu(3), 100000000000, runmw, mHpm, mch(1), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 1, 1, onetothree, 'l', 'n');
-     neutralino1amplitudechargino2udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mch(2), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 1, 2, onetothree, 'q', 'n');
-     neutralino1amplitudechargino2csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mch(2), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 1, 2, onetothree, 'q', 'n');
-     neutralino1amplitudechargino2enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), me(1,1), me(2,1), msnu(1), 100000000000, runmw, mHpm, mch(2), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 1, 2, onetothree, 'l', 'n');
-     neutralino1amplitudechargino2munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), me(1,2), me(2,2), msnu(2), 100000000000, runmw, mHpm, mch(2), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 1, 2, onetothree, 'l', 'n');
-     neutralino1amplitudechargino2taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), me(1,3), me(2,3), msnu(3), 100000000000, runmw, mHpm, mch(2), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 1, 2, onetothree, 'l', 'n');
+     neutralino1amplitudechargino1udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mch(1), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 1, 1, onetothree, 'q', 'n');
+     neutralino1amplitudechargino1csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mch(1), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 1, 1, onetothree, 'q', 'n');
+     neutralino1amplitudechargino1enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), me(1,1), me(2,1), msnu(1), 100000000000, polemw, mHpm, mch(1), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 1, 1, onetothree, 'l', 'n');
+     neutralino1amplitudechargino1munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), me(1,2), me(2,2), msnu(2), 100000000000, polemw, mHpm, mch(1), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 1, 1, onetothree, 'l', 'n');
+     neutralino1amplitudechargino1taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), me(1,3), me(2,3), msnu(3), 100000000000, polemw, mHpm, mch(1), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 1, 1, onetothree, 'l', 'n');
+     neutralino1amplitudechargino2udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mch(2), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 1, 2, onetothree, 'q', 'n');
+     neutralino1amplitudechargino2csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mch(2), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 1, 2, onetothree, 'q', 'n');
+     neutralino1amplitudechargino2enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), me(1,1), me(2,1), msnu(1), 100000000000, polemw, mHpm, mch(2), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 1, 2, onetothree, 'l', 'n');
+     neutralino1amplitudechargino2munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), me(1,2), me(2,2), msnu(2), 100000000000, polemw, mHpm, mch(2), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 1, 2, onetothree, 'l', 'n');
+     neutralino1amplitudechargino2taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(1), me(1,3), me(2,3), msnu(3), 100000000000, polemw, mHpm, mch(2), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 1, 2, onetothree, 'l', 'n');
      
      neutralino1amplitudephotongravitino = neutralinoamplitudedecayphotongravitino(mneut(1), mgravitino, MPlreduced, mixNeut, g, gp, 1, gravonoff, neutNLSP);
      neutralino1amplitudeZgravitino = neutralinoamplitudedecayZgravitino(mneut(1), polemz, mgravitino, MPlreduced, mixNeut, g, gp, beta, 1, gravonoff, neutNLSP);
@@ -3536,20 +3846,31 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   
   if ( ParticleNeutralino1.three_width != ParticleNeutralino1.three_width) /// Tests for a nan as only nans aren't equal to themselves
     {
-      out << "# Three body decays give nan for neutralino 1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      fout << "# Three body decays give nan for neutralino 1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      errorflag = -1;
       ParticleNeutralino1.No_of_Decays = Neut1_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
       ParticleNeutralino1.total_width = ParticleNeutralino1.two_width;
     }
   else {
     ParticleNeutralino1.total_width = ParticleNeutralino1.two_width + ParticleNeutralino1.three_width;
   }
-   
+
+  if ( ParticleNeutralino1.total_width != ParticleNeutralino1.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleNeutralino1.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleNeutralino1.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in Neutralino1 total width \n");
+    }
+ 
+
   for (int i =0; i<ParticleNeutralino1.No_of_Decays; i++) {
      ParticleNeutralino1.Array_Decays[i][5]= ParticleNeutralino1.Array_Decays[i][2]/ParticleNeutralino1.total_width;
    }
 
-  if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleNeutralino1, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleNeutralino1, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino1, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino1, BRTol);}
 
  }
 
@@ -3644,16 +3965,16 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    neutralino2amplitudeneut1numunumubar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), msnu(2), 100000000000, runmz, mh0(1), mh0(2), mA0(1), mneut(1), 0, alphas, 0, runmw, g, gp, alpha, beta, 0, mixNeut, 2, 1, onetothree, 'n');
    neutralino2amplitudeneut1nutaunutaubar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), msnu(3), 100000000000, runmz, mh0(1), mh0(2), mA0(1), mneut(1), 0, alphas, 0, runmw, g, gp, alpha, beta, 0, mixNeut, 2, 1, onetothree, 'n'); ///Note set msf(2) very large as there is no msnuR so need this intermediate to decouple and not be present
 
-   neutralino2amplitudechargino1udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mch(1), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 2, 1, onetothree, 'q', 'n');
-   neutralino2amplitudechargino1csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mch(1), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 2, 1, onetothree, 'q', 'n');
-   neutralino2amplitudechargino1enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), me(1,1), me(2,1), msnu(1), 100000000000, runmw, mHpm, mch(1), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 2, 1, onetothree, 'l', 'n');
-   neutralino2amplitudechargino1munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), me(1,2), me(2,2), msnu(2), 100000000000, runmw, mHpm, mch(1), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 2, 1, onetothree, 'l', 'n');
-   neutralino2amplitudechargino1taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), me(1,3), me(2,3), msnu(3), 100000000000, runmw, mHpm, mch(1), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 2, 1, onetothree, 'l', 'n');
-   neutralino2amplitudechargino2udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mch(2), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 2, 2, onetothree, 'q', 'n');
-   neutralino2amplitudechargino2csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mch(2), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 2, 2, onetothree, 'q', 'n');
-   neutralino2amplitudechargino2enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), me(1,1), me(2,1), msnu(1), 100000000000, runmw, mHpm, mch(2), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 2, 2, onetothree, 'l', 'n');
-   neutralino2amplitudechargino2munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), me(1,2), me(2,2), msnu(2), 100000000000, runmw, mHpm, mch(2), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 2, 2, onetothree, 'l', 'n');
-   neutralino2amplitudechargino2taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), me(1,3), me(2,3), msnu(3), 100000000000, runmw, mHpm, mch(2), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 2, 2, onetothree, 'l', 'n');
+   neutralino2amplitudechargino1udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mch(1), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 2, 1, onetothree, 'q', 'n');
+   neutralino2amplitudechargino1csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mch(1), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 2, 1, onetothree, 'q', 'n');
+   neutralino2amplitudechargino1enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), me(1,1), me(2,1), msnu(1), 100000000000, polemw, mHpm, mch(1), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 2, 1, onetothree, 'l', 'n');
+   neutralino2amplitudechargino1munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), me(1,2), me(2,2), msnu(2), 100000000000, polemw, mHpm, mch(1), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 2, 1, onetothree, 'l', 'n');
+   neutralino2amplitudechargino1taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), me(1,3), me(2,3), msnu(3), 100000000000, polemw, mHpm, mch(1), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 2, 1, onetothree, 'l', 'n');
+   neutralino2amplitudechargino2udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mch(2), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 2, 2, onetothree, 'q', 'n');
+   neutralino2amplitudechargino2csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mch(2), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 2, 2, onetothree, 'q', 'n');
+   neutralino2amplitudechargino2enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), me(1,1), me(2,1), msnu(1), 100000000000, polemw, mHpm, mch(2), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 2, 2, onetothree, 'l', 'n');
+   neutralino2amplitudechargino2munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), me(1,2), me(2,2), msnu(2), 100000000000, polemw, mHpm, mch(2), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 2, 2, onetothree, 'l', 'n');
+   neutralino2amplitudechargino2taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), me(1,3), me(2,3), msnu(3), 100000000000, polemw, mHpm, mch(2), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 2, 2, onetothree, 'l', 'n');
 
  }
 
@@ -3839,20 +4160,31 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   
   if ( ParticleNeutralino2.three_width != ParticleNeutralino2.three_width) /// Tests for a nan as only nans aren't equal to themselves
     {
-      out << "# Three body decays give nan for neutralino 2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      fout << "# Three body decays give nan for neutralino 2 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      errorflag = -1;
       ParticleNeutralino2.No_of_Decays = Neut2_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
       ParticleNeutralino2.total_width = ParticleNeutralino2.two_width;
     }
   else {
     ParticleNeutralino2.total_width = ParticleNeutralino2.two_width + ParticleNeutralino2.three_width;
   }
+  
+  if ( ParticleNeutralino2.total_width != ParticleNeutralino2.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleNeutralino2.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleNeutralino2.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in Neutralino2 total width \n");
+    }
+ 
    
   for (int i =0; i<ParticleNeutralino2.No_of_Decays; i++) {
      ParticleNeutralino2.Array_Decays[i][5]= ParticleNeutralino2.Array_Decays[i][2]/ParticleNeutralino2.total_width;
    }
 
-  if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleNeutralino2, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleNeutralino2, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino2, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino2, BRTol);}
  
 
  }
@@ -3961,16 +4293,17 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    neutralino3amplitudeneut2numunumubar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(3), msnu(2), 100000000000, runmz, mh0(1), mh0(2), mA0(1), mneut(2), 0, alphas, 0, runmw, g, gp, alpha, beta, 0, mixNeut, 3, 2, onetothree, 'n');
    neutralino3amplitudeneut2nutaunutaubar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(3), msnu(3), 100000000000, runmz, mh0(1), mh0(2), mA0(1), mneut(2), 0, alphas, 0, runmw, g, gp, alpha, beta, 0, mixNeut, 3, 2, onetothree, 'n');
    
-   neutralino3amplitudechargino1udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mch(1), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 3, 1, onetothree, 'q', 'n');
-   neutralino3amplitudechargino1csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mch(1), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 3, 1, onetothree, 'q', 'n');
-   neutralino3amplitudechargino1enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), me(1,1), me(2,1), msnu(1), 100000000000, runmw, mHpm, mch(1), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 3, 1, onetothree, 'l', 'n');
-   neutralino3amplitudechargino1munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), me(1,2), me(2,2), msnu(2), 100000000000, runmw, mHpm, mch(1), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 3, 1, onetothree, 'l', 'n');
-   neutralino3amplitudechargino1taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), me(1,3), me(2,3), msnu(3), 100000000000, runmw, mHpm, mch(1), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 3, 1, onetothree, 'l', 'n');
-   neutralino3amplitudechargino2udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mch(2), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 3, 2, onetothree, 'q', 'n');
-   neutralino3amplitudechargino2csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mch(2), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 3, 2, onetothree, 'q', 'n');
-   neutralino3amplitudechargino2enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), me(1,1), me(2,1), msnu(1), 100000000000, runmw, mHpm, mch(2), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 3, 2, onetothree, 'l', 'n');
-   neutralino3amplitudechargino2munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), me(1,2), me(2,2), msnu(2), 100000000000, runmw, mHpm, mch(2), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 3, 2, onetothree, 'l', 'n');
-   neutralino3amplitudechargino2taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), me(1,3), me(2,3), msnu(3), 100000000000, runmw, mHpm, mch(2), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 3, 2, onetothree, 'l', 'n');
+   neutralino3amplitudechargino1udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mch(1), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 3, 1, onetothree, 'q', 'n');
+   // neutralino3amplitudechargino1csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mch(1), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 3, 1, onetothree, 'q', 'n');
+   neutralino3amplitudechargino1csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mch(1), MCHARM, MSTRANGE, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 3, 1, onetothree, 'q', 'n');
+   neutralino3amplitudechargino1enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), me(1,1), me(2,1), msnu(1), 100000000000, polemw, mHpm, mch(1), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 3, 1, onetothree, 'l', 'n');
+   neutralino3amplitudechargino1munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), me(1,2), me(2,2), msnu(2), 100000000000, polemw, mHpm, mch(1), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 3, 1, onetothree, 'l', 'n');
+   neutralino3amplitudechargino1taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), me(1,3), me(2,3), msnu(3), 100000000000, polemw, mHpm, mch(1), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 3, 1, onetothree, 'l', 'n');
+   neutralino3amplitudechargino2udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mch(2), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 3, 2, onetothree, 'q', 'n');
+   neutralino3amplitudechargino2csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mch(2), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 3, 2, onetothree, 'q', 'n');
+   neutralino3amplitudechargino2enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), me(1,1), me(2,1), msnu(1), 100000000000, polemw, mHpm, mch(2), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 3, 2, onetothree, 'l', 'n');
+   neutralino3amplitudechargino2munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), me(1,2), me(2,2), msnu(2), 100000000000, polemw, mHpm, mch(2), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 3, 2, onetothree, 'l', 'n');
+   neutralino3amplitudechargino2taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(3), me(1,3), me(2,3), msnu(3), 100000000000, polemw, mHpm, mch(2), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 3, 2, onetothree, 'l', 'n');
 
  }
  else if (nmssmIsIt == true){
@@ -4170,20 +4503,31 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   
   if ( ParticleNeutralino3.three_width != ParticleNeutralino3.three_width) /// Tests for a nan as only nans aren't equal to themselves
     {
-      out << "# Three body decays give nan for neutralino 3 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      fout << "# Three body decays give nan for neutralino 3 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      errorflag = -1;
       ParticleNeutralino3.No_of_Decays = Neut3_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
       ParticleNeutralino3.total_width = ParticleNeutralino3.two_width;
     }
   else {
     ParticleNeutralino3.total_width = ParticleNeutralino3.two_width + ParticleNeutralino3.three_width;
   }
+  
+  if ( ParticleNeutralino3.total_width != ParticleNeutralino3.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleNeutralino3.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleNeutralino3.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in Neutralino3 total width \n");
+    }
+ 
    
   for (int i =0; i<ParticleNeutralino3.No_of_Decays; i++) {
      ParticleNeutralino3.Array_Decays[i][5]= ParticleNeutralino3.Array_Decays[i][2]/ParticleNeutralino3.total_width;
    }
 
-  if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleNeutralino3, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleNeutralino3, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino3, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino3, BRTol);}
 
  }
  else{}
@@ -4307,16 +4651,20 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    neutralino4amplitudeneut3numunumubar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(4), msnu(2), 100000000000, runmz, mh0(1), mh0(2), mA0(1), mneut(3), 0, alphas, 0, runmw, g, gp, alpha, beta, 0, mixNeut, 4, 3, onetothree, 'n');
    neutralino4amplitudeneut3nutaunutaubar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(4), msnu(3), 100000000000, runmz, mh0(1), mh0(2), mA0(1), mneut(3), 0, alphas, 0, runmw, g, gp, alpha, beta, 0, mixNeut, 4, 3, onetothree, 'n');
    
-   neutralino4amplitudechargino1udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mch(1), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 4, 1, onetothree, 'q', 'n');
-   neutralino4amplitudechargino1csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mch(1), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 4, 1, onetothree, 'q', 'n');
-   neutralino4amplitudechargino1enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), me(1,1), me(2,1), msnu(1), 100000000000, runmw, mHpm, mch(1), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 4, 1, onetothree, 'l', 'n');
-   neutralino4amplitudechargino1munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), me(1,2), me(2,2), msnu(2), 100000000000, runmw, mHpm, mch(1), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 4, 1, onetothree, 'l', 'n');
-   neutralino4amplitudechargino1taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), me(1,3), me(2,3), msnu(3), 100000000000, runmw, mHpm, mch(1), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 4, 1, onetothree, 'l', 'n');
-   neutralino4amplitudechargino2udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), mu(1,1), mu(2,1), md(1,1), md(2,1), runmw, mHpm, mch(2), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 4, 2, onetothree, 'q', 'n');
-   neutralino4amplitudechargino2csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), mu(1,2), mu(2,2), md(1,2), md(2,2), runmw, mHpm, mch(2), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 4, 2, onetothree, 'q', 'n');
-   neutralino4amplitudechargino2enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), me(1,1), me(2,1), msnu(1), 100000000000, runmw, mHpm, mch(2), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 4, 2, onetothree, 'l', 'n');
-   neutralino4amplitudechargino2munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), me(1,2), me(2,2), msnu(2), 100000000000, runmw, mHpm, mch(2), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 4, 2, onetothree, 'l', 'n');
-   neutralino4amplitudechargino2taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), me(1,3), me(2,3), msnu(3), 100000000000, runmw, mHpm, mch(2), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 4, 2, onetothree, 'l', 'n');
+   neutralino4amplitudechargino1udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mch(1), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 4, 1, onetothree, 'q', 'n');
+   // neutralino4amplitudechargino1csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mch(1), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 4, 1, onetothree, 'q', 'n');
+   neutralino4amplitudechargino1csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mch(1), MCHARM, MSTRANGE, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 4, 1, onetothree, 'q', 'n');
+   neutralino4amplitudechargino1enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), me(1,1), me(2,1), msnu(1), 100000000000, polemw, mHpm, mch(1), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 4, 1, onetothree, 'l', 'n');
+   neutralino4amplitudechargino1munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), me(1,2), me(2,2), msnu(2), 100000000000, polemw, mHpm, mch(1), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 4, 1, onetothree, 'l', 'n');
+   neutralino4amplitudechargino1taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), me(1,3), me(2,3), msnu(3), 100000000000, polemw, mHpm, mch(1), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 4, 1, onetothree, 'l', 'n');
+   neutralino4amplitudechargino2udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mch(2), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 4, 2, onetothree, 'q', 'n');
+  // neutralino4amplitudechargino2csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mch(2), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 4, 2, onetothree, 'q', 'n');
+   neutralino4amplitudechargino2csbar = neutralinoamplitudedecaycharginoffprimebar (2558.7916589598717, mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mch(2), MCHARM, MSTRANGE, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 4, 2, onetothree, 'q', 'n');
+   neutralino4amplitudechargino2enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), me(1,1), me(2,1), msnu(1), 100000000000, polemw, mHpm, mch(2), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 4, 2, onetothree, 'l', 'n');
+   neutralino4amplitudechargino2munumubar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), me(1,2), me(2,2), msnu(2), 100000000000, polemw, mHpm, mch(2), 0, mmu, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmmu, mixNeut, 4, 2, onetothree, 'l', 'n');
+   neutralino4amplitudechargino2taunutaubar = neutralinoamplitudedecaycharginoffprimebar (mneut(4), me(1,3), me(2,3), msnu(3), 100000000000, polemw, mHpm, mch(2), 0, mtau, 0, thetatau-PI/2, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmtau, mixNeut, 4, 2, onetothree, 'l', 'n');
+
+
  }
  else if (nmssmIsIt == true){
    neutralino4amplitudeWbosonpluscharginoW1 = neutralinoamplitudedecaycharginoWNMSSM (mneut(4), MCH1, polemw, g, thetaL2, thetaR2, mixNeut, 4, 1);
@@ -4536,22 +4884,31 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   
   if ( ParticleNeutralino4.three_width != ParticleNeutralino4.three_width) /// Tests for a nan as only nans aren't equal to themselves
     {
-      out << "# Three body decays give nan for neutralino 4 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      fout << "# Three body decays give nan for neutralino 4 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      errorflag = -1;
       ParticleNeutralino4.No_of_Decays = Neut4_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
       ParticleNeutralino4.total_width = ParticleNeutralino4.two_width;
     }
   else {
     ParticleNeutralino4.total_width = ParticleNeutralino4.two_width + ParticleNeutralino4.three_width;
   }
+
+  if ( ParticleNeutralino4.total_width != ParticleNeutralino4.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleNeutralino4.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleNeutralino4.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in Neutralino4 total width \n");
+    }
+ 
    
   for (int i =0; i<ParticleNeutralino4.No_of_Decays; i++) {
      ParticleNeutralino4.Array_Decays[i][5]= ParticleNeutralino4.Array_Decays[i][2]/ParticleNeutralino4.total_width;
    }
 
-  if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleNeutralino4, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleNeutralino4, BRTol);}
-
-  out.precision(10);
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino4, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino4, BRTol);}
 
  }
  else{}
@@ -4738,20 +5095,30 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
   
   if ( ParticleNeutralino5.three_width != ParticleNeutralino5.three_width) /// Tests for a nan as only nans aren't equal to themselves
     {
-      out << "# Three body decays give nan for neutralino 5 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      fout << "# Three body decays give nan for neutralino 5 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+      errorflag = -1;
       ParticleNeutralino5.No_of_Decays = Neut5_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
       ParticleNeutralino5.total_width = ParticleNeutralino5.two_width;
     }
   else {
     ParticleNeutralino5.total_width = ParticleNeutralino5.two_width + ParticleNeutralino5.three_width;
   }
-   
+
+  if ( ParticleNeutralino5.total_width != ParticleNeutralino5.total_width) /// Tests for a nan as only nans aren't equal to themselves
+    {
+      errorflag = -1;
+      // for (int i = 0; i<ParticleNeutralino5.No_of_Decays; i++) {
+      //   fout << i << " " << ParticleNeutralino5.Array_Decays[i][2] << endl;
+      // }	  
+      throw( "nan in Neutralino5 total width \n");
+    }
+    
   for (int i =0; i<ParticleNeutralino5.No_of_Decays; i++) {
      ParticleNeutralino5.Array_Decays[i][5]= ParticleNeutralino5.Array_Decays[i][2]/ParticleNeutralino5.total_width;
    }
 
-  if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleNeutralino5, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleNeutralino5, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino5, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino5, BRTol);}
    }
    else{}
 
@@ -5067,14 +5434,23 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
  /// Note no need for test for nans here as the higgs 1 -> 3 decay formulae are all purely analytic algebraic expressions, therefore no numerical integration is involved so we can't get nans.
 
     Particlehiggsl.total_width = Particlehiggsl.two_width + Particlehiggsl.three_width;
-  
+ 
+    if ( Particlehiggsl.total_width != Particlehiggsl.total_width) /// Tests for a nan as only nans aren't equal to themselves
+      {
+	errorflag = -1;
+	// for (int i = 0; i<Particlehiggsl.No_of_Decays; i++) {
+	//   fout << Particlehiggsl.Array_Decays[i][2] << endl;
+	// }
+	
+	throw( "nan in lightest higgs total width \n");
+      }
    
   for (int i =0; i<Particlehiggsl.No_of_Decays; i++) {
      Particlehiggsl.Array_Decays[i][5]= Particlehiggsl.Array_Decays[i][2]/Particlehiggsl.total_width;
    } 
 
-  if (outputPartialWidths == false) {  OutputNoPWs(out, Particlehiggsl, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(out, Particlehiggsl, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, Particlehiggsl, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, Particlehiggsl, BRTol);}
 
  }
  else{}
@@ -5391,14 +5767,22 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
  /// Note no need for test for nans here as the higgs 1 -> 3 decay formulae are all purely analytic algebraic expressions, therefore no numerical integration is involved so we can't get nans.
 
  ParticleHiggsH.total_width = ParticleHiggsH.two_width + ParticleHiggsH.three_width;
-  
-   
+
+ if ( ParticleHiggsH.total_width != ParticleHiggsH.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleHiggsH.No_of_Decays; i++) {
+     //   fout << i << " " << ParticleHiggsH.Array_Decays[i][2] << endl;
+     // }	  
+     throw( "nan in H0 (second heaviest higgs) total width \n");
+   }
+ 
  for (int i =0; i<ParticleHiggsH.No_of_Decays; i++) {
    ParticleHiggsH.Array_Decays[i][5]= ParticleHiggsH.Array_Decays[i][2]/ParticleHiggsH.total_width;
  } 
  
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleHiggsH, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleHiggsH, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsH, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsH, BRTol);}
 
  }
  else{}
@@ -5420,13 +5804,14 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    ///QCD Corrections not included for u or d quarks as the correction formulae not valid for these
     }
     else {
+      // alphasAtMH3 = 9.4241337759888785E-002;
       H03amplitudecantic = higgslorHamplitudedecayquarkantiquark (mh0(3), mcpole, g, alpha, beta, runmw, 1, 'M', CPEMix, nmssmIsIt, QCDcorr, alphasAtMH3);
       H03amplitudesantis = higgslorHamplitudedecayquarkantiquark (mh0(3), mspole, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, QCDcorr, alphasAtMH3);
       H03amplitudebantib = higgslorHamplitudedecayquarkantiquark (mh0(3), mbPole, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, QCDcorr, alphasAtMH3); ///use runmb here to reduce necessary corrections
       H03amplitudetantit = higgslorHamplitudedecayquarkantiquark (mh0(3), mtPole, g, alpha, beta, runmw, 1, 'M', CPEMix, nmssmIsIt, QCDcorr, alphasAtMH3); ///don't use runmt here as closer to answer with corrections with usual mass
    ///QCD Corrections not included for u or d quarks as the correction formulae not valid for these
     }
-   
+
     H03amplitudeeantie = higgslorHamplitudedecayquarkantiquark (mh0(3), runmel, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, false, alphasAtMH3)/3; ///0 as leptons are like down-type quarks, divide by 3 as No of colours is 1 for leptons cf 3 for quarks
     H03amplitudemuantimu = higgslorHamplitudedecayquarkantiquark (mh0(3), runmmu, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, false, alphasAtMH3)/3;
     H03amplitudetauantitau = higgslorHamplitudedecayquarkantiquark (mh0(3), runmtau, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, false, alphasAtMH3)/3;
@@ -5475,10 +5860,12 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
 
  H03amplitudecharW1charW1 = higgsphiamplitudedecaysamecharginoNMSSM (mh0(3), mch(1), g, thetaL2, thetaR2, lam, CPEMix, 1, 3);
  H03amplitudecharW2charW2 = higgsphiamplitudedecaysamecharginoNMSSM (mh0(3), mch(2), g, thetaL2, thetaR2, lam, CPEMix, 2, 3);
- H03amplitudecharW1charW2 = higgsphiamplitudedecaydiffcharginoNMSSM (mh0(3), mch(1), mch(2), g, thetaL2, thetaR2, lam, CPEMix, 3);
+ H03amplitudecharW1charW2 = higgsphiamplitudedecaydiffcharginoNMSSM (mh0(3), -mch(1), mch(2), g, thetaL2, thetaR2, lam, CPEMix, 3);
 
  H03amplitudegammagamma = higgsCPevenamplitudedecaygammagammaNMSSM(mh0(3), mtAtMH3, mbAtMH3, mcAtMH3, runmtau, runmw, mHpm, mch(1), mch(2), mu(1,2), mu(2,2), mu(1,3), mu(2,3), md(1,2), md(2,2), md(1,3), md(2,3), me(1,2), me(2,2), me(1,3), me(2,3), CPEMix, beta, g, gp, alphaAtMH3, thetat, thetab, thetatau-PI/2, thetaL2, thetaR2, At, Ab, Atau, greekmu, mueff, lam, kappa, Alambda, 3);
+
  H03amplitudegluongluon = higgsCPevenamplitudedecaygluongluonNMSSM(mh0(3), mtPole, mbPole, mcpole, runmw, mu(1,2), mu(2,2), mu(1,3), mu(2,3), md(1,2), md(2,2), md(1,3), md(2,3), mu(1,1), mu(2,1), md(1,1), md(2,1), mtAtMH3, mbAtMH3, CPEMix, beta, g, gp, gs, alphasAtMH3, thetat, thetab, thetaL2, thetaR2, At, Ab, greekmu, mueff, lam, kappa, Alambda, 3, QCDcorr);
+
  H03amplitudeZgamma = higgshamplitudedecayZgammaNMSSM (mh0(3), g, gp, alphaAtMH3, runmw, polemz, mHpm, CPEMix, beta, mtAtMH3, mbAtMH3, mcAtMH3, mch(1), mch(2), thetaL2, thetaR2, lam, kappa, Alambda, greekmu, mueff, 3);
 
  H03amplitudeneutZ1neutZ1 = higgshamplitudedecayneutineutjNMSSM (mh0(3), mneut(1), mneut(1), g, gp, CPEMix, mixNeut, lam, kappa, 1, 1, 3);
@@ -5624,10 +6011,9 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
  ParticleHiggsH3.Array_Decays[77][0] = PDGA2; ParticleHiggsH3.Array_Decays[77][1] = PDGA0; ParticleHiggsH3.Array_Decays[77][2] = H03amplitudehiggsA2higgsA; ParticleHiggsH3.Array_Decays[77][3] = 2; ParticleHiggsH3.Array_Comments[77] = "# H3 -> A2 A";
  ParticleHiggsH3.Array_Decays[78][0] = PDGA2; ParticleHiggsH3.Array_Decays[78][1] = PDGA2; ParticleHiggsH3.Array_Decays[78][2] = H03amplitudehiggsA2higgsA2; ParticleHiggsH3.Array_Decays[78][3] = 2; ParticleHiggsH3.Array_Comments[78] = "# H3 -> A2 A2";
  ParticleHiggsH3.Array_Decays[79][0] = PDGZboson; ParticleHiggsH3.Array_Decays[79][1] = PDGA2; ParticleHiggsH3.Array_Decays[79][2] = H03amplitudehiggsA2Zboson; ParticleHiggsH3.Array_Decays[79][3] = 2; ParticleHiggsH3.Array_Comments[79] = "# H3 -> A2 Z";
- ParticleHiggsH3.Array_Decays[80][0] = PDGh0; ParticleHiggsH3.Array_Decays[80][1] = PDGh0; ParticleHiggsH3.Array_Decays[80][2] = H03amplitudeh0h0; ParticleHiggsH3.Array_Decays[80][3] = 2; ParticleHiggsH3.Array_Comments[80] = "# H3 -> h h";
- ParticleHiggsH3.Array_Decays[81][0] = PDGh0; ParticleHiggsH3.Array_Decays[81][1] = PDGH0; ParticleHiggsH3.Array_Decays[81][2] = H03amplitudeh0H0; ParticleHiggsH3.Array_Decays[81][3] = 2; ParticleHiggsH3.Array_Comments[81] = "# H3 -> h H";
- ParticleHiggsH3.Array_Decays[82][0] = PDGH0; ParticleHiggsH3.Array_Decays[82][1] = PDGH0; ParticleHiggsH3.Array_Decays[82][2] = H03amplitudeH0H0; ParticleHiggsH3.Array_Decays[82][3] = 2; ParticleHiggsH3.Array_Comments[82] = "# H3 -> H H";
- ParticleHiggsH3.Array_Decays[83][0] = PDGHplus; ParticleHiggsH3.Array_Decays[83][1] = -PDGWplus; ParticleHiggsH3.Array_Decays[83][2] = H03amplitudeWHpm; ParticleHiggsH3.Array_Decays[83][3] = 2; ParticleHiggsH3.Array_Comments[83] = "# H3 -> H+ W- (or H- W+)";
+ ParticleHiggsH3.Array_Decays[80][0] = PDGh0; ParticleHiggsH3.Array_Decays[80][1] = PDGH0; ParticleHiggsH3.Array_Decays[80][2] = H03amplitudeh0H0; ParticleHiggsH3.Array_Decays[80][3] = 2; ParticleHiggsH3.Array_Comments[80] = "# H3 -> h H";
+ ParticleHiggsH3.Array_Decays[81][0] = PDGH0; ParticleHiggsH3.Array_Decays[81][1] = PDGH0; ParticleHiggsH3.Array_Decays[81][2] = H03amplitudeH0H0; ParticleHiggsH3.Array_Decays[81][3] = 2; ParticleHiggsH3.Array_Comments[81] = "# H3 -> H H";
+ ParticleHiggsH3.Array_Decays[82][0] = PDGHplus; ParticleHiggsH3.Array_Decays[82][1] = -PDGWplus; ParticleHiggsH3.Array_Decays[82][2] = H03amplitudeWHpm; ParticleHiggsH3.Array_Decays[82][3] = 2; ParticleHiggsH3.Array_Comments[82] = "# H3 -> H+ W- (or H- W+)";
    
  double HiggsH3_No_1to2_Decays = 0;
  
@@ -5650,15 +6036,24 @@ Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.
    
  /// Note no need for test for nans here as the higgs 1 -> 3 decay formulae are all purely analytic algebraic expressions, therefore no numerical integration is involved so we can't get nans.
 
-    ParticleHiggsH3.total_width = ParticleHiggsH3.two_width + ParticleHiggsH3.three_width;
-  
+ ParticleHiggsH3.total_width = ParticleHiggsH3.two_width + ParticleHiggsH3.three_width;
+
+ if ( ParticleHiggsH3.total_width != ParticleHiggsH3.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleHiggsH3.No_of_Decays; i++) {
+     //   fout << ParticleHiggsH3.Array_Decays[i][2] << endl;
+     // }	    
+     throw( "nan in H03 heaviest higgs total width \n");
+   }
+ 
    
   for (int i =0; i<ParticleHiggsH3.No_of_Decays; i++) {
      ParticleHiggsH3.Array_Decays[i][5]= ParticleHiggsH3.Array_Decays[i][2]/ParticleHiggsH3.total_width;
    } 
 
-  if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleHiggsH3, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleHiggsH3, BRTol);}
+  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsH3, BRTol);}
+  else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsH3, BRTol);}
   
    }
  }
@@ -5882,13 +6277,22 @@ if (flagA1 == 1) {
  }
  
  ParticleHiggsA.total_width = ParticleHiggsA.two_width + ParticleHiggsA.three_width;
+
+ if ( ParticleHiggsA.total_width != ParticleHiggsA.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleHiggsA.No_of_Decays; i++) {
+     //   fout << ParticleHiggsA.Array_Decays[i][2] << endl;
+     // }	    
+     throw( "nan in A0 lightest pseudoscalar higgs total width \n");
+   }
    
  for (int i =0; i<ParticleHiggsA.No_of_Decays; i++) {
    ParticleHiggsA.Array_Decays[i][5]= ParticleHiggsA.Array_Decays[i][2]/ParticleHiggsA.total_width;
  } 
 
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleHiggsA, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleHiggsA, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsA, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsA, BRTol);}
 
  }
 
@@ -5981,7 +6385,7 @@ if (flagA1 == 1) {
    ParticleHiggsA2.Array_Decays[0][0] = PDGup; ParticleHiggsA2.Array_Decays[0][1] = -PDGup; ParticleHiggsA2.Array_Decays[0][2] = A02amplitudeuantiu; ParticleHiggsA2.Array_Decays[0][3] = 2; ParticleHiggsA2.Array_Comments[0] = "# A2 -> u ub";
    ParticleHiggsA2.Array_Decays[1][0] = PDGdown; ParticleHiggsA2.Array_Decays[1][1] = -PDGdown; ParticleHiggsA2.Array_Decays[1][2] = A02amplitudedantid; ParticleHiggsA2.Array_Decays[1][3] = 2; ParticleHiggsA2.Array_Comments[1] = "# A2 -> d db";
    ParticleHiggsA2.Array_Decays[2][0] = PDGcharm; ParticleHiggsA2.Array_Decays[2][1] = -PDGcharm; ParticleHiggsA2.Array_Decays[2][2] = A02amplitudecantic; ParticleHiggsA2.Array_Decays[2][3] = 2; ParticleHiggsA2.Array_Comments[2] = "# A2 -> c cb";
-   ParticleHiggsA2.Array_Decays[3][0] = PDGstrange; ParticleHiggsA2.Array_Decays[3][1] = -PDGstrange; ParticleHiggsA2.Array_Decays[3][2] = A02amplitudesantis; ParticleHiggsH.Array_Decays[3][3] = 2; ParticleHiggsA2.Array_Comments[3] = "# A2 -> s sb";
+   ParticleHiggsA2.Array_Decays[3][0] = PDGstrange; ParticleHiggsA2.Array_Decays[3][1] = -PDGstrange; ParticleHiggsA2.Array_Decays[3][2] = A02amplitudesantis; ParticleHiggsA2.Array_Decays[3][3] = 2; ParticleHiggsA2.Array_Comments[3] = "# A2 -> s sb";
    ParticleHiggsA2.Array_Decays[4][0] = PDGbottom; ParticleHiggsA2.Array_Decays[4][1] = -PDGbottom; ParticleHiggsA2.Array_Decays[4][2] = A02amplitudebantib; ParticleHiggsA2.Array_Decays[4][3] = 2; ParticleHiggsA2.Array_Comments[4] = "# A2 -> b bb";
    ParticleHiggsA2.Array_Decays[5][0] = PDGtop; ParticleHiggsA2.Array_Decays[5][1] = -PDGtop; ParticleHiggsA2.Array_Decays[5][2] = A02amplitudetantit; ParticleHiggsA2.Array_Decays[5][3] = 2; ParticleHiggsA2.Array_Comments[5] = "# A2 -> t tb";
    ParticleHiggsA2.Array_Decays[6][0] = PDGelectron; ParticleHiggsA2.Array_Decays[6][1] = -PDGelectron; ParticleHiggsA2.Array_Decays[6][2] = A02amplitudeeantie; ParticleHiggsA2.Array_Decays[6][3] = 2; ParticleHiggsA2.Array_Comments[6] = "# A2 -> e- e+";
@@ -6065,14 +6469,23 @@ if (flagA1 == 1) {
 
  
    ParticleHiggsA2.total_width = ParticleHiggsA2.two_width + ParticleHiggsA2.three_width;
+
+ if ( ParticleHiggsA2.total_width != ParticleHiggsA2.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleHiggsA2.No_of_Decays; i++) {
+     //   fout << ParticleHiggsA2.Array_Decays[i][2] << endl;
+     // }	    
+     throw( "nan in A02 heaviest pseudoscalar higgs total width \n");
+   }
   
    
    for (int i =0; i<ParticleHiggsA2.No_of_Decays; i++) {
      ParticleHiggsA2.Array_Decays[i][5]= ParticleHiggsA2.Array_Decays[i][2]/ParticleHiggsA2.total_width;
    } 
 
-   if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleHiggsA2, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleHiggsA2, BRTol);}
+   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsA2, BRTol);}
+   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsA2, BRTol);}
 
    }
 
@@ -6085,8 +6498,6 @@ if (flagA1 == 1) {
  double Hplusamplitudeupdown=0, Hplusamplitudecharmstrange=0, Hplusamplitudetopbottom=0, Hplusamplitudeelectronelectronneutrino=0, Hplusamplitudemuonmuonneutrino=0, Hplusamplitudetautauneutrino=0, Hplusamplitudeupstrange=0, Hplusamplitudeupbottom=0, Hplusamplitudecharmdown=0, Hplusamplitudecharmbottom=0, Hplusamplitudetopdown=0, Hplusamplitudetopstrange=0, HplusamplitudeneutZ1charW1=0, HplusamplitudeneutZ1charW2=0, HplusamplitudeneutZ2charW1=0, HplusamplitudeneutZ2charW2=0, HplusamplitudeneutZ3charW1=0, HplusamplitudeneutZ3charW2=0, HplusamplitudeneutZ4charW1=0, HplusamplitudeneutZ4charW2=0, HplusamplitudehW=0, HplusamplitudesupLsdownL=0, HplusamplitudesupRsdownL=0, HplusamplitudesupLsdownR=0, HplusamplitudesupRsdownR=0, HplusamplitudescharmLsstrangeL=0, HplusamplitudescharmLsstrangeR=0, HplusamplitudescharmRsstrangeL=0, HplusamplitudescharmRsstrangeR=0, Hplusamplitudestop1sbottom1=0, Hplusamplitudestop1sbottom2=0, Hplusamplitudestop2sbottom1=0, Hplusamplitudestop2sbottom2=0, HplusamplitudeselectronLsnue=0, HplusamplitudeselectronRsnue=0, HplusamplitudesmuonLsnumu=0, HplusamplitudesmuonRsnumu=0, Hplusamplitudestau1snutau=0, Hplusamplitudestau2snutau=0; ///note Hplus -> H W is kinematically forbidden if we take tree-level mass formulae in the MSSM
 
  double HplusamplitudeWH = 0, HplusamplitudeWH3 = 0, HplusamplitudeWA = 0, HplusamplitudeWA2 = 0, HplusamplitudeneutZ5charW1 = 0, HplusamplitudeneutZ5charW2 = 0;///for NMSSM
-
- // mHpm = 1000;
 
  if (flagHpm == 1) {
  
@@ -6222,15 +6633,26 @@ if (flagA1 == 1) {
  
  ParticleHiggsplus.total_width = ParticleHiggsplus.two_width + ParticleHiggsplus.three_width;
     
+ if ( ParticleHiggsplus.total_width != ParticleHiggsplus.total_width) /// Tests for a nan as only nans aren't equal to themselves
+   {
+     errorflag = -1;
+     // for (int i = 0; i<ParticleHiggsplus.No_of_Decays; i++) {
+     //   fout << ParticleHiggsplus.Array_Decays[i][2] << endl;
+     // }	    
+     throw( "nan in H+ total width \n");
+   }
+
  for (int i =0; i<ParticleHiggsplus.No_of_Decays; i++) {
    ParticleHiggsplus.Array_Decays[i][5]= ParticleHiggsplus.Array_Decays[i][2]/ParticleHiggsplus.total_width;
  } 
  
- if (outputPartialWidths == false) {  OutputNoPWs(out, ParticleHiggsplus, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(out, ParticleHiggsplus, BRTol);}
+ if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsplus, BRTol);}
+ else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsplus, BRTol);}
   
 
  }
+
+ return errorflag;
 }
 
 /// Function to calculate the gluino decay amplitudes
@@ -6243,6 +6665,10 @@ double gluinoamplitudedecay (double m1, double m2, double m3, double alphastrong
   else {
       squareplus = pow(m1,2) - pow((m2 + m3),2);
       squareminus = pow(m1,2) - pow((m2 - m3),2);
+      if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in gluinoamplitudedecay\n");
+      errorflag = -1;
+      }
       squareratio = 1 + pow((m2/m1),2) - pow((m3/m1),2);
       amplitudeW = 1./4*alphastrong*(1/(2*m1))*squareratio*pow(squareplus*squareminus,0.5);
   }
@@ -6259,6 +6685,12 @@ double gluinoamplitudedecaymix (double m1, double m2, double m3, double alphastr
     squareplus = pow(m1,2) - pow((m2 + m3),2);
     squareminus = pow(m1,2) - pow((m2 - m3),2);
     squareratio = 1 + pow((m2/m1),2) - pow((m3/m1),2);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in gluinoamplitudedecaymix\n");
+      errorflag = -1;
+    }
+    else{}
+
     if (squarkmix ==1) { 
       squareratiomix1= squareratio - 2*sin(2*theta)*m2/m1;
       amplitudeW = (alphastrong*1./4)*squareratiomix1*(1/(2*m1))*pow(squareplus*squareminus,0.5); 
@@ -6266,6 +6698,10 @@ double gluinoamplitudedecaymix (double m1, double m2, double m3, double alphastr
     else if (squarkmix ==2) {
       squareratiomix2 = squareratio + 2*sin(2*theta)*m2/m1;
       amplitudeW = (alphastrong*1./4)*squareratiomix2*(1/(2*m1))*pow(squareplus*squareminus,0.5);
+    }
+    else {
+      throw ("problem: squarkmix must be 1 or 2 in gluinoamplitudedecaymix\n");
+      errorflag = -1;
     }
   }
   return amplitudeW;
@@ -6280,6 +6716,11 @@ double squarkamplitudedecaygluino (double m1, double m2, double m3, double alpha
   else {  
     squareplus = pow(m1,2) - pow((m2 + m3),2);
     squareminus = pow(m1,2) - pow((m2 - m3),2);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squarkamplitudedecaygluino\n");
+      errorflag = -1;
+    }
+    else{}
     squareratio = 1 - pow((m2/m1),2) - pow((m3/m1),2);
     amplitudeW = 4./3*alphastrong*(1/(2*m1))*squareratio*pow(squareplus*squareminus,0.5);
   }
@@ -6294,6 +6735,11 @@ double squarkamplitudedecaygluinomix (double m1, double m2, double m3, double al
   else {
     squareplus = pow(m1,2)-pow((m2+m3),2);
     squareminus = pow(m1,2) - pow((m2-m3),2);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squarkamplitudedecaygluinomix\n");
+      errorflag = -1;
+    }
+    else{}
     if (squarkmix == 1) {
       squareratiomix = 1- pow(m2/m1,2) - pow(m3/m1,2) +2*sin(2*theta)*m2*m3/(pow(m1,2));
       amplitudeW = 4./3*alphastrong*1/(2*m1)*squareratiomix*pow(squareplus*squareminus,0.5);
@@ -6301,6 +6747,10 @@ double squarkamplitudedecaygluinomix (double m1, double m2, double m3, double al
     else if (squarkmix == 2) {
       squareratiomix = 1- pow(m2/m1,2) - pow(m3/m1,2) -2*sin(2*theta)*m2*m3/(pow(m1,2));
       amplitudeW = 4./3*alphastrong*1/(2*m1)*squareratiomix*pow(squareplus*squareminus,0.5);
+    }
+    else {
+      throw ("problem: quarkmix must be 1 or 2 in squarkamplitudedecaygluinomix\n");
+      errorflag = -1;
     }
   }
   return amplitudeW;
@@ -6313,9 +6763,14 @@ double squarkamplitudedecaycharginoW1 (double m1, double m2, double m3, double g
     amplitudeW = 0;
   }
   else {
-    squareplus = 1 - pow(m3/m1+m2/m1,2);
-    squareminus = 1 - pow(m3/m1-m2/m1,2);
-    squareratio = 1 - pow(m3/m1,2) - pow(m2/m1,2);
+    squareplus = 1 - pow(fabs(m3)/m1+m2/m1,2);
+    squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squarkamplitudedecaycharginoW1\n");
+      errorflag = -1;
+    }
+    else{}
+    squareratio = 1 - pow(fabs(m3)/m1,2) - pow(m2/m1,2);
     amplitudeW = pow(g,2)*pow(sin(gamma),2)/(16*M_PI)*m1*squareratio*pow(squareplus*squareminus,0.5);
   }
   return amplitudeW;
@@ -6327,9 +6782,14 @@ double squarkamplitudedecaycharginoW2 (double m1, double m2, double m3, double g
     amplitudeW = 0;
   }
   else {
-    squareplus = 1 - pow(m3/m1+m2/m1,2);
-    squareminus = 1 - pow(m3/m1-m2/m1,2);
-    squareratio = 1 - pow(m3/m1,2) - pow(m2/m1,2);
+    squareplus = 1 - pow(fabs(m3)/m1+m2/m1,2);
+    squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squarkamplitudedecaycharginoW2\n");
+      errorflag = -1;
+    }
+    else{}
+    squareratio = 1 - pow(fabs(m3)/m1,2) - pow(m2/m1,2);
     amplitudeW = pow(g,2)*pow(cos(gamma),2)/(16*M_PI)*m1*squareratio*pow(squareplus*squareminus,0.5);
   }
   return amplitudeW;
@@ -6339,17 +6799,22 @@ double squarkamplitudedecaycharginoW2 (double m1, double m2, double m3, double g
 double squark1amplitudedecaycharginoW1mix (double m1, double m2, double m3, double g, double gammaL, double gammaR,  double theta, double beta, double mWboson, double runmt, double runmb, double torb) /// the variable torb depends on if it is stop (torb=1) or sbottom (torb =2) decaying and changes AprimeuW1 to AprimedW1 accordingly
 {
   double squareratio=0, squareplus=0, squareminus=0, lambda=0, angular1=0, angular2=0, amplitudeW=0;
-  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, int torb);
+  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     amplitudeW = 0;
   }
   else {
-    squareplus = 1 - pow(m3/m1+m2/m1,2);
-    squareminus = 1 - pow(m3/m1-m2/m1,2);
-    squareratio = 1- pow(m3/m1,2) - pow(m2/m1,2);
+    squareplus = 1 - pow(fabs(m3)/m1+m2/m1,2);
+    squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squark1amplitudedecaycharginoW1mix\n");
+      errorflag = -1;
+    }
+    else{}
+    squareratio = 1- pow(fabs(m3)/m1,2) - pow(m2/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
-    angular1 = squarkmixcharginocouplings(g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, torb)(1);
-    angular2 = squarkmixcharginocouplings(g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, torb)(2);
+    angular1 = squarkmixcharginocouplings(g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, m3, 0, torb)(1);
+    angular2 = squarkmixcharginocouplings(g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, m3, 0, torb)(2);
     amplitudeW = m1/(16*PI)*(angular1*squareratio + m3*m2/(pow(m1,2))*angular2)*lambda; //test
   }
   return amplitudeW;
@@ -6360,17 +6825,21 @@ double squark1amplitudedecaycharginoW1mix (double m1, double m2, double m3, doub
 double squark1amplitudedecaycharginoW2mix (double m1, double m2, double m3, double g, double gammaL, double gammaR,  double theta, double beta, double mWboson, double runmt, double runmb, double torb) /// the variable torb depends on if it is stop (torb=1) or sbottom (torb =2) decaying and changes AprimeuW2 to AprimedW2 accordingly
 {
   double squareratio=0, squareplus=0, squareminus=0, lambda=0, angular1=0, angular2=0, amplitudeW=0;
-  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, int torb);
+  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     amplitudeW = 0;
   }
   else {
-    squareplus = 1 - pow(m3/m1+m2/m1,2);
-    squareminus = 1 - pow(m3/m1-m2/m1,2);
-    squareratio = 1- pow(m3/m1,2) - pow(m2/m1,2);
+    squareplus = 1 - pow(fabs(m3)/m1+m2/m1,2);
+    squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squark1amplitudedecaycharginoW2mix\n");
+      errorflag = -1;
+    }
+    squareratio = 1- pow(fabs(m3)/m1,2) - pow(m2/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
-    angular1 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, torb)(3);
-    angular2 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, torb)(4);
+    angular1 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, 0, m3, torb)(3);
+    angular2 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, 0, m3, torb)(4);
 		
     amplitudeW = m1/(16*PI)*lambda*(angular1*squareratio + m3*m2/(pow(m1,2))*angular2);
   }
@@ -6382,19 +6851,24 @@ double squark1amplitudedecaycharginoW2mix (double m1, double m2, double m3, doub
 double squark2amplitudedecaycharginoW1mix (double m1, double m2, double m3, double g, double gammaL, double gammaR,  double theta, double beta, double mWboson, double runmt, double runmb, double torb) /// the variable torb depends on if it is stop (torb=1) or sbottom (torb =2) decaying and changes AprimeuW1 to AprimedW1 accordingly
 {
   double squareratio=0, squareplus=0, squareminus=0, lambda=0, angular1=0, angular2=0, amplitudeW=0;
-  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, int torb);
+  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
 
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     amplitudeW = 0;
   }
   else {
-    squareplus = 1 - pow(m3/m1+m2/m1,2);
-    squareminus = 1 - pow(m3/m1-m2/m1,2);
-    squareratio = 1- pow(m3/m1,2) - pow(m2/m1,2);
+    squareplus = 1 - pow(fabs(m3)/m1+m2/m1,2);
+    squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squark2amplitudedecaycharginoW1mix\n");
+      errorflag = -1;
+    }
+    squareratio = 1- pow(fabs(m3)/m1,2) - pow(m2/m1,2);
     lambda = pow(squareplus*squareminus, 0.5);
-    angular1 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, torb)(5);
-    angular2 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, torb)(6);
+    angular1 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, m3, 0, torb)(5);
+    angular2 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, m3, 0, torb)(6);
     amplitudeW = m1/(16*PI)*lambda*(angular1*squareratio + m3*m2/(pow(m1,2))*angular2);
+   
   }
   return amplitudeW;
 }
@@ -6402,19 +6876,23 @@ double squark2amplitudedecaycharginoW1mix (double m1, double m2, double m3, doub
 double squark2amplitudedecaycharginoW2mix (double m1, double m2, double m3, double g, double gammaL, double gammaR,  double theta, double beta, double mWboson, double runmt, double runmb, double torb) /// the variable torb depends on if it is stop (torb=1) or sbottom (torb =2) decaying and changes AprimeuW2 to AprimedW2 accordingly
 {
   double squareratio=0, squareplus=0, squareminus=0, lambda = 0, angular1=0, angular2=0, amplitudeW=0;
-  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, int torb);
+  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     amplitudeW = 0;
   }
   else {
-    squareplus = 1 - pow(m3/m1+m2/m1,2);
-    squareminus = 1 - pow(m3/m1-m2/m1,2);
-    squareratio = 1- pow(m3/m1,2) - pow(m2/m1,2);
+    squareplus = 1 - pow(fabs(m3)/m1+m2/m1,2);
+    squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squark2amplitudedecaycharginoW2mix\n");
+      errorflag = -1;
+    }
+    squareratio = 1- pow(fabs(m3)/m1,2) - pow(m2/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
-    angular1 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, torb)(7);
-    angular2 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, torb)(8);
+    angular1 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, 0, m3, torb)(7);
+    angular2 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, 0, m3, torb)(8);
     
-    amplitudeW = m1/(16*M_PI)*lambda*(angular1*squareratio + m3*m2/(pow(m1,2))*angular2); 
+    amplitudeW = m1/(16*PI)*lambda*(angular1*squareratio + m3*m2/(pow(m1,2))*angular2); 
   }
   return amplitudeW;
 }
@@ -6426,12 +6904,16 @@ double squarkLamplitudedecayneutralino (double m1, double m2, double m3, double 
 	  amplitudeW = 0;
     	}
 	else {
-	  squareplus = 1 - pow(m3/m1+m2/m1,2);
-	  squareminus = 1 - pow(m3/m1-m2/m1,2);
-	  squareratio = 1 - pow(m3/m1,2) - pow(m2/m1,2);
-	  AqZ = 1/(pow(2,0.5))*(uord*g*mixNeut(neutralino,2) + gprime*mixNeut(neutralino,1)/3); // trying different neutralino mixing elements as comparison with SUSYHIT suggests different mixNeut order
+	  squareplus = 1 - pow(fabs(m3)/m1+m2/m1,2);
+	  squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
+	  if (squareplus*squareminus < 0) {
+	    throw ("problem: lambda will give nan in squarkLamplitudedecayneutralino\n");
+	    errorflag = -1;
+	  }
+	  squareratio = 1 - pow(fabs(m3)/m1,2) - pow(m2/m1,2);
+	  AqZ = 1/(pow(2,0.5))*(uord*g*mixNeut(neutralino,2) + gprime*mixNeut(neutralino,1)/3); 
 	  lambda = pow(squareplus*squareminus,0.5);
-	  amplitudeW = pow(AqZ,2)*m1/(16*PI)*squareratio*lambda; // need to check this formula, unsure about AqZ and also if it should be mod squared or just the squared I have done here!
+	  amplitudeW = pow(AqZ,2)*m1/(16*PI)*squareratio*lambda; 
 	}
 	return amplitudeW;
 }
@@ -6443,11 +6925,19 @@ double squarkRamplitudedecayneutralino (double m1, double m2, double m3, double 
 	  amplitudeW = 0;
     	}
 	else {
-	  squareplus = 1 - pow(m3/m1+m2/m1,2);
-	  squareminus = 1 - pow(m3/m1-m2/m1,2);
+	  squareplus = 1 - pow(fabs(m3)/m1+m2/m1,2);
+	  squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
+	  if (squareplus*squareminus < 0) {
+	    throw ("problem: lambda will give nan in squarkRamplitudedecayneutralino\n");
+	    errorflag = -1;
+	  }
 	  squareratio = 1 - pow(m3/m1,2) - pow(m2/m1,2);
 	  if ( uord == 1) { uordchanger =1;}
 	  else if (uord == -1) { uordchanger =-0.5;}
+	  else {
+	    throw("problem: uord must be 1 or -1 in squarkRamplitudedecayneutralino");
+	    errorflag = -1;
+	  }
 	  BqZ = 1/(pow(2,0.5))*4./3*uordchanger*gprime*mixNeut(neutralino,1); ///Following changes in AqZ suggested by SUSYHIT
 	  lambda = pow(squareplus*squareminus,0.5);
 	  amplitudeW = pow(BqZ,2)*m1/(16*PI)*squareratio*lambda; /// need to check this formula, unsure about BqZ and also if it should be mod squared or just the squared I have done here!
@@ -6457,342 +6947,8 @@ double squarkRamplitudedecayneutralino (double m1, double m2, double m3, double 
 }
 
 
-double squark1amplitudedecayneutralinomix (double m1, double m2, double m3, double g, double gprime, double theta, double beta, double mWboson, DoubleMatrix & mixNeut, double runmt, double runmb, int neutralino, int uord) ///neutralino takes values of 1, 2, 3, or 4 and denotes which neutralino mass eigenstate we decay into, uord takes value 1 for top quarks and -1 for bottom quarks in order to change the sign of the g*neutralinomixingmatrix[2][element] in AqZ accordingly, 
-{
-  double squareplus, squareminus, AqZ=0, BqZ=0, fq=0, neutelem=0, modasquared, modbsquared, combo1, combo2, lambda, amplitudeW; ///fq is the fermion Yukawa coupling - see pg 143 of Tata and Baer, neutelem ensures the third row of the neutralinomixingmatrix is selected for up type squarks and the fourth row is selected for down type squarks
-  vector <double> a(2), b(2);
-  if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    amplitudeW = 0;
-  }
-  else {
-    squareplus = 1 - pow(m3/m1+m2/m1,2);
-    squareminus = 1 - pow(m3/m1-m2/m1,2);
-    if ( uord == 1) {
-      fq = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
-      neutelem = 3;
-      BqZ = 1/(pow(2,0.5))*4./3*gprime*mixNeut(neutralino,1);
-    }
-    else if (uord == -1) { 
-      fq = g*runmb/(pow(2,0.5)*mWboson*cos(beta));
-      neutelem = 4;
-      BqZ = 1/(pow(2,0.5))*4./3*-1./2*gprime*mixNeut(neutralino,1);
-    }
-    
-    AqZ = 1/(pow(2,0.5))*(uord*g*mixNeut(neutralino,2) + gprime*mixNeut(neutralino,1)/3);	
-    /// Note for now I have taken AqZ and BqZ to be real - this effects which parts of a and b are real and imaginary, I have done this by assuming all masses are positive
-    combo1 = fq*mixNeut(neutralino,neutelem)*cos(theta);
-    combo2 = fq*mixNeut(neutralino,neutelem)*sin(theta);
-		
-    if (m3 < 0) {
-      a[0] = 0.5*(-AqZ*cos(theta)-combo1 - BqZ*sin(theta)+combo2); /// real part
-      a[1] = 0; /// imaginary part
-      b[0] = 0.5*(AqZ*cos(theta) -combo1 - BqZ*sin(theta) - combo2); /// real part
-      b[1] = 0; /// imaginary part
-    }
-    
-    else if (m3 >=0) {
-      a[0] = 0; /// real part
-      a[1] = 0.5*((AqZ*cos(theta) - combo1) - BqZ*sin(theta) - combo2); /// imaginary part
-      b[0] = 0; /// real part
-      b[1] = 0.5*(-AqZ*cos(theta)-combo1 - BqZ*sin(theta) + combo2); ///imaginary part
-	}
-    modasquared = pow(a[0],2) + pow(a[1],2);
-    modbsquared = pow(b[0],2) + pow(b[1],2);
-    lambda = pow(squareplus*squareminus,0.5);
-    amplitudeW = m1/(8*M_PI)*lambda*(modasquared*squareplus+modbsquared*squareminus);
-  }
-  return amplitudeW;
-}
 
-double squark2amplitudedecayneutralinomix (double m1, double m2, double m3, double g, double gprime, double theta, double beta, double mWboson, DoubleMatrix & mixNeut, double runmt, double runmb, int neutralino, int uord) ///neutralino takes values of 1, 2, 3, or 4 and denotes which neutralino mass eigenstate we decay into, uord takes value 1 for top quarks and -1 for bottom quarks in order to change the sign of the g*neutralinomixingmatrix[2][element] in AqZ accordingly, uordchanger changes the sign and magnitude of the coefficient of BqZ depending on if you have an up or down type squark
-{
-  double squareplus, squareminus,  AqZ, BqZ, uordchanger=0, fq=0, neutelem=0, areal, aimag, breal, bimag, modasquared, modbsquared, lambda, amplitudeW; ///fq is the fermion Yukawa coupling - see pg 143 of Tata and Baer, neutelem ensures the third row of the neutralinomixingmatrix is selected for up type squarks and the fourth row is selected for down type squarks
-  ///complex<double> a,b; // NEED TO RELOOK THROUGH ALL THIS AS COMPLEX NUMBERS NOT WORKING PROPERLY
-  if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    amplitudeW = 0;
-  }
-  else {
-    squareplus = 1 - pow(m3/m1+m2/m1,2);
-    squareminus = 1 - pow(m3/m1-m2/m1,2);
-    if ( uord == 1) {
-      uordchanger =1;
-	fq = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
-	neutelem = 3;
-    }
-    else if (uord == -1) { 
-      uordchanger =-0.5;
-      fq = g*runmb/(pow(2,0.5)*mWboson*cos(beta));				
-      neutelem = 4;
-    }
-		
-    AqZ = 1/(pow(2,0.5))*(uord*g*mixNeut(neutralino,2) + gprime*mixNeut(neutralino,1))/3;	
-    BqZ = 1/(pow(2,0.5))*4./3*uordchanger*gprime*mixNeut(neutralino,1);
-    /// Note for now I have taken AqZ and BqZ to be real - this effects which parts of a and b are real and imaginary, I have done this by assuming all masses are positive
-    areal = 0.5*(-fq*mixNeut(neutralino,neutelem)*sin(theta)-fq*mixNeut(neutralino,neutelem)*cos(theta));
-    aimag = 0.5*(AqZ*sin(theta)+BqZ*cos(theta));
-    breal = 0.5*(-fq*mixNeut(neutralino,neutelem)*sin(theta)+fq*mixNeut(neutralino,neutelem)*cos(theta));
-    bimag = 0.5*(-AqZ*sin(theta)+BqZ*cos(theta));
-    modasquared = pow(areal,2)+pow(aimag,2);
-    modbsquared = pow(breal,2)+pow(bimag,2);
-    lambda = pow(squareplus*squareminus,0.5);
-    amplitudeW = m1/(8*M_PI)*lambda*(modasquared*squareplus*+modbsquared*squareminus);
-  }
-  return amplitudeW;
-}
-
-double teststop1amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmt, int neutralino) {
-  double amplitudeW, squareplus, squareminus, lambda, ft, modasquared, modbsquared;
-  vector <double> AtZ(2), BtZ(2), a(2), b(2);
-
-  if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    amplitudeW = 0;
-  }
-
-  else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
-    ft = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
-      
-    if (m3 >=0) /// so thetai is 1 in Tata and Baer formulae
-	{
-	  AtZ[0] = 0;
-	  AtZ[1] = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp/3*mixNeut(neutralino,1));
-	  BtZ[0] = 0;
-	  BtZ[1] = 4/(3*pow(2,0.5))*(gp*mixNeut(neutralino,1));
-	  a[0] = 0.5*(-AtZ[1]*cos(theta) + BtZ[1]*sin(theta));
-	  a[1] = 0.5*(-ft*mixNeut(neutralino,3)*cos(theta) - ft*mixNeut(neutralino,3)*sin(theta));
-	  b[0] = 0.5*(AtZ[1]*cos(theta) + BtZ[1]*sin(theta));
-	  b[1] = 0.5*(-ft*mixNeut(neutralino,3)*cos(theta) + ft*mixNeut(neutralino,3)*sin(theta));
-	}
-      
-      else if (m3 < 0) /// so thetai is 0 in Tata and Baer formulae
-	{
-	  AtZ[0] = -1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp/3*mixNeut(neutralino,1));
-	  AtZ[1] = 0;
-	  BtZ[0] = 4/(3*pow(2,0.5))*gp*mixNeut(neutralino,1);
-	  BtZ[1] = 0;
-	  a[0] = 0.5*(-ft*mixNeut(neutralino,3)*cos(theta) +ft*mixNeut(neutralino,3)*sin(theta));
-	  a[1] = 0.5*(AtZ[0]*cos(theta) - BtZ[0]*sin(theta));
-	  b[0] = 0.5*(ft*mixNeut(neutralino,3)*cos(theta)-ft*mixNeut(neutralino,3)*sin(theta));
-	  b[1] = 0.5*(-AtZ[0]*cos(theta) - BtZ[0]*sin(theta));
-	}
-
-    modasquared = pow(a[0],2) + pow(a[1],2);
-    modbsquared = pow(b[0],2) + pow(b[1],2);
-    
-    amplitudeW = m1/(8*PI)*lambda*(modasquared*squareplus + modbsquared*squareminus);
-  }
-
-  return amplitudeW;
-
-}
-
-
-double teststop2amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmt, int neutralino) {
-  double amplitudeW, squareplus, squareminus, lambda, ft, modasquared, modbsquared;
-  vector <double> AtZ(2), BtZ(2), a(2), b(2);
-
-  if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    amplitudeW = 0;
-  }
-
-  else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
-    ft = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
-      
-    if (m3 >=0) /// so thetai is 1 in Tata and Baer formulae
-      {
-	AtZ[0] = 0;
-	AtZ[1] = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp/3*mixNeut(neutralino,1));
-	BtZ[0] = 0;
-	BtZ[1] = 4/(3*pow(2,0.5))*(gp*mixNeut(neutralino,1));
-	
-	a[0] = 0.5*(-AtZ[1]*sin(theta) - BtZ[1]*cos(theta));
-	a[1] = 0.5*(-ft*mixNeut(neutralino,3)*sin(theta) + ft*mixNeut(neutralino,3)*cos(theta));
-	b[0] = 0.5*(AtZ[1]*sin(theta) - BtZ[1]*cos(theta));
-	b[1] = 0.5*(-ft*mixNeut(neutralino,3)*sin(theta) - ft*mixNeut(neutralino,3)*cos(theta));
-      }
-      
-      else if (m3 < 0) /// so thetai is 0 in Tata and Baer formulae
-	{
-	  AtZ[0] = -1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp/3*mixNeut(neutralino,1));
-	  AtZ[1] = 0;
-	  BtZ[0] = 4/(3*pow(2,0.5))*gp*mixNeut(neutralino,1);
-	  BtZ[1] = 0;
-	  
-	  a[0] = 0.5*(-ft*mixNeut(neutralino,3)*sin(theta) - ft*mixNeut(neutralino,3)*cos(theta));
-	  a[1] = 0.5*(AtZ[0]*sin(theta) + BtZ[0]*cos(theta));
-	  b[0] = 0.5*(ft*mixNeut(neutralino,3)*sin(theta) - ft*mixNeut(neutralino,3)*cos(theta));
-	  b[1] = 0.5*(-AtZ[0]*sin(theta) + BtZ[0]*cos(theta));
-	}
-
-      modasquared = pow(a[0],2) + pow(a[1],2);
-      modbsquared = pow(b[0],2) + pow(b[1],2);
-
-      amplitudeW = m1/(8*PI)*lambda*(modasquared*squareplus + modbsquared*squareminus);
-  }
-
-  return amplitudeW;
-
-}
-
-double testsbottom1amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmb, int neutralino) {
-  double amplitudeW, squareplus, squareminus, lambda, fb, modasquared, modbsquared;
-  vector <double> AbZ(2), BbZ(2), a(2), b(2);
-
-  if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    amplitudeW = 0;
-  }
-
-  else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
-    fb = g*runmb/(pow(2,0.5)*mWboson*cos(beta));
-      
-    if (m3 >=0) /// so thetai is 1 in Tata and Baer formulae
-      {
-	AbZ[0] = 0;
-	AbZ[1] = 1/(pow(2,0.5))*(-g*mixNeut(neutralino,2) + gp/3*mixNeut(neutralino,1));
-	BbZ[0] = 0;
-	BbZ[1] = -2/(3*pow(2,0.5))*(gp*mixNeut(neutralino,1));
-
-	a[0] = 0.5*(-AbZ[1]*cos(theta) + BbZ[1]*sin(theta));
-	a[1] = 0.5*(-fb*mixNeut(neutralino,4)*cos(theta) - fb*mixNeut(neutralino,4)*sin(theta));
-	b[0] = 0.5*(AbZ[1]*cos(theta) + BbZ[1]*sin(theta));
-	b[1] = 0.5*(-fb*mixNeut(neutralino,4)*cos(theta) + fb*mixNeut(neutralino,4)*sin(theta));
-      }
-    
-    else if (m3 < 0) /// so thetai is 0 in Tata and Baer formulae
-      {
-	AbZ[0] = -1/(pow(2,0.5))*(-g*mixNeut(neutralino,2) + gp/3*mixNeut(neutralino,1));
-	AbZ[1] = 0;
-	BbZ[0] = -2/(3*pow(2,0.5))*gp*mixNeut(neutralino,1);
-	BbZ[1] = 0;
-	  
-	a[0] = 0.5*(-fb*mixNeut(neutralino,4)*cos(theta) +fb*mixNeut(neutralino,4)*sin(theta));
-	a[1] = 0.5*(AbZ[0]*cos(theta) - BbZ[0]*sin(theta));
-	b[0] = 0.5*(fb*mixNeut(neutralino,4)*cos(theta)-fb*mixNeut(neutralino,4)*sin(theta));
-	b[1] = 0.5*(-AbZ[0]*cos(theta) - BbZ[0]*sin(theta));
-      }
-
-    modasquared = pow(a[0],2) + pow(a[1],2);
-    modbsquared = pow(b[0],2) + pow(b[1],2);
-    amplitudeW = m1/(8*PI)*lambda*(modasquared*squareplus + modbsquared*squareminus);
-  }
-
-  return amplitudeW;
-
-}
-
-
-double testsbottom2amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmb, int neutralino) {
-  double amplitudeW, squareplus, squareminus, lambda, fb, modasquared, modbsquared;
-  vector <double> AbZ(2), BbZ(2), a(2), b(2);
-
-  if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    amplitudeW = 0;
-  }
-
-  else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
-    fb = g*runmb/(pow(2,0.5)*mWboson*cos(beta));
-      
-    if (m3 >=0) /// so thetai is 1 in Tata and Baer formulae
-      {
-	AbZ[0] = 0;
-	AbZ[1] = 1/(pow(2,0.5))*(-g*mixNeut(neutralino,2) + gp/3*mixNeut(neutralino,1));
-	BbZ[0] = 0;
-	BbZ[1] = -2/(3*pow(2,0.5))*(gp*mixNeut(neutralino,1));
-	a[0] = 0.5*(-AbZ[1]*sin(theta) - BbZ[1]*cos(theta));
-	a[1] = 0.5*(-fb*mixNeut(neutralino,4)*sin(theta) + fb*mixNeut(neutralino,4)*cos(theta));
-	b[0] = 0.5*(AbZ[1]*sin(theta) - BbZ[1]*cos(theta));
-	b[1] = 0.5*(-fb*mixNeut(neutralino,4)*sin(theta) - fb*mixNeut(neutralino,4)*cos(theta));
-      }
-      
-    else if (m3 < 0) /// so thetai is 0 in Tata and Baer formulae
-      {
-	AbZ[0] = -1/(pow(2,0.5))*(-g*mixNeut(neutralino,2) + gp/3*mixNeut(neutralino,1));
-	AbZ[1] = 0;
-	BbZ[0] = -2/(3*pow(2,0.5))*gp*mixNeut(neutralino,1);
-	BbZ[1] = 0;
-	a[0] = 0.5*(-fb*mixNeut(neutralino,4)*sin(theta) -fb*mixNeut(neutralino,4)*cos(theta));
-	a[1] = 0.5*(AbZ[0]*sin(theta) + BbZ[0]*cos(theta));
-	b[0] = 0.5*(fb*mixNeut(neutralino,4)*sin(theta)+fb*mixNeut(neutralino,4)*cos(theta));
-	b[1] = 0.5*(-AbZ[0]*sin(theta) + BbZ[0]*cos(theta));
-      }
-
-    modasquared = pow(a[0],2) + pow(a[1],2);
-    modbsquared = pow(b[0],2) + pow(b[1],2);
-    amplitudeW = m1/(8*PI)*lambda*(modasquared*squareplus + modbsquared*squareminus);
-  }
-
-  return amplitudeW;
-
-}
-
-           
-double testmederivedstop1amplitudedecayneutralinomix (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmt, int neutralino) {
-  double amplitudeW, squareplus, squareminus, squareratio, lambda, ft, modalphatildasquared, modbetatildasquared;
-  vector <double> AtZ(2), BtZ(2), alphatilda(2), betatilda(2), alphabetadagger(2), betaalphadagger(2);
-
-  if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    amplitudeW = 0;
-  }
-  
-  else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
-    squareratio = 1 - pow(m2/m1,2) - pow(m3/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
-    ft = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
-      
-    if (m3 >=0) /// so thetai is 1 in Tata and Baer formulae
-      {
-	AtZ[0] = 0;
-	AtZ[1] = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp/3*mixNeut(neutralino,1));
-	BtZ[0] = 0;
-	BtZ[1] = 4/(3*pow(2,0.5))*(gp*mixNeut(neutralino,1));
-	
-	alphatilda[0] = -AtZ[1]*cos(theta);
-	alphatilda[1] = -ft*mixNeut(neutralino,3)*sin(theta); 
-	betatilda[0] = BtZ[1]*sin(theta);
-	betatilda[1] = -ft*mixNeut(neutralino,3)*cos(theta);
-      }
-      
-    else if (m3 < 0) /// so thetai is 0 in Tata and Baer formulae
-      {
-	AtZ[0] = -1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp/3*mixNeut(neutralino,1));
-	AtZ[1] = 0;
-	BtZ[0] = 4/(3*pow(2,0.5))*gp*mixNeut(neutralino,1);
-	BtZ[1] = 0;
-	
-	alphatilda[0] = ft*mixNeut(neutralino,3)*sin(theta);
-	alphatilda[1] = AtZ[0]*cos(theta);
-	betatilda[0] = -ft*mixNeut(neutralino,3)*mixNeut(neutralino,3)*cos(theta);
-	betatilda[1] = -BtZ[0]*sin(theta);
- 
-      }
-    modalphatildasquared = pow(alphatilda[0],2) + pow(alphatilda[1],2);
-    modbetatildasquared = pow(betatilda[0],2) + pow(betatilda[1],2);
-    alphabetadagger[0] = alphatilda[0]*betatilda[0] + alphatilda[1]*betatilda[1];
-    alphabetadagger[1] = alphatilda[1]*betatilda[0] - alphatilda[0]*betatilda[1];
-    betaalphadagger[0] = alphatilda[0]*betatilda[0] + alphatilda[1]*betatilda[1];
-    betaalphadagger[1] = -alphatilda[1]*betatilda[0] + alphatilda[0]*betatilda[1];
-    /// Note when we therefore add alphabetadagger and betaalphadagger the imaginary [1] parts cancel leaving only the real parts
-    
-    amplitudeW = m1/(32*PI)*lambda*((modalphatildasquared+modbetatildasquared)*squareratio + m2*m3/(pow(m1,2))*(alphabetadagger[0] + betaalphadagger[0]));
-  }
-  return amplitudeW;
-  
-}
-
-double testrealsquark3amplitudedecayneutralino (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmq, int squark , int oneortwo,  int neutralino) {
+double squark3amplitudedecayneutralino (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmq, int squark , int oneortwo,  int neutralino) {
 
   double amplitudeW, squareplus, squareminus, lambda, fq=0, alphatilda=0, betatilda=0, a=0, b=0;
   
@@ -6802,9 +6958,13 @@ double testrealsquark3amplitudedecayneutralino (double m1, double m2, double m3,
   }
   
   else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
+    squareplus = 1 - pow((m2+fabs(m3))/m1,2);
+    squareminus = 1 - pow((m2-fabs(m3))/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squark3amplitudedecayneutralino\n");
+      errorflag = -1;
+    }
     
     if (squark == 1) /// we have stops
       {
@@ -6819,7 +6979,10 @@ double testrealsquark3amplitudedecayneutralino (double m1, double m2, double m3,
 	    alphatilda = (-sin(theta)*1/(pow(2,0.5))*(mixNeut(neutralino,1)*gp/3 + mixNeut(neutralino,2)*g) + cos(theta)*fq*mixNeut(neutralino,4)); /// again simplified form of atopr(2,i) * g from susyhit
 	    betatilda = -4/(3*pow(2,0.5))*cos(theta)*mixNeut(neutralino,1)*gp - fq*sin(theta)*mixNeut(neutralino,4); /// again simplified form of btopr(2,i) * g from susyhit
 	  }
-	else { throw("problem: stop must be stop1 or stop2\n"); }
+	else {
+	  throw("problem: stop must be stop1 or stop2\n"); 
+	  errorflag = -1;
+	}
       }
     else if ( squark ==2) /// we have sbottoms
       {
@@ -6836,10 +6999,16 @@ double testrealsquark3amplitudedecayneutralino (double m1, double m2, double m3,
 	    betatilda = cos(theta)*(2/(3*pow(2,0.5)))*gp*(mixNeut(neutralino,1)) - sin(theta)*fq*mixNeut(neutralino,3); /// simplified bbot(2,i)*g from susyhit
 	  }
 	  
-	else { throw("problem: must be sbottom1s or sbottom2s\n"); }
+	else {
+	  throw("problem: must be sbottom1s or sbottom2s\n");
+	  errorflag = -1;
+	}
       }
       
-    else { throw("problem: third generation squarks must be stops or sbottoms\n"); }
+    else {
+      throw("problem: third generation squarks must be stops or sbottoms\n");
+      errorflag = -1;
+    }
           
     a = 0.5*(alphatilda + betatilda);
     b = 0.5*(betatilda - alphatilda);
@@ -6863,6 +7032,10 @@ double squark3amplitudedecaysquark3Wboson (double m1, double m2, double m3, doub
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squark3amplitudedecaysquark3Wboson\n");
+      errorflag = -1;
+    }
     
     if(m1torb == 1) /// we have an initial stop
       {
@@ -6874,7 +7047,10 @@ double squark3amplitudedecaysquark3Wboson (double m1, double m2, double m3, doub
 	  {
 	    capthetai = pow(sin(thetat),2);
 	  }
-	else { throw("problem1!\n");}
+	else {
+	  throw("problem: m1oneortwo must be 1 or 2 in squark3amplitudedecaysquark3Wboson!\n");
+	errorflag = -1;
+	}
       }
     else if(m1torb == 2) /// we have an initial sbottom
       {
@@ -6886,9 +7062,13 @@ double squark3amplitudedecaysquark3Wboson (double m1, double m2, double m3, doub
 	  {
 	    capthetai = pow(sin(thetab),2);
 	  }
-	else {throw("problem2!\n");}
+	else {throw("problem: m1oneortwo must be 1 or 2 in squark3amplitudedecaysquark3Wboson!\n");
+	  errorflag = -1;
+	}
       }
-    else { throw("problem5!"); }
+    else { throw("problem: m1torb must be 1 or 2 in squark3amplitudedecaysquark3Wboson!");
+      errorflag = -1;
+    }
       
 
     if(m3torb == 1) /// we have a final state stop
@@ -6901,7 +7081,9 @@ double squark3amplitudedecaysquark3Wboson (double m1, double m2, double m3, doub
 	  {
 	    capthetaf = pow(sin(thetat),2);
 	  }
-	else { throw("problem3!"); }
+	else { throw("problem: m3oneortwo must be 1 or 2 in squark3amplitudedecaysquark3Wboson!");
+	  errorflag = -1;
+	}
       }
     else if(m3torb == 2) /// we have a final state sbottom
       {
@@ -6913,9 +7095,13 @@ double squark3amplitudedecaysquark3Wboson (double m1, double m2, double m3, doub
 	  {
 	    capthetaf = pow(sin(thetab),2);
 	  }
-	else { throw("problem4!");}
+	else { throw("problem: m3oneortwo must be 1 or 2 in squark3amplitudedecaysquark3Wboson!");
+	  errorflag = -1;
+	}
       }
-    else { throw("problem6!"); }
+    else { throw("problem: m3torb must be 1 or 2 in squark3amplitudedecaysquark3Wboson!");
+      errorflag = -1;
+    }
     amplitudeW = pow(g,2)/(32*PI)*(pow(m1,3)/pow(m2,2))*pow(lambda,3)*capthetai*capthetaf;
   }
   return amplitudeW;
@@ -6932,6 +7118,10 @@ double squark3amplitudedecaychargedHiggssquark3 (double m1, double m2, double m3
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squark3amplitudedecaychargedHiggssquark3\n");
+      errorflag = -1;
+    }
     combo1 = tan(beta) + 1/(tan(beta));
     combo2 = greekmu + At/(tan(beta));
     combo3 = greekmu + Ab*tan(beta);
@@ -6952,6 +7142,10 @@ double squark3amplitudedecaychargedHiggssquark3 (double m1, double m2, double m3
 	  {
 	    A = A12;
 	  }
+	else {
+	  throw("problem:b1or2 must be 1 or 2 in squark3amplitudedecaychargedHiggssquark3\n");
+	  errorflag = -1;
+	}
       }
     if(t1or2 == 2) /// we have an initial stop2
       {
@@ -6963,7 +7157,15 @@ double squark3amplitudedecaychargedHiggssquark3 (double m1, double m2, double m3
 	  {
 	    A = A22;
 	  }
+	else {
+	  throw("problem:b1or2 must be 1 or 2 in squark3amplitudedecaychargedHiggssquark3\n");
+	  errorflag = -1;
+	}
       }
+    else {
+      throw("problem:t1or2 must be 1 or 2 in squark3amplitudedecaychargedHiggssquark3\n");
+      errorflag = -1;
+    }
     
     amplitudeW = pow(A,2)*lambda/(16*PI*m1);
   }
@@ -6983,6 +7185,10 @@ double squark32amplitudedecayneutralHiggssquark3 (double m1, double m2, double m
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squark32amplitudedecayneutralHiggssquark3\n");
+      errorflag = -1;
+    }
     combo1 = 1 - 5./3 * pow(gp/g,2);
     combo2 = -1 +1./3 * pow(gp/g,2);
     combo3 = At*cos(alpha) + greekmu*sin(alpha);
@@ -7014,7 +7220,10 @@ double squark32amplitudedecayneutralHiggssquark3 (double m1, double m2, double m
       B=BA;
     }
       
-    else { throw("char compare problem ... phi must be one of h, H, or A\n"); }
+    else {
+      throw("problem: phi must be one of h, H, or A in squark32amplitudedecayneutraliHiggssquark3 \n");
+      errorflag = -1;
+    }
     
     if (torb == 1) ///stop2 decay
       {
@@ -7025,6 +7234,10 @@ double squark32amplitudedecayneutralHiggssquark3 (double m1, double m2, double m
       {
 	amplitudeW = pow(B,2)*lambda/(16*PI*m1);
       }
+    else {
+      throw("problem:torb must be 1 or 2 in squark32amplitudedecayneutralHiggssquark3\n");
+      errorflag = -1;
+    }
   }
   return amplitudeW;
 }
@@ -7041,6 +7254,10 @@ double squark32amplitudedecaysquark3Zboson (double m1, double m2, double m3, dou
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squark32amplitudedecaysquark3Zboson\n");
+      errorflag = -1;
+    }
     angular = pow(cos(theta)*sin(theta),2);
     costhetaW = g/pow((pow(g,2)+pow(gp,2)),0.5);
     
@@ -7057,10 +7274,14 @@ double sleptonamplitudedecayleptonneutralino (double m1, double m2, double m3, d
   }
 
   else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
+    squareplus = 1 - pow((m2+fabs(m3))/m1,2);
+    squareminus = 1 - pow((m2-fabs(m3))/m1,2);
     squareratio = 1 - pow(m3/m1,2) - pow(m2/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in sleptonamplitudedecayleptonneutralino\n");
+      errorflag = -1;
+    }
     A = -1/(pow(2,0.5)) * (g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1));
     B = -pow(2,0.5)*gp*mixNeut(neutralino,1);
     if(LorR == 'L') {
@@ -7070,9 +7291,12 @@ double sleptonamplitudedecayleptonneutralino (double m1, double m2, double m3, d
     else if (LorR == 'R') {
       C=B;
     }
+    else {
+      throw("problem: LorR must be L or R in sleptonamplitudedecayleptonneutralino\n");
+      errorflag = -1;
+    }
       
-    else { throw("Initial slepton must be LH 'L' or RH 'R' "); }
-    
+   
     amplitudeW = pow(C,2)*m1*fabs(squareratio)/(16*PI) * lambda;
   }
   return amplitudeW;
@@ -7087,10 +7311,14 @@ double sneutrinoamplitudedecayneutrinoneutralino (double m1, double m2, double m
   }
 
   else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
+    squareplus = 1 - pow((m2+fabs(m3))/m1,2);
+    squareminus = 1 - pow((m2-fabs(m3))/m1,2);
     squareratio = 1 - pow(m3/m1,2) - pow(m2/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in sneutrinoamplitudedecayneutrinoneutralino\n");
+      errorflag = -1;
+    }
     A = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) - gp*mixNeut(neutralino,1));
 
     amplitudeW = pow(A,2)*m1*squareratio*lambda/(16*PI); /// note here as m2=0 then lambda and squareratio each reduce to (1-pow(m3/m1,2)) 
@@ -7109,9 +7337,13 @@ double sleptonamplitudedecaychargino (double m1, double m2, double m3, double g,
 
   else { 
     squareratio = 1 - pow(m3/m1,2) - pow(m2/m1,2);
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
+    squareplus = 1 - pow((m2+fabs(m3))/m1,2);
+    squareminus = 1 - pow((m2-fabs(m3))/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in sleptonamplitudedecaychargino\n");
+      errorflag = -1;
+    }
     if (chargino == 1) {
       trigtheta = sin(theta);
     }
@@ -7119,7 +7351,8 @@ double sleptonamplitudedecaychargino (double m1, double m2, double m3, double g,
       trigtheta = cos(theta);
     }
     else {
-      throw("Chargino must be a chargino1 or a chargino2, hence int chargino 1 or 2 only allowed!");
+      throw("problem: chargino must be a 1 or 2 in sleptonamplitudedecaychargino\n");
+      errorflag = -1;
     }	    
     amplitudeW = pow(g*trigtheta,2)*m1*squareratio*lambda/(16*PI); /// note in the slepton decay to neutrinos case m2 is zero so lambda reduces to squareratio - giving squareratio squared
       }
@@ -7135,9 +7368,13 @@ double stauamplitudedecaytauneutralino (double m1, double m2, double m3, double 
   }
 
   else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
+    squareplus = 1 - pow((m2+fabs(m3))/m1,2);
+    squareminus = 1 - pow((m2-fabs(m3))/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stauamplitudedecaytauneutralino\n");
+      errorflag = -1;
+    }
     ftau = g*m2/(pow(2,0.5)*mWboson*cos(beta));
     if (oneortwo == 1) /// we have a stau1 decaying
       {
@@ -7150,7 +7387,8 @@ double stauamplitudedecaytauneutralino (double m1, double m2, double m3, double 
 	betatilda = pow(2,0.5)*gp*mixNeut(neutralino,1)*sin(theta) + ftau*mixNeut(neutralino,3)*cos(theta); 
       }
     else {
-      throw("Stau must be a stau1 or a stau2, hence for int oneortwo 1 or 2 only allowed!\n");
+      throw("problem: oneortwo must be 1 or 2 in stauamplitudedecaytauneutralino\n");
+      errorflag = -1;
     }
     a = 0.5*(alphatilda + betatilda);
     b = 0.5*(betatilda - alphatilda);
@@ -7168,9 +7406,13 @@ double stausneutrinoamplitudedecaytauneutrinoneutralino (double m1, double m2, d
   
   else { 
     squareratio = 1 - pow(m3/m1,2) - pow(m2/m1,2);
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
+    squareplus = 1 - pow((m2+fabs(m3))/m1,2);
+    squareminus = 1 - pow((m2-fabs(m3))/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stausneutrinoamplitudedecaytauneutrinoneutralino\n");
+      errorflag = -1;
+    }
     A = 1/(pow(2,0.5))*(g*-mixNeut(neutralino,2) + gp*mixNeut(neutralino,1));
     amplitudeW = m1/(16*PI)*pow(A,2)*lambda*squareratio; /// note lambda and squareratio reduce to same thing here as m2 = 0
   }
@@ -7186,9 +7428,13 @@ double stauamplitudedecaynutauchargino (double m1, double m2, double m3, double 
 
   else { 
     squareratio = 1 - pow(m3/m1,2) - pow(m2/m1,2);
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
+    squareplus = 1 - pow((m2+fabs(m3))/m1,2);
+    squareminus = 1 - pow((m2-fabs(m3))/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stauamplitudedecaynutauchargino\n");
+      errorflag = -1;
+    }
     ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
       
       if (chargino ==1)	{
@@ -7202,7 +7448,10 @@ double stauamplitudedecaynutauchargino (double m1, double m2, double m3, double 
 	B = ftau*sin(thetaL);
       }
             
-      else {throw("Chargino must be a chargino1 or chargino2 - problem!\n");}
+      else {
+	throw("problem: chargino must be a 1 or 2 in stauamplitudedecaynutauchargino\n");
+	errorflag = -1;
+      }
       
       if(oneortwo == 2) { 
 	mixingpart = -A*sin(theta) + B*cos(theta);
@@ -7210,7 +7459,10 @@ double stauamplitudedecaynutauchargino (double m1, double m2, double m3, double 
       else if (oneortwo == 1) {
 	mixingpart = A*cos(theta) + B*sin(theta);
       }
-      else { throw("Stau must be a stau1 or stau2 - problem!\n");}
+      else {
+	throw("problem: oneortwo must be 1 or 2 in stauamplitudedecaynutauchargino\n");
+	errorflag = -1;
+      }
             
       amplitudeW = pow(mixingpart,2)*m1*lambda*squareratio/(16*PI); ///again lambda and squareratio reduce to same thing as m2 = 0
     }
@@ -7228,9 +7480,13 @@ double stausneutrinoamplitudedecaytauchargino (double m1, double m2, double m3, 
 
   else { 
     squareratio = 1 - pow(m3/m1,2) - pow(m2/m1,2);
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
+    squareplus = 1 - pow((m2+fabs(m3))/m1,2);
+    squareminus = 1 - pow((m2-fabs(m3))/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stausneutrinoamplitudedecaytauchargino\n");
+      errorflag = -1;
+    }
     ftau = g*m2/(pow(2,0.5)*mWboson*cos(beta)); ///as m2 is mtau which is what we need to calculate ftau
     
     if(chargino==1) {
@@ -7241,8 +7497,10 @@ double stausneutrinoamplitudedecaytauchargino (double m1, double m2, double m3, 
       A = g*cos(thetaR);
       B = ftau*sin(thetaL);
     }
-    else {throw("Chargino must be a chargino1 or chargino2 - problem!\n");}
-    
+    else {
+      throw("problem: chargino must be a 1 or 2 in stausneutrinoamplitudedecaytauchargino\n");
+      errorflag = -1;
+    }   
     sumsquare = pow(A,2) + pow(B,2);
     amplitudeW = m1*lambda/(16*PI)*(sumsquare*squareratio + 4*m2*m3/(pow(m1,2))*B*A);
   }
@@ -7263,6 +7521,10 @@ double stauamplitudedecaysnustauHminus (double m1, double m2, double m3, double 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stauamplitudedecaysnustauHminus\n");
+      errorflag = -1;
+    }
     
     combo1 = pow(mtau,2)*tan(beta) - pow(mWboson,2)*sin(2*beta);
     combo2 = mtau*(greekmu+Atau*tan(beta));
@@ -7273,7 +7535,10 @@ double stauamplitudedecaysnustauHminus (double m1, double m2, double m3, double 
       else if (oneortwo == 2) {
 	A = g/(pow(2,0.5)*mWboson)*(-combo1*cos(thetatau) - sin(thetatau)*combo2);
       }
-      else { throw("Stau must be a stau1 or stau2 - problem!\n"); }
+      else {
+	throw("problem: oneortwo must be 1 or 2 in stauamplitudedecaysnustauHminus\n");
+	errorflag = -1;
+      }
       
       amplitudeW = pow(A,2)*lambda/(16*PI*m1);
   }
@@ -7294,6 +7559,10 @@ double stauamplitudedecaysnustauWboson (double m1, double m2, double m3, double 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stauamplitudedecaysnustauWboson\n");
+      errorflag = -1;
+    }
     
     if (oneortwo == 1) {
       mixangle = sin(thetatau);
@@ -7301,7 +7570,10 @@ double stauamplitudedecaysnustauWboson (double m1, double m2, double m3, double 
       else if (oneortwo == 2) {
 	mixangle = cos(thetatau);
       }
-      else {  throw("Stau must be a stau1 or stau2 - problem!\n"); }
+      else {
+	throw("problem oneortwo must be 1 or 2 in stauamplitudedecaysnustauWboson\n");
+	errorflag = -1;
+      }
     
     amplitudeW = pow(g*mixangle,2)*pow(m1,3)/(32*PI*pow(m3,2))*pow(lambda,3);
   }
@@ -7321,6 +7593,10 @@ double stau2amplitudedecaystau1Zboson (double m1, double m2, double m3, double g
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stau2amplitudedecaystau1Zboson\n");
+      errorflag = -1;
+    }
     mixangle = pow(cos(thetatau)*sin(thetatau),2);
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
     
@@ -7340,6 +7616,10 @@ double stau2amplitudedecaystau1phi (double m1, double m2, double m3, double g, d
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stau2amplitudedecaystau1phi\n");
+      errorflag = -1;
+    }
     combo1 = -1 +3*pow(gp/g,2); /// is just -1 + 3*pow(tanthetaW,2)
     combo2 = g*mWboson/4;
     combo3 = g*mtau/(2*mWboson);
@@ -7356,8 +7636,10 @@ double stau2amplitudedecaystau1phi (double m1, double m2, double m3, double g, d
     else if (phi == 'A') {
       Acoeff = combo3*combo6;
     }
-    else {  throw("Phi can only be an h, H or A - problem!\n");  }
-    
+    else {
+      throw("problem: phi can only be an h, H or A instau2amplitudedecaystau1phi\n");
+      errorflag = -1;
+    }    
     amplitudeW = pow(Acoeff,2)*lambda/(16*PI*m1);
   }
   return amplitudeW;
@@ -7378,6 +7660,10 @@ double charginoamplitudedecayquarksquarkL (double m1, double m2, double m3, doub
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in charginoamplitudedecayquarksquarkL\n");
+      errorflag = -1;
+    }
     
     if (chargino == 1) /// chargino1 decaying
       {
@@ -7387,8 +7673,11 @@ double charginoamplitudedecayquarksquarkL (double m1, double m2, double m3, doub
       {
 	scriptA = g*cos(theta); /// theta is thetaL if sdownL and thetaR if supL
       }
-    else {  throw("Chargino must be a chargino1 or chargino2 - problem!\n"); }
-    amplitudeW = 3*m1*lambda/(32*PI)*(pow(scriptA,2)*alteredsquareratio);
+    else {
+      throw("problem: chargino must be a 1 or 2 in charginoamplitudedecayquarksquarkL\n");
+      errorflag = -1;
+    }
+    amplitudeW = 3*fabs(m1)*lambda/(32*PI)*(pow(scriptA,2)*alteredsquareratio);
   }
   return amplitudeW;
 }
@@ -7397,7 +7686,7 @@ double charginoamplitudedecayquarksquarkmix (double m1, double m2, double m3, do
 
 {
   double amplitudeW, squareplus, squareminus, alteredsquareratio, lambda, combo1=0, combo2=0;
-  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, int torb);
+  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
   
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     amplitudeW = 0;
@@ -7408,32 +7697,47 @@ double charginoamplitudedecayquarksquarkmix (double m1, double m2, double m3, do
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in charginoamplitudedecayquarksquarkmix\n");
+      errorflag = -1;
+    }
     
     int torb = upordowntypesquark;
 
     if (chargino == 1) {
       if (oneortwo == 1) {
-    	combo1 = squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, torb)(1);
-    	combo2 = -squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, torb)(2);
+    	combo1 = squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, m3, 0, torb)(1);
+    	combo2 = -squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, m3, 0, torb)(2);
       }
       else if (oneortwo == 2) {
-    	combo1 = squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, torb)(5);
-    	combo2 = -squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, torb)(6);
+    	combo1 = squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, m3, 0, torb)(5);
+    	combo2 = -squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, m3, 0, torb)(6);
+      }
+      else {
+	throw("problem: oneortwo must be a 1 or 2 in charginoamplitudedecayquarksquarkmix\n");
+	errorflag = -1;
       }
     }
     else if (chargino == 2) {
       if (oneortwo == 1) {
-    	combo1 = squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, torb)(3);
-    	combo2 = -squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, torb)(4);
+    	combo1 = squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, 0, m3, torb)(3);
+    	combo2 = -squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, 0, m3, torb)(4);
       }
       else if (oneortwo == 2) {
-    	combo1 = squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, torb)(7);
-    	combo2 = -squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, torb)(8);
+    	combo1 = squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, 0, m3, torb)(7);
+    	combo2 = -squarkmixcharginocouplings (g, theta, beta, thetaL, thetaR, runmt, runmb, mWboson, 0, m3, torb)(8);
+      }
+      else { 
+	throw("problem: oneortwo must be a 1 or 2 in charginoamplitudedecayquarksquarkmix\n");
+	errorflag = -1;
       }
     }
+    else {
+      throw("problem: chargino must be a 1 or 2 in charginoamplitudedecayquarksquarkmix\n");
+      errorflag = -1;
+    }
 
-    amplitudeW = 3*m1*lambda/(32*PI)*(combo1*alteredsquareratio + combo2*m2/m1);
-    
+    amplitudeW = 3*fabs(m1)*lambda/(32*PI)*(combo1*alteredsquareratio + combo2*m2/m1);
   }
   return amplitudeW;
 }
@@ -7453,15 +7757,23 @@ double charginoamplitudedecayleptonsleptonL (double m1, double m2, double m3, do
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in charginoamplitudedecayleptonsleptonL\n");
+      errorflag = -1;
+    }
       
     if (chargino == 1) { 
       A = -g*sin(thetaLorR);
     }
-      else if (chargino == 2) {
-	A = -g*cos(thetaLorR);
-      }
+    else if (chargino == 2) {
+      A = -g*cos(thetaLorR);
+    }
+    else {
+      throw("problem: chargino must be a 1 or 2 in charginoamplitudedecayleptonsleptonL\n");
+      errorflag = -1;
+    }
 
-    amplitudeW = m1*lambda/(32*PI)*pow(A,2)*alteredsquareratio;
+    amplitudeW = fabs(m1)*lambda/(32*PI)*pow(A,2)*alteredsquareratio;
   }
   return amplitudeW;
 }
@@ -7481,6 +7793,10 @@ double charginoamplitudedecaysnutautau (double m1, double m2, double m3, double 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);	 
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in charginoamplitudedecaysnutautau\n");
+      errorflag = -1;
+    }
     ftau = g*m2/(pow(2,0.5)*mWboson*cos(beta));
     
     if (chargino == 1) {
@@ -7491,7 +7807,12 @@ double charginoamplitudedecaysnutautau (double m1, double m2, double m3, double 
       A = g*cos(thetaR);
       Bprimeprime = ftau*sin(thetaL);
     }
-    amplitudeW = m1*lambda/(32*PI)*((pow(A,2)+pow(Bprimeprime,2))*alteredsquareratio + 4*A*Bprimeprime*m2/m1);
+    else { 
+      throw("problem: chargino must be a 1 or 2 in charginoamplitudedecaysnutautau\n");
+      errorflag = -1;
+    }
+
+    amplitudeW = fabs(m1)*lambda/(32*PI)*((pow(A,2)+pow(Bprimeprime,2))*alteredsquareratio + 4*A*Bprimeprime*m2/fabs(m1));
   }
   return amplitudeW;
 }
@@ -7511,12 +7832,15 @@ double charginoamplitudedecaystaunutau (double m1, double m2, double m3, double 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);	 /// reduces to 1 - pow(m3/m1,2) as m2 = 0
-      ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in charginoamplitudedecaystaunutau\n");
+      errorflag = -1;
+    }
+    ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
       
       if (chargino == 1) {
 	A = -g*sin(thetaL);
 	Bprimeprime = -ftau*cos(thetaL);
-	
 	if (oneortwo == 1) /// decaying to a stau1
 	  {
 	    scriptA = A*sin(thetatau) + Bprimeprime*cos(thetatau);
@@ -7525,6 +7849,10 @@ double charginoamplitudedecaystaunutau (double m1, double m2, double m3, double 
 	  {
 	    scriptA = -A*cos(thetatau) + Bprimeprime*sin(thetatau);
 	  }
+	else {
+	  throw("problem: oneortwo must be a 1 or 2 in charginoamplitudedecaystaunutau\n");
+	  errorflag = -1;
+	}
       }
       else if (chargino == 2) {
 	A = -g*cos(thetaL);
@@ -7538,9 +7866,16 @@ double charginoamplitudedecaystaunutau (double m1, double m2, double m3, double 
 	  {
 	    scriptA= -A*cos(thetatau) + Bprimeprime*sin(thetatau);
 	  }
+	else {
+	  throw("problem: oneortwo must be a 1 or 2 in charginoamplitudedecaystaunutau\n");
+	  errorflag = -1;
+	}
       }
-      
-      amplitudeW = pow(scriptA,2)*m1*lambda*alteredsquareratio/(32*PI);
+      else {
+	throw("problem: chargino must be a 1 or 2 in charginoamplitudedecaystaunutau\n");
+	errorflag = -1;
+      }      
+      amplitudeW = pow(scriptA,2)*fabs(m1)*lambda*alteredsquareratio/(32*PI);
   }
   return amplitudeW;
 }
@@ -7560,6 +7895,10 @@ double charginoamplitudedecayWbosonneutralino (double m1, double m2, double m3, 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in charginoamplitudedecayWbosonneutralino\n");
+      errorflag = -1;
+    }
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
     squarecombo2 = (pow(pow(m1,2) - pow(m3,2),2) - pow(m2,4))/pow(m2,2);
       
@@ -7572,7 +7911,10 @@ double charginoamplitudedecayWbosonneutralino (double m1, double m2, double m3, 
       X = 0.5*((-sin(thetaR)*mixNeut(neutralino,4)/(pow(2,0.5)) - cos(thetaR)*mixNeut(neutralino,2)) + sin(thetaL)*mixNeut(neutralino,3)/(pow(2,0.5)) - cos(thetaL)*mixNeut(neutralino,2));
       Y = 0.5*((sin(thetaR)*mixNeut(neutralino,4)/(pow(2,0.5)) + cos(thetaR)*mixNeut(neutralino,2)) + sin(thetaL)*mixNeut(neutralino,3)/(pow(2,0.5)) - cos(thetaL)*mixNeut(neutralino,2));
     }
-
+    else {
+      throw("problem: chargino must be a 1 or 2 in charginoamplitudedecayWbosonneutralino\n");
+      errorflag = -1;
+    }
     amplitudeW = pow(g,2)/(16*PI*fabs(m1))*lambda*((pow(X,2)+pow(Y,2))*(squarecombo1+squarecombo2) - 6*(pow(X,2) - pow(Y,2))*(m1)*(m3));
   }
   return amplitudeW;
@@ -7589,9 +7931,13 @@ double charginoamplitudedecayHminusneutralino (double m1, double m2, double m3, 
   }
 
   else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
+    squareplus = 1 - pow((m2+fabs(m3))/m1,2);
+    squareminus = 1 - pow((m2-fabs(m3))/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in charginoamplitudedecayHminusneutralino\n");
+      errorflag = -1;
+    }
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
     
     A1 = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaR) - g*mixNeut(neutralino,4)*cos(thetaR);
@@ -7608,7 +7954,10 @@ double charginoamplitudedecayHminusneutralino (double m1, double m2, double m3, 
       a = 0.5*(-cos(beta)*A1 + sin(beta)*A3);
       b = 0.5*(-cos(beta)*A1 - sin(beta)*A3);
     }
-
+    else { 
+      throw("problem: chargino must be a 1 or 2 in charginoamplitudedecayHminusneutralino\n");
+      errorflag = -1;
+    }
     amplitudeW = lambda/(16*PI*fabs(m1))*((pow(a,2)+pow(b,2))*squarecombo1 + 2*(pow(a,2) - pow(b,2))*m1*m3);
   }
   return amplitudeW;
@@ -7625,9 +7974,13 @@ double chargino2amplitudedecaychargino1Zboson (double m1, double m2, double m3, 
   }
 
   else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
+    squareplus = 1 - pow((m2+fabs(m3))/fabs(m1),2);
+    squareminus = 1 - pow((m2-fabs(m3))/fabs(m1),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in chargino2amplitudedecaychargino1Zboson\n");
+      errorflag = -1;
+    }
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
     squarecombo2 = (pow(pow(m1,2) - pow(m3,2),2) - pow(m2,4))/pow(m2,2); 
     e = g*gp/(pow(pow(g,2)+pow(gp,2),0.5));
@@ -7636,7 +7989,7 @@ double chargino2amplitudedecaychargino1Zboson (double m1, double m2, double m3, 
     y = 0.5*(sin(thetaL)*cos(thetaL) + sin(thetaR)*cos(thetaR));
     matelem = (pow(x,2) + pow(y,2))*(squarecombo1 + squarecombo2) + 6*(pow(x,2) - pow(y,2))*m1*m3;
     
-    amplitudeW = pow(e,2)*lambda/(64*PI*m1)*pow(g/gp + gp/g,2)*matelem;
+    amplitudeW = pow(e,2)*lambda/(64*PI*fabs(m1))*pow(g/gp + gp/g,2)*matelem;
   }
   return amplitudeW;
 }
@@ -7652,9 +8005,13 @@ double chargino2amplitudedecaychargino1neutHiggs (double m1, double m2, double m
   }
 
   else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
+    squareplus = 1 - pow((m2+fabs(m3))/fabs(m1),2);
+    squareminus = 1 - pow((m2-fabs(m3))/fabs(m1),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in chargino2amplitudedecaychargino1neutHiggs\n");
+      errorflag = -1;
+    }
     squarecombo1 = pow(m1,2) - pow(m2,2) + pow(m3,2);
     
     if(phi == 'h') {
@@ -7669,17 +8026,19 @@ double chargino2amplitudedecaychargino1neutHiggs (double m1, double m2, double m
       ///  throw("DECAY to H\n"); 
     }
       
-      else if (phi == 'A') {
-	S = 0.5*(sin(thetaR)*sin(thetaL)*sin(beta) - cos(thetaL)*cos(thetaR)*cos(beta) - sin(thetaL)*sin(thetaR)*cos(beta) + cos(thetaL)*cos(thetaR)*sin(beta));
-	P = 0.5*(-sin(thetaR)*sin(thetaL)*sin(beta) + cos(thetaL)*cos(thetaR)*cos(beta) - sin(thetaL)*sin(thetaR)*cos(beta) + cos(thetaL)*cos(thetaR)*sin(beta));
-	/// throw("DECAY to A\n"); 
-      }
+    else if (phi == 'A') {
+      S = 0.5*(sin(thetaR)*sin(thetaL)*sin(beta) - cos(thetaL)*cos(thetaR)*cos(beta) - sin(thetaL)*sin(thetaR)*cos(beta) + cos(thetaL)*cos(thetaR)*sin(beta));
+      P = 0.5*(-sin(thetaR)*sin(thetaL)*sin(beta) + cos(thetaL)*cos(thetaR)*cos(beta) - sin(thetaL)*sin(thetaR)*cos(beta) + cos(thetaL)*cos(thetaR)*sin(beta));
+      /// throw("DECAY to A\n"); 
+    }
     
-      else {  throw("char compare problem ... phi must be one of h, H, or A\n");  }
-    
+    else {
+      throw("problem: phi must be one of h, H, or A in chargino2amplitudedecaychargino1neutHiggs\n");
+      errorflag = -1;
+    }    
     matelem = (pow(S,2) + pow(P,2))*squarecombo1 + 2*(pow(S,2)-pow(P,2))*m1*m3;
-
-    amplitudeW = pow(g,2)*lambda/(32*PI*m1)*matelem;
+    
+    amplitudeW = pow(g,2)*lambda/(32*PI*fabs(m1))*matelem;
   }
   return amplitudeW;
 }
@@ -7698,6 +8057,10 @@ double neutralinoamplitudedecayquarksquarkLorR (double m1, double m2, double m3,
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecayquarksquarkLorR\n");
+      errorflag = -1;
+    }
     alteredsquareratio = 1 + pow(m2/m1,2) - pow(m3/m1,2);
     
     if (uordtype == 1) /// up type squark (i.e. u squark or c squark)
@@ -7711,7 +8074,10 @@ double neutralinoamplitudedecayquarksquarkLorR (double m1, double m2, double m3,
 	A = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) - gp/3*mixNeut(neutralino,1));
 	B = 2/(3*pow(2,0.5))*gp*mixNeut(neutralino,1);
       }
-      
+    else {
+      throw("problem: uordtype must be a 1 or 2 in neutralinoamplitudedecayquarksquarLorR\n");
+      errorflag = -1;
+    }
     if(LorR == 'L') /// so get wino and zino couplings as LH squark
       {
 	C = A;
@@ -7721,7 +8087,10 @@ double neutralinoamplitudedecayquarksquarkLorR (double m1, double m2, double m3,
       {
 	C = B;
       }
-    
+    else {
+      throw("problem: LorR must be a L or R in neutralinoamplitudedecayquarksquarLorR\n");
+    errorflag = -1;
+    }    
     amplitudeW = 3*pow(C,2)*fabs(m1)*lambda/(32*PI)*alteredsquareratio;
   }
   return amplitudeW;
@@ -7743,6 +8112,10 @@ double neutralinoamplitudedecayleptonsleptonLorR (double m1, double m2, double m
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecayleptonsleptonLorR\n");
+      errorflag = -1;
+    }
     alteredsquareratio = 1 + pow(m2/m1,2) - pow(m3/m1,2);
     
     A = -1/(pow(2,0.5)) * (g*-mixNeut(neutralino,2) + gp*-mixNeut(neutralino,1));
@@ -7756,7 +8129,11 @@ double neutralinoamplitudedecayleptonsleptonLorR (double m1, double m2, double m
     else if (LorR == 'R') /// so get only Zino couplings as RH
       {
 	C = B;
-      }      
+      }    
+    else {
+      throw("problem: LorR must be a L or R in neutralinoamplitudedecayleptonsleptonLorR\n");
+      errorflag = -1;
+    }  
     amplitudeW = pow(C,2)*fabs(m1)*lambda*alteredsquareratio/(32*PI);
   }
   return amplitudeW;
@@ -7778,6 +8155,10 @@ double neutralinoamplitudedecayneutrinosneutrinoL (double m1, double m2, double 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecayneutrinosneutrinoL\n");
+      errorflag = -1;
+    }
     alteredsquareratio = 1 + pow(m2/m1,2) - pow(m3/m1,2);
     
     A = 1/(pow(2,0.5)) * (g*-mixNeut(neutralino,2) + gp*mixNeut(neutralino,1));
@@ -7802,6 +8183,10 @@ double neutralinoamplitudedecaysquark3quarkmix (double m1, double m2, double m3,
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecaysquark3quarkmix\n");
+      errorflag = -1;
+    }
     masscombo1 = pow(1+m2/(m1),2) - pow(m3/m1,2);
     masscombo2 = pow(1-m2/(m1),2) - pow(m3/m1,2);      
     
@@ -7821,7 +8206,10 @@ double neutralinoamplitudedecaysquark3quarkmix (double m1, double m2, double m3,
 	    betatilda = 4/(3*pow(2,0.5))*cos(theta)*-mixNeut(neutralino,1)*gp - fq*sin(theta)*mixNeut(neutralino,4); /// again simplified form of btopr(2,i) * g from susyhit
 	  }
 	
-	else {  throw("problem: stop must be stop1 or stop2\n");  }
+	else {
+	  throw("problem: oneortwo must be 1 or 2 in neutralinoamplitudedecaysquark3quarkmix\n");
+	  errorflag = -1;
+	}
       }
     
     else if ( squark ==2) /// we have sbottoms
@@ -7839,15 +8227,20 @@ double neutralinoamplitudedecaysquark3quarkmix (double m1, double m2, double m3,
 	    alphatilda = sin(theta)*(mixNeut(neutralino,1)*-gp*(1/(3*pow(2,0.5))) + mixNeut(neutralino,2)*g*1/(pow(2,0.5))) + cos(theta)*fq*mixNeut(neutralino,3); /// simplified abot(2,i)*g from susyhit
 	    betatilda = cos(theta)*(2/(3*pow(2,0.5)))*gp*(mixNeut(neutralino,1)) - sin(theta)*fq*mixNeut(neutralino,3); /// simplified bbot(2,i)*g from susyhit
 	  }
-	  
-	else {  throw("problem: must be sbottom1s or sbottom2s\n");  }
+	else {
+	  throw("problem: oneortwo must be 1 or 2 in neutralinoamplitudedecaysquark3quarkmix\n");
+	  errorflag = -1;
+	}
 	}
       
-    else {  throw("problem: third generation squarks must be stops or sbottoms\n"); }
-    
+    else {
+      throw("problem: squark must be 1 or 2 in neutralinoamplitudedecaysquark3quarkmix\n");
+      errorflag = -1;
+    }    
     a = 0.5*(alphatilda + betatilda);
     b = 0.5*(betatilda - alphatilda);
     amplitudeW = 3*lambda*fabs(m1)/(16*PI)*(pow(a,2)*masscombo1 + pow(b,2)*masscombo2);
+    
   }
   return amplitudeW;
 }
@@ -7867,6 +8260,10 @@ double neutralinoamplitudedecaystautau (double m1, double m2, double m3, double 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecaystautau\n");
+      errorflag = -1;
+    }
     
     ftau = g*m2/(pow(2,0.5)*mWboson*cos(beta));
     if (oneortwo == 1) /// we are decaying into a stau1
@@ -7880,7 +8277,8 @@ double neutralinoamplitudedecaystautau (double m1, double m2, double m3, double 
 	betatilda = -pow(2,0.5)*gp*mixNeut(neutralino,1)*sin(theta) - ftau*mixNeut(neutralino,3)*cos(theta);
       }
     else {
-       throw("Stau must be a stau1 or a stau2, hence for int oneortwo 1 or 2 only allowed!\n"); 
+       throw("problem: oneortwo must be 1 or 2 in neutralinoamplitudedecaystautau\n"); 
+       errorflag = -1;
     }
 
     a = 0.5*(alphatilda + betatilda);
@@ -7904,11 +8302,14 @@ double neutralinoamplitudedecaycharginoWboson (double m1, double m2, double m3, 
   }
 
   else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
-    
+    squareplus = 1 - pow((m2+fabs(m3))/m1,2);
+    squareminus = 1 - pow((m2-fabs(m3))/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
-      
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecaycharginoWboson\n");
+      errorflag = -1;
+    }    
+  
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
     squarecombo2 = (pow(pow(m1,2) - pow(m3,2),2) - pow(m2,4))/pow(m2,2);
     
@@ -7921,7 +8322,10 @@ double neutralinoamplitudedecaycharginoWboson (double m1, double m2, double m3, 
       X = 0.5*((-sin(thetaR)*mixNeut(neutralino,4)/(pow(2,0.5)) - cos(thetaR)*mixNeut(neutralino,2)) + sin(thetaL)*mixNeut(neutralino,3)/(pow(2,0.5)) - cos(thetaL)*mixNeut(neutralino,2));
       Y = 0.5*((sin(thetaR)*mixNeut(neutralino,4)/(pow(2,0.5)) + cos(thetaR)*mixNeut(neutralino,2)) + sin(thetaL)*mixNeut(neutralino,3)/(pow(2,0.5)) - cos(thetaL)*mixNeut(neutralino,2));
     }
-
+    else {
+      throw("problem: chargino must be 1 or 2 in neutralinoamplitudedecaycharginoWboson\n");
+      errorflag = -1;
+    }
     amplitudeW = pow(g,2)/(16*PI*fabs(m1))*lambda*((pow(X,2)+pow(Y,2))*(squarecombo1+squarecombo2) - 6*(pow(X,2) - pow(Y,2))*m1*m3);
       
   }
@@ -7940,8 +8344,11 @@ double neutralinoamplitudedecaycharginoHplus (double m1, double m2, double m3, d
   else { 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
-    
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecaycharginoHplus\n");
+      errorflag = -1;
+    }    
     
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
 
@@ -7949,8 +8356,7 @@ double neutralinoamplitudedecaycharginoHplus (double m1, double m2, double m3, d
     A2 = -1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*cos(thetaR) - g*mixNeut(neutralino,4)*sin(thetaR);
     A3 = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaL) + g*mixNeut(neutralino,3)*cos(thetaL);
     A4 = -1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*cos(thetaL) + g*mixNeut(neutralino,3)*sin(thetaL);
-    
-      
+          
     if (chargino == 1) {
       a = 0.5*(-cos(beta)*A2 + sin(beta)*A4);
       b = 0.5*(-cos(beta)*A2 - sin(beta)*A4);
@@ -7960,7 +8366,10 @@ double neutralinoamplitudedecaycharginoHplus (double m1, double m2, double m3, d
       a = 0.5*(-cos(beta)*A1 + sin(beta)*A3);
       b = 0.5*(-cos(beta)*A1 - sin(beta)*A3);
     }
-
+    else {
+      throw("problem: chargino must be 1 or 2 in neutralinoamplitudedecaycharginoHplus\n");
+      errorflag = -1;
+    }
     amplitudeW = lambda/(16*PI*fabs(m1))*((pow(a,2)+pow(b,2))*squarecombo1 + 2*(pow(a,2) - pow(b,2))*m1*m3);
   }
   return amplitudeW;
@@ -7978,8 +8387,11 @@ double neutralinoamplitudedecayneutralinoZboson (double m1, double m2, double m3
   else { 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
-    
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoZboson\n");
+      errorflag = -1;
+    }    
     
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
     squarecombo2 = (pow(pow(m1,2)-pow(m3,2),2) -pow(m2,4))/(pow(m2,2));
@@ -8005,9 +8417,12 @@ double neutralinoamplitudedecayneutralinoneutHiggs (double m1, double m2, double
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     squarecombo = pow(m1,2) + pow(m3,2) - pow(m2,2);
-    
     lambda = pow(squareplus*squareminus,0.5);
-    
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoneutHiggs\n");
+      errorflag = -1;
+    }    
+        
     if(phi == 'h') /// here mixingangle is alpha
       {
 	Xij = -0.5*(mixNeut(ineutralino,3)*-sin(mixingangle) - mixNeut(ineutralino,4)*cos(mixingangle))*(-g*mixNeut(fneutralino,2) + gp*mixNeut(fneutralino,1));
@@ -8028,6 +8443,10 @@ double neutralinoamplitudedecayneutralinoneutHiggs (double m1, double m2, double
 	Xji = 0.5*(mixNeut(fneutralino,3)*sin(mixingangle) - mixNeut(fneutralino,4)*cos(mixingangle))*(-g*mixNeut(ineutralino,2) + gp*mixNeut(ineutralino,1));
 	amplitudeW = pow(Xij+Xji,2)*lambda/(16*PI*fabs(m1))*(squarecombo - 2*m1*m3);
       }
+    else { 
+      throw("problem: phi must be h or H or A in neutralinoamplitudedecayneutralinoneutHiggs\n");
+      errorflag = -1;
+    }
   }
   return amplitudeW;
 }
@@ -8051,14 +8470,17 @@ double higgslorHamplitudedecayquarkantiquark (double m1, double m2, double g, do
 	    angular = pow(CPEMix(1,1)/sin(beta),2);
 	  }
 	}
-	if (uord == 0) {
+	else if (uord == 0) {
 	  if (NMSSMmodel == false) {
 	    angular = pow(-sin(alpha)/cos(beta),2);
 	  }
 	  else if (NMSSMmodel == true) {
 	    angular = pow(CPEMix(1,2)/cos(beta),2);
 	  }
-	 
+	}
+	else {
+	  throw("problem: uord must be 1 or 0 in higgslorHamplitudedecayquarkantiquark\n");
+	  errorflag = -1;
 	}
       }
     else if (lorH == 'H') {
@@ -8078,19 +8500,31 @@ double higgslorHamplitudedecayquarkantiquark (double m1, double m2, double g, do
 	    angular = pow(CPEMix(2,2)/cos(beta),2);
 	  }
 	}
+	else {
+	  throw("problem: uord must be 1 or 0 in higgslorHamplitudedecayquarkantiquark\n");
+	  errorflag = -1;
+	}
     }
 
-    if (NMSSMmodel ==true && lorH == 'M') ///M for max i.e. H3 heaviest higgs in NMSSM
+    else if (NMSSMmodel ==true && lorH == 'M') ///M for max i.e. H3 heaviest higgs in NMSSM
       {
 	if (uord == 1) /// u
 	  {
 	    angular = pow(CPEMix(3,1)/sin(beta),2);
 	  }
-	if (uord == 0) /// d
+	else if (uord == 0) /// d
 	  {
 	    angular = pow(CPEMix(3,2)/cos(beta),2);
 	  }
+	else {
+	  throw("problem: uord must be 1 or 0 in higgslorHamplitudedecayquarkantiquark\n");
+	  errorflag = -1;
+	}
       }
+    else {
+      throw("problem: lorH must be h or H or M (i.e. H3), where M is only for NMSSM, in higgslorHamplitudedecayquarkantiquark\n");
+    errorflag = -1;
+    }
 
     amplitudeW = GFosqrt2*3*m1/(4*PI)*pow(m2,2)*angular*pow(squarecombo1,1.5);
 
@@ -8138,6 +8572,10 @@ double higgsAamplitudedecayquarkantiquark (double m1, double m2, double g, doubl
     else if (uord == 0) {
       angular = pow(tan(beta),2);
     }
+    else {
+      throw("problem: uord must be 1 or 0 in higgsAamplitudedecayquarkantiquark\n");
+      errorflag = -1;
+    }
     amplitudeW = 3*GFosqrt2/(4*PI)*angular*(pow(m2,2))*m1*pow(squarecombo1,0.5);
 
     if (QCD == true) {
@@ -8181,6 +8619,10 @@ double higgsAamplitudedecayquarkantiquarkNMSSM (double m1, double m2, double bet
     else if (uord == 0) {
       angular = pow(CPOMix(higgs,2)/cos(beta),2);
     }
+    else {
+      throw("problem: uord must be 1 or 0 in higgsAamplitudedecayquarkantiquarkNMSSM\n");
+    errorflag = -1;
+    }
     amplitudeW = 3*GFosqrt2/(4*PI)*angular*(pow(m2,2))*m1*pow(squarecombo1,0.5);
 
     if (QCD == true) {
@@ -8209,10 +8651,13 @@ double higgsphiamplitudedecayneutralinoneutralino (double m1, double m2, double 
 
   else { 
     squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
-        
+    squareminus = 1 - pow((m2-m3)/m1,2);        
     lambda = pow(squareplus*squareminus,0.5);
-    
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsphiamplitudedecayneutralinoneutralino\n");
+      errorflag = -1;
+    }    
+     
     if(phi == 'h') /// here mixingangle is alpha
       {
 	Xij = -0.5*(mixNeut(ineutralino,3)*-sin(mixingangle) - mixNeut(ineutralino,4)*cos(mixingangle))*(-mixNeut(fneutralino,2) + tanthetaW*mixNeut(fneutralino,1));
@@ -8246,7 +8691,12 @@ double higgsphiamplitudedecayneutralinoneutralino (double m1, double m2, double 
 	  amplitudeW = pow(g,2)*fabs(m1)/(8*PI)*(pow(Xij+Xji,2))*squareminus*lambda;
 	}
       }
+    else {
+      throw("problem: phi must be h or H or A in higgsphiamplitudedecayneutralinoneutralino\n");
+      errorflag = -1;
+    }
   }
+
   return amplitudeW;
 }
      
@@ -8264,6 +8714,10 @@ double higgsAamplitudedecayneutralinoneutralinoNMSSM (double m1, double m2, doub
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsAamplitudedecayneutralinoneutralinoNMSSM\n");
+      errorflag = -1;
+    }    
 
     coupling = lam/(pow(2,0.5))*(CPOMix(pseudoscalar,1)*(mixNeut(ineutralino,3)*mixNeut(jneutralino,5) + mixNeut(ineutralino,5)*mixNeut(jneutralino,3)) + CPOMix(pseudoscalar,2)*(mixNeut(ineutralino,4)*mixNeut(jneutralino,5) + mixNeut(ineutralino,5)*mixNeut(jneutralino,4)) + CPOMix(pseudoscalar,3)*(mixNeut(ineutralino,3)*mixNeut(jneutralino,4)+mixNeut(jneutralino,3)*mixNeut(ineutralino,4))) - pow(2,0.5)*kappa*CPOMix(pseudoscalar,3)*mixNeut(ineutralino,5)*mixNeut(jneutralino,5) - tanthetaW*g/2*(-CPOMix(pseudoscalar,1)*(mixNeut(ineutralino,1)*mixNeut(jneutralino,4) + mixNeut(ineutralino,4)*mixNeut(jneutralino,1)) + CPOMix(pseudoscalar,2)*(mixNeut(ineutralino,1)*mixNeut(jneutralino,3) + mixNeut(ineutralino,3)*mixNeut(jneutralino,1))) - g/2*(CPOMix(pseudoscalar,1)*(mixNeut(ineutralino,2)*mixNeut(jneutralino,4) + mixNeut(ineutralino,4)*mixNeut(jneutralino,2)) - CPOMix(pseudoscalar,2)*(mixNeut(ineutralino,2)*mixNeut(jneutralino,3) + mixNeut(ineutralino,3)*mixNeut(jneutralino,2)));
 
@@ -8271,6 +8725,7 @@ double higgsAamplitudedecayneutralinoneutralinoNMSSM (double m1, double m2, doub
     else if (ineutralino != jneutralino) { delta = 2;}
 
     amplitudeW = m1/(16*PI)*squareminus*lambda*pow(coupling,2)*delta;
+
   }
   return amplitudeW;
 }
@@ -8289,6 +8744,10 @@ double higgsphiamplitudedecaysamechargino (double m1, double m2, double g, doubl
     squareplus = 1 - pow((m2+m2)/m1,2);
     squareminus = 1 - pow((m2-m2)/m1,2); /// so ofcourse squarminus is just 1, just keeping link with other amplitudes
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsphiamplitudedecaysamechargino\n");
+      errorflag = -1;
+    }    
     
     DoubleVector SWcoupling(6);
      for (int i=1; i<=6; i++) {
@@ -8321,7 +8780,10 @@ double higgsphiamplitudedecaysamechargino (double m1, double m2, double g, doubl
        S = SWcoupling(6);
        index = 1;
      }
-    
+     else {
+       throw("problem: phi must be h or H or A and chargino must be 1 or 2 in higgsphiamplitudedecaysamechargino\n");
+       errorflag = -1;
+     }    
     amplitudeW = pow(g,2)/(4*PI)*pow(S,2)*fabs(m1)*pow(lambda,index);
   }  
   return amplitudeW; 
@@ -8341,15 +8803,24 @@ double higgsphiamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, 
     squareplus = 1 - pow((m2+m2)/m1,2);
     squareminus = 1 - pow((m2-m2)/m1,2); /// so ofcourse squarminus is just 1, just keeping link with other amplitudes
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsphiamplitudedecaysamecharginoNMSSM\n");
+      errorflag = -1;
+    }    
 
     if (chargino == 1) {
-      coupling = lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*cos(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPEMix(higgs,2)*cos(thetaL)*sin(thetaR));
+      coupling = (lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*cos(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPEMix(higgs,2)*cos(thetaL)*sin(thetaR)));
     }
     else if (chargino == 2) {
-      coupling = lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*sin(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPEMix(higgs,2)*sin(thetaL)*cos(thetaR));
+      coupling = (lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*sin(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPEMix(higgs,2)*sin(thetaL)*cos(thetaR)));
+    }
+    else {
+      throw("problem: phi must be h or H or A in higgsphiamplitudedecaysamecharginoNMSSM\n");
+      errorflag = -1;
     }
     
     amplitudeW = m1/(8*PI)*pow(lambda,3)*pow(coupling,2);
+
   }
   return amplitudeW;
 }
@@ -8367,15 +8838,23 @@ double higgsAamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, do
     squareplus = 1 - pow((m2+m2)/m1,2);
     squareminus = 1 - pow((m2-m2)/m1,2); /// so ofcourse squarminus is just 1, just keeping link with other amplitudes
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsAamplitudedecaysamecharginoNMSSM\n");
+      errorflag = -1;
+    }    
 
     if (chargino == 1) {
-      S = lam/(pow(2,0.5))*CPOMix(pseudoscalar,3)*cos(thetaL)*cos(thetaR) - g/(pow(2,0.5))*(CPOMix(pseudoscalar,1)*sin(thetaL)*cos(thetaR) + CPOMix(pseudoscalar,2)*cos(thetaL)*sin(thetaR));
+      S = (lam/(pow(2,0.5))*CPOMix(pseudoscalar,3)*cos(thetaL)*cos(thetaR) - g/(pow(2,0.5))*(CPOMix(pseudoscalar,1)*sin(thetaL)*cos(thetaR) + CPOMix(pseudoscalar,2)*cos(thetaL)*sin(thetaR)));
     }
     else if (chargino == 2) {
-      S = lam/(pow(2,0.5))*CPOMix(pseudoscalar,3)*sin(thetaL)*sin(thetaR) + g/(pow(2,0.5))*(CPOMix(pseudoscalar,1)*cos(thetaL)*sin(thetaR) + CPOMix(pseudoscalar,2)*sin(thetaL)*cos(thetaR)); 
+      S = (lam/(pow(2,0.5))*CPOMix(pseudoscalar,3)*sin(thetaL)*sin(thetaR) + g/(pow(2,0.5))*(CPOMix(pseudoscalar,1)*cos(thetaL)*sin(thetaR) + CPOMix(pseudoscalar,2)*sin(thetaL)*cos(thetaR))); 
     }
-
+    else { 
+      throw("problem: chargino must be 1 or 2 in higgsAamplitudedecaysamecharginoNMSSM\n");
+      errorflag = -1;
+    }
     amplitudeW = m1/(8*PI)*lambda*pow(S,2);
+
   }
   return amplitudeW;
 }
@@ -8390,13 +8869,17 @@ double higgsphiamplitudedecaydiffcharginoNMSSM (double m1, double m2, double m3,
   
   else { 
     squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2); /// so ofcourse squarminus is just 1, just keeping link with other amplitudes
+    squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsphiamplitudedecaydiffcharginoNMSSM\n");
+      errorflag = -1;
+    }  
 
-    coupling1 = lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*sin(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*sin(thetaR) - CPEMix(higgs,2)*cos(thetaL)*cos(thetaR));
-    coupling2 = lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*cos(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*cos(thetaR) - CPEMix(higgs,2)*sin(thetaL)*sin(thetaR));
+    coupling1 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*sin(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*sin(thetaR) - CPEMix(higgs,2)*cos(thetaL)*cos(thetaR)));
+    coupling2 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*cos(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*cos(thetaR) - CPEMix(higgs,2)*sin(thetaL)*sin(thetaR)));
 
-    amplitudeW = m1/(16*PI)*lambda*((pow(coupling1,2)+pow(coupling2,2))*0.5*(squareplus+squareminus) - coupling1*coupling2*(squareminus-squareplus));
+    amplitudeW = m1/(16*PI)*lambda*((pow(coupling1,2)+pow(coupling2,2))*0.5*(squareplus+squareminus) + coupling1*coupling2*(squareminus-squareplus));
   }
   return amplitudeW;
 }
@@ -8415,6 +8898,10 @@ double higgsphiamplitudedecaydifchargino (double m1, double m2, double m3, doubl
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2); 
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsphiamplitudedecaydifchargino\n");
+      errorflag = -1;
+    }  
     
     DoubleVector SPWcoupling(6);
      for (int i=1; i<=6; i++) {
@@ -8435,7 +8922,10 @@ double higgsphiamplitudedecaydifchargino (double m1, double m2, double m3, doubl
        S = SPWcoupling(5);
        P = SPWcoupling(6);
      }
-    
+     else {
+       throw("problem: phi must be h or H or A in higgsphiamplitudedecaydifchargino\n");
+       errorflag = -1;
+     }     
      amplitudeW = pow(g,2)/(16*PI)*fabs(m1)*lambda*(pow(S,2)*squareplus + pow(P,2)*squareminus);
   }  
   
@@ -8454,12 +8944,17 @@ double higgsAamplitudedecaydifcharginoNMSSM (double m1, double m2, double m3, do
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2); 
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsAamplitudedecaydifcharginoNMSSM\n");
+      errorflag = -1;
+    }  
 
-    C1 = lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*cos(thetaL)*sin(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*sin(thetaL)*sin(thetaR) - CPOMix(pseudoscalar,2)*cos(thetaL)*cos(thetaR));
+    C1 = (lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*cos(thetaL)*sin(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*sin(thetaL)*sin(thetaR) - CPOMix(pseudoscalar,2)*cos(thetaL)*cos(thetaR)));
 
-    C2 = lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*sin(thetaL)*cos(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*-cos(thetaL)*cos(thetaR) + CPOMix(pseudoscalar,2)*sin(thetaR)*sin(thetaL));
+    C2 = (lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*sin(thetaL)*cos(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*-cos(thetaL)*cos(thetaR) + CPOMix(pseudoscalar,2)*sin(thetaR)*sin(thetaL)));
     
     amplitudeW = lambda/(16*PI)*m1*((pow(C1,2) + pow(C2,2))*0.5*(squareplus+squareminus) + 4*C1*C2*0.25*(squareminus-squareplus));
+
   }
   return amplitudeW;
 }
@@ -8477,6 +8972,10 @@ double higgshamplitudedecayAA (double m1, double m2, double g, double gp, double
     squareplus = 1 - pow((m2+m2)/m1,2);
     squareminus = 1 - pow((m2-m2)/m1,2); ///obviously 1, just for comparison and consistency with other decay modes
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecayAA\n");
+      errorflag = -1;
+    }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
     coupling = g*mWboson/(4*pow(costhetaW,2))*sin(beta+alpha)*cos(2*beta);
@@ -8499,6 +8998,10 @@ double higgsHamplitudedecayhh (double m1, double m2, double g, double gp, double
     squareplus = 1 - pow((m2+m2)/m1,2);
     squareminus = 1 - pow((m2-m2)/m1,2); ///obviously 1, just for comparison and consistency with other decay modes
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecayhh\n");
+      errorflag = -1;
+    }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
     coupling = g*mWboson/(4*pow(costhetaW,2))*(cos(2*alpha)*cos(beta+alpha) - 2*sin(2*alpha)*sin(beta+alpha));
@@ -8521,6 +9024,10 @@ double higgsHamplitudedecayAA (double m1, double m2, double g, double gp, double
     squareplus = 1 - pow((m2+m2)/m1,2);
     squareminus = 1 - pow((m2-m2)/m1,2); ///obviously 1, just for comparison and consistency with other decay modes
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecayAA\n");
+      errorflag = -1;
+    }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
     coupling = -g*mWboson/(4*pow(costhetaW,2))*(cos(beta+alpha)*cos(2*beta));
@@ -8543,6 +9050,10 @@ double higgsHamplitudedecayHplusHminus (double m1, double m2, double g, double g
     squareplus = 1 - pow((m2+m2)/m1,2);
     squareminus = 1 - pow((m2-m2)/m1,2); ///obviously 1, just for comparison and consistency with other decay modes
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecayHplusHminus\n");
+      errorflag = -1;
+    }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
     coupling = g*mWboson*(cos(beta-alpha) - cos(beta+alpha)*cos(2*beta)/(2*pow(costhetaW,2)));
@@ -8565,6 +9076,10 @@ double higgshamplitudedecayhiggsAZboson (double m1, double m2, double m3, double
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecayhiggsAZboson\n");
+      errorflag = -1;
+    }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
     coupling =(g/(costhetaW))*(cos(beta-alpha));
@@ -8587,6 +9102,10 @@ double higgsHamplitudedecayhiggsAZboson (double m1, double m2, double m3, double
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecayhiggsAZboson\n");
+      errorflag = -1;
+    }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
     coupling =(g/(costhetaW))*(sin(beta-alpha));
@@ -8610,6 +9129,10 @@ double higgsAamplitudedecayhiggshZboson (double m1, double m2, double m3, double
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsAamplitudedecayhiggshZboson\n");
+      errorflag = -1;
+    }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
     coupling =(g/(costhetaW))*(cos(beta-alpha));
@@ -8634,6 +9157,10 @@ double higgsAamplitudedecayhiggsHZboson (double m1, double m2, double m3, double
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsAamplitudedecayhiggsHZboson\n");
+      errorflag = -1;
+    }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
     coupling =(g/(costhetaW))*(sin(beta-alpha));
@@ -8656,6 +9183,10 @@ double higgsAamplitudedecayhiggshorHZbosonNMSSM (double m1, double m2, double m3
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsAamplitudedecayhiggshorHZbosonNMSSM\n");
+      errorflag = -1;
+    }  
     
     if (pseudoscalar == 1 && higgs == 1) {
       coupling = (CPEMix(1,1)*cos(beta) - CPEMix(1,2)*sin(beta))*cos(thetaA);
@@ -8674,6 +9205,10 @@ double higgsAamplitudedecayhiggshorHZbosonNMSSM (double m1, double m2, double m3
     }
     else if (pseudoscalar == 2 && higgs == 3) {
       coupling = (CPEMix(3,1)*cos(beta) - CPEMix(3,2)*sin(beta))*sin(thetaA);
+    }
+    else { 
+      throw("problem: higgs must be 1 or 2 or 3 and pseudoscalar must be 1 or 2 in higgsAamplitudedecayhiggshorHZbosonNMSSM\n");
+      errorflag = -1;
     }
 
     amplitudeW = GFosqrt2*pow(m1,3)/(8*PI)*pow(lambda,3)*pow(coupling,2);
@@ -8696,7 +9231,10 @@ double higgshamplitudedecay2squarksamehand (double m1, double m2, double m3, dou
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
-
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecay2squarksamehand\n");
+      errorflag = -1;
+    }  
      DoubleVector hsqsqcoupling(4);
      for (int i=1; i<=4; i++) {
      hsqsqcoupling(i) = 0;
@@ -8715,6 +9253,10 @@ double higgshamplitudedecay2squarksamehand (double m1, double m2, double m3, dou
     else if (sq == 4) {
       coupling = hsqsqcoupling(4);
     }    
+    else {
+      throw("problem: sq must be 1, 2, 3, or 4 in higgshamplitudedecay2squarksamehand\n");
+      errorflag = -1;
+    }
     
     amplitudeW = 3*pow(coupling,2)/(16*PI*m1)*lambda;
   }
@@ -8734,6 +9276,10 @@ double higgshamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecay2squarksamehandNMSSM\n");
+      errorflag = -1;
+    }  
 
     if (sq == 1) ///uLuL
       {
@@ -8751,7 +9297,10 @@ double higgshamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3
       {
 	coupling = g*(-mWboson/3*pow(gp/g,2)*(sin(beta)*CPEMix(1,1) - cos(beta)*CPEMix(1,2)) - pow(mq,2)*CPEMix(1,2)/(mWboson*cos(beta)));
       }
-    
+    else {
+      throw("problem: sq must be 1, 2, 3, or 4 in higgshamplitudedecay2squarksamehandNMSSM\n");
+      errorflag = -1;
+    }    
     amplitudeW = 3*lambda*pow(coupling,2)/(16*PI*m1);
   }
   return amplitudeW;
@@ -8769,6 +9318,10 @@ double higgshamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecay2sleptonsamehandNMSSM\n");
+      errorflag = -1;
+    }  
 
     if (sl == 1) ///snuLsnuL - drop terms proportional to ml^2 here
       {
@@ -8782,11 +9335,16 @@ double higgshamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m
       {
 	coupling = g*(mWboson*pow(gp/g,2)*(sin(beta)*CPEMix(1,1) - cos(beta)*CPEMix(1,2)));
       }
-    
+    else {
+      throw("problem: sl must be 1, 2, or 3 in higgshamplitudedecay2sleptonsamehandNMSSM\n");
+      errorflag = -1;
+    }    
     amplitudeW = lambda*pow(coupling,2)/(16*PI*m1);
+
   }
   return amplitudeW;
 }
+
 
 double higgsHamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mq, DoubleMatrix & CPEMix, int sl)
 {
@@ -8801,6 +9359,11 @@ double higgsHamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
 
+    if (squareplus*squareminus < 0) {
+      throw("lambda will give nan in higgsHamplitudedecay2sleptonsamehandNMSSM");
+      errorflag = -1;
+    }  
+
     if (sl == 1) ///snuLsnuL - drop terms proportional to ml^2 here
       {
 	coupling = g*(mWboson*(0.5+pow(gp/g,2)/2)*(sin(beta)*CPEMix(2,1) - cos(beta)*CPEMix(2,2)));
@@ -8813,6 +9376,10 @@ double higgsHamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m
       {
 	coupling = g*(mWboson*pow(gp/g,2)*(sin(beta)*CPEMix(2,1) - cos(beta)*CPEMix(2,2)));
       }
+    else {
+      throw("problem: sl must be 1, 2, or 3 in higgsHamplitudedecay2sleptonsamehandNMSSM\n");
+      errorflag = -1;
+    }
     
     amplitudeW = lambda*pow(coupling,2)/(16*PI*m1);
   }
@@ -8831,6 +9398,10 @@ double higgsH3amplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsH3amplitudedecay2sleptonsamehandNMSSM\n");
+      errorflag = -1;
+    }  
 
     if (sl == 1) ///snuLsnuL - drop terms proportional to ml^2 here
       {
@@ -8844,7 +9415,10 @@ double higgsH3amplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double 
       {
 	coupling = g*(mWboson*pow(gp/g,2)*(sin(beta)*CPEMix(3,1) - cos(beta)*CPEMix(3,2)));
       }
-
+    else {
+      throw("problem: sl must be 1, 2, or 3 in higgsH3amplitudedecay2sleptonsamehandNMSSM\n");
+      errorflag = -1;
+    }
     
     amplitudeW = lambda*pow(coupling,2)/(16*PI*m1); 
   }
@@ -8864,6 +9438,10 @@ double higgshamplitudedecay2squarkdiffhand (double m1, double m2, double m3, dou
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecay2squarkdiffhand\n");
+      errorflag = -1;
+    }  
 
      DoubleVector hsqsqcoupling(2);
      for (int i=1; i<=2; i++) {
@@ -8877,6 +9455,10 @@ double higgshamplitudedecay2squarkdiffhand (double m1, double m2, double m3, dou
     }
     else if (sq == 2) {
       coupling = hsqsqcoupling(2);
+    }
+    else {
+      throw("problem: sq must be 1, or 2 in higgshamplitudedecay2squarkdiffhand\n");
+      errorflag = -1;
     }
         
     amplitudeW = 3*pow(coupling,2)/(16*PI*m1)*lambda;
@@ -8897,6 +9479,10 @@ double higgshamplitudedecay2squarkdiffhandNMSSM (double m1, double m2, double m3
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecay2squarkdiffhandNMSSM\n");
+      errorflag = -1;
+    }  
 
     if (sq == 1) ///uLuR
       {
@@ -8906,6 +9492,10 @@ double higgshamplitudedecay2squarkdiffhandNMSSM (double m1, double m2, double m3
       {
 	coupling = mq*g/(2*mWboson*cos(beta))*(Aq*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,3));
       }
+    else {
+      throw("problem: sq must be 1, or 2 in higgshamplitudedecay2squarkdiffhandNMSSM\n");
+      errorflag = -1;
+    }
     amplitudeW = 3/(16*PI*m1)*lambda*pow(coupling,2);
   }
   return amplitudeW;
@@ -8926,6 +9516,10 @@ double higgsHamplitudedecay2squarksamehand (double m1, double m2, double m3, dou
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecay2squarksamehand\n");
+      errorflag = -1;
+    }  
 
      DoubleVector Hsqsqcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -8946,7 +9540,10 @@ double higgsHamplitudedecay2squarksamehand (double m1, double m2, double m3, dou
     else if (sq == 4) {
       coupling = Hsqsqcoupling(4);
     }    
-    
+    else {
+      throw("problem: sq must be 1, 2, 3 or 4 in higgsHamplitudedecay2squarksamehand\n");
+      errorflag = -1;
+    }
     amplitudeW = 3*pow(coupling,2)/(16*PI*m1)*lambda;
   }
   return amplitudeW;
@@ -8965,6 +9562,10 @@ double higgsHamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecay2squarksamehandNMSSM\n");
+      errorflag = -1;
+    }  
 
     if (sq == 1) ///uLuL
       {
@@ -8982,6 +9583,10 @@ double higgsHamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3
       {
 	coupling = g*(-mWboson/3*pow(gp/g,2)*(sin(beta)*CPEMix(2,1) - cos(beta)*CPEMix(2,2)) - pow(mq,2)*CPEMix(2,2)/(mWboson*cos(beta)));
       }
+    else {
+      throw("problem: sq must be 1, 2, 3 or 4 in higgsHamplitudedecay2squarksamehandNMSSM\n");
+      errorflag = -1;
+    }
     
     amplitudeW = 3*lambda*pow(coupling,2)/(16*PI*m1); 
   }
@@ -9000,6 +9605,10 @@ double higgsH3amplitudedecay2squarksamehandNMSSM (double m1, double m2, double m
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsH3amplitudedecay2squarksamehandNMSSM\n");
+      errorflag = -1;
+    }  
     
     if (sq == 1) ///uLuL
       {
@@ -9017,8 +9626,11 @@ double higgsH3amplitudedecay2squarksamehandNMSSM (double m1, double m2, double m
       {
 	coupling = g*(-mWboson/3*pow(gp/g,2)*(sin(beta)*CPEMix(3,1) - cos(beta)*CPEMix(3,2)) - pow(mq,2)*CPEMix(3,2)/(mWboson*cos(beta)));
       }
-    
-    amplitudeW = 3*lambda*pow(coupling,2)/(16*PI*m1); ///VERY DUBIOUS ABOUT FACTOR OF 2 AT END HERE - DROPPED!
+    else {
+      throw("problem: sq must be 1, 2, 3 or 4 in higgsH3amplitudedecay2squarksamehandNMSSM\n");
+      errorflag = -1;
+    }    
+    amplitudeW = 3*lambda*pow(coupling,2)/(16*PI*m1); 
   }
   return amplitudeW;
 }
@@ -9037,6 +9649,10 @@ double higgsHamplitudedecay2squarkdiffhand (double m1, double m2, double m3, dou
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecay2squarkdiffhand\n");
+      errorflag = -1;
+    }  
 
      DoubleVector Hsqsqcoupling(2);
      for (int i=1; i<=2; i++) {
@@ -9051,7 +9667,10 @@ double higgsHamplitudedecay2squarkdiffhand (double m1, double m2, double m3, dou
     else if (sq == 2) {
       coupling = Hsqsqcoupling(2);
     }
-        
+    else { 
+      throw("problem: sq must be 1 or 2 in higgsHamplitudedecay2squarkdiffhand\n");
+      errorflag = -1;
+    }        
     amplitudeW = 3*pow(coupling,2)/(16*PI*m1)*lambda;
   }
   return amplitudeW;
@@ -9071,6 +9690,10 @@ double higgshamplitudedecay2sleptonsamehand (double m1, double m2, double m3, do
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecay2sleptonsamehand\n");
+      errorflag = -1;
+    }  
 
      DoubleVector hslslcoupling(3);
      for (int i=1; i<=3; i++) {
@@ -9088,7 +9711,10 @@ double higgshamplitudedecay2sleptonsamehand (double m1, double m2, double m3, do
     else if (sl == 3) {
       coupling = hslslcoupling(3);
     }
-        
+    else {
+      throw("problem: sl must be 1, 2, or 3 in higgshamplitudedecay2sleptonsamehand\n");
+      errorflag = -1;
+    }        
     amplitudeW = pow(coupling,2)/(16*PI*m1)*lambda;
   }
   return amplitudeW;
@@ -9107,6 +9733,10 @@ double higgshamplitudedecay2sleptondiffhand (double m1, double m2, double m3, do
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecay2sleptondiffhand\n");
+      errorflag = -1;
+    }  
 
      DoubleVector hslslcoupling(1);
      for (int i=1; i<=1; i++) {
@@ -9118,7 +9748,10 @@ double higgshamplitudedecay2sleptondiffhand (double m1, double m2, double m3, do
     if (sl == 1) {
       coupling = hslslcoupling(1);
     }
-  
+    else {
+      throw("problem: sl must be 1 in higgshamplitudedecay2sleptondiffhand\n");
+      errorflag = -1;
+    } 
     amplitudeW = pow(coupling,2)/(16*PI*m1)*lambda;
   }
   return amplitudeW;
@@ -9137,6 +9770,10 @@ double higgsHamplitudedecay2sleptonsamehand (double m1, double m2, double m3, do
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecay2sleptonsamehand\n");
+      errorflag = -1;
+    }  
 
      DoubleVector Hslslcoupling(3);
      for (int i=1; i<=3; i++) {
@@ -9154,7 +9791,10 @@ double higgsHamplitudedecay2sleptonsamehand (double m1, double m2, double m3, do
     else if (sl == 3) {
       coupling = Hslslcoupling(3);
     }
-   
+    else {
+      throw("problem: sl must be 1, 2, or 3 in higgsHamplitudedecay2sleptonsamehand\n");
+      errorflag = -1;
+    }   
     amplitudeW = pow(coupling,2)/(16*PI*m1)*lambda;
   }
   return amplitudeW;
@@ -9173,6 +9813,10 @@ double higgsHamplitudedecay2sleptondiffhand (double m1, double m2, double m3, do
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecay2sleptondiffhand\n");
+      errorflag = -1;
+    }  
 
      DoubleVector Hslslcoupling(1);
      for (int i=1; i<=1; i++) {
@@ -9184,7 +9828,10 @@ double higgsHamplitudedecay2sleptondiffhand (double m1, double m2, double m3, do
     if (sl == 1) {
       coupling = Hslslcoupling(1);
     }
-        
+    else {
+      throw("problem: sl must be 1 in higgsHamplitudedecay2sleptondiffhand\n");
+      errorflag = -1;
+    }        
     amplitudeW = pow(coupling,2)/(16*PI*m1)*lambda;
   }
   return amplitudeW;
@@ -9205,6 +9852,10 @@ double higgshamplitudedecaystop1stop1 (double m1, double m2, double m3, double g
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecaystop1stop1\n");
+      errorflag = -1;
+    }  
 
      DoubleVector hst1st1samehandcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -9245,6 +9896,10 @@ double higgshamplitudedecaystop2stop2 (double m1, double m2, double m3, double g
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecaystop2stop2\n");
+      errorflag = -1;
+    }  
 
      DoubleVector hst2st2samehandcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -9284,6 +9939,10 @@ double higgshamplitudedecaystop1stop2 (double m1, double m2, double m3, double g
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecay2stop1stop2\n");
+      errorflag = -1;
+    }  
 
      DoubleVector hst1st2samehandcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -9323,6 +9982,10 @@ double higgshamplitudedecaysbottom1sbottom1 (double m1, double m2, double m3, do
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecaysbottom1sbottom1\n");
+      errorflag = -1;
+    }  
 
      DoubleVector hsb1sb1samehandcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -9362,6 +10025,10 @@ double higgshamplitudedecaysbottom2sbottom2 (double m1, double m2, double m3, do
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecaysbottom2sbottom2\n");
+      errorflag = -1;
+    }  
 
      DoubleVector hsb2sb2samehandcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -9401,6 +10068,10 @@ double higgshamplitudedecaysbottom1sbottom2 (double m1, double m2, double m3, do
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecaysbottom1sbottom2\n");
+      errorflag = -1;
+    }  
 
      DoubleVector hsb1sb2samehandcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -9440,6 +10111,10 @@ double higgsHamplitudedecaystop1stop1 (double m1, double m2, double m3, double g
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecaystop1stop1\n");
+      errorflag = -1;
+    }  
 
      DoubleVector Hst1st1samehandcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -9479,6 +10154,10 @@ double higgsHamplitudedecaystop2stop2 (double m1, double m2, double m3, double g
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecaystop2stop2\n");
+      errorflag = -1;
+    }  
 
      DoubleVector Hst2st2samehandcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -9518,6 +10197,10 @@ double higgsHamplitudedecaystop1stop2 (double m1, double m2, double m3, double g
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecaystop1stop2\n");
+      errorflag = -1;
+    }  
 
      DoubleVector Hst1st2samehandcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -9557,6 +10240,10 @@ double higgsHamplitudedecaysbottom1sbottom1 (double m1, double m2, double m3, do
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecaysbottom1sbottom1\n");
+      errorflag = -1;
+    }  
 
      DoubleVector Hsb1sb1samehandcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -9596,6 +10283,10 @@ double higgsHamplitudedecaysbottom2sbottom2 (double m1, double m2, double m3, do
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecaysbottom2sbottom2\n");
+      errorflag = -1;
+    }  
 
      DoubleVector Hsb2sb2samehandcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -9635,6 +10326,10 @@ double higgsHamplitudedecaysbottom1sbottom2 (double m1, double m2, double m3, do
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecaysbottom1sbottom2\n");
+      errorflag = -1;
+    }  
 
      DoubleVector Hsb1sb2samehandcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -9674,6 +10369,10 @@ double higgshamplitudedecaystau1stau1 (double m1, double m2, double m3, double g
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecaystau1stau1\n");
+      errorflag = -1;
+    }  
 
      DoubleVector hstau1stau1samehandcoupling(3);
      for (int i=1; i<=3; i++) {
@@ -9714,6 +10413,10 @@ double higgshamplitudedecaystau2stau2 (double m1, double m2, double m3, double g
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecaystau2stau2\n");
+      errorflag = -1;
+    }  
 
      DoubleVector hstau2stau2samehandcoupling(3);
      for (int i=1; i<=3; i++) {
@@ -9753,6 +10456,10 @@ double higgshamplitudedecaystau1stau2 (double m1, double m2, double m3, double g
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecaystau1stau2\n");
+      errorflag = -1;
+    }  
 
      DoubleVector hstau1stau2samehandcoupling(3);
      for (int i=1; i<=3; i++) {
@@ -9778,27 +10485,6 @@ double higgshamplitudedecaystau1stau2 (double m1, double m2, double m3, double g
 }
 
 
-double higgshtestamplitudedecaystau1stau1 (double m1, double m2, double thetatau, double g, double gp, double mWboson, double alpha, double beta, double mtau, double greekmu, double Atau) {
-
-  double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling;
-
-  if (fabs(m1) < 2*fabs(m2)){
-    amplitudeW = 0;
-  }
-  
-  else { 
-    squareplus = 1 - pow((m2+m2)/m1,2);
-    squareminus = 1 - pow((m2-m2)/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
-
-    coupling = pow(sin(thetatau),2)*(g*(mWboson*(-0.5+0.5*pow(gp/g,2))*sin(alpha+beta) + pow(mtau,2)*sin(alpha)/(mWboson*cos(beta)))) + pow(cos(thetatau),2)*(g*(-mWboson*pow(gp/g,2)*sin(alpha+beta) + pow(mtau,2)*sin(alpha)/(mWboson*cos(beta)))) + 2*cos(thetatau)*sin(thetatau)*(g*mtau/(2*mWboson*cos(beta)))*(-greekmu*cos(alpha) - Atau*sin(alpha));
-
-    amplitudeW = pow(coupling,2)/(16*PI*m1)*lambda;
-  }
-  return amplitudeW;
-}
-
-
 double higgsHamplitudedecaystau1stau1 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtau, double greekmu, double Atau, double theta) ///calculates partial width for H->stau1 antistau1
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
@@ -9813,6 +10499,10 @@ double higgsHamplitudedecaystau1stau1 (double m1, double m2, double m3, double g
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecaystau1stau1\n");
+      errorflag = -1;
+    }  
 
      DoubleVector Hstau1stau1samehandcoupling(3);
      for (int i=1; i<=3; i++) {
@@ -9853,6 +10543,10 @@ double higgsHamplitudedecaystau2stau2 (double m1, double m2, double m3, double g
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecaystau2stau2\n");
+      errorflag = -1;
+    } 
 
      DoubleVector Hstau2stau2samehandcoupling(3);
      for (int i=1; i<=3; i++) {
@@ -9893,6 +10587,10 @@ double higgsHamplitudedecaystau1stau2 (double m1, double m2, double m3, double g
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHamplitudedecaystau1stau2\n");
+      errorflag = -1;
+    } 
 
      DoubleVector Hstau1stau2samehandcoupling(3);
      for (int i=1; i<=3; i++) {
@@ -9931,6 +10629,10 @@ double higgsAamplitudedecaysfermions (double m1, double m2, double m3, double g,
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsAamplitudedecaysfermions\n");
+      errorflag = -1;
+    } 
     
     if(uord == 'u') {
       coupling = g*mf/(2*mWboson)*(greekmu + Asf/(tan(beta)));
@@ -9938,7 +10640,10 @@ double higgsAamplitudedecaysfermions (double m1, double m2, double m3, double g,
     else if (uord == 'd') {
       coupling = g*mf/(2*mWboson)*(greekmu + Asf*tan(beta));
     }
-    
+    else {
+      throw("problem: uord must be u or d in higgsAamplitudedecaysfermions\n");
+      errorflag = -1;
+    }    
     amplitudeW = pow(coupling,2)/(16*PI*m1)*lambda;
   }
   return amplitudeW;
@@ -9957,6 +10662,10 @@ double higgsAamplitudedecaysfermionsNMSSM (double m1, double m2, double m3, doub
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsAamplitudedecaysfermionsNMSSM\n");
+      errorflag = -1;
+    } 
 
     if(uord == 'u') {
       fq = g*mf/(pow(2,0.5)*mWboson*sin(beta));
@@ -9965,8 +10674,10 @@ double higgsAamplitudedecaysfermionsNMSSM (double m1, double m2, double m3, doub
     else if (uord == 'd') {
       fq = g*mf/(pow(2,0.5)*mWboson*cos(beta));
       coupling = fq/pow(2,0.5)*(mueff*CPOMix(pseudoscalar,1) + Asf*CPOMix(pseudoscalar,2) + lam*pow(2,0.5)*mWboson*sin(beta)/g*CPOMix(pseudoscalar,3));
-    }
-    
+    } 
+    else {
+      throw("problem: uord must be u or d in higgsAamplitudedecaysfermionsNMSSM\n");
+    }    
     amplitudeW = 1/(16*PI*m1)*lambda*pow(coupling,2);
   }
 
@@ -9986,11 +10697,16 @@ double higgsHplusamplitudedecayquarkantiquark (double m1, double m2, double m3, 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHplusamplitudedecayquarkantiquark\n");
+      errorflag = -1;
+    } 
     CKM = VCKM(quark,antiquark);
 
     massbetacombination = (pow(m3*tan(beta),2) + pow(m2/(tan(beta)),2))*(pow(m1,2) - pow(m2,2) - pow(m3,2)) - 4*pow(m2*m3,2);
     
     amplitudeW = 3*GFosqrt2*pow(CKM,2)/(4*PI*m1)*massbetacombination*lambda;
+
   }
   return amplitudeW;
 }
@@ -10008,8 +10724,11 @@ double higgsHplusamplitudedecayneutralinochargino (double m1, double m2, double 
   else { 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
-    
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHplusamplitudedecayneutralinochargino\n");
+      errorflag = -1;
+    } 
 
     A1 = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaR) - g*mixNeut(neutralino,4)*cos(thetaR);
     A2 = -1/(pow(2,0.5))*(-g*mixNeut(neutralino,2) - gp*mixNeut(neutralino,1))*-cos(thetaR) - g*mixNeut(neutralino,4)*sin(thetaR);
@@ -10026,47 +10745,14 @@ double higgsHplusamplitudedecayneutralinochargino (double m1, double m2, double 
       a = 0.5*(-cos(beta)*A1 + sin(beta)*A3);
       b = 0.5*(-cos(beta)*A1 - sin(beta)*A3);
     }
- 
+    else {
+      throw("problem: chargino must be 1 or 2 in higgsHplusamplitudedecayneutralinochargino\n");
+    } 
     amplitudeW = 1/(8*PI*fabs(m1))*lambda*((pow(a,2)+pow(b,2))*(pow(m1,2)-pow(m2,2)-pow(m3,2)) - 2*(pow(a,2)-pow(b,2))*m2*m3);
-
   }
   return amplitudeW;
 }
 
-
-
-double higgsHplusamplitudedecayneutralinocharginosusyhitway (double m1, double m2, double m3, double g, double gp, double beta, double thetaL, double thetaR, DoubleMatrix & mixNeut, int neutralino,  int chargino) /// neutralino is j in T&B whilst chargino is i
-{
-  
-  double amplitudeW, squareplus, squareminus, lambda; ///A1=0, A2=0, A3=0, A4=0,a=0, b=0;
-  DoubleMatrix gACNL(2,4), gACNR(2,4);
-  if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    amplitudeW = 0;
-  }
-
-  else { 
-    squareplus = 1 - pow((m2+m3)/m1,2);
-    squareminus = 1 - pow((m2-m3)/m1,2);
-    
-    lambda = pow(squareplus*squareminus,0.5);
-    
-    for (int i=1; i<=2; i++) {
-      for(int j=1; j<=4; j++) {
-	gACNL(i,j)=0;
-	gACNR(i,j)=0;
-      }
-    }
-
-    gACNL(1,neutralino) = cos(beta)*(-g*mixNeut(neutralino,4)*sin(thetaR) + 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*cos(thetaR));
-    gACNR(1,neutralino) = sin(beta)*(-g*mixNeut(neutralino,3)*sin(thetaL) - 1/(pow(2,0.5))*cos(thetaL)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1)));
-    gACNL(2,neutralino) = cos(beta)*(g*cos(thetaR)*mixNeut(neutralino,4) + 1/(pow(2,0.5))*sin(thetaR)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1)));
-    gACNR(2,neutralino) = sin(beta)*(g*cos(thetaL)*mixNeut(neutralino,3) - 1/(pow(2,0.5))*sin(thetaL)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1)));
-       
-    amplitudeW = 1/(16*PI*fabs(m1))*lambda*((pow(gACNL(chargino,neutralino),2)+pow(gACNR(chargino,neutralino),2))*(pow(m1,2)-pow(m2,2)-pow(m3,2)) - 4*gACNL(chargino,neutralino)*gACNR(chargino,neutralino)*m2*m3);
-
-  }
-  return amplitudeW;
-}
 
 
 double higgsHplusamplitudedecayWbosonhiggsh (double m1, double m2, double m3, double g, double alpha, double beta) /// Calculates the partial width for a charged Higgs boson H+ to decay to a Wboson and a neutral light scalar higgs (i.e. the SM-like higgs) h, m2 must be the W boson mass
@@ -10080,8 +10766,11 @@ double higgsHplusamplitudedecayWbosonhiggsh (double m1, double m2, double m3, do
   else { 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
-    
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHplusamplitudedecayWbosonhiggsh\n");
+      errorflag = -1;
+    } 
     
     amplitudeW = pow(g,2)*pow(cos(beta-alpha),2)*pow(m1,3)/(64*PI*pow(m2,2))*pow(lambda,3);
         
@@ -10106,10 +10795,13 @@ DoubleVector higgsHplusamplitudedecaysquarksquark (double m1, double m2, double 
   }
   
   else { 
-
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHplusamplitudedecaysquarksquark\n");
+      errorflag = -1;
+    } 
 
      DoubleVector Hplussquarksquarkcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -10142,11 +10834,14 @@ DoubleVector higgsHplusamplitudedecaysquarksquarkmix (double m1, double m2, doub
       amplitudeW(i) = 0;
     }
   }
-  
   else { 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsHplusamplitudedecaysquarksquarkmix\n");
+      errorflag = -1;
+    } 
 
      DoubleVector Hplussquarksquarkcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -10217,9 +10912,16 @@ double higgsesamplitudedecaygammagammatotal(double m1, double g, double gprime, 
   matelemsum(1) = Itr + Ist1r + Ist2r + Ibr + Isb1r + Isb2r + Icr + Itaur + Istau1r + Istau2r + IWr + IHpmr + Ichar1r + Ichar2r;
   matelemsum(2) = Iti + Ist1i + Ist2i + Ibi + Isb1i + Isb2i + Ici + Itaui + Istau1i + Istau2i + IWi + IHpmi + Ichar1i + Ichar2i;
   
+
   prefactor = GFosqrt2*pow(alphaEmrun,2)*pow(m1,3)/(128*pow(PI,3));
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
+  if (matelemmodsquare != matelemmodsquare) {
+    throw("nan in matelemmodsquare in higgsesamplitudedecaygammagammatotal\n");
+    errorflag = -1;
+    // fout << "Itr = " << Itr << endl; fout << " Ist1r = " << Ist1r << endl; fout<< " Ist2r = " << Ist2r << endl; fout<< " Ibr = " << Ibr << endl; fout<< " Isb1r = " << Isb1r << endl; fout<< " Isb2r = " << Isb2r << endl; fout << "Icr = " << Icr << endl; fout << "Itaur = " << Itaur << endl; fout << "Istau1r = "<< Istau1r << endl; fout << "Istau2r = "<< Istau2r << endl; fout << "IWr = " << IWr << endl; fout << "IHpmr = " << IHpmr << endl; fout << "Ichar1r = " << Ichar1r << endl; fout << "Ichar2r = " << Ichar2r << endl;
+    // fout << "Iti = " << Iti << endl; fout << " Ist1i = " << Ist1i << endl; fout<< " Ist2i = " << Ist2i << endl; fout<< " Ibi = " << Ibi << endl; fout<< " Isb1i = " << Isb1i << endl; fout<< " Isb2i = " << Isb2i << endl; fout << "Ici = " << Ici << endl; fout << "Itaui = " << Itaui << endl; fout << "Istau1i = "<< Istau1i << endl; fout << "Istau2i = "<< Istau2i << endl; fout << "IWi = " << IWi << endl; fout << "IHpmi = " << IHpmi << endl; fout << "Ichar1i = " << Ichar1i << endl; fout << "Ichar2i = " << Ichar2i << endl;
+  }
   amplitudeW = prefactor*matelemmodsquare;
      
   return amplitudeW;
@@ -10259,6 +10961,10 @@ DoubleVector higgsmatrixelementgammagammaviatops (double m1, double mtop, double
       F1over2(2) = -2*f(3)*f(2);
       Rt = 1/(tan(beta));
     }
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviatops\n");
+    errorflag = -1;
+  }
    
   It(1) = 3*4./9*Rt*F1over2(1);
   It(2) = 3*4./9*Rt*F1over2(2);
@@ -10340,6 +11046,10 @@ DoubleVector higgsmatrixelementgammagammaviastops (double m1, double mstop1, dou
       Rst1 = cos(thetat)*RstL + sin(thetat)*RstR;
       Rst2 = -sin(thetat)*RstL + cos(thetat)*RstR;
     }
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviastops\n");
+    errorflag = -1;
+  }
   
   F01(1) = f1(3)*(1-f1(3)*f1(1));
   F01(2) = f1(3)*(-f1(3)*f1(2));
@@ -10391,7 +11101,10 @@ DoubleVector higgsmatrixelementgammagammaviabottoms (double m1, double mbottom, 
       F1over2(2) = -2*f(3)*f(2);
       Rb = tan(beta);
     }
-   
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviabottoms\n");
+    errorflag = -1;
+  }   
   Ib(1) = 3*1./9*Rb*F1over2(1);
   Ib(2) = 3*1./9*Rb*F1over2(2);
   return Ib;
@@ -10474,7 +11187,10 @@ DoubleVector higgsmatrixelementgammagammaviabottoms (double m1, double mbottom, 
       Rsb1 = cos(thetab)*RsbL + sin(thetab)*RsbR;
       Rsb2 = -sin(thetab)*RsbL + cos(thetab)*RsbR;
     }
-  
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviasbottoms\n");
+    errorflag = -1;
+  }  
   F01(1) = f1(3)*(1-f1(3)*f1(1));
   F01(2) = f1(3)*(-f1(3)*f1(2));
   F02(1) = f2(3)*(1-f2(3)*f2(1));
@@ -10524,7 +11240,10 @@ DoubleVector higgsmatrixelementgammagammaviacharms (double m1, double mcharm, do
       F1over2(2) = -2*f(3)*f(2);
       Rc = 1/(tan(beta));
     }
-   
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviacharms\n");
+    errorflag = -1;
+  }
   Ic(1) = 3*4./9*Rc*F1over2(1);
   Ic(2) = 3*4./9*Rc*F1over2(2);
   return Ic;
@@ -10562,7 +11281,10 @@ DoubleVector higgsmatrixelementgammagammaviataus (double m1, double mtau, double
       F1over2(2) = -2*f(3)*f(2);
       Rtau = tan(beta);
     }
-   
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviataus\n");
+    errorflag = -1;
+  }  
   Itau(1) = 1*Rtau*F1over2(1);
   Itau(2) = 1*Rtau*F1over2(2);
   return Itau;
@@ -10643,6 +11365,10 @@ DoubleVector higgsmatrixelementgammagammaviastaus (double m1, double mstau1, dou
       Rstau1 = sin(thetatau)*RstauL - cos(thetatau)*RstauR;
       Rstau2 = cos(thetatau)*RstauL + sin(thetatau)*RstauR;
     }
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviastaus\n");
+    errorflag = -1;
+  }
   
   F01(1) = f1(3)*(1-f1(3)*f1(1));
   F01(2) = f1(3)*(-f1(3)*f1(2));
@@ -10686,6 +11412,10 @@ DoubleVector higgsmatrixelementgammagammaviaWbosons (double m1, double mWboson, 
     {
       RW = 0;
     }
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviaWbosons\n");
+    errorflag = -1;
+  }
   F1(1) = 2 + 3*f(3) + 3*f(3)*(2-f(3))*f(1);
   F1(2) = 3*f(3)*(2-f(3))*f(2);
   
@@ -10722,6 +11452,11 @@ DoubleVector higgsmatrixelementgammagammaviaHpms (double m1, double mHpm, double
     {
       RHpm = 0;
     }
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviaHpms\n");
+    errorflag = -1;
+  }
+
   F0(1) = f(3)*(1-f(3)*f(1));
   F0(2) = f(3)*(f(3)*f(2));
   
@@ -10773,6 +11508,10 @@ DoubleVector higgsmatrixelementgammagammaviachargino1s (double m1, double mcharg
       F1over2(1) = -2*f(3)*f(1);
       F1over2(2) = -2*f(3)*f(2);
     }
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviachargino1s\n");
+    errorflag = -1;
+  }
   
   Ichargino1(1) = Rchargino1*F1over2(1)*mWboson/mchargino1;
   Ichargino1(2) = Rchargino1*F1over2(2)*mWboson/mchargino1;
@@ -10826,6 +11565,10 @@ DoubleVector higgsmatrixelementgammagammaviachargino2s (double m1, double mcharg
       F1over2(1) = -2*f(3)*f(1);
       F1over2(2) = -2*f(3)*f(2);
     }
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviachargino2s\n");
+    errorflag = -1;
+  }
 
   Ichargino2(1) = Rchargino2*F1over2(1)*mWboson/mchargino2;
 
@@ -10881,7 +11624,6 @@ double higgsesamplitudedecaygluongluontotal(double m1, double g, double gs, doub
   IsdRr = -4*higgsmatrixelementgammagammaviasbottoms (m1, msdownL, msdownR, mdown, mup, mWboson, 0, g, gprime, alpha, beta, Aup, Adown, greekmu, higgstype)(3);
   IsdRi = -4*higgsmatrixelementgammagammaviasbottoms (m1, msdownL, msdownR, mdown, mup, mWboson, 0, g, gprime, alpha, beta, Aup, Adown, greekmu, higgstype)(4);
 
-
   DoubleVector matelemsum(2);
   matelemsum(1) = Itr + Ist1r + Ist2r + Ibr + Isb1r + Isb2r + Icr + IscLr + IscRr + IssLr + IssRr + IsuLr + IsuRr + IsdLr + IsdRr;
   matelemsum(2) = Iti + Ist1i + Ist2i + Ibi + Isb1i + Isb2i + Ici + IscLi + IscRi + IssLi + IssRi + IsuLi + IsuRi + IsdLi + IsdRi;
@@ -10901,7 +11643,10 @@ double higgsesamplitudedecaygluongluontotal(double m1, double g, double gs, doub
     int NF = 0;
     if (higgstype == 'h') { NF = 5;}
     else if (higgstype == 'H' || higgstype == 'A') { NF = 6;}
-    else { throw("Problem - higgstype must be 'h', 'H' or 'A' in MSSM!\n"); }
+    else {
+      throw("Problem: higgstype must be 'h', 'H' or 'A' in higgsesamplitudedecaygluongluontotal as in MSSM!\n");
+      errorflag = -1;
+    }
     DoubleVector hggQCDcorrections(double amplitudeW, double alphas, int Nf, char higgs, double prefactor, double SMtotr, double SMtoti, double sqtotr, double sqtoti);
     amplitudeW = hggQCDcorrections(amplitudeW, pow(gs,2)/(4*PI), NF, higgstype, prefactor, SMTOTRE, SMTOTIM, SQTOTRE, SQTOTIM)(1);
 
@@ -10945,7 +11690,10 @@ double fermionQCDcorrections(double amplitudeW, double alphasnow, double alphasp
   else if (higgs == 'A') {
     amplitude = amplitudeW*(1+alphasnow/PI*(97./4-7./6*Nf))*pow(alphasnow/alphasprev,2);
   }
-  else {  throw("PROBLEM higgstype must be 'h' or 'H' or 'A' in MSSM\n"); }
+  else {
+    throw("problem: higgstype must be 'h' or 'H' or 'A' in fermionQCDcorrections as must be in MSSM\n");
+    errorflag = -1;
+  }
   return amplitude;
 }
 
@@ -10977,6 +11725,10 @@ double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp,
     if (nmssmIsIt == false) { coupling = 0;} ///Only get H3 in NMSSM
     else if (nmssmIsIt == true) { coupling = CPEMix(3,1)*sin(beta) + CPEMix(3,2)*cos(beta);}
   }
+  else {
+    throw("problem: higgs must be 1 or 2 in higgsamplituddecayVVstar\n");
+    errorflag = -1;
+  }
 
   if(m1 < 2*mboson && m1 > mboson) {
     if (Vtype == 'W') {
@@ -10984,6 +11736,10 @@ double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp,
     }
     else if (Vtype == 'Z') {
       prefactor = pow(g,4)*m1/(2048*pow(PI,3)*pow(cos2thetaW,2))*(7 - 40*sin2thetaW/3 + 160*pow(sin2thetaW,2)/9)*pow(coupling,2);
+    }
+    else {
+      throw("problem: Vtype must be W or Z in higgsamplitudedecayVVstar\n");
+      errorflag = -1;
     }
   epsilon = mboson/m1;
   a = 3*(1-8*pow(epsilon,2)+20*pow(epsilon,4))/(pow(4*pow(epsilon,2)-1,0.5))*acos((3*pow(epsilon,2)-1)/(2*pow(epsilon,3)));
@@ -10993,7 +11749,7 @@ double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp,
   amplitudeW = prefactor*integrals;
   }
   else if(m1> 2*mboson || m1< mboson) {
-     throw("m1 either greater than 2*mboson so both on-shell, or m1 less than mboson so both off-shell, this formula is for one on-shell vector boson and one off-shell vector boson (of the same type of course)\n"); 
+     throw("problem: in higgsamplitudedecayVVstar m1 either greater than 2*mboson so both on-shell, or m1 less than mboson so both off-shell, this formula is for one on-shell vector boson and one off-shell vector boson (of the same type of course)\n"); 
   }
   return amplitudeW;
 }
@@ -11019,6 +11775,10 @@ DoubleVector higgshamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	squareplus = 1 - pow(m3/m1+m2/m1,2);
 	squareminus = 1 - pow(m3/m1-m2/m1,2);
 	lambda = pow(squareplus*squareminus,0.5);
+	if (squareplus*squareminus < 0) {
+	  throw("lambda will give nan in higgshamplitudedecayVV for W\n");
+	  errorflag = -1;
+	} 
 	prefactor = pow(g,2)*pow(m1,3)/(64*PI*pow(mWboson,2));
 	massratio = 4*pow(mWboson/m1,2);
 	if (nmssmIsIt == false) { coupling = sin(beta-alpha);}
@@ -11041,6 +11801,10 @@ DoubleVector higgshamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	squareplus = 1 - pow(m3/m1+m2/m1,2);
 	squareminus = 1 - pow(m3/m1-m2/m1,2);
 	lambda = pow(squareplus*squareminus,0.5);
+	if (squareplus*squareminus < 0) {
+	  throw("lambda will give nan in higgshamplitudedecayVV for Z\n");
+	  errorflag = -1;
+	} 
 	prefactor = pow(g,2)*pow(m1,3)/(128*PI*pow(mWboson,2));	
 	massratio = 4*pow(mZboson/m1,2);
 	if (nmssmIsIt == false) { coupling = sin(beta-alpha);}
@@ -11048,7 +11812,10 @@ DoubleVector higgshamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	amplitudeW = lambda*prefactor*(1-massratio + 3./4*pow(massratio,2))*pow(coupling,2);
 	Returns(2) = 2;
       }
-
+    }
+    else {
+      throw("problem: Vtype must be W or Z in higgshamplitudedecayVV\n");
+      errorflag = -1;
     }
   Returns(1) = amplitudeW;
   return Returns;
@@ -11077,6 +11844,10 @@ DoubleVector higgsHamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	squareplus = 1 - pow(m3/m1+m2/m1,2);
 	squareminus = 1 - pow(m3/m1-m2/m1,2);
 	lambda = pow(squareplus*squareminus,0.5);
+	if (squareplus*squareminus < 0) {
+	  throw("lambda will give nan in higgsHamplitudedecayVV for W\n");
+	  errorflag = -1;
+	} 
 	prefactor = pow(g,2)*pow(m1,3)/(64*PI*pow(mWboson,2));
 	massratio = 4*pow(mWboson/m1,2);
 	if (nmssmIsIt == false) { coupling = cos(beta-alpha);}
@@ -11099,6 +11870,10 @@ DoubleVector higgsHamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	squareplus = 1 - pow(m3/m1+m2/m1,2);
 	squareminus = 1 - pow(m3/m1-m2/m1,2);
 	lambda = pow(squareplus*squareminus,0.5);
+	if (squareplus*squareminus < 0) {
+	  throw("lambda will give nan in higgsHamplitudedecayVV for Z\n");
+	  errorflag = -1;
+	} 
 	prefactor = pow(g,2)*pow(m1,3)/(128*PI*pow(mWboson,2));	
 	massratio = 4*pow(mZboson/m1,2);
 	if (nmssmIsIt == false) { coupling = cos(beta-alpha);}
@@ -11106,7 +11881,10 @@ DoubleVector higgsHamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	amplitudeW = lambda*prefactor*(1-massratio + 3./4*pow(massratio,2))*pow(coupling,2);
 	Returns(2) = 2;
       }
-
+    }
+    else {
+      throw("problem: Vtype must be W or Z in higgsHamplitudedecayVV\n");
+      errorflag = -1;
     }
   Returns(1) = amplitudeW;
    return Returns;
@@ -11134,7 +11912,11 @@ DoubleVector higgsH3amplitudedecayVVNMSSM(double m1, double mWboson, double mZbo
 	squareplus = 1 - pow(m3/m1+m2/m1,2);
 	squareminus = 1 - pow(m3/m1-m2/m1,2);
 	lambda = pow(squareplus*squareminus,0.5);
-	prefactor = pow(g,2)*pow(m1,3)/(64*PI*pow(mWboson,2));
+	if (squareplus*squareminus < 0) {
+	  throw("lambda will give nan in higgsH3amplitudedecayVVNMSSM for W\n");
+	  errorflag = -1;
+	} 
+	prefactor = GFosqrt2*pow(m1,3)/(8*PI);
 	massratio = 4*pow(mWboson/m1,2);
 	if (nmssmIsIt == false) { coupling = 0;} ///Only get H3 in NMSSM
 	else if (nmssmIsIt == true) { coupling = CPEMix(3,1)*sin(beta) + CPEMix(3,2)*cos(beta);}
@@ -11156,14 +11938,21 @@ DoubleVector higgsH3amplitudedecayVVNMSSM(double m1, double mWboson, double mZbo
 	squareplus = 1 - pow(m3/m1+m2/m1,2);
 	squareminus = 1 - pow(m3/m1-m2/m1,2);
 	lambda = pow(squareplus*squareminus,0.5);
-	prefactor = pow(g,2)*pow(m1,3)/(128*PI*pow(mWboson,2));	
+	if (squareplus*squareminus < 0) {
+	  throw("lambda will give nan in higgsH3amplitudedecayVVNMSSM for Z\n");
+	  errorflag = -1;
+	} 
+	prefactor = GFosqrt2*pow(m1,3)/(16*PI);	
 	massratio = 4*pow(mZboson/m1,2);
 	if (nmssmIsIt == false) { coupling = 0;} ///Only get H3 in NMSSM
 	else if (nmssmIsIt == true) { coupling = CPEMix(3,1)*sin(beta) + CPEMix(3,2)*cos(beta);}
 	amplitudeW = lambda*prefactor*(1-massratio + 3./4*pow(massratio,2))*pow(coupling,2);
 	Returns(2) = 2;
       }
-
+    }
+    else {
+      throw("problem: Vtype must be W or Z in higgsH3amplitudedecayVV\n");
+      errorflag = -1;
     }
   Returns(1) = amplitudeW;
 
@@ -11237,6 +12026,10 @@ DoubleVector higgsmatrixelementZgammaviafermions (double m1, double mferm, doubl
     else if (fermtype == 'd') {
       Rhf = -sin(alpha)/cos(beta);
       }
+    else {
+      throw("problem: fermtype must be u or d in higgsmatrixelementZgammaviafermions\n");
+      errorflag = -1;
+    }
   }
   else if (higgstype == 'H') {
     if (fermtype == 'u') {
@@ -11244,6 +12037,10 @@ DoubleVector higgsmatrixelementZgammaviafermions (double m1, double mferm, doubl
     }
     else if (fermtype == 'd') {
       Rhf = cos(alpha)/(cos(beta));
+    }
+    else {
+      throw("problem: fermtype must be u or d in higgsmatrixelementZgammaviafermions\n");
+      errorflag = -1;
     }
   }
   else if (higgstype == 'A') {
@@ -11253,6 +12050,14 @@ DoubleVector higgsmatrixelementZgammaviafermions (double m1, double mferm, doubl
     else if (fermtype == 'd') {
       Rhf = tan(beta);
     }
+    else {
+      throw("problem: fermtype must be u or d in higgsmatrixelementZgammaviafermions\n");
+      errorflag = -1;
+    }
+  }
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementZgammaviafermions\n");
+    errorflag = -1;
   }
   ftau = foftau(mferm, m1);
   flambda = foftau(mferm, mZboson);
@@ -11265,6 +12070,10 @@ DoubleVector higgsmatrixelementZgammaviafermions (double m1, double mferm, doubl
   else if (higgstype == 'A') {
     Integral1r = 0;
     Integral1i = 0;
+  }
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementZgammaviafermions\n");
+    errorflag = -1;
   }
   Integral2r = -ftau(3)*flambda(3)/(2*(ftau(3)-flambda(3)))*(ftau(1)-flambda(1));
   Integral2i = -ftau(3)*flambda(3)/(2*(ftau(3)-flambda(3)))*(ftau(2)-flambda(2));  
@@ -11299,6 +12108,10 @@ DoubleVector higgsmatrixelementZgammaviaWbosons (double m1, double mWboson, doub
   }
   else if (higgstype == 'A') {
     RhW = 0;
+  }
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementZgammaviaWbosons\n");
+    errorflag = -1;
   }
   ftau = foftau(mWboson, m1);
   flambda = foftau(mWboson, mZboson);
@@ -11345,6 +12158,10 @@ DoubleVector higgsmatrixelementZgammaviaHplus (double m1, double mWboson, double
   else if (higgstype == 'A') {
     RhHplus =0;
   }
+  else {
+    throw("problem: higgstype must be h or H or A in higgsmatrixelementZgammaviaHplus\n");
+    errorflag = -1;
+  }
   ftau = foftau(mHplus, m1);
   flambda = foftau(mHplus, mZboson);
   gtau = goftau(mHplus, m1);
@@ -11360,11 +12177,6 @@ DoubleVector higgsmatrixelementZgammaviaHplus (double m1, double mWboson, double
   
   return amplitude;
 }
-
-
-
-
-
 
 	  
 /// Decays to gravitinos
@@ -11444,6 +12256,7 @@ double neutralinoamplitudedecayphigravitino(double m1, double mphi, double mgrav
     else if (phi == 'A') {
       coupling = 1/(pow(6,0.5)*MPlreduced*mgrav)*(mixNeut(neutralino,4)*cos(beta)+mixNeut(neutralino,3)*sin(beta));
     }
+    else {  throw("problem: phi must be h or H or A in neutralinoamplitudedecayphigravitino\n");  }
     amplitudeW =  pow(coupling,2)/(16*PI*pow(fabs(m1),3))*pow((pow(m1,2)-pow(mphi,2)),4);
     }
   }
@@ -11451,19 +12264,15 @@ double neutralinoamplitudedecayphigravitino(double m1, double mphi, double mgrav
 }
 
 
-
-
-
-
 ///Functions that calculate the couplings:
 
-DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, int torb)
+DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb)
 {
   DoubleVector couplings(16);
   for (int i=1; i<=16; i++) { couplings(i) = 0;}
 
   double fu=0, fd=0, AprimeuW1=0, AprimedW1=0, BW1=0, BprimeW1=0, sq1AprimeW1=0, sq1ch1B1=0, sq1ch1combo=0, sq1ch1angular1=0, sq1ch1angular2=0, sq1ch1B2=0, AprimeuW2=0, AprimedW2=0, BW2=0, BprimeW2=0, sq1AprimeW2=0, sq1ch2B1=0, sq1ch2B2=0, sq1ch2combo=0, sq1ch2angular1=0, sq1ch2angular2=0, sq2AprimeW1=0, sq2ch1B1=0, sq2ch1B2=0, sq2ch1combo=0, sq2ch1angular1=0, sq2ch1angular2=0, sq2AprimeW2=0, sq2ch2B1=0, sq2ch2B2=0, sq2ch2combo=0, sq2ch2angular1=0, sq2ch2angular2=0;
-  
+
   fu = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
   fd = g*runmb/(pow(2,0.5)*mWboson*cos(beta));
   AprimeuW1 = -g*sin(gammaL);
@@ -11481,7 +12290,10 @@ DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, do
       sq1ch1B1 = BprimeW1;
       sq1ch1B2 = BW1;
     }
-
+    else {
+      throw("problem: torb must be 1 or 2 in squarkmixcharginocouplings\n");
+      errorflag = -1;
+    }
     AprimeuW2 = -g*cos(gammaL);
     AprimedW2 = -g*cos(gammaR);
     BW2 = fu*sin(gammaR);
@@ -11496,7 +12308,10 @@ DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, do
       sq1ch2B1 = BprimeW2;
       sq1ch2B2 = BW2;
     }
-
+    else {
+      throw("problem: torb must be 1 or 2 in squarkmixcharginocouplings\n");
+      errorflag = -1;
+    }
     
     if (torb == 1 ) {
       sq2AprimeW1 = AprimedW1;
@@ -11508,6 +12323,10 @@ DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, do
       sq2ch1B1 = BprimeW1;
       sq2ch1B2 = BW1;
     }
+    else {
+      throw("problem: torb must be 1 or 2 in squarkmixcharginocouplings\n");
+      errorflag = -1;
+    }
 
     if (torb == 1 ) {
       sq2AprimeW2 = AprimedW2;
@@ -11518,6 +12337,10 @@ DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, do
       sq2AprimeW2 = AprimeuW2;
       sq2ch2B1 = BprimeW2;
       sq2ch2B2 = BW2;
+    }
+    else {
+      throw("problem: torb must be 1 or 2 in squarkmixcharginocouplings\n");
+      errorflag = -1;
     }
 		
     sq1ch1combo = sq1AprimeW1*cos(theta)-sq1ch1B1*sin(theta);
@@ -11580,10 +12403,7 @@ DoubleVector higgsphidifcharginocouplings (double alpha, double beta, double the
   SPcoupling(1) = Sh; SPcoupling(2) = Ph; SPcoupling(3) = SH; SPcoupling(4) = PH; SPcoupling(5) = SA; SPcoupling(6) = PA;
   return SPcoupling;
 }
-     
-
-
-
+ 
 DoubleVector higgshsquarksamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mupq, double mdownq) /// calculates the couplings of light scalar higgs h to two squarks of same handedness
 {
   DoubleVector hsqsqcoupling(4);
@@ -11720,7 +12540,7 @@ DoubleVector higgsHplussquarkcouplings (double mWboson, double g, double beta, d
 }      
 
 
-DoubleVector foftau(double mpart, double mcomp) ///f(tau) function for use in h->gamma gamma
+DoubleVector foftau(double mpart, double mcomp) ///f(tau) function for use in h->gamma gamma or Z gamma
 {
   double tau=0, fr=0, fi=0, etap=0, etam=0;
   DoubleVector f(3);
@@ -11735,6 +12555,14 @@ DoubleVector foftau(double mpart, double mcomp) ///f(tau) function for use in h-
   else if (tau<1) {
     etap = 1 + pow(1-tau,0.5);
     etam = 1 - pow(1-tau,0.5);
+    if (etap/etam < 0) {
+      throw("problem: log will give nan as etap/etam < 0\n");
+      errorflag = -1;
+    }
+    if (etam == 0) {
+      throw("problem: will get inf as etam = 0 so etap/etam = inf\n");
+      errorflag = -1;
+    }
     fr = -0.25*pow(log(etap/etam),2)+0.25*pow(PI,2);
     fi = 0.5*PI*log(etap/etam);
   }
@@ -11759,6 +12587,14 @@ DoubleVector goftau(double mpart, double mcomp) ///g(tau) function for use in h-
   else if (tau<1) {
     etap = 1 + pow(1-tau,0.5);
     etam = 1 - pow(1-tau,0.5);
+    if (etap/etam < 0) {
+      throw("problem: log will give nan as etap/etam < 0\n");
+      errorflag = -1;
+    }
+    if (etam == 0) {
+      throw("problem: will get inf as etam = 0 so etap/etam = inf\n");
+      errorflag = -1;
+    }
     gr = 0.5*pow(1-tau,0.5)*(log(etap/etam));
     gi = 0.5*pow(1-tau,0.5)*-PI;
   }
@@ -11768,58 +12604,15 @@ DoubleVector goftau(double mpart, double mcomp) ///g(tau) function for use in h-
   return g;
 }
 
-
-
 ///Integrand functions for 1->3 decays
-
-double gpsitilda(double mass1, double mass2, double mass3, double mass4, double massq, double Et) ///the integrand in the psitilda integral
- {
-   double gpsitilda = 0, pt = 0, squareplus = 0, squareminus = 0, lambda = 0, A = 0;
-   A = pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et;
-   pt = pow(pow(Et,2)-pow(massq,2),0.5);
-   squareplus = A - pow(mass4 + massq,2);
-   squareminus = A - pow(mass4 - massq,2);
-   if (squareplus <0) ///this can happen erronesouly at very end of range due to finite precision used, squareplus should actually then be very very small and +ve
-     { squareplus = 0;} /// set to zero to avoid nan problem in lambda, note that given squareplus very very very small anyway here this should not affect the accuracy of the integral
-   lambda = pow(squareplus*squareminus,0.5);
-   gpsitilda = pow(PI,2)*fabs(mass1)*pt*Et*lambda/(A)*(pow(mass1,2)-pow(mass4,2)-2*fabs(mass1)*Et)/((A-pow(mass2,2))*(A-pow(mass3,2)));
-   return gpsitilda;
- }
-
-double gphitilda(double mass1, double mass2, double mass3, double mass4, double massq, double Et) ///the integrand in the phitilda integral
- {
-   double gphitilda = 0, A = 0, Z=0;
-   DoubleVector Etbarmaxmin (double m1, double m2, double massq, double Et);
-   double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin);
-   DoubleVector Etbar(2);
-   for (int i=1; i<=2; i++) { Etbar(i) = 0;}
-   Etbar = Etbarmaxmin(mass1, mass4, massq, Et);
-   Z = Zfunc(mass1,massq,mass3,Etbar(1),Etbar(2));
-   A = pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et;
-   gphitilda = 0.5*pow(PI,2)*fabs(mass1)*fabs(mass4)/(A-pow(mass2,2))*(-(Etbar(1)-Etbar(2)) - (pow(mass4,2)-pow(massq,2)+2*Et*fabs(mass1)-pow(mass3,2))/(2*fabs(mass1))*log(Z));
-   return gphitilda;
- }
-
-double gxsi(double mass1, double mass2, double mass3, double mass4, double massq, double Et) ///the integrand in the xsi integral
-{
-  double gxsi = 0, Z=0, A=0;
-  double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin);
-  DoubleVector Etbarmaxmin (double m1, double m2, double massq, double Et);
-  DoubleVector Etbar(2);
-  for (int i=1; i<=2; i++) { Etbar(i) = 0;}
-  Etbar = Etbarmaxmin(mass1, mass4, massq, Et);
-  Z = Zfunc(mass1,massq,mass3,Etbar(1),Etbar(2));
-  A = pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et;
-  gxsi = 0.5*pow(PI,2)/(A-pow(mass2,2))*((Etbar(1)-Etbar(2))-(pow(mass1,2)-pow(massq,2)-2*fabs(mass1)*Et+pow(mass3,2))/(2*fabs(mass1))*log(Z));
-  return gxsi;
-}
 
 double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin) ///required in many of the 1->3 integrals
 {
   double Z = 0;
   Z = (pow(m1,2)+pow(mq,2)-2*fabs(m1)*Etbarmax - pow(m,2))/(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Etbarmin-pow(m,2));
   if (Z <=0) {
-    throw("May have nan issue if do log(Z) as Z<=0!\n");
+    throw("May have nan issue if do log(Z) as Z<=0! See Zfunc used in 1->3 decays\n");
+    errorflag = -1;
   }
   return Z;
 }
@@ -11839,192 +12632,10 @@ DoubleVector Etbarmaxmin (double m1, double m2, double massq, double Et) ///requ
   Etbarsupremum(1) = (zet*(fabs(m1)-Et)+pow(B,0.5))/(2*A); ///Etbarmax
   Etbarsupremum(2) = (zet*(fabs(m1)-Et)-pow(B,0.5))/(2*A); ///Etbarmin
   if (Etbarsupremum(1) != Etbarsupremum(1) || Etbarsupremum(2) != Etbarsupremum(2)) {
-     throw("Etbar nan problem! \n"); 
+     throw("problem: Etbar gives nan! See Etbarmaxmin used in 1->3 decays \n"); 
+     errorflag = -1;
   }
     return Etbarsupremum;
-}
-
-
-double grho(double mass1, double mass2, double mass3, double mass4, double massq, double Et) ///the integrand in the rho integral
-{
-  double grho = 0, Z=0;
-  double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin);
-  DoubleVector Etbar(2);
-  for (int i=1; i<=2; i++) { Etbar(i) = 0;}
-  DoubleVector Etbarmaxmin (double m1, double m2, double massq, double Et);
-  Etbar = Etbarmaxmin(mass1, mass4, massq, Et);
-  Z = Zfunc(mass1,massq,mass3,Etbar(1),Etbar(2));
-  grho =  -pow(PI,2)/(2*fabs(mass1))*1/(pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et-pow(mass2,2))*log(Z);
-  return grho;
-}
-
-double gchi(double mass1, double mass2, double mass3, double mass4, double massq, double Et) ///the integrand in the chi integral
-{
-  double gchi = 0, pt=0, A=0, squareplus=0, squareminus=0, lambda=0;
-  A = pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et;
-  squareplus = A - pow((mass4 + massq),2);
-  squareminus = A - pow((mass4 - massq),2);
-  lambda = pow(squareplus*squareminus,0.5);
-  pt = pow(pow(Et,2) - pow(massq,2),0.5);
-  gchi = pow(PI,2)*fabs(mass1)*pt*Et*lambda/(A)*1/((pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et-pow(mass2,2))*(pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et-pow(mass3,2)));
-  return gchi;
-}
-
-
-double gzeta(double mass1, double mass2, double mass3, double mass4, double massq, double Et) ///the integrand in the zeta integral
-{
-  double gzeta = 0, A=0;
-  DoubleVector Etbar(2);
-  for (int i=1; i<=2; i++) { Etbar(i) = 0;}
-  DoubleVector Etbarmaxmin (double m1, double m2, double massq, double Et);
-  Etbar = Etbarmaxmin(mass1, mass4, massq, Et);
-  A = pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et;
-  gzeta = pow(PI,2)*(Etbar(1)-Etbar(2))/((A-pow(mass2,2))*(A-pow(mass3,2)));
-  return gzeta;
-}
-
-
-double gX(double mass1, double mass2, double mass3, double mass4, double massq, double Et) ///the integrand in the X integral
-{
-  double gX = 0, pt=0, A=0, B=0, squareplus=0, squareminus=0, lambda=0;
-  A = pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et;
-  B = pow(mass1,2)-pow(mass4,2)-2*fabs(mass1)*Et;
-  pt = pow(pow(Et,2) - pow(massq,2),0.5);
-  squareplus = A - pow((mass4 + massq),2);
-  squareminus = A - pow((mass4 - massq),2);
-  lambda = pow(squareplus*squareminus,0.5);
-  gX = 0.5*pow(PI,2)*pt*B/A*lambda*1/((pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et-pow(mass2,2))*(pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et-pow(mass3,2)));
-  return gX;
-}
-
-
-double gY(double mass1, double mass2, double mass3, double mass4, double massq, double Et) ///the integrand in the Y integral
-{
-  double gY = 0, A=0, Z=0;
-  double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin);
-  DoubleVector Etbar(2);
-  for (int i=1; i<=2; i++) { Etbar(i) = 0;}
-  DoubleVector Etbarmaxmin(double m1, double m2, double massq, double Et);
-  Etbar = Etbarmaxmin(mass1, mass4, massq, Et);
-  Z = Zfunc(mass1,massq,mass3,Etbar(1),Etbar(2));
-  A = pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et;
-  gY = 0.5*pow(PI,2)*1/(A-pow(mass2,2))*((Etbar(1)-Etbar(2))*A + 1/(2*fabs(mass1))*(pow(mass1,2)*pow(mass4,2)-pow(mass1,2)*pow(mass3,2)+pow(massq,4)+2*fabs(mass1)*Et*pow(mass3,2)-pow(mass3,2)*pow(massq,2))*log(Z));
-  return gY;
-}
-
-
-double gchiprime(double mass1, double mass2, double mass3, double mass4, double massq, double Et) ///the integrand in the chiprime integral
-{
-  double gchiprime = 0, A=0, Z=0;
-  DoubleVector Etbar(2);
-  for (int i=1; i<=2; i++) { Etbar(i) = 0;}
-  DoubleVector Etbarmaxmin(double m1, double m2, double massq, double Et);
-  Etbar = Etbarmaxmin(mass1, mass4, massq, Et);
-  double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin);
-  Z = Zfunc(mass1,massq,mass2,Etbar(1),Etbar(2));
-  A = pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et;
-  gchiprime = -0.5*pow(PI,2)*Et/(A-pow(mass3,2))*log(Z);
-  return gchiprime;
-}
-
-
-double gG1(double mass1, double mass2, double mass3, double massq, double Et) ///the integrand in the G1 integral
-{
-  double gG1 = 0, A=0, pt=0;
-  pt = pow(pow(Et,2)-pow(massq,2),0.5);
-  A = pow(mass1,2)+pow(massq,2)-2*fabs(mass1)*Et;
-  gG1 = fabs(mass1)*pt*Et*pow((A-pow(mass3,2)),2)/(pow(A-pow(mass2,2),2)*A);
-  return gG1;
-}
-
-
-double gG2(double mass1, double mass2, double mass3, double masst, double massb, double Ebbar) ///the integrand in the G2 integral
-{
-  double gG2 = 0, A=0, squareplus=0, squareminus=0, lambda=0;
-  A = pow(mass1,2)+pow(massb,2)-2*fabs(mass1)*Ebbar;
-  squareplus = A - pow(mass3+masst,2);
-  squareminus = A - pow(mass3-masst,2);
-  lambda = pow(squareplus*squareminus,0.5);
-  gG2 = fabs(mass1)*pow(Ebbar,2)*lambda*(A-pow(masst,2)-pow(mass3,2))/(pow(A-pow(mass2,2),2)*A);
-  return gG2;
-}
-
-
-double gG3(double mass1, double mass2, double mass3, double masst, double massb, double Ebbar) ///the integrand in the G3 integral
-{
-  double gG3 = 0, A=0, squareplus=0, squareminus=0, lambda=0;
-  A = pow(mass1,2)+pow(massb,2)-2*fabs(mass1)*Ebbar;
-  squareplus = A - pow(mass3+masst,2);
-  squareminus = A - pow(mass3-masst,2);
-  lambda = pow(squareplus*squareminus,0.5);
-  gG3 = pow(Ebbar,2)*lambda*4*fabs(mass1)*fabs(mass3)*masst/(pow(A-pow(mass2,2),2)*A);
-  return gG3;
-}
-
-
-double gG4(double mass1, double mass2, double mass3, double mass4, double masst, double massb, double Et) ///the integrand in the G4 integral
-{
-  double gG4 = 0, A=0, X=0, Ebbarmax=0, Ebbarmin=0;
-  DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4, double Et);
-  double Xfunc (double mass1, double mass2, double mass3, double mass4, double mass5, double Et);
-  Ebbarmax = Ebbarmaxmin (mass1, masst, massb, mass4, Et)(1);
-  Ebbarmin = Ebbarmaxmin (mass1, masst, massb, mass4, Et)(2);
-  X = Xfunc(mass1, masst, massb, mass4, mass3, Et);
-  A = pow(mass1,2)+pow(masst,2)-2*fabs(mass1)*Et;
-  gG4 = fabs(mass1)*fabs(mass4)*1/(A-pow(mass2,2))*((Ebbarmax-Ebbarmin) - (pow(mass3,2)+pow(masst,2)-2*Et*mass1-pow(mass4,2))/(2*fabs(mass1))*log(X));
-  return gG4;
-}
-
-
-double gG5(double mass1, double mass2, double mass3, double mass4, double masst, double massb, double Et) ///the integrand in the G5 integral
-{
-  double gG5 = 0, A=0, X=0;
-  DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4, double Et);
-  double Xfunc (double mass1, double mass2, double mass3, double mass4, double mass5, double Et);
-  X = Xfunc(mass1, masst, massb, mass4, mass3, Et);
-  A = pow(mass1,2)+pow(masst,2)-2*fabs(mass1)*Et;
-  gG5 = (fabs(mass1)/mass1)*masst/2*(A-pow(mass4,2))/(A-pow(mass2,2))*log(X);
-  return gG5;
-}
-
-
-double gG6(double mass1, double mass2, double mass3, double mass4, double masst, double massb, double Et) ///the integrand in the G6 integral
-{
-  double gG6 = 0, A=0, X=0, Ebbarmax=0, Ebbarmin=0;
-  DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4, double Et);
-  double Xfunc (double mass1, double mass2, double mass3, double mass4, double mass5, double Et);
-  Ebbarmax = Ebbarmaxmin (mass1, masst, massb, mass4, Et)(1);
-  Ebbarmin = Ebbarmaxmin (mass1, masst, massb, mass4, Et)(2);
-  X = Xfunc(mass1, masst, massb, mass4, mass3, Et);
-  A = pow(mass1,2)+pow(masst,2)-2*fabs(mass1)*Et;
-  gG6 = 0.5/(A-pow(mass2,2))*((fabs(mass1)*(pow(mass1,2)+pow(masst,2)-2*Et*fabs(mass1)-pow(mass4,2))-(pow(mass3,2)-pow(mass1,2))/fabs(mass1)*-A)*log(X) + 2*(-A)*(Ebbarmax-Ebbarmin));
-  return gG6;
-}
-
-
-double gG7(double mass1, double mass2, double mass3, double mass4, double masst, double massb, double Et) ///the integrand in the G7 integral
-{
-  double gG7 = 0, A=0, X=0, Ebbarmax=0, Ebbarmin=0;
-  DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4, double Et);
-  double Xfunc (double mass1, double mass2, double mass3, double mass4, double mass5, double Et);
-  Ebbarmax = Ebbarmaxmin (mass1, masst, massb, mass4, Et)(1);
-  Ebbarmin = Ebbarmaxmin (mass1, masst, massb, mass4, Et)(2);
-  X = Xfunc(mass1, masst, massb, mass4, mass3, Et);
-  A = pow(mass1,2)+pow(masst,2)-2*mass1*Et;
-  gG7 = 0.5*fabs(mass4)*masst*1/(A-pow(mass2,2))*(2*(Ebbarmax-Ebbarmin)-(pow(mass3,2)-pow(mass1,2))/mass1*log(X));
-  return gG7;
-}
-
-
-double gG8(double mass1, double mass2, double mass3, double mass4, double masst, double massb, double Et) ///the integrand in the G8 integral
-{
-  double gG8 = 0, A=0, Ebbarmax=0, Ebbarmin=0;
-  DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4, double Et);
-  Ebbarmax = Ebbarmaxmin (mass1, masst, massb, mass4, Et)(1);
-  Ebbarmin = Ebbarmaxmin (mass1, masst, massb, mass4, Et)(2);
-  A = pow(mass1,2)+pow(masst,2)-2*fabs(mass1)*Et;
-  gG8 = fabs(mass1)*masst*(A-pow(mass4,2))*(Ebbarmax-Ebbarmin)/((A-pow(mass2,2))*(A-pow(mass3,2)));
-  return gG8;
 }
 
 
@@ -12043,6 +12654,10 @@ DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4
   }
 
   lambda = pow(squareplus*squareminus,0.5);
+  if (squareplus*squareminus < 0) {
+    throw ("problem: lambda will give nan in Ebbarmaxmin used in 1->3 decays\n");
+    errorflag = -1;
+  } 
   Ebbar(1) = ((pow(mass1,2)+pow(mass2,2)-2*fabs(mass1)*Et-pow(mass3,2)-pow(mass4,2))*(fabs(mass1)-Et) + pt*lambda)/(2*(pow(mass1,2)+pow(mass2,2)-2*Et*fabs(mass1))); ///I have -pow(mass3,2) here whereas T&B have + pow(mass3,2), I have changed the sign to agree with SPheno, note however this actually makes negligible difference due to the smallness of the b mass
   Ebbar(2) = ((pow(mass1,2)+pow(mass2,2)-2*fabs(mass1)*Et-pow(mass3,2)-pow(mass4,2))*(fabs(mass1)-Et) - pt*lambda)/(2*(pow(mass1,2)+pow(mass2,2)-2*Et*fabs(mass1))); ///I have -pow(mass3,2) here whereas T&B have + pow(mass3,2), I have changed the sign to agree with SPheno, note however this actually makes negligible difference due to the smallness of the b mass
 
@@ -12057,23 +12672,10 @@ DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4
   for (int i=1; i<=2; i++) { Ebbar(i)=0;}
   Ebbar = Ebbarmaxmin (mass1, mass2, mass3, mass4, Et);
   X = (pow(mass5,2)+2*Ebbar(1)*fabs(mass1)-pow(mass1,2))/(pow(mass5,2)+2*Ebbar(2)*fabs(mass1)-pow(mass1,2));
-
   return X;
 }
 
-double gZintegral(double m1, double m2, double mz, double mf, double E) ///the integrand in the Zintegral integral
-{
-  double gZintegral = 0, Bf=0, D=0, F=0, G=0, H=0;
-  Bf = pow(1-4*pow(mf,2)/(pow(m1,2)+pow(m2,2)-2*E*fabs(m1)),0.5);
-  D = pow(m1,2)+pow(m2,2)-pow(mz,2)-2*E*fabs(m1);
-  F = pow(m1,2)+pow(m2,2)-2*fabs(m1)*fabs(m2);
-  G = pow(E,2)+pow(m2,2) + Bf/3*(pow(E,2)-pow(m2,2));
-  H = fabs(m2)*(fabs(m1)/m1)*(pow(m1,2)+pow(m2,2)-2*pow(mf,2));
-  gZintegral = Bf*pow(pow(E,2)-pow(m2,2),0.5)/(pow(D,2))*(E*F-fabs(m1)*G+H);
-  return gZintegral;
-}
 
-/// Ben
 ///Functions for 1->3 decays via dgauss:
 double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, double mchargino, double mquark, double mquarkp, double msqL, double msqpL, double g, double thetaL, double thetaR, double alphas, int charg, bool onetothree)
 {
@@ -12103,7 +12705,10 @@ double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, doub
 	Ad = g*cos(thetaR);
 	Au = g*cos(thetaL);
       }
-
+    else {
+      throw("problem: charg must be 1 or 2 in gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen\n");
+      errorflag = -1;
+    }
       m1 = mgluino, m2 = msqL, m3 = msqL, m4 = mchargino, mq = mquark;
       psiu = dgauss(gpsitildadgauss,mquark,upper,accuracy)*1/(pow(PI,2)*m1);
       m1 = mgluino, m2 = msqpL, m3 = msqpL, m4 = mchargino, mq = mquarkp;
@@ -12116,94 +12721,6 @@ double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, doub
   }
   return amplitudeW;
 }
-
-
-
-
-double hHintegral (double m1, double m2, double mf, double mh, double mH, double fromE, double toE, double stepE, double g, double gp, double alpha, DoubleMatrix & mixNeut, int neutralinoi, int neutralinoj) ///integral required for the squared hH exchange contribution to the neutralinoj -> neutralinoi + f + fbar 1->3 decay
- {
-   double f=0, Area=0, E=0;
-   double mid=0, end=0;
-   double fmid=0, fend=0;
-
-   for(E=fromE; E+stepE<toE; E= E+stepE) {
-     f = ghHintegral(m1, m2, mf, mh, mH, g, gp, alpha, neutralinoi, neutralinoj, mixNeut, E);
-     end = E + stepE;
-     mid = (E+end)/2;
-     fmid = ghHintegral(m1, m2, mf, mh, mH, g, gp, alpha, neutralinoi, neutralinoj, mixNeut, mid);
-     fend = ghHintegral(m1, m2, mf, mh, mH, g, gp, alpha, neutralinoi, neutralinoj, mixNeut, end);
-     Area = Area + (end-E)/6 * (f + 4*fmid + fend);
-   }
-   return Area;
- }
-
-double ghHintegral(double m1, double m2, double mf, double mh, double mH, double g, double gp, double alpha, int neutralinoi, int neutralinoj, DoubleMatrix & mixNeut, double E) ///the integrand in the hHintegral integral
- {
-   double ghHintegral = 0, B=0, Bf=0, D=0, F=0, G=0, Xijh=0, XijH=0, Xjih=0, XjiH=0, H=0;
-   B = 4*pow(mf,2)/(pow(m1,2)+pow(m2,2)-2*E*fabs(m1));
-   Bf = pow(1-B,0.5);
-   D = pow(m1,2)+pow(m2,2)-2*E*fabs(m1)-2*pow(mf,2);
-   F = pow(m1,2)+pow(m2,2)-2*fabs(m1)*E-pow(mh,2);
-   G = pow(m1,2)+pow(m2,2)-2*fabs(m1)*E-pow(mH,2);
-   H = pow(E,2) - pow(m2,2);
-   
-   Xjih = -0.5*(fabs(m1)/m1)*(fabs(m2)/m2)*(mixNeut(neutralinoj,3)*-sin(alpha)-mixNeut(neutralinoj,4)*cos(alpha))*(g*-mixNeut(neutralinoi,2)-gp*-mixNeut(neutralinoi,1));
-   XjiH = -0.5*(fabs(m1)/m1)*(fabs(m2)/m2)*(mixNeut(neutralinoj,3)*cos(alpha)-mixNeut(neutralinoj,4)*sin(alpha))*(g*-mixNeut(neutralinoi,2)-gp*-mixNeut(neutralinoi,1));
-   Xijh = -0.5*(fabs(m1)/m1)*(fabs(m2)/m2)*(mixNeut(neutralinoi,3)*-sin(alpha)-mixNeut(neutralinoi,4)*cos(alpha))*(g*-mixNeut(neutralinoj,2)-gp*-mixNeut(neutralinoj,1));
-   XijH = -0.5*(fabs(m1)/m1)*(fabs(m2)/m2)*(mixNeut(neutralinoi,3)*cos(alpha)-mixNeut(neutralinoi,4)*sin(alpha))*(g*-mixNeut(neutralinoj,2)-gp*-mixNeut(neutralinoj,1));
-   ghHintegral = Bf*pow(H,0.5)*D*(E+fabs(m2)*(fabs(m1)/m1))*pow(((-sin(alpha)*(Xjih+Xijh))/F + cos(alpha)*(XjiH+XijH)/G),2);
-   
-   return ghHintegral;
-}
-
-double gAintegral(double m1, double m2, double mz, double mA, double mf, double E) ///the integrand in the Aintegral integral
-{
-  double gAintegral = 0, Bf=0, D=0, F=0;
-  Bf = pow(1-4*pow(mf,2)/(pow(m1,2)+pow(m2,2)-2*E*fabs(m1)),0.5);
-  D = pow(m1,2)+pow(m2,2)-2*E*fabs(m1)-2*pow(mf,2);
-  F = pow(m1,2)+pow(m2,2)-2*fabs(m1)*E-pow(mA,2);
-  gAintegral = Bf*pow(pow(E,2)-pow(m2,2),0.5)*D*(E-fabs(m2)*(fabs(m1)/m1))/pow(F,2);
-  return gAintegral;
-}
-
-
-///the integrand in the Zsfintegral integral
-double gZsfintegral(double m1, double m2, double msf, double mf, double mz,
-		    double s) 
-{
-  double gZsfintegral = 0, EQ=0, Q=0, Qprime=0, musquared=0, B=0, C=0, D=0, F=0, G=0, H=0;
-  EQ = (s + pow(m1,2)-pow(m2,2))/(2*m1);
-  if (fabs(pow(EQ,2) - s)<1e-12) {s = pow(EQ,2);}
-  Q = pow(pow(EQ,2)-s,0.5);
-  Qprime = Q*pow(1-4*pow(mf,2)/s,0.5);
-  musquared = s + pow(msf,2) - pow(m2,2)- pow(mf,2);
-  B = m1*EQ+pow(msf,2)-pow(m1,2)-s-pow(mf,2);
-  C = pow(msf,2)-pow(m2,2)-pow(mf,2);
-  D = pow(msf,2)-pow(m1,2)-pow(mf,2);
-  F = fabs(m1)*fabs(m2)*(s-2*pow(mf,2));
-  G = fabs(m1)*(EQ+Qprime)-musquared;
-  H = fabs(m1)*(EQ-Qprime)-musquared;
-  gZsfintegral = 1/(s-pow(mz,2))*(-0.5*Qprime*B-1/(4*fabs(m1))*(C*D + F)*log(G/H));
-  return gZsfintegral;
-}
-
-
-double gJintegral(double m1, double m2, double msf, double mphi, double mf, double s, int AorhorH) ///the integrand in the Jintegral integral, int AorhorH changes sign of one of the terms in the integrand for A (int AorhorH = 1) relative to h or H (int AorhorH = 0)
-{
-  double gJintegral = 0, EQ=0, Q=0, Qprime=0, musquared=0, B=0, G=0, H=0;
-  EQ = (s + pow(m1,2)-pow(m2,2))/(2*fabs(m1));
-  Q = pow(pow(EQ,2)-s,0.5);
-  Qprime = Q*pow(1-4*pow(mf,2)/s,0.5);
-  musquared = s + pow(msf,2) - pow(m2,2)- pow(mf,2);
-  B = s*pow(msf,2)-pow(mf,2)*(pow(m1,2)+pow(m2,2))+pow(-1,AorhorH)*fabs(m1)*fabs(m2)*(s-2*pow(mf,2));
-  G = fabs(m1)*(EQ+Qprime)-musquared;
-  H = fabs(m1)*(EQ-Qprime)-musquared;
-  gJintegral = 1/(s-pow(mphi,2))*(0.5*s*Qprime + B/(4*fabs(m1))*log(G/H));
-  return gJintegral;
-}	
-
-
-  
 
 ///Function that runs alphas to desired scale using 1-loop renormalisation group equations, inc. MSSM gluinos and squarks (hence 2/3 not 2/7)
 double alphasrun (double mu, double mu0, double alphasmu0) {
@@ -12228,66 +12745,66 @@ double alpharun (double mu, double mu0, double alphamu0) {
 
 // Outputs a space before if greater than zero, a minus otherwise, also outputs spaces after depending on no. of digits in PDG code
 // Useful for outputting negative numbers in rows, Tom Cridge added to output PDG codes with no. of space depending on length of PDG (usually 1 or 2 for SM particles whereas 7 for SUSY particles -  therefore output 5 extra spaces for SM)
-void printRowPDG(ostream & out, double x) {
+void printRowPDG(ostream & fout, double x) {
 
   /// make it return a character when you've worked out the equivalent of printf
 
   double underflow = 1.0e-120;
   if (fabs(x) < underflow) x = 0.0; /// Traps -0.0
-  if (x >= 0.0) out << " " << x;
-  else out << x;
-  if (fabs(x)<10) out << "      ";
-  else if (fabs(x)<100) out << "     ";
+  if (x >= 0.0) fout << " " << x;
+  else fout << x;
+  if (fabs(x)<10) fout << "      ";
+  else if (fabs(x)<100) fout << "     ";
   else {}
 }
 
 
-void OutputNoPWs(ostream & out, Particle & P, double BRTol) ///Outputs the decay table into the leshouchesOutput file with no PWs (partial widths) given, just branching ratios
+void OutputNoPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the decay table into the leshouchesOutput file with no PWs (partial widths) given, just branching ratios
  {
-   out << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
-   out << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
+   fout << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
+   fout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
    if (P.three_width/P.total_width < BRTol) {
-     out << left << setw(6) << "#" << setw(18) << "BR" << setw(6) << "NDA" << setw(12) << left << "PDG1" << setw(12) << " PDG2" << setw(30) << "Comments" << "    " << endl;
+     fout << left << setw(6) << "#" << setw(18) << "BR" << setw(6) << "NDA" << setw(12) << left << "PDG1" << setw(12) << " PDG2" << setw(30) << "Comments" << "    " << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
-	 out << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3];  printRowPDG(out, P.Array_Decays[k][0]); out << "   "; printRowPDG(out, P.Array_Decays[k][1]); out << "   " << left << setprecision(0) << setw(15) << P.Array_Comments[k] << endl;
+	 fout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3];  printRowPDG(fout, P.Array_Decays[k][0]); fout << "   "; printRowPDG(fout, P.Array_Decays[k][1]); fout << "   " << left << setprecision(0) << setw(15) << P.Array_Comments[k] << endl;
        }
      }
    }
    else {
-     out << left << setw(6) << "#" << setw(18) << "BR" << setw(8) << "NDA" << setw(12) << left << " PDG1" << setw(12) << " PDG2" << setw(12) << " PDG3 " << setw(30) << "Comments" << "     " << endl;
+     fout << left << setw(6) << "#" << setw(18) << "BR" << setw(8) << "NDA" << setw(12) << left << " PDG1" << setw(12) << " PDG2" << setw(12) << " PDG3 " << setw(30) << "Comments" << "     " << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
-	 out << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(out, P.Array_Decays[k][0]); out << "    "; printRowPDG(out,P.Array_Decays[k][1]); out << "    "; printRowPDG(out,P.Array_Decays[k][4]); out << "   " << left << setprecision(0) << setw(25) << P.Array_Comments[k] << endl;
+	 fout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(25) << P.Array_Comments[k] << endl;
        }
      }
    }
-   out << "#" << endl;
+   fout << "#" << endl;
  }
 
 
-void OutputYesPWs(ostream & out, Particle & P, double BRTol) ///Outputs the decay table into the leshouchesOutput file with PWs (partial widths) given after the comments column so as not to affect SLHA form
+void OutputYesPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the decay table into the leshouchesOutput file with PWs (partial widths) given after the comments column so as not to affect SLHA form
  {
-   out << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
-   out << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
+   fout << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
+   fout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
 
    if (P.three_width/P.total_width < BRTol || P.three_width == 0) {
-     out << left << setw(6) << "# " << setw(20) << "BR " << setw(6) << "NDA " << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(30) << "Comments" << "    " << setw(18) << "PW" << endl;
+     fout << left << setw(6) << "# " << setw(20) << "BR " << setw(6) << "NDA " << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(30) << "Comments" << "    " << setw(18) << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
-     	 out << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << " " << P.Array_Decays[k][3] << setw(4) << " ";  printRowPDG(out, P.Array_Decays[k][0]); out << "    "; printRowPDG(out,P.Array_Decays[k][1]); out << "    "; out << left << setprecision(0) << setw(30) << P.Array_Comments[k] << "    " << scientific << setprecision(8) << setw(18) << P.Array_Decays[k][2] << endl;
+     	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << " " << P.Array_Decays[k][3] << setw(4) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; fout << left << setprecision(0) << setw(30) << P.Array_Comments[k] << "    " << scientific << setprecision(8) << setw(18) << P.Array_Decays[k][2] << endl;
        }
      }
-     out << "#" << endl; 
+     fout << "#" << endl; 
    }
    else {
-     out << left << setw(6) << "# " << setw(20) << "BR" << setw(6) << "NDA" << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(12) << "PDG3" << setw(35) << "Comments" << "      " << setw(28) << "PW" << endl;
+     fout << left << setw(6) << "# " << setw(20) << "BR" << setw(6) << "NDA" << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(12) << "PDG3" << setw(35) << "Comments" << "      " << setw(28) << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
-     	 out << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(8) << fixed << " " << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(out, P.Array_Decays[k][0]); out << "    "; printRowPDG(out,P.Array_Decays[k][1]); out << "    "; printRowPDG(out,P.Array_Decays[k][4]); out << "   " << left << setprecision(0) << setw(38) << P.Array_Comments[k] << "    "<< setw(18) << scientific << setprecision(8) << P.Array_Decays[k][2] << endl;
+     	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(8) << fixed << " " << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(38) << P.Array_Comments[k] << "    "<< setw(18) << scientific << setprecision(8) << P.Array_Decays[k][2] << endl;
        }
      }
-     out << "#" << endl; 
+     fout << "#" << endl; 
    }
  }
 
@@ -12305,6 +12822,10 @@ double gpsitildadgauss(double Et) {
   if (squareplus <0) ///< this can happen erronesouly at very end of range due to finite precision used, squareplus should actually then be very very small and +ve
     { squareplus = 0;} ///< set to zero to avoid nan problem in lambda, note that given squareplus very very very small anyway here this should not affect the accuracy of the integral
   lambda = pow(squareplus*squareminus,0.5);
+  // if (lambda != lambda) {
+  //   throw("problem: nan in lambda in gpsitildadgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // }
   gpsitildadgauss = pow(PI,2)*fabs(m1)*pt*Et*lambda/(A)*(pow(m1,2)-pow(m4,2)-2*fabs(m1)*Et)/((A-pow(m2,2))*(A-pow(m3,2)));
 
   return gpsitildadgauss;
@@ -12331,7 +12852,7 @@ double gxsidgauss (double Et)
   double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin);
   DoubleVector Etbarmaxmin (double m1, double m2, double massq, double Et);
   DoubleVector Etbar(2);
-  //out << "m1 = " << m1 << " m2 = " << m2 << " m3 = " << m3 << " m4 = " << m4 << " mq = " << mq << endl;
+  //fout << "m1 = " << m1 << " m2 = " << m2 << " m3 = " << m3 << " m4 = " << m4 << " mq = " << mq << endl;
   for (int i=1; i<=2; i++) { Etbar(i) = 0;}
   Etbar = Etbarmaxmin(m1, m4, mq, Et);
   Z = Zfunc(m1,mq,m3,Etbar(1),Etbar(2));
@@ -12346,7 +12867,7 @@ double grhodgauss (double Et)
   double grhodgauss = 0, Z=0;
   double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin);
   DoubleVector Etbar(2);
-  //out << "m1 = " << m1 << " m2 = " << m2 << " m3 = " << m3 << " m4 = " << m4 << " mq = " << mq << endl;
+  //fout << "m1 = " << m1 << " m2 = " << m2 << " m3 = " << m3 << " m4 = " << m4 << " mq = " << mq << endl;
   for (int i=1; i<=2; i++) { Etbar(i) = 0;}
   DoubleVector Etbarmaxmin (double m1, double m2, double massq, double Et);
   Etbar = Etbarmaxmin(m1, m4, mq, Et);
@@ -12359,17 +12880,21 @@ double grhodgauss (double Et)
 double gchidgauss (double Et) {
   double gchidgauss = 0, pt=0, A=0, squareplus=0, squareminus=0, lambda=0;
   A = pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et;
-  squareplus = A - pow((m4 + mq),2);
-  squareminus = A - pow((m4 - mq),2);
-  if (squareplus < 0 && fabs(squareplus) < checkAgainstNeg) {
+  squareplus = A - pow((fabs(m4) + mq),2);
+  squareminus = A - pow((fabs(m4) - mq),2);
+  if (squareplus < 0 && fabs(squareplus) < 1e-8) {
     squareplus = 0; ///avoid numerical error giving a negative and hence a nan for lambda at upper boundary of integration range
   }
   lambda = pow(squareplus*squareminus,0.5);
-  if (lambda != lambda) {
-    throw("nan in lambda in gchidgauss\n");
-  }
+  // if (lambda != lambda) {
+  //   throw("problem: nan in lambda in gchidgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // }
   pt = pow(pow(Et,2) - pow(mq,2),0.5);
-  if (pt != pt) { throw("nan in pt in gchidgauss"); }
+  // if (pt != pt) {
+  // throw("problem: nan in pt in gchidgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // }
   gchidgauss = pow(PI,2)*fabs(m1)*pt*Et*lambda/A*1/((pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m2,2))*(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m3,2)));
   return gchidgauss;
 }
@@ -12394,11 +12919,15 @@ double gXdgauss (double Et)
   A = pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et;
   B = pow(m1,2)-pow(m4,2)-2*fabs(m1)*Et;
   pt = pow(pow(Et,2) - pow(mq,2),0.5);
-  squareplus = A - pow((m4 + mq),2);
-  squareminus = A - pow((m4 - mq),2);
-  if (squareplus < 0 && fabs(squareplus) < checkAgainstNeg) {
+  squareplus = A - pow((fabs(m4) + mq),2);
+  squareminus = A - pow((fabs(m4) - mq),2);
+  if (squareplus < 0 && fabs(squareplus) < 1e-9) {
     squareplus = 0; ///avoid numerical error giving a negative and hence a nan for lambda at upper boundary of integration range
   }
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gXdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   lambda = pow(squareplus*squareminus,0.5);
   gXdgauss = 0.5*pow(PI,2)*pt*B/A*lambda*1/((pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m2,2))*(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m3,2)));
   return gXdgauss;
@@ -12454,9 +12983,8 @@ double gG4dgauss(double Et) ///m1 = mgluino, m2 = mstopi, m4 = msbottomi, m6 = m
   Ebbarmax = Ebbarmaxmin (m1, m6, m7, m8, Et)(1);
   Ebbarmin = Ebbarmaxmin (m1, m6, m7, m8, Et)(2);
   X = Xfunc(m1, m6, m7, m8, m4, Et);
-  
   A = pow(m1,2)+pow(m6,2)-2*fabs(m1)*Et;
-  gG4dgauss = (fabs(m1))*(m8)*1/(A-pow(m2,2))*((Ebbarmax-Ebbarmin) - (pow(m4,2)+pow(m6,2)-2*Et*fabs(m1)-pow(m8,2))/(2*fabs(m1))*log(X));
+  gG4dgauss = (m1)*(m8)*1/(A-pow(m2,2))*((Ebbarmax-Ebbarmin) - (pow(m4,2)+pow(m6,2)-2*Et*fabs(m1)-pow(m8,2))/(2*fabs(m1))*log(X));
   return gG4dgauss;
 }
 
@@ -12508,7 +13036,7 @@ double gG8dgauss(double Et)
   Ebbarmax = Ebbarmaxmin (m1, m6, m7, m8, Et)(1);
   Ebbarmin = Ebbarmaxmin (m1, m6, m7, m8, Et)(2);
   A = pow(m1,2)+pow(m6,2)-2*fabs(m1)*Et;
-  gG8dgauss = (fabs(m1))*m6*(A-pow(m8,2))*(Ebbarmax-Ebbarmin)/((A-pow(m2,2))*(A-pow(m3,2)));
+  gG8dgauss = ((m1))*m6*(A-pow(m8,2))*(Ebbarmax-Ebbarmin)/((A-pow(m2,2))*(A-pow(m3,2)));
   return gG8dgauss;
 }
 
@@ -12520,7 +13048,10 @@ double gG2dgauss(double Ebbar)
   squareplus = A - pow((m8)+m6,2);
   squareminus = A - pow((m8)-m6,2);
   lambda = pow(squareplus*squareminus,0.5);
-
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gG2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   gG2dgauss = fabs(m1)*pow(Ebbar,2)*lambda*(A-pow(m6,2)-pow(m8,2))/(pow(A-pow(m4,2),2)*A);
   return gG2dgauss;
 }
@@ -12533,6 +13064,10 @@ double gG3dgauss(double Ebbar)
   squareplus = A - pow((m8)+m6,2);
   squareminus = A - pow((m8)-m6,2);
   lambda = pow(squareplus*squareminus,0.5);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gG3dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
 
   gG3dgauss = pow(Ebbar,2)*lambda*4*fabs(m1)*fabs(m8)*fabs(m6)/(pow(A-pow(m4,2),2)*A);
   return gG3dgauss;
@@ -12582,7 +13117,6 @@ double gAdgauss(double E) ///m1 = mZi, m4 = mZj, m2 = mstop1, m3 = mstop2, mq = 
   return gAdgauss;
 }
 
-
 double gZsfdgauss(double s) ///m2 = msfi where i is the sfermion contribution interference with Z you are considering
 {
   double gZsfintegral = 0, EQ=0, Q=0, Qprime=0, musquared=0, B=0, C=0, D=0, F=0, G=0, H=0;
@@ -12601,7 +13135,6 @@ double gZsfdgauss(double s) ///m2 = msfi where i is the sfermion contribution in
   return gZsfintegral;
 }
 
-
 double gJdgauss (double s)
 {
   double gJdgauss = 0, EQ=0, Q=0, Qprime=0, musquared=0, B=0, G=0, H=0;
@@ -12616,16 +13149,18 @@ double gJdgauss (double s)
   return gJdgauss;
 }	
 
-
-
 double gneutineutjffZ1dgauss(double s) ///m1 = mneuti, m4 = mneutj, mq = mf, MZboson = mZboson
 {
   double Z1dgauss = 0, lambda1 = 0, lambda2 = 0, squareplus1 = 0, squareminus1 = 0;
   squareplus1 = s - pow(fabs(m1)+fabs(m4),2);
   squareminus1 = s - pow(fabs(m1)-fabs(m4),2);
-  if (squareminus1 > 0 && fabs(squareminus1) < checkAgainstNeg) { 
+  if (squareminus1 > 0 && fabs(squareminus1) < 1e-9) { 
     squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
   }
+  // if (squareplus1*squareminus1 < 0) {
+  //   throw ("problem: lambda1 will give nan in gneutineutjffZ1dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
   Z1dgauss = 1/(3*pow(s,2)*pow(s-pow(MZboson,2),2))*(-2*pow(s,4) + (pow(m1,2) + pow(m4,2) + 2*pow(mq,2))*pow(s,3) + (pow(pow(m1,2)-pow(m4,2),2) - 2*(pow(m1,2)+pow(m4,2))*2*pow(mq,2))*pow(s,2) + 2*pow(mq,2)*pow(pow(m1,2)-pow(m4,2),2)*s)*1/s*lambda1*lambda2;
@@ -12637,9 +13172,13 @@ double gneutineutjffZ2dgauss(double s)
   double Z2dgauss = 0, lambda1 = 0, lambda2 = 0, squareplus1 = 0, squareminus1 = 0;
   squareplus1 = s - pow(fabs(m1)+fabs(m4),2);
   squareminus1 = s - pow(fabs(m1)-fabs(m4),2);
-  if (squareminus1 > 0 && fabs(squareminus1) < checkAgainstNeg) { 
+  if (squareminus1 > 0 && fabs(squareminus1) < 1e-9) { 
     squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
   }
+  // if (squareplus1*squareminus1 < 0) {
+  //   throw ("problem: lambda1 will give nan in gneutineutjffZ2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
   Z2dgauss = 1/(s*pow(s-pow(MZboson,2),2))*lambda1*lambda2*(s-2*pow(mq,2));
@@ -12651,9 +13190,13 @@ double gneutineutjffZ3dgauss(double s)
   double Z3dgauss = 0, lambda1 = 0, lambda2 = 0, squareplus1 = 0, squareminus1 = 0;
   squareplus1 = s - pow(fabs(m1)+fabs(m4),2);
   squareminus1 = s - pow(fabs(m1)-fabs(m4),2);
-  if (squareminus1 > 0 && fabs(squareminus1) < checkAgainstNeg) { 
+  if (squareminus1 > 0 && fabs(squareminus1) < 1e-9) { 
     squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
   }
+  // if (squareplus1*squareminus1 < 0) {
+  //   throw ("problem: lambda1 will give nan in gneutineutjffZ3dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
   Z3dgauss = 1/(s*pow(s-pow(MZboson,2),2))*lambda1*lambda2*(-s+pow(m1,2)+pow(m4,2));
@@ -12665,9 +13208,13 @@ double gneutineutjffZ4dgauss(double s)
   double Z4dgauss = 0, lambda1 = 0, lambda2 = 0, squareplus1 = 0, squareminus1 = 0;
   squareplus1 = s - pow(fabs(m1)+fabs(m4),2);
   squareminus1 = s - pow(fabs(m1)-fabs(m4),2);
-  if (squareminus1 > 0 && fabs(squareminus1) < checkAgainstNeg) { 
+  if (squareminus1 > 0 && fabs(squareminus1) < 1e-9) { 
     squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
   }
+  // if (squareplus1*squareminus1 < 0) {
+  //   throw ("problem: lambda1 will give nan in gneutineutjffZ4dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
   Z4dgauss = 1/(s*pow(s-pow(MZboson,2),2))*lambda1*lambda2;
@@ -12679,7 +13226,6 @@ double gintegralhdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz,
 {
   double gintegralhdgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*m1*E;
-
   gintegralhdgauss = (pow(pow(E,2)-pow(m4,2),0.5)*pow(s-4*pow(mq,2),0.5))/(pow(s,0.5)*pow(s-pow(mh,2),2))*(E-fabs(m4))*(s-4*pow(mq,2));
 
   return gintegralhdgauss;
@@ -12689,8 +13235,6 @@ double gintegralHdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz,
 {
   double gintegralHdgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*m1*E;
-  
-   
   gintegralHdgauss = (pow(pow(E,2)-pow(m4,2),0.5)*pow(s-4*pow(mq,2),0.5))/(pow(s,0.5)*pow(s-pow(mH,2),2))*(E-fabs(m4))*(s-4*pow(mq,2));
    
   return gintegralHdgauss;
@@ -12701,7 +13245,6 @@ double gintegralh1dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 {
   double gintegralh1dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegralh1dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)/(pow(s,0.5)*pow(s-pow(mh,2),2));
    
   return gintegralh1dgauss;
@@ -12711,7 +13254,6 @@ double gintegralh2dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 {
   double gintegralh2dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-   
   gintegralh2dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*(s-2*pow(mq,2))/(pow(s,0.5)*pow(s-pow(mh,2),2));
 
   return gintegralh2dgauss;
@@ -12722,8 +13264,6 @@ double gintegralh3dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 {
   double gintegralh3dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
-   
   gintegralh3dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*2*fabs(m1)*E/(pow(s,0.5)*pow(s-pow(mh,2),2));
    
   return gintegralh3dgauss;
@@ -12734,7 +13274,6 @@ double gintegralh4dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 {
   double gintegralh4dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-
   gintegralh4dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*2*fabs(m1)*E*(s-2*pow(mq,2))/(pow(s,0.5)*pow(s-pow(mh,2),2));
    
   return gintegralh4dgauss;
@@ -12745,7 +13284,6 @@ double gintegralH1dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
   double gintegralH1dgauss = 0, s=0;
   
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
- 
   gintegralH1dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)/(pow(s,0.5)*pow(s-pow(mH,2),2));
    
   return gintegralH1dgauss;
@@ -12755,7 +13293,6 @@ double gintegralH2dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 {
   double gintegralH2dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegralH2dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*(s-2*pow(mq,2))/(pow(s,0.5)*pow(s-pow(mH,2),2));
 
   return gintegralH2dgauss;
@@ -12766,7 +13303,6 @@ double gintegralH3dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 {
   double gintegralH3dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegralH3dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*2*fabs(m1)*E/(pow(s,0.5)*pow(s-pow(mH,2),2));
 
   return gintegralH3dgauss;
@@ -12777,7 +13313,6 @@ double gintegralH4dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 {
   double gintegralH4dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegralH4dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*2*fabs(m1)*E*(s-2*pow(mq,2))/(pow(s,0.5)*pow(s-pow(mH,2),2));
   
   return gintegralH4dgauss;
@@ -12788,7 +13323,6 @@ double gintegralhH1dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = m
 {
   double gintegralhH1dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegralhH1dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)/(pow(s,0.5)*(s-pow(mh,2))*(s-pow(mH,2)));
 
   return gintegralhH1dgauss;
@@ -12798,7 +13332,6 @@ double gintegralhH2dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = m
 {
   double gintegralhH2dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegralhH2dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*(s-2*pow(mq,2))/(pow(s,0.5)*(s-pow(mh,2))*(s-pow(mH,2)));
    
   return gintegralhH2dgauss;
@@ -12809,7 +13342,6 @@ double gintegralhH3dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = m
 {
   double gintegralhH3dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegralhH3dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*2*fabs(m1)*E/(pow(s,0.5)*(s-pow(mh,2))*(s-pow(mH,2)));
 
   return gintegralhH3dgauss;
@@ -12820,8 +13352,7 @@ double gintegralhH4dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = m
 {
   double gintegralhH4dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
- gintegralhH4dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*2*fabs(m1)*E*(s-2*pow(mq,2))/(pow(s,0.5)*(s-pow(mh,2))*(s-pow(mH,2)));
+  gintegralhH4dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*2*fabs(m1)*E*(s-2*pow(mq,2))/(pow(s,0.5)*(s-pow(mh,2))*(s-pow(mH,2)));
 
  return gintegralhH4dgauss;
 }
@@ -12830,7 +13361,6 @@ double gintegralA1dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 {
   double gintegralA1dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegralA1dgauss = 4*pow(m1,2)*pow(pow(E,2)-pow(m4,2),0.5)*pow(s-4*pow(mq,2),0.5)/(pow(s,0.5)*pow(s-pow(mA,2),2));
    
   return gintegralA1dgauss;
@@ -12841,7 +13371,6 @@ double gintegralA2dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 {
   double gintegralA2dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegralA2dgauss = 4*pow(m1,2)*pow(pow(E,2)-pow(m4,2),0.5)*pow(s-4*pow(mq,2),0.5)*(s-2*pow(mq,2))/(pow(s,0.5)*pow(s-pow(mA,2),2));
    
   return gintegralA2dgauss;
@@ -12852,7 +13381,6 @@ double gintegralA3dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 {
   double gintegralA3dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegralA3dgauss = 4*pow(m1,2)*pow(pow(E,2)-pow(m4,2),0.5)*pow(s-4*pow(mq,2),0.5)*2*fabs(m1)*E/(pow(s,0.5)*pow(s-pow(mA,2),2));
    
   return gintegralA3dgauss;
@@ -12863,7 +13391,6 @@ double gintegralA4dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 {
   double gintegralA4dgauss = 0, s=0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegralA4dgauss = 4*pow(m1,2)*pow(pow(E,2)-pow(m4,2),0.5)*pow(s-4*pow(mq,2),0.5)*2*fabs(m1)*E*(s-2*pow(mq,2))/(pow(s,0.5)*pow(s-pow(mA,2),2));
    
   return gintegralA4dgauss;
@@ -12877,10 +13404,10 @@ double gintegral1Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //   throw("Problem: will get nan as logarg < 0 in gintegral1Zsfdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
 
   gintegral1Zsfdgauss = 1/(s-pow(MZboson,2))*(-2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) - (pow(m2,2)-pow(mq,2)+pow(m4,2) - 2*fabs(m1)*E)*log(logarg));
   
@@ -12895,6 +13422,10 @@ double gintegral2Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
+  // if (logarg < 0) {
+  //   throw("Problem: will get nan as logarg < 0 in gintegral2Zsfdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
   
   gintegral2Zsfdgauss = 1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) + (pow(m2,2)+pow(m1,2)- 2*fabs(m1)*E - pow(mq,2))*log(logarg));
    
@@ -12909,6 +13440,10 @@ double gintegral3Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
+  // if (logarg < 0) {
+  //   throw("Problem: will get nan as logarg < 0 in gintegral3Zsfdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
 
   gintegral3Zsfdgauss = 1/(s-pow(MZboson,2))*((pow(m1,2) + 2*pow(mq,2) + pow(m4,2) -1.5*pow(m2,2) - 0.5*(pow(mq,2) + fabs(m1)*E + fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)))*(pow(mq,2) + fabs(m1)*E + fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)-pow(m2,2)) - (pow(m1,2) + 2*pow(mq,2) + pow(m4,2) -1.5*pow(m2,2) - 0.5*(pow(mq,2) + fabs(m1)*E - fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)))*(pow(mq,2) + fabs(m1)*E - fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)-pow(m2,2)) + (pow(m1,2) + pow(mq,2) - pow(m2,2))*(pow(m2,2)-pow(mq,2)-pow(m4,2))*log(logarg));
 
@@ -12924,6 +13459,10 @@ double gintegral4Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
+  // if (logarg < 0) {
+  //   throw("Problem: will get nan as logarg < 0 in gintegral4Zsfdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
   
   gintegral4Zsfdgauss = 1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) + (pow(m2,2)-pow(mq,2)-pow(m4,2))*log(logarg));
    
@@ -12938,6 +13477,10 @@ double gintegral5Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
+  // if (logarg < 0) {
+  //   throw("Problem: will get nan as logarg < 0 in gintegral5Zsfdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
   
   gintegral5Zsfdgauss = -1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) + (pow(m2,2)-pow(mq,2)-pow(m1,2))*log(logarg));
    
@@ -12952,6 +13495,10 @@ double gintegral6Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
+  // if (logarg < 0) {
+  //   throw("Problem: will get nan as logarg < 0 in gintegral6Zsfdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
   
   gintegral6Zsfdgauss = 1/(s-pow(MZboson,2))*(s- 2*pow(mq,2))*log(logarg);
    
@@ -12966,6 +13513,10 @@ double gintegral7Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
+  // if (logarg < 0) {
+  //   throw("Problem: will get nan as logarg < 0 in gintegral7Zsfdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
   
   gintegral7Zsfdgauss = 1/(s-pow(MZboson,2))*(2*fabs(m1)*E)*log(logarg);
    
@@ -12980,6 +13531,10 @@ double gintegral8Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
+  // if (logarg < 0) {
+  //   throw("Problem: will get nan as logarg < 0 in gintegral8Zsfdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
 
   gintegral8Zsfdgauss = 1/(s-pow(MZboson,2))*log(logarg);
   
@@ -12996,10 +13551,10 @@ double gintegral1hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral1hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral1hsfdgauss = 2/(s-pow(mh,2))*(2*s*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2)*s - pow(mq,2)*(pow(m1,2)+pow(m4,2)))*log(logarg));
   
@@ -13015,10 +13570,10 @@ double gintegral2hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral2hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral2hsfdgauss = -1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m4,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
      
@@ -13035,10 +13590,10 @@ double gintegral3hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral3hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral3hsfdgauss = 1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m1,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
      
@@ -13055,10 +13610,10 @@ double gintegral4hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral4hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral4hsfdgauss = 1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m4,2))*log(logarg));
      
@@ -13074,10 +13629,10 @@ double gintegral5hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral5hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral5hsfdgauss = -1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m1,2))*log(logarg));
      
@@ -13093,10 +13648,10 @@ double gintegral6hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral6hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral6hsfdgauss = 1/(s-pow(mh,2))*(s-2*pow(mq,2))*log(logarg);
      
@@ -13112,10 +13667,10 @@ double gintegral7hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral7hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral7hsfdgauss = 1/(s-pow(mh,2))*(2*fabs(m1)*E)*log(logarg);
      
@@ -13131,10 +13686,10 @@ double gintegral8hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral8hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral8hsfdgauss = 1/(s-pow(mh,2))*log(logarg);
      
@@ -13150,10 +13705,10 @@ double gintegral1Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral1Hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral1Hsfdgauss = 2/(s-pow(mH,2))*(2*s*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2)*s - pow(mq,2)*(pow(m1,2)+pow(m4,2)))*log(logarg));
    
@@ -13169,10 +13724,10 @@ double gintegral2Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral2Hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral2Hsfdgauss = -1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m4,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
      
@@ -13189,10 +13744,10 @@ double gintegral3Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral3Hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral3Hsfdgauss = 1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m1,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
      
@@ -13209,10 +13764,10 @@ double gintegral4Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral4Hsfdgauss used in 1->3 decays\n");
+   //   errorflag = -1;
+  // }
 
   gintegral4Hsfdgauss = 1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m4,2))*log(logarg));
      
@@ -13228,10 +13783,10 @@ double gintegral5Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral5Hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral5Hsfdgauss = -1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m1,2))*log(logarg));
      
@@ -13247,10 +13802,10 @@ double gintegral6Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral6Hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral6Hsfdgauss = 1/(s-pow(mH,2))*(s-2*pow(mq,2))*log(logarg);
      
@@ -13266,10 +13821,10 @@ double gintegral7Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral7Hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral7Hsfdgauss = 1/(s-pow(mH,2))*(2*fabs(m1)*E)*log(logarg);
      
@@ -13285,10 +13840,10 @@ double gintegral8Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
-
-  if (logarg < 0) {
-     throw("Problem -> will get nan as logarg < 0\n"); 
-  }
+  // if (logarg < 0) {
+  //    throw("Problem: will get nan as logarg < 0 in gintegral8Hsfdgauss used in 1->3 decays\n"); 
+  //   errorflag = -1;
+  // }
 
   gintegral8Hsfdgauss = 1/(s-pow(mH,2))*log(logarg);
      
@@ -13300,9 +13855,15 @@ double gintegral1ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
 {
   double gintegral1ZAdgauss = 0, s = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegral1ZAdgauss = 1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m1,2) - fabs(m1)*E);
-
+  // if (pow(E,2)-pow(m4,2)<0) {
+  // throw("problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
+  // if (1-4*pow(mq,2)/s<0) {
+  //throw("problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
   return gintegral1ZAdgauss;
 }
 
@@ -13310,8 +13871,15 @@ double gintegral2ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
 {
   double gintegral2ZAdgauss = 0, s = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegral2ZAdgauss = -1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m4,2) - fabs(m1)*E);
+  // if (pow(E,2)-pow(m4,2)<0) {
+  //throw("problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
+  // if (1-4*pow(mq,2)/s<0) {
+  //throw("problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
 
   return gintegral2ZAdgauss;
 }
@@ -13320,8 +13888,15 @@ double gintegral3ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
 {
   double gintegral3ZAdgauss = 0, s = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegral3ZAdgauss = 1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m1,2)-fabs(m1)*E);
+  // if (pow(E,2)-pow(m4,2)<0) {
+  //throw("problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
+  // if (1-4*pow(mq,2)/s<0) {
+  //throw("problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
 
   return gintegral3ZAdgauss;
 }
@@ -13330,8 +13905,15 @@ double gintegral4ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
 {
   double gintegral4ZAdgauss = 0, s = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gintegral4ZAdgauss = -1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m4,2) - fabs(m1)*E);
+  // if (pow(E,2)-pow(m4,2)<0) {
+// throw("problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
+  // if (1-4*pow(mq,2)/s<0) {
+  //throw("problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
 
   return gintegral4ZAdgauss;
 }
@@ -13340,9 +13922,16 @@ double gneutineutjffgA1dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
 {
   double gneutineutjffgA1dgauss = 0, s = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gneutineutjffgA1dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)/((s-pow(MZboson,2))*(s-pow(mA,2)));
-  
+  // if (pow(E,2)-pow(m4,2)<0) {
+  //throw("problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
+  // if (1-4*pow(mq,2)/s<0) {
+  //throw("problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }  
+
   return gneutineutjffgA1dgauss;
 }
 
@@ -13350,8 +13939,15 @@ double gneutineutjffgA2dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
 {
   double gneutineutjffgA2dgauss = 0, s = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gneutineutjffgA2dgauss = 2*fabs(m1)*(s-2*pow(mq,2))*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)/((s-pow(MZboson,2))*(s-pow(mA,2)));
+  // if (pow(E,2)-pow(m4,2)<0) {
+  //throw("problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
+  // if (1-4*pow(mq,2)/s<0) {
+  //throw("problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }  
   
   return gneutineutjffgA2dgauss;
 }
@@ -13360,8 +13956,15 @@ double gneutineutjffgA3dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
 {
   double gneutineutjffgA3dgauss = 0, s = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gneutineutjffgA3dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*2*fabs(m1)*E/((s-pow(MZboson,2))*(s-pow(mA,2)));
+  // if (pow(E,2)-pow(m4,2)<0) {
+  //throw("problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
+  // if (1-4*pow(mq,2)/s<0) {
+  //throw("problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }  
   
   return gneutineutjffgA3dgauss;
 }
@@ -13370,8 +13973,16 @@ double gneutineutjffgA4dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
 {
   double gneutineutjffgA4dgauss = 0, s = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  
   gneutineutjffgA4dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(s-2*pow(mq,2))*2*fabs(m1)*E/((s-pow(MZboson,2))*(s-pow(mA,2)));
+  // if (pow(E,2)-pow(m4,2)<0) {
+  //throw("problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // }
+  // if (1-4*pow(mq,2)/s<0) {
+  //throw("problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays");
+  //   errorflag = -1;
+  // } 
+  
   
   return gneutineutjffgA4dgauss;
 }
@@ -13383,10 +13994,11 @@ double gneuticharjffpW1dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpW1dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
 
-  // out << "masses in integrand: " << m1 << " " << m2 << " " << m3 << " " << m4 << " " << MWboson << endl;
-  // out << "s = " << s << " at E = " << E << endl;
-  
   gneuticharjffpW1dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(-2*pow(s,4) + (pow(m1,2) + pow(m2,2) + pow(m3,2) + pow(m4,2))*pow(s,3) + (pow(pow(m1,2)-pow(m2,2),2) + pow(pow(m3,2)-pow(m4,2),2) - 2*(pow(m1,2)+pow(m2,2))*(pow(m3,2)+pow(m4,2)))*pow(s,2) + ((pow(m1,2)+pow(m2,2))*pow(pow(m3,2)-pow(m4,2),2) + (pow(m3,2)+pow(m4,2))*pow(pow(m1,2)-pow(m2,2),2))*s - 2*pow(pow(m1,2)-pow(m2,2),2)*pow(pow(m3,2)-pow(m4,2),2))*1/(3*pow(s,2))*1/(pow(s-pow(MWboson,2),2));
 
   return gneuticharjffpW1dgauss;
@@ -13398,6 +14010,10 @@ double gneuticharjffpW2dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpW2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   
   gneuticharjffpW2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(s-pow(m3,2)-pow(m4,2))/(pow(s-pow(MWboson,2),2));
 
@@ -13411,6 +14027,10 @@ double gneuticharjffpHpm1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpHpm1dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
 
   gneuticharjffpHpm1dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)/(pow(s-pow(m5,2),2));
 
@@ -13423,6 +14043,10 @@ double gneuticharjffpHpm2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpHpm2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
 
   gneuticharjffpHpm2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(s-pow(m3,2)-pow(m4,2))/(pow(s-pow(m5,2),2));
 
@@ -13435,6 +14059,10 @@ double gneuticharjffpHpm3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpHpm3dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
 
   gneuticharjffpHpm3dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E/(pow(s-pow(m5,2),2));
 
@@ -13447,6 +14075,10 @@ double gneuticharjffpHpm4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpHpm4dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
 
   gneuticharjffpHpm4dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/(pow(s-pow(m5,2),2));
 
@@ -13460,9 +14092,14 @@ double gneuticharjffp1sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  
+  if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp1sf1sf2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
 
   gneuticharjffp1sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)/((s-pow(m5,2))*(s-pow(m6,2)));
-
   return gneuticharjffp1sf1sf2dgauss;
 }
 
@@ -13472,6 +14109,12 @@ double gneuticharjffp2sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+
+  if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp2sf1sf2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
 
   gneuticharjffp2sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(s-pow(m3,2)-pow(m4,2))/((s-pow(m5,2))*(s-pow(m6,2)));
 
@@ -13485,6 +14128,12 @@ double gneuticharjffp3sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
 
+  if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp3sf1sf2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
+
   gneuticharjffp3sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E/((s-pow(m5,2))*(s-pow(m6,2)));
 
   return gneuticharjffp3sf1sf2dgauss;
@@ -13496,6 +14145,12 @@ double gneuticharjffp4sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+
+  if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp4sf1sf2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
 
   gneuticharjffp4sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/((s-pow(m5,2))*(s-pow(m6,2)));
 
@@ -13509,9 +14164,15 @@ double gneuticharjffp1sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
+
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays\n");}
 
   gneuticharjffp1sfp1sf2dgauss = (2*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5) + (pow(m6,2)*s - pow(m1,2)*pow(m3,2) - pow(m2,2)*pow(m4,2))*log(Z)))/(s-pow(m5,2));
 
@@ -13524,9 +14185,14 @@ double gneuticharjffp2sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  // if  squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays\n");}
 
   gneuticharjffp2sfp1sf2dgauss = -(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s + (pow(m6,2)-2*fabs(m1)*E + pow(m4,2)-pow(m3,2))*log(Z))/(s-pow(m5,2));
 
@@ -13539,9 +14205,14 @@ double gneuticharjffp3sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays\n");}
 
   gneuticharjffp3sfp1sf2dgauss = (2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s + (pow(m6,2)+pow(m1,2)-2*fabs(m1)*E-pow(m2,2))*log(Z))/(s-pow(m5,2));
 
@@ -13553,10 +14224,15 @@ double gneuticharjffp4sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   double gneuticharjffp4sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
-  squareminus = s - pow(m3-m2,2);
+  squareminus = s - pow(m3- m2,2);
+ // if (squareplus*squareminus < 0) {
+ //    throw ("problem: lambda will give nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays\n");
+ //    errorflag = -1;
+ //  } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays\n");}
 
   gneuticharjffp4sfp1sf2dgauss = (2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s + (pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
 
@@ -13569,9 +14245,14 @@ double gneuticharjffp5sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+ // if (squareplus*squareminus < 0) {
+ //    throw ("problem: lambda will give nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays\n");
+ //    errorflag = -1;
+ //  } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays\n");}
 
   gneuticharjffp5sfp1sf2dgauss = (-2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - (pow(m6,2)-pow(m1,2)-pow(m2,2))*log(Z))/(s-pow(m5,2));
 
@@ -13584,9 +14265,14 @@ double gneuticharjffp6sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp6sfp1sf2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp6sfp1sf2dgauss used in 1->3 decays\n");}
 
   gneuticharjffp6sfp1sf2dgauss = log(Z)*(s-pow(m2,2)-pow(m3,2))/(s-pow(m5,2));
 
@@ -13599,9 +14285,15 @@ double gneuticharjffp7sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+ // if (squareplus*squareminus < 0) {
+ //    throw ("problem: lambda will give nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays\n");
+ //    errorflag = -1;
+ //  } 
+
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays\n");}
 
   gneuticharjffp7sfp1sf2dgauss = log(Z)*2*fabs(m1)*E/(s-pow(m5,2));
 
@@ -13614,9 +14306,14 @@ double gneuticharjffp8sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp8sfp1sf2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp8sfp1sf2dgauss used in 1->3 decays\n");}
 
   gneuticharjffp8sfp1sf2dgauss = log(Z)/(s-pow(m5,2));
 
@@ -13630,6 +14327,10 @@ double gneuticharjffp1WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
   s= pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp1WHpmdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
   B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
   
@@ -13644,6 +14345,10 @@ double gneuticharjffp2WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
   s= pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp2WHpmdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
   B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
   
@@ -13658,6 +14363,10 @@ double gneuticharjffp3WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
   s= pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp3WHpmdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
   B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
   
@@ -13672,6 +14381,10 @@ double gneuticharjffp4WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
   s= pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp4WHpmdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
   B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
   
@@ -13686,10 +14399,15 @@ double gneuticharjffpW1Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpW1Sfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
-  
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffpW1Sfpdgauss used in 1->3 decays\n");}
+
   gneuticharjffpW1Sfpdgauss = (-B - (pow(m6,2)+pow(m4,2)-2*fabs(m1)*E-pow(m3,2))*log(Z))/(s-pow(m5,2));
 
   return gneuticharjffpW1Sfpdgauss;
@@ -13701,9 +14419,14 @@ double gneuticharjffpW2Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpW2Sfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
+if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffpW2Sfpdgauss used in 1->3 decays\n");}
   
   gneuticharjffpW2Sfpdgauss = (B + (pow(m6,2)+pow(m1,2)-2*fabs(m1)*E-pow(m2,2))*log(Z))/(s-pow(m5,2));
 
@@ -13716,10 +14439,15 @@ double gneuticharjffpW3Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpW3Sfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
-  
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffpW3Sfpdgauss used in 1->3 decays\n");}
+
   gneuticharjffpW3Sfpdgauss = ((pow(m1,2)+pow(m3,2)+pow(m2,2)+pow(m4,2)-1.5*pow(m6,2)-0.25*(A+B))*(0.5*(A+B)-pow(m6,2)) - (pow(m1,2)+pow(m3,2)+pow(m2,2)+pow(m4,2)-1.5*pow(m6,2)-0.25*(A-B))*(0.5*(A-B)-pow(m6,2)) + (pow(m1,2)+pow(m2,2)-pow(m6,2))*(pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
   
   return gneuticharjffpW3Sfpdgauss;
@@ -13732,9 +14460,14 @@ double gneuticharjffpW4Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpW4Sfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffpW4Sfpdgauss used in 1->3 decays\n");}
   
   gneuticharjffpW4Sfpdgauss = (B + (pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
 
@@ -13747,10 +14480,15 @@ double gneuticharjffpW5Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpW5Sfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
-  
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffpW5Sfpdgauss used in 1->3 decays\n");}  
+
   gneuticharjffpW5Sfpdgauss = (-B - (pow(m6,2)-pow(m1,2)-pow(m2,2))*log(Z))/(s-pow(m5,2));
 
   return gneuticharjffpW5Sfpdgauss;
@@ -13762,9 +14500,14 @@ double gneuticharjffpW6Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpW6Sfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffpW6Sfpdgauss used in 1->3 decays\n");}
   
   gneuticharjffpW6Sfpdgauss = (s-pow(m2,2)-pow(m3,2))*log(Z)/(s-pow(m5,2));
 
@@ -13777,9 +14520,14 @@ double gneuticharjffpW7Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpW7Sfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffpW7Sfpdgauss used in 1->3 decays\n");}
   
   gneuticharjffpW7Sfpdgauss = 2*fabs(m1)*E*log(Z)/(s-pow(m5,2));
 
@@ -13792,9 +14540,14 @@ double gneuticharjffpW8Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpW8Sfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffpW8Sfpdgauss used in 1->3 decays\n");}
   
   gneuticharjffpW8Sfpdgauss = log(Z)/(s-pow(m5,2));
 
@@ -13807,6 +14560,10 @@ double gneuticharjffpHg1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpHg1dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   
   gneuticharjffpHg1dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)/(s*(s-pow(m5,2))*(s-pow(m6,2)));
 
@@ -13819,6 +14576,10 @@ double gneuticharjffpHg2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpHg2dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   
   gneuticharjffpHg2dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
 
@@ -13831,6 +14592,10 @@ double gneuticharjffpHg3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpHg3dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   
   gneuticharjffpHg3dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E/(s*(s-pow(m5,2))*(s-pow(m6,2)));
 
@@ -13843,6 +14608,10 @@ double gneuticharjffpHg4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffpHg4dgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   
   gneuticharjffpHg4dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
 
@@ -13856,9 +14625,14 @@ double gneuticharjffp1gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp1gsfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp1gsfpdgauss used in 1->3 decays\n");}
 
   gneuticharjffp1gsfpdgauss = 2*(s*B + (pow(m6,2)*s - pow(m1,2)*pow(m3,2) - pow(m2,2)*pow(m4,2))*log(Z))/(s-pow(m5,2));
   
@@ -13871,9 +14645,14 @@ double gneuticharjffp2gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp2gsfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp2gsfpdgauss used in 1->3 decays\n");}
 
   gneuticharjffp2gsfpdgauss = (-B - (pow(m6,2) + pow(m4,2) - 2*fabs(m1)*E - pow(m3,2))*log(Z))/(s-pow(m5,2));
   
@@ -13886,9 +14665,14 @@ double gneuticharjffp3gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp3gsfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp3gsfpdgauss used in 1->3 decays\n");}
 
   gneuticharjffp3gsfpdgauss = (B + (pow(m6,2)+pow(m1,2)-2*fabs(m1)*E - pow(m2,2))*log(Z))/(s-pow(m5,2));
   
@@ -13901,9 +14685,14 @@ double gneuticharjffp4gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp4gsfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp4gsfpdgauss used in 1->3 decays\n");}
 
   gneuticharjffp4gsfpdgauss = (B + (pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
   
@@ -13916,9 +14705,14 @@ double gneuticharjffp5gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp5gsfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp5gsfpdgauss used in 1->3 decays\n");}
 
   gneuticharjffp5gsfpdgauss = (-B-(pow(m6,2)-pow(m1,2)-pow(m2,2))*log(Z))/(s-pow(m5,2));
   
@@ -13931,9 +14725,14 @@ double gneuticharjffp6gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp6gsfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp6gsfpdgauss used in 1->3 decays\n");}
 
   gneuticharjffp6gsfpdgauss = (s-pow(m2,2)-pow(m3,2))*log(Z)/(s-pow(m5,2));
   
@@ -13946,9 +14745,14 @@ double gneuticharjffp7gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp7gsfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp5gsfpdgauss used in 1->3 decays\n");}
 
   gneuticharjffp7gsfpdgauss = 2*fabs(m1)*E*log(Z)/(s-pow(m5,2));
   
@@ -13961,9 +14765,14 @@ double gneuticharjffp8gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp8gsfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
+  if (Z < 0) {throw("problem: Z<0 will give log(Z) as nan in gneuticharjffp8gsfpdgauss used in 1->3 decays\n");}
 
   gneuticharjffp8gsfpdgauss = log(Z)/(s-pow(m5,2));
   
@@ -13976,6 +14785,10 @@ double gneuticharjffp1sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp1sfpsfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   
   gneuticharjffp1sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp1sfpsfpdgauss;
@@ -13987,6 +14800,10 @@ double gneuticharjffp2sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp2sfpsfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   
   gneuticharjffp2sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
 
@@ -13999,6 +14816,10 @@ double gneuticharjffp3sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp3sfpsfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   
   gneuticharjffp3sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E/(s*(s-pow(m5,2))*(s-pow(m6,2)));
 
@@ -14011,6 +14832,10 @@ double gneuticharjffp4sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  // if (squareplus*squareminus < 0) {
+  //   throw ("problem: lambda will give nan in gneuticharjffp4sfpsfpdgauss used in 1->3 decays\n");
+  //   errorflag = -1;
+  // } 
   
   gneuticharjffp4sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
 
@@ -14047,6 +14872,10 @@ double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (double mgluino, do
 	  A = 1/(pow(2,0.5))*(-g*-mixNeut(i,2) + gp/3*-mixNeut(i,1));
 	  B = -2/(3*pow(2,0.5))*gp*-mixNeut(i,1);
 	}
+	else {
+	  throw("problem: uord must be u or d in gluinoamplitudedecaydgaussneutralinoqqbarfirsttwogen");
+	  errorflag = -1;
+	}
 
 	m1 = mgluino; mq = mquark; m4 = mneutralino; m2 = msqL; m3 = msqL;
 	
@@ -14071,10 +14900,6 @@ double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (double mgluino, do
 
 
 
-
-
-
-
 double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, double mst2, double mneutralino, double mt, double mWboson, double g, double gp, double thetat, double beta, double alphas, DoubleMatrix & mixNeut, double runmt, int neutralino, bool onetothree, char torb) ///calculates PW for gluino -> neutralino + q qbar pair where q are t 
 {
   double amplitudeW=0, Gammast1=0, Gammast2=0, Gammast1st2=0;
@@ -14084,20 +14909,18 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
   upper = (pow(mgluino,2)-2*mt*fabs(mneutralino)-pow(mneutralino,2))/(2*mgluino);
   double gs = pow(alphas*4*PI,0.5);
 
-  
-
   if (fabs(mgluino) < fabs(mneutralino) + 2*mt || fabs(mgluino)> mst1 + mt || fabs(mgluino) > mst2 + mt || onetothree == false) { amplitudeW = 0;}
   else {
-    
-  
     if (torb == 't') {
       ft = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
-     
     }
     
     else if (torb == 'b') {
       ft = g*runmt/(pow(2,0.5)*mWboson*cos(beta));
-     
+    }
+    else {
+      throw("problem: torb be t or b in gluinoamplitudedecaydgaussneutralinottbar");
+      errorflag = -1;
     }
 
     double psiLLst1=0, chiLLst1=0, phiLLst1=0, rhoLLst1=0, xsiLLst1=0;
@@ -14200,12 +15023,13 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
 	  ast2beta1 = Complex(0,-(ft*mixNeut(neutralino,3)*sin(thetat)-BtZ*cos(thetat)));
 	  pm = -1;
 	}
-
     }
-      
+    else {
+      throw("problem: torb be t or b in gluinoamplitudedecaydgaussneutralinottbar");
+      errorflag = -1;
+    }    
    
       ///Note the effect of the complex couplings and the pm factors for negative masses cancel out as the couplings always appear in pairs so multiplying them gives an extra minus sign when they are purely imaginary, but this extra minus sign is cancelled out by the extra minus sign in the pm factor. Therefore really the additional minus signs come from the fact I've used the neutralino mass itself throughout my calculation (rather than its absolute value) which therefore naturally introduces additional minus signs.
-
     
     Complex aGammast1 = Complex(0.0,0.0), aextraGammast1 = Complex(0.0,0.0);
 
@@ -14213,25 +15037,18 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
     
     Gammast1 = aGammast1.real();
 
-
     double extraGammast1 = 0;
     aextraGammast1 = -pm*mneutralino*mt*sin(thetat)*cos(thetat)*(ast1alpha1*ast1alpha1 + ast1beta1*ast1beta1)*pow(mgluino,2)*rhoLLst1 + pm*mneutralino*mt*sin(thetat)*cos(thetat)*(ast1alpha1*ast1alpha1 + ast1beta1*ast1beta1)*xsiLLst1;
     extraGammast1 = aextraGammast1.real();
-
 
     Complex aGammast2 = Complex(0.0,0.0), aextraGammast2 = Complex(0.0,0.0);
     aGammast2 = pm*(ast2alpha1*ast2alpha1 + ast2beta1*ast2beta1)*psiLLst2 + 4*pm*mt*mneutralino*chiLLst2*ast2alpha1*ast2beta1 + 4*mgluino*mt*sin(thetat)*cos(thetat)*(ast2alpha1*ast2alpha1 + ast2beta1*ast2beta1)*XL1R1st2*pm + 8*pm*sin(thetat)*cos(thetat)*ast2alpha1*ast2beta1*mgluino*pow(mt,2)*mneutralino*zetaL1R1st2 + pm*2*sin(thetat)*cos(thetat)*ast2alpha1*ast2beta1*YL1R2st2 + pm*(pow(sin(thetat),2)*ast2alpha1*ast2alpha1 + pow(cos(thetat),2)*ast2beta1*ast2beta1)*phiLLst2 + pm*xsiLLst2*(2*pow(mt,2)*sin(thetat)*cos(thetat)*ast2alpha1*ast2beta1 + mgluino*mt*ast2alpha1*ast2beta1) + pm*rhoLLst2*(-mgluino*mt*pow(mneutralino,2)*ast2alpha1*ast2beta1) + pm*rhoLLst2*mgluino*mneutralino*pow(mt,2)*(pow(cos(thetat),2)*ast2alpha1*ast2alpha1 + pow(sin(thetat),2)*ast2beta1*ast2beta1);
     Gammast2 = aGammast2.real();
 
-
-
-
     double extraGammast2 = 0;
     // extraGammast2 = pow(PI,2)/(8*pow(mgluino*gs,2))*(8*pow(mgluino*gs/PI,2)*(rhoLLst2*pow(mgluino,2)*mneutralino*mt*sin(thetat)*cos(thetat)*(pow(st2alpha1,2)+pow(st2beta1,2)) + mneutralino*mt*sin(thetat)*cos(thetat)*(pow(st2alpha1,2) + pow(st2beta1,2))*xsiLLst2)); /// Note no chiprime term whereas Spheno has a chiprime term -> missing term relative to T&B
     aextraGammast2 = pm*(xsiLLst2*-mneutralino*mt*sin(thetat)*cos(thetat)*(ast2alpha1*ast2alpha1 + ast2beta1*ast2beta1) + rhoLLst2*pow(mgluino,2)*mneutralino*mt*sin(thetat)*cos(thetat)*(ast2alpha1*ast2alpha1 + ast2beta1*ast2beta1));
     extraGammast2 = aextraGammast2.real();
-
-
 
     Complex aGammast1st2 = Complex(0.0,0.0), aextraGammast1st2 = Complex(0.0,0.0);
     aGammast1st2 = pow(PI,2)/(8*pow(mgluino*gs,2))*(32*pow(mgluino*gs/PI,2)*pm*mgluino*mt*(pow(cos(thetat),2)-pow(sin(thetat),2))*(ast1alpha1*ast2alpha1 + ast1beta1*ast2beta1)*XLRst1st2 + 32*pm*pow(mgluino*gs/PI,2)*mgluino*pow(mt,2)*mneutralino*(ast1alpha1*ast2beta1 + ast1beta1*ast2alpha1)*(pow(cos(thetat),2)-pow(sin(thetat),2))*zetaLRst1st2 + pm*16*pow(mgluino*gs/PI,2)*(ast1beta1*ast2alpha1*pow(cos(thetat),2) - pow(sin(thetat),2)*ast2beta1*ast1alpha1)*YLRst1st2 + 16*pm*pow(mgluino*gs/PI,2)*sin(thetat)*cos(thetat)*(ast1alpha1*ast2alpha1 - ast1beta1*ast2beta1)*phitildaLLst1st2 + 16*pm*pow(mgluino*gs/PI,2)*mt*mneutralino*(ast1alpha1*ast2alpha1 - ast1beta1*ast2beta1)*chiprimeLRst1st2 + pm*16*pow(mgluino*gs/PI,2)*pow(mt,2)*(pow(cos(thetat),2)*ast1alpha1*ast2beta1 - pow(sin(thetat),2)*ast1beta1*ast2alpha1)*xsiLLst1st2 + 16*pm*pow(mgluino*gs/PI,2)*mgluino*pow(mt,2)*mneutralino*(ast1beta1*ast2beta1-ast1alpha1*ast2alpha1)*sin(thetat)*cos(thetat)*rhotildaLLst1st2);
@@ -14240,12 +15057,9 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
     double extraGammast1st2 = 0; 
     aextraGammast1st2 = (pow(PI,2)/(8*pow(mgluino*gs,2))*(-32*pm*pow(mgluino*gs/PI,2)*sin(thetat)*cos(thetat)*mgluino*mt*(ast1alpha1*ast2beta1-ast1beta1*ast2alpha1)*chiprimeLRst1st2 -16*pm*pow(mgluino*gs/PI,2)*sin(thetat)*cos(thetat)*mgluino*mt*(ast1alpha1*ast2beta1 - ast1beta1*ast2alpha1)*xsiLLst1st2 + 16*pm*pow(mgluino*gs/PI,2)*mt*mneutralino*(pow(sin(thetat),2)*ast1alpha1*ast2alpha1 - pow(cos(thetat),2)*ast1beta1*ast2beta1)*xsiLLst1st2 + 16*pm*pow(mgluino*gs/PI,2)*pow(mgluino,3)*mt*(ast1alpha1*ast2beta1-ast1beta1*ast2alpha1)*sin(thetat)*cos(thetat)*rhotildaLLst1st2 - 16*pm*pow(mgluino*gs/PI,2)*pow(mgluino,2)*mt*mneutralino*(pow(sin(thetat),2)*ast1alpha1*ast2alpha1 - pow(cos(thetat),2)*ast1beta1*ast2beta1)*rhotildaLLst1st2)); ///Extra terms SPHENO has in Gammast1st2 not present in T&B
 
-
-
     extraGammast1st2 = aextraGammast1st2.real();
 
     amplitudeW = (alphas)/(8*pow(PI,4)*mgluino)*(Gammast1+Gammast2+Gammast1st2+extraGammast1+extraGammast2+extraGammast1st2);
-
   }
 
   return amplitudeW;
@@ -14258,7 +15072,7 @@ double gluinoamplitudedecaydgausschartbbar (double mgluino, double mst1, double 
 {
   double Gammast1 = 0, Gammast2 = 0, Gammast1st2 = 0 , Gammasb1 =0, Gammasb2 = 0, Gammast1sb1 = 0, Gammast1sb2 = 0, Gammast2sb1 = 0, Gammast2sb2 = 0, from = 0, upper = 0, fromb = 0, upperb = 0, amplitudeW = 0, sumsquarest1 = 0, sumsquarest2 = 0, sumsquaresb1 = 0, sumsquaresb2 = 0, alphasb1ch = 0, alphasb2ch = 0, alphast1ch = 0, alphast2ch = 0, betasb1ch = 0, betasb2ch = 0, betast1ch = 0, betast2ch = 0;
 
-  DoubleVector squarkmixcharginocouplings(double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, int torb);
+  DoubleVector squarkmixcharginocouplings(double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
 
   if (mgluino > mbottom + msb1 || mgluino > mbottom + msb2 || mgluino > mtop + mst1 || mgluino > mtop + mst2 || mgluino < mtop + mbottom + mchar || onetothree == false) {amplitudeW = 0;}
   else {
@@ -14275,39 +15089,42 @@ double gluinoamplitudedecaydgausschartbbar (double mgluino, double mst1, double 
       couplingsb(i) = 0;
     }
 
-    couplingst = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1);
-    couplingsb = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2);
+    // couplingst = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1);
+    // couplingsb = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2);
 
     if (chargino == 1) {
-      sumsquarest1 = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1)(1);
-      sumsquarest2 = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1)(5);
-      sumsquaresb1 = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2)(1);
-      sumsquaresb2 = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2)(5);
-      alphast1ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1)(9);
-      alphast2ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1)(13);
-      betast1ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1)(11);
-      betast2ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1)(15);
-      alphasb1ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2)(9);
-      alphasb2ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2)(13);
-      betasb1ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2)(11);
-      betasb2ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2)(15);
+      sumsquarest1 = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,mchar,0,1)(1);
+      sumsquarest2 = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,mchar,0,1)(5);
+      sumsquaresb1 = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,mchar,0,2)(1);
+      sumsquaresb2 = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,mchar,0,2)(5);
+      alphast1ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,mchar,0,1)(9);
+      alphast2ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,mchar,0,1)(13);
+      betast1ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,mchar,0,1)(11);
+      betast2ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,mchar,0,1)(15);
+      alphasb1ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,mchar,0,2)(9);
+      alphasb2ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,mchar,0,2)(13);
+      betasb1ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,mchar,0,2)(11);
+      betasb2ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,mchar,0,2)(15);
     }
 
     else if (chargino == 2) {
-      sumsquarest1 = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1)(3);
-      sumsquarest2 = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1)(7);
-      sumsquaresb1 = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2)(3);
-      sumsquaresb2 = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2)(7);
-      alphast1ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1)(10);
-      alphast2ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1)(14);
-      betast1ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1)(12);
-      betast2ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,1)(16);
-      alphasb1ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2)(10);
-      alphasb2ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2)(14);
-      betasb1ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2)(12);
-      betasb2ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,2)(16);
+      sumsquarest1 = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,0,mchar,1)(3);
+      sumsquarest2 = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,0,mchar,1)(7);
+      sumsquaresb1 = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,0,mchar,2)(3);
+      sumsquaresb2 = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,0,mchar,2)(7);
+      alphast1ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,0,mchar,1)(10);
+      alphast2ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,0,mchar,1)(14);
+      betast1ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,0,mchar,1)(12);
+      betast2ch = squarkmixcharginocouplings(g,thetat,beta,gammaL,gammaR,runmt,runmb,MWboson,0,mchar,1)(16);
+      alphasb1ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,0,mchar,2)(10);
+      alphasb2ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,0,mchar,2)(14);
+      betasb1ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,0,mchar,2)(12);
+      betasb2ch = squarkmixcharginocouplings(g,thetab,beta,gammaL,gammaR,runmt,runmb,MWboson,0,mchar,2)(16);
     }
-
+    else {
+      throw("problem: chargino must be 1 or 2 in gluinoamplitudedecaydgausschartbbar");
+      errorflag = -1;
+    }
     double G1st1 = 0, G1st2 = 0, G2sb1 = 0, G2sb2 = 0, G3sb1 = 0, G3sb2 = 0, G4st1sb1 = 0, G4st1sb2 = 0, G4st2sb1 = 0, G4st2sb2 = 0, G5st1sb1 = 0, G5st1sb2 = 0, G5st2sb1 = 0, G5st2sb2 = 0, G6st1sb1 = 0, G6st1sb2 = 0, G6st2sb1 = 0,G6st2sb2 = 0, G7st1sb1 = 0, G7st1sb2 = 0, G7st2sb1 = 0, G7st2sb2 = 0, G8st1 = 0, G8st2 = 0, G8st1st2 = 0;
 
     m1 = mgluino, m2 = mst1, m3 = mst1, m6 = mtop, m8 = mchar;
@@ -14325,13 +15142,11 @@ double gluinoamplitudedecaydgausschartbbar (double mgluino, double mst1, double 
     m1 = mgluino, m2 = mst1, m3 = mst2, m6 = mtop, m8 = mchar;
     G8st1st2 = dgauss(gG8dgauss,from,upper,accuracy);
 
-    Gammast1st2 = 2*(alphast1ch*alphast2ch+betast1ch*betast2ch)*cos(2*thetat)*G8st1st2; ///Global minus sign difference cf T&B, I follow SPheno
-    
+    Gammast1st2 = 2*(alphast1ch*alphast2ch+betast1ch*betast2ch)*cos(2*thetat)*G8st1st2; ///Global minus sign difference cf T&B, I follow SPheno    
     
     m1 = mgluino, m4 = msb1, m6 = mtop, m7 = mbottom, m8 = mchar;
     G2sb1 = dgauss(gG2dgauss,fromb,upperb,accuracy);
     G3sb1 = dgauss(gG3dgauss,fromb,upperb,accuracy);
-
 
     Gammasb1 = sumsquaresb1*G2sb1 + alphasb1ch*betasb1ch*G3sb1; ///Different to T&B, they have - alphasb1ch*betasb1ch*G3sb1, I follow SPheno
     
@@ -14340,7 +15155,6 @@ double gluinoamplitudedecaydgausschartbbar (double mgluino, double mst1, double 
     G3sb2 = dgauss(gG3dgauss,fromb,upperb,accuracy);
 
     Gammasb2 = sumsquaresb2*G2sb2 + alphasb2ch*betasb2ch*G3sb2; ///Different to T&B, they have - alphasb2ch*betasb2ch*G3sb2, I follow SPheno
-
     ///Taken mb -> 0 limit in squared matrix element (but not in phase space) so no sb1sb2 interference term
     
     m1 = mgluino, m2 = mst1, m4 = msb1, m6 = mtop, m7 = mbottom , m8 = mchar;
@@ -14368,7 +15182,6 @@ double gluinoamplitudedecaydgausschartbbar (double mgluino, double mst1, double 
 
     Gammast2sb1 = (sin(thetat)*sin(thetab)*alphasb1ch*betast2ch-cos(thetat)*cos(thetab)*betasb1ch*alphast2ch)*G6st2sb1 - (sin(thetat)*cos(thetab)*alphasb1ch*alphast2ch - cos(thetat)*sin(thetab)*betasb1ch*betast2ch)*G4st2sb1 - (sin(thetat)*cos(thetab)*betasb1ch*alphast2ch - cos(thetat)*sin(thetab)*alphasb1ch*betast2ch)*G5st2sb1 + (sin(thetat)*sin(thetab)*betasb1ch*betast2ch - cos(thetat)*cos(thetab)*alphasb1ch*alphast2ch)*G7st2sb1; ///The sign in front of the G7st1sb1 and G5st1sb1 terms has been changed from that given in Baer and Tata in order to agree with SPheno.
 
-    
     m1 = mgluino, m2 = mst2, m4 = msb2, m6 = mtop, m7 = mbottom, m8 = mchar;
     G4st2sb2 = dgauss(gG4dgauss,from,upper,accuracy);
     G5st2sb2 = dgauss(gG5dgauss,from,upper,accuracy);
@@ -14381,7 +15194,6 @@ double gluinoamplitudedecaydgausschartbbar (double mgluino, double mst1, double 
   }
   
   return amplitudeW;
-
 }
 
 
@@ -14499,7 +15311,10 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
       Aq = g*runmq*tan(beta)/(mWboson);
       goldstoneffcoup = fq*cos(beta)/sqrt(2);
     }
-
+    else {
+      throw("problem: uordornuorl must be u or d or n or l in neutralinoamplitudedecaydgaussneutralinoffbar");
+      errorflag = -1;
+    }
 
     double YZisf1sf1Zj = 0, YZisf2sf2Zj = 0, psitildaZisf1sf2Zj = 0, phitildaZisf1sf2Zj = 0, YZisf1sf2Zj = 0;
 
@@ -14514,7 +15329,6 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     phitildaZisf1sf2Zj = dgauss(gphitildadgauss,from,to,accuracy);
     YZisf1sf2Zj = dgauss(gYdgauss,from,to,accuracy);
 
-
     fromz = fabs(mneutralinoj);
     toz = (pow(mneutralinoi,2) + pow(mneutralinoj,2) - 4*pow(mf,2))/(2*fabs(mneutralinoi));
     
@@ -14523,11 +15337,6 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     Wij = 0.25*pow(pow(g,2)+pow(gp,2),0.5)*(mixNeut(ineutralino,4)*mixNeut(jneutralino,4) - mixNeut(ineutralino,3)*mixNeut(jneutralino,3));
     double sinthetaW = 0;
     sinthetaW = gp/(pow(pow(g,2)+pow(gp,2),0.5));
-
-   
-    ///WORKING FORMULAE FROM HERE DOWNWARDS!!!!!
-
-    ///Redo of Z component via SPheno formulae:
 
     double intZ1 = 0, intZ2 = 0, intZ3 = 0, intZ4 = 0, sminz = 0, smaxz = 0;
     m1 = mneutralinoi, m4 = mneutralinoj, mq = mf, MZboson = mZboson;
@@ -14539,8 +15348,6 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     intZ4 = dgauss(gneutineutjffZ4dgauss,sminz,smaxz,accuracy);
 
     GammaZ = 64*pow(g*sinthetaW,2)*pow(Wij,2)*(-4*fabs(mneutralinoi)*fabs(mneutralinoj)*pow(mf,2)*(pow(alphaf,2)-pow(betaf,2))*intZ4*-rj*ri + pow(mf,2)*(pow(alphaf,2)-pow(betaf,2))*intZ3 - fabs(mneutralinoi)*fabs(mneutralinoj)*(pow(alphaf,2) + pow(betaf,2))*intZ2*-rj*ri + 0.5*(pow(alphaf,2) + pow(betaf,2))*intZ1);
-
-    ///Redo of sf component via SPheno formulae:
 
     ///First sf t sf u msf1-msf1, msf1-msf2, msf2-msf2 components:
      m1 = mneutralinoi, m2 = msf1, m3 = msf1, m4 = mneutralinoj, mq = mf;
@@ -14554,7 +15361,6 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     zetaZisf1sf1Zj = dgauss(gzetadgauss,from,to,accuracy);
     XZisf1sf1Zj = dgauss(gXdgauss,from,to,accuracy);
     chitildaZisf1sf1Zj = dgauss(gchidgauss,from,to,accuracy);
-   
 
     m1 = mneutralinoi, m2 = msf2, m3 = msf2, m4 = mneutralinoj, mq = mf;
     double xsiZisf2sf2Zj = 0, rhotildaZisf2sf2Zj = 0, chiprimeZisf2sf2Zj = 0, phitildaZisf2sf2Zj = 0, psitildaZisf2sf2Zj = 0, zetaZisf2sf2Zj = 0, XZisf2sf2Zj = 0, chitildaZisf2sf2Zj = 0;
@@ -14581,9 +15387,7 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     double Gammasftsfumsf1msf2 = 0, Gammasftsfumsf1msf1 = 0, Gammasftsfumsf2msf2 = 0;
     Gammasftsfumsf1msf1 = -2*(8*(sf1alpha1Zi*sf1beta1Zi*sf1beta1Zj*sf1alpha1Zj + sf1beta1Zi*sf1alpha1Zi*sf1alpha1Zj*sf1beta1Zj)*pow(mneutralinoi/PI,2)*YZisf1sf1Zj*ri -(sf1alpha1Zi*sf1alpha1Zi*sf1alpha1Zj*sf1alpha1Zj + sf1beta1Zi*sf1beta1Zi*sf1beta1Zj*sf1beta1Zj)*8*pow(mneutralinoi/PI,2)*phitildaZisf1sf1Zj*ri*rj + (sf1beta1Zi*sf1alpha1Zi*sf1beta1Zj*sf1alpha1Zj + sf1alpha1Zi*sf1beta1Zi*sf1alpha1Zj*sf1beta1Zj)*pow(mf,2)*8*pow(mneutralinoi/PI,2)*xsiZisf1sf1Zj*ri -((sf1alpha1Zi*sf1alpha1Zi*sf1beta1Zj*sf1alpha1Zj + sf1beta1Zi*sf1beta1Zi*sf1alpha1Zj*sf1beta1Zj)*fabs(mneutralinoi)*mf)*(8*pow(mneutralinoi/PI,2)*xsiZisf1sf1Zj - 4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)+pow(mneutralinoj,2))*rhotildaZisf1sf1Zj*ri + 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf1Zj) + fabs(mneutralinoj)*rj*mf*(sf1beta1Zi*sf1alpha1Zi*sf1alpha1Zj*sf1alpha1Zj + sf1alpha1Zi*sf1beta1Zi*sf1beta1Zj*sf1beta1Zj)*(-8*pow(mneutralinoi/PI,2)*xsiZisf1sf1Zj + 8*pow(mneutralinoi,4)/pow(PI,2)*rhotildaZisf1sf1Zj*ri - 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf1Zj) - (sf1beta1Zi*sf1beta1Zi*sf1beta1Zj*sf1alpha1Zj + sf1alpha1Zi*sf1alpha1Zi*sf1alpha1Zj*sf1beta1Zj)*fabs(mneutralinoi)*ri*mf*(4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)-pow(mneutralinoj,2))*rhotildaZisf1sf1Zj - 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf1Zj) + (sf1alpha1Zi*sf1beta1Zi*sf1alpha1Zj*sf1alpha1Zj + sf1beta1Zi*sf1alpha1Zi*sf1beta1Zj*sf1beta1Zj)*mf*fabs(mneutralinoj)*rj*ri*8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf1Zj -2*(sf1beta1Zi*sf1beta1Zi*sf1alpha1Zj*sf1alpha1Zj  + sf1alpha1Zi*sf1alpha1Zi*sf1beta1Zj*sf1beta1Zj)*pow(mf,2)*ri*rj*fabs(mneutralinoi)*fabs(mneutralinoj)*4*pow(mneutralinoi/PI,2)*rhotildaZisf1sf1Zj);
 
-
     Gammasftsfumsf2msf2 = -2*(8*(sf2alpha1Zi*sf2beta1Zi*sf2beta1Zj*sf2alpha1Zj + sf2beta1Zi*sf2alpha1Zi*sf2alpha1Zj*sf2beta1Zj)*pow(mneutralinoi/PI,2)*YZisf2sf2Zj*ri -(sf2alpha1Zi*sf2alpha1Zi*sf2alpha1Zj*sf2alpha1Zj + sf2beta1Zi*sf2beta1Zi*sf2beta1Zj*sf2beta1Zj)*8*pow(mneutralinoi/PI,2)*phitildaZisf2sf2Zj*ri*rj + (sf2beta1Zi*sf2alpha1Zi*sf2beta1Zj*sf2alpha1Zj + sf2alpha1Zi*sf2beta1Zi*sf2alpha1Zj*sf2beta1Zj)*pow(mf,2)*8*pow(mneutralinoi/PI,2)*xsiZisf2sf2Zj*ri -((sf2alpha1Zi*sf2alpha1Zi*sf2beta1Zj*sf2alpha1Zj + sf2beta1Zi*sf2beta1Zi*sf2alpha1Zj*sf2beta1Zj)*fabs(mneutralinoi)*mf)*(8*pow(mneutralinoi/PI,2)*xsiZisf2sf2Zj - 4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)+pow(mneutralinoj,2))*rhotildaZisf2sf2Zj*ri + 8*pow(mneutralinoi/PI,2)*chiprimeZisf2sf2Zj) + fabs(mneutralinoj)*rj*mf*(sf2beta1Zi*sf2alpha1Zi*sf2alpha1Zj*sf2alpha1Zj + sf2alpha1Zi*sf2beta1Zi*sf2beta1Zj*sf2beta1Zj)*(-8*pow(mneutralinoi/PI,2)*xsiZisf2sf2Zj + 8*pow(mneutralinoi,4)/pow(PI,2)*rhotildaZisf2sf2Zj*ri - 8*pow(mneutralinoi/PI,2)*chiprimeZisf2sf2Zj) - (sf2beta1Zi*sf2beta1Zi*sf2beta1Zj*sf2alpha1Zj + sf2alpha1Zi*sf2alpha1Zi*sf2alpha1Zj*sf2beta1Zj)*fabs(mneutralinoi)*ri*mf*(4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)-pow(mneutralinoj,2))*rhotildaZisf2sf2Zj - 8*pow(mneutralinoi/PI,2)*chiprimeZisf2sf2Zj) + (sf2alpha1Zi*sf2beta1Zi*sf2alpha1Zj*sf2alpha1Zj + sf2beta1Zi*sf2alpha1Zi*sf2beta1Zj*sf2beta1Zj)*mf*fabs(mneutralinoj)*rj*ri*8*pow(mneutralinoi/PI,2)*chiprimeZisf2sf2Zj -2*(sf2beta1Zi*sf2beta1Zi*sf2alpha1Zj*sf2alpha1Zj  + sf2alpha1Zi*sf2alpha1Zi*sf2beta1Zj*sf2beta1Zj)*pow(mf,2)*fabs(mneutralinoi)*fabs(mneutralinoj)*ri*rj*4*pow(mneutralinoi/PI,2)*rhotildaZisf2sf2Zj);
-
 
     Gammasftsfumsf1msf2 = -2*(8*(sf1alpha1Zi*sf2beta1Zi*sf1beta1Zj*sf2alpha1Zj + sf1beta1Zi*sf2alpha1Zi*sf1alpha1Zj*sf2beta1Zj)*pow(mneutralinoi/PI,2)*YZisf1sf2Zj -(sf1alpha1Zi*sf2alpha1Zi*sf1alpha1Zj*sf2alpha1Zj + sf1beta1Zi*sf2beta1Zi*sf1beta1Zj*sf2beta1Zj)*8*pow(mneutralinoi/PI,2)*phitildaZisf1sf2Zj*ri*rj + (sf1beta1Zi*sf2alpha1Zi*sf1beta1Zj*sf2alpha1Zj + sf1alpha1Zi*sf2beta1Zi*sf1alpha1Zj*sf2beta1Zj)*pow(mf,2)*8*pow(mneutralinoi/PI,2)*xsiZisf1sf2Zj*ri -((sf1alpha1Zi*sf2alpha1Zi*sf1beta1Zj*sf2alpha1Zj + sf1beta1Zi*sf2beta1Zi*sf1alpha1Zj*sf2beta1Zj)*fabs(mneutralinoi)*mf)*(8*pow(mneutralinoi/PI,2)*xsiZisf1sf2Zj - 4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)+pow(mneutralinoj,2))*rhotildaZisf1sf2Zj*ri + 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf2Zj) + fabs(mneutralinoj)*rj*mf*(sf1beta1Zi*sf2alpha1Zi*sf1alpha1Zj*sf2alpha1Zj + sf1alpha1Zi*sf2beta1Zi*sf1beta1Zj*sf2beta1Zj)*(-8*pow(mneutralinoi/PI,2)*xsiZisf1sf2Zj + 8*pow(mneutralinoi,4)/pow(PI,2)*rhotildaZisf1sf2Zj*ri - 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf2Zj) - (sf1beta1Zi*sf2beta1Zi*sf1beta1Zj*sf2alpha1Zj + sf1alpha1Zi*sf2alpha1Zi*sf1alpha1Zj*sf2beta1Zj)*fabs(mneutralinoi)*ri*mf*(4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)-pow(mneutralinoj,2))*rhotildaZisf1sf2Zj - 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf2Zj) + (sf1alpha1Zi*sf2beta1Zi*sf1alpha1Zj*sf2alpha1Zj + sf1beta1Zi*sf2alpha1Zi*sf1beta1Zj*sf2beta1Zj)*mf*fabs(mneutralinoj)*rj*8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf2Zj -2*(sf1beta1Zi*sf2beta1Zi*sf1alpha1Zj*sf2alpha1Zj  + sf1alpha1Zi*sf2alpha1Zi*sf1beta1Zj*sf2beta1Zj)*pow(mf,2)*fabs(mneutralinoi)*fabs(mneutralinoj)*ri*rj*4*pow(mneutralinoi/PI,2)*rhotildaZisf1sf2Zj);
 
@@ -14596,11 +15400,8 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     double Gammasfsfnondiag = 0;
     Gammasfsfnondiag = 16*pow(mneutralinoi/PI,2)*((sf1beta1Zi*sf2beta1Zi + sf1alpha1Zi*sf2alpha1Zi)*(sf1alpha1Zj*sf2alpha1Zj + sf2beta1Zj*sf1beta1Zj)*psitildaZisf1sf2Zj + rj*2*(sf1beta1Zi*sf2beta1Zi + sf1alpha1Zi*sf2alpha1Zi)*(sf2alpha1Zj*sf1beta1Zj + sf1alpha1Zj*sf2beta1Zj)*mf*fabs(mneutralinoj)*chitildaZisf1sf2Zj - ri*2*(sf1alpha1Zi*sf2beta1Zi + sf2alpha1Zi*sf1beta1Zi)*(sf1alpha1Zj*sf2alpha1Zj + sf2beta1Zj*sf1beta1Zj)*fabs(mneutralinoi)*mf*XZisf1sf2Zj - ri*rj*2*(sf1alpha1Zi*sf2beta1Zi + sf2alpha1Zi*sf1beta1Zi)*(sf2alpha1Zj*sf1beta1Zj + sf1alpha1Zj*sf2beta1Zj)*pow(mf,2)*fabs(mneutralinoi)*fabs(mneutralinoj)*zetaZisf1sf2Zj);
    
-
     double Gammasftot = 0;
     Gammasftot = 2*Gammasf1sf1diag + 2*Gammasf2sf2diag + 2*Gammasfsfnondiag +Gammasftsfumsf1msf1 + Gammasftsfumsf2msf2 + 2*Gammasftsfumsf1msf2;
-
-    ///Redo Gammah:
 
     double Gammah = 0, GammaH = 0, GammahHinterf = 0, integralh1 = 0, integralh2 = 0, integralh3 = 0, integralh4 =0, integralH1 = 0, integralH2 = 0, integralH3 = 0, integralH4 = 0, integralhH1 = 0, integralhH2 = 0, integralhH3 = 0, integralhH4 = 0;
     m1 = mneutralinoi, m4 = mneutralinoj, mq = mf, MZboson = mZboson, mh = mhiggsl, mH = mhiggsH, mA = mhiggsA, g1 = g, g2 = gp, NeutMIX = mixNeut, neutralinoi = ineutralino, neutralinoj = jneutralino, alphamix = alpha,mq = mf;
@@ -14953,13 +15754,9 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
   }
 
   else{
-
     double GammaW = 0, GammaHpm = 0, Gammagoldstone = 0, Gammasfp1 = 0, Gammasfp2 = 0, Gammasf1 = 0, Gammasf2 = 0, Gammasfp1sf1 = 0, Gammasfp1sf2 = 0, Gammasfp2sf1 = 0, Gammasfp2sf2 = 0, GammaWHpm = 0, GammaWgoldstone = 0, GammaWSfp1 = 0, GammaWSfp2 = 0, GammaWSf1 = 0, GammaWSf2 = 0, GammaHgoldstone = 0, Gammagsfp1 = 0, Gammagsfp2 = 0, GammaHpmsfp1 = 0, GammaHpmsfp2 = 0, Gammagsf1 = 0, Gammagsf2 = 0, GammaHpmsf1 = 0, GammaHpmsf2 = 0, Gammasfpsfp = 0;
 
     double charneutWcoupL = 0, charneutWcoupR = 0, coupHpmcharneutL = 0, coupHpmcharneutR = 0, coupHpm1charneutL = 0, coupHpm1charneutR = 0, coupHpm2charneutL = 0, coupHpm2charneutR = 0, fd = 0, fu = 0, coupHpm1ffpd = 0, coupHpm1ffpu = 0, coupHpm2ffpd = 0, coupHpm2ffpu = 0;
-    
-    // runmqp = 4*runmqp;
-
     fu = g*runmqp/(pow(2,0.5)*sin(beta)*mWboson); ///Just usual yukawa for up type
     fd = g*runmq/(pow(2,0.5)*cos(beta)*mWboson); ///Just usual yukawa for down type
     double ri = 0, rj = 0, rc = 0;
@@ -14983,6 +15780,10 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       coupHpmcharneutL = (g*cos(thetaR2)*mixNeut(ineutralino,4) - sin(thetaR2)/(pow(2,0.5))*(gp*mixNeut(ineutralino,1)+g*mixNeut(ineutralino,2)));
       coupHpmcharneutR = (g*cos(thetaL2)*mixNeut(ineutralino,3) + sin(thetaL2)/(pow(2,0.5))*(gp*mixNeut(ineutralino,1)+g*mixNeut(ineutralino,2)));
     }
+    else {
+      throw("problem: jchargino must be 1 or 2 in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
+    }
 
     double AZiu = 0, BZiu = 0, sf1alpha1Ziu = 0, sf1beta1Ziu = 0, sf2alpha1Ziu = 0, sf2beta1Ziu = 0;
     double AZid = 0, BZid = 0, sf1alpha1Zid = 0, sf1beta1Zid = 0, sf2alpha1Zid = 0, sf2beta1Zid = 0;
@@ -14992,22 +15793,19 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       AZiu = g/(pow(2,0.5))*(-mixNeut(ineutralino,2)) + gp/(3*pow(2,0.5))*(-mixNeut(ineutralino,1));
       BZiu = (4./3)*gp/(pow(2,0.5))*(-mixNeut(ineutralino,1));
       sf1alpha1Ziu = AZiu*cos(thetaqp)*rj*-rc*ri - fu*mixNeut(ineutralino,4)*sin(thetaqp);
-      sf1beta1Ziu = -rc*fu*mixNeut(ineutralino,4)*cos(thetaqp) - BZiu*sin(thetaqp);
-      sf2alpha1Ziu = ri*rc*fu*mixNeut(ineutralino,4)*cos(thetaqp) + AZiu*sin(thetaqp);
+      sf1beta1Ziu = rc*fu*mixNeut(ineutralino,4)*cos(thetaqp) - BZiu*sin(thetaqp);
+      sf2alpha1Ziu = -ri*fu*mixNeut(ineutralino,4)*cos(thetaqp) + rc*AZiu*sin(thetaqp);
       sf2beta1Ziu = -BZiu*cos(thetaqp)*rj*-rc*ri + fu*mixNeut(ineutralino,4)*sin(thetaqp);
 
       AZid = g/(pow(2,0.5))*(mixNeut(ineutralino,2)) + gp/(3*pow(2,0.5))*(-mixNeut(ineutralino,1));
       BZid = (2./3)*gp/(pow(2,0.5))*(mixNeut(ineutralino,1));
       sf1alpha1Zid = AZid*cos(thetaq)*rj*-rc*ri - fd*mixNeut(ineutralino,4)*sin(thetaq);
-      sf1beta1Zid = -rc*fd*mixNeut(ineutralino,3)*cos(thetaq) - BZid*sin(thetaq);
-      sf2alpha1Zid = fd*mixNeut(ineutralino,3)*cos(thetaq)*rc + AZid*sin(thetaq);
+      sf1beta1Zid = fd*mixNeut(ineutralino,3)*cos(thetaq) - ri*BZid*sin(thetaq);
+      sf2alpha1Zid = fd*mixNeut(ineutralino,3)*cos(thetaq)*rc - rc*ri*AZid*sin(thetaq);
       sf2beta1Zid = -BZid*cos(thetaq)*rj*-rc*ri + fd*mixNeut(ineutralino,4)*sin(thetaq);
-      
+            
       Nc = 3;
     }
-
-
-
     else if (qorl == 'l') {
       AZiu = g/(pow(2,0.5))*(-mixNeut(ineutralino,2)) + gp/(pow(2,0.5))*(mixNeut(ineutralino,1));
       BZiu = 0;
@@ -15019,10 +15817,14 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       AZid = g/(pow(2,0.5))*(mixNeut(ineutralino,2)) + gp/(pow(2,0.5))*(mixNeut(ineutralino,1));
       BZid = pow(2,0.5)*gp*mixNeut(ineutralino,1);
       sf1alpha1Zid = AZid*cos(thetaq)*rj*-rc*ri - fd*mixNeut(ineutralino,3)*sin(thetaq);
-      sf1beta1Zid = -rc*fd*mixNeut(ineutralino,3)*cos(thetaq) - BZid*sin(thetaq);
-      sf2alpha1Zid = fd*mixNeut(ineutralino,3)*cos(thetaq)*rc + AZid*sin(thetaq);
+      sf1beta1Zid = fd*mixNeut(ineutralino,3)*cos(thetaq) - ri*BZid*sin(thetaq);
+      sf2alpha1Zid = fd*mixNeut(ineutralino,3)*cos(thetaq)*rc - rc*ri*AZid*sin(thetaq);
       sf2beta1Zid = -BZid*cos(thetaq)*rj*-rc*ri + fd*mixNeut(ineutralino,3)*sin(thetaq);
+
       Nc = 1;
+    }
+    else {
+      throw("problem: qorl must be q or l in neutralinoamplitudedecaycharginoffprimebar");
     }
 
     ///GammaW
@@ -15071,42 +15873,38 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int2Hpm = 2*fabs(m1)*dgauss(gneuticharjffpHpm2dgauss,from,to,accuracy);
     int3Hpm = 2*fabs(m1)*dgauss(gneuticharjffpHpm3dgauss,from,to,accuracy);
     int4Hpm = 2*fabs(m1)*dgauss(gneuticharjffpHpm4dgauss,from,to,accuracy);  
-
   
     Gammagoldstone = coupcombo1Hpm1*coupcombo3Hpm1*int4Wpm - 4*coupcombo1Hpm1*coupcombo4Hpm1*int3Wpm*mf*mfp + 4*coupcombo2Hpm1*coupcombo3Hpm1*int2Wpm*fabs(mneutralinoi)*fabs(mcharginoj)*rj - 16*coupcombo2Hpm1*coupcombo4Hpm1*int1Wpm*mf*mfp*fabs(mneutralinoi)*fabs(mcharginoj)*rj;
 
     GammaHpm = coupcombo1Hpm2*coupcombo3Hpm2*int4Hpm - 4*coupcombo1Hpm2*coupcombo4Hpm2*int3Hpm*mf*mfp + 4*coupcombo2Hpm2*coupcombo3Hpm2*int2Hpm*fabs(mneutralinoi)*fabs(mcharginoj)*rj - 16*coupcombo2Hpm2*coupcombo4Hpm2*int1Hpm*mf*mfp*fabs(mneutralinoi)*fabs(mcharginoj)*rj;
-
-
-
+ 
     ///Sfp Sfp diagonal (Remember fp is u-type fermion)
 
     double alphasfp1char = 0, betasfp1char = 0, alphasf1char = 0, betasf1char = 0, alphasfp2char = 0, betasfp2char = 0, alphasf2char = 0, betasf2char = 0;
 
-    // thetaqp = 0.182002275;
-    // thetaq = 1.252210642;
-
     if (jchargino == 1) {
       alphasfp1char = -g*sin(thetaR2)*cos(thetaqp) + fu*cos(thetaR2)*sin(thetaqp);
-      betasfp1char = -fd*cos(thetaL2)*cos(thetaqp);
-      alphasf1char = -g*sin(thetaL2)*cos(thetaq) + fd*cos(thetaL2)*sin(thetaq);
+      betasfp1char = -fd*cos(thetaL2)*cos(thetaqp)*rc;
+      alphasf1char = -g*sin(thetaL2)*cos(thetaq) + fd*cos(thetaL2)*rc*sin(thetaq);
       betasf1char = -fu*cos(thetaR2)*cos(thetaq);
-      alphasfp2char = -g*sin(thetaR2)*sin(thetaqp) + fu*cos(thetaR2)*-cos(thetaqp);
-      betasfp2char = fd*cos(thetaL2)*sin(thetaqp);
-      alphasf2char = fd*cos(thetaL2)*cos(thetaq) + rc*g*sin(thetaL2)*sin(thetaq);
+      alphasfp2char = rc*g*sin(thetaR2)*sin(thetaqp) + fu*cos(thetaR2)*-cos(thetaqp);
+      betasfp2char = -fd*cos(thetaL2)*sin(thetaqp)*rc;
+      alphasf2char = -fd*cos(thetaL2)*cos(thetaq) + g*sin(thetaL2)*sin(thetaq);
       betasf2char = -fu*cos(thetaR2)*sin(thetaq);
-
-      
     }
     else if (jchargino == 2) {
       alphasfp1char = -g*cos(thetaR2)*cos(thetaqp) - fu*sin(thetaR2)*sin(thetaqp);
-      betasfp1char = fd*sin(thetaL2)*cos(thetaqp);
-      alphasf1char = -g*cos(thetaL2)*cos(thetaq) - fd*sin(thetaL2)*sin(thetaq);
+      betasfp1char = fd*sin(thetaL2)*cos(thetaqp)*rc;
+      alphasf1char = -g*cos(thetaL2)*cos(thetaq) - fd*sin(thetaL2)*rc*sin(thetaq);
       betasf1char = fu*sin(thetaR2)*cos(thetaq);
-      alphasfp2char = g*cos(thetaR2)*sin(thetaqp) - fu*sin(thetaR2)*-cos(thetaq);
-      betasfp2char = fd*sin(thetaL2)*sin(thetaqp);
-      alphasf2char = -fd*sin(thetaL2)*cos(thetaq) + rc*g*cos(thetaL2)*sin(thetaq);
+      alphasfp2char = rc*g*cos(thetaR2)*sin(thetaqp) - fu*sin(thetaR2)*-cos(thetaq);
+      betasfp2char = fd*sin(thetaL2)*sin(thetaqp)*rc;
+      alphasf2char = fd*sin(thetaL2)*cos(thetaq) + g*cos(thetaL2)*sin(thetaq);
       betasf2char = fu*sin(thetaR2)*sin(thetaq);
+    }
+    else {
+      throw("problem: jchargino must be 1 or 2 in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
     }
 
     double coupcombo1sfp1 = 0, coupcombo2sfp1 = 0, coupcombo3sfp1 = 0, coupcombo4sfp1 = 0;
@@ -15124,11 +15922,11 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int3sfp1 = 2*fabs(m1)*dgauss(gneuticharjffpHpm3dgauss,mfp,Eupper,accuracy);
     int4sfp1 = 2*fabs(m1)*dgauss(gneuticharjffpHpm4dgauss,mfp,Eupper,accuracy);
 
-    Gammasfp1 = coupcombo1sfp1*coupcombo3sfp1*int4sfp1 + 4*coupcombo1sfp1*coupcombo4sfp1*-mf*fabs(mcharginoj)*int3sfp1*rc + 4*coupcombo2sfp1*coupcombo3sfp1*fabs(mneutralinoi)*mfp*int2sfp1*rc + 16*coupcombo2sfp1*coupcombo4sfp1*fabs(mneutralinoi)*mfp*-mf*fabs(mcharginoj)*int1sfp1;
+    Gammasfp1 = coupcombo1sfp1*coupcombo3sfp1*int4sfp1 + 4*coupcombo1sfp1*coupcombo4sfp1*-mf*fabs(mcharginoj)*int3sfp1 + 4*coupcombo2sfp1*coupcombo3sfp1*fabs(mneutralinoi)*mfp*int2sfp1 + 16*coupcombo2sfp1*coupcombo4sfp1*fabs(mneutralinoi)*mfp*-mf*fabs(mcharginoj)*int1sfp1;
 
     double coupcombo1sfp2 = 0, coupcombo2sfp2 = 0, coupcombo3sfp2 = 0, coupcombo4sfp2 = 0;
     coupcombo1sfp2 = pow(sf2alpha1Ziu,2) + pow(sf2beta1Ziu,2);
-    coupcombo2sfp2 = sf2alpha1Ziu*sf2beta1Ziu*ri;
+    coupcombo2sfp2 = sf2alpha1Ziu*sf2beta1Ziu;
     coupcombo3sfp2 = pow(alphasfp2char,2) + pow(betasfp2char,2);
     coupcombo4sfp2 = alphasfp2char*betasfp2char;
 
@@ -15141,11 +15939,10 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
 
     Gammasfp2 = coupcombo1sfp2*coupcombo3sfp2*int4sfp2 + 4*coupcombo1sfp2*coupcombo4sfp2*-mf*fabs(mcharginoj)*int3sfp2*rc + 4*coupcombo2sfp2*coupcombo3sfp2*fabs(mneutralinoi)*mfp*int2sfp2*rc + 16*coupcombo2sfp2*coupcombo4sfp2*fabs(mneutralinoi)*mfp*-mf*fabs(mcharginoj)*int1sfp2;
 
-
     ///Sf Sf diagonal
     double coupcombo1sf1 = 0, coupcombo2sf1 = 0, coupcombo3sf1 = 0, coupcombo4sf1 = 0;
     coupcombo1sf1 = pow(sf1alpha1Zid,2) + pow(sf1beta1Zid,2);
-    coupcombo2sf1 = -sf1alpha1Zid*sf1beta1Zid;
+    coupcombo2sf1 = -ri*sf1alpha1Zid*sf1beta1Zid;
     coupcombo3sf1 = pow(alphasf1char,2) + pow(betasf1char,2);
     coupcombo4sf1 = -alphasf1char*betasf1char*rj;
 
@@ -15180,21 +15977,25 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     ///Sfp 1 sf 2
     
     double coupcombo1sfp1sf2 = 0, coupcombo2sfp1sf2 = 0, coupcombo3sfp1sf2 = 0, coupcombo4sfp1sf2 = 0, coupcombo5sfp1sf2 = 0, coupcombo6sfp1sf2 = 0, coupcombo7sfp1sf2 = 0, coupcombo8sfp1sf2 = 0;
-    coupcombo1sfp1sf2 = -0.5*(sf1alpha1Ziu*sf2beta1Zid*betasfp1char*alphasf2char + rc*ri*sf1beta1Ziu*sf2alpha1Zid*alphasfp1char*betasf2char);
-    coupcombo2sfp1sf2 = -ri*fabs(mneutralinoi)*fabs(mcharginoj)*(ri*sf1alpha1Ziu*sf2alpha1Zid*alphasfp1char*alphasf2char + sf1beta1Ziu*sf2beta1Zid*betasfp1char*betasf2char);
-    coupcombo3sfp1sf2 = ri*rc*mf*mfp*(sf1beta1Ziu*sf2alpha1Zid*betasfp1char*alphasf2char + ri*sf1alpha1Ziu*sf2beta1Zid*alphasfp1char*betasf2char);
-    coupcombo8sfp1sf2 = ri*2*fabs(mneutralinoi)*fabs(mcharginoj)*mf*mfp*(sf1beta1Ziu*sf2beta1Zid*alphasfp1char*alphasf2char + rc*ri*sf1alpha1Ziu*sf2alpha1Zid*betasfp1char*betasf2char);
+    coupcombo1sfp1sf2 = -0.5*ri*(-sf1alpha1Ziu*sf2beta1Zid*betasfp1char*alphasf2char + sf1beta1Ziu*sf2alpha1Zid*alphasfp1char*betasf2char);
+    coupcombo2sfp1sf2 = fabs(mneutralinoi)*fabs(mcharginoj)*(ri*sf1alpha1Ziu*sf2alpha1Zid*alphasfp1char*alphasf2char + sf1beta1Ziu*sf2beta1Zid*betasfp1char*betasf2char);
+    coupcombo3sfp1sf2 = ri*mf*mfp*(sf1beta1Ziu*sf2alpha1Zid*betasfp1char*alphasf2char - rc*sf1alpha1Ziu*sf2beta1Zid*alphasfp1char*betasf2char);
+    coupcombo8sfp1sf2 = ri*2*fabs(mneutralinoi)*fabs(mcharginoj)*mf*mfp*(rc*sf1beta1Ziu*sf2beta1Zid*alphasfp1char*alphasf2char + ri*sf1alpha1Ziu*sf2alpha1Zid*betasfp1char*betasf2char);
     if (norc == 'n') {
-    coupcombo4sfp1sf2 = fabs(mneutralinoi)*mf*(-sf1alpha1Ziu*sf2alpha1Zid*betasfp1char*alphasf2char - ri*sf1beta1Ziu*sf2beta1Zid*alphasfp1char*betasf2char);
+    coupcombo4sfp1sf2 = ri*fabs(mneutralinoi)*mf*(sf1alpha1Ziu*sf2alpha1Zid*betasfp1char*alphasf2char - sf1beta1Ziu*sf2beta1Zid*alphasfp1char*betasf2char);
     coupcombo5sfp1sf2 = mfp*fabs(mcharginoj)*(ri*sf1beta1Ziu*sf2alpha1Zid*alphasfp1char*alphasf2char + sf1alpha1Ziu*sf2beta1Zid*betasfp1char*betasf2char)*rj;
-    coupcombo6sfp1sf2 = -ri*fabs(mneutralinoi)*mfp*(-sf1beta1Ziu*sf2beta1Zid*betasfp1char*alphasf2char - ri*sf1alpha1Ziu*sf2alpha1Zid*alphasfp1char*betasf2char);
-    coupcombo7sfp1sf2 = -ri*fabs(mcharginoj)*mf*(ri*sf1alpha1Ziu*sf2beta1Zid*alphasfp1char*alphasf2char + sf1beta1Ziu*sf2alpha1Zid*betasfp1char*betasf2char)*rj;
+    coupcombo6sfp1sf2 = -ri*fabs(mneutralinoi)*mfp*(-sf1beta1Ziu*sf2beta1Zid*betasfp1char*alphasf2char + sf1alpha1Ziu*sf2alpha1Zid*alphasfp1char*betasf2char);
+    coupcombo7sfp1sf2 = fabs(mcharginoj)*mf*(ri*sf1alpha1Ziu*sf2beta1Zid*alphasfp1char*alphasf2char + sf1beta1Ziu*sf2alpha1Zid*betasfp1char*betasf2char)*rj;
     }
     else if (norc == 'c') {
-      coupcombo4sfp1sf2 = fabs(mneutralinoi)*mf*(-rj*alphasfp1char*alphasf2char*sf1beta1Ziu*sf2alpha1Zid + betasfp1char*betasf2char*sf1alpha1Ziu*sf2beta1Zid);
-      coupcombo5sfp1sf2 = fabs(mcharginoj)*mfp*(alphasf2char*betasfp1char*sf1alpha1Ziu*sf2alpha1Zid - rj*alphasfp1char*betasf2char*sf1beta1Ziu*sf2beta1Zid);
-      coupcombo6sfp1sf2 = -fabs(mneutralinoi)*mfp*(-betasfp1char*betasf2char*sf1beta1Ziu*sf2alpha1Zid - alphasfp1char*alphasf2char*sf1alpha1Ziu*sf2beta1Zid);
-      coupcombo7sfp1sf2 = -fabs(mcharginoj)*mf*(-alphasfp1char*betasf2char*sf1alpha1Ziu*sf2alpha1Zid + rj*betasfp1char*alphasf2char*sf1beta1Ziu*sf2beta1Zid);
+      coupcombo4sfp1sf2 = -(fabs(mneutralinoi)*mf*(-rj*alphasfp1char*alphasf2char*sf1beta1Ziu*sf2alpha1Zid + betasfp1char*betasf2char*sf1alpha1Ziu*sf2beta1Zid));
+      coupcombo5sfp1sf2 = -(fabs(mcharginoj)*mfp*(alphasf2char*betasfp1char*sf1alpha1Ziu*sf2alpha1Zid - rj*alphasfp1char*betasf2char*sf1beta1Ziu*sf2beta1Zid));
+      coupcombo6sfp1sf2 = -(-fabs(mneutralinoi)*mfp*(-betasfp1char*betasf2char*sf1beta1Ziu*sf2alpha1Zid - alphasfp1char*alphasf2char*sf1alpha1Ziu*sf2beta1Zid));
+      coupcombo7sfp1sf2 = -(-fabs(mcharginoj)*mf*(-alphasfp1char*betasf2char*sf1alpha1Ziu*sf2alpha1Zid + rj*betasfp1char*alphasf2char*sf1beta1Ziu*sf2beta1Zid));
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
     }
 
     double int1sfp1sf2 = 0, int2sfp1sf2 = 0, int3sfp1sf2 = 0, int4sfp1sf2 = 0, int5sfp1sf2 = 0, int6sfp1sf2 = 0, int7sfp1sf2 = 0, int8sfp1sf2 = 0;
@@ -15213,21 +16014,25 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     ///Sfp 1 Sf 1 interference
 
     double coupcombo1sfp1sf1 = 0, coupcombo2sfp1sf1 = 0, coupcombo3sfp1sf1 = 0, coupcombo4sfp1sf1 = 0, coupcombo5sfp1sf1 = 0, coupcombo6sfp1sf1 = 0, coupcombo7sfp1sf1 = 0, coupcombo8sfp1sf1 = 0;
-    coupcombo1sfp1sf1 = 0.5*(ri*sf1alpha1Ziu*sf1beta1Zid*betasfp1char*alphasf1char + sf1beta1Ziu*sf1alpha1Zid*alphasfp1char*betasf1char)*rj;
+    coupcombo1sfp1sf1 = -0.5*(ri*sf1alpha1Ziu*sf1beta1Zid*betasfp1char*alphasf1char + sf1beta1Ziu*sf1alpha1Zid*alphasfp1char*betasf1char)*rj;
     coupcombo2sfp1sf1 = -fabs(mneutralinoi)*fabs(mcharginoj)*(sf1alpha1Ziu*sf1alpha1Zid*alphasfp1char*alphasf1char + ri*sf1beta1Ziu*sf1beta1Zid*betasfp1char*betasf1char)*ri*rj;
-    coupcombo3sfp1sf1 = mf*mfp*(sf1beta1Ziu*sf1alpha1Zid*betasfp1char*alphasf1char + ri*sf1alpha1Ziu*sf1beta1Zid*alphasfp1char*betasf1char)*rj;
-    coupcombo8sfp1sf1 = -2*fabs(mneutralinoi)*fabs(mcharginoj)*mf*mfp*(ri*sf1beta1Ziu*sf1beta1Zid*alphasfp1char*alphasf1char + sf1alpha1Ziu*sf1alpha1Zid*betasfp1char*betasf1char)*ri*rj;
+    coupcombo3sfp1sf1 = -rc*mf*mfp*(sf1beta1Ziu*sf1alpha1Zid*betasfp1char*alphasf1char + ri*sf1alpha1Ziu*sf1beta1Zid*alphasfp1char*betasf1char)*rj;
+    coupcombo8sfp1sf1 = -2*rc*fabs(mneutralinoi)*fabs(mcharginoj)*mf*mfp*(ri*sf1beta1Ziu*sf1beta1Zid*alphasfp1char*alphasf1char + sf1alpha1Ziu*sf1alpha1Zid*betasfp1char*betasf1char)*ri*rj;
     if (norc == 'n') {
     coupcombo4sfp1sf1 = fabs(mneutralinoi)*mf*(-sf1alpha1Ziu*sf1alpha1Zid*betasfp1char*alphasf1char - ri*sf1beta1Ziu*sf1beta1Zid*alphasfp1char*betasf1char)*ri;
-    coupcombo5sfp1sf1 = mfp*fabs(mcharginoj)*(sf1beta1Ziu*sf1alpha1Zid*alphasfp1char*alphasf1char + ri*sf1alpha1Ziu*sf1beta1Zid*betasfp1char*betasf1char)*rj;
+    coupcombo5sfp1sf1 = -mfp*fabs(mcharginoj)*(sf1beta1Ziu*sf1alpha1Zid*alphasfp1char*alphasf1char + ri*sf1alpha1Ziu*sf1beta1Zid*betasfp1char*betasf1char)*rj;
     coupcombo6sfp1sf1 = fabs(mneutralinoi)*mfp*(-ri*sf1beta1Ziu*sf1beta1Zid*betasfp1char*alphasf1char - sf1alpha1Ziu*sf1alpha1Zid*alphasfp1char*betasf1char)*ri;
-    coupcombo7sfp1sf1 = fabs(mcharginoj)*mf*(ri*sf1alpha1Ziu*sf1beta1Zid*alphasfp1char*alphasf1char + sf1beta1Ziu*sf1alpha1Zid*betasfp1char*betasf1char)*rj;
+    coupcombo7sfp1sf1 = -fabs(mcharginoj)*mf*(ri*sf1alpha1Ziu*sf1beta1Zid*alphasfp1char*alphasf1char + sf1beta1Ziu*sf1alpha1Zid*betasfp1char*betasf1char)*rj;
     }
     else if (norc == 'c') {
-      coupcombo4sfp1sf1 = -fabs(mneutralinoi)*mf*(alphasfp1char*alphasf1char*sf1beta1Ziu*sf1alpha1Zid + betasfp1char*betasf1char*sf1alpha1Ziu*sf1beta1Zid)*rj;
-      coupcombo5sfp1sf1 = fabs(mcharginoj)*mfp*(alphasf1char*betasfp1char*sf1alpha1Ziu*sf1alpha1Zid + alphasfp1char*betasf1char*sf1beta1Ziu*sf1beta1Zid)*rj;
+      coupcombo4sfp1sf1 = fabs(mneutralinoi)*mf*(alphasfp1char*alphasf1char*sf1beta1Ziu*sf1alpha1Zid + betasfp1char*betasf1char*sf1alpha1Ziu*sf1beta1Zid)*rj;
+      coupcombo5sfp1sf1 = -fabs(mcharginoj)*mfp*(alphasf1char*betasfp1char*sf1alpha1Ziu*sf1alpha1Zid + alphasfp1char*betasf1char*sf1beta1Ziu*sf1beta1Zid)*rj;
       coupcombo6sfp1sf1 = fabs(mneutralinoi)*mfp*(-betasfp1char*betasf1char*sf1beta1Ziu*sf1alpha1Zid - alphasfp1char*alphasf1char*sf1alpha1Ziu*sf1beta1Zid)*rj;
       coupcombo7sfp1sf1 = -fabs(mcharginoj)*mf*(-alphasfp1char*betasf1char*sf1alpha1Ziu*sf1alpha1Zid - betasfp1char*alphasf1char*sf1beta1Ziu*sf1beta1Zid)*rj;
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
     }
     
     double int1sfp1sf1 = 0, int2sfp1sf1 = 0, int3sfp1sf1 = 0, int4sfp1sf1 = 0, int5sfp1sf1 = 0, int6sfp1sf1 = 0, int7sfp1sf1 = 0, int8sfp1sf1 = 0;
@@ -15246,25 +16051,30 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     ///Sfp 2 Sf 2 interference
     
     double coupcombo1sfp2sf2 = 0, coupcombo2sfp2sf2 = 0, coupcombo3sfp2sf2 = 0, coupcombo4sfp2sf2 = 0, coupcombo5sfp2sf2 = 0, coupcombo6sfp2sf2 = 0, coupcombo7sfp2sf2 = 0, coupcombo8sfp2sf2 = 0;
-    coupcombo8sfp2sf2 = 2*fabs(mneutralinoi)*fabs(mcharginoj)*mf*mfp*(sf2beta1Ziu*sf2beta1Zid*alphasfp2char*alphasf2char - sf2alpha1Ziu*sf2alpha1Zid*betasfp2char*betasf2char)*ri*rj;
+    coupcombo8sfp2sf2 = -2*fabs(mneutralinoi)*fabs(mcharginoj)*mf*mfp*(sf2beta1Ziu*sf2beta1Zid*alphasfp2char*alphasf2char - sf2alpha1Ziu*sf2alpha1Zid*betasfp2char*betasf2char)*ri*rj;
 
     if (norc == 'n') {
       coupcombo1sfp2sf2 = 0.5*(-sf2alpha1Ziu*sf2beta1Zid*betasfp2char*alphasf2char + ri*sf2beta1Ziu*sf2alpha1Zid*alphasfp2char*betasf2char)*rj;
-      coupcombo2sfp2sf2 = -fabs(mneutralinoi)*fabs(mcharginoj)*(sf2alpha1Ziu*sf2alpha1Zid*alphasfp2char*alphasf2char - sf2beta1Ziu*sf2beta1Zid*betasfp2char*betasf2char)*ri*rj;
-      coupcombo3sfp2sf2 = -mf*mfp*(-sf2beta1Ziu*sf2alpha1Zid*betasfp2char*alphasf2char + sf2alpha1Ziu*sf2beta1Zid*alphasfp2char*betasf2char);
-      coupcombo4sfp2sf2 = fabs(mneutralinoi)*mf*(sf2alpha1Ziu*sf2alpha1Zid*betasfp2char*alphasf2char - sf2beta1Ziu*sf2beta1Zid*alphasfp2char*betasf2char)*ri*rj;
-      coupcombo5sfp2sf2 = mfp*fabs(mcharginoj)*(sf2beta1Ziu*sf2alpha1Zid*alphasfp2char*alphasf2char + ri*rj*sf2alpha1Ziu*sf2beta1Zid*betasfp2char*betasf2char)*rj*ri;
-      coupcombo6sfp2sf2 = -ri*fabs(mneutralinoi)*mfp*(sf2beta1Ziu*sf2beta1Zid*betasfp2char*alphasf2char - sf2alpha1Ziu*sf2alpha1Zid*alphasfp2char*betasf2char);
+      coupcombo2sfp2sf2 = fabs(mneutralinoi)*fabs(mcharginoj)*(sf2alpha1Ziu*sf2alpha1Zid*alphasfp2char*alphasf2char - sf2beta1Ziu*sf2beta1Zid*betasfp2char*betasf2char)*rj;
+      coupcombo3sfp2sf2 = -mf*mfp*(-ri*sf2beta1Ziu*sf2alpha1Zid*betasfp2char*alphasf2char + sf2alpha1Ziu*sf2beta1Zid*alphasfp2char*betasf2char);
+      coupcombo4sfp2sf2 = -fabs(mneutralinoi)*mf*(sf2alpha1Ziu*sf2alpha1Zid*betasfp2char*alphasf2char - ri*sf2beta1Ziu*sf2beta1Zid*alphasfp2char*betasf2char)*rj;
+      coupcombo5sfp2sf2 = -mfp*fabs(mcharginoj)*(sf2beta1Ziu*sf2alpha1Zid*alphasfp2char*alphasf2char + ri*rj*sf2alpha1Ziu*sf2beta1Zid*betasfp2char*betasf2char)*rj*ri;
+      coupcombo6sfp2sf2 = fabs(mneutralinoi)*mfp*(ri*sf2beta1Ziu*sf2beta1Zid*betasfp2char*alphasf2char - sf2alpha1Ziu*sf2alpha1Zid*alphasfp2char*betasf2char);
       coupcombo7sfp2sf2 = fabs(mcharginoj)*mf*(sf2alpha1Ziu*sf2beta1Zid*alphasfp2char*alphasf2char - sf2beta1Ziu*sf2alpha1Zid*betasfp2char*betasf2char)*rj;
+ 
     }
     else if (norc == 'c') {
-      coupcombo1sfp2sf2 = 0.5*(-rj*sf2alpha1Ziu*sf2beta1Zid*betasfp2char*alphasf2char - sf2beta1Ziu*sf2alpha1Zid*alphasfp2char*betasf2char);
-      coupcombo2sfp2sf2 = rj*fabs(mneutralinoi)*fabs(mcharginoj)*(sf2alpha1Ziu*sf2alpha1Zid*alphasfp2char*alphasf2char - rj*sf2beta1Ziu*sf2beta1Zid*betasfp2char*betasf2char)*ri;
+      coupcombo1sfp2sf2 = -0.5*(-rj*sf2alpha1Ziu*sf2beta1Zid*betasfp2char*alphasf2char - sf2beta1Ziu*sf2alpha1Zid*alphasfp2char*betasf2char);
+      coupcombo2sfp2sf2 = -rj*fabs(mneutralinoi)*fabs(mcharginoj)*(sf2alpha1Ziu*sf2alpha1Zid*alphasfp2char*alphasf2char - rj*sf2beta1Ziu*sf2beta1Zid*betasfp2char*betasf2char)*ri;
       coupcombo3sfp2sf2 = mf*mfp*(-rj*sf2beta1Ziu*sf2alpha1Zid*betasfp2char*alphasf2char - sf2alpha1Ziu*sf2beta1Zid*alphasfp2char*betasf2char);
-      coupcombo4sfp2sf2 = -rj*fabs(mneutralinoi)*mf*(alphasfp2char*alphasf2char*sf2beta1Ziu*sf2alpha1Zid + betasfp2char*betasf2char*sf2alpha1Ziu*sf2beta1Zid);
-      coupcombo5sfp2sf2 = -rj*fabs(mcharginoj)*mfp*(alphasf2char*betasfp2char*sf2alpha1Ziu*sf2alpha1Zid - alphasfp2char*betasf2char*sf2beta1Ziu*sf2beta1Zid)*rj;
-      coupcombo6sfp2sf2 = rj*fabs(mneutralinoi)*mfp*(-betasfp2char*betasf2char*sf2beta1Ziu*sf2alpha1Zid - alphasfp2char*alphasf2char*sf2alpha1Ziu*sf2beta1Zid);
-      coupcombo7sfp2sf2 = -fabs(mcharginoj)*mf*(-alphasfp2char*betasf2char*sf2alpha1Ziu*sf2alpha1Zid + betasfp2char*alphasf2char*sf2beta1Ziu*sf2beta1Zid);
+      coupcombo4sfp2sf2 = rj*fabs(mneutralinoi)*mf*(alphasfp2char*alphasf2char*sf2beta1Ziu*sf2alpha1Zid + betasfp2char*betasf2char*sf2alpha1Ziu*sf2beta1Zid);
+      coupcombo5sfp2sf2 = rj*fabs(mcharginoj)*mfp*(alphasf2char*betasfp2char*sf2alpha1Ziu*sf2alpha1Zid - alphasfp2char*betasf2char*sf2beta1Ziu*sf2beta1Zid)*rj;
+      coupcombo6sfp2sf2 = -rj*fabs(mneutralinoi)*mfp*(-betasfp2char*betasf2char*sf2beta1Ziu*sf2alpha1Zid - alphasfp2char*alphasf2char*sf2alpha1Ziu*sf2beta1Zid);
+      coupcombo7sfp2sf2 = fabs(mcharginoj)*mf*(-alphasfp2char*betasf2char*sf2alpha1Ziu*sf2alpha1Zid + betasfp2char*alphasf2char*sf2beta1Ziu*sf2beta1Zid);
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+    errorflag = -1;
     }
     
     double int1sfp2sf2 = 0, int2sfp2sf2 = 0, int3sfp2sf2 = 0, int4sfp2sf2 = 0, int5sfp2sf2 = 0, int6sfp2sf2 = 0, int7sfp2sf2 = 0, int8sfp2sf2 = 0;
@@ -15283,16 +16093,15 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     ///Sfp 2 Sf 1 interference
     
     double coupcombo1sfp2sf1 = 0, coupcombo2sfp2sf1 = 0, coupcombo3sfp2sf1 = 0, coupcombo4sfp2sf1 = 0, coupcombo5sfp2sf1 = 0, coupcombo6sfp2sf1 = 0, coupcombo7sfp2sf1 = 0, coupcombo8sfp2sf1 = 0;
-    coupcombo8sfp2sf1 = -2*fabs(mneutralinoi)*fabs(mcharginoj)*mf*mfp*(sf2beta1Ziu*sf1beta1Zid*alphasfp2char*alphasf1char - sf2alpha1Ziu*sf1alpha1Zid*betasfp2char*betasf1char);
-
+    coupcombo8sfp2sf1 = ri*rc*2*fabs(mneutralinoi)*fabs(mcharginoj)*mf*mfp*(sf2beta1Ziu*sf1beta1Zid*alphasfp2char*alphasf1char - sf2alpha1Ziu*sf1alpha1Zid*betasfp2char*betasf1char);
     if (norc == 'n') {
-      coupcombo1sfp2sf1 = 0.5*(-sf2alpha1Ziu*sf1beta1Zid*betasfp2char*alphasf1char + sf2beta1Ziu*sf1alpha1Zid*alphasfp2char*betasf1char);
-      coupcombo2sfp2sf1 = ri*fabs(mneutralinoi)*fabs(mcharginoj)*(sf2alpha1Ziu*sf1alpha1Zid*alphasfp2char*alphasf1char - sf2beta1Ziu*sf1beta1Zid*betasfp2char*betasf1char);
-      coupcombo3sfp2sf1 = mf*mfp*(-sf2beta1Ziu*sf1alpha1Zid*betasfp2char*alphasf1char + sf2alpha1Ziu*sf1beta1Zid*alphasfp2char*betasf1char);
-      coupcombo4sfp2sf1 = -ri*fabs(mneutralinoi)*mf*(sf2alpha1Ziu*sf1alpha1Zid*betasfp2char*alphasf1char + ri*sf2beta1Ziu*sf1beta1Zid*alphasfp2char*betasf1char);
-      coupcombo5sfp2sf1 = mfp*fabs(mcharginoj)*(sf2beta1Ziu*sf1alpha1Zid*alphasfp2char*alphasf1char - sf2alpha1Ziu*sf1beta1Zid*betasfp2char*betasf1char)*rj;
-      coupcombo6sfp2sf1 = fabs(mneutralinoi)*mfp*(sf2beta1Ziu*sf1beta1Zid*betasfp2char*alphasf1char + ri*sf2alpha1Ziu*sf1alpha1Zid*alphasfp2char*betasf1char);
-      coupcombo7sfp2sf1 = -ri*fabs(mcharginoj)*mf*(sf2alpha1Ziu*sf1beta1Zid*alphasfp2char*alphasf1char + ri*sf2beta1Ziu*sf1alpha1Zid*betasfp2char*betasf1char)*rj;
+      coupcombo1sfp2sf1 = ri*0.5*(-sf2alpha1Ziu*sf1beta1Zid*betasfp2char*alphasf1char + sf2beta1Ziu*sf1alpha1Zid*alphasfp2char*betasf1char);
+      coupcombo2sfp2sf1 = -fabs(mneutralinoi)*fabs(mcharginoj)*(sf2alpha1Ziu*sf1alpha1Zid*alphasfp2char*alphasf1char - sf2beta1Ziu*sf1beta1Zid*betasfp2char*betasf1char);
+      coupcombo3sfp2sf1 = ri*mf*mfp*(-sf2beta1Ziu*sf1alpha1Zid*betasfp2char*alphasf1char + sf2alpha1Ziu*sf1beta1Zid*alphasfp2char*betasf1char);
+      coupcombo4sfp2sf1 = fabs(mneutralinoi)*mf*(sf2alpha1Ziu*sf1alpha1Zid*betasfp2char*alphasf1char + ri*sf2beta1Ziu*sf1beta1Zid*alphasfp2char*betasf1char);
+      coupcombo5sfp2sf1 = ri*mfp*fabs(mcharginoj)*(sf2beta1Ziu*sf1alpha1Zid*alphasfp2char*alphasf1char - sf2alpha1Ziu*sf1beta1Zid*betasfp2char*betasf1char)*rj;
+      coupcombo6sfp2sf1 = -ri*fabs(mneutralinoi)*mfp*(sf2beta1Ziu*sf1beta1Zid*betasfp2char*alphasf1char + ri*sf2alpha1Ziu*sf1alpha1Zid*alphasfp2char*betasf1char);
+      coupcombo7sfp2sf1 = -ri*fabs(mcharginoj)*mf*(ri*sf2alpha1Ziu*sf1beta1Zid*alphasfp2char*alphasf1char + sf2beta1Ziu*sf1alpha1Zid*betasfp2char*betasf1char)*rj;
     }
     else if (norc == 'c') {
       coupcombo1sfp2sf1 = -0.5*(-sf2alpha1Ziu*sf1beta1Zid*betasfp2char*alphasf1char - sf2beta1Ziu*sf1alpha1Zid*alphasfp2char*betasf1char);
@@ -15302,6 +16111,10 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       coupcombo5sfp2sf1 = fabs(mcharginoj)*mfp*(alphasf1char*betasfp2char*sf2alpha1Ziu*sf1alpha1Zid + alphasfp2char*betasf1char*sf2beta1Ziu*sf1beta1Zid);
       coupcombo6sfp2sf1 = -fabs(mneutralinoi)*mfp*(-betasfp2char*betasf1char*sf2beta1Ziu*sf1alpha1Zid - alphasfp2char*alphasf1char*sf2alpha1Ziu*sf1beta1Zid);
       coupcombo7sfp2sf1 = fabs(mcharginoj)*mf*(-alphasfp2char*betasf1char*sf2alpha1Ziu*sf1alpha1Zid - betasfp2char*alphasf1char*sf2beta1Ziu*sf1beta1Zid);
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
     }
 
     double int1sfp2sf1 = 0, int2sfp2sf1 = 0, int3sfp2sf1 = 0, int4sfp2sf1 = 0, int5sfp2sf1 = 0, int6sfp2sf1 = 0, int7sfp2sf1 = 0, int8sfp2sf1 = 0;
@@ -15333,7 +16146,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int3WHpm = 2*fabs(m1)*dgauss(gneuticharjffp3WHpmdgauss,fabs(mcharginoj), Eupper3, accuracy);
     int4WHpm = 2*fabs(m1)*dgauss(gneuticharjffp4WHpmdgauss,fabs(mcharginoj), Eupper3, accuracy);
 
-    GammaWHpm = coupcombo1WHpm*int1WHpm + coupcombo2WHpm*int2WHpm + coupcombo3WHpm*int3WHpm + coupcombo4WHpm*int4WHpm;
+    GammaWHpm = coupcombo1WHpm*int1WHpm*rc*rj + coupcombo2WHpm*int2WHpm*rc*rj + coupcombo3WHpm*int3WHpm + coupcombo4WHpm*int4WHpm;
 
     ///W-goldstone interference
     double coupcombo1Wg = 0, coupcombo2Wg = 0, coupcombo3Wg = 0, coupcombo4Wg = 0;
@@ -15354,14 +16167,14 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     
     ///W Sfp 1 interference
     double coupcombo1Wsfp1 = 0, coupcombo2Wsfp1 = 0, coupcombo3Wsfp1 = 0, coupcombo4Wsfp1 = 0, coupcombo5Wsfp1 = 0, coupcombo6Wsfp1 = 0, coupcombo7Wsfp1 = 0, coupcombo8Wsfp1 = 0;
-    coupcombo1Wsfp1 = 2*charneutWcoupL*sf1alpha1Ziu*-g/(pow(2,0.5))*betasfp1char*fabs(mneutralinoi)*mf;
-    coupcombo2Wsfp1 = -2*charneutWcoupL*-sf1beta1Ziu*g/(pow(2,0.5))*alphasfp1char*mfp*fabs(mcharginoj);
-    coupcombo3Wsfp1 = -2*charneutWcoupR*sf1alpha1Ziu*g/(pow(2,0.5))*alphasfp1char*-ri*rc*rj;
-    coupcombo4Wsfp1 = -ri*4*charneutWcoupR*sf1beta1Ziu*g/(pow(2,0.5))*alphasfp1char*fabs(mneutralinoi)*mfp*rj;
-    coupcombo5Wsfp1 = -4*charneutWcoupR*sf1alpha1Ziu*g/(pow(2,0.5))*betasfp1char*mf*fabs(mcharginoj)*rj*-ri;
-    coupcombo6Wsfp1 = 2*charneutWcoupL*sf1alpha1Ziu*g/(pow(2,0.5))*alphasfp1char*fabs(mneutralinoi)*fabs(mcharginoj)*-rc;
-    coupcombo7Wsfp1 = -2*charneutWcoupL*sf1beta1Ziu*g/(pow(2,0.5))*betasfp1char*mfp*mf*-rc;
-    coupcombo8Wsfp1 = 8*charneutWcoupR*sf1beta1Ziu*g/(pow(2,0.5))*betasfp1char*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj)*rj*-rc*ri;
+    coupcombo7Wsfp1 = -2*charneutWcoupL*sf1beta1Ziu*g/(pow(2,0.5))*betasfp1char*mfp*mf;
+    coupcombo8Wsfp1 = 8*charneutWcoupR*sf1beta1Ziu*g/(pow(2,0.5))*betasfp1char*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj)*ri*rj;
+    coupcombo1Wsfp1 = 2*charneutWcoupL*sf1alpha1Ziu*-g/(pow(2,0.5))*betasfp1char*fabs(mneutralinoi)*mf*rj;
+    coupcombo2Wsfp1 = rc*2*charneutWcoupL*-sf1beta1Ziu*g/(pow(2,0.5))*alphasfp1char*mfp*fabs(mcharginoj)*rj;
+    coupcombo3Wsfp1 = rc*2*charneutWcoupR*sf1alpha1Ziu*g/(pow(2,0.5))*alphasfp1char*ri*rj;
+    coupcombo4Wsfp1 = rc*ri*4*charneutWcoupR*sf1beta1Ziu*g/(pow(2,0.5))*alphasfp1char*fabs(mneutralinoi)*mfp;
+    coupcombo5Wsfp1 = 4*charneutWcoupR*sf1alpha1Ziu*g/(pow(2,0.5))*betasfp1char*mf*fabs(mcharginoj)*ri;
+    coupcombo6Wsfp1 = -rc*2*charneutWcoupL*sf1alpha1Ziu*g/(pow(2,0.5))*alphasfp1char*fabs(mneutralinoi)*fabs(mcharginoj);
 
     double intW1Sfp1 = 0, intW2Sfp1 = 0, intW3Sfp1 = 0, intW4Sfp1 = 0, intW5Sfp1 = 0, intW6Sfp1 = 0, intW7Sfp1 = 0, intW8Sfp1 = 0;
     m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp1;
@@ -15378,12 +16191,12 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
 
     /// W Sfp 2 interference
     double coupcombo1Wsfp2 = 0, coupcombo2Wsfp2 = 0, coupcombo3Wsfp2 = 0, coupcombo4Wsfp2 = 0, coupcombo5Wsfp2 = 0, coupcombo6Wsfp2 = 0, coupcombo7Wsfp2 = 0, coupcombo8Wsfp2 = 0;
-    coupcombo1Wsfp2 = -2*charneutWcoupL*sf2alpha1Ziu*-g/(pow(2,0.5))*betasfp2char*fabs(mneutralinoi)*-mf*rj;
+    coupcombo1Wsfp2 = rc*2*charneutWcoupL*sf2alpha1Ziu*-g/(pow(2,0.5))*betasfp2char*fabs(mneutralinoi)*-mf*rj;
     coupcombo2Wsfp2 = -ri*2*charneutWcoupL*-sf2beta1Ziu*g/(pow(2,0.5))*alphasfp2char*mfp*fabs(mcharginoj)*rj;
-    coupcombo3Wsfp2 = -2*charneutWcoupR*sf2alpha1Ziu*g/(pow(2,0.5))*alphasfp2char*rc*ri;
+    coupcombo3Wsfp2 = 2*charneutWcoupR*sf2alpha1Ziu*g/(pow(2,0.5))*alphasfp2char*ri;
     coupcombo4Wsfp2 = -4*charneutWcoupR*sf2beta1Ziu*g/(pow(2,0.5))*alphasfp2char*fabs(mneutralinoi)*mfp;
-    coupcombo5Wsfp2 = 4*charneutWcoupR*sf2alpha1Ziu*g/(pow(2,0.5))*betasfp2char*mf*fabs(mcharginoj)*ri;
-    coupcombo6Wsfp2 = 2*charneutWcoupL*sf2alpha1Ziu*g/(pow(2,0.5))*alphasfp2char*fabs(mneutralinoi)*fabs(mcharginoj)*rj*rc;
+    coupcombo5Wsfp2 = -rc*4*charneutWcoupR*sf2alpha1Ziu*g/(pow(2,0.5))*betasfp2char*mf*fabs(mcharginoj)*ri;
+    coupcombo6Wsfp2 = -2*charneutWcoupL*sf2alpha1Ziu*g/(pow(2,0.5))*alphasfp2char*fabs(mneutralinoi)*fabs(mcharginoj)*rj;
     coupcombo7Wsfp2 = 2*charneutWcoupL*sf2beta1Ziu*g/(pow(2,0.5))*betasfp2char*mfp*mf*rj*-ri*rc;
     coupcombo8Wsfp2 = 8*charneutWcoupR*sf2beta1Ziu*g/(pow(2,0.5))*betasfp2char*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj)*rc;
 
@@ -15404,13 +16217,13 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     double coupcombo1Wsf1 = 0, coupcombo2Wsf1 = 0, coupcombo3Wsf1 = 0, coupcombo4Wsf1 = 0, coupcombo5Wsf1 = 0, coupcombo6Wsf1 = 0, coupcombo7Wsf1 = 0, coupcombo8Wsf1 = 0;
 
     coupcombo6Wsf1 = 2*charneutWcoupR*sf1alpha1Zid*g/(pow(2,0.5))*alphasf1char*fabs(mneutralinoi)*fabs(mcharginoj)*-rc;
-    coupcombo7Wsf1 = 2*charneutWcoupR*sf1beta1Zid*g/(pow(2,0.5))*betasf1char*mf*mfp*rc;
-    coupcombo8Wsf1 = 8*charneutWcoupL*sf1beta1Zid*g/(pow(2,0.5))*betasf1char*fabs(mneutralinoi)*mf*mfp*fabs(mcharginoj)*rj*-ri*rc;
+    coupcombo7Wsf1 = -2*charneutWcoupR*sf1beta1Zid*g/(pow(2,0.5))*betasf1char*mf*mfp;
+    coupcombo8Wsf1 = -8*charneutWcoupL*sf1beta1Zid*g/(pow(2,0.5))*betasf1char*fabs(mneutralinoi)*mf*mfp*fabs(mcharginoj)*rj*-ri;
     if (norc == 'n') {
       coupcombo1Wsf1 = -2*charneutWcoupR*sf1alpha1Zid*-g/(pow(2,0.5))*betasf1char*fabs(mneutralinoi)*-mfp;
-      coupcombo2Wsf1 = -2*charneutWcoupR*-sf1beta1Zid*g/(pow(2,0.5))*alphasf1char*mf*fabs(mcharginoj)*rj;
+      coupcombo2Wsf1 = 2*charneutWcoupR*-sf1beta1Zid*g/(pow(2,0.5))*alphasf1char*mf*fabs(mcharginoj)*rj;
       coupcombo3Wsf1 = 2*charneutWcoupR*sf1alpha1Zid*g/(pow(2,0.5))*alphasf1char;
-      coupcombo4Wsf1 = -ri*4*charneutWcoupL*sf1beta1Zid*g/(pow(2,0.5))*alphasf1char*fabs(mneutralinoi)*mf;
+      coupcombo4Wsf1 = ri*4*charneutWcoupL*sf1beta1Zid*g/(pow(2,0.5))*alphasf1char*fabs(mneutralinoi)*mf;
       coupcombo5Wsf1 = ri*4*charneutWcoupL*sf1alpha1Zid*g/(pow(2,0.5))*betasf1char*mfp*fabs(mcharginoj)*rj;
     }
     else if (norc == 'c') {
@@ -15419,6 +16232,10 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       coupcombo3Wsf1 = 2*charneutWcoupL*alphasf1char*-g/pow(2,0.5)*sf1alpha1Zid*ri*rj;
       coupcombo4Wsf1 = -4*charneutWcoupL*betasf1char*-g/pow(2,0.5)*sf1alpha1Zid*fabs(mneutralinoi)*mf*ri*rj;
       coupcombo5Wsf1 = -4*charneutWcoupL*alphasf1char*g/pow(2,0.5)*sf1beta1Zid*mfp*fabs(mcharginoj)*rj;
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
     }
 
     double intW1Sf1 = 0, intW2Sf1 = 0, intW3Sf1 = 0, intW4Sf1 = 0, intW5Sf1 = 0, intW6Sf1 = 0, intW7Sf1 = 0, intW8Sf1 = 0;
@@ -15436,22 +16253,26 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
 
     ///W Sf2 interference
     double coupcombo1Wsf2 = 0, coupcombo2Wsf2 = 0, coupcombo3Wsf2 = 0, coupcombo4Wsf2 = 0, coupcombo5Wsf2 = 0, coupcombo6Wsf2 = 0, coupcombo7Wsf2 = 0, coupcombo8Wsf2 = 0;
-    coupcombo6Wsf2 = 2*charneutWcoupR*sf2alpha1Zid*g/(pow(2,0.5))*alphasf2char*fabs(mneutralinoi)*fabs(mcharginoj)*-ri;
-    coupcombo7Wsf2 = -2*charneutWcoupR*sf2beta1Zid*g/(pow(2,0.5))*betasf2char*mf*mfp*rj*-ri;
-    coupcombo8Wsf2 = -8*charneutWcoupL*sf2beta1Zid*g/(pow(2,0.5))*betasf2char*fabs(mneutralinoi)*mf*mfp*fabs(mcharginoj);
+    coupcombo6Wsf2 = 2*charneutWcoupR*sf2alpha1Zid*g/(pow(2,0.5))*alphasf2char*fabs(mneutralinoi)*fabs(mcharginoj)*rj*rc;
+    coupcombo7Wsf2 = -2*charneutWcoupR*sf2beta1Zid*g/(pow(2,0.5))*betasf2char*mf*mfp*rc;
+    coupcombo8Wsf2 = 8*charneutWcoupL*sf2beta1Zid*g/(pow(2,0.5))*betasf2char*fabs(mneutralinoi)*mf*mfp*fabs(mcharginoj)*rj*rc*ri;
     if (norc == 'n') {
-      coupcombo1Wsf2 = 2*charneutWcoupR*sf2alpha1Zid*-g/(pow(2,0.5))*betasf2char*fabs(mneutralinoi)*-mfp*ri;
-      coupcombo2Wsf2 = 2*charneutWcoupR*-sf2beta1Zid*g/(pow(2,0.5))*alphasf2char*mf*fabs(mcharginoj)*rj*ri;
-      coupcombo3Wsf2 = 2*charneutWcoupR*sf2alpha1Zid*g/(pow(2,0.5))*alphasf2char*ri;
-      coupcombo4Wsf2 = 4*charneutWcoupL*sf2beta1Zid*g/(pow(2,0.5))*alphasf2char*fabs(mneutralinoi)*mf;
-      coupcombo5Wsf2 = -4*charneutWcoupL*sf2alpha1Zid*g/(pow(2,0.5))*betasf2char*mfp*fabs(mcharginoj)*rj;
+      coupcombo1Wsf2 = -2*charneutWcoupR*sf2alpha1Zid*-g/(pow(2,0.5))*betasf2char*fabs(mneutralinoi)*-mfp;
+      coupcombo2Wsf2 = -2*charneutWcoupR*-sf2beta1Zid*g/(pow(2,0.5))*alphasf2char*mf*fabs(mcharginoj)*rj;
+      coupcombo3Wsf2 = -2*charneutWcoupR*sf2alpha1Zid*g/(pow(2,0.5))*alphasf2char;
+      coupcombo4Wsf2 = -4*charneutWcoupL*sf2beta1Zid*g/(pow(2,0.5))*alphasf2char*fabs(mneutralinoi)*mf*ri;
+      coupcombo5Wsf2 = 4*charneutWcoupL*sf2alpha1Zid*g/(pow(2,0.5))*betasf2char*mfp*fabs(mcharginoj)*rj*ri;
     }
     else if (norc == 'c') {
-      coupcombo1Wsf2 = 2*charneutWcoupR*alphasf2char*-g/pow(2,0.5)*sf2beta1Zid*fabs(mneutralinoi)*-mfp*ri;
-      coupcombo2Wsf2 = 2*charneutWcoupR*betasf2char*-g/pow(2,0.5)*sf2alpha1Zid*mf*fabs(mcharginoj)*rj;
-      coupcombo3Wsf2 = -2*charneutWcoupL*alphasf2char*-g/pow(2,0.5)*sf2alpha1Zid*ri*rj;
-      coupcombo4Wsf2 = -4*charneutWcoupL*betasf2char*-g/pow(2,0.5)*sf2alpha1Zid*fabs(mneutralinoi)*mf*ri;
-      coupcombo5Wsf2 = -4*charneutWcoupL*alphasf2char*g/pow(2,0.5)*sf2beta1Zid*mfp*fabs(mcharginoj)*rj;
+      coupcombo1Wsf2 = 2*charneutWcoupR*alphasf2char*-g/pow(2,0.5)*sf2beta1Zid*fabs(mneutralinoi)*mfp*ri*rj*rc;
+      coupcombo2Wsf2 = 2*charneutWcoupR*betasf2char*g/pow(2,0.5)*sf2alpha1Zid*mf*fabs(mcharginoj)*rc;
+      coupcombo3Wsf2 = -2*charneutWcoupL*alphasf2char*g/pow(2,0.5)*sf2alpha1Zid*ri*rc;
+      coupcombo4Wsf2 = -4*charneutWcoupL*betasf2char*g/pow(2,0.5)*sf2alpha1Zid*fabs(mneutralinoi)*mf*ri*rj*rc;
+      coupcombo5Wsf2 = 4*charneutWcoupL*alphasf2char*g/pow(2,0.5)*sf2beta1Zid*mfp*fabs(mcharginoj)*rc;
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
     }
 
     double intW1Sf2 = 0, intW2Sf2 = 0, intW3Sf2 = 0, intW4Sf2 = 0, intW5Sf2 = 0, intW6Sf2 = 0, intW7Sf2 = 0, intW8Sf2 = 0;
@@ -15486,24 +16307,28 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     ///goldstone - sfp1 interference
     double coupcombo1gsfp1 = 0, coupcombo2gsfp1 = 0, coupcombo3gsfp1 = 0, coupcombo4gsfp1 = 0, coupcombo5gsfp1 = 0, coupcombo6gsfp1 = 0, coupcombo7gsfp1 = 0, coupcombo8gsfp1 = 0; 
     if (norc == 'n') {
-      coupcombo1gsfp1 = -0.5*(coupHpm1charneutR*sf1alpha1Ziu*coupHpm1ffpd*betasfp1char + coupHpm1charneutL*sf1beta1Ziu*coupHpm1ffpu*alphasfp1char);
+      coupcombo1gsfp1 = 0.5*(coupHpm1charneutR*sf1alpha1Ziu*coupHpm1ffpd*betasfp1char + coupHpm1charneutL*sf1beta1Ziu*coupHpm1ffpu*alphasfp1char);
       coupcombo2gsfp1 = (coupHpm1charneutR*sf1beta1Ziu*coupHpm1ffpu*betasfp1char + coupHpm1charneutL*sf1alpha1Ziu*coupHpm1ffpd*alphasfp1char)*fabs(mneutralinoi)*-mf;
       coupcombo3gsfp1 = (coupHpm1charneutL*-sf1beta1Ziu*coupHpm1ffpd*betasfp1char - coupHpm1charneutR*sf1alpha1Ziu*coupHpm1ffpu*alphasfp1char)*mfp*fabs(mcharginoj)*-ri;
       coupcombo4gsfp1 = (coupHpm1charneutR*-sf1beta1Ziu*coupHpm1ffpd*betasfp1char + coupHpm1charneutL*sf1alpha1Ziu*coupHpm1ffpu*-alphasfp1char)*fabs(mneutralinoi)*-mfp;
-      coupcombo5gsfp1 = -(coupHpm1charneutL*sf1beta1Ziu*coupHpm1ffpu*betasfp1char + ri*coupHpm1charneutR*sf1alpha1Ziu*coupHpm1ffpd*alphasfp1char)*mf*fabs(mcharginoj);
-      coupcombo6gsfp1 = -ri*(coupHpm1charneutL*sf1alpha1Ziu*coupHpm1ffpd*betasfp1char + coupHpm1charneutR*sf1beta1Ziu*coupHpm1ffpu*alphasfp1char)*fabs(mneutralinoi)*fabs(mcharginoj);
-      coupcombo7gsfp1 = (coupHpm1charneutR*sf1alpha1Ziu*coupHpm1ffpu*betasfp1char + coupHpm1charneutL*sf1beta1Ziu*coupHpm1ffpd*alphasfp1char)*mfp*mf;
-      coupcombo8gsfp1 = 2*(coupHpm1charneutL*sf1alpha1Ziu*coupHpm1ffpu*betasfp1char + ri*coupHpm1charneutR*sf1beta1Ziu*coupHpm1ffpd*alphasfp1char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj);
+      coupcombo5gsfp1 = -(-coupHpm1charneutL*sf1beta1Ziu*coupHpm1ffpu*betasfp1char + ri*coupHpm1charneutR*sf1alpha1Ziu*coupHpm1ffpd*alphasfp1char)*mf*fabs(mcharginoj);
+      coupcombo6gsfp1 = ri*(coupHpm1charneutL*sf1alpha1Ziu*coupHpm1ffpd*betasfp1char + coupHpm1charneutR*sf1beta1Ziu*coupHpm1ffpu*alphasfp1char)*fabs(mneutralinoi)*fabs(mcharginoj);
+      coupcombo7gsfp1 = -(coupHpm1charneutR*sf1alpha1Ziu*coupHpm1ffpu*betasfp1char + coupHpm1charneutL*sf1beta1Ziu*coupHpm1ffpd*alphasfp1char)*mfp*mf;
+      coupcombo8gsfp1 = 2*(coupHpm1charneutL*sf1alpha1Ziu*coupHpm1ffpu*betasfp1char - ri*coupHpm1charneutR*sf1beta1Ziu*coupHpm1ffpd*alphasfp1char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj);
     }
     else if (norc == 'c') {
-      coupcombo1gsfp1 = 0.5*(coupHpm1charneutL*betasfp1char*coupHpm1ffpu*sf1alpha1Ziu + rj*coupHpm1charneutR*alphasfp1char*coupHpm1ffpd*sf1beta1Ziu);
+      coupcombo1gsfp1 = -0.5*(coupHpm1charneutL*betasfp1char*coupHpm1ffpu*sf1alpha1Ziu + rj*coupHpm1charneutR*alphasfp1char*coupHpm1ffpd*sf1beta1Ziu);
       coupcombo2gsfp1 = (coupHpm1charneutL*alphasfp1char*coupHpm1ffpd*sf1alpha1Ziu + rj*coupHpm1charneutR*betasfp1char*coupHpm1ffpu*sf1beta1Ziu)*fabs(mneutralinoi)*mfp;
       coupcombo3gsfp1 = -(coupHpm1charneutR*alphasfp1char*coupHpm1ffpu*sf1alpha1Ziu + rj*coupHpm1charneutL*betasfp1char*coupHpm1ffpd*sf1beta1Ziu)*mf*fabs(mcharginoj)*rj;
       coupcombo4gsfp1 = -(coupHpm1charneutL*alphasfp1char*coupHpm1ffpu*sf1alpha1Ziu + rj*coupHpm1charneutR*betasfp1char*coupHpm1ffpd*sf1beta1Ziu)*fabs(mneutralinoi)*mf;
       coupcombo5gsfp1 = (rj*coupHpm1charneutR*alphasfp1char*coupHpm1ffpd*sf1alpha1Ziu + coupHpm1charneutL*betasfp1char*coupHpm1ffpu*sf1beta1Ziu)*mfp*fabs(mcharginoj);
-      coupcombo6gsfp1 = (rj*coupHpm1charneutR*betasfp1char*coupHpm1ffpu*sf1alpha1Ziu + coupHpm1charneutL*alphasfp1char*coupHpm1ffpd*sf1beta1Ziu)*fabs(mcharginoj)*fabs(mneutralinoi);
-      coupcombo7gsfp1 = -(rj*coupHpm1charneutL*betasfp1char*coupHpm1ffpd*sf1alpha1Ziu + coupHpm1charneutR*alphasfp1char*coupHpm1ffpu*sf1beta1Ziu)*mf*mfp*rj;
-      coupcombo8gsfp1 = -2*(rj*coupHpm1charneutR*betasfp1char*coupHpm1ffpd*sf1alpha1Ziu + coupHpm1charneutL*alphasfp1char*coupHpm1ffpu*sf1beta1Ziu)*mf*mfp*fabs(mcharginoj)*fabs(mneutralinoi);
+      coupcombo6gsfp1 = -(rj*coupHpm1charneutR*betasfp1char*coupHpm1ffpu*sf1alpha1Ziu + coupHpm1charneutL*alphasfp1char*coupHpm1ffpd*sf1beta1Ziu)*fabs(mcharginoj)*fabs(mneutralinoi);
+      coupcombo7gsfp1 = (rj*coupHpm1charneutL*betasfp1char*coupHpm1ffpd*sf1alpha1Ziu + coupHpm1charneutR*alphasfp1char*coupHpm1ffpu*sf1beta1Ziu)*mf*mfp*rj;
+      coupcombo8gsfp1 = 2*(rj*coupHpm1charneutR*betasfp1char*coupHpm1ffpd*sf1alpha1Ziu + coupHpm1charneutL*alphasfp1char*coupHpm1ffpu*sf1beta1Ziu)*mf*mfp*fabs(mcharginoj)*fabs(mneutralinoi);
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
     }
 
     double int1gsfp1 = 0, int2gsfp1 = 0, int3gsfp1 = 0, int4gsfp1 = 0, int5gsfp1 = 0, int6gsfp1 = 0, int7gsfp1 = 0, int8gsfp1 = 0;
@@ -15528,20 +16353,24 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       int7gsfp1 = 2*fabs(m1)*dgauss(gneuticharjffp7gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
       int8gsfp1 = 2*fabs(m1)*dgauss(gneuticharjffp8gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
     }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+    errorflag = -1;
+    }
 
     Gammagsfp1 = coupcombo1gsfp1*int1gsfp1 + coupcombo2gsfp1*int2gsfp1 + coupcombo3gsfp1*int3gsfp1 + coupcombo4gsfp1*int4gsfp1 + coupcombo5gsfp1*int5gsfp1 + coupcombo6gsfp1*int6gsfp1 + coupcombo7gsfp1*int7gsfp1 + coupcombo8gsfp1*int8gsfp1;
 
     ///goldstone - sfp2 interference
     double coupcombo1gsfp2 = 0, coupcombo2gsfp2 = 0, coupcombo3gsfp2 = 0, coupcombo4gsfp2 = 0, coupcombo5gsfp2 = 0, coupcombo6gsfp2 = 0, coupcombo7gsfp2 = 0, coupcombo8gsfp2 = 0; 
     if (norc == 'n') {
-      coupcombo1gsfp2 = -ri*0.5*(ri*coupHpm1charneutR*sf2alpha1Ziu*coupHpm1ffpd*-betasfp2char + coupHpm1charneutL*sf2beta1Ziu*coupHpm1ffpu*alphasfp2char);
-      coupcombo2gsfp2 = -(coupHpm1charneutR*sf2beta1Ziu*coupHpm1ffpu*-betasfp2char - coupHpm1charneutL*sf2alpha1Ziu*coupHpm1ffpd*alphasfp2char)*fabs(mneutralinoi)*mf;
-      coupcombo3gsfp2 = (coupHpm1charneutL*-sf2beta1Ziu*coupHpm1ffpd*-betasfp2char - coupHpm1charneutR*sf2alpha1Ziu*coupHpm1ffpu*alphasfp2char)*mfp*fabs(mcharginoj)*rj*ri;
-      coupcombo4gsfp2 = (coupHpm1charneutR*-sf2beta1Ziu*coupHpm1ffpd*-betasfp2char + ri*coupHpm1charneutL*sf2alpha1Ziu*coupHpm1ffpu*-alphasfp2char)*fabs(mneutralinoi)*mfp*ri;
-      coupcombo5gsfp2 = -ri*(coupHpm1charneutL*sf2beta1Ziu*coupHpm1ffpu*-betasfp2char - coupHpm1charneutR*sf2alpha1Ziu*coupHpm1ffpd*alphasfp2char)*mf*fabs(mcharginoj)*rj;
-      coupcombo6gsfp2 = -(ri*coupHpm1charneutL*sf2alpha1Ziu*coupHpm1ffpd*-betasfp2char + coupHpm1charneutR*sf2beta1Ziu*coupHpm1ffpu*alphasfp2char)*fabs(mneutralinoi)*fabs(mcharginoj);
-      coupcombo7gsfp2 = ri*(ri*coupHpm1charneutR*sf2alpha1Ziu*coupHpm1ffpu*-betasfp2char + coupHpm1charneutL*sf2beta1Ziu*coupHpm1ffpd*alphasfp2char)*mfp*mf;
-      coupcombo8gsfp2 = ri*2*(coupHpm1charneutL*sf2alpha1Ziu*coupHpm1ffpu*-betasfp2char + ri*coupHpm1charneutR*sf2beta1Ziu*coupHpm1ffpd*alphasfp2char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj);
+      coupcombo1gsfp2 = -0.5*(ri*coupHpm1charneutR*sf2alpha1Ziu*coupHpm1ffpd*-betasfp2char + coupHpm1charneutL*sf2beta1Ziu*coupHpm1ffpu*alphasfp2char);
+      coupcombo2gsfp2 = -ri*(coupHpm1charneutR*sf2beta1Ziu*coupHpm1ffpu*-betasfp2char + coupHpm1charneutL*sf2alpha1Ziu*coupHpm1ffpd*alphasfp2char)*fabs(mneutralinoi)*mf;
+      coupcombo3gsfp2 = -(coupHpm1charneutL*-sf2beta1Ziu*coupHpm1ffpd*-betasfp2char - coupHpm1charneutR*sf2alpha1Ziu*coupHpm1ffpu*alphasfp2char)*mfp*fabs(mcharginoj)*rj;
+      coupcombo4gsfp2 = -(coupHpm1charneutR*-sf2beta1Ziu*coupHpm1ffpd*-betasfp2char + ri*coupHpm1charneutL*sf2alpha1Ziu*coupHpm1ffpu*-alphasfp2char)*fabs(mneutralinoi)*mfp;
+      coupcombo5gsfp2 = -(coupHpm1charneutL*sf2beta1Ziu*coupHpm1ffpu*-betasfp2char - coupHpm1charneutR*sf2alpha1Ziu*coupHpm1ffpd*alphasfp2char)*mf*fabs(mcharginoj)*rj;
+      coupcombo6gsfp2 = -(coupHpm1charneutL*sf2alpha1Ziu*coupHpm1ffpd*-betasfp2char + ri*coupHpm1charneutR*sf2beta1Ziu*coupHpm1ffpu*alphasfp2char)*fabs(mneutralinoi)*fabs(mcharginoj);
+      coupcombo7gsfp2 = (ri*coupHpm1charneutR*sf2alpha1Ziu*coupHpm1ffpu*-betasfp2char + coupHpm1charneutL*sf2beta1Ziu*coupHpm1ffpd*alphasfp2char)*mfp*mf;
+      coupcombo8gsfp2 = 2*(coupHpm1charneutL*sf2alpha1Ziu*coupHpm1ffpu*-betasfp2char + ri*coupHpm1charneutR*sf2beta1Ziu*coupHpm1ffpd*alphasfp2char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj);
     }
     else if (norc == 'c') {
       coupcombo1gsfp2 = 0.5*(coupHpm1charneutL*betasfp2char*coupHpm1ffpu*sf2alpha1Ziu*rj + coupHpm1charneutR*alphasfp2char*coupHpm1ffpd*sf2beta1Ziu);
@@ -15552,6 +16381,10 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       coupcombo6gsfp2 = (rj*coupHpm1charneutR*betasfp2char*coupHpm1ffpu*sf2alpha1Ziu + coupHpm1charneutL*alphasfp2char*coupHpm1ffpd*sf2beta1Ziu)*fabs(mcharginoj)*fabs(mneutralinoi)*rj;
       coupcombo7gsfp2 = -(rj*coupHpm1charneutL*betasfp2char*coupHpm1ffpd*sf2alpha1Ziu + coupHpm1charneutR*alphasfp2char*coupHpm1ffpu*sf2beta1Ziu)*mf*mfp;
       coupcombo8gsfp2 = -2*(rj*coupHpm1charneutR*betasfp2char*coupHpm1ffpd*sf2alpha1Ziu + coupHpm1charneutL*alphasfp2char*coupHpm1ffpu*sf2beta1Ziu)*mf*mfp*fabs(mcharginoj)*fabs(mneutralinoi)*rj;
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
     }
 
     double int1gsfp2 = 0, int2gsfp2 = 0, int3gsfp2 = 0, int4gsfp2 = 0, int5gsfp2 = 0, int6gsfp2 = 0, int7gsfp2 = 0, int8gsfp2 = 0;
@@ -15576,30 +16409,38 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       int7gsfp2 = 2*fabs(m1)*dgauss(gneuticharjffp7gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
       int8gsfp2 = 2*fabs(m1)*dgauss(gneuticharjffp8gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
     }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
+    }
 
     Gammagsfp2 = coupcombo1gsfp2*int1gsfp2 + coupcombo2gsfp2*int2gsfp2 + coupcombo3gsfp2*int3gsfp2 + coupcombo4gsfp2*int4gsfp2 + coupcombo5gsfp2*int5gsfp2 + coupcombo6gsfp2*int6gsfp2 + coupcombo7gsfp2*int7gsfp2 + coupcombo8gsfp2*int8gsfp2;
 
     ///H+ - sfp1 interference
     double coupcombo1Hpmsfp1 = 0, coupcombo2Hpmsfp1 = 0, coupcombo3Hpmsfp1 = 0, coupcombo4Hpmsfp1 = 0, coupcombo5Hpmsfp1 = 0, coupcombo6Hpmsfp1 = 0, coupcombo7Hpmsfp1 = 0, coupcombo8Hpmsfp1 = 0; 
     if (norc == 'n') {
-      coupcombo1Hpmsfp1 = 0.5*(coupHpm2charneutR*sf1alpha1Ziu*coupHpm2ffpd*betasfp1char + ri*coupHpm2charneutL*sf1beta1Ziu*coupHpm2ffpu*alphasfp1char)*-ri;
+      coupcombo1Hpmsfp1 = 0.5*(coupHpm2charneutR*sf1alpha1Ziu*coupHpm2ffpd*betasfp1char - ri*coupHpm2charneutL*sf1beta1Ziu*coupHpm2ffpu*alphasfp1char)*-ri;
       coupcombo2Hpmsfp1 = (coupHpm2charneutR*sf1beta1Ziu*coupHpm2ffpu*betasfp1char + coupHpm2charneutL*sf1alpha1Ziu*coupHpm2ffpd*alphasfp1char)*fabs(mneutralinoi)*-mf;
       coupcombo3Hpmsfp1 = (coupHpm2charneutL*-sf1beta1Ziu*coupHpm2ffpd*betasfp1char - coupHpm2charneutR*sf1alpha1Ziu*coupHpm2ffpu*alphasfp1char)*mfp*fabs(mcharginoj)*-ri;
-      coupcombo4Hpmsfp1 = (ri*coupHpm2charneutR*-sf1beta1Ziu*coupHpm2ffpd*betasfp1char + coupHpm2charneutL*sf1alpha1Ziu*coupHpm2ffpu*-alphasfp1char)*fabs(mneutralinoi)*-mfp;
+      coupcombo4Hpmsfp1 = (-ri*coupHpm2charneutR*-sf1beta1Ziu*coupHpm2ffpd*betasfp1char + coupHpm2charneutL*sf1alpha1Ziu*coupHpm2ffpu*-alphasfp1char)*fabs(mneutralinoi)*-mfp;
       coupcombo5Hpmsfp1 = (coupHpm2charneutL*sf1beta1Ziu*coupHpm2ffpu*betasfp1char + coupHpm2charneutR*sf1alpha1Ziu*coupHpm2ffpd*alphasfp1char)*mf*fabs(mcharginoj)*-ri;
-      coupcombo6Hpmsfp1 = -ri*(coupHpm2charneutL*sf1alpha1Ziu*coupHpm2ffpd*betasfp1char + coupHpm2charneutR*sf1beta1Ziu*coupHpm2ffpu*alphasfp1char)*fabs(mneutralinoi)*fabs(mcharginoj);
-      coupcombo7Hpmsfp1 = (coupHpm2charneutR*sf1alpha1Ziu*coupHpm2ffpu*betasfp1char + coupHpm2charneutL*sf1beta1Ziu*coupHpm2ffpd*alphasfp1char)*mfp*mf;
-      coupcombo8Hpmsfp1 = 2*ri*(coupHpm2charneutL*sf1alpha1Ziu*coupHpm2ffpu*betasfp1char + coupHpm2charneutR*sf1beta1Ziu*coupHpm2ffpd*alphasfp1char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj);
+      coupcombo6Hpmsfp1 = ri*(coupHpm2charneutL*sf1alpha1Ziu*coupHpm2ffpd*betasfp1char + coupHpm2charneutR*sf1beta1Ziu*coupHpm2ffpu*alphasfp1char)*fabs(mneutralinoi)*fabs(mcharginoj);
+      coupcombo7Hpmsfp1 = -(coupHpm2charneutR*sf1alpha1Ziu*coupHpm2ffpu*betasfp1char + coupHpm2charneutL*sf1beta1Ziu*coupHpm2ffpd*alphasfp1char)*mfp*mf;
+      coupcombo8Hpmsfp1 = -2*ri*(coupHpm2charneutL*sf1alpha1Ziu*coupHpm2ffpu*betasfp1char + coupHpm2charneutR*sf1beta1Ziu*coupHpm2ffpd*alphasfp1char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj);
     }
     else if (norc == 'c') {
-      coupcombo1Hpmsfp1 = 0.5*(coupHpm2charneutL*betasfp1char*coupHpm2ffpu*sf1alpha1Ziu + rj*coupHpm2charneutR*alphasfp1char*coupHpm2ffpd*sf1beta1Ziu);
+      coupcombo1Hpmsfp1 = rj*0.5*(coupHpm2charneutL*betasfp1char*coupHpm2ffpu*sf1alpha1Ziu + rj*coupHpm2charneutR*alphasfp1char*coupHpm2ffpd*sf1beta1Ziu);
       coupcombo2Hpmsfp1 = (coupHpm2charneutL*alphasfp1char*coupHpm2ffpd*sf1alpha1Ziu + rj*coupHpm2charneutR*betasfp1char*coupHpm2ffpu*sf1beta1Ziu)*fabs(mneutralinoi)*mfp;
       coupcombo3Hpmsfp1 = -(rj*coupHpm2charneutR*alphasfp1char*coupHpm2ffpu*sf1alpha1Ziu + coupHpm2charneutL*betasfp1char*coupHpm2ffpd*sf1beta1Ziu)*mf*fabs(mcharginoj);
       coupcombo4Hpmsfp1 = -(coupHpm2charneutL*alphasfp1char*coupHpm2ffpu*sf1alpha1Ziu + rj*coupHpm2charneutR*betasfp1char*coupHpm2ffpd*sf1beta1Ziu)*fabs(mneutralinoi)*mf;
       coupcombo5Hpmsfp1 = (rj*coupHpm2charneutR*alphasfp1char*coupHpm2ffpd*sf1alpha1Ziu + coupHpm2charneutL*betasfp1char*coupHpm2ffpu*sf1beta1Ziu)*mfp*fabs(mcharginoj);
-      coupcombo6Hpmsfp1 = (rj*coupHpm2charneutR*betasfp1char*coupHpm2ffpu*sf1alpha1Ziu + coupHpm2charneutL*alphasfp1char*coupHpm2ffpd*sf1beta1Ziu)*fabs(mcharginoj)*fabs(mneutralinoi);
-      coupcombo7Hpmsfp1 = -(coupHpm2charneutL*betasfp1char*coupHpm2ffpd*sf1alpha1Ziu + rj*coupHpm2charneutR*alphasfp1char*coupHpm2ffpu*sf1beta1Ziu)*mf*mfp;
-      coupcombo8Hpmsfp1 = -2*(rj*coupHpm2charneutR*betasfp1char*coupHpm2ffpd*sf1alpha1Ziu + coupHpm2charneutL*alphasfp1char*coupHpm2ffpu*sf1beta1Ziu)*mf*mfp*fabs(mcharginoj)*fabs(mneutralinoi);
+      coupcombo6Hpmsfp1 = (coupHpm2charneutR*betasfp1char*coupHpm2ffpu*sf1alpha1Ziu + rj*coupHpm2charneutL*alphasfp1char*coupHpm2ffpd*sf1beta1Ziu)*fabs(mcharginoj)*fabs(mneutralinoi);
+      coupcombo7Hpmsfp1 = -(rj*coupHpm2charneutL*betasfp1char*coupHpm2ffpd*sf1alpha1Ziu + coupHpm2charneutR*alphasfp1char*coupHpm2ffpu*sf1beta1Ziu)*mf*mfp;
+      coupcombo8Hpmsfp1 = -2*(coupHpm2charneutR*betasfp1char*coupHpm2ffpd*sf1alpha1Ziu + rj*coupHpm2charneutL*alphasfp1char*coupHpm2ffpu*sf1beta1Ziu)*mf*mfp*fabs(mcharginoj)*fabs(mneutralinoi);
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
     }
 
     double int1Hpmsfp1 = 0, int2Hpmsfp1 = 0, int3Hpmsfp1 = 0, int4Hpmsfp1 = 0, int5Hpmsfp1 = 0, int6Hpmsfp1 = 0, int7Hpmsfp1 = 0, int8Hpmsfp1 = 0;
@@ -15624,20 +16465,24 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       int7Hpmsfp1 = 2*fabs(m1)*dgauss(gneuticharjffp7gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
       int8Hpmsfp1 = 2*fabs(m1)*dgauss(gneuticharjffp8gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
     }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
+    }
 
     GammaHpmsfp1 = coupcombo1Hpmsfp1*int1Hpmsfp1 + coupcombo2Hpmsfp1*int2Hpmsfp1 + coupcombo3Hpmsfp1*int3Hpmsfp1 + coupcombo4Hpmsfp1*int4Hpmsfp1 + coupcombo5Hpmsfp1*int5Hpmsfp1 + coupcombo6Hpmsfp1*int6Hpmsfp1 + coupcombo7Hpmsfp1*int7Hpmsfp1 + coupcombo8Hpmsfp1*int8Hpmsfp1;
 
     ///H+ - sfp2 interference
     double coupcombo1Hpmsfp2 = 0, coupcombo2Hpmsfp2 = 0, coupcombo3Hpmsfp2 = 0, coupcombo4Hpmsfp2 = 0, coupcombo5Hpmsfp2 = 0, coupcombo6Hpmsfp2 = 0, coupcombo7Hpmsfp2 = 0, coupcombo8Hpmsfp2 = 0; 
     if (norc == 'n') {
-      coupcombo1Hpmsfp2 = -ri*0.5*(-coupHpm2charneutR*sf2alpha1Ziu*coupHpm2ffpd*-betasfp2char + coupHpm2charneutL*sf2beta1Ziu*coupHpm2ffpu*alphasfp2char);
-      coupcombo2Hpmsfp2 = (coupHpm2charneutR*sf2beta1Ziu*coupHpm2ffpu*-betasfp2char - coupHpm2charneutL*sf2alpha1Ziu*coupHpm2ffpd*alphasfp2char)*fabs(mneutralinoi)*-mf;
-      coupcombo3Hpmsfp2 = -(coupHpm2charneutL*-sf2beta1Ziu*coupHpm2ffpd*-betasfp2char + ri*coupHpm2charneutR*sf2alpha1Ziu*coupHpm2ffpu*alphasfp2char)*mfp*fabs(mcharginoj);
-      coupcombo4Hpmsfp2 = -(coupHpm2charneutR*-sf2beta1Ziu*coupHpm2ffpd*-betasfp2char - coupHpm2charneutL*sf2alpha1Ziu*coupHpm2ffpu*-alphasfp2char)*fabs(mneutralinoi)*mfp;
-      coupcombo5Hpmsfp2 = (coupHpm2charneutL*sf2beta1Ziu*coupHpm2ffpu*-betasfp2char + coupHpm2charneutR*sf2alpha1Ziu*coupHpm2ffpd*alphasfp2char)*mf*fabs(mcharginoj)*rj*ri;
-      coupcombo6Hpmsfp2 = -(ri*coupHpm2charneutL*sf2alpha1Ziu*coupHpm2ffpd*-betasfp2char + coupHpm2charneutR*sf2beta1Ziu*coupHpm2ffpu*alphasfp2char)*fabs(mneutralinoi)*fabs(mcharginoj);
-      coupcombo7Hpmsfp2 = ri*(ri*coupHpm2charneutR*sf2alpha1Ziu*coupHpm2ffpu*-betasfp2char + coupHpm2charneutL*sf2beta1Ziu*coupHpm2ffpd*alphasfp2char)*mfp*mf;
-      coupcombo8Hpmsfp2 = 2*(coupHpm2charneutL*sf2alpha1Ziu*coupHpm2ffpu*-betasfp2char + coupHpm2charneutR*sf2beta1Ziu*coupHpm2ffpd*alphasfp2char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj);
+      coupcombo1Hpmsfp2 = -0.5*(-ri*coupHpm2charneutR*sf2alpha1Ziu*coupHpm2ffpd*-betasfp2char + coupHpm2charneutL*sf2beta1Ziu*coupHpm2ffpu*alphasfp2char);
+      coupcombo2Hpmsfp2 = ri*(coupHpm2charneutR*sf2beta1Ziu*coupHpm2ffpu*-betasfp2char + coupHpm2charneutL*sf2alpha1Ziu*coupHpm2ffpd*alphasfp2char)*fabs(mneutralinoi)*-mf;
+      coupcombo3Hpmsfp2 = -ri*(coupHpm2charneutL*-sf2beta1Ziu*coupHpm2ffpd*-betasfp2char - ri*coupHpm2charneutR*sf2alpha1Ziu*coupHpm2ffpu*alphasfp2char)*mfp*fabs(mcharginoj);
+      coupcombo4Hpmsfp2 = -(ri*coupHpm2charneutR*-sf2beta1Ziu*coupHpm2ffpd*-betasfp2char - coupHpm2charneutL*sf2alpha1Ziu*coupHpm2ffpu*-alphasfp2char)*fabs(mneutralinoi)*mfp;
+      coupcombo5Hpmsfp2 = -(coupHpm2charneutL*sf2beta1Ziu*coupHpm2ffpu*-betasfp2char + coupHpm2charneutR*sf2alpha1Ziu*coupHpm2ffpd*alphasfp2char)*mf*fabs(mcharginoj)*rj;
+      coupcombo6Hpmsfp2 = -(coupHpm2charneutL*sf2alpha1Ziu*coupHpm2ffpd*-betasfp2char + ri*coupHpm2charneutR*sf2beta1Ziu*coupHpm2ffpu*alphasfp2char)*fabs(mneutralinoi)*fabs(mcharginoj);
+      coupcombo7Hpmsfp2 = (ri*coupHpm2charneutR*sf2alpha1Ziu*coupHpm2ffpu*-betasfp2char + coupHpm2charneutL*sf2beta1Ziu*coupHpm2ffpd*alphasfp2char)*mfp*mf;
+      coupcombo8Hpmsfp2 = 2*ri*(coupHpm2charneutL*sf2alpha1Ziu*coupHpm2ffpu*-betasfp2char + coupHpm2charneutR*sf2beta1Ziu*coupHpm2ffpd*alphasfp2char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj);
     }
     else if (norc == 'c') {
       coupcombo1Hpmsfp2 = 0.5*(rj*coupHpm2charneutL*betasfp2char*coupHpm2ffpu*sf2alpha1Ziu + coupHpm2charneutR*alphasfp2char*coupHpm2ffpd*sf2beta1Ziu);
@@ -15648,6 +16493,10 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       coupcombo6Hpmsfp2 = (coupHpm2charneutR*betasfp2char*coupHpm2ffpu*sf2alpha1Ziu + rj*coupHpm2charneutL*alphasfp2char*coupHpm2ffpd*sf2beta1Ziu)*fabs(mcharginoj)*fabs(mneutralinoi);
       coupcombo7Hpmsfp2 = -(rj*coupHpm2charneutL*betasfp2char*coupHpm2ffpd*sf2alpha1Ziu + coupHpm2charneutR*alphasfp2char*coupHpm2ffpu*sf2beta1Ziu)*mf*mfp;
       coupcombo8Hpmsfp2 = -2*(coupHpm2charneutR*betasfp2char*coupHpm2ffpd*sf2alpha1Ziu + rj*coupHpm2charneutL*alphasfp2char*coupHpm2ffpu*sf2beta1Ziu)*mf*mfp*fabs(mcharginoj)*fabs(mneutralinoi);
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
     }
 
     double int1Hpmsfp2 = 0, int2Hpmsfp2 = 0, int3Hpmsfp2 = 0, int4Hpmsfp2 = 0, int5Hpmsfp2 = 0, int6Hpmsfp2 = 0, int7Hpmsfp2 = 0, int8Hpmsfp2 = 0;
@@ -15672,20 +16521,24 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       int7Hpmsfp2 = 2*fabs(m1)*dgauss(gneuticharjffp7gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
       int8Hpmsfp2 = 2*fabs(m1)*dgauss(gneuticharjffp8gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
     }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+    errorflag = -1;
+    }
 
     GammaHpmsfp2 = coupcombo1Hpmsfp2*int1Hpmsfp2 + coupcombo2Hpmsfp2*int2Hpmsfp2 + coupcombo3Hpmsfp2*int3Hpmsfp2 + coupcombo4Hpmsfp2*int4Hpmsfp2 + coupcombo5Hpmsfp2*int5Hpmsfp2 + coupcombo6Hpmsfp2*int6Hpmsfp2 + coupcombo7Hpmsfp2*int7Hpmsfp2 + coupcombo8Hpmsfp2*int8Hpmsfp2;
 
     ///goldstone - sf1 interference
     double coupcombo1gsf1 = 0, coupcombo2gsf1 = 0, coupcombo3gsf1 = 0, coupcombo4gsf1 = 0, coupcombo5gsf1 = 0, coupcombo6gsf1 = 0, coupcombo7gsf1 = 0, coupcombo8gsf1 = 0; 
     if (norc == 'n') {
-      coupcombo1gsf1 = -ri*0.5*(ri*coupHpm1charneutR*-sf1beta1Zid*coupHpm1ffpd*-alphasf1char + coupHpm1charneutL*-sf1alpha1Zid*coupHpm1ffpu*-betasf1char);
+      coupcombo1gsf1 = -ri*0.5*(-ri*coupHpm1charneutR*-sf1beta1Zid*coupHpm1ffpd*-alphasf1char + coupHpm1charneutL*-sf1alpha1Zid*coupHpm1ffpu*-betasf1char);
       coupcombo2gsf1 = (coupHpm1charneutR*-sf1alpha1Zid*coupHpm1ffpu*-alphasf1char + ri*coupHpm1charneutL*-sf1beta1Zid*coupHpm1ffpd*-betasf1char)*fabs(mneutralinoi)*-mfp;
       coupcombo3gsf1 = (coupHpm1charneutL*sf1alpha1Zid*coupHpm1ffpd*-alphasf1char - ri*coupHpm1charneutR*-sf1beta1Zid*coupHpm1ffpu*-betasf1char)*mf*fabs(mcharginoj)*-ri;
-      coupcombo4gsf1 = (coupHpm1charneutR*sf1alpha1Zid*coupHpm1ffpd*-alphasf1char + ri*coupHpm1charneutL*-sf1beta1Zid*coupHpm1ffpu*betasf1char)*fabs(mneutralinoi)*-mf;
+      coupcombo4gsf1 = (coupHpm1charneutR*sf1alpha1Zid*coupHpm1ffpd*-alphasf1char + ri*coupHpm1charneutL*sf1beta1Zid*coupHpm1ffpu*betasf1char)*fabs(mneutralinoi)*-mf;
       coupcombo5gsf1 = (coupHpm1charneutL*-sf1alpha1Zid*coupHpm1ffpu*-alphasf1char + ri*coupHpm1charneutR*-sf1beta1Zid*coupHpm1ffpd*-betasf1char)*mfp*fabs(mcharginoj)*-ri;
-      coupcombo6gsf1 = (coupHpm1charneutL*-sf1beta1Zid*coupHpm1ffpd*-alphasf1char + ri*coupHpm1charneutR*-sf1alpha1Zid*coupHpm1ffpu*-betasf1char)*fabs(mneutralinoi)*fabs(mcharginoj)*-ri;
-      coupcombo7gsf1 = (ri*coupHpm1charneutR*-sf1beta1Zid*coupHpm1ffpu*-alphasf1char + coupHpm1charneutL*-sf1alpha1Zid*coupHpm1ffpd*-betasf1char)*mfp*mf*ri;
-      coupcombo8gsf1 = 2*(ri*coupHpm1charneutL*-sf1beta1Zid*coupHpm1ffpu*-alphasf1char + coupHpm1charneutR*-sf1alpha1Zid*coupHpm1ffpd*-betasf1char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj);
+      coupcombo6gsf1 = (-coupHpm1charneutL*-sf1beta1Zid*coupHpm1ffpd*-alphasf1char + ri*coupHpm1charneutR*-sf1alpha1Zid*coupHpm1ffpu*-betasf1char)*fabs(mneutralinoi)*fabs(mcharginoj)*-ri;
+      coupcombo7gsf1 = (-ri*coupHpm1charneutR*-sf1beta1Zid*coupHpm1ffpu*-alphasf1char + coupHpm1charneutL*-sf1alpha1Zid*coupHpm1ffpd*-betasf1char)*mfp*mf*ri;
+      coupcombo8gsf1 = -2*(ri*coupHpm1charneutL*-sf1beta1Zid*coupHpm1ffpu*-alphasf1char + coupHpm1charneutR*-sf1alpha1Zid*coupHpm1ffpd*-betasf1char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj);
     }
     else if (norc == 'c') {
       coupcombo1gsf1 = 0.5*(rj*coupHpm1charneutL*betasf1char*coupHpm1ffpu*sf1alpha1Zid + coupHpm1charneutR*alphasf1char*coupHpm1ffpd*sf1beta1Zid);
@@ -15696,6 +16549,10 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       coupcombo6gsf1 = (coupHpm1charneutR*betasf1char*coupHpm1ffpu*sf1alpha1Zid + rj*coupHpm1charneutL*alphasf1char*coupHpm1ffpd*sf1beta1Zid)*fabs(mcharginoj)*fabs(mneutralinoi);
       coupcombo7gsf1 = -(rj*coupHpm1charneutL*betasf1char*coupHpm1ffpd*sf1alpha1Zid + coupHpm1charneutR*alphasf1char*coupHpm1ffpu*sf1beta1Zid)*mf*mfp;
       coupcombo8gsf1 = -2*(coupHpm1charneutR*betasf1char*coupHpm1ffpd*sf1alpha1Zid + rj*coupHpm1charneutL*alphasf1char*coupHpm1ffpu*sf1beta1Zid)*mf*mfp*fabs(mcharginoj)*fabs(mneutralinoi);
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
     }
 
     double int1gsf1 = 0, int2gsf1 = 0, int3gsf1 = 0, int4gsf1 = 0, int5gsf1 = 0, int6gsf1 = 0, int7gsf1 = 0, int8gsf1 = 0;
@@ -15720,30 +16577,36 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       int7gsf1 = 2*fabs(m1)*dgauss(gneuticharjffp7gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
       int8gsf1 = 2*fabs(m1)*dgauss(gneuticharjffp8gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
     }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+    }
 
     Gammagsf1 = coupcombo1gsf1*int1gsf1 + coupcombo2gsf1*int2gsf1 + coupcombo3gsf1*int3gsf1 + coupcombo4gsf1*int4gsf1 + coupcombo5gsf1*int5gsf1 + coupcombo6gsf1*int6gsf1 + coupcombo7gsf1*int7gsf1 + coupcombo8gsf1*int8gsf1;
 
     ///goldstone - sf2 interference
     double coupcombo1gsf2 = 0, coupcombo2gsf2 = 0, coupcombo3gsf2 = 0, coupcombo4gsf2 = 0, coupcombo5gsf2 = 0, coupcombo6gsf2 = 0, coupcombo7gsf2 = 0, coupcombo8gsf2 = 0; 
     if (norc == 'n') {
-      coupcombo1gsf2 = 0.5*(ri*coupHpm1charneutR*-sf2beta1Zid*coupHpm1ffpd*-alphasf2char + coupHpm1charneutL*-sf2alpha1Zid*coupHpm1ffpu*-betasf2char);
-      coupcombo2gsf2 = (ri*coupHpm1charneutR*-sf2alpha1Zid*coupHpm1ffpu*-alphasf2char + coupHpm1charneutL*-sf2beta1Zid*coupHpm1ffpd*-betasf2char)*fabs(mneutralinoi)*-mfp;
-      coupcombo3gsf2 = (ri*coupHpm1charneutL*sf2alpha1Zid*coupHpm1ffpd*-alphasf2char - coupHpm1charneutR*-sf2beta1Zid*coupHpm1ffpu*-betasf2char)*mf*fabs(mcharginoj)*-ri;
-      coupcombo4gsf2 = (ri*coupHpm1charneutR*sf2alpha1Zid*coupHpm1ffpd*-alphasf2char + coupHpm1charneutL*-sf2beta1Zid*coupHpm1ffpu*betasf2char)*fabs(mneutralinoi)*-mf;
-      coupcombo5gsf2 = (ri*coupHpm1charneutL*-sf2alpha1Zid*coupHpm1ffpu*-alphasf2char + coupHpm1charneutR*-sf2beta1Zid*coupHpm1ffpd*-betasf2char)*mfp*fabs(mcharginoj)*-ri;
-      coupcombo6gsf2 = (coupHpm1charneutL*-sf2beta1Zid*coupHpm1ffpd*-alphasf2char + ri*coupHpm1charneutR*-sf2alpha1Zid*coupHpm1ffpu*-betasf2char)*fabs(mneutralinoi)*fabs(mcharginoj)*rj;
-      coupcombo7gsf2 = -(ri*coupHpm1charneutR*-sf2beta1Zid*coupHpm1ffpu*-alphasf2char + coupHpm1charneutL*-sf2alpha1Zid*coupHpm1ffpd*-betasf2char)*mfp*mf;
-      coupcombo8gsf2 = -2*(coupHpm1charneutL*-sf2beta1Zid*coupHpm1ffpu*-alphasf2char + ri*coupHpm1charneutR*-sf2alpha1Zid*coupHpm1ffpd*-betasf2char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj)*rj;
+      coupcombo1gsf2 = -0.5*(coupHpm1charneutR*-sf2beta1Zid*coupHpm1ffpd*-alphasf2char + ri*coupHpm1charneutL*-sf2alpha1Zid*coupHpm1ffpu*-betasf2char);
+      coupcombo2gsf2 = -(coupHpm1charneutR*-sf2alpha1Zid*coupHpm1ffpu*-alphasf2char + ri*coupHpm1charneutL*-sf2beta1Zid*coupHpm1ffpd*-betasf2char)*fabs(mneutralinoi)*-mfp;
+      coupcombo3gsf2 = (ri*coupHpm1charneutL*sf2alpha1Zid*coupHpm1ffpd*-alphasf2char - coupHpm1charneutR*-sf2beta1Zid*coupHpm1ffpu*-betasf2char)*mf*fabs(mcharginoj);
+      coupcombo4gsf2 = -(coupHpm1charneutR*sf2alpha1Zid*coupHpm1ffpd*-alphasf2char + ri*coupHpm1charneutL*-sf2beta1Zid*coupHpm1ffpu*betasf2char)*fabs(mneutralinoi)*-mf;
+      coupcombo5gsf2 = (ri*coupHpm1charneutL*-sf2alpha1Zid*coupHpm1ffpu*-alphasf2char + coupHpm1charneutR*-sf2beta1Zid*coupHpm1ffpd*-betasf2char)*mfp*fabs(mcharginoj);
+      coupcombo6gsf2 = -(ri*coupHpm1charneutL*-sf2beta1Zid*coupHpm1ffpd*-alphasf2char + coupHpm1charneutR*-sf2alpha1Zid*coupHpm1ffpu*-betasf2char)*fabs(mneutralinoi)*fabs(mcharginoj)*rj;
+      coupcombo7gsf2 = (coupHpm1charneutR*-sf2beta1Zid*coupHpm1ffpu*-alphasf2char + ri*coupHpm1charneutL*-sf2alpha1Zid*coupHpm1ffpd*-betasf2char)*mfp*mf;
+      coupcombo8gsf2 = 2*(ri*coupHpm1charneutL*-sf2beta1Zid*coupHpm1ffpu*-alphasf2char + coupHpm1charneutR*-sf2alpha1Zid*coupHpm1ffpd*-betasf2char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj)*rj;
     }
     else if (norc == 'c') {
-      coupcombo1gsf2 = 0.5*(coupHpm1charneutL*betasf2char*coupHpm1ffpu*sf2alpha1Zid - rj*coupHpm1charneutR*alphasf2char*coupHpm1ffpd*sf2beta1Zid);
-      coupcombo2gsf2 = (coupHpm1charneutL*alphasf2char*coupHpm1ffpd*sf2alpha1Zid - rj*coupHpm1charneutR*betasf2char*coupHpm1ffpu*sf2beta1Zid)*fabs(mneutralinoi)*mf;
-      coupcombo3gsf2 = (-rj*coupHpm1charneutR*alphasf2char*coupHpm1ffpu*sf2alpha1Zid + coupHpm1charneutL*betasf2char*coupHpm1ffpd*sf2beta1Zid)*mfp*fabs(mcharginoj);
-      coupcombo4gsf2 = -(coupHpm1charneutL*alphasf2char*coupHpm1ffpu*sf2alpha1Zid + rj*coupHpm1charneutR*betasf2char*coupHpm1ffpd*sf2beta1Zid)*fabs(mneutralinoi)*mfp;
-      coupcombo5gsf2 = -(-rj*coupHpm1charneutR*alphasf2char*coupHpm1ffpd*sf2alpha1Zid + coupHpm1charneutL*betasf2char*coupHpm1ffpu*sf2beta1Zid)*mf*fabs(mcharginoj);
-      coupcombo6gsf2 = rj*(coupHpm1charneutR*betasf2char*coupHpm1ffpu*sf2alpha1Zid + coupHpm1charneutL*alphasf2char*coupHpm1ffpd*sf2beta1Zid)*fabs(mcharginoj)*fabs(mneutralinoi);
-      coupcombo7gsf2 = rj*(coupHpm1charneutL*betasf2char*coupHpm1ffpd*sf2alpha1Zid + coupHpm1charneutR*alphasf2char*coupHpm1ffpu*sf2beta1Zid)*mf*mfp;
-      coupcombo8gsf2 = 2*(rj*coupHpm1charneutR*betasf2char*coupHpm1ffpd*sf2alpha1Zid + coupHpm1charneutL*alphasf2char*coupHpm1ffpu*sf2beta1Zid)*mf*mfp*fabs(mcharginoj)*fabs(mneutralinoi);
+      coupcombo1gsf2 = -0.5*rj*(coupHpm1charneutL*betasf2char*coupHpm1ffpu*sf2alpha1Zid - coupHpm1charneutR*alphasf2char*coupHpm1ffpd*sf2beta1Zid);
+      coupcombo2gsf2 = -(coupHpm1charneutL*alphasf2char*coupHpm1ffpd*sf2alpha1Zid - rj*coupHpm1charneutR*betasf2char*coupHpm1ffpu*sf2beta1Zid)*fabs(mneutralinoi)*mf;
+      coupcombo3gsf2 = -(-rj*coupHpm1charneutR*alphasf2char*coupHpm1ffpu*sf2alpha1Zid + coupHpm1charneutL*betasf2char*coupHpm1ffpd*sf2beta1Zid)*mfp*fabs(mcharginoj);
+      coupcombo4gsf2 = (coupHpm1charneutL*alphasf2char*coupHpm1ffpu*sf2alpha1Zid + rj*coupHpm1charneutR*betasf2char*coupHpm1ffpd*sf2beta1Zid)*fabs(mneutralinoi)*mfp;
+      coupcombo5gsf2 = -(rj*coupHpm1charneutR*alphasf2char*coupHpm1ffpd*sf2alpha1Zid + coupHpm1charneutL*betasf2char*coupHpm1ffpu*sf2beta1Zid)*mf*fabs(mcharginoj);
+      coupcombo6gsf2 = (coupHpm1charneutR*betasf2char*coupHpm1ffpu*sf2alpha1Zid + coupHpm1charneutL*alphasf2char*coupHpm1ffpd*sf2beta1Zid)*fabs(mcharginoj)*fabs(mneutralinoi);
+      coupcombo7gsf2 = -rj*(coupHpm1charneutL*betasf2char*coupHpm1ffpd*sf2alpha1Zid + coupHpm1charneutR*alphasf2char*coupHpm1ffpu*sf2beta1Zid)*mf*mfp;
+      coupcombo8gsf2 = -2*(rj*coupHpm1charneutR*betasf2char*coupHpm1ffpd*sf2alpha1Zid + coupHpm1charneutL*alphasf2char*coupHpm1ffpu*sf2beta1Zid)*mf*mfp*fabs(mcharginoj)*fabs(mneutralinoi);
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
     }
 
     double int1gsf2 = 0, int2gsf2 = 0, int3gsf2 = 0, int4gsf2 = 0, int5gsf2 = 0, int6gsf2 = 0, int7gsf2 = 0, int8gsf2 = 0;
@@ -15768,20 +16631,23 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       int7gsf2 = 2*fabs(m1)*dgauss(gneuticharjffp7gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
       int8gsf2 = 2*fabs(m1)*dgauss(gneuticharjffp8gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
     }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+    }
 
     Gammagsf2 = coupcombo1gsf2*int1gsf2 + coupcombo2gsf2*int2gsf2 + coupcombo3gsf2*int3gsf2 + coupcombo4gsf2*int4gsf2 + coupcombo5gsf2*int5gsf2 + coupcombo6gsf2*int6gsf2 + coupcombo7gsf2*int7gsf2 + coupcombo8gsf2*int8gsf2;
 
     //Hpm - sf1 interference
     double coupcombo1Hpmsf1 = 0, coupcombo2Hpmsf1 = 0, coupcombo3Hpmsf1 = 0, coupcombo4Hpmsf1 = 0, coupcombo5Hpmsf1 = 0, coupcombo6Hpmsf1 = 0, coupcombo7Hpmsf1 = 0, coupcombo8Hpmsf1 = 0; 
     if (norc == 'n') {
-      coupcombo1Hpmsf1 = -0.5*(coupHpm2charneutR*sf1beta1Zid*coupHpm2ffpd*alphasf1char + coupHpm2charneutL*sf1alpha1Zid*coupHpm2ffpu*betasf1char);
+      coupcombo1Hpmsf1 = 0.5*(coupHpm2charneutR*sf1beta1Zid*coupHpm2ffpd*alphasf1char + coupHpm2charneutL*sf1alpha1Zid*coupHpm2ffpu*betasf1char);
       coupcombo2Hpmsf1 = -(coupHpm2charneutR*sf1alpha1Zid*coupHpm2ffpu*alphasf1char + coupHpm2charneutL*sf1beta1Zid*coupHpm2ffpd*betasf1char)*fabs(mneutralinoi)*mfp;
       coupcombo3Hpmsf1 = (-coupHpm2charneutL*sf1alpha1Zid*coupHpm2ffpd*alphasf1char - coupHpm2charneutR*sf1beta1Zid*coupHpm2ffpu*betasf1char)*mf*fabs(mcharginoj)*-ri;
       coupcombo4Hpmsf1 = (-coupHpm2charneutR*sf1alpha1Zid*coupHpm2ffpd*alphasf1char - coupHpm2charneutL*sf1beta1Zid*coupHpm2ffpu*betasf1char)*fabs(mneutralinoi)*-mf;
-      coupcombo5Hpmsf1 = (coupHpm2charneutL*-sf1alpha1Zid*coupHpm2ffpu*-alphasf1char + ri*coupHpm2charneutR*-sf1beta1Zid*coupHpm2ffpd*-betasf1char)*mfp*fabs(mcharginoj)*-ri;
-      coupcombo6Hpmsf1 = -(ri*coupHpm2charneutL*-sf1beta1Zid*coupHpm2ffpd*-alphasf1char + coupHpm2charneutR*-sf1alpha1Zid*coupHpm2ffpu*-betasf1char)*fabs(mneutralinoi)*fabs(mcharginoj);
-      coupcombo7Hpmsf1 = ri*(ri*coupHpm2charneutR*-sf1beta1Zid*coupHpm2ffpu*-alphasf1char + coupHpm2charneutL*-sf1alpha1Zid*coupHpm2ffpd*-betasf1char)*mfp*mf;
-      coupcombo8Hpmsf1 = 2*(ri*coupHpm2charneutL*-sf1beta1Zid*coupHpm2ffpu*-alphasf1char + coupHpm2charneutR*-sf1alpha1Zid*coupHpm2ffpd*-betasf1char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj);
+      coupcombo5Hpmsf1 = (coupHpm2charneutL*-sf1alpha1Zid*coupHpm2ffpu*-alphasf1char - ri*coupHpm2charneutR*-sf1beta1Zid*coupHpm2ffpd*-betasf1char)*mfp*fabs(mcharginoj)*-ri;
+      coupcombo6Hpmsf1 = -(-ri*coupHpm2charneutL*-sf1beta1Zid*coupHpm2ffpd*-alphasf1char + coupHpm2charneutR*-sf1alpha1Zid*coupHpm2ffpu*-betasf1char)*fabs(mneutralinoi)*fabs(mcharginoj);
+      coupcombo7Hpmsf1 = (-coupHpm2charneutR*-sf1beta1Zid*coupHpm2ffpu*-alphasf1char + ri*coupHpm2charneutL*-sf1alpha1Zid*coupHpm2ffpd*-betasf1char)*mfp*mf;
+      coupcombo8Hpmsf1 = 2*(-ri*coupHpm2charneutL*-sf1beta1Zid*coupHpm2ffpu*-alphasf1char + coupHpm2charneutR*-sf1alpha1Zid*coupHpm2ffpd*-betasf1char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj);
     }
     else if (norc == 'c') {
       coupcombo1Hpmsf1 = 0.5*(rj*coupHpm2charneutL*betasf1char*coupHpm2ffpu*sf1alpha1Zid + coupHpm2charneutR*alphasf1char*coupHpm2ffpd*sf1beta1Zid);
@@ -15792,6 +16658,10 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       coupcombo6Hpmsf1 = (coupHpm2charneutR*betasf1char*coupHpm2ffpu*sf1alpha1Zid + rj*coupHpm2charneutL*alphasf1char*coupHpm2ffpd*sf1beta1Zid)*fabs(mcharginoj)*fabs(mneutralinoi);
       coupcombo7Hpmsf1 = -(rj*coupHpm2charneutL*betasf1char*coupHpm2ffpd*sf1alpha1Zid + coupHpm2charneutR*alphasf1char*coupHpm2ffpu*sf1beta1Zid)*mf*mfp;
       coupcombo8Hpmsf1 = -2*(coupHpm2charneutR*betasf1char*coupHpm2ffpd*sf1alpha1Zid + rj*coupHpm2charneutL*alphasf1char*coupHpm2ffpu*sf1beta1Zid)*mf*mfp*fabs(mcharginoj)*fabs(mneutralinoi);
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+    errorflag = -1;
     }
 
     double int1Hpmsf1 = 0, int2Hpmsf1 = 0, int3Hpmsf1 = 0, int4Hpmsf1 = 0, int5Hpmsf1 = 0, int6Hpmsf1 = 0, int7Hpmsf1 = 0, int8Hpmsf1 = 0;
@@ -15816,30 +16686,38 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       int7Hpmsf1 = 2*fabs(m1)*dgauss(gneuticharjffp7gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
       int8Hpmsf1 = 2*fabs(m1)*dgauss(gneuticharjffp8gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
     }    
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
+    }
 
     GammaHpmsf1 = coupcombo1Hpmsf1*int1Hpmsf1 + coupcombo2Hpmsf1*int2Hpmsf1 + coupcombo3Hpmsf1*int3Hpmsf1 + coupcombo4Hpmsf1*int4Hpmsf1 + coupcombo5Hpmsf1*int5Hpmsf1 + coupcombo6Hpmsf1*int6Hpmsf1 + coupcombo7Hpmsf1*int7Hpmsf1 + coupcombo8Hpmsf1*int8Hpmsf1;
 
     ///Hpm - sf2 interference
     double coupcombo1Hpmsf2 = 0, coupcombo2Hpmsf2 = 0, coupcombo3Hpmsf2 = 0, coupcombo4Hpmsf2 = 0, coupcombo5Hpmsf2 = 0, coupcombo6Hpmsf2 = 0, coupcombo7Hpmsf2 = 0, coupcombo8Hpmsf2 = 0; 
     if (norc == 'n') {
-      coupcombo1Hpmsf2 = 0.5*(coupHpm2charneutR*-sf2beta1Zid*coupHpm2ffpd*-alphasf2char + coupHpm2charneutL*-sf2alpha1Zid*coupHpm2ffpu*-betasf2char)*ri;
-      coupcombo2Hpmsf2 = -ri*(coupHpm2charneutR*-sf2alpha1Zid*coupHpm2ffpu*-alphasf2char + coupHpm2charneutL*-sf2beta1Zid*coupHpm2ffpd*-betasf2char)*fabs(mneutralinoi)*mfp;
-      coupcombo3Hpmsf2 = -(coupHpm2charneutL*sf2alpha1Zid*coupHpm2ffpd*-alphasf2char - coupHpm2charneutR*-sf2beta1Zid*coupHpm2ffpu*-betasf2char)*mf*fabs(mcharginoj);
-      coupcombo4Hpmsf2 = (coupHpm2charneutR*sf2alpha1Zid*coupHpm2ffpd*-alphasf2char + coupHpm2charneutL*-sf2beta1Zid*coupHpm2ffpu*betasf2char)*fabs(mneutralinoi)*mf*-ri;
-      coupcombo5Hpmsf2 = (ri*coupHpm2charneutL*-sf2alpha1Zid*coupHpm2ffpu*-alphasf2char + coupHpm2charneutR*-sf2beta1Zid*coupHpm2ffpd*-betasf2char)*mfp*fabs(mcharginoj)*-ri;
-      coupcombo6Hpmsf2 = (coupHpm2charneutL*-sf2beta1Zid*coupHpm2ffpd*-alphasf2char + coupHpm2charneutR*-sf2alpha1Zid*coupHpm2ffpu*-betasf2char)*fabs(mneutralinoi)*fabs(mcharginoj)*rj;
-      coupcombo7Hpmsf2 = -(coupHpm2charneutR*-sf2beta1Zid*coupHpm2ffpu*-alphasf2char + coupHpm2charneutL*-sf2alpha1Zid*coupHpm2ffpd*-betasf2char)*mfp*mf*ri;
-      coupcombo8Hpmsf2 = -2*(ri*coupHpm2charneutL*-sf2beta1Zid*coupHpm2ffpu*-alphasf2char + coupHpm2charneutR*-sf2alpha1Zid*coupHpm2ffpd*-betasf2char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj)*ri*rj;
+      coupcombo1Hpmsf2 = -0.5*(coupHpm2charneutR*-sf2beta1Zid*coupHpm2ffpd*-alphasf2char + coupHpm2charneutL*-sf2alpha1Zid*coupHpm2ffpu*-betasf2char);
+      coupcombo2Hpmsf2 = (coupHpm2charneutR*-sf2alpha1Zid*coupHpm2ffpu*-alphasf2char + coupHpm2charneutL*-sf2beta1Zid*coupHpm2ffpd*-betasf2char)*fabs(mneutralinoi)*mfp;
+      coupcombo3Hpmsf2 = (coupHpm2charneutL*sf2alpha1Zid*coupHpm2ffpd*-alphasf2char - coupHpm2charneutR*-sf2beta1Zid*coupHpm2ffpu*-betasf2char)*mf*fabs(mcharginoj)*ri;
+      coupcombo4Hpmsf2 = (coupHpm2charneutR*sf2alpha1Zid*coupHpm2ffpd*-alphasf2char + coupHpm2charneutL*-sf2beta1Zid*coupHpm2ffpu*betasf2char)*fabs(mneutralinoi)*mf;
+      coupcombo5Hpmsf2 = (ri*coupHpm2charneutL*-sf2alpha1Zid*coupHpm2ffpu*-alphasf2char + coupHpm2charneutR*-sf2beta1Zid*coupHpm2ffpd*-betasf2char)*mfp*fabs(mcharginoj);
+      coupcombo6Hpmsf2 = -(coupHpm2charneutL*-sf2beta1Zid*coupHpm2ffpd*-alphasf2char + coupHpm2charneutR*-sf2alpha1Zid*coupHpm2ffpu*-betasf2char)*fabs(mneutralinoi)*fabs(mcharginoj)*rj*ri;
+      coupcombo7Hpmsf2 = (coupHpm2charneutR*-sf2beta1Zid*coupHpm2ffpu*-alphasf2char + coupHpm2charneutL*-sf2alpha1Zid*coupHpm2ffpd*-betasf2char)*mfp*mf;
+      coupcombo8Hpmsf2 = 2*(ri*coupHpm2charneutL*-sf2beta1Zid*coupHpm2ffpu*-alphasf2char + coupHpm2charneutR*-sf2alpha1Zid*coupHpm2ffpd*-betasf2char)*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj)*rj;
     }
     else if (norc == 'c') {
-      coupcombo1Hpmsf2 = -0.5*(coupHpm2charneutL*betasf2char*coupHpm2ffpu*sf2alpha1Zid + rj*coupHpm2charneutR*alphasf2char*coupHpm2ffpd*sf2beta1Zid);
-      coupcombo2Hpmsf2 = (coupHpm2charneutL*alphasf2char*coupHpm2ffpd*sf2alpha1Zid - rj*coupHpm2charneutR*betasf2char*coupHpm2ffpu*sf2beta1Zid)*fabs(mneutralinoi)*mf;
-      coupcombo3Hpmsf2 = (-rj*coupHpm2charneutR*alphasf2char*coupHpm2ffpu*sf2alpha1Zid + coupHpm2charneutL*betasf2char*coupHpm2ffpd*sf2beta1Zid)*mfp*fabs(mcharginoj);
-      coupcombo4Hpmsf2 = -(coupHpm2charneutL*alphasf2char*coupHpm2ffpu*sf2alpha1Zid - rj*coupHpm2charneutR*betasf2char*coupHpm2ffpd*sf2beta1Zid)*fabs(mneutralinoi)*mfp;
-      coupcombo5Hpmsf2 = (rj*coupHpm2charneutR*alphasf2char*coupHpm2ffpd*sf2alpha1Zid + coupHpm2charneutL*betasf2char*coupHpm2ffpu*sf2beta1Zid)*mf*fabs(mcharginoj);
-      coupcombo6Hpmsf2 = -(coupHpm2charneutR*betasf2char*coupHpm2ffpu*sf2alpha1Zid + coupHpm2charneutL*alphasf2char*coupHpm2ffpd*sf2beta1Zid)*fabs(mcharginoj)*fabs(mneutralinoi);
-      coupcombo7Hpmsf2 = rj*(coupHpm2charneutL*betasf2char*coupHpm2ffpd*sf2alpha1Zid + coupHpm2charneutR*alphasf2char*coupHpm2ffpu*sf2beta1Zid)*mf*mfp;
-      coupcombo8Hpmsf2 = 2*(-rj*coupHpm2charneutR*betasf2char*coupHpm2ffpd*sf2alpha1Zid + coupHpm2charneutL*alphasf2char*coupHpm2ffpu*sf2beta1Zid)*mf*mfp*fabs(mcharginoj)*fabs(mneutralinoi);
+      coupcombo1Hpmsf2 = 0.5*(coupHpm2charneutL*betasf2char*coupHpm2ffpu*sf2alpha1Zid + rj*coupHpm2charneutR*alphasf2char*coupHpm2ffpd*sf2beta1Zid);
+      coupcombo2Hpmsf2 = -(coupHpm2charneutL*alphasf2char*coupHpm2ffpd*sf2alpha1Zid - rj*coupHpm2charneutR*betasf2char*coupHpm2ffpu*sf2beta1Zid)*fabs(mneutralinoi)*mf;
+      coupcombo3Hpmsf2 = -(-rj*coupHpm2charneutR*alphasf2char*coupHpm2ffpu*sf2alpha1Zid + coupHpm2charneutL*betasf2char*coupHpm2ffpd*sf2beta1Zid)*mfp*fabs(mcharginoj);
+      coupcombo4Hpmsf2 = (coupHpm2charneutL*alphasf2char*coupHpm2ffpu*sf2alpha1Zid - rj*coupHpm2charneutR*betasf2char*coupHpm2ffpd*sf2beta1Zid)*fabs(mneutralinoi)*mfp;
+      coupcombo5Hpmsf2 = -(rj*coupHpm2charneutR*alphasf2char*coupHpm2ffpd*sf2alpha1Zid + coupHpm2charneutL*betasf2char*coupHpm2ffpu*sf2beta1Zid)*mf*fabs(mcharginoj);
+      coupcombo6Hpmsf2 = (coupHpm2charneutR*betasf2char*coupHpm2ffpu*sf2alpha1Zid + coupHpm2charneutL*alphasf2char*coupHpm2ffpd*sf2beta1Zid)*fabs(mcharginoj)*fabs(mneutralinoi);
+      coupcombo7Hpmsf2 = -rj*(coupHpm2charneutL*betasf2char*coupHpm2ffpd*sf2alpha1Zid + coupHpm2charneutR*alphasf2char*coupHpm2ffpu*sf2beta1Zid)*mf*mfp;
+      coupcombo8Hpmsf2 = -2*(-rj*coupHpm2charneutR*betasf2char*coupHpm2ffpd*sf2alpha1Zid + coupHpm2charneutL*alphasf2char*coupHpm2ffpu*sf2beta1Zid)*mf*mfp*fabs(mcharginoj)*fabs(mneutralinoi);
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
     }
 
     double int1Hpmsf2 = 0, int2Hpmsf2 = 0, int3Hpmsf2 = 0, int4Hpmsf2 = 0, int5Hpmsf2 = 0, int6Hpmsf2 = 0, int7Hpmsf2 = 0, int8Hpmsf2 = 0;
@@ -15864,22 +16742,30 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       int7Hpmsf2 = 2*fabs(m1)*dgauss(gneuticharjffp7gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
       int8Hpmsf2 = 2*fabs(m1)*dgauss(gneuticharjffp8gsfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
     }  
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
+    }
 
     GammaHpmsf2 = coupcombo1Hpmsf2*int1Hpmsf2 + coupcombo2Hpmsf2*int2Hpmsf2 + coupcombo3Hpmsf2*int3Hpmsf2 + coupcombo4Hpmsf2*int4Hpmsf2 + coupcombo5Hpmsf2*int5Hpmsf2 + coupcombo6Hpmsf2*int6Hpmsf2 + coupcombo7Hpmsf2*int7Hpmsf2 + coupcombo8Hpmsf2*int8Hpmsf2;
 
     ///Sfp Sfp interference
     double coupcombo1sfpsfp = 0, coupcombo2sfpsfp = 0, coupcombo3sfpsfp = 0, coupcombo4sfpsfp = 0;
     if (norc == 'n') {
-      coupcombo1sfpsfp = sf1beta1Ziu*sf2beta1Ziu + sf1alpha1Ziu*sf2alpha1Ziu;
+      coupcombo1sfpsfp = (sf1beta1Ziu*sf2beta1Ziu + sf1alpha1Ziu*sf2alpha1Ziu)*ri;
       coupcombo2sfpsfp = (sf1alpha1Ziu*sf2beta1Ziu + sf1beta1Ziu*sf2alpha1Ziu)*ri;
-      coupcombo3sfpsfp = -alphasfp1char*alphasfp2char + betasfp1char*betasfp2char;
-      coupcombo4sfpsfp = (betasfp1char*alphasfp2char - alphasfp1char*betasfp2char)*rj;
+      coupcombo3sfpsfp = (-alphasfp1char*alphasfp2char + betasfp1char*betasfp2char)*ri;
+      coupcombo4sfpsfp = (betasfp1char*alphasfp2char - alphasfp1char*betasfp2char)*rj*ri;
     }
     else if (norc == 'c') {
-      coupcombo1sfpsfp = -betasfp1char*betasfp2char + alphasfp1char*alphasfp2char;
-      coupcombo2sfpsfp = alphasfp1char*betasfp2char - alphasfp2char*betasfp1char;
-      coupcombo3sfpsfp = (-sf1alpha1Ziu*sf2alpha1Ziu + sf1beta1Ziu*sf2beta1Ziu)*rj;
-      coupcombo4sfpsfp = (-sf1alpha1Ziu*sf2beta1Ziu + sf2alpha1Ziu*sf1beta1Ziu)*rj;
+      coupcombo1sfpsfp = -betasfp1char*betasfp2char + alphasfp1char*alphasfp2char*rj;
+      coupcombo2sfpsfp = rj*alphasfp1char*betasfp2char - alphasfp2char*betasfp1char;
+      coupcombo3sfpsfp = (-sf1alpha1Ziu*sf2alpha1Ziu + rj*sf1beta1Ziu*sf2beta1Ziu);
+      coupcombo4sfpsfp = (-sf1alpha1Ziu*sf2beta1Ziu + rj*sf2alpha1Ziu*sf1beta1Ziu);
+    }
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+    errorflag = -1;
     }
 
     double int1sfpsfp = 0, int2sfpsfp = 0, int3sfpsfp = 0, int4sfpsfp = 0;
@@ -15896,7 +16782,11 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       int3sfpsfp = 2*fabs(m1)*dgauss(gneuticharjffp2sfpsfpdgauss,mfp,Eupper,accuracy);
       int2sfpsfp = 2*fabs(m1)*dgauss(gneuticharjffp3sfpsfpdgauss,mfp,Eupper,accuracy);
       int4sfpsfp = 2*fabs(m1)*dgauss(gneuticharjffp4sfpsfpdgauss,mfp,Eupper,accuracy);
-    } 
+    }    
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
+    }
 
     if (norc == 'n') {
       Gammasfpsfp = 4*coupcombo2sfpsfp*coupcombo4sfpsfp*-fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj)*int1sfpsfp + 2*coupcombo2sfpsfp*coupcombo3sfpsfp*fabs(mneutralinoi)*mfp*int2sfpsfp + 2*coupcombo1sfpsfp*coupcombo4sfpsfp*-mf*fabs(mcharginoj)*int3sfpsfp + coupcombo1sfpsfp*coupcombo3sfpsfp*int4sfpsfp;
@@ -15904,11 +16794,38 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     else if (norc == 'c') {
       Gammasfpsfp = 4*coupcombo2sfpsfp*coupcombo4sfpsfp*-fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj)*int1sfpsfp + 2*coupcombo2sfpsfp*coupcombo3sfpsfp*fabs(mneutralinoi)*mf*int2sfpsfp + 2*coupcombo1sfpsfp*coupcombo4sfpsfp*-mfp*fabs(mcharginoj)*int3sfpsfp + coupcombo1sfpsfp*coupcombo3sfpsfp*int4sfpsfp;
     } 
+    else {
+      throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
+      errorflag = -1;
+    }
 
-    amplitudeW = Nc/(512*pow(PI,3)*pow(fabs(mneutralinoi),3))*(GammaW + Gammasf1 + Gammasf2 + Gammasfp1 + Gammasfp2 -2*Gammasfp1sf1 - 2*Gammasfp1sf2 - 2*Gammasfp2sf1 - 2*Gammasfp2sf2 + 2*GammaWHpm + 2*GammaWgoldstone+ GammaHpm + Gammagoldstone + -2*GammaWSfp1 - 2*GammaWSfp2 - 2*GammaWSf1 - 2*GammaWSf2 + 2*GammaHgoldstone - 2*Gammagsfp1 - 2*Gammagsfp2 - 2*Gammagsf1 - 2*Gammagsf2 - 2*GammaHpmsfp1 - 2*GammaHpmsfp2 - 2*GammaHpmsf1 - 2*GammaHpmsf2 + 2*Gammasfpsfp);
+    double Gammasf1sf2 = 0;
+    ///Sf - Sf interference
+    double coupcombo1sf1sf2 = 0, coupcombo2sf1sf2 = 0, coupcombo3sf1sf2 = 0, coupcombo4sf1sf2 = 0;
+    coupcombo3sf1sf2 = -(rc*sf1alpha1Zid*sf2alpha1Zid + sf1beta1Zid*sf2beta1Zid)*rj;
+    coupcombo4sf1sf2 = (ri*sf1beta1Zid*sf2alpha1Zid - sf1alpha1Zid*sf2beta1Zid)*rj*rc;
+    coupcombo1sf1sf2 = -(betasf1char*-betasf2char + alphasf1char*alphasf2char)*ri;
+    coupcombo2sf1sf2 = rc*(-alphasf1char*-betasf2char - betasf1char*alphasf2char);
 
+    double int1sf1sf2 = 0, int2sf1sf2 = 0, int3sf1sf2 = 0, int4sf1sf2 = 0;
+    m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msf1, m6 = msf2;
+    int1sf1sf2 = 2*fabs(m1)*dgauss(gneuticharjffp1sf1sf2dgauss,mf,Eupper2,accuracy);
+    int2sf1sf2 = 2*fabs(m1)*dgauss(gneuticharjffp2sf1sf2dgauss,mf,Eupper2,accuracy);
+    int3sf1sf2 = 2*fabs(m1)*dgauss(gneuticharjffp3sf1sf2dgauss,mf,Eupper2,accuracy);
+    int4sf1sf2 = 2*fabs(m1)*dgauss(gneuticharjffp4sf1sf2dgauss,mf,Eupper2,accuracy);
     
+      Gammasf1sf2 = (-rc*ri*coupcombo1sf1sf2*coupcombo3sf1sf2*int4sf1sf2 + 2*ri*coupcombo1sf1sf2*coupcombo4sf1sf2*mf*-fabs(mcharginoj)*int2sf1sf2 -rc*2*coupcombo2sf1sf2*coupcombo3sf1sf2*fabs(mneutralinoi)*mfp*int3sf1sf2 + 4*coupcombo2sf1sf2*coupcombo4sf1sf2*fabs(mneutralinoi)*mf*-fabs(mcharginoj)*mfp*int1sf1sf2);
+   
 
+    amplitudeW = Nc/(512*pow(PI,3)*pow(fabs(mneutralinoi),3))*(GammaW + Gammasf1 + Gammasf2 + Gammasfp1 + Gammasfp2 -2*Gammasfp1sf1 - 2*Gammasfp1sf2 - 2*Gammasfp2sf1 - 2*Gammasfp2sf2 + 2*GammaWHpm + 2*GammaWgoldstone+ GammaHpm + Gammagoldstone -2*GammaWSfp1 - 2*GammaWSfp2 - 2*GammaWSf1 - 2*GammaWSf2 + 2*GammaHgoldstone - 2*Gammagsfp1 - 2*Gammagsfp2 - 2*Gammagsf1 - 2*Gammagsf2 - 2*GammaHpmsfp1 - 2*GammaHpmsfp2 - 2*GammaHpmsf1 - 2*GammaHpmsf2 + 2*Gammasfpsfp - 2*Gammasf1sf2);
+    // fout << "amplitudeW = " << amplitudeW << endl;
+    // fout << "GammaW = " << GammaW << " Gammasf1 = " << Gammasf1 << " Gammasf2 = " << Gammasf2 << " Gammasfp1 = " << Gammasfp1 << " Gammasfp2 = " << Gammasfp2 << endl;
+    // fout << "Gammasfp1sf1 = " << Gammasfp1sf1 << " Gammasfp1sf2 = " << Gammasfp1sf2 <<" Gammasfp2sf1 = " << Gammasfp2sf1 <<" Gammasfp2sf2 = " << Gammasfp2sf2 << endl;
+    // fout << "GammaWHpm = " << GammaWHpm << " GammaWgoldstone = " << GammaWgoldstone << " GammaHpm = " << GammaHpm << " Gammagoldstone = " << Gammagoldstone << endl;
+    // fout << "GammaWSfp1 = " << GammaWSfp1 << " GammaWSfp2 = " << GammaWSfp2 << " GammaWSf1 = " << GammaWSf1 << " GammaWSf2 = " << GammaWSf2 << endl;
+    // fout << "GammaHgoldstone = " << GammaHgoldstone << " Gammagsfp1 = " << Gammagsfp1 << " Gammagsfp2 = " << Gammagsfp2 << " Gammagsf1 = " << Gammagsf1 << " Gammagsf2 = " << Gammagsf2 << endl;
+    // fout << "GammaHpmsfp1 = " << GammaHpmsfp1 << " GammaHpmsfp2 = " << GammaHpmsfp2 << " GammaHpmsf1 = " << GammaHpmsf1 << " GammaHpmsf2 = " << GammaHpmsf2 << endl;
+    // fout << "Gammasfpsfp = " << Gammasfpsfp << " Gammasf1sf2 = " << Gammasf1sf2 << endl;
   }
 
   return amplitudeW;
@@ -15920,7 +16837,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
 double higgsAamplitudedecaygammagammaNMSSM (double m1, double g, double gprime, double alpha, double mWboson, DoubleMatrix & CPOMix, double beta, double mtop, double mbottom, double mcharm, double mtau, double mch1, double mch2, double thetaL, double thetaR, double lam, int higgs)
 {
   double prefactor=0, Itr=0, Iti=0, Ibr = 0, Ibi = 0, Icr = 0, Ici = 0, Itaur = 0, Itaui = 0, Ichar1r = 0, Ichar1i = 0, Ichar2r = 0, Ichar2i = 0, couplingt = 0, couplingb = 0, couplingc = 0, couplingtau = 0, couplingch1 = 0, couplingch2 = 0, kintr = 0, kinti = 0, kinbr =0, kinbi = 0, kincr = 0, kinci = 0, kintaur = 0, kintaui = 0, kinch1r = 0, kinch1i = 0, kinch2r = 0, kinch2i = 0, matelemmodsquare=0, amplitudeW=0;
-
 
   DoubleVector foftau(double mpart, double mcomp); ///CF(CA) in NMSSMTools
   DoubleVector tfoftau(3), bfoftau(3), cfoftau(3), taufoftau(3), ch1foftau(3), ch2foftau(3);
@@ -16010,11 +16926,8 @@ double higgsAamplitudedecaygluongluonNMSSM (double m1, double g, double gs, doub
   else if (QCD == false) {
     amplitudeW = amplitudeW;
   }
-
      
   return amplitudeW;
-  
-
 }
 
 
@@ -16062,7 +16975,6 @@ double higgsAamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
   amplitudeW = prefactor*matelemmodsquare;
      
   return amplitudeW;
-
 }
 
 
@@ -16087,7 +16999,7 @@ double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double m
   couplingW = CPEMix(higgs,1)*sin(beta) + CPEMix(higgs,2)*cos(beta);
 
   couplingch1 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*cos(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPEMix(higgs,2)*cos(thetaL)*sin(thetaR)))*1/(pow(GFosqrt2*2,0.5)*mchar1);
-  couplingch2 = lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*sin(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPEMix(higgs,2)*sin(thetaL)*cos(thetaR))*1/(pow(GFosqrt2*2,0.5)*mchar2);;
+  couplingch2 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*sin(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPEMix(higgs,2)*sin(thetaL)*cos(thetaR)))*1/(pow(GFosqrt2*2,0.5)*mchar2);
 
   couplingHpm = (lam*mueff/(pow(2,0.5))*(2*CPEMix(higgs,3)*pow(cos(beta),2) + 2*CPEMix(higgs,3)*pow(sin(beta),2)) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,2)*cos(beta)*sin(beta) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,1)*cos(beta)*sin(beta) + mueff*kappa*pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + lam*Alambda/pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + pow(gp,2)/4*mWboson/g*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) - 2*CPEMix(higgs,1)*pow(sin(beta),2)) + cos(beta)*(2*CPEMix(higgs,2)*pow(sin(beta),2) - 2*CPEMix(higgs,2)*pow(cos(beta),2))) + g/4*mWboson*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) + 2*CPEMix(higgs,1)*pow(sin(beta),2) + 2*2*CPEMix(higgs,2)*sin(beta)*cos(beta)) + cos(beta)*(2*CPEMix(higgs,2)*pow(cos(beta),2) + 2*CPEMix(higgs,2)*pow(sin(beta),2) + 2*2*CPEMix(higgs,1)*sin(beta)*cos(beta))) + lam/pow(2,0.5)*0)/(2*pow(mHpm,2)*pow(2*GFosqrt2,0.5));
 
@@ -16118,11 +17030,8 @@ double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double m
   kinWr = -(2+3*Wfoftau(3) +3*Wfoftau(3)*(2-Wfoftau(3))*Wfoftau(1)); kinHpmr = Hpmfoftau(3)*(Hpmfoftau(3)*Hpmfoftau(1) -1); kinch1r = 2*ch1foftau(3)*(1+ (1-ch1foftau(3))*ch1foftau(1)); kinch2r = 2*ch2foftau(3)*(1+ (1-ch2foftau(3))*ch2foftau(1));
   kinWi = -(3*Wfoftau(3)*(2-Wfoftau(3))*Wfoftau(2)); kinHpmi = Hpmfoftau(3)*(Hpmfoftau(3)*Hpmfoftau(2)); kinch1i = 2*ch1foftau(3)*((1-ch1foftau(3))*ch1foftau(2)); kinch2i = 2*ch2foftau(3)*((1-ch2foftau(3))*ch2foftau(2));
 
-
-
   kinscLr = scLfoftau(3)*(scLfoftau(3)*scLfoftau(1)-1); kinscRr = scRfoftau(3)*(scRfoftau(3)*scRfoftau(1)-1); kinssLr = ssLfoftau(3)*(ssLfoftau(3)*ssLfoftau(1)-1); kinssRr = ssRfoftau(3)*(ssRfoftau(3)*ssRfoftau(1)-1); kinsmuLr = smuLfoftau(3)*(smuLfoftau(3)*smuLfoftau(1)-1); kinsmuRr = smuRfoftau(3)*(smuRfoftau(3)*smuRfoftau(1)-1);
   kinscLi = scLfoftau(3)*(scLfoftau(3)*scLfoftau(2)); kinscRi = scRfoftau(3)*(scRfoftau(3)*scRfoftau(2)); kinssLi = ssLfoftau(3)*(ssLfoftau(3)*ssLfoftau(2)); kinssRi = ssRfoftau(3)*(ssRfoftau(3)*ssRfoftau(2));  kinsmuLi = smuLfoftau(3)*(smuLfoftau(3)*smuLfoftau(2)); kinsmuRi = smuRfoftau(3)*(smuRfoftau(3)*smuRfoftau(2));
-
 
   kinst1r = st1foftau(3)*(st1foftau(3)*st1foftau(1)-1); kinst2r = st2foftau(3)*(st2foftau(3)*st2foftau(1)-1); kinsb1r = sb1foftau(3)*(sb1foftau(3)*sb1foftau(1)-1); kinsb2r = sb2foftau(3)*(sb2foftau(3)*sb2foftau(1)-1); kinstau1r = stau1foftau(3)*(stau1foftau(3)*stau1foftau(1)-1); kinstau2r = stau2foftau(3)*(stau2foftau(3)*stau2foftau(1)-1);
   kinst1i = st1foftau(3)*(st1foftau(3)*st1foftau(2)); kinst2i = st2foftau(3)*(st2foftau(3)*st2foftau(2)); kinsb1i = sb1foftau(3)*(sb1foftau(3)*sb1foftau(2)); kinsb2i = sb2foftau(3)*(sb2foftau(3)*sb2foftau(2)); kinstau1i = stau1foftau(3)*(stau1foftau(3)*stau1foftau(2)); kinstau2i = stau2foftau(3)*(stau2foftau(3)*stau2foftau(2));
@@ -16143,15 +17052,14 @@ double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double m
   matelemsum(1) = Itr + Ibr + Icr + Itaur + Ichar1r + Ichar2r + IWr + IHpmr + IscLr + IscRr + IssLr + IssRr + IsmuLr + IsmuRr + Ist1r + Ist2r + Isb1r + Isb2r + Istau1r + Istau2r;
   matelemsum(2) = Iti + Ibi + Ici + Itaui + Ichar1i + Ichar2i + IWi + IHpmi + IscLi + IscRi + IssLi + IssRi + IsmuLi + IsmuRi + Ist1i + Ist2i + Isb1i + Isb2i + Istau1i + Istau2i;
 
+
   prefactor = GFosqrt2/(4*PI)*pow(m1,3)/2*pow(alpha/PI,2)/16;
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
-  
+
   amplitudeW = prefactor*matelemmodsquare;
 
-     
   return amplitudeW;
-  
 }
 
 
@@ -16173,7 +17081,6 @@ double higgsCPevenamplitudedecaygluongluonNMSSM(double m1, double mtop, double m
   DoubleVector foftau(double mpart, double mcomp); ///CF(CA) in NMSSMTools
   
   tfoftau = foftau(mtop, m1); bfoftau = foftau(mbottom, m1); cfoftau = foftau(mcharm, m1); scLfoftau = foftau(mscharmL, m1); scRfoftau = foftau(mscharmR, m1); ssLfoftau = foftau(msstrangeL, m1); ssRfoftau = foftau(msstrangeR, m1); st1foftau = foftau(mstop1, m1); st2foftau = foftau(mstop2, m1); sb1foftau = foftau(msbottom1, m1); sb2foftau = foftau(msbottom2, m1); suLfoftau = foftau(msupL, m1); suRfoftau = foftau(msupR, m1); sdLfoftau = foftau(msdownL, m1); sdRfoftau = foftau(msdownR, m1);
-
 
   couplingt = CPEMix(higgs,1)/sin(beta); couplingc = CPEMix(higgs,1)/sin(beta); couplingb = CPEMix(higgs,2)/(cos(beta));
 
@@ -16197,8 +17104,6 @@ double higgsCPevenamplitudedecaygluongluonNMSSM(double m1, double mtop, double m
   couplingsb1 = mWboson/(g*pow(msbottom1,2))*(pow(cos(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(sin(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/6*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + 2*sin(thetab)*cos(thetab)*fb/(pow(2,0.5))*(-mueff*CPEMix(higgs,1)+Ab*CPEMix(higgs,2)-lam*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,3)));
 
   couplingsb2 = mWboson/(g*pow(msbottom2,2))*(pow(sin(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(cos(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/6*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) - 2*sin(thetab)*cos(thetab)*fb/(pow(2,0.5))*(-mueff*CPEMix(higgs,1)+Ab*CPEMix(higgs,2)-lam*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,3)));	
-
-  //  out << mWboson/(g*pow(msbottom1,2)) << " " << pow(cos(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2)))  << " " << pow(sin(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/6*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) << " " << 2*sin(thetab)*cos(thetab)*fb/(pow(2,0.5))*(-mueff*CPEMix(higgs,1)+Ab*CPEMix(higgs,2)-lam*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,3)) << endl;
   
   kintr = 2*tfoftau(3)*(1 + (1-tfoftau(3))*tfoftau(1)); kincr = 2*cfoftau(3)*(1 + (1-cfoftau(3))*cfoftau(1)); kinbr = 2*bfoftau(3)*(1 + (1-bfoftau(3))*bfoftau(1));
   kinti = 2*tfoftau(3)*((1-tfoftau(3))*tfoftau(2)); kinci = 2*cfoftau(3)*((1-cfoftau(3))*cfoftau(2)); kinbi = 2*bfoftau(3)*((1-bfoftau(3))*bfoftau(2));
@@ -16247,18 +17152,18 @@ double higgsCPevenamplitudedecaygluongluonNMSSM(double m1, double mtop, double m
     int NF = 0;
     if (higgs == 1) { NF = 5;}
     else if (higgs == 2 || higgs == 3) { NF = 6;}
-    else { throw("Problem - higgs must be 1, 2, 3 i.e 'h', 'H' or 'H3' in NMSSM!\n"); }
+    else {
+      throw("Problem - higgs must be 1, 2, 3 i.e 'h', 'H' or 'H3' in NMSSM!\n");
+      errorflag = -1;
+    }
     DoubleVector hggQCDcorrections(double amplitudeW, double alphas, int Nf, char higgs, double prefactor, double SMtotr, double SMtoti, double sqtotr, double sqtoti);
     amplitudeW = hggQCDcorrections(amplitudeW, alphas, NF, 'h', prefactor, SMTOTRE, SMTOTIM, SQTOTRE, SQTOTIM)(1); ///Pass hggQCDcorrections 'h' as it just matters whether it is CPeven (so 95/4 in FQCD) or CPodd (so 97/4 in FQCD)
   }
   else if (QCD == false) {
     amplitudeW = amplitudeW;
   }
-
      
   return amplitudeW;
-  
-
 }
 
 
@@ -16293,11 +17198,9 @@ double higgshamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
     couplingch1 = 4*mWboson/(mch1*g*sinthW*costhW)*(lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*cos(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPEMix(higgs,2)*cos(thetaL)*sin(thetaR)))*(-pow(sin(thetaR),2) - 0.5*pow(cos(thetaR),2) + 2*pow(sinthW,2) - pow(sin(thetaL),2) - 0.5*pow(cos(thetaL),2));
     couplingch2 = 4*mWboson/(mch2*g*sinthW*costhW)*(lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*sin(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPEMix(higgs,2)*sin(thetaL)*cos(thetaR)))*(-pow(cos(thetaR),2) - 0.5*pow(sin(thetaR),2) + 2*pow(sinthW,2) - pow(cos(thetaL),2) - 0.5*pow(sin(thetaL),2));
 
-
     couplingHpm = (1-2*sin2thW)/(sinthW*costhW*2*pow(mHpm,2))*1/(pow(GFosqrt2*2,0.5))*(lam*mueff/(pow(2,0.5))*(2*CPEMix(higgs,3)*pow(cos(beta),2) + 2*CPEMix(higgs,3)*pow(sin(beta),2)) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,2)*cos(beta)*sin(beta) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,1)*cos(beta)*sin(beta) + mueff*kappa*pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + lam*Alambda/pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + pow(gp,2)/4*mWboson/g*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) - 2*CPEMix(higgs,1)*pow(sin(beta),2)) + cos(beta)*(2*CPEMix(higgs,2)*pow(sin(beta),2) - 2*CPEMix(higgs,2)*pow(cos(beta),2))) + g/4*mWboson*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) + 2*CPEMix(higgs,1)*pow(sin(beta),2) + 2*2*CPEMix(higgs,2)*sin(beta)*cos(beta)) + cos(beta)*(2*CPEMix(higgs,2)*pow(cos(beta),2) + 2*CPEMix(higgs,2)*pow(sin(beta),2) + 2*2*CPEMix(higgs,1)*sin(beta)*cos(beta))) + lam/pow(2,0.5)*0); ///ignored corrections for now - no top or bottom loop corrections ///MUP in NMSSMTools is a fine-tuning parameter - set 0
 
     couplingW = -g/gp*(CPEMix(higgs,1)*sin(beta) + CPEMix(higgs,2)*cos(beta));
-
 
     kintr = tfoftau(3)*tZfoftau(3)/(2*(tfoftau(3)-tZfoftau(3))) + pow(tfoftau(3)*tZfoftau(3),2)/(2*(pow(tfoftau(3)-tZfoftau(3),2)))*(tfoftau(1) - tZfoftau(1)) + pow(tfoftau(3),2)*tZfoftau(3)/(pow(tfoftau(3)-tZfoftau(3),2))*(tgoftau(1)-tZgoftau(1)) + tfoftau(3)*tZfoftau(3)/(2*(tfoftau(3)-tZfoftau(3)))*(tfoftau(1)-tZfoftau(1));
     kinti = pow(tfoftau(3)*tZfoftau(3),2)/(2*(pow(tfoftau(3)-tZfoftau(3),2)))*(tfoftau(2) - tZfoftau(2)) + pow(tfoftau(3),2)*tZfoftau(3)/(pow(tfoftau(3)-tZfoftau(3),2))*(tgoftau(2)-tZgoftau(2)) + tfoftau(3)*tZfoftau(3)/(2*(tfoftau(3)-tZfoftau(3)))*(tfoftau(2)-tZfoftau(2));
@@ -16309,7 +17212,6 @@ double higgshamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
     kinWr = 4*(3-pow(gp/g,2))*-Wfoftau(3)*WZfoftau(3)/(2*(Wfoftau(3)-WZfoftau(3)))*(Wfoftau(1) - WZfoftau(1)) + ((1 + 2/Wfoftau(3))*pow(gp/g,2) - (5+ 2/Wfoftau(3)))*(Wfoftau(3)*WZfoftau(3)/(2*(Wfoftau(3)-WZfoftau(3))) + pow(Wfoftau(3)*WZfoftau(3),2)/(2*pow(Wfoftau(3)-WZfoftau(3),2))*(Wfoftau(1)-WZfoftau(1)) + pow(Wfoftau(3),2)*WZfoftau(3)/(pow(Wfoftau(3)-WZfoftau(3),2))*(Wgoftau(1)-WZgoftau(1)));
     kinWi = 4*(3-pow(gp/g,2))*-Wfoftau(3)*WZfoftau(3)/(2*(Wfoftau(3)-WZfoftau(3)))*(Wfoftau(2) - WZfoftau(2)) + ((1 + 2/Wfoftau(3))*pow(gp/g,2) - (5+ 2/Wfoftau(3)))*(pow(Wfoftau(3),2)*WZfoftau(3)/(pow(Wfoftau(3)-WZfoftau(3),2))*(Wgoftau(2)-WZgoftau(2)));
 
-
     kinHpmr = Hpmfoftau(3)*HpmZfoftau(3)/(2*(Hpmfoftau(3)-HpmZfoftau(3))) + pow(Hpmfoftau(3)*HpmZfoftau(3),2)/(2*pow(Hpmfoftau(3)-HpmZfoftau(3),2))*(Hpmfoftau(1)-HpmZfoftau(1)) + pow(Hpmfoftau(3),2)*HpmZfoftau(3)/(pow(Hpmfoftau(3)-HpmZfoftau(3),2))*(Hpmgoftau(1)-HpmZgoftau(1));
     kinHpmi = pow(Hpmfoftau(3)*HpmZfoftau(3),2)/(2*pow(Hpmfoftau(3)-HpmZfoftau(3),2))*(Hpmfoftau(2)-HpmZfoftau(2)) + pow(Hpmfoftau(3),2)*HpmZfoftau(3)/(pow(Hpmfoftau(3)-HpmZfoftau(3),2))*(Hpmgoftau(2)-HpmZgoftau(2));
    
@@ -16317,8 +17219,7 @@ double higgshamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
     kinch1i = pow(ch1foftau(3)*ch1Zfoftau(3),2)/(2*pow(ch1foftau(3)-ch1Zfoftau(3),2))*(ch1foftau(2) - ch1Zfoftau(2)) + pow(ch1foftau(3),2)*ch1Zfoftau(3)/pow(ch1foftau(3) - ch1Zfoftau(3),2)*(ch1goftau(2) - ch1Zgoftau(2)) + ch1foftau(3)*ch1Zfoftau(3)/(2*(ch1foftau(3)-ch1Zfoftau(3)))*(ch1foftau(2)-ch1Zfoftau(2));
     kinch2r = ch2foftau(3)*ch2Zfoftau(3)/(2*(ch2foftau(3)-ch2Zfoftau(3))) + pow(ch2foftau(3)*ch2Zfoftau(3),2)/(2*pow(ch2foftau(3)-ch2Zfoftau(3),2))*(ch2foftau(1) - ch2Zfoftau(1)) + pow(ch2foftau(3),2)*ch2Zfoftau(3)/pow(ch2foftau(3) - ch2Zfoftau(3),2)*(ch2goftau(1) - ch2Zgoftau(1)) + ch2foftau(3)*ch2Zfoftau(3)/(2*(ch2foftau(3)-ch2Zfoftau(3)))*(ch2foftau(1)-ch2Zfoftau(1));
     kinch2i = pow(ch2foftau(3)*ch2Zfoftau(3),2)/(2*pow(ch2foftau(3)-ch2Zfoftau(3),2))*(ch2foftau(2) - ch2Zfoftau(2)) + pow(ch2foftau(3),2)*ch2Zfoftau(3)/pow(ch2foftau(3) - ch2Zfoftau(3),2)*(ch2goftau(2) - ch2Zgoftau(2)) + ch2foftau(3)*ch2Zfoftau(3)/(2*(ch2foftau(3)-ch2Zfoftau(3)))*(ch2foftau(2)-ch2Zfoftau(2));
-   
-  
+       
     Itr = couplingt*kintr; Icr = couplingc*kincr; Ibr = couplingb*kinbr; Ichar1r = couplingch1*kinch1r; Ichar2r = couplingch2*kinch2r; 
     Iti = couplingt*kinti; Ici = couplingc*kinci; Ibi = couplingb*kinbi; Ichar1i = couplingch1*kinch1i; Ichar2i = couplingch2*kinch2i; 
     IWr = couplingW*kinWr; IWi = couplingW*kinWi; IHpmr = couplingHpm*kinHpmr; IHpmi = couplingHpm*kinHpmi;
@@ -16338,7 +17239,6 @@ double higgshamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
   }  
   return amplitudeW;
 
-
 }
 
  
@@ -16354,12 +17254,14 @@ double higgshamplitudedecayneutineutjNMSSM (double m1, double mneuti, double mne
     squareplus = 1 - pow(mneutj/m1+mneuti/m1,2);
     squareminus = 1 - pow(mneutj/m1-mneuti/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgshamplitudedecayneutineutjNMSSM\n");
+      errorflag = -1;
+    } 
     
     coupling = lam/(pow(2,0.5))*(CPEMix(higgs,1)*(mixNeut(neuti,3)*mixNeut(neutj,5) + mixNeut(neuti,5)*mixNeut(neutj,3)) + CPEMix(higgs,2)*(mixNeut(neuti,4)*mixNeut(neutj,5) + mixNeut(neuti,5)*mixNeut(neutj,4)) + CPEMix(higgs,3)*(mixNeut(neuti,4)*mixNeut(neutj,3)+mixNeut(neuti,3)*mixNeut(neutj,4))) - pow(2,0.5)*kappa*CPEMix(higgs,3)*mixNeut(neuti,5)*mixNeut(neutj,5) + gp/2*(-CPEMix(higgs,1)*(mixNeut(neuti,1)*mixNeut(neutj,4) + mixNeut(neuti,4)*mixNeut(neutj,1)) + CPEMix(higgs,2)*(mixNeut(neuti,1)*mixNeut(neutj,3) + mixNeut(neuti,3)*mixNeut(neutj,1))) + g/2*(CPEMix(higgs,1)*(mixNeut(neuti,2)*mixNeut(neutj,4) + mixNeut(neuti,4)*mixNeut(neutj,2)) - CPEMix(higgs,2)*(mixNeut(neuti,2)*mixNeut(neutj,3) + mixNeut(neuti,3)*mixNeut(neutj,2)));
 
-
     amplitudeW = factor*squareplus*pow(m1,2)*lambda*pow(coupling,2)/(16*PI*fabs(m1));
-    
   }
   return amplitudeW;
 }
@@ -16375,6 +17277,10 @@ double higgsAamplitudedecayHpmWboson(double m1, double mWboson, double mHpm, dou
     squareplus = 1 - pow(mHpm/m1 + mWboson/m1,2);
     squareminus = 1 - pow(mHpm/m1 - mWboson/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsAamplitudedecayHpmWboson\n");
+      errorflag = -1;
+    } 
     
     if (nmssmIsIt == false) { coupling = 1;}
     else if (nmssmIsIt == true) { 
@@ -16384,6 +17290,9 @@ double higgsAamplitudedecayHpmWboson(double m1, double mWboson, double mHpm, dou
       else if (pseudoscalar == 2) {
 	coupling = sin(thetaA);
       }
+      else{
+	throw("problem: pseudoscalar must be 1 or 2 in higgsAamplitudedecayHpmWboson");
+	errorflag = -1;}
     }
 
     amplitudeW = GFosqrt2*pow(fabs(m1),3)*pow(coupling,2)/(8*PI)*pow(lambda,3);
@@ -16411,6 +17320,10 @@ double higgsCPevenamplitudedecayAANMSSM(double m1, double mA1, double mA2, doubl
     squareplus = 1 - pow(mA1/m1 + mA2/m1,2);
     squareminus = 1 - pow(mA1/m1 - mA2/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsCPevenamplitudedecayAANMSSM\n");
+      errorflag = -1;
+    } 
     
     prefactor = 1/(32*PI*m1);
     hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
@@ -16434,6 +17347,10 @@ double higgsCPevenamplitudedecaypseudoscalarZNMSSM (double m1, double mA, double
     squareplus = 1 - pow(mA/m1+mZboson/m1,2);
     squareminus = 1 - pow(mA/m1-mZboson/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsCPevenamplitudedecaypseudoscalarZNMSSM\n");
+      errorflag = -1;
+    } 
     coupling = (CPEMix(higgs,1)*cos(beta) - CPEMix(higgs,2)*sin(beta))*(CPOMix(pseudoscalar,1)*cos(beta) - CPOMix(pseudoscalar,2)*sin(beta));
     amplitudeW = (pow(g,2)+pow(gp,2))*pow(m1,3)/(64*PI*pow(mZboson,2))*pow(coupling,2)*pow(lambda,3);
 
@@ -16450,6 +17367,10 @@ double higgsCPevenamplitudedecayHpHmNMSSM (double m1, double mHpm, double mWboso
     double squareplus = 0, lambda = 0, couplingHpm = 0;
     squareplus = 1 - pow(2*mHpm/m1,2);
     lambda = pow(squareplus,0.5);
+    if (squareplus < 0) {
+      throw ("problem: lambda will give nan in higgsCPevenamplitudedecayHpHmNMSSM\n");
+      errorflag = -1;
+    } 
     couplingHpm = (lam*mueff/(pow(2,0.5))*(2*CPEMix(higgs,3)*pow(cos(beta),2) + 2*CPEMix(higgs,3)*pow(sin(beta),2)) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,2)*cos(beta)*sin(beta) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,1)*cos(beta)*sin(beta) + mueff*kappa*pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + lam*Alambda/pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + pow(gp,2)/4*mWboson/g*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) - 2*CPEMix(higgs,1)*pow(sin(beta),2)) + cos(beta)*(2*CPEMix(higgs,2)*pow(sin(beta),2) - 2*CPEMix(higgs,2)*pow(cos(beta),2))) + g/4*mWboson*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) + 2*CPEMix(higgs,1)*pow(sin(beta),2) + 2*2*CPEMix(higgs,2)*sin(beta)*cos(beta)) + cos(beta)*(2*CPEMix(higgs,2)*pow(cos(beta),2) + 2*CPEMix(higgs,2)*pow(sin(beta),2) + 2*2*CPEMix(higgs,1)*sin(beta)*cos(beta))) + lam/pow(2,0.5)*0);
 
     amplitudeW = lambda*pow(couplingHpm,2)/(16*PI*m1);
@@ -16473,6 +17394,10 @@ double higgsCPevenamplitudedecayhhorhHorHHNMSSM(double m1, double mh1, double mh
     squareplus = 1 - pow(mh1/m1+mh2/m1,2);
     squareminus = 1 - pow(mh1/m1-mh2/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsCPevenamplitudedecayhhorhHorHHNMSSM\n");
+      errorflag = -1;
+    } 
     if (higgs1 == higgs2) { deltah1h2 = 1;}
     else {deltah1h2 = 2;}
     prefactor = deltah1h2/(32*PI*m1);
@@ -16499,13 +17424,17 @@ double higgsA2amplitudedecayA1CPevenNMSSM(double m1, double mA1, double mh, doub
     squareplus = 1 - pow(mA1/m1 + mh/m1,2);
     squareminus = 1 - pow(mA1/m1 - mh/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsA2amplitudedecayA1CPevenNMSSM\n");
+      errorflag = -1;
+    } 
     
     prefactor = 1/(16*PI*m1);
     hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
     hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
     int pseudoscalar1 = 1, pseudoscalar2 = 2;
 
-coupling = (pow(g,2)+pow(gp,2))/(4*pow(2,0.5))*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,1,1) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,2)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,2,2) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,1))) + lam*Alambda/(pow(2,0.5))*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,3)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,3)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,2)) - kappa*Akappa/(pow(2,0.5))*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,3,3) + pow(lam,2)/pow(2,0.5)*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,2)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,3,3)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,1)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,3,3)) + mueff/lam*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,1)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,2,2))) + pow(kappa,2)*pow(2,0.5)*mueff/lam*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,3,3) + lam*kappa/(pow(2,0.5))*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,3,3)-2*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,2,3)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,3,3)-2*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,3)) + 2*mueff/lam*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,2)-CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,3) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,3)));
+    coupling = (pow(g,2)+pow(gp,2))/(4*pow(2,0.5))*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,1,1) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,2)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,2,2) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,1))) + lam*Alambda/(pow(2,0.5))*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,3)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,3)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,2)) - kappa*Akappa/(pow(2,0.5))*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,3,3) + pow(lam,2)/pow(2,0.5)*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,2)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,3,3)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,1)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,3,3)) + mueff/lam*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,1)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,2,2))) + pow(kappa,2)*pow(2,0.5)*mueff/lam*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,3,3) + lam*kappa/(pow(2,0.5))*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,3,3)-2*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,2,3)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,3,3)-2*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,3)) + 2*mueff/lam*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,2)-CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,3) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,3)));
 
     amplitudeW = prefactor*lambda*pow(coupling,2);
   }
@@ -16522,6 +17451,10 @@ double higgsCPevenamplitudedecayWHpmNMSSM (double m1, double mWboson, double mHp
     squareplus = 1 - pow(mWboson/m1+mHpm/m1,2);
     squareminus = 1 - pow(mWboson/m1-mHpm/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsCPevenamplitudedecayWHpmNMSSM\n");
+      errorflag = -1;
+    } 
     
     amplitudeW = GFosqrt2*pow(m1,3)/(8*PI)*pow(CPEMix(higgs,1)*cos(beta)-CPEMix(higgs,2)*sin(beta),2)*pow(lambda,3);
   }
@@ -16538,6 +17471,10 @@ double higgsCPevenamplitudedecaystopistopiNMSSM (double m1, double mstopi, doubl
     squareplus = 1 - 4*pow(mstopi/m1,2);
     squareminus = 1;
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystopistopiNMSSM\n");
+      errorflag = -1;
+    } 
     hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
     hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
     huq = runmt/hvev1;
@@ -16547,7 +17484,10 @@ double higgsCPevenamplitudedecaystopistopiNMSSM (double m1, double mstopi, doubl
     else if (stop == 2) {
       angle1 = -sin(thetat); angle2 = cos(thetat);
     }
-
+    else{
+      throw("problem: stop must be 1 or 2 in higgsCPevenamplitudedecaystopistopiNMSSM\n");
+      errorflag = -1;
+    }
     coupling = pow(angle1,2)*pow(2,0.5)*(pow(huq,2)*hvev1*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + pow(angle2,2)*pow(2,0.5)*(pow(huq,2)*hvev1*CPEMix(higgs,1) - pow(gp,2)/3*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + 2*angle1*angle2*huq/(pow(2,0.5))*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2) - lam*hvev2*CPEMix(higgs,3));
 
     amplitudeW = 3/(16*PI*m1)*lambda*pow(coupling,2);
@@ -16565,6 +17505,10 @@ double higgsCPevenamplitudedecaystopistopjNMSSM (double m1, double mstopi, doubl
     squareplus = 1 - pow(mstopi/m1+mstopj/m1,2);
     squareminus = 1- pow(mstopi/m1-mstopj/m1,2); 
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystopistopjNMSSM\n");
+      errorflag = -1;
+    } 
     hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
     hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
     huq = runmt/hvev1;
@@ -16586,6 +17530,10 @@ double higgsCPevenamplitudedecaysbottomisbottomiNMSSM (double m1, double msbotto
     squareplus = 1 - 4*pow(msbottomi/m1,2);
     squareminus = 1;
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsCPevenamplitudedecaysbottomisbottomiNMSSM\n");
+      errorflag = -1;
+    } 
     hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
     hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
     hdq = runmb/hvev2;
@@ -16594,6 +17542,10 @@ double higgsCPevenamplitudedecaysbottomisbottomiNMSSM (double m1, double msbotto
     }
     else if (sbottom == 2) {
       angle1 = -sin(thetab); angle2 = cos(thetab);
+    }
+    else{
+      throw("problem: sbottom must be 1 or 2 in higgsCPevenamplitudedecaysbottomisbottomiNMSSM");
+      errorflag = -1;
     }
 
     coupling = pow(angle1,2)*pow(2,0.5)*(pow(hdq,2)*hvev2*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + pow(angle2,2)*pow(2,0.5)*(pow(hdq,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/6*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + 2*angle1*angle2*hdq/(pow(2,0.5))*(Ab*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*hvev1*CPEMix(higgs,3));
@@ -16613,6 +17565,10 @@ double higgsCPevenamplitudedecaysbottomisbottomjNMSSM (double m1, double msbotto
     squareplus = 1 - pow(msbottomi/m1+msbottomj/m1,2);
     squareminus = 1- pow(msbottomi/m1-msbottomj/m1,2); 
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsCPevenamplitudedecaysbottomisbottomjNMSSM\n");
+      errorflag = -1;
+    } 
     hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
     hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
     hdq = runmb/hvev2;
@@ -16634,6 +17590,10 @@ double higgsCPevenamplitudedecaystauistauiNMSSM (double m1, double mstaui, doubl
     squareplus = 1 - 4*pow(mstaui/m1,2);
     squareminus = 1;
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystauistauiNMSSM\n");
+      errorflag = -1;
+    } 
     hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
     hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
     hlq = runmtau/hvev2;
@@ -16642,6 +17602,10 @@ double higgsCPevenamplitudedecaystauistauiNMSSM (double m1, double mstaui, doubl
     }
     else if (stau == 2) {
       angle1 = -cos(thetatau); angle2 = sin(thetatau);
+    }
+    else{
+      throw("problem: stau must be 1 or 2 in higgsCPevenamplitudedecaystauistauiNMSSM");
+      errorflag = -1;
     }
 
     coupling = pow(angle1,2)*pow(2,0.5)*(pow(hlq,2)*hvev2*CPEMix(higgs,2) + (-pow(gp,2)/4 + pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + pow(angle2,2)*pow(2,0.5)*(pow(hlq,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/2*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) - 2*angle1*angle2*hlq/(pow(2,0.5))*(Atau*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*hvev1*CPEMix(higgs,3));
@@ -16661,6 +17625,10 @@ double higgsCPevenamplitudedecaystauistaujNMSSM (double m1, double mstaui, doubl
     squareplus = 1 - pow(mstaui/m1+mstauj/m1,2);
     squareminus = 1- pow(mstaui/m1-mstauj/m1,2); 
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystauistaujNMSSM\n");
+      errorflag = -1;
+    } 
     hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
     hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
     hlq = runmtau/hvev2;
@@ -16684,6 +17652,10 @@ double stop2amplitudedecaystop1CPevenhiggsNMSSM (double mst2, double mst1, doubl
     squareplus = 1 - pow(mst1/mst2 + mh/mst2,2);
     squareminus = 1 - pow(mst1/mst2 - mh/mst2,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stop2amplitudedecaystop1CPevenhiggsNMSSM\n");
+      errorflag = -1;
+    } 
     ft = g*mt/(pow(2,0.5)*mWboson*sin(beta));
     hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
     hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
@@ -16708,11 +17680,16 @@ double stop2amplitudedecaystop1CPoddhiggsNMSSM (double mst2, double mst1, double
     squareplus = 1 - pow(mst1/mst2 + ma/mst2,2);
     squareminus = 1 - pow(mst1/mst2 - ma/mst2,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stop2amplitudedecaystop1CPoddhiggsNMSSM\n");
+      errorflag = -1;
+    } 
     ft = g*mt/(pow(2,0.5)*mWboson*sin(beta));
     hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
     ALR = -(ft/pow(2,0.5))*(At*CPOMix(higgs,1) + mueff*CPOMix(higgs,2) + lam*hvev2*CPOMix(higgs,3));
     coupling = (pow(cos(thetat),2)-pow(sin(thetat),2))*ALR;
     amplitudeW = prefactor*lambda*pow(coupling,2);
+
   }
   return amplitudeW;
 }
@@ -16729,6 +17706,10 @@ double sbottom2amplitudedecaysbottom1CPevenhiggsNMSSM (double msb2, double msb1,
     squareplus = 1 - pow(msb1/msb2 + mh/msb2,2);
     squareminus = 1 - pow(msb1/msb2 - mh/msb2,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in sbottom2amplitudedecaysbottom1CPevenhiggsNMSSM\n");
+      errorflag = -1;
+    } 
     fb = g*mb/(pow(2,0.5)*mWboson*cos(beta));
     hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
     hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
@@ -16737,6 +17718,7 @@ double sbottom2amplitudedecaysbottom1CPevenhiggsNMSSM (double msb2, double msb1,
     CLR = -fb/pow(2,0.5)*(Ab*CPEMix(higgs,2)-mueff*CPEMix(higgs,1)-lam*hvev1*CPEMix(higgs,3));
     coupling = cos(thetab)*sin(thetab)*(CR-CL) + (pow(cos(thetab),2)-pow(sin(thetab),2))*CLR;
     amplitudeW = prefactor*lambda*pow(coupling,2);
+
   }
   return amplitudeW;
 }
@@ -16753,11 +17735,16 @@ double sbottom2amplitudedecaysbottom1CPoddhiggsNMSSM (double msb2, double msb1, 
     squareplus = 1 - pow(msb1/msb2 + ma/msb2,2);
     squareminus = 1 - pow(msb1/msb2 - ma/msb2,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in sbottom2amplitudedecaysbottom1CPoddhiggsNMSSM\n");
+      errorflag = -1;
+    } 
     fb = g*mb/(pow(2,0.5)*mWboson*cos(beta));
     hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
     ALR = -(fb/pow(2,0.5))*(Ab*CPOMix(higgs,2) + mueff*CPOMix(higgs,1) + lam*hvev1*CPOMix(higgs,3));
     coupling = (pow(cos(thetab),2)-pow(sin(thetab),2))*ALR;
     amplitudeW = prefactor*lambda*pow(coupling,2);
+
   }
   return amplitudeW;
 }
@@ -16774,6 +17761,10 @@ double stau2amplitudedecaystau1CPevenhiggsNMSSM (double mstau2, double mstau1, d
     squareplus = 1 - pow(mstau1/mstau2 + mh/mstau2,2);
     squareminus = 1 - pow(mstau1/mstau2 - mh/mstau2,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stau2amplitudedecaystau1CPevenhiggsNMSSM\n");
+      errorflag = -1;
+    } 
     ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
     hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
     hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
@@ -16782,7 +17773,6 @@ double stau2amplitudedecaystau1CPevenhiggsNMSSM (double mstau2, double mstau1, d
     CLR = -ftau/pow(2,0.5)*(Atau*CPEMix(higgs,2)-mueff*CPEMix(higgs,1)-lam*hvev1*CPEMix(higgs,3));
     coupling = cos(thetatau)*sin(thetatau)*(CR-CL) + (pow(cos(thetatau),2)-pow(sin(thetatau),2))*CLR;
     amplitudeW = prefactor*lambda*pow(coupling,2);
-    
   }
   return amplitudeW;
 }
@@ -16801,11 +17791,16 @@ double stau2amplitudedecaystau1CPoddhiggsNMSSM
     squareplus = 1 - pow(mstau1/mstau2 + ma/mstau2,2);
     squareminus = 1 - pow(mstau1/mstau2 - ma/mstau2,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stau2amplitudedecaystau1CPoddhiggsNMSSM\n");
+      errorflag = -1;
+    } 
     ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
     hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
     ALR = -(ftau/pow(2,0.5))*(Atau*CPOMix(higgs,2) + mueff*CPOMix(higgs,1) + lam*hvev1*CPOMix(higgs,3));
     coupling = (pow(cos(thetatau),2)-pow(sin(thetatau),2))*ALR;
     amplitudeW = prefactor*lambda*pow(coupling,2);
+
   }
   return amplitudeW;
 }
@@ -16819,13 +17814,18 @@ double chargino2amplitudedecaychargino1CPevenhiggsNMSSM (double mchar2, double m
   }
   else {
     prefactor = 1/(32*PI*fabs(mchar2));
-    coupling1 = lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*sin(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*sin(thetaR) - CPEMix(higgs,2)*cos(thetaL)*cos(thetaR));
-    coupling2 = lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*cos(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*cos(thetaR) - CPEMix(higgs,2)*sin(thetaL)*sin(thetaR));
+    coupling1 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*sin(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*sin(thetaR) - CPEMix(higgs,2)*cos(thetaL)*cos(thetaR)));
+    coupling2 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*cos(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*cos(thetaR) - CPEMix(higgs,2)*sin(thetaL)*sin(thetaR)));
     squareplus = 1 - pow(mchar1/mchar2 + mh/mchar2,2);
     squareminus = 1 - pow(mchar1/mchar2 - mh/mchar2,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in chargino2amplitudedecaychargino1CPevenhiggsNMSSM\n");
+      errorflag = -1;
+    } 
     coupling = (pow(coupling1,2)+pow(coupling2,2))*(pow(mchar1,2)+pow(mchar2,2)-pow(mh,2)) + 4*coupling1*coupling2*mchar1*mchar2;
     amplitudeW = prefactor*lambda*coupling;
+
   }
   return amplitudeW;
 }
@@ -16840,11 +17840,15 @@ double chargino2amplitudedecaychargino1CPoddhiggsNMSSM (double mchar2, double mc
   else {
     int pseudoscalar = higgs;
     prefactor = 1/(32*PI*fabs(mchar2));
-    C1 = lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*cos(thetaL)*sin(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*sin(thetaL)*sin(thetaR) - CPOMix(pseudoscalar,2)*cos(thetaL)*cos(thetaR));
-    C2 = lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*sin(thetaL)*cos(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*-cos(thetaL)*cos(thetaR) + CPOMix(pseudoscalar,2)*sin(thetaR)*sin(thetaL));
+    C1 = (lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*cos(thetaL)*sin(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*sin(thetaL)*sin(thetaR) - CPOMix(pseudoscalar,2)*cos(thetaL)*cos(thetaR)));
+    C2 = (lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*sin(thetaL)*cos(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*-cos(thetaL)*cos(thetaR) + CPOMix(pseudoscalar,2)*sin(thetaR)*sin(thetaL)));
     squareplus = 1 - pow(mchar1/mchar2 + mA/mchar2,2);
     squareminus = 1 - pow(mchar1/mchar2 - mA/mchar2,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in chargino2amplitudedecaychargino1CPevoddhiggsNMSSM\n");
+      errorflag = -1;
+    } 
     coupling = (pow(C1,2)+pow(C2,2))*(pow(mchar1,2)+pow(mchar2,2)-pow(mA,2)) + 4*C1*C2*mchar1*mchar2;
     amplitudeW = prefactor*lambda*coupling;
   }
@@ -16867,6 +17871,10 @@ double neutralinoamplitudedecaycharginoWNMSSM (double mneut, double mchar, doubl
     else if (chargino == 2) {
       V2 = sin(thetaR); V1 = -cos(thetaR); U2 = sin(thetaL); U1 = -cos(thetaL);
     }
+    else{
+      throw("problem: chargino must be 1 or 2 in neutralinoamplitudedecaycharginoWNMSSM");
+      errorflag = -1;
+    }
 
     coupleL = -1/pow(2,0.5)*mixNeut(neutralino,4)*V2 + mixNeut(neutralino,2)*V1;
     coupleR = 1/pow(2,0.5)*mixNeut(neutralino,3)*U2 + mixNeut(neutralino,2)*U1;
@@ -16874,6 +17882,10 @@ double neutralinoamplitudedecaycharginoWNMSSM (double mneut, double mchar, doubl
     squareplus = 1 - pow(fabs(mchar)/fabs(mneut) + mWboson/fabs(mneut),2);
     squareminus = 1 - pow(fabs(mchar)/fabs(mneut) - mWboson/fabs(mneut),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecaycharginoWNMSSM\n");
+      errorflag = -1;
+    } 
 
     coupling = -12*mneut*mchar*coupleL*coupleR + (pow(coupleL,2)+pow(coupleR,2))*((pow(mchar,2)+pow(mneut,2)-pow(mWboson,2)) + (pow(mneut,2)+pow(mWboson,2)-pow(mchar,2))*(pow(mneut,2)-pow(mchar,2)-pow(mWboson,2))/pow(mWboson,2));
 
@@ -16895,6 +17907,10 @@ double neutralinoamplitudedecayneutralinoZNMSSM (double mneuti, double mneutj, d
     squareplus = 1 - pow(fabs(mneutj)/fabs(mneuti) + mZboson/fabs(mneuti),2);
     squareminus = 1 - pow(fabs(mneutj)/fabs(mneuti) - mZboson/fabs(mneuti),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoZNMSSM\n");
+      errorflag = -1;
+    } 
 
     costhetaW = g/pow(pow(g,2)+pow(gp,2),0.5);
 
@@ -16920,12 +17936,20 @@ double neutralinoamplitudecharginoHpmNMSSM (double mneut, double mchar, double m
     squareplus = 1 - pow(fabs(mchar)/fabs(mneut) + mHp/fabs(mneut),2);
     squareminus = 1 - pow(fabs(mchar)/fabs(mneut) - mHp/fabs(mneut),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecaycharginoHpmNMSSM\n");
+      errorflag = -1;
+    } 
     
     if (chargino == 1) {
       V2 = cos(thetaR); V1 = sin(thetaR); U2 = cos(thetaL); U1 = sin(thetaL);
     }
     else if (chargino == 2) {
       V2 = sin(thetaR); V1 = -cos(thetaR); U2 = sin(thetaL); U1 = -cos(thetaL);
+    }
+    else{
+      throw("problem: chargino must be 1 or 2 in neutralinoamplitudecharginoHpmNMSSM\n");
+      errorflag = -1;
     }
 
     coupHpZiWjL = lam*cos(beta)*mixNeut(neutralino,5)*U2 - sin(beta)/(pow(2,0.5))*(gp*mixNeut(neutralino,1)+g*mixNeut(neutralino,2))*U2 + sin(beta)*g*mixNeut(neutralino,3)*U1;
@@ -16950,6 +17974,10 @@ double neutralinoamplitudedecayneutralinoCPevenhiggsNMSSM (double mneuti, double
     squareplus = 1 - pow(fabs(mneutj)/fabs(mneuti) + mhiggs/fabs(mneuti),2);
     squareminus = 1 - pow(fabs(mneutj)/fabs(mneuti) - mhiggs/fabs(mneuti),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoCPevenhiggsNMSSM\n");
+      errorflag = -1;
+    } 
 
     coupHZiZj = 0.5*(lam/(pow(2,0.5))*(CPEMix(higgs,1)*(mixNeut(neutralinoj,3)*mixNeut(neutralinoi,5) + mixNeut(neutralinoj,5)*mixNeut(neutralinoi,3)) + CPEMix(higgs,2)*(mixNeut(neutralinoj,4)*mixNeut(neutralinoi,5)+mixNeut(neutralinoi,4)*mixNeut(neutralinoj,5)) + CPEMix(higgs,3)*(mixNeut(neutralinoj,4)*mixNeut(neutralinoi,3) + mixNeut(neutralinoj,3)*mixNeut(neutralinoi,4))) - pow(2,0.5)*kappa*CPEMix(higgs,3)*mixNeut(neutralinoj,5)*mixNeut(neutralinoi,5) + gp/2*(-CPEMix(higgs,1)*(mixNeut(neutralinoj,1)*mixNeut(neutralinoi,4)+mixNeut(neutralinoj,4)*mixNeut(neutralinoi,1)) + CPEMix(higgs,2)*(mixNeut(neutralinoj,1)*mixNeut(neutralinoi,3)+mixNeut(neutralinoi,1)*mixNeut(neutralinoj,3))) + g/2*(CPEMix(higgs,1)*(mixNeut(neutralinoj,2)*mixNeut(neutralinoi,4)+mixNeut(neutralinoj,4)*mixNeut(neutralinoi,2)) - CPEMix(higgs,2)*(mixNeut(neutralinoj,2)*mixNeut(neutralinoi,3)+mixNeut(neutralinoj,3)*mixNeut(neutralinoi,2))));
 
@@ -16972,6 +18000,10 @@ double neutralinoamplitudedecayneutralinoCPoddhiggsNMSSM (double mneuti, double 
     squareplus = 1 - pow(fabs(mneutj)/fabs(mneuti) + ma/fabs(mneuti),2);
     squareminus = 1 - pow(fabs(mneutj)/fabs(mneuti) - ma/fabs(mneuti),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoCPoddhiggsNMSSM\n");
+      errorflag = -1;
+    } 
 
     coupAZiZj = -0.5*(lam/pow(2,0.5)*(CPOMix(higgsa,1)*(mixNeut(neutj,3)*mixNeut(neuti,5) + mixNeut(neuti,3)*mixNeut(neutj,5)) + CPOMix(higgsa,2)*(mixNeut(neutj,4)*mixNeut(neuti,5) + mixNeut(neuti,4)*mixNeut(neutj,5)) + CPOMix(higgsa,3)*(mixNeut(neutj,4)*mixNeut(neuti,3) + mixNeut(neutj,3)*mixNeut(neuti,4))) - pow(2,0.5)*kappa*CPOMix(higgsa,3)*mixNeut(neuti,5)*mixNeut(neutj,5) - gp/2*(-CPOMix(higgsa,1)*(mixNeut(neutj,1)*mixNeut(neuti,4) + mixNeut(neuti,1)*mixNeut(neutj,4)) + CPOMix(higgsa,2)*(mixNeut(neutj,1)*mixNeut(neuti,3) + mixNeut(neuti,1)*mixNeut(neutj,3))) - g/2*(CPOMix(higgsa,1)*(mixNeut(neutj,2)*mixNeut(neuti,4) + mixNeut(neutj,4)*mixNeut(neuti,2)) - CPOMix(higgsa,2)*(mixNeut(neutj,2)*mixNeut(neuti,3)+mixNeut(neutj,3)*mixNeut(neuti,2))));
 
@@ -16995,6 +18027,10 @@ double neutralinoamplitudedecaysfermionfermionfirst2genNMSSM (double mneut, doub
     squareplus = 1 - pow(msf/fabs(mneut) + mf/fabs(mneut),2);
     squareminus = 1 - pow(msf/fabs(mneut) - mf/fabs(mneut),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudedecaysfermionsfermionfirst2genNMSSM\n");
+      errorflag = -1;
+    } 
     costhetaW = g/pow(pow(gp,2)+pow(g,2),0.5);
     sinthetaW = gp/pow(pow(gp,2)+pow(g,2),0.5);
 
@@ -17028,12 +18064,20 @@ double neutralinoamplitudedecaysfermionfermionfirst2genNMSSM (double mneut, doub
       coup1 = -c(2)/(pow(2,0.5)*costhetaW);
       coup2 = 0;
     }
+    else{
+      throw("problem: type must be u or d or l or n in neutralinoamplitudedecaysfermionsfermionfirst2genNMSSM\n");
+      errorflag = -1;
+    }
     
     if (LorR == 'L') {
       coupling = coup1;
     }
     else if (LorR == 'R') {
       coupling = coup2;
+    }
+    else{
+      throw("problem: LorR must be L or R in neutralinoamplitudedecaysfermionsfermionfirst2genNMSSM\n");
+      errorflag = -1;
     }
     prefactor = N*pow(g,2)/(32*PI*fabs(mneut));
     amplitudeW = prefactor*lambda*(pow(coupling,2))*(pow(mneut,2)-pow(msf,2)+pow(mf,2));
@@ -17055,6 +18099,10 @@ double neutralinoamplitudestoptopNMSSM (double mneut, double mst, double mt, dou
     squareplus = 1 - pow(mst/fabs(mneut) + mt/fabs(mneut),2);
     squareminus = 1 - pow(mst/fabs(mneut) - mt/fabs(mneut),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudestoptopNMSSM\n");
+      errorflag = -1;
+    } 
     costhetaW = g/pow(pow(gp,2)+pow(g,2),0.5);
     sinthetaW = gp/pow(pow(gp,2)+pow(g,2),0.5);
 
@@ -17072,6 +18120,10 @@ double neutralinoamplitudestoptopNMSSM (double mneut, double mst, double mt, dou
     else if (stop == 2) {
       coup1 = -sin(thetat)*pow(2,0.5)*(-2./3*c(1)*sinthetaW + (-0.5+2./3*pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetat)*ft/g*mixNeut(neut,4);
       coup2 = -2./3*cos(thetat)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetat)*ft/g*mixNeut(neut,4);
+    }
+    else{
+      throw("problem: stop must be 1 or 2 in neutralinoamplitudestoptopNMSSM");
+      errorflag = -1;
     }
     amplitudeW = prefactor*lambda*((pow(coup1,2)+pow(coup2,2))*(pow(mneut,2)-pow(mst,2)+pow(mt,2)) + 4*mt*mneut*coup1*coup2);
   }
@@ -17091,6 +18143,10 @@ double neutralinoamplitudesbottombottomNMSSM (double mneut, double msb, double m
     squareplus = 1 - pow(msb/fabs(mneut) + mb/fabs(mneut),2);
     squareminus = 1 - pow(msb/fabs(mneut) - mb/fabs(mneut),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudesbottombottomNMSSM\n");
+      errorflag = -1;
+    } 
     costhetaW = g/pow(pow(gp,2)+pow(g,2),0.5);
     sinthetaW = gp/pow(pow(gp,2)+pow(g,2),0.5);
 
@@ -17108,6 +18164,10 @@ double neutralinoamplitudesbottombottomNMSSM (double mneut, double msb, double m
     else if (sbottom == 2) {
       coup1 = -sin(thetab)*pow(2,0.5)*(1./3*c(1)*sinthetaW + (0.5-1./3*pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetab)*fb/g*mixNeut(neut,3);
       coup2 = 1./3*cos(thetab)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetab)*fb/g*mixNeut(neut,3);
+    }
+    else{
+      throw("problem: sbottom must be 1 or 2 in neutralinoamplitudesbottombottomNMSSM\n");
+    errorflag = -1;
     }
     amplitudeW = prefactor*lambda*((pow(coup1,2)+pow(coup2,2))*(pow(mneut,2)-pow(msb,2)+pow(mb,2)) + 4*mb*mneut*coup1*coup2);
   }
@@ -17128,6 +18188,10 @@ double neutralinoamplitudestautauNMSSM (double mneut, double mstau, double mtau,
     squareplus = 1 - pow(mstau/fabs(mneut) + mtau/fabs(mneut),2);
     squareminus = 1 - pow(mstau/fabs(mneut) - mtau/fabs(mneut),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudestautauNMSSM\n");
+      errorflag = -1;
+    } 
     costhetaW = g/pow(pow(gp,2)+pow(g,2),0.5);
     sinthetaW = gp/pow(pow(gp,2)+pow(g,2),0.5);
 
@@ -17145,6 +18209,10 @@ double neutralinoamplitudestautauNMSSM (double mneut, double mstau, double mtau,
     else if (stau == 2) {
       coup1 = -sin(thetatau)*pow(2,0.5)*(c(1)*sinthetaW + (0.5-pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetatau)*ftau/g*mixNeut(neut,3);
       coup2 = cos(thetatau)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetatau)*ftau/g*mixNeut(neut,3);
+    }
+    else{
+      throw("problem: stau must be 1 or 2 in neutralinoamplitudestautauNMSSM");
+      errorflag = -1;
     }
     amplitudeW = prefactor*lambda*((pow(coup1,2)+pow(coup2,2))*(pow(mneut,2)-pow(mstau,2)+pow(mtau,2)) + 4*mtau*mneut*coup1*coup2);
   }
@@ -17165,6 +18233,10 @@ double neutralinoamplitudestauneutrinotauneutrinoNMSSM (double mneut, double mst
     squareplus = 1 - pow(mstaunu/fabs(mneut) + mtaunu/fabs(mneut),2);
     squareminus = 1 - pow(mstaunu/fabs(mneut) - mtaunu/fabs(mneut),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in neutralinoamplitudestauneutrinotauneutrinoNMSSM\n");
+      errorflag = -1;
+    } 
     costhetaW = g/pow(pow(gp,2)+pow(g,2),0.5);
     sinthetaW = gp/pow(pow(gp,2)+pow(g,2),0.5);
 
@@ -17193,6 +18265,10 @@ double squarkamplitudedecayquarkneutralinoNMSSM (double m1, double mq, double mn
     squareplus = 1 - pow(mq/m1 + fabs(mneut)/m1,2);
     squareminus = 1 - pow(mq/m1 - fabs(mneut)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squarkamplitudedecayquarkneutralinoNMSSM\n");
+      errorflag = -1;
+    } 
 
     c(1) = mixNeut(neut,1)*costhetaW + mixNeut(neut,2)*sinthetaW;
     c(2) = -mixNeut(neut,1)*sinthetaW + mixNeut(neut,2)*costhetaW;
@@ -17213,6 +18289,10 @@ double squarkamplitudedecayquarkneutralinoNMSSM (double m1, double mq, double mn
     }
     else if (uord == 'd' && LorR == 'R') {
       coupling = pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1))*1./3;
+    }
+    else{
+      throw("problem: uord must be u or d and LorR must be L or R in squarkamplitudedecayquarkneutralinoNMSSM\n");
+    errorflag = -1;
     }
 
     amplitudeW = prefactor*pow(coupling,2)*(pow(m1,2)-pow(mneut,2) - pow(mq,2))*lambda;
@@ -17237,6 +18317,10 @@ double sleptonamplitudedecayleptonneutralinoNMSSM (double m1, double ml, double 
     squareplus = 1 - pow(ml/m1 + fabs(mneut)/m1,2);
     squareminus = 1 - pow(ml/m1 - fabs(mneut)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in sleptonamplitudedecayleptonneutralinoNMSSM\n");
+      errorflag = -1;
+    } 
 
     c(1) = mixNeut(neut,1)*costhetaW + mixNeut(neut,2)*sinthetaW;
     c(2) = -mixNeut(neut,1)*sinthetaW + mixNeut(neut,2)*costhetaW;
@@ -17257,6 +18341,10 @@ double sleptonamplitudedecayleptonneutralinoNMSSM (double m1, double ml, double 
     }
     else if (uord == 'd' && LorR == 'R') {
       coupling = pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1));
+    }
+    else{
+      throw("problem: uord must be u or d and LorR must be L or R in sleptonamplitudedecayleptonneutralinoNMSSM\n");
+      errorflag = -1;
     }
 
     amplitudeW = prefactor*pow(coupling,2)*(pow(m1,2)-pow(mneut,2) - pow(ml,2))*lambda;
@@ -17280,6 +18368,10 @@ double stopamplitudedecaytopneutralinoNMSSM (double m1, double mt, double mneut,
     squareplus = 1 - pow(mt/m1 + fabs(mneut)/m1,2);
     squareminus = 1 - pow(mt/m1 - fabs(mneut)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stopamplitudedecaytopneutralinoNMSSM\n");
+      errorflag = -1;
+    } 
     ft = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
 
     c(1) = mixNeut(neut,1)*costhetaW + mixNeut(neut,2)*sinthetaW;
@@ -17297,6 +18389,10 @@ double stopamplitudedecaytopneutralinoNMSSM (double m1, double mt, double mneut,
     else if (stop == 2) {
       coupling1 = -sin(thetat)*pow(2,0.5)*(-2./3*c(1)*sinthetaW + (-0.5+2./3*pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetat)*ft/g*mixNeut(neut,4);
       coupling2 = -2./3*cos(thetat)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetat)*ft/g*mixNeut(neut,4);
+    }
+    else{
+      throw("problem: stop must be 1 or 2 in stopamplitudedecaytopneutralinoNMSSM\n");
+      errorflag = -1;
     }
     
     amplitudeW = prefactor*((pow(coupling1,2)+pow(coupling2,2))*(pow(m1,2) - pow(mt,2) - pow(mneut,2)) - 4*coupling1*coupling2*mt*mneut)*lambda;
@@ -17321,6 +18417,10 @@ double sbottomamplitudedecaybottomneutralinoNMSSM (double m1, double mb, double 
     squareplus = 1 - pow(mb/m1 + fabs(mneut)/m1,2);
     squareminus = 1 - pow(mb/m1 - fabs(mneut)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in sbottomamplitudedecaybottomneutralinoNMSSM\n");
+      errorflag = -1;
+    } 
     fb = g*runmb/(pow(2,0.5)*mWboson*cos(beta));
 
     c(1) = mixNeut(neut,1)*costhetaW + mixNeut(neut,2)*sinthetaW;
@@ -17338,6 +18438,10 @@ double sbottomamplitudedecaybottomneutralinoNMSSM (double m1, double mb, double 
     else if (sbottom == 2) {
       coupling1 = -sin(thetab)*pow(2,0.5)*(1./3*c(1)*sinthetaW + (0.5-1./3*pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetab)*fb/g*mixNeut(neut,3);
       coupling2 = 1./3*cos(thetab)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetab)*fb/g*mixNeut(neut,3);
+    }
+    else{
+      throw("problem: sbottom must be 1 or 2 in sbottomamplitudedecaybottomneutralinoNMSSM\n");
+      errorflag = -1;
     }
     
     amplitudeW = prefactor*((pow(coupling1,2)+pow(coupling2,2))*(pow(m1,2) - pow(mb,2) - pow(mneut,2)) - 4*coupling1*coupling2*mb*mneut)*lambda;
@@ -17361,6 +18465,10 @@ double stauamplitudedecaytauneutralinoNMSSM (double m1, double mtau, double mneu
     squareplus = 1 - pow(mtau/m1 + fabs(mneut)/m1,2);
     squareminus = 1 - pow(mtau/m1 - fabs(mneut)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in stauamplitudedecaytauneutralinoNMSSM\n");
+      errorflag = -1;
+    } 
     ftau = g*runmtau/(pow(2,0.5)*mWboson*cos(beta));
 
     c(1) = mixNeut(neut,1)*costhetaW + mixNeut(neut,2)*sinthetaW;
@@ -17379,6 +18487,10 @@ double stauamplitudedecaytauneutralinoNMSSM (double m1, double mtau, double mneu
       coupling1 = -sin(thetatau)*pow(2,0.5)*(c(1)*sinthetaW + (0.5-pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetatau)*ftau/g*mixNeut(neut,3);
       coupling2 = cos(thetatau)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetatau)*ftau/g*mixNeut(neut,3);
     }
+    else{
+      throw("problem: stau must be 1 or 2 in stauamplitudedecaytauneutralinoNMSSM\n");
+    errorflag = -1;
+    }
     
     amplitudeW = prefactor*((pow(coupling1,2)+pow(coupling2,2))*(pow(m1,2) - pow(mtau,2) - pow(mneut,2)) - 4*coupling1*coupling2*mtau*mneut)*lambda;
 
@@ -17393,10 +18505,13 @@ double charginoiamplitudedecayneutralinojHpmNMSSM (double mchar, double mneut, d
   if (fabs(mchar) < fabs(mneut) + mHpm) { amplitudeW = 0;}
   else {
     double prefactor = 0, coupling1 = 0, coupling2 = 0, squareplus = 0, squareminus = 0, lambda = 0;
-
     squareplus = 1 - pow(mHpm/fabs(mchar) + fabs(mneut)/fabs(mchar),2);
     squareminus = 1 - pow(mHpm/fabs(mchar) - fabs(mneut)/fabs(mchar),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in charginoiamplitudedecayneutralinojHpmNMSSM\n");
+      errorflag = -1;
+    } 
 
     prefactor = pow(g,2)/(32*PI*fabs(mchar));
     
@@ -17408,8 +18523,13 @@ double charginoiamplitudedecayneutralinojHpmNMSSM (double mchar, double mneut, d
       coupling1 = 1/g*(lam*sin(beta)*mixNeut(neut,5)*sin(thetaR)+ cos(beta)/pow(2,0.5)*(gp*mixNeut(neut,1) + g*mixNeut(neut,2))*sin(thetaR) - g*cos(beta)*mixNeut(neut,4)*cos(thetaR));
       coupling2 = 1/g*(lam*cos(beta)*mixNeut(neut,5)*sin(thetaL) - sin(beta)/pow(2,0.5)*(gp*mixNeut(neut,1) + g*mixNeut(neut,2))*sin(thetaL) - g*sin(beta)*mixNeut(neut,3)*cos(thetaL));
     }
+    else{
+      throw("problem: chargino must be 1 or 2 in charginoiamplitudedecayneutralinojHpmNMSSM\n");
+    errorflag = -1;
+    }
 
     amplitudeW = prefactor*lambda*((pow(coupling1,2)+pow(coupling2,2))*(pow(mneut,2)+pow(mchar,2)-pow(mHpm,2)) + 4*coupling1*coupling2*mneut*mchar);
+
   }
   return amplitudeW;
 }
@@ -17430,6 +18550,9 @@ double charginoiamplitudedecayneutralinojWNMSSM (double mchar, double mneut, dou
     else if (chargino == 2) {
       V2 = sin(thetaR); V1 = -cos(thetaR); U2 = sin(thetaL); U1 = -cos(thetaL);
     }
+    else{
+      throw("problem: chargino must be 1 or 2 in charginoiamplitudedecayneutralinojWNMSSM\n");
+    }
 
     coupleL = -1/pow(2,0.5)*mixNeut(neut,4)*V2 + mixNeut(neut,2)*V1;
     coupleR = 1/pow(2,0.5)*mixNeut(neut,3)*U2 + mixNeut(neut,2)*U1;
@@ -17437,6 +18560,10 @@ double charginoiamplitudedecayneutralinojWNMSSM (double mchar, double mneut, dou
     squareplus = 1 - pow(fabs(mneut)/fabs(mchar) + mWboson/fabs(mchar),2);
     squareminus = 1 - pow(fabs(mneut)/fabs(mchar) - mWboson/fabs(mchar),2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in charginoiamplitudedecayneutralinojWNMSSM\n");
+      errorflag = -1;
+    } 
 
     coupling = -12*mneut*mchar*coupleL*coupleR + (pow(coupleL,2)+pow(coupleR,2))*((pow(mchar,2)+pow(mneut,2)-pow(mWboson,2)) + (pow(mchar,2)+pow(mWboson,2)-pow(mneut,2))*(pow(mchar,2)-pow(mneut,2)-pow(mWboson,2))/pow(mWboson,2));
 
@@ -17458,12 +18585,20 @@ double HpmamplitudecharginojneutralinoiNMSSM (double mHp, double mchar, double m
     squareplus = 1 - pow(fabs(mchar)/mHp + fabs(mneut)/mHp,2);
     squareminus = 1 - pow(fabs(mchar)/mHp - fabs(mneut)/mHp,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in HpmamplitudecharginojneutralinoiNMSSM\n");
+      errorflag = -1;
+    } 
     
     if (chargino == 1) {
       V2 = cos(thetaR); V1 = sin(thetaR); U2 = cos(thetaL); U1 = sin(thetaL);
     }
     else if (chargino == 2) {
       V2 = sin(thetaR); V1 = -cos(thetaR); U2 = sin(thetaL); U1 = -cos(thetaL);
+    }
+    else{
+      throw("problem: chargino must be 1 or 2 in HpmamplitudecharginojneutralinoiNMSSM\n");
+      errorflag = -1;
     }
 
     coupHpZiWjL = lam*cos(beta)*mixNeut(neutralino,5)*U2 - sin(beta)/(pow(2,0.5))*(gp*mixNeut(neutralino,1)+g*mixNeut(neutralino,2))*U2 + sin(beta)*g*mixNeut(neutralino,3)*U1;
@@ -17473,7 +18608,6 @@ double HpmamplitudecharginojneutralinoiNMSSM (double mHp, double mchar, double m
 
     amplitudeW = prefactor*coupling*lambda;
 
-  
   }
   return amplitudeW;
 }
@@ -17487,6 +18621,10 @@ double snutauamplitudedecaynutauneutralinoNMSSM (double m1, double mneut, double
     squareplus = 1 - pow(fabs(mneut)/m1,2);
     squareminus = 1 - pow(fabs(mneut)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in snutauamplitudedecaynutauneutralinoNMSSM\n");
+      errorflag = -1;
+    } 
 
     sinthetaW = gp/(pow(pow(g,2)+pow(gp,2),0.5));
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));

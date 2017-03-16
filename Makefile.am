@@ -22,7 +22,7 @@ doc_DATA = doc/rpcManual.pdf \
            doc/neutManual.pdf \
 	   doc/nmssmManual.pdf \
 	   doc/threeLoop.pdf \
-	   doc/ho.pdf
+	   doc/ho.pdf doc/decays.pdf
 
 dist_pkgdata_DATA += CHANGES GUIDELINES COPYING $(doc_DATA) 
 

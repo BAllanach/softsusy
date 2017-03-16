@@ -18,6 +18,7 @@ Block MINPAR                 # Input parameters
     4   1.000000000e+00      # sign(mu)
     5  -3.000000000e+02      # A_0
 Block SOFTSUSY               # SOFTSUSY specific inputs
+    0   1.000000000e+00      # Calculate decays in output (only for RPC (N)MSSM)
     1   1.000000000e-04      # tolerance
     2   2.000000000e+00      # up-quark mixing (=1) or down (=2)
     5   1.000000000E+00      # 2-loop running

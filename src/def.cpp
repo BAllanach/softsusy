@@ -10,9 +10,9 @@
 #include "def.h"
 
 /// global variable declaration
-/// no quark mixing (dominant third family approx), and no verbose output
 namespace softsusy {
-  int MIXING = 1, PRINTOUT = 0;
+/// no quark mixing (dominant third family approx), and no verbose output
+  int MIXING = -1, PRINTOUT = 0;
   /// fractional accuracy required - may need to make smaller for accurate
   /// neutrino masses
   double TOLERANCE = 1.0e-4;
@@ -84,6 +84,8 @@ namespace softsusy {
   bool threeBodyDecays = true;
   /// Default: don't output partial widths in decays
   bool outputPartialWidths = false;
+  /// Default: don't calculate decays
+  bool calcDecays = false;
   
   /// Controls the use of MSSM three-loop RGEs
   bool USE_THREE_LOOP_RGE = false;

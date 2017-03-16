@@ -17,7 +17,6 @@ int main() {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
-
   bool gaugeUnification = true, ewsbBCscale = false;
 
   /// Do we include 2-loop RGEs of *all* scalar masses and A-terms, or only the
@@ -41,7 +40,9 @@ int main() {
 
   /// "try" catches errors in main program and prints them out
   try {
-
+    /// Turn quark mixing on
+    MIXING = 1;
+    
     /// Contains default quark and lepton masses and gauge coupling
     /// information 
     QedQcd oneset;      ///< See "lowe.h" for default parameter definitions 
