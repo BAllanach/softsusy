@@ -71,7 +71,7 @@ int main() {
     
     /// Calculate the spectrum
     r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
-
+    
     /// check the point in question is problem free: if so print the output
     if (!r.displayProblem().test()) 
       cout << tanb << " " << r.displayPhys().mh0(1) << " " 
