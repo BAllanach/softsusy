@@ -4,9 +4,7 @@
    - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
    - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
 
-   \brief Code calculates decay modes for three body modes and prints out an
-          SLHA format file with them in. For R-parity conserving
-          NMSSM/MSSM. See arXiv://1702.????? 
+   \brief Code calculates three body decay modes 
 */
 
 #ifndef THREEBODYDECAYS_H
