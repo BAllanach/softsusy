@@ -17,8 +17,8 @@
 
 using namespace softsusy;
 /// switch on if you're trying to get it through PYTHIA; off otherwise
-const bool PYTHIA = false;
-const bool GMSB = true;
+const bool PYTHIA = true;
+const bool GMSB = false;
 
 int main() {
   /// Sets up exception handling
@@ -95,7 +95,7 @@ int main() {
     const char* modelIdent = "sugra"; 
 
     if (GMSB) {
-      cout << "# Mmess=" << mMess << " n5=" << n5 << "lambda = " << lambda << "tanbeta=" << tanb; 
+      cout << "# Mmess=" << mMess << " n5=" << n5 << "lambda = " << lambda << "tanbeta=" << tanb << endl; 
       uni = false; 
       mGutGuess = mMess;
       boundaryCondition = &gmsbBcs;
