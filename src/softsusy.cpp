@@ -2894,6 +2894,12 @@ double MssmSoftsusy::calcRunningMb() {
 	if (is_a<numeric>(test))
 	  dzetamb += ex_to<numeric>(test).to_double();
       }
+
+     // AVB: fix double-counting of eps-scalar contribution
+     double alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
+     dzetamb-= + 31.0 / 72.0 * sqr(alphasMZ) / sqr(PI) // pure QCD 
+	        + alphasMZ/(3.0 * PI) * decoupling_corrections.dmb.one_loop; // due to factrorization of one-loop term
+
       if (close(dzetamb, decoupling_corrections.dmb.two_loop, 
 		TWOLOOP_NUM_THRESH)) needcalc = false; 
       decoupling_corrections.dmb.two_loop = dzetamb;
