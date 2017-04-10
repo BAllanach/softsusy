@@ -2409,11 +2409,20 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
   double    mtpole  = dataSet.displayPoleMt();
   double p = mtpole;
   double q = displayMu();
+  double mtdiv = mtpole;
+    
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+  if (USE_TWO_LOOP_GAUGE_YUKAWA) {
+     p = forLoops.mt;
+     mtdiv = forLoops.mt;
+  }
+#endif
+
   /// stop/gluino correction 6% correction
   double  stopGluino = 4.0 * sqr(displayGaugeCoupling(3)) / 3.0 *
     (b1(p, mg, mstop1, q) + 
      b1(p, mg, mstop2, q) -
-     sin(2.0 * thetat) * mg / mtpole * //PA: should be running mass?
+     sin(2.0 * thetat) * mg / mtdiv * 
      (b0(p, mg, mstop1, q) - 
       b0(p, mg, mstop2, q)));
 

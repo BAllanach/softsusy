@@ -1,2 +1,2 @@
-<li><b>Major upgrade</b>: added MSSM/NMSSM decays
+<li>Fixed 2-loop mt threshold corrections: boils down to using running mt in definition of stop mixing in one-loop corrections. Only relevant when --enable-two-loop-gauge-yukawa-compilation is switched on.
 
