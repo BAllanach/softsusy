@@ -1,28 +1,24 @@
-// ====================================================================
-// This file is part of FlexibleSUSY.
-//
-// FlexibleSUSY is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published
-// by the Free Software Foundation, either version 3 of the License,
-// or (at your option) any later version.
-//
-// FlexibleSUSY is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with FlexibleSUSY.  If not, see
-// <http://www.gnu.org/licenses/>.
-// ====================================================================
+/** \file softsusy.h
+    - Project:     SOFTSUSY 
+    - Author:      Alex Voigt
+    - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
+    - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
+    
+    \brief Two loop corrections to the top mass.
+    This file has been generated at Fri 31 Mar 2017 14:09:29
+    with the script "tquark_to_cpp.m". This file is part of FlexibleSUSY.
 
-// This file has been generated at Fri 31 Mar 2017 14:09:29
-// with the script "tquark_to_cpp.m".
+*/
+
 
 #ifndef MSSM_TWO_LOOP_SQCD_MT_H
 #define MSSM_TWO_LOOP_SQCD_MT_H
 
-namespace flexiblesusy {
+#include "numerics.hpp"
+#include <cmath>
+#include <limits>
+
+namespace softsusy {
 namespace mssm_twoloop_mt {
 
 struct Parameters {
