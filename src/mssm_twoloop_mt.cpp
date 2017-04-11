@@ -53,7 +53,7 @@ namespace {
    double fin(double mm1, double mm2, double mmu)
    {
       using std::log;
-      using gm2calc::dilog;
+      //      using gm2calc::dilog;
       const double PI = 3.14159265358979323846264338327950288;
 
       return (6*(mm1*log(mm1/mmu) + mm2*log(mm2/mmu)) +
@@ -170,7 +170,7 @@ double dMt_over_mt_2loop_qcd(const Parameters& pars)
 double dMt_over_mt_2loop_susy(const Parameters& pars)
 {
    using std::log;
-   using gm2calc::dilog;
+   //   using gm2calc::dilog;
    const double g3     = pars.g3;
    const double Xt     = pars.xt;
    const double mt     = pars.mt;

@@ -14,7 +14,7 @@
 #ifndef MSSM_TWO_LOOP_SQCD_MT_H
 #define MSSM_TWO_LOOP_SQCD_MT_H
 
-#include "numerics.hpp"
+#include "numerics.h"
 #include <cmath>
 #include <limits>
 
