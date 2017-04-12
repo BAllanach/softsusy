@@ -8,38 +8,35 @@
 #include "mssm_twoloop_mt.h"
 
 namespace softsusy {
-namespace mssm_twoloop_mt {
+    
+    namespace {
+      const double Pi  = 3.1415926535897932384626433832795;
+      const double zt2 = 1.6449340668482264364724151666460;
+      const double zt3 = 1.2020569031595942853997381615114;
+      const double log2 = std::log(2.);
+      
+      template <typename T> T pow2(T x)  { return x*x; }
+      template <typename T> T pow3(T x)  { return x*x*x; }
+      template <typename T> T pow4(T x)  { return x*x*x*x; }
+      template <typename T> T pow5(T x)  { return x*x*x*x*x; }
+      template <typename T> T pow6(T x)  { return x*x*x*x*x*x; }
+      template <typename T> T pow7(T x)  { return x*x*x*x*x*x*x; }
+      template <typename T> T pow8(T x)  { return x*x*x*x*x*x*x*x; }
+      template <typename T> T pow9(T x)  { return x*x*x*x*x*x*x*x*x; }
+      template <typename T> T pow10(T x) { return x*x*x*x*x*x*x*x*x*x; }
+      
+      const double oneLoop = 1./pow2(4*Pi);
+      const double twoLoop = pow2(oneLoop);
+      
+      template <typename T>
+      bool is_zero(T a, T prec = std::numeric_limits<T>::epsilon()) {
+	return std::fabs(a) < prec;
+      }
 
-namespace {
-   const double Pi  = 3.1415926535897932384626433832795;
-   const double zt2 = 1.6449340668482264364724151666460;
-   const double zt3 = 1.2020569031595942853997381615114;
-   const double log2 = std::log(2.);
-
-   template <typename T> T pow2(T x)  { return x*x; }
-   template <typename T> T pow3(T x)  { return x*x*x; }
-   template <typename T> T pow4(T x)  { return x*x*x*x; }
-   template <typename T> T pow5(T x)  { return x*x*x*x*x; }
-   template <typename T> T pow6(T x)  { return x*x*x*x*x*x; }
-   template <typename T> T pow7(T x)  { return x*x*x*x*x*x*x; }
-   template <typename T> T pow8(T x)  { return x*x*x*x*x*x*x*x; }
-   template <typename T> T pow9(T x)  { return x*x*x*x*x*x*x*x*x; }
-   template <typename T> T pow10(T x) { return x*x*x*x*x*x*x*x*x*x; }
-
-   const double oneLoop = 1./pow2(4*Pi);
-   const double twoLoop = pow2(oneLoop);
-
-   template <typename T>
-   bool is_zero(T a, T prec = std::numeric_limits<T>::epsilon())
-   {
-      return std::fabs(a) < prec;
-   }
-
-   template <typename T>
-   bool is_equal(T a, T b, T prec = std::numeric_limits<T>::epsilon())
-   {
-      return is_zero(a - b, prec);
-   }
+      template <typename T>
+      bool is_equal(T a, T b, T prec = std::numeric_limits<T>::epsilon()) {
+	return is_zero(a - b, prec);
+      }
 
    /**
     * fin[] function from arXiv:hep-ph/0507139 .
@@ -977,5 +974,5 @@ double dMt_over_mt_2loop(const Parameters& pars)
    return dMt_over_mt_2loop_qcd(pars) + dMt_over_mt_2loop_susy(pars);
 }
 
-} // namespace mssm_twoloop_mt
-} // namespace flexiblesusy
+} // namespace softsusy
+

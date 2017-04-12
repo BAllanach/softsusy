@@ -2568,8 +2568,8 @@ double MssmSoftsusy::calcRunMtNeutralinos() const {
   return neutralinos;
   
 }
-
-double MssmSoftsusy::calcRunMtCharginos() const {
+  
+  double MssmSoftsusy::calcRunMtCharginos() const {
   double    mtpole  = dataSet.displayPoleMt();
   double    q       = displayMu();
   double    ht      = forLoops.ht;
@@ -2640,7 +2640,7 @@ double MssmSoftsusy::calcRunningMt() {
   stopGluino = calcRunMtStopGluino();
   resigmat = resigmat + stopGluino;
   /// rest are extra bits from Matchev et al: 2% corrections  
-  //Higgs contribution
+  /// Higgs contribution
   higgs = calcRunMtHiggs();
   resigmat = resigmat + higgs;
   /// Neutralino contribution
@@ -2687,6 +2687,10 @@ double MssmSoftsusy::calcRunningMt() {
 	   << dmtas2 << endl
 	   << "two-loop total correction (Mt -> mt)" 
 	   << dmt_MT << endl;*/
+      cout << "DEBUG: checking ginac expressions with those of C++ implementation.\n";
+      double xt = forLoops.mt * (displaySoftA(UA, 3, 3) -
+				 displaySusyMu() / displayTanb());
+      Parameters setOne(displayGaugeCoupling(3), forLoops.mt, displayGaugino(3), forLoops.mu(1, 3), forLoops.mu(2, 3), displayMsusy(), xt, displayMu());
     }
   } else ordinaryQcdCorrections = true;
 #endif
