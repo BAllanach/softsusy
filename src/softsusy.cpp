@@ -2692,7 +2692,8 @@ double MssmSoftsusy::calcRunningMt() {
 				 displaySusyMu() / displayTanb());
       Parameters pars(displayGaugeCoupling(3), forLoops.mt, displayGaugino(3), forLoops.mu(1, 3), forLoops.mu(2, 3), displayMsusy(), xt, displayMu());
       double dmtOmtcpp = dMt_over_mt_2loop(pars);
-      cout << "dmOmtcpp=" << dmtOmtcpp << " vs " << dmtas2 << endl;
+      //      cout << pars.g3<< " " << pars.mt << " " << pars.mg << " " << pars.mst1 << " " << pars.mst2 << " " << pars.msusy << " " << pars.xt << " " << pars.Q << endl;
+      cout << "dmOmtcpp=" << dmtOmtcpp << " vs " << dmt_MT << endl;
     }
   } else ordinaryQcdCorrections = true;
 #endif
