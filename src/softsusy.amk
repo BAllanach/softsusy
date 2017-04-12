@@ -66,6 +66,9 @@ softpoint_x_LDADD += lib2lthresh.la libmssmparam.la
 
 rpvsoftsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
 rpvneut_x_LDADD     += lib2lthresh.la libmssmparam.la 
+
+testDecay_x_LDADD  += lib2lthresh.la libmssmparam.la 
+testDecay_x_LDADD  += lib2lthresh.la libmssmparam.la 
 endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
 pkginclude_HEADERS += \
