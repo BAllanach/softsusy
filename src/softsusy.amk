@@ -64,6 +64,9 @@ softsusy_nmssm_x_LDADD += lib2lthresh.la libmssmparam.la
 softpoint_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
 softpoint_x_LDADD += lib2lthresh.la libmssmparam.la 
 
+testDecay_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp 
+testDecay_x_LDADD += lib2lthresh.la libmssmparam.la 
+
 rpvsoftsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
 rpvneut_x_LDADD     += lib2lthresh.la libmssmparam.la 
 endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
