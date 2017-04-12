@@ -2690,7 +2690,8 @@ double MssmSoftsusy::calcRunningMt() {
       cout << "DEBUG: checking ginac expressions with those of C++ implementation.\n";
       double xt = forLoops.mt * (displaySoftA(UA, 3, 3) -
 				 displaySusyMu() / displayTanb());
-      Parameters setOne(displayGaugeCoupling(3), forLoops.mt, displayGaugino(3), forLoops.mu(1, 3), forLoops.mu(2, 3), displayMsusy(), xt, displayMu());
+      Parameters pars(displayGaugeCoupling(3), forLoops.mt, displayGaugino(3), forLoops.mu(1, 3), forLoops.mu(2, 3), displayMsusy(), xt, displayMu());
+      double dmtOmtcpp = dMt_over_mt_2loop(pars);
     }
   } else ordinaryQcdCorrections = true;
 #endif
