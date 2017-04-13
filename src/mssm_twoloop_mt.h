@@ -7,7 +7,7 @@
     \brief Two loop corrections to the top mass.
     This file has been generated at Fri 31 Mar 2017 14:09:29
     with the script "tquark_to_cpp.m". This file is part of FlexibleSUSY.
-
+    
 */
 
 
@@ -15,11 +15,12 @@
 #define MSSM_TWO_LOOP_SQCD_MT_H
 
 #include "numerics.h"
+#include "def.h"
 #include <cmath>
 #include <limits>
 
 namespace softsusy {
-
+  
   struct Parameters {
     Parameters() = default;
     Parameters(double g3_, double mt_, double mg_, double mst1_,
@@ -38,13 +39,16 @@ namespace softsusy {
     double Q{};     ///< renormalization scale
   };
   
-/// 2-loop QCD contributions to Delta Mt over mt [hep-ph/0507139]
-double dMt_over_mt_2loop_qcd(const Parameters&);
-/// 2-loop SUSY contributions to Delta Mt over mt [hep-ph/0507139]
-double dMt_over_mt_2loop_susy(const Parameters&);
-/// 2-loop full SQCD contributions to Delta Mt over mt [hep-ph/0507139]
-double dMt_over_mt_2loop(const Parameters&);
-
+  /// 2-loop QCD contributions to Delta Mt over mt [hep-ph/0507139]
+  double dMt_over_mt_2loop_qcd(const Parameters&);
+  /// 2-loop SUSY contributions to Delta Mt over mt [hep-ph/0507139]
+  double dMt_over_mt_2loop_susy(const Parameters&);
+  /// 2-loop full SQCD contributions to Delta Mt over mt [hep-ph/0507139].
+  /// Here, msusy should be mu(1, 2)
+  double dMt_over_mt_2loop(double g3, double mt, double mg, double mst1,
+			   double mst2, double msusy, double thetat,
+			   double q);
+  
 } // namespace softsusy
 
 #endif

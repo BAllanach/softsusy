@@ -2627,6 +2627,8 @@ double MssmSoftsusy::calcRunMtNeutralinos() const {
   return charginoContribution;
   
 }
+
+  //  static double lastTimeDmt = 0.;  
 ///  Formulae from hep-ph/9801365: checked but should be checked again!
 /// Implicitly calculates at the current scale.
 double MssmSoftsusy::calcRunningMt() {
@@ -2668,7 +2670,7 @@ double MssmSoftsusy::calcRunningMt() {
     /// two-previous iterations gave different results
     using namespace GiNaC;
     if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) {  
-      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+      /*      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
       double dmtas2 =  decoupling_corrections.dmt.two_loop;
       if (needcalc) {
 	ex test = tquark_corrections::eval_tquark_twoloop_strong_pole(drbrp);
@@ -2676,36 +2678,24 @@ double MssmSoftsusy::calcRunningMt() {
 	else dout <<" Not numeric: 2loop pole t-quark " << endl;
 	decoupling_corrections.dmt.two_loop = dmtas2;
       } else dout << " mt: no calculation " << endl;
-      
+      */     
       /// back converion Mt -> mt(mu)
       /// dmt_as2 is already properly normalized
       /// ones need to normalize only 1-loop contribution
       double dmtas = (qcd + stopGluino)/(16.0 * sqr(PI));
+      double g3 = displayGaugeCoupling(3);
+      double mt = displayDrBarPars().mt;
+      double mg = displayDrBarPars().mGluino;
+      double mst1 = displayDrBarPars().mu(1,3);
+      double mst2 = displayDrBarPars().mu(2,3);
+      double msusy = displayDrBarPars().mu(1, 2);
+      double thetat = displayDrBarPars().thetat;
+      double q = displayMu();
+      const double dmtas2 =
+	dMt_over_mt_2loop(g3, mt, mg, mst1, mst2, msusy, thetat, q);
+
       double dmt_MT = (dmtas2 - dmtas*dmtas);
       resigmat -= mtpole*dmt_MT;
-
-      // This was my implementation and it didnt work       
-      cout << "DEBUG: checking ginac expressions with those of C++ implementation.\n";
-      double xt = sin(2.0 * forLoops.thetat) * (sqr(forLoops.mu(1, 3)) - sqr(forLoops.mu(2, 3))) / (2.0 * forLoops.mt);
-      Parameters pars(displayGaugeCoupling(3), forLoops.mt, displayGaugino(3), forLoops.mu(1, 3), forLoops.mu(2, 3), displayDrBarPars().mu(1, 2), xt, displayMu());
-      double dmtOmtcpp = dMt_over_mt_2loop(pars);
-      cout << pars.g3<< " " << pars.mt << " " << pars.mg << " " << pars.mst1 << " " << pars.mst2 << " " << pars.msusy << " " << pars.xt << " " << pars.Q << endl;
-      cout << "dmOmtcpp=" << dmtOmtcpp << " vs " << dmtas2 << endl;
-      // end of mine
-
-      
-      //      Parameters pars;
-      pars.g3 = displayGaugeCoupling(3);
-      pars.mt = displayDrBarPars().mt;
-      pars.mg = displayDrBarPars().mGluino;
-      pars.mst1 = displayDrBarPars().mu(1,3);
-      pars.mst2 = displayDrBarPars().mu(2,3);
-      pars.msusy = displayDrBarPars().mu(1, 2);
-      pars.xt = sin(2*displayDrBarPars().thetat) *
-	(sqr(pars.mst1) - sqr(pars.mst2)) / (2*pars.mt);
-      pars.Q = displayMu();
-      const double qcd_2l = dMt_over_mt_2loop(pars);
-      cout << "2. DEBUG: " << dmtas2 << " " << qcd_2l << endl;
     }
   } else ordinaryQcdCorrections = true;
 #endif
