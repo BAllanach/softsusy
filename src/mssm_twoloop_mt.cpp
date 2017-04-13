@@ -64,7 +64,7 @@ namespace softsusy {
 } // anonymous namespace
 
 /// 1-loop QCD contributions to Delta Mt over mt [hep-ph/0210258]
-double dMt_over_mt_1loop_qcd(const Parameters& pars)
+/*double dMt_over_mt_1loop_qcd(const Parameters& pars)
 {
    using std::log;
    const double g3  = pars.g3;
@@ -147,10 +147,10 @@ double dMt_over_mt_1loop(const Parameters& pars)
 {
    return dMt_over_mt_1loop_qcd(pars) + dMt_over_mt_1loop_susy(pars);
 }
-
+*/
+  
 /// 2-loop QCD contributions to Delta Mt over mt [hep-ph/0507139]
-double dMt_over_mt_2loop_qcd(const Parameters& pars)
-{
+double dMt_over_mt_2loop_qcd(const Parameters& pars) {
    using std::log;
    const double g3  = pars.g3;
    const double mmt = pow2(pars.mt);
@@ -164,8 +164,7 @@ double dMt_over_mt_2loop_qcd(const Parameters& pars)
 }
 
 /// 2-loop SUSY contributions to Delta Mt over mt [hep-ph/0507139]
-double dMt_over_mt_2loop_susy(const Parameters& pars)
-{
+double dMt_over_mt_2loop_susy(const Parameters& pars) {
    using std::log;
    //   using gm2calc::dilog;
    const double g3     = pars.g3;
@@ -179,7 +178,8 @@ double dMt_over_mt_2loop_susy(const Parameters& pars)
    const double mmst2  = pow2(pars.mst2);
    const double mmsusy = pow2(pars.msusy);
 
-   if (is_equal(mmst1, mmst2, 1e-6) && is_equal(mmst1, mmgl, 1e-6) && is_equal(mmst1, mmsusy, 1e-6)) {
+   if (is_equal(mmst1, mmst2, 1e-6) && is_equal(mmst1, mmgl, 1e-6) &&
+       is_equal(mmst1, mmsusy, 1e-6)) {
       const double result =
       (32.31481481481482 - (320*mgl*Xt)/(27.*mmsusy) + (1354*log(
          mmsusy/mmu))/27. - (32*mgl*Xt*log(mmsusy/mmu))/(27.*mmsusy) + (16*mgl*

@@ -38,14 +38,6 @@ namespace softsusy {
     double Q{};     ///< renormalization scale
   };
   
-  
-/// 1-loop QCD contributions to Delta Mt over mt [hep-ph/0210258]
-double dMt_over_mt_1loop_qcd(const Parameters&);
-/// 1-loop SUSY contributions to Delta Mt over mt [hep-ph/0210258]
-double dMt_over_mt_1loop_susy(const Parameters&);
-/// 1-loop full SQCD contributions to Delta Mt over mt [hep-ph/0210258]
-double dMt_over_mt_1loop(const Parameters&);
-
 /// 2-loop QCD contributions to Delta Mt over mt [hep-ph/0507139]
 double dMt_over_mt_2loop_qcd(const Parameters&);
 /// 2-loop SUSY contributions to Delta Mt over mt [hep-ph/0507139]

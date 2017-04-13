@@ -2683,17 +2683,29 @@ double MssmSoftsusy::calcRunningMt() {
       double dmtas = (qcd + stopGluino)/(16.0 * sqr(PI));
       double dmt_MT = (dmtas2 - dmtas*dmtas);
       resigmat -= mtpole*dmt_MT;
-      /*      dout << "two-loop tquark strong pole contribution: " 
-	   << dmtas2 << endl
-	   << "two-loop total correction (Mt -> mt)" 
-	   << dmt_MT << endl;*/
+
+      // This was my implementation and it didnt work       
       cout << "DEBUG: checking ginac expressions with those of C++ implementation.\n";
-      double xt = forLoops.mt * (displaySoftA(UA, 3, 3) -
-				 displaySusyMu() / displayTanb());
-      Parameters pars(displayGaugeCoupling(3), forLoops.mt, displayGaugino(3), forLoops.mu(1, 3), forLoops.mu(2, 3), displayMsusy(), xt, displayMu());
+      double xt = sin(2.0 * forLoops.thetat) * (sqr(forLoops.mu(1, 3)) - sqr(forLoops.mu(2, 3))) / (2.0 * forLoops.mt);
+      Parameters pars(displayGaugeCoupling(3), forLoops.mt, displayGaugino(3), forLoops.mu(1, 3), forLoops.mu(2, 3), displayDrBarPars().mu(1, 2), xt, displayMu());
       double dmtOmtcpp = dMt_over_mt_2loop(pars);
-      //      cout << pars.g3<< " " << pars.mt << " " << pars.mg << " " << pars.mst1 << " " << pars.mst2 << " " << pars.msusy << " " << pars.xt << " " << pars.Q << endl;
-      cout << "dmOmtcpp=" << dmtOmtcpp << " vs " << dmt_MT << endl;
+      cout << pars.g3<< " " << pars.mt << " " << pars.mg << " " << pars.mst1 << " " << pars.mst2 << " " << pars.msusy << " " << pars.xt << " " << pars.Q << endl;
+      cout << "dmOmtcpp=" << dmtOmtcpp << " vs " << dmtas2 << endl;
+      // end of mine
+
+      
+      //      Parameters pars;
+      pars.g3 = displayGaugeCoupling(3);
+      pars.mt = displayDrBarPars().mt;
+      pars.mg = displayDrBarPars().mGluino;
+      pars.mst1 = displayDrBarPars().mu(1,3);
+      pars.mst2 = displayDrBarPars().mu(2,3);
+      pars.msusy = displayDrBarPars().mu(1, 2);
+      pars.xt = sin(2*displayDrBarPars().thetat) *
+	(sqr(pars.mst1) - sqr(pars.mst2)) / (2*pars.mt);
+      pars.Q = displayMu();
+      const double qcd_2l = dMt_over_mt_2loop(pars);
+      cout << "2. DEBUG: " << dmtas2 << " " << qcd_2l << endl;
     }
   } else ordinaryQcdCorrections = true;
 #endif
