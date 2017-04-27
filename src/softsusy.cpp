@@ -9025,11 +9025,8 @@ double MssmSoftsusy::deltaVb(double outrho, double outsin,
   ComplexVector bChicNuSmul(2);
   ComplexVector bChi0MuSmul(dimN), aChicMuSnul(2);
   
-  double hmu = displayYukawaElement(YE, 2, 2);
   bPsicNuSmul(1) = g;
-  bPsicNuSmul(2) = -hmu;
   aPsicMuSnul(1) = g;
-  aPsicMuSnul(2) = -hmu;
   bPsi0MuSmul(1) = -gp / root2;
   bPsi0MuSmul(2) = -g * root2 * 0.5;
   
