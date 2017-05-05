@@ -2409,11 +2409,20 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
   double    mtpole  = dataSet.displayPoleMt();
   double p = mtpole;
   double q = displayMu();
+  double mtdiv = mtpole;
+    
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+  if (USE_TWO_LOOP_GAUGE_YUKAWA) {
+     p = forLoops.mt;
+     mtdiv = forLoops.mt;
+  }
+#endif
+
   /// stop/gluino correction 6% correction
   double  stopGluino = 4.0 * sqr(displayGaugeCoupling(3)) / 3.0 *
     (b1(p, mg, mstop1, q) + 
      b1(p, mg, mstop2, q) -
-     sin(2.0 * thetat) * mg / mtpole * //PA: should be running mass?
+     sin(2.0 * thetat) * mg / mtdiv * 
      (b0(p, mg, mstop1, q) - 
       b0(p, mg, mstop2, q)));
 
@@ -2894,6 +2903,12 @@ double MssmSoftsusy::calcRunningMb() {
 	if (is_a<numeric>(test))
 	  dzetamb += ex_to<numeric>(test).to_double();
       }
+
+     // AVB: fix double-counting of eps-scalar contribution
+     double alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
+     dzetamb-= + 31.0 / 72.0 * sqr(alphasMZ) / sqr(PI) // pure QCD 
+	        + alphasMZ/(3.0 * PI) * decoupling_corrections.dmb.one_loop; // due to factrorization of one-loop term
+
       if (close(dzetamb, decoupling_corrections.dmb.two_loop, 
 		TWOLOOP_NUM_THRESH)) needcalc = false; 
       decoupling_corrections.dmb.two_loop = dzetamb;
@@ -9010,11 +9025,8 @@ double MssmSoftsusy::deltaVb(double outrho, double outsin,
   ComplexVector bChicNuSmul(2);
   ComplexVector bChi0MuSmul(dimN), aChicMuSnul(2);
   
-  double hmu = displayYukawaElement(YE, 2, 2);
   bPsicNuSmul(1) = g;
-  bPsicNuSmul(2) = -hmu;
   aPsicMuSnul(1) = g;
-  aPsicMuSnul(2) = -hmu;
   bPsi0MuSmul(1) = -gp / root2;
   bPsi0MuSmul(2) = -g * root2 * 0.5;
   
