@@ -55,6 +55,7 @@
  */
 
 #include <iostream>
+#include <string>
 #include "mycomplex.h"
 #include "def.h"
 #include "linalg.h"
