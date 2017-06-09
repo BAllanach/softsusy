@@ -5,7 +5,7 @@
     Webpage: http://hepforge.cedar.ac.uk/softsusy/
 */
 
-#include "softsusy.h"
+#include "./softsusy.h"
 
 namespace softsusy {
   extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
@@ -37,18 +37,20 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   mxBC = s.displayMxBC();
   
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop ; 
-  decoupling_corrections.das.two_loop = s.decoupling_corrections.das.two_loop ; 
+  decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop; 
+  decoupling_corrections.das.two_loop = s.decoupling_corrections.das.two_loop; 
   
-  decoupling_corrections.dmb.one_loop = s.decoupling_corrections.dmb.one_loop ; 
-  decoupling_corrections.dmb.two_loop = s.decoupling_corrections.dmb.two_loop ; 
+  decoupling_corrections.dmb.one_loop = s.decoupling_corrections.dmb.one_loop; 
+  decoupling_corrections.dmb.two_loop = s.decoupling_corrections.dmb.two_loop; 
   
-  decoupling_corrections.dmt.one_loop = s.decoupling_corrections.dmt.one_loop ; 
-  decoupling_corrections.dmt.two_loop = s.decoupling_corrections.dmt.two_loop ; 
+  decoupling_corrections.dmt.one_loop = s.decoupling_corrections.dmt.one_loop; 
+  decoupling_corrections.dmt.two_loop = s.decoupling_corrections.dmt.two_loop; 
   
-  decoupling_corrections.dmtau.one_loop = s.decoupling_corrections.dmtau.one_loop ; 
-  decoupling_corrections.dmtau.two_loop = s.decoupling_corrections.dmtau.two_loop ; 
-#endif //COMPILE_TWO_LOOP_GAUGE_YUKAWA
+  decoupling_corrections.dmtau.one_loop =
+    s.decoupling_corrections.dmtau.one_loop; 
+  decoupling_corrections.dmtau.two_loop
+    = s.decoupling_corrections.dmtau.two_loop; 
+#endif  ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
   included_thresholds = s.included_thresholds;
   
   return *this;
@@ -78,13 +80,11 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     decoupling_corrections.dmtau.two_loop = 0;
 #endif
     if (USE_TWO_LOOP_GAUGE_YUKAWA) {
-      included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
-	ENABLE_TWO_LOOP_AS_AS_YUK | 
-	ENABLE_TWO_LOOP_MB_AS | 
-	ENABLE_TWO_LOOP_MB_YUK |
+      included_thresholds = ENABLE_TWO_LOOP_MT_AS | ENABLE_TWO_LOOP_AS_AS_YUK | 
+	ENABLE_TWO_LOOP_MB_AS | ENABLE_TWO_LOOP_MB_YUK |
 	ENABLE_TWO_LOOP_MTAU_YUK;
-    } else included_thresholds = 0;
-    
+    } else
+      included_thresholds = 0;
   }
   
   
@@ -107,18 +107,26 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     setMu(s.displayMu()); 
     
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop ; 
-    decoupling_corrections.das.two_loop = s.decoupling_corrections.das.two_loop ; 
+    decoupling_corrections.das.one_loop =
+      s.decoupling_corrections.das.one_loop; 
+    decoupling_corrections.das.two_loop =
+      s.decoupling_corrections.das.two_loop; 
     
-    decoupling_corrections.dmb.one_loop = s.decoupling_corrections.dmb.one_loop ; 
-    decoupling_corrections.dmb.two_loop = s.decoupling_corrections.dmb.two_loop ; 
+    decoupling_corrections.dmb.one_loop =
+      s.decoupling_corrections.dmb.one_loop; 
+    decoupling_corrections.dmb.two_loop =
+      s.decoupling_corrections.dmb.two_loop; 
     
-    decoupling_corrections.dmt.one_loop = s.decoupling_corrections.dmt.one_loop ; 
-    decoupling_corrections.dmt.two_loop = s.decoupling_corrections.dmt.two_loop ; 
+    decoupling_corrections.dmt.one_loop =
+      s.decoupling_corrections.dmt.one_loop; 
+    decoupling_corrections.dmt.two_loop =
+      s.decoupling_corrections.dmt.two_loop; 
     
-    decoupling_corrections.dmtau.one_loop = s.decoupling_corrections.dmtau.one_loop ; 
-    decoupling_corrections.dmtau.two_loop = s.decoupling_corrections.dmtau.two_loop ; 
-#endif //COMPILE_TWO_LOOP_GAUGE_YUKAWA
+    decoupling_corrections.dmtau.one_loop =
+      s.decoupling_corrections.dmtau.one_loop; 
+    decoupling_corrections.dmtau.two_loop =
+      s.decoupling_corrections.dmtau.two_loop; 
+#endif  ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
     included_thresholds = s.included_thresholds;
   }
   
@@ -2405,7 +2413,7 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
   double    mstop1  = forLoops.mu(1,3);
   double    mstop2  = forLoops.mu(2,3);
   double    mg      = forLoops.mGluino; 
-  double    thetat  = forLoops.thetat ;
+  double    thetat  = forLoops.thetat;
   double    mtpole  = dataSet.displayPoleMt();
   double p = mtpole;
   double q = displayMu();
@@ -2464,7 +2472,7 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
 double MssmSoftsusy::calcRunMtHiggs() const {
   
   double    mH      = forLoops.mh0(2); 
-  double    alpha   = forLoops.thetaH ;
+  double    alpha   = forLoops.thetaH;
   double    mh0     = forLoops.mh0(1);
   double    mA      = forLoops.mA0(1);
   double    mHc     = forLoops.mHpm;
@@ -2483,7 +2491,7 @@ double MssmSoftsusy::calcRunMtHiggs() const {
   double p = mtpole;
   
   const double  costh   = (displayMw() / displayMz());
-  const double    cw2   = sqr(costh) ;
+  const double    cw2   = sqr(costh);
   const double    sw2   = (1.0 - cw2);
   double gtL = 0.5 - 2.0 * sw2 / 3.0, gtR = 2.0 * sw2 / 3.0;
   
@@ -2518,7 +2526,7 @@ double MssmSoftsusy::calcRunMtNeutralinos() const {
   double    ht      = forLoops.ht;
   double    g       = displayGaugeCoupling(2);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double    thetat  = forLoops.thetat ;
+  double    thetat  = forLoops.thetat;
   double p = mtpole;
   DoubleMatrix neutralinoContribution(4, 2);
   
@@ -2583,7 +2591,7 @@ double MssmSoftsusy::calcRunMtCharginos() const {
   double    q       = displayMu();
   double    ht      = forLoops.ht;
   double    hb      = forLoops.hb;
-  double    thetab  = forLoops.thetab ;
+  double    thetab  = forLoops.thetab;
   double    g       = displayGaugeCoupling(2);
   double p = mtpole;
   
@@ -3411,7 +3419,7 @@ void MssmSoftsusy::addSnuTauGaugino(double p, double & chargino, double & neutra
   aChicBSnul = v.complexConjugate() * aPsicBSnul;
   bChicBSnul = u * bPsicBSnul;
   
-  DoubleVector fChBSnuLL(2), gChBSnuLL(2) ;
+  DoubleVector fChBSnuLL(2), gChBSnuLL(2);
   for (i=1; i<=2; i++) {
     fChBSnuLL(i) = (aChicBSnul(i).conj() * aChicBSnul(i) +
 		    bChicBSnul(i).conj() * bChicBSnul(i)).real();
@@ -3552,10 +3560,10 @@ double MssmSoftsusy::addSnuEweak(double p, int family, double & electroweak) {
   double    thetat      = forLoops.thetat;
   double    thetab      = forLoops.thetab;
   double    thetatau    = forLoops.thetatau;
-  double    ct          = cos(thetat) ;
-  double    st          = sin(thetat) ;
-  double    cb          = cos(thetab) ;
-  double    sb          = sin(thetab) ;
+  double    ct          = cos(thetat);
+  double    st          = sin(thetat);
+  double    cb          = cos(thetab);
+  double    sb          = sin(thetab);
   double    ctau        = cos(thetatau);
   double    stau        = sin(thetatau);
   double    q           = displayMu();
@@ -3665,7 +3673,7 @@ void MssmSoftsusy::addSnuGaugino(double p, int /* family */, double & chargino, 
   aChicBSnul = v.complexConjugate() * aPsicBSnul;
   bChicBSnul = u * bPsicBSnul;
   
-  DoubleVector fChBSnuLL(2), gChBSnuLL(2) ;
+  DoubleVector fChBSnuLL(2), gChBSnuLL(2);
   for (i=1; i<=2; i++) {
     fChBSnuLL(i) = (aChicBSnul(i).conj() * aChicBSnul(i) +
 		    bChicBSnul(i).conj() * bChicBSnul(i)).real();
@@ -3761,7 +3769,7 @@ DoubleMatrix MssmSoftsusy::addStopStop(double /* p */,
 
 DoubleMatrix MssmSoftsusy::addStopSbottom(double /* p */, double /* mt */,
 					  DoubleMatrix & sbottom) {
-  double thetab     = forLoops.thetab, cb = cos(thetab), sb = sin(thetab) ;
+  double thetab     = forLoops.thetab, cb = cos(thetab), sb = sin(thetab);
   double q          = displayMu();
   double ht         = forLoops.ht, htsq = sqr(ht);
   double hb         = forLoops.hb, hbsq = sqr(hb);
@@ -4157,7 +4165,7 @@ DoubleMatrix MssmSoftsusy::addStopChargino(double p, DoubleMatrix & chargino) {
   aChicBStopr = v.complexConjugate() * aPsicBStopr;
   bChicBStopr = u * bPsicBStopr;
   
-  DoubleVector fChBStopLL(2), gChBStopLL(2) ;
+  DoubleVector fChBStopLL(2), gChBStopLL(2);
   DoubleVector fChBStopLR(2), gChBStopLR(2); 
   DoubleVector fChBStopRR(2), gChBStopRR(2); 
   
@@ -4518,7 +4526,7 @@ void MssmSoftsusy::addSlepGaugino(double p1, double p2, int /* family */, Double
   
   bChicNuStaul = u * bPsicNuStaul;
   
-  DoubleVector fChNuStauLL(2) ;
+  DoubleVector fChNuStauLL(2);
   DoubleVector fChNuStauRR(2); 
   for (i=1; i<=2; i++) {
     fChNuStauLL(i) = (bChicNuStaul(i).conj() * bChicNuStaul(i)).real();
@@ -4906,7 +4914,7 @@ void MssmSoftsusy::addStauGaugino(double p, double mtau, DoubleMatrix & chargino
   bChicNuStaul = u * bPsicNuStaul;
   bChicNuStaur = u * bPsicNuStaur;
   
-  DoubleVector fChNuStauLL(2) ;
+  DoubleVector fChNuStauLL(2);
   DoubleVector fChNuStauLR(2); 
   DoubleVector fChNuStauRR(2); 
   for (i=1; i<=2; i++) {
@@ -5745,7 +5753,7 @@ DoubleMatrix MssmSoftsusy::addSbotChargino(double p, double mt, DoubleMatrix & c
   aChicTSbotr = v.complexConjugate() * aPsicTSbotr;
   bChicTSbotr = u * bPsicTSbotr;
   
-  DoubleVector fChTSbotLL(2), gChTSbotLL(2) ;
+  DoubleVector fChTSbotLL(2), gChTSbotLL(2);
   DoubleVector fChTSbotLR(2), gChTSbotLR(2); 
   DoubleVector fChTSbotRR(2), gChTSbotRR(2); 
   
@@ -6159,7 +6167,7 @@ DoubleMatrix MssmSoftsusy::addSupChargino(double p1, double p2, int /* family */
   aChicBStopr = v.complexConjugate() * aPsicBStopr;
   bChicBStopr = u * bPsicBStopr;
   
-  DoubleVector fChBStopLL(2), gChBStopLL(2) ;
+  DoubleVector fChBStopLL(2), gChBStopLL(2);
   DoubleVector fChBStopLR(2), gChBStopLR(2); 
   DoubleVector fChBStopRR(2), gChBStopRR(2); 
   
@@ -7778,7 +7786,7 @@ void MssmSoftsusy::itLowsoft
 /// Higgs contribution to the Transverse part of Z self-energy
 double MssmSoftsusy::piZZTHiggs(double p, double q, 
 				double thetaWDRbar) const {
-  double    alpha   = displayDrBarPars().thetaH ;
+  double    alpha   = displayDrBarPars().thetaH;
   double    beta    = atan(displayTanb());
   double smHiggs = 0.0, susyHiggs = 0.0;
   double    mz      = displayMzRun();
@@ -7817,18 +7825,18 @@ double MssmSoftsusy::piZZTHiggs(double p, double q,
 
 /// sfermion contribution to the Transverse part of Z self-energy
 double MssmSoftsusy::piZZTsfermions(double p, double q) const {
-  double    thetat = displayDrBarPars().thetat ;
+  double    thetat = displayDrBarPars().thetat;
   double    thetab = displayDrBarPars().thetab;
-  double    thetatau= displayDrBarPars().thetatau ;
-  double    st      = sin(thetat) ;
-  double    sb      = sin(thetab) ;
-  double    stau    = sin(thetatau) ;
-  double    ct      = cos(thetat) ;
-  double    cb      = cos(thetab) ;
+  double    thetatau= displayDrBarPars().thetatau;
+  double    st      = sin(thetat);
+  double    sb      = sin(thetab);
+  double    stau    = sin(thetatau);
+  double    ct      = cos(thetat);
+  double    cb      = cos(thetab);
   double    ctau    = cos(thetatau);
-  double    ct2     = sqr(ct) ;
-  double    cb2     = sqr(cb) ;
-  double    ctau2   = sqr(ctau) ;
+  double    ct2     = sqr(ct);
+  double    cb2     = sqr(cb);
+  double    ctau2   = sqr(ctau);
   double    st2     = (1.0 - ct2);
   double    sb2     = (1.0 - cb2);
   double    stau2   = (1.0 - ctau2);
@@ -7923,11 +7931,11 @@ double MssmSoftsusy::piZZTfermions(double p, double q, bool usePoleMt) const {
   
   double    mb   =  displayDrBarPars().mb;
   double    mtau =  displayDrBarPars().mtau;
-  double    ms   =  displayDataSet().displayMass(mStrange) ;
-  double    mc   =  displayDataSet().displayMass(mCharm) ;
-  double    mmu  =  displayDataSet().displayMass(mMuon) ;
-  double    mE  =   displayDataSet().displayMass(mElectron) ;
-  double    mD  =   displayDataSet().displayMass(mDown) ;
+  double    ms   =  displayDataSet().displayMass(mStrange);
+  double    mc   =  displayDataSet().displayMass(mCharm);
+  double    mmu  =  displayDataSet().displayMass(mMuon);
+  double    mE  =   displayDataSet().displayMass(mElectron);
+  double    mD  =   displayDataSet().displayMass(mDown);
   double    mU  =   displayDataSet().displayMass(mUp);
   
   double quarks = 0.0;
@@ -8032,7 +8040,7 @@ double MssmSoftsusy::piZZT(double p, double q, bool usePoleMt) const {
   //PA: obtain neutralino contributions in separate method
   double charginos = piZZTCharginos(p, q, thetaWDRbar);
   
-  rhs = higgs + charginos + neutralinos + fermions + sfermions ;
+  rhs = higgs + charginos + neutralinos + fermions + sfermions;
   double pi = rhs * sqr(g) / (cw2DRbar * 16.0 * sqr(PI));
   
   return pi;
@@ -8041,7 +8049,7 @@ double MssmSoftsusy::piZZT(double p, double q, bool usePoleMt) const {
 
 double MssmSoftsusy::piWWTHiggs(double p, double q, double thetaWDRbar) const {
   double    beta      = atan(displayTanb());
-  double    alpha     = displayDrBarPars().thetaH ;
+  double    alpha     = displayDrBarPars().thetaH;
   double    cw2DRbar  = sqr(cos(thetaWDRbar));
   double    sw2DRbar  = 1.0 - cw2DRbar;
   double    mH = displayDrBarPars().mh0(2); 
@@ -8083,11 +8091,11 @@ double MssmSoftsusy::piWWTfermions(double p, double q, bool usePoleMt) const {
   double    mtau =  displayDrBarPars().mtau;
   
   /// fermions: these are valid at MZ
-  double    ms   =  displayDataSet().displayMass(mStrange) ;
-  double    mc   =  displayDataSet().displayMass(mCharm) ;
-  double    mmu  =  displayDataSet().displayMass(mMuon) ;
-  double    mE  =  displayDataSet().displayMass(mElectron) ;
-  double    mD  =  displayDataSet().displayMass(mDown) ;
+  double    ms   =  displayDataSet().displayMass(mStrange);
+  double    mc   =  displayDataSet().displayMass(mCharm);
+  double    mmu  =  displayDataSet().displayMass(mMuon);
+  double    mE  =  displayDataSet().displayMass(mElectron);
+  double    mD  =  displayDataSet().displayMass(mDown);
   double    mU  =  displayDataSet().displayMass(mUp);
   
   double fermions =
@@ -8099,14 +8107,14 @@ double MssmSoftsusy::piWWTfermions(double p, double q, bool usePoleMt) const {
 
 double MssmSoftsusy::piWWTsfermions(double p, double q) const {
   
-  double    thetat = displayDrBarPars().thetat ;
+  double    thetat = displayDrBarPars().thetat;
   double    thetab = displayDrBarPars().thetab;
-  double    thetatau= displayDrBarPars().thetatau ;
-  double    st      = sin(thetat) ;
-  double    sb      = sin(thetab) ;
-  double    stau    = sin(thetatau) ;
-  double    ct      = cos(thetat) ;
-  double    cb      = cos(thetab) ;
+  double    thetatau= displayDrBarPars().thetatau;
+  double    st      = sin(thetat);
+  double    sb      = sin(thetab);
+  double    stau    = sin(thetatau);
+  double    ct      = cos(thetat);
+  double    cb      = cos(thetab);
   double    ctau    = cos(thetatau);
   
   /// sfermions
@@ -8500,13 +8508,13 @@ double MssmSoftsusy::piAA(double p, double q) const {/// checked 30.07.03
   double    thetaWDRbar = asin(calcSinthdrbar());
   double    cw2DRbar    = sqr(cos(thetaWDRbar));
   double    sw2DRbar    = 1.0 - cw2DRbar;
-  double    thetat  = tree.thetat ;
+  double    thetat  = tree.thetat;
   double    thetab  = tree.thetab;
   double    thetatau= tree.thetatau;
-  double    st      = sin(thetat) ;
-  double    sb      = sin(thetab) ;
-  double    ct      = cos(thetat) ;
-  double    cb      = cos(thetab) ;
+  double    st      = sin(thetat);
+  double    sb      = sin(thetab);
+  double    ct      = cos(thetat);
+  double    cb      = cos(thetab);
   double    stau    = sin(thetatau);
   double    ctau    = cos(thetatau);
   double    g       = displayGaugeCoupling(2);
@@ -8813,21 +8821,21 @@ double MssmSoftsusy::piZGT(double p, double q) const { ///! checked 7/6/6
   double    mtop = displayDataSet().displayPoleMt();
   double    mb   =  tree.mb;
   double    mtau =  tree.mtau;
-  double    ms   =  displayDataSet().displayMass(mStrange) ;
-  double    mc   =  displayDataSet().displayMass(mCharm) ;
-  double    mmu  =  displayDataSet().displayMass(mMuon) ;
-  double    mE  =  displayDataSet().displayMass(mElectron) ;
-  double    mD  =  displayDataSet().displayMass(mDown) ;
+  double    ms   =  displayDataSet().displayMass(mStrange);
+  double    mc   =  displayDataSet().displayMass(mCharm);
+  double    mmu  =  displayDataSet().displayMass(mMuon);
+  double    mE  =  displayDataSet().displayMass(mElectron);
+  double    mD  =  displayDataSet().displayMass(mDown);
   double    mU  =  displayDataSet().displayMass(mUp);
-  double    thetat = tree.thetat ;
+  double    thetat = tree.thetat;
   double    thetab = tree.thetab;
-  double    thetatau= tree.thetatau ;
-  double    ct      = cos(thetat) ;
-  double    cb      = cos(thetab) ;
+  double    thetatau= tree.thetatau;
+  double    ct      = cos(thetat);
+  double    cb      = cos(thetab);
   double    ctau    = cos(thetatau);
-  double    ct2     = sqr(ct) ;
-  double    cb2     = sqr(cb) ;
-  double    ctau2   = sqr(ctau) ;
+  double    ct2     = sqr(ct);
+  double    cb2     = sqr(cb);
+  double    ctau2   = sqr(ctau);
   double    st2     = (1.0 - ct2);
   double    sb2     = (1.0 - cb2);
   double    stau2   = (1.0 - ctau2);
@@ -8969,7 +8977,7 @@ double MssmSoftsusy::deltaVb(double outrho, double outsin,
   double g       = displayGaugeCoupling(2);
   double gp      = displayGaugeCoupling(1) * sqrt(0.6);
   double costh   = (displayMw() / displayMz());
-  double cw2     = sqr(costh) ;
+  double cw2     = sqr(costh);
   double sw2     = (1.0 - cw2);
   double outcos  = sqrt(1.0 - sqr(outsin));
   double q       = displayMu();
@@ -10037,56 +10045,56 @@ void MssmSoftsusy::extparSLHA(ostream & out,
     printRow(out, pars.display(i)); 
     out << "  # M_" << i << "(MX)" << endl;      
   }
-  out << "     11   "; printRow(out, pars.display(11)) ; 
+  out << "     11   "; printRow(out, pars.display(11)); 
   out << "  # At(MX)" << endl;    
-  out << "     12   "; printRow(out, pars.display(12)) ; 
+  out << "     12   "; printRow(out, pars.display(12)); 
   out << "  # Ab(MX)" << endl;    
-  out << "     13   "; printRow(out, pars.display(13)) ; 
+  out << "     13   "; printRow(out, pars.display(13)); 
   out << "  # Atau(MX)" << endl;    
   if (!altEwsb) {
-    out << "     21   "; printRow(out, pars.display(21)) ; 
+    out << "     21   "; printRow(out, pars.display(21)); 
     out << "  # mHd^2(MX)" << endl;    
-    out << "     22   "; printRow(out, pars.display(22)) ; 
+    out << "     22   "; printRow(out, pars.display(22)); 
     out << "  # mHu^2(MX)" << endl;    
   } else {
-    out << "     23   "; printRow(out, displayMuCond()) ; 
+    out << "     23   "; printRow(out, displayMuCond()); 
     out << "  # mu(MX)" << endl;    
-    out << "     26   "; printRow(out, displayMaCond()) ; 
+    out << "     26   "; printRow(out, displayMaCond()); 
     out << "  # mA(pole)" << endl;    
   }
   if (displaySetTbAtMX()) {
-    out << "     25   "; printRow(out, pars.display(25)) ; 
+    out << "     25   "; printRow(out, pars.display(25)); 
     out << "  # tan beta(MX)" << endl;    
   }
-  out << "     31   "; printRow(out, pars.display(31)) ; 
+  out << "     31   "; printRow(out, pars.display(31)); 
   out << "  # meL(MX)" << endl;    
-  out << "     32   "; printRow(out, pars.display(32)) ; 
+  out << "     32   "; printRow(out, pars.display(32)); 
   out << "  # mmuL(MX)" << endl;    
-  out << "     33   "; printRow(out, pars.display(33)) ; 
+  out << "     33   "; printRow(out, pars.display(33)); 
   out << "  # mtauL(MX)" << endl;    
-  out << "     34   "; printRow(out, pars.display(34)) ; 
+  out << "     34   "; printRow(out, pars.display(34)); 
   out << "  # meR(MX)" << endl;    
-  out << "     35   "; printRow(out, pars.display(35)) ; 
+  out << "     35   "; printRow(out, pars.display(35)); 
   out << "  # mmuR(MX)" << endl;    
-  out << "     36   "; printRow(out, pars.display(36)) ; 
+  out << "     36   "; printRow(out, pars.display(36)); 
   out << "  # mtauR(MX)" << endl;    
-  out << "     41   "; printRow(out, pars.display(41)) ; 
+  out << "     41   "; printRow(out, pars.display(41)); 
   out << "  # mqL1(MX)" << endl;    
-  out << "     42   "; printRow(out, pars.display(42)) ; 
+  out << "     42   "; printRow(out, pars.display(42)); 
   out << "  # mqL2(MX)" << endl;    
-  out << "     43   "; printRow(out, pars.display(43)) ; 
+  out << "     43   "; printRow(out, pars.display(43)); 
   out << "  # mqL3(MX)" << endl;    
-  out << "     44   "; printRow(out, pars.display(44)) ; 
+  out << "     44   "; printRow(out, pars.display(44)); 
   out << "  # muR(MX)" << endl;    
-  out << "     45   "; printRow(out, pars.display(45)) ; 
+  out << "     45   "; printRow(out, pars.display(45)); 
   out << "  # mcR(MX)" << endl;    
-  out << "     46   "; printRow(out, pars.display(46)) ; 
+  out << "     46   "; printRow(out, pars.display(46)); 
   out << "  # mtR(MX)" << endl;    
-  out << "     47   "; printRow(out, pars.display(47)) ; 
+  out << "     47   "; printRow(out, pars.display(47)); 
   out << "  # mdR(MX)" << endl;    
-  out << "     48   "; printRow(out, pars.display(48)) ; 
+  out << "     48   "; printRow(out, pars.display(48)); 
   out << "  # msR(MX)" << endl;    
-  out << "     49   "; printRow(out, pars.display(49)) ; 
+  out << "     49   "; printRow(out, pars.display(49)); 
   out << "  # mbR(MX)" << endl;    
 }
 
@@ -10099,7 +10107,7 @@ void MssmSoftsusy::minparSLHA(ostream & out, const char model [],
   bool printMX = false;
   
   out << "Block MINPAR               # SUSY breaking input parameters\n";
-  out << "     3   "; printRow(out, tanb)            ; out << "   # tanb, DRbar, Feynman gauge" << endl;
+  out << "     3   "; printRow(out, tanb)           ; out << "   # tanb, DRbar, Feynman gauge" << endl;
   if (!altEwsb) {
     out << "     4   "; 
     printRow(out, double(sgnMu)); 
@@ -10107,30 +10115,30 @@ void MssmSoftsusy::minparSLHA(ostream & out, const char model [],
   }
   if (!strcmp(model, "sugra")) {
     out << "     1   "; printRow(out, pars.display(1)); out << "   # m0" << endl;
-    out << "     2   "; printRow(out, pars.display(2)) ; out << "   # m12" << endl;
-    out << "     5   "; printRow(out, pars.display(3)) ; out << "   # A0" << endl;
+    out << "     2   "; printRow(out, pars.display(2)); out << "   # m12" << endl;
+    out << "     5   "; printRow(out, pars.display(3)); out << "   # A0" << endl;
     printMX = true;
   }
   else if (!strcmp(model, "gmsb")) {
     out << "     1   "; printRow(out, pars.display(3)); out << "   # lambda" << endl;
-    out << "     2   "; printRow(out, pars.display(2)) ; out << "   # M_mess" 
+    out << "     2   "; printRow(out, pars.display(2)); out << "   # M_mess" 
 	<< endl;
-    out << "     5   "; printRow(out, pars.display(1)) ; out << "   # N5" << endl;
-    out << "     6   "; printRow(out, pars.display(4)) ; out << "   # cgrav" << endl;
+    out << "     5   "; printRow(out, pars.display(1)); out << "   # N5" << endl;
+    out << "     6   "; printRow(out, pars.display(4)); out << "   # cgrav" << endl;
   }
   else if (!strcmp(model, "splitgmsb")) {
     out << "     1   "; printRow(out, pars.display(2)); out << "   # lambdaL" << endl;
-    out << "     2   "; printRow(out, pars.display(3)) ; out << "   # lambdaD" 
+    out << "     2   "; printRow(out, pars.display(3)); out << "   # lambdaD" 
 	<< endl;
-    out << "     5   "; printRow(out, pars.display(1)) ; out << "   # N5" << endl; 
-    out << "     6   "; printRow(out, 1.0) ; out << "   # cgrav" << endl;
-    out << "     7   "; printRow(out, pars.display(4)) ; out << "   # mMess" << endl;
-    out << "     8   "; printRow(out, pars.display(5)) ; out << "   # mu/M2" << endl;
-    out << "     9   "; printRow(out, pars.display(6)) ; out << "   # mA(pole)/M2" << endl;
-    out << "    10   "; printRow(out, pars.display(7)) ; out << "   # desired mh^0" << endl;
+    out << "     5   "; printRow(out, pars.display(1)); out << "   # N5" << endl; 
+    out << "     6   "; printRow(out, 1.0); out << "   # cgrav" << endl;
+    out << "     7   "; printRow(out, pars.display(4)); out << "   # mMess" << endl;
+    out << "     8   "; printRow(out, pars.display(5)); out << "   # mu/M2" << endl;
+    out << "     9   "; printRow(out, pars.display(6)); out << "   # mA(pole)/M2" << endl;
+    out << "    10   "; printRow(out, pars.display(7)); out << "   # desired mh^0" << endl;
   }
   else if (!strcmp(model, "amsb")) {
-    out << "     1   "; printRow(out, pars.display(2)) ; out << "   # m0" 
+    out << "     1   "; printRow(out, pars.display(2)); out << "   # m0" 
 	<< endl;
     out << "     2   "; printRow(out, pars.display(1)); out << "   # m3/2" 
 	<< endl;
@@ -10339,7 +10347,7 @@ const static double sigmaMh = 2.0;
  DoubleVector mhIntegrand(double mh, const DoubleVector & /* y */) {
   DoubleVector dydx(1);
   dydx(1) = lep2Likelihood(mh) * 
-    exp(-sqr(mhTrue - mh) / (2.0 * sqr(sigmaMh))) ;
+    exp(-sqr(mhTrue - mh) / (2.0 * sqr(sigmaMh)));
   
   return dydx;
 }
@@ -10582,14 +10590,14 @@ void MssmSoftsusy::doQuarkMixing(DoubleMatrix & /* mDon */,
 Complex MssmSoftsusy::pis1s1Sfermions(double p, double q, DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau) const {
   drBarPars tree(displayDrBarPars()); 
   double hb = tree.hb, htau = tree.htau;
-  double    thetat  = tree.thetat ;
+  double    thetat  = tree.thetat;
   double    thetab  = tree.thetab;
   double    thetatau= tree.thetatau;
-  double    st      = sin(thetat) ;
-  double    sb      = sin(thetab) ;
+  double    st      = sin(thetat);
+  double    sb      = sin(thetab);
   double    stau    = sin(thetatau);
-  double    ct      = cos(thetat) ;
-  double    cb      = cos(thetab) ;
+  double    ct      = cos(thetat);
+  double    cb      = cos(thetab);
   double    ctau    = cos(thetatau);
   double    msbot1  = tree.md(1, 3);
   double    msbot2  = tree.md(2, 3);
@@ -10692,7 +10700,7 @@ Complex MssmSoftsusy::pis1s1Sfermions(double p, double q, DoubleMatrix ls1tt,  D
 
 Complex MssmSoftsusy::pis1s2Sfermions(double p, double q,  DoubleMatrix ls1tt,  DoubleMatrix ls1bb,  DoubleMatrix ls1tautau, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const {
   drBarPars tree(displayDrBarPars()); 
-  double    thetat  = tree.thetat ;
+  double    thetat  = tree.thetat;
   double    thetab  = tree.thetab;
   double    thetatau= tree.thetatau;
   double    mz      = displayMzRun();
@@ -10765,14 +10773,14 @@ Complex MssmSoftsusy::pis1s2Sfermions(double p, double q,  DoubleMatrix ls1tt,  
 
 Complex MssmSoftsusy::pis2s2Sfermions(double p, double q, DoubleMatrix ls2tt,  DoubleMatrix ls2bb,  DoubleMatrix ls2tautau) const {
   drBarPars tree(displayDrBarPars()); 
-  double    thetat  = tree.thetat ;
+  double    thetat  = tree.thetat;
   double    thetab  = tree.thetab;
   double    thetatau= tree.thetatau;
-  double    st      = sin(thetat) ;
-  double    sb      = sin(thetab) ;
+  double    st      = sin(thetat);
+  double    sb      = sin(thetab);
   double    stau    = sin(thetatau);
-  double    ct      = cos(thetat) ;
-  double    cb      = cos(thetab) ;
+  double    ct      = cos(thetat);
+  double    cb      = cos(thetab);
   double    ctau    = cos(thetatau);
   double    msbot1  = tree.md(1, 3);
   double    msbot2  = tree.md(2, 3);
@@ -11449,7 +11457,7 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS,
   double sinb = sin(beta), cosb = cos(beta);
   double sinb2 = sqr(sinb), cosb2 = sqr(cosb), mzPole = displayMz(), 
     mzRun2 = sqr(displayMzRun());
-  double mApole = physpars.mA0(1); /// physical value
+  double mApole = physpars.mA0(1); ///< physical value
   ///  double mApole2 = sqr(mApole);
   
   /// There'll be trouble if B has the opp sign to mu. This isn't really
@@ -11464,7 +11472,7 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS,
   mHtree(1, 1) = mAsq * sinb2 + mzRun2 * cosb2;
   mHtree(1, 2) = - sinb * cosb * (mAsq + mzRun2); 
   mHtree(2, 2) = mAsq * cosb2 + mzRun2 * sinb2; 
-  mHtree(2, 1) = mHtree(1 ,2); 
+  mHtree(2, 1) = mHtree(1, 2); 
   
   ComplexMatrix mhAtmh(mHtree), mhAtmH(mHtree), mhAt0(mHtree);
   ComplexMatrix sigmaMh(2, 2), sigmaMH(2, 2), sigma0(2, 2);
@@ -11511,7 +11519,7 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS,
       double s11b = 0.0, s12b = 0.0, s22b = 0.0;
       double s11tau = 0.0, s12tau = 0.0, s22tau = 0.0;
       double s11w = 0.0, s22w = 0.0, s12w = 0.0;
-      int kkk = 0; /// chooses DR-bar scheme from slavich et al
+      int kkk = 0;  ///< chooses DR-bar scheme from slavich et al
       
       double fmasq = fabs(mAsq);
       /// two-loop Higgs corrections: alpha_s alpha_t, alpha_s alpha_b and
@@ -11587,13 +11595,13 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS,
     mhAtmH(1, 1) = mHtree(1, 1) + t1OV1Ms1loop + dMA * sqr(sin(beta));
     mhAtmH(1, 2) = mHtree(1, 2) - dMA * sin(beta) * cos(beta);
     mhAtmH(2, 2) = mHtree(2, 2) + t2OV2Ms1loop + dMA * sqr(cos(beta));
-    mhAtmH(2, 1) = mhAtmH(1 ,2);
+    mhAtmH(2, 1) = mhAtmH(1, 2);
     mhAtmH = mhAtmH - sigmaMH;
     
     mhAt0(1, 1)  = mHtree(1, 1) + t1OV1Ms1loop + dMA * sqr(sin(beta));
     mhAt0(1, 2)  = mHtree(1, 2) - dMA * sin(beta) * cos(beta);
     mhAt0(2, 2)  = mHtree(2, 2) + t2OV2Ms1loop + dMA * sqr(cos(beta));
-    mhAt0(2, 1)  = mhAt0(1 ,2);
+    mhAt0(2, 1)  = mhAt0(1, 2);
     mhAt0        = mhAt0 - sigma0;
   }
   
