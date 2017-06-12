@@ -1,3 +1,1 @@
-<li>Fixed erroneous muon Yukawa in delta_vB calculation: less than per mille effects. Thanks to M Back and A Voigt.
-<li>Fixed 2-loop mt threshold corrections: boils down to using running mt in definition of stop mixing in one-loop corrections. Only relevant when --enable-two-loop-gauge-yukawa-compilation is switched on.
-
+<li>Made 0 mixing default (ie no quark mixing, but non-zero masses for second/third family)
