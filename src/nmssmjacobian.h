@@ -187,6 +187,17 @@ namespace softsusy {
     /// \return the value of the Jacobian
     double calcFTInverseJacobian(const NmssmSoftsusy& m, double mx);
 
+    /// \brief Calculates the Jacobian transforming observables to parameters.
+    /// \param[in] m the model to calculate the Jacobian for
+    /// \return the value of the Jacobian
+    double calcFTInverseJacobianLogs(const NmssmSoftsusy& m);
+
+    /// \brief Calculates the Jacobian transforming observables to parameters.
+    /// \param[in] m the model to calculate the Jacobian for
+    /// \param[in] mx the scale at which the input parameters are defined
+    /// \return the value of the Jacobian
+    double calcFTInverseJacobianLogs(const NmssmSoftsusy& m, double mx);
+
     /// \brief Calculates the fine-tuning using the Jacobian measure.
     /// \param[in] m the model to calculate the fine-tuning for
     /// \return the value of the fine-tuning
@@ -197,6 +208,17 @@ namespace softsusy {
     /// \param[in] mx the scale at which the input parameters are defined
     /// \return the value of the fine-tuning
     double calcDeltaJ(const NmssmSoftsusy& m, double mx);
+
+    /// \brief Calculates the fine-tuning using logarithmic derivatives.
+    /// \param[in] m the model to calculate the fine-tuning for
+    /// \return the value of the fine-tuning
+    double calcDeltaJLogs(const NmssmSoftsusy& m);
+
+    /// \brief Calculates the fine-tuning using logarithmic derivatives.
+    /// \param[in] m the model to calculate the fine-tuning for
+    /// \param[in] mx the scale at which the input parameters are defined
+    /// \return the value of the fine-tuning
+    double calcDeltaJLogs(const NmssmSoftsusy& m, double mx);
 
   private:
     enum Parameters { Mzsq, Tanb, Svev, Mtsq, Lambda, Kappa,
@@ -252,24 +274,35 @@ namespace softsusy {
     static double calcMt(NmssmSoftsusy& model, bool getRunningMass = false);
 
     static double calcRunningParameter(double x, void* parameters);
+    static double calcLogRunningParameter(double x, void* parameters);
     std::pair<double,double> calcRGDerivative(NmssmSoftsusy& model,
                                               Parameters dep, Parameters indep,
                                               double toScale) const;
+    std::pair<double,double> calcRGLogDerivative(NmssmSoftsusy& model,
+                                                 Parameters dep, Parameters indep,
+                                                 double toScale) const;
     double calcRGFlowJacobian(NmssmSoftsusy& model, double startScale,
                               double endScale);
+    double calcRGFlowJacobianLogs(NmssmSoftsusy& model, double startScale,
+                                  double endScale);
     static int ewsbOutputErrors(const DoubleVector & guess, void* parameters,
                                 DoubleVector & errors);
     static void fixEWSBOutputs(EWSBPars* pars, int & err);
     static double calcEWSBParameter(double x, void* parameters);
     static double calcEWSBOutput(double x, void* parameters);
+    static double calcLogEWSBOutput(double x, void* parameters);
     std::pair<double,double> calcEWSBOutputDerivative(NmssmSoftsusy& model,
                                                       Parameters dep,
                                                       Parameters indep);
+    std::pair<double,double> calcEWSBOutputLogDerivative(NmssmSoftsusy& model,
+                                                         Parameters dep,
+                                                         Parameters indep);
     std::pair<double,double> calcEWSBParameterDerivative(NmssmSoftsusy& model,
                                                          Parameters dep,
                                                          Parameters indep);
     double calcEWSBJacobian(NmssmSoftsusy& model);
     double calcInverseEWSBJacobian(NmssmSoftsusy& model);
+    double calcInverseEWSBJacobianLogs(NmssmSoftsusy& model);
 
     bool checkDerivativeErrors(DoubleMatrix& derivs, const DoubleMatrix& errors,
                                const std::vector<double>& paramValues) const;

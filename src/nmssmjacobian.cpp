@@ -92,6 +92,66 @@ namespace softsusy {
     return fabs(numerator * determinant / denominator);
   }
 
+  /// Calculates the fine-tuning for the model, using the Jacobian
+  /// measure.  The Jacobian matrix is calculated using derivatives
+  /// computed with respect to the logarithms of the parameters and
+  /// observables.  The parameters are taken to be defined at the
+  /// input scale \c mx obtained from a call to \c m.displayMxBC(),
+  /// while the observables are calculated at the SUSY scale
+  /// returned by \c m.calcMs().   Internally, the Jacobian matrix
+  /// is calculated by calling calcFTInverseJacobianLogs(), and
+  /// can be accessed after the calculation.
+  /// \see calcFTInverseJacobianLogs(const NmssmSoftsusy&)
+  double NmssmJacobian::calcDeltaJLogs(const NmssmSoftsusy& m) {
+    return calcDeltaJLogs(m, m.displayMxBC());
+  }
+
+  /// Calculates the fine-tuning as in calcDeltaJLogs(const NmssmSoftsusy& m),
+  /// but with \c mx set to the given value instead of that returned by
+  /// \c m.displayMxBC().
+  double NmssmJacobian::calcDeltaJLogs(const NmssmSoftsusy& m, double mx) {
+    NmssmSoftsusy model(m);
+
+    model.runto(model.calcMs());
+
+    model.calcDrBarPars();
+    const double mtrun = model.displayDrBarPars().mt;
+    const double sinthDRbar = model.calcSinthdrbar();
+    model.doTadpoles(mtrun, sinthDRbar);
+
+    // derivatives due to RG flow are not calculated logarithmically
+    double prefactor;
+    if (SoftHiggsOut) {
+      prefactor = 1. / (model.displayMh1Squared() * model.displayMh2Squared()
+                         * model.displayMsSquared());
+      if (includeTop) prefactor /= model.displayYukawaElement(YU, 3, 3);
+      model.runto(mx);
+      prefactor *= model.displayMh1Squared() * model.displayMh2Squared()
+        * model.displayMsSquared();
+      if (includeTop) prefactor *= model.displayYukawaElement(YU, 3, 3);
+    } else if (Z3) {
+      prefactor = 1. / (model.displayLambda() * model.displayKappa()
+                        * model.displayMsSquared());
+      if (includeTop) prefactor /= model.displayYukawaElement(YU, 3, 3);
+      model.runto(mx);
+      prefactor *= model.displayLambda() * model.displayKappa()
+        * model.displayMsSquared();
+      if (includeTop) prefactor *= model.displayYukawaElement(YU, 3, 3);
+    } else {
+      prefactor = 1. / (model.displaySusyMu() * model.displayM3Squared()
+                        * model.displayXiS());
+      if (includeTop) prefactor /= model.displayYukawaElement(YU, 3, 3);
+      model.runto(mx);
+      prefactor *= model.displaySusyMu() * model.displayM3Squared()
+         * model.displayXiS();
+      if (includeTop) prefactor *= model.displayYukawaElement(YU, 3, 3);
+    }
+
+    const double determinant = calcFTInverseJacobianLogs(model, mx);
+
+    return fabs(prefactor * determinant);
+  }
+
   /// Calculates the Jacobian of the form \f$ J^{-1} = |
   /// \partial O / \partial p | \f$.  The transformation is done
   /// in two stages.  In the first, the observables at the
@@ -116,8 +176,39 @@ namespace softsusy {
 
     model.runto(model.calcMs());
 
-    const double rgDet = calcRGFlowJacobian(model, mx, model.displayMu());
+    const double scale = model.displayMu();
+    const double rgDet = calcRGFlowJacobian(model, mx, scale);
     const double ewsbDet = calcInverseEWSBJacobian(model);
+
+    return ewsbDet * rgDet;
+  }
+
+  /// Calculates the Jacobian of the form \f$ J^{-1} = |
+  /// \partial \ln O / \partial \ln p | \f$.  The transformation is
+  /// done in two stages.  In the first, the observables at the
+  /// SUSY scale, obtained from \c m.calcMs(), are traded for
+  /// the parameters at this scale using the EWSB conditions.
+  /// The Jacobian matrix for this transformation can be
+  /// accessed afterwards using displayInverseEWSBJacobian().
+  /// Then, the parameters at this scale are transformed to
+  /// parameters at the scale \c mx, obtained from calling
+  /// \c m.displayMxBC(), using the RGEs.  The Jacobian matrix for
+  /// this transformation may be accessed by calling
+  /// displayInverseRGFlowJacobian().
+  double NmssmJacobian::calcFTInverseJacobianLogs(const NmssmSoftsusy& m) {
+    return calcFTInverseJacobianLogs(m, m.displayMxBC());
+  }
+
+  /// Calculates the Jacobian as in
+  /// calcFTInverseJacobianLogs(const NmssmSoftsusy& m), but with \c mx set to
+  /// the given value instead of that returned by \c m.displayMxBC().
+  double NmssmJacobian::calcFTInverseJacobianLogs(const NmssmSoftsusy& m, double mx) {
+    NmssmSoftsusy model(m);
+
+    model.runto(model.calcMs());
+
+    const double rgDet = calcRGFlowJacobian(model, mx, model.displayMu());
+    const double ewsbDet = calcInverseEWSBJacobianLogs(model);
 
     return ewsbDet * rgDet;
   }
@@ -148,7 +239,8 @@ namespace softsusy {
 
     model.runto(model.calcMs());
 
-    const double rgDet = calcRGFlowJacobian(model, model.displayMu(), mx);
+    const double scale = model.displayMu();
+    const double rgDet = calcRGFlowJacobian(model, scale, mx);
     const double ewsbDet = calcEWSBJacobian(model);
 
     return ewsbDet * rgDet;
@@ -524,6 +616,327 @@ namespace softsusy {
     return std::pair<double,double>(derivative, err);
   }
 
+  double NmssmJacobian::calcLogRunningParameter(double x, void* parameters) {
+    RGFlowPars* pars = static_cast<RGFlowPars*>(parameters);
+
+    NmssmSoftsusy* tempModel = pars->model;
+    Parameters independent = pars->independent;
+    Parameters dependent = pars->dependent;
+    const double endScale = pars->toScale;
+
+    const DoubleVector savedPars(tempModel->display());
+    const double startScale = tempModel->displayMu();
+
+    ostringstream msg;
+    if (PRINTOUT > 1) msg << "# Qstart = " << startScale << ", ";
+
+    const double value = std::exp(x);
+    switch (independent) {
+    case Lambda: {
+      if (pars->useSugraTrilinears) {
+        const double Alambda = tempModel->displaySoftAlambda();
+        tempModel->setTrialambda(value * Alambda);
+      }
+      tempModel->setLambda(value);
+      if (PRINTOUT > 1) msg << "lambda = " << value << ", ";
+      break;
+    }
+    case Kappa: {
+      if (pars->useSugraTrilinears) {
+        const double Akappa = tempModel->displaySoftAkappa();
+        tempModel->setTriakappa(value * Akappa);
+      }
+      tempModel->setKappa(value);
+      if (PRINTOUT > 1) msg << "kappa = " << value << ", ";
+      break;
+    }
+    case SMu: {
+      tempModel->setSusyMu(value);
+      if (PRINTOUT > 1) msg << "mu = " << value << ", ";
+      break;
+    }
+    case M3Sq: {
+      tempModel->setM3Squared(value);
+      if (PRINTOUT > 1) msg << "m3sq = " << value << ", ";
+      break;
+    }
+    case XiS: {
+      tempModel->setXiS(value);
+      if (PRINTOUT > 1) msg << "xiS = " << value << ", ";
+      break;
+    }
+    case Mh1Sq: {
+      tempModel->setMh1Squared(value);
+      if (PRINTOUT > 1) msg << "mH1Sq = " << value << ", ";
+      break;
+    }
+    case Mh2Sq: {
+      tempModel->setMh2Squared(value);
+      if (PRINTOUT > 1) msg << "mH2Sq = " << value << ", ";
+      break;
+    }
+    case MsSq: {
+      tempModel->setMsSquared(value);
+      if (PRINTOUT > 1) msg << "mSsq = " << value << ", ";
+      break;
+    }
+    case Yt: {
+      if (pars->useSugraTrilinears) {
+        const double At = tempModel->displaySoftA(UA, 3, 3);
+        tempModel->setTrilinearElement(UA, 3, 3, value * At);
+      }
+      tempModel->setYukawaElement(YU, 3, 3, value);
+      if (PRINTOUT > 1) msg << "ht = " << value << ", ";
+      break;
+    }
+    default: {
+      ostringstream ii;
+      ii << "NmssmJacobian:calcLogRunningParameter called with incorrect"
+         << " independent parameter " << independent << '\n';
+      throw ii.str();
+    }
+    }
+
+    tempModel->runto(endScale);
+
+    if (PRINTOUT > 1) msg << "Qend = " << endScale << ", ";
+
+    double output;
+    switch (dependent) {
+    case Lambda: {
+      output = tempModel->displayLambda();
+      if (PRINTOUT > 1) msg << "lambda = " << output << '\n';
+      break;
+    }
+    case Kappa: {
+      output = tempModel->displayKappa();
+      if (PRINTOUT > 1) msg << "kappa = " << output << '\n';
+      break;
+    }
+    case SMu: {
+      output = tempModel->displaySusyMu();
+      if (PRINTOUT > 1) msg << "mu = " << output << '\n';
+      break;
+    }
+    case M3Sq: {
+      output = tempModel->displayM3Squared();
+      if (PRINTOUT > 1) msg << "m3sq = " << output << '\n';
+      break;
+    }
+    case XiS: {
+      output = tempModel->displayXiS();
+      if (PRINTOUT > 1) msg << "xiS = " << output << '\n';
+      break;
+    }
+    case Mh1Sq: {
+      output = tempModel->displayMh1Squared();
+      if (PRINTOUT > 1) msg << "mH1Sq = " << output << '\n';
+      break;
+    }
+    case Mh2Sq: {
+      output = tempModel->displayMh2Squared();
+      if (PRINTOUT > 1) msg << "mH2Sq = " << output << '\n';
+      break;
+    }
+    case MsSq: {
+      output = tempModel->displayMsSquared();
+      if (PRINTOUT > 1) msg << "mSsq = " << output << '\n';
+      break;
+    }
+    case Yt: {
+      output = tempModel->displayYukawaElement(YU, 3, 3);
+      if (PRINTOUT > 1) msg << "ht = " << output << '\n';
+      break;
+    }
+    default: {
+      ostringstream ii;
+      ii << "NmssmJacobian:calcLogRunningParameter called with incorrect"
+         << " dependent parameter " << dependent << '\n';
+      throw ii.str();
+    }
+    }
+
+    if (PRINTOUT > 1) cout << msg.str();
+
+    tempModel->setMu(startScale);
+    tempModel->set(savedPars);
+
+    return std::log(output);
+  }
+
+  std::pair<double,double> NmssmJacobian::calcRGLogDerivative(
+    NmssmSoftsusy& model, Parameters dep, Parameters indep, double toScale) const {
+
+    double x = 0.;
+    double h = 0.01;
+
+    switch (indep) {
+    case Lambda: {
+      x = std::log(model.displayLambda());
+      h = 0.0005 * x;
+      break;
+    }
+    case Kappa: {
+      x = std::log(model.displayKappa());
+      h = 0.0005 * x;
+      break;
+    }
+    case SMu: {
+      x = std::log(model.displaySusyMu());
+      h = 0.01 * x;
+      break;
+    }
+    case M3Sq: {
+      x = std::log(model.displayM3Squared());
+      h = 0.01 * x;
+      break;
+    }
+    case XiS: {
+      x = std::log(model.displayXiS());
+      h = 0.01 * x;
+      break;
+    }
+    case Mh1Sq: {
+      x = std::log(model.displayMh1Squared());
+      h = 0.01 * x;
+      break;
+    }
+    case Mh2Sq: {
+      x = std::log(model.displayMh2Squared());
+      h = 0.01 * x;
+      break;
+    }
+    case MsSq: {
+      x = std::log(model.displayMsSquared());
+      h = 0.01 * x;
+      break;
+    }
+    case Yt: {
+      x = std::log(model.displayYukawaElement(YU, 3, 3));
+      h = 0.0005 * x;
+      break;
+    }
+    default: {
+      ostringstream ii;
+      ii << "NmssmJacobian:calcRGLogDerivative called with incorrect"
+         << " independent parameter " << indep << '\n';
+      throw ii.str();
+    }
+    }
+
+#ifdef ENABLE_GSL
+    h = sqrt(std::numeric_limits<double>::epsilon()) * maximum(fabs(x), 1.0);
+#endif
+
+    volatile const double temp = x + h;
+    h = temp - x;
+
+    RGFlowPars pars;
+    pars.model = &model;
+    pars.independent = indep;
+    pars.dependent = dep;
+    pars.toScale = toScale;
+    pars.useSugraTrilinears = useSugraTrilinears;
+
+    double derivative = 0.;
+    double err = 0.;
+
+    bool has_error = false;
+
+#ifdef ENABLE_GSL
+    gsl_function func;
+    func.function = &calcLogRunningParameter;
+    func.params = &pars;
+
+    gsl_deriv_central(&func, x, h, &derivative, &err);
+
+    if (fabs(x) > 1.0e-10 &&
+        (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+      has_error = fabs(err / derivative) > 1.0;
+    }
+
+    if (has_error) {
+      // attempt to use a forward or backward difference in
+      // case we are at a boundary in parameter space
+      gsl_deriv_forward(&func, x, h, &derivative, &err);
+
+      if (fabs(x) > 1.0e-10 &&
+          (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+        has_error = fabs(err / derivative) > 1.0;
+      }
+
+      if (has_error) {
+        gsl_deriv_backward(&func, x, h, &derivative, &err);
+
+        if (fabs(x) > 1.0e-10 &&
+            (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+          has_error = fabs(err / derivative) > 1.0;
+        }
+      }
+    }
+#else
+    if (fabs(x) > 1.0e-10) {
+      derivative = calcDerivative(calcLogRunningParameter, x, h, &err, &pars);
+
+      if (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10) {
+        has_error = fabs(err / derivative) > 1.0;
+      }
+    }
+#endif
+
+    if (has_error) {
+      derivative = -numberOfTheBeast;
+    }
+
+    if (PRINTOUT > 1) {
+      const double scale = model.displayMu();
+
+      ostringstream msg;
+      msg << "# derivative[d";
+
+      switch (dep) {
+      case Lambda: msg << "log(lambda(Q=" << toScale << "))/d"; break;
+      case Kappa: msg << "log(kappa(Q=" << toScale << "))/d"; break;
+      case SMu: msg << "log(mu(Q=" << toScale << "))/d"; break;
+      case M3Sq: msg << "log(m3sq(Q=" << toScale << "))/d"; break;
+      case XiS: msg << "log(xiS(Q=" << toScale << "))/d"; break;
+      case Mh1Sq: msg << "log(mH1Sq(Q=" << toScale << "))/d"; break;
+      case Mh2Sq: msg << "log(mH2Sq(Q=" << toScale << "))/d"; break;
+      case MsSq: msg << "log(mSsq(Q=" << toScale << "))/d"; break;
+      case Yt: msg << "log(ht(Q=" << toScale << "))/d"; break;
+      default: {
+        ostringstream ii;
+        ii << "NmssmJacobian:calcRGLogDerivative called with incorrect"
+           << " dependent parameter " << dep << '\n';
+        throw ii.str();
+      }
+      }
+
+      switch (indep) {
+      case Lambda: msg << "log(lambda(Q=" << scale << "))] = "; break;
+      case Kappa: msg << "log(kappa(Q=" << scale << "))] = "; break;
+      case SMu: msg << "log(mu(Q=" << scale << "))] = "; break;
+      case M3Sq: msg << "log(m3sq(Q=" << scale << "))] = "; break;
+      case XiS: msg << "log(xiS(Q=" << scale << "))] = "; break;
+      case Mh1Sq: msg << "log(mH1Sq(Q=" << scale << "))] = "; break;
+      case Mh2Sq: msg << "log(mH2Sq(Q=" << scale << "))] = "; break;
+      case MsSq: msg << "log(mSsq(Q=" << scale << "))] = "; break;
+      case Yt: msg << "log(ht(Q=" << scale << "))] = "; break;
+      default: {
+        ostringstream ii;
+        ii << "NmssmJacobian:calcRGLogDerivative called with incorrect"
+           << " independent parameter " << indep << '\n';
+        throw ii.str();
+      }
+      }
+
+      msg << derivative << ", error = " << err << '\n';
+      cout << msg.str();
+    }
+
+    return std::pair<double,double>(derivative, err);
+  }
+
   double NmssmJacobian::calcRGFlowJacobian(NmssmSoftsusy& model,
                                            double startScale, double endScale) {
     const DoubleVector savedPars(model.display());
@@ -610,6 +1023,160 @@ namespace softsusy {
       }
       if (includeTop) {
         result = calcRGDerivative(model, Yt, indepPars[i], endScale);
+        jac(i + 1, 4) = result.first;
+        jacErrors(i + 1, 4) = result.second;
+      }
+    }
+
+    // check for errors
+    hasError = checkDerivativeErrors(jac, jacErrors, paramValues);
+
+    // save calculated matrix
+    // convention: inverse refers to case where transformation
+    // is from high-scale to low-scale parameters
+    if (startScale == endScale) {
+      if (invJacRGFlow.displayRows() != numPars
+          || invJacRGFlow.displayCols() != numPars) {
+        invJacRGFlow.resize(numPars, numPars);
+      }
+      invJacRGFlow = jac;
+
+      if (invJacRGFlowErrors.displayRows() != numPars
+          || invJacRGFlowErrors.displayCols() != numPars) {
+        invJacRGFlowErrors.resize(numPars, numPars);
+      }
+      invJacRGFlowErrors = jacErrors;
+
+      if (jacRGFlow.displayRows() != numPars
+          || jacRGFlow.displayCols() != numPars) {
+        jacRGFlow.resize(numPars, numPars);
+      }
+      jacRGFlow = jac;
+
+      if (jacRGFlowErrors.displayRows() != numPars
+          || jacRGFlowErrors.displayCols() != numPars) {
+        jacRGFlowErrors.resize(numPars, numPars);
+      }
+      jacRGFlowErrors = jacErrors;
+    } else if (startScale > endScale) {
+      if (invJacRGFlow.displayRows() != numPars
+          || invJacRGFlow.displayCols() != numPars) {
+        invJacRGFlow.resize(numPars, numPars);
+      }
+      invJacRGFlow = jac;
+
+      if (invJacRGFlowErrors.displayRows() != numPars
+          || invJacRGFlowErrors.displayCols() != numPars) {
+        invJacRGFlowErrors.resize(numPars, numPars);
+      }
+      invJacRGFlowErrors = jacErrors;
+    } else {
+      if (jacRGFlow.displayRows() != numPars
+          || jacRGFlow.displayCols() != numPars) {
+        jacRGFlow.resize(numPars, numPars);
+      }
+      jacRGFlow = jac;
+
+      if (jacRGFlowErrors.displayRows() != numPars
+          || jacRGFlowErrors.displayCols() != numPars) {
+        jacRGFlowErrors.resize(numPars, numPars);
+      }
+      jacRGFlowErrors = jacErrors;
+    }
+
+    model.setMu(scale);
+    model.set(savedPars);
+
+    return jac.determinant();
+  }
+
+  // @todo handle negative parameters properly
+  double NmssmJacobian::calcRGFlowJacobianLogs(
+    NmssmSoftsusy& model, double startScale, double endScale) {
+    const DoubleVector savedPars(model.display());
+    const double scale = model.displayMu();
+
+    model.runto(startScale);
+
+    const int numPars = includeTop ? 4 : 3;
+
+    DoubleMatrix jac(numPars, numPars);
+    DoubleMatrix jacErrors(numPars, numPars);
+
+    std::vector<Parameters> indepPars;
+    std::vector<double> paramValues;
+
+    if (SoftHiggsOut) {
+      indepPars.push_back(Mh1Sq);
+      indepPars.push_back(Mh2Sq);
+      indepPars.push_back(MsSq);
+
+      paramValues.push_back(std::log(model.displayMh1Squared()));
+      paramValues.push_back(std::log(model.displayMh2Squared()));
+      paramValues.push_back(std::log(model.displayMsSquared()));
+    } else if (Z3) {
+      indepPars.push_back(Lambda);
+      indepPars.push_back(Kappa);
+      indepPars.push_back(MsSq);
+
+      paramValues.push_back(std::log(model.displayLambda()));
+      paramValues.push_back(std::log(model.displayKappa()));
+      paramValues.push_back(std::log(model.displayMsSquared()));
+    } else {
+      indepPars.push_back(SMu);
+      indepPars.push_back(M3Sq);
+      indepPars.push_back(XiS);
+
+      paramValues.push_back(std::log(model.displaySusyMu()));
+      paramValues.push_back(std::log(model.displayM3Squared()));
+      paramValues.push_back(std::log(model.displayXiS()));
+    }
+    if (includeTop) {
+      indepPars.push_back(Yt);
+      paramValues.push_back(std::log(model.displayYukawaElement(YU, 3, 3)));
+    }
+
+    for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
+      std::pair<double,double> result;
+      if (SoftHiggsOut) {
+        result = calcRGLogDerivative(model, Mh1Sq, indepPars[i], endScale);
+        jac(i + 1, 1) = result.first;
+        jacErrors(i + 1, 1) = result.second;
+
+        result = calcRGLogDerivative(model, Mh2Sq, indepPars[i], endScale);
+        jac(i + 1, 2) = result.first;
+        jacErrors(i + 1, 2) = result.second;
+
+        result = calcRGLogDerivative(model, MsSq, indepPars[i], endScale);
+        jac(i + 1, 3) = result.first;
+        jacErrors(i + 1, 3) = result.second;
+      } else if (Z3) {
+        result = calcRGLogDerivative(model, Lambda, indepPars[i], endScale);
+        jac(i + 1, 1) = result.first;
+        jacErrors(i + 1, 1) = result.second;
+
+        result = calcRGLogDerivative(model, Kappa, indepPars[i], endScale);
+        jac(i + 1, 2) = result.first;
+        jacErrors(i + 1, 2) = result.second;
+
+        result = calcRGLogDerivative(model, MsSq, indepPars[i], endScale);
+        jac(i + 1, 3) = result.first;
+        jacErrors(i + 1, 3) = result.second;
+      } else {
+        result = calcRGLogDerivative(model, SMu, indepPars[i], endScale);
+        jac(i + 1, 1) = result.first;
+        jacErrors(i + 1, 1) = result.second;
+
+        result = calcRGLogDerivative(model, M3Sq, indepPars[i], endScale);
+        jac(i + 1, 2) = result.first;
+        jacErrors(i + 1, 2) = result.second;
+
+        result = calcRGLogDerivative(model, XiS, indepPars[i], endScale);
+        jac(i + 1, 3) = result.first;
+        jacErrors(i + 1, 3) = result.second;
+      }
+      if (includeTop) {
+        result = calcRGLogDerivative(model, Yt, indepPars[i], endScale);
         jac(i + 1, 4) = result.first;
         jacErrors(i + 1, 4) = result.second;
       }
@@ -832,6 +1399,164 @@ namespace softsusy {
     tempModel->setProblem(savedProblems);
 
     return output;
+  }
+
+  double NmssmJacobian::calcLogEWSBOutput(double x, void* parameters) {
+    EWSBPars* pars = static_cast<EWSBPars*>(parameters);
+
+    NmssmSoftsusy* tempModel = pars->model;
+    Parameters independent = pars->independent;
+    Parameters dependent = pars->dependent;
+
+    const DoubleVector savedPars(tempModel->display());
+    const drBarPars savedDrBarPars(tempModel->displayDrBarPars());
+    // reset problems to avoid subsequent iterations skipping
+    // calculating tadpoles
+    const sProblem savedProblems(tempModel->displayProblem());
+    tempModel->setProblem(sProblem());
+
+    ostringstream msg;
+    if (PRINTOUT > 1) msg << "# ";
+
+    const double value = std::exp(x);
+    switch (independent) {
+    case Lambda: {
+      if (pars->useSugraTrilinears) {
+        const double Alambda = tempModel->displaySoftAlambda();
+        tempModel->setTrialambda(value * Alambda);
+      }
+      tempModel->setLambda(value);
+      if (PRINTOUT > 1) msg << "lambda = " << value << ", ";
+      break;
+    }
+    case Kappa: {
+      if (pars->useSugraTrilinears) {
+        const double Akappa = tempModel->displaySoftAkappa();
+        tempModel->setTriakappa(value * Akappa);
+      }
+      tempModel->setKappa(value);
+      if (PRINTOUT > 1) msg << "kappa = " << value << ", ";
+      break;
+    }
+    case SMu: {
+      tempModel->setSusyMu(value);
+      if (PRINTOUT > 1) msg << "mu = " << value << ", ";
+      break;
+    }
+    case M3Sq: {
+      tempModel->setM3Squared(value);
+      if (PRINTOUT > 1) msg << "m3sq = " << value << ", ";
+      break;
+    }
+    case XiS: {
+      tempModel->setXiS(value);
+      if (PRINTOUT > 1) msg << "xiS = " << value << ", ";
+      break;
+    }
+    case Mh1Sq: {
+      tempModel->setMh1Squared(value);
+      if (PRINTOUT > 1) msg << "mH1Sq = " << value << ", ";
+      break;
+    }
+    case Mh2Sq: {
+      tempModel->setMh2Squared(value);
+      if (PRINTOUT > 1) msg << "mH2Sq = " << value << ", ";
+      break;
+    }
+    case MsSq: {
+      tempModel->setMsSquared(value);
+      if (PRINTOUT > 1) msg << "mSsq = " << value << ", ";
+      break;
+    }
+    case Yt: {
+      if (pars->useSugraTrilinears) {
+        const double At = tempModel->displaySoftA(UA, 3, 3);
+        tempModel->setTrilinearElement(UA, 3, 3, value * At);
+      }
+      tempModel->setYukawaElement(YU, 3, 3, value);
+      if (PRINTOUT > 1) msg << "ht = " << value << ", ";
+      break;
+    }
+    default: {
+      ostringstream ii;
+      ii << "NmssmJacobian:calcEWSBOutput called with incorrect"
+         << " independent parameter " << independent << '\n';
+      throw ii.str();
+    }
+    }
+
+    tempModel->calcDrBarPars();
+    tempModel->doTadpoles(tempModel->displayDrBarPars().mt,
+                          tempModel->calcSinthdrbar());
+
+    DoubleVector vevs(3);
+    vevs(1) = tempModel->displayHvev();
+    vevs(2) = tempModel->displayTanb();
+    vevs(3) = tempModel->displaySvev();
+
+    int error = 0;
+    tempModel->predVevs(vevs, error);
+
+    if (error != 0) {
+      pars->failedVevIteration = true;
+      if (PRINTOUT > 0) {
+        cout << "# Warning: could not solve for VEVs\n";
+      }
+    }
+
+    tempModel->setHvev(vevs(1));
+    tempModel->setTanb(vevs(2));
+    tempModel->setSvev(vevs(3));
+
+    tempModel->calcDrBarPars();
+    const double mtrun = tempModel->displayDrBarPars().mt;
+    const double sinthDRbar = tempModel->calcSinthdrbar();
+    tempModel->doTadpoles(mtrun, sinthDRbar);
+
+    if (tempModel->displayProblem().inaccurateHiggsMass) {
+      pars->inaccurateHiggsMass = true;
+      if (fabs(tempModel->displayDrBarHiggsAccuracy())
+          > fabs(pars->higgsMassAccuracy))
+        pars->higgsMassAccuracy = tempModel->displayDrBarHiggsAccuracy();
+    }
+
+    double output;
+    switch (dependent) {
+    case Mzsq: {
+      output = sqr(calcMz(*tempModel, pars->useRunningMasses));
+      if (PRINTOUT > 1) msg << "MZ = " << sqrt(output) << '\n';
+      break;
+    }
+    case Tanb: {
+      output = tempModel->displayTanb();
+      if (PRINTOUT > 1) msg << "tanb = " << output << '\n';
+      break;
+    }
+    case Svev: {
+      output = tempModel->displaySvev();
+      if (PRINTOUT > 1) msg << "Svev = " << output << '\n';
+      break;
+    }
+    case Mtsq: {
+      output = sqr(calcMt(*tempModel, pars->useRunningMasses));
+      if (PRINTOUT > 1) msg << "MT = " << sqrt(output) << '\n';
+      break;
+    }
+    default: {
+      ostringstream ii;
+      ii << "NmssmJacobian:calcLogEWSBOutput called with incorrect"
+         << " dependent parameter " << dependent << '\n';
+      throw ii.str();
+    }
+    }
+
+    if (PRINTOUT > 1) cout << msg.str();
+
+    tempModel->set(savedPars);
+    tempModel->setDrBarPars(savedDrBarPars);
+    tempModel->setProblem(savedProblems);
+
+    return std::log(output);
   }
 
   int NmssmJacobian::ewsbOutputErrors(const DoubleVector & guess,
@@ -1249,6 +1974,176 @@ namespace softsusy {
     return std::pair<double,double>(derivative, err);
   }
 
+  std::pair<double,double> NmssmJacobian::calcEWSBOutputLogDerivative(
+    NmssmSoftsusy& model, Parameters dep, Parameters indep) {
+
+    double x = 0.;
+    double h = 0.01;
+
+    switch (indep) {
+    case Lambda: {
+      x = std::log(model.displayLambda());
+      h = 0.0005 * x;
+      break;
+    }
+    case Kappa: {
+      x = std::log(model.displayKappa());
+      h = 0.0005 * x;
+      break;
+    }
+    case SMu: {
+      x = std::log(model.displaySusyMu());
+      h = 0.01 * x;
+      break;
+    }
+    case M3Sq: {
+      x = std::log(model.displayM3Squared());
+      h = 0.01 * x;
+      break;
+    }
+    case XiS: {
+      x = std::log(model.displayXiS());
+      h = 0.01 * x;
+      break;
+    }
+    case Mh1Sq: {
+      x = std::log(model.displayMh1Squared());
+      h = 0.01 * x;
+      break;
+    }
+    case Mh2Sq: {
+      x = std::log(model.displayMh2Squared());
+      h = 0.01 * x;
+      break;
+    }
+    case MsSq: {
+      x = std::log(model.displayMsSquared());
+      h = 0.01 * x;
+      break;
+    }
+    case Yt: {
+      x = std::log(model.displayYukawaElement(YU, 3, 3));
+      h = 0.0005 * x;
+      break;
+    }
+    default: {
+      ostringstream ii;
+      ii << "NmssmJacobian:calcEWSBOutputLogDerivative called with incorrect"
+         << " independent parameter " << indep << '\n';
+      throw ii.str();
+    }
+    }
+
+#ifdef ENABLE_GSL
+    h = sqrt(std::numeric_limits<double>::epsilon()) * maximum(fabs(x), 1.0);
+#endif
+
+    volatile const double temp = x + h;
+    h = temp - x;
+
+    EWSBPars pars;
+    pars.model = &model;
+    pars.independent = indep;
+    pars.dependent = dep;
+    pars.useRunningMasses = useRunningMasses;
+    pars.useSugraTrilinears = useSugraTrilinears;
+
+    double derivative = 0.;
+    double err = 0.;
+
+    bool has_error = false;
+
+#ifdef ENABLE_GSL
+    gsl_function func;
+    func.function = &calcLogEWSBOutput;
+    func.params = &pars;
+
+    gsl_deriv_central(&func, x, h, &derivative, &err);
+
+    if (fabs(x) > 1.0e-10 &&
+        (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+      has_error = fabs(err / derivative) > 1.0;
+    }
+
+    if (has_error) {
+      // attempt to use a forward or backward difference in
+      // case we are at a boundary at parameter space
+      gsl_deriv_forward(&func, x, h, &derivative, &err);
+
+      if (fabs(x) > 1.0e-10 &&
+          (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+        has_error = fabs(err / derivative) > 1.0;
+      }
+
+      if (has_error) {
+        gsl_deriv_backward(&func, x, h, &derivative, &err);
+
+        if (fabs(x) > 1.0e-10 &&
+            (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10)) {
+          has_error = fabs(err / derivative) > 1.0;
+        }
+      }
+    }
+#else
+    if (fabs(x) > 1.0e-10) {
+      derivative = calcDerivative(calcLogEWSBOutput, x, h, &err, &pars);
+
+      if (fabs(derivative) > 1.0e-10 || fabs(err) > 1.0e-10) {
+        has_error = fabs(err / derivative) > 1.0;
+      }
+    }
+#endif
+
+    if (has_error) {
+      derivative = -numberOfTheBeast;
+    }
+
+    failedVevIterationWarning = pars.failedVevIteration;
+    inaccurateHiggsMassWarning = pars.inaccurateHiggsMass;
+    if (fabs(pars.higgsMassAccuracy) > fabs(worstCaseHiggsAccuracy))
+      worstCaseHiggsAccuracy = pars.higgsMassAccuracy;
+
+    if (PRINTOUT > 1) {
+      ostringstream msg;
+      msg << "# derivative[d";
+
+      switch (dep) {
+      case Mzsq: msg << "log(MZsq)/d"; break;
+      case Tanb: msg << "log(tanb)/d"; break;
+      case Svev: msg << "log(Svev)/d"; break;
+      case Mtsq: msg << "log(MTsq)/d"; break;
+      default: {
+        ostringstream ii;
+        ii << "NmssmJacobian:calcEWSBOutputLogDerivative called with incorrect"
+           << " dependent parameter " << dep << '\n';
+        throw ii.str();
+      }
+      }
+
+      switch (indep) {
+      case Lambda: msg << "log(lambda)] = "; break;
+      case Kappa: msg << "log(kappa)] = "; break;
+      case SMu: msg << "log(mu)] = "; break;
+      case M3Sq: msg << "log(m3sq)] = "; break;
+      case XiS: msg << "log(xiS)] = "; break;
+      case Mh1Sq: msg << "log(mH1Sq)] = "; break;
+      case Mh2Sq: msg << "log(mH2Sq)] = "; break;
+      case MsSq: msg << "log(mSsq)] = "; break;
+      case Yt: msg << "log(ht)] = "; break;
+      default: {
+        ostringstream ii;
+        ii << "NmssmJacobian:calcEWSBOutputLogDerivative called with incorrect"
+           << " independent parameter " << indep << '\n';
+        throw ii.str();
+      }
+      }
+      msg << derivative << ", error = " << err << '\n';
+      cout << msg.str();
+    }
+
+    return std::pair<double,double>(derivative, err);
+  }
+
   std::pair<double,double> NmssmJacobian::calcEWSBParameterDerivative(
     NmssmSoftsusy& model, Parameters dep, Parameters indep) {
 
@@ -1619,6 +2514,118 @@ namespace softsusy {
           jacErrors(i + 1, 4) = 0.;
         } else {
           result = calcEWSBOutputDerivative(model, Mtsq, indepPars[i]);
+          jac(i + 1, 4) = result.first;
+          jacErrors(i + 1, 4) = result.second;
+        }
+      }
+    }
+
+    // check for errors
+    hasError = checkDerivativeErrors(jac, jacErrors, paramValues);
+
+    // save calculated matrix
+    if (invJacEWSB.displayRows() != numPars
+        || invJacEWSB.displayCols() != numPars) {
+      invJacEWSB.resize(numPars, numPars);
+    }
+    invJacEWSB = jac;
+
+    if (invJacEWSBErrors.displayRows() != numPars
+        || invJacEWSBErrors.displayCols() != numPars) {
+      invJacEWSBErrors.resize(numPars, numPars);
+    }
+    invJacEWSBErrors = jacErrors;
+
+    return jac.determinant();
+  }
+
+  // @todo handle negative parameters properly
+  double NmssmJacobian::calcInverseEWSBJacobianLogs(NmssmSoftsusy& model) {
+
+    const int numPars = includeTop ? 4 : 3;
+
+    // reset warnings on each call
+    failedVevIterationWarning = false;
+    inaccurateHiggsMassWarning = false;
+    worstCaseHiggsAccuracy = 0.;
+
+    DoubleMatrix jac(numPars, numPars);
+    DoubleMatrix jacErrors(numPars, numPars);
+
+    std::vector<Parameters> indepPars;
+    std::vector<double> paramValues;
+
+    if (SoftHiggsOut) {
+      indepPars.push_back(Mh1Sq);
+      indepPars.push_back(Mh2Sq);
+      indepPars.push_back(MsSq);
+
+      paramValues.push_back(std::log(model.displayMh1Squared()));
+      paramValues.push_back(std::log(model.displayMh2Squared()));
+      paramValues.push_back(std::log(model.displayMsSquared()));
+    } else if (Z3) {
+      indepPars.push_back(Lambda);
+      indepPars.push_back(Kappa);
+      indepPars.push_back(MsSq);
+
+      paramValues.push_back(std::log(model.displayLambda()));
+      paramValues.push_back(std::log(model.displayKappa()));
+      paramValues.push_back(std::log(model.displayMsSquared()));
+    } else {
+      indepPars.push_back(SMu);
+      indepPars.push_back(M3Sq);
+      indepPars.push_back(XiS);
+
+      paramValues.push_back(std::log(model.displaySusyMu()));
+      paramValues.push_back(std::log(model.displayM3Squared()));
+      paramValues.push_back(std::log(model.displayXiS()));
+    }
+    if (includeTop) {
+      indepPars.push_back(Yt);
+      paramValues.push_back(std::log(model.displayYukawaElement(YU, 3, 3)));
+    }
+
+    for (int i = 0, numIndep = indepPars.size(); i < numIndep; ++i) {
+      std::pair<double,double> result;
+      if (Z3 && !SoftHiggsOut) {
+        if (indepPars[i] == Lambda) {
+          jac(i + 1, 1) = 0.;
+          jacErrors(i + 1, 1) = 0.;
+          jac(i + 1, 2) = 0.;
+          jacErrors(i + 1, 2) = 0.;
+          jac(i + 1, 3) = 1.;
+          jacErrors(i + 1, 3) = 0.;
+        } else {
+          result = calcEWSBOutputLogDerivative(model, Mzsq, indepPars[i]);
+          jac(i + 1, 1) = result.first;
+          jacErrors(i + 1, 1) = result.second;
+
+          result = calcEWSBOutputLogDerivative(model, Tanb, indepPars[i]);
+          jac(i + 1, 2) = result.first;
+          jacErrors(i + 1, 2) = result.second;
+
+          jac(i + 1, 3) = 0.;
+          jacErrors(i + 1, 3) = 0.;
+        }
+      } else {
+        result = calcEWSBOutputLogDerivative(model, Mzsq, indepPars[i]);
+        jac(i + 1, 1) = result.first;
+        jacErrors(i + 1, 1) = result.second;
+
+        result = calcEWSBOutputLogDerivative(model, Tanb, indepPars[i]);
+        jac(i + 1, 2) = result.first;
+        jacErrors(i + 1, 2) = result.second;
+
+        result = calcEWSBOutputLogDerivative(model, Svev, indepPars[i]);
+        jac(i + 1, 3) = result.first;
+        jacErrors(i + 1, 3) = result.second;
+      }
+      if (includeTop) {
+        if ((Z3 && !SoftHiggsOut) && indepPars[i] == Lambda) {
+          jac(i + 1, 4) = 0.;
+          jacErrors(i + 1, 4) = 0.;
+        } else {
+          result = calcEWSBOutputLogDerivative(model, Mtsq, indepPars[i]);
           jac(i + 1, 4) = result.first;
           jacErrors(i + 1, 4) = result.second;
         }
