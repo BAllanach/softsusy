@@ -1978,52 +1978,42 @@ namespace softsusy {
     NmssmSoftsusy& model, Parameters dep, Parameters indep) {
 
     double x = 0.;
-    double h = 0.01;
 
     switch (indep) {
     case Lambda: {
       x = std::log(model.displayLambda());
-      h = 0.0005 * x;
       break;
     }
     case Kappa: {
       x = std::log(model.displayKappa());
-      h = 0.0005 * x;
       break;
     }
     case SMu: {
       x = std::log(model.displaySusyMu());
-      h = 0.01 * x;
       break;
     }
     case M3Sq: {
       x = std::log(model.displayM3Squared());
-      h = 0.01 * x;
       break;
     }
     case XiS: {
       x = std::log(model.displayXiS());
-      h = 0.01 * x;
       break;
     }
     case Mh1Sq: {
       x = std::log(model.displayMh1Squared());
-      h = 0.01 * x;
       break;
     }
     case Mh2Sq: {
       x = std::log(model.displayMh2Squared());
-      h = 0.01 * x;
       break;
     }
     case MsSq: {
       x = std::log(model.displayMsSquared());
-      h = 0.01 * x;
       break;
     }
     case Yt: {
       x = std::log(model.displayYukawaElement(YU, 3, 3));
-      h = 0.0005 * x;
       break;
     }
     default: {
@@ -2034,9 +2024,7 @@ namespace softsusy {
     }
     }
 
-#ifdef ENABLE_GSL
-    h = sqrt(std::numeric_limits<double>::epsilon()) * maximum(fabs(x), 1.0);
-#endif
+    double h = sqrt(std::numeric_limits<double>::epsilon()) * maximum(fabs(x), 1.0);
 
     volatile const double temp = x + h;
     h = temp - x;
