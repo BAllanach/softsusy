@@ -7594,10 +7594,10 @@ void MssmSoftsusy::itLowsoft
     cout << " scale:" << displayMu() << endl; 
     cout << "whereas it should be " << mz << endl; 
   }
-  
+
   if (numTries - 1 > maxTries) {/// Iterating too long: bail out
-    flagNoConvergence(true);
     setProblem(old.displayProblem());
+    flagNoConvergence(true);    
     if (PRINTOUT) cout << "itLowsoft reached maxtries\n"; 
     numTries = 0; 
     return;
@@ -9640,7 +9640,7 @@ void MssmSoftsusy::spinfoSLHA(ostream & out) {
   if (displayProblem().noConvergence)
     out << "     3   Possible problem: Not achieved desired accuracy of "
 	<< TOLERANCE << "- got " 
-	<< fracDiff << endl;
+	<< fracDiff << " # Warning" << endl;
   if (displayProblem().inaccurateHiggsMass)
     out << "     3   # Warning: Higgs masses are very inaccurate at this point.\n";
   int posj = 0, posi = 0; double mass = 0.;
@@ -9649,10 +9649,6 @@ void MssmSoftsusy::spinfoSLHA(ostream & out) {
     out << "     3    " 
 	<< tachyonNames[displayProblem().tachyonWarning] 
 	<< " is tree-level tachyon at MZ # Warning" << endl;
-  if (displayProblem().noConvergence)
-    out << "     3    did not achieve desired precision. "
-	<< " Got " << displayFracDiff() << " instead of " << TOLERANCE 
-	<< " # Warning" << endl;
   if (displayProblem().inaccurateHiggsMass)
     out << "     3    Higgs mass especially inaccurate due to large hierarchies"
 	<< " in spectrum # Warning" << endl;

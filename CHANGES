@@ -1,1 +1,2 @@
+<li>Fixed problem that wasn't flagging the non-convergence of the fixed point iteration algorithm
 <li>Made 0 mixing default (ie no quark mixing, but non-zero masses for second/third family)
