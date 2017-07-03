@@ -13,7 +13,7 @@ Block SMINPUTS               # Standard Model inputs
     7   1.777000000e+00      # mtau(pole)
 Block MINPAR                 # Input parameters
     1   4.000000000e+02      # m_0
-    2   2.000000000e+02      # m_12
+    2   3.500000000e+02      # m_12
     3   1.000000000e+01      # tanb
     4   1.000000000e+00      # sign(mu)
     5  -3.000000000e+02      # A_0
@@ -50,7 +50,7 @@ Block EXTPAR  # Input parameters
    62   0.1                  # kappa
 #   63   1000                 # A_lambda
 #   64   1000                 # A_kappa
-   65   100                 # lambda * <S>
+   65   200                 # lambda * <S>
    66   100                 # xi_F
 #   67   0                    # xi_S
 #   68   0                    # mu'

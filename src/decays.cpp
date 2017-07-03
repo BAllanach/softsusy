@@ -43,6 +43,8 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
   errorflag = 0; /// 0 output if no issues, -1 if issues in calculating decays
 
   bool QCDcorr = true; ///Turns on QCD corrections to h->gg and h->qq
+  // //TEMP
+  // QCDcorr = false;
 
   ///Switch on or off 1->3 decays
   bool onetothree = threeBodyDecays; ///Turns on 1->3 decays, reads this in from input file, default is true
@@ -165,6 +167,7 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
    CPOMix2(2,2) = CPOMix(2,3);
    
    // fout << "S = " << S << " CPEMix = " << CPEMix << " CPOMix = " << CPOMix << endl;
+   // *ffout << "CPEMix = " << CPEMix << std::endl;
 
    ///Additional NMSSM parameters
    kappa = nmssmrun.displayKappa();
@@ -192,6 +195,8 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
    thetaR2 = -thetaR + PI/2;
    
    runmw = mwSoftSusy; ///"running" W mass, i.e. that used for couplings
+
+   // *ffout << "mixNeut = " << mixNeut << std::endl;
 
   ///Mixing angles taken from softsusy depend on the mass ordering, I have taken the Spheno method whereby the sfermions are always mass ordered, this isn't necessarily true of softsusy so if the mass ordering is reverse I must change the mixing angle and reorder the masses.
   if (mu(1,3) <= mu(2,3)) {
@@ -313,21 +318,21 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
  msAtMH = pow(2,0.5)*nmssmrun.displayMwRun()*cos(atan(nmssmrun.displayTanb()))*nmssmrun.displayYukawaMatrix(YD)(2,2)/nmssmrun.displayGaugeCoupling(2);
 
  ///If yukawa matrix elements are 0 (can occur if only include mixing in third generation in softsusy spectrum generator) then use a non-zero mass - avoids issues of inf in foftau for loop decays!
- if (mbAtMH3 == 0) {mbAtMH3 = mb;}
- if (mtAtMH3 == 0) {mtAtMH3 = mt;}
- if (mcAtMH3 == 0) {mcAtMH3 = mc;}
- // if (msAtMH3 == 0) {msAtMH3 = ms;}
- if (mbAtMH == 0) {mbAtMH = mb;}
- if (mtAtMH == 0) {mtAtMH = mt;}
- if (mcAtMH == 0) {mcAtMH = mc;}
- if (msAtMH == 0) {msAtMH = ms;}
- if (mbAtMA2 == 0) {mbAtMA2 = mb;}
- if (mtAtMA2 == 0) {mtAtMA2 = mt;}
- if (mcAtMA2 == 0) {mcAtMA2 = mc;}
- if (mbAtMA == 0) {mbAtMA = mb;}
- if (mtAtMA == 0) {mtAtMA = mt;}
- if (mcAtMA == 0) {mcAtMA = mc;}
- if (msAtMA == 0) {msAtMA = ms;}
+ if (mbAtMH3 <1.0e-66) {mbAtMH3 = mb;}
+ if (mtAtMH3 <1.0e-66) {mtAtMH3 = mt;}
+ if (mcAtMH3 <1.0e-66) {mcAtMH3 = mc;}
+ // if (msAtMH3 <1.0e-66) {msAtMH3 = ms;}
+ if (mbAtMH <1.0e-66) {mbAtMH = mb;}
+ if (mtAtMH <1.0e-66) {mtAtMH = mt;}
+ if (mcAtMH <1.0e-66) {mcAtMH = mc;}
+ if (msAtMH <1.0e-66) {msAtMH = ms;}
+ if (mbAtMA2 <1.0e-66) {mbAtMA2 = mb;}
+ if (mtAtMA2 <1.0e-66) {mtAtMA2 = mt;}
+ if (mcAtMA2 <1.0e-66) {mcAtMA2 = mc;}
+ if (mbAtMA <1.0e-66) {mbAtMA = mb;}
+ if (mtAtMA <1.0e-66) {mtAtMA = mt;}
+ if (mcAtMA <1.0e-66) {mcAtMA = mc;}
+ if (msAtMA <1.0e-66) {msAtMA = ms;}
 
 ///For mh should not use full susy running as susy not around this scale, instead use SM running as in QeDQcD object defined in lowe.h:
  QedQcd a(nmssmrun.displayDataSet());
@@ -475,14 +480,14 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
     msAtMH = pow(2,0.5)*polemw*cos(beta)*r->displayYukawaMatrix(YD)(2,2)/r->displayGaugeCoupling(2);
     
     ///If yukawa matrix elements are 0 (can get if set mixing to 0 in softsusy spectrum generator) then use a non-zero mass - otherwise get inf issue in foftau function for loop decays!
-    if (mbAtMH == 0) {mbAtMH = mb;}
-    if (mtAtMH == 0) {mtAtMH = mt;}
-    if (mcAtMH == 0) {mcAtMH = mc;}
-    if (msAtMH == 0) {msAtMH = ms;}
-    if (mbAtMA == 0) {mbAtMA = mb;}
-    if (mtAtMA == 0) {mtAtMA = mt;}
-    if (mcAtMA == 0) {mcAtMA = mc;}
-    if (msAtMA == 0) {msAtMA = ms;}
+    if (mbAtMH <1.0e-66) {mbAtMH = mb;}
+    if (mtAtMH <1.0e-66) {mtAtMH = mt;}
+    if (mcAtMH <1.0e-66) {mcAtMH = mc;}
+    if (msAtMH <1.0e-66) {msAtMH = ms;}
+    if (mbAtMA <1.0e-66) {mbAtMA = mb;}
+    if (mtAtMA <1.0e-66) {mtAtMA = mt;}
+    if (mcAtMA <1.0e-66) {mcAtMA = mc;}
+    if (msAtMA <1.0e-66) {msAtMA = ms;}
     
     ///For mh should not use full susy running as susy not around this scale, instead use SM running as in QeDQcD object defined in lowe.h:
     QedQcd a(r->displayDataSet());
@@ -499,6 +504,13 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
     g3atmH0 = pow(4*PI*alphasAtMH,0.5);
     g3atmA0 = pow(4*PI*alphasAtMA,0.5);
   }
+
+ if (runmmu < 1.0e-66) {runmmu = mmu;} //Catches cases where mixing has been set off in the spectrum generator thereby giving lepton yukawa matrix only non-zero (3,3) element and so giving running mass for muon = 0, this would mean no higgs -> mu mu decay, therefore set runmmu = pole mmu in this case
+ // if (runmc == 0) {runmc = mc;}
+ // if (runms == 0) {runms = ms;}
+
+ 
+ 
 
  ///gravitino stuff - For NLSP decays to LSP gravitino, occur often in GMSB scenarios
  double mgravitino = r->displayGravitino();
@@ -4992,6 +5004,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  
  double h0amplitudeneutZ1neutZ5 = 0, h0amplitudeneutZ2neutZ5 = 0, h0amplitudeneutZ3neutZ5 = 0, h0amplitudeneutZ4neutZ5 = 0, h0amplitudeneutZ5neutZ5 = 0;
 
+ // mh0(1) = 125.09;
+
  if (flagh1 == 1) {
    ///If QCDcorr off use these below -> running masses used to approximate some of QCD corrections at tree-level
    if (QCDcorr == false) {
@@ -5004,12 +5018,16 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    }
    ///With QCDcorr on then use actual pole masses for quarks as corrections being accounted for
    else {
-     h0amplitudecantic = higgslorHamplitudedecayquarkantiquark (mh0(1), mcpole, g, alpha, beta, runmw, 1, 'l', CPEMix, nmssmIsIt, QCDcorr, alphasAtMh);
-     h0amplitudesantis = higgslorHamplitudedecayquarkantiquark (mh0(1), mspole, g, alpha, beta, runmw, 0, 'l', CPEMix, nmssmIsIt, QCDcorr, alphasAtMh);
+       h0amplitudecantic = higgslorHamplitudedecayquarkantiquark (mh0(1), mcpole, g, alpha, beta, runmw, 1, 'l', CPEMix, nmssmIsIt, QCDcorr, alphasAtMh);
+       h0amplitudesantis = higgslorHamplitudedecayquarkantiquark (mh0(1), mspole, g, alpha, beta, runmw, 0, 'l', CPEMix, nmssmIsIt, QCDcorr, alphasAtMh);
      ///mcpole and mspole set in decays.h, this values used are those appropriate for the scheme used for the h -> qq QCD corrections, as in hdecay
-     h0amplitudebantib = higgslorHamplitudedecayquarkantiquark (mh0(1), mbPole, g, alpha, beta, runmw, 0, 'l', CPEMix, nmssmIsIt, QCDcorr, alphasAtMh); 
+       h0amplitudebantib = higgslorHamplitudedecayquarkantiquark (mh0(1), mbPole, g, alpha, beta, runmw, 0, 'l', CPEMix, nmssmIsIt, QCDcorr, alphasAtMh); 
      ///No decay to two tops as kinematically forbidden
+
+
+
    }
+
 
    h0amplitudeeantie = higgslorHamplitudedecayquarkantiquark (mh0(1), runmel, g, alpha, beta, runmw, 0, 'l', CPEMix, nmssmIsIt, false, alphasAtMh)/3; ///0 as leptons are like down-type quarks, divided by three as Nc is three for quarks but 1 for leptons
    h0amplitudemuantimu = higgslorHamplitudedecayquarkantiquark (mh0(1), runmmu, g, alpha, beta, runmw, 0, 'l', CPEMix, nmssmIsIt, false, alphasAtMh)/3;
@@ -5041,8 +5059,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      h0amplitudesstrangeRantisstrangeL = higgshamplitudedecay2squarkdiffhand (mh0(1), md(2,1), md(2,2), g, alpha, beta, runmw, runmc, runms, greekmu, Ac, As, 2);
      h0amplitudeselectronLantiselectronR = higgshamplitudedecay2sleptondiffhand (mh0(1), me(1,1), me(2,1), g, alpha, beta, runmw, runmel, greekmu, Ae, 1);
      h0amplitudeselectronRantiselectronL = higgshamplitudedecay2sleptondiffhand (mh0(1), me(2,1), me(1,1), g, alpha, beta, runmw, runmel, greekmu, Ae, 1);
-     h0amplitudesmuonLantismuonR = higgshamplitudedecay2sleptondiffhand (mh0(1), me(1,2), me(2,2), g, alpha, beta, runmw, runmmu, greekmu, Amu, 1);
-     h0amplitudesmuonRantismuonL = higgshamplitudedecay2sleptondiffhand (mh0(1), me(2,2), me(2,1), g, alpha, beta, runmw, runmmu, greekmu, Amu, 1);
+     h0amplitudesmuonLantismuonR = higgshamplitudedecay2sleptondiffhand (mh0(1), me(1,2), me(2,2), g, alpha, beta, runmw, mmu, greekmu, Amu, 1);
+     h0amplitudesmuonRantismuonL = higgshamplitudedecay2sleptondiffhand (mh0(1), me(2,2), me(2,1), g, alpha, beta, runmw, mmu, greekmu, Amu, 1);
      h0amplitudestop1antistop1 = higgshamplitudedecaystop1stop1 (mh0(1), mu(1,3), mu(1,3), g, gp, alpha, beta, runmw, runmt, runmb, greekmu, At, Ab, thetat); ///use runmt and runmb here as mass used to set yukawa coupling, note however pole masses give greater agreement with susyhit as susyhit uses non-running masses here, similar for other higgs decays to third generation sfermions
      h0amplitudestop2antistop2 = higgshamplitudedecaystop2stop2 (mh0(1), mu(2,3), mu(2,3), g, gp, alpha, beta, runmw, runmt, runmb, greekmu, At, Ab, thetat); ///use runmt and runmb here as mass used to set yukawa coupling, note however pole masses give greater agreement with susyhit as susyhit uses non-running masses here, similar for other higgs decays to third generation sfermions
      h0amplitudestop1antistop2 = higgshamplitudedecaystop1stop2 (mh0(1), mu(1,3), mu(2,3), g, gp, alpha, beta, runmw, runmt, runmb, greekmu, At, Ab, thetat); ///use runmt and runmb here as mass used to set yukawa coupling, note however pole masses give greater agreement with susyhit as susyhit uses non-running masses here, similar for other higgs decays to third generation sfermions
@@ -5061,10 +5079,10 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      h0amplitudecharW1charW2 = higgsphiamplitudedecaydifchargino (mh0(1), mch(1), mch(2), g, thetaL2, thetaR2, alpha, beta, 'h');
 
      h0amplitudegammagamma = higgsesamplitudedecaygammagammatotal(mh0(1), g, gp, alphaAtMh, runmw, polemw, alpha, beta, mtAtMh, mbAtMh, mcAtMh, runmtau, mHpm, mu(1,3), mu(2,3), md(1,3), md(2,3), me(1,3), me(2,3), mch(1), mch(2), thetaL, thetaR, thetat, thetab, thetatau, greekmu, At, Ab, Atau, 'h'); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
-     h0amplitudegluongluon = higgsesamplitudedecaygluongluontotal(mh0(1), g, g3atmh0, gp, runmw, alpha, beta, mtPole, mbPole, mcpole, mu(1,3), mu(2,3), md(1,3), md(2,3), thetat, thetab, greekmu, At, Ab, ms, mu(1,2), mu(2,2), md(1,2), md(2,2), Ac, As, mup, mdo, mu(1,1), mu(2,1), md(1,1), md(2,1), Au, Ad, 'h', QCDcorr); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
+     h0amplitudegluongluon = higgsesamplitudedecaygluongluontotal(mh0(1), g, g3atmh0, gp, runmw, alpha, beta, mtPole, mbPole, mcpole, mu(1,3), mu(2,3), md(1,3), md(2,3), thetat, thetab, greekmu, At, Ab, ms, mu(1,2), mu(2,2), md(1,2), md(2,2), Ac, As, mup, mdo, mu(1,1), mu(2,1), md(1,1), md(2,1), Au, Ad, 'h', QCDcorr); ///Use gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
      h0amplitudeZgamma = higgsesamplitudedecayZbosonphotontotal(mh0(1), polemz, g, gp, alphaAtMh, polemw, runmw, alpha, beta, mtAtMh, mbAtMh, mcAtMh, msAtMh, mu(1,3), mu(2,3), md(1,3), md(2,3), mHpm, thetat, thetab, greekmu, At, Ab, 'h'); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
 
-     
+
      h0amplitudeneutZ1neutZ1 = higgsphiamplitudedecayneutralinoneutralino (mh0(1), mneut(1), mneut(1), g, tanthetaW, alpha, mixNeut, 1, 1, 'h');
      h0amplitudeneutZ1neutZ2 = higgsphiamplitudedecayneutralinoneutralino (mh0(1), mneut(1), mneut(2), g, tanthetaW, alpha, mixNeut, 1, 2, 'h');
      h0amplitudeneutZ1neutZ3 = higgsphiamplitudedecayneutralinoneutralino (mh0(1), mneut(1), mneut(3), g, tanthetaW, alpha, mixNeut, 1, 3, 'h');
@@ -5130,7 +5148,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      h0amplitudecharW2charW2 = higgsphiamplitudedecaysamecharginoNMSSM (mh0(1), mch(2), g, thetaL2, thetaR2, lam, CPEMix, 2, 1);
      h0amplitudecharW1charW2 = higgsphiamplitudedecaydiffcharginoNMSSM (mh0(1), mch(1), mch(2), g, thetaL2, thetaR2, lam, CPEMix, 1);
      h0amplitudegammagamma = higgsCPevenamplitudedecaygammagammaNMSSM(mh0(1), mtAtMh, mbAtMh, mcAtMh, runmtau, runmw, mHpm, mch(1), mch(2), mu(1,2), mu(2,2), mu(1,3), mu(2,3), md(1,2), md(2,2), md(1,3), md(2,3), me(1,2), me(2,2), me(1,3), me(2,3), CPEMix, beta, g, gp, alphaAtMh,thetat, thetab, thetatau-PI/2, thetaL2, thetaR2, At, Ab, Atau, greekmu, mueff, lam, kappa, Alambda, 1); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
-     h0amplitudegluongluon = higgsCPevenamplitudedecaygluongluonNMSSM(mh0(1), mtPole, mbPole, mcpole, runmw, mu(1,2), mu(2,2), mu(1,3), mu(2,3), md(1,2), md(2,2), md(1,3), md(2,3), mu(1,1), mu(2,1), md(1,1), md(2,1), mtAtMh, mbAtMh, CPEMix, beta, g, gp, gs, alphasAtMh, thetat, thetab, thetaL2, thetaR2, At, Ab, greekmu, mueff, lam, kappa, Alambda, 1, QCDcorr); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
+     h0amplitudegluongluon = higgsCPevenamplitudedecaygluongluonNMSSM(mh0(1), mtPole, mbPole, mcpole, runmw, mu(1,2), mu(2,2), mu(1,3), mu(2,3), md(1,2), md(2,2), md(1,3), md(2,3), mu(1,1), mu(2,1), md(1,1), md(2,1), mtPole, mbPole, CPEMix, beta, g, gp, gs, alphasAtMh, thetat, thetab, thetaL2, thetaR2, At, Ab, greekmu, mueff, lam, kappa, Alambda, 1, QCDcorr); ///Use gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
      h0amplitudeZgamma = higgshamplitudedecayZgammaNMSSM (mh0(1), g, gp, alphaAtMh, runmw, polemz, mHpm, CPEMix, beta, mtAtMh, mbAtMh, mcAtMh, mch(1), mch(2), thetaL2, thetaR2, lam, kappa, Alambda, greekmu, mueff, 1); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
      
      h0amplitudeneutZ1neutZ1 = higgshamplitudedecayneutineutjNMSSM (mh0(1), mneut(1), mneut(1), g, gp, CPEMix, mixNeut, lam, kappa, 1, 1, 1);
@@ -5161,6 +5179,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    h0amplitudeWW = higgshamplitudedecayVV(mh0(1), polemw, polemz, g, gp, alpha, beta, 'W', CPEMix, nmssmIsIt)(1);
    h0amplitudeZZ = higgshamplitudedecayVV(mh0(1), polemw, polemz, g, gp, alpha, beta, 'Z', CPEMix, nmssmIsIt)(1);
    
+
+
    int h0WWcommentcode, h0ZZcommentcode, h0WWNDA=0, h0ZZNDA=0;
    h0WWcommentcode = higgshamplitudedecayVV(mh0(1), polemw, polemz, g, gp, alpha, beta, 'W', CPEMix, nmssmIsIt)(2);
    string h0WWcomment, h0ZZcomment;
@@ -5384,7 +5404,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      H0amplitudecharW1charW2 = higgsphiamplitudedecaydifchargino (mh0(2), mch(1), mch(2), g, thetaL2, thetaR2, alpha, beta, 'H');
      
      H0amplitudegammagamma = higgsesamplitudedecaygammagammatotal(mh0(2), g, gp, alphaAtMH, runmw, polemw, alpha, beta, mtAtMH, mbAtMH, mcAtMH, runmtau, mHpm, mu(1,3), mu(2,3), md(1,3), md(2,3), me(1,3), me(2,3), mch(1), mch(2), thetaL, thetaR, thetat, thetab, thetatau, greekmu, At, Ab, Atau, 'H'); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
-     H0amplitudegluongluon = higgsesamplitudedecaygluongluontotal(mh0(2), g, g3atmH0, gp, runmw, alpha, beta, mtPole, mbPole, mcpole, mu(1,3), mu(2,3), md(1,3), md(2,3), thetat, thetab, greekmu, At, Ab, mspole, mu(1,2), mu(2,2), md(1,2), md(2,2), Ac, As, runmu, runmd, mu(1,1), mu(2,1), md(1,1), md(2,1), Au, Ad, 'H', QCDcorr); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
+     H0amplitudegluongluon = higgsesamplitudedecaygluongluontotal(mh0(2), g, g3atmH0, gp, runmw, alpha, beta, mtPole, mbPole, mcpole, mu(1,3), mu(2,3), md(1,3), md(2,3), thetat, thetab, greekmu, At, Ab, mspole, mu(1,2), mu(2,2), md(1,2), md(2,2), Ac, As, runmu, runmd, mu(1,1), mu(2,1), md(1,1), md(2,1), Au, Ad, 'H', QCDcorr); ///Use gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
      H0amplitudeZgamma = higgsesamplitudedecayZbosonphotontotal(mh0(2), polemz, g, gp, alphaAtMH, polemw, runmw, alpha, beta, mtAtMH, mbAtMH, mcAtMH, msAtMH, mu(1,3), mu(2,3), md(1,3), md(2,3), mHpm, thetat, thetab, greekmu, At, Ab, 'H'); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
 
      H0amplitudeneutZ1neutZ1 = higgsphiamplitudedecayneutralinoneutralino (mh0(2), mneut(1), mneut(1), g, tanthetaW, alpha, mixNeut, 1, 1, 'H');
@@ -5450,7 +5470,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      H0amplitudecharW2charW2 = higgsphiamplitudedecaysamecharginoNMSSM (mh0(2), mch(2), g, thetaL2, thetaR2, lam, CPEMix, 2, 2);
      H0amplitudecharW1charW2 = higgsphiamplitudedecaydiffcharginoNMSSM (mh0(2), mch(1), mch(2), g, thetaL2, thetaR2, lam, CPEMix, 2);
      H0amplitudegammagamma = higgsCPevenamplitudedecaygammagammaNMSSM(mh0(2), mtAtMH, mbAtMH, mcAtMH, runmtau, runmw, mHpm, mch(1), mch(2), mu(1,2), mu(2,2), mu(1,3), mu(2,3), md(1,2), md(2,2), md(1,3), md(2,3), me(1,2), me(2,2), me(1,3), me(2,3), CPEMix, beta, g, gp, alphaAtMH, thetat, thetab, thetatau-PI/2, thetaL2, thetaR2, At, Ab, Atau, greekmu, mueff, lam, kappa, Alambda, 2); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
-     H0amplitudegluongluon = higgsCPevenamplitudedecaygluongluonNMSSM(mh0(2), mtPole, mbPole, mcpole, runmw, mu(1,2), mu(2,2), mu(1,3), mu(2,3), md(1,2), md(2,2), md(1,3), md(2,3), mu(1,1), mu(2,1), md(1,1), md(2,1), mtAtMH, mbAtMH, CPEMix, beta, g, gp, gs, alphasAtMH, thetat, thetab, thetaL2, thetaR2, At, Ab, greekmu, mueff, lam, kappa, Alambda, 2, QCDcorr);///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
+     H0amplitudegluongluon = higgsCPevenamplitudedecaygluongluonNMSSM(mh0(2), mtPole, mbPole, mcpole, runmw, mu(1,2), mu(2,2), mu(1,3), mu(2,3), md(1,2), md(2,2), md(1,3), md(2,3), mu(1,1), mu(2,1), md(1,1), md(2,1), mtPole, mbPole, CPEMix, beta, g, gp, gs, alphasAtMH, thetat, thetab, thetaL2, thetaR2, At, Ab, greekmu, mueff, lam, kappa, Alambda, 2, QCDcorr);///Use gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
      H0amplitudeZgamma = higgshamplitudedecayZgammaNMSSM (mh0(2), g, gp, alphaAtMH, runmw, polemz, mHpm, CPEMix, beta, mtAtMH, mbAtMH, mcAtMH, mch(1), mch(2), thetaL2, thetaR2, lam, kappa, Alambda, greekmu, mueff, 2);///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
      
      H0amplitudeneutZ1neutZ1 = higgshamplitudedecayneutineutjNMSSM (mh0(2), mneut(1), mneut(1), g, gp, CPEMix, mixNeut, lam, kappa, 1, 1, 2);
@@ -5480,6 +5500,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    
    H0amplitudeWbosonWboson = higgsHamplitudedecayVV(mh0(2), polemw, polemz, g, gp, alpha, beta, 'W', CPEMix, nmssmIsIt)(1);
    H0amplitudeZbosonZboson = higgsHamplitudedecayVV(mh0(2), polemw, polemz, g, gp, alpha, beta, 'Z', CPEMix, nmssmIsIt)(1);
+
    
    int H0WWcommentcode, H0ZZcommentcode, H0WWNDA=0, H0ZZNDA=0;
    H0WWcommentcode = higgsHamplitudedecayVV(mh0(2), polemw, polemz, g, gp, alpha, beta, 'W', CPEMix, nmssmIsIt)(2);
@@ -5589,6 +5610,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    double HiggsH_No_1to2_Decays = 0;
    
    HiggsH_No_1to2_Decays = ParticleHiggsH.No_1to2_Decays + ParticleHiggsH.No_NMSSM_Decays; /// As higgsH can't be NLSP as heavier than higgsl
+
    
    for (int j = 0; j<HiggsH_No_1to2_Decays; j++) {
      ParticleHiggsH.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
@@ -5642,6 +5664,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    double H03amplitudeuantiu=0, H03amplitudedantid=0, H03amplitudesantis=0, H03amplitudecantic=0, H03amplitudebantib=0, H03amplitudetantit=0, H03amplitudeeantie=0, H03amplitudemuantimu=0, H03amplitudetauantitau=0, H03amplitudeneutZ1neutZ1=0, H03amplitudeneutZ1neutZ2=0, H03amplitudeneutZ1neutZ3=0, H03amplitudeneutZ1neutZ4=0, H03amplitudeneutZ2neutZ2=0, H03amplitudeneutZ2neutZ3=0, H03amplitudeneutZ2neutZ4=0, H03amplitudeneutZ3neutZ3=0, H03amplitudeneutZ3neutZ4=0, H03amplitudeneutZ4neutZ4=0, H03amplitudecharW1charW1=0, H03amplitudecharW1charW2=0, H03amplitudecharW2charW2=0, H03amplitudeh0h0=0, H03amplitudehiggsAhiggsA=0, H03amplitudeHplusHminus=0, H03amplitudehiggsAZboson=0, H03amplitudesupLantisupL=0, H03amplitudesupLantisupR=0, H03amplitudesupRantisupL=0, H03amplitudesupRantisupR=0, H03amplitudesdownLantisdownL=0, H03amplitudesdownLantisdownR=0, H03amplitudesdownRantisdownL=0, H03amplitudesdownRantisdownR=0, H03amplitudescharmLantischarmL=0, H03amplitudescharmLantischarmR=0, H03amplitudescharmRantischarmL=0, H03amplitudescharmRantischarmR=0, H03amplitudesstrangeLantisstrangeL=0, H03amplitudesstrangeLantisstrangeR=0, H03amplitudesstrangeRantisstrangeL=0, H03amplitudesstrangeRantisstrangeR=0, H03amplitudesnueLantisnueL=0, H03amplitudeselectronLantiselectronL=0, H03amplitudeselectronRantiselectronR=0, H03amplitudeselectronLantiselectronR=0, H03amplitudeselectronRantiselectronL=0, H03amplitudesnumuLantisnumuL=0, H03amplitudesnutauLantisnutauL=0, H03amplitudesmuonLantismuonL=0, H03amplitudesmuonRantismuonR=0, H03amplitudesmuonLantismuonR=0, H03amplitudesmuonRantismuonL=0, H03amplitudestau1antistau1=0, H03amplitudestau2antistau2=0, H03amplitudestau1antistau2=0, H03amplitudestau2antistau1=0, H03amplitudestop1antistop1=0, H03amplitudestop1antistop2=0, H03amplitudestop2antistop1=0, H03amplitudestop2antistop2=0, H03amplitudesbottom1antisbottom1=0, H03amplitudesbottom1antisbottom2=0, H03amplitudesbottom2antisbottom1=0, H03amplitudesbottom2antisbottom2=0, H03amplitudegluongluon=0, H03amplitudegammagamma=0, H03amplitudeZgamma=0, H03amplitudeneutZ1neutZ5 = 0, H03amplitudeneutZ2neutZ5 = 0, H03amplitudeneutZ3neutZ5 = 0, H03amplitudeneutZ4neutZ5 = 0, H03amplitudeneutZ5neutZ5 = 0, H03amplitudeWW = 0, H03amplitudeZZ = 0, H03amplitudehiggsAhiggsA2 = 0, H03amplitudehiggsA2higgsA2 = 0, H03amplitudehiggsA2Zboson = 0, H03amplitudeh0H0 = 0, H03amplitudeH0H0 = 0, H03amplitudeWHpm = 0;
    
    if (flagH3 == 1) {
+
+       // *ffout << "alphasAtMH3 = " << alphasAtMH3 << std::endl;
      
      if (QCDcorr == false) {
        ///No decays to u or d as PWs to u and d are tiny as proportional to yukawas squared
@@ -5657,7 +5681,10 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        ///mcpole and mspole set in decays.h, this values used are those appropriate for the scheme used for the h -> qq QCD corrections, as in hdecay
        H03amplitudebantib = higgslorHamplitudedecayquarkantiquark (mh0(3), mbPole, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, QCDcorr, alphasAtMH3); 
        H03amplitudetantit = higgslorHamplitudedecayquarkantiquark (mh0(3), mtPole, g, alpha, beta, runmw, 1, 'M', CPEMix, nmssmIsIt, QCDcorr, alphasAtMH3); 
+
      }
+
+
      
      H03amplitudeeantie = higgslorHamplitudedecayquarkantiquark (mh0(3), runmel, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, false, alphasAtMH3)/3; ///0 as leptons are like down-type quarks, divide by 3 as No of colours is 1 for leptons cf 3 for quarks
      H03amplitudemuantimu = higgslorHamplitudedecayquarkantiquark (mh0(3), runmmu, g, alpha, beta, runmw, 0, 'M', CPEMix, nmssmIsIt, false, alphasAtMH3)/3;
@@ -5710,7 +5737,9 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      H03amplitudecharW1charW2 = higgsphiamplitudedecaydiffcharginoNMSSM (mh0(3), -mch(1), mch(2), g, thetaL2, thetaR2, lam, CPEMix, 3);
      
      H03amplitudegammagamma = higgsCPevenamplitudedecaygammagammaNMSSM(mh0(3), mtAtMH3, mbAtMH3, mcAtMH3, runmtau, runmw, mHpm, mch(1), mch(2), mu(1,2), mu(2,2), mu(1,3), mu(2,3), md(1,2), md(2,2), md(1,3), md(2,3), me(1,2), me(2,2), me(1,3), me(2,3), CPEMix, beta, g, gp, alphaAtMH3, thetat, thetab, thetatau-PI/2, thetaL2, thetaR2, At, Ab, Atau, greekmu, mueff, lam, kappa, Alambda, 3); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
-     H03amplitudegluongluon = higgsCPevenamplitudedecaygluongluonNMSSM(mh0(3), mtPole, mbPole, mcpole, runmw, mu(1,2), mu(2,2), mu(1,3), mu(2,3), md(1,2), md(2,2), md(1,3), md(2,3), mu(1,1), mu(2,1), md(1,1), md(2,1), mtAtMH3, mbAtMH3, CPEMix, beta, g, gp, gs, alphasAtMH3, thetat, thetab, thetaL2, thetaR2, At, Ab, greekmu, mueff, lam, kappa, Alambda, 3, QCDcorr); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
+  
+     H03amplitudegluongluon = higgsCPevenamplitudedecaygluongluonNMSSM(mh0(3), mtPole, mbPole, mcpole, runmw, mu(1,2), mu(2,2), mu(1,3), mu(2,3), md(1,2), md(2,2), md(1,3), md(2,3), mu(1,1), mu(2,1), md(1,1), md(2,1), mtPole, mbPole, CPEMix, beta, g, gp, gs, alphasAtMH3, thetat, thetab, thetaL2, thetaR2, At, Ab, greekmu, mueff, lam, kappa, Alambda, 3, QCDcorr); ///Use gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
+
      H03amplitudeZgamma = higgshamplitudedecayZgammaNMSSM (mh0(3), g, gp, alphaAtMH3, runmw, polemz, mHpm, CPEMix, beta, mtAtMH3, mbAtMH3, mcAtMH3, mch(1), mch(2), thetaL2, thetaR2, lam, kappa, Alambda, greekmu, mueff, 3); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
      
      H03amplitudeneutZ1neutZ1 = higgshamplitudedecayneutineutjNMSSM (mh0(3), mneut(1), mneut(1), g, gp, CPEMix, mixNeut, lam, kappa, 1, 1, 3);
@@ -5969,7 +5998,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      A0amplitudestau2stau1 = higgsAamplitudedecaysfermions(mA0(1), me(2,3), me(1,3), g, runmw, runmtau, greekmu, Atau, beta, 'd');
      
      A0amplitudegammagamma = higgsesamplitudedecaygammagammatotal(mA0(1), g, gp, alphaAtMA, runmw, polemw, alpha, beta, mtAtMA, mbAtMA, mcAtMA, runmtau, mHpm, mu(1,3), mu(2,3), md(1,3), md(2,3), me(1,3), me(2,3), mch(1), mch(2), thetaL, thetaR, thetat, thetab, thetatau, greekmu, At, Ab, Atau, 'A'); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
-     A0amplitudegluongluon = higgsesamplitudedecaygluongluontotal(mA0(1), g, g3atmA0, gp, runmw, alpha, beta, mtPole, mbPole, mcpole, mu(1,3), mu(2,3), md(1,3), md(2,3), thetat, thetab, greekmu, At, Ab, runms, mu(1,2), mu(2,2), md(1,2), md(2,2), Ac, As, runmu, runmd, mu(1,1), mu(2,1), md(1,1), md(2,1), Au, Ad, 'A', QCDcorr);///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
+     A0amplitudegluongluon = higgsesamplitudedecaygluongluontotal(mA0(1), g, g3atmA0, gp, runmw, alpha, beta, mtPole, mbPole, mcpole, mu(1,3), mu(2,3), md(1,3), md(2,3), thetat, thetab, greekmu, At, Ab, runms, mu(1,2), mu(2,2), md(1,2), md(2,2), Ac, As, runmu, runmd, mu(1,1), mu(2,1), md(1,1), md(2,1), Au, Ad, 'A', QCDcorr);///Use gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
      A0amplitudeZgamma = higgsesamplitudedecayZbosonphotontotal(mA0(1), polemz, g, gp, alphaAtMA, polemw, runmw, alpha, beta, mtAtMA, mbAtMA, mcAtMA, msAtMA, mu(1,3), mu(2,3), md(1,3), md(2,3), mHpm, thetat, thetab, greekmu, At, Ab, 'A');///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
    
      A0amplitudeWHpm = higgsAamplitudedecayHpmWboson(mA0(1), polemw, mHpm, g, thetaA, 1, nmssmIsIt);
@@ -6037,7 +6066,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      A0amplitudestau2stau1 = higgsAamplitudedecaysfermionsNMSSM(mA0(1), me(2,3), me(1,3), g, runmw, runmtau, Atau, beta, lam, mueff, CPOMix, 'd', 1); 
 
    A0amplitudegammagamma = higgsAamplitudedecaygammagammaNMSSM (mA0(1), g, gp, alphaAtMA, runmw, CPOMix, beta, mtAtMA, mbAtMA, mcAtMA, runmtau, mch(1), mch(2), thetaL2, thetaR2, lam, 1); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
-   A0amplitudegluongluon = higgsAamplitudedecaygluongluonNMSSM (mA0(1), g, gs, alphasAtMA, runmw, CPOMix, beta, mtPole, mbPole, mcpole, lam, 1, QCDcorr); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
+   A0amplitudegluongluon = higgsAamplitudedecaygluongluonNMSSM (mA0(1), g, gs, alphasAtMA, runmw, CPOMix, beta, mtPole, mbPole, mcpole, lam, 1, QCDcorr); ///Use gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
    A0amplitudeZgamma = higgsAamplitudedecayZgammaNMSSM (mA0(1), g, gp, alphaAtMA, runmw, polemz, CPOMix, beta,mtAtMA, mbAtMA, mcAtMA, mch(1), mch(2), thetaL2, thetaR2, lam, 1); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
    
    A0amplitudeWHpm = higgsAamplitudedecayHpmWboson(mA0(1), polemw, mHpm, g, thetaA, 1, nmssmIsIt);
@@ -6214,7 +6243,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      A02amplitudestau1stau2 = higgsAamplitudedecaysfermionsNMSSM(mA0(2), me(1,3), me(2,3), g, runmw, runmtau, Atau, beta, lam, mueff, CPOMix, 'd', 2);
      A02amplitudestau2stau1 = higgsAamplitudedecaysfermionsNMSSM(mA0(2), me(2,3), me(1,3), g, runmw, runmtau, Atau, beta, lam, mueff, CPOMix, 'd', 2); 
      
-     A02amplitudegluongluon = higgsAamplitudedecaygluongluonNMSSM (mA0(2), g, gs, alphasAtMA2, runmw, CPOMix, beta, mtPole, mbPole, mcpole, lam, 2, QCDcorr); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
+     A02amplitudegluongluon = higgsAamplitudedecaygluongluonNMSSM (mA0(2), g, gs, alphasAtMA2, runmw, CPOMix, beta, mtPole, mbPole, mcpole, lam, 2, QCDcorr); ///Use gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
      A02amplitudegammagamma = higgsAamplitudedecaygammagammaNMSSM (mA0(2), g, gp, alphaAtMA2, runmw, CPOMix, beta, mtAtMA2, mbAtMA2, mcAtMA2, runmtau, mch(1), mch(2), thetaL2, thetaR2, lam, 2); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
      A02amplitudeZgamma = higgsAamplitudedecayZgammaNMSSM (mA0(2), g, gp, alphaAtMA2, runmw, polemz, CPOMix, beta, mtAtMA2, mbAtMA2, mcAtMA2, mch(1), mch(2), thetaL2, thetaR2, lam, 2); ///Use quark masses and gauge couplings run to the mass of the decaying higgs, exact scale these were evaluated may significantly alter the PW
 
@@ -10769,12 +10798,14 @@ double higgsesamplitudedecaygammagammatotal(double m1, double g, double gprime, 
   prefactor = GFosqrt2*pow(alphaEmrun,2)*pow(m1,3)/(128*pow(PI,3));
   // *ffout << "Itr = " << Itr << endl; *ffout << " Ist1r = " << Ist1r << endl; *ffout<< " Ist2r = " << Ist2r << endl; *ffout<< " Ibr = " << Ibr << endl; *ffout<< " Isb1r = " << Isb1r << endl; *ffout<< " Isb2r = " << Isb2r << endl; *ffout << "Icr = " << Icr << endl; *ffout << "Itaur = " << Itaur << endl; *ffout << "Istau1r = "<< Istau1r << endl; *ffout << "Istau2r = "<< Istau2r << endl; *ffout << "IWr = " << IWr << endl; *ffout << "IHpmr = " << IHpmr << endl; *ffout << "Ichar1r = " << Ichar1r << endl; *ffout << "Ichar2r = " << Ichar2r << endl;
   // *ffout << "Iti = " << Iti << endl; *ffout << " Ist1i = " << Ist1i << endl; *ffout<< " Ist2i = " << Ist2i << endl; *ffout<< " Ibi = " << Ibi << endl; *ffout<< " Isb1i = " << Isb1i << endl; *ffout<< " Isb2i = " << Isb2i << endl; *ffout << "Ici = " << Ici << endl; *ffout << "Itaui = " << Itaui << endl; *ffout << "Istau1i = "<< Istau1i << endl; *ffout << "Istau2i = "<< Istau2i << endl; *ffout << "IWi = " << IWi << endl; *ffout << "IHpmi = " << IHpmi << endl; *ffout << "Ichar1i = " << Ichar1i << endl; *ffout << "Ichar2i = " << Ichar2i << endl;
+  // *ffout << "prefactor = " << prefactor << std::endl;
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
   if (matelemmodsquare != matelemmodsquare) {
     throw("nan in matelemmodsquare in higgsesamplitudedecaygammagammatotal\n");
     errorflag = -1;
     // ffout << "Itr = " << Itr << endl; fout << " Ist1r = " << Ist1r << endl; fout<< " Ist2r = " << Ist2r << endl; fout<< " Ibr = " << Ibr << endl; fout<< " Isb1r = " << Isb1r << endl; fout<< " Isb2r = " << Isb2r << endl; fout << "Icr = " << Icr << endl; fout << "Itaur = " << Itaur << endl; fout << "Istau1r = "<< Istau1r << endl; fout << "Istau2r = "<< Istau2r << endl; fout << "IWr = " << IWr << endl; fout << "IHpmr = " << IHpmr << endl; fout << "Ichar1r = " << Ichar1r << endl; fout << "Ichar2r = " << Ichar2r << endl;
     // ffout << "Iti = " << Iti << endl; fout << " Ist1i = " << Ist1i << endl; fout<< " Ist2i = " << Ist2i << endl; fout<< " Ibi = " << Ibi << endl; fout<< " Isb1i = " << Isb1i << endl; fout<< " Isb2i = " << Isb2i << endl; fout << "Ici = " << Ici << endl; fout << "Itaui = " << Itaui << endl; fout << "Istau1i = "<< Istau1i << endl; fout << "Istau2i = "<< Istau2i << endl; fout << "IWi = " << IWi << endl; fout << "IHpmi = " << IHpmi << endl; fout << "Ichar1i = " << Ichar1i << endl; fout << "Ichar2i = " << Ichar2i << endl;
+    // ffout << "prefactor = " << prefactor << endl;
   }
   amplitudeW = prefactor*matelemmodsquare;
      
@@ -11443,7 +11474,6 @@ double higgsesamplitudedecaygluongluontotal(double m1, double g, double gs, doub
   DoubleVector higgsmatrixelementgammagammaviasbottoms (double m1, double msbottom1, double msbottom2, double mbottom, double mtop, double mWboson, double thetab, double g, double gprime, double alpha, double beta, double Atop, double Abottom, double greekmu, char higgstype);
   DoubleVector higgsmatrixelementgammagammaviacharms (double m1, double mcharm, double alpha, double beta, char higgstype);
 
-
   Itr = 1* higgsmatrixelementgammagammaviatops (m1, mtop, alpha, beta, higgstype)(1);
   Iti = 1* higgsmatrixelementgammagammaviatops (m1, mtop, alpha, beta, higgstype)(2);
   Ist1r = -higgsmatrixelementgammagammaviastops (m1, mstop1, mstop2, mtop, mbottom, mWboson, thetat, g, gprime, alpha, beta, greekmu, Atop, Abottom, higgstype)(1);
@@ -11484,7 +11514,7 @@ double higgsesamplitudedecaygluongluontotal(double m1, double g, double gs, doub
 
   prefactor = pow(gs,4)*GFosqrt2/(128*pow(PI,5)*16)*pow(m1,3)*9./8;
 
-  // *ffout << "Itr = " << Itr << endl; *ffout << " Ist1r = " << Ist1r << endl; *ffout<< " Ist2r = " << Ist2r << endl; *ffout<< " Ibr = " << Ibr << endl; *ffout<< " Isb1r = " << Isb1r << endl; *ffout<< " Isb2r = " << Isb2r << endl; *ffout << "Icr = " << Icr << endl; *ffout << "IsuLr = " << IsuLr << endl; *ffout << "IsuRr = "<< IsuRr << endl; *ffout << "IsdLr = "<< IsdLr << endl; *ffout << "IsdRr = " << IsdRr << endl; *ffout << "IscLr = " << IscLr << endl; *ffout << "IscRr = " << IscRr << endl; *ffout << "IssLr = " << IssLr << endl; *ffout << "IssRr = " << IssRr << endl;
+  //  *ffout << "Itr = " << Itr << endl; *ffout << " Ist1r = " << Ist1r << endl; *ffout<< " Ist2r = " << Ist2r << endl; *ffout<< " Ibr = " << Ibr << endl; *ffout<< " Isb1r = " << Isb1r << endl; *ffout<< " Isb2r = " << Isb2r << endl; *ffout << "Icr = " << Icr << endl; *ffout << "IsuLr = " << IsuLr << endl; *ffout << "IsuRr = "<< IsuRr << endl; *ffout << "IsdLr = "<< IsdLr << endl; *ffout << "IsdRr = " << IsdRr << endl; *ffout << "IscLr = " << IscLr << endl; *ffout << "IscRr = " << IscRr << endl; *ffout << "IssLr = " << IssLr << endl; *ffout << "IssRr = " << IssRr << endl;
   // *ffout << "Iti = " << Iti << endl; *ffout << " Ist1i = " << Ist1i << endl; *ffout<< " Ist2i = " << Ist2i << endl; *ffout<< " Ibi = " << Ibi << endl; *ffout<< " Isb1i = " << Isb1i << endl; *ffout<< " Isb2i = " << Isb2i << endl; *ffout << "Ici = " << Ici << endl; *ffout << "IsuLi = " << IsuLi << endl; *ffout << "IsuRi = "<< IsuRi << endl; *ffout << "IsdLi = "<< IsdLi << endl; *ffout << "IsdRi = " << IsdRi << endl; *ffout << "IscLi = " << IscLi << endl; *ffout << "IscRi = " << IscRi << endl; *ffout << "IssLi = " << IssLi << endl; *ffout << "IssRi = " << IssRi << endl;
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
@@ -11543,6 +11573,7 @@ double fermionQCDcorrections(double amplitudeW, double alphasnow, double alphasp
   double amplitude = 0;
   if (higgs == 'h' || higgs == 'H') {
     amplitude = amplitudeW*(1+alphasnow/PI*(95./4-7./6*Nf))*pow(alphasnow/alphasprev,2);
+    // *ffout << "FQCD factor = " << (1+alphasnow/PI*(95./4-7./6*Nf))*pow(alphasnow/alphasprev,2) << std::endl;
   }
   else if (higgs == 'A') {
     amplitude = amplitudeW*(1+alphasnow/PI*(97./4-7./6*Nf))*pow(alphasnow/alphasprev,2);
@@ -11559,16 +11590,22 @@ double susyQCDcorrections(double prefactor, double alphas, double SMtotr, double
 {
   double amplitude = 0, factor = 0;
   factor = 17./6*alphas/PI; ///additional correction at NLO to squark loops
+  // *ffout << "SQCD factor = " << factor << std::endl;
   amplitude = prefactor*(SMtotr*sqtotr+pow(sqtotr,2)+SMtoti*sqtoti+pow(sqtoti,2))*factor; ///Note the (SMr*sqr+pow(sqr,2)+SMi*sqi+pow(sqi,2)) is just Re[c.c. of total matrix element x matrix element part from squarks] this is the interference of the total matrix element with the squark parts of the matrix element which get extra alphas susy qcd corrections. Note amplitude here must be added to the amplitude inc FQCD corrections to get the total FQCD and SQCD corrected amplitude.
 
   return amplitude;
 }
 
-double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp, double beta, double alpha, char Vtype, DoubleMatrix & CPEMix, bool nmssmIsIt, int higgs) ///Function that calculates higgs to VV* to Vff'bar. Formula derived as in Marciano and Keung, massless fermion limit and zero W width considered.
+double higgsamplitudedecayVVstar (double m1, double mWboson, double mZboson, double g, double gp, double beta, double alpha, char Vtype, DoubleMatrix & CPEMix, bool nmssmIsIt, int higgs) ///Function that calculates higgs to VV* to Vff'bar. Formula derived as in Marciano and Keung, massless fermion limit and zero W width considered.
 {
-  double prefactor=0, epsilon=0, integrals=0, a=0, b=0, c=0, coupling = 0, amplitudeW=0;
-  double sin2thetaW = pow(gp,2)/(pow(g,2)+pow(gp,2));
-  double cos2thetaW = pow(g,2)/(pow(g,2)+pow(gp,2));
+    double prefactor=0, epsilon=0, integrals=0, a=0, b=0, c=0, coupling = 0, mboson = 0, amplitudeW=0;
+    double sin2thetaW = pow(gp,2)/(pow(g,2)+pow(gp,2));
+    double cos2thetaW = pow(g,2)/(pow(g,2)+pow(gp,2));
+
+    // *ffout << "g^2/(8*mW^2) = " << pow(g/mWboson,2)/8 << std::endl;
+    // *ffout << "Gfosqrt2 = " << GFosqrt2 << std::endl;
+    // *ffout << "mZ = "  << mZboson << std::endl;
+    // *ffout << "mW/costhetaW = " << mWboson/pow(cos2thetaW,0.5) << std::endl;
 
   if (higgs == 1) {
     if (nmssmIsIt == false) { coupling = sin(beta-alpha);}
@@ -11587,12 +11624,20 @@ double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp,
     errorflag = -1;
   }
 
+  if (Vtype == 'W') { mboson = mWboson;}
+  else if (Vtype == 'Z') { mboson = mZboson;}
+
   if(m1 < 2*mboson && m1 > mboson) {
     if (Vtype == 'W') {
-      prefactor = 3*pow(g,4)*m1/(512*pow(PI,3))*pow(coupling,2);
+	// prefactor = 3*pow(g,4)*m1/(512*pow(PI,3))*pow(coupling,2);
+	// prefactor = 3*GFosqrt2*m1*pow(g*mboson,2)/(64*pow(PI,3))*pow(coupling,2);
+	prefactor = pow(GFosqrt2,2)*3*pow(mboson,4)/(8*pow(PI,3))*m1*pow(coupling,2);
     }
     else if (Vtype == 'Z') {
-      prefactor = pow(g,4)*m1/(2048*pow(PI,3)*pow(cos2thetaW,2))*(7 - 40*sin2thetaW/3 + 160*pow(sin2thetaW,2)/9)*pow(coupling,2);
+	// prefactor = pow(g,4)*m1/(2048*pow(PI,3)*pow(cos2thetaW,2))*(7 - 40*sin2thetaW/3 + 160*pow(sin2thetaW,2)/9)*pow(coupling,2);
+	// prefactor = pow(GFosqrt2,2)*m1/(32*pow(PI,3))*pow(mboson,4)*(7 - 40*sin2thetaW/3 + 160*pow(sin2thetaW,2)/9)*pow(coupling,2);
+	prefactor = pow(GFosqrt2,2)*m1/(32*pow(PI,3))*pow(mWboson,4)/pow(cos2thetaW,2)*(7 - 40*sin2thetaW/3 + 160*pow(sin2thetaW,2)/9)*pow(coupling,2);
+
     }
     else {
       throw("problem: Vtype must be W or Z in higgsamplitudedecayVVstar\n");
@@ -11604,6 +11649,11 @@ double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp,
   c = 3*(1-6*pow(epsilon,2)+4*pow(epsilon,4))*log(epsilon);
   integrals = a - b - c;
   amplitudeW = prefactor*integrals;
+  // *ffout << Vtype << Vtype << ": " << std::endl;
+  // *ffout << "prefactor = " << prefactor << std::endl;
+  // *ffout << "integrals = " << integrals << std::endl;
+  // *ffout << "GFosqrt2 = " << GFosqrt2 << std::endl;
+  // *ffout << "g^2/(8*mboson^2) = " << pow(g/mboson,2)/8 << std::endl;
   }
   else if(m1> 2*mboson || m1< mboson) {
      throw("problem: in higgsamplitudedecayVVstar m1 either greater than 2*mboson so both on-shell, or m1 less than mboson so both off-shell, this formula is for one on-shell vector boson and one off-shell vector boson (of the same type of course)\n"); 
@@ -11617,6 +11667,7 @@ DoubleVector higgshamplitudedecayVV(double m1, double mWboson, double mZboson, d
   for (int i=1; i<=2; i++) {
     Returns(i) = 0;
   }
+  double higgsamplitudedecayVVstar (double m1, double mWboson, double mZboson, double g, double gp, double beta, double alpha, char Vtype , DoubleMatrix & CPEMix, bool nmssmIsIt, int higgs);
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, prefactor=0, m2=0, m3=0, massratio=0, coupling = 0;
   if (Vtype == 'W')
     {
@@ -11624,7 +11675,7 @@ DoubleVector higgshamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	amplitudeW = 0; ///I don't calculate cases where both are off-shell
       }
       else if (fabs(m1) < 2*fabs(mWboson)) {
-	amplitudeW = higgsamplitudedecayVVstar (m1, mWboson, g, gp, beta, alpha, 'W', CPEMix, nmssmIsIt, 1);
+	  amplitudeW = higgsamplitudedecayVVstar (m1, mWboson, mZboson, g, gp, beta, alpha, 'W', CPEMix, nmssmIsIt, 1);
 	  Returns(2) = 1;
 	}
       else if (fabs(m1) >= 2*fabs(mWboson)) {
@@ -11651,8 +11702,8 @@ DoubleVector higgshamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	amplitudeW = 0; ///I don't calculate cases where both are off-shell
       }
       else if (fabs(m1) < 2*fabs(mZboson)) {
-	amplitudeW = higgsamplitudedecayVVstar (m1, mZboson, g, gp, beta, alpha, 'Z', CPEMix, nmssmIsIt, 1);
-	Returns(2) = 1;
+	  amplitudeW = higgsamplitudedecayVVstar (m1, mWboson, mZboson, g, gp, beta, alpha, 'Z', CPEMix, nmssmIsIt, 1);
+	  Returns(2) = 1;
       }
       else if (fabs(m1) >= 2*fabs(mZboson)) {
 	m2 = mZboson, m3 = mZboson;
@@ -11687,7 +11738,7 @@ DoubleVector higgsHamplitudedecayVV(double m1, double mWboson, double mZboson, d
   for (int i=1; i<=2; i++) {
     Returns(i) = 0;
   }
-  double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp, double beta, double alpha, char Vtype , DoubleMatrix & CPEMix, bool nmssmIsIt, int higgs);
+  double higgsamplitudedecayVVstar (double m1, double mWboson, double mZboson, double g, double gp, double beta, double alpha, char Vtype , DoubleMatrix & CPEMix, bool nmssmIsIt, int higgs);
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, prefactor=0, m2=0, m3=0, massratio=0, coupling = 0;
   if (Vtype == 'W')
     {
@@ -11695,7 +11746,7 @@ DoubleVector higgsHamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	amplitudeW = 0;
       }
       else if (fabs(m1) < 2*fabs(mWboson)) {
-	amplitudeW = higgsamplitudedecayVVstar (m1, mWboson, g, gp, beta, alpha, 'W', CPEMix, nmssmIsIt, 2);
+	  amplitudeW = higgsamplitudedecayVVstar (m1, mWboson, mZboson, g, gp, beta, alpha, 'W', CPEMix, nmssmIsIt, 2);
 	  Returns(2) = 1;
 	}
       else if (fabs(m1) >= 2*fabs(mWboson)) {
@@ -11722,7 +11773,7 @@ DoubleVector higgsHamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	amplitudeW = 0;
       }
       else if (fabs(m1) < 2*fabs(mZboson)) {
-	amplitudeW = higgsamplitudedecayVVstar (m1, mZboson, g, gp, beta, alpha, 'Z', CPEMix, nmssmIsIt, 2);
+	  amplitudeW = higgsamplitudedecayVVstar (m1, mWboson, mZboson, g, gp, beta, alpha, 'Z', CPEMix, nmssmIsIt, 2);
 	Returns(2) = 1;
       }
       else if (fabs(m1) >= 2*fabs(mZboson)) {
@@ -11757,7 +11808,7 @@ DoubleVector higgsH3amplitudedecayVVNMSSM(double m1, double mWboson, double mZbo
   for (int i=1; i<=2; i++) {
     Returns(i) = 0;
   }
-  double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp, double beta, double alpha, char Vtype , DoubleMatrix & CPEMix, bool nmssmIsIt, int higgs);
+  double higgsamplitudedecayVVstar (double m1, double mWboson, double mZboson, double g, double gp, double beta, double alpha, char Vtype , DoubleMatrix & CPEMix, bool nmssmIsIt, int higgs);
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, prefactor=0, m2=0, m3=0, massratio=0, coupling = 0;
   if (Vtype == 'W')
     {
@@ -11765,7 +11816,7 @@ DoubleVector higgsH3amplitudedecayVVNMSSM(double m1, double mWboson, double mZbo
 	amplitudeW = 0;
       }
       else if (fabs(m1) < 2*fabs(mWboson)) {
-	amplitudeW = higgsamplitudedecayVVstar (m1, mWboson, g, gp, beta, alpha, 'W', CPEMix, nmssmIsIt, 2);
+	  amplitudeW = higgsamplitudedecayVVstar (m1, mWboson, mZboson, g, gp, beta, alpha, 'W', CPEMix, nmssmIsIt, 2);
 	  Returns(2) = 1;
 	}
       else if (fabs(m1) >= 2*fabs(mWboson)) {
@@ -11791,8 +11842,8 @@ DoubleVector higgsH3amplitudedecayVVNMSSM(double m1, double mWboson, double mZbo
 	amplitudeW = 0;
       }
       else if (fabs(m1) < 2*fabs(mZboson)) {
-	amplitudeW = higgsamplitudedecayVVstar (m1, mZboson, g, gp, beta, alpha, 'Z', CPEMix, nmssmIsIt, 2);
-	Returns(2) = 1;
+	  amplitudeW = higgsamplitudedecayVVstar (m1, mWboson, mZboson, g, gp, beta, alpha, 'Z', CPEMix, nmssmIsIt, 2);
+	  Returns(2) = 1;
       }
       else if (fabs(m1) >= 2*fabs(mZboson)) {
 	m2 = mZboson, m3 = mZboson;
@@ -12507,8 +12558,8 @@ DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4
   double pt = 0, squareplus = 0, squareminus = 0, lambda = 0, A = 0;
   pt = pow(pow(Et,2)-pow(mass2,2),0.5);
   A = pow(mass1,2)+pow(mass2,2)-2*Et*fabs(mass1);
-  squareplus = A - pow(mass3+mass4,2);
-  squareminus = A - pow(mass3-mass4,2);
+  squareplus = A - pow(mass3+fabs(mass4),2);
+  squareminus = A - pow(mass3-fabs(mass4),2);
 
   if (squareplus < 0 && fabs(squareplus) < 1e-8) {
     squareplus = 0; ///Avoid issues of finite precision meaning you get a very small negative squareplus at Amin (smin) rather than 0, this can cause issues when you take the squareroot of lambda, giving a nan
@@ -12625,7 +12676,7 @@ void OutputNoPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the deca
    fout << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
    fout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
    if (P.three_width/P.total_width < BRTol) {
-     fout << left << setw(6) << "#" << setw(18) << "BR" << setw(6) << "NDA" << setw(12) << left << "PDG1" << setw(12) << " PDG2" << setw(30) << "Comments" << "    " << endl;
+     fout << left << setw(6) << "#" << setw(18) << "BR" << setw(6) << "NDA" << setw(12) << left << "PDG1" << setw(10) << " PDG2" << setw(15) << "Comments" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
 	 fout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3];  printRowPDG(fout, P.Array_Decays[k][0]); fout << "   "; printRowPDG(fout, P.Array_Decays[k][1]); fout << "   " << left << setprecision(0) << setw(15) << P.Array_Comments[k] << endl;
@@ -12633,10 +12684,10 @@ void OutputNoPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the deca
      }
    }
    else {
-     fout << left << setw(6) << "#" << setw(18) << "BR" << setw(8) << "NDA" << setw(12) << left << " PDG1" << setw(12) << " PDG2" << setw(12) << " PDG3 " << setw(30) << "Comments" << "     " << endl;
+     fout << left << setw(6) << "#" << setw(18) << "BR" << setw(8) << "NDA" << setw(12) << left << " PDG1" << setw(10) << " PDG2" << setw(12) << " PDG3 " << setw(15) << "Comments" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
-	 fout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(25) << P.Array_Comments[k] << endl;
+	 fout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(15) << P.Array_Comments[k] << endl;
        }
      }
    }
@@ -12650,19 +12701,19 @@ void OutputYesPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the dec
    fout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
 
    if (P.three_width/P.total_width < BRTol || P.three_width == 0) {
-     fout << left << setw(6) << "# " << setw(20) << "BR " << setw(6) << "NDA " << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(30) << "Comments" << "    " << setw(18) << "PW" << endl;
+     fout << left << setw(6) << "# " << setw(20) << "BR " << setw(6) << "NDA " << setw(12) << "PDG1 " << setw(9) << "PDG2" << setw(15) << "Comments" << setw(18) << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
-     	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << " " << P.Array_Decays[k][3] << setw(4) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; fout << left << setprecision(0) << setw(30) << P.Array_Comments[k] << "    " << scientific << setprecision(8) << setw(18) << P.Array_Decays[k][2] << endl;
+     	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << " " << P.Array_Decays[k][3] << setw(4) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; fout << left << setprecision(0) << setw(15) << P.Array_Comments[k] << "    " << scientific << setprecision(8) << setw(18) << P.Array_Decays[k][2] << endl;
        }
      }
      fout << "#" << endl; 
    }
    else {
-     fout << left << setw(6) << "# " << setw(20) << "BR" << setw(6) << "NDA" << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(12) << "PDG3" << setw(35) << "Comments" << "      " << setw(28) << "PW" << endl;
+     fout << left << setw(6) << "# " << setw(20) << "BR" << setw(6) << "NDA" << setw(12) << "PDG1 " << setw(9) << "PDG2" << setw(12) << "PDG3" << setw(15) << "Comments" << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
-     	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(8) << fixed << " " << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(38) << P.Array_Comments[k] << "    "<< setw(18) << scientific << setprecision(8) << P.Array_Decays[k][2] << endl;
+     	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(8) << fixed << " " << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(15) << P.Array_Comments[k] << "    "<< setw(18) << scientific << setprecision(8) << P.Array_Decays[k][2] << endl;
        }
      }
      fout << "#" << endl; 

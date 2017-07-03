@@ -1,3 +1,4 @@
-<li>Fixed erroneous muon Yukawa in delta_vB calculation: less than per mille effects. Thanks to M Back and A Voigt.
-<li>Fixed 2-loop mt threshold corrections: boils down to using running mt in definition of stop mixing in one-loop corrections. Only relevant when --enable-two-loop-gauge-yukawa-compilation is switched on.
-
+<li>higgs->mu mu decays implemented with pole muon mass when the Yukawa coupling is zero
+<li>H->WW* H->ZZ* have prefactors altered to hopefully include more higher order effects 
+<li>Fixed problem that wasn't flagging the non-convergence of the fixed point iteration algorithm: thanks to A Ibrahim for finding it
+<li>Made 0 mixing default (ie no quark mixing, but non-zero masses for second/third family)
