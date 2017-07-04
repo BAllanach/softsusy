@@ -129,21 +129,6 @@ An example point using the high accuracy mode can be run with, for example,
 > ./softpoint.x sugra --tol=1.0e-5 --m0=7240 --m12=800 --a0=-6000 --tanBeta=50 --sgnMu=1 --mt=173.2 --alpha_s=0.1187 --mbmb=4.18 --two-loop-susy-thresholds --three-loop-rges
 See [5] for more details.
 
-LINK TO NMSSMTOOLS
-------------------
-
-To link with NMSSMTools, so that SOFTSUSY NMSSM output can be piped through it
-(to calculate decays, for example), you'll need to download and
-NMSSMTools. Then, you can link it using by running 
-> ./setup_nmssmtools.sh --nmssmtools-dir=/path/to/NMSSMTools --compile 
-After this, there will be an additional executable ./softsusy_nmssmtools.x
-that calculates the spectrum with SOFTSUSY, and decays with NMSSMTools. It can
-be run by (for example): 
-> ./softsusy_nmssmools.x leshouches < inOutFiles/nmssmSLHAnoZ3Input 
-If you use it, you should of course provide the proper citations to
-NMSSMTools. Using the program in this mode, you should make sure in the SLHA
-input file that Block SOFTSUSY variables 15 and 17 are set to 1. 
-
 There are detailed comparisons between SOFTSUSY and other publicly available
 codes in 
         * Precise Determination of the Neutral Higgs Boson Masses in the MSSM,
@@ -191,6 +176,27 @@ INPUT AND INFO FILES
     * [inOutFiles/rpvHouchesOutput] is the output from the R-parity violating
     test program rpvmain.cpp
     
+LINK TO NMSSMTOOLS
+------------------
+
+This feature is now deprecated, but I have included instructions for SOFTSUSY
+authors. Users may ignore this. 
+To link with NMSSMTools, so that SOFTSUSY NMSSM output can be piped through it
+(to calculate decays, for example), you'll need to download 
+NMSSMTools4.2.1. Then, you can link it using by running 
+> ./setup_nmssmtools.sh --nmssmtools-dir=/path/to/NMSSMTools --compile 
+After this, there will be an additional executable ./softsusy_nmssmtools.x
+that calculates the spectrum with SOFTSUSY, and decays with NMSSMTools. It can
+be run by (for example): 
+> ./softsusy_nmssmools.x leshouches < inOutFiles/nmssmSLHAnoZ3Input 
+If you use it, you should of course provide the proper citations to
+NMSSMTools. Using the program in this mode, you should make sure in the SLHA
+input file that Block SOFTSUSY variables 15 and 17 are set to 1.
+Other files that you need (and are not currently in the SOFTSUSY public
+distribution) are: setup_nmssmtools.sh, softsusy_nmssmtools.x.in,
+NMSSMTools_4.2.1.tgz, Makefile.nmssmtools
+
+
 LICENSE
 -------
 
