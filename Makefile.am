@@ -14,7 +14,7 @@ include doc/doc.amk
 include inOutFiles/inOut.amk
 
 dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh \
-Makefile.nmssmtools CHANGES GUIDELINES COPYING $(DOCFILES) 
+NMSSMTools_4.2.1.tgz Makefile.nmssmtools CHANGES GUIDELINES COPYING $(DOCFILES) 
 
 CLEANFILES += $(OUTPUTFILES) *.x
 
