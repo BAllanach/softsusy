@@ -319,21 +319,21 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
  // double gAtMH = nmssmrun.displayGaugeCoupling(2);
 
  ///If yukawa matrix elements are 0 (can occur if only include mixing in third generation in softsusy spectrum generator) then use a non-zero mass - avoids issues of inf in foftau for loop decays!
- if (mbAtMH3 == 0) {mbAtMH3 = mb;}
- if (mtAtMH3 == 0) {mtAtMH3 = mt;}
- if (mcAtMH3 == 0) {mcAtMH3 = mc;}
- // if (msAtMH3 == 0) {msAtMH3 = ms;}
- if (mbAtMH == 0) {mbAtMH = mb;}
- if (mtAtMH == 0) {mtAtMH = mt;}
- if (mcAtMH == 0) {mcAtMH = mc;}
- if (msAtMH == 0) {msAtMH = ms;}
- if (mbAtMA2 == 0) {mbAtMA2 = mb;}
- if (mtAtMA2 == 0) {mtAtMA2 = mt;}
- if (mcAtMA2 == 0) {mcAtMA2 = mc;}
- if (mbAtMA == 0) {mbAtMA = mb;}
- if (mtAtMA == 0) {mtAtMA = mt;}
- if (mcAtMA == 0) {mcAtMA = mc;}
- if (msAtMA == 0) {msAtMA = ms;}
+ if (mbAtMH3 < 1.0e-66) {mbAtMH3 = mb;}
+ if (mtAtMH3 < 1.0e-66) {mtAtMH3 = mt;}
+ if (mcAtMH3 < 1.0e-66) {mcAtMH3 = mc;}
+ // if (msAtMH3 < 1.0e-66) {msAtMH3 = ms;}
+ if (mbAtMH < 1.0e-66) {mbAtMH = mb;}
+ if (mtAtMH < 1.0e-66) {mtAtMH = mt;}
+ if (mcAtMH < 1.0e-66) {mcAtMH = mc;}
+ if (msAtMH < 1.0e-66) {msAtMH = ms;}
+ if (mbAtMA2 < 1.0e-66) {mbAtMA2 = mb;}
+ if (mtAtMA2 < 1.0e-66) {mtAtMA2 = mt;}
+ if (mcAtMA2 < 1.0e-66) {mcAtMA2 = mc;}
+ if (mbAtMA < 1.0e-66) {mbAtMA = mb;}
+ if (mtAtMA < 1.0e-66) {mtAtMA = mt;}
+ if (mcAtMA < 1.0e-66) {mcAtMA = mc;}
+ if (msAtMA < 1.0e-66) {msAtMA = ms;}
 
 ///For mh should not use full susy running as susy not around this scale, instead use SM running as in QeDQcD object defined in lowe.h:
  QedQcd a(nmssmrun.displayDataSet());
@@ -481,14 +481,14 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
     msAtMH = pow(2,0.5)*polemw*cos(beta)*r->displayYukawaMatrix(YD)(2,2)/r->displayGaugeCoupling(2);
     
     ///If yukawa matrix elements are 0 (can get if set mixing to 0 in softsusy spectrum generator) then use a non-zero mass - otherwise get inf issue in foftau function for loop decays!
-    if (mbAtMH == 0) {mbAtMH = mb;}
-    if (mtAtMH == 0) {mtAtMH = mt;}
-    if (mcAtMH == 0) {mcAtMH = mc;}
-    if (msAtMH == 0) {msAtMH = ms;}
-    if (mbAtMA == 0) {mbAtMA = mb;}
-    if (mtAtMA == 0) {mtAtMA = mt;}
-    if (mcAtMA == 0) {mcAtMA = mc;}
-    if (msAtMA == 0) {msAtMA = ms;}
+    if (mbAtMH < 1.0e-66) {mbAtMH = mb;}
+    if (mtAtMH < 1.0e-66) {mtAtMH = mt;}
+    if (mcAtMH < 1.0e-66) {mcAtMH = mc;}
+    if (msAtMH < 1.0e-66) {msAtMH = ms;}
+    if (mbAtMA < 1.0e-66) {mbAtMA = mb;}
+    if (mtAtMA < 1.0e-66) {mtAtMA = mt;}
+    if (mcAtMA < 1.0e-66) {mcAtMA = mc;}
+    if (msAtMA < 1.0e-66) {msAtMA = ms;}
     
     ///For mh should not use full susy running as susy not around this scale, instead use SM running as in QeDQcD object defined in lowe.h:
     QedQcd a(r->displayDataSet());
