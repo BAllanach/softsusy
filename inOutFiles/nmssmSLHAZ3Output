@@ -203,7 +203,7 @@ Block smumix               # smuon mixing matrix
 # No 1to3 decays included in NMSSM - therefore onetothree set to false
 #     PDG         Width             
 DECAY 1000021     1.31529245e+00   # Gluino decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       1.62019949e-01    2      5         -1000005   # ~g -> b ~b_1*
       1.62019949e-01    2     -5          1000005   # ~g -> bb ~b_1
       3.37980051e-01    2      6         -1000006   # ~g -> t ~t_1*
@@ -211,7 +211,7 @@ DECAY 1000021     1.31529245e+00   # Gluino decays
 #
 #     PDG         Width             
 DECAY 1000001     7.91136132e+00   # SdownL decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       3.41068290e-02    2      1          1000021   # ~d_L -> d ~g 
       5.90024952e-01    2      2         -1000024   # ~d_L -> u ~chi_1-
       4.14667916e-02    2      2         -1000037   # ~d_L -> u ~chi_2-
@@ -223,7 +223,7 @@ DECAY 1000001     7.91136132e+00   # SdownL decays
 #
 #     PDG         Width             
 DECAY 2000001     4.25701577e-01   # SdownR decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       4.58187421e-02    2      1          1000021   # ~d_R -> d ~g 
       9.44411689e-01    2      1          1000022   # ~d_R -> d ~chi_10
       4.47425703e-03    2      1          1000023   # ~d_R -> d ~chi_20
@@ -233,7 +233,7 @@ DECAY 2000001     4.25701577e-01   # SdownR decays
 #
 #     PDG         Width             
 DECAY 1000002     8.01726974e+00   # SupL decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       2.55573795e-02    2      2          1000021   # ~u_L -> u ~g 
       6.30260973e-01    2      1          1000024   # ~u_L -> d ~chi_1+
       1.40879358e-02    2      1          1000037   # ~u_L -> d ~chi_2+
@@ -245,7 +245,7 @@ DECAY 1000002     8.01726974e+00   # SupL decays
 #
 #     PDG         Width             
 DECAY 2000002     1.64939418e+00   # SupR decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       1.39412489e-02    2      2          1000021   # ~u_R -> u ~g 
       9.75951205e-01    2      2          1000022   # ~u_R -> u ~chi_10
       4.62488524e-03    2      2          1000023   # ~u_R -> u ~chi_20
@@ -255,7 +255,7 @@ DECAY 2000002     1.64939418e+00   # SupR decays
 #
 #     PDG         Width             
 DECAY 1000003     7.91126786e+00   # SstrangeL decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       3.41013137e-02    2      3          1000021   # ~s_L -> s ~g 
       5.90028242e-01    2      4         -1000024   # ~s_L -> c ~chi_1-
       4.14667107e-02    2      4         -1000037   # ~s_L -> c ~chi_2-
@@ -267,7 +267,7 @@ DECAY 1000003     7.91126786e+00   # SstrangeL decays
 #
 #     PDG         Width             
 DECAY 2000003     4.25686756e-01   # SstrangeR decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       4.57891450e-02    2      3          1000021   # ~s_R -> s ~g 
       9.44441026e-01    2      3          1000022   # ~s_R -> s ~chi_10
       4.47439155e-03    2      3          1000023   # ~s_R -> s ~chi_20
@@ -277,7 +277,7 @@ DECAY 2000003     4.25686756e-01   # SstrangeR decays
 #
 #     PDG         Width             
 DECAY 1000004     8.01712234e+00   # ScharmL decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       2.55447751e-02    2      4          1000021   # ~c_L -> c ~g 
       6.30269571e-01    2      3          1000024   # ~c_L -> s ~chi_1+
       1.40880409e-02    2      3          1000037   # ~c_L -> s ~chi_2+
@@ -289,7 +289,7 @@ DECAY 1000004     8.01712234e+00   # ScharmL decays
 #
 #     PDG         Width             
 DECAY 2000004     1.64930352e+00   # ScharmR decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       1.38927766e-02    2      4          1000021   # ~c_R -> c ~g 
       9.75999243e-01    2      4          1000022   # ~c_R -> c ~chi_10
       4.62510662e-03    2      4          1000023   # ~c_R -> c ~chi_20
@@ -299,7 +299,7 @@ DECAY 2000004     1.64930352e+00   # ScharmR decays
 #
 #     PDG         Width             
 DECAY 1000005     9.70837636e+00   # Sbottom1 decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       3.29762336e-01    2      6         -1000024   # ~b_1 -> t ~chi_1-
       2.46191773e-01    2      6          1000037   # ~b_1 -> t ~-chi_2-
       1.87970755e-01    2     -24         1000006   # ~b_1 -> W- ~t_1
@@ -311,7 +311,7 @@ DECAY 1000005     9.70837636e+00   # Sbottom1 decays
 #
 #     PDG         Width             
 DECAY 2000005     1.00441096e+00   # Sbottom2 decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       2.26196268e-02    2      6         -1000024   # ~b_2 -> t ~chi_1-
       2.88116909e-01    2      6         -1000037   # ~b_2 -> t ~chi_2-
       1.39392154e-01    2     -24         1000006   # ~b_2 -> W- ~t_1
@@ -323,7 +323,7 @@ DECAY 2000005     1.00441096e+00   # Sbottom2 decays
 #
 #     PDG         Width             
 DECAY 1000006     2.96036529e+00   # Stop1 decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       4.97050247e-01    2      5          1000024   # ~t_1 -> b ~chi_1+
       1.05460598e-01    2      5          1000037   # ~t_1 -> b ~chi_2+
       2.43766606e-01    2      6          1000022   # ~t_1 -> t ~chi_10
@@ -331,7 +331,7 @@ DECAY 1000006     2.96036529e+00   # Stop1 decays
 #
 #     PDG         Width             
 DECAY 2000006     1.22664804e+01   # Stop2 decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       2.15913327e-01    2      5          1000024   # ~t_2 -> b ~chi_1+
       1.35228270e-01    2      5          1000037   # ~t_2 -> b ~chi_2+
       6.41683492e-02    2      25         1000006   # ~t_2 -> h ~t_1
@@ -344,7 +344,7 @@ DECAY 2000006     1.22664804e+01   # Stop2 decays
 #
 #     PDG         Width             
 DECAY 1000011     3.28812991e+00   # SelectronL decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       5.55244419e-01    2      12        -1000024   # ~e_L -> nu_e ~chi_1-
       1.30092750e-01    2      11         1000022   # ~e_L -> e- ~chi_10
       3.14660134e-01    2      11         1000023   # ~e_L -> e- ~chi_20
@@ -352,13 +352,13 @@ DECAY 1000011     3.28812991e+00   # SelectronL decays
 #
 #     PDG         Width             
 DECAY 2000011     1.79666427e+00   # SelectronR decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       9.96767665e-01    2      11         1000022   # ~e_R -> e- ~chi_10
       3.23233520e-03    2      11         1000023   # ~e_R -> e- ~chi_20
 #
 #     PDG         Width             
 DECAY 1000013     3.28813629e+00   # SmuonL decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       5.55244530e-01    2      14        -1000024   # ~mu_L -> nu_mu ~chi_1-
       1.30092637e-01    2      13         1000022   # ~mu_L -> mu- ~chi_10
       3.14660137e-01    2      13         1000023   # ~mu_L -> mu- ~chi_20
@@ -366,13 +366,13 @@ DECAY 1000013     3.28813629e+00   # SmuonL decays
 #
 #     PDG         Width             
 DECAY 2000013     1.79651653e+00   # SmuonR decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       9.96767915e-01    2      13         1000022   # ~mu_R -> mu- ~chi_10
       3.23208520e-03    2      13         1000023   # ~mu_R -> mu- ~chi_20
 #
 #     PDG         Width             
 DECAY 1000012     3.30467040e+00   # Selectron sneutrino decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       5.79186526e-01    2      11         1000024   # ~nu_eL -> e- ~chi_1+
       1.67120383e-01    2      12         1000022   # ~nu_eL -> nu_e ~chi_10
       2.53691741e-01    2      12         1000023   # ~nu_eL -> nu_e ~chi_20
@@ -380,7 +380,7 @@ DECAY 1000012     3.30467040e+00   # Selectron sneutrino decays
 #
 #     PDG         Width             
 DECAY 1000014     3.30454063e+00   # Smuon sneutrino decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       5.79184634e-01    2      13         1000024   # ~nu_muL -> mu- ~chi_1+
       1.67123070e-01    2      14         1000022   # ~nu_muL -> nu_mu ~chi_10
       2.53690953e-01    2      14         1000023   # ~nu_muL -> nu_mu ~chi_20
@@ -388,14 +388,14 @@ DECAY 1000014     3.30454063e+00   # Smuon sneutrino decays
 #
 #     PDG         Width             
 DECAY 1000015     1.89114059e+00   # Stau1 decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       7.45396296e-02    2      16         1000024   # ~tau_1- -> nu_tau ~chi_1-
       8.82503288e-01    2      15         1000022   # ~tau_1- -> tau- ~chi_10
       4.29570822e-02    2      15         1000023   # ~tau_1- -> tau- ~chi_20
 #
 #     PDG         Width             
 DECAY 2000015     3.11739582e+00   # Stau2 decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       5.31030599e-01    2      16         1000024   # ~tau_2- -> nu_tau ~chi_1-
       1.65699999e-01    2      15         1000022   # ~tau_2- -> tau- ~chi_10
       3.03229392e-01    2      15         1000023   # ~tau_2- -> tau- ~chi_20
@@ -403,19 +403,19 @@ DECAY 2000015     3.11739582e+00   # Stau2 decays
 #
 #     PDG         Width             
 DECAY 1000016     3.27198445e+00   # Stau sneutrino decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       1.67591562e-01    2      16         1000022   # ~nu_tauL -> nu_tau ~chi_10
       2.52903216e-01    2      16         1000023   # ~nu_tauL -> nu_tau ~chi_20
       5.79505103e-01    2      15         1000024   # ~nu_tauL -> tau- ~chi_1+
 #
 #     PDG         Width             
 DECAY 1000024     5.56147616e-03   # Chargino 1+ (lightest) decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       1.00000000e+00    2      24         1000022   # ~chi_1+ -> W+ ~chi_10
 #
 #     PDG         Width             
 DECAY 1000037     2.55579036e+00   # Chargino 2+ (heaviest) decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       9.41609643e-05    2      1000012   -11        # ~chi_2+ -> e+ ~nu_eL
       4.85131821e-05    2     -1000011    12        # ~chi_2+ -> nu_e ~e_L+
       9.42720829e-05    2      1000014   -13        # ~chi_2+ -> mu+ ~nu_muL
@@ -430,16 +430,16 @@ DECAY 1000037     2.55579036e+00   # Chargino 2+ (heaviest) decays
 #
 #     PDG         Width             
 DECAY 1000022     0.00000000e+00   # Neutralino1 decays
-#     BR                NDA      PDG1        PDG2      PDG3       Comments       
+#     BR                NDA      PDG1        PDG2        PDG3       Comments                           
 #
 #     PDG         Width             
 DECAY 1000023     8.02606993e-04   # Neutralino2 decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       1.00000000e+00    2      23         1000022   # ~chi_20 -> Z ~chi_10
 #
 #     PDG         Width             
 DECAY 1000025     2.45584360e+00   # Neutralino3 decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       1.02720401e-05    2     -11         2000011   # ~chi_30 -> e+ ~e_R-
       1.02720401e-05    2      11        -2000011   # ~chi_30 -> e- ~e_R+
       1.02958259e-05    2     -13         2000013   # ~chi_30 -> mu+ ~mu_R-
@@ -455,7 +455,7 @@ DECAY 1000025     2.45584360e+00   # Neutralino3 decays
 #
 #     PDG         Width             
 DECAY 1000035     2.56824096e+00   # Neutralino4 decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       3.76572063e-06    2     -11         1000011   # ~chi_40 -> e+ ~e_L-
       1.04450271e-04    2     -11         2000011   # ~chi_40 -> e+ ~e_R-
       3.76572063e-06    2      11        -1000011   # ~chi_40 -> e ~e_L+
@@ -483,7 +483,7 @@ DECAY 1000035     2.56824096e+00   # Neutralino4 decays
 #
 #     PDG         Width             
 DECAY 1000045     3.70737304e-02   # Neutralino5 decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       7.34119539e-04    2     -11         1000011   # ~chi_50 -> e+ ~e_L-
       3.66392685e-04    2     -11         2000011   # ~chi_50 -> e+ ~e_R-
       7.34119539e-04    2      11        -1000011   # ~chi_50 -> e ~e_L+
@@ -515,65 +515,65 @@ DECAY 1000045     3.70737304e-02   # Neutralino5 decays
       8.75248809e-04    2      25         1000025   # ~chi_50 -> h ~chi_30
 #
 #     PDG         Width             
-DECAY 25          4.24179265e-03   # light higgs decays
-#     BR                NDA   PDG1         PDG2     Comments       
-      4.52424823e-02    2      4         -4         # h -> c cb    
-      3.28449780e-04    2      3         -3         # h -> s sb    
-      8.41047137e-01    2      5         -5         # h -> b bb    
-      1.82452101e-04    2      13        -13        # h -> mu- mu+ 
-      5.57809617e-02    2      15        -15        # h-> tau- tau+
-      1.32794440e-03    2      22         22        # h -> gamma gamma
-      4.24886673e-02    2      21         21        # h -> gluon gluon
-      1.42176318e-04    2      23         22        # h -> Z gamma 
-      1.30261681e-02    2      24        -24        # h -> WW* -> W f f'bar
-      4.33556461e-04    2      23         23        # h -> ZZ* -> Z f f'bar
+DECAY 25          4.23809621e-03   # light higgs decays
+#     BR                NDA   PDG1         PDG2       Comments                          
+      4.52819425e-02    2      4         -4         # h -> c cb    
+      3.28736251e-04    2      3         -3         # h -> s sb    
+      8.41780693e-01    2      5         -5         # h -> b bb    
+      1.82611235e-04    2      13        -13        # h -> mu- mu+ 
+      5.58296135e-02    2      15        -15        # h-> tau- tau+
+      1.32910262e-03    2      22         22        # h -> gamma gamma
+      4.23181600e-02    2      21         21        # h -> gluon gluon
+      1.42300323e-04    2      23         22        # h -> Z gamma 
+      1.23943105e-02    2      24        -24        # h -> WW* -> W f f'bar
+      4.12526029e-04    2      23         23        # h -> ZZ* -> Z f f'bar
 #
 #     PDG         Width             
-DECAY 35          3.05365469e-01   # heavy higgs decays
-#     BR                NDA   PDG1         PDG2     Comments       
-      8.56373684e-06    2      4         -4         # H -> c cb    
-      3.55618124e-06    2      3         -3         # H -> s sb    
-      9.24795852e-03    2      5         -5         # H -> b bb    
-      1.30240025e-01    2      6         -6         # H -> t tb    
-      2.44891608e-06    2      13        -13        # H -> mu- mu+ 
-      7.49924533e-04    2      15        -15        # H -> tau- tau+
-      1.24130682e-04    2      1000022    1000022   # H -> ~chi_10 ~chi_10
-      3.73496526e-04    2      1000022    1000023   # H -> ~chi_10 ~chi_20
-      4.77777650e-05    2      1000023    1000023   # H -> ~chi_20 ~chi_20
-      1.15886781e-04    2      1000024   -1000024   # H -> ~chi_1+ ~chi_1-
-      2.46562074e-01    2      25         25        # H -> h h     
-      3.91501076e-04    2      21         21        # H -> gluon gluon
-      1.10667634e-05    2      23         22        # H -> Z gamma 
-      4.14671458e-01    2      24        -24        # H -> W+ W-   
-      1.97449633e-01    2      23        -23        # H -> Z Z     
+DECAY 35          3.05363650e-01   # heavy higgs decays
+#     BR                NDA   PDG1         PDG2       Comments                          
+      8.56378784e-06    2      4         -4         # H -> c cb    
+      3.55620242e-06    2      3         -3         # H -> s sb    
+      9.24801359e-03    2      5         -5         # H -> b bb    
+      1.30240801e-01    2      6         -6         # H -> t tb    
+      2.44893066e-06    2      13        -13        # H -> mu- mu+ 
+      7.49928999e-04    2      15        -15        # H -> tau- tau+
+      1.24131421e-04    2      1000022    1000022   # H -> ~chi_10 ~chi_10
+      3.73498751e-04    2      1000022    1000023   # H -> ~chi_10 ~chi_20
+      4.77780496e-05    2      1000023    1000023   # H -> ~chi_20 ~chi_20
+      1.15887471e-04    2      1000024   -1000024   # H -> ~chi_1+ ~chi_1-
+      2.46563542e-01    2      25         25        # H -> h h     
+      3.89464306e-04    2      21         21        # H -> gluon gluon
+      7.15074987e-06    2      23         22        # H -> Z gamma 
+      4.14673927e-01    2      24        -24        # H -> W+ W-   
+      1.97450809e-01    2      23        -23        # H -> Z Z     
 #
 #     PDG         Width             
-DECAY 45          2.28248855e+00   # NMSSM third scalar higgs decays
-#     BR                NDA   PDG1         PDG2     Comments       
-      4.36070814e-06    2      4         -4         # H3 -> c cb   
-      2.16537721e-04    2      3         -3         # H3 -> s sb   
-      6.29017721e-01    2      5         -5         # H3 -> b bb   
-      1.08099396e-01    2      6         -6         # H3 -> t tb   
-      1.74671126e-04    2      13        -13        # H3 -> mu- mu+
-      5.34908292e-02    2      15        -15        # H3 -> tau- tau+
-      8.04972771e-03    2      1000022    1000022   # H3 -> ~chi_10 ~chi_10
-      3.47023655e-02    2      1000022    1000023   # H3 -> ~chi_10 ~chi_20
-      5.48384892e-02    2      1000022    1000025   # H3 -> ~chi_10 ~chi_30
-      3.54578377e-03    2      1000022    1000035   # H3 -> ~chi_10 ~chi_40
-      2.84247754e-02    2      1000023    1000023   # H3 -> ~chi_20 ~chi_20
-      6.87274681e-02    2      1000024   -1000024   # H3 -> ~chi_1+ ~chi_1-
-      2.34353574e-03    2      25         25        # H3 -> h h    
-      3.64322212e-03    2      36         23        # H3 -> A Z    
-      4.25897701e-06    2      22         22        # H3 -> gamma gamma
-      3.90740723e-04    2      21         21        # H3 -> gluon gluon
-      1.05463124e-05    2      23         22        # H3 -> Z gamma
-      9.76716402e-04    2      24        -24        # H3 -> W+ W-  
-      4.73995955e-04    2      23        -23        # H3 -> Z Z    
-      2.86485373e-03    2      25         35        # H3 -> h H    
+DECAY 45          2.28245365e+00   # NMSSM third scalar higgs decays
+#     BR                NDA   PDG1         PDG2       Comments                          
+      4.36077483e-06    2      4         -4         # H3 -> c cb   
+      2.16541033e-04    2      3         -3         # H3 -> s sb   
+      6.29027341e-01    2      5         -5         # H3 -> b bb   
+      1.08101049e-01    2      6         -6         # H3 -> t tb   
+      1.74673798e-04    2      13        -13        # H3 -> mu- mu+
+      5.34916473e-02    2      15        -15        # H3 -> tau- tau+
+      8.04985081e-03    2      1000022    1000022   # H3 -> ~chi_10 ~chi_10
+      3.47028962e-02    2      1000022    1000023   # H3 -> ~chi_10 ~chi_20
+      5.48393278e-02    2      1000022    1000025   # H3 -> ~chi_10 ~chi_30
+      3.54583799e-03    2      1000022    1000035   # H3 -> ~chi_10 ~chi_40
+      2.84252101e-02    2      1000023    1000023   # H3 -> ~chi_20 ~chi_20
+      6.87285191e-02    2      1000024   -1000024   # H3 -> ~chi_1+ ~chi_1-
+      2.34357158e-03    2      25         25        # H3 -> h h    
+      3.64327783e-03    2      36         23        # H3 -> A Z    
+      4.25904214e-06    2      22         22        # H3 -> gamma gamma
+      3.75379565e-04    2      21         21        # H3 -> gluon gluon
+      1.06208267e-05    2      23         22        # H3 -> Z gamma
+      9.76731339e-04    2      24        -24        # H3 -> W+ W-  
+      4.74003204e-04    2      23        -23        # H3 -> Z Z    
+      2.86489754e-03    2      25         35        # H3 -> h H    
 #
 #     PDG         Width             
 DECAY 36          1.93102521e-02   # pseudoscalar higgs decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       3.39070232e-06    2      4         -4         # A -> c cb    
       2.05041681e-04    2      3         -3         # A -> s sb    
       5.38925723e-01    2      5         -5         # A -> b bb    
@@ -591,7 +591,7 @@ DECAY 36          1.93102521e-02   # pseudoscalar higgs decays
 #
 #     PDG         Width             
 DECAY 46          2.75886416e+00   # NMSSM second pseudoscalar higgs decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       3.21475715e-06    2      4         -4         # A2 -> c cb   
       1.78200921e-04    2      3         -3         # A2 -> s sb   
       5.17972392e-01    2      5         -5         # A2 -> b bb   
@@ -613,7 +613,7 @@ DECAY 46          2.75886416e+00   # NMSSM second pseudoscalar higgs decays
 #
 #     PDG         Width             
 DECAY 37          3.13801231e+00   # Charged higgs+ decays
-#     BR                NDA   PDG1         PDG2     Comments       
+#     BR                NDA   PDG1         PDG2       Comments                          
       1.13080049e-04    2      4         -3         # H+ -> c sb   
       8.68238391e-01    2      6         -5         # H+ -> t bb   
       1.31949353e-04    2      14        -13        # H+ -> mu+ nu_mu
