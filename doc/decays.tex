@@ -979,7 +979,8 @@ output for this SM-like Higgs are given in Figure~\ref{h0SMBRsbarplot}.
 In order to provide a qualitative demonstration that the decay calculator is
 functioning correctly one may also scan the mass of the decaying particle and
 investigate how the partial widths and branching ratios change. 
-Figure~\ref{h0scancomp} shows how the branching ratios of an SM-like Higgs change as its
+Figure~\ref{h0scancomp} shows how the branching ratios of a SM-like Higgs
+change as its 
 mass is scanned from the $Z^0$ boson mass up to $200$ GeV as calculated in
 $(a)$ {\tt 
   SOFTSUSY} and in $(b)$ a well-known plot produced by the LHC Higgs Cross
@@ -989,7 +990,7 @@ Section Working Group \cite{Denner:2011} in 2011.
   \subfloat[{\tt SOFTSUSY}]{\includegraphics[height = 10cm]{figure2}\label{fig:f1}}
   \hfill
   \subfloat[LHC Higgs Cross-Section Working Group]{\includegraphics[height = 10cm]{higgscommonresultdecays.jpeg}\label{fig:f2}}
-  \caption{Branching ratios for an SM(-like) Higgs as calculated in (a) by {\tt SOFTSUSY} and in (b) by the LHC Higgs Cross-Section Working Group in \cite{Denner:2011}. This demonstrates a verification of the partial widths output by {\tt SOFTSUSY}.} \label{h0scancomp}
+  \caption{Branching ratios for a SM(-like) Higgs as calculated in (a) by {\tt SOFTSUSY} and in (b) by the LHC Higgs Cross-Section Working Group in \cite{Denner:2011}. This demonstrates a verification of the partial widths output by {\tt SOFTSUSY}.} \label{h0scancomp}
 \end{figure} 
 This shows good level of agreement, with small differences due to effects
 detailed previously in the quantitative comparison at $m_h = 125$ GeV. 
@@ -1124,7 +1125,17 @@ PW/GeV & BR & PW/GeV & BR & \\ \hline
 1.81e-05 & 1.42e-03 & 1.77e-05 & 1.42e-03 & $\tilde{g} \rightarrow \tilde{Z}_3 b \bar{b}$ \\ \hline
 3.18e-05 & 2.50e-03 & 3.24e-05 & 2.60e-03 & $\tilde{g} \rightarrow \tilde{Z}_4 b \bar{b}$ \\  \hline
 \end{tabular}
-\caption{The $\tilde{g}$ decay partial widths and branching ratios to $\tilde{Z}_i b \bar{b}$ as output by {\tt SOFTSUSY} with \code{runmb} taken so that the $b$ Yukawa coupling in {\tt SOFTSUSY} matches that in {\tt sPHENO}. These decays showed significant differences between the two programs, particularly for $\tilde{Z}_3$ and $\tilde{Z}_4$, see Table~\ref{gluino3bodycomp}. The agreement is now much improved, demonstrating that the differences result from a choice of the running $b$ mass \code{runmb} and hence in the Yukawa coupling. This again used the parameters from {\tt sPHENO}'s spectrum file directly in the {\tt SOFTSUSY} decay calculator, with the addition relative to Table~\ref{gluino3bodycomp} of {\tt sPHENO}'s running $b$ mass.}
+\caption{The $\tilde{g}$ decay partial widths and branching ratios to
+  $\tilde{Z}_i b \bar{b}$ as output by {\tt SOFTSUSY} with \code{runmb} taken
+  so that the $b$ Yukawa coupling in {\tt SOFTSUSY} matches that in {\tt
+    sPHENO}. These decays showed significant differences between the two
+  programs, particularly for $\tilde{Z}_3$ and $\tilde{Z}_4$, see
+  Table~\ref{gluino3bodycomp}. The agreement is now much improved,
+  demonstrating that the differences result from a choice of the running $b$
+  mass \code{runmb} and hence in the Yukawa coupling. This again used the
+  parameters from {\tt sPHENO}'s spectrum file directly in the {\tt SOFTSUSY}
+  decay calculator, with the addition relative to Table~\ref{gluino3bodycomp}
+  of {\tt sPHENO}'s running $b$ mass.} 
 \label{glutoneutbbnewyuk}
 \end{table}
 \end{center}
@@ -1150,71 +1161,127 @@ calculator to determine their partial widths are also provided.
   level modes is clearly evident in the sudden drop in the 3 body branching ratios once the first 2 body mode $\tilde{g} \rightarrow \tilde{t}_1 t$ is kinematically available. Note the ``$g$" indicated in the plot are $\tilde{g}$ (i.e.\ gluinos), whilst ``$Z_i$" are $\tilde{Z}_i$ (i.e.\ neutralinos) and ``$W_j$" are $\tilde{W}_j$ (i.e.\ charginos). ``st" indicates stops $\tilde{t}_i$, ``sb" indicate sbottoms $\tilde{b}_i$, ``sq" are $\tilde{q}$ squarks of the first two generations and ``$q$" here are quarks of the first two generations. } \label{gluino3body}
 \end{figure}        
 
-\subsection{NMSSM Decays - $H_3$}
+\subsection{NMSSM Decays - $H$}
 
 Similar detailed checks to those above were performed in the NMSSM fields'
 sector and 
 we provide some 
-details here. For example, in Table~\ref{nmssmSLHAnoZ3Inputspctable} we
-present a quantitative comparison of the decays of the heaviest neutral CP
-even Higgs of the NMSSM, the $H3$, for the parameter space point {\tt nmssmSLHAnoZ3Input} provided with
-the {\tt SOFTSUSY} package. The spectrum is given in
+details here. In Table~\ref{nmssmSLHAnoZ3Inputspctable} we
+present a quantitative comparison of the decays of the second heaviest neutral
+CP 
+even Higgs of the NMSSM, the $H$. The spectrum is given in
 Figure~\ref{nmssmSLHAnoZ3Inputspectrum} with decay modes of branching ratios
-(BRs) greater than $10^{-6}$ indicated by arrows, with thicker, bolder arrows
-representing larger BRs. It should be noted that for this parameter point it
-is actually the second heaviest of the CP even neutral Higgs bosons which
-is most NMSSM singlet-like, meanwhile the $\tilde{Z}_3$ is dominantly the singlino.
-Decays involving the $H$ and $\tilde{Z}_3$ here are therefore most specific to 
-the NMSSM\@. Validation was of course carried out for all the particle decays of
-the extended Higgs and Neutralino sectors, we just provide that of the $H3$ here.
-The comparison in Table~\ref{nmssmSLHAnoZ3Inputspctable} demonstrates that the level of
-agreement is usually better than $10\%$ and generally around $5\%$ with the
+(BRs) greater than $0.1$ indicated by arrows, with thicker, bolder arrows
+representing larger BRs. For this parameter point, $H$ is the CP even Higgs
+which has the largest singlet component. Although validation was carried out
+for all the 
+particle decays of 
+the extended Higgs and neutralinos, for brevity we just provide that of the
+$H$ here. 
+The comparison in Table~\ref{nmssmSLHAnoZ3Inputspctable} demonstrates that the
+level of 
+agreement is usually better than $10\%$ with the
 exception of a few of the decay modes. The decay modes which show larger
-differences are the decays to quarks, 1-loop decays and the decays to two
-vector bosons. For the decays to quarks and the 1-loop decay to $gg$, there are differences in the value of $\alpha_s$ between {\tt SOFTSUSY} and {\tt NMSSMTools} which explain the
-majority of the differences observed (with remaining small input differences
-explaining the remaining difference). {\tt SOFTSUSY} and {\tt  NMSSMTools} both run the gauge couplings to the 
-scale of the $H3$ however there are differences in the running order and scheme; {\tt SOFTSUSY} matches at $m_Z$ and then runs $\alpha_s$ in the full NMSSM at 2-loops with 1-loop threshold corrections at $m_Z$. Similarly for the case 
-of the decay to $\gamma\gamma$ there are differences in the $\alpha$ values obtained by the two programs in running to $m_{H3}$, however now there are also further differences as {\tt SOFTSUSY} also runs the quark masses to $m_{H3}$ for the $\gamma\gamma$ case whereas {\tt NMSSMTools} does not. The exact values of the gauge couplings and quark 
-masses in the two programs are given in the caption to Table~\ref{nmssmSLHAnoZ3Inputspctable}.
-Significantly improved agreement is seen in
-Table~\ref{nmssmSLHAnoZ3Inputspctable} when the {\tt NMSSMTools} values of
-masses and 
-coupling constants are taken within {\tt SOFTSUSY}, in this case the
-disagreement between the programs is then back to less than $5\%$. In decays
-to vector bosons the large differences observed (shown in bold) 
-are a consequence of a delicate cancellation in the coupling at this parameter
-point which means small input parameter differences result in large
-differences in the coupling and so cause consequent large differences in the
-output partial widths, which are proportional to the coupling squared. The
-differences between the two programs here can therefore be interpreted as an
-indication of a large theoretical error in the calculation at this parameter
-point and at this level of accuracy. 
+differences are the decays to "down-type" fermions, i.e. fermions with third
+component of weak isospin $T_3 = -{1 \over 2}$ and the 1-loop decay to two
+photons $H \rightarrow \gamma \gamma$. 
+Note that the decays to quarks and to two
+gluons here show good agreement with {\tt NMSSMTools}: the scale of the
+decaying 
+Higgs $m_H = 519.3$ GeV is relatively close to $M_{SUSY} =
+\sqrt{m_{\tilde{t}_1}m_{\tilde{t}_2}} = 675.5$ GeV so any differences in the
+running between the two programs have little effect. 
+{\tt SOFTSUSY} and {\tt
+  NMSSMTools} both run the gauge couplings to $m_H$: however there are
+potential differences in the running order and 
+scheme. {\tt SOFTSUSY} matches at $m_Z$ and then runs $\alpha_s$ in the full
+NMSSM at 2-loops with 1-loop threshold corrections at $m_Z$. 
+For the case of
+the decays $H \rightarrow s \bar{s}$, $b \bar{b}$, $\mu^+ \mu^-$ and $\tau^+
+\tau^-$, differences are seen between the default {\tt SOFTSUSY} 
+partial widths and those of {\tt NMSSMTools}. Some of these differences can be
+explained by the use of different values for the masses from which Higgs
+couplings are extracted, particularly in the case
+of the decays to $b$, $\mu$ 
+and $\tau$ pairs. {\tt SOFTSUSY} uses $m_b(pole) = 4.97$ GeV, $m_{\mu}(M_{SUSY}) =
+0.103$ GeV and $m_{\tau}(M_{SUSY}) = 1.80$ GeV; meanwhile {\tt NMSSMTools} uses
+$m_b = 4.54$ GeV, $m_{\mu} = 0.106$ GeV and $m_{\tau} = 1.78$ GeV. However,
+most of the differences are due to the definition of the CP 
+even 
+mixing matrix $S$: the coupling of the singlet-like $H$ to ``down-type"
+fermions is given by $[S(2,2)/\cos(\beta)]^2$. {\tt SOFTSUSY}
+obtains $S(2,2)
+= 2.71 \times 10^{-2}$, whilst {\tt NMSSMTools} has $S(2,2) = 2.87 \times
+10^{-2}$. Given that the partial widths are proportional to the square of the
+mixing matrix element, this results in an approximate $12\%$ difference. 
+The {\tt SOFTSUSY} decay calculation uses the tree-level value $S(M_{SUSY})$,
+whereas {\tt NMSSMTools} uses $S$ as extracted from the loop-corrected pole
+mass matrix. The two choices are equivalent to leading order, and so the
+numerical difference between the programs is simply a higher order effect.
+For
+this reason in columns 5 and 6 of Table~\ref{nmssmSLHAnoZ3Inputspctable}, the
+CP even mixing matrix elements have also been set to those of {\tt NMSSMTools}
+to demonstrate that this makes up much of the remaining differences. The other
+significant difference observed in the partial widths between the default {\tt
+  SOFTSUSY} results and those of {\tt NMSSMTools} is in the $\gamma \gamma$
+channel. By default {\tt SOFTSUSY} runs $\alpha$ {\em and}
+quark masses, whereas {\tt NMSSMTools} runs $\alpha$
+but not the quark masses to calculate the Higgs couplings. The quark masses
+used by {\tt  
+  SOFTSUSY} for this point are $m_t(m_{H}) = 144.5$ GeV, $m_{b}(m_{H}) =
+2.40$ GeV, $m_c(m_{H}) 
+= 0.57$ GeV whereas {\tt NMSSMTools} uses $m_t = 170.9$ GeV, $m_b = 4.54$ GeV,
+$m_c = 1.40$ GeV; meanwhile {\tt SOFTSUSY} uses $\alpha(m_{H}) =
+7.88\times10^{-3}$ whereas {\tt NMSSMTools} obtains
+$\alpha(m_{H}) = 7.30\times10^{-3}$. The difference in the values of
+$\alpha(m_H)$ 
+is presumably due to a difference in the scheme\footnote{{\tt
+  SOFTSUSY} matches at $m_Z$ and then runs $\alpha$ in the full NMSSM at
+2-loops.}. With the quark masses and $\alpha$ used by {\tt NMSSMTools} inserted
+into the {\tt SOFTSUSY} decay code the difference between the two programs is
+dramatically reduced, with them now showing excellent agreement. 
+This clearly
+demonstrates that the difference observed is due to different quark masses and
+coupling constants taken, in particular it is the quark masses which have the
+largest effect here. The reason for such sensitivity to the masses taken is
+that for this parameter point there is a large cancellation between the $t$, $W$
+and other loop contributions. The degree of the cancellation is consequently
+heavily dependent upon the top mass used. With {\tt SOFTSUSY}'s choices
+then the real part of the top loop contribution is $\mathcal{R}[I_t] = 8.99 \times
+10^{-2}$ and the real part of the $W$ loop contribution $\mathcal{R}[I_W] = -0.114$
+whilst the other significant contribution is that of the heaviest chargino
+$\tilde{W}_2$: $\mathcal{R}[I_{\tilde{W}_2}] = 5.53 \times 10^{-2}$, resulting
+in significant cancellation such that the total of all the particle loop
+contributions is $(2.65-6.62i) \times 10^{-2}$. With the quark mass choices of
+{\tt NMSSMTools} instead one obtains $\mathcal{R}[I_t] = 0.135$ and so the
+total cancellation is much smaller and the total of all the loop contributions
+is $(7.16-7.30i) \times 10^{-2}$, which has a modulus much larger than that
+obtained using the usual {\tt SOFTSUSY} choices. Once these are
+squared this explains the significant discrepancy. Differences
+seen between the two programs for this channel should be interpreted as an
+indication of a large theoretical error in the calculation at this order for
+this parameter point. 
 Note that the comparison is carried out
-against an old version of {\tt NMSSMTools}: {\tt NMSSMTools-4.2.1} as there
-exists a link code 
+against an old version of {\tt NMSSMTools} ({\tt NMSSMTools-4.2.1}) since 
+there only exists an interface
 between the  
-{\tt SOFTSUSY} spectrum generator and this version of {\tt NMSSMTools}, which does not work for later versions. Therefore comparing with {\tt NMSSMTools-4.2.1} allowed the effects of the spectrum
+{\tt SOFTSUSY} spectrum generator and this old version of {\tt
+  NMSSMTools}. Therefore comparing with {\tt 
+  NMSSMTools-4.2.1} allowed the effects of the spectrum 
 generator to be isolated as much as possible from other differences in the
 decay calculations for validation.  
 
 \begin{figure} %[htop]
 \centerline{\includegraphics[scale=1.2]{figure5}} 
-\caption{Mass spectrum and branching ratios for the NMSSM parameter point {\tt
-    nmssmSLHAnoZ3Input} used for the comparison with {\tt NMSSMTools}. The
-  arrows represent decay modes of branching ratios (BRs) greater than
-  $10^{-6}$, with thicker, bolder arrows representing larger BRs. The full
-  input file is provided with the {\tt SOFTSUSY-4.0} package, but it is a
-  constrained NMSSM point with $m_0 =
-  400$ GeV, $m_{1/2} = 100$ GeV, 
+\caption{Mass spectrum and branching ratios for the constrained NMSSM
+  parameter point in Table~\protect\ref{nmssmSLHAnoZ3Inputspctable} with $m_0 =
+  400$ GeV, $m_{1/2} = 350$ GeV, 
   $\tan\beta = 10$, sign$(\mu) = +1$, $A_0 = -300$ GeV, $\lambda = 0.1$,
   $\kappa = 
-  0.1$, $\lambda \langle S \rangle = 100$ GeV and $\xi_F = 100$ GeV\@. 
-%Note
-%  that our notation $\tilde{Z}_i$ and $\tilde{W}_j$ are 
-%  indicated 
-%  as $\tilde{\chi}_{i}^{0}$ and $\tilde{\chi}_{j}^{\pm}$ respectively in this
-%  figure. 
+  0.1$, $\lambda \langle S \rangle = 200$ GeV and $\xi_F = 100$ GeV
+used for the comparison with {\tt NMSSMTools}. The
+  arrows represent decay modes of branching ratios (BRs) greater than
+  $0.1$, with thicker, bolder arrows representing larger BRs. 
 The figure was produced with the aid of {\tt slhaplot-3.0.4} of {\tt PySLHA}
 \cite{Buckley:2013}. } \label{nmssmSLHAnoZ3Inputspectrum} 
 \end{figure} 
@@ -1223,69 +1290,77 @@ The figure was produced with the aid of {\tt slhaplot-3.0.4} of {\tt PySLHA}
 \begin{table} %[htop]
 \centering
 %\def\arraystretch{1.1}%
-\begin{tabular}{|c|c|c|c|c|c|c|} \hline
-\multicolumn{2}{|C{3.0cm}|}{{\tt SOFTSUSY} with its quark masses and coupling constants run to $m_{H3}$} & \multicolumn{2}{C{3.0cm}|}{{\tt SOFTSUSY} with {\tt NMSSMTools-4.2.1} quark masses and running coupling constants} & \multicolumn{2}{C{3.0cm}|}{{\tt NMSSMTools-4.2.1}} & mode \\ \hline
-PW/GeV & BR & PW/GeV & BR & PW/GeV & BR & \\ \hline
-8.46e-06 & 2.55e-06 & 8.88e-06 & 2.84e-06 & 9.01e-06 & 2.82e-06 & $H_{3} \rightarrow c \bar{c}$ \\ \hline
-4.08e-04 & 1.23e-04 & 4.94e-04 & 1.58e-04 & 5.16e-04 & 1.62e-04 & $H_{3} \rightarrow s \bar{s}$ \\ \hline
-1.24e+00 & 3.72e-01 & 1.04e+00 & 3.32e-01 & 1.09e+00 & 3.40e-01 & $H_{3} \rightarrow b \bar{b}$ \\ \hline
-1.62e-01 & 4.88e-02 & 1.62e-01 & 5.18e-02 & 1.64e-01 & 5.14e-02 & $H_{3} \rightarrow t \bar{t}$ \\ \hline
-3.39e-04 & 1.02e-04 & 3.58e-04 & 1.15e-04 & 3.75e-04 & 1.18e-04 & $H_{3} \rightarrow \mu^- \mu^+$ \\ \hline
-1.03e-01 & 3.09e-02 & 1.01e-01 & 3.25e-02 & 1.06e-01 & 3.33e-02 & $H_{3} \rightarrow \tau^- \tau^+$ \\ \hline
-3.74e-02 & 1.13e-02 & 3.74e-02 & 1.20e-02 & 3.55e-02 & 1.11e-02 & $H_{3} \rightarrow \tilde{Z}_1 \tilde{Z}_1$  \\ \hline
-1.42e-01 & 4.27e-02 & 1.42e-01 & 4.54e-02 & 1.40e-01 & 4.38e-02 & $H_{3} \rightarrow \tilde{Z}_1 \tilde{Z}_2$ \\ \hline
-2.34e-03 & 7.05e-04 & 2.34e-03 & 7.50e-04 & 2.35e-03 & 7.35e-04 & $H_{3} \rightarrow \tilde{Z}_1 \tilde{Z}_3$ \\ \hline
-1.83e-01 & 5.51e-02 & 1.83e-01 & 5.86e-02 & 1.74e-01 & 5.45e-02 & $H_{3} \rightarrow \tilde{Z}_1 \tilde{Z}_4$ \\ \hline
-1.22e-01 & 3.68e-02 & 1.22e-01 & 3.92e-02 & 1.26e-01 & 3.94e-02 & $H_{3} \rightarrow \tilde{Z}_2 \tilde{Z}_2$ \\ \hline
-6.15e-03 & 1.85e-03 & 6.15e-03 & 1.97e-03 & 6.21e-03 & 1.95e-03 & $H_{3} \rightarrow \tilde{Z}_2 \tilde{Z}_3$ \\ \hline
-2.81e-01 & 8.46e-02 & 2.81e-01 & 9.0e-02 & 2.89e-01 & 9.07e-02 & $H_{3} \rightarrow \tilde{Z}_2 \tilde{Z}_4$ \\ \hline
-1.11e-04 & 3.35e-05 & 1.11e-04 & 3.56e-05 & 1.11e-04 & 3.48e-05 & $H_{3} \rightarrow \tilde{Z}_3 \tilde{Z}_3$ \\ \hline
-3.63e-01 & 1.09e-01 & 3.63e-01 & 1.16e-01 & 3.62e-01 & 1.13e-01 & $H_{3} \rightarrow \tilde{W}_1 \tilde{W}_1$ \\ \hline
-3.18e-01 & 9.58e-02 & 3.18e-01 & 1.02e-01 & 3.25e-01 & 1.02e-01 & $H_{3} \rightarrow \tilde{W}_1 \tilde{W}_2$ \\ \hline
-3.18e-01 & 9.58e-02 & 3.18e-01 & 1.02e-01 & 3.25e-01 & 1.02e-01 & $H_{3} \rightarrow \tilde{W}_2 \tilde{W}_1$ \\ \hline
-6.97e-03 & 2.10e-03 & 6.97e-03 & 2.23e-03 & 7.11e-03 & 2.23e-03 & $H_{3} \rightarrow h h$ \\ \hline
-1.20e-05 & 3.63e-06 & 1.12e-05 & 3.58e-06 & 1.06e-05 & 3.31e-06 & $H_{3} \rightarrow \gamma \gamma$ \\ \hline
-9.09e-04 & 2.74e-04 & 7.61e-04 & 2.44e-04 & 8.00e-04 & 2.51e-04 & $H_{3} \rightarrow g g$ \\ \hline
-3.37e-05 & 1.02e-05 & 3.37e-05 & 1.08e-05 & 3.35e-05 & 1.05e-05 & $H_{3} \rightarrow Z \gamma$ \\ \hline
-1.42e-03 & 4.26e-04 & \textbf{1.42e-03} & 4.53e-04 & \textbf{3.25e-03} & 1.02e-03 & $H_{3} \rightarrow W^+ W^-$ \\ \hline
-6.79e-04 & 2.04e-04 & \textbf{6.79e-04} & 2.17e-04 & \textbf{1.56e-03} & 4.89e-04 & $H_{3} \rightarrow Z Z$ \\ \hline
-2.79e-02 & 8.39e-03 & 2.79e-02 & 8.93e-03 & 2.61e-02 & 8.17e-03 & $H_{3} \rightarrow \tilde{Z}_1 \tilde{Z}_5$ \\ \hline
-8.61e-03 & 2.59e-03 & 8.61e-03 & 2.76e-03 & 8.89e-03 & 2.79e-03 & $H_{3} \rightarrow \tilde{Z}_2 \tilde{Z}_5$ \\ \hline
-4.84e-05 & 1.46e-05 & 4.84e-05 & 1.55e-05 & 5.06e-05 & 1.59e-05 & $H_{3} \rightarrow h H$ \\ \hline
-3.32e+00 & 1.00e+00 & 3.12e+00 & 1.00e+00 & 3.19e+00 & 1.00e+00 & Column totals \\ \hline
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} \hline
+\multicolumn{2}{|C{3.0cm}|}{{\tt SOFTSUSY} default with its quark masses and coupling constants run to $m_{H}$} & \multicolumn{2}{C{3.0cm}|}{{\tt SOFTSUSY} with {\tt NMSSMTools-4.2.1} quark masses and running coupling constants} &
+\multicolumn{2}{C{3.0cm}|}{{\tt SOFTSUSY} with {\tt NMSSMTools-4.2.1} quark masses, running coupling constants and $S$} & \multicolumn{2}{C{3.0cm}|}{{\tt NMSSMTools-4.2.1} with same QCD corrections} & mode \\ \hline
+PW/GeV & BR & PW/GeV & BR & PW/GeV & BR & PW/GeV & BR & \\ \hline
+2.98e-06 & 9.22e-06 & 2.99e-06 & 9.24e-06 & 3.04e-06 & 9.22e-06 & 3.04e-06 & 9.21e-06 & $H \rightarrow c \bar{c}$ \\ \hline
+3.65e-07 & 1.13e-06 & 3.67e-07 & 1.14e-06 & 4.10e-07 & 1.24e-06 & 4.33e-07 & 1.31e-06 & $H \rightarrow s \bar{s}$ \\ \hline
+9.44e-04 & 2.92e-03 & 7.73e-04 & 2.39e-03 & 8.64e-04 & 2.62e-03 & 8.93e-04 & 2.71e-03 & $H \rightarrow b \bar{b}$ \\ \hline
+5.58e-02 & 1.73e-01 & 5.58e-02 & 1.73e-01 & 5.68e-02 & 1.72e-01 & 5.68e-02 & 1.72e-01 & $H \rightarrow t \bar{t}$ \\ \hline
+2.52e-07 & 7.79e-07 & 2.68e-07 & 8.27e-07 & 2.99e-07 & 9.06e-07 & 3.16e-07 & 9.56e-07 & $H \rightarrow \mu^- \mu^+$ \\ \hline
+7.75e-05 & 2.40e-04 & 7.57e-05 & 2.34e-04 & 8.45e-05 & 2.56e-04 & 8.92e-05 & 2.70e-04 & $H \rightarrow \tau^- \tau^+$ \\ \hline
+1.21e-05 & 3.73e-05 & 1.21e-05 & 3.74e-05 & 1.33e-05 & 4.04e-05 & 1.22e-05 & 3.70e-05 & $H \rightarrow \tilde{Z}_1 \tilde{Z}_1$  \\ \hline
+3.25e-05 & 1.00e-04 & 3.25e-05 & 1.01e-04 & 3.60e-05 & 1.09e-04 & 3.44e-05 & 1.04e-04 & $H \rightarrow \tilde{Z}_1 \tilde{Z}_2$ \\ \hline
+2.00e-02 & 6.18e-02 & 2.00e-02 & 6.18e-02 & 2.00e-02 & 6.06e-02 & 2.07e-02 & 6.27e-02 & $H \rightarrow h h$ \\ \hline
+9.03e-08 & 2.97e-07 & 1.61e-01 & 4.97e-07 & 1.62e-07 & 4.91e-07 & 1.68e-07 & 5.09e-07 & $H \rightarrow \gamma \gamma$ \\ \hline
+1.47e-04 & 4.54e-04 & 1.47e-04 & 4.54e-04 & 1.49e-04 & 4.53e-04 & 1.53e-04 & 4.63e-04 & $H \rightarrow g g$ \\ \hline
+2.07e-06 & 6.39e-06 & 1.93e-06 & 5.98e-06 & 2.14e-06 & 6.47e-06 & 2.21e-06 & 6.69e-06 & $H \rightarrow Z \gamma$ \\ \hline
+1.67e-01 & 5.15e-01 & 1.67e-01 & 5.15e-01 & 1.70e-01 & 5.16e-01 & 1.70e-01 & 5.15e-01 & $H \rightarrow W^+ W^-$ \\ \hline
+8.00e-02 & 2.47e-01 & 8.00e-02 & 2.47e-01 & 8.17e-02 & 2.48e-01 & 8.16e-02 & 2.47e-01 & $H \rightarrow Z Z$ \\ \hline
+3.24e-01 & 1.00e+00 & 3.23e-01 & 1.00e+00 & 3.30e-01 & 1.00e+00 & 3.30e-01 & 1.00e+00 & Column totals \\ \hline
 \end{tabular}
-\caption{The $H3$ decay partial widths and branching ratios as output by {\tt
-    SOFTSUSY} with the quark masses and coupling constants run to $m_{H3}$
-  as is the default, {\tt SOFTSUSY} with the quark masses and coupling
+\caption{$H$ decay partial widths and branching ratios as output by {\tt
+    SOFTSUSY} with the quark masses and coupling constants run to $m_{H}$
+  as is the default (except in cases where QCD corrections are applied - here pole masses
+  must be used), {\tt SOFTSUSY} with the quark masses and coupling
   constants set temporarily to those of {\tt NMSSMTools} for comparison of
-  results, and {\tt NMSSMTools-4.2.1}
+  results, {\tt SOFTSUSY} with the quark masses and coupling
+  constants and CP even Higgs mixing matrix ($S$) set temporarily to that
+  of {\tt NMSSMTools} for comparison of
+  results and {\tt NMSSMTools-4.2.1}
   \cite{Ellwanger:2004xm,Ellwanger:2012dd,Ellwanger:2006ch}. For columns 3 and
   4 this  
-  meant setting $\alpha_s(m_{H3})= 9.42\times10^{-2}$, $m_b = 4.54$ GeV for
-  $H3  
+  meant setting $\alpha_s(m_{H})= 9.41\times10^{-2}$, $m_b = 4.54$ GeV for
+  $H  
   \rightarrow 
-  bb$, $m_{\mu}= 0.106$ GeV for $H3 \rightarrow \mu \mu$, $m_{\tau}=
-  1.78$ GeV for $H3 
+  bb$, $m_{\mu}= 0.106$ GeV for $H \rightarrow \mu \mu$, $m_{\tau}=
+  1.78$ GeV for $H 
   \rightarrow  
-  \tau \tau$, and the same values were used appropriately for $H3
-  \rightarrow gg$. These should be compared with the values {\tt SOFTSUSY} obtains from
-  running to the $H3$ mass of $\alpha_s(m_{H3}) = 9.70\times 10^{-2}$, $m_b(m_{H3}) = 4.97$GeV, 
-  $m_{\mu} = 0.103$GeV, $m_{\tau} = 1.79$GeV. Meanwhile for $H3 \rightarrow \gamma \gamma$, {\tt SOFTSUSY}
-  uses $m_t(m_{H3}) = 146.6$GeV, $m_{b}(m_{H3}) = 2.42$GeV, $m_c(m_{H3}) = 0.57$GeV whereas {\tt NMSSMTools}
-  has $m_t = 170.9$GeV, $m_b = 4.54$GeV, $m_c = 1.40$GeV. These were therefore input into {\tt SOFTSUSY} 
-  for columns 3 and 4. There is also a difference in $\alpha$, in {\tt SOFTSUSY} this is run to $m_{H3}$ giving 
-  $\alpha(m_{H3}) = 7.91\times10^{-3}$ whereas {\tt NMSSMTools} obtains $\alpha(m_{H3}) = 7.30\times10^{-3}$. This
-  is therefore also set in the decay calculator code for columns 3 and 4.
-  The 
-  parameter point considered is the {\tt nmssmSLHAnoZ3Input} file provided
-  with the {\tt SOFTSUSY} package. There is good agreement between the two
-  programs with differences around $5-10\%$. Differences can be larger for the
+  \tau \tau$, and the same values were used appropriately for $H 
+  \rightarrow gg$. These should be compared with the values {\tt SOFTSUSY}
+  obtains from 
+  running to the $H$ mass of $\alpha_s(m_{H}) = 9.42\times 10^{-2}$,
+  $m_{\mu} = 0.103$ GeV, $m_{\tau} = 1.80$ GeV and its $m_b(pole) = 4.97$ GeV. Meanwhile for $H \rightarrow \gamma \gamma$, {\tt SOFTSUSY}
+  uses $m_t(m_{H}) = 144.5$ GeV, $m_{b}(m_{H}) = 2.40$ GeV, $m_c(m_{H}) =
+  0.57$ GeV whereas {\tt NMSSMTools}
+  has $m_t = 170.9$ GeV, $m_b = 4.54$ GeV, $m_c = 1.40$ GeV. These were
+  therefore input into {\tt SOFTSUSY}  
+  for columns 3 and 4. In {\tt SOFTSUSY} 
+  $\alpha(m_{H}) = 7.88\times10^{-3}$ whereas {\tt NMSSMTools} obtains
+  $\alpha(m_{H}) = 7.30\times10^{-3}$. This 
+  is therefore also set in the decay calculator code for columns 3 and 4. Meanwhile it was noticed there were small
+  differences in the smaller elements of the CP even mixing matrix ($S$) between the two codes, therefore $S$ 
+  was additionally set to that of {\tt NMSSMTools}, on top of the changes described for columns 3 and 4, in columns
+  5 and 6. The 
+  parameter point considered is the
+constrained NMSSM
+  parameter point  with $m_0 =
+  400$ GeV, $m_{1/2} = 350$ GeV, 
+  $\tan\beta = 10$, sign$(\mu) = +1$, $A_0 = -300$ GeV, $\lambda = 0.1$,
+  $\kappa = 
+  0.1$, $\lambda \langle S \rangle = 200$ GeV and $\xi_F = 100$ GeV
+used for the comparison with {\tt NMSSMTools}.
+There is good agreement between the two
+  programs with differences around $10\%$. Differences can be larger for the
   decays to quarks and 1-loop decays to $\gamma \gamma$ and $gg$ due to
-  differences in the quark masses and coupling constants taken. Using the same
+  differences in the quark masses and coupling constants taken, or indeed due to small
+  differences in elements of the CP even mixing matrix $S$. Using the same
   values for these as in {\tt NMSSMTools} significantly reduces these
-  differences to around $5\%$ or less, demonstrating this is the main source
-  of the differences. This is illustrated in the improved agreement of the 3rd
-  and 4th columns with the 5th and 6th columns. A more detailed description of
+  differences to around $5\%$ or less. This is illustrated in the improved
+  agreement of the 3rd 
+  and 4th columns, and 5th and 6th columns, with the 7th and 8th columns. A
+  more detailed description of 
   the level of agreement and source of differences is given in the text.} 
 \label{nmssmSLHAnoZ3Inputspctable}
 \end{table}
@@ -1684,12 +1759,9 @@ Here we begin the list of partial width expressions used in calculating the deca
 
 The following are a list of commonly occurring functions that arise from the kinematics of the decays:
 $\tilde{\lambda}^{1/2}$ appears as a result of the phase space integration:
-
-{\centering
 \begin{equation}
-\tilde{\lambda}^{1/2} (m_{1}, m_2, m_{3}) = \sqrt{(1- ({m_2 + m_3 \over m_1})^2)(1-({m_2 - m_3 \over m_1})^2)}
+\tilde{\lambda}^{1/2} (m_{1}, m_2, m_{3}) = \sqrt{\left(1- ({m_2 + m_3 \over m_1})^2\right)\left(1-({m_2 - m_3 \over m_1})^2\right)}.
 \end{equation}
-}
 For loop integrals the real and imaginary parts of the loop give the following kinetic factor, where $\tau_{a} = 4({m_{a} \over m_{h_i}})^2$:
 \begin{equation} \label{ftau}
 f(\tau) = \begin{cases}
@@ -1703,7 +1775,7 @@ For the $Z\gamma$ decay loops, the kinetic factor $g(\tau)$ also occurs:
 \begin{equation}
 g(\tau) = \begin{cases} \label{gtau}
 			\sqrt{\tau - 1} \sin^{-1} ({1 \over \sqrt{\tau}}), \: $for$ & \: \: \tau \geq 1, \\
-			{1 \over 2}\sqrt{1-\tau} [\ln({1+\sqrt{1-\tau} \over 1-\sqrt{1-\tau}}) - i \pi], \: $for$ & \: \: \tau < 1 \\
+			{1 \over 2}\sqrt{1-\tau} [\ln\left({1+\sqrt{1-\tau} \over 1-\sqrt{1-\tau}}\right) - i \pi], \: $for$ & \: \: \tau < 1 \\
 			\end{cases}
 \end{equation}
 
@@ -3699,7 +3771,24 @@ There are 4 main contributions to these decays, with $W$ boson, $H^{\pm}$, $\til
   \caption{$W$, $H^{\pm}$, $\tilde{f'}_k$, $\tilde{f}_k$ contributions to the $\tilde{Z}_i \rightarrow \tilde{W}_j f' \bar{f}$ decay. $i=1,2,3,4$, $j=1,2$, $k=1,2$. There are then also interferences between all these contributions.} \label{neutcharfeyn3}
 \end{figure} 
 
-For this decay mode, and the ``reverse'' decay mode $\tilde{W}_j \rightarrow \tilde{Z}_i f' \bar{f}$, the formulae used are extracted from the {\tt sPHENO} code, based on the work in references \cite{Baer:1998, TataBaer}. Note that $f'$, $f$ are fermions with third components of weak isospin $1 \over 2$ and $-{1 \over 2}$ respectively. A difference relative to these references is that, following the formulae of {\tt sPHENO}, the expressions given do not neglect $m_f$ in the Dirac algebra of the squared matrix element (whereas in \cite{Baer:1998, TataBaer} it is neglected here, but of course included in the phase space). As a result there is also $WH^{\pm}$ interference which is not present if $m_f$ is neglected in the Dirac algebra. The possibilities of positive and negative neutralino and chargino masses are included via $(-1)^{\theta_{i}}$ and $(-1)^{\theta_{j}}$ factors. Similarly the fermion Yukawa couplings are included and the formulae themselves allow for mixing of the fermions. However in our program, mixing is only considered for the third generation of sfermions and here this 3 body mode $\tilde{Z}_i \rightarrow \tilde{W}_j t \bar{b}$ is not calculated as the 2 body modes $\tilde{Z}_i \rightarrow W \tilde{W}_j$ and $\tilde{Z}_i \rightarrow h \tilde{W}_j$ are then kinematically available and will dominate the branching ratios.
+For this decay mode, and the ``reverse'' decay mode $\tilde{W}_j \rightarrow
+\tilde{Z}_i f' \bar{f}$, the formulae used are extracted from the {\tt sPHENO}
+code, based on the work in references \cite{Baer:1998, TataBaer}. Note that
+$f'$, $f$ are fermions with third components of weak isospin $1 \over 2$ and
+$-{1 \over 2}$ respectively. A difference relative to these references is
+that, following the formulae of {\tt sPHENO}, the expressions given do not
+neglect $m_f$ in the Dirac algebra of the squared matrix element (whereas in
+\cite{Baer:1998, TataBaer} it is neglected here, but of course included in the
+phase space). As a result there is also $WH^{\pm}$ interference which is not
+present if $m_f$ is neglected in the Dirac algebra. The possibilities of
+positive and negative neutralino and chargino masses are included via
+$(-1)^{\theta_{i}}$ and $(-1)^{\theta_{j}}$ factors. Similarly the fermion
+Yukawa couplings are included and the formulae themselves allow for mixing of
+the fermions. However in our program, mixing is only considered for the third
+generation of sfermions and here this 3 body mode $\tilde{Z}_i \rightarrow
+\tilde{W}_j t \bar{b}$ is not calculated as the 2 body modes $\tilde{Z}_i
+\rightarrow W \tilde{W}_j$ and $\tilde{Z}_i \rightarrow h \tilde{W}_j$ are
+then kinematically available and will dominate the branching ratios. 
 The overall expression for the partial width is therefore given by:
 \begin{equation} \label{neutchff}
 \begin{aligned}
@@ -4710,7 +4799,15 @@ where
 Note that $M_{P}^{red} = {M_{P} \over \sqrt{8\pi}} \approx 2.4 \times 10^{18} $ GeV.
 
 \section{NMSSM Decays} \label{appendix:NMSSMdec}
-Only 2 body decays have been included in the NMSSM, this does however include the important loop decays of the neutral Higgs bosons to $\gamma\gamma$, $Z\gamma$ and $gg$, as well as QCD corrections to the neutral Higgs decays to $q\bar{q}$ and $gg$. We do however include the decays $\phi \rightarrow WW^* \rightarrow Wf'\bar{f}$ and $\phi \rightarrow ZZ^* \rightarrow Zf\bar{f}$.\footnote{The decays $\phi \rightarrow WW^* \rightarrow Wf'\bar{f}$ and $\phi \rightarrow ZZ^* \rightarrow Zf\bar{f}$, whilst strictly being 3 body, are classified as having NDA (Number of Daughters) of 2 according to SLHA conventions.}
+Only 2 body decays have been included in the NMSSM, this does however include
+the important loop decays of the neutral Higgs bosons to $\gamma\gamma$,
+$Z\gamma$ and $gg$, as well as QCD corrections to the neutral Higgs decays to
+$q\bar{q}$ and $gg$. We do however include the decays $\phi \rightarrow WW^*
+\rightarrow Wf'\bar{f}$ and $\phi \rightarrow ZZ^* \rightarrow
+Zf\bar{f}$.\footnote{The decays $\phi \rightarrow WW^* \rightarrow Wf'\bar{f}$
+  and $\phi \rightarrow ZZ^* \rightarrow Zf\bar{f}$, whilst strictly being 3
+  body, are classified as having NDA (Number of Daughters) of 2 according to
+  SLHA conventions.} 
 Note that throughout $S(A,B)$ is the now 3x3 CP even Higgs mixing matrix and $P(A,B)$ is the  $2\times3$ CP odd Higgs mixing matrix (with goldstone excluded). The additional NMSSM variables include $\lambda$ (distinct from the $\tilde{\lambda}(A,B,C)$ used for kinematic part of decay widths given above), $\kappa$ and $\mu_{eff} = {\lambda \langle S \rangle \over \sqrt{2}}$. The conventions used for the NMSSM decay formulae were detailed earlier in section~\ref{NMSSMconventions}, with differences with respect to the {\tt SOFTSUSY} NMSSM manual \cite{Allanach:2013kza} noted. The conventions are those of {\tt NMSSMTools}~\cite{Ellwanger:2004xm,Ellwanger:2006rn,Ellwanger:2012dd,Ellwanger:2006ch}, against which the formulae were checked for consistency and which provided a useful guide.
 
 The NMSSM simply involves the addition of a gauge singlet chiral superfield to the MSSM, therefore the NMSSM has an additional neutralino, additional CP even neutral Higgs and additional CP odd neutral Higgs, therefore any decays not involving the extended neutralino or extended Higgs sectors are as in the MSSM.
@@ -5607,7 +5704,8 @@ This formula applies for all the CP even neutral Higgs bosons, whether in the MS
 A(\tilde{\beta}) = & (1+\tilde{\beta}^2)\Big[4Li_2 ({1-\tilde{\beta} \over 1+\tilde{\beta}}) + 2Li_2 ({\tilde{\beta}-1  \over \tilde{\beta}+1}) - 3\log({1+\tilde{\beta} \over 1-\tilde{\beta}})\log{2\over 1+\tilde{\beta}} - 2\log({1+\tilde{\beta} \over 1-\tilde{\beta}})\log\tilde{\beta}\Big] \\ & - 3\tilde{\beta} \log{4 \over 1-\tilde{\beta}^2} - 4\tilde{\beta} \log\tilde{\beta}.
 \end{aligned}
 \end{equation}
-This is exactly as given in Eqs. (16) and (25) of \cite{Spira:2016}. $Li_2$ is the di-logarithm function, aka Spence's function. 
+This is exactly as given in Eqs. (16) and (25) of \cite{Spira:2016}. $Li_2$ is
+the di-logarithm function (Spence's function). 
 
 For the CP odd Higgs bosons we have:
 \begin{equation} \label{AqqQCDcorr}
