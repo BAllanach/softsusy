@@ -422,7 +422,7 @@ In our description in this section and the rest of the paper, we classify decay 
 according to both the number of daughter particles (with $N$ body meaning $N$ decay products) and 
 the order of the corrections included; i.e.\ tree-level, 1-loop or 2-loop.
 
-For 2 body tree-level decay modes, the analytical expressions for the partial widths are explicitly used in order to
+For 2 body tree-level decay modes, the analytic expressions for the partial widths are explicitly used in order to
 provide fast evaluation. Similarly, for the 2 body 1-loop decays the loop integrals were
 performed analytically and the resulting formulae used.
 For 3 body decay modes (all tree-level), the phase space integral
@@ -809,7 +809,7 @@ Here, as elsewhere in this paper,
 Now, in Table~\ref{h0SMliketable}, we can perform similar comparisons between
 {\tt SOFTSUSY} and {\tt HDECAY-3.4} of {\tt SUSYHIT-1.4} for Higgs
 decays. Here we have taken a SM-like Higgs, in the decoupling limit so all the
-SUSY decays are kinematically forbidden, given by a point in the pMSSM parameter space
+SUSY decays are kinematically forbidden, given by a point in the phenomenological MSSM (pMSSM) parameter space
 which has Higgs mass $125$ GeV, this point we call {\tt pmssm1} and the SLHA \cite{Skands:2003cj} form of the input file is given verbatim in Table~\ref{PMSSM1Table}. The results of our decay calculator without QCD
 corrections included, with QCD corrections included, and with the same input
 quark and gauge boson masses and same input gauge couplings as {\tt SUSYHIT},
@@ -1182,7 +1182,7 @@ The comparison in Table~\ref{nmssmSLHAnoZ3Inputspctable} demonstrates that the
 level of 
 agreement is usually better than $10\%$ with the
 exception of a few of the decay modes. The decay modes which show larger
-differences are the decays to "down-type" fermions, i.e. fermions with third
+differences are the decays to "down-type" fermions, i.e.\ fermions with third
 component of weak isospin $T_3 = -{1 \over 2}$ and the 1-loop decay to two
 photons $H \rightarrow \gamma \gamma$. 
 Note that the decays to quarks and to two
@@ -1224,7 +1224,7 @@ CP even mixing matrix elements have also been set to those of {\tt NMSSMTools}
 to demonstrate that this makes up much of the remaining differences. The other
 significant difference observed in the partial widths between the default {\tt
   SOFTSUSY} results and those of {\tt NMSSMTools} is in the $\gamma \gamma$
-channel. By default {\tt SOFTSUSY} runs $\alpha$ {\em and}
+channel. By default {\tt SOFTSUSY} runs $\alpha$ {\em and}\/
 quark masses, whereas {\tt NMSSMTools} runs $\alpha$
 but not the quark masses to calculate the Higgs couplings. The quark masses
 used by {\tt  
@@ -1303,7 +1303,7 @@ PW/GeV & BR & PW/GeV & BR & PW/GeV & BR & PW/GeV & BR & \\ \hline
 1.21e-05 & 3.73e-05 & 1.21e-05 & 3.74e-05 & 1.33e-05 & 4.04e-05 & 1.22e-05 & 3.70e-05 & $H \rightarrow \tilde{Z}_1 \tilde{Z}_1$  \\ \hline
 3.25e-05 & 1.00e-04 & 3.25e-05 & 1.01e-04 & 3.60e-05 & 1.09e-04 & 3.44e-05 & 1.04e-04 & $H \rightarrow \tilde{Z}_1 \tilde{Z}_2$ \\ \hline
 2.00e-02 & 6.18e-02 & 2.00e-02 & 6.18e-02 & 2.00e-02 & 6.06e-02 & 2.07e-02 & 6.27e-02 & $H \rightarrow h h$ \\ \hline
-9.03e-08 & 2.97e-07 & 1.61e-01 & 4.97e-07 & 1.62e-07 & 4.91e-07 & 1.68e-07 & 5.09e-07 & $H \rightarrow \gamma \gamma$ \\ \hline
+9.03e-08 & 2.97e-07 & 1.61e-07 & 4.97e-07 & 1.62e-07 & 4.91e-07 & 1.68e-07 & 5.09e-07 & $H \rightarrow \gamma \gamma$ \\ \hline
 1.47e-04 & 4.54e-04 & 1.47e-04 & 4.54e-04 & 1.49e-04 & 4.53e-04 & 1.53e-04 & 4.63e-04 & $H \rightarrow g g$ \\ \hline
 2.07e-06 & 6.39e-06 & 1.93e-06 & 5.98e-06 & 2.14e-06 & 6.47e-06 & 2.21e-06 & 6.69e-06 & $H \rightarrow Z \gamma$ \\ \hline
 1.67e-01 & 5.15e-01 & 1.67e-01 & 5.15e-01 & 1.70e-01 & 5.16e-01 & 1.70e-01 & 5.15e-01 & $H \rightarrow W^+ W^-$ \\ \hline
@@ -1331,10 +1331,10 @@ PW/GeV & BR & PW/GeV & BR & PW/GeV & BR & PW/GeV & BR & \\ \hline
   \rightarrow gg$. These should be compared with the values {\tt SOFTSUSY}
   obtains from 
   running to the $H$ mass of $\alpha_s(m_{H}) = 9.42\times 10^{-2}$,
-  $m_{\mu} = 0.103$ GeV, $m_{\tau} = 1.80$ GeV and its $m_b(pole) = 4.97$ GeV. Meanwhile for $H \rightarrow \gamma \gamma$, {\tt SOFTSUSY}
-  uses $m_t(m_{H}) = 144.5$ GeV, $m_{b}(m_{H}) = 2.40$ GeV, $m_c(m_{H}) =
-  0.57$ GeV whereas {\tt NMSSMTools}
-  has $m_t = 170.9$ GeV, $m_b = 4.54$ GeV, $m_c = 1.40$ GeV. These were
+  $m_{\mu} = 0.103$ GeV, $m_{\tau} = 1.80$~GeV and its $m_b(pole) = 4.97$~GeV. Meanwhile for $H \rightarrow \gamma \gamma$, {\tt SOFTSUSY}
+  uses $m_t(m_{H}) = 144.5$~GeV, $m_{b}(m_{H}) = 2.40$~GeV, $m_c(m_{H}) =
+  0.57$~GeV whereas {\tt NMSSMTools}
+  has $m_t = 170.9$~GeV, $m_b = 4.54$~GeV, $m_c = 1.40$~GeV. These were
   therefore input into {\tt SOFTSUSY}  
   for columns 3 and 4. In {\tt SOFTSUSY} 
   $\alpha(m_{H}) = 7.88\times10^{-3}$ whereas {\tt NMSSMTools} obtains
