@@ -880,10 +880,10 @@ double dMt_over_mt_2loop_susy(const Parameters& pars) {
    return result * twoLoop;
 }
 
-/// 2-loop full SQCD contributions to Delta Mt over mt [hep-ph/0507139]
-double dMt_over_mt_2loop(const Parameters& pars) {
-   return dMt_over_mt_2loop_qcd(pars) + dMt_over_mt_2loop_susy(pars);
-}
+  /// 2-loop full SQCD contributions to Delta Mt over mt [hep-ph/0507139]
+  double dMt_over_mt_2loop(const Parameters& pars) {
+    return dMt_over_mt_2loop_qcd(pars) + dMt_over_mt_2loop_susy(pars);
+  }
 
   /// 2-loop full SQCD contributions to Delta Mt over mt [hep-ph/0507139]
   double dMt_over_mt_2loop(double g3, double mt, double mg, double mst1,
@@ -898,5 +898,5 @@ double dMt_over_mt_2loop(const Parameters& pars) {
     return dMt_over_mt_2loop_qcd(pars) + dMt_over_mt_2loop_susy(pars);
   }
 
-} // namespace softsusy
+} ///< namespace softsusy
 

@@ -18,7 +18,7 @@
 #include "def.h"
 #include <cmath>
 #include <limits>
-
+ 
 namespace softsusy {
   
   struct Parameters {
@@ -49,6 +49,6 @@ namespace softsusy {
 			   double mst2, double msusy, double thetat,
 			   double q);
   
-} // namespace softsusy
+} ///< namespace softsusy
 
 #endif

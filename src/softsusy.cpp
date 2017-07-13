@@ -2682,7 +2682,7 @@ double MssmSoftsusy::calcRunningMt() {
       /// back converion Mt -> mt(mu)
       /// dmt_as2 is already properly normalized
       /// ones need to normalize only 1-loop contribution
-      double dmtas = (qcd + stopGluino)/(16.0 * sqr(PI));
+      double dmtas = (qcd + stopGluino) / (16.0 * sqr(PI));
       double g3 = displayGaugeCoupling(3);
       double mt = displayDrBarPars().mt;
       double mg = displayDrBarPars().mGluino;
