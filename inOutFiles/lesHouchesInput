@@ -17,7 +17,7 @@ Block MINPAR		     # Input parameters
     4   1.000000000e+00	     # sign(mu)
     5   0.000000000e+00	     # A0
 Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
-    0   1.000000000e+00      # Calculate decays in output (only for RPC (N)MSSM)
+    0   0.000000000e+00      # Calculate decays in output (only for RPC (N)MSSM)
 # The default is that without this, SOFTSUSY will only calculate the spectrum   
     1   1.000000000e-03      # Numerical precision: suggested range 10^(-3...-6)
     2   0.000000000e+00	     # Quark mixing parameter: see manual
@@ -31,8 +31,8 @@ Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
    12   0.000000000e+00	     # Print spectrum even when point disallowed
    13	0.000000000e+00	     # Set a tachyonic A^0 to zero mass
 #   19   1.000000000e+00      # Include 3-loop SUSY RGEs
-#   20   3.100000000e+01      # Include 2-loop g/Yuk corrections: 31 for all
+   20   3.100000000e+01      # Include 2-loop g/Yuk corrections: 31 for all
 #   22   1.000000000e+00      # Include 2-loop sparticle mass thresholds
 #   23   0.000000000e+00      # No expansion of 2-loop gluino terms
-   24   1.000000000e-06      # If decay BR is below this number, don't output
-   25   1.000000000e+00	     # If set to 0, don't calculate 3-body decays (1=default)
+#   24   1.000000000e-06      # If decay BR is below this number, don't output
+#   25   1.000000000e+00	     # If set to 0, don't calculate 3-body decays (1=default)

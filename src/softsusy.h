@@ -41,6 +41,8 @@
 #define HR "----------------------------------------------------------"
 
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+#include "mssm_twoloop_mt.h"
+#include "mssm_twoloop_mb.h"
 #include <ginac/ginac.h>
 namespace softsusy { class MssmSoftsusy; }
 namespace SoftSusy_helpers_ {
@@ -56,7 +58,7 @@ namespace SoftSusy_helpers_ {
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
 namespace softsusy {
-  
+
   ///< default SUSY breaking boundary condition scale
   const double mxDefault = 1.9e16; 
   

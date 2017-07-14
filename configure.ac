@@ -11,10 +11,10 @@ dnl Put default fortran compiler for this variable
 F77=gfortran
 dnl === disable debug symbols by default =====
 if test "x$CXXFLAGS" = "x"; then
-    CXXFLAGS="-O2 -Wall"
+    CXXFLAGS="-O2 -Wall -std=c++11"
 fi
 if test "x$CFLAGS" = "x"; then
-    CFLAGS="-O2 -Wall"
+    CFLAGS="-O2 -Wall -srd=c++11"
 fi
 if test "x$FFLAGS" = "x"; then
     FFLAGS="-O2 -Wall"
@@ -135,5 +135,5 @@ AC_OUTPUT
 # To run with looptools, run: ./configure FFLAGS="-DQUAD=1" --enable-looptools CPPFLAGS=-I/home/bca20/code/LoopTools-2.13/install/include LDFLAGS=-L/home/bca20/code/LoopTools-2.13/install/lib64
 
 # For GINAC/CLN
-# GINAC_LIBS="-L/usr/local/lib -lginac" GINAC_CFLAGS="-I/usr/local/include" CLN_LIBS="-L/usr/local/lib -lcln" CLN_CFLAGS="-I/usr/local/include" ./configure --enable-two-loop-gauge-yukawa-compilation --enable-three-loop-rge-compilation
+# GINAC_LIBS="-L/usr/lib -lginac" GINAC_CFLAGS="-I/usr/include" CLN_LIBS="-L/usr/lib -lcln" CLN_CFLAGS="-I/usr/include" ./configure --enable-two-loop-gauge-yukawa-compilation --enable-three-loop-rge-compilation
 
