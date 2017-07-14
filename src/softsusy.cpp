@@ -2656,7 +2656,6 @@ double MssmSoftsusy::calcRunningMt() {
   
   bool ordinaryQcdCorrections = true;
   
-  /// Fixed by Ben: 28/7/14
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   decoupling_corrections.dmt.one_loop = qcd + stopGluino + higgs + 
     neutralinos + charginoContribution;
@@ -2665,10 +2664,10 @@ double MssmSoftsusy::calcRunningMt() {
   
   if (USE_TWO_LOOP_GAUGE_YUKAWA) {
     ordinaryQcdCorrections = false;
-    bool & needcalc = decoupling_corrections.dmt.two_loop_needs_recalc; 
+    /// bool & needcalc = decoupling_corrections.dmt.two_loop_needs_recalc; 
     /// flag: calculate corrections if the
     /// two-previous iterations gave different results
-    using namespace GiNaC;
+    // using namespace GiNaC;
     if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) {  
       /*      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
       double dmtas2 =  decoupling_corrections.dmt.two_loop;
@@ -2681,7 +2680,7 @@ double MssmSoftsusy::calcRunningMt() {
       */     
       /// back converion Mt -> mt(mu)
       /// dmt_as2 is already properly normalized
-      /// ones need to normalize only 1-loop contribution
+      /// one needs to normalize only 1-loop contribution
       double dmtas = (qcd + stopGluino) / (16.0 * sqr(PI));
       double g3 = displayGaugeCoupling(3);
       double mt = displayDrBarPars().mt;
@@ -2878,39 +2877,61 @@ double MssmSoftsusy::calcRunningMb() {
   double dzetamb = 0.;
   
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  
   decoupling_corrections.dmb.one_loop = deltaSquarkGluino + 
     deltaSquarkChargino + deltaHiggs + deltaNeutralino;
   
-  // AVB: this also include top quark contribution (decoupling)!
-  
+  /// AVB: this also includes top quark contribution (decoupling)!
   if (USE_TWO_LOOP_GAUGE_YUKAWA) {
-    
-    bool & needcalc = decoupling_corrections.dmb.two_loop_needs_recalc; 
+    /*    
+     bool & needcalc = decoupling_corrections.dmb.two_loop_needs_recalc; 
     // flag: calculate corrections if two-previous iterations gave different results
-    using namespace GiNaC;
-    
-    if (needcalc) {
-      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+     using namespace GiNaC;
+     
+     if (needcalc) {
+       exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
       
       if ((included_thresholds & ENABLE_TWO_LOOP_MB_AS)) {
 	ex test = bquark_corrections::eval_bquark_twoloop_strong_dec(drbrp);
 	if (is_a<numeric>(test))
 	  dzetamb += ex_to<numeric>(test).to_double();
-      }
-      if ((included_thresholds & ENABLE_TWO_LOOP_MB_YUK)) {
-	ex test = bquark_corrections::eval_bquark_twoloop_yukawa_dec(drbrp);
-	if (is_a<numeric>(test))
+	  }
+	  if ((included_thresholds & ENABLE_TWO_LOOP_MB_YUK)) {
+	  ex test = bquark_corrections::eval_bquark_twoloop_yukawa_dec(drbrp);
+	  if (is_a<numeric>(test))
 	  dzetamb += ex_to<numeric>(test).to_double();
-      }
-      if (close(dzetamb, decoupling_corrections.dmb.two_loop, 
-		TWOLOOP_NUM_THRESH)) needcalc = false; 
-      decoupling_corrections.dmb.two_loop = dzetamb;
-    } else {
-      dzetamb = decoupling_corrections.dmb.two_loop;
-    }
+	  }
+	  
+	  if (close(dzetamb, decoupling_corrections.dmb.two_loop, 
+	  TWOLOOP_NUM_THRESH)) needcalc = false; 
+	  decoupling_corrections.dmb.two_loop = dzetamb;
+	  }
+	  else {
+	  dzetamb = decoupling_corrections.dmb.two_loop;
+	  }*/
+
+     //      double dmtas = (qcd + stopGluino) / (16.0 * sqr(PI));
+      double g3 = displayGaugeCoupling(3);
+      double mt = displayDrBarPars().mt;
+      double mb = displayDrBarPars().mb;
+      double mg = displayDrBarPars().mGluino;
+      double mst1 = displayDrBarPars().mu(1,3);
+      double mst2 = displayDrBarPars().mu(2,3);
+      double msb1 = displayDrBarPars().md(1,3);
+      double msb2 = displayDrBarPars().md(2,3);
+      double msusy = displayDrBarPars().md(1, 2);
+      double thetat = displayDrBarPars().thetat;
+      double thetab = displayDrBarPars().thetab;
+      double q = displayMu();
+      
+      double dzetamb = delta_mb_2loop(g3, mt, mb, mg, mst1, mst2, msb1, msb2,
+				      msusy, thetat, thetab, q);
+      /// AVB:  fix double-counting of eps-scalar contribution due to
+      /// factorization of one-loop term 
+      double alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
+      dzetamb-= + 31.0 / 72.0 * sqr(alphasMZ) / sqr(PI) ///< pure QCD
+	+ alphasMZ / (3.0 * PI) * decoupling_corrections.dmb.one_loop; 
+
   }
-  
 #endif
   
   /// it's NOT clear if this resummation is reliable in the full 1-loop scheme

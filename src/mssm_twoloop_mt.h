@@ -21,9 +21,9 @@
  
 namespace softsusy {
   
-  struct Parameters {
-    Parameters() = default;
-    Parameters(double g3_, double mt_, double mg_, double mst1_,
+  struct mtParameters {
+    mtParameters() = default;
+    mtParameters(double g3_, double mt_, double mg_, double mst1_,
                double mst2_, double msusy_, double xt_, double Q_)
       : g3(g3_), mt(mt_), mg(mg_), mst1(mst1_)
       , mst2(mst2_), msusy(msusy_), xt(xt_), Q(Q_)
@@ -40,9 +40,9 @@ namespace softsusy {
   };
   
   /// 2-loop QCD contributions to Delta Mt over mt [hep-ph/0507139]
-  double dMt_over_mt_2loop_qcd(const Parameters&);
+  double dMt_over_mt_2loop_qcd(const mtParameters&);
   /// 2-loop SUSY contributions to Delta Mt over mt [hep-ph/0507139]
-  double dMt_over_mt_2loop_susy(const Parameters&);
+  double dMt_over_mt_2loop_susy(const mtParameters&);
   /// 2-loop full SQCD contributions to Delta Mt over mt [hep-ph/0507139].
   /// Here, msusy should be mu(1, 2)
   double dMt_over_mt_2loop(double g3, double mt, double mg, double mst1,

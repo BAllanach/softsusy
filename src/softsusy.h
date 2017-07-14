@@ -26,7 +26,6 @@
 #include <cstdlib>
 #include <cmath>
 #include "def.h"
-#include "mssm_twoloop_mt.h"
 #include "utils.h"
 #include "numerics.h"
 #include "physpars.h"
@@ -42,6 +41,8 @@
 #define HR "----------------------------------------------------------"
 
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+#include "mssm_twoloop_mt.h"
+#include "mssm_twoloop_mb.h"
 #include <ginac/ginac.h>
 namespace softsusy { class MssmSoftsusy; }
 namespace SoftSusy_helpers_ {

@@ -62,7 +62,7 @@ namespace softsusy {
 } // anonymous namespace
 
   /// 2-loop QCD contributions to Delta Mt over mt [hep-ph/0507139]
-double dMt_over_mt_2loop_qcd(const Parameters& pars) {
+double dMt_over_mt_2loop_qcd(const mtParameters& pars) {
    using std::log;
    const double g3  = pars.g3;
    const double mmt = pow2(pars.mt);
@@ -76,7 +76,7 @@ double dMt_over_mt_2loop_qcd(const Parameters& pars) {
 }
 
 /// 2-loop SUSY contributions to Delta Mt over mt [hep-ph/0507139]
-double dMt_over_mt_2loop_susy(const Parameters& pars) {
+double dMt_over_mt_2loop_susy(const mtParameters& pars) {
    using std::log;
    //   using gm2calc::dilog;
    const double g3     = pars.g3;
@@ -881,7 +881,7 @@ double dMt_over_mt_2loop_susy(const Parameters& pars) {
 }
 
   /// 2-loop full SQCD contributions to Delta Mt over mt [hep-ph/0507139]
-  double dMt_over_mt_2loop(const Parameters& pars) {
+  double dMt_over_mt_2loop(const mtParameters& pars) {
     return dMt_over_mt_2loop_qcd(pars) + dMt_over_mt_2loop_susy(pars);
   }
 
@@ -891,7 +891,7 @@ double dMt_over_mt_2loop_susy(const Parameters& pars) {
 			   double q) {
       double xt = sin(2.0 * thetat) * (sqr(mst1) - sqr(mst2)) /
 	(2.0 * mt);
-      Parameters pars;
+      mtParameters pars;
       pars.g3 = g3; pars.mt = mt; pars.mg = mg; pars.mst1 = mst1;
       pars.mst2 = mst2; pars.msusy = msusy; pars.xt = xt; pars.Q = q;
     

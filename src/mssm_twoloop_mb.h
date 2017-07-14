@@ -53,7 +53,7 @@ namespace softsusy {
   /// 2-loop full SQCD contributions to mb [arXiv:0707.0650]
   double delta_mb_2loop(double g3, double mt, double mb, double mg,
 			double mst1, double mst2, double msb1, double msb2,
-			double msusy, double xt, double xb, double q);
+			double msusy, double thetat, double thetab, double q);
   
 } ///< namespace softsusy
 

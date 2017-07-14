@@ -4256,7 +4256,9 @@ double delta_mb_2loop(const Parameters& pars)
 
 double delta_mb_2loop(double g3, double mt, double mb, double mg,
 		      double mst1, double mst2, double msb1, double msb2,
-		      double msusy, double xt, double xb, double q) {
+		      double msusy, double thetat, double thetab, double q) {
+  double xt = sin(2.0 * thetat) * (sqr(mst1) - sqr(mst2)) / (2.0 * mt);
+  double xb = sin(2.0 * thetab) * (sqr(msb1) - sqr(msb2)) / (2.0 * mb);  
   Parameters pars;
   pars.g3 = g3; pars.mt = mt; pars.mb = mt; pars.mg = mg; pars.mst1 = mst1;
   pars.mst2 = mst2; pars.msb1 = msb1; pars.msb2 = msb2; pars.msusy = msusy;
