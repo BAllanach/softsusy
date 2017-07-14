@@ -1,5 +1,1 @@
-<li>higgs->Z gamma corrected in NMSSM case - it was missing a contribution
-<li>higgs->mu mu decays implemented with pole muon mass when the Yukawa coupling is zero
-<li>H->WW* H->ZZ* decays have prefactors altered to hopefully include more higher order effects 
-<li>Fixed problem that wasn't flagging the non-convergence of the fixed point iteration algorithm: thanks to A Ibrahim for finding it
-<li>Made 0 mixing default (ie no quark mixing, but non-zero masses for second/third family)
+<li>
