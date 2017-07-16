@@ -2420,7 +2420,7 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
   double mtdiv = mtpole;
     
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  if (USE_TWO_LOOP_GAUGE_YUKAWA) {
+  if (USE_TWO_LOOP_GAUGE_YUKAWA && (included_thresholds & ENABLE_TWO_LOOP_MT_AS)) {
      p = forLoops.mt;
      mtdiv = forLoops.mt;
   }
@@ -2679,7 +2679,7 @@ double MssmSoftsusy::calcRunningMt() {
   
   decoupling_corrections.dmt.one_loop /= (-16.0 * sqr(PI));  
   
-  if (USE_TWO_LOOP_GAUGE_YUKAWA) {
+  if (USE_TWO_LOOP_GAUGE_YUKAWA && (included_thresholds & ENABLE_TWO_LOOP_MT_AS)) {
     ordinaryQcdCorrections = false;
     /// bool & needcalc = decoupling_corrections.dmt.two_loop_needs_recalc; 
     /// flag: calculate corrections if the
@@ -2898,7 +2898,7 @@ double MssmSoftsusy::calcRunningMb() {
     deltaSquarkChargino + deltaHiggs + deltaNeutralino;
   
   /// AVB: this also includes top quark contribution (decoupling)!
-  if (USE_TWO_LOOP_GAUGE_YUKAWA) {
+  if (USE_TWO_LOOP_GAUGE_YUKAWA && (included_thresholds & ENABLE_TWO_LOOP_MB_YUK)) {
     /*    
      bool & needcalc = decoupling_corrections.dmb.two_loop_needs_recalc; 
     // flag: calculate corrections if two-previous iterations gave different results
@@ -3128,7 +3128,7 @@ double MssmSoftsusy::calcRunningMtau() {
   
   decoupling_corrections.dmtau.one_loop = -dzetamtau;
   
-  if (USE_TWO_LOOP_GAUGE_YUKAWA) {
+  if (USE_TWO_LOOP_GAUGE_YUKAWA && (included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
     // flag: calculate corrections if two-previous iterations gave different
     // results 
     bool & needcalc = decoupling_corrections.dmtau.two_loop_needs_recalc;  
