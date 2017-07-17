@@ -203,6 +203,7 @@ double fs(double z);
 double ffbar(double z);
 
 Complex dilog(const Complex & x);
+std::complex<long double> dilogcl(const std::complex<long double>&);
 
 /// Trapezoidal function integration to accuracy tol
 double trapzd(double (*func)(double), double a, double b, int n, 
