@@ -31,6 +31,7 @@
 #include "physpars.h"
 #include "lowe.h"
 #include "softpars.h"
+#include "mssm_twoloop_as.h"
 #include "twoloophiggs.h"
 #include "mssmUtils.h"
 
