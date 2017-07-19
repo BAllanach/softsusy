@@ -44,6 +44,7 @@
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 #include "mssm_twoloop_mt.h"
 #include "mssm_twoloop_mb.h"
+#include "mssm_twoloop_as.h"
 #include <ginac/ginac.h>
 namespace softsusy { class MssmSoftsusy; }
 namespace SoftSusy_helpers_ {
