@@ -6842,22 +6842,22 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
   decoupling_corrections.das.one_loop = -deltaAlphas;	
   
   if (USE_TWO_LOOP_GAUGE_YUKAWA) {
-    
     if ((included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK)) {
-      using namespace GiNaC;
-      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-      ex test = gs_corrections::eval_gs_twoloop_strong(drbrp);
-      if (is_a<numeric>(test)) {
-  	double dgs2 = ex_to<numeric>(test).to_double();
-	dgs2 = 2.0*dgs2; 
-	decoupling_corrections.das.two_loop = dgs2;
-	dalpha_2 = deltaAlphas*deltaAlphas/4.0 + dgs2;
-      }
+      /*      using namespace GiNaC;
+	      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
+	      ex test = gs_corrections::eval_gs_twoloop_strong(drbrp);
+	      if (is_a<numeric>(test)) {
+	      double dgs2 = ex_to<numeric>(test).to_double();
+	      dgs2 = 2.0*dgs2; 
+	      decoupling_corrections.das.two_loop = dgs2;
+	      dalpha_2 = deltaAlphas*deltaAlphas/4.0 + dgs2;
+	      }*/
 
       ///////// comparing C++ implementation //////////
-      /*
-      const double mst_1 = tree.mu(1, 3), mst_2 = tree.mu(2, 3), theta_t = tree.thetat;
-      const double msb_1 = tree.md(1, 3), msb_2 = tree.md(2, 3), theta_b = tree.thetab;
+      const double mst_1 = tree.mu(1, 3), mst_2 = tree.mu(2, 3),
+	theta_t = tree.thetat;
+      const double msb_1 = tree.md(1, 3), msb_2 = tree.md(2, 3),
+	theta_b = tree.thetab;
       const double msd_1 = tree.md(1, 2), msd_2 = tree.md(2, 2);
 
       flexiblesusy::mssm_twoloop_as::Parameters pars;
@@ -6890,18 +6890,17 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
          + flexiblesusy::mssm_twoloop_as::delta_alpha_s_2loop_at_as(pars)
          + flexiblesusy::mssm_twoloop_as::delta_alpha_s_2loop_ab_as(pars));
 
-      cout << "GiNaC - C++ = "
+      /*      cout << "GiNaC - C++ = "
            << "(" << decoupling_corrections.das.two_loop << " - "
            << dgs2_cpp << ") = "
            << (1 - decoupling_corrections.das.two_loop/dgs2_cpp)*100
-           << "%" << endl;
+           << "%" << endl;*/
       
       decoupling_corrections.das.two_loop = dgs2_cpp;
-      dalpha_2 = deltaAlphas*deltaAlphas/4.0 + dgs2_cpp;*/
+      dalpha_2 = deltaAlphas*deltaAlphas/4.0 + dgs2_cpp;
     }
-    
   }
-#endif // COMPILE_TWO_LOOP_GAUGE_YUKAWA
+#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
   
   const double alphasDRbar_post = alphasMSbar / (1.0 - deltaAlphas + dalpha_2);
   
