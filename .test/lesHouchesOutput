@@ -22,7 +22,7 @@ Block MINPAR               # SUSY breaking input parameters
 Block EXTPAR               # scale of SUSY breaking BCs
      0    1.88116790e+16   # MX scale
 # SOFTSUSY-specific non SLHA information:
-# MIXING=0 Desired accuracy=1.00000000e-03 Achieved accuracy=5.81401486e-04
+# MIXING=0 Desired accuracy=1.00000000e-03 Achieved accuracy=5.81401303e-04
 # 3-loop RGE corrections are off. 2-loop Yukawa/g3 thresholds are on
 # 2-loop O(a_s^2) threshold corrections to mt are on
 # 2-loop O(a_s^2) threshold corrections mb are on
