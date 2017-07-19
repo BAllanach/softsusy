@@ -17,7 +17,7 @@ Block MINPAR		     # Input parameters
     4   1.000000000e+00	     # sign(mu)
     5   0.000000000e+00	     # A0
 Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
-    0   0.000000000e+00      # Calculate decays in output (only for RPC (N)MSSM)
+    0   1.000000000e+00      # Calculate decays in output (only for RPC (N)MSSM)
 # The default is that without this, SOFTSUSY will only calculate the spectrum   
     1   1.000000000e-03      # Numerical precision: suggested range 10^(-3...-6)
     2   0.000000000e+00	     # Quark mixing parameter: see manual
