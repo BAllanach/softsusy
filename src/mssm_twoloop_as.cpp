@@ -1,23 +1,10 @@
-// ====================================================================
-// This file is part of FlexibleSUSY.
-//
-// FlexibleSUSY is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published
-// by the Free Software Foundation, either version 3 of the License,
-// or (at your option) any later version.
-//
-// FlexibleSUSY is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with FlexibleSUSY.  If not, see
-// <http://www.gnu.org/licenses/>.
-// ====================================================================
-
-// This file has been generated at Tue 18 Jul 2017 21:57:52
-// with the script "as2_to_cpp.m".
+/** \file mssm_twoloop_as.cpp
+    Project: SOFTSUSY 
+    Author: Ben Allanach and Alex Voigt
+    Manual: B.C. Allanach, A. Bednyakov and R. Ruiz de Austri, 
+    Comput. Phys. Commun. (2015) 192, arXiv:1407.6130.
+    Webpage: http://hepforge.cedar.ac.uk/softsusy/
+*/
 
 #include "mssm_twoloop_as.h"
 #include "numerics.h"

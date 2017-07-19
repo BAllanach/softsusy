@@ -1,7 +1,8 @@
 /** \file mssm_twoloop_mb.cpp
     Project: SOFTSUSY 
     Author: Alex Voigt
-    Manual: hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
+    Manual: B.C. Allanach, A. Bednyakov and R. Ruiz de Austri, 
+    Comput. Phys. Commun. (2015) 192, arXiv:1407.6130.
     Webpage: http://hepforge.cedar.ac.uk/softsusy/
 */
 

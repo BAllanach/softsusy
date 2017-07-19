@@ -1,4 +1,4 @@
-/** \file softsusy.h
+/** \file mssm_twoloop_mt.h
     - Project:     SOFTSUSY 
     - Author:      Alex Voigt
     - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
