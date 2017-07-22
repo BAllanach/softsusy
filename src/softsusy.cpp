@@ -3144,6 +3144,54 @@ double MssmSoftsusy::calcRunningMtau() {
 	
       } 
       dzetamtau2 = -dzetamtau*dzetamtau + dzmtau2;
+
+      const drBarPars tree(displayDrBarPars());
+      const double mst_1 = tree.mu(1, 3), mst_2 = tree.mu(2, 3),
+        theta_t = tree.thetat;
+      const double msb_1 = tree.md(1, 3), msb_2 = tree.md(2, 3),
+        theta_b = tree.thetab;
+      const double mstau_1 = tree.me(1, 3), mstau_2 = tree.me(2, 3),
+        theta_tau = tree.thetatau;
+
+      flexiblesusy::mssm_twoloop_mtau::Parameters pars;
+      pars.yt = tree.ht;
+      pars.yb = tree.hb;
+      pars.ytau = tree.htau;
+      pars.mt = tree.mt;
+      pars.mb = tree.mb;
+      pars.mtau = tree.mtau;
+      pars.mst1 = mst_1;
+      pars.mst2 = mst_2;
+      pars.msb1 = msb_1;
+      pars.msb2 = msb_2;
+      pars.mstau1 = mstau_1;
+      pars.mstau2 = mstau_2;
+      pars.msntau = tree.msnu(3);
+      pars.xt = sin(2*theta_t) * (sqr(mst_1) - sqr(mst_2)) / (2. * pars.mt);
+      pars.xb = sin(2*theta_b) * (sqr(msb_1) - sqr(msb_2)) / (2. * pars.mb);
+      pars.xtau = sin(2*theta_tau) * (sqr(mstau_1) - sqr(mstau_2)) / (2. * pars.mtau);
+      pars.mw = tree.mw;
+      pars.mz = tree.mz;
+      pars.mh = tree.mh0(1);
+      pars.mH = tree.mh0(2);
+      pars.mC = tree.mHpm;
+      pars.mA = tree.mA0(1);
+      pars.mu = displaySusyMu();
+      pars.tb = displayTanb();
+      pars.Q = displayMu();
+
+      const double dmtau_2L =
+        + flexiblesusy::mssm_twoloop_mtau::delta_mtau_2loop_atau_atau(pars)
+        + flexiblesusy::mssm_twoloop_mtau::delta_mtau_2loop_atau_at(pars)
+        + flexiblesusy::mssm_twoloop_mtau::delta_mtau_2loop_atau_ab(pars);
+
+      cout << "dmtau(GiNaC) = " << decoupling_corrections.dmtau.two_loop
+           << ", dmtau(C++) = " << dmtau_2L
+           << ", diff = " << (decoupling_corrections.dmtau.two_loop - dmtau_2L)/decoupling_corrections.dmtau.two_loop
+           << endl;
+
+      decoupling_corrections.dmtau.two_loop = dmtau_2L;
+      dzetamtau2 = -dzetamtau*dzetamtau + dmtau_2L;
     }
   }
 #endif

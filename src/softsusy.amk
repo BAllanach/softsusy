@@ -51,25 +51,25 @@ if COMPILE_TWO_LOOP_GAUGE_YUKAWA
 CPPFLAGS += -I$(srcdir)/src
 include src/two_loop_thresholds/mssmparam.amk
 include src/two_loop_thresholds/two_loop_th.amk
-softsusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_as.cpp 
+softsusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
 softsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
 if COMPILE_TWO_LOOP_SPARTICLE_MASS
-higher_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_as.cpp 
+higher_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
 higher_x_LDADD += lib2lthresh.la libmssmparam.la 
 endif COMPILE_TWO_LOOP_SPARTICLE_MASS
 
-softsusy_nmssm_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_as.cpp 
+softsusy_nmssm_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
 softsusy_nmssm_x_LDADD += lib2lthresh.la libmssmparam.la 
 
-softpoint_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_as.cpp 
+softpoint_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
 softpoint_x_LDADD += lib2lthresh.la libmssmparam.la 
 
-testDecay_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_as.cpp 
+testDecay_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
 testDecay_x_LDADD += lib2lthresh.la libmssmparam.la 
 
-rpvsoftsusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_as.cpp 
+rpvsoftsusy_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
 rpvsoftsusy_x_LDADD += lib2lthresh.la libmssmparam.la 
-rpvneut_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_as.cpp 
+rpvneut_x_SOURCES += src/two_loop_thresholds/twoloopbubble.cpp src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
 rpvneut_x_LDADD     += lib2lthresh.la libmssmparam.la 
 
 testDecay_x_LDADD  += lib2lthresh.la libmssmparam.la 
@@ -78,8 +78,8 @@ endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
 pkginclude_HEADERS += \
 $(addprefix src/, \
-decays.h threeBodyDecays.h particle.h mssm_twoloop_mt.h mssm_twoloop_mb.h \
-mssm_twoloop_mb.h \
+decays.h threeBodyDecays.h particle.h mssm_twoloop_mt.h \
+mssm_twoloop_mtau.h mssm_twoloop_mb.h \
 def.h main.h mainDecay.h numerics.h \
 softpars.h susy.h linalg.h \
 physpars.h softpoint.h twoloophiggs.h \
