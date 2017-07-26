@@ -107,13 +107,13 @@ AC_ARG_ENABLE([debug],
 #AG_PATH_AUTOOPTS([5.17], [], [AC_MSG_ERROR([No suitable version of AutoGen could be found])])
 
 # GiNaC/cln for two-loop decoupling corrections
-if test x"$enable_two_loop_gauge_yukawa_compilation" = x"yes"; then
- PKG_CHECK_MODULES([CLN], cln >= 1.3.1)  
- PKG_CHECK_MODULES([GINAC], ginac >= 1.3.5)  
-
- LIBS="$LIBS $CLN_LIBS $GINAC_LIBS"
- CPPFLAGS="$CPPFLAGS $CLN_CFLAGS $GINAC_CFLAGS"
-fi
+#if test x"$enable_two_loop_gauge_yukawa_compilation" = x"yes"; then
+# PKG_CHECK_MODULES([CLN], cln >= 1.3.1)  
+# PKG_CHECK_MODULES([GINAC], ginac >= 1.3.5)  
+#
+# LIBS="$LIBS $CLN_LIBS $GINAC_LIBS"
+# CPPFLAGS="$CPPFLAGS $CLN_CFLAGS $GINAC_CFLAGS"
+#fi
 
 # TSIL for 2-loop sparticle mass functions. But at the moment we are including 
 # it, so no worries.
