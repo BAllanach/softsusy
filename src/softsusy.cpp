@@ -37,7 +37,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   mxBC = s.displayMxBC();
   
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop; 
+  /*  decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop; 
   decoupling_corrections.das.two_loop = s.decoupling_corrections.das.two_loop; 
   
   decoupling_corrections.dmb.one_loop = s.decoupling_corrections.dmb.one_loop; 
@@ -49,7 +49,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   decoupling_corrections.dmtau.one_loop =
     s.decoupling_corrections.dmtau.one_loop; 
   decoupling_corrections.dmtau.two_loop
-    = s.decoupling_corrections.dmtau.two_loop; 
+  = s.decoupling_corrections.dmtau.two_loop; */
 #endif  ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
   included_thresholds = s.included_thresholds;
   
@@ -67,7 +67,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     setMu(0.0);
     
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    decoupling_corrections.das.one_loop = 0;
+    /*    decoupling_corrections.das.one_loop = 0;
     decoupling_corrections.das.two_loop = 0;
     
     decoupling_corrections.dmb.one_loop = 0;
@@ -77,7 +77,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     decoupling_corrections.dmt.two_loop = 0;
     
     decoupling_corrections.dmtau.one_loop = 0;
-    decoupling_corrections.dmtau.two_loop = 0;
+    decoupling_corrections.dmtau.two_loop = 0;*/
 #endif
     if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | ENABLE_TWO_LOOP_AS_AS_YUK | 
@@ -107,7 +107,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     setMu(s.displayMu()); 
     
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    decoupling_corrections.das.one_loop =
+    /*    decoupling_corrections.das.one_loop =
       s.decoupling_corrections.das.one_loop; 
     decoupling_corrections.das.two_loop =
       s.decoupling_corrections.das.two_loop; 
@@ -125,7 +125,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     decoupling_corrections.dmtau.one_loop =
       s.decoupling_corrections.dmtau.one_loop; 
     decoupling_corrections.dmtau.two_loop =
-      s.decoupling_corrections.dmtau.two_loop; 
+    s.decoupling_corrections.dmtau.two_loop; */
 #endif  ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
     included_thresholds = s.included_thresholds;
   }
@@ -140,7 +140,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     setMu(s.displayMu()); 
     
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    decoupling_corrections.das.one_loop = 0;
+    /*    decoupling_corrections.das.one_loop = 0;
     decoupling_corrections.das.two_loop = 0;
     
     decoupling_corrections.dmb.one_loop = 0;
@@ -150,7 +150,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     decoupling_corrections.dmt.two_loop = 0;
     
     decoupling_corrections.dmtau.one_loop = 0;
-    decoupling_corrections.dmtau.two_loop = 0;
+    decoupling_corrections.dmtau.two_loop = 0;*/
     
 #endif //COMPILE_TWO_LOOP_GAUGE_YUKAWA
     if (USE_TWO_LOOP_GAUGE_YUKAWA) {
@@ -177,7 +177,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     setMu(mu);
     
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    decoupling_corrections.das.one_loop = 0;
+    /*    decoupling_corrections.das.one_loop = 0;
     decoupling_corrections.das.two_loop = 0;
     
     decoupling_corrections.dmb.one_loop = 0;
@@ -187,7 +187,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     decoupling_corrections.dmt.two_loop = 0;
     
     decoupling_corrections.dmtau.one_loop = 0;
-    decoupling_corrections.dmtau.two_loop = 0;
+    decoupling_corrections.dmtau.two_loop = 0;*/
 #endif
     if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
@@ -2674,10 +2674,10 @@ double MssmSoftsusy::calcRunningMt() {
   bool ordinaryQcdCorrections = true;
   
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  decoupling_corrections.dmt.one_loop = qcd + stopGluino + higgs + 
+  double decoupling_corrections_dmt_one_loop = qcd + stopGluino + higgs + 
     neutralinos + charginoContribution;
   
-  decoupling_corrections.dmt.one_loop /= (-16.0 * sqr(PI));  
+  decoupling_corrections_dmt_one_loop /= (-16.0 * sqr(PI));  
   
   if (USE_TWO_LOOP_GAUGE_YUKAWA && (included_thresholds & ENABLE_TWO_LOOP_MT_AS)) {
     ordinaryQcdCorrections = false;
@@ -2894,7 +2894,7 @@ double MssmSoftsusy::calcRunningMb() {
   double dzetamb = 0.;
   
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  decoupling_corrections.dmb.one_loop = deltaSquarkGluino + 
+  double decoupling_corrections_dmb_one_loop = deltaSquarkGluino + 
     deltaSquarkChargino + deltaHiggs + deltaNeutralino;
   
   /// AVB: this also includes top quark contribution (decoupling)!
@@ -2946,7 +2946,7 @@ double MssmSoftsusy::calcRunningMb() {
       /// factorization of one-loop term 
       double alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
       dzetamb-= + 31.0 / 72.0 * sqr(alphasMZ) / sqr(PI) ///< pure QCD
-	+ alphasMZ / (3.0 * PI) * decoupling_corrections.dmb.one_loop; 
+	+ alphasMZ / (3.0 * PI) * decoupling_corrections_dmb_one_loop; 
 
   }
 #endif
@@ -3126,8 +3126,6 @@ double MssmSoftsusy::calcRunningMtau() {
   
   const double dzetamtau = sigmaNeutralino + sigmaChargino + sigmaHiggs;
   
-  decoupling_corrections.dmtau.one_loop = -dzetamtau;
-  
   if (USE_TWO_LOOP_GAUGE_YUKAWA &&
       (included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
     // flag: calculate corrections if two-previous iterations gave different
@@ -3192,7 +3190,7 @@ double MssmSoftsusy::calcRunningMtau() {
       //           << ", diff = " << (decoupling_corrections.dmtau.two_loop - dmtau_2L)/decoupling_corrections.dmtau.two_loop
       //           << endl;
 
-      decoupling_corrections.dmtau.two_loop = dmtau_2L;
+      //      decoupling_corrections.dmtau.two_loop = dmtau_2L;
       dzetamtau2 = -dzetamtau*dzetamtau + dmtau_2L;
     }
   // }
@@ -6889,8 +6887,6 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
   double dalpha_2 = 0.;
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
-  decoupling_corrections.das.one_loop = -deltaAlphas;	
-  
   if (USE_TWO_LOOP_GAUGE_YUKAWA) {
     if ((included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK)) {
       /*      using namespace GiNaC;
@@ -6946,7 +6942,7 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
            << (1 - decoupling_corrections.das.two_loop/dgs2_cpp)*100
            << "%" << endl;*/
       
-      decoupling_corrections.das.two_loop = dgs2_cpp;
+      //      decoupling_corrections.das.two_loop = dgs2_cpp;
       dalpha_2 = deltaAlphas*deltaAlphas/4.0 + dgs2_cpp;
     }
   }
@@ -7175,15 +7171,14 @@ void MssmSoftsusy::fixedPointIteration
     
     // keep it  
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    SoftSusy_helpers_::decoupling_corrections_t d_coupl = 
-      decoupling_corrections;
+    //    SoftSusy_helpers_::decoupling_corrections_t d_coupl = decoupling_corrections;
 #endif
     int enabled_thresholds = included_thresholds;    
 
     setSoftsusy(empty); /// Always starts from an empty object
     /// These are things that are re-written by the new initialisation
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    decoupling_corrections = d_coupl;
+    //    decoupling_corrections = d_coupl;
 #endif
     included_thresholds = enabled_thresholds;
     setSetTbAtMX(setTbAtMXflag); 
