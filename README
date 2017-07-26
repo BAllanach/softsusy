@@ -122,7 +122,7 @@ An example point using the higher order terms can be run with, for example,
 
 HIGH ACCURACY MODE
 ------------------
-If the high accuracy mode with 3-loop RGEs and some 2-loop threshold corrections is required, first install CLN and GiNaC, then
+If the high accuracy mode with 3-loop RGEs and some 2-loop threshold corrections is required, do
 > ./configure --enable-full-susy-threshold-compilation --enable-three-loop-rge-compilation
 > make 
 An example point using the high accuracy mode can be run with, for example,
