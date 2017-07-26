@@ -3128,10 +3128,11 @@ double MssmSoftsusy::calcRunningMtau() {
   
   decoupling_corrections.dmtau.one_loop = -dzetamtau;
   
-  if (USE_TWO_LOOP_GAUGE_YUKAWA && (included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
+  if (USE_TWO_LOOP_GAUGE_YUKAWA &&
+      (included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
     // flag: calculate corrections if two-previous iterations gave different
     // results 
-    bool & needcalc = decoupling_corrections.dmtau.two_loop_needs_recalc;  
+    /*    bool & needcalc = decoupling_corrections.dmtau.two_loop_needs_recalc;  
     using namespace GiNaC;
     if ((included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
       exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
@@ -3143,7 +3144,7 @@ double MssmSoftsusy::calcRunningMtau() {
 	decoupling_corrections.dmtau.two_loop = dzmtau2;
 	
       } 
-      dzetamtau2 = -dzetamtau*dzetamtau + dzmtau2;
+      dzetamtau2 = -dzetamtau*dzetamtau + dzmtau2;*/
 
       const drBarPars tree(displayDrBarPars());
       const double mst_1 = tree.mu(1, 3), mst_2 = tree.mu(2, 3),
@@ -3169,7 +3170,8 @@ double MssmSoftsusy::calcRunningMtau() {
       pars.msntau = tree.msnu(3);
       pars.xt = sin(2*theta_t) * (sqr(mst_1) - sqr(mst_2)) / (2. * pars.mt);
       pars.xb = sin(2*theta_b) * (sqr(msb_1) - sqr(msb_2)) / (2. * pars.mb);
-      pars.xtau = sin(2*theta_tau) * (sqr(mstau_1) - sqr(mstau_2)) / (2. * pars.mtau);
+      pars.xtau = sin(2*theta_tau) * (sqr(mstau_1) - sqr(mstau_2)) /
+	(2. * pars.mtau);
       pars.mw = tree.mw;
       pars.mz = tree.mz;
       pars.mh = tree.mh0(1);
@@ -3185,15 +3187,15 @@ double MssmSoftsusy::calcRunningMtau() {
         + flexiblesusy::mssm_twoloop_mtau::delta_mtau_2loop_atau_at(pars)
         + flexiblesusy::mssm_twoloop_mtau::delta_mtau_2loop_atau_ab(pars);
 
-      cout << "dmtau(GiNaC) = " << decoupling_corrections.dmtau.two_loop
-           << ", dmtau(C++) = " << dmtau_2L
-           << ", diff = " << (decoupling_corrections.dmtau.two_loop - dmtau_2L)/decoupling_corrections.dmtau.two_loop
-           << endl;
+      //      cout << "dmtau(GiNaC) = " << decoupling_corrections.dmtau.two_loop
+      //           << ", dmtau(C++) = " << dmtau_2L
+      //           << ", diff = " << (decoupling_corrections.dmtau.two_loop - dmtau_2L)/decoupling_corrections.dmtau.two_loop
+      //           << endl;
 
       decoupling_corrections.dmtau.two_loop = dmtau_2L;
       dzetamtau2 = -dzetamtau*dzetamtau + dmtau_2L;
     }
-  }
+  // }
 #endif
   
   return mTauSMMZ * 
