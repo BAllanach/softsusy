@@ -10,12 +10,9 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 AUTOMAKE_OPTIONS = subdir-objects
 
 include src/softsusy.amk
-# Not making docs in official tag
+#Not making docs in official tag
 #include doc/doc.amk
-if COMPILE_TWO_LOOP_GAUGE_YUKAWA
-else
 include inOutFiles/inOut.amk
-endif
 
 doc_DATA = doc/rpcManual.pdf \
            doc/rpvManual.pdf \

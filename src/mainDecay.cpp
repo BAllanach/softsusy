@@ -32,7 +32,7 @@ int main() {
 
     void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=sugraBcs;
   /// Parameters used: CMSSM parameters
-  double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
+  double mGutGuess = 2.0e16, tanb = 10.0;
   int sgnMu = 1;      ///< sign of mu parameter 
   int numPoints = 100; ///< number of scan points
 

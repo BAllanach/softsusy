@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([softsusy],[4.0.2],[softsusy@projects.hepforge.org],[softsusy])
+AC_INIT([softsusy],[4.0.3],[softsusy@projects.hepforge.org],[softsusy])
 AC_CONFIG_SRCDIR([src])
 AC_CONFIG_AUX_DIR([Config])
 AC_CONFIG_HEADERS([Config/config.h])
@@ -11,7 +11,7 @@ dnl Put default fortran compiler for this variable
 dnl F77=gfortran
 dnl === disable debug symbols by default =====
 if test "x$CXXFLAGS" = "x"; then
-    CXXFLAGS="-O2 -Wall"
+    CXXFLAGS="-O2 -Wall -std=c++11"
 fi
 if test "x$CFLAGS" = "x"; then
     CFLAGS="-O2 -Wall"
@@ -105,15 +105,6 @@ AC_ARG_ENABLE([debug],
 
 #Autogen
 #AG_PATH_AUTOOPTS([5.17], [], [AC_MSG_ERROR([No suitable version of AutoGen could be found])])
-
-# GiNaC/cln for two-loop decoupling corrections
-if test x"$enable_two_loop_gauge_yukawa_compilation" = x"yes"; then
- PKG_CHECK_MODULES([CLN], cln >= 1.3.1)  
- PKG_CHECK_MODULES([GINAC], ginac >= 1.3.5)  
-
- LIBS="$LIBS $CLN_LIBS $GINAC_LIBS"
- CPPFLAGS="$CPPFLAGS $CLN_CFLAGS $GINAC_CFLAGS"
-fi
 
 # TSIL for 2-loop sparticle mass functions. But at the moment we are including 
 # it, so no worries.

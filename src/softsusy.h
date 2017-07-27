@@ -31,6 +31,7 @@
 #include "physpars.h"
 #include "lowe.h"
 #include "softpars.h"
+#include "mssm_twoloop_as.h"
 #include "twoloophiggs.h"
 #include "mssmUtils.h"
 
@@ -41,22 +42,26 @@
 #define HR "----------------------------------------------------------"
 
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-#include <ginac/ginac.h>
+#include "mssm_twoloop_mt.h"
+#include "mssm_twoloop_mb.h"
+#include "mssm_twoloop_mtau.h"
+#include "mssm_twoloop_as.h"
+//#include <ginac/ginac.h>
 namespace softsusy { class MssmSoftsusy; }
-namespace SoftSusy_helpers_ {
-  GiNaC::exmap drBarPars_exmap(const softsusy::MssmSoftsusy &);
-}
-#include "two_loop_thresholds/softsusy_exmap.hpp"
-#include "two_loop_thresholds/mssmparam.hpp"
-#include "two_loop_thresholds/tau_corrections.hpp"
-#include "two_loop_thresholds/bquark_corrections.hpp"
-#include "two_loop_thresholds/tquark_corrections.hpp"
-#include "two_loop_thresholds/gs_corrections.hpp"
-#include "two_loop_thresholds/dec_cor_helper.hpp"
+//namespace SoftSusy_helpers_ {
+//  GiNaC::exmap drBarPars_exmap(const softsusy::MssmSoftsusy &);
+//}
+//#include "two_loop_thresholds/softsusy_exmap.hpp"
+//#include "two_loop_thresholds/mssmparam.hpp"
+//#include "two_loop_thresholds/tau_corrections.hpp"
+//#include "two_loop_thresholds/bquark_corrections.hpp"
+//#include "two_loop_thresholds/tquark_corrections.hpp"
+//#include "two_loop_thresholds/gs_corrections.hpp"
+//#include "two_loop_thresholds/dec_cor_helper.hpp"
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
 namespace softsusy {
-  
+
   ///< default SUSY breaking boundary condition scale
   const double mxDefault = 1.9e16; 
   
@@ -116,7 +121,7 @@ namespace softsusy {
     
   public:
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
+    //    SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
     /// Flag allowing to choose which two-loop thresholds have to be included
     int included_thresholds; 

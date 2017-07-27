@@ -32,7 +32,7 @@ doc/%.pdf: doc/%.tex
 	pdflatex $(*F).tex ; bibtex $(*F); pdflatex $(*F).tex; pdflatex $(*F).tex 
 
 clean-local:
-	-rm -f doc/*.log doc/*.spl doc/*.aux doc/*.dvi doc/*.ps doc/*.toc doc/*.out doc/*.pdf
+	-rm -f doc/*.log doc/*.spl doc/*.aux doc/*.dvi doc/*.ps doc/*.toc doc/*.out *flymake*
 
 distclean-local: clean-local
 	-rm -f $(doc_DATA)
