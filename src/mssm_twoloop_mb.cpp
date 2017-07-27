@@ -162,13 +162,13 @@ namespace {
 /**
  * The function returns the 2-loop SQCD (QCD + SUSY) relation between
  * the Standard Model DR-bar bottom mass
- * \f$m_b^{\text{SM},\overline{\text{DR}}}\f$ and the MSSM DR-bar
- * bottom mass \f$m_b^{\text{MSSM},\overline{\text{DR}}}\f$.
+ * \f$m_b^{{SM},\overline{{DR}}}\f$ and the MSSM DR-bar
+ * bottom mass \f$m_b^{{MSSM},\overline{{DR}}}\f$.
  * The relation has the form
  *
  * \f[
-    m_b^{\text{SM},\overline{\text{DR}}} =
-    m_b^{\text{MSSM},\overline{\text{DR}}} \left[
+    m_b^{{SM},\overline{{DR}}} =
+    m_b^{{MSSM},\overline{{DR}}} \left[
        1 + \left(\frac{\Delta m_b}{m_b}\right)_{1L}
          + \left(\frac{\Delta m_b}{m_b}\right)_{2L}
     \right]
