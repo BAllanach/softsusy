@@ -1,4 +1,4 @@
+0.5. Get down to one master branch to streamline production
 1a. Split up decays.cpp to have a more quickly compiled structure
 1b. Make an object to hold the decays
 2. Add first two family terms to other things, eg tadpoles etc. 
-3. Get rid of all stupid preprocessor commands to do with the higher loops
