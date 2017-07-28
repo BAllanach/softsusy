@@ -10,22 +10,7 @@ doc_DATA = doc/rpcManual.pdf \
 
 DOCFILES = $(doc_DATA)
 
-EXTRA_DIST += doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
-	   doc/nmssmManual.pdf doc/threeLoop.pdf doc/decays.pdf
-#        doc/anc/*.eps \
-#	doc/rpcManual.tex \
-#	doc/rpvManual.tex \
-#	doc/neutManual.tex \
-#	doc/nmssmManual.tex \
-#       doc/threeLoop.bib \
-#	doc/tableTwo.tex \
-#	doc/threeLoop.tex \
-#	doc/tableOne.tex \
-#	doc/axodraw.sty \
-#	doc/jheppub.sty \
-#	doc/elsarticle.cls doc/elsarticle-num.bst
-
-# doc: $(doc_DATA)
+doc: $(doc_DATA)
 
 doc/%.pdf: doc/%.tex
 	cd $(top_builddir)/doc;\

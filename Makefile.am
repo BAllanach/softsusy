@@ -10,19 +10,11 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 AUTOMAKE_OPTIONS = subdir-objects
 
 include src/softsusy.amk
-#Not making docs in official tag
-#include doc/doc.amk
+include doc/doc.amk
 include inOutFiles/inOut.amk
 
-doc_DATA = doc/rpcManual.pdf \
-           doc/rpvManual.pdf \
-           doc/neutManual.pdf \
-	   doc/nmssmManual.pdf \
-	   doc/threeLoop.pdf \
-	   doc/ho.pdf doc/decays.pdf
-
 dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh \
-NMSSMTools_4.2.1.tgz Makefile.nmssmtools CHANGES GUIDELINES COPYING $(doc_DATA) 
+NMSSMTools_4.2.1.tgz Makefile.nmssmtools CHANGES GUIDELINES COPYING $(DOCFILES) 
 
 CLEANFILES += $(OUTPUTFILES) *.x
 

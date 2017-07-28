@@ -12,8 +12,8 @@ doc/*.toc
 doc/*.log
 doc/*.out
 doc/*.spl
+doc/*flymake*
 doc/*-eps-*.pdf
-doc/*.pdf
 *.lo
 *.x 
 *.o
