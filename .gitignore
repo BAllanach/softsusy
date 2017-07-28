@@ -13,6 +13,7 @@ doc/*.log
 doc/*.out
 doc/*.spl
 doc/*-eps-*.pdf
+doc/*.pdf
 *.lo
 *.x 
 *.o
