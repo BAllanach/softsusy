@@ -14,7 +14,7 @@ if test "x$CXXFLAGS" = "x"; then
     CXXFLAGS="-O2 -Wall -std=c++11"
 fi
 if test "x$CFLAGS" = "x"; then
-    CFLAGS="-O2 -Wall -srd=c++11"
+    CFLAGS="-O2 -Wall"
 fi
 if test "x$FFLAGS" = "x"; then
     FFLAGS="-O2 -Wall"

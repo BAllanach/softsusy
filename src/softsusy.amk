@@ -43,6 +43,7 @@ softsusy_nmssm_x_LDADD += libsupermodel.la libtsil.la
 softpoint_x_LDADD      += libsupermodel.la libtsil.la 
 rpvsoftsusy_x_LDADD    += libsupermodel.la libtsil.la 
 rpvneut_x_LDADD        += libsupermodel.la libtsil.la 
+testDecay_x_LDADD      += libsupermodel.la libtsil.la 
 endif COMPILE_TWO_LOOP_SPARTICLE_MASS
 
 if COMPILE_TWO_LOOP_GAUGE_YUKAWA
@@ -74,7 +75,7 @@ lowe.h mycomplex.h rge.h softsusy.h \
 utils.h mssmUtils.h rpvsoft.h rpvsusypars.h \
 tensor.h rpvmain.h flavoursoft.h \
 xpr-base.h xpr-matrix.h xpr-vector.h rpvneut.h \
-nmssmsusy.h nmssmsoftpars.h higher_order.h \
+nmssmsusy.h nmssmsoftpars.h higher.h higher_order.h \
 nmssmsoftsusy.h nmssmUtils.h)
 
 libsoft_la_SOURCES = \
