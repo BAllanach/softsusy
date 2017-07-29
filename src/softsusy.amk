@@ -4,13 +4,10 @@ bin_PROGRAMS += softsusy.x \
                 softsusy-nmssm.x \
                 softpoint.x \
                 rpvsoftsusy.x \
-                rpvneut.x testDecay.x
+                rpvneut.x 
 
 softsusy_x_SOURCES = src/main.cpp 
 softsusy_x_LDADD = libsoft.la 
-
-testDecay_x_SOURCES = src/mainDecay.cpp 
-testDecay_x_LDADD = libsoft.la 
 
 softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp 
 softsusy_nmssm_x_LDADD = libsoft.la
@@ -43,7 +40,6 @@ softsusy_nmssm_x_LDADD += libsupermodel.la libtsil.la
 softpoint_x_LDADD      += libsupermodel.la libtsil.la 
 rpvsoftsusy_x_LDADD    += libsupermodel.la libtsil.la 
 rpvneut_x_LDADD        += libsupermodel.la libtsil.la 
-testDecay_x_LDADD      += libsupermodel.la libtsil.la 
 endif COMPILE_TWO_LOOP_SPARTICLE_MASS
 
 if COMPILE_TWO_LOOP_GAUGE_YUKAWA
@@ -57,8 +53,6 @@ softsusy_nmssm_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/
 
 softpoint_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
 
-testDecay_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-
 rpvsoftsusy_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
 rpvneut_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp
 endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
@@ -67,7 +61,7 @@ pkginclude_HEADERS += \
 $(addprefix src/, \
 decays.h threeBodyDecays.h particle.h mssm_twoloop_mt.h \
 mssm_twoloop_mtau.h mssm_twoloop_mb.h mssm_twoloop_as.h \
-def.h main.h mainDecay.h numerics.h \
+def.h main.h numerics.h \
 softpars.h susy.h linalg.h \
 physpars.h softpoint.h twoloophiggs.h \
 nmssm2loop.h dilogwrap.h \
