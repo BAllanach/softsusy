@@ -1,14 +1,14 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([softsusy],[4.0.3],[softsusy@projects.hepforge.org],[softsusy])
+AC_INIT([softsusy],[4.0.4],[softsusy@projects.hepforge.org],[softsusy],[http://softsusy.hepforge.org/])
 AC_CONFIG_SRCDIR([src])
 AC_CONFIG_AUX_DIR([Config])
 AC_CONFIG_HEADERS([Config/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 dnl Put default fortran compiler for this variable
-F77=gfortran
+dnl F77=gfortran
 dnl === disable debug symbols by default =====
 if test "x$CXXFLAGS" = "x"; then
     CXXFLAGS="-O2 -Wall -std=c++11"
@@ -99,9 +99,9 @@ AC_ARG_ENABLE([looptools],
               esac],[looptools_compilation=false])
 AM_CONDITIONAL(LOOPTOOLS, [test x$looptools_compilation = xtrue])
 
-AC_ARG_ENABLE([debug], 
-               AC_HELP_STRING([--enable-debug],[enables debug printing in two-loop threshold corrections]), 
- 	      AC_DEFINE([DEBUG],[1],[Threshold correction debugging output]),[])
+# AC_ARG_ENABLE([debug], 
+#               AC_HELP_STRING([--enable-debug],[enables debug printing in two-loop threshold corrections]), 
+# 	      AC_DEFINE([DEBUG],[1],[Threshold correction debugging output]),[])
 
 #Autogen
 #AG_PATH_AUTOOPTS([5.17], [], [AC_MSG_ERROR([No suitable version of AutoGen could be found])])

@@ -1,5 +1,3 @@
-
-
 /** \file softpoint.cpp
     - Project:     SOFTSUSY 
    - Authors:     Ben Allanach, Markus Bernhardt 

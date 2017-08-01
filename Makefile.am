@@ -26,7 +26,7 @@ updateWeb: dist
 	scp softsusy-${VERSION}.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; 
 	scp inOutFiles/*{Input,Output}* allanach@login.hepforge.org:~/softsusy/public_html/code
 	scp {src/def.h,inOutFiles/outputTest,README} allanach@login.hepforge.org:~/softsusy/public_html/code
-	scp -r doc allanach@login.hepforge.org:~/softsusy/public_html/; \
+	scp -r doc/*.pdf allanach@login.hepforge.org:~/softsusy/public_html/doc; \
 	doxygen softsusy.cfg &&\
 	scp -r html allanach@login.hepforge.org:~/softsusy/public_html; \
 	scp -r CHANGES allanach@login.hepforge.org:~/softsusy/public_html/CHANGES.${VERSION}.html; \
