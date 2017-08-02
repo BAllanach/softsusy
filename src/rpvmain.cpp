@@ -30,13 +30,11 @@ int main() {
   outputCharacteristics(6);
 
   /// Header  
-  cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
-       << " Ben Allanach, Markus Bernhardt 2009\n";
-  cerr << "If you use SOFTSUSY, please refer to B.C. Allanach, ";
-  cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145;\n";
-  cerr << "For RPV aspects, B.C. Allanach and M.A. Bernhardt, ";
-  cerr << "Comp. Phys. Commun. 181 (2010) 232, ";
-  cerr << "arXiv:0903.1805.\n";
+  cout << "# SOFTSUSY" << SOFTSUSY_VERSION << endl;
+  cout << "# If you use SOFTSUSY, please refer to B.C. Allanach, \n";
+  cout << "# Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145;\n";
+  cout << "# For RPV aspects, B.C. Allanach and M.A. Bernhardt, \n";
+  cout << "# Comp. Phys. Commun. 181 (2010) 232, arXiv:0903.1805.\n";
 
   /// "try" catches errors in main program and prints them out
   try {
@@ -50,8 +48,8 @@ int main() {
     
     /// Print out the Standard Model data being used, as well as quark mixing
     /// assumption and the numerical accuracy of the solution
-    cerr << "Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
-         << TOLERANCE << endl << oneset << endl;
+    cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
+         << TOLERANCE << endl;
 
     /// set parameters
     double tanb = 10.;
@@ -93,7 +91,7 @@ int main() {
     }
   }
   catch(const string & a) {
-    cout << a; return -1;
+    cerr << a; return -1;
   }
   catch(const char *a) {
     printf("%s", a); return -1;

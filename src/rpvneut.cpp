@@ -2759,7 +2759,8 @@ void RpvNeutrino::headerSLHA(ostream & out) {
   MssmSoftsusy::headerSLHA(out);
   out << "# B.C. Allanach and M.A. Bernhardt, Comput. Phys. Commun. ";
   out << "181 (2010) 232,\n# arXiv:0903.1805\n";
-  out << "# B.C. Allanach, M. Hanussek and C.H. Kom, arXiv:1109.3735\n";
+  out << "# B.C. Allanach, M. Hanussek and C.H. Kom,\n";
+  out << "# Comput. Phys. Commun. 183 (2012) 785-793, arXiv:1109.3735\n";
 }
 
 void RpvNeutrino::massSLHA(ostream & out) {

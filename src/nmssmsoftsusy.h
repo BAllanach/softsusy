@@ -563,6 +563,8 @@ namespace softsusy {
 					int sgnMu, double tanb, double qMax,
 					int numPoints,
 					bool ewsbBCscale);
+    /// Proper citation info in SLHA file
+    void headerSLHA(ostream & out);    
     /// This does the MODSEL block of SLHA
     void modselSLHA(ostream & out, const char model[], double qMax);
     /// EXTPAR block of SLHA

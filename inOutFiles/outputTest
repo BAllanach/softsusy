@@ -1,10 +1,7 @@
+# SOFTSUSY4.0.4 test program, Ben Allanach 2002
+# If you use SOFTSUSY, please refer to B.C. Allanach,
+# Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145
 # Low energy data in SOFTSUSY: MIXING=0 TOLERANCE=1.000000e-04
-mU: 1.260421e-03  mC: 6.250260e-01  mt: 1.658566e+02  mt^pole: 1.735000e+02
-mD: 2.705296e-03  mS: 5.525710e-02  mB: 2.850884e+00  mb(mb):  4.180000e+00
-mE: 5.026585e-04  mM: 1.039338e-01  mT: 1.751426e+00  mb^pole: 4.940200e+00
-aE: 1.279500e+02  aS: 1.187000e-01   Q: 9.118760e+01  mT^pole: 1.776860e+00
-loops: 3        thresholds: 1
-
 # tan beta   mh           mA           mH0          mH+-
 3.000000e+00 1.039897e+02 8.461997e+02 8.481719e+02 8.503507e+02
 7.700000e+00 1.141271e+02 7.330615e+02 7.335088e+02 7.377310e+02

@@ -25,10 +25,10 @@ int main() {
     /// Sets format of output: 6 decimal places
     outputCharacteristics(6);
     
-    cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
+    cout << "# SOFTSUSY" << SOFTSUSY_VERSION 
 	 << " test program, Ben Allanach 2002\n";
-    cerr << "If you use SOFTSUSY, please refer to B.C. Allanach,\n";
-    cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
+    cout << "# If you use SOFTSUSY, please refer to B.C. Allanach,\n";
+    cout << "# Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
     
     /// Parameters used: CMSSM parameters
     double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
@@ -48,7 +48,7 @@ int main() {
     /// Print out the SM data being used, as well as quark mixing assumption and
     /// the numerical accuracy of the solution
     cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
-	 << TOLERANCE << endl << oneset << endl;
+	 << TOLERANCE << endl;
     
     /// Print out header line
     cout << "# tan beta   mh           mA           mH0          mH+-\n";
@@ -82,9 +82,9 @@ int main() {
       cout << tanb << " " << r.displayProblem() << endl;
   }
   }
-  catch(const string & a) { cout << a; return -1; }
-  catch(const char * a) { cout << a; return -1; }
-  catch(...) { cout << "Unknown type of exception caught.\n"; return -1; }
+  catch(const string & a) { cerr << a; return -1; }
+  catch(const char * a) { cerr << a; return -1; }
+  catch(...) { cerr << "Unknown type of exception caught.\n"; return -1; }
 
   return 0;
 }

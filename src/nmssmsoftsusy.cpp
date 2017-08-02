@@ -9352,6 +9352,13 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     if (displayProblem().notGlobalMin)
       out << "     3   # Warning: Not in global min of Higgs potential\n";
   }
+
+  void NmssmSoftsusy::headerSLHA(ostream & out) {
+    MssmSoftsusy::headerSLHA(out);
+    out << "# B.C. Allanach, P. Athron, L.C. Tunstall, A. Voigt and "
+	<< "A.~G.~Williams,\n# Comput. Phys. Commun. 185 (2014) 2322, "
+	<< "arXiv:1311.7659\n";
+  }
   
   /// SUSY Les Houches accord for interfacing to Monte-Carlos, decay programs etc.
   void NmssmSoftsusy::lesHouchesAccordOutput(ostream & out, const char model[],

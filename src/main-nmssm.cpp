@@ -40,8 +40,8 @@ int main() {
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
-  cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE="
-       << TOLERANCE << endl << oneset << endl;
+  cout << "# Data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE="
+       << TOLERANCE << endl;
 
   /// Print out header line
   cout << "# tan beta   mh(1)        mh(2)        mA(1)        mA(2)"

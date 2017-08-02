@@ -116,15 +116,15 @@ int main(int argc, char *argv[]) {
 	
   try {
   if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
-    cerr << "SOFTSUSY" << SOFTSUSY_VERSION << endl;
+    cout << "SOFTSUSY" << SOFTSUSY_VERSION << endl;
     if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) exit(0);
-    cerr << "B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
-    cerr << " hep-ph/0104145\n";
-    cerr << "For RPV aspects, B.C. Allanach and M.A. Bernhardt, Comput. "
+    cout << "B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
+    cout << " hep-ph/0104145\n";
+    cout << "For RPV aspects, B.C. Allanach and M.A. Bernhardt, Comput. "
 	 << "Phys. Commun. 181 (2010) 232, arXiv:0903.1805.\n\n";
-    cerr << "Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
+    cout << "Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
 	 << TOLERANCE << endl;
-    cerr << "G_F=" << GMU << " GeV^2" << endl;
+    cout << "G_F=" << GMU << " GeV^2" << endl;
   }
   
   double mgutGuess = 2.0e16, tanb = 0.;
@@ -1497,9 +1497,9 @@ int main(int argc, char *argv[]) {
       break;
     }
   }
-  catch(const string & a) { cout << a; return -1; }
-  catch(const char * a) { cout << a; return -1; }
-  catch(...) { cout << "Unknown type of exception caught.\n"; return -1; }
+  catch(const string & a) { cerr << a; return -1; }
+  catch(const char * a) { cerr << a; return -1; }
+  catch(...) { cerr << "Unknown type of exception caught.\n"; return -1; }
   
   return 0;
 }

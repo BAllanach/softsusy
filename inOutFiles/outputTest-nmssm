@@ -1,10 +1,4 @@
-# Low energy data in SOFTSUSY: MIXING=0 TOLERANCE=1.000000e-04
-mU: 1.260421e-03  mC: 6.250260e-01  mt: 1.658566e+02  mt^pole: 1.735000e+02
-mD: 2.705296e-03  mS: 5.525710e-02  mB: 2.850884e+00  mb(mb):  4.180000e+00
-mE: 5.026585e-04  mM: 1.039338e-01  mT: 1.751426e+00  mb^pole: 4.940200e+00
-aE: 1.279500e+02  aS: 1.187000e-01   Q: 9.118760e+01  mT^pole: 1.776860e+00
-loops: 3        thresholds: 1
-
+# Data in SOFTSUSY: MIXING=0 TOLERANCE=1.000000e-04
 # tan beta   mh(1)        mh(2)        mA(1)        mA(2)        mH+-
 5.000000e+00 1.080212e+02 7.036168e+02 5.798918e+02 7.344754e+02 7.381526e+02
 1.000000e+01 1.089962e+02 4.861010e+02 4.944352e+02 6.935633e+02 6.982874e+02

@@ -15,20 +15,8 @@
 #include "rpvmain.h"
 
 int main() {
-  /// Header  
-  cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
-       << " Ben Allanach, Markus Bernhardt 2009\n";
-  cerr << "If you use SOFTSUSY, please refer to B.C. Allanach, ";
-  cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145;\n";
-  cerr << "For RPV aspects, B.C. Allanach and M.A. Bernhardt, ";
-  cerr << "Comp. Phys. Commun. 181 (2010) 232, ";
-  cerr << "arXiv:0903.1805.\n";
-  cerr << "For RPV neutrino masses, B.C. Allanach, M. Hanussek and S. Kom,\n";
-  cerr << "Comput. Phys. Commun. 183 (2012) 785, arXiv:1109.3735 [hep-ph]\n";
-
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
-
 
   /// MIXING=1: CKM-mixing in up-sector
   MIXING = 1; 
@@ -87,10 +75,10 @@ int main() {
 			      numPoints, ewsbBCscale);
   }
   catch(const string & a) {
-    cout << a; return -1;
+    cerr << a; return -1;
   }
   catch(const char *a) {
-    cout << a; return -1;
+    cerr << a; return -1;
   }
   return 0;
 }

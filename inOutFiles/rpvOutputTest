@@ -1,3 +1,9 @@
+# SOFTSUSY4.0.4
+# If you use SOFTSUSY, please refer to B.C. Allanach, 
+# Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145;
+# For RPV aspects, B.C. Allanach and M.A. Bernhardt, 
+# Comp. Phys. Commun. 181 (2010) 232, arXiv:0903.1805.
+# Low energy data in SOFTSUSY: MIXING=1 TOLERANCE=1.000000e-04
 # l''_{323}(M_X) m_stop_R     # Problem flag
 0.000000e+00  8.065710e+02 # 
 2.000000e-02  8.056901e+02 # 
