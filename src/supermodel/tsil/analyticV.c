@@ -156,7 +156,8 @@ TSIL_COMPLEX TSIL_V0x0y (TSIL_REAL X, TSIL_REAL Y, TSIL_COMPLEX S, TSIL_REAL QQ)
 TSIL_COMPLEX TSIL_V0xyz (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z,
 			 TSIL_COMPLEX S, TSIL_REAL QQ)
 {
-  TSIL_REAL    temp, AX, AY, AZ, X2, X3, Y2, Y3, Z2, Z3;
+  //  TSIL_REAL    temp, AX, AY, AZ, X2, X3, Y2, Y3, Z2, Z3;
+    TSIL_REAL    temp, AY, AZ, X2, X3, Y2, Y3, Z2, Z3;
   TSIL_COMPLEX denom;
 
   if (TSIL_FABS(Y) < TSIL_FABS(Z)) {temp=Z; Z=Y; Y=temp;}
@@ -177,7 +178,7 @@ TSIL_COMPLEX TSIL_V0xyz (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z,
     return TSIL_Infinity;
   }
 
-  AX = TSIL_A(X,QQ);
+  //  AX = TSIL_A(X,QQ);
   AY = TSIL_A(Y,QQ);
   AZ = TSIL_A(Z,QQ);
   denom = X*(X-S)*TSIL_Delta(X,Y,Z);

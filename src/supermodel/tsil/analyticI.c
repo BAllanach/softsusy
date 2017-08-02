@@ -275,7 +275,8 @@ TSIL_COMPLEX TSIL_xI2p2 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 
 TSIL_COMPLEX TSIL_I2pp (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 {
-  TSIL_COMPLEX Ax, Ay, Az, X, Y, Z, sqrtx, sqrty, sqrtz;
+  //  TSIL_COMPLEX Ax, Ay, Az, X, Y, Z, sqrtx, sqrty, sqrtz;
+  TSIL_COMPLEX Ax, Ay, Az, X, Y, Z, sqrty, sqrtz;
   TSIL_REAL tmp, Deltaxyz, onemyox;
   TSIL_REAL onemyox2, onemyox3, onemyox4, onemyox5;
   TSIL_REAL x2, x3, y2, y3, z2, z3, xpymz;
@@ -313,7 +314,7 @@ TSIL_COMPLEX TSIL_I2pp (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
     if (x < 0) X -= I * TSIL_EPSILON;
     if (y < 0) Y -= I * TSIL_EPSILON;
     if (z < 0) Z -= I * TSIL_EPSILON;
-    sqrtx = TSIL_CSQRT(X);
+    //    sqrtx = TSIL_CSQRT(X);
     sqrty = TSIL_CSQRT(Y);
     sqrtz = TSIL_CSQRT(Z);
     return ((1.0L + 0.5L*(Az-Ax-3.0L*Ay)/y + (Ax-Ay)/(sqrty*sqrtz) 
@@ -345,7 +346,8 @@ TSIL_COMPLEX TSIL_I2pp (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 
 TSIL_COMPLEX TSIL_I2p3 (TSIL_REAL x, TSIL_REAL y, TSIL_REAL z, TSIL_REAL QQ)
 {
-  TSIL_COMPLEX Ax, Ay, Az, X, Y, Z, sqrtx, sqrty, sqrtz;
+  //  TSIL_COMPLEX Ax, Ay, Az, X, Y, Z, sqrtx, sqrty, sqrtz;
+  TSIL_COMPLEX Ax, Ay, Az, X, Y, sqrtx, sqrty, sqrtz;
   TSIL_REAL tmp, Deltaxyz;
   TSIL_REAL onemyox, onemyox2, onemyox3, onemyox4, onemyox5;
   TSIL_REAL xm1, xm2, x2, x3, x4;

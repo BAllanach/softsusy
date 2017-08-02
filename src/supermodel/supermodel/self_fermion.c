@@ -151,10 +151,11 @@ int mSSFFS (TSIL_DATA *input_data,
 	    TSIL_COMPLEX *MSSffS)
 {
   TSIL_COMPLEX M, Uyuzv, Uzxyv, Uuyxv, Buy, Bxz;
-  TSIL_REAL x, y, z, u, v, s;
+  //  TSIL_REAL x, y, z, u, v, s;
+    TSIL_REAL x, z, u, v, s;
 
   x = input_data->x;
-  y = input_data->y;
+  //  y = input_data->y;
   z = input_data->z;
   u = input_data->u;
   v = input_data->v;

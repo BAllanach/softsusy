@@ -64,7 +64,8 @@ int SUMO_GluinoPole (int loop_order, int expand_around_pole)
   TSIL_REAL m2_suL_saf[2], m2_suR_saf[2], m2_sdL_saf[2], m2_sdR_saf[2];
   int i, iter, retval = -1;
   /* char funcname[] = "GluinoPole"; */
-
+  m_top_saf = 0.; m2_top_saf = 0.;
+  
   if (0 == are_tree_couplings_updated) SUMO_Tree_Couplings ();
 
   /* If expanding around pole masses, save lagrangian masses, restore
