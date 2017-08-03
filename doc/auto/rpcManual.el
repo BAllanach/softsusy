@@ -6,7 +6,8 @@
     "article"
     "art10"
     "axodraw"
-    "jheppub")
+    "jheppub"
+    "verbatim")
    (TeX-add-symbols
     '("href" 2)
     "at"

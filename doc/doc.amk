@@ -12,6 +12,8 @@ DOCFILES = $(doc_DATA)
 
 doc: $(doc_DATA)
 
+doc/rpcManual.pdf: doc/rpcManual.tex src/main.cpp inOutFiles/outputTest
+
 doc/%.pdf: doc/%.tex
 	cd $(top_builddir)/doc;\
 	pdflatex $(*F).tex ; bibtex $(*F); pdflatex $(*F).tex; pdflatex $(*F).tex 

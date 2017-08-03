@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage{axodraw}
 \usepackage{jheppub}      
+\usepackage{verbatim}
 
 \keywords{sparticle, MSSM}  
 % Macros
@@ -1062,7 +1063,7 @@ bracketed entries replaced by double precision values:
 \begin{verbatim}
 Block SOFTSUSY     # SOFTSUSY specific inputs
   1   <TOLERANCE>  # desired fractional accuracy in output
-  2   <MIXING>     # quark mixing option
+  2   <mixing>     # quark mixing option
   3   <PRINTOUT>   # gives additional verbose output during calculation
   4   <QEWSB>      # change electroweak symmetry breaking scale
   5   <INCLUDE_2_LOOP_SCALAR_CORRECTIONS> # Full 2-loop running in RGEs
@@ -1089,14 +1090,14 @@ values
 mean that \SOFTSUSY~takes significantly longer to perform the calculation.
 
 The next parameter
-\code{MIXING} determines what $M_Z$ boundary condition will be used for the
+\code{mixing} determines what $M_Z$ boundary condition will be used for the
 quark Yukawa matrix parameters.
-\code{MIXING}=0.0 sets the quark mixings to zero but includes the first two 
+\code{mixing}=0.0 sets the quark mixings to zero but includes the first two 
 family's diagonal terms.
-\code{MIXING}=1.0,2.0 sets all the mixing at $M_Z$
+\code{mixing}=1.0,2.0 sets all the mixing at $M_Z$
 to be in the up-quark or down-quark
 sector respectively, as in eq.~(\ref{ckm}).
-\code{MIXING}=-1.0 sets the first two family Yukawa couplings to be zero. This
+\code{mixing}=-1.0 sets the first two family Yukawa couplings to be zero. This
 last option should {\em not}\/ be used if flavour mixing is desired, and is
 only included for backwards compatibility/checks.
 
@@ -1211,84 +1212,7 @@ The most important features of the objects are
 described in appendix~\ref{sec:objects}.
 The sample program \code{main.cpp}~has the following form: 
 \small
-\begin{verbatim}
-#include <iostream>
-#include "mycomplex.h"
-#include "def.h"
-#include "linalg.h"
-#include "lowe.h"
-#include "rge.h"
-#include "softsusy.h"
-#include "softpars.h"
-#include "susy.h"
-#include "utils.h"
-#include "numerics.h"
-
-int main() {
-  /// Sets up exception handling
-  signal(SIGFPE, FPE_ExceptionHandler); 
-
- /// Sets format of output: 6 decimal places
-  outputCharacteristics(6);
-
-  cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
-       << " test program, Ben Allanach 2002\n";
-  cerr << "If you use SOFTSUSY, please refer to B.C. Allanach,\n";
-  cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
-
-  /// Parameters used: CMSSM parameters
-  double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
-  int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 10; ///< number of scan points
-
-  QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
-
-  /// most important Standard Model inputs: you may change these and recompile
-  double alphasMZ = 0.1187, mtop = 173.4, mbmb = 4.2;
-  oneset.setAlpha(ALPHAS, alphasMZ);
-  oneset.setPoleMt(mtop);
-  oneset.setMass(mBottom, mbmb);
-
-  oneset.toMz();      ///< Runs SM fermion masses to MZ
-
-  /// Print out the SM data being used, as well as quark mixing assumption and
-  /// the numerical accuracy of the solution
-  cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
-       << TOLERANCE << endl << oneset << endl;
-
-  /// Print out header line
-  cout << "# tan beta   mh           mA           mH0          mH+-\n";
-
-  int i; 
-  /// Set limits of tan beta scan
-  double startTanb = 3.0, endTanb = 50.0;
-  /// Cycle through different points in the scan
-  for (i = 0; i<=numPoints; i++) {
-
-    tanb = (endTanb - startTanb) / double(numPoints) * double(i) +
-      startTanb; // set tan beta ready for the scan.
-
-    /// Preparation for calculation: set up object and input parameters
-    MssmSoftsusy r; 
-    DoubleVector pars(3); 
-    pars(1) = m0; pars(2) = m12; pars(3) = a0;
-    bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
-    
-    /// Calculate the spectrum
-    r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
-
-    /// check the point in question is problem free: if so print the output
-    if (!r.displayProblem().test()) 
-      cout << tanb << " " << r.displayPhys().mh0 << " " 
-           << r.displayPhys().mA0 << " " 
-           << r.displayPhys().mH0 << " " 
-           << r.displayPhys().mHpm << endl;
-    else
-      /// print out what the problem(s) is(are)
-      cout << tanb << " " << r.displayProblem() << endl;
-  }
-}
-\end{verbatim}
+\verbatiminput{../src/main.cpp}
 \normalsize
 First of all, a function \code{signal}~is called which attempts to catch any floating point
 exceptions that may occur during the running of the program. 
@@ -1358,30 +1282,10 @@ for the main program above, which can be run by the command
 ./softsusy.x
 \end{verbatim}\normalsize
 The output obtained was
-\small\begin{verbatim}
-# Low energy data in SOFTSUSY: MIXING=1 TOLERANCE=1.000000e-03
-mU: 1.375003e-03  mC: 6.250222e-01  mt: 1.657605e+02  mt^pole: 1.734000e+02
-mD: 2.734060e-03  mS: 5.986152e-02  mB: 2.866748e+00  mb(mb):  4.200000e+00
-mE: 5.026664e-04  mM: 1.039355e-01  mT: 1.751578e+00  mb^pole: 4.962029e+00
-aE: 1.279250e+02  aS: 1.187000e-01   Q: 9.118760e+01  mT^pole: 1.776990e+00
-loops: 3        thresholds: 1
-
-# tan beta   mh           mA           mH0          mH+-
-3.000000e+00 1.039255e+02 8.453169e+02 8.473537e+02 8.494758e+02
-7.700000e+00 1.140726e+02 7.321935e+02 7.326559e+02 7.368674e+02
-1.240000e+01 1.153050e+02 7.101467e+02 7.103521e+02 7.149075e+02
-1.710000e+01 1.156316e+02 6.913273e+02 6.914275e+02 6.961964e+02
-2.180000e+01 1.157377e+02 6.695505e+02 6.696477e+02 6.745775e+02
-2.650000e+01 1.157523e+02 6.443757e+02 6.444185e+02 6.496148e+02
-3.120000e+01 1.157003e+02 6.148784e+02 6.149922e+02 6.204020e+02
-3.590000e+01 1.155505e+02 5.820500e+02 5.820491e+02 5.879275e+02
-4.060000e+01 1.151542e+02 5.447311e+02 5.448647e+02 5.510808e+02
-4.530000e+01 [ stau tachyon ]
-5.000000e+01 [ stau tachyon ]
-\end{verbatim}\normalsize
+\small\verbatiminput{../inOutFiles/outputTest}\normalsize
 
 Firstly, the output details the input parameters, starting with
-\code{MIXING}~and \code{TOLERANCE}.  
+\code{mixing}~and \code{TOLERANCE}.  
 After the output of the input \code{QedQcd} object,
 various pole Higgs masses are displayed for different values of tan beta, as
 labelled by the various columns. The columns are, respectively, 
@@ -1752,6 +1656,8 @@ and gauge couplings at $M_Z$.
 %
 \begin{table}\begin{center}\begin{tabular}{lll} 
 data variable & & methods \\ \hline
+\code{int mixing} & quark mixing parameter & \code{setMixing} \\
+ & & \code{displayMixing} \\ \hline
 \code{Approx mssmSusyApprox} & loops/thresholds & \code{setMssmApprox} \\
  & & \code{displayMssmApprox} \\ \hline
 \code{DoubleMatrix u, d, e}  & Yukawa
@@ -1792,6 +1698,16 @@ Yukawa and gauge couplings, methods exist to either set (or display) one
 element or a whole matrix or vector of them.
 Another object, \code{MssmSusyRGE}~is also available, which is an
 \code{RGE}~object and therefore can be run to different scales.
+\code{mixing} determines what $M_Z$ boundary condition will be used for the
+quark Yukawa matrix parameters.
+\code{mixing}=0.0 sets the quark mixings to zero but includes the first two 
+family's diagonal terms.
+\code{mixing}=1.0,2.0 sets all the mixing at $M_Z$
+to be in the up-quark or down-quark
+sector respectively, as in eq.~(\ref{ckm}).
+\code{mixing}=-1.0 sets the first two family Yukawa couplings to be zero. This
+last option should {\em not}\/ be used if flavour mixing is desired, and is
+only included for backwards compatibility/checks.
 
 \subsection{\code{SoftParsMssm}~Class\label{sec:softie}}
 The operators \code{<<}, \code{>>} have been overloaded to write or read a
