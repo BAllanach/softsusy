@@ -38,6 +38,7 @@ int main() {
 
     /// Define RpvNeutrino object    
     RpvNeutrino kw;
+    /// Quark mixing is defined to be in the up sector (1) at MZ
     kw.setMixing(1);
     
     /// Set the CKM angles in Wolfenstein parameterisation

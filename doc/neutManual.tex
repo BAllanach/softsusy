@@ -1,6 +1,7 @@
 \documentclass[pdflatex,final,3p,times]{elsarticle}
 \usepackage{axodraw}
- \usepackage{color}
+\usepackage{color}
+\usepackage{verbatim}
 \bibstyle{elsarticle-num}
 
 % beginning of macros
@@ -628,60 +629,6 @@ Block SOFTSUSY
     2   1.000000000e+00      # quark mixing: none (=0), up (=1) or down (=2)
 \end{verbatim}
 
-
-\section{Sample Output \label{sec:output}}
-
-The following is an example for one non--zero $\rpv$ coupling
-$\lambda'_{322}(M_{GUT})=0.01$ at $M_{GUT}$ in an $\rpv$ mSUGRA
-SPS1a--like~\cite{Allanach:2002nj} scenario:
-\small
-\begin{verbatim}
-./softpoint.x sugra --m0=100 --m12=250 --a0=-100 --tanBeta=10 --mgut=unified --sgnMu=1 --lambdaP 3 2 2 0.01
-\end{verbatim}
-\normalsize The SLHA2 compliant output contains $\rpc$--conserving and
-$\rpv$ MSSM information.  Results related to the neutrino
-sector are displayed in the following blocks:
-\begin{verbatim}
-Block MASS   # Mass spectrum
-#PDG code      mass              particle
-        12     4.128113522451627e-50   # Mnu1(pole) normal hierarchy output
-        14    -2.818848508640361e-42   # Mnu2(pole) normal hierarchy output
-        16    -5.258228488951831e-06   # Mnu3(pole) normal hierarchy output
-...
-Block RVSNVEV Q= 4.670086691357357e+02 # sneutrino VEVs D 
-     1   -2.115552831665844e-23   # SneutrinoVev_{1}
-     2   -3.117652325269568e-18   # SneutrinoVev_{2}
-     3   -7.695902798823816e-02   # SneutrinoVev_{3}
-...
-Block UPMNS Q= 4.670086691357357e+02 # neutrino mixing matrix:
-  1  1     9.999999999518719e-01   # UPMNS_{11} matrix element
-  1  2     9.811018586559509e-06   # UPMNS_{12} matrix element
-  1  3     2.652785268618422e-20   # UPMNS_{13} matrix element
-  2  1    -9.811018586559507e-06   # UPMNS_{21} matrix element
-  2  2     9.999999999518718e-01   # UPMNS_{22} matrix element
-  2  3     6.939913220612296e-17   # UPMNS_{23} matrix element
-  3  1    -2.454643369143216e-20   # UPMNS_{31} matrix element
-  3  2    -2.018886379347570e-16   # UPMNS_{32} matrix element
-  3  3     1.000000000000000e+00   # UPMNS_{33} matrix element
-\end{verbatim}
-The block \code{MASS} includes the three pole neutrino masses
-calculated in units of GeV, given the $\rpv$ model parameters.
-Note that the corresponding particle data group (PDG) codes~\cite{pdg} are for
-the 
-neutrino flavour eigenstates. However, since we  
-are dealing with massive neutrinos, we slightly adapt this definition such that the mass ordering of the
-neutrinos is specified to be either normal or inverted hierarchy according to the value of the 
-\code{invertedOutput} parameter.
-In block \code{RVSNVEV}, the 1--loop sneutrino VEVs are displayed at the energy scale $Q$ at which 
-the EWSB conditions are imposed ($M_S$).
- Finally, the block \code{UPMNS} displays the matrix elements of the matrix
-$U_{\rm PMNS}$ in Eq.~\ref{eq:upmns}.
-The neutrino spectrum predicted by this model point is in
-contradiction with data, but in the next section, we calculate with
-a parameter point that leads to neutrino mixings and masses that are agreement
-with 2011 oscillation data
-in a sample program. 
-
 \section{Sample Program \label{sec:prog}}
 
 In this section we present a sample main program, that illustrates a
@@ -697,77 +644,8 @@ $\lambda'_{233}(M_{GUT})=3.0\times 10^{-5}$,
 $\lambda'_{333}(M_{GUT})=-3.5\times10^{-5}$.  
 
 The sample program has the following form: 
-\small
-\begin{verbatim}
-#include <rpvmain.h>
-
-int main() {
-  /// Sets up exception handling
-  signal(SIGFPE, FPE_ExceptionHandler); 
-
-  /// MIXING=0: diagonal Yukawa matrices, MIXING=1: CKM-mixing in up-sector, 
-  /// MIXING=2: CKM-mixing in down-sector
-  MIXING = 1; 
-
-  /// Apply SUSY breaking conditions at GUT scale, where g_1=g_2
-  bool gaugeUnification = true;
-
-  /// Sets format of output: 3 decimal places
-  outputCharacteristics(3);
-  
-  /// "try" catches errors in main program and prints them out
-  try {
-    QedQcd oneset;      ///< See "lowe.h" for default parameter definitions 
-    oneset.toMz();      ///< Runs SM fermion masses to MZ
-
-    /// Guess at GUT scale
-    double mxGuess = 2.e16;
-    
-    /// Close to scenario IH S2 from arXiv 1106.4338
-    int sgnMu = 1;
-    double tanb = 20., a0 = 912.3, m12 = 500., m0 = 100.;
-
-    /// Define RpvNeutrino object    
-    RpvNeutrino kw;
-
-    /// Set the GUT scale RPV SUSY couplings
-    kw.setLamPrime(1, 1, 1,  0.040);
-    kw.setLamPrime(2, 1, 1, -0.018);
-    kw.setLamPrime(3, 1, 1,  0.019);	
-    kw.setLamPrime(1, 3, 3,  3.3e-5);
-    kw.setLamPrime(2, 3, 3,  3.2e-5);
-    kw.setLamPrime(3, 3, 3, -3.5e-5);
-
-    /// Store inputs into one vector
-    DoubleVector pars(3); pars(1) = m0; pars(2) = m12; pars(3) = a0;
-
-    /// Outputs the RPV couplings required into the vector pars used by lowOrg
-    kw.rpvDisplay(pars);
-    /// Makes sure the neutrino mass ordering will be as expected in inverted
-    /// hierarchy output. If required, must be set before lowOrg is called 
-    kw.setInvertedOutput();
-    /// For inverted output, because of large cancellations, one requires the
-    /// SUSY spectrum calculation to be performed to a high fractional
-    /// accuracy
-    TOLERANCE = 1.0e-6;
-
-    /// Main driver routine: do the calculation
-    kw.lowOrg(rpvSugraBcs, mxGuess, pars, sgnMu, tanb, oneset, gaugeUnification);
-
-    /// Output the results in SLHA2 format
-    double qMax = 0.;  char * modelIdent = (char *)"sugra"; 
-    int numPoints = 1; bool altEwsb = false;
-    kw.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax, numPoints, mgut, altEwsb);
-  }
-  catch(const string & a) {
-    cout << a; exit(-1);
-  }
-  catch(const char *a) {
-    printf("%s", a); exit(-1);
-  }
-}
-\end{verbatim}
-\normalsize The structure of the main file above is as follows.  After
+\small\verbatiminput{../src/rpvneutmain.cpp}\normalsize 
+The structure of the main file above is as follows.  After
 including a header file, an exception handler is set up, followed by
 specifying a (sub--) set of global variables, all of which are
 described in the $\rpc$ manual~\cite{Allanach:2001kg}.  These include
@@ -823,31 +701,40 @@ parameters at $M_Z$ and the physical parameters SLHA2 compliant format.
 Finally, the 
 \code{catch} commands print any errors produced by the code.
 
+\section{Sample Output \label{sec:output}}
+
 The output is in standard SLHA2 format, including
 neutrino masses in GeV units, neutrino mass 
 ordering (inverted hierarchy 
 in this example) and the PMNS mixing matrix: 
-\begin{verbatim}
-[ ... ]
-Block MASS                      # Mass spectrum
-# PDG code     mass             particle
-[ ... ]
-        12     4.65793809e-11   # Mnu1 inverted hierarchy output
-        14     4.70348794e-11   # Mnu2 inverted hierarchy output
-        16     1.20158889e-14   # Mnu3 inverted hierarchy output
-[ ... ]
-Block UPMNS Q= 9.11876000e+01 # neutrino mixing matrix (inverted  hierarchy)
-  1  1     8.61178721e-01   # UPMNS_{11} matrix element
-  1  2     5.08244716e-01   # UPMNS_{12} matrix element
-  1  3     7.64979577e-03   # UPMNS_{13} matrix element
-  2  1    -3.29127098e-01   # UPMNS_{21} matrix element
-  2  2     5.69021210e-01   # UPMNS_{22} matrix element
-  2  3    -7.53584909e-01   # UPMNS_{23} matrix element
-  3  1    -3.87358444e-01   # UPMNS_{31} matrix element
-  3  2     6.46453533e-01   # UPMNS_{32} matrix element
-  3  3     6.57306066e-01   # UPMNS_{33} matrix element
+\small\begin{verbatim}
 [ ... ]
 \end{verbatim}
+\verbatiminput{mnu}
+\begin{verbatim}
+[ ... ]
+\end{verbatim}
+\verbatiminput{snuvev}
+\begin{verbatim}
+[ ... ]
+\end{verbatim}
+\verbatiminput{upmns}
+\begin{verbatim}
+[ ... ]
+\end{verbatim}\normalsize
+
+The block \code{MASS} includes the three pole neutrino masses
+calculated in units of GeV, given the $\rpv$ model parameters.
+Note that the corresponding particle data group (PDG) codes~\cite{pdg} are for
+the 
+neutrino flavour eigenstates. However, since we  
+are dealing with massive neutrinos, we slightly adapt this definition such that the mass ordering of the
+neutrinos is specified to be either normal or inverted hierarchy according to the value of the 
+\code{invertedOutput} parameter.
+In block \code{RVSNVEV}, the 1--loop sneutrino VEVs are displayed at the energy scale $Q$ at which 
+the EWSB conditions are imposed ($M_S$).
+Finally, the block \code{UPMNS} displays the matrix elements of the matrix
+$U_{\rm PMNS}$ in Eq.~\ref{eq:upmns}.
 
 
 \section{The \code{RpvNeutrino}~class\label{sec:objects}}

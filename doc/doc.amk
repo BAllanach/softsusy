@@ -14,6 +14,17 @@ doc: $(doc_DATA)
 
 doc/rpcManual.pdf: doc/rpcManual.tex src/main.cpp inOutFiles/outputTest
 doc/rpvManual.pdf: doc/rpvManual.tex src/rpvmain.cpp inOutFiles/rpvOutputTest
+doc/neutManual.pdf: doc/neutManual.tex src/rpvneutmain.cpp doc/mnu.tex doc/upmns.tex doc/snuvev.tex
+
+doc/mnu.tex: inOutFiles/neutOutputTest
+	     cat inOutFiles/neutOutputTest | grep "MASS\|Mnu" > doc/mnu.tex
+
+doc/snuvev.tex: inOutFiles/neutOutputTest
+		cat inOutFiles/neutOutputTest | grep "Sneutrino\|sneutrino" > doc/snuvev.tex
+
+doc/upmns.tex: inOutFiles/neutOutputTest
+	     cat inOutFiles/neutOutputTest | grep UPMNS > doc/upmns.tex
+
 
 doc/%.pdf: doc/%.tex
 	cd $(top_builddir)/doc;\

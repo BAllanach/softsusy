@@ -12,6 +12,8 @@ doc/*.toc
 doc/*.log
 doc/*.out
 doc/*.spl
+doc/*flymake*
+doc/auto/*
 *.lo
 *.x 
 *.o
