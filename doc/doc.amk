@@ -13,6 +13,7 @@ DOCFILES = $(doc_DATA)
 doc: $(doc_DATA)
 
 doc/rpcManual.pdf: doc/rpcManual.tex src/main.cpp inOutFiles/outputTest
+doc/rpvManual.pdf: doc/rpvManual.tex src/rpvmain.cpp inOutFiles/rpvOutputTest
 
 doc/%.pdf: doc/%.tex
 	cd $(top_builddir)/doc;\
