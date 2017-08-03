@@ -47,7 +47,7 @@ int main() {
     
     /// Print out the SM data being used, as well as quark mixing assumption and
     /// the numerical accuracy of the solution
-    cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
+    cout << "# Low energy data in SOFTSUSY: mixing=0" << " TOLERANCE=" 
 	 << TOLERANCE << endl;
     
     /// Print out header line
@@ -63,7 +63,7 @@ int main() {
 
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r;
-
+    
     DoubleVector pars(3);
     pars(1) = m0; pars(2) = m12; pars(3) = a0;
     bool uni = true;  ///< MGUT defined by g1(MGUT)=g2(MGUT)

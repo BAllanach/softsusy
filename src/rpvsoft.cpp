@@ -992,10 +992,10 @@ void RpvSoftsusy::sparticleThresholdCorrections(double tb) {
 
   setMw(sqrt(0.25 * sqr(newGauge(2)) * sqr(vev) - piwwtMW));
 
-  if (MIXING < 0 || MIXING > 2) {
+  if (displayMixing() < 0 || displayMixing() > 2) {
     ostringstream ii;
     ii << "In MssmSoftsusy::sparticleThresholdCorrections(double tb) ";
-    ii << "\n MIXING=" << MIXING << " is out of range (0 -> 2)\n";
+    ii << "\n mixing=" << displayMixing() << " is out of range (0 -> 2)\n";
     throw ii.str();
   }
 

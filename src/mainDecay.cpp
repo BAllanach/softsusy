@@ -30,42 +30,44 @@ int main() {
     /// Sets format of output: 6 decimal places
     outputCharacteristics(6);
 
+    int mixing = 0;
+    
     void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=sugraBcs;
-  /// Parameters used: CMSSM parameters
-  double mGutGuess = 2.0e16, tanb = 10.0;
-  int sgnMu = 1;      ///< sign of mu parameter 
-  int numPoints = 100; ///< number of scan points
+    /// Parameters used: CMSSM parameters
+    double mGutGuess = 2.0e16, tanb = 10.0;
+    int sgnMu = 1;      ///< sign of mu parameter 
+    int numPoints = 100; ///< number of scan points
+    
+    QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
+    
+    /// most important Standard Model inputs: you may change these and recompile
+    double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
+    oneset.setAlpha(ALPHAS, alphasMZ);
+    oneset.setPoleMt(mtop);
+    oneset.setMbMb(mbmb);
+    
+    oneset.toMz();      ///< Runs SM fermion masses to MZ
+    
+    /// Print out the SM data being used, as well as quark mixing assumption and
+    /// the numerical accuracy of the solution
+    cout << "# Low energy data in SOFTSUSY: mixing=" << mixing << " TOLERANCE=" 
+	 << TOLERANCE << endl;
 
-  QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
-
-  /// most important Standard Model inputs: you may change these and recompile
-  double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
-  oneset.setAlpha(ALPHAS, alphasMZ);
-  oneset.setPoleMt(mtop);
-  oneset.setMbMb(mbmb);
-
-  oneset.toMz();      ///< Runs SM fermion masses to MZ
-
-  /// Print out the SM data being used, as well as quark mixing assumption and
-  /// the numerical accuracy of the solution
-  cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
-       << TOLERANCE << endl;
-
-  int i; 
-
-  /// Set limits of random scan
-  int startn5 = 1, endn5 = 5;
-  double startMmess = 1.0e5, endMmess = 1.0e6;
-  double startx = 0.01, endx = 0.99;
-  double startM0 = 1000., endM0 = 4000.;
-  double startA0 = -4000., endA0 = 4000.;
-  double startM12 = 1000., endM12 = 4000.;  
-  double startTanb = 3.0, endTanb = 50.0;
-  long idum = idummySave;
-
-  char fname[80] = "tests";
-  fstream fout(fname, ios::out);
-  
+    int i; 
+    
+    /// Set limits of random scan
+    int startn5 = 1, endn5 = 5;
+    double startMmess = 1.0e5, endMmess = 1.0e6;
+    double startx = 0.01, endx = 0.99;
+    double startM0 = 1000., endM0 = 4000.;
+    double startA0 = -4000., endA0 = 4000.;
+    double startM12 = 1000., endM12 = 4000.;  
+    double startTanb = 3.0, endTanb = 50.0;
+    long idum = idummySave;
+    
+    char fname[80] = "tests";
+    fstream fout(fname, ios::out);
+    
   /// Cycle through different points in the scan
   for (i = 0; i<=numPoints; i++) {
     sgnMu = 1;

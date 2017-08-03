@@ -73,10 +73,6 @@ namespace softsusy{
   /// variable for level of output and amount of quark: 0-3, higher numbers
   /// giving more diagnostics. Set by user in file "massIn"
   extern int PRINTOUT;
-  /// quark mixing flag: set by user in file "massIn":
-  /// 0=no quark mixing, 1=in up sector, 2=in down sector, -1=3rd family
-  /// approximation (all at MZ)
-  extern int MIXING; 
   /// overall accuracy required
   extern double TOLERANCE;
   /// SUSY breaking scale - if set by user

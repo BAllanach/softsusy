@@ -174,7 +174,7 @@ public:
 
   /// next two routines are copy of old code which was taken out of the
   /// softsusy version when flavorsoft was implemented for objects
-  /// RpvSoftsusy2, MIXING=1 sets CKM mixing in the up-sector, MIXING=2 sets
+  /// RpvSoftsusy2, mixing=1 sets CKM mixing in the up-sector, mixing=2 sets
   /// CKM mixing in the down-sector 
   /// pars contains RPV SUSY parameters for the point in question
   void sparticleThresholdCorrections(double tb, const DoubleVector & pars);

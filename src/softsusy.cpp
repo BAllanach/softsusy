@@ -7158,7 +7158,6 @@ void MssmSoftsusy::fixedPointIteration
  oneset, bool gaugeUnification, bool ewsbBCscale) {
   
   try {
-    
     const static MssmSoftsusy empty;
     
     double muFirst = displaySusyMu(); /// Remember initial values
@@ -7701,7 +7700,7 @@ void MssmSoftsusy::itLowsoft
   static double oldMu = 0.;
   static int numTries = 0;
   double mz = displayMz();
-  
+
   if (numTries != 0 && sqr(displayMu() / mz - 1.0) > TOLERANCE) {
     cout << "WARNING: itLowsoft called at inappropriate";
     cout << " scale:" << displayMu() << endl; 
@@ -9775,7 +9774,7 @@ void MssmSoftsusy::spinfoSLHA(ostream & out) {
 
 void MssmSoftsusy::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
-  out << "# MIXING=" << displayMixing() << " Desired accuracy="
+  out << "# mixing=" << displayMixing() << " Desired accuracy="
       << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
   out << "# 3-loop RGE corrections are ";
   if (displayLoops() == 3) out << "on"; else out << "off";
@@ -10692,7 +10691,7 @@ void MssmSoftsusy::setEwsbConditions(const DoubleVector & inputs) {
   /// input diagonal matrices and it'll give you back mixed ones
 void MssmSoftsusy::doQuarkMixing(DoubleMatrix & /* mDon */,
 				 DoubleMatrix & /* mUpq */) {
-  /// This is a dummy routine - MIXING is ignored in this object (it's all
+  /// This is a dummy routine - mixing is ignored in this object (it's all
   /// done in FLAVOURMSSMSOFTSUSY these days).
 }
 

@@ -1385,10 +1385,10 @@ void RpvNeutrino::sparticleThresholdCorrections(double tb,
   
   setMw(sqrt(0.25 * sqr(newGauge(2)) * sqr(vev) - piwwtMW));
   
-  if (MIXING < 0 || MIXING > 2) {
+  if (displayMixing() < 0 || displayMixing() > 2) {
     ostringstream ii;
     ii << "In MssmSoftsusy::sparticleThresholdCorrections(double tb) ";
-    ii << "\n MIXING=" << MIXING << " is out of range (0 -> 2)\n";
+    ii << "\n mixing=" << displayMixing() << " is out of range (0 -> 2)\n";
     throw ii.str();
   }
   
@@ -1902,7 +1902,7 @@ void RpvNeutrino::neutrino(DoubleVector & neutrino, DoubleMatrix & mixMnu,
   msga  = msa  + gfix * mga;
   msgch = msch + gfix * mgch;
   
-  /// OBTAIN THE MIXING MATRICES AND MASS EIGENVALUES 
+  /// OBTAIN THE mixing MATRICES AND MASS EIGENVALUES 
   /// convention as in Dedes et al,  hep-ph/0603225
   ComplexMatrix zsr(5, 5), zsa(5, 5), zsch(8, 8), zsd(6, 6), zsu(6, 6), 
     zfn(7, 7);

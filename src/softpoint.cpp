@@ -81,6 +81,8 @@ void errorCall() {
 }
 
 int main(int argc, char *argv[]) {
+  int mixing = 0;
+  
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
@@ -115,16 +117,16 @@ int main(int argc, char *argv[]) {
     LAMBDA = 0., cgrav = 1.;
 	
   try {
-  if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
-    cout << "SOFTSUSY" << SOFTSUSY_VERSION << endl;
-    if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) exit(0);
-    cout << "B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
-    cout << " hep-ph/0104145\n";
-    cout << "For RPV aspects, B.C. Allanach and M.A. Bernhardt, Comput. "
-	 << "Phys. Commun. 181 (2010) 232, arXiv:0903.1805.\n\n";
-    cout << "Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
-	 << TOLERANCE << endl;
-    cout << "G_F=" << GMU << " GeV^2" << endl;
+    if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
+      cout << "SOFTSUSY" << SOFTSUSY_VERSION << endl;
+      if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) exit(0);
+      cout << "B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
+      cout << " hep-ph/0104145\n";
+      cout << "For RPV aspects, B.C. Allanach and M.A. Bernhardt, Comput. "
+	   << "Phys. Commun. 181 (2010) 232, arXiv:0903.1805.\n\n";
+      cout << "Low energy data in SOFTSUSY: mixing=" << mixing << " TOLERANCE=" 
+	   << TOLERANCE << endl;
+      cout << "G_F=" << GMU << " GeV^2" << endl;
   }
   
   double mgutGuess = 2.0e16, tanb = 0.;
@@ -1131,8 +1133,7 @@ int main(int argc, char *argv[]) {
 		    break;
 		  case 1: TOLERANCE = d; break;
 		  case 2: 
-		    MIXING = int(d); 
-		    //if (MIXING > 0) flavourViolation = true;
+		    mixing = int(d); 
 		    break;
 		  case 3: PRINTOUT = int(d); break;
 		  case 4: QEWSB = d; break;
@@ -1420,7 +1421,9 @@ int main(int argc, char *argv[]) {
       }
       
       oneset.toMz();
-
+      /// Set quark mixing correctly
+      r->setMixing(mixing); k.setMixing(mixing); nmssm.setMixing(mixing);
+      
     switch (susy_model) {
     case MSSM:
       r->fixedPointIteration(boundaryCondition, mgutGuess, pars, sgnMu, tanb, 

@@ -1182,16 +1182,16 @@ const flavourPhysical & flavourPhysical::operator=(const flavourPhysical &s) {
 
 void FlavourMssmSoftsusy::doQuarkMixing(DoubleMatrix & mDon, 
 					DoubleMatrix & mUpq) {
-  if (MIXING < 0 || MIXING > 4) {
+  if (displayMixing() < 0 || displayMixing() > 4) {
     ostringstream ii;
     ii << "In FlavourMssmSoftsusy::sparticleThresholdCorrections(double tb) ";
-    ii << "\n MIXING=" << MIXING << " is out of range (0 -> 4)\n";
+    ii << "\n mixing=" << displayMixing() << " is out of range (0 -> 4)\n";
     throw ii.str();
   }
 
   DoubleMatrix vCkm(displayCkm());
 
-  switch(MIXING) {
+  switch(displayMixing()) {
   case 1:       
     mUpq = vCkm.transpose() * mUpq * vCkm;
     break;

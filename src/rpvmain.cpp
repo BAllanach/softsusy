@@ -39,7 +39,7 @@ int main() {
   /// "try" catches errors in main program and prints them out
   try {
     /// Turn quark mixing on
-    MIXING = 1;
+    int mixing = 1;
     
     /// Contains default quark and lepton masses and gauge coupling
     /// information 
@@ -48,7 +48,7 @@ int main() {
     
     /// Print out the Standard Model data being used, as well as quark mixing
     /// assumption and the numerical accuracy of the solution
-    cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
+    cout << "# Low energy data in SOFTSUSY: mixing=" << mixing << " TOLERANCE=" 
          << TOLERANCE << endl;
 
     /// set parameters
@@ -74,6 +74,7 @@ int main() {
       
       /// define rpvSoftsusy object
       RpvSoftsusy kw;
+      kw.setMixing(mixing);
       
       /// set lambda coupling at mgut
       kw.setLamPrimePrime(3, 2, 3, lambda); 

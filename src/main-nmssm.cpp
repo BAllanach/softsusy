@@ -18,7 +18,6 @@
 using namespace softsusy;
 
 int main() {
-
   /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
   softsusy::PRINTOUT = 0;
@@ -40,7 +39,7 @@ int main() {
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
-  cout << "# Data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE="
+  cout << "# Data in SOFTSUSY: mixing=0" << " TOLERANCE="
        << TOLERANCE << endl;
 
   /// Print out header line
@@ -64,7 +63,7 @@ int main() {
         startTanb; // set tan beta ready for the scan.
 
      NmssmSoftsusy n;
-
+     
      try {
        n.NmssmSoftsusy::lowOrg(SemiMsugraBcs, mGutGuess, pars, nmpars, 
 			       sgnMu, tanb, oneset, uni);

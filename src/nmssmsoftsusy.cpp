@@ -8590,7 +8590,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     static double oldMu = 0.;
     static int numTries = 0;
     double mz = displayMz();
-    
+
     if (numTries != 0 && sqr(displayMu() / mz - 1.0) > TOLERANCE) {
       cout << "WARNING: itLowsoft called at inappropriate";
       cout << " scale:" << displayMu() << '\n';

@@ -18,9 +18,6 @@ int main() {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
-  /// MIXING=1: CKM-mixing in up-sector
-  MIXING = 1; 
-
   /// Apply SUSY breaking conditions at GUT scale, where g_1=g_2
   bool gaugeUnification = true;
 
@@ -41,7 +38,8 @@ int main() {
 
     /// Define RpvNeutrino object    
     RpvNeutrino kw;
-
+    kw.setMixing(1);
+    
     /// Set the CKM angles in Wolfenstein parameterisation
     double lambda = 0.2272, aCkm = 0.818, rhobar = 0.221, etabar = 0.34;
     kw.setAngles(lambda, aCkm, rhobar, etabar);
