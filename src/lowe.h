@@ -134,10 +134,6 @@ ostream & operator <<(ostream &, const QedQcd &);
 /// Formatted output from QedQcd object
 istream & operator >>(istream &left, QedQcd &m);
 
-/// Reads in a QedQed-type object and returns it in oneset.
-/// Call with fname "" if you want it to come from standard input
-/// "massIn" is an example of a data initialisation file: 
-void readIn(QedQcd & oneset, const char fname[80]); 
 /// Input pole mass of top and alphaS(mt), outputs running mass mt(mt)
 /// including one-loop standard model correction only
 double getRunMt(double poleMt, double asmt);

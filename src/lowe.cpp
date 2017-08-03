@@ -433,44 +433,6 @@ DoubleVector QedQcd::getGaugeMu(const double m2, const double sinth) const {
   return temp;
 }
 
-int accessedReadIn; // Should be initialised to zero at start of prog
-/*
---------------- read in a qcd-type object ------------------
-Call with fname "" if you want it to come from standard input
-
-"massIn" is an example of a data initialisation file: 
-*/
-void readIn(QedQcd &mset, const char fname[80]) {
-   static QedQcd prevReadIn; // Data will be stored in here for rest of the
-				// run
-
-  // Read in data if it's not been set
-  if (accessedReadIn == 0) {
-    string c;
-    if (!strcmp(fname,"")) cin >> prevReadIn >> c >> MIXING >> c >> TOLERANCE 
-			       >> c >> PRINTOUT; // from standard input 
-    else {   
-      // read from filename fname
-	  fstream fin(fname, ios::in); 
-	  if(!fin) {
-	    mset = QedQcd();
-	    return;
-	    ostringstream ii;
-	    ii << "Can't find input file " << fname << endl;
-	    throw ii.str();
-	  }
-	  fin >> prevReadIn >> c >> MIXING >> c >> TOLERANCE >> c >> PRINTOUT;
-	  fin.close();
-    }
-
-    if (PRINTOUT) cout << prevReadIn;
-    accessedReadIn = 1; // Flag the fact we've read in the data once
-  }
-
-  mset = prevReadIn;
-
-}
-
 DoubleVector gaugeDerivs(double x, const DoubleVector & y) {
   tempLe->setMu(exp(x));
   tempLe->setAlpha(ALPHA, y.display(1));

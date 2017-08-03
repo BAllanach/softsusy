@@ -213,6 +213,7 @@ namespace softsusy {
   double MssmSusy::displayTanb() const { return tanb; }
   
   ostream & operator <<(ostream &left, const MssmSusy &s) {
+    left << " mixing: " << s.displayMixing() << endl;
     left << " Y^U" << s.displayYukawaMatrix(YU) << " Y^D" <<
       s.displayYukawaMatrix(YD) << " Y^E" << s.displayYukawaMatrix(YE);
     left << "higgs VEV: " << s.displayHvev() 
@@ -254,9 +255,12 @@ namespace softsusy {
     string c;
     DoubleMatrix u(3, 3), d(3, 3), e(3, 3);
     double g1, g2, g3, smu, tanb, hv;
+    int mix;
+    left >> c >> mix;
     left >> c >> u >> c >> d >> c >> e >> c >> c >> hv;
     left >> c >> c >> tanb >> c >> smu;
     left >> c >> g1 >> c >> g2 >> c >> g3;
+    s.setMixing(mix);
     s.setYukawaMatrix(YU, u);
     s.setYukawaMatrix(YD, d);
     s.setYukawaMatrix(YE, e);
@@ -733,7 +737,7 @@ void MssmSusy::setMssmApprox(int l, int t) {
     const static double kz = 7.21234141895757; ///< 6 Zeta(3)
     
     /// full three family 
-    if (MIXING > 0 ) {
+    if (displayMixing() > 0 ) {
       /// For calculational brevity
       /// NB!!! Change notations to that of J&J  hep-ph/0408128 (Y->Y^T , etc)
       DoubleMatrix &d1=a.dt, 

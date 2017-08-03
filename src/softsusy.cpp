@@ -7406,7 +7406,7 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   /// 3-family mixed-up Yukawa couplings: From PDG 2000
   doQuarkMixing(mDq, mUq); 
   
-  if (MIXING == -1) {
+  if (displayMixing() == -1) {
     mDq(1, 1) = 0.; mDq(2, 2) = 0.; mUq(1, 1) = 0.; mUq(2, 2) = 0.;
     mLep(1, 1) = 0.; mLep(2, 2) = 0.;
   }
@@ -7553,7 +7553,7 @@ void MssmSoftsusy::setNeutCurrCouplings(double sinthDRbar, double & sw2,
 
 //PA: sets the Yukawas and Trilinears
 void MssmSoftsusy::calcDRTrilinears(drBarPars & eg, double vev, double beta) {
-  if (MIXING > 0) {    
+  if (displayMixing() > 0) {    
     DoubleMatrix diagUp(displayYukawaMatrix(YU)),
       diagDown(displayYukawaMatrix(YD)),
       diagLep(displayYukawaMatrix(YE));
@@ -9775,7 +9775,8 @@ void MssmSoftsusy::spinfoSLHA(ostream & out) {
 
 void MssmSoftsusy::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
-  out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
+  out << "# MIXING=" << displayMixing() << " Desired accuracy="
+      << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
   out << "# 3-loop RGE corrections are ";
   if (displayLoops() == 3) out << "on"; else out << "off";
   out << ". 2-loop Yukawa/g3 thresholds are ";
