@@ -81,6 +81,10 @@ namespace softsusy {
     /// Bilinear Higgs superpotential parameter and ratio of Higgs VEVs,
     /// \f$ v_1/v_2 \f$ 
     double smu, tanb, hVev;   
+    /// quark mixing flag: set by user in file "massIn":
+    /// 0=no quark mixing, 1=in up sector, 2=in down sector, -1=3rd family
+    /// approximation (all at MZ)
+    int mixing;
   public:
     MssmSusy(); ///< Constructor fills object with zeroes by default
     /// Constructor sets object to be equal to another
@@ -90,7 +94,7 @@ namespace softsusy {
     /// RG evolution l and thresholds parameter t
     MssmSusy(const DoubleMatrix & u, const DoubleMatrix & d, const
 	     DoubleMatrix & e, const DoubleVector & v, double m,
-	     double tb, double h);
+	     double tb, double h, int mix);
     virtual ~MssmSusy() {}; ///< Default destructor
     
     /// sets object to be equal to another
@@ -120,6 +124,8 @@ namespace softsusy {
     inline void setMssmApprox(const Approx & a) { mssmSusyApprox = a; };
     void set(const DoubleVector &);
     void set(const DoubleVector &, int & k);
+    /// Sets quark mixing parameter
+    void setMixing(double mix) { mixing = mix; };
     
     int displayMssmLoops() const { return mssmSusyApprox.displayLoops(); };
     /// Returns DRbar running Higgs vev
@@ -142,6 +148,8 @@ namespace softsusy {
     /// Calculate beta functions of SUSY preserving parameters of RPC MSSM
     /// Returns all parameters as elements of a vector
     const DoubleVector display() const;
+    /// Returns quark mixing parameter
+    int displayMixing() const { return mixing; };
     
     /// outputs object QedQcd & r valid at 1 GeV from SUSY data at mt, from
     /// diagonal elements of Yukawa couplings and Higgs VEV vev. 
@@ -225,7 +233,7 @@ namespace softsusy {
     /// RG evolution l and thresholds parameter t
     MssmSusyRGE(const DoubleMatrix & u, const DoubleMatrix & d, const
 		DoubleMatrix & e, const DoubleVector & v, double m,
-		double tb, double MU, int l, int t, double h);
+		double tb, double MU, int l, int t, double h, int mix);
     virtual ~MssmSusyRGE() {}; ///< Default destructor
     
     /// sets object to be equal to another

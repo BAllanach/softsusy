@@ -182,8 +182,8 @@ namespace softsusy {
     /// RG evolution l and thresholds parameter t
     NmssmSusy(const DoubleMatrix & u,
 	      const DoubleMatrix & d, 
-	      const DoubleMatrix & e, const DoubleVector & v, double m,
-	      double tb,  double hv, int l, int t, double sv,
+	      const DoubleMatrix & e, const DoubleVector & v, double m, 
+	      double tb,  double hv, int mix, int l, int t, double sv,
 	      double lambda, double kappa, double xiF, 
 	      double mupr);
     NmssmSusy(double lambda, double kappa, double sv, double xiF, 
@@ -263,8 +263,9 @@ namespace softsusy {
     /// RG evolution l and thresholds parameter t
     NmssmSusyRGE(const DoubleMatrix & u, const DoubleMatrix & d, const
 		 DoubleMatrix & e, const DoubleVector & v, double m,
-		 double tb, double MU, int l, int t, double h, double s,
-		 double lambda, double kappa, double xiF, double mupr);
+		 double tb, double MU, int l, int t, double h, int mix,
+		 double s, double lambda, double kappa, double xiF,
+		 double mupr);
     
     NmssmSusyRGE(const MssmSusy &m);
     

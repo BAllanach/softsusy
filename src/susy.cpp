@@ -41,7 +41,7 @@ namespace softsusy {
   
   MssmSusy::MssmSusy()
     : mssmSusyApprox(), u(3, 3), d(3, 3), e(3, 3), g(3), smu(0.0), tanb(0.0), 
-      hVev(0.0) {}
+      hVev(0.0), mixing(0) {}
   
   MssmSusyRGE::MssmSusyRGE()
     : MssmSusy() {
@@ -50,8 +50,8 @@ namespace softsusy {
   }
   
   MssmSusy::MssmSusy(const MssmSusy &s)
-    : mssmSusyApprox(s.mssmSusyApprox), u(s.u), d(s.d), e(s.e), g(s.g), smu(s.smu), 
-      tanb(s.tanb), hVev(s.hVev) {}
+    : mssmSusyApprox(s.mssmSusyApprox), u(s.u), d(s.d), e(s.e), g(s.g),
+      smu(s.smu), tanb(s.tanb), hVev(s.hVev), mixing(s.mixing) {}
 
   MssmSusyRGE::MssmSusyRGE(const MssmSusy &s)
     : MssmSusy(s) {
@@ -68,13 +68,15 @@ namespace softsusy {
   
   MssmSusy::MssmSusy(const DoubleMatrix & u, const DoubleMatrix & d, const
 		     DoubleMatrix & e, const DoubleVector & v, double m,
-		     double tb, double hv)
-    : mssmSusyApprox(), u(u), d(d), e(e), g(v), smu(m), tanb(tb), hVev(hv) {}
+		     double tb, double hv, int mix)
+    : mssmSusyApprox(), u(u), d(d), e(e), g(v), smu(m), tanb(tb), hVev(hv),
+      mixing(mix) {}
   
   MssmSusyRGE::MssmSusyRGE(const DoubleMatrix & u, const DoubleMatrix & d, const
 			   DoubleMatrix & e, const DoubleVector & v, double m,
-			   double tb, double MU, int l, int t, double hv)
-    : MssmSusy(u, d, e, v, m, tb, hv) { 
+			   double tb, double MU, int l, int t, double hv,
+			   int mix)
+    : MssmSusy(u, d, e, v, m, tb, hv, mix) { 
     setPars(numSusyPars);
     setMu(MU); 
     setMssmApprox(l, t);
@@ -357,7 +359,7 @@ void MssmSusy::setMssmApprox(int l, int t) {
 	+ hVev * twolp * 4.5 * g4(2);
     }
     /// Contains all susy derivatives:
-    MssmSusy ds(du, dd, de, dg, dmu, dt, dHvev); 
+    MssmSusy ds(du, dd, de, dg, dmu, dt, dHvev, mixing); 
     
     return ds;
   }
