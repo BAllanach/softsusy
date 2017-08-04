@@ -10,6 +10,7 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 AUTOMAKE_OPTIONS = subdir-objects
 
 include src/softsusy.amk
+# COMMENT NEXT LINE FOR AN OFFICIAL VERSION -- DONT WANT TO HAVE TO MAKE DOC
 include doc/doc.amk
 include inOutFiles/inOut.amk
 
