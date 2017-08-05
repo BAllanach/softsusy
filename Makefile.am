@@ -10,12 +10,11 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 AUTOMAKE_OPTIONS = subdir-objects
 
 include src/softsusy.amk
-# Comment this next line for an official release
-# include doc/doc.amk
+include doc/doc.amk
 include inOutFiles/inOut.amk
 
 dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh \
-NMSSMTools_4.2.1.tgz Makefile.nmssmtools CHANGES GUIDELINES COPYING 
+NMSSMTools_4.2.1.tgz Makefile.nmssmtools CHANGES GUIDELINES COPYING $(DOCFILES)
 
 CLEANFILES += $(OUTPUTFILES) *.x
 
@@ -36,4 +35,4 @@ updateWeb: dist
 install-data-local:
 	rm -f higher.x softsusy.x softsusy-nmssm.x softpoint.x rpvsoftsusy.x rpvneut.x *.la
 
-EXTRA_DIST += doc/rpcManual.pdf doc/rpvManual.pdf doc/decays.pdf doc/rpvManual.pdf doc/threeLoop.pdf doc/neutManual.pdf doc/nmssmManual.pdf doc/ho.pdf
+

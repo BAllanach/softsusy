@@ -12,9 +12,9 @@ DOCFILES = $(doc_DATA)
 
 doc: $(doc_DATA)
 
-doc/rpcManual.pdf: doc/rpcManual.tex src/main.cpp inOutFiles/outputTest
+doc/rpcManual.pdf: doc/rpcManual.tex src/rpvmain.cpp inOutFiles/rpvOutputTest
 doc/rpvManual.pdf: doc/rpvManual.tex src/rpvmain.cpp inOutFiles/rpvOutputTest
-doc/neutManual.pdf: doc/neutManual.proto.tex src/rpvneutmain.cpp inOutFiles/neutOutputTest
+doc/neutManual.pdf: doc/neutManual.proto.tex inOutFiles/neutOutputTest
 	     	    cat inOutFiles/neutOutputTest | grep "MASS\|Mnu" >  doc/mnu.tex;\
 		    cat inOutFiles/neutOutputTest | grep "Sneutrino\|sneutrino" > doc/snuvev.tex;\
 		    cat inOutFiles/neutOutputTest | grep UPMNS > doc/upmns.tex;\
@@ -33,3 +33,4 @@ clean-local:
 distclean-local: clean-local
 	-rm -f $(doc_DATA)
 
+EXTRA_DIST += doc
