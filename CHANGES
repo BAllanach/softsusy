@@ -1,1 +1,1 @@
-<li> 
+<li> Made quark mixing parameter MIXING an object parameter in MssmSusy object. Use setMixing() and displayMixing() methods
