@@ -121,13 +121,12 @@ void scaleVariation() {
     for (int i=0; i<=numPoints; i++) {
       double qewsb = (qewsbEnd - qewsbStart) / double(numPoints) * double(i) + 
 	qewsbStart; 
-      QEWSB = qewsb;
       DoubleVector pars(3); 
       bool uni = true, ewsbBCscale = false; double mGutGuess = 1.e16;
       
       pars(1) = m0; pars(2) = m12; pars(3) = a0; 
       /// Calculate the spectrum
-      MssmSoftsusy r;
+      MssmSoftsusy r; r.setQewsb(qewsb);
       r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni, 
 	       ewsbBCscale);
       if (treeLevelGluino) {

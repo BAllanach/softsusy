@@ -81,7 +81,7 @@ void errorCall() {
 }
 
 int main(int argc, char *argv[]) {
-  int mixing = 0;
+  int mixing = 0; double qewsb = 1;
   
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
@@ -260,7 +260,7 @@ int main(int argc, char *argv[]) {
 #endif
 	}
 	  else if (starts_with(argv[i], "--QEWSB=")) 
-	    QEWSB = get_value(argv[i], "--QEWSB=");
+	    qewsb = get_value(argv[i], "--QEWSB=");
 	  else if (starts_with(argv[i], "--m0="))
 	    { m0 = get_value(argv[i], "--m0="); }
 	  else if (starts_with(argv[i], "--m12=")) 
@@ -1136,7 +1136,7 @@ int main(int argc, char *argv[]) {
 		    mixing = int(d); 
 		    break;
 		  case 3: PRINTOUT = int(d); break;
-		  case 4: QEWSB = d; break;
+		  case 4: qewsb = d; break;
 		  case 5: INCLUDE_2_LOOP_SCALAR_CORRECTIONS = 
 		      bool(int(d+EPSTOL)); break;
 		  case 6: outputCharacteristics(int(d+EPSTOL)-1); break;  
@@ -1423,6 +1423,7 @@ int main(int argc, char *argv[]) {
       oneset.toMz();
       /// Set quark mixing correctly
       r->setMixing(mixing); k.setMixing(mixing); nmssm.setMixing(mixing);
+      r->setQewsb(qewsb); k.setQewsb(qewsb); nmssm.setQewsb(qewsb);
       
     switch (susy_model) {
     case MSSM:

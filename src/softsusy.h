@@ -110,7 +110,12 @@ namespace softsusy {
     bool altEwsb;       ///< flag: do we set mu, mA at the SUSY breaking scale?
     double predMzSq;    ///< predicted Z mass squared after iteration
     double t1OV1Ms, t2OV2Ms;  ///< DRbar tadpoles(MSusy): incl 2 loops
-    double t1OV1Ms1loop, t2OV2Ms1loop; ///< DRbar tadpoles(MSusy): excl 2 loops
+    double t1OV1Ms1loop, t2OV2Ms1loop; ///< DRbar tadpoles(MSusy): excl 2
+				       ///loops
+    /// there are two possible conventions: if QEWSB > MZ, its value is assumed
+    /// in GeV and used as a constant MSUSY. Otherwise, it MULTIPLIES the usual 
+    /// MSUSY value, of root(mstop1 mstop2)
+    double qewsb;       
     
   protected:
     void setT1OV1Ms(double t1) { t1OV1Ms = t1; } 
@@ -186,6 +191,7 @@ namespace softsusy {
     bool displaySetTbAtMX() const { return setTbAtMX; } 
     bool displayAltEwsb() const { return altEwsb; }
     double displayPredMzSq() const { return predMzSq; }
+    double displayQewsb() const { return qewsb; }
     
     /// Flags weird mgut-type problems
     void flagMgutOutOfBounds(bool a) { problem.mgutOutOfBounds = a; };
@@ -258,6 +264,8 @@ namespace softsusy {
     void setPredMzSq(double a) { predMzSq = a; }
     /// Sets total set of RGE parameters equal to elements of a vector
     void set(const DoubleVector &);
+    /// Sets user-set scale qewsb
+    void setQewsb(double q) { qewsb = q; }
     
     /// Switch 2-loop threshold \f$O(\alpha_s^2), O(\alpha_s \alpha_b),
     /// O(\alpha_s \alpha_t) \f$ corrections to \f$\alpha_s\f$ 

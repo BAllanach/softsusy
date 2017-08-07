@@ -1,1 +1,1 @@
-<li> Made quark mixing parameter MIXING an object parameter in MssmSusy object. Use setMixing() and displayMixing() methods
+<li> Made quark mixing parameter MIXING an object parameter in MssmSusy object. Use setMixing() and displayMixing() methods. User-set electroweak symmetry breaking scale QEWSB now moved into MssmSoftsusy object: use setQewsb() and displayQewsb().

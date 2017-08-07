@@ -75,8 +75,6 @@ namespace softsusy{
   extern int PRINTOUT;
   /// overall accuracy required
   extern double TOLERANCE;
-  /// SUSY breaking scale - if set by user
-  extern double QEWSB;
   /// For RPV: do you want to fix the RPV SUSY couplings at MSUSY?
   extern bool susyRpvBCatMSUSY;
   /// Again, for RPV: do you want old school (SLHA-1 like) output?

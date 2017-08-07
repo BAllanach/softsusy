@@ -34,23 +34,8 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   t2OV2Ms = s.displayTadpole2Ms(); 
   t1OV1Ms1loop = s.displayTadpole1Ms1loop(); 
   t2OV2Ms1loop = s.displayTadpole2Ms1loop(); 
+  qewsb = s.displayQewsb();
   mxBC = s.displayMxBC();
-  
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  /*  decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop; 
-  decoupling_corrections.das.two_loop = s.decoupling_corrections.das.two_loop; 
-  
-  decoupling_corrections.dmb.one_loop = s.decoupling_corrections.dmb.one_loop; 
-  decoupling_corrections.dmb.two_loop = s.decoupling_corrections.dmb.two_loop; 
-  
-  decoupling_corrections.dmt.one_loop = s.decoupling_corrections.dmt.one_loop; 
-  decoupling_corrections.dmt.two_loop = s.decoupling_corrections.dmt.two_loop; 
-  
-  decoupling_corrections.dmtau.one_loop =
-    s.decoupling_corrections.dmtau.one_loop; 
-  decoupling_corrections.dmtau.two_loop
-  = s.decoupling_corrections.dmtau.two_loop; */
-#endif  ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
   included_thresholds = s.included_thresholds;
   
   return *this;
@@ -62,23 +47,10 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       problem(), msusy(0.0), minV(numberOfTheBeast), 
       mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false), 
       predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), 
-      t2OV2Ms1loop(0.), mxBC(mxDefault) { 
+      t2OV2Ms1loop(0.), qewsb(1.) , mxBC(mxDefault){ 
     setPars(110);
     setMu(0.0);
     
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    /*    decoupling_corrections.das.one_loop = 0;
-    decoupling_corrections.das.two_loop = 0;
-    
-    decoupling_corrections.dmb.one_loop = 0;
-    decoupling_corrections.dmb.two_loop = 0;
-    
-    decoupling_corrections.dmt.one_loop = 0;
-    decoupling_corrections.dmt.two_loop = 0;
-    
-    decoupling_corrections.dmtau.one_loop = 0;
-    decoupling_corrections.dmtau.two_loop = 0;*/
-#endif
     if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | ENABLE_TWO_LOOP_AS_AS_YUK | 
 	ENABLE_TWO_LOOP_MB_AS | ENABLE_TWO_LOOP_MB_YUK |
@@ -101,32 +73,12 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       altEwsb(s.displayAltEwsb()), predMzSq(s.displayPredMzSq()), 
       t1OV1Ms(s.displayTadpole1Ms()), t2OV2Ms(s.displayTadpole2Ms()), 
       t1OV1Ms1loop(s.displayTadpole1Ms1loop()), 
-      t2OV2Ms1loop(s.displayTadpole2Ms1loop()), mxBC(s.displayMxBC()) {
+      t2OV2Ms1loop(s.displayTadpole2Ms1loop()), qewsb(s.displayQewsb()),
+      mxBC(s.displayMxBC()) {
     
     setPars(110);
     setMu(s.displayMu()); 
     
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    /*    decoupling_corrections.das.one_loop =
-      s.decoupling_corrections.das.one_loop; 
-    decoupling_corrections.das.two_loop =
-      s.decoupling_corrections.das.two_loop; 
-    
-    decoupling_corrections.dmb.one_loop =
-      s.decoupling_corrections.dmb.one_loop; 
-    decoupling_corrections.dmb.two_loop =
-      s.decoupling_corrections.dmb.two_loop; 
-    
-    decoupling_corrections.dmt.one_loop =
-      s.decoupling_corrections.dmt.one_loop; 
-    decoupling_corrections.dmt.two_loop =
-      s.decoupling_corrections.dmt.two_loop; 
-    
-    decoupling_corrections.dmtau.one_loop =
-      s.decoupling_corrections.dmtau.one_loop; 
-    decoupling_corrections.dmtau.two_loop =
-    s.decoupling_corrections.dmtau.two_loop; */
-#endif  ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
     included_thresholds = s.included_thresholds;
   }
   
@@ -135,24 +87,11 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       physpars(), forLoops(), problem(), 
       msusy(0.0), minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.), 
       setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
-      t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), mxBC(mxDefault) { 
+      t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
+      qewsb(1.0), mxBC(mxDefault) { 
     setPars(110);
     setMu(s.displayMu()); 
     
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    /*    decoupling_corrections.das.one_loop = 0;
-    decoupling_corrections.das.two_loop = 0;
-    
-    decoupling_corrections.dmb.one_loop = 0;
-    decoupling_corrections.dmb.two_loop = 0;
-    
-    decoupling_corrections.dmt.one_loop = 0;
-    decoupling_corrections.dmt.two_loop = 0;
-    
-    decoupling_corrections.dmtau.one_loop = 0;
-    decoupling_corrections.dmtau.two_loop = 0;*/
-    
-#endif //COMPILE_TWO_LOOP_GAUGE_YUKAWA
     if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
 	ENABLE_TWO_LOOP_AS_AS_YUK | 
@@ -172,24 +111,12 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.),
       setTbAtMX(false), 
       altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
-      t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), mxBC(mxDefault) {
+      t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
+      qewsb(1.0), mxBC(mxDefault){
     setHvev(hv);
     setPars(110);
     setMu(mu);
     
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    /*    decoupling_corrections.das.one_loop = 0;
-    decoupling_corrections.das.two_loop = 0;
-    
-    decoupling_corrections.dmb.one_loop = 0;
-    decoupling_corrections.dmb.two_loop = 0;
-    
-    decoupling_corrections.dmt.one_loop = 0;
-    decoupling_corrections.dmt.two_loop = 0;
-    
-    decoupling_corrections.dmtau.one_loop = 0;
-    decoupling_corrections.dmtau.two_loop = 0;*/
-#endif
     if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
 	ENABLE_TWO_LOOP_AS_AS_YUK | 
@@ -7081,11 +7008,12 @@ double MssmSoftsusy::calcMs() const {
   
   drBarPars tree(displayDrBarPars());
   
-  if (QEWSB < EPSTOL) throw("QEWSB Probably too low\n");
+  if (displayQewsb() < EPSTOL) throw("qewsb Probably too low\n");
   
-  if (QEWSB < MZ) 
-    return maximum(QEWSB * sqrt(tree.mu(2, 3) * tree.mu(1, 3)), displayMz());
-  else return QEWSB;
+  if (displayQewsb() < MZ) 
+    return maximum(displayQewsb() * sqrt(tree.mu(2, 3) * tree.mu(1, 3)),
+		   displayMz());
+  else return displayQewsb();
 }
 
 /// Provides the first guess at a SUSY object at mt, inputting tanb and oneset

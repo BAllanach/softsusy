@@ -18,10 +18,6 @@ namespace softsusy {
   double TOLERANCE = 1.0e-4;
   /// decay constant of muon
   double GMU = 1.16637e-5; 
-  /// there are two possible conventions: if QEWSB > MZ, its value is assumed
-  /// in GeV and used as a constant MSUSY. Otherwise, it MULTIPLIES the usual 
-  /// MSUSY value, of root(mstop1 mstop2)
-  double QEWSB = 1.0; 
   /// Do we include 2-loop RGEs of *all* scalar masses and A-terms, or only the
   /// scalar mass Higgs parameters? (Other quantities all 2-loop anyway): the
   /// default in SOFTSUSY 3 is to include all 2-loop terms

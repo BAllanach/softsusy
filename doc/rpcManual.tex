@@ -1121,18 +1121,6 @@ $\mu(M_{SUSY})$ and $s_W(M_{SUSY})$, and flags the nature of any tachyons
 encountered. Values \code{PRINTOUT}$>$0 are only required
 if additional diagnostics are required for debugging purposes.
 
-\code{QEWSB}~may be used to multiplicatively change the scale $M_{SUSY}$ at which 
-the Higgs potential is minimised and sparticle masses calculated, or it may
-alternatively be used as a fixed scale.
-This can be useful if one wants to examine
-the scale dependence of the results~\cite{scaledep}. Setting
-\code{QEWSB}=$x<M_Z/1$ GeV,
-sets $M_{SUSY} = x\sqrt{m_{\tilde t_1}(M_{SUSY}) m_{\tilde t_2}(M_{SUSY})}$. Values from
-0.5 to 2 are common. If $M_{SUSY}<M_Z$ results from the above expression, $M_{SUSY}=M_Z$
-is used. If on the other hand a {\em fixed scale}\/ is desired from $M_{SUSY}$, 
-setting \code{QEWSB}$>M_Z/1$ GeV in the input results in 
-$M_{SUSY}=$\code{QEWSB}~GeV being fixed.
-
 If \code{INCLUDE\_2\_LOOP\_SCALAR\_CORRECTIONS} is switched off (\code{0}) as
 in the default case, 
 2-loop RGEs~\cite{mandv}
@@ -1891,6 +1879,9 @@ $M_{SUSY}$ & \code{setTbAtMX} \\ \hline
 \code{double t1OV1Ms1loop} & 1-loop tadpole $t_1/v_1(M_{SUSY})$ & \code{displayTadpole1Ms1loop} \\
 \code{double t2OV2Ms1loop} & 1-loop tadpole $t_2/v_2(M_{SUSY})$ & \code{displayTadpole2Ms1loop} \\
 \hline
+\code{double qewsb} & User-set EWSB scale (GeV) & \code{displayQewsb} \\
+                    & default \code{1.0}   & \code{setQewsb} \\
+\hline
 \end{tabular}\caption{\label{tab:mssmsoftdata}\code{MssmSoftsusy} class data and accessor methods.}\end{center}\end{table}
 
 \begin{table}\begin{center}\begin{tabular}{ll} 
@@ -1961,6 +1952,19 @@ superpotential $\mu$ parameter, \code{tanb} is the value of $\tan \beta (M_Z)$
 required and \code{oneset} contains the $M_Z$ scale low energy data.
 If \code{altEwsb=true}, we have alternative boundary conditions on electroweak
 symmetry breaking, and the data in the class \code{AltEwsbMssm}~is used.
+\code{qewsb}~may be used to multiplicatively change the scale $M_{SUSY}$ at which 
+the Higgs potential is minimised and sparticle masses calculated, or it may
+alternatively be used as a fixed scale.
+This can be useful if one wants to examine
+the scale dependence of the results~\cite{scaledep}. Setting
+\code{qewsb}=$x<M_Z/1$ GeV,
+sets $M_{SUSY} = x\sqrt{m_{\tilde t_1}(M_{SUSY}) m_{\tilde t_2}(M_{SUSY})}$. Values from
+0.5 to 2 are common. If $M_{SUSY}<M_Z$ results from the above expression, $M_{SUSY}=M_Z$
+is used. If on the other hand a {\em fixed scale}\/ is desired from $M_{SUSY}$, 
+setting \code{qewsb}$>M_Z/1$ GeV in the input results in 
+$M_{SUSY}=$\code{qewsb}~GeV being fixed.
+
+
 
 \begin{table}\begin{center}\begin{tabular}{lll}      
 data & & methods \\ \hline
