@@ -7096,13 +7096,13 @@ void MssmSoftsusy::fixedPointIteration
     double m32 = displayGravitino();
     double muCondFirst = displayMuCond();
     double maCondFirst = displayMaCond();
+    double qqewsb      = displayQewsb();
     
     // keep it  
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
     //    SoftSusy_helpers_::decoupling_corrections_t d_coupl = decoupling_corrections;
 #endif
     int enabled_thresholds = included_thresholds;    
-
     setSoftsusy(empty); /// Always starts from an empty object
     /// These are things that are re-written by the new initialisation
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
@@ -7116,6 +7116,7 @@ void MssmSoftsusy::fixedPointIteration
     setM32(m32);
     setMuCond(muCondFirst);
     setMaCond(maCondFirst);
+    setQewsb(qqewsb);
     
     double mz = displayMz();
     
