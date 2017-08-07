@@ -59,7 +59,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   MssmSoftsusy::MssmSoftsusy()
     : MssmSusy(), MssmSoftPars(), AltEwsbMssm(), Approx(), 
       physpars(), forLoops(), 
-      problem(), msusy(0.0), minV(6.66e66), 
+      problem(), msusy(0.0), minV(numberOfTheBeast), 
       mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false), 
       predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), 
       t2OV2Ms1loop(0.), mxBC(mxDefault) { 
@@ -133,7 +133,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
     : MssmSusy(s), MssmSoftPars(), AltEwsbMssm(), Approx(s.displayMssmApprox()),
       physpars(), forLoops(), problem(), 
-      msusy(0.0), minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), 
+      msusy(0.0), minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.), 
       setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
       t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), mxBC(mxDefault) { 
     setPars(110);
@@ -169,7 +169,8 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
    double hv) 
     : MssmSusy(ss), MssmSoftPars(s), AltEwsbMssm(), Approx(l, t), physpars(sp), 
       forLoops(), problem(), msusy(0.0),
-      minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), 
+      minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.),
+      setTbAtMX(false), 
       altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
       t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), mxBC(mxDefault) {
     setHvev(hv);

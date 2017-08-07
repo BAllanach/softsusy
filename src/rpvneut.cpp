@@ -3083,7 +3083,7 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
   m(2) = displayPhys().msnu(1);
   m(3) = displayPhys().msnu(2);
   m(4) = displayPhys().msnu(3);
-  m(5) = 6.66e66; /// goldstone boson in last place
+  m(5) = numberOfTheBeast; /// goldstone boson in last place
 
   //  DoubleVector newCpOdds(m.sort());
   DoubleVector newCpOdds(m);

@@ -108,7 +108,7 @@
  }
 
  int DoubleVector::closest(double a) const {
-   double dist = 6.66e66; 
+   double dist = numberOfTheBeast;
    int position = -666;
    for (int i = displayStart(); i <= displayEnd(); ++i) {
      double propDist = fabs(display(i) - a);
