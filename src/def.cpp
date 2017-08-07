@@ -61,8 +61,6 @@ namespace softsusy {
   bool printRuledOutSpectra = false;
   /// default is to set tree-level tachyonic A masses to 0 in loops
   bool mAFlag = false;
-  /// default is that developer-level debugging printout flag is OFF
-  bool printDEBUG = false;
   /// random number seed
   long idummySave = -22;
   /// Default: use SOFTSUSY conventions for masses of sparticles in loops, ie

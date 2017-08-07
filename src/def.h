@@ -85,9 +85,6 @@ namespace softsusy{
   /// Flag which can be set to switch on producing spectrum output even for
   /// theoretically ruled out regions of parameter space
   extern bool printRuledOutSpectra;
-  /// Tries really hard to get convergence when the going gets tough, at the
-  /// cost of time for those points (takes up to 43 sec on my computer)
-  extern bool tryToConvergeHard;
   /// If =0 (default), sets tachyonic mA=0, otherwise resets mA=sqrt(|mA|^2)
   extern bool mAFlag;
   /// A handy global variable for random number generator
