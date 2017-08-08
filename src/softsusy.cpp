@@ -7097,17 +7097,10 @@ void MssmSoftsusy::fixedPointIteration
     double muCondFirst = displayMuCond();
     double maCondFirst = displayMaCond();
     double qqewsb      = displayQewsb();
+    int lpnum = displayLoops();
     
-    // keep it  
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    //    SoftSusy_helpers_::decoupling_corrections_t d_coupl = decoupling_corrections;
-#endif
     int enabled_thresholds = included_thresholds;    
     setSoftsusy(empty); /// Always starts from an empty object
-    /// These are things that are re-written by the new initialisation
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    //    decoupling_corrections = d_coupl;
-#endif
     included_thresholds = enabled_thresholds;
     setSetTbAtMX(setTbAtMXflag); 
     if (altFlag) useAlternativeEwsb();
@@ -7139,12 +7132,7 @@ void MssmSoftsusy::fixedPointIteration
     
     MssmSusyRGE t(guessAtSusyMt(tanb, oneset));
 
-    // default SoftSusy loop number
-    int lpnum = 2;
-    
-    if (USE_THREE_LOOP_RGE) lpnum = 3; 
-    
-    t.setMssmLoops(lpnum); /// >= 2 loops should protect against ht Landau pole 
+    t.setMssmLoops(2); /// 2 loops should protect against ht Landau pole 
     t.runto(mxBC); 
 
     setMssmSusy(t); setMu(t.displayMu());

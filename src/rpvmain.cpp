@@ -73,7 +73,7 @@ int main() {
       double lambda = Start + ((End - Start) / double(numPoints) * double(ii));
       
       /// define rpvSoftsusy object
-      RpvSoftsusy kw;
+      RpvSoftsusy kw; 
       kw.setMixing(mixing);
       
       /// set lambda coupling at mgut

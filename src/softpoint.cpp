@@ -43,9 +43,7 @@ void errorCall() {
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   ii << "--two-loop-gauge-yukawa switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
-#ifdef COMPILE_THREE_LOOP_RGE
   ii << "--three-loop-rges switches on 3-loop RGEs\n";
-#endif ///< COMPILE_THREE_LOOP_RGE
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   ii << "--two-loop-sparticle-masses switches on SUSYQCD two-loop corrections to squark\n and gluino pole masses.\n";
   ii << "--two-loop-sparticle-mass-method=<n> chooses the expansion of these terms:\n";
@@ -82,6 +80,7 @@ void errorCall() {
 
 int main(int argc, char *argv[]) {
   int mixing = 0; double qewsb = 1;
+  bool useThreeLoopRge = false;
   
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
@@ -214,23 +213,10 @@ int main(int argc, char *argv[]) {
 #endif
 	}
 	else if (starts_with(argv[i], "--disable-three-loop-rges")) {
-#ifdef COMPILE_THREE_LOOP_RGE
-	  USE_THREE_LOOP_RGE = false;
-#else
-	  compilationProblem = true;
-	  cout << "Three-loop RGEs for SUSY parameters not compiled.\n";
-	  cout << "Please use the --enable-three-loop-rges with ./configure\n";
-	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
-#endif
+	  useThreeLoopRge = false;
 	}
 	else if (starts_with(argv[i], "--three-loop-rges")) {
-#ifdef COMPILE_THREE_LOOP_RGE
-	  USE_THREE_LOOP_RGE = true;
-#else
-	  compilationProblem = true;
-	  cout << "Three-loop RGEs not compiled.\n";
-	  cout << "Please use the --enable-three-loop-rges with ./configure\n";
-#endif
+	  useThreeLoopRge = true;
 	}
 	else if (starts_with(argv[i], "--disable-two-loop-sparticle-mass")) {
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
@@ -1223,15 +1209,13 @@ int main(int argc, char *argv[]) {
                     if(num == 1) softsusy::SoftHiggsOut = true;
                   }
                      break;
-#ifdef COMPILE_THREE_LOOP_RGE
 		  case 19: {
                     int num = int(d + EPSTOL);
-		    if (num == 1) USE_THREE_LOOP_RGE = true;
-		    else if (num == 0) USE_THREE_LOOP_RGE = false;
+		    if (num == 1) useThreeLoopRge = true;
+		    else if (num == 0) useThreeLoopRge = false;
 		    else cout << "WARNING: incorrect setting for SOFTSUSY Block 19 (should be 0 or 1)\n";
 		    break;			     
 		  }
-#endif
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 		  case 20: {
                     int num = int(d + EPSTOL);
@@ -1424,7 +1408,9 @@ int main(int argc, char *argv[]) {
       /// Set quark mixing correctly
       r->setMixing(mixing); k.setMixing(mixing); nmssm.setMixing(mixing);
       r->setQewsb(qewsb); k.setQewsb(qewsb); nmssm.setQewsb(qewsb);
-      
+      if (useThreeLoopRge) {
+	r->setLoops(3); k.setLoops(3); nmssm.setLoops(3);
+      }
     switch (susy_model) {
     case MSSM:
       r->fixedPointIteration(boundaryCondition, mgutGuess, pars, sgnMu, tanb, 

@@ -125,9 +125,6 @@ namespace softsusy {
     double mxBC; ///< Scale at which SUSY breaking boundary conditions set
     
   public:
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    //    SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
-#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
     /// Flag allowing to choose which two-loop thresholds have to be included
     int included_thresholds; 
     
@@ -1056,7 +1053,8 @@ namespace softsusy {
 			     const QedQcd & oneset, bool gaugeUnification, 
 			     bool ewsbBCscale =  false); 
     /// legacy wrapper to provide backward compatibility: does the same as the
-    /// above 
+    /// above. If you want non-default valuse, make sure loops, qewsb and
+    /// mixing are set in the object before calling it
     double lowOrg(void (*boundaryCondition)
 		  (MssmSoftsusy &, const DoubleVector &),
 		  double mxGuess, 

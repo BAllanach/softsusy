@@ -740,7 +740,6 @@ MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
     dmH1sq = dmH1sq + dmH1sq2 * oneO16Pif;
     dmH2sq = dmH2sq + dmH2sq2 * oneO16Pif;
     
-#ifdef COMPILE_THREE_LOOP_RGE
     if (xx.displayMssmApprox().displayLoops() > 2) {
       
       const static double threelp = 2.53945672191370e-7; // 1/(16 pi^2)^3
@@ -1020,7 +1019,6 @@ dm3sq3=m3sq*(18.*d4T*e2T+e6T*(1+kz)+6.*e2T*(e4T+u2d2T)+18.*(d2T*(e4T+u2d2T)+u2d2
  dhd3 *= threelp; dhd += dhd3;
  dhe3 *= threelp; dhe += dhe3;
     } ///< end of 3-loop 
-#endif ///< COMPILE_THREE_LOOP_RGE
   }
   
   MssmSoftPars ds(dmG, dhu, dhd, dhe, dmq, dmu,

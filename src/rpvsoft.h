@@ -255,7 +255,7 @@ inline RpvSoftsusy::RpvSoftsusy()
     nuMasses(3), neutralFermMixing(7, 7), Uch(5, 5), Vch(5, 5), numRpcBcs(10) {
       setPars(numRpvSoftPars);
       setMu(0.0);
-      setLoops(0);
+      setLoops(2);
       setThresholds(0);
 }
 

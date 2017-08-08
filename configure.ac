@@ -55,16 +55,6 @@ AC_F77_LIBRARY_LDFLAGS
 ## If you want shared libraries, configure with --enable-shared
 AC_PROG_LIBTOOL
 
-## Use three-loop RGEs for superpotential parameters and gauge couplings
-AC_ARG_ENABLE([three-loop-rge-compilation], 
-               AC_HELP_STRING([--enable-three-loop-rge-compilation],[Compile three-loop RGEs for SUSY parameters]), 
- 	      [AC_DEFINE([COMPILE_THREE_LOOP_RGE],[1],[Compile 3-loop RGE for SUSY parameters]) case "${enableval}" in
-              yes) three_loop_rge_compilation=true ;;
-              no)  three_loop_rge_compilation=false ;;
-              *) AC_MSG_ERROR([bad value ${enableval} for --enable-three_loop_rge_compilation]) ;;
-              esac],[three_loop_rge_compilation=false])
-AM_CONDITIONAL(COMPILE_THREE_LOOP_RGE, [test x$three_loop_rge_compilation = xtrue])
-
 ## Switch on two-loop threshold corrections to third family Yukawa couplings 
 ## and strong gauge coupling 
 AC_ARG_ENABLE([two-loop-gauge-yukawa-compilation], 

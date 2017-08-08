@@ -81,9 +81,6 @@ namespace softsusy {
   /// Default: don't calculate decays
   bool calcDecays = false;
   
-  /// Controls the use of MSSM three-loop RGEs
-  bool USE_THREE_LOOP_RGE = false;
-  
   /// Threshold to prevent the re-evaluation of two-loop leading SUSY thresholds
   /// corrections. By default we set it to 10%. 
   double TWOLOOP_NUM_THRESH = 0.1;

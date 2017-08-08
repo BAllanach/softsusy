@@ -392,8 +392,6 @@ void MssmSusy::setMssmApprox(int l, int t) {
     
   }
   
-#ifdef COMPILE_THREE_LOOP_RGE
-  
   void setBetasThreeLoop(Tensor & teBeta, DoubleMatrix & duBeta,
 			 DoubleMatrix & ddBeta, DoubleMatrix & deBeta, DoubleVector &euBeta, 
 			 DoubleVector & edBeta, DoubleVector & eeBeta,
@@ -436,8 +434,6 @@ void MssmSusy::setMssmApprox(int l, int t) {
     
     
   }
-  
-#endif
   
   // outputs one-loop anomlous dimensions gii given matrix inputs
   // Note that we use the convention (for matrices in terms of gamma's)
@@ -569,7 +565,6 @@ void MssmSusy::setMssmApprox(int l, int t) {
 		      ddT - ceBeta * eeT) * twolp;  
     }
     
-#ifdef COMPILE_THREE_LOOP_RGE
     /// 3 loop contributions:
     if (displayMssmApprox().displayLoops() > 2) {
       //DoubleVector & g4 = a.g4;
@@ -610,7 +605,6 @@ void MssmSusy::setMssmApprox(int l, int t) {
 		      + gdeBeta * ddT * eeT) * threelp;
       
     }
-#endif ///< COMPILE_THREE_LOOP_RGE
   }
   
   // Outputs derivatives vector y[n] for SUSY parameters: interfaces to
@@ -721,7 +715,6 @@ void MssmSusy::setMssmApprox(int l, int t) {
   }
   
   /// By Bednyakov, see arXiv:1009.5455
-#ifdef COMPILE_THREE_LOOP_RGE
   void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				DoubleMatrix & gQQ, DoubleMatrix & gDD,
 				DoubleMatrix & gUU, double & gH1H1, double &
@@ -1224,5 +1217,4 @@ void MssmSusy::setMssmApprox(int l, int t) {
       
     } /// third family approximation 
   }
-#endif /// COMPILE_THREE_LOOP_RGE
 } /// namespace softsusy

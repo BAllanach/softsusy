@@ -89,7 +89,6 @@ namespace softsusy{
   extern bool mAFlag;
   /// A handy global variable for random number generator
   extern long idummySave;
-  extern int numTry;
   /// minimum branching ratio that will get printed out
   extern double minBR;
   /// If false, don't calculate the three-body decays
@@ -99,9 +98,6 @@ namespace softsusy{
   /// If true, calculate decays
   extern bool calcDecays;
   
-  /// Controls the use of MSSM three-loop RGEs
-  extern bool USE_THREE_LOOP_RGE;
-
   /// Threshold to prevent the re-evaluation of two-loop leading SUSY 
   /// thresholds corrections
   extern double TWOLOOP_NUM_THRESH;
