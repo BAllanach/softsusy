@@ -15,6 +15,7 @@
 #include "softsusy.h"
 #include "physpars.h"
 #include "lowe.h"
+#include "def.h"
 #include "softpars.h"
 #include "softsusy.h"
 #include "flavoursoft.h"

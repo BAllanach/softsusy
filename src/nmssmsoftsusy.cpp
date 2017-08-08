@@ -4149,7 +4149,6 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
   /// This part of the code adds higher loop corrections to gluino masses etc
   /// from Steve Martin et al
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   if(accuracy != 0 && USE_TWO_LOOP_SPARTICLE_MASS) {
     supermodel smodel;
 
@@ -4215,16 +4214,8 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     phys.md(1, 2)  = smodel.msL;
     phys.md(2, 2)  = smodel.msR;
   }
-#endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
   setPhys(phys);
-  /// PA: now set these values from NMSSM routines
-#ifndef COMPILE_TWO_LOOP_SPARTICLE_MASS
   gluino(accuracy); 
-#else
-  if(accuracy == 0 || !USE_TWO_LOOP_SPARTICLE_MASS) {
-    gluino(accuracy);
-  }
-#endif
   }
   
   /// PA: Higgs routine for NMSSM

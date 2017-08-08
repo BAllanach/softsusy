@@ -29,7 +29,6 @@ rpvsoftsusy_x_LDADD += -looptools -lgfortran
 rpvneut_x_LDADD += -looptools -lgfortran
 endif LOOPTOOLS
 
-if COMPILE_TWO_LOOP_SPARTICLE_MASS
 bin_PROGRAMS += higher.x 
 higher_x_SOURCES = src/higher.cpp 
 higher_x_LDADD = libsoft.la libsupermodel.la libtsil.la
@@ -40,14 +39,11 @@ softsusy_nmssm_x_LDADD += libsupermodel.la libtsil.la
 softpoint_x_LDADD      += libsupermodel.la libtsil.la 
 rpvsoftsusy_x_LDADD    += libsupermodel.la libtsil.la 
 rpvneut_x_LDADD        += libsupermodel.la libtsil.la 
-endif COMPILE_TWO_LOOP_SPARTICLE_MASS
 
 if COMPILE_TWO_LOOP_GAUGE_YUKAWA
 CPPFLAGS += -I$(srcdir)/src
 softsusy_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-if COMPILE_TWO_LOOP_SPARTICLE_MASS
 higher_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-endif COMPILE_TWO_LOOP_SPARTICLE_MASS
 
 softsusy_nmssm_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
 

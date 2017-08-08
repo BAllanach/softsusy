@@ -2782,7 +2782,7 @@ void RpvNeutrino::massSLHA(ostream & out) {
 void RpvNeutrino::spinfoSLHA(ostream & out) {
   out << "Block SPINFO          # Program information\n"
       << "     1    SOFTSUSY    # spectrum calculator\n";
-  out << "     2    " << SOFTSUSY_VERSION << "       # version number\n";
+  out << "     2    " << PACKAGE_VERSION << "       # version number\n";
   if (displayProblem().noConvergence)
     out << "     3   Possible problem: Not achieved desired accuracy of "
 	<< TOLERANCE << "- got " 

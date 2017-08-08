@@ -16,7 +16,6 @@
 #include <fstream>
 #include <sstream>
 #include <cstring>
-#include "def.h"
 #include "utils.h"
 #include "linalg.h"
 #include "rge.h"

@@ -21,8 +21,6 @@
 
 #include "higher.h"
 
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
-
 /// Change this variable to the location in your code of nllfast
 const char * fullPathToNllFast = "/home/bca20/code/nllfast-3.1-13TeV/";
 
@@ -261,10 +259,8 @@ void doScan(double lowRatio, double highRatio, int numPoints) {
       cout << endl;
     }
 }
-#endif
 
 int main(int argc, char *argv[]) {
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
@@ -300,9 +296,7 @@ int main(int argc, char *argv[]) {
   catch(const string & a) { cout << a; return -1; }
   catch(const char * a) { cout << a; return -1; }
   catch(...) { cout << "Unknown type of exception caught.\n"; return -1; }
-#else
-  cout << "Error: you must do ./configure --enable-two-loop-sparticle-mass-compilation before making this program\n";
-#endif
+
   return 0;
 }
 

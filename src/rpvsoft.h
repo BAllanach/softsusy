@@ -18,7 +18,6 @@
 #include <cstring>
 #include <sstream>
 #include <fstream>
-#include "def.h"
 #include "flavoursoft.h"
 #include "softsusy.h"
 #include "linalg.h"

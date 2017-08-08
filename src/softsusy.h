@@ -34,10 +34,8 @@
 #include "mssm_twoloop_as.h"
 #include "twoloophiggs.h"
 #include "mssmUtils.h"
-
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 #include "higher_order.h"
-#endif
+
 
 #define HR "----------------------------------------------------------"
 

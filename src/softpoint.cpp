@@ -26,7 +26,7 @@ string ToUpper(const string & s) {
 
 void errorCall() {
   ostringstream ii;
-  ii << "\n\nSOFTSUSY" << SOFTSUSY_VERSION 
+  ii << "\n\nSOFTSUSY" << PACKAGE_VERSION 
      << " called with incorrect arguments. Need to put either:\n";
   ii << "./softpoint.x leshouches < lesHouchesInput\n for SLHA/SLAH2 input, or\n";
   ii << "./softpoint.x sugra [SUGRA parameters] [other options]\n";
@@ -44,11 +44,9 @@ void errorCall() {
   ii << "--two-loop-gauge-yukawa switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
   ii << "--three-loop-rges switches on 3-loop RGEs\n";
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   ii << "--two-loop-sparticle-masses switches on SUSYQCD two-loop corrections to squark\n and gluino pole masses.\n";
   ii << "--two-loop-sparticle-mass-method=<n> chooses the expansion of these terms:\n";
   ii << "1=expansion around gluino pole mass only or 2=expand around\ngluino and squark pole masses.\n";
-#endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
   ii << "--mgut=unified sets the scale at which SUSY breaking terms are set to the GUT\n";
   ii << "scale where g1=g2. --mgut=<value> sets it to a fixed scale, ";
   ii << "whereas --mgut=msusy\nsets it to MSUSY\n\n";
@@ -117,7 +115,7 @@ int main(int argc, char *argv[]) {
 	
   try {
     if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
-      cout << "SOFTSUSY" << SOFTSUSY_VERSION << endl;
+      cout << "SOFTSUSY" << PACKAGE_VERSION << endl;
       if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) exit(0);
       cout << "B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
       cout << " hep-ph/0104145\n";
@@ -219,22 +217,10 @@ int main(int argc, char *argv[]) {
 	  useThreeLoopRge = true;
 	}
 	else if (starts_with(argv[i], "--disable-two-loop-sparticle-mass")) {
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 	  USE_TWO_LOOP_SPARTICLE_MASS = false;
-#else
-	  compilationProblem = true;
-	  cout << "Two-loop thresholds for sparticles not compiled.\n";
-	  cout << "Please use the --enable-two-loop-susy-thresholds with ./configure\n";
-#endif
 	}
 	else if (starts_with(argv[i], "--two-loop-sparticle-masses")) {
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 	  USE_TWO_LOOP_SPARTICLE_MASS = true;
-#else
-	  compilationProblem = true;
-	  cout << "Two-loop sparticle masses not compiled.\n";
-	  cout << "Please use the --enable-two-loop-sparticle-mass with ./configure\n";
-#endif
 	}
 	else if (starts_with(argv[i], "--two-loop-sparticle-mass-method=")) {
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
@@ -439,7 +425,7 @@ int main(int argc, char *argv[]) {
 		    break;
 		    default: 
 		      ostringstream ii;
-		      ii << "SOFTSUSY" << SOFTSUSY_VERSION 
+		      ii << "SOFTSUSY" << PACKAGE_VERSION 
 			 << " cannot yet do model " 
 			 << model << ": terminal error\n";
 		      throw ii.str();
@@ -1243,7 +1229,6 @@ int main(int argc, char *argv[]) {
 		    if (num > 0) higgsUncertainties = true;
 		    break;
 		  }
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 		  case 22: {
 		    int num = int(d + EPSTOL);
 		    if (num > 0) USE_TWO_LOOP_SPARTICLE_MASS = true;
@@ -1257,7 +1242,6 @@ int main(int argc, char *argv[]) {
 		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 1 and 3 inclusive)\n";		    
 		    break;
 		  }
-#endif
 		  case 24: {
 		    if (d < 1. && d > 0.) minBR = d;
 		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 24 (should be between 0 and 1)\n";

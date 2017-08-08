@@ -19,7 +19,6 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
-#include "def.h"
 #include "softsusy.h"
 #include "linalg.h"
 #include "rpvsusypars.h"

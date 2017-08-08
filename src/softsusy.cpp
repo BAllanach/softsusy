@@ -6648,7 +6648,6 @@ void MssmSoftsusy::physical(int accuracy) {
 
   /// This part of the code adds higher loop corrections to gluino masses etc
   /// from Steve Martin et al
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   if(accuracy != 0 && USE_TWO_LOOP_SPARTICLE_MASS) {
     supermodel smodel;
 
@@ -6719,7 +6718,6 @@ void MssmSoftsusy::physical(int accuracy) {
     physpars.md(1, 2)  = smodel.msL;
     physpars.md(2, 2)  = smodel.msR;
   }
-#endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
 }
 
   /// For a given trial value of the log of field H2, gives the value of the
@@ -9658,7 +9656,7 @@ void MssmSoftsusy::headerSLHA(ostream & out) {
   out.setf(ios::scientific, ios::floatfield);
   out.precision(8);
   
-  out << "# SOFTSUSY" << SOFTSUSY_VERSION << " SLHA compliant output" << endl;
+  out << "# SOFTSUSY" << PACKAGE_VERSION << " SLHA compliant output" << endl;
   out << "# B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
   out << " hep-ph/0104145\n";
 }
@@ -9666,7 +9664,7 @@ void MssmSoftsusy::headerSLHA(ostream & out) {
 void MssmSoftsusy::spinfoSLHA(ostream & out) {
   out << "Block SPINFO          # Program information\n"
       << "     1    SOFTSUSY    # spectrum calculator\n";
-  out << "     2    " << SOFTSUSY_VERSION << "       # version number\n";
+  out << "     2    " << PACKAGE_VERSION << "       # version number\n";
   if (displayProblem().noConvergence)
     out << "     3   Possible problem: Not achieved desired accuracy of "
 	<< TOLERANCE << "- got " 

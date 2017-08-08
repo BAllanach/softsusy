@@ -18,7 +18,6 @@
 
 #include <cmath>
 namespace softsusy{
-  const char SOFTSUSY_VERSION[] = PACKAGE_VERSION;
   /// uncomment if you want checking of vector/matrices bounds: slows code
   /// down. It also now checks over/underflows in matrix multiplication etc
   /// #define ARRAY_BOUNDS_CHECKING 
@@ -98,9 +97,6 @@ namespace softsusy{
   /// If true, calculate decays
   extern bool calcDecays;
   
-  /// Threshold to prevent the re-evaluation of two-loop leading SUSY 
-  /// thresholds corrections
-  extern double TWOLOOP_NUM_THRESH;
   /// Includes the evaluation of leading two-loop thresholds corrections
   /// to the strong coupling constant and to the third family of fermion masses 
   extern bool USE_TWO_LOOP_GAUGE_YUKAWA; 

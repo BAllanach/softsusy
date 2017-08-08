@@ -493,17 +493,11 @@ DGR acknowledges the support of the Ohio Supercomputer Center.
 \label{sec:install}
 
 In order to have {\tt \small SOFTSUSY} use the higher order corrections
-described in the present paper, the code containing them must be both compiled
-{\em and}\/ a run-time flag should be set to ensure their employment in the
+described in the present paper, the run-time flag should be set to ensure
+their employment in the 
 spectrum calculation. 
-A compilation argument to the {\tt ./configure}~command is provided in order
-to compile the necessary code to include the higher order corrections:
-\begin{verbatim}
---enable-two-loop-sparticle-mass-compilation
-\end{verbatim}
 We have included a global boolean variable which controls the higher order
-corrections  at run time (provided that the program has already been compiled
-with  the higher order corrections included):
+corrections  at run time:
 \begin{quote}
  \verb|bool USE_TWO_LOOP_SPARTICLE_MASS|  - if \code{true}, the 
           $\mathcal{O}(\alpha_s^2)$ corrections are included 
@@ -519,11 +513,6 @@ two-loop corrections to the extracted MSSM value of $\alpha_s(M_Z)$ or
 three-loop MSSM renormalisation group equations, as
 described in Ref.~\cite{Allanach:2014nba}.
         
-To summarise, installation is completed by executing the following commands
-\begin{verbatim}
-> ./configure --enable-two-loop-sparticle-mass-compilation
-> make
-\end{verbatim}
 We remind the reader that the two-loop corrections discussed here are
 available for use either in the MSSM (with or without $R-$parity
 violation)~\cite{Allanach:2009bv} or 
@@ -567,8 +556,6 @@ parameters. The program may then be run with
 \normalsize
 
 One can change whether the higher order corrections are switched on 
-(provided they have been compiled by
-setting the correct \verb|./configure| flag as described above)
 with
 \code{SOFTSUSY Block} parameter 22 and the two-loop gluino expansion
 approximation with parameter 23:

@@ -81,9 +81,6 @@ namespace softsusy {
   /// Default: don't calculate decays
   bool calcDecays = false;
   
-  /// Threshold to prevent the re-evaluation of two-loop leading SUSY thresholds
-  /// corrections. By default we set it to 10%. 
-  double TWOLOOP_NUM_THRESH = 0.1;
   /// Includes the evaluation of leading two-loop thresholds corrections
   /// to the strong coupling constant and to the third family of fermion masses 
   bool USE_TWO_LOOP_GAUGE_YUKAWA = false;

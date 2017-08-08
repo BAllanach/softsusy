@@ -13,7 +13,6 @@
 #ifndef RGE_H
 #define RGE_H
 
-#include "def.h"
 #include "utils.h"
 class DoubleVector; 
 #include "linalg.h"

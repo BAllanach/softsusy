@@ -19,7 +19,6 @@
 #include <cstring>
 #include <cstdlib>
 #include <cmath>
-#include "def.h"
 #include "utils.h"
 #include "numerics.h"
 #include "physpars.h" 

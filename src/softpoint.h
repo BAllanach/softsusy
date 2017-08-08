@@ -12,7 +12,6 @@
 #include <sstream>
 #include <cstring>
 #include "mycomplex.h"
-#include "def.h"
 #include "linalg.h"
 #include "lowe.h"
 #include "rge.h"

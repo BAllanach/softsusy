@@ -30,7 +30,7 @@ int main() {
   outputCharacteristics(6);
 
   /// Header  
-  cout << "# SOFTSUSY" << SOFTSUSY_VERSION << endl;
+  cout << "# SOFTSUSY" << PACKAGE_VERSION << endl;
   cout << "# If you use SOFTSUSY, please refer to B.C. Allanach, \n";
   cout << "# Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145;\n";
   cout << "# For RPV aspects, B.C. Allanach and M.A. Bernhardt, \n";

@@ -17,8 +17,8 @@
 
 #include "utils.h"
 #include "mycomplex.h"
-#include <iostream>
 #include "def.h"
+#include <iostream>
 #include "linalg.h"
 #include "dilogwrap.h"
 #ifdef USE_LOOPTOOLS
