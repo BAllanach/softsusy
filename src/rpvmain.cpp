@@ -19,13 +19,6 @@ int main() {
 
   bool gaugeUnification = true, ewsbBCscale = false;
 
-  /// Do we include 2-loop RGEs of *all* scalar masses and A-terms, or only the
-  /// scalar mass Higgs parameters? (Other quantities all 2-loop anyway): the
-  /// default in SOFTSUSY 3 is to include all 2-loop terms, except for RPV,
-  /// which is already slow and calculated to less accuracy than the R-parity
-  /// conserving version
-  INCLUDE_2_LOOP_SCALAR_CORRECTIONS = false;
-
   /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
 

@@ -48,17 +48,22 @@ namespace softsusy {
     /// \f$ m_S^2 |S|^2 + \frac{1}{2}m{'2}_S S^2 + \xi_S S + h.c. \f$ 
     /// repectively.
     double mSsq, mSpsq, xiS;
+    /// PA: switch for selecting between the Z3 preserving case and the
+    /// Z3 violating case with mu and m3sq allowed
+    /// needed fpr slecting which EWSB routines to use.
+    bool Z3; 
   public:
     /// Default constructor fills object with zeroes
     SoftParsNmssm()
-      : alambda(0.0), akappa(0.0), mSsq(0.0), mSpsq(0.0), xiS(0.0) {};
+      : alambda(0.0), akappa(0.0), mSsq(0.0), mSpsq(0.0), xiS(0.0), Z3(true) {};
     SoftParsNmssm(const SoftParsNmssm & s)
     : alambda(s.displayTrialambda()), akappa(s.displayTriakappa()), 
       mSsq(s.displayMsSquared()), mSpsq(s.displayMspSquared()), 
-      xiS(s.displayXiS()) {};
+      xiS(s.displayXiS()), Z3(s.Z3) {};
     SoftParsNmssm(double al, double ak, double ms, double msp, double x)
-      : alambda(al), akappa(ak), mSsq(ms), mSpsq(msp), xiS(x) {}
+      : alambda(al), akappa(ak), mSsq(ms), mSpsq(msp), xiS(x), Z3(true) {}
     const SoftParsNmssm & operator=(const SoftParsNmssm & s);
+
     
     const SoftParsNmssm & displaySoftParsNmssm() const { return *this; }
     //PA: Return trilinear soft mass $a_\lambda S H_u H_d$
@@ -81,7 +86,9 @@ namespace softsusy {
     //    const DoubleVector display(const NmssmSusy & n, const MssmSoftPars & s)       const;
     /// Increments k and fills the DoubleVector with entries
     void display(DoubleVector & y, int & k) const;
+    bool displayZ3() const { return Z3; }
 
+    void setZ3(bool z) { Z3 = z; }
     /// PA: Set trilinear SUSY breaking parameter alambda
     void setTrialambda(double al) { alambda = al; };
     /// PA: Set trilinear SUSY breaking parameter akappa

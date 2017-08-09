@@ -22,6 +22,13 @@ namespace softsusy {
     setSoftsusy(s.displaySoftsusy());
     tSOVSMs = s.tSOVSMs;
     tSOVSMs1loop = s.tSOVSMs1loop;
+    GUTlambda = s.GUTlambda;
+    GUTmuPrime = s.GUTmuPrime;
+    GUTsVev = s.GUTsVev;
+    MICROMEGAS = s.MICROMEGAS;
+    NMSDECAY = s.NMSDECAY;
+    setZ3(s.displayZ3());
+    
     return *this;
   }
   
@@ -3744,7 +3751,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       rewsbmSsq(mSsq);
       setMsSquared(mSsq);
     }
-    else if(Z3){
+    else if( displayZ3() ){
       if (rewsbSvev(sgnMu,s)) flagMusqwrongsign(true);
       else flagMusqwrongsign(false);
       setSvev(s);
@@ -3999,7 +4006,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       double pizztMS = sqr(displayMzRun()) - sqr(displayMz()); /// resums logs
       //double pizztMS = piZZT(displayMz(), displayMu());
       
-      if(Z3){
+      if (displayZ3()) {
 	iterateSvev(snew, sgnMu, mt, maxTries, pizztMS, sinthDRbarMS,
 		    tol, err); 
 	if (err == 2) flagMusqwrongsign(true);
@@ -4029,7 +4036,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       }
       /// PA: using Z3 version of EWSB
       //with kappa as output
-      if(Z3){
+      if(displayZ3()){
 	if (rewsbKap(kapnew) == 0) flagM3sq(false);
 	else flagM3sq(true);   
 	setKappa(kapnew);
@@ -4039,7 +4046,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 	else flagM3sq(true);   
 	setM3Squared(m3sqnew);
       }
-      if(Z3 == false){
+      if(displayZ3() == false){
 	rewsbXiS(xiSnew);
 	setXiS(xiSnew);
       }
@@ -8621,14 +8628,14 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       double tbIn; double predictedMzSq = 0.;
       predictedMzSq = predMzsq(tbIn);
       setPredMzSq(predictedMzSq); 
-      if(!softsusy::GUTlambda) setLambda(nmpars(1));
-      if (!softsusy::GUTkappa && (!softsusy::Z3 || softsusy::SoftHiggsOut))
+      if(!GUTlambda) setLambda(nmpars(1));
+      if (!GUTkappa && (!displayZ3() || softsusy::SoftHiggsOut))
 	setKappa(nmpars(2));
-      if (!softsusy::GUTsVev && (!softsusy::Z3 || softsusy::SoftHiggsOut))
+      if (!GUTsVev && (!displayZ3() || softsusy::SoftHiggsOut))
 	setSvev(nmpars(3));
-      if (!softsusy::GUTxiF && !softsusy::Z3)
+      if (!GUTxiF && !displayZ3())
 	setXiF(nmpars(4));
-      if (!softsusy::GUTmuPrime && !softsusy::Z3)
+      if (!GUTmuPrime && !displayZ3())
 	setMupr(nmpars(5));
       
       if (!ewsbBCscale) err = runto(mxBC, eps);
@@ -8683,14 +8690,14 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       }
       
       boundaryCondition(*this, pars);
-      if(softsusy::GUTlambda) setLambda(nmpars(1));
-      if (softsusy::GUTkappa && (!softsusy::Z3 || softsusy::SoftHiggsOut))
+      if(GUTlambda) setLambda(nmpars(1));
+      if (GUTkappa && (!displayZ3() || softsusy::SoftHiggsOut))
 	setKappa(nmpars(2));
-      if (softsusy::GUTsVev && (!softsusy::Z3 || softsusy::SoftHiggsOut))
+      if (GUTsVev && (!displayZ3() || softsusy::SoftHiggsOut))
 	setSvev(nmpars(3));
-      if (softsusy::GUTxiF && !softsusy::Z3)
+      if (GUTxiF && !displayZ3())
 	setXiF(nmpars(4));
-      if (softsusy::GUTmuPrime && !softsusy::Z3)
+      if (GUTmuPrime && !displayZ3())
 	setMupr(nmpars(5));
       
       if (!ewsbBCscale) err = runto(displayMsusy(), eps);
@@ -8811,7 +8818,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
    int sgnMu, double tanb, const QedQcd & oneset, bool gaugeUnification, 
    bool ewsbBCscale) {
     
-    if (Z3) {
+    if (displayZ3()) {
       if (PRINTOUT && !close(nmpars(4), 0.0, EPSTOL))
 	cout << "WARNING: you set Z3 == true and xiF != 0, "
 	     << "xiF will be ignored\n";
@@ -8826,13 +8833,30 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       double muFirst = displaySusyMu(); /// Remember initial value
       
       const static NmssmSoftsusy empty;
-      bool setTbAtMXflag = displaySetTbAtMX(); 
+      bool setTbAtMXflag = displaySetTbAtMX();
+      int lpnum = displayLoops();
+      bool GUTlambda = displayGUTlambda();
+      bool GUTkappa = displayGUTkappa();
+      bool GUTmuPrime = displayGUTmuPrime();
+      bool GUTxiF = displayGUTxiF();
+      bool Z3 = displayZ3();
+      bool GUTsVev = displayGUTsVev();
+      int MICROMEGAS = displayMICROMEGAS();
+      int NMSDECAY   = displayNMSDECAY();
       
       setSoftsusy(empty); /// Always starts from an empty object
       /// These are things that are re-written by the new initialisation
       setSetTbAtMX(setTbAtMXflag);
       setData(oneset); 
       setMw(MW); 
+      setGUTlambda(GUTlambda);
+      setGUTkappa(GUTkappa);
+      setGUTmuPrime(GUTmuPrime);
+      setGUTxiF(GUTxiF);
+      setZ3(Z3);
+      setGUTsVev(GUTsVev);
+      setMICROMEGAS(MICROMEGAS);
+      setNMSDECAY(NMSDECAY);
       
       double mz = displayMz();
       
@@ -8864,19 +8888,19 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       /// Initial guess: B=0, mu=1st parameter, need better guesses
       boundaryCondition(*this, pars);
 
-      if(softsusy::GUTlambda) setLambda(nmpars(1));
-      if (softsusy::GUTkappa && (!softsusy::Z3 || softsusy::SoftHiggsOut))
+      if (GUTlambda) setLambda(nmpars(1));
+      if (GUTkappa && (!displayZ3() || softsusy::SoftHiggsOut))
 	setKappa(nmpars(2));
-      if (softsusy::GUTsVev && (!softsusy::Z3 || softsusy::SoftHiggsOut))
+      if (GUTsVev && (!displayZ3() || softsusy::SoftHiggsOut))
 	setSvev(nmpars(3));
-      if (softsusy::GUTxiF && !softsusy::Z3)
+      if (GUTxiF && !displayZ3())
 	setXiF(nmpars(4));
-      if (softsusy::GUTmuPrime && !softsusy::Z3)
+      if (GUTmuPrime && !displayZ3())
 	setMupr(nmpars(5));
       
       if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
 	/// LCT: Changed sets to match softsusy.cpp 8/8/13
-	if(Z3){
+	if(displayZ3()){
 	  setSusyMu(0.0);
 	  setM3Squared(0.0);
 	}
@@ -8896,7 +8920,9 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
 
       physical(0);
-
+      setThresholds(3);
+      setLoops(lpnum);
+      
       /// PA: itLowsoft to be added along with the rest of lowOrg
       itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 
 		nmpars, gaugeUnification, ewsbBCscale);
@@ -8973,9 +8999,9 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     out << "     3    1   # NMSSM\n";
     
     if (softsusy::NMSSMTools) {
-      out << "     9    " << softsusy::MICROMEGAS;
+      out << "     9    " << displayMICROMEGAS();
       out << "   # call micrOmegas (default: 0 = no)\n";
-      out << "    13    " << softsusy::NMSDECAY;
+      out << "    13    " << displayNMSDECAY();
       out << "   # sparticle decays via NMSDECAY (default: 0)\n";
       out << "    12   "; printRow(out, qMax);
       out << "   # parameter output scale\n";
@@ -9009,7 +9035,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       out << "     22   "; printRow(out, pars.display(22));
       out << "  # mHu^2(MX)\n";
     }
-    if (!Z3 && softsusy::SoftHiggsOut) {
+    if (!displayZ3() && softsusy::SoftHiggsOut) {
       out << "     23   "; printRow(out, pars.display(54));
       out << "  # mu(MX)\n";
       out << "     26   "; printRow(out, pars.display(55));
@@ -9053,15 +9079,15 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     out << "  # Alambda(MX)\n";
     out << "     64   "; printRow(out, pars.display(51));
     out << "  # Akappa(MX)\n";
-    if (!Z3 && softsusy::SoftHiggsOut) {
+    if (!displayZ3() && softsusy::SoftHiggsOut) {
       out << "     67   "; printRow(out, pars.display(56));
       out << "  # xi_S(MX)\n";
     }
-    if (!Z3) {
+    if (!displayZ3()) {
       out << "     69   "; printRow(out, pars.display(52) * displayMupr());
       out << "  # mS'^2(MX)\n";
     }
-    if (!Z3 && !softsusy::SoftHiggsOut) {
+    if (!displayZ3() && !softsusy::SoftHiggsOut) {
       out << "     70   "; printRow(out, pars.display(53));
       out << "  # mS^2(MX)\n";
     }
@@ -9334,7 +9360,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
   void NmssmSoftsusy::softsusySLHA(ostream& out)
   {
     MssmSoftsusy::softsusySLHA(out);
-    out << "# Z3 = " << softsusy::Z3
+    out << "# Z3 = " << displayZ3()
 	<< ", SoftHiggsOut = " << softsusy::SoftHiggsOut << '\n';
   }
   

@@ -101,15 +101,16 @@ int main(int argc, char *argv[]) {
 
   QedQcd oneset;
   MssmSoftsusy m; FlavourMssmSoftsusy k; NmssmSoftsusy nmssm;
+  nmssm.setGUTlambda(true);
+  nmssm.setGUTkappa(true);
+  nmssm.setGUTmuPrime(true);
+  nmssm.setGUTxiF(true);
+  nmssm.setGUTsVev(true);
+  
   k.setInitialData(oneset);
   MssmSoftsusy * r = &m; 
   RpvNeutrino kw; bool RPVflag = false;
   enum Model_t { MSSM, NMSSM } susy_model = MSSM; // susy model (MODSEL entry 3)
-  softsusy::GUTlambda = true;
-  softsusy::GUTkappa = true;
-  softsusy::GUTmuPrime = true;
-  softsusy::GUTxiF = true;
-  softsusy::GUTsVev = true;
   double m0 = 0., m12 = 0., a0 = 0., m32 = 0., mMess = 0., n5 = 0.,
     LAMBDA = 0., cgrav = 1.;
 	
@@ -829,7 +830,7 @@ int main(int argc, char *argv[]) {
                      switch (i) {
                      case 61: // scale where to input lambda
                         if (fabs(d + 1.0) < EPSTOL) {
-                           softsusy::GUTlambda = false;
+			  nmssm.setGUTlambda(false);
                         } else {
                            cout << "# WARNING: cannot input NMSSM parameter lambda"
                               " (set in QEXTPAR " << i << ") at a scale "
@@ -839,7 +840,7 @@ int main(int argc, char *argv[]) {
                         break;
                      case 62: // scale where to input kappa
                         if (fabs(d + 1.0) < EPSTOL) {
-                           softsusy::GUTkappa = false;
+			  nmssm.setGUTkappa(false);
                         } else {
                            cout << "# WARNING: cannot input NMSSM parameter kappa"
                               " (set in QEXTPAR " << i << ") at a scale "
@@ -849,7 +850,7 @@ int main(int argc, char *argv[]) {
                         break;
                      case 65: // scale where to input <S>
                         if (fabs(d + 1.0) < EPSTOL) {
-                           softsusy::GUTsVev = false;
+			  nmssm.setGUTsVev(false);
                         } else {
                            cout << "# WARNING: cannot input NMSSM parameter <S>"
                               " (set in QEXTPAR " << i << ") at a scale "
@@ -859,7 +860,7 @@ int main(int argc, char *argv[]) {
                         break;
                      case 66: // scale where to input xiF
                         if (fabs(d + 1.0) < EPSTOL) {
-                           softsusy::GUTxiF = false;
+			  nmssm.setGUTxiF(false);
                         } else {
                            cout << "# WARNING: cannot input NMSSM parameter xiF"
                               " (set in QEXTPAR " << i << ") at a scale "
@@ -869,7 +870,7 @@ int main(int argc, char *argv[]) {
                         break;
                      case 68: // scale where to input mu'
                         if (fabs(d + 1.0) < EPSTOL) {
-                           softsusy::GUTmuPrime = false;
+			  nmssm.setGUTmuPrime(false);
                         } else {
                            cout << "# WARNING: cannot input NMSSM parameter mu'"
                               " (set in QEXTPAR " << i << ") at a scale "
@@ -1109,8 +1110,7 @@ int main(int argc, char *argv[]) {
 		    break;
 		  case 3: PRINTOUT = int(d); break;
 		  case 4: qewsb = d; break;
-		  case 5: INCLUDE_2_LOOP_SCALAR_CORRECTIONS = 
-		      bool(int(d+EPSTOL)); break;
+		  case 5: break;
 		  case 6: outputCharacteristics(int(d+EPSTOL)-1); break;  
 		  case 7: {
 		    int num = int(d+EPSTOL);
@@ -1182,12 +1182,12 @@ int main(int argc, char *argv[]) {
 		    break;
                   case 16: {
                      int num = int(d + EPSTOL);
-                     softsusy::MICROMEGAS = num;
+                     nmssm.setMICROMEGAS(num);
                   }
                     break;
                   case 17: {
                      int num = int(d + EPSTOL);
-                     softsusy::NMSDECAY = num;
+                     nmssm.setNMSDECAY(num);
                   }
 		    break;
                   case 18: {
@@ -1299,7 +1299,7 @@ int main(int argc, char *argv[]) {
 
       // set NMSSM boundary conditions
       if (susy_model == NMSSM) {
-         softsusy::Z3 = nmssm_input.is_Z3_symmetric();
+	nmssm.setZ3(nmssm_input.is_Z3_symmetric());
 
          if (flavourViolation) {
             string msg("# Error: flavour violation in the NMSSM is currenty"
@@ -1318,7 +1318,7 @@ int main(int argc, char *argv[]) {
              pars(6) = nmssm_input.get(NMSSM_input::xiS);
              nmssmBoundaryCondition = &NmssmSugraNoSoftHiggsMassBcs;
            } else {
-             if (softsusy::Z3) {
+             if (nmssm.displayZ3()) {
                // Here we must use SemiMsugraBcs to avoid setting mS2
                // at the GUT scale
                if (pars.size() != 5)

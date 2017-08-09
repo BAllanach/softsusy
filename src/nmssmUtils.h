@@ -41,6 +41,7 @@ public:
       muPrime,               // EXTPAR entry 68
       mPrimeS2,              // EXTPAR entry 69
       mS2,                   // EXTPAR entry 70
+      GUTlambda,      
       NUMBER_OF_NMSSM_INPUT_PARAMETERS
    };
 

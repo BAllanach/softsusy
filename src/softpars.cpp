@@ -426,7 +426,6 @@ MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
     
     DoubleMatrix u4(u2 * u2), d4(d2 * d2), u4t(u2t * u2t), d4t(d2t * d2t);
     
-    if (INCLUDE_2_LOOP_SCALAR_CORRECTIONS) {
 	// NB you should introduce speedy computation here. For example sum
 	// traces, not add then trace. Also surely some of the products are
 	// repeated, eg u2 * u2 = u4, d2 * d2 = d4, u1 * mu * ut, d1 * md *
@@ -668,7 +667,6 @@ MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
       dhu2 *= oneO16Pif; dhu += dhu2;
       dhd2 *= oneO16Pif; dhd += dhd2;
       dhe2 *= oneO16Pif; dhe += dhe2;
-    }
     
     // Default is to include these 2-loop corrections anyhow because they can 
     // be so important: gauginos + higgs 

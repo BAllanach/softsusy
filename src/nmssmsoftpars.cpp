@@ -163,11 +163,10 @@ namespace softsusy {
       
       DoubleMatrix u4(u2 * u2), d4(d2 * d2), e4(e2 * e2);
       
-      if (INCLUDE_2_LOOP_SCALAR_CORRECTIONS) {
-	  /// NB you should introduce speedy computation here. For example sum
-	  /// traces, not add then trace. Also surely some of the products are
-	  /// repeated, eg u2 * u2 = u4, d2 * d2 = d4, u1 * mu * ut, d1 * md *
-	  /// dt, d2 * d1, d2 * mq
+      /// NB you should introduce speedy computation here. For example sum
+      /// traces, not add then trace. Also surely some of the products are
+      /// repeated, eg u2 * u2 = u4, d2 * d2 = d4, u1 * mu * ut, d1 * md *
+      /// dt, d2 * d1, d2 * mq
 	  dmq2 =
 	    - lsq * (2.0 * ut * mu * u1 + mq * u2 + u2 * mq + 2.0 * mH2sq * u2
 		     + 2.0 * hu2) - 2.0 * Mlamsq * u2
@@ -267,7 +266,6 @@ namespace softsusy {
 	dhe2 *= oneO16Pif; dhe += dhe2;
 	dhlam2 *=oneO16Pif; dhlam += dhlam2;
 	dhkap2 *=oneO16Pif; dhkap += dhkap2;
-      }
       
       /// Default is to include these 2-loop corrections anyhow because they can
       /// be so important: gauginos + higgs
@@ -381,6 +379,7 @@ namespace softsusy {
     mSsq = s.mSsq;
     mSpsq = s.mSpsq;
     xiS = s.xiS;
+    Z3 = s.Z3;
     return *this;
   }
   

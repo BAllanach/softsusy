@@ -47,6 +47,21 @@ namespace softsusy {
     
     double tSOVSMs;  ///< New Nmssm DRbar tadpole(MSusy): incl 2 loops
     double tSOVSMs1loop; ///<New Nmssm DRbar tadpole(MSusy): excl 2 loops
+    /// If true the input value of lambda is set at the GUT scale
+    /// If false the input lambda is set at MSUSY.
+    bool GUTlambda;
+    /// If true the input value of kappa is set at the GUT scale
+    /// If false the input kappa is set at MSUSY.
+    bool GUTkappa;
+    bool GUTmuPrime;
+    bool GUTxiF;
+    bool GUTsVev;
+    /// If true then the EWSB conditions will output soft Higgs masses
+    /// Will be inconsistent with constrained models
+    /// but can be useful for non-universal Higgs cases 
+    int MICROMEGAS;
+    int NMSDECAY;
+      
     /// LCT: Returns logarithm factor from one-loop effective potential
     double looplog(double mass) const;
     
@@ -80,8 +95,14 @@ namespace softsusy {
     NmssmSusy displayNmssmSusy() const {
       return NmssmSusy(displayMssmSusy(), displayNmssmSusyPars());
     }
-
     MssmSoftsusy convertToMssm() const;
+    bool displayGUTlambda() const { return GUTlambda; }
+    bool displayGUTkappa() const { return GUTkappa; }
+    bool displayGUTmuPrime() const { return GUTmuPrime; }
+    bool displayGUTxiF() const { return GUTxiF; }
+    bool displayGUTsVev() const { return GUTsVev; }
+    bool displayMICROMEGAS() const { return MICROMEGAS; }
+    bool displayNMSDECAY() const { return NMSDECAY; }
     
     /// PA: obtains NMSSM P1-sfermion-sfermion couplings 
     //for 3rd generation sfermions
@@ -293,6 +314,13 @@ namespace softsusy {
       setMssmSusy(n.displayMssmSusy()); 
       setNmssmSusyPars(n.displayNmssmSusyPars());
     }
+    void setGUTlambda(bool i)  { GUTlambda = i; }
+    void setGUTkappa(bool i)  { GUTkappa = i; }
+    void setGUTmuPrime(bool i)  {  GUTmuPrime = i; }
+    void setGUTxiF(bool i)  {  GUTxiF = i; }
+    void setGUTsVev(bool i)  {  GUTsVev = i; }
+    void setMICROMEGAS(int i)  {  MICROMEGAS = i; }
+    void setNMSDECAY(int i)  {  NMSDECAY = i; }
 
     /// LCT: Returns Higgs potential at minimum. Inputs: {v1,v2,s}=Higgs vevs from
     /// EWSB conditions, {mHu2,mHd2,mSsq}=soft masses calculated at scale mu.
@@ -603,29 +631,38 @@ namespace softsusy {
   
   inline NmssmSoftsusy::NmssmSoftsusy()
     : NmssmSusyPars(), SoftParsNmssm(), MssmSoftsusy(), tSOVSMs(0.0), 
-      tSOVSMs1loop(0.0)  {}
+      tSOVSMs1loop(0.0), GUTlambda(false), GUTkappa(false),
+      GUTmuPrime(false), GUTxiF(false), GUTsVev(false), 
+      MICROMEGAS(0), NMSDECAY(0) {}
   
   inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSoftsusy & s)
     : NmssmSusyPars(s.displayNmssmSusyPars()), 
       SoftParsNmssm(s.displaySoftParsNmssm()), 
       MssmSoftsusy(s.displayMssmSoft()),
-      tSOVSMs(s.tSOVSMs), 
-      tSOVSMs1loop(s.tSOVSMs1loop)  {
+      tSOVSMs(s.tSOVSMs), tSOVSMs1loop(s.tSOVSMs1loop),
+      GUTlambda(s.GUTlambda), GUTkappa(s.GUTkappa), GUTmuPrime(s.GUTmuPrime),
+      GUTxiF(s.GUTxiF), GUTsVev(s.GUTsVev), 
+      MICROMEGAS(s.MICROMEGAS), NMSDECAY(s.NMSDECAY)  {
     setPars(121);   
   }
   
   inline NmssmSoftsusy::NmssmSoftsusy(const NmssmSusy &s)
     : NmssmSusyPars(s.displayNmssmSusy()), SoftParsNmssm(), 
       MssmSoftsusy(s.MssmSusy::displayMssmSusy()), tSOVSMs(0.0), 
-      tSOVSMs1loop(0.0)  {
+      tSOVSMs1loop(0.0), GUTlambda(false), GUTkappa(false),
+      GUTmuPrime(false), GUTxiF(false), GUTsVev(false), 
+      MICROMEGAS(0), NMSDECAY(0) {
     setPars(121);
   }
   
   inline NmssmSoftsusy::NmssmSoftsusy
   (const NmssmSusyPars & ss, const SoftParsNmssm & s, 
    const MssmSoftsusy & sp): NmssmSusyPars(ss), 
-					SoftParsNmssm(s), MssmSoftsusy(sp),
-					tSOVSMs(0.0), tSOVSMs1loop(0.0)  {
+			     SoftParsNmssm(s), MssmSoftsusy(sp),
+			     tSOVSMs(0.0), tSOVSMs1loop(0.0), 
+			     GUTlambda(false), GUTkappa(false),
+			     GUTmuPrime(false), GUTxiF(false), GUTsVev(false),
+			     MICROMEGAS(0), NMSDECAY(0)   {
     setPars(121);
   }
   

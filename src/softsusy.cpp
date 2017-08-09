@@ -6477,9 +6477,7 @@ void MssmSoftsusy::doChargedSleptons(double mtau, double pizztMS, double
       
       physpars.me(1, family) = ccbSqrt(mSlepSquared(1, 1));
       physpars.me(2, family) = ccbSqrt(mSlepSquared(2, 2));
-      
-    }
-    
+    }    
   }
   
   /// do third family

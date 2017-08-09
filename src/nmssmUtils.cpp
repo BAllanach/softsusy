@@ -173,7 +173,7 @@ void NMSSM_command_line_parser::parse(int argc, char* argv[]) {
       else if (starts_with(argv[i], "--a0="))
          a0  = get_value(argv[i], "--a0=");
       else if (strcmp(argv[i], "--lambdaAtMsusy") == 0)
-         softsusy::GUTlambda = false;
+         nmssm_input->set(NMSSM_input::GUTlambda, false);
       else if (starts_with(argv[i], "--tanBeta="))
          nmssm_input->set(NMSSM_input::tanBeta, get_value(argv[i], "--tanBeta="));
       else if (starts_with(argv[i], "--mHu2="))
@@ -369,7 +369,7 @@ void NmssmSugraNoSoftHiggsMassBcs(NmssmSoftsusy & m, const DoubleVector & inputP
 
   // If SoftHiggsOut == true, then mu, Bmu and xiS are not fixed by
   // EWSB.  In this case they must be set in the BCS.
-  if (!softsusy::Z3 && softsusy::SoftHiggsOut) {
+  if (m.displayZ3() && softsusy::SoftHiggsOut) {
     m.setSusyMu(inputParameters(4));
     m.setM3Squared(inputParameters(5));
     m.setXiS(inputParameters(6));
@@ -383,7 +383,7 @@ void generalNmssmBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   ms.set(inputParameters); k = numSoftParsMssm + 1;
   r.set(inputParameters, k);
 
-  if (Z3 == false) {
+  if (m.displayZ3() == false) {
     double m3sq = m.displayM3Squared();
     double XiS = m.displayXiS();
     ms.setM3Squared(m3sq);
@@ -462,20 +462,20 @@ void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters)
   if (!softsusy::SoftHiggsOut) {
     m.setMh1Squared(inputParameters.display(21));
     m.setMh2Squared(inputParameters.display(22));
-    if (!softsusy::Z3)
+    if (!m.displayZ3())
       m.setMsSquared(inputParameters.display(53));
   }
 
   m.setTrialambda(m.displayLambda() * inputParameters.display(50));
   m.setTriakappa(m.displayKappa() * inputParameters.display(51));
 
-  if (!softsusy::Z3) {
+  if (!m.displayZ3()) {
     m.setMspSquared(inputParameters.display(52) * m.displayMupr());
   }
 
   // If SoftHiggsOut == true, then mu, Bmu and xiS are not fixed by
   // EWSB.  In this case they must be set in the BCS.
-  if (!softsusy::Z3 && softsusy::SoftHiggsOut) {
+  if (m.displayZ3() && softsusy::SoftHiggsOut) {
     m.setSusyMu(inputParameters(54));
     m.setM3Squared(inputParameters(55));
     m.setXiS(inputParameters(56));
@@ -501,7 +501,7 @@ void nuhmINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   m.setMsSquared(mH * mH);
   m.setTrialambda(m.displayLambda() * Al);
   m.setTriakappa(m.displayKappa() * Ak);
-  if(Z3 == false) {
+  if(m.displayZ3() == false) {
      m.setMspSquared(inputParameters.display(52) * m.displayMupr());
   }
 }
@@ -513,7 +513,7 @@ void nuhmIINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   double mH2  = inputParameters.display(4);
   double A0 = inputParameters.display(5);
   double mS = 0.0;
-  if (Z3 == false)
+  if (m.displayZ3() == false)
      mS = inputParameters.display(6);
   double Al = inputParameters.display(5);
   double Ak = inputParameters.display(6);
@@ -521,11 +521,11 @@ void nuhmIINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 		      m.displayMssmSoftPars());
 
   m.setMh1Squared(mH1 * mH1); m.setMh2Squared(mH2 * mH2);
-  if (Z3 == false)
+  if (m.displayZ3() == false)
      m.setMsSquared(mS * mS);
   m.setTrialambda(m.displayLambda() * Al);
   m.setTriakappa(m.displayKappa() * Ak);
-  if (Z3 == false) {
+  if (m.displayZ3() == false) {
     m.setMspSquared(inputParameters.display(52) * m.displayMupr());
   }
 }

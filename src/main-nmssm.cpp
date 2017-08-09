@@ -56,13 +56,13 @@ int main() {
   nmpars(1) = lambda; nmpars(2) = kappa; nmpars(3) = s;
   nmpars(4) = xiF; nmpars(5) = mupr;
   bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
-  softsusy::Z3 = true;
 
   for (int i = 0; i < numPoints; i++) {
      tanb = (endTanb - startTanb) / double(numPoints) * double(i) +
         startTanb; // set tan beta ready for the scan.
 
      NmssmSoftsusy n;
+     n.setZ3(true);
      
      try {
        n.NmssmSoftsusy::lowOrg(SemiMsugraBcs, mGutGuess, pars, nmpars, 
