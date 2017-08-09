@@ -14,7 +14,6 @@ namespace softsusy {
   /// no verbose debug output
   int PRINTOUT = 0;
   /// fractional accuracy required - may need to make smaller for accurate
-  /// neutrino masses
   double TOLERANCE = 1.0e-4;
   /// decay constant of muon
   double GMU = 1.16637e-5; 

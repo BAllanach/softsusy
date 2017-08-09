@@ -1066,7 +1066,6 @@ Block SOFTSUSY     # SOFTSUSY specific inputs
   2   <mixing>     # quark mixing option
   3   <PRINTOUT>   # gives additional verbose output during calculation
   4   <QEWSB>      # change electroweak symmetry breaking scale
-  5   <INCLUDE_2_LOOP_SCALAR_CORRECTIONS> # Full 2-loop running in RGEs
   6   <PRECISION>  # number of significant figures in SLHA output
   7   <numHiggsLoops> # number of loops in REWSB/mh calculation
  10   <forceSlha1>    # if =1, tries to force output into SLHA 1 format
@@ -1121,14 +1120,9 @@ $\mu(M_{SUSY})$ and $s_W(M_{SUSY})$, and flags the nature of any tachyons
 encountered. Values \code{PRINTOUT}$>$0 are only required
 if additional diagnostics are required for debugging purposes.
 
-If \code{INCLUDE\_2\_LOOP\_SCALAR\_CORRECTIONS} is switched off (\code{0}) as
-in the default case, 
-2-loop RGEs~\cite{mandv}
- are used for the Higgs and gaugino masses, $\mu$, Yukawa and gauge
-couplings but  
-1-loop RGEs are used for other MSSM parameters. Switching on the 2-loop
+Switching on the 2-loop
 corrections (\code{1})
-results in a full 2-loop RGE evolution, but slows the calculation by a factor
+results in a full 2-loop RGE evolution, but slows the calculation by a factor 
 of approximately three.
 \code{<numHiggsLoops>} may be set to either \code{2} (default) or \code{1},
 and is the number of loops of particles allowed to contribute to the Higgs
