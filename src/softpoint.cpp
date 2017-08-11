@@ -26,7 +26,7 @@ string ToUpper(const string & s) {
 
 void errorCall() {
   ostringstream ii;
-  ii << "\n\nSOFTSUSY" << PACKAGE_VERSION 
+  ii << "SOFTSUSY" << PACKAGE_VERSION 
      << " called with incorrect arguments. Need to put either:\n";
   ii << "./softpoint.x leshouches < lesHouchesInput\n for SLHA/SLAH2 input, or\n";
   ii << "./softpoint.x sugra [SUGRA parameters] [other options]\n";
@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
 	
   try {
     if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
-      cout << "SOFTSUSY" << PACKAGE_VERSION << endl;
+      cout << "# SOFTSUSY" << PACKAGE_VERSION << endl;
       if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) exit(0);
       cout << "# B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
       cout << " hep-ph/0104145\n";
