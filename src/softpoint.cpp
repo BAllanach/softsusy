@@ -118,13 +118,13 @@ int main(int argc, char *argv[]) {
     if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
       cout << "SOFTSUSY" << PACKAGE_VERSION << endl;
       if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) exit(0);
-      cout << "B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
+      cout << "# B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
       cout << " hep-ph/0104145\n";
-      cout << "For RPV aspects, B.C. Allanach and M.A. Bernhardt, Comput. "
-	   << "Phys. Commun. 181 (2010) 232, arXiv:0903.1805.\n\n";
-      cout << "Low energy data in SOFTSUSY: mixing=" << mixing << " TOLERANCE=" 
+      cout << "# For RPV aspects, B.C. Allanach and M.A. Bernhardt, Comput. \n"
+	   << "# Phys. Commun. 181 (2010) 232, arXiv:0903.1805.\n";
+      cout << "# Low energy data in SOFTSUSY: mixing=" << mixing << " TOLERANCE=" 
 	   << TOLERANCE << endl;
-      cout << "G_F=" << GMU << " GeV^2" << endl;
+      cout << "# G_F=" << GMU << " GeV^2" << endl;
   }
   
   double mgutGuess = 2.0e16, tanb = 0.;
