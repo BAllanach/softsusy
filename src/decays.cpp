@@ -12676,9 +12676,6 @@ void OutputYesPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the dec
  }
 
 
-double fdgauss(double x) {
-  return x * x;
-}
 
 double gpsitildadgauss(double Et) {
   double gpsitildadgauss = 0, pt = 0, squareplus = 0, squareminus = 0, lambda = 0, A = 0;

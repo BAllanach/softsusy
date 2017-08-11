@@ -36,8 +36,6 @@ const double accuracy = 0.01;
 /// Calculate Decays does all decay table calculations and outputs
 int calculateDecays(ostream & out, MssmSoftsusy * r,
 		    const NmssmSoftsusy & nmssm, bool nmssmIsIt);
-///Dgauss numerical integration integrand
-double fdgauss(double x);
 
 /// Change mcpole to alter quark "pole" masses used in h -> qq with QCD
 /// corrections 
