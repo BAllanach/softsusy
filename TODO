@@ -1,3 +1,5 @@
+0.5 NMSSM 3-body decays
+0.7 chi1+ -> chi0 pi^+ compressed decay
 1a. Split up decays.cpp to have a more quickly compiled structure?
 1b. Make an object to hold the decays
 2. Add first two family terms to other things, eg tadpoles etc. 
