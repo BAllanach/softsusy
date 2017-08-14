@@ -303,7 +303,7 @@ DECAY 2000004     1.64930352e+00   # ScharmR decays
 DECAY 1000005     9.70837636e+00   # Sbottom1 decays
 #     BR                NDA   PDG1         PDG2       Comments                          
       3.29762336e-01    2      6         -1000024   # ~b_1 -> t ~chi_1-
-      2.46191773e-01    2      6          1000037   # ~b_1 -> t ~-chi_2-
+      2.46191773e-01    2      6         -1000037   # ~b_1 -> t ~chi_2-
       1.87970755e-01    2     -24         1000006   # ~b_1 -> W- ~t_1
       1.63469488e-02    2      5          1000022   # ~b_1 -> b ~chi_10
       2.04968021e-01    2      5          1000023   # ~b_1 -> b ~chi_20
@@ -391,14 +391,14 @@ DECAY 1000014     3.30454063e+00   # Smuon sneutrino decays
 #     PDG         Width             
 DECAY 1000015     1.89114059e+00   # Stau1 decays
 #     BR                NDA   PDG1         PDG2       Comments                          
-      7.45396296e-02    2      16         1000024   # ~tau_1- -> nu_tau ~chi_1-
+      7.45396296e-02    2      16        -1000024   # ~tau_1- -> nu_tau ~chi_1-
       8.82503288e-01    2      15         1000022   # ~tau_1- -> tau- ~chi_10
       4.29570822e-02    2      15         1000023   # ~tau_1- -> tau- ~chi_20
 #
 #     PDG         Width             
 DECAY 2000015     3.11739582e+00   # Stau2 decays
 #     BR                NDA   PDG1         PDG2       Comments                          
-      5.31030599e-01    2      16         1000024   # ~tau_2- -> nu_tau ~chi_1-
+      5.31030599e-01    2      16        -1000024   # ~tau_2- -> nu_tau ~chi_1-
       1.65699999e-01    2      15         1000022   # ~tau_2- -> tau- ~chi_10
       3.03229392e-01    2      15         1000023   # ~tau_2- -> tau- ~chi_20
       4.00098543e-05    2      15         1000025   # ~tau_2- -> tau- ~chi_30
@@ -432,7 +432,6 @@ DECAY 1000037     2.55579036e+00   # Chargino 2+ (heaviest) decays
 #
 #     PDG         Width             
 DECAY 1000022     0.00000000e+00   # Neutralino1 decays
-#     BR                NDA      PDG1        PDG2        PDG3       Comments                           
 #
 #     PDG         Width             
 DECAY 1000023     8.02606993e-04   # Neutralino2 decays

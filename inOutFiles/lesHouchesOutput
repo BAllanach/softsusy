@@ -254,7 +254,7 @@ DECAY 2000004     2.15881497e+00   # ScharmR decays
 DECAY 1000005     1.32530954e+01   # Sbottom1 decays
 #     BR                NDA   PDG1         PDG2       Comments                          
       3.33116484e-01    2      6         -1000024   # ~b_1 -> t ~chi_1-
-      3.15121681e-01    2      6          1000037   # ~b_1 -> t ~-chi_2-
+      3.15121681e-01    2      6         -1000037   # ~b_1 -> t ~chi_2-
       1.34293149e-01    2     -24         1000006   # ~b_1 -> W- ~t_1
       1.62541860e-02    2      5          1000022   # ~b_1 -> b ~chi_10
       1.88866386e-01    2      5          1000023   # ~b_1 -> b ~chi_20
@@ -370,7 +370,6 @@ DECAY 1000037     4.08063020e+00   # Chargino 2+ (heaviest) decays
 #
 #     PDG         Width             
 DECAY 1000022     0.00000000e+00   # Neutralino1 decays
-#     BR                NDA      PDG1        PDG2        PDG3       Comments                           
 #
 #     PDG         Width             
 DECAY 1000023     8.42956024e-01   # Neutralino2 decays

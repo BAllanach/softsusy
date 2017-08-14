@@ -598,7 +598,7 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
  ///PDG codes for extra NMSSM particles:
  double PDGA2 = 46, PDGH3 = 45, PDGneutralino5 = 1000045;
  
- double MCH1=mch(1), MCH2=mch(2);
+ double MCH1=fabs(mch(1)), MCH2=fabs(mch(2));  //BP FIX: not sure why it can be negative??
  
  ///Particle class used to store decay info in one place for ease of output into decay tables
  /// Create object ParticleGluino of class Particle, stores all decay info for gluino decays
@@ -1370,14 +1370,14 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
  ParticleGluino.Array_Decays[38][0] = PDGneutralino2;ParticleGluino.Array_Decays[38][1] = PDGstrange; ParticleGluino.Array_Decays[38][4] = -PDGstrange; ParticleGluino.Array_Decays[38][2] = gluinoamplitudeneut2ssbar; ParticleGluino.Array_Decays[38][3] = 3; ParticleGluino.Array_Comments[38] = "# ~g -> ~Z2 s sb";
  ParticleGluino.Array_Decays[39][0] = PDGneutralino3;ParticleGluino.Array_Decays[39][1] = PDGstrange; ParticleGluino.Array_Decays[39][4] = -PDGstrange; ParticleGluino.Array_Decays[39][2] = gluinoamplitudeneut3ssbar; ParticleGluino.Array_Decays[39][3] = 3; ParticleGluino.Array_Comments[39] = "# ~g -> ~Z3 s sb";
  ParticleGluino.Array_Decays[40][0] = PDGneutralino4;ParticleGluino.Array_Decays[40][1] = PDGstrange; ParticleGluino.Array_Decays[40][4] = -PDGstrange; ParticleGluino.Array_Decays[40][2] = gluinoamplitudeneut4ssbar; ParticleGluino.Array_Decays[40][3] = 3; ParticleGluino.Array_Comments[40] = "# ~g -> ~Z4 s sb";
- ParticleGluino.Array_Decays[41][0] = PDGchargino1;ParticleGluino.Array_Decays[41][1] = PDGup; ParticleGluino.Array_Decays[41][4] = -PDGdown; ParticleGluino.Array_Decays[41][2] = gluinoamplitudechar1udbar; ParticleGluino.Array_Decays[41][3] = 3; ParticleGluino.Array_Comments[41] = "# ~g -> ~W1- u db";
- ParticleGluino.Array_Decays[42][0] = -PDGchargino1;ParticleGluino.Array_Decays[42][1] = PDGdown; ParticleGluino.Array_Decays[42][4] = -PDGup; ParticleGluino.Array_Decays[42][2] = gluinoamplitudechar1udbar; ParticleGluino.Array_Decays[42][3] = 3; ParticleGluino.Array_Comments[42] = "# ~g -> ~W1+ ub d";
- ParticleGluino.Array_Decays[43][0] = PDGchargino1;ParticleGluino.Array_Decays[43][1] = PDGcharm; ParticleGluino.Array_Decays[43][4] = -PDGstrange; ParticleGluino.Array_Decays[43][2] = gluinoamplitudechar1csbar; ParticleGluino.Array_Decays[43][3] = 3; ParticleGluino.Array_Comments[43] = "# ~g -> ~W1- c sb";
- ParticleGluino.Array_Decays[44][0] = -PDGchargino1;ParticleGluino.Array_Decays[44][1] = PDGstrange; ParticleGluino.Array_Decays[44][4] = -PDGcharm; ParticleGluino.Array_Decays[44][2] = gluinoamplitudechar1csbar; ParticleGluino.Array_Decays[44][3] = 3; ParticleGluino.Array_Comments[44] = "# ~g -> ~W1+ cb s";
- ParticleGluino.Array_Decays[45][0] = PDGchargino2;ParticleGluino.Array_Decays[45][1] = PDGup; ParticleGluino.Array_Decays[45][4] = -PDGdown; ParticleGluino.Array_Decays[45][2] = gluinoamplitudechar2udbar; ParticleGluino.Array_Decays[45][3] = 3; ParticleGluino.Array_Comments[45] = "# ~g -> ~W2- u db";
- ParticleGluino.Array_Decays[46][0] = -PDGchargino2;ParticleGluino.Array_Decays[46][1] = PDGdown; ParticleGluino.Array_Decays[46][4] = -PDGup; ParticleGluino.Array_Decays[46][2] = gluinoamplitudechar2udbar; ParticleGluino.Array_Decays[46][3] = 3; ParticleGluino.Array_Comments[46] = "# ~g -> ~W2+ ub d";
- ParticleGluino.Array_Decays[47][0] = PDGchargino2;ParticleGluino.Array_Decays[47][1] = PDGcharm; ParticleGluino.Array_Decays[47][4] = -PDGstrange; ParticleGluino.Array_Decays[47][2] = gluinoamplitudechar2csbar; ParticleGluino.Array_Decays[47][3] = 3; ParticleGluino.Array_Comments[47] = "# ~g -> ~W2- c sb";
- ParticleGluino.Array_Decays[48][0] = -PDGchargino2;ParticleGluino.Array_Decays[48][1] = PDGstrange; ParticleGluino.Array_Decays[48][4] = -PDGcharm; ParticleGluino.Array_Decays[48][2] = gluinoamplitudechar2csbar; ParticleGluino.Array_Decays[48][3] = 3; ParticleGluino.Array_Comments[48] = "# ~g -> ~W2+ cb s";  
+ ParticleGluino.Array_Decays[41][0] = -PDGchargino1;ParticleGluino.Array_Decays[41][1] = PDGup; ParticleGluino.Array_Decays[41][4] = -PDGdown; ParticleGluino.Array_Decays[41][2] = gluinoamplitudechar1udbar; ParticleGluino.Array_Decays[41][3] = 3; ParticleGluino.Array_Comments[41] = "# ~g -> ~W1- u db";
+ ParticleGluino.Array_Decays[42][0] = PDGchargino1;ParticleGluino.Array_Decays[42][1] = PDGdown; ParticleGluino.Array_Decays[42][4] = -PDGup; ParticleGluino.Array_Decays[42][2] = gluinoamplitudechar1udbar; ParticleGluino.Array_Decays[42][3] = 3; ParticleGluino.Array_Comments[42] = "# ~g -> ~W1+ ub d";
+ ParticleGluino.Array_Decays[43][0] = -PDGchargino1;ParticleGluino.Array_Decays[43][1] = PDGcharm; ParticleGluino.Array_Decays[43][4] = -PDGstrange; ParticleGluino.Array_Decays[43][2] = gluinoamplitudechar1csbar; ParticleGluino.Array_Decays[43][3] = 3; ParticleGluino.Array_Comments[43] = "# ~g -> ~W1- c sb";
+ ParticleGluino.Array_Decays[44][0] = PDGchargino1;ParticleGluino.Array_Decays[44][1] = PDGstrange; ParticleGluino.Array_Decays[44][4] = -PDGcharm; ParticleGluino.Array_Decays[44][2] = gluinoamplitudechar1csbar; ParticleGluino.Array_Decays[44][3] = 3; ParticleGluino.Array_Comments[44] = "# ~g -> ~W1+ cb s";
+ ParticleGluino.Array_Decays[45][0] = -PDGchargino2;ParticleGluino.Array_Decays[45][1] = PDGup; ParticleGluino.Array_Decays[45][4] = -PDGdown; ParticleGluino.Array_Decays[45][2] = gluinoamplitudechar2udbar; ParticleGluino.Array_Decays[45][3] = 3; ParticleGluino.Array_Comments[45] = "# ~g -> ~W2- u db";
+ ParticleGluino.Array_Decays[46][0] = PDGchargino2;ParticleGluino.Array_Decays[46][1] = PDGdown; ParticleGluino.Array_Decays[46][4] = -PDGup; ParticleGluino.Array_Decays[46][2] = gluinoamplitudechar2udbar; ParticleGluino.Array_Decays[46][3] = 3; ParticleGluino.Array_Comments[46] = "# ~g -> ~W2+ ub d";
+ ParticleGluino.Array_Decays[47][0] = -PDGchargino2;ParticleGluino.Array_Decays[47][1] = PDGcharm; ParticleGluino.Array_Decays[47][4] = -PDGstrange; ParticleGluino.Array_Decays[47][2] = gluinoamplitudechar2csbar; ParticleGluino.Array_Decays[47][3] = 3; ParticleGluino.Array_Comments[47] = "# ~g -> ~W2- c sb";
+ ParticleGluino.Array_Decays[48][0] = PDGchargino2;ParticleGluino.Array_Decays[48][1] = PDGstrange; ParticleGluino.Array_Decays[48][4] = -PDGcharm; ParticleGluino.Array_Decays[48][2] = gluinoamplitudechar2csbar; ParticleGluino.Array_Decays[48][3] = 3; ParticleGluino.Array_Comments[48] = "# ~g -> ~W2+ cb s";  
  ParticleGluino.Array_Decays[49][0] = PDGneutralino1; ParticleGluino.Array_Decays[49][1] = PDGtop; ParticleGluino.Array_Decays[49][4] = -PDGtop;  ParticleGluino.Array_Decays[49][2] = gluinoamplitudeneut1ttbar;  ParticleGluino.Array_Decays[49][3] = 3; ParticleGluino.Array_Comments[49] = "# ~g -> ~Z1 t tb";
  ParticleGluino.Array_Decays[50][0] = PDGneutralino2; ParticleGluino.Array_Decays[50][1] = PDGtop; ParticleGluino.Array_Decays[50][4] = -PDGtop;  ParticleGluino.Array_Decays[50][2] = gluinoamplitudeneut2ttbar;  ParticleGluino.Array_Decays[50][3] = 3; ParticleGluino.Array_Comments[50] = "# ~g -> ~Z2 t tb";
  ParticleGluino.Array_Decays[51][0] = PDGneutralino3; ParticleGluino.Array_Decays[51][1] = PDGtop; ParticleGluino.Array_Decays[51][4] = -PDGtop;  ParticleGluino.Array_Decays[51][2] = gluinoamplitudeneut3ttbar;  ParticleGluino.Array_Decays[51][3] = 3; ParticleGluino.Array_Comments[51] = "# ~g -> ~Z3 t tb";
@@ -2090,7 +2090,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 
    ParticleSbottom1.Array_Decays[0][0] = PDGbottom; ParticleSbottom1.Array_Decays[0][1] = PDGgluino; ParticleSbottom1.Array_Decays[0][2] = sbottom1amplitudegluinobottom; ParticleSbottom1.Array_Decays[0][3] = 2; ParticleSbottom1.Array_Comments[0] = "# ~b_1 -> b ~g";
    ParticleSbottom1.Array_Decays[1][0] = PDGtop; ParticleSbottom1.Array_Decays[1][1] = -PDGchargino1; ParticleSbottom1.Array_Decays[1][2] = sbottom1amplitudetopcharginoW1; ParticleSbottom1.Array_Decays[1][3] = 2; ParticleSbottom1.Array_Comments[1] = "# ~b_1 -> t ~chi_1-"; 
-   ParticleSbottom1.Array_Decays[2][0] = PDGtop; ParticleSbottom1.Array_Decays[2][1] = PDGchargino2; ParticleSbottom1.Array_Decays[2][2] = sbottom1amplitudetopcharginoW2; ParticleSbottom1.Array_Decays[2][3] = 2; ParticleSbottom1.Array_Comments[2] = "# ~b_1 -> t ~-chi_2-";
+   ParticleSbottom1.Array_Decays[2][0] = PDGtop; ParticleSbottom1.Array_Decays[2][1] = -PDGchargino2; ParticleSbottom1.Array_Decays[2][2] = sbottom1amplitudetopcharginoW2; ParticleSbottom1.Array_Decays[2][3] = 2; ParticleSbottom1.Array_Comments[2] = "# ~b_1 -> t ~chi_2-";
 
    ParticleSbottom1.Array_Decays[3][0] = -PDGWplus; ParticleSbottom1.Array_Decays[3][1] = PDGstop1 ; ParticleSbottom1.Array_Decays[3][2] = sbottom1amplitudeWbosonstop1; ParticleSbottom1.Array_Decays[3][3] = 2; ParticleSbottom1.Array_Comments[3] = "# ~b_1 -> W- ~t_1";
    ParticleSbottom1.Array_Decays[4][0] = -PDGWplus; ParticleSbottom1.Array_Decays[4][1] = PDGstop2 ; ParticleSbottom1.Array_Decays[4][2] = sbottom1amplitudeWbosonstop2; ParticleSbottom1.Array_Decays[4][3] = 2; ParticleSbottom1.Array_Comments[4] = "# ~b_1 -> W- ~t_2";
@@ -2939,8 +2939,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    stau1amplitudetausneutrinoHminus = stauamplitudedecaysnustauHminus (me(1,3), msnu(3), mHpm, g, runmw, beta, thetatau, runmtau, greekmu, Atau, 1);
    stau1amplitudesnustauWboson = stauamplitudedecaysnustauWboson (me(1,3), msnu(3), polemw, g, thetatau, 1);
    
-   ParticleStau1.Array_Decays[0][0] = PDGnutau; ParticleStau1.Array_Decays[0][1] = PDGchargino1; ParticleStau1.Array_Decays[0][2] = stau1amplitudetauneutrinocharginoW1; ParticleStau1.Array_Decays[0][3] = 2; ParticleStau1.Array_Comments[0] = "# ~tau_1- -> nu_tau ~chi_1-";
-   ParticleStau1.Array_Decays[1][0] = PDGnutau; ParticleStau1.Array_Decays[1][1] = PDGchargino2; ParticleStau1.Array_Decays[1][2] = stau1amplitudetauneutrinocharginoW2; ParticleStau1.Array_Decays[1][3] = 2; ParticleStau1.Array_Comments[1] = "# ~tau_1- -> nu_tau ~chi_2-";
+   ParticleStau1.Array_Decays[0][0] = PDGnutau; ParticleStau1.Array_Decays[0][1] = -PDGchargino1; ParticleStau1.Array_Decays[0][2] = stau1amplitudetauneutrinocharginoW1; ParticleStau1.Array_Decays[0][3] = 2; ParticleStau1.Array_Comments[0] = "# ~tau_1- -> nu_tau ~chi_1-";
+   ParticleStau1.Array_Decays[1][0] = PDGnutau; ParticleStau1.Array_Decays[1][1] = -PDGchargino2; ParticleStau1.Array_Decays[1][2] = stau1amplitudetauneutrinocharginoW2; ParticleStau1.Array_Decays[1][3] = 2; ParticleStau1.Array_Comments[1] = "# ~tau_1- -> nu_tau ~chi_2-";
    ParticleStau1.Array_Decays[2][0] = PDGnustauL; ParticleStau1.Array_Decays[2][1] = -PDGHplus; ParticleStau1.Array_Decays[2][2] = stau1amplitudetausneutrinoHminus; ParticleStau1.Array_Decays[2][3] = 2; ParticleStau1.Array_Comments[2] = "# ~tau_1- -> H- ~nu_tauL";
    ParticleStau1.Array_Decays[3][0] = PDGnustauL; ParticleStau1.Array_Decays[3][1] = -PDGWplus; ParticleStau1.Array_Decays[3][2] = stau1amplitudesnustauWboson; ParticleStau1.Array_Decays[3][3] = 2; ParticleStau1.Array_Comments[3] = "# ~tau_1- -> W- ~nu_tauL";
    ParticleStau1.Array_Decays[4][0] = PDGtau; ParticleStau1.Array_Decays[4][1] = PDGneutralino1; ParticleStau1.Array_Decays[4][2] = stau1amplitudetauneutralinoZ1; ParticleStau1.Array_Decays[4][3] = 2; ParticleStau1.Array_Comments[4] = "# ~tau_1- -> tau- ~chi_10";
@@ -3028,8 +3028,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      stau2amplitudetauneutralinoZ5 = stauamplitudedecaytauneutralinoNMSSM(me(2,3), mtau, mneut(5), g, gp, thetatau, mixNeut, runmtau, runmw, beta, 2, 5);
    }
    
-   ParticleStau2.Array_Decays[0][0] = PDGnutau; ParticleStau2.Array_Decays[0][1] = PDGchargino1; ParticleStau2.Array_Decays[0][2] = stau2amplitudetauneutrinocharginoW1; ParticleStau2.Array_Decays[0][3] = 2; ParticleStau2.Array_Comments[0] = "# ~tau_2- -> nu_tau ~chi_1-";
-   ParticleStau2.Array_Decays[1][0] = PDGnutau; ParticleStau2.Array_Decays[1][1] = PDGchargino2; ParticleStau2.Array_Decays[1][2] = stau2amplitudetauneutrinocharginoW2; ParticleStau2.Array_Decays[1][3] = 2; ParticleStau2.Array_Comments[1] = "# ~tau_2- -> nu_tau ~chi_2-";
+   ParticleStau2.Array_Decays[0][0] = PDGnutau; ParticleStau2.Array_Decays[0][1] = -PDGchargino1; ParticleStau2.Array_Decays[0][2] = stau2amplitudetauneutrinocharginoW1; ParticleStau2.Array_Decays[0][3] = 2; ParticleStau2.Array_Comments[0] = "# ~tau_2- -> nu_tau ~chi_1-";
+   ParticleStau2.Array_Decays[1][0] = PDGnutau; ParticleStau2.Array_Decays[1][1] = -PDGchargino2; ParticleStau2.Array_Decays[1][2] = stau2amplitudetauneutrinocharginoW2; ParticleStau2.Array_Decays[1][3] = 2; ParticleStau2.Array_Comments[1] = "# ~tau_2- -> nu_tau ~chi_2-";
    ParticleStau2.Array_Decays[2][0] = PDGnustauL; ParticleStau2.Array_Decays[2][1] = -PDGHplus; ParticleStau2.Array_Decays[2][2] = stau2amplitudestausneutrinoHminus; ParticleStau2.Array_Decays[2][3] = 2; ParticleStau2.Array_Comments[2] = "# ~tau_2- -> H- ~nu_tauL";
    ParticleStau2.Array_Decays[3][0] = PDGnustauL; ParticleStau2.Array_Decays[3][1] = -PDGWplus; ParticleStau2.Array_Decays[3][2] = stau2amplitudestausneutrinoWboson; ParticleStau2.Array_Decays[3][3] = 2; ParticleStau2.Array_Comments[3] = "# ~tau_2- -> W- ~nu_tauL";
    ParticleStau2.Array_Decays[4][0] = PDGstau1; ParticleStau2.Array_Decays[4][1] = PDGZboson; ParticleStau2.Array_Decays[4][2] = stau2amplitudestau1Zboson; ParticleStau2.Array_Decays[4][3] = 2; ParticleStau2.Array_Comments[4] = "# ~tau_2- -> Z ~tau_1-";
@@ -12630,18 +12630,18 @@ void OutputNoPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the deca
  {
    fout << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
    fout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
-   if (P.three_width/P.total_width < BRTol) {
+   if (1-P.three_width/P.total_width > BRTol) {
      fout << left << setw(6) << "#" << setw(18) << "BR" << setw(6) << "NDA" << setw(12) << left << "PDG1" << setw(12) << " PDG2" << setw(30) << "Comments" << "    " << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
-       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
+       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 2) {
 	 fout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3];  printRowPDG(fout, P.Array_Decays[k][0]); fout << "   "; printRowPDG(fout, P.Array_Decays[k][1]); fout << "   " << left << setprecision(0) << setw(15) << P.Array_Comments[k] << endl;
        }
      }
    }
-   else {
+   if (P.three_width/P.total_width > BRTol) {
      fout << left << setw(6) << "#" << setw(18) << "BR" << setw(8) << "NDA" << setw(12) << left << " PDG1" << setw(12) << " PDG2" << setw(12) << " PDG3 " << setw(30) << "Comments" << "     " << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
-       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
+       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 3) {
 	 fout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(25) << P.Array_Comments[k] << endl;
        }
      }
@@ -12655,19 +12655,19 @@ void OutputYesPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the dec
    fout << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
    fout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
 
-   if (P.three_width/P.total_width < BRTol || P.three_width == 0) {
+   if (1-P.three_width/P.total_width > BRTol) {
      fout << left << setw(6) << "# " << setw(20) << "BR " << setw(6) << "NDA " << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(30) << "Comments" << "    " << setw(18) << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
-       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
+       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 2) {
      	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << " " << P.Array_Decays[k][3] << setw(4) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; fout << left << setprecision(0) << setw(30) << P.Array_Comments[k] << "    " << scientific << setprecision(8) << setw(18) << P.Array_Decays[k][2] << endl;
        }
      }
      fout << "#" << endl; 
    }
-   else {
+   if (P.three_width/P.total_width > BRTol) {
      fout << left << setw(6) << "# " << setw(20) << "BR" << setw(6) << "NDA" << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(12) << "PDG3" << setw(35) << "Comments" << "      " << setw(28) << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
-       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0) {
+       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 3) {
      	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(8) << fixed << " " << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(38) << P.Array_Comments[k] << "    "<< setw(18) << scientific << setprecision(8) << P.Array_Decays[k][2] << endl;
        }
      }
