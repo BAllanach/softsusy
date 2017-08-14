@@ -13835,6 +13835,9 @@ double gneuticharjffpW1dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpW1dgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -13850,6 +13853,9 @@ double gneuticharjffpW2dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpW2dgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -13860,12 +13866,15 @@ double gneuticharjffpW2dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp
 }
 
 
-double gneuticharjffpHpm1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mHpm;
+double gneuticharjffpHpm1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mHpm; //sometimes mass order differs as called in different cases
 {
   double gneuticharjffpHpm1dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m4,2);
-  squareminus = s - pow(m3-m4,2);
+  squareplus = s - pow(fabs(m3)+fabs(m4),2);
+  squareminus = s - pow(fabs(m3)-fabs(m4),2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpHpm1dgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -13875,12 +13884,15 @@ double gneuticharjffpHpm1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
   return gneuticharjffpHpm1dgauss;
 }
 
-double gneuticharjffpHpm2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mHpm;
+double gneuticharjffpHpm2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mHpm; //sometimes mass order differs as called in different cases
 {
   double gneuticharjffpHpm2dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m4,2);
-  squareminus = s - pow(m3-m4,2);
+  squareplus = s - pow(fabs(m3)+fabs(m4),2);
+  squareminus = s - pow(fabs(m3)-fabs(m4),2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpHpm2dgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -13890,12 +13902,15 @@ double gneuticharjffpHpm2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
   return gneuticharjffpHpm2dgauss;
 }
 
-double gneuticharjffpHpm3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mHpm;
+double gneuticharjffpHpm3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mHpm; //sometimes mass order differs as called in different cases
 {
   double gneuticharjffpHpm3dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m4,2);
-  squareminus = s - pow(m3-m4,2);
+  squareplus = s - pow(fabs(m3)+fabs(m4),2); 
+  squareminus = s - pow(fabs(m3)-fabs(m4),2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpHpm3dgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -13905,14 +13920,18 @@ double gneuticharjffpHpm3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
   return gneuticharjffpHpm3dgauss;
 }
 
-double gneuticharjffpHpm4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mHpm;
+double gneuticharjffpHpm4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mHpm; //sometimes mass order differs as called in different cases
 {
   double gneuticharjffpHpm4dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m4,2);
-  squareminus = s - pow(m3-m4,2);
+  squareplus = s - pow(fabs(m3)+fabs(m4),2);
+  squareminus = s - pow(fabs(m3)-fabs(m4),2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpHpm4dgauss used in 1->3 decays" << endl;
+      cout.precision(10);
+      *ffout << "problem: lambda will give nan in gneuticharjffpHpm4dgauss used in 1->3 decays" << endl;
     errorflag = -1;
   } 
 
@@ -13926,8 +13945,8 @@ double gneuticharjffp1sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
 {
   double gneuticharjffp1sf1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m4,2);
-  squareminus = s - pow(m3-m4,2);
+  squareplus = s - pow(fabs(m3)+m4,2); //inserted fabs
+  squareminus = s - pow(fabs(m3)-m4,2); //inserted fabs
   
   if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
   if (squareplus*squareminus < 0) {
@@ -13943,8 +13962,8 @@ double gneuticharjffp2sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
 {
   double gneuticharjffp2sf1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m4,2);
-  squareminus = s - pow(m3-m4,2);
+  squareplus = s - pow(fabs(m3)+m4,2); //inserted fabs
+  squareminus = s - pow(fabs(m3)-m4,2); //inserted fabs
 
   if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
   if (squareplus*squareminus < 0) {
@@ -13960,8 +13979,8 @@ double gneuticharjffp3sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
 {
   double gneuticharjffp3sf1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m4,2);
-  squareminus = s - pow(m3-m4,2);
+  squareplus = s - pow(fabs(m3)+m4,2); //inserted fabs
+  squareminus = s - pow(fabs(m3)-m4,2); //inserted fabs
 
   if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
   if (squareplus*squareminus < 0) {
@@ -13977,8 +13996,8 @@ double gneuticharjffp4sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
 {
   double gneuticharjffp4sf1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m4,2);
-  squareminus = s - pow(m3-m4,2);
+  squareplus = s - pow(fabs(m3)+m4,2); //inserted fabs
+  squareminus = s - pow(fabs(m3)-m4,2); //inserted fabs
 
   if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
   if (squareplus*squareminus < 0) {
@@ -13995,11 +14014,14 @@ double gneuticharjffp1sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
 {
   double gneuticharjffp1sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m2,2);
-  squareminus = s - pow(m3-m2,2);
+  squareplus = s - pow(fabs(m3)+m2,2);
+  squareminus = s - pow(fabs(m3)-m2,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+      *ffout << "problem: lambda will give nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays" << endl;
+      errorflag = -1;
   } 
 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
@@ -14018,11 +14040,14 @@ double gneuticharjffp2sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
 {
   double gneuticharjffp2sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m2,2);
-  squareminus = s - pow(m3-m2,2);
+  squareplus = s - pow(fabs(m3)+m2,2); //inserted fabs
+  squareminus = s - pow(fabs(m3)-m2,2); //inserted fabs
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+      *ffout << "problem: lambda will give nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays" << endl;
+      errorflag = -1;
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
@@ -14040,11 +14065,14 @@ double gneuticharjffp3sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
 {
   double gneuticharjffp3sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m2,2);
-  squareminus = s - pow(m3-m2,2);
+  squareplus = s - pow(fabs(m3)+m2,2);
+  squareminus = s - pow(fabs(m3)-m2,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+      *ffout << "problem: lambda will give nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays" << endl;
+      errorflag = -1;
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
@@ -14061,11 +14089,14 @@ double gneuticharjffp4sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
 {
   double gneuticharjffp4sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m2,2);
-  squareminus = s - pow(m3- m2,2);
- if (squareplus*squareminus < 0) {
-   *ffout << "problem: lambda will give nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+  squareplus = s - pow(fabs(m3)+m2,2); //inserted fabs
+  squareminus = s - pow(fabs(m3)- m2,2); //inserted fabs
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
+  if (squareplus*squareminus < 0) {
+      *ffout << "problem: lambda will give nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays" << endl;
+      errorflag = -1;
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
@@ -14082,11 +14113,14 @@ double gneuticharjffp5sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
 {
   double gneuticharjffp5sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m2,2);
-  squareminus = s - pow(m3-m2,2);
- if (squareplus*squareminus < 0) {
-   *ffout << "problem: lambda will give nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+  squareplus = s - pow(fabs(m3)+m2,2); //inserted fabs
+  squareminus = s - pow(fabs(m3)-m2,2); //inserted fabs
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
+  if (squareplus*squareminus < 0) {
+      *ffout << "problem: lambda will give nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays" << endl;
+      errorflag = -1;
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
@@ -14103,8 +14137,11 @@ double gneuticharjffp6sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
 {
   double gneuticharjffp6sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m2,2);
-  squareminus = s - pow(m3-m2,2);
+  squareplus = s - pow(fabs(m3)+m2,2); //inserted fabs
+  squareminus = s - pow(fabs(m3)-m2,2); //inserted fabs
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp6sfp1sf2dgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14124,11 +14161,17 @@ double gneuticharjffp7sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
 {
   double gneuticharjffp7sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m2,2);
-  squareminus = s - pow(m3-m2,2);
+  squareplus = s - pow(fabs(m3)+m2,2); //inserted fabs
+  squareminus = s - pow(fabs(m3)-m2,2);  //inserted fabs
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
  if (squareplus*squareminus < 0) {
-   *ffout << "problem: lambda will give nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+     cout.precision(10);
+     // *ffout << "squareplus = " << squareplus << std::endl;
+     // *ffout << "squareminus = " << squareminus << std::endl;
+     *ffout << "problem: lambda will give nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays" << endl;
+     errorflag = -1;
   } 
 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
@@ -14146,8 +14189,11 @@ double gneuticharjffp8sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
 {
   double gneuticharjffp8sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m2,2);
-  squareminus = s - pow(m3-m2,2);
+  squareplus = s - pow(fabs(m3)+m2,2); //inserted fabs
+  squareminus = s - pow(fabs(m3)-m2,2); //inserted fabs
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp8sfp1sf2dgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14170,6 +14216,9 @@ double gneuticharjffp1WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
   s= pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp1WHpmdgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14186,6 +14235,9 @@ double gneuticharjffp2WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
   s= pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp2WHpmdgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14203,6 +14255,9 @@ double gneuticharjffp3WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
   s= pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp3WHpmdgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14220,6 +14275,9 @@ double gneuticharjffp4WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
   s= pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp4WHpmdgauss used in 1->3 decays"<< endl;
     errorflag = -1;
@@ -14237,6 +14295,9 @@ double gneuticharjffpW1Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpW1Sfpdgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14258,6 +14319,9 @@ double gneuticharjffpW2Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpW2Sfpdgauss used in 1->3 decays"<< endl;
     errorflag = -1;
@@ -14279,6 +14343,9 @@ double gneuticharjffpW3Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpW3Sfpdgauss used in 1->3 decays"<< endl;
     errorflag = -1;
@@ -14301,6 +14368,9 @@ double gneuticharjffpW4Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpW4Sfpdgauss used in 1->3 decays"<< endl;
     errorflag = -1;
@@ -14322,6 +14392,9 @@ double gneuticharjffpW5Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpW5Sfpdgauss used in 1->3 decays"<< endl;
     errorflag = -1;
@@ -14343,6 +14416,9 @@ double gneuticharjffpW6Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpW6Sfpdgauss used in 1->3 decays"<< endl;
     errorflag = -1;
@@ -14364,6 +14440,9 @@ double gneuticharjffpW7Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpW7Sfpdgauss used in 1->3 decays"<< endl;
     errorflag = -1;
@@ -14385,6 +14464,9 @@ double gneuticharjffpW8Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpW8Sfpdgauss used in 1->3 decays"<< endl;
     errorflag = -1;
@@ -14406,6 +14488,9 @@ double gneuticharjffpHg1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpHg1dgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14420,6 +14505,9 @@ double gneuticharjffpHg2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpHg2dgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14434,6 +14522,9 @@ double gneuticharjffpHg3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpHg3dgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14448,6 +14539,9 @@ double gneuticharjffpHg4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffpHg4dgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14463,6 +14557,9 @@ double gneuticharjffp1gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp1gsfpdgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14484,6 +14581,9 @@ double gneuticharjffp2gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp2gsfpdgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14505,6 +14605,9 @@ double gneuticharjffp3gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp3gsfpdgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14526,6 +14629,9 @@ double gneuticharjffp4gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp4gsfpdgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14547,6 +14653,9 @@ double gneuticharjffp5gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14568,6 +14677,9 @@ double gneuticharjffp6gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp6gsfpdgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14589,6 +14701,9 @@ double gneuticharjffp7gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp7gsfpdgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14610,6 +14725,9 @@ double gneuticharjffp8gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gneuticharjffp8gsfpdgauss used in 1->3 decays" << endl;
     errorflag = -1;
@@ -14629,11 +14747,15 @@ double gneuticharjffp1sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
 {
   double gneuticharjffp1sfpsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0;
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m4,2);
-  squareminus = s - pow(m3-m4,2);
+  squareplus = s - pow(m3+fabs(m4),2);
+  squareminus = s - pow(m3-fabs(m4),2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp1sfpsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+      cout.precision(10);
+      *ffout << "problem: lambda will give nan in gneuticharjffp1sfpsfpdgauss used in 1->3 decays" << endl;
+      errorflag = -1;
   } 
   gneuticharjffp1sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp1sfpsfpdgauss;
@@ -14643,11 +14765,15 @@ double gneuticharjffp2sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
 {
   double gneuticharjffp2sfpsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0;
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m4,2);
-  squareminus = s - pow(m3-m4,2);
+  squareplus = s - pow(m3+fabs(m4),2);
+  squareminus = s - pow(m3-fabs(m4),2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp2sfpsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+      cout.precision(10);
+      *ffout << "problem: lambda will give nan in gneuticharjffp2sfpsfpdgauss used in 1->3 decays" << endl;
+      errorflag = -1;
   } 
   gneuticharjffp2sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp2sfpsfpdgauss;
@@ -14657,11 +14783,15 @@ double gneuticharjffp3sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
 {
   double gneuticharjffp3sfpsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0;
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m4,2);
-  squareminus = s - pow(m3-m4,2);
+  squareplus = s - pow(m3+fabs(m4),2);
+  squareminus = s - pow(m3-fabs(m4),2);
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp3sfpsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+      cout.precision(10);
+      *ffout << "problem: lambda will give nan in gneuticharjffp3sfpsfpdgauss used in 1->3 decays" << endl;
+      errorflag = -1;
   } 
   gneuticharjffp3sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp3sfpsfpdgauss;
@@ -14671,11 +14801,15 @@ double gneuticharjffp4sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
 {
   double gneuticharjffp4sfpsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0;
   s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
-  squareplus = s - pow(m3+m4,2);
-  squareminus = s - pow(m3-m4,2);
+  squareplus = s - pow(m3+fabs(m4),2); //inserted fabs
+  squareminus = s - pow(m3-fabs(m4),2); //inserted fabs
+  if (fabs(squareplus) < 1e-6) {
+      squareplus = 0.0; //Catch nan due to numerical precision
+  }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp4sfpsfpdgauss used in 1->3 decays " << endl;
-    errorflag = -1;
+      cout.precision(10);
+      *ffout << "problem: lambda will give nan in gneuticharjffp4sfpsfpdgauss used in 1->3 decays " << endl;
+      errorflag = -1;
   } 
   
   gneuticharjffp4sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));

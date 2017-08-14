@@ -1,3 +1,4 @@
+<li> Fixed bug in decays numerics that was giving many NaN's from numerical errors in a big cancellation 
 <li> Few PDGIDs were wrong sign in decays: Bugfix by Brian Peterson
 <li> 3-loop RGEs and 2-loop corrections to gluino/sparticle masses now always compiled. 2-loop scalar RGEs used for RPC by default.
 <li> Made quark mixing parameter MIXING an object parameter in MssmSusy object. Use setMixing() and displayMixing() methods. User-set electroweak symmetry breaking scale QEWSB now moved into MssmSoftsusy object: use setQewsb() and displayQewsb().
