@@ -21,12 +21,15 @@
 #include "flavoursoft.h"
 #include "susy.h"
 #include "particle.h"
+#include "threeBodyDecays.h"
 #include <iostream>
 #include <cstring>
 #include <stdlib.h>
 #include <cmath>
 #include <stdlib.h>
 #include <vector>
+#include <iomanip>
+#include <complex>
 
 using namespace std;
 

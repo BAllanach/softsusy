@@ -7,13 +7,8 @@
 */
 
 #include "decays.h"
-#include "threeBodyDecays.h"
-#include <iostream>
-#include <cstring>
-#include <stdlib.h>
-#include <iomanip>
-#include "main.h"
-#include <complex>
+
+
 
 using namespace std;
 static double m1 = 0.,m2 = 0.,m3 = 0.,m4 = 0.,mq = 0.,m5 = 0.,m6 = 0.,
