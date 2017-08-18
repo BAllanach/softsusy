@@ -19,6 +19,8 @@ static DoubleMatrix NeutMIX(NeutMIXdim,NeutMIXdim);
 static double errorflag = 0; /// 0 output if no issues, -1 if issues in calculating decays
 static ostream* ffout;
 
+const double GFosqrt2 = GMU / pow(2,0.5);
+
 int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIsIt) { 
 
   /// If there is a serious problem with the point, return an error code and /// warning
@@ -3250,14 +3252,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleChargino1.Array_Decays[22][0] = PDGHplus; ParticleChargino1.Array_Decays[22][1] = PDGneutralino4; ParticleChargino1.Array_Decays[22][2] = chargino1amplitudeHminusneutralinoZ4; ParticleChargino1.Array_Decays[22][3] = 2; ParticleChargino1.Array_Comments[22] = "# ~chi_1+ -> H+ ~chi_40";
 
    /// Somehow, you need to sneak in the pion decay here and re-number the
-   /// decays
+   /// other decays
+   ParticleChargino1.Array_Decays[23][0] = PDGpiPlus; ParticleChargino1.Array_Decays[23][1] = PDGneutralino1; ParticleChargino1.Array_Decays[23][2] = 6.6e-6; ParticleChargino1.Array_Decays[23][3] = 2; ParticleChargino1.Array_Comments[23] = "# ~chi_1+ -> pi+ ~chi_10";   
+   
+   ParticleChargino1.Array_Decays[24][0] = PDGHplus; ParticleChargino1.Array_Decays[24][1] = PDGneutralino5; ParticleChargino1.Array_Decays[24][2] = chargino1amplitudeHminusneutralinoZ5; ParticleChargino1.Array_Decays[24][3] = 2; ParticleChargino1.Array_Comments[24] = "# ~chi_1+ -> H+ ~chi_50";
+   ParticleChargino1.Array_Decays[25][0] = PDGWplus; ParticleChargino1.Array_Decays[25][1] = PDGneutralino5; ParticleChargino1.Array_Decays[25][2] = chargino1amplitudeWbosonneutralinoZ5; ParticleChargino1.Array_Decays[25][3] = 2; ParticleChargino1.Array_Comments[25] = "# ~chi_1+ -> W+ ~chi_50";
    
    
-   ParticleChargino1.Array_Decays[23][0] = PDGHplus; ParticleChargino1.Array_Decays[23][1] = PDGneutralino5; ParticleChargino1.Array_Decays[23][2] = chargino1amplitudeHminusneutralinoZ5; ParticleChargino1.Array_Decays[23][3] = 2; ParticleChargino1.Array_Comments[23] = "# ~chi_1+ -> H+ ~chi_50";
-   ParticleChargino1.Array_Decays[24][0] = PDGWplus; ParticleChargino1.Array_Decays[24][1] = PDGneutralino5; ParticleChargino1.Array_Decays[24][2] = chargino1amplitudeWbosonneutralinoZ5; ParticleChargino1.Array_Decays[24][3] = 2; ParticleChargino1.Array_Comments[24] = "# ~chi_1+ -> W+ ~chi_50";
-   
-   
-   ParticleChargino1.Array_Decays[25][0] = PDGneutralino1; ParticleChargino1.Array_Decays[25][1] = PDGup; ParticleChargino1.Array_Decays[25][4] = -PDGdown; ParticleChargino1.Array_Decays[25][2] = chargino1amplitudeneut1udbar; ParticleChargino1.Array_Decays[25][3] = 3; ParticleChargino1.Array_Comments[25] = "# ~chi_1+ -> chi_10 u dbar";
+   ParticleChargino1.Array_Decays[45][0] = PDGneutralino1; ParticleChargino1.Array_Decays[45][1] = PDGup; ParticleChargino1.Array_Decays[45][4] = -PDGdown; ParticleChargino1.Array_Decays[45][2] = chargino1amplitudeneut1udbar; ParticleChargino1.Array_Decays[45][3] = 3; ParticleChargino1.Array_Comments[45] = "# ~chi_1+ -> chi_10 u dbar";
    ParticleChargino1.Array_Decays[26][0] = PDGneutralino1; ParticleChargino1.Array_Decays[26][1] = PDGcharm; ParticleChargino1.Array_Decays[26][4] = -PDGstrange; ParticleChargino1.Array_Decays[26][2] = chargino1amplitudeneut1csbar; ParticleChargino1.Array_Decays[26][3] = 3; ParticleChargino1.Array_Comments[26] = "# ~chi_1+ -> chi_10 c sbar";
    ParticleChargino1.Array_Decays[27][0] = PDGneutralino1; ParticleChargino1.Array_Decays[27][1] = PDGnuelectron; ParticleChargino1.Array_Decays[27][4] = -PDGelectron; ParticleChargino1.Array_Decays[27][2] = chargino1amplitudeneut1nueebar; ParticleChargino1.Array_Decays[27][3] = 3; ParticleChargino1.Array_Comments[27] = "# ~chi_1+ -> chi_10 nu_e e+";
    ParticleChargino1.Array_Decays[28][0] = PDGneutralino1; ParticleChargino1.Array_Decays[28][1] = PDGnumuon; ParticleChargino1.Array_Decays[28][4] = -PDGmuon; ParticleChargino1.Array_Decays[28][2] = chargino1amplitudeneut1numumubar; ParticleChargino1.Array_Decays[28][3] = 3; ParticleChargino1.Array_Comments[28] = "# ~chi_1+ -> chi_10 nu_mu mu+";
@@ -3277,7 +3279,9 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleChargino1.Array_Decays[42][0] = PDGneutralino4; ParticleChargino1.Array_Decays[42][1] = PDGnuelectron; ParticleChargino1.Array_Decays[42][4] = -PDGelectron; ParticleChargino1.Array_Decays[42][2] = chargino1amplitudeneut4nueebar; ParticleChargino1.Array_Decays[42][3] = 3; ParticleChargino1.Array_Comments[42] = "# ~chi_1+ -> chi_40 nu_e e+";
    ParticleChargino1.Array_Decays[43][0] = PDGneutralino4; ParticleChargino1.Array_Decays[43][1] = PDGnumuon; ParticleChargino1.Array_Decays[43][4] = -PDGmuon; ParticleChargino1.Array_Decays[43][2] = chargino1amplitudeneut4numumubar; ParticleChargino1.Array_Decays[43][3] = 3; ParticleChargino1.Array_Comments[43] = "# ~chi_1+ -> chi_40 nu_mu mu+";
    ParticleChargino1.Array_Decays[44][0] = PDGneutralino4; ParticleChargino1.Array_Decays[44][1] = PDGnutau; ParticleChargino1.Array_Decays[44][4] = -PDGtau; ParticleChargino1.Array_Decays[44][2] = chargino1amplitudeneut4nutautaubar; ParticleChargino1.Array_Decays[44][3] = 3; ParticleChargino1.Array_Comments[44] = "# ~chi_1+ -> chi_40 nu_tau tau+";
- 
+   /// Ben: Added this one
+   ParticleChargino1.Array_Decays[45][0] = PDGneutralino1; ParticleChargino1.Array_Decays[45][1] = PDGpiPlus; ParticleChargino1.Array_Decays[45][4] = PDGpi0; ParticleChargino1.Array_Decays[45][2] = 5.55e-5; ParticleChargino1.Array_Decays[45][3] = 3; ParticleChargino1.Array_Comments[45] = "# ~chi_1+ -> chi_10 pi+ pi0";
+   
    double Chargino1_No_1to2_Decays = 0;
  
    Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.No_grav_Decays + ParticleChargino1.No_NMSSM_Decays;
@@ -12610,7 +12614,7 @@ void printRowPDG(ostream & fout, double x) {
   else fout << x;
   if (fabs(x)<10) fout << "      ";
   else if (fabs(x)<100) fout << "     ";
-  else {}
+  else if (fabs(x)<1000) fout << "    ";
 }
 
 
@@ -12619,7 +12623,7 @@ void OutputNoPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the deca
    fout << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
    fout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
    if (1-P.three_width/P.total_width > BRTol) {
-     fout << left << setw(6) << "#" << setw(18) << "BR" << setw(6) << "NDA" << setw(12) << left << "PDG1" << setw(12) << " PDG2" << setw(30) << "Comments" << "    " << endl;
+     fout << left << setw(6) << "#" << setw(18) << "BR" << setw(6) << "NDA" << setw(12) << left << "PDG1" << setw(12) << " PDG2" << setw(18) << "Comments" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 2) {
 	 fout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3];  printRowPDG(fout, P.Array_Decays[k][0]); fout << "   "; printRowPDG(fout, P.Array_Decays[k][1]); fout << "   " << left << setprecision(0) << setw(15) << P.Array_Comments[k] << endl;
@@ -12627,7 +12631,7 @@ void OutputNoPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the deca
      }
    }
    if (P.three_width/P.total_width > BRTol) {
-     fout << left << setw(6) << "#" << setw(18) << "BR" << setw(8) << "NDA" << setw(12) << left << " PDG1" << setw(12) << " PDG2" << setw(12) << " PDG3 " << setw(30) << "Comments" << "     " << endl;
+     fout << left << setw(6) << "#" << setw(18) << "BR" << setw(8) << "NDA" << setw(12) << left << " PDG1" << setw(12) << " PDG2" << setw(12) << " PDG3 " << setw(18) << "Comments" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 3) {
 	 fout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(25) << P.Array_Comments[k] << endl;
@@ -12644,7 +12648,7 @@ void OutputYesPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the dec
    fout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
 
    if (1-P.three_width/P.total_width > BRTol) {
-     fout << left << setw(6) << "# " << setw(20) << "BR " << setw(6) << "NDA " << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(30) << "Comments" << "    " << setw(18) << "PW" << endl;
+     fout << left << setw(6) << "# " << setw(20) << "BR " << setw(6) << "NDA " << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(18) << "Comments" << setw(18) << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 2) {
      	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << " " << P.Array_Decays[k][3] << setw(4) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; fout << left << setprecision(0) << setw(30) << P.Array_Comments[k] << "    " << scientific << setprecision(8) << setw(18) << P.Array_Decays[k][2] << endl;
@@ -12653,7 +12657,7 @@ void OutputYesPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the dec
      fout << "#" << endl; 
    }
    if (P.three_width/P.total_width > BRTol) {
-     fout << left << setw(6) << "# " << setw(20) << "BR" << setw(6) << "NDA" << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(12) << "PDG3" << setw(35) << "Comments" << "      " << setw(28) << "PW" << endl;
+     fout << left << setw(6) << "# " << setw(20) << "BR" << setw(6) << "NDA" << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(12) << "PDG3" << setw(18) << "Comments" << setw(28) << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
        if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 3) {
      	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(8) << fixed << " " << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(38) << P.Array_Comments[k] << "    "<< setw(18) << scientific << setprecision(8) << P.Array_Decays[k][2] << endl;

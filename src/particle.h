@@ -11,7 +11,6 @@
 #define PARTICLE_H
 
 const int NeutMIXdim = 4;
-const double GFosqrt2 = GMU / pow(2,0.5);
 
 /// Define Particle PDG codes - for SLHA output of decay tables
 const int PDGdown = 1, PDGup = 2, PDGstrange = 3, PDGcharm = 4, PDGbottom = 5,
@@ -34,7 +33,7 @@ const int PDGselectronR = 2000011, PDGsmuonR = 2000013, PDGstau2 = 2000015;
 /// 2000016 - for use later with right handed neutrinos
 const int PDGgravitino = 1000039;
 /// useful meson codes
-const int PDGpi0 = 111, PDG piPlus = 211;
+const int PDGpi0 = 111, PDGpiPlus = 211;
 
 ///PDG codes for extra NMSSM particles:
 const int PDGA2 = 46, PDGH3 = 45, PDGneutralino5 = 1000045;
@@ -44,12 +43,12 @@ class Particle {
  public:
   string name;                             ///< name of the parent
   double mass;                             ///< mass of the parent
-  double PDG;                              ///< PDG code of parent
-  double No_of_Decays;                     ///< How many decay modes
-  double No_1to2_Decays;                   ///< How many 2-body decay modes
-  double No_1to3_Decays;                   ///< How many 3-body decay modes
-  double No_grav_Decays;                   ///< How many decays to gravitinos
-  double No_NMSSM_Decays;                  ///< How many NMSSM specific modes
+  int PDG;                              ///< PDG code of parent
+  int No_of_Decays;                     ///< How many decay modes
+  int No_1to2_Decays;                   ///< How many 2-body decay modes
+  int No_1to3_Decays;                   ///< How many 3-body decay modes
+  int No_grav_Decays;                   ///< How many decays to gravitinos
+  int No_NMSSM_Decays;                  ///< How many NMSSM specific modes
   double total_width;                
   double two_width;                        ///< Total width of 2-body modes
   double three_width;                      ///< Total width of 3-body modes
