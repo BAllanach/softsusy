@@ -10,6 +10,35 @@
 #ifndef PARTICLE_H
 #define PARTICLE_H
 
+const int NeutMIXdim = 4;
+const double GFosqrt2 = GMU / pow(2,0.5);
+
+/// Define Particle PDG codes - for SLHA output of decay tables
+const int PDGdown = 1, PDGup = 2, PDGstrange = 3, PDGcharm = 4, PDGbottom = 5,
+  PDGtop = 6;
+const int PDGelectron = 11, PDGnuelectron = 12, PDGmuon = 13, PDGnumuon = 14,
+  PDGtau = 15, PDGnutau = 16, PDGgluon = 21, PDGphoton = 22, PDGZboson = 23,
+  PDGWplus = 24, PDGh0 = 25, PDGH0 = 35, PDGA0 = 36, PDGHplus = 37;
+const int PDGsdownL = 1000001, PDGsupL = 1000002, PDGsstrangeL = 1000003,
+  PDGscharmL = 1000004, PDGsbottom1 = 1000005, PDGstop1 = 1000006;
+const int PDGselectronL = 1000011, PDGnuselectronL = 1000012,
+  PDGsmuonL = 1000013, PDGnusmuonL = 1000014, PDGstau1 = 1000015,
+  PDGnustauL = 1000016;
+const int PDGgluino = 1000021, PDGneutralino1 = 1000022,
+  PDGneutralino2 = 1000023, PDGchargino1 = 1000024, PDGneutralino3 = 1000025,
+  PDGneutralino4 = 1000035, PDGchargino2 = 1000037;
+const int PDGsdownR = 2000001, PDGsupR = 2000002, PDGsstrangeR = 2000003,
+  PDGscharmR = 2000004, PDGsbottom2 = 2000005, PDGstop2 = 2000006;
+const int PDGselectronR = 2000011, PDGsmuonR = 2000013, PDGstau2 = 2000015;
+/// const int PDGnuselectronR = 2000012, PDGnusmuonR = 2000014, PDGnustauR =
+/// 2000016 - for use later with right handed neutrinos
+const int PDGgravitino = 1000039;
+/// useful meson codes
+const int PDGpi0 = 111, PDG piPlus = 211;
+
+///PDG codes for extra NMSSM particles:
+const int PDGA2 = 46, PDGH3 = 45, PDGneutralino5 = 1000045;
+
 /// Particle class definition for decays
 class Particle {
  public:

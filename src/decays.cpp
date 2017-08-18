@@ -14,8 +14,6 @@ using namespace std;
 static double m1 = 0.,m2 = 0.,m3 = 0.,m4 = 0.,mq = 0.,m5 = 0.,m6 = 0.,
   m7 = 0., m8 = 0., MZboson = 0., MWboson = 0., mh = 0., mH = 0.,
   mA = 0., mphi = 0., g1 = 0., g2 = 0., alphamix = 0., betavac = 0.;
-const int NeutMIXdim = 4;
-const double GFosqrt2 = GMU/pow(2,0.5);
 static int neutralinoj = 0, neutralinoi = 0, AorhorH = 0;
 static DoubleMatrix NeutMIX(NeutMIXdim,NeutMIXdim);
 static double errorflag = 0; /// 0 output if no issues, -1 if issues in calculating decays
@@ -580,19 +578,7 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
  DoubleMatrix VCKM = vul*vdlT; ///CKM only used so far in H+ decays to q q'bar, otherwise taken as diagonal
  DoubleMatrix Vu(3,3), Uu(3,3), yu(3,3), Vd(3,3), Ud(3,3), yd(3,3), Ve(3,3), Ue(3,3), ye(3,3);
  
- ///Define Particle PDG codes - for SLHA output of decay tables
- double PDGdown = 1, PDGup = 2, PDGstrange = 3, PDGcharm = 4, PDGbottom = 5, PDGtop = 6;
- double PDGelectron = 11, PDGnuelectron = 12, PDGmuon = 13, PDGnumuon = 14, PDGtau = 15, PDGnutau = 16, PDGgluon = 21, PDGphoton = 22, PDGZboson = 23, PDGWplus = 24, PDGh0 = 25, PDGH0 = 35, PDGA0 = 36, PDGHplus = 37;
- double PDGsdownL = 1000001, PDGsupL = 1000002, PDGsstrangeL = 1000003, PDGscharmL = 1000004, PDGsbottom1 = 1000005, PDGstop1 = 1000006;  double PDGselectronL = 1000011, PDGnuselectronL = 1000012, PDGsmuonL = 1000013, PDGnusmuonL = 1000014, PDGstau1 = 1000015, PDGnustauL = 1000016;
- double PDGgluino = 1000021, PDGneutralino1 = 1000022, PDGneutralino2 = 1000023, PDGchargino1 = 1000024, PDGneutralino3 = 1000025, PDGneutralino4 = 1000035, PDGchargino2 = 1000037;
- double PDGsdownR = 2000001, PDGsupR = 2000002, PDGsstrangeR = 2000003, PDGscharmR = 2000004, PDGsbottom2 = 2000005, PDGstop2 = 2000006;
- double PDGselectronR = 2000011, PDGsmuonR = 2000013, PDGstau2 = 2000015;
- /// double PDGnuselectronR = 2000012, PDGnusmuonR = 2000014, PDGnustauR = 2000016
- double PDGgravitino = 1000039;
- 
- ///PDG codes for extra NMSSM particles:
- double PDGA2 = 46, PDGH3 = 45, PDGneutralino5 = 1000045;
- 
+
  double MCH1=fabs(mch(1)), MCH2=fabs(mch(2));  //BP FIX: not sure why it can be negative??
  
  ///Particle class used to store decay info in one place for ease of output into decay tables
@@ -997,8 +983,10 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
  ParticleChargino1.name = "Chargino 1+ (lightest)";
  ParticleChargino1.PDG = PDGchargino1;
  ParticleChargino1.mass = MCH1;
- ParticleChargino1.No_1to2_Decays = 23; ///We consider decays of the W1+, the W1- decays then just follow with the same amplitudes but often particles swapped for their anitparticles
- ParticleChargino1.No_1to3_Decays = 20;
+ /// Ben: added in the charged pion/neutralino decay here
+ ParticleChargino1.No_1to2_Decays = 24; ///We consider decays of the W1+, the W1- decays then just follow with the same amplitudes but often particles swapped for their anitparticles
+ /// Added pi^+ pi^0 one here
+ ParticleChargino1.No_1to3_Decays = 21;
  ParticleChargino1.No_grav_Decays = 0;
  ParticleChargino1.No_NMSSM_Decays = 2;
  ParticleChargino1.No_of_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.No_1to3_Decays + ParticleChargino1.No_grav_Decays + ParticleChargino1.No_NMSSM_Decays; 
@@ -3261,9 +3249,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleChargino1.Array_Decays[21][0] = PDGHplus; ParticleChargino1.Array_Decays[21][1] = PDGneutralino3; ParticleChargino1.Array_Decays[21][2] = chargino1amplitudeHminusneutralinoZ3; ParticleChargino1.Array_Decays[21][3] = 2; ParticleChargino1.Array_Comments[21] = "# ~chi_1+ -> H+ ~chi_30";
    ParticleChargino1.Array_Decays[22][0] = PDGHplus; ParticleChargino1.Array_Decays[22][1] = PDGneutralino4; ParticleChargino1.Array_Decays[22][2] = chargino1amplitudeHminusneutralinoZ4; ParticleChargino1.Array_Decays[22][3] = 2; ParticleChargino1.Array_Comments[22] = "# ~chi_1+ -> H+ ~chi_40";
 
+   /// Somehow, you need to sneak in the pion decay here and re-number the
+   /// decays
+   
+   
    ParticleChargino1.Array_Decays[23][0] = PDGHplus; ParticleChargino1.Array_Decays[23][1] = PDGneutralino5; ParticleChargino1.Array_Decays[23][2] = chargino1amplitudeHminusneutralinoZ5; ParticleChargino1.Array_Decays[23][3] = 2; ParticleChargino1.Array_Comments[23] = "# ~chi_1+ -> H+ ~chi_50";
    ParticleChargino1.Array_Decays[24][0] = PDGWplus; ParticleChargino1.Array_Decays[24][1] = PDGneutralino5; ParticleChargino1.Array_Decays[24][2] = chargino1amplitudeWbosonneutralinoZ5; ParticleChargino1.Array_Decays[24][3] = 2; ParticleChargino1.Array_Comments[24] = "# ~chi_1+ -> W+ ~chi_50";
-
+   
+   
    ParticleChargino1.Array_Decays[25][0] = PDGneutralino1; ParticleChargino1.Array_Decays[25][1] = PDGup; ParticleChargino1.Array_Decays[25][4] = -PDGdown; ParticleChargino1.Array_Decays[25][2] = chargino1amplitudeneut1udbar; ParticleChargino1.Array_Decays[25][3] = 3; ParticleChargino1.Array_Comments[25] = "# ~chi_1+ -> chi_10 u dbar";
    ParticleChargino1.Array_Decays[26][0] = PDGneutralino1; ParticleChargino1.Array_Decays[26][1] = PDGcharm; ParticleChargino1.Array_Decays[26][4] = -PDGstrange; ParticleChargino1.Array_Decays[26][2] = chargino1amplitudeneut1csbar; ParticleChargino1.Array_Decays[26][3] = 3; ParticleChargino1.Array_Comments[26] = "# ~chi_1+ -> chi_10 c sbar";
    ParticleChargino1.Array_Decays[27][0] = PDGneutralino1; ParticleChargino1.Array_Decays[27][1] = PDGnuelectron; ParticleChargino1.Array_Decays[27][4] = -PDGelectron; ParticleChargino1.Array_Decays[27][2] = chargino1amplitudeneut1nueebar; ParticleChargino1.Array_Decays[27][3] = 3; ParticleChargino1.Array_Comments[27] = "# ~chi_1+ -> chi_10 nu_e e+";
