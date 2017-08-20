@@ -342,19 +342,18 @@ DECAY 1000016     2.90638504e+00   # Stau sneutrino decays
       9.26528478e-01    2      24         1000015   # ~nu_tauL -> W+ ~tau_1-
 #
 #     PDG         Width             
-DECAY 1000024     7.97014386e-01   # Chargino 1+ (lightest) decays
+DECAY 1000024     7.97007786e-01   # Chargino 1+ (lightest) decays
 #     BR                NDA   PDG1         PDG2       Comments          
-      4.90727379e-02    2      1000012   -11        # ~chi_1+ -> e+ ~nu_eL
-      2.50093249e-02    2     -1000011    12        # ~chi_1+ -> nu_e ~e_L+
-      4.90822392e-02    2      1000014   -13        # ~chi_1+ -> mu+ ~nu_muL
-      2.50161067e-02    2     -1000013    14        # ~chi_1+ -> nu_mu ~muL+
-      5.28421674e-02    2     -15         1000016   # ~chi_1+ -> tau+ ~nu_tauL
-      7.75459816e-01    2      16        -1000015   # ~chi_1+ -> nu_tau ~tau_1+
-      8.19290155e-04    2      16        -2000015   # ~chi_1+ -> nu_tau ~tau_2+
-      2.26204024e-02    2      24         1000022   # ~chi_1+ -> W+ ~chi_10
-      8.28090448e-06    2      211        1000022   # ~chi_1+ -> pi+ ~chi_10
+      4.90731443e-02    2      1000012   -11        # ~chi_1+ -> e+ ~nu_eL
+      2.50095320e-02    2     -1000011    12        # ~chi_1+ -> nu_e ~e_L+
+      4.90826456e-02    2      1000014   -13        # ~chi_1+ -> mu+ ~nu_muL
+      2.50163139e-02    2     -1000013    14        # ~chi_1+ -> nu_mu ~muL+
+      5.28426049e-02    2     -15         1000016   # ~chi_1+ -> tau+ ~nu_tauL
+      7.75466237e-01    2      16        -1000015   # ~chi_1+ -> nu_tau ~tau_1+
+      8.19296939e-04    2      16        -2000015   # ~chi_1+ -> nu_tau ~tau_2+
+      2.26205897e-02    2      24         1000022   # ~chi_1+ -> W+ ~chi_10
 #     BR                NDA      PDG1        PDG2        PDG3       Comments          
-      6.96348785e-05    3        1000022     211         111       # ~chi_1+ -> chi_10 pi+ pi0
+      6.96354552e-05    3        1000022     211         111       # ~chi_1+ -> chi_10 pi+ pi0
 #
 #     PDG         Width             
 DECAY 1000037     4.08063020e+00   # Chargino 2+ (heaviest) decays

@@ -2200,3 +2200,14 @@ double signedSqr(double f){ if (f > 0.) return sqr(f);
   double signedSqrt(double f);
   /// returns f * f * sign(f)
   double signedSqr(double f);
+
+double lambda(double m1, double m2, double m3) {
+  if (fabs(m1) < fabs(m2) +fabs(m3)) {
+    cout << "m1 < m2 + m3 DEBUG\n";
+    return 0.;
+  }
+  double squareplus  = pow(m1, 2) - pow((m2 + m3), 2);
+  double squareminus = pow(m1, 2) - pow((m2 - m3), 2);
+
+  return 0.5 * sqrt(squareplus * squareminus) / m1;
+}

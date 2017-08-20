@@ -322,5 +322,10 @@ void rsolv(const DoubleMatrix & a, int n, const DoubleVector & d,
   /// returns f * f * sign(f)
   double signedSqr(double f);
 
+/// Kinematic mass function - differs from the pure one in PDG by a root and
+/// factor
+/// \f$ \lambda(m_1,m_2,m_3)=\frac{\sqrt{(m_1^2-(m_2^2+m_3^2))(m_1^2-(m_2^2-m_3^2))}}{2 m_1}\f$.
+double lambda(double m1, double m2, double m3);
+
 #endif
 

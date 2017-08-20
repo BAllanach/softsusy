@@ -8,8 +8,6 @@
 
 #include "decays.h"
 
-
-
 using namespace std;
 static double m1 = 0.,m2 = 0.,m3 = 0.,m4 = 0.,mq = 0.,m5 = 0.,m6 = 0.,
   m7 = 0., m8 = 0., MZboson = 0., MWboson = 0., mh = 0., mH = 0.,
@@ -3253,7 +3251,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 
    /// Somehow, you need to sneak in the pion decay here and re-number the
    /// other decays
-   ParticleChargino1.Array_Decays[23][0] = PDGpiPlus; ParticleChargino1.Array_Decays[23][1] = PDGneutralino1; ParticleChargino1.Array_Decays[23][2] = 6.6e-6; ParticleChargino1.Array_Decays[23][3] = 2; ParticleChargino1.Array_Comments[23] = "# ~chi_1+ -> pi+ ~chi_10";   
+   double gammaChi1ToPiNeut1 = charginoToNeutralino1pion(r);
+   ParticleChargino1.Array_Decays[23][0] = PDGpiPlus; ParticleChargino1.Array_Decays[23][1] = PDGneutralino1; ParticleChargino1.Array_Decays[23][2] = gammaChi1ToPiNeut1; ParticleChargino1.Array_Decays[23][3] = 2; ParticleChargino1.Array_Comments[23] = "# ~chi_1+ -> pi+ ~chi_10";   
    
    ParticleChargino1.Array_Decays[24][0] = PDGHplus; ParticleChargino1.Array_Decays[24][1] = PDGneutralino5; ParticleChargino1.Array_Decays[24][2] = chargino1amplitudeHminusneutralinoZ5; ParticleChargino1.Array_Decays[24][3] = 2; ParticleChargino1.Array_Comments[24] = "# ~chi_1+ -> H+ ~chi_50";
    ParticleChargino1.Array_Decays[25][0] = PDGWplus; ParticleChargino1.Array_Decays[25][1] = PDGneutralino5; ParticleChargino1.Array_Decays[25][2] = chargino1amplitudeWbosonneutralinoZ5; ParticleChargino1.Array_Decays[25][3] = 2; ParticleChargino1.Array_Comments[25] = "# ~chi_1+ -> W+ ~chi_50";
@@ -6545,11 +6544,11 @@ double gluinoamplitudedecaymix (double m1, double m2, double m3, double alphastr
 
     if (squarkmix ==1) { 
       squareratiomix1= squareratio - 2*sin(2*theta)*m2/m1;
-      amplitudeW = (alphastrong*1./4)*squareratiomix1*(1/(2*m1))*pow(squareplus*squareminus,0.5); 
+      amplitudeW = (alphastrong*1/4)*squareratiomix1*(1/(2*m1))*pow(squareplus*squareminus,0.5); 
     }
     else if (squarkmix ==2) {
       squareratiomix2 = squareratio + 2*sin(2*theta)*m2/m1;
-      amplitudeW = (alphastrong*1./4)*squareratiomix2*(1/(2*m1))*pow(squareplus*squareminus,0.5);
+      amplitudeW = (alphastrong*1/4)*squareratiomix2*(1/(2*m1))*pow(squareplus*squareminus,0.5);
     }
     else {
       throw ("problem: squarkmix must be 1 or 2 in gluinoamplitudedecaymix\n");

@@ -422,12 +422,11 @@ DECAY 1000016     2.80374497e+00   # Stau sneutrino decays
       5.59943333e-01    2      15         1000024   # ~nu_tauL -> tau- ~chi_1+
 #
 #     PDG         Width             
-DECAY 1000024     9.13896589e-03   # Chargino 1+ (lightest) decays
+DECAY 1000024     9.13236589e-03   # Chargino 1+ (lightest) decays
 #     BR                NDA   PDG1         PDG2       Comments          
-      9.93204920e-01    2      24         1000022   # ~chi_1+ -> W+ ~chi_10
-      7.22182365e-04    2      211        1000022   # ~chi_1+ -> pi+ ~chi_10
+      9.93922714e-01    2      24         1000022   # ~chi_1+ -> W+ ~chi_10
 #     BR                NDA      PDG1        PDG2        PDG3       Comments          
-      6.07289716e-03    3        1000022     211         111       # ~chi_1+ -> chi_10 pi+ pi0
+      6.07728607e-03    3        1000022     211         111       # ~chi_1+ -> chi_10 pi+ pi0
 #
 #     PDG         Width             
 DECAY 1000037     2.97607039e+00   # Chargino 2+ (heaviest) decays

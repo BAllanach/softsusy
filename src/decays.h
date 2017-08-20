@@ -33,7 +33,6 @@
 
 using namespace std;
 
-
 /// Approximate accuracy with which 3 body decays are calculated
 const double accuracy = 0.01; 
 
@@ -47,6 +46,9 @@ const double mcpole = 1.40;
 /// Change mspole to alter quark "pole" masses used in h -> qq with QCD
 /// corrections 
 const double mspole = 0.19; 
+/// When mass splitting is below this scale, chargino decays involving hadrons
+/// are calculated rather than to quarks
+const double hadronicScale = 1.4;
 
 ///Function Declarations used to calculate Partial Widths in decays.cpp
 double gluinoamplitudedecay (double m1, double m2, double m3,
