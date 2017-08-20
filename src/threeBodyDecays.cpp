@@ -21,7 +21,8 @@ double charginoToNeutralino1pion(const MssmSoftsusy * m) {
 
   double OL11 = cos(m->displayPhys().thetaL),
     OR11 = cos(m->displayPhys().thetaR); 
-  double kpi = lambda(mchi1, mneut1, mpiplus);
+  double kpi = sqrt(lambda(sqr(mchi1), sqr(mneut1), sqr(mpiplus))) * 0.5
+    / (mchi1);
   double width = sqr(fpi) * sqr(GMU) * kpi / (4.0 * PI * sqr(mchi1)) *
     ( sqr(OL11 + OR11) * ( sqr(sqr(mchi1) - sqr(mneut1)) -
 			   sqr(mpiplus) * sqr(mchi1 - mneut1) ) +
