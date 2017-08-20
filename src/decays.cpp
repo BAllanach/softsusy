@@ -3285,6 +3285,9 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    if (fabs(MCH1) - mpiplus - fabs(mneut(1)) < hadronicScale) {
      ParticleChargino1.Array_Decays[26][2] = 0.;
      ParticleChargino1.Array_Decays[45][2] = 0.;
+   } else {
+     ParticleChargino1.Array_Decays[23][2] = 0.;
+     ParticleChargino1.Array_Decays[46][2] = 0.;     
    }
    
    double Chargino1_No_1to2_Decays = 0;
