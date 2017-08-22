@@ -34,6 +34,16 @@ using namespace std;
 //double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, double mchargino, double mquark, double mquarkp, double msqL, double msqpL, double g, double thetaL, double thetaR, double alphas, int charg, bool onetothree);
 const double fpi = 0.13041 / sqrt(2.0), mpiplus = 0.13957018, mpi0 = 0.1349766;
 const double GFosqrt2 = GMU / sqrt(2.0);
+static ostream* ffout;
+static double m1 = 0.,m2 = 0.,m3 = 0.,m4 = 0.,mq = 0.,m5 = 0.,m6 = 0.,
+  m7 = 0., m8 = 0., MZboson = 0., MWboson = 0., mh = 0., mH = 0.,
+  mA = 0., mphi = 0., g1 = 0., g2 = 0., alphamix = 0., betavac = 0.;
+static int neutralinoj = 0, neutralinoi = 0, AorhorH = 0;
+static DoubleMatrix NeutMIX(NeutMIXdim,NeutMIXdim);
+
+/// Calculate Decays does all decay table calculations and outputs
+int calculateDecays(ostream & out, MssmSoftsusy * r,
+		    const NmssmSoftsusy & nmssm, bool nmssmIsIt);
 
 double charginoToNeutralino1pion(const MssmSoftsusy * m);
 
@@ -279,5 +289,7 @@ DoubleVector higgshsleptondiffhandcouplings (double mWboson, double g, double al
 DoubleVector higgsHsleptonsamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mel);
 DoubleVector higgsHsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae);
 DoubleVector higgsHplussquarkcouplings (double mWboson, double g, double beta, double mup, double mdown, double greekmu, double Au, double Ad);
-
+///Function Declarations used to calculate Partial Widths in decays.cpp
+DoubleVector foftau(double mpart, double mcomp);  
+DoubleVector goftau(double mpart, double mcomp);
 #endif

@@ -36,10 +36,6 @@ using namespace std;
 /// Approximate accuracy with which 3 body decays are calculated
 const double accuracy = 0.01; 
 
-/// Calculate Decays does all decay table calculations and outputs
-int calculateDecays(ostream & out, MssmSoftsusy * r,
-		    const NmssmSoftsusy & nmssm, bool nmssmIsIt);
-
 /// Change mcpole to alter quark "pole" masses used in h -> qq with QCD
 /// corrections 
 const double mcpole = 1.40;
@@ -50,15 +46,9 @@ const double mspole = 0.19;
 /// are calculated rather than to quarks
 const double hadronicScale = 1.4;
 
-///Function Declarations used to calculate Partial Widths in decays.cpp
-
-
-  DoubleVector foftau(double mpart, double mcomp);  
-  
-  
-  void printRowPDG(ostream & cout, double x);
-  void OutputNoPWs(ostream & cout, Particle & P, double BRTol);
-  void OutputYesPWs(ostream & cout, Particle & P, double BRTol);
+void printRowPDG(ostream & cout, double x);
+void OutputNoPWs(ostream & cout, Particle & P, double BRTol);
+void OutputYesPWs(ostream & cout, Particle & P, double BRTol);
 
   ///Integral calculating functions for 1->3 decays
   double Zsfintegralsum(double m1, double m2, double msf, double mf, double mz, double min, double max, double Nsteps, int adaptive, double approx);
@@ -88,7 +78,7 @@ const double hadronicScale = 1.4;
 double ghHintegral(double m1, double m2, double mf, double mh, double mH, double g, double gp, double alpha, int neutralinoi, int neutralinoj, DoubleMatrix & mixNeut, double E); 
 double hHintegral (double m1, double m2, double mf, double mh, double mH, double fromE, double toE, double stepE, double g, double gp, double alpha, DoubleMatrix & mixNeut, int neutralinoi, int neutralinoj);
 										///Hintegral
-																										///only done via usual method (not via a separate integrating function compute_areai) as can't pass a DoubleMatrix & in a function pointer
+																				//only done via usual method (not via a separate integrating function compute_areai) as can't pass a DoubleMatrix & in a function pointer
 
 
 
