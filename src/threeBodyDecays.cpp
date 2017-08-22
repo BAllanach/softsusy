@@ -123,19 +123,89 @@ double squarkamplitudedecaycharginoW1 (double m1, double m2, double m3, double g
 }
 		  
 double squarkamplitudedecaycharginoW2 (double m1, double m2, double m3, double g, double gamma) {
-  double squareratio, squareplus, squareminus, amplitudeW;
+  double squareratio, amplitudeW;
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     amplitudeW = 0;
   }
   else {
-    squareplus = 1 - pow(fabs(m3)/m1+m2/m1,2);
-    squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
-    if (squareplus*squareminus < 0) {
-      throw ("problem: lambda will give nan in squarkamplitudedecaycharginoW2\n");
-    }
-    else{}
     squareratio = 1 - pow(fabs(m3)/m1,2) - pow(m2/m1,2);
-    amplitudeW = pow(g,2)*pow(cos(gamma),2)/(16*M_PI)*m1*squareratio*pow(squareplus*squareminus,0.5);
+    amplitudeW = pow(g,2)*pow(cos(gamma),2)/(16*M_PI)*squareratio*
+      sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)))/m1;      
+  }
+  return amplitudeW;
+}
+
+
+double squark1amplitudedecaycharginoW1mix (double m1, double m2, double m3, double g, double gammaL, double gammaR,  double theta, double beta, double mWboson, double runmt, double runmb, double torb) /// the variable torb depends on if it is stop (torb=1) or sbottom (torb =2) decaying and changes AprimeuW1 to AprimedW1 accordingly
+{
+  double squareratio=0, angular1=0, angular2=0, amplitudeW=0;
+  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
+  if (fabs(m1) < fabs(m2) +fabs(m3)) {
+    amplitudeW = 0;
+  }
+  else {
+    squareratio = 1.0 - pow(fabs(m3)/m1,2) - pow(m2/m1,2);
+    angular1 = squarkmixcharginocouplings(g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, m3, 0, torb)(1);
+    angular2 = squarkmixcharginocouplings(g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, m3, 0, torb)(2);
+    amplitudeW = 1.0/(16*PI*m1)*(angular1*squareratio + m3*m2/(pow(m1,2))*angular2)*sqrt(lambda(sqr(m1), sqr(m2), sqr(m3))); //test
+  }
+  return amplitudeW;
+}
+
+
+
+double squark1amplitudedecaycharginoW2mix (double m1, double m2, double m3, double g, double gammaL, double gammaR,  double theta, double beta, double mWboson, double runmt, double runmb, double torb) /// the variable torb depends on if it is stop (torb=1) or sbottom (torb =2) decaying and changes AprimeuW2 to AprimedW2 accordingly
+{
+  double squareratio=0, angular1=0, angular2=0, amplitudeW=0;
+  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
+  if (fabs(m1) < fabs(m2) +fabs(m3)) {
+    amplitudeW = 0;
+  }
+  else {
+    squareratio = 1- pow(fabs(m3)/m1,2) - pow(m2/m1,2);
+    angular1 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, 0, m3, torb)(3);
+    angular2 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, 0, m3, torb)(4);
+		
+    amplitudeW = 1.0/(16*PI*m1)*sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)))*(angular1*squareratio + m3*m2/(pow(m1,2))*angular2);
+  }
+  return amplitudeW;
+}
+
+
+
+double squark2amplitudedecaycharginoW1mix (double m1, double m2, double m3, double g, double gammaL, double gammaR,  double theta, double beta, double mWboson, double runmt, double runmb, double torb) /// the variable torb depends on if it is stop (torb=1) or sbottom (torb =2) decaying and changes AprimeuW1 to AprimedW1 accordingly
+{
+  double squareratio=0, angular1=0, angular2=0, amplitudeW=0;
+  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
+
+  if (fabs(m1) < fabs(m2) +fabs(m3)) {
+    amplitudeW = 0;
+  }
+  else {
+    squareratio = 1- pow(fabs(m3)/m1,2) - pow(m2/m1,2);
+    angular1 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, m3, 0, torb)(5);
+    angular2 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, m3, 0, torb)(6);
+    amplitudeW = 1./(16*PI*m1)*sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)))*(angular1*squareratio + m3*m2/(pow(m1,2))*angular2);
+   
+  }
+  return amplitudeW;
+}
+
+double squark2amplitudedecaycharginoW2mix (double m1, double m2, double m3, double g, double gammaL, double gammaR,  double theta, double beta, double mWboson, double runmt, double runmb, double torb) /// the variable torb depends on if it is stop (torb=1) or sbottom (torb =2) decaying and changes AprimeuW2 to AprimedW2 accordingly
+{
+  double squareratio=0, angular1=0, angular2=0, amplitudeW=0;
+  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
+  if (fabs(m1) < fabs(m2) +fabs(m3)) {
+    amplitudeW = 0;
+  }
+  else {
+    squareratio = 1- pow(fabs(m3)/m1,2) - pow(m2/m1,2);
+    angular1 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, 0, m3, torb)(7);
+    angular2 = squarkmixcharginocouplings (g, theta, beta, gammaL, gammaR, runmt, runmb, mWboson, 0, m3, torb)(8);
+    
+    amplitudeW = 1.0/(m1*16*PI)*(angular1*squareratio +
+				 m3*m2/(pow(m1,2))*angular2) *
+      sqrt(lambda(sqr(m1), sqr(m2), sqr(m3))); 
   }
   return amplitudeW;
 }

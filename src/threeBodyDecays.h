@@ -49,4 +49,20 @@ double squarkamplitudedecaycharginoW1 (double m1, double m2, double m3,
 				       double g, double gamma);
 double squarkamplitudedecaycharginoW2 (double m1, double m2, double m3,
 				       double g, double gamma);
+double squark1amplitudedecaycharginoW1mix
+(double m1, double m2, double m3, double g, double gammaL, double gammaR,
+ double theta, double beta, double mWboson, double runmt, double runmb,
+ double torb); 
+double squark1amplitudedecaycharginoW2mix
+(double m1, double m2, double m3, double g, double gammaL, double gammaR,
+ double theta, double beta, double mWboson, double runmt, double runmb,
+ double torb);
+double squark2amplitudedecaycharginoW1mix
+(double m1, double m2, double m3, double g, double gammaL, double gammaR,
+ double theta, double beta, double mWboson, double mup, double mdown,
+ double torb);
+double squark2amplitudedecaycharginoW2mix
+(double m1, double m2, double m3, double g, double gammaL, double gammaR,
+ double theta, double beta, double mWboson, double mup, double mdown,
+ double torb);
 #endif
