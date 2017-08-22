@@ -20,6 +20,8 @@ const double GFosqrt2 = GMU / pow(2,0.5);
 
 int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIsIt) { 
 
+  int errorflag = 0
+  
   /// If there is a serious problem with the point, return an error code and /// warning
   if (
       (!nmssmIsIt && r->displayProblem().testSeriousProblem()) ||
@@ -32,7 +34,6 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmss
 
   double flaggluino = 1, flagsupL = 1, flagsupR = 1, flagsdownL = 1, flagsdownR = 1, flagscharmL = 1, flagscharmR = 1, flagsstrangeL = 1, flagsstrangeR = 1, flagstop1 = 1, flagstop2 = 1, flagsbottom1 = 1, flagsbottom2 = 1, flagselectronL = 1, flagselectronR = 1, flagsmuonL = 1, flagsmuonR = 1, flagstau1 = 1, flagstau2 = 1, flagsnueL = 1, flagsnumuL = 1, flagsnutauL = 1, flagneut1 = 1, flagneut2 = 1, flagneut3 = 1, flagneut4 = 1, flagneut5 = 1, flagchar1 = 1, flagchar2 = 1, flagh1 = 1, flagH2 = 1, flagH3 = 1, flagA1 = 1, flagA2 = 1, flagHpm = 1; ///< Flags to turn off decays, default 1 = on, 0 = off
 
-  errorflag = 0; /// 0 output if no issues, -1 if issues in calculating decays
 
   bool QCDcorr = true; ///Turns on QCD corrections to h->gg and h->qq
 
@@ -6517,34 +6518,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 /// Function to calculate the gluino decay amplitudes
 
 
-double squarkamplitudedecaygluinomix (double m1, double m2, double m3, double alphastrong, double squarkmix, double theta) {
-  double squareratiomix, squareplus, squareminus, amplitudeW=0;
-  if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    amplitudeW = 0;
-  }
-  else {
-    squareplus = pow(m1,2)-pow((m2+m3),2);
-    squareminus = pow(m1,2) - pow((m2-m3),2);
-    if (squareplus*squareminus < 0) {
-      throw ("problem: lambda will give nan in squarkamplitudedecaygluinomix\n");
-      errorflag = -1;
-    }
-    else{}
-    if (squarkmix == 1) {
-      squareratiomix = 1- pow(m2/m1,2) - pow(m3/m1,2) +2*sin(2*theta)*m2*m3/(pow(m1,2));
-      amplitudeW = 4./3*alphastrong*1/(2*m1)*squareratiomix*pow(squareplus*squareminus,0.5);
-    }
-    else if (squarkmix == 2) {
-      squareratiomix = 1- pow(m2/m1,2) - pow(m3/m1,2) -2*sin(2*theta)*m2*m3/(pow(m1,2));
-      amplitudeW = 4./3*alphastrong*1/(2*m1)*squareratiomix*pow(squareplus*squareminus,0.5);
-    }
-    else {
-      throw ("problem: quarkmix must be 1 or 2 in squarkamplitudedecaygluinomix\n");
-      errorflag = -1;
-    }
-  }
-  return amplitudeW;
-}
 
 
 double squarkamplitudedecaycharginoW1 (double m1, double m2, double m3, double g, double gamma) {
@@ -6557,7 +6530,6 @@ double squarkamplitudedecaycharginoW1 (double m1, double m2, double m3, double g
     squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in squarkamplitudedecaycharginoW1\n");
-      errorflag = -1;
     }
     else{}
     squareratio = 1 - pow(fabs(m3)/m1,2) - pow(m2/m1,2);
@@ -6576,7 +6548,6 @@ double squarkamplitudedecaycharginoW2 (double m1, double m2, double m3, double g
     squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in squarkamplitudedecaycharginoW2\n");
-      errorflag = -1;
     }
     else{}
     squareratio = 1 - pow(fabs(m3)/m1,2) - pow(m2/m1,2);
@@ -6598,7 +6569,6 @@ double squark1amplitudedecaycharginoW1mix (double m1, double m2, double m3, doub
     squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in squark1amplitudedecaycharginoW1mix\n");
-      errorflag = -1;
     }
     else{}
     squareratio = 1- pow(fabs(m3)/m1,2) - pow(m2/m1,2);
@@ -6624,7 +6594,6 @@ double squark1amplitudedecaycharginoW2mix (double m1, double m2, double m3, doub
     squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in squark1amplitudedecaycharginoW2mix\n");
-      errorflag = -1;
     }
     squareratio = 1- pow(fabs(m3)/m1,2) - pow(m2/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
@@ -6651,7 +6620,6 @@ double squark2amplitudedecaycharginoW1mix (double m1, double m2, double m3, doub
     squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in squark2amplitudedecaycharginoW1mix\n");
-      errorflag = -1;
     }
     squareratio = 1- pow(fabs(m3)/m1,2) - pow(m2/m1,2);
     lambda = pow(squareplus*squareminus, 0.5);
@@ -6675,7 +6643,6 @@ double squark2amplitudedecaycharginoW2mix (double m1, double m2, double m3, doub
     squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in squark2amplitudedecaycharginoW2mix\n");
-      errorflag = -1;
     }
     squareratio = 1- pow(fabs(m3)/m1,2) - pow(m2/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
@@ -6698,7 +6665,6 @@ double squarkLamplitudedecayneutralino (double m1, double m2, double m3, double 
 	  squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
 	  if (squareplus*squareminus < 0) {
 	    throw ("problem: lambda will give nan in squarkLamplitudedecayneutralino\n");
-	    errorflag = -1;
 	  }
 	  squareratio = 1 - pow(fabs(m3)/m1,2) - pow(m2/m1,2);
 	  AqZ = 1/(pow(2,0.5))*(uord*g*mixNeut(neutralino,2) + gprime*mixNeut(neutralino,1)/3); 
@@ -6719,14 +6685,12 @@ double squarkRamplitudedecayneutralino (double m1, double m2, double m3, double 
 	  squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
 	  if (squareplus*squareminus < 0) {
 	    throw ("problem: lambda will give nan in squarkRamplitudedecayneutralino\n");
-	    errorflag = -1;
 	  }
 	  squareratio = 1 - pow(m3/m1,2) - pow(m2/m1,2);
 	  if ( uord == 1) { uordchanger =1;}
 	  else if (uord == -1) { uordchanger =-0.5;}
 	  else {
 	    throw("problem: uord must be 1 or -1 in squarkRamplitudedecayneutralino");
-	    errorflag = -1;
 	  }
 	  BqZ = 1/(pow(2,0.5))*4./3*uordchanger*gprime*mixNeut(neutralino,1); ///Following changes in AqZ suggested by SUSYHIT
 	  lambda = pow(squareplus*squareminus,0.5);
@@ -6753,7 +6717,6 @@ double squark3amplitudedecayneutralino (double m1, double m2, double m3, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in squark3amplitudedecayneutralino\n");
-      errorflag = -1;
     }
     
     if (squark == 1) /// we have stops
@@ -6771,7 +6734,6 @@ double squark3amplitudedecayneutralino (double m1, double m2, double m3, double 
 	  }
 	else {
 	  throw("problem: stop must be stop1 or stop2\n"); 
-	  errorflag = -1;
 	}
       }
     else if ( squark ==2) /// we have sbottoms
@@ -6791,13 +6753,11 @@ double squark3amplitudedecayneutralino (double m1, double m2, double m3, double 
 	  
 	else {
 	  throw("problem: must be sbottom1s or sbottom2s\n");
-	  errorflag = -1;
 	}
       }
       
     else {
       throw("problem: third generation squarks must be stops or sbottoms\n");
-      errorflag = -1;
     }
           
     a = 0.5*(alphatilda + betatilda);
@@ -6824,7 +6784,6 @@ double squark3amplitudedecaysquark3Wboson (double m1, double m2, double m3, doub
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in squark3amplitudedecaysquark3Wboson\n");
-      errorflag = -1;
     }
     
     if(m1torb == 1) /// we have an initial stop
@@ -6839,7 +6798,6 @@ double squark3amplitudedecaysquark3Wboson (double m1, double m2, double m3, doub
 	  }
 	else {
 	  throw("problem: m1oneortwo must be 1 or 2 in squark3amplitudedecaysquark3Wboson!\n");
-	  errorflag = -1;
 	}
       }
     else if(m1torb == 2) /// we have an initial sbottom
@@ -6853,11 +6811,9 @@ double squark3amplitudedecaysquark3Wboson (double m1, double m2, double m3, doub
 	    capthetai = pow(sin(thetab),2);
 	  }
 	else {throw("problem: m1oneortwo must be 1 or 2 in squark3amplitudedecaysquark3Wboson!\n");
-	  errorflag = -1;
 	}
       }
     else { throw("problem: m1torb must be 1 or 2 in squark3amplitudedecaysquark3Wboson!");
-      errorflag = -1;
     }
       
 
@@ -6872,7 +6828,6 @@ double squark3amplitudedecaysquark3Wboson (double m1, double m2, double m3, doub
 	    capthetaf = pow(sin(thetat),2);
 	  }
 	else { throw("problem: m3oneortwo must be 1 or 2 in squark3amplitudedecaysquark3Wboson!");
-	  errorflag = -1;
 	}
       }
     else if(m3torb == 2) /// we have a final state sbottom
@@ -6886,11 +6841,9 @@ double squark3amplitudedecaysquark3Wboson (double m1, double m2, double m3, doub
 	    capthetaf = pow(sin(thetab),2);
 	  }
 	else { throw("problem: m3oneortwo must be 1 or 2 in squark3amplitudedecaysquark3Wboson!");
-	  errorflag = -1;
 	}
       }
     else { throw("problem: m3torb must be 1 or 2 in squark3amplitudedecaysquark3Wboson!");
-      errorflag = -1;
     }
     amplitudeW = pow(g,2)/(32*PI)*(pow(m1,3)/pow(m2,2))*pow(lambda,3)*capthetai*capthetaf;
   }
@@ -6910,7 +6863,6 @@ double squark3amplitudedecaychargedHiggssquark3 (double m1, double m2, double m3
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in squark3amplitudedecaychargedHiggssquark3\n");
-      errorflag = -1;
     }
     combo1 = tan(beta) + 1/(tan(beta));
     combo2 = greekmu + At/(tan(beta));
@@ -6934,7 +6886,6 @@ double squark3amplitudedecaychargedHiggssquark3 (double m1, double m2, double m3
 	  }
 	else {
 	  throw("problem:b1or2 must be 1 or 2 in squark3amplitudedecaychargedHiggssquark3\n");
-	  errorflag = -1;
 	}
       }
     if(t1or2 == 2) /// we have an initial stop2
@@ -6949,12 +6900,10 @@ double squark3amplitudedecaychargedHiggssquark3 (double m1, double m2, double m3
 	  }
 	else {
 	  throw("problem:b1or2 must be 1 or 2 in squark3amplitudedecaychargedHiggssquark3\n");
-	  errorflag = -1;
 	}
       }
     else {
       throw("problem:t1or2 must be 1 or 2 in squark3amplitudedecaychargedHiggssquark3\n");
-      errorflag = -1;
     }
     
     amplitudeW = pow(A,2)*lambda/(16*PI*m1);
@@ -6977,7 +6926,6 @@ double squark32amplitudedecayneutralHiggssquark3 (double m1, double m2, double m
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in squark32amplitudedecayneutralHiggssquark3\n");
-      errorflag = -1;
     }
     combo1 = 1 - 5./3 * pow(gp/g,2);
     combo2 = -1 +1./3 * pow(gp/g,2);
@@ -7012,7 +6960,6 @@ double squark32amplitudedecayneutralHiggssquark3 (double m1, double m2, double m
       
     else {
       throw("problem: phi must be one of h, H, or A in squark32amplitudedecayneutraliHiggssquark3 \n");
-      errorflag = -1;
     }
     
     if (torb == 1) ///stop2 decay
@@ -7026,7 +6973,6 @@ double squark32amplitudedecayneutralHiggssquark3 (double m1, double m2, double m
       }
     else {
       throw("problem:torb must be 1 or 2 in squark32amplitudedecayneutralHiggssquark3\n");
-      errorflag = -1;
     }
   }
   return amplitudeW;
@@ -7046,7 +6992,6 @@ double squark32amplitudedecaysquark3Zboson (double m1, double m2, double m3, dou
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in squark32amplitudedecaysquark3Zboson\n");
-      errorflag = -1;
     }
     angular = pow(cos(theta)*sin(theta),2);
     costhetaW = g/pow((pow(g,2)+pow(gp,2)),0.5);
@@ -7070,7 +7015,6 @@ double sleptonamplitudedecayleptonneutralino (double m1, double m2, double m3, d
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sleptonamplitudedecayleptonneutralino\n");
-      errorflag = -1;
     }
     A = -1/(pow(2,0.5)) * (g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1));
     B = -pow(2,0.5)*gp*mixNeut(neutralino,1);
@@ -7083,7 +7027,6 @@ double sleptonamplitudedecayleptonneutralino (double m1, double m2, double m3, d
     }
     else {
       throw("problem: LorR must be L or R in sleptonamplitudedecayleptonneutralino\n");
-      errorflag = -1;
     }
       
    
@@ -7107,7 +7050,6 @@ double sneutrinoamplitudedecayneutrinoneutralino (double m1, double m2, double m
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sneutrinoamplitudedecayneutrinoneutralino\n");
-      errorflag = -1;
     }
     A = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) - gp*mixNeut(neutralino,1));
 
@@ -7132,7 +7074,6 @@ double sleptonamplitudedecaychargino (double m1, double m2, double m3, double g,
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sleptonamplitudedecaychargino\n");
-      errorflag = -1;
     }
     if (chargino == 1) {
       trigtheta = sin(theta);
@@ -7142,7 +7083,6 @@ double sleptonamplitudedecaychargino (double m1, double m2, double m3, double g,
     }
     else {
       throw("problem: chargino must be a 1 or 2 in sleptonamplitudedecaychargino\n");
-      errorflag = -1;
     }	    
     amplitudeW = pow(g*trigtheta,2)*m1*squareratio*lambda/(16*PI); /// note in the slepton decay to neutrinos case m2 is zero so lambda reduces to squareratio - giving squareratio squared
       }
@@ -7163,7 +7103,6 @@ double stauamplitudedecaytauneutralino (double m1, double m2, double m3, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stauamplitudedecaytauneutralino\n");
-      errorflag = -1;
     }
     ftau = g*m2/(pow(2,0.5)*mWboson*cos(beta));
     if (oneortwo == 1) /// we have a stau1 decaying
@@ -7178,7 +7117,6 @@ double stauamplitudedecaytauneutralino (double m1, double m2, double m3, double 
       }
     else {
       throw("problem: oneortwo must be 1 or 2 in stauamplitudedecaytauneutralino\n");
-      errorflag = -1;
     }
     a = 0.5*(alphatilda + betatilda);
     b = 0.5*(betatilda - alphatilda);
@@ -7201,7 +7139,6 @@ double stausneutrinoamplitudedecaytauneutrinoneutralino (double m1, double m2, d
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stausneutrinoamplitudedecaytauneutrinoneutralino\n");
-      errorflag = -1;
     }
     A = 1/(pow(2,0.5))*(g*-mixNeut(neutralino,2) + gp*mixNeut(neutralino,1));
     amplitudeW = m1/(16*PI)*pow(A,2)*lambda*squareratio; /// note lambda and squareratio reduce to same thing here as m2 = 0
@@ -7223,7 +7160,6 @@ double stauamplitudedecaynutauchargino (double m1, double m2, double m3, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stauamplitudedecaynutauchargino\n");
-      errorflag = -1;
     }
     ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
       
@@ -7240,7 +7176,6 @@ double stauamplitudedecaynutauchargino (double m1, double m2, double m3, double 
             
       else {
 	throw("problem: chargino must be a 1 or 2 in stauamplitudedecaynutauchargino\n");
-	errorflag = -1;
       }
       
       if(oneortwo == 2) { 
@@ -7251,7 +7186,6 @@ double stauamplitudedecaynutauchargino (double m1, double m2, double m3, double 
       }
       else {
 	throw("problem: oneortwo must be 1 or 2 in stauamplitudedecaynutauchargino\n");
-	errorflag = -1;
       }
             
       amplitudeW = pow(mixingpart,2)*m1*lambda*squareratio/(16*PI); ///again lambda and squareratio reduce to same thing as m2 = 0
@@ -7275,7 +7209,6 @@ double stausneutrinoamplitudedecaytauchargino (double m1, double m2, double m3, 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stausneutrinoamplitudedecaytauchargino\n");
-      errorflag = -1;
     }
     ftau = g*m2/(pow(2,0.5)*mWboson*cos(beta)); ///as m2 is mtau which is what we need to calculate ftau
     
@@ -7289,7 +7222,6 @@ double stausneutrinoamplitudedecaytauchargino (double m1, double m2, double m3, 
     }
     else {
       throw("problem: chargino must be a 1 or 2 in stausneutrinoamplitudedecaytauchargino\n");
-      errorflag = -1;
     }   
     sumsquare = pow(A,2) + pow(B,2);
     amplitudeW = m1*lambda/(16*PI)*(sumsquare*squareratio + 4*m2*m3/(pow(m1,2))*B*A);
@@ -7313,7 +7245,6 @@ double stauamplitudedecaysnustauHminus (double m1, double m2, double m3, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stauamplitudedecaysnustauHminus\n");
-      errorflag = -1;
     }
     
     combo1 = pow(mtau,2)*tan(beta) - pow(mWboson,2)*sin(2*beta);
@@ -7327,7 +7258,6 @@ double stauamplitudedecaysnustauHminus (double m1, double m2, double m3, double 
       }
       else {
 	throw("problem: oneortwo must be 1 or 2 in stauamplitudedecaysnustauHminus\n");
-	errorflag = -1;
       }
       
       amplitudeW = pow(A,2)*lambda/(16*PI*m1);
@@ -7351,7 +7281,6 @@ double stauamplitudedecaysnustauWboson (double m1, double m2, double m3, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stauamplitudedecaysnustauWboson\n");
-      errorflag = -1;
     }
     
     if (oneortwo == 1) {
@@ -7362,7 +7291,6 @@ double stauamplitudedecaysnustauWboson (double m1, double m2, double m3, double 
       }
       else {
 	throw("problem oneortwo must be 1 or 2 in stauamplitudedecaysnustauWboson\n");
-	errorflag = -1;
       }
     
     amplitudeW = pow(g*mixangle,2)*pow(m1,3)/(32*PI*pow(m3,2))*pow(lambda,3);
@@ -7385,7 +7313,6 @@ double stau2amplitudedecaystau1Zboson (double m1, double m2, double m3, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stau2amplitudedecaystau1Zboson\n");
-      errorflag = -1;
     }
     mixangle = pow(cos(thetatau)*sin(thetatau),2);
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
@@ -7408,7 +7335,6 @@ double stau2amplitudedecaystau1phi (double m1, double m2, double m3, double g, d
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stau2amplitudedecaystau1phi\n");
-      errorflag = -1;
     }
     combo1 = -1 +3*pow(gp/g,2); /// is just -1 + 3*pow(tanthetaW,2)
     combo2 = g*mWboson/4;
@@ -7428,7 +7354,6 @@ double stau2amplitudedecaystau1phi (double m1, double m2, double m3, double g, d
     }
     else {
       throw("problem: phi can only be an h, H or A instau2amplitudedecaystau1phi\n");
-      errorflag = -1;
     }    
     amplitudeW = pow(Acoeff,2)*lambda/(16*PI*m1);
   }
@@ -7452,7 +7377,6 @@ double charginoamplitudedecayquarksquarkL (double m1, double m2, double m3, doub
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in charginoamplitudedecayquarksquarkL\n");
-      errorflag = -1;
     }
     
     if (chargino == 1) /// chargino1 decaying
@@ -7465,7 +7389,6 @@ double charginoamplitudedecayquarksquarkL (double m1, double m2, double m3, doub
       }
     else {
       throw("problem: chargino must be a 1 or 2 in charginoamplitudedecayquarksquarkL\n");
-      errorflag = -1;
     }
     amplitudeW = 3*fabs(m1)*lambda/(32*PI)*(pow(scriptA,2)*alteredsquareratio);
   }
@@ -7489,7 +7412,6 @@ double charginoamplitudedecayquarksquarkmix (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in charginoamplitudedecayquarksquarkmix\n");
-      errorflag = -1;
     }
     
     int torb = upordowntypesquark;
@@ -7505,7 +7427,6 @@ double charginoamplitudedecayquarksquarkmix (double m1, double m2, double m3, do
       }
       else {
 	throw("problem: oneortwo must be a 1 or 2 in charginoamplitudedecayquarksquarkmix\n");
-	errorflag = -1;
       }
     }
     else if (chargino == 2) {
@@ -7519,12 +7440,10 @@ double charginoamplitudedecayquarksquarkmix (double m1, double m2, double m3, do
       }
       else { 
 	throw("problem: oneortwo must be a 1 or 2 in charginoamplitudedecayquarksquarkmix\n");
-	errorflag = -1;
       }
     }
     else {
       throw("problem: chargino must be a 1 or 2 in charginoamplitudedecayquarksquarkmix\n");
-      errorflag = -1;
     }
 
     amplitudeW = 3*fabs(m1)*lambda/(32*PI)*(combo1*alteredsquareratio + combo2*m2/m1);
@@ -7549,7 +7468,6 @@ double charginoamplitudedecayleptonsleptonL (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in charginoamplitudedecayleptonsleptonL\n");
-      errorflag = -1;
     }
       
     if (chargino == 1) { 
@@ -7560,7 +7478,6 @@ double charginoamplitudedecayleptonsleptonL (double m1, double m2, double m3, do
     }
     else {
       throw("problem: chargino must be a 1 or 2 in charginoamplitudedecayleptonsleptonL\n");
-      errorflag = -1;
     }
 
     amplitudeW = fabs(m1)*lambda/(32*PI)*pow(A,2)*alteredsquareratio;
@@ -7585,7 +7502,6 @@ double charginoamplitudedecaysnutautau (double m1, double m2, double m3, double 
     lambda = pow(squareplus*squareminus,0.5);	 
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in charginoamplitudedecaysnutautau\n");
-      errorflag = -1;
     }
     ftau = g*m2/(pow(2,0.5)*mWboson*cos(beta));
     
@@ -7599,7 +7515,6 @@ double charginoamplitudedecaysnutautau (double m1, double m2, double m3, double 
     }
     else { 
       throw("problem: chargino must be a 1 or 2 in charginoamplitudedecaysnutautau\n");
-      errorflag = -1;
     }
 
     amplitudeW = fabs(m1)*lambda/(32*PI)*((pow(A,2)+pow(Bprimeprime,2))*alteredsquareratio + 4*A*Bprimeprime*m2/fabs(m1));
@@ -7624,7 +7539,6 @@ double charginoamplitudedecaystaunutau (double m1, double m2, double m3, double 
     lambda = pow(squareplus*squareminus,0.5);	 /// reduces to 1 - pow(m3/m1,2) as m2 = 0
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in charginoamplitudedecaystaunutau\n");
-      errorflag = -1;
     }
     ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
       
@@ -7641,7 +7555,6 @@ double charginoamplitudedecaystaunutau (double m1, double m2, double m3, double 
 	  }
 	else {
 	  throw("problem: oneortwo must be a 1 or 2 in charginoamplitudedecaystaunutau\n");
-	  errorflag = -1;
 	}
       }
       else if (chargino == 2) {
@@ -7658,12 +7571,10 @@ double charginoamplitudedecaystaunutau (double m1, double m2, double m3, double 
 	  }
 	else {
 	  throw("problem: oneortwo must be a 1 or 2 in charginoamplitudedecaystaunutau\n");
-	  errorflag = -1;
 	}
       }
       else {
 	throw("problem: chargino must be a 1 or 2 in charginoamplitudedecaystaunutau\n");
-	errorflag = -1;
       }      
       amplitudeW = pow(scriptA,2)*fabs(m1)*lambda*alteredsquareratio/(32*PI);
   }
@@ -7687,7 +7598,6 @@ double charginoamplitudedecayWbosonneutralino (double m1, double m2, double m3, 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in charginoamplitudedecayWbosonneutralino\n");
-      errorflag = -1;
     }
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
     squarecombo2 = (pow(pow(m1,2) - pow(m3,2),2) - pow(m2,4))/pow(m2,2);
@@ -7703,7 +7613,6 @@ double charginoamplitudedecayWbosonneutralino (double m1, double m2, double m3, 
     }
     else {
       throw("problem: chargino must be a 1 or 2 in charginoamplitudedecayWbosonneutralino\n");
-      errorflag = -1;
     }
     amplitudeW = pow(g,2)/(16*PI*fabs(m1))*lambda*((pow(X,2)+pow(Y,2))*(squarecombo1+squarecombo2) - 6*(pow(X,2) - pow(Y,2))*(m1)*(m3));
   }
@@ -7726,7 +7635,6 @@ double charginoamplitudedecayHminusneutralino (double m1, double m2, double m3, 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in charginoamplitudedecayHminusneutralino\n");
-      errorflag = -1;
     }
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
     
@@ -7746,7 +7654,6 @@ double charginoamplitudedecayHminusneutralino (double m1, double m2, double m3, 
     }
     else { 
       throw("problem: chargino must be a 1 or 2 in charginoamplitudedecayHminusneutralino\n");
-      errorflag = -1;
     }
     amplitudeW = lambda/(16*PI*fabs(m1))*((pow(a,2)+pow(b,2))*squarecombo1 + 2*(pow(a,2) - pow(b,2))*m1*m3);
   }
@@ -7769,7 +7676,6 @@ double chargino2amplitudedecaychargino1Zboson (double m1, double m2, double m3, 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in chargino2amplitudedecaychargino1Zboson\n");
-      errorflag = -1;
     }
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
     squarecombo2 = (pow(pow(m1,2) - pow(m3,2),2) - pow(m2,4))/pow(m2,2); 
@@ -7800,7 +7706,6 @@ double chargino2amplitudedecaychargino1neutHiggs (double m1, double m2, double m
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in chargino2amplitudedecaychargino1neutHiggs\n");
-      errorflag = -1;
     }
     squarecombo1 = pow(m1,2) - pow(m2,2) + pow(m3,2);
     
@@ -7824,7 +7729,6 @@ double chargino2amplitudedecaychargino1neutHiggs (double m1, double m2, double m
     
     else {
       throw("problem: phi must be one of h, H, or A in chargino2amplitudedecaychargino1neutHiggs\n");
-      errorflag = -1;
     }    
     matelem = (pow(S,2) + pow(P,2))*squarecombo1 + 2*(pow(S,2)-pow(P,2))*m1*m3;
     
@@ -7849,7 +7753,6 @@ double neutralinoamplitudedecayquarksquarkLorR (double m1, double m2, double m3,
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecayquarksquarkLorR\n");
-      errorflag = -1;
     }
     alteredsquareratio = 1 + pow(m2/m1,2) - pow(m3/m1,2);
     
@@ -7866,7 +7769,6 @@ double neutralinoamplitudedecayquarksquarkLorR (double m1, double m2, double m3,
       }
     else {
       throw("problem: uordtype must be a 1 or 2 in neutralinoamplitudedecayquarksquarLorR\n");
-      errorflag = -1;
     }
     if(LorR == 'L') /// so get wino and zino couplings as LH squark
       {
@@ -7879,7 +7781,6 @@ double neutralinoamplitudedecayquarksquarkLorR (double m1, double m2, double m3,
       }
     else {
       throw("problem: LorR must be a L or R in neutralinoamplitudedecayquarksquarLorR\n");
-      errorflag = -1;
     }    
     amplitudeW = 3*pow(C,2)*fabs(m1)*lambda/(32*PI)*alteredsquareratio;
   }
@@ -7904,7 +7805,6 @@ double neutralinoamplitudedecayleptonsleptonLorR (double m1, double m2, double m
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecayleptonsleptonLorR\n");
-      errorflag = -1;
     }
     alteredsquareratio = 1 + pow(m2/m1,2) - pow(m3/m1,2);
     
@@ -7922,7 +7822,6 @@ double neutralinoamplitudedecayleptonsleptonLorR (double m1, double m2, double m
       }    
     else {
       throw("problem: LorR must be a L or R in neutralinoamplitudedecayleptonsleptonLorR\n");
-      errorflag = -1;
     }  
     amplitudeW = pow(C,2)*fabs(m1)*lambda*alteredsquareratio/(32*PI);
   }
@@ -7947,7 +7846,6 @@ double neutralinoamplitudedecayneutrinosneutrinoL (double m1, double m2, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecayneutrinosneutrinoL\n");
-      errorflag = -1;
     }
     alteredsquareratio = 1 + pow(m2/m1,2) - pow(m3/m1,2);
     
@@ -7975,7 +7873,6 @@ double neutralinoamplitudedecaysquark3quarkmix (double m1, double m2, double m3,
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecaysquark3quarkmix\n");
-      errorflag = -1;
     }
     masscombo1 = pow(1+m2/(m1),2) - pow(m3/m1,2);
     masscombo2 = pow(1-m2/(m1),2) - pow(m3/m1,2);      
@@ -7998,7 +7895,6 @@ double neutralinoamplitudedecaysquark3quarkmix (double m1, double m2, double m3,
 	
 	else {
 	  throw("problem: oneortwo must be 1 or 2 in neutralinoamplitudedecaysquark3quarkmix\n");
-	  errorflag = -1;
 	}
       }
     
@@ -8019,13 +7915,11 @@ double neutralinoamplitudedecaysquark3quarkmix (double m1, double m2, double m3,
 	  }
 	else {
 	  throw("problem: oneortwo must be 1 or 2 in neutralinoamplitudedecaysquark3quarkmix\n");
-	  errorflag = -1;
 	}
 	}
       
     else {
       throw("problem: squark must be 1 or 2 in neutralinoamplitudedecaysquark3quarkmix\n");
-      errorflag = -1;
     }    
     a = 0.5*(alphatilda + betatilda);
     b = 0.5*(betatilda - alphatilda);
@@ -8052,7 +7946,6 @@ double neutralinoamplitudedecaystautau (double m1, double m2, double m3, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecaystautau\n");
-      errorflag = -1;
     }
     
     ftau = g*m2/(pow(2,0.5)*mWboson*cos(beta));
@@ -8068,7 +7961,6 @@ double neutralinoamplitudedecaystautau (double m1, double m2, double m3, double 
       }
     else {
        throw("problem: oneortwo must be 1 or 2 in neutralinoamplitudedecaystautau\n"); 
-       errorflag = -1;
     }
 
     a = 0.5*(alphatilda + betatilda);
@@ -8097,7 +7989,6 @@ double neutralinoamplitudedecaycharginoWboson (double m1, double m2, double m3, 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecaycharginoWboson\n");
-      errorflag = -1;
     }    
   
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
@@ -8114,7 +8005,6 @@ double neutralinoamplitudedecaycharginoWboson (double m1, double m2, double m3, 
     }
     else {
       throw("problem: chargino must be 1 or 2 in neutralinoamplitudedecaycharginoWboson\n");
-      errorflag = -1;
     }
     amplitudeW = pow(g,2)/(16*PI*fabs(m1))*lambda*((pow(X,2)+pow(Y,2))*(squarecombo1+squarecombo2) - 6*(pow(X,2) - pow(Y,2))*m1*m3);
       
@@ -8137,7 +8027,6 @@ double neutralinoamplitudedecaycharginoHplus (double m1, double m2, double m3, d
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecaycharginoHplus\n");
-      errorflag = -1;
     }    
     
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
@@ -8158,7 +8047,6 @@ double neutralinoamplitudedecaycharginoHplus (double m1, double m2, double m3, d
     }
     else {
       throw("problem: chargino must be 1 or 2 in neutralinoamplitudedecaycharginoHplus\n");
-      errorflag = -1;
     }
     amplitudeW = lambda/(16*PI*fabs(m1))*((pow(a,2)+pow(b,2))*squarecombo1 + 2*(pow(a,2) - pow(b,2))*m1*m3);
   }
@@ -8180,7 +8068,6 @@ double neutralinoamplitudedecayneutralinoZboson (double m1, double m2, double m3
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoZboson\n");
-      errorflag = -1;
     }    
     
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
@@ -8210,7 +8097,6 @@ double neutralinoamplitudedecayneutralinoneutHiggs (double m1, double m2, double
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoneutHiggs\n");
-      errorflag = -1;
     }    
         
     if(phi == 'h') /// here mixingangle is alpha
@@ -8235,7 +8121,6 @@ double neutralinoamplitudedecayneutralinoneutHiggs (double m1, double m2, double
       }
     else { 
       throw("problem: phi must be h or H or A in neutralinoamplitudedecayneutralinoneutHiggs\n");
-      errorflag = -1;
     }
   }
   return amplitudeW;
@@ -8270,7 +8155,6 @@ double higgslorHamplitudedecayquarkantiquark (double m1, double m2, double g, do
 	}
 	else {
 	  throw("problem: uord must be 1 or 0 in higgslorHamplitudedecayquarkantiquark\n");
-	  errorflag = -1;
 	}
       }
     else if (lorH == 'H') {
@@ -8292,7 +8176,6 @@ double higgslorHamplitudedecayquarkantiquark (double m1, double m2, double g, do
 	}
 	else {
 	  throw("problem: uord must be 1 or 0 in higgslorHamplitudedecayquarkantiquark\n");
-	  errorflag = -1;
 	}
     }
 
@@ -8308,12 +8191,10 @@ double higgslorHamplitudedecayquarkantiquark (double m1, double m2, double g, do
 	  }
 	else {
 	  throw("problem: uord must be 1 or 0 in higgslorHamplitudedecayquarkantiquark\n");
-	  errorflag = -1;
 	}
       }
     else {
       throw("problem: lorH must be h or H or M (i.e. H3), where M is only for NMSSM, in higgslorHamplitudedecayquarkantiquark\n");
-      errorflag = -1;
     }
 
     amplitudeW = GFosqrt2*3*m1/(4*PI)*pow(m2,2)*angular*pow(squarecombo1,1.5);
@@ -8364,7 +8245,6 @@ double higgsAamplitudedecayquarkantiquark (double m1, double m2, double g, doubl
     }
     else {
       throw("problem: uord must be 1 or 0 in higgsAamplitudedecayquarkantiquark\n");
-      errorflag = -1;
     }
     amplitudeW = 3*GFosqrt2/(4*PI)*angular*(pow(m2,2))*m1*pow(squarecombo1,0.5);
 
@@ -8411,7 +8291,6 @@ double higgsAamplitudedecayquarkantiquarkNMSSM (double m1, double m2, double bet
     }
     else {
       throw("problem: uord must be 1 or 0 in higgsAamplitudedecayquarkantiquarkNMSSM\n");
-      errorflag = -1;
     }
     amplitudeW = 3*GFosqrt2/(4*PI)*angular*(pow(m2,2))*m1*pow(squarecombo1,0.5);
 
@@ -8445,7 +8324,6 @@ double higgsphiamplitudedecayneutralinoneutralino (double m1, double m2, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsphiamplitudedecayneutralinoneutralino\n");
-      errorflag = -1;
     }    
      
     if(phi == 'h') /// here mixingangle is alpha
@@ -8483,7 +8361,6 @@ double higgsphiamplitudedecayneutralinoneutralino (double m1, double m2, double 
       }
     else {
       throw("problem: phi must be h or H or A in higgsphiamplitudedecayneutralinoneutralino\n");
-      errorflag = -1;
     }
   }
 
@@ -8506,7 +8383,6 @@ double higgsAamplitudedecayneutralinoneutralinoNMSSM (double m1, double m2, doub
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsAamplitudedecayneutralinoneutralinoNMSSM\n");
-      errorflag = -1;
     }    
 
     coupling = lam/(pow(2,0.5))*(CPOMix(pseudoscalar,1)*(mixNeut(ineutralino,3)*mixNeut(jneutralino,5) + mixNeut(ineutralino,5)*mixNeut(jneutralino,3)) + CPOMix(pseudoscalar,2)*(mixNeut(ineutralino,4)*mixNeut(jneutralino,5) + mixNeut(ineutralino,5)*mixNeut(jneutralino,4)) + CPOMix(pseudoscalar,3)*(mixNeut(ineutralino,3)*mixNeut(jneutralino,4)+mixNeut(jneutralino,3)*mixNeut(ineutralino,4))) - pow(2,0.5)*kappa*CPOMix(pseudoscalar,3)*mixNeut(ineutralino,5)*mixNeut(jneutralino,5) - tanthetaW*g/2*(-CPOMix(pseudoscalar,1)*(mixNeut(ineutralino,1)*mixNeut(jneutralino,4) + mixNeut(ineutralino,4)*mixNeut(jneutralino,1)) + CPOMix(pseudoscalar,2)*(mixNeut(ineutralino,1)*mixNeut(jneutralino,3) + mixNeut(ineutralino,3)*mixNeut(jneutralino,1))) - g/2*(CPOMix(pseudoscalar,1)*(mixNeut(ineutralino,2)*mixNeut(jneutralino,4) + mixNeut(ineutralino,4)*mixNeut(jneutralino,2)) - CPOMix(pseudoscalar,2)*(mixNeut(ineutralino,2)*mixNeut(jneutralino,3) + mixNeut(ineutralino,3)*mixNeut(jneutralino,2)));
@@ -8536,7 +8412,6 @@ double higgsphiamplitudedecaysamechargino (double m1, double m2, double g, doubl
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsphiamplitudedecaysamechargino\n");
-      errorflag = -1;
     }    
     
     DoubleVector SWcoupling(6);
@@ -8572,7 +8447,6 @@ double higgsphiamplitudedecaysamechargino (double m1, double m2, double g, doubl
      }
      else {
        throw("problem: phi must be h or H or A and chargino must be 1 or 2 in higgsphiamplitudedecaysamechargino\n");
-       errorflag = -1;
      }    
     amplitudeW = pow(g,2)/(4*PI)*pow(S,2)*fabs(m1)*pow(lambda,index);
   }  
@@ -8595,7 +8469,6 @@ double higgsphiamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsphiamplitudedecaysamecharginoNMSSM\n");
-      errorflag = -1;
     }    
 
     if (chargino == 1) {
@@ -8606,7 +8479,6 @@ double higgsphiamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, 
     }
     else {
       throw("problem: phi must be h or H or A in higgsphiamplitudedecaysamecharginoNMSSM\n");
-      errorflag = -1;
     }
     
     amplitudeW = m1/(8*PI)*pow(lambda,3)*pow(coupling,2);
@@ -8630,7 +8502,6 @@ double higgsAamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsAamplitudedecaysamecharginoNMSSM\n");
-      errorflag = -1;
     }    
 
     if (chargino == 1) {
@@ -8641,7 +8512,6 @@ double higgsAamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, do
     }
     else { 
       throw("problem: chargino must be 1 or 2 in higgsAamplitudedecaysamecharginoNMSSM\n");
-      errorflag = -1;
     }
     amplitudeW = m1/(8*PI)*lambda*pow(S,2);
 
@@ -8663,7 +8533,6 @@ double higgsphiamplitudedecaydiffcharginoNMSSM (double m1, double m2, double m3,
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsphiamplitudedecaydiffcharginoNMSSM\n");
-      errorflag = -1;
     }  
 
     coupling1 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*sin(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*sin(thetaR) - CPEMix(higgs,2)*cos(thetaL)*cos(thetaR)));
@@ -8690,7 +8559,6 @@ double higgsphiamplitudedecaydifchargino (double m1, double m2, double m3, doubl
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsphiamplitudedecaydifchargino\n");
-      errorflag = -1;
     }  
     
     DoubleVector SPWcoupling(6);
@@ -8714,7 +8582,6 @@ double higgsphiamplitudedecaydifchargino (double m1, double m2, double m3, doubl
      }
      else {
        throw("problem: phi must be h or H or A in higgsphiamplitudedecaydifchargino\n");
-       errorflag = -1;
      }     
      amplitudeW = pow(g,2)/(16*PI)*fabs(m1)*lambda*(pow(S,2)*squareplus + pow(P,2)*squareminus);
   }  
@@ -8736,7 +8603,6 @@ double higgsAamplitudedecaydifcharginoNMSSM (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsAamplitudedecaydifcharginoNMSSM\n");
-      errorflag = -1;
     }  
 
     C1 = (lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*cos(thetaL)*sin(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*sin(thetaL)*sin(thetaR) - CPOMix(pseudoscalar,2)*cos(thetaL)*cos(thetaR)));
@@ -8764,7 +8630,6 @@ double higgshamplitudedecayAA (double m1, double m2, double g, double gp, double
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecayAA\n");
-      errorflag = -1;
     }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
@@ -8790,7 +8655,6 @@ double higgsHamplitudedecayhh (double m1, double m2, double g, double gp, double
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecayhh\n");
-      errorflag = -1;
     }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
@@ -8816,7 +8680,6 @@ double higgsHamplitudedecayAA (double m1, double m2, double g, double gp, double
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecayAA\n");
-      errorflag = -1;
     }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
@@ -8842,7 +8705,6 @@ double higgsHamplitudedecayHplusHminus (double m1, double m2, double g, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecayHplusHminus\n");
-      errorflag = -1;
     }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
@@ -8868,7 +8730,6 @@ double higgshamplitudedecayhiggsAZboson (double m1, double m2, double m3, double
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecayhiggsAZboson\n");
-      errorflag = -1;
     }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
@@ -8894,7 +8755,6 @@ double higgsHamplitudedecayhiggsAZboson (double m1, double m2, double m3, double
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecayhiggsAZboson\n");
-      errorflag = -1;
     }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
@@ -8921,7 +8781,6 @@ double higgsAamplitudedecayhiggshZboson (double m1, double m2, double m3, double
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsAamplitudedecayhiggshZboson\n");
-      errorflag = -1;
     }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
@@ -8949,7 +8808,6 @@ double higgsAamplitudedecayhiggsHZboson (double m1, double m2, double m3, double
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsAamplitudedecayhiggsHZboson\n");
-      errorflag = -1;
     }  
     
     costhetaW = g/(pow(pow(g,2)+pow(gp,2),0.5));
@@ -8975,7 +8833,6 @@ double higgsAamplitudedecayhiggshorHZbosonNMSSM (double m1, double m2, double m3
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsAamplitudedecayhiggshorHZbosonNMSSM\n");
-      errorflag = -1;
     }  
     
     if (pseudoscalar == 1 && higgs == 1) {
@@ -8998,7 +8855,6 @@ double higgsAamplitudedecayhiggshorHZbosonNMSSM (double m1, double m2, double m3
     }
     else { 
       throw("problem: higgs must be 1 or 2 or 3 and pseudoscalar must be 1 or 2 in higgsAamplitudedecayhiggshorHZbosonNMSSM\n");
-      errorflag = -1;
     }
 
     amplitudeW = GFosqrt2*pow(m1,3)/(8*PI)*pow(lambda,3)*pow(coupling,2);
@@ -9023,7 +8879,6 @@ double higgshamplitudedecay2squarksamehand (double m1, double m2, double m3, dou
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecay2squarksamehand\n");
-      errorflag = -1;
     }  
      DoubleVector hsqsqcoupling(4);
      for (int i=1; i<=4; i++) {
@@ -9045,7 +8900,6 @@ double higgshamplitudedecay2squarksamehand (double m1, double m2, double m3, dou
     }    
     else {
       throw("problem: sq must be 1, 2, 3, or 4 in higgshamplitudedecay2squarksamehand\n");
-      errorflag = -1;
     }
     
     amplitudeW = 3*pow(coupling,2)/(16*PI*m1)*lambda;
@@ -9068,7 +8922,6 @@ double higgshamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecay2squarksamehandNMSSM\n");
-      errorflag = -1;
     }  
 
     if (sq == 1) ///uLuL
@@ -9089,7 +8942,6 @@ double higgshamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3
       }
     else {
       throw("problem: sq must be 1, 2, 3, or 4 in higgshamplitudedecay2squarksamehandNMSSM\n");
-      errorflag = -1;
     }    
     amplitudeW = 3*lambda*pow(coupling,2)/(16*PI*m1);
   }
@@ -9110,7 +8962,6 @@ double higgshamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecay2sleptonsamehandNMSSM\n");
-      errorflag = -1;
     }  
 
     if (sl == 1) ///snuLsnuL - drop terms proportional to ml^2 here
@@ -9127,7 +8978,6 @@ double higgshamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m
       }
     else {
       throw("problem: sl must be 1, 2, or 3 in higgshamplitudedecay2sleptonsamehandNMSSM\n");
-      errorflag = -1;
     }    
     amplitudeW = lambda*pow(coupling,2)/(16*PI*m1);
 
@@ -9151,7 +9001,6 @@ double higgsHamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m
 
     if (squareplus*squareminus < 0) {
       throw("lambda will give nan in higgsHamplitudedecay2sleptonsamehandNMSSM");
-      errorflag = -1;
     }  
 
     if (sl == 1) ///snuLsnuL - drop terms proportional to ml^2 here
@@ -9168,7 +9017,6 @@ double higgsHamplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double m
       }
     else {
       throw("problem: sl must be 1, 2, or 3 in higgsHamplitudedecay2sleptonsamehandNMSSM\n");
-      errorflag = -1;
     }
     
     amplitudeW = lambda*pow(coupling,2)/(16*PI*m1);
@@ -9190,7 +9038,6 @@ double higgsH3amplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsH3amplitudedecay2sleptonsamehandNMSSM\n");
-      errorflag = -1;
     }  
 
     if (sl == 1) ///snuLsnuL - drop terms proportional to ml^2 here
@@ -9207,7 +9054,6 @@ double higgsH3amplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double 
       }
     else {
       throw("problem: sl must be 1, 2, or 3 in higgsH3amplitudedecay2sleptonsamehandNMSSM\n");
-      errorflag = -1;
     }
     
     amplitudeW = lambda*pow(coupling,2)/(16*PI*m1); 
@@ -9230,7 +9076,6 @@ double higgshamplitudedecay2squarkdiffhand (double m1, double m2, double m3, dou
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecay2squarkdiffhand\n");
-      errorflag = -1;
     }  
 
      DoubleVector hsqsqcoupling(2);
@@ -9248,7 +9093,6 @@ double higgshamplitudedecay2squarkdiffhand (double m1, double m2, double m3, dou
     }
     else {
       throw("problem: sq must be 1, or 2 in higgshamplitudedecay2squarkdiffhand\n");
-      errorflag = -1;
     }
         
     amplitudeW = 3*pow(coupling,2)/(16*PI*m1)*lambda;
@@ -9271,7 +9115,6 @@ double higgshamplitudedecay2squarkdiffhandNMSSM (double m1, double m2, double m3
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecay2squarkdiffhandNMSSM\n");
-      errorflag = -1;
     }  
 
     if (sq == 1) ///uLuR
@@ -9284,7 +9127,6 @@ double higgshamplitudedecay2squarkdiffhandNMSSM (double m1, double m2, double m3
       }
     else {
       throw("problem: sq must be 1, or 2 in higgshamplitudedecay2squarkdiffhandNMSSM\n");
-      errorflag = -1;
     }
     amplitudeW = 3/(16*PI*m1)*lambda*pow(coupling,2);
   }
@@ -9308,7 +9150,6 @@ double higgsHamplitudedecay2squarksamehand (double m1, double m2, double m3, dou
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecay2squarksamehand\n");
-      errorflag = -1;
     }  
 
      DoubleVector Hsqsqcoupling(4);
@@ -9332,7 +9173,6 @@ double higgsHamplitudedecay2squarksamehand (double m1, double m2, double m3, dou
     }    
     else {
       throw("problem: sq must be 1, 2, 3 or 4 in higgsHamplitudedecay2squarksamehand\n");
-      errorflag = -1;
     }
     amplitudeW = 3*pow(coupling,2)/(16*PI*m1)*lambda;
   }
@@ -9354,7 +9194,6 @@ double higgsHamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecay2squarksamehandNMSSM\n");
-      errorflag = -1;
     }  
 
     if (sq == 1) ///uLuL
@@ -9375,7 +9214,6 @@ double higgsHamplitudedecay2squarksamehandNMSSM (double m1, double m2, double m3
       }
     else {
       throw("problem: sq must be 1, 2, 3 or 4 in higgsHamplitudedecay2squarksamehandNMSSM\n");
-      errorflag = -1;
     }
     
     amplitudeW = 3*lambda*pow(coupling,2)/(16*PI*m1); 
@@ -9397,7 +9235,6 @@ double higgsH3amplitudedecay2squarksamehandNMSSM (double m1, double m2, double m
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsH3amplitudedecay2squarksamehandNMSSM\n");
-      errorflag = -1;
     }  
     
     if (sq == 1) ///uLuL
@@ -9418,7 +9255,6 @@ double higgsH3amplitudedecay2squarksamehandNMSSM (double m1, double m2, double m
       }
     else {
       throw("problem: sq must be 1, 2, 3 or 4 in higgsH3amplitudedecay2squarksamehandNMSSM\n");
-      errorflag = -1;
     }    
     amplitudeW = 3*lambda*pow(coupling,2)/(16*PI*m1); 
   }
@@ -9441,7 +9277,6 @@ double higgsHamplitudedecay2squarkdiffhand (double m1, double m2, double m3, dou
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecay2squarkdiffhand\n");
-      errorflag = -1;
     }  
 
      DoubleVector Hsqsqcoupling(2);
@@ -9459,7 +9294,6 @@ double higgsHamplitudedecay2squarkdiffhand (double m1, double m2, double m3, dou
     }
     else { 
       throw("problem: sq must be 1 or 2 in higgsHamplitudedecay2squarkdiffhand\n");
-      errorflag = -1;
     }        
     amplitudeW = 3*pow(coupling,2)/(16*PI*m1)*lambda;
   }
@@ -9482,7 +9316,6 @@ double higgshamplitudedecay2sleptonsamehand (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecay2sleptonsamehand\n");
-      errorflag = -1;
     }  
 
      DoubleVector hslslcoupling(3);
@@ -9503,7 +9336,6 @@ double higgshamplitudedecay2sleptonsamehand (double m1, double m2, double m3, do
     }
     else {
       throw("problem: sl must be 1, 2, or 3 in higgshamplitudedecay2sleptonsamehand\n");
-      errorflag = -1;
     }        
     amplitudeW = pow(coupling,2)/(16*PI*m1)*lambda;
   }
@@ -9525,7 +9357,6 @@ double higgshamplitudedecay2sleptondiffhand (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecay2sleptondiffhand\n");
-      errorflag = -1;
     }  
 
      DoubleVector hslslcoupling(1);
@@ -9540,7 +9371,6 @@ double higgshamplitudedecay2sleptondiffhand (double m1, double m2, double m3, do
     }
     else {
       throw("problem: sl must be 1 in higgshamplitudedecay2sleptondiffhand\n");
-      errorflag = -1;
     } 
     amplitudeW = pow(coupling,2)/(16*PI*m1)*lambda;
   }
@@ -9562,7 +9392,6 @@ double higgsHamplitudedecay2sleptonsamehand (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecay2sleptonsamehand\n");
-      errorflag = -1;
     }  
 
      DoubleVector Hslslcoupling(3);
@@ -9583,7 +9412,6 @@ double higgsHamplitudedecay2sleptonsamehand (double m1, double m2, double m3, do
     }
     else {
       throw("problem: sl must be 1, 2, or 3 in higgsHamplitudedecay2sleptonsamehand\n");
-      errorflag = -1;
     }   
     amplitudeW = pow(coupling,2)/(16*PI*m1)*lambda;
   }
@@ -9605,7 +9433,6 @@ double higgsHamplitudedecay2sleptondiffhand (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecay2sleptondiffhand\n");
-      errorflag = -1;
     }  
 
      DoubleVector Hslslcoupling(1);
@@ -9620,7 +9447,6 @@ double higgsHamplitudedecay2sleptondiffhand (double m1, double m2, double m3, do
     }
     else {
       throw("problem: sl must be 1 in higgsHamplitudedecay2sleptondiffhand\n");
-      errorflag = -1;
     }        
     amplitudeW = pow(coupling,2)/(16*PI*m1)*lambda;
   }
@@ -9644,7 +9470,6 @@ double higgshamplitudedecaystop1stop1 (double m1, double m2, double m3, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecaystop1stop1\n");
-      errorflag = -1;
     }  
 
      DoubleVector hst1st1samehandcoupling(4);
@@ -9688,7 +9513,6 @@ double higgshamplitudedecaystop2stop2 (double m1, double m2, double m3, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecaystop2stop2\n");
-      errorflag = -1;
     }  
 
      DoubleVector hst2st2samehandcoupling(4);
@@ -9731,7 +9555,6 @@ double higgshamplitudedecaystop1stop2 (double m1, double m2, double m3, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecay2stop1stop2\n");
-      errorflag = -1;
     }  
 
      DoubleVector hst1st2samehandcoupling(4);
@@ -9774,7 +9597,6 @@ double higgshamplitudedecaysbottom1sbottom1 (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecaysbottom1sbottom1\n");
-      errorflag = -1;
     }  
 
      DoubleVector hsb1sb1samehandcoupling(4);
@@ -9817,7 +9639,6 @@ double higgshamplitudedecaysbottom2sbottom2 (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecaysbottom2sbottom2\n");
-      errorflag = -1;
     }  
 
      DoubleVector hsb2sb2samehandcoupling(4);
@@ -9860,7 +9681,6 @@ double higgshamplitudedecaysbottom1sbottom2 (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecaysbottom1sbottom2\n");
-      errorflag = -1;
     }  
 
      DoubleVector hsb1sb2samehandcoupling(4);
@@ -9903,7 +9723,6 @@ double higgsHamplitudedecaystop1stop1 (double m1, double m2, double m3, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecaystop1stop1\n");
-      errorflag = -1;
     }  
 
      DoubleVector Hst1st1samehandcoupling(4);
@@ -9946,7 +9765,6 @@ double higgsHamplitudedecaystop2stop2 (double m1, double m2, double m3, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecaystop2stop2\n");
-      errorflag = -1;
     }  
 
      DoubleVector Hst2st2samehandcoupling(4);
@@ -9989,7 +9807,6 @@ double higgsHamplitudedecaystop1stop2 (double m1, double m2, double m3, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecaystop1stop2\n");
-      errorflag = -1;
     }  
 
      DoubleVector Hst1st2samehandcoupling(4);
@@ -10032,7 +9849,6 @@ double higgsHamplitudedecaysbottom1sbottom1 (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecaysbottom1sbottom1\n");
-      errorflag = -1;
     }  
 
      DoubleVector Hsb1sb1samehandcoupling(4);
@@ -10075,7 +9891,6 @@ double higgsHamplitudedecaysbottom2sbottom2 (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecaysbottom2sbottom2\n");
-      errorflag = -1;
     }  
 
      DoubleVector Hsb2sb2samehandcoupling(4);
@@ -10118,7 +9933,6 @@ double higgsHamplitudedecaysbottom1sbottom2 (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecaysbottom1sbottom2\n");
-      errorflag = -1;
     }  
 
      DoubleVector Hsb1sb2samehandcoupling(4);
@@ -10161,7 +9975,6 @@ double higgshamplitudedecaystau1stau1 (double m1, double m2, double m3, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecaystau1stau1\n");
-      errorflag = -1;
     }  
 
      DoubleVector hstau1stau1samehandcoupling(3);
@@ -10205,7 +10018,6 @@ double higgshamplitudedecaystau2stau2 (double m1, double m2, double m3, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecaystau2stau2\n");
-      errorflag = -1;
     }  
 
      DoubleVector hstau2stau2samehandcoupling(3);
@@ -10248,7 +10060,6 @@ double higgshamplitudedecaystau1stau2 (double m1, double m2, double m3, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecaystau1stau2\n");
-      errorflag = -1;
     }  
 
      DoubleVector hstau1stau2samehandcoupling(3);
@@ -10291,7 +10102,6 @@ double higgsHamplitudedecaystau1stau1 (double m1, double m2, double m3, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecaystau1stau1\n");
-      errorflag = -1;
     }  
 
      DoubleVector Hstau1stau1samehandcoupling(3);
@@ -10335,7 +10145,6 @@ double higgsHamplitudedecaystau2stau2 (double m1, double m2, double m3, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecaystau2stau2\n");
-      errorflag = -1;
     } 
 
      DoubleVector Hstau2stau2samehandcoupling(3);
@@ -10379,7 +10188,6 @@ double higgsHamplitudedecaystau1stau2 (double m1, double m2, double m3, double g
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHamplitudedecaystau1stau2\n");
-      errorflag = -1;
     } 
 
      DoubleVector Hstau1stau2samehandcoupling(3);
@@ -10421,7 +10229,6 @@ double higgsAamplitudedecaysfermions (double m1, double m2, double m3, double g,
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsAamplitudedecaysfermions\n");
-      errorflag = -1;
     } 
     
     if(uord == 'u') {
@@ -10432,7 +10239,6 @@ double higgsAamplitudedecaysfermions (double m1, double m2, double m3, double g,
     }
     else {
       throw("problem: uord must be u or d in higgsAamplitudedecaysfermions\n");
-      errorflag = -1;
     }    
     amplitudeW = pow(coupling,2)/(16*PI*m1)*lambda;
   }
@@ -10454,7 +10260,6 @@ double higgsAamplitudedecaysfermionsNMSSM (double m1, double m2, double m3, doub
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsAamplitudedecaysfermionsNMSSM\n");
-      errorflag = -1;
     } 
 
     if(uord == 'u') {
@@ -10489,7 +10294,6 @@ double higgsHplusamplitudedecayquarkantiquark (double m1, double m2, double m3, 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHplusamplitudedecayquarkantiquark\n");
-      errorflag = -1;
     } 
     CKM = VCKM(quark,antiquark);
 
@@ -10517,7 +10321,6 @@ double higgsHplusamplitudedecayneutralinochargino (double m1, double m2, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHplusamplitudedecayneutralinochargino\n");
-      errorflag = -1;
     } 
 
     A1 = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaR) - g*mixNeut(neutralino,4)*cos(thetaR);
@@ -10559,7 +10362,6 @@ double higgsHplusamplitudedecayWbosonhiggsh (double m1, double m2, double m3, do
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHplusamplitudedecayWbosonhiggsh\n");
-      errorflag = -1;
     } 
     
     // amplitudeW = pow(g,2)*pow(cos(beta-alpha),2)*pow(m1,3)/(64*PI*pow(m2,2))*pow(lambda,3);
@@ -10590,7 +10392,6 @@ DoubleVector higgsHplusamplitudedecaysquarksquark (double m1, double m2, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHplusamplitudedecaysquarksquark\n");
-      errorflag = -1;
     } 
 
      DoubleVector Hplussquarksquarkcoupling(4);
@@ -10630,7 +10431,6 @@ DoubleVector higgsHplusamplitudedecaysquarksquarkmix (double m1, double m2, doub
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsHplusamplitudedecaysquarksquarkmix\n");
-      errorflag = -1;
     } 
 
      DoubleVector Hplussquarksquarkcoupling(4);
@@ -10708,7 +10508,6 @@ double higgsesamplitudedecaygammagammatotal(double m1, double g, double gprime, 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
   if (matelemmodsquare != matelemmodsquare) {
     throw("nan in matelemmodsquare in higgsesamplitudedecaygammagammatotal\n");
-    errorflag = -1;
     // ffout << "Itr = " << Itr << endl; fout << " Ist1r = " << Ist1r << endl; fout<< " Ist2r = " << Ist2r << endl; fout<< " Ibr = " << Ibr << endl; fout<< " Isb1r = " << Isb1r << endl; fout<< " Isb2r = " << Isb2r << endl; fout << "Icr = " << Icr << endl; fout << "Itaur = " << Itaur << endl; fout << "Istau1r = "<< Istau1r << endl; fout << "Istau2r = "<< Istau2r << endl; fout << "IWr = " << IWr << endl; fout << "IHpmr = " << IHpmr << endl; fout << "Ichar1r = " << Ichar1r << endl; fout << "Ichar2r = " << Ichar2r << endl;
     // ffout << "Iti = " << Iti << endl; fout << " Ist1i = " << Ist1i << endl; fout<< " Ist2i = " << Ist2i << endl; fout<< " Ibi = " << Ibi << endl; fout<< " Isb1i = " << Isb1i << endl; fout<< " Isb2i = " << Isb2i << endl; fout << "Ici = " << Ici << endl; fout << "Itaui = " << Itaui << endl; fout << "Istau1i = "<< Istau1i << endl; fout << "Istau2i = "<< Istau2i << endl; fout << "IWi = " << IWi << endl; fout << "IHpmi = " << IHpmi << endl; fout << "Ichar1i = " << Ichar1i << endl; fout << "Ichar2i = " << Ichar2i << endl;
   }
@@ -10753,7 +10552,6 @@ DoubleVector higgsmatrixelementgammagammaviatops (double m1, double mtop, double
     }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviatops\n");
-    errorflag = -1;
   }
    
   It(1) = 3*4./9*Rt*F1over2(1);
@@ -10838,7 +10636,6 @@ DoubleVector higgsmatrixelementgammagammaviastops (double m1, double mstop1, dou
     }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviastops\n");
-    errorflag = -1;
   }
   
   F01(1) = f1(3)*(1-f1(3)*f1(1));
@@ -10893,7 +10690,6 @@ DoubleVector higgsmatrixelementgammagammaviabottoms (double m1, double mbottom, 
     }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviabottoms\n");
-    errorflag = -1;
   }   
   Ib(1) = 3*1./9*Rb*F1over2(1);
   Ib(2) = 3*1./9*Rb*F1over2(2);
@@ -10979,7 +10775,6 @@ DoubleVector higgsmatrixelementgammagammaviabottoms (double m1, double mbottom, 
     }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviasbottoms\n");
-    errorflag = -1;
   }  
   F01(1) = f1(3)*(1-f1(3)*f1(1));
   F01(2) = f1(3)*(-f1(3)*f1(2));
@@ -11032,7 +10827,6 @@ DoubleVector higgsmatrixelementgammagammaviacharms (double m1, double mcharm, do
     }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviacharms\n");
-    errorflag = -1;
   }
   Ic(1) = 3*4./9*Rc*F1over2(1);
   Ic(2) = 3*4./9*Rc*F1over2(2);
@@ -11073,7 +10867,6 @@ DoubleVector higgsmatrixelementgammagammaviataus (double m1, double mtau, double
     }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviataus\n");
-    errorflag = -1;
   }  
   Itau(1) = 1*Rtau*F1over2(1);
   Itau(2) = 1*Rtau*F1over2(2);
@@ -11157,7 +10950,6 @@ DoubleVector higgsmatrixelementgammagammaviastaus (double m1, double mstau1, dou
     }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviastaus\n");
-    errorflag = -1;
   }
   
   F01(1) = f1(3)*(1-f1(3)*f1(1));
@@ -11204,7 +10996,6 @@ DoubleVector higgsmatrixelementgammagammaviaWbosons (double m1, double mWboson, 
     }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviaWbosons\n");
-    errorflag = -1;
   }
   F1(1) = 2 + 3*f(3) + 3*f(3)*(2-f(3))*f(1);
   F1(2) = 3*f(3)*(2-f(3))*f(2);
@@ -11244,7 +11035,6 @@ DoubleVector higgsmatrixelementgammagammaviaHpms (double m1, double mHpm, double
     }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviaHpms\n");
-    errorflag = -1;
   }
 
   F0(1) = f(3)*(1-f(3)*f(1));
@@ -11300,7 +11090,6 @@ DoubleVector higgsmatrixelementgammagammaviachargino1s (double m1, double mcharg
     }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviachargino1s\n");
-    errorflag = -1;
   }
   
   Ichargino1(1) = Rchargino1*F1over2(1)*mWboson/mchargino1;
@@ -11357,7 +11146,6 @@ DoubleVector higgsmatrixelementgammagammaviachargino2s (double m1, double mcharg
     }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementgammagammaviachargino2s\n");
-    errorflag = -1;
   }
 
   Ichargino2(1) = Rchargino2*F1over2(1)*mWboson/mchargino2;
@@ -11438,7 +11226,6 @@ double higgsesamplitudedecaygluongluontotal(double m1, double g, double gs, doub
     else if (higgstype == 'H' || higgstype == 'A') { NF = 6;}
     else {
       throw("Problem: higgstype must be 'h', 'H' or 'A' in higgsesamplitudedecaygluongluontotal as in MSSM!\n");
-      errorflag = -1;
     }
     DoubleVector hggQCDcorrections(double amplitudeW, double alphas, int Nf, char higgs, double prefactor, double SMtotr, double SMtoti, double sqtotr, double sqtoti);
     amplitudeW = hggQCDcorrections(amplitudeW, pow(gs,2)/(4*PI), NF, higgstype, prefactor, SMTOTRE, SMTOTIM, SQTOTRE, SQTOTIM)(1);
@@ -11485,7 +11272,6 @@ double fermionQCDcorrections(double amplitudeW, double alphasnow, double alphasp
   }
   else {
     throw("problem: higgstype must be 'h' or 'H' or 'A' in fermionQCDcorrections as must be in MSSM\n");
-    errorflag = -1;
   }
   return amplitude;
 }
@@ -11520,7 +11306,6 @@ double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp,
   }
   else {
     throw("problem: higgs must be 1 or 2 in higgsamplituddecayVVstar\n");
-    errorflag = -1;
   }
 
   if(m1 < 2*mboson && m1 > mboson) {
@@ -11532,7 +11317,6 @@ double higgsamplitudedecayVVstar (double m1, double mboson, double g, double gp,
     }
     else {
       throw("problem: Vtype must be W or Z in higgsamplitudedecayVVstar\n");
-      errorflag = -1;
     }
   epsilon = mboson/m1;
   a = 3*(1-8*pow(epsilon,2)+20*pow(epsilon,4))/(pow(4*pow(epsilon,2)-1,0.5))*acos((3*pow(epsilon,2)-1)/(2*pow(epsilon,3)));
@@ -11570,7 +11354,6 @@ DoubleVector higgshamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	lambda = pow(squareplus*squareminus,0.5);
 	if (squareplus*squareminus < 0) {
 	  throw("lambda will give nan in higgshamplitudedecayVV for W\n");
-	  errorflag = -1;
 	} 
 	// prefactor = pow(g,2)*pow(m1,3)/(64*PI*pow(mWboson,2));
 	prefactor = GFosqrt2*pow(m1,3)/(8*PI);
@@ -11597,7 +11380,6 @@ DoubleVector higgshamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	lambda = pow(squareplus*squareminus,0.5);
 	if (squareplus*squareminus < 0) {
 	  throw("lambda will give nan in higgshamplitudedecayVV for Z\n");
-	  errorflag = -1;
 	} 
 	// prefactor = pow(g,2)*pow(m1,3)/(128*PI*pow(mWboson,2));	
 	prefactor = GFosqrt2*pow(m1,3)/(16*PI);
@@ -11610,7 +11392,6 @@ DoubleVector higgshamplitudedecayVV(double m1, double mWboson, double mZboson, d
     }
     else {
       throw("problem: Vtype must be W or Z in higgshamplitudedecayVV\n");
-      errorflag = -1;
     }
   Returns(1) = amplitudeW;
   return Returns;
@@ -11641,7 +11422,6 @@ DoubleVector higgsHamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	lambda = pow(squareplus*squareminus,0.5);
 	if (squareplus*squareminus < 0) {
 	  throw("lambda will give nan in higgsHamplitudedecayVV for W\n");
-	  errorflag = -1;
 	} 
 	// prefactor = pow(g,2)*pow(m1,3)/(64*PI*pow(mWboson,2));
 	prefactor = GFosqrt2*pow(m1,3)/(8*PI);
@@ -11668,7 +11448,6 @@ DoubleVector higgsHamplitudedecayVV(double m1, double mWboson, double mZboson, d
 	lambda = pow(squareplus*squareminus,0.5);
 	if (squareplus*squareminus < 0) {
 	  throw("lambda will give nan in higgsHamplitudedecayVV for Z\n");
-	  errorflag = -1;
 	} 
 	// prefactor = pow(g,2)*pow(m1,3)/(128*PI*pow(mWboson,2));	
 	prefactor = GFosqrt2*pow(m1,3)/(16*PI);
@@ -11681,7 +11460,6 @@ DoubleVector higgsHamplitudedecayVV(double m1, double mWboson, double mZboson, d
     }
     else {
       throw("problem: Vtype must be W or Z in higgsHamplitudedecayVV\n");
-      errorflag = -1;
     }
   Returns(1) = amplitudeW;
    return Returns;
@@ -11711,7 +11489,6 @@ DoubleVector higgsH3amplitudedecayVVNMSSM(double m1, double mWboson, double mZbo
 	lambda = pow(squareplus*squareminus,0.5);
 	if (squareplus*squareminus < 0) {
 	  throw("lambda will give nan in higgsH3amplitudedecayVVNMSSM for W\n");
-	  errorflag = -1;
 	} 
 	prefactor = GFosqrt2*pow(m1,3)/(8*PI);
 	massratio = 4*pow(mWboson/m1,2);
@@ -11737,7 +11514,6 @@ DoubleVector higgsH3amplitudedecayVVNMSSM(double m1, double mWboson, double mZbo
 	lambda = pow(squareplus*squareminus,0.5);
 	if (squareplus*squareminus < 0) {
 	  throw("lambda will give nan in higgsH3amplitudedecayVVNMSSM for Z\n");
-	  errorflag = -1;
 	} 
 	prefactor = GFosqrt2*pow(m1,3)/(16*PI);	
 	massratio = 4*pow(mZboson/m1,2);
@@ -11749,7 +11525,6 @@ DoubleVector higgsH3amplitudedecayVVNMSSM(double m1, double mWboson, double mZbo
     }
     else {
       throw("problem: Vtype must be W or Z in higgsH3amplitudedecayVV\n");
-      errorflag = -1;
     }
   Returns(1) = amplitudeW;
 
@@ -11825,7 +11600,6 @@ DoubleVector higgsmatrixelementZgammaviafermions (double m1, double mferm, doubl
       }
     else {
       throw("problem: fermtype must be u or d in higgsmatrixelementZgammaviafermions\n");
-      errorflag = -1;
     }
   }
   else if (higgstype == 'H') {
@@ -11837,7 +11611,6 @@ DoubleVector higgsmatrixelementZgammaviafermions (double m1, double mferm, doubl
     }
     else {
       throw("problem: fermtype must be u or d in higgsmatrixelementZgammaviafermions\n");
-      errorflag = -1;
     }
   }
   else if (higgstype == 'A') {
@@ -11849,12 +11622,10 @@ DoubleVector higgsmatrixelementZgammaviafermions (double m1, double mferm, doubl
     }
     else {
       throw("problem: fermtype must be u or d in higgsmatrixelementZgammaviafermions\n");
-      errorflag = -1;
     }
   }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementZgammaviafermions\n");
-    errorflag = -1;
   }
   ftau = foftau(mferm, m1);
   flambda = foftau(mferm, mZboson);
@@ -11870,7 +11641,6 @@ DoubleVector higgsmatrixelementZgammaviafermions (double m1, double mferm, doubl
   }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementZgammaviafermions\n");
-    errorflag = -1;
   }
   Integral2r = -ftau(3)*flambda(3)/(2*(ftau(3)-flambda(3)))*(ftau(1)-flambda(1));
   Integral2i = -ftau(3)*flambda(3)/(2*(ftau(3)-flambda(3)))*(ftau(2)-flambda(2));  
@@ -11908,7 +11678,6 @@ DoubleVector higgsmatrixelementZgammaviaWbosons (double m1, double mWboson, doub
   }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementZgammaviaWbosons\n");
-    errorflag = -1;
   }
   ftau = foftau(mWboson, m1);
   flambda = foftau(mWboson, mZboson);
@@ -11957,7 +11726,6 @@ DoubleVector higgsmatrixelementZgammaviaHplus (double m1, double mWboson, double
   }
   else {
     throw("problem: higgstype must be h or H or A in higgsmatrixelementZgammaviaHplus\n");
-    errorflag = -1;
   }
   ftau = foftau(mHplus, m1);
   flambda = foftau(mHplus, mZboson);
@@ -12089,7 +11857,6 @@ DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, do
     }
     else {
       throw("problem: torb must be 1 or 2 in squarkmixcharginocouplings\n");
-      errorflag = -1;
     }
     AprimeuW2 = -g*cos(gammaL);
     AprimedW2 = -g*cos(gammaR);
@@ -12107,7 +11874,6 @@ DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, do
     }
     else {
       throw("problem: torb must be 1 or 2 in squarkmixcharginocouplings\n");
-      errorflag = -1;
     }
     
     if (torb == 1 ) {
@@ -12122,7 +11888,6 @@ DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, do
     }
     else {
       throw("problem: torb must be 1 or 2 in squarkmixcharginocouplings\n");
-      errorflag = -1;
     }
 
     if (torb == 1 ) {
@@ -12137,7 +11902,6 @@ DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, do
     }
     else {
       throw("problem: torb must be 1 or 2 in squarkmixcharginocouplings\n");
-      errorflag = -1;
     }
 		
     sq1ch1combo = sq1AprimeW1*cos(theta)-sq1ch1B1*sin(theta);
@@ -12354,11 +12118,9 @@ DoubleVector foftau(double mpart, double mcomp) ///f(tau) function for use in h-
     etam = 1 - pow(1-tau,0.5);
     if (etap/etam < 0) {
       throw("problem: log will give nan as etap/etam < 0\n");
-      errorflag = -1;
     }
     if (etam == 0) {
       throw("problem: will get inf as etam = 0 so etap/etam = inf\n");
-      errorflag = -1;
     }
     fr = -0.25*pow(log(etap/etam),2)+0.25*pow(PI,2);
     fi = 0.5*PI*log(etap/etam);
@@ -12386,11 +12148,9 @@ DoubleVector goftau(double mpart, double mcomp) ///g(tau) function for use in h-
     etam = 1 - pow(1-tau,0.5);
     if (etap/etam < 0) {
       throw("problem: log will give nan as etap/etam < 0\n");
-      errorflag = -1;
     }
     if (etam == 0) {
       throw("problem: will get inf as etam = 0 so etap/etam = inf\n");
-      errorflag = -1;
     }
     gr = 0.5*pow(1-tau,0.5)*(log(etap/etam));
     gi = 0.5*pow(1-tau,0.5)*-PI;
@@ -12409,7 +12169,6 @@ double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin) /
   Z = (pow(m1,2)+pow(mq,2)-2*fabs(m1)*Etbarmax - pow(m,2))/(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Etbarmin-pow(m,2));
   if (Z <=0) {
     *ffout << "May have nan issue if do log(Z) as Z<=0! See Zfunc used in 1->3 decays" << endl;
-    errorflag = -1;
   }
   return Z;
 }
@@ -12430,7 +12189,6 @@ DoubleVector Etbarmaxmin (double m1, double m2, double massq, double Et) ///requ
   Etbarsupremum(2) = (zet*(fabs(m1)-Et)-pow(B,0.5))/(2*A); ///Etbarmin
   if (Etbarsupremum(1) != Etbarsupremum(1) || Etbarsupremum(2) != Etbarsupremum(2)) {
     *ffout << "problem: Etbar gives nan! See Etbarmaxmin used in 1->3 decays" << endl; 
-     errorflag = -1;
   }
     return Etbarsupremum;
 }
@@ -12453,7 +12211,6 @@ DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4
   lambda = pow(squareplus*squareminus,0.5);
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in Ebbarmaxmin used in 1->3 decays" << endl;
-    errorflag = -1;
   } 
   Ebbar(1) = ((pow(mass1,2)+pow(mass2,2)-2*fabs(mass1)*Et-pow(mass3,2)-pow(mass4,2))*(fabs(mass1)-Et) + pt*lambda)/(2*(pow(mass1,2)+pow(mass2,2)-2*Et*fabs(mass1))); ///I have -pow(mass3,2) here whereas T&B have + pow(mass3,2), I have changed the sign to agree with SPheno, note however this actually makes negligible difference due to the smallness of the b mass
   Ebbar(2) = ((pow(mass1,2)+pow(mass2,2)-2*fabs(mass1)*Et-pow(mass3,2)-pow(mass4,2))*(fabs(mass1)-Et) - pt*lambda)/(2*(pow(mass1,2)+pow(mass2,2)-2*Et*fabs(mass1))); ///I have -pow(mass3,2) here whereas T&B have + pow(mass3,2), I have changed the sign to agree with SPheno, note however this actually makes negligible difference due to the smallness of the b mass
@@ -12504,7 +12261,6 @@ double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, doub
       }
     else {
       throw("problem: charg must be 1 or 2 in gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen\n");
-      errorflag = -1;
     }
       m1 = mgluino, m2 = msqL, m3 = msqL, m4 = mchargino, mq = mquark;
       psiu = dgauss(gpsitildadgauss,mquark,upper,accuracy)*1/(pow(PI,2)*m1);
@@ -12618,7 +12374,6 @@ double gpsitildadgauss(double Et) {
   lambda = pow(squareplus*squareminus,0.5);
   if (lambda != lambda) {
     *ffout << "problem: nan in lambda in gpsitildadgauss used in 1->3 decays\n" << endl;
-    errorflag = -1;
   }
   gpsitildadgauss = pow(PI,2)*fabs(m1)*pt*Et*lambda/(A)*(pow(m1,2)-pow(m4,2)-2*fabs(m1)*Et)/((A-pow(m2,2))*(A-pow(m3,2)));
 
@@ -12677,17 +12432,14 @@ double gchidgauss (double Et) {
   squareplus = A - pow((fabs(m4) + mq),2);
   squareminus = A - pow((fabs(m4) - mq),2);
   if (squareplus < 0 && fabs(squareplus) < 1e-8) {
-    squareplus = 0; ///avoid numerical error giving a negative and hence a nan for lambda at upper boundary of integration range
   }
   lambda = pow(squareplus*squareminus,0.5);
   if (lambda != lambda) {
     *ffout << "problem: nan in lambda in gchidgauss used in 1->3 decays" << endl;
-    errorflag = -1;
   }
   pt = pow(pow(Et,2) - pow(mq,2),0.5);
   if (pt != pt) {
     *ffout << "problem: nan in pt in gchidgauss used in 1->3 decays" << endl;
-    errorflag = -1;
   }
   gchidgauss = pow(PI,2)*fabs(m1)*pt*Et*lambda/A*1/((pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m2,2))*(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m3,2)));
   return gchidgauss;
@@ -12715,12 +12467,8 @@ double gXdgauss (double Et)
   pt = pow(pow(Et,2) - pow(mq,2),0.5);
   squareplus = A - pow((fabs(m4) + mq),2);
   squareminus = A - pow((fabs(m4) - mq),2);
-  if (squareplus < 0 && fabs(squareplus) < 1e-9) {
-    squareplus = 0; ///avoid numerical error giving a negative and hence a nan for lambda at upper boundary of integration range
-  }
   if (squareplus*squareminus < 0) {
     *ffout << "problem: lambda will give nan in gXdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
   } 
   lambda = pow(squareplus*squareminus,0.5);
   gXdgauss = 0.5*pow(PI,2)*pt*B/A*lambda*1/((pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m2,2))*(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m3,2)));
@@ -12843,8 +12591,7 @@ double gG2dgauss(double Ebbar)
   squareminus = A - pow((m8)-m6,2);
   lambda = pow(squareplus*squareminus,0.5);
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gG2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gG2dgauss used in 1->3 decays" << endl;
   } 
   gG2dgauss = fabs(m1)*pow(Ebbar,2)*lambda*(A-pow(m6,2)-pow(m8,2))/(pow(A-pow(m4,2),2)*A);
   return gG2dgauss;
@@ -12859,8 +12606,7 @@ double gG3dgauss(double Ebbar)
   squareminus = A - pow((m8)-m6,2);
   lambda = pow(squareplus*squareminus,0.5);
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gG3dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gG3dgauss used in 1->3 decays" << endl;
   } 
 
   gG3dgauss = pow(Ebbar,2)*lambda*4*fabs(m1)*fabs(m8)*fabs(m6)/(pow(A-pow(m4,2),2)*A);
@@ -12952,8 +12698,7 @@ double gneutineutjffZ1dgauss(double s) ///m1 = mneuti, m4 = mneutj, mq = mf, MZb
     squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
   }
   if (squareplus1*squareminus1 < 0) {
-    *ffout << "problem: lambda1 will give nan in gneutineutjffZ1dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda1 will give nan in gneutineutjffZ1dgauss used in 1->3 decays" << endl;
   } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
@@ -12970,8 +12715,7 @@ double gneutineutjffZ2dgauss(double s)
     squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
   }
   if (squareplus1*squareminus1 < 0) {
-    *ffout << "problem: lambda1 will give nan in gneutineutjffZ2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda1 will give nan in gneutineutjffZ2dgauss used in 1->3 decays" << endl;
   } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
@@ -12988,8 +12732,7 @@ double gneutineutjffZ3dgauss(double s)
     squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
   }
   if (squareplus1*squareminus1 < 0) {
-    *ffout << "problem: lambda1 will give nan in gneutineutjffZ3dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda1 will give nan in gneutineutjffZ3dgauss used in 1->3 decays" << endl;
   } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
@@ -13006,8 +12749,7 @@ double gneutineutjffZ4dgauss(double s)
     squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
   }
   if (squareplus1*squareminus1 < 0) {
-    *ffout << "problem: lambda1 will give nan in gneutineutjffZ4dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda1 will give nan in gneutineutjffZ4dgauss used in 1->3 decays" << endl;
   } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
@@ -13183,8 +12925,7 @@ double gintegral1Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral1Zsfdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral1Zsfdgauss used in 1->3 decays" << endl;
   }
 
   gintegral1Zsfdgauss = 1/(s-pow(MZboson,2))*(-2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) - (pow(m2,2)-pow(mq,2)+pow(m4,2) - 2*fabs(m1)*E)*log(logarg));
@@ -13201,8 +12942,7 @@ double gintegral2Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral2Zsfdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral2Zsfdgauss used in 1->3 decays" << endl;
   }  
   gintegral2Zsfdgauss = 1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) + (pow(m2,2)+pow(m1,2)- 2*fabs(m1)*E - pow(mq,2))*log(logarg));
    
@@ -13218,8 +12958,7 @@ double gintegral3Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral3Zsfdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral3Zsfdgauss used in 1->3 decays" << endl;
   }
 
   gintegral3Zsfdgauss = 1/(s-pow(MZboson,2))*((pow(m1,2) + 2*pow(mq,2) + pow(m4,2) -1.5*pow(m2,2) - 0.5*(pow(mq,2) + fabs(m1)*E + fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)))*(pow(mq,2) + fabs(m1)*E + fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)-pow(m2,2)) - (pow(m1,2) + 2*pow(mq,2) + pow(m4,2) -1.5*pow(m2,2) - 0.5*(pow(mq,2) + fabs(m1)*E - fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)))*(pow(mq,2) + fabs(m1)*E - fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)-pow(m2,2)) + (pow(m1,2) + pow(mq,2) - pow(m2,2))*(pow(m2,2)-pow(mq,2)-pow(m4,2))*log(logarg));
@@ -13236,8 +12975,7 @@ double gintegral4Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral4Zsfdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral4Zsfdgauss used in 1->3 decays" << endl;
   }
   
   gintegral4Zsfdgauss = 1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) + (pow(m2,2)-pow(mq,2)-pow(m4,2))*log(logarg));
@@ -13253,8 +12991,7 @@ double gintegral5Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral5Zsfdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral5Zsfdgauss used in 1->3 decays" << endl;
   }
   
   gintegral5Zsfdgauss = -1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) + (pow(m2,2)-pow(mq,2)-pow(m1,2))*log(logarg));
@@ -13270,8 +13007,7 @@ double gintegral6Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral6Zsfdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral6Zsfdgauss used in 1->3 decays" << endl;
   }
   
   gintegral6Zsfdgauss = 1/(s-pow(MZboson,2))*(s- 2*pow(mq,2))*log(logarg);
@@ -13287,8 +13023,7 @@ double gintegral7Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral7Zsfdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral7Zsfdgauss used in 1->3 decays" << endl;
   }
   
   gintegral7Zsfdgauss = 1/(s-pow(MZboson,2))*(2*fabs(m1)*E)*log(logarg);
@@ -13304,8 +13039,7 @@ double gintegral8Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral8Zsfdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral8Zsfdgauss used in 1->3 decays" << endl;
   }
 
   gintegral8Zsfdgauss = 1/(s-pow(MZboson,2))*log(logarg);
@@ -13323,8 +13057,7 @@ double gintegral1hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral1hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral1hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral1hsfdgauss = 2/(s-pow(mh,2))*(2*s*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2)*s - pow(mq,2)*(pow(m1,2)+pow(m4,2)))*log(logarg));
@@ -13342,8 +13075,7 @@ double gintegral2hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral2hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral2hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral2hsfdgauss = -1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m4,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
@@ -13362,8 +13094,7 @@ double gintegral3hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral3hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral3hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral3hsfdgauss = 1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m1,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
@@ -13382,8 +13113,7 @@ double gintegral4hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral4hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral4hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral4hsfdgauss = 1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m4,2))*log(logarg));
@@ -13401,8 +13131,7 @@ double gintegral5hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral5hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral5hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral5hsfdgauss = -1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m1,2))*log(logarg));
@@ -13420,8 +13149,7 @@ double gintegral6hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral6hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral6hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral6hsfdgauss = 1/(s-pow(mh,2))*(s-2*pow(mq,2))*log(logarg);
@@ -13439,8 +13167,7 @@ double gintegral7hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral7hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral7hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral7hsfdgauss = 1/(s-pow(mh,2))*(2*fabs(m1)*E)*log(logarg);
@@ -13458,8 +13185,7 @@ double gintegral8hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral8hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral8hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral8hsfdgauss = 1/(s-pow(mh,2))*log(logarg);
@@ -13477,8 +13203,7 @@ double gintegral1Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral1Hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral1Hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral1Hsfdgauss = 2/(s-pow(mH,2))*(2*s*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2)*s - pow(mq,2)*(pow(m1,2)+pow(m4,2)))*log(logarg));
@@ -13496,8 +13221,7 @@ double gintegral2Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral2Hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral2Hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral2Hsfdgauss = -1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m4,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
@@ -13516,8 +13240,7 @@ double gintegral3Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral3Hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral3Hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral3Hsfdgauss = 1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m1,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
@@ -13536,8 +13259,7 @@ double gintegral4Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral4Hsfdgauss used in 1->3 decay" << endl;
-     errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral4Hsfdgauss used in 1->3 decay" << endl;
   }
 
   gintegral4Hsfdgauss = 1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m4,2))*log(logarg));
@@ -13555,8 +13277,7 @@ double gintegral5Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral5Hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral5Hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral5Hsfdgauss = -1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m1,2))*log(logarg));
@@ -13574,8 +13295,7 @@ double gintegral6Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral6Hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral6Hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral6Hsfdgauss = 1/(s-pow(mH,2))*(s-2*pow(mq,2))*log(logarg);
@@ -13593,8 +13313,7 @@ double gintegral7Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral7Hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral7Hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral7Hsfdgauss = 1/(s-pow(mH,2))*(2*fabs(m1)*E)*log(logarg);
@@ -13612,8 +13331,7 @@ double gintegral8Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    *ffout << "Problem: will get nan as logarg < 0 in gintegral8Hsfdgauss used in 1->3 decays" << endl; 
-    errorflag = -1;
+    throw << "Problem: will get nan as logarg < 0 in gintegral8Hsfdgauss used in 1->3 decays" << endl; 
   }
 
   gintegral8Hsfdgauss = 1/(s-pow(mH,2))*log(logarg);
@@ -13628,12 +13346,10 @@ double gintegral1ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gintegral1ZAdgauss = 1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m1,2) - fabs(m1)*E);
   if (pow(E,2)-pow(m4,2)<0) {
-    *ffout << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays" << endl;
   }
   if (1-4*pow(mq,2)/s<0) {
-    *ffout << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays" << endl;
   }
   return gintegral1ZAdgauss;
 }
@@ -13644,12 +13360,10 @@ double gintegral2ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gintegral2ZAdgauss = -1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m4,2) - fabs(m1)*E);
   if (pow(E,2)-pow(m4,2)<0) {
-    *ffout << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays" << endl;
   }
   if (1-4*pow(mq,2)/s<0) {
-    *ffout << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays" << endl;
   }
 
   return gintegral2ZAdgauss;
@@ -13661,12 +13375,10 @@ double gintegral3ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gintegral3ZAdgauss = 1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m1,2)-fabs(m1)*E);
   if (pow(E,2)-pow(m4,2)<0) {
-    *ffout << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays" << endl;
   }
   if (1-4*pow(mq,2)/s<0) {
-    *ffout << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays" << endl;
   }
 
   return gintegral3ZAdgauss;
@@ -13678,12 +13390,10 @@ double gintegral4ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gintegral4ZAdgauss = -1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m4,2) - fabs(m1)*E);
   if (pow(E,2)-pow(m4,2)<0) {
-    *ffout << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays" << endl;
   }
   if (1-4*pow(mq,2)/s<0) {
-    *ffout << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays" << endl;
   }
 
   return gintegral4ZAdgauss;
@@ -13695,12 +13405,10 @@ double gneutineutjffgA1dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gneutineutjffgA1dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)/((s-pow(MZboson,2))*(s-pow(mA,2)));
   if (pow(E,2)-pow(m4,2)<0) {
-    *ffout << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays" << endl;
   }
   if (1-4*pow(mq,2)/s<0) {
-    *ffout << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays" << endl;
   }  
 
   return gneutineutjffgA1dgauss;
@@ -13712,12 +13420,10 @@ double gneutineutjffgA2dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gneutineutjffgA2dgauss = 2*fabs(m1)*(s-2*pow(mq,2))*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)/((s-pow(MZboson,2))*(s-pow(mA,2)));
   if (pow(E,2)-pow(m4,2)<0) {
-    *ffout << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays" << endl;
   }
   if (1-4*pow(mq,2)/s<0) {
-    *ffout << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays" << endl;
   }  
   
   return gneutineutjffgA2dgauss;
@@ -13729,12 +13435,10 @@ double gneutineutjffgA3dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gneutineutjffgA3dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*2*fabs(m1)*E/((s-pow(MZboson,2))*(s-pow(mA,2)));
   if (pow(E,2)-pow(m4,2)<0) {
-    *ffout << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays" << endl;
   }
   if (1-4*pow(mq,2)/s<0) {
-    *ffout << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays" << endl;
   }  
   
   return gneutineutjffgA3dgauss;
@@ -13746,12 +13450,10 @@ double gneutineutjffgA4dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gneutineutjffgA4dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(s-2*pow(mq,2))*2*fabs(m1)*E/((s-pow(MZboson,2))*(s-pow(mA,2)));
   if (pow(E,2)-pow(m4,2)<0) {
-    *ffout << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays" << endl;
   }
   if (1-4*pow(mq,2)/s<0) {
-    *ffout << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays" << endl;
   } 
   
   
@@ -13769,8 +13471,7 @@ double gneuticharjffpW1dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpW1dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpW1dgauss used in 1->3 decays" << endl;
   } 
 
   gneuticharjffpW1dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(-2*pow(s,4) + (pow(m1,2) + pow(m2,2) + pow(m3,2) + pow(m4,2))*pow(s,3) + (pow(pow(m1,2)-pow(m2,2),2) + pow(pow(m3,2)-pow(m4,2),2) - 2*(pow(m1,2)+pow(m2,2))*(pow(m3,2)+pow(m4,2)))*pow(s,2) + ((pow(m1,2)+pow(m2,2))*pow(pow(m3,2)-pow(m4,2),2) + (pow(m3,2)+pow(m4,2))*pow(pow(m1,2)-pow(m2,2),2))*s - 2*pow(pow(m1,2)-pow(m2,2),2)*pow(pow(m3,2)-pow(m4,2),2))*1/(3*pow(s,2))*1/(pow(s-pow(MWboson,2),2));
@@ -13787,8 +13488,7 @@ double gneuticharjffpW2dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpW2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpW2dgauss used in 1->3 decays" << endl;
   }   
   gneuticharjffpW2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(s-pow(m3,2)-pow(m4,2))/(pow(s-pow(MWboson,2),2));
 
@@ -13806,8 +13506,7 @@ double gneuticharjffpHpm1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpHpm1dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpHpm1dgauss used in 1->3 decays" << endl;
   } 
 
   gneuticharjffpHpm1dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)/(pow(s-pow(m5,2),2));
@@ -13824,8 +13523,7 @@ double gneuticharjffpHpm2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpHpm2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpHpm2dgauss used in 1->3 decays" << endl;
   } 
 
   gneuticharjffpHpm2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(s-pow(m3,2)-pow(m4,2))/(pow(s-pow(m5,2),2));
@@ -13842,8 +13540,7 @@ double gneuticharjffpHpm3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpHpm3dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpHpm3dgauss used in 1->3 decays" << endl;
   } 
 
   gneuticharjffpHpm3dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E/(pow(s-pow(m5,2),2));
@@ -13861,8 +13558,7 @@ double gneuticharjffpHpm4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
   }
   if (squareplus*squareminus < 0) {
       cout.precision(10);
-      *ffout << "problem: lambda will give nan in gneuticharjffpHpm4dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+      throw << "problem: lambda will give nan in gneuticharjffpHpm4dgauss used in 1->3 decays" << endl;
   } 
 
   gneuticharjffpHpm4dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/(pow(s-pow(m5,2),2));
@@ -13880,8 +13576,7 @@ double gneuticharjffp1sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
   
   if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp1sf1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp1sf1sf2dgauss used in 1->3 decays" << endl;
   } 
 
   gneuticharjffp1sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)/((s-pow(m5,2))*(s-pow(m6,2)));
@@ -13897,8 +13592,7 @@ double gneuticharjffp2sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
 
   if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp2sf1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp2sf1sf2dgauss used in 1->3 decays" << endl;
   } 
 
   gneuticharjffp2sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(s-pow(m3,2)-pow(m4,2))/((s-pow(m5,2))*(s-pow(m6,2)));
@@ -13914,8 +13608,7 @@ double gneuticharjffp3sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
 
   if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp3sf1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp3sf1sf2dgauss used in 1->3 decays" << endl;
   } 
 
   gneuticharjffp3sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E/((s-pow(m5,2))*(s-pow(m6,2)));
@@ -13931,8 +13624,7 @@ double gneuticharjffp4sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
 
   if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp4sf1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp4sf1sf2dgauss used in 1->3 decays" << endl;
   } 
 
   gneuticharjffp4sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/((s-pow(m5,2))*(s-pow(m6,2)));
@@ -13950,16 +13642,14 @@ double gneuticharjffp1sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-      *ffout << "problem: lambda will give nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays" << endl;
-      errorflag = -1;
+      throw << "problem: lambda will give nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays" << endl;
   } 
 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays" << endl;
   }
 
   gneuticharjffp1sfp1sf2dgauss = (2*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5) + (pow(m6,2)*s - pow(m1,2)*pow(m3,2) - pow(m2,2)*pow(m4,2))*log(Z)))/(s-pow(m5,2));
@@ -13976,15 +13666,13 @@ double gneuticharjffp2sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-      *ffout << "problem: lambda will give nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays" << endl;
-      errorflag = -1;
+      throw << "problem: lambda will give nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays" << endl;
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays" << endl;
   }
   
   gneuticharjffp2sfp1sf2dgauss = -(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s + (pow(m6,2)-2*fabs(m1)*E + pow(m4,2)-pow(m3,2))*log(Z))/(s-pow(m5,2));
@@ -14001,15 +13689,13 @@ double gneuticharjffp3sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-      *ffout << "problem: lambda will give nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays" << endl;
-      errorflag = -1;
+      throw << "problem: lambda will give nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays" << endl;
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp3sfp1sf2dgauss = (2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s + (pow(m6,2)+pow(m1,2)-2*fabs(m1)*E-pow(m2,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp3sfp1sf2dgauss;
@@ -14025,15 +13711,13 @@ double gneuticharjffp4sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-      *ffout << "problem: lambda will give nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays" << endl;
-      errorflag = -1;
+      throw << "problem: lambda will give nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays" << endl;
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp4sfp1sf2dgauss = (2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s + (pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp4sfp1sf2dgauss;
@@ -14049,15 +13733,13 @@ double gneuticharjffp5sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-      *ffout << "problem: lambda will give nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays" << endl;
-      errorflag = -1;
+      throw << "problem: lambda will give nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays" << endl;
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp5sfp1sf2dgauss = (-2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - (pow(m6,2)-pow(m1,2)-pow(m2,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp5sfp1sf2dgauss;
@@ -14073,15 +13755,13 @@ double gneuticharjffp6sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp6sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp6sfp1sf2dgauss used in 1->3 decays" << endl;
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp6sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp6sfp1sf2dgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp6sfp1sf2dgauss = log(Z)*(s-pow(m2,2)-pow(m3,2))/(s-pow(m5,2));
   return gneuticharjffp6sfp1sf2dgauss;
@@ -14098,18 +13778,16 @@ double gneuticharjffp7sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   }
  if (squareplus*squareminus < 0) {
      cout.precision(10);
-     // *ffout << "squareplus = " << squareplus << std::endl;
-     // *ffout << "squareminus = " << squareminus << std::endl;
-     *ffout << "problem: lambda will give nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays" << endl;
-     errorflag = -1;
+     // throw << "squareplus = " << squareplus << std::endl;
+     // throw << "squareminus = " << squareminus << std::endl;
+     throw << "problem: lambda will give nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays" << endl;
   } 
 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp7sfp1sf2dgauss = log(Z)*2*fabs(m1)*E/(s-pow(m5,2));
   return gneuticharjffp7sfp1sf2dgauss;
@@ -14125,15 +13803,13 @@ double gneuticharjffp8sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp8sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp8sfp1sf2dgauss used in 1->3 decays" << endl;
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp8sfp1sf2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp8sfp1sf2dgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp8sfp1sf2dgauss = log(Z)/(s-pow(m5,2));
   return gneuticharjffp8sfp1sf2dgauss;
@@ -14150,8 +13826,7 @@ double gneuticharjffp1WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp1WHpmdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp1WHpmdgauss used in 1->3 decays" << endl;
   } 
   A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
   B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
@@ -14169,8 +13844,7 @@ double gneuticharjffp2WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp2WHpmdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp2WHpmdgauss used in 1->3 decays" << endl;
   } 
   A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
   B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
@@ -14189,8 +13863,7 @@ double gneuticharjffp3WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp3WHpmdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp3WHpmdgauss used in 1->3 decays" << endl;
   } 
   A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
   B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
@@ -14209,8 +13882,7 @@ double gneuticharjffp4WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp4WHpmdgauss used in 1->3 decays"<< endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp4WHpmdgauss used in 1->3 decays"<< endl;
   } 
   A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
   B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
@@ -14229,15 +13901,13 @@ double gneuticharjffpW1Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpW1Sfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpW1Sfpdgauss used in 1->3 decays" << endl;
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW1Sfpdgauss used in 1->3 decays"<<endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW1Sfpdgauss used in 1->3 decays"<<endl;
   }
   gneuticharjffpW1Sfpdgauss = (-B - (pow(m6,2)+pow(m4,2)-2*fabs(m1)*E-pow(m3,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW1Sfpdgauss;
@@ -14253,15 +13923,13 @@ double gneuticharjffpW2Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpW2Sfpdgauss used in 1->3 decays"<< endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpW2Sfpdgauss used in 1->3 decays"<< endl;
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW2Sfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW2Sfpdgauss used in 1->3 decays" << endl;
   }
   gneuticharjffpW2Sfpdgauss = (B + (pow(m6,2)+pow(m1,2)-2*fabs(m1)*E-pow(m2,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW2Sfpdgauss;
@@ -14277,15 +13945,13 @@ double gneuticharjffpW3Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpW3Sfpdgauss used in 1->3 decays"<< endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpW3Sfpdgauss used in 1->3 decays"<< endl;
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW3Sfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW3Sfpdgauss used in 1->3 decays" << endl;
   }
   gneuticharjffpW3Sfpdgauss = ((pow(m1,2)+pow(m3,2)+pow(m2,2)+pow(m4,2)-1.5*pow(m6,2)-0.25*(A+B))*(0.5*(A+B)-pow(m6,2)) - (pow(m1,2)+pow(m3,2)+pow(m2,2)+pow(m4,2)-1.5*pow(m6,2)-0.25*(A-B))*(0.5*(A-B)-pow(m6,2)) + (pow(m1,2)+pow(m2,2)-pow(m6,2))*(pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW3Sfpdgauss;
@@ -14302,15 +13968,13 @@ double gneuticharjffpW4Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpW4Sfpdgauss used in 1->3 decays"<< endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpW4Sfpdgauss used in 1->3 decays"<< endl;
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW4Sfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW4Sfpdgauss used in 1->3 decays" << endl;
   }
   gneuticharjffpW4Sfpdgauss = (B + (pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW4Sfpdgauss;
@@ -14326,15 +13990,13 @@ double gneuticharjffpW5Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpW5Sfpdgauss used in 1->3 decays"<< endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpW5Sfpdgauss used in 1->3 decays"<< endl;
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW5Sfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW5Sfpdgauss used in 1->3 decays" << endl;
   }  
   gneuticharjffpW5Sfpdgauss = (-B - (pow(m6,2)-pow(m1,2)-pow(m2,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW5Sfpdgauss;
@@ -14350,15 +14012,13 @@ double gneuticharjffpW6Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpW6Sfpdgauss used in 1->3 decays"<< endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpW6Sfpdgauss used in 1->3 decays"<< endl;
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW6Sfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW6Sfpdgauss used in 1->3 decays" << endl;
   }
   gneuticharjffpW6Sfpdgauss = (s-pow(m2,2)-pow(m3,2))*log(Z)/(s-pow(m5,2));
   return gneuticharjffpW6Sfpdgauss;
@@ -14374,15 +14034,13 @@ double gneuticharjffpW7Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpW7Sfpdgauss used in 1->3 decays"<< endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpW7Sfpdgauss used in 1->3 decays"<< endl;
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW7Sfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW7Sfpdgauss used in 1->3 decays" << endl;
   }  
   gneuticharjffpW7Sfpdgauss = 2*fabs(m1)*E*log(Z)/(s-pow(m5,2));
   return gneuticharjffpW7Sfpdgauss;
@@ -14398,15 +14056,13 @@ double gneuticharjffpW8Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpW8Sfpdgauss used in 1->3 decays"<< endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpW8Sfpdgauss used in 1->3 decays"<< endl;
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW8Sfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW8Sfpdgauss used in 1->3 decays" << endl;
   }
   gneuticharjffpW8Sfpdgauss = log(Z)/(s-pow(m5,2));
   return gneuticharjffpW8Sfpdgauss;
@@ -14422,8 +14078,7 @@ double gneuticharjffpHg1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpHg1dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpHg1dgauss used in 1->3 decays" << endl;
   } 
   gneuticharjffpHg1dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffpHg1dgauss;
@@ -14439,8 +14094,7 @@ double gneuticharjffpHg2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpHg2dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpHg2dgauss used in 1->3 decays" << endl;
   }   
   gneuticharjffpHg2dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffpHg2dgauss;
@@ -14456,8 +14110,7 @@ double gneuticharjffpHg3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpHg3dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpHg3dgauss used in 1->3 decays" << endl;
   } 
   gneuticharjffpHg3dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffpHg3dgauss;
@@ -14473,8 +14126,7 @@ double gneuticharjffpHg4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffpHg4dgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffpHg4dgauss used in 1->3 decays" << endl;
   } 
   gneuticharjffpHg4dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffpHg4dgauss;
@@ -14491,15 +14143,13 @@ double gneuticharjffp1gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp1gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp1gsfpdgauss used in 1->3 decays" << endl;
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp1gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp1gsfpdgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp1gsfpdgauss = 2*(s*B + (pow(m6,2)*s - pow(m1,2)*pow(m3,2) - pow(m2,2)*pow(m4,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp1gsfpdgauss;
@@ -14515,15 +14165,13 @@ double gneuticharjffp2gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp2gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp2gsfpdgauss used in 1->3 decays" << endl;
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp2gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp2gsfpdgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp2gsfpdgauss = (-B - (pow(m6,2) + pow(m4,2) - 2*fabs(m1)*E - pow(m3,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp2gsfpdgauss;
@@ -14539,15 +14187,13 @@ double gneuticharjffp3gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp3gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp3gsfpdgauss used in 1->3 decays" << endl;
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp3gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp3gsfpdgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp3gsfpdgauss = (B + (pow(m6,2)+pow(m1,2)-2*fabs(m1)*E - pow(m2,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp3gsfpdgauss;
@@ -14563,15 +14209,13 @@ double gneuticharjffp4gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp4gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp4gsfpdgauss used in 1->3 decays" << endl;
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp4gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp4gsfpdgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp4gsfpdgauss = (B + (pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp4gsfpdgauss;
@@ -14587,15 +14231,13 @@ double gneuticharjffp5gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" << endl;
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp5gsfpdgauss = (-B-(pow(m6,2)-pow(m1,2)-pow(m2,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp5gsfpdgauss;
@@ -14611,15 +14253,13 @@ double gneuticharjffp6gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp6gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp6gsfpdgauss used in 1->3 decays" << endl;
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp6gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp6gsfpdgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp6gsfpdgauss = (s-pow(m2,2)-pow(m3,2))*log(Z)/(s-pow(m5,2));
   return gneuticharjffp6gsfpdgauss;
@@ -14635,15 +14275,13 @@ double gneuticharjffp7gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp7gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp7gsfpdgauss used in 1->3 decays" << endl;
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp7gsfpdgauss = 2*fabs(m1)*E*log(Z)/(s-pow(m5,2));
   return gneuticharjffp7gsfpdgauss;
@@ -14659,15 +14297,13 @@ double gneuticharjffp8gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gneuticharjffp8gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: lambda will give nan in gneuticharjffp8gsfpdgauss used in 1->3 decays" << endl;
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    *ffout << "problem: Z<0 will give log(Z) as nan in gneuticharjffp8gsfpdgauss used in 1->3 decays" << endl;
-    errorflag = -1;
+    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp8gsfpdgauss used in 1->3 decays" << endl;
   }
   gneuticharjffp8gsfpdgauss = log(Z)/(s-pow(m5,2));
   return gneuticharjffp8gsfpdgauss;
@@ -14684,8 +14320,7 @@ double gneuticharjffp1sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
   }
   if (squareplus*squareminus < 0) {
       cout.precision(10);
-      *ffout << "problem: lambda will give nan in gneuticharjffp1sfpsfpdgauss used in 1->3 decays" << endl;
-      errorflag = -1;
+      throw << "problem: lambda will give nan in gneuticharjffp1sfpsfpdgauss used in 1->3 decays" << endl;
   } 
   gneuticharjffp1sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp1sfpsfpdgauss;
@@ -14702,8 +14337,7 @@ double gneuticharjffp2sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
   }
   if (squareplus*squareminus < 0) {
       cout.precision(10);
-      *ffout << "problem: lambda will give nan in gneuticharjffp2sfpsfpdgauss used in 1->3 decays" << endl;
-      errorflag = -1;
+      throw << "problem: lambda will give nan in gneuticharjffp2sfpsfpdgauss used in 1->3 decays" << endl;
   } 
   gneuticharjffp2sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp2sfpsfpdgauss;
@@ -14720,8 +14354,7 @@ double gneuticharjffp3sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
   }
   if (squareplus*squareminus < 0) {
       cout.precision(10);
-      *ffout << "problem: lambda will give nan in gneuticharjffp3sfpsfpdgauss used in 1->3 decays" << endl;
-      errorflag = -1;
+      throw << "problem: lambda will give nan in gneuticharjffp3sfpsfpdgauss used in 1->3 decays" << endl;
   } 
   gneuticharjffp3sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp3sfpsfpdgauss;
@@ -14738,8 +14371,7 @@ double gneuticharjffp4sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
   }
   if (squareplus*squareminus < 0) {
       cout.precision(10);
-      *ffout << "problem: lambda will give nan in gneuticharjffp4sfpsfpdgauss used in 1->3 decays " << endl;
-      errorflag = -1;
+      throw << "problem: lambda will give nan in gneuticharjffp4sfpsfpdgauss used in 1->3 decays " << endl;
   } 
   
   gneuticharjffp4sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
@@ -14776,7 +14408,6 @@ double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (double mgluino, do
 	}
 	else {
 	  throw("problem: uord must be u or d in gluinoamplitudedecaydgaussneutralinoqqbarfirsttwogen");
-	  errorflag = -1;
 	}
 
 	m1 = mgluino; mq = mquark; m4 = mneutralino; m2 = msqL; m3 = msqL;
@@ -14822,7 +14453,6 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
     }
     else {
       throw("problem: torb be t or b in gluinoamplitudedecaydgaussneutralinottbar");
-      errorflag = -1;
     }
 
     double psiLLst1=0, chiLLst1=0, phiLLst1=0, rhoLLst1=0, xsiLLst1=0;
@@ -14928,7 +14558,6 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
     }
     else {
       throw("problem: torb be t or b in gluinoamplitudedecaydgaussneutralinottbar");
-      errorflag = -1;
     }    
    
       ///Note the effect of the complex couplings and the pm factors for negative masses cancel out as the couplings always appear in pairs so multiplying them gives an extra minus sign when they are purely imaginary, but this extra minus sign is cancelled out by the extra minus sign in the pm factor. Therefore really the additional minus signs come from the fact I've used the neutralino mass itself throughout my calculation (rather than its absolute value) which therefore naturally introduces additional minus signs.
@@ -15025,7 +14654,6 @@ double gluinoamplitudedecaydgausschartbbar (double mgluino, double mst1, double 
     }
     else {
       throw("problem: chargino must be 1 or 2 in gluinoamplitudedecaydgausschartbbar");
-      errorflag = -1;
     }
     double G1st1 = 0, G1st2 = 0, G2sb1 = 0, G2sb2 = 0, G3sb1 = 0, G3sb2 = 0, G4st1sb1 = 0, G4st1sb2 = 0, G4st2sb1 = 0, G4st2sb2 = 0, G5st1sb1 = 0, G5st1sb2 = 0, G5st2sb1 = 0, G5st2sb2 = 0, G6st1sb1 = 0, G6st1sb2 = 0, G6st2sb1 = 0,G6st2sb2 = 0, G7st1sb1 = 0, G7st1sb2 = 0, G7st2sb1 = 0, G7st2sb2 = 0, G8st1 = 0, G8st2 = 0, G8st1st2 = 0;
 
@@ -15215,7 +14843,6 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     }
     else {
       throw("problem: uordornuorl must be u or d or n or l in neutralinoamplitudedecaydgaussneutralinoffbar");
-      errorflag = -1;
     }
 
     double YZisf1sf1Zj = 0, YZisf2sf2Zj = 0, psitildaZisf1sf2Zj = 0, phitildaZisf1sf2Zj = 0, YZisf1sf2Zj = 0;
@@ -15684,7 +15311,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: jchargino must be 1 or 2 in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double AZiu = 0, BZiu = 0, sf1alpha1Ziu = 0, sf1beta1Ziu = 0, sf2alpha1Ziu = 0, sf2beta1Ziu = 0;
@@ -15806,7 +15432,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: jchargino must be 1 or 2 in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double coupcombo1sfp1 = 0, coupcombo2sfp1 = 0, coupcombo3sfp1 = 0, coupcombo4sfp1 = 0;
@@ -15897,7 +15522,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double int1sfp1sf2 = 0, int2sfp1sf2 = 0, int3sfp1sf2 = 0, int4sfp1sf2 = 0, int5sfp1sf2 = 0, int6sfp1sf2 = 0, int7sfp1sf2 = 0, int8sfp1sf2 = 0;
@@ -15934,7 +15558,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
     
     double int1sfp1sf1 = 0, int2sfp1sf1 = 0, int3sfp1sf1 = 0, int4sfp1sf1 = 0, int5sfp1sf1 = 0, int6sfp1sf1 = 0, int7sfp1sf1 = 0, int8sfp1sf1 = 0;
@@ -15976,7 +15599,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
     
     double int1sfp2sf2 = 0, int2sfp2sf2 = 0, int3sfp2sf2 = 0, int4sfp2sf2 = 0, int5sfp2sf2 = 0, int6sfp2sf2 = 0, int7sfp2sf2 = 0, int8sfp2sf2 = 0;
@@ -16016,7 +15638,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double int1sfp2sf1 = 0, int2sfp2sf1 = 0, int3sfp2sf1 = 0, int4sfp2sf1 = 0, int5sfp2sf1 = 0, int6sfp2sf1 = 0, int7sfp2sf1 = 0, int8sfp2sf1 = 0;
@@ -16137,7 +15758,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double intW1Sf1 = 0, intW2Sf1 = 0, intW3Sf1 = 0, intW4Sf1 = 0, intW5Sf1 = 0, intW6Sf1 = 0, intW7Sf1 = 0, intW8Sf1 = 0;
@@ -16174,7 +15794,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double intW1Sf2 = 0, intW2Sf2 = 0, intW3Sf2 = 0, intW4Sf2 = 0, intW5Sf2 = 0, intW6Sf2 = 0, intW7Sf2 = 0, intW8Sf2 = 0;
@@ -16230,7 +15849,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double int1gsfp1 = 0, int2gsfp1 = 0, int3gsfp1 = 0, int4gsfp1 = 0, int5gsfp1 = 0, int6gsfp1 = 0, int7gsfp1 = 0, int8gsfp1 = 0;
@@ -16257,7 +15875,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     Gammagsfp1 = coupcombo1gsfp1*int1gsfp1 + coupcombo2gsfp1*int2gsfp1 + coupcombo3gsfp1*int3gsfp1 + coupcombo4gsfp1*int4gsfp1 + coupcombo5gsfp1*int5gsfp1 + coupcombo6gsfp1*int6gsfp1 + coupcombo7gsfp1*int7gsfp1 + coupcombo8gsfp1*int8gsfp1;
@@ -16286,7 +15903,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double int1gsfp2 = 0, int2gsfp2 = 0, int3gsfp2 = 0, int4gsfp2 = 0, int5gsfp2 = 0, int6gsfp2 = 0, int7gsfp2 = 0, int8gsfp2 = 0;
@@ -16313,7 +15929,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     Gammagsfp2 = coupcombo1gsfp2*int1gsfp2 + coupcombo2gsfp2*int2gsfp2 + coupcombo3gsfp2*int3gsfp2 + coupcombo4gsfp2*int4gsfp2 + coupcombo5gsfp2*int5gsfp2 + coupcombo6gsfp2*int6gsfp2 + coupcombo7gsfp2*int7gsfp2 + coupcombo8gsfp2*int8gsfp2;
@@ -16342,7 +15957,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double int1Hpmsfp1 = 0, int2Hpmsfp1 = 0, int3Hpmsfp1 = 0, int4Hpmsfp1 = 0, int5Hpmsfp1 = 0, int6Hpmsfp1 = 0, int7Hpmsfp1 = 0, int8Hpmsfp1 = 0;
@@ -16369,7 +15983,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     GammaHpmsfp1 = coupcombo1Hpmsfp1*int1Hpmsfp1 + coupcombo2Hpmsfp1*int2Hpmsfp1 + coupcombo3Hpmsfp1*int3Hpmsfp1 + coupcombo4Hpmsfp1*int4Hpmsfp1 + coupcombo5Hpmsfp1*int5Hpmsfp1 + coupcombo6Hpmsfp1*int6Hpmsfp1 + coupcombo7Hpmsfp1*int7Hpmsfp1 + coupcombo8Hpmsfp1*int8Hpmsfp1;
@@ -16398,7 +16011,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double int1Hpmsfp2 = 0, int2Hpmsfp2 = 0, int3Hpmsfp2 = 0, int4Hpmsfp2 = 0, int5Hpmsfp2 = 0, int6Hpmsfp2 = 0, int7Hpmsfp2 = 0, int8Hpmsfp2 = 0;
@@ -16425,7 +16037,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     GammaHpmsfp2 = coupcombo1Hpmsfp2*int1Hpmsfp2 + coupcombo2Hpmsfp2*int2Hpmsfp2 + coupcombo3Hpmsfp2*int3Hpmsfp2 + coupcombo4Hpmsfp2*int4Hpmsfp2 + coupcombo5Hpmsfp2*int5Hpmsfp2 + coupcombo6Hpmsfp2*int6Hpmsfp2 + coupcombo7Hpmsfp2*int7Hpmsfp2 + coupcombo8Hpmsfp2*int8Hpmsfp2;
@@ -16454,7 +16065,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double int1gsf1 = 0, int2gsf1 = 0, int3gsf1 = 0, int4gsf1 = 0, int5gsf1 = 0, int6gsf1 = 0, int7gsf1 = 0, int8gsf1 = 0;
@@ -16563,7 +16173,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double int1Hpmsf1 = 0, int2Hpmsf1 = 0, int3Hpmsf1 = 0, int4Hpmsf1 = 0, int5Hpmsf1 = 0, int6Hpmsf1 = 0, int7Hpmsf1 = 0, int8Hpmsf1 = 0;
@@ -16590,7 +16199,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }    
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     GammaHpmsf1 = coupcombo1Hpmsf1*int1Hpmsf1 + coupcombo2Hpmsf1*int2Hpmsf1 + coupcombo3Hpmsf1*int3Hpmsf1 + coupcombo4Hpmsf1*int4Hpmsf1 + coupcombo5Hpmsf1*int5Hpmsf1 + coupcombo6Hpmsf1*int6Hpmsf1 + coupcombo7Hpmsf1*int7Hpmsf1 + coupcombo8Hpmsf1*int8Hpmsf1;
@@ -16619,7 +16227,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double int1Hpmsf2 = 0, int2Hpmsf2 = 0, int3Hpmsf2 = 0, int4Hpmsf2 = 0, int5Hpmsf2 = 0, int6Hpmsf2 = 0, int7Hpmsf2 = 0, int8Hpmsf2 = 0;
@@ -16646,7 +16253,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }  
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     GammaHpmsf2 = coupcombo1Hpmsf2*int1Hpmsf2 + coupcombo2Hpmsf2*int2Hpmsf2 + coupcombo3Hpmsf2*int3Hpmsf2 + coupcombo4Hpmsf2*int4Hpmsf2 + coupcombo5Hpmsf2*int5Hpmsf2 + coupcombo6Hpmsf2*int6Hpmsf2 + coupcombo7Hpmsf2*int7Hpmsf2 + coupcombo8Hpmsf2*int8Hpmsf2;
@@ -16667,7 +16273,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double int1sfpsfp = 0, int2sfpsfp = 0, int3sfpsfp = 0, int4sfpsfp = 0;
@@ -16687,7 +16292,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }    
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     if (norc == 'n') {
@@ -16698,7 +16302,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     } 
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
-      errorflag = -1;
     }
 
     double Gammasf1sf2 = 0;
@@ -16948,26 +16551,26 @@ double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double m
   Ist1r = couplingst1*kinst1r; Ist2r = couplingst2*kinst2r; Isb1r = couplingsb1*kinsb1r; Isb2r = couplingsb2*kinsb2r; Istau1r = couplingstau1*kinstau1r; Istau2r = couplingstau2*kinstau2r;
   Ist1i = couplingst1*kinst1i; Ist2i = couplingst2*kinst2i; Isb1i = couplingsb1*kinsb1i; Isb2i = couplingsb2*kinsb2i; Istau1i = couplingstau1*kinstau1i; Istau2i = couplingstau2*kinstau2i;
 
-  // *ffout << "Itr = " << Itr << std::endl;
-  // *ffout << "Ibr = " << Ibr << std:: endl;
-  // *ffout << "Icr = " << Icr << std:: endl;
-  // *ffout << "Itaur = " << Itaur << std:: endl;
-  // *ffout << "Ichar1r = " << Ichar1r << std:: endl;
-  // *ffout << "Ichar2r = " << Ichar2r << std:: endl;
-  // *ffout << "IWr = " << IWr << std:: endl;
-  // *ffout << "IHpmr = " << IHpmr << std:: endl;
-  // *ffout << "IscLr = " << IscLr << std:: endl;
-  // *ffout << "IscRr = " << IscRr << std:: endl;
-  // *ffout << "IssLr = " << IssLr << std:: endl;
-  // *ffout << "IssRr = " << IssRr << std:: endl;
-  // *ffout << "IsmuLr = " << IsmuLr << std:: endl;
-  // *ffout << "IsmuRr = " << IsmuRr << std:: endl;
-  // *ffout << "Ist1r = " << Ist1r << std:: endl;
-  // *ffout << "Ist2r = " << Ist2r << std:: endl;
-  // *ffout << "Isb1r = " << Isb1r << std:: endl;
-  // *ffout << "Isb2r = " << Isb2r << std:: endl;
-  // *ffout << "Istau1r = " << Istau1r << std:: endl;
-  // *ffout << "Istau2r = " << Istau2r << std:: endl;
+  // throw << "Itr = " << Itr << std::endl;
+  // throw << "Ibr = " << Ibr << std:: endl;
+  // throw << "Icr = " << Icr << std:: endl;
+  // throw << "Itaur = " << Itaur << std:: endl;
+  // throw << "Ichar1r = " << Ichar1r << std:: endl;
+  // throw << "Ichar2r = " << Ichar2r << std:: endl;
+  // throw << "IWr = " << IWr << std:: endl;
+  // throw << "IHpmr = " << IHpmr << std:: endl;
+  // throw << "IscLr = " << IscLr << std:: endl;
+  // throw << "IscRr = " << IscRr << std:: endl;
+  // throw << "IssLr = " << IssLr << std:: endl;
+  // throw << "IssRr = " << IssRr << std:: endl;
+  // throw << "IsmuLr = " << IsmuLr << std:: endl;
+  // throw << "IsmuRr = " << IsmuRr << std:: endl;
+  // throw << "Ist1r = " << Ist1r << std:: endl;
+  // throw << "Ist2r = " << Ist2r << std:: endl;
+  // throw << "Isb1r = " << Isb1r << std:: endl;
+  // throw << "Isb2r = " << Isb2r << std:: endl;
+  // throw << "Istau1r = " << Istau1r << std:: endl;
+  // throw << "Istau2r = " << Istau2r << std:: endl;
 
   // *ffout << "Iti = " << Iti << std::endl;
   // *ffout << "Ibi = " << Ibi << std:: endl;
@@ -17118,7 +16721,6 @@ double higgsCPevenamplitudedecaygluongluonNMSSM(double m1, double mtop, double m
     if (higgs == 1 || higgs == 2 || higgs == 3) {}
     else {
       throw("Problem - higgs must be 1, 2, 3 i.e 'h', 'H' or 'H3' in NMSSM!\n");
-      errorflag = -1;
     }
     DoubleVector hggQCDcorrections(double amplitudeW, double alphas, int Nf, char higgs, double prefactor, double SMtotr, double SMtoti, double sqtotr, double sqtoti);
     amplitudeW = hggQCDcorrections(amplitudeW, alphas, NF, 'h', prefactor, SMTOTRE, SMTOTIM, SQTOTRE, SQTOTIM)(1); ///Pass hggQCDcorrections 'h' as it just matters whether it is CPeven (so 95/4 in FQCD) or CPodd (so 97/4 in FQCD)
@@ -17229,7 +16831,6 @@ double higgshamplitudedecayneutineutjNMSSM (double m1, double mneuti, double mne
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecayneutineutjNMSSM\n");
-      errorflag = -1;
     } 
     
     coupling = lam/(pow(2,0.5))*(CPEMix(higgs,1)*(mixNeut(neuti,3)*mixNeut(neutj,5) + mixNeut(neuti,5)*mixNeut(neutj,3)) + CPEMix(higgs,2)*(mixNeut(neuti,4)*mixNeut(neutj,5) + mixNeut(neuti,5)*mixNeut(neutj,4)) + CPEMix(higgs,3)*(mixNeut(neuti,4)*mixNeut(neutj,3)+mixNeut(neuti,3)*mixNeut(neutj,4))) - pow(2,0.5)*kappa*CPEMix(higgs,3)*mixNeut(neuti,5)*mixNeut(neutj,5) + gp/2*(-CPEMix(higgs,1)*(mixNeut(neuti,1)*mixNeut(neutj,4) + mixNeut(neuti,4)*mixNeut(neutj,1)) + CPEMix(higgs,2)*(mixNeut(neuti,1)*mixNeut(neutj,3) + mixNeut(neuti,3)*mixNeut(neutj,1))) + g/2*(CPEMix(higgs,1)*(mixNeut(neuti,2)*mixNeut(neutj,4) + mixNeut(neuti,4)*mixNeut(neutj,2)) - CPEMix(higgs,2)*(mixNeut(neuti,2)*mixNeut(neutj,3) + mixNeut(neuti,3)*mixNeut(neutj,2)));
@@ -17252,7 +16853,6 @@ double higgsAamplitudedecayHpmWboson(double m1, double mWboson, double mHpm, dou
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsAamplitudedecayHpmWboson\n");
-      errorflag = -1;
     } 
     
     if (nmssmIsIt == false) { coupling = 1;}
@@ -17265,7 +16865,6 @@ double higgsAamplitudedecayHpmWboson(double m1, double mWboson, double mHpm, dou
       }
       else{
 	throw("problem: pseudoscalar must be 1 or 2 in higgsAamplitudedecayHpmWboson");
-	errorflag = -1;
       }
     }
 
@@ -17296,7 +16895,6 @@ double higgsCPevenamplitudedecayAANMSSM(double m1, double mA1, double mA2, doubl
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecayAANMSSM\n");
-      errorflag = -1;
     } 
     
     prefactor = 1/(32*PI*m1);
@@ -17323,7 +16921,6 @@ double higgsCPevenamplitudedecaypseudoscalarZNMSSM (double m1, double mA, double
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaypseudoscalarZNMSSM\n");
-      errorflag = -1;
     } 
     coupling = (CPEMix(higgs,1)*cos(beta) - CPEMix(higgs,2)*sin(beta))*(CPOMix(pseudoscalar,1)*cos(beta) - CPOMix(pseudoscalar,2)*sin(beta));
     amplitudeW = (pow(g,2)+pow(gp,2))*pow(m1,3)/(64*PI*pow(mZboson,2))*pow(coupling,2)*pow(lambda,3);
@@ -17343,7 +16940,6 @@ double higgsCPevenamplitudedecayHpHmNMSSM (double m1, double mHpm, double mWboso
     lambda = pow(squareplus,0.5);
     if (squareplus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecayHpHmNMSSM\n");
-      errorflag = -1;
     } 
     couplingHpm = (lam*mueff/(pow(2,0.5))*(2*CPEMix(higgs,3)*pow(cos(beta),2) + 2*CPEMix(higgs,3)*pow(sin(beta),2)) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,2)*cos(beta)*sin(beta) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,1)*cos(beta)*sin(beta) + mueff*kappa*pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + lam*Alambda/pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + pow(gp,2)/4*mWboson/g*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) - 2*CPEMix(higgs,1)*pow(sin(beta),2)) + cos(beta)*(2*CPEMix(higgs,2)*pow(sin(beta),2) - 2*CPEMix(higgs,2)*pow(cos(beta),2))) + g/4*mWboson*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) + 2*CPEMix(higgs,1)*pow(sin(beta),2) + 2*2*CPEMix(higgs,2)*sin(beta)*cos(beta)) + cos(beta)*(2*CPEMix(higgs,2)*pow(cos(beta),2) + 2*CPEMix(higgs,2)*pow(sin(beta),2) + 2*2*CPEMix(higgs,1)*sin(beta)*cos(beta))) + lam/pow(2,0.5)*0);
 
@@ -17370,7 +16966,6 @@ double higgsCPevenamplitudedecayhhorhHorHHNMSSM(double m1, double mh1, double mh
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecayhhorhHorHHNMSSM\n");
-      errorflag = -1;
     } 
     if (higgs1 == higgs2) { deltah1h2 = 1;}
     else {deltah1h2 = 2;}
@@ -17400,7 +16995,6 @@ double higgsA2amplitudedecayA1CPevenNMSSM(double m1, double mA1, double mh, doub
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsA2amplitudedecayA1CPevenNMSSM\n");
-      errorflag = -1;
     } 
     
     prefactor = 1/(16*PI*m1);
@@ -17427,7 +17021,6 @@ double higgsCPevenamplitudedecayWHpmNMSSM (double m1, double mWboson, double mHp
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecayWHpmNMSSM\n");
-      errorflag = -1;
     } 
     
     amplitudeW = GFosqrt2*pow(m1,3)/(8*PI)*pow(CPEMix(higgs,1)*cos(beta)-CPEMix(higgs,2)*sin(beta),2)*pow(lambda,3);
@@ -17447,7 +17040,6 @@ double higgsCPevenamplitudedecaystopistopiNMSSM (double m1, double mstopi, doubl
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystopistopiNMSSM\n");
-      errorflag = -1;
     } 
     hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
     hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
@@ -17460,7 +17052,6 @@ double higgsCPevenamplitudedecaystopistopiNMSSM (double m1, double mstopi, doubl
     }
     else{
       throw("problem: stop must be 1 or 2 in higgsCPevenamplitudedecaystopistopiNMSSM\n");
-      errorflag = -1;
     }
     coupling = pow(angle1,2)*pow(2,0.5)*(pow(huq,2)*hvev1*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + pow(angle2,2)*pow(2,0.5)*(pow(huq,2)*hvev1*CPEMix(higgs,1) - pow(gp,2)/3*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + 2*angle1*angle2*huq/(pow(2,0.5))*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2) - lam*hvev2*CPEMix(higgs,3));
 
@@ -17481,7 +17072,6 @@ double higgsCPevenamplitudedecaystopistopjNMSSM (double m1, double mstopi, doubl
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystopistopjNMSSM\n");
-      errorflag = -1;
     } 
     hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
     hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
@@ -17506,7 +17096,6 @@ double higgsCPevenamplitudedecaysbottomisbottomiNMSSM (double m1, double msbotto
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaysbottomisbottomiNMSSM\n");
-      errorflag = -1;
     } 
     hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
     hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
@@ -17519,7 +17108,6 @@ double higgsCPevenamplitudedecaysbottomisbottomiNMSSM (double m1, double msbotto
     }
     else{
       throw("problem: sbottom must be 1 or 2 in higgsCPevenamplitudedecaysbottomisbottomiNMSSM");
-      errorflag = -1;
     }
 
     coupling = pow(angle1,2)*pow(2,0.5)*(pow(hdq,2)*hvev2*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + pow(angle2,2)*pow(2,0.5)*(pow(hdq,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/6*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + 2*angle1*angle2*hdq/(pow(2,0.5))*(Ab*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*hvev1*CPEMix(higgs,3));
@@ -17541,7 +17129,6 @@ double higgsCPevenamplitudedecaysbottomisbottomjNMSSM (double m1, double msbotto
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaysbottomisbottomjNMSSM\n");
-      errorflag = -1;
     } 
     hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
     hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
@@ -17566,7 +17153,6 @@ double higgsCPevenamplitudedecaystauistauiNMSSM (double m1, double mstaui, doubl
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystauistauiNMSSM\n");
-      errorflag = -1;
     } 
     hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
     hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
@@ -17579,7 +17165,6 @@ double higgsCPevenamplitudedecaystauistauiNMSSM (double m1, double mstaui, doubl
     }
     else{
       throw("problem: stau must be 1 or 2 in higgsCPevenamplitudedecaystauistauiNMSSM");
-      errorflag = -1;
     }
 
     coupling = pow(angle1,2)*pow(2,0.5)*(pow(hlq,2)*hvev2*CPEMix(higgs,2) + (-pow(gp,2)/4 + pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + pow(angle2,2)*pow(2,0.5)*(pow(hlq,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/2*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) - 2*angle1*angle2*hlq/(pow(2,0.5))*(Atau*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*hvev1*CPEMix(higgs,3));
@@ -17601,7 +17186,6 @@ double higgsCPevenamplitudedecaystauistaujNMSSM (double m1, double mstaui, doubl
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystauistaujNMSSM\n");
-      errorflag = -1;
     } 
     hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
     hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
@@ -17628,7 +17212,6 @@ double stop2amplitudedecaystop1CPevenhiggsNMSSM (double mst2, double mst1, doubl
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stop2amplitudedecaystop1CPevenhiggsNMSSM\n");
-      errorflag = -1;
     } 
     ft = g*mt/(pow(2,0.5)*mWboson*sin(beta));
     hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
@@ -17656,7 +17239,6 @@ double stop2amplitudedecaystop1CPoddhiggsNMSSM (double mst2, double mst1, double
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stop2amplitudedecaystop1CPoddhiggsNMSSM\n");
-      errorflag = -1;
     } 
     ft = g*mt/(pow(2,0.5)*mWboson*sin(beta));
     hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
@@ -17682,7 +17264,6 @@ double sbottom2amplitudedecaysbottom1CPevenhiggsNMSSM (double msb2, double msb1,
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sbottom2amplitudedecaysbottom1CPevenhiggsNMSSM\n");
-      errorflag = -1;
     } 
     fb = g*mb/(pow(2,0.5)*mWboson*cos(beta));
     hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
@@ -17711,7 +17292,6 @@ double sbottom2amplitudedecaysbottom1CPoddhiggsNMSSM (double msb2, double msb1, 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sbottom2amplitudedecaysbottom1CPoddhiggsNMSSM\n");
-      errorflag = -1;
     } 
     fb = g*mb/(pow(2,0.5)*mWboson*cos(beta));
     hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
@@ -17737,7 +17317,6 @@ double stau2amplitudedecaystau1CPevenhiggsNMSSM (double mstau2, double mstau1, d
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stau2amplitudedecaystau1CPevenhiggsNMSSM\n");
-      errorflag = -1;
     } 
     ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
     hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
@@ -17767,7 +17346,6 @@ double stau2amplitudedecaystau1CPoddhiggsNMSSM
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stau2amplitudedecaystau1CPoddhiggsNMSSM\n");
-      errorflag = -1;
     } 
     ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
     hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
@@ -17795,7 +17373,6 @@ double chargino2amplitudedecaychargino1CPevenhiggsNMSSM (double mchar2, double m
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in chargino2amplitudedecaychargino1CPevenhiggsNMSSM\n");
-      errorflag = -1;
     } 
     coupling = (pow(coupling1,2)+pow(coupling2,2))*(pow(mchar1,2)+pow(mchar2,2)-pow(mh,2)) + 4*coupling1*coupling2*mchar1*mchar2;
     amplitudeW = prefactor*lambda*coupling;
@@ -17821,7 +17398,6 @@ double chargino2amplitudedecaychargino1CPoddhiggsNMSSM (double mchar2, double mc
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in chargino2amplitudedecaychargino1CPevoddhiggsNMSSM\n");
-      errorflag = -1;
     } 
     coupling = (pow(C1,2)+pow(C2,2))*(pow(mchar1,2)+pow(mchar2,2)-pow(mA,2)) + 4*C1*C2*mchar1*mchar2;
     amplitudeW = prefactor*lambda*coupling;
@@ -17847,7 +17423,6 @@ double neutralinoamplitudedecaycharginoWNMSSM (double mneut, double mchar, doubl
     }
     else{
       throw("problem: chargino must be 1 or 2 in neutralinoamplitudedecaycharginoWNMSSM");
-      errorflag = -1;
     }
 
     coupleL = -1/pow(2,0.5)*mixNeut(neutralino,4)*V2 + mixNeut(neutralino,2)*V1;
@@ -17858,7 +17433,6 @@ double neutralinoamplitudedecaycharginoWNMSSM (double mneut, double mchar, doubl
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecaycharginoWNMSSM\n");
-      errorflag = -1;
     } 
 
     coupling = -12*mneut*mchar*coupleL*coupleR + (pow(coupleL,2)+pow(coupleR,2))*((pow(mchar,2)+pow(mneut,2)-pow(mWboson,2)) + (pow(mneut,2)+pow(mWboson,2)-pow(mchar,2))*(pow(mneut,2)-pow(mchar,2)-pow(mWboson,2))/pow(mWboson,2));
@@ -17883,7 +17457,6 @@ double neutralinoamplitudedecayneutralinoZNMSSM (double mneuti, double mneutj, d
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoZNMSSM\n");
-      errorflag = -1;
     } 
 
     costhetaW = g/pow(pow(g,2)+pow(gp,2),0.5);
@@ -17912,7 +17485,6 @@ double neutralinoamplitudecharginoHpmNMSSM (double mneut, double mchar, double m
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecaycharginoHpmNMSSM\n");
-      errorflag = -1;
     } 
     
     if (chargino == 1) {
@@ -17923,7 +17495,6 @@ double neutralinoamplitudecharginoHpmNMSSM (double mneut, double mchar, double m
     }
     else{
       throw("problem: chargino must be 1 or 2 in neutralinoamplitudecharginoHpmNMSSM\n");
-      errorflag = -1;
     }
 
     coupHpZiWjL = lam*cos(beta)*mixNeut(neutralino,5)*U2 - sin(beta)/(pow(2,0.5))*(gp*mixNeut(neutralino,1)+g*mixNeut(neutralino,2))*U2 + sin(beta)*g*mixNeut(neutralino,3)*U1;
@@ -17950,7 +17521,6 @@ double neutralinoamplitudedecayneutralinoCPevenhiggsNMSSM (double mneuti, double
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoCPevenhiggsNMSSM\n");
-      errorflag = -1;
     } 
 
     coupHZiZj = 0.5*(lam/(pow(2,0.5))*(CPEMix(higgs,1)*(mixNeut(neutralinoj,3)*mixNeut(neutralinoi,5) + mixNeut(neutralinoj,5)*mixNeut(neutralinoi,3)) + CPEMix(higgs,2)*(mixNeut(neutralinoj,4)*mixNeut(neutralinoi,5)+mixNeut(neutralinoi,4)*mixNeut(neutralinoj,5)) + CPEMix(higgs,3)*(mixNeut(neutralinoj,4)*mixNeut(neutralinoi,3) + mixNeut(neutralinoj,3)*mixNeut(neutralinoi,4))) - pow(2,0.5)*kappa*CPEMix(higgs,3)*mixNeut(neutralinoj,5)*mixNeut(neutralinoi,5) + gp/2*(-CPEMix(higgs,1)*(mixNeut(neutralinoj,1)*mixNeut(neutralinoi,4)+mixNeut(neutralinoj,4)*mixNeut(neutralinoi,1)) + CPEMix(higgs,2)*(mixNeut(neutralinoj,1)*mixNeut(neutralinoi,3)+mixNeut(neutralinoi,1)*mixNeut(neutralinoj,3))) + g/2*(CPEMix(higgs,1)*(mixNeut(neutralinoj,2)*mixNeut(neutralinoi,4)+mixNeut(neutralinoj,4)*mixNeut(neutralinoi,2)) - CPEMix(higgs,2)*(mixNeut(neutralinoj,2)*mixNeut(neutralinoi,3)+mixNeut(neutralinoj,3)*mixNeut(neutralinoi,2))));
@@ -17976,7 +17546,6 @@ double neutralinoamplitudedecayneutralinoCPoddhiggsNMSSM (double mneuti, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoCPoddhiggsNMSSM\n");
-      errorflag = -1;
     } 
 
     coupAZiZj = -0.5*(lam/pow(2,0.5)*(CPOMix(higgsa,1)*(mixNeut(neutj,3)*mixNeut(neuti,5) + mixNeut(neuti,3)*mixNeut(neutj,5)) + CPOMix(higgsa,2)*(mixNeut(neutj,4)*mixNeut(neuti,5) + mixNeut(neuti,4)*mixNeut(neutj,5)) + CPOMix(higgsa,3)*(mixNeut(neutj,4)*mixNeut(neuti,3) + mixNeut(neutj,3)*mixNeut(neuti,4))) - pow(2,0.5)*kappa*CPOMix(higgsa,3)*mixNeut(neuti,5)*mixNeut(neutj,5) - gp/2*(-CPOMix(higgsa,1)*(mixNeut(neutj,1)*mixNeut(neuti,4) + mixNeut(neuti,1)*mixNeut(neutj,4)) + CPOMix(higgsa,2)*(mixNeut(neutj,1)*mixNeut(neuti,3) + mixNeut(neuti,1)*mixNeut(neutj,3))) - g/2*(CPOMix(higgsa,1)*(mixNeut(neutj,2)*mixNeut(neuti,4) + mixNeut(neutj,4)*mixNeut(neuti,2)) - CPOMix(higgsa,2)*(mixNeut(neutj,2)*mixNeut(neuti,3)+mixNeut(neutj,3)*mixNeut(neuti,2))));
@@ -18003,7 +17572,6 @@ double neutralinoamplitudedecaysfermionfermionfirst2genNMSSM (double mneut, doub
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecaysfermionfermionfirst2genNMSSM\n");
-      errorflag = -1;
     } 
     costhetaW = g/pow(pow(gp,2)+pow(g,2),0.5);
     sinthetaW = gp/pow(pow(gp,2)+pow(g,2),0.5);
@@ -18040,7 +17608,6 @@ double neutralinoamplitudedecaysfermionfermionfirst2genNMSSM (double mneut, doub
     }
     else{
       throw("problem: type must be u or d or l or n in neutralinoamplitudedecaysfermionsfermionfirst2genNMSSM\n");
-      errorflag = -1;
     }
     
     if (LorR == 'L') {
@@ -18051,7 +17618,6 @@ double neutralinoamplitudedecaysfermionfermionfirst2genNMSSM (double mneut, doub
     }
     else{
       throw("problem: LorR must be L or R in neutralinoamplitudedecaysfermionsfermionfirst2genNMSSM\n");
-      errorflag = -1;
     }
     prefactor = N*pow(g,2)/(32*PI*fabs(mneut));
     amplitudeW = prefactor*lambda*(pow(coupling,2))*(pow(mneut,2)-pow(msf,2)+pow(mf,2));
@@ -18075,7 +17641,6 @@ double neutralinoamplitudestoptopNMSSM (double mneut, double mst, double mt, dou
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudestoptopNMSSM\n");
-      errorflag = -1;
     } 
     costhetaW = g/pow(pow(gp,2)+pow(g,2),0.5);
     sinthetaW = gp/pow(pow(gp,2)+pow(g,2),0.5);
@@ -18097,7 +17662,6 @@ double neutralinoamplitudestoptopNMSSM (double mneut, double mst, double mt, dou
     }
     else{
       throw("problem: stop must be 1 or 2 in neutralinoamplitudestoptopNMSSM");
-      errorflag = -1;
     }
     amplitudeW = prefactor*lambda*((pow(coup1,2)+pow(coup2,2))*(pow(mneut,2)-pow(mst,2)+pow(mt,2)) + 4*mt*mneut*coup1*coup2);
   }
@@ -18119,7 +17683,6 @@ double neutralinoamplitudesbottombottomNMSSM (double mneut, double msb, double m
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudesbottombottomNMSSM\n");
-      errorflag = -1;
     } 
     costhetaW = g/pow(pow(gp,2)+pow(g,2),0.5);
     sinthetaW = gp/pow(pow(gp,2)+pow(g,2),0.5);
@@ -18141,7 +17704,6 @@ double neutralinoamplitudesbottombottomNMSSM (double mneut, double msb, double m
     }
     else{
       throw("problem: sbottom must be 1 or 2 in neutralinoamplitudesbottombottomNMSSM\n");
-      errorflag = -1;
     }
     amplitudeW = prefactor*lambda*((pow(coup1,2)+pow(coup2,2))*(pow(mneut,2)-pow(msb,2)+pow(mb,2)) + 4*mb*mneut*coup1*coup2);
   }
@@ -18164,7 +17726,6 @@ double neutralinoamplitudestautauNMSSM (double mneut, double mstau, double mtau,
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudestautauNMSSM\n");
-      errorflag = -1;
     } 
     costhetaW = g/pow(pow(gp,2)+pow(g,2),0.5);
     sinthetaW = gp/pow(pow(gp,2)+pow(g,2),0.5);
@@ -18186,7 +17747,6 @@ double neutralinoamplitudestautauNMSSM (double mneut, double mstau, double mtau,
     }
     else{
       throw("problem: stau must be 1 or 2 in neutralinoamplitudestautauNMSSM");
-      errorflag = -1;
     }
     amplitudeW = prefactor*lambda*((pow(coup1,2)+pow(coup2,2))*(pow(mneut,2)-pow(mstau,2)+pow(mtau,2)) + 4*mtau*mneut*coup1*coup2);
   }
@@ -18209,7 +17769,6 @@ double neutralinoamplitudestauneutrinotauneutrinoNMSSM (double mneut, double mst
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudestauneutrinotauneutrinoNMSSM\n");
-      errorflag = -1;
     } 
     costhetaW = g/pow(pow(gp,2)+pow(g,2),0.5);
     sinthetaW = gp/pow(pow(gp,2)+pow(g,2),0.5);
@@ -18241,7 +17800,6 @@ double squarkamplitudedecayquarkneutralinoNMSSM (double m1, double mq, double mn
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in squarkamplitudedecayquarkneutralinoNMSSM\n");
-      errorflag = -1;
     } 
 
     c(1) = mixNeut(neut,1)*costhetaW + mixNeut(neut,2)*sinthetaW;
@@ -18266,7 +17824,6 @@ double squarkamplitudedecayquarkneutralinoNMSSM (double m1, double mq, double mn
     }
     else{
       throw("problem: uord must be u or d and LorR must be L or R in squarkamplitudedecayquarkneutralinoNMSSM\n");
-      errorflag = -1;
     }
 
     amplitudeW = prefactor*pow(coupling,2)*(pow(m1,2)-pow(mneut,2) - pow(mq,2))*lambda;
@@ -18293,7 +17850,6 @@ double sleptonamplitudedecayleptonneutralinoNMSSM (double m1, double ml, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sleptonamplitudedecayleptonneutralinoNMSSM\n");
-      errorflag = -1;
     } 
 
     c(1) = mixNeut(neut,1)*costhetaW + mixNeut(neut,2)*sinthetaW;
@@ -18318,7 +17874,6 @@ double sleptonamplitudedecayleptonneutralinoNMSSM (double m1, double ml, double 
     }
     else{
       throw("problem: uord must be u or d and LorR must be L or R in sleptonamplitudedecayleptonneutralinoNMSSM\n");
-      errorflag = -1;
     }
 
     amplitudeW = prefactor*pow(coupling,2)*(pow(m1,2)-pow(mneut,2) - pow(ml,2))*lambda;
@@ -18344,7 +17899,6 @@ double stopamplitudedecaytopneutralinoNMSSM (double m1, double mt, double mneut,
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stopamplitudedecaytopneutralinoNMSSM\n");
-      errorflag = -1;
     } 
     ft = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
 
@@ -18366,7 +17920,6 @@ double stopamplitudedecaytopneutralinoNMSSM (double m1, double mt, double mneut,
     }
     else{
       throw("problem: stop must be 1 or 2 in stopamplitudedecaytopneutralinoNMSSM\n");
-      errorflag = -1;
     }
     
     amplitudeW = prefactor*((pow(coupling1,2)+pow(coupling2,2))*(pow(m1,2) - pow(mt,2) - pow(mneut,2)) - 4*coupling1*coupling2*mt*mneut)*lambda;
@@ -18393,7 +17946,6 @@ double sbottomamplitudedecaybottomneutralinoNMSSM (double m1, double mb, double 
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sbottomamplitudedecaybottomneutralinoNMSSM\n");
-      errorflag = -1;
     } 
     fb = g*runmb/(pow(2,0.5)*mWboson*cos(beta));
 
@@ -18415,7 +17967,6 @@ double sbottomamplitudedecaybottomneutralinoNMSSM (double m1, double mb, double 
     }
     else{
       throw("problem: sbottom must be 1 or 2 in sbottomamplitudedecaybottomneutralinoNMSSM\n");
-      errorflag = -1;
     }
     
     amplitudeW = prefactor*((pow(coupling1,2)+pow(coupling2,2))*(pow(m1,2) - pow(mb,2) - pow(mneut,2)) - 4*coupling1*coupling2*mb*mneut)*lambda;
@@ -18441,7 +17992,6 @@ double stauamplitudedecaytauneutralinoNMSSM (double m1, double mtau, double mneu
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stauamplitudedecaytauneutralinoNMSSM\n");
-      errorflag = -1;
     } 
     ftau = g*runmtau/(pow(2,0.5)*mWboson*cos(beta));
 
@@ -18463,7 +18013,6 @@ double stauamplitudedecaytauneutralinoNMSSM (double m1, double mtau, double mneu
     }
     else{
       throw("problem: stau must be 1 or 2 in stauamplitudedecaytauneutralinoNMSSM\n");
-      errorflag = -1;
     }
     
     amplitudeW = prefactor*((pow(coupling1,2)+pow(coupling2,2))*(pow(m1,2) - pow(mtau,2) - pow(mneut,2)) - 4*coupling1*coupling2*mtau*mneut)*lambda;
@@ -18484,7 +18033,6 @@ double charginoiamplitudedecayneutralinojHpmNMSSM (double mchar, double mneut, d
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in charginoiamplitudedecayneutralinojHpmNMSSM\n");
-      errorflag = -1;
     } 
 
     prefactor = pow(g,2)/(32*PI*fabs(mchar));
@@ -18499,7 +18047,6 @@ double charginoiamplitudedecayneutralinojHpmNMSSM (double mchar, double mneut, d
     }
     else{
       throw("problem: chargino must be 1 or 2 in charginoiamplitudedecayneutralinojHpmNMSSM\n");
-      errorflag = -1;
     }
 
     amplitudeW = prefactor*lambda*((pow(coupling1,2)+pow(coupling2,2))*(pow(mneut,2)+pow(mchar,2)-pow(mHpm,2)) + 4*coupling1*coupling2*mneut*mchar);
@@ -18536,7 +18083,6 @@ double charginoiamplitudedecayneutralinojWNMSSM (double mchar, double mneut, dou
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in charginoiamplitudedecayneutralinojWNMSSM\n");
-      errorflag = -1;
     } 
 
     coupling = -12*mneut*mchar*coupleL*coupleR + (pow(coupleL,2)+pow(coupleR,2))*((pow(mchar,2)+pow(mneut,2)-pow(mWboson,2)) + (pow(mchar,2)+pow(mWboson,2)-pow(mneut,2))*(pow(mchar,2)-pow(mneut,2)-pow(mWboson,2))/pow(mWboson,2));
@@ -18561,7 +18107,6 @@ double HpmamplitudecharginojneutralinoiNMSSM (double mHp, double mchar, double m
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in HpmamplitudecharginojneutralinoiNMSSM\n");
-      errorflag = -1;
     } 
     
     if (chargino == 1) {
@@ -18572,7 +18117,6 @@ double HpmamplitudecharginojneutralinoiNMSSM (double mHp, double mchar, double m
     }
     else{
       throw("problem: chargino must be 1 or 2 in HpmamplitudecharginojneutralinoiNMSSM\n");
-      errorflag = -1;
     }
 
     coupHpZiWjL = lam*cos(beta)*mixNeut(neutralino,5)*U2 - sin(beta)/(pow(2,0.5))*(gp*mixNeut(neutralino,1)+g*mixNeut(neutralino,2))*U2 + sin(beta)*g*mixNeut(neutralino,3)*U1;
@@ -18597,7 +18141,6 @@ double snutauamplitudedecaynutauneutralinoNMSSM (double m1, double mneut, double
     lambda = pow(squareplus*squareminus,0.5);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in snutauamplitudedecaynutauneutralinoNMSSM\n");
-      errorflag = -1;
     } 
 
     sinthetaW = gp/(pow(pow(g,2)+pow(gp,2),0.5));

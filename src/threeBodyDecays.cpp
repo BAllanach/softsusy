@@ -64,7 +64,6 @@ double gluinoamplitudedecaymix (double m1, double m2, double m3, double alphastr
     }
     else {
       throw ("problem: squarkmix must be 1 or 2 in gluinoamplitudedecaymix\n");
-      errorflag = -1;
     }
   }
   return amplitudeW;
@@ -81,6 +80,32 @@ double squarkamplitudedecaygluino (double m1, double m2, double m3,
     squareratio = 1 - pow((m2/m1),2) - pow((m3/m1),2);
     amplitudeW = 4./3*alphastrong*(1/(2*m1))*squareratio*
       sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)));
+  }
+  return amplitudeW;
+}
+
+double squarkamplitudedecaygluinomix (double m1, double m2, double m3,
+				      double alphastrong, double squarkmix,
+				      double theta) {
+  double squareratiomix, amplitudeW=0;
+  if (fabs(m1) < fabs(m2) +fabs(m3)) {
+    amplitudeW = 0;
+  }
+  else {
+    if (squarkmix == 1) {
+      squareratiomix = 1- pow(m2/m1,2) - pow(m3/m1,2) +2*sin(2*theta)*m2*m3/(pow(m1,2));
+      amplitudeW = 4./3*alphastrong*1/(2*m1)*squareratiomix*
+	sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)));
+    }
+    else if (squarkmix == 2) {
+      squareratiomix = 1- pow(m2/m1,2) - pow(m3/m1,2) -2*sin(2*theta)*m2*m3/(pow(m1,2));
+      amplitudeW = 4./3*alphastrong*1/(2*m1)*squareratiomix*
+	sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)));
+    }
+    else {
+      throw ("problem: quarkmix must be 1 or 2 in squarkamplitudedecaygluinomix\n");
+      errorflag = -1;
+    }
   }
   return amplitudeW;
 }
