@@ -8,8 +8,6 @@
 
 #include "twoBodyDecays.h"
 
-const double GFosqrt2 = GMU / sqrt(2.0);
-
 /// First, do hadronic decays
 double charginoToNeutralino1pion(const MssmSoftsusy * m) {
   double mchi1 = fabs(m->displayPhys().mch(1)),
@@ -137,7 +135,6 @@ double squarkamplitudedecaycharginoW2 (double m1, double m2, double m3, double g
 double squark1amplitudedecaycharginoW1mix (double m1, double m2, double m3, double g, double gammaL, double gammaR,  double theta, double beta, double mWboson, double runmt, double runmb, double torb) /// the variable torb depends on if it is stop (torb=1) or sbottom (torb =2) decaying and changes AprimeuW1 to AprimedW1 accordingly
 {
   double squareratio=0, angular1=0, angular2=0, amplitudeW=0;
-  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     amplitudeW = 0;
   }
@@ -155,7 +152,6 @@ double squark1amplitudedecaycharginoW1mix (double m1, double m2, double m3, doub
 double squark1amplitudedecaycharginoW2mix (double m1, double m2, double m3, double g, double gammaL, double gammaR,  double theta, double beta, double mWboson, double runmt, double runmb, double torb) /// the variable torb depends on if it is stop (torb=1) or sbottom (torb =2) decaying and changes AprimeuW2 to AprimedW2 accordingly
 {
   double squareratio=0, angular1=0, angular2=0, amplitudeW=0;
-  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     amplitudeW = 0;
   }
@@ -174,8 +170,6 @@ double squark1amplitudedecaycharginoW2mix (double m1, double m2, double m3, doub
 double squark2amplitudedecaycharginoW1mix (double m1, double m2, double m3, double g, double gammaL, double gammaR,  double theta, double beta, double mWboson, double runmt, double runmb, double torb) /// the variable torb depends on if it is stop (torb=1) or sbottom (torb =2) decaying and changes AprimeuW1 to AprimedW1 accordingly
 {
   double squareratio=0, angular1=0, angular2=0, amplitudeW=0;
-  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
-
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     amplitudeW = 0;
   }
@@ -192,7 +186,6 @@ double squark2amplitudedecaycharginoW1mix (double m1, double m2, double m3, doub
 double squark2amplitudedecaycharginoW2mix (double m1, double m2, double m3, double g, double gammaL, double gammaR,  double theta, double beta, double mWboson, double runmt, double runmb, double torb) /// the variable torb depends on if it is stop (torb=1) or sbottom (torb =2) decaying and changes AprimeuW2 to AprimedW2 accordingly
 {
   double squareratio=0, angular1=0, angular2=0, amplitudeW=0;
-  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     amplitudeW = 0;
   }
@@ -929,8 +922,6 @@ double charginoamplitudedecayquarksquarkmix (double m1, double m2, double m3, do
 
 {
   double amplitudeW, squareplus, squareminus, alteredsquareratio, lambda, combo1=0, combo2=0;
-  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     amplitudeW = 0;
   }
@@ -1930,8 +1921,6 @@ double higgsAamplitudedecayneutralinoneutralinoNMSSM (double m1, double m2, doub
 double higgsphiamplitudedecaysamechargino (double m1, double m2, double g, double thetaL, double thetaR, double alpha, double beta, int chargino, char phi) /// phi tells it whether a "h", "H" or "A" is decaying
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, S=0, index=0;
-  DoubleVector higgsphisamecharginocouplings(double alpha, double beta, double thetaL, double thetaR);
-  
   if (fabs(m1) < fabs(m2) +fabs(m2)){
     amplitudeW = 0;
   }
@@ -2077,8 +2066,6 @@ double higgsphiamplitudedecaydiffcharginoNMSSM (double m1, double m2, double m3,
 double higgsphiamplitudedecaydifchargino (double m1, double m2, double m3, double g, double thetaL, double thetaR, double alpha, double beta, char phi) /// phi tells it whether a "h", "H" or "A" is decaying
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, S=0, P=0;
-  DoubleVector higgsphidifcharginocouplings(double alpha, double beta, double thetaL, double thetaR);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -2397,8 +2384,6 @@ double higgsAamplitudedecayhiggshorHZbosonNMSSM (double m1, double m2, double m3
 double higgshamplitudedecay2squarksamehand (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mupq, double mdownq, int sq) ///calculates partial width for h->squark squark with no mixing and squarks of same handedness, therefore for first two generations, int sq tells the function which squarks it's decaying into - uL, dL, uR, dR for sq = 1,2,3,4 respectively
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
-  DoubleVector higgshsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mupq, double mdownq);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -2594,8 +2579,6 @@ double higgsH3amplitudedecay2sleptonsamehandNMSSM (double m1, double m2, double 
 double higgshamplitudedecay2squarkdiffhand (double m1, double m2, double m3, double g, double alpha, double beta, double mWboson, double mupq, double mdownq, double greekmu, double Aup, double Adown, int sq) ///calculates partial width for h->squark squark with no mixing and squarks of different handedness, therefore for first two generations, int sq tells the function which squarks it's decaying into - uL, dL, uR, dR for sq = 1,2,3,4 respectively
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
-  DoubleVector higgshsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mupq, double mdownq, double greekmu, double Aup, double Adown);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -2668,8 +2651,6 @@ double higgshamplitudedecay2squarkdiffhandNMSSM (double m1, double m2, double m3
 double higgsHamplitudedecay2squarksamehand (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson,double mupq, double mdownq, int sq) ///calculates partial width for H->squark squark with no mixing and squarks of same handedness, therefore for first two generations, int sq tells the function which squarks it's decaying into - uL, dL, uR, dR for sq = 1,2,3,4 respectively
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
-  DoubleVector higgsHsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mupq, double mdownq);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -2795,8 +2776,6 @@ double higgsH3amplitudedecay2squarksamehandNMSSM (double m1, double m2, double m
 double higgsHamplitudedecay2squarkdiffhand (double m1, double m2, double m3, double g, double alpha, double beta, double mWboson, double mupq, double mdownq, double greekmu, double Aup, double Adown, int sq) ///calculates partial width for H->squark squark with no mixing and squarks of different handedness, therefore for first two generations, int sq tells the function which squarks it's decaying into - uL, dL, uR, dR for sq = 1,2,3,4 respectively
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
-  DoubleVector higgsHsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mupq, double mdownq, double greekmu, double Aup, double Adown);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -2834,8 +2813,6 @@ double higgsHamplitudedecay2squarkdiffhand (double m1, double m2, double m3, dou
 double higgshamplitudedecay2sleptonsamehand (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mel, int sl) ///calculates partial width for h->slepton slepton with no mixing and sleptons of same handedness, therefore for first two generations, int sl tells the function which sleptons it's decaying into - nuL, eL, eR for sl = 1,2,3 respectively
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
-  DoubleVector higgshsleptonsamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mel);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -2875,8 +2852,6 @@ double higgshamplitudedecay2sleptonsamehand (double m1, double m2, double m3, do
 double higgshamplitudedecay2sleptondiffhand (double m1, double m2, double m3, double g, double alpha, double beta, double mWboson, double mel, double greekmu, double Aelectron, int sl) ///calculates partial width for h->slepton slepton with no mixing and sleptons of different handedness, therefore for first two generations, int sl tells the function which sleptons it's decaying into - nuL, eL, eR for sl = 1,2,3 respectively
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
-  DoubleVector higgshsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -2910,8 +2885,6 @@ double higgshamplitudedecay2sleptondiffhand (double m1, double m2, double m3, do
 double higgsHamplitudedecay2sleptonsamehand (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mel, int sl) ///calculates partial width for H->slepton slepton with no mixing and sleptons of same handedness, therefore for first two generations, int sl tells the function which sleptons it's decaying into - nuL, eL, eR for sl = 1,2,3 respectively
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
-  DoubleVector higgsHsleptonsamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mel);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -2951,8 +2924,6 @@ double higgsHamplitudedecay2sleptonsamehand (double m1, double m2, double m3, do
 double higgsHamplitudedecay2sleptondiffhand (double m1, double m2, double m3, double g, double alpha, double beta, double mWboson, double mel, double greekmu, double Aelectron, int sl) ///calculates partial width for H->slepton slepton with no mixing and sleptons of different handedness, therefore for first two generations, int sl tells the function which sleptons it's decaying into - nuL, eL, eR for sl = 1,2,3 respectively
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0;
-  DoubleVector higgsHsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -2987,9 +2958,6 @@ double higgsHamplitudedecay2sleptondiffhand (double m1, double m2, double m3, do
 double higgshamplitudedecaystop1stop1 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtop, double mbottom, double greekmu, double Atop, double Abottom, double theta) ///calculates partial width for h->stop1 antistop1
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgshsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgshsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3030,9 +2998,6 @@ double higgshamplitudedecaystop1stop1 (double m1, double m2, double m3, double g
 double higgshamplitudedecaystop2stop2 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtop, double mbottom, double greekmu, double Atop, double Abottom, double theta) ///calculates partial width for h->stop2 antistop2
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgshsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgshsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3072,9 +3037,6 @@ double higgshamplitudedecaystop2stop2 (double m1, double m2, double m3, double g
 double higgshamplitudedecaystop1stop2 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtop, double mbottom, double greekmu, double Atop, double Abottom, double theta) ///calculates partial width for h->stop1 antistop2 or stop2 antistop1 as they are the same
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgshsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgshsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3114,9 +3076,6 @@ double higgshamplitudedecaystop1stop2 (double m1, double m2, double m3, double g
 double higgshamplitudedecaysbottom1sbottom1 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtop, double mbottom, double greekmu, double Atop, double Abottom, double theta) ///calculates partial width for h->sbottom1 antisbottom1
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgshsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgshsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3156,9 +3115,6 @@ double higgshamplitudedecaysbottom1sbottom1 (double m1, double m2, double m3, do
 double higgshamplitudedecaysbottom2sbottom2 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtop, double mbottom, double greekmu, double Atop, double Abottom, double theta) ///calculates partial width for h->sbottom2 antisbottom2
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgshsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgshsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3198,9 +3154,6 @@ double higgshamplitudedecaysbottom2sbottom2 (double m1, double m2, double m3, do
 double higgshamplitudedecaysbottom1sbottom2 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtop, double mbottom, double greekmu, double Atop, double Abottom, double theta) ///calculates partial width for h->sbottom1 antisbottom2 or sbottom2 antisbottom1 as they are the same
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgshsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgshsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3240,9 +3193,6 @@ double higgshamplitudedecaysbottom1sbottom2 (double m1, double m2, double m3, do
 double higgsHamplitudedecaystop1stop1 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtop, double mbottom, double greekmu, double Atop, double Abottom, double theta) ///calculates partial width for H->stop1 antistop1
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgsHsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgsHsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3282,9 +3232,6 @@ double higgsHamplitudedecaystop1stop1 (double m1, double m2, double m3, double g
 double higgsHamplitudedecaystop2stop2 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtop, double mbottom, double greekmu, double Atop, double Abottom, double theta) ///calculates partial width for H->stop2 antistop2
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgsHsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgsHsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3324,9 +3271,6 @@ double higgsHamplitudedecaystop2stop2 (double m1, double m2, double m3, double g
 double higgsHamplitudedecaystop1stop2 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtop, double mbottom, double greekmu, double Atop, double Abottom, double theta) ///calculates partial width for H->stop1 antistop2 or stop2 antistop1 as they are the same
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgsHsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgsHsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3366,9 +3310,6 @@ double higgsHamplitudedecaystop1stop2 (double m1, double m2, double m3, double g
 double higgsHamplitudedecaysbottom1sbottom1 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtop, double mbottom, double greekmu, double Atop, double Abottom, double theta) ///calculates partial width for H->sbottom1 antisbottom1
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgsHsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgsHsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3408,9 +3349,6 @@ double higgsHamplitudedecaysbottom1sbottom1 (double m1, double m2, double m3, do
 double higgsHamplitudedecaysbottom2sbottom2 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtop, double mbottom, double greekmu, double Atop, double Abottom, double theta) ///calculates partial width for H->sbottom2 antisbottom2
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgsHsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgsHsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3450,9 +3388,6 @@ double higgsHamplitudedecaysbottom2sbottom2 (double m1, double m2, double m3, do
 double higgsHamplitudedecaysbottom1sbottom2 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtop, double mbottom, double greekmu, double Atop, double Abottom, double theta) ///calculates partial width for H->sbottom1 antisbottom2 or sbottom2 antisbottom1 as they are the same
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgsHsquarksamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgsHsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3492,9 +3427,6 @@ double higgsHamplitudedecaysbottom1sbottom2 (double m1, double m2, double m3, do
 double higgshamplitudedecaystau1stau1 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtau, double greekmu, double Atau, double theta) ///calculates partial width for h->stau1 antistau1
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgshsleptonsamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtau); 
-  DoubleVector higgshsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtau, double greekmu, double Atau);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3535,9 +3467,6 @@ double higgshamplitudedecaystau1stau1 (double m1, double m2, double m3, double g
 double higgshamplitudedecaystau2stau2 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtau, double greekmu, double Atau, double theta) ///calculates partial width for h->stau2 antistau2
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgshsleptonsamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtau); 
-  DoubleVector higgshsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtau, double greekmu, double Atau);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3577,9 +3506,6 @@ double higgshamplitudedecaystau2stau2 (double m1, double m2, double m3, double g
 double higgshamplitudedecaystau1stau2 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtau, double greekmu, double Atau, double theta) ///calculates partial width for h->stau1 antistau2 or h->stau2 antistau1 as these widths have the same value
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgshsleptonsamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtau); 
-  DoubleVector higgshsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtau, double greekmu, double Atau);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3619,9 +3545,6 @@ double higgshamplitudedecaystau1stau2 (double m1, double m2, double m3, double g
 double higgsHamplitudedecaystau1stau1 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtau, double greekmu, double Atau, double theta) ///calculates partial width for H->stau1 antistau1
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgsHsleptonsamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtau); 
-  DoubleVector higgsHsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtau, double greekmu, double Atau);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3662,9 +3585,6 @@ double higgsHamplitudedecaystau1stau1 (double m1, double m2, double m3, double g
 double higgsHamplitudedecaystau2stau2 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtau, double greekmu, double Atau, double theta) ///calculates partial width for H->stau2 antistau2
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgsHsleptonsamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtau); 
-  DoubleVector higgsHsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtau, double greekmu, double Atau);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3705,9 +3625,6 @@ double higgsHamplitudedecaystau2stau2 (double m1, double m2, double m3, double g
 double higgsHamplitudedecaystau1stau2 (double m1, double m2, double m3, double g, double gp, double alpha, double beta, double mWboson, double mtau, double greekmu, double Atau, double theta) ///calculates partial width for H->stau1 antistau2 or H->stau2 antistau1 as these widths have the same value
 {
   double amplitudeW=0, squareplus=0, squareminus=0, lambda=0, coupling=0, couplingLL=0, couplingRR=0, couplingLR = 0;
-  DoubleVector higgsHsleptonsamehandcouplings(double mWboson, double g, double gp, double alpha, double beta, double mtau); 
-  DoubleVector higgsHsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtau, double greekmu, double Atau);
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)){
     amplitudeW = 0;
   }
@@ -3903,8 +3820,7 @@ double higgsHplusamplitudedecayWbosonhiggsh (double m1, double m2, double m3, do
 
 DoubleVector higgsHplusamplitudedecaysquarksquark (double m1, double m2, double m3, double g, double beta, double mWboson, double mup, double mdown, double greekmu, double Aup, double Adown) ///calculates partial width for Hplus->squarki antisquarkj where i,j are each L/R so no mixing, i.e. first two generations of squarks
 {
-  double squareplus=0, squareminus=0, lambda=0; 
-  DoubleVector higgsHplussquarkcouplings (double mWboson, double g, double beta, double mup, double mdown, double greekmu, double Au, double Ad);
+  double squareplus=0, squareminus=0, lambda=0;
   DoubleVector amplitudeW(4);
   for (int i=1; i<=4; i++) {
     amplitudeW(i) = 0;
@@ -3944,7 +3860,6 @@ DoubleVector higgsHplusamplitudedecaysquarksquark (double m1, double m2, double 
 DoubleVector higgsHplusamplitudedecaysquarksquarkmix (double m1, double m2, double m3, double g, double beta, double mWboson, double mtop, double mbottom, double greekmu, double Atop, double Abottom, double thetatop, double thetabottom) ///calculates partial width for Hplus->squarki antisquarkj where i,j are each 1/2 so mixing included, i.e. third generations of squarks
 {
   double squareplus=0, squareminus=0, lambda=0, coupling11=0, coupling22=0, coupling12=0, coupling21=0; 
-  DoubleVector higgsHplussquarkcouplings (double mWboson, double g, double beta, double mtop, double mbottom, double greekmu, double At, double Ab);
   DoubleVector amplitudeW(4);
   for (int i=1; i<=4; i++) {
     amplitudeW(i) = 0;
@@ -4092,10 +4007,6 @@ DoubleVector higgsmatrixelementgammagammaviastops (double m1, double mstop1, dou
 {
   DoubleVector foftau(double mpart, double mcomp);
   DoubleVector f1(3), f2(3), F01(2), F02(2), Ist1(2), Ist2(2), Istopsboth(4);
-  DoubleVector higgshsquarksamehandcouplings(double mWboson, double g, double gprime, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgshsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  DoubleVector higgsHsquarksamehandcouplings(double mWboson, double g, double gprime, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgsHsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
   double Rst1=0, Rst2=0, RstL=0, RstR=0, RstLR=0, RstL1=0, RstL2=0, RstR1=0, RstR2=0, RstLR1=0, RstLR2=0;
 
   for (int i=1; i<=3;i++) {
@@ -4230,10 +4141,6 @@ DoubleVector higgsmatrixelementgammagammaviabottoms (double m1, double mbottom, 
 {
   DoubleVector foftau(double mpart, double mcomp);
   DoubleVector f1(3), f2(3), F01(2), F02(2), Isb1(2), Isb2(2), Isbottomsboth(4);
-  DoubleVector higgshsquarksamehandcouplings(double mWboson, double g, double gprime, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgshsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
-  DoubleVector higgsHsquarksamehandcouplings(double mWboson, double g, double gprime, double alpha, double beta, double mtop, double mbottom);
-  DoubleVector higgsHsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mtop, double mbottom, double greekmu, double Atop, double Abottom);
   double Rsb1=0, Rsb2=0, RsbL=0, RsbR=0, RsbLR=0, RsbL1=0, RsbL2=0, RsbR1=0, RsbR2=0, RsbLR1=0, RsbLR2=0;
   for (int i=1; i<=3;i++) {
     f1(i) = 0;
@@ -4406,10 +4313,6 @@ DoubleVector higgsmatrixelementgammagammaviastaus (double m1, double mstau1, dou
 {
   DoubleVector foftau(double mpart, double mcomp);
   DoubleVector f1(3), f2(3), F01(2), F02(2), Istau1(2), Istau2(2), Istausboth(4);
-  DoubleVector higgshsleptonsamehandcouplings(double mWboson, double g, double gprime, double alpha, double beta, double mel);
-  DoubleVector higgshsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae);
-  DoubleVector higgsHsleptonsamehandcouplings(double mWboson, double g, double gprime, double alpha, double beta, double mel);
-  DoubleVector higgsHsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae);
   double Rstau1=0, Rstau2=0, RstauL=0, RstauR=0, RstauLR=0, RstauL1=0, RstauL2=0, RstauR1=0, RstauR2=0, RstauLR1=0, RstauLR2=0;
   
   for (int i=1; i<=3;i++) {
@@ -4630,7 +4533,6 @@ DoubleVector higgsmatrixelementgammagammaviachargino1s (double m1, double mcharg
 
 DoubleVector higgsmatrixelementgammagammaviachargino2s (double m1, double mchargino2, double mWboson, double alpha, double beta, double thetaL, double thetaR, char higgstype) ///function that calculates the part of the matrix element that differs depending on the loop particles, in this case it calculates it for chargino2s in the loop.
 {
-  DoubleVector higgsphisamecharginocouplings (double alpha, double beta, double thetaL, double thetaR);
   DoubleVector foftau(double mpart, double mcomp);
   DoubleVector f(3), F1over2(2), Ichargino2(2), Charcouplings(6);
   double Rchargino2=0;
@@ -5356,3 +5258,274 @@ double neutralinoamplitudedecayphigravitino(double m1, double mphi, double mgrav
   }
   return amplitudeW;
 }
+
+
+///Functions that calculate the couplings:
+DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb)
+{
+  DoubleVector couplings(16);
+  for (int i=1; i<=16; i++) { couplings(i) = 0;}
+
+  double fu=0, fd=0, AprimeuW1=0, AprimedW1=0, BW1=0, BprimeW1=0, sq1AprimeW1=0, sq1ch1B1=0, sq1ch1combo=0, sq1ch1angular1=0, sq1ch1angular2=0, sq1ch1B2=0, AprimeuW2=0, AprimedW2=0, BW2=0, BprimeW2=0, sq1AprimeW2=0, sq1ch2B1=0, sq1ch2B2=0, sq1ch2combo=0, sq1ch2angular1=0, sq1ch2angular2=0, sq2AprimeW1=0, sq2ch1B1=0, sq2ch1B2=0, sq2ch1combo=0, sq2ch1angular1=0, sq2ch1angular2=0, sq2AprimeW2=0, sq2ch2B1=0, sq2ch2B2=0, sq2ch2combo=0, sq2ch2angular1=0, sq2ch2angular2=0;
+
+  fu = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
+  fd = g*runmb/(pow(2,0.5)*mWboson*cos(beta));
+  AprimeuW1 = -g*sin(gammaL);
+  AprimedW1 = -g*sin(gammaR);
+  BW1 = -fu*cos(gammaR);
+  BprimeW1 = -fd*cos(gammaL);
+  
+    if (torb == 1 ) {
+      sq1AprimeW1 = AprimedW1;
+      sq1ch1B1 = BW1;
+      sq1ch1B2 = BprimeW1;
+    }
+    else if (torb == 2) {
+      sq1AprimeW1 = AprimeuW1;
+      sq1ch1B1 = BprimeW1;
+      sq1ch1B2 = BW1;
+    }
+    else {
+      throw("problem: torb must be 1 or 2 in squarkmixcharginocouplings\n");
+    }
+    AprimeuW2 = -g*cos(gammaL);
+    AprimedW2 = -g*cos(gammaR);
+    BW2 = fu*sin(gammaR);
+    BprimeW2 = fd*sin(gammaL);
+    if (torb == 1 ) {
+      sq1AprimeW2 = AprimedW2;
+      sq1ch2B1 = BW2;
+      sq1ch2B2 = BprimeW2;
+    }
+    else if (torb == 2) {
+      sq1AprimeW2 = AprimeuW2;
+      sq1ch2B1 = BprimeW2;
+      sq1ch2B2 = BW2;
+    }
+    else {
+      throw("problem: torb must be 1 or 2 in squarkmixcharginocouplings\n");
+    }
+    
+    if (torb == 1 ) {
+      sq2AprimeW1 = AprimedW1;
+      sq2ch1B1 = BW1;
+      sq2ch1B2 = BprimeW1;
+    }
+    else if (torb == 2) {
+      sq2AprimeW1 = AprimeuW1;
+      sq2ch1B1 = BprimeW1;
+      sq2ch1B2 = BW1;
+    }
+    else {
+      throw("problem: torb must be 1 or 2 in squarkmixcharginocouplings\n");
+    }
+
+    if (torb == 1 ) {
+      sq2AprimeW2 = AprimedW2;
+      sq2ch2B1 = BW2;
+      sq2ch2B2 = BprimeW2;
+    }
+    else if (torb == 2) {
+      sq2AprimeW2 = AprimeuW2;
+      sq2ch2B1 = BprimeW2;
+      sq2ch2B2 = BW2;
+    }
+    else {
+      throw("problem: torb must be 1 or 2 in squarkmixcharginocouplings\n");
+    }
+		
+    sq1ch1combo = sq1AprimeW1*cos(theta)-sq1ch1B1*sin(theta);
+    sq1ch1angular1 = pow(sq1ch1combo,2) + pow(sq1ch1B2*cos(theta),2);
+    sq1ch1angular2 = 4*sq1ch1combo*sq1ch1B2*cos(theta);
+
+    sq1ch2combo = sq1AprimeW2*cos(theta)-sq1ch2B1*sin(theta);
+    sq1ch2angular1 = pow(sq1ch2combo,2) + pow(sq1ch2B2*cos(theta),2);
+    sq1ch2angular2 = 4*sq1ch2combo*sq1ch2B2*cos(theta);
+
+    sq2ch1combo = sq2AprimeW1*sin(theta)+sq2ch1B1*cos(theta);
+    sq2ch1angular1 = pow(sq2ch1combo,2) + pow(sq2ch1B2*sin(theta),2);
+    sq2ch1angular2 = 4*sq2ch1combo*sq2ch1B2*sin(theta);
+
+    sq2ch2combo = sq2AprimeW2*sin(theta) + sq2ch2B1*cos(theta);
+    sq2ch2angular1 = pow(sq2ch2combo,2) + pow(sq2ch2B2*sin(theta),2);
+    sq2ch2angular2 = 4*sq2ch2combo*sq2ch2B2*sin(theta);
+
+    couplings(1) = sq1ch1angular1; couplings(2) = sq1ch1angular2; couplings(3) = sq1ch2angular1; couplings(4) = sq1ch2angular2; couplings(5) = sq2ch1angular1; couplings(6) = sq2ch1angular2; couplings(7) = sq2ch2angular1; couplings(8) = sq2ch2angular2; couplings(9) = sq1ch1combo; couplings(10) = sq1ch2combo; couplings(11) = sq1ch1B2*cos(theta); couplings(12) = sq1ch2B2*cos(theta); couplings(13) = sq2ch1combo; couplings(14) = sq2ch2combo; couplings(15) = sq2ch1B2*sin(theta); couplings(16) = sq2ch2B2*sin(theta);
+    return couplings;
+}
+
+DoubleVector higgsphisamecharginocouplings (double alpha, double beta, double thetaL, double thetaR) /// calculates the couplings of a neutral higgs (h,H,A) to Wtildai Wtildai - i.e. to two charginos of the same type (mass)
+{
+  DoubleVector Scoupling(6);
+  for (int i=1; i<=6; i++) {
+    Scoupling(i) = 0;
+  }
+  DoubleVector Sih(2), SiH(2), SiA(2);
+  for (int i=1; i<=2; i++) {
+    Scoupling(i) = 0;
+  }
+
+  Sih(1) = 0.5*(-sin(alpha)*sin(thetaR)*cos(thetaL) + cos(alpha)*sin(thetaL)*cos(thetaR));
+  Sih(2) = 0.5*(sin(alpha)*cos(thetaR)*sin(thetaL) - cos(alpha)*cos(thetaL)*sin(thetaR));
+  SiH(1) = 0.5*(cos(alpha)*sin(thetaR)*cos(thetaL) + sin(alpha)*sin(thetaL)*cos(thetaR));
+  SiH(2) = -0.5*(cos(alpha)*cos(thetaR)*sin(thetaL) + sin(alpha)*cos(thetaL)*sin(thetaR));
+  SiA(1) = 0.5*(sin(thetaR)*cos(thetaL)*sin(beta) + sin(thetaL)*cos(thetaR)*cos(beta));
+  SiA(2) = -0.5*(cos(thetaR)*sin(thetaL)*sin(beta) + cos(thetaL)*sin(thetaR)*cos(beta));
+ 
+  Scoupling(1) = Sih(1); Scoupling(2) = Sih(2); Scoupling(3) = SiH(1); Scoupling(4) = SiH(2); Scoupling(5) = SiA(1); Scoupling(6) = SiA(2);
+  return Scoupling;
+}
+
+DoubleVector higgsphidifcharginocouplings (double alpha, double beta, double thetaL, double thetaR) /// calculates the couplings of a netural higgs (h,H,A) to Wtildai Wtildaj - i.e. to two charginos of different type (mass)
+{
+  DoubleVector SPcoupling(6);
+  for (int i=1; i<=6; i++) {
+    SPcoupling(i) = 0;
+  }
+  double Sh=0, Ph=0, SH=0, PH=0, SA=0, PA=0;  
+
+  Sh = 0.5*(sin(thetaR)*sin(thetaL)*sin(alpha) + cos(thetaL)*cos(thetaR)*cos(alpha) - sin(thetaL)*sin(thetaR)*cos(alpha) - cos(thetaL)*cos(thetaR)*sin(alpha ));
+  Ph = 0.5*(-sin(thetaR)*sin(thetaL)*sin(alpha) - cos(thetaL)*cos(thetaR)*cos(alpha) - sin(thetaL)*sin(thetaR)*cos(alpha) - cos(thetaL)*cos(thetaR)*sin(alpha ));
+  SH = 0.5*(-sin(thetaR)*sin(thetaL)*cos(alpha) + cos(thetaL)*cos(thetaR)*sin(alpha) - sin(thetaL)*sin(thetaR)*sin(alpha) + cos(thetaL)*cos(thetaR)*cos(alpha));
+  PH = 0.5*(sin(thetaR)*sin(thetaL)*cos(alpha) - cos(thetaL)*cos(thetaR)*sin(alpha) - sin(thetaL)*sin(thetaR)*sin(alpha) + cos(thetaL)*cos(thetaR)*cos(alpha));
+  SA = 0.5*(-sin(thetaR)*sin(thetaL)*sin(beta) + cos(thetaL)*cos(thetaR)*cos(beta) + sin(thetaL)*sin(thetaR)*cos(beta) - cos(thetaL)*cos(thetaR)*sin(beta));
+  PA = 0.5*(sin(thetaR)*sin(thetaL)*sin(beta) - cos(thetaL)*cos(thetaR)*cos(beta) + sin(thetaL)*sin(thetaR)*cos(beta) - cos(thetaL)*cos(thetaR)*sin(beta));
+ 
+  SPcoupling(1) = Sh; SPcoupling(2) = Ph; SPcoupling(3) = SH; SPcoupling(4) = PH; SPcoupling(5) = SA; SPcoupling(6) = PA;
+  return SPcoupling;
+}
+ 
+DoubleVector higgshsquarksamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mupq, double mdownq) /// calculates the couplings of light scalar higgs h to two squarks of same handedness
+{
+  DoubleVector hsqsqcoupling(4);
+  for (int i=1; i<=4; i++) {
+    hsqsqcoupling(i) = 0;
+  }
+  double huLuL=0, huRuR=0, hdLdL=0, hdRdR=0;  
+  huLuL = g*(mWboson*(0.5 - pow(gp/g,2)/6)*sin(alpha+beta) - pow(mupq,2)*cos(alpha)/(mWboson*sin(beta)));
+  hdLdL = g*(mWboson*(-0.5 - pow(gp/g,2)/6)*sin(alpha+beta) + pow(mdownq,2)*sin(alpha)/(mWboson*cos(beta)));
+  huRuR = g*(2*mWboson/3*pow(gp/g,2)*sin(alpha+beta) - pow(mupq,2)*cos(alpha)/(mWboson*sin(beta)));
+  hdRdR = g*(-mWboson/3*pow(gp/g,2)*sin(alpha+beta) + pow(mdownq,2)*sin(alpha)/(mWboson*cos(beta)));
+  hsqsqcoupling(1) = huLuL; hsqsqcoupling(2) = hdLdL; hsqsqcoupling(3) = huRuR; hsqsqcoupling(4) = hdRdR; 
+  return hsqsqcoupling;
+}    
+
+DoubleVector higgshsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mupq, double mdownq, double greekmu, double Aup, double Adown) /// calculates the couplings of light scalar higgs h to two squarks of different handedness
+{
+  DoubleVector hsqsqcoupling(2);
+  for (int i=1; i<=2; i++) {
+    hsqsqcoupling(i) = 0;
+  }
+  double huLuR=0, hdLdR=0;
+  huLuR = g*mupq/(2*mWboson*sin(beta))*(greekmu*sin(alpha) + Aup*cos(alpha));
+  hdLdR = g*mdownq/(2*mWboson*cos(beta))*(-greekmu*cos(alpha) - Adown*sin(alpha));
+
+  hsqsqcoupling(1) = huLuR; hsqsqcoupling(2) = hdLdR; 
+  return hsqsqcoupling;
+}    
+
+DoubleVector higgsHsquarksamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mupq, double mdownq) /// calculates the couplings of heavy scalar higgs H to two squarks of same handedness
+{
+  DoubleVector Hsqsqcoupling(4);
+  for (int i=1; i<=4; i++) {
+    Hsqsqcoupling(i) = 0;
+  }
+  double HuLuL=0, HuRuR=0, HdLdL=0, HdRdR=0;  
+  HuLuL = g*(-mWboson*(0.5 - pow(gp/g,2)/6)*cos(alpha+beta) - pow(mupq,2)*sin(alpha)/(mWboson*sin(beta)));
+  HdLdL = g*(mWboson*(0.5 + pow(gp/g,2)/6)*cos(alpha+beta) - pow(mdownq,2)*cos(alpha)/(mWboson*cos(beta)));
+  HuRuR = g*(-2*mWboson/3*pow(gp/g,2)*cos(alpha+beta) - pow(mupq,2)*sin(alpha)/(mWboson*sin(beta)));
+  HdRdR = g*(mWboson/3*pow(gp/g,2)*cos(alpha+beta) - pow(mdownq,2)*cos(alpha)/(mWboson*cos(beta)));
+ 
+  Hsqsqcoupling(1) = HuLuL; Hsqsqcoupling(2) = HdLdL; Hsqsqcoupling(3) = HuRuR; Hsqsqcoupling(4) = HdRdR; 
+  return Hsqsqcoupling;
+}    
+
+DoubleVector higgsHsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mupq, double mdownq, double greekmu, double Aup, double Adown) /// calculates the couplings of heavy scalar higgs H to two squarks of different handedness
+{
+  DoubleVector Hsqsqcoupling(2);
+  for (int i=1; i<=2; i++) {
+    Hsqsqcoupling(2) = 0;
+  }
+  double HuLuR=0, HdLdR=0;
+  HuLuR = g*mupq/(2*mWboson*sin(beta))*(-greekmu*cos(alpha) + Aup*sin(alpha));
+  HdLdR = g*mdownq/(2*mWboson*cos(beta))*(-greekmu*sin(alpha) + Adown*cos(alpha));
+  
+  Hsqsqcoupling(1) = HuLuR; Hsqsqcoupling(2) = HdLdR; 
+  return Hsqsqcoupling;
+}    
+
+DoubleVector higgshsleptonsamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mel) /// calculates the couplings of light scalar higgs h to two sleptons of same handedness
+{
+  DoubleVector hslslcoupling(3);
+  for (int i=1; i<=3; i++) {
+    hslslcoupling(3) = 0;
+  }
+  double hnuLnuL=0, heLeL=0, heReR=0;  
+  hnuLnuL = g*(mWboson*(0.5 + pow(gp/g,2)/2)*sin(alpha+beta));
+  heLeL = g*(mWboson*(-0.5 + pow(gp/g,2)/2)*sin(alpha+beta) + pow(mel,2)*sin(alpha)/(mWboson*cos(beta)));
+  heReR = g*(-mWboson*pow(gp/g,2)*sin(alpha+beta) + pow(mel,2)*sin(alpha)/(mWboson*cos(beta)));
+ 
+  hslslcoupling(1) = hnuLnuL; hslslcoupling(2) = heLeL; hslslcoupling(3) = heReR; 
+  return hslslcoupling;
+}    
+  
+DoubleVector higgshsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae) /// calculates the couplings of light scalar higgs h to two sleptons of different handedness
+{
+  DoubleVector hslslcoupling(1);
+  for (int i=1; i<=1; i++) {
+    hslslcoupling(1) = 0;
+  }
+  double heLeR=0;
+  heLeR = g*mel/(2*mWboson*cos(beta))*(-greekmu*cos(alpha) - Ae*sin(alpha));
+  
+  hslslcoupling(1) = heLeR;
+  return hslslcoupling;
+}    
+
+DoubleVector higgsHsleptonsamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mel) /// calculates the couplings of heavy scalar higgs H to two sleptons of same handedness
+{
+  DoubleVector Hslslcoupling(3);
+  for (int i=1; i<=3; i++) {
+    Hslslcoupling(3) = 0;
+  }
+  double HnuLnuL=0, HeLeL=0, HeReR=0;  
+  HnuLnuL = g*(-mWboson*(0.5 + pow(gp/g,2)/2)*cos(alpha+beta));
+  HeLeL = g*(mWboson*(0.5 - pow(gp/g,2)/2)*cos(alpha+beta) - pow(mel,2)*cos(alpha)/(mWboson*cos(beta)));
+  HeReR = g*(mWboson*pow(gp/g,2)*cos(alpha+beta) - pow(mel,2)*cos(alpha)/(mWboson*cos(beta)));
+ 
+  Hslslcoupling(1) = HnuLnuL; Hslslcoupling(2) = HeLeL; Hslslcoupling(3) = HeReR; 
+  return Hslslcoupling;
+}    
+
+DoubleVector higgsHsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae) /// calculates the couplings of heavy scalar higgs H to two sleptons of different handedness
+{
+  DoubleVector Hslslcoupling(1);
+  for (int i=1; i<=1; i++) {
+    Hslslcoupling(i) = 0;
+  }
+  double HeLeR=0;
+  HeLeR = g*mel/(2*mWboson*cos(beta))*(-greekmu*sin(alpha) + Ae*cos(alpha));
+  
+  Hslslcoupling(1) = HeLeR;
+  return Hslslcoupling;
+}  
+
+DoubleVector higgsHplussquarkcouplings (double mWboson, double g, double beta, double mup, double mdown, double greekmu, double Au, double Ad) /// calculates the couplings of charged scalar higgs H+ to two squarks
+{
+  DoubleVector Hplussqsqcoupling(4);
+  for (int i=1; i<=4; i++) {
+    Hplussqsqcoupling(i) = 0;
+  }
+  double HplusuLdL=0, HplusuRdR=0, HplusuLdR=0, HplusuRdL=0; 
+  HplusuLdL = g/(pow(2,0.5))*(-mWboson*sin(2*beta) + (pow(mdown,2)*tan(beta)+pow(mup,2)/(tan(beta)))/mWboson);
+  HplusuRdR = (g*mup*mdown*(tan(beta) + 1/(tan(beta))))/(pow(2,0.5)*mWboson);
+  HplusuLdR = -g*mdown/(pow(2,0.5)*mWboson)*(Ad*tan(beta) + greekmu);
+  HplusuRdL = -g*mup/(pow(2,0.5)*mWboson)*(Au/(tan(beta)) + greekmu);
+  
+  Hplussqsqcoupling(1) = HplusuLdL;
+  Hplussqsqcoupling(2) = HplusuRdR;
+  Hplussqsqcoupling(3) = HplusuLdR;
+  Hplussqsqcoupling(4) = HplusuRdL;
+  
+  return Hplussqsqcoupling;
+}      

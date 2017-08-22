@@ -33,6 +33,7 @@ using namespace std;
 
 //double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, double mchargino, double mquark, double mquarkp, double msqL, double msqpL, double g, double thetaL, double thetaR, double alphas, int charg, bool onetothree);
 const double fpi = 0.13041 / sqrt(2.0), mpiplus = 0.13957018, mpi0 = 0.1349766;
+const double GFosqrt2 = GMU / sqrt(2.0);
 
 double charginoToNeutralino1pion(const MssmSoftsusy * m);
 
@@ -266,4 +267,17 @@ double gluinoamplitudedecay1to3neutfirsttwogen (double m1, double m2, double m3,
   DoubleVector higgsHsleptonsamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mel) ;
   DoubleVector higgsHsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae);
   DoubleVector higgsHplussquarkcouplings (double mWboson, double g, double beta, double mup, double mdown, double greekmu, double Au, double Ad);
+  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
+DoubleVector higgsphisamecharginocouplings (double alpha, double beta, double thetaL, double thetaR);
+DoubleVector higgsphidifcharginocouplings (double alpha, double beta, double thetaL, double thetaR);
+DoubleVector higgshsquarksamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mupq, double mdownq);
+DoubleVector higgshsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mupq, double mdownq, double greekmu, double Aup, double Adown);
+DoubleVector higgsHsquarksamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mupq, double mdownq);
+DoubleVector higgsHsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mupq, double mdownq, double greekmu, double Aup, double Adown);
+DoubleVector higgshsleptonsamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mel);
+DoubleVector higgshsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae);
+DoubleVector higgsHsleptonsamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mel);
+DoubleVector higgsHsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae);
+DoubleVector higgsHplussquarkcouplings (double mWboson, double g, double beta, double mup, double mdown, double greekmu, double Au, double Ad);
+
 #endif
