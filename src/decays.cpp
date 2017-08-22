@@ -20,10 +20,10 @@ const double GFosqrt2 = GMU / pow(2,0.5);
 
 int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIsIt) { 
 
-  int errorflag = 0
+  int errorflag = 0;
   
   /// If there is a serious problem with the point, return an error code and /// warning
-  if (
+    if (
       (!nmssmIsIt && r->displayProblem().testSeriousProblem()) ||
       (nmssmIsIt && nmssm.displayProblem().testSeriousProblem())
       ) {
@@ -12591,7 +12591,7 @@ double gG2dgauss(double Ebbar)
   squareminus = A - pow((m8)-m6,2);
   lambda = pow(squareplus*squareminus,0.5);
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gG2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gG2dgauss used in 1->3 decays" );
   } 
   gG2dgauss = fabs(m1)*pow(Ebbar,2)*lambda*(A-pow(m6,2)-pow(m8,2))/(pow(A-pow(m4,2),2)*A);
   return gG2dgauss;
@@ -12606,7 +12606,7 @@ double gG3dgauss(double Ebbar)
   squareminus = A - pow((m8)-m6,2);
   lambda = pow(squareplus*squareminus,0.5);
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gG3dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gG3dgauss used in 1->3 decays" );
   } 
 
   gG3dgauss = pow(Ebbar,2)*lambda*4*fabs(m1)*fabs(m8)*fabs(m6)/(pow(A-pow(m4,2),2)*A);
@@ -12698,7 +12698,7 @@ double gneutineutjffZ1dgauss(double s) ///m1 = mneuti, m4 = mneutj, mq = mf, MZb
     squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
   }
   if (squareplus1*squareminus1 < 0) {
-    throw << "problem: lambda1 will give nan in gneutineutjffZ1dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda1 will give nan in gneutineutjffZ1dgauss used in 1->3 decays" );
   } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
@@ -12715,7 +12715,7 @@ double gneutineutjffZ2dgauss(double s)
     squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
   }
   if (squareplus1*squareminus1 < 0) {
-    throw << "problem: lambda1 will give nan in gneutineutjffZ2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda1 will give nan in gneutineutjffZ2dgauss used in 1->3 decays" );
   } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
@@ -12732,7 +12732,7 @@ double gneutineutjffZ3dgauss(double s)
     squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
   }
   if (squareplus1*squareminus1 < 0) {
-    throw << "problem: lambda1 will give nan in gneutineutjffZ3dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda1 will give nan in gneutineutjffZ3dgauss used in 1->3 decays" );
   } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
@@ -12749,7 +12749,7 @@ double gneutineutjffZ4dgauss(double s)
     squareminus1 = 0; ///Set to 0 to avoid numerical precision causing a very small but positive squareminus1 at smax when it should be exactly 0, this can cause problems as it would make lambda1 the sqrt of a negative number (as squareplus1 is negative), avoid this by setting to 0
   }
   if (squareplus1*squareminus1 < 0) {
-    throw << "problem: lambda1 will give nan in gneutineutjffZ4dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda1 will give nan in gneutineutjffZ4dgauss used in 1->3 decays" );
   } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
   lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
@@ -12925,7 +12925,7 @@ double gintegral1Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral1Zsfdgauss used in 1->3 decays" << endl;
+    throw( "Problem: will get nan as logarg < 0 in gintegral1Zsfdgauss used in 1->3 decays" );
   }
 
   gintegral1Zsfdgauss = 1/(s-pow(MZboson,2))*(-2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) - (pow(m2,2)-pow(mq,2)+pow(m4,2) - 2*fabs(m1)*E)*log(logarg));
@@ -12942,7 +12942,7 @@ double gintegral2Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral2Zsfdgauss used in 1->3 decays" << endl;
+    throw( "Problem: will get nan as logarg < 0 in gintegral2Zsfdgauss used in 1->3 decays" );
   }  
   gintegral2Zsfdgauss = 1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) + (pow(m2,2)+pow(m1,2)- 2*fabs(m1)*E - pow(mq,2))*log(logarg));
    
@@ -12958,7 +12958,7 @@ double gintegral3Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral3Zsfdgauss used in 1->3 decays" << endl;
+    throw( "Problem: will get nan as logarg < 0 in gintegral3Zsfdgauss used in 1->3 decays" );
   }
 
   gintegral3Zsfdgauss = 1/(s-pow(MZboson,2))*((pow(m1,2) + 2*pow(mq,2) + pow(m4,2) -1.5*pow(m2,2) - 0.5*(pow(mq,2) + fabs(m1)*E + fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)))*(pow(mq,2) + fabs(m1)*E + fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)-pow(m2,2)) - (pow(m1,2) + 2*pow(mq,2) + pow(m4,2) -1.5*pow(m2,2) - 0.5*(pow(mq,2) + fabs(m1)*E - fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)))*(pow(mq,2) + fabs(m1)*E - fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)-pow(m2,2)) + (pow(m1,2) + pow(mq,2) - pow(m2,2))*(pow(m2,2)-pow(mq,2)-pow(m4,2))*log(logarg));
@@ -12975,7 +12975,7 @@ double gintegral4Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral4Zsfdgauss used in 1->3 decays" << endl;
+    throw( "Problem: will get nan as logarg < 0 in gintegral4Zsfdgauss used in 1->3 decays" );
   }
   
   gintegral4Zsfdgauss = 1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) + (pow(m2,2)-pow(mq,2)-pow(m4,2))*log(logarg));
@@ -12991,7 +12991,7 @@ double gintegral5Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral5Zsfdgauss used in 1->3 decays" << endl;
+    throw( "Problem: will get nan as logarg < 0 in gintegral5Zsfdgauss used in 1->3 decays" );
   }
   
   gintegral5Zsfdgauss = -1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) + (pow(m2,2)-pow(mq,2)-pow(m1,2))*log(logarg));
@@ -13007,7 +13007,7 @@ double gintegral6Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral6Zsfdgauss used in 1->3 decays" << endl;
+    throw( "Problem: will get nan as logarg < 0 in gintegral6Zsfdgauss used in 1->3 decays" );
   }
   
   gintegral6Zsfdgauss = 1/(s-pow(MZboson,2))*(s- 2*pow(mq,2))*log(logarg);
@@ -13023,7 +13023,7 @@ double gintegral7Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral7Zsfdgauss used in 1->3 decays" << endl;
+    throw( "Problem: will get nan as logarg < 0 in gintegral7Zsfdgauss used in 1->3 decays" );
   }
   
   gintegral7Zsfdgauss = 1/(s-pow(MZboson,2))*(2*fabs(m1)*E)*log(logarg);
@@ -13039,7 +13039,7 @@ double gintegral8Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral8Zsfdgauss used in 1->3 decays" << endl;
+    throw( "Problem: will get nan as logarg < 0 in gintegral8Zsfdgauss used in 1->3 decays" );
   }
 
   gintegral8Zsfdgauss = 1/(s-pow(MZboson,2))*log(logarg);
@@ -13057,7 +13057,7 @@ double gintegral1hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral1hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral1hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral1hsfdgauss = 2/(s-pow(mh,2))*(2*s*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2)*s - pow(mq,2)*(pow(m1,2)+pow(m4,2)))*log(logarg));
@@ -13075,7 +13075,7 @@ double gintegral2hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral2hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral2hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral2hsfdgauss = -1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m4,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
@@ -13094,7 +13094,7 @@ double gintegral3hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral3hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral3hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral3hsfdgauss = 1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m1,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
@@ -13113,7 +13113,7 @@ double gintegral4hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral4hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral4hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral4hsfdgauss = 1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m4,2))*log(logarg));
@@ -13131,7 +13131,7 @@ double gintegral5hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral5hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral5hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral5hsfdgauss = -1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m1,2))*log(logarg));
@@ -13149,7 +13149,7 @@ double gintegral6hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral6hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral6hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral6hsfdgauss = 1/(s-pow(mh,2))*(s-2*pow(mq,2))*log(logarg);
@@ -13167,7 +13167,7 @@ double gintegral7hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral7hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral7hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral7hsfdgauss = 1/(s-pow(mh,2))*(2*fabs(m1)*E)*log(logarg);
@@ -13185,7 +13185,7 @@ double gintegral8hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral8hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral8hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral8hsfdgauss = 1/(s-pow(mh,2))*log(logarg);
@@ -13203,7 +13203,7 @@ double gintegral1Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral1Hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral1Hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral1Hsfdgauss = 2/(s-pow(mH,2))*(2*s*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2)*s - pow(mq,2)*(pow(m1,2)+pow(m4,2)))*log(logarg));
@@ -13221,7 +13221,7 @@ double gintegral2Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral2Hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral2Hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral2Hsfdgauss = -1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m4,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
@@ -13240,7 +13240,7 @@ double gintegral3Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral3Hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral3Hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral3Hsfdgauss = 1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m1,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
@@ -13259,7 +13259,7 @@ double gintegral4Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral4Hsfdgauss used in 1->3 decay" << endl;
+    throw( "Problem: will get nan as logarg < 0 in gintegral4Hsfdgauss used in 1->3 decay" );
   }
 
   gintegral4Hsfdgauss = 1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m4,2))*log(logarg));
@@ -13277,7 +13277,7 @@ double gintegral5Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral5Hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral5Hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral5Hsfdgauss = -1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m1,2))*log(logarg));
@@ -13295,7 +13295,7 @@ double gintegral6Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral6Hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral6Hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral6Hsfdgauss = 1/(s-pow(mH,2))*(s-2*pow(mq,2))*log(logarg);
@@ -13313,7 +13313,7 @@ double gintegral7Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral7Hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral7Hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral7Hsfdgauss = 1/(s-pow(mH,2))*(2*fabs(m1)*E)*log(logarg);
@@ -13331,7 +13331,7 @@ double gintegral8Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
   Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
-    throw << "Problem: will get nan as logarg < 0 in gintegral8Hsfdgauss used in 1->3 decays" << endl; 
+    throw( "Problem: will get nan as logarg < 0 in gintegral8Hsfdgauss used in 1->3 decays" ); 
   }
 
   gintegral8Hsfdgauss = 1/(s-pow(mH,2))*log(logarg);
@@ -13346,10 +13346,10 @@ double gintegral1ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gintegral1ZAdgauss = 1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m1,2) - fabs(m1)*E);
   if (pow(E,2)-pow(m4,2)<0) {
-    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays" << endl;
+    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays" );
   }
   if (1-4*pow(mq,2)/s<0) {
-    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays" << endl;
+    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays" );
   }
   return gintegral1ZAdgauss;
 }
@@ -13360,10 +13360,10 @@ double gintegral2ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gintegral2ZAdgauss = -1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m4,2) - fabs(m1)*E);
   if (pow(E,2)-pow(m4,2)<0) {
-    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays" << endl;
+    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays" );
   }
   if (1-4*pow(mq,2)/s<0) {
-    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays" << endl;
+    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays" );
   }
 
   return gintegral2ZAdgauss;
@@ -13375,10 +13375,10 @@ double gintegral3ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gintegral3ZAdgauss = 1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m1,2)-fabs(m1)*E);
   if (pow(E,2)-pow(m4,2)<0) {
-    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays" << endl;
+    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays" );
   }
   if (1-4*pow(mq,2)/s<0) {
-    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays" << endl;
+    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays" );
   }
 
   return gintegral3ZAdgauss;
@@ -13390,10 +13390,10 @@ double gintegral4ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gintegral4ZAdgauss = -1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m4,2) - fabs(m1)*E);
   if (pow(E,2)-pow(m4,2)<0) {
-    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays" << endl;
+    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays" );
   }
   if (1-4*pow(mq,2)/s<0) {
-    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays" << endl;
+    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays" );
   }
 
   return gintegral4ZAdgauss;
@@ -13405,10 +13405,10 @@ double gneutineutjffgA1dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gneutineutjffgA1dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)/((s-pow(MZboson,2))*(s-pow(mA,2)));
   if (pow(E,2)-pow(m4,2)<0) {
-    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays" << endl;
+    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays" );
   }
   if (1-4*pow(mq,2)/s<0) {
-    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays" << endl;
+    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays" );
   }  
 
   return gneutineutjffgA1dgauss;
@@ -13420,10 +13420,10 @@ double gneutineutjffgA2dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gneutineutjffgA2dgauss = 2*fabs(m1)*(s-2*pow(mq,2))*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)/((s-pow(MZboson,2))*(s-pow(mA,2)));
   if (pow(E,2)-pow(m4,2)<0) {
-    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays" << endl;
+    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays" );
   }
   if (1-4*pow(mq,2)/s<0) {
-    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays" << endl;
+    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays" );
   }  
   
   return gneutineutjffgA2dgauss;
@@ -13435,10 +13435,10 @@ double gneutineutjffgA3dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gneutineutjffgA3dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*2*fabs(m1)*E/((s-pow(MZboson,2))*(s-pow(mA,2)));
   if (pow(E,2)-pow(m4,2)<0) {
-    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays" << endl;
+    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays" );
   }
   if (1-4*pow(mq,2)/s<0) {
-    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays" << endl;
+    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays" );
   }  
   
   return gneutineutjffgA3dgauss;
@@ -13450,10 +13450,10 @@ double gneutineutjffgA4dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
   s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
   gneutineutjffgA4dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(s-2*pow(mq,2))*2*fabs(m1)*E/((s-pow(MZboson,2))*(s-pow(mA,2)));
   if (pow(E,2)-pow(m4,2)<0) {
-    throw << "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays" << endl;
+    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays" );
   }
   if (1-4*pow(mq,2)/s<0) {
-    throw << "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays" << endl;
+    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays" );
   } 
   
   
@@ -13471,7 +13471,7 @@ double gneuticharjffpW1dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpW1dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffpW1dgauss used in 1->3 decays" );
   } 
 
   gneuticharjffpW1dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(-2*pow(s,4) + (pow(m1,2) + pow(m2,2) + pow(m3,2) + pow(m4,2))*pow(s,3) + (pow(pow(m1,2)-pow(m2,2),2) + pow(pow(m3,2)-pow(m4,2),2) - 2*(pow(m1,2)+pow(m2,2))*(pow(m3,2)+pow(m4,2)))*pow(s,2) + ((pow(m1,2)+pow(m2,2))*pow(pow(m3,2)-pow(m4,2),2) + (pow(m3,2)+pow(m4,2))*pow(pow(m1,2)-pow(m2,2),2))*s - 2*pow(pow(m1,2)-pow(m2,2),2)*pow(pow(m3,2)-pow(m4,2),2))*1/(3*pow(s,2))*1/(pow(s-pow(MWboson,2),2));
@@ -13488,7 +13488,7 @@ double gneuticharjffpW2dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpW2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffpW2dgauss used in 1->3 decays" );
   }   
   gneuticharjffpW2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(s-pow(m3,2)-pow(m4,2))/(pow(s-pow(MWboson,2),2));
 
@@ -13506,7 +13506,7 @@ double gneuticharjffpHpm1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpHpm1dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffpHpm1dgauss used in 1->3 decays" );
   } 
 
   gneuticharjffpHpm1dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)/(pow(s-pow(m5,2),2));
@@ -13523,7 +13523,7 @@ double gneuticharjffpHpm2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpHpm2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffpHpm2dgauss used in 1->3 decays" );
   } 
 
   gneuticharjffpHpm2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(s-pow(m3,2)-pow(m4,2))/(pow(s-pow(m5,2),2));
@@ -13540,7 +13540,7 @@ double gneuticharjffpHpm3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpHpm3dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffpHpm3dgauss used in 1->3 decays" );
   } 
 
   gneuticharjffpHpm3dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E/(pow(s-pow(m5,2),2));
@@ -13558,7 +13558,7 @@ double gneuticharjffpHpm4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
   }
   if (squareplus*squareminus < 0) {
       cout.precision(10);
-      throw << "problem: lambda will give nan in gneuticharjffpHpm4dgauss used in 1->3 decays" << endl;
+      throw( "problem: lambda will give nan in gneuticharjffpHpm4dgauss used in 1->3 decays" );
   } 
 
   gneuticharjffpHpm4dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/(pow(s-pow(m5,2),2));
@@ -13576,7 +13576,7 @@ double gneuticharjffp1sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
   
   if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp1sf1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp1sf1sf2dgauss used in 1->3 decays" );
   } 
 
   gneuticharjffp1sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)/((s-pow(m5,2))*(s-pow(m6,2)));
@@ -13592,7 +13592,7 @@ double gneuticharjffp2sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
 
   if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp2sf1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp2sf1sf2dgauss used in 1->3 decays" );
   } 
 
   gneuticharjffp2sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(s-pow(m3,2)-pow(m4,2))/((s-pow(m5,2))*(s-pow(m6,2)));
@@ -13608,7 +13608,7 @@ double gneuticharjffp3sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
 
   if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp3sf1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp3sf1sf2dgauss used in 1->3 decays" );
   } 
 
   gneuticharjffp3sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E/((s-pow(m5,2))*(s-pow(m6,2)));
@@ -13624,7 +13624,7 @@ double gneuticharjffp4sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
 
   if (squareplus < 0 && fabs(squareplus/s) < 1e-1) {squareplus = 0;} ///Avoid small negative values of squareplus at upper boundary where theoretically s = 0 exactly.
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp4sf1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp4sf1sf2dgauss used in 1->3 decays" );
   } 
 
   gneuticharjffp4sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/((s-pow(m5,2))*(s-pow(m6,2)));
@@ -13642,14 +13642,14 @@ double gneuticharjffp1sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-      throw << "problem: lambda will give nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays" );
   } 
 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays" );
   }
 
   gneuticharjffp1sfp1sf2dgauss = (2*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5) + (pow(m6,2)*s - pow(m1,2)*pow(m3,2) - pow(m2,2)*pow(m4,2))*log(Z)))/(s-pow(m5,2));
@@ -13666,13 +13666,13 @@ double gneuticharjffp2sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-      throw << "problem: lambda will give nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays" );
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays" );
   }
   
   gneuticharjffp2sfp1sf2dgauss = -(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s + (pow(m6,2)-2*fabs(m1)*E + pow(m4,2)-pow(m3,2))*log(Z))/(s-pow(m5,2));
@@ -13689,13 +13689,13 @@ double gneuticharjffp3sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-      throw << "problem: lambda will give nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays" );
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays" );
   }
   gneuticharjffp3sfp1sf2dgauss = (2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s + (pow(m6,2)+pow(m1,2)-2*fabs(m1)*E-pow(m2,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp3sfp1sf2dgauss;
@@ -13711,13 +13711,13 @@ double gneuticharjffp4sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-      throw << "problem: lambda will give nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays" );
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays" );
   }
   gneuticharjffp4sfp1sf2dgauss = (2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s + (pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp4sfp1sf2dgauss;
@@ -13733,13 +13733,13 @@ double gneuticharjffp5sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-      throw << "problem: lambda will give nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays" );
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays" );
   }
   gneuticharjffp5sfp1sf2dgauss = (-2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - (pow(m6,2)-pow(m1,2)-pow(m2,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp5sfp1sf2dgauss;
@@ -13755,13 +13755,13 @@ double gneuticharjffp6sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp6sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp6sfp1sf2dgauss used in 1->3 decays" );
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp6sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp6sfp1sf2dgauss used in 1->3 decays" );
   }
   gneuticharjffp6sfp1sf2dgauss = log(Z)*(s-pow(m2,2)-pow(m3,2))/(s-pow(m5,2));
   return gneuticharjffp6sfp1sf2dgauss;
@@ -13778,16 +13778,16 @@ double gneuticharjffp7sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   }
  if (squareplus*squareminus < 0) {
      cout.precision(10);
-     // throw << "squareplus = " << squareplus << std::endl;
-     // throw << "squareminus = " << squareminus << std::endl;
-     throw << "problem: lambda will give nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays" << endl;
+     // throw( "squareplus = " << squareplus << std::endl);
+     // throw( "squareminus = " << squareminus << std::endl);
+     throw( "problem: lambda will give nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays" );
   } 
 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays" );
   }
   gneuticharjffp7sfp1sf2dgauss = log(Z)*2*fabs(m1)*E/(s-pow(m5,2));
   return gneuticharjffp7sfp1sf2dgauss;
@@ -13803,13 +13803,13 @@ double gneuticharjffp8sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp8sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp8sfp1sf2dgauss used in 1->3 decays" );
   } 
   numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp8sfp1sf2dgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp8sfp1sf2dgauss used in 1->3 decays" );
   }
   gneuticharjffp8sfp1sf2dgauss = log(Z)/(s-pow(m5,2));
   return gneuticharjffp8sfp1sf2dgauss;
@@ -13826,7 +13826,7 @@ double gneuticharjffp1WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp1WHpmdgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp1WHpmdgauss used in 1->3 decays" );
   } 
   A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
   B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
@@ -13844,7 +13844,7 @@ double gneuticharjffp2WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp2WHpmdgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp2WHpmdgauss used in 1->3 decays" );
   } 
   A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
   B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
@@ -13863,7 +13863,7 @@ double gneuticharjffp3WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp3WHpmdgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp3WHpmdgauss used in 1->3 decays" );
   } 
   A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
   B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
@@ -13882,7 +13882,7 @@ double gneuticharjffp4WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp4WHpmdgauss used in 1->3 decays"<< endl;
+    throw( "problem: lambda will give nan in gneuticharjffp4WHpmdgauss used in 1->3 decays");
   } 
   A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
   B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
@@ -13901,13 +13901,13 @@ double gneuticharjffpW1Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpW1Sfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffpW1Sfpdgauss used in 1->3 decays" );
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW1Sfpdgauss used in 1->3 decays"<<endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW1Sfpdgauss used in 1->3 decays");
   }
   gneuticharjffpW1Sfpdgauss = (-B - (pow(m6,2)+pow(m4,2)-2*fabs(m1)*E-pow(m3,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW1Sfpdgauss;
@@ -13923,13 +13923,13 @@ double gneuticharjffpW2Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpW2Sfpdgauss used in 1->3 decays"<< endl;
+    throw( "problem: lambda will give nan in gneuticharjffpW2Sfpdgauss used in 1->3 decays");
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW2Sfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW2Sfpdgauss used in 1->3 decays" );
   }
   gneuticharjffpW2Sfpdgauss = (B + (pow(m6,2)+pow(m1,2)-2*fabs(m1)*E-pow(m2,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW2Sfpdgauss;
@@ -13945,13 +13945,13 @@ double gneuticharjffpW3Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpW3Sfpdgauss used in 1->3 decays"<< endl;
+    throw( "problem: lambda will give nan in gneuticharjffpW3Sfpdgauss used in 1->3 decays");
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW3Sfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW3Sfpdgauss used in 1->3 decays" );
   }
   gneuticharjffpW3Sfpdgauss = ((pow(m1,2)+pow(m3,2)+pow(m2,2)+pow(m4,2)-1.5*pow(m6,2)-0.25*(A+B))*(0.5*(A+B)-pow(m6,2)) - (pow(m1,2)+pow(m3,2)+pow(m2,2)+pow(m4,2)-1.5*pow(m6,2)-0.25*(A-B))*(0.5*(A-B)-pow(m6,2)) + (pow(m1,2)+pow(m2,2)-pow(m6,2))*(pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW3Sfpdgauss;
@@ -13968,13 +13968,13 @@ double gneuticharjffpW4Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpW4Sfpdgauss used in 1->3 decays"<< endl;
+    throw( "problem: lambda will give nan in gneuticharjffpW4Sfpdgauss used in 1->3 decays");
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW4Sfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW4Sfpdgauss used in 1->3 decays" );
   }
   gneuticharjffpW4Sfpdgauss = (B + (pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW4Sfpdgauss;
@@ -13990,13 +13990,13 @@ double gneuticharjffpW5Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpW5Sfpdgauss used in 1->3 decays"<< endl;
+    throw( "problem: lambda will give nan in gneuticharjffpW5Sfpdgauss used in 1->3 decays");
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW5Sfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW5Sfpdgauss used in 1->3 decays" );
   }  
   gneuticharjffpW5Sfpdgauss = (-B - (pow(m6,2)-pow(m1,2)-pow(m2,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW5Sfpdgauss;
@@ -14012,13 +14012,13 @@ double gneuticharjffpW6Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpW6Sfpdgauss used in 1->3 decays"<< endl;
+    throw( "problem: lambda will give nan in gneuticharjffpW6Sfpdgauss used in 1->3 decays");
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW6Sfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW6Sfpdgauss used in 1->3 decays" );
   }
   gneuticharjffpW6Sfpdgauss = (s-pow(m2,2)-pow(m3,2))*log(Z)/(s-pow(m5,2));
   return gneuticharjffpW6Sfpdgauss;
@@ -14034,13 +14034,13 @@ double gneuticharjffpW7Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpW7Sfpdgauss used in 1->3 decays"<< endl;
+    throw( "problem: lambda will give nan in gneuticharjffpW7Sfpdgauss used in 1->3 decays");
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW7Sfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW7Sfpdgauss used in 1->3 decays" );
   }  
   gneuticharjffpW7Sfpdgauss = 2*fabs(m1)*E*log(Z)/(s-pow(m5,2));
   return gneuticharjffpW7Sfpdgauss;
@@ -14056,13 +14056,13 @@ double gneuticharjffpW8Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpW8Sfpdgauss used in 1->3 decays"<< endl;
+    throw( "problem: lambda will give nan in gneuticharjffpW8Sfpdgauss used in 1->3 decays");
   } 
   A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffpW8Sfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW8Sfpdgauss used in 1->3 decays" );
   }
   gneuticharjffpW8Sfpdgauss = log(Z)/(s-pow(m5,2));
   return gneuticharjffpW8Sfpdgauss;
@@ -14078,7 +14078,7 @@ double gneuticharjffpHg1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpHg1dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffpHg1dgauss used in 1->3 decays" );
   } 
   gneuticharjffpHg1dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffpHg1dgauss;
@@ -14094,7 +14094,7 @@ double gneuticharjffpHg2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpHg2dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffpHg2dgauss used in 1->3 decays" );
   }   
   gneuticharjffpHg2dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffpHg2dgauss;
@@ -14110,7 +14110,7 @@ double gneuticharjffpHg3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpHg3dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffpHg3dgauss used in 1->3 decays" );
   } 
   gneuticharjffpHg3dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffpHg3dgauss;
@@ -14126,7 +14126,7 @@ double gneuticharjffpHg4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffpHg4dgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffpHg4dgauss used in 1->3 decays" );
   } 
   gneuticharjffpHg4dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffpHg4dgauss;
@@ -14143,13 +14143,13 @@ double gneuticharjffp1gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp1gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp1gsfpdgauss used in 1->3 decays" );
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp1gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp1gsfpdgauss used in 1->3 decays" );
   }
   gneuticharjffp1gsfpdgauss = 2*(s*B + (pow(m6,2)*s - pow(m1,2)*pow(m3,2) - pow(m2,2)*pow(m4,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp1gsfpdgauss;
@@ -14165,13 +14165,13 @@ double gneuticharjffp2gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp2gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp2gsfpdgauss used in 1->3 decays" );
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp2gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp2gsfpdgauss used in 1->3 decays" );
   }
   gneuticharjffp2gsfpdgauss = (-B - (pow(m6,2) + pow(m4,2) - 2*fabs(m1)*E - pow(m3,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp2gsfpdgauss;
@@ -14187,13 +14187,13 @@ double gneuticharjffp3gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp3gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp3gsfpdgauss used in 1->3 decays" );
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp3gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp3gsfpdgauss used in 1->3 decays" );
   }
   gneuticharjffp3gsfpdgauss = (B + (pow(m6,2)+pow(m1,2)-2*fabs(m1)*E - pow(m2,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp3gsfpdgauss;
@@ -14209,13 +14209,13 @@ double gneuticharjffp4gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp4gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp4gsfpdgauss used in 1->3 decays" );
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp4gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp4gsfpdgauss used in 1->3 decays" );
   }
   gneuticharjffp4gsfpdgauss = (B + (pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp4gsfpdgauss;
@@ -14231,13 +14231,13 @@ double gneuticharjffp5gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" );
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" );
   }
   gneuticharjffp5gsfpdgauss = (-B-(pow(m6,2)-pow(m1,2)-pow(m2,2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp5gsfpdgauss;
@@ -14253,13 +14253,13 @@ double gneuticharjffp6gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp6gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp6gsfpdgauss used in 1->3 decays" );
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp6gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp6gsfpdgauss used in 1->3 decays" );
   }
   gneuticharjffp6gsfpdgauss = (s-pow(m2,2)-pow(m3,2))*log(Z)/(s-pow(m5,2));
   return gneuticharjffp6gsfpdgauss;
@@ -14275,13 +14275,13 @@ double gneuticharjffp7gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp7gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp7gsfpdgauss used in 1->3 decays" );
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" );
   }
   gneuticharjffp7gsfpdgauss = 2*fabs(m1)*E*log(Z)/(s-pow(m5,2));
   return gneuticharjffp7gsfpdgauss;
@@ -14297,13 +14297,13 @@ double gneuticharjffp8gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
       squareplus = 0.0; //Catch nan due to numerical precision
   }
   if (squareplus*squareminus < 0) {
-    throw << "problem: lambda will give nan in gneuticharjffp8gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: lambda will give nan in gneuticharjffp8gsfpdgauss used in 1->3 decays" );
   } 
   A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
   B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
-    throw << "problem: Z<0 will give log(Z) as nan in gneuticharjffp8gsfpdgauss used in 1->3 decays" << endl;
+    throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp8gsfpdgauss used in 1->3 decays" );
   }
   gneuticharjffp8gsfpdgauss = log(Z)/(s-pow(m5,2));
   return gneuticharjffp8gsfpdgauss;
@@ -14320,7 +14320,7 @@ double gneuticharjffp1sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
   }
   if (squareplus*squareminus < 0) {
       cout.precision(10);
-      throw << "problem: lambda will give nan in gneuticharjffp1sfpsfpdgauss used in 1->3 decays" << endl;
+      throw( "problem: lambda will give nan in gneuticharjffp1sfpsfpdgauss used in 1->3 decays" );
   } 
   gneuticharjffp1sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp1sfpsfpdgauss;
@@ -14337,7 +14337,7 @@ double gneuticharjffp2sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
   }
   if (squareplus*squareminus < 0) {
       cout.precision(10);
-      throw << "problem: lambda will give nan in gneuticharjffp2sfpsfpdgauss used in 1->3 decays" << endl;
+      throw( "problem: lambda will give nan in gneuticharjffp2sfpsfpdgauss used in 1->3 decays" );
   } 
   gneuticharjffp2sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp2sfpsfpdgauss;
@@ -14354,7 +14354,7 @@ double gneuticharjffp3sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
   }
   if (squareplus*squareminus < 0) {
       cout.precision(10);
-      throw << "problem: lambda will give nan in gneuticharjffp3sfpsfpdgauss used in 1->3 decays" << endl;
+      throw( "problem: lambda will give nan in gneuticharjffp3sfpsfpdgauss used in 1->3 decays" );
   } 
   gneuticharjffp3sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp3sfpsfpdgauss;
@@ -14371,7 +14371,7 @@ double gneuticharjffp4sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
   }
   if (squareplus*squareminus < 0) {
       cout.precision(10);
-      throw << "problem: lambda will give nan in gneuticharjffp4sfpsfpdgauss used in 1->3 decays " << endl;
+      throw( "problem: lambda will give nan in gneuticharjffp4sfpsfpdgauss used in 1->3 decays " );
   } 
   
   gneuticharjffp4sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
@@ -16551,26 +16551,26 @@ double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double m
   Ist1r = couplingst1*kinst1r; Ist2r = couplingst2*kinst2r; Isb1r = couplingsb1*kinsb1r; Isb2r = couplingsb2*kinsb2r; Istau1r = couplingstau1*kinstau1r; Istau2r = couplingstau2*kinstau2r;
   Ist1i = couplingst1*kinst1i; Ist2i = couplingst2*kinst2i; Isb1i = couplingsb1*kinsb1i; Isb2i = couplingsb2*kinsb2i; Istau1i = couplingstau1*kinstau1i; Istau2i = couplingstau2*kinstau2i;
 
-  // throw << "Itr = " << Itr << std::endl;
-  // throw << "Ibr = " << Ibr << std:: endl;
-  // throw << "Icr = " << Icr << std:: endl;
-  // throw << "Itaur = " << Itaur << std:: endl;
-  // throw << "Ichar1r = " << Ichar1r << std:: endl;
-  // throw << "Ichar2r = " << Ichar2r << std:: endl;
-  // throw << "IWr = " << IWr << std:: endl;
-  // throw << "IHpmr = " << IHpmr << std:: endl;
-  // throw << "IscLr = " << IscLr << std:: endl;
-  // throw << "IscRr = " << IscRr << std:: endl;
-  // throw << "IssLr = " << IssLr << std:: endl;
-  // throw << "IssRr = " << IssRr << std:: endl;
-  // throw << "IsmuLr = " << IsmuLr << std:: endl;
-  // throw << "IsmuRr = " << IsmuRr << std:: endl;
-  // throw << "Ist1r = " << Ist1r << std:: endl;
-  // throw << "Ist2r = " << Ist2r << std:: endl;
-  // throw << "Isb1r = " << Isb1r << std:: endl;
-  // throw << "Isb2r = " << Isb2r << std:: endl;
-  // throw << "Istau1r = " << Istau1r << std:: endl;
-  // throw << "Istau2r = " << Istau2r << std:: endl;
+  // throw( "Itr = " << Itr << std::endl);
+  // throw( "Ibr = " << Ibr << std:: endl);
+  // throw( "Icr = " << Icr << std:: endl);
+  // throw( "Itaur = " << Itaur << std:: endl);
+  // throw( "Ichar1r = " << Ichar1r << std:: endl);
+  // throw( "Ichar2r = " << Ichar2r << std:: endl);
+  // throw( "IWr = " << IWr << std:: endl);
+  // throw( "IHpmr = " << IHpmr << std:: endl);
+  // throw( "IscLr = " << IscLr << std:: endl);
+  // throw( "IscRr = " << IscRr << std:: endl);
+  // throw( "IssLr = " << IssLr << std:: endl);
+  // throw( "IssRr = " << IssRr << std:: endl);
+  // throw( "IsmuLr = " << IsmuLr << std:: endl);
+  // throw( "IsmuRr = " << IsmuRr << std:: endl);
+  // throw( "Ist1r = " << Ist1r << std:: endl);
+  // throw( "Ist2r = " << Ist2r << std:: endl);
+  // throw( "Isb1r = " << Isb1r << std:: endl);
+  // throw( "Isb2r = " << Isb2r << std:: endl);
+  // throw( "Istau1r = " << Istau1r << std:: endl);
+  // throw( "Istau2r = " << Istau2r << std:: endl);
 
   // *ffout << "Iti = " << Iti << std::endl;
   // *ffout << "Ibi = " << Ibi << std:: endl;
