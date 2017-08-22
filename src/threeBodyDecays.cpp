@@ -104,9 +104,38 @@ double squarkamplitudedecaygluinomix (double m1, double m2, double m3,
     }
     else {
       throw ("problem: quarkmix must be 1 or 2 in squarkamplitudedecaygluinomix\n");
-      errorflag = -1;
     }
   }
   return amplitudeW;
 }
 
+double squarkamplitudedecaycharginoW1 (double m1, double m2, double m3, double g, double gamma) {
+  double squareratio, amplitudeW;
+  if (fabs(m1) < fabs(m2) +fabs(m3)) {
+    amplitudeW = 0;
+  }
+  else {
+    squareratio = 1 - pow(fabs(m3)/m1,2) - pow(m2/m1,2);
+    amplitudeW = pow(g,2)*pow(sin(gamma),2)/(16*M_PI)*squareratio*
+      sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)))/m1;
+  }
+  return amplitudeW;
+}
+		  
+double squarkamplitudedecaycharginoW2 (double m1, double m2, double m3, double g, double gamma) {
+  double squareratio, squareplus, squareminus, amplitudeW;
+  if (fabs(m1) < fabs(m2) +fabs(m3)) {
+    amplitudeW = 0;
+  }
+  else {
+    squareplus = 1 - pow(fabs(m3)/m1+m2/m1,2);
+    squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
+    if (squareplus*squareminus < 0) {
+      throw ("problem: lambda will give nan in squarkamplitudedecaycharginoW2\n");
+    }
+    else{}
+    squareratio = 1 - pow(fabs(m3)/m1,2) - pow(m2/m1,2);
+    amplitudeW = pow(g,2)*pow(cos(gamma),2)/(16*M_PI)*m1*squareratio*pow(squareplus*squareminus,0.5);
+  }
+  return amplitudeW;
+}

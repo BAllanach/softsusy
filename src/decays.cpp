@@ -6520,41 +6520,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 
 
 
-double squarkamplitudedecaycharginoW1 (double m1, double m2, double m3, double g, double gamma) {
-  double squareratio, squareplus, squareminus, amplitudeW;
-  if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    amplitudeW = 0;
-  }
-  else {
-    squareplus = 1 - pow(fabs(m3)/m1+m2/m1,2);
-    squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
-    if (squareplus*squareminus < 0) {
-      throw ("problem: lambda will give nan in squarkamplitudedecaycharginoW1\n");
-    }
-    else{}
-    squareratio = 1 - pow(fabs(m3)/m1,2) - pow(m2/m1,2);
-    amplitudeW = pow(g,2)*pow(sin(gamma),2)/(16*M_PI)*m1*squareratio*pow(squareplus*squareminus,0.5);
-  }
-  return amplitudeW;
-}
-		  
-double squarkamplitudedecaycharginoW2 (double m1, double m2, double m3, double g, double gamma) {
-  double squareratio, squareplus, squareminus, amplitudeW;
-  if (fabs(m1) < fabs(m2) +fabs(m3)) {
-    amplitudeW = 0;
-  }
-  else {
-    squareplus = 1 - pow(fabs(m3)/m1+m2/m1,2);
-    squareminus = 1 - pow(fabs(m3)/m1-m2/m1,2);
-    if (squareplus*squareminus < 0) {
-      throw ("problem: lambda will give nan in squarkamplitudedecaycharginoW2\n");
-    }
-    else{}
-    squareratio = 1 - pow(fabs(m3)/m1,2) - pow(m2/m1,2);
-    amplitudeW = pow(g,2)*pow(cos(gamma),2)/(16*M_PI)*m1*squareratio*pow(squareplus*squareminus,0.5);
-  }
-  return amplitudeW;
-}
 
 
 double squark1amplitudedecaycharginoW1mix (double m1, double m2, double m3, double g, double gammaL, double gammaR,  double theta, double beta, double mWboson, double runmt, double runmb, double torb) /// the variable torb depends on if it is stop (torb=1) or sbottom (torb =2) decaying and changes AprimeuW1 to AprimedW1 accordingly

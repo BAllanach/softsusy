@@ -51,10 +51,6 @@ const double mspole = 0.19;
 const double hadronicScale = 1.4;
 
 ///Function Declarations used to calculate Partial Widths in decays.cpp
-double squarkamplitudedecaycharginoW1 (double m1, double m2, double m3,
-				       double g, double gamma);
-double squarkamplitudedecaycharginoW2 (double m1, double m2, double m3,
-				       double g, double gamma);
 double squark1amplitudedecaycharginoW1mix
 (double m1, double m2, double m3, double g, double gammaL, double gammaR,
  double theta, double beta, double mWboson, double runmt, double runmb,

@@ -31,9 +31,6 @@
 
 using namespace std;
 
-static int errorflag = 0; /// 0 output if no issues, -1 if issues in calculating
-/// decays 
-
 //double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, double mchargino, double mquark, double mquarkp, double msqL, double msqpL, double g, double thetaL, double thetaR, double alphas, int charg, bool onetothree);
 const double fpi = 0.13041 / sqrt(2.0), mpiplus = 0.13957018, mpi0 = 0.1349766;
 double charginoToNeutralino1pion(const MssmSoftsusy * m);
@@ -48,4 +45,8 @@ double squarkamplitudedecaygluino (double m1, double m2, double m3,
 double squarkamplitudedecaygluinomix (double m1, double m2, double m3,
 				      double alphastrong, double squarkmix,
 				      double theta);
+double squarkamplitudedecaycharginoW1 (double m1, double m2, double m3,
+				       double g, double gamma);
+double squarkamplitudedecaycharginoW2 (double m1, double m2, double m3,
+				       double g, double gamma);
 #endif
