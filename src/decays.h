@@ -51,14 +51,6 @@ const double mspole = 0.19;
 const double hadronicScale = 1.4;
 
 ///Function Declarations used to calculate Partial Widths in decays.cpp
-double squarkLamplitudedecayneutralino
-(double m1, double m2, double m3, double g, double gprime,
- DoubleMatrix & mixNeut, int neutralino, int uord ); 
-  double squarkRamplitudedecayneutralino (double m1, double m2, double m3, double g, double gprime, DoubleMatrix & mixNeut, int neutralino, int uord );
-  
-  double squark3amplitudedecayneutralino (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmt, int squark , int oneortwo,  int neutralino);
-  double squark3amplitudedecaysquark3Wboson (double m1, double m2, double m3, double g, double thetat, double thetab, int m1torb, int m1oneortwo, int m3torb, int m3oneortwo);
-  double squark3amplitudedecaychargedHiggssquark3 (double m1, double m2, double m3, double g, double mWboson, double beta, double thetat, double thetab, double greekmu, double At, double Ab, double mt, double mb, int t1or2, int b1or2);
   double squark32amplitudedecayneutralHiggssquark3 (double m1, double m2, double m3, double g, double gp, double mWboson, double beta, double alpha, double thetat, double thetab, double greekmu, double At, double Ab, double mt, double mb, int torb, char phi);
   double squark32amplitudedecaysquark3Zboson (double m1, double m2, double m3, double g, double gp, double theta);
   double sleptonamplitudedecayleptonneutralino (double m1, double m2, double m3, double g, double gp, DoubleMatrix & mixNeut, char LorR, int neutralino);
