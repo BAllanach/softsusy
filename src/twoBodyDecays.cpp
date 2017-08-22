@@ -8,9 +8,7 @@
 
 #include "twoBodyDecays.h"
 
-/*static double m1 = 0.,m2 = 0.,m3 = 0.,m4 = 0.,mq = 0.,m5 = 0.,m6 = 0.,
-  m7 = 0., m8 = 0., MZboson = 0., MWboson = 0., mh = 0., mH = 0.,
-  mA = 0., mphi = 0., g1 = 0., g2 = 0., alphamix = 0., betavac = 0.;*/
+const double GFosqrt2 = GMU / sqrt(2.0);
 
 /// First, do hadronic decays
 double charginoToNeutralino1pion(const MssmSoftsusy * m) {
@@ -4046,7 +4044,6 @@ double higgsesamplitudedecaygammagammatotal(double m1, double g, double gprime, 
   amplitudeW = prefactor*matelemmodsquare;
      
   return amplitudeW;
- 
 }
 
 DoubleVector higgsmatrixelementgammagammaviatops (double m1, double mtop, double alpha, double beta, char higgstype) ///function that calculates the part of the matrix element that differs depending on the loop particles, in this case it calculates it for tops in the loop.

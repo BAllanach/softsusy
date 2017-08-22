@@ -6517,7 +6517,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 
 
 ///Functions that calculate the couplings:
-
 DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb)
 {
   DoubleVector couplings(16);

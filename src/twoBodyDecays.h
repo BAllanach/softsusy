@@ -33,7 +33,7 @@ using namespace std;
 
 //double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, double mchargino, double mquark, double mquarkp, double msqL, double msqpL, double g, double thetaL, double thetaR, double alphas, int charg, bool onetothree);
 const double fpi = 0.13041 / sqrt(2.0), mpiplus = 0.13957018, mpi0 = 0.1349766;
-const double GFosqrt2 = GMU / sqrt(2.0);
+
 double charginoToNeutralino1pion(const MssmSoftsusy * m);
 
 double gluinoamplitudedecay (double m1, double m2, double m3,
