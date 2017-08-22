@@ -33,3 +33,54 @@ double charginoToNeutralino1pion(const MssmSoftsusy * m) {
   return width; 
 }
 
+double gluinoamplitudedecay (double m1, double m2, double m3, double alphastrong) {
+  double squareratio, amplitudeW;
+  if (fabs(m1) < fabs(m2) +fabs(m3)) {
+    amplitudeW = 0;
+  }
+  else {
+      squareratio = 1 + pow((m2/m1),2) - pow((m3/m1),2);
+      amplitudeW = 1./4*alphastrong*(1/(2*m1))*squareratio*
+	sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)));
+  }
+  return amplitudeW;
+}
+
+
+double gluinoamplitudedecaymix (double m1, double m2, double m3, double alphastrong, double squarkmix, double theta) {
+  double squareratio, amplitudeW=0, squareratiomix1, squareratiomix2;
+  if (fabs(m1) < fabs(m2) +fabs(m3)) {
+    amplitudeW = 0;
+  }
+  else {
+    squareratio = 1 + pow((m2/m1),2) - pow((m3/m1),2);
+    if (squarkmix ==1) { 
+      squareratiomix1= squareratio - 2*sin(2*theta)*m2/m1;
+      amplitudeW = (alphastrong*1/4)*squareratiomix1*(1/(2*m1))*sqrt(lambda(sqr(m1), sqr(m2), sqr(m3))); 
+    }
+    else if (squarkmix ==2) {
+      squareratiomix2 = squareratio + 2*sin(2*theta)*m2/m1;
+      amplitudeW = (alphastrong*1/4)*squareratiomix2*(1/(2*m1))*sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)));
+    }
+    else {
+      throw ("problem: squarkmix must be 1 or 2 in gluinoamplitudedecaymix\n");
+      errorflag = -1;
+    }
+  }
+  return amplitudeW;
+}
+
+
+double squarkamplitudedecaygluino (double m1, double m2, double m3,
+				   double alphastrong) {
+  double squareratio, amplitudeW;
+  if (fabs(m1) < fabs(m2) +fabs(m3)) {
+    amplitudeW = 0;
+  }
+  else {  
+    squareratio = 1 - pow((m2/m1),2) - pow((m3/m1),2);
+    amplitudeW = 4./3*alphastrong*(1/(2*m1))*squareratio*
+      sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)));
+  }
+  return amplitudeW;
+}
