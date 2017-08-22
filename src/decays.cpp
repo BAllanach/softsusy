@@ -6518,19 +6518,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 /// Function to calculate the gluino decay amplitudes
 
 double gluinoamplitudedecay (double m1, double m2, double m3, double alphastrong) {
-  double squareratio, squareplus, squareminus, amplitudeW;
+  double squareratio, amplitudeW;
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     amplitudeW = 0;
   }
   else {
-      squareplus = pow(m1,2) - pow((m2 + m3),2);
-      squareminus = pow(m1,2) - pow((m2 - m3),2);
-      if (squareplus*squareminus < 0) {
-	throw ("problem: lambda will give nan in gluinoamplitudedecay\n");
-	errorflag = -1;
-      }
       squareratio = 1 + pow((m2/m1),2) - pow((m3/m1),2);
-      amplitudeW = 1./4*alphastrong*(1/(2*m1))*squareratio*pow(squareplus*squareminus,0.5);
+      amplitudeW = 1./4*alphastrong*(1/(2*m1))*squareratio*
+	sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)));
   }
   return amplitudeW;
 }
