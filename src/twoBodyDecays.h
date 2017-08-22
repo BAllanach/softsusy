@@ -44,7 +44,7 @@ static DoubleMatrix NeutMIX(NeutMIXdim,NeutMIXdim);
 /// Calculate Decays does all decay table calculations and outputs
 int calculateDecays(ostream & out, MssmSoftsusy * r,
 		    const NmssmSoftsusy & nmssm, bool nmssmIsIt);
-
+/// Two body partial width calculations
 double charginoToNeutralino1pion(const MssmSoftsusy * m);
 
 double gluinoamplitudedecay (double m1, double m2, double m3,
@@ -265,31 +265,4 @@ double gluinoamplitudedecay1to3neutfirsttwogen (double m1, double m2, double m3,
 
   double higgsesamplitudedecaygammagammatotal(double m1, double g, double gprime, double alphaEmrun, double mWboson, double polemw, double alpha, double beta, double mtop, double mbottom, double mcharm, double mtau, double mHpm, double mstop1, double mstop2, double msbottom1, double msbottom2, double mstau1, double mstau2, double mchargino1, double mchargino2, double thetaL, double thetaR, double thetat, double thetab, double thetatau, double greekmu, double Atop, double Abottom, double Atau, char higgstype);
   
-  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, int torb);
-  DoubleVector higgsphisamecharginocouplings(double alpha, double beta, double thetaL, double thetaR);
-  DoubleVector higgsphidifcharginocouplings (double alpha, double beta, double thetaL, double thetaR);
-  DoubleVector higgshsquarksamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mupq, double mdownq);
-  DoubleVector higgshsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mupq, double mdownq, double greekmu, double Aup, double Adown);
-  DoubleVector higgsHsquarksamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mupq, double mdownq);
-  DoubleVector higgsHsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mupq, double mdownq, double greekmu, double Aup, double Adown);
-  DoubleVector higgshsleptonsamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mel);
-  DoubleVector higgshsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae);
-  DoubleVector higgsHsleptonsamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mel) ;
-  DoubleVector higgsHsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae);
-  DoubleVector higgsHplussquarkcouplings (double mWboson, double g, double beta, double mup, double mdown, double greekmu, double Au, double Ad);
-  DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
-DoubleVector higgsphisamecharginocouplings (double alpha, double beta, double thetaL, double thetaR);
-DoubleVector higgsphidifcharginocouplings (double alpha, double beta, double thetaL, double thetaR);
-DoubleVector higgshsquarksamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mupq, double mdownq);
-DoubleVector higgshsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mupq, double mdownq, double greekmu, double Aup, double Adown);
-DoubleVector higgsHsquarksamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mupq, double mdownq);
-DoubleVector higgsHsquarkdiffhandcouplings (double mWboson, double g, double alpha, double beta, double mupq, double mdownq, double greekmu, double Aup, double Adown);
-DoubleVector higgshsleptonsamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mel);
-DoubleVector higgshsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae);
-DoubleVector higgsHsleptonsamehandcouplings (double mWboson, double g, double gp, double alpha, double beta, double mel);
-DoubleVector higgsHsleptondiffhandcouplings (double mWboson, double g, double alpha, double beta, double mel, double greekmu, double Ae);
-DoubleVector higgsHplussquarkcouplings (double mWboson, double g, double beta, double mup, double mdown, double greekmu, double Au, double Ad);
-///Function Declarations used to calculate Partial Widths in decays.cpp
-DoubleVector foftau(double mpart, double mcomp);  
-DoubleVector goftau(double mpart, double mcomp);
 #endif
