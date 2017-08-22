@@ -21,7 +21,7 @@
 #include "flavoursoft.h"
 #include "susy.h"
 #include "particle.h"
-#include "threeBodyDecays.h"
+#include "twoBodyDecays.h"
 #include <iostream>
 #include <cstring>
 #include <stdlib.h>
