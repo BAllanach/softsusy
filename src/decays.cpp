@@ -34,9 +34,6 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
   ///Switch on or off 1->3 decays
   bool onetothree = threeBodyDecays; ///Turns on 1->3 decays, reads this in from input file, default is true
 
-  ///BR Tolerance
-  double BRTol = minBR; ///BRs less than this are not output, read in from SOFTSUSY Block in input file
-    
   NmssmSoftsusy nmssmrun = nmssm; ///Do this as nmssm is a const to ensure it can't be changed here (e.g. if run in RPV mode where NMSSM is not included don't want this to change NMSSM), copy to nmssmrun to allow me to run it to MSusy, 1000GeV or whatever scale for parameter extraction
 
   DoubleMatrix S(3,3);
@@ -1356,18 +1353,10 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
       // }	  
       throw( "nan in gluino total width \n");
     }
-  
-  for (int i =0; i<ParticleGluino.No_of_Decays; i++) {
-    ParticleGluino.Array_Decays[i][5]= ParticleGluino.Array_Decays[i][2]/ParticleGluino.total_width; ///Sets BRs of gluino decays
-  }
-
-  if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleGluino, BRTol);}
-  else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleGluino, BRTol);}
   }
 
  
  ///Squark Decays
-
  ///SdownL Decays
 
  double sdownLamplitudegluinodown=0, sdownLamplitudedownneutralinoZ1=0, sdownLamplitudedownneutralinoZ2=0, sdownLamplitudedownneutralinoZ3=0, sdownLamplitudedownneutralinoZ4=0, sdownLamplitudecharginoW1up=0, sdownLamplitudecharginoW2up=0, sdownLamplitudedowngravitino=0;
@@ -1438,11 +1427,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      throw( "nan in sdownL total width \n");
    }
  
- for (int i =0; i<ParticleSdownL.No_of_Decays; i++) {
-   ParticleSdownL.Array_Decays[i][5]= ParticleSdownL.Array_Decays[i][2]/ParticleSdownL.total_width;
- }
- if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSdownL, BRTol);}
- else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSdownL, BRTol);}
  }
 
   
@@ -1514,13 +1498,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	  
        throw( "nan in sdownR total width \n");
      }
-   
-   for (int i =0; i<ParticleSdownR.No_of_Decays; i++) {
-     ParticleSdownR.Array_Decays[i][5]= ParticleSdownR.Array_Decays[i][2]/ParticleSdownR.total_width;
-   }
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSdownR, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSdownR, BRTol);}
    
  }
  
@@ -1595,13 +1572,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in supL total width \n");
      }
  
-   for (int i =0; i<ParticleSupL.No_of_Decays; i++) {
-     ParticleSupL.Array_Decays[i][5]= ParticleSupL.Array_Decays[i][2]/ParticleSupL.total_width;
-   }
-
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSupL, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSupL, BRTol);}
-   
  }
 
  ///SupR Decays
@@ -1669,13 +1639,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	  
        throw( "nan in supR total width \n");
      }
-   
-   for (int i =0; i<ParticleSupR.No_of_Decays; i++) {
-     ParticleSupR.Array_Decays[i][5]= ParticleSupR.Array_Decays[i][2]/ParticleSupR.total_width;
-   }
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSupR, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSupR, BRTol);}
-   
+  
  }
 
  ///SstrangeL Decays
@@ -1749,13 +1713,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in sstrangeL total width \n");
      }
    
-   for (int i =0; i<ParticleSstrangeL.No_of_Decays; i++) {
-     ParticleSstrangeL.Array_Decays[i][5]= ParticleSstrangeL.Array_Decays[i][2]/ParticleSstrangeL.total_width;
-   }
-
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSstrangeL, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSstrangeL, BRTol);}
-   
  }
 
 
@@ -1827,12 +1784,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in sstrangeR total width \n");
      }
     
-   for (int i =0; i<ParticleSstrangeR.No_of_Decays; i++) {
-     ParticleSstrangeR.Array_Decays[i][5]= ParticleSstrangeR.Array_Decays[i][2]/ParticleSstrangeR.total_width;
-   }
- 
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSstrangeR, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSstrangeR, BRTol);}
  }
 
  ///ScharmL Decays
@@ -1906,11 +1857,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in scharmL total width \n");
      }
  
-   for (int i =0; i<ParticleScharmL.No_of_Decays; i++) {
-     ParticleScharmL.Array_Decays[i][5]= ParticleScharmL.Array_Decays[i][2]/ParticleScharmL.total_width;
-   }
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleScharmL, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleScharmL, BRTol);}
  }
  
  
@@ -1980,16 +1926,9 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	  
        throw( "nan in scharmR total width \n");
      }
- 
-   for (int i =0; i<ParticleScharmR.No_of_Decays; i++) {
-     ParticleScharmR.Array_Decays[i][5]= ParticleScharmR.Array_Decays[i][2]/ParticleScharmR.total_width;
-   }
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleScharmR, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleScharmR, BRTol);}
  }
-
- ///Sbottom1 Decays
  
+ ///Sbottom1 Decays
  double sbottom1amplitudegluinobottom=0, sbottom1amplitudebottomneutralinoZ1=0, sbottom1amplitudebottomneutralinoZ2=0, sbottom1amplitudebottomneutralinoZ3=0, sbottom1amplitudebottomneutralinoZ4=0, sbottom1amplitudetopcharginoW1=0, sbottom1amplitudetopcharginoW2=0, sbottom1amplitudeWbosonstop1=0, sbottom1amplitudeWbosonstop2=0, sbottom1amplitudeHminusstop1=0, sbottom1amplitudeHminusstop2=0, sbottom1amplitudebottomgravitino=0;
  double sbottom1amplitudebottomneutralinoZ5 = 0;
 
@@ -2067,14 +2006,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	  
        throw( "nan in sbottom1 total width \n");
      }
-    
-   for (int i =0; i<ParticleSbottom1.No_of_Decays; i++) {
-     ParticleSbottom1.Array_Decays[i][5]= ParticleSbottom1.Array_Decays[i][2]/ParticleSbottom1.total_width;
-   }
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSbottom1, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSbottom1, BRTol);}
-   
  }
 
  ///Sbottom2 Decays
@@ -2172,17 +2103,9 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in sbottom2 total width \n");
      }
    
-   for (int i =0; i<ParticleSbottom2.No_of_Decays; i++) {
-     ParticleSbottom2.Array_Decays[i][5]= ParticleSbottom2.Array_Decays[i][2]/ParticleSbottom2.total_width;
-   }
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSbottom2, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSbottom2, BRTol);}
-   
  }
 
  ///Stop1 Decays
-
  double stop1amplitudegluinotop=0, stop1amplitudetopneutralinoZ1=0, stop1amplitudetopneutralinoZ2=0, stop1amplitudetopneutralinoZ3=0, stop1amplitudetopneutralinoZ4=0, stop1amplitudebottomcharginoW1=0, stop1amplitudebottomcharginoW2=0, stop1amplitudeWbosonsbottom1=0, stop1amplitudeWbosonsbottom2=0, stop1amplitudeHplussbottom1=0, stop1amplitudeHplussbottom2=0, stop1amplitudetopgravitino=0;
  
  double stop1amplitudetopneutralinoZ5 = 0;
@@ -2262,14 +2185,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	  
        throw( "nan in stop1 total width \n");
      }
- 
-   for (int i =0; i<ParticleStop1.No_of_Decays; i++) {
-     ParticleStop1.Array_Decays[i][5]= ParticleStop1.Array_Decays[i][2]/ParticleStop1.total_width;
-   }
-
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleStop1, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleStop1, BRTol);}
- }
+  }
 
  ///Stop2 Decays
  
@@ -2369,13 +2285,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in stop2 total width \n");
      }
    
-   for (int i =0; i<ParticleStop2.No_of_Decays; i++) {
-     ParticleStop2.Array_Decays[i][5]= ParticleStop2.Array_Decays[i][2]/ParticleStop2.total_width;
-   }
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleStop2, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleStop2, BRTol);}
-   
  }
 
  /// Slepton Decays
@@ -2449,13 +2358,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in selectronL total width \n");
      }
    
-   for (int i =0; i<ParticleSelectronL.No_of_Decays; i++) {
-     ParticleSelectronL.Array_Decays[i][5]= ParticleSelectronL.Array_Decays[i][2]/ParticleSelectronL.total_width;
-   }
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSelectronL, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSelectronL, BRTol);}
-   
  }
 
 
@@ -2524,12 +2426,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in selectronR total width \n");
      }
   
-   for (int i =0; i<ParticleSelectronR.No_of_Decays; i++) {
-     ParticleSelectronR.Array_Decays[i][5]= ParticleSelectronR.Array_Decays[i][2]/ParticleSelectronR.total_width;
-   }
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSelectronR, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSelectronR, BRTol);}
-   
  }
 
 
@@ -2602,12 +2498,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in smuonL total width \n");
      }
   
-   for (int i =0; i<ParticleSmuonL.No_of_Decays; i++) {
-     ParticleSmuonL.Array_Decays[i][5]= ParticleSmuonL.Array_Decays[i][2]/ParticleSmuonL.total_width;
-   }
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSmuonL, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSmuonL, BRTol);}
-   
  }
 
  ///SmuonR decays
@@ -2673,14 +2563,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	  
        throw( "nan in smuonR total width \n");
      }
-   
-   for (int i =0; i<ParticleSmuonR.No_of_Decays; i++) {
-     ParticleSmuonR.Array_Decays[i][5]= ParticleSmuonR.Array_Decays[i][2]/ParticleSmuonR.total_width;
-   }
- 
-   if (outputPartialWidths ==  false) {  OutputNoPWs(fout, ParticleSmuonR, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSmuonR, BRTol);}
-   
  }
 
  ///Selectron sneutrino decays
@@ -2750,16 +2632,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        //   fout << i << " " << ParticleSnue.Array_Decays[i][2] << endl;
        // }	  
        throw( "nan in snue total width \n");
-     }
-   
- 
-   for (int i =0; i<ParticleSnue.No_of_Decays; i++) {
-     ParticleSnue.Array_Decays[i][5]= ParticleSnue.Array_Decays[i][2]/ParticleSnue.total_width;
-   }
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSnue, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSnue, BRTol);}
-   
+     }  
  }
  
 
@@ -2831,13 +2704,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	  
        throw( "nan in snumu total width \n");
      }
-   
-   for (int i =0; i<ParticleSnumu.No_of_Decays; i++) {
-     ParticleSnumu.Array_Decays[i][5]= ParticleSnumu.Array_Decays[i][2]/ParticleSnumu.total_width;
-   }
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSnumu, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSnumu, BRTol);}
    
  }
 
@@ -2914,12 +2780,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in stau1 total width \n");
      }
   
-   for (int i =0; i<ParticleStau1.No_of_Decays; i++) {
-     ParticleStau1.Array_Decays[i][5]= ParticleStau1.Array_Decays[i][2]/ParticleStau1.total_width;
-   }
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleStau1, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleStau1, BRTol);}
-   
  }
 
 
@@ -3010,13 +2870,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	  
        throw( "nan in stau2 total width \n");
      }
-  
-   for (int i =0; i<ParticleStau2.No_of_Decays; i++) {
-     ParticleStau2.Array_Decays[i][5]= ParticleStau2.Array_Decays[i][2]/ParticleStau2.total_width;
-   }
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleStau2, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleStau2, BRTol);}
-
  }
  
  ///Stau sneutrino decays
@@ -3096,12 +2949,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in snutau total width \n");
      }
    
-   for (int i =0; i<ParticleSnutau.No_of_Decays; i++) {
-     ParticleSnutau.Array_Decays[i][5]= ParticleSnutau.Array_Decays[i][2]/ParticleSnutau.total_width;
-   }
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleSnutau, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleSnutau, BRTol);}
  }
 
 
@@ -3269,14 +3116,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	  
        throw( "nan in chargino1 total width \n");
      }
-   
-   for (int i =0; i<ParticleChargino1.No_of_Decays; i++) {
-     ParticleChargino1.Array_Decays[i][5]= ParticleChargino1.Array_Decays[i][2]/ParticleChargino1.total_width;
-   }
- 
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleChargino1, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleChargino1, BRTol);}
-
  }
 
  ///Chargino2 Decays
@@ -3443,13 +3282,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in chargino2 total width \n");
      }
  
-   for (int i =0; i<ParticleChargino2.No_of_Decays; i++) {
-     ParticleChargino2.Array_Decays[i][5]= ParticleChargino2.Array_Decays[i][2]/ParticleChargino2.total_width;
-   }
- 
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleChargino2, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleChargino2, BRTol);}
-
  }
 
 
@@ -3702,13 +3534,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	  
        throw( "nan in Neutralino1 total width \n");
      }
-   
-   for (int i =0; i<ParticleNeutralino1.No_of_Decays; i++) {
-     ParticleNeutralino1.Array_Decays[i][5]= ParticleNeutralino1.Array_Decays[i][2]/ParticleNeutralino1.total_width;
-   }
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino1, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino1, BRTol);}
    
  }
 
@@ -4007,12 +3832,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in Neutralino2 total width \n");
      }
    
-     for (int i =0; i<ParticleNeutralino2.No_of_Decays; i++) {
-       ParticleNeutralino2.Array_Decays[i][5]= ParticleNeutralino2.Array_Decays[i][2]/ParticleNeutralino2.total_width;
-     }
-     
-     if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino2, BRTol);}
-     else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino2, BRTol);}
  }
 
 ///Neutralino3 Decays
@@ -4344,14 +4163,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	  
        throw( "nan in Neutralino3 total width \n");
      }
-   
-   for (int i =0; i<ParticleNeutralino3.No_of_Decays; i++) {
-     ParticleNeutralino3.Array_Decays[i][5]= ParticleNeutralino3.Array_Decays[i][2]/ParticleNeutralino3.total_width;
-   }
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino3, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino3, BRTol);}
-   
  }
  
  
@@ -4720,13 +4531,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in Neutralino4 total width \n");
      }
       
-   for (int i =0; i<ParticleNeutralino4.No_of_Decays; i++) {
-     ParticleNeutralino4.Array_Decays[i][5]= ParticleNeutralino4.Array_Decays[i][2]/ParticleNeutralino4.total_width;
-   }
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino4, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino4, BRTol);}
-   
  }
  
  if (nmssmIsIt == true) {
@@ -4926,12 +4730,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 	 throw( "nan in Neutralino5 total width \n");
        }
      
-     for (int i =0; i<ParticleNeutralino5.No_of_Decays; i++) {
-       ParticleNeutralino5.Array_Decays[i][5]= ParticleNeutralino5.Array_Decays[i][2]/ParticleNeutralino5.total_width;
-     }
-     
-     if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleNeutralino5, BRTol);}
-     else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleNeutralino5, BRTol);}
    }
 
  }
@@ -5253,13 +5051,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in lightest higgs total width \n");
      }
    
-   for (int i =0; i<Particlehiggsl.No_of_Decays; i++) {
-     Particlehiggsl.Array_Decays[i][5]= Particlehiggsl.Array_Decays[i][2]/Particlehiggsl.total_width;
-   } 
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, Particlehiggsl, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, Particlehiggsl, BRTol);}
-   
  }
 
  ///higgsH decays
@@ -5576,14 +5367,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	  
        throw( "nan in H0 (second heaviest higgs) total width \n");
      }
-   
-   for (int i =0; i<ParticleHiggsH.No_of_Decays; i++) {
-     ParticleHiggsH.Array_Decays[i][5]= ParticleHiggsH.Array_Decays[i][2]/ParticleHiggsH.total_width;
-   } 
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsH, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsH, BRTol);}
-   
  } 
  
  if (nmssmIsIt == true) {
@@ -5846,13 +5629,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in H03 heaviest higgs total width \n");
      }
    
-   for (int i =0; i<ParticleHiggsH3.No_of_Decays; i++) {
-     ParticleHiggsH3.Array_Decays[i][5]= ParticleHiggsH3.Array_Decays[i][2]/ParticleHiggsH3.total_width;
-   } 
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsH3, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsH3, BRTol);}
-   
    }
  }
 
@@ -6089,13 +5865,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in A0 lightest pseudoscalar higgs total width \n");
      }
    
-   for (int i =0; i<ParticleHiggsA.No_of_Decays; i++) {
-     ParticleHiggsA.Array_Decays[i][5]= ParticleHiggsA.Array_Decays[i][2]/ParticleHiggsA.total_width;
-   } 
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsA, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsA, BRTol);}
-   
  }
 
  ///NMSSM Pseudoscalar2 (A2) decays:
@@ -6281,13 +6050,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 	 throw( "nan in A02 heaviest pseudoscalar higgs total width \n");
        }
           
-     for (int i =0; i<ParticleHiggsA2.No_of_Decays; i++) {
-       ParticleHiggsA2.Array_Decays[i][5]= ParticleHiggsA2.Array_Decays[i][2]/ParticleHiggsA2.total_width;
-     } 
-     
-     if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsA2, BRTol);}
-     else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsA2, BRTol);}
-     
    }
  }
  
@@ -6449,12 +6211,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        throw( "nan in H+ total width \n");
      }
    
-   for (int i =0; i<ParticleHiggsplus.No_of_Decays; i++) {
-     ParticleHiggsplus.Array_Decays[i][5]= ParticleHiggsplus.Array_Decays[i][2]/ParticleHiggsplus.total_width;
-   } 
-   
-   if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsplus, BRTol);}
-   else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsplus, BRTol);}
  }
 
  /// Construct decay table
@@ -6495,6 +6251,12 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    decayTable.push_back(ParticleHiggsH3);
    decayTable.push_back(ParticleNeutralino5);
  }
- 
+
+ /// calculate branching ratios
+  vector<Particle>::iterator ii;
+  for (ii=decayTable.begin(); ii<decayTable.end(); ii++)
+    for (int i=0; i<ii->No_of_Decays; i++)
+      ii->Array_Decays[i][5] = ii->Array_Decays[i][2] / ii->total_width;
+    
  return errorflag;
 }
