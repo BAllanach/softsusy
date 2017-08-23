@@ -3116,8 +3116,7 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     
     GammagA = coupcombogA1*coupcombogA3*integralgA4 - 2*coupcombogA1*coupcombogA4*pow(mq,2)*integralgA3 + 2*coupcombogA2*coupcombogA3*fabs(mneutralinoi)*fabs(mneutralinoj)*integralgA2 -4*coupcombogA2*coupcombogA4*pow(mq,2)*fabs(mneutralinoi)*fabs(mneutralinoj)*integralgA1;
 
-    amplitudeW = Nc/(512*pow(PI,3)*pow(fabs(mneutralinoi),3))*(GammaZ + Gammah + GammaH + GammaA + GammahHinterf + Gammasftot - 4*Gammahsf1 - 4*Gammahsf2 - 4*GammaHsf1 - 4*GammaHsf2 - 4*GammaAsf1 - 4*GammaAsf2 + 4*GammaZsf1 - 4*GammaZsf2 - 4*GammaZA + 2*GammagA - 4*GammaZg + Gammagoldstone - 4*Gammagsf1 -4*Gammagsf2);
-    
+    amplitudeW = Nc/(512*pow(PI,3)*pow(fabs(mneutralinoi),3))*(GammaZ + Gammah + GammaH + GammaA + GammahHinterf + Gammasftot - 4*Gammahsf1 - 4*Gammahsf2 - 4*GammaHsf1 - 4*GammaHsf2 - 4*GammaAsf1 - 4*GammaAsf2 + 4*GammaZsf1 - 4*GammaZsf2 - 4*GammaZA + 2*GammagA - 4*GammaZg + Gammagoldstone - 4*Gammagsf1 -4*Gammagsf2);    
 }
   
   return amplitudeW;

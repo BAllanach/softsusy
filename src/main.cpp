@@ -76,7 +76,8 @@ int main() {
     s.mch(1) = fabs(s.mneut(1)) + dm;
     r.setPhys(s);
     NmssmSoftsusy nmssm;
-    calculateDecays(cout, &r, nmssm, false);
+    vector<Particle> decayTable;
+    calculateDecays(cout, &r, decayTable, nmssm, false);
     
     /// check the point in question is problem free: if so print the output
     if (!r.displayProblem().test()) 

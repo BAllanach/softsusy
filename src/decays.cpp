@@ -10,7 +10,9 @@
 
 using namespace std;
 
-int calculateDecays(ostream & fout, MssmSoftsusy * r, const NmssmSoftsusy & nmssm, bool nmssmIsIt) { 
+int calculateDecays(ostream & fout, MssmSoftsusy * r,
+		    vector<Particle> & decayTable, 
+		    const NmssmSoftsusy & nmssm, bool nmssmIsIt) { 
 
   int errorflag = 0;
   
@@ -6453,6 +6455,45 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    
    if (outputPartialWidths == false) {  OutputNoPWs(fout, ParticleHiggsplus, BRTol);}
    else if (outputPartialWidths == true) { OutputYesPWs(fout, ParticleHiggsplus, BRTol);}
+ }
+
+ /// Construct decay table
+ decayTable.push_back(ParticleGluino);
+ decayTable.push_back(ParticleSdownL);
+ decayTable.push_back(ParticleSdownR);
+ decayTable.push_back(ParticleSupL);
+ decayTable.push_back(ParticleSupR);
+ decayTable.push_back(ParticleSstrangeL);
+ decayTable.push_back(ParticleSstrangeR);
+ decayTable.push_back(ParticleScharmL);
+ decayTable.push_back(ParticleScharmR);
+ decayTable.push_back(ParticleSbottom1);
+ decayTable.push_back(ParticleSbottom2);
+ decayTable.push_back(ParticleStop1);
+ decayTable.push_back(ParticleStop2);
+ decayTable.push_back(ParticleSelectronL);
+ decayTable.push_back(ParticleSelectronR);
+ decayTable.push_back(ParticleSmuonL);
+ decayTable.push_back(ParticleSmuonR);
+ decayTable.push_back(ParticleSnue);
+ decayTable.push_back(ParticleSnumu);
+ decayTable.push_back(ParticleStau1);
+ decayTable.push_back(ParticleStau2);
+ decayTable.push_back(ParticleSnutau);
+ decayTable.push_back(ParticleChargino1);
+ decayTable.push_back(ParticleChargino2);
+ decayTable.push_back(ParticleNeutralino1);
+ decayTable.push_back(ParticleNeutralino2);
+ decayTable.push_back(ParticleNeutralino3);
+ decayTable.push_back(ParticleNeutralino4);
+ decayTable.push_back(Particlehiggsl);
+ decayTable.push_back(ParticleHiggsH);
+ decayTable.push_back(ParticleHiggsA);
+ decayTable.push_back(ParticleHiggsplus);
+ if (nmssmIsIt) {
+   decayTable.push_back(ParticleHiggsA2);
+   decayTable.push_back(ParticleHiggsH3);
+   decayTable.push_back(ParticleNeutralino5);
  }
  
  return errorflag;

@@ -77,6 +77,7 @@ void errorCall() {
 }
 
 int main(int argc, char *argv[]) {
+  vector<Particle> decayTable;
   int mixing = 0; double qewsb = 1;
   bool useThreeLoopRge = false;
   
@@ -1409,7 +1410,7 @@ int main(int argc, char *argv[]) {
 
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
-      if (calcDecays) calculateDecays(cout, r, nmssm, false);
+      if (calcDecays) calculateDecays(cout, r, decayTable, nmssm, false);
       //    if (calcDecays) calculateDecays(r, nmssm, false);
       if (higgsUncertainties) {
 	int numPts = 30;
@@ -1457,7 +1458,7 @@ int main(int argc, char *argv[]) {
       nmssm.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,
                                    numPoints, ewsbBCscale);
 
-      if (calcDecays) calculateDecays(cout, r, nmssm, true);
+      if (calcDecays) calculateDecays(cout, r, decayTable, nmssm, true);
       if (nmssm.displayProblem().test()) {
          cout << "# SOFTSUSY problem with NMSSM point: "
               << nmssm.displayProblem() << endl;

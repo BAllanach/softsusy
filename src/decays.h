@@ -36,6 +36,7 @@ using namespace std;
 
 /// Calculate Decays does all decay table calculations and outputs
 int calculateDecays(ostream & out, MssmSoftsusy * r,
+		    vector<Particle> & decayTable, 
 		    const NmssmSoftsusy & nmssm, bool nmssmIsIt);
   
 #endif
