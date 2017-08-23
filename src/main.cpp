@@ -14,7 +14,8 @@
 */
 
 #include "main.h"
-
+#include "nmssmsoftsusy.h"
+#include "decays.h"
 using namespace softsusy;
 
 int main() {
@@ -55,11 +56,12 @@ int main() {
     
     int i;
     /// Set limits of tan beta scan
-    double startTanb = 3.0, endTanb = 50.0;
+    double startDm = 0.1, endDm = 5.0;
+    
     /// Cycle through different points in the scan
     for (i = 0; i <= numPoints; i++) {
-      tanb = (endTanb - startTanb) / static_cast<double>(numPoints) *
-	static_cast<double>(i) + startTanb;  /// set tan beta ready for the scan.
+      double dm = (endDm - startDm) / static_cast<double>(numPoints) *
+	static_cast<double>(i) + startDm;  /// set tan beta ready for the scan.
 
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r;
@@ -70,6 +72,11 @@ int main() {
     
     /// Calculate the spectrum
     r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+    sPhysical s(r.displayPhys());
+    s.mch(1) = fabs(s.mneut(1)) + dm;
+    r.setPhys(s);
+    NmssmSoftsusy nmssm;
+    calculateDecays(cout, &r, nmssm, false);
     
     /// check the point in question is problem free: if so print the output
     if (!r.displayProblem().test()) 

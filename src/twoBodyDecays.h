@@ -1,10 +1,11 @@
-/** \file threeBodydecays.h
+/** \file twoBodydecays.h
    - Project:     SOFTSUSY 
    - Author:      Tom Cridge, Ben Allanach
    - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
    - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
 
-   \brief Code calculates three body decay modes 
+   \brief Code calculates two body decay modes of sparticles and Higgs'. 
+   See arxiv:1703.09717
 */
 
 #ifndef TWOBODYDECAYS_H
@@ -41,9 +42,6 @@ static double m1 = 0.,m2 = 0.,m3 = 0.,m4 = 0.,mq = 0.,m5 = 0.,m6 = 0.,
 static int neutralinoj = 0, neutralinoi = 0, AorhorH = 0;
 static DoubleMatrix NeutMIX(NeutMIXdim,NeutMIXdim);
 
-/// Calculate Decays does all decay table calculations and outputs
-int calculateDecays(ostream & out, MssmSoftsusy * r,
-		    const NmssmSoftsusy & nmssm, bool nmssmIsIt);
 /// Two body partial width calculations
 double charginoToNeutralino1pion(const MssmSoftsusy * m);
 
