@@ -5262,8 +5262,7 @@ double neutralinoamplitudedecayphigravitino(double m1, double mphi, double mgrav
 void slhaDecays(ostream & fout, vector<Particle> & decayTable,
 		bool outputPartialWidths) {
   vector<Particle>::iterator i;
-  double BRTol = minBR;
   for (i=decayTable.begin(); i<decayTable.end(); i++)
-    if (!outputPartialWidths) OutputNoPWs(fout, *i, BRTol);
-    else OutputYesPWs(fout, *i, BRTol);
+    if (!outputPartialWidths) OutputNoPWs(fout, *i);
+    else OutputYesPWs(fout, *i);
 }

@@ -48,8 +48,8 @@ const double mspole = 0.19;
 const double hadronicScale = 1.4;
 
 void printRowPDG(ostream & cout, double x);
-void OutputNoPWs(ostream & cout, Particle & P, double BRTol);
-void OutputYesPWs(ostream & cout, Particle & P, double BRTol);
+void OutputNoPWs(ostream & cout, Particle & P);
+void OutputYesPWs(ostream & cout, Particle & P);
 
   ///Integral calculating functions for 1->3 decays
   double Zsfintegralsum(double m1, double m2, double msf, double mf, double mz, double min, double max, double Nsteps, int adaptive, double approx);

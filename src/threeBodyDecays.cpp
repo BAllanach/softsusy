@@ -161,22 +161,22 @@ void printRowPDG(ostream & fout, double x) {
 }
 
 
-void OutputNoPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the decay table into the leshouchesOutput file with no PWs (partial widths) given, just branching ratios
+void OutputNoPWs(ostream & fout, Particle & P) ///Outputs the decay table into the leshouchesOutput file with no PWs (partial widths) given, just branching ratios
  {
    fout << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
    fout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
-   if (1-P.three_width/P.total_width > BRTol) {
+   if (1-P.three_width/P.total_width > minBR) {
      fout << left << setw(6) << "#" << setw(18) << "BR" << setw(6) << "NDA" << setw(12) << left << "PDG1" << setw(12) << " PDG2" << setw(18) << "Comments" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
-       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 2) {
+       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > minBR && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 2) {
 	 fout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3];  printRowPDG(fout, P.Array_Decays[k][0]); fout << "   "; printRowPDG(fout, P.Array_Decays[k][1]); fout << "   " << left << setprecision(0) << setw(15) << P.Array_Comments[k] << endl;
        }
      }
    }
-   if (P.three_width/P.total_width > BRTol) {
+   if (P.three_width/P.total_width > minBR) {
      fout << left << setw(6) << "#" << setw(18) << "BR" << setw(8) << "NDA" << setw(12) << left << " PDG1" << setw(12) << " PDG2" << setw(12) << " PDG3 " << setw(18) << "Comments" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
-       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 3) {
+       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > minBR && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 3) {
 	 fout << left << setw(6) << " " << setw(18) << scientific << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(25) << P.Array_Comments[k] << endl;
        }
      }
@@ -185,24 +185,24 @@ void OutputNoPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the deca
  }
 
 
-void OutputYesPWs(ostream & fout, Particle & P, double BRTol) ///Outputs the decay table into the leshouchesOutput file with PWs (partial widths) given after the comments column so as not to affect SLHA form
+void OutputYesPWs(ostream & fout, Particle & P) ///Outputs the decay table into the leshouchesOutput file with PWs (partial widths) given after the comments column so as not to affect SLHA form
  {
    fout << left << setw(6) << "#" << setw(12) << "PDG" << setw(18) << "Width" << endl;
    fout << "DECAY " << setw(12) << fixed << setprecision(0) << P.PDG << setw(12) << scientific << setprecision(8) <<  P.total_width << "   " << "# " << P.name << " decays" << endl;
 
-   if (1-P.three_width/P.total_width > BRTol) {
+   if (1-P.three_width/P.total_width > minBR) {
      fout << left << setw(6) << "# " << setw(20) << "BR " << setw(6) << "NDA " << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(18) << "Comments" << setw(18) << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
-       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 2) {
+       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > minBR && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 2) {
      	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(6) << fixed << " " << P.Array_Decays[k][3] << setw(4) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; fout << left << setprecision(0) << setw(30) << P.Array_Comments[k] << "    " << scientific << setprecision(8) << setw(18) << P.Array_Decays[k][2] << endl;
        }
      }
      fout << "#" << endl; 
    }
-   if (P.three_width/P.total_width > BRTol) {
+   if (P.three_width/P.total_width > minBR) {
      fout << left << setw(6) << "# " << setw(20) << "BR" << setw(6) << "NDA" << setw(12) << "PDG1 " << setw(11) << "PDG2" << setw(12) << "PDG3" << setw(18) << "Comments" << setw(28) << "PW" << endl;
      for (int k=0; k<P.No_of_Decays; k++) {
-       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > BRTol && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 3) {
+       if( P.Array_Decays[k][2] != 0 && P.Array_Decays[k][5] > minBR && P.Array_Decays[k][2] > 0 && P.Array_Decays[k][3] == 3) {
      	 fout << left << setw(6) << " " << setprecision(8) << P.Array_Decays[k][5] << setprecision(0) << setw(8) << fixed << " " << P.Array_Decays[k][3] << setw(2) << " ";  printRowPDG(fout, P.Array_Decays[k][0]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][1]); fout << "    "; printRowPDG(fout,P.Array_Decays[k][4]); fout << "   " << left << setprecision(0) << setw(38) << P.Array_Comments[k] << "    "<< setw(18) << scientific << setprecision(8) << P.Array_Decays[k][2] << endl;
        }
      }
