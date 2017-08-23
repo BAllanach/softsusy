@@ -38,6 +38,12 @@ const int PDGpi0 = 111, PDGpiPlus = 211;
 ///PDG codes for extra NMSSM particles:
 const int PDGA2 = 46, PDGH3 = 45, PDGneutralino5 = 1000045;
 
+typedef enum {gluino = 0, sdownL, sdownR, supL, supR, strangeL, strangeR,
+	      scharmL, scharmR, sbottom1, sbottom2, stop1, stop2, selectronL,
+	      selectronR, smuonL, smuonR, snue, snumu, stau1, stau2, snutau,
+	      chargino1, chargino2, neutralino1, neutralino2, neutralino3,
+	      neutralino4, h0, H0, A0, Hplus, A2, H3, neutralino5} particleType;
+
 /// Particle class definition for decays
 class Particle {
  public:
