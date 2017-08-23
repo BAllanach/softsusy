@@ -16,7 +16,7 @@ double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin) /
 {
   double Z = 0;
   Z = (pow(m1,2)+pow(mq,2)-2*fabs(m1)*Etbarmax - pow(m,2))/(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Etbarmin-pow(m,2));
-  if (Z <=0) {
+    if (Z <=0) {
     *ffout << "May have nan issue if do log(Z) as Z<=0! See Zfunc used in 1->3 decays" << endl;
   }
   return Z;
@@ -6337,3 +6337,38 @@ DoubleVector goftau(double mpart, double mcomp) ///g(tau) function for use in h-
   return g;
 }
 
+Complex fofqsq(double qSq) {
+  const double beta = -0.145, mRhoSq = sqr(0.773), gammaRho = 0.145,
+    mRhoPrimeSq = sqr(1.37), gammaRhoPrime = 0.51;
+  return (bw(mRhoSq, gammaRho, qSq) + beta *
+	  bw(mRhoPrimeSq, gammaRhoPrime, qSq)) / (1.0 + beta);
+}
+
+Complex bw(double mSq, double gamma, double qSq) {
+  return mSq / (mSq - qSq - Complex(0., 1.) * sqrt(qSq) * gamma);
+}
+
+static double mn = 0., mch = 0., ol11 = 0., or11 = 0.;
+double chToN2piInt(double qSq) {
+  return sqr(fofqsq(qSq).mod()) * sqrt(1.0 - 4.0 * sqr(mpiplus) / qSq) *
+    sqrt(lambda(sqr(mch), sqr(mn), qSq)) *
+	 ( (sqr(ol11) + sqr(or11)) *
+	   (qSq * (sqr(mch) + sqr(mn) - 2.0 * qSq) +
+	    sqr(sqr(mch) - sqr(mn))) -
+	   12.0 * ol11 * or11 * qSq * mch * mn); 
+}
+
+double charginoToNeutralino2pion(const MssmSoftsusy * m) {
+  double mchi1 = fabs(m->displayPhys().mch(1)),
+    mneut1 = fabs(m->displayPhys().mneut(1));
+  mch = mchi1; mn = mneut1; ol11 = cos(m->displayPhys().thetaL);
+  or11 = cos(m->displayPhys().thetaR); 
+  double qSqstart = 4.0 * mpiplus;
+  double qSqend = mchi1 - mneut1;
+  if (mchi1 < mneut1 + 2.0 * mpiplus) return 0.;
+  if (mchi1 - mneut1 - mpiplus > hadronicScale) return 0.;
+  double preFactor =sqr(GMU) / (192.0 * sqr(PI) * PI * mchi1 * sqr(mchi1));
+  double tol = TOLERANCE;
+  double integral = dgauss(chToN2piInt, qSqstart, qSqend,tol);
+  return integral * preFactor;
+}

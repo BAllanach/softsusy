@@ -55,7 +55,7 @@ void OutputYesPWs(ostream & cout, Particle & P, double BRTol);
   double Aintegralsum(double m1, double m2, double mz, double mA, double mf, double min, double max, double Nsteps, int adaptive, double approx);
   double G3integralsum(double m1, double m2, double m3, double mt, double mb, double min, double max, double Nsteps, int adaptive, double approx);
   double G2integralsum(double m1, double m2, double m3, double mt, double mb, double min, double max, double Nsteps, int adaptive, double approx);
-  double chiprimeintegralsum(double m1, double m2, double m3, double m4, double mq, double min, double max, double Nsteps, int adaptive, double approx);
+double chiprimeintegralsum(double m1, double m2, double m3, double m4, double mq, double min, double max, double Nsteps, int adaptive, double approx);
   double Yintegralsum(double m1, double m2, double m3, double m4, double mq, double min, double max, double Nsteps, int adaptive, double approx);
   double Xintegralsum(double m1, double m2, double m3, double m4, double mq, double min, double max, double Nsteps, int adaptive, double approx);
   double zetaintegralsum(double m1, double m2, double m3, double m4, double mq, double min, double max, double Nsteps, int adaptive, double approx);
@@ -85,9 +85,7 @@ double hHintegral (double m1, double m2, double mf, double mh, double mH, double
   ///1 to 3 decay functions calling dgauss
   double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (double mgluino, double mneutralino, double msqL, double msqR, double mquark, double g, double gp, DoubleMatrix & mixNeut, double alphas, char uord, int neut, bool onetothree);
   double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, double mst2, double mneutralino, double mt, double mWboson, double g, double gp, double thetat, double beta, double alphas, DoubleMatrix & mixNeut, double runmt, int neutralino, bool onetothree, char torb);
-  // double gluinoamplitudedecaydgaussneutralinobbbarorig(double mgluino, double msb1, double msb2, double mneutralino, double mb, double mWboson, double g, double gp, double thetab, double beta, double alphas, DoubleMatrix & mixNeut, double runmb, int neutralino, bool onetothree);
   double gluinoamplitudedecaydgausschartbbar (double mgluino, double mst1, double mst2, double msb1, double msb2, double mtop, double mbottom, double mchar, double alphas, double thetat, double thetab, double MWBoson, double g, double gp, double gammaL, double gammaR, double beta, double runmt, double runmb, int chargino, bool onetothree);
-  // double gluinoamplitudedecaydgausschartbbarorig (double mgluino, double mst1, double mst2, double msb1, double msb2, double mtop, double mbottom, double mchar, double alphas, double thetat, double thetab, double MWBoson, double g, double gp, double gammaL, double gammaR, double beta, double runmt, double runmb, int chargino, bool onetothree);
   double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, double msf1, double msf2, double mZboson, double mhiggsl, double mhiggsH, double mhiggsA, double mneutralinoj, double mf, double alphas, double thetaq, double mWboson, double g, double gp, double alpha, double beta, double runmq, DoubleMatrix & mixNeut, int ineutralino, int jneutralino, bool onetothree, char uordornuorl);
   double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double msfp1, double msfp2, double msf1, double msf2, double mWboson, double mHP, double mcharginoj, double mfp, double mf, double thetaq, double thetaqp, double g, double gp, double alpha, double beta, double thetaL2, double thetaR2, double runmqp, double runmq, DoubleMatrix & mixNeut, int ineutralino, int jchargino, bool onetothree, char qorl, char norc); 
 
@@ -248,5 +246,10 @@ DoubleVector higgsHplussquarkcouplings (double mWboson, double g, double beta, d
 ///Function Declarations used to calculate Partial Widths in decays.cpp
 DoubleVector foftau(double mpart, double mcomp);  
 DoubleVector goftau(double mpart, double mcomp);
-
+double chToN2piInt(double mchi1, double mneut1, double ol11, double or11,
+		   double qSq);
+double charginoToNeutralino2pion(const MssmSoftsusy * m);
+Complex fofqsq(double qSq);
+Complex bw(double mSq, double gamma, double qSq);
+  
 #endif

@@ -3221,8 +3221,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleChargino1.Array_Decays[43][0] = PDGneutralino4; ParticleChargino1.Array_Decays[43][1] = PDGnumuon; ParticleChargino1.Array_Decays[43][4] = -PDGmuon; ParticleChargino1.Array_Decays[43][2] = chargino1amplitudeneut4numumubar; ParticleChargino1.Array_Decays[43][3] = 3; ParticleChargino1.Array_Comments[43] = "# ~chi_1+ -> chi_40 nu_mu mu+";
    ParticleChargino1.Array_Decays[44][0] = PDGneutralino4; ParticleChargino1.Array_Decays[44][1] = PDGnutau; ParticleChargino1.Array_Decays[44][4] = -PDGtau; ParticleChargino1.Array_Decays[44][2] = chargino1amplitudeneut4nutautaubar; ParticleChargino1.Array_Decays[44][3] = 3; ParticleChargino1.Array_Comments[44] = "# ~chi_1+ -> chi_40 nu_tau tau+";
    /// Ben: Added this one
-   ParticleChargino1.Array_Decays[46][0] = PDGneutralino1; ParticleChargino1.Array_Decays[46][1] = PDGpiPlus; ParticleChargino1.Array_Decays[46][4] = PDGpi0; ParticleChargino1.Array_Decays[46][2] = 5.55e-5; ParticleChargino1.Array_Decays[46][3] = 3; ParticleChargino1.Array_Comments[46] = "# ~chi_1+ -> chi_10 pi+ pi0";
-
+   ParticleChargino1.Array_Decays[46][0] = PDGneutralino1; ParticleChargino1.Array_Decays[46][1] = PDGpiPlus; ParticleChargino1.Array_Decays[46][4] = PDGpi0; ParticleChargino1.Array_Decays[46][2] = charginoToNeutralino2pion(r); ParticleChargino1.Array_Decays[46][3] = 3; ParticleChargino1.Array_Comments[46] = "# ~chi_1+ -> chi_10 pi+ pi0";
    /// If at too low mass difference, use pions rather than quarks
    if (fabs(MCH1) - mpiplus - fabs(mneut(1)) < hadronicScale) {
      ParticleChargino1.Array_Decays[26][2] = 0.;

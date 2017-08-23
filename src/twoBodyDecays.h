@@ -7,8 +7,8 @@
    \brief Code calculates three body decay modes 
 */
 
-#ifndef THREEBODYDECAYS_H
-#define THREEBODYDECAYS_H
+#ifndef TWOBODYDECAYS_H
+#define TWOBODYDECAYS_H
 
 #include "nmssmsoftsusy.h"
 #include "decays.h"
