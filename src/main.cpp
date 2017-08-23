@@ -56,12 +56,12 @@ int main() {
     
     int i;
     /// Set limits of tan beta scan
-    double startDm = 0.1, endDm = 5.0;
+    double startTb = 2., endTb = 50.;
     
     /// Cycle through different points in the scan
     for (i = 0; i <= numPoints; i++) {
-      double dm = (endDm - startDm) / static_cast<double>(numPoints) *
-	static_cast<double>(i) + startDm;  /// set tan beta ready for the scan.
+      tanb = (endTb - startTb) / static_cast<double>(numPoints) *
+	static_cast<double>(i) + startTb;  /// set tan beta ready for the scan.
 
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r;
@@ -72,13 +72,7 @@ int main() {
     
     /// Calculate the spectrum
     r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
-    sPhysical s(r.displayPhys());
-    s.mch(1) = fabs(s.mneut(1)) + dm;
-    r.setPhys(s);
-    NmssmSoftsusy nmssm;
-    vector<Particle> decayTable;
-    calculateDecays(cout, &r, decayTable, nmssm, false);
-    
+
     /// check the point in question is problem free: if so print the output
     if (!r.displayProblem().test()) 
       cout << tanb << " " << r.displayPhys().mh0(1) << " " 
