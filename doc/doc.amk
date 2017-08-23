@@ -34,3 +34,4 @@ distclean-local: clean-local
 	-rm -f $(doc_DATA)
 
 EXTRA_DIST += doc
+
