@@ -3081,8 +3081,12 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      ParticleChargino1.Array_Decays[23][2] = 0.;
      ParticleChargino1.Array_Decays[46][2] = 0.;     
    }
+
+   /*   cout << "DEBUG: " << chargino1amplitudeneut1nueebar << " "
+	<< chargino1amplitudeneut1numumubar << " " 
+	<< charginoToNeutralino2pion(r) << endl;*/     
    
-   double Chargino1_No_1to2_Decays = 0;
+   int Chargino1_No_1to2_Decays = 0;
  
    Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.No_grav_Decays + ParticleChargino1.No_NMSSM_Decays;
  

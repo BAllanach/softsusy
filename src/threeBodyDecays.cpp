@@ -6349,12 +6349,24 @@ Complex bw(double mSq, double gamma, double qSq) {
 
 static double mn = 0., mch = 0., ol11 = 0., or11 = 0.;
 double chToN2piInt(double qSq) {
-  return sqr(fofqsq(qSq).mod()) * sqrt(1.0 - 4.0 * sqr(mpiplus) / qSq) *
+  double integrand = sqr(fofqsq(qSq).mod()) *
+    sqrt(1.0 - 4.0 * sqr(mpiplus) / qSq) *
     sqrt(lambda(sqr(mch), sqr(mn), qSq)) *
 	 ( (sqr(ol11) + sqr(or11)) *
 	   (qSq * (sqr(mch) + sqr(mn) - 2.0 * qSq) +
 	    sqr(sqr(mch) - sqr(mn))) -
-	   12.0 * ol11 * or11 * qSq * mch * mn); 
+	   12.0 * ol11 * or11 * qSq * mch * mn);
+  //  cout << "DEBUG: " << qSq
+    /*<< " " << sqr(fofqsq(qSq).mod()) << " " 
+       <<    sqrt(1.0 - 4.0 * sqr(mpiplus) / qSq)  << " " <<
+    sqrt(lambda(sqr(mch), sqr(mn), qSq)) << " " << 
+	  (sqr(ol11) + sqr(or11)) *
+	   (qSq * (sqr(mch) + sqr(mn) - 2.0 * qSq) +
+	    sqr(sqr(mch) - sqr(mn))) << " " <<
+	   12.0 * ol11 * or11 * qSq * mch * mn
+	   << endl;*/
+  //       << " " << mch << " " << mn << " " << sqrt(qSq) << " " << lambda(sqr(mch), sqr(mn), qSq) << endl;
+  return integrand;
 }
 
 double charginoToNeutralino2pion(const MssmSoftsusy * m) {
@@ -6362,12 +6374,13 @@ double charginoToNeutralino2pion(const MssmSoftsusy * m) {
     mneut1 = fabs(m->displayPhys().mneut(1));
   mch = mchi1; mn = mneut1; ol11 = cos(m->displayPhys().thetaL);
   or11 = cos(m->displayPhys().thetaR); 
-  double qSqstart = 4.0 * mpiplus;
-  double qSqend = mchi1 - mneut1;
+  double qSqstart = 4.0 * mpiplus * mpiplus;
+  double qSqend = sqr(mchi1 - mneut1);
   if (mchi1 < mneut1 + 2.0 * mpiplus) return 0.;
   if (mchi1 - mneut1 - mpiplus > hadronicScale) return 0.;
   double preFactor =sqr(GMU) / (192.0 * sqr(PI) * PI * mchi1 * sqr(mchi1));
   double tol = TOLERANCE;
   double integral = dgauss(chToN2piInt, qSqstart, qSqend,tol);
+  //  cout << integral << " " << preFactor << endl;///< DEBUG
   return integral * preFactor;
 }
