@@ -1,4 +1,4 @@
-/** \file decays.cpp
+/** \file threeBodyDecays.cpp
    Project:     SOFTSUSY 
    Author:      Tom Cridge, Ben Allanach
    Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
@@ -6,7 +6,7 @@
 
 */
 
-#include "decays.h"
+#include "threeBodyDecays.h"
 
 using namespace std;
 
