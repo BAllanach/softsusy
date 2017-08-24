@@ -8,6 +8,8 @@
 
 #include "twoBodyDecays.h"
 
+const double GFosqrt2 = GMU / sqrt(2.0);
+
 /// First, do hadronic decays
 double charginoToNeutralino1pion(const MssmSoftsusy * m) {
   double mchi1 = fabs(m->displayPhys().mch(1)),

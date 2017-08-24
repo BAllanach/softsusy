@@ -34,12 +34,11 @@ using namespace std;
 
 //double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, double mchargino, double mquark, double mquarkp, double msqL, double msqpL, double g, double thetaL, double thetaR, double alphas, int charg, bool onetothree);
 const double fpi = 0.13041 / sqrt(2.0), mpiplus = 0.13957018, mpi0 = 0.1349766;
-const double GFosqrt2 = GMU / sqrt(2.0);
 static ostream* ffout;
-static double m1 = 0.,m2 = 0.,m3 = 0.,m4 = 0.,mq = 0.,m5 = 0.,m6 = 0.,
-  m7 = 0., m8 = 0., MZboson = 0., MWboson = 0., mh = 0., mH = 0.,
-  mA = 0., mphi = 0., g1 = 0., g2 = 0., alphamix = 0., betavac = 0.;
-static int neutralinoj = 0, neutralinoi = 0, AorhorH = 0;
+static double m1, m2, m3, m4, mq, m5, m6, 
+  m7,  m8,  MZboson,  MWboson,  mh,  mH, 
+  mA,  mphi,  g1,  g2,  alphamix,  betavac;
+static int neutralinoj, neutralinoi, AorhorH;
 static DoubleMatrix NeutMIX(NeutMIXdim,NeutMIXdim);
 
 /// Two body partial width calculations

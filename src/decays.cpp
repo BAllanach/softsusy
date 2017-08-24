@@ -6261,6 +6261,11 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
   for (ii=decayTable.begin(); ii<decayTable.end(); ii++)
     for (int i=0; i<ii->No_of_Decays; i++)
       ii->Array_Decays[i][5] = ii->Array_Decays[i][2] / ii->total_width;
-    
+
+  m1 = 0.; m2 = 0.; m3 = 0.; m4 = 0.; mq = 0.; m5 = 0.; m6 = 0.; 
+  m7 = 0.;  m8 = 0.;  MZboson = 0.;  MWboson = 0.;  mh = 0.;  mH = 0.; 
+  mA = 0.;  mphi = 0.;  g1 = 0.;  g2 = 0.;  alphamix = 0.;  betavac = 0.;
+  neutralinoj = 0;  neutralinoi = 0;  AorhorH = 0;
+  
  return errorflag;
 }

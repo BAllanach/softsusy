@@ -10,6 +10,8 @@
 
 using namespace std;
 
+const double GFosqrt2 = GMU / sqrt(2.0);
+
 ///Integrand functions for 1->3 decays
 
 double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin) ///required in many of the 1->3 integrals
@@ -4220,7 +4222,7 @@ double higgsAamplitudedecaygammagammaNMSSM (double m1, double g, double gprime, 
   matelemsum(1) = Itr + Ibr + Icr + Itaur + Ichar1r + Ichar2r;
   matelemsum(2) = Iti + Ibi + Ici + Itaui + Ichar1i + Ichar2i;
 
-  prefactor = (GFosqrt2*pow(alpha,2))/(32*pow(PI,3))*pow(m1,3);
+  prefactor = (GMU*pow(alpha,2))/(sqrt(2.0)*32*pow(PI,3))*pow(m1,3);
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
   amplitudeW = prefactor*matelemmodsquare;
@@ -4259,7 +4261,7 @@ double higgsAamplitudedecaygluongluonNMSSM (double m1, double g, double gs, doub
   matelemsum(1) = Itr + Ibr + Icr;
   matelemsum(2) = Iti + Ibi + Ici;
 
-  prefactor = GFosqrt2*pow(alphas,2)/(16*pow(PI,3))*pow(m1,3);
+  prefactor = GMU*pow(alphas,2)/(sqrt(2.0)*16*pow(PI,3))*pow(m1,3);
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
   amplitudeW = prefactor*matelemmodsquare;
@@ -4323,7 +4325,7 @@ double higgsAamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
   matelemsum(2) = Iti + Ibi + Ici + Ichar1i + Ichar2i;
 
   // prefactor = pow(g,2)*pow(m1,3)*pow(alpha,2)/(512*pow(PI,3)*pow(mWboson,2))*pow((1-pow(mZboson/m1,2)),3);
-  prefactor = GFosqrt2*pow(m1,3)*pow(alpha,2)/(64*pow(PI,3))*pow((1-pow(mZboson/m1,2)),3);
+  prefactor = GMU*pow(m1,3)*pow(alpha,2)/(sqrt(2.0)*64*pow(PI,3))*pow((1-pow(mZboson/m1,2)),3);
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
   amplitudeW = prefactor*matelemmodsquare;

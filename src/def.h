@@ -38,7 +38,6 @@ namespace softsusy{
   
   extern double GMU; ///< Fermi constant
   extern double MZ;  ///< Z boson mass
-  
   /// LEPEWWG central value 14/06/06. Is just used for intialisation etc
   const double MW = 80.404; 
   /// particle data book 2004 central value. Is just used for intialisation etc
