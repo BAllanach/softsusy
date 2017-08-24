@@ -24,22 +24,24 @@ double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin) /
   return Z;
 }
 
-DoubleVector Etbarmaxmin (double m1, double m2, double massq, double Et) ///required for many of the 1->3 integrals, this gives E max and min of t bar for given Et therefore different to overall limits of integration on Et which are Etmax, Etmin
+DoubleVector Etbarmaxmin(double m1, double m2, double massq, double Et) ///required for many of the 1->3 integrals, this gives E max and min of t bar for given Et therefore different to overall limits of integration on Et which are Etmax, Etmin
 {
   DoubleVector Etbarsupremum(2);
   double pt=0, zet=0, A=0, B=0;
-  pt = pow(pow(Et,2)-pow(massq,2),0.5);
-  zet = 2*pow(massq,2)+pow(m1,2)-pow(m2,2)-2*fabs(m1)*Et;
-  A = pow(m1,2)+pow(massq,2)-2*fabs(m1)*Et;
-  B = (pow(pt*zet,2)-4*pow(pt*massq,2)*A);
+  pt = sqrt(sqr(Et)-sqr(massq));
+  zet = 2.0*sqr(massq)+sqr(m1)-sqr(m2)-2*fabs(m1)*Et;
+  A = sqr(m1)+sqr(massq)-2*fabs(m1)*Et;
+  B = (sqr(pt*zet)-4*sqr(pt*massq)*A);
+  //  if (printOutNow) cout << "DEBUG: pt=" << pt << " zet=" << zet << " A=" << A << " B=" << B << endl;
   if ( B < 0) {
     B = 0; /// B may become very very small and negative at the tails of this squareroot, this causes problems as we get sqrt(-ve) therefore set B to 0 here as it's very small anyway so has negligible effect on the overall answer.
   }
  
-  Etbarsupremum(1) = (zet*(fabs(m1)-Et)+pow(B,0.5))/(2*A); ///Etbarmax
-  Etbarsupremum(2) = (zet*(fabs(m1)-Et)-pow(B,0.5))/(2*A); ///Etbarmin
+  Etbarsupremum(1) = (zet*(fabs(m1)-Et)+sqrt(B))/(2*A); ///Etbarmax
+  Etbarsupremum(2) = (zet*(fabs(m1)-Et)-sqrt(B))/(2*A); ///Etbarmin
   if (Etbarsupremum(1) != Etbarsupremum(1) || Etbarsupremum(2) != Etbarsupremum(2)) {
-    *ffout << "problem: Etbar gives nan! See Etbarmaxmin used in 1->3 decays" << endl; 
+    *ffout << "problem: Etbar gives nan! See Etbarmaxmin used in 1->3 decays" << endl;
+    cout << "problem: Etbar gives nan! See Etbarmaxmin used in 1->3 decays" << endl;     
   }
     return Etbarsupremum;
 }
@@ -301,11 +303,12 @@ double gzetadgauss (double Et)
 {
   double gzetadgauss = 0, A=0;
   DoubleVector Etbar(2);
-  for (int i=1; i<=2; i++) { Etbar(i) = 0;}
-  DoubleVector Etbarmaxmin (double m1, double m2, double massq, double Et);
+  //  DoubleVector Etbarmaxmin(double m1, double m2, double massq, double Et);
   Etbar = Etbarmaxmin(m1, m4, mq, Et);
-  A = pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et;
-  gzetadgauss = pow(PI,2)*(Etbar(1)-Etbar(2))/((A-pow(m2,2))*(A-pow(m3,2)));
+  A = sqr(m1)+sqr(mq)-2.0*fabs(m1)*Et;
+
+  gzetadgauss = sqr(PI)*(Etbar(1)-Etbar(2))/((A-sqr(m2))*(A-sqr(m3)));
+  //  if (printOutNow) cout << "Et=" << Et << " Etbarmaxmin=" << Etbar << " DEBUG: gzetadgauss=" << gzetadgauss << endl;
   return gzetadgauss;
 }
 
@@ -2738,6 +2741,7 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     xsiZisf1sf1Zj = dgauss(gxsidgauss,from,to,accuracy);
     rhotildaZisf1sf1Zj = dgauss(grhodgauss,from,to,accuracy);
     chiprimeZisf1sf1Zj = dgauss(gchiprimedgauss,from,to,accuracy);
+    /// the problem is in here - DEBUG
     zetaZisf1sf1Zj = dgauss(gzetadgauss,from,to,accuracy);
     XZisf1sf1Zj = dgauss(gXdgauss,from,to,accuracy);
     chitildaZisf1sf1Zj = dgauss(gchidgauss,from,to,accuracy);
@@ -6358,16 +6362,6 @@ double chToN2piInt(double qSq) {
 	   (qSq * (sqr(mch) + sqr(mn) - 2.0 * qSq) +
 	    sqr(sqr(mch) - sqr(mn))) -
 	   12.0 * ol11 * or11 * qSq * mch * mn);
-  //  cout << "DEBUG: " << qSq
-    /*<< " " << sqr(fofqsq(qSq).mod()) << " " 
-       <<    sqrt(1.0 - 4.0 * sqr(mpiplus) / qSq)  << " " <<
-    sqrt(lambda(sqr(mch), sqr(mn), qSq)) << " " << 
-	  (sqr(ol11) + sqr(or11)) *
-	   (qSq * (sqr(mch) + sqr(mn) - 2.0 * qSq) +
-	    sqr(sqr(mch) - sqr(mn))) << " " <<
-	   12.0 * ol11 * or11 * qSq * mch * mn
-	   << endl;*/
-  //       << " " << mch << " " << mn << " " << sqrt(qSq) << " " << lambda(sqr(mch), sqr(mn), qSq) << endl;
   return integrand;
 }
 
@@ -6383,6 +6377,6 @@ double charginoToNeutralino2pion(const MssmSoftsusy * m) {
   double preFactor =sqr(GMU) / (192.0 * sqr(PI) * PI * mchi1 * sqr(mchi1));
   double tol = TOLERANCE;
   double integral = dgauss(chToN2piInt, qSqstart, qSqend,tol);
-  //  cout << integral << " " << preFactor << endl;///< DEBUG
+
   return integral * preFactor;
 }

@@ -20,7 +20,7 @@
 namespace softsusy{
   /// uncomment if you want checking of vector/matrices bounds: slows code
   /// down. It also now checks over/underflows in matrix multiplication etc
-  /// #define ARRAY_BOUNDS_CHECKING 
+  ///  #define ARRAY_BOUNDS_CHECKING 
 
   extern bool NMSSMTools;
   extern bool SoftHiggsOut;

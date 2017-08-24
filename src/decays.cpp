@@ -1108,7 +1108,7 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
  Particle ParticleHiggsA2;
  ParticleHiggsA2.name = "NMSSM second pseudoscalar higgs";
  ParticleHiggsA2.PDG = PDGA2;
- ParticleHiggsA2.mass = mA0(2);
+ if (nmssmIsIt) ParticleHiggsA2.mass = mA0(2);
  ParticleHiggsA2.No_1to2_Decays = 0;
  ParticleHiggsA2.No_1to3_Decays = 0;
  ParticleHiggsA2.No_grav_Decays = 0;
@@ -1127,7 +1127,7 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
  Particle ParticleHiggsH3;
  ParticleHiggsH3.name = "NMSSM third scalar higgs";
  ParticleHiggsH3.PDG = PDGH3;
- ParticleHiggsH3.mass = mh0(3);
+ if (nmssmIsIt) ParticleHiggsH3.mass = mh0(3);
  ParticleHiggsH3.No_1to2_Decays = 0;
  ParticleHiggsH3.No_1to3_Decays = 2;
  ParticleHiggsH3.No_grav_Decays = 0;
@@ -1146,7 +1146,7 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
  Particle ParticleNeutralino5;
  ParticleNeutralino5.name = "Neutralino5";
  ParticleNeutralino5.PDG = PDGneutralino5;
- ParticleNeutralino5.mass = mneut(5);
+ if (nmssmIsIt) ParticleNeutralino5.mass = mneut(5);
  ParticleNeutralino5.No_1to2_Decays = 0;
  ParticleNeutralino5.No_1to3_Decays = 0; ///1->3 decays not included in NMSSM, only in MSSM
  ParticleNeutralino5.No_grav_Decays = 0; ///Decays to gravitinos not included in NMSSM, only in MSSM
@@ -1161,13 +1161,7 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
  ParticleNeutralino5.two_width = 0.0;
  ParticleNeutralino5.three_width = 0.0;
  
- ///Initialise NeutMIX before using it in the integrals
- for (int i = 1; i<=NeutMIXdim; i++) {
-   for (int j = 1; j<=NeutMIXdim; j++) {
-     NeutMIX(i,j) = 0;
-   }
- }
-
+ 
   NeutMIX = mixNeut;
   g1 = g; g2 = gp; alphamix = alpha; betavac = beta;
   ///Gluino Decays
@@ -2708,8 +2702,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  }
 
 
+ 
  ///Stau1 decays
-
  double stau1amplitudetauneutralinoZ1=0, stau1amplitudetauneutralinoZ2=0, stau1amplitudetauneutralinoZ3=0, stau1amplitudetauneutralinoZ4=0, stau1amplitudetauneutrinocharginoW1=0, stau1amplitudetauneutrinocharginoW2=0, stau1amplitudetausneutrinoHminus=0, stau1amplitudesnustauWboson=0, stau1amplitudetaugravitino=0;
  double stau1amplitudetauneutralinoZ5 = 0;
  
@@ -3082,10 +3076,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      ParticleChargino1.Array_Decays[46][2] = 0.;     
    }
 
-   /*   cout << "DEBUG: " << chargino1amplitudeneut1nueebar << " "
-	<< chargino1amplitudeneut1numumubar << " " 
-	<< charginoToNeutralino2pion(r) << endl;*/     
-   
    int Chargino1_No_1to2_Decays = 0;
  
    Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.No_grav_Decays + ParticleChargino1.No_NMSSM_Decays;
@@ -3287,7 +3277,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      }
  
  }
-
 
  ///Neutralino Decays
  ///Neutralino1 Decays
@@ -3540,9 +3529,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      }
    
  }
-
 ///Neutralino2 Decays
- 
  double neutralino2amplitudeuLubar=0, neutralino2amplitudeuRubar=0, neutralino2amplitudeuLbaru=0, neutralino2amplitudeuRbaru=0, neutralino2amplitudedLdbar=0, neutralino2amplitudedRdbar=0, neutralino2amplitudedLbard=0, neutralino2amplitudedRbard=0, neutralino2amplitudecLcbar=0, neutralino2amplitudecRcbar=0, neutralino2amplitudecLbarc=0, neutralino2amplitudecRbarc=0, neutralino2amplitudesLsbar=0, neutralino2amplitudesRsbar=0, neutralino2amplitudesLbars=0, neutralino2amplitudesRbars=0, neutralino2amplitudeeLebar=0, neutralino2amplitudeeRebar=0, neutralino2amplitudeeLbare=0, neutralino2amplitudeeRbare=0, neutralino2amplitudemuLmubar=0, neutralino2amplitudemuRmubar=0, neutralino2amplitudemuLbarmu=0, neutralino2amplitudemuRbarmu=0, neutralino2amplitudesnuenuebar=0, neutralino2amplitudesnuebarnue=0, neutralino2amplitudesnumunumubar=0, neutralino2amplitudesnumubarnumu=0, neutralino2amplitudetopstop1bar=0, neutralino2amplitudetopstop2bar=0, neutralino2amplitudetopbarstop1=0, neutralino2amplitudetopbarstop2=0, neutralino2amplitudebottomsbottom1bar=0, neutralino2amplitudebottomsbottom2bar=0, neutralino2amplitudebottombarsbottom1=0, neutralino2amplitudebottombarsbottom2=0, neutralino2amplitudetaustau1bar=0, neutralino2amplitudetaustau2bar=0, neutralino2amplitudetaubarstau1=0, neutralino2amplitudetaubarstau2=0, neutralino2amplitudenutausnutaubar=0, neutralino2amplitudenutaubarsnutau=0, neutralino2amplitudeWbosonpluscharginoW1=0, neutralino2amplitudeWbosonpluscharginoW2=0, neutralino2amplitudeWbosonminuscharginoW1=0, neutralino2amplitudeWbosonminuscharginoW2=0, neutralino2amplitudeHpluscharginoW1=0, neutralino2amplitudeHpluscharginoW2=0, neutralino2amplitudeHminuscharginoW1=0, neutralino2amplitudeHminuscharginoW2=0, neutralino2amplitudeZbosonneutralino1=0, neutralino2amplitudeZbosonneutralino3=0, neutralino2amplitudeZbosonneutralino4=0, neutralino2amplitudehneutralino1=0, neutralino2amplitudehneutralino3=0, neutralino2amplitudehneutralino4=0, neutralino2amplitudeHneutralino1=0, neutralino2amplitudeHneutralino3=0, neutralino2amplitudeHneutralino4=0, neutralino2amplitudeAneutralino1=0, neutralino2amplitudeAneutralino3=0, neutralino2amplitudeAneutralino4=0, neutralino2amplitudephotongravitino=0, neutralino2amplitudeZgravitino=0, neutralino2amplitudehgravitino=0, neutralino2amplitudeHgravitino=0, neutralino2amplitudeAgravitino=0;
 
  double neutralino2amplitudeneut1uubar=0, neutralino2amplitudeneut1ddbar=0, neutralino2amplitudeneut1ccbar=0, neutralino2amplitudeneut1ssbar=0, neutralino2amplitudeneut1ttbar=0, neutralino2amplitudeneut1bbbar=0, neutralino2amplitudeneut1eebar=0, neutralino2amplitudeneut1mumubar=0, neutralino2amplitudeneut1tautaubar=0, neutralino2amplitudeneut1nuenuebar=0, neutralino2amplitudeneut1numunumubar=0, neutralino2amplitudeneut1nutaunutaubar=0, neutralino2amplitudechargino1udbar=0, neutralino2amplitudechargino1csbar=0, neutralino2amplitudechargino1enuebar=0, neutralino2amplitudechargino1munumubar=0, neutralino2amplitudechargino1taunutaubar=0, neutralino2amplitudechargino2udbar=0, neutralino2amplitudechargino2csbar=0, neutralino2amplitudechargino2enuebar=0, neutralino2amplitudechargino2munumubar=0, neutralino2amplitudechargino2taunutaubar=0;
@@ -3601,7 +3588,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      neutralino2amplitudeHpluscharginoW2 = neutralinoamplitudedecaycharginoHplus (mneut(2), mHpm, MCH2, g, gp, beta, thetaL2, thetaR2, mixNeut, 2, 2);
      neutralino2amplitudeHminuscharginoW1 = neutralinoamplitudedecaycharginoHplus (mneut(2), mHpm, MCH1, g, gp, beta, thetaL2, thetaR2, mixNeut, 2, 1);
      neutralino2amplitudeHminuscharginoW2 = neutralinoamplitudedecaycharginoHplus (mneut(2), mHpm, MCH2, g, gp, beta, thetaL2, thetaR2, mixNeut, 2, 2);
-     
      neutralino2amplitudeZbosonneutralino1 = neutralinoamplitudedecayneutralinoZboson (mneut(2), polemz, mneut(1), g, gp, mixNeut, 2, 1);
      
      neutralino2amplitudehneutralino1 = neutralinoamplitudedecayneutralinoneutHiggs (mneut(2), mh0(1), mneut(1), g, gp, mixNeut, alpha, 2, 1, 'h');
@@ -3623,11 +3609,11 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      neutralino2amplitudeneut1bbbar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), md(1,3), md(2,3), runmz, mh0(1), mh0(2), mA0(1), mneut(1), mb, alphas, thetab, runmw, g, gp, alpha, beta, runmb, mixNeut, 2, 1, onetothree, 'd');
      neutralino2amplitudeneut1eebar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), me(1,1), me(2,1), runmz, mh0(1), mh0(2), mA0(1), mneut(1), mel, alphas, 0, runmw, g, gp, alpha, beta, runmel, mixNeut, 2, 1, onetothree, 'l');
      neutralino2amplitudeneut1mumubar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), me(1,2), me(2,2), runmz, mh0(1), mh0(2), mA0(1), mneut(1), mmu, alphas, 0, runmw, g, gp, alpha, beta, runmmu, mixNeut, 2, 1, onetothree, 'l');
-     neutralino2amplitudeneut1tautaubar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), me(1,3), me(2,3), runmz, mh0(1), mh0(2), mA0(1), mneut(1), mtau, alphas, thetatau-PI/2, runmw, g, gp, alpha, beta, runmtau, mixNeut, 2, 1, onetothree, 'l');
-     neutralino2amplitudeneut1nuenuebar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), msnu(1), 100000000000, runmz, mh0(1), mh0(2), mA0(1), mneut(1), 0, alphas, 0, runmw, g, gp, alpha, beta, 0, mixNeut, 2, 1, onetothree, 'n');
+
+     //     printOutNow = true; ///< DEBUG
+										     neutralino2amplitudeneut1nuenuebar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), msnu(1), 100000000000, runmz, mh0(1), mh0(2), mA0(1), mneut(1), 0, alphas, 0, runmw, g, gp, alpha, beta, 0, mixNeut, 2, 1, onetothree, 'n');
      neutralino2amplitudeneut1numunumubar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), msnu(2), 100000000000, runmz, mh0(1), mh0(2), mA0(1), mneut(1), 0, alphas, 0, runmw, g, gp, alpha, beta, 0, mixNeut, 2, 1, onetothree, 'n');
      neutralino2amplitudeneut1nutaunutaubar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), msnu(3), 100000000000, runmz, mh0(1), mh0(2), mA0(1), mneut(1), 0, alphas, 0, runmw, g, gp, alpha, beta, 0, mixNeut, 2, 1, onetothree, 'n'); ///Note set msf(2) very large as there is no msnuR so need this intermediate to decouple and not be present
-     
      neutralino2amplitudechargino1udbar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mch(1), mup, mdo, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 2, 1, onetothree, 'q', 'n');
      neutralino2amplitudechargino1csbar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mch(1), mc, ms, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 2, 1, onetothree, 'q', 'n');
      neutralino2amplitudechargino1enuebar = neutralinoamplitudedecaycharginoffprimebar (mneut(2), me(1,1), me(2,1), msnu(1), 100000000000, polemw, mHpm, mch(1), 0, mel, 0, 0, g, gp, alphas, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 2, 1, onetothree, 'l', 'n');
@@ -3696,7 +3682,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      neutralino2amplitudetaustau2bar = neutralinoamplitudestautauNMSSM (mneut(2), me(2,3), mtau, g, gp, thetatau, beta, runmw, mixNeut, runmtau, 2, 2);
      neutralino2amplitudetaubarstau1 = neutralino2amplitudetaustau1bar;
      neutralino2amplitudetaubarstau2 = neutralino2amplitudetaustau2bar;
-     
      neutralino2amplitudesnuenuebar = neutralinoamplitudestauneutrinotauneutrinoNMSSM (mneut(2), msnu(1), 0, g, gp, mixNeut, 2);
      neutralino2amplitudesnuebarnue = neutralino2amplitudesnuenuebar;
      neutralino2amplitudesnumunumubar = neutralinoamplitudestauneutrinotauneutrinoNMSSM (mneut(2), msnu(2), 0, g, gp, mixNeut, 2);
@@ -4539,7 +4524,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  
  if (nmssmIsIt == true) {
    ///Neutralino5 Decays
-   
    double neutralino5amplitudeuLubar=0, neutralino5amplitudeuRubar=0, neutralino5amplitudeuLbaru=0, neutralino5amplitudeuRbaru=0, neutralino5amplitudedLdbar=0, neutralino5amplitudedRdbar=0, neutralino5amplitudedLbard=0, neutralino5amplitudedRbard=0, neutralino5amplitudecLcbar=0, neutralino5amplitudecRcbar=0, neutralino5amplitudecLbarc=0, neutralino5amplitudecRbarc=0, neutralino5amplitudesLsbar=0, neutralino5amplitudesRsbar=0, neutralino5amplitudesLbars=0, neutralino5amplitudesRbars=0, neutralino5amplitudeeLebar=0, neutralino5amplitudeeRebar=0, neutralino5amplitudeeLbare=0, neutralino5amplitudeeRbare=0, neutralino5amplitudemuLmubar=0, neutralino5amplitudemuRmubar=0, neutralino5amplitudemuLbarmu=0, neutralino5amplitudemuRbarmu=0,neutralino5amplitudesnuenuebar=0, neutralino5amplitudesnuebarnue=0, neutralino5amplitudesnumunumubar=0, neutralino5amplitudesnumubarnumu=0, neutralino5amplitudetopstop1bar=0, neutralino5amplitudetopstop2bar=0, neutralino5amplitudetopbarstop1=0, neutralino5amplitudetopbarstop2=0, neutralino5amplitudebottomsbottom1bar=0, neutralino5amplitudebottomsbottom2bar=0, neutralino5amplitudebottombarsbottom1=0, neutralino5amplitudebottombarsbottom2=0, neutralino5amplitudetaustau1bar=0, neutralino5amplitudetaustau2bar=0, neutralino5amplitudetaubarstau1=0, neutralino5amplitudetaubarstau2=0, neutralino5amplitudenutausnutaubar=0, neutralino5amplitudenutaubarsnutau=0, neutralino5amplitudeWbosonpluscharginoW1=0, neutralino5amplitudeWbosonpluscharginoW2=0, neutralino5amplitudeWbosonminuscharginoW1=0, neutralino5amplitudeWbosonminuscharginoW2=0, neutralino5amplitudeHpluscharginoW1=0, neutralino5amplitudeHpluscharginoW2=0, neutralino5amplitudeHminuscharginoW1=0, neutralino5amplitudeHminuscharginoW2=0, neutralino5amplitudeZbosonneutralino1=0, neutralino5amplitudeZbosonneutralino2=0, neutralino5amplitudeZbosonneutralino3=0, neutralino5amplitudeZbosonneutralino4=0, neutralino5amplitudehneutralino1=0, neutralino5amplitudehneutralino2=0, neutralino5amplitudehneutralino3=0, neutralino5amplitudehneutralino4=0, neutralino5amplitudeHneutralino1=0, neutralino5amplitudeHneutralino2=0, neutralino5amplitudeHneutralino3=0, neutralino5amplitudeHneutralino4=0, neutralino5amplitudeAneutralino1=0, neutralino5amplitudeAneutralino2=0, neutralino5amplitudeAneutralino3=0, neutralino5amplitudeAneutralino4=0, neutralino5amplitudeH3neutralino1 = 0, neutralino5amplitudeH3neutralino2 = 0, neutralino5amplitudeH3neutralino3 = 0, neutralino5amplitudeH3neutralino4 = 0, neutralino5amplitudeA2neutralino1=0, neutralino5amplitudeA2neutralino2=0, neutralino5amplitudeA2neutralino3=0, neutralino5amplitudeA2neutralino4=0;
    
    if (flagneut5 == 1) {
@@ -5056,10 +5040,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      }
    
  }
-
  ///higgsH decays
- 
- double H0amplitudeuantiu=0, H0amplitudedantid=0, H0amplitudesantis=0, H0amplitudecantic=0, H0amplitudebantib=0, H0amplitudetantit=0, H0amplitudeeantie=0, H0amplitudemuantimu=0, H0amplitudetauantitau=0, H0amplitudeneutZ1neutZ1=0, H0amplitudeneutZ1neutZ2=0, H0amplitudeneutZ1neutZ3=0, H0amplitudeneutZ1neutZ4=0, H0amplitudeneutZ2neutZ2=0, H0amplitudeneutZ2neutZ3=0, H0amplitudeneutZ2neutZ4=0, H0amplitudeneutZ3neutZ3=0, H0amplitudeneutZ3neutZ4=0, H0amplitudeneutZ4neutZ4=0, H0amplitudecharW1charW1=0, H0amplitudecharW1charW2=0, H0amplitudecharW2charW2=0, H0amplitudeh0h0=0, H0amplitudehiggsAhiggsA=0, H0amplitudeHplusHminus=0, H0amplitudehiggsAZboson=0, H0amplitudesupLantisupL=0, H0amplitudesupLantisupR=0, H0amplitudesupRantisupL=0, H0amplitudesupRantisupR=0, H0amplitudesdownLantisdownL=0, H0amplitudesdownLantisdownR=0, H0amplitudesdownRantisdownL=0, H0amplitudesdownRantisdownR=0, H0amplitudescharmLantischarmL=0, H0amplitudescharmLantischarmR=0, H0amplitudescharmRantischarmL=0, H0amplitudescharmRantischarmR=0, H0amplitudesstrangeLantisstrangeL=0, H0amplitudesstrangeLantisstrangeR=0, H0amplitudesstrangeRantisstrangeL=0, H0amplitudesstrangeRantisstrangeR=0, H0amplitudesnueLantisnueL=0, H0amplitudeselectronLantiselectronL=0, H0amplitudeselectronRantiselectronR=0, H0amplitudeselectronLantiselectronR=0, H0amplitudeselectronRantiselectronL=0, H0amplitudesnumuLantisnumuL=0, H0amplitudesnutauLantisnutauL=0, H0amplitudesmuonLantismuonL=0, H0amplitudesmuonRantismuonR=0, H0amplitudesmuonLantismuonR=0, H0amplitudesmuonRantismuonL=0, H0amplitudestau1antistau1=0, H0amplitudestau2antistau2=0, H0amplitudestau1antistau2=0, H0amplitudestau2antistau1=0, H0amplitudestop1antistop1=0, H0amplitudestop1antistop2=0, H0amplitudestop2antistop1=0, H0amplitudestop2antistop2=0, H0amplitudesbottom1antisbottom1=0, H0amplitudesbottom1antisbottom2=0, H0amplitudesbottom2antisbottom1=0, H0amplitudesbottom2antisbottom2=0, H0amplitudegluongluon=0, H0amplitudegammagamma=0, H0amplitudeWbosonWboson=0, H0amplitudeZbosonZboson=0, H0amplitudeZgamma=0, H0amplitudehiggsAhiggsA2=0, H0amplitudehiggsA2higgsA2=0, H0amplitudehiggsA2Zboson=0, H0amplitudeWHpm=0;
+  double H0amplitudeuantiu=0, H0amplitudedantid=0, H0amplitudesantis=0, H0amplitudecantic=0, H0amplitudebantib=0, H0amplitudetantit=0, H0amplitudeeantie=0, H0amplitudemuantimu=0, H0amplitudetauantitau=0, H0amplitudeneutZ1neutZ1=0, H0amplitudeneutZ1neutZ2=0, H0amplitudeneutZ1neutZ3=0, H0amplitudeneutZ1neutZ4=0, H0amplitudeneutZ2neutZ2=0, H0amplitudeneutZ2neutZ3=0, H0amplitudeneutZ2neutZ4=0, H0amplitudeneutZ3neutZ3=0, H0amplitudeneutZ3neutZ4=0, H0amplitudeneutZ4neutZ4=0, H0amplitudecharW1charW1=0, H0amplitudecharW1charW2=0, H0amplitudecharW2charW2=0, H0amplitudeh0h0=0, H0amplitudehiggsAhiggsA=0, H0amplitudeHplusHminus=0, H0amplitudehiggsAZboson=0, H0amplitudesupLantisupL=0, H0amplitudesupLantisupR=0, H0amplitudesupRantisupL=0, H0amplitudesupRantisupR=0, H0amplitudesdownLantisdownL=0, H0amplitudesdownLantisdownR=0, H0amplitudesdownRantisdownL=0, H0amplitudesdownRantisdownR=0, H0amplitudescharmLantischarmL=0, H0amplitudescharmLantischarmR=0, H0amplitudescharmRantischarmL=0, H0amplitudescharmRantischarmR=0, H0amplitudesstrangeLantisstrangeL=0, H0amplitudesstrangeLantisstrangeR=0, H0amplitudesstrangeRantisstrangeL=0, H0amplitudesstrangeRantisstrangeR=0, H0amplitudesnueLantisnueL=0, H0amplitudeselectronLantiselectronL=0, H0amplitudeselectronRantiselectronR=0, H0amplitudeselectronLantiselectronR=0, H0amplitudeselectronRantiselectronL=0, H0amplitudesnumuLantisnumuL=0, H0amplitudesnutauLantisnutauL=0, H0amplitudesmuonLantismuonL=0, H0amplitudesmuonRantismuonR=0, H0amplitudesmuonLantismuonR=0, H0amplitudesmuonRantismuonL=0, H0amplitudestau1antistau1=0, H0amplitudestau2antistau2=0, H0amplitudestau1antistau2=0, H0amplitudestau2antistau1=0, H0amplitudestop1antistop1=0, H0amplitudestop1antistop2=0, H0amplitudestop2antistop1=0, H0amplitudestop2antistop2=0, H0amplitudesbottom1antisbottom1=0, H0amplitudesbottom1antisbottom2=0, H0amplitudesbottom2antisbottom1=0, H0amplitudesbottom2antisbottom2=0, H0amplitudegluongluon=0, H0amplitudegammagamma=0, H0amplitudeWbosonWboson=0, H0amplitudeZbosonZboson=0, H0amplitudeZgamma=0, H0amplitudehiggsAhiggsA2=0, H0amplitudehiggsA2higgsA2=0, H0amplitudehiggsA2Zboson=0, H0amplitudeWHpm=0;
 
  double H0amplitudeneutZ1neutZ5 = 0, H0amplitudeneutZ2neutZ5 = 0, H0amplitudeneutZ3neutZ5 = 0, H0amplitudeneutZ4neutZ5 = 0, H0amplitudeneutZ5neutZ5 = 0;
 

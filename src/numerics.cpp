@@ -40,11 +40,11 @@ double dgauss(double (*f)(double x), double a, double b, double eps) {
     x(12)  =   0.0950125098376374401853193354;
   }
   const double constant = 1.0e-25;
-  double delta = constant * abs(a - b);
+  double delta = constant * fabs(a - b);
   double dgauss = 0.;
   double aa = a;
  lab5: double y = b - aa;
-  if (abs(y) <= delta) return dgauss;
+  if (fabs(y) <= delta) return dgauss;
  lab2: double bb = aa + y;
   double c1 = 0.5 * (aa + bb);
   double c2 = c1 - aa;
@@ -60,12 +60,14 @@ double dgauss(double (*f)(double x), double a, double b, double eps) {
   }
   s8 = s8 * c2;
   s16 = s16 * c2;
-  if (abs(s16 - s8) > eps * (1. + abs(s16))) goto lab4;
+  if (fabs(s16 - s8) > eps * (1. + fabs(s16))) goto lab4;
   dgauss = dgauss + s16;
   aa = bb;
   goto lab5;
  lab4: y = 0.5 * y;
-  if (abs(y) > delta) goto lab2;
+  if (fabs(y) > delta) goto lab2;
+  cout << "Too high accuracy required in numerics.cpp:dgauss\n";
+  dgauss = 0.;
   throw("Too high accuracy required in numerics.cpp:dgauss\n");
   return dgauss;
 }
