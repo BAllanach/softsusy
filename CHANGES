@@ -1,3 +1,6 @@
+<li> Added chargino->charged pion/neutralino decays for small mass splittings
+<li> Split decays up into three files to allow faster compilation. Made a
+decayTable object
 <li> Fixed bug in decays numerics that was giving many NaN's from numerical errors in a big cancellation 
 <li> Few PDGIDs were wrong sign in decays: Bugfix by Brian Peterson
 <li> 3-loop RGEs and 2-loop corrections to gluino/sparticle masses now always compiled. 2-loop scalar RGEs used for RPC by default.
