@@ -256,4 +256,5 @@ double gluinoamplitudedecay1to3neutfirsttwogen (double m1, double m2, double m3,
   double higgsesamplitudedecaygammagammatotal(double m1, double g, double gprime, double alphaEmrun, double mWboson, double polemw, double alpha, double beta, double mtop, double mbottom, double mcharm, double mtau, double mHpm, double mstop1, double mstop2, double msbottom1, double msbottom2, double mstau1, double mstau2, double mchargino1, double mchargino2, double thetaL, double thetaR, double thetat, double thetab, double thetatau, double greekmu, double Atop, double Abottom, double Atau, char higgstype);
 /// outputs a decay table in SLHA format
 void slhaDecays(ostream & fout, vector<Particle> & decayTable, bool outputPartialWidths);
+DoubleVector hggQCDcorrections(double amplitudeW, double alphas, int Nf, char higgs, double prefactor, double SMtotr, double SMtoti, double sqtotr, double sqtoti);
 #endif

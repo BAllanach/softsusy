@@ -17,7 +17,7 @@ const double GFosqrt2 = GMU / sqrt(2.0);
 double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin) ///required in many of the 1->3 integrals
 {
   double Z = 0;
-  Z = (pow(m1,2)+pow(mq,2)-2*fabs(m1)*Etbarmax - pow(m,2))/(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Etbarmin-pow(m,2));
+  Z = (sqr(m1)+sqr(mq)-2*fabs(m1)*Etbarmax - sqr(m))/(sqr(m1)+sqr(mq)-2*fabs(m1)*Etbarmin-sqr(m));
     if (Z <=0) {
       throw("May have nan issue if do log(Z) as Z<=0! See Zfunc used in 1->3 decays\n");
   }
@@ -51,21 +51,21 @@ DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4
   DoubleVector Ebbar(2);
   for (int i=1; i<=2; i++) { Ebbar(i)=0;}
   double pt = 0, squareplus = 0, squareminus = 0, lambda = 0, A = 0;
-  pt = pow(pow(Et,2)-pow(mass2,2),0.5);
-  A = pow(mass1,2)+pow(mass2,2)-2*Et*fabs(mass1);
-  squareplus = A - pow(mass3+mass4,2);
-  squareminus = A - pow(mass3-mass4,2);
+  pt = sqrt(sqr(Et)-sqr(mass2));
+  A = sqr(mass1)+sqr(mass2)-2*Et*fabs(mass1);
+  squareplus = A - sqr(mass3+mass4);
+  squareminus = A - sqr(mass3-mass4);
 
   if (squareplus < 0 && fabs(squareplus) < 1e-8) {
     squareplus = 0; ///Avoid issues of finite precision meaning you get a very small negative squareplus at Amin (smin) rather than 0, this can cause issues when you take the squareroot of lambda, giving a nan
   }
 
-  lambda = pow(squareplus*squareminus,0.5);
+  lambda = sqrt(squareplus*squareminus);
   if (squareplus*squareminus < 0) {
     throw("problem: lambda will give nan in Ebbarmaxmin used in 1->3 decays\n");
   } 
-  Ebbar(1) = ((pow(mass1,2)+pow(mass2,2)-2*fabs(mass1)*Et-pow(mass3,2)-pow(mass4,2))*(fabs(mass1)-Et) + pt*lambda)/(2*(pow(mass1,2)+pow(mass2,2)-2*Et*fabs(mass1))); ///I have -pow(mass3,2) here whereas T&B have + pow(mass3,2), I have changed the sign to agree with SPheno, note however this actually makes negligible difference due to the smallness of the b mass
-  Ebbar(2) = ((pow(mass1,2)+pow(mass2,2)-2*fabs(mass1)*Et-pow(mass3,2)-pow(mass4,2))*(fabs(mass1)-Et) - pt*lambda)/(2*(pow(mass1,2)+pow(mass2,2)-2*Et*fabs(mass1))); ///I have -pow(mass3,2) here whereas T&B have + pow(mass3,2), I have changed the sign to agree with SPheno, note however this actually makes negligible difference due to the smallness of the b mass
+  Ebbar(1) = ((sqr(mass1)+sqr(mass2)-2*fabs(mass1)*Et-pow(mass3,2)-pow(mass4,2))*(fabs(mass1)-Et) + pt*lambda)/(2*(sqr(mass1)+sqr(mass2)-2*Et*fabs(mass1))); ///I have -pow(mass3,2) here whereas T&B have + pow(mass3,2), I have changed the sign to agree with SPheno, note however this actually makes negligible difference due to the smallness of the b mass
+  Ebbar(2) = ((sqr(mass1)+sqr(mass2)-2*fabs(mass1)*Et-pow(mass3,2)-pow(mass4,2))*(fabs(mass1)-Et) - pt*lambda)/(2*(sqr(mass1)+sqr(mass2)-2*Et*fabs(mass1))); ///I have -pow(mass3,2) here whereas T&B have + pow(mass3,2), I have changed the sign to agree with SPheno, note however this actually makes negligible difference due to the smallness of the b mass
 
   return Ebbar;
 }
@@ -77,7 +77,7 @@ DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4
   DoubleVector Ebbar(2);
   for (int i=1; i<=2; i++) { Ebbar(i)=0;}
   Ebbar = Ebbarmaxmin (mass1, mass2, mass3, mass4, Et);
-  X = (pow(mass5,2)+2*Ebbar(1)*fabs(mass1)-pow(mass1,2))/(pow(mass5,2)+2*Ebbar(2)*fabs(mass1)-pow(mass1,2));
+  X = (pow(mass5,2)+2*Ebbar(1)*fabs(mass1)-sqr(mass1))/(pow(mass5,2)+2*Ebbar(2)*fabs(mass1)-sqr(mass1));
   return X;
 }
 
@@ -86,7 +86,7 @@ DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4
 double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, double mchargino, double mquark, double mquarkp, double msqL, double msqpL, double g, double thetaL, double thetaR, double alphas, int charg, bool onetothree)
 {
   double amplitudeW=0, Au=0, Ad=0, psiu=0, psid=0, phiI=0, upper=0;
-  upper = (pow(mgluino,2)-2*mquark*fabs(mchargino)-pow(mchargino,2))/(2*mgluino);
+  upper = (sqr(mgluino)-2*mquark*fabs(mchargino)-pow(mchargino,2))/(2*mgluino);
 
   if (onetothree == false) {
     amplitudeW = 0;
@@ -115,13 +115,13 @@ double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, doub
       throw("problem: charg must be 1 or 2 in gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen\n");
     }
       m1 = mgluino, m2 = msqL, m3 = msqL, m4 = mchargino, mq = mquark;
-      psiu = dgauss(gpsitildadgauss,mquark,upper,accuracy)*1/(pow(PI,2)*m1);
+      psiu = dgauss(gpsitildadgauss,mquark,upper,accuracy)*1/(sqr(PI)*m1);
       m1 = mgluino, m2 = msqpL, m3 = msqpL, m4 = mchargino, mq = mquarkp;
-      psid = dgauss(gpsitildadgauss,mquark,upper,accuracy)*1/(pow(PI,2)*m1);
+      psid = dgauss(gpsitildadgauss,mquark,upper,accuracy)*1/(sqr(PI)*m1);
       m1 = mgluino, m2 = msqL, m3 = msqpL, m4 = mchargino, mq = mquark; ///Note mq isn't important really for these modes as they are first two gen quarks
-      phiI = dgauss(gphitildadgauss,mq,upper,accuracy)*1/(pow(PI,2)*m1);
+      phiI = dgauss(gphitildadgauss,mq,upper,accuracy)*1/(sqr(PI)*m1);
       
-      amplitudeW = alphas/(16*pow(PI,2))*(pow(Ad,2)*psiu + pow(Au,2)*psid + 2*Au*Ad*phiI);
+      amplitudeW = alphas/(16*sqr(PI))*(pow(Ad,2)*psiu + pow(Au,2)*psid + 2*Au*Ad*phiI);
     }
   }
   return amplitudeW;
@@ -217,17 +217,17 @@ void OutputYesPWs(ostream & fout, Particle & P) ///Outputs the decay table into 
 
 double gpsitildadgauss(double Et) {
   double gpsitildadgauss = 0, pt = 0, squareplus = 0, squareminus = 0, lambda = 0, A = 0;
-  A = pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et;
-  pt = pow(pow(Et,2)-pow(mq,2),0.5);
+  A = sqr(m1)+sqr(mq)-2*fabs(m1)*Et;
+  pt = pow(sqr(Et)-sqr(mq),0.5);
   squareplus = A - pow(fabs(m4)+mq,2);
   squareminus = A - pow(fabs(m4)-mq,2);
   if (squareplus <0) ///< this can happen erronesouly at very end of range due to finite precision used, squareplus should actually then be very very small and +ve
     { squareplus = 0;} ///< set to zero to avoid nan problem in lambda, note that given squareplus very very very small anyway here this should not affect the accuracy of the integral
-  lambda = pow(squareplus*squareminus,0.5);
+  lambda = sqrt(squareplus*squareminus);
   if (lambda != lambda) {
     throw("problem: nan in lambda in gpsitildadgauss used in 1->3 decays\n");
   }
-  gpsitildadgauss = pow(PI,2)*fabs(m1)*pt*Et*lambda/(A)*(pow(m1,2)-pow(m4,2)-2*fabs(m1)*Et)/((A-pow(m2,2))*(A-pow(m3,2)));
+  gpsitildadgauss = sqr(PI)*fabs(m1)*pt*Et*lambda/(A)*(sqr(m1)-sqr(m4)-2*fabs(m1)*Et)/((A-sqr(m2))*(A-sqr(m3)));
 
   return gpsitildadgauss;
 }
@@ -241,8 +241,8 @@ double gphitildadgauss(double Et) {
   for (int i=1; i<=2; i++) { Etbar(i) = 0;}
   Etbar = Etbarmaxmin(m1, m4, mq, Et);
   Z = Zfunc(m1, mq, m3, Etbar(1), Etbar(2));
-  A = pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et;
-  gphitildadgauss = 0.5*pow(PI,2)*fabs(m1)*fabs(m4)/(A-pow(m2,2))*(-(Etbar(1)-Etbar(2)) - (pow(m4,2)-pow(mq,2)+2*Et*fabs(m1)-pow(m3,2))/(2*fabs(m1))*log(Z));
+  A = sqr(m1)+sqr(mq)-2*fabs(m1)*Et;
+  gphitildadgauss = 0.5*sqr(PI)*fabs(m1)*fabs(m4)/(A-sqr(m2))*(-(Etbar(1)-Etbar(2)) - (sqr(m4)-sqr(mq)+2*Et*fabs(m1)-sqr(m3))/(2*fabs(m1))*log(Z));
   return gphitildadgauss;
 }
 
@@ -257,8 +257,8 @@ double gxsidgauss (double Et)
   for (int i=1; i<=2; i++) { Etbar(i) = 0;}
   Etbar = Etbarmaxmin(m1, m4, mq, Et);
   Z = Zfunc(m1,mq,m3,Etbar(1),Etbar(2));
-  A = pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et;
-  gxsidgauss = 0.5*pow(PI,2)/(A-pow(m2,2))*((Etbar(1)-Etbar(2))-(pow(m1,2)-pow(mq,2)-2*fabs(m1)*Et+pow(m3,2))/(2*m1)*log(Z));
+  A = sqr(m1)+sqr(mq)-2*fabs(m1)*Et;
+  gxsidgauss = 0.5*sqr(PI)/(A-sqr(m2))*((Etbar(1)-Etbar(2))-(sqr(m1)-sqr(mq)-2*fabs(m1)*Et+sqr(m3))/(2*m1)*log(Z));
   return gxsidgauss;
 }
 
@@ -273,27 +273,27 @@ double grhodgauss (double Et)
   DoubleVector Etbarmaxmin (double m1, double m2, double massq, double Et);
   Etbar = Etbarmaxmin(m1, m4, mq, Et);
   Z = Zfunc(m1,mq,m3,Etbar(1),Etbar(2));
-  grhodgauss = -pow(PI,2)/(2*fabs(m1))*1/(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m2,2))*log(Z);
+  grhodgauss = -sqr(PI)/(2*fabs(m1))*1/(sqr(m1)+sqr(mq)-2*fabs(m1)*Et-sqr(m2))*log(Z);
   return grhodgauss;
 }
 
 
 double gchidgauss (double Et) {
   double gchidgauss = 0, pt=0, A=0, squareplus=0, squareminus=0, lambda=0;
-  A = pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et;
+  A = sqr(m1)+sqr(mq)-2*fabs(m1)*Et;
   squareplus = A - pow((fabs(m4) + mq),2);
   squareminus = A - pow((fabs(m4) - mq),2);
   if (squareplus < 0 && fabs(squareplus) < 1e-8) {
   }
-  lambda = pow(squareplus*squareminus,0.5);
+  lambda = sqrt(squareplus*squareminus);
   if (lambda != lambda) {
     throw("problem: nan in lambda in gchidgauss used in 1->3 decays\n");
   }
-  pt = pow(pow(Et,2) - pow(mq,2),0.5);
+  pt = pow(sqr(Et) - sqr(mq),0.5);
   if (pt != pt) {
     throw("problem: nan in pt in gchidgauss used in 1->3 decays\n");
   }
-  gchidgauss = pow(PI,2)*fabs(m1)*pt*Et*lambda/A*1/((pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m2,2))*(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m3,2)));
+  gchidgauss = sqr(PI)*fabs(m1)*pt*Et*lambda/A*1/((sqr(m1)+sqr(mq)-2*fabs(m1)*Et-sqr(m2))*(sqr(m1)+sqr(mq)-2*fabs(m1)*Et-sqr(m3)));
   return gchidgauss;
 }
 
@@ -315,16 +315,16 @@ double gzetadgauss (double Et)
 double gXdgauss (double Et)
 {
   double gXdgauss = 0, pt=0, A=0, B=0, squareplus=0, squareminus=0, lambda=0;
-  A = pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et;
-  B = pow(m1,2)-pow(m4,2)-2*fabs(m1)*Et;
-  pt = pow(pow(Et,2) - pow(mq,2),0.5);
+  A = sqr(m1)+sqr(mq)-2*fabs(m1)*Et;
+  B = sqr(m1)-sqr(m4)-2*fabs(m1)*Et;
+  pt = pow(sqr(Et) - sqr(mq),0.5);
   squareplus = A - pow((fabs(m4) + mq),2);
   squareminus = A - pow((fabs(m4) - mq),2);
   if (squareplus*squareminus < 0) {
     throw("problem: lambda will give nan in gXdgauss used in 1->3 decays\n");
   } 
-  lambda = pow(squareplus*squareminus,0.5);
-  gXdgauss = 0.5*pow(PI,2)*pt*B/A*lambda*1/((pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m2,2))*(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m3,2)));
+  lambda = sqrt(squareplus*squareminus);
+  gXdgauss = 0.5*sqr(PI)*pt*B/A*lambda*1/((sqr(m1)+sqr(mq)-2*fabs(m1)*Et-sqr(m2))*(sqr(m1)+sqr(mq)-2*fabs(m1)*Et-sqr(m3)));
   return gXdgauss;
 }
 
@@ -335,11 +335,11 @@ double gYdgauss (double Et)
   double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin);
   DoubleVector Etbar(2);
   for (int i=1; i<=2; i++) { Etbar(i) = 0;}
-  DoubleVector Etbarmaxmin(double m1, double m2, double massq, double Et);
+
   Etbar = Etbarmaxmin(m1, m4, mq, Et);
   Z = Zfunc(m1,mq,m3,Etbar(1),Etbar(2));
-  A = pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et;
-  gYdgauss = 0.5*pow(PI,2)*1/(A-pow(m2,2))*((Etbar(1)-Etbar(2))*A + 1/(2*fabs(m1))*(pow(m1,2)*pow(m4,2)-pow(m1,2)*pow(m3,2)+pow(mq,4)+2*fabs(m1)*Et*pow(m3,2)-pow(m3,2)*pow(mq,2))*log(Z));
+  A = sqr(m1)+sqr(mq)-2*fabs(m1)*Et;
+  gYdgauss = 0.5*sqr(PI)*1/(A-sqr(m2))*((Etbar(1)-Etbar(2))*A + 1/(2*fabs(m1))*(sqr(m1)*sqr(m4)-sqr(m1)*sqr(m3)+pow(mq,4)+2*fabs(m1)*Et*sqr(m3)-sqr(m3)*sqr(mq))*log(Z));
   return gYdgauss;
 }
 
@@ -347,14 +347,11 @@ double gYdgauss (double Et)
 double gchiprimedgauss (double Et)
 {
   double gchiprimedgauss = 0, A=0, Z=0;
-  DoubleVector Etbar(2);
-  for (int i=1; i<=2; i++) { Etbar(i) = 0;}
-  DoubleVector Etbarmaxmin(double m1, double m2, double massq, double Et);
-  Etbar = Etbarmaxmin(m1, m4, mq, Et);
+  DoubleVector Etbar = Etbarmaxmin(m1, m4, mq, Et);
   double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin);
   Z = Zfunc(m1,mq,m2,Etbar(1),Etbar(2));
-  A = pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et;
-  gchiprimedgauss = -0.5*pow(PI,2)*Et/(A-pow(m3,2))*log(Z);
+  A = sqr(m1)+sqr(mq)-2*fabs(m1)*Et;
+  gchiprimedgauss = -0.5*sqr(PI)*Et/(A-sqr(m3))*log(Z);
   return gchiprimedgauss;
 }
 
@@ -363,9 +360,9 @@ double gchiprimedgauss (double Et)
 double gG1dgauss(double Et) ///m1 = mgluino, m2 = mstopi, m6 = mtop, m8 = mcharginoj
 {
   double gG1dgauss = 0, A=0, pt=0;
-  pt = pow(pow(Et,2)-pow(m6,2),0.5);
-  A = pow(m1,2)+pow(m6,2)-2*fabs(m1)*Et;
-  gG1dgauss = fabs(m1)*pt*Et*pow((A-pow(m8,2)),2)/(pow(A-pow(m2,2),2)*A);
+  pt = pow(sqr(Et)-pow(m6,2),0.5);
+  A = sqr(m1)+pow(m6,2)-2*fabs(m1)*Et;
+  gG1dgauss = fabs(m1)*pt*Et*pow((A-pow(m8,2)),2)/(pow(A-sqr(m2),2)*A);
   return gG1dgauss;
 }
 
@@ -373,13 +370,11 @@ double gG1dgauss(double Et) ///m1 = mgluino, m2 = mstopi, m6 = mtop, m8 = mcharg
 double gG4dgauss(double Et) ///m1 = mgluino, m2 = mstopi, m4 = msbottomi, m6 = mtop, m7 = mbottom , m8 = mcharginoj
 {
   double gG4dgauss = 0, A=0, X=0, Ebbarmax=0, Ebbarmin=0;
-  DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4, double Et);
-  double Xfunc (double mass1, double mass2, double mass3, double mass4, double mass5, double Et);
   Ebbarmax = Ebbarmaxmin (m1, m6, m7, m8, Et)(1);
   Ebbarmin = Ebbarmaxmin (m1, m6, m7, m8, Et)(2);
   X = Xfunc(m1, m6, m7, m8, m4, Et);
-  A = pow(m1,2)+pow(m6,2)-2*fabs(m1)*Et;
-  gG4dgauss = (m1)*(m8)*1/(A-pow(m2,2))*((Ebbarmax-Ebbarmin) - (pow(m4,2)+pow(m6,2)-2*Et*fabs(m1)-pow(m8,2))/(2*fabs(m1))*log(X));
+  A = sqr(m1)+pow(m6,2)-2*fabs(m1)*Et;
+  gG4dgauss = (m1)*(m8)*1/(A-sqr(m2))*((Ebbarmax-Ebbarmin) - (sqr(m4)+pow(m6,2)-2*Et*fabs(m1)-pow(m8,2))/(2*fabs(m1))*log(X));
   return gG4dgauss;
 }
 
@@ -387,11 +382,10 @@ double gG4dgauss(double Et) ///m1 = mgluino, m2 = mstopi, m4 = msbottomi, m6 = m
 double gG5dgauss(double Et) ///m1 = mgluino, m2 = mstopi, m4 = msbottomi, m6 = mtop, m7 = mbottom , m8 = mcharginoj
 {
   double gG5dgauss = 0, A=0, X=0;
-  DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4, double Et);
-  double Xfunc (double mass1, double mass2, double mass3, double mass4, double mass5, double Et);
   X = Xfunc(m1, m6, m7, m8, m4, Et);
-  A = pow(m1,2)+pow(m6,2)-2*fabs(m1)*Et;
-  gG5dgauss = (fabs(m1)/m1)*m6/2*(A-pow(m8,2))/(A-pow(m2,2))*log(X);
+  A = sqr(m1)+pow(m6,2)-2*fabs(m1)*Et;
+  
+  gG5dgauss = (fabs(m1)/m1)*m6/2*(A-pow(m8,2))/(A-sqr(m2))*log(X);
   return gG5dgauss;
 }
 
@@ -399,13 +393,11 @@ double gG5dgauss(double Et) ///m1 = mgluino, m2 = mstopi, m4 = msbottomi, m6 = m
 double gG6dgauss(double Et) ///m1 = mgluino, m2 = mstopi, m4 = msbottomi, m6 = mtop, m7 = mbottom , m8 = mcharginoj
 {
   double gG6dgauss = 0, A=0, X=0, Ebbarmax=0, Ebbarmin=0;
-  DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4, double Et);
-  double Xfunc (double mass1, double mass2, double mass3, double mass4, double mass5, double Et);
   Ebbarmax = Ebbarmaxmin (m1, m6, m7, m8, Et)(1);
   Ebbarmin = Ebbarmaxmin (m1, m6, m7, m8, Et)(2);
   X = Xfunc(m1, m6, m7, m8, m4, Et);
-  A = pow(m1,2)+pow(m6,2)-2*fabs(m1)*Et;
-  gG6dgauss = 0.5/(A-pow(m2,2))*((fabs(m1)*(A-pow(m8,2))-(pow(m4,2)-pow(m1,2))/fabs(m1)*-A)*log(X) + 2*(-A)*(Ebbarmax-Ebbarmin));
+  A = sqr(m1)+pow(m6,2)-2*fabs(m1)*Et;
+  gG6dgauss = 0.5/(A-sqr(m2))*((fabs(m1)*(A-pow(m8,2))-(sqr(m4)-sqr(m1))/fabs(m1)*-A)*log(X) + 2*(-A)*(Ebbarmax-Ebbarmin));
   return gG6dgauss;
 }
 
@@ -413,13 +405,12 @@ double gG6dgauss(double Et) ///m1 = mgluino, m2 = mstopi, m4 = msbottomi, m6 = m
 double gG7dgauss(double Et)
 {
   double gG7dgauss = 0, A=0, X=0, Ebbarmax=0, Ebbarmin=0;
-  DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4, double Et);
-  double Xfunc (double mass1, double mass2, double mass3, double mass4, double mass5, double Et);
+
   Ebbarmax = Ebbarmaxmin (m1, m6, m7, m8, Et)(1);
   Ebbarmin = Ebbarmaxmin (m1, m6, m7, m8, Et)(2);
   X = Xfunc(m1, m6, m7, m8, m4, Et);
-  A = pow(m1,2)+pow(m6,2)-2*fabs(m1)*Et;
-  gG7dgauss = 0.5*(m8)*m6*1/(A-pow(m2,2))*(2*(Ebbarmax-Ebbarmin)-(pow(m4,2)-pow(m1,2))/fabs(m1)*log(X));
+  A = sqr(m1)+pow(m6,2)-2*fabs(m1)*Et;
+  gG7dgauss = 0.5*(m8)*m6*1/(A-sqr(m2))*(2*(Ebbarmax-Ebbarmin)-(sqr(m4)-sqr(m1))/fabs(m1)*log(X));
   return gG7dgauss;
 }
 
@@ -427,11 +418,10 @@ double gG7dgauss(double Et)
 double gG8dgauss(double Et)
 {
   double gG8dgauss = 0, A=0, Ebbarmax=0, Ebbarmin=0;
-  DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4, double Et);
   Ebbarmax = Ebbarmaxmin (m1, m6, m7, m8, Et)(1);
   Ebbarmin = Ebbarmaxmin (m1, m6, m7, m8, Et)(2);
-  A = pow(m1,2)+pow(m6,2)-2*fabs(m1)*Et;
-  gG8dgauss = ((m1))*m6*(A-pow(m8,2))*(Ebbarmax-Ebbarmin)/((A-pow(m2,2))*(A-pow(m3,2)));
+  A = sqr(m1)+pow(m6,2)-2*fabs(m1)*Et;
+  gG8dgauss = ((m1))*m6*(A-pow(m8,2))*(Ebbarmax-Ebbarmin)/((A-sqr(m2))*(A-sqr(m3)));
   return gG8dgauss;
 }
 
@@ -439,14 +429,14 @@ double gG8dgauss(double Et)
 double gG2dgauss(double Ebbar)
 { 
   double gG2dgauss = 0, A=0, squareplus=0, squareminus=0, lambda=0;
-  A = pow(m1,2)+pow(m7,2)-2*fabs(m1)*Ebbar;
+  A = sqr(m1)+pow(m7,2)-2*fabs(m1)*Ebbar;
   squareplus = A - pow((m8)+m6,2);
   squareminus = A - pow((m8)-m6,2);
-  lambda = pow(squareplus*squareminus,0.5);
+  lambda = sqrt(squareplus*squareminus);
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gG2dgauss used in 1->3 decays" );
   } 
-  gG2dgauss = fabs(m1)*pow(Ebbar,2)*lambda*(A-pow(m6,2)-pow(m8,2))/(pow(A-pow(m4,2),2)*A);
+  gG2dgauss = fabs(m1)*pow(Ebbar,2)*lambda*(A-pow(m6,2)-pow(m8,2))/(pow(A-sqr(m4),2)*A);
   return gG2dgauss;
 }
 
@@ -454,15 +444,15 @@ double gG2dgauss(double Ebbar)
 double gG3dgauss(double Ebbar)
 {
   double gG3dgauss = 0, A=0, squareplus=0, squareminus=0, lambda=0;
-  A = pow(m1,2)+pow(m7,2)-2*fabs(m1)*Ebbar;
+  A = sqr(m1)+pow(m7,2)-2*fabs(m1)*Ebbar;
   squareplus = A - pow((m8)+m6,2);
   squareminus = A - pow((m8)-m6,2);
-  lambda = pow(squareplus*squareminus,0.5);
+  lambda = sqrt(squareplus*squareminus);
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gG3dgauss used in 1->3 decays" );
   } 
 
-  gG3dgauss = pow(Ebbar,2)*lambda*4*fabs(m1)*fabs(m8)*fabs(m6)/(pow(A-pow(m4,2),2)*A);
+  gG3dgauss = pow(Ebbar,2)*lambda*4*fabs(m1)*fabs(m8)*fabs(m6)/(pow(A-sqr(m4),2)*A);
   return gG3dgauss;
 }
 
@@ -470,12 +460,12 @@ double gG3dgauss(double Ebbar)
 double gZdgauss(double E) ///m1 = mZi, m4 = mZj, m2 = mstop1, m3 = mstop2, mq = mt, MZboson = mz
 {
   double gZdgauss = 0, Bf=0, D=0, F=0, G=0, H=0;
-  Bf = pow(1-4*pow(mq,2)/(pow(m1,2)+pow(m4,2)-2*E*fabs(m1)),0.5);
-  D = pow(m1,2)+pow(m4,2)-pow(MZboson,2)-2*E*fabs(m1);
-  F = pow(m1,2)+pow(m4,2)-2*fabs(m1)*fabs(m4);
-  G = pow(E,2)+pow(m4,2) + Bf/3*(pow(E,2)-pow(m4,2));
-  H = fabs(m4)*(fabs(m1)/m1)*(pow(m1,2)+pow(m4,2)-2*pow(mq,2));
-  gZdgauss = Bf*pow(pow(E,2)-pow(m4,2),0.5)/(pow(D,2))*(E*F-fabs(m1)*G+H);
+  Bf = pow(1-4*sqr(mq)/(sqr(m1)+sqr(m4)-2*E*fabs(m1)),0.5);
+  D = sqr(m1)+sqr(m4)-pow(MZboson,2)-2*E*fabs(m1);
+  F = sqr(m1)+sqr(m4)-2*fabs(m1)*fabs(m4);
+  G = pow(E,2)+sqr(m4) + Bf/3*(pow(E,2)-sqr(m4));
+  H = fabs(m4)*(fabs(m1)/m1)*(sqr(m1)+sqr(m4)-2*sqr(mq));
+  gZdgauss = Bf*pow(pow(E,2)-sqr(m4),0.5)/(pow(D,2))*(E*F-fabs(m1)*G+H);
 
   return gZdgauss;
 }
@@ -484,11 +474,11 @@ double gZdgauss(double E) ///m1 = mZi, m4 = mZj, m2 = mstop1, m3 = mstop2, mq = 
 double ghHdgauss (double E) ///m1 = mZi, m4 = mZj, m2 = mstop1, m3 = mstop2, mq = mt, MZboson = mz
 {
    double ghHdgauss = 0, Bf=0, D=0, F=0, G=0, Xijh=0, XijH=0, Xjih=0, XjiH=0, H=0;
-   Bf = pow(1-4*pow(mq,2)/(pow(m1,2)+pow(m4,2)-2*E*m1),0.5);
-   D = pow(m1,2)+pow(m4,2)-2*E*m1-2*pow(mq,2);
-   F = pow(m1,2)+pow(m4,2)-2*m1*E-pow(mh,2);
-   G = pow(m1,2)+pow(m4,2)-2*m1*E-pow(mH,2);
-   H = pow(E,2) - pow(m4,2);
+   Bf = pow(1-4*sqr(mq)/(sqr(m1)+sqr(m4)-2*E*m1),0.5);
+   D = sqr(m1)+sqr(m4)-2*E*m1-2*sqr(mq);
+   F = sqr(m1)+sqr(m4)-2*m1*E-pow(mh,2);
+   G = sqr(m1)+sqr(m4)-2*m1*E-pow(mH,2);
+   H = pow(E,2) - sqr(m4);
    
    Xjih = -0.5*(fabs(m1)/m1)*(fabs(m4)/m4)*(NeutMIX(neutralinoj,3)*-sin(alphamix)-NeutMIX(neutralinoj,4)*cos(alphamix))*(g1*-NeutMIX(neutralinoi,2)-g2*-NeutMIX(neutralinoi,1));
    XjiH = -0.5*(fabs(m1)/m1)*(fabs(m4)/m4)*(NeutMIX(neutralinoj,3)*cos(alphamix)-NeutMIX(neutralinoj,4)*sin(alphamix))*(g1*-NeutMIX(neutralinoi,2)-g2*-NeutMIX(neutralinoi,1));
@@ -503,27 +493,27 @@ double ghHdgauss (double E) ///m1 = mZi, m4 = mZj, m2 = mstop1, m3 = mstop2, mq 
 double gAdgauss(double E) ///m1 = mZi, m4 = mZj, m2 = mstop1, m3 = mstop2, mq = mt
 {
   double gAdgauss = 0, Bf=0, D=0, F=0;
-  Bf = pow(1-4*pow(mq,2)/(pow(m1,2)+pow(m4,2)-2*E*m1),0.5);
-  D = pow(m1,2)+pow(m4,2)-2*E*m1-2*pow(mq,2);
-  F = pow(m1,2)+pow(m4,2)-2*m1*E-pow(mA,2);
-  gAdgauss = fabs(m1)*Bf*pow(pow(E,2)-pow(m4,2),0.5)*D*(E-fabs(m4)*(fabs(m1)/m1))/pow(F,2);
+  Bf = pow(1-4*sqr(mq)/(sqr(m1)+sqr(m4)-2*E*m1),0.5);
+  D = sqr(m1)+sqr(m4)-2*E*m1-2*sqr(mq);
+  F = sqr(m1)+sqr(m4)-2*m1*E-pow(mA,2);
+  gAdgauss = fabs(m1)*Bf*pow(pow(E,2)-sqr(m4),0.5)*D*(E-fabs(m4)*(fabs(m1)/m1))/pow(F,2);
   return gAdgauss;
 }
 
 double gZsfdgauss(double s) ///m2 = msfi where i is the sfermion contribution interference with Z you are considering
 {
   double gZsfintegral = 0, EQ=0, Q=0, Qprime=0, musquared=0, B=0, C=0, D=0, F=0, G=0, H=0;
-  EQ = (s + pow(m1,2)-pow(m4,2))/(2*m1);
+  EQ = (s + sqr(m1)-sqr(m4))/(2*m1);
   Q = pow(pow(EQ,2)-s,0.5);
-  Qprime = Q*pow(1-4*pow(mq,2)/s,0.5);
-  musquared = s + pow(m2,2) - pow(m4,2)- pow(mq,2);
-  B = m1*EQ+pow(m2,2)-pow(m1,2)-s-pow(mq,2);
-  C = pow(m2,2)-pow(m4,2)-pow(mq,2);
-  D = pow(m2,2)-pow(m1,2)-pow(mq,2);
-  F = fabs(m1)*fabs(m4)*(s-2*pow(mq,2));
+  Qprime = Q*pow(1-4*sqr(mq)/s,0.5);
+  musquared = s + sqr(m2) - sqr(m4)- sqr(mq);
+  B = m1*EQ+sqr(m2)-sqr(m1)-s-sqr(mq);
+  C = sqr(m2)-sqr(m4)-sqr(mq);
+  D = sqr(m2)-sqr(m1)-sqr(mq);
+  F = fabs(m1)*fabs(m4)*(s-2*sqr(mq));
   G = m1*(EQ+Qprime)-musquared;
   H = m1*(EQ-Qprime)-musquared;
-  gZsfintegral = pow(PI,2)/2*1/fabs(m1)*1/(s-pow(MZboson,2))*(-0.5*Qprime*B-1/(4*m1)*(C*D + F)*log(G/H));
+  gZsfintegral = sqr(PI)/2*1/fabs(m1)*1/(s-pow(MZboson,2))*(-0.5*Qprime*B-1/(4*m1)*(C*D + F)*log(G/H));
   
   return gZsfintegral;
 }
@@ -531,11 +521,11 @@ double gZsfdgauss(double s) ///m2 = msfi where i is the sfermion contribution in
 double gJdgauss (double s)
 {
   double gJdgauss = 0, EQ=0, Q=0, Qprime=0, musquared=0, B=0, G=0, H=0;
-  EQ = (s + pow(m1,2)-pow(m4,2))/(2*m1);
+  EQ = (s + sqr(m1)-sqr(m4))/(2*m1);
   Q = pow(pow(EQ,2)-s,0.5);
-  Qprime = Q*pow(1-4*pow(mq,2)/s,0.5);
-  musquared = s + pow(m2,2) - pow(m4,2)- pow(mq,2);
-  B = s*pow(m2,2)-pow(mq,2)*(pow(m1,2)+pow(m4,2))+pow(-1,AorhorH)*fabs(m1)*fabs(m4)*(s-2*pow(mq,2));
+  Qprime = Q*pow(1-4*sqr(mq)/s,0.5);
+  musquared = s + sqr(m2) - sqr(m4)- sqr(mq);
+  B = s*sqr(m2)-sqr(mq)*(sqr(m1)+sqr(m4))+pow(-1,AorhorH)*fabs(m1)*fabs(m4)*(s-2*sqr(mq));
   G = m1*(EQ+Qprime)-musquared;
   H = m1*(EQ-Qprime)-musquared;
   gJdgauss = 1/(s-pow(mphi,2))*(0.5*s*Qprime + B/(4*m1)*log(G/H));
@@ -554,8 +544,8 @@ double gneutineutjffZ1dgauss(double s) ///m1 = mneuti, m4 = mneutj, mq = mf, MZb
     throw( "problem: lambda1 will give nan in gneutineutjffZ1dgauss used in 1->3 decays" );
   } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
-  lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
-  Z1dgauss = 1/(3*pow(s,2)*pow(s-pow(MZboson,2),2))*(-2*pow(s,4) + (pow(m1,2) + pow(m4,2) + 2*pow(mq,2))*pow(s,3) + (pow(pow(m1,2)-pow(m4,2),2) - 2*(pow(m1,2)+pow(m4,2))*2*pow(mq,2))*pow(s,2) + 2*pow(mq,2)*pow(pow(m1,2)-pow(m4,2),2)*s)*1/s*lambda1*lambda2;
+  lambda2 = pow(s*(s-4*sqr(mq)),0.5);    
+  Z1dgauss = 1/(3*pow(s,2)*pow(s-pow(MZboson,2),2))*(-2*pow(s,4) + (sqr(m1) + sqr(m4) + 2*sqr(mq))*pow(s,3) + (pow(sqr(m1)-sqr(m4),2) - 2*(sqr(m1)+sqr(m4))*2*sqr(mq))*pow(s,2) + 2*sqr(mq)*pow(sqr(m1)-sqr(m4),2)*s)*1/s*lambda1*lambda2;
   return Z1dgauss;
 }
 
@@ -571,8 +561,8 @@ double gneutineutjffZ2dgauss(double s)
     throw( "problem: lambda1 will give nan in gneutineutjffZ2dgauss used in 1->3 decays" );
   } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
-  lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
-  Z2dgauss = 1/(s*pow(s-pow(MZboson,2),2))*lambda1*lambda2*(s-2*pow(mq,2));
+  lambda2 = pow(s*(s-4*sqr(mq)),0.5);    
+  Z2dgauss = 1/(s*pow(s-pow(MZboson,2),2))*lambda1*lambda2*(s-2*sqr(mq));
   return Z2dgauss;
 }
 
@@ -588,8 +578,8 @@ double gneutineutjffZ3dgauss(double s)
     throw( "problem: lambda1 will give nan in gneutineutjffZ3dgauss used in 1->3 decays" );
   } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
-  lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
-  Z3dgauss = 1/(s*pow(s-pow(MZboson,2),2))*lambda1*lambda2*(-s+pow(m1,2)+pow(m4,2));
+  lambda2 = pow(s*(s-4*sqr(mq)),0.5);    
+  Z3dgauss = 1/(s*pow(s-pow(MZboson,2),2))*lambda1*lambda2*(-s+sqr(m1)+sqr(m4));
   return Z3dgauss;
 }
 
@@ -605,7 +595,7 @@ double gneutineutjffZ4dgauss(double s)
     throw( "problem: lambda1 will give nan in gneutineutjffZ4dgauss used in 1->3 decays" );
   } 
   lambda1 = pow(squareplus1*squareminus1,0.5);
-  lambda2 = pow(s*(s-4*pow(mq,2)),0.5);    
+  lambda2 = pow(s*(s-4*sqr(mq)),0.5);    
   Z4dgauss = 1/(s*pow(s-pow(MZboson,2),2))*lambda1*lambda2;
   return Z4dgauss;
 }
@@ -614,8 +604,8 @@ double gneutineutjffZ4dgauss(double s)
 double gintegralhdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mh = mhiggsl
 {
   double gintegralhdgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*m1*E;
-  gintegralhdgauss = (pow(pow(E,2)-pow(m4,2),0.5)*pow(s-4*pow(mq,2),0.5))/(pow(s,0.5)*pow(s-pow(mh,2),2))*(E-fabs(m4))*(s-4*pow(mq,2));
+  s = sqr(m1) + sqr(m4) - 2*m1*E;
+  gintegralhdgauss = (pow(pow(E,2)-sqr(m4),0.5)*pow(s-4*sqr(mq),0.5))/(pow(s,0.5)*pow(s-pow(mh,2),2))*(E-fabs(m4))*(s-4*sqr(mq));
 
   return gintegralhdgauss;
 }
@@ -623,8 +613,8 @@ double gintegralhdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz,
 double gintegralHdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mH = mhiggsH
 {
   double gintegralHdgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*m1*E;
-  gintegralHdgauss = (pow(pow(E,2)-pow(m4,2),0.5)*pow(s-4*pow(mq,2),0.5))/(pow(s,0.5)*pow(s-pow(mH,2),2))*(E-fabs(m4))*(s-4*pow(mq,2));
+  s = sqr(m1) + sqr(m4) - 2*m1*E;
+  gintegralHdgauss = (pow(pow(E,2)-sqr(m4),0.5)*pow(s-4*sqr(mq),0.5))/(pow(s,0.5)*pow(s-pow(mH,2),2))*(E-fabs(m4))*(s-4*sqr(mq));
    
   return gintegralHdgauss;
 }
@@ -633,16 +623,16 @@ double gintegralHdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz,
 double gintegralh1dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mh = mhiggsl
 {
   double gintegralh1dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralh1dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)/(pow(s,0.5)*pow(s-pow(mh,2),2));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralh1dgauss = 2*fabs(m1)*pow(s-4*sqr(mq),0.5)*pow(pow(E,2)-sqr(m4),0.5)*2*fabs(m1)/(pow(s,0.5)*pow(s-pow(mh,2),2));
   return gintegralh1dgauss;
 }
 
 double gintegralh2dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mh = mhiggsl
 {
   double gintegralh2dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralh2dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*(s-2*pow(mq,2))/(pow(s,0.5)*pow(s-pow(mh,2),2));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralh2dgauss = 2*fabs(m1)*pow(s-4*sqr(mq),0.5)*pow(pow(E,2)-sqr(m4),0.5)*2*fabs(m1)*(s-2*sqr(mq))/(pow(s,0.5)*pow(s-pow(mh,2),2));
 
   return gintegralh2dgauss;
 }
@@ -651,8 +641,8 @@ double gintegralh2dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 double gintegralh3dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mh = mhiggsl
 {
   double gintegralh3dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralh3dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*2*fabs(m1)*E/(pow(s,0.5)*pow(s-pow(mh,2),2));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralh3dgauss = 2*fabs(m1)*pow(s-4*sqr(mq),0.5)*pow(pow(E,2)-sqr(m4),0.5)*2*fabs(m1)*2*fabs(m1)*E/(pow(s,0.5)*pow(s-pow(mh,2),2));
   return gintegralh3dgauss;
 }
 
@@ -660,24 +650,24 @@ double gintegralh3dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 double gintegralh4dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mh = mhiggsl
 {
   double gintegralh4dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralh4dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*2*fabs(m1)*E*(s-2*pow(mq,2))/(pow(s,0.5)*pow(s-pow(mh,2),2));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralh4dgauss = 2*fabs(m1)*pow(s-4*sqr(mq),0.5)*pow(pow(E,2)-sqr(m4),0.5)*2*fabs(m1)*2*fabs(m1)*E*(s-2*sqr(mq))/(pow(s,0.5)*pow(s-pow(mh,2),2));
   return gintegralh4dgauss;
 }
 
 double gintegralH1dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mH = mhiggsH
 {
   double gintegralH1dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralH1dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)/(pow(s,0.5)*pow(s-pow(mH,2),2));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralH1dgauss = 2*fabs(m1)*pow(s-4*sqr(mq),0.5)*pow(pow(E,2)-sqr(m4),0.5)*2*fabs(m1)/(pow(s,0.5)*pow(s-pow(mH,2),2));
   return gintegralH1dgauss;
 }
 
 double gintegralH2dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mH = mhiggsH
 {
   double gintegralH2dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralH2dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*(s-2*pow(mq,2))/(pow(s,0.5)*pow(s-pow(mH,2),2));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralH2dgauss = 2*fabs(m1)*pow(s-4*sqr(mq),0.5)*pow(pow(E,2)-sqr(m4),0.5)*2*fabs(m1)*(s-2*sqr(mq))/(pow(s,0.5)*pow(s-pow(mH,2),2));
   return gintegralH2dgauss;
 }
 
@@ -685,8 +675,8 @@ double gintegralH2dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 double gintegralH3dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mH = mhiggsH
 {
   double gintegralH3dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralH3dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*2*fabs(m1)*E/(pow(s,0.5)*pow(s-pow(mH,2),2));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralH3dgauss = 2*fabs(m1)*pow(s-4*sqr(mq),0.5)*pow(pow(E,2)-sqr(m4),0.5)*2*fabs(m1)*2*fabs(m1)*E/(pow(s,0.5)*pow(s-pow(mH,2),2));
   return gintegralH3dgauss;
 }
 
@@ -694,8 +684,8 @@ double gintegralH3dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 double gintegralH4dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mh = mhiggsl
 {
   double gintegralH4dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralH4dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*2*fabs(m1)*E*(s-2*pow(mq,2))/(pow(s,0.5)*pow(s-pow(mH,2),2));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralH4dgauss = 2*fabs(m1)*pow(s-4*sqr(mq),0.5)*pow(pow(E,2)-sqr(m4),0.5)*2*fabs(m1)*2*fabs(m1)*E*(s-2*sqr(mq))/(pow(s,0.5)*pow(s-pow(mH,2),2));
   return gintegralH4dgauss;
 }
 
@@ -703,16 +693,16 @@ double gintegralH4dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 double gintegralhH1dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mh = mhiggsl, mH = mhiggsH
 {
   double gintegralhH1dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralhH1dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)/(pow(s,0.5)*(s-pow(mh,2))*(s-pow(mH,2)));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralhH1dgauss = 2*fabs(m1)*pow(s-4*sqr(mq),0.5)*pow(pow(E,2)-sqr(m4),0.5)*2*fabs(m1)/(pow(s,0.5)*(s-pow(mh,2))*(s-pow(mH,2)));
   return gintegralhH1dgauss;
 }
 
 double gintegralhH2dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mh = mhiggsl, mH = mhiggsH
 {
   double gintegralhH2dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralhH2dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*(s-2*pow(mq,2))/(pow(s,0.5)*(s-pow(mh,2))*(s-pow(mH,2)));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralhH2dgauss = 2*fabs(m1)*pow(s-4*sqr(mq),0.5)*pow(pow(E,2)-sqr(m4),0.5)*2*fabs(m1)*(s-2*sqr(mq))/(pow(s,0.5)*(s-pow(mh,2))*(s-pow(mH,2)));
   return gintegralhH2dgauss;
 }
 
@@ -720,8 +710,8 @@ double gintegralhH2dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = m
 double gintegralhH3dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mh = mhiggsl, mH = mhiggsH
 {
   double gintegralhH3dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralhH3dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*2*fabs(m1)*E/(pow(s,0.5)*(s-pow(mh,2))*(s-pow(mH,2)));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralhH3dgauss = 2*fabs(m1)*pow(s-4*sqr(mq),0.5)*pow(pow(E,2)-sqr(m4),0.5)*2*fabs(m1)*2*fabs(m1)*E/(pow(s,0.5)*(s-pow(mh,2))*(s-pow(mH,2)));
   return gintegralhH3dgauss;
 }
 
@@ -729,16 +719,16 @@ double gintegralhH3dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = m
 double gintegralhH4dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mh = mhiggsl, mH = mhiggsH
 {
   double gintegralhH4dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralhH4dgauss = 2*fabs(m1)*pow(s-4*pow(mq,2),0.5)*pow(pow(E,2)-pow(m4,2),0.5)*2*fabs(m1)*2*fabs(m1)*E*(s-2*pow(mq,2))/(pow(s,0.5)*(s-pow(mh,2))*(s-pow(mH,2)));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralhH4dgauss = 2*fabs(m1)*pow(s-4*sqr(mq),0.5)*pow(pow(E,2)-sqr(m4),0.5)*2*fabs(m1)*2*fabs(m1)*E*(s-2*sqr(mq))/(pow(s,0.5)*(s-pow(mh,2))*(s-pow(mH,2)));
   return gintegralhH4dgauss;
 }
 
 double gintegralA1dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mA = mhiggsA
 {
   double gintegralA1dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralA1dgauss = 4*pow(m1,2)*pow(pow(E,2)-pow(m4,2),0.5)*pow(s-4*pow(mq,2),0.5)/(pow(s,0.5)*pow(s-pow(mA,2),2));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralA1dgauss = 4*sqr(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(s-4*sqr(mq),0.5)/(pow(s,0.5)*pow(s-pow(mA,2),2));
   return gintegralA1dgauss;
 }
 
@@ -746,8 +736,8 @@ double gintegralA1dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 double gintegralA2dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mA = mhiggsA
 {
   double gintegralA2dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralA2dgauss = 4*pow(m1,2)*pow(pow(E,2)-pow(m4,2),0.5)*pow(s-4*pow(mq,2),0.5)*(s-2*pow(mq,2))/(pow(s,0.5)*pow(s-pow(mA,2),2));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralA2dgauss = 4*sqr(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(s-4*sqr(mq),0.5)*(s-2*sqr(mq))/(pow(s,0.5)*pow(s-pow(mA,2),2));
   return gintegralA2dgauss;
 }
 
@@ -755,8 +745,8 @@ double gintegralA2dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 double gintegralA3dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mA = mhiggsA
 {
   double gintegralA3dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralA3dgauss = 4*pow(m1,2)*pow(pow(E,2)-pow(m4,2),0.5)*pow(s-4*pow(mq,2),0.5)*2*fabs(m1)*E/(pow(s,0.5)*pow(s-pow(mA,2),2));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralA3dgauss = 4*sqr(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(s-4*sqr(mq),0.5)*2*fabs(m1)*E/(pow(s,0.5)*pow(s-pow(mA,2),2));
   return gintegralA3dgauss;
 }
 
@@ -764,24 +754,24 @@ double gintegralA3dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz
 double gintegralA4dgauss (double E) ///m1 = mZi, m4 = mZj, mq = mt, MZboson = mz, mA = mhiggsA
 {
   double gintegralA4dgauss = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegralA4dgauss = 4*pow(m1,2)*pow(pow(E,2)-pow(m4,2),0.5)*pow(s-4*pow(mq,2),0.5)*2*fabs(m1)*E*(s-2*pow(mq,2))/(pow(s,0.5)*pow(s-pow(mA,2),2));
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegralA4dgauss = 4*sqr(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(s-4*sqr(mq),0.5)*2*fabs(m1)*E*(s-2*sqr(mq))/(pow(s,0.5)*pow(s-pow(mA,2),2));
   return gintegralA4dgauss;
 }
 
 double gintegral1Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = mz, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral1Zsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral1Zsfdgauss used in 1->3 decays" );
   }
 
-  gintegral1Zsfdgauss = 1/(s-pow(MZboson,2))*(-2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) - (pow(m2,2)-pow(mq,2)+pow(m4,2) - 2*fabs(m1)*E)*log(logarg));
+  gintegral1Zsfdgauss = 1/(s-pow(MZboson,2))*(-2*fabs(m1)*pow(1-4*sqr(mq)/s,0.5)*pow(pow(E,2)-sqr(m4),0.5) - (sqr(m2)-sqr(mq)+sqr(m4) - 2*fabs(m1)*E)*log(logarg));
   
   return gintegral1Zsfdgauss;
 }
@@ -789,15 +779,15 @@ double gintegral1Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
 double gintegral2Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = mz, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral2Zsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral2Zsfdgauss used in 1->3 decays" );
   }  
-  gintegral2Zsfdgauss = 1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) + (pow(m2,2)+pow(m1,2)- 2*fabs(m1)*E - pow(mq,2))*log(logarg));
+  gintegral2Zsfdgauss = 1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*sqr(mq)/s,0.5)*pow(pow(E,2)-sqr(m4),0.5) + (sqr(m2)+sqr(m1)- 2*fabs(m1)*E - sqr(mq))*log(logarg));
    
   return gintegral2Zsfdgauss;
 }
@@ -805,16 +795,16 @@ double gintegral2Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
 double gintegral3Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = mz, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral3Zsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral3Zsfdgauss used in 1->3 decays" );
   }
 
-  gintegral3Zsfdgauss = 1/(s-pow(MZboson,2))*((pow(m1,2) + 2*pow(mq,2) + pow(m4,2) -1.5*pow(m2,2) - 0.5*(pow(mq,2) + fabs(m1)*E + fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)))*(pow(mq,2) + fabs(m1)*E + fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)-pow(m2,2)) - (pow(m1,2) + 2*pow(mq,2) + pow(m4,2) -1.5*pow(m2,2) - 0.5*(pow(mq,2) + fabs(m1)*E - fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)))*(pow(mq,2) + fabs(m1)*E - fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5)-pow(m2,2)) + (pow(m1,2) + pow(mq,2) - pow(m2,2))*(pow(m2,2)-pow(mq,2)-pow(m4,2))*log(logarg));
+  gintegral3Zsfdgauss = 1/(s-pow(MZboson,2))*((sqr(m1) + 2*sqr(mq) + sqr(m4) -1.5*sqr(m2) - 0.5*(sqr(mq) + fabs(m1)*E + fabs(m1)*pow(1-4*sqr(mq)/s,0.5)*pow(pow(E,2)-sqr(m4),0.5)))*(sqr(mq) + fabs(m1)*E + fabs(m1)*pow(1-4*sqr(mq)/s,0.5)*pow(pow(E,2)-sqr(m4),0.5)-sqr(m2)) - (sqr(m1) + 2*sqr(mq) + sqr(m4) -1.5*sqr(m2) - 0.5*(sqr(mq) + fabs(m1)*E - fabs(m1)*pow(1-4*sqr(mq)/s,0.5)*pow(pow(E,2)-sqr(m4),0.5)))*(sqr(mq) + fabs(m1)*E - fabs(m1)*pow(1-4*sqr(mq)/s,0.5)*pow(pow(E,2)-sqr(m4),0.5)-sqr(m2)) + (sqr(m1) + sqr(mq) - sqr(m2))*(sqr(m2)-sqr(mq)-sqr(m4))*log(logarg));
    
   return gintegral3Zsfdgauss;
 }
@@ -822,58 +812,58 @@ double gintegral3Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
 double gintegral4Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = mz, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral4Zsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral4Zsfdgauss used in 1->3 decays" );
   }
   
-  gintegral4Zsfdgauss = 1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) + (pow(m2,2)-pow(mq,2)-pow(m4,2))*log(logarg));
+  gintegral4Zsfdgauss = 1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*sqr(mq)/s,0.5)*pow(pow(E,2)-sqr(m4),0.5) + (sqr(m2)-sqr(mq)-sqr(m4))*log(logarg));
   return gintegral4Zsfdgauss;
 }    
 
 double gintegral5Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = mz, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral5Zsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral5Zsfdgauss used in 1->3 decays" );
   }
   
-  gintegral5Zsfdgauss = -1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*pow(mq,2)/s,0.5)*pow(pow(E,2)-pow(m4,2),0.5) + (pow(m2,2)-pow(mq,2)-pow(m1,2))*log(logarg));
+  gintegral5Zsfdgauss = -1/(s-pow(MZboson,2))*(2*fabs(m1)*pow(1-4*sqr(mq)/s,0.5)*pow(pow(E,2)-sqr(m4),0.5) + (sqr(m2)-sqr(mq)-sqr(m1))*log(logarg));
   return gintegral5Zsfdgauss;
 }
 
 double gintegral6Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = mz, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral6Zsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral6Zsfdgauss used in 1->3 decays" );
   }
   
-  gintegral6Zsfdgauss = 1/(s-pow(MZboson,2))*(s- 2*pow(mq,2))*log(logarg);
+  gintegral6Zsfdgauss = 1/(s-pow(MZboson,2))*(s- 2*sqr(mq))*log(logarg);
   return gintegral6Zsfdgauss;
 }
 
 double gintegral7Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = mz, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral7Zsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral7Zsfdgauss used in 1->3 decays" );
@@ -886,10 +876,10 @@ double gintegral7Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
 double gintegral8Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = mz, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral8Zsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral8Zsfdgauss used in 1->3 decays" );
@@ -904,16 +894,16 @@ double gintegral8Zsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, MZboson = 
 double gintegral1hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral1hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral1hsfdgauss used in 1->3 decays" ); 
   }
 
-  gintegral1hsfdgauss = 2/(s-pow(mh,2))*(2*s*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2)*s - pow(mq,2)*(pow(m1,2)+pow(m4,2)))*log(logarg));
+  gintegral1hsfdgauss = 2/(s-pow(mh,2))*(2*s*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5) + (sqr(m2)*s - sqr(mq)*(sqr(m1)+sqr(m4)))*log(logarg));
   
   return gintegral1hsfdgauss;
 }
@@ -922,16 +912,16 @@ double gintegral1hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral2hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral2hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral2hsfdgauss used in 1->3 decays" ); 
   }
 
-  gintegral2hsfdgauss = -1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m4,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
+  gintegral2hsfdgauss = -1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5) + (sqr(m2) + sqr(m4) -2*fabs(m1)*E - sqr(mq))*log(logarg));
      
   return gintegral2hsfdgauss;
 }
@@ -941,16 +931,16 @@ double gintegral2hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral3hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral3hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral3hsfdgauss used in 1->3 decays" ); 
   }
 
-  gintegral3hsfdgauss = 1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m1,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
+  gintegral3hsfdgauss = 1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5) + (sqr(m2) + sqr(m1) -2*fabs(m1)*E - sqr(mq))*log(logarg));
      
   return gintegral3hsfdgauss;
 }
@@ -960,16 +950,16 @@ double gintegral3hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral4hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral4hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral4hsfdgauss used in 1->3 decays" ); 
   }
 
-  gintegral4hsfdgauss = 1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m4,2))*log(logarg));
+  gintegral4hsfdgauss = 1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5) + (sqr(m2) - sqr(mq) - sqr(m4))*log(logarg));
      
   return gintegral4hsfdgauss;
 }
@@ -978,16 +968,16 @@ double gintegral4hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral5hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral5hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral5hsfdgauss used in 1->3 decays" ); 
   }
 
-  gintegral5hsfdgauss = -1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m1,2))*log(logarg));
+  gintegral5hsfdgauss = -1/(s-pow(mh,2))*(2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5) + (sqr(m2) - sqr(mq) - sqr(m1))*log(logarg));
      
   return gintegral5hsfdgauss;
 }
@@ -996,16 +986,16 @@ double gintegral5hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral6hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral6hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral6hsfdgauss used in 1->3 decays" ); 
   }
 
-  gintegral6hsfdgauss = 1/(s-pow(mh,2))*(s-2*pow(mq,2))*log(logarg);
+  gintegral6hsfdgauss = 1/(s-pow(mh,2))*(s-2*sqr(mq))*log(logarg);
      
   return gintegral6hsfdgauss;
 }
@@ -1014,10 +1004,10 @@ double gintegral6hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral7hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral7hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral7hsfdgauss used in 1->3 decays" ); 
@@ -1032,10 +1022,10 @@ double gintegral7hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral8hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral8hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral8hsfdgauss used in 1->3 decays" ); 
@@ -1050,16 +1040,16 @@ double gintegral8hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral1Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral1Hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral1Hsfdgauss used in 1->3 decays" ); 
   }
 
-  gintegral1Hsfdgauss = 2/(s-pow(mH,2))*(2*s*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2)*s - pow(mq,2)*(pow(m1,2)+pow(m4,2)))*log(logarg));
+  gintegral1Hsfdgauss = 2/(s-pow(mH,2))*(2*s*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5) + (sqr(m2)*s - sqr(mq)*(sqr(m1)+sqr(m4)))*log(logarg));
    
    return gintegral1Hsfdgauss;
 }
@@ -1068,16 +1058,16 @@ double gintegral1Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral2Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral2Hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral2Hsfdgauss used in 1->3 decays" ); 
   }
 
-  gintegral2Hsfdgauss = -1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m4,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
+  gintegral2Hsfdgauss = -1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5) + (sqr(m2) + sqr(m4) -2*fabs(m1)*E - sqr(mq))*log(logarg));
      
   return gintegral2Hsfdgauss;
 }
@@ -1087,16 +1077,16 @@ double gintegral2Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral3Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral3Hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral3Hsfdgauss used in 1->3 decays" ); 
   }
 
-  gintegral3Hsfdgauss = 1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) + pow(m1,2) -2*fabs(m1)*E - pow(mq,2))*log(logarg));
+  gintegral3Hsfdgauss = 1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5) + (sqr(m2) + sqr(m1) -2*fabs(m1)*E - sqr(mq))*log(logarg));
      
   return gintegral3Hsfdgauss;
 }
@@ -1106,16 +1096,16 @@ double gintegral3Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral4Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral4Hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral4Hsfdgauss used in 1->3 decay" );
   }
 
-  gintegral4Hsfdgauss = 1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m4,2))*log(logarg));
+  gintegral4Hsfdgauss = 1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5) + (sqr(m2) - sqr(mq) - sqr(m4))*log(logarg));
      
   return gintegral4Hsfdgauss;
 }
@@ -1124,16 +1114,16 @@ double gintegral4Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral5Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral5Hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral5Hsfdgauss used in 1->3 decays" ); 
   }
 
-  gintegral5Hsfdgauss = -1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5) + (pow(m2,2) - pow(mq,2) - pow(m1,2))*log(logarg));
+  gintegral5Hsfdgauss = -1/(s-pow(mH,2))*(2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5) + (sqr(m2) - sqr(mq) - sqr(m1))*log(logarg));
      
   return gintegral5Hsfdgauss;
 }
@@ -1142,16 +1132,16 @@ double gintegral5Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral6Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral6Hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral6Hsfdgauss used in 1->3 decays" ); 
   }
 
-  gintegral6Hsfdgauss = 1/(s-pow(mH,2))*(s-2*pow(mq,2))*log(logarg);
+  gintegral6Hsfdgauss = 1/(s-pow(mH,2))*(s-2*sqr(mq))*log(logarg);
      
   return gintegral6Hsfdgauss;
 }
@@ -1160,10 +1150,10 @@ double gintegral6Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral7Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral7Hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral7Hsfdgauss used in 1->3 decays" ); 
@@ -1178,10 +1168,10 @@ double gintegral7Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral8Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = mh, m2 = msfi where i is the sfermion index you're considering for that interference (i = 1,2)
 {
   double gintegral8Hsfdgauss = 0, logarg=0, EQ = 0, Qprime = 0, musquared = 0, s=0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  musquared = s + pow(m2,2) - pow(m4,2) - pow(mq,2);
-  EQ = (s+pow(m1,2) - pow(m4,2))/(2*fabs(m1));
-  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*pow(mq,2)/s,0.5);
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  musquared = s + sqr(m2) - sqr(m4) - sqr(mq);
+  EQ = (s+sqr(m1) - sqr(m4))/(2*fabs(m1));
+  Qprime = pow(pow(EQ,2) - s,0.5)*pow(1 - 4*sqr(mq)/s,0.5);
   logarg = (fabs(m1)*(EQ + Qprime)-musquared)/(fabs(m1)*(EQ - Qprime) - musquared); ///argument of the log
   if (logarg < 0) {
     throw( "Problem: will get nan as logarg < 0 in gintegral8Hsfdgauss used in 1->3 decays" ); 
@@ -1196,13 +1186,13 @@ double gintegral8Hsfdgauss (double E) ///m1 = mZi, m4 = mZj, mq = mf, mhiggsl = 
 double gintegral1ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggsA, m2 = msfi, MZboson = mz
 {
   double gintegral1ZAdgauss = 0, s = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegral1ZAdgauss = 1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m1,2) - fabs(m1)*E);
-  if (pow(E,2)-pow(m4,2)<0) {
-    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays" );
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegral1ZAdgauss = 1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5)*(sqr(m1) - fabs(m1)*E);
+  if (pow(E,2)-sqr(m4)<0) {
+    throw( "problem: pow(E,2)-sqr(m4)< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays" );
   }
-  if (1-4*pow(mq,2)/s<0) {
-    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays" );
+  if (1-4*sqr(mq)/s<0) {
+    throw( "problem: 1-4*sqr(mq)/s< 0 so sqrt gives nan in gintegral1ZAdgauss used in 1->3 decays" );
   }
   return gintegral1ZAdgauss;
 }
@@ -1210,13 +1200,13 @@ double gintegral1ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
 double gintegral2ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggsA, m2 = msfi, MZboson = mz
 {
   double gintegral2ZAdgauss = 0, s = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegral2ZAdgauss = -1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m4,2) - fabs(m1)*E);
-  if (pow(E,2)-pow(m4,2)<0) {
-    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays" );
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegral2ZAdgauss = -1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5)*(sqr(m4) - fabs(m1)*E);
+  if (pow(E,2)-sqr(m4)<0) {
+    throw( "problem: pow(E,2)-sqr(m4)< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays" );
   }
-  if (1-4*pow(mq,2)/s<0) {
-    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays" );
+  if (1-4*sqr(mq)/s<0) {
+    throw( "problem: 1-4*sqr(mq)/s< 0 so sqrt gives nan in gintegral2ZAdgauss used in 1->3 decays" );
   }
 
   return gintegral2ZAdgauss;
@@ -1225,13 +1215,13 @@ double gintegral2ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
 double gintegral3ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggsA, m2 = msfi, MZboson = mz
 {
   double gintegral3ZAdgauss = 0, s = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegral3ZAdgauss = 1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m1,2)-fabs(m1)*E);
-  if (pow(E,2)-pow(m4,2)<0) {
-    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays" );
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegral3ZAdgauss = 1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5)*(sqr(m1)-fabs(m1)*E);
+  if (pow(E,2)-sqr(m4)<0) {
+    throw( "problem: pow(E,2)-sqr(m4)< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays" );
   }
-  if (1-4*pow(mq,2)/s<0) {
-    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays" );
+  if (1-4*sqr(mq)/s<0) {
+    throw( "problem: 1-4*sqr(mq)/s< 0 so sqrt gives nan in gintegral3ZAdgauss used in 1->3 decays" );
   }
 
   return gintegral3ZAdgauss;
@@ -1240,13 +1230,13 @@ double gintegral3ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
 double gintegral4ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggsA, m2 = msfi, MZboson = mz
 {
   double gintegral4ZAdgauss = 0, s = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gintegral4ZAdgauss = -1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(pow(m4,2) - fabs(m1)*E);
-  if (pow(E,2)-pow(m4,2)<0) {
-    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays" );
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gintegral4ZAdgauss = -1/((s-pow(MZboson,2))*(s-pow(mA,2)))*2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5)*(sqr(m4) - fabs(m1)*E);
+  if (pow(E,2)-sqr(m4)<0) {
+    throw( "problem: pow(E,2)-sqr(m4)< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays" );
   }
-  if (1-4*pow(mq,2)/s<0) {
-    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays" );
+  if (1-4*sqr(mq)/s<0) {
+    throw( "problem: 1-4*sqr(mq)/s< 0 so sqrt gives nan in gintegral4ZAdgauss used in 1->3 decays" );
   }
 
   return gintegral4ZAdgauss;
@@ -1255,13 +1245,13 @@ double gintegral4ZAdgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggs
 double gneutineutjffgA1dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggsA, MZboson = mz
 {
   double gneutineutjffgA1dgauss = 0, s = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gneutineutjffgA1dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)/((s-pow(MZboson,2))*(s-pow(mA,2)));
-  if (pow(E,2)-pow(m4,2)<0) {
-    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays" );
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gneutineutjffgA1dgauss = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5)/((s-pow(MZboson,2))*(s-pow(mA,2)));
+  if (pow(E,2)-sqr(m4)<0) {
+    throw( "problem: pow(E,2)-sqr(m4)< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays" );
   }
-  if (1-4*pow(mq,2)/s<0) {
-    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays" );
+  if (1-4*sqr(mq)/s<0) {
+    throw( "problem: 1-4*sqr(mq)/s< 0 so sqrt gives nan in gneutineutjffgA1dgauss used in 1->3 decays" );
   }  
 
   return gneutineutjffgA1dgauss;
@@ -1270,13 +1260,13 @@ double gneutineutjffgA1dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
 double gneutineutjffgA2dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggsA, MZboson = mz
 {
   double gneutineutjffgA2dgauss = 0, s = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gneutineutjffgA2dgauss = 2*fabs(m1)*(s-2*pow(mq,2))*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)/((s-pow(MZboson,2))*(s-pow(mA,2)));
-  if (pow(E,2)-pow(m4,2)<0) {
-    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays" );
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gneutineutjffgA2dgauss = 2*fabs(m1)*(s-2*sqr(mq))*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5)/((s-pow(MZboson,2))*(s-pow(mA,2)));
+  if (pow(E,2)-sqr(m4)<0) {
+    throw( "problem: pow(E,2)-sqr(m4)< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays" );
   }
-  if (1-4*pow(mq,2)/s<0) {
-    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays" );
+  if (1-4*sqr(mq)/s<0) {
+    throw( "problem: 1-4*sqr(mq)/s< 0 so sqrt gives nan in gneutineutjffgA2dgauss used in 1->3 decays" );
   }  
   
   return gneutineutjffgA2dgauss;
@@ -1285,13 +1275,13 @@ double gneutineutjffgA2dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
 double gneutineutjffgA3dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggsA, MZboson = mz
 {
   double gneutineutjffgA3dgauss = 0, s = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gneutineutjffgA3dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*2*fabs(m1)*E/((s-pow(MZboson,2))*(s-pow(mA,2)));
-  if (pow(E,2)-pow(m4,2)<0) {
-    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays" );
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gneutineutjffgA3dgauss = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5)*2*fabs(m1)*E/((s-pow(MZboson,2))*(s-pow(mA,2)));
+  if (pow(E,2)-sqr(m4)<0) {
+    throw( "problem: pow(E,2)-sqr(m4)< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays" );
   }
-  if (1-4*pow(mq,2)/s<0) {
-    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays" );
+  if (1-4*sqr(mq)/s<0) {
+    throw( "problem: 1-4*sqr(mq)/s< 0 so sqrt gives nan in gneutineutjffgA3dgauss used in 1->3 decays" );
   }  
   
   return gneutineutjffgA3dgauss;
@@ -1300,13 +1290,13 @@ double gneutineutjffgA3dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
 double gneutineutjffgA4dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mhiggsA, MZboson = mz
 {
   double gneutineutjffgA4dgauss = 0, s = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
-  gneutineutjffgA4dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(1-4*pow(mq,2)/s,0.5)*(s-2*pow(mq,2))*2*fabs(m1)*E/((s-pow(MZboson,2))*(s-pow(mA,2)));
-  if (pow(E,2)-pow(m4,2)<0) {
-    throw( "problem: pow(E,2)-pow(m4,2)< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays" );
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
+  gneutineutjffgA4dgauss = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*pow(1-4*sqr(mq)/s,0.5)*(s-2*sqr(mq))*2*fabs(m1)*E/((s-pow(MZboson,2))*(s-pow(mA,2)));
+  if (pow(E,2)-sqr(m4)<0) {
+    throw( "problem: pow(E,2)-sqr(m4)< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays" );
   }
-  if (1-4*pow(mq,2)/s<0) {
-    throw( "problem: 1-4*pow(mq,2)/s< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays" );
+  if (1-4*sqr(mq)/s<0) {
+    throw( "problem: 1-4*sqr(mq)/s< 0 so sqrt gives nan in gneutineutjffgA4dgauss used in 1->3 decays" );
   } 
   
   
@@ -1317,7 +1307,7 @@ double gneutineutjffgA4dgauss(double E) /// m1 = mZi, m4 = mZj, mq = mf, mA = mh
 double gneuticharjffpW1dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp, MWboson = mw
 {
   double gneuticharjffpW1dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1327,14 +1317,14 @@ double gneuticharjffpW1dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp
     throw( "problem: lambda will give nan in gneuticharjffpW1dgauss used in 1->3 decays" );
   } 
 
-  gneuticharjffpW1dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(-2*pow(s,4) + (pow(m1,2) + pow(m2,2) + pow(m3,2) + pow(m4,2))*pow(s,3) + (pow(pow(m1,2)-pow(m2,2),2) + pow(pow(m3,2)-pow(m4,2),2) - 2*(pow(m1,2)+pow(m2,2))*(pow(m3,2)+pow(m4,2)))*pow(s,2) + ((pow(m1,2)+pow(m2,2))*pow(pow(m3,2)-pow(m4,2),2) + (pow(m3,2)+pow(m4,2))*pow(pow(m1,2)-pow(m2,2),2))*s - 2*pow(pow(m1,2)-pow(m2,2),2)*pow(pow(m3,2)-pow(m4,2),2))*1/(3*pow(s,2))*1/(pow(s-pow(MWboson,2),2));
+  gneuticharjffpW1dgauss = 2*fabs(m1)/s*sqrt(squareplus*squareminus)*pow(pow(E,2)-sqr(m2),0.5)*(-2*pow(s,4) + (sqr(m1) + sqr(m2) + sqr(m3) + sqr(m4))*pow(s,3) + (pow(sqr(m1)-sqr(m2),2) + pow(sqr(m3)-sqr(m4),2) - 2*(sqr(m1)+sqr(m2))*(sqr(m3)+sqr(m4)))*pow(s,2) + ((sqr(m1)+sqr(m2))*pow(sqr(m3)-sqr(m4),2) + (sqr(m3)+sqr(m4))*pow(sqr(m1)-sqr(m2),2))*s - 2*pow(sqr(m1)-sqr(m2),2)*pow(sqr(m3)-sqr(m4),2))*1/(3*pow(s,2))*1/(pow(s-pow(MWboson,2),2));
   return gneuticharjffpW1dgauss;
 }
 
 double gneuticharjffpW2dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp, MWboson = mw
 {
   double gneuticharjffpW2dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1343,7 +1333,7 @@ double gneuticharjffpW2dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffpW2dgauss used in 1->3 decays" );
   }   
-  gneuticharjffpW2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(s-pow(m3,2)-pow(m4,2))/(pow(s-pow(MWboson,2),2));
+  gneuticharjffpW2dgauss = 2*fabs(m1)/s*sqrt(squareplus*squareminus)*pow(pow(E,2)-sqr(m2),0.5)*(s-sqr(m3)-sqr(m4))/(pow(s-pow(MWboson,2),2));
 
   return gneuticharjffpW2dgauss;
 }
@@ -1352,7 +1342,7 @@ double gneuticharjffpW2dgauss(double E) ///m1 = mZi, m2 = mWj, m3 = mf, m4 = mfp
 double gneuticharjffpHpm1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mHpm; //sometimes mass order differs as called in different cases
 {
   double gneuticharjffpHpm1dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+fabs(m4),2);
   squareminus = s - pow(fabs(m3)-fabs(m4),2);
   if (fabs(squareplus) < 1e-6) {
@@ -1362,14 +1352,14 @@ double gneuticharjffpHpm1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
     throw( "problem: lambda will give nan in gneuticharjffpHpm1dgauss used in 1->3 decays" );
   } 
 
-  gneuticharjffpHpm1dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)/(pow(s-pow(m5,2),2));
+  gneuticharjffpHpm1dgauss = 2*fabs(m1)/s*sqrt(squareplus*squareminus)*pow(pow(E,2)-sqr(m2),0.5)/(pow(s-pow(m5,2),2));
   return gneuticharjffpHpm1dgauss;
 }
 
 double gneuticharjffpHpm2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mHpm; //sometimes mass order differs as called in different cases
 {
   double gneuticharjffpHpm2dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+fabs(m4),2);
   squareminus = s - pow(fabs(m3)-fabs(m4),2);
   if (fabs(squareplus) < 1e-6) {
@@ -1379,14 +1369,14 @@ double gneuticharjffpHpm2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
     throw( "problem: lambda will give nan in gneuticharjffpHpm2dgauss used in 1->3 decays" );
   } 
 
-  gneuticharjffpHpm2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(s-pow(m3,2)-pow(m4,2))/(pow(s-pow(m5,2),2));
+  gneuticharjffpHpm2dgauss = 2*fabs(m1)/s*sqrt(squareplus*squareminus)*pow(pow(E,2)-sqr(m2),0.5)*(s-sqr(m3)-sqr(m4))/(pow(s-pow(m5,2),2));
   return gneuticharjffpHpm2dgauss;
 }
 
 double gneuticharjffpHpm3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mHpm; //sometimes mass order differs as called in different cases
 {
   double gneuticharjffpHpm3dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+fabs(m4),2); 
   squareminus = s - pow(fabs(m3)-fabs(m4),2);
   if (fabs(squareplus) < 1e-6) {
@@ -1396,14 +1386,14 @@ double gneuticharjffpHpm3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
     throw( "problem: lambda will give nan in gneuticharjffpHpm3dgauss used in 1->3 decays" );
   } 
 
-  gneuticharjffpHpm3dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E/(pow(s-pow(m5,2),2));
+  gneuticharjffpHpm3dgauss = 2*fabs(m1)/s*sqrt(squareplus*squareminus)*pow(pow(E,2)-sqr(m2),0.5)*2*fabs(m1)*E/(pow(s-pow(m5,2),2));
   return gneuticharjffpHpm3dgauss;
 }
 
 double gneuticharjffpHpm4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mHpm; //sometimes mass order differs as called in different cases
 {
   double gneuticharjffpHpm4dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+fabs(m4),2);
   squareminus = s - pow(fabs(m3)-fabs(m4),2);
   if (fabs(squareplus) < 1e-6) {
@@ -1414,7 +1404,7 @@ double gneuticharjffpHpm4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
       throw( "problem: lambda will give nan in gneuticharjffpHpm4dgauss used in 1->3 decays" );
   } 
 
-  gneuticharjffpHpm4dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/(pow(s-pow(m5,2),2));
+  gneuticharjffpHpm4dgauss = 2*fabs(m1)/s*sqrt(squareplus*squareminus)*pow(pow(E,2)-sqr(m2),0.5)*2*fabs(m1)*E*(s-sqr(m3)-sqr(m4))/(pow(s-pow(m5,2),2));
 
   return gneuticharjffpHpm4dgauss;
 }
@@ -1423,7 +1413,7 @@ double gneuticharjffpHpm4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj,
 double gneuticharjffp1sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msf1, m6 = msf2
 {
   double gneuticharjffp1sf1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+m4,2); //inserted fabs
   squareminus = s - pow(fabs(m3)-m4,2); //inserted fabs
   
@@ -1432,14 +1422,14 @@ double gneuticharjffp1sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
     throw( "problem: lambda will give nan in gneuticharjffp1sf1sf2dgauss used in 1->3 decays" );
   } 
 
-  gneuticharjffp1sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)/((s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffp1sf1sf2dgauss = 2*fabs(m1)/s*sqrt(squareplus*squareminus)*pow(pow(E,2)-sqr(m2),0.5)/((s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp1sf1sf2dgauss;
 }
 
 double gneuticharjffp2sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msf1, m6 = msf2
 {
   double gneuticharjffp2sf1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+m4,2); //inserted fabs
   squareminus = s - pow(fabs(m3)-m4,2); //inserted fabs
 
@@ -1448,14 +1438,14 @@ double gneuticharjffp2sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
     throw( "problem: lambda will give nan in gneuticharjffp2sf1sf2dgauss used in 1->3 decays" );
   } 
 
-  gneuticharjffp2sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*(s-pow(m3,2)-pow(m4,2))/((s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffp2sf1sf2dgauss = 2*fabs(m1)/s*sqrt(squareplus*squareminus)*pow(pow(E,2)-sqr(m2),0.5)*(s-sqr(m3)-sqr(m4))/((s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp2sf1sf2dgauss;
 }
  
 double gneuticharjffp3sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msf1, m6 = msf2
 {
   double gneuticharjffp3sf1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+m4,2); //inserted fabs
   squareminus = s - pow(fabs(m3)-m4,2); //inserted fabs
 
@@ -1464,14 +1454,14 @@ double gneuticharjffp3sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
     throw( "problem: lambda will give nan in gneuticharjffp3sf1sf2dgauss used in 1->3 decays" );
   } 
 
-  gneuticharjffp3sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E/((s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffp3sf1sf2dgauss = 2*fabs(m1)/s*sqrt(squareplus*squareminus)*pow(pow(E,2)-sqr(m2),0.5)*2*fabs(m1)*E/((s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp3sf1sf2dgauss;
 } 
 
 double gneuticharjffp4sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msf1, m6 = msf2
 {
   double gneuticharjffp4sf1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+m4,2); //inserted fabs
   squareminus = s - pow(fabs(m3)-m4,2); //inserted fabs
 
@@ -1480,7 +1470,7 @@ double gneuticharjffp4sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
     throw( "problem: lambda will give nan in gneuticharjffp4sf1sf2dgauss used in 1->3 decays" );
   } 
 
-  gneuticharjffp4sf1sf2dgauss = 2*fabs(m1)/s*pow(squareplus*squareminus,0.5)*pow(pow(E,2)-pow(m2,2),0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/((s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffp4sf1sf2dgauss = 2*fabs(m1)/s*sqrt(squareplus*squareminus)*pow(pow(E,2)-sqr(m2),0.5)*2*fabs(m1)*E*(s-sqr(m3)-sqr(m4))/((s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp4sf1sf2dgauss;
 }
  
@@ -1488,7 +1478,7 @@ double gneuticharjffp4sf1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 =
 double gneuticharjffp1sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msfp1, m6 = msf2
 {
   double gneuticharjffp1sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+m2,2);
   squareminus = s - pow(fabs(m3)-m2,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1498,21 +1488,21 @@ double gneuticharjffp1sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
     throw( "problem: lambda will give nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays" );
   } 
 
-  numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
-  denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
+  numerator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s + 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
+  denominator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s - 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp1sfp1sf2dgauss used in 1->3 decays" );
   }
 
-  gneuticharjffp1sfp1sf2dgauss = (2*(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5) + (pow(m6,2)*s - pow(m1,2)*pow(m3,2) - pow(m2,2)*pow(m4,2))*log(Z)))/(s-pow(m5,2));
+  gneuticharjffp1sfp1sf2dgauss = (2*(2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus) + (pow(m6,2)*s - sqr(m1)*sqr(m3) - sqr(m2)*sqr(m4))*log(Z)))/(s-pow(m5,2));
   return gneuticharjffp1sfp1sf2dgauss;
 }
 
 double gneuticharjffp2sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msfp1, m6 = msf2
 {
   double gneuticharjffp2sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+m2,2); //inserted fabs
   squareminus = s - pow(fabs(m3)-m2,2); //inserted fabs
   if (fabs(squareplus) < 1e-6) {
@@ -1521,21 +1511,21 @@ double gneuticharjffp2sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays" );
   } 
-  numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
-  denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
+  numerator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s + 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
+  denominator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s - 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp2sfp1sf2dgauss used in 1->3 decays" );
   }
   
-  gneuticharjffp2sfp1sf2dgauss = -(2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s + (pow(m6,2)-2*fabs(m1)*E + pow(m4,2)-pow(m3,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffp2sfp1sf2dgauss = -(2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s + (pow(m6,2)-2*fabs(m1)*E + sqr(m4)-sqr(m3))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp2sfp1sf2dgauss;
 }
 
 double gneuticharjffp3sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msfp1, m6 = msf2
 {
   double gneuticharjffp3sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+m2,2);
   squareminus = s - pow(fabs(m3)-m2,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1544,20 +1534,20 @@ double gneuticharjffp3sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays" );
   } 
-  numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
-  denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
+  numerator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s + 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
+  denominator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s - 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp3sfp1sf2dgauss used in 1->3 decays" );
   }
-  gneuticharjffp3sfp1sf2dgauss = (2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s + (pow(m6,2)+pow(m1,2)-2*fabs(m1)*E-pow(m2,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffp3sfp1sf2dgauss = (2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s + (pow(m6,2)+sqr(m1)-2*fabs(m1)*E-sqr(m2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp3sfp1sf2dgauss;
 }
 
 double gneuticharjffp4sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msfp1, m6 = msf2
 {
   double gneuticharjffp4sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+m2,2); //inserted fabs
   squareminus = s - pow(fabs(m3)- m2,2); //inserted fabs
   if (fabs(squareplus) < 1e-6) {
@@ -1566,20 +1556,20 @@ double gneuticharjffp4sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays" );
   } 
-  numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
-  denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
+  numerator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s + 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
+  denominator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s - 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp4sfp1sf2dgauss used in 1->3 decays" );
   }
-  gneuticharjffp4sfp1sf2dgauss = (2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s + (pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffp4sfp1sf2dgauss = (2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s + (pow(m6,2)-sqr(m3)-sqr(m4))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp4sfp1sf2dgauss;
 }
 
 double gneuticharjffp5sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msfp1, m6 = msf2
 {
   double gneuticharjffp5sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+m2,2); //inserted fabs
   squareminus = s - pow(fabs(m3)-m2,2); //inserted fabs
   if (fabs(squareplus) < 1e-6) {
@@ -1588,20 +1578,20 @@ double gneuticharjffp5sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays" );
   } 
-  numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
-  denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
+  numerator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s + 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
+  denominator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s - 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp5sfp1sf2dgauss used in 1->3 decays" );
   }
-  gneuticharjffp5sfp1sf2dgauss = (-2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - (pow(m6,2)-pow(m1,2)-pow(m2,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffp5sfp1sf2dgauss = (-2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - (pow(m6,2)-sqr(m1)-sqr(m2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp5sfp1sf2dgauss;
 }
 
 double gneuticharjffp6sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msfp1, m6 = msf2
 {
   double gneuticharjffp6sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+m2,2); //inserted fabs
   squareminus = s - pow(fabs(m3)-m2,2); //inserted fabs
   if (fabs(squareplus) < 1e-6) {
@@ -1610,20 +1600,20 @@ double gneuticharjffp6sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp6sfp1sf2dgauss used in 1->3 decays" );
   } 
-  numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
-  denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
+  numerator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s + 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
+  denominator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s - 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp6sfp1sf2dgauss used in 1->3 decays" );
   }
-  gneuticharjffp6sfp1sf2dgauss = log(Z)*(s-pow(m2,2)-pow(m3,2))/(s-pow(m5,2));
+  gneuticharjffp6sfp1sf2dgauss = log(Z)*(s-sqr(m2)-sqr(m3))/(s-pow(m5,2));
   return gneuticharjffp6sfp1sf2dgauss;
 }
 
 double gneuticharjffp7sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msfp1, m6 = msf2
 {
   double gneuticharjffp7sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+m2,2); //inserted fabs
   squareminus = s - pow(fabs(m3)-m2,2);  //inserted fabs
   if (fabs(squareplus) < 1e-6) {
@@ -1636,8 +1626,8 @@ double gneuticharjffp7sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
      throw( "problem: lambda will give nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays" );
   } 
 
-  numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
-  denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
+  numerator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s + 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
+  denominator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s - 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp7sfp1sf2dgauss used in 1->3 decays" );
@@ -1649,7 +1639,7 @@ double gneuticharjffp7sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
 double gneuticharjffp8sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 = mcharginoj, m4 = mfp, m5 = msfp1, m6 = msf2
 {
   double gneuticharjffp8sfp1sf2dgauss = 0, s = 0, squareplus = 0, squareminus = 0, numerator = 0, denominator = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(fabs(m3)+m2,2); //inserted fabs
   squareminus = s - pow(fabs(m3)-m2,2); //inserted fabs
   if (fabs(squareplus) < 1e-6) {
@@ -1658,8 +1648,8 @@ double gneuticharjffp8sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp8sfp1sf2dgauss used in 1->3 decays" );
   } 
-  numerator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s + 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
-  denominator = 0.5*(pow(m2,2)+pow(m3,2)+2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s - 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s - 2*pow(m6,2));
+  numerator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s + 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
+  denominator = 0.5*(sqr(m2)+sqr(m3)+2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s - 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s - 2*pow(m6,2));
   Z = numerator/denominator;
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp8sfp1sf2dgauss used in 1->3 decays" );
@@ -1672,7 +1662,7 @@ double gneuticharjffp8sfp1sf2dgauss(double E) ///m1 = mneutralinoi, m2 = mf, m3 
 double gneuticharjffp1WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mWboson, m6 = mHpm
 {
   double gneuticharjffp1WHpmdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0;
-  s= pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s= sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1681,16 +1671,16 @@ double gneuticharjffp1WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp1WHpmdgauss used in 1->3 decays" );
   } 
-  A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
-  B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
-  gneuticharjffp1WHpmdgauss = (-0.5*(A*B) + (pow(m1,2)+pow(m3,2))*B)/((s-pow(m5,2))*(s-pow(m6,2)));
+  A = 2*fabs(m1)*E + sqr(m3) + sqr(m4) - (sqr(m1)-sqr(m2))*(sqr(m3)-sqr(m4))/s;
+  B = 2*fabs(m1)/s*pow(pow(E,2)-sqr(m2),0.5)*sqrt(squareplus*squareminus);
+  gneuticharjffp1WHpmdgauss = (-0.5*(A*B) + (sqr(m1)+sqr(m3))*B)/((s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp1WHpmdgauss;
 }
 
 double gneuticharjffp2WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mWboson, m6 = mHpm
 {
   double gneuticharjffp2WHpmdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0;
-  s= pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s= sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1699,17 +1689,17 @@ double gneuticharjffp2WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp2WHpmdgauss used in 1->3 decays" );
   } 
-  A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
-  B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
+  A = 2*fabs(m1)*E + sqr(m3) + sqr(m4) - (sqr(m1)-sqr(m2))*(sqr(m3)-sqr(m4))/s;
+  B = 2*fabs(m1)/s*pow(pow(E,2)-sqr(m2),0.5)*sqrt(squareplus*squareminus);
   
-  gneuticharjffp2WHpmdgauss = (0.5*(A*B) - (pow(m2,2)+pow(m4,2))*B)/((s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffp2WHpmdgauss = (0.5*(A*B) - (sqr(m2)+sqr(m4))*B)/((s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp2WHpmdgauss;
 }
 
 double gneuticharjffp3WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mWboson, m6 = mHpm
 {
   double gneuticharjffp3WHpmdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0;
-  s= pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s= sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1718,9 +1708,9 @@ double gneuticharjffp3WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp3WHpmdgauss used in 1->3 decays" );
   } 
-  A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
-  B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
-  gneuticharjffp3WHpmdgauss = (0.5*(A*B)+(pow(m1,2)-2*fabs(m1)*E-pow(m3,2))*B)/((s-pow(m5,2))*(s-pow(m6,2)));
+  A = 2*fabs(m1)*E + sqr(m3) + sqr(m4) - (sqr(m1)-sqr(m2))*(sqr(m3)-sqr(m4))/s;
+  B = 2*fabs(m1)/s*pow(pow(E,2)-sqr(m2),0.5)*sqrt(squareplus*squareminus);
+  gneuticharjffp3WHpmdgauss = (0.5*(A*B)+(sqr(m1)-2*fabs(m1)*E-sqr(m3))*B)/((s-pow(m5,2))*(s-pow(m6,2)));
 
   return gneuticharjffp3WHpmdgauss;
 }
@@ -1728,7 +1718,7 @@ double gneuticharjffp3WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
 double gneuticharjffp4WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mWboson, m6 = mHpm
 {
   double gneuticharjffp4WHpmdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0;
-  s= pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s= sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1737,17 +1727,17 @@ double gneuticharjffp4WHpmdgauss(double E) /// m1 = mneutralinoi, m2 = mchargino
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp4WHpmdgauss used in 1->3 decays");
   } 
-  A = 2*fabs(m1)*E + pow(m3,2) + pow(m4,2) - (pow(m1,2)-pow(m2,2))*(pow(m3,2)-pow(m4,2))/s;
-  B = 2*fabs(m1)/s*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5);
+  A = 2*fabs(m1)*E + sqr(m3) + sqr(m4) - (sqr(m1)-sqr(m2))*(sqr(m3)-sqr(m4))/s;
+  B = 2*fabs(m1)/s*pow(pow(E,2)-sqr(m2),0.5)*sqrt(squareplus*squareminus);
   
-  gneuticharjffp4WHpmdgauss = (-0.5*(A*B)-(pow(m2,2)-2*fabs(m1)*E-pow(m4,2))*B)/((s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffp4WHpmdgauss = (-0.5*(A*B)-(sqr(m2)-2*fabs(m1)*E-sqr(m4))*B)/((s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp4WHpmdgauss;
 }
 
 double gneuticharjffpW1Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp
 {
   double gneuticharjffpW1Sfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1756,20 +1746,20 @@ double gneuticharjffpW1Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffpW1Sfpdgauss used in 1->3 decays" );
   } 
-  A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m2) + sqr(m3) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW1Sfpdgauss used in 1->3 decays");
   }
-  gneuticharjffpW1Sfpdgauss = (-B - (pow(m6,2)+pow(m4,2)-2*fabs(m1)*E-pow(m3,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffpW1Sfpdgauss = (-B - (pow(m6,2)+sqr(m4)-2*fabs(m1)*E-sqr(m3))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW1Sfpdgauss;
 }
 
 double gneuticharjffpW2Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp
 {
   double gneuticharjffpW2Sfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1778,20 +1768,20 @@ double gneuticharjffpW2Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffpW2Sfpdgauss used in 1->3 decays");
   } 
-  A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m2) + sqr(m3) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW2Sfpdgauss used in 1->3 decays" );
   }
-  gneuticharjffpW2Sfpdgauss = (B + (pow(m6,2)+pow(m1,2)-2*fabs(m1)*E-pow(m2,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffpW2Sfpdgauss = (B + (pow(m6,2)+sqr(m1)-2*fabs(m1)*E-sqr(m2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW2Sfpdgauss;
 }
 
 double gneuticharjffpW3Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp
 {
   double gneuticharjffpW3Sfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1800,13 +1790,13 @@ double gneuticharjffpW3Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffpW3Sfpdgauss used in 1->3 decays");
   } 
-  A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m2) + sqr(m3) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW3Sfpdgauss used in 1->3 decays" );
   }
-  gneuticharjffpW3Sfpdgauss = ((pow(m1,2)+pow(m3,2)+pow(m2,2)+pow(m4,2)-1.5*pow(m6,2)-0.25*(A+B))*(0.5*(A+B)-pow(m6,2)) - (pow(m1,2)+pow(m3,2)+pow(m2,2)+pow(m4,2)-1.5*pow(m6,2)-0.25*(A-B))*(0.5*(A-B)-pow(m6,2)) + (pow(m1,2)+pow(m2,2)-pow(m6,2))*(pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffpW3Sfpdgauss = ((sqr(m1)+sqr(m3)+sqr(m2)+sqr(m4)-1.5*pow(m6,2)-0.25*(A+B))*(0.5*(A+B)-pow(m6,2)) - (sqr(m1)+sqr(m3)+sqr(m2)+sqr(m4)-1.5*pow(m6,2)-0.25*(A-B))*(0.5*(A-B)-pow(m6,2)) + (sqr(m1)+sqr(m2)-pow(m6,2))*(pow(m6,2)-sqr(m3)-sqr(m4))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW3Sfpdgauss;
 }
 
@@ -1814,7 +1804,7 @@ double gneuticharjffpW3Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
 double gneuticharjffpW4Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp
 {
   double gneuticharjffpW4Sfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1823,20 +1813,20 @@ double gneuticharjffpW4Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffpW4Sfpdgauss used in 1->3 decays");
   } 
-  A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m2) + sqr(m3) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW4Sfpdgauss used in 1->3 decays" );
   }
-  gneuticharjffpW4Sfpdgauss = (B + (pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffpW4Sfpdgauss = (B + (pow(m6,2)-sqr(m3)-sqr(m4))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW4Sfpdgauss;
 }
 
 double gneuticharjffpW5Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp
 {
   double gneuticharjffpW5Sfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1845,20 +1835,20 @@ double gneuticharjffpW5Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffpW5Sfpdgauss used in 1->3 decays");
   } 
-  A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m2) + sqr(m3) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW5Sfpdgauss used in 1->3 decays" );
   }  
-  gneuticharjffpW5Sfpdgauss = (-B - (pow(m6,2)-pow(m1,2)-pow(m2,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffpW5Sfpdgauss = (-B - (pow(m6,2)-sqr(m1)-sqr(m2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffpW5Sfpdgauss;
 }
 
 double gneuticharjffpW6Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp
 {
   double gneuticharjffpW6Sfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1867,20 +1857,20 @@ double gneuticharjffpW6Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffpW6Sfpdgauss used in 1->3 decays");
   } 
-  A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m2) + sqr(m3) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW6Sfpdgauss used in 1->3 decays" );
   }
-  gneuticharjffpW6Sfpdgauss = (s-pow(m2,2)-pow(m3,2))*log(Z)/(s-pow(m5,2));
+  gneuticharjffpW6Sfpdgauss = (s-sqr(m2)-sqr(m3))*log(Z)/(s-pow(m5,2));
   return gneuticharjffpW6Sfpdgauss;
 }
 
 double gneuticharjffpW7Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp
 {
   double gneuticharjffpW7Sfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1889,8 +1879,8 @@ double gneuticharjffpW7Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffpW7Sfpdgauss used in 1->3 decays");
   } 
-  A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m2) + sqr(m3) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW7Sfpdgauss used in 1->3 decays" );
@@ -1902,7 +1892,7 @@ double gneuticharjffpW7Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
 double gneuticharjffpW8Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp
 {
   double gneuticharjffpW8Sfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m2+m3,2);
   squareminus = s - pow(m2-m3,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1911,8 +1901,8 @@ double gneuticharjffpW8Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffpW8Sfpdgauss used in 1->3 decays");
   } 
-  A = pow(m2,2) + pow(m3,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m2) + sqr(m3) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (A + B - 2*pow(m6,2))/(A - B - 2*pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffpW8Sfpdgauss used in 1->3 decays" );
@@ -1924,7 +1914,7 @@ double gneuticharjffpW8Sfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 =
 double gneuticharjffpHg1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mWboson, m6 = mHP
 {
   double gneuticharjffpHg1dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1933,14 +1923,14 @@ double gneuticharjffpHg1dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffpHg1dgauss used in 1->3 decays" );
   } 
-  gneuticharjffpHg1dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)/(s*(s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffpHg1dgauss = 2*fabs(m1)*pow(pow(E,2)-sqr(m2),0.5)*sqrt(squareplus*squareminus)/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffpHg1dgauss;
 }
 
 double gneuticharjffpHg2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mWboson, m6 = mHP
 {
   double gneuticharjffpHg2dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1949,14 +1939,14 @@ double gneuticharjffpHg2dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffpHg2dgauss used in 1->3 decays" );
   }   
-  gneuticharjffpHg2dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffpHg2dgauss = 2*fabs(m1)*pow(pow(E,2)-sqr(m2),0.5)*sqrt(squareplus*squareminus)*(s-sqr(m3)-sqr(m4))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffpHg2dgauss;
 }
 
 double gneuticharjffpHg3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mWboson, m6 = mHP
 {
   double gneuticharjffpHg3dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1965,14 +1955,14 @@ double gneuticharjffpHg3dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffpHg3dgauss used in 1->3 decays" );
   } 
-  gneuticharjffpHg3dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E/(s*(s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffpHg3dgauss = 2*fabs(m1)*pow(pow(E,2)-sqr(m2),0.5)*sqrt(squareplus*squareminus)*2*fabs(m1)*E/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffpHg3dgauss;
 }
 
 double gneuticharjffpHg4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, m3 = mf, m4 = mfp, m5 = mWboson, m6 = mHP
 {
   double gneuticharjffpHg4dgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m4,2);
   squareminus = s - pow(m3-m4,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1981,7 +1971,7 @@ double gneuticharjffpHg4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffpHg4dgauss used in 1->3 decays" );
   } 
-  gneuticharjffpHg4dgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffpHg4dgauss = 2*fabs(m1)*pow(pow(E,2)-sqr(m2),0.5)*sqrt(squareplus*squareminus)*2*fabs(m1)*E*(s-sqr(m3)-sqr(m4))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffpHg4dgauss;
 }
 
@@ -1989,7 +1979,7 @@ double gneuticharjffpHg4dgauss(double E) ///m1 = mneutralinoi, m2 = mcharginoj, 
 double gneuticharjffp1gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp1
 {
   double gneuticharjffp1gsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
   if (fabs(squareplus) < 1e-6) {
@@ -1998,20 +1988,20 @@ double gneuticharjffp1gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp1gsfpdgauss used in 1->3 decays" );
   } 
-  A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m3) + sqr(m2) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp1gsfpdgauss used in 1->3 decays" );
   }
-  gneuticharjffp1gsfpdgauss = 2*(s*B + (pow(m6,2)*s - pow(m1,2)*pow(m3,2) - pow(m2,2)*pow(m4,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffp1gsfpdgauss = 2*(s*B + (pow(m6,2)*s - sqr(m1)*sqr(m3) - sqr(m2)*sqr(m4))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp1gsfpdgauss;
 }
 
 double gneuticharjffp2gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp1
 {
   double gneuticharjffp2gsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
   if (fabs(squareplus) < 1e-6) {
@@ -2020,20 +2010,20 @@ double gneuticharjffp2gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp2gsfpdgauss used in 1->3 decays" );
   } 
-  A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m3) + sqr(m2) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp2gsfpdgauss used in 1->3 decays" );
   }
-  gneuticharjffp2gsfpdgauss = (-B - (pow(m6,2) + pow(m4,2) - 2*fabs(m1)*E - pow(m3,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffp2gsfpdgauss = (-B - (pow(m6,2) + sqr(m4) - 2*fabs(m1)*E - sqr(m3))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp2gsfpdgauss;
 }
 
 double gneuticharjffp3gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp1
 {
   double gneuticharjffp3gsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
   if (fabs(squareplus) < 1e-6) {
@@ -2042,20 +2032,20 @@ double gneuticharjffp3gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp3gsfpdgauss used in 1->3 decays" );
   } 
-  A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m3) + sqr(m2) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp3gsfpdgauss used in 1->3 decays" );
   }
-  gneuticharjffp3gsfpdgauss = (B + (pow(m6,2)+pow(m1,2)-2*fabs(m1)*E - pow(m2,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffp3gsfpdgauss = (B + (pow(m6,2)+sqr(m1)-2*fabs(m1)*E - sqr(m2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp3gsfpdgauss;
 }
 
 double gneuticharjffp4gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp1
 {
   double gneuticharjffp4gsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
   if (fabs(squareplus) < 1e-6) {
@@ -2064,20 +2054,20 @@ double gneuticharjffp4gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp4gsfpdgauss used in 1->3 decays" );
   } 
-  A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m3) + sqr(m2) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp4gsfpdgauss used in 1->3 decays" );
   }
-  gneuticharjffp4gsfpdgauss = (B + (pow(m6,2)-pow(m3,2)-pow(m4,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffp4gsfpdgauss = (B + (pow(m6,2)-sqr(m3)-sqr(m4))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp4gsfpdgauss;
 }
 
 double gneuticharjffp5gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp1
 {
   double gneuticharjffp5gsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
   if (fabs(squareplus) < 1e-6) {
@@ -2086,20 +2076,20 @@ double gneuticharjffp5gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" );
   } 
-  A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m3) + sqr(m2) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" );
   }
-  gneuticharjffp5gsfpdgauss = (-B-(pow(m6,2)-pow(m1,2)-pow(m2,2))*log(Z))/(s-pow(m5,2));
+  gneuticharjffp5gsfpdgauss = (-B-(pow(m6,2)-sqr(m1)-sqr(m2))*log(Z))/(s-pow(m5,2));
   return gneuticharjffp5gsfpdgauss;
 }
 
 double gneuticharjffp6gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp1
 {
   double gneuticharjffp6gsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
   if (fabs(squareplus) < 1e-6) {
@@ -2108,20 +2098,20 @@ double gneuticharjffp6gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp6gsfpdgauss used in 1->3 decays" );
   } 
-  A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m3) + sqr(m2) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp6gsfpdgauss used in 1->3 decays" );
   }
-  gneuticharjffp6gsfpdgauss = (s-pow(m2,2)-pow(m3,2))*log(Z)/(s-pow(m5,2));
+  gneuticharjffp6gsfpdgauss = (s-sqr(m2)-sqr(m3))*log(Z)/(s-pow(m5,2));
   return gneuticharjffp6gsfpdgauss;
 }
 
 double gneuticharjffp7gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp1
 {
   double gneuticharjffp7gsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
   if (fabs(squareplus) < 1e-6) {
@@ -2130,8 +2120,8 @@ double gneuticharjffp7gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp7gsfpdgauss used in 1->3 decays" );
   } 
-  A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m3) + sqr(m2) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp5gsfpdgauss used in 1->3 decays" );
@@ -2143,7 +2133,7 @@ double gneuticharjffp7gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
 double gneuticharjffp8gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp1
 {
   double gneuticharjffp8gsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0, A = 0, B = 0, Z = 0;
-  s = pow(m1,2) + pow(m4,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m4) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+m2,2);
   squareminus = s - pow(m3-m2,2);
   if (fabs(squareplus) < 1e-6) {
@@ -2152,8 +2142,8 @@ double gneuticharjffp8gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
   if (squareplus*squareminus < 0) {
     throw( "problem: lambda will give nan in gneuticharjffp8gsfpdgauss used in 1->3 decays" );
   } 
-  A = pow(m3,2) + pow(m2,2) + 2*fabs(m1)*E + (pow(m1,2)-pow(m4,2))*(pow(m3,2)-pow(m2,2))/s;
-  B = 2*fabs(m1)*pow(pow(E,2)-pow(m4,2),0.5)*pow(squareplus*squareminus,0.5)/s;
+  A = sqr(m3) + sqr(m2) + 2*fabs(m1)*E + (sqr(m1)-sqr(m4))*(sqr(m3)-sqr(m2))/s;
+  B = 2*fabs(m1)*pow(pow(E,2)-sqr(m4),0.5)*sqrt(squareplus*squareminus)/s;
   Z = (0.5*(A+B)-pow(m6,2))/(0.5*(A-B)-pow(m6,2));
   if (Z < 0) {
     throw( "problem: Z<0 will give log(Z) as nan in gneuticharjffp8gsfpdgauss used in 1->3 decays" );
@@ -2165,7 +2155,7 @@ double gneuticharjffp8gsfpdgauss(double E) ///m1 = mneutralinoi, m2 = mfp, m3 = 
 double gneuticharjffp1sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 = -mf, m4 = charginoj, m5 = msfp1, m6 = msfp2
 {
   double gneuticharjffp1sfpsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+fabs(m4),2);
   squareminus = s - pow(m3-fabs(m4),2);
   if (fabs(squareplus) < 1e-6) {
@@ -2175,14 +2165,14 @@ double gneuticharjffp1sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
       cout.precision(10);
       throw( "problem: lambda will give nan in gneuticharjffp1sfpsfpdgauss used in 1->3 decays" );
   } 
-  gneuticharjffp1sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)/(s*(s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffp1sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-sqr(m2),0.5)*sqrt(squareplus*squareminus)/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp1sfpsfpdgauss;
 }
 
 double gneuticharjffp2sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 = -mf, m4 = charginoj, m5 = msfp1, m6 = msfp2
 {
   double gneuticharjffp2sfpsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+fabs(m4),2);
   squareminus = s - pow(m3-fabs(m4),2);
   if (fabs(squareplus) < 1e-6) {
@@ -2192,14 +2182,14 @@ double gneuticharjffp2sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
       cout.precision(10);
       throw( "problem: lambda will give nan in gneuticharjffp2sfpsfpdgauss used in 1->3 decays" );
   } 
-  gneuticharjffp2sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffp2sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-sqr(m2),0.5)*sqrt(squareplus*squareminus)*(s-sqr(m3)-sqr(m4))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp2sfpsfpdgauss;
 }
 
 double gneuticharjffp3sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 = -mf, m4 = charginoj, m5 = msfp1, m6 = msfp2
 {
   double gneuticharjffp3sfpsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+fabs(m4),2);
   squareminus = s - pow(m3-fabs(m4),2);
   if (fabs(squareplus) < 1e-6) {
@@ -2209,14 +2199,14 @@ double gneuticharjffp3sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
       cout.precision(10);
       throw( "problem: lambda will give nan in gneuticharjffp3sfpsfpdgauss used in 1->3 decays" );
   } 
-  gneuticharjffp3sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E/(s*(s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffp3sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-sqr(m2),0.5)*sqrt(squareplus*squareminus)*2*fabs(m1)*E/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp3sfpsfpdgauss;
 }
 
 double gneuticharjffp4sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3 = -mf, m4 = charginoj, m5 = msfp1, m6 = msfp2
 {
   double gneuticharjffp4sfpsfpdgauss = 0, s = 0, squareplus = 0, squareminus = 0;
-  s = pow(m1,2) + pow(m2,2) - 2*fabs(m1)*E;
+  s = sqr(m1) + sqr(m2) - 2*fabs(m1)*E;
   squareplus = s - pow(m3+fabs(m4),2); //inserted fabs
   squareminus = s - pow(m3-fabs(m4),2); //inserted fabs
   if (fabs(squareplus) < 1e-6) {
@@ -2227,7 +2217,7 @@ double gneuticharjffp4sfpsfpdgauss(double E) /// m1 = mneutralinoi, m2 = mfp, m3
       throw( "problem: lambda will give nan in gneuticharjffp4sfpsfpdgauss used in 1->3 decays " );
   } 
   
-  gneuticharjffp4sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-pow(m2,2),0.5)*pow(squareplus*squareminus,0.5)*2*fabs(m1)*E*(s-pow(m3,2)-pow(m4,2))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
+  gneuticharjffp4sfpsfpdgauss = 2*fabs(m1)*pow(pow(E,2)-sqr(m2),0.5)*sqrt(squareplus*squareminus)*2*fabs(m1)*E*(s-sqr(m3)-sqr(m4))/(s*(s-pow(m5,2))*(s-pow(m6,2)));
   return gneuticharjffp4sfpsfpdgauss;
 }
 
@@ -2237,7 +2227,7 @@ double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (double mgluino, do
   double amplitudeW=0, phiL=0, phiR=0, psiL=0, psiR=0, A = 0, B = 0, from = 0, upper = 0;
   int i = neut;
   from = mquark;
-  upper = (pow(mgluino,2)-2*mquark*fabs(mneutralino)-pow(mneutralino,2))/(2*mgluino);
+  upper = (sqr(mgluino)-2*mquark*fabs(mneutralino)-pow(mneutralino,2))/(2*mgluino);
   if(onetothree == false)
     {
       amplitudeW = 0;
@@ -2265,18 +2255,18 @@ double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (double mgluino, do
 
 	m1 = mgluino; mq = mquark; m4 = mneutralino; m2 = msqL; m3 = msqL;
 	
-	psiL = dgauss(gpsitildadgauss,from,upper,accuracy)*1/(pow(PI,2)*m1);
-	phiL = dgauss(gphitildadgauss,from,upper,accuracy)*1/(pow(PI,2)*m1);
+	psiL = dgauss(gpsitildadgauss,from,upper,accuracy)*1/(sqr(PI)*m1);
+	phiL = dgauss(gphitildadgauss,from,upper,accuracy)*1/(sqr(PI)*m1);
 	m1 = mgluino; mq = mquark; m4 = mneutralino; m2 = msqR; m3 = msqR;
 	
-	psiR = dgauss(gpsitildadgauss,from,upper,accuracy)*1/(pow(PI,2)*m1);
-	phiR = dgauss(gphitildadgauss,from,upper,accuracy)*1/(pow(PI,2)*m1);
+	psiR = dgauss(gpsitildadgauss,from,upper,accuracy)*1/(sqr(PI)*m1);
+	phiR = dgauss(gphitildadgauss,from,upper,accuracy)*1/(sqr(PI)*m1);
 
 	if ((mneutralino > 0 && mgluino > 0) || (mneutralino < 0 && mgluino < 0)) {
-	  amplitudeW = alphas/(8*pow(PI,2))*(pow(A,2)*(psiL + phiL) + pow(B,2)*(psiR + phiR));
+	  amplitudeW = alphas/(8*sqr(PI))*(pow(A,2)*(psiL + phiL) + pow(B,2)*(psiR + phiR));
 	}
 	else if ((mneutralino < 0 || mgluino < 0) && mneutralino*mgluino<0) {
-	  amplitudeW = alphas/(8*pow(PI,2))*(pow(A,2)*(psiL - phiL) + pow(B,2)*(psiR - phiR));
+	  amplitudeW = alphas/(8*sqr(PI))*(pow(A,2)*(psiL - phiL) + pow(B,2)*(psiR - phiR));
 	}
 
       }
@@ -2292,7 +2282,7 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
   double AtZ=0, BtZ=0, ft=0, from=0, upper=0;
 
   from = mt;
-  upper = (pow(mgluino,2)-2*mt*fabs(mneutralino)-pow(mneutralino,2))/(2*mgluino);
+  upper = (sqr(mgluino)-2*mt*fabs(mneutralino)-pow(mneutralino,2))/(2*mgluino);
   double gs = pow(alphas*4*PI,0.5);
 
   if (fabs(mgluino) < fabs(mneutralino) + 2*mt || fabs(mgluino)> mst1 + mt || fabs(mgluino) > mst2 + mt || onetothree == false) { amplitudeW = 0;}
@@ -2422,7 +2412,7 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
     Gammast1 = aGammast1.real();
 
     double extraGammast1 = 0;
-    aextraGammast1 = -pm*mneutralino*mt*sin(thetat)*cos(thetat)*(ast1alpha1*ast1alpha1 + ast1beta1*ast1beta1)*pow(mgluino,2)*rhoLLst1 + pm*mneutralino*mt*sin(thetat)*cos(thetat)*(ast1alpha1*ast1alpha1 + ast1beta1*ast1beta1)*xsiLLst1;
+    aextraGammast1 = -pm*mneutralino*mt*sin(thetat)*cos(thetat)*(ast1alpha1*ast1alpha1 + ast1beta1*ast1beta1)*sqr(mgluino)*rhoLLst1 + pm*mneutralino*mt*sin(thetat)*cos(thetat)*(ast1alpha1*ast1alpha1 + ast1beta1*ast1beta1)*xsiLLst1;
     extraGammast1 = aextraGammast1.real();
 
     Complex aGammast2 = Complex(0.0,0.0), aextraGammast2 = Complex(0.0,0.0);
@@ -2430,16 +2420,16 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
     Gammast2 = aGammast2.real();
 
     double extraGammast2 = 0;
-    // extraGammast2 = pow(PI,2)/(8*pow(mgluino*gs,2))*(8*pow(mgluino*gs/PI,2)*(rhoLLst2*pow(mgluino,2)*mneutralino*mt*sin(thetat)*cos(thetat)*(pow(st2alpha1,2)+pow(st2beta1,2)) + mneutralino*mt*sin(thetat)*cos(thetat)*(pow(st2alpha1,2) + pow(st2beta1,2))*xsiLLst2)); /// Note no chiprime term whereas Spheno has a chiprime term -> missing term relative to T&B
-    aextraGammast2 = pm*(xsiLLst2*-mneutralino*mt*sin(thetat)*cos(thetat)*(ast2alpha1*ast2alpha1 + ast2beta1*ast2beta1) + rhoLLst2*pow(mgluino,2)*mneutralino*mt*sin(thetat)*cos(thetat)*(ast2alpha1*ast2alpha1 + ast2beta1*ast2beta1));
+    // extraGammast2 = sqr(PI)/(8*pow(mgluino*gs,2))*(8*pow(mgluino*gs/PI,2)*(rhoLLst2*sqr(mgluino)*mneutralino*mt*sin(thetat)*cos(thetat)*(pow(st2alpha1,2)+pow(st2beta1,2)) + mneutralino*mt*sin(thetat)*cos(thetat)*(pow(st2alpha1,2) + pow(st2beta1,2))*xsiLLst2)); /// Note no chiprime term whereas Spheno has a chiprime term -> missing term relative to T&B
+    aextraGammast2 = pm*(xsiLLst2*-mneutralino*mt*sin(thetat)*cos(thetat)*(ast2alpha1*ast2alpha1 + ast2beta1*ast2beta1) + rhoLLst2*sqr(mgluino)*mneutralino*mt*sin(thetat)*cos(thetat)*(ast2alpha1*ast2alpha1 + ast2beta1*ast2beta1));
     extraGammast2 = aextraGammast2.real();
 
     Complex aGammast1st2 = Complex(0.0,0.0), aextraGammast1st2 = Complex(0.0,0.0);
-    aGammast1st2 = pow(PI,2)/(8*pow(mgluino*gs,2))*(32*pow(mgluino*gs/PI,2)*pm*mgluino*mt*(pow(cos(thetat),2)-pow(sin(thetat),2))*(ast1alpha1*ast2alpha1 + ast1beta1*ast2beta1)*XLRst1st2 + 32*pm*pow(mgluino*gs/PI,2)*mgluino*pow(mt,2)*mneutralino*(ast1alpha1*ast2beta1 + ast1beta1*ast2alpha1)*(pow(cos(thetat),2)-pow(sin(thetat),2))*zetaLRst1st2 + pm*16*pow(mgluino*gs/PI,2)*(ast1beta1*ast2alpha1*pow(cos(thetat),2) - pow(sin(thetat),2)*ast2beta1*ast1alpha1)*YLRst1st2 + 16*pm*pow(mgluino*gs/PI,2)*sin(thetat)*cos(thetat)*(ast1alpha1*ast2alpha1 - ast1beta1*ast2beta1)*phitildaLLst1st2 + 16*pm*pow(mgluino*gs/PI,2)*mt*mneutralino*(ast1alpha1*ast2alpha1 - ast1beta1*ast2beta1)*chiprimeLRst1st2 + pm*16*pow(mgluino*gs/PI,2)*pow(mt,2)*(pow(cos(thetat),2)*ast1alpha1*ast2beta1 - pow(sin(thetat),2)*ast1beta1*ast2alpha1)*xsiLLst1st2 + 16*pm*pow(mgluino*gs/PI,2)*mgluino*pow(mt,2)*mneutralino*(ast1beta1*ast2beta1-ast1alpha1*ast2alpha1)*sin(thetat)*cos(thetat)*rhotildaLLst1st2);
+    aGammast1st2 = sqr(PI)/(8*pow(mgluino*gs,2))*(32*pow(mgluino*gs/PI,2)*pm*mgluino*mt*(pow(cos(thetat),2)-pow(sin(thetat),2))*(ast1alpha1*ast2alpha1 + ast1beta1*ast2beta1)*XLRst1st2 + 32*pm*pow(mgluino*gs/PI,2)*mgluino*pow(mt,2)*mneutralino*(ast1alpha1*ast2beta1 + ast1beta1*ast2alpha1)*(pow(cos(thetat),2)-pow(sin(thetat),2))*zetaLRst1st2 + pm*16*pow(mgluino*gs/PI,2)*(ast1beta1*ast2alpha1*pow(cos(thetat),2) - pow(sin(thetat),2)*ast2beta1*ast1alpha1)*YLRst1st2 + 16*pm*pow(mgluino*gs/PI,2)*sin(thetat)*cos(thetat)*(ast1alpha1*ast2alpha1 - ast1beta1*ast2beta1)*phitildaLLst1st2 + 16*pm*pow(mgluino*gs/PI,2)*mt*mneutralino*(ast1alpha1*ast2alpha1 - ast1beta1*ast2beta1)*chiprimeLRst1st2 + pm*16*pow(mgluino*gs/PI,2)*pow(mt,2)*(pow(cos(thetat),2)*ast1alpha1*ast2beta1 - pow(sin(thetat),2)*ast1beta1*ast2alpha1)*xsiLLst1st2 + 16*pm*pow(mgluino*gs/PI,2)*mgluino*pow(mt,2)*mneutralino*(ast1beta1*ast2beta1-ast1alpha1*ast2alpha1)*sin(thetat)*cos(thetat)*rhotildaLLst1st2);
 
     Gammast1st2 =  aGammast1st2.real(); ///Gammast1st2 terms as from T&B but with sign change for X term and also the factor of -(cos^2(thetat)-sin^2(thetat))(st1alpha1*st2alpha1+st1beta1*st2beta1) T&B has in the chiprime term has been changed to (cos^2(thetat)+sin^2(thetat))(st1alpha1*st2alpha1 - st1beta1*st2beta1) = 1*(st1alpha1*st2alpha1 - st1beta1*st2beta1), in order in both cases to agree with SPHENO
     double extraGammast1st2 = 0; 
-    aextraGammast1st2 = (pow(PI,2)/(8*pow(mgluino*gs,2))*(-32*pm*pow(mgluino*gs/PI,2)*sin(thetat)*cos(thetat)*mgluino*mt*(ast1alpha1*ast2beta1-ast1beta1*ast2alpha1)*chiprimeLRst1st2 -16*pm*pow(mgluino*gs/PI,2)*sin(thetat)*cos(thetat)*mgluino*mt*(ast1alpha1*ast2beta1 - ast1beta1*ast2alpha1)*xsiLLst1st2 + 16*pm*pow(mgluino*gs/PI,2)*mt*mneutralino*(pow(sin(thetat),2)*ast1alpha1*ast2alpha1 - pow(cos(thetat),2)*ast1beta1*ast2beta1)*xsiLLst1st2 + 16*pm*pow(mgluino*gs/PI,2)*pow(mgluino,3)*mt*(ast1alpha1*ast2beta1-ast1beta1*ast2alpha1)*sin(thetat)*cos(thetat)*rhotildaLLst1st2 - 16*pm*pow(mgluino*gs/PI,2)*pow(mgluino,2)*mt*mneutralino*(pow(sin(thetat),2)*ast1alpha1*ast2alpha1 - pow(cos(thetat),2)*ast1beta1*ast2beta1)*rhotildaLLst1st2)); ///Extra terms SPHENO has in Gammast1st2 not present in T&B
+    aextraGammast1st2 = (sqr(PI)/(8*pow(mgluino*gs,2))*(-32*pm*pow(mgluino*gs/PI,2)*sin(thetat)*cos(thetat)*mgluino*mt*(ast1alpha1*ast2beta1-ast1beta1*ast2alpha1)*chiprimeLRst1st2 -16*pm*pow(mgluino*gs/PI,2)*sin(thetat)*cos(thetat)*mgluino*mt*(ast1alpha1*ast2beta1 - ast1beta1*ast2alpha1)*xsiLLst1st2 + 16*pm*pow(mgluino*gs/PI,2)*mt*mneutralino*(pow(sin(thetat),2)*ast1alpha1*ast2alpha1 - pow(cos(thetat),2)*ast1beta1*ast2beta1)*xsiLLst1st2 + 16*pm*pow(mgluino*gs/PI,2)*pow(mgluino,3)*mt*(ast1alpha1*ast2beta1-ast1beta1*ast2alpha1)*sin(thetat)*cos(thetat)*rhotildaLLst1st2 - 16*pm*pow(mgluino*gs/PI,2)*sqr(mgluino)*mt*mneutralino*(pow(sin(thetat),2)*ast1alpha1*ast2alpha1 - pow(cos(thetat),2)*ast1beta1*ast2beta1)*rhotildaLLst1st2)); ///Extra terms SPHENO has in Gammast1st2 not present in T&B
 
     extraGammast1st2 = aextraGammast1st2.real();
 
@@ -2456,14 +2446,12 @@ double gluinoamplitudedecaydgausschartbbar (double mgluino, double mst1, double 
 {
   double Gammast1 = 0, Gammast2 = 0, Gammast1st2 = 0 , Gammasb1 =0, Gammasb2 = 0, Gammast1sb1 = 0, Gammast1sb2 = 0, Gammast2sb1 = 0, Gammast2sb2 = 0, from = 0, upper = 0, fromb = 0, upperb = 0, amplitudeW = 0, sumsquarest1 = 0, sumsquarest2 = 0, sumsquaresb1 = 0, sumsquaresb2 = 0, alphasb1ch = 0, alphasb2ch = 0, alphast1ch = 0, alphast2ch = 0, betasb1ch = 0, betasb2ch = 0, betast1ch = 0, betast2ch = 0;
 
-  DoubleVector squarkmixcharginocouplings(double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, double mch1, double mch2, int torb);
-
   if (mgluino > mbottom + msb1 || mgluino > mbottom + msb2 || mgluino > mtop + mst1 || mgluino > mtop + mst2 || mgluino < mtop + mbottom + mchar || onetothree == false) {amplitudeW = 0;}
   else {
     from = mtop;
-    upper = (pow(mgluino,2)+pow(mtop,2)-pow(fabs(mchar)+mbottom,2))/(2*mgluino);
+    upper = (sqr(mgluino)+pow(mtop,2)-pow(fabs(mchar)+mbottom,2))/(2*mgluino);
     fromb = mbottom;
-    upperb = (pow(mgluino,2)-pow(mtop+fabs(mchar),2))/(2*mgluino);
+    upperb = (sqr(mgluino)-pow(mtop+fabs(mchar),2))/(2*mgluino);
   
     DoubleVector couplingst(16);
     DoubleVector couplingsb(16);
@@ -2573,7 +2561,7 @@ double gluinoamplitudedecaydgausschartbbar (double mgluino, double mst1, double 
     
     Gammast2sb2 = (sin(thetat)*-cos(thetab)*alphasb2ch*betast2ch-cos(thetat)*sin(thetab)*betasb2ch*alphast2ch)*G6st2sb2 - (sin(thetat)*sin(thetab)*alphasb2ch*alphast2ch + cos(thetat)*cos(thetab)*betasb2ch*betast2ch)*G4st2sb2 - (sin(thetat)*sin(thetab)*betasb2ch*alphast2ch + cos(thetat)*cos(thetab)*alphasb2ch*betast2ch)*G5st2sb2 + (sin(thetat)*-cos(thetab)*betasb2ch*betast2ch - cos(thetat)*sin(thetab)*alphasb2ch*alphast2ch)*G7st2sb2; ///The sign in front of the G7st1sb1 and G5st1sb1 terms has been changed from that given in Baer and Tata in order to agree with SPheno.
 
-    amplitudeW = alphas/(16*pow(PI,2)*mgluino)*(Gammast1 + Gammast2 + Gammast1st2 + Gammasb1 + Gammasb2 + Gammast1sb1 + Gammast2sb1 + Gammast1sb2 + Gammast2sb2);
+    amplitudeW = alphas/(16*sqr(PI)*mgluino)*(Gammast1 + Gammast2 + Gammast1st2 + Gammasb1 + Gammasb2 + Gammast1sb1 + Gammast2sb1 + Gammast1sb2 + Gammast2sb2);
   }
   
   return amplitudeW;
@@ -2583,8 +2571,6 @@ double gluinoamplitudedecaydgausschartbbar (double mgluino, double mst1, double 
 double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, double msf1, double msf2, double mZboson, double mhiggsl, double mhiggsH, double mhiggsA, double mneutralinoj, double mf, double alphas, double thetaq, double mWboson, double g, double gp, double alpha, double beta, double runmq, DoubleMatrix & mixNeut, int ineutralino, int jneutralino, bool onetothree, char uordornuorl)
 {
   double GammaZ = 0, Gammahsf1 = 0, Gammahsf2 = 0, GammaHsf1 = 0, GammaHsf2 = 0, GammaAsf1 = 0, GammaAsf2 = 0, GammaZsf1 = 0, GammaZsf2 = 0, amplitudeW = 0;
-
-  DoubleVector squarkmixcharginocouplings(double g, double theta, double beta, double gammaL, double gammaR, double runmt, double runmb, double mWboson, int torb);
 
   if (fabs(mneutralinoi) > mf + msf1 || fabs(mneutralinoi) > mf + msf2 || fabs(mneutralinoi) > fabs(mneutralinoj) + mhiggsl || fabs(mneutralinoi) > fabs(mneutralinoj) + mhiggsH || fabs(mneutralinoi) > fabs(mneutralinoj) + mhiggsA || fabs(mneutralinoi) > fabs(mneutralinoj) + mZboson || fabs(mneutralinoi) < fabs(mneutralinoj) + mf + mf || onetothree == false) {
     amplitudeW = 0;
@@ -2768,11 +2754,11 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     chitildaZisf1sf2Zj = dgauss(gchidgauss,from,to,accuracy);
 
     double Gammasftsfumsf1msf2 = 0, Gammasftsfumsf1msf1 = 0, Gammasftsfumsf2msf2 = 0;
-    Gammasftsfumsf1msf1 = -2*(8*(sf1alpha1Zi*sf1beta1Zi*sf1beta1Zj*sf1alpha1Zj + sf1beta1Zi*sf1alpha1Zi*sf1alpha1Zj*sf1beta1Zj)*pow(mneutralinoi/PI,2)*YZisf1sf1Zj*ri -(sf1alpha1Zi*sf1alpha1Zi*sf1alpha1Zj*sf1alpha1Zj + sf1beta1Zi*sf1beta1Zi*sf1beta1Zj*sf1beta1Zj)*8*pow(mneutralinoi/PI,2)*phitildaZisf1sf1Zj*ri*rj + (sf1beta1Zi*sf1alpha1Zi*sf1beta1Zj*sf1alpha1Zj + sf1alpha1Zi*sf1beta1Zi*sf1alpha1Zj*sf1beta1Zj)*pow(mf,2)*8*pow(mneutralinoi/PI,2)*xsiZisf1sf1Zj*ri -((sf1alpha1Zi*sf1alpha1Zi*sf1beta1Zj*sf1alpha1Zj + sf1beta1Zi*sf1beta1Zi*sf1alpha1Zj*sf1beta1Zj)*fabs(mneutralinoi)*mf)*(8*pow(mneutralinoi/PI,2)*xsiZisf1sf1Zj - 4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)+pow(mneutralinoj,2))*rhotildaZisf1sf1Zj*ri + 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf1Zj) + fabs(mneutralinoj)*rj*mf*(sf1beta1Zi*sf1alpha1Zi*sf1alpha1Zj*sf1alpha1Zj + sf1alpha1Zi*sf1beta1Zi*sf1beta1Zj*sf1beta1Zj)*(-8*pow(mneutralinoi/PI,2)*xsiZisf1sf1Zj + 8*pow(mneutralinoi,4)/pow(PI,2)*rhotildaZisf1sf1Zj*ri - 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf1Zj) - (sf1beta1Zi*sf1beta1Zi*sf1beta1Zj*sf1alpha1Zj + sf1alpha1Zi*sf1alpha1Zi*sf1alpha1Zj*sf1beta1Zj)*fabs(mneutralinoi)*ri*mf*(4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)-pow(mneutralinoj,2))*rhotildaZisf1sf1Zj - 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf1Zj) + (sf1alpha1Zi*sf1beta1Zi*sf1alpha1Zj*sf1alpha1Zj + sf1beta1Zi*sf1alpha1Zi*sf1beta1Zj*sf1beta1Zj)*mf*fabs(mneutralinoj)*rj*ri*8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf1Zj -2*(sf1beta1Zi*sf1beta1Zi*sf1alpha1Zj*sf1alpha1Zj  + sf1alpha1Zi*sf1alpha1Zi*sf1beta1Zj*sf1beta1Zj)*pow(mf,2)*ri*rj*fabs(mneutralinoi)*fabs(mneutralinoj)*4*pow(mneutralinoi/PI,2)*rhotildaZisf1sf1Zj);
+    Gammasftsfumsf1msf1 = -2*(8*(sf1alpha1Zi*sf1beta1Zi*sf1beta1Zj*sf1alpha1Zj + sf1beta1Zi*sf1alpha1Zi*sf1alpha1Zj*sf1beta1Zj)*pow(mneutralinoi/PI,2)*YZisf1sf1Zj*ri -(sf1alpha1Zi*sf1alpha1Zi*sf1alpha1Zj*sf1alpha1Zj + sf1beta1Zi*sf1beta1Zi*sf1beta1Zj*sf1beta1Zj)*8*pow(mneutralinoi/PI,2)*phitildaZisf1sf1Zj*ri*rj + (sf1beta1Zi*sf1alpha1Zi*sf1beta1Zj*sf1alpha1Zj + sf1alpha1Zi*sf1beta1Zi*sf1alpha1Zj*sf1beta1Zj)*pow(mf,2)*8*pow(mneutralinoi/PI,2)*xsiZisf1sf1Zj*ri -((sf1alpha1Zi*sf1alpha1Zi*sf1beta1Zj*sf1alpha1Zj + sf1beta1Zi*sf1beta1Zi*sf1alpha1Zj*sf1beta1Zj)*fabs(mneutralinoi)*mf)*(8*pow(mneutralinoi/PI,2)*xsiZisf1sf1Zj - 4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)+pow(mneutralinoj,2))*rhotildaZisf1sf1Zj*ri + 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf1Zj) + fabs(mneutralinoj)*rj*mf*(sf1beta1Zi*sf1alpha1Zi*sf1alpha1Zj*sf1alpha1Zj + sf1alpha1Zi*sf1beta1Zi*sf1beta1Zj*sf1beta1Zj)*(-8*pow(mneutralinoi/PI,2)*xsiZisf1sf1Zj + 8*pow(mneutralinoi,4)/sqr(PI)*rhotildaZisf1sf1Zj*ri - 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf1Zj) - (sf1beta1Zi*sf1beta1Zi*sf1beta1Zj*sf1alpha1Zj + sf1alpha1Zi*sf1alpha1Zi*sf1alpha1Zj*sf1beta1Zj)*fabs(mneutralinoi)*ri*mf*(4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)-pow(mneutralinoj,2))*rhotildaZisf1sf1Zj - 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf1Zj) + (sf1alpha1Zi*sf1beta1Zi*sf1alpha1Zj*sf1alpha1Zj + sf1beta1Zi*sf1alpha1Zi*sf1beta1Zj*sf1beta1Zj)*mf*fabs(mneutralinoj)*rj*ri*8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf1Zj -2*(sf1beta1Zi*sf1beta1Zi*sf1alpha1Zj*sf1alpha1Zj  + sf1alpha1Zi*sf1alpha1Zi*sf1beta1Zj*sf1beta1Zj)*pow(mf,2)*ri*rj*fabs(mneutralinoi)*fabs(mneutralinoj)*4*pow(mneutralinoi/PI,2)*rhotildaZisf1sf1Zj);
 
-    Gammasftsfumsf2msf2 = -2*(8*(sf2alpha1Zi*sf2beta1Zi*sf2beta1Zj*sf2alpha1Zj + sf2beta1Zi*sf2alpha1Zi*sf2alpha1Zj*sf2beta1Zj)*pow(mneutralinoi/PI,2)*YZisf2sf2Zj*ri -(sf2alpha1Zi*sf2alpha1Zi*sf2alpha1Zj*sf2alpha1Zj + sf2beta1Zi*sf2beta1Zi*sf2beta1Zj*sf2beta1Zj)*8*pow(mneutralinoi/PI,2)*phitildaZisf2sf2Zj*ri*rj + (sf2beta1Zi*sf2alpha1Zi*sf2beta1Zj*sf2alpha1Zj + sf2alpha1Zi*sf2beta1Zi*sf2alpha1Zj*sf2beta1Zj)*pow(mf,2)*8*pow(mneutralinoi/PI,2)*xsiZisf2sf2Zj*ri -((sf2alpha1Zi*sf2alpha1Zi*sf2beta1Zj*sf2alpha1Zj + sf2beta1Zi*sf2beta1Zi*sf2alpha1Zj*sf2beta1Zj)*fabs(mneutralinoi)*mf)*(8*pow(mneutralinoi/PI,2)*xsiZisf2sf2Zj - 4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)+pow(mneutralinoj,2))*rhotildaZisf2sf2Zj*ri + 8*pow(mneutralinoi/PI,2)*chiprimeZisf2sf2Zj) + fabs(mneutralinoj)*rj*mf*(sf2beta1Zi*sf2alpha1Zi*sf2alpha1Zj*sf2alpha1Zj + sf2alpha1Zi*sf2beta1Zi*sf2beta1Zj*sf2beta1Zj)*(-8*pow(mneutralinoi/PI,2)*xsiZisf2sf2Zj + 8*pow(mneutralinoi,4)/pow(PI,2)*rhotildaZisf2sf2Zj*ri - 8*pow(mneutralinoi/PI,2)*chiprimeZisf2sf2Zj) - (sf2beta1Zi*sf2beta1Zi*sf2beta1Zj*sf2alpha1Zj + sf2alpha1Zi*sf2alpha1Zi*sf2alpha1Zj*sf2beta1Zj)*fabs(mneutralinoi)*ri*mf*(4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)-pow(mneutralinoj,2))*rhotildaZisf2sf2Zj - 8*pow(mneutralinoi/PI,2)*chiprimeZisf2sf2Zj) + (sf2alpha1Zi*sf2beta1Zi*sf2alpha1Zj*sf2alpha1Zj + sf2beta1Zi*sf2alpha1Zi*sf2beta1Zj*sf2beta1Zj)*mf*fabs(mneutralinoj)*rj*ri*8*pow(mneutralinoi/PI,2)*chiprimeZisf2sf2Zj -2*(sf2beta1Zi*sf2beta1Zi*sf2alpha1Zj*sf2alpha1Zj  + sf2alpha1Zi*sf2alpha1Zi*sf2beta1Zj*sf2beta1Zj)*pow(mf,2)*fabs(mneutralinoi)*fabs(mneutralinoj)*ri*rj*4*pow(mneutralinoi/PI,2)*rhotildaZisf2sf2Zj);
+    Gammasftsfumsf2msf2 = -2*(8*(sf2alpha1Zi*sf2beta1Zi*sf2beta1Zj*sf2alpha1Zj + sf2beta1Zi*sf2alpha1Zi*sf2alpha1Zj*sf2beta1Zj)*pow(mneutralinoi/PI,2)*YZisf2sf2Zj*ri -(sf2alpha1Zi*sf2alpha1Zi*sf2alpha1Zj*sf2alpha1Zj + sf2beta1Zi*sf2beta1Zi*sf2beta1Zj*sf2beta1Zj)*8*pow(mneutralinoi/PI,2)*phitildaZisf2sf2Zj*ri*rj + (sf2beta1Zi*sf2alpha1Zi*sf2beta1Zj*sf2alpha1Zj + sf2alpha1Zi*sf2beta1Zi*sf2alpha1Zj*sf2beta1Zj)*pow(mf,2)*8*pow(mneutralinoi/PI,2)*xsiZisf2sf2Zj*ri -((sf2alpha1Zi*sf2alpha1Zi*sf2beta1Zj*sf2alpha1Zj + sf2beta1Zi*sf2beta1Zi*sf2alpha1Zj*sf2beta1Zj)*fabs(mneutralinoi)*mf)*(8*pow(mneutralinoi/PI,2)*xsiZisf2sf2Zj - 4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)+pow(mneutralinoj,2))*rhotildaZisf2sf2Zj*ri + 8*pow(mneutralinoi/PI,2)*chiprimeZisf2sf2Zj) + fabs(mneutralinoj)*rj*mf*(sf2beta1Zi*sf2alpha1Zi*sf2alpha1Zj*sf2alpha1Zj + sf2alpha1Zi*sf2beta1Zi*sf2beta1Zj*sf2beta1Zj)*(-8*pow(mneutralinoi/PI,2)*xsiZisf2sf2Zj + 8*pow(mneutralinoi,4)/sqr(PI)*rhotildaZisf2sf2Zj*ri - 8*pow(mneutralinoi/PI,2)*chiprimeZisf2sf2Zj) - (sf2beta1Zi*sf2beta1Zi*sf2beta1Zj*sf2alpha1Zj + sf2alpha1Zi*sf2alpha1Zi*sf2alpha1Zj*sf2beta1Zj)*fabs(mneutralinoi)*ri*mf*(4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)-pow(mneutralinoj,2))*rhotildaZisf2sf2Zj - 8*pow(mneutralinoi/PI,2)*chiprimeZisf2sf2Zj) + (sf2alpha1Zi*sf2beta1Zi*sf2alpha1Zj*sf2alpha1Zj + sf2beta1Zi*sf2alpha1Zi*sf2beta1Zj*sf2beta1Zj)*mf*fabs(mneutralinoj)*rj*ri*8*pow(mneutralinoi/PI,2)*chiprimeZisf2sf2Zj -2*(sf2beta1Zi*sf2beta1Zi*sf2alpha1Zj*sf2alpha1Zj  + sf2alpha1Zi*sf2alpha1Zi*sf2beta1Zj*sf2beta1Zj)*pow(mf,2)*fabs(mneutralinoi)*fabs(mneutralinoj)*ri*rj*4*pow(mneutralinoi/PI,2)*rhotildaZisf2sf2Zj);
 
-    Gammasftsfumsf1msf2 = -2*(8*(sf1alpha1Zi*sf2beta1Zi*sf1beta1Zj*sf2alpha1Zj + sf1beta1Zi*sf2alpha1Zi*sf1alpha1Zj*sf2beta1Zj)*pow(mneutralinoi/PI,2)*YZisf1sf2Zj -(sf1alpha1Zi*sf2alpha1Zi*sf1alpha1Zj*sf2alpha1Zj + sf1beta1Zi*sf2beta1Zi*sf1beta1Zj*sf2beta1Zj)*8*pow(mneutralinoi/PI,2)*phitildaZisf1sf2Zj*ri*rj + (sf1beta1Zi*sf2alpha1Zi*sf1beta1Zj*sf2alpha1Zj + sf1alpha1Zi*sf2beta1Zi*sf1alpha1Zj*sf2beta1Zj)*pow(mf,2)*8*pow(mneutralinoi/PI,2)*xsiZisf1sf2Zj*ri -((sf1alpha1Zi*sf2alpha1Zi*sf1beta1Zj*sf2alpha1Zj + sf1beta1Zi*sf2beta1Zi*sf1alpha1Zj*sf2beta1Zj)*fabs(mneutralinoi)*mf)*(8*pow(mneutralinoi/PI,2)*xsiZisf1sf2Zj - 4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)+pow(mneutralinoj,2))*rhotildaZisf1sf2Zj*ri + 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf2Zj) + fabs(mneutralinoj)*rj*mf*(sf1beta1Zi*sf2alpha1Zi*sf1alpha1Zj*sf2alpha1Zj + sf1alpha1Zi*sf2beta1Zi*sf1beta1Zj*sf2beta1Zj)*(-8*pow(mneutralinoi/PI,2)*xsiZisf1sf2Zj + 8*pow(mneutralinoi,4)/pow(PI,2)*rhotildaZisf1sf2Zj*ri - 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf2Zj) - (sf1beta1Zi*sf2beta1Zi*sf1beta1Zj*sf2alpha1Zj + sf1alpha1Zi*sf2alpha1Zi*sf1alpha1Zj*sf2beta1Zj)*fabs(mneutralinoi)*ri*mf*(4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)-pow(mneutralinoj,2))*rhotildaZisf1sf2Zj - 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf2Zj) + (sf1alpha1Zi*sf2beta1Zi*sf1alpha1Zj*sf2alpha1Zj + sf1beta1Zi*sf2alpha1Zi*sf1beta1Zj*sf2beta1Zj)*mf*fabs(mneutralinoj)*rj*8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf2Zj -2*(sf1beta1Zi*sf2beta1Zi*sf1alpha1Zj*sf2alpha1Zj  + sf1alpha1Zi*sf2alpha1Zi*sf1beta1Zj*sf2beta1Zj)*pow(mf,2)*fabs(mneutralinoi)*fabs(mneutralinoj)*ri*rj*4*pow(mneutralinoi/PI,2)*rhotildaZisf1sf2Zj);
+    Gammasftsfumsf1msf2 = -2*(8*(sf1alpha1Zi*sf2beta1Zi*sf1beta1Zj*sf2alpha1Zj + sf1beta1Zi*sf2alpha1Zi*sf1alpha1Zj*sf2beta1Zj)*pow(mneutralinoi/PI,2)*YZisf1sf2Zj -(sf1alpha1Zi*sf2alpha1Zi*sf1alpha1Zj*sf2alpha1Zj + sf1beta1Zi*sf2beta1Zi*sf1beta1Zj*sf2beta1Zj)*8*pow(mneutralinoi/PI,2)*phitildaZisf1sf2Zj*ri*rj + (sf1beta1Zi*sf2alpha1Zi*sf1beta1Zj*sf2alpha1Zj + sf1alpha1Zi*sf2beta1Zi*sf1alpha1Zj*sf2beta1Zj)*pow(mf,2)*8*pow(mneutralinoi/PI,2)*xsiZisf1sf2Zj*ri -((sf1alpha1Zi*sf2alpha1Zi*sf1beta1Zj*sf2alpha1Zj + sf1beta1Zi*sf2beta1Zi*sf1alpha1Zj*sf2beta1Zj)*fabs(mneutralinoi)*mf)*(8*pow(mneutralinoi/PI,2)*xsiZisf1sf2Zj - 4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)+pow(mneutralinoj,2))*rhotildaZisf1sf2Zj*ri + 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf2Zj) + fabs(mneutralinoj)*rj*mf*(sf1beta1Zi*sf2alpha1Zi*sf1alpha1Zj*sf2alpha1Zj + sf1alpha1Zi*sf2beta1Zi*sf1beta1Zj*sf2beta1Zj)*(-8*pow(mneutralinoi/PI,2)*xsiZisf1sf2Zj + 8*pow(mneutralinoi,4)/sqr(PI)*rhotildaZisf1sf2Zj*ri - 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf2Zj) - (sf1beta1Zi*sf2beta1Zi*sf1beta1Zj*sf2alpha1Zj + sf1alpha1Zi*sf2alpha1Zi*sf1alpha1Zj*sf2beta1Zj)*fabs(mneutralinoi)*ri*mf*(4*pow(mneutralinoi/PI,2)*(pow(mneutralinoi,2)-pow(mneutralinoj,2))*rhotildaZisf1sf2Zj - 8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf2Zj) + (sf1alpha1Zi*sf2beta1Zi*sf1alpha1Zj*sf2alpha1Zj + sf1beta1Zi*sf2alpha1Zi*sf1beta1Zj*sf2beta1Zj)*mf*fabs(mneutralinoj)*rj*8*pow(mneutralinoi/PI,2)*chiprimeZisf1sf2Zj -2*(sf1beta1Zi*sf2beta1Zi*sf1alpha1Zj*sf2alpha1Zj  + sf1alpha1Zi*sf2alpha1Zi*sf1beta1Zj*sf2beta1Zj)*pow(mf,2)*fabs(mneutralinoi)*fabs(mneutralinoj)*ri*rj*4*pow(mneutralinoi/PI,2)*rhotildaZisf1sf2Zj);
 
     ///sf sf diag contribution 2x as t and u same
     double Gammasf1sf1diag = 0, Gammasf2sf2diag = 0;
@@ -2804,11 +2790,11 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     integralhH3 = dgauss(gintegralhH3dgauss,fromz,toz,accuracy);
     integralhH4 = dgauss(gintegralhH4dgauss,fromz,toz,accuracy);
 
-    Gammah = (2*pow(Xijh + Xjih,2)*pow(fq*trigofalphah,2)*(integralh4 -2*pow(mq,2)*integralh3 +rj*2*mneutralinoi*fabs(mneutralinoj)*integralh2 - rj*4*mneutralinoi*fabs(mneutralinoj)*pow(mq,2)*integralh1));
+    Gammah = (2*pow(Xijh + Xjih,2)*pow(fq*trigofalphah,2)*(integralh4 -2*sqr(mq)*integralh3 +rj*2*mneutralinoi*fabs(mneutralinoj)*integralh2 - rj*4*mneutralinoi*fabs(mneutralinoj)*sqr(mq)*integralh1));
     
-    GammaH = (2*pow(XijH+ XjiH,2)*pow(fq*trigofalphaH,2)*(integralH4 - 2*pow(mq,2)*integralH3 +rj*2*mneutralinoi*fabs(mneutralinoj)*integralH2 - rj*4*mneutralinoi*fabs(mneutralinoj)*pow(mq,2)*integralH1));
+    GammaH = (2*pow(XijH+ XjiH,2)*pow(fq*trigofalphaH,2)*(integralH4 - 2*sqr(mq)*integralH3 +rj*2*mneutralinoi*fabs(mneutralinoj)*integralH2 - rj*4*mneutralinoi*fabs(mneutralinoj)*sqr(mq)*integralH1));
 
-    GammahHinterf = 2*2*(Xijh + Xjih)*(XijH + XjiH)*pow(fq,2)*trigofalphah*trigofalphaH*(integralhH4 - 2*pow(mq,2)*integralhH3 + 2*ri*rj*fabs(mneutralinoi)*fabs(mneutralinoj)*integralhH2 - 4*ri*rj*fabs(mneutralinoi)*fabs(mneutralinoj)*pow(mq,2)*integralhH1);
+    GammahHinterf = 2*2*(Xijh + Xjih)*(XijH + XjiH)*pow(fq,2)*trigofalphah*trigofalphaH*(integralhH4 - 2*sqr(mq)*integralhH3 + 2*ri*rj*fabs(mneutralinoi)*fabs(mneutralinoj)*integralhH2 - 4*ri*rj*fabs(mneutralinoi)*fabs(mneutralinoj)*sqr(mq)*integralhH1);
 
     ///Pseudoscalar A contribution:
 
@@ -2821,7 +2807,7 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     integralA3 = dgauss(gintegralA3dgauss,fromz,toz,accuracy);
     integralA4 = dgauss(gintegralA4dgauss,fromz,toz,accuracy);
 
-    GammaA = pow(XijA + XjiA,2)*pow(Aq,2)*(integralA4 + 2*pow(mq,2)*integralA3 + 2*fabs(mneutralinoi)*fabs(mneutralinoj)*integralA2*-rj*ri + 4*pow(mq,2)*fabs(mneutralinoi)*fabs(mneutralinoj)*integralA1*-rj*ri);
+    GammaA = pow(XijA + XjiA,2)*pow(Aq,2)*(integralA4 + 2*sqr(mq)*integralA3 + 2*fabs(mneutralinoi)*fabs(mneutralinoj)*integralA2*-rj*ri + 4*sqr(mq)*fabs(mneutralinoi)*fabs(mneutralinoj)*integralA1*-rj*ri);
 
     double Gammagoldstone = 0; ///Have an additional pseudoscalar goldstone with mass of Z due to being in Feynman gauge, to add in the longitudinal polarisation of the Z
     double integralgoldstone1 = 0, integralgoldstone2 = 0, integralgoldstone3 = 0, integralgoldstone4 = 0;
@@ -2836,7 +2822,7 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     integralgoldstone3 = dgauss(gintegralA3dgauss,fromz,toz,accuracy);
     integralgoldstone4 = dgauss(gintegralA4dgauss,fromz,toz,accuracy);
 
-    Gammagoldstone = pow(goldstoneneutineutjcoup,2)*pow(goldstoneffcoup,2)*4*(integralgoldstone4 + 2*pow(mq,2)*integralgoldstone3 + 2*fabs(mneutralinoi)*fabs(mneutralinoj)*integralgoldstone2*-rj*ri + 4*pow(mq,2)*fabs(mneutralinoi)*fabs(mneutralinoj)*integralgoldstone1*-rj*ri);
+    Gammagoldstone = pow(goldstoneneutineutjcoup,2)*pow(goldstoneffcoup,2)*4*(integralgoldstone4 + 2*sqr(mq)*integralgoldstone3 + 2*fabs(mneutralinoi)*fabs(mneutralinoj)*integralgoldstone2*-rj*ri + 4*sqr(mq)*fabs(mneutralinoi)*fabs(mneutralinoj)*integralgoldstone1*-rj*ri);
 
     double coupcombo1Zsf1 = 0, coupcombo2Zsf1 = 0, coupcombo3Zsf1 = 0, coupcombo4Zsf1 = 0, coupcombo5Zsf1 = 0, coupcombo6Zsf1 = 0, coupcombo7Zsf1 = 0, coupcombo8Zsf1 = 0; 
     coupcombo1Zsf1 = -2*2*Wij*g*sinthetaW*(-sf1alpha1Zi*(alphaf-betaf)*sf1beta1Zj + sf1beta1Zi*(alphaf+betaf)*sf1alpha1Zj)*mf*fabs(mneutralinoi);
@@ -2896,8 +2882,8 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     coupcombo4hsf1 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(-sf1beta1Zi*sf1beta1Zj - sf1alpha1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
     coupcombo5hsf1 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*-mq*fabs(mneutralinoj)*ri;
     coupcombo6hsf1 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(-sf1alpha1Zi*sf1beta1Zj - sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj);
-    coupcombo7hsf1 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-pow(mq,2)*-ri*rj;
-    coupcombo8hsf1 = 2*(Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*pow(mq,2)*fabs(mneutralinoj);
+    coupcombo7hsf1 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-sqr(mq)*-ri*rj;
+    coupcombo8hsf1 = 2*(Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj);
 
     coupcombo1Hsf1 = 0.5*(XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-ri*rj;
     coupcombo2Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
@@ -2905,8 +2891,8 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     coupcombo4Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(-sf1beta1Zi*sf1beta1Zj - sf1alpha1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
     coupcombo5Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*-mq*fabs(mneutralinoj)*ri;
     coupcombo6Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(-sf1alpha1Zi*sf1beta1Zj - sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj);
-    coupcombo7Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-pow(mq,2)*-ri*rj;
-    coupcombo8Hsf1 = 2*(XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*pow(mq,2)*fabs(mneutralinoj);
+    coupcombo7Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-sqr(mq)*-ri*rj;
+    coupcombo8Hsf1 = 2*(XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj);
 
     coupcombo1hsf2 = 0.5*(Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-ri*rj;
     coupcombo2hsf2 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
@@ -2914,8 +2900,8 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     coupcombo4hsf2 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(-sf2beta1Zi*sf2beta1Zj - sf2alpha1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
     coupcombo5hsf2 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*-mq*fabs(mneutralinoj)*ri;
     coupcombo6hsf2 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(-sf2alpha1Zi*sf2beta1Zj - sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj);
-    coupcombo7hsf2 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-pow(mq,2)*-ri*rj;
-    coupcombo8hsf2 = 2*(Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*pow(mq,2)*fabs(mneutralinoj);
+    coupcombo7hsf2 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-sqr(mq)*-ri*rj;
+    coupcombo8hsf2 = 2*(Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj);
 
     coupcombo1Hsf2 = 0.5*(XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-ri*rj;
     coupcombo2Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
@@ -2923,8 +2909,8 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     coupcombo4Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(-sf2beta1Zi*sf2beta1Zj - sf2alpha1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
     coupcombo5Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*-mq*fabs(mneutralinoj)*ri;
     coupcombo6Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(-sf2alpha1Zi*sf2beta1Zj - sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj);
-    coupcombo7Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-pow(mq,2)*-ri*rj;
-    coupcombo8Hsf2 = 2*(XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*pow(mq,2)*fabs(mneutralinoj);
+    coupcombo7Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-sqr(mq)*-ri*rj;
+    coupcombo8Hsf2 = 2*(XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj);
     
     double integral1hsf1 = 0, integral2hsf1 = 0, integral3hsf1 = 0, integral4hsf1 = 0, integral5hsf1 = 0, integral6hsf1 = 0, integral7hsf1 = 0, integral8hsf1 = 0, integral1hsf2 = 0, integral2hsf2 = 0, integral3hsf2 = 0, integral4hsf2 = 0, integral5hsf2 = 0, integral6hsf2 = 0, integral7hsf2 = 0, integral8hsf2 = 0, integral1Hsf1 = 0, integral2Hsf1 = 0, integral3Hsf1 = 0, integral4Hsf1 = 0, integral5Hsf1 = 0, integral6Hsf1 = 0, integral7Hsf1 = 0, integral8Hsf1 = 0, integral1Hsf2 = 0, integral2Hsf2 = 0, integral3Hsf2 = 0, integral4Hsf2 = 0, integral5Hsf2 = 0, integral6Hsf2 = 0, integral7Hsf2 = 0, integral8Hsf2 = 0;
 
@@ -2981,8 +2967,8 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     coupcombo4Asf1 = (XijA + XjiA)*Aq/2*(-sf1beta1Zi*sf1beta1Zj - sf1alpha1Zi*sf1alpha1Zj)*mq*fabs(mneutralinoi);
     coupcombo5Asf1 = -(XijA + XjiA)*Aq/2*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*mq*fabs(mneutralinoj)*-ri*rj;
     coupcombo6Asf1 = (XijA + XjiA)*Aq/2*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj)*-rj;
-    coupcombo7Asf1 = (XijA + XjiA)*Aq/2*pow(mq,2)*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*ri;
-    coupcombo8Asf1 = (XijA + XjiA)*Aq*fabs(mneutralinoi)*pow(mq,2)*fabs(mneutralinoj)*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-rj;
+    coupcombo7Asf1 = (XijA + XjiA)*Aq/2*sqr(mq)*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*ri;
+    coupcombo8Asf1 = (XijA + XjiA)*Aq*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj)*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-rj;
 
     coupcombo1Asf2 = 0.5*(XijA + XjiA)*Aq/2*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*ri;
     coupcombo2Asf2 = -(XijA + XjiA)*Aq/2*fabs(mneutralinoi)*mq*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj);
@@ -2990,8 +2976,8 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     coupcombo4Asf2 = (XijA + XjiA)*Aq/2*(-sf2beta1Zi*sf2beta1Zj - sf2alpha1Zi*sf2alpha1Zj)*mq*fabs(mneutralinoi);
     coupcombo5Asf2 = -(XijA + XjiA)*Aq/2*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*mq*fabs(mneutralinoj)*-ri*rj;
     coupcombo6Asf2 = (XijA + XjiA)*Aq/2*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj)*-rj;
-    coupcombo7Asf2 = (XijA + XjiA)*Aq/2*pow(mq,2)*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*ri;
-    coupcombo8Asf2 = (XijA + XjiA)*Aq*fabs(mneutralinoi)*pow(mq,2)*fabs(mneutralinoj)*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-rj;
+    coupcombo7Asf2 = (XijA + XjiA)*Aq/2*sqr(mq)*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*ri;
+    coupcombo8Asf2 = (XijA + XjiA)*Aq*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj)*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-rj;
 
     double integral1Asf1 = 0, integral2Asf1 = 0, integral3Asf1 = 0, integral4Asf1 = 0, integral5Asf1 = 0, integral6Asf1 = 0, integral7Asf1 = 0, integral8Asf1 = 0, integral1Asf2 = 0, integral2Asf2 = 0, integral3Asf2 = 0, integral4Asf2 = 0, integral5Asf2 = 0, integral6Asf2 = 0, integral7Asf2 = 0, integral8Asf2 = 0; 
 
@@ -3119,7 +3105,7 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     integralgA3 = 2*fabs(m1)*dgauss(gneutineutjffgA3dgauss,fromz,toz,accuracy);
     integralgA4 = 2*fabs(m1)*dgauss(gneutineutjffgA4dgauss,fromz,toz,accuracy);
     
-    GammagA = coupcombogA1*coupcombogA3*integralgA4 - 2*coupcombogA1*coupcombogA4*pow(mq,2)*integralgA3 + 2*coupcombogA2*coupcombogA3*fabs(mneutralinoi)*fabs(mneutralinoj)*integralgA2 -4*coupcombogA2*coupcombogA4*pow(mq,2)*fabs(mneutralinoi)*fabs(mneutralinoj)*integralgA1;
+    GammagA = coupcombogA1*coupcombogA3*integralgA4 - 2*coupcombogA1*coupcombogA4*sqr(mq)*integralgA3 + 2*coupcombogA2*coupcombogA3*fabs(mneutralinoi)*fabs(mneutralinoj)*integralgA2 -4*coupcombogA2*coupcombogA4*sqr(mq)*fabs(mneutralinoi)*fabs(mneutralinoj)*integralgA1;
 
     amplitudeW = Nc/(512*pow(PI,3)*pow(fabs(mneutralinoi),3))*(GammaZ + Gammah + GammaH + GammaA + GammahHinterf + Gammasftot - 4*Gammahsf1 - 4*Gammahsf2 - 4*GammaHsf1 - 4*GammaHsf2 - 4*GammaAsf1 - 4*GammaAsf2 + 4*GammaZsf1 - 4*GammaZsf2 - 4*GammaZA + 2*GammagA - 4*GammaZg + Gammagoldstone - 4*Gammagsf1 -4*Gammagsf2);    
 }
@@ -4196,7 +4182,6 @@ double higgsAamplitudedecaygammagammaNMSSM (double m1, double g, double gprime, 
 {
   double prefactor=0, Itr=0, Iti=0, Ibr = 0, Ibi = 0, Icr = 0, Ici = 0, Itaur = 0, Itaui = 0, Ichar1r = 0, Ichar1i = 0, Ichar2r = 0, Ichar2i = 0, couplingt = 0, couplingb = 0, couplingc = 0, couplingtau = 0, couplingch1 = 0, couplingch2 = 0, kintr = 0, kinti = 0, kinbr =0, kinbi = 0, kincr = 0, kinci = 0, kintaur = 0, kintaui = 0, kinch1r = 0, kinch1i = 0, kinch2r = 0, kinch2i = 0, matelemmodsquare=0, amplitudeW=0;
 
-  DoubleVector foftau(double mpart, double mcomp); ///CF(CA) in NMSSMTools
   DoubleVector tfoftau(3), bfoftau(3), cfoftau(3), taufoftau(3), ch1foftau(3), ch2foftau(3);
   ///Initialise these components
   for (int i = 1; i <= 3; i++) {
@@ -4240,7 +4225,6 @@ double higgsAamplitudedecaygluongluonNMSSM (double m1, double g, double gs, doub
   double prefactor=0, Itr=0, Iti=0, Ibr = 0, Ibi = 0, Icr = 0, Ici = 0, couplingt = 0, couplingb = 0, couplingc = 0, kintr = 0, kinti = 0, kinbr =0, kinbi = 0, kincr = 0, kinci = 0, matelemmodsquare=0, amplitudeW=0;
 
 
-  DoubleVector foftau(double mpart, double mcomp); ///CF(CA) in NMSSMTools
   DoubleVector tfoftau(3), bfoftau(3), cfoftau(3);
   ///Initialise these components
   for (int i = 1; i <= 3; i++) {
@@ -4278,7 +4262,7 @@ double higgsAamplitudedecaygluongluonNMSSM (double m1, double g, double gs, doub
   if (QCD == true) {
     int NF = 0;
     NF = 6;
-    DoubleVector hggQCDcorrections(double amplitudeW, double alphas, int Nf, char higgs, double prefactor, double SMtotr, double SMtoti, double sqtotr, double sqtoti);
+
     amplitudeW = hggQCDcorrections(amplitudeW, alphas, NF, 'A', prefactor, SMTOTRE, SMTOTIM, SQTOTRE, SQTOTIM)(1); ///Pass hggQCDcorrections 'A' as it just matters whether it is CPeven (so 95/4 in FQCD) or CPodd (so 97/4 in FQCD)
   }
   else if (QCD == false) {
@@ -4294,7 +4278,6 @@ double higgsAamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
   double prefactor=0, Itr=0, Iti=0, Ibr = 0, Ibi = 0, Icr = 0, Ici = 0, Ichar1r = 0, Ichar1i = 0, Ichar2r = 0, Ichar2i = 0, couplingt = 0, couplingb = 0, couplingc = 0, couplingch1 =0, couplingch2 = 0, kintr = 0, kinti = 0, kinbr =0, kinbi = 0, kincr = 0, kinci = 0, kinch1r = 0, kinch1i = 0, kinch2r = 0, kinch2i = 0, matelemmodsquare=0, amplitudeW=0;
   double sin2thW = 0, sinthW = 0, costhW = 0;
 
-  DoubleVector foftau(double mpart, double mcomp); ///CF(CA) in NMSSMTools
   DoubleVector tfoftau(3), bfoftau(3), cfoftau(3), ch1foftau(3), ch2foftau(3), tZfoftau(3), bZfoftau(3), cZfoftau(3), ch1Zfoftau(3), ch2Zfoftau(3);
   ///Initialise these components
   for (int i = 1; i <= 3; i++) {
@@ -4349,8 +4332,6 @@ double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double m
   double kintr = 0, kinbr = 0, kincr = 0, kintaur = 0, kinWr = 0, kinHpmr = 0, kinch1r = 0, kinch2r = 0, kinscLr = 0, kinscRr = 0, kinssLr = 0, kinssRr = 0, kinst1r = 0, kinst2r = 0, kinsb1r = 0, kinsb2r = 0, kinsmuLr = 0, kinsmuRr = 0, kinstau1r = 0, kinstau2r = 0;
   double kinti = 0, kinbi = 0, kinci = 0, kintaui = 0, kinWi = 0, kinHpmi = 0, kinch1i = 0, kinch2i = 0, kinscLi = 0, kinscRi = 0, kinssLi = 0, kinssRi = 0, kinst1i = 0, kinst2i = 0, kinsb1i = 0, kinsb2i = 0, kinsmuLi = 0, kinsmuRi = 0, kinstau1i = 0, kinstau2i = 0;
   double Itr = 0, Icr = 0, Ibr = 0, Itaur = 0, Ichar1r = 0, Ichar2r = 0, IWr = 0, IHpmr = 0, Iti = 0, Ici = 0, Ibi = 0, Itaui = 0, Ichar1i = 0, Ichar2i = 0, IWi = 0, IHpmi = 0, IscLr = 0, IscRr = 0, IssLr = 0, IssRr = 0, IsmuLr = 0, IsmuRr = 0, IscLi = 0, IscRi = 0, IssLi = 0, IssRi = 0, IsmuLi = 0, IsmuRi = 0, Ist1r = 0, Ist2r = 0, Isb1r = 0, Isb2r = 0, Istau1r = 0, Istau2r = 0, Ist1i = 0, Ist2i = 0, Isb1i = 0, Isb2i = 0, Istau1i = 0, Istau2i = 0;
-
-  DoubleVector foftau(double mpart, double mcomp); ///CF(CA) in NMSSMTools
 
   tfoftau = foftau(mtop, m1); bfoftau = foftau(mbottom, m1); cfoftau = foftau(mcharm, m1); taufoftau = foftau(mtau, m1); Wfoftau = foftau(mWboson, m1); Hpmfoftau = foftau(mHpm, m1); ch1foftau = foftau(mchar1, m1); ch2foftau = foftau(mchar2, m1); scLfoftau = foftau(mscharmL, m1); scRfoftau = foftau(mscharmR, m1); ssLfoftau = foftau(msstrangeL, m1); ssRfoftau = foftau(msstrangeR, m1); st1foftau = foftau(mstop1, m1); st2foftau = foftau(mstop2, m1); sb1foftau = foftau(msbottom1, m1); sb2foftau = foftau(msbottom2, m1); stau1foftau = foftau(mstau1, m1); stau2foftau = foftau(mstau2, m1); smuLfoftau = foftau(msmuonL, m1); smuRfoftau = foftau(msmuonR, m1);
 
@@ -4436,8 +4417,6 @@ double higgsCPevenamplitudedecaygluongluonNMSSM(double m1, double mtop, double m
   double kinti = 0, kinbi = 0, kinci = 0, kinscLi = 0, kinscRi = 0, kinssLi = 0, kinssRi = 0, kinst1i = 0, kinst2i = 0, kinsb1i = 0, kinsb2i = 0, kinsuLi = 0, kinsuRi = 0, kinsdLi = 0, kinsdRi = 0;
   double Itr = 0, Icr = 0, Ibr = 0, Iti = 0, Ici = 0, Ibi = 0, IscLr = 0, IscRr = 0, IssLr = 0, IssRr = 0, IscLi = 0, IscRi = 0, IssLi = 0, IssRi = 0, Ist1r = 0, Ist2r = 0, Isb1r = 0, Isb2r = 0, Ist1i = 0, Ist2i = 0, Isb1i = 0, Isb2i = 0, IsuLr = 0, IsuRr = 0, IsuLi = 0, IsuRi = 0, IsdLr = 0, IsdRr = 0, IsdLi = 0, IsdRi = 0;
 
-  DoubleVector foftau(double mpart, double mcomp); ///CF(CA) in NMSSMTools
-  
   tfoftau = foftau(mtop, m1); bfoftau = foftau(mbottom, m1); cfoftau = foftau(mcharm, m1); scLfoftau = foftau(mscharmL, m1); scRfoftau = foftau(mscharmR, m1); ssLfoftau = foftau(msstrangeL, m1); ssRfoftau = foftau(msstrangeR, m1); st1foftau = foftau(mstop1, m1); st2foftau = foftau(mstop2, m1); sb1foftau = foftau(msbottom1, m1); sb2foftau = foftau(msbottom2, m1); suLfoftau = foftau(msupL, m1); suRfoftau = foftau(msupR, m1); sdLfoftau = foftau(msdownL, m1); sdRfoftau = foftau(msdownR, m1);
 
   couplingt = CPEMix(higgs,1)/sin(beta); couplingc = CPEMix(higgs,1)/sin(beta); couplingb = CPEMix(higgs,2)/(cos(beta));
@@ -4516,7 +4495,7 @@ double higgsCPevenamplitudedecaygluongluonNMSSM(double m1, double mtop, double m
     else {
       throw("Problem - higgs must be 1, 2, 3 i.e 'h', 'H' or 'H3' in NMSSM!\n");
     }
-    DoubleVector hggQCDcorrections(double amplitudeW, double alphas, int Nf, char higgs, double prefactor, double SMtotr, double SMtoti, double sqtotr, double sqtoti);
+
     amplitudeW = hggQCDcorrections(amplitudeW, alphas, NF, 'h', prefactor, SMTOTRE, SMTOTIM, SQTOTRE, SQTOTIM)(1); ///Pass hggQCDcorrections 'h' as it just matters whether it is CPeven (so 95/4 in FQCD) or CPodd (so 97/4 in FQCD)
    
   }
@@ -4536,9 +4515,6 @@ double higgshamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
   if (m1 < mZboson) { amplitudeW = 0;}
   else {
     
-    DoubleVector foftau(double mpart, double mcomp); ///CF(CA) in NMSSMTools
-    DoubleVector goftau(double mpart, double mcomp);
-
     DoubleVector tfoftau(3), bfoftau(3), cfoftau(3), ch1foftau(3), ch2foftau(3), Wfoftau(3), Hpmfoftau(3), tZfoftau(3), bZfoftau(3), cZfoftau(3), ch1Zfoftau(3), ch2Zfoftau(3), WZfoftau(3), HpmZfoftau(3);
     DoubleVector tgoftau(3), bgoftau(3), cgoftau(3), ch1goftau(3), ch2goftau(3), Wgoftau(3), Hpmgoftau(3), tZgoftau(3), bZgoftau(3), cZgoftau(3), ch1Zgoftau(3), ch2Zgoftau(3), WZgoftau(3), HpmZgoftau(3);
     ///Initialise these components
@@ -4614,14 +4590,14 @@ double higgshamplitudedecayneutineutjNMSSM (double m1, double mneuti, double mne
     else if (neuti == neutj) { factor = 1;} ///for same neutralino they are QM indistinguishable so don't get factor of 2
     squareplus = 1 - pow(mneutj/m1+mneuti/m1,2);
     squareminus = 1 - pow(mneutj/m1-mneuti/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgshamplitudedecayneutineutjNMSSM\n");
     } 
     
     coupling = lam/(pow(2,0.5))*(CPEMix(higgs,1)*(mixNeut(neuti,3)*mixNeut(neutj,5) + mixNeut(neuti,5)*mixNeut(neutj,3)) + CPEMix(higgs,2)*(mixNeut(neuti,4)*mixNeut(neutj,5) + mixNeut(neuti,5)*mixNeut(neutj,4)) + CPEMix(higgs,3)*(mixNeut(neuti,4)*mixNeut(neutj,3)+mixNeut(neuti,3)*mixNeut(neutj,4))) - pow(2,0.5)*kappa*CPEMix(higgs,3)*mixNeut(neuti,5)*mixNeut(neutj,5) + gp/2*(-CPEMix(higgs,1)*(mixNeut(neuti,1)*mixNeut(neutj,4) + mixNeut(neuti,4)*mixNeut(neutj,1)) + CPEMix(higgs,2)*(mixNeut(neuti,1)*mixNeut(neutj,3) + mixNeut(neuti,3)*mixNeut(neutj,1))) + g/2*(CPEMix(higgs,1)*(mixNeut(neuti,2)*mixNeut(neutj,4) + mixNeut(neuti,4)*mixNeut(neutj,2)) - CPEMix(higgs,2)*(mixNeut(neuti,2)*mixNeut(neutj,3) + mixNeut(neuti,3)*mixNeut(neutj,2)));
 
-    amplitudeW = factor*squareplus*pow(m1,2)*lambda*pow(coupling,2)/(16*PI*fabs(m1));
+    amplitudeW = factor*squareplus*sqr(m1)*lambda*pow(coupling,2)/(16*PI*fabs(m1));
   }
   return amplitudeW;
 }
@@ -4636,7 +4612,7 @@ double higgsAamplitudedecayHpmWboson(double m1, double mWboson, double mHpm, dou
     double squareplus = 0, squareminus = 0, lambda = 0, coupling = 0;
     squareplus = 1 - pow(mHpm/m1 + mWboson/m1,2);
     squareminus = 1 - pow(mHpm/m1 - mWboson/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsAamplitudedecayHpmWboson\n");
     } 
@@ -4678,7 +4654,7 @@ double higgsCPevenamplitudedecayAANMSSM(double m1, double mA1, double mA2, doubl
     double squareplus = 0, squareminus = 0, lambda = 0, hvev1 = 0, hvev2 = 0, prefactor = 0, coupling = 0;
     squareplus = 1 - pow(mA1/m1 + mA2/m1,2);
     squareminus = 1 - pow(mA1/m1 - mA2/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecayAANMSSM\n");
     } 
@@ -4704,7 +4680,7 @@ double higgsCPevenamplitudedecaypseudoscalarZNMSSM (double m1, double mA, double
     double squareplus = 0, squareminus = 0, lambda = 0, coupling = 0;
     squareplus = 1 - pow(mA/m1+mZboson/m1,2);
     squareminus = 1 - pow(mA/m1-mZboson/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaypseudoscalarZNMSSM\n");
     } 
@@ -4749,7 +4725,7 @@ double higgsCPevenamplitudedecayhhorhHorHHNMSSM(double m1, double mh1, double mh
     double squareplus = 0, squareminus = 0, lambda = 0, prefactor = 0, coupling = 0, deltah1h2 = 0, hvev1 = 0, hvev2 = 0;
     squareplus = 1 - pow(mh1/m1+mh2/m1,2);
     squareminus = 1 - pow(mh1/m1-mh2/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecayhhorhHorHHNMSSM\n");
     } 
@@ -4778,7 +4754,7 @@ double higgsA2amplitudedecayA1CPevenNMSSM(double m1, double mA1, double mh, doub
     double squareplus = 0, squareminus = 0, lambda = 0, hvev1 = 0, hvev2 = 0, prefactor = 0, coupling = 0;
     squareplus = 1 - pow(mA1/m1 + mh/m1,2);
     squareminus = 1 - pow(mA1/m1 - mh/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsA2amplitudedecayA1CPevenNMSSM\n");
     } 
@@ -4804,7 +4780,7 @@ double higgsCPevenamplitudedecayWHpmNMSSM (double m1, double mWboson, double mHp
     double squareplus = 0, squareminus = 0, lambda = 0;
     squareplus = 1 - pow(mWboson/m1+mHpm/m1,2);
     squareminus = 1 - pow(mWboson/m1-mHpm/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecayWHpmNMSSM\n");
     } 
@@ -4823,7 +4799,7 @@ double higgsCPevenamplitudedecaystopistopiNMSSM (double m1, double mstopi, doubl
     double squareplus = 0, squareminus = 0, lambda = 0, hvev1 = 0, hvev2 = 0, huq = 0, coupling = 0, angle1 = 0, angle2 = 0;
     squareplus = 1 - 4*pow(mstopi/m1,2);
     squareminus = 1;
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystopistopiNMSSM\n");
     } 
@@ -4855,7 +4831,7 @@ double higgsCPevenamplitudedecaystopistopjNMSSM (double m1, double mstopi, doubl
     double squareplus = 0, squareminus = 0, lambda = 0, hvev1 = 0, hvev2 = 0, huq = 0, coupling = 0;
     squareplus = 1 - pow(mstopi/m1+mstopj/m1,2);
     squareminus = 1- pow(mstopi/m1-mstopj/m1,2); 
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystopistopjNMSSM\n");
     } 
@@ -4879,7 +4855,7 @@ double higgsCPevenamplitudedecaysbottomisbottomiNMSSM (double m1, double msbotto
     double squareplus = 0, squareminus = 0, lambda = 0, hvev1 = 0, hvev2 = 0, hdq = 0, coupling = 0, angle1 = 0, angle2 = 0;
     squareplus = 1 - 4*pow(msbottomi/m1,2);
     squareminus = 1;
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaysbottomisbottomiNMSSM\n");
     } 
@@ -4912,7 +4888,7 @@ double higgsCPevenamplitudedecaysbottomisbottomjNMSSM (double m1, double msbotto
     double squareplus = 0, squareminus = 0, lambda = 0, hvev1 = 0, hvev2 = 0, hdq = 0, coupling = 0;
     squareplus = 1 - pow(msbottomi/m1+msbottomj/m1,2);
     squareminus = 1- pow(msbottomi/m1-msbottomj/m1,2); 
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaysbottomisbottomjNMSSM\n");
     } 
@@ -4936,7 +4912,7 @@ double higgsCPevenamplitudedecaystauistauiNMSSM (double m1, double mstaui, doubl
     double squareplus = 0, squareminus = 0, lambda = 0, hvev1 = 0, hvev2 = 0, hlq = 0, coupling = 0, angle1 = 0, angle2 = 0;
     squareplus = 1 - 4*pow(mstaui/m1,2);
     squareminus = 1;
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystauistauiNMSSM\n");
     } 
@@ -4969,7 +4945,7 @@ double higgsCPevenamplitudedecaystauistaujNMSSM (double m1, double mstaui, doubl
     double squareplus = 0, squareminus = 0, lambda = 0, hvev1 = 0, hvev2 = 0, hlq = 0, coupling = 0;
     squareplus = 1 - pow(mstaui/m1+mstauj/m1,2);
     squareminus = 1- pow(mstaui/m1-mstauj/m1,2); 
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystauistaujNMSSM\n");
     } 
@@ -4995,7 +4971,7 @@ double stop2amplitudedecaystop1CPevenhiggsNMSSM (double mst2, double mst1, doubl
     prefactor = 1/(16*PI*mst2);
     squareplus = 1 - pow(mst1/mst2 + mh/mst2,2);
     squareminus = 1 - pow(mst1/mst2 - mh/mst2,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stop2amplitudedecaystop1CPevenhiggsNMSSM\n");
     } 
@@ -5022,7 +4998,7 @@ double stop2amplitudedecaystop1CPoddhiggsNMSSM (double mst2, double mst1, double
     prefactor = 1/(16*PI*mst2);
     squareplus = 1 - pow(mst1/mst2 + ma/mst2,2);
     squareminus = 1 - pow(mst1/mst2 - ma/mst2,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stop2amplitudedecaystop1CPoddhiggsNMSSM\n");
     } 
@@ -5047,7 +5023,7 @@ double sbottom2amplitudedecaysbottom1CPevenhiggsNMSSM (double msb2, double msb1,
     prefactor = 1/(16*PI*msb2);
     squareplus = 1 - pow(msb1/msb2 + mh/msb2,2);
     squareminus = 1 - pow(msb1/msb2 - mh/msb2,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sbottom2amplitudedecaysbottom1CPevenhiggsNMSSM\n");
     } 
@@ -5075,7 +5051,7 @@ double sbottom2amplitudedecaysbottom1CPoddhiggsNMSSM (double msb2, double msb1, 
     prefactor = 1/(16*PI*msb2);
     squareplus = 1 - pow(msb1/msb2 + ma/msb2,2);
     squareminus = 1 - pow(msb1/msb2 - ma/msb2,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sbottom2amplitudedecaysbottom1CPoddhiggsNMSSM\n");
     } 
@@ -5100,7 +5076,7 @@ double stau2amplitudedecaystau1CPevenhiggsNMSSM (double mstau2, double mstau1, d
     prefactor = 1/(16*PI*mstau2);
     squareplus = 1 - pow(mstau1/mstau2 + mh/mstau2,2);
     squareminus = 1 - pow(mstau1/mstau2 - mh/mstau2,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stau2amplitudedecaystau1CPevenhiggsNMSSM\n");
     } 
@@ -5129,7 +5105,7 @@ double stau2amplitudedecaystau1CPoddhiggsNMSSM
     prefactor = 1/(16*PI*mstau2);
     squareplus = 1 - pow(mstau1/mstau2 + ma/mstau2,2);
     squareminus = 1 - pow(mstau1/mstau2 - ma/mstau2,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stau2amplitudedecaystau1CPoddhiggsNMSSM\n");
     } 
@@ -5156,7 +5132,7 @@ double chargino2amplitudedecaychargino1CPevenhiggsNMSSM (double mchar2, double m
     coupling2 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*cos(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*cos(thetaR) - CPEMix(higgs,2)*sin(thetaL)*sin(thetaR)));
     squareplus = 1 - pow(mchar1/mchar2 + mh/mchar2,2);
     squareminus = 1 - pow(mchar1/mchar2 - mh/mchar2,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in chargino2amplitudedecaychargino1CPevenhiggsNMSSM\n");
     } 
@@ -5181,7 +5157,7 @@ double chargino2amplitudedecaychargino1CPoddhiggsNMSSM (double mchar2, double mc
     C2 = (lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*sin(thetaL)*cos(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*-cos(thetaL)*cos(thetaR) + CPOMix(pseudoscalar,2)*sin(thetaR)*sin(thetaL)));
     squareplus = 1 - pow(mchar1/mchar2 + mA/mchar2,2);
     squareminus = 1 - pow(mchar1/mchar2 - mA/mchar2,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in chargino2amplitudedecaychargino1CPevoddhiggsNMSSM\n");
     } 
@@ -5216,7 +5192,7 @@ double neutralinoamplitudedecaycharginoWNMSSM (double mneut, double mchar, doubl
 
     squareplus = 1 - pow(fabs(mchar)/fabs(mneut) + mWboson/fabs(mneut),2);
     squareminus = 1 - pow(fabs(mchar)/fabs(mneut) - mWboson/fabs(mneut),2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecaycharginoWNMSSM\n");
     } 
@@ -5240,7 +5216,7 @@ double neutralinoamplitudedecayneutralinoZNMSSM (double mneuti, double mneutj, d
     prefactor = pow(g,2)/(32*PI*fabs(mneuti));
     squareplus = 1 - pow(fabs(mneutj)/fabs(mneuti) + mZboson/fabs(mneuti),2);
     squareminus = 1 - pow(fabs(mneutj)/fabs(mneuti) - mZboson/fabs(mneuti),2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoZNMSSM\n");
     } 
@@ -5268,7 +5244,7 @@ double neutralinoamplitudecharginoHpmNMSSM (double mneut, double mchar, double m
     prefactor = 1/(32*PI*fabs(mneut));
     squareplus = 1 - pow(fabs(mchar)/fabs(mneut) + mHp/fabs(mneut),2);
     squareminus = 1 - pow(fabs(mchar)/fabs(mneut) - mHp/fabs(mneut),2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecaycharginoHpmNMSSM\n");
     } 
@@ -5304,7 +5280,7 @@ double neutralinoamplitudedecayneutralinoCPevenhiggsNMSSM (double mneuti, double
     prefactor = 1/(8*PI*fabs(mneuti));
     squareplus = 1 - pow(fabs(mneutj)/fabs(mneuti) + mhiggs/fabs(mneuti),2);
     squareminus = 1 - pow(fabs(mneutj)/fabs(mneuti) - mhiggs/fabs(mneuti),2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoCPevenhiggsNMSSM\n");
     } 
@@ -5329,7 +5305,7 @@ double neutralinoamplitudedecayneutralinoCPoddhiggsNMSSM (double mneuti, double 
     prefactor = 1/(4*PI*fabs(mneuti));
     squareplus = 1 - pow(fabs(mneutj)/fabs(mneuti) + ma/fabs(mneuti),2);
     squareminus = 1 - pow(fabs(mneutj)/fabs(mneuti) - ma/fabs(mneuti),2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoCPoddhiggsNMSSM\n");
     } 
@@ -5355,7 +5331,7 @@ double neutralinoamplitudedecaysfermionfermionfirst2genNMSSM (double mneut, doub
   else {
     squareplus = 1 - pow(msf/fabs(mneut) + mf/fabs(mneut),2);
     squareminus = 1 - pow(msf/fabs(mneut) - mf/fabs(mneut),2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudedecaysfermionfermionfirst2genNMSSM\n");
     } 
@@ -5424,7 +5400,7 @@ double neutralinoamplitudestoptopNMSSM (double mneut, double mst, double mt, dou
     prefactor = 3*pow(g,2)/(32*PI*fabs(mneut));
     squareplus = 1 - pow(mst/fabs(mneut) + mt/fabs(mneut),2);
     squareminus = 1 - pow(mst/fabs(mneut) - mt/fabs(mneut),2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudestoptopNMSSM\n");
     } 
@@ -5466,7 +5442,7 @@ double neutralinoamplitudesbottombottomNMSSM (double mneut, double msb, double m
     prefactor = 3*pow(g,2)/(32*PI*fabs(mneut));
     squareplus = 1 - pow(msb/fabs(mneut) + mb/fabs(mneut),2);
     squareminus = 1 - pow(msb/fabs(mneut) - mb/fabs(mneut),2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudesbottombottomNMSSM\n");
     } 
@@ -5509,7 +5485,7 @@ double neutralinoamplitudestautauNMSSM (double mneut, double mstau, double mtau,
     prefactor = pow(g,2)/(32*PI*fabs(mneut));
     squareplus = 1 - pow(mstau/fabs(mneut) + mtau/fabs(mneut),2);
     squareminus = 1 - pow(mstau/fabs(mneut) - mtau/fabs(mneut),2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudestautauNMSSM\n");
     } 
@@ -5552,7 +5528,7 @@ double neutralinoamplitudestauneutrinotauneutrinoNMSSM (double mneut, double mst
     prefactor = pow(g,2)/(32*PI*fabs(mneut));
     squareplus = 1 - pow(mstaunu/fabs(mneut) + mtaunu/fabs(mneut),2);
     squareminus = 1 - pow(mstaunu/fabs(mneut) - mtaunu/fabs(mneut),2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in neutralinoamplitudestauneutrinotauneutrinoNMSSM\n");
     } 
@@ -5583,7 +5559,7 @@ double squarkamplitudedecayquarkneutralinoNMSSM (double m1, double mq, double mn
 
     squareplus = 1 - pow(mq/m1 + fabs(mneut)/m1,2);
     squareminus = 1 - pow(mq/m1 - fabs(mneut)/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in squarkamplitudedecayquarkneutralinoNMSSM\n");
     } 
@@ -5612,7 +5588,7 @@ double squarkamplitudedecayquarkneutralinoNMSSM (double m1, double mq, double mn
       throw("problem: uord must be u or d and LorR must be L or R in squarkamplitudedecayquarkneutralinoNMSSM\n");
     }
 
-    amplitudeW = prefactor*pow(coupling,2)*(pow(m1,2)-pow(mneut,2) - pow(mq,2))*lambda;
+    amplitudeW = prefactor*pow(coupling,2)*(sqr(m1)-pow(mneut,2) - sqr(mq))*lambda;
     
   }
   return amplitudeW;
@@ -5633,7 +5609,7 @@ double sleptonamplitudedecayleptonneutralinoNMSSM (double m1, double ml, double 
 
     squareplus = 1 - pow(ml/m1 + fabs(mneut)/m1,2);
     squareminus = 1 - pow(ml/m1 - fabs(mneut)/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sleptonamplitudedecayleptonneutralinoNMSSM\n");
     } 
@@ -5662,7 +5638,7 @@ double sleptonamplitudedecayleptonneutralinoNMSSM (double m1, double ml, double 
       throw("problem: uord must be u or d and LorR must be L or R in sleptonamplitudedecayleptonneutralinoNMSSM\n");
     }
 
-    amplitudeW = prefactor*pow(coupling,2)*(pow(m1,2)-pow(mneut,2) - pow(ml,2))*lambda;
+    amplitudeW = prefactor*pow(coupling,2)*(sqr(m1)-pow(mneut,2) - pow(ml,2))*lambda;
     
   }
   return amplitudeW;
@@ -5682,7 +5658,7 @@ double stopamplitudedecaytopneutralinoNMSSM (double m1, double mt, double mneut,
 
     squareplus = 1 - pow(mt/m1 + fabs(mneut)/m1,2);
     squareminus = 1 - pow(mt/m1 - fabs(mneut)/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stopamplitudedecaytopneutralinoNMSSM\n");
     } 
@@ -5708,7 +5684,7 @@ double stopamplitudedecaytopneutralinoNMSSM (double m1, double mt, double mneut,
       throw("problem: stop must be 1 or 2 in stopamplitudedecaytopneutralinoNMSSM\n");
     }
     
-    amplitudeW = prefactor*((pow(coupling1,2)+pow(coupling2,2))*(pow(m1,2) - pow(mt,2) - pow(mneut,2)) - 4*coupling1*coupling2*mt*mneut)*lambda;
+    amplitudeW = prefactor*((pow(coupling1,2)+pow(coupling2,2))*(sqr(m1) - pow(mt,2) - pow(mneut,2)) - 4*coupling1*coupling2*mt*mneut)*lambda;
 
   }
   return amplitudeW;
@@ -5729,7 +5705,7 @@ double sbottomamplitudedecaybottomneutralinoNMSSM (double m1, double mb, double 
 
     squareplus = 1 - pow(mb/m1 + fabs(mneut)/m1,2);
     squareminus = 1 - pow(mb/m1 - fabs(mneut)/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sbottomamplitudedecaybottomneutralinoNMSSM\n");
     } 
@@ -5755,7 +5731,7 @@ double sbottomamplitudedecaybottomneutralinoNMSSM (double m1, double mb, double 
       throw("problem: sbottom must be 1 or 2 in sbottomamplitudedecaybottomneutralinoNMSSM\n");
     }
     
-    amplitudeW = prefactor*((pow(coupling1,2)+pow(coupling2,2))*(pow(m1,2) - pow(mb,2) - pow(mneut,2)) - 4*coupling1*coupling2*mb*mneut)*lambda;
+    amplitudeW = prefactor*((pow(coupling1,2)+pow(coupling2,2))*(sqr(m1) - pow(mb,2) - pow(mneut,2)) - 4*coupling1*coupling2*mb*mneut)*lambda;
   }
   return amplitudeW;
 }
@@ -5775,7 +5751,7 @@ double stauamplitudedecaytauneutralinoNMSSM (double m1, double mtau, double mneu
 
     squareplus = 1 - pow(mtau/m1 + fabs(mneut)/m1,2);
     squareminus = 1 - pow(mtau/m1 - fabs(mneut)/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stauamplitudedecaytauneutralinoNMSSM\n");
     } 
@@ -5801,7 +5777,7 @@ double stauamplitudedecaytauneutralinoNMSSM (double m1, double mtau, double mneu
       throw("problem: stau must be 1 or 2 in stauamplitudedecaytauneutralinoNMSSM\n");
     }
     
-    amplitudeW = prefactor*((pow(coupling1,2)+pow(coupling2,2))*(pow(m1,2) - pow(mtau,2) - pow(mneut,2)) - 4*coupling1*coupling2*mtau*mneut)*lambda;
+    amplitudeW = prefactor*((pow(coupling1,2)+pow(coupling2,2))*(sqr(m1) - pow(mtau,2) - pow(mneut,2)) - 4*coupling1*coupling2*mtau*mneut)*lambda;
 
   }
   return amplitudeW;
@@ -5816,7 +5792,7 @@ double charginoiamplitudedecayneutralinojHpmNMSSM (double mchar, double mneut, d
     double prefactor = 0, coupling1 = 0, coupling2 = 0, squareplus = 0, squareminus = 0, lambda = 0;
     squareplus = 1 - pow(mHpm/fabs(mchar) + fabs(mneut)/fabs(mchar),2);
     squareminus = 1 - pow(mHpm/fabs(mchar) - fabs(mneut)/fabs(mchar),2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in charginoiamplitudedecayneutralinojHpmNMSSM\n");
     } 
@@ -5866,7 +5842,7 @@ double charginoiamplitudedecayneutralinojWNMSSM (double mchar, double mneut, dou
 
     squareplus = 1 - pow(fabs(mneut)/fabs(mchar) + mWboson/fabs(mchar),2);
     squareminus = 1 - pow(fabs(mneut)/fabs(mchar) - mWboson/fabs(mchar),2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in charginoiamplitudedecayneutralinojWNMSSM\n");
     } 
@@ -5890,7 +5866,7 @@ double HpmamplitudecharginojneutralinoiNMSSM (double mHp, double mchar, double m
     prefactor = 1/(16*PI*mHp);
     squareplus = 1 - pow(fabs(mchar)/mHp + fabs(mneut)/mHp,2);
     squareminus = 1 - pow(fabs(mchar)/mHp - fabs(mneut)/mHp,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in HpmamplitudecharginojneutralinoiNMSSM\n");
     } 
@@ -5924,7 +5900,7 @@ double snutauamplitudedecaynutauneutralinoNMSSM (double m1, double mneut, double
     prefactor = pow(g,2)/(16*PI*m1);
     squareplus = 1 - pow(fabs(mneut)/m1,2);
     squareminus = 1 - pow(fabs(mneut)/m1,2);
-    lambda = pow(squareplus*squareminus,0.5);
+    lambda = sqrt(squareplus*squareminus);
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in snutauamplitudedecaynutauneutralinoNMSSM\n");
     } 
@@ -5936,7 +5912,7 @@ double snutauamplitudedecaynutauneutralinoNMSSM (double m1, double mneut, double
 
     coup = -c2/(pow(2,0.5)*costhetaW);
 
-    amplitudeW = prefactor*lambda*(pow(m1,2)-pow(mneut,2))*pow(coup,2);
+    amplitudeW = prefactor*lambda*(sqr(m1)-pow(mneut,2))*pow(coup,2);
 
   }
   return amplitudeW;
@@ -6235,7 +6211,7 @@ DoubleVector foftau(double mpart, double mcomp) ///f(tau) function for use in h-
     if (etam == 0) {
       throw("problem: will get inf as etam = 0 so etap/etam = inf\n");
     }
-    fr = -0.25*pow(log(etap/etam),2)+0.25*pow(PI,2);
+    fr = -0.25*pow(log(etap/etam),2)+0.25*sqr(PI);
     fi = 0.5*PI*log(etap/etam);
   }
   f(1)=fr;

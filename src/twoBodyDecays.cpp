@@ -4653,7 +4653,6 @@ double higgsesamplitudedecaygluongluontotal(double m1, double g, double gs, doub
     else {
       throw("Problem: higgstype must be 'h', 'H' or 'A' in higgsesamplitudedecaygluongluontotal as in MSSM!\n");
     }
-    DoubleVector hggQCDcorrections(double amplitudeW, double alphas, int Nf, char higgs, double prefactor, double SMtotr, double SMtoti, double sqtotr, double sqtoti);
     amplitudeW = hggQCDcorrections(amplitudeW, pow(gs,2)/(4*PI), NF, higgstype, prefactor, SMTOTRE, SMTOTIM, SQTOTRE, SQTOTIM)(1);
 
   }
@@ -4666,8 +4665,7 @@ double higgsesamplitudedecaygluongluontotal(double m1, double g, double gs, doub
 }
 
 ///Function for QCD corrections to h->gg
-DoubleVector hggQCDcorrections(double amplitudeW, double alphas, int Nf, char higgs, double prefactor, double SMtotr, double SMtoti, double sqtotr, double sqtoti)
-{
+DoubleVector hggQCDcorrections(double amplitudeW, double alphas, int Nf, char higgs, double prefactor, double SMtotr, double SMtoti, double sqtotr, double sqtoti) {
   double amplitudeafterFQCD = 0, amplitudefromSQCD = 0, amplitude = 0, hggstargcc = 0, hggstargbb = 0;
   double fermionQCDcorrections(double amplitudeW, double alphasnow, double alphasprev, int Nf, char higgs);
   double susyQCDcorrections(double prefactor, double alphas, double totr, double toti, double sqtotr, double sqtoti);
