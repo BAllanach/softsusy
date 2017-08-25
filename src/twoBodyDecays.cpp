@@ -8,7 +8,8 @@
 
 #include "twoBodyDecays.h"
 
-const double GFosqrt2 = GMU / sqrt(2.0);
+const double root2    = sqrt(2.0);
+const double GFosqrt2 = GMU / root2;
 
 /// First, do hadronic decays
 double charginoToNeutralino1pion(const MssmSoftsusy * m) {
@@ -214,7 +215,7 @@ double squarkLamplitudedecayneutralino (double m1, double m2, double m3,
     	}
 	else {
 	  squareratio = 1 - pow(fabs(m3)/m1,2) - pow(m2/m1,2);
-	  AqZ = 1/(pow(2,0.5))*(uord*g*mixNeut(neutralino,2) + gprime*mixNeut(neutralino,1)/3); 
+	  AqZ = 1/(root2)*(uord*g*mixNeut(neutralino,2) + gprime*mixNeut(neutralino,1)/3); 
 	  lam = sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)));
 	  amplitudeW = pow(AqZ,2)/(16*PI*m1)*squareratio*lam; 
 	}
@@ -234,7 +235,7 @@ double squarkRamplitudedecayneutralino (double m1, double m2, double m3, double 
 	  else {
 	    throw("problem: uord must be 1 or -1 in squarkRamplitudedecayneutralino");
 	  }
-	  BqZ = 1/(pow(2,0.5))*4./3*uordchanger*gprime*mixNeut(neutralino,1); ///Following changes in AqZ suggested by SUSYHIT
+	  BqZ = 1/(root2)*4./3*uordchanger*gprime*mixNeut(neutralino,1); ///Following changes in AqZ suggested by SUSYHIT
 	  lam = sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)));
 	  amplitudeW = pow(BqZ,2)/(16*PI*m1)*squareratio*lam; /// need to check this formula, unsure about BqZ and also if it should be mod squared or just the squared I have done here!
 	  
@@ -256,16 +257,16 @@ double squark3amplitudedecayneutralino (double m1, double m2, double m3, double 
     lam = sqrt(lambda(sqr(m1), sqr(m2), sqr(m3)));
     if (squark == 1) /// we have stops
       {
-	fq = g*runmq/(pow(2,0.5)*mWboson*sin(beta));
+	fq = g*runmq/(root2*mWboson*sin(beta));
 	if (oneortwo == 1) /// we have stop1s
 	  {
-	    alphatilda = (cos(theta)*1/(pow(2,0.5))*(-g*mixNeut(neutralino,2) - gp/3*mixNeut(neutralino,1)) - fq*sin(theta)*mixNeut(neutralino,4)); /// this is just simpler (rearranged) form of atopr(1,i) from susyhit *g
-	    betatilda = (4/(3*pow(2,0.5))*gp*mixNeut(neutralino,1)*sin(theta) - fq*mixNeut(neutralino,4)*cos(theta)); /// this is just simpler (rearranged) form of btopr(1,i) from susyhit * g
+	    alphatilda = (cos(theta)*1/(root2)*(-g*mixNeut(neutralino,2) - gp/3*mixNeut(neutralino,1)) - fq*sin(theta)*mixNeut(neutralino,4)); /// this is just simpler (rearranged) form of atopr(1,i) from susyhit *g
+	    betatilda = (4/(3*root2)*gp*mixNeut(neutralino,1)*sin(theta) - fq*mixNeut(neutralino,4)*cos(theta)); /// this is just simpler (rearranged) form of btopr(1,i) from susyhit * g
 	  }
      	else if (oneortwo == 2) /// we have stop2s
 	  {
-	    alphatilda = (-sin(theta)*1/(pow(2,0.5))*(mixNeut(neutralino,1)*gp/3 + mixNeut(neutralino,2)*g) + cos(theta)*fq*mixNeut(neutralino,4)); /// again simplified form of atopr(2,i) * g from susyhit
-	    betatilda = -4/(3*pow(2,0.5))*cos(theta)*mixNeut(neutralino,1)*gp - fq*sin(theta)*mixNeut(neutralino,4); /// again simplified form of btopr(2,i) * g from susyhit
+	    alphatilda = (-sin(theta)*1/(root2)*(mixNeut(neutralino,1)*gp/3 + mixNeut(neutralino,2)*g) + cos(theta)*fq*mixNeut(neutralino,4)); /// again simplified form of atopr(2,i) * g from susyhit
+	    betatilda = -4/(3*root2)*cos(theta)*mixNeut(neutralino,1)*gp - fq*sin(theta)*mixNeut(neutralino,4); /// again simplified form of btopr(2,i) * g from susyhit
 	  }
 	else {
 	  throw("problem: stop must be stop1 or stop2\n"); 
@@ -273,17 +274,17 @@ double squark3amplitudedecayneutralino (double m1, double m2, double m3, double 
       }
     else if ( squark ==2) /// we have sbottoms
       {
-	fq = g*runmq/(pow(2,0.5)*mWboson*cos(beta));
+	fq = g*runmq/(root2*mWboson*cos(beta));
 	
 	if ( oneortwo == 1) /// we have sbottom1s
 	  {
-	    alphatilda = (1/pow(2,0.5))*cos(theta)*(-mixNeut(neutralino,1)*gp/3 + mixNeut(neutralino,2)*g) - sin(theta)*mixNeut(neutralino,3)*fq; /// just simplified form of abot(1,i) * g from susyhit
-	    betatilda = sin(theta)*2/(3*pow(2,0.5))*(-mixNeut(neutralino,1)*gp) - cos(theta)*fq*mixNeut(neutralino,3);
+	    alphatilda = (1/root2)*cos(theta)*(-mixNeut(neutralino,1)*gp/3 + mixNeut(neutralino,2)*g) - sin(theta)*mixNeut(neutralino,3)*fq; /// just simplified form of abot(1,i) * g from susyhit
+	    betatilda = sin(theta)*2/(3*root2)*(-mixNeut(neutralino,1)*gp) - cos(theta)*fq*mixNeut(neutralino,3);
 	  }
 	else if (oneortwo == 2) /// we have sbottom2s
 	  {
-	    alphatilda = sin(theta)*(mixNeut(neutralino,1)*-gp*(1/(3*pow(2,0.5))) + mixNeut(neutralino,2)*g*1/(pow(2,0.5))) + cos(theta)*fq*mixNeut(neutralino,3); /// simplified abot(2,i)*g from susyhit
-	    betatilda = cos(theta)*(2/(3*pow(2,0.5)))*gp*(mixNeut(neutralino,1)) - sin(theta)*fq*mixNeut(neutralino,3); /// simplified bbot(2,i)*g from susyhit
+	    alphatilda = sin(theta)*(mixNeut(neutralino,1)*-gp*(1/(3*root2)) + mixNeut(neutralino,2)*g*1/(root2)) + cos(theta)*fq*mixNeut(neutralino,3); /// simplified abot(2,i)*g from susyhit
+	    betatilda = cos(theta)*(2/(3*root2))*gp*(mixNeut(neutralino,1)) - sin(theta)*fq*mixNeut(neutralino,3); /// simplified bbot(2,i)*g from susyhit
 	  }
 	  
 	else {
@@ -395,10 +396,10 @@ double squark3amplitudedecaychargedHiggssquark3 (double m1, double m2, double m3
     combo3 = greekmu + Ab*tan(beta);
     combo4 = (pow(mb,2)*tan(beta) + pow(mt,2)/(tan(beta))) - pow(mWboson,2)*sin(2*beta);
       
-    A11 = g/(pow(2,0.5)*mWboson)*(mt*mb*combo1*sin(thetat)*sin(thetab) + mt*combo2*sin(thetat)*cos(thetab) + mb*combo3*sin(thetab)*cos(thetat) + combo4*cos(thetat)*cos(thetab));
-    A12 = g/(pow(2,0.5)*mWboson)*(mt*mb*combo1*sin(thetat)*(-cos(thetab)) + mt*combo2*sin(thetat)*sin(thetab) + mb*combo3*(-cos(thetab))*cos(thetat) + combo4*cos(thetat)*sin(thetab));
-    A21 = g/(pow(2,0.5)*mWboson)*(mt*mb*combo1*(-cos(thetat))*sin(thetab) + mt*combo2*(-cos(thetat))*cos(thetab) + mb*combo3*sin(thetab)*sin(thetat) + combo4*sin(thetat)*cos(thetab));
-    A22 = g/(pow(2,0.5)*mWboson)*(mt*mb*combo1*(-cos(thetat))*(-cos(thetab)) + mt*combo2*-(cos(thetat))*sin(thetab) + mb*combo3*(-cos(thetab))*sin(thetat) + combo4*sin(thetat)*sin(thetab));
+    A11 = g/(root2*mWboson)*(mt*mb*combo1*sin(thetat)*sin(thetab) + mt*combo2*sin(thetat)*cos(thetab) + mb*combo3*sin(thetab)*cos(thetat) + combo4*cos(thetat)*cos(thetab));
+    A12 = g/(root2*mWboson)*(mt*mb*combo1*sin(thetat)*(-cos(thetab)) + mt*combo2*sin(thetat)*sin(thetab) + mb*combo3*(-cos(thetab))*cos(thetat) + combo4*cos(thetat)*sin(thetab));
+    A21 = g/(root2*mWboson)*(mt*mb*combo1*(-cos(thetat))*sin(thetab) + mt*combo2*(-cos(thetat))*cos(thetab) + mb*combo3*sin(thetab)*sin(thetat) + combo4*sin(thetat)*cos(thetab));
+    A22 = g/(root2*mWboson)*(mt*mb*combo1*(-cos(thetat))*(-cos(thetab)) + mt*combo2*-(cos(thetat))*sin(thetab) + mb*combo3*(-cos(thetab))*sin(thetat) + combo4*sin(thetat)*sin(thetab));
 
     if(t1or2 == 1) /// we have an initial stop1
       {
@@ -541,8 +542,8 @@ double sleptonamplitudedecayleptonneutralino (double m1, double m2, double m3, d
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sleptonamplitudedecayleptonneutralino\n");
     }
-    A = -1/(pow(2,0.5)) * (g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1));
-    B = -pow(2,0.5)*gp*mixNeut(neutralino,1);
+    A = -1/(root2) * (g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1));
+    B = -root2*gp*mixNeut(neutralino,1);
     if(LorR == 'L') {
       C=A;
     }
@@ -576,7 +577,7 @@ double sneutrinoamplitudedecayneutrinoneutralino (double m1, double m2, double m
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sneutrinoamplitudedecayneutrinoneutralino\n");
     }
-    A = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) - gp*mixNeut(neutralino,1));
+    A = 1/(root2)*(g*mixNeut(neutralino,2) - gp*mixNeut(neutralino,1));
 
     amplitudeW = pow(A,2)*m1*squareratio*lambda/(16*PI); /// note here as m2=0 then lambda and squareratio each reduce to (1-pow(m3/m1,2)) 
       }
@@ -629,16 +630,16 @@ double stauamplitudedecaytauneutralino (double m1, double m2, double m3, double 
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stauamplitudedecaytauneutralino\n");
     }
-    ftau = g*m2/(pow(2,0.5)*mWboson*cos(beta));
+    ftau = g*m2/(root2*mWboson*cos(beta));
     if (oneortwo == 1) /// we have a stau1 decaying
       {
-	alphatilda = 1/(pow(2,0.5))*sin(theta)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1)) + ftau*mixNeut(neutralino,3)*cos(theta);
-	betatilda =  pow(2,0.5)*gp*mixNeut(neutralino,1)*-cos(theta) + ftau*mixNeut(neutralino,3)*sin(theta);
+	alphatilda = 1/(root2)*sin(theta)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1)) + ftau*mixNeut(neutralino,3)*cos(theta);
+	betatilda =  root2*gp*mixNeut(neutralino,1)*-cos(theta) + ftau*mixNeut(neutralino,3)*sin(theta);
       }
     else if (oneortwo ==2) /// we have a stau2 decaying
       {
-	alphatilda = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*-cos(theta) + ftau*mixNeut(neutralino,3)*sin(theta);
-	betatilda = pow(2,0.5)*gp*mixNeut(neutralino,1)*sin(theta) + ftau*mixNeut(neutralino,3)*cos(theta); 
+	alphatilda = 1/(root2)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*-cos(theta) + ftau*mixNeut(neutralino,3)*sin(theta);
+	betatilda = root2*gp*mixNeut(neutralino,1)*sin(theta) + ftau*mixNeut(neutralino,3)*cos(theta); 
       }
     else {
       throw("problem: oneortwo must be 1 or 2 in stauamplitudedecaytauneutralino\n");
@@ -665,7 +666,7 @@ double stausneutrinoamplitudedecaytauneutrinoneutralino (double m1, double m2, d
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stausneutrinoamplitudedecaytauneutrinoneutralino\n");
     }
-    A = 1/(pow(2,0.5))*(g*-mixNeut(neutralino,2) + gp*mixNeut(neutralino,1));
+    A = 1/(root2)*(g*-mixNeut(neutralino,2) + gp*mixNeut(neutralino,1));
     amplitudeW = m1/(16*PI)*pow(A,2)*lambda*squareratio; /// note lambda and squareratio reduce to same thing here as m2 = 0
   }
   return amplitudeW;
@@ -686,7 +687,7 @@ double stauamplitudedecaynutauchargino (double m1, double m2, double m3, double 
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stauamplitudedecaynutauchargino\n");
     }
-    ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
+    ftau = g*mtau/(root2*mWboson*cos(beta));
       
       if (chargino ==1)	{
 	A = g*sin(thetaL);
@@ -735,7 +736,7 @@ double stausneutrinoamplitudedecaytauchargino (double m1, double m2, double m3, 
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stausneutrinoamplitudedecaytauchargino\n");
     }
-    ftau = g*m2/(pow(2,0.5)*mWboson*cos(beta)); ///as m2 is mtau which is what we need to calculate ftau
+    ftau = g*m2/(root2*mWboson*cos(beta)); ///as m2 is mtau which is what we need to calculate ftau
     
     if(chargino==1) {
       A = g*sin(thetaR);
@@ -776,10 +777,10 @@ double stauamplitudedecaysnustauHminus (double m1, double m2, double m3, double 
     combo2 = mtau*(greekmu+Atau*tan(beta));
 
       if (oneortwo == 1) {
-	A = g/(pow(2,0.5)*mWboson)*(combo1*sin(thetatau) - combo2*cos(thetatau));
+	A = g/(root2*mWboson)*(combo1*sin(thetatau) - combo2*cos(thetatau));
       }
       else if (oneortwo == 2) {
-	A = g/(pow(2,0.5)*mWboson)*(-combo1*cos(thetatau) - sin(thetatau)*combo2);
+	A = g/(root2*mWboson)*(-combo1*cos(thetatau) - sin(thetatau)*combo2);
       }
       else {
 	throw("problem: oneortwo must be 1 or 2 in stauamplitudedecaysnustauHminus\n");
@@ -1026,7 +1027,7 @@ double charginoamplitudedecaysnutautau (double m1, double m2, double m3, double 
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in charginoamplitudedecaysnutautau\n");
     }
-    ftau = g*m2/(pow(2,0.5)*mWboson*cos(beta));
+    ftau = g*m2/(root2*mWboson*cos(beta));
     
     if (chargino == 1) {
       A = g*sin(thetaR);
@@ -1063,7 +1064,7 @@ double charginoamplitudedecaystaunutau (double m1, double m2, double m3, double 
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in charginoamplitudedecaystaunutau\n");
     }
-    ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
+    ftau = g*mtau/(root2*mWboson*cos(beta));
       
       if (chargino == 1) {
 	A = -g*sin(thetaL);
@@ -1126,13 +1127,13 @@ double charginoamplitudedecayWbosonneutralino (double m1, double m2, double m3, 
     squarecombo2 = (pow(pow(m1,2) - pow(m3,2),2) - pow(m2,4))/pow(m2,2);
       
     if (chargino == 1) {
-      X = 0.5*((cos(thetaR)*mixNeut(neutralino,4)/(pow(2,0.5)) - sin(thetaR)*mixNeut(neutralino,2)) - cos(thetaL)*mixNeut(neutralino,3)/(pow(2,0.5)) - sin(thetaL)*mixNeut(neutralino,2));
-      Y = 0.5*(-(cos(thetaR)*mixNeut(neutralino,4)/(pow(2,0.5)) - sin(thetaR)*mixNeut(neutralino,2)) - cos(thetaL)*mixNeut(neutralino,3)/(pow(2,0.5)) - sin(thetaL)*mixNeut(neutralino,2));
+      X = 0.5*((cos(thetaR)*mixNeut(neutralino,4)/(root2) - sin(thetaR)*mixNeut(neutralino,2)) - cos(thetaL)*mixNeut(neutralino,3)/(root2) - sin(thetaL)*mixNeut(neutralino,2));
+      Y = 0.5*(-(cos(thetaR)*mixNeut(neutralino,4)/(root2) - sin(thetaR)*mixNeut(neutralino,2)) - cos(thetaL)*mixNeut(neutralino,3)/(root2) - sin(thetaL)*mixNeut(neutralino,2));
     }
       
     else if (chargino == 2) {
-      X = 0.5*((-sin(thetaR)*mixNeut(neutralino,4)/(pow(2,0.5)) - cos(thetaR)*mixNeut(neutralino,2)) + sin(thetaL)*mixNeut(neutralino,3)/(pow(2,0.5)) - cos(thetaL)*mixNeut(neutralino,2));
-      Y = 0.5*((sin(thetaR)*mixNeut(neutralino,4)/(pow(2,0.5)) + cos(thetaR)*mixNeut(neutralino,2)) + sin(thetaL)*mixNeut(neutralino,3)/(pow(2,0.5)) - cos(thetaL)*mixNeut(neutralino,2));
+      X = 0.5*((-sin(thetaR)*mixNeut(neutralino,4)/(root2) - cos(thetaR)*mixNeut(neutralino,2)) + sin(thetaL)*mixNeut(neutralino,3)/(root2) - cos(thetaL)*mixNeut(neutralino,2));
+      Y = 0.5*((sin(thetaR)*mixNeut(neutralino,4)/(root2) + cos(thetaR)*mixNeut(neutralino,2)) + sin(thetaL)*mixNeut(neutralino,3)/(root2) - cos(thetaL)*mixNeut(neutralino,2));
     }
     else {
       throw("problem: chargino must be a 1 or 2 in charginoamplitudedecayWbosonneutralino\n");
@@ -1161,10 +1162,10 @@ double charginoamplitudedecayHminusneutralino (double m1, double m2, double m3, 
     }
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
     
-    A1 = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaR) - g*mixNeut(neutralino,4)*cos(thetaR);
-    A2 = -1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*cos(thetaR) - g*mixNeut(neutralino,4)*sin(thetaR);
-    A3 = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaL) + g*mixNeut(neutralino,3)*cos(thetaL);
-    A4 = -1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*cos(thetaL) + g*mixNeut(neutralino,3)*sin(thetaL);
+    A1 = 1/(root2)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaR) - g*mixNeut(neutralino,4)*cos(thetaR);
+    A2 = -1/(root2)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*cos(thetaR) - g*mixNeut(neutralino,4)*sin(thetaR);
+    A3 = 1/(root2)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaL) + g*mixNeut(neutralino,3)*cos(thetaL);
+    A4 = -1/(root2)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*cos(thetaL) + g*mixNeut(neutralino,3)*sin(thetaL);
     
     if (chargino == 1) {
       a = 0.5*(-cos(beta)*A2 + sin(beta)*A4);
@@ -1281,14 +1282,14 @@ double neutralinoamplitudedecayquarksquarkLorR (double m1, double m2, double m3,
     
     if (uordtype == 1) /// up type squark (i.e. u squark or c squark)
       {
-	A = 1/(pow(2,0.5))*(-g*mixNeut(neutralino,2) - gp/3*mixNeut(neutralino,1));
-	B = -4/(3*pow(2,0.5))*gp*mixNeut(neutralino,1);
+	A = 1/(root2)*(-g*mixNeut(neutralino,2) - gp/3*mixNeut(neutralino,1));
+	B = -4/(3*root2)*gp*mixNeut(neutralino,1);
       }
     
     else if (uordtype == 2) /// down type squark (i.e. d squark or s squark)
       {
-	A = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) - gp/3*mixNeut(neutralino,1));
-	B = 2/(3*pow(2,0.5))*gp*mixNeut(neutralino,1);
+	A = 1/(root2)*(g*mixNeut(neutralino,2) - gp/3*mixNeut(neutralino,1));
+	B = 2/(3*root2)*gp*mixNeut(neutralino,1);
       }
     else {
       throw("problem: uordtype must be a 1 or 2 in neutralinoamplitudedecayquarksquarLorR\n");
@@ -1331,8 +1332,8 @@ double neutralinoamplitudedecayleptonsleptonLorR (double m1, double m2, double m
     }
     alteredsquareratio = 1 + pow(m2/m1,2) - pow(m3/m1,2);
     
-    A = -1/(pow(2,0.5)) * (g*-mixNeut(neutralino,2) + gp*-mixNeut(neutralino,1));
-    B = pow(2,0.5)*gp*mixNeut(neutralino,1);
+    A = -1/(root2) * (g*-mixNeut(neutralino,2) + gp*-mixNeut(neutralino,1));
+    B = root2*gp*mixNeut(neutralino,1);
     
     if(LorR == 'L' ) /// so get wino and zino couplings as LH slepton
       {
@@ -1372,7 +1373,7 @@ double neutralinoamplitudedecayneutrinosneutrinoL (double m1, double m2, double 
     }
     alteredsquareratio = 1 + pow(m2/m1,2) - pow(m3/m1,2);
     
-    A = 1/(pow(2,0.5)) * (g*-mixNeut(neutralino,2) + gp*mixNeut(neutralino,1));
+    A = 1/(root2) * (g*-mixNeut(neutralino,2) + gp*mixNeut(neutralino,1));
     
     amplitudeW = pow(A,2)*fabs(m1)*lambda*alteredsquareratio/(32*PI);
   }
@@ -1403,17 +1404,17 @@ double neutralinoamplitudedecaysquark3quarkmix (double m1, double m2, double m3,
     
     if (squark == 1) /// we have stops
       {
-	fq = g*runmq/(pow(2,0.5)*mWboson*sin(beta));
+	fq = g*runmq/(root2*mWboson*sin(beta));
 	if (oneortwo == 1) /// we have stop1s
 	  {
-	    alphatilda = (cos(theta)*1/(pow(2,0.5))*(-g*mixNeut(neutralino,2) - gp/3*mixNeut(neutralino,1)) - fq*sin(theta)*mixNeut(neutralino,4)); /// this is just simpler (rearranged) form of atopr(1,i) from susyhit *g
-	    betatilda = (4/(3*pow(2,0.5))*gp*mixNeut(neutralino,1)*sin(theta) - fq*mixNeut(neutralino,4)*cos(theta)); /// this is just simpler (rearranged) form of btopr(1,i) from susyhit * g
+	    alphatilda = (cos(theta)*1/(root2)*(-g*mixNeut(neutralino,2) - gp/3*mixNeut(neutralino,1)) - fq*sin(theta)*mixNeut(neutralino,4)); /// this is just simpler (rearranged) form of atopr(1,i) from susyhit *g
+	    betatilda = (4/(3*root2)*gp*mixNeut(neutralino,1)*sin(theta) - fq*mixNeut(neutralino,4)*cos(theta)); /// this is just simpler (rearranged) form of btopr(1,i) from susyhit * g
 	  }
 	
 	else if (oneortwo == 2) /// we have stop2s
 	  {
-	    alphatilda = (sin(theta)*1/(pow(2,0.5))*(-mixNeut(neutralino,1)*gp/3 - mixNeut(neutralino,2)*g) + cos(theta)*fq*mixNeut(neutralino,4)); /// again simplified form of atopr(2,i) * g from susyhit
-	    betatilda = 4/(3*pow(2,0.5))*cos(theta)*-mixNeut(neutralino,1)*gp - fq*sin(theta)*mixNeut(neutralino,4); /// again simplified form of btopr(2,i) * g from susyhit
+	    alphatilda = (sin(theta)*1/(root2)*(-mixNeut(neutralino,1)*gp/3 - mixNeut(neutralino,2)*g) + cos(theta)*fq*mixNeut(neutralino,4)); /// again simplified form of atopr(2,i) * g from susyhit
+	    betatilda = 4/(3*root2)*cos(theta)*-mixNeut(neutralino,1)*gp - fq*sin(theta)*mixNeut(neutralino,4); /// again simplified form of btopr(2,i) * g from susyhit
 	  }
 	
 	else {
@@ -1423,18 +1424,18 @@ double neutralinoamplitudedecaysquark3quarkmix (double m1, double m2, double m3,
     
     else if ( squark ==2) /// we have sbottoms
       {
-	fq = g*runmq/(pow(2,0.5)*mWboson*cos(beta));
+	fq = g*runmq/(root2*mWboson*cos(beta));
 	
 	if ( oneortwo == 1) /// we have sbottom1s
 	  {
-	    alphatilda = (1/pow(2,0.5))*cos(theta)*(-mixNeut(neutralino,1)*gp/3 + mixNeut(neutralino,2)*g) - sin(theta)*mixNeut(neutralino,3)*fq; /// just simplified form of abot(1,i) * g from susyhit
-	    betatilda = sin(theta)*2/(3*pow(2,0.5))*(-mixNeut(neutralino,1)*gp) - cos(theta)*fq*mixNeut(neutralino,3);
+	    alphatilda = (1/root2)*cos(theta)*(-mixNeut(neutralino,1)*gp/3 + mixNeut(neutralino,2)*g) - sin(theta)*mixNeut(neutralino,3)*fq; /// just simplified form of abot(1,i) * g from susyhit
+	    betatilda = sin(theta)*2/(3*root2)*(-mixNeut(neutralino,1)*gp) - cos(theta)*fq*mixNeut(neutralino,3);
 	  }
 	
 	else if (oneortwo == 2) /// we have sbottom2s
 	  {
-	    alphatilda = sin(theta)*(mixNeut(neutralino,1)*-gp*(1/(3*pow(2,0.5))) + mixNeut(neutralino,2)*g*1/(pow(2,0.5))) + cos(theta)*fq*mixNeut(neutralino,3); /// simplified abot(2,i)*g from susyhit
-	    betatilda = cos(theta)*(2/(3*pow(2,0.5)))*gp*(mixNeut(neutralino,1)) - sin(theta)*fq*mixNeut(neutralino,3); /// simplified bbot(2,i)*g from susyhit
+	    alphatilda = sin(theta)*(mixNeut(neutralino,1)*-gp*(1/(3*root2)) + mixNeut(neutralino,2)*g*1/(root2)) + cos(theta)*fq*mixNeut(neutralino,3); /// simplified abot(2,i)*g from susyhit
+	    betatilda = cos(theta)*(2/(3*root2))*gp*(mixNeut(neutralino,1)) - sin(theta)*fq*mixNeut(neutralino,3); /// simplified bbot(2,i)*g from susyhit
 	  }
 	else {
 	  throw("problem: oneortwo must be 1 or 2 in neutralinoamplitudedecaysquark3quarkmix\n");
@@ -1471,16 +1472,16 @@ double neutralinoamplitudedecaystautau (double m1, double m2, double m3, double 
       throw ("problem: lambda will give nan in neutralinoamplitudedecaystautau\n");
     }
     
-    ftau = g*m2/(pow(2,0.5)*mWboson*cos(beta));
+    ftau = g*m2/(root2*mWboson*cos(beta));
     if (oneortwo == 1) /// we are decaying into a stau1
       {
-	alphatilda = 1/(pow(2,0.5))*sin(theta)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1)) + ftau*mixNeut(neutralino,3)*cos(theta);
-	betatilda =  pow(2,0.5)*gp*mixNeut(neutralino,1)*-cos(theta) + ftau*mixNeut(neutralino,3)*sin(theta);
+	alphatilda = 1/(root2)*sin(theta)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1)) + ftau*mixNeut(neutralino,3)*cos(theta);
+	betatilda =  root2*gp*mixNeut(neutralino,1)*-cos(theta) + ftau*mixNeut(neutralino,3)*sin(theta);
       }
     else if (oneortwo ==2) /// we are decaying into a stau2
       {
-	alphatilda = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*-cos(theta) + ftau*mixNeut(neutralino,3)*sin(theta);
-	betatilda = -pow(2,0.5)*gp*mixNeut(neutralino,1)*sin(theta) - ftau*mixNeut(neutralino,3)*cos(theta);
+	alphatilda = 1/(root2)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*-cos(theta) + ftau*mixNeut(neutralino,3)*sin(theta);
+	betatilda = -root2*gp*mixNeut(neutralino,1)*sin(theta) - ftau*mixNeut(neutralino,3)*cos(theta);
       }
     else {
        throw("problem: oneortwo must be 1 or 2 in neutralinoamplitudedecaystautau\n"); 
@@ -1518,13 +1519,13 @@ double neutralinoamplitudedecaycharginoWboson (double m1, double m2, double m3, 
     squarecombo2 = (pow(pow(m1,2) - pow(m3,2),2) - pow(m2,4))/pow(m2,2);
     
     if (chargino == 1) {
-      X = 0.5*((cos(thetaR)*mixNeut(neutralino,4)/(pow(2,0.5)) - sin(thetaR)*mixNeut(neutralino,2)) - cos(thetaL)*mixNeut(neutralino,3)/(pow(2,0.5)) - sin(thetaL)*mixNeut(neutralino,2));
-      Y = 0.5*(-(cos(thetaR)*mixNeut(neutralino,4)/(pow(2,0.5)) - sin(thetaR)*mixNeut(neutralino,2)) - cos(thetaL)*mixNeut(neutralino,3)/(pow(2,0.5)) - sin(thetaL)*mixNeut(neutralino,2));
+      X = 0.5*((cos(thetaR)*mixNeut(neutralino,4)/(root2) - sin(thetaR)*mixNeut(neutralino,2)) - cos(thetaL)*mixNeut(neutralino,3)/(root2) - sin(thetaL)*mixNeut(neutralino,2));
+      Y = 0.5*(-(cos(thetaR)*mixNeut(neutralino,4)/(root2) - sin(thetaR)*mixNeut(neutralino,2)) - cos(thetaL)*mixNeut(neutralino,3)/(root2) - sin(thetaL)*mixNeut(neutralino,2));
 	}
       
     else if (chargino == 2) {
-      X = 0.5*((-sin(thetaR)*mixNeut(neutralino,4)/(pow(2,0.5)) - cos(thetaR)*mixNeut(neutralino,2)) + sin(thetaL)*mixNeut(neutralino,3)/(pow(2,0.5)) - cos(thetaL)*mixNeut(neutralino,2));
-      Y = 0.5*((sin(thetaR)*mixNeut(neutralino,4)/(pow(2,0.5)) + cos(thetaR)*mixNeut(neutralino,2)) + sin(thetaL)*mixNeut(neutralino,3)/(pow(2,0.5)) - cos(thetaL)*mixNeut(neutralino,2));
+      X = 0.5*((-sin(thetaR)*mixNeut(neutralino,4)/(root2) - cos(thetaR)*mixNeut(neutralino,2)) + sin(thetaL)*mixNeut(neutralino,3)/(root2) - cos(thetaL)*mixNeut(neutralino,2));
+      Y = 0.5*((sin(thetaR)*mixNeut(neutralino,4)/(root2) + cos(thetaR)*mixNeut(neutralino,2)) + sin(thetaL)*mixNeut(neutralino,3)/(root2) - cos(thetaL)*mixNeut(neutralino,2));
     }
     else {
       throw("problem: chargino must be 1 or 2 in neutralinoamplitudedecaycharginoWboson\n");
@@ -1554,10 +1555,10 @@ double neutralinoamplitudedecaycharginoHplus (double m1, double m2, double m3, d
     
     squarecombo1 = pow(m1,2) + pow(m3,2) - pow(m2,2);
 
-    A1 = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaR) - g*mixNeut(neutralino,4)*cos(thetaR);
-    A2 = -1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*cos(thetaR) - g*mixNeut(neutralino,4)*sin(thetaR);
-    A3 = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaL) + g*mixNeut(neutralino,3)*cos(thetaL);
-    A4 = -1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*cos(thetaL) + g*mixNeut(neutralino,3)*sin(thetaL);
+    A1 = 1/(root2)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaR) - g*mixNeut(neutralino,4)*cos(thetaR);
+    A2 = -1/(root2)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*cos(thetaR) - g*mixNeut(neutralino,4)*sin(thetaR);
+    A3 = 1/(root2)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaL) + g*mixNeut(neutralino,3)*cos(thetaL);
+    A4 = -1/(root2)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*cos(thetaL) + g*mixNeut(neutralino,3)*sin(thetaL);
           
     if (chargino == 1) {
       a = 0.5*(-cos(beta)*A2 + sin(beta)*A4);
@@ -1908,7 +1909,7 @@ double higgsAamplitudedecayneutralinoneutralinoNMSSM (double m1, double m2, doub
       throw ("problem: lambda will give nan in higgsAamplitudedecayneutralinoneutralinoNMSSM\n");
     }    
 
-    coupling = lam/(pow(2,0.5))*(CPOMix(pseudoscalar,1)*(mixNeut(ineutralino,3)*mixNeut(jneutralino,5) + mixNeut(ineutralino,5)*mixNeut(jneutralino,3)) + CPOMix(pseudoscalar,2)*(mixNeut(ineutralino,4)*mixNeut(jneutralino,5) + mixNeut(ineutralino,5)*mixNeut(jneutralino,4)) + CPOMix(pseudoscalar,3)*(mixNeut(ineutralino,3)*mixNeut(jneutralino,4)+mixNeut(jneutralino,3)*mixNeut(ineutralino,4))) - pow(2,0.5)*kappa*CPOMix(pseudoscalar,3)*mixNeut(ineutralino,5)*mixNeut(jneutralino,5) - tanthetaW*g/2*(-CPOMix(pseudoscalar,1)*(mixNeut(ineutralino,1)*mixNeut(jneutralino,4) + mixNeut(ineutralino,4)*mixNeut(jneutralino,1)) + CPOMix(pseudoscalar,2)*(mixNeut(ineutralino,1)*mixNeut(jneutralino,3) + mixNeut(ineutralino,3)*mixNeut(jneutralino,1))) - g/2*(CPOMix(pseudoscalar,1)*(mixNeut(ineutralino,2)*mixNeut(jneutralino,4) + mixNeut(ineutralino,4)*mixNeut(jneutralino,2)) - CPOMix(pseudoscalar,2)*(mixNeut(ineutralino,2)*mixNeut(jneutralino,3) + mixNeut(ineutralino,3)*mixNeut(jneutralino,2)));
+    coupling = lam/(root2)*(CPOMix(pseudoscalar,1)*(mixNeut(ineutralino,3)*mixNeut(jneutralino,5) + mixNeut(ineutralino,5)*mixNeut(jneutralino,3)) + CPOMix(pseudoscalar,2)*(mixNeut(ineutralino,4)*mixNeut(jneutralino,5) + mixNeut(ineutralino,5)*mixNeut(jneutralino,4)) + CPOMix(pseudoscalar,3)*(mixNeut(ineutralino,3)*mixNeut(jneutralino,4)+mixNeut(jneutralino,3)*mixNeut(ineutralino,4))) - root2*kappa*CPOMix(pseudoscalar,3)*mixNeut(ineutralino,5)*mixNeut(jneutralino,5) - tanthetaW*g/2*(-CPOMix(pseudoscalar,1)*(mixNeut(ineutralino,1)*mixNeut(jneutralino,4) + mixNeut(ineutralino,4)*mixNeut(jneutralino,1)) + CPOMix(pseudoscalar,2)*(mixNeut(ineutralino,1)*mixNeut(jneutralino,3) + mixNeut(ineutralino,3)*mixNeut(jneutralino,1))) - g/2*(CPOMix(pseudoscalar,1)*(mixNeut(ineutralino,2)*mixNeut(jneutralino,4) + mixNeut(ineutralino,4)*mixNeut(jneutralino,2)) - CPOMix(pseudoscalar,2)*(mixNeut(ineutralino,2)*mixNeut(jneutralino,3) + mixNeut(ineutralino,3)*mixNeut(jneutralino,2)));
 
     if (ineutralino == jneutralino) { delta = 1;}
     else if (ineutralino != jneutralino) { delta = 2;}
@@ -1993,10 +1994,10 @@ double higgsphiamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, 
     }    
 
     if (chargino == 1) {
-      coupling = (lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*cos(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPEMix(higgs,2)*cos(thetaL)*sin(thetaR)));
+      coupling = (lam/(root2)*CPEMix(higgs,3)*cos(thetaL)*cos(thetaR) + g/(root2)*(CPEMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPEMix(higgs,2)*cos(thetaL)*sin(thetaR)));
     }
     else if (chargino == 2) {
-      coupling = (lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*sin(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPEMix(higgs,2)*sin(thetaL)*cos(thetaR)));
+      coupling = (lam/(root2)*CPEMix(higgs,3)*sin(thetaL)*sin(thetaR) - g/(root2)*(CPEMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPEMix(higgs,2)*sin(thetaL)*cos(thetaR)));
     }
     else {
       throw("problem: phi must be h or H or A in higgsphiamplitudedecaysamecharginoNMSSM\n");
@@ -2026,10 +2027,10 @@ double higgsAamplitudedecaysamecharginoNMSSM (double m1, double m2, double g, do
     }    
 
     if (chargino == 1) {
-      S = (lam/(pow(2,0.5))*CPOMix(pseudoscalar,3)*cos(thetaL)*cos(thetaR) - g/(pow(2,0.5))*(CPOMix(pseudoscalar,1)*sin(thetaL)*cos(thetaR) + CPOMix(pseudoscalar,2)*cos(thetaL)*sin(thetaR)));
+      S = (lam/(root2)*CPOMix(pseudoscalar,3)*cos(thetaL)*cos(thetaR) - g/(root2)*(CPOMix(pseudoscalar,1)*sin(thetaL)*cos(thetaR) + CPOMix(pseudoscalar,2)*cos(thetaL)*sin(thetaR)));
     }
     else if (chargino == 2) {
-      S = (lam/(pow(2,0.5))*CPOMix(pseudoscalar,3)*sin(thetaL)*sin(thetaR) + g/(pow(2,0.5))*(CPOMix(pseudoscalar,1)*cos(thetaL)*sin(thetaR) + CPOMix(pseudoscalar,2)*sin(thetaL)*cos(thetaR))); 
+      S = (lam/(root2)*CPOMix(pseudoscalar,3)*sin(thetaL)*sin(thetaR) + g/(root2)*(CPOMix(pseudoscalar,1)*cos(thetaL)*sin(thetaR) + CPOMix(pseudoscalar,2)*sin(thetaL)*cos(thetaR))); 
     }
     else { 
       throw("problem: chargino must be 1 or 2 in higgsAamplitudedecaysamecharginoNMSSM\n");
@@ -2056,8 +2057,8 @@ double higgsphiamplitudedecaydiffcharginoNMSSM (double m1, double m2, double m3,
       throw ("problem: lambda will give nan in higgsphiamplitudedecaydiffcharginoNMSSM\n");
     }  
 
-    coupling1 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*sin(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*sin(thetaR) - CPEMix(higgs,2)*cos(thetaL)*cos(thetaR)));
-    coupling2 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*cos(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*cos(thetaR) - CPEMix(higgs,2)*sin(thetaL)*sin(thetaR)));
+    coupling1 = (lam/(root2)*CPEMix(higgs,3)*cos(thetaL)*sin(thetaR) + g/(root2)*(CPEMix(higgs,1)*sin(thetaL)*sin(thetaR) - CPEMix(higgs,2)*cos(thetaL)*cos(thetaR)));
+    coupling2 = (lam/(root2)*CPEMix(higgs,3)*sin(thetaL)*cos(thetaR) - g/(root2)*(CPEMix(higgs,1)*cos(thetaL)*cos(thetaR) - CPEMix(higgs,2)*sin(thetaL)*sin(thetaR)));
 
     amplitudeW = m1/(16*PI)*lambda*((pow(coupling1,2)+pow(coupling2,2))*0.5*(squareplus+squareminus) + coupling1*coupling2*(squareminus-squareplus));
   }
@@ -2124,9 +2125,9 @@ double higgsAamplitudedecaydifcharginoNMSSM (double m1, double m2, double m3, do
       throw ("problem: lambda will give nan in higgsAamplitudedecaydifcharginoNMSSM\n");
     }  
 
-    C1 = (lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*cos(thetaL)*sin(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*sin(thetaL)*sin(thetaR) - CPOMix(pseudoscalar,2)*cos(thetaL)*cos(thetaR)));
+    C1 = (lam/root2*CPOMix(pseudoscalar,3)*cos(thetaL)*sin(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*sin(thetaL)*sin(thetaR) - CPOMix(pseudoscalar,2)*cos(thetaL)*cos(thetaR)));
 
-    C2 = (lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*sin(thetaL)*cos(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*-cos(thetaL)*cos(thetaR) + CPOMix(pseudoscalar,2)*sin(thetaR)*sin(thetaL)));
+    C2 = (lam/root2*CPOMix(pseudoscalar,3)*sin(thetaL)*cos(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*-cos(thetaL)*cos(thetaR) + CPOMix(pseudoscalar,2)*sin(thetaR)*sin(thetaL)));
     
     amplitudeW = lambda/(16*PI)*m1*((pow(C1,2) + pow(C2,2))*0.5*(squareplus+squareminus) + 4*C1*C2*0.25*(squareminus-squareplus));
 
@@ -2634,11 +2635,11 @@ double higgshamplitudedecay2squarkdiffhandNMSSM (double m1, double m2, double m3
 
     if (sq == 1) ///uLuR
       {
-	coupling = mq*g/(2*mWboson*sin(beta))*(Aq*CPEMix(higgs,1) - mueff*CPEMix(higgs,2) - lam*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,3));
+	coupling = mq*g/(2*mWboson*sin(beta))*(Aq*CPEMix(higgs,1) - mueff*CPEMix(higgs,2) - lam*root2*mWboson*cos(beta)/g*CPEMix(higgs,3));
       }
     if (sq == 2) ///dLdR
       {
-	coupling = mq*g/(2*mWboson*cos(beta))*(Aq*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,3));
+	coupling = mq*g/(2*mWboson*cos(beta))*(Aq*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*root2*mWboson*sin(beta)/g*CPEMix(higgs,3));
       }
     else {
       throw("problem: sq must be 1, or 2 in higgshamplitudedecay2squarkdiffhandNMSSM\n");
@@ -3712,12 +3713,12 @@ double higgsAamplitudedecaysfermionsNMSSM (double m1, double m2, double m3, doub
     } 
 
     if(uord == 'u') {
-      fq = g*mf/(pow(2,0.5)*mWboson*sin(beta));
-      coupling = fq/pow(2,0.5)*(Asf*CPOMix(pseudoscalar,1) + mueff*CPOMix(pseudoscalar,2) + lam*pow(2,0.5)*mWboson*cos(beta)/g*CPOMix(pseudoscalar,3));
+      fq = g*mf/(root2*mWboson*sin(beta));
+      coupling = fq/root2*(Asf*CPOMix(pseudoscalar,1) + mueff*CPOMix(pseudoscalar,2) + lam*root2*mWboson*cos(beta)/g*CPOMix(pseudoscalar,3));
     }
     else if (uord == 'd') {
-      fq = g*mf/(pow(2,0.5)*mWboson*cos(beta));
-      coupling = fq/pow(2,0.5)*(mueff*CPOMix(pseudoscalar,1) + Asf*CPOMix(pseudoscalar,2) + lam*pow(2,0.5)*mWboson*sin(beta)/g*CPOMix(pseudoscalar,3));
+      fq = g*mf/(root2*mWboson*cos(beta));
+      coupling = fq/root2*(mueff*CPOMix(pseudoscalar,1) + Asf*CPOMix(pseudoscalar,2) + lam*root2*mWboson*sin(beta)/g*CPOMix(pseudoscalar,3));
     } 
     else {
       throw("problem: uord must be u or d in higgsAamplitudedecaysfermionsNMSSM\n");
@@ -3772,10 +3773,10 @@ double higgsHplusamplitudedecayneutralinochargino (double m1, double m2, double 
       throw ("problem: lambda will give nan in higgsHplusamplitudedecayneutralinochargino\n");
     } 
 
-    A1 = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaR) - g*mixNeut(neutralino,4)*cos(thetaR);
-    A2 = -1/(pow(2,0.5))*(-g*mixNeut(neutralino,2) - gp*mixNeut(neutralino,1))*-cos(thetaR) - g*mixNeut(neutralino,4)*sin(thetaR);
-    A3 = 1/(pow(2,0.5))*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaL) + g*mixNeut(neutralino,3)*cos(thetaL);
-    A4 = -1/(pow(2,0.5))*(-g*mixNeut(neutralino,2) - gp*mixNeut(neutralino,1))*-cos(thetaL) + g*mixNeut(neutralino,3)*sin(thetaL);
+    A1 = 1/(root2)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaR) - g*mixNeut(neutralino,4)*cos(thetaR);
+    A2 = -1/(root2)*(-g*mixNeut(neutralino,2) - gp*mixNeut(neutralino,1))*-cos(thetaR) - g*mixNeut(neutralino,4)*sin(thetaR);
+    A3 = 1/(root2)*(g*mixNeut(neutralino,2) + gp*mixNeut(neutralino,1))*sin(thetaL) + g*mixNeut(neutralino,3)*cos(thetaL);
+    A4 = -1/(root2)*(-g*mixNeut(neutralino,2) - gp*mixNeut(neutralino,1))*-cos(thetaL) + g*mixNeut(neutralino,3)*sin(thetaL);
 
     
     if (chargino == 1) {
@@ -4486,20 +4487,20 @@ DoubleVector higgsmatrixelementgammagammaviachargino1s (double m1, double mcharg
 
   if (higgstype == 'h')
     {
-      Rchargino1 = pow(2,0.5)*((cos(thetaL2)*sin(thetaR2))*-sin(alpha) + (sin(thetaL2)*cos(thetaR2))*cos(alpha));
+      Rchargino1 = root2*((cos(thetaL2)*sin(thetaR2))*-sin(alpha) + (sin(thetaL2)*cos(thetaR2))*cos(alpha));
       F1over2(1) = -2*f(3)*(1+(1-f(3))*f(1));
       F1over2(2) = -2*f(3)*((1-f(3))*f(2));
 
     }
   else if (higgstype == 'H')
     {
-      Rchargino1 = pow(2,0.5)*((cos(thetaL2)*sin(thetaR2))*cos(alpha) + (sin(thetaL2)*cos(thetaR2))*sin(alpha));
+      Rchargino1 = root2*((cos(thetaL2)*sin(thetaR2))*cos(alpha) + (sin(thetaL2)*cos(thetaR2))*sin(alpha));
       F1over2(1) = -2*f(3)*(1+(1-f(3))*f(1));
       F1over2(2) = -2*f(3)*((1-f(3))*f(2));
     }
   else if (higgstype == 'A')
     {
-      Rchargino1 = -pow(2,0.5)*(-(cos(thetaL2)*sin(thetaR2))*sin(beta) - (sin(thetaL2)*cos(thetaR2))*cos(beta));
+      Rchargino1 = -root2*(-(cos(thetaL2)*sin(thetaR2))*sin(beta) - (sin(thetaL2)*cos(thetaR2))*cos(beta));
       F1over2(1) = -2*f(3)*f(1);
       F1over2(2) = -2*f(3)*f(2);
     }
@@ -4539,7 +4540,7 @@ DoubleVector higgsmatrixelementgammagammaviachargino2s (double m1, double mcharg
 
   if (higgstype == 'h')
     {
-      Rchargino2 = pow(2,0.5)*(-sin(thetaL2)*cos(thetaR2)*-sin(alpha) + (-cos(thetaL2)*sin(thetaR2))*cos(alpha));
+      Rchargino2 = root2*(-sin(thetaL2)*cos(thetaR2)*-sin(alpha) + (-cos(thetaL2)*sin(thetaR2))*cos(alpha));
 
       F1over2(1) = -2*f(3)*(1+(1-f(3))*f(1));
       F1over2(2) = -2*f(3)*((1-f(3))*f(2));
@@ -4547,14 +4548,14 @@ DoubleVector higgsmatrixelementgammagammaviachargino2s (double m1, double mcharg
     }
   else if (higgstype == 'H')
     {
-      Rchargino2 = pow(2,0.5)*(-sin(thetaL2)*cos(thetaR2)*cos(alpha) + (-cos(thetaL2)*sin(thetaR2))*sin(alpha));
+      Rchargino2 = root2*(-sin(thetaL2)*cos(thetaR2)*cos(alpha) + (-cos(thetaL2)*sin(thetaR2))*sin(alpha));
 
       F1over2(1) = -2*f(3)*(1+(1-f(3))*f(1));
       F1over2(2) = -2*f(3)*((1-f(3))*f(2));
     }
   else if (higgstype == 'A')
     {
-      Rchargino2 = -pow(2,0.5)*(sin(thetaL2)*cos(thetaR2)*sin(beta) + cos(thetaL2)*sin(thetaR2)*cos(beta));
+      Rchargino2 = -root2*(sin(thetaL2)*cos(thetaR2)*sin(beta) + cos(thetaL2)*sin(thetaR2)*cos(beta));
       F1over2(1) = -2*f(3)*f(1);
       F1over2(2) = -2*f(3)*f(2);
     }
