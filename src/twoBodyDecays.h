@@ -31,7 +31,6 @@
 #include <complex>
 
 using namespace std;
-
 const double fpi = 0.13041 / sqrt(2.0), mpiplus = 0.13957018, mpi0 = 0.1349766;
 
 /// Two body partial width calculations

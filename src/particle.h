@@ -10,8 +10,6 @@
 #ifndef PARTICLE_H
 #define PARTICLE_H
 
-const int NeutMIXdim = 4;
-
 /// Define Particle PDG codes - for SLHA output of decay tables
 const int PDGdown = 1, PDGup = 2, PDGstrange = 3, PDGcharm = 4, PDGbottom = 5,
   PDGtop = 6;

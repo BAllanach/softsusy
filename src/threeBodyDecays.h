@@ -47,13 +47,6 @@ const double mspole = 0.19;
 /// are calculated rather than to quarks
 const double hadronicScale = 1.4;
 
-static double m1, m2, m3, m4, mq, m5,
-  m6, m7,  m8,  MZboson,  MWboson,  mh,
-  mH, 
-  mA,  mphi,  g1,  g2,  alphamix,  betavac;
-static int neutralinoj, neutralinoi, AorhorH;
-static DoubleMatrix NeutMIX(NeutMIXdim,NeutMIXdim);
-
 void printRowPDG(ostream & cout, double x);
 void OutputNoPWs(ostream & cout, Particle & P);
 void OutputYesPWs(ostream & cout, Particle & P);

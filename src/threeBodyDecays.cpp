@@ -13,7 +13,6 @@ using namespace std;
 const double GFosqrt2 = GMU / root2;
 
 ///Integrand functions for 1->3 decays
-
 double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin) ///required in many of the 1->3 integrals
 {
   double Z = 0;

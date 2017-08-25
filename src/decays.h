@@ -34,6 +34,12 @@
 
 using namespace std;
 
+/// global decay variables
+extern double m1, m2, m3, m4, mq, m5, m6, m7,  m8,  MZboson,  MWboson,  mh,
+  mH, mA,  mphi, betavac, g1, g2, alphamix;
+extern int neutralinoj, neutralinoi, AorhorH;
+extern DoubleMatrix NeutMIX;
+
 /// Calculate Decays does all decay table calculations and outputs
 int calculateDecays(ostream & out, MssmSoftsusy * r,
 		    vector<Particle> & decayTable, 

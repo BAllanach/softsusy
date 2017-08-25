@@ -10,10 +10,24 @@
 
 using namespace std;
 
+/// decay global variable declarations
+double m1, m2, m3, m4, mq, m5, m6, 
+  m7,  m8,  MZboson,  MWboson,  mh,  mH, 
+  mA,  mphi,  g1,  g2,  alphamix,  betavac;
+int neutralinoj, neutralinoi, AorhorH;
+DoubleMatrix NeutMIX(4, 4);
+
 int calculateDecays(ostream & fout, MssmSoftsusy * r,
 		    vector<Particle> & decayTable, 
 		    const NmssmSoftsusy & nmssm, bool nmssmIsIt) { 
-
+  /// Initialise global decay variables
+  m1 = 0.; m2 = 0.; m3 = 0.; m4 = 0.; mq = 0.; m5 = 0.; m6 = 0.; 
+  m7 = 0.;  m8 = 0.;  MZboson = 0.;  MWboson = 0.;  mh = 0.;  mH = 0.; 
+  mA = 0.;  mphi = 0.;  g1 = 0.;  g2 = 0.;  alphamix = 0.;  betavac = 0.,
+  neutralinoj = 0;  neutralinoi = 0;  AorhorH = 0;
+  for (int i=1; i<=4; i++)
+    for (int j=1; j<=4; j++)
+      NeutMIX(i, j) = 0.;
   int errorflag = 0;
   
   /// If there is a serious problem with the point, return an error code and
@@ -1163,8 +1177,6 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
  ParticleNeutralino5.two_width = 0.0;
  ParticleNeutralino5.three_width = 0.0;
  
- 
-  NeutMIX = mixNeut;
   g1 = g; g2 = gp; alphamix = alpha; betavac = beta;
   ///Gluino Decays
   if (flaggluino == 1) {
@@ -6248,10 +6260,5 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
     for (int i=0; i<ii->No_of_Decays; i++)
       ii->Array_Decays[i][5] = ii->Array_Decays[i][2] / ii->total_width;
 
-  m1 = 0.; m2 = 0.; m3 = 0.; m4 = 0.; mq = 0.; m5 = 0.; m6 = 0.; 
-  m7 = 0.;  m8 = 0.;  MZboson = 0.;  MWboson = 0.;  mh = 0.;  mH = 0.; 
-  mA = 0.;  mphi = 0.;  g1 = 0.;  g2 = 0.;  alphamix = 0.;  betavac = 0.;
-  neutralinoj = 0;  neutralinoi = 0;  AorhorH = 0;
-  
  return errorflag;
 }
