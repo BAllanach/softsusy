@@ -6263,7 +6263,7 @@ Complex bw(double mSq, double gamma, double qSq) {
 static double mn = 0., mch = 0., ol11 = 0., or11 = 0.;
 double chToN2piInt(double qSq) {
   double integrand = sqr(fofqsq(qSq).mod()) *
-    sqrt(1.0 - 4.0 * sqr(mpiplus) / qSq) *
+    sqrt(1.0 - 4.0 * sqr(mpiplus) / qSq) * (1.0 - 4.0 * sqr(mpiplus) / qSq) *
     sqrt(lambda(sqr(mch), sqr(mn), qSq)) *
 	 ( (sqr(ol11) + sqr(or11)) *
 	   (qSq * (sqr(mch) + sqr(mn) - 2.0 * qSq) +
@@ -6275,7 +6275,19 @@ double chToN2piInt(double qSq) {
 double charginoToNeutralino2pion(const MssmSoftsusy * m) {
   double mchi1 = fabs(m->displayPhys().mch(1)),
     mneut1 = fabs(m->displayPhys().mneut(1));
-  mch = mchi1; mn = mneut1; ol11 = cos(m->displayPhys().thetaL);
+  mch = mchi1; mn = mneut1;
+  Complex OL11 = -1.0 / root2 * m->displayDrBarPars().nBpmz.display(1, 4) *
+    m->displayDrBarPars().uBpmz(1, 2).conj() +
+    m->displayDrBarPars().nBpmz.display(1, 2) *
+    m->displayDrBarPars().uBpmz(1, 1).conj();
+  Complex OR11 = +1.0 / root2 *
+    m->displayDrBarPars().nBpmz.display(1, 3).conj() *
+    m->displayDrBarPars().vBpmz(1, 2) +
+    m->displayDrBarPars().nBpmz.display(1, 2).conj() *
+    m->displayDrBarPars().vBpmz(1, 1);
+  ol11 = OL11.real(); or11 = OR11.real();
+
+  ol11 = cos(m->displayPhys().thetaL);
   or11 = cos(m->displayPhys().thetaR); 
   double qSqstart = 4.0 * mpiplus * mpiplus;
   double qSqend = sqr(mchi1 - mneut1);

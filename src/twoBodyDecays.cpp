@@ -17,14 +17,22 @@ double charginoToNeutralino1pion(const MssmSoftsusy * m) {
   if (mchi1 < mneut1 + mpiplus) return 0.;
   if (mchi1 - mneut1 - mpiplus > hadronicScale) return 0.;
 
-  double OL11 = cos(m->displayPhys().thetaL),
-    OR11 = cos(m->displayPhys().thetaR); 
+  Complex OL11 = -1.0 / root2 * m->displayDrBarPars().nBpmz.display(1, 4) *
+    m->displayDrBarPars().uBpmz(1, 2).conj() +
+    m->displayDrBarPars().nBpmz.display(1, 2) *
+    m->displayDrBarPars().uBpmz(1, 1).conj();
+  Complex OR11 = +1.0 / root2 *
+    m->displayDrBarPars().nBpmz.display(1, 3).conj() *
+    m->displayDrBarPars().vBpmz(1, 2) +
+    m->displayDrBarPars().nBpmz.display(1, 2).conj() *
+    m->displayDrBarPars().vBpmz(1, 1);
+  double ol11 = OL11.real(), or11 = OR11.real();
   double kpi = sqrt(lambda(sqr(mchi1), sqr(mneut1), sqr(mpiplus))) * 0.5
     / (mchi1);
   double width = sqr(fpi) * sqr(GMU) * kpi / (4.0 * PI * sqr(mchi1)) *
-    ( sqr(OL11 + OR11) * ( sqr(sqr(mchi1) - sqr(mneut1)) -
+    ( sqr(ol11 + or11) * ( sqr(sqr(mchi1) - sqr(mneut1)) -
 			   sqr(mpiplus) * sqr(mchi1 - mneut1) ) +
-      sqr(OL11 - OR11) * ( sqr(sqr(mchi1) - sqr(mneut1)) -
+      sqr(ol11 - or11) * ( sqr(sqr(mchi1) - sqr(mneut1)) -
 			   sqr(mpiplus) * sqr(mchi1 + mneut1))
       );
 
