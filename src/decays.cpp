@@ -25,9 +25,8 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
     fout << "# Not calculating decays: serious problem with point\n";
     return -1;
   }
-  ffout = &fout;
 
-  bool flaggluino = 1, flagsupL = 1, flagsupR = 1, flagsdownL = 1, flagsdownR = 1, flagscharmL = 1, flagscharmR = 1, flagsstrangeL = 1, flagsstrangeR = 1, flagstop1 = 1, flagstop2 = 1, flagsbottom1 = 1, flagsbottom2 = 1, flagselectronL = 1, flagselectronR = 1, flagsmuonL = 1, flagsmuonR = 1, flagstau1 = 1, flagstau2 = 1, flagsnueL = 1, flagsnumuL = 1, flagsnutauL = 1, flagneut1 = 1, flagneut2 = 1, flagneut3 = 1, flagneut4 = 1, flagneut5 = 1, flagchar1 = 1, flagchar2 = 1, flagh1 = 1, flagH2 = 1, flagH3 = 1, flagA1 = 1, flagA2 = 1, flagHpm = 1; ///< Flags to turn off decays, default 1 = on, 0 = off
+    bool flaggluino = 1, flagsupL = 1, flagsupR = 1, flagsdownL = 1, flagsdownR = 1, flagscharmL = 1, flagscharmR = 1, flagsstrangeL = 1, flagsstrangeR = 1, flagstop1 = 1, flagstop2 = 1, flagsbottom1 = 1, flagsbottom2 = 1, flagselectronL = 1, flagselectronR = 1, flagsmuonL = 1, flagsmuonR = 1, flagstau1 = 1, flagstau2 = 1, flagsnueL = 1, flagsnumuL = 1, flagsnutauL = 1, flagneut1 = 1, flagneut2 = 1, flagneut3 = 1, flagneut4 = 1, flagneut5 = 1, flagchar1 = 1, flagchar2 = 1, flagh1 = 1, flagH2 = 1, flagH3 = 1, flagA1 = 1, flagA2 = 1, flagHpm = 1; ///< Flags to turn off decays, default 1 = on, 0 = off
 
   bool QCDcorr = true; ///Turns on QCD corrections to h->gg and h->qq
 
@@ -463,7 +462,7 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
  // NLSP = 0; /// Temporarily set to neutralino
  // neutNLSP = 0, upsquNLSP= 0, downsquNLSP = 0, slepNLSP = 0, snuNLSP = 0, gluNLSP = 0; /// For scans
  if( NLSP == 0) {
-   //    ffout << "NLSP is neutralino" << endl;
+   //    fout << "NLSP is neutralino" << endl;
    upsquNLSP= 0; downsquNLSP = 0; slepNLSP = 0; snuNLSP = 0; gluNLSP = 0;
  }
  else if (NLSP == 1) {
@@ -932,7 +931,9 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
  ParticleChargino1.No_1to3_Decays = 21;
  ParticleChargino1.No_grav_Decays = 0;
  ParticleChargino1.No_NMSSM_Decays = 2;
- ParticleChargino1.No_of_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.No_1to3_Decays + ParticleChargino1.No_grav_Decays + ParticleChargino1.No_NMSSM_Decays; 
+ ParticleChargino1.No_1to4_Decays = 1;
+ ParticleChargino1.No_of_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.No_1to3_Decays + ParticleChargino1.No_grav_Decays + ParticleChargino1.No_NMSSM_Decays +
+   ParticleChargino1.No_1to4_Decays; 
  ParticleChargino1.Array_Decays.resize(ParticleChargino1.No_of_Decays);
  for (int i = 0; i < ParticleChargino1.No_of_Decays; i++)
    ParticleChargino1.Array_Decays[i].resize(6);
@@ -940,6 +941,7 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
  ParticleChargino1.total_width = 0.0;
  ParticleChargino1.two_width = 0.0;
  ParticleChargino1.three_width = 0.0;
+ ParticleChargino1.four_width = 0.0;
 
  ///Create object ParticleChargino2, stores all decay info for chargino2 decays
  Particle ParticleChargino2;
@@ -3067,13 +3069,16 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleChargino1.Array_Decays[44][0] = PDGneutralino4; ParticleChargino1.Array_Decays[44][1] = PDGnutau; ParticleChargino1.Array_Decays[44][4] = -PDGtau; ParticleChargino1.Array_Decays[44][2] = chargino1amplitudeneut4nutautaubar; ParticleChargino1.Array_Decays[44][3] = 3; ParticleChargino1.Array_Comments[44] = "# ~chi_1+ -> chi_40 nu_tau tau+";
    /// Ben: Added this one
    ParticleChargino1.Array_Decays[46][0] = PDGneutralino1; ParticleChargino1.Array_Decays[46][1] = PDGpiPlus; ParticleChargino1.Array_Decays[46][4] = PDGpi0; ParticleChargino1.Array_Decays[46][2] = charginoToNeutralino2pion(r); ParticleChargino1.Array_Decays[46][3] = 3; ParticleChargino1.Array_Comments[46] = "# ~chi_1+ -> chi_10 pi+ pi0";
+   /// and this one
+   /* DEBUG  ParticleChargino1.Array_Decays[47][0] = PDGneutralino1; ParticleChargino1.Array_Decays[47][1] = PDGpiPlus; ParticleChargino1.Array_Decays[47][4] = PDGpi0; ParticleChargino1.Array_Decays[47][2] = charginoToNeutralino3pion(r); ParticleChargino1.Array_Decays[47][3] = 4; ParticleChargino1.Array_Comments[47] = "# ~chi_1+ -> chi_10 pi+ pi0 pi0";*/
    /// If at too low mass difference, use pions rather than quarks
    if (fabs(MCH1) - mpiplus - fabs(mneut(1)) < hadronicScale) {
      ParticleChargino1.Array_Decays[26][2] = 0.;
      ParticleChargino1.Array_Decays[45][2] = 0.;
    } else {
      ParticleChargino1.Array_Decays[23][2] = 0.;
-     ParticleChargino1.Array_Decays[46][2] = 0.;     
+     ParticleChargino1.Array_Decays[46][2] = 0.;
+     ParticleChargino1.Array_Decays[47][2] = 0.;     
    }
 
    int Chargino1_No_1to2_Decays = 0;
@@ -3610,7 +3615,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      neutralino2amplitudeneut1eebar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), me(1,1), me(2,1), runmz, mh0(1), mh0(2), mA0(1), mneut(1), mel, alphas, 0, runmw, g, gp, alpha, beta, runmel, mixNeut, 2, 1, onetothree, 'l');
      neutralino2amplitudeneut1mumubar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), me(1,2), me(2,2), runmz, mh0(1), mh0(2), mA0(1), mneut(1), mmu, alphas, 0, runmw, g, gp, alpha, beta, runmmu, mixNeut, 2, 1, onetothree, 'l');
 
-     //     printOutNow = true; ///< DEBUG
 										     neutralino2amplitudeneut1nuenuebar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), msnu(1), 100000000000, runmz, mh0(1), mh0(2), mA0(1), mneut(1), 0, alphas, 0, runmw, g, gp, alpha, beta, 0, mixNeut, 2, 1, onetothree, 'n');
      neutralino2amplitudeneut1numunumubar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), msnu(2), 100000000000, runmz, mh0(1), mh0(2), mA0(1), mneut(1), 0, alphas, 0, runmw, g, gp, alpha, beta, 0, mixNeut, 2, 1, onetothree, 'n');
      neutralino2amplitudeneut1nutaunutaubar = neutralinoamplitudedecaydgaussneutralinoffbar (mneut(2), msnu(3), 100000000000, runmz, mh0(1), mh0(2), mA0(1), mneut(1), 0, alphas, 0, runmw, g, gp, alpha, beta, 0, mixNeut, 2, 1, onetothree, 'n'); ///Note set msf(2) very large as there is no msnuR so need this intermediate to decouple and not be present

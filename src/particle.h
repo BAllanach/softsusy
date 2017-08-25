@@ -53,11 +53,13 @@ class Particle {
   int No_of_Decays;                     ///< How many decay modes
   int No_1to2_Decays;                   ///< How many 2-body decay modes
   int No_1to3_Decays;                   ///< How many 3-body decay modes
+  int No_1to4_Decays;                   ///< How many 4-body decay modes
   int No_grav_Decays;                   ///< How many decays to gravitinos
   int No_NMSSM_Decays;                  ///< How many NMSSM specific modes
   double total_width;                
   double two_width;                        ///< Total width of 2-body modes
   double three_width;                      ///< Total width of 3-body modes
+  double four_width;                      ///< Total width of 4-body modes  
   vector<vector<double> > Array_Decays;    ///< Partial width for each decay
   vector<string> Array_Comments;           ///< Comments for SLHA file
 };

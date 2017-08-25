@@ -19,7 +19,7 @@ double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin) /
   double Z = 0;
   Z = (pow(m1,2)+pow(mq,2)-2*fabs(m1)*Etbarmax - pow(m,2))/(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Etbarmin-pow(m,2));
     if (Z <=0) {
-    *ffout << "May have nan issue if do log(Z) as Z<=0! See Zfunc used in 1->3 decays" << endl;
+      throw("May have nan issue if do log(Z) as Z<=0! See Zfunc used in 1->3 decays\n");
   }
   return Z;
 }
@@ -40,8 +40,7 @@ DoubleVector Etbarmaxmin(double m1, double m2, double massq, double Et) ///requi
   Etbarsupremum(1) = (zet*(fabs(m1)-Et)+sqrt(B))/(2*A); ///Etbarmax
   Etbarsupremum(2) = (zet*(fabs(m1)-Et)-sqrt(B))/(2*A); ///Etbarmin
   if (Etbarsupremum(1) != Etbarsupremum(1) || Etbarsupremum(2) != Etbarsupremum(2)) {
-    *ffout << "problem: Etbar gives nan! See Etbarmaxmin used in 1->3 decays" << endl;
-    cout << "problem: Etbar gives nan! See Etbarmaxmin used in 1->3 decays" << endl;     
+    throw("problem: Etbar gives nan! See Etbarmaxmin used in 1->3 decays\n");
   }
     return Etbarsupremum;
 }
@@ -63,7 +62,7 @@ DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4
 
   lambda = pow(squareplus*squareminus,0.5);
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in Ebbarmaxmin used in 1->3 decays" << endl;
+    throw("problem: lambda will give nan in Ebbarmaxmin used in 1->3 decays\n");
   } 
   Ebbar(1) = ((pow(mass1,2)+pow(mass2,2)-2*fabs(mass1)*Et-pow(mass3,2)-pow(mass4,2))*(fabs(mass1)-Et) + pt*lambda)/(2*(pow(mass1,2)+pow(mass2,2)-2*Et*fabs(mass1))); ///I have -pow(mass3,2) here whereas T&B have + pow(mass3,2), I have changed the sign to agree with SPheno, note however this actually makes negligible difference due to the smallness of the b mass
   Ebbar(2) = ((pow(mass1,2)+pow(mass2,2)-2*fabs(mass1)*Et-pow(mass3,2)-pow(mass4,2))*(fabs(mass1)-Et) - pt*lambda)/(2*(pow(mass1,2)+pow(mass2,2)-2*Et*fabs(mass1))); ///I have -pow(mass3,2) here whereas T&B have + pow(mass3,2), I have changed the sign to agree with SPheno, note however this actually makes negligible difference due to the smallness of the b mass
@@ -226,7 +225,7 @@ double gpsitildadgauss(double Et) {
     { squareplus = 0;} ///< set to zero to avoid nan problem in lambda, note that given squareplus very very very small anyway here this should not affect the accuracy of the integral
   lambda = pow(squareplus*squareminus,0.5);
   if (lambda != lambda) {
-    *ffout << "problem: nan in lambda in gpsitildadgauss used in 1->3 decays\n" << endl;
+    throw("problem: nan in lambda in gpsitildadgauss used in 1->3 decays\n");
   }
   gpsitildadgauss = pow(PI,2)*fabs(m1)*pt*Et*lambda/(A)*(pow(m1,2)-pow(m4,2)-2*fabs(m1)*Et)/((A-pow(m2,2))*(A-pow(m3,2)));
 
@@ -288,11 +287,11 @@ double gchidgauss (double Et) {
   }
   lambda = pow(squareplus*squareminus,0.5);
   if (lambda != lambda) {
-    *ffout << "problem: nan in lambda in gchidgauss used in 1->3 decays" << endl;
+    throw("problem: nan in lambda in gchidgauss used in 1->3 decays\n");
   }
   pt = pow(pow(Et,2) - pow(mq,2),0.5);
   if (pt != pt) {
-    *ffout << "problem: nan in pt in gchidgauss used in 1->3 decays" << endl;
+    throw("problem: nan in pt in gchidgauss used in 1->3 decays\n");
   }
   gchidgauss = pow(PI,2)*fabs(m1)*pt*Et*lambda/A*1/((pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m2,2))*(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m3,2)));
   return gchidgauss;
@@ -322,7 +321,7 @@ double gXdgauss (double Et)
   squareplus = A - pow((fabs(m4) + mq),2);
   squareminus = A - pow((fabs(m4) - mq),2);
   if (squareplus*squareminus < 0) {
-    *ffout << "problem: lambda will give nan in gXdgauss used in 1->3 decays" << endl;
+    throw("problem: lambda will give nan in gXdgauss used in 1->3 decays\n");
   } 
   lambda = pow(squareplus*squareminus,0.5);
   gXdgauss = 0.5*pow(PI,2)*pt*B/A*lambda*1/((pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m2,2))*(pow(m1,2)+pow(mq,2)-2*fabs(m1)*Et-pow(m3,2)));
@@ -4405,48 +4404,6 @@ double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double m
   Ist1r = couplingst1*kinst1r; Ist2r = couplingst2*kinst2r; Isb1r = couplingsb1*kinsb1r; Isb2r = couplingsb2*kinsb2r; Istau1r = couplingstau1*kinstau1r; Istau2r = couplingstau2*kinstau2r;
   Ist1i = couplingst1*kinst1i; Ist2i = couplingst2*kinst2i; Isb1i = couplingsb1*kinsb1i; Isb2i = couplingsb2*kinsb2i; Istau1i = couplingstau1*kinstau1i; Istau2i = couplingstau2*kinstau2i;
 
-  // throw( "Itr = " << Itr << std::endl);
-  // throw( "Ibr = " << Ibr << std:: endl);
-  // throw( "Icr = " << Icr << std:: endl);
-  // throw( "Itaur = " << Itaur << std:: endl);
-  // throw( "Ichar1r = " << Ichar1r << std:: endl);
-  // throw( "Ichar2r = " << Ichar2r << std:: endl);
-  // throw( "IWr = " << IWr << std:: endl);
-  // throw( "IHpmr = " << IHpmr << std:: endl);
-  // throw( "IscLr = " << IscLr << std:: endl);
-  // throw( "IscRr = " << IscRr << std:: endl);
-  // throw( "IssLr = " << IssLr << std:: endl);
-  // throw( "IssRr = " << IssRr << std:: endl);
-  // throw( "IsmuLr = " << IsmuLr << std:: endl);
-  // throw( "IsmuRr = " << IsmuRr << std:: endl);
-  // throw( "Ist1r = " << Ist1r << std:: endl);
-  // throw( "Ist2r = " << Ist2r << std:: endl);
-  // throw( "Isb1r = " << Isb1r << std:: endl);
-  // throw( "Isb2r = " << Isb2r << std:: endl);
-  // throw( "Istau1r = " << Istau1r << std:: endl);
-  // throw( "Istau2r = " << Istau2r << std:: endl);
-
-  // *ffout << "Iti = " << Iti << std::endl;
-  // *ffout << "Ibi = " << Ibi << std:: endl;
-  // *ffout << "Ici = " << Ici << std:: endl;
-  // *ffout << "Itaui = " << Itaui << std:: endl;
-  // *ffout << "Ichar1i = " << Ichar1i << std:: endl;
-  // *ffout << "Ichar2i = " << Ichar2i << std:: endl;
-  // *ffout << "IWi = " << IWi << std:: endl;
-  // *ffout << "IHpmi = " << IHpmi << std:: endl;
-  // *ffout << "IscLi = " << IscLi << std:: endl;
-  // *ffout << "IscRi = " << IscRi << std:: endl;
-  // *ffout << "IssLi = " << IssLi << std:: endl;
-  // *ffout << "IssRi = " << IssRi << std:: endl;
-  // *ffout << "IsmuLi = " << IsmuLi << std:: endl;
-  // *ffout << "IsmuRi = " << IsmuRi << std:: endl;
-  // *ffout << "Ist1i = " << Ist1i << std:: endl;
-  // *ffout << "Ist2i = " << Ist2i << std:: endl;
-  // *ffout << "Isb1i = " << Isb1i << std:: endl;
-  // *ffout << "Isb2i = " << Isb2i << std:: endl;
-  // *ffout << "Istau1i = " << Istau1i << std:: endl;
-  // *ffout << "Istau2i = " << Istau2i << std:: endl;
-
   DoubleVector matelemsum(2); double matelemmodsquare = 0;
   for (int i = 1; i <= 2; i++) {
     matelemsum(i) = 0;
@@ -4543,23 +4500,6 @@ double higgsCPevenamplitudedecaygluongluonNMSSM(double m1, double mtop, double m
   
   amplitudeW = prefactor*matelemmodsquare;
 
-  // *ffout << "gluon gluon: " << std::endl;
-  // *ffout << "Itr = " << Itr << " Iti = " << Iti << std::endl;
-  // *ffout << "Ibr = " << Ibr << " Ibi = " << Ibi << std::endl;
-  // *ffout << "Icr = " << Icr << " Ici = " << Ici << std::endl;
-  // *ffout << "IscLr = " << IscLr << " IscLi = " << IscLi << std::endl;
-  // *ffout << "IscRr = " << IscRr << " IscRi = " << IscRi << std::endl;
-  // *ffout << "IssLr = " << IssLr << " IssLi = " << IssLi << std::endl;
-  // *ffout << "IssRr = " << IssRr << " IssRi = " << IssRi << std::endl;
-  // *ffout << "IsuLr = " << IsuLr << " IsuLi = " << IsuLi << std::endl;
-  // *ffout << "IsuRr = " << IsuRr << " IsuRi = " << IsuRi << std::endl;
-  // *ffout << "IsdLr = " << IsdLr << " IsdLi = " << IsdLi << std::endl;
-  // *ffout << "IsdRr = " << IsdRr << " IsdRi = " << IsdRi << std::endl;
-  // *ffout << "Ist1r = " << Ist1r << " Ist1i = " << Ist1i << std::endl;
-  // *ffout << "Ist2r = " << Ist2r << " Ist2i = " << Ist2i << std::endl;
-  // *ffout << "Isb1r = " << Isb1r << " Isb1i = " << Isb1i << std::endl;
-  // *ffout << "Isb2r = " << Isb2r << " Isb2i = " << Isb2i << std::endl;
-
   
   double SMTOTRE = 0, SMTOTIM = 0, SQTOTRE = 0, SQTOTIM = 0;
   SMTOTRE = Itr + Ibr + Icr;
@@ -4654,14 +4594,6 @@ double higgshamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
     
     prefactor = GFosqrt2*pow(m1,3)*pow(alpha,2)/(64*pow(PI,3))*pow((1-pow(mZboson/m1,2)),3);
 
-    // *ffout << "Itr = " << Itr << " Iti = " << Iti << std::endl;
-    // *ffout << "Ibr = " << Ibr << " Ibi = " << Ibi << std::endl;
-    // *ffout << "Icr = " << Icr << " Ici = " << Ici << std::endl;
-    // *ffout << "Ichar1r = " << Ichar1r << " Ichar1i = " << Ichar1i << std::endl;
-    // *ffout << "Ichar2r = " << Ichar2r << " Ichar2i = " << Ichar2i << std::endl;
-    // *ffout << "IWr = " << IWr << " IWi = " << IWi << std::endl;
-    // *ffout << "IHpmr = " << IHpmr << " IHpmi = " << IHpmi << std::endl;
-    
     matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
     amplitudeW = prefactor*matelemmodsquare;
 

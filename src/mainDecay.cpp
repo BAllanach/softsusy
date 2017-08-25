@@ -31,7 +31,7 @@ int main() {
     /// Parameters used: CMSSM parameters
     double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 20.0, m0 = 500.;
     int sgnMu = 1;       ///< sign of mu parameter 
-    int numPoints = 220;  ///< number of scan points
+    int numPoints = 2200;  ///< number of scan points
     
     QedQcd oneset;       ///< See "lowe.h" for default definitions parameters
     
@@ -57,12 +57,14 @@ int main() {
     double startM2 = 50., endM2 = 270.; ///< DEBUG
     
     /// Cycle through different points in the scan
-    for (i = 0; i <= numPoints; i++) {
+    for (i = 2016; i <= 2017; i++) {
       double m2 = (endM2 - startM2) / static_cast<double>(numPoints) *
 	static_cast<double>(i) + startM2;  /// set tan beta ready for the scan.
 
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r;
+
+    //    m2 = 251.7; ///< problematic point
     
     DoubleVector pars(5);
     pars(1) = m0; pars(2) = m12; pars(3) = a0; pars(4) = m2;
@@ -74,14 +76,14 @@ int main() {
 
     NmssmSoftsusy nmssm;
     vector<Particle> decayTable;
-    calculateDecays(cout, &r, decayTable, nmssm, false);
+    int err = calculateDecays(cout, &r, decayTable, nmssm, false);
     
     /// check the point in question is problem free: if so print the output
     if (!r.displayProblem().test()) {
       /// Sets format of output: 6 decimal places
       outputCharacteristics(6);
 
-      if (decayTable.size() > 0) 
+      if (decayTable.size() > 0 && err == 0) 
       cout << m2 << " " << r.displayPhys().mch(1) << " "
 	   << r.displayPhys().mch(1) - r.displayPhys().mneut(1) << " "
 	   << decayTable[chargino1].Array_Decays[26][5] +
@@ -97,6 +99,7 @@ int main() {
       /// print out what the problem(s) is(are)
       cout << m2 << " " << r.displayProblem() << endl;
     }
+    exit(0);
   }
   catch(const string & a) { cerr << a; return -1; }
   catch(const char * a) { cerr << a; return -1; }

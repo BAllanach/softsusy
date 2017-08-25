@@ -4,7 +4,7 @@ bin_PROGRAMS += softsusy.x \
                 softsusy-nmssm.x \
                 softpoint.x \
                 rpvsoftsusy.x \
-                rpvneut.x 
+                rpvneut.x decay.x
 
 softsusy_x_SOURCES = src/main.cpp 
 softsusy_x_LDADD = libsoft.la 
@@ -20,6 +20,9 @@ rpvsoftsusy_x_LDADD = libsoft.la
 
 rpvneut_x_SOURCES = src/rpvneutmain.cpp 
 rpvneut_x_LDADD = libsoft.la 
+
+decay_x_SOURCES = src/mainDecay.cpp
+decay_x_LDADD   = libsoft.la
 
 if LOOPTOOLS
 softsusy_x_LDADD += -looptools -lgfortran
@@ -39,6 +42,7 @@ softsusy_nmssm_x_LDADD += libsupermodel.la libtsil.la
 softpoint_x_LDADD      += libsupermodel.la libtsil.la 
 rpvsoftsusy_x_LDADD    += libsupermodel.la libtsil.la 
 rpvneut_x_LDADD        += libsupermodel.la libtsil.la 
+decay_x_LDADD        += libsupermodel.la libtsil.la 
 
 if COMPILE_TWO_LOOP_GAUGE_YUKAWA
 CPPFLAGS += -I$(srcdir)/src
@@ -58,7 +62,7 @@ $(addprefix src/, \
 decays.h twoBodyDecays.h threeBodyDecays.h particle.h mssm_twoloop_mt.h \
 mssm_twoloop_mtau.h mssm_twoloop_mb.h mssm_twoloop_as.h \
 def.h main.h numerics.h \
-softpars.h susy.h linalg.h \
+softpars.h mainDecay.h susy.h linalg.h \
 physpars.h softpoint.h twoloophiggs.h \
 nmssm2loop.h dilogwrap.h \
 lowe.h mycomplex.h rge.h softsusy.h \

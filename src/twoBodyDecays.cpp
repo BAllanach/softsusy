@@ -432,7 +432,7 @@ double squark3amplitudedecaychargedHiggssquark3 (double m1, double m2, double m3
       throw("problem:t1or2 must be 1 or 2 in squark3amplitudedecaychargedHiggssquark3\n");
     }
     
-    amplitudeW = pow(A,2)*lam/(16*PI*m1 * sqr(m1));
+    amplitudeW = pow(A,2)*lam/(16*PI* m1 * sqr(m1));
   }
   return amplitudeW;
   
@@ -3950,21 +3950,17 @@ double higgsesamplitudedecaygammagammatotal(double m1, double g, double gprime, 
   matelemsum(2) = Iti + Ist1i + Ist2i + Ibi + Isb1i + Isb2i + Ici + Itaui + Istau1i + Istau2i + IWi + IHpmi + Ichar1i + Ichar2i;
   
   prefactor = GFosqrt2*pow(alphaEmrun,2)*pow(m1,3)/(128*pow(PI,3));
-  // *ffout << "Itr = " << Itr << endl; *ffout << " Ist1r = " << Ist1r << endl; *ffout<< " Ist2r = " << Ist2r << endl; *ffout<< " Ibr = " << Ibr << endl; *ffout<< " Isb1r = " << Isb1r << endl; *ffout<< " Isb2r = " << Isb2r << endl; *ffout << "Icr = " << Icr << endl; *ffout << "Itaur = " << Itaur << endl; *ffout << "Istau1r = "<< Istau1r << endl; *ffout << "Istau2r = "<< Istau2r << endl; *ffout << "IWr = " << IWr << endl; *ffout << "IHpmr = " << IHpmr << endl; *ffout << "Ichar1r = " << Ichar1r << endl; *ffout << "Ichar2r = " << Ichar2r << endl;
-  // *ffout << "Iti = " << Iti << endl; *ffout << " Ist1i = " << Ist1i << endl; *ffout<< " Ist2i = " << Ist2i << endl; *ffout<< " Ibi = " << Ibi << endl; *ffout<< " Isb1i = " << Isb1i << endl; *ffout<< " Isb2i = " << Isb2i << endl; *ffout << "Ici = " << Ici << endl; *ffout << "Itaui = " << Itaui << endl; *ffout << "Istau1i = "<< Istau1i << endl; *ffout << "Istau2i = "<< Istau2i << endl; *ffout << "IWi = " << IWi << endl; *ffout << "IHpmi = " << IHpmi << endl; *ffout << "Ichar1i = " << Ichar1i << endl; *ffout << "Ichar2i = " << Ichar2i << endl;
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
   if (matelemmodsquare != matelemmodsquare) {
     throw("nan in matelemmodsquare in higgsesamplitudedecaygammagammatotal\n");
-    // ffout << "Itr = " << Itr << endl; fout << " Ist1r = " << Ist1r << endl; fout<< " Ist2r = " << Ist2r << endl; fout<< " Ibr = " << Ibr << endl; fout<< " Isb1r = " << Isb1r << endl; fout<< " Isb2r = " << Isb2r << endl; fout << "Icr = " << Icr << endl; fout << "Itaur = " << Itaur << endl; fout << "Istau1r = "<< Istau1r << endl; fout << "Istau2r = "<< Istau2r << endl; fout << "IWr = " << IWr << endl; fout << "IHpmr = " << IHpmr << endl; fout << "Ichar1r = " << Ichar1r << endl; fout << "Ichar2r = " << Ichar2r << endl;
-    // ffout << "Iti = " << Iti << endl; fout << " Ist1i = " << Ist1i << endl; fout<< " Ist2i = " << Ist2i << endl; fout<< " Ibi = " << Ibi << endl; fout<< " Isb1i = " << Isb1i << endl; fout<< " Isb2i = " << Isb2i << endl; fout << "Ici = " << Ici << endl; fout << "Itaui = " << Itaui << endl; fout << "Istau1i = "<< Istau1i << endl; fout << "Istau2i = "<< Istau2i << endl; fout << "IWi = " << IWi << endl; fout << "IHpmi = " << IHpmi << endl; fout << "Ichar1i = " << Ichar1i << endl; fout << "Ichar2i = " << Ichar2i << endl;
   }
   amplitudeW = prefactor*matelemmodsquare;
      
   return amplitudeW;
 }
 
-DoubleVector higgsmatrixelementgammagammaviatops (double m1, double mtop, double alpha, double beta, char higgstype) ///function that calculates the part of the matrix element that differs depending on the loop particles, in this case it calculates it for tops in the loop.
-{
+///function that calculates the part of the matrix element that differs depending on the loop particles, in this case it calculates it for tops in the loop.
+DoubleVector higgsmatrixelementgammagammaviatops (double m1, double mtop, double alpha, double beta, char higgstype) {
   DoubleVector foftau(double mpart, double mcomp);
   DoubleVector f(3), F1over2(2), It(2);
   double Rt=0;
@@ -4640,9 +4636,6 @@ double higgsesamplitudedecaygluongluontotal(double m1, double g, double gs, doub
   matelemsum(2) = Iti + Ist1i + Ist2i + Ibi + Isb1i + Isb2i + Ici + IscLi + IscRi + IssLi + IssRi + IsuLi + IsuRi + IsdLi + IsdRi;
 
   prefactor = pow(gs,4)*GFosqrt2/(128*pow(PI,5)*16)*pow(m1,3)*9./8;
-
-  // *ffout << "Itr = " << Itr << endl; *ffout << " Ist1r = " << Ist1r << endl; *ffout<< " Ist2r = " << Ist2r << endl; *ffout<< " Ibr = " << Ibr << endl; *ffout<< " Isb1r = " << Isb1r << endl; *ffout<< " Isb2r = " << Isb2r << endl; *ffout << "Icr = " << Icr << endl; *ffout << "IsuLr = " << IsuLr << endl; *ffout << "IsuRr = "<< IsuRr << endl; *ffout << "IsdLr = "<< IsdLr << endl; *ffout << "IsdRr = " << IsdRr << endl; *ffout << "IscLr = " << IscLr << endl; *ffout << "IscRr = " << IscRr << endl; *ffout << "IssLr = " << IssLr << endl; *ffout << "IssRr = " << IssRr << endl;
-  // *ffout << "Iti = " << Iti << endl; *ffout << " Ist1i = " << Ist1i << endl; *ffout<< " Ist2i = " << Ist2i << endl; *ffout<< " Ibi = " << Ibi << endl; *ffout<< " Isb1i = " << Isb1i << endl; *ffout<< " Isb2i = " << Isb2i << endl; *ffout << "Ici = " << Ici << endl; *ffout << "IsuLi = " << IsuLi << endl; *ffout << "IsuRi = "<< IsuRi << endl; *ffout << "IsdLi = "<< IsdLi << endl; *ffout << "IsdRi = " << IsdRi << endl; *ffout << "IscLi = " << IscLi << endl; *ffout << "IscRi = " << IscRi << endl; *ffout << "IssLi = " << IssLi << endl; *ffout << "IssRi = " << IssRi << endl;
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
 
