@@ -257,4 +257,15 @@ double gluinoamplitudedecay1to3neutfirsttwogen (double m1, double m2, double m3,
 /// outputs a decay table in SLHA format
 void slhaDecays(ostream & fout, vector<Particle> & decayTable, bool outputPartialWidths);
 DoubleVector hggQCDcorrections(double amplitudeW, double alphas, int Nf, char higgs, double prefactor, double SMtotr, double SMtoti, double sqtotr, double sqtoti);
+  DoubleVector higgsmatrixelementgammagammaviatops (double m1, double mtop, double alpha, double beta, char higgstype);
+  DoubleVector higgsmatrixelementgammagammaviastops (double m1, double mstop1, double mstop2, double mtop, double mbottom, double mWboson, double thetat, double g, double gprime, double alpha, double beta, double greekmu, double Atop, double Abottom, char higgstype);
+  DoubleVector higgsmatrixelementgammagammaviabottoms (double m1, double mbottom, double alpha, double beta, char higgstype);
+  DoubleVector higgsmatrixelementgammagammaviasbottoms (double m1, double msbottom1, double msbottom2, double mbottom, double mtop, double mWboson, double thetab, double g, double gprime, double alpha, double beta, double Atop, double Abottom, double greekmu, char higgstype);
+  DoubleVector higgsmatrixelementgammagammaviastaus (double m1, double mstau1, double mstau2, double mtau, double mWboson, double thetatau, double g, double gprime, double alpha, double beta, double greekmu, double Atau, char higgstype);
+  DoubleVector higgsmatrixelementgammagammaviaWbosons (double m1, double mWboson, double alpha, double beta, double g, double gprime, char higgstype);
+  DoubleVector higgsmatrixelementgammagammaviaHpms (double m1, double mHpm, double mWboson, double alpha, double beta, double g, double gprime, char higgstype);
+  DoubleVector higgsmatrixelementgammagammaviachargino1s (double m1, double mchargino1, double mWboson, double alpha, double beta, double thetaL, double thetaR, char higgstype);
+  DoubleVector higgsmatrixelementgammagammaviachargino2s (double m1, double mchargino2, double mWboson, double alpha, double beta, double thetaL, double thetaR, char higgstype);
+  DoubleVector higgsmatrixelementgammagammaviacharms (double m1, double mcharm, double alpha, double beta, char higgstype);
+  DoubleVector higgsmatrixelementgammagammaviataus (double m1, double mtau, double alpha, double beta, char higgstype);
 #endif

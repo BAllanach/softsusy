@@ -3820,21 +3820,17 @@ double higgsHplusamplitudedecayWbosonhiggsh (double m1, double m2, double m3, do
 }
 
 
-DoubleVector higgsHplusamplitudedecaysquarksquark (double m1, double m2, double m3, double g, double beta, double mWboson, double mup, double mdown, double greekmu, double Aup, double Adown) ///calculates partial width for Hplus->squarki antisquarkj where i,j are each L/R so no mixing, i.e. first two generations of squarks
-{
+///calculates partial width for
+///Hplus->squarki antisquarkj where i,j are each L/R so no mixing, i.e. first
+///two generations of squarks 
+DoubleVector higgsHplusamplitudedecaysquarksquark (double m1, double m2, double m3, double g, double beta, double mWboson, double mup, double mdown, double greekmu, double Aup, double Adown) {
   double squareplus=0, squareminus=0, lambda=0;
   DoubleVector amplitudeW(4);
-  for (int i=1; i<=4; i++) {
-    amplitudeW(i) = 0;
-  }    
-  
   if (fabs(m1) < fabs(m2) +fabs(m3)) {
     for(int i=1; i<=4; i++) {
       amplitudeW(i) = 0;
     }
-  }
-  
-  else { 
+  }  else { 
     squareplus = 1 - pow((m2+m3)/m1,2);
     squareminus = 1 - pow((m2-m3)/m1,2);
     lambda = pow(squareplus*squareminus,0.5);
@@ -3904,17 +3900,6 @@ DoubleVector higgsHplusamplitudedecaysquarksquarkmix (double m1, double m2, doub
 double higgsesamplitudedecaygammagammatotal(double m1, double g, double gprime, double alphaEmrun, double mWboson, double polemw, double alpha, double beta, double mtop, double mbottom, double mcharm, double mtau, double mHpm, double mstop1, double mstop2, double msbottom1, double msbottom2, double mstau1, double mstau2, double mchargino1, double mchargino2, double thetaL, double thetaR, double thetat, double thetab, double thetatau, double greekmu, double Atop, double Abottom, double Atau, char higgstype) /// function that calculates the partial width for h->gamma gamma at 1-loop (forbidden at tree-level)
 {
   double prefactor=0, Itr=0, Iti=0, Ist1r=0, Ist1i=0, Ist2r=0, Ist2i=0, Ibr=0, Ibi=0, Isb1r=0, Isb1i=0, Isb2r=0, Isb2i=0, Icr=0, Ici=0, Itaur=0, Itaui=0, Istau1r=0, Istau1i=0, Istau2r=0, Istau2i=0, IWr=0, IWi=0, IHpmr=0, IHpmi=0, Ichar1r=0, Ichar1i=0, Ichar2r=0, Ichar2i=0, matelemmodsquare=0, amplitudeW=0;
-  DoubleVector higgsmatrixelementgammagammaviatops (double m1, double mtop, double alpha, double beta, char higgstype);
-  DoubleVector higgsmatrixelementgammagammaviastops (double m1, double mstop1, double mstop2, double mtop, double mbottom, double mWboson, double thetat, double g, double gprime, double alpha, double beta, double greekmu, double Atop, double Abottom, char higgstype);
-  DoubleVector higgsmatrixelementgammagammaviabottoms (double m1, double mbottom, double alpha, double beta, char higgstype);
-  DoubleVector higgsmatrixelementgammagammaviasbottoms (double m1, double msbottom1, double msbottom2, double mbottom, double mtop, double mWboson, double thetab, double g, double gprime, double alpha, double beta, double Atop, double Abottom, double greekmu, char higgstype);
-  DoubleVector higgsmatrixelementgammagammaviastaus (double m1, double mstau1, double mstau2, double mtau, double mWboson, double thetatau, double g, double gprime, double alpha, double beta, double greekmu, double Atau, char higgstype);
-  DoubleVector higgsmatrixelementgammagammaviaWbosons (double m1, double mWboson, double alpha, double beta, double g, double gprime, char higgstype);
-  DoubleVector higgsmatrixelementgammagammaviaHpms (double m1, double mHpm, double mWboson, double alpha, double beta, double g, double gprime, char higgstype);
-  DoubleVector higgsmatrixelementgammagammaviachargino1s (double m1, double mchargino1, double mWboson, double alpha, double beta, double thetaL, double thetaR, char higgstype);
-  DoubleVector higgsmatrixelementgammagammaviachargino2s (double m1, double mchargino2, double mWboson, double alpha, double beta, double thetaL, double thetaR, char higgstype);
-  DoubleVector higgsmatrixelementgammagammaviacharms (double m1, double mcharm, double alpha, double beta, char higgstype);
-  DoubleVector higgsmatrixelementgammagammaviataus (double m1, double mtau, double alpha, double beta, char higgstype);
 
   Itr = higgsmatrixelementgammagammaviatops (m1, mtop, alpha, beta, higgstype)(1);
   Iti = higgsmatrixelementgammagammaviatops (m1, mtop, alpha, beta, higgstype)(2);
@@ -5000,8 +4985,6 @@ DoubleVector higgsmatrixelementZgammaviafermions (double m1, double mferm, doubl
 {
   double sinthetaW=0, costhetaW=0, Rhf=0, factor1=0, Integral1r=0, Integral1i=0, Integral2r=0, Integral2i=0;
   DoubleVector amplitude(2);
-  DoubleVector foftau(double mpart, double mcomp);
-  DoubleVector goftau(double mpart, double mcomp);
   DoubleVector ftau(3), flambda(3), gtau(3), glambda(3);
   for (int i=1; i<=3;i++) {
     ftau(i) = 0;
@@ -5078,8 +5061,7 @@ DoubleVector higgsmatrixelementZgammaviaWbosons (double m1, double mWboson, doub
 {
   double tanthetaW=0, RhW=0, factor1=0, factor2=0, Integral1r=0, Integral1i=0, Integral2r=0, Integral2i=0;
   DoubleVector amplitude(2);
-  DoubleVector foftau(double mpart, double mcomp);
-  DoubleVector goftau(double mpart, double mcomp);
+
   DoubleVector ftau(3), flambda(3), gtau(3), glambda(3);
   for (int i=1; i<=3;i++) {
     ftau(i) = 0;
@@ -5125,8 +5107,6 @@ DoubleVector higgsmatrixelementZgammaviaHplus (double m1, double mWboson, double
 {
   double sinthetaW=0, costhetaW=0, RhHplus=0, factor1=0, Integral1r=0, Integral1i=0;
   DoubleVector amplitude(2);
-  DoubleVector foftau(double mpart, double mcomp);
-  DoubleVector goftau(double mpart, double mcomp);
   DoubleVector ftau(3), flambda(3), gtau(3), glambda(3);
   for (int i=1; i<=3;i++) {
     ftau(i) = 0;
