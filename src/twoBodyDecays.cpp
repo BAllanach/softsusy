@@ -8,7 +8,6 @@
 
 #include "twoBodyDecays.h"
 
-const double root2    = sqrt(2.0);
 const double GFosqrt2 = GMU / root2;
 
 /// First, do hadronic decays

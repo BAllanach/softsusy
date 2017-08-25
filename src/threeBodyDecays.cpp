@@ -10,7 +10,7 @@
 
 using namespace std;
 
-const double GFosqrt2 = GMU / sqrt(2.0);
+const double GFosqrt2 = GMU / root2;
 
 ///Integrand functions for 1->3 decays
 
@@ -136,7 +136,7 @@ double alphasrun (double mu, double mu0, double alphasmu0) {
 
 ///Function that mimics hdecay's ALPHAS running with the link to Lambda QCD
 double alphasrunlambdaQCD (double mu, double LAMBDA, double Nf) {
-  double alphasmu2 = 12*PI/((33-2*Nf)*log(pow(mu/LAMBDA,2)))*(1 - ((6*(153-19*Nf)/pow(33-2*Nf,2))*log(log(pow(mu/LAMBDA,2)))/log(pow(mu/LAMBDA,2))));
+  double alphasmu2 = 24*PI/((33-2*Nf)*log(mu/LAMBDA))*(1 - ((12*(153-19*Nf)/sqr(33-2*Nf))*log(2*log(mu/LAMBDA))/log(sqr(mu/LAMBDA))));
   return alphasmu2;
 }
 
@@ -2242,12 +2242,12 @@ double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (double mgluino, do
       }
       else {
 	if ( uord == 'u') {
-	  A = 1/(pow(2,0.5))*(g*-mixNeut(i,2)+gp/3*-mixNeut(i,1));
-	  B = 4/(3*pow(2,0.5))*gp*-mixNeut(i,1);
+	  A = 1/(root2)*(g*-mixNeut(i,2)+gp/3*-mixNeut(i,1));
+	  B = 4/(3*root2)*gp*-mixNeut(i,1);
 	}
 	else if (uord == 'd') {
-	  A = 1/(pow(2,0.5))*(-g*-mixNeut(i,2) + gp/3*-mixNeut(i,1));
-	  B = -2/(3*pow(2,0.5))*gp*-mixNeut(i,1);
+	  A = 1/(root2)*(-g*-mixNeut(i,2) + gp/3*-mixNeut(i,1));
+	  B = -2/(3*root2)*gp*-mixNeut(i,1);
 	}
 	else {
 	  throw("problem: uord must be u or d in gluinoamplitudedecaydgaussneutralinoqqbarfirsttwogen");
@@ -2288,11 +2288,11 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
   if (fabs(mgluino) < fabs(mneutralino) + 2*mt || fabs(mgluino)> mst1 + mt || fabs(mgluino) > mst2 + mt || onetothree == false) { amplitudeW = 0;}
   else {
     if (torb == 't') {
-      ft = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
+      ft = g*runmt/(root2*mWboson*sin(beta));
     }
     
     else if (torb == 'b') {
-      ft = g*runmt/(pow(2,0.5)*mWboson*cos(beta));
+      ft = g*runmt/(root2*mWboson*cos(beta));
     }
     else {
       throw("problem: torb be t or b in gluinoamplitudedecaydgaussneutralinottbar");
@@ -2355,8 +2355,8 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
     
     if (torb == 't') {
 
-      AtZ = g/(pow(2,0.5))*(-mixNeut(neutralino,2)) + gp/(3*pow(2,0.5))*(-mixNeut(neutralino,1));
-      BtZ = (4./3)*gp/(pow(2,0.5))*(-mixNeut(neutralino,1));
+      AtZ = g/(root2)*(-mixNeut(neutralino,2)) + gp/(3*root2)*(-mixNeut(neutralino,1));
+      BtZ = (4./3)*gp/(root2)*(-mixNeut(neutralino,1));
 
       if (mneutralino >=0) {
 	ast1alpha1 = Complex(AtZ*cos(thetat) - ft*mixNeut(neutralino,4)*sin(thetat),0.0);
@@ -2379,8 +2379,8 @@ double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, d
 
     else if (torb == 'b') {
 
-      AtZ = g/(pow(2,0.5))*(mixNeut(neutralino,2)) + gp/(3*pow(2,0.5))*(-mixNeut(neutralino,1));
-      BtZ = (2./3)*gp/(pow(2,0.5))*(mixNeut(neutralino,1));
+      AtZ = g/(root2)*(mixNeut(neutralino,2)) + gp/(3*root2)*(-mixNeut(neutralino,1));
+      BtZ = (2./3)*gp/(root2)*(mixNeut(neutralino,1));
 
       if (mneutralino >=0) {
 	ast1alpha1 = Complex(AtZ*cos(thetat) - ft*mixNeut(neutralino,3)*sin(thetat),0.0);
@@ -2589,15 +2589,15 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     else if (mneutralinoj < 0) { rj = -1;} ///correction factor for negative masses
     
     if (uordornuorl == 'u') {
-      fq = g*runmq/(pow(2,0.5)*mWboson*sin(beta));
-      AZi = g/(pow(2,0.5))*(-mixNeut(ineutralino,2)) + gp/(3*pow(2,0.5))*(-mixNeut(ineutralino,1));
-      BZi = (4./3)*gp/(pow(2,0.5))*(-mixNeut(ineutralino,1));
+      fq = g*runmq/(root2*mWboson*sin(beta));
+      AZi = g/(root2)*(-mixNeut(ineutralino,2)) + gp/(3*root2)*(-mixNeut(ineutralino,1));
+      BZi = (4./3)*gp/(root2)*(-mixNeut(ineutralino,1));
       sf1alpha1Zi = AZi*cos(thetaq) - fq*mixNeut(ineutralino,4)*sin(thetaq);
       sf1beta1Zi = fq*mixNeut(ineutralino,4)*cos(thetaq) + BZi*sin(thetaq);
       sf2alpha1Zi = (AZi*sin(thetaq)+fq*mixNeut(ineutralino,4)*cos(thetaq));
       sf2beta1Zi = fq*mixNeut(ineutralino,4)*sin(thetaq)-BZi*cos(thetaq);
-      AZj = g/(pow(2,0.5))*(-mixNeut(jneutralino,2)) + gp/(3*pow(2,0.5))*(-mixNeut(jneutralino,1));
-      BZj = (4./3)*gp/(pow(2,0.5))*(-mixNeut(jneutralino,1));
+      AZj = g/(root2)*(-mixNeut(jneutralino,2)) + gp/(3*root2)*(-mixNeut(jneutralino,1));
+      BZj = (4./3)*gp/(root2)*(-mixNeut(jneutralino,1));
       sf1alpha1Zj = AZj*cos(thetaq) - fq*mixNeut(jneutralino,4)*sin(thetaq);
       sf1beta1Zj = fq*mixNeut(jneutralino,4)*cos(thetaq) + BZj*sin(thetaq);
       sf2alpha1Zj = (AZj*sin(thetaq)+fq*mixNeut(jneutralino,4)*cos(thetaq));
@@ -2608,19 +2608,19 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
       trigofalphah = cos(alpha);
       trigofalphaH = sin(alpha);
       Aq = g*runmq/(mWboson*tan(beta));
-      goldstoneffcoup = -fq*sin(beta)/sqrt(2);
+      goldstoneffcoup = -fq*sin(beta)/root2;
     }
     
     else if (uordornuorl == 'd') {
-      fq = g*runmq/(pow(2,0.5)*mWboson*cos(beta));
-      AZi = g/(pow(2,0.5))*(mixNeut(ineutralino,2)) + gp/(3*pow(2,0.5))*(-mixNeut(ineutralino,1));
-      BZi = (2./3)*gp/(pow(2,0.5))*(mixNeut(ineutralino,1));
+      fq = g*runmq/(root2*mWboson*cos(beta));
+      AZi = g/(root2)*(mixNeut(ineutralino,2)) + gp/(3*root2)*(-mixNeut(ineutralino,1));
+      BZi = (2./3)*gp/(root2)*(mixNeut(ineutralino,1));
       sf1alpha1Zi = AZi*cos(thetaq) - fq*mixNeut(ineutralino,3)*sin(thetaq);
       sf1beta1Zi = fq*mixNeut(ineutralino,3)*cos(thetaq) + BZi*sin(thetaq);
       sf2alpha1Zi = (AZi*sin(thetaq)+fq*mixNeut(ineutralino,3)*cos(thetaq));
       sf2beta1Zi = fq*mixNeut(ineutralino,3)*sin(thetaq)-BZi*cos(thetaq);
-      AZj = g/(pow(2,0.5))*(mixNeut(jneutralino,2)) + gp/(3*pow(2,0.5))*(-mixNeut(jneutralino,1));
-      BZj = (2./3)*gp/(pow(2,0.5))*(mixNeut(jneutralino,1));
+      AZj = g/(root2)*(mixNeut(jneutralino,2)) + gp/(3*root2)*(-mixNeut(jneutralino,1));
+      BZj = (2./3)*gp/(root2)*(mixNeut(jneutralino,1));
       sf1alpha1Zj = AZj*cos(thetaq) - fq*mixNeut(jneutralino,3)*sin(thetaq);
       sf1beta1Zj = fq*mixNeut(jneutralino,3)*cos(thetaq) + BZj*sin(thetaq);
       sf2alpha1Zj = (AZj*sin(thetaq)+fq*mixNeut(jneutralino,3)*cos(thetaq));
@@ -2636,13 +2636,13 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
 
     else if (uordornuorl == 'n') {
       fq = 0;
-      AZi = g/(pow(2,0.5))*(-mixNeut(ineutralino,2)) + gp/(pow(2,0.5))*(mixNeut(ineutralino,1));
+      AZi = g/(root2)*(-mixNeut(ineutralino,2)) + gp/(root2)*(mixNeut(ineutralino,1));
       BZi = 0;
       sf1alpha1Zi = AZi*cos(thetaq) - fq*mixNeut(ineutralino,4)*sin(thetaq);
       sf1beta1Zi = fq*mixNeut(ineutralino,4)*cos(thetaq) + BZi*sin(thetaq);
       sf2alpha1Zi = (AZi*sin(thetaq)+fq*mixNeut(ineutralino,4)*cos(thetaq));
       sf2beta1Zi = fq*mixNeut(ineutralino,4)*sin(thetaq)-BZi*cos(thetaq);
-      AZj = g/(pow(2,0.5))*(-mixNeut(jneutralino,2)) + gp/(pow(2,0.5))*(mixNeut(jneutralino,1));
+      AZj = g/(root2)*(-mixNeut(jneutralino,2)) + gp/(root2)*(mixNeut(jneutralino,1));
       BZj = 0;
       sf1alpha1Zj = AZj*cos(thetaq) - fq*mixNeut(jneutralino,4)*sin(thetaq);
       sf1beta1Zj = fq*mixNeut(jneutralino,4)*cos(thetaq) + BZj*sin(thetaq);
@@ -2658,15 +2658,15 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     }
 
     else if (uordornuorl == 'l') {
-      fq = g*runmq/(pow(2,0.5)*mWboson*cos(beta));
-      AZi = g/(pow(2,0.5))*(mixNeut(ineutralino,2)) + gp/(pow(2,0.5))*(mixNeut(ineutralino,1));
-      BZi = pow(2,0.5)*gp*mixNeut(ineutralino,1);
+      fq = g*runmq/(root2*mWboson*cos(beta));
+      AZi = g/(root2)*(mixNeut(ineutralino,2)) + gp/(root2)*(mixNeut(ineutralino,1));
+      BZi = root2*gp*mixNeut(ineutralino,1);
       sf1alpha1Zi = AZi*cos(thetaq) - fq*mixNeut(ineutralino,3)*sin(thetaq);
       sf1beta1Zi = fq*mixNeut(ineutralino,3)*cos(thetaq) + BZi*sin(thetaq);
       sf2alpha1Zi = (AZi*sin(thetaq)+fq*mixNeut(ineutralino,3)*cos(thetaq));
       sf2beta1Zi = fq*mixNeut(ineutralino,3)*sin(thetaq)-BZi*cos(thetaq);
-      AZj = g/(pow(2,0.5))*(mixNeut(jneutralino,2)) + gp/(pow(2,0.5))*(mixNeut(jneutralino,1));
-      BZj = pow(2,0.5)*gp*mixNeut(jneutralino,1);
+      AZj = g/(root2)*(mixNeut(jneutralino,2)) + gp/(root2)*(mixNeut(jneutralino,1));
+      BZj = root2*gp*mixNeut(jneutralino,1);
       sf1alpha1Zj = AZj*cos(thetaq) - fq*mixNeut(jneutralino,3)*sin(thetaq);
       sf1beta1Zj = fq*mixNeut(jneutralino,3)*cos(thetaq) + BZj*sin(thetaq);
       sf2alpha1Zj = (AZj*sin(thetaq)+fq*mixNeut(jneutralino,3)*cos(thetaq));
@@ -2876,41 +2876,41 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
 
     double coupcombo1hsf1 = 0, coupcombo2hsf1 = 0, coupcombo3hsf1 = 0, coupcombo4hsf1 = 0, coupcombo5hsf1 = 0, coupcombo6hsf1 = 0, coupcombo7hsf1 = 0, coupcombo8hsf1 = 0, coupcombo1Hsf1 = 0, coupcombo2Hsf1 = 0, coupcombo3Hsf1 = 0, coupcombo4Hsf1 = 0, coupcombo5Hsf1 = 0, coupcombo6Hsf1 = 0, coupcombo7Hsf1 = 0, coupcombo8Hsf1 = 0, coupcombo1hsf2 = 0, coupcombo2hsf2 = 0, coupcombo3hsf2 = 0, coupcombo4hsf2 = 0, coupcombo5hsf2 = 0, coupcombo6hsf2 = 0, coupcombo7hsf2 = 0, coupcombo8hsf2 = 0, coupcombo1Hsf2 = 0, coupcombo2Hsf2 = 0, coupcombo3Hsf2 = 0, coupcombo4Hsf2 = 0, coupcombo5Hsf2 = 0, coupcombo6Hsf2 = 0, coupcombo7Hsf2 = 0, coupcombo8Hsf2 = 0;
 
-    coupcombo1hsf1 = 0.5*(Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-ri*rj;
-    coupcombo2hsf1 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
-    coupcombo3hsf1 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*mq*fabs(mneutralinoj)*ri;
-    coupcombo4hsf1 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(-sf1beta1Zi*sf1beta1Zj - sf1alpha1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
-    coupcombo5hsf1 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*-mq*fabs(mneutralinoj)*ri;
-    coupcombo6hsf1 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(-sf1alpha1Zi*sf1beta1Zj - sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj);
-    coupcombo7hsf1 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-sqr(mq)*-ri*rj;
-    coupcombo8hsf1 = 2*(Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj);
+    coupcombo1hsf1 = 0.5*(Xijh+Xjih)*fq*trigofalphah/(root2)*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-ri*rj;
+    coupcombo2hsf1 = (Xijh+Xjih)*fq*trigofalphah/(root2)*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
+    coupcombo3hsf1 = (Xijh+Xjih)*fq*trigofalphah/(root2)*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*mq*fabs(mneutralinoj)*ri;
+    coupcombo4hsf1 = (Xijh+Xjih)*fq*trigofalphah/(root2)*(-sf1beta1Zi*sf1beta1Zj - sf1alpha1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
+    coupcombo5hsf1 = (Xijh+Xjih)*fq*trigofalphah/(root2)*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*-mq*fabs(mneutralinoj)*ri;
+    coupcombo6hsf1 = (Xijh+Xjih)*fq*trigofalphah/(root2)*(-sf1alpha1Zi*sf1beta1Zj - sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj);
+    coupcombo7hsf1 = (Xijh+Xjih)*fq*trigofalphah/(root2)*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-sqr(mq)*-ri*rj;
+    coupcombo8hsf1 = 2*(Xijh+Xjih)*fq*trigofalphah/(root2)*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj);
 
-    coupcombo1Hsf1 = 0.5*(XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-ri*rj;
-    coupcombo2Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
-    coupcombo3Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*mq*fabs(mneutralinoj)*ri;
-    coupcombo4Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(-sf1beta1Zi*sf1beta1Zj - sf1alpha1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
-    coupcombo5Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*-mq*fabs(mneutralinoj)*ri;
-    coupcombo6Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(-sf1alpha1Zi*sf1beta1Zj - sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj);
-    coupcombo7Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-sqr(mq)*-ri*rj;
-    coupcombo8Hsf1 = 2*(XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj);
+    coupcombo1Hsf1 = 0.5*(XijH+XjiH)*fq*trigofalphaH/(root2)*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-ri*rj;
+    coupcombo2Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(root2)*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
+    coupcombo3Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(root2)*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*mq*fabs(mneutralinoj)*ri;
+    coupcombo4Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(root2)*(-sf1beta1Zi*sf1beta1Zj - sf1alpha1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
+    coupcombo5Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(root2)*(sf1beta1Zi*sf1beta1Zj + sf1alpha1Zi*sf1alpha1Zj)*-mq*fabs(mneutralinoj)*ri;
+    coupcombo6Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(root2)*(-sf1alpha1Zi*sf1beta1Zj - sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj);
+    coupcombo7Hsf1 = (XijH+XjiH)*fq*trigofalphaH/(root2)*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*-sqr(mq)*-ri*rj;
+    coupcombo8Hsf1 = 2*(XijH+XjiH)*fq*trigofalphaH/(root2)*(sf1alpha1Zi*sf1beta1Zj + sf1beta1Zi*sf1alpha1Zj)*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj);
 
-    coupcombo1hsf2 = 0.5*(Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-ri*rj;
-    coupcombo2hsf2 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
-    coupcombo3hsf2 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*mq*fabs(mneutralinoj)*ri;
-    coupcombo4hsf2 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(-sf2beta1Zi*sf2beta1Zj - sf2alpha1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
-    coupcombo5hsf2 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*-mq*fabs(mneutralinoj)*ri;
-    coupcombo6hsf2 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(-sf2alpha1Zi*sf2beta1Zj - sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj);
-    coupcombo7hsf2 = (Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-sqr(mq)*-ri*rj;
-    coupcombo8hsf2 = 2*(Xijh+Xjih)*fq*trigofalphah/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj);
+    coupcombo1hsf2 = 0.5*(Xijh+Xjih)*fq*trigofalphah/(root2)*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-ri*rj;
+    coupcombo2hsf2 = (Xijh+Xjih)*fq*trigofalphah/(root2)*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
+    coupcombo3hsf2 = (Xijh+Xjih)*fq*trigofalphah/(root2)*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*mq*fabs(mneutralinoj)*ri;
+    coupcombo4hsf2 = (Xijh+Xjih)*fq*trigofalphah/(root2)*(-sf2beta1Zi*sf2beta1Zj - sf2alpha1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
+    coupcombo5hsf2 = (Xijh+Xjih)*fq*trigofalphah/(root2)*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*-mq*fabs(mneutralinoj)*ri;
+    coupcombo6hsf2 = (Xijh+Xjih)*fq*trigofalphah/(root2)*(-sf2alpha1Zi*sf2beta1Zj - sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj);
+    coupcombo7hsf2 = (Xijh+Xjih)*fq*trigofalphah/(root2)*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-sqr(mq)*-ri*rj;
+    coupcombo8hsf2 = 2*(Xijh+Xjih)*fq*trigofalphah/(root2)*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj);
 
-    coupcombo1Hsf2 = 0.5*(XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-ri*rj;
-    coupcombo2Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
-    coupcombo3Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*mq*fabs(mneutralinoj)*ri;
-    coupcombo4Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(-sf2beta1Zi*sf2beta1Zj - sf2alpha1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
-    coupcombo5Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*-mq*fabs(mneutralinoj)*ri;
-    coupcombo6Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(-sf2alpha1Zi*sf2beta1Zj - sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj);
-    coupcombo7Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-sqr(mq)*-ri*rj;
-    coupcombo8Hsf2 = 2*(XijH+XjiH)*fq*trigofalphaH/(pow(2,0.5))*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj);
+    coupcombo1Hsf2 = 0.5*(XijH+XjiH)*fq*trigofalphaH/(root2)*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-ri*rj;
+    coupcombo2Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(root2)*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
+    coupcombo3Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(root2)*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*mq*fabs(mneutralinoj)*ri;
+    coupcombo4Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(root2)*(-sf2beta1Zi*sf2beta1Zj - sf2alpha1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*mq*-rj;
+    coupcombo5Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(root2)*(sf2beta1Zi*sf2beta1Zj + sf2alpha1Zi*sf2alpha1Zj)*-mq*fabs(mneutralinoj)*ri;
+    coupcombo6Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(root2)*(-sf2alpha1Zi*sf2beta1Zj - sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*fabs(mneutralinoj);
+    coupcombo7Hsf2 = (XijH+XjiH)*fq*trigofalphaH/(root2)*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*-sqr(mq)*-ri*rj;
+    coupcombo8Hsf2 = 2*(XijH+XjiH)*fq*trigofalphaH/(root2)*(sf2alpha1Zi*sf2beta1Zj + sf2beta1Zi*sf2alpha1Zj)*fabs(mneutralinoi)*sqr(mq)*fabs(mneutralinoj);
     
     double integral1hsf1 = 0, integral2hsf1 = 0, integral3hsf1 = 0, integral4hsf1 = 0, integral5hsf1 = 0, integral6hsf1 = 0, integral7hsf1 = 0, integral8hsf1 = 0, integral1hsf2 = 0, integral2hsf2 = 0, integral3hsf2 = 0, integral4hsf2 = 0, integral5hsf2 = 0, integral6hsf2 = 0, integral7hsf2 = 0, integral8hsf2 = 0, integral1Hsf1 = 0, integral2Hsf1 = 0, integral3Hsf1 = 0, integral4Hsf1 = 0, integral5Hsf1 = 0, integral6Hsf1 = 0, integral7Hsf1 = 0, integral8Hsf1 = 0, integral1Hsf2 = 0, integral2Hsf2 = 0, integral3Hsf2 = 0, integral4Hsf2 = 0, integral5Hsf2 = 0, integral6Hsf2 = 0, integral7Hsf2 = 0, integral8Hsf2 = 0;
 
@@ -3125,8 +3125,8 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     double GammaW = 0, GammaHpm = 0, Gammagoldstone = 0, Gammasfp1 = 0, Gammasfp2 = 0, Gammasf1 = 0, Gammasf2 = 0, Gammasfp1sf1 = 0, Gammasfp1sf2 = 0, Gammasfp2sf1 = 0, Gammasfp2sf2 = 0, GammaWHpm = 0, GammaWgoldstone = 0, GammaWSfp1 = 0, GammaWSfp2 = 0, GammaWSf1 = 0, GammaWSf2 = 0, GammaHgoldstone = 0, Gammagsfp1 = 0, Gammagsfp2 = 0, GammaHpmsfp1 = 0, GammaHpmsfp2 = 0, Gammagsf1 = 0, Gammagsf2 = 0, GammaHpmsf1 = 0, GammaHpmsf2 = 0, Gammasfpsfp = 0;
 
     double charneutWcoupL = 0, charneutWcoupR = 0, coupHpmcharneutL = 0, coupHpmcharneutR = 0, coupHpm1charneutL = 0, coupHpm1charneutR = 0, coupHpm2charneutL = 0, coupHpm2charneutR = 0, fd = 0, fu = 0, coupHpm1ffpd = 0, coupHpm1ffpu = 0, coupHpm2ffpd = 0, coupHpm2ffpu = 0;
-    fu = g*runmqp/(pow(2,0.5)*sin(beta)*mWboson); ///Just usual yukawa for up type
-    fd = g*runmq/(pow(2,0.5)*cos(beta)*mWboson); ///Just usual yukawa for down type
+    fu = g*runmqp/(root2*sin(beta)*mWboson); ///Just usual yukawa for up type
+    fd = g*runmq/(root2*cos(beta)*mWboson); ///Just usual yukawa for down type
     double ri = 0, rj = 0, rc = 0;
     if (mneutralinoi >= 0) { ri = 1;}
     else if (mneutralinoi < 0) { ri = -1;} ///correction factor for negative masses
@@ -3136,17 +3136,17 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     else if (norc == 'c') { rc = -1;} ///correction factor for if it's chargino -> neutralino fp fbar rather than neutralino -> chargino fpbar f
 
     if ( jchargino == 1) {
-      charneutWcoupL = g*(sin(thetaL2)*mixNeut(ineutralino,2) + cos(thetaL2)*mixNeut(ineutralino,3)/(pow(2,0.5)));
-      charneutWcoupR = g*(sin(thetaR2)*mixNeut(ineutralino,2) - cos(thetaR2)*mixNeut(ineutralino,4)/(pow(2,0.5)));
-      coupHpmcharneutL = (g*sin(thetaR2)*mixNeut(ineutralino,4) + cos(thetaR2)/(pow(2,0.5))*(gp*mixNeut(ineutralino,1)+g*mixNeut(ineutralino,2)));
-      coupHpmcharneutR = (g*sin(thetaL2)*mixNeut(ineutralino,3) - cos(thetaL2)/(pow(2,0.5))*(gp*mixNeut(ineutralino,1)+g*mixNeut(ineutralino,2)));
+      charneutWcoupL = g*(sin(thetaL2)*mixNeut(ineutralino,2) + cos(thetaL2)*mixNeut(ineutralino,3)/(root2));
+      charneutWcoupR = g*(sin(thetaR2)*mixNeut(ineutralino,2) - cos(thetaR2)*mixNeut(ineutralino,4)/(root2));
+      coupHpmcharneutL = (g*sin(thetaR2)*mixNeut(ineutralino,4) + cos(thetaR2)/(root2)*(gp*mixNeut(ineutralino,1)+g*mixNeut(ineutralino,2)));
+      coupHpmcharneutR = (g*sin(thetaL2)*mixNeut(ineutralino,3) - cos(thetaL2)/(root2)*(gp*mixNeut(ineutralino,1)+g*mixNeut(ineutralino,2)));
     }
 
     else if ( jchargino == 2) {
-      charneutWcoupL = g*(cos(thetaL2)*mixNeut(ineutralino,2) - sin(thetaL2)*mixNeut(ineutralino,3)/(pow(2,0.5)));
-      charneutWcoupR = g*(cos(thetaR2)*mixNeut(ineutralino,2) + sin(thetaR2)*mixNeut(ineutralino,4)/(pow(2,0.5)));
-      coupHpmcharneutL = (g*cos(thetaR2)*mixNeut(ineutralino,4) - sin(thetaR2)/(pow(2,0.5))*(gp*mixNeut(ineutralino,1)+g*mixNeut(ineutralino,2)));
-      coupHpmcharneutR = (g*cos(thetaL2)*mixNeut(ineutralino,3) + sin(thetaL2)/(pow(2,0.5))*(gp*mixNeut(ineutralino,1)+g*mixNeut(ineutralino,2)));
+      charneutWcoupL = g*(cos(thetaL2)*mixNeut(ineutralino,2) - sin(thetaL2)*mixNeut(ineutralino,3)/(root2));
+      charneutWcoupR = g*(cos(thetaR2)*mixNeut(ineutralino,2) + sin(thetaR2)*mixNeut(ineutralino,4)/(root2));
+      coupHpmcharneutL = (g*cos(thetaR2)*mixNeut(ineutralino,4) - sin(thetaR2)/(root2)*(gp*mixNeut(ineutralino,1)+g*mixNeut(ineutralino,2)));
+      coupHpmcharneutR = (g*cos(thetaL2)*mixNeut(ineutralino,3) + sin(thetaL2)/(root2)*(gp*mixNeut(ineutralino,1)+g*mixNeut(ineutralino,2)));
     }
     else {
       throw("problem: jchargino must be 1 or 2 in neutralinoamplitudedecaycharginoffprimebar");
@@ -3157,15 +3157,15 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     double Nc = 0;
     
     if (qorl == 'q') {
-      AZiu = g/(pow(2,0.5))*(-mixNeut(ineutralino,2)) + gp/(3*pow(2,0.5))*(-mixNeut(ineutralino,1));
-      BZiu = (4./3)*gp/(pow(2,0.5))*(-mixNeut(ineutralino,1));
+      AZiu = g/(root2)*(-mixNeut(ineutralino,2)) + gp/(3*root2)*(-mixNeut(ineutralino,1));
+      BZiu = (4./3)*gp/(root2)*(-mixNeut(ineutralino,1));
       sf1alpha1Ziu = AZiu*cos(thetaqp)*rj*-rc*ri - fu*mixNeut(ineutralino,4)*sin(thetaqp);
       sf1beta1Ziu = rc*fu*mixNeut(ineutralino,4)*cos(thetaqp) - BZiu*sin(thetaqp);
       sf2alpha1Ziu = -ri*fu*mixNeut(ineutralino,4)*cos(thetaqp) + rc*AZiu*sin(thetaqp);
       sf2beta1Ziu = -BZiu*cos(thetaqp)*rj*-rc*ri + fu*mixNeut(ineutralino,4)*sin(thetaqp);
 
-      AZid = g/(pow(2,0.5))*(mixNeut(ineutralino,2)) + gp/(3*pow(2,0.5))*(-mixNeut(ineutralino,1));
-      BZid = (2./3)*gp/(pow(2,0.5))*(mixNeut(ineutralino,1));
+      AZid = g/(root2)*(mixNeut(ineutralino,2)) + gp/(3*root2)*(-mixNeut(ineutralino,1));
+      BZid = (2./3)*gp/(root2)*(mixNeut(ineutralino,1));
       sf1alpha1Zid = AZid*cos(thetaq)*rj*-rc*ri - fd*mixNeut(ineutralino,4)*sin(thetaq);
       sf1beta1Zid = fd*mixNeut(ineutralino,3)*cos(thetaq) - ri*BZid*sin(thetaq);
       sf2alpha1Zid = fd*mixNeut(ineutralino,3)*cos(thetaq)*rc - rc*ri*AZid*sin(thetaq);
@@ -3174,15 +3174,15 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
       Nc = 3;
     }
     else if (qorl == 'l') {
-      AZiu = g/(pow(2,0.5))*(-mixNeut(ineutralino,2)) + gp/(pow(2,0.5))*(mixNeut(ineutralino,1));
+      AZiu = g/(root2)*(-mixNeut(ineutralino,2)) + gp/(root2)*(mixNeut(ineutralino,1));
       BZiu = 0;
       sf1alpha1Ziu = AZiu*cos(thetaqp)*rj*-rc*ri - fu*mixNeut(ineutralino,4)*sin(thetaqp);
       sf1beta1Ziu = -rc*fu*mixNeut(ineutralino,4)*cos(thetaqp) - BZiu*sin(thetaqp);
       sf2alpha1Ziu = 0; ///No snuR exists so only one sfp contribution
       sf2beta1Ziu = 0; ///No snuR exists so only one sfp contribution
          
-      AZid = g/(pow(2,0.5))*(mixNeut(ineutralino,2)) + gp/(pow(2,0.5))*(mixNeut(ineutralino,1));
-      BZid = pow(2,0.5)*gp*mixNeut(ineutralino,1);
+      AZid = g/(root2)*(mixNeut(ineutralino,2)) + gp/(root2)*(mixNeut(ineutralino,1));
+      BZid = root2*gp*mixNeut(ineutralino,1);
       sf1alpha1Zid = AZid*cos(thetaq)*rj*-rc*ri - fd*mixNeut(ineutralino,3)*sin(thetaq);
       sf1beta1Zid = fd*mixNeut(ineutralino,3)*cos(thetaq) - ri*BZid*sin(thetaq);
       sf2alpha1Zid = fd*mixNeut(ineutralino,3)*cos(thetaq)*rc - rc*ri*AZid*sin(thetaq);
@@ -3494,10 +3494,10 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
 
     ///W-Hpm interference
     double coupcombo1WHpm = 0, coupcombo2WHpm = 0, coupcombo3WHpm = 0, coupcombo4WHpm = 0;
-    coupcombo1WHpm = (charneutWcoupR*coupHpm2charneutR + charneutWcoupL*coupHpm2charneutL)*-g/(pow(2,0.5))*coupHpm2ffpu*fabs(mcharginoj)*mfp*rc;
-    coupcombo2WHpm = (charneutWcoupL*coupHpm2charneutR + charneutWcoupR*coupHpm2charneutL)*g/(pow(2,0.5))*-coupHpm2ffpd*fabs(mneutralinoi)*-mf*ri*rc*rj;
-    coupcombo3WHpm = (charneutWcoupR*coupHpm2charneutR + charneutWcoupL*coupHpm2charneutL)*g/(pow(2,0.5))*-coupHpm2ffpd*fabs(mcharginoj)*-mf*rc;
-    coupcombo4WHpm = (charneutWcoupL*coupHpm2charneutR + charneutWcoupR*coupHpm2charneutL)*-g/(pow(2,0.5))*coupHpm2ffpu*fabs(mneutralinoi)*mfp*ri*rc*rj;
+    coupcombo1WHpm = (charneutWcoupR*coupHpm2charneutR + charneutWcoupL*coupHpm2charneutL)*-g/(root2)*coupHpm2ffpu*fabs(mcharginoj)*mfp*rc;
+    coupcombo2WHpm = (charneutWcoupL*coupHpm2charneutR + charneutWcoupR*coupHpm2charneutL)*g/(root2)*-coupHpm2ffpd*fabs(mneutralinoi)*-mf*ri*rc*rj;
+    coupcombo3WHpm = (charneutWcoupR*coupHpm2charneutR + charneutWcoupL*coupHpm2charneutL)*g/(root2)*-coupHpm2ffpd*fabs(mcharginoj)*-mf*rc;
+    coupcombo4WHpm = (charneutWcoupL*coupHpm2charneutR + charneutWcoupR*coupHpm2charneutL)*-g/(root2)*coupHpm2ffpu*fabs(mneutralinoi)*mfp*ri*rc*rj;
 
     double int1WHpm = 0, int2WHpm = 0, int3WHpm = 0, int4WHpm = 0;
     double Eupper3 = 0;
@@ -3512,10 +3512,10 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
 
     ///W-goldstone interference
     double coupcombo1Wg = 0, coupcombo2Wg = 0, coupcombo3Wg = 0, coupcombo4Wg = 0;
-    coupcombo1Wg = (charneutWcoupR*coupHpm1charneutR + charneutWcoupL*coupHpm1charneutL)*-g/(pow(2,0.5))*coupHpm1ffpu*fabs(mcharginoj)*mfp*rc;
-    coupcombo2Wg = (charneutWcoupL*coupHpm1charneutR + charneutWcoupR*coupHpm1charneutL)*g/(pow(2,0.5))*-coupHpm1ffpd*fabs(mneutralinoi)*-mf*ri*rc*rj;
-    coupcombo3Wg = (charneutWcoupR*coupHpm1charneutR + charneutWcoupL*coupHpm1charneutL)*g/(pow(2,0.5))*-coupHpm1ffpd*fabs(mcharginoj)*-mf*rc;
-    coupcombo4Wg = (charneutWcoupL*coupHpm1charneutR + charneutWcoupR*coupHpm1charneutL)*-g/(pow(2,0.5))*coupHpm1ffpu*fabs(mneutralinoi)*mfp*ri*rc*rj;
+    coupcombo1Wg = (charneutWcoupR*coupHpm1charneutR + charneutWcoupL*coupHpm1charneutL)*-g/(root2)*coupHpm1ffpu*fabs(mcharginoj)*mfp*rc;
+    coupcombo2Wg = (charneutWcoupL*coupHpm1charneutR + charneutWcoupR*coupHpm1charneutL)*g/(root2)*-coupHpm1ffpd*fabs(mneutralinoi)*-mf*ri*rc*rj;
+    coupcombo3Wg = (charneutWcoupR*coupHpm1charneutR + charneutWcoupL*coupHpm1charneutL)*g/(root2)*-coupHpm1ffpd*fabs(mcharginoj)*-mf*rc;
+    coupcombo4Wg = (charneutWcoupL*coupHpm1charneutR + charneutWcoupR*coupHpm1charneutL)*-g/(root2)*coupHpm1ffpu*fabs(mneutralinoi)*mfp*ri*rc*rj;
 
     double int1Wg = 0, int2Wg = 0, int3Wg = 0, int4Wg = 0;
     Eupper3 = 1/(2*fabs(mneutralinoi))*(pow(mneutralinoi,2) + pow(mcharginoj,2) - pow(mf,2) - pow(mfp,2) - 2*mf*mfp);
@@ -3529,14 +3529,14 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     
     ///W Sfp 1 interference
     double coupcombo1Wsfp1 = 0, coupcombo2Wsfp1 = 0, coupcombo3Wsfp1 = 0, coupcombo4Wsfp1 = 0, coupcombo5Wsfp1 = 0, coupcombo6Wsfp1 = 0, coupcombo7Wsfp1 = 0, coupcombo8Wsfp1 = 0;
-    coupcombo7Wsfp1 = -2*charneutWcoupL*sf1beta1Ziu*g/(pow(2,0.5))*betasfp1char*mfp*mf;
-    coupcombo8Wsfp1 = 8*charneutWcoupR*sf1beta1Ziu*g/(pow(2,0.5))*betasfp1char*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj)*ri*rj;
-    coupcombo1Wsfp1 = 2*charneutWcoupL*sf1alpha1Ziu*-g/(pow(2,0.5))*betasfp1char*fabs(mneutralinoi)*mf*rj;
-    coupcombo2Wsfp1 = rc*2*charneutWcoupL*-sf1beta1Ziu*g/(pow(2,0.5))*alphasfp1char*mfp*fabs(mcharginoj)*rj;
-    coupcombo3Wsfp1 = rc*2*charneutWcoupR*sf1alpha1Ziu*g/(pow(2,0.5))*alphasfp1char*ri*rj;
-    coupcombo4Wsfp1 = rc*ri*4*charneutWcoupR*sf1beta1Ziu*g/(pow(2,0.5))*alphasfp1char*fabs(mneutralinoi)*mfp;
-    coupcombo5Wsfp1 = 4*charneutWcoupR*sf1alpha1Ziu*g/(pow(2,0.5))*betasfp1char*mf*fabs(mcharginoj)*ri;
-    coupcombo6Wsfp1 = -rc*2*charneutWcoupL*sf1alpha1Ziu*g/(pow(2,0.5))*alphasfp1char*fabs(mneutralinoi)*fabs(mcharginoj);
+    coupcombo7Wsfp1 = -2*charneutWcoupL*sf1beta1Ziu*g/(root2)*betasfp1char*mfp*mf;
+    coupcombo8Wsfp1 = 8*charneutWcoupR*sf1beta1Ziu*g/(root2)*betasfp1char*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj)*ri*rj;
+    coupcombo1Wsfp1 = 2*charneutWcoupL*sf1alpha1Ziu*-g/(root2)*betasfp1char*fabs(mneutralinoi)*mf*rj;
+    coupcombo2Wsfp1 = rc*2*charneutWcoupL*-sf1beta1Ziu*g/(root2)*alphasfp1char*mfp*fabs(mcharginoj)*rj;
+    coupcombo3Wsfp1 = rc*2*charneutWcoupR*sf1alpha1Ziu*g/(root2)*alphasfp1char*ri*rj;
+    coupcombo4Wsfp1 = rc*ri*4*charneutWcoupR*sf1beta1Ziu*g/(root2)*alphasfp1char*fabs(mneutralinoi)*mfp;
+    coupcombo5Wsfp1 = 4*charneutWcoupR*sf1alpha1Ziu*g/(root2)*betasfp1char*mf*fabs(mcharginoj)*ri;
+    coupcombo6Wsfp1 = -rc*2*charneutWcoupL*sf1alpha1Ziu*g/(root2)*alphasfp1char*fabs(mneutralinoi)*fabs(mcharginoj);
 
     double intW1Sfp1 = 0, intW2Sfp1 = 0, intW3Sfp1 = 0, intW4Sfp1 = 0, intW5Sfp1 = 0, intW6Sfp1 = 0, intW7Sfp1 = 0, intW8Sfp1 = 0;
     m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp1;
@@ -3553,14 +3553,14 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
 
     /// W Sfp 2 interference
     double coupcombo1Wsfp2 = 0, coupcombo2Wsfp2 = 0, coupcombo3Wsfp2 = 0, coupcombo4Wsfp2 = 0, coupcombo5Wsfp2 = 0, coupcombo6Wsfp2 = 0, coupcombo7Wsfp2 = 0, coupcombo8Wsfp2 = 0;
-    coupcombo1Wsfp2 = rc*2*charneutWcoupL*sf2alpha1Ziu*-g/(pow(2,0.5))*betasfp2char*fabs(mneutralinoi)*-mf*rj;
-    coupcombo2Wsfp2 = -ri*2*charneutWcoupL*-sf2beta1Ziu*g/(pow(2,0.5))*alphasfp2char*mfp*fabs(mcharginoj)*rj;
-    coupcombo3Wsfp2 = 2*charneutWcoupR*sf2alpha1Ziu*g/(pow(2,0.5))*alphasfp2char*ri;
-    coupcombo4Wsfp2 = -4*charneutWcoupR*sf2beta1Ziu*g/(pow(2,0.5))*alphasfp2char*fabs(mneutralinoi)*mfp;
-    coupcombo5Wsfp2 = -rc*4*charneutWcoupR*sf2alpha1Ziu*g/(pow(2,0.5))*betasfp2char*mf*fabs(mcharginoj)*ri;
-    coupcombo6Wsfp2 = -2*charneutWcoupL*sf2alpha1Ziu*g/(pow(2,0.5))*alphasfp2char*fabs(mneutralinoi)*fabs(mcharginoj)*rj;
-    coupcombo7Wsfp2 = 2*charneutWcoupL*sf2beta1Ziu*g/(pow(2,0.5))*betasfp2char*mfp*mf*rj*-ri*rc;
-    coupcombo8Wsfp2 = 8*charneutWcoupR*sf2beta1Ziu*g/(pow(2,0.5))*betasfp2char*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj)*rc;
+    coupcombo1Wsfp2 = rc*2*charneutWcoupL*sf2alpha1Ziu*-g/(root2)*betasfp2char*fabs(mneutralinoi)*-mf*rj;
+    coupcombo2Wsfp2 = -ri*2*charneutWcoupL*-sf2beta1Ziu*g/(root2)*alphasfp2char*mfp*fabs(mcharginoj)*rj;
+    coupcombo3Wsfp2 = 2*charneutWcoupR*sf2alpha1Ziu*g/(root2)*alphasfp2char*ri;
+    coupcombo4Wsfp2 = -4*charneutWcoupR*sf2beta1Ziu*g/(root2)*alphasfp2char*fabs(mneutralinoi)*mfp;
+    coupcombo5Wsfp2 = -rc*4*charneutWcoupR*sf2alpha1Ziu*g/(root2)*betasfp2char*mf*fabs(mcharginoj)*ri;
+    coupcombo6Wsfp2 = -2*charneutWcoupL*sf2alpha1Ziu*g/(root2)*alphasfp2char*fabs(mneutralinoi)*fabs(mcharginoj)*rj;
+    coupcombo7Wsfp2 = 2*charneutWcoupL*sf2beta1Ziu*g/(root2)*betasfp2char*mfp*mf*rj*-ri*rc;
+    coupcombo8Wsfp2 = 8*charneutWcoupR*sf2beta1Ziu*g/(root2)*betasfp2char*fabs(mneutralinoi)*mfp*mf*fabs(mcharginoj)*rc;
 
     double intW1Sfp2 = 0, intW2Sfp2 = 0, intW3Sfp2 = 0, intW4Sfp2 = 0, intW5Sfp2 = 0, intW6Sfp2 = 0, intW7Sfp2 = 0, intW8Sfp2 = 0;
     m1 = mneutralinoi, m2 = mfp, m3 = mf, m4 = mcharginoj, m5 = mWboson, m6 = msfp2;
@@ -3578,22 +3578,22 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     ///W Sf1 interference
     double coupcombo1Wsf1 = 0, coupcombo2Wsf1 = 0, coupcombo3Wsf1 = 0, coupcombo4Wsf1 = 0, coupcombo5Wsf1 = 0, coupcombo6Wsf1 = 0, coupcombo7Wsf1 = 0, coupcombo8Wsf1 = 0;
 
-    coupcombo6Wsf1 = 2*charneutWcoupR*sf1alpha1Zid*g/(pow(2,0.5))*alphasf1char*fabs(mneutralinoi)*fabs(mcharginoj)*-rc;
-    coupcombo7Wsf1 = -2*charneutWcoupR*sf1beta1Zid*g/(pow(2,0.5))*betasf1char*mf*mfp;
-    coupcombo8Wsf1 = -8*charneutWcoupL*sf1beta1Zid*g/(pow(2,0.5))*betasf1char*fabs(mneutralinoi)*mf*mfp*fabs(mcharginoj)*rj*-ri;
+    coupcombo6Wsf1 = 2*charneutWcoupR*sf1alpha1Zid*g/(root2)*alphasf1char*fabs(mneutralinoi)*fabs(mcharginoj)*-rc;
+    coupcombo7Wsf1 = -2*charneutWcoupR*sf1beta1Zid*g/(root2)*betasf1char*mf*mfp;
+    coupcombo8Wsf1 = -8*charneutWcoupL*sf1beta1Zid*g/(root2)*betasf1char*fabs(mneutralinoi)*mf*mfp*fabs(mcharginoj)*rj*-ri;
     if (norc == 'n') {
-      coupcombo1Wsf1 = -2*charneutWcoupR*sf1alpha1Zid*-g/(pow(2,0.5))*betasf1char*fabs(mneutralinoi)*-mfp;
-      coupcombo2Wsf1 = 2*charneutWcoupR*-sf1beta1Zid*g/(pow(2,0.5))*alphasf1char*mf*fabs(mcharginoj)*rj;
-      coupcombo3Wsf1 = 2*charneutWcoupR*sf1alpha1Zid*g/(pow(2,0.5))*alphasf1char;
-      coupcombo4Wsf1 = ri*4*charneutWcoupL*sf1beta1Zid*g/(pow(2,0.5))*alphasf1char*fabs(mneutralinoi)*mf;
-      coupcombo5Wsf1 = ri*4*charneutWcoupL*sf1alpha1Zid*g/(pow(2,0.5))*betasf1char*mfp*fabs(mcharginoj)*rj;
+      coupcombo1Wsf1 = -2*charneutWcoupR*sf1alpha1Zid*-g/(root2)*betasf1char*fabs(mneutralinoi)*-mfp;
+      coupcombo2Wsf1 = 2*charneutWcoupR*-sf1beta1Zid*g/(root2)*alphasf1char*mf*fabs(mcharginoj)*rj;
+      coupcombo3Wsf1 = 2*charneutWcoupR*sf1alpha1Zid*g/(root2)*alphasf1char;
+      coupcombo4Wsf1 = ri*4*charneutWcoupL*sf1beta1Zid*g/(root2)*alphasf1char*fabs(mneutralinoi)*mf;
+      coupcombo5Wsf1 = ri*4*charneutWcoupL*sf1alpha1Zid*g/(root2)*betasf1char*mfp*fabs(mcharginoj)*rj;
     }
     else if (norc == 'c') {
-      coupcombo1Wsf1 = 2*charneutWcoupR*alphasf1char*-g/pow(2,0.5)*sf1beta1Zid*fabs(mneutralinoi)*-mfp*ri;
-      coupcombo2Wsf1 = 2*charneutWcoupR*betasf1char*-g/pow(2,0.5)*sf1alpha1Zid*mf*fabs(mcharginoj);
-      coupcombo3Wsf1 = 2*charneutWcoupL*alphasf1char*-g/pow(2,0.5)*sf1alpha1Zid*ri*rj;
-      coupcombo4Wsf1 = -4*charneutWcoupL*betasf1char*-g/pow(2,0.5)*sf1alpha1Zid*fabs(mneutralinoi)*mf*ri*rj;
-      coupcombo5Wsf1 = -4*charneutWcoupL*alphasf1char*g/pow(2,0.5)*sf1beta1Zid*mfp*fabs(mcharginoj)*rj;
+      coupcombo1Wsf1 = 2*charneutWcoupR*alphasf1char*-g/root2*sf1beta1Zid*fabs(mneutralinoi)*-mfp*ri;
+      coupcombo2Wsf1 = 2*charneutWcoupR*betasf1char*-g/root2*sf1alpha1Zid*mf*fabs(mcharginoj);
+      coupcombo3Wsf1 = 2*charneutWcoupL*alphasf1char*-g/root2*sf1alpha1Zid*ri*rj;
+      coupcombo4Wsf1 = -4*charneutWcoupL*betasf1char*-g/root2*sf1alpha1Zid*fabs(mneutralinoi)*mf*ri*rj;
+      coupcombo5Wsf1 = -4*charneutWcoupL*alphasf1char*g/root2*sf1beta1Zid*mfp*fabs(mcharginoj)*rj;
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
@@ -3614,22 +3614,22 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
 
     ///W Sf2 interference
     double coupcombo1Wsf2 = 0, coupcombo2Wsf2 = 0, coupcombo3Wsf2 = 0, coupcombo4Wsf2 = 0, coupcombo5Wsf2 = 0, coupcombo6Wsf2 = 0, coupcombo7Wsf2 = 0, coupcombo8Wsf2 = 0;
-    coupcombo6Wsf2 = 2*charneutWcoupR*sf2alpha1Zid*g/(pow(2,0.5))*alphasf2char*fabs(mneutralinoi)*fabs(mcharginoj)*rj*rc;
-    coupcombo7Wsf2 = -2*charneutWcoupR*sf2beta1Zid*g/(pow(2,0.5))*betasf2char*mf*mfp*rc;
-    coupcombo8Wsf2 = 8*charneutWcoupL*sf2beta1Zid*g/(pow(2,0.5))*betasf2char*fabs(mneutralinoi)*mf*mfp*fabs(mcharginoj)*rj*rc*ri;
+    coupcombo6Wsf2 = 2*charneutWcoupR*sf2alpha1Zid*g/(root2)*alphasf2char*fabs(mneutralinoi)*fabs(mcharginoj)*rj*rc;
+    coupcombo7Wsf2 = -2*charneutWcoupR*sf2beta1Zid*g/(root2)*betasf2char*mf*mfp*rc;
+    coupcombo8Wsf2 = 8*charneutWcoupL*sf2beta1Zid*g/(root2)*betasf2char*fabs(mneutralinoi)*mf*mfp*fabs(mcharginoj)*rj*rc*ri;
     if (norc == 'n') {
-      coupcombo1Wsf2 = -2*charneutWcoupR*sf2alpha1Zid*-g/(pow(2,0.5))*betasf2char*fabs(mneutralinoi)*-mfp;
-      coupcombo2Wsf2 = -2*charneutWcoupR*-sf2beta1Zid*g/(pow(2,0.5))*alphasf2char*mf*fabs(mcharginoj)*rj;
-      coupcombo3Wsf2 = -2*charneutWcoupR*sf2alpha1Zid*g/(pow(2,0.5))*alphasf2char;
-      coupcombo4Wsf2 = -4*charneutWcoupL*sf2beta1Zid*g/(pow(2,0.5))*alphasf2char*fabs(mneutralinoi)*mf*ri;
-      coupcombo5Wsf2 = 4*charneutWcoupL*sf2alpha1Zid*g/(pow(2,0.5))*betasf2char*mfp*fabs(mcharginoj)*rj*ri;
+      coupcombo1Wsf2 = -2*charneutWcoupR*sf2alpha1Zid*-g/(root2)*betasf2char*fabs(mneutralinoi)*-mfp;
+      coupcombo2Wsf2 = -2*charneutWcoupR*-sf2beta1Zid*g/(root2)*alphasf2char*mf*fabs(mcharginoj)*rj;
+      coupcombo3Wsf2 = -2*charneutWcoupR*sf2alpha1Zid*g/(root2)*alphasf2char;
+      coupcombo4Wsf2 = -4*charneutWcoupL*sf2beta1Zid*g/(root2)*alphasf2char*fabs(mneutralinoi)*mf*ri;
+      coupcombo5Wsf2 = 4*charneutWcoupL*sf2alpha1Zid*g/(root2)*betasf2char*mfp*fabs(mcharginoj)*rj*ri;
     }
     else if (norc == 'c') {
-      coupcombo1Wsf2 = 2*charneutWcoupR*alphasf2char*-g/pow(2,0.5)*sf2beta1Zid*fabs(mneutralinoi)*mfp*ri*rj*rc;
-      coupcombo2Wsf2 = 2*charneutWcoupR*betasf2char*g/pow(2,0.5)*sf2alpha1Zid*mf*fabs(mcharginoj)*rc;
-      coupcombo3Wsf2 = -2*charneutWcoupL*alphasf2char*g/pow(2,0.5)*sf2alpha1Zid*ri*rc;
-      coupcombo4Wsf2 = -4*charneutWcoupL*betasf2char*g/pow(2,0.5)*sf2alpha1Zid*fabs(mneutralinoi)*mf*ri*rj*rc;
-      coupcombo5Wsf2 = 4*charneutWcoupL*alphasf2char*g/pow(2,0.5)*sf2beta1Zid*mfp*fabs(mcharginoj)*rc;
+      coupcombo1Wsf2 = 2*charneutWcoupR*alphasf2char*-g/root2*sf2beta1Zid*fabs(mneutralinoi)*mfp*ri*rj*rc;
+      coupcombo2Wsf2 = 2*charneutWcoupR*betasf2char*g/root2*sf2alpha1Zid*mf*fabs(mcharginoj)*rc;
+      coupcombo3Wsf2 = -2*charneutWcoupL*alphasf2char*g/root2*sf2alpha1Zid*ri*rc;
+      coupcombo4Wsf2 = -4*charneutWcoupL*betasf2char*g/root2*sf2alpha1Zid*fabs(mneutralinoi)*mf*ri*rj*rc;
+      coupcombo5Wsf2 = 4*charneutWcoupL*alphasf2char*g/root2*sf2beta1Zid*mfp*fabs(mcharginoj)*rc;
     }
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
@@ -4197,8 +4197,8 @@ double higgsAamplitudedecaygammagammaNMSSM (double m1, double g, double gprime, 
 
   couplingt = 4./3*CPOMix(higgs,1)/(sin(beta)); couplingc = 4./3*CPOMix(higgs,1)/(sin(beta)); couplingb = 1./3*CPOMix(higgs,2)/(cos(beta)); couplingtau = CPOMix(higgs,2)/(cos(beta));
   
-  couplingch1 = 2*mWboson/(g*mch1)*(lam/(pow(2,0.5))*CPOMix(higgs,3)*cos(thetaL)*cos(thetaR) - g/(pow(2,0.5))*(CPOMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPOMix(higgs,2)*cos(thetaL)*sin(thetaR)));
-  couplingch2 = 2*mWboson/(g*mch2)*(lam/(pow(2,0.5))*CPOMix(higgs,3)*sin(thetaL)*sin(thetaR) + g/(pow(2,0.5))*(CPOMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPOMix(higgs,2)*sin(thetaL)*cos(thetaR)));
+  couplingch1 = 2*mWboson/(g*mch1)*(lam/(root2)*CPOMix(higgs,3)*cos(thetaL)*cos(thetaR) - g/(root2)*(CPOMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPOMix(higgs,2)*cos(thetaL)*sin(thetaR)));
+  couplingch2 = 2*mWboson/(g*mch2)*(lam/(root2)*CPOMix(higgs,3)*sin(thetaL)*sin(thetaR) + g/(root2)*(CPOMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPOMix(higgs,2)*sin(thetaL)*cos(thetaR)));
 
   Itr = couplingt*kintr; Icr = couplingc*kincr; Ibr = couplingb*kinbr; Itaur = couplingtau*kintaur; Ichar1r = couplingch1*kinch1r; Ichar2r = couplingch2*kinch2r;
   Iti = couplingt*kinti; Ici = couplingc*kinci; Ibi = couplingb*kinbi; Itaui = couplingtau*kintaui; Ichar1i = couplingch1*kinch1i; Ichar2i = couplingch2*kinch2i;
@@ -4210,7 +4210,7 @@ double higgsAamplitudedecaygammagammaNMSSM (double m1, double g, double gprime, 
   matelemsum(1) = Itr + Ibr + Icr + Itaur + Ichar1r + Ichar2r;
   matelemsum(2) = Iti + Ibi + Ici + Itaui + Ichar1i + Ichar2i;
 
-  prefactor = (GMU*pow(alpha,2))/(sqrt(2.0)*32*pow(PI,3))*pow(m1,3);
+  prefactor = (GMU*pow(alpha,2))/(root2*32*pow(PI,3))*pow(m1,3);
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
   amplitudeW = prefactor*matelemmodsquare;
@@ -4248,7 +4248,7 @@ double higgsAamplitudedecaygluongluonNMSSM (double m1, double g, double gs, doub
   matelemsum(1) = Itr + Ibr + Icr;
   matelemsum(2) = Iti + Ibi + Ici;
 
-  prefactor = GMU*pow(alphas,2)/(sqrt(2.0)*16*pow(PI,3))*pow(m1,3);
+  prefactor = GMU*pow(alphas,2)/(root2*16*pow(PI,3))*pow(m1,3);
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
   amplitudeW = prefactor*matelemmodsquare;
@@ -4295,9 +4295,9 @@ double higgsAamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
   couplingt = -2*(1-8*sin2thW/3)/(sinthW*costhW)*CPOMix(higgs,1)/(sin(beta)); couplingc = -2*(1-8*sin2thW/3)/(sinthW*costhW)*CPOMix(higgs,1)/(sin(beta)); couplingb =(-1+4*sin2thW/3)/(sinthW*costhW)*CPOMix(higgs,2)/(cos(beta));
 
   
-  couplingch1 = 4*mWboson/(mch1*g*sinthW*costhW)*(-pow(sin(thetaR),2) - 0.5*pow(cos(thetaR),2) - pow(sin(thetaL),2) - 0.5*pow(cos(thetaL),2) + 2*sin2thW)*(lam/(pow(2,0.5))*CPOMix(higgs,3)*cos(thetaL)*cos(thetaR) - g/(pow(2,0.5))*(CPOMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPOMix(higgs,2)*cos(thetaL)*sin(thetaR)));
+  couplingch1 = 4*mWboson/(mch1*g*sinthW*costhW)*(-pow(sin(thetaR),2) - 0.5*pow(cos(thetaR),2) - pow(sin(thetaL),2) - 0.5*pow(cos(thetaL),2) + 2*sin2thW)*(lam/(root2)*CPOMix(higgs,3)*cos(thetaL)*cos(thetaR) - g/(root2)*(CPOMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPOMix(higgs,2)*cos(thetaL)*sin(thetaR)));
 
-  couplingch2 = 4*mWboson/(mch2*g*sinthW*costhW)*(-pow(cos(thetaR),2) - 0.5*pow(sin(thetaR),2) - pow(cos(thetaL),2) - 0.5*pow(sin(thetaL),2) + 2*sin2thW)*(lam/(pow(2,0.5))*CPOMix(higgs,3)*sin(thetaL)*sin(thetaR) + g/(pow(2,0.5))*(CPOMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPOMix(higgs,2)*sin(thetaL)*cos(thetaR)));
+  couplingch2 = 4*mWboson/(mch2*g*sinthW*costhW)*(-pow(cos(thetaR),2) - 0.5*pow(sin(thetaR),2) - pow(cos(thetaL),2) - 0.5*pow(sin(thetaL),2) + 2*sin2thW)*(lam/(root2)*CPOMix(higgs,3)*sin(thetaL)*sin(thetaR) + g/(root2)*(CPOMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPOMix(higgs,2)*sin(thetaL)*cos(thetaR)));
 
   
   Itr = couplingt*kintr; Icr = couplingc*kincr; Ibr = couplingb*kinbr; Ichar1r = couplingch1*kinch1r; Ichar2r = couplingch2*kinch2r; 
@@ -4311,7 +4311,7 @@ double higgsAamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
   matelemsum(2) = Iti + Ibi + Ici + Ichar1i + Ichar2i;
 
   // prefactor = pow(g,2)*pow(m1,3)*pow(alpha,2)/(512*pow(PI,3)*pow(mWboson,2))*pow((1-pow(mZboson/m1,2)),3);
-  prefactor = GMU*pow(m1,3)*pow(alpha,2)/(sqrt(2.0)*64*pow(PI,3))*pow((1-pow(mZboson/m1,2)),3);
+  prefactor = GMU*pow(m1,3)*pow(alpha,2)/(root2*64*pow(PI,3))*pow((1-pow(mZboson/m1,2)),3);
 
   matelemmodsquare = pow(matelemsum(1),2) + pow(matelemsum(2),2);
   amplitudeW = prefactor*matelemmodsquare;
@@ -4338,10 +4338,10 @@ double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double m
   couplingt = 4./3*CPEMix(higgs,1)/sin(beta); couplingc = 4./3*CPEMix(higgs,1)/sin(beta); couplingb = CPEMix(higgs,2)/(3*cos(beta)); couplingtau = CPEMix(higgs,2)/cos(beta);
   couplingW = CPEMix(higgs,1)*sin(beta) + CPEMix(higgs,2)*cos(beta);
 
-  couplingch1 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*cos(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPEMix(higgs,2)*cos(thetaL)*sin(thetaR)))*1/(pow(GFosqrt2*2,0.5)*mchar1);
-  couplingch2 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*sin(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPEMix(higgs,2)*sin(thetaL)*cos(thetaR)))*1/(pow(GFosqrt2*2,0.5)*mchar2);
+  couplingch1 = (lam/(root2)*CPEMix(higgs,3)*cos(thetaL)*cos(thetaR) + g/(root2)*(CPEMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPEMix(higgs,2)*cos(thetaL)*sin(thetaR)))*1/(pow(GFosqrt2*2,0.5)*mchar1);
+  couplingch2 = (lam/(root2)*CPEMix(higgs,3)*sin(thetaL)*sin(thetaR) - g/(root2)*(CPEMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPEMix(higgs,2)*sin(thetaL)*cos(thetaR)))*1/(pow(GFosqrt2*2,0.5)*mchar2);
 
-  couplingHpm = (lam*mueff/(pow(2,0.5))*(2*CPEMix(higgs,3)*pow(cos(beta),2) + 2*CPEMix(higgs,3)*pow(sin(beta),2)) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,2)*cos(beta)*sin(beta) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,1)*cos(beta)*sin(beta) + mueff*kappa*pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + lam*Alambda/pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + pow(gp,2)/4*mWboson/g*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) - 2*CPEMix(higgs,1)*pow(sin(beta),2)) + cos(beta)*(2*CPEMix(higgs,2)*pow(sin(beta),2) - 2*CPEMix(higgs,2)*pow(cos(beta),2))) + g/4*mWboson*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) + 2*CPEMix(higgs,1)*pow(sin(beta),2) + 2*2*CPEMix(higgs,2)*sin(beta)*cos(beta)) + cos(beta)*(2*CPEMix(higgs,2)*pow(cos(beta),2) + 2*CPEMix(higgs,2)*pow(sin(beta),2) + 2*2*CPEMix(higgs,1)*sin(beta)*cos(beta))) + lam/pow(2,0.5)*0)/(2*pow(mHpm,2)*pow(2*GFosqrt2,0.5));
+  couplingHpm = (lam*mueff/(root2)*(2*CPEMix(higgs,3)*pow(cos(beta),2) + 2*CPEMix(higgs,3)*pow(sin(beta),2)) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,2)*cos(beta)*sin(beta) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,1)*cos(beta)*sin(beta) + mueff*kappa*root2*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + lam*Alambda/root2*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + pow(gp,2)/4*mWboson/g*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) - 2*CPEMix(higgs,1)*pow(sin(beta),2)) + cos(beta)*(2*CPEMix(higgs,2)*pow(sin(beta),2) - 2*CPEMix(higgs,2)*pow(cos(beta),2))) + g/4*mWboson*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) + 2*CPEMix(higgs,1)*pow(sin(beta),2) + 2*2*CPEMix(higgs,2)*sin(beta)*cos(beta)) + cos(beta)*(2*CPEMix(higgs,2)*pow(cos(beta),2) + 2*CPEMix(higgs,2)*pow(sin(beta),2) + 2*2*CPEMix(higgs,1)*sin(beta)*cos(beta))) + lam/root2*0)/(2*pow(mHpm,2)*pow(2*GFosqrt2,0.5));
 
   couplingscL = 4./3*2*mWboson/(g*pow(mscharmL,2))*(pow(gp,2)/12+pow(g,2)/4)*2*(mWboson/g)*(sin(beta)*CPEMix(higgs,1) - cos(beta)*CPEMix(higgs,2));
   couplingscR = 4./3*2*mWboson/(g*pow(mscharmR,2))*(pow(gp,2)/6)*2*(mWboson/g)*(sin(beta)*CPEMix(higgs,1) - cos(beta)*CPEMix(higgs,2));
@@ -4350,19 +4350,19 @@ double higgsCPevenamplitudedecaygammagammaNMSSM(double m1, double mtop, double m
   couplingsmuL = 2*mWboson/(g*pow(msmuonL,2))*2*mWboson/g*(-pow(gp,2)/4+pow(g,2)/4)*(sin(beta)*CPEMix(higgs,1) - CPEMix(higgs,2));
   couplingsmuR = 2*mWboson/(g*pow(msmuonR,2))*2*mWboson/g*(pow(gp,2)/2)*(sin(beta)*CPEMix(higgs,1) - CPEMix(higgs,2));
 
-  ft = g*mtop/(pow(2,0.5)*mWboson*sin(beta)); fb = g*mbottom/(pow(2,0.5)*mWboson*cos(beta)); ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
+  ft = g*mtop/(root2*mWboson*sin(beta)); fb = g*mbottom/(root2*mWboson*cos(beta)); ftau = g*mtau/(root2*mWboson*cos(beta));
 
-  couplingst1 = 1/(2*pow(2*GFosqrt2,0.5)*pow(mstop1,2))*(pow(cos(thetat),2)*pow(2,0.5)*(pow(ft,2)*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(sin(thetat),2)*pow(2,0.5)*(pow(ft,2)*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - (pow(gp,2)/3)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + 2*sin(thetat)*cos(thetat)*ft/(pow(2,0.5))*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2)-lam*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,3)));
+  couplingst1 = 1/(2*pow(2*GFosqrt2,0.5)*pow(mstop1,2))*(pow(cos(thetat),2)*root2*(pow(ft,2)*root2*mWboson*sin(beta)/g*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(sin(thetat),2)*root2*(pow(ft,2)*root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - (pow(gp,2)/3)*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) + 2*sin(thetat)*cos(thetat)*ft/(root2)*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2)-lam*root2*mWboson*cos(beta)/g*CPEMix(higgs,3)));
 
-  couplingst2 = 1/(2*pow(2*GFosqrt2,0.5)*pow(mstop2,2))*(pow(sin(thetat),2)*pow(2,0.5)*(pow(ft,2)*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(cos(thetat),2)*pow(2,0.5)*(pow(ft,2)*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - (pow(gp,2)/3)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) - 2*sin(thetat)*cos(thetat)*ft/(pow(2,0.5))*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2)-lam*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,3)));
+  couplingst2 = 1/(2*pow(2*GFosqrt2,0.5)*pow(mstop2,2))*(pow(sin(thetat),2)*root2*(pow(ft,2)*root2*mWboson*sin(beta)/g*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(cos(thetat),2)*root2*(pow(ft,2)*root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - (pow(gp,2)/3)*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) - 2*sin(thetat)*cos(thetat)*ft/(root2)*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2)-lam*root2*mWboson*cos(beta)/g*CPEMix(higgs,3)));
 
-  couplingsb1 = 1/(2*pow(2*GFosqrt2,0.5)*pow(msbottom1,2))*(pow(cos(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(sin(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/6*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + 2*sin(thetab)*cos(thetab)*fb/(pow(2,0.5))*(-mueff*CPEMix(higgs,1)+Ab*CPEMix(higgs,2)-lam*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,3)));
+  couplingsb1 = 1/(2*pow(2*GFosqrt2,0.5)*pow(msbottom1,2))*(pow(cos(thetab),2)*root2*(pow(fb,2)*root2*mWboson*cos(beta)/g*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(sin(thetab),2)*root2*(pow(fb,2)*root2*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/6*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) + 2*sin(thetab)*cos(thetab)*fb/(root2)*(-mueff*CPEMix(higgs,1)+Ab*CPEMix(higgs,2)-lam*root2*mWboson*sin(beta)/g*CPEMix(higgs,3)));
 
-  couplingsb2 = 1/(2*pow(2*GFosqrt2,0.5)*pow(msbottom2,2))*(pow(sin(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(cos(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/6*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) - 2*sin(thetab)*cos(thetab)*fb/(pow(2,0.5))*(-mueff*CPEMix(higgs,1)+Ab*CPEMix(higgs,2)-lam*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,3)));			
+  couplingsb2 = 1/(2*pow(2*GFosqrt2,0.5)*pow(msbottom2,2))*(pow(sin(thetab),2)*root2*(pow(fb,2)*root2*mWboson*cos(beta)/g*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(cos(thetab),2)*root2*(pow(fb,2)*root2*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/6*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) - 2*sin(thetab)*cos(thetab)*fb/(root2)*(-mueff*CPEMix(higgs,1)+Ab*CPEMix(higgs,2)-lam*root2*mWboson*sin(beta)/g*CPEMix(higgs,3)));			
   
-  couplingstau1 = 1/(2*pow(2*GFosqrt2,0.5)*pow(mstau1,2))*(pow(sin(thetatau),2)*pow(2,0.5)*(pow(ftau,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + (-pow(gp,2)/4+pow(g,2)/4)*pow(2,0.5)*mWboson/g*(sin(beta)*CPEMix(higgs,1) - cos(beta)*CPEMix(higgs,2))) + pow(cos(thetatau),2)*pow(2,0.5)*(pow(ftau,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/2*(pow(2,0.5)*mWboson/g)*(sin(beta)*CPEMix(higgs,1) - cos(beta)*CPEMix(higgs,2))) - 2*sin(thetatau)*cos(thetatau)*ftau/(pow(2,0.5))*(-mueff*CPEMix(higgs,1) + Atau*CPEMix(higgs,2) - lam*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,3)));
+  couplingstau1 = 1/(2*pow(2*GFosqrt2,0.5)*pow(mstau1,2))*(pow(sin(thetatau),2)*root2*(pow(ftau,2)*root2*mWboson*cos(beta)/g*CPEMix(higgs,2) + (-pow(gp,2)/4+pow(g,2)/4)*root2*mWboson/g*(sin(beta)*CPEMix(higgs,1) - cos(beta)*CPEMix(higgs,2))) + pow(cos(thetatau),2)*root2*(pow(ftau,2)*root2*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/2*(root2*mWboson/g)*(sin(beta)*CPEMix(higgs,1) - cos(beta)*CPEMix(higgs,2))) - 2*sin(thetatau)*cos(thetatau)*ftau/(root2)*(-mueff*CPEMix(higgs,1) + Atau*CPEMix(higgs,2) - lam*root2*mWboson*sin(beta)/g*CPEMix(higgs,3)));
 
-  couplingstau2 = 1/(2*pow(2*GFosqrt2,0.5)*pow(mstau2,2))*(pow(cos(thetatau),2)*pow(2,0.5)*(pow(ftau,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + (-pow(gp,2)/4+pow(g,2)/4)*pow(2,0.5)*mWboson/g*(sin(beta)*CPEMix(higgs,1) - cos(beta)*CPEMix(higgs,2))) + pow(sin(thetatau),2)*pow(2,0.5)*(pow(ftau,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/2*(pow(2,0.5)*mWboson/g)*(sin(beta)*CPEMix(higgs,1) - cos(beta)*CPEMix(higgs,2))) + 2*sin(thetatau)*cos(thetatau)*ftau/(pow(2,0.5))*(-mueff*CPEMix(higgs,1) + Atau*CPEMix(higgs,2) - lam*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,3)));
+  couplingstau2 = 1/(2*pow(2*GFosqrt2,0.5)*pow(mstau2,2))*(pow(cos(thetatau),2)*root2*(pow(ftau,2)*root2*mWboson*cos(beta)/g*CPEMix(higgs,2) + (-pow(gp,2)/4+pow(g,2)/4)*root2*mWboson/g*(sin(beta)*CPEMix(higgs,1) - cos(beta)*CPEMix(higgs,2))) + pow(sin(thetatau),2)*root2*(pow(ftau,2)*root2*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/2*(root2*mWboson/g)*(sin(beta)*CPEMix(higgs,1) - cos(beta)*CPEMix(higgs,2))) + 2*sin(thetatau)*cos(thetatau)*ftau/(root2)*(-mueff*CPEMix(higgs,1) + Atau*CPEMix(higgs,2) - lam*root2*mWboson*sin(beta)/g*CPEMix(higgs,3)));
 
   kintr = 2*tfoftau(3)*(1 + (1-tfoftau(3))*tfoftau(1)); kincr = 2*cfoftau(3)*(1 + (1-cfoftau(3))*cfoftau(1)); kinbr = 2*bfoftau(3)*(1 + (1-bfoftau(3))*bfoftau(1)); kintaur = 2*taufoftau(3)*(1 + (1-taufoftau(3))*taufoftau(1));
   kinti = 2*tfoftau(3)*((1-tfoftau(3))*tfoftau(2)); kinci = 2*cfoftau(3)*((1-cfoftau(3))*cfoftau(2)); kinbi = 2*bfoftau(3)*((1-bfoftau(3))*bfoftau(2)); kintaui = 2*taufoftau(3)*((1-taufoftau(3))*taufoftau(2));
@@ -4432,15 +4432,15 @@ double higgsCPevenamplitudedecaygluongluonNMSSM(double m1, double mtop, double m
   couplingsdL = 2*mWboson/(g*pow(msdownL,2))*2*(pow(gp,2)/12 + pow(g,2)/4)*(mWboson/g)*(sin(beta)*CPEMix(higgs,1) - cos(beta)*CPEMix(higgs,2));
   couplingsdR = 2*mWboson/(g*pow(msdownR,2))*(pow(gp,2)/6)*2*(mWboson/g)*(sin(beta)*CPEMix(higgs,1) - cos(beta)*CPEMix(higgs,2));
 
-  ft = g*runmt/(pow(2,0.5)*mWboson*sin(beta)); fb = g*runmb/(pow(2,0.5)*mWboson*cos(beta));
+  ft = g*runmt/(root2*mWboson*sin(beta)); fb = g*runmb/(root2*mWboson*cos(beta));
 
-  couplingst1 = mWboson/(g*pow(mstop1,2))*(pow(cos(thetat),2)*pow(2,0.5)*(pow(ft,2)*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(sin(thetat),2)*pow(2,0.5)*(pow(ft,2)*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - (pow(gp,2)/3)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + 2*sin(thetat)*cos(thetat)*ft/(pow(2,0.5))*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2)-lam*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,3)));
+  couplingst1 = mWboson/(g*pow(mstop1,2))*(pow(cos(thetat),2)*root2*(pow(ft,2)*root2*mWboson*sin(beta)/g*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(sin(thetat),2)*root2*(pow(ft,2)*root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - (pow(gp,2)/3)*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) + 2*sin(thetat)*cos(thetat)*ft/(root2)*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2)-lam*root2*mWboson*cos(beta)/g*CPEMix(higgs,3)));
 
-  couplingst2 = mWboson/(g*pow(mstop2,2))*(pow(sin(thetat),2)*pow(2,0.5)*(pow(ft,2)*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(cos(thetat),2)*pow(2,0.5)*(pow(ft,2)*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - (pow(gp,2)/3)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) - 2*sin(thetat)*cos(thetat)*ft/(pow(2,0.5))*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2)-lam*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,3)));
+  couplingst2 = mWboson/(g*pow(mstop2,2))*(pow(sin(thetat),2)*root2*(pow(ft,2)*root2*mWboson*sin(beta)/g*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(cos(thetat),2)*root2*(pow(ft,2)*root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - (pow(gp,2)/3)*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) - 2*sin(thetat)*cos(thetat)*ft/(root2)*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2)-lam*root2*mWboson*cos(beta)/g*CPEMix(higgs,3)));
 
-  couplingsb1 = mWboson/(g*pow(msbottom1,2))*(pow(cos(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(sin(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/6*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + 2*sin(thetab)*cos(thetab)*fb/(pow(2,0.5))*(-mueff*CPEMix(higgs,1)+Ab*CPEMix(higgs,2)-lam*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,3)));
+  couplingsb1 = mWboson/(g*pow(msbottom1,2))*(pow(cos(thetab),2)*root2*(pow(fb,2)*root2*mWboson*cos(beta)/g*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(sin(thetab),2)*root2*(pow(fb,2)*root2*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/6*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) + 2*sin(thetab)*cos(thetab)*fb/(root2)*(-mueff*CPEMix(higgs,1)+Ab*CPEMix(higgs,2)-lam*root2*mWboson*sin(beta)/g*CPEMix(higgs,3)));
 
-  couplingsb2 = mWboson/(g*pow(msbottom2,2))*(pow(sin(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(cos(thetab),2)*pow(2,0.5)*(pow(fb,2)*pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/6*(pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,1) - pow(2,0.5)*mWboson*cos(beta)/g*CPEMix(higgs,2))) - 2*sin(thetab)*cos(thetab)*fb/(pow(2,0.5))*(-mueff*CPEMix(higgs,1)+Ab*CPEMix(higgs,2)-lam*pow(2,0.5)*mWboson*sin(beta)/g*CPEMix(higgs,3)));	
+  couplingsb2 = mWboson/(g*pow(msbottom2,2))*(pow(sin(thetab),2)*root2*(pow(fb,2)*root2*mWboson*cos(beta)/g*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) + pow(cos(thetab),2)*root2*(pow(fb,2)*root2*mWboson*cos(beta)/g*CPEMix(higgs,2) + pow(gp,2)/6*(root2*mWboson*sin(beta)/g*CPEMix(higgs,1) - root2*mWboson*cos(beta)/g*CPEMix(higgs,2))) - 2*sin(thetab)*cos(thetab)*fb/(root2)*(-mueff*CPEMix(higgs,1)+Ab*CPEMix(higgs,2)-lam*root2*mWboson*sin(beta)/g*CPEMix(higgs,3)));	
   
   kintr = 2*tfoftau(3)*(1 + (1-tfoftau(3))*tfoftau(1)); kincr = 2*cfoftau(3)*(1 + (1-cfoftau(3))*cfoftau(1)); kinbr = 2*bfoftau(3)*(1 + (1-bfoftau(3))*bfoftau(1));
   kinti = 2*tfoftau(3)*((1-tfoftau(3))*tfoftau(2)); kinci = 2*cfoftau(3)*((1-cfoftau(3))*cfoftau(2)); kinbi = 2*bfoftau(3)*((1-bfoftau(3))*bfoftau(2));
@@ -4532,10 +4532,10 @@ double higgshamplitudedecayZgammaNMSSM (double m1, double g, double gp, double a
     
     couplingt = -2*(1-8*sin2thW/3)/(sinthW*costhW)*CPEMix(higgs,1)/(sin(beta)); couplingc = -2*(1-8*sin2thW/3)/(sinthW*costhW)*CPEMix(higgs,1)/(sin(beta)); couplingb =(-1+4*sin2thW/3)/(sinthW*costhW)*CPEMix(higgs,2)/(cos(beta));
 
-    couplingch1 = 4*mWboson/(mch1*g*sinthW*costhW)*(lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*cos(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPEMix(higgs,2)*cos(thetaL)*sin(thetaR)))*(-pow(sin(thetaR),2) - 0.5*pow(cos(thetaR),2) + 2*pow(sinthW,2) - pow(sin(thetaL),2) - 0.5*pow(cos(thetaL),2));
-    couplingch2 = 4*mWboson/(mch2*g*sinthW*costhW)*(lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*sin(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPEMix(higgs,2)*sin(thetaL)*cos(thetaR)))*(-pow(cos(thetaR),2) - 0.5*pow(sin(thetaR),2) + 2*pow(sinthW,2) - pow(cos(thetaL),2) - 0.5*pow(sin(thetaL),2));
+    couplingch1 = 4*mWboson/(mch1*g*sinthW*costhW)*(lam/(root2)*CPEMix(higgs,3)*cos(thetaL)*cos(thetaR) + g/(root2)*(CPEMix(higgs,1)*sin(thetaL)*cos(thetaR) + CPEMix(higgs,2)*cos(thetaL)*sin(thetaR)))*(-pow(sin(thetaR),2) - 0.5*pow(cos(thetaR),2) + 2*pow(sinthW,2) - pow(sin(thetaL),2) - 0.5*pow(cos(thetaL),2));
+    couplingch2 = 4*mWboson/(mch2*g*sinthW*costhW)*(lam/(root2)*CPEMix(higgs,3)*sin(thetaL)*sin(thetaR) - g/(root2)*(CPEMix(higgs,1)*cos(thetaL)*sin(thetaR) + CPEMix(higgs,2)*sin(thetaL)*cos(thetaR)))*(-pow(cos(thetaR),2) - 0.5*pow(sin(thetaR),2) + 2*pow(sinthW,2) - pow(cos(thetaL),2) - 0.5*pow(sin(thetaL),2));
 
-    couplingHpm = (1-2*sin2thW)/(sinthW*costhW*2*pow(mHpm,2))*1/(pow(GFosqrt2*2,0.5))*(lam*mueff/(pow(2,0.5))*(2*CPEMix(higgs,3)*pow(cos(beta),2) + 2*CPEMix(higgs,3)*pow(sin(beta),2)) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,2)*cos(beta)*sin(beta) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,1)*cos(beta)*sin(beta) + mueff*kappa*pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + lam*Alambda/pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + pow(gp,2)/4*mWboson/g*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) - 2*CPEMix(higgs,1)*pow(sin(beta),2)) + cos(beta)*(2*CPEMix(higgs,2)*pow(sin(beta),2) - 2*CPEMix(higgs,2)*pow(cos(beta),2))) + g/4*mWboson*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) + 2*CPEMix(higgs,1)*pow(sin(beta),2) + 2*2*CPEMix(higgs,2)*sin(beta)*cos(beta)) + cos(beta)*(2*CPEMix(higgs,2)*pow(cos(beta),2) + 2*CPEMix(higgs,2)*pow(sin(beta),2) + 2*2*CPEMix(higgs,1)*sin(beta)*cos(beta))) + lam/pow(2,0.5)*0); ///ignored corrections for now - no top or bottom loop corrections ///MUP in NMSSMTools is a fine-tuning parameter - set 0
+    couplingHpm = (1-2*sin2thW)/(sinthW*costhW*2*pow(mHpm,2))*1/(pow(GFosqrt2*2,0.5))*(lam*mueff/(root2)*(2*CPEMix(higgs,3)*pow(cos(beta),2) + 2*CPEMix(higgs,3)*pow(sin(beta),2)) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,2)*cos(beta)*sin(beta) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,1)*cos(beta)*sin(beta) + mueff*kappa*root2*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + lam*Alambda/root2*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + pow(gp,2)/4*mWboson/g*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) - 2*CPEMix(higgs,1)*pow(sin(beta),2)) + cos(beta)*(2*CPEMix(higgs,2)*pow(sin(beta),2) - 2*CPEMix(higgs,2)*pow(cos(beta),2))) + g/4*mWboson*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) + 2*CPEMix(higgs,1)*pow(sin(beta),2) + 2*2*CPEMix(higgs,2)*sin(beta)*cos(beta)) + cos(beta)*(2*CPEMix(higgs,2)*pow(cos(beta),2) + 2*CPEMix(higgs,2)*pow(sin(beta),2) + 2*2*CPEMix(higgs,1)*sin(beta)*cos(beta))) + lam/root2*0); ///ignored corrections for now - no top or bottom loop corrections ///MUP in NMSSMTools is a fine-tuning parameter - set 0
 
     couplingW = -g/gp*(CPEMix(higgs,1)*sin(beta) + CPEMix(higgs,2)*cos(beta));
 
@@ -4595,7 +4595,7 @@ double higgshamplitudedecayneutineutjNMSSM (double m1, double mneuti, double mne
       throw ("problem: lambda will give nan in higgshamplitudedecayneutineutjNMSSM\n");
     } 
     
-    coupling = lam/(pow(2,0.5))*(CPEMix(higgs,1)*(mixNeut(neuti,3)*mixNeut(neutj,5) + mixNeut(neuti,5)*mixNeut(neutj,3)) + CPEMix(higgs,2)*(mixNeut(neuti,4)*mixNeut(neutj,5) + mixNeut(neuti,5)*mixNeut(neutj,4)) + CPEMix(higgs,3)*(mixNeut(neuti,4)*mixNeut(neutj,3)+mixNeut(neuti,3)*mixNeut(neutj,4))) - pow(2,0.5)*kappa*CPEMix(higgs,3)*mixNeut(neuti,5)*mixNeut(neutj,5) + gp/2*(-CPEMix(higgs,1)*(mixNeut(neuti,1)*mixNeut(neutj,4) + mixNeut(neuti,4)*mixNeut(neutj,1)) + CPEMix(higgs,2)*(mixNeut(neuti,1)*mixNeut(neutj,3) + mixNeut(neuti,3)*mixNeut(neutj,1))) + g/2*(CPEMix(higgs,1)*(mixNeut(neuti,2)*mixNeut(neutj,4) + mixNeut(neuti,4)*mixNeut(neutj,2)) - CPEMix(higgs,2)*(mixNeut(neuti,2)*mixNeut(neutj,3) + mixNeut(neuti,3)*mixNeut(neutj,2)));
+    coupling = lam/(root2)*(CPEMix(higgs,1)*(mixNeut(neuti,3)*mixNeut(neutj,5) + mixNeut(neuti,5)*mixNeut(neutj,3)) + CPEMix(higgs,2)*(mixNeut(neuti,4)*mixNeut(neutj,5) + mixNeut(neuti,5)*mixNeut(neutj,4)) + CPEMix(higgs,3)*(mixNeut(neuti,4)*mixNeut(neutj,3)+mixNeut(neuti,3)*mixNeut(neutj,4))) - root2*kappa*CPEMix(higgs,3)*mixNeut(neuti,5)*mixNeut(neutj,5) + gp/2*(-CPEMix(higgs,1)*(mixNeut(neuti,1)*mixNeut(neutj,4) + mixNeut(neuti,4)*mixNeut(neutj,1)) + CPEMix(higgs,2)*(mixNeut(neuti,1)*mixNeut(neutj,3) + mixNeut(neuti,3)*mixNeut(neutj,1))) + g/2*(CPEMix(higgs,1)*(mixNeut(neuti,2)*mixNeut(neutj,4) + mixNeut(neuti,4)*mixNeut(neutj,2)) - CPEMix(higgs,2)*(mixNeut(neuti,2)*mixNeut(neutj,3) + mixNeut(neuti,3)*mixNeut(neutj,2)));
 
     amplitudeW = factor*squareplus*sqr(m1)*lambda*pow(coupling,2)/(16*PI*fabs(m1));
   }
@@ -4660,10 +4660,10 @@ double higgsCPevenamplitudedecayAANMSSM(double m1, double mA1, double mA2, doubl
     } 
     
     prefactor = 1/(32*PI*m1);
-    hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
-    hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
+    hvev1 = root2*mWboson*sin(beta)/g;
+    hvev2 = root2*mWboson*cos(beta)/g;
 
-    coupling = (pow(g,2)+pow(gp,2))/(4*pow(2,0.5))*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,1,1) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,2)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,2,2) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,1))) + lam*Alambda/(pow(2,0.5))*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,3)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,3)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,2)) - kappa*Akappa/(pow(2,0.5))*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,3,3) + pow(lam,2)/pow(2,0.5)*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,2)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,3,3)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,1)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,3,3)) + mueff/lam*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,1)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,2,2))) + pow(kappa,2)*pow(2,0.5)*mueff/lam*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,3,3) + lam*kappa/(pow(2,0.5))*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,3,3)-2*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,2,3)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,3,3)-2*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,3)) + 2*mueff/lam*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,2)-CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,3) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,3)));
+    coupling = (pow(g,2)+pow(gp,2))/(4*root2)*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,1,1) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,2)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,2,2) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,1))) + lam*Alambda/(root2)*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,3)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,3)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,2)) - kappa*Akappa/(root2)*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,3,3) + pow(lam,2)/root2*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,2)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,3,3)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,1)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,3,3)) + mueff/lam*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,1)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,2,2))) + pow(kappa,2)*root2*mueff/lam*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,3,3) + lam*kappa/(root2)*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,3,3)-2*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,2,3)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,3,3)-2*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,3)) + 2*mueff/lam*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,2)-CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,3) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,3)));
 
     amplitudeW = prefactor*lambda*pow(coupling,2); ///Multiplied by 2 later if A A2 to account for indistinguishability
 
@@ -4703,7 +4703,7 @@ double higgsCPevenamplitudedecayHpHmNMSSM (double m1, double mHpm, double mWboso
     if (squareplus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecayHpHmNMSSM\n");
     } 
-    couplingHpm = (lam*mueff/(pow(2,0.5))*(2*CPEMix(higgs,3)*pow(cos(beta),2) + 2*CPEMix(higgs,3)*pow(sin(beta),2)) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,2)*cos(beta)*sin(beta) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,1)*cos(beta)*sin(beta) + mueff*kappa*pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + lam*Alambda/pow(2,0.5)*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + pow(gp,2)/4*mWboson/g*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) - 2*CPEMix(higgs,1)*pow(sin(beta),2)) + cos(beta)*(2*CPEMix(higgs,2)*pow(sin(beta),2) - 2*CPEMix(higgs,2)*pow(cos(beta),2))) + g/4*mWboson*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) + 2*CPEMix(higgs,1)*pow(sin(beta),2) + 2*2*CPEMix(higgs,2)*sin(beta)*cos(beta)) + cos(beta)*(2*CPEMix(higgs,2)*pow(cos(beta),2) + 2*CPEMix(higgs,2)*pow(sin(beta),2) + 2*2*CPEMix(higgs,1)*sin(beta)*cos(beta))) + lam/pow(2,0.5)*0);
+    couplingHpm = (lam*mueff/(root2)*(2*CPEMix(higgs,3)*pow(cos(beta),2) + 2*CPEMix(higgs,3)*pow(sin(beta),2)) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,2)*cos(beta)*sin(beta) - pow(lam,2)*mWboson*sin(beta)/g*2*CPEMix(higgs,1)*cos(beta)*sin(beta) + mueff*kappa*root2*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + lam*Alambda/root2*2*CPEMix(higgs,3)*cos(beta)*sin(beta) + pow(gp,2)/4*mWboson/g*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) - 2*CPEMix(higgs,1)*pow(sin(beta),2)) + cos(beta)*(2*CPEMix(higgs,2)*pow(sin(beta),2) - 2*CPEMix(higgs,2)*pow(cos(beta),2))) + g/4*mWboson*(sin(beta)*(2*CPEMix(higgs,1)*pow(cos(beta),2) + 2*CPEMix(higgs,1)*pow(sin(beta),2) + 2*2*CPEMix(higgs,2)*sin(beta)*cos(beta)) + cos(beta)*(2*CPEMix(higgs,2)*pow(cos(beta),2) + 2*CPEMix(higgs,2)*pow(sin(beta),2) + 2*2*CPEMix(higgs,1)*sin(beta)*cos(beta))) + lam/root2*0);
 
     amplitudeW = lambda*pow(couplingHpm,2)/(16*PI*m1);
   }
@@ -4732,10 +4732,10 @@ double higgsCPevenamplitudedecayhhorhHorHHNMSSM(double m1, double mh1, double mh
     if (higgs1 == higgs2) { deltah1h2 = 1;}
     else {deltah1h2 = 2;}
     prefactor = deltah1h2/(32*PI*m1);
-    hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
-    hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
+    hvev1 = root2*mWboson*sin(beta)/g;
+    hvev2 = root2*mWboson*cos(beta)/g;
     
-    coupling = (pow(g,2)+pow(gp,2))/(4*pow(2,0.5))*(hvev1*(hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,1,1,1)-hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,1,2,2))+ hvev2*(hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,2,2,2) - hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,2,1,1))) - lam*Alambda/pow(2,0.5)*hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,1,2,3) + kappa*Akappa/(3*pow(2,0.5))*hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,3,3,3) + pow(lam,2)/pow(2,0.5)*(hvev1*(hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,1,2,2) + hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,1,3,3)) + hvev2*(hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,2,1,1) + hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,2,3,3)) + mueff/lam*(hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,3,1,1)+hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,3,2,2))) + pow(kappa,2)*pow(2,0.5)*mueff/lam*hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,3,3,3) - lam*kappa/(pow(2,0.5))*(hvev1*hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,3,2,3) + hvev2*hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,3,1,3) + 2*mueff/lam*hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,1,2,3));
+    coupling = (pow(g,2)+pow(gp,2))/(4*root2)*(hvev1*(hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,1,1,1)-hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,1,2,2))+ hvev2*(hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,2,2,2) - hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,2,1,1))) - lam*Alambda/root2*hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,1,2,3) + kappa*Akappa/(3*root2)*hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,3,3,3) + pow(lam,2)/root2*(hvev1*(hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,1,2,2) + hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,1,3,3)) + hvev2*(hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,2,1,1) + hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,2,3,3)) + mueff/lam*(hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,3,1,1)+hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,3,2,2))) + pow(kappa,2)*root2*mueff/lam*hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,3,3,3) - lam*kappa/(root2)*(hvev1*hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,3,2,3) + hvev2*hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,3,1,3) + 2*mueff/lam*hHH3Couplings(CPEMix,starthiggs,higgs1,higgs2,1,2,3));
 
     amplitudeW = prefactor*lambda*pow(coupling,2);
   }
@@ -4760,11 +4760,11 @@ double higgsA2amplitudedecayA1CPevenNMSSM(double m1, double mA1, double mh, doub
     } 
     
     prefactor = 1/(16*PI*m1);
-    hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
-    hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
+    hvev1 = root2*mWboson*sin(beta)/g;
+    hvev2 = root2*mWboson*cos(beta)/g;
     int pseudoscalar1 = 1, pseudoscalar2 = 2;
 
-    coupling = (pow(g,2)+pow(gp,2))/(4*pow(2,0.5))*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,1,1) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,2)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,2,2) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,1))) + lam*Alambda/(pow(2,0.5))*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,3)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,3)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,2)) - kappa*Akappa/(pow(2,0.5))*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,3,3) + pow(lam,2)/pow(2,0.5)*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,2)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,3,3)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,1)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,3,3)) + mueff/lam*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,1)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,2,2))) + pow(kappa,2)*pow(2,0.5)*mueff/lam*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,3,3) + lam*kappa/(pow(2,0.5))*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,3,3)-2*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,2,3)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,3,3)-2*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,3)) + 2*mueff/lam*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,2)-CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,3) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,3)));
+    coupling = (pow(g,2)+pow(gp,2))/(4*root2)*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,1,1) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,2)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,2,2) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,1))) + lam*Alambda/(root2)*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,3)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,3)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,2)) - kappa*Akappa/(root2)*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,3,3) + pow(lam,2)/root2*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,2)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,3,3)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,1)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,3,3)) + mueff/lam*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,1)+CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,2,2))) + pow(kappa,2)*root2*mueff/lam*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,3,3) + lam*kappa/(root2)*(hvev1*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,3,3)-2*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,2,3)) + hvev2*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,3,3)-2*CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,3)) + 2*mueff/lam*(CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,3,1,2)-CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,1,2,3) - CPEhCPOACPOACoupling(CPEMix,CPOMix,higgs,pseudoscalar1,pseudoscalar2,2,1,3)));
 
     amplitudeW = prefactor*lambda*pow(coupling,2);
   }
@@ -4803,8 +4803,8 @@ double higgsCPevenamplitudedecaystopistopiNMSSM (double m1, double mstopi, doubl
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystopistopiNMSSM\n");
     } 
-    hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
-    hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
+    hvev1 = (root2*mWboson*sin(beta))/g;
+    hvev2 = (root2*mWboson*cos(beta))/g;
     huq = runmt/hvev1;
     if (stop == 1) {
       angle1 = cos(thetat); angle2 = sin(thetat);
@@ -4815,7 +4815,7 @@ double higgsCPevenamplitudedecaystopistopiNMSSM (double m1, double mstopi, doubl
     else{
       throw("problem: stop must be 1 or 2 in higgsCPevenamplitudedecaystopistopiNMSSM\n");
     }
-    coupling = pow(angle1,2)*pow(2,0.5)*(pow(huq,2)*hvev1*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + pow(angle2,2)*pow(2,0.5)*(pow(huq,2)*hvev1*CPEMix(higgs,1) - pow(gp,2)/3*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + 2*angle1*angle2*huq/(pow(2,0.5))*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2) - lam*hvev2*CPEMix(higgs,3));
+    coupling = pow(angle1,2)*root2*(pow(huq,2)*hvev1*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + pow(angle2,2)*root2*(pow(huq,2)*hvev1*CPEMix(higgs,1) - pow(gp,2)/3*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + 2*angle1*angle2*huq/(root2)*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2) - lam*hvev2*CPEMix(higgs,3));
 
     amplitudeW = 3/(16*PI*m1)*lambda*pow(coupling,2);
   }
@@ -4835,11 +4835,11 @@ double higgsCPevenamplitudedecaystopistopjNMSSM (double m1, double mstopi, doubl
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystopistopjNMSSM\n");
     } 
-    hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
-    hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
+    hvev1 = (root2*mWboson*sin(beta))/g;
+    hvev2 = (root2*mWboson*cos(beta))/g;
     huq = runmt/hvev1;
 
-    coupling = cos(thetat)*sin(thetat)*(pow(2,0.5)*(pow(huq,2)*hvev1*CPEMix(higgs,1) - pow(gp,2)/3*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) - pow(2,0.5)*(pow(huq,2)*hvev1*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2)))) + (pow(cos(thetat),2)-pow(sin(thetat),2))*huq/(pow(2,0.5))*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2) - lam*hvev2*CPEMix(higgs,3));
+    coupling = cos(thetat)*sin(thetat)*(root2*(pow(huq,2)*hvev1*CPEMix(higgs,1) - pow(gp,2)/3*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) - root2*(pow(huq,2)*hvev1*CPEMix(higgs,1) + (pow(gp,2)/12 - pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2)))) + (pow(cos(thetat),2)-pow(sin(thetat),2))*huq/(root2)*(At*CPEMix(higgs,1) - mueff*CPEMix(higgs,2) - lam*hvev2*CPEMix(higgs,3));
 
     amplitudeW = 3/(16*PI*m1)*lambda*pow(coupling,2);
   }
@@ -4859,8 +4859,8 @@ double higgsCPevenamplitudedecaysbottomisbottomiNMSSM (double m1, double msbotto
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaysbottomisbottomiNMSSM\n");
     } 
-    hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
-    hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
+    hvev1 = (root2*mWboson*sin(beta))/g;
+    hvev2 = (root2*mWboson*cos(beta))/g;
     hdq = runmb/hvev2;
     if (sbottom == 1) {
       angle1 = cos(thetab); angle2 = sin(thetab);
@@ -4872,7 +4872,7 @@ double higgsCPevenamplitudedecaysbottomisbottomiNMSSM (double m1, double msbotto
       throw("problem: sbottom must be 1 or 2 in higgsCPevenamplitudedecaysbottomisbottomiNMSSM");
     }
 
-    coupling = pow(angle1,2)*pow(2,0.5)*(pow(hdq,2)*hvev2*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + pow(angle2,2)*pow(2,0.5)*(pow(hdq,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/6*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + 2*angle1*angle2*hdq/(pow(2,0.5))*(Ab*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*hvev1*CPEMix(higgs,3));
+    coupling = pow(angle1,2)*root2*(pow(hdq,2)*hvev2*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + pow(angle2,2)*root2*(pow(hdq,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/6*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + 2*angle1*angle2*hdq/(root2)*(Ab*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*hvev1*CPEMix(higgs,3));
 
     amplitudeW = 3/(16*PI*m1)*lambda*pow(coupling,2);
   }
@@ -4892,11 +4892,11 @@ double higgsCPevenamplitudedecaysbottomisbottomjNMSSM (double m1, double msbotto
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaysbottomisbottomjNMSSM\n");
     } 
-    hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
-    hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
+    hvev1 = (root2*mWboson*sin(beta))/g;
+    hvev2 = (root2*mWboson*cos(beta))/g;
     hdq = runmb/hvev2;
 
-    coupling = cos(thetab)*sin(thetab)*(pow(2,0.5)*(pow(hdq,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/6*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) - pow(2,0.5)*(pow(hdq,2)*hvev2*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2)))) + (pow(cos(thetab),2)-pow(sin(thetab),2))*hdq/(pow(2,0.5))*(Ab*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*hvev1*CPEMix(higgs,3));
+    coupling = cos(thetab)*sin(thetab)*(root2*(pow(hdq,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/6*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) - root2*(pow(hdq,2)*hvev2*CPEMix(higgs,2) + (pow(gp,2)/12 + pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2)))) + (pow(cos(thetab),2)-pow(sin(thetab),2))*hdq/(root2)*(Ab*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*hvev1*CPEMix(higgs,3));
 
     amplitudeW = 3/(16*PI*m1)*lambda*pow(coupling,2);
   }
@@ -4916,8 +4916,8 @@ double higgsCPevenamplitudedecaystauistauiNMSSM (double m1, double mstaui, doubl
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystauistauiNMSSM\n");
     } 
-    hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
-    hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
+    hvev1 = (root2*mWboson*sin(beta))/g;
+    hvev2 = (root2*mWboson*cos(beta))/g;
     hlq = runmtau/hvev2;
     if (stau == 1) {
       angle1 = sin(thetatau); angle2 = cos(thetatau);
@@ -4929,7 +4929,7 @@ double higgsCPevenamplitudedecaystauistauiNMSSM (double m1, double mstaui, doubl
       throw("problem: stau must be 1 or 2 in higgsCPevenamplitudedecaystauistauiNMSSM");
     }
 
-    coupling = pow(angle1,2)*pow(2,0.5)*(pow(hlq,2)*hvev2*CPEMix(higgs,2) + (-pow(gp,2)/4 + pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + pow(angle2,2)*pow(2,0.5)*(pow(hlq,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/2*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) - 2*angle1*angle2*hlq/(pow(2,0.5))*(Atau*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*hvev1*CPEMix(higgs,3));
+    coupling = pow(angle1,2)*root2*(pow(hlq,2)*hvev2*CPEMix(higgs,2) + (-pow(gp,2)/4 + pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) + pow(angle2,2)*root2*(pow(hlq,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/2*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) - 2*angle1*angle2*hlq/(root2)*(Atau*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*hvev1*CPEMix(higgs,3));
 
     amplitudeW = 1/(16*PI*m1)*lambda*pow(coupling,2);
   }
@@ -4949,11 +4949,11 @@ double higgsCPevenamplitudedecaystauistaujNMSSM (double m1, double mstaui, doubl
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in higgsCPevenamplitudedecaystauistaujNMSSM\n");
     } 
-    hvev1 = (pow(2,0.5)*mWboson*sin(beta))/g;
-    hvev2 = (pow(2,0.5)*mWboson*cos(beta))/g;
+    hvev1 = (root2*mWboson*sin(beta))/g;
+    hvev2 = (root2*mWboson*cos(beta))/g;
     hlq = runmtau/hvev2;
 
-    coupling = cos(thetatau)*sin(thetatau)*(pow(2,0.5)*(pow(hlq,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/2*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) - pow(2,0.5)*(pow(hlq,2)*hvev2*CPEMix(higgs,2) + (-pow(gp,2)/4 + pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2)))) - (pow(sin(thetatau),2)-pow(cos(thetatau),2))*hlq/(pow(2,0.5))*(Atau*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*hvev1*CPEMix(higgs,3));
+    coupling = cos(thetatau)*sin(thetatau)*(root2*(pow(hlq,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/2*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2))) - root2*(pow(hlq,2)*hvev2*CPEMix(higgs,2) + (-pow(gp,2)/4 + pow(g,2)/4)*(hvev1*CPEMix(higgs,1) - hvev2*CPEMix(higgs,2)))) - (pow(sin(thetatau),2)-pow(cos(thetatau),2))*hlq/(root2)*(Atau*CPEMix(higgs,2) - mueff*CPEMix(higgs,1) - lam*hvev1*CPEMix(higgs,3));
 
     amplitudeW = 1/(16*PI*m1)*lambda*pow(coupling,2);
   }
@@ -4975,12 +4975,12 @@ double stop2amplitudedecaystop1CPevenhiggsNMSSM (double mst2, double mst1, doubl
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stop2amplitudedecaystop1CPevenhiggsNMSSM\n");
     } 
-    ft = g*mt/(pow(2,0.5)*mWboson*sin(beta));
-    hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
-    hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
-    CL = -pow(2,0.5)*(pow(ft,2)*hvev1*CPEMix(higgs,1) + (pow(gp,2)/12-pow(g,2)/4)*(hvev1*CPEMix(higgs,1)-hvev2*CPEMix(higgs,2)));
-    CR = -pow(2,0.5)*(pow(ft,2)*hvev1*CPEMix(higgs,1) - pow(gp,2)/3*(hvev1*CPEMix(higgs,1)-hvev2*CPEMix(higgs,2)));
-    CLR = -ft/pow(2,0.5)*(At*CPEMix(higgs,1)-mueff*CPEMix(higgs,2)-lam*hvev2*CPEMix(higgs,3));
+    ft = g*mt/(root2*mWboson*sin(beta));
+    hvev1 = root2*mWboson*sin(beta)/g;
+    hvev2 = root2*mWboson*cos(beta)/g;
+    CL = -root2*(pow(ft,2)*hvev1*CPEMix(higgs,1) + (pow(gp,2)/12-pow(g,2)/4)*(hvev1*CPEMix(higgs,1)-hvev2*CPEMix(higgs,2)));
+    CR = -root2*(pow(ft,2)*hvev1*CPEMix(higgs,1) - pow(gp,2)/3*(hvev1*CPEMix(higgs,1)-hvev2*CPEMix(higgs,2)));
+    CLR = -ft/root2*(At*CPEMix(higgs,1)-mueff*CPEMix(higgs,2)-lam*hvev2*CPEMix(higgs,3));
     coupling = cos(thetat)*sin(thetat)*(CR-CL) + (pow(cos(thetat),2)-pow(sin(thetat),2))*CLR;
     amplitudeW = prefactor*lambda*pow(coupling,2);
   }
@@ -5002,9 +5002,9 @@ double stop2amplitudedecaystop1CPoddhiggsNMSSM (double mst2, double mst1, double
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stop2amplitudedecaystop1CPoddhiggsNMSSM\n");
     } 
-    ft = g*mt/(pow(2,0.5)*mWboson*sin(beta));
-    hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
-    ALR = -(ft/pow(2,0.5))*(At*CPOMix(higgs,1) + mueff*CPOMix(higgs,2) + lam*hvev2*CPOMix(higgs,3));
+    ft = g*mt/(root2*mWboson*sin(beta));
+    hvev2 = root2*mWboson*cos(beta)/g;
+    ALR = -(ft/root2)*(At*CPOMix(higgs,1) + mueff*CPOMix(higgs,2) + lam*hvev2*CPOMix(higgs,3));
     coupling = (pow(cos(thetat),2)-pow(sin(thetat),2))*ALR;
     amplitudeW = prefactor*lambda*pow(coupling,2);
 
@@ -5027,12 +5027,12 @@ double sbottom2amplitudedecaysbottom1CPevenhiggsNMSSM (double msb2, double msb1,
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sbottom2amplitudedecaysbottom1CPevenhiggsNMSSM\n");
     } 
-    fb = g*mb/(pow(2,0.5)*mWboson*cos(beta));
-    hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
-    hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
-    CL = -pow(2,0.5)*(pow(fb,2)*hvev2*CPEMix(higgs,2) + (pow(gp,2)/12+pow(g,2)/4)*(hvev1*CPEMix(higgs,1)-hvev2*CPEMix(higgs,2)));
-    CR = -pow(2,0.5)*(pow(fb,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/6*(hvev1*CPEMix(higgs,1)-hvev2*CPEMix(higgs,2)));
-    CLR = -fb/pow(2,0.5)*(Ab*CPEMix(higgs,2)-mueff*CPEMix(higgs,1)-lam*hvev1*CPEMix(higgs,3));
+    fb = g*mb/(root2*mWboson*cos(beta));
+    hvev1 = root2*mWboson*sin(beta)/g;
+    hvev2 = root2*mWboson*cos(beta)/g;
+    CL = -root2*(pow(fb,2)*hvev2*CPEMix(higgs,2) + (pow(gp,2)/12+pow(g,2)/4)*(hvev1*CPEMix(higgs,1)-hvev2*CPEMix(higgs,2)));
+    CR = -root2*(pow(fb,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/6*(hvev1*CPEMix(higgs,1)-hvev2*CPEMix(higgs,2)));
+    CLR = -fb/root2*(Ab*CPEMix(higgs,2)-mueff*CPEMix(higgs,1)-lam*hvev1*CPEMix(higgs,3));
     coupling = cos(thetab)*sin(thetab)*(CR-CL) + (pow(cos(thetab),2)-pow(sin(thetab),2))*CLR;
     amplitudeW = prefactor*lambda*pow(coupling,2);
 
@@ -5055,9 +5055,9 @@ double sbottom2amplitudedecaysbottom1CPoddhiggsNMSSM (double msb2, double msb1, 
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sbottom2amplitudedecaysbottom1CPoddhiggsNMSSM\n");
     } 
-    fb = g*mb/(pow(2,0.5)*mWboson*cos(beta));
-    hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
-    ALR = -(fb/pow(2,0.5))*(Ab*CPOMix(higgs,2) + mueff*CPOMix(higgs,1) + lam*hvev1*CPOMix(higgs,3));
+    fb = g*mb/(root2*mWboson*cos(beta));
+    hvev1 = root2*mWboson*sin(beta)/g;
+    ALR = -(fb/root2)*(Ab*CPOMix(higgs,2) + mueff*CPOMix(higgs,1) + lam*hvev1*CPOMix(higgs,3));
     coupling = (pow(cos(thetab),2)-pow(sin(thetab),2))*ALR;
     amplitudeW = prefactor*lambda*pow(coupling,2);
 
@@ -5080,12 +5080,12 @@ double stau2amplitudedecaystau1CPevenhiggsNMSSM (double mstau2, double mstau1, d
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stau2amplitudedecaystau1CPevenhiggsNMSSM\n");
     } 
-    ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
-    hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
-    hvev2 = pow(2,0.5)*mWboson*cos(beta)/g;
-    CL = -pow(2,0.5)*(pow(ftau,2)*hvev2*CPEMix(higgs,2) + (-pow(gp,2)/4+pow(g,2)/4)*(hvev1*CPEMix(higgs,1)-hvev2*CPEMix(higgs,2)));
-    CR = -pow(2,0.5)*(pow(ftau,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/2*(hvev1*CPEMix(higgs,1)-hvev2*CPEMix(higgs,2)));
-    CLR = -ftau/pow(2,0.5)*(Atau*CPEMix(higgs,2)-mueff*CPEMix(higgs,1)-lam*hvev1*CPEMix(higgs,3));
+    ftau = g*mtau/(root2*mWboson*cos(beta));
+    hvev1 = root2*mWboson*sin(beta)/g;
+    hvev2 = root2*mWboson*cos(beta)/g;
+    CL = -root2*(pow(ftau,2)*hvev2*CPEMix(higgs,2) + (-pow(gp,2)/4+pow(g,2)/4)*(hvev1*CPEMix(higgs,1)-hvev2*CPEMix(higgs,2)));
+    CR = -root2*(pow(ftau,2)*hvev2*CPEMix(higgs,2) + pow(gp,2)/2*(hvev1*CPEMix(higgs,1)-hvev2*CPEMix(higgs,2)));
+    CLR = -ftau/root2*(Atau*CPEMix(higgs,2)-mueff*CPEMix(higgs,1)-lam*hvev1*CPEMix(higgs,3));
     coupling = cos(thetatau)*sin(thetatau)*(CR-CL) + (pow(cos(thetatau),2)-pow(sin(thetatau),2))*CLR;
     amplitudeW = prefactor*lambda*pow(coupling,2);
   }
@@ -5109,9 +5109,9 @@ double stau2amplitudedecaystau1CPoddhiggsNMSSM
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stau2amplitudedecaystau1CPoddhiggsNMSSM\n");
     } 
-    ftau = g*mtau/(pow(2,0.5)*mWboson*cos(beta));
-    hvev1 = pow(2,0.5)*mWboson*sin(beta)/g;
-    ALR = -(ftau/pow(2,0.5))*(Atau*CPOMix(higgs,2) + mueff*CPOMix(higgs,1) + lam*hvev1*CPOMix(higgs,3));
+    ftau = g*mtau/(root2*mWboson*cos(beta));
+    hvev1 = root2*mWboson*sin(beta)/g;
+    ALR = -(ftau/root2)*(Atau*CPOMix(higgs,2) + mueff*CPOMix(higgs,1) + lam*hvev1*CPOMix(higgs,3));
     coupling = (pow(cos(thetatau),2)-pow(sin(thetatau),2))*ALR;
     amplitudeW = prefactor*lambda*pow(coupling,2);
 
@@ -5128,8 +5128,8 @@ double chargino2amplitudedecaychargino1CPevenhiggsNMSSM (double mchar2, double m
   }
   else {
     prefactor = 1/(32*PI*fabs(mchar2));
-    coupling1 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*cos(thetaL)*sin(thetaR) + g/(pow(2,0.5))*(CPEMix(higgs,1)*sin(thetaL)*sin(thetaR) - CPEMix(higgs,2)*cos(thetaL)*cos(thetaR)));
-    coupling2 = (lam/(pow(2,0.5))*CPEMix(higgs,3)*sin(thetaL)*cos(thetaR) - g/(pow(2,0.5))*(CPEMix(higgs,1)*cos(thetaL)*cos(thetaR) - CPEMix(higgs,2)*sin(thetaL)*sin(thetaR)));
+    coupling1 = (lam/(root2)*CPEMix(higgs,3)*cos(thetaL)*sin(thetaR) + g/(root2)*(CPEMix(higgs,1)*sin(thetaL)*sin(thetaR) - CPEMix(higgs,2)*cos(thetaL)*cos(thetaR)));
+    coupling2 = (lam/(root2)*CPEMix(higgs,3)*sin(thetaL)*cos(thetaR) - g/(root2)*(CPEMix(higgs,1)*cos(thetaL)*cos(thetaR) - CPEMix(higgs,2)*sin(thetaL)*sin(thetaR)));
     squareplus = 1 - pow(mchar1/mchar2 + mh/mchar2,2);
     squareminus = 1 - pow(mchar1/mchar2 - mh/mchar2,2);
     lambda = sqrt(squareplus*squareminus);
@@ -5153,8 +5153,8 @@ double chargino2amplitudedecaychargino1CPoddhiggsNMSSM (double mchar2, double mc
   else {
     int pseudoscalar = higgs;
     prefactor = 1/(32*PI*fabs(mchar2));
-    C1 = (lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*cos(thetaL)*sin(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*sin(thetaL)*sin(thetaR) - CPOMix(pseudoscalar,2)*cos(thetaL)*cos(thetaR)));
-    C2 = (lam/pow(2,0.5)*CPOMix(pseudoscalar,3)*sin(thetaL)*cos(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*-cos(thetaL)*cos(thetaR) + CPOMix(pseudoscalar,2)*sin(thetaR)*sin(thetaL)));
+    C1 = (lam/root2*CPOMix(pseudoscalar,3)*cos(thetaL)*sin(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*sin(thetaL)*sin(thetaR) - CPOMix(pseudoscalar,2)*cos(thetaL)*cos(thetaR)));
+    C2 = (lam/root2*CPOMix(pseudoscalar,3)*sin(thetaL)*cos(thetaR) - pow(2,-0.5)*g*(CPOMix(pseudoscalar,1)*-cos(thetaL)*cos(thetaR) + CPOMix(pseudoscalar,2)*sin(thetaR)*sin(thetaL)));
     squareplus = 1 - pow(mchar1/mchar2 + mA/mchar2,2);
     squareminus = 1 - pow(mchar1/mchar2 - mA/mchar2,2);
     lambda = sqrt(squareplus*squareminus);
@@ -5187,8 +5187,8 @@ double neutralinoamplitudedecaycharginoWNMSSM (double mneut, double mchar, doubl
       throw("problem: chargino must be 1 or 2 in neutralinoamplitudedecaycharginoWNMSSM");
     }
 
-    coupleL = -1/pow(2,0.5)*mixNeut(neutralino,4)*V2 + mixNeut(neutralino,2)*V1;
-    coupleR = 1/pow(2,0.5)*mixNeut(neutralino,3)*U2 + mixNeut(neutralino,2)*U1;
+    coupleL = -1/root2*mixNeut(neutralino,4)*V2 + mixNeut(neutralino,2)*V1;
+    coupleR = 1/root2*mixNeut(neutralino,3)*U2 + mixNeut(neutralino,2)*U1;
 
     squareplus = 1 - pow(fabs(mchar)/fabs(mneut) + mWboson/fabs(mneut),2);
     squareminus = 1 - pow(fabs(mchar)/fabs(mneut) - mWboson/fabs(mneut),2);
@@ -5259,8 +5259,8 @@ double neutralinoamplitudecharginoHpmNMSSM (double mneut, double mchar, double m
       throw("problem: chargino must be 1 or 2 in neutralinoamplitudecharginoHpmNMSSM\n");
     }
 
-    coupHpZiWjL = lam*cos(beta)*mixNeut(neutralino,5)*U2 - sin(beta)/(pow(2,0.5))*(gp*mixNeut(neutralino,1)+g*mixNeut(neutralino,2))*U2 + sin(beta)*g*mixNeut(neutralino,3)*U1;
-    coupHpZiWjR = lam*sin(beta)*mixNeut(neutralino,5)*V2 + cos(beta)/(pow(2,0.5))*(gp*mixNeut(neutralino,1)+g*mixNeut(neutralino,2))*V2 + cos(beta)*g*mixNeut(neutralino,4)*V1;
+    coupHpZiWjL = lam*cos(beta)*mixNeut(neutralino,5)*U2 - sin(beta)/(root2)*(gp*mixNeut(neutralino,1)+g*mixNeut(neutralino,2))*U2 + sin(beta)*g*mixNeut(neutralino,3)*U1;
+    coupHpZiWjR = lam*sin(beta)*mixNeut(neutralino,5)*V2 + cos(beta)/(root2)*(gp*mixNeut(neutralino,1)+g*mixNeut(neutralino,2))*V2 + cos(beta)*g*mixNeut(neutralino,4)*V1;
 
     coupling = (pow(coupHpZiWjL,2)+pow(coupHpZiWjR,2))*(pow(mchar,2)+pow(mneut,2)-pow(mHp,2)) + 4*coupHpZiWjL*coupHpZiWjR*mneut*mchar;
 
@@ -5285,7 +5285,7 @@ double neutralinoamplitudedecayneutralinoCPevenhiggsNMSSM (double mneuti, double
       throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoCPevenhiggsNMSSM\n");
     } 
 
-    coupHZiZj = 0.5*(lam/(pow(2,0.5))*(CPEMix(higgs,1)*(mixNeut(neutralinoj,3)*mixNeut(neutralinoi,5) + mixNeut(neutralinoj,5)*mixNeut(neutralinoi,3)) + CPEMix(higgs,2)*(mixNeut(neutralinoj,4)*mixNeut(neutralinoi,5)+mixNeut(neutralinoi,4)*mixNeut(neutralinoj,5)) + CPEMix(higgs,3)*(mixNeut(neutralinoj,4)*mixNeut(neutralinoi,3) + mixNeut(neutralinoj,3)*mixNeut(neutralinoi,4))) - pow(2,0.5)*kappa*CPEMix(higgs,3)*mixNeut(neutralinoj,5)*mixNeut(neutralinoi,5) + gp/2*(-CPEMix(higgs,1)*(mixNeut(neutralinoj,1)*mixNeut(neutralinoi,4)+mixNeut(neutralinoj,4)*mixNeut(neutralinoi,1)) + CPEMix(higgs,2)*(mixNeut(neutralinoj,1)*mixNeut(neutralinoi,3)+mixNeut(neutralinoi,1)*mixNeut(neutralinoj,3))) + g/2*(CPEMix(higgs,1)*(mixNeut(neutralinoj,2)*mixNeut(neutralinoi,4)+mixNeut(neutralinoj,4)*mixNeut(neutralinoi,2)) - CPEMix(higgs,2)*(mixNeut(neutralinoj,2)*mixNeut(neutralinoi,3)+mixNeut(neutralinoj,3)*mixNeut(neutralinoi,2))));
+    coupHZiZj = 0.5*(lam/(root2)*(CPEMix(higgs,1)*(mixNeut(neutralinoj,3)*mixNeut(neutralinoi,5) + mixNeut(neutralinoj,5)*mixNeut(neutralinoi,3)) + CPEMix(higgs,2)*(mixNeut(neutralinoj,4)*mixNeut(neutralinoi,5)+mixNeut(neutralinoi,4)*mixNeut(neutralinoj,5)) + CPEMix(higgs,3)*(mixNeut(neutralinoj,4)*mixNeut(neutralinoi,3) + mixNeut(neutralinoj,3)*mixNeut(neutralinoi,4))) - root2*kappa*CPEMix(higgs,3)*mixNeut(neutralinoj,5)*mixNeut(neutralinoi,5) + gp/2*(-CPEMix(higgs,1)*(mixNeut(neutralinoj,1)*mixNeut(neutralinoi,4)+mixNeut(neutralinoj,4)*mixNeut(neutralinoi,1)) + CPEMix(higgs,2)*(mixNeut(neutralinoj,1)*mixNeut(neutralinoi,3)+mixNeut(neutralinoi,1)*mixNeut(neutralinoj,3))) + g/2*(CPEMix(higgs,1)*(mixNeut(neutralinoj,2)*mixNeut(neutralinoi,4)+mixNeut(neutralinoj,4)*mixNeut(neutralinoi,2)) - CPEMix(higgs,2)*(mixNeut(neutralinoj,2)*mixNeut(neutralinoi,3)+mixNeut(neutralinoj,3)*mixNeut(neutralinoi,2))));
 
     coupling = 2*pow(coupHZiZj,2)*(pow(mneuti,2)+pow(mneutj,2)-pow(mhiggs,2)) + 4*pow(coupHZiZj,2)*mneuti*mneutj;
 
@@ -5310,7 +5310,7 @@ double neutralinoamplitudedecayneutralinoCPoddhiggsNMSSM (double mneuti, double 
       throw ("problem: lambda will give nan in neutralinoamplitudedecayneutralinoCPoddhiggsNMSSM\n");
     } 
 
-    coupAZiZj = -0.5*(lam/pow(2,0.5)*(CPOMix(higgsa,1)*(mixNeut(neutj,3)*mixNeut(neuti,5) + mixNeut(neuti,3)*mixNeut(neutj,5)) + CPOMix(higgsa,2)*(mixNeut(neutj,4)*mixNeut(neuti,5) + mixNeut(neuti,4)*mixNeut(neutj,5)) + CPOMix(higgsa,3)*(mixNeut(neutj,4)*mixNeut(neuti,3) + mixNeut(neutj,3)*mixNeut(neuti,4))) - pow(2,0.5)*kappa*CPOMix(higgsa,3)*mixNeut(neuti,5)*mixNeut(neutj,5) - gp/2*(-CPOMix(higgsa,1)*(mixNeut(neutj,1)*mixNeut(neuti,4) + mixNeut(neuti,1)*mixNeut(neutj,4)) + CPOMix(higgsa,2)*(mixNeut(neutj,1)*mixNeut(neuti,3) + mixNeut(neuti,1)*mixNeut(neutj,3))) - g/2*(CPOMix(higgsa,1)*(mixNeut(neutj,2)*mixNeut(neuti,4) + mixNeut(neutj,4)*mixNeut(neuti,2)) - CPOMix(higgsa,2)*(mixNeut(neutj,2)*mixNeut(neuti,3)+mixNeut(neutj,3)*mixNeut(neuti,2))));
+    coupAZiZj = -0.5*(lam/root2*(CPOMix(higgsa,1)*(mixNeut(neutj,3)*mixNeut(neuti,5) + mixNeut(neuti,3)*mixNeut(neutj,5)) + CPOMix(higgsa,2)*(mixNeut(neutj,4)*mixNeut(neuti,5) + mixNeut(neuti,4)*mixNeut(neutj,5)) + CPOMix(higgsa,3)*(mixNeut(neutj,4)*mixNeut(neuti,3) + mixNeut(neutj,3)*mixNeut(neuti,4))) - root2*kappa*CPOMix(higgsa,3)*mixNeut(neuti,5)*mixNeut(neutj,5) - gp/2*(-CPOMix(higgsa,1)*(mixNeut(neutj,1)*mixNeut(neuti,4) + mixNeut(neuti,1)*mixNeut(neutj,4)) + CPOMix(higgsa,2)*(mixNeut(neutj,1)*mixNeut(neuti,3) + mixNeut(neuti,1)*mixNeut(neutj,3))) - g/2*(CPOMix(higgsa,1)*(mixNeut(neutj,2)*mixNeut(neuti,4) + mixNeut(neutj,4)*mixNeut(neuti,2)) - CPOMix(higgsa,2)*(mixNeut(neutj,2)*mixNeut(neuti,3)+mixNeut(neutj,3)*mixNeut(neuti,2))));
 
     coupling = pow(coupAZiZj,2)*(pow(mneuti,2)+pow(mneutj,2) - pow(ma,2)) - 2*pow(coupAZiZj,2)*mneuti*mneutj;
 
@@ -5347,25 +5347,25 @@ double neutralinoamplitudedecaysfermionfermionfirst2genNMSSM (double mneut, doub
     if (type == 'u') {
       N = 3;
       q = 2./3;
-      coup1 = -pow(2,0.5)*(q*c(1)*sinthetaW + (0.5-q*pow(sinthetaW,2))*c(2)/costhetaW);
-      coup2 = -q*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1));
+      coup1 = -root2*(q*c(1)*sinthetaW + (0.5-q*pow(sinthetaW,2))*c(2)/costhetaW);
+      coup2 = -q*root2*sinthetaW*(c(2)*gp/g - c(1));
     }
     else if (type == 'd') {
       N = 3;
       q = -1./3;
-      coup1 = pow(2,0.5)*(c(1)*sinthetaW*-q + (0.5+q*pow(sinthetaW,2))*c(2)/costhetaW);
-      coup2 = -q*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1));
+      coup1 = root2*(c(1)*sinthetaW*-q + (0.5+q*pow(sinthetaW,2))*c(2)/costhetaW);
+      coup2 = -q*root2*sinthetaW*(c(2)*gp/g - c(1));
     }
     else if (type == 'l') {
       N = 1;
       q = -1;
-      coup1 = pow(2,0.5)*(c(1)*sinthetaW*-q + (0.5-pow(sinthetaW,2))*c(2)/costhetaW);
-      coup2 = -q*pow(2,0.5)*sinthetaW*(c(2)*gp/g-c(1));
+      coup1 = root2*(c(1)*sinthetaW*-q + (0.5-pow(sinthetaW,2))*c(2)/costhetaW);
+      coup2 = -q*root2*sinthetaW*(c(2)*gp/g-c(1));
     }
     else if (type == 'n') {
       N = 1;
       q = 0;
-      coup1 = -c(2)/(pow(2,0.5)*costhetaW);
+      coup1 = -c(2)/(root2*costhetaW);
       coup2 = 0;
     }
     else{
@@ -5412,15 +5412,15 @@ double neutralinoamplitudestoptopNMSSM (double mneut, double mst, double mt, dou
     c(3) = mixNeut(neut,3);
     c(4) = mixNeut(neut,4);
     c(5) = mixNeut(neut,5);
-    ft = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
+    ft = g*runmt/(root2*mWboson*sin(beta));
 
     if ( stop == 1) {
-      coup1 = cos(thetat)*pow(2,0.5)*(-2./3*c(1)*sinthetaW + (-0.5 + 2./3*pow(sinthetaW,2))*c(2)/costhetaW) - sin(thetat)*ft/g*mixNeut(neut,4);
-      coup2 = -2./3*sin(thetat)*pow(2,0.5)*sinthetaW*(c(2)*gp/g-c(1)) - cos(thetat)*ft/g*mixNeut(neut,4);
+      coup1 = cos(thetat)*root2*(-2./3*c(1)*sinthetaW + (-0.5 + 2./3*pow(sinthetaW,2))*c(2)/costhetaW) - sin(thetat)*ft/g*mixNeut(neut,4);
+      coup2 = -2./3*sin(thetat)*root2*sinthetaW*(c(2)*gp/g-c(1)) - cos(thetat)*ft/g*mixNeut(neut,4);
     }
     else if (stop == 2) {
-      coup1 = -sin(thetat)*pow(2,0.5)*(-2./3*c(1)*sinthetaW + (-0.5+2./3*pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetat)*ft/g*mixNeut(neut,4);
-      coup2 = -2./3*cos(thetat)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetat)*ft/g*mixNeut(neut,4);
+      coup1 = -sin(thetat)*root2*(-2./3*c(1)*sinthetaW + (-0.5+2./3*pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetat)*ft/g*mixNeut(neut,4);
+      coup2 = -2./3*cos(thetat)*root2*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetat)*ft/g*mixNeut(neut,4);
     }
     else{
       throw("problem: stop must be 1 or 2 in neutralinoamplitudestoptopNMSSM");
@@ -5454,15 +5454,15 @@ double neutralinoamplitudesbottombottomNMSSM (double mneut, double msb, double m
     c(3) = mixNeut(neut,3);
     c(4) = mixNeut(neut,4);
     c(5) = mixNeut(neut,5);
-    fb = g*runmb/(pow(2,0.5)*mWboson*cos(beta));
+    fb = g*runmb/(root2*mWboson*cos(beta));
 
     if ( sbottom == 1) {
-      coup1 = cos(thetab)*pow(2,0.5)*(1./3*c(1)*sinthetaW + (0.5 - 1./3*pow(sinthetaW,2))*c(2)/costhetaW) - sin(thetab)*fb/g*mixNeut(neut,3);
-      coup2 = 1./3*sin(thetab)*pow(2,0.5)*sinthetaW*(c(2)*gp/g-c(1)) - cos(thetab)*fb/g*mixNeut(neut,3);
+      coup1 = cos(thetab)*root2*(1./3*c(1)*sinthetaW + (0.5 - 1./3*pow(sinthetaW,2))*c(2)/costhetaW) - sin(thetab)*fb/g*mixNeut(neut,3);
+      coup2 = 1./3*sin(thetab)*root2*sinthetaW*(c(2)*gp/g-c(1)) - cos(thetab)*fb/g*mixNeut(neut,3);
     }
     else if (sbottom == 2) {
-      coup1 = -sin(thetab)*pow(2,0.5)*(1./3*c(1)*sinthetaW + (0.5-1./3*pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetab)*fb/g*mixNeut(neut,3);
-      coup2 = 1./3*cos(thetab)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetab)*fb/g*mixNeut(neut,3);
+      coup1 = -sin(thetab)*root2*(1./3*c(1)*sinthetaW + (0.5-1./3*pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetab)*fb/g*mixNeut(neut,3);
+      coup2 = 1./3*cos(thetab)*root2*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetab)*fb/g*mixNeut(neut,3);
     }
     else{
       throw("problem: sbottom must be 1 or 2 in neutralinoamplitudesbottombottomNMSSM\n");
@@ -5497,15 +5497,15 @@ double neutralinoamplitudestautauNMSSM (double mneut, double mstau, double mtau,
     c(3) = mixNeut(neut,3);
     c(4) = mixNeut(neut,4);
     c(5) = mixNeut(neut,5);
-    ftau = g*runmtau/(pow(2,0.5)*mWboson*cos(beta));
+    ftau = g*runmtau/(root2*mWboson*cos(beta));
 
     if ( stau == 1) {
-      coup1 = cos(thetatau)*pow(2,0.5)*(c(1)*sinthetaW + (0.5 - pow(sinthetaW,2))*c(2)/costhetaW) - sin(thetatau)*ftau/g*mixNeut(neut,3);
-      coup2 = sin(thetatau)*pow(2,0.5)*sinthetaW*(c(2)*gp/g-c(1)) - cos(thetatau)*ftau/g*mixNeut(neut,3);
+      coup1 = cos(thetatau)*root2*(c(1)*sinthetaW + (0.5 - pow(sinthetaW,2))*c(2)/costhetaW) - sin(thetatau)*ftau/g*mixNeut(neut,3);
+      coup2 = sin(thetatau)*root2*sinthetaW*(c(2)*gp/g-c(1)) - cos(thetatau)*ftau/g*mixNeut(neut,3);
     }
     else if (stau == 2) {
-      coup1 = -sin(thetatau)*pow(2,0.5)*(c(1)*sinthetaW + (0.5-pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetatau)*ftau/g*mixNeut(neut,3);
-      coup2 = cos(thetatau)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetatau)*ftau/g*mixNeut(neut,3);
+      coup1 = -sin(thetatau)*root2*(c(1)*sinthetaW + (0.5-pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetatau)*ftau/g*mixNeut(neut,3);
+      coup2 = cos(thetatau)*root2*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetatau)*ftau/g*mixNeut(neut,3);
     }
     else{
       throw("problem: stau must be 1 or 2 in neutralinoamplitudestautauNMSSM");
@@ -5537,7 +5537,7 @@ double neutralinoamplitudestauneutrinotauneutrinoNMSSM (double mneut, double mst
 
     c(2) = -mixNeut(neut,1)*sinthetaW + mixNeut(neut,2)*costhetaW;
     
-    coup1 = -c(2)/(pow(2,0.5)*costhetaW);
+    coup1 = -c(2)/(root2*costhetaW);
     
     amplitudeW = prefactor*lambda*pow(coup1,2)*(pow(mneut,2)-pow(mstaunu,2));
   }
@@ -5573,16 +5573,16 @@ double squarkamplitudedecayquarkneutralinoNMSSM (double m1, double mq, double mn
     prefactor = pow(g,2)/(16*PI*m1);
     
     if (uord == 'u' && LorR == 'L') {
-      coupling = -pow(2,0.5)*(2./3*c(1)*sinthetaW + (0.5 - 2./3*pow(sinthetaW,2))*c(2)/costhetaW);
+      coupling = -root2*(2./3*c(1)*sinthetaW + (0.5 - 2./3*pow(sinthetaW,2))*c(2)/costhetaW);
     }
     else if (uord == 'u' && LorR == 'R') {
-      coupling = -2./3*pow(2,0.5)*sinthetaW*(c(2)*gp/g-c(1));
+      coupling = -2./3*root2*sinthetaW*(c(2)*gp/g-c(1));
     }
     else if (uord == 'd' && LorR == 'L') {
-      coupling = pow(2,0.5)*(c(1)*1./3*sinthetaW + (0.5-1./3*pow(sinthetaW,2))*c(2)/costhetaW);
+      coupling = root2*(c(1)*1./3*sinthetaW + (0.5-1./3*pow(sinthetaW,2))*c(2)/costhetaW);
     }
     else if (uord == 'd' && LorR == 'R') {
-      coupling = pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1))*1./3;
+      coupling = root2*sinthetaW*(c(2)*gp/g - c(1))*1./3;
     }
     else{
       throw("problem: uord must be u or d and LorR must be L or R in squarkamplitudedecayquarkneutralinoNMSSM\n");
@@ -5623,16 +5623,16 @@ double sleptonamplitudedecayleptonneutralinoNMSSM (double m1, double ml, double 
     prefactor = pow(g,2)/(16*PI*m1);
     
     if (uord == 'u' && LorR == 'L') {
-      coupling = -c(2)/(pow(2,0.5)*costhetaW);
+      coupling = -c(2)/(root2*costhetaW);
     }
     else if (uord == 'u' && LorR == 'R') {
       coupling = 0; ///no sneutrinoR
     }
     else if (uord == 'd' && LorR == 'L') {
-      coupling = pow(2,0.5)*(c(1)*sinthetaW + (0.5-pow(sinthetaW,2))*c(2)/costhetaW);
+      coupling = root2*(c(1)*sinthetaW + (0.5-pow(sinthetaW,2))*c(2)/costhetaW);
     }
     else if (uord == 'd' && LorR == 'R') {
-      coupling = pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1));
+      coupling = root2*sinthetaW*(c(2)*gp/g - c(1));
     }
     else{
       throw("problem: uord must be u or d and LorR must be L or R in sleptonamplitudedecayleptonneutralinoNMSSM\n");
@@ -5662,7 +5662,7 @@ double stopamplitudedecaytopneutralinoNMSSM (double m1, double mt, double mneut,
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stopamplitudedecaytopneutralinoNMSSM\n");
     } 
-    ft = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
+    ft = g*runmt/(root2*mWboson*sin(beta));
 
     c(1) = mixNeut(neut,1)*costhetaW + mixNeut(neut,2)*sinthetaW;
     c(2) = -mixNeut(neut,1)*sinthetaW + mixNeut(neut,2)*costhetaW;
@@ -5673,12 +5673,12 @@ double stopamplitudedecaytopneutralinoNMSSM (double m1, double mt, double mneut,
     prefactor = pow(g,2)/(16*PI*m1);
     
     if (stop == 1) {
-      coupling1 = cos(thetat)*pow(2,0.5)*(-2./3*c(1)*sinthetaW + (-0.5+2./3*pow(sinthetaW,2))*c(2)/costhetaW) - sin(thetat)*ft/g*mixNeut(neut,4);
-      coupling2 = -2./3*sin(thetat)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) - cos(thetat)*ft/g*mixNeut(neut,4);
+      coupling1 = cos(thetat)*root2*(-2./3*c(1)*sinthetaW + (-0.5+2./3*pow(sinthetaW,2))*c(2)/costhetaW) - sin(thetat)*ft/g*mixNeut(neut,4);
+      coupling2 = -2./3*sin(thetat)*root2*sinthetaW*(c(2)*gp/g - c(1)) - cos(thetat)*ft/g*mixNeut(neut,4);
     }
     else if (stop == 2) {
-      coupling1 = -sin(thetat)*pow(2,0.5)*(-2./3*c(1)*sinthetaW + (-0.5+2./3*pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetat)*ft/g*mixNeut(neut,4);
-      coupling2 = -2./3*cos(thetat)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetat)*ft/g*mixNeut(neut,4);
+      coupling1 = -sin(thetat)*root2*(-2./3*c(1)*sinthetaW + (-0.5+2./3*pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetat)*ft/g*mixNeut(neut,4);
+      coupling2 = -2./3*cos(thetat)*root2*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetat)*ft/g*mixNeut(neut,4);
     }
     else{
       throw("problem: stop must be 1 or 2 in stopamplitudedecaytopneutralinoNMSSM\n");
@@ -5709,7 +5709,7 @@ double sbottomamplitudedecaybottomneutralinoNMSSM (double m1, double mb, double 
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in sbottomamplitudedecaybottomneutralinoNMSSM\n");
     } 
-    fb = g*runmb/(pow(2,0.5)*mWboson*cos(beta));
+    fb = g*runmb/(root2*mWboson*cos(beta));
 
     c(1) = mixNeut(neut,1)*costhetaW + mixNeut(neut,2)*sinthetaW;
     c(2) = -mixNeut(neut,1)*sinthetaW + mixNeut(neut,2)*costhetaW;
@@ -5720,12 +5720,12 @@ double sbottomamplitudedecaybottomneutralinoNMSSM (double m1, double mb, double 
     prefactor = pow(g,2)/(16*PI*m1);
     
     if (sbottom == 1) {
-      coupling1 = cos(thetab)*pow(2,0.5)*(1./3*c(1)*sinthetaW + (0.5-1./3*pow(sinthetaW,2))*c(2)/costhetaW) - sin(thetab)*fb/g*mixNeut(neut,3);
-      coupling2 = 1./3*sin(thetab)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) - cos(thetab)*fb/g*mixNeut(neut,3);
+      coupling1 = cos(thetab)*root2*(1./3*c(1)*sinthetaW + (0.5-1./3*pow(sinthetaW,2))*c(2)/costhetaW) - sin(thetab)*fb/g*mixNeut(neut,3);
+      coupling2 = 1./3*sin(thetab)*root2*sinthetaW*(c(2)*gp/g - c(1)) - cos(thetab)*fb/g*mixNeut(neut,3);
     }
     else if (sbottom == 2) {
-      coupling1 = -sin(thetab)*pow(2,0.5)*(1./3*c(1)*sinthetaW + (0.5-1./3*pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetab)*fb/g*mixNeut(neut,3);
-      coupling2 = 1./3*cos(thetab)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetab)*fb/g*mixNeut(neut,3);
+      coupling1 = -sin(thetab)*root2*(1./3*c(1)*sinthetaW + (0.5-1./3*pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetab)*fb/g*mixNeut(neut,3);
+      coupling2 = 1./3*cos(thetab)*root2*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetab)*fb/g*mixNeut(neut,3);
     }
     else{
       throw("problem: sbottom must be 1 or 2 in sbottomamplitudedecaybottomneutralinoNMSSM\n");
@@ -5755,7 +5755,7 @@ double stauamplitudedecaytauneutralinoNMSSM (double m1, double mtau, double mneu
     if (squareplus*squareminus < 0) {
       throw ("problem: lambda will give nan in stauamplitudedecaytauneutralinoNMSSM\n");
     } 
-    ftau = g*runmtau/(pow(2,0.5)*mWboson*cos(beta));
+    ftau = g*runmtau/(root2*mWboson*cos(beta));
 
     c(1) = mixNeut(neut,1)*costhetaW + mixNeut(neut,2)*sinthetaW;
     c(2) = -mixNeut(neut,1)*sinthetaW + mixNeut(neut,2)*costhetaW;
@@ -5766,12 +5766,12 @@ double stauamplitudedecaytauneutralinoNMSSM (double m1, double mtau, double mneu
     prefactor = pow(g,2)/(16*PI*m1);
     
     if (stau == 1) {
-      coupling1 = cos(thetatau)*pow(2,0.5)*(c(1)*sinthetaW + (0.5-pow(sinthetaW,2))*c(2)/costhetaW) - sin(thetatau)*ftau/g*mixNeut(neut,3);
-      coupling2 = sin(thetatau)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) - cos(thetatau)*ftau/g*mixNeut(neut,3);
+      coupling1 = cos(thetatau)*root2*(c(1)*sinthetaW + (0.5-pow(sinthetaW,2))*c(2)/costhetaW) - sin(thetatau)*ftau/g*mixNeut(neut,3);
+      coupling2 = sin(thetatau)*root2*sinthetaW*(c(2)*gp/g - c(1)) - cos(thetatau)*ftau/g*mixNeut(neut,3);
     }
     else if (stau == 2) {
-      coupling1 = -sin(thetatau)*pow(2,0.5)*(c(1)*sinthetaW + (0.5-pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetatau)*ftau/g*mixNeut(neut,3);
-      coupling2 = cos(thetatau)*pow(2,0.5)*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetatau)*ftau/g*mixNeut(neut,3);
+      coupling1 = -sin(thetatau)*root2*(c(1)*sinthetaW + (0.5-pow(sinthetaW,2))*c(2)/costhetaW) - cos(thetatau)*ftau/g*mixNeut(neut,3);
+      coupling2 = cos(thetatau)*root2*sinthetaW*(c(2)*gp/g - c(1)) + sin(thetatau)*ftau/g*mixNeut(neut,3);
     }
     else{
       throw("problem: stau must be 1 or 2 in stauamplitudedecaytauneutralinoNMSSM\n");
@@ -5800,12 +5800,12 @@ double charginoiamplitudedecayneutralinojHpmNMSSM (double mchar, double mneut, d
     prefactor = pow(g,2)/(32*PI*fabs(mchar));
     
     if (chargino == 1) {
-      coupling1 = 1/g*(lam*sin(beta)*mixNeut(neut,5)*cos(thetaR)+ cos(beta)/pow(2,0.5)*(gp*mixNeut(neut,1) + g*mixNeut(neut,2))*cos(thetaR) + g*cos(beta)*mixNeut(neut,4)*sin(thetaR));
-      coupling2 = 1/g*(lam*cos(beta)*mixNeut(neut,5)*cos(thetaL) - sin(beta)/pow(2,0.5)*(gp*mixNeut(neut,1) + g*mixNeut(neut,2))*cos(thetaL) + g*sin(beta)*mixNeut(neut,3)*sin(thetaL));
+      coupling1 = 1/g*(lam*sin(beta)*mixNeut(neut,5)*cos(thetaR)+ cos(beta)/root2*(gp*mixNeut(neut,1) + g*mixNeut(neut,2))*cos(thetaR) + g*cos(beta)*mixNeut(neut,4)*sin(thetaR));
+      coupling2 = 1/g*(lam*cos(beta)*mixNeut(neut,5)*cos(thetaL) - sin(beta)/root2*(gp*mixNeut(neut,1) + g*mixNeut(neut,2))*cos(thetaL) + g*sin(beta)*mixNeut(neut,3)*sin(thetaL));
     }
     else if (chargino == 2) {
-      coupling1 = 1/g*(lam*sin(beta)*mixNeut(neut,5)*sin(thetaR)+ cos(beta)/pow(2,0.5)*(gp*mixNeut(neut,1) + g*mixNeut(neut,2))*sin(thetaR) - g*cos(beta)*mixNeut(neut,4)*cos(thetaR));
-      coupling2 = 1/g*(lam*cos(beta)*mixNeut(neut,5)*sin(thetaL) - sin(beta)/pow(2,0.5)*(gp*mixNeut(neut,1) + g*mixNeut(neut,2))*sin(thetaL) - g*sin(beta)*mixNeut(neut,3)*cos(thetaL));
+      coupling1 = 1/g*(lam*sin(beta)*mixNeut(neut,5)*sin(thetaR)+ cos(beta)/root2*(gp*mixNeut(neut,1) + g*mixNeut(neut,2))*sin(thetaR) - g*cos(beta)*mixNeut(neut,4)*cos(thetaR));
+      coupling2 = 1/g*(lam*cos(beta)*mixNeut(neut,5)*sin(thetaL) - sin(beta)/root2*(gp*mixNeut(neut,1) + g*mixNeut(neut,2))*sin(thetaL) - g*sin(beta)*mixNeut(neut,3)*cos(thetaL));
     }
     else{
       throw("problem: chargino must be 1 or 2 in charginoiamplitudedecayneutralinojHpmNMSSM\n");
@@ -5837,8 +5837,8 @@ double charginoiamplitudedecayneutralinojWNMSSM (double mchar, double mneut, dou
       throw("problem: chargino must be 1 or 2 in charginoiamplitudedecayneutralinojWNMSSM\n");
     }
 
-    coupleL = -1/pow(2,0.5)*mixNeut(neut,4)*V2 + mixNeut(neut,2)*V1;
-    coupleR = 1/pow(2,0.5)*mixNeut(neut,3)*U2 + mixNeut(neut,2)*U1;
+    coupleL = -1/root2*mixNeut(neut,4)*V2 + mixNeut(neut,2)*V1;
+    coupleR = 1/root2*mixNeut(neut,3)*U2 + mixNeut(neut,2)*U1;
 
     squareplus = 1 - pow(fabs(mneut)/fabs(mchar) + mWboson/fabs(mchar),2);
     squareminus = 1 - pow(fabs(mneut)/fabs(mchar) - mWboson/fabs(mchar),2);
@@ -5881,8 +5881,8 @@ double HpmamplitudecharginojneutralinoiNMSSM (double mHp, double mchar, double m
       throw("problem: chargino must be 1 or 2 in HpmamplitudecharginojneutralinoiNMSSM\n");
     }
 
-    coupHpZiWjL = lam*cos(beta)*mixNeut(neutralino,5)*U2 - sin(beta)/(pow(2,0.5))*(gp*mixNeut(neutralino,1)+g*mixNeut(neutralino,2))*U2 + sin(beta)*g*mixNeut(neutralino,3)*U1;
-    coupHpZiWjR = lam*sin(beta)*mixNeut(neutralino,5)*V2 + cos(beta)/(pow(2,0.5))*(gp*mixNeut(neutralino,1)+g*mixNeut(neutralino,2))*V2 + cos(beta)*g*mixNeut(neutralino,4)*V1;
+    coupHpZiWjL = lam*cos(beta)*mixNeut(neutralino,5)*U2 - sin(beta)/(root2)*(gp*mixNeut(neutralino,1)+g*mixNeut(neutralino,2))*U2 + sin(beta)*g*mixNeut(neutralino,3)*U1;
+    coupHpZiWjR = lam*sin(beta)*mixNeut(neutralino,5)*V2 + cos(beta)/(root2)*(gp*mixNeut(neutralino,1)+g*mixNeut(neutralino,2))*V2 + cos(beta)*g*mixNeut(neutralino,4)*V1;
 
     coupling = (pow(coupHpZiWjL,2)+pow(coupHpZiWjR,2))*(pow(mHp,2)-pow(mneut,2)-pow(mchar,2)) - 4*coupHpZiWjL*coupHpZiWjR*mneut*mchar;
 
@@ -5910,7 +5910,7 @@ double snutauamplitudedecaynutauneutralinoNMSSM (double m1, double mneut, double
 
     c2 = -mixNeut(neutralino,1)*sinthetaW + mixNeut(neutralino,2)*costhetaW;
 
-    coup = -c2/(pow(2,0.5)*costhetaW);
+    coup = -c2/(root2*costhetaW);
 
     amplitudeW = prefactor*lambda*(sqr(m1)-pow(mneut,2))*pow(coup,2);
 
@@ -5927,8 +5927,8 @@ DoubleVector squarkmixcharginocouplings (double g, double theta, double beta, do
 
   double fu=0, fd=0, AprimeuW1=0, AprimedW1=0, BW1=0, BprimeW1=0, sq1AprimeW1=0, sq1ch1B1=0, sq1ch1combo=0, sq1ch1angular1=0, sq1ch1angular2=0, sq1ch1B2=0, AprimeuW2=0, AprimedW2=0, BW2=0, BprimeW2=0, sq1AprimeW2=0, sq1ch2B1=0, sq1ch2B2=0, sq1ch2combo=0, sq1ch2angular1=0, sq1ch2angular2=0, sq2AprimeW1=0, sq2ch1B1=0, sq2ch1B2=0, sq2ch1combo=0, sq2ch1angular1=0, sq2ch1angular2=0, sq2AprimeW2=0, sq2ch2B1=0, sq2ch2B2=0, sq2ch2combo=0, sq2ch2angular1=0, sq2ch2angular2=0;
 
-  fu = g*runmt/(pow(2,0.5)*mWboson*sin(beta));
-  fd = g*runmb/(pow(2,0.5)*mWboson*cos(beta));
+  fu = g*runmt/(root2*mWboson*sin(beta));
+  fd = g*runmb/(root2*mWboson*cos(beta));
   AprimeuW1 = -g*sin(gammaL);
   AprimedW1 = -g*sin(gammaR);
   BW1 = -fu*cos(gammaR);
@@ -6176,10 +6176,10 @@ DoubleVector higgsHplussquarkcouplings (double mWboson, double g, double beta, d
     Hplussqsqcoupling(i) = 0;
   }
   double HplusuLdL=0, HplusuRdR=0, HplusuLdR=0, HplusuRdL=0; 
-  HplusuLdL = g/(pow(2,0.5))*(-mWboson*sin(2*beta) + (pow(mdown,2)*tan(beta)+pow(mup,2)/(tan(beta)))/mWboson);
-  HplusuRdR = (g*mup*mdown*(tan(beta) + 1/(tan(beta))))/(pow(2,0.5)*mWboson);
-  HplusuLdR = -g*mdown/(pow(2,0.5)*mWboson)*(Ad*tan(beta) + greekmu);
-  HplusuRdL = -g*mup/(pow(2,0.5)*mWboson)*(Au/(tan(beta)) + greekmu);
+  HplusuLdL = g/(root2)*(-mWboson*sin(2*beta) + (pow(mdown,2)*tan(beta)+pow(mup,2)/(tan(beta)))/mWboson);
+  HplusuRdR = (g*mup*mdown*(tan(beta) + 1/(tan(beta))))/(root2*mWboson);
+  HplusuLdR = -g*mdown/(root2*mWboson)*(Ad*tan(beta) + greekmu);
+  HplusuRdL = -g*mup/(root2*mWboson)*(Au/(tan(beta)) + greekmu);
   
   Hplussqsqcoupling(1) = HplusuLdL;
   Hplussqsqcoupling(2) = HplusuRdR;
