@@ -53,19 +53,16 @@ int main() {
     
     int i;
     /// Set limits of M2 scan
-    //     double startM2 = 50., endM2 = 250.;
-    double startM2 = 50., endM2 = 270.; ///< DEBUG
+    double startM2 = 50, endM2 = 270.; ///< DEBUG
     
     /// Cycle through different points in the scan
-    for (i = 2016; i <= 2017; i++) {
+    for (i = 0; i <= numPoints; i++) {
       double m2 = (endM2 - startM2) / static_cast<double>(numPoints) *
 	static_cast<double>(i) + startM2;  /// set tan beta ready for the scan.
 
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r;
 
-    //    m2 = 251.7; ///< problematic point
-    
     DoubleVector pars(5);
     pars(1) = m0; pars(2) = m12; pars(3) = a0; pars(4) = m2;
     pars(5) = m12;
@@ -86,8 +83,8 @@ int main() {
       if (decayTable.size() > 0 && err == 0) 
       cout << m2 << " " << r.displayPhys().mch(1) << " "
 	   << r.displayPhys().mch(1) - r.displayPhys().mneut(1) << " "
-	   << decayTable[chargino1].Array_Decays[26][5] +
-	decayTable[chargino1].Array_Decays[45][5] << " "
+	   << decayTable[chargino1].Array_Decays[45][5] +
+	decayTable[chargino1].Array_Decays[26][5] << " " 
 	   << decayTable[chargino1].Array_Decays[23][5] << " "
 	   << decayTable[chargino1].Array_Decays[46][5] << " "
 	   << decayTable[chargino1].Array_Decays[27][5] << " "
