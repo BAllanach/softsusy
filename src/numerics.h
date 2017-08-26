@@ -30,6 +30,11 @@ using namespace softsusy;
 /// precision eps
 double dgauss(double (*f)(double x), double a, double b, double eps);
 
+/// adaptive Gaussian one dimensional integration of f(x) between a and b to
+/// precision eps with user - given parameters in DoubleVector & v
+double dgauss(double (*f)(double x, const DoubleVector & v),
+	      const DoubleVector & v, double a, double b, double eps);
+
 /// calculate root(1+x), where x<<1 accurately
 double accurateSqrt1Plusx(double x);
 
