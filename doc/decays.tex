@@ -1,4 +1,4 @@
-\documentclass[final,3p,times,pdflatex]{elsarticle}
+\documentclass[final,3p,times]{elsarticle}
 %\usepackage{axodraw}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -545,12 +545,27 @@ For the third generation sfermions:
                      \tilde{\tau}_{1/2} W^+, \tilde{\tau}_{1/2} H^+, \\
 \tilde{\tau}_{2} &\rightarrow \tilde{\tau}_{1} Z, \tilde{\tau}_{1} h/H/A. 
 \end{align*}
-For charginos, the two-body decay modes included are:
+For charginos, the two-body decay modes included are (where $\delta_{j1}$ is
+Kronecker delta):
 \begin{align*}
-\tilde{W}_{j} &\rightarrow \tilde{q}_L \bar{q'}, \tilde{q}_{1/2} \bar{q'}, \tilde{l}_L \bar{\nu}_{l}, \tilde{\nu}_{{l}_{L}} \bar{l}, \tilde{\tau}_{1/2} \bar{\nu}_{\tau}, \tilde{\nu}_{{\tau}_{L}} \bar{\tau},  \tilde{Z}_{i} W^+, \tilde{Z}_{i} H^+,
-\\
+\tilde{W}_{j} &\rightarrow \tilde{q}_L \bar{q'}, \tilde{q}_{1/2} \bar{q'},
+                \tilde{l}_L \bar{\nu}_{l}, \tilde{\nu}_{{l}_{L}} \bar{l},
+                \tilde{\tau}_{1/2} \bar{\nu}_{\tau}, \tilde{\nu}_{{\tau}_{L}}
+                \bar{\tau},  \tilde{Z}_{i} W^+, \tilde{Z}_{i} H^\pm,
+                \delta_{j1}\tilde{Z}_1 \pi^\pm  \\
 \tilde{W}_{2} &\rightarrow \tilde{W}_{1} Z, \tilde{W}_{1} h/H/A.
 \end{align*}
+There is a case that deserves special attention: when the lightest
+chargino and lightest neutralino are quasi-mass degenerate (such is the case
+when the lightest neutralino is wino dominated, for instance), it is more
+appropriate to discuss decays into explicit hadrons rather than quark states. 
+Folllowing Ref.~\cite{gunionetal}, we define a constant
+scale~$\Lambda_H$. When $m_{{\tilde W}_1^+} - m_{{\tilde 
+    Z}_1^+} - m_{\pi^+} < \Lambda_H$, decays into quarks are switched off and 
+instead we switch to decays into mesons. We choose $\Lambda_H=1.5$
+GeV by default. 
+
+
 For neutralinos the two-body decay modes are ($k>i$ as the neutralinos
 are mass ordered): 
 \begin{align*}
@@ -607,7 +622,8 @@ The phenomenologically most important three-body decays in the MSSM are included
 h &\rightarrow V f \bar{f}. \\
 \tilde{g} &\rightarrow \tilde{Z}_i q \bar{q}, \tilde{W}_i q \bar{q'}. \\
 \tilde{Z}_{i} &\rightarrow \tilde{Z}_j f \bar{f}, \tilde{W}_j f \bar{f'}. \\
-\tilde{W}_{j} &\rightarrow \tilde{Z}_i f \bar{f'}.
+\tilde{W}_{j} &\rightarrow \tilde{Z}_i f \bar{f'}, \delta_{j1} \tilde{Z}_1
+                \pi^\pm \pi^0. \\
 \end{align*}
 
 As of yet, there are no three-body decays of sfermions included; this may be
@@ -1581,7 +1597,12 @@ $\tilde{W}_i^+ \rightarrow \bar{\tilde{\tau}}_{1/2} \nu_{\tau}$ &~\ref{chstau1nu
 $\tilde{W}_1^+ \rightarrow W \tilde{Z}_j$ &~\ref{ch1Wneut} & $\tilde{Z}_j \rightarrow H^+ \tilde{W}_{1/2}$ &~\ref{neutHpmch1} \\ \hline
 $\tilde{W}_1^+ \rightarrow H^- \tilde{Z}_j$ &~\ref{ch1Hpmneut} & $\tilde{Z}_i \rightarrow Z \tilde{Z}_{j}$ &~\ref{neutZneut} \\ \hline
 $\tilde{W}_2 \rightarrow Z \tilde{W}_1$ &~\ref{ch2Zch1} & $\tilde{Z}_i \rightarrow h \tilde{Z}_{j}$ &~\ref{neuthneut} \\ \hline
-$\tilde{W}_2 \rightarrow \phi \tilde{W}_1$ &~\ref{ch2phich1} & $\tilde{Z}_i \rightarrow A \tilde{Z}_{j}$ &~\ref{neutAneut} \\ \hline
+$\tilde{W}_2 \rightarrow \phi \tilde{W}_1$ &~\ref{ch2phich1} & $\tilde{Z}_i
+                                                               \rightarrow A
+                                                               \tilde{Z}_{j}$
+                                                          &~\ref{neutAneut} \\
+  \hline
+$\tilde{W}_1^+ \rightarrow \pi^+ \tilde{Z}_1$ & ~\ref{ch2pineut} & & \\ \hline
 \end{tabular}
 \caption{MSSM 2 body decays included in the {\tt SOFTSUSY} decay program,
   the references for the formulae in the appendices are given. $\phi$ here is
@@ -1640,7 +1661,10 @@ $\tilde{g} \rightarrow q \bar{q} \tilde{Z}_i$ &~\ref{gqqneut} & $\tilde{Z}_i \ri
 $\tilde{g} \rightarrow t \bar{t} \tilde{Z}_i$ &~\ref{gttneut} & $\tilde{Z}_i \rightarrow \tilde{W}_j f' \bar{f}$ &~\ref{neutchff} \\ \hline
 $\tilde{g} \rightarrow b \bar{b} \tilde{Z}_i$ &~\ref{gttneut} & \multicolumn{2}{c|}{\bf{Chargino $1 \rightarrow 3 $ decays} } \\ \hline
 $\tilde{g} \rightarrow q \bar{q'} \tilde{W}_i^-$ &~\ref{gchqqp} & $\tilde{W}_j \rightarrow \tilde{Z}_i \bar{f'} f$ &~\ref{neutchff} \\ \hline
-$\tilde{g} \rightarrow t \bar{b} \tilde{W}_i^-$ &~\ref{gchqqp} & & \\ \hline
+$\tilde{g} \rightarrow t \bar{b} \tilde{W}_i^-$ &~\ref{gchqqp} &
+                                                                 $\tilde{W}_1^+
+                                                                 \rightarrow
+                                                                 \pi^0 \pi^+ \tilde{Z}_1$&~\ref{chpipineut}\\ \hline
 \end{tabular}
 \caption{Three body decays included in the {\tt SOFTSUSY} decay program, the
   references for the formulae in the appendices are given. Not all 3 body
@@ -2258,7 +2282,34 @@ $S_H$ , $P_H$ are the same as $S_h$ and $P_h$ if you take $\sin\alpha \rightarro
 S_A = {1 \over 2} (\sin \theta_R \sin \theta_L \sin \beta - \cos \theta_L \cos \theta_R \cos \beta - \sin \theta_L \sin \theta_R \cos \beta + \cos \theta_L \cos \theta_R \sin \beta ).
 \end{equation}
 %}
-Again $P_A$ is the same as $S_A$ except the first two terms gain an additional minus sign.
+Again $P_A$ is the same as $S_A$ except the first two terms gain an additional
+minus sign.
+
+
+For the case when the lightest chargino and the lightest neutralino 
+are quasi-degenerate and ignoring decays to
+kaons (whose decays are Cabbibo suppressed 
+by a factor of 20 or so), the partial width of the lightest chargino decaying
+into a pion and the lightest
+neutralino reads~\cite{gunionetal}\footnote{Note that  in Eq.~\ref{ch2pineut}
+we have switched conventions $O^{L}_{11}\leftrightarrow O^R_{11}$ with respect
+to Ref.~\cite{gunionetal}.}
+\begin{eqnarray}
+\Gamma( {\tilde W}_1^+ \rightarrow {\tilde Z}_1 \pi^+) &=& 
+\frac{f_\pi^2 G_F^2}{4 \pi} \frac{\lambda(m_{{\tilde W}_1},\ m_{{\tilde
+      Z}_1},\ m_{\pi^+})}{m_{{\tilde W}_1}}
+\left\{ (O^L_{11} +O^R_{11})^2 \left[ (m_{{\tilde W}_1}^2 - m_{{\tilde
+                                                           Z}_1}^2)^2 - 
+m_{\pi^+}^2(m_{{\tilde Z}_1} - m_{{\tilde W}_1})^2 \right] \right. \nonumber \\
+&&\left.  + (O^R_{11} - O^L_{11})^2 \left[ (m_{{\tilde W}_1}^2 - m_{{\tilde Z}_1}^2)^2 - m_{\pi^+}^2 (m_{{\tilde W}_1}
+  + m_{{\tilde Z}_1})^2\right]
+\right\}, \label{ch2pineut}
+\end{eqnarray}
+where $f_\pi \approx 93$ MeV is the pion decay constant and
+\begin{equation}O^L_{11}=- \frac{1}{\sqrt{2}} N_{41} \sin \theta_L + 
+N_{21} \cos \theta_L, \qquad
+O^R_{11}=\frac{1}{\sqrt{2}} N_{31} \sin \theta_R + 
+N_{21} \cos \theta_R. \label{theBigO}\end{equation}
 \subsection{Neutralinos} \label{Neutralinos}
 
 %{\centering
@@ -3817,7 +3868,7 @@ For $\tilde{W}^{+}_{1}$, i.e.\ the lightest chargino ($j = 1$), and where $i$ is
 \alpha_{\tilde{f}_2}^{\tilde{W}_1} &= -f_{d}\cos\theta_{L}\cos\theta_{q} + g\sin\theta_{L}\sin\theta_{q}, \\
 \beta_{\tilde{f}_2}^{\tilde{W}_1} &= -f_{u}\cos\theta_R\sin\theta_{q}.
 \end{align}
-Note that because of the conventions adopted, if the fermions considered are $\tau$ and $\nu_{\tau}$, so that the intermediates are $\tilde{\tau}_1$ and $\tilde{\tau}_2$, then the mixing angles in the formulae for this 3 body	 decay must be rotated so that one must take $\cos\theta_{\tau} \rightarrow \sin\theta_{\tau}$ and $\sin\theta_{\tau} \rightarrow -\cos\theta_{\tau}$ in the formulae listed for the $\tilde{Z}_i \rightarrow \tilde{W}_j  f' \bar{f}$ and for the reverse decay $\tilde{W}_j \rightarrow \tilde{Z}_i  f' \bar{f}$. Note that in this case where the fermions are $\tau$ and $\nu_{\tau}$, then $\theta_q$ would be the mixing angle for the $\tilde{\tau}$, whilst $\theta_{q'} = 0$ as the is no mixing for $\tilde{\nu_{\tau}}$.
+Note that because of the conventions adopted, if the fermions considered are $\tau$ and $\nu_{\tau}$, so that the intermediates are $\tilde{\tau}_1$ and $\tilde{\tau}_2$, then the mixing angles in the formulae for this 3 body	 decay must be rotated so that one must take $\cos\theta_{\tau} \rightarrow \sin\theta_{\tau}$ and $\sin\theta_{\tau} \rightarrow -\cos\theta_{\tau}$ in the formulae listed for the $\tilde{Z}_i \rightarrow \tilde{W}_j  f' \bar{f}$ and for the reverse decay $\tilde{W}_j \rightarrow \tilde{Z}_i  f' \bar{f}$. Note that in this case where the fermions are $\tau$ and $\nu_{\tau}$, then $\theta_q$ would be the mixing angle for the $\tilde{\tau}$, whilst $\theta_{q'} = 0$ as there is no mixing for $\tilde{\nu_{\tau}}$.
 
 For $\tilde{W}^{+}_{2}$, i.e.\ the heaviest chargino ($j = 2$), where $i$ is the index of the neutralino:
 \begin{align}
@@ -4727,8 +4778,36 @@ It should be noted the partial widths of the decays $\tilde{Z}_i \rightarrow \ti
 
 \textbf{\underline{$\tilde{W}_j \rightarrow \tilde{Z}_i f' \bar{f}$}}
 
-It is detailed above in the formulae for $\tilde{Z}_i \rightarrow \tilde{W}_j f' \bar{f}$ how to adapt the formula for the chargino decaying into the neutralino rather than the neutralino decaying into the chargino.
+It is detailed above in the formulae for $\tilde{Z}_i \rightarrow \tilde{W}_j
+f' \bar{f}$ how to adapt the formula for the chargino decaying into the
+neutralino rather than the neutralino decaying into the chargino. 
 
+\textbf{\underline{$\tilde{W}_1 \rightarrow \tilde{Z}_1 \pi^\pm \pi^0$}}
+
+For the quasi lightest neutralino-lightest chargino mass degenerate case, 
+the chargino partial decay width into two pions and the neutralino is~\cite{gunionetal}
+\begin{eqnarray}
+\Gamma( {\tilde W}_1^+ \rightarrow {\tilde Z}_1 \pi^+) &=& 
+\frac{G_F^2}{192 \pi^3 m_{{\tilde W}_1}^2} \int_{4 m_\pi^2}^{(M_{\tilde{Z}_1}-M_{\tilde{W}_1})^2}
+dq^2\ \left| \tilde{F}(q^2)\right|^2 \left(1 - \frac{4 m_\pi^2}{q^2} \right)^{3/2}
+\lambda(m_{\tilde{W}_1},\ m_{\tilde{Z}_1}, \sqrt{q^2}) \times \nonumber \\&&
+\left\{ \left[ (O^L_{11})^2 +O^R_{11})^2\right] 
+\left[ q^2(m_{{\tilde W}_1}^2 + m_{{\tilde Z}_1}^2-2q^2) +
+(m_{{\tilde W}_1}^2 - m_{{\tilde Z}_1}^2)^2 \right] \right. \nonumber \\
+&&\left. -12 O^L_{11} O^R_{11} q^2 m_{\tilde{Z}_1}m_{\tilde{W}_1}
+\right\}, \label{chpipineut}
+\end{eqnarray}
+where $O^{L,R}_{11}$ are defined in Eq.~\ref{theBigO} and
+\begin{equation}
+\tilde{F}(q^2)=\frac{BW_\rho(q^2) + \beta BW_{\rho'}(q^2)}{1+\beta},
+\end{equation}
+where $\beta=-0.145$ and
+$BW_V$ refers to the Breit-Wigner pole of meson $V \in \{ \rho,\ \rho' \}$:
+\begin{equation}
+BW_V(q^2) = \frac{m_V^2}{m_V^2 - q^2 - i \sqrt{q^2} \Gamma_V}.
+\end{equation}
+$m_\rho=0.773$ GeV, $\Gamma_\rho=0.145$ GeV, $m_{\rho'}=1.370$ GeV and
+$\Gamma_{\rho'}=0.510$ GeV are used. 
 \section{Decays to Gravitinos} \label{appendix:gravitinos}
 
 In certain SUSY-breaking scenarios, particularly gauge-mediated SUSY breaking (GMSB), the gravitino can be very light and therefore may be the Lightest Supersymmetric Particle (LSP). Moreover, the gravitino has longitudinal components from the goldstino which couple much more strongly than gravitational strength, this therefore provides interactions relevant to collider phenomenology, resulting in gravitino-SUSY-SM couplings that affect collider signatures, when the gravitino is the LSP\@. Consequently Next-to-Lightest Supersymmetric Particle (NLSP) decays to gravitino LSPs may be of interest and are included within our decay calculator program {\tt SOFTSUSY}.
