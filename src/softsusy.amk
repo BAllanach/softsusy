@@ -48,13 +48,11 @@ if COMPILE_TWO_LOOP_GAUGE_YUKAWA
 CPPFLAGS += -I$(srcdir)/src
 softsusy_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
 higher_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-
 softsusy_nmssm_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-
 softpoint_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-
 rpvsoftsusy_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
 rpvneut_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp
+decay_x_SOURCES  += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp
 endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
 pkginclude_HEADERS += \
