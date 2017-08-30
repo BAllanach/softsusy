@@ -26,14 +26,14 @@ double charginoToNeutralino1pion(const MssmSoftsusy * m) {
     m->displayDrBarPars().uBpmz(1, 2) +
     m->displayDrBarPars().nBpmz.display(1, 2).conj() *
     m->displayDrBarPars().uBpmz(1, 1);
-  double ol11 = OL11.real(), or11 = OR11.real();
+
   double kpi = sqrt(lambda(sqr(mchi1), sqr(mneut1), sqr(mpiplus))) * 0.5
     / (mchi1);
   double width = sqr(fpi) * sqr(GMU) * kpi / (4.0 * PI * sqr(mchi1)) *
-    ( sqr(ol11 + or11) * ( sqr(sqr(mchi1) - sqr(mneut1)) -
-			   sqr(mpiplus) * sqr(mchi1 - mneut1) ) +
-      sqr(ol11 - or11) * ( sqr(sqr(mchi1) - sqr(mneut1)) -
-			   sqr(mpiplus) * sqr(mchi1 + mneut1))
+    ( ((OL11 + OR11) * (OL11 + OR11)).real() * ( sqr(sqr(mchi1) - sqr(mneut1)) -
+				   sqr(mpiplus) * sqr(mchi1 - mneut1) ) +
+      ((OL11 - OR11) * (OL11 - OR11)).real() * ( sqr(sqr(mchi1) - sqr(mneut1)) -
+				    sqr(mpiplus) * sqr(mchi1 + mneut1))
       );
 
   return width; 
