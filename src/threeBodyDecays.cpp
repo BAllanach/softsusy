@@ -6277,18 +6277,16 @@ double charginoToNeutralino2pion(const MssmSoftsusy * m) {
     mneut1 = fabs(m->displayPhys().mneut(1));
   mch = mchi1; mn = mneut1;
   Complex OL11 = -1.0 / root2 * m->displayDrBarPars().nBpmz.display(1, 4) *
-    m->displayDrBarPars().uBpmz(1, 2).conj() +
+    m->displayDrBarPars().vBpmz(1, 2).conj() +
     m->displayDrBarPars().nBpmz.display(1, 2) *
-    m->displayDrBarPars().uBpmz(1, 1).conj();
+    m->displayDrBarPars().vBpmz(1, 1).conj();
   Complex OR11 = +1.0 / root2 *
     m->displayDrBarPars().nBpmz.display(1, 3).conj() *
-    m->displayDrBarPars().vBpmz(1, 2) +
+    m->displayDrBarPars().uBpmz(1, 2) +
     m->displayDrBarPars().nBpmz.display(1, 2).conj() *
-    m->displayDrBarPars().vBpmz(1, 1);
+    m->displayDrBarPars().uBpmz(1, 1);
   ol11 = OL11.real(); or11 = OR11.real();
 
-  ol11 = cos(m->displayPhys().thetaL);
-  or11 = cos(m->displayPhys().thetaR); 
   double qSqstart = 4.0 * mpiplus * mpiplus;
   double qSqend = sqr(mchi1 - mneut1);
   if (mchi1 < mneut1 + 2.0 * mpiplus) return 0.;

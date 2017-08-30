@@ -18,14 +18,14 @@ double charginoToNeutralino1pion(const MssmSoftsusy * m) {
   if (mchi1 - mneut1 - mpiplus > hadronicScale) return 0.;
 
   Complex OL11 = -1.0 / root2 * m->displayDrBarPars().nBpmz.display(1, 4) *
-    m->displayDrBarPars().uBpmz(1, 2).conj() +
+    m->displayDrBarPars().vBpmz(1, 2).conj() +
     m->displayDrBarPars().nBpmz.display(1, 2) *
-    m->displayDrBarPars().uBpmz(1, 1).conj();
+    m->displayDrBarPars().vBpmz(1, 1).conj();
   Complex OR11 = +1.0 / root2 *
     m->displayDrBarPars().nBpmz.display(1, 3).conj() *
-    m->displayDrBarPars().vBpmz(1, 2) +
+    m->displayDrBarPars().uBpmz(1, 2) +
     m->displayDrBarPars().nBpmz.display(1, 2).conj() *
-    m->displayDrBarPars().vBpmz(1, 1);
+    m->displayDrBarPars().uBpmz(1, 1);
   double ol11 = OL11.real(), or11 = OR11.real();
   double kpi = sqrt(lambda(sqr(mchi1), sqr(mneut1), sqr(mpiplus))) * 0.5
     / (mchi1);

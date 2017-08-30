@@ -38,4 +38,4 @@ set output "chiLifetime.eps"
 set ylabel "log_{10}({/Symobl t}/s)"
 plot "decay.out" u 3:(log10(0.658e-24/$10)) notit w l lt 1 lc rgb "black" lw 4
 
-!epstopdf --autorotate=All chiDK.eps; epstopdf --autorotate=All chiLifetime.eps; rm *.eps
+!epstopdf --autorotate=All chiDK.eps; epstopdf --autorotate=All chiLifetime.eps; rm chiDK.eps chiLifetime.eps
