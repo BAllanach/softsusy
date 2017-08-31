@@ -6260,9 +6260,9 @@ Complex bw(double mSq, double gamma, double qSq) {
   return mSq / (mSq - qSq - Complex(0., 1.) * sqrt(qSq) * gamma);
 }
 
-static double mn = 0., mch = 0.;
-static Complex OL11, OR11;
-double chToN2piInt(double qSq) {
+double chToN2piInt(double qSq, const DoubleVector & v) {
+  Complex OL11(v.display(1), v.display(2)), OR11(v.display(3), v.display(4));
+  double mch = v.display(5), mn = v.display(6);
   double integrand = sqr(fofqsq(qSq).mod()) *
     sqrt(1.0 - 4.0 * sqr(mpiplus) / qSq) * (1.0 - 4.0 * sqr(mpiplus) / qSq) *
     sqrt(lambda(sqr(mch), sqr(mn), qSq)) *
@@ -6279,22 +6279,26 @@ double charginoToNeutralino2pion(const MssmSoftsusy * m) {
   if (mchi1 < mneut1 + 2.0 * mpiplus) return 0.;
   if (mchi1 - mneut1 - mpiplus > hadronicScale) return 0.;
 
-  mch = mchi1; mn = mneut1;
-  OL11 = -1.0 / root2 * m->displayDrBarPars().nBpmz.display(1, 4) *
+  Complex OL11 = -1.0 / root2 * m->displayDrBarPars().nBpmz.display(1, 4) *
     m->displayDrBarPars().vBpmz(1, 2).conj() +
     m->displayDrBarPars().nBpmz.display(1, 2) *
     m->displayDrBarPars().vBpmz(1, 1).conj();
-  OR11 = +1.0 / root2 *
+  Complex OR11 = +1.0 / root2 *
     m->displayDrBarPars().nBpmz.display(1, 3).conj() *
     m->displayDrBarPars().uBpmz(1, 2) +
     m->displayDrBarPars().nBpmz.display(1, 2).conj() *
     m->displayDrBarPars().uBpmz(1, 1);
 
+  DoubleVector v(6);
+  v(1) = OL11.real(); v(2) = OL11.imag();
+  v(3) = OR11.real(); v(4) = OR11.imag();
+  v(5) = mchi1; v(6) = mneut1;
+  
   double qSqstart = 4.0 * mpiplus * mpiplus;
   double qSqend = sqr(mchi1 - mneut1);
   double preFactor =sqr(GMU) / (192.0 * sqr(PI) * PI * mchi1 * sqr(mchi1));
   double tol = TOLERANCE;
-  double integral = dgauss(chToN2piInt, qSqstart, qSqend,tol);
+  double integral = dgauss(chToN2piInt, v, qSqstart, qSqend, tol);
 
   return integral * preFactor;
 }

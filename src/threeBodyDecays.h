@@ -247,8 +247,7 @@ DoubleVector higgsHplussquarkcouplings (double mWboson, double g, double beta, d
 ///Function Declarations used to calculate Partial Widths in decays.cpp
 DoubleVector foftau(double mpart, double mcomp);  
 DoubleVector goftau(double mpart, double mcomp);
-double chToN2piInt(double mchi1, double mneut1, double ol11, double or11,
-		   double qSq);
+double chToN2piInt(double qSq, const DoubleVector & v);
 double charginoToNeutralino2pion(const MssmSoftsusy * m);
 Complex fofqsq(double qSq);
 Complex bw(double mSq, double gamma, double qSq);
