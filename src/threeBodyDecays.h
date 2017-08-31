@@ -45,7 +45,7 @@ const double mcpole = 1.40;
 const double mspole = 0.19; 
 /// When mass splitting is below this scale, chargino decays involving hadrons
 /// are calculated rather than to quarks
-const double hadronicScale = 1.4;
+const double hadronicScale = 1.5;
 
 void printRowPDG(ostream & cout, double x);
 void OutputNoPWs(ostream & cout, Particle & P);

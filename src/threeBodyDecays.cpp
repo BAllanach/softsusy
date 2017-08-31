@@ -6257,7 +6257,13 @@ Complex fofqsq(double qSq) {
 }
 
 Complex bw(double mSq, double gamma, double qSq) {
-  return mSq / (mSq - qSq - Complex(0., 1.) * sqrt(qSq) * gamma);
+  double gammaQsq = gamma;
+  double p = sqrt(qSq - 4.0 * sqr(mpiplus)) * 0.5;
+  double prho = sqrt(mSq - 4.0 * sqr(mpiplus)) * 0.5;
+  gammaQsq *= mSq * p * sqr(p) /
+  (prho * sqr(prho) * qSq);
+  
+  return mSq / (mSq - qSq - Complex(0., 1.) * sqrt(qSq) * gammaQsq);
 }
 
 double chToN2piInt(double qSq, const DoubleVector & v) {

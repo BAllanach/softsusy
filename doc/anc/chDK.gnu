@@ -15,7 +15,7 @@ set label 3 at 1.8,0.07 "{/Symbol n}_{/Symbol t}{/Symbol t}^+{/Symbol c}@_1^0" t
 set label 4 at 0.15,0.92 "{/Symbol p}^+{/Symbol c}@_1^0" textcolor rgb "black"
 set label 5 at 0.4,0.25 "{/Symbol p}^+{/Symbol p}^0{/Symbol c}@_1^0" textcolor rgb "green"
 set label 6 at 1.8,0.65 "{/Symbol c}@_1^0jj" textcolor rgb "orange"
-plot [0.1:5] [0:1] "decay.out" u 3:5 notit w l lt 1 \
+plot [0.1:10] [0:1] "decay.out" u 3:5 notit w l lt 1 \
 lc rgb "black" lw 4, \
 "decay.out" u 3:6 notit w l lt 2 \
 lc rgb "green" lw 4,  \

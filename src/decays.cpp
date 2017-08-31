@@ -3084,7 +3084,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    /// and this one
    /* DEBUG  ParticleChargino1.Array_Decays[47][0] = PDGneutralino1; ParticleChargino1.Array_Decays[47][1] = PDGpiPlus; ParticleChargino1.Array_Decays[47][4] = PDGpi0; ParticleChargino1.Array_Decays[47][2] = charginoToNeutralino3pion(r); ParticleChargino1.Array_Decays[47][3] = 4; ParticleChargino1.Array_Comments[47] = "# ~chi_1+ -> chi_10 pi+ pi0 pi0";*/
    /// If at too low mass difference, use pions rather than quarks
-   if (fabs(MCH1) - mpiplus - fabs(mneut(1)) < hadronicScale) {
+   if (fabs(MCH1) - fabs(mneut(1)) < hadronicScale) {
      ParticleChargino1.Array_Decays[26][2] = 0.;
      ParticleChargino1.Array_Decays[45][2] = 0.;
    } else {

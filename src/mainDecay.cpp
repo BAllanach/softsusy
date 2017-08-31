@@ -31,7 +31,7 @@ int main() {
     /// Parameters used: CMSSM parameters
     double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 20.0, m0 = 500.;
     int sgnMu = 1;       ///< sign of mu parameter 
-    int numPoints = 2200;  ///< number of scan points
+    int numPoints = 2000;  ///< number of scan points
     
     QedQcd oneset;       ///< See "lowe.h" for default definitions parameters
     
@@ -53,7 +53,7 @@ int main() {
     
     int i;
     /// Set limits of M2 scan
-    double startM2 = 50, endM2 = 270.; ///< DEBUG
+    double startM2 = 50, endM2 = 280.; ///< DEBUG
     
     /// Cycle through different points in the scan
     for (i = 0; i <= numPoints; i++) {
