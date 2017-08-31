@@ -11,7 +11,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 include src/softsusy.amk
 #Comment the next line for a distribution - don't want doc sources
-#include doc/doc.amk
+include doc/doc.amk
 include inOutFiles/inOut.amk
 
 DOCFILES = doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
