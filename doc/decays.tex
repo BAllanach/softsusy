@@ -565,7 +565,7 @@ appropriate to discuss decays into explicit hadrons rather than quark states.
 Folllowing Ref.~\cite{gunionetal}, we define a constant
 scale~$\Lambda_H$. When $m_{{\tilde W}_1^+} - m_{{\tilde 
     Z}_1^+} < \Lambda_H$, decays into quarks are switched off and 
-instead we switch to decays into mesons. We choose $\Lambda_H=1.5$
+instead we switch to decays into hadrons. We choose $\Lambda_H=1.5$
 GeV by default. 
 
 
@@ -4816,10 +4816,16 @@ where $O^{L,R}_{11}$ are defined in Eq.~\ref{theBigO} and
 where $\beta=-0.145$ and
 $BW_V$ refers to the Breit-Wigner pole of meson $V \in \{ \rho,\ \rho' \}$:
 \begin{equation}
-BW_V(q^2) = \frac{m_V^2}{m_V^2 - q^2 - i \sqrt{q^2} \Gamma_V}.
+BW_V(q^2) = \frac{m_V^2}{m_V^2 - q^2 - i \sqrt{q^2} \Gamma_V(q^2)}.
 \end{equation}
-$m_\rho=0.773$ GeV, $\Gamma_\rho=0.145$ GeV, $m_{\rho'}=1.370$ GeV and
-$\Gamma_{\rho'}=0.510$ GeV are used. 
+Here, $m_\rho=0.773$ GeV and $m_{\rho'}=1.370$ GeV are used as well as
+\begin{equation}
+\Gamma_V(q^2) = \frac{\Gamma_V m_V^2}{q^2} 
+\left( \frac{q^2 - 4m_\pi^2}{m_V^2 - 4 m_\pi^2}
+\right)^{3/2},
+\end{equation}
+where $\Gamma_\rho=0.145$ GeV and
+$\Gamma_{\rho'}=0.510$ GeV.
 \section{Decays to Gravitinos} \label{appendix:gravitinos}
 
 In certain SUSY-breaking scenarios, particularly gauge-mediated SUSY breaking (GMSB), the gravitino can be very light and therefore may be the Lightest Supersymmetric Particle (LSP). Moreover, the gravitino has longitudinal components from the goldstino which couple much more strongly than gravitational strength, this therefore provides interactions relevant to collider phenomenology, resulting in gravitino-SUSY-SM couplings that affect collider signatures, when the gravitino is the LSP\@. Consequently Next-to-Lightest Supersymmetric Particle (NLSP) decays to gravitino LSPs may be of interest and are included within our decay calculator program {\tt SOFTSUSY}.
