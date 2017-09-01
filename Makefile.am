@@ -9,13 +9,12 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
 AUTOMAKE_OPTIONS = subdir-objects
 
-include src/softsusy.amk
-#Comment the next line for a distribution - don't want doc sources
-include doc/doc.amk
-include inOutFiles/inOut.amk
 
+include src/softsusy.amk
 DOCFILES = doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
 	   doc/nmssmManual.pdf doc/threeLoop.pdf doc/ho.pdf doc/decays.pdf
+include doc/doc.amk
+include inOutFiles/inOut.amk
 
 dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh \
 NMSSMTools_4.2.1.tgz Makefile.nmssmtools CHANGES GUIDELINES COPYING $(DOCFILES)
@@ -39,3 +38,7 @@ updateWeb: dist
 install-data-local:
 	rm -f higher.x softsusy.x softsusy-nmssm.x softpoint.x rpvsoftsusy.x rpvneut.x *.la
 
+# For distributions: don't re-make the docs
+dist-hook:
+	sed -i -e 's/^include doc/#include doc/g' $(distdir)/Makefile.am
+	rm $(distdir)/doc/doc.amk
