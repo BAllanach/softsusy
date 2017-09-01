@@ -7070,6 +7070,43 @@ MssmSusyRGE MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
   return t;
 }
 
+/// Check that threshold correction loop orders are consistent with
+/// Higgs mass loop order
+void MssmSoftsusy::check_flags()
+{
+#ifdef ENABLE_HIMALAYA
+  if (numHiggsMassLoops > 2) {
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+     if (!USE_TWO_LOOP_GAUGE_YUKAWA ||
+         !(included_thresholds & ENABLE_TWO_LOOP_MT_AS) ||
+         !(included_thresholds & ENABLE_TWO_LOOP_MB_AS)) {
+        cout << "# WARNING: 3-loop corrections to the Higgs mass require"
+           " 2L corrections to yt and yb.  The latter will be enabled.\n";
+        USE_TWO_LOOP_GAUGE_YUKAWA = true;
+        included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
+        included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
+     }
+
+     if (displayLoops() < 3) {
+        cout << "# WARNING: 3-loop corrections to the Higgs mass require"
+           " 3L beta functions.  The latter will be enabled.\n";
+        setLoops(3);
+     }
+#else
+     cout << "# WARNING: You've enable 3-loop corrections to the Higgs mass,"
+        " but the necessary 2-loop corrections to yt and yb are not compiled"
+        " in.  The calculated CP-even Higgs mass is inconsistent at 3-loop"
+        " level!\n";
+#endif
+  }
+#else
+  if (numHiggsMassLoops > 2) {
+     cout << "# WARNING: 3-loop corrections to the Higgs mass are disabled,"
+        " because Himalaya is not compiled in.";
+  }
+#endif
+}
+
 /// Returns low energy softsusy object consistent with BC's m0 etc at MGUT.
 /// oneset should be at MZ and contains the SM data to fit the model to.
 /// If the running comes into difficulty, eg if a Landau pole is reached, it
@@ -7082,6 +7119,8 @@ void MssmSoftsusy::fixedPointIteration
  const DoubleVector & pars, int sgnMu, double tanb, const QedQcd &
  oneset, bool gaugeUnification, bool ewsbBCscale) {
   
+  check_flags();
+
   try {
     const static MssmSoftsusy empty;
     
@@ -11472,6 +11511,61 @@ Complex MssmSoftsusy::pis2s2(double p, double q) const {
     / (16.0 * sqr(PI));
 }
 
+/// calculates 3-loop corrections to CP-even Higgs mass in the MSSM
+/// using Himalaya
+DoubleMatrix MssmSoftsusy::calcHiggs3L(bool is_bottom) {
+  DoubleMatrix DMh(2,2);
+
+#ifdef ENABLE_HIMALAYA
+  const double vev = displayHvev();
+  const double beta = std::atan(displayTanb());
+  const double sinb = std::sin(beta);
+  const double cosb = std::cos(beta);
+
+   himalaya::Parameters pars;
+   pars.scale = displayMu();
+   pars.mu = displaySusyMu();
+   pars.g3 = displayGaugeCoupling(3);
+   pars.vd = cosb * vev; // check sqrt(2.)
+   pars.vu = sinb * vev; // check sqrt(2.)
+   pars.At = displayTrilinear(UA,3,3);
+   pars.Ab = displayTrilinear(DA,3,3);
+   pars.MG = std::fabs(displayGaugino(3));
+   pars.MW = displayMwRun();
+   pars.MZ = displayMzRun();
+   pars.Mt = forLoops.mt;
+   pars.Mb = forLoops.mb;
+   pars.MA = sqrt(std::fabs(displayM3Squared() / (sinb * cosb)));
+   pars.MSt << forLoops.mu(1,3), forLoops.mu(2,3);
+   pars.MSb << forLoops.md(1,3), forLoops.md(2,3);
+   pars.s2t = std::sin(2*forLoops.thetat);
+   pars.s2b = std::cos(2*forLoops.thetab);
+   for (int i = 0; i < 3; i++) {
+      for (int k = 0; k < 3; k++) {
+         pars.mq2(i,k) = displaySoftMassSquared(mQl,i+1,k+1);
+         pars.md2(i,k) = displaySoftMassSquared(mDr,i+1,k+1);
+         pars.mu2(i,k) = displaySoftMassSquared(mUr,i+1,k+1);
+      }
+   }
+
+   try {
+      const bool mdr_scheme = false;
+      const bool verbose = false;
+      himalaya::HierarchyCalculator hc(pars, verbose);
+      const auto hier = hc.calculateDMh3L(is_bottom, mdr_scheme);
+      const auto DMh3L = hier.getDMh(3);
+      for (int i = 0; i < 2; i++)
+         for (int k = 0; k < 2; k++)
+            DMh(i+1,k+1) = DMh3L(i,k);
+   } catch (const std::exception& e) {
+      if (PRINTOUT > 1)
+         cout << e.what();
+   }
+#endif
+
+  return DMh;
+}
+
 bool MssmSoftsusy::higgs(int accuracy, double piwwtMS,
 			 double /* pizztMS */) {
   
@@ -11593,6 +11687,20 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS,
     sigmaMh(2, 1) = sigmaMh(1, 2);
     sigmaMH(2, 1) = sigmaMH(1, 2);
     sigma0(2, 1)  =  sigma0(1, 2);
+
+    if (numHiggsMassLoops > 2) {
+       const DoubleMatrix DMh_3L_t = calcHiggs3L(false);
+       const DoubleMatrix DMh_3L_b = calcHiggs3L(true);
+
+       for (int i = 1; i <= 2; i++) {
+          for (int k = 1; k <= 2; k++) {
+             sigmaMh(i,k) -= DMh_3L_t(i,k) + DMh_3L_b(i,k);
+             sigmaMH(i,k) -= DMh_3L_t(i,k) + DMh_3L_b(i,k);
+             sigma0 (i,k) -= DMh_3L_t(i,k) + DMh_3L_b(i,k);
+          }
+       }
+    }
+
     /*
       As the calculation stands without the two-loop terms, BPMZ have
       obviously organised PI_Sij (CP-even loop corrections) so that their pole

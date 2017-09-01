@@ -1,0 +1,3 @@
+#define Himalaya_VERSION_MAJOR @Himalaya_VERSION_MAJOR@
+#define Himalaya_VERSION_MINOR @Himalaya_VERSION_MINOR@
+#define Himalaya_VERSION_RELEASE @Himalaya_VERSION_RELEASE@

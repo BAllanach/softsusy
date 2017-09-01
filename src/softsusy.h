@@ -46,6 +46,10 @@
 namespace softsusy { class MssmSoftsusy; }
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
+#ifdef ENABLE_HIMALAYA
+#include "HierarchyCalculator.hpp"
+#endif
+
 namespace softsusy {
 
   ///< default SUSY breaking boundary condition scale
@@ -110,6 +114,8 @@ namespace softsusy {
     void setT2OV2Ms1loop(double t2) { t2OV2Ms1loop = t2; }
     double mxBC; ///< Scale at which SUSY breaking boundary conditions set
     
+    void check_flags(); ///< check consistency of threshold flags
+    DoubleMatrix calcHiggs3L(bool is_bottom); ///< Higgs 3L corrections
   public:
     /// Flag allowing to choose which two-loop thresholds have to be included
     int included_thresholds; 

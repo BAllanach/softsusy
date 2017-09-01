@@ -57,6 +57,25 @@ rpvneut_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_tw
 decay_x_SOURCES  += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp
 endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
+himalayadir = $(srcdir)/src/Himalaya-1.0.0
+
+if ENABLE_HIMALAYA
+softsusy_x_LDADD       += $(himalayadir)/libHimalaya.a
+softsusy_nmssm_x_LDADD += $(himalayadir)/libHimalaya.a
+softpoint_x_LDADD      += $(himalayadir)/libHimalaya.a
+rpvsoftsusy_x_LDADD    += $(himalayadir)/libHimalaya.a
+rpvneut_x_LDADD        += $(himalayadir)/libHimalaya.a
+higher_x_LDADD         += $(himalayadir)/libHimalaya.a
+CPPFLAGS               += -I$(himalayadir)/source/include
+endif ENABLE_HIMALAYA
+
+$(himalayadir)/libHimalaya.a:
+	cd $(himalayadir) && cmake . && make
+.PHONY: clean-local-himalaya
+clean-local: clean-local-himalaya
+clean-local-himalaya:
+	-cd $(himalayadir) && make clean
+
 pkginclude_HEADERS += \
 $(addprefix src/, \
 decays.h twoBodyDecays.h threeBodyDecays.h particle.h mssm_twoloop_mt.h \
@@ -82,4 +101,110 @@ src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twolo
 
 libsoft_la_LDFLAGS = @FLIBS@
 
-EXTRA_DIST += src/nmspec.f src/nmh_slhainp.f
+EXTRA_DIST += src/nmspec.f src/nmh_slhainp.f \
+   $(himalayadir)/doc \
+   $(himalayadir)/doc/himalaya.conf \
+   $(himalayadir)/.gitignore \
+   $(himalayadir)/LICENSE \
+   $(himalayadir)/README.md \
+   $(himalayadir)/source \
+   $(himalayadir)/source/hierarchies \
+   $(himalayadir)/source/hierarchies/H6bq22g.cpp \
+   $(himalayadir)/source/hierarchies/H3.cpp \
+   $(himalayadir)/source/hierarchies/H6.cpp \
+   $(himalayadir)/source/hierarchies/H9q2.cpp \
+   $(himalayadir)/source/hierarchies/H5.cpp \
+   $(himalayadir)/source/hierarchies/H9.cpp \
+   $(himalayadir)/source/hierarchies/H6b.cpp \
+   $(himalayadir)/source/hierarchies/H3q22g.cpp \
+   $(himalayadir)/source/hierarchies/H6bq2g2.cpp \
+   $(himalayadir)/source/hierarchies/H6g2.cpp \
+   $(himalayadir)/source/hierarchies/H6b2qg2.cpp \
+   $(himalayadir)/source/hierarchies/HierarchyCalculator.cpp \
+   $(himalayadir)/source/hierarchies/H5g1.cpp \
+   $(himalayadir)/source/hierarchies/HierarchyObject.cpp \
+   $(himalayadir)/source/hierarchies/H4.cpp \
+   $(himalayadir)/source/hierarchies/H32q2g.cpp \
+   $(himalayadir)/source/example.cpp \
+   $(himalayadir)/source/include \
+   $(himalayadir)/source/include/hierarchies \
+   $(himalayadir)/source/include/hierarchies/H3q22g.hpp \
+   $(himalayadir)/source/include/hierarchies/H6.hpp \
+   $(himalayadir)/source/include/hierarchies/H6bq22g.hpp \
+   $(himalayadir)/source/include/hierarchies/H4.hpp \
+   $(himalayadir)/source/include/hierarchies/H6b.hpp \
+   $(himalayadir)/source/include/hierarchies/h6b2qg2 \
+   $(himalayadir)/source/include/hierarchies/h6b2qg2/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6b2qg2/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6b2qg2/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h5 \
+   $(himalayadir)/source/include/hierarchies/h5/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h5/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h5/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6g2 \
+   $(himalayadir)/source/include/hierarchies/h6g2/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6g2/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6g2/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h9q2 \
+   $(himalayadir)/source/include/hierarchies/h9q2/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h9q2/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h9q2/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h3q22g \
+   $(himalayadir)/source/include/hierarchies/h3q22g/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h3q22g/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h3q22g/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/H32q2g.hpp \
+   $(himalayadir)/source/include/hierarchies/h3 \
+   $(himalayadir)/source/include/hierarchies/h3/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h3/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h3/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/H3.hpp \
+   $(himalayadir)/source/include/hierarchies/H6b2qg2.hpp \
+   $(himalayadir)/source/include/hierarchies/h6b \
+   $(himalayadir)/source/include/hierarchies/h6b/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6b/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6b/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h5g1 \
+   $(himalayadir)/source/include/hierarchies/h5g1/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h5g1/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h5g1/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/H5.hpp \
+   $(himalayadir)/source/include/hierarchies/h6bq22g \
+   $(himalayadir)/source/include/hierarchies/h6bq22g/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6bq22g/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6bq22g/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/H6bq2g2.hpp \
+   $(himalayadir)/source/include/hierarchies/H9.hpp \
+   $(himalayadir)/source/include/hierarchies/H9q2.hpp \
+   $(himalayadir)/source/include/hierarchies/H5g1.hpp \
+   $(himalayadir)/source/include/hierarchies/H6g2.hpp \
+   $(himalayadir)/source/include/hierarchies/h32q2g \
+   $(himalayadir)/source/include/hierarchies/h32q2g/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h32q2g/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h32q2g/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h9 \
+   $(himalayadir)/source/include/hierarchies/h9/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h9/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h9/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/Utils.hpp \
+   $(himalayadir)/source/include/hierarchies/h4 \
+   $(himalayadir)/source/include/hierarchies/h4/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h4/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h4/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6 \
+   $(himalayadir)/source/include/hierarchies/h6/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6bq2g2 \
+   $(himalayadir)/source/include/hierarchies/h6bq2g2/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6bq2g2/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6bq2g2/sigS1Full.inc \
+   $(himalayadir)/source/include/Himalaya_interface.hpp \
+   $(himalayadir)/source/include/HierarchyCalculator.hpp \
+   $(himalayadir)/source/include/version.hpp.in \
+   $(himalayadir)/source/include/HierarchyObject.hpp \
+   $(himalayadir)/source/include/version.hpp \
+   $(himalayadir)/source/include/mh2l \
+   $(himalayadir)/source/include/mh2l/DSZHiggs.f \
+   $(himalayadir)/source/include/mh2l/functs.f \
+   $(himalayadir)/CMakeLists.txt

@@ -67,6 +67,25 @@ AC_ARG_ENABLE([two-loop-gauge-yukawa-compilation],
               esac],[two_loop_gauge_yukawa_compilation=false])
 AM_CONDITIONAL(COMPILE_TWO_LOOP_GAUGE_YUKAWA, [test x$two_loop_gauge_yukawa_compilation = xtrue])
 
+# Use Himalaya for 3L contributions to Mh
+AC_ARG_ENABLE([himalaya], 
+              AC_HELP_STRING([--enable-himalaya],[Include 3-loop Higgs mass contributions from Himalaya]),
+             [AC_DEFINE([ENABLE_HIMALAYA],[1],[Include 3-loop Higgs mass contributions from Himalaya])
+              case "${enableval}" in
+              yes) enable_himalaya=yes ;;
+              no)  enable_himalaya=no ;;
+              *) AC_MSG_ERROR([bad value ${enableval} for --enable-himalaya]) ;;
+              esac],[enable_himalaya=no])
+AM_CONDITIONAL(ENABLE_HIMALAYA, [test x$enable_himalaya = xyes])
+
+AS_IF([test "x$enable_himalaya" = "xyes"],
+      [AC_LANG_PUSH([C++])
+       AC_CHECK_HEADERS([Eigen/Dense], [],
+                        [AC_MSG_ERROR([Eigen headers not found])]
+                       )
+       AC_LANG_POP([C++])]
+     )
+
 # Use looptools instead of SOFTSUSY's built in 1-loop functions
 AC_ARG_ENABLE([looptools], 
                AC_HELP_STRING([--enable-looptools],[Looptools evaluation of Pasarino-Veltman functions]),

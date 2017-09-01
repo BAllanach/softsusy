@@ -19,11 +19,11 @@ doc/%.pdf: doc/%.tex
 	cd $(top_builddir)/doc;\
 	pdflatex $(*F).tex ; bibtex $(*F); pdflatex $(*F).tex; pdflatex $(*F).tex 
 
-clean-local:
+.PHONY: clean-local-doc distclean-local-doc
+
+clean-local-doc:
 	-rm -f doc/*.log doc/*.spl doc/*.aux doc/*.dvi doc/*.ps doc/*.toc doc/*.out *flymake*
 
-distclean-local: clean-local
+distclean-local-doc: clean-local-doc
 	-rm -f $(doc_DATA)
-
-
 

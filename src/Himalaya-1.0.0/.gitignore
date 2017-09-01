@@ -1,0 +1,4 @@
+build/
+.kdev4/
+*.kdev4
+source/include/version.hpp

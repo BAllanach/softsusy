@@ -1115,9 +1115,9 @@ int main(int argc, char *argv[]) {
 		  case 6: outputCharacteristics(int(d+EPSTOL)-1); break;  
 		  case 7: {
 		    int num = int(d+EPSTOL);
-		    if (num != 1 && num!= 2) {
+		    if (num < 1 || num > 3) {
 		      cout << "# WARNING: Can only set number of loops for"
-			   << " higgs masses and REWSB to be 1 or 2 in "
+			   << " higgs masses and REWSB to be 1, 2 or 3 in "
 			   << " BLOCK SOFTSUSY parameter 7, not " << num 
 			   << ". Ignoring.\n";
 		  } else {

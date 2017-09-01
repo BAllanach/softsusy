@@ -1,3 +1,4 @@
+<li> Added <a href="http://inspirehep.net/record/1617767">Himalaya</a> interface: three loop threshold corrections to Higgs mass. Thanks to R Harlander, J Klappert and A Voigt. See below for configuration options and use
 <li> Added chargino->charged pion/neutralino decays for small mass splittings
 <li> Split decays up into three files to allow faster compilation. Made a
 decayTable object
