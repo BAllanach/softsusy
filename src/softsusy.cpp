@@ -2659,9 +2659,11 @@ double MssmSoftsusy::calcRunningMt() {
 double MssmSoftsusy::calcRunMbDrBarConv() const {
   double    g       = displayGaugeCoupling(2);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double alphasMZ   = dataSet.displayAlpha(ALPHAS); ///< alpha_s(MS-bar,SM(5))
-  double conversion = (1.0 - alphasMZ / (3.0 * PI) 
-		       - 29.0 / 72.0 * sqr(alphasMZ) / sqr(PI) +
+  double alphasMZ   = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
+  double conversion = (1.0 - alphasMZ / (3.0 * PI) +
+		       // Commented this last line for consistency with HO
+		       // corrections to gauge/Yukawa couplings
+		       //- 29.0 / 72.0 * sqr(alphasMZ) / sqr(PI) +
 		       3.0 * sqr(g) / (128.0 * sqr(PI)) +
 		       13.0 * sqr(gp) / (1152. * sqr(PI)));
   return conversion;
@@ -2873,8 +2875,9 @@ double MssmSoftsusy::calcRunningMb() {
       /// AVB:  fix double-counting of eps-scalar contribution due to
       /// factorization of one-loop term 
       double alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
-      dzetamb-= + 31.0 / 72.0 * sqr(alphasMZ) / sqr(PI) ///< pure QCD
-	+ alphasMZ / (3.0 * PI) * decoupling_corrections_dmb_one_loop; 
+      /// commented this + 31.0 / 72.0 * sqr(alphasMZ) / sqr(PI) ///< pure
+      /// QCD for consistency with HO corrections
+      dzetamb-= alphasMZ / (3.0 * PI) * decoupling_corrections_dmb_one_loop; 
 
   }
 #endif
