@@ -37,7 +37,9 @@
     [Allanach:2014nba] B.C. Allanach, A. Bednyakov and R. Ruiz de Austri, Comput. Phys. Commun. (2015) 192, arXiv:1407.6130.
     
     If you use the two-loop SUSY QCD corrections to squark and gluino pole masses, please cite [Allanach:2001kg] and
-    [Allanach:2016rxd] B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de Austri, arXiv:1601.06657.
+    [Allanach:2016rxd] B.C. Allanach, Stephen P. Martin, David G. Robertson
+    and Roberto Ruiz de Austri, Comput.Phys.Commun. 219 (2017) 339, 
+    arXiv:1601.06657.
     
     \section documentation Documentation
     These web-pages contain the documentation of the latest SOFTSUSY code.
