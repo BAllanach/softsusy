@@ -18,33 +18,27 @@
 
     \section manual Official manual
     If you use SOFTSUSY to write a paper, please cite 
-    [1a] <a href="http://xxx.arxiv.org/abs/hep-ph/0104145">
-    B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145, 
-    </a> which is the main SOFTSUSY manual.<br>
-    If you use decays, please cite [1a] and <a
-    href="http://arxiv.org/abs/arXiv:1703.09717">B.C. Allanach and T. Cridge
-    , arXiv:1703.09717</a>.<p>
-    If you calculate in the NMSSM, please cite [1a] and <br>
-    [2] <a href="http://arxiv.org/abs/1311.7659">B.C. Allanach, P. Athron, 
-    L. Tunstall, A. Voigt and A. Williams, arXiv:1311.7659</a>. <p>
-    If you use the R-parity violating aspects, please cite [1a] and <br>
-    [3] <a href="http://arxiv.org/abs/0903.1805">B.C. Allanach and 
-    M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232-245,
-    arXiv:0903.1805</a>.<p>
-    For RPV neutrino oscillation output, please cite [1a], [3] and <br>
-    [4] <a href="http://xxx.soton.ac.uk/abs/1109.3735">B.C. Allanach,
-    M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012) 785,
-    arXiv:1109.3735</a>.<p>
-    If you use the three-loop RGEs or two-loop threshold corrections to Yukawa
-    and gauge couplings, please cite [1a] and<br>
-    [5] <a href="http://arxiv.org/abs/arXiv:1407.6130">B.C. Allanach, A. 
-    Bednyakov and R. Ruiz, Comput. Phys. Commun. (2015) 192,
-    arXiv:1407.6130</a><p>
-    For two-loop SUSY QCD corrections to squark and gluino pole masses, please
-    cite [1a] and<br>
-    [6] <a href="http://arxiv.org/abs/arXiv:1601.06657">B.C. Allanach,
-    S. Martin, D. Robertson and R. Ruiz de Austri, arXiv:1601.06657</a>.
+    [Allanach:2001kg] B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145,
 
+    which is the SOFTSUSY manual for the R-parity conserving MSSM. 
+    If you use the decay calculations, please cite [Allanach:2001kg] and
+    [Allanach:2017hcf] B.C. Allanach and T. Cridge, arxiv:1703.09717
+
+    If you calculate in the NMSSM, please cite [Allanach:2001kg] and
+    [Allanach:2013kza] B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and A. Williams, Comput. Phys. Comm. 185 (2014) 2322, arXiv:1311.7659.
+
+    If you use the R-parity violating aspects, please cite [Allanach:2001kg] and
+    [Allanach:2009bv] B.C. Allanach and M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232, arXiv:0903.1805.
+    
+    If you use it to calculate neutrino masses and mixings, please cite [Allanach:2001kg], [Allanach:2009bv] and
+    [Allanach:2011de] B.C. Allanach, M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012) 785, arXiv:1109.3735.
+    
+    If you use the three-loop RGEs or two-loop threshold corrections to gauge/Yukawa couplings, please cite [Allanach:2001kg] and
+    [Allanach:2014nba] B.C. Allanach, A. Bednyakov and R. Ruiz de Austri, Comput. Phys. Commun. (2015) 192, arXiv:1407.6130.
+    
+    If you use the two-loop SUSY QCD corrections to squark and gluino pole masses, please cite [Allanach:2001kg] and
+    [Allanach:2016rxd] B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de Austri, arXiv:1601.06657.
+    
     \section documentation Documentation
     These web-pages contain the documentation of the latest SOFTSUSY code.
     There are class diagrams and cross-referenced links a la doxygen to help 
