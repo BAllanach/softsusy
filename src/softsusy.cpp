@@ -6784,7 +6784,7 @@ static double unificationScale, minTol;
   double tol = 1.0e-3, lnx; minTol = tol * 10.0;
   /// Numerical recipes routine to determine minimum of potential specified in
   /// minimufb3
-  double Vmin = findMinimum(ax, bx, cx, minimufb3, tol, &lnx);
+  double Vmin = findMinimum(ax, bx, cx, minimufb3, tol, lnx);
   
   /// Restore initial parameters
   ///  setMu(initialMu);

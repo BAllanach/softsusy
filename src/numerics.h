@@ -77,7 +77,7 @@ double calcDerivative(double (*func)(double),
 /// f is user-defined function, minimum value returned in xmin. Based on a
 /// golden section search
 double findMinimum(double ax, double bx, double cx, double (*f)(double),
-		   double tol, double *xmin);
+		   double tol, double & xmin);
 
 void shft2(double & a, double & b, double & c); ///< a=b and b=c
 /// a=b, b=c and c=d

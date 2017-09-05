@@ -380,7 +380,7 @@ inline void shft3(double & a, double & b, double & c, double d) {
 }
 
 double findMinimum(double ax, double bx, double cx, double (*f)(double),
-		   double tol, double *xmin)
+		   double tol, double &xmin)
 {
   const double R = 0.61803399, C = 1.0 - R;
   double f1, f2, x0, x1, x2, x3;
@@ -406,10 +406,10 @@ double findMinimum(double ax, double bx, double cx, double (*f)(double),
 	}
   }
   if (f1 < f2) {
-    *xmin = x1; 
+    xmin = x1; 
     return f1; 
   } else {
-    *xmin = x2; 
+    xmin = x2; 
     return f2; 
   }
 }
