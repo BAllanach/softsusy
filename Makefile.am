@@ -1,3 +1,4 @@
+# Adding comment
 lib_LTLIBRARIES = 
 bin_PROGRAMS = 
 CLEANFILES =
