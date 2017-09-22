@@ -22,7 +22,7 @@
 
     which is the SOFTSUSY manual for the R-parity conserving MSSM. 
     If you use the decay calculations, please cite [Allanach:2001kg] and
-    [Allanach:2017hcf] B.C. Allanach and T. Cridge, arxiv:1703.09717
+    [Allanach:2017hcf] B.C. Allanach and T. Cridge, Comput. Phys. Commun. 220 (2017) 417, arxiv:1703.09717
 
     If you calculate in the NMSSM, please cite [Allanach:2001kg] and
     [Allanach:2013kza] B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and A. Williams, Comput. Phys. Comm. 185 (2014) 2322, arXiv:1311.7659.
