@@ -3004,7 +3004,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      chargino1amplitudeWbosonneutralinoZ4 = charginoiamplitudedecayneutralinojWNMSSM (MCH1, mneut(4), polemw, g, gp, thetaL2, thetaR2, mixNeut, 1, 4);
      chargino1amplitudeWbosonneutralinoZ5 = charginoiamplitudedecayneutralinojWNMSSM (MCH1, mneut(5), polemw, g, gp, thetaL2, thetaR2, mixNeut, 1, 5);
    }
- 
+
    chargino1amplitudeneut1udbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,1), mu(2,1), md(1,1), md(2,1), polemw, mHpm, mneut(1), mup, mdo, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmu, runmd, mixNeut, 1, 1, onetothree, 'q', 'c');
    chargino1amplitudeneut1csbar = neutralinoamplitudedecaycharginoffprimebar (MCH1, mu(1,2), mu(2,2), md(1,2), md(2,2), polemw, mHpm, mneut(1), mc, ms, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, runmc, runms, mixNeut, 1, 1, onetothree, 'q', 'c');
    chargino1amplitudeneut1nueebar = neutralinoamplitudedecaycharginoffprimebar (MCH1, msnu(1), 10000000000, me(1,1), me(2,1), polemw, mHpm, mneut(1), 0, mel, 0, 0, g, gp, alpha, beta, thetaL2, thetaR2, 0, runmel, mixNeut, 1, 1, onetothree, 'l', 'c');

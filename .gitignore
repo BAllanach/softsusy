@@ -35,6 +35,7 @@ cmsdilep.x
 scansusy_slha.x
 softsusy-nmssm.x
 aclocal.m4
+m4/*
 benchmarks/*.spec
 doc/*.ps
 doc/*.spl

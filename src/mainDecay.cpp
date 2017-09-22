@@ -53,7 +53,7 @@ int main() {
     
     int i;
     /// Set limits of M2 scan
-    double startM2 = 50, endM2 = 280.; ///< DEBUG
+    double startM2 = 255, endM2 = 280.; ///< DEBUG
     
     /// Cycle through different points in the scan
     for (i = 0; i <= numPoints; i++) {
@@ -69,17 +69,26 @@ int main() {
     bool uni = true;  ///< MGUT defined by g1(MGUT)=g2(MGUT)
     
     /// Calculate the spectrum
+    const char * modelIdent = "nonUniversal";
+    double qMax = 0.;
     r.lowOrg(nonUniGauginos, mGutGuess, pars, sgnMu, tanb, oneset, uni);
 
+    
     NmssmSoftsusy nmssm;
     vector<Particle> decayTable;
     int err = calculateDecays(cout, &r, decayTable, nmssm, false);
+
+    r.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax, 0,
+    			     false);
+    slhaDecays(cout, decayTable, false);
+    exit(0);
     
     /// check the point in question is problem free: if so print the output
     if (!r.displayProblem().test()) {
       /// Sets format of output: 6 decimal places
       outputCharacteristics(6);
 
+      
       if (decayTable.size() > 0 && err == 0) 
       cout << m2 << " " << r.displayPhys().mch(1) << " "
 	   << r.displayPhys().mch(1) - r.displayPhys().mneut(1) << " "
