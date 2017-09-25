@@ -21,8 +21,6 @@
  
 namespace softsusy {
 
-  using Real = long double;
-  
   struct mtParameters {
     mtParameters() = default;
     mtParameters(double g3_, double mt_, double mg_, double mst1_,

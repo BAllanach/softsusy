@@ -10,7 +10,7 @@
 
 namespace softsusy {
     
-    namespace {
+  namespace {
       const double Pi  = 3.1415926535897932384626433832795;
       const double zt2 = 1.6449340668482264364724151666460;
       const double zt3 = 1.2020569031595942853997381615114;
@@ -60,7 +60,7 @@ namespace softsusy {
          2*(mm1*pow2(log(mm1/mmu)) + mm2*pow2(log(mm2/mmu))))/2.;
    }
 
-} // anonymous namespace
+  } // anonymous namespace
 
   /// 2-loop QCD contributions to Delta Mt over mt [hep-ph/0507139]
 double dMt_over_mt_2loop_qcd(const mtParameters& pars) {

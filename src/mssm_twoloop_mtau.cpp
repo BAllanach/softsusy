@@ -32,7 +32,7 @@ namespace flexiblesusy {
 namespace mssm_twoloop_mtau {
 
 namespace {
-   const long double Pi = 3.1415926535897932384626433832795l;
+   const Real Pi = 3.1415926535897932384626433832795l;
 
    template <typename T> T power2(T x)  { return x*x; }
    template <typename T> T power3(T x)  { return x*x*x; }
@@ -45,8 +45,8 @@ namespace {
    template <typename T> T power12(T x) { return x*x*x*x*x * x*x*x*x*x * x*x; }
    template <typename T> T power14(T x) { return x*x*x*x*x * x*x*x*x*x * x*x*x*x; }
 
-   const long double oneLoop = 1.l/power2(4*Pi);
-   const long double twoLoop = power2(oneLoop);
+   const Real oneLoop = 1.l/power2(4*Pi);
+   const Real twoLoop = power2(oneLoop);
 
    template <typename T>
    bool is_zero(T a, T prec = std::numeric_limits<T>::epsilon())
@@ -82,7 +82,7 @@ namespace {
     *
     * @return Fin20(m12, m22, mmu)
     */
-   long double Fin20(long double mm1, long double mm2, long double mmu)
+   Real Fin20(Real mm1, Real mm2, Real mmu)
    {
       using std::log;
 
@@ -94,24 +94,24 @@ namespace {
          2*(mm1*power2(log(mm1/mmu)) + mm2*power2(log(mm2/mmu))))/2.;
    }
 
-   long double LambdaSquared(long double x, long double y)
+   Real LambdaSquared(Real x, Real y)
    {
       return power2(1 - x - y) - 4*x*y;
    }
 
    /// ClausenCl[2,x]
-   long double ClausenCl2(long double x)
+   Real ClausenCl2(Real x)
    {
       using std::exp;
-      const std::complex<long double> img(0.l,1.l);
+      const std::complex<Real> img(0.l,1.l);
 
       return std::imag(dilogcl(exp(img*x)));
    }
 
    /// x < 1 && y < 1, LambdaSquared(x,y) > 0
-   long double PhiPos(long double x, long double y)
+   Real PhiPos(Real x, Real y)
    {
-      const long double lambda = std::sqrt(LambdaSquared(x,y));
+      const Real lambda = std::sqrt(LambdaSquared(x,y));
 
       return (-(log(x)*log(y))
               + 2*log((1 - lambda + x - y)/2.)*log((1 - lambda - x + y)/2.)
@@ -121,20 +121,20 @@ namespace {
    }
 
    /// LambdaSquared(x,y) < 0
-   long double PhiNeg(long double x, long double y)
+   Real PhiNeg(Real x, Real y)
    {
       using std::acos;
       using std::sqrt;
-      const long double lambda = std::sqrt(-LambdaSquared(x,y));
+      const Real lambda = std::sqrt(-LambdaSquared(x,y));
 
       return 2*(+ ClausenCl2(2*acos((1 + x - y)/(2.*sqrt(x))))
                 + ClausenCl2(2*acos((1 - x + y)/(2.*sqrt(y))))
                 + ClausenCl2(2*acos((-1 + x + y)/(2.*sqrt(x*y)))))/lambda;
    }
 
-   long double Phi(long double x, long double y)
+   Real Phi(Real x, Real y)
    {
-      const long double lambda = LambdaSquared(x,y);
+      const Real lambda = LambdaSquared(x,y);
 
       if (lambda > 0.)
          return PhiPos(x,y);
@@ -152,18 +152,18 @@ namespace {
     *
     * @return Fin3(m12, m22, m32, mmu)
     */
-   long double Fin3(long double mm1, long double mm2, long double mm3, long double mmu)
+   Real Fin3(Real mm1, Real mm2, Real mm3, Real mmu)
    {
       using std::log;
 
-      std::array<long double,3> masses = { mm1, mm2, mm3 };
+      std::array<Real,3> masses = { mm1, mm2, mm3 };
       std::sort(masses.begin(), masses.end());
 
-      const long double mm = masses[2];
-      const long double x = masses[0]/mm;
-      const long double y = masses[1]/mm;
+      const Real mm = masses[2];
+      const Real x = masses[0]/mm;
+      const Real y = masses[1]/mm;
 
-      const long double lambda = LambdaSquared(x,y);
+      const Real lambda = LambdaSquared(x,y);
 
       if (is_zero(lambda, 1e-10l)) {
          return -(mm*(2*y*(-3 + 2*log(mm/mmu))*log(y)
@@ -182,28 +182,28 @@ namespace {
    }
 
    /// Delta[m1,m2,m3,-1]
-   long double DeltaInv(long double m1, long double m2, long double m3)
+   Real DeltaInv(Real m1, Real m2, Real m3)
    {
       return 1./(power2(m1) + power2(m2) + power2(m3) - 2*(m1*m2 + m1*m3 + m2*m3));
    }
 
    /// calculates sin(theta)
-   long double calc_sin_theta(long double mf, long double xf, long double msf12, long double msf22)
+   Real calc_sin_theta(Real mf, Real xf, Real msf12, Real msf22)
    {
       if (is_zero(mf, 1e-10l) || is_zero(xf, 1e-10l))
          return 0.;
 
-      const long double sin_2theta = 2.0*mf*xf / (msf12 - msf22);
-      const long double theta = 0.5*std::asin(sin_2theta);
+      const Real sin_2theta = 2.0*mf*xf / (msf12 - msf22);
+      const Real theta = 0.5*std::asin(sin_2theta);
 
       return std::sin(theta);
    }
 
    /// calculates Higgs mixing angle from squarde Higgs masses and tan(beta)
-   long double calc_alpha(long double mh2, long double mH2, long double tb)
+   Real calc_alpha(Real mh2, Real mH2, Real tb)
    {
-      const long double beta = std::atan(tb);
-      const long double sin_2alpha = -(mH2 + mh2)/(mH2 - mh2) * std::sin(2*beta);
+      const Real beta = std::atan(tb);
+      const Real sin_2alpha = -(mH2 + mh2)/(mH2 - mh2) * std::sin(2*beta);
 
       return 0.5*std::asin(sin_2alpha);
    }
@@ -213,28 +213,28 @@ namespace {
 double delta_mtau_2loop_atau_atau(const Parameters& pars)
 {
    using std::log;
-   const long double ytau  = pars.ytau;
-   const long double xtau  = pars.xtau;
-   const long double mstau12 = power2(pars.mstau1);
-   const long double mstau2  = pars.mstau2;
-   const long double mstau22 = power2(pars.mstau2);
-   const long double mstau24 = power4(pars.mstau2);
-   const long double msntau2 = power2(pars.msntau);
-   const long double mw2   = power2(pars.mw);
-   const long double mz2   = power2(pars.mz);
-   const long double mh2   = power2(pars.mh);
-   const long double mH2   = power2(pars.mH);
-   const long double mC2   = power2(pars.mC);
-   const long double mA2   = power2(pars.mA);
-   const long double mu    = pars.mu;
-   const long double mu2   = power2(pars.mu);
-   const long double tb    = pars.tb;
-   const long double sb    = tb / std::sqrt(1. + power2(tb));
-   const long double cb    = 1. / std::sqrt(1. + power2(tb));
-   const long double Q2    = power2(pars.Q);
-   const long double alpha = calc_alpha(mh2, mH2, tb);
-   const long double sa    = std::sin(alpha);
-   const long double ca    = std::cos(alpha);
+   const Real ytau  = pars.ytau;
+   const Real xtau  = pars.xtau;
+   const Real mstau12 = power2(pars.mstau1);
+   const Real mstau2  = pars.mstau2;
+   const Real mstau22 = power2(pars.mstau2);
+   const Real mstau24 = power4(pars.mstau2);
+   const Real msntau2 = power2(pars.msntau);
+   const Real mw2   = power2(pars.mw);
+   const Real mz2   = power2(pars.mz);
+   const Real mh2   = power2(pars.mh);
+   const Real mH2   = power2(pars.mH);
+   const Real mC2   = power2(pars.mC);
+   const Real mA2   = power2(pars.mA);
+   const Real mu    = pars.mu;
+   const Real mu2   = power2(pars.mu);
+   const Real tb    = pars.tb;
+   const Real sb    = tb / std::sqrt(1. + power2(tb));
+   const Real cb    = 1. / std::sqrt(1. + power2(tb));
+   const Real Q2    = power2(pars.Q);
+   const Real alpha = calc_alpha(mh2, mH2, tb);
+   const Real sa    = std::sin(alpha);
+   const Real ca    = std::cos(alpha);
 
    const double result =
    ((-(mC2*mH2) + mA2*(3*mC2 + mH2))*(mstau12 + mstau22))/(4.*mA2*mC2*mH2) - (
@@ -11441,38 +11441,38 @@ double delta_mtau_2loop_atau_atau(const Parameters& pars)
 double delta_mtau_2loop_atau_at(const Parameters& pars)
 {
    using std::log;
-   const long double ytau  = pars.ytau;
-   const long double yt    = pars.yt;
-   const long double xt    = pars.xt;
-   const long double xtau  = pars.xtau;
-   const long double mt    = pars.mt;
-   const long double mt2   = power2(pars.mt);
-   const long double mst1  = pars.mst1;
-   const long double mst12 = power2(pars.mst1);
-   const long double mst14 = power4(pars.mst1);
-   const long double mst2  = pars.mst2;
-   const long double mst22 = power2(pars.mst2);
-   const long double mst24 = power4(pars.mst2);
-   const long double msb1  = pars.msb1;
-   const long double msb12 = power2(pars.msb1);
-   const long double msb14 = power4(pars.msb1);
-   const long double mstau12 = power2(pars.mstau1);
-   const long double mstau22 = power2(pars.mstau2);
-   const long double msntau2 = power2(pars.msntau);
-   const long double mh2   = power2(pars.mh);
-   const long double mH2   = power2(pars.mH);
-   const long double mC2   = power2(pars.mC);
-   const long double mA2   = power2(pars.mA);
-   const long double mu    = pars.mu;
-   const long double mu2   = power2(pars.mu);
-   const long double tb    = pars.tb;
-   const long double sb    = tb / std::sqrt(1. + power2(tb));
-   const long double cb    = 1. / std::sqrt(1. + power2(tb));
-   const long double Q2    = power2(pars.Q);
-   const long double snt   = calc_sin_theta(mt, xt, mst12, mst22);
-   const long double alpha = calc_alpha(mh2, mH2, tb);
-   const long double sa    = std::sin(alpha);
-   const long double ca    = std::cos(alpha);
+   const Real ytau  = pars.ytau;
+   const Real yt    = pars.yt;
+   const Real xt    = pars.xt;
+   const Real xtau  = pars.xtau;
+   const Real mt    = pars.mt;
+   const Real mt2   = power2(pars.mt);
+   const Real mst1  = pars.mst1;
+   const Real mst12 = power2(pars.mst1);
+   const Real mst14 = power4(pars.mst1);
+   const Real mst2  = pars.mst2;
+   const Real mst22 = power2(pars.mst2);
+   const Real mst24 = power4(pars.mst2);
+   const Real msb1  = pars.msb1;
+   const Real msb12 = power2(pars.msb1);
+   const Real msb14 = power4(pars.msb1);
+   const Real mstau12 = power2(pars.mstau1);
+   const Real mstau22 = power2(pars.mstau2);
+   const Real msntau2 = power2(pars.msntau);
+   const Real mh2   = power2(pars.mh);
+   const Real mH2   = power2(pars.mH);
+   const Real mC2   = power2(pars.mC);
+   const Real mA2   = power2(pars.mA);
+   const Real mu    = pars.mu;
+   const Real mu2   = power2(pars.mu);
+   const Real tb    = pars.tb;
+   const Real sb    = tb / std::sqrt(1. + power2(tb));
+   const Real cb    = 1. / std::sqrt(1. + power2(tb));
+   const Real Q2    = power2(pars.Q);
+   const Real snt   = calc_sin_theta(mt, xt, mst12, mst22);
+   const Real alpha = calc_alpha(mh2, mH2, tb);
+   const Real sa    = std::sin(alpha);
+   const Real ca    = std::cos(alpha);
 
    const double result =
    (-3*mu2*(-2 + 3*mA2*(mA2 - mst12 - mst22)*DeltaInv(mA2,mst12,mst22))*log(
@@ -17038,42 +17038,42 @@ double delta_mtau_2loop_atau_at(const Parameters& pars)
 double delta_mtau_2loop_atau_ab(const Parameters& pars)
 {
    using std::log;
-   const long double ytau  = pars.ytau;
-   const long double yb    = pars.yb;
-   const long double xt    = pars.xt;
-   const long double xb    = pars.xb;
-   const long double mt    = pars.mt;
-   const long double mt2   = power2(pars.mt);
-   const long double mst1  = pars.mst1;
-   const long double mst12 = power2(pars.mst1);
-   const long double mst14 = power4(pars.mst1);
-   const long double mst2  = pars.mst2;
-   const long double mst22 = power2(pars.mst2);
-   const long double mst24 = power4(pars.mst2);
-   const long double msb1  = pars.msb1;
-   const long double msb12 = power2(pars.msb1);
-   const long double msb14 = power4(pars.msb1);
-   const long double msb2  = pars.msb2;
-   const long double msb22 = power2(pars.msb2);
-   const long double msb24 = power4(pars.msb2);
-   const long double mstau12 = power2(pars.mstau1);
-   const long double mstau22 = power2(pars.mstau2);
-   const long double msntau2 = power2(pars.msntau);
-   const long double msntau4 = power4(pars.msntau);
-   const long double mh2   = power2(pars.mh);
-   const long double mH2   = power2(pars.mH);
-   const long double mC2   = power2(pars.mC);
-   const long double mA2   = power2(pars.mA);
-   const long double mu    = pars.mu;
-   const long double mu2   = power2(pars.mu);
-   const long double tb    = pars.tb;
-   const long double sb    = tb / std::sqrt(1. + power2(tb));
-   const long double cb    = 1. / std::sqrt(1. + power2(tb));
-   const long double Q2    = power2(pars.Q);
-   const long double snt   = calc_sin_theta(mt, xt, mst12, mst22);
-   const long double alpha = calc_alpha(mh2, mH2, tb);
-   const long double sa    = std::sin(alpha);
-   const long double ca    = std::cos(alpha);
+   const Real ytau  = pars.ytau;
+   const Real yb    = pars.yb;
+   const Real xt    = pars.xt;
+   const Real xb    = pars.xb;
+   const Real mt    = pars.mt;
+   const Real mt2   = power2(pars.mt);
+   const Real mst1  = pars.mst1;
+   const Real mst12 = power2(pars.mst1);
+   const Real mst14 = power4(pars.mst1);
+   const Real mst2  = pars.mst2;
+   const Real mst22 = power2(pars.mst2);
+   const Real mst24 = power4(pars.mst2);
+   const Real msb1  = pars.msb1;
+   const Real msb12 = power2(pars.msb1);
+   const Real msb14 = power4(pars.msb1);
+   const Real msb2  = pars.msb2;
+   const Real msb22 = power2(pars.msb2);
+   const Real msb24 = power4(pars.msb2);
+   const Real mstau12 = power2(pars.mstau1);
+   const Real mstau22 = power2(pars.mstau2);
+   const Real msntau2 = power2(pars.msntau);
+   const Real msntau4 = power4(pars.msntau);
+   const Real mh2   = power2(pars.mh);
+   const Real mH2   = power2(pars.mH);
+   const Real mC2   = power2(pars.mC);
+   const Real mA2   = power2(pars.mA);
+   const Real mu    = pars.mu;
+   const Real mu2   = power2(pars.mu);
+   const Real tb    = pars.tb;
+   const Real sb    = tb / std::sqrt(1. + power2(tb));
+   const Real cb    = 1. / std::sqrt(1. + power2(tb));
+   const Real Q2    = power2(pars.Q);
+   const Real snt   = calc_sin_theta(mt, xt, mst12, mst22);
+   const Real alpha = calc_alpha(mh2, mH2, tb);
+   const Real sa    = std::sin(alpha);
+   const Real ca    = std::cos(alpha);
 
    const double result =
    (3*(-(mC2*mH2) + mA2*(3*mC2 + mH2))*(msb12 + msb22))/(4.*mA2*mC2*mH2) + (3*
