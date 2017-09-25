@@ -20,6 +20,8 @@
 #include <limits>
  
 namespace softsusy {
+
+  using Real = long double;
   
   struct mtParameters {
     mtParameters() = default;
