@@ -407,7 +407,7 @@ double squark3amplitudedecaychargedHiggssquark3 (double m1, double m2, double m3
     A12 = g/(root2*mWboson)*(mt*mb*combo1*sin(thetat)*(-cos(thetab)) + mt*combo2*sin(thetat)*sin(thetab) + mb*combo3*(-cos(thetab))*cos(thetat) + combo4*cos(thetat)*sin(thetab));
     A21 = g/(root2*mWboson)*(mt*mb*combo1*(-cos(thetat))*sin(thetab) + mt*combo2*(-cos(thetat))*cos(thetab) + mb*combo3*sin(thetab)*sin(thetat) + combo4*sin(thetat)*cos(thetab));
     A22 = g/(root2*mWboson)*(mt*mb*combo1*(-cos(thetat))*(-cos(thetab)) + mt*combo2*-(cos(thetat))*sin(thetab) + mb*combo3*(-cos(thetab))*sin(thetat) + combo4*sin(thetat)*sin(thetab));
-
+    // std::cout << "t1or2 = " << t1or2 << std::endl;
     if(t1or2 == 1) /// we have an initial stop1
       {
 	if (b1or2 == 1) /// we have a final state sbottom1
@@ -422,7 +422,7 @@ double squark3amplitudedecaychargedHiggssquark3 (double m1, double m2, double m3
 	  throw("problem:b1or2 must be 1 or 2 in squark3amplitudedecaychargedHiggssquark3\n");
 	}
       }
-    if(t1or2 == 2) /// we have an initial stop2
+    else if(t1or2 == 2) /// we have an initial stop2
       {
 	if (b1or2 == 1) /// we have a final state sbottom1
 	  {
