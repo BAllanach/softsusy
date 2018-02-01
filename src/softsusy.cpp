@@ -6893,7 +6893,6 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
     16.0 / 9.0 * log(tree.mt / q);
   
   double deltaASusy = 
-    /// commented out since alpha(MZ) includes it!
     log(tree.mHpm / q) / 3.0 + 4.0 / 9.0 * 
     (log(tree.mu(1,1) / q) + 
      log(tree.mu(2,1) / q) + 
@@ -9226,6 +9225,16 @@ double MssmSoftsusy::dRho(double outrho, double outsin, double alphaDRbar,
   double sinb = sin(atan(displayTanb()));
   
   double xt = 3.0 * GMU * sqr(mt) / (8.0 * sqr(PI) * root2);
+
+  /// This is the expression for the 2-loop SM corrections from 1411.0740
+  /// at MZ in rxi=1 gauge
+  double y0 = -18.616753, y1 = 15.972019, y2 = -16.216781, y3 = 0.0152367,
+    y4 = -13.633472;
+  double dT = sqr(mt / 173.34) - 1.0;
+  double ds = sqr(outsin / 0.231) - 1.;
+  double dH = log(displayPhys().mh0(1) / 125.15);
+  double das = displayDataSet().displayAlpha(ALPHAS) / 0.1184 - 1.;
+  double yHo = 1.0e-4 * (y0 + y1 * ds + y2 * dT + y3 * dH + y4 * das);
   
   double deltaRho2LoopSm = alphaDRbar * sqr(displayGaugeCoupling(3)) / 
     (16.0 * PI * sqr(PI) * sqr(outsin)) * /// bug-fixed 24.08.2002
@@ -9233,7 +9242,7 @@ double MssmSoftsusy::dRho(double outrho, double outsin, double alphaDRbar,
      - 0.85 * sqr(mz)
      / sqr(mt)) + sqr(xt) * sqr(h1s2Mix()) / sqr(sinb) *
     rho2(tree.mh0(1) / mt) / 3.0;
-  
+
   double deltaRhoOneLoop = pizztMZ / (outrho * sqr(mz))
     - piwwtMW / sqr(displayMw());
   
