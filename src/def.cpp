@@ -76,5 +76,8 @@ namespace softsusy {
   /// Default: expand around gluino and squark pole masses
   int expandAroundGluinoPole = 3;
 
+  /// Thresholds at 2-loop SM to electroweak gauge couplings at QED x QCD /
+  /// MSSM matching scale 
+  bool twoLEW =true;
 }
 /// end of global variable declaration

@@ -22,6 +22,10 @@ namespace softsusy{
   /// down. It also now checks over/underflows in matrix multiplication etc
   ///  #define ARRAY_BOUNDS_CHECKING 
 
+  /// Set to true (default) if you want to include 2-loop SM contributions to
+  /// electroweak gauge coupling threshold effects
+  extern bool twoLEW;
+  
   extern bool NMSSMTools;
   extern bool SoftHiggsOut;
   /// Set to number of loops to use for calculation of Higgs mass 

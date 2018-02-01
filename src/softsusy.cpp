@@ -6929,8 +6929,8 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
 					 b4 * das);
     
     double deltaAlpha;
-    deltaAlpha = -alphaEm / (2.0 * PI) * (deltaASM + deltaASusy) +
-      deltaAlphaTwoLoop;
+    deltaAlpha = -alphaEm / (2.0 * PI) * (deltaASM + deltaASusy);
+    if (twoLEW) deltaAlpha += deltaAlphaTwoLoop;
   
     return alphaEm / (1.0 - deltaAlpha);
 }
@@ -9248,7 +9248,8 @@ double MssmSoftsusy::dRho(double outrho, double outsin, double alphaDRbar,
   double ds = sqr(outsin / 0.231) - 1.;
   double dH = log(displayPhys().mh0(1) / 125.15);
   double das = displayDataSet().displayAlpha(ALPHAS) / 0.1184 - 1.;
-  double yHo = 1.0e-4 * (y0 + y1 * ds + y2 * dT + y3 * dH + y4 * das);
+  double deltaRho2LoopSm = 1.0e-4 * (y0 + y1 * ds + y2 * dT + y3 * dH +
+				     y4 * das);
   
   /*  double deltaRho2LoopSm = alphaDRbar * sqr(displayGaugeCoupling(3)) / 
     (16.0 * PI * sqr(PI) * sqr(outsin)) * /// bug-fixed 24.08.2002
@@ -9257,12 +9258,11 @@ double MssmSoftsusy::dRho(double outrho, double outsin, double alphaDRbar,
      / sqr(mt)) + sqr(xt) * sqr(h1s2Mix()) / sqr(sinb) *
      rho2(tree.mh0(1) / mt) / 3.0; */
 
-  double deltaRho2LoopSm = yHo; 
-  
   double deltaRhoOneLoop = pizztMZ / (outrho * sqr(mz))
     - piwwtMW / sqr(displayMw());
-  
-  double deltaRho = deltaRhoOneLoop + deltaRho2LoopSm;
+
+  double deltaRho = deltaRhoOneLoop;
+  if (twoLEW) deltaRho += deltaRho2LoopSm;
   
   return deltaRho;
 }
@@ -9303,7 +9303,7 @@ double MssmSoftsusy::dR(double outrho, double outsin, double alphaDRbar,
   double das = displayDataSet().displayAlpha(ALPHAS) / 0.1184 - 1.;  
   double deltaR2LoopSm = 1.0e-4 * (r0 + r1 * ds + r2 * dT + r3 * dH + r4 * das);
   
-  deltaR = deltaR + deltaR2LoopSm; 
+  if (twoLEW) deltaR += deltaR2LoopSm; 
   
   return deltaR;
 }
