@@ -78,6 +78,6 @@ namespace softsusy {
 
   /// Thresholds at 2-loop SM to electroweak gauge couplings at QED x QCD /
   /// MSSM matching scale 
-  bool twoLEW = false;
+  bool twoLEW = true;
 }
 /// end of global variable declaration
