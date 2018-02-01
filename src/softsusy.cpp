@@ -9236,10 +9236,7 @@ double MssmSoftsusy::dRho(double outrho, double outsin, double alphaDRbar,
   
   /// 2 loop SM contribution
   double mt   = dataSet.displayPoleMt(); 
-  double sinb = sin(atan(displayTanb()));
   
-  double xt = 3.0 * GMU * sqr(mt) / (8.0 * sqr(PI) * root2);
-
   /// This is the expression for the 2-loop SM corrections from 1411.7040
   /// at MZ in rxi=1 gauge
   double y0 = -18.616753, y1 = 15.972019, y2 = -16.216781, y3 = 0.0152367,
@@ -9270,14 +9267,6 @@ double MssmSoftsusy::dRho(double outrho, double outsin, double alphaDRbar,
 double MssmSoftsusy::dR(double outrho, double outsin, double alphaDRbar,
 			double pizztMZ, double piwwt0) {
   drBarPars tree(displayDrBarPars());
-  
-  double outcos = cos(asin(outsin));
-  /// 2 loop SM contribution
-  double mt   = dataSet.displayPoleMt();
-  
-  double sinb = sin(atan(displayTanb()));
-  
-  double xt = 3.0 * GMU * sqr(mt) / (8.0 * sqr(PI) * root2);
   
   double dvb = deltaVb(outrho, outsin, alphaDRbar, pizztMZ);
   
@@ -9364,8 +9353,9 @@ void MssmSoftsusy::rhohat(double & outrho, double & outsin, double alphaDRbar,
     (root2 * sqr(mz) * GMU * (1.0 - deltaR));
   //  cout << "old s^2thW=" << sin2thetasqO4;
   
-  sin2thetasqO4 = PI * alphaDRbar * (1.0 + deltaR)/ 
-    (root2 * sqr(mz) * GMU); 
+  sin2thetasqO4 = PI * alphaDRbar / (root2 * sqr(mz) * GMU);
+  if (twoLEW) sin2thetasqO4 *= (1.0 + deltaR);
+  else sin2thetasqO4 /= (1.0 - deltaR);
   //  cout << " new s^2thW=" << sin2thetasqO4 << endl;
   
   if (sin2thetasqO4 >= 0.25) sin2thetasqO4 = 0.25;

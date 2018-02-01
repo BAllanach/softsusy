@@ -49,7 +49,7 @@ Block RVLAMLQDIN           # input LLE couplings at MGUT
   2 2 2   3.30000000e-05   # lambda'_{222}
   3 2 2   3.20000000e-05   # lambda'_{322}
 # SOFTSUSY-specific non SLHA information:
-# mixing=2 Desired accuracy=1.00000000e-03 Achieved accuracy=5.40976732e-04
+# mixing=2 Desired accuracy=1.00000000e-03 Achieved accuracy=5.40977277e-04
 # 3-loop RGE corrections are off. 2-loop Yukawa/g3 thresholds are off
 # 2-loop SUSY QCD computation of squark/gluino pole masses are off
 Block MASS                      # Mass spectrum
@@ -84,7 +84,7 @@ Block MASS                      # Mass spectrum
    2000001     1.01193036e+03   # ~d_4
    2000003     1.05396924e+03   # ~d_5
    2000005     1.05631509e+03   # ~d_6
-   1000002     8.16966897e+02   # ~u_1
+   1000002     8.16966898e+02   # ~u_1
    1000004     1.00029548e+03   # ~u_2
    1000006     1.01523772e+03   # ~u_3
    2000002     1.01524318e+03   # ~u_4
@@ -92,7 +92,7 @@ Block MASS                      # Mass spectrum
    2000006     1.05343174e+03   # ~u_6
         12     1.88623449e-10   # Mnu1 normal hierarchy output
         14     2.88430456e-10   # Mnu2 normal hierarchy output
-        16    -5.31492313e-07   # Mnu3 normal hierarchy output
+        16    -5.31492314e-07   # Mnu3 normal hierarchy output
 Block RVNMIX  # neutrino-neutralino mixing matrix 
   1 1    1.84584174e-03   # N_{11}
   1 2    8.74835756e-01   # N_{12}
@@ -110,7 +110,7 @@ Block RVNMIX  # neutrino-neutralino mixing matrix
   2 7   -1.39075453e-10   # N_{27}
   3 1    9.99610254e-01   # N_{31}
   3 2    1.18795361e-02   # N_{32}
-  3 3   -2.52629184e-02   # N_{33}
+  3 3   -2.52629183e-02   # N_{33}
   3 4    3.11010092e-05   # N_{34}
   3 5   -2.93677582e-05   # N_{35}
   3 6    2.10484836e-05   # N_{36}
@@ -122,10 +122,10 @@ Block RVNMIX  # neutrino-neutralino mixing matrix
   4 5   -1.51918305e-02   # N_{45}
   4 6    8.49640221e-02   # N_{46}
   4 7   -3.24832527e-02   # N_{47}
-  5 1    3.16623075e-05   # N_{51}
+  5 1    3.16623076e-05   # N_{51}
   5 2    5.84403962e-07   # N_{52}
   5 3   -1.02073559e-06   # N_{53}
-  5 4    3.68684656e-02   # N_{54}
+  5 4    3.68684655e-02   # N_{54}
   5 5    9.68158915e-01   # N_{55}
   5 6   -2.07063925e-01   # N_{56}
   5 7    1.35770253e-01   # N_{57}
@@ -145,17 +145,17 @@ Block RVNMIX  # neutrino-neutralino mixing matrix
   7 7    6.92023131e-01   # N_{77}
 Block RVUMIX  # lepton-chargino mixing matrix U
   1 1   -9.99999999e-01   # U_{11}
-  1 2   -1.66140557e-09   # U_{12}
+  1 2   -1.66140666e-09   # U_{12}
   1 3    2.01306093e-09   # U_{13}
   1 4    3.53410176e-05   # U_{14}
   1 5   -2.12207210e-05   # U_{15}
-  2 1   -1.86314159e-09   # U_{21}
+  2 1   -1.86314268e-09   # U_{21}
   2 2    1.00000000e+00   # U_{22}
-  2 3   -2.15763726e-10   # U_{23}
+  2 3   -2.15763733e-10   # U_{23}
   2 4   -3.76723362e-06   # U_{24}
   2 5    3.23260229e-06   # U_{25}
-  3 1    2.25395304e-09   # U_{31}
-  3 2    2.45082531e-10   # U_{32}
+  3 1    2.25395281e-09   # U_{31}
+  3 2    2.45082534e-10   # U_{32}
   3 3    1.00000000e+00   # U_{33}
   3 4    4.56390663e-06   # U_{34}
   3 5   -3.75100126e-06   # U_{35}
@@ -171,17 +171,17 @@ Block RVUMIX  # lepton-chargino mixing matrix U
   5 5    9.55198128e-01   # U_{55}
 Block RVVMIX  # lepton-chargino mixing matrix V
   1 1   -1.00000000e+00   # V_{11}
-  1 2   -1.67511164e-11   # V_{12}
-  1 3    1.16741071e-12   # V_{13}
+  1 2   -1.69200625e-11   # V_{12}
+  1 3    1.16776451e-12   # V_{13}
   1 4    6.39249444e-10   # V_{14}
   1 5   -2.00094083e-09   # V_{15}
-  2 1   -1.67512216e-11   # V_{21}
+  2 1   -1.69201747e-11   # V_{21}
   2 2    1.00000000e+00   # V_{22}
-  2 3   -2.59607751e-11   # V_{23}
+  2 3   -2.59607709e-11   # V_{23}
   2 4   -1.40895569e-08   # V_{24}
   2 5    4.41022953e-08   # V_{25}
-  3 1    1.16957341e-12   # V_{31}
-  3 2    2.60066594e-11   # V_{32}
+  3 1    1.16985151e-12   # V_{31}
+  3 2    2.60066771e-11   # V_{32}
   3 3    1.00000000e+00   # V_{33}
   3 4    3.01887104e-07   # V_{34}
   3 5   -9.44927131e-07   # V_{35}
@@ -201,7 +201,7 @@ Block gauge Q= 8.81070927e+02  # SM gauge couplings
      3     1.06573237e+00   # g3(Q)MSSM DRbar
 Block yu Q= 8.81070927e+02   # diagonal Up Yukawa matrix
   1  1     7.27319790e-06    # YU_{11}(Q)MSSM DRbar
-  2  2     3.32456391e-03    # YU_{22}(Q)MSSM DRbar
+  2  2     3.32456392e-03    # YU_{22}(Q)MSSM DRbar
   3  3     8.30447460e-01    # YU_{33}(Q)MSSM DRbar
 Block yd Q= 8.81070927e+02   # diagonal down Yukawa matrix
   1  1     5.49626999e-05    # YD_{11}(Q)MSSM DRbar
@@ -226,13 +226,13 @@ Block RVLAMLLE Q= 8.81070927e+02 # non-zero R-Parity violating LLE couplings
   2 1 1   -6.52904563e-11   # lambda_{211}
   2 1 2    1.65665515e-07   # lambda_{212}
   2 1 3   -4.52315170e-10   # lambda_{213}
-  2 3 1    3.08257432e-15   # lambda_{231}
+  2 3 1    3.08257703e-15   # lambda_{231}
   2 3 2   -1.64331742e-08   # lambda_{232}
   2 3 3   -2.38309990e-07   # lambda_{233}
   3 1 1    7.97560744e-11   # lambda_{311}
   3 1 2   -2.62050584e-11   # lambda_{312}
   3 1 3    2.93629209e-06   # lambda_{313}
-  3 2 1   -3.08257432e-15   # lambda_{321}
+  3 2 1   -3.08257703e-15   # lambda_{321}
   3 2 2    1.64331742e-08   # lambda_{322}
   3 2 3    2.38309990e-07   # lambda_{323}
 Block RVLAMLQD Q= 8.81070927e+02 # non-zero R-Parity violating LQD couplings 
@@ -262,7 +262,7 @@ Block RVLAMLQD Q= 8.81070927e+02 # non-zero R-Parity violating LQD couplings
   3 2 3    3.66809884e-08   # lambda'_{323}
   3 3 1   -1.12331638e-06   # lambda'_{331}
   3 3 2    5.67976245e-08   # lambda'_{332}
-  3 3 3   -8.97826521e-05   # lambda'_{333}
+  3 3 3   -8.97826522e-05   # lambda'_{333}
 Block RVLAMUDD Q= 8.81070927e+02 # non-zero R-Parity violating UDD couplings 
 Block RVTLLE Q= 8.81070927e+02 # non-zero R-Parity violating LLE soft terms 
   1 2 1   -8.45490742e-08   # T_{121}
@@ -270,17 +270,17 @@ Block RVTLLE Q= 8.81070927e+02 # non-zero R-Parity violating LLE soft terms
   1 2 3    2.53400481e-06   # T_{123}
   1 3 1    1.07429436e-07   # T_{131}
   1 3 2    1.46085543e-07   # T_{132}
-  1 3 3    5.14995074e-03   # T_{133}
+  1 3 3    5.14995075e-03   # T_{133}
   2 1 1    8.45490742e-08   # T_{211}
   2 1 2   -2.91597270e-04   # T_{212}
   2 1 3   -2.53400481e-06   # T_{213}
-  2 3 1    1.77664416e-11   # T_{231}
+  2 3 1    1.77664378e-11   # T_{231}
   2 3 2    2.25357927e-05   # T_{232}
   2 3 3    3.13781146e-04   # T_{233}
   3 1 1   -1.07429436e-07   # T_{311}
   3 1 2   -1.46085543e-07   # T_{312}
-  3 1 3   -5.14995074e-03   # T_{313}
-  3 2 1   -1.77664416e-11   # T_{321}
+  3 1 3   -5.14995075e-03   # T_{313}
+  3 2 1   -1.77664378e-11   # T_{321}
   3 2 2   -2.25357927e-05   # T_{322}
   3 2 3   -3.13781146e-04   # T_{323}
 Block RVTLQD Q= 8.81070927e+02 # non-zero R-Parity violating LQD soft terms 
@@ -309,7 +309,7 @@ Block RVTLQD Q= 8.81070927e+02 # non-zero R-Parity violating LQD soft terms
   3 2 2   -2.21424755e-05   # T'_{322}
   3 2 3   -9.59325338e-05   # T'_{323}
   3 3 1    3.08724629e-03   # T'_{331}
-  3 3 2   -1.48924257e-04   # T'_{332}
+  3 3 2   -1.48924258e-04   # T'_{332}
   3 3 3    1.16245629e-01   # T'_{333}
 Block RVTUDD Q= 8.81070927e+02 # non-zero R-Parity violating UDD soft terms 
 Block RVKAPPA Q= 8.81070927e+02 # R-Parity violating kappa 
@@ -323,36 +323,36 @@ Block RVD Q= 8.81070927e+02 # R-Parity violating D
 Block RVSNVEV Q= 8.81070927e+02 # sneutrino VEVs D 
      1    3.56274459e-02   # SneutrinoVev_{1}
      2    4.03198964e-04   # SneutrinoVev_{2}
-     3   -8.77058836e-04   # SneutrinoVev_{3}
+     3   -8.77058835e-04   # SneutrinoVev_{3}
 Block RVM2LH1 Q= 8.81070927e+02 # M2LH1 
      1   -4.79449171e+01   # M2LH1_{1}
      2   -2.04394606e+00   # M2LH1_{2}
      3    2.76672761e+00   # M2LH1_{3}
 Block UPMNS Q= 9.11876000e+01 # neutrino mixing matrix (normal hierarchy)
-  1  1     1.94726621e-03   # UPMNS_{11} matrix element
+  1  1     1.94726622e-03   # UPMNS_{11} matrix element
   1  2     2.74680593e-02   # UPMNS_{12} matrix element
   1  3     9.99620785e-01   # UPMNS_{13} matrix element
   2  1    -8.74898866e-01   # UPMNS_{21} matrix element
   2  2     4.84166724e-01   # UPMNS_{22} matrix element
-  2  3    -1.15998582e-02   # UPMNS_{23} matrix element
+  2  3    -1.15998581e-02   # UPMNS_{23} matrix element
   3  1    -4.84301747e-01   # UPMNS_{31} matrix element
   3  2    -8.74544504e-01   # UPMNS_{32} matrix element
   3  3     2.49745755e-02   # UPMNS_{33} matrix element
 Block msq2 Q= 8.81070927e+02 # super CKM squark mass^2 matrix - DRbar
   1  1     1.03299370e+06    # (m_Q^2)_{11}
   1  2    -1.02151630e+03    # (m_Q^2)_{12}
-  1  3    -7.66686143e+02    # (m_Q^2)_{13}
+  1  3    -7.66686144e+02    # (m_Q^2)_{13}
   2  1    -1.02151630e+03    # (m_Q^2)_{21}
   2  2     1.03719999e+06    # (m_Q^2)_{22}
   2  3     5.87713270e+03    # (m_Q^2)_{23}
-  3  1    -7.66686143e+02    # (m_Q^2)_{31}
+  3  1    -7.66686144e+02    # (m_Q^2)_{31}
   3  2     5.87713270e+03    # (m_Q^2)_{32}
   3  3     8.79566288e+05    # (m_Q^2)_{33}
 Block msl2 Q= 8.81070927e+02 # super MNS slepton mass^2 matrix - DRbar
   1  1     1.09137160e+05    # (m_L^2)_{11}
-  1  2    -4.67279057e+03    # (m_L^2)_{12}
+  1  2    -4.67279058e+03    # (m_L^2)_{12}
   1  3    -4.89934217e+03    # (m_L^2)_{13}
-  2  1    -4.67279057e+03    # (m_L^2)_{21}
+  2  1    -4.67279058e+03    # (m_L^2)_{21}
   2  2     1.17401286e+05    # (m_L^2)_{22}
   2  3    -2.20629127e+03    # (m_L^2)_{23}
   3  1    -4.89934217e+03    # (m_L^2)_{31}
@@ -364,9 +364,9 @@ Block msd2 Q= 8.81070927e+02 # super CKM squark mass^2 matrix - DRbar
   1  3    -3.77118213e+01    # (m_d^2)_{13}
   2  1    -2.10724103e+03    # (m_d^2)_{21}
   2  2     9.52630359e+05    # (m_d^2)_{22}
-  2  3    -9.90769552e+00    # (m_d^2)_{23}
+  2  3    -9.90769553e+00    # (m_d^2)_{23}
   3  1    -3.77118213e+01    # (m_d^2)_{31}
-  3  2    -9.90769552e+00    # (m_d^2)_{32}
+  3  2    -9.90769553e+00    # (m_d^2)_{32}
   3  3     9.19138036e+05    # (m_d^2)_{33}
 Block msu2 Q= 8.81070927e+02 # super CKM squark mass^2 matrix - DRbar
   1  1     9.62096617e+05    # (m_u^2)_{11}
@@ -384,9 +384,9 @@ Block mse2 Q= 8.81070927e+02 # super MNS slepton mass^2 matrix - DRbar
   1  3     6.64051664e-03    # (m_e^2)_{13}
   2  1     3.57199514e-04    # (m_e^2)_{21}
   2  2     4.36151395e+04    # (m_e^2)_{22}
-  2  3     6.18018267e-01    # (m_e^2)_{23}
+  2  3     6.18018268e-01    # (m_e^2)_{23}
   3  1     6.64051664e-03    # (m_e^2)_{31}
-  3  2     6.18018267e-01    # (m_e^2)_{32}
+  3  2     6.18018268e-01    # (m_e^2)_{32}
   3  3     3.84283642e+04    # (m_e^2)_{33}
 Block tu Q= 8.81070927e+02   # super CKM trilinear matrix - DRbar
   1  1    -8.39957107e-03    # (T_u)_{11}
@@ -444,20 +444,20 @@ Block USQMIX  # super CKM squark mass^2 matrix
   2  1     5.90020244e-04   # (USQMIX)_{21}
   2  2     5.97460817e-03   # (USQMIX)_{22}
   2  3     8.96790705e-01   # (USQMIX)_{23}
-  2  4     2.88201355e-08   # (USQMIX)_{24}
+  2  4     2.88201354e-08   # (USQMIX)_{24}
   2  5     1.33583574e-04   # (USQMIX)_{25}
   2  6    -4.42414251e-01   # (USQMIX)_{26}
   3  1     4.14288463e-07   # (USQMIX)_{31}
   3  2     8.63497088e-03   # (USQMIX)_{32}
   3  3    -1.68537848e-04   # (USQMIX)_{33}
-  3  4     5.23954941e-08   # (USQMIX)_{34}
+  3  4     5.23955030e-08   # (USQMIX)_{34}
   3  5     9.99962701e-01   # (USQMIX)_{35}
   3  6     7.69103339e-05   # (USQMIX)_{36}
   4  1     2.01318362e-05   # (USQMIX)_{41}
-  4  2     4.54515658e-10   # (USQMIX)_{42}
+  4  2     4.54515581e-10   # (USQMIX)_{42}
   4  3    -3.70437003e-08   # (USQMIX)_{43}
   4  4     1.00000000e+00   # (USQMIX)_{44}
-  4  5    -5.24172568e-08   # (USQMIX)_{45}
+  4  5    -5.24172657e-08   # (USQMIX)_{45}
   4  6     1.68927508e-08   # (USQMIX)_{46}
   5  1     9.99999389e-01   # (USQMIX)_{51}
   5  2     9.29072843e-04   # (USQMIX)_{52}
@@ -465,7 +465,7 @@ Block USQMIX  # super CKM squark mass^2 matrix
   5  4    -2.01318491e-05   # (USQMIX)_{54}
   5  5    -8.54773705e-06   # (USQMIX)_{55}
   5  6     2.10746220e-04   # (USQMIX)_{56}
-  6  1    -9.32688601e-04   # (USQMIX)_{61}
+  6  1    -9.32688600e-04   # (USQMIX)_{61}
   6  2     9.99944251e-01   # (USQMIX)_{62}
   6  3    -5.62677708e-03   # (USQMIX)_{63}
   6  4     1.76257581e-08   # (USQMIX)_{64}
@@ -540,7 +540,7 @@ Block RVLMIX  # charged higgs-slepton mixing matrix
   4 5    9.15903849e-01   # C_{45}
   4 6    2.23609431e-05   # C_{46}
   4 7   -2.08869089e-03   # C_{47}
-  4 8   -2.40542956e-01   # C_{48}
+  4 8   -2.40542957e-01   # C_{48}
   5 1    1.02765515e-08   # C_{51}
   5 2    1.44837733e-08   # C_{52}
   5 3    9.22403000e-05   # C_{53}
@@ -557,10 +557,10 @@ Block RVLMIX  # charged higgs-slepton mixing matrix
   6 6   -1.88129887e-04   # C_{66}
   6 7    9.99855229e-01   # C_{67}
   6 8    1.07741205e-03   # C_{68}
-  7 1    1.20349386e-08   # C_{71}
+  7 1    1.20349391e-08   # C_{71}
   7 2    1.71598394e-06   # C_{72}
   7 3    1.70920726e-02   # C_{73}
-  7 4   -7.70369387e-03   # C_{74}
+  7 4   -7.70369388e-03   # C_{74}
   7 5    2.60116356e-01   # C_{75}
   7 6    8.75449795e-06   # C_{76}
   7 7   -8.17165234e-04   # C_{77}
@@ -597,7 +597,7 @@ Block RVAMIX  # CP-odd neutral scalar mixing matrix
   1 3   -1.50121062e-04   # curlyN~_{13}
   1 4   -9.09021805e-06   # curlyN~_{14}
   1 5    1.14704077e-05   # curlyN~_{15}
-  2 1    1.06710911e-04   # curlyN~_{21}
+  2 1    1.06710912e-04   # curlyN~_{21}
   2 2    1.26029097e-04   # curlyN~_{22}
   2 3    8.10166114e-01   # curlyN~_{23}
   2 4   -3.64762090e-01   # curlyN~_{24}
