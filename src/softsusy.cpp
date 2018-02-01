@@ -35,6 +35,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   t1OV1Ms1loop = s.displayTadpole1Ms1loop(); 
   t2OV2Ms1loop = s.displayTadpole2Ms1loop(); 
   qewsb = s.displayQewsb();
+  matchingScale = s.displayMatchingScale();
   mxBC = s.displayMxBC();
   included_thresholds = s.included_thresholds;
   
@@ -47,7 +48,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       problem(), msusy(0.0), minV(numberOfTheBeast), 
       mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false), 
       predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), 
-      t2OV2Ms1loop(0.), qewsb(1.) , mxBC(mxDefault){ 
+      t2OV2Ms1loop(0.), qewsb(1.), matchingScale(MZ), mxBC(mxDefault){ 
     setPars(110);
     setMu(0.0);
     
@@ -74,7 +75,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       t1OV1Ms(s.displayTadpole1Ms()), t2OV2Ms(s.displayTadpole2Ms()), 
       t1OV1Ms1loop(s.displayTadpole1Ms1loop()), 
       t2OV2Ms1loop(s.displayTadpole2Ms1loop()), qewsb(s.displayQewsb()),
-      mxBC(s.displayMxBC()) {
+      matchingScale(s.displayMatchingScale()), mxBC(s.displayMxBC()) {
     
     setPars(110);
     setMu(s.displayMu()); 
@@ -82,13 +83,13 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     included_thresholds = s.included_thresholds;
   }
   
-  MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
-    : MssmSusy(s), MssmSoftPars(), AltEwsbMssm(), Approx(s.displayMssmApprox()),
-      physpars(), forLoops(), problem(), 
-      msusy(0.0), minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.), 
-      setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
-      t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
-      qewsb(1.0), mxBC(mxDefault) { 
+MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
+	: MssmSusy(s), MssmSoftPars(), AltEwsbMssm(), Approx(s.displayMssmApprox()),
+	physpars(), forLoops(), problem(), 
+	msusy(0.0), minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.), 
+	setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
+	t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
+	qewsb(1.0), matchingScale(MZ), mxBC(mxDefault) { 
     setPars(110);
     setMu(s.displayMu()); 
     
@@ -112,7 +113,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       setTbAtMX(false), 
       altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
       t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
-      qewsb(1.0), mxBC(mxDefault){
+	qewsb(1.0), matchingScale(MZ), mxBC(mxDefault){
     setHvev(hv);
     setPars(110);
     setMu(mu);
@@ -9787,6 +9788,9 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
     if (expandAroundGluinoPole == 2) out << "# Expansion around gluino pole mass.\n";    
     if (expandAroundGluinoPole == 3) out << "# Expansion around gluino and squark pole masses.\n";    
   }
+  else out << "off" << endl;
+  out << "2-loop EW SM threshold corrections to EW couplings are ";
+  if (twoLEW) out << "on" << endl;
   else out << "off" << endl;
 }
 

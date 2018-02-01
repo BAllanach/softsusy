@@ -105,6 +105,8 @@ namespace softsusy {
     /// in GeV and used as a constant MSUSY. Otherwise, it MULTIPLIES the usual 
     /// MSUSY value, of root(mstop1 mstop2)
     double qewsb;       
+    /// Scale at which QED x QCD is matched to MSSM
+    double matchingScale;
     
   protected:
     void setT1OV1Ms(double t1) { t1OV1Ms = t1; } 
@@ -180,6 +182,7 @@ namespace softsusy {
     bool displayAltEwsb() const { return altEwsb; }
     double displayPredMzSq() const { return predMzSq; }
     double displayQewsb() const { return qewsb; }
+    double displayMatchingScale() const { return matchingScale; }
     
     /// Flags weird mgut-type problems
     void flagMgutOutOfBounds(bool a) { problem.mgutOutOfBounds = a; };
@@ -253,7 +256,9 @@ namespace softsusy {
     /// Sets total set of RGE parameters equal to elements of a vector
     void set(const DoubleVector &);
     /// Sets user-set scale qewsb
-    void setQewsb(double q) { qewsb = q; }
+    void setQewsb(double q) { qewsb = q; };
+    /// Sets the scale at which QEDxQCD is matched to MSSM
+    void setMatchingScale(double q) { matchingScale = q; };
     
     /// Switch 2-loop threshold \f$O(\alpha_s^2), O(\alpha_s \alpha_b),
     /// O(\alpha_s \alpha_t) \f$ corrections to \f$\alpha_s\f$ 
