@@ -1396,8 +1396,13 @@ int main(int argc, char *argv[]) {
       if (useThreeLoopRge) {
 	r->setLoops(3); k.setLoops(3); nmssm.setLoops(3);
       }
+
     switch (susy_model) {
     case MSSM:
+      oneset.runto(oneset.displayPoleMt());  ///< DEBUG
+      r->setMatchingScale(oneset.displayPoleMt()); ///< DEBUG
+
+      cout << oneset; ///< DEBUG
       r->fixedPointIteration(boundaryCondition, mgutGuess, pars, sgnMu, tanb, 
 			     oneset, gaugeUnification, ewsbBCscale);
       

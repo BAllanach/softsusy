@@ -2324,18 +2324,7 @@ double MssmSoftsusy::calcRunMtQCD() const {
   double qcd = - (5.0 + 6.0 * log(displayMu() / mt)) * 4.0 *
     sqr(displayGaugeCoupling(3)) / 3.0;
   
-  /// 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
-  //rruiz: comment this out
-  //double l = 2.0 * log(mt / displayMu());
-  
-  //double  twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
-  //  (-0.5383144424082562 + 0.1815337873591885 * l - 
-  //   0.03799544386587666 * sqr(l));
-  
-  //return qcd + twoLoopQcd;
-  
   return qcd;
-  
 }
 
 double MssmSoftsusy::calcRunMtStopGluino() const {
@@ -2802,13 +2791,14 @@ double MssmSoftsusy::calcRunMbHiggs() const {
 
 double MssmSoftsusy::calcRunningMb() {
   
-  if (displayMu() != displayMz()) {
+  /* if (displayMu() != displayMz()) {
     ostringstream ii;
     ii << "MssmSoftsusy::calcRunningMb called with mu=" <<
       displayMu() << endl; 
     throw ii.str();
-  }
-  
+    } */
+
+  /// This boundary condition needs to be set at the relevant scale  
   double mbMZ = dataSet.displayMass(mBottom);
   /// First convert mbMZ into DRbar value from hep-ph/9703293,0207126,9701308
   /// (SM gauge boson contributions)
@@ -7150,6 +7140,7 @@ void MssmSoftsusy::fixedPointIteration
     double maCondFirst = displayMaCond();
     double qqewsb      = displayQewsb();
     int lpnum = displayLoops();
+    double mScale = displayMatchingScale();
     
     int enabled_thresholds = included_thresholds;    
     setSoftsusy(empty); /// Always starts from an empty object
@@ -7174,10 +7165,10 @@ void MssmSoftsusy::fixedPointIteration
       throw ii;
     }
     
-    if (oneset.displayMu() != mz) {
+    /*    if (oneset.displayMu() != mz) {
       cout << "WARNING: fixedPointIteration in softsusy.cpp called with oneset at scale\n" 
 	   << oneset.displayMu() << "\ninstead of " << mz << endl;
-    }
+	   }*/
     
     int maxtries = 100; 
     double tol = TOLERANCE;
@@ -7209,13 +7200,13 @@ void MssmSoftsusy::fixedPointIteration
       }
     }
 
-    run(mxBC, mz);
+    run(mxBC, mScale);
 
     if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
 
     physical(0);
 
-    setThresholds(3); setLoops(lpnum);
+    setThresholds(3); setLoops(lpnum); setMatchingScale(mScale);
     
     itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 
 	      gaugeUnification, ewsbBCscale);
@@ -7225,7 +7216,7 @@ void MssmSoftsusy::fixedPointIteration
 	|| displayProblem().noRhoConvergence || displayProblem().problemThrown)
       return;
     
-    runto(maximum(displayMsusy(), mz));
+    runto(maximum(displayMsusy(), mScale));
     if (ewsbBCscale) boundaryCondition(*this, pars); 
     
     physical(3);
@@ -7312,12 +7303,13 @@ double MssmSoftsusy::getVev() {
 /// You should set up an iteration here since Yuk's depend on top mass which
 /// depends on Yuk's etc. 
 void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
-  double mz = displayMz();  if (displayMu() != mz) {
+  double mz = displayMz();
+  /*if (displayMu() != mz) {
     ostringstream ii;
     ii << "Called MssmSoftsusy::sparticleThresholdCorrections "
        << "with scale" << displayMu() << endl;
     throw ii.str();
-  }
+    }*/
   
   if (!setTbAtMX) setTanb(tb);
   calcDrBarPars(); /// for the up-coming loops
@@ -7671,11 +7663,11 @@ void MssmSoftsusy::itLowsoft
   static int numTries = 0;
   double mz = displayMz();
 
-  if (numTries != 0 && sqr(displayMu() / mz - 1.0) > TOLERANCE) {
+  /*  if (numTries != 0 && sqr(displayMu() / mz - 1.0) > TOLERANCE) {
     cout << "WARNING: itLowsoft called at inappropriate";
     cout << " scale:" << displayMu() << endl; 
     cout << "whereas it should be " << mz << endl; 
-  }
+    } */
 
   if (numTries - 1 > maxTries) {/// Iterating too long: bail out
     setProblem(old.displayProblem());
@@ -7692,11 +7684,12 @@ void MssmSoftsusy::itLowsoft
   /// On first iteration, don't bother with finite corrections  
   numTries = numTries + 1;
   try {
+    runto(displayMatchingScale());
+
     sparticleThresholdCorrections(tanb); 
     
     if (problem.noRhoConvergence && PRINTOUT) 
       cout << "No convergence in rhohat\n"; 
-    
     
     /// precision of running/RGE integration: start off low and increase
     double eps = maximum(exp(double(- numTries) * log(10.0)), tol * 0.01); 
@@ -7723,7 +7716,6 @@ void MssmSoftsusy::itLowsoft
     predictedMzSq = predMzsq(tbIn);
     setPredMzSq(predictedMzSq);  
     if (!ewsbBCscale) err = runto(mxBC, eps);
-    
     
     /// Guard against the top Yukawa fixed point
     if (displayYukawaElement(YU, 3, 3) > 3.0 
@@ -7840,7 +7832,7 @@ void MssmSoftsusy::itLowsoft
       if (PRINTOUT > 1) printObj();
     }
     
-    err = runto(mz, eps);
+    err = runto(displayMatchingScale(), eps);
     if (err) {
       /// problem with running: bail out 
       flagProblemThrown(true);
@@ -9308,12 +9300,12 @@ void MssmSoftsusy::rhohat(double & outrho, double & outsin, double alphaDRbar,
   static double oldrho = 0.23, oldsin = 0.8;
   
   double mz = displayMz();
-  if (displayMu() != mz) {
+  /*  if (displayMu() != mz) {
     ostringstream ii;   
     ii << "Called MssmSoftsusy::rhohat "
        << "with scale" << displayMu() << endl;
     throw ii.str();
-  }
+    }*/
   
   static int numTries = 0;
   
@@ -9789,7 +9781,8 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
     if (expandAroundGluinoPole == 3) out << "# Expansion around gluino and squark pole masses.\n";    
   }
   else out << "off" << endl;
-  out << "2-loop EW SM threshold corrections to EW couplings are ";
+  out << "# Matching scale=" << displayMatchingScale() << endl;
+  out << "# 2-loop EW SM threshold corrections to EW couplings are ";
   if (twoLEW) out << "on" << endl;
   else out << "off" << endl;
 }
