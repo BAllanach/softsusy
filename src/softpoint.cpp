@@ -97,8 +97,10 @@ int main(int argc, char *argv[]) {
   // Sets format of output: 4 decimal places
   outputCharacteristics(6);
 
-  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=extendedSugraBcs;
-  void (*nmssmBoundaryCondition)(NmssmSoftsusy&, const DoubleVector&) = NmssmMsugraBcs;
+  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)
+    =extendedSugraBcs;
+  void (*nmssmBoundaryCondition)(NmssmSoftsusy&, const DoubleVector&)
+    =NmssmMsugraBcs;
 
   QedQcd oneset;
   MssmSoftsusy m; FlavourMssmSoftsusy k; NmssmSoftsusy nmssm;
@@ -1399,10 +1401,6 @@ int main(int argc, char *argv[]) {
 
     switch (susy_model) {
     case MSSM:
-      oneset.runto(oneset.displayPoleMt());  ///< DEBUG
-      r->setMatchingScale(oneset.displayPoleMt()); ///< DEBUG
-
-      cout << oneset; ///< DEBUG
       r->fixedPointIteration(boundaryCondition, mgutGuess, pars, sgnMu, tanb, 
 			     oneset, gaugeUnification, ewsbBCscale);
       

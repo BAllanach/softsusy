@@ -77,7 +77,7 @@ namespace softsusy {
   int expandAroundGluinoPole = 3;
 
   /// Thresholds at 2-loop SM to electroweak gauge couplings at QED x QCD /
-  /// MSSM matching scale 
+  /// MSSM matching scale. Currently only works if it's at MZ.
   bool twoLEW = false; 
 }
 /// end of global variable declaration

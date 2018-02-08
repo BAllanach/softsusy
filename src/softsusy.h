@@ -105,8 +105,6 @@ namespace softsusy {
     /// in GeV and used as a constant MSUSY. Otherwise, it MULTIPLIES the usual 
     /// MSUSY value, of root(mstop1 mstop2)
     double qewsb;       
-    /// Scale at which QED x QCD is matched to MSSM
-    double matchingScale;
     
   protected:
     void setT1OV1Ms(double t1) { t1OV1Ms = t1; } 
@@ -175,14 +173,14 @@ namespace softsusy {
     double displayMxBC() const { return mxBC; }; ///< displays M_X value
     /// Returns object as a const
     const MssmSoftsusy & displaySoftsusy() const { return *this; }
-    /// Returns value of pole MZ being used
-    double displayMz() const { return displayDataSet().displayMu(); }
+    /// Returns value of pole MZ being used 
+    double displayMz() const { return double(MZ); }
     /// Is tan beta set at the user defined SUSY breaking scale?
     bool displaySetTbAtMX() const { return setTbAtMX; } 
     bool displayAltEwsb() const { return altEwsb; }
     double displayPredMzSq() const { return predMzSq; }
     double displayQewsb() const { return qewsb; }
-    double displayMatchingScale() const { return matchingScale; }
+    double displayMatchingScale() const { return displayDataSet().displayMu(); }
     
     /// Flags weird mgut-type problems
     void flagMgutOutOfBounds(bool a) { problem.mgutOutOfBounds = a; };
@@ -257,8 +255,6 @@ namespace softsusy {
     void set(const DoubleVector &);
     /// Sets user-set scale qewsb
     void setQewsb(double q) { qewsb = q; };
-    /// Sets the scale at which QEDxQCD is matched to MSSM
-    void setMatchingScale(double q) { matchingScale = q; };
     
     /// Switch 2-loop threshold \f$O(\alpha_s^2), O(\alpha_s \alpha_b),
     /// O(\alpha_s \alpha_t) \f$ corrections to \f$\alpha_s\f$ 
@@ -1042,6 +1038,8 @@ namespace softsusy {
     /// SUSY breaking is set in the usual way. If it is true, the boundary
     /// condition is set to \f$\sqrt{m_{{\tilde t}_1} m_{{\tilde t}_2}} \f$, ie
     /// like in the "pheno MSSM".
+    /// Note that oneset should be at the scale at which QEDxQCD is matched to
+    /// the MSSM.
     void fixedPointIteration(void (*boundaryCondition)
 			     (MssmSoftsusy &, const DoubleVector &),
 			     double mxGuess, 

@@ -147,7 +147,7 @@ istream & operator >>(istream &left, QedQcd &m) {
   return left;
 }
 
-//  returns qed beta function at energy mu < mtop
+//  returns qed beta function in SM 
 double QedQcd::qedBeta() const {
   double x;
   x = 24.0 / 9.0;
@@ -156,15 +156,7 @@ double QedQcd::qedBeta() const {
   if (displayMu() > mf.display(mBottom)) x += 2.0 / 9.0;
   if (displayMu() > mf.display(mTau)) x += 2.0 / 3.0;
   if (displayMu() > MW) x += -7.0 / 2.0;
-  if (displayMu() > (mtPole + TOLERANCE))  {
-    ostringstream ii;
-    
-      ii << "qed beta function called at " << displayMu() << 
-	" above mt=" << displayPoleMt() << 
-	", outside range of validity";
-      ii << " in QedQcd::qedbeta\n";
-      throw ii.str();
-    }
+  if (displayMu() > mf.display(mTop)) x += 8.0 / 9.0;
   
   return (x * sqr(a.display(ALPHA)) / PI);
 }

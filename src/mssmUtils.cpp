@@ -348,10 +348,10 @@ namespace softsusy {
     /// of MZ compared to TOLERANCE if the program is struggling and gone beyond
     /// 10 tries - an extra 2 comes from MZ v MZ^2
     int k = sT.size() - 2;
-    if (!in.displayProblem().testSeriousProblem()) {
+    /*    if (!in.displayProblem().testSeriousProblem()) {
       sT(k) = 0.5 * sTfn(predictedMzSq, sqr(MZ));
       if (numTries > 10) sT(k) *= 0.1;
-    }
+      } */
     
     return sT.max();
   }

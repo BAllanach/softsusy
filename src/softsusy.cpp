@@ -35,7 +35,6 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   t1OV1Ms1loop = s.displayTadpole1Ms1loop(); 
   t2OV2Ms1loop = s.displayTadpole2Ms1loop(); 
   qewsb = s.displayQewsb();
-  matchingScale = s.displayMatchingScale();
   mxBC = s.displayMxBC();
   included_thresholds = s.included_thresholds;
   
@@ -48,7 +47,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       problem(), msusy(0.0), minV(numberOfTheBeast), 
       mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false), 
       predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), 
-      t2OV2Ms1loop(0.), qewsb(1.), matchingScale(MZ), mxBC(mxDefault){ 
+      t2OV2Ms1loop(0.), qewsb(1.), mxBC(mxDefault){ 
     setPars(110);
     setMu(0.0);
     
@@ -75,7 +74,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       t1OV1Ms(s.displayTadpole1Ms()), t2OV2Ms(s.displayTadpole2Ms()), 
       t1OV1Ms1loop(s.displayTadpole1Ms1loop()), 
       t2OV2Ms1loop(s.displayTadpole2Ms1loop()), qewsb(s.displayQewsb()),
-      matchingScale(s.displayMatchingScale()), mxBC(s.displayMxBC()) {
+      mxBC(s.displayMxBC()) {
     
     setPars(110);
     setMu(s.displayMu()); 
@@ -89,7 +88,7 @@ MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
 	msusy(0.0), minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.), 
 	setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
 	t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
-	qewsb(1.0), matchingScale(MZ), mxBC(mxDefault) { 
+	qewsb(1.0), mxBC(mxDefault) { 
     setPars(110);
     setMu(s.displayMu()); 
     
@@ -113,7 +112,7 @@ MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
       setTbAtMX(false), 
       altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
       t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
-	qewsb(1.0), matchingScale(MZ), mxBC(mxDefault){
+	qewsb(1.0), mxBC(mxDefault){
     setHvev(hv);
     setPars(110);
     setMu(mu);
@@ -7140,7 +7139,6 @@ void MssmSoftsusy::fixedPointIteration
     double maCondFirst = displayMaCond();
     double qqewsb      = displayQewsb();
     int lpnum = displayLoops();
-    double mScale = displayMatchingScale();
     
     int enabled_thresholds = included_thresholds;    
     setSoftsusy(empty); /// Always starts from an empty object
@@ -7200,13 +7198,13 @@ void MssmSoftsusy::fixedPointIteration
       }
     }
 
-    run(mxBC, mScale);
+    run(mxBC, displayMatchingScale());
 
     if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
 
     physical(0);
 
-    setThresholds(3); setLoops(lpnum); setMatchingScale(mScale);
+    setThresholds(3); setLoops(lpnum); 
     
     itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 
 	      gaugeUnification, ewsbBCscale);
@@ -7216,7 +7214,7 @@ void MssmSoftsusy::fixedPointIteration
 	|| displayProblem().noRhoConvergence || displayProblem().problemThrown)
       return;
     
-    runto(maximum(displayMsusy(), mScale));
+    runto(maximum(displayMsusy(), displayMatchingScale()));
     if (ewsbBCscale) boundaryCondition(*this, pars); 
     
     physical(3);
@@ -7313,12 +7311,13 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   
   if (!setTbAtMX) setTanb(tb);
   calcDrBarPars(); /// for the up-coming loops
+  
   double alphaMsbar = dataSet.displayAlpha(ALPHA);
   double alphaDrbar = qedSusythresh(alphaMsbar, displayMu());
-  
+
   double alphasMZDRbar =
     qcdSusythresh(displayDataSet().displayAlpha(ALPHAS), displayMu());
-  
+
   /// Do gauge couplings
   double outrho = 1.0, outsin = 0.48, tol = TOLERANCE * 1.0e-8; 
   int maxTries = 20;
@@ -7343,7 +7342,7 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   
   //  if (problem.noRhoConvergence) 
   //    outsin = sqrt(1.0 - sqr(displayMw() / displayMz())); 
-  
+  //  cout << "alphaInv=" << 1./alphaDrbar << endl;
   double eDR = sqrt(4.0 * PI * alphaDrbar), costhDR = cos(asin(outsin));
   
   DoubleVector newGauge(3);
@@ -7378,6 +7377,7 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   setMw(ccbSqrt(poleMwSq)); 
   setGaugeCoupling(1, newGauge(1));
   setGaugeCoupling(2, newGauge(2));
+  //  cout << "before3: " << this->displayGaugeCoupling(1) << " " << this->displayGaugeCoupling(2) << endl; ///<
   setGaugeCoupling(3, newGauge(3));
   setHvev(vev); 
   setYukawaMatrix(YU, mUq * (root2 / (vev * sin(beta))));
@@ -7687,7 +7687,7 @@ void MssmSoftsusy::itLowsoft
     runto(displayMatchingScale());
 
     sparticleThresholdCorrections(tanb); 
-    
+
     if (problem.noRhoConvergence && PRINTOUT) 
       cout << "No convergence in rhohat\n"; 
     
@@ -7700,6 +7700,7 @@ void MssmSoftsusy::itLowsoft
     int err = 0;
     
     err = runto(displayMsusy(), eps);
+
     
     if (err == 1) {
       /// problem with running: bail out 
@@ -7711,12 +7712,11 @@ void MssmSoftsusy::itLowsoft
       return;
     }
     
-    
     double tbIn; double predictedMzSq = 0.;
     predictedMzSq = predMzsq(tbIn);
     setPredMzSq(predictedMzSq);  
     if (!ewsbBCscale) err = runto(mxBC, eps);
-    
+
     /// Guard against the top Yukawa fixed point
     if (displayYukawaElement(YU, 3, 3) > 3.0 
 	|| displayYukawaElement(YD, 3, 3) > 3.0 
@@ -9300,12 +9300,6 @@ void MssmSoftsusy::rhohat(double & outrho, double & outsin, double alphaDRbar,
   static double oldrho = 0.23, oldsin = 0.8;
   
   double mz = displayMz();
-  /*  if (displayMu() != mz) {
-    ostringstream ii;   
-    ii << "Called MssmSoftsusy::rhohat "
-       << "with scale" << displayMu() << endl;
-    throw ii.str();
-    }*/
   
   static int numTries = 0;
   
