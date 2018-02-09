@@ -5,7 +5,7 @@
     "latex2e"
     "article"
     "art10"
-    "axodraw"
+    "axodraw2"
     "jheppub"
     "verbatim")
    (TeX-add-symbols

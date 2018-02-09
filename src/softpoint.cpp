@@ -40,6 +40,7 @@ void errorCall() {
   ii << "--higgsUncertainties gives an estimate of Higgs mass uncertainties\n";
   ii << "--mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
   ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
+  ii << "--matching_scale=<value>\n";
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   ii << "--two-loop-gauge-yukawa switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
@@ -130,7 +131,7 @@ int main(int argc, char *argv[]) {
       cout << "# G_F=" << GMU << " GeV^2" << endl;
   }
   
-  double mgutGuess = 2.0e16, tanb = 0.;
+    double mgutGuess = 2.0e16, tanb = 0., mScale = MZ;
   int sgnMu = 1;
   bool gaugeUnification = true, ewsbBCscale = false;
   double desiredMh = 0.;
@@ -182,6 +183,8 @@ int main(int argc, char *argv[]) {
 	oneset.setPoleMt(get_value(argv[i], "--mt="));
       else if (starts_with(argv[i],"--alpha_s="))
 	oneset.setAlpha(ALPHAS, get_value(argv[i], "--alpha_s="));      
+      else if (starts_with(argv[i],"--matching_scale="))
+	mScale = get_value(argv[i], "--matching_scale=");      
       else if (starts_with(argv[i],"--alpha_inverse="))
 	oneset.setAlpha(ALPHA, 1.0 / get_value(argv[i],"--alpha_inverse="));
       else if (starts_with(argv[i],"--RPV")) 
@@ -1264,6 +1267,11 @@ int main(int argc, char *argv[]) {
 		    else cout << "#WARNING incorrect setting for SOFTSUSY Block 26 (should be either 0 or 1)\n";
 		    break;
 		  }
+		  case 27: {
+		    if (d >= MZ) mScale = d;
+		    else cout << "#WARNING incorrect " << d << " for SOFTSUSY Block 27 (should be > MZ)\n";
+		    break;
+		  }		    
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "
@@ -1379,6 +1387,7 @@ int main(int argc, char *argv[]) {
 	  throw ii.str();
 	}
       }
+      
       // intput error checking  
       if (sgnMu != 1 && sgnMu != -1 && sgnMu != 0) {
 	ostringstream ii;
@@ -1399,7 +1408,10 @@ int main(int argc, char *argv[]) {
 	r->setLoops(3); k.setLoops(3); nmssm.setLoops(3);
       }
 
-    switch (susy_model) {
+      /// Run to scale at which MSUSY and QEDxQCD are matched
+      oneset.runto(mScale);
+
+      switch (susy_model) {
     case MSSM:
       r->fixedPointIteration(boundaryCondition, mgutGuess, pars, sgnMu, tanb, 
 			     oneset, gaugeUnification, ewsbBCscale);
