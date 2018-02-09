@@ -4,9 +4,7 @@
    File:        main.cpp
    Author:      Ben Allanach 
    Manual:      B.C. Allanach, hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
-                B.C. Allanach, M.A. Bernhardt, arXiv:0903.1805, Comp. Phys. 
-		Commun. 181 (2010) 232-245
-   Webpage:     http://allanach.home.cern.ch/allanach/softsusy.html
+   Webpage:     http://softsusy.hepforge.org/
    Description: main calling program example: performs a scan of tan beta 
    (starting at CMSSM10.1.1) and prints out Higgs masses as a result in
    the format

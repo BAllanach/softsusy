@@ -16,13 +16,14 @@ static QedQcd *tempLe;
 
 QedQcd::QedQcd()
   : a(2), mf(9), mtPole(PMTOP), mbPole(PMBOTTOM), mbMb(MBOTTOM), 
-    mtauPole(MTAU) { 
+    mtauPole(MTAU), aMz(2) { 
   setPars(11);
   // Default object: 1998 PDB defined in 'def.h'
   mf(1) = MUP; mf(2) = MCHARM; 
   mf(4) = MDOWN; mf(5) = MSTRANGE; mf(6) = MBOTTOM;
   mf(7) = MELECTRON; mf(8) = MMUON; mf(9) = MTAU;
   a(1) = ALPHAMZ;  a(2) = ALPHASMZ;
+  aMz(1) = ALPHAMZ;  aMz(2) = ALPHASMZ;
   mf(3) = getRunMtFromMz(PMTOP, ALPHASMZ);
   setMu(MZ);
   setLoops(3);
@@ -37,6 +38,7 @@ const QedQcd & QedQcd::operator=(const QedQcd & m) {
   mtauPole = m.mtauPole;
   a = m.a;
   mf = m.mf;
+    aMz = m.aMz;
   setLoops(m.displayLoops());
   setThresholds(m.displayThresholds());
   setMu(m.displayMu());
@@ -73,6 +75,9 @@ int QedQcd::flavours(double mu) const {
 }
 
 ostream & operator <<(ostream &left, const QedQcd &m) {
+  left << "alpha(MZ): " << 1.0 / m.displayAlphaMz(ALPHA)
+       << "alpha_s(MZ): " << 1.0 / m.displayAlphaMz(ALPHAS)
+       << endl;
   left << "mU: " << m.displayMass(mUp) 
        << "  mC: " << m.displayMass(mCharm) 
        << "  mt: " << m.displayMass(mTop) 
@@ -103,8 +108,9 @@ istream & operator >>(istream &left, QedQcd &m) {
 
   string c, cmbmb, cmbpole;
   double mu, mc, mtpole, md, ms, me, mmu, mtau, invalph, 
-    alphas, scale;
+    alphas, scale, alphaMz, alphasMz;
   int t, l;
+  left >> c >> alphaMz >> c >> alphasMz;
   left >> c >> mu >> c >> mc >> c >> c >> c >> mtpole;
   left >> c >> md >> c >> ms >> c >> cmbmb >> c >> cmbpole;
   left >> c >> me >> c >> mmu >> c >> mtau;
@@ -119,6 +125,8 @@ istream & operator >>(istream &left, QedQcd &m) {
   m.setMass(mTau, mtau);
   m.setAlpha(ALPHA, 1.0 / invalph);
   m.setAlpha(ALPHAS, alphas);
+  m.setAlphaMz(ALPHA, 1.0 / alphaMz);
+  m.setAlphaMz(ALPHAS, alphasMz);
   m.setMu(scale);
   // y[3] is pole mass
   m.setPoleMt(mtpole);
@@ -373,10 +381,11 @@ void QedQcd::toMz() {
   setMass(mTop, getRunMtFromMz(mt, as));
   calcPoleMb();
 
-  const double tol = 1.0e-5;
-
-  double alphasMZ = displayAlpha(ALPHAS);
-  double alphaMZ = displayAlpha(ALPHA);
+  const double tol = TOLERANCE * 1.0e-1;
+  
+  double alphasMZ = displayAlphaMz(ALPHAS);
+  double alphaMZ = displayAlphaMz(ALPHA);
+  setAlpha(ALPHA, alphaMZ); setAlphaMz(ALPHAS, alphasMZ);
   double mz = displayMu();
   runGauge(mz, 1.0);
   run(1.0, mz, tol);

@@ -1075,6 +1075,7 @@ Block SOFTSUSY     # SOFTSUSY specific inputs
 excluded if=1
  13   <mAflag>        # If =0 (default), sets tachyonic mA=0, otherwise mA=sqrt(|mA|^2)
  21   <higgsUncert>   # If =1, provides an estimate of Higgs mass uncertainties
+ 26   <mQEDxQCD>      # Scale at which QEDxQCD is matched to MSSM (default MZ)
 \end{verbatim}
 \normalsize
 The fractional numerical precision on masses and couplings output by \SOFTSUSY~is better than \code{TOLERANCE}, which
@@ -1154,6 +1155,9 @@ $\log Q$), values of the
 physical Higgs masses are calculated. The uncertainty is estimated as the
 difference between the maximum Higgs mass calculated in this way and the
 minimum one. 
+
+\code{<mQEDxQCD>}~is equal to the scale at which QED$\times$QCD are matched to
+the MSSM  $M_{QED\times QCD}$, which by default is $m_t$. 
 
 In the standard SLHA input format, a parameter 
 \code{12}~in \code{Block MODSEL} fixes the maximum scale of printing out the

@@ -7297,18 +7297,10 @@ double MssmSoftsusy::getVev() {
   return getVev(pizzt);
 }
 
-/// It'll set the important SUSY couplings: supposed to be applied at MZ
+/// It'll set the important SUSY couplings: 
 /// You should set up an iteration here since Yuk's depend on top mass which
 /// depends on Yuk's etc. 
 void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
-  double mz = displayMz();
-  /*if (displayMu() != mz) {
-    ostringstream ii;
-    ii << "Called MssmSoftsusy::sparticleThresholdCorrections "
-       << "with scale" << displayMu() << endl;
-    throw ii.str();
-    }*/
-  
   if (!setTbAtMX) setTanb(tb);
   calcDrBarPars(); /// for the up-coming loops
   
@@ -7661,14 +7653,6 @@ void MssmSoftsusy::itLowsoft
   static MssmSoftsusy old;
   static double oldMu = 0.;
   static int numTries = 0;
-  double mz = displayMz();
-
-  /*  if (numTries != 0 && sqr(displayMu() / mz - 1.0) > TOLERANCE) {
-    cout << "WARNING: itLowsoft called at inappropriate";
-    cout << " scale:" << displayMu() << endl; 
-    cout << "whereas it should be " << mz << endl; 
-    } */
-
   if (numTries - 1 > maxTries) {/// Iterating too long: bail out
     setProblem(old.displayProblem());
     flagNoConvergence(true);    
@@ -10102,10 +10086,10 @@ void MssmSoftsusy::drbarSLHA(ostream & out, int numPoints, double qMax, int n) {
 void MssmSoftsusy::sminputsSLHA(ostream & out) {
   QedQcd d(displayDataSet());
   out << "Block SMINPUTS             # Standard Model inputs\n";
-  out << "     1   "; printRow(out, 1.0 / d.displayAlpha(ALPHA)); 
+  out << "     1   "; printRow(out, 1.0 / d.displayAlphaMz(ALPHA)); 
   out << "   # alpha_em^(-1)(MZ) SM MSbar\n";
   out << "     2   "; printRow(out, GMU); out << "   # G_Fermi\n";
-  out << "     3   "; printRow(out, d.displayAlpha(ALPHAS)); 
+  out << "     3   "; printRow(out, d.displayAlphaMz(ALPHAS)); 
   out << "   # alpha_s(MZ)MSbar\n";
   out << "     4   "; printRow(out, displayMz()); out << "   # MZ(pole)\n";
   out << "     5   "; printRow(out, d.displayMbMb()); out << "   # mb(mb)\n";

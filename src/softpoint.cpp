@@ -182,11 +182,11 @@ int main(int argc, char *argv[]) {
       else if (starts_with(argv[i],"--mt=")) 
 	oneset.setPoleMt(get_value(argv[i], "--mt="));
       else if (starts_with(argv[i],"--alpha_s="))
-	oneset.setAlpha(ALPHAS, get_value(argv[i], "--alpha_s="));      
+	oneset.setAlphaMz(ALPHAS, get_value(argv[i], "--alpha_s="));      
       else if (starts_with(argv[i],"--matching_scale="))
 	mScale = get_value(argv[i], "--matching_scale=");      
       else if (starts_with(argv[i],"--alpha_inverse="))
-	oneset.setAlpha(ALPHA, 1.0 / get_value(argv[i],"--alpha_inverse="));
+	oneset.setAlphaMz(ALPHA, 1.0 / get_value(argv[i],"--alpha_inverse="));
       else if (starts_with(argv[i],"--RPV")) 
 	RPVflag = true;
       else if (starts_with(argv[i], "--tanBeta=")) 
