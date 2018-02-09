@@ -7305,7 +7305,7 @@ double MssmSoftsusy::getVev() {
     if (displayMu() != displayDataSet().displayMu()) {
       ostringstream ii;
       ii << "Called MssmSoftsusy::sparticleThresholdCorrections "
-	 << "with scale" << displayMu() << endl;
+	 << "with scale " << displayMu() << endl;
       throw ii.str();
     }
 

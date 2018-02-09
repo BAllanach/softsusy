@@ -8589,7 +8589,8 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     static int numTries = 0;
     double mz = displayMz();
 
-    if (numTries != 0 && sqr(displayMu() / mz - 1.0) > TOLERANCE) {
+    if (numTries != 0 && sqr(displayMu() / displayDataSet().displayMu() - 1.0)
+	> TOLERANCE) {
       cout << "WARNING: itLowsoft called at inappropriate";
       cout << " scale:" << displayMu() << '\n';
       cout << "whereas it should be " << mz << '\n';
@@ -8611,6 +8612,8 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     numTries = numTries + 1;
     
     try {
+      runto(displayMatchingScale());
+    
       sparticleThresholdCorrections(tanb); 
       
       if (displayProblem().noRhoConvergence) {
@@ -8764,7 +8767,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 	if (PRINTOUT > 1) printObj();
       }
       
-      err = runto(mz, eps);
+      err = runto(displayMatchingScale(), eps);
       if (err) {
 	/// problem with running: bail out 
 	flagNonperturbative(true);

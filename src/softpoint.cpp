@@ -1409,7 +1409,7 @@ int main(int argc, char *argv[]) {
       }
 
       /// Run to scale at which MSUSY and QEDxQCD are matched: by default it's
-      /// mt 
+      /// mt for MSSM, MZ for NMSSM
       if (mScale < MZ) mScale = oneset.displayPoleMt();
       oneset.runto(mScale);
 
