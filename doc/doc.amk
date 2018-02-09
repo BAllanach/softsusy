@@ -4,7 +4,7 @@ doc_DATA = $(DOCFILES)
 
 doc: $(doc_DATA)
 
-doc/rpcManual.pdf: doc/rpcManual.tex src/rpvmain.cpp inOutFiles/rpvOutputTest
+doc/rpcManual.pdf: doc/rpcManual.tex src/rpvmain.cpp inOutFiles/rpvOutputTest doc/rpcManual.ax1 doc/rpcManual.ax2
 doc/rpvManual.pdf: doc/rpvManual.tex src/rpvmain.cpp inOutFiles/rpvOutputTest
 doc/neutManual.pdf: doc/neutManual.proto.tex inOutFiles/neutOutputTest
 	     	    cat inOutFiles/neutOutputTest | grep "MASS\|Mnu" >  doc/mnu.tex;\
@@ -17,7 +17,7 @@ doc/neutManual.pdf: doc/neutManual.proto.tex inOutFiles/neutOutputTest
 
 doc/%.pdf: doc/%.tex
 	cd $(top_builddir)/doc;\
-	pdflatex $(*F).tex ; bibtex $(*F); axohelp $(*F).tex; pdflatex $(*F).tex; pdflatex $(*F).tex 
+	pdflatex $(*F).tex ; bibtex $(*F); pdflatex $(*F).tex; pdflatex $(*F).tex 
 
 .PHONY: clean-local-doc distclean-local-doc
 

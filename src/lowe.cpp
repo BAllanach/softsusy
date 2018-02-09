@@ -76,7 +76,7 @@ int QedQcd::flavours(double mu) const {
 
 ostream & operator <<(ostream &left, const QedQcd &m) {
   left << "alpha(MZ): " << 1.0 / m.displayAlphaMz(ALPHA)
-       << "alpha_s(MZ): " << 1.0 / m.displayAlphaMz(ALPHAS)
+       << "  alpha_s(MZ): " << m.displayAlphaMz(ALPHAS)
        << endl;
   left << "mU: " << m.displayMass(mUp) 
        << "  mC: " << m.displayMass(mCharm) 

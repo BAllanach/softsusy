@@ -931,9 +931,9 @@ int main(int argc, char *argv[]) {
 		else if (block == "SMINPUTS") {
 		  int i; double d; kk >> i >> d; 
 		  switch (i) {
-		  case 1: oneset.setAlpha(ALPHA, 1.0 / d); break;
+		  case 1: oneset.setAlphaMz(ALPHA, 1.0 / d); break;
 		  case 2: GMU = d; break;
-		  case 3: oneset.setAlpha(ALPHAS, d); break; 
+		  case 3: oneset.setAlphaMz(ALPHAS, d); break; 
 		  case 4: oneset.setMu(d); m.setData(oneset); MZ = d; break;
 		  case 5: oneset.setMass(mBottom, d); 
 		    oneset.setMbMb(d); break;
