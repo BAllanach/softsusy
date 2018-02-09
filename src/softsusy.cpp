@@ -6908,15 +6908,16 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
   /// Two loop correction parameterisation from 1411.7040 in MSBAR SCHEME and
   //  at MZ
     double b0 = 1.751181, b1 = -0.523813, b2 = -0.662710, b3 = -0.000962,
-      b4 =0.252884;
+      b4 =0.252884, b5 = 2.971626, b6 = -0.739561;
     double mt = displayDataSet().displayPoleMt();
     double dT = log(mt / 173.34) - 1.0;
     double sw = calcSinthdrbar();
     double ds = sqr(sw / 0.231) - 1.;
     double dH = log(displayPhys().mh0(1) / 125.15);
     double das = displayDataSet().displayAlpha(ALPHAS) / 0.1184 - 1.;
+    double dmu = log(displayDataSet().displayMu() / MZ);
     double deltaAlphaTwoLoop = 1.0e-4 * (b0 + b1 * ds + b2 * dT + b3 * dH +
-					 b4 * das);
+					 b4 * das + b5 * dmu + b6 * dT * dmu);
     
     double deltaAlpha;
     deltaAlpha = -alphaEm / (2.0 * PI) * (deltaASM + deltaASusy);
@@ -7300,7 +7301,14 @@ double MssmSoftsusy::getVev() {
 /// It'll set the important SUSY couplings: 
 /// You should set up an iteration here since Yuk's depend on top mass which
 /// depends on Yuk's etc. 
-void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
+  void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
+    if (displayMu() != displayDataSet().displayMu()) {
+      ostringstream ii;
+      ii << "Called MssmSoftsusy::sparticleThresholdCorrections "
+	 << "with scale" << displayMu() << endl;
+      throw ii.str();
+    }
+
   if (!setTbAtMX) setTanb(tb);
   calcDrBarPars(); /// for the up-coming loops
   
@@ -9217,13 +9225,15 @@ double MssmSoftsusy::dRho(double outrho, double outsin, double alphaDRbar,
   /// This is the expression for the 2-loop SM corrections from 1411.7040
   /// at MZ in rxi=1 gauge
   double y0 = -18.616753, y1 = 15.972019, y2 = -16.216781, y3 = 0.0152367,
-    y4 = -13.633472;
+    y4 = -13.633472, y5 = 0.647931, y6 = 0.021604, y7 = 2.518649, y8 = 0.131301;
   double dT = sqr(mt / 173.34) - 1.0;
   double ds = sqr(outsin / 0.231) - 1.;
   double dH = log(displayPhys().mh0(1) / 125.15);
   double das = displayDataSet().displayAlpha(ALPHAS) / 0.1184 - 1.;
+  double dmu = log(displayDataSet().displayMu() / MZ);
   double deltaRho2LoopSm = 1.0e-4 * (y0 + y1 * ds + y2 * dT + y3 * dH +
-				     y4 * das);
+				     y4 * das + y5 * dmu + y6 * sqr(dmu) +
+				     y7 * dT * dmu + y8 * dH * dmu);
   
   /*  double deltaRho2LoopSm = alphaDRbar * sqr(displayGaugeCoupling(3)) / 
     (16.0 * PI * sqr(PI) * sqr(outsin)) * /// bug-fixed 24.08.2002
@@ -9262,12 +9272,16 @@ double MssmSoftsusy::dR(double outrho, double outsin, double alphaDRbar,
 
   /// new calculation from 1411.7040
   double r0 = -2.8472779, r1 = 1.620742, r2 = 1.773226, r3 =-0.364310,
-    r4 = 1.137797;
+    r4 = 1.137797, r5 = -5.330681, r6 = 2.899265, r7 = 3.781905,
+    r8 = 0.241184;
   double dT = log(displayDataSet().displayPoleMt() / 173.34);
   double ds = sqr(outsin / 0.231) - 1.;
   double dH = log(displayPhys().mh0(1) / 125.15);
-  double das = displayDataSet().displayAlpha(ALPHAS) / 0.1184 - 1.;  
-  double deltaR2LoopSm = 1.0e-4 * (r0 + r1 * ds + r2 * dT + r3 * dH + r4 * das);
+  double das = displayDataSet().displayAlpha(ALPHAS) / 0.1184 - 1.;
+  double dmu = log(displayDataSet().displayMu() / MZ);
+  double deltaR2LoopSm = 1.0e-4 * (r0 + r1 * ds + r2 * dT + r3 * dH +
+				   r4 * das + r5 * dmu + r6 * sqr(dmu) +
+				   r7 * dT * dmu + r8 * dH * dmu);
   
   if (twoLEW) deltaR += deltaR2LoopSm; 
   

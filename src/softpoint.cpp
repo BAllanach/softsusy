@@ -131,10 +131,10 @@ int main(int argc, char *argv[]) {
       cout << "# G_F=" << GMU << " GeV^2" << endl;
   }
   
-    double mgutGuess = 2.0e16, tanb = 0., mScale = MZ;
-  int sgnMu = 1;
-  bool gaugeUnification = true, ewsbBCscale = false;
-  double desiredMh = 0.;
+    double mgutGuess = 2.0e16, tanb = 0., mScale = 0.;
+    int sgnMu = 1;
+    bool gaugeUnification = true, ewsbBCscale = false;
+    double desiredMh = 0.;
 
   // If there are no arguments, give error message,
   // or if none of the options are called, then go to error message
@@ -1408,7 +1408,9 @@ int main(int argc, char *argv[]) {
 	r->setLoops(3); k.setLoops(3); nmssm.setLoops(3);
       }
 
-      /// Run to scale at which MSUSY and QEDxQCD are matched
+      /// Run to scale at which MSUSY and QEDxQCD are matched: by default it's
+      /// mt 
+      if (mScale < MZ) mScale = oneset.displayPoleMt();
       oneset.runto(mScale);
 
       switch (susy_model) {
