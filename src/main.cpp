@@ -29,15 +29,16 @@ int main() {
     cout << "# If you use SOFTSUSY, please refer to B.C. Allanach,\n";
     cout << "# Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
     
-    /// Parameters used: CMSSM parameters
-    double m12 = 500., a0 = 0., mGutGuess = 2.0e16, tanb = 10.0, m0 = 125.;
+    /// Parameters used: CMSSM parameters to get a high mh
+    double m12 = 5000., a0 = -14.e3, mGutGuess = 2.0e16,
+      tanb = 20.0, m0 = 5000.;
     int sgnMu = 1;       ///< sign of mu parameter 
-    int numPoints = 10;  ///< number of scan points
+    int numPoints = 50;  ///< number of scan points
     
-    QedQcd oneset;       ///< See "lowe.h" for default definitions parameters
+    QedQcd oneset; ///< See "lowe.h" for default definitions parameters
     
     /// most important Standard Model inputs: you may change these and recompile
-    double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
+    double alphasMZ = 0.1181, mtop = 173.34, mbmb = 4.18;
     oneset.setAlpha(ALPHAS, alphasMZ);
     oneset.setPoleMt(mtop);
     oneset.setMbMb(mbmb);
@@ -54,32 +55,37 @@ int main() {
     
     int i;
     /// Set limits of tan beta scan
-    double startTb = 2., endTb = 50.;
+    double startlnM = MZ, endlnM = 7.0e3;
     
     /// Cycle through different points in the scan
     for (i = 0; i <= numPoints; i++) {
-      tanb = (endTb - startTb) / static_cast<double>(numPoints) *
-	static_cast<double>(i) + startTb;  /// set tan beta ready for the scan.
+      double mScale =
+			  (endlnM - startlnM) / static_cast<double>(numPoints) *
+			  static_cast<double>(i) + startlnM
+			  ; /// set mScale ready for the scan.
 
-    /// Preparation for calculation: set up object and input parameters
-    MssmSoftsusy r;
-    
-    DoubleVector pars(3);
-    pars(1) = m0; pars(2) = m12; pars(3) = a0;
-    bool uni = true;  ///< MGUT defined by g1(MGUT)=g2(MGUT)
-    
-    /// Calculate the spectrum
-    r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+      QedQcd twoset(oneset);
+      twoset.runto(mScale);
 
-    /// check the point in question is problem free: if so print the output
-    if (!r.displayProblem().test()) 
-      cout << tanb << " " << r.displayPhys().mh0(1) << " " 
-           << r.displayPhys().mA0(1) << " " 
-           << r.displayPhys().mh0(2) << " " 
-           << r.displayPhys().mHpm << endl;
-    else
-      /// print out what the problem(s) is(are)
-      cout << tanb << " " << r.displayProblem() << endl;
+      /// Preparation for calculation: set up object and input parameters
+      MssmSoftsusy r;
+    
+      DoubleVector pars(3);
+      pars(1) = m0; pars(2) = m12; pars(3) = a0;
+      bool uni = true;  ///< MGUT defined by g1(MGUT)=g2(MGUT)
+      
+      /// Calculate the spectrum
+      r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, twoset, uni);
+
+      /// check the point in question is problem free: if so print the output
+      if (!r.displayProblem().test()) 
+	cout << mScale << " " << r.displayPhys().mh0(1) << " " 
+	     << r.displayPhys().mA0(1) << " " 
+	     << r.displayPhys().mh0(2) << " " 
+	     << r.displayPhys().mHpm << endl;
+      else
+	/// print out what the problem(s) is(are)
+	cout << mScale << " " << r.displayProblem() << endl;
   }
   }
   catch(const string & a) { cerr << a; return -1; }
