@@ -33,7 +33,7 @@ int main() {
     double m12 = 5000., a0 = -14.e3, mGutGuess = 2.0e16,
       tanb = 20.0, m0 = 5000.;
     int sgnMu = 1;       ///< sign of mu parameter 
-    int numPoints = 50;  ///< number of scan points
+    int numPoints = 500;  ///< number of scan points
     
     QedQcd oneset; ///< See "lowe.h" for default definitions parameters
     
