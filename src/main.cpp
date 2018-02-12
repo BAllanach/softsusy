@@ -51,7 +51,7 @@ int main() {
 	 << TOLERANCE << endl;
     
     /// Print out header line
-    cout << "# tan beta   mh           mA           mH0          mH+-\n";
+    cout << "# mQEDxQCD   mh           mA           mH0          mH+-         mzrun        mwrun        mtrun        mA0run       mh0run\n";
     
     int i;
     /// Set limits of tan beta scan
@@ -77,15 +77,26 @@ int main() {
       /// Calculate the spectrum
       r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, twoset, uni);
 
+      r.runto(mScale);
+      r.calcDrBarPars();
+
+      double mtrun = r.displayDrBarPars().mt;
+      
       /// check the point in question is problem free: if so print the output
       if (!r.displayProblem().test()) 
 	cout << mScale << " " << r.displayPhys().mh0(1) << " " 
 	     << r.displayPhys().mA0(1) << " " 
 	     << r.displayPhys().mh0(2) << " " 
-	     << r.displayPhys().mHpm << endl;
+	     << r.displayPhys().mHpm << " "
+	     << r.displayMzRun() << " "
+	     << r.displayMwRun() << " "
+	     << mtrun << " "
+	     << r.displayDrBarPars().mA0(1) << " "
+	     << r.displayDrBarPars().mh0(1) << " "
+	     << endl;
       else
 	/// print out what the problem(s) is(are)
-	cout << mScale << " " << r.displayProblem() << endl;
+	cout << "#" << mScale << " " << r.displayProblem() << endl;
   }
   }
   catch(const string & a) { cerr << a; return -1; }
