@@ -1,8 +1,0 @@
-/home/bca20/code/softsusy/src/Himalaya-1.0.0/CMakeFiles/install.dir
-/home/bca20/code/softsusy/src/Himalaya-1.0.0/CMakeFiles/list_install_components.dir
-/home/bca20/code/softsusy/src/Himalaya-1.0.0/CMakeFiles/rebuild_cache.dir
-/home/bca20/code/softsusy/src/Himalaya-1.0.0/CMakeFiles/edit_cache.dir
-/home/bca20/code/softsusy/src/Himalaya-1.0.0/CMakeFiles/Himalaya.dir
-/home/bca20/code/softsusy/src/Himalaya-1.0.0/CMakeFiles/example.dir
-/home/bca20/code/softsusy/src/Himalaya-1.0.0/CMakeFiles/DSZ.dir
-/home/bca20/code/softsusy/src/Himalaya-1.0.0/CMakeFiles/install/local.dir
