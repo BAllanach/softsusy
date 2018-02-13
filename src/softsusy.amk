@@ -70,11 +70,11 @@ CPPFLAGS               += -I$(himalayadir)/source/include
 endif ENABLE_HIMALAYA
 
 $(himalayadir)/libHimalaya.a:
-	cd $(himalayadir) && cmake . && make
+	cd $(himalayadir) && cmake . && $(MAKE)
 .PHONY: clean-local-himalaya
 clean-local: clean-local-himalaya
 clean-local-himalaya:
-	-cd $(himalayadir) && make clean
+	-$(MAKE) -C $(himalayadir) clean
 
 pkginclude_HEADERS += \
 $(addprefix src/, \
