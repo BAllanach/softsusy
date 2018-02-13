@@ -29,7 +29,7 @@ namespace softsusy{
   extern bool NMSSMTools;
   extern bool SoftHiggsOut;
   /// Set to number of loops to use for calculation of Higgs mass 
-  /// (currently up to 2, the default)
+  /// (currently up to 3 with Himalaya; the default is 2)
   extern int numHiggsMassLoops;
   /// Set to number of loops to use for REWSB condition up to the default of 2
   extern int numRewsbLoops;

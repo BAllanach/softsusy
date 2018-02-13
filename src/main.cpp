@@ -33,7 +33,7 @@ int main() {
     double m12 = 5000., a0 = -14.e3, mGutGuess = 2.0e16,
       tanb = 20.0, m0 = 5000.;
     int sgnMu = 1;       ///< sign of mu parameter 
-    int numPoints = 1;  ///< number of scan points
+    int numPoints = 500;  ///< number of scan points
     
     QedQcd oneset; ///< See "lowe.h" for default definitions parameters
     
@@ -55,7 +55,9 @@ int main() {
     
     int i;
     /// Set limits of tan beta scan
-    double startlnM = 1.53164e+02, endlnM = 1.547340e+02;
+    //    double startlnM = 1.53164e+02, endlnM = 1.547340e+02;
+    double startlnM = MZ, endlnM = 6.0e3;    
+    numHiggsMassLoops = 3;
     
     /// Cycle through different points in the scan
     for (i = 0; i <= numPoints; i++) {
@@ -68,8 +70,11 @@ int main() {
       twoset.runto(mScale);
 
       /// Preparation for calculation: set up object and input parameters
+      USE_TWO_LOOP_GAUGE_YUKAWA = true;      
       MssmSoftsusy r;
-    
+      r.setLoops(3);     
+      r.included_thresholds = 31; ///< all thresholds included
+      
       DoubleVector pars(3);
       pars(1) = m0; pars(2) = m12; pars(3) = a0;
       bool uni = true;  ///< MGUT defined by g1(MGUT)=g2(MGUT)

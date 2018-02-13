@@ -11844,8 +11844,8 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS,
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << " h0/H tachyon: m^2=" << temp;
   }
-  cout << "mhatmh" << mhAtmh << endl;
-  cout << "*** temp" << tempc << endl;
+  //  cout << "mhatmh" << mhAtmh << endl;
+  //  cout << "*** temp" << tempc << endl;
   temp = temp.apply(ccbSqrt);
   
   /// If certain DRbar ratios are large, they can cause massive higher order
