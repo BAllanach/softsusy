@@ -1011,6 +1011,8 @@ namespace softsusy {
     string printShort() const;
     /// Prints a list of all sparticle/Higgs masses to standard output
     string printLong();
+    /// Prints a list of all *running* sparticle/Higgs masses to standard output
+    string printLongDrbar();
     
     /// Prints whole object to standard output
     virtual void printObj() { 

@@ -23,7 +23,7 @@ int main() {
   try {
     /// Sets format of output: 6 decimal places
     outputCharacteristics(6);
-    
+
     cout << "# SOFTSUSY" << PACKAGE_VERSION 
 	 << " test program, Ben Allanach 2002\n";
     cout << "# If you use SOFTSUSY, please refer to B.C. Allanach,\n";
@@ -33,7 +33,7 @@ int main() {
     double m12 = 5000., a0 = -14.e3, mGutGuess = 2.0e16,
       tanb = 20.0, m0 = 5000.;
     int sgnMu = 1;       ///< sign of mu parameter 
-    int numPoints = 500;  ///< number of scan points
+    int numPoints = 1;  ///< number of scan points
     
     QedQcd oneset; ///< See "lowe.h" for default definitions parameters
     
@@ -55,7 +55,7 @@ int main() {
     
     int i;
     /// Set limits of tan beta scan
-    double startlnM = MZ, endlnM = 7.0e3;
+    double startlnM = 1.53164e+02, endlnM = 1.547340e+02;
     
     /// Cycle through different points in the scan
     for (i = 0; i <= numPoints; i++) {
@@ -81,6 +81,8 @@ int main() {
       r.calcDrBarPars();
 
       double mtrun = r.displayDrBarPars().mt;
+
+
       
       /// check the point in question is problem free: if so print the output
       if (!r.displayProblem().test()) 
@@ -90,9 +92,8 @@ int main() {
 	     << r.displayPhys().mHpm << " "
 	     << r.displayMzRun() << " "
 	     << r.displayMwRun() << " "
-	     << mtrun << " "
-	     << r.displayDrBarPars().mA0(1) << " "
-	     << r.displayDrBarPars().mh0(1) << " "
+	     << mtrun << " " 
+	     << r.printLongDrbar()
 	     << endl;
       else
 	/// print out what the problem(s) is(are)

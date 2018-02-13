@@ -1373,6 +1373,72 @@ string MssmSoftsusy::printLong() {
   return a.str();
 }
 
+string MssmSoftsusy::printLongDrbar() {
+  /// output:
+  ///  1  2     3      4   5   6   7    8  9  10 11   12    13    
+  /// mu  m3sq mH1sq mH2sq g1 g2 mt(mt) mh mA mH mH+ alphaH msnu3
+  ///  14     15     16     17    18     19    20   
+  /// msnu1 mstopL mstopR msupL msupR msbotL msbotR
+  ///  21   22   23     24     25     26     27    28     29     
+  /// msdL msdR mstauL mstauR mselL mselR thetat thetab thetatau
+  /// 30   31   32   33   34      35      36     37     38    
+  /// mgl mch1 mch2 thetaL thetaR mneut1 mneut2 mneut3 mneut4
+  ///   39    40     41 
+  /// sinthW t1ov1 t2ov2 
+  ostringstream a;
+  double mu = displaySusyMu();
+  if (displayProblem().muSqWrongSign || displayProblem().m3sq ||
+      displayProblem().higgsUfb) 
+    mu = -1.0 *  mu;
+  
+  a << " " << mu << " " 
+    << displayM3Squared() << " " 
+    << displayMh1Squared() << " " <<
+    displayMh2Squared() << " " << 
+    displayGaugeCoupling(1) << " " <<
+    displayGaugeCoupling(2) << " " <<
+    calcRunningMt() << " " <<
+    displayDrBarPars().mh0(1) << " " <<
+    displayDrBarPars().mA0(1) << " " <<
+    displayDrBarPars().mh0(2) << " " <<
+    displayDrBarPars().mHpm << " " <<
+    displayDrBarPars().thetaH << " " <<
+    displayDrBarPars().msnu.display(3) << " " <<
+    displayDrBarPars().msnu.display(1) << " " <<
+    displayDrBarPars().mu.display(1, 3) << " " <<
+    displayDrBarPars().mu.display(2, 3) << " " <<
+    displayDrBarPars().mu.display(1, 1) << " " <<
+    displayDrBarPars().mu.display(2, 1) << " " <<
+    displayDrBarPars().md.display(1, 3) << " " <<
+    displayDrBarPars().md.display(2, 3) << " " <<
+    displayDrBarPars().md.display(1, 1) << " " <<
+    displayDrBarPars().md.display(2, 1) << " " <<
+    displayDrBarPars().me.display(1, 3) << " " <<
+    displayDrBarPars().me.display(2, 3) << " " <<
+    displayDrBarPars().me.display(1, 1) << " " <<
+    displayDrBarPars().me.display(2, 1) << " " <<
+    displayDrBarPars().thetat << " " <<
+    displayDrBarPars().thetab << " " <<
+    displayDrBarPars().thetatau << " " <<
+    displayDrBarPars().mGluino << " " <<
+    displayDrBarPars().mch.display(1) << " " <<
+    displayDrBarPars().mch.display(2) << " " <<
+    displayDrBarPars().thetaL << " " <<
+    displayDrBarPars().thetaR << " " <<
+    displayDrBarPars().mneut.display(1) << " " <<
+    displayDrBarPars().mneut.display(2) << " " <<
+    displayDrBarPars().mneut.display(3) << " " <<
+    displayDrBarPars().mneut.display(4) << " " <<
+    calcSinthdrbar() << " " <<
+    displayTadpole1Ms() << " " <<
+    displayTadpole2Ms() << " ";
+  
+  if (displayProblem().test()) a << "%" << displayProblem();
+  a << flush;
+  return a.str();
+}
+
+  
 //PA: adds sfermion contribitions to the left right and scalar parts 
 //of the self energy
 void MssmSoftsusy::addChaLoopSfermion(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) const {
@@ -6879,8 +6945,11 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
   
   if (tree.mHpm < TOLERANCE) return 0.0;
   
-  double deltaASM = -1.0 / 3.0 + 
-    16.0 / 9.0 * log(tree.mt / q);
+  double deltaASM = -1.0 / 3.0 ;
+  /// If this is called at a scale > mt, it's already been taken into account
+  /// in the QED x QCD running below the current scale, therefore only include
+  /// it if we are at a lower scale
+  if (displayMu() < tree.mt) deltaASM += 16.0 / 9.0 * log(tree.mt / q);
   
   double deltaASusy = 
     log(tree.mHpm / q) / 3.0 + 4.0 / 9.0 * 
@@ -11775,6 +11844,8 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS,
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << " h0/H tachyon: m^2=" << temp;
   }
+  cout << "mhatmh" << mhAtmh << endl;
+  cout << "*** temp" << tempc << endl;
   temp = temp.apply(ccbSqrt);
   
   /// If certain DRbar ratios are large, they can cause massive higher order
