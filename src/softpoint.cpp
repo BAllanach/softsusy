@@ -1433,34 +1433,19 @@ int main(int argc, char *argv[]) {
       }	
       //    if (calcDecays) calculateDecays(r, nmssm, false);
       if (higgsUncertainties) {
-	int numPts = 30;
-	DoubleVector mh(numPts), mH(numPts), mA(numPts), mHp(numPts);
-	double dmh = 0., dmH = 0., dmA = 0., dmHp = 0.;
-	double lnqMin = log(MZ), 
-	  lnqMax = log(2.0 * r->displayMsusy());
-	for (int i = 0; i< numPts; i++) {
-	  MssmSoftsusy a(r->displaySoftsusy());
-	  double lnq = (lnqMax - lnqMin) * double(i) / double(numPts) + lnqMin;
-	  double q = exp(lnq);
-	  int accuracy = 3; 
-	  double mt = 0., sinth = 0., piww = 0., pizz = 0;
-	  a.calcHiggsAtScale(accuracy, mt, sinth, piww, pizz, q);
-	  if (!a.displayProblem().testSeriousProblem()) {
-	    mh.set(i+1, a.displayPhys().mh0(1));
-	    mH.set(i+1, a.displayPhys().mh0(2));
-	    mA.set(i+1, a.displayPhys().mA0(1));
-	    mHp.set(i+1, a.displayPhys().mHpm);
-	  }
-	 }
-	/// Try to add some fixed-order uncertainties to this
-        int p;
-	dmh  =  mh.max(p) -  mh.min(p);
-	dmA  =  mA.max(p) -  mA.min(p);
-	dmH  =  mH.max(p) -  mH.min(p);
-	dmHp = mHp.max(p) - mHp.min(p);
-	cout << "# Estimated Higgs uncertainties in GeV:\n# Dmh=" 
-	     << dmh << " DmH=" << dmH << " DmA=" << dmA 
-	     << " DmH+-=" << dmHp << endl;
+        const sPhysical dM = r->displayPhysUncertainty(
+           boundaryCondition, mgutGuess, pars, sgnMu, tanb,
+           oneset, gaugeUnification, ewsbBCscale);
+        const double dmh = dM.mh0(1);
+        const double dmH = dM.mh0(2);
+        const double dmA = dM.mA0(1);
+        const double dmHp = dM.mHpm;
+
+        cout << "Block DMASS                   # uncertainties\n"
+             << "        25    "; printRow(cout, dmh ); cout << "   # uncertainty of h0 in GeV\n"
+             << "        35    "; printRow(cout, dmH ); cout << "   # uncertainty of H0 in GeV\n"
+             << "        36    "; printRow(cout, dmA ); cout << "   # uncertainty of A0 in GeV\n"
+             << "        37    "; printRow(cout, dmHp); cout << "   # uncertainty of H+ in GeV\n";
       }
       
       if (r->displayProblem().test()) {

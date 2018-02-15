@@ -51,6 +51,16 @@ namespace softsusy { class MssmSoftsusy; }
 
 namespace softsusy {
 
+  /// uncertainty flags
+  enum EPoleUncertainties {
+     DeltaQpole = 1,
+     DeltaQmatch = 2,
+     DeltaMt = 4,
+     DeltaAlphaS = 8,
+     DeltaAlphaEm = 16,
+     DeltaAll = DeltaQpole + DeltaQmatch + DeltaMt + DeltaAlphaS + DeltaAlphaEm
+  };
+
   ///< default SUSY breaking boundary condition scale
   const double mxDefault = 1.9e16; 
   
@@ -119,6 +129,8 @@ namespace softsusy {
     void check_flags(); ///< check consistency of threshold flags
     DoubleMatrix calcHiggs3L(bool is_bottom); ///< Higgs 3L corrections
   public:
+    using TMSSMBoundaryCondition = void(*)(MssmSoftsusy&, const DoubleVector&);
+
     /// Flag allowing to choose which two-loop thresholds have to be included
     int included_thresholds; 
     
@@ -149,6 +161,17 @@ namespace softsusy {
     
     /// Displays physical parameters only
      const sPhysical & displayPhys() const;
+
+    /// Displays uncertainty estimate of pole masses
+    sPhysical displayPhysUncertainty(
+       TMSSMBoundaryCondition boundaryCondition,
+       double mxGuess,
+       const DoubleVector & pars, int sgnMu, double tanb,
+       const QedQcd & oneset, bool gaugeUnification,
+       bool ewsbBCscale =  false,
+       int contributions = DeltaAll) const;
+    /// Displays uncertainty estimate of pole masses by scale variation only
+    sPhysical displayPhysUncertaintyScaleVariation() const;
     
     /// Displays tree-level masses and mixings of sparticles and third
     /// generation fermions
@@ -1052,8 +1075,7 @@ namespace softsusy {
     /// like in the "pheno MSSM".
     /// Note that oneset should be at the scale at which QEDxQCD is matched to
     /// the MSSM.
-    void fixedPointIteration(void (*boundaryCondition)
-			     (MssmSoftsusy &, const DoubleVector &),
+    void fixedPointIteration(TMSSMBoundaryCondition boundaryCondition,
 			     double mxGuess, 
 			     const DoubleVector & pars, int sgnMu, double tanb,
 			     const QedQcd & oneset, bool gaugeUnification, 

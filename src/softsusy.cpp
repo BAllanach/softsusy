@@ -11907,4 +11907,137 @@ double softsusy::MssmSoftsusy::calcRunMbNeutralinos() const {
   return deltaNeutralino; 
 }
 
+/// calculates an uncertainty estimate of the pole masses from scale
+/// variation only
+softsusy::sPhysical MssmSoftsusy::displayPhysUncertaintyScaleVariation() const
+{
+   const int numPts = 30;
+   DoubleVector mh(numPts), mH(numPts), mA(numPts), mHp(numPts);
+   const double lnqMin = log(0.5 * displayMsusy()),
+      lnqMax = log(2.0 * displayMsusy());
+
+   for (int i = 0; i< numPts; i++) {
+      MssmSoftsusy a(*this);
+      const double lnq = (lnqMax - lnqMin) * double(i) / double(numPts) + lnqMin;
+      const double q = exp(lnq);
+      const int accuracy = 3;
+      double mt = 0., sinth = 0., piww = 0., pizz = 0;
+
+      a.calcHiggsAtScale(accuracy, mt, sinth, piww, pizz, q);
+
+      if (!a.displayProblem().testSeriousProblem()) {
+         mh.set(i+1, a.displayPhys().mh0(1));
+         mH.set(i+1, a.displayPhys().mh0(2));
+         mA.set(i+1, a.displayPhys().mA0(1));
+         mHp.set(i+1, a.displayPhys().mHpm);
+      }
+   }
+   int p;
+
+   sPhysical phys;
+   phys.mh0(1) =  mh.max(p) -  mh.min(p);
+   phys.mh0(2) =  mH.max(p) -  mH.min(p);
+   phys.mA0(1) =  mA.max(p) -  mA.min(p);
+   phys.mHpm   = mHp.max(p) - mHp.min(p);
+
+   return phys;
+}
+
+/// Calculates an uncertainty estimate of the pole masses from scale
+/// variation and changing of couplings by higher orders
+/// The first parameters are the same as in fixedPointIteration().
+/// The last parameter determines the sources of uncertainty taken
+/// into account.
+softsusy::sPhysical MssmSoftsusy::displayPhysUncertainty(
+   TMSSMBoundaryCondition bc,
+   double mxGuess, const DoubleVector& pars, int sgnMu, double tanb,
+   const QedQcd& oneset, bool gaugeUnification,
+   bool ewsbBCscale, int contributions) const
+{
+   const DoubleVector masses = displayPhys().display();
+   const int len = displayPhys().size();
+   DoubleVector v_scale(len), v_match(len), v_mt(len), v_alphas(len), v_alphaem(len);
+
+   // vary Q_pole
+   if (contributions & DeltaQpole) {
+      v_scale = displayPhysUncertaintyScaleVariation().display();
+   }
+
+   // vary Q_match
+   if (contributions & DeltaQmatch) {
+      const double Q_match = oneset.displayMu();
+      const double lnqMin = std::log(0.5 * Q_match);
+      const double lnqMax = std::log(2.0 * Q_match);
+      const int numPts = 10;
+      DoubleVector mh(numPts), mH(numPts), mA(numPts), mHp(numPts);
+
+      for (int i = 0; i < numPts; i++) {
+         const double lnq = (lnqMax - lnqMin) * double(i) / double(numPts) + lnqMin;
+         const double q = exp(lnq);
+
+         QedQcd tmp(oneset);
+         tmp.runto(q);
+
+         MssmSoftsusy a(*this);
+         a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, tmp, gaugeUnification, ewsbBCscale);
+
+         if (!a.displayProblem().testSeriousProblem()) {
+            mh.set(i+1, a.displayPhys().mh0(1));
+            mH.set(i+1, a.displayPhys().mh0(2));
+            mA.set(i+1, a.displayPhys().mA0(1));
+            mHp.set(i+1, a.displayPhys().mHpm);
+         }
+      }
+
+      int p;
+      sPhysical phys;
+      phys.mh0(1) =  mh.max(p) -  mh.min(p);
+      phys.mh0(2) =  mH.max(p) -  mH.min(p);
+      phys.mA0(1) =  mA.max(p) -  mA.min(p);
+      phys.mHpm   = mHp.max(p) - mHp.min(p);
+
+      v_match = phys.display();
+   }
+
+   // vary mt
+   if (contributions & DeltaMt) {
+      MssmSoftsusy a(*this);
+      a.useAlternativeMt();
+      a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, oneset, gaugeUnification, ewsbBCscale);
+
+      v_mt = DoubleVector(masses - a.displayPhys().display()).abs();
+   }
+
+   // vary alpha_s
+   if (contributions & DeltaAlphaS) {
+      MssmSoftsusy a(*this);
+      a.useAlternativeAlphaS();
+      a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, oneset, gaugeUnification, ewsbBCscale);
+
+      v_alphas = DoubleVector(masses - a.displayPhys().display()).abs();
+   }
+
+   // vary alpha_em
+   if (contributions & DeltaAlphaEm) {
+      MssmSoftsusy a(*this);
+      a.useAlternativeAlphaEm();
+      a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, oneset, gaugeUnification, ewsbBCscale);
+
+      v_alphaem = DoubleVector(masses - a.displayPhys().display()).abs();
+   }
+
+   // combine
+   const DoubleVector total =
+      DoubleVector( v_scale.apply(sqr) +
+                    v_match.apply(sqr) +
+                    v_mt.apply(sqr) +
+                    v_alphas.apply(sqr) +
+                    v_alphaem.apply(sqr) ).apply(std::sqrt);
+
+   sPhysical dM_total;
+   dM_total.set(total);
+
+   return dM_total;
+}
+
 } ///< namespace softsusy
