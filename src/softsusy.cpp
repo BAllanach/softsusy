@@ -715,8 +715,8 @@ double MssmSoftsusy::doCalcTadpole2oneLoop(double /* mt */, double sinthDRbar) {
   /// Sfermion couplings
   DoubleMatrix lTS2Lr(2, 2),  lBS2Lr(2, 2),  lTauS2Lr(2, 2);
   H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mu, sinb);
-  double fermions = doCalcTad2Sfermions(lTS2Lr, lBS2Lr, lTauS2Lr, costhDRbar);
-  double sfermions = doCalcTad2fermions(q);
+  double sfermions = doCalcTad2Sfermions(lTS2Lr, lBS2Lr, lTauS2Lr, costhDRbar);
+  double fermions = doCalcTad2fermions(q);
   double higgs = doCalcTad2Higgs(q, costhDRbar2, g, tanb);
   /// Neutralinos
   double neutralinos = doCalcTad2Neutralinos(q, costhDRbar, g, sinb);
