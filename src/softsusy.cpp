@@ -7760,7 +7760,7 @@ void MssmSoftsusy::itLowsoft
     if (err) {
       // problem with running: bail out 
       flagProblemThrown(true);
-      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to MZ\n"; 
+      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to Msusy\n";
       if (PRINTOUT > 1) printObj();
       numTries = 0;
       return;
@@ -7839,7 +7839,7 @@ void MssmSoftsusy::itLowsoft
     if (err) {
       /// problem with running: bail out 
       flagProblemThrown(true);
-      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to MZ\n"; 
+      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to M_{QEDxQCD}\n";
       if (PRINTOUT > 1) printObj();
       ///    old = MssmSoftsusy();
       numTries = 0;
