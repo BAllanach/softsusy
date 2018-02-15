@@ -30,6 +30,8 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   setSetTbAtMX(s.displaySetTbAtMX());
   altEwsb = s.altEwsb;
   altMt = s.altMt;
+  altAlphaS = s.altAlphaS;
+  altAlphaEm = s.altAlphaEm;
   predMzSq = s.displayPredMzSq();
   t1OV1Ms = s.displayTadpole1Ms(); 
   t2OV2Ms = s.displayTadpole2Ms(); 
@@ -47,7 +49,8 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       physpars(), forLoops(), 
       problem(), msusy(0.0), minV(numberOfTheBeast), 
       mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false),
-      altMt(false), predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.),
+      altMt(false), altAlphaS(false), altAlphaEm(false),
+      predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.),
       t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), qewsb(1.), mxBC(mxDefault)
   {
     setPars(110);
@@ -73,6 +76,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       mw(s.mw), dataSet(s.displayDataSet()), fracDiff(s.displayFracDiff()), 
       setTbAtMX(s.displaySetTbAtMX()), 
       altEwsb(s.displayAltEwsb()), altMt(s.displayAltMt()),
+      altAlphaS(s.displayAltAlphaS()), altAlphaEm(s.displayAltAlphaEm()),
       predMzSq(s.displayPredMzSq()),
       t1OV1Ms(s.displayTadpole1Ms()), t2OV2Ms(s.displayTadpole2Ms()), 
       t1OV1Ms1loop(s.displayTadpole1Ms1loop()), 
@@ -89,7 +93,8 @@ MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
 	: MssmSusy(s), MssmSoftPars(), AltEwsbMssm(), Approx(s.displayMssmApprox()),
 	physpars(), forLoops(), problem(), 
 	msusy(0.0), minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.), 
-	setTbAtMX(false), altEwsb(false), altMt(false), predMzSq(0.),
+	setTbAtMX(false), altEwsb(false), altMt(false), altAlphaS(false),
+        altAlphaEm(false), predMzSq(0.),
         t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
 	qewsb(1.0), mxBC(mxDefault) { 
     setPars(110);
@@ -113,7 +118,8 @@ MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
       forLoops(), problem(), msusy(0.0),
       minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.),
       setTbAtMX(false), 
-      altEwsb(false), altMt(false), predMzSq(0.), t1OV1Ms(0.),
+      altEwsb(false), altMt(false), altAlphaS(false), altAlphaEm(false),
+      predMzSq(0.), t1OV1Ms(0.),
       t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
 	qewsb(1.0), mxBC(mxDefault){
     setHvev(hv);
@@ -6793,7 +6799,10 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
   }
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
   
-  const double alphasDRbar_post = alphasMSbar / (1.0 - deltaAlphas + dalpha_2);
+  const double alphasDRbar_post =
+     altAlphaS ?
+     alphasMSbar * (1.0 + deltaAlphas - dalpha_2 + sqr(deltaAlphas)) :
+     alphasMSbar / (1.0 - deltaAlphas + dalpha_2);
   
   return alphasDRbar_post;
 }
@@ -6847,11 +6856,15 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
     double deltaAlphaTwoLoop = 1.0e-4 * (b0 + b1 * ds + b2 * dT + b3 * dH +
 					 b4 * das + b5 * dmu + b6 * dT * dmu);
     
-    double deltaAlpha;
-    deltaAlpha = -alphaEm / (2.0 * PI) * (deltaASM + deltaASusy);
-    if (twoLEW) deltaAlpha += deltaAlphaTwoLoop;
-  
-    return alphaEm / (1.0 - deltaAlpha);
+    const double deltaAlpha_1L = -alphaEm / (2.0 * PI) * (deltaASM + deltaASusy);
+    const double deltaAlpha_2L = twoLEW ? deltaAlphaTwoLoop : 0.;
+
+    const double alphaEm_post =
+       altAlphaEm ?
+       alphaEm * (1.0 + deltaAlpha_1L + deltaAlpha_2L + sqr(deltaAlpha_1L)) :
+       alphaEm / (1.0 - (deltaAlpha_1L + deltaAlpha_2L));
+
+    return alphaEm_post;
 }
 
 /// Returns lsp mass in mass and function return labels which particle is lsp:
@@ -7064,6 +7077,8 @@ void MssmSoftsusy::fixedPointIteration
     bool setTbAtMXflag = displaySetTbAtMX(); 
     bool altFlag = displayAltEwsb();
     bool altFlagMt = displayAltMt();
+    bool altFlagAlphaS = displayAltAlphaS();
+    bool altFlagAlphaEm = displayAltAlphaEm();
     double m32 = displayGravitino();
     double muCondFirst = displayMuCond();
     double maCondFirst = displayMaCond();
@@ -7076,6 +7091,8 @@ void MssmSoftsusy::fixedPointIteration
     setSetTbAtMX(setTbAtMXflag); 
     if (altFlag) useAlternativeEwsb();
     if (altFlagMt) useAlternativeMt();
+    if (altFlagAlphaS) useAlternativeAlphaS();
+    if (altFlagAlphaEm) useAlternativeAlphaEm();
     setData(oneset); 
     setMw(MW); 
     setM32(m32);
