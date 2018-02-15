@@ -29,6 +29,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   setThresholds(s.displayThresholds());
   setSetTbAtMX(s.displaySetTbAtMX());
   altEwsb = s.altEwsb;
+  altMt = s.altMt;
   predMzSq = s.displayPredMzSq();
   t1OV1Ms = s.displayTadpole1Ms(); 
   t2OV2Ms = s.displayTadpole2Ms(); 
@@ -45,9 +46,10 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     : MssmSusy(), MssmSoftPars(), AltEwsbMssm(), Approx(), 
       physpars(), forLoops(), 
       problem(), msusy(0.0), minV(numberOfTheBeast), 
-      mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false), 
-      predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), 
-      t2OV2Ms1loop(0.), qewsb(1.), mxBC(mxDefault){ 
+      mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false),
+      altMt(false), predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.),
+      t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), qewsb(1.), mxBC(mxDefault)
+  {
     setPars(110);
     setMu(0.0);
     
@@ -70,7 +72,8 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       problem(s.problem), msusy(s.msusy), minV(s.minV), 
       mw(s.mw), dataSet(s.displayDataSet()), fracDiff(s.displayFracDiff()), 
       setTbAtMX(s.displaySetTbAtMX()), 
-      altEwsb(s.displayAltEwsb()), predMzSq(s.displayPredMzSq()), 
+      altEwsb(s.displayAltEwsb()), altMt(s.displayAltMt()),
+      predMzSq(s.displayPredMzSq()),
       t1OV1Ms(s.displayTadpole1Ms()), t2OV2Ms(s.displayTadpole2Ms()), 
       t1OV1Ms1loop(s.displayTadpole1Ms1loop()), 
       t2OV2Ms1loop(s.displayTadpole2Ms1loop()), qewsb(s.displayQewsb()),
@@ -86,8 +89,8 @@ MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
 	: MssmSusy(s), MssmSoftPars(), AltEwsbMssm(), Approx(s.displayMssmApprox()),
 	physpars(), forLoops(), problem(), 
 	msusy(0.0), minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.), 
-	setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
-	t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
+	setTbAtMX(false), altEwsb(false), altMt(false), predMzSq(0.),
+        t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
 	qewsb(1.0), mxBC(mxDefault) { 
     setPars(110);
     setMu(s.displayMu()); 
@@ -110,7 +113,7 @@ MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
       forLoops(), problem(), msusy(0.0),
       minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.),
       setTbAtMX(false), 
-      altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
+      altEwsb(false), altMt(false), predMzSq(0.), t1OV1Ms(0.),
       t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
 	qewsb(1.0), mxBC(mxDefault){
     setHvev(hv);
@@ -2627,8 +2630,15 @@ double MssmSoftsusy::calcRunningMt() {
       const double dmtas2 =
 	dMt_over_mt_2loop(g3, mt, mg, mst1, mst2, msusy, thetat, q);
 
-      double dmt_MT = (dmtas2 - dmtas*dmtas);
-      resigmat -= mtpole*dmt_MT;
+      if (altMt) {
+         // Eq.(16) of [1609.00371]
+         const double sigma_1L = resigmat/mtpole;
+         resigmat = mt*(sigma_1L - dmtas2);
+      } else {
+         // Eq.(13) of [1609.00371]
+         const double dmt_MT = (dmtas2 - dmtas*dmtas);
+         resigmat -= mtpole*dmt_MT;
+      }
     }
   } else ordinaryQcdCorrections = true;
 #endif
@@ -7135,6 +7145,7 @@ void MssmSoftsusy::fixedPointIteration
     
     bool setTbAtMXflag = displaySetTbAtMX(); 
     bool altFlag = displayAltEwsb();
+    bool altFlagMt = displayAltMt();
     double m32 = displayGravitino();
     double muCondFirst = displayMuCond();
     double maCondFirst = displayMaCond();
@@ -7146,6 +7157,7 @@ void MssmSoftsusy::fixedPointIteration
     included_thresholds = enabled_thresholds;
     setSetTbAtMX(setTbAtMXflag); 
     if (altFlag) useAlternativeEwsb();
+    if (altFlagMt) useAlternativeMt();
     setData(oneset); 
     setMw(MW); 
     setM32(m32);

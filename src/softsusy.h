@@ -97,6 +97,7 @@ namespace softsusy {
     bool setTbAtMX;     ///< flag: do we set tan beta at the SUSY breaking 
                         ///< scale?
     bool altEwsb;       ///< flag: do we set mu, mA at the SUSY breaking scale?
+    bool altMt;         ///< flag: do we use an alternative mt(MSSM,DR-bar) calculation?
     double predMzSq;    ///< predicted Z mass squared after iteration
     double t1OV1Ms, t2OV2Ms;  ///< DRbar tadpoles(MSusy): incl 2 loops
     double t1OV1Ms1loop, t2OV2Ms1loop; ///< DRbar tadpoles(MSusy): excl 2
@@ -178,6 +179,7 @@ namespace softsusy {
     /// Is tan beta set at the user defined SUSY breaking scale?
     bool displaySetTbAtMX() const { return setTbAtMX; } 
     bool displayAltEwsb() const { return altEwsb; }
+    bool displayAltMt() const { return altMt; }
     double displayPredMzSq() const { return predMzSq; }
     double displayQewsb() const { return qewsb; }
     double displayMatchingScale() const { return displayDataSet().displayMu(); }
@@ -249,6 +251,8 @@ namespace softsusy {
     void setSetTbAtMX(bool a) { setTbAtMX = a; }
     /// Use alernative EWSB conditions: set mu and MA(pole)
     void useAlternativeEwsb() { altEwsb = true; }
+    /// Use alernative mt(MSSM,DR-bar) calculation
+    void useAlternativeMt() { altMt = true; }
     /// Set MZ^2 predicted after iteration
     void setPredMzSq(double a) { predMzSq = a; }
     /// Sets total set of RGE parameters equal to elements of a vector

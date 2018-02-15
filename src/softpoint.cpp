@@ -1404,6 +1404,7 @@ int main(int argc, char *argv[]) {
       /// Set quark mixing correctly
       r->setMixing(mixing); k.setMixing(mixing); nmssm.setMixing(mixing);
       r->setQewsb(qewsb); k.setQewsb(qewsb); nmssm.setQewsb(qewsb);
+      r->useAlternativeMt();
       if (useThreeLoopRge) {
 	r->setLoops(3); k.setLoops(3); nmssm.setLoops(3);
       }
