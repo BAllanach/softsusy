@@ -21,9 +21,6 @@
 #include <iostream>
 #include "linalg.h"
 #include "dilogwrap.h"
-#ifdef USE_LOOPTOOLS
-#include "clooptools.h"
-#endif
 using namespace softsusy;
 
 /// adaptive Gaussian one dimensional integration of f(x) between a and b to

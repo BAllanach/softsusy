@@ -13,6 +13,10 @@
 
 #include "rpvmain.h"
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 int main() {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 

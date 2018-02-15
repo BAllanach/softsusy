@@ -12,10 +12,6 @@
 #ifndef DEF_H
 #define DEF_H
 
-#ifdef HAVE_CONFIG_H
- #include <config.h>
-#endif
-
 #include <cmath>
 namespace softsusy{
   /// uncomment if you want checking of vector/matrices bounds: slows code

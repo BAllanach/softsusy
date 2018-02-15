@@ -9,6 +9,14 @@
 
 #include "numerics.h"
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef USE_LOOPTOOLS
+#include "clooptools.h"
+#endif
+
 double dgauss(double (*f)(double x), double a, double b, double eps) {
   static DoubleVector w(12), x(12);
   /// set the initial values if they are uninitialised

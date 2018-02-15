@@ -2,6 +2,10 @@
 #include "mssmUtils.h"
 #include <iostream>
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 namespace softsusy {
   
   void generalBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {

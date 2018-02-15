@@ -20,10 +20,6 @@
 #include "rge.h"
 #include "tensor.h"
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 namespace softsusy {
   
   const static int numSusyPars = 33;
