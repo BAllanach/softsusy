@@ -39,27 +39,100 @@ const sPhysical & sPhysical::operator=(const sPhysical &s) {
 
 // a should be in C convention ie start from index zero
 void sPhysical::display(double *a) const {
-  std::size_t k = 0;
-  mh0.fillArray(a,k);   k += mh0.size();
-  mA0.fillArray(a,k);   k += mA0.size();
-  a[k++] = mHpm;
-  msnu.fillArray(a,k);  k += msnu.size();
-  mch.fillArray(a,k);   k += mch.size();
-  mneut.fillArray(a,k); k += mneut.size();
-  a[k++] = mGluino;
-  mixNeut.fillArray(a,k); k += mixNeut.size();
-  a[k++] = thetaL;
-  a[k++] = thetaR;
-  a[k++] = thetat;
-  a[k++] = thetab;
-  a[k++] = thetatau;
-  a[k++] = thetamu;
-  mu.fillArray(a,k); k += mu.size();
-  md.fillArray(a,k); k += md.size();
-  me.fillArray(a,k); k += me.size();
-  a[k++] = thetaH;
-  mixh0.fillArray(a,k); k += mixh0.size();
-  a[k++] = thetaA0;
+   const DoubleVector v = display();
+   for (std::size_t i = 0; i < v.size(); i++)
+      a[i] = v(i+1);
+}
+
+int sPhysical::size() const
+{
+   return mh0.size() + mA0.size() + 1 // Higgses
+        + msnu.size() + mch.size() + mneut.size()
+        + 1                                 // gluino
+        + mixNeut.size() + 8 + mixh0.size() // mixing angles
+        + mu.size() + md.size() + me.size();
+}
+
+DoubleVector sPhysical::display() const
+{
+   const int len = size();
+   DoubleVector v(len);
+   int k = 1;
+
+   for (std::size_t i = 1; i <= mh0.size()    ; i++) v(k++) = mh0(i);
+   for (std::size_t i = 1; i <= mA0.size()    ; i++) v(k++) = mA0(i);
+   v(k++) = mHpm;
+   for (std::size_t i = 1; i <= msnu.size()   ; i++) v(k++) = msnu(i);
+   for (std::size_t i = 1; i <= mch.size()    ; i++) v(k++) = mch(i);
+   for (std::size_t i = 1; i <= mneut.size()  ; i++) v(k++) = mneut(i);
+   v(k++) = mGluino;
+   for (int i = 1; i <= mixNeut.displayRows(); i++)
+      for (int j = 1; j <= mixNeut.displayCols(); j++)
+         v(k++) = mixNeut(i,j);
+   v(k++) = thetaL;
+   v(k++) = thetaR;
+   v(k++) = thetat;
+   v(k++) = thetab;
+   v(k++) = thetatau;
+   v(k++) = thetamu;
+   for (int i = 1; i <= mu.displayRows(); i++)
+      for (int j = 1; j <= mu.displayCols(); j++)
+         v(k++) = mu(i,j);
+   for (int i = 1; i <= md.displayRows(); i++)
+      for (int j = 1; j <= md.displayCols(); j++)
+         v(k++) = md(i,j);
+   for (int i = 1; i <= me.displayRows(); i++)
+      for (int j = 1; j <= me.displayCols(); j++)
+         v(k++) = me(i,j);
+   v(k++) = thetaH;
+   for (int i = 1; i <= mixh0.displayRows(); i++)
+      for (int j = 1; j <= mixh0.displayCols(); j++)
+         v(k++) = mixh0(i,j);
+   v(k++) = thetaA0;
+
+   if (len+1 != k)
+      throw std::string("Bug: access outside array boundaries");
+
+   return v;
+}
+
+void sPhysical::set(const DoubleVector& v)
+{
+   if (size() != v.size())
+      throw std::string("Bug: vector is too small!");
+
+   std::size_t k = 1;
+
+   for (std::size_t i = 1; i <= mh0.size()    ; i++) mh0(i) = v(k++);
+   for (std::size_t i = 1; i <= mA0.size()    ; i++) mA0(i) = v(k++);
+   mHpm = v(k++);
+   for (std::size_t i = 1; i <= msnu.size()   ; i++) msnu(i) = v(k++);
+   for (std::size_t i = 1; i <= mch.size()    ; i++) mch(i) = v(k++);
+   for (std::size_t i = 1; i <= mneut.size()  ; i++) mneut(i) = v(k++);
+   mGluino = v(k++);
+   for (int i = 1; i <= mixNeut.displayRows(); i++)
+      for (int j = 1; j <= mixNeut.displayCols(); j++)
+         mixNeut(i,j) = v(k++);
+   thetaL = v(k++);
+   thetaR = v(k++);
+   thetat = v(k++);
+   thetab = v(k++);
+   thetatau = v(k++);
+   thetamu = v(k++);
+   for (int i = 1; i <= mu.displayRows(); i++)
+      for (int j = 1; j <= mu.displayCols(); j++)
+         mu(i,j) = v(k++);
+   for (int i = 1; i <= md.displayRows(); i++)
+      for (int j = 1; j <= md.displayCols(); j++)
+         md(i,j) = v(k++);
+   for (int i = 1; i <= me.displayRows(); i++)
+      for (int j = 1; j <= me.displayCols(); j++)
+         me(i,j) = v(k++);
+   thetaH = v(k++);
+   for (int i = 1; i <= mixh0.displayRows(); i++)
+      for (int j = 1; j <= mixh0.displayCols(); j++)
+         mixh0(i,j) = v(k++);
+   thetaA0 = v(k++);
 }
 
 #define HR "---------------------------------------------------------------\n"

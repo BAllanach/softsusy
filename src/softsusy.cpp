@@ -29,6 +29,9 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   setThresholds(s.displayThresholds());
   setSetTbAtMX(s.displaySetTbAtMX());
   altEwsb = s.altEwsb;
+  altMt = s.altMt;
+  altAlphaS = s.altAlphaS;
+  altAlphaEm = s.altAlphaEm;
   predMzSq = s.displayPredMzSq();
   t1OV1Ms = s.displayTadpole1Ms(); 
   t2OV2Ms = s.displayTadpole2Ms(); 
@@ -45,9 +48,11 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
     : MssmSusy(), MssmSoftPars(), AltEwsbMssm(), Approx(), 
       physpars(), forLoops(), 
       problem(), msusy(0.0), minV(numberOfTheBeast), 
-      mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false), 
-      predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), 
-      t2OV2Ms1loop(0.), qewsb(1.), mxBC(mxDefault){ 
+      mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false),
+      altMt(false), altAlphaS(false), altAlphaEm(false),
+      predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.),
+      t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), qewsb(1.), mxBC(mxDefault)
+  {
     setPars(110);
     setMu(0.0);
     
@@ -70,7 +75,9 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       problem(s.problem), msusy(s.msusy), minV(s.minV), 
       mw(s.mw), dataSet(s.displayDataSet()), fracDiff(s.displayFracDiff()), 
       setTbAtMX(s.displaySetTbAtMX()), 
-      altEwsb(s.displayAltEwsb()), predMzSq(s.displayPredMzSq()), 
+      altEwsb(s.displayAltEwsb()), altMt(s.displayAltMt()),
+      altAlphaS(s.displayAltAlphaS()), altAlphaEm(s.displayAltAlphaEm()),
+      predMzSq(s.displayPredMzSq()),
       t1OV1Ms(s.displayTadpole1Ms()), t2OV2Ms(s.displayTadpole2Ms()), 
       t1OV1Ms1loop(s.displayTadpole1Ms1loop()), 
       t2OV2Ms1loop(s.displayTadpole2Ms1loop()), qewsb(s.displayQewsb()),
@@ -86,8 +93,9 @@ MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
 	: MssmSusy(s), MssmSoftPars(), AltEwsbMssm(), Approx(s.displayMssmApprox()),
 	physpars(), forLoops(), problem(), 
 	msusy(0.0), minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.), 
-	setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
-	t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
+	setTbAtMX(false), altEwsb(false), altMt(false), altAlphaS(false),
+        altAlphaEm(false), predMzSq(0.),
+        t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
 	qewsb(1.0), mxBC(mxDefault) { 
     setPars(110);
     setMu(s.displayMu()); 
@@ -110,7 +118,8 @@ MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
       forLoops(), problem(), msusy(0.0),
       minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.),
       setTbAtMX(false), 
-      altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
+      altEwsb(false), altMt(false), altAlphaS(false), altAlphaEm(false),
+      predMzSq(0.), t1OV1Ms(0.),
       t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
 	qewsb(1.0), mxBC(mxDefault){
     setHvev(hv);
@@ -2664,20 +2673,7 @@ double MssmSoftsusy::calcRunningMt() {
   
   if (USE_TWO_LOOP_GAUGE_YUKAWA && (included_thresholds & ENABLE_TWO_LOOP_MT_AS)) {
     ordinaryQcdCorrections = false;
-    /// bool & needcalc = decoupling_corrections.dmt.two_loop_needs_recalc; 
-    /// flag: calculate corrections if the
-    /// two-previous iterations gave different results
-    // using namespace GiNaC;
     if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) {  
-      /*      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-      double dmtas2 =  decoupling_corrections.dmt.two_loop;
-      if (needcalc) {
-	ex test = tquark_corrections::eval_tquark_twoloop_strong_pole(drbrp);
-	if (is_a<numeric>(test)) dmtas2 = ex_to<numeric>(test).to_double();
-	else dout <<" Not numeric: 2loop pole t-quark " << endl;
-	decoupling_corrections.dmt.two_loop = dmtas2;
-      } else dout << " mt: no calculation " << endl;
-      */     
       /// back converion Mt -> mt(mu)
       /// dmt_as2 is already properly normalized
       /// one needs to normalize only 1-loop contribution
@@ -2693,8 +2689,15 @@ double MssmSoftsusy::calcRunningMt() {
       const double dmtas2 =
 	dMt_over_mt_2loop(g3, mt, mg, mst1, mst2, msusy, thetat, q);
 
-      double dmt_MT = (dmtas2 - dmtas*dmtas);
-      resigmat -= mtpole*dmt_MT;
+      if (altMt) {
+         // Eq.(16) of [1609.00371]
+         const double sigma_1L = resigmat/mtpole;
+         resigmat = mt*(sigma_1L - dmtas2);
+      } else {
+         // Eq.(13) of [1609.00371]
+         const double dmt_MT = (dmtas2 - dmtas*dmtas);
+         resigmat -= mtpole*dmt_MT;
+      }
     }
   } else ordinaryQcdCorrections = true;
 #endif
@@ -2885,34 +2888,6 @@ double MssmSoftsusy::calcRunningMb() {
   
   /// AVB: this also includes top quark contribution (decoupling)!
   if (USE_TWO_LOOP_GAUGE_YUKAWA && (included_thresholds & ENABLE_TWO_LOOP_MB_YUK)) {
-    /*    
-     bool & needcalc = decoupling_corrections.dmb.two_loop_needs_recalc; 
-    // flag: calculate corrections if two-previous iterations gave different results
-     using namespace GiNaC;
-     
-     if (needcalc) {
-       exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-      
-      if ((included_thresholds & ENABLE_TWO_LOOP_MB_AS)) {
-	ex test = bquark_corrections::eval_bquark_twoloop_strong_dec(drbrp);
-	if (is_a<numeric>(test))
-	  dzetamb += ex_to<numeric>(test).to_double();
-	  }
-	  if ((included_thresholds & ENABLE_TWO_LOOP_MB_YUK)) {
-	  ex test = bquark_corrections::eval_bquark_twoloop_yukawa_dec(drbrp);
-	  if (is_a<numeric>(test))
-	  dzetamb += ex_to<numeric>(test).to_double();
-	  }
-	  
-	  if (close(dzetamb, decoupling_corrections.dmb.two_loop, 
-	  TWOLOOP_NUM_THRESH)) needcalc = false; 
-	  decoupling_corrections.dmb.two_loop = dzetamb;
-	  }
-	  else {
-	  dzetamb = decoupling_corrections.dmb.two_loop;
-	  }*/
-
-     //      double dmtas = (qcd + stopGluino) / (16.0 * sqr(PI));
       double g3 = displayGaugeCoupling(3);
       double mt = displayDrBarPars().mt;
       double mb = displayDrBarPars().mb;
@@ -3115,22 +3090,6 @@ double MssmSoftsusy::calcRunningMtau() {
   
   if (USE_TWO_LOOP_GAUGE_YUKAWA &&
       (included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
-    // flag: calculate corrections if two-previous iterations gave different
-    // results 
-    /*    bool & needcalc = decoupling_corrections.dmtau.two_loop_needs_recalc;  
-    using namespace GiNaC;
-    if ((included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
-      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-      double dzmtau2 = decoupling_corrections.dmtau.two_loop;
-      if (needcalc) {
-	ex test = tau_corrections::eval_tau_twoloop_yukawa_dec(drbrp);
-	if (is_a<numeric>(test)) dzmtau2 = ex_to<numeric>(test).to_double();
-	else dout <<" Not numeric: 2loop  tau-lepton " << endl;
-	decoupling_corrections.dmtau.two_loop = dzmtau2;
-	
-      } 
-      dzetamtau2 = -dzetamtau*dzetamtau + dzmtau2;*/
-
       const drBarPars tree(displayDrBarPars());
       const double mst_1 = tree.mu(1, 3), mst_2 = tree.mu(2, 3),
         theta_t = tree.thetat;
@@ -3172,15 +3131,8 @@ double MssmSoftsusy::calcRunningMtau() {
         + flexiblesusy::mssm_twoloop_mtau::delta_mtau_2loop_atau_at(pars)
         + flexiblesusy::mssm_twoloop_mtau::delta_mtau_2loop_atau_ab(pars);
 
-      //      cout << "dmtau(GiNaC) = " << decoupling_corrections.dmtau.two_loop
-      //           << ", dmtau(C++) = " << dmtau_2L
-      //           << ", diff = " << (decoupling_corrections.dmtau.two_loop - dmtau_2L)/decoupling_corrections.dmtau.two_loop
-      //           << endl;
-
-      //      decoupling_corrections.dmtau.two_loop = dmtau_2L;
       dzetamtau2 = -dzetamtau*dzetamtau + dmtau_2L;
     }
-  // }
 #endif
   
   return mTauSMMZ * 
@@ -6872,17 +6824,6 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
 
   if (USE_TWO_LOOP_GAUGE_YUKAWA) {
     if ((included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK)) {
-      /*      using namespace GiNaC;
-	      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-	      ex test = gs_corrections::eval_gs_twoloop_strong(drbrp);
-	      if (is_a<numeric>(test)) {
-	      double dgs2 = ex_to<numeric>(test).to_double();
-	      dgs2 = 2.0*dgs2; 
-	      decoupling_corrections.das.two_loop = dgs2;
-	      dalpha_2 = deltaAlphas*deltaAlphas/4.0 + dgs2;
-	      }*/
-
-      ///////// comparing C++ implementation //////////
       const double mst_1 = tree.mu(1, 3), mst_2 = tree.mu(2, 3),
 	theta_t = tree.thetat;
       const double msb_1 = tree.md(1, 3), msb_2 = tree.md(2, 3),
@@ -6919,19 +6860,15 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
          + flexiblesusy::mssm_twoloop_as::delta_alpha_s_2loop_at_as(pars)
          + flexiblesusy::mssm_twoloop_as::delta_alpha_s_2loop_ab_as(pars));
 
-      /*      cout << "GiNaC - C++ = "
-           << "(" << decoupling_corrections.das.two_loop << " - "
-           << dgs2_cpp << ") = "
-           << (1 - decoupling_corrections.das.two_loop/dgs2_cpp)*100
-           << "%" << endl;*/
-      
-      //      decoupling_corrections.das.two_loop = dgs2_cpp;
       dalpha_2 = deltaAlphas*deltaAlphas/4.0 + dgs2_cpp;
     }
   }
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
   
-  const double alphasDRbar_post = alphasMSbar / (1.0 - deltaAlphas + dalpha_2);
+  const double alphasDRbar_post =
+     altAlphaS ?
+     alphasMSbar * (1.0 + deltaAlphas - dalpha_2 + sqr(deltaAlphas)) :
+     alphasMSbar / (1.0 - deltaAlphas + dalpha_2);
   
   return alphasDRbar_post;
 }
@@ -6988,11 +6925,15 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
     double deltaAlphaTwoLoop = 1.0e-4 * (b0 + b1 * ds + b2 * dT + b3 * dH +
 					 b4 * das + b5 * dmu + b6 * dT * dmu);
     
-    double deltaAlpha;
-    deltaAlpha = -alphaEm / (2.0 * PI) * (deltaASM + deltaASusy);
-    if (twoLEW) deltaAlpha += deltaAlphaTwoLoop;
-  
-    return alphaEm / (1.0 - deltaAlpha);
+    const double deltaAlpha_1L = -alphaEm / (2.0 * PI) * (deltaASM + deltaASusy);
+    const double deltaAlpha_2L = twoLEW ? deltaAlphaTwoLoop : 0.;
+
+    const double alphaEm_post =
+       altAlphaEm ?
+       alphaEm * (1.0 + deltaAlpha_1L + deltaAlpha_2L + sqr(deltaAlpha_1L)) :
+       alphaEm / (1.0 - (deltaAlpha_1L + deltaAlpha_2L));
+
+    return alphaEm_post;
 }
 
 /// Returns lsp mass in mass and function return labels which particle is lsp:
@@ -7204,6 +7145,9 @@ void MssmSoftsusy::fixedPointIteration
     
     bool setTbAtMXflag = displaySetTbAtMX(); 
     bool altFlag = displayAltEwsb();
+    bool altFlagMt = displayAltMt();
+    bool altFlagAlphaS = displayAltAlphaS();
+    bool altFlagAlphaEm = displayAltAlphaEm();
     double m32 = displayGravitino();
     double muCondFirst = displayMuCond();
     double maCondFirst = displayMaCond();
@@ -7215,6 +7159,9 @@ void MssmSoftsusy::fixedPointIteration
     included_thresholds = enabled_thresholds;
     setSetTbAtMX(setTbAtMXflag); 
     if (altFlag) useAlternativeEwsb();
+    if (altFlagMt) useAlternativeMt();
+    if (altFlagAlphaS) useAlternativeAlphaS();
+    if (altFlagAlphaEm) useAlternativeAlphaEm();
     setData(oneset); 
     setMw(MW); 
     setM32(m32);
@@ -12029,6 +11976,156 @@ double softsusy::MssmSoftsusy::calcRunMbNeutralinos() const {
   deltaNeutralino = -deltaNeutralino / (16.0 * sqr(PI));
   
   return deltaNeutralino; 
+}
+
+/// calculates an uncertainty estimate of the pole masses from scale
+/// variation only
+softsusy::sPhysical MssmSoftsusy::displayPhysUncertaintyScaleVariation() const
+{
+   const int numPts = 30;
+   const double lnqMin = log(0.5 * displayMsusy()),
+      lnqMax = log(2.0 * displayMsusy());
+   DoubleVector mh(1), mH(1), mA(1), mHp(1);
+   mh(1) = displayPhys().mh0(1);
+   mH(1) = displayPhys().mh0(2);
+   mA(1) = displayPhys().mA0(1);
+   mHp(1) = displayPhys().mHpm;
+
+   for (int i = 0; i< numPts; i++) {
+      MssmSoftsusy a(*this);
+      const double lnq = (lnqMax - lnqMin) * double(i) / double(numPts) + lnqMin;
+      const double q = exp(lnq);
+      const int accuracy = 3;
+      double mt = 0., sinth = 0., piww = 0., pizz = 0;
+
+      a.calcHiggsAtScale(accuracy, mt, sinth, piww, pizz, q);
+
+      if (!a.displayProblem().testSeriousProblem()) {
+         mh.append(a.displayPhys().mh0(1));
+         mH.append(a.displayPhys().mh0(2));
+         mA.append(a.displayPhys().mA0(1));
+         mHp.append(a.displayPhys().mHpm);
+      }
+   }
+   int p;
+
+   sPhysical phys;
+   phys.mh0(1) =  mh.max(p) -  mh.min(p);
+   phys.mh0(2) =  mH.max(p) -  mH.min(p);
+   phys.mA0(1) =  mA.max(p) -  mA.min(p);
+   phys.mHpm   = mHp.max(p) - mHp.min(p);
+
+   return phys;
+}
+
+/// Calculates an uncertainty estimate of the pole masses from scale
+/// variation and changing of couplings by higher orders
+/// The first parameters are the same as in fixedPointIteration().
+/// The last parameter determines the sources of uncertainty taken
+/// into account.
+softsusy::sPhysical MssmSoftsusy::displayPhysUncertainty(
+   TMSSMBoundaryCondition bc,
+   double mxGuess, const DoubleVector& pars, int sgnMu, double tanb,
+   const QedQcd& oneset, bool gaugeUnification,
+   bool ewsbBCscale, int contributions) const
+{
+   const sPhysical masses = displayPhys();
+   const DoubleVector v_masses = displayPhys().display();
+   const int len = displayPhys().size();
+   DoubleVector v_scale(len), v_match(len), v_mt(len), v_alphas(len), v_alphaem(len);
+
+   // vary Q_pole
+   if (contributions & DeltaQpole) {
+      v_scale = displayPhysUncertaintyScaleVariation().display();
+   }
+
+   // vary Q_match
+   if (contributions & DeltaQmatch) {
+      const double Q_match = oneset.displayMu();
+      const double lnqMin = std::log(0.5 * Q_match);
+      const double lnqMax = std::log(2.0 * Q_match);
+      const int numPts = 10;
+      DoubleVector mh(1), mH(1), mA(1), mHp(1);
+      mh(1) = masses.mh0(1);
+      mH(1) = masses.mh0(2);
+      mA(1) = masses.mA0(1);
+      mHp(1) = masses.mHpm;
+
+      for (int i = 0; i < numPts; i++) {
+         const double lnq = (lnqMax - lnqMin) * double(i) / double(numPts) + lnqMin;
+         const double q = exp(lnq);
+
+         QedQcd tmp(oneset);
+         const int err = tmp.runto(q);
+
+         if (!err) {
+            MssmSoftsusy a(*this);
+            a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, tmp, gaugeUnification, ewsbBCscale);
+
+            if (!a.displayProblem().testSeriousProblem()) {
+               mh.append(a.displayPhys().mh0(1));
+               mH.append(a.displayPhys().mh0(2));
+               mA.append(a.displayPhys().mA0(1));
+               mHp.append(a.displayPhys().mHpm);
+            }
+         }
+      }
+
+      int p;
+      sPhysical phys;
+      phys.mh0(1) =  mh.max(p) -  mh.min(p);
+      phys.mh0(2) =  mH.max(p) -  mH.min(p);
+      phys.mA0(1) =  mA.max(p) -  mA.min(p);
+      phys.mHpm   = mHp.max(p) - mHp.min(p);
+
+      v_match = phys.display();
+   }
+
+   // vary mt
+   if (contributions & DeltaMt) {
+      MssmSoftsusy a(*this);
+      a.useAlternativeMt();
+      a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, oneset, gaugeUnification, ewsbBCscale);
+
+      if (!a.displayProblem().testSeriousProblem()) {
+         v_mt = DoubleVector(v_masses - a.displayPhys().display()).abs();
+      }
+   }
+
+   // vary alpha_s
+   if (contributions & DeltaAlphaS) {
+      MssmSoftsusy a(*this);
+      a.useAlternativeAlphaS();
+      a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, oneset, gaugeUnification, ewsbBCscale);
+
+      if (!a.displayProblem().testSeriousProblem()) {
+         v_alphas = DoubleVector(v_masses - a.displayPhys().display()).abs();
+      }
+   }
+
+   // vary alpha_em
+   if (contributions & DeltaAlphaEm) {
+      MssmSoftsusy a(*this);
+      a.useAlternativeAlphaEm();
+      a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, oneset, gaugeUnification, ewsbBCscale);
+
+      if (!a.displayProblem().testSeriousProblem()) {
+         v_alphaem = DoubleVector(v_masses - a.displayPhys().display()).abs();
+      }
+   }
+
+   // combine
+   const DoubleVector total =
+      DoubleVector( v_scale.apply(sqr) +
+                    v_match.apply(sqr) +
+                    v_mt.apply(sqr) +
+                    v_alphas.apply(sqr) +
+                    v_alphaem.apply(sqr) ).apply(std::sqrt);
+
+   sPhysical dM_total;
+   dM_total.set(total);
+
+   return dM_total;
 }
 
 } ///< namespace softsusy

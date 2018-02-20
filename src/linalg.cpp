@@ -31,6 +31,11 @@
   *  ELEMENT ACCESS
   */
 
+ void DoubleVector::append(double e) {
+    setEnd(displayEnd() + 1);
+    set(displayEnd(), e);
+ }
+
  // Changes the length of a vector - copies as many elements of old one as
  // possible, and fills any extra up with zeroes
  void DoubleVector::setEnd(int e) {
