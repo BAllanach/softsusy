@@ -1440,12 +1440,12 @@ int main(int argc, char *argv[]) {
         const double dmH = dM.mh0(2);
         const double dmA = dM.mA0(1);
         const double dmHp = dM.mHpm;
-
+	outputCharacteristics(8);
         cout << "Block DMASS                   # uncertainties\n"
-             << "        25    "; printRow(cout, dmh ); cout << "   # uncertainty of h0 in GeV\n"
-             << "        35    "; printRow(cout, dmH ); cout << "   # uncertainty of H0 in GeV\n"
-             << "        36    "; printRow(cout, dmA ); cout << "   # uncertainty of A0 in GeV\n"
-             << "        37    "; printRow(cout, dmHp); cout << "   # uncertainty of H+ in GeV\n";
+             << "      25    "; printRow(cout, dmh ); cout << "   # uncertainty of h0 in GeV\n"
+             << "      35    "; printRow(cout, dmH ); cout << "   # uncertainty of H0 in GeV\n"
+             << "      36    "; printRow(cout, dmA ); cout << "   # uncertainty of A0 in GeV\n"
+             << "      37    "; printRow(cout, dmHp); cout << "   # uncertainty of H+ in GeV\n";
       }
       
       if (r->displayProblem().test()) {

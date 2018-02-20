@@ -525,3 +525,8 @@ DECAY 37          3.57772318e+00   # Charged higgs+ decays
       8.35120114e-06    2      1000014   -2000013   # H+ -> ~mu_R+ nu_muL
       5.73248294e-05    2      1000016   -1000015   # H+ -> ~tau_1+ nu_tauL
 #
+Block DMASS                   # uncertainties
+      25     1.34840890e+00   # uncertainty of h0 in GeV
+      35     2.06663400e+00   # uncertainty of H0 in GeV
+      36     7.18391478e+01   # uncertainty of A0 in GeV
+      37     7.19191419e+01   # uncertainty of H+ in GeV
