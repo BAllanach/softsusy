@@ -1149,13 +1149,13 @@ be physically fine if there are no further problems reported.
 \code{<higgsUncert>}~is by default set to \code{0}, but if it is set to
 \code{1}, then \SOFTSUSY~will estimate the approximate errors in each Higgs
 boson mass, in units of GeV. This is printed out at the bottom of the SLHA
-file in a comment. 
-The uncertainties are calculated as follows: For 30 different values of
-renormalisation scale $Q$ between $M_Z$ and $2 M_{SUSY}$ (spaced equally in
-$\log Q$), values of the
-physical Higgs masses are calculated. The uncertainty is estimated as the
-difference between the maximum Higgs mass calculated in this way and the
-minimum one. 
+file in block called \code{DMASS}. 
+% The uncertainties are calculated as follows: For 30 different values of
+% renormalisation scale $Q$ between $M_Z$ and $2 M_{SUSY}$ (spaced equally in
+% $\log Q$), values of the
+% physical Higgs masses are calculated. The uncertainty is estimated as the
+% difference between the maximum Higgs mass calculated in this way and the
+% minimum one. 
 
 \code{<mQEDxQCD>}~is equal to the scale at which QED$\times$QCD are matched to
 the MSSM  $M_{QED\times QCD}$, which by default is $m_t$. 

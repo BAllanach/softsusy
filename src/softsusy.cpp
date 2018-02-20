@@ -12023,23 +12023,23 @@ softsusy::sPhysical MssmSoftsusy::displayPhysUncertaintyScaleVariation() const
 /// The first parameters are the same as in fixedPointIteration().
 /// The last parameter determines the sources of uncertainty taken
 /// into account.
-softsusy::sPhysical MssmSoftsusy::displayPhysUncertainty(
-   TMSSMBoundaryCondition bc,
+softsusy::sPhysical
+MssmSoftsusy::displayPhysUncertainty(TMSSMBoundaryCondition bc,
    double mxGuess, const DoubleVector& pars, int sgnMu, double tanb,
    const QedQcd& oneset, bool gaugeUnification,
-   bool ewsbBCscale, int contributions) const
-{
+   bool ewsbBCscale, int contributions) const {
    const sPhysical masses = displayPhys();
    const DoubleVector v_masses = displayPhys().display();
    const int len = displayPhys().size();
-   DoubleVector v_scale(len), v_match(len), v_mt(len), v_alphas(len), v_alphaem(len);
+   DoubleVector v_scale(len), v_match(len), v_mt(len), v_alphas(len),
+     v_alphaem(len);
 
-   // vary Q_pole
+   /// vary Q_pole
    if (contributions & DeltaQpole) {
       v_scale = displayPhysUncertaintyScaleVariation().display();
    }
 
-   // vary Q_match
+   /// vary Q_match
    if (contributions & DeltaQmatch) {
       const double Q_match = oneset.displayMu();
       const double lnqMin = std::log(0.5 * Q_match);
@@ -12103,7 +12103,7 @@ softsusy::sPhysical MssmSoftsusy::displayPhysUncertainty(
       }
    }
 
-   // vary alpha_em
+   /// vary alpha_em
    if (contributions & DeltaAlphaEm) {
       MssmSoftsusy a(*this);
       a.useAlternativeAlphaEm();
