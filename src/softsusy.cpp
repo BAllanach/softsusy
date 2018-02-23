@@ -2858,19 +2858,11 @@ double MssmSoftsusy::calcRunMbHiggs() const {
 
 
 double MssmSoftsusy::calcRunningMb() {
-  
-  /* if (displayMu() != displayMz()) {
-    ostringstream ii;
-    ii << "MssmSoftsusy::calcRunningMb called with mu=" <<
-      displayMu() << endl; 
-    throw ii.str();
-    } */
-
   /// This boundary condition needs to be set at the relevant scale  
-  double mbMZ = dataSet.displayMass(mBottom);
-  /// First convert mbMZ into DRbar value from hep-ph/9703293,0207126,9701308
+  double mbSM5 = dataSet.displayMass(mBottom);
+  /// First convert mbSM5 into DRbar value from hep-ph/9703293,0207126,9701308
   /// (SM gauge boson contributions)
-  mbMZ = mbMZ * calcRunMbDrBarConv(); 
+  mbSM5 = mbSM5 * calcRunMbDrBarConv(); 
   
   double deltaSquarkGluino = calcRunMbSquarkGluino();
   //Chargino-squark loops
@@ -2905,10 +2897,10 @@ double MssmSoftsusy::calcRunningMb() {
 				      msusy, thetat, thetab, q);
       /// AVB:  fix double-counting of eps-scalar contribution due to
       /// factorization of one-loop term 
-      double alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
-      /// commented this + 31.0 / 72.0 * sqr(alphasMZ) / sqr(PI) ///< pure
+      double alphas = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
+      /// commented this + 31.0 / 72.0 * sqr(alphas) / sqr(PI) ///< pure
       /// QCD for consistency with HO corrections
-      dzetamb-= alphasMZ / (3.0 * PI) * decoupling_corrections_dmb_one_loop; 
+      dzetamb -= alphas / (3.0 * PI) * decoupling_corrections_dmb_one_loop; 
 
   }
 #endif
@@ -2916,7 +2908,7 @@ double MssmSoftsusy::calcRunningMb() {
   /// it's NOT clear if this resummation is reliable in the full 1-loop scheme
   /// but it's at least valid to 1 loop. Warning though: if you add higher
   /// loops, you'll have to re-arrange.
-  return mbMZ / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs
+  return mbSM5 / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs
 		 + deltaNeutralino + dzetamb);
 }
 
@@ -6882,11 +6874,9 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
   
   if (tree.mHpm < TOLERANCE) return 0.0;
   
-  double deltaASM = -1.0 / 3.0 ;
-  /// If this is called at a scale > mt, it's already been taken into account
-  /// in the QED x QCD running below the current scale, therefore only include
-  /// it if we are at a lower scale
-  if (displayMu() < tree.mt) deltaASM += 16.0 / 9.0 * log(tree.mt / q);
+  /// QedQcd always returns running couplings in the SM(5).
+  /// Therefore, the top threshold must be taken into account here.
+  double deltaASM = -1.0 / 3.0 + 16.0 / 9.0 * log(tree.mt / q);
   
   double deltaASusy = 
     log(tree.mHpm / q) / 3.0 + 4.0 / 9.0 * 

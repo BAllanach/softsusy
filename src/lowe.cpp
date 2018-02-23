@@ -65,7 +65,9 @@ const DoubleVector QedQcd::display() const {
 //  Active flavours at energy mu
 int QedQcd::flavours(double mu) const {
   int k = 0;
-  if (mu > mf.display(mTop)) k++;
+  // do not count the top, because we always want to match the SM(5)
+  // to the SUSY model
+  // if (mu > mf.display(mTop)) k++;
   if (mu > mf.display(mCharm)) k++;
   if (mu > mf.display(mUp)) k++;
   if (mu > mf.display(mDown)) k++;
@@ -160,7 +162,9 @@ double QedQcd::qedBeta() const {
   double x;
   x = 24.0 / 9.0;
   if (displayMu() > mf.display(mCharm)) x += 8.0 / 9.0;
-  if (displayMu() > mf.display(mTop)) x += 8.0 / 9.0;
+  // do not take top into account, because we always want to match the
+  // SM(5) to the SUSY model
+  // if (displayMu() > mf.display(mTop)) x += 8.0 / 9.0;
   if (displayMu() > mf.display(mBottom)) x += 2.0 / 9.0;
   if (displayMu() > mf.display(mTau)) x += 2.0 / 3.0;
   if (displayMu() > MW) x += -7.0 / 2.0;
