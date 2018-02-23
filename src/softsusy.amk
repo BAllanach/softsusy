@@ -46,17 +46,6 @@ rpvsoftsusy_x_LDADD    += libsupermodel.la libtsil.la
 rpvneut_x_LDADD        += libsupermodel.la libtsil.la 
 decay_x_LDADD        += libsupermodel.la libtsil.la 
 
-if COMPILE_TWO_LOOP_GAUGE_YUKAWA
-CPPFLAGS += -I$(srcdir)/src
-softsusy_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-higher_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-softsusy_nmssm_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-softpoint_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-rpvsoftsusy_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-rpvneut_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp
-decay_x_SOURCES  += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp
-endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
-
 himalayadir = $(srcdir)/src/Himalaya-1.0.0
 
 if ENABLE_HIMALAYA
@@ -98,6 +87,11 @@ src/physpars.cpp src/rge.cpp src/nmssm2loop.f src/dilogwrap.f src/softsusy.cpp\
  src/nmssmsoftsusy.cpp src/nmssmsusy.cpp src/nmssmsoftpars.cpp src/nmssmUtils.cpp \
 src/susy.cpp src/utils.cpp src/mssmUtils.cpp src/softpars.cpp \
 src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twoloophiggs.f
+
+if COMPILE_TWO_LOOP_GAUGE_YUKAWA
+libsoft_la_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp \
+ src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp
+endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
 libsoft_la_LDFLAGS = @FLIBS@
 
