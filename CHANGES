@@ -1,2 +1,2 @@
-<li>Matching scale of QEDxQCD to MSSM is now variable: it's set by the scale you run oneset up to before calling fixedOrderIteration
+<li>Matching scale of QEDxQCD(5) to MSSM is now variable: it's set by the scale you run oneset up to before calling fixedOrderIteration
 <li>Added 2-loop SM contributions to electroweak threshold corrections from 1411.7040

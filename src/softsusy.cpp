@@ -6916,8 +6916,8 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
     + (log(fabs(tree.mch(1)) / q) 
        + log(fabs(tree.mch(2)) / q)) * 4.0 / 3.0;
 
-  /// Two loop correction parameterisation from 1411.7040 in MSBAR SCHEME and
-  //  at MZ
+  /// Two loop correction parameterisation from private communication of
+  ///  authors from 1411.7040 in MSBAR SCHEME and at MZ
     double b0 = 1.751181, b1 = -0.523813, b2 = -0.662710, b3 = -0.000962,
       b4 =0.252884, b5 = 2.971626, b6 = -0.739561;
     double mt = displayDataSet().displayPoleMt();
@@ -6930,7 +6930,8 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
     double deltaAlphaTwoLoop = 1.0e-4 * (b0 + b1 * ds + b2 * dT + b3 * dH +
 					 b4 * das + b5 * dmu + b6 * dT * dmu);
     
-    const double deltaAlpha_1L = -alphaEm / (2.0 * PI) * (deltaASM + deltaASusy);
+    const double deltaAlpha_1L = -alphaEm / (2.0 * PI) *
+      (deltaASM + deltaASusy);
     const double deltaAlpha_2L = twoLEW ? deltaAlphaTwoLoop : 0.;
 
     const double alphaEm_post =
