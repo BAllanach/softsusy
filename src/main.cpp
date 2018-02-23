@@ -32,7 +32,7 @@ int main() {
     outputCharacteristics(6);
     
     cout << "# SOFTSUSY" << PACKAGE_VERSION 
-	 << " test program, Ben Allanach 2002\n";
+         << " test program, Ben Allanach 2002\n";
     cout << "# If you use SOFTSUSY, please refer to B.C. Allanach,\n";
     cout << "# Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
     
@@ -55,7 +55,7 @@ int main() {
     /// Print out the SM data being used, as well as quark mixing assumption and
     /// the numerical accuracy of the solution
     cout << "# Low energy data in SOFTSUSY: mixing=0" << " TOLERANCE=" 
-	 << TOLERANCE << endl;
+         << TOLERANCE << endl;
     
     /// Print out header line
     cout << "# tan beta   mh           mA           mH0          mH+-\n";
