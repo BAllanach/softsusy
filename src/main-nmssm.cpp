@@ -36,6 +36,7 @@ int main() {
   oneset.setPoleMt(mtop);
   oneset.setMass(mBottom, mbmb);
   oneset.toMz();      ///< Runs SM fermion masses to MZ
+  oneset.runto(oneset.displayPoleMt());      ///< Runs SM fermion masses to mt
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution

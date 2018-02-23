@@ -1,4 +1,4 @@
-# SOFTSUSY4.1.0 SLHA compliant output
+# SOFTSUSY4.1.1 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 # B.C. Allanach and M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232,
 # arXiv:0903.1805
@@ -6,7 +6,7 @@
 # Comput. Phys. Commun. 183 (2012) 785-793, arXiv:1109.3735
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    4.1.0       # version number
+     2    4.1.1       # version number
 Block MODSEL  # Select model
      1    1   # sugra
      4    1   # R-parity violating

@@ -1087,7 +1087,7 @@ Block SOFTSUSY     # SOFTSUSY specific inputs
 excluded if=1
  13   <mAflag>        # If =0 (default), sets tachyonic mA=0, otherwise mA=sqrt(|mA|^2)
  21   <higgsUncert>   # If =1, provides an estimate of Higgs mass uncertainties
- 26   <mQEDxQCD>      # Scale at which QEDxQCD is matched to MSSM (default MZ)
+ 26   <mQEDxQCD5>      # Scale at which QEDxQCD is matched to MSSM (default mt)
 \end{verbatim}
 \normalsize
 The fractional numerical precision on masses and couplings output by \SOFTSUSY~is better than \code{TOLERANCE}, which
@@ -1168,7 +1168,7 @@ file in block called \code{DMASS}.
 % difference between the maximum Higgs mass calculated in this way and the
 % minimum one. 
 
-\code{<mQEDxQCD>}~is equal to the scale at which QED$\times$QCD are matched to
+\code{<mQEDxQCD5>}~is equal to the scale at which QED$\times$QCD are matched to
 the MSSM  $M_{QED\times QCD5}$, which by default is $m_t$. 
 
 In the standard SLHA input format, a parameter 
@@ -1213,7 +1213,8 @@ The sample program \code{main.cpp}~has the following form:
 \small
 \verbatiminput{../src/main.cpp}
 \normalsize
-First of all, a function \code{signal}~is called which attempts to catch any floating point
+First of all, a function \code{signal}~is called which attempts to catch any
+floating point 
 exceptions that may occur during the running of the program. 
 Then, after an initial introductory print-out, the variables specifying the
 supersymmetry breaking parameters are specified. For these, the same notation
@@ -1223,6 +1224,8 @@ are defined and combined with the defaults already present in the
 and 
 Standard Model fermion masses and gauge couplings are
 then run up to $M_Z$ with the method \code{toMz}.
+They are then run to the pole top mass with the method 
+\code{runto}. 
 
 \begin{table}\begin{center}
 \begin{tabular}[l]{lll} name & arguments \\ 
@@ -1960,7 +1963,8 @@ of soft SUSY breaking parameters to be applied as the theoretical boundary
 condition.  
 \code{sgnMu} is the sign of the
 superpotential $\mu$ parameter, \code{tanb} is the value of $\tan \beta (M_Z)$
-required and \code{oneset} contains the $M_Z$ scale low energy data.
+required and \code{oneset}~contains the $M_{QED \times QCD5}$ scale low energy
+data. $M_{QED \times QCD5}$ is defined to be the scale of \code{oneset}.
 If \code{altEwsb=true}, we have alternative boundary conditions on electroweak
 symmetry breaking, and the data in the class \code{AltEwsbMssm}~is used.
 \code{qewsb}~may be used to multiplicatively change the scale $M_{SUSY}$ at which 

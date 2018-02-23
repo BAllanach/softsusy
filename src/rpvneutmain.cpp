@@ -28,6 +28,7 @@ int main() {
   try {
     QedQcd oneset;      ///< See "lowe.h" for default parameter definitions 
     oneset.toMz();      ///< Runs SM fermion masses to MZ
+    oneset.runto(oneset.displayPoleMt());      ///< Runs SM fermion masses to MZ
 
     /// Guess at GUT scale
     double mxGuess = 2.e16;
