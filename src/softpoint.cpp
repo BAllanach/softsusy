@@ -11,6 +11,10 @@
 
 #include "softpoint.h"
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 // Returns a string with all characters in upper case: very handy
 string ToUpper(const string & s) {
         string result;

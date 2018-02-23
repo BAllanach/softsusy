@@ -12,10 +12,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#ifdef HAVE_CONFIG_H
- #include <config.h>
-#endif
-
 #include "mycomplex.h"
 #include "def.h"
 #include <cstdlib>

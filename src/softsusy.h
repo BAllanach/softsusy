@@ -15,10 +15,6 @@
 #ifndef SOFTSUSY_H
 #define SOFTSUSY_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -36,18 +32,6 @@
 #include "higher_order.h"
 
 #define HR "----------------------------------------------------------"
-
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-#include "mssm_twoloop_mt.h"
-#include "mssm_twoloop_mb.h"
-#include "mssm_twoloop_mtau.h"
-#include "mssm_twoloop_as.h"
-namespace softsusy { class MssmSoftsusy; }
-#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
-
-#ifdef ENABLE_HIMALAYA
-#include "HierarchyCalculator.hpp"
-#endif
 
 namespace softsusy {
 

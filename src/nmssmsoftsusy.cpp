@@ -9,6 +9,14 @@
 
 #ifdef NMSSMSOFTSUSY_H
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
+#include "higher_order.h"
+#endif
+
 namespace softsusy {
   
   extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,

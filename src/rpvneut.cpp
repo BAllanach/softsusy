@@ -7,6 +7,10 @@
 
 #include "rpvneut.h"
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 namespace softsusy {
 
 const RpvNeutrino & RpvNeutrino::operator = (const RpvNeutrino &s) {

@@ -16,6 +16,11 @@
 #include "main.h"
 #include "nmssmsoftsusy.h"
 #include "decays.h"
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 using namespace softsusy;
 
 int main() {
