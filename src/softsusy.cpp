@@ -739,8 +739,8 @@ double MssmSoftsusy::doCalcTadpole2oneLoop(double /* mt */, double sinthDRbar) {
   /// Sfermion couplings
   DoubleMatrix lTS2Lr(2, 2),  lBS2Lr(2, 2),  lTauS2Lr(2, 2);
   H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mu, sinb);
-  double fermions = doCalcTad2Sfermions(lTS2Lr, lBS2Lr, lTauS2Lr, costhDRbar);
-  double sfermions = doCalcTad2fermions(q);
+  double sfermions = doCalcTad2Sfermions(lTS2Lr, lBS2Lr, lTauS2Lr, costhDRbar);
+  double fermions = doCalcTad2fermions(q);
   double higgs = doCalcTad2Higgs(q, costhDRbar2, g, tanb);
   /// Neutralinos
   double neutralinos = doCalcTad2Neutralinos(q, costhDRbar, g, sinb);
@@ -7236,7 +7236,7 @@ void MssmSoftsusy::fixedPointIteration
 	|| displayProblem().noRhoConvergence || displayProblem().problemThrown)
       return;
     
-    runto(maximum(displayMsusy(), displayMatchingScale()));
+    runto(displayMsusy());
     if (ewsbBCscale) boundaryCondition(*this, pars); 
     
     physical(3);
@@ -7781,7 +7781,7 @@ void MssmSoftsusy::itLowsoft
     if (err) {
       // problem with running: bail out 
       flagProblemThrown(true);
-      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to MZ\n"; 
+      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to Msusy\n";
       if (PRINTOUT > 1) printObj();
       numTries = 0;
       return;
@@ -7790,6 +7790,17 @@ void MssmSoftsusy::itLowsoft
     setMsusy(calcMs());
     if (ewsbBCscale) mxBC = displayMsusy();
     if (PRINTOUT > 0) cout << " mgut=" << mxBC << flush;
+
+    if (!ewsbBCscale) err = runto(displayMsusy(), eps);
+    calcDrBarPars();
+    if (err) {
+      // problem with running: bail out
+      flagProblemThrown(true);
+      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to Msusy\n";
+      if (PRINTOUT > 1) printObj();
+      numTries = 0;
+      return;
+    }
     
     mtrun = forLoops.mt; ///< This will be at MSUSY
     //    double tbIn; double predictedMzSq = 0.;
@@ -7849,7 +7860,7 @@ void MssmSoftsusy::itLowsoft
     if (err) {
       /// problem with running: bail out 
       flagProblemThrown(true);
-      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to MZ\n"; 
+      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to M_{QEDxQCD}\n";
       if (PRINTOUT > 1) printObj();
       ///    old = MssmSoftsusy();
       numTries = 0;
