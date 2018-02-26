@@ -11998,6 +11998,7 @@ double softsusy::MssmSoftsusy::calcRunMbNeutralinos() const {
 /// variation only
 softsusy::sPhysical MssmSoftsusy::displayPhysUncertaintyScaleVariation() const
 {
+   const sPhysical masses = displayPhys();
    const int numPts = 30;
    const double lnqMin = log(0.5 * displayMsusy()),
       lnqMax = log(2.0 * displayMsusy());
@@ -12026,10 +12027,10 @@ softsusy::sPhysical MssmSoftsusy::displayPhysUncertaintyScaleVariation() const
    int p;
 
    sPhysical phys;
-   phys.mh0(1) =  mh.max(p) -  mh.min(p);
-   phys.mh0(2) =  mH.max(p) -  mH.min(p);
-   phys.mA0(1) =  mA.max(p) -  mA.min(p);
-   phys.mHpm   = mHp.max(p) - mHp.min(p);
+   phys.mh0(1) = maximum(abs( mh.max(p) - masses.mh0(1)), abs( mh.min(p) - masses.mh0(1)));
+   phys.mh0(2) = maximum(abs( mH.max(p) - masses.mh0(2)), abs( mH.min(p) - masses.mh0(2)));
+   phys.mA0(1) = maximum(abs( mA.max(p) - masses.mA0(1)), abs( mA.min(p) - masses.mA0(1)));
+   phys.mHpm   = maximum(abs(mHp.max(p) - masses.mHpm  ), abs(mHp.min(p) - masses.mHpm  ));
 
    return phys;
 }
@@ -12089,10 +12090,10 @@ MssmSoftsusy::displayPhysUncertainty(TMSSMBoundaryCondition bc,
 
       int p;
       sPhysical phys;
-      phys.mh0(1) =  mh.max(p) -  mh.min(p);
-      phys.mh0(2) =  mH.max(p) -  mH.min(p);
-      phys.mA0(1) =  mA.max(p) -  mA.min(p);
-      phys.mHpm   = mHp.max(p) - mHp.min(p);
+      phys.mh0(1) = maximum(abs( mh.max(p) - masses.mh0(1)), abs( mh.min(p) - masses.mh0(1)));
+      phys.mh0(2) = maximum(abs( mH.max(p) - masses.mh0(2)), abs( mH.min(p) - masses.mh0(2)));
+      phys.mA0(1) = maximum(abs( mA.max(p) - masses.mA0(1)), abs( mA.min(p) - masses.mA0(1)));
+      phys.mHpm   = maximum(abs(mHp.max(p) - masses.mHpm  ), abs(mHp.min(p) - masses.mHpm  ));
 
       v_match = phys.display();
    }
