@@ -12133,8 +12133,8 @@ MssmSoftsusy::displayPhysUncertainty(TMSSMBoundaryCondition bc,
 
    // combine
    const DoubleVector total =
-      DoubleVector( v_scale.apply(sqr) +
-                    v_match.apply(sqr) +
+      v_scale.abs() +
+      DoubleVector( v_match.apply(sqr) +
                     v_mt.apply(sqr) +
                     v_alphas.apply(sqr) +
                     v_alphaem.apply(sqr) ).apply(std::sqrt);
