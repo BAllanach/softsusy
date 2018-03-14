@@ -20,6 +20,10 @@ DoubleMatrix NeutMIX(4, 4);
 int calculateDecays(ostream & fout, MssmSoftsusy * r,
 		    vector<Particle> & decayTable, 
 		    const NmssmSoftsusy & nmssm, bool nmssmIsIt) { 
+  /// We work on the principle that any problem flags should already be set,
+  /// and calculateDecays should not change them
+  sProblem rProb = r->displayProblem();
+  
   /// Initialise global decay variables
   m1 = 0.; m2 = 0.; m3 = 0.; m4 = 0.; mq = 0.; m5 = 0.; m6 = 0.; 
   m7 = 0.;  m8 = 0.;  MZboson = 0.;  MWboson = 0.;  mh = 0.;  mH = 0.; 
@@ -6260,5 +6264,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
     for (int i=0; i<ii->No_of_Decays; i++)
       ii->Array_Decays[i][5] = ii->Array_Decays[i][2] / ii->total_width;
 
+  /// re-set problem flags to their values before decays were calculated
+  r->setProblem(rProb);
+  
  return errorflag;
 }

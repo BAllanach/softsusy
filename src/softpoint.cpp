@@ -1429,11 +1429,16 @@ int main(int argc, char *argv[]) {
       
       if (gutScaleOutput) qMax = r->displayMxBC();
 
+      cout << "DEBUG: " << r -> displayProblem() << endl;
+      
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
+      cout << "DEBUG: " << r -> displayProblem() << endl;	      
       if (calcDecays) {
 	calculateDecays(cout, r, decayTable, nmssm, false);
+      cout << "DEBUG: " << r -> displayProblem() << endl;	
 	slhaDecays(cout, decayTable, outputPartialWidths);
+      cout << "DEBUG: " << r -> displayProblem() << endl;	
       }	
       //    if (calcDecays) calculateDecays(r, nmssm, false);
       if (higgsUncertainties) {
