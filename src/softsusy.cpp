@@ -884,8 +884,7 @@ double MssmSoftsusy::displaySoftA(trilinears k, int i, int j) const {
   double mt = tempSoft1->displayDrBarPars().mt;
   double sinthDRbar = tempSoft1->calcSinthdrbar();
   /// We miss two-loop terms in our calculation of fine-tuning...
-  tempSoft1->calcTadpole2Ms1loop(mt, sinthDRbar); 
-  tempSoft1->calcTadpole1Ms1loop(mt, sinthDRbar);
+  tempSoft1->doTadpoles(mt, sinthDRbar);
   
   referenceMzsq = tempSoft1->predMzsq(predTanb);  
   
