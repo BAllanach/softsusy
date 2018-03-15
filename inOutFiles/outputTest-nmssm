@@ -1,42 +1,12 @@
 # Data in SOFTSUSY: mixing=0 TOLERANCE=1.000000e-04
 # tan beta   mh(1)        mh(2)        mA(1)        mA(2)        mH+-
-WARNING: lowOrg in softsusy.cpp called with oneset at scale
-1.735000e+02
-instead of 9.118760e+01
 5.000000e+00 1.067135e+02 7.087390e+02 5.819687e+02 7.228368e+02 7.264125e+02
-WARNING: lowOrg in softsusy.cpp called with oneset at scale
-1.735000e+02
-instead of 9.118760e+01
 1.000000e+01 1.079846e+02 4.942513e+02 4.977155e+02 6.824230e+02 6.871757e+02
-WARNING: lowOrg in softsusy.cpp called with oneset at scale
-1.735000e+02
-instead of 9.118760e+01
 1.500000e+01 1.061685e+02 4.007640e+02 4.562247e+02 6.605092e+02 6.660249e+02
-WARNING: lowOrg in softsusy.cpp called with oneset at scale
-1.735000e+02
-instead of 9.118760e+01
 2.000000e+01 1.030948e+02 3.356310e+02 4.245451e+02 6.357767e+02 6.423966e+02
-WARNING: lowOrg in softsusy.cpp called with oneset at scale
-1.735000e+02
-instead of 9.118760e+01
 2.500000e+01 9.766964e+01 2.792870e+02 3.944412e+02 6.058917e+02 6.137854e+02
-WARNING: lowOrg in softsusy.cpp called with oneset at scale
-1.735000e+02
-instead of 9.118760e+01
 3.000000e+01 8.590849e+01 2.268844e+02 3.623500e+02 5.704297e+02 5.799098e+02
-WARNING: lowOrg in softsusy.cpp called with oneset at scale
-1.735000e+02
-instead of 9.118760e+01
 3.500000e+01 [ h0 tachyon ]
-WARNING: lowOrg in softsusy.cpp called with oneset at scale
-1.735000e+02
-instead of 9.118760e+01
 4.000000e+01 [ h0 tachyon ]
-WARNING: lowOrg in softsusy.cpp called with oneset at scale
-1.735000e+02
-instead of 9.118760e+01
 4.500000e+01 [ h0 tachyon ]
-WARNING: lowOrg in softsusy.cpp called with oneset at scale
-1.735000e+02
-instead of 9.118760e+01
 5.000000e+01 [ h0 tachyon ]

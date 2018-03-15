@@ -2,7 +2,7 @@ docdir = ${datadir}/doc/${PACKAGE}
 
 doc_DATA = $(DOCFILES) 
 
-doc: $(doc_DATA)
+# doc: $(doc_DATA)
 
 doc/rpcManual.pdf: doc/rpcManual.tex src/rpvmain.cpp inOutFiles/rpvOutputTest doc/rpcManual.ax1 doc/rpcManual.ax2
 doc/rpvManual.pdf: doc/rpvManual.tex src/rpvmain.cpp inOutFiles/rpvOutputTest

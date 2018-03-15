@@ -1,4 +1,3 @@
-DEBUG: 
 # SOFTSUSY4.1.1 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 # B.C. Allanach and M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232,
@@ -615,4 +614,3 @@ Block RVAMIX  # CP-odd neutral scalar mixing matrix
   4 3    4.10788968e-01   # curlyN~_{43}
   4 4    9.11730306e-01   # curlyN~_{44}
   4 5   -5.14735911e-04   # curlyN~_{45}
-DEBUG: 

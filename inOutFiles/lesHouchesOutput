@@ -1,4 +1,3 @@
-DEBUG: 
 # SOFTSUSY4.1.1 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 Block SPINFO          # Program information
@@ -155,8 +154,6 @@ Block ae Q= 8.76108988e+02
   1  1    -2.99615382e+02      # Ae(Q)MSSM DRbar
   2  2    -2.99609847e+02      # Amu(Q)MSSM DRbar
   3  3    -2.97944574e+02      # Atau(Q)MSSM DRbar
-DEBUG: 
-DEBUG: 
 #     PDG         Width             
 DECAY 1000021     1.41430286e+01   # Gluino decays
 #     BR                NDA   PDG1         PDG2       Comments          
@@ -528,7 +525,6 @@ DECAY 37          3.56946612e+00   # Charged higgs+ decays
       8.33128423e-06    2      1000014   -2000013   # H+ -> ~mu_R+ nu_muL
       5.76875301e-05    2      1000016   -1000015   # H+ -> ~tau_1+ nu_tauL
 #
-DEBUG: 
 Block DMASS                   # uncertainties
       25     7.56242538e-01   # uncertainty of h0 in GeV
       35     2.58689466e+00   # uncertainty of H0 in GeV
