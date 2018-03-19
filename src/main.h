@@ -66,6 +66,7 @@
 #include "susy.h"
 #include "utils.h"
 #include "numerics.h"
+#include "mssmjacobian.h"
 using namespace softsusy;
 
 namespace NR {

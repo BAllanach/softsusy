@@ -1431,6 +1431,12 @@ int main(int argc, char *argv[]) {
 
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
+
+      /*      {
+	MssmJacobian mj;
+	cout << mj.calcFTInverseJacobian(r->displayMssmSoft()) << endl;
+	}  */     
+      
       if (calcDecays) {
 	calculateDecays(cout, r, decayTable, nmssm, false);
 	slhaDecays(cout, decayTable, outputPartialWidths);

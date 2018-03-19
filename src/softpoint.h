@@ -28,6 +28,7 @@
 #include "twoloophiggs.h"
 #include "dilogwrap.h"
 #include "rpvneut.h"
+#include "mssmjacobian.h"
 using namespace softsusy;
 
 /// string routine for options
