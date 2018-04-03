@@ -154,7 +154,6 @@ Block ae Q= 8.76108988e+02
   1  1    -2.99615382e+02      # Ae(Q)MSSM DRbar
   2  2    -2.99609847e+02      # Amu(Q)MSSM DRbar
   3  3    -2.97944574e+02      # Atau(Q)MSSM DRbar
-3.200225e-01
 #     PDG         Width             
 DECAY 1000021     1.41430286e+01   # Gluino decays
 #     BR                NDA   PDG1         PDG2       Comments          

@@ -58,7 +58,7 @@ int main() {
          << TOLERANCE << endl;
     
     /// Print out header line
-    cout << "# tan beta   mh           mA           mH0          mH+-\n";
+    cout << "# tan beta   mh           mA           mH0          mH+-         FT\n";
     
     int i;
     /// Set limits of tan beta scan
@@ -78,13 +78,15 @@ int main() {
     
     /// Calculate the spectrum
     r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
+    MssmJacobian mj; ///< DEBUG
 
     /// check the point in question is problem free: if so print the output
     if (!r.displayProblem().test()) 
       cout << tanb << " " << r.displayPhys().mh0(1) << " " 
            << r.displayPhys().mA0(1) << " " 
            << r.displayPhys().mh0(2) << " " 
-           << r.displayPhys().mHpm << endl;
+           << r.displayPhys().mHpm << " "
+	   << mj.calcDeltaJ(r.displayMssmSoft()) << endl; ///< DEBUG
     else
       /// print out what the problem(s) is(are)
       cout << tanb << " " << r.displayProblem() << endl;
