@@ -71,10 +71,10 @@ int SUMO_SbotPole (int i, int loop_order)
 
 int SUMO_SuLPole (int i, int loop_order)
 {
-  //  int j = 0;
+  int j = 0;
   char funcname[] = "SUMO_SuLPole";
 
-  //  if (i==0) j = 1;
+  if (i==0) j = 1;
 
   if (loop_order > 2) 
     SUMO_Error(funcname, "Invalid loop order specified.", 3);
@@ -102,10 +102,10 @@ int SUMO_SuLPole (int i, int loop_order)
 
 int SUMO_SdLPole (int i, int loop_order)
 {
-  //  int j = 0;
+  int j = 0;
   char funcname[] = "SUMO_SdLPole";
 
-  //  if (i==0) j = 1;
+  if (i==0) j = 1;
 
   if (loop_order > 2) 
     SUMO_Error(funcname, "Invalid loop order specified.", 3);
@@ -134,9 +134,9 @@ int SUMO_SdLPole (int i, int loop_order)
 int SUMO_SuRPole (int i, int loop_order)
 {
   char funcname[] = "SuRPole";
-  //  int j = 0;
+  int j = 0;
 
-  //  if (i==0) j = 1;
+  if (i==0) j = 1;
 
   if (loop_order > 2) 
     SUMO_Error(funcname, "Invalid loop order specified.", 3);
@@ -165,9 +165,9 @@ int SUMO_SuRPole (int i, int loop_order)
 int SUMO_SdRPole (int i, int loop_order)
 {
   char funcname[] = "SdRPole";
-  //  int j = 0;
+  int j = 0;
 
-  //  if (i==0) j = 1;
+  if (i==0) j = 1;
 
   if (loop_order > 2) 
     SUMO_Error(funcname, "Invalid loop order specified.", 3);

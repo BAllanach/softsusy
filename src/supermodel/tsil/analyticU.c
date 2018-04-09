@@ -35,11 +35,9 @@ int TSIL_Uanalytic (TSIL_REAL X,
 TSIL_COMPLEX TSIL_U0xyz (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z, 
 			 TSIL_COMPLEX S, TSIL_REAL QQ)
 {
-  //  TSIL_REAL temp, lnbarX, lnbarY, lnbarZ, DeltaXYZ;
-    TSIL_REAL temp, lnbarY, lnbarZ, DeltaXYZ;
+  TSIL_REAL temp, lnbarX, lnbarY, lnbarZ, DeltaXYZ;
   TSIL_COMPLEX log1mSoX, sqDeltaSYZ, sqDeltaXYZ;
-  //  TSIL_COMPLEX Tp, Tm, logTp, logTm, log1mTp, log1mTm;
-    TSIL_COMPLEX Tp, Tm, log1mTp, log1mTm;
+  TSIL_COMPLEX Tp, Tm, logTp, logTm, log1mTp, log1mTm;
   TSIL_COMPLEX Rp, Rm, logRp, logRm, log1mRp, log1mRm, log1m1oRp, log1m1oRm;
   TSIL_COMPLEX part1, part2, part3;
 
@@ -50,7 +48,7 @@ TSIL_COMPLEX TSIL_U0xyz (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z,
   if (TSIL_CABS(S) < TSIL_TOL) 
     return ((TSIL_I20xy(Y,Z,QQ) - TSIL_I2(X,Y,Z,QQ))/X);
 
-  //  lnbarX = TSIL_LOG(X/QQ);
+  lnbarX = TSIL_LOG(X/QQ);
   lnbarY = TSIL_LOG(Y/QQ);
   lnbarZ = TSIL_LOG(Z/QQ);
   DeltaXYZ = X*X + Y*Y + Z*Z -2.0L*X*Y -2.0L*X*Z -2.0L*Y*Z;
@@ -78,8 +76,8 @@ TSIL_COMPLEX TSIL_U0xyz (TSIL_REAL X, TSIL_REAL Y, TSIL_REAL Z,
   sqDeltaSYZ = TSIL_CSQRT(S*S + Y*Y + Z*Z -2.0L*S*Y -2.0L*S*Z -2.0L*Y*Z);
   Tp = (S+Y-Z + sqDeltaSYZ)/(2.0L*Y); 
   Tm = (S+Y-Z - sqDeltaSYZ)/(2.0L*Y); 
-  //  logTp = TSIL_CLOG(Tp);
-  //  logTm = TSIL_CLOG(Tm);  
+  logTp = TSIL_CLOG(Tp);
+  logTm = TSIL_CLOG(Tm);  
   log1mTp = TSIL_CLOG(1.0L - Tp);
   log1mTm = TSIL_CLOG(1.0L - Tm);
 

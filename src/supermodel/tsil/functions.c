@@ -2,7 +2,6 @@
 
 #include "internal.h"
 #include <string.h>
-#include "tsil_names.h"
 
 /* ******************************************************************* */
 /* Implements Eq. 2.29 of hep-ph/0307101                               */
@@ -320,6 +319,7 @@ void TSIL_PrintInfo (void)
 
 int TSIL_ValidIdentifier (const char* which)
 { 
+#include "tsil_names.h"
 
   int i,j;
 
@@ -378,6 +378,7 @@ int TSIL_GetData (TSIL_DATA    *foo,
 		  const char   *which, 
 		  TSIL_COMPLEX *val)
 {
+#include "tsil_names.h"
 
   int i;
   int retval = 1;
@@ -470,6 +471,7 @@ int TSIL_GetBoldData (TSIL_DATA    *foo,
 		      const char   *which,
 		      TSIL_COMPLEX val[][3])
 {
+#include "tsil_names.h"
 
   int i, j;
   int retval = 1;
@@ -533,8 +535,10 @@ int TSIL_GetBoldData (TSIL_DATA    *foo,
 
 TSIL_COMPLEX TSIL_GetFunction (TSIL_DATA *foo, const char *which)
 {
+#include "tsil_names.h"
+
   int i,j;
-  //  int match = NO;
+  int match = NO;
 
   TSIL_COMPLEX result = (TSIL_COMPLEX) 0.0;
   char funcname[] = "TSIL_GetFunction";
@@ -674,9 +678,10 @@ TSIL_COMPLEX TSIL_GetFunction (TSIL_DATA *foo, const char *which)
 
 TSIL_COMPLEX TSIL_GetFunctionR (TSIL_RESULT *foo, const char *which)
 {
+#include "tsil_names.h"
 
   int i,j;
-  //  int match = NO;
+  int match = NO;
 
   TSIL_COMPLEX result = (TSIL_COMPLEX) 0.0;
   char funcname[] = "TSIL_GetFunctionR";
@@ -746,6 +751,7 @@ TSIL_COMPLEX TSIL_GetBoldFunction (TSIL_DATA  *foo,
 				   const char *which,
 				   int        n)
 {
+#include "tsil_names.h"
 
   int i,j;
   TSIL_COMPLEX result = (TSIL_COMPLEX) 0.0;
@@ -946,6 +952,7 @@ void TSIL_PrintDataM (TSIL_DATA *foo)
 
 void TSIL_WriteData (FILE *fp, TSIL_DATA *foo)
 {
+#include "tsil_names.h"
 
   TSIL_REAL fac = foo->scaleFac;
   int j, k;
@@ -1120,6 +1127,7 @@ void TSIL_WriteData (FILE *fp, TSIL_DATA *foo)
 
 void TSIL_WriteDataM (FILE *fp, TSIL_DATA *foo)
 {
+#include "tsil_names.h"
 
   TSIL_REAL fac = foo->scaleFac;
   int j, k;

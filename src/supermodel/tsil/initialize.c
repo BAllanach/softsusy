@@ -90,8 +90,7 @@ int TSIL_SetParameters (TSIL_DATA *foo,
 			TSIL_REAL qq)
 {
   TSIL_REAL tmp[6];
-  // int i, mtype;
-  int i;
+  int i, mtype;
 
   /* Basic sanity check on arguments: */
   tmp[0] = x;
@@ -175,7 +174,7 @@ int TSIL_SetParameters (TSIL_DATA *foo,
   TSIL_ConstructV (&(foo->V[xzuv]), xzuv, x, z, u, v, qq);
   TSIL_ConstructV (&(foo->V[yuzv]), yuzv, y, u, z, v, qq);
 
-  //  mtype = TSIL_ConstructM (&(foo->M), x, y, z, u, v, qq);
+  mtype = TSIL_ConstructM (&(foo->M), x, y, z, u, v, qq);
 
   /* Set Runge-Kutta step-size parameter parameters.  */
   /* These can be reset by calling TSIL_ResetStepSizeParams */

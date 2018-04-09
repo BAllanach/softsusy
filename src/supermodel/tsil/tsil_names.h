@@ -6,12 +6,6 @@
 #define NUM_B_PERMS 2
 #define NUM_V_PERMS 2
 
-const char *tbarname[6][2] = {{"TBARvyz","TBARvzy"},
-			      {"TBARuxv","TBARuvx"},
-			      {"TBARyzv","TBARyvz"},
-			      {"TBARxuv","TBARxvu"},
-			      {"TBARzyv","TBARzvy"},
-			      {"TBARvxu","TBARvux"}};
 const char *uname[4][2] = {{"Uzxyv","Uzxvy"},
 			   {"Uuyxv","Uuyvx"},
 			   {"Uxzuv","Uxzvu"},
@@ -27,22 +21,23 @@ const char *tname[6][2] = {{"Tvyz","Tvzy"},
 const char *sname[2][6] = {{"Svyz","Szvy","Syzv","Svzy","Syvz","Szyv"},
 			   {"Suxv","Svux","Sxvu","Suvx","Sxuv","Svxu"}};
 
+const char *bname[2][2] = {{"Bxz","Bzx"}, 
+                           {"Byu","Buy"}};
 
 const char *vname[4][2] = {{"Vzxyv","Vzxvy"},
 			   {"Vuyxv","Vuyvx"},
 			   {"Vxzuv","Vxzvu"},
 			   {"Vyuzv","Vyuvz"}};
 
+const char *tbarname[6][2] = {{"TBARvyz","TBARvzy"},
+			      {"TBARuxv","TBARuvx"},
+			      {"TBARyzv","TBARyvz"},
+			      {"TBARxuv","TBARxvu"},
+			      {"TBARzyv","TBARzvy"},
+			      {"TBARvxu","TBARvux"}};
 
 /* These are only used for display purposes and by the test program,
    so we really don't need permutations for them. */
-
-/* But here they are in case we want them some day: */
-/*  */
-const char *ssname[2][3] = {{"SSvyz0", "SSvyz1", "SSvyz2"},
-   {"SSuxv0", "SSuxv1", "SSuxv2"}};
-const char *bname[2][2] = {{"Bxz","Bzx"}, 
-                           {"Byu","Buy"}};
 const char *uuname[4][3] = {{"UUzxyv0", "UUzxyv1", "UUzxyv2"},
 			    {"UUuyxv0", "UUuyxv1", "UUuyxv2"},
 			    {"UUxzuv0", "UUxzuv1", "UUxzuv2"},
@@ -57,7 +52,10 @@ const char *ttname[6][3] = {{"TTvyz0", "TTvyz1", "TTvyz2"},
 			    {"TTxuv0", "TTxuv1", "TTxuv2"},
 			    {"TTzyv0", "TTzyv1", "TTzyv2"},
 			    {"TTvxu0", "TTvxu1", "TTvxu2"}};
-/**/
+const char *ssname[2][3] = {{"SSvyz0", "SSvyz1", "SSvyz2"},
+			    {"SSuxv0", "SSuxv1", "SSuxv2"}};
+
+/* But here they are in case we want them some day: */
 /* const char *uuname0[4][2] = {{"UUzxyv0","UUzxvy0"}, */
 /* 			     {"UUuyxv0","UUuyvx0"}, */
 /* 			     {"UUxzuv0","UUxzvu0"}, */

@@ -217,8 +217,7 @@ TSIL_COMPLEX TSIL_BepsAtZero (TSIL_REAL x, TSIL_REAL y, TSIL_REAL qq)
 
 TSIL_COMPLEX TSIL_Beps0x (TSIL_REAL x, TSIL_COMPLEX s, TSIL_REAL qq)
 {
-  //  TSIL_COMPLEX sqrtx, lnbarx, log1msox, lnbarms;
-  TSIL_COMPLEX lnbarx, log1msox, lnbarms;
+  TSIL_COMPLEX sqrtx, lnbarx, log1msox, lnbarms;
 
   if (TSIL_CABS(s) < TSIL_TOL) return TSIL_BepsAtZero (0, x, qq);
 
@@ -227,7 +226,7 @@ TSIL_COMPLEX TSIL_Beps0x (TSIL_REAL x, TSIL_COMPLEX s, TSIL_REAL qq)
     return 4.0L - Zeta2/2.0L - 2.0L*lnbarms + lnbarms*lnbarms/2.0L;
   }
 
-  //  sqrtx = TSIL_CSQRT(x);
+  sqrtx = TSIL_CSQRT(x);
   lnbarx = TSIL_CLOG(x/qq);
 
   if (TSIL_CABS(1 - s/x) < 10.0*TSIL_TOL)

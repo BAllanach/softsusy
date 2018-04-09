@@ -896,8 +896,7 @@ void M_FFFFS (TSIL_RESULT *r,
 	      TSIL_COMPLEX *mFfFfS, TSIL_COMPLEX *mFffFS,
 	      TSIL_COMPLEX *mffffS)
 {
-  //  TSIL_REAL x,y,z,u,v,qq;
-  TSIL_REAL x,y,z,u,v;
+  TSIL_REAL x,y,z,u,v,qq;
   TSIL_REAL s;
   TSIL_COMPLEX M, Uzxyv, Uuyxv, Uxzuv, Uyuzv;
   TSIL_COMPLEX BxzByu, Sxuv, Syzv;
@@ -908,7 +907,7 @@ void M_FFFFS (TSIL_RESULT *r,
   u = r->u;
   v = r->v;
   s = r->s;
-  //  qq = r->qq;
+  qq = r->qq;
 
   M      = r->M;
   Uzxyv  = r->U[zxyv];
@@ -947,8 +946,7 @@ void M_FFFFS2 (TSIL_RESULT *r,
 	       TSIL_COMPLEX *mFfFfS, TSIL_COMPLEX *mFffFS,
 	       TSIL_COMPLEX *mffffS, TSIL_COMPLEX *mFfFfSp)
 {
-  //  TSIL_REAL x,y,z,u,v,qq;
-    TSIL_REAL x,y,z,u,v;
+  TSIL_REAL x,y,z,u,v,qq;
   TSIL_REAL s;
   TSIL_COMPLEX M, Uzxyv, Uuyxv, Uxzuv, Uyuzv;
   TSIL_COMPLEX BxzByu, Sxuv, Syzv;
@@ -960,7 +958,7 @@ void M_FFFFS2 (TSIL_RESULT *r,
   u = r->u;
   v = r->v;
   s = r->s;
-  //  qq = r->qq;
+  qq = r->qq;
 
   M = r->M;
   Uzxyv = r->U[zxyv];

@@ -11,19 +11,19 @@ void TSIL_ConstructT (TSIL_TTYPE *t,
 		 TSIL_REAL z,
 		 TSIL_REAL qq)
 {
-  //    TSIL_REAL Ay, Az, Ax, Deltaxyz;
-    TSIL_REAL sqrtx, sqrty, sqrtz, alphax, alphay, alphaz;
-    int i;
+  TSIL_REAL Ay, Az, Ax, Deltaxyz;
+  TSIL_REAL sqrtx, sqrty, sqrtz, alphax, alphay, alphaz;
+  int i;
 
   t->which  = n;
   t->arg[0] = x;
   t->arg[1] = y;
   t->arg[2] = z;
 
-  /*  Ay = TSIL_A(y, qq);
+  Ay = TSIL_A(y, qq);
   Az = TSIL_A(z, qq);
   Ax = TSIL_A(x, qq);
-  Deltaxyz = TSIL_Delta(x,y,z);*/
+  Deltaxyz = TSIL_Delta(x,y,z);
 
   sqrtx = TSIL_SQRT(x);
   sqrty = TSIL_SQRT(y);
