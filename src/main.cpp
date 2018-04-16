@@ -32,7 +32,7 @@ int main() {
     outputCharacteristics(6);
     
     cout << "# SOFTSUSY" << PACKAGE_VERSION 
-         << " test program, Ben Allanach 2002\n";
+         << " test program, Ben Allanach\n";
     cout << "# If you use SOFTSUSY, please refer to B.C. Allanach,\n";
     cout << "# Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
     

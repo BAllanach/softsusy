@@ -20,7 +20,7 @@ namespace softsusy{
 
   /// Set to true (default) if you want to include 2-loop SM contributions to
   /// electroweak gauge coupling threshold effects
-  extern bool twoLEW;
+  //  extern bool twoLEW;
   
   extern bool NMSSMTools;
   extern bool SoftHiggsOut;

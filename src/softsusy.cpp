@@ -6917,7 +6917,7 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
 
   /// Two loop correction parameterisation from private communication of
   ///  authors from 1411.7040 in MSBAR SCHEME and at MZ
-    double b0 = 1.751181, b1 = -0.523813, b2 = -0.662710, b3 = -0.000962,
+  /*  double b0 = 1.751181, b1 = -0.523813, b2 = -0.662710, b3 = -0.000962,
       b4 =0.252884, b5 = 2.971626, b6 = -0.739561;
     double mt = displayDataSet().displayPoleMt();
     double dT = log(mt / 173.34) - 1.0;
@@ -6931,13 +6931,20 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
     
     const double deltaAlpha_1L = -alphaEm / (2.0 * PI) *
       (deltaASM + deltaASusy);
-    const double deltaAlpha_2L = twoLEW ? deltaAlphaTwoLoop : 0.;
+      const double deltaAlpha_2L = twoLEW ? deltaAlphaTwoLoop : 0.; 
 
     const double alphaEm_post =
        altAlphaEm ?
        alphaEm * (1.0 + deltaAlpha_1L + deltaAlpha_2L + sqr(deltaAlpha_1L)) :
-       alphaEm / (1.0 - (deltaAlpha_1L + deltaAlpha_2L));
+       alphaEm / (1.0 - (deltaAlpha_1L + deltaAlpha_2L)); */
 
+   const double deltaAlpha_1L = -alphaEm / (2.0 * PI) *
+      (deltaASM + deltaASusy);
+   
+  const double alphaEm_post =
+       altAlphaEm ?
+    alphaEm * (1.0 + deltaAlpha_1L) : alphaEm / (1.0 - deltaAlpha_1L);
+  
     return alphaEm_post;
 }
 
@@ -9252,10 +9259,12 @@ double MssmSoftsusy::dRho(double outrho, double outsin, double alphaDRbar,
   
   /// 2 loop SM contribution
   double mt   = dataSet.displayPoleMt(); 
+  double sinb = sin(atan(displayTanb()));
+  double xt = 3.0 * GMU * sqr(mt) / (8.0 * sqr(PI) * root2);
   
   /// This is the expression for the 2-loop SM corrections from 1411.7040
   /// at MZ in rxi=1 gauge
-  double y0 = -18.616753, y1 = 15.972019, y2 = -16.216781, y3 = 0.0152367,
+  /*  double y0 = -18.616753, y1 = 15.972019, y2 = -16.216781, y3 = 0.0152367,
     y4 = -13.633472, y5 = 0.647931, y6 = 0.021604, y7 = 2.518649, y8 = 0.131301;
   double dT = sqr(mt / 173.34) - 1.0;
   double ds = sqr(outsin / 0.231) - 1.;
@@ -9264,20 +9273,20 @@ double MssmSoftsusy::dRho(double outrho, double outsin, double alphaDRbar,
   double dmu = log(displayDataSet().displayMu() / MZ);
   double deltaRho2LoopSm = 1.0e-4 * (y0 + y1 * ds + y2 * dT + y3 * dH +
 				     y4 * das + y5 * dmu + y6 * sqr(dmu) +
-				     y7 * dT * dmu + y8 * dH * dmu);
+				     y7 * dT * dmu + y8 * dH * dmu); */
   
-  /*  double deltaRho2LoopSm = alphaDRbar * sqr(displayGaugeCoupling(3)) / 
+  double deltaRho2LoopSm = alphaDRbar * sqr(displayGaugeCoupling(3)) / 
     (16.0 * PI * sqr(PI) * sqr(outsin)) * /// bug-fixed 24.08.2002
     (-2.145 * sqr(mt) / sqr(displayMw()) + 1.262 * log(mt / mz) - 2.24 
      - 0.85 * sqr(mz)
      / sqr(mt)) + sqr(xt) * sqr(h1s2Mix()) / sqr(sinb) *
-     rho2(tree.mh0(1) / mt) / 3.0; */
+     rho2(tree.mh0(1) / mt) / 3.0; 
 
   double deltaRhoOneLoop = pizztMZ / (outrho * sqr(mz))
     - piwwtMW / sqr(displayMw());
 
-  double deltaRho = deltaRhoOneLoop;
-  if (twoLEW) deltaRho += deltaRho2LoopSm;
+  double deltaRho = deltaRhoOneLoop + deltaRho2LoopSm;
+  //  if (twoLEW) deltaRho += deltaRho2LoopSm;
   
   return deltaRho;
 }
@@ -9285,24 +9294,27 @@ double MssmSoftsusy::dRho(double outrho, double outsin, double alphaDRbar,
 double MssmSoftsusy::dR(double outrho, double outsin, double alphaDRbar,
 			double pizztMZ, double piwwt0) {
   drBarPars tree(displayDrBarPars());
-  
+  double outcos = cos(asin(outsin));
+  /// 2 loop SM contribution
+  double mt   = dataSet.displayPoleMt();
+  double sinb = sin(atan(displayTanb()));
+  double xt = 3.0 * GMU * sqr(mt) / (8.0 * sqr(PI) * root2);
   double dvb = deltaVb(outrho, outsin, alphaDRbar, pizztMZ);
-  
   double mz = displayMz();
   
   double deltaR =  outrho * piwwt0 / sqr(displayMw()) - 
     pizztMZ / sqr(mz) + dvb;
   
   /// Dominant two-loop SM term
-  /*  double deltaR2LoopSm = alphaDRbar * sqr(displayGaugeCoupling(3)) / 
+  double deltaR2LoopSm = alphaDRbar * sqr(displayGaugeCoupling(3)) / 
     (16.0 * sqr(PI) * PI * sqr(outsin) * sqr(outcos)) *
     (2.145 * sqr(mt) / sqr(mz) + 0.575 * log(mt / mz) - 0.224 
      - 0.144 * sqr(mz) / sqr(mt)) - 
     sqr(xt) * sqr(h1s2Mix()) / sqr(sinb) *
-    rho2(tree.mh0(1) / mt) * (1.0 - deltaR) * outrho / 3.0;*/
+    rho2(tree.mh0(1) / mt) * (1.0 - deltaR) * outrho / 3.0;
 
   /// new calculation from 1411.7040
-  double r0 = -2.8472779, r1 = 1.620742, r2 = 1.773226, r3 =-0.364310,
+  /*  double r0 = -2.8472779, r1 = 1.620742, r2 = 1.773226, r3 =-0.364310,
     r4 = 1.137797, r5 = -5.330681, r6 = 2.899265, r7 = 3.781905,
     r8 = 0.241184;
   double dT = log(displayDataSet().displayPoleMt() / 173.34);
@@ -9312,9 +9324,9 @@ double MssmSoftsusy::dR(double outrho, double outsin, double alphaDRbar,
   double dmu = log(displayDataSet().displayMu() / MZ);
   double deltaR2LoopSm = 1.0e-4 * (r0 + r1 * ds + r2 * dT + r3 * dH +
 				   r4 * das + r5 * dmu + r6 * sqr(dmu) +
-				   r7 * dT * dmu + r8 * dH * dmu);
+				   r7 * dT * dmu + r8 * dH * dmu); */
   
-  if (twoLEW) deltaR += deltaR2LoopSm; 
+  deltaR += deltaR2LoopSm; 
   
   return deltaR;
 }
@@ -9370,8 +9382,9 @@ void MssmSoftsusy::rhohat(double & outrho, double & outsin, double alphaDRbar,
   //  cout << "old s^2thW=" << sin2thetasqO4;
   
   sin2thetasqO4 = PI * alphaDRbar / (root2 * sqr(mz) * GMU);
-  if (twoLEW) sin2thetasqO4 *= (1.0 + deltaR);
-  else sin2thetasqO4 /= (1.0 - deltaR);
+  //  if (twoLEW) sin2thetasqO4 *= (1.0 + deltaR);
+  //  else
+  sin2thetasqO4 /= (1.0 - deltaR);
   //  cout << " new s^2thW=" << sin2thetasqO4 << endl;
   
   if (sin2thetasqO4 >= 0.25) sin2thetasqO4 = 0.25;
@@ -9805,9 +9818,9 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
   }
   else out << "off" << endl;
   out << "# Matching scale=" << displayMatchingScale() << endl;
-  out << "# 2-loop EW SM threshold corrections to EW couplings are ";
-  if (twoLEW) out << "on" << endl;
-  else out << "off" << endl;
+  //  out << "# 2-loop EW SM threshold corrections to EW couplings are ";
+  //  if (twoLEW) out << "on" << endl;
+  //  else out << "off" << endl;
 }
 
 void MssmSoftsusy::higgsMSLHA(ostream & out) {

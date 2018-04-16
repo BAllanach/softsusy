@@ -1,4 +1,4 @@
 <li>Calculating decays no longer changes problem flags. Thanks to J Kersten for finding the bug
 <li>2-loop tadpole pieces now included in fine-tuning calculation: thanks to R Ruiz de Austri
 <li>Matching scale of QEDxQCD(5) to MSSM is now variable: it's set by the scale you run oneset up to before calling fixedOrderIteration. Used to be MZ: current default is <b>mtop(phys)</b>.
-<li>Added 2-loop SM contributions to electroweak threshold corrections in private communication from authors of 1411.7040. They only work if the matching scale of QEDxQCD(5) to MSSM is set equal to MZ
+

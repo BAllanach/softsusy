@@ -347,7 +347,7 @@ namespace softsusy {
     /// The predicted value of MZ^2 is an absolute measure of how close to a
     /// true solution we are:
     // double tbPred = 0.;
-    double predictedMzSq = in.displayPredMzSq();
+    //    double predictedMzSq = in.displayPredMzSq();
     /// We allow an extra factor of 10 for the precision in the predicted value
     /// of MZ compared to TOLERANCE if the program is struggling and gone beyond
     /// 10 tries - an extra 2 comes from MZ v MZ^2
