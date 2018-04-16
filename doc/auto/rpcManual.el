@@ -139,6 +139,7 @@
     "sdecay"
     "pythia"
     "micromegas"
+    "uncert"
     "Randall:1998uk"
     "gmsb"
     "lhacc2")))

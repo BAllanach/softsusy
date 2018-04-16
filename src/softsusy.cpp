@@ -12008,8 +12008,7 @@ double softsusy::MssmSoftsusy::calcRunMbNeutralinos() const {
 
 /// calculates an uncertainty estimate of the pole masses from scale
 /// variation only
-softsusy::sPhysical MssmSoftsusy::displayPhysUncertaintyScaleVariation() const
-{
+softsusy::sPhysical MssmSoftsusy::displayPhysUncertaintyScaleVariation() const {
    const sPhysical masses = displayPhys();
    const int numPts = 30;
    const double lnqMin = log(0.5 * displayMsusy()),
@@ -12081,7 +12080,8 @@ MssmSoftsusy::displayPhysUncertainty(TMSSMBoundaryCondition bc,
       mHp(1) = masses.mHpm;
 
       for (int i = 0; i < numPts; i++) {
-         const double lnq = (lnqMax - lnqMin) * double(i) / double(numPts) + lnqMin;
+         const double lnq = (lnqMax - lnqMin) * double(i) / double(numPts) +
+	   lnqMin;
          const double q = exp(lnq);
 
          QedQcd tmp(oneset);
@@ -12089,7 +12089,8 @@ MssmSoftsusy::displayPhysUncertainty(TMSSMBoundaryCondition bc,
 
          if (!err) {
             MssmSoftsusy a(*this);
-            a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, tmp, gaugeUnification, ewsbBCscale);
+            a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, tmp,
+				  gaugeUnification, ewsbBCscale);
 
             if (!a.displayProblem().testSeriousProblem()) {
                mh.append(a.displayPhys().mh0(1));

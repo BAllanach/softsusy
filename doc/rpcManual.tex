@@ -1042,7 +1042,7 @@ unphysical point.}
     \code{--mgut=<value>} & set unification scale to fixed value \\
     \code{--higgsUncertainties} & provides an estimate of uncertainties in
       Higgs masses\\
-    \code{--matchingScale}=<value> & set $M_{QED \times QCD5}$ \\
+    \code{--matchingScale=<value>} & set $M_{QED \times QCD5}$ \\
     \hline
   \end{tabular}
   \caption{General command line options for \code{softpoint.x} These variables
@@ -1159,7 +1159,13 @@ be physically fine if there are no further problems reported.
 \code{<higgsUncert>}~is by default set to \code{0}, but if it is set to
 \code{1}, then \SOFTSUSY~will estimate the approximate errors in each Higgs
 boson mass, in units of GeV. This is printed out at the bottom of the SLHA
-file in block called \code{DMASS}. 
+file in block called \code{DMASS}. Sources of error in Higgs mass predictions
+are added {\em linearly}. They are calculated from individually varying
+$M_{SUSY}$, $M_{QED\times QCD5}$ by a
+factor or 2 in each direction and taking the maximum and minimum Higgs mass
+values within the range. Other finite uncertainties are taken into account by
+changing the determination of $m_t(Q)$, $\alpha(Q)$ and $\alpha_s(Q)$ by higher order
+effects~\cite{uncert}. 
 % The uncertainties are calculated as follows: For 30 different values of
 % renormalisation scale $Q$ between $M_Z$ and $2 M_{SUSY}$ (spaced equally in
 % $\log Q$), values of the
@@ -2476,6 +2482,12 @@ G. Belanger, F. Boudjema, A. Pukhov and A. Semikov,
 {\it micrOMEGAs: A program for calculating the relic density in the MSSM},
 {\em Comput. Phys. Comm.} {\bf 149} (2002) 103,
   [\href{http://xxx.lanl.gov/abs/hep-ph/0112278}{{\tt hep-ph/0112278}}].
+
+\bibitem{uncert}
+B.C. Allanach and A. Voigt,
+{\em Uncertainties in the Lightest $CP$ Even Higgs Boson Mass Prediction in the
+  Minimal Supersymmetric Standard Model: Fixed Order Calculations Versus 
+  Effective Field Theory Predictions}, to appear.
 
 \bibitem{Randall:1998uk}
 L.~Randall and R.~Sundrum, {\it Out of this world supersymmetry breaking},
