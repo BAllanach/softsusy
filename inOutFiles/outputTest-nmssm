@@ -3,27 +3,27 @@
 WARNING: lowOrg in softsusy.cpp called with oneset at scale
 1.735000e+02
 instead of 9.118760e+01
-5.000000e+00 1.079408e+02 6.860393e+02 5.735323e+02 7.330081e+02 7.367571e+02
+5.000000e+00 1.066950e+02 7.091040e+02 5.822069e+02 7.219634e+02 7.255257e+02
 WARNING: lowOrg in softsusy.cpp called with oneset at scale
 1.735000e+02
 instead of 9.118760e+01
-1.000000e+01 1.086224e+02 4.700221e+02 4.876339e+02 6.927421e+02 6.975065e+02
+1.000000e+01 1.079873e+02 4.949795e+02 4.980189e+02 6.815845e+02 6.863299e+02
 WARNING: lowOrg in softsusy.cpp called with oneset at scale
 1.735000e+02
 instead of 9.118760e+01
-1.500000e+01 1.061071e+02 3.773368e+02 4.453044e+02 6.711725e+02 6.767761e+02
+1.500000e+01 1.061968e+02 4.015136e+02 4.565757e+02 6.596986e+02 6.652082e+02
 WARNING: lowOrg in softsusy.cpp called with oneset at scale
 1.735000e+02
 instead of 9.118760e+01
-2.000000e+01 1.019130e+02 3.131408e+02 4.129400e+02 6.470390e+02 6.537397e+02
+2.000000e+01 1.031647e+02 3.364180e+02 4.249519e+02 6.350028e+02 6.416146e+02
 WARNING: lowOrg in softsusy.cpp called with oneset at scale
 1.735000e+02
 instead of 9.118760e+01
-2.500000e+01 9.416328e+01 2.583160e+02 3.820970e+02 6.180541e+02 6.260080e+02
+2.500000e+01 9.782545e+01 2.801023e+02 3.949165e+02 6.051633e+02 6.130480e+02
 WARNING: lowOrg in softsusy.cpp called with oneset at scale
 1.735000e+02
 instead of 9.118760e+01
-3.000000e+01 [ Not in global min of Higgs potential ]
+3.000000e+01 8.629580e+01 2.276685e+02 3.629147e+02 5.697458e+02 5.792149e+02
 WARNING: lowOrg in softsusy.cpp called with oneset at scale
 1.735000e+02
 instead of 9.118760e+01
