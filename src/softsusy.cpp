@@ -9399,7 +9399,10 @@ void MssmSoftsusy::rhohat(double & outrho, double & outsin, double alphaDRbar,
   double deltaRho = dRho(outrho, outsin, alphaDRbar, pizztMZ, piwwtMW);
   
   if (fabs(deltaRho) < 1.0) outrho = 1.0 / (1.0 - deltaRho);
-  else outrho = 1.0;
+  else {
+    outrho = 1.0;
+    flagNoRhoConvergence(true);
+  }
   
   if (PRINTOUT > 2) cout << " drho=" << deltaRho << " sw=" << outsin << endl; 
   
