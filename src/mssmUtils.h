@@ -79,6 +79,20 @@ namespace softsusy {
   
   /// Formatted output
   std::ostream & operator<<(std::ostream&, const MssmSoftsusy&);
+
+  /// Calculates coefficients in semi-analytic solution for down-type
+  /// soft Higgs mass for MSUGRA boundary conditions at the given scale,
+  /// in the order M_0^2, M_{1/2}^2, A_0^2, M_{1/2} A_0 (see Eq. (14)
+  /// of arXiv:1312.4150). The high-scale is taken to be given by
+  /// mx.displayMxBC().
+  DoubleVector calcMh1SqSugraCoeffs(const MssmSoftsusy & m, double scale);
+
+  /// Calculates coefficients in semi-analytic solution for up-type
+  /// soft Higgs mass for MSUGRA boundary conditions at the given scale,
+  /// in the order M_0^2, M_{1/2}^2, A_0^2, M_{1/2} A_0 (see Eq. (14)
+  /// of arXiv:1312.4150). The high-scale is taken to be given by
+  /// mx.displayMxBC().
+  DoubleVector calcMh2SqSugraCoeffs(const MssmSoftsusy & m, double scale);
   
 } ///< namespace softsusy
 

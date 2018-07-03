@@ -931,7 +931,7 @@ observed value of $M_Z$.
 But $\mu$ has a different origin to the SUSY breaking parameters and the
 balancing appears unnatural. Various measures have
 been proposed in order to quantify the apparent cancellation, for
-example ref.s~\cite{Barbieri:1998uv,deCarlos:1993yy}.
+example refs.~\cite{Barbieri:1998uv,deCarlos:1993yy}.
 The definition of naturalness $c_a$ 
 of a `fundamental' parameter $a$ employed here is~\cite{deCarlos:1993yy} 
 \begin{equation}
@@ -959,6 +959,8 @@ The resulting value of $M_Z^{pole}$ is the
 prediction for the new changed input parameters, and its derivative is
 determined by examining its behaviour as the initial changes in input
 parameters tend to zero.
+
+
 
 \appendix
 
@@ -1210,7 +1212,7 @@ We now present the sample program from which it is possible to run
 the variable $\tan \beta$, with other parameters as in point
 CMSSM10.1.1~\cite{bench}. 
 It then prints the four pole Higgs masses as a function of $\tan \beta$ in the
-standard output channel. If there are any problems with the parameter point,
+standard output channel along with a Bayesian measure of naturalness~\cite{1709.07895}. If there are any problems with the parameter point,
 the program prints out these instead of the Higgs masses.
 The most important features of the objects are 
 described in appendix~\ref{sec:objects}.
@@ -1296,8 +1298,11 @@ Firstly, the output details the input parameters, starting with
 After the output of the input \code{QedQcd} object,
 various pole Higgs masses are displayed for different values of tan beta, as
 labelled by the various columns. The columns are, respectively, 
-$\tan \beta$, $m_{h^0}$, $m_{A^0}$, $m_{H^0}$ and $m_{H^\pm}$.
-In the case that there is a problem with the point, the higgs masses are
+$\tan \beta$, $m_{h^0}$, $m_{A^0}$, $m_{H^0}$, $m_{H^\pm}$ and a measure of
+Bayesian naturalness~\cite{1709.07895}. The returned \code{nan}\ value
+indicates that the naturalness calculation had numerical instabilities at the
+point in question. 
+In the case that there is a different problem with the point, the higgs masses are
 replaced by a warning: three points have tachyonic staus, and the last has
 not achieved convergence of the iteration and possesses a negative mass
 squared for $m_{H^\pm}$. Here, \code{stau tachyon}~indicates that the
@@ -1917,6 +1922,7 @@ to Standard Model \\
 \code{rewsb} & Sets $\mu$, $B$ from EWSB conditions\\ 
 \code{fineTune} & Calculates fine-tuning for soft parameters$^*$ \\ & and
 $h_t$\\ 
+\code{calcBayesianNaturalness} & Calculates Bayesian naturalness for soft parameters \\ 
 \code{getVev} & Calculates VEV $v^{\overline{DR}}$ at current scale from $Z$\\
  & self-energy and gauge couplings\\ 
 \code{calcSinthdrbar} & Calculates $s_W^{\overline{DR}}$ at current scale
@@ -2046,8 +2052,13 @@ of \code{bcPars} being the fine-tuning with respect to the Higgs potential
 parameters ($\mu$ and $B$) and
 the top Yukawa coupling
 $(h_t)$ respectively. \code{fineTune} is an optional feature.
+Alternatively, for a Bayesian measure of naturalness of the soft parameters only, one may use the method 
+\code{double  calcBayesianNaturalness() const}~\cite{1709.07895}. This method
+returns \code{nan} in the 
+case of numerical instabilities in the naturalness calculation.
 \code{sinSqThetaEff()} returns a \code{double} number corresponding to a full
-one-loop calculation of the quantity $\sin^2 \theta_{eff}^l$. It does {\em
+one-loop calculation of the quantity $\sin^2 \theta_{eff}^l$. 
+It does {\em
   not}\/ contain any 2-loop corrections, and may not be accurate enough for
 precision electroweak fits. 
 

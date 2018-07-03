@@ -30,6 +30,7 @@
 #include "twoloophiggs.h"
 #include "mssmUtils.h"
 #include "higher_order.h"
+#include "mssmjacobian.h"
 
 #define HR "----------------------------------------------------------"
 
@@ -840,6 +841,17 @@ namespace softsusy {
     /// Returns fine-tuning as defined in Baer et al arXiv:1212.2655 eq 1.2
     double deltaEW() const;
 
+    /// DH: returns the values of the tree-level EWSB conditions
+    double ewsbCondition1TreeLevel() const;
+    double ewsbCondition2TreeLevel() const;
+    /// DH: returns the EWSB conditions at the current EWSB loop order.
+    /// Note that this uses the current values of the tadpoles, i.e. it
+    /// does not calculate or recalculate them.
+    void ewsbConditions(DoubleVector & values) const;
+    /// DH: solves the EWSB conditions for the Higgs VEVs,
+    /// given the current values of all of the other parameters
+    void predVevs(DoubleVector & vevs, int & err);
+
     /// Calculates fine-tuning for soft parameters and mu, m_3^2, top Yukawa. 
     /// IO parameters: bcPars 
     /// should be a vector giving the high-scale SUSY breaking boundary
@@ -862,6 +874,8 @@ namespace softsusy {
     /// You should evaluate this at a scale MSusy average of stops.
     /// Returns depth of electroweak minimum
     double realMinMs() const;
+    /// Calculates Bayesian naturalness a la arXiv:1709.07895
+    double calcBayesianNaturalness() const;
     
     /// Calculates Higgs contribution to the transverse part of Z self-energy: 
     //for p=external momentum, Q=renormalisation scale

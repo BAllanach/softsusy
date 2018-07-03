@@ -381,6 +381,41 @@ double calcDerivative(double (*func)(double), double x, double h, double
   return ans;
 }
 
+double calcDerivative(double (*func)(double, void*), double x, double h, double
+		      *err, void* params){
+  const double CON = 1.4, CON2 = CON * CON, BIG = 1.0e30, 
+    SAFE = 2.0; 
+  const int NTAB = 10;
+  
+  int i, j;
+  double errt, fac, hh, ans = 0.0;
+  
+  if (h == 0.0) throw "h must be nonzero in numerics.cpp:calcDerivative";
+
+
+  DoubleMatrix a(NTAB, NTAB);
+  hh = h;
+  a(1, 1) = ((*func)(x + hh, params) - (*func)(x - hh, params)) / (2.0 * hh);
+  *err = BIG;
+  for (i=2; i<=NTAB; i++) {
+    hh /= CON;
+    a(1, i) = ((*func)(x + hh, params) - (*func)(x - hh, params)) / (2.0 * hh);
+    fac = CON2;
+    for (j=2; j<=i; j++) {
+      a(j, i) = (a(j-1, i) * fac - a(j-1, i-1)) / (fac - 1.0);
+      fac = CON2 * fac;
+      errt = maximum(fabs(a(j, i) - a(j-1, i)), fabs(a(j, i) - a(j-1, i-1)));
+      if (errt <= *err) {
+	*err = errt;
+	ans = a(j, i);
+      }
+    }
+    if (fabs(a(i, i) - a(i-1, i-1)) >= SAFE * (*err)) break;
+  }
+
+  return ans;
+}
+
 inline void shft2(double & a, double & b, double c) { a = b; b = c; }
 
 inline void shft3(double & a, double & b, double & c, double d) { 
@@ -1746,7 +1781,8 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc) {
 
 /// You will need to clear this lot up....
 DoubleMatrix fdjac(int n, DoubleVector x, const DoubleVector & fvec,
-	   void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
+           int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+           void* params) {
   double EPS = maximum(TOLERANCE, 1.0e-4);
   int i,j;
   double h,temp;
@@ -1759,7 +1795,7 @@ DoubleMatrix fdjac(int n, DoubleVector x, const DoubleVector & fvec,
     if (h == 0.0) h = EPS;
     x(j) = temp + h;
     h = x(j) - temp;
-    (*vecfunc)(x, f);
+    (*vecfunc)(x, params, f);
     x(j) = temp;
     for (i=1; i<=n; i++) df(i, j) = (f(i) - fvec.display(i)) / h;
   }
@@ -1769,8 +1805,8 @@ DoubleMatrix fdjac(int n, DoubleVector x, const DoubleVector & fvec,
 bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
 	    DoubleVector & p, 
 	    DoubleVector & x, double & f, double stpmax, 
-	    void (*vecfunc)(const DoubleVector &, DoubleVector &), 
-	    DoubleVector & fvec) {
+	    int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+	    DoubleVector & fvec, void* params) {
   double ALF = TOLERANCE;
   double TOLX = TOLERANCE * 1.0e-3;
   
@@ -1793,7 +1829,7 @@ bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g,
   alam = 1.0;
   for (;;) {
     x = xold + alam * p;
-    vecfunc(x, fvec); 
+    vecfunc(x, params, fvec);
     f = fvec.dot(fvec);
     if (alam < alamin) {
       x = xold;
@@ -1908,7 +1944,8 @@ void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
 
 /// More work can be done on this: get rid of int n and in subfunctions too
 bool newt(DoubleVector & x, 
-	  void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
+	  int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+          void* params) {
   bool err = false; 
   const int MAXITS = 200;    ///< max iterations
   double TOLF   = TOLERANCE; ///< convergence on function values
@@ -1925,7 +1962,7 @@ bool newt(DoubleVector & x,
   DoubleVector g(n), p(n), xold(n);
   DoubleVector fvec(n);
 
-  vecfunc(x, fvec); 
+  vecfunc(x, params, fvec);
   f = 0.5 * fvec.dot(fvec);
   test = 0.0;
   test = fvec.apply(fabs).max();
@@ -1937,7 +1974,7 @@ bool newt(DoubleVector & x,
   stpmax = STPMX * maximum(sqrt(sum), (double) n);
   for (its=1; its<=MAXITS; its++) {
     //    cout << its << endl; ///< DEBUG
-    fjac = fdjac(n, x, fvec, vecfunc);
+    fjac = fdjac(n, x, fvec, vecfunc, params);
     for (i=1;i<=n;i++) {
       for (sum=0.0, j=1; j<=n; j++) sum += fjac(j, i) * fvec(j);
       g(i) = sum;
@@ -1947,7 +1984,7 @@ bool newt(DoubleVector & x,
     for (i=1; i<=n; i++) p(i) = -fvec(i);
     ludcmp(fjac, n, indx, d);
     lubksb(fjac, n, indx, p);
-    err = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec);
+    err = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec, params);
     test = 0.0;
     for (i=1; i<=n; i++)
       if (fabs(fvec(i)) > test) test = fabs(fvec(i));
@@ -2020,7 +2057,8 @@ DoubleVector testDerivs(double /* x */, const DoubleVector & y) {
   }*/
   
 void broydn(DoubleVector x, int & check, 
-	    void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
+	    int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+            void* params) {
   const int MAXITS = 200;
   double TOLF =  TOLERANCE;
   const double EPS = TOLF * 1.0e-3;
@@ -2046,7 +2084,7 @@ void broydn(DoubleVector x, int & check,
     fvec(n);
   DoubleMatrix qt(n, n), r(n, n);
 
-  vecfunc(x, fvec); 
+  vecfunc(x, params, fvec);
   double f = 0.5 * fvec.dot(fvec);
   
   double test = fvec.apply(fabs).max();
@@ -2059,7 +2097,7 @@ void broydn(DoubleVector x, int & check,
   int restrt = 1, sing;
   for (int its=1; its<=MAXITS; its++) {
     if (restrt) {
-      r = fdjac(n, x, fvec, vecfunc);
+       r = fdjac(n, x, fvec, vecfunc, params);
       qrdcmp(r, n, c, d, sing);
       if (sing) throw("singular Jacobian in broydn\n");
       for (int i=1; i<=n; i++) {
@@ -2128,7 +2166,7 @@ void broydn(DoubleVector x, int & check,
     }
     rsolv(r, n, d, p); 
     DoubleVector fvec(n);
-    check = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec);
+    check = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec, params);
     test = 0.0;
     for (int i=1; i<=n; i++)
       if (fabs(fvec(i)) > test) test = fabs(fvec(i));

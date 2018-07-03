@@ -1,3 +1,2 @@
-<li>D Robertson fixed bug which caused some points to take forever when calculating 2-loop corrections to squark/gluino masses - thanks to S Kraml for flagging the bug 
-<li>Fixed bug which gives wrong array comment for a 3-body decay
-<li>Flag noRhoConvergence if deltaR comes out >1 - thanks to P Athron, M Bach, A Voigt
+<li>Implemented Jacobian fine-tuning measure written by Dylan Harries and
+company - arXiv:1709.07895

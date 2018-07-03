@@ -58,7 +58,7 @@ int main() {
          << TOLERANCE << endl;
     
     /// Print out header line
-    cout << "# tan beta   mh           mA           mH0          mH+-\n";
+    cout << "# tan beta   mh           mA           mH0          mH+-         BN\n";
     
     int i;
     /// Set limits of tan beta scan
@@ -67,7 +67,7 @@ int main() {
     /// Cycle through different points in the scan
     for (i = 0; i <= numPoints; i++) {
       tanb = (endTb - startTb) / static_cast<double>(numPoints) *
-	static_cast<double>(i) + startTb;  /// set tan beta ready for the scan.
+           static_cast<double>(i) + startTb;  /// set tan beta ready for the scan.
 
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r;
@@ -84,7 +84,8 @@ int main() {
       cout << tanb << " " << r.displayPhys().mh0(1) << " " 
            << r.displayPhys().mA0(1) << " " 
            << r.displayPhys().mh0(2) << " " 
-           << r.displayPhys().mHpm << endl;
+           << r.displayPhys().mHpm << " "
+           << r.calcBayesianNaturalness() << endl;
     else
       /// print out what the problem(s) is(are)
       cout << tanb << " " << r.displayProblem() << endl;

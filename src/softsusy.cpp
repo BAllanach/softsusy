@@ -22,6 +22,11 @@
 #include "HierarchyCalculator.hpp"
 #endif
 
+#ifdef ENABLE_GSL
+#include <limits>
+#include <gsl/gsl_multiroots.h>
+#endif
+
 namespace softsusy {
   extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
     ydR, yeL, yeR, ynuL;
@@ -844,6 +849,245 @@ double MssmSoftsusy::displaySoftA(trilinears k, int i, int j) const {
     / displayYukawaElement(yukawa(k), i, j); 
   return temp;
 }
+
+  /// DH: return the values of the EWSB conditions
+  double MssmSoftsusy::ewsbCondition1TreeLevel() const {
+    const double vev = displayHvev();
+    const double tb = displayTanb();
+    const double vd = vev * cos(atan(tb));
+    const double vu = vev * sin(atan(tb));
+    const double mH1Sq = displayMh1Squared();
+    const double g1 = displayGaugeCoupling(1);
+    const double g2 = displayGaugeCoupling(2);
+    const double mu = displaySusyMu();
+    const double m3Sq = displayM3Squared();
+
+    double result = mH1Sq + 0.125 * (sqr(g2) + 0.6 * sqr(g1)) *
+       (sqr(vd) - sqr(vu)) - m3Sq * tb + sqr(mu);
+
+    return result;
+  }
+
+  double MssmSoftsusy::ewsbCondition2TreeLevel() const {
+    const double vev = displayHvev();
+    const double tb = displayTanb();
+    const double vd = vev * cos(atan(tb));
+    const double vu = vev * sin(atan(tb));
+    const double mH2Sq = displayMh2Squared();
+    const double g1 = displayGaugeCoupling(1);
+    const double g2 = displayGaugeCoupling(2);
+    const double mu = displaySusyMu();
+    const double m3Sq = displayM3Squared();
+
+    double result = mH2Sq - 0.125 * (sqr(g2) + 0.6 * sqr(g1)) *
+       (sqr(vd) - sqr(vu)) - m3Sq / tb + sqr(mu);
+
+    return result;
+  }
+
+  /// DH: returns the values of the EWSB conditions for the given
+  /// values of the VEVs
+  void MssmSoftsusy::ewsbConditions(DoubleVector & values) const {
+
+    values(1) = ewsbCondition1TreeLevel();
+    values(2) = ewsbCondition2TreeLevel();
+
+    if (numRewsbLoops > 0) {
+      values(1) -= displayTadpole1Ms();
+      values(2) -= displayTadpole2Ms();
+    }
+  }
+
+namespace {
+#ifdef ENABLE_GSL
+  int calcEWSBConditions(const gsl_vector* vevs, void* params,
+                         gsl_vector* values) {
+    if (testNan(gsl_vector_get(vevs, 0)) || testNan(gsl_vector_get(vevs, 1))) {
+      gsl_vector_set_all(values, std::numeric_limits<double>::max());
+      return GSL_EDOM;
+    }
+
+    MssmSoftsusy* model = static_cast<MssmSoftsusy*>(params);
+
+    // reset problems to avoid skipping tadpole calculation
+    const sProblem savedProblems(model->displayProblem());
+    model->setProblem(sProblem());
+
+    const double current_vd = gsl_vector_get(vevs, 0);
+    const double current_vu = gsl_vector_get(vevs, 1);
+
+    model->setHvev(sqrt(sqr(current_vd) + sqr(current_vu)));
+    model->setTanb(current_vu / current_vd);
+
+    if (numRewsbLoops > 0) {
+      model->calcDrBarPars();
+      const double mt = model->displayDrBarPars().mt;
+      const double sinthDRbar = model->calcSinthdrbar();
+      model->doTadpoles(mt, sinthDRbar);
+    }
+
+    DoubleVector ewsbValues(2);
+    model->ewsbConditions(ewsbValues);
+
+    model->setProblem(savedProblems);
+
+    for (std::size_t i = 0; i < 2; ++i)
+       gsl_vector_set(values, i, ewsbValues(i+1));
+
+    const int error = testNan(ewsbValues(1)) || testNan(ewsbValues(2));
+
+    return error ? GSL_EDOM : GSL_SUCCESS;
+  }
+#else
+  int calcEWSBConditions(const DoubleVector & vevs, void* params,
+                         DoubleVector & values) {
+
+    MssmSoftsusy* model = static_cast<MssmSoftsusy*>(params);
+
+    // reset problems to avoid skipping tadpole calculation
+    const sProblem savedProblems(model->displayProblem());
+    model->setProblem(sProblem());
+
+    model->setHvev(vevs(1));
+    model->setTanb(vevs(2));
+
+    if (numRewsbLoops > 0) {
+      model->calcDrBarPars();
+      const double mt = model->displayDrBarPars().mt;
+      const double sinthDRbar = model->calcSinthdrbar();
+      model->doTadpoles(mt, sinthDRbar);
+    }
+
+    model->ewsbConditions(values);
+
+    model->setProblem(savedProblems);
+
+    const int error = testNan(values(1)) || testNan(values(2));
+
+    return error;
+  }
+#endif
+}
+
+  /// DH: solves the EWSB conditions for the Higgs VEVs
+  void MssmSoftsusy::predVevs(DoubleVector & vevs, int & err) {
+    /// Stores running parameters in a vector
+    DoubleVector storedObject(display());
+    const double initialMu = displayMu();
+    const drBarPars savedDrBarPars(displayDrBarPars());
+
+    /// Initial guess
+    vevs(1) = displayHvev();
+    vevs(2) = displayTanb();
+
+    bool error;
+#ifdef ENABLE_GSL
+    const double precision = 1.0e-3 * TOLERANCE;
+    const std::size_t max_iters = 200;
+
+    const gsl_multiroot_fsolver_type* solvers[2]
+       = { gsl_multiroot_fsolver_hybrids, gsl_multiroot_fsolver_broyden };
+
+    const std::size_t number_of_solvers = sizeof(solvers)/sizeof(*solvers);
+
+    gsl_vector* x = gsl_vector_alloc(2);
+    if (!x) {
+      std::ostringstream ii;
+      ii << "Error: could not allocate gsl_vector\n";
+      throw ii.str();
+    }
+
+    const double initial_vd = vevs(1) * cos(atan(vevs(2)));
+    const double initial_vu = vevs(1) * sin(atan(vevs(2)));
+
+    gsl_vector_set(x, 0, initial_vd);
+    gsl_vector_set(x, 1, initial_vu);
+
+    gsl_multiroot_function func = {&calcEWSBConditions, 2, this};
+
+#ifndef DEBUG
+    gsl_set_error_handler_off();
+#endif
+
+    for (std::size_t i = 0; i < number_of_solvers; ++i) {
+      gsl_multiroot_fsolver* solver
+         = gsl_multiroot_fsolver_alloc(solvers[i], 2);
+
+      if (!solver) {
+        gsl_vector_free(x);
+        std::ostringstream ii;
+        ii << "Error: could not allocate gsl_multiroot_fsolver: "
+           << gsl_multiroot_fsolver_name(solver) << '\n';
+        throw ii.str();
+      }
+
+      gsl_multiroot_fsolver_set(solver, &func, x);
+
+      int status;
+      std::size_t iter = 0;
+
+      if (PRINTOUT > 2) {
+        cout << "# Starting iteration with solver " << i << '\n'
+             << "# Initial guess:\n"
+             << "#\tv = " << displayHvev() << ", "
+             << "tanb = " << displayTanb() << '\n'
+             << "#\tf1 = " << gsl_vector_get(solver->f, 0) << ", "
+             << "f2 = " << gsl_vector_get(solver->f, 1) << '\n';
+      }
+
+      do {
+        ++iter;
+        status = gsl_multiroot_fsolver_iterate(solver);
+
+        if (PRINTOUT > 2) {
+          cout << "# Iteration " << iter << ":\n"
+               << "#\tv = " << displayHvev() << ", "
+               << "tanb = " << displayTanb() << '\n'
+               << "#\tf1 = " << gsl_vector_get(solver->f, 0) << ", "
+               << "f2 = " << gsl_vector_get(solver->f, 1) << '\n';
+        }
+
+        if (status)
+          break;
+
+        status = gsl_multiroot_test_residual(solver->f, precision);
+      } while (status == GSL_CONTINUE && iter < max_iters);
+
+      if (PRINTOUT > 2) {
+        cout << "# Solver " << i << " finished with status: "
+             << gsl_strerror(status) << '\n';
+      }
+
+      const double found_vd = gsl_vector_get(solver->x, 0);
+      const double found_vu = gsl_vector_get(solver->x, 1);
+
+      vevs(1) = sqrt(sqr(found_vd) + sqr(found_vu));
+      vevs(2) = found_vu / found_vd;
+
+     gsl_multiroot_fsolver_free(solver);
+
+      if (status == GSL_SUCCESS) {
+        error = false;
+        break;
+      } else {
+        error = true;
+      }
+    }
+
+    gsl_vector_free(x);
+#else
+    /// @todo this uses the calculation of the DR-bar Higgs masses
+    /// after imposing EWSB.  Check that this is not inconsistent.
+    error = newt(vevs, calcEWSBConditions, this);
+#endif
+
+    err = error ? 1 : 0;
+
+    /// Restore initial parameters at correct scale
+    setMu(initialMu);
+    set(storedObject);
+    setDrBarPars(savedDrBarPars);
+  }
 
  double ftCalc(double x) {
   /// Stores running parameters in a vector
@@ -7289,6 +7533,12 @@ double MssmSoftsusy::realMinMs() const {
      sqr(temp.displayGaugeCoupling(2))) * 
     sqr(sqr(displayHvev()) * cos(2.0 * beta));
 }
+
+
+  double MssmSoftsusy::calcBayesianNaturalness() const {
+    MssmJacobian mj;
+    return mj.calcDeltaJ(displayMssmSoft());
+  }
 
 /// Calculates sin theta at the current scale
 double MssmSoftsusy::calcSinthdrbar() const {

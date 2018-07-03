@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 WARNING: lowOrg in softsusy.cpp called with oneset at scale
 1.70900000e+02
 instead of 9.11876000e+01
+=======
+>>>>>>> nmssmFinetune
 # SOFTSUSY4.1.1 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 # B.C. Allanach, P. Athron, L.C. Tunstall, A. Voigt and A.~G.~Williams,

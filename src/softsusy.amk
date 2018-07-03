@@ -74,19 +74,20 @@ softpars.h mainDecay.h susy.h linalg.h \
 physpars.h softpoint.h twoloophiggs.h \
 nmssm2loop.h dilogwrap.h \
 lowe.h mycomplex.h rge.h softsusy.h \
-utils.h mssmUtils.h rpvsoft.h rpvsusypars.h \
+utils.h mssmUtils.h mssmjacobian.h rpvsoft.h rpvsusypars.h \
 tensor.h rpvmain.h flavoursoft.h \
 xpr-base.h xpr-matrix.h xpr-vector.h rpvneut.h \
 nmssmsusy.h nmssmsoftpars.h higher.h higher_order.h \
-nmssmsoftsusy.h nmssmUtils.h)
+nmssmsoftsusy.h nmssmUtils.h nmssmjacobian.h)
 
 libsoft_la_SOURCES = \
 src/decays.cpp src/twoBodyDecays.cpp src/threeBodyDecays.cpp \
 src/def.cpp src/linalg.cpp src/lowe.cpp src/numerics.cpp  src/rpvneut.cpp \
 src/physpars.cpp src/rge.cpp src/nmssm2loop.f src/dilogwrap.f src/softsusy.cpp\
  src/nmssmsoftsusy.cpp src/nmssmsusy.cpp src/nmssmsoftpars.cpp src/nmssmUtils.cpp \
-src/susy.cpp src/utils.cpp src/mssmUtils.cpp src/softpars.cpp \
-src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twoloophiggs.f
+src/susy.cpp src/utils.cpp src/mssmUtils.cpp src/softpars.cpp src/nmssmjacobian.cpp \
+src/mssmjacobian.cpp src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twoloophiggs.f
+
 
 if COMPILE_TWO_LOOP_GAUGE_YUKAWA
 libsoft_la_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp \

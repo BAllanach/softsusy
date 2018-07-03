@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([softsusy],[4.1.2],[softsusy@projects.hepforge.org],[softsusy],[http://softsusy.hepforge.org/])
+AC_INIT([softsusy],[4.1.3],[softsusy@projects.hepforge.org],[softsusy],[http://softsusy.hepforge.org/])
 AC_CONFIG_SRCDIR([src])
 AC_CONFIG_AUX_DIR([Config])
 AC_CONFIG_HEADERS([Config/config.h])
@@ -100,6 +100,24 @@ AM_CONDITIONAL(LOOPTOOLS, [test x$looptools_compilation = xtrue])
 # AC_ARG_ENABLE([debug], 
 #               AC_HELP_STRING([--enable-debug],[enables debug printing in two-loop threshold corrections]), 
 # 	      AC_DEFINE([DEBUG],[1],[Threshold correction debugging output]),[])
+
+AC_ARG_ENABLE([gsl],
+              AC_HELP_STRING([--enable-gsl],[enables linking against GSL (default: no)]),
+              [],[enable_gsl=no])
+
+AS_IF([test "x$enable_gsl" = "xyes"],
+   [AC_CHECK_LIB([m],[cos],[],
+                [AC_MSG_ERROR([libm not found, but required for enabling GSL])])
+   AC_CHECK_LIB([gslcblas],[cblas_dgemm],[],
+                [AC_MSG_ERROR([libgslcblas not found, but required for enabling GSL])])
+   AC_CHECK_LIB([gsl],[gsl_blas_dgemm],[],
+                [AC_MSG_ERROR([libgsl not found, but required for enabling GSL])])
+   AC_CHECK_HEADERS([gsl/gsl_multiroots.h gsl/gsl_deriv.h],[],
+                   [AC_MSG_ERROR([GSL must be installed to use GSL routines])], [])
+   AC_DEFINE([ENABLE_GSL],[1],[Enable GSL routines])]
+)
+
+AM_CONDITIONAL([ENABLE_GSL], [test "x$enable_gsl" = "xyes"])
 
 #Autogen
 #AG_PATH_AUTOOPTS([5.17], [], [AC_MSG_ERROR([No suitable version of AutoGen could be found])])
