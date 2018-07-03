@@ -5,7 +5,7 @@
    Author:      Ben Allanach 
    Manual:      B.C. Allanach, hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
                 B.C. Allanach, M.A. Bernhardt, arXiv:0903.1805, Comp. Phys. 
-		Commun. 181 (2010) 232-245
+                Commun. 181 (2010) 232-245
    Webpage:     http://allanach.home.cern.ch/allanach/softsusy.html
    Description: main calling program example: performs a scan of tan beta 
    (starting at CMSSM10.1.1) and prints out Higgs masses as a result in
@@ -58,7 +58,7 @@ int main() {
          << TOLERANCE << endl;
     
     /// Print out header line
-    cout << "# tan beta   mh           mA           mH0          mH+-         FT\n";
+    cout << "# tan beta   mh           mA           mH0          mH+-         BN\n";
     
     int i;
     /// Set limits of tan beta scan
@@ -67,7 +67,7 @@ int main() {
     /// Cycle through different points in the scan
     for (i = 0; i <= numPoints; i++) {
       tanb = (endTb - startTb) / static_cast<double>(numPoints) *
-	static_cast<double>(i) + startTb;  /// set tan beta ready for the scan.
+           static_cast<double>(i) + startTb;  /// set tan beta ready for the scan.
 
     /// Preparation for calculation: set up object and input parameters
     MssmSoftsusy r;
@@ -78,7 +78,6 @@ int main() {
     
     /// Calculate the spectrum
     r.lowOrg(sugraBcs, mGutGuess, pars, sgnMu, tanb, oneset, uni);
-    MssmJacobian mj; ///< DEBUG
 
     /// check the point in question is problem free: if so print the output
     if (!r.displayProblem().test()) 
@@ -86,7 +85,7 @@ int main() {
            << r.displayPhys().mA0(1) << " " 
            << r.displayPhys().mh0(2) << " " 
            << r.displayPhys().mHpm << " "
-	   << mj.calcDeltaJ(r.displayMssmSoft()) << endl; ///< DEBUG
+           << r.calcBayesianNaturalness() << endl;
     else
       /// print out what the problem(s) is(are)
       cout << tanb << " " << r.displayProblem() << endl;

@@ -293,6 +293,10 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     cout << flush;
   }
 
+  double NmssmSoftsusy::calcBayesianNaturalness() const {
+    NmssmJacobian mj;
+    return mj.calcDeltaJ(*this);
+  }  
 
   /// PA: calls routines to calculate all three tadpoles and sets them.
   ///  Currently only works at one loop.

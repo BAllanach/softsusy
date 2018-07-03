@@ -7527,6 +7527,12 @@ double MssmSoftsusy::realMinMs() const {
     sqr(sqr(displayHvev()) * cos(2.0 * beta));
 }
 
+
+  double MssmSoftsusy::calcBayesianNaturalness() const {
+    MssmJacobian mj;
+    return mj.calcDeltaJ(displayMssmSoft());
+  }
+
 /// Calculates sin theta at the current scale
 double MssmSoftsusy::calcSinthdrbar() const {
   

@@ -30,6 +30,7 @@
 #include "mssmUtils.h"
 #include "nmssm2loop.h"
 #include "nmssmUtils.h"
+#include "nmssmjacobian.h"
 #include <cassert>
 
 namespace softsusy {
@@ -596,7 +597,9 @@ namespace softsusy {
                                                     const DoubleVector &),
                           const DoubleVector & bcPars, double MX,
                           bool doTop = false);
-
+    /// Calculates Bayesian naturalness a la arXiv:1709.07895
+    double calcBayesianNaturalness() const;
+    
     /// Main iteration routine:
     /// Boundary condition is the theoretical condition on parameters at the high
     /// energy scale mx: the parameters themselves are contained within the

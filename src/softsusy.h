@@ -30,6 +30,7 @@
 #include "twoloophiggs.h"
 #include "mssmUtils.h"
 #include "higher_order.h"
+#include "mssmjacobian.h"
 
 #define HR "----------------------------------------------------------"
 
@@ -873,6 +874,8 @@ namespace softsusy {
     /// You should evaluate this at a scale MSusy average of stops.
     /// Returns depth of electroweak minimum
     double realMinMs() const;
+    /// Calculates Bayesian naturalness a la arXiv:1709.07895
+    double calcBayesianNaturalness() const;
     
     /// Calculates Higgs contribution to the transverse part of Z self-energy: 
     //for p=external momentum, Q=renormalisation scale

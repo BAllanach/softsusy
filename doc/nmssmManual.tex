@@ -1313,6 +1313,11 @@ To implement the NMSSM pole masses and mixing matrices, the
     masses, and stored in units of GeV. Mixing angles are in radian
     units.}
 \end{table}
+A routine is available for fine-tuning type calculations in the NMSSM. The
+Bayesian naturalness may be calculated \`{a} la Ref.~\cite{1709.07895} by the
+method \code{double NmssmSoftsusy::calcBayesianNaturalness() const;}. In the
+event of numerical instabilties in the calculation, a \code{nan}\ value is
+returned. 
 
 \section{Renormalization Group Equations for the NMSSM}\label{sec:RGEs}
 In this section, we present the components of the one- and two-loop renormalization group equations (RGEs) which belong exclusively to the NMSSM.  Our expressions have been derived in the $\overline{\mbox{DR}}$ scheme from existing results \cite{MV94,Yam94} for general SUSY gauge theories. The complete RGEs are then obtained by combing the expressions below with those for the MSSM \cite{MV94}.

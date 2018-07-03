@@ -74,7 +74,10 @@ namespace softsusy {
     }
     if (includeTop) numerator *= model.displayYukawaElement(YU, 3, 3);
 
-    return fabs(numerator * determinant / denominator);
+    double ans = fabs(numerator * determinant / denominator);
+    if (displayError()) ans = asin(2.0);
+    
+    return ans;
   }
 
   /// Calculates the Jacobian of the form \f$ J^{-1} = |

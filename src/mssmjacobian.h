@@ -88,7 +88,8 @@ namespace softsusy {
 
     /// \brief Calculates the fine-tuning using the Jacobian measure.
     /// \param[in] m the model to calculate the fine-tuning for
-    /// \return the value of the fine-tuning
+    /// \return the value of the fine-tuning. It returns NaN if it had trouble
+    /// calculating the fine-tuning
     double calcDeltaJ(const MssmSoftsusy& m);
 
     /// \brief Calculates the fine-tuning using the Jacobian measure.
