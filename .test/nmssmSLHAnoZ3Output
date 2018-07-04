@@ -1,16 +1,10 @@
-<<<<<<< HEAD
-WARNING: lowOrg in softsusy.cpp called with oneset at scale
-1.70900000e+02
-instead of 9.11876000e+01
-=======
->>>>>>> nmssmFinetune
-# SOFTSUSY4.1.1 SLHA compliant output
+# SOFTSUSY4.1.3 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 # B.C. Allanach, P. Athron, L.C. Tunstall, A. Voigt and A.~G.~Williams,
 # Comput. Phys. Commun. 185 (2014) 2322, arXiv:1311.7659
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    4.1.1       # version number
+     2    4.1.3       # version number
 Block MODSEL  # Select model
      1    1   # sugra
      3    1   # NMSSM

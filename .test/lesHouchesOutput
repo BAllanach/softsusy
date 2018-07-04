@@ -1,8 +1,8 @@
-# SOFTSUSY4.1.1 SLHA compliant output
+# SOFTSUSY4.1.3 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    4.1.1       # version number
+     2    4.1.3       # version number
 Block MODSEL  # Select model
      1    1   # sugra
 Block SMINPUTS             # Standard Model inputs
@@ -525,14 +525,7 @@ DECAY 37          3.56502460e+00   # Charged higgs+ decays
       5.76121472e-05    2      1000016   -1000015   # H+ -> ~tau_1+ nu_tauL
 #
 Block DMASS                   # uncertainties
-<<<<<<< HEAD
       25     9.86869870e-01   # uncertainty of h0 in GeV
       35     2.67750593e+00   # uncertainty of H0 in GeV
       36     4.10791564e+01   # uncertainty of A0 in GeV
       37     4.09886143e+01   # uncertainty of H+ in GeV
-=======
-      25     7.56242538e-01   # uncertainty of h0 in GeV
-      35     2.58689466e+00   # uncertainty of H0 in GeV
-      36     4.01821716e+01   # uncertainty of A0 in GeV
-      37     4.00912407e+01   # uncertainty of H+ in GeV
->>>>>>> nmssmFinetune
