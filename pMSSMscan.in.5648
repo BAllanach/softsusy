@@ -1,0 +1,69 @@
+BLOCK MODSEL # Model selection
+	1 0 # nonUniversal
+	#
+BLOCK SMINPUTS # Standard Model inputs
+	1 1.27908970E+02 # alpha_em^-1(M_Z)^MSbar
+	2 1.16637870E-05 # G_F [GeV^-2]
+	3 1.18400000E-01 # alpha_S(M_Z)^MSbar
+	4 9.11876000E+01 # M_Z pole mass
+	5 4.18000000E+00 # mb(mb)^MSbar
+	6 1.73200000E+02 # mt pole mass
+	7 1.77700000E+00 # mtau pole mass
+	#
+BLOCK MINPAR # Input parameters - minimal models
+	3 9.87794234601 # tanb
+	#
+BLOCK EXTPAR # Input parameters - non-minimal models
+	0 -1.00000000E+00 # Set
+	1 2196.83642439 # M_1(MX)
+	2 -3477.03493378 # M_2(MX)
+	3 2167.15856863 # M_3(MX)
+	11 -5624.52430781 # At(MX)
+	12 -836.278794491 # Ab(MX)
+	13 -2527.42278499 # Atau(MX)
+	23 54.8005664494 # mu(MX)
+	26 3737.23724836 # mA(pole)
+	31 2129.78472947 # meL(MX)
+	32 2129.78472947 # mmuL(MX)
+	33 748.524371321 # mtauL(MX)
+	34 2709.68101357 # meR(MX)
+	35 2709.68101357 # mmuR(MX)
+	36 2425.20191182 # mtauR(MX)
+	41 788.433402914 # mqL1(MX)
+	42 788.433402914 # mqL2(MX)
+	43 1334.55128191 # mqL3(MX)
+	44 2107.17604228 # muR(MX)
+	45 2107.17604228 # mcR(MX)
+	46 1790.58455256 # mtR(MX)
+	47 3605.54482024 # mdR(MX)
+	48 3605.54482024 # msR(MX)
+	49 3453.56692095 # mbR(MX)
+	#
+Block SOFTSUSY # Optional SOFTSUSY-specific parameters
+	0 1.000000000e+00 # Calculate decays in output (only for RPC (N)MSSM)
+	# The default is that without this, SOFTSUSY will only calculate the spectrum
+	1 1.000000000e-03 # Numerical precision: suggested range 10^(-3...-6)
+	2 0.000000000e+00 # Quark mixing parameter: see manual
+	3 0.000000000e+00 # Additional verbose output?
+	4 1.000000000e+00 # Change electroweak symmetry breaking scale?
+	5 1.000000000e+00 # Include 2-loop scalar mass squared/trilinear RGEs
+	6 1.000000000e-04 # Numerical precision
+	7 2.000000000e+00 # Number of loops in Higgs mass computation
+	10 0.000000000e+00 # Force it to SLHA***1*** output?
+	11 1.000000000e+19 # Gravitino mass
+	12 0.000000000e+00 # Print spectrum even when point disallowed
+	13 0.000000000e+00 # Set a tachyonic A^0 to zero mass
+	# 19 1.000000000e+00 # Include 3-loop SUSY RGEs
+	# 20 3.100000000e+01 # Include 2-loop g/Yuk corrections: 31 for all
+	# 22 1.000000000e+00 # Include 2-loop sparticle mass thresholds
+	# 23 0.000000000e+00 # No expansion of 2-loop gluino terms
+	24 1.000000000e-06 # If decay BR is below this number, don't output
+	25 1.000000000e+00 # If set to 0, don't calculate 3-body decays (1=default)
+	#
+Block SPhenoInput # SPheno specific input
+	1 -1 # error level
+	2 0 # SPA conventions
+	11 1 # calculate branching ratios
+	12 1.00000000E-04 # write only branching ratios larger than this value
+	21 0 # calculate cross section
+	49 1 # use old matching
