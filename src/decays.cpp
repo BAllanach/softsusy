@@ -3106,15 +3106,19 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    }
  
    for (int j=0; j<Chargino1_No_1to2_Decays; j++) {
+     cout << j << "th decay, 2 body " << Chargino1_No_1to2_Decays << " " << ParticleChargino1.two_width << "+" << ParticleChargino1.Array_Decays[j][2] << endl; ///< DEBUG
      ParticleChargino1.two_width = ParticleChargino1.two_width + ParticleChargino1.Array_Decays[j][2];
    }
+   cout << "two body width=" << ParticleChargino1.two_width << endl; ///< DEBUG
    for (int j=Chargino1_No_1to2_Decays; j<ParticleChargino1.No_of_Decays; j++) {
+     cout << j << "th decay, 3 body " << ParticleChargino1.No_of_Decays  << " " << ParticleChargino1.three_width << "+" << ParticleChargino1.Array_Decays[j][2] << endl; ///< DEBUG
      ParticleChargino1.three_width = ParticleChargino1.three_width + ParticleChargino1.Array_Decays[j][2];
    }
-   
+   cout << "three body width=" << ParticleChargino1.three_width << endl; ///< DEBUG
    if ( ParticleChargino1.three_width != ParticleChargino1.three_width) /// Tests for a nan as only nans aren't equal to themselves
-   {
-     fout << "# Three body decays give nan for chargino1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+  {
+    cout << "3 width is NAN\n"; ///< DEBUG
+    fout << "# Three body decays give nan for chargino1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleChargino1.No_of_Decays = Chargino1_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleChargino1.total_width = ParticleChargino1.two_width;
@@ -3123,6 +3127,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      ParticleChargino1.total_width = ParticleChargino1.two_width + ParticleChargino1.three_width;
    }
 
+   cout << "Total width=" << ParticleChargino1.total_width << endl;
+   
    if ( ParticleChargino1.total_width != ParticleChargino1.total_width) /// Tests for a nan as only nans aren't equal to themselves
      {
        errorflag = -1;
@@ -3134,7 +3140,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  }
 
  ///Chargino2 Decays
- 
  double chargino2amplitudeWbosonneutralinoZ1=0, chargino2amplitudeWbosonneutralinoZ2=0, chargino2amplitudeWbosonneutralinoZ3=0, chargino2amplitudeWbosonneutralinoZ4=0, chargino2amplitudeHminusneutralinoZ1=0, chargino2amplitudeHminusneutralinoZ2=0, chargino2amplitudeHminusneutralinoZ3=0, chargino2amplitudeHminusneutralinoZ4=0, chargino2amplitudesupLd=0, chargino2amplitudesdownLu=0, chargino2amplitudescharmLs=0, chargino2amplitudesstrangeLc=0, chargino2amplitudestop1b=0, chargino2amplitudestop2b=0, chargino2amplitudesbottom1t=0, chargino2amplitudesbottom2t=0, chargino2amplitudesnuee=0, chargino2amplitudeselectronLnue=0, chargino2amplitudesnumumu=0, chargino2amplitudesmuonLnumu=0, chargino2amplitudesnutautau=0, chargino2amplitudenutaustau1=0, chargino2amplitudenutaustau2=0, chargino2amplitudechargino1Zboson=0, chargino2amplitudechargino1h=0, chargino2amplitudechargino1H=0, chargino2amplitudechargino1A=0, chargino2amplitudeneut1udbar=0, chargino2amplitudeneut1csbar=0, chargino2amplitudeneut1nueebar=0, chargino2amplitudeneut1numumubar=0, chargino2amplitudeneut1nutautaubar=0, chargino2amplitudeneut2udbar=0, chargino2amplitudeneut2csbar=0, chargino2amplitudeneut2nueebar=0, chargino2amplitudeneut2numumubar=0, chargino2amplitudeneut2nutautaubar=0, chargino2amplitudeneut3udbar=0, chargino2amplitudeneut3csbar=0, chargino2amplitudeneut3nueebar=0, chargino2amplitudeneut3numumubar=0, chargino2amplitudeneut3nutautaubar=0, chargino2amplitudeneut4udbar=0, chargino2amplitudeneut4csbar=0, chargino2amplitudeneut4nueebar=0, chargino2amplitudeneut4numumubar=0, chargino2amplitudeneut4nutautaubar=0;
 
  double chargino2amplitudechargino1H3 = 0, chargino2amplitudechargino1A2 = 0, chargino2amplitudeHminusneutralinoZ5 = 0, chargino2amplitudeWbosonneutralinoZ5 = 0;

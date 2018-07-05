@@ -12,8 +12,8 @@ const double GFosqrt2 = GMU / root2;
 
 /// First, do hadronic decays
 double charginoToNeutralino1pion(const MssmSoftsusy * m) {
-  double mchi1 = fabs(m->displayPhys().mch(1)),
-    mneut1 = fabs(m->displayPhys().mneut(1));
+  double mchi1 = m->displayPhys().mchBpmz(1);
+  double mneut1 = m->displayPhys().mnBpmz(1);
   if (mchi1 < mneut1 + mpiplus) return 0.;
   if (mchi1 - mneut1 - mpiplus > hadronicScale) return 0.;
 
@@ -36,6 +36,12 @@ double charginoToNeutralino1pion(const MssmSoftsusy * m) {
 				    sqr(mpiplus) * sqr(mchi1 + mneut1))
       );
 
+  cout << "check: "
+       << OL11 << " " << OR11 << " " 
+       << ((OL11 + OR11) * (OL11 + OR11)).real() 
+       << " " <<  ((OL11 - OR11) * (OL11 - OR11)).real() 
+       << endl; //DEBUG
+  
   return width; 
 }
 
