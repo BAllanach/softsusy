@@ -3085,8 +3085,9 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleChargino1.Array_Decays[44][0] = PDGneutralino4; ParticleChargino1.Array_Decays[44][1] = PDGnutau; ParticleChargino1.Array_Decays[44][4] = -PDGtau; ParticleChargino1.Array_Decays[44][2] = chargino1amplitudeneut4nutautaubar; ParticleChargino1.Array_Decays[44][3] = 3; ParticleChargino1.Array_Comments[44] = "# ~chi_1+ -> chi_40 nu_tau tau+";
    /// Ben: Added this one
    ParticleChargino1.Array_Decays[46][0] = PDGneutralino1; ParticleChargino1.Array_Decays[46][1] = PDGpiPlus; ParticleChargino1.Array_Decays[46][4] = PDGpi0; ParticleChargino1.Array_Decays[46][2] = charginoToNeutralino2pion(r); ParticleChargino1.Array_Decays[46][3] = 3; ParticleChargino1.Array_Comments[46] = "# ~chi_1+ -> chi_10 pi+ pi0";
-   /// and this one
-   /* DEBUG  ParticleChargino1.Array_Decays[47][0] = PDGneutralino1; ParticleChargino1.Array_Decays[47][1] = PDGpiPlus; ParticleChargino1.Array_Decays[47][4] = PDGpi0; ParticleChargino1.Array_Decays[47][2] = charginoToNeutralino3pion(r); ParticleChargino1.Array_Decays[47][3] = 4; ParticleChargino1.Array_Comments[47] = "# ~chi_1+ -> chi_10 pi+ pi0 pi0";*/
+  /// Ben: Added this one
+   /*   ParticleChargino1.Array_Decays[47][0] = PDGneutralino2; ParticleChargino1.Array_Decays[47][1] = PDGpiPlus; ParticleChargino1.Array_Decays[47][4] = PDGpi0; ParticleChargino1.Array_Decays[47][2] = charginoToNeutralino21pion(r); ParticleChargino1.Array_Decays[47][3] = 3; ParticleChargino1.Array_Comments[47] = "# ~chi_1+ -> chi_20 pi+ pi0";*/
+
    /// If at too low mass difference, use pions rather than quarks
    if (fabs(MCH1) - fabs(mneut(1)) < hadronicScale) {
      ParticleChargino1.Array_Decays[26][2] = 0.;
@@ -3094,7 +3095,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    } else {
      ParticleChargino1.Array_Decays[23][2] = 0.;
      ParticleChargino1.Array_Decays[46][2] = 0.;
-     ParticleChargino1.Array_Decays[47][2] = 0.;     
    }
 
    int Chargino1_No_1to2_Decays = 0;
@@ -3106,19 +3106,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    }
  
    for (int j=0; j<Chargino1_No_1to2_Decays; j++) {
-     cout << j << "th decay, 2 body " << Chargino1_No_1to2_Decays << " " << ParticleChargino1.two_width << "+" << ParticleChargino1.Array_Decays[j][2] << endl; ///< DEBUG
      ParticleChargino1.two_width = ParticleChargino1.two_width + ParticleChargino1.Array_Decays[j][2];
    }
-   cout << "two body width=" << ParticleChargino1.two_width << endl; ///< DEBUG
    for (int j=Chargino1_No_1to2_Decays; j<ParticleChargino1.No_of_Decays; j++) {
-     cout << j << "th decay, 3 body " << ParticleChargino1.No_of_Decays  << " " << ParticleChargino1.three_width << "+" << ParticleChargino1.Array_Decays[j][2] << endl; ///< DEBUG
      ParticleChargino1.three_width = ParticleChargino1.three_width + ParticleChargino1.Array_Decays[j][2];
    }
-   cout << "three body width=" << ParticleChargino1.three_width << endl; ///< DEBUG
    if ( ParticleChargino1.three_width != ParticleChargino1.three_width) /// Tests for a nan as only nans aren't equal to themselves
   {
-    cout << "3 width is NAN\n"; ///< DEBUG
-    fout << "# Three body decays give nan for chargino1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+    fout << "# Three body decays give nan for chargino1 - warning! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleChargino1.No_of_Decays = Chargino1_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleChargino1.total_width = ParticleChargino1.two_width;
@@ -3127,8 +3122,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      ParticleChargino1.total_width = ParticleChargino1.two_width + ParticleChargino1.three_width;
    }
 
-   cout << "Total width=" << ParticleChargino1.total_width << endl;
-   
    if ( ParticleChargino1.total_width != ParticleChargino1.total_width) /// Tests for a nan as only nans aren't equal to themselves
      {
        errorflag = -1;
@@ -6221,7 +6214,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	    
        throw( "nan in H+ total width \n");
      }
-   
  }
 
  /// Construct decay table

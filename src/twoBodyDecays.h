@@ -35,6 +35,7 @@ const double fpi = 0.13041 / root2, mpiplus = 0.13957018, mpi0 = 0.1349766;
 
 /// Two body partial width calculations
 double charginoToNeutralino1pion(const MssmSoftsusy * m);
+//double charginoToNeutralino21pion(const MssmSoftsusy * m);
 
 double gluinoamplitudedecay (double m1, double m2, double m3,
 			     double alphastrong); 

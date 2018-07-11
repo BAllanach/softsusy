@@ -6272,10 +6272,10 @@ double chToN2piInt(double qSq, const DoubleVector & v) {
   double integrand = sqr(fofqsq(qSq).mod()) *
     sqrt(1.0 - 4.0 * sqr(mpiplus) / qSq) * (1.0 - 4.0 * sqr(mpiplus) / qSq) *
     sqrt(lambda(sqr(mch), sqr(mn), qSq)) *
-    ( (OL11 * OL11 + OR11 * OR11).real()  *
+    ( abs(OL11 * OL11 + OR11 * OR11)  *
 	   (qSq * (sqr(mch) + sqr(mn) - 2.0 * qSq) +
 	    sqr(sqr(mch) - sqr(mn))) -
-      12.0 * (OL11 * OR11).real() * qSq * mch * mn);
+      12.0 * abs(OL11 * OR11) * qSq * mch * mn);
   return integrand;
 }
 
