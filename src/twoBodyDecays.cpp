@@ -12,8 +12,8 @@ const double GFosqrt2 = GMU / root2;
 
 /// First, do hadronic decays
 double charginoToNeutralino1pion(const MssmSoftsusy * m) {
-  double mchi1 = fabs(m->displayPhys().mch(1)),
-    mneut1 = fabs(m->displayPhys().mneut(1));
+  double mchi1 = fabs(m->displayPhys().mch(1));
+  double mneut1 = fabs(m->displayPhys().mneut(1));
   if (mchi1 < mneut1 + mpiplus) return 0.;
   if (mchi1 - mneut1 - mpiplus > hadronicScale) return 0.;
 
@@ -30,14 +30,44 @@ double charginoToNeutralino1pion(const MssmSoftsusy * m) {
   double kpi = sqrt(lambda(sqr(mchi1), sqr(mneut1), sqr(mpiplus))) * 0.5
     / (mchi1);
   double width = sqr(fpi) * sqr(GMU) * kpi / (4.0 * PI * sqr(mchi1)) *
-    ( ((OL11 + OR11) * (OL11 + OR11)).real() * ( sqr(sqr(mchi1) - sqr(mneut1)) -
+    ( abs((OL11 + OR11) * (OL11 + OR11)) * ( sqr(sqr(mchi1) - sqr(mneut1)) -
 				   sqr(mpiplus) * sqr(mchi1 - mneut1) ) +
-      ((OL11 - OR11) * (OL11 - OR11)).real() * ( sqr(sqr(mchi1) - sqr(mneut1)) -
+      abs((OL11 - OR11) * (OL11 - OR11)) * ( sqr(sqr(mchi1) - sqr(mneut1)) -
 				    sqr(mpiplus) * sqr(mchi1 + mneut1))
       );
 
   return width; 
 }
+
+/// First, do hadronic decays
+/*double charginoToNeutralino21pion(const MssmSoftsusy * m) {
+  double mchi1 = fabs(m->displayPhys().mch(1));
+  double mneut2 = fabs(m->displayPhys().mneut(2));
+  if (mchi1 < mneut2 + mpiplus) return 0.;
+  if (mchi1 - mneut2 - mpiplus > hadronicScale) return 0.;
+
+  Complex OL21 = -1.0 / root2 * m->displayDrBarPars().nBpmz.display(2, 4) *
+    m->displayDrBarPars().vBpmz(1, 2).conj() +
+    m->displayDrBarPars().nBpmz.display(2, 2) *
+    m->displayDrBarPars().vBpmz(1, 1).conj();
+  Complex OR21 = +1.0 / root2 *
+    m->displayDrBarPars().nBpmz.display(2, 3).conj() *
+    m->displayDrBarPars().uBpmz(1, 2) +
+    m->displayDrBarPars().nBpmz.display(2, 2).conj() *
+    m->displayDrBarPars().uBpmz(1, 1);
+
+  double kpi = sqrt(lambda(sqr(mchi1), sqr(mneut2), sqr(mpiplus))) * 0.5
+    / (mchi1);
+  double width = sqr(fpi) * sqr(GMU) * kpi / (4.0 * PI * sqr(mchi1)) *
+    ( abs((OL21 + OR21) * (OL21 + OR21)) * ( sqr(sqr(mchi1) - sqr(mneut2)) -
+				   sqr(mpiplus) * sqr(mchi1 - mneut2) ) +
+      abs((OL21 - OR21) * (OL21 - OR21)) * ( sqr(sqr(mchi1) - sqr(mneut2)) -
+				    sqr(mpiplus) * sqr(mchi1 + mneut2))
+      );
+
+  return width; 
+  }*/
+
 
 double gluinoamplitudedecay (double m1, double m2, double m3, double alphastrong) {
   double squareratio, amplitudeW;

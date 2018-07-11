@@ -3099,8 +3099,9 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleChargino1.Array_Decays[44][0] = PDGneutralino4; ParticleChargino1.Array_Decays[44][1] = PDGnutau; ParticleChargino1.Array_Decays[44][4] = -PDGtau; ParticleChargino1.Array_Decays[44][2] = chargino1amplitudeneut4nutautaubar; ParticleChargino1.Array_Decays[44][3] = 3; ParticleChargino1.Array_Comments[44] = "# ~chi_1+ -> chi_40 nu_tau tau+";
    /// Ben: Added this one
    ParticleChargino1.Array_Decays[46][0] = PDGneutralino1; ParticleChargino1.Array_Decays[46][1] = PDGpiPlus; ParticleChargino1.Array_Decays[46][4] = PDGpi0; ParticleChargino1.Array_Decays[46][2] = charginoToNeutralino2pion(r); ParticleChargino1.Array_Decays[46][3] = 3; ParticleChargino1.Array_Comments[46] = "# ~chi_1+ -> chi_10 pi+ pi0";
-   /// and this one
-   /* DEBUG  ParticleChargino1.Array_Decays[47][0] = PDGneutralino1; ParticleChargino1.Array_Decays[47][1] = PDGpiPlus; ParticleChargino1.Array_Decays[47][4] = PDGpi0; ParticleChargino1.Array_Decays[47][2] = charginoToNeutralino3pion(r); ParticleChargino1.Array_Decays[47][3] = 4; ParticleChargino1.Array_Comments[47] = "# ~chi_1+ -> chi_10 pi+ pi0 pi0";*/
+  /// Ben: Added this one
+   /*   ParticleChargino1.Array_Decays[47][0] = PDGneutralino2; ParticleChargino1.Array_Decays[47][1] = PDGpiPlus; ParticleChargino1.Array_Decays[47][4] = PDGpi0; ParticleChargino1.Array_Decays[47][2] = charginoToNeutralino21pion(r); ParticleChargino1.Array_Decays[47][3] = 3; ParticleChargino1.Array_Comments[47] = "# ~chi_1+ -> chi_20 pi+ pi0";*/
+
    /// If at too low mass difference, use pions rather than quarks
    if (fabs(MCH1) - fabs(mneut(1)) < hadronicScale) {
      ParticleChargino1.Array_Decays[26][2] = 0.;
@@ -3108,7 +3109,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    } else {
      ParticleChargino1.Array_Decays[23][2] = 0.;
      ParticleChargino1.Array_Decays[46][2] = 0.;
-     ParticleChargino1.Array_Decays[47][2] = 0.;     
    }
 
    int Chargino1_No_1to2_Decays = 0;
@@ -3125,10 +3125,9 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    for (int j=Chargino1_No_1to2_Decays; j<ParticleChargino1.No_of_Decays; j++) {
      ParticleChargino1.three_width = ParticleChargino1.three_width + ParticleChargino1.Array_Decays[j][2];
    }
-   
    if ( ParticleChargino1.three_width != ParticleChargino1.three_width) /// Tests for a nan as only nans aren't equal to themselves
-   {
-     fout << "# Three body decays give nan for chargino1 - problem! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
+  {
+    fout << "# Three body decays give nan for chargino1 - warning! Therefore total and partial widths and branching ratios output only includes 1->2 decays" << endl;
      errorflag = -1;
      ParticleChargino1.No_of_Decays = Chargino1_No_1to2_Decays; ///So only 1 to 2 decays are output if a 1 to 3 decay gives a nan
      ParticleChargino1.total_width = ParticleChargino1.two_width;
@@ -3148,7 +3147,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  }
 
  ///Chargino2 Decays
- 
  double chargino2amplitudeWbosonneutralinoZ1=0, chargino2amplitudeWbosonneutralinoZ2=0, chargino2amplitudeWbosonneutralinoZ3=0, chargino2amplitudeWbosonneutralinoZ4=0, chargino2amplitudeHminusneutralinoZ1=0, chargino2amplitudeHminusneutralinoZ2=0, chargino2amplitudeHminusneutralinoZ3=0, chargino2amplitudeHminusneutralinoZ4=0, chargino2amplitudesupLd=0, chargino2amplitudesdownLu=0, chargino2amplitudescharmLs=0, chargino2amplitudesstrangeLc=0, chargino2amplitudestop1b=0, chargino2amplitudestop2b=0, chargino2amplitudesbottom1t=0, chargino2amplitudesbottom2t=0, chargino2amplitudesnuee=0, chargino2amplitudeselectronLnue=0, chargino2amplitudesnumumu=0, chargino2amplitudesmuonLnumu=0, chargino2amplitudesnutautau=0, chargino2amplitudenutaustau1=0, chargino2amplitudenutaustau2=0, chargino2amplitudechargino1Zboson=0, chargino2amplitudechargino1h=0, chargino2amplitudechargino1H=0, chargino2amplitudechargino1A=0, chargino2amplitudeneut1udbar=0, chargino2amplitudeneut1csbar=0, chargino2amplitudeneut1nueebar=0, chargino2amplitudeneut1numumubar=0, chargino2amplitudeneut1nutautaubar=0, chargino2amplitudeneut2udbar=0, chargino2amplitudeneut2csbar=0, chargino2amplitudeneut2nueebar=0, chargino2amplitudeneut2numumubar=0, chargino2amplitudeneut2nutautaubar=0, chargino2amplitudeneut3udbar=0, chargino2amplitudeneut3csbar=0, chargino2amplitudeneut3nueebar=0, chargino2amplitudeneut3numumubar=0, chargino2amplitudeneut3nutautaubar=0, chargino2amplitudeneut4udbar=0, chargino2amplitudeneut4csbar=0, chargino2amplitudeneut4nueebar=0, chargino2amplitudeneut4numumubar=0, chargino2amplitudeneut4nutautaubar=0;
 
  double chargino2amplitudechargino1H3 = 0, chargino2amplitudechargino1A2 = 0, chargino2amplitudeHminusneutralinoZ5 = 0, chargino2amplitudeWbosonneutralinoZ5 = 0;
@@ -6230,7 +6228,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	    
        throw( "nan in H+ total width \n");
      }
-   
  }
 
  /// Construct decay table
