@@ -18,7 +18,7 @@ double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin) /
   double Z = 0;
   Z = (sqr(m1)+sqr(mq)-2*fabs(m1)*Etbarmax - sqr(m))/(sqr(m1)+sqr(mq)-2*fabs(m1)*Etbarmin-sqr(m));
     if (Z <=0) {
-      throw("May have nan issue if do log(Z) as Z<=0! See Zfunc used in 1->3 decays\n");
+      std::cout << "May have nan issue if do log(Z) as Z<=0! See Zfunc used in 1->3 decays\n" << endl;
   }
   return Z;
 }
@@ -31,6 +31,12 @@ DoubleVector Etbarmaxmin(double m1, double m2, double massq, double Et) ///requi
   zet = 2.0*sqr(massq)+sqr(m1)-sqr(m2)-2*fabs(m1)*Et;
   A = sqr(m1)+sqr(massq)-2*fabs(m1)*Et;
   B = (sqr(pt*zet)-4*sqr(pt*massq)*A);
+  // std::cout << "Et = " << Et << std::endl;
+  // std::cout << "massq = " << massq << std::endl;
+  // std::cout << "pt = " << pt << std::endl;
+  // std::cout << "zet = " << zet << std::endl;
+  // std::cout << "pt*zet = " << pt*zet << std::endl;
+  // std::cout << "pt*massq = " << pt*massq << std::endl;
   //  if (printOutNow) cout << "DEBUG: pt=" << pt << " zet=" << zet << " A=" << A << " B=" << B << endl;
   if ( B < 0) {
     B = 0; /// B may become very very small and negative at the tails of this squareroot, this causes problems as we get sqrt(-ve) therefore set B to 0 here as it's very small anyway so has negligible effect on the overall answer.
@@ -38,8 +44,11 @@ DoubleVector Etbarmaxmin(double m1, double m2, double massq, double Et) ///requi
  
   Etbarsupremum(1) = (zet*(fabs(m1)-Et)+sqrt(B))/(2*A); ///Etbarmax
   Etbarsupremum(2) = (zet*(fabs(m1)-Et)-sqrt(B))/(2*A); ///Etbarmin
+  // std::cout << "Etbarsupremum(1) = " << Etbarsupremum(1) << std::endl;
+  // std::cout << "Etbarsupremum(2) = " << Etbarsupremum(2) << std::endl;
+  // std::cout << "sqrt(B) = " << sqrt(B)<< std::endl;
   if (Etbarsupremum(1) != Etbarsupremum(1) || Etbarsupremum(2) != Etbarsupremum(2)) {
-    throw("problem: Etbar gives nan! See Etbarmaxmin used in 1->3 decays\n");
+    std::cout << "problem: Etbar gives nan! See Etbarmaxmin used in 1->3 decays\n" << endl;
   }
     return Etbarsupremum;
 }
@@ -61,7 +70,7 @@ DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4
 
   lambda = sqrt(squareplus*squareminus);
   if (squareplus*squareminus < 0) {
-    throw("problem: lambda will give nan in Ebbarmaxmin used in 1->3 decays\n");
+    std::cout << "problem: lambda will give nan in Ebbarmaxmin used in 1->3 decays\n"<< endl;
   } 
   Ebbar(1) = ((sqr(mass1)+sqr(mass2)-2*fabs(mass1)*Et-pow(mass3,2)-pow(mass4,2))*(fabs(mass1)-Et) + pt*lambda)/(2*(sqr(mass1)+sqr(mass2)-2*Et*fabs(mass1))); ///I have -pow(mass3,2) here whereas T&B have + pow(mass3,2), I have changed the sign to agree with SPheno, note however this actually makes negligible difference due to the smallness of the b mass
   Ebbar(2) = ((sqr(mass1)+sqr(mass2)-2*fabs(mass1)*Et-pow(mass3,2)-pow(mass4,2))*(fabs(mass1)-Et) - pt*lambda)/(2*(sqr(mass1)+sqr(mass2)-2*Et*fabs(mass1))); ///I have -pow(mass3,2) here whereas T&B have + pow(mass3,2), I have changed the sign to agree with SPheno, note however this actually makes negligible difference due to the smallness of the b mass
@@ -84,15 +93,19 @@ DoubleVector Ebbarmaxmin (double mass1, double mass2, double mass3, double mass4
 ///Functions for 1->3 decays via dgauss:
 double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, double mchargino, double mquark, double mquarkp, double msqL, double msqpL, double g, double thetaL, double thetaR, double alphas, int charg, bool onetothree)
 {
-  double amplitudeW=0, Au=0, Ad=0, psiu=0, psid=0, phiI=0, upper=0;
-  upper = (sqr(mgluino)-2*mquark*fabs(mchargino)-pow(mchargino,2))/(2*mgluino);
-
+  double amplitudeW=0, Au=0, Ad=0, psiu=0, psid=0, phiIu=0, phiId=0, upper=0, upperd=0;
+  upper = (sqr(mgluino)+sqr(mquark)-sqr(mquarkp)-2*mquarkp*fabs(mchargino)-pow(mchargino,2))/(2*mgluino);
+  upperd = (sqr(mgluino)+sqr(mquarkp)-sqr(mquark)-2*mquark*fabs(mchargino)-pow(mchargino,2))/(2*mgluino);
+  // std::cout << "mgluino = " <<mgluino << std::endl;
+  // std::cout << "mchargino = " << mchargino <<std::endl;
+  // std::cout << "mquark = " << mquark << std::endl;
+  // std::cout << "mquarkp = " << mquarkp << std::endl;
   if (onetothree == false) {
     amplitudeW = 0;
   }
   else if (onetothree == true) {
     
-    if(mgluino < mchargino+mquark+mquarkp) {
+    if(mgluino < fabs(mchargino)+mquark+mquarkp) {
       amplitudeW = 0;
     }
     else if (mgluino > msqL + mquark || mgluino > msqpL + mquarkp) {
@@ -113,14 +126,31 @@ double gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (double mgluino, doub
     else {
       throw("problem: charg must be 1 or 2 in gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen\n");
     }
+      // std::cout << "mquark = " << mquark << std::endl;
+      // std::cout << "upper = " << upper << std::endl;
       m1 = mgluino, m2 = msqL, m3 = msqL, m4 = mchargino, mq = mquark;
       psiu = dgauss(gpsitildadgauss,mquark,upper,accuracy)*1/(sqr(PI)*m1);
       m1 = mgluino, m2 = msqpL, m3 = msqpL, m4 = mchargino, mq = mquarkp;
-      psid = dgauss(gpsitildadgauss,mquark,upper,accuracy)*1/(sqr(PI)*m1);
-      m1 = mgluino, m2 = msqL, m3 = msqpL, m4 = mchargino, mq = mquark; ///Note mq isn't important really for these modes as they are first two gen quarks
-      phiI = dgauss(gphitildadgauss,mq,upper,accuracy)*1/(sqr(PI)*m1);
+      psid = dgauss(gpsitildadgauss,mquarkp,upperd,accuracy)*1/(sqr(PI)*m1);
+      m1 = mgluino, m2 = msqL, m3 = msqpL, m4 = mchargino, mq = mquarkp; ///Note mq isn't important really for these modes as they are first two gen quarks
+      // std::cout << "psiu = " << psiu << std::endl;
+      // std::cout << "psid = " << psid << std::endl;
+      // std::cout << "mq = " << mq << std::endl;
+      // std::cout << "mquark = " << mquark << std::endl;
+      // std::cout << "upper = " << upper << std::endl;
+      // std::cout << "mquarkp = " << mquarkp << std::endl;
+      // std::cout << "upperd = " << upperd << std::endl;
+      // // std::cout << "mq = " << mq << std::endl;
+      // std::cout << "upper = " << upper << std::endl;
+	
+      phiIu = dgauss(gphitildadgauss,mquark,upper,accuracy)*1/(sqr(PI)*m1);
+      // std::cout << "phiIu = " << phiIu << std::endl;
+      phiId = dgauss(gphitildadgauss,mquarkp,upperd,accuracy)*1/(sqr(PI)*m1);
+      // std::cout << "phiId = " << phiId << std::endl;
+
       
-      amplitudeW = alphas/(16*sqr(PI))*(pow(Ad,2)*psiu + pow(Au,2)*psid + 2*Au*Ad*phiI);
+      amplitudeW = alphas/(16*sqr(PI))*(pow(Ad,2)*psiu + pow(Au,2)*psid + Au*Ad*(phiIu+phiId));
+      // std::cout << "amplitudeW = " << amplitudeW << std::endl;
     }
   }
   return amplitudeW;
@@ -218,6 +248,9 @@ double gpsitildadgauss(double Et) {
   double gpsitildadgauss = 0, pt = 0, squareplus = 0, squareminus = 0, lambda = 0, A = 0;
   A = sqr(m1)+sqr(mq)-2*fabs(m1)*Et;
   pt = pow(sqr(Et)-sqr(mq),0.5);
+  // std::cout << "Et = " << Et << std::endl;
+  // std::cout << "mq = " << mq <<std::endl;
+  // std::cout << "pt = " << pt << std::endl;
   squareplus = A - pow(fabs(m4)+mq,2);
   squareminus = A - pow(fabs(m4)-mq,2);
   if (squareplus <0) ///< this can happen erronesouly at very end of range due to finite precision used, squareplus should actually then be very very small and +ve
@@ -228,6 +261,7 @@ double gpsitildadgauss(double Et) {
   }
   gpsitildadgauss = sqr(PI)*fabs(m1)*pt*Et*lambda/(A)*(sqr(m1)-sqr(m4)-2*fabs(m1)*Et)/((A-sqr(m2))*(A-sqr(m3)));
 
+
   return gpsitildadgauss;
 }
 
@@ -237,6 +271,9 @@ double gphitildadgauss(double Et) {
   DoubleVector Etbarmaxmin (double m1, double m2, double massq, double Et);
   double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin);
   DoubleVector Etbar(2);
+  // std::cout << "gphitildadgauss: " << std::endl;
+  // std::cout << "mq = " << mq << std::endl;
+  // std::cout << "Et = " << Et << std::endl;
   for (int i=1; i<=2; i++) { Etbar(i) = 0;}
   Etbar = Etbarmaxmin(m1, m4, mq, Et);
   Z = Zfunc(m1, mq, m3, Etbar(1), Etbar(2));

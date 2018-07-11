@@ -1226,10 +1226,19 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
  
  ///1 to 3 decays of gluinos to neutralinos and first two gen quarks via dgauss method:
  gluinoamplitudeneut1uubar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(1), mu(1,1), mu(2,1), mup, g, gp, mixNeut, alphas, 'u', 1, onetothree);
+  if (gluinoamplitudeneut1uubar < 0) {
+   gluinoamplitudeneut1uubar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(1), mu(1,1), mu(2,1), 0, g, gp, mixNeut, alphas, 'u', 1, onetothree);
+   // May get a PW < 0 in cases of very compressed spectra due to numerical precision, in this case take mup = 0 and repeat to ensure positive PW. This is not an issue as mup is so small relative to LambdaQCD that it can be taken as 0 without issues - spectra with mass splittings of order LambdaQCD would have to be treated differently with decays to pions rather than separate quarks. We do the same setting of mdown to 0 if the gluino 3 body decay to it has a negative PW.
+ }
+
  gluinoamplitudeneut2uubar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(2), mu(1,1), mu(2,1), mup, g, gp, mixNeut, alphas, 'u', 2, onetothree);
  gluinoamplitudeneut3uubar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(3), mu(1,1), mu(2,1), mup, g, gp, mixNeut, alphas, 'u', 3, onetothree);
  gluinoamplitudeneut4uubar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(4), mu(1,1), mu(2,1), mup, g, gp, mixNeut, alphas, 'u', 4, onetothree);
  gluinoamplitudeneut1ddbar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(1), md(1,1), md(2,1), mdo, g, gp, mixNeut, alphas, 'd', 1, onetothree);
+  if (gluinoamplitudeneut1ddbar < 0) {
+    gluinoamplitudeneut1ddbar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(1), md(1,1), md(2,1), 0.0, g, gp, mixNeut, alphas, 'd', 1, onetothree); //Reason as for the gluinoamplitudeneut1uubar case
+ }
+
  gluinoamplitudeneut2ddbar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(2), md(1,1), md(2,1), mdo, g, gp, mixNeut, alphas, 'd', 2, onetothree);
  gluinoamplitudeneut3ddbar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(3), md(1,1), md(2,1), mdo, g, gp, mixNeut, alphas, 'd', 3, onetothree);
  gluinoamplitudeneut4ddbar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(4), md(1,1), md(2,1), mdo, g, gp, mixNeut, alphas, 'd', 4, onetothree);
@@ -1259,6 +1268,10 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
 
  ///1 to 3 decays of gluinos to charginos and q qpbar using dgauss method
  gluinoamplitudechar1udbar = gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (mGluino, MCH1, mup, mdo, mu(1,1), md(1,1), g, thetaL2, thetaR2, alphas, 1, onetothree);
+ if (gluinoamplitudechar1udbar < 0) {
+   gluinoamplitudechar1udbar = gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (mGluino, MCH1, 0, 0, mu(1,1), md(1,1), g, thetaL2, thetaR2, alphas, 1, onetothree); //For very compressed spectra these partial widths contain very fine cancellations, which for small quark masses of the first generation can mean numerical precision issues give negative PWs, to avoid this we re-evaluate the PWs in this limit in the masssless quark limit for the first generation quarks, this has no real effect on the PW as for very compressed regions the regions of phase space where the finite quark mass would have an effect are suppressed
+ }
+   
  gluinoamplitudechar2udbar = gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (mGluino, MCH2, mup, mdo, mu(1,1), md(1,1), g, thetaL2, thetaR2, alphas, 2, onetothree);
  gluinoamplitudechar1csbar = gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (mGluino, MCH1, mc, ms, mu(1,2), md(1,2), g, thetaL2, thetaR2, alphas, 1, onetothree);
  gluinoamplitudechar2csbar = gluinoamplitudedecaydgausscharginoqqpbarfirsttwogen (mGluino, MCH2, mc, ms, mu(1,2), md(1,2), g, thetaL2, thetaR2, alphas, 2, onetothree);
@@ -1344,6 +1357,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
   }
  for (int j=Gluino_No_1to2_Decays; j<ParticleGluino.No_of_Decays; j++) {
    ParticleGluino.three_width = ParticleGluino.three_width + ParticleGluino.Array_Decays[j][2];
+   // std::cout << "ParticleGluino.Array_Decays[" << j << "][2] = "<< ParticleGluino.Array_Decays[j][2] << std::endl;
  }
   
   if ( ParticleGluino.three_width != ParticleGluino.three_width) /// Tests for a nan as only nans aren't equal to themselves
