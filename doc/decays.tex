@@ -419,7 +419,7 @@ The following assumptions are made in the decay calculator:
   first two generations.  
 \end{itemize}
 
-\subsection{Method}
+\subsection{Method} \label{method}
 
 In our description in this section and the rest of the paper, we classify decay modes 
 according to both the number of daughter particles (with $N$ body meaning $N$ decay products) and 
@@ -477,10 +477,52 @@ included and any assumptions made for each of the 3 body decays are
 given in detail in~\ref{appendix:MSSM3body} with the corresponding partial
 width formulae.
 
-The situation is of course more complicated for loop decays than at tree-level,
-each loop provides an additional loop integral to be performed, in the case
-of the 1-loop decays included in {\tt SOFTSUSY},  they were performed
-explicitly with the help of Passarino-Veltman reduction \cite{Passarino:1979}.
+In the case of very compressed regions, the 3 body decays often involve very
+fine cancellations between quantities, and this may cause issues with
+numerical precision, giving essentially random positive and negative numbers
+rather than reflecting the overall size of the integral (which must be
+positive definite). There can be negative integrands close to both ends of the
+integration region for any of the 3 body modes, however these end regions are
+usally very phase space suppressed relative to the rest of the phase space,
+therefore issues only arise when the phase space region available itself is
+only ``ends'', i.e. is very compressed. In order to attempt to deal with
+potential issues arising here, we have implemented a check for negative
+partial widths, which may arise due to the numerical precision in the fine
+cancellations. If such negative partial widths arise anywhere in the program a
+warning is output and this partial width is set to 0. Setting such partial
+widths to 0 is acceptable as these decay modes are very suppressed and so only
+important when they are the only modes available. One circumstance where these
+very compressed modes are the only ones available occurs for a gluino nearly
+degenerate with the lightest neutralino which is the LSP. In this case, when
+the spectrum is very compressed (for example so the gluino is only a few
+hundred MeV larger in mass than the neutralino LSP) the only modes available
+are decays to the lightest neutralino and quark anti-quark pairs of the first
+generation and these are all very suppressed. Consequently the size of the
+integral determined in the 3-body decays is important for the phenomenology of
+the model and so we circumvent the numerical precision issues associated with
+the fine cancellations by taking the compressed spectrum limit of the
+integrand and explicitly performing the cancellation analytically, leaving the
+remainder, which is then calculated by \SOFTSUSY~to give the partial widths
+(and hence branching ratios) and lifetime of the gluino. More information on
+the limit taken and formulae used are given in \ref{gluino3bodydecays}. There
+may be similar regions in the 3 body decays of neutralinos, charginos (or
+sfermions when these are added to the program), which would benefit from
+increased accuracy gained from taking such limits; for now this is left to
+future work and greater study. In general, the outputs of spectrum generator
+and decay calculator programs for such compressed spectra are of questionable
+accuracy in any case, as when the spectrum is so compressed the decay modes
+are dominated by the exact amount of the limited phase space available and
+consequently small differences in the masses of the supersymmetric particles
+and the quarks (such as those arising from different assumptions, running
+schemes and higher-order corrections) can significantly alter the partial
+widths easily by an order of magnitude. Therefore spectrum generators and
+decay calculators should be used with caution for such highly (a few hundred 
+MeV-level) compressed regions.
+
+Finally, the last class of decays included are loop decays, for which the situation is of course more complicated than at tree-level,
+each loop provides an additional loop integral to be performed. In the case
+of the 1-loop decays included in {\tt SOFTSUSY},  the integrals were performed
+explicitly with the help of Passarino-Veltman reduction \cite{Passarino:1979} and formulae are available in \ref{Higgs_Sector} and \ref{appendix:NMSSMdec}.
 
 \section{Decay Modes Included \label{sec:list}}
 The following section provides a list of all the decay modes included in the
@@ -3073,7 +3115,7 @@ The modes included are the most phenomenologically relevant modes, the formulae 
 \textbf{\underline{$h \rightarrow VV* \rightarrow V f \bar{f}$}}
 Detailed previously, see Eqs. \eqref{hWWstar} \eqref{hZZstar}.
 
-\subsection{Gluino $1 \rightarrow 3$ Decays}
+\subsection{Gluino $1 \rightarrow 3$ Decays} \label{gluino3bodydecays}
 
 \underline{$\tilde{g} \rightarrow \tilde{Z}_i q \bar{q}$}
 
@@ -3087,7 +3129,7 @@ Here the $\psi_{L/R}$ and $\phi_{L/R}$ are integrals related to the $\tilde{\psi
 \psi_{L/R} = {1 \over \pi^2 m_{\tilde{g}}} \tilde{\psi}(m_{\tilde{g}},m_{\tilde{q}_{L/R}},m_{\tilde{q}_{L/R}},m_{\tilde{Z}_i}).
 \end{equation}
 \begin{equation}
-\phi_{L/R} = {1 \over \pi^2 m_{\tilde{g}}} \tilde{\psi}(m_{\tilde{g}},m_{\tilde{q}_{L/R}},m_{\tilde{q}_{L/R}},m_{\tilde{Z}_i}).
+\phi_{L/R} = {1 \over \pi^2 m_{\tilde{g}}} \tilde{\phi}(m_{\tilde{g}},m_{\tilde{q}_{L/R}},m_{\tilde{q}_{L/R}},m_{\tilde{Z}_i}).
 \end{equation}
 The $A_{{\tilde{Z}_i}}^{q}$ and $B_{{\tilde{Z}_i}}^{q}$ are couplings which depend upon if the quarks are ``up-type" or ``down-type" in $SU(2)_L$ and are:
 \begin{equation}
@@ -3102,6 +3144,101 @@ B_{{\tilde{Z}_i}}^{q} = \begin{cases}
 						{2 \over 3 \sqrt{2}} g' N_{1i}$, for ``down-type" quarks$.
                                               \end{cases}
 \end{equation}
+
+As described in Section~\ref{method}, in some circumstances we may have very
+compressed mass spectra, and in this limit the formulae provided here
+demonstrate numerical precision issues due to fine cancellation. In
+particular, in the $\phi$ integral it is seen that the terms
+$-[E_{\bar{f}}(max) - E_{\bar{f}}(min)]$ and $-{m_{\tilde{Z}_j}^2 - m_{f}^2 +
+  2|m_{\tilde{Z}_i}|E_f - m_{\tilde{f}_2}^2 \over 2|m_{\tilde{Z}_i}|} \log
+Z(m_{\tilde{f}_2})$ of equation~\ref{phitildaintegral} may cancel to such a
+degree that numerical precision (particularly in $\log Z$) affects the output
+of the integral. In general this may lead to the ``partial widths'' calculated
+being incorrect as they are purely a reflection of integrating a series of
+positive and negative numbers randomly distributed and reflecting numerical
+precision. Fortunately however, such fine cancellations only occur for
+extremely (a few hundred MeV) compressed spectra, which are naturally very phase-space
+suppressed. These modes are therefore only important to the phenomenology of
+the parent particles and the sparticle spectrum when they are the only modes
+available and so dictate the lifetime of the decaying particle. In the case of
+the gluino here, this occurs when the gluino is only a few hundred MeV larger
+in mass than the neutralino LSP ($\tilde{Z}_1$), in which case the decay to
+the first generation quark and antiquark pairs set the total width and
+lifetime of this near degenerate gluino. We therefore must attempt to
+circumvent numerical precision issues in this case to accurately reflect the
+phenomenology of such ultra-compressed spectra. In order to do so we therefore focus on the fine cancellation and expand in the limit of very compressed spectra in order to carry out any cancellation analytically, the formula remaining then contains only the remainder piece and so can be evaluated by \SOFTSUSY~accurately to give the partial widths and overall gluino lifetime relevant for these cases.
+\vspace{0.5cm}
+
+Consider the $\tilde{\phi}(m_{\tilde{g}},m_{\tilde{q}_{L/R}},m_{\tilde{q}_{L/R}},m_{\tilde{Z}})$ integrand, which we call here $g(\tilde{\phi})$:
+
+\begin{equation}
+g(\tilde{\phi}) = {0.5 \pi^2 |m_{\tilde{g}}||m_{\tilde{Z}}| \over m_{\tilde{g}}^2 + m_{q}^2 - 2|m_{\tilde{g}}|E_f-m_{\tilde{q}_{L/R}}^2} \Big[-[E_{\bar{q}}(max) - E_{\bar{q}}(min)]-{m_{\tilde{Z}}^2 - m_{q}^2 + 2|m_{\tilde{g}}|E_q - m_{\tilde{q}_{L/R}}^2 \over 2|m_{\tilde{g}}|} \log Z(m_{\tilde{q}_{L/R}})\Big] 
+\end{equation}
+
+The fine cancellation issues arise in the square brackets between $[E_{\bar{q}}(max) - E_{\bar{q}}(min)]$ and $-{m_{\tilde{Z}}^2 - m_{q}^2 + 2|m_{\tilde{g}}|E_q - m_{\tilde{q}_{L/R}}^2 \over 2|m_{\tilde{g}}|} \log Z(m_{\tilde{q}_{L/R}})$, specifically the numerical precision issues often arise in the log as Z is given by:
+\begin{equation}
+Z(m_{\tilde{q}_{L/R}}) = {m_{\tilde{g}}^2 + m_{q}^2 - 2|m_{\tilde{g}}|E_{\bar{q}}(max) - m_{\tilde{q}_{L/R}}^2 \over m_{\tilde{g}}^2 + m_{q}^2 - 2|m_{\tilde{g}}|E_{\bar{q}}(min) - m_{\tilde{q}_{L/R}}^2}
+\end{equation}
+where $E_{\bar{q}}(max/min)$ are given in equation~\ref{Efbarmaxmin}. If the spectrum is very compressed, $E_{\bar{q}}(max)$ and $E_{\bar{q}}(min)$ are very close as there difference is given by:
+\begin{equation}
+E_{\bar{q}}(max) - E_{\bar{q}}(min) = p_q{\sqrt{\zeta^2 - 4m_q^2(m_{\tilde{g}}^2+m_q^2-2|m_{\tilde{g}}|E_q|}) \over m_{\tilde{g}}^2 + m_q^2 - 2|m_{\tilde{g}}|E_q}
+\end{equation}
+where $p_q = \sqrt{E_q^2 - m_q^2}$ and $\zeta = 2m_q^2 +
+m_{\tilde{g}}^2-m_{\tilde{Z}}^2-2|m_{\tilde{g}}|E_q$ and the limits on the
+$E_q$ integration run from $m_q \rightarrow
+(m_{\tilde{g}}^2-2m_q|m_{\tilde{Z}}|-m_{\tilde{Z}}^2)/(2|m_{\tilde{g}}|)$
+which for very compressed spectra is of order a few times $m_q$. Consequently
+$p_t \sim m_q$ and $E_{\bar{q}}(max) - E_{\bar{q}}(min) \ll
+|m_{\tilde{g}}|$. In this limit, then Z is very close to 1 and so the
+logarithm ends up being very small, causing the issues with numerical
+precision. The same behaviour also arises in the limit the intermediate squarks
+are much heavier than the initial and final state particles,
+i.e. when $m_{\tilde{q}_{L/R}}\gg m_{\tilde{g}}$. In this case, the same limit
+and expression we shall derive also applies. Therefore we rewrite $Z$ to make
+this closeness to 1 more explicit and then Taylor expand the logarithm, taking
+the first term in this expansion: 
+\begin{equation}
+Z(m_{\tilde{q}_{L/R}}) = 1 - {2|m_{\tilde{g}}|(E_{\bar{q}}(max) - E_{\bar{q}}(min)) \over m_{\tilde{g}}^2 + m_{q}^2 - 2|m_{\tilde{g}}|E_{\bar{q}}(min) - m_{\tilde{q}_{L/R}}^2}
+\end{equation}
+\begin{equation}
+\log Z(m_{\tilde{q}_{L/R}}) = - {2|m_{\tilde{g}}|(E_{\bar{q}}(max) - E_{\bar{q}}(min)) \over m_{\tilde{g}}^2 + m_{q}^2 - 2|m_{\tilde{g}}|E_{\bar{q}}(min) - m_{\tilde{q}_{L/R}}^2} + \ldots,
+\end{equation}
+where we have neglected higher order terms.
+It is at this point that the limit $(E_{\bar{q}}(max) - E_{\bar{q}}(min)) \ll
+m_{\tilde{g}}$ or $m_{\tilde{g}} \ll m_{\tilde{q}_{L/R}}$ is taken. With this
+limit then we may rewrite our $g(\tilde{\phi})$ integrand as follows, where in
+the second line we explicitly perform the cancellation analytically in order
+to leave the remainder piece to be evaluated by \SOFTSUSY~without the
+issues of numerical precision: 
+\begin{equation}
+\begin{split}
+g(\tilde{\phi}) = {0.5 \pi^2 |m_{\tilde{g}}||m_{\tilde{Z}}| \over m_{\tilde{g}}^2 + m_{q}^2 - 2|m_{\tilde{g}}|E_f-m_{\tilde{q}_{L/R}}^2}[E_{\bar{q}}(max) - E_{\bar{q}}(min)] \Big[-1+{m_{\tilde{Z}}^2 - m_{q}^2 + 2|m_{\tilde{g}}|E_q - m_{\tilde{q}_{L/R}}^2 \over m_{\tilde{g}}^2+m_q^2-2|m_{\tilde{g}}|E_{\bar{q}}(min)-m_{\tilde{q}_{L/R}}^2}\Big] \\ = {0.5 \pi^2 |m_{\tilde{g}}||m_{\tilde{Z}}| \over m_{\tilde{g}}^2 + m_{q}^2 - 2|m_{\tilde{g}}|E_f-m_{\tilde{q}_{L/R}}^2}[E_{\bar{q}}(max) - E_{\bar{q}}(min)] \Big[-1+1+{m_{\tilde{Z}}^2-2m_q^2 + 2|m_{\tilde{g}}|E_q+2|m_{\tilde{g}}|E_{\bar{q}}(min)-m_{\tilde{g}}^2 \over _{\tilde{g}}^2+m_q^2-2|m_{\tilde{g}}|E_{\bar{q}}(min)-m_{\tilde{q}_{L/R}}^2}\Big]
+\end{split}
+\end{equation}
+Consequently, in the limit of a very compressed spectrum or very large intermediate squark masses, we may improve numerical precision and avoid fine cancellations by instead evaluating:
+\begin{equation}
+g(\tilde{\phi}) = {0.5 \pi^2 |m_{\tilde{g}}||m_{\tilde{Z}}| \over
+  m_{\tilde{g}}^2 + m_{q}^2 -
+  2|m_{\tilde{g}}|E_f-m_{\tilde{q}_{L/R}}^2}[E_{\bar{q}}(max) -
+E_{\bar{q}}(min)] \Big[{m_{\tilde{Z}}^2-2m_q^2 +
+  2|m_{\tilde{g}}|E_q+2|m_{\tilde{g}}|E_{\bar{q}}(min)-m_{\tilde{g}}^2 \over
+  _{\tilde{g}}^2+m_q^2-2|m_{\tilde{g}}|E_{\bar{q}}(min)-m_{\tilde{q}_{L/R}}^2}\Big] \label{limiting}
+\end{equation}
+
+As this situation is only of importance where these modes are the only modes
+available (as otherwise they will be completely swamped by less phase space
+suppressed modes), we currently apply this only to the cases of gluino decays
+to the lightest neutralino and the first generation quarks ($\tilde{g}
+\rightarrow \tilde{Z}_i u\bar{u}$ or $\tilde{g} \rightarrow \tilde{Z}_i
+d\bar{d}$). The limiting formula Eq.~\ref{limiting} is taken when $p_t < 10
+m_{\tilde{g}}$ or $m_{\tilde{q}_{L/R}} < 5 m_{\tilde{g}}$ (these choices are somewhat
+arbitrary and can be changed by the user). We leave an investigation of the
+precise points to change between the two formulae, and to whether similar
+limits may be taken for other very compressed 3-body decays (such as those of
+neutralinos and charginos) to future study. 
+
+\vspace{1cm}
+
 For the more complicated case of decays to third generation quarks; the Yukawa coupling contributions, squark-mixing effects and final state quark masses are all included as they can have significant effects. The decay is mediated by either $\tilde{t}_1$ or $\tilde{t}_2$ in the t or u channel, giving 4 Feynman diagrams (2 shown below as $j=1,2$) and 6 (i.e. $^4 C _2$) interferences. The six interferences can be split into 2 ``diagonal'' contributions ($\tilde{t}_1$ t - $\tilde{t}_1$ u interference and $\tilde{t}_2$ t - $\tilde{t}_2$ u interference) and 4 ``non-diagonal'' contributions ($\tilde{t}_1$ t - $\tilde{t}_2$ t, $\tilde{t}_1$ t - $\tilde{t}_2$ u, $\tilde{t}_1$ u - $\tilde{t}_2$ t and $\tilde{t}_1$ u - $\tilde{t}_2$ u interferences). The possibility of negative neutralino masses (which can be absorbed into imaginary couplings) is also included. The formulae are adopted from {\tt sPHENO}, it should be noted that differences exit between these formulae and those present in Baer and Tata's book \cite{TataBaer}.
 \begin{figure}
   \centering {\subfloat[channel a]{\includegraphics[scale =
@@ -3487,7 +3624,7 @@ Y(m_{\tilde{Z}_i},m_{\tilde{f}_1},m_{\tilde{f}_2},m_{\tilde{Z}_j}) = {\pi^2 \ove
 
 where here
 
-\begin{equation}
+\begin{equation} \label{Efbarmaxmin}
 E_{\bar{f}}(max/min) = {(s + m_{f}^2 - m_{\tilde{Z}_j}^2)(|m_{\tilde{Z}_i}|-E_{f}) \pm \sqrt{(E_{f}^2 - m_{f}^2)(s + m_{f}^2 - m_{\tilde{Z}_j}^2)^2 - 4(E_{f}^2 - m_{f}^2)m_{f}^2 s} \over 2s}.
 \end{equation}
 
