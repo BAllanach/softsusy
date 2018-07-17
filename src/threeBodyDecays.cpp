@@ -282,6 +282,35 @@ double gphitildadgauss(double Et) {
   return gphitildadgauss;
 }
 
+double gphitildadgausslimit(double Et) {
+  //This is gphitilda with the logZ expanded in the limit mqL (=m2=m3) >> rest of masses or equally in the limit of very compressed spectra where (Etbarmax - Etbarmin) << rest of masses (i.e. pt is small cf gluino mass). phiL/R should be positive definite as the integrand for gluino 3 body decays to neutralinos and a quark antiquark pair is proportional to it, yet in very compressed spectra you can find fine cancellations between the -(Etbar(1)-Etbar(2)) and the - (sqr(m4)-sqr(mq)+2*Et*fabs(m1)-sqr(m3))/(2*fabs(m1))*log(Z) pieces in the usual expression in gphitildadgauss. These fine cancellations cause random positive and negative values (due to finite precision), potentially leaving phiL/R overall negative. In this case we therefore call this form here, which is expanded and rearranged to explicitly remove the fine cancellations (the function is always positive) and so allow better evaluation (no numerical precision issues).
+  double gphitildadgauss = 0, A = 0, Z=0, pt = 0;
+  DoubleVector Etbarmaxmin (double m1, double m2, double massq, double Et);
+  double Zfunc(double m1, double mq, double m, double Etbarmax, double Etbarmin);
+  DoubleVector Etbar(2);
+  // std::cout << "gphitildadgauss: " << std::endl;
+  // std::cout << "mq = " << mq << std::endl;
+  // std::cout << "Et = " << Et << std::endl;
+  for (int i=1; i<=2; i++) { Etbar(i) = 0;}
+  Etbar = Etbarmaxmin(m1, m4, mq, Et);
+  Z = Zfunc(m1, mq, m3, Etbar(1), Etbar(2));
+  A = sqr(m1)+sqr(mq)-2*fabs(m1)*Et;
+  // std::cout << "m1 = " << m1 << " m2 = " << m2 << " m4 = " << m4 << " mq = " << mq << std::endl;
+  pt = sqrt(sqr(Et)-sqr(mq));
+  // std::cout << "Et = " << Et << " pt = " << pt << std::endl;
+  if (pt/m1 > 0.1 && m2/m1 < 5) { //The choice of the exact limit is somewhat arbitrary and may be varied by the user here to attempt to avoid any discontinuities arising upon switching to the limiting form in the else statement
+    gphitildadgauss = 0.5*sqr(PI)*fabs(m1)*fabs(m4)/(A-sqr(m2))*(-(Etbar(1)-Etbar(2)) - (sqr(m4)-sqr(mq)+2*Et*fabs(m1)-sqr(m3))/(2*fabs(m1))*log(Z));
+    // std::cout << "normal" << std::endl;
+  }
+  else {
+    gphitildadgauss = 0.5*sqr(PI)*fabs(m1)*fabs(m4)/(A-sqr(m2))*(Etbar(1)-Etbar(2))*(sqr(m4)-2*sqr(mq)-sqr(m1)+2*Et*fabs(m1)+2*fabs(m1)*Etbar(2))/(sqr(m1)+sqr(mq)-2*fabs(m1)*Etbar(2)-sqr(m2));
+    // std::cout << "limit" << std::endl;
+  }
+  // std::cout << "gphitildadgauss = " << gphitildadgauss << std::endl;
+  return gphitildadgauss;
+}
+
+
 
 double gxsidgauss (double Et)
 {
@@ -2310,6 +2339,67 @@ double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (double mgluino, do
   return amplitudeW;
 }
 
+double gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogenlimit (double mgluino, double mneutralino, double msqL, double msqR, double mquark, double g, double gp, DoubleMatrix & mixNeut, double alphas, char uord, int neut, bool onetothree)/// m1 is mgluino, m2 is neutralinoi mass, m3 is sqL mass, m4 is sqR mass, m5 is quark mass but assumed zero in calculation here, just used to check allowed for now; char uord tells us if the quark is u type 'u' or d type 'd', int neut tells us which neutralino it is
+{
+  double amplitudeW=0, phiL=0, phiR=0, psiL=0, psiR=0, A = 0, B = 0, from = 0, upper = 0;
+  int i = neut;
+  from = mquark;
+  upper = (sqr(mgluino)-2*mquark*fabs(mneutralino)-pow(mneutralino,2))/(2*mgluino);
+  // std::cout << "from = " << from << " upper = " << upper << std::endl;
+  if(onetothree == false)
+    {
+      amplitudeW = 0;
+    }
+  else if (onetothree == true)
+    {  
+      if(mgluino < fabs(mneutralino) + 2*mquark) {
+      	amplitudeW =0; 
+      }
+      else if (mgluino > msqL + mquark || mgluino > msqR + mquark) {
+      	amplitudeW = 0; /// 1->3 decay not relevant here if one to two decay open
+      }
+      else {
+	if ( uord == 'u') {
+	  A = 1/(root2)*(g*-mixNeut(i,2)+gp/3*-mixNeut(i,1));
+	  B = 4/(3*root2)*gp*-mixNeut(i,1);
+	}
+	else if (uord == 'd') {
+	  A = 1/(root2)*(-g*-mixNeut(i,2) + gp/3*-mixNeut(i,1));
+	  B = -2/(3*root2)*gp*-mixNeut(i,1);
+	}
+	else {
+	  throw("problem: uord must be u or d in gluinoamplitudedecaydgaussneutralinoqqbarfirsttwogen");
+	}
+
+	m1 = mgluino; mq = mquark; m4 = mneutralino; m2 = msqL; m3 = msqL;
+	
+	psiL = dgauss(gpsitildadgauss,from,upper,accuracy)*1/(sqr(PI)*m1);
+
+	phiL = dgauss(gphitildadgausslimit,from,upper,accuracy)*1/(sqr(PI)*m1);
+	
+	m1 = mgluino; mq = mquark; m4 = mneutralino; m2 = msqR; m3 = msqR;
+	
+	psiR = dgauss(gpsitildadgauss,from,upper,accuracy)*1/(sqr(PI)*m1);
+	phiR = dgauss(gphitildadgausslimit,from,upper,accuracy)*1/(sqr(PI)*m1);
+	
+	// std::cout << "A = " << A << std::endl;
+	// std::cout << "B = " << B << std::endl;
+	// std::cout << "psiL = " << psiL << std::endl;
+	// std::cout << "psiR = " << psiR << std::endl;
+	// std::cout << "phiL = " << phiL << std::endl;
+	// std::cout << "phiR = " << phiR << std::endl;
+	
+	if ((mneutralino > 0 && mgluino > 0) || (mneutralino < 0 && mgluino < 0)) {
+	  amplitudeW = alphas/(8*sqr(PI))*(pow(A,2)*(psiL + phiL) + pow(B,2)*(psiR + phiR));
+	}
+	else if ((mneutralino < 0 || mgluino < 0) && mneutralino*mgluino<0) {
+	  amplitudeW = alphas/(8*sqr(PI))*(pow(A,2)*(psiL - phiL) + pow(B,2)*(psiR - phiR));
+	}
+
+      }
+    }
+  return amplitudeW;
+}
 
 
 double gluinoamplitudedecaydgaussneutralinottbar (double mgluino, double mst1, double mst2, double mneutralino, double mt, double mWboson, double g, double gp, double thetat, double beta, double alphas, DoubleMatrix & mixNeut, double runmt, int neutralino, bool onetothree, char torb) ///calculates PW for gluino -> neutralino + q qbar pair where q are t 

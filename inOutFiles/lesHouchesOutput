@@ -153,6 +153,7 @@ Block ae Q= 8.75885068e+02
   1  1    -2.99008582e+02      # Ae(Q)MSSM DRbar
   2  2    -2.99003094e+02      # Amu(Q)MSSM DRbar
   3  3    -2.97351965e+02      # Atau(Q)MSSM DRbar
+#warning! Partial Width for # ~chi_20 -> chi_1- u db is negative = -2.893544e-25 and is set to zero here
 #     PDG         Width             
 DECAY 1000021     1.41408172e+01   # Gluino decays
 #     BR                NDA   PDG1         PDG2       Comments          

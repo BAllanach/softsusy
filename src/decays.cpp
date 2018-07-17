@@ -1225,16 +1225,16 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
  double gluinoamplitudeneut1uubar = 0, gluinoamplitudeneut2uubar = 0, gluinoamplitudeneut3uubar = 0, gluinoamplitudeneut4uubar = 0, gluinoamplitudeneut1ddbar = 0, gluinoamplitudeneut2ddbar = 0, gluinoamplitudeneut3ddbar = 0, gluinoamplitudeneut4ddbar = 0, gluinoamplitudeneut1ccbar = 0, gluinoamplitudeneut2ccbar = 0, gluinoamplitudeneut3ccbar = 0, gluinoamplitudeneut4ccbar = 0, gluinoamplitudeneut1ssbar = 0, gluinoamplitudeneut2ssbar = 0, gluinoamplitudeneut3ssbar = 0, gluinoamplitudeneut4ssbar = 0, gluinoamplitudeneut1ttbar = 0, gluinoamplitudeneut2ttbar = 0, gluinoamplitudeneut3ttbar = 0, gluinoamplitudeneut4ttbar = 0, gluinoamplitudeneut1bbbar = 0, gluinoamplitudeneut2bbbar = 0, gluinoamplitudeneut3bbbar = 0, gluinoamplitudeneut4bbbar = 0, gluinoamplitudegravitinogluon = 0;
  
  ///1 to 3 decays of gluinos to neutralinos and first two gen quarks via dgauss method:
- gluinoamplitudeneut1uubar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(1), mu(1,1), mu(2,1), mup, g, gp, mixNeut, alphas, 'u', 1, onetothree);
-  if (gluinoamplitudeneut1uubar < 0) {
-   gluinoamplitudeneut1uubar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(1), mu(1,1), mu(2,1), 0, g, gp, mixNeut, alphas, 'u', 1, onetothree);
-   // May get a PW < 0 in cases of very compressed spectra due to numerical precision, in this case take mup = 0 and repeat to ensure positive PW. This is not an issue as mup is so small relative to LambdaQCD that it can be taken as 0 without issues - spectra with mass splittings of order LambdaQCD would have to be treated differently with decays to pions rather than separate quarks. We do the same setting of mdown to 0 if the gluino 3 body decay to it has a negative PW.
- }
+  // gluinoamplitudeneut1uubar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(1), mu(1,1), mu(2,1), mup, g, gp, mixNeut, alphas, 'u', 1, onetothree);
+ gluinoamplitudeneut1uubar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogenlimit (mGluino, mneut(1), mu(1,1), mu(2,1), mup, g, gp, mixNeut, alphas, 'u', 1, onetothree);
+  gluinoamplitudeneut1ddbar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogenlimit (mGluino, mneut(1), md(1,1), md(2,1), mdo, g, gp, mixNeut, alphas, 'd', 1, onetothree);
+     // May get a PW < 0 in cases of very compressed spectra due to numerical precision, in this case take limit of compressed spectra so can avoid numerical issues associated with fine cancellations
+ 
 
  gluinoamplitudeneut2uubar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(2), mu(1,1), mu(2,1), mup, g, gp, mixNeut, alphas, 'u', 2, onetothree);
  gluinoamplitudeneut3uubar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(3), mu(1,1), mu(2,1), mup, g, gp, mixNeut, alphas, 'u', 3, onetothree);
  gluinoamplitudeneut4uubar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(4), mu(1,1), mu(2,1), mup, g, gp, mixNeut, alphas, 'u', 4, onetothree);
- gluinoamplitudeneut1ddbar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(1), md(1,1), md(2,1), mdo, g, gp, mixNeut, alphas, 'd', 1, onetothree);
+ // gluinoamplitudeneut1ddbar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(1), md(1,1), md(2,1), mdo, g, gp, mixNeut, alphas, 'd', 1, onetothree);
   if (gluinoamplitudeneut1ddbar < 0) {
     gluinoamplitudeneut1ddbar = gluinoamplitudedecaydgaussneutralinoqqpbarfirsttwogen (mGluino, mneut(1), md(1,1), md(2,1), 0.0, g, gp, mixNeut, alphas, 'd', 1, onetothree); //Reason as for the gluinoamplitudeneut1uubar case
  }
@@ -1342,6 +1342,15 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  ParticleGluino.Array_Decays[59][0] = PDGchargino2; ParticleGluino.Array_Decays[59][1] = -PDGtop; ParticleGluino.Array_Decays[59][4] = PDGbottom; ParticleGluino.Array_Decays[59][2] =  gluinoamplitudechar2tbbar; ParticleGluino.Array_Decays[59][3] = 3; ParticleGluino.Array_Comments[59] = "# ~g -> ~W2+ tb b";
  ParticleGluino.Array_Decays[60][0] = -PDGchargino2; ParticleGluino.Array_Decays[60][1] = PDGtop; ParticleGluino.Array_Decays[60][4] = -PDGbottom; ParticleGluino.Array_Decays[60][2] =  gluinoamplitudechar2tbbar; ParticleGluino.Array_Decays[60][3] = 3; ParticleGluino.Array_Comments[60] = "# ~g -> ~W2- t bb";
 
+ // std::cout << "Checking for Negative Partial Widths... " << std::endl;
+ for(int i = 0; i<ParticleGluino.No_of_Decays; i++) {
+   if (ParticleGluino.Array_Decays[i][2] < 0) {
+     fout << "#warning! Partial Width for " << ParticleGluino.Array_Comments[i] << " is negative = " << ParticleGluino.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+     ParticleGluino.Array_Decays[i][2] = 0;
+     errorflag = -1;
+   }
+ }
+
  double Gluino_No_1to2_Decays = 0;
  ParticleGluino.two_width = 0;
  ParticleGluino.three_width = 0;
@@ -1407,7 +1416,8 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      sdownLamplitudedownneutralinoZ4 = squarkamplitudedecayquarkneutralinoNMSSM (md(1,1), mdo, mneut(4), g, gp, mixNeut, 'd', 'L', 4);
      sdownLamplitudedownneutralinoZ5 = squarkamplitudedecayquarkneutralinoNMSSM (md(1,1), mdo, mneut(5), g, gp, mixNeut, 'd', 'L', 5);
    }
-   
+
+
    ParticleSdownL.Array_Decays[0][0] = PDGdown; ParticleSdownL.Array_Decays[0][1] = PDGgluino; ParticleSdownL.Array_Decays[0][2] = sdownLamplitudegluinodown; ParticleSdownL.Array_Decays[0][3] = 2; ParticleSdownL.Array_Comments[0] = "# ~d_L -> d ~g";
    ParticleSdownL.Array_Decays[1][0] = PDGup; ParticleSdownL.Array_Decays[1][1] = -PDGchargino1; ParticleSdownL.Array_Decays[1][2] = sdownLamplitudecharginoW1up; ParticleSdownL.Array_Decays[1][3] = 2; ParticleSdownL.Array_Comments[1] = "# ~d_L -> u ~chi_1-" ;
    ParticleSdownL.Array_Decays[2][0] = PDGup; ParticleSdownL.Array_Decays[2][1] = -PDGchargino2; ParticleSdownL.Array_Decays[2][2] = sdownLamplitudecharginoW2up; ParticleSdownL.Array_Decays[2][3] = 2; ParticleSdownL.Array_Comments[2] = "# ~d_L -> u ~chi_2-";
@@ -1417,6 +1427,15 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSdownL.Array_Decays[6][0] = PDGdown; ParticleSdownL.Array_Decays[6][1] = PDGneutralino4; ParticleSdownL.Array_Decays[6][2] = sdownLamplitudedownneutralinoZ4; ParticleSdownL.Array_Decays[6][3] = 2; ParticleSdownL.Array_Comments[6] = "# ~d_L -> d ~chi_40";
    ParticleSdownL.Array_Decays[7][0] = PDGdown; ParticleSdownL.Array_Decays[7][1] = PDGneutralino5; ParticleSdownL.Array_Decays[7][2] = sdownLamplitudedownneutralinoZ5; ParticleSdownL.Array_Decays[7][3] = 2; ParticleSdownL.Array_Comments[7] = "# ~d_L -> d ~chi_50";
    ParticleSdownL.Array_Decays[8][0] = PDGdown; ParticleSdownL.Array_Decays[8][1] = PDGgravitino; ParticleSdownL.Array_Decays[8][2] = sdownLamplitudedowngravitino; ParticleSdownL.Array_Decays[8][3] = 2; ParticleSdownL.Array_Comments[8] = "# ~d_L -> d ~G";
+
+   for(int i = 0; i<ParticleSdownL.No_of_Decays; i++) {
+     if (ParticleSdownL.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSdownL.Array_Comments[i] << " is negative = " << ParticleSdownL.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSdownL.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }
+
    
  double SdownL_No_1to2_Decays = 0;
  
@@ -1488,6 +1507,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSdownR.Array_Decays[5][0] = PDGdown; ParticleSdownR.Array_Decays[5][1] = PDGneutralino4; ParticleSdownR.Array_Decays[5][2] = sdownRamplitudedownneutralinoZ5; ParticleSdownR.Array_Decays[5][3] = 2; ParticleSdownR.Array_Comments[5] = "# ~d_R -> d ~chi_50";
    
    ParticleSdownR.Array_Decays[6][0] = PDGdown; ParticleSdownR.Array_Decays[6][1] = PDGgravitino; ParticleSdownR.Array_Decays[6][2] = sdownRamplitudedowngravitino; ParticleSdownR.Array_Decays[6][3] = 2; ParticleSdownR.Array_Comments[6] = "# ~d_R -> d ~G";
+
+   for(int i = 0; i<ParticleSdownR.No_of_Decays; i++) {
+     if (ParticleSdownR.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSdownR.Array_Comments[i] << " is negative = " << ParticleSdownR.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSdownR.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }   
 
    double SdownR_No_1to2_Decays = 0;
    
@@ -1561,6 +1588,15 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSupL.Array_Decays[7][0] = PDGup; ParticleSupL.Array_Decays[7][1] = PDGneutralino5; ParticleSupL.Array_Decays[7][2] = supLamplitudeupneutralinoZ5; ParticleSupL.Array_Decays[7][3] = 2; ParticleSupL.Array_Comments[7] = "# ~u_L -> u ~chi_50";
    
    ParticleSupL.Array_Decays[8][0] = PDGup; ParticleSupL.Array_Decays[8][1] = PDGgravitino; ParticleSupL.Array_Decays[8][2] = supLamplitudeupgravitino; ParticleSupL.Array_Decays[8][3] = 2; ParticleSupL.Array_Comments[8] = "# ~u_L -> u ~G";
+
+   for(int i = 0; i<ParticleSupL.No_of_Decays; i++) {
+     if (ParticleSupL.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSupL.Array_Comments[i] << " is negative = " << ParticleSupL.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSupL.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }
+   
    
    double SupL_No_1to2_Decays = 0;
    
@@ -1630,6 +1666,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSupR.Array_Decays[5][0] = PDGup; ParticleSupR.Array_Decays[5][1] = PDGneutralino5; ParticleSupR.Array_Decays[5][2] = supRamplitudeupneutralinoZ5; ParticleSupR.Array_Decays[5][3] = 2; ParticleSupR.Array_Comments[5] = "# ~u_R -> u ~chi_50";
    
    ParticleSupR.Array_Decays[6][0] = PDGup; ParticleSupR.Array_Decays[6][1] = PDGgravitino; ParticleSupR.Array_Decays[6][2] = supRamplitudeupgravitino; ParticleSupR.Array_Decays[6][3] = 2; ParticleSupR.Array_Comments[6] = "# ~u_R -> u ~G";
+
+   for(int i = 0; i<ParticleSupR.No_of_Decays; i++) {
+     if (ParticleSupR.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSupR.Array_Comments[i] << " is negative = " << ParticleSupR.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSupR.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }   
 
    double SupR_No_1to2_Decays = 0;
    
@@ -1703,7 +1747,15 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSstrangeL.Array_Decays[7][0] = PDGstrange; ParticleSstrangeL.Array_Decays[7][1] = PDGneutralino5; ParticleSstrangeL.Array_Decays[7][2] = sstrangeLamplitudestrangeneutralinoZ5; ParticleSstrangeL.Array_Decays[7][3] = 2; ParticleSstrangeL.Array_Comments[7] = "# ~s_L -> s ~chi_50";
 
    ParticleSstrangeL.Array_Decays[8][0] = PDGstrange; ParticleSstrangeL.Array_Decays[8][1] = PDGgravitino; ParticleSstrangeL.Array_Decays[8][2] = sstrangeLamplitudestrangegravitino; ParticleSstrangeL.Array_Decays[8][3] = 2; ParticleSstrangeL.Array_Comments[8] = "# ~s_L -> s ~G";
-   
+
+   for(int i = 0; i<ParticleSstrangeL.No_of_Decays; i++) {
+     if (ParticleSstrangeL.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSstrangeL.Array_Comments[i] << " is negative = " << ParticleSstrangeL.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSstrangeL.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }
+      
    double SstrangeL_No_1to2_Decays = 0;
 
    SstrangeL_No_1to2_Decays = ParticleSstrangeL.No_1to2_Decays + ParticleSstrangeL.No_grav_Decays + ParticleSstrangeL.No_NMSSM_Decays;
@@ -1775,6 +1827,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 
    ParticleSstrangeR.Array_Decays[6][0] = PDGstrange; ParticleSstrangeR.Array_Decays[6][1] = PDGgravitino; ParticleSstrangeR.Array_Decays[6][2] = sstrangeRamplitudestrangegravitino; ParticleSstrangeR.Array_Decays[6][3] = 2; ParticleSstrangeR.Array_Comments[6] = "# ~s_R -> s ~G";
 
+   for(int i = 0; i<ParticleSstrangeR.No_of_Decays; i++) {
+     if (ParticleSstrangeR.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSstrangeR.Array_Comments[i] << " is negative = " << ParticleSstrangeR.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSstrangeR.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }
+   
    double SstrangeR_No_1to2_Decays = 0;
 
    SstrangeR_No_1to2_Decays = ParticleSstrangeR.No_1to2_Decays + ParticleSstrangeR.No_grav_Decays + ParticleSstrangeR.No_NMSSM_Decays;
@@ -1848,6 +1908,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    
    ParticleScharmL.Array_Decays[8][0] = PDGcharm; ParticleScharmL.Array_Decays[8][1] = PDGgravitino; ParticleScharmL.Array_Decays[8][2] = scharmLamplitudecharmgravitino; ParticleScharmL.Array_Decays[8][3] = 2; ParticleScharmL.Array_Comments[8] = "# ~c_L -> c ~G";
 
+   for(int i = 0; i<ParticleScharmL.No_of_Decays; i++) {
+     if (ParticleScharmL.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleScharmL.Array_Comments[i] << " is negative = " << ParticleScharmL.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleScharmL.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }   
+
    double ScharmL_No_1to2_Decays = 0;
 
    ScharmL_No_1to2_Decays = ParticleScharmL.No_1to2_Decays + ParticleScharmL.No_grav_Decays + ParticleScharmL.No_NMSSM_Decays;
@@ -1917,6 +1985,15 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleScharmR.Array_Decays[5][0] = PDGcharm; ParticleScharmR.Array_Decays[5][1] = PDGneutralino5; ParticleScharmR.Array_Decays[5][2] = scharmRamplitudecharmneutralinoZ5; ParticleScharmR.Array_Decays[5][3] = 2; ParticleScharmR.Array_Comments[5] = "# ~c_R -> c ~chi_50";
    
    ParticleScharmR.Array_Decays[6][0] = PDGcharm; ParticleScharmR.Array_Decays[6][1] = PDGgravitino; ParticleScharmR.Array_Decays[6][2] = scharmRamplitudecharmgravitino; ParticleScharmR.Array_Decays[6][3] = 2; ParticleScharmR.Array_Comments[6] = "# ~c_R -> c ~G";
+
+   for(int i = 0; i<ParticleScharmR.No_of_Decays; i++) {
+     if (ParticleScharmR.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleScharmR.Array_Comments[i] << " is negative = " << ParticleScharmR.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleScharmR.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }
+   
 
    double ScharmR_No_1to2_Decays = 0;
 
@@ -1998,6 +2075,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSbottom1.Array_Decays[11][0] = PDGbottom; ParticleSbottom1.Array_Decays[11][1] = PDGneutralino5; ParticleSbottom1.Array_Decays[11][2] = sbottom1amplitudebottomneutralinoZ5; ParticleSbottom1.Array_Decays[11][3] = 2; ParticleSbottom1.Array_Comments[11] = "# ~b_1 -> b ~chi_50";
 
    ParticleSbottom1.Array_Decays[12][0] = PDGbottom; ParticleSbottom1.Array_Decays[12][1] = PDGgravitino; ParticleSbottom1.Array_Decays[12][2] = sbottom1amplitudebottomgravitino; ParticleSbottom1.Array_Decays[12][3] = 2; ParticleSbottom1.Array_Comments[12] = "# ~b_1 -> b ~G";
+
+   for(int i = 0; i<ParticleSbottom1.No_of_Decays; i++) {
+     if (ParticleSbottom1.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSbottom1.Array_Comments[i] << " is negative = " << ParticleSbottom1.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSbottom1.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }
 
    double Sbottom1_No_1to2_Decays = 0;
 
@@ -2093,7 +2178,16 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 
    ParticleSbottom2.Array_Decays[16][0] = PDGbottom; ParticleSbottom2.Array_Decays[16][1] = PDGgravitino; ParticleSbottom2.Array_Decays[16][2] = sbottom2amplitudebottomgravitino; ParticleSbottom2.Array_Decays[16][3] = 2; ParticleSbottom2.Array_Comments[16] = "# ~b_2 -> b ~G";
    ParticleSbottom2.Array_Decays[17][0] = PDGH3; ParticleSbottom2.Array_Decays[17][1] = PDGsbottom1; ParticleSbottom2.Array_Decays[17][2] = sbottom2amplitudeH3sbottom1; ParticleSbottom2.Array_Decays[17][3] = 2; ParticleSbottom2.Array_Comments[17] = "# ~b_2 -> H3 ~b_1";
-   ParticleSbottom2.Array_Decays[18][0] = PDGA2; ParticleSbottom2.Array_Decays[18][1] = PDGsbottom1; ParticleSbottom2.Array_Decays[18][2] = sbottom2amplitudeA2sbottom1; ParticleSbottom2.Array_Decays[18][3] = 2; ParticleSbottom2.Array_Comments[18] = "# ~b_2 -> A2 ~b_1"; 
+   ParticleSbottom2.Array_Decays[18][0] = PDGA2; ParticleSbottom2.Array_Decays[18][1] = PDGsbottom1; ParticleSbottom2.Array_Decays[18][2] = sbottom2amplitudeA2sbottom1; ParticleSbottom2.Array_Decays[18][3] = 2; ParticleSbottom2.Array_Comments[18] = "# ~b_2 -> A2 ~b_1";
+
+   for(int i = 0; i<ParticleSbottom2.No_of_Decays; i++) {
+     if (ParticleSbottom2.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSbottom2.Array_Comments[i] << " is negative = " << ParticleSbottom2.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSbottom2.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }
+   
    double Sbottom2_No_1to2_Decays = 0;
 
    Sbottom2_No_1to2_Decays = ParticleSbottom2.No_1to2_Decays + ParticleSbottom2.No_grav_Decays + ParticleSbottom2.No_NMSSM_Decays;
@@ -2176,6 +2270,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleStop1.Array_Decays[11][0] = PDGtop; ParticleStop1.Array_Decays[11][1] = PDGneutralino5; ParticleStop1.Array_Decays[11][2] = stop1amplitudetopneutralinoZ5; ParticleStop1.Array_Decays[11][3] = 2; ParticleStop1.Array_Comments[11] = "# ~t_1 -> t ~chi_50";
 
    ParticleStop1.Array_Decays[12][0] = PDGtop; ParticleStop1.Array_Decays[12][1] = PDGgravitino; ParticleStop1.Array_Decays[12][2] = stop1amplitudetopgravitino; ParticleStop1.Array_Decays[12][3] = 2; ParticleStop1.Array_Comments[12] = "# ~t_1 -> t ~G";
+
+   for(int i = 0; i<ParticleStop1.No_of_Decays; i++) {
+     if (ParticleStop1.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleStop1.Array_Comments[i] << " is negative = " << ParticleStop1.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleStop1.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }   
 
    double Stop1_No_1to2_Decays = 0;
 
@@ -2275,7 +2377,15 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleStop2.Array_Decays[17][0] = PDGtop; ParticleStop2.Array_Decays[17][1] = PDGneutralino5; ParticleStop2.Array_Decays[17][2] = stop2amplitudetopneutralinoZ5; ParticleStop2.Array_Decays[17][3] = 2; ParticleStop2.Array_Comments[17] = "# ~t_2 -> t ~chi_50";
    
    ParticleStop2.Array_Decays[18][0] = PDGtop; ParticleStop2.Array_Decays[18][1] = PDGgravitino; ParticleStop2.Array_Decays[18][2] = stop2amplitudetopgravitino; ParticleStop2.Array_Decays[18][3] = 2; ParticleStop2.Array_Comments[18] = "# ~t_2 -> t ~G";
- 
+
+   for(int i = 0; i<ParticleStop2.No_of_Decays; i++) {
+     if (ParticleStop2.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleStop2.Array_Comments[i] << " is negative = " << ParticleStop2.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleStop2.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }
+    
    double Stop2_No_1to2_Decays = 0;
 
    Stop2_No_1to2_Decays = ParticleStop2.No_1to2_Decays + ParticleStop2.No_grav_Decays + ParticleStop2.No_NMSSM_Decays;
@@ -2349,6 +2459,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 
    ParticleSelectronL.Array_Decays[7][0] = PDGelectron; ParticleSelectronL.Array_Decays[7][1] = PDGgravitino; ParticleSelectronL.Array_Decays[7][2] = selectronLamplitudeelectrongravitino; ParticleSelectronL.Array_Decays[7][3] = 2; ParticleSelectronL.Array_Comments[7] = "# ~e_L -> e- ~G";
 
+   for(int i = 0; i<ParticleSelectronL.No_of_Decays; i++) {
+     if (ParticleSelectronL.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSelectronL.Array_Comments[i] << " is negative = " << ParticleSelectronL.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSelectronL.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }   
+
    double SelectronL_No_1to2_Decays = 0;
    
    SelectronL_No_1to2_Decays = ParticleSelectronL.No_1to2_Decays + ParticleSelectronL.No_grav_Decays + ParticleSelectronL.No_NMSSM_Decays;
@@ -2416,6 +2534,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSelectronR.Array_Decays[4][0] = PDGelectron; ParticleSelectronR.Array_Decays[4][1] = PDGneutralino5; ParticleSelectronR.Array_Decays[4][2] = selectronRamplitudeeneutralinoZ5; ParticleSelectronR.Array_Decays[4][3] = 2; ParticleSelectronR.Array_Comments[4] = "# ~e_R -> e- ~chi_50";
  
    ParticleSelectronR.Array_Decays[5][0] = PDGelectron; ParticleSelectronR.Array_Decays[5][1] = PDGgravitino; ParticleSelectronR.Array_Decays[5][2] = selectronRamplitudeelectrongravitino; ParticleSelectronR.Array_Decays[5][3] = 2; ParticleSelectronR.Array_Comments[5] = "# ~e_R -> e- ~G";
+
+   for(int i = 0; i<ParticleSelectronR.No_of_Decays; i++) {
+     if (ParticleSelectronR.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSelectronR.Array_Comments[i] << " is negative = " << ParticleSelectronR.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSelectronR.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }   
 
    double SelectronR_No_1to2_Decays = 0;
 
@@ -2487,7 +2613,15 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSmuonL.Array_Decays[5][0] = PDGmuon; ParticleSmuonL.Array_Decays[5][1] = PDGneutralino4; ParticleSmuonL.Array_Decays[5][2] = smuonLamplitudemuneutralinoZ4; ParticleSmuonL.Array_Decays[5][3] = 2; ParticleSmuonL.Array_Comments[5] = "# ~mu_L -> mu- ~chi_40";
    ParticleSmuonL.Array_Decays[6][0] = PDGmuon; ParticleSmuonL.Array_Decays[6][1] = PDGneutralino4; ParticleSmuonL.Array_Decays[6][2] = smuonLamplitudemuneutralinoZ5; ParticleSmuonL.Array_Decays[6][3] = 2; ParticleSmuonL.Array_Comments[6] = "# ~mu_L -> mu- ~chi_50";
 
-   ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] = PDGgravitino; ParticleSmuonL.Array_Decays[7][2] = smuonLamplitudemuongravitino; ParticleSmuonL.Array_Decays[7][3] = 2; ParticleSmuonL.Array_Comments[7] = "# ~mu_L -> mu- ~G"; 
+   ParticleSmuonL.Array_Decays[7][0] = PDGmuon; ParticleSmuonL.Array_Decays[7][1] = PDGgravitino; ParticleSmuonL.Array_Decays[7][2] = smuonLamplitudemuongravitino; ParticleSmuonL.Array_Decays[7][3] = 2; ParticleSmuonL.Array_Comments[7] = "# ~mu_L -> mu- ~G";
+
+   for(int i = 0; i<ParticleSmuonL.No_of_Decays; i++) {
+     if (ParticleSmuonL.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSmuonL.Array_Comments[i] << " is negative = " << ParticleSmuonL.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSmuonL.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }   
    
    double SmuonL_No_1to2_Decays = 0;
 
@@ -2554,6 +2688,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSmuonR.Array_Decays[4][0] = PDGmuon; ParticleSmuonR.Array_Decays[4][1] = PDGneutralino5; ParticleSmuonR.Array_Decays[4][2] = smuonRamplitudemuneutralinoZ5; ParticleSmuonR.Array_Decays[4][3] = 2; ParticleSmuonR.Array_Comments[4] = "# ~mu_R -> mu- ~chi_50";
  
    ParticleSmuonR.Array_Decays[5][0] = PDGmuon; ParticleSmuonR.Array_Decays[5][1] = PDGgravitino; ParticleSmuonR.Array_Decays[5][2] = smuonRamplitudemuongravitino; ParticleSmuonR.Array_Decays[5][3] = 2; ParticleSmuonR.Array_Comments[5] = "# ~mu_R -> mu- ~G";
+
+   for(int i = 0; i<ParticleSmuonR.No_of_Decays; i++) {
+     if (ParticleSmuonR.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSmuonR.Array_Comments[i] << " is negative = " << ParticleSmuonR.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSmuonR.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }     
  
    double SmuonR_No_1to2_Decays = 0;
 
@@ -2624,6 +2766,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSnue.Array_Decays[6][0] = PDGnuelectron; ParticleSnue.Array_Decays[6][1] = PDGneutralino5; ParticleSnue.Array_Decays[6][2] = snueamplitudenueneutralinoZ5; ParticleSnue.Array_Decays[6][3] = 2; ParticleSnue.Array_Comments[6] = "# ~nu_eL -> nu_e ~chi_50";
 
    ParticleSnue.Array_Decays[7][0] = PDGnuelectron; ParticleSnue.Array_Decays[7][1] = PDGgravitino; ParticleSnue.Array_Decays[7][2] = snueamplitudenuegravitino; ParticleSnue.Array_Decays[7][3] = 2; ParticleSnue.Array_Comments[7] = "# ~nu_eL -> nu_e ~G";
+
+   for(int i = 0; i<ParticleSnue.No_of_Decays; i++) {
+     if (ParticleSnue.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSnue.Array_Comments[i] << " is negative = " << ParticleSnue.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSnue.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }     
 
    double Snue_No_1to2_Decays = 0;
 
@@ -2696,6 +2846,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
 
    ParticleSnumu.Array_Decays[7][0] = PDGnumuon; ParticleSnumu.Array_Decays[7][1] = PDGgravitino; ParticleSnumu.Array_Decays[7][2] = snumuamplitudenumugravitino; ParticleSnumu.Array_Decays[7][3] = 2; ParticleSnumu.Array_Comments[7] = "# ~nu_muL -> nu_mu ~G";
 
+   for(int i = 0; i<ParticleSnumu.No_of_Decays; i++) {
+     if (ParticleSnumu.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSnumu.Array_Comments[i] << " is negative = " << ParticleSnumu.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSnumu.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }  
+   
    double Snumu_No_1to2_Decays = 0;
 
    Snumu_No_1to2_Decays = ParticleSnumu.No_1to2_Decays + ParticleSnumu.No_grav_Decays + ParticleSnumu.No_NMSSM_Decays;
@@ -2771,6 +2929,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleStau1.Array_Decays[8][0] = PDGtau; ParticleStau1.Array_Decays[8][1] = PDGneutralino5; ParticleStau1.Array_Decays[8][2] = stau1amplitudetauneutralinoZ5; ParticleStau1.Array_Decays[8][3] = 2; ParticleStau1.Array_Comments[8] = "# ~tau_1- -> tau- ~chi_50";
  
    ParticleStau1.Array_Decays[9][0] = PDGtau; ParticleStau1.Array_Decays[9][1] = PDGgravitino; ParticleStau1.Array_Decays[9][2] = stau1amplitudetaugravitino; ParticleStau1.Array_Decays[9][3] = 2; ParticleStau1.Array_Comments[9] = "# ~tau_1- -> tau- ~G";
+
+   for(int i = 0; i<ParticleStau1.No_of_Decays; i++) {
+     if (ParticleStau1.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleStau1.Array_Comments[i] << " is negative = " << ParticleStau1.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleStau1.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }     
    
    double Stau1_No_1to2_Decays = 0;
    
@@ -2862,6 +3028,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    
    ParticleStau2.Array_Decays[15][0] = PDGtau; ParticleStau2.Array_Decays[15][1] = PDGgravitino; ParticleStau2.Array_Decays[15][2] = stau2amplitudetaugravitino; ParticleStau2.Array_Decays[15][3] = 2; ParticleStau2.Array_Comments[15] = "# ~tau_2- -> tau- ~G";
 
+   for(int i = 0; i<ParticleStau2.No_of_Decays; i++) {
+     if (ParticleStau2.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleStau2.Array_Comments[i] << " is negative = " << ParticleStau2.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleStau2.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }   
+
    double Stau2_No_1to2_Decays = 0;
 
    Stau2_No_1to2_Decays = ParticleStau2.No_1to2_Decays + ParticleStau2.No_grav_Decays + ParticleStau2.No_NMSSM_Decays;
@@ -2939,6 +3113,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleSnutau.Array_Decays[10][0] = PDGnutau; ParticleSnutau.Array_Decays[10][1] = PDGneutralino5; ParticleSnutau.Array_Decays[10][2] = snutauamplitudenutauneutralinoZ5; ParticleSnutau.Array_Decays[10][3] = 2; ParticleSnutau.Array_Comments[10] = "# ~nu_tauL -> nu_tau ~chi_50";
 
    ParticleSnutau.Array_Decays[11][0] = PDGnutau; ParticleSnutau.Array_Decays[11][1] = PDGgravitino; ParticleSnutau.Array_Decays[11][2] = snutauamplitudenutaugravitino; ParticleSnutau.Array_Decays[11][3] = 2; ParticleSnutau.Array_Comments[11] = "# ~nu_tauL -> nu_tau ~G";
+
+   for(int i = 0; i<ParticleSnutau.No_of_Decays; i++) {
+     if (ParticleSnutau.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleSnutau.Array_Comments[i] << " is negative = " << ParticleSnutau.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleSnutau.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }   
 
    double Snutau_No_1to2_Decays = 0;
 
@@ -3111,6 +3293,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      ParticleChargino1.Array_Decays[46][2] = 0.;
    }
 
+   for(int i = 0; i<ParticleChargino1.No_of_Decays; i++) {
+     if (ParticleChargino1.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleChargino1.Array_Comments[i] << " is negative = " << ParticleChargino1.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleChargino1.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }
+
    int Chargino1_No_1to2_Decays = 0;
  
    Chargino1_No_1to2_Decays = ParticleChargino1.No_1to2_Decays + ParticleChargino1.No_grav_Decays + ParticleChargino1.No_NMSSM_Decays;
@@ -3274,6 +3464,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleChargino2.Array_Decays[48][0] = PDGneutralino4; ParticleChargino2.Array_Decays[48][1] = PDGnuelectron; ParticleChargino2.Array_Decays[48][4] = -PDGelectron; ParticleChargino2.Array_Decays[48][2] = chargino2amplitudeneut4nueebar; ParticleChargino2.Array_Decays[48][3] = 3; ParticleChargino2.Array_Comments[48] = "# ~chi_2+ -> ~chi_40 nu_e e+";
    ParticleChargino2.Array_Decays[49][0] = PDGneutralino4; ParticleChargino2.Array_Decays[49][1] = PDGnumuon; ParticleChargino2.Array_Decays[49][4] = -PDGmuon; ParticleChargino2.Array_Decays[49][2] = chargino2amplitudeneut4numumubar; ParticleChargino2.Array_Decays[49][3] = 3; ParticleChargino2.Array_Comments[49] = "# ~chi_2+ -> ~chi_40 nu_mu mu+";
    ParticleChargino2.Array_Decays[50][0] = PDGneutralino4; ParticleChargino2.Array_Decays[50][1] = PDGnutau; ParticleChargino2.Array_Decays[50][4] = -PDGtau; ParticleChargino2.Array_Decays[50][2] = chargino2amplitudeneut4nutautaubar; ParticleChargino2.Array_Decays[50][3] = 3; ParticleChargino2.Array_Comments[50] = "# ~chi_2+ -> ~chi_40 nu_tau tau+";
+
+   for(int i = 0; i<ParticleChargino2.No_of_Decays; i++) {
+     if (ParticleChargino2.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleChargino2.Array_Comments[i] << " is negative = " << ParticleChargino2.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleChargino2.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }
 
    double Chargino2_No_1to2_Decays = 0;
    Chargino2_No_1to2_Decays = ParticleChargino2.No_1to2_Decays + ParticleChargino2.No_grav_Decays + ParticleChargino2.No_NMSSM_Decays;
@@ -3525,6 +3723,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleNeutralino1.Array_Decays[74][0] = PDGchargino2; ParticleNeutralino1.Array_Decays[74][1] = PDGnuelectron; ParticleNeutralino1.Array_Decays[74][4] = -PDGelectron; ParticleNeutralino1.Array_Decays[74][2] = neutralino1amplitudechargino2enuebar; ParticleNeutralino1.Array_Decays[74][3] = 3; ParticleNeutralino1.Array_Comments[74] = "# ~chi_10 -> chi_2- nu_e eb";
    ParticleNeutralino1.Array_Decays[75][0] = PDGchargino2; ParticleNeutralino1.Array_Decays[75][1] = PDGnumuon; ParticleNeutralino1.Array_Decays[75][4] = -PDGmuon; ParticleNeutralino1.Array_Decays[75][2] = neutralino1amplitudechargino2munumubar; ParticleNeutralino1.Array_Decays[75][3] = 3; ParticleNeutralino1.Array_Comments[75] = "# ~chi_10 -> chi_2- nu_mu mub";
    ParticleNeutralino1.Array_Decays[76][0] = PDGchargino2; ParticleNeutralino1.Array_Decays[76][1] = PDGnutau; ParticleNeutralino1.Array_Decays[67][4] = -PDGtau; ParticleNeutralino1.Array_Decays[76][2] = neutralino1amplitudechargino2taunutaubar; ParticleNeutralino1.Array_Decays[76][3] = 3; ParticleNeutralino1.Array_Comments[76] = "# ~chi_10 -> chi_2- nu_tau taubar";
+
+   for(int i = 0; i<ParticleNeutralino1.No_of_Decays; i++) {
+     if (ParticleNeutralino1.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleNeutralino1.Array_Comments[i] << " is negative = " << ParticleNeutralino1.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleNeutralino1.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }
    
    double Neut1_No_1to2_Decays = 0;
    
@@ -3817,6 +4023,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleNeutralino2.Array_Decays[88][0] = PDGchargino2; ParticleNeutralino2.Array_Decays[88][1] = PDGnuelectron; ParticleNeutralino2.Array_Decays[88][4] = -PDGelectron; ParticleNeutralino2.Array_Decays[88][2] = neutralino2amplitudechargino2enuebar; ParticleNeutralino2.Array_Decays[88][3] = 3; ParticleNeutralino2.Array_Comments[88] = "# ~chi_20 -> chi_2- nu_e eb";
    ParticleNeutralino2.Array_Decays[89][0] = PDGchargino2; ParticleNeutralino2.Array_Decays[89][1] = PDGnumuon; ParticleNeutralino2.Array_Decays[89][4] = -PDGmuon; ParticleNeutralino2.Array_Decays[89][2] = neutralino2amplitudechargino2munumubar; ParticleNeutralino2.Array_Decays[89][3] = 3; ParticleNeutralino2.Array_Comments[89] = "# ~chi_20 -> chi_2- nu_mu mub";
    ParticleNeutralino2.Array_Decays[90][0] = PDGchargino2; ParticleNeutralino2.Array_Decays[90][1] = PDGnutau; ParticleNeutralino2.Array_Decays[90][4] = -PDGtau; ParticleNeutralino2.Array_Decays[90][2] = neutralino2amplitudechargino2taunutaubar; ParticleNeutralino2.Array_Decays[90][3] = 3; ParticleNeutralino2.Array_Comments[90] = "# ~chi_20 -> chi_2- nu_tau taubar";
+
+   for(int i = 0; i<ParticleNeutralino2.No_of_Decays; i++) {
+     if (ParticleNeutralino2.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleNeutralino2.Array_Comments[i] << " is negative = " << ParticleNeutralino2.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleNeutralino2.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }
    
    double Neut2_No_1to2_Decays = 0;
    
@@ -4149,6 +4363,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleNeutralino3.Array_Decays[102][0] = PDGchargino2; ParticleNeutralino3.Array_Decays[102][1] = PDGnuelectron; ParticleNeutralino3.Array_Decays[102][4] = -PDGelectron; ParticleNeutralino3.Array_Decays[102][2] = neutralino3amplitudechargino2enuebar; ParticleNeutralino3.Array_Decays[102][3] = 3; ParticleNeutralino3.Array_Comments[102] = "# ~chi_30 -> chi_2- nu_e eb";
    ParticleNeutralino3.Array_Decays[103][0] = PDGchargino2; ParticleNeutralino3.Array_Decays[103][1] = PDGnumuon; ParticleNeutralino3.Array_Decays[103][4] = -PDGmuon; ParticleNeutralino3.Array_Decays[103][2] = neutralino3amplitudechargino2munumubar; ParticleNeutralino3.Array_Decays[103][3] = 3; ParticleNeutralino3.Array_Comments[103] = "# ~chi_30 -> chi_2- nu_mu mub";
    ParticleNeutralino3.Array_Decays[104][0] = PDGchargino2; ParticleNeutralino3.Array_Decays[104][1] = PDGnutau; ParticleNeutralino3.Array_Decays[104][4] = -PDGtau; ParticleNeutralino3.Array_Decays[104][2] = neutralino3amplitudechargino2taunutaubar; ParticleNeutralino3.Array_Decays[104][3] = 3; ParticleNeutralino3.Array_Comments[104] = "# ~chi_30 -> chi_2- nu_tau taubar";
+
+   for(int i = 0; i<ParticleNeutralino3.No_of_Decays; i++) {
+     if (ParticleNeutralino3.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleNeutralino3.Array_Comments[i] << " is negative = " << ParticleNeutralino3.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleNeutralino3.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }   
    
    double Neut3_No_1to2_Decays = 0;
    
@@ -4516,6 +4738,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleNeutralino4.Array_Decays[116][0] = PDGchargino2; ParticleNeutralino4.Array_Decays[116][1] = PDGnuelectron; ParticleNeutralino4.Array_Decays[116][4] = -PDGelectron; ParticleNeutralino4.Array_Decays[116][2] = neutralino4amplitudechargino2enuebar; ParticleNeutralino4.Array_Decays[116][3] = 3; ParticleNeutralino4.Array_Comments[116] = "# ~chi_40 -> chi_2- nu_e eb";
    ParticleNeutralino4.Array_Decays[117][0] = PDGchargino2; ParticleNeutralino4.Array_Decays[117][1] = PDGnumuon; ParticleNeutralino4.Array_Decays[117][4] = -PDGmuon; ParticleNeutralino4.Array_Decays[117][2] = neutralino4amplitudechargino2munumubar; ParticleNeutralino4.Array_Decays[117][3] = 3; ParticleNeutralino4.Array_Comments[117] = "# ~chi_40 -> chi_2- nu_mu mub";
    ParticleNeutralino4.Array_Decays[118][0] = PDGchargino2; ParticleNeutralino4.Array_Decays[118][1] = PDGnutau; ParticleNeutralino4.Array_Decays[118][4] = -PDGtau; ParticleNeutralino4.Array_Decays[118][2] = neutralino4amplitudechargino2taunutaubar; ParticleNeutralino4.Array_Decays[118][3] = 3; ParticleNeutralino4.Array_Comments[118] = "# ~chi_40 -> chi_2- nu_tau taubar";
+
+   for(int i = 0; i<ParticleNeutralino4.No_of_Decays; i++) {
+     if (ParticleNeutralino4.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleNeutralino4.Array_Comments[i] << " is negative = " << ParticleNeutralino4.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleNeutralino4.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }
    
    double Neut4_No_1to2_Decays = 0;
    
@@ -4715,6 +4945,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      ParticleNeutralino5.Array_Decays[71][0] = PDGA2; ParticleNeutralino5.Array_Decays[71][1] = PDGneutralino2; ParticleNeutralino5.Array_Decays[71][2] = neutralino5amplitudeA2neutralino2; ParticleNeutralino5.Array_Decays[71][3] = 2; ParticleNeutralino5.Array_Comments[71] = "# ~chi_50 -> A2 ~chi_20";
      ParticleNeutralino5.Array_Decays[72][0] = PDGA2; ParticleNeutralino5.Array_Decays[72][1] = PDGneutralino3; ParticleNeutralino5.Array_Decays[72][2] = neutralino5amplitudeA2neutralino3; ParticleNeutralino5.Array_Decays[72][3] = 2; ParticleNeutralino5.Array_Comments[72] = "# ~chi_50 -> A2 ~chi_30";
      ParticleNeutralino5.Array_Decays[73][0] = PDGA2; ParticleNeutralino5.Array_Decays[73][1] = PDGneutralino4; ParticleNeutralino5.Array_Decays[73][2] = neutralino5amplitudeA2neutralino4; ParticleNeutralino5.Array_Decays[73][3] = 2; ParticleNeutralino5.Array_Comments[73] = "# ~chi_50 -> A2 ~chi_40";
+
+     for(int i = 0; i<ParticleNeutralino5.No_of_Decays; i++) {
+       if (ParticleNeutralino5.Array_Decays[i][2] < 0) {
+	 fout << "#warning! Partial Width for " << ParticleNeutralino5.Array_Comments[i] << " is negative = " << ParticleNeutralino5.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+	 ParticleNeutralino5.Array_Decays[i][2] = 0;
+	 errorflag = -1;
+       }
+     }     
      
      double Neut5_No_1to2_Decays = 0;
      
@@ -5030,6 +5268,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    Particlehiggsl.Array_Decays[76][0] = PDGZboson; Particlehiggsl.Array_Decays[76][1] = PDGA2; Particlehiggsl.Array_Decays[76][2] = h0amplitudehiggsA2Zboson; Particlehiggsl.Array_Decays[76][3] = 2; Particlehiggsl.Array_Comments[76] = "# h -> A2 Z";
    Particlehiggsl.Array_Decays[77][0] = PDGHplus; Particlehiggsl.Array_Decays[77][1] = -PDGHplus; Particlehiggsl.Array_Decays[77][2] = h0amplitudeHpmHpm; Particlehiggsl.Array_Decays[77][3] = 2; Particlehiggsl.Array_Comments[77] = "# h -> H+ H-";
    Particlehiggsl.Array_Decays[78][0] = PDGHplus; Particlehiggsl.Array_Decays[78][1] = -PDGWplus; Particlehiggsl.Array_Decays[78][2] = h0amplitudeWHpm; Particlehiggsl.Array_Decays[78][3] = 2; Particlehiggsl.Array_Comments[78] = "# h -> H+- W-+";
+
+   for(int i = 0; i<Particlehiggsl.No_of_Decays; i++) {
+     if (Particlehiggsl.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << Particlehiggsl.Array_Comments[i] << " is negative = " << Particlehiggsl.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       Particlehiggsl.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }   
    
    double higgsl_No_1to2_Decays = 0;
    
@@ -5346,6 +5592,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleHiggsH.Array_Decays[79][0] = PDGZboson; ParticleHiggsH.Array_Decays[79][1] = PDGA2; ParticleHiggsH.Array_Decays[79][2] = H0amplitudehiggsA2Zboson; ParticleHiggsH.Array_Decays[79][3] = 2; ParticleHiggsH.Array_Comments[79] = "# H -> A2 Z";
    ParticleHiggsH.Array_Decays[80][0] = PDGHplus; ParticleHiggsH.Array_Decays[80][1] = -PDGWplus; ParticleHiggsH.Array_Decays[80][2] = H0amplitudeWHpm; ParticleHiggsH.Array_Decays[80][3] = 2; ParticleHiggsH.Array_Comments[80] = "# H -> H+- W-+";
    
+   for(int i = 0; i<ParticleHiggsH.No_of_Decays; i++) {
+     if (ParticleHiggsH.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleHiggsH.Array_Comments[i] << " is negative = " << ParticleHiggsH.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleHiggsH.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }    
+   
    double HiggsH_No_1to2_Decays = 0;
    
    HiggsH_No_1to2_Decays = ParticleHiggsH.No_1to2_Decays + ParticleHiggsH.No_NMSSM_Decays; /// As higgsH can't be NLSP as heavier than higgsl
@@ -5606,6 +5860,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
       ParticleHiggsH3.Array_Decays[80][0] = PDGh0; ParticleHiggsH3.Array_Decays[80][1] = PDGH0; ParticleHiggsH3.Array_Decays[80][2] = H03amplitudeh0H0; ParticleHiggsH3.Array_Decays[80][3] = 2; ParticleHiggsH3.Array_Comments[80] = "# H3 -> h H";
       ParticleHiggsH3.Array_Decays[81][0] = PDGH0; ParticleHiggsH3.Array_Decays[81][1] = PDGH0; ParticleHiggsH3.Array_Decays[81][2] = H03amplitudeH0H0; ParticleHiggsH3.Array_Decays[81][3] = 2; ParticleHiggsH3.Array_Comments[81] = "# H3 -> H H";
       ParticleHiggsH3.Array_Decays[82][0] = PDGHplus; ParticleHiggsH3.Array_Decays[82][1] = -PDGWplus; ParticleHiggsH3.Array_Decays[82][2] = H03amplitudeWHpm; ParticleHiggsH3.Array_Decays[82][3] = 2; ParticleHiggsH3.Array_Comments[82] = "# H3 -> H+- W-+";
+
+      for(int i = 0; i<ParticleHiggsH3.No_of_Decays; i++) {
+	if (ParticleHiggsH3.Array_Decays[i][2] < 0) {
+	  fout << "#warning! Partial Width for " << ParticleHiggsH3.Array_Comments[i] << " is negative = " << ParticleHiggsH3.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+	  ParticleHiggsH3.Array_Decays[i][2] = 0;
+	  errorflag = -1;
+	}
+   }          
       
       double HiggsH3_No_1to2_Decays = 0;
       
@@ -5842,6 +6104,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleHiggsA.Array_Decays[50][0] = PDGneutralino1; ParticleHiggsA.Array_Decays[50][1] = PDGneutralino5; ParticleHiggsA.Array_Decays[50][2] = A0amplitudeneutZ4neutZ5; ParticleHiggsA.Array_Decays[50][3] = 2; ParticleHiggsA.Array_Comments[50] = "# A -> ~chi_40 ~chi_50";
    ParticleHiggsA.Array_Decays[51][0] = PDGneutralino1; ParticleHiggsA.Array_Decays[51][1] = PDGneutralino5; ParticleHiggsA.Array_Decays[51][2] = A0amplitudeneutZ5neutZ5; ParticleHiggsA.Array_Decays[51][3] = 2; ParticleHiggsA.Array_Comments[51] = "# A -> ~chi_50 ~chi_50";
    ParticleHiggsA.Array_Decays[52][0] = PDGZboson; ParticleHiggsA.Array_Decays[52][1] = PDGH3; ParticleHiggsA.Array_Decays[52][2] = A0amplitudehiggsH3Zboson; ParticleHiggsA.Array_Decays[52][3] = 2; ParticleHiggsA.Array_Comments[52] = "# A -> H3 Z";
+
+   for(int i = 0; i<ParticleHiggsA.No_of_Decays; i++) {
+     if (ParticleHiggsA.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleHiggsA.Array_Comments[i] << " is negative = " << ParticleHiggsA.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleHiggsA.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }       
    
    double HiggsA_No_1to2_Decays = 0;
    
@@ -6024,6 +6294,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
      ParticleHiggsA2.Array_Decays[53][0] = PDGh0; ParticleHiggsA2.Array_Decays[53][1] = PDGA0; ParticleHiggsA2.Array_Decays[53][2] = A02amplitudehiggshA0; ParticleHiggsA2.Array_Decays[53][3] = 2; ParticleHiggsA2.Array_Comments[53] = "# A2 -> h A";
      ParticleHiggsA2.Array_Decays[54][0] = PDGH0; ParticleHiggsA2.Array_Decays[54][1] = PDGA0; ParticleHiggsA2.Array_Decays[54][2] = A02amplitudehiggsHA0; ParticleHiggsA2.Array_Decays[54][3] = 2; ParticleHiggsA2.Array_Comments[54] = "# A2 -> H A";
      ParticleHiggsA2.Array_Decays[55][0] = PDGH3; ParticleHiggsA2.Array_Decays[55][1] = PDGA0; ParticleHiggsA2.Array_Decays[55][2] = A02amplitudehiggsH3A0; ParticleHiggsA2.Array_Decays[55][3] = 2; ParticleHiggsA2.Array_Comments[55] = "# A2 -> H3 A";
+
+     for(int i = 0; i<ParticleHiggsA2.No_of_Decays; i++) {
+       if (ParticleHiggsA2.Array_Decays[i][2] < 0) {
+	 fout << "#warning! Partial Width for " << ParticleHiggsA2.Array_Comments[i] << " is negative = " << ParticleHiggsA2.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+	 ParticleHiggsA2.Array_Decays[i][2] = 0;
+	 errorflag = -1;
+       }
+     }       
      
      double HiggsA2_No_1to2_Decays = 0;
      ParticleHiggsA2.two_width = 0;
@@ -6187,6 +6465,14 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleHiggsplus.Array_Decays[42][0] = PDGWplus; ParticleHiggsplus.Array_Decays[42][1] = PDGA2; ParticleHiggsplus.Array_Decays[42][2] = HplusamplitudeWA2; ParticleHiggsplus.Array_Decays[42][3] = 2; ParticleHiggsplus.Array_Comments[42] = "# H+ -> W+ A2";
    ParticleHiggsplus.Array_Decays[43][0] = PDGneutralino5; ParticleHiggsplus.Array_Decays[43][1] = PDGchargino1; ParticleHiggsplus.Array_Decays[43][2] = HplusamplitudeneutZ5charW1; ParticleHiggsplus.Array_Decays[43][3] = 2; ParticleHiggsplus.Array_Comments[43] = "# H+ -> ~chi_50 ~chi_1+";
    ParticleHiggsplus.Array_Decays[44][0] = PDGneutralino5; ParticleHiggsplus.Array_Decays[44][1] = PDGchargino2; ParticleHiggsplus.Array_Decays[44][2] = HplusamplitudeneutZ5charW2; ParticleHiggsplus.Array_Decays[44][3] = 2; ParticleHiggsplus.Array_Comments[44] = "# H+ -> ~chi_50 ~chi_2+";
+
+   for(int i = 0; i<ParticleHiggsplus.No_of_Decays; i++) {
+     if (ParticleHiggsplus.Array_Decays[i][2] < 0) {
+       fout << "#warning! Partial Width for " << ParticleHiggsplus.Array_Comments[i] << " is negative = " << ParticleHiggsplus.Array_Decays[i][2] << " and is set to zero here" << endl; //most likely due to numerical precision issues and so for small partial widths which are negligible if they are not the only decay modes available, contact the authors for more information or if you are concerned about your specific point producing a negative partial width in error
+       ParticleHiggsplus.Array_Decays[i][2] = 0;
+       errorflag = -1;
+     }
+   }       
    
    double Higgsplus_No_1to2_Decays = 0;
    
