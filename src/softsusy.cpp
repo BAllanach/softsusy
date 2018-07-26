@@ -7343,7 +7343,7 @@ void MssmSoftsusy::check_flags()
 #else
   if (numHiggsMassLoops > 2) {
      cout << "# WARNING: 3-loop corrections to the Higgs mass are disabled,"
-        " because Himalaya is not compiled in.";
+        " because Himalaya is not compiled in.\n";
   }
 #endif
 }

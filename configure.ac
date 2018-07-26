@@ -23,9 +23,11 @@ dnl ==========================================
 
 AC_LANG(C++)
 
-AM_INIT_AUTOMAKE([1.9 foreign])
+AM_INIT_AUTOMAKE([-Wall 1.9 foreign])
 dnl Checks for programs.
 AC_PROG_CXX
+
+AM_PROG_AR
 
 if test x"$CXX" = x; then
  AC_MSG_ERROR([could not find C++ compiler])

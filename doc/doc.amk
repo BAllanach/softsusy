@@ -6,16 +6,16 @@ doc_DATA = $(DOCFILES)
 
 doc/rpcManual.pdf: doc/rpcManual.tex src/rpvmain.cpp inOutFiles/outputTest doc/rpcManual.ax1 doc/rpcManual.ax2
 doc/rpvManual.pdf: doc/rpvManual.tex src/rpvmain.cpp inOutFiles/rpvOutputTest
-doc/neutManual.pdf: doc/neutManual.proto.tex inOutFiles/neutOutputTest
+doc/neutManual.tex: doc/neutManual.proto.tex inOutFiles/neutOutputTest
 	     	    cat inOutFiles/neutOutputTest | grep "MASS\|Mnu" >  doc/mnu.tex;\
 		    cat inOutFiles/neutOutputTest | grep "Sneutrino\|sneutrino" > doc/snuvev.tex;\
 		    cat inOutFiles/neutOutputTest | grep UPMNS > doc/upmns.tex;\
 		    sed -e '/MNUINPUT/ {' -e 'r doc/mnu.tex' -e 'd' -e '}' doc/neutManual.proto.tex | sed -e '/SNUVEVINPUT/ {' -e 'r doc/snuvev.tex' -e 'd' -e '}' | sed -e '/UPMNSINPUT/ {' -e 'r doc/upmns.tex' -e 'd' -e '}' > doc/neutManual.tex;\
-		    rm doc/mnu.tex doc/snuvev.tex doc/upmns.tex;\
-		    cd doc;\
-		    pdflatex neutManual.tex; pdflatex neutManual.tex; rm neutManual.tex
+		    rm doc/mnu.tex doc/snuvev.tex doc/upmns.tex
+doc/neutManual.pdf: 
 
-doc/%.pdf: doc/%.tex
+
+$(DOCFILES): doc/%.pdf : doc/%.tex
 	cd $(top_builddir)/doc;\
 	pdflatex $(*F).tex ; bibtex $(*F); pdflatex $(*F).tex; pdflatex $(*F).tex 
 
