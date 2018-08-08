@@ -16,7 +16,7 @@
     <a href="http://projects.hepforge.org/softsusy/">
     SOFTSUSY Homepage</a>
 
-    \section manual Official manual
+    \section manual Official manuals
     If you use SOFTSUSY to write a paper, please cite <br>
     [Allanach:2001kg] B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145,
 
@@ -50,7 +50,7 @@
 
     \section updates Official Updates
     Updates will be posted on the    
-    <a href="http://projects.hepforge.org/softsusy/">
+    <a href="https://softsusy.hepforge.org/">
     SOFTSUSY Homepage</a>, and the manuals in the doc subdirectory
     will also be updated and released with the distribution.
  */

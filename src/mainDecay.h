@@ -1,5 +1,4 @@
-
-/** \file main.h
+/** \file mainDecay.h
    - Project:     SOFTSUSY 
    - Author:      Ben Allanach 
    - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 

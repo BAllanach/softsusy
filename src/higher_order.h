@@ -1,3 +1,12 @@
+/**  \file higher_order.h
+   - Project:     SOFTSUSY 
+   - Author:      B.C. Allanach, S. Martin, D. Robertson and R. Ruiz de Austri
+   - Manual:      B.C. Allanach, S. Martin, D. Robertson and R. Ruiz de Austri, 
+                  arXiv:1601.06657
+   - Webpage:     http://softsusy.hepforge.org
+   \brief         Interface to higher loop corrections
+*/
+
 #ifndef HIGHERORDER_H
 #define HIGHERORDER_H
 

@@ -1,10 +1,10 @@
-/** \file twoBodydecays.h
+/** \file twoBodyDecays.h
    - Project:     SOFTSUSY 
    - Author:      Tom Cridge, Ben Allanach
    - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
    - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
 
-   \brief Code calculates two body decay modes of sparticles and Higgs'. 
+   \brief Code calculates two body decay modes of sparticles and Higgs. 
    See arxiv:1703.09717
 */
 

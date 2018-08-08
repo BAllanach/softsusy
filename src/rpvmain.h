@@ -1,4 +1,4 @@
-/** \file def.h
+/** \file rpvmain.h
    - Project:     SOFTSUSY
    - Author:      Ben Allanach, Markus Bernhardt
    - Manual:      arXiv:0903.1805, Comp. Phys. Comm. 181 (2010) 232

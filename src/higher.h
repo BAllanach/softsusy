@@ -1,11 +1,10 @@
-/** 
-   Project:     SOFTSUSY 
-   File:        higher.h
-   Author:      B.C. Allanach, S. Martin, D. Robertson and R. Ruiz de Austri
-   Manual:      B.C. Allanach, S. Martin, D. Robertson and R. Ruiz de Austri, 
-                arXiv:1601.06657
-   Webpage:     http://allanach.home.cern.ch/allanach/softsusy.html
-   Description: main calling program to be put in src/ in the softsusy
+/**  \file higher.h
+   - Project:     SOFTSUSY 
+   - Author:      B.C. Allanach, S. Martin, D. Robertson and R. Ruiz de Austri
+   - Manual:      B.C. Allanach, S. Martin, D. Robertson and R. Ruiz de Austri, 
+                  arXiv:1601.06657
+   - Webpage:     http://allanach.home.cern.ch/allanach/softsusy.html
+   \brief       Main calling program to be put in src/ in the softsusy
                 directory, for 2-loop SUSY QCD corrections to gluino and
                 squark pole masses.
 */
