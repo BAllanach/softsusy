@@ -1,2 +1,2 @@
-<li>Fixed discussion of Higgs decays in manual
-<li>Got rid of approximate 2-loop running mt corrections: they have been causing inaccurate results since 3.7.4, decreasing mh by 4 GeV or so, for instance. For accurate mh determination, use ./configure --enable-two-loop-gauge-yukawa-compilation and SLHA higher-loop contribution flags. Thanks to T. Garon and L. Everett for pointing this out. 
+<li>Fixed discussion of Higgs decays in decays manual
+<li>Got rid of approximate 2-loop running mt corrections: they have been causing inaccurate results since 3.7.4, decreasing mh by 4 GeV or so, for instance. For most accurate mh determination, use <pre>./configure --enable-two-loop-gauge-yukawa-compilation</pre> and SLHA higher-loop contribution flags. Thanks to T. Garon and L. Everett for pointing this out. 
