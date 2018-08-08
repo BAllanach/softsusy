@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([softsusy],[4.1.5],[softsusy@projects.hepforge.org],[softsusy],[http://softsusy.hepforge.org/])
+AC_INIT([softsusy], [4.1.5], [B.C.Allanach@damtp.cam.ac.uk], [softsusy], [http://softsusy.hepforge.org/])
 AC_CONFIG_SRCDIR([src])
 AC_CONFIG_AUX_DIR([Config])
 AC_CONFIG_HEADERS([Config/config.h])
@@ -23,7 +23,7 @@ dnl ==========================================
 
 AC_LANG(C++)
 
-AM_INIT_AUTOMAKE([-Wall 1.9 foreign])
+AM_INIT_AUTOMAKE([-Wall foreign])
 dnl Checks for programs.
 AC_PROG_CXX
 
