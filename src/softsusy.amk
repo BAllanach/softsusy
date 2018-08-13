@@ -47,18 +47,13 @@ rpvneut_x_LDADD        += libsupermodel.la libtsil.la
 decay_x_LDADD        += libsupermodel.la libtsil.la 
 
 himalayadir = $(srcdir)/src/Himalaya-1.0.0
+himalayalib = $(himalayadir)/libHimalaya.a
 
 if ENABLE_HIMALAYA
-softsusy_x_LDADD       += $(himalayadir)/libHimalaya.a
-softsusy_nmssm_x_LDADD += $(himalayadir)/libHimalaya.a
-softpoint_x_LDADD      += $(himalayadir)/libHimalaya.a
-rpvsoftsusy_x_LDADD    += $(himalayadir)/libHimalaya.a
-rpvneut_x_LDADD        += $(himalayadir)/libHimalaya.a
-higher_x_LDADD         += $(himalayadir)/libHimalaya.a
 CPPFLAGS               += -I$(himalayadir)/source/include
 endif ENABLE_HIMALAYA
 
-$(himalayadir)/libHimalaya.a:
+$(himalayalib):
 	cd $(himalayadir) && cmake . && $(MAKE)
 .PHONY: clean-local-himalaya
 clean-local: clean-local-himalaya
