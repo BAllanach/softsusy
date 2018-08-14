@@ -363,8 +363,8 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
                 &costau, &scalesq, &amu, &tanb, &vev2, &s1tau, &s2tau);
 
       /// rescale T1 to get TS
-      double sss = s1s * vev * cos(atan(tanb)) / s;
-      double ssb = s1b * vev * sin(atan(tanb)) / s;
+      const double sss = s1s * sqr(vev * cos(atan(tanb)) / s);
+      const double ssb = s1b * sqr(vev * sin(atan(tanb)) / s);
 
       if (!testNan(s1s * s1t * s1b * s1tau * s2s * s2t * s2b * s2tau
                    * sss * ssb)) {
