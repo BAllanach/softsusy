@@ -7691,7 +7691,6 @@ void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2,
     /// If it's only at MZ, the point may be OK: here, we may use the pole
     /// mass in loops, if necessary
     if (close(displayMu(), displayDataSet().displayMu(), 1.0e-6)) {
-      cout << "***IN HERE\n";
       if (altEwsb) mAsq = sqr(displayMaCond());
       else {
 	double mApole = physpars.mA0(1); /// physical value
