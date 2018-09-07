@@ -1,1 +1,2 @@
 <li>Fixed Higgs potential minimisation in NMSSM - thanks to S Pogel
+<li>Fixed MA(mu)^2<0 but MApole^2>0 workaround: I accidentally broke this in 4.1.1 - thanks to P Slavich

@@ -7690,7 +7690,8 @@ void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2,
   if (mAsq < 0.) {
     /// If it's only at MZ, the point may be OK: here, we may use the pole
     /// mass in loops, if necessary
-    if (close(displayMu(), MZ, 1.0e-6)) { 
+    if (close(displayMu(), displayDataSet().displayMu(), 1.0e-6)) {
+      cout << "***IN HERE\n";
       if (altEwsb) mAsq = sqr(displayMaCond());
       else {
 	double mApole = physpars.mA0(1); /// physical value
@@ -7707,7 +7708,7 @@ void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2,
 	
 	mAsq = poleMasq;	
       } ///< not alternative EWSB conditions
-    } ///< we are at MZ
+    } ///< we are at mScale
     
     /// If, after using the pole mass or whatever, we still have a problem, we
     /// must flag a tachyon and do something to stop a proliferation of NANs
