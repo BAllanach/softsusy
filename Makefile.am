@@ -17,8 +17,7 @@ DOCFILES = doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
 include doc/doc.amk
 include inOutFiles/inOut.amk
 
-dist_pkgdata_DATA += softsusy_nmssmtools.x.in setup_nmssmtools.sh \
-NMSSMTools_4.2.1.tgz Makefile.nmssmtools CHANGES GUIDELINES COPYING $(DOCFILES)
+dist_pkgdata_DATA += CHANGES GUIDELINES COPYING $(DOCFILES)
 
 CLEANFILES += $(OUTPUTFILES) *.x
 
