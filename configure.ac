@@ -23,7 +23,7 @@ dnl ==========================================
 
 AC_LANG(C++)
 
-AM_INIT_AUTOMAKE([-Wall foreign])
+AM_INIT_AUTOMAKE([foreign])
 dnl Checks for programs.
 AC_PROG_CXX
 
