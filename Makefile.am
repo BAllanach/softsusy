@@ -43,3 +43,4 @@ install-data-local:
 dist-hook:
 	sed -i -e 's/^include doc/#include doc/g' $(distdir)/Makefile.am
 	rm $(distdir)/doc/doc.amk
+	autoreconf -vif	

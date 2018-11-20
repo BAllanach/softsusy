@@ -16,6 +16,11 @@
 #include "main.h"
 #include "nmssmsoftsusy.h"
 #include "decays.h"
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 using namespace softsusy;
 
 int main() {
@@ -23,7 +28,7 @@ int main() {
   signal(SIGFPE, FPE_ExceptionHandler); 
 
   try {
-    cout << "# SOFTSUSY" << PACKAGE_VERSION 
+    cout << "# SOFTSUSY" << PACKAGE_VERSION
 	 << " test program, Ben Allanach 2002\n";
     cout << "# If you use SOFTSUSY, please refer to B.C. Allanach,\n";
     cout << "# Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145\n";
