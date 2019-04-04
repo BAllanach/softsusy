@@ -114,8 +114,9 @@ namespace softsusy {
     void check_flags(); ///< check consistency of threshold flags
     DoubleMatrix calcHiggs3L(bool is_bottom); ///< Higgs 3L corrections
   public:
-    using TMSSMBoundaryCondition = void(*)(MssmSoftsusy&, const DoubleVector&);
-
+    //    using TMSSMBoundaryCondition = void(*)(MssmSoftsusy&, const DoubleVector&);
+    typedef void TMSSMBoundaryCondition(MssmSoftsusy&, const DoubleVector&);
+    
     /// Flag allowing to choose which two-loop thresholds have to be included
     int included_thresholds; 
     
