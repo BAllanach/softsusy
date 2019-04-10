@@ -36,7 +36,7 @@ updateWeb: dist
 	rm -fr html *.tar.gz
 
 install-data-local:
-	rm -f higher.x softsusy.x softsusy-nmssm.x softpoint.x rpvsoftsusy.x rpvneut.x *.la
+	rm -f softsusy.x softsusy-nmssm.x softpoint.x rpvsoftsusy.x rpvneut.x *.la
 
 # For distributions: don't re-make the docs
 dist-hook:

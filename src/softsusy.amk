@@ -34,9 +34,6 @@ rpvsoftsusy_x_LDADD += -looptools -lgfortran
 rpvneut_x_LDADD += -looptools -lgfortran
 endif LOOPTOOLS
 
-bin_PROGRAMS += higher.x 
-higher_x_SOURCES = src/higher.cpp 
-higher_x_LDADD = libsoft.la libsupermodel.la libtsil.la
 include src/supermodel/tsil.amk
 include src/supermodel/supermodel.amk
 softsusy_x_LDADD       += libsupermodel.la libtsil.la 
@@ -54,7 +51,6 @@ softsusy_nmssm_x_LDADD += $(himalayadir)/libHimalaya.a
 softpoint_x_LDADD      += $(himalayadir)/libHimalaya.a
 rpvsoftsusy_x_LDADD    += $(himalayadir)/libHimalaya.a
 rpvneut_x_LDADD        += $(himalayadir)/libHimalaya.a
-higher_x_LDADD         += $(himalayadir)/libHimalaya.a
 CPPFLAGS               += -I$(himalayadir)/source/include
 endif ENABLE_HIMALAYA
 
@@ -76,7 +72,7 @@ src/lowe.h src/mycomplex.h src/rge.h src/softsusy.h \
 src/utils.h src/mssmUtils.h src/mssmjacobian.h src/rpvsoft.h src/rpvsusypars.h \
 src/tensor.h src/rpvmain.h src/flavoursoft.h \
 src/xpr-base.h src/xpr-matrix.h src/xpr-vector.h src/rpvneut.h \
-src/nmssmsusy.h src/nmssmsoftpars.h src/higher.h src/higher_order.h \
+src/nmssmsusy.h src/nmssmsoftpars.h src/higher_order.h \
 src/nmssmsoftsusy.h src/nmssmUtils.h src/nmssmjacobian.h
 
 libsoft_la_SOURCES = \
