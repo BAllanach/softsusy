@@ -9525,6 +9525,8 @@ namespace {
       physical(0);
       setThresholds(3);
       setLoops(lpnum);
+
+      //      cout << "*** DEBUG: Going into itLowsoft ***\n" << *this;
       
       /// PA: itLowsoft to be added along with the rest of lowOrg
       itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars,
