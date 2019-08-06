@@ -77,7 +77,7 @@ int QedQcd::flavours(double mu) const {
 }
 
 ostream & operator <<(ostream &left, const QedQcd &m) {
-  left << "alpha(MZ): " << 1.0 / m.displayAlphaMz(ALPHA)
+  left << "alpha(MZ)^-1: " << 1.0 / m.displayAlphaMz(ALPHA)
        << "  alpha_s(MZ): " << m.displayAlphaMz(ALPHAS)
        << endl;
   left << "mU: " << m.displayMass(mUp) 
@@ -388,7 +388,7 @@ void QedQcd::toMz() {
   
   double alphasMZ = displayAlphaMz(ALPHAS);
   double alphaMZ = displayAlphaMz(ALPHA);
-  setAlpha(ALPHA, alphaMZ); setAlphaMz(ALPHAS, alphasMZ);
+  setAlpha(ALPHA, alphaMZ); setAlpha(ALPHAS, alphasMZ);
   double mz = displayMu();
   runGauge(mz, 1.0);
   run(1.0, mz, tol);
