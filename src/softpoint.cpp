@@ -1341,9 +1341,8 @@ int main(int argc, char *argv[]) {
                pars(4) = pars(3); // sets Al to A0
                pars(5) = pars(3); // sets Ak to A0
                nmssmBoundaryCondition = &SemiMsugraBcs;
-             } else {
-               nmssmBoundaryCondition = &NmssmMsugraBcs;
-             }
+             } else nmssmBoundaryCondition = &NmssmMsugraBcs;
+             
            }
          } else if (strcmp(modelIdent, "nonUniversal") == 0) {
            nmssmBoundaryCondition = &extendedNMSugraBcs;
@@ -1462,10 +1461,8 @@ int main(int argc, char *argv[]) {
       nmssm_input.check_setup();
 
       DoubleVector nmpars(nmssm_input.get_nmpars());
-      nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu,
-                   tanb, oneset, gaugeUnification, ewsbBCscale);
-      nmssm.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,
-                                   numPoints, ewsbBCscale);
+      nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu, tanb, oneset, gaugeUnification, ewsbBCscale);
+      nmssm.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax, numPoints, ewsbBCscale);
 
       if (calcDecays) {
 	calculateDecays(cout, r, decayTable, nmssm, true);

@@ -45,7 +45,7 @@ int main() {
     
     /// most important Standard Model inputs: you may change these and recompile
     double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
-    oneset.setAlpha(ALPHAS, alphasMZ);
+    oneset.setAlphaMz(ALPHAS, alphasMZ);
     oneset.setPoleMt(mtop);
     oneset.setMbMb(mbmb);
     
