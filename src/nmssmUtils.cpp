@@ -432,6 +432,10 @@ void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
     m.setMh1Squared(mllsq);
     m.setMh2Squared(mllsq);
     m.setMsSquared(msingl);
+
+    cout << "Boundary condition applied at scale: "
+	 << m.displayMu()
+	 << m;
     
     // m.setTrilinearElement(1,1 m.displayMssmSusy(), 0.0);
     //    DoubleVector pars(2); ///< encodes EWSB BC

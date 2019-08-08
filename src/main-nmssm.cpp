@@ -32,7 +32,7 @@ int main() {
 
   /// most important Standard Model inputs: you may change these and recompile
   double alphasMZ = 0.1187, mtop = 172.1, mbmb = 4.18;
-  oneset.setAlpha(ALPHAS, alphasMZ);
+  oneset.setAlphaMz(ALPHAS, alphasMZ);
   oneset.setPoleMt(mtop);
   oneset.setMass(mBottom, mbmb);
   oneset.toMz();      ///< Runs SM fermion masses to MZ
@@ -55,7 +55,7 @@ int main() {
   LAMBDA3 = 2.e5;
   LAMBDAX = 2.e5;
   mMess = 5.e5;
-  cgrav = 0.0;
+  cgrav = 1.0;
   mGutGuess = mMess;
     
   DoubleVector pars(4);
@@ -93,7 +93,7 @@ int main() {
   double lambda, kappa, mupr, xiF, s;	
   //point I:
    lambda = 0.8;
-   kappa  = 0.0;
+   kappa  = 0.1;
    mupr =  2.6e3;     //order 1e3;
    xiF  = -6.76e7;    //is it positive or negative ??
    s    =  732.5;
@@ -105,22 +105,34 @@ int main() {
   // xiF = 4.84e6;    //order 1e6;
   // s   = 730.;
 
-  DoubleVector nmpars(5);
+   /*  DoubleVector nmpars(5);
   nmpars(1) = lambda; nmpars(2) = kappa; nmpars(3) = s;
-  nmpars(4) = xiF; nmpars(5) = mupr;
+  nmpars(4) = xiF; nmpars(5) = mupr;*/
   
   bool uni = false; // MGUT defined by g1(MGUT)=g2(MGUT)  // the final point of running is ***not*** MGUT
-
  
-  double tanb;  
+  double tanb = 4.;  
   //  for (int i = 0; i < numPoints; i++) {
   //     tanb = (endTanb - startTanb) / double(numPoints) * double(i) +
   //        startTanb; // set tan beta ready for the scan.
 
-     tanb = 4.0;
      
      NmssmSoftsusy n;
-     n.setZ3(false);   //this was originally true - i.e. it was for Z_3 symmetric models
+     //this was originally true - i.e. it was for Z_3 symmetric models     
+     n.setZ3(false);   
+     NMSSM_input nmssm_input; // NMSSM input parameters     
+     nmssm_input.set(NMSSM_input::lambda, lambda);
+     nmssm_input.set(NMSSM_input::kappa, kappa);
+     nmssm_input.set(NMSSM_input::lambdaS, lambda * s);
+     nmssm_input.set(NMSSM_input::xiF, xiF);
+     nmssm_input.check_setup();
+     DoubleVector nmpars(nmssm_input.get_nmpars());
+
+     n.setGUTlambda(true);
+     n.setGUTkappa(true);
+     n.setGUTmuPrime(true);
+     n.setGUTxiF(true);
+     n.setGUTsVev(true);
      
      try {
        n.NmssmSoftsusy::lowOrg(focusgmsb, mMess, pars, nmpars, 
