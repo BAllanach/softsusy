@@ -23,10 +23,10 @@ int cubicRoots(double alpha, double beta, double gamma, double delta,
     int a =
       cubicRootsInside(beta / alpha, gamma / alpha, delta / alpha, ans);
     if (a > 2) {
-      /// order the roots
-      if (ans(1) > ans(2)) ans.swap(1, 2);
-      if (ans(2) > ans(3)) ans.swap(2, 3);
-      if (ans(1) > ans(2)) ans.swap(1, 2);      
+      /// order the roots in increasing absolute order
+      if (fabs(ans(1)) > fabs(ans(2))) ans.swap(1, 2);
+      if (fabs(ans(2)) > fabs(ans(3))) ans.swap(2, 3);
+      if (fabs(ans(1)) > fabs(ans(2))) ans.swap(1, 2);      
     }
     return a;
   }
@@ -231,7 +231,7 @@ double log1minusx(double x) {
   if (x > 1.) return 0.; 
   else if (close(1., x, EPSTOL)) return numberOfTheBeast;
   else if (fabs(x) > 0.125) return log(1. - x);
-  else if (x < 1.e-200) return 0.;
+  else if (fpclassify(x) == FP_ZERO) return 0.;
   double test = -x; int i = 1; double l1mx = -x;
   /// Find largest power that we need from the expansion
   do { 
@@ -621,21 +621,21 @@ double b0(double p, double m1, double m2, double q) {
     
     Complex xPlus, xMinus;
 
-    /*
     /// alternative form: should be more accurate
-    double sgn_b = 1.;
-    if (b < 0.) sgn_b = -1.;
+    /*
     double q =
-      -0.5 * (-s + sgn_b * sqrt(sqr(s) - 4.0 * s * sqr(mMax)));
-    double xPlus = q / sqr(p);
-    double xMinus = sqr(mMax) / q;
+      -0.5 * (-s + sqrt(sqr(s) - 4.0 * s * sqr(mMax)));
+    xPlus = q / sqr(p);
+    xMinus = sqr(mMax) / q;
     */
+    
     xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
       (2. * sqr(p));
     xMinus = 2. * (sqr(mMax) - iEpsilon) / 
       (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
-    
-    ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
+
+    ans = -2.0 * log(p / q) - fB(xPlus)
+      - fB(xMinus);
   } else {
     if (close(m1, m2, EPSTOL)) {
       ans = - log(sqr(m1 / q));

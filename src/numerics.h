@@ -25,8 +25,10 @@
 #include "dilogwrap.h"
 using namespace softsusy;
 
-/// gives DoubleVector ans with all n real roots (returned) in of a x^3 + b
-/// x^2 + c x + d=0. Needs an upgrade to include complex roots
+/// gives DoubleVector ans with all n real roots (returned) in increasing
+/// absolute order for:
+/// a x^3 + b x^2 + c x + d=0.
+/// Needs an upgrade to include complex roots
 int cubicRoots(double a, double b, double c, double d,
 	       DoubleVector & ans);
 

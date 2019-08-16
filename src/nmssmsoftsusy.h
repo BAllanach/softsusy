@@ -52,6 +52,7 @@ namespace softsusy {
     bool GUTkappa;
     bool GUTmuPrime;
     bool GUTxiF;
+    bool GUTxiS;
     bool GUTsVev;
     /// If true then the EWSB conditions will output soft Higgs masses
     /// Will be inconsistent with constrained models
@@ -124,6 +125,7 @@ namespace softsusy {
     bool displayGUTkappa() const { return GUTkappa; }
     bool displayGUTmuPrime() const { return GUTmuPrime; }
     bool displayGUTxiF() const { return GUTxiF; }
+    bool displayGUTxiS() const { return GUTxiS; }
     bool displayGUTsVev() const { return GUTsVev; }
     bool displayMICROMEGAS() const { return MICROMEGAS; }
     bool displayNMSDECAY() const { return NMSDECAY; }
@@ -345,6 +347,7 @@ namespace softsusy {
     void setGUTkappa(bool i)  { GUTkappa = i; }
     void setGUTmuPrime(bool i)  {  GUTmuPrime = i; }
     void setGUTxiF(bool i)  {  GUTxiF = i; }
+    void setGUTxiS(bool i)  {  GUTxiS = i; }    
     void setGUTsVev(bool i)  {  GUTsVev = i; }
     void setMICROMEGAS(int i)  {  MICROMEGAS = i; }
     void setNMSDECAY(int i)  {  NMSDECAY = i; }
@@ -370,6 +373,9 @@ namespace softsusy {
     /// PA: third EWSB condition (for the singlet Higgs field)
     //new with respect to the MSSM.
     virtual int rewsbXiS(double & xiS) const;
+    /// BCA: fourth EWSB condition (for the singlet Higgs field)
+    /// new with respect to the MSSM.
+    virtual int rewsbSvevNoZ3(double & xiS) const;    
     /// PA:For Z3 invariant NMSSM when we solve for s, kappa and mS
     /// or for non universal Higgs
     virtual int rewsbmSsq(double & mSsq) const;
@@ -379,7 +385,7 @@ namespace softsusy {
     virtual int rewsbmH2sq(double & mH211sq) const;
     /// PA: Imposes EWSB at the tree level.
     virtual void rewsbTreeLevel(int sgnMu);
-    /// PA: finds mu iteratively in the casew where we use EWSB to swap
+    /// PA: finds mu iteratively in the case where we use EWSB to swap
     //(mu, m3sq, XiS) --> (mZ, tb, s)
     /// Uses the full one loop tadpole from Degrassi and Slavich.
     /// No two loop added yet.
@@ -688,7 +694,7 @@ namespace softsusy {
   inline NmssmSoftsusy::NmssmSoftsusy()
     : NmssmSusyPars(), SoftParsNmssm(), MssmSoftsusy(), tSOVSMs(0.0), 
       tSOVSMs1loop(0.0), GUTlambda(false), GUTkappa(false),
-      GUTmuPrime(false), GUTxiF(false), GUTsVev(false), 
+      GUTmuPrime(false), GUTxiF(false), GUTxiS(false), GUTsVev(false), 
       MICROMEGAS(0), NMSDECAY(0), drbarHiggsAccuracy(0.),
       physHiggsAccuracy(0.) {}
 
@@ -699,7 +705,7 @@ namespace softsusy {
 
       tSOVSMs(s.tSOVSMs), tSOVSMs1loop(s.tSOVSMs1loop),
       GUTlambda(s.GUTlambda), GUTkappa(s.GUTkappa), GUTmuPrime(s.GUTmuPrime),
-      GUTxiF(s.GUTxiF), GUTsVev(s.GUTsVev), 
+      GUTxiF(s.GUTxiF), GUTxiS(s.GUTxiS), GUTsVev(s.GUTsVev), 
       MICROMEGAS(s.MICROMEGAS), NMSDECAY(s.NMSDECAY),
       drbarHiggsAccuracy(s.drbarHiggsAccuracy),
       physHiggsAccuracy(s.physHiggsAccuracy)  {
@@ -710,7 +716,7 @@ namespace softsusy {
     : NmssmSusyPars(s.displayNmssmSusy()), SoftParsNmssm(), 
       MssmSoftsusy(s.MssmSusy::displayMssmSusy()), tSOVSMs(0.0), 
       tSOVSMs1loop(0.0), GUTlambda(false), GUTkappa(false),
-      GUTmuPrime(false), GUTxiF(false), GUTsVev(false), 
+      GUTmuPrime(false), GUTxiF(false), GUTxiS(false), GUTsVev(false), 
       MICROMEGAS(0), NMSDECAY(0), drbarHiggsAccuracy(0.),
       physHiggsAccuracy(0.) {
     setPars(121);
@@ -722,7 +728,7 @@ namespace softsusy {
 			     SoftParsNmssm(s), MssmSoftsusy(sp),
 			     tSOVSMs(0.0), tSOVSMs1loop(0.0), 
 			     GUTlambda(false), GUTkappa(false),
-			     GUTmuPrime(false), GUTxiF(false), GUTsVev(false),
+			     GUTmuPrime(false), GUTxiF(false), GUTxiS(false), GUTsVev(false),
 			     MICROMEGAS(0), NMSDECAY(0),
                                         drbarHiggsAccuracy(0.),
                                         physHiggsAccuracy(0.)   {

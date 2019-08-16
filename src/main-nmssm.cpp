@@ -10,6 +10,8 @@
 */
 
 #include <iostream>
+#include <cmath>
+#include <cfloat>
 #include "def.h"
 #include "linalg.h"
 #include "lowe.h"
@@ -31,7 +33,7 @@ int main() {
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
 
   /// most important Standard Model inputs: you may change these and recompile
-  double alphasMZ = 0.1187, mtop = 172.1, mbmb = 4.18;
+  double alphasMZ = 0.1187, mtop = 170.9, mbmb = 4.18;
   oneset.setAlphaMz(ALPHAS, alphasMZ);
   oneset.setPoleMt(mtop);
   oneset.setMass(mBottom, mbmb);
@@ -90,13 +92,14 @@ int main() {
   	  throw ii.str();
   	}
 
-  double lambda, kappa, mupr, xiF, s;	
+	double lambda, kappa, mupr, xiF, s, xiS;	
   //point I:
    lambda = 0.8;
    kappa  = 0.1;
-   mupr =  2.6e3;     //order 1e3;
-   xiF  = -6.76e7;    //is it positive or negative ??
-   s    =  732.5;
+   mupr =  2.2e3;     //order 1e3;
+   xiF  = -2.0e3;    //is it positive or negative ??
+   xiS  = -8.0e7;
+   s    =  730.;
 
   //point III:
   // lambda = 0.8;
@@ -116,15 +119,17 @@ int main() {
   //     tanb = (endTanb - startTanb) / double(numPoints) * double(i) +
   //        startTanb; // set tan beta ready for the scan.
 
-     
+
      NmssmSoftsusy n;
      //this was originally true - i.e. it was for Z_3 symmetric models     
      n.setZ3(false);   
      NMSSM_input nmssm_input; // NMSSM input parameters     
+     try {     
      nmssm_input.set(NMSSM_input::lambda, lambda);
      nmssm_input.set(NMSSM_input::kappa, kappa);
-     nmssm_input.set(NMSSM_input::lambdaS, lambda * s);
+     //     nmssm_input.set(NMSSM_input::lambdaS, lambda * s);
      nmssm_input.set(NMSSM_input::xiF, xiF);
+     nmssm_input.set(NMSSM_input::xiS, xiS);
      nmssm_input.check_setup();
      DoubleVector nmpars(nmssm_input.get_nmpars());
 
@@ -132,14 +137,16 @@ int main() {
      n.setGUTkappa(true);
      n.setGUTmuPrime(true);
      n.setGUTxiF(true);
-     n.setGUTsVev(true);
+     n.setGUTxiS(true);     
+     //     n.setGUTsVev(true);
      
-     try {
        n.NmssmSoftsusy::lowOrg(focusgmsb, mMess, pars, nmpars, 
   			       sgnMu, tanb, oneset, uni);
      } catch (const std::string& error) {
+       cout << error;
        n.flagProblemThrown(true);
      } catch (const char* error) {
+       cout << error;
        n.flagProblemThrown(true);
      }
 

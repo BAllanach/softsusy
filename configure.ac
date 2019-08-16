@@ -11,7 +11,7 @@ dnl Put default fortran compiler for this variable
 dnl F77=gfortran
 dnl === disable debug symbols by default =====
 if test "x$CXXFLAGS" = "x"; then
-    CXXFLAGS="-O2 -std=c++11"
+    CXXFLAGS="-O2 -std=c++14"
 fi
 if test "x$CFLAGS" = "x"; then
     CFLAGS="-O2"

@@ -32,7 +32,7 @@ double NMSSM_input::get(NMSSM_parameters par) const {
 }
 
 DoubleVector NMSSM_input::get_nmpars() const {
-   DoubleVector nmpars(5);
+   DoubleVector nmpars(6);
    nmpars(1) = get(NMSSM_input::lambda);
    nmpars(2) = get(NMSSM_input::kappa);
    if (is_set(NMSSM_input::lambdaS)) {
@@ -49,6 +49,7 @@ DoubleVector NMSSM_input::get_nmpars() const {
    }
    nmpars(4) = get(NMSSM_input::xiF);
    nmpars(5) = get(NMSSM_input::muPrime);
+   nmpars(6) = get(NMSSM_input::xiS);   
    return nmpars;
 };
 
@@ -87,9 +88,9 @@ void NMSSM_input::check_ewsb_output_parameters() const {
          if (!is_set(lambdaS) && !is_set(kappa) && !is_set(mS2))
             supported = true;
       } else {
-         if (!is_set(mu) && !is_set(BmuOverCosBetaSinBeta) && !is_set(xiS))
+         if (!is_set(mu) && !is_set(BmuOverCosBetaSinBeta))
             supported = true;
-         if (!is_set(lambdaS) || close(parameter[lambdaS], 0., EPSTOL))
+         if ( (!is_set(lambdaS) || close(parameter[lambdaS], 0., EPSTOL)) && !is_set(xiS))
             throw "# ERROR: <S> is zero!  In the Z3 violating NMSSM <S> is not"
                " determined by the EWSB conditions, so <S> has to be set to"
                " a non-zero value on the user-side!\n";
@@ -318,6 +319,7 @@ void NmssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 				 m.displayMssmSusy(),
 				 m.displayMssmSoftPars());
   m.MssmSoftPars::standardSugra(m.displayMssmSoft(), m0, m12, a0);
+  cout << "DEBUG: BC at " << m.displayMu() << ": " << m;
 }
 
 //PA: msugra bcs in the mssm limit of the general nmssm
@@ -433,6 +435,11 @@ void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
     m.setMh2Squared(mllsq);
     m.setMsSquared(msingl);
 
+    const double susyMu = m.displaySusyMu();
+    if (!close(susyMu, 0.0, EPSTOL))
+      m.setMspSquared(m.displayM3Squared() * m.displayMupr() /
+		    susyMu);
+    
     cout << "Boundary condition applied at scale: "
 	 << m.displayMu()
 	 << m;

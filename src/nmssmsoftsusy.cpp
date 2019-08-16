@@ -3460,6 +3460,44 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return 0;
   }
 
+  /// BCA: fourth EWSB condition (for the singlet Higgs field)
+  /// new with respect to the MSSM.
+  int NmssmSoftsusy::rewsbSvevNoZ3(double & s) const {
+    double mSsq = displayMsSquared();
+    double mSpsq = displayMspSquared();
+    double mupr = displayMupr();
+    double kap = displayKappa();
+    double lam = displayLambda();
+    double al = displayTrialambda();
+    double ak = displayTriakappa();
+    double xiF = displayXiF();
+    double xiS = displayXiS();
+    double sin2b = sin(2.0 * atan(displayTanb()));
+    double vev = displayHvev();
+    double smu = displaySusyMu();
+
+    /// coefficients of cubic: a s^3 + b s^2 + c s + d = 0
+    double a = - sqr(kap) / root2;
+    double b = - (ak * 0.5 + 1.5 * kap * mupr);
+    double c = - (mSsq - displayTadpoleSMs() + mSpsq + sqr(mupr)
+       + 2.0 * kap * xiF + 0.5 * sqr(lam) * sqr(vev)
+       - 0.5 * lam * kap * sqr(vev) * sin2b) / root2;
+    double d =  -xiS - 0.5 * smu * lam * sqr(vev) - xiF * mupr
+      + 0.25 * sqr(vev) * sin2b * (al + lam * mupr);
+
+    DoubleVector ans(3);
+    int numSolns = cubicRoots(a, b, c, d, ans);
+
+    if (PRINTOUT && numSolns > 1) cout << "WARNING: more than one solution for s" << endl;
+    
+    /// We take the smallest absolute value - there's always at least one real
+    /// solution 
+    s = ans(1);
+    
+    return 0;
+  }
+ 
+  
   // PA: for Z3 invariant NMSSM where we solve for s, kappa and mS
   // Or low energy non-universal Higgs versions
   int NmssmSoftsusy::rewsbmSsq(double & mSsq) const {
@@ -3788,8 +3826,12 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       if (rewsbM3sq(mu, m3sq)) flagM3sq(true);
       else flagM3sq(false);
       setM3Squared(m3sq);
+
+      /// If you want to set xiS
       rewsbXiS(xiS);
       setXiS(xiS);
+      /// Otherwise, we want EWSB to set set the s vev
+      
     }
   }
 
@@ -9249,6 +9291,8 @@ namespace {
 	setSvev(nmpars(3));
       if (!GUTxiF && !displayZ3())
 	setXiF(nmpars(4));
+      if (!GUTxiS && !displayZ3())
+	setXiS(nmpars(6));
       if (!GUTmuPrime && !displayZ3())
 	setMupr(nmpars(5));
       if (!ewsbBCscale) err = runto(mxBC, eps);
@@ -9310,6 +9354,8 @@ namespace {
 	setSvev(nmpars(3));
       if (GUTxiF && !displayZ3())
 	setXiF(nmpars(4));
+      if (GUTxiS && !displayZ3())
+	setXiS(nmpars(6));
       if (GUTmuPrime && !displayZ3())
 	setMupr(nmpars(5));
       if (!ewsbBCscale) err = runto(displayMsusy(), eps);
@@ -9450,6 +9496,7 @@ namespace {
       bool GUTkappa = displayGUTkappa();
       bool GUTmuPrime = displayGUTmuPrime();
       bool GUTxiF = displayGUTxiF();
+      bool GUTxiS = displayGUTxiS();      
       bool GUTsVev = displayGUTsVev();
       int MICROMEGAS = displayMICROMEGAS();
       int NMSDECAY   = displayNMSDECAY();
@@ -9463,6 +9510,7 @@ namespace {
       setGUTkappa(GUTkappa);
       setGUTmuPrime(GUTmuPrime);
       setGUTxiF(GUTxiF);
+      setGUTxiS(GUTxiS);      
       setZ3( displayZ3() );
       setGUTsVev(GUTsVev);
       setMICROMEGAS(MICROMEGAS);
@@ -9499,6 +9547,8 @@ namespace {
 	setSvev(nmpars(3));
       if (GUTxiF && !displayZ3())
 	setXiF(nmpars(4));
+      if (GUTxiS && !displayZ3())
+	setXiS(nmpars(6));
       if (GUTmuPrime && !displayZ3())
 	setMupr(nmpars(5));
       
