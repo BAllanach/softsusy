@@ -76,6 +76,7 @@ namespace softsusy {
   /// Default: expand around gluino and squark pole masses
   int expandAroundGluinoPole = 3;
 
+  bool setsVevByInput = true;
   /// Thresholds at 2-loop SM to electroweak gauge couplings at QED x QCD /
   /// MSSM matching scale. If the QEDxQCD matching scale is not set to MZ,
   /// these two-loop corrections will be ineffective
