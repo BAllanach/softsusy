@@ -4719,9 +4719,7 @@ namespace {
 	  /// If you want to set xiS
 	  rewsbXiS(xiSnew);
 	  setXiS(xiSnew);
-	  if (PRINTOUT > 1) 
 	} 
-
       }
       else{
         rewsbmSsq(mSsqnew);
