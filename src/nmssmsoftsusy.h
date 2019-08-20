@@ -634,6 +634,12 @@ namespace softsusy {
     /// easier to read than couting the normal display function or
     /// calling printlong etc.
     void printall() const;
+    /// Prints whole object to standard output
+    virtual void printObj() { 
+      cout << this->displayNmssmSoftsusy(); 
+    };
+    /// Displays whole object as a const
+    const NmssmSoftsusy & displayNmssmSoftsusy() const;
 
     /// Outputs with Les Houches accord conventions to standard output.
     /// Inputs:
