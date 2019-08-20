@@ -75,8 +75,9 @@ namespace softsusy {
   bool USE_TWO_LOOP_SPARTICLE_MASS = false;
   /// Default: expand around gluino and squark pole masses
   int expandAroundGluinoPole = 3;
-
-  bool setsVevByInput = true;
+  /// Do you want to calculate svev from EWSB (and input xiS) as opposed to
+  /// the converse?
+  bool setsVevEWSB = false;
   /// Thresholds at 2-loop SM to electroweak gauge couplings at QED x QCD /
   /// MSSM matching scale. If the QEDxQCD matching scale is not set to MZ,
   /// these two-loop corrections will be ineffective
