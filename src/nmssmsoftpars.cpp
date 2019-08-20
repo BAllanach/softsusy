@@ -114,15 +114,6 @@ namespace softsusy {
 	+ lam * ( 2.0 * aYtr  + 8.0 * hlam * lam
 		  + 4.0 * hkap * kap + 1.2 * gsqM(1) + 6.0 * gsqM(2) );
 
-      /*      cout << " dhlam(1L)=" << dhlam << " " << (Ytr + 4.0 * lsq + 2.0 * ksq
-	       - 0.6 * gsq(1) - 3.0 * gsq(2)) * hlam << endl
-	   << lam * ( 2.0 * aYtr  + 8.0 * hlam * lam
-		      + 4.0 * hkap * kap + 1.2 * gsqM(1) + 6.0 * gsqM(2) ) 
-	   << " 1=" << 2.0 * aYtr  << " 2="<<  8.0 * hlam * lam << " 3=" << 
-	4.0 * hkap * kap  << " 4=" << 1.2 * gsqM(1) <<" 5=" << 6.0 * gsqM(2);
-      */
-      ///< DEBUG
-
       dhkap = 18.0 * hkap * ksq + 12.0 * lam * kap * hlam
 	+ 6.0 * hkap * lsq;
       
@@ -132,7 +123,7 @@ namespace softsusy {
 	+ 4.0 * xiF * (lam * hlam + kap * hkap)
 	+ 4.0 * lam * smu * (mH2sq + mH1sq) + 4.0 * kap * mupr * mSsq
 	+ 4.0 * hlam * m3sq + 2.0 * hkap * mSpsq;
-      
+
       /// convert to proper derivatives:
       dmSsq  *= ONEO16Pisq;
       dmSpsq *= ONEO16Pisq;
@@ -331,7 +322,7 @@ namespace softsusy {
       
       dxiS2 = - 4.0 * l4 * xiS - 16.0 * lam * lsq * hlam * xiF
 	- 8.0 * k4 * xiS - 32.0 * kap * ksq * hkap * xiF
-	- 2.0 * lsq * xiF * (xiS * Ytr + 2.0 * aYtr)
+	- 2.0 * lsq * (xiS * Ytr + 2.0 * aYtr * xiF)
 	- 4.0 * lam * hlam * xiF * Ytr
 	- 8.0 * lsq * ksq * xiS
 	- 16.0 * lam * kap * (kap * hlam + lam * hkap) * xiF
@@ -365,8 +356,7 @@ namespace softsusy {
       dmH2sq = dmH2sq + dmH2sq2 * oneO16Pif;
       dmSsq = dmSsq + dmSsq2 * oneO16Pif;
       dmSpsq = dmSpsq + dmSpsq2 * oneO16Pif;
-      dxiS = dxiS + dxiS2 * oneO16Pif;
-      
+      dxiS = dxiS + dxiS2 * oneO16Pif; 
     }
   }
   /** end of RGE functions **/
