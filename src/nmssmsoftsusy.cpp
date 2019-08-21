@@ -153,6 +153,8 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return trial;
   }
 
+  const NmssmSoftsusy & NmssmSoftsusy::displayNmssmSoftsusy() const { return *this; }
+  
   /*  const DoubleVector NmssmSoftsusy::display() const {
     DoubleVector y(MssmSoftsusy::display());
     int k = y.displayEnd() + 1;
@@ -1116,8 +1118,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     mS(2, 3) = root2 * lam * mueff * v2
       - (al + lam * kap * s * root2 + lam * mupr) * v1 / root2;
     mS(3, 3) = (al + lam * mupr) * v1 * v2 / (root2 * s)
-      + s / root2 * (ak + 2.0 * root2 * sqr(kap) * s
-                     + 3.0 * kap * mupr)
+      + s / root2 * (ak + 2.0 * root2 * sqr(kap) * s + 3.0 * kap * mupr)
       - root2 * (xiS + xiF * mupr + 0.5 * lam * smu * sqr(vev)) / s;
 
     mS.symmetrise();
@@ -1257,7 +1258,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
 
     if (mhsq(1) < 0. || mhsq(2) < 0. || mhsq(3) < 0.) {
       flagTachyon(h0);
-      if (PRINTOUT > 1) cout << " mH1/mH2/mH3 tachyon ";
+      if (PRINTOUT > 1) cout << " mH1/mH2/mH3 tree-level tachyon ";
     }
 
     DoubleVector mHiggs(mhsq.apply(ccbSqrt));
@@ -3460,6 +3461,45 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
     return 0;
   }
 
+  /// BCA: fourth EWSB condition (for the singlet Higgs field)
+  /// new with respect to the MSSM.
+  int NmssmSoftsusy::rewsbSvevNoZ3(double & s) const {
+    double mSsq = displayMsSquared();
+    double mSpsq = displayMspSquared();
+    double mupr = displayMupr();
+    double kap = displayKappa();
+    double lam = displayLambda();
+    double al = displayTrialambda();
+    double ak = displayTriakappa();
+    double xiF = displayXiF();
+    double xiS = displayXiS();
+    double sin2b = sin(2.0 * atan(displayTanb()));
+    double vev = displayHvev();
+    double smu = displaySusyMu();
+
+    /// coefficients of cubic: a s^3 + b s^2 + c s + d = 0
+    double a = - sqr(kap) / root2;
+    double b = - (ak * 0.5 + 1.5 * kap * mupr);
+    double c = - (mSsq - displayTadpoleSMs() + mSpsq + sqr(mupr)
+       + 2.0 * kap * xiF + 0.5 * sqr(lam) * sqr(vev)
+       - 0.5 * lam * kap * sqr(vev) * sin2b) / root2;
+    double d =  -xiS - 0.5 * smu * lam * sqr(vev) - xiF * mupr
+      + 0.25 * sqr(vev) * sin2b * (al + lam * mupr);
+
+    DoubleVector ans(3);
+    int numSolns = cubicRoots(a, b, c, d, ans);
+
+    if (PRINTOUT && numSolns > 1)
+      cout << "Solutions to s cubic: " << ans;
+    
+    /// We take the smallest absolute value - there's always at least one real
+    /// solution 
+    s = ans(1);
+    
+    return 0;
+  }
+ 
+  
   // PA: for Z3 invariant NMSSM where we solve for s, kappa and mS
   // Or low energy non-universal Higgs versions
   int NmssmSoftsusy::rewsbmSsq(double & mSsq) const {
@@ -3754,6 +3794,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
   // Curently works for general nmssm mapping
   // mu --> mZ, m3sq --> tan beta, s --> XiS  (Z3 = false)
   // ie (mu, m3sq, XiS) --> (mZ, tb, s)
+  
   //and s --> mZ, kappa --> tan beta, mS --> s  (Z3 = true)
   //ie (kappa, mS) --> (mZ, tb)
   void NmssmSoftsusy::rewsbTreeLevel(int sgnMu) {
@@ -3779,8 +3820,7 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       setKappa(kap);
       rewsbmSsq(mSsq);
       setMsSquared(mSsq);
-    }
-    else{
+    } else {
       if (rewsbMu(sgnMu, mu)) flagMusqwrongsign(true);
       else flagMusqwrongsign(false);
       setSusyMu(mu);
@@ -3788,8 +3828,16 @@ void NmssmSoftsusy::set(const DoubleVector & y) {
       if (rewsbM3sq(mu, m3sq)) flagM3sq(true);
       else flagM3sq(false);
       setM3Squared(m3sq);
-      rewsbXiS(xiS);
-      setXiS(xiS);
+      
+      if (setsVevEWSB) {
+	double s = 0.;
+	rewsbSvevNoZ3(s);
+	setSvev(s);
+      } else if (!GUTxiS) {
+	/// If you want to set xiS
+	rewsbXiS(xiS);
+	setXiS(xiS);	
+      }
     }
   }
 
@@ -4465,14 +4513,18 @@ namespace {
       }
       setM3Squared(m3sqnew);
 
-      double xiSnew;
-
-      rewsbXiS(xiSnew);
-      setXiS(xiSnew);
-
+      /// EWSB to set set the s vev from xiS input       
+      if (setsVevEWSB) {
+	double s = 0.;
+	rewsbSvevNoZ3(s);
+	setSvev(s);
+      } else if (!GUTxiS) {
+	double xiSnew = 0.;
+	/// If you want to set xiS
+	rewsbXiS(xiSnew);
+	setXiS(xiSnew);
+      }
     }
-
-
     catch(const char *a) {
       numTries = 0;
       throw a;
@@ -4657,9 +4709,17 @@ namespace {
         else flagM3sq(true);
         setM3Squared(m3sqnew);
       }
-      if(displayZ3() == false){
-	rewsbXiS(xiSnew);
-	setXiS(xiSnew);
+      if(displayZ3() == false) {
+
+	/// We want EWSB to set set the s vev from xiS input?
+	if (setsVevEWSB) {
+	  rewsbSvevNoZ3(snew);
+	  setSvev(snew);
+	} else if (!GUTxiS) {
+	  /// If you want to set xiS
+	  rewsbXiS(xiSnew);
+	  setXiS(xiSnew);
+	} 
       }
       else{
         rewsbmSsq(mSsqnew);
@@ -9245,12 +9305,11 @@ namespace {
       if(!GUTlambda) setLambda(nmpars(1));
       if (!GUTkappa && (!displayZ3() || softsusy::SoftHiggsOut))
 	setKappa(nmpars(2));
-      if (!GUTsVev && (!displayZ3() || softsusy::SoftHiggsOut))
-	setSvev(nmpars(3));
-      if (!GUTxiF && !displayZ3())
-	setXiF(nmpars(4));
-      if (!GUTmuPrime && !displayZ3())
-	setMupr(nmpars(5));
+      if (!GUTsVev && (!displayZ3() || softsusy::SoftHiggsOut) && !setsVevEWSB) 
+	{ setSvev(nmpars(3)); }
+      if (!GUTxiF && !displayZ3()) setXiF(nmpars(4));
+      //      if (!GUTxiS && !displayZ3()) { setXiS(nmpars(6)); cout << "** setting xis=" << nmpars(6) << endl; }
+      if (!GUTmuPrime && !displayZ3()) setMupr(nmpars(5));
       if (!ewsbBCscale) err = runto(mxBC, eps);
 
       /// Guard against the top Yukawa fixed point
@@ -9273,7 +9332,7 @@ namespace {
         /// problem with running: bail out
         flagNonperturbative(true);
         if (PRINTOUT)
-          cout << "itLowsoft gone non-perturbative approaching mgut\n";
+          cout << "itLowsoft gone non-perturbative approaching MX:\n";
         if (PRINTOUT > 1) printObj();
         numTries = 0;
         return;
@@ -9306,12 +9365,11 @@ namespace {
       if(GUTlambda) setLambda(nmpars(1));
       if (GUTkappa && (!displayZ3() || softsusy::SoftHiggsOut))
 	setKappa(nmpars(2));
-      if (GUTsVev && (!displayZ3() || softsusy::SoftHiggsOut))
-	setSvev(nmpars(3));
-      if (GUTxiF && !displayZ3())
-	setXiF(nmpars(4));
-      if (GUTmuPrime && !displayZ3())
-	setMupr(nmpars(5));
+      if (GUTsVev && (!displayZ3() || softsusy::SoftHiggsOut) && !setsVevEWSB)
+	{ setSvev(nmpars(3)); }
+      if (GUTxiF && !displayZ3()) setXiF(nmpars(4));
+      //      if (GUTxiS && !displayZ3()) { setXiS(nmpars(6)); }
+      if (GUTmuPrime && !displayZ3()) setMupr(nmpars(5));
       if (!ewsbBCscale) err = runto(displayMsusy(), eps);
 
       calcDrBarPars();
@@ -9416,7 +9474,7 @@ namespace {
     /// at one loop and only kappa additionally at two loop.
     t.setLambda(nmpars.display(1));
     t.setKappa(nmpars.display(2));
-    t.setSvev(nmpars.display(3));
+    if (!setsVevEWSB) t.setSvev(nmpars.display(3));
     t.setXiF(nmpars.display(4));
     t.setMupr(nmpars.display(5));
     return t;
@@ -9450,6 +9508,7 @@ namespace {
       bool GUTkappa = displayGUTkappa();
       bool GUTmuPrime = displayGUTmuPrime();
       bool GUTxiF = displayGUTxiF();
+      bool GUTxiS = displayGUTxiS();      
       bool GUTsVev = displayGUTsVev();
       int MICROMEGAS = displayMICROMEGAS();
       int NMSDECAY   = displayNMSDECAY();
@@ -9463,6 +9522,7 @@ namespace {
       setGUTkappa(GUTkappa);
       setGUTmuPrime(GUTmuPrime);
       setGUTxiF(GUTxiF);
+      setGUTxiS(GUTxiS);      
       setZ3( displayZ3() );
       setGUTsVev(GUTsVev);
       setMICROMEGAS(MICROMEGAS);
@@ -9491,17 +9551,15 @@ namespace {
 
       /// Initial guess: B=0, mu=1st parameter, need better guesses
       boundaryCondition(*this, pars);
-
       if (GUTlambda) setLambda(nmpars(1));
       if (GUTkappa && (!displayZ3() || softsusy::SoftHiggsOut))
 	setKappa(nmpars(2));
-      if (GUTsVev && (!displayZ3() || softsusy::SoftHiggsOut))
-	setSvev(nmpars(3));
-      if (GUTxiF && !displayZ3())
-	setXiF(nmpars(4));
-      if (GUTmuPrime && !displayZ3())
-	setMupr(nmpars(5));
-      
+      if (GUTsVev && (!displayZ3() || softsusy::SoftHiggsOut) && !setsVevEWSB)
+	{ setSvev(nmpars(3)); }
+      if (GUTxiF && !displayZ3()) setXiF(nmpars(4));
+      //      if (GUTxiS && !displayZ3()) setXiS(nmpars(6));
+      if (GUTmuPrime && !displayZ3()) setMupr(nmpars(5));
+
       if ((sgnMu == 1 || sgnMu == -1) && !ewsbBCscale) {
 	/// LCT: Changed sets to match softsusy.cpp 8/8/13
 	if(displayZ3()){
@@ -9511,6 +9569,7 @@ namespace {
 	else {
 	  setSusyMu(sgnMu * MZ);
 	  setM3Squared(1.0e6);
+	  setXiS(-1.0e6);
 	}
       }
       else {
@@ -9521,11 +9580,11 @@ namespace {
       run(mxBC, mz);
 
       if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu);
-
+      
       physical(0);
       setThresholds(3);
       setLoops(lpnum);
-      
+
       /// PA: itLowsoft to be added along with the rest of lowOrg
       itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars,
                 nmpars, gaugeUnification, ewsbBCscale);
@@ -9539,7 +9598,7 @@ namespace {
       if (ewsbBCscale) boundaryCondition(*this, pars);
 
       physical(3);
-
+      
       /// LCT: Flag warning if not at global min of Higgs potential
       double v1 = displayHvev() * cos(atan(displayTanb()));
       double v2 = displayHvev() * sin(atan(displayTanb()));

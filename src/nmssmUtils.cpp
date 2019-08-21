@@ -32,7 +32,7 @@ double NMSSM_input::get(NMSSM_parameters par) const {
 }
 
 DoubleVector NMSSM_input::get_nmpars() const {
-   DoubleVector nmpars(5);
+   DoubleVector nmpars(6);
    nmpars(1) = get(NMSSM_input::lambda);
    nmpars(2) = get(NMSSM_input::kappa);
    if (is_set(NMSSM_input::lambdaS)) {
@@ -49,6 +49,7 @@ DoubleVector NMSSM_input::get_nmpars() const {
    }
    nmpars(4) = get(NMSSM_input::xiF);
    nmpars(5) = get(NMSSM_input::muPrime);
+   nmpars(6) = get(NMSSM_input::xiS);   
    return nmpars;
 };
 
@@ -87,9 +88,9 @@ void NMSSM_input::check_ewsb_output_parameters() const {
          if (!is_set(lambdaS) && !is_set(kappa) && !is_set(mS2))
             supported = true;
       } else {
-         if (!is_set(mu) && !is_set(BmuOverCosBetaSinBeta) && !is_set(xiS))
+         if (!is_set(mu) && !is_set(BmuOverCosBetaSinBeta))
             supported = true;
-         if (!is_set(lambdaS) || close(parameter[lambdaS], 0., EPSTOL))
+         if ( (!is_set(lambdaS) || close(parameter[lambdaS], 0., EPSTOL)) && !is_set(xiS))
             throw "# ERROR: <S> is zero!  In the Z3 violating NMSSM <S> is not"
                " determined by the EWSB conditions, so <S> has to be set to"
                " a non-zero value on the user-side!\n";
@@ -333,6 +334,127 @@ void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 		      m.displayMssmSoftPars());
   m.setMspSquared(1e6);
 }
+//focusgmsb
+  void focusgmsb(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+ //  void splitGmsb(MssmSoftsusy & m, const DoubleVector & inputParameters) {
+    
+    double LAMBDA3 = inputParameters(1);
+    double LAMBDAX = inputParameters(2);
+    double mMess = inputParameters(3);
+    double cgrav = inputParameters(4);
+
+    // double smallambda = inputParameters(5); //  nmpars(1)
+    // double csif = 1e6;                      //  nmpars(4)
+    // double muprime = 1e3;                   //  nmpars(5)
+    double msingl = 1e6;
+    // double Asmalllambda = 0;
+    double msinglprime = 0.0;
+    double csisingl;                           // output - obtained from tadpole condition 
+        
+    double lambdag1 =  5 *LAMBDAX;
+    double lambdag2 =  2 *LAMBDA3 + 3 *LAMBDAX;
+    double lambdag3 =  2 *LAMBDAX;
+
+    double m1, m2, m3;
+    m1 = sqr(m.displayGaugeCoupling(1)) / (16.0 * sqr(PI)) * lambdag1;
+    m2 = sqr(m.displayGaugeCoupling(2)) / (16.0 * sqr(PI)) * lambdag2;
+    m3 = sqr(m.displayGaugeCoupling(3)) / (16.0 * sqr(PI)) * lambdag3;
+    m.setGauginoMass(1, m1);
+    m.setGauginoMass(2, m2);
+    m.setGauginoMass(3, m3);
+// I am not sure about this    
+    m.setM32(2.37e-19 * sqrt((sqr(LAMBDA3) + sqr(LAMBDAX)) * 0.5) *
+	     mMess * cgrav);
+// I am not sure about this        
+      
+    double g1f = sqr(sqr(m.displayGaugeCoupling(1)));
+    double g2f = sqr(sqr(m.displayGaugeCoupling(2)));
+    double g3f = sqr(sqr(m.displayGaugeCoupling(3)));
+    
+    double lambdaP1sf = 5 * sqr(LAMBDAX);
+    double lambdaP2sf = 2 * sqr(LAMBDA3) + 3 *sqr(LAMBDAX);
+    double lambdaP3sq = 2 * sqr(LAMBDAX);
+
+
+  //   const double epstol = 1.0e-4;
+  //   double x = LAMBDA / mMess;
+  
+  //   double f, g;
+  
+  // if(fabs(x) < epstol) { /// hep-ph/9801271
+  //   g = 1.0 + x*x/6.0 + sqr(x*x)/15.0;
+  //   f = 1.0 + x*x/36.0 - 11.0*sqr(x*x)/450.0;
+  // }
+  // else if(fabs(x-1.0) < 0.0001) {
+  //   g  =  log(4.0);
+  //   f  = -sqr(PI)/6.0 + log(4.0) + 0.5*sqr(log(4.0));
+  //   g -=  0.0008132638905771205626;
+  //   f -= -0.0049563838821509165200;
+  // }
+  // else {
+  //   g = 1.0 / sqr(x) * 
+  //     ((1.0 + x) * log(1.0 + x) + (1.0 - x) * log(1.0 - x));
+  //   f = (1.0 + x) / sqr(x) * 
+  //     (log(1.0 + x) - 2.0 * dilog(x / (1.0 + x)) + 0.5 * 
+  //      dilog(2.0 * x / (1.0 + x))) + 
+  //     (1.0 - x) / sqr(x) * (log(1.0 - x) - 2.0 * dilog(-x / (1.0 - x)) +
+  // 			    0.5 * dilog(-2.0 * x / (1.0 - x)));
+  // }
+
+    double mursq, mdrsq, mersq, mqlsq, mllsq;
+    mursq = 2.0 *
+      (4.0 / 3.0 * g3f * lambdaP3sq + 0.6 * 4.0 / 9.0 * g1f * lambdaP1sf)
+      / sqr(16.0 * sqr(PI));
+    mdrsq = 2.0 *
+      (4.0 / 3.0 * g3f * lambdaP3sq + 0.6 * 1.0 / 9.0 * g1f * lambdaP1sf)
+      / sqr(16.0 * sqr(PI));
+    mersq = 2.0 *
+      (0.6 * g1f * lambdaP1sf)
+      / sqr(16.0 * sqr(PI));
+    mqlsq = 2.0 *
+      (4.0 / 3.0 * g3f * lambdaP3sq + 0.75 * g2f * lambdaP2sf +
+       0.6 * g1f / 36.0 * lambdaP1sf)
+      / sqr(16.0 * sqr(PI));
+    mllsq = 2.0 *
+      (0.75 * g2f * lambdaP2sf + 0.6 * 0.25 * g1f * lambdaP1sf)
+      / sqr(16.0 * sqr(PI));
+    
+    // You need Higgs masses too!
+    
+    DoubleMatrix id(3, 3);
+    id(1, 1) = 1.0; id(2, 2) = 1.0; id(3, 3) = 1.0;
+    
+    m.setSoftMassMatrix(mQl, mqlsq * id);
+    m.setSoftMassMatrix(mUr, mursq * id);
+    m.setSoftMassMatrix(mDr, mdrsq * id);
+    m.setSoftMassMatrix(mLl, mllsq * id);
+    m.setSoftMassMatrix(mEr, mersq * id);
+
+    m.setMh1Squared(mllsq);
+    m.setMh2Squared(mllsq);
+    m.setMsSquared(msingl);
+
+    const double susyMu = m.displaySusyMu();
+    if (!close(susyMu, 0.0, EPSTOL))
+      m.setMspSquared(m.displayM3Squared() * m.displayMupr() /
+		    susyMu);
+    
+    cout << "Boundary condition applied at scale: "
+	 << m.displayMu()
+	 << m;
+    
+    // m.setTrilinearElement(1,1 m.displayMssmSusy(), 0.0);
+    //    DoubleVector pars(2); ///< encodes EWSB BC
+    //    pars(1) = muOm2 * m2;
+    //    pars(2) = mAOm2 * m2;
+    
+    /// Save the two parameters
+    //m.setEwsbConditions(pars);
+    //maybe not needed for focusgmsb
+    //    cout << "**** DEBUG: at Mmess *****" <<;
+  }
+//focusgmsb
+  
 
 //PA: semi-msugra bcs for the nmssm
 void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {

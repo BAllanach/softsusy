@@ -19,9 +19,21 @@
 #include "mycomplex.h"
 #include "def.h"
 #include <iostream>
+#include <cmath>
+#include <cfloat>
 #include "linalg.h"
 #include "dilogwrap.h"
 using namespace softsusy;
+
+/// gives DoubleVector ans with all n real roots (returned) in increasing
+/// absolute order for:
+/// a x^3 + b x^2 + c x + d=0.
+/// Needs an upgrade to include complex roots
+int cubicRoots(double a, double b, double c, double d,
+	       DoubleVector & ans);
+
+/// cubic roots for x^3 + a*x + b*x^2 + c*x^4 = 0
+int cubicRootsInside(double a, double b, double c, DoubleVector & ans);
 
 /// adaptive Gaussian one dimensional integration of f(x) between a and b to
 /// precision eps

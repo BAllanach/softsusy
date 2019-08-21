@@ -92,6 +92,8 @@ namespace softsusy{
   /// pole masses. If = 2, expand only around gluino pole mass rather than the
   /// tree-level mass and iterate. 1 and 2 are a little slower. 
   extern int expandAroundGluinoPole;
+  /// Quick start bool to trap svev setting rather than xiS setting
+  extern bool setsVevEWSB;
 }
 
 #endif

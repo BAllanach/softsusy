@@ -23,6 +23,8 @@ CLEANFILES += $(OUTPUTFILES) *.x
 
 .PHONY: doc test updateWeb install
 
+nodoc: $(OUTPUTFILES) programs
+
 programs: softpoint.x rpvsoftsusy.x softsusy.x softsusy-nmssm.x rpvneut.x decay.x
 
 updateWeb: dist

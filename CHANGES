@@ -1,1 +1,2 @@
-<li>Fixed Mac installation issues: thanks to G Belanger, S Kraml and A Pukhov
+<li>Fixed xiS 2-loop beta function: caused some instabilities for Z3 violating
+case, when xiF was non-zero

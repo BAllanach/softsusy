@@ -17,6 +17,69 @@
 #include "clooptools.h"
 #endif
 
+int cubicRoots(double alpha, double beta, double gamma, double delta,
+	       DoubleVector & ans) {
+  if (fpclassify(alpha) != FP_ZERO) {
+    int a =
+      cubicRootsInside(beta / alpha, gamma / alpha, delta / alpha, ans);
+    if (a > 2) {
+      /// order the roots in increasing absolute order
+      if (fabs(ans(1)) > fabs(ans(2))) ans.swap(1, 2);
+      if (fabs(ans(2)) > fabs(ans(3))) ans.swap(2, 3);
+      if (fabs(ans(1)) > fabs(ans(2))) ans.swap(1, 2);      
+    }
+    return a;
+  }
+  if (fpclassify(beta) == FP_ZERO) {
+    /// It's a linear equation
+    if (fpclassify(gamma) != FP_ZERO) {
+	ans.setEnd(1);
+	ans(1) = -delta / gamma;
+	return 1;
+      }
+  }
+  double sgn_delta = 1.;
+  if (delta < 0.) sgn_delta = -1.;
+  /// it's a quadratic really
+  double q = -0.5 *
+    (delta + sgn_delta * sqrt(sqr(delta) - 4.0 * beta * gamma));
+  ans.setEnd(2);
+  ans(1) = q / beta;
+  ans(2) = gamma / q;
+  
+  return ans.displayEnd();
+}
+
+int cubicRootsInside(double a, double b, double c, 
+	       DoubleVector & ans) {
+  ans.setEnd(3);
+  double Q = (sqr(a) - 3.0 * b) / 9.0;
+  double R = (2.0 * sqr(a) * a - 9.0 * a * b + 27.0 * c) / 54.;
+  double Qcub = Q * Q * Q;
+  double Rsq  = R * R;
+  double rtQ  = sqrt(Q);
+
+  if (Rsq <= Qcub) {
+    /// Three real roots
+    double theta = acos(R / sqrt(Qcub));
+    ans(1) = -2.0 * rtQ * cos(theta / 3.0) - a / 3.0;
+    ans(2) = -2.0 * rtQ * cos((theta + 2.0 * PI) / 3.0)
+      - a / 3.0;
+    ans(3) = -2.0 * rtQ * cos((theta - 2.0 * PI) / 3.0)
+      - a / 3.0;
+  } else {
+    /// only one real root
+    double sgn_R = 1;
+    if (R < 0.) sgn_R = -1.;
+    double A = -sgn_R * cbrt(abs(R) + sqrt(Rsq - Qcub));
+    double B = 1.;
+    if (fpclassify(A) != FP_ZERO) B = Q / A;
+    ans.setEnd(1);
+    ans(1) = A + B - a / 3.0;
+  }
+  return ans.displayEnd();
+}
+
 double dgauss(double (*f)(double x), double a, double b, double eps) {
   static DoubleVector w(12), x(12);
   /// set the initial values if they are uninitialised
@@ -168,7 +231,7 @@ double log1minusx(double x) {
   if (x > 1.) return 0.; 
   else if (close(1., x, EPSTOL)) return numberOfTheBeast;
   else if (fabs(x) > 0.125) return log(1. - x);
-  else if (x < 1.e-200) return 0.;
+  else if (fpclassify(x) == FP_ZERO) return 0.;
   double test = -x; int i = 1; double l1mx = -x;
   /// Find largest power that we need from the expansion
   do { 
@@ -558,12 +621,21 @@ double b0(double p, double m1, double m2, double q) {
     
     Complex xPlus, xMinus;
 
+    /// alternative form: should be more accurate
+    /*
+    double q =
+      -0.5 * (-s + sqrt(sqr(s) - 4.0 * s * sqr(mMax)));
+    xPlus = q / sqr(p);
+    xMinus = sqr(mMax) / q;
+    */
+    
     xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
       (2. * sqr(p));
     xMinus = 2. * (sqr(mMax) - iEpsilon) / 
       (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
 
-    ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
+    ans = -2.0 * log(p / q) - fB(xPlus)
+      - fB(xMinus);
   } else {
     if (close(m1, m2, EPSTOL)) {
       ans = - log(sqr(m1 / q));
@@ -627,6 +699,15 @@ Complex b0c(double p, double m1, double m2, double q) {
     
     Complex xPlus, xMinus;
 
+    /*
+    /// alternative form: should be more accurate
+    double sgn_b = 1.;
+    if (b < 0.) sgn_b = -1.;
+    double q =
+      -0.5 * (-s + sgn_b * sqrt(sqr(s) - 4.0 * s * sqr(mMax)));
+    double xPlus = q / sqr(p);
+    double xMinus = sqr(mMax) / q;
+    */
     xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
       (2. * sqr(p));
     xMinus = 2. * (sqr(mMax) - iEpsilon) / 

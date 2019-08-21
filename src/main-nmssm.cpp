@@ -5,10 +5,8 @@
    A. Williams, Comput. Phys. Comm. 185 (2014) 2322, arXiv:1311.7659;
    B.C. Allanach, hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305; 
 
-   \brief A main C++ program to calculate Higgs masses as a function of tan
-   beta in the NMSSM. Other than tan beta, this mimics the Z3 violating MSSM
-   example SLHA input point. It provides an example of a Bayesian naturalness
-   calculation (`BN' in the output).
+   \brief a main C++ program to calculate Higgs masses as a function of tan
+   beta in the NMSSM
 */
 
 #include <iostream>
@@ -25,23 +23,16 @@ int main() {
   softsusy::PRINTOUT = 0;
 
   /// Parameters used: CMSSM parameters
-  double m12 = 350., a0 = -300., mGutGuess = 2.0e16, tanb = 10.0, m0 = 400.;
+  double m12 = 300., a0 = -300., mGutGuess = 2.0e16, tanb = 10.0, m0 = 500.;
   int sgnMu = 1;      ///< sign of mu parameter
   int numPoints = 10; ///< number of scan points
-  double lambda = 0.1,
-    kappa = 0.1,
-    s = 2000.0,
-    xiF = 100.0,
-    mupr = 0.0;
+  double lambda = 0.1, kappa = 0.1, s = 0.0, xiF = 0.0, mupr = 0.0;
 
   QedQcd oneset;      ///< See "lowe.h" for default definitions parameters
 
   /// most important Standard Model inputs: you may change these and recompile
-  double alphasMZ = 0.1181, mtop = 170.9, mbmb = 4.20;
-  double aInv = 127.918;
+  double alphasMZ = 0.1187, mtop = 173.5, mbmb = 4.18;
   oneset.setAlpha(ALPHAS, alphasMZ);
-  oneset.setAlphaMz(ALPHAS, alphasMZ);
-  oneset.setAlphaMz(ALPHA, 1.0 / aInv);
   oneset.setPoleMt(mtop);
   oneset.setMass(mBottom, mbmb);
   oneset.toMz();      ///< Runs SM fermion masses to MZ
@@ -72,25 +63,11 @@ int main() {
         startTanb; // set tan beta ready for the scan.
 
      NmssmSoftsusy n;
-     n.setZ3(false);
-     NMSSM_input nmssm_input; // NMSSM input parameters     
-     nmssm_input.set(NMSSM_input::lambda, lambda);
-     nmssm_input.set(NMSSM_input::kappa, kappa);
-     nmssm_input.set(NMSSM_input::lambdaS, lambda * s);
-     nmssm_input.set(NMSSM_input::xiF, xiF);
-     nmssm_input.check_setup();
-     DoubleVector nmpars(nmssm_input.get_nmpars());
-
-     n.setGUTlambda(true);
-     n.setGUTkappa(true);
-     n.setGUTmuPrime(true);
-     n.setGUTxiF(true);
-     n.setGUTsVev(false);
-     n.setMixing(2);
+     n.setZ3(true);
      
      try {
-       n.NmssmSoftsusy::lowOrg(NmssmMsugraBcs, mGutGuess, pars,
-			       nmpars, sgnMu, tanb, oneset, uni);
+       n.NmssmSoftsusy::lowOrg(SemiMsugraBcs, mGutGuess, pars, nmpars, 
+			       sgnMu, tanb, oneset, uni);
      } catch (const std::string& error) {
        n.flagProblemThrown(true);
      } catch (const char* error) {

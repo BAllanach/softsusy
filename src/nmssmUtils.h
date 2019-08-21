@@ -98,6 +98,8 @@ private:
 
 void NmssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
 
+void focusgmsb(NmssmSoftsusy & m, const DoubleVector & inputParameters);
+
 void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
 
 void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters);
