@@ -1,2 +1,3 @@
 <li>Fixed xiS 2-loop beta function: caused some instabilities for Z3 violating
 case, when xiF was non-zero
+<li>Fixed 2-loop terms in m3sq and mSpSq beta functions - small numerical differences

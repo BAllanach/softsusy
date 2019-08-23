@@ -290,8 +290,8 @@ namespace softsusy {
 	  - 4.0 * lsq * ksq * m3sq - 8.0 * lam * ksq * smu * hlam
 	  - 8.0 * lsq * kap * smu * hkap - 8.0 * lam * kap * (ksq + lsq) * mSpsq
 	  - 8.0 * (lsq * kap * hlam + ksq * lam * hkap) * mupr
-	  + 2.4 * gsq(1) * lsq * (m3sq - smu * mG(1))
-	  + 12 * gsq(2) * lsq * (m3sq - smu * mG(2));
+	  + 7.2 * gsq(1) * lsq * (m3sq - smu * mG(1))
+	  + 36. * gsq(2) * lsq * (m3sq - smu * mG(2));
 	
 	
 	dmSsq2 = - 16.0 * lsq * (Mlamsq + sqr(hlam))
@@ -313,8 +313,8 @@ namespace softsusy {
 	  - 8.0 * lam * hlam * mupr * Ytr
 	  - 16.0 * lsq * kap * (lam * m3sq + smu * hlam)
 	  - 8.0 * lam * kap * (m3sq * Ytr + smu * aYtr)
-	  + 4.8 * lam * kap * gsq(1) * (m3sq - smu * mG(1))
-	  + 24.0 * lam * kap * gsq(2) * (m3sq - smu * mG(2))
+	  + 14.4 * lam * kap * gsq(1) * (m3sq - smu * mG(1))
+	  + 72.0 * lam * kap * gsq(2) * (m3sq - smu * mG(2))
 	  + 2.4 * gsq(1) * (lsq * mSpsq + 2.0 * mupr * lam * hlam
 			    - 2.0 * lsq * mupr * mG(1))
 	  + 12.0 * gsq(2) * (lsq * mSpsq + 2.0 * mupr * lam * hlam
@@ -344,8 +344,8 @@ namespace softsusy {
 				+ 2.0 * smu * (mH1sq + mH2sq - mupr * mG(1)
 					       + 2.0 * msq(1))
 				+ 2.0 * xiF * (hlam - lam * mG(1)))
-	+ 3.0 * gsq(2) * (3.0 * m3sq - 2.0 * smu * mG(2)) * hlam
-	+ 3.0 * gsq(2) * lam * (3.0 * m3sq * (mupr - mG(2)) + lam * xiS
+	+ 6.0 * gsq(2) * (3.0 * m3sq - 2.0 * smu * mG(2)) * hlam
+	+ 6.0 * gsq(2) * lam * (3.0 * m3sq * (mupr - mG(2)) + lam * xiS
 				+ 2.0 * smu * (mH1sq + mH2sq - mupr * mG(2)
 					       + 2.0 * msq(2))
 				+ 2.0 * xiF * (hlam - lam * mG(2)));
