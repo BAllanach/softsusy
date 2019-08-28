@@ -626,7 +626,7 @@ double b0(double p, double m1, double m2, double q) {
     Complex qq =
       -0.5 * (-s + sqrt(sqr(s) - 4.0 * pSq * sqr(mMax) * oneiEpsilon));
     xMinus  = qq / pSq;
-    xPlus = sqr(mMax) / qq;
+    xPlus = sqr(mMax) * oneiEpsilon / qq;
     
     /*xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
       (2. * sqr(p));
@@ -701,7 +701,7 @@ Complex b0c(double p, double m1, double m2, double q) {
     Complex qq =
       -0.5 * (-s + sqrt(sqr(s) - 4.0 * pSq * sqr(mMax) * oneiEpsilon));
     xMinus  = qq / pSq;
-    xPlus = sqr(mMax) / qq;
+    xPlus   = sqr(mMax) * oneiEpsilon / qq;
      
     /*    xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
       (2. * sqr(p));
