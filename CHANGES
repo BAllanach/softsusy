@@ -1,3 +1,2 @@
 <li>Fixed xiS 2-loop beta function: caused some instabilities for Z3 violating NMSSM case, when xiF was non-zero 
-<li>Fixed 2-loop terms in m3sq and mSpSq beta functions - small numerical differences
 <li>Made loop function b0 more accurate in cases where quadratic roots cancel. Small numerical differences.
