@@ -592,6 +592,8 @@ Complex fBc(const Complex & a) {
 double b0(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
+  if (fabs(m1) < 1.0e-30) m1 = 1.0e-30;
+  if (fabs(m2) < 1.0e-30) m2 = 1.0e-30;  
   double b0l = B0(p*p, m1*m1, m2*m2).real();
   return B0(p*p, m1*m1, m2*m2).real();
 #endif
@@ -617,7 +619,7 @@ double b0(double p, double m1, double m2, double q) {
 
   /// p is not 0  
   if (pTest > pTolerance) {  
-    //    Complex iEpsilon(0.0, EPSTOL * sqr(mMax));
+    Complex iEpsilon(0.0, EPSTOL * sqr(mMax));
     
     Complex xPlus, xMinus;
 
@@ -628,20 +630,23 @@ double b0(double p, double m1, double m2, double q) {
     xMinus  = qq / pSq;
     xPlus = sqr(mMax) * oneiEpsilon / qq;
     
-    /*xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
+    /*    xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
       (2. * sqr(p));
     xMinus = 2. * (sqr(mMax) - iEpsilon) / 
     (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));*/
-
+    //    cout << "DEBUG2: " << xPlus << " " << xMinus << endl;
     ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
   } else {
     if (close(m1, m2, EPSTOL)) {
+      //      	cout << "DEBUG5\n";
       ans = - log(sqr(m1 / q));
     } else {
       double Mmax2 = sqr(mMax), Mmin2 = sqr(mMin); 
       if (Mmin2 < 1.e-30) {
+	//	cout << "DEBUG3\n";
 	ans = 1.0 - log(Mmax2 / sqr(q));
       } else {
+	//	cout << "DEBUG4\n";
 	ans = 1.0 - log(Mmax2 / sqr(q)) + Mmin2 * log(Mmax2 / Mmin2) 
 	  / (Mmin2 - Mmax2);
       }
@@ -668,8 +673,10 @@ double b0(double p, double m1, double m2, double q) {
 Complex b0c(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
+  if (fabs(m1) < 1.0e-30) m1 = 1.0e-30;
+  if (fabs(m2) < 1.0e-30) m2 = 1.0e-30;  
   Complex b0l = B0(p*p, m1*m1, m2*m2);
-  //  return B0(p*p, m1*m1, m2*m2);
+  return B0(p*p, m1*m1, m2*m2);
 #endif
 
   /// Avoids IR infinities
@@ -747,8 +754,10 @@ Complex b0c(double p, double m1, double m2, double q) {
 double b1(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
+  if (fabs(m1) < 1.0e-30) m1 = 1.0e-30;
+  if (fabs(m2) < 1.0e-30) m2 = 1.0e-30;  
   double b1l = -B1(p*p, m1*m1, m2*m2).real();
-  //    return b1l;
+  return b1l;
 #endif
 
   double ans = 0.;
@@ -759,7 +768,7 @@ double b1(double p, double m1, double m2, double q) {
 
   if (pTest > pTolerance) {
     ans = (a0(m2, q) - a0(m1, q) + (sqr(p) + sqr(m1) - sqr(m2)) 
-	   * b0(p, m1, m2, q)) / (2.0 * sqr(p)); 
+	   * b0(p, m1, m2, q)) / (2.0 * sqr(p));
   } else if (fabs(m1) > 1.0e-15 && fabs(m2) > 1.0e-15) { ///< checked
     const double m12 = sqr(m1), m22 = sqr(m2);
     const double m14 = sqr(m12), m24 = sqr(m22);
@@ -806,8 +815,10 @@ double b1(double p, double m1, double m2, double q) {
 Complex b1c(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
+  if (fabs(m1) < 1.0e-30) m1 = 1.0e-30;
+  if (fabs(m2) < 1.0e-30) m2 = 1.0e-30;    
   Complex b1l = -B1(p*p, m1*m1, m2*m2);
-  //    return b1l;
+  return b1l;
 #endif
 
   Complex ans = 0.;
@@ -831,7 +842,7 @@ Complex b1c(double p, double m1, double m2, double q) {
   } else {
     ans = bIntegral(1, p, m1, m2, q); 
   }
-
+#
 #ifdef USE_LOOPTOOLS
   if (!close(b1l, ans, 1.0e-3) && 
       (b1l.imag() > 1.0e-6 && ans.imag() > 1.0e-6)) {
@@ -849,7 +860,10 @@ return ans;
 double b22(double p,  double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
+  if (fabs(m1) < 1.0e-30) m1 = 1.0e-30;
+  if (fabs(m2) < 1.0e-30) m2 = 1.0e-30;  
   double b22l = B00(p*p, m1*m1, m2*m2).real();
+  return b22l;
 #endif
 
   double answer = 0.;
@@ -904,7 +918,10 @@ double b22(double p,  double m1, double m2, double q) {
 Complex b22c(double p,  double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
+  if (fabs(m1) < 1.0e-30) m1 = 1.0e-30;
+  if (fabs(m2) < 1.0e-30) m2 = 1.0e-30;  
   Complex b22l = B00(p*p, m1*m1, m2*m2);
+  return b22l;
 #endif
 
   Complex answer = 0.;

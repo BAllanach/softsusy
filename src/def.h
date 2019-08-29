@@ -14,6 +14,10 @@
 
 #include <cmath>
 namespace softsusy{
+  /// uncomment if you want to use looptools (slower) rather than SOFTSUSY's
+  /// defined loop functions: good for testing
+  /// #define USE_LOOPTOOLS
+
   /// uncomment if you want checking of vector/matrices bounds: slows code
   /// down. It also now checks over/underflows in matrix multiplication etc
   ///  #define ARRAY_BOUNDS_CHECKING 
