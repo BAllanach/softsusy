@@ -1,2 +1,2 @@
-<li>Fixed xiS 2-loop beta function: caused some instabilities for Z3 violating NMSSM case, when xiF was non-zero 
-<li>Made loop function b0 more accurate in cases where quadratic roots cancel. Small numerical differences.
+<li>Trapped some more NaNs in three body decay kinematical functions
+

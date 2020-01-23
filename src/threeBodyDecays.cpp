@@ -348,8 +348,7 @@ double gchidgauss (double Et) {
   A = sqr(m1)+sqr(mq)-2*fabs(m1)*Et;
   squareplus = A - pow((fabs(m4) + mq),2);
   squareminus = A - pow((fabs(m4) - mq),2);
-  if (squareplus < 0 && fabs(squareplus) < 1e-8) {
-  }
+  if (squareplus < 0 && fabs(squareplus) < 1e-8) squareplus = 0.;
   lambda = sqrt(squareplus*squareminus);
   if (lambda != lambda) {
     throw("problem: nan in lambda in gchidgauss used in 1->3 decays\n");
@@ -377,18 +376,18 @@ double gzetadgauss (double Et)
 }
 
 
-double gXdgauss (double Et)
-{
+double gXdgauss (double Et) {
   double gXdgauss = 0, pt=0, A=0, B=0, squareplus=0, squareminus=0, lambda=0;
   A = sqr(m1)+sqr(mq)-2*fabs(m1)*Et;
   B = sqr(m1)-sqr(m4)-2*fabs(m1)*Et;
   pt = pow(sqr(Et) - sqr(mq),0.5);
   squareplus = A - pow((fabs(m4) + mq),2);
   squareminus = A - pow((fabs(m4) - mq),2);
-  if (squareplus*squareminus < 0) {
+  if (squareplus < 0 && fabs(squareplus) < 1e-8) squareplus = 0.;
+  if (squareplus*squareminus < 0) 
     throw("problem: lambda will give nan in gXdgauss used in 1->3 decays\n");
-  } 
-  lambda = sqrt(squareplus*squareminus);
+  
+  lambda = sqrt(squareplus * squareminus);
   gXdgauss = 0.5*sqr(PI)*pt*B/A*lambda*1/((sqr(m1)+sqr(mq)-2*fabs(m1)*Et-sqr(m2))*(sqr(m1)+sqr(mq)-2*fabs(m1)*Et-sqr(m3)));
   return gXdgauss;
 }
