@@ -34,7 +34,7 @@ updateWeb: dist
 	scp -P 222 -r doc/*.pdf allanach@login.hepforge.org:~/softsusy/public_html/doc; \
 	doxygen softsusy.cfg &&\
 	scp -P 222 -r html allanach@login.hepforge.org:~/softsusy/public_html; \
-	scp -P 222 -r CHANGES allanach@login.hepforge.org:~/softsusy/public_html/CHANGES.${VERSION}.html; \
+	scp -P 222 -r CHANGES allanach@login.hepforge.org:~/softsusy/public_html/CHANGES.${VERSION}.shtml; \
 	rm -fr html *.tar.gz
 
 install-data-local:
