@@ -1,2 +1,2 @@
-<li>Trapped some more NaNs in three body decay kinematical functions. Thanks to J. van d'Abeele.
+<li>Allow users to input mh, mA0, mHp, mH0 pole masses from the outset, perhaps from eg another program. SOFTSUSY uses its own calculation of Higgs couplings and mixing, but the input pole masses in eg decay calculations.</li>
 

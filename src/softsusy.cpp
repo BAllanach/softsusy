@@ -6816,6 +6816,12 @@ void MssmSoftsusy::calcHiggsAtScale(int accuracy, double & mt,
     
     higgsTachyon = ppp.higgs(accuracy, piwwtMS, pizztMS); /// iterate 
     
+    /// If Higgs masses have been input, switch pole masses to these instead
+    if (inputMhPole) ppp.physpars.mh0(1) = fixMhPole;
+    if (inputMA0Pole) ppp.physpars.mA0(1) = fixMA0Pole;
+    if (inputMH0Pole) ppp.physpars.mh0(2) = fixMH0Pole;
+    if (inputMHpmPole) ppp.physpars.mHpm = fixMHpmPole;        
+
     DoubleVector newHiggsMasses(4);
     newHiggsMasses(1) = ppp.displayPhys().mh0(1);
     newHiggsMasses(2) = ppp.displayPhys().mA0(1);

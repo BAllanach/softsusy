@@ -74,6 +74,16 @@ namespace softsusy{
   /// If true, calculate decays
   extern bool calcDecays;
   
+  /// Allow users to input mh, mA0, mHp, mH0 pole masses from the outset,
+  /// perhaps from eg another program. SOFTSUSY uses its own calculation of
+  /// Higgs couplings and mixing, but the input pole masses in eg decay
+  /// calculations. Initially, we have hacked this in with the following
+  /// global variables. Ideally though, they would be incorporated into
+  /// SOFTSUSY variables. 
+  extern bool inputMhPole, inputMA0Pole, inputMH0Pole, inputMHpmPole;
+  /// extern values for those quantities
+  extern double fixMhPole, fixMA0Pole, fixMH0Pole, fixMHpmPole;
+
   /// Includes the evaluation of leading two-loop thresholds corrections
   /// to the strong coupling constant and to the third family of fermion masses 
   extern bool USE_TWO_LOOP_GAUGE_YUKAWA; 

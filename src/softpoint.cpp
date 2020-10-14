@@ -38,6 +38,8 @@ void errorCall() {
   ii << "./softpoint.x gmsb [mGMSB parameters] [other options]\n";
   ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
   ii << "[other options]: --decays calculates the decays for NMSSM/MSSM\n";
+  ii << "--mh0=<value> --mA0=<value> --mHpm=<value> --mH0=<value> sets the MSSM ";
+  ii << "Higgs pole masses.\n";
   ii << "--minBR=<value> sets the minimum branching ratio printed\n";
   ii << "--dontCalculateThreeBody switches the 3-body decay width calculations off\n";
   ii << "--outputPartialWidths outputs the partial widths themselves in the comments\n";
@@ -187,6 +189,18 @@ int main(int argc, char *argv[]) {
 	oneset.setPoleMt(get_value(argv[i], "--mt="));
       else if (starts_with(argv[i],"--alpha_s="))
 	oneset.setAlphaMz(ALPHAS, get_value(argv[i], "--alpha_s="));      
+      else if (starts_with(argv[i],"--mh0=")) {
+	inputMhPole = true; fixMhPole = get_value(argv[i], "--mh0=");
+      }
+      else if (starts_with(argv[i],"--mA0=")) {
+	inputMA0Pole = true; fixMA0Pole = get_value(argv[i], "--mA0=");
+      }
+      else if (starts_with(argv[i],"--mH0=")) {
+	inputMH0Pole = true; fixMH0Pole = get_value(argv[i], "--mH0=");
+      }
+      else if (starts_with(argv[i],"--mHpm=")) {
+	inputMHpmPole = true; fixMHpmPole = get_value(argv[i], "--mHpm=");
+      }
       else if (starts_with(argv[i],"--matching_scale="))
 	mScale = get_value(argv[i], "--matching_scale=");      
       else if (starts_with(argv[i],"--alpha_inverse="))

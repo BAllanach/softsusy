@@ -61,6 +61,11 @@ namespace softsusy {
   bool outputPartialWidths = false;
   /// Default: don't calculate decays
   bool calcDecays = false;
+
+  /// Default: don't input pole Higgs masses in command line
+  bool inputMhPole = false, inputMA0Pole = false, inputMH0Pole = false,
+    inputMHpmPole = false;  
+  double fixMhPole = 0., fixMA0Pole = 0., fixMH0Pole = 0., fixMHpmPole = 0.;
   
   /// Includes the evaluation of leading two-loop thresholds corrections
   /// to the strong coupling constant and to the third family of fermion masses 
