@@ -1,5 +1,5 @@
 # Example input in SLHA format, and suitable for input to
-# SOFTSUSY (v1.8 or higher): CMSSM10.1.1 input - see arXiv:1109.3859
+# SOFTSUSY (v1.8 or higher)
 Block MODSEL		     # Select model
     1    1		     # sugra
 Block SMINPUTS		     # Standard Model inputs
