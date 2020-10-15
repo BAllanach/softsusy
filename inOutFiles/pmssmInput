@@ -36,6 +36,10 @@ Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
 #   23   0.000000000e+00      # No expansion of 2-loop gluino terms
 #   24   1.000000000e-06      # If decay BR is below this number, don't output
 #   25   1.000000000e+00	     # If set to 0, don't calculate 3-body decays (1=default)
+   28   1.250000000e+02      # Artificially fixed value of mh0(pole)
+   29   2.500000000e+02      # Artificially fixed value of mA0(pole): TRUMPS EXTPAR 26
+   30   5.000000000e+02      # Artificially fixed value of mH0(pole)
+   31   6.000000000e+02      # Artificially fixed value of mH+/-(pole)   
 Block EXTPAR
    0    -1.0              # MX=MSUSY
    1    7.000000000e+02   # M1
