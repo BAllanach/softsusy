@@ -1,2 +1,3 @@
-<li>Trapped some more NaNs in three body decay kinematical functions. Thanks to J. van d'Abeele.
+<li> Reinstated neutralino2->tau taubar neutralino1 in decays (accidentally deleted in 4.1.0)
+
 
