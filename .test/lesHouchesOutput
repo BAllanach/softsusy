@@ -1,10 +1,10 @@
-# WARNING: Don't understand data input 20 3.100000e+01 in block SOFTSUSY: ignoring it
+# WARNING: Don't understand data input 20 0.000000e+00 in block SOFTSUSY: ignoring it
 # WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# SOFTSUSY4.1.9 SLHA compliant output
+# SOFTSUSY4.1.10 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    4.1.9       # version number
+     2    4.1.10       # version number
 Block MODSEL  # Select model
      1    1   # sugra
 Block SMINPUTS             # Standard Model inputs
