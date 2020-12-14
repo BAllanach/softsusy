@@ -1089,6 +1089,10 @@ excluded if=1
  13   <mAflag>        # If =0 (default), sets tachyonic mA=0, otherwise mA=sqrt(|mA|^2)
  21   <higgsUncert>   # If =1, provides an estimate of Higgs mass uncertainties
  27   <mQEDxQCD5>      # Scale at which QEDxQCD is matched to MSSM (default mt)
+ 28   <mh0(pole)>      # Artificially fixed value of mh0(pole)
+ 29   <mA0(pole)>      # Artificially fixed value of mA0(pole): TRUMPS EXTPAR 26
+ 30   <mH0(pole)>      # Artificially fixed value of mH0(pole)
+ 31   <mH+/-(pole)>    # Artificially fixed value of mH+/-(pole)
 \end{verbatim}
 \normalsize
 The fractional numerical precision on masses and couplings output by \SOFTSUSY~is better than \code{TOLERANCE}, which
@@ -1177,6 +1181,15 @@ effects~\cite{uncert}.
 
 \code{<mQEDxQCD5>}~is equal to the scale at which QED$\times$QCD are matched to
 the MSSM  $M_{QED\times QCD5}$, which by default is $m_t$. 
+
+\code{<mh0(pole)>}, \code{<mA0(pole)>}, \code{<mA0(pole)>} and
+\code{<mH+/-(pole)>} are intended for users that wish to use another
+speciality program to calculate pole masses of the Higgs bosons. They may use
+the other program to calculate them and then input them within these
+variables, in units of GeV. \SOFTSUSY{}~will perform its spectrum calculation
+as usual, but will overwrite the pole Higgs boson masses at the end of the
+calculation. However, decays (for example) will be calculated using these
+input masses. 
 
 In the standard SLHA input format, a parameter 
 \code{12}~in \code{Block MODSEL} fixes the maximum scale of printing out the

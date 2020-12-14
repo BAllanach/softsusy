@@ -1,3 +1,2 @@
-<li> Reinstated neutralino2->tau taubar neutralino1 in decays (accidentally deleted in 4.1.0)
-
+<li>Allow users to input mh, mA0, mHp, mH0 pole masses from the outset, perhaps from eg another program. SOFTSUSY uses its own calculation of Higgs couplings and mixing, but the input pole masses in eg decay calculations.</li>
 

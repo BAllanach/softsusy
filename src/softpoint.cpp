@@ -38,6 +38,8 @@ void errorCall() {
   ii << "./softpoint.x gmsb [mGMSB parameters] [other options]\n";
   ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
   ii << "[other options]: --decays calculates the decays for NMSSM/MSSM\n";
+  ii << "--mh0=<value> --mA0=<value> --mHpm=<value> --mH0=<value> sets the MSSM ";
+  ii << "Higgs pole masses.\n";
   ii << "--minBR=<value> sets the minimum branching ratio printed\n";
   ii << "--dontCalculateThreeBody switches the 3-body decay width calculations off\n";
   ii << "--outputPartialWidths outputs the partial widths themselves in the comments\n";
@@ -187,6 +189,18 @@ int main(int argc, char *argv[]) {
 	oneset.setPoleMt(get_value(argv[i], "--mt="));
       else if (starts_with(argv[i],"--alpha_s="))
 	oneset.setAlphaMz(ALPHAS, get_value(argv[i], "--alpha_s="));      
+      else if (starts_with(argv[i],"--mh0=")) {
+	inputMhPole = true; fixMhPole = get_value(argv[i], "--mh0=");
+      }
+      else if (starts_with(argv[i],"--mA0=")) {
+	inputMA0Pole = true; fixMA0Pole = get_value(argv[i], "--mA0=");
+      }
+      else if (starts_with(argv[i],"--mH0=")) {
+	inputMH0Pole = true; fixMH0Pole = get_value(argv[i], "--mH0=");
+      }
+      else if (starts_with(argv[i],"--mHpm=")) {
+	inputMHpmPole = true; fixMHpmPole = get_value(argv[i], "--mHpm=");
+      }
       else if (starts_with(argv[i],"--matching_scale="))
 	mScale = get_value(argv[i], "--matching_scale=");      
       else if (starts_with(argv[i],"--alpha_inverse="))
@@ -732,6 +746,10 @@ int main(int argc, char *argv[]) {
 		    else if (i == 23 || i == 26) {
 		      m.useAlternativeEwsb();
 		      k.useAlternativeEwsb();
+		      if (fixMA0Pole) {
+			r->setMaCond(fixMA0Pole);
+			k.setMaCond(fixMA0Pole);
+		      }
 		      if (i == 23) {
                          r->setMuCond(d); r->setSusyMu(d);
                          k.setMuCond(d); k.setSusyMu(d);
@@ -742,6 +760,10 @@ int main(int argc, char *argv[]) {
                          }
                       }
 		      if (i == 26) {
+			if (fixMA0Pole) {
+			  cout << "# WARNING: MApole artificially set to " << fixMA0Pole << ", trumping setting it as " << d << endl << "# in EXTPAR 26\n";
+			  d = fixMA0Pole;
+			}
 			r->setMaCond(d); k.setMaCond(d);
 		      }
 		    }
@@ -1243,39 +1265,71 @@ int main(int argc, char *argv[]) {
 		    int num = int(d + EPSTOL);
 		    if (num > 0) USE_TWO_LOOP_SPARTICLE_MASS = true;
 		    else if (num == 0) USE_TWO_LOOP_SPARTICLE_MASS = false;
-		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 22 (should be a positive semi-definite\n";
+		    else cout << "# WARNING: incorrect setting for SOFTSUSY Block 22 (should be a positive semi-definite\n";
 		    break;
 		  }
 		  case 23: {
 		    int num = int(d + EPSTOL);
 		    if (num > 0 && num <=3) expandAroundGluinoPole = num;
-		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 1 and 3 inclusive)\n";		    
+		    else cout << "# WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 1 and 3 inclusive)\n";		    
 		    break;
 		  }
 		  case 24: {
 		    if (d < 1. && d > 0.) minBR = d;
-		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 24 (should be between 0 and 1)\n";
+		    else cout << "# WARNING: incorrect setting for SOFTSUSY Block 24 (should be between 0 and 1)\n";
 		    break;
 		  }
 		  case 25: {
 		    int num = int(d + EPSTOL);
 		    if (num == 0) threeBodyDecays = false;
 		    else if (num == 1) threeBodyDecays = true;
-		    else cout << "#WARNING incorrect setting for SOFTSUSY Block 25 (should be either 0 or 1)\n";
+		    else cout << "# WARNING incorrect setting for SOFTSUSY Block 25 (should be either 0 or 1)\n";
 		    break;
 		  }
 		  case 26: {
 		    int num = int(d + EPSTOL);
 		    if (num == 0) outputPartialWidths = false;
 		    else if (num == 1) outputPartialWidths = true;
-		    else cout << "#WARNING incorrect setting for SOFTSUSY Block 26 (should be either 0 or 1)\n";
+		    else cout << "# WARNING incorrect setting for SOFTSUSY Block 26 (should be either 0 or 1)\n";
 		    break;
 		  }
 		  case 27: {
 		    if (d >= MZ) mScale = d;
-		    else cout << "#WARNING incorrect " << d << " for SOFTSUSY Block 27 (should be > MZ)\n";
+		    else cout << "# WARNING incorrect " << d << " for SOFTSUSY Block 27 (should be > MZ)\n";
 		    break;
-		  }		    
+		  }
+		  case 28: {
+		    if (d >= 0.) {
+		      inputMhPole = true;
+		      fixMhPole   = d;
+		    }
+		    else cout << "# WARNING incorrect " << d << " for SOFTSUSY Block 28 (should be > 0)\n";
+		    break;
+		  }
+		  case 29: {
+		    if (d >= 0.) {
+		      inputMA0Pole = true;
+		      fixMA0Pole   = d;
+		    }
+		    else cout << "# WARNING incorrect " << d << " for SOFTSUSY Block 29 (should be > 0)\n";
+		    break;
+		  }
+		  case 30: {
+		    if (d >= 0.) {
+		      inputMH0Pole = true;
+		      fixMH0Pole   = d;
+		    }
+		    else cout << "# WARNING incorrect " << d << " for SOFTSUSY Block 30 (should be > 0)\n";
+		    break;
+		  }
+		  case 31: {
+		    if (d >= 0.) {
+		      inputMHpmPole = true;
+		      fixMHpmPole   = d;
+		    }
+		    else cout << "# WARNING incorrect " << d << " for SOFTSUSY Block 31 (should be > 0)\n";
+		    break;
+		  }
 		  default:
 		    cout << "# WARNING: Don't understand data input " << i 
 			 << " " << d << " in block "
