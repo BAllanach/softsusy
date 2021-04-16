@@ -6406,7 +6406,9 @@ double chToN2piInt(double qSq, const DoubleVector & v) {
 }
 
 double charginoToNeutralino2pion(const MssmSoftsusy * m) {
-  // This is a hack to get BPMZ conventions for positive chargino masses
+  // This is a hack to get BPMZ conventions for positive chargino masses:
+  // really, these mixing matrices had better be stored in the MssmSoftsusy
+  // object itself rather than recalculated twice
   double thetaL = m->displayPhys().thetaL;
   double thetaR = m->displayPhys().thetaR;
   ComplexMatrix uBpmz(2, 2), vBpmz(2, 2);
@@ -6426,15 +6428,10 @@ double charginoToNeutralino2pion(const MssmSoftsusy * m) {
   if (mchi1 < mneut1 + 2.0 * mpiplus) return 0.;
   if (mchi1 - mneut1 - mpiplus > hadronicScale) return 0.;
 
-  Complex OL11 = -1.0 / root2 * nBpmz.display(1, 4) *
-    vBpmz(1, 2).conj() +
-    nBpmz.display(1, 2) *
-    vBpmz(1, 1).conj();
-  Complex OR11 = +1.0 / root2 *
-    nBpmz.display(1, 3).conj() *
-    uBpmz(1, 2) +
-    nBpmz.display(1, 2).conj() *
-    uBpmz(1, 1);
+  Complex OL11 = -1.0 / root2 * nBpmz.display(1, 4) *  vBpmz(1, 2).conj() +
+    nBpmz.display(1, 2) * vBpmz(1, 1).conj();
+  Complex OR11 = +1.0 / root2 * nBpmz.display(1, 3).conj() *
+    uBpmz(1, 2) + nBpmz.display(1, 2).conj() * uBpmz(1, 1);
 
   DoubleVector v(6);
   v(1) = OL11.real(); v(2) = OL11.imag();
