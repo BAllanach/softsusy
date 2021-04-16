@@ -1,2 +1,2 @@
-<li>Allow users to input mh, mA0, mHp, mH0 pole masses from the outset, perhaps from eg another program. SOFTSUSY uses its own calculation of Higgs couplings and mixing, but the input pole masses in eg decay calculations.</li>
+<li>Changed chargino to pion decay calculations to use the pole parameters: discontinuities were appearing when it kicked in before because of a mismatch with the ffbar calculation. Thanks to S Kraml, A Lessa and M Goodsell
 
