@@ -9,6 +9,7 @@
 #include "linalg.h"
 
 #include <utility>
+#include <limits>
 
 namespace softsusy {
 

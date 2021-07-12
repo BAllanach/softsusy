@@ -34,6 +34,7 @@
 #define MSSM_TWO_LOOP_MTAU_H
 
 #include <iosfwd>
+#include <limits>
 
 namespace flexiblesusy {
 namespace mssm_twoloop_mtau {

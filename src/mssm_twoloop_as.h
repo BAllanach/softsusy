@@ -14,6 +14,7 @@
 #define MSSM_TWO_LOOP_AS_H
 
 #include <iosfwd>
+#include <limits>
 
 namespace flexiblesusy {
 namespace mssm_twoloop_as {

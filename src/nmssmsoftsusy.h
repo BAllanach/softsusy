@@ -20,6 +20,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <utility>
+#include <limits>
 #include "def.h"
 #include "utils.h"
 #include "numerics.h"

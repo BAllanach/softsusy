@@ -7,7 +7,7 @@
 #define NMSSMJACOBIAN_H
 
 #include "linalg.h"
-
+#include <limits>
 #include <utility>
 
 namespace softsusy {

@@ -21,6 +21,7 @@
 #include <iostream>
 #include <cmath>
 #include <cfloat>
+#include <limits>
 #include "linalg.h"
 #include "dilogwrap.h"
 using namespace softsusy;

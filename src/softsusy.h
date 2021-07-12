@@ -21,6 +21,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cmath>
+#include <limits>
 #include "def.h"
 #include "utils.h"
 #include "numerics.h"
