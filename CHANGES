@@ -1,2 +1,2 @@
-<li>Changed chargino to pion decay calculations to use the pole parameters: discontinuities were appearing when it kicked in before because of a mismatch with the ffbar calculation. Thanks to S Kraml, A Lessa and M Goodsell
+<li>Added limits header file: some modern compilers had problems otherwise
 
