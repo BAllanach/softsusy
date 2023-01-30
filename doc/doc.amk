@@ -17,7 +17,7 @@ doc/neutManual.pdf:
 
 $(DOCFILES): doc/%.pdf : doc/%.tex
 	cd $(top_builddir)/doc;\
-	pdflatex $(*F).tex ; bibtex $(*F); pdflatex $(*F).tex; pdflatex $(*F).tex 
+	pdflatex $(*F).tex ; axohelp $(*F) ; bibtex $(*F); pdflatex $(*F).tex; pdflatex $(*F).tex 
 
 .PHONY: clean-local-doc distclean-local-doc
 

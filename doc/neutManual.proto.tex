@@ -1,5 +1,5 @@
 \documentclass[pdflatex,final,3p,times]{elsarticle}
-\usepackage{axodraw}
+\usepackage{axodraw2}
 \usepackage{color}
 \usepackage{verbatim}
 \bibstyle{elsarticle-num}
@@ -477,35 +477,35 @@ predictions.
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=350pt]{neutalg.eps}
-% \begin{picture}(323,245)
-% \put(10,0){\makebox(280,10)[c]{\fbox{7.\ Calculate Higgs,
-%       sparticle \textbf{and neutrino} pole masses. Run to $M_Z$.}}}
-% \put(10,40){\makebox(280,10)[c]{\fbox{6.\ Run to $M_Z$.}}}
-% \put(150,76.5){\vector(0,-1){23}}
-% \put(10,80){\makebox(280,10)[c]{\fbox{5.\ Run to $M_X$. Apply soft breaking
-% and $\rpv$ SUSY boundary conditions.}}}
-% \put(150,116.5){\vector(0,-1){23}}
-% \put(10,130){\makebox(280,10)[c]{\fbox{\shortstack{4.\ EWSB, iterative solution of $\mu$ 
-% and sneutrino VEVs \\ \textbf{including full $\rpc$ and $\rpv$ 1 loop contributions to the
-%  tadpoles  $\frac{\partial {\bf \Delta V}}{\partial v_{u,d,i}}$ }.}}}}
-% \put(150,176){\vector(0,-1){23}}
-% \put(10,180){\makebox(280,10)[c]{\fbox{3.\ Run to $M_S$.}}}
-% \put(20,190){convergence}
-% \DashLine(115,185)(-45,185){5}
-% \DashLine(-45,185)(-45,5){5}
-% \DashLine(-45,5)(-10,5){5}
-% \put(-10,5){\vector(1,0){2}}
-% \put(150,217){\vector(0,-1){24}}
-% \put(150,259){\vector(0,-1){26}}
-% \put(60,265){\fbox{1.\ SUSY radiative corrections to
-% $g_i(M_Z)$}}
-% \put(10,220){\makebox(280,10)[c]{\fbox{2.\ $Y_E$, $Y_D$ include $v_k$
-%       contributions. Iterative solution of $Y_E$.}}} 
-% \put(182,45){\line(1,0){161}}
-% \put(343,45){\line(0,1){225}}
-% \put(343,270){\vector(-1,0){115}}
-% \end{picture}
+%\includegraphics[width=350pt]{neutalg.eps}
+\begin{picture}(323,245)
+\put(10,0){\makebox(280,10)[c]{\fbox{7.\ Calculate Higgs,
+      sparticle \textbf{and neutrino} pole masses. Run to $M_Z$.}}}
+\put(10,40){\makebox(280,10)[c]{\fbox{6.\ Run to $M_Z$.}}}
+\put(150,76.5){\vector(0,-1){23}}
+\put(10,80){\makebox(280,10)[c]{\fbox{5.\ Run to $M_X$. Apply soft breaking
+and $\rpv$ SUSY boundary conditions.}}}
+\put(150,116.5){\vector(0,-1){23}}
+\put(10,130){\makebox(280,10)[c]{\fbox{\shortstack{4.\ EWSB, iterative solution of $\mu$ 
+and sneutrino VEVs \\ \textbf{including full $\rpc$ and $\rpv$ 1 loop contributions to the
+ tadpoles  $\frac{\partial {\bf \Delta V}}{\partial v_{u,d,i}}$ }.}}}}
+\put(150,176){\vector(0,-1){23}}
+\put(10,180){\makebox(280,10)[c]{\fbox{3.\ Run to $M_S$.}}}
+\put(20,190){convergence}
+\DashLine(115,185)(-45,185){5}
+\DashLine(-45,185)(-45,5){5}
+\DashLine(-45,5)(-10,5){5}
+\put(-10,5){\vector(1,0){2}}
+\put(150,217){\vector(0,-1){24}}
+\put(150,259){\vector(0,-1){26}}
+\put(60,265){\fbox{1.\ SUSY radiative corrections to
+$g_i(M_Z)$}}
+\put(10,220){\makebox(280,10)[c]{\fbox{2.\ $Y_E$, $Y_D$ include $v_k$
+      contributions. Iterative solution of $Y_E$.}}} 
+\put(182,45){\line(1,0){161}}
+\put(343,45){\line(0,1){225}}
+\put(343,270){\vector(-1,0){115}}
+\end{picture}
 \end{center}
 \caption{Iterative algorithm used to calculate the $\rpv$ MSSM spectrum 
 in the neutrino mode. Differences to the original $\rpv$ mode are highlighted in bold print.
@@ -738,35 +738,35 @@ $U_{\rm PMNS}$ in Eq.~\ref{eq:upmns}.
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=245pt]{neutobj.eps}
-% \begin{picture}(215,200)(-30,0)
-% \GBox(200,200)(-30,0){0.9}
-% \ArrowLine(60,180)(20,130)
-% \ArrowLine(60,180)(150,190)
-% \ArrowLine(150,160)(150,190)
-% \ArrowLine(60,180)(150,130)
-% \ArrowLine(150,100)(150,130)
-% \ArrowLine(150,130)(50,100)
-% \ArrowLine(150,160)(150,130)
-% \ArrowLine(70,150)(150,130)
-% \ArrowLine(50,100)(50,70)
-% \ArrowLine(50,30)(50,70)
-% \ArrowLine(150,30)(50,70)
-% \ArrowLine(30,70)(150,70)
-% \SetPFont{Teletype}{10}
-% \BText(70,150){Approx}
-% \BText(60,180){RGE}
-% \BText(150,190){MssmSusyRGE}
-% \BText(20,130){QedQcd}
-% \BText(150,160){MssmSusy}
-% \BText(50,30){RpvSoftPars}
-% \BText(40,100){FlavourMssmSoftsusy}
-% \BText(30,70){RpvSoftsusy}
-% \BText(150,100){SoftParsMssm}
-% \BText(150,130){MssmSoftsusy}
-% \BText(150,30){RpvSusyPars}
-% \BText(150,70){RpvNeutrino}
-% \end{picture}
+%\includegraphics[width=245pt]{neutobj.eps}
+\begin{picture}(215,200)(-30,0)
+\GBox(200,200)(-30,0){0.9}
+\ArrowLine(60,180)(20,130)
+\ArrowLine(60,180)(150,190)
+\ArrowLine(150,160)(150,190)
+\ArrowLine(60,180)(150,130)
+\ArrowLine(150,100)(150,130)
+\ArrowLine(150,130)(50,100)
+\ArrowLine(150,160)(150,130)
+\ArrowLine(70,150)(150,130)
+\ArrowLine(50,100)(50,70)
+\ArrowLine(50,30)(50,70)
+\ArrowLine(150,30)(50,70)
+%\ArrowLine(30,70)(150,70)
+\SetPFont{Teletype}{10}
+\BText(70,150){Approx}
+\BText(60,180){RGE}
+\BText(150,190){MssmSusyRGE}
+\BText(20,130){QedQcd}
+\BText(150,160){MssmSusy}
+\BText(50,30){RpvSoftPars}
+\BText(40,100){FlavourMssmSoftsusy}
+\BText(30,70){RpvSoftsusy}
+\BText(150,100){SoftParsMssm}
+\BText(150,130){MssmSoftsusy}
+\BText(150,30){RpvSusyPars}
+\BText(150,70){RpvNeutrino}
+\end{picture}
 \end{center}
 \caption{Heuristic high-level object structure of \SOFTSUSY-3.2. Inheritance is
 displayed by the direction of the arrows. \label{fig:objstruc}}
