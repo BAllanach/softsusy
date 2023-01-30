@@ -1,8 +1,8 @@
-# SOFTSUSY4.1.10 SLHA compliant output
+# SOFTSUSY4.1.12 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    4.1.10       # version number
+     2    4.1.12       # version number
 Block MODSEL  # Select model
      1    1   # sugra
      6    1   # flavour violating MSSM
@@ -113,7 +113,7 @@ Block USQMIX  # super CKM squark mass^2 matrix
   2  2     1.74803047e-03   # (USQMIX)_{22}
   2  3     9.02048901e-01   # (USQMIX)_{23}
   2  4     9.57801233e-09   # (USQMIX)_{24}
-  2  5     5.00786842e-05   # (USQMIX)_{25}
+  2  5     5.00786843e-05   # (USQMIX)_{25}
   2  6    -4.31630275e-01   # (USQMIX)_{26}
   3  1     1.17004258e-07   # (USQMIX)_{31}
   3  2     8.47037195e-03   # (USQMIX)_{32}
@@ -155,14 +155,14 @@ Block DSQMIX  # super CKM squark mass^2 matrix
   3  1     1.74039021e-06   # (DSQMIX)_{31}
   3  2     3.95234378e-03   # (DSQMIX)_{32}
   3  3     3.57200919e-04   # (DSQMIX)_{33}
-  3  4     5.77541469e-06   # (DSQMIX)_{34}
+  3  4     5.77541155e-06   # (DSQMIX)_{34}
   3  5     9.99992073e-01   # (DSQMIX)_{35}
   3  6    -3.23835139e-04   # (DSQMIX)_{36}
   4  1     1.94125813e-04   # (DSQMIX)_{41}
-  4  2     6.23136212e-08   # (DSQMIX)_{42}
+  4  2     6.23136335e-08   # (DSQMIX)_{42}
   4  3    -2.37721607e-06   # (DSQMIX)_{43}
   4  4     9.99999981e-01   # (DSQMIX)_{44}
-  4  5    -5.77449765e-06   # (DSQMIX)_{45}
+  4  5    -5.77449451e-06   # (DSQMIX)_{45}
   4  6     2.15447427e-06   # (DSQMIX)_{46}
   5  1    -1.37698744e-01   # (DSQMIX)_{51}
   5  2     9.89788099e-01   # (DSQMIX)_{52}
@@ -266,13 +266,13 @@ Block msl2 Q= 8.80715297e+02 # super MNS slepton mass^2 matrix - DRbar
   3  3     1.24268584e+05    # (m_L^2)_{33}
 Block msd2 Q= 8.80715297e+02 # super CKM squark mass^2 matrix - DRbar
   1  1     9.57278492e+05    # (m_d^2)_{11}
-  1  2    -2.11494242e-06    # (m_d^2)_{12}
-  1  3     2.36795585e-03    # (m_d^2)_{13}
-  2  1    -2.11494242e-06    # (m_d^2)_{21}
+  1  2    -2.11485965e-06    # (m_d^2)_{12}
+  1  3     2.36795571e-03    # (m_d^2)_{13}
+  2  1    -2.11485965e-06    # (m_d^2)_{21}
   2  2     9.57274211e+05    # (m_d^2)_{22}
-  2  3    -3.56088395e-01    # (m_d^2)_{23}
-  3  1     2.36795585e-03    # (m_d^2)_{31}
-  3  2    -3.56088395e-01    # (m_d^2)_{32}
+  2  3    -3.56088394e-01    # (m_d^2)_{23}
+  3  1     2.36795571e-03    # (m_d^2)_{31}
+  3  2    -3.56088394e-01    # (m_d^2)_{32}
   3  3     9.48067050e+05    # (m_d^2)_{33}
 Block msu2 Q= 8.80715297e+02 # super CKM squark mass^2 matrix - DRbar
   1  1     9.66243836e+05    # (m_u^2)_{11}
@@ -280,9 +280,9 @@ Block msu2 Q= 8.80715297e+02 # super CKM squark mass^2 matrix - DRbar
   1  3     1.25899720e-05    # (m_u^2)_{13}
   2  1     3.22423369e-09    # (m_u^2)_{21}
   2  2     9.66238888e+05    # (m_u^2)_{22}
-  2  3     6.58009410e-02    # (m_u^2)_{23}
+  2  3     6.58009413e-02    # (m_u^2)_{23}
   3  1     1.25899720e-05    # (m_u^2)_{31}
-  3  2     6.58009410e-02    # (m_u^2)_{32}
+  3  2     6.58009413e-02    # (m_u^2)_{32}
   3  3     6.64555771e+05    # (m_u^2)_{33}
 Block mse2 Q= 8.80715297e+02 # super MNS slepton mass^2 matrix - DRbar
   1  1     4.92149032e+04    # (m_e^2)_{11}
@@ -308,7 +308,7 @@ Block td Q= 8.80715297e+02   # super CKM trilinear matrix - DRbar
   1  1    -1.90119008e-01    # (T_d)_{11}
   1  2    -2.65434976e-06    # (T_d)_{12}
   1  3     6.27186980e-05    # (T_d)_{13}
-  2  1    -5.42172302e-05    # (T_d)_{21}
+  2  1    -5.42172303e-05    # (T_d)_{21}
   2  2    -3.88293618e+00    # (T_d)_{22}
   2  3    -9.43151054e-03    # (T_d)_{23}
   3  1     6.07405015e-02    # (T_d)_{31}

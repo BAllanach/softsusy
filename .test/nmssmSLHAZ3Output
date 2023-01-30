@@ -1,10 +1,10 @@
-# SOFTSUSY4.1.10 SLHA compliant output
+# SOFTSUSY4.1.12 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 # B.C. Allanach, P. Athron, L.C. Tunstall, A. Voigt and A.~G.~Williams,
 # Comput. Phys. Commun. 185 (2014) 2322, arXiv:1311.7659
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    4.1.10       # version number
+     2    4.1.12       # version number
 Block MODSEL  # Select model
      1    1   # sugra
      3    1   # NMSSM
@@ -28,7 +28,7 @@ Block MINPAR               # SUSY breaking input parameters
 Block EXTPAR               # scale of SUSY breaking BCs
      0    2.25148843e+16   # MX scale
 # SOFTSUSY-specific non SLHA information:
-# mixing=2 Desired accuracy=1.00000000e-04 Achieved accuracy=5.95137089e-06
+# mixing=2 Desired accuracy=1.00000000e-04 Achieved accuracy=5.95137770e-06
 # 3-loop RGE corrections are off. 2-loop Yukawa/g3 thresholds are off
 # 2-loop SUSY QCD computation of squark/gluino pole masses are off
 # Matching scale=1.70900000e+02
@@ -309,7 +309,7 @@ DECAY 1000005     9.24731878e+00   # Sbottom1 decays
       1.66568743e-02    2      5          1000022   # ~b_1 -> b ~chi_10
       2.14629013e-01    2      5          1000023   # ~b_1 -> b ~chi_20
       4.58488363e-03    2      5          1000025   # ~b_1 -> b ~chi_30
-      8.67721670e-03    2      5          1000035   # ~b_1 -> b ~chi_40
+      8.67721669e-03    2      5          1000035   # ~b_1 -> b ~chi_40
       1.00882244e-04    2      5          1000045   # ~b_1 -> b ~chi_50
 #
 #     PDG         Width             
@@ -443,8 +443,8 @@ DECAY 1000025     2.60587954e+00   # Neutralino3 decays
       2.26387388e-05    2      13        -2000013   # ~chi_30 -> mu- ~mu_R+
       6.19349283e-06    2      12        -1000012   # ~chi_30 -> nu_e ~nu_eL*
       6.19349283e-06    2     -12         1000012   # ~chi_30 -> nu_eb ~nu_eL
-      6.20380964e-06    2      14        -1000014   # ~chi_30 -> nu_mu ~nu_muL*
-      6.20380964e-06    2     -14         1000014   # ~chi_30 -> nu_mub ~nu_muL
+      6.20380965e-06    2      14        -1000014   # ~chi_30 -> nu_mu ~nu_muL*
+      6.20380965e-06    2     -14         1000014   # ~chi_30 -> nu_mub ~nu_muL
       2.22344397e-04    2     -1000015    15        # ~chi_30 -> tau- ~tau_1+
       2.22344397e-04    2      1000015   -15        # ~chi_30 -> tau+ ~tau_1-
       9.72535628e-06    2      16        -1000016   # ~chi_30 -> nu_tau ~nu_tauL*
@@ -459,9 +459,9 @@ DECAY 1000025     2.60587954e+00   # Neutralino3 decays
 #     PDG         Width             
 DECAY 1000035     2.67165563e+00   # Neutralino4 decays
 #     BR                NDA   PDG1         PDG2       Comments          
-      5.73997741e-05    2     -11         1000011   # ~chi_40 -> e+ ~e_L-
+      5.73997742e-05    2     -11         1000011   # ~chi_40 -> e+ ~e_L-
       1.53974850e-04    2     -11         2000011   # ~chi_40 -> e+ ~e_R-
-      5.73997741e-05    2      11        -1000011   # ~chi_40 -> e ~e_L+
+      5.73997742e-05    2      11        -1000011   # ~chi_40 -> e ~e_L+
       1.53974850e-04    2      11        -2000011   # ~chi_40 -> e ~e_R+
       5.73912637e-05    2     -13         1000013   # ~chi_40 -> mu+ ~mu_L-
       1.54139802e-04    2     -13         2000013   # ~chi_40 -> mu+ ~mu_R-
@@ -589,7 +589,7 @@ DECAY 45          2.31153526e+00   # NMSSM third scalar higgs decays
       4.24577066e-06    2      22         22        # H3 -> gamma gamma
       3.68176558e-04    2      21         21        # H3 -> gluon gluon
       1.02423178e-05    2      23         22        # H3 -> Z gamma
-      8.30157179e-04    2      24        -24        # H3 -> W+ W-  
+      8.30157178e-04    2      24        -24        # H3 -> W+ W-  
       4.03223976e-04    2      23        -23        # H3 -> Z Z    
       3.78931291e-03    2      25         35        # H3 -> h H    
 #
@@ -619,5 +619,5 @@ DECAY 1000045     4.67201191e-02   # Neutralino5 decays
       8.61168782e-02    2      23         1000022   # ~chi_50 -> Z ~chi_10
       1.23072409e-01    2      23         1000023   # ~chi_50 -> Z ~chi_20
       5.47400044e-02    2      25         1000022   # ~chi_50 -> h ~chi_10
-      1.01648852e-01    2      25         1000023   # ~chi_50 -> h ~chi_20
+      1.01648853e-01    2      25         1000023   # ~chi_50 -> h ~chi_20
 #
