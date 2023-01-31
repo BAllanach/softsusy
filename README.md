@@ -1,4 +1,3 @@
--------------------------------------------------
 SOFTSUSY
 -------------------------------------------------
 by: B C Allanach, P Athron, A Bednyakov, M Bernhardt, T Cridge, D Grellscheid,
@@ -96,8 +95,8 @@ If you use the three-loop RGEs or two-loop threshold corrections, please cite
 If you use the two-loop SUSY QCD corrections to squark and gluino pole masses,
 please cite 1 and 
 
-> 6. B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de
-Austri, arXiv:1601.06657. 
+> 6. [B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de
+Austri, arXiv:1601.06657] (https://arxiv.org/abs/1601.06657)
 
 
 ## SOFTSUSY-specific input for SUSY Les Houches Accord input files
@@ -172,7 +171,8 @@ EXECTUABLE FILES: AFTER INSTALLATION
 
 FILES INCLUDED IN THIS DISTRIBUTION
 -----------------------------------
-Source files are to be found in the `src/` subdirectory.
+Source files are to be found in the `src/` subdirectory. Manuals are found in the `doc/` subdirectory: `rpcManual.pdf` is the main one, and the other `.pdf` files describe various extensions to this.
+
 
 INPUT AND INFO FILES
 --------------------
