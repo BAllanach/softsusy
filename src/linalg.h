@@ -95,6 +95,9 @@ public:
   const DoubleVector & display() const { return *this; }///< returns whole thing
   double compare(const DoubleVector & a) const; 
 
+  /// appends an element at the end
+  void append(double);
+
   /// Changes the length of a vector - copies as many elements of old one as
   /// possible, and fills any extra up with zeroes
   void setEnd(int e);

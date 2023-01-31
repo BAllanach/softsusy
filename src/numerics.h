@@ -17,18 +17,33 @@
 
 #include "utils.h"
 #include "mycomplex.h"
-#include <iostream>
 #include "def.h"
+#include <iostream>
+#include <cmath>
+#include <cfloat>
+#include <limits>
 #include "linalg.h"
 #include "dilogwrap.h"
-#ifdef USE_LOOPTOOLS
-#include "clooptools.h"
-#endif
 using namespace softsusy;
+
+/// gives DoubleVector ans with all n real roots (returned) in increasing
+/// absolute order for:
+/// a x^3 + b x^2 + c x + d=0.
+/// Needs an upgrade to include complex roots
+int cubicRoots(double a, double b, double c, double d,
+	       DoubleVector & ans);
+
+/// cubic roots for x^3 + a*x + b*x^2 + c*x^4 = 0
+int cubicRootsInside(double a, double b, double c, DoubleVector & ans);
 
 /// adaptive Gaussian one dimensional integration of f(x) between a and b to
 /// precision eps
 double dgauss(double (*f)(double x), double a, double b, double eps);
+
+/// adaptive Gaussian one dimensional integration of f(x) between a and b to
+/// precision eps with user - given parameters in DoubleVector & v
+double dgauss(double (*f)(double x, const DoubleVector & v),
+	      const DoubleVector & v, double a, double b, double eps);
 
 /// calculate root(1+x), where x<<1 accurately
 double accurateSqrt1Plusx(double x);
@@ -69,10 +84,15 @@ int integrateOdes(DoubleVector & ystart, double x1, double x2, double eps,
 double calcDerivative(double (*func)(double), 
 		     double x, double h, double *err);
 
+/// DH: overloaded version allowing to pass additional parameters to the
+/// function
+double calcDerivative(double (*func)(double, void*),
+                      double x, double h, double* err, void* params = NULL);
+
 /// f is user-defined function, minimum value returned in xmin. Based on a
 /// golden section search
 double findMinimum(double ax, double bx, double cx, double (*f)(double),
-		   double tol, double *xmin);
+		   double tol, double & xmin);
 
 void shft2(double & a, double & b, double & c); ///< a=b and b=c
 /// a=b, b=c and c=d
@@ -263,14 +283,15 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc);
 /// point to be evaluated, fvec is the vector of function values at the point,
 /// and  vecfunc(n, x, f) is the Jacobian array
 void fdjac(int n, DoubleVector x, const DoubleVector & fvec, DoubleMatrix & df,
-	   void (*vecfunc)(const DoubleVector &, DoubleVector &));
+	   int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+           void* params = NULL);
 /// These are experimental things for trying the shooting method - returns
 /// F.F/2 evaluated at x. Boolean value on return is error flag
 bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
 	    DoubleVector & p, 
 	    DoubleVector & x, double & f, double stpmax, 
-	    void (*vecfunc)(const DoubleVector &, DoubleVector &), 
-	    DoubleVector & fvec);
+	    int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+	    DoubleVector & fvec, void* params = NULL);
 /* allocate an int vector with subscript range v[nl..nh] */
 int *ivector(long nl, long nh);
 /* free an int vector allocated with ivector() */
@@ -283,7 +304,8 @@ void lubksb(const DoubleMatrix & a, int n, int *indx, DoubleVector & b);
 /// (df/dx=0). The length of x should be equal to the number of parameters to
 /// vary AND the number of constraints ie the length of the vector in vecfunc.
 bool newt(DoubleVector & x, 
-	  void (*vecfunc)(const DoubleVector &, DoubleVector &));
+	  int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+          void* params = NULL);
 /// calculates the n-vector y, given freely specifiable values v(1..n2) at x1
 void load(float x, const DoubleVector & v, DoubleVector & y);
 /// Gives a discrepancy vector f[1..n2] from ending boundary conditions at
@@ -322,5 +344,10 @@ void rsolv(const DoubleMatrix & a, int n, const DoubleVector & d,
   /// returns f * f * sign(f)
   double signedSqr(double f);
 
+/// Kinematic mass function - differs from the pure one in PDG by a root and
+/// factor
+/// \f$ f(m_1,m_2,m_3)=\frac{\sqrt{(m_1^2-(m_2^2+m_3^2))(m_1^2-(m_2^2-m_3^2))}}{2 m_1}\f$.
+double kinFn(double m1, double m2, double m3);
+double lambda(double a, double b, double c); 
 #endif
 

@@ -5,8 +5,9 @@
     "latex2e"
     "article"
     "art10"
-    "axodraw"
-    "jheppub")
+    "axodraw2"
+    "jheppub"
+    "verbatim")
    (TeX-add-symbols
     '("href" 2)
     "at"
@@ -117,6 +118,7 @@
     "avdeev"
     "bednyakov"
     "Groom:2000in"
+    "degrassi"
     "Casas:1998vh"
     "Martin:2001vx"
     "Yamada:2001ck"
@@ -137,6 +139,7 @@
     "sdecay"
     "pythia"
     "micromegas"
+    "uncert"
     "Randall:1998uk"
     "gmsb"
     "lhacc2")))

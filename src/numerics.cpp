@@ -9,7 +9,77 @@
 
 #include "numerics.h"
 
- 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef USE_LOOPTOOLS
+#include "clooptools.h"
+#endif
+
+int cubicRoots(double alpha, double beta, double gamma, double delta,
+	       DoubleVector & ans) {
+  if (fpclassify(alpha) != FP_ZERO) {
+    int a =
+      cubicRootsInside(beta / alpha, gamma / alpha, delta / alpha, ans);
+    if (a > 2) {
+      /// order the roots in increasing absolute order
+      if (fabs(ans(1)) > fabs(ans(2))) ans.swap(1, 2);
+      if (fabs(ans(2)) > fabs(ans(3))) ans.swap(2, 3);
+      if (fabs(ans(1)) > fabs(ans(2))) ans.swap(1, 2);      
+    }
+    return a;
+  }
+  if (fpclassify(beta) == FP_ZERO) {
+    /// It's a linear equation
+    if (fpclassify(gamma) != FP_ZERO) {
+	ans.setEnd(1);
+	ans(1) = -delta / gamma;
+	return 1;
+      }
+  }
+  double sgn_delta = 1.;
+  if (delta < 0.) sgn_delta = -1.;
+  /// it's a quadratic really
+  double q = -0.5 *
+    (delta + sgn_delta * sqrt(sqr(delta) - 4.0 * beta * gamma));
+  ans.setEnd(2);
+  ans(1) = q / beta;
+  ans(2) = gamma / q;
+  
+  return ans.displayEnd();
+}
+
+int cubicRootsInside(double a, double b, double c, 
+	       DoubleVector & ans) {
+  ans.setEnd(3);
+  double Q = (sqr(a) - 3.0 * b) / 9.0;
+  double R = (2.0 * sqr(a) * a - 9.0 * a * b + 27.0 * c) / 54.;
+  double Qcub = Q * Q * Q;
+  double Rsq  = R * R;
+  double rtQ  = sqrt(Q);
+
+  if (Rsq <= Qcub) {
+    /// Three real roots
+    double theta = acos(R / sqrt(Qcub));
+    ans(1) = -2.0 * rtQ * cos(theta / 3.0) - a / 3.0;
+    ans(2) = -2.0 * rtQ * cos((theta + 2.0 * PI) / 3.0)
+      - a / 3.0;
+    ans(3) = -2.0 * rtQ * cos((theta - 2.0 * PI) / 3.0)
+      - a / 3.0;
+  } else {
+    /// only one real root
+    double sgn_R = 1;
+    if (R < 0.) sgn_R = -1.;
+    double A = -sgn_R * cbrt(abs(R) + sqrt(Rsq - Qcub));
+    double B = 1.;
+    if (fpclassify(A) != FP_ZERO) B = Q / A;
+    ans.setEnd(1);
+    ans(1) = A + B - a / 3.0;
+  }
+  return ans.displayEnd();
+}
+
 double dgauss(double (*f)(double x), double a, double b, double eps) {
   static DoubleVector w(12), x(12);
   /// set the initial values if they are uninitialised
@@ -40,11 +110,11 @@ double dgauss(double (*f)(double x), double a, double b, double eps) {
     x(12)  =   0.0950125098376374401853193354;
   }
   const double constant = 1.0e-25;
-  double delta = constant * abs(a - b);
+  double delta = constant * fabs(a - b);
   double dgauss = 0.;
   double aa = a;
  lab5: double y = b - aa;
-  if (abs(y) <= delta) return dgauss;
+  if (fabs(y) <= delta) return dgauss;
  lab2: double bb = aa + y;
   double c1 = 0.5 * (aa + bb);
   double c2 = c1 - aa;
@@ -60,12 +130,77 @@ double dgauss(double (*f)(double x), double a, double b, double eps) {
   }
   s8 = s8 * c2;
   s16 = s16 * c2;
-  if (abs(s16 - s8) > eps * (1. + abs(s16))) goto lab4;
+  if (fabs(s16 - s8) > eps * (1. + fabs(s16))) goto lab4;
   dgauss = dgauss + s16;
   aa = bb;
   goto lab5;
  lab4: y = 0.5 * y;
-  if (abs(y) > delta) goto lab2;
+  if (fabs(y) > delta) goto lab2;
+  cout << "Too high accuracy required in numerics.cpp:dgauss\n";
+  dgauss = 0.;
+  throw("Too high accuracy required in numerics.cpp:dgauss\n");
+  return dgauss;
+}
+
+double dgauss(double (*f)(double x, const DoubleVector & v),
+	      const DoubleVector & v, double a, double b, double eps) {
+  static DoubleVector w(12), x(12);
+  /// set the initial values if they are uninitialised
+  if (w(1) < 1.0e-5) {
+    w(1)  =    0.1012285362903762591525313543;
+    w(2)  =    0.2223810344533744705443559944;
+    w(3)  =    0.3137066458778872873379622020;
+    w(4)  =    0.3626837833783619829651504493;
+    w(5)  =    0.0271524594117540948517805725;
+    w(6)  =    0.0622535239386478928628438370;
+    w(7)  =    0.0951585116824927848099251076;
+    w(8)  =    0.1246289712555338720524762822;
+    w(9)  =    0.1495959888165767320815017305;
+    w(10) =    0.1691565193950025381893120790;
+    w(11) =    0.1826034150449235888667636680;
+    w(12) =    0.1894506104550684962853967232;
+    x(1)  =    0.9602898564975362316835608686;
+    x(2)  =    0.7966664774136267395915539365;
+    x(3)  =    0.5255324099163289858177390492;
+    x(4)  =    0.1834346424956498049394761424;
+    x(5)  =    0.9894009349916499325961541735;
+    x(6)  =    0.9445750230732325760779884155;
+    x(7)  =    0.8656312023878317438804678977;
+    x(8)  =    0.7554044083550030338951011948;
+    x(9)  =    0.6178762444026437484466717640; 
+    x(10)  =   0.4580167776572273863424194430;
+    x(11)  =   0.2816035507792589132304605015;
+    x(12)  =   0.0950125098376374401853193354;
+  }
+  const double constant = 1.0e-25;
+  double delta = constant * fabs(a - b);
+  double dgauss = 0.;
+  double aa = a;
+ lab5: double y = b - aa;
+  if (fabs(y) <= delta) return dgauss;
+ lab2: double bb = aa + y;
+  double c1 = 0.5 * (aa + bb);
+  double c2 = c1 - aa;
+  double s8 = 0.;
+  double s16 = 0.;
+  for (int i=1; i<=4; i++) {
+    double u = x(i) * c2;
+    s8 = s8 + w(i) * (f(c1 + u, v) + f(c1 - u, v));
+  }
+  for (int i=5; i<=12; i++) {
+    double u = x(i) * c2;
+    s16 = s16 + w(i) * (f(c1 + u, v) + f(c1 - u, v));
+  }
+  s8 = s8 * c2;
+  s16 = s16 * c2;
+  if (fabs(s16 - s8) > eps * (1. + fabs(s16))) goto lab4;
+  dgauss = dgauss + s16;
+  aa = bb;
+  goto lab5;
+ lab4: y = 0.5 * y;
+  if (fabs(y) > delta) goto lab2;
+  cout << "Too high accuracy required in numerics.cpp:dgauss\n";
+  dgauss = 0.;
   throw("Too high accuracy required in numerics.cpp:dgauss\n");
   return dgauss;
 }
@@ -96,7 +231,7 @@ double log1minusx(double x) {
   if (x > 1.) return 0.; 
   else if (close(1., x, EPSTOL)) return numberOfTheBeast;
   else if (fabs(x) > 0.125) return log(1. - x);
-  else if (x < 1.e-200) return 0.;
+  else if (fpclassify(x) == FP_ZERO) return 0.;
   double test = -x; int i = 1; double l1mx = -x;
   /// Find largest power that we need from the expansion
   do { 
@@ -309,6 +444,41 @@ double calcDerivative(double (*func)(double), double x, double h, double
   return ans;
 }
 
+double calcDerivative(double (*func)(double, void*), double x, double h, double
+		      *err, void* params){
+  const double CON = 1.4, CON2 = CON * CON, BIG = 1.0e30, 
+    SAFE = 2.0; 
+  const int NTAB = 10;
+  
+  int i, j;
+  double errt, fac, hh, ans = 0.0;
+  
+  if (h == 0.0) throw "h must be nonzero in numerics.cpp:calcDerivative";
+
+
+  DoubleMatrix a(NTAB, NTAB);
+  hh = h;
+  a(1, 1) = ((*func)(x + hh, params) - (*func)(x - hh, params)) / (2.0 * hh);
+  *err = BIG;
+  for (i=2; i<=NTAB; i++) {
+    hh /= CON;
+    a(1, i) = ((*func)(x + hh, params) - (*func)(x - hh, params)) / (2.0 * hh);
+    fac = CON2;
+    for (j=2; j<=i; j++) {
+      a(j, i) = (a(j-1, i) * fac - a(j-1, i-1)) / (fac - 1.0);
+      fac = CON2 * fac;
+      errt = maximum(fabs(a(j, i) - a(j-1, i)), fabs(a(j, i) - a(j-1, i-1)));
+      if (errt <= *err) {
+	*err = errt;
+	ans = a(j, i);
+      }
+    }
+    if (fabs(a(i, i) - a(i-1, i-1)) >= SAFE * (*err)) break;
+  }
+
+  return ans;
+}
+
 inline void shft2(double & a, double & b, double c) { a = b; b = c; }
 
 inline void shft3(double & a, double & b, double & c, double d) { 
@@ -316,7 +486,7 @@ inline void shft3(double & a, double & b, double & c, double d) {
 }
 
 double findMinimum(double ax, double bx, double cx, double (*f)(double),
-		   double tol, double *xmin)
+		   double tol, double &xmin)
 {
   const double R = 0.61803399, C = 1.0 - R;
   double f1, f2, x0, x1, x2, x3;
@@ -342,10 +512,10 @@ double findMinimum(double ax, double bx, double cx, double (*f)(double),
 	}
   }
   if (f1 < f2) {
-    *xmin = x1; 
+    xmin = x1; 
     return f1; 
   } else {
-    *xmin = x2; 
+    xmin = x2; 
     return f2; 
   }
 }
@@ -422,6 +592,8 @@ Complex fBc(const Complex & a) {
 double b0(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
+  if (fabs(m1) < 1.0e-30) m1 = 1.0e-30;
+  if (fabs(m2) < 1.0e-30) m2 = 1.0e-30;  
   double b0l = B0(p*p, m1*m1, m2*m2).real();
   return B0(p*p, m1*m1, m2*m2).real();
 #endif
@@ -451,20 +623,30 @@ double b0(double p, double m1, double m2, double q) {
     
     Complex xPlus, xMinus;
 
-    xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
+    /// alternative form: should be more accurate
+    Complex oneiEpsilon(1.0, EPSTOL);
+    Complex qq =
+      -0.5 * (-s + sqrt(sqr(s) - 4.0 * pSq * sqr(mMax) * oneiEpsilon));
+    xMinus  = qq / pSq;
+    xPlus = sqr(mMax) * oneiEpsilon / qq;
+    
+    /*    xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
       (2. * sqr(p));
     xMinus = 2. * (sqr(mMax) - iEpsilon) / 
-      (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
-
+    (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));*/
+    //    cout << "DEBUG2: " << xPlus << " " << xMinus << endl;
     ans = -2.0 * log(p / q) - fB(xPlus) - fB(xMinus);
   } else {
     if (close(m1, m2, EPSTOL)) {
+      //      	cout << "DEBUG5\n";
       ans = - log(sqr(m1 / q));
     } else {
       double Mmax2 = sqr(mMax), Mmin2 = sqr(mMin); 
       if (Mmin2 < 1.e-30) {
+	//	cout << "DEBUG3\n";
 	ans = 1.0 - log(Mmax2 / sqr(q));
       } else {
+	//	cout << "DEBUG4\n";
 	ans = 1.0 - log(Mmax2 / sqr(q)) + Mmin2 * log(Mmax2 / Mmin2) 
 	  / (Mmin2 - Mmax2);
       }
@@ -491,8 +673,10 @@ double b0(double p, double m1, double m2, double q) {
 Complex b0c(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
+  if (fabs(m1) < 1.0e-30) m1 = 1.0e-30;
+  if (fabs(m2) < 1.0e-30) m2 = 1.0e-30;  
   Complex b0l = B0(p*p, m1*m1, m2*m2);
-  //  return B0(p*p, m1*m1, m2*m2);
+  return B0(p*p, m1*m1, m2*m2);
 #endif
 
   /// Avoids IR infinities
@@ -516,15 +700,24 @@ Complex b0c(double p, double m1, double m2, double q) {
 
   /// p is not 0  
   if (pTest > pTolerance) {  
-    Complex iEpsilon(0.0, EPSTOL * sqr(mMax));
-    
+    //    Complex iEpsilon(0.0, EPSTOL * sqr(mMax));
     Complex xPlus, xMinus;
-
-    xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
+    
+    /// alternative form: should be more accurate
+    Complex oneiEpsilon(1.0, EPSTOL);
+    Complex qq =
+      -0.5 * (-s + sqrt(sqr(s) - 4.0 * pSq * sqr(mMax) * oneiEpsilon));
+    xMinus  = qq / pSq;
+    xPlus   = sqr(mMax) * oneiEpsilon / qq;
+     
+    /*    xPlus = (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon))) /
       (2. * sqr(p));
     xMinus = 2. * (sqr(mMax) - iEpsilon) / 
-      (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));
+    (s + sqrt(sqr(s) - 4. * sqr(p) * (sqr(mMax) - iEpsilon)));*/
 
+    /*cout << "DEBUG: " << pSq << " " << mMax << " " << s << endl;
+    cout << "Comparison: " << xPlus << "=" << xPlus1 << " " << xMinus << "=" << xMinus1 << endl;
+    exit(0);*/
     ans = -2.0 * log(p / q) - fBc(xPlus) - fBc(xMinus);
   } else {
     if (close(m1, m2, EPSTOL)) {
@@ -561,8 +754,10 @@ Complex b0c(double p, double m1, double m2, double q) {
 double b1(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
+  if (fabs(m1) < 1.0e-30) m1 = 1.0e-30;
+  if (fabs(m2) < 1.0e-30) m2 = 1.0e-30;  
   double b1l = -B1(p*p, m1*m1, m2*m2).real();
-  //    return b1l;
+  return b1l;
 #endif
 
   double ans = 0.;
@@ -573,7 +768,7 @@ double b1(double p, double m1, double m2, double q) {
 
   if (pTest > pTolerance) {
     ans = (a0(m2, q) - a0(m1, q) + (sqr(p) + sqr(m1) - sqr(m2)) 
-	   * b0(p, m1, m2, q)) / (2.0 * sqr(p)); 
+	   * b0(p, m1, m2, q)) / (2.0 * sqr(p));
   } else if (fabs(m1) > 1.0e-15 && fabs(m2) > 1.0e-15) { ///< checked
     const double m12 = sqr(m1), m22 = sqr(m2);
     const double m14 = sqr(m12), m24 = sqr(m22);
@@ -620,8 +815,10 @@ double b1(double p, double m1, double m2, double q) {
 Complex b1c(double p, double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
+  if (fabs(m1) < 1.0e-30) m1 = 1.0e-30;
+  if (fabs(m2) < 1.0e-30) m2 = 1.0e-30;    
   Complex b1l = -B1(p*p, m1*m1, m2*m2);
-  //    return b1l;
+  return b1l;
 #endif
 
   Complex ans = 0.;
@@ -645,7 +842,7 @@ Complex b1c(double p, double m1, double m2, double q) {
   } else {
     ans = bIntegral(1, p, m1, m2, q); 
   }
-
+#
 #ifdef USE_LOOPTOOLS
   if (!close(b1l, ans, 1.0e-3) && 
       (b1l.imag() > 1.0e-6 && ans.imag() > 1.0e-6)) {
@@ -663,7 +860,10 @@ return ans;
 double b22(double p,  double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
+  if (fabs(m1) < 1.0e-30) m1 = 1.0e-30;
+  if (fabs(m2) < 1.0e-30) m2 = 1.0e-30;  
   double b22l = B00(p*p, m1*m1, m2*m2).real();
+  return b22l;
 #endif
 
   double answer = 0.;
@@ -718,7 +918,10 @@ double b22(double p,  double m1, double m2, double q) {
 Complex b22c(double p,  double m1, double m2, double q) {
 #ifdef USE_LOOPTOOLS
   setmudim(q*q);
+  if (fabs(m1) < 1.0e-30) m1 = 1.0e-30;
+  if (fabs(m2) < 1.0e-30) m2 = 1.0e-30;  
   Complex b22l = B00(p*p, m1*m1, m2*m2);
+  return b22l;
 #endif
 
   Complex answer = 0.;
@@ -1674,7 +1877,8 @@ double zriddr(double (*func)(double), double x1, double x2, double xacc) {
 
 /// You will need to clear this lot up....
 DoubleMatrix fdjac(int n, DoubleVector x, const DoubleVector & fvec,
-	   void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
+           int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+           void* params) {
   double EPS = maximum(TOLERANCE, 1.0e-4);
   int i,j;
   double h,temp;
@@ -1687,7 +1891,7 @@ DoubleMatrix fdjac(int n, DoubleVector x, const DoubleVector & fvec,
     if (h == 0.0) h = EPS;
     x(j) = temp + h;
     h = x(j) - temp;
-    (*vecfunc)(x, f);
+    (*vecfunc)(x, params, f);
     x(j) = temp;
     for (i=1; i<=n; i++) df(i, j) = (f(i) - fvec.display(i)) / h;
   }
@@ -1697,8 +1901,8 @@ DoubleMatrix fdjac(int n, DoubleVector x, const DoubleVector & fvec,
 bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g, 
 	    DoubleVector & p, 
 	    DoubleVector & x, double & f, double stpmax, 
-	    void (*vecfunc)(const DoubleVector &, DoubleVector &), 
-	    DoubleVector & fvec) {
+	    int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+	    DoubleVector & fvec, void* params) {
   double ALF = TOLERANCE;
   double TOLX = TOLERANCE * 1.0e-3;
   
@@ -1721,7 +1925,7 @@ bool lnsrch(const DoubleVector & xold, double fold, const DoubleVector & g,
   alam = 1.0;
   for (;;) {
     x = xold + alam * p;
-    vecfunc(x, fvec); 
+    vecfunc(x, params, fvec);
     f = fvec.dot(fvec);
     if (alam < alamin) {
       x = xold;
@@ -1836,7 +2040,8 @@ void ludcmp(DoubleMatrix & a, int n, int *indx, double & d) {
 
 /// More work can be done on this: get rid of int n and in subfunctions too
 bool newt(DoubleVector & x, 
-	  void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
+	  int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+          void* params) {
   bool err = false; 
   const int MAXITS = 200;    ///< max iterations
   double TOLF   = TOLERANCE; ///< convergence on function values
@@ -1853,7 +2058,7 @@ bool newt(DoubleVector & x,
   DoubleVector g(n), p(n), xold(n);
   DoubleVector fvec(n);
 
-  vecfunc(x, fvec); 
+  vecfunc(x, params, fvec);
   f = 0.5 * fvec.dot(fvec);
   test = 0.0;
   test = fvec.apply(fabs).max();
@@ -1865,7 +2070,7 @@ bool newt(DoubleVector & x,
   stpmax = STPMX * maximum(sqrt(sum), (double) n);
   for (its=1; its<=MAXITS; its++) {
     //    cout << its << endl; ///< DEBUG
-    fjac = fdjac(n, x, fvec, vecfunc);
+    fjac = fdjac(n, x, fvec, vecfunc, params);
     for (i=1;i<=n;i++) {
       for (sum=0.0, j=1; j<=n; j++) sum += fjac(j, i) * fvec(j);
       g(i) = sum;
@@ -1875,7 +2080,7 @@ bool newt(DoubleVector & x,
     for (i=1; i<=n; i++) p(i) = -fvec(i);
     ludcmp(fjac, n, indx, d);
     lubksb(fjac, n, indx, p);
-    err = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec);
+    err = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec, params);
     test = 0.0;
     for (i=1; i<=n; i++)
       if (fabs(fvec(i)) > test) test = fabs(fvec(i));
@@ -1948,7 +2153,8 @@ DoubleVector testDerivs(double /* x */, const DoubleVector & y) {
   }*/
   
 void broydn(DoubleVector x, int & check, 
-	    void (*vecfunc)(const DoubleVector &, DoubleVector &)) {
+	    int (*vecfunc)(const DoubleVector &, void*, DoubleVector &),
+            void* params) {
   const int MAXITS = 200;
   double TOLF =  TOLERANCE;
   const double EPS = TOLF * 1.0e-3;
@@ -1974,7 +2180,7 @@ void broydn(DoubleVector x, int & check,
     fvec(n);
   DoubleMatrix qt(n, n), r(n, n);
 
-  vecfunc(x, fvec); 
+  vecfunc(x, params, fvec);
   double f = 0.5 * fvec.dot(fvec);
   
   double test = fvec.apply(fabs).max();
@@ -1987,7 +2193,7 @@ void broydn(DoubleVector x, int & check,
   int restrt = 1, sing;
   for (int its=1; its<=MAXITS; its++) {
     if (restrt) {
-      r = fdjac(n, x, fvec, vecfunc);
+       r = fdjac(n, x, fvec, vecfunc, params);
       qrdcmp(r, n, c, d, sing);
       if (sing) throw("singular Jacobian in broydn\n");
       for (int i=1; i<=n; i++) {
@@ -2056,7 +2262,7 @@ void broydn(DoubleVector x, int & check,
     }
     rsolv(r, n, d, p); 
     DoubleVector fvec(n);
-    check = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec);
+    check = lnsrch(xold, fold, g, p, x, f, stpmax, vecfunc, fvec, params);
     test = 0.0;
     for (int i=1; i<=n; i++)
       if (fabs(fvec(i)) > test) test = fabs(fvec(i));
@@ -2200,3 +2406,21 @@ double signedSqr(double f){ if (f > 0.) return sqr(f);
   double signedSqrt(double f);
   /// returns f * f * sign(f)
   double signedSqr(double f);
+
+double kinFn(double m1, double m2, double m3) {
+  if (fabs(m1) < fabs(m2) +fabs(m3)) {
+    cout << "m1 < m2 + m3 DEBUG\n";
+    return 0.;
+  }
+  double squareplus  = pow(m1, 2) - pow((m2 + m3), 2);
+  double squareminus = pow(m1, 2) - pow((m2 - m3), 2);
+
+  return 0.5 * sqrt(squareplus * squareminus) / m1;
+}
+
+double lambda(double a, double b, double c) {
+  if (fabs(a) < fabs(b) + fabs(c)) {
+    throw("a < b + c in numerics.cpp:lambda\n");
+  }
+  return sqr(a + b - c) - 4.0 * a * b;
+}

@@ -13,7 +13,7 @@ doc/*.log
 doc/*.out
 doc/*.spl
 doc/*flymake*
-doc/*-eps-*.pdf
+doc/auto/*
 *.lo
 *.x 
 *.o
@@ -35,6 +35,7 @@ cmsdilep.x
 scansusy_slha.x
 softsusy-nmssm.x
 aclocal.m4
+m4/*
 benchmarks/*.spec
 doc/*.ps
 doc/*.spl
@@ -52,3 +53,8 @@ src/supermodel/supermodel/libtsil.a
 ver
 make.nmssmtools
 softsusy-*.tar.gz
+src/Himalaya-1.0.0/example
+src/Himalaya-1.0.0/libDSZ.a
+src/Himalaya-1.0.0/libHimalaya.a
+src/Himalaya-1.0.0/CMake*
+src/Himalaya-1.0.0/cmake*

@@ -18,7 +18,6 @@
 using namespace softsusy;
 
 int main() {
-
   /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
   softsusy::PRINTOUT = 0;
@@ -37,15 +36,16 @@ int main() {
   oneset.setPoleMt(mtop);
   oneset.setMass(mBottom, mbmb);
   oneset.toMz();      ///< Runs SM fermion masses to MZ
+  oneset.runto(oneset.displayPoleMt());      ///< Runs SM fermion masses to mt
 
   /// Print out the SM data being used, as well as quark mixing assumption and
   /// the numerical accuracy of the solution
-  cout << "# Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE="
-       << TOLERANCE << endl << oneset << endl;
+  cout << "# Data in SOFTSUSY: mixing=0" << " TOLERANCE="
+       << TOLERANCE << endl;
 
   /// Print out header line
   cout << "# tan beta   mh(1)        mh(2)        mA(1)        mA(2)"
-       << "        mH+-\n";
+       << "        mH+-         BN   \n";
 
   /// Set limits of tan beta scan
   double startTanb = 5.0, endTanb = 55.0;
@@ -57,14 +57,14 @@ int main() {
   nmpars(1) = lambda; nmpars(2) = kappa; nmpars(3) = s;
   nmpars(4) = xiF; nmpars(5) = mupr;
   bool uni = true; // MGUT defined by g1(MGUT)=g2(MGUT)
-  softsusy::Z3 = true;
 
   for (int i = 0; i < numPoints; i++) {
      tanb = (endTanb - startTanb) / double(numPoints) * double(i) +
         startTanb; // set tan beta ready for the scan.
 
      NmssmSoftsusy n;
-
+     n.setZ3(true);
+     
      try {
        n.NmssmSoftsusy::lowOrg(SemiMsugraBcs, mGutGuess, pars, nmpars, 
 			       sgnMu, tanb, oneset, uni);
@@ -81,7 +81,8 @@ int main() {
              << n.displayPhys().mh0(2) << ' '
              << n.displayPhys().mA0(1) << ' '
              << n.displayPhys().mA0(2) << ' '
-             << n.displayPhys().mHpm << '\n';
+             << n.displayPhys().mHpm   << ' '
+	     << n.calcBayesianNaturalness() << '\n';
      } else {
         cout << tanb << ' ' << n.displayProblem() << '\n';
      }

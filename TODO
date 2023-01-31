@@ -1,5 +1,4 @@
-1a. Split up decays.cpp to have a more quickly compiled structure
-1b. Make an object to hold the decays
-2. Add first two family terms to other things, eg tadpoles etc. 
-3. Get rid of all stupid preprocessor commands to do with the higher loops
-
+0 Normalise BPMZ conventions for physpars too
+1 Have --enable-two-loop-gauge-Yukawa on by default
+2 Complete decays
+3 Add first two family terms to other things, eg tadpoles etc. 

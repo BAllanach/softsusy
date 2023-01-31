@@ -1,23 +1,29 @@
 docdir = ${datadir}/doc/${PACKAGE}
 
-doc_DATA = doc/rpcManual.pdf \
-           doc/rpvManual.pdf \
-           doc/neutManual.pdf \
-	   doc/nmssmManual.pdf \
-	   doc/threeLoop.pdf \
-	   doc/ho.pdf \
-	   doc/decays.pdf
+doc_DATA = $(DOCFILES) 
 
-DOCFILES = $(doc_DATA)
+# doc: $(doc_DATA)
 
-doc: $(doc_DATA)
+doc/rpcManual.pdf: doc/rpcManual.tex src/rpvmain.cpp inOutFiles/outputTest doc/rpcManual.ax1 doc/rpcManual.ax2
+doc/rpvManual.pdf: doc/rpvManual.tex src/rpvmain.cpp inOutFiles/rpvOutputTest
+doc/neutManual.tex: doc/neutManual.proto.tex inOutFiles/neutOutputTest
+	     	    cat inOutFiles/neutOutputTest | grep "MASS\|Mnu" >  doc/mnu.tex;\
+		    cat inOutFiles/neutOutputTest | grep "Sneutrino\|sneutrino" > doc/snuvev.tex;\
+		    cat inOutFiles/neutOutputTest | grep UPMNS > doc/upmns.tex;\
+		    sed -e '/MNUINPUT/ {' -e 'r doc/mnu.tex' -e 'd' -e '}' doc/neutManual.proto.tex | sed -e '/SNUVEVINPUT/ {' -e 'r doc/snuvev.tex' -e 'd' -e '}' | sed -e '/UPMNSINPUT/ {' -e 'r doc/upmns.tex' -e 'd' -e '}' > doc/neutManual.tex;\
+		    rm doc/mnu.tex doc/snuvev.tex doc/upmns.tex
+doc/neutManual.pdf: 
 
-doc/%.pdf: doc/%.tex
+
+$(DOCFILES): doc/%.pdf : doc/%.tex
 	cd $(top_builddir)/doc;\
-	pdflatex $(*F).tex ; bibtex $(*F); pdflatex $(*F).tex; pdflatex $(*F).tex 
+	pdflatex $(*F).tex ; axohelp $(*F) ; bibtex $(*F); pdflatex $(*F).tex; pdflatex $(*F).tex 
 
-clean-local:
+.PHONY: clean-local-doc distclean-local-doc
+
+clean-local-doc:
 	-rm -f doc/*.log doc/*.spl doc/*.aux doc/*.dvi doc/*.ps doc/*.toc doc/*.out *flymake*
 
-distclean-local: clean-local
+distclean-local-doc: clean-local-doc
 	-rm -f $(doc_DATA)
+

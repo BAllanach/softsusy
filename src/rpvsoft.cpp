@@ -947,18 +947,18 @@ void RpvSoftsusy::isawigInterface764(char herwigInputFile [80],
 }
 
 
-// It'll set the important SUSY couplings: supposed to be applied at MZ
+// It'll set the important SUSY couplings: supposed to be applied at MQEDxQCD
 // You should set up an iteration here since Yuk's depend on top mass which
 // depends on Yuk's etc. 
 void RpvSoftsusy::sparticleThresholdCorrections(double tb) {
-  mz = displayMz();
-  if (displayMu() != mz) {
+  if (displayMu() != displayDataSet().displayMu()) {
     ostringstream ii;
     ii << "Called MssmSoftsusy::sparticleThresholdCorrections "
 	 << "with scale" << displayMu() << endl;
     throw ii.str();
   }
   
+  mz = displayMz();
   setTanb(tb);
   
   double alphaDrbar = 
@@ -992,10 +992,10 @@ void RpvSoftsusy::sparticleThresholdCorrections(double tb) {
 
   setMw(sqrt(0.25 * sqr(newGauge(2)) * sqr(vev) - piwwtMW));
 
-  if (MIXING < 0 || MIXING > 2) {
+  if (displayMixing() < 0 || displayMixing() > 2) {
     ostringstream ii;
     ii << "In MssmSoftsusy::sparticleThresholdCorrections(double tb) ";
-    ii << "\n MIXING=" << MIXING << " is out of range (0 -> 2)\n";
+    ii << "\n mixing=" << displayMixing() << " is out of range (0 -> 2)\n";
     throw ii.str();
   }
 

@@ -41,7 +41,7 @@ namespace softsusy {
   
   MssmSusy::MssmSusy()
     : mssmSusyApprox(), u(3, 3), d(3, 3), e(3, 3), g(3), smu(0.0), tanb(0.0), 
-      hVev(0.0) {}
+      hVev(0.0), mixing(0) {}
   
   MssmSusyRGE::MssmSusyRGE()
     : MssmSusy() {
@@ -50,8 +50,8 @@ namespace softsusy {
   }
   
   MssmSusy::MssmSusy(const MssmSusy &s)
-    : mssmSusyApprox(s.mssmSusyApprox), u(s.u), d(s.d), e(s.e), g(s.g), smu(s.smu), 
-      tanb(s.tanb), hVev(s.hVev) {}
+    : mssmSusyApprox(s.mssmSusyApprox), u(s.u), d(s.d), e(s.e), g(s.g),
+      smu(s.smu), tanb(s.tanb), hVev(s.hVev), mixing(s.mixing) {}
 
   MssmSusyRGE::MssmSusyRGE(const MssmSusy &s)
     : MssmSusy(s) {
@@ -68,13 +68,15 @@ namespace softsusy {
   
   MssmSusy::MssmSusy(const DoubleMatrix & u, const DoubleMatrix & d, const
 		     DoubleMatrix & e, const DoubleVector & v, double m,
-		     double tb, double hv)
-    : mssmSusyApprox(), u(u), d(d), e(e), g(v), smu(m), tanb(tb), hVev(hv) {}
+		     double tb, double hv, int mix)
+    : mssmSusyApprox(), u(u), d(d), e(e), g(v), smu(m), tanb(tb), hVev(hv),
+      mixing(mix) {}
   
   MssmSusyRGE::MssmSusyRGE(const DoubleMatrix & u, const DoubleMatrix & d, const
 			   DoubleMatrix & e, const DoubleVector & v, double m,
-			   double tb, double MU, int l, int t, double hv)
-    : MssmSusy(u, d, e, v, m, tb, hv) { 
+			   double tb, double MU, int l, int t, double hv,
+			   int mix)
+    : MssmSusy(u, d, e, v, m, tb, hv, mix) { 
     setPars(numSusyPars);
     setMu(MU); 
     setMssmApprox(l, t);
@@ -211,6 +213,7 @@ namespace softsusy {
   double MssmSusy::displayTanb() const { return tanb; }
   
   ostream & operator <<(ostream &left, const MssmSusy &s) {
+    left << " mixing: " << s.displayMixing() << endl;
     left << " Y^U" << s.displayYukawaMatrix(YU) << " Y^D" <<
       s.displayYukawaMatrix(YD) << " Y^E" << s.displayYukawaMatrix(YE);
     left << "higgs VEV: " << s.displayHvev() 
@@ -252,9 +255,12 @@ namespace softsusy {
     string c;
     DoubleMatrix u(3, 3), d(3, 3), e(3, 3);
     double g1, g2, g3, smu, tanb, hv;
+    int mix;
+    left >> c >> mix;
     left >> c >> u >> c >> d >> c >> e >> c >> c >> hv;
     left >> c >> c >> tanb >> c >> smu;
     left >> c >> g1 >> c >> g2 >> c >> g3;
+    s.setMixing(mix);
     s.setYukawaMatrix(YU, u);
     s.setYukawaMatrix(YD, d);
     s.setYukawaMatrix(YE, e);
@@ -357,7 +363,7 @@ void MssmSusy::setMssmApprox(int l, int t) {
 	+ hVev * twolp * 4.5 * g4(2);
     }
     /// Contains all susy derivatives:
-    MssmSusy ds(du, dd, de, dg, dmu, dt, dHvev); 
+    MssmSusy ds(du, dd, de, dg, dmu, dt, dHvev, mixing); 
     
     return ds;
   }
@@ -385,8 +391,6 @@ void MssmSusy::setMssmApprox(int l, int t) {
     ceBeta(1) = 18.0 / 5.0; ceBeta(2) = 2.0; ceBeta(3) = 0.0;
     
   }
-  
-#ifdef COMPILE_THREE_LOOP_RGE
   
   void setBetasThreeLoop(Tensor & teBeta, DoubleMatrix & duBeta,
 			 DoubleMatrix & ddBeta, DoubleMatrix & deBeta, DoubleVector &euBeta, 
@@ -430,8 +434,6 @@ void MssmSusy::setMssmApprox(int l, int t) {
     
     
   }
-  
-#endif
   
   // outputs one-loop anomlous dimensions gii given matrix inputs
   // Note that we use the convention (for matrices in terms of gamma's)
@@ -563,7 +565,6 @@ void MssmSusy::setMssmApprox(int l, int t) {
 		      ddT - ceBeta * eeT) * twolp;  
     }
     
-#ifdef COMPILE_THREE_LOOP_RGE
     /// 3 loop contributions:
     if (displayMssmApprox().displayLoops() > 2) {
       //DoubleVector & g4 = a.g4;
@@ -604,7 +605,6 @@ void MssmSusy::setMssmApprox(int l, int t) {
 		      + gdeBeta * ddT * eeT) * threelp;
       
     }
-#endif ///< COMPILE_THREE_LOOP_RGE
   }
   
   // Outputs derivatives vector y[n] for SUSY parameters: interfaces to
@@ -715,7 +715,6 @@ void MssmSusy::setMssmApprox(int l, int t) {
   }
   
   /// By Bednyakov, see arXiv:1009.5455
-#ifdef COMPILE_THREE_LOOP_RGE
   void MssmSusy::getThreeLpAnom(DoubleMatrix & gEE, DoubleMatrix & gLL,
 				DoubleMatrix & gQQ, DoubleMatrix & gDD,
 				DoubleMatrix & gUU, double & gH1H1, double &
@@ -731,7 +730,7 @@ void MssmSusy::setMssmApprox(int l, int t) {
     const static double kz = 7.21234141895757; ///< 6 Zeta(3)
     
     /// full three family 
-    if (MIXING > 0 ) {
+    if (displayMixing() > 0 ) {
       /// For calculational brevity
       /// NB!!! Change notations to that of J&J  hep-ph/0408128 (Y->Y^T , etc)
       DoubleMatrix &d1=a.dt, 
@@ -1218,5 +1217,4 @@ void MssmSusy::setMssmApprox(int l, int t) {
       
     } /// third family approximation 
   }
-#endif /// COMPILE_THREE_LOOP_RGE
 } /// namespace softsusy

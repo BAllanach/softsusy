@@ -31,6 +31,11 @@
   *  ELEMENT ACCESS
   */
 
+ void DoubleVector::append(double e) {
+    setEnd(displayEnd() + 1);
+    set(displayEnd(), e);
+ }
+
  // Changes the length of a vector - copies as many elements of old one as
  // possible, and fills any extra up with zeroes
  void DoubleVector::setEnd(int e) {
@@ -108,7 +113,7 @@
  }
 
  int DoubleVector::closest(double a) const {
-   double dist = 6.66e66; 
+   double dist = numberOfTheBeast;
    int position = -666;
    for (int i = displayStart(); i <= displayEnd(); ++i) {
      double propDist = fabs(display(i) - a);
@@ -1683,11 +1688,34 @@ void DoubleMatrix::fillArray(double* array, unsigned offset) const {
 }
 
 double DoubleMatrix::determinant() const {
+  // DH: special cases for small matrices
+  if (rows == 2 && cols == 2) {
+    return elmt(1,1) * elmt(2,2) - elmt(1,2) * elmt(2,1);
+  } else if (rows == 3 && cols == 3) {
+    const double ans = elmt(1,1) * (elmt(2,2) * elmt(3,3) - elmt(2,3) * elmt(3,2))
+       - elmt(1,2) * (elmt(2,1) * elmt(3,3) - elmt(2,3) * elmt(3,1))
+       + elmt(1,3) * (elmt(2,1) * elmt(3,2) - elmt(2,2) * elmt(3,1));
+    return ans;
+  } else if (rows == 4 && cols == 4) {
+    const double minor11 = elmt(2,2) * (elmt(3,3) * elmt(4,4) - elmt(3,4) * elmt(4,3))
+       - elmt(2,3) * (elmt(3,2) * elmt(4,4) - elmt(3,4) * elmt(4,2))
+       + elmt(2,4) * (elmt(3,2) * elmt(4,3) - elmt(3,3) * elmt(4,2));
+    const double minor12 = elmt(2,1) * (elmt(3,3) * elmt(4,4) - elmt(3,4) * elmt(4,3))
+       - elmt(2,3) * (elmt(3,1) * elmt(4,4) - elmt(3,4) * elmt(4,1))
+       + elmt(2,4) * (elmt(3,1) * elmt(4,3) - elmt(3,3) * elmt(4,1));
+    const double minor13 = elmt(2,1) * (elmt(3,2) * elmt(4,4) - elmt(3,4) * elmt(4,2))
+       - elmt(2,2) * (elmt(3,1) * elmt(4,4) - elmt(3,4) * elmt(4,1))
+       + elmt(2,4) * (elmt(3,1) * elmt(4,2) - elmt(3,2) * elmt(4,1));
+    const double minor14 = elmt(2,1) * (elmt(3,2) * elmt(4,3) - elmt(3,3) * elmt(4,2))
+       - elmt(2,2) * (elmt(3,1) * elmt(4,3) - elmt(3,3) * elmt(4,1))
+       + elmt(2,3) * (elmt(3,1) * elmt(4,2) - elmt(3,2) * elmt(4,1));
+    return elmt(1,1) * minor11 - elmt(1,2) * minor12 + elmt(1,3) * minor13
+       - elmt(1,4) * minor14;
+  }
   double ans = 1.;
-  DoubleMatrix lu(this->ludcmp(ans));
+  const DoubleMatrix lu(this->ludcmp(ans));
 
-  int i; 
-  for (i=1; i<=displayRows(); i++)
+  for (int i = 1; i <= rows; ++i)
     ans *= lu.elmt(i, i);
   return ans;
 }

@@ -85,8 +85,7 @@ MSSM
 {\em Computer:}\/ Personal computer.\\
 {\em Operating system:}\/ Tested on Linux 3.4.6\\
 {\em Word size:}\/ 64 bits.\\
-{\em External routines:}\/ At least {\tt GiNaC1.3.5}~\cite{ginac} and {\tt
-  CLN1.3.1}~(both freely obtainable from \verb|www.ginac.de|).\\
+{\em External routines:}\/ None.\\
 {\em Typical running time:}\/ A minute per parameter point.\\
 {\em Nature of problem:}\/ Calculating supersymmetric particle spectrum and
 mixing parameters in the minimal supersymmetric standard
@@ -821,9 +820,9 @@ generic CMSSM points, there are typically relative changes in the spectra of
 \unitlength=1in
 \begin{center}
 \begin{picture}(7,2)
-\put(-0.5,2){\includegraphics[angle=270,width=0.48\textwidth]{anc/mScanAs.eps}}
-\put(1.83,2){\includegraphics[angle=270,width=0.48\textwidth]{anc/tbScanDy.eps}}
-\put(4.16,2){\includegraphics[angle=270,width=0.48\textwidth]{anc/tbScanDyt.eps}}
+\put(-0.5,2){\includegraphics[angle=270,width=0.48\textwidth]{anc/mScanAs}}
+\put(1.83,2){\includegraphics[angle=270,width=0.48\textwidth]{anc/tbScanDy}}
+\put(4.16,2){\includegraphics[angle=270,width=0.48\textwidth]{anc/tbScanDyt}}
 \put(0,1.9){(a)}
 \put(2.33,1.9){(b)}
 \put(4.66,1.9){(c)}
@@ -1226,34 +1225,26 @@ Grant~MK-1001.2014.2.
 \section{Installation of the Increased Accuracy Mode}
 \label{sec:install}
 
-The two freely available programs {\tt CLN} (at least version 1.3.1) and {\tt
-  GiNaC} (at least version 1.3.5) should be installed before the user attempts
-to install {\tt SOFTSUSY} with the higher order threshold corrections. However, 
-{\tt SOFTSUSY} should compile without problems without these libraries if our
-higher order corrections are not required. 
-Two compilation arguments to the {\tt ./configure}~command are provided:
+A compilation argument to the {\tt ./configure}~command is provided:
 \begin{itemize}
-	\item[] \verb|--enable-three-loop-rge-compilation| - compile three-loop RGEs in the MSSM\footnote{ {\tt GiNaC} and {\tt CLN} are not required 
-		for three-loop RGEs.}
 	\item[] \verb|--enable-two-loop-gauge-yukawa-compilation| - compile
           additional two-loop threshold corrections to the third generation
-          Yukawa couplings and the strong coupling constant.
+          Yukawa couplings and the strong coupling constant (this can take a
+          lot of memory and increase compilation time).
 \end{itemize}
-Thus, if all higher order corrections are desired, {\tt CLN} and {\tt GiNaC}
-should be first installed, then 
+If all higher order corrections are desired then 
 the program should be
 compiled, via:
 \begin{verbatim}
-> ./configure --enable-three-loop-rge-compilation --enable-two-loop-gauge-yukawa-compilation
+> ./configure --enable-two-loop-gauge-yukawa-compilation
 > make
 \end{verbatim}
+The 3-loop RGEs are always compiled. 
 
-We have included two global boolean variables that control the higher order
+We have included a global boolean variable that controls the higher order
 corrections  at run time, provided the program has already been compiled with 
 the higher order corrections included:
 \begin{itemize}
-	\item \verb|USE_THREE_LOOP_RGE|  - add three-loop contribution to
-          MSSM RGE (corresponds to the \code{SOFTSUSY Block} parameter 19). 
 	\item \verb|USE_TWO_LOOP_GAUGE_YUKAWA| - add two-loop threshold
           corrections to the third generation Yukawa couplings and the strong
           coupling constant 
@@ -1261,9 +1252,13 @@ the higher order corrections included:
           variable is switched on, {\tt MssmSoftsusy} object constructors will 
           automatically include all higher order threshold corrections.
 \end{itemize}
-By default, both of these sets of higher order corrections are switched off 
-(the boolean values are set to {\tt false}), unless the user sets them in
-their main program, or in the input parameters (see~\ref{sec:run}). 
+By default, both the 3-loop RGEs and the 2-loop threshold correction are
+switched off
+(the boolean value is set to {\tt false}), unless the user sets them in
+their main program, or in the input parameters (see~\ref{sec:run}). The
+\SOFTSUSY~\code{RGE}~class contains a variable
+\code{loops}~\cite{Allanach:2001kg} that should be set to three in order to
+use the three-loop RGEs.  
 
 We also add the variable
 \verb|double TWOLOOP_NUM_THRESH = 0.1| for finer control. It is 
@@ -1289,7 +1284,7 @@ corrections will be, by default, switched off. One may switch all of the
 higher order corrections on with 
 the arguments 
 \verb|--three-loop-rges --two-loop-gauge-yukawa|
-(provided they have
+(the latter provided that the two-loop threshold corrections have
 been compiled as specified above).
 Thus, in order to produce the spectrum detailed in the $\Delta(\mbox{all})$
 row of Table~\ref{tab:cmssm}, one may use the command with {\tt SOFTSUSY3.5.1}:
@@ -1310,7 +1305,7 @@ parameters. The program may then be run with
 \end{verbatim}
 \normalsize
 
-One can change whether the 3-loop RGE corrections are switched on with
+One can change whether the 3-loop RGE corrections are switched on with 
 \code{SOFTSUSY Block} parameter 19, whereas the 2-loop third family and $g_3$
 threshold corrections 
 are switched on with \code{SOFTSUSY Block} parameter 20 in the SLHA input file:

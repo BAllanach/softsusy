@@ -421,7 +421,7 @@ MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
     double Utau = displayTrilinear(EA, 3, 3), Utau2 = sqr(Utau);
     
     double sP;
-    if (MIXING < 1) {
+    if (xx.displayMixing() < 1) {
       sP = ///< dominant 3rd family approximation
 	-(3.0 * mH2sq + mq3 - 4.0 * mu3) * ht2 +  
 	(3.0 * mH1sq - mq3 - 2.0 * md3) * hb2 + 
@@ -453,9 +453,9 @@ MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
     
     DoubleMatrix u4(u2 * u2), d4(d2 * d2), u4t(u2t * u2t), d4t(d2t * d2t);
     
-    if (INCLUDE_2_LOOP_SCALAR_CORRECTIONS) {
+    if (1) {
       /// new dominant 3-family version 
-      if (MIXING < 1) {
+      if (xx.displayMixing() < 1) {
 	dmq2 = -(2.0 * mq + 8.0 * mH2sq) * u4 - 
 	  4.0 * u1 * mu * u2t * ut - 
 	  4.0 * u2 * mq * u2 - 4.0 * u2 * u1 * mu * ut - 2.0 * u4 * mq -
@@ -904,7 +904,7 @@ MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
        ceBeta * heeT - ceBeta * mG * eeT); // checked
     
     double dmH1sq2, dm3sq2, dmH2sq2;
-    if (MIXING < 1) {
+    if (xx.displayMixing() < 1) {
       /// The following are valid in the third-family approximation -- they are
       /// much faster, and should be a good approximation to the no-mixed case
       dm3sq2 = m3sq * 
@@ -1016,7 +1016,6 @@ MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
     dmH1sq = dmH1sq + dmH1sq2 * oneO16Pif;
     dmH2sq = dmH2sq + dmH2sq2 * oneO16Pif;
     
-#ifdef COMPILE_THREE_LOOP_RGE
     if (xx.displayMssmApprox().displayLoops() > 2) {
       
       const static double threelp = 2.53945672191370e-7; // 1/(16 pi^2)^3
@@ -1036,7 +1035,7 @@ MssmSoftPars MssmSoftPars::beta2(const MssmSusy & xx, sBrevity& a) const {
       double smu_ = xx.displaySusyMu();
       
       // three-loop contribution 3rd family approximation
-      if (MIXING < 0) {
+      if (xx.displayMixing() < 0) {
 	
 	static const double O750= .00133333333333333333 ;
 	static const double O27= .03703703703703703703 ;
@@ -2845,7 +2844,6 @@ dm3sq3=m3sq*(18.*d4T*e2T+e6T*(1+kz)+6.*e2T*(e4T+u2d2T)+18.*(d2T*(e4T+u2d2T)+u2d2
  dhe3 *= threelp; dhe += dhe3;
       }
     } ///< end of 3-loop 
-#endif ///< COMPILE_THREE_LOOP_RGE
   }
   
   MssmSoftPars ds(dmG, dhu, dhd, dhe, dmq, dmu,

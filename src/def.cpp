@@ -11,42 +11,19 @@
 
 /// global variable declaration
 namespace softsusy {
-/// no quark mixing (dominant third family approx), and no verbose output
-  int MIXING = 0, PRINTOUT = 0;
+  /// no verbose debug output
+  int PRINTOUT = 0;
   /// fractional accuracy required - may need to make smaller for accurate
-  /// neutrino masses
   double TOLERANCE = 1.0e-4;
   /// decay constant of muon
   double GMU = 1.16637e-5; 
-  /// there are two possible conventions: if QEWSB > MZ, its value is assumed
-  /// in GeV and used as a constant MSUSY. Otherwise, it MULTIPLIES the usual 
-  /// MSUSY value, of root(mstop1 mstop2)
-  double QEWSB = 1.0; 
-  /// Do we include 2-loop RGEs of *all* scalar masses and A-terms, or only the
-  /// scalar mass Higgs parameters? (Other quantities all 2-loop anyway): the
-  /// default in SOFTSUSY 3 is to include all 2-loop terms
-  bool INCLUDE_2_LOOP_SCALAR_CORRECTIONS = true;
-  /// PA: switch for selecting between the Z3 preserving case and the
-  // Z3 violating case with mu and m3sq allowed
-  // needed fpr selecting which EWSB routines to use.
-  bool Z3 = true;
-  //If true the input value of lambda is set at the GUT scale
-  //If false the input lambda is set at MSUSY.
-  bool GUTlambda = false;
-  //If true the input value of kappa is set at the GUT scale
-  //If false the input kappa is set at MSUSY.
-  bool GUTkappa = false;
-  bool GUTmuPrime = false;
-  bool GUTxiF = false;
-  bool GUTsVev = false;
-  /// Enable/Disable NMSSMTools compatible SLHA output
-  bool NMSSMTools = false;
   //If true then the EWSB conditions will output soft Higgs masses
   //Will be inconsistent with constrained models
   //but can be useful for non-universal Higgs cases 
   bool SoftHiggsOut = false;
-  int MICROMEGAS = 0;
-  int NMSDECAY = 0;
+  /// If true we give the output needed for nmssmTools
+  /// otherwise normal nmssm softsusy output
+  bool NMSSMTools = false;
   /// number of loops used to calculate Higgs mass and tadpoles. They should be
   /// identical for a consistent calculation
   int numHiggsMassLoops = 2, numRewsbLoops = 2;
@@ -65,8 +42,6 @@ namespace softsusy {
   bool printRuledOutSpectra = false;
   /// default is to set tree-level tachyonic A masses to 0 in loops
   bool mAFlag = false;
-  /// default is that developer-level debugging printout flag is OFF
-  bool printDEBUG = false;
   /// random number seed
   long idummySave = -22;
   /// Default: use SOFTSUSY conventions for masses of sparticles in loops, ie
@@ -86,13 +61,12 @@ namespace softsusy {
   bool outputPartialWidths = false;
   /// Default: don't calculate decays
   bool calcDecays = false;
+
+  /// Default: don't input pole Higgs masses in command line
+  bool inputMhPole = false, inputMA0Pole = false, inputMH0Pole = false,
+    inputMHpmPole = false;  
+  double fixMhPole = 0., fixMA0Pole = 0., fixMH0Pole = 0., fixMHpmPole = 0.;
   
-  /// Controls the use of MSSM three-loop RGEs
-  bool USE_THREE_LOOP_RGE = false;
-  
-  /// Threshold to prevent the re-evaluation of two-loop leading SUSY thresholds
-  /// corrections. By default we set it to 10%. 
-  double TWOLOOP_NUM_THRESH = 0.1;
   /// Includes the evaluation of leading two-loop thresholds corrections
   /// to the strong coupling constant and to the third family of fermion masses 
   bool USE_TWO_LOOP_GAUGE_YUKAWA = false;
@@ -106,6 +80,12 @@ namespace softsusy {
   bool USE_TWO_LOOP_SPARTICLE_MASS = false;
   /// Default: expand around gluino and squark pole masses
   int expandAroundGluinoPole = 3;
-
+  /// Do you want to calculate svev from EWSB (and input xiS) as opposed to
+  /// the converse?
+  bool setsVevEWSB = false;
+  /// Thresholds at 2-loop SM to electroweak gauge couplings at QED x QCD /
+  /// MSSM matching scale. If the QEDxQCD matching scale is not set to MZ,
+  /// these two-loop corrections will be ineffective
+  //  bool twoLEW = true; 
 }
 /// end of global variable declaration

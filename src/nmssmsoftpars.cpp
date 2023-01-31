@@ -114,15 +114,6 @@ namespace softsusy {
 	+ lam * ( 2.0 * aYtr  + 8.0 * hlam * lam
 		  + 4.0 * hkap * kap + 1.2 * gsqM(1) + 6.0 * gsqM(2) );
 
-      /*      cout << " dhlam(1L)=" << dhlam << " " << (Ytr + 4.0 * lsq + 2.0 * ksq
-	       - 0.6 * gsq(1) - 3.0 * gsq(2)) * hlam << endl
-	   << lam * ( 2.0 * aYtr  + 8.0 * hlam * lam
-		      + 4.0 * hkap * kap + 1.2 * gsqM(1) + 6.0 * gsqM(2) ) 
-	   << " 1=" << 2.0 * aYtr  << " 2="<<  8.0 * hlam * lam << " 3=" << 
-	4.0 * hkap * kap  << " 4=" << 1.2 * gsqM(1) <<" 5=" << 6.0 * gsqM(2);
-      */
-      ///< DEBUG
-
       dhkap = 18.0 * hkap * ksq + 12.0 * lam * kap * hlam
 	+ 6.0 * hkap * lsq;
       
@@ -132,7 +123,7 @@ namespace softsusy {
 	+ 4.0 * xiF * (lam * hlam + kap * hkap)
 	+ 4.0 * lam * smu * (mH2sq + mH1sq) + 4.0 * kap * mupr * mSsq
 	+ 4.0 * hlam * m3sq + 2.0 * hkap * mSpsq;
-      
+
       /// convert to proper derivatives:
       dmSsq  *= ONEO16Pisq;
       dmSpsq *= ONEO16Pisq;
@@ -161,106 +152,12 @@ namespace softsusy {
       
       const DoubleVector &g4=a.g4;
       
-      const double ht = m.displayYukawaElement(YU, 3, 3), ht2 = sqr(ht);
-      const double htau = m.displayYukawaElement(YE, 3, 3), htau2 = sqr(htau);
-      const double hb = m.displayYukawaElement(YD, 3, 3), hb2 = sqr(hb);
-      const double Ut = msoft.displayTrilinear(UA, 3, 3);
-      const double Ub = msoft.displayTrilinear(DA, 3, 3);
-      const double Utau = msoft.displayTrilinear(EA, 3, 3);
-      
       DoubleMatrix u4(u2 * u2), d4(d2 * d2), e4(e2 * e2);
       
-      if (INCLUDE_2_LOOP_SCALAR_CORRECTIONS) {
-	/// new dominant 3-family version 
-	if (MIXING < 1) {
-	  dmq2 =
-	    - lsq * (2.0 * ut * mu * u1 + mq * u2 + u2 * mq + 2.0 * mH2sq * u2
-		     + 2.0 * hu2) - 2.0 * Mlamsq * u2
-	    - 2.0 * lam * hlam * (u1 * hut + hu * ut)
-	    - lsq * (2.0 * dt * md * d1 + mq * d2 + d2 * mq + 2.0 * mH1sq * d2
-		     + 2.0 * hd2) - 2.0 * Mlamsq * d2
-	    - 2.0 * lam * hlam * (d1 * hdt + hd * dt)
-	    + 0.4 * gsq(1) * sP;
-	  
-	  dml2 =
-	    - lsq * (2.0 * et * me * e1 + ml * e2 + e2 * ml
-		     + 2.0 * mH1sq * e2 + 2.0 * he2) - 2.0 * Mlamsq * e2
-	    - 2.0 * lam * hlam * (e1 * het + he * et)
-	    - 1.2 * gsq(1) * sP;
-	  
-	  dmu2 =
-	    - 2.0 * lsq * (2.0 * ut * mq * u1 + mu * u2 + u2 * mu
-			   + 2.0 * mH2sq * u2 + 2.0 * hu2) - 4.0 * Mlamsq * u2
-	    - 4.0 * lam * hlam * (ut * hu + hut * u1)
-	    - 1.6 * gsq(1) * sP;
-	  
-	  dmd2 =
-	    - 2.0 * lsq * (2.0 * dt * mq * d1 + md * d2 + d2 * md
-			   + 2.0 * mH1sq * d2 + 2.0 * hd2) - 4.0 * Mlamsq * d2
-	    - 4.0 * lam * hlam * (dt * hd + hdt * d1)
-	    + 0.8 * gsq(1) * sP;
-	  
-	  dme2 =
-	    - 2.0 * lsq * (2.0 * et * ml * e1 + me * e2 + e2 * me + 2.0 * mH1sq * e2
-			   + 2.0 * he2) - 4.0 * Mlamsq * e2
-	    - 4.0 * lam * hlam * (et * he + het * e1)
-	    + 2.4 * gsq(1) * sP;
-	  
-	  dhu2 =
-	    - lsq * hu * (3.0 * lsq + 2.0 * ksq + 3.0 * ddT + eeT)
-	    - lsq * (5.0 * u2 * hu + 4.0 * hu * u2t + d2 * hu + 2.0 * hd * dt * u1)
-	    - 2.0 * lam * hlam * u1 * (3.0 * lsq + 2.0 * ksq + 3.0 * ddT + eeT)
-	    - 2.0 * lsq * u1 * (3.0 * lam * hlam + 2.0 * kap * hkap
-				+ 3.0 * hddT + heeT)
-	    - 2.0 * lam * hlam * (3.0 * u2 * u1 + d2 * u1);
-	  
-	  dhd2 =
-	    - lsq * hd * (3.0 * lsq + 2.0 * ksq + 3.0 * uuT)
-	    - lsq * (5.0 * d2 * hd + 4.0 * hd * d2t + u2 * hd + 2.0 * hu * ut * d1)
-	    - 2.0 * lam * hlam * d1 * (3.0 * lsq + 2.0 * ksq + 3.0 * uuT)
-	    - 2.0 * lsq * d1 * (3.0 * lam * hlam + 2.0 * kap * hkap + 3.0 * huuT)
-	    - 2.0 * lam * hlam * (3.0 * d2 * d1 + u2 * d1);
-	  
-	  dhe2 =
-	    - lsq * he * (3.0 * lsq + 2.0 * ksq + 3.0 * uuT)
-	    - lsq * (3.0 * e2 * he + 3.0 * he * e2t)
-	    - 2.0 * lam * hlam * e1 * (3.0 * lsq + 2.0 * ksq + 3.0 * uuT)
-	    - 2.0 * lsq * e1 * (3.0 * lam * hlam + 2.0 * kap * hkap + 3.0 * huuT)
-	    - 6.0 * lam * hlam *  e2 * e1;
-	  
-	  /// Mixing < 1
-	  /// PA: warning in 3rd family terms the trilinears are Ut etc
-	  /// and the Yukawas are ht, hb, htau
-	  
-	  dhlam2 = - 50.0 * l4 * hlam - 36.0 * lam * (Ut * ht * ht2)
-	    - 36.0 * lam * (Ub * hb * hb2)
-	    - 12.0 * lam * (Utau * htau * htau2)
-	    - 9.0 * hlam * (ht2 * ht2)
-	    - 9.0 * hlam * (hb2 * hb2)
-	    - 3.0 * hlam * (htau2 * htau2)
-	    - 8.0 * k4 * hlam - 32.0 * lam * kap * ksq * hkap
-	    - 12.0 * lsq * ksq * hlam - 6.0 * lsq *(hlam * Ytr + lam * aYtr)
-	    - 24.0 * lsq * kap * (kap * hlam  +  lam * hkap)
-	    - 12.0 * lam * (Ut * ht * hb2 + Ub * hb * ht2)
-	    - 3.0 * lsq * hlam * Ytr - 6.0 * hlam * (ht2 * hb2)
-	    + 2.4 * gsq(1) * lsq * (1.5 * hlam - mG(1))
-	    + 1.6 * gsq(1) * lam * (huuT - mG(1) * uuT)
-	    - 0.8 * gsq(1) * lam * (hddT - mG(1) * ddT)
-	    + 2.4 * gsq(1) * lam * (heeT - mG(1) * eeT)
-	    + 0.4 * gsq(1) * hlam * (2.0 * uuT - ddT + 3.0 * eeT)
-	    + 12.0 * gsq(2) * lsq * hlam * (1.5 * hlam - mG(2))
-	    + 32.0 * gsq(3) * lam * (huuT - mG(3) * uuT)
-	    + 32.0 * gsq(3) * lam * (hddT - mG(3) * ddT)
-	    + 16.0 * gsq(3) * hlam * (uuT + ddT)
-	    + 0.02 * g4(1) * (207.0 * hlam - 828.0 * lam * mG(1))
-	    + 0.5 * g4(2) * (15.0 * hlam - 60.0 * lam * mG(2))
-	    + 1.8 * gsq(1) * gsq(2) * (hlam - 2.0 * lam * (mG(1) + mG(2)));
-	  
-	} else {
-	  /// NB you should introduce speedy computation here. For example sum
-	  /// traces, not add then trace. Also surely some of the products are
-	  /// repeated, eg u2 * u2 = u4, d2 * d2 = d4, u1 * mu * ut, d1 * md *
-	  /// dt, d2 * d1, d2 * mq
+      /// NB you should introduce speedy computation here. For example sum
+      /// traces, not add then trace. Also surely some of the products are
+      /// repeated, eg u2 * u2 = u4, d2 * d2 = d4, u1 * mu * ut, d1 * md *
+      /// dt, d2 * d1, d2 * mq
 	  dmq2 =
 	    - lsq * (2.0 * ut * mu * u1 + mq * u2 + u2 * mq + 2.0 * mH2sq * u2
 		     + 2.0 * hu2) - 2.0 * Mlamsq * u2
@@ -337,7 +234,6 @@ namespace softsusy {
 	    + 0.02 * g4(1) * (207.0 * hlam - 828.0 * lam * mG(1))
 	    + 0.5 * g4(2) * (15.0 * hlam - 60.0 * lam * mG(2))
 	    + 1.8 * gsq(1) * gsq(2) * (hlam - 2.0 * lam * (mG(1) + mG(2)));
-	}
 	
 	dhkap2 = - 120.0 * k4 * hkap - 12.0 * l4 * hkap
 	  - 48.0 * lsq * lam * kap * hlam
@@ -361,7 +257,6 @@ namespace softsusy {
 	dhe2 *= oneO16Pif; dhe += dhe2;
 	dhlam2 *=oneO16Pif; dhlam += dhlam2;
 	dhkap2 *=oneO16Pif; dhkap += dhkap2;
-      }
       
       /// Default is to include these 2-loop corrections anyhow because they can
       /// be so important: gauginos + higgs
@@ -370,60 +265,6 @@ namespace softsusy {
       
       double dmH1sq2, dm3sq2, dmH2sq2;
       double dmSsq2, dmSpsq2, dxiS2;
-      if (MIXING < 1) {
-	/// The following are valid in the third-family approximation -- they are
-	/// much faster, and should be a good approximation to the no-mixed case
-	dm3sq2 =
-	  - 14.0 * l4 * m3sq - 32.0 * smu * lam * lsq * hlam
-	  - 15.0 * lsq * m3sq * uuT - 18.0 * lsq * smu * huuT
-	  - 6.0 * smu * lam * hlam * uuT
-	  - 15.0 * lsq * m3sq * ddT - 18.0 * lsq * smu * hddT
-	  - 6.0 * smu * lam * hlam * ddT
-	  - 5.0 * lsq * m3sq * eeT - 6.0 * lsq * smu * heeT
-	  - 2.0 * smu * lam * hlam * eeT
-	  - 4.0 * lsq * ksq * m3sq - 8.0 * lam * ksq * smu * hlam
-	  - 8.0 * lsq * kap * smu * hkap - 8.0 * lam * kap * (ksq + lsq) * mSpsq
-	  - 8.0 * (lsq * kap * hlam + ksq * lam * hkap) * mupr
-	  + 2.4 * gsq(1) * lsq * (m3sq - smu * mG(1))
-	  + 12 * gsq(2) * lsq * (m3sq - smu * mG(2));
-	
-	dmH2sq2 =
-	  - 12.0 * lsq * (Mlamsq + hlam * hlam)
-	  - 6.0 * (lsq * Xd + ddT * Mlamsq + 2.0 * lam * hlam * hddT)
-	  - 2.0 * (lsq * Xe + eeT * Mlamsq + 2.0 * lam * hlam * heeT)
-	  - 4.0 * (ksq * Mlamsq + lsq * Mkapsq + 2.0 * lam * kap * hlam * hkap)
-	  + 1.2 * gsq(1) * sP;
-	
-	dmH1sq2 =
-	  - 12.0 * lsq * (Mlamsq + hlam * hlam)
-	  - 6.0 * (lsq * Xu + uuT * Mlamsq + 2.0 * lam * hlam * huuT)
-	  - 4.0 * (ksq * Mlamsq + lsq * Mkapsq + 2.0 * lam * kap * hlam * hkap)
-	  - 1.2 * gsq(1) * sP;
-	
-	dmSsq2 = - 16.0 * lsq * (Mlamsq + sqr(hlam))
-	  - 32.0 * ksq * (Mkapsq + sqr(hkap))
-	  - 12.0 * (Mlamsq * uuT + lsq * Xu + 2.0 * lam * hlam * huuT)
-	  - 12.0 * (Mlamsq * ddT + lsq * Xd + 2.0 * lam * hlam * hddT)
-	  - 4.0 * (Mlamsq * eeT + lsq * Xe + 2.0 * lam * hlam * heeT)
-	  - 16.0 * (ksq * Mlamsq + lsq * Mkapsq + 2.0 * lam * kap * hlam * hkap)
-	  + 2.4 * gsq(1) * (Mlamsq - 2.0 * lam * hlam * mG(1) + 2.0 * lsq * msq(1))
-	  + 12.0 * gsq(2) * (Mlamsq - 2.0 * lam * hlam * mG(2) + 2.0 * lsq * msq(2));
-	
-	dmSpsq2 = - 8.0 * (l4 * mSpsq + 4.0 * lsq * lam * mupr * hlam)
-	  - 16.0 * (2.0 * k4 * mSpsq + 5.0 * ksq * kap * mupr * hkap)
-	  - 32.0 * ksq * lsq * mSpsq - 48.0 * lam * ksq * mupr * hlam
-	  - 32.0 * lsq * kap * mupr * hkap - 8.0 * lam * hlam * mupr * Ytr
-	  - 4.0 * lsq * ( mSpsq * Ytr + 2.0 * mupr * aYtr)
-	  - 16.0 * lsq * kap * (lam * m3sq + smu * hlam)
-	  - 8.0 * lam * kap * (m3sq * Ytr + smu * aYtr)
-	  + 4.8 * lam * kap * gsq(1) * (m3sq - smu * mG(1))
-	  + 24.0 * lam * kap * gsq(2) * (m3sq - smu * mG(2))
-	  + 2.4 * gsq(1) * (lsq * mSpsq + 2.0 * mupr * lam * hlam
-			    - 2.0 * mupr * mG(1))
-	  + 12.0 * gsq(2) * (lsq * mSpsq + 2.0 * mupr * lam * hlam
-			     - 2.0 * mupr * mG(2));
-	
-      } else {
 	/// In the mixed case, we need to use the slower full 3-family
 	/// expressions
 	dmH2sq2 =
@@ -450,7 +291,7 @@ namespace softsusy {
 	  - 8.0 * lsq * kap * smu * hkap - 8.0 * lam * kap * (ksq + lsq) * mSpsq
 	  - 8.0 * (lsq * kap * hlam + ksq * lam * hkap) * mupr
 	  + 2.4 * gsq(1) * lsq * (m3sq - smu * mG(1))
-	  + 12 * gsq(2) * lsq * (m3sq - smu * mG(2));
+	  + 12. * gsq(2) * lsq * (m3sq - smu * mG(2));
 	
 	
 	dmSsq2 = - 16.0 * lsq * (Mlamsq + sqr(hlam))
@@ -478,11 +319,10 @@ namespace softsusy {
 			    - 2.0 * lsq * mupr * mG(1))
 	  + 12.0 * gsq(2) * (lsq * mSpsq + 2.0 * mupr * lam * hlam
 			     - 2.0 * lsq * mupr * mG(2));
-      }
       
       dxiS2 = - 4.0 * l4 * xiS - 16.0 * lam * lsq * hlam * xiF
 	- 8.0 * k4 * xiS - 32.0 * kap * ksq * hkap * xiF
-	- 2.0 * lsq * xiF * (xiS * Ytr + 2.0 * aYtr)
+	- 2.0 * lsq * (xiS * Ytr + 2.0 * aYtr * xiF)
 	- 4.0 * lam * hlam * xiF * Ytr
 	- 8.0 * lsq * ksq * xiS
 	- 16.0 * lam * kap * (kap * hlam + lam * hkap) * xiF
@@ -504,8 +344,8 @@ namespace softsusy {
 				+ 2.0 * smu * (mH1sq + mH2sq - mupr * mG(1)
 					       + 2.0 * msq(1))
 				+ 2.0 * xiF * (hlam - lam * mG(1)))
-	+ 3.0 * gsq(2) * (3.0 * m3sq - 2.0 * smu * mG(2)) * hlam
-	+ 3.0 * gsq(2) * lam * (3.0 * m3sq * (mupr - mG(2)) + lam * xiS
+	+ 6.0 * gsq(2) * (3.0 * m3sq - 2.0 * smu * mG(2)) * hlam
+	+ 6.0 * gsq(2) * lam * (3.0 * m3sq * (mupr - mG(2)) + lam * xiS
 				+ 2.0 * smu * (mH1sq + mH2sq - mupr * mG(2)
 					       + 2.0 * msq(2))
 				+ 2.0 * xiF * (hlam - lam * mG(2)));
@@ -516,8 +356,7 @@ namespace softsusy {
       dmH2sq = dmH2sq + dmH2sq2 * oneO16Pif;
       dmSsq = dmSsq + dmSsq2 * oneO16Pif;
       dmSpsq = dmSpsq + dmSpsq2 * oneO16Pif;
-      dxiS = dxiS + dxiS2 * oneO16Pif;
-      
+      dxiS = dxiS + dxiS2 * oneO16Pif; 
     }
   }
   /** end of RGE functions **/
@@ -530,6 +369,7 @@ namespace softsusy {
     mSsq = s.mSsq;
     mSpsq = s.mSpsq;
     xiS = s.xiS;
+    Z3 = s.Z3;
     return *this;
   }
   

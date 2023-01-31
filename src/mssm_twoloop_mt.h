@@ -20,7 +20,7 @@
 #include <limits>
  
 namespace softsusy {
-  
+
   struct mtParameters {
     mtParameters() = default;
     mtParameters(double g3_, double mt_, double mg_, double mst1_,

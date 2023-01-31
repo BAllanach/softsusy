@@ -7,7 +7,7 @@ inOutFiles/lesHouchesInput
 OUTPUTFILES = $(TESTOUTPUT) inOutFiles/neutOutputTest inOutFiles/rpvOutputTest \
 inOutFiles/outputTest inOutFiles/outputTest-nmssm
 
-inOutFiles/%Output : inOutFiles/%Input softpoint.x 
+$(OUTPUTFILES) : inOutFiles/%Output : inOutFiles/%Input softpoint.x 
 	$(install_sh) -d inOutFiles
 	./softpoint.x leshouches < $< > $@
 

@@ -1,5 +1,3 @@
-
-
 /** \file softpoint.cpp
     - Project:     SOFTSUSY 
    - Authors:     Ben Allanach, Markus Bernhardt 
@@ -12,6 +10,10 @@
 */ 
 
 #include "softpoint.h"
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 // Returns a string with all characters in upper case: very handy
 string ToUpper(const string & s) {
@@ -28,7 +30,7 @@ string ToUpper(const string & s) {
 
 void errorCall() {
   ostringstream ii;
-  ii << "\n\nSOFTSUSY" << SOFTSUSY_VERSION 
+  ii << "SOFTSUSY" << PACKAGE_VERSION 
      << " called with incorrect arguments. Need to put either:\n";
   ii << "./softpoint.x leshouches < lesHouchesInput\n for SLHA/SLAH2 input, or\n";
   ii << "./softpoint.x sugra [SUGRA parameters] [other options]\n";
@@ -36,23 +38,22 @@ void errorCall() {
   ii << "./softpoint.x gmsb [mGMSB parameters] [other options]\n";
   ii << "./softpoint.x nmssm sugra [NMSSM flags] [NMSSM parameters] [other options]\n\n";
   ii << "[other options]: --decays calculates the decays for NMSSM/MSSM\n";
+  ii << "--mh0=<value> --mA0=<value> --mHpm=<value> --mH0=<value> sets the MSSM ";
+  ii << "Higgs pole masses.\n";
   ii << "--minBR=<value> sets the minimum branching ratio printed\n";
   ii << "--dontCalculateThreeBody switches the 3-body decay width calculations off\n";
   ii << "--outputPartialWidths outputs the partial widths themselves in the comments\n";
   ii << "--higgsUncertainties gives an estimate of Higgs mass uncertainties\n";
   ii << "--mbmb=<value> --mt=<value> --alpha_s=<value> --QEWSB=<value>\n";
   ii << "--alpha_inverse=<value> --tanBeta=<value> --sgnMu=<value> --tol=<value>\n";
+  ii << "--matching_scale=<value>\n";
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
   ii << "--two-loop-gauge-yukawa switches on leading 2-loop SUSY threshold corrections to third generation Yukawa couplings and g3.\n";
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
-#ifdef COMPILE_THREE_LOOP_RGE
   ii << "--three-loop-rges switches on 3-loop RGEs\n";
-#endif ///< COMPILE_THREE_LOOP_RGE
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   ii << "--two-loop-sparticle-masses switches on SUSYQCD two-loop corrections to squark\n and gluino pole masses.\n";
   ii << "--two-loop-sparticle-mass-method=<n> chooses the expansion of these terms:\n";
   ii << "1=expansion around gluino pole mass only or 2=expand around\ngluino and squark pole masses.\n";
-#endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
   ii << "--mgut=unified sets the scale at which SUSY breaking terms are set to the GUT\n";
   ii << "scale where g1=g2. --mgut=<value> sets it to a fixed scale, ";
   ii << "whereas --mgut=msusy\nsets it to MSUSY\n\n";
@@ -83,6 +84,10 @@ void errorCall() {
 }
 
 int main(int argc, char *argv[]) {
+  vector<Particle> decayTable;
+  int mixing = 0; double qewsb = 1;
+  bool useThreeLoopRge = false;
+  
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
@@ -99,40 +104,43 @@ int main(int argc, char *argv[]) {
   // Sets format of output: 4 decimal places
   outputCharacteristics(6);
 
-  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)=extendedSugraBcs;
-  void (*nmssmBoundaryCondition)(NmssmSoftsusy&, const DoubleVector&) = NmssmMsugraBcs;
+  void (*boundaryCondition)(MssmSoftsusy &, const DoubleVector &)
+    =extendedSugraBcs;
+  void (*nmssmBoundaryCondition)(NmssmSoftsusy&, const DoubleVector&)
+    =NmssmMsugraBcs;
 
   QedQcd oneset;
   MssmSoftsusy m; FlavourMssmSoftsusy k; NmssmSoftsusy nmssm;
+  nmssm.setGUTlambda(true);
+  nmssm.setGUTkappa(true);
+  nmssm.setGUTmuPrime(true);
+  nmssm.setGUTxiF(true);
+  nmssm.setGUTsVev(true);
+  
   k.setInitialData(oneset);
   MssmSoftsusy * r = &m; 
   RpvNeutrino kw; bool RPVflag = false;
   enum Model_t { MSSM, NMSSM } susy_model = MSSM; // susy model (MODSEL entry 3)
-  softsusy::GUTlambda = true;
-  softsusy::GUTkappa = true;
-  softsusy::GUTmuPrime = true;
-  softsusy::GUTxiF = true;
-  softsusy::GUTsVev = true;
   double m0 = 0., m12 = 0., a0 = 0., m32 = 0., mMess = 0., n5 = 0.,
     LAMBDA = 0., cgrav = 1.;
 	
   try {
-  if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
-    cerr << "SOFTSUSY" << SOFTSUSY_VERSION << endl;
-    if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) exit(0);
-    cerr << "B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
-    cerr << " hep-ph/0104145\n";
-    cerr << "For RPV aspects, B.C. Allanach and M.A. Bernhardt, Comput. "
-	 << "Phys. Commun. 181 (2010) 232, arXiv:0903.1805.\n\n";
-    cerr << "Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
-	 << TOLERANCE << endl;
-    cerr << "G_F=" << GMU << " GeV^2" << endl;
+    if (argc !=1 && strcmp(argv[1],"leshouches") != 0) {
+      cout << "# SOFTSUSY" << PACKAGE_VERSION << endl;
+      if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) exit(0);
+      cout << "# B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
+      cout << " hep-ph/0104145\n";
+      cout << "# For RPV aspects, B.C. Allanach and M.A. Bernhardt, Comput. \n"
+	   << "# Phys. Commun. 181 (2010) 232, arXiv:0903.1805.\n";
+      cout << "# Low energy data in SOFTSUSY: mixing=" << mixing << " TOLERANCE=" 
+	   << TOLERANCE << endl;
+      cout << "# G_F=" << GMU << " GeV^2" << endl;
   }
   
-  double mgutGuess = 2.0e16, tanb = 0.;
-  int sgnMu = 1;
-  bool gaugeUnification = true, ewsbBCscale = false;
-  double desiredMh = 0.;
+    double mgutGuess = 2.0e16, tanb = 0., mScale = 0.;
+    int sgnMu = 1;
+    bool gaugeUnification = true, ewsbBCscale = false;
+    double desiredMh = 0.;
 
   // If there are no arguments, give error message,
   // or if none of the options are called, then go to error message
@@ -180,9 +188,23 @@ int main(int argc, char *argv[]) {
       else if (starts_with(argv[i],"--mt=")) 
 	oneset.setPoleMt(get_value(argv[i], "--mt="));
       else if (starts_with(argv[i],"--alpha_s="))
-	oneset.setAlpha(ALPHAS, get_value(argv[i], "--alpha_s="));      
+	oneset.setAlphaMz(ALPHAS, get_value(argv[i], "--alpha_s="));      
+      else if (starts_with(argv[i],"--mh0=")) {
+	inputMhPole = true; fixMhPole = get_value(argv[i], "--mh0=");
+      }
+      else if (starts_with(argv[i],"--mA0=")) {
+	inputMA0Pole = true; fixMA0Pole = get_value(argv[i], "--mA0=");
+      }
+      else if (starts_with(argv[i],"--mH0=")) {
+	inputMH0Pole = true; fixMH0Pole = get_value(argv[i], "--mH0=");
+      }
+      else if (starts_with(argv[i],"--mHpm=")) {
+	inputMHpmPole = true; fixMHpmPole = get_value(argv[i], "--mHpm=");
+      }
+      else if (starts_with(argv[i],"--matching_scale="))
+	mScale = get_value(argv[i], "--matching_scale=");      
       else if (starts_with(argv[i],"--alpha_inverse="))
-	oneset.setAlpha(ALPHA, 1.0 / get_value(argv[i],"--alpha_inverse="));
+	oneset.setAlphaMz(ALPHA, 1.0 / get_value(argv[i],"--alpha_inverse="));
       else if (starts_with(argv[i],"--RPV")) 
 	RPVflag = true;
       else if (starts_with(argv[i], "--tanBeta=")) 
@@ -214,41 +236,16 @@ int main(int argc, char *argv[]) {
 #endif
 	}
 	else if (starts_with(argv[i], "--disable-three-loop-rges")) {
-#ifdef COMPILE_THREE_LOOP_RGE
-	  USE_THREE_LOOP_RGE = false;
-#else
-	  compilationProblem = true;
-	  cout << "Three-loop RGEs for SUSY parameters not compiled.\n";
-	  cout << "Please use the --enable-three-loop-rges with ./configure\n";
-	  cout << "Make sure you install the CLN and GiNaC packages beforehand.\n";
-#endif
+	  useThreeLoopRge = false;
 	}
 	else if (starts_with(argv[i], "--three-loop-rges")) {
-#ifdef COMPILE_THREE_LOOP_RGE
-	  USE_THREE_LOOP_RGE = true;
-#else
-	  compilationProblem = true;
-	  cout << "Three-loop RGEs not compiled.\n";
-	  cout << "Please use the --enable-three-loop-rges with ./configure\n";
-#endif
+	  useThreeLoopRge = true;
 	}
 	else if (starts_with(argv[i], "--disable-two-loop-sparticle-mass")) {
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 	  USE_TWO_LOOP_SPARTICLE_MASS = false;
-#else
-	  compilationProblem = true;
-	  cout << "Two-loop thresholds for sparticles not compiled.\n";
-	  cout << "Please use the --enable-two-loop-susy-thresholds with ./configure\n";
-#endif
 	}
 	else if (starts_with(argv[i], "--two-loop-sparticle-masses")) {
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 	  USE_TWO_LOOP_SPARTICLE_MASS = true;
-#else
-	  compilationProblem = true;
-	  cout << "Two-loop sparticle masses not compiled.\n";
-	  cout << "Please use the --enable-two-loop-sparticle-mass with ./configure\n";
-#endif
 	}
 	else if (starts_with(argv[i], "--two-loop-sparticle-mass-method=")) {
 #ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
@@ -260,7 +257,7 @@ int main(int argc, char *argv[]) {
 #endif
 	}
 	  else if (starts_with(argv[i], "--QEWSB=")) 
-	    QEWSB = get_value(argv[i], "--QEWSB=");
+	    qewsb = get_value(argv[i], "--QEWSB=");
 	  else if (starts_with(argv[i], "--m0="))
 	    { m0 = get_value(argv[i], "--m0="); }
 	  else if (starts_with(argv[i], "--m12=")) 
@@ -453,7 +450,7 @@ int main(int argc, char *argv[]) {
 		    break;
 		    default: 
 		      ostringstream ii;
-		      ii << "SOFTSUSY" << SOFTSUSY_VERSION 
+		      ii << "SOFTSUSY" << PACKAGE_VERSION 
 			 << " cannot yet do model " 
 			 << model << ": terminal error\n";
 		      throw ii.str();
@@ -749,6 +746,10 @@ int main(int argc, char *argv[]) {
 		    else if (i == 23 || i == 26) {
 		      m.useAlternativeEwsb();
 		      k.useAlternativeEwsb();
+		      if (fixMA0Pole) {
+			r->setMaCond(fixMA0Pole);
+			k.setMaCond(fixMA0Pole);
+		      }
 		      if (i == 23) {
                          r->setMuCond(d); r->setSusyMu(d);
                          k.setMuCond(d); k.setSusyMu(d);
@@ -759,6 +760,10 @@ int main(int argc, char *argv[]) {
                          }
                       }
 		      if (i == 26) {
+			if (fixMA0Pole) {
+			  cout << "# WARNING: MApole artificially set to " << fixMA0Pole << ", trumping setting it as " << d << endl << "# in EXTPAR 26\n";
+			  d = fixMA0Pole;
+			}
 			r->setMaCond(d); k.setMaCond(d);
 		      }
 		    }
@@ -857,7 +862,7 @@ int main(int argc, char *argv[]) {
                      switch (i) {
                      case 61: // scale where to input lambda
                         if (fabs(d + 1.0) < EPSTOL) {
-                           softsusy::GUTlambda = false;
+			  nmssm.setGUTlambda(false);
                         } else {
                            cout << "# WARNING: cannot input NMSSM parameter lambda"
                               " (set in QEXTPAR " << i << ") at a scale "
@@ -867,7 +872,7 @@ int main(int argc, char *argv[]) {
                         break;
                      case 62: // scale where to input kappa
                         if (fabs(d + 1.0) < EPSTOL) {
-                           softsusy::GUTkappa = false;
+			  nmssm.setGUTkappa(false);
                         } else {
                            cout << "# WARNING: cannot input NMSSM parameter kappa"
                               " (set in QEXTPAR " << i << ") at a scale "
@@ -877,7 +882,7 @@ int main(int argc, char *argv[]) {
                         break;
                      case 65: // scale where to input <S>
                         if (fabs(d + 1.0) < EPSTOL) {
-                           softsusy::GUTsVev = false;
+			  nmssm.setGUTsVev(false);
                         } else {
                            cout << "# WARNING: cannot input NMSSM parameter <S>"
                               " (set in QEXTPAR " << i << ") at a scale "
@@ -887,7 +892,7 @@ int main(int argc, char *argv[]) {
                         break;
                      case 66: // scale where to input xiF
                         if (fabs(d + 1.0) < EPSTOL) {
-                           softsusy::GUTxiF = false;
+			  nmssm.setGUTxiF(false);
                         } else {
                            cout << "# WARNING: cannot input NMSSM parameter xiF"
                               " (set in QEXTPAR " << i << ") at a scale "
@@ -897,7 +902,7 @@ int main(int argc, char *argv[]) {
                         break;
                      case 68: // scale where to input mu'
                         if (fabs(d + 1.0) < EPSTOL) {
-                           softsusy::GUTmuPrime = false;
+			  nmssm.setGUTmuPrime(false);
                         } else {
                            cout << "# WARNING: cannot input NMSSM parameter mu'"
                               " (set in QEXTPAR " << i << ") at a scale "
@@ -952,9 +957,9 @@ int main(int argc, char *argv[]) {
 		else if (block == "SMINPUTS") {
 		  int i; double d; kk >> i >> d; 
 		  switch (i) {
-		  case 1: oneset.setAlpha(ALPHA, 1.0 / d); break;
+		  case 1: oneset.setAlphaMz(ALPHA, 1.0 / d); break;
 		  case 2: GMU = d; break;
-		  case 3: oneset.setAlpha(ALPHAS, d); break; 
+		  case 3: oneset.setAlphaMz(ALPHAS, d); break; 
 		  case 4: oneset.setMu(d); m.setData(oneset); MZ = d; break;
 		  case 5: oneset.setMass(mBottom, d); 
 		    oneset.setMbMb(d); break;
@@ -1133,19 +1138,17 @@ int main(int argc, char *argv[]) {
 		    break;
 		  case 1: TOLERANCE = d; break;
 		  case 2: 
-		    MIXING = int(d); 
-		    //if (MIXING > 0) flavourViolation = true;
+		    mixing = int(d); 
 		    break;
 		  case 3: PRINTOUT = int(d); break;
-		  case 4: QEWSB = d; break;
-		  case 5: INCLUDE_2_LOOP_SCALAR_CORRECTIONS = 
-		      bool(int(d+EPSTOL)); break;
+		  case 4: qewsb = d; break;
+		  case 5: break;
 		  case 6: outputCharacteristics(int(d+EPSTOL)-1); break;  
 		  case 7: {
 		    int num = int(d+EPSTOL);
-		    if (num != 1 && num!= 2) {
+		    if (num < 1 || num > 3) {
 		      cout << "# WARNING: Can only set number of loops for"
-			   << " higgs masses and REWSB to be 1 or 2 in "
+			   << " higgs masses and REWSB to be 1, 2 or 3 in "
 			   << " BLOCK SOFTSUSY parameter 7, not " << num 
 			   << ". Ignoring.\n";
 		  } else {
@@ -1211,12 +1214,12 @@ int main(int argc, char *argv[]) {
 		    break;
                   case 16: {
                      int num = int(d + EPSTOL);
-                     softsusy::MICROMEGAS = num;
+                     nmssm.setMICROMEGAS(num);
                   }
                     break;
                   case 17: {
                      int num = int(d + EPSTOL);
-                     softsusy::NMSDECAY = num;
+                     nmssm.setNMSDECAY(num);
                   }
 		    break;
                   case 18: {
@@ -1224,15 +1227,13 @@ int main(int argc, char *argv[]) {
                     if(num == 1) softsusy::SoftHiggsOut = true;
                   }
                      break;
-#ifdef COMPILE_THREE_LOOP_RGE
 		  case 19: {
                     int num = int(d + EPSTOL);
-		    if (num == 1) USE_THREE_LOOP_RGE = true;
-		    else if (num == 0) USE_THREE_LOOP_RGE = false;
+		    if (num == 1) useThreeLoopRge = true;
+		    else if (num == 0) useThreeLoopRge = false;
 		    else cout << "WARNING: incorrect setting for SOFTSUSY Block 19 (should be 0 or 1)\n";
 		    break;			     
 		  }
-#endif
 #ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
 		  case 20: {
                     int num = int(d + EPSTOL);
@@ -1260,38 +1261,73 @@ int main(int argc, char *argv[]) {
 		    if (num > 0) higgsUncertainties = true;
 		    break;
 		  }
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 		  case 22: {
 		    int num = int(d + EPSTOL);
 		    if (num > 0) USE_TWO_LOOP_SPARTICLE_MASS = true;
 		    else if (num == 0) USE_TWO_LOOP_SPARTICLE_MASS = false;
-		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 22 (should be a positive semi-definite\n";
+		    else cout << "# WARNING: incorrect setting for SOFTSUSY Block 22 (should be a positive semi-definite\n";
 		    break;
 		  }
 		  case 23: {
 		    int num = int(d + EPSTOL);
 		    if (num > 0 && num <=3) expandAroundGluinoPole = num;
-		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 1 and 3 inclusive)\n";		    
+		    else cout << "# WARNING: incorrect setting for SOFTSUSY Block 23 (should be between 1 and 3 inclusive)\n";		    
 		    break;
 		  }
-#endif
 		  case 24: {
 		    if (d < 1. && d > 0.) minBR = d;
-		    else cout << "#WARNING: incorrect setting for SOFTSUSY Block 24 (should be between 0 and 1)\n";
+		    else cout << "# WARNING: incorrect setting for SOFTSUSY Block 24 (should be between 0 and 1)\n";
 		    break;
 		  }
 		  case 25: {
 		    int num = int(d + EPSTOL);
 		    if (num == 0) threeBodyDecays = false;
 		    else if (num == 1) threeBodyDecays = true;
-		    else cout << "#WARNING incorrect setting for SOFTSUSY Block 25 (should be either 0 or 1)\n";
+		    else cout << "# WARNING incorrect setting for SOFTSUSY Block 25 (should be either 0 or 1)\n";
 		    break;
 		  }
 		  case 26: {
 		    int num = int(d + EPSTOL);
 		    if (num == 0) outputPartialWidths = false;
 		    else if (num == 1) outputPartialWidths = true;
-		    else cout << "#WARNING incorrect setting for SOFTSUSY Block 26 (should be either 0 or 1)\n";
+		    else cout << "# WARNING incorrect setting for SOFTSUSY Block 26 (should be either 0 or 1)\n";
+		    break;
+		  }
+		  case 27: {
+		    if (d >= MZ) mScale = d;
+		    else cout << "# WARNING incorrect " << d << " for SOFTSUSY Block 27 (should be > MZ)\n";
+		    break;
+		  }
+		  case 28: {
+		    if (d >= 0.) {
+		      inputMhPole = true;
+		      fixMhPole   = d;
+		    }
+		    else cout << "# WARNING incorrect " << d << " for SOFTSUSY Block 28 (should be > 0)\n";
+		    break;
+		  }
+		  case 29: {
+		    if (d >= 0.) {
+		      inputMA0Pole = true;
+		      fixMA0Pole   = d;
+		    }
+		    else cout << "# WARNING incorrect " << d << " for SOFTSUSY Block 29 (should be > 0)\n";
+		    break;
+		  }
+		  case 30: {
+		    if (d >= 0.) {
+		      inputMH0Pole = true;
+		      fixMH0Pole   = d;
+		    }
+		    else cout << "# WARNING incorrect " << d << " for SOFTSUSY Block 30 (should be > 0)\n";
+		    break;
+		  }
+		  case 31: {
+		    if (d >= 0.) {
+		      inputMHpmPole = true;
+		      fixMHpmPole   = d;
+		    }
+		    else cout << "# WARNING incorrect " << d << " for SOFTSUSY Block 31 (should be > 0)\n";
 		    break;
 		  }
 		  default:
@@ -1332,7 +1368,7 @@ int main(int argc, char *argv[]) {
 
       // set NMSSM boundary conditions
       if (susy_model == NMSSM) {
-         softsusy::Z3 = nmssm_input.is_Z3_symmetric();
+	nmssm.setZ3(nmssm_input.is_Z3_symmetric());
 
          if (flavourViolation) {
             string msg("# Error: flavour violation in the NMSSM is currenty"
@@ -1351,7 +1387,7 @@ int main(int argc, char *argv[]) {
              pars(6) = nmssm_input.get(NMSSM_input::xiS);
              nmssmBoundaryCondition = &NmssmSugraNoSoftHiggsMassBcs;
            } else {
-             if (softsusy::Z3) {
+             if (nmssm.displayZ3()) {
                // Here we must use SemiMsugraBcs to avoid setting mS2
                // at the GUT scale
                if (pars.size() != 5)
@@ -1359,9 +1395,8 @@ int main(int argc, char *argv[]) {
                pars(4) = pars(3); // sets Al to A0
                pars(5) = pars(3); // sets Ak to A0
                nmssmBoundaryCondition = &SemiMsugraBcs;
-             } else {
-               nmssmBoundaryCondition = &NmssmMsugraBcs;
-             }
+             } else nmssmBoundaryCondition = &NmssmMsugraBcs;
+             
            }
          } else if (strcmp(modelIdent, "nonUniversal") == 0) {
            nmssmBoundaryCondition = &extendedNMSugraBcs;
@@ -1409,6 +1444,7 @@ int main(int argc, char *argv[]) {
 	  throw ii.str();
 	}
       }
+      
       // intput error checking  
       if (sgnMu != 1 && sgnMu != -1 && sgnMu != 0) {
 	ostringstream ii;
@@ -1422,8 +1458,19 @@ int main(int argc, char *argv[]) {
       }
       
       oneset.toMz();
+      /// Set quark mixing correctly
+      r->setMixing(mixing); k.setMixing(mixing); nmssm.setMixing(mixing);
+      r->setQewsb(qewsb); k.setQewsb(qewsb); nmssm.setQewsb(qewsb);
+      if (useThreeLoopRge) {
+	r->setLoops(3); k.setLoops(3); nmssm.setLoops(3);
+      }
 
-    switch (susy_model) {
+      /// Run to scale at which MSUSY and QEDxQCD are matched: by default it's
+      /// mt for MSSM, MZ for NMSSM
+      if (mScale < MZ) mScale = oneset.displayPoleMt();
+      oneset.runto(mScale);
+
+      switch (susy_model) {
     case MSSM:
       r->fixedPointIteration(boundaryCondition, mgutGuess, pars, sgnMu, tanb, 
 			     oneset, gaugeUnification, ewsbBCscale);
@@ -1437,36 +1484,25 @@ int main(int argc, char *argv[]) {
 
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
-      if (calcDecays) calculateDecays(cout, r, nmssm, false);
+      if (calcDecays) {
+	calculateDecays(cout, r, decayTable, nmssm, false);
+	slhaDecays(cout, decayTable, outputPartialWidths);
+      }	
+      //    if (calcDecays) calculateDecays(r, nmssm, false);
       if (higgsUncertainties) {
-	int numPts = 30;
-	DoubleVector mh(numPts), mH(numPts), mA(numPts), mHp(numPts);
-	double dmh = 0., dmH = 0., dmA = 0., dmHp = 0.;
-	double lnqMin = log(MZ), 
-	  lnqMax = log(2.0 * r->displayMsusy());
-	for (int i = 0; i< numPts; i++) {
-	  MssmSoftsusy a(r->displaySoftsusy());
-	  double lnq = (lnqMax - lnqMin) * double(i) / double(numPts) + lnqMin;
-	  double q = exp(lnq);
-	  int accuracy = 3; 
-	  double mt = 0., sinth = 0., piww = 0., pizz = 0;
-	  a.calcHiggsAtScale(accuracy, mt, sinth, piww, pizz, q);
-	  if (!a.displayProblem().testSeriousProblem()) {
-	    mh.set(i+1, a.displayPhys().mh0(1));
-	    mH.set(i+1, a.displayPhys().mh0(2));
-	    mA.set(i+1, a.displayPhys().mA0(1));
-	    mHp.set(i+1, a.displayPhys().mHpm);
-	  }
-	 }
-	/// Try to add some fixed-order uncertainties to this
-        int p;
-	dmh  =  mh.max(p) -  mh.min(p);
-	dmA  =  mA.max(p) -  mA.min(p);
-	dmH  =  mH.max(p) -  mH.min(p);
-	dmHp = mHp.max(p) - mHp.min(p);
-	cout << "# Estimated Higgs uncertainties in GeV:\n# Dmh=" 
-	     << dmh << " DmH=" << dmH << " DmA=" << dmA 
-	     << " DmH+-=" << dmHp << endl;
+        const sPhysical dM = r->displayPhysUncertainty(
+           boundaryCondition, mgutGuess, pars, sgnMu, tanb,
+           oneset, gaugeUnification, ewsbBCscale);
+        const double dmh = dM.mh0(1);
+        const double dmH = dM.mh0(2);
+        const double dmA = dM.mA0(1);
+        const double dmHp = dM.mHpm;
+	outputCharacteristics(8);
+        cout << "Block DMASS                   # uncertainties\n"
+             << "      25    "; printRow(cout, dmh ); cout << "   # uncertainty of h0 in GeV\n"
+             << "      35    "; printRow(cout, dmH ); cout << "   # uncertainty of H0 in GeV\n"
+             << "      36    "; printRow(cout, dmA ); cout << "   # uncertainty of A0 in GeV\n"
+             << "      37    "; printRow(cout, dmHp); cout << "   # uncertainty of H+ in GeV\n";
       }
       
       if (r->displayProblem().test()) {
@@ -1479,12 +1515,14 @@ int main(int argc, char *argv[]) {
       nmssm_input.check_setup();
 
       DoubleVector nmpars(nmssm_input.get_nmpars());
-      nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu,
-                   tanb, oneset, gaugeUnification, ewsbBCscale);
-      nmssm.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,
-                                   numPoints, ewsbBCscale);
-      if (calcDecays) calculateDecays(cout, r, nmssm, true);
-      if (nmssm.displayProblem().test()) {
+      nmssm.lowOrg(nmssmBoundaryCondition, mgutGuess, pars, nmpars, sgnMu, tanb, oneset, gaugeUnification, ewsbBCscale);
+      nmssm.lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax, numPoints, ewsbBCscale);
+
+      if (calcDecays) {
+	calculateDecays(cout, r, decayTable, nmssm, true);
+	slhaDecays(cout, decayTable, outputPartialWidths);
+      }
+	if (nmssm.displayProblem().test()) {
          cout << "# SOFTSUSY problem with NMSSM point: "
               << nmssm.displayProblem() << endl;
          return -1;
@@ -1497,9 +1535,9 @@ int main(int argc, char *argv[]) {
       break;
     }
   }
-  catch(const string & a) { cout << a; return -1; }
-  catch(const char * a) { cout << a; return -1; }
-  catch(...) { cout << "Unknown type of exception caught.\n"; return -1; }
+  catch(const string & a) { cerr << a; return -1; }
+  catch(const char * a) { cerr << a; return -1; }
+  catch(...) { cerr << "Unknown type of exception caught.\n"; return -1; }
   
   return 0;
 }

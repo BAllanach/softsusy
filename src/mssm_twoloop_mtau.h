@@ -1,3 +1,14 @@
+/** \file mssm_twoloop_mtau.h
+    - Project:     SOFTSUSY 
+    - Author:      Alex Voigt
+    - Manual:      hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
+    - Webpage:     http://hepforge.cedar.ac.uk/softsusy/
+    
+    \brief Two loop corrections to the tau mass.
+    This file has been generated at Fri 7 Apr 2017 21:00:53
+    with the script "tau_to_cpp.m". It is part of FlexibleSUSY.    
+*/
+
 // ====================================================================
 // This file is part of FlexibleSUSY.
 //
@@ -23,6 +34,7 @@
 #define MSSM_TWO_LOOP_MTAU_H
 
 #include <iosfwd>
+#include <limits>
 
 namespace flexiblesusy {
 namespace mssm_twoloop_mtau {

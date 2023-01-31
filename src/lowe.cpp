@@ -16,13 +16,14 @@ static QedQcd *tempLe;
 
 QedQcd::QedQcd()
   : a(2), mf(9), mtPole(PMTOP), mbPole(PMBOTTOM), mbMb(MBOTTOM), 
-    mtauPole(MTAU) { 
+    mtauPole(MTAU), aMz(2) { 
   setPars(11);
   // Default object: 1998 PDB defined in 'def.h'
   mf(1) = MUP; mf(2) = MCHARM; 
   mf(4) = MDOWN; mf(5) = MSTRANGE; mf(6) = MBOTTOM;
   mf(7) = MELECTRON; mf(8) = MMUON; mf(9) = MTAU;
   a(1) = ALPHAMZ;  a(2) = ALPHASMZ;
+  aMz(1) = ALPHAMZ;  aMz(2) = ALPHASMZ;
   mf(3) = getRunMtFromMz(PMTOP, ALPHASMZ);
   setMu(MZ);
   setLoops(3);
@@ -37,6 +38,7 @@ const QedQcd & QedQcd::operator=(const QedQcd & m) {
   mtauPole = m.mtauPole;
   a = m.a;
   mf = m.mf;
+    aMz = m.aMz;
   setLoops(m.displayLoops());
   setThresholds(m.displayThresholds());
   setMu(m.displayMu());
@@ -63,7 +65,9 @@ const DoubleVector QedQcd::display() const {
 //  Active flavours at energy mu
 int QedQcd::flavours(double mu) const {
   int k = 0;
-  if (mu > mf.display(mTop)) k++;
+  // do not count the top, because we always want to match the SM(5)
+  // to the SUSY model
+  // if (mu > mf.display(mTop)) k++;
   if (mu > mf.display(mCharm)) k++;
   if (mu > mf.display(mUp)) k++;
   if (mu > mf.display(mDown)) k++;
@@ -73,6 +77,9 @@ int QedQcd::flavours(double mu) const {
 }
 
 ostream & operator <<(ostream &left, const QedQcd &m) {
+  left << "alpha(MZ)^-1: " << 1.0 / m.displayAlphaMz(ALPHA)
+       << "  alpha_s(MZ): " << m.displayAlphaMz(ALPHAS)
+       << endl;
   left << "mU: " << m.displayMass(mUp) 
        << "  mC: " << m.displayMass(mCharm) 
        << "  mt: " << m.displayMass(mTop) 
@@ -103,8 +110,9 @@ istream & operator >>(istream &left, QedQcd &m) {
 
   string c, cmbmb, cmbpole;
   double mu, mc, mtpole, md, ms, me, mmu, mtau, invalph, 
-    alphas, scale;
+    alphas, scale, alphaMz, alphasMz;
   int t, l;
+  left >> c >> alphaMz >> c >> alphasMz;
   left >> c >> mu >> c >> mc >> c >> c >> c >> mtpole;
   left >> c >> md >> c >> ms >> c >> cmbmb >> c >> cmbpole;
   left >> c >> me >> c >> mmu >> c >> mtau;
@@ -119,6 +127,8 @@ istream & operator >>(istream &left, QedQcd &m) {
   m.setMass(mTau, mtau);
   m.setAlpha(ALPHA, 1.0 / invalph);
   m.setAlpha(ALPHAS, alphas);
+  m.setAlphaMz(ALPHA, 1.0 / alphaMz);
+  m.setAlphaMz(ALPHAS, alphasMz);
   m.setMu(scale);
   // y[3] is pole mass
   m.setPoleMt(mtpole);
@@ -147,24 +157,17 @@ istream & operator >>(istream &left, QedQcd &m) {
   return left;
 }
 
-//  returns qed beta function at energy mu < mtop
+//  returns qed beta function in SM 
 double QedQcd::qedBeta() const {
   double x;
   x = 24.0 / 9.0;
   if (displayMu() > mf.display(mCharm)) x += 8.0 / 9.0;
-  if (displayMu() > mf.display(mTop)) x += 8.0 / 9.0;
+  // do not take top into account, because we always want to match the
+  // SM(5) to the SUSY model
+  // if (displayMu() > mf.display(mTop)) x += 8.0 / 9.0;
   if (displayMu() > mf.display(mBottom)) x += 2.0 / 9.0;
   if (displayMu() > mf.display(mTau)) x += 2.0 / 3.0;
   if (displayMu() > MW) x += -7.0 / 2.0;
-  if (displayMu() > (mtPole + TOLERANCE))  {
-    ostringstream ii;
-    
-      ii << "qed beta function called at " << displayMu() << 
-	" above mt=" << displayPoleMt() << 
-	", outside range of validity";
-      ii << " in QedQcd::qedbeta\n";
-      throw ii.str();
-    }
   
   return (x * sqr(a.display(ALPHA)) / PI);
 }
@@ -381,10 +384,11 @@ void QedQcd::toMz() {
   setMass(mTop, getRunMtFromMz(mt, as));
   calcPoleMb();
 
-  const double tol = 1.0e-5;
-
-  double alphasMZ = displayAlpha(ALPHAS);
-  double alphaMZ = displayAlpha(ALPHA);
+  const double tol = TOLERANCE * 1.0e-1;
+  
+  double alphasMZ = displayAlphaMz(ALPHAS);
+  double alphaMZ = displayAlphaMz(ALPHA);
+  setAlpha(ALPHA, alphaMZ); setAlpha(ALPHAS, alphasMZ);
   double mz = displayMu();
   runGauge(mz, 1.0);
   run(1.0, mz, tol);
@@ -431,44 +435,6 @@ DoubleVector QedQcd::getGaugeMu(const double m2, const double sinth) const {
   temp.set(3, oneset.displayAlpha(ALPHAS));
 
   return temp;
-}
-
-int accessedReadIn; // Should be initialised to zero at start of prog
-/*
---------------- read in a qcd-type object ------------------
-Call with fname "" if you want it to come from standard input
-
-"massIn" is an example of a data initialisation file: 
-*/
-void readIn(QedQcd &mset, const char fname[80]) {
-   static QedQcd prevReadIn; // Data will be stored in here for rest of the
-				// run
-
-  // Read in data if it's not been set
-  if (accessedReadIn == 0) {
-    string c;
-    if (!strcmp(fname,"")) cin >> prevReadIn >> c >> MIXING >> c >> TOLERANCE 
-			       >> c >> PRINTOUT; // from standard input 
-    else {   
-      // read from filename fname
-	  fstream fin(fname, ios::in); 
-	  if(!fin) {
-	    mset = QedQcd();
-	    return;
-	    ostringstream ii;
-	    ii << "Can't find input file " << fname << endl;
-	    throw ii.str();
-	  }
-	  fin >> prevReadIn >> c >> MIXING >> c >> TOLERANCE >> c >> PRINTOUT;
-	  fin.close();
-    }
-
-    if (PRINTOUT) cout << prevReadIn;
-    accessedReadIn = 1; // Flag the fact we've read in the data once
-  }
-
-  mset = prevReadIn;
-
 }
 
 DoubleVector gaugeDerivs(double x, const DoubleVector & y) {

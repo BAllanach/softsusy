@@ -465,6 +465,75 @@ int TSIL_GetData (TSIL_DATA    *foo,
 }
 
 /* ******************************************************************* */
+/* Extract function values from the data object to an array            */
+
+int TSIL_GetDataR (TSIL_RESULT *foo, 
+		  const char   *which, 
+		  TSIL_COMPLEX *val)
+{
+#include "tsil_names.h"
+
+  int i;
+  int retval = 1;
+  char funcname[] = "TSIL_GetDataR";
+  char errmsg0[45] = "Function not defined for these parameters: ";
+  char errmsg[55];
+
+  strcpy (errmsg, errmsg0);
+
+  if (!strcmp(which, "M")) {
+    if (TSIL_IsInfinite (*val = foo->M))
+      TSIL_Warn (funcname, strncat (errmsg, "M", 1));
+  }
+  else if (!strcmp(which, "U")) {
+    for (i=0; i<NUM_U_FUNCS; i++)
+      if (TSIL_IsInfinite (val[i] = foo->U[i])) {
+	TSIL_Warn (funcname, strncat (errmsg, uname[i][0], 5));	  
+	strcpy (errmsg, errmsg0);
+      }
+  }
+  else if (!strcmp(which, "T")) {
+    for (i=0; i<NUM_T_FUNCS; i++)
+      if (TSIL_IsInfinite (val[i] = foo->T[i])) {
+	TSIL_Warn (funcname, strncat (errmsg, tname[i][0], 4));
+	strcpy (errmsg, errmsg0);
+      }
+  }
+  else if (!strcmp(which, "S")) {
+    for (i=0; i<NUM_S_FUNCS; i++)
+      if (TSIL_IsInfinite (val[i] = foo->S[i])) {
+	TSIL_Warn (funcname, strncat (errmsg, sname[i][0], 4));
+	strcpy (errmsg, errmsg0);
+      }
+  }
+  else if (!strcmp(which, "B")) {
+    for (i=0; i<NUM_B_FUNCS; i++)
+      if (TSIL_IsInfinite (val[i] = foo->B[i])) {
+	TSIL_Warn (funcname, strncat (errmsg, bname[i][0], 3));
+	strcpy (errmsg, errmsg0);
+      }
+  }
+  else if (!strcmp(which, "V")) {
+    for (i=0; i<NUM_V_FUNCS; i++)
+      if (TSIL_IsInfinite (val[i] = foo->V[i])) {
+	TSIL_Warn (funcname, strncat (errmsg, vname[i][0], 5));
+	strcpy (errmsg, errmsg0);
+      }
+  }
+  else if (!strcmp(which, "TBAR")) {
+    for (i=0; i<NUM_T_FUNCS; i++)
+      if (TSIL_IsInfinite (val[i] = foo->TBAR[i])) {
+	TSIL_Warn (funcname, strncat (errmsg, tbarname[i][0], 7));
+	strcpy (errmsg, errmsg0);
+      }
+  }
+  else
+    TSIL_Error (funcname, "Invalid identifier specified.", 111);
+  
+  return retval;
+}
+
+/* ******************************************************************* */
 /* Extract "bold" function values from the data object to an array     */
 
 int TSIL_GetBoldData (TSIL_DATA    *foo,
@@ -538,7 +607,6 @@ TSIL_COMPLEX TSIL_GetFunction (TSIL_DATA *foo, const char *which)
 #include "tsil_names.h"
 
   int i,j;
-  int match = NO;
 
   TSIL_COMPLEX result = (TSIL_COMPLEX) 0.0;
   char funcname[] = "TSIL_GetFunction";
@@ -681,7 +749,6 @@ TSIL_COMPLEX TSIL_GetFunctionR (TSIL_RESULT *foo, const char *which)
 #include "tsil_names.h"
 
   int i,j;
-  int match = NO;
 
   TSIL_COMPLEX result = (TSIL_COMPLEX) 0.0;
   char funcname[] = "TSIL_GetFunctionR";
@@ -861,8 +928,8 @@ TSIL_COMPLEX TSIL_GetBoldFunction (TSIL_DATA  *foo,
 
 int TSIL_IsInfinite (TSIL_COMPLEX z)
 {
-  /* DGR - modified to work with gcc4 */
-#if __GNUC__==4
+  /* DGR - modified to work with gcc4+ */
+#if __GNUC__ >= 4
   if (isnan(TSIL_CREAL(z)) || isinf(TSIL_CREAL(z)) ||
       isnan(TSIL_CIMAG(z)) || isinf(TSIL_CIMAG(z)))
     return TRUE;
@@ -956,21 +1023,28 @@ void TSIL_WriteData (FILE *fp, TSIL_DATA *foo)
 
   TSIL_REAL fac = foo->scaleFac;
   int j, k;
+  TSIL_REAL xx = fac * foo->x;
+  TSIL_REAL yy = fac * foo->y;
+  TSIL_REAL zz = fac * foo->z;
+  TSIL_REAL uu = fac * foo->u;
+  TSIL_REAL vv = fac * foo->v;
+  TSIL_REAL ss = fac * foo->s;
+  TSIL_REAL qqq = fac * foo->qq;
 
   if (foo->status == UNEVALUATED) {
     TSIL_Warn ("Write/TSIL_PrintData", "This case has not yet been evaluated!");
     return;
   }
 
-  fprintf(fp, "x = %.12Lf\n", (long double) (fac * foo->x));
+  fprintf(fp, "x = %.12Lf\n", (long double) xx);
   if (foo->whichFns == STUM)
-    fprintf(fp, "y = %.12Lf\n", (long double) (fac * foo->y));
+    fprintf(fp, "y = %.12Lf\n", (long double) yy);
   if (foo->whichFns != ST)
-    fprintf(fp, "z = %.12Lf\n", (long double) (fac * foo->z));
-  fprintf(fp, "u = %.12Lf\n", (long double) (fac * foo->u));
-  fprintf(fp, "v = %.12Lf\n", (long double) (fac * foo->v));
-  fprintf(fp, "s = %.12Lf\n", (long double) (fac * foo->s));
-  fprintf(fp, "qq = %.12Lf\n", (long double) (fac * foo->qq));
+    fprintf(fp, "z = %.12Lf\n", (long double) zz);
+  fprintf(fp, "u = %.12Lf\n", (long double) uu);
+  fprintf(fp, "v = %.12Lf\n", (long double) vv);
+  fprintf(fp, "s = %.12Lf\n", (long double) ss);
+  fprintf(fp, "qq = %.12Lf\n", (long double) qqq);
 
   fprintf(fp, "\n");
 
@@ -1011,6 +1085,28 @@ void TSIL_WriteData (FILE *fp, TSIL_DATA *foo)
       TSIL_cprintf(foo->Tbar[j].value); fprintf(fp, "\n");
     }
     fprintf(fp, "\n");
+    fprintf(fp, "Ixyv     = ");
+      TSIL_cprintf(TSIL_I2(xx,yy,vv,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Izuv     = ");
+      TSIL_cprintf(TSIL_I2(zz,uu,vv,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Ax       = "); TSIL_cprintf(TSIL_A(xx,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Ay       = "); TSIL_cprintf(TSIL_A(yy,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Az       = "); TSIL_cprintf(TSIL_A(zz,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Au       = "); TSIL_cprintf(TSIL_A(uu,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Av       = "); TSIL_cprintf(TSIL_A(vv,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Bepsxz   = ");
+      TSIL_cprintf(TSIL_Beps(xx,zz,ss,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Bepsyu   = ");
+      TSIL_cprintf(TSIL_Beps(yy,uu,ss,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Aepsx    = "); TSIL_cprintf(TSIL_Aeps(xx,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Aepsy    = "); TSIL_cprintf(TSIL_Aeps(yy,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Aepsz    = "); TSIL_cprintf(TSIL_Aeps(zz,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Aepsu    = "); TSIL_cprintf(TSIL_Aeps(uu,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Aepsv    = "); TSIL_cprintf(TSIL_Aeps(vv,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "\n");
     for (j=0; j<4; j++) {
       for (k=0; k<3; k++) {
 	fprintf(fp, "%s  = ",uuname[j][k]);
@@ -1041,7 +1137,6 @@ void TSIL_WriteData (FILE *fp, TSIL_DATA *foo)
   }
   else if (foo->whichFns == STU) {
 
-    fprintf(fp, "\n");
     fprintf(fp, "%s    = ",uname[xzuv][0]);
     TSIL_cprintf(foo->U[xzuv].value); fprintf(fp, "\n");
 
@@ -1068,6 +1163,22 @@ void TSIL_WriteData (FILE *fp, TSIL_DATA *foo)
       TSIL_cprintf(foo->Tbar[j].value); fprintf(fp, "\n");
     }
     fprintf(fp, "\n");
+    fprintf(fp, "Izuv     = ");
+      TSIL_cprintf(TSIL_I2(zz,uu,vv,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Ax       = "); TSIL_cprintf(TSIL_A(xx,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Az       = "); TSIL_cprintf(TSIL_A(zz,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Au       = "); TSIL_cprintf(TSIL_A(uu,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Av       = "); TSIL_cprintf(TSIL_A(vv,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Bepsxz   = ");
+      TSIL_cprintf(TSIL_Beps(xx,zz,ss,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Aepsx    = "); TSIL_cprintf(TSIL_Aeps(xx,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Aepsz    = "); TSIL_cprintf(TSIL_Aeps(zz,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Aepsu    = "); TSIL_cprintf(TSIL_Aeps(uu,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Aepsv    = "); TSIL_cprintf(TSIL_Aeps(vv,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "\n");
     for (k=0; k<3; k++) {
       fprintf(fp, "%s  = ",uuname[xzuv][k]);
       TSIL_cprintf(foo->U[xzuv].bold[k]); fprintf(fp, "\n");
@@ -1092,7 +1203,6 @@ void TSIL_WriteData (FILE *fp, TSIL_DATA *foo)
   }
   else if (foo->whichFns == ST) {
 
-    fprintf(fp, "\n");
     for (j=1; j<6; j+=2) {
       fprintf(fp, "%s     = ",tname[j][0]);
       TSIL_cprintf(foo->T[j].value); fprintf(fp, "\n");
@@ -1106,6 +1216,14 @@ void TSIL_WriteData (FILE *fp, TSIL_DATA *foo)
       fprintf(fp, "%s  = ",tbarname[j][0]);
       TSIL_cprintf(foo->Tbar[j].value); fprintf(fp, "\n");
     }
+    fprintf(fp, "\n");
+    fprintf(fp, "Ax       = "); TSIL_cprintf(TSIL_A(xx,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Au       = "); TSIL_cprintf(TSIL_A(uu,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Av       = "); TSIL_cprintf(TSIL_A(vv,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Aepsx    = "); TSIL_cprintf(TSIL_Aeps(xx,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Aepsu    = "); TSIL_cprintf(TSIL_Aeps(uu,qqq)); fprintf(fp, "\n");
+    fprintf(fp, "Aepsv    = "); TSIL_cprintf(TSIL_Aeps(vv,qqq)); fprintf(fp, "\n");
     fprintf(fp, "\n");
     for (j=1; j<6; j+=2) {
       for (k=0; k<3; k++) {
@@ -1131,21 +1249,28 @@ void TSIL_WriteDataM (FILE *fp, TSIL_DATA *foo)
 
   TSIL_REAL fac = foo->scaleFac;
   int j, k;
+  TSIL_REAL xx = fac * foo->x;
+  TSIL_REAL yy = fac * foo->y;
+  TSIL_REAL zz = fac * foo->z;
+  TSIL_REAL uu = fac * foo->u;
+  TSIL_REAL vv = fac * foo->v;
+  TSIL_REAL ss = fac * foo->s;
+  TSIL_REAL qqq = fac * foo->qq;
 
   if (foo->status == UNEVALUATED) {
     TSIL_Warn ("TSIL_PrintDataM", "This case has not been evaluated!");
     return;
   }
 
-  fprintf(fp, "x = %.12Lf;\n", (long double) (fac * foo->x));
+  fprintf(fp, "x = %.12Lf;\n", (long double) xx);
   if (foo->whichFns == STUM)
-    fprintf(fp, "y = %.12Lf;\n", (long double) (fac * foo->y));
+    fprintf(fp, "y = %.12Lf;\n", (long double) yy);
   if (foo->whichFns != ST)
-    fprintf(fp, "z = %.12Lf;\n", (long double) (fac * foo->z));
-  fprintf(fp, "u = %.12Lf;\n", (long double) (fac * foo->u));
-  fprintf(fp, "v = %.12Lf;\n", (long double) (fac * foo->v));
-  fprintf(fp, "s = %.12Lf;\n", (long double) (fac * foo->s));
-  fprintf(fp, "qq = %.12Lf;\n", (long double) (fac * foo->qq));
+    fprintf(fp, "z = %.12Lf;\n", (long double) zz);
+  fprintf(fp, "u = %.12Lf;\n", (long double) uu);
+  fprintf(fp, "v = %.12Lf;\n", (long double) vv);
+  fprintf(fp, "s = %.12Lf;\n", (long double) ss);
+  fprintf(fp, "qq = %.12Lf;\n", (long double) qqq);
 
   fprintf(fp, "\n");
 
@@ -1185,6 +1310,29 @@ void TSIL_WriteDataM (FILE *fp, TSIL_DATA *foo)
       TSIL_cprintfM(foo->Tbar[j].value); fprintf(fp, ";\n");
     }
     fprintf(fp, "\n");
+    fprintf(fp, "Ixyv     = ");
+      TSIL_cprintfM(TSIL_I2(xx,yy,vv,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Izuv     = ");
+      TSIL_cprintfM(TSIL_I2(zz,uu,vv,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Ax       = "); TSIL_cprintfM(TSIL_A(xx,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Ay       = "); TSIL_cprintfM(TSIL_A(yy,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Az       = "); TSIL_cprintfM(TSIL_A(zz,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Au       = "); TSIL_cprintfM(TSIL_A(uu,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Av       = "); TSIL_cprintfM(TSIL_A(vv,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Bepsxz   = ");
+      TSIL_cprintfM(TSIL_Beps(xx,zz,ss,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Bepsyu   = ");
+      TSIL_cprintfM(TSIL_Beps(yy,uu,ss,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Aepsx    = "); TSIL_cprintfM(TSIL_Aeps(xx,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Aepsy    = "); TSIL_cprintfM(TSIL_Aeps(yy,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Aepsz    = "); TSIL_cprintfM(TSIL_Aeps(zz,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Aepsu    = "); TSIL_cprintfM(TSIL_Aeps(uu,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Aepsv    = "); TSIL_cprintfM(TSIL_Aeps(vv,qqq)); fprintf(fp, ";\n");
+
+    fprintf(fp, "\n");
     for (j=0; j<4; j++) {
       for (k=0; k<3; k++) {
 	fprintf(fp, "%s  = ",uuname[j][k]);
@@ -1215,8 +1363,6 @@ void TSIL_WriteDataM (FILE *fp, TSIL_DATA *foo)
   }
   else if (foo->whichFns == STU) {
 
-    fprintf(fp, "\n");
-
     fprintf(fp, "%s    = ",uname[xzuv][0]);
     TSIL_cprintfM(foo->U[xzuv].value); fprintf(fp, ";\n");
 
@@ -1243,6 +1389,22 @@ void TSIL_WriteDataM (FILE *fp, TSIL_DATA *foo)
       TSIL_cprintfM(foo->Tbar[j].value); fprintf(fp, ";\n");
     }
     fprintf(fp, "\n");
+    fprintf(fp, "Izuv     = ");
+      TSIL_cprintfM(TSIL_I2(zz,uu,vv,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Ax       = "); TSIL_cprintfM(TSIL_A(xx,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Az       = "); TSIL_cprintfM(TSIL_A(zz,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Au       = "); TSIL_cprintfM(TSIL_A(uu,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Av       = "); TSIL_cprintfM(TSIL_A(vv,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Bepsxz   = ");
+      TSIL_cprintfM(TSIL_Beps(xx,zz,ss,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Aepsx    = "); TSIL_cprintfM(TSIL_Aeps(xx,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Aepsz    = "); TSIL_cprintfM(TSIL_Aeps(zz,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Aepsu    = "); TSIL_cprintfM(TSIL_Aeps(uu,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Aepsv    = "); TSIL_cprintfM(TSIL_Aeps(vv,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "\n");
     for (k=0; k<3; k++) {
       fprintf(fp, "%s  = ",uuname[xzuv][k]);
       TSIL_cprintfM(foo->U[xzuv].bold[k]); fprintf(fp, ";\n");
@@ -1267,7 +1429,6 @@ void TSIL_WriteDataM (FILE *fp, TSIL_DATA *foo)
   }
   else if (foo->whichFns == ST) {
 
-    fprintf(fp, "\n");
     for (j=1; j<6; j+=2) {
       fprintf(fp, "%s     = ",tname[j][0]);
       TSIL_cprintfM(foo->T[j].value); fprintf(fp, ";\n");
@@ -1281,6 +1442,15 @@ void TSIL_WriteDataM (FILE *fp, TSIL_DATA *foo)
       fprintf(fp, "%s  = ",tbarname[j][0]);
       TSIL_cprintfM(foo->Tbar[j].value); fprintf(fp, ";\n");
     }
+    fprintf(fp, "\n");
+    fprintf(fp, "Ax       = "); TSIL_cprintfM(TSIL_A(xx,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Au       = "); TSIL_cprintfM(TSIL_A(uu,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Av       = "); TSIL_cprintfM(TSIL_A(vv,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "\n");
+    fprintf(fp, "Aepsx    = "); TSIL_cprintfM(TSIL_Aeps(xx,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Aepsu    = "); TSIL_cprintfM(TSIL_Aeps(uu,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "Aepsv    = "); TSIL_cprintfM(TSIL_Aeps(vv,qqq)); fprintf(fp, ";\n");
+    fprintf(fp, "\n");
 
     for (j=1; j<6; j+=2) {
       for (k=0; k<3; k++) {

@@ -1,0 +1,1 @@
+(2*threeLoopFlag*xAt*pow2(Al4p)*pow2(At)*(349-56*lmMsusy+24*lmMt-282*z3-32*pow2(lmMsusy))*pow2(Sbeta)*pow4(Mt)*(pow2(Cbeta)*(1+pow2(Sbeta)+pow4(Sbeta)+pow6(Sbeta)+pow8(Sbeta))+power10(Sbeta)))/(27.*pow2(Cbeta)*pow2(Msusy))

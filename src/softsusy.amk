@@ -4,7 +4,9 @@ bin_PROGRAMS += softsusy.x \
                 softsusy-nmssm.x \
                 softpoint.x \
                 rpvsoftsusy.x \
-                rpvneut.x 
+                rpvneut.x
+
+EXTRA_PROGRAMS = decay.x
 
 softsusy_x_SOURCES = src/main.cpp 
 softsusy_x_LDADD = libsoft.la 
@@ -21,6 +23,9 @@ rpvsoftsusy_x_LDADD = libsoft.la
 rpvneut_x_SOURCES = src/rpvneutmain.cpp 
 rpvneut_x_LDADD = libsoft.la 
 
+decay_x_SOURCES = src/mainDecay.cpp
+decay_x_LDADD   = libsoft.la
+
 if LOOPTOOLS
 softsusy_x_LDADD += -looptools -lgfortran
 softsusy_nmssm_x_LDADD += -looptools -lgfortran
@@ -29,10 +34,6 @@ rpvsoftsusy_x_LDADD += -looptools -lgfortran
 rpvneut_x_LDADD += -looptools -lgfortran
 endif LOOPTOOLS
 
-if COMPILE_TWO_LOOP_SPARTICLE_MASS
-bin_PROGRAMS += higher.x 
-higher_x_SOURCES = src/higher.cpp 
-higher_x_LDADD = libsoft.la libsupermodel.la libtsil.la
 include src/supermodel/tsil.amk
 include src/supermodel/supermodel.amk
 softsusy_x_LDADD       += libsupermodel.la libtsil.la 
@@ -40,46 +41,160 @@ softsusy_nmssm_x_LDADD += libsupermodel.la libtsil.la
 softpoint_x_LDADD      += libsupermodel.la libtsil.la 
 rpvsoftsusy_x_LDADD    += libsupermodel.la libtsil.la 
 rpvneut_x_LDADD        += libsupermodel.la libtsil.la 
-endif COMPILE_TWO_LOOP_SPARTICLE_MASS
+decay_x_LDADD        += libsupermodel.la libtsil.la 
 
-if COMPILE_TWO_LOOP_GAUGE_YUKAWA
-CPPFLAGS += -I$(srcdir)/src
-softsusy_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-if COMPILE_TWO_LOOP_SPARTICLE_MASS
-higher_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-endif COMPILE_TWO_LOOP_SPARTICLE_MASS
+himalayadir = $(srcdir)/src/Himalaya-1.0.0
 
-softsusy_nmssm_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
+if ENABLE_HIMALAYA
+softsusy_x_LDADD       += $(himalayadir)/libHimalaya.a
+softsusy_nmssm_x_LDADD += $(himalayadir)/libHimalaya.a
+softpoint_x_LDADD      += $(himalayadir)/libHimalaya.a
+rpvsoftsusy_x_LDADD    += $(himalayadir)/libHimalaya.a
+rpvneut_x_LDADD        += $(himalayadir)/libHimalaya.a
+CPPFLAGS               += -I$(himalayadir)/source/include
+endif ENABLE_HIMALAYA
 
-softpoint_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-
-rpvsoftsusy_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp 
-rpvneut_x_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp
-endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
+$(himalayadir)/libHimalaya.a:
+	cd $(himalayadir) && cmake . && $(MAKE)
+.PHONY: clean-local-himalaya
+clean-local: clean-local-himalaya
+clean-local-himalaya:
+	-$(MAKE) -C $(himalayadir) clean
 
 pkginclude_HEADERS += \
-$(addprefix src/, \
-decays.h threeBodyDecays.h particle.h mssm_twoloop_mt.h \
-mssm_twoloop_mtau.h mssm_twoloop_mb.h mssm_twoloop_as.h \
-def.h main.h numerics.h \
-softpars.h susy.h linalg.h \
-physpars.h softpoint.h twoloophiggs.h \
-nmssm2loop.h dilogwrap.h \
-lowe.h mycomplex.h rge.h softsusy.h \
-utils.h mssmUtils.h rpvsoft.h rpvsusypars.h \
-tensor.h rpvmain.h flavoursoft.h \
-xpr-base.h xpr-matrix.h xpr-vector.h rpvneut.h \
-nmssmsusy.h nmssmsoftpars.h higher.h higher_order.h \
-nmssmsoftsusy.h nmssmUtils.h)
+src/decays.h src/twoBodyDecays.h src/threeBodyDecays.h src/particle.h src/mssm_twoloop_mt.h \
+src/mssm_twoloop_mtau.h src/mssm_twoloop_mb.h src/mssm_twoloop_as.h \
+src/def.h src/main.h src/numerics.h \
+src/softpars.h src/mainDecay.h src/susy.h src/linalg.h \
+src/physpars.h src/softpoint.h src/twoloophiggs.h \
+src/nmssm2loop.h src/dilogwrap.h \
+src/lowe.h src/mycomplex.h src/rge.h src/softsusy.h \
+src/utils.h src/mssmUtils.h src/mssmjacobian.h src/rpvsoft.h src/rpvsusypars.h \
+src/tensor.h src/rpvmain.h src/flavoursoft.h \
+src/xpr-base.h src/xpr-matrix.h src/xpr-vector.h src/rpvneut.h \
+src/nmssmsusy.h src/nmssmsoftpars.h src/higher_order.h \
+src/nmssmsoftsusy.h src/nmssmUtils.h src/nmssmjacobian.h
 
 libsoft_la_SOURCES = \
-src/decays.cpp src/threeBodyDecays.cpp \
+src/decays.cpp src/twoBodyDecays.cpp src/threeBodyDecays.cpp \
 src/def.cpp src/linalg.cpp src/lowe.cpp src/numerics.cpp  src/rpvneut.cpp \
 src/physpars.cpp src/rge.cpp src/nmssm2loop.f src/dilogwrap.f src/softsusy.cpp\
  src/nmssmsoftsusy.cpp src/nmssmsusy.cpp src/nmssmsoftpars.cpp src/nmssmUtils.cpp \
-src/susy.cpp src/utils.cpp src/mssmUtils.cpp src/softpars.cpp \
-src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twoloophiggs.f
+src/susy.cpp src/utils.cpp src/mssmUtils.cpp src/softpars.cpp src/nmssmjacobian.cpp \
+src/mssmjacobian.cpp src/tensor.cpp src/rpvsusypars.cpp src/rpvsoft.cpp src/flavoursoft.cpp src/twoloophiggs.f
+
+
+if COMPILE_TWO_LOOP_GAUGE_YUKAWA
+libsoft_la_SOURCES += src/mssm_twoloop_mb.cpp src/mssm_twoloop_mt.cpp \
+ src/mssm_twoloop_mtau.cpp src/mssm_twoloop_as.cpp
+endif COMPILE_TWO_LOOP_GAUGE_YUKAWA
 
 libsoft_la_LDFLAGS = @FLIBS@
 
-EXTRA_DIST += src/nmspec.f src/nmh_slhainp.f
+EXTRA_DIST += src/nmspec.f src/nmh_slhainp.f \
+   $(himalayadir)/doc \
+   $(himalayadir)/doc/himalaya.conf \
+   $(himalayadir)/.gitignore \
+   $(himalayadir)/LICENSE \
+   $(himalayadir)/README.md \
+   $(himalayadir)/source \
+   $(himalayadir)/source/hierarchies \
+   $(himalayadir)/source/hierarchies/H6bq22g.cpp \
+   $(himalayadir)/source/hierarchies/H3.cpp \
+   $(himalayadir)/source/hierarchies/H6.cpp \
+   $(himalayadir)/source/hierarchies/H9q2.cpp \
+   $(himalayadir)/source/hierarchies/H5.cpp \
+   $(himalayadir)/source/hierarchies/H9.cpp \
+   $(himalayadir)/source/hierarchies/H6b.cpp \
+   $(himalayadir)/source/hierarchies/H3q22g.cpp \
+   $(himalayadir)/source/hierarchies/H6bq2g2.cpp \
+   $(himalayadir)/source/hierarchies/H6g2.cpp \
+   $(himalayadir)/source/hierarchies/H6b2qg2.cpp \
+   $(himalayadir)/source/hierarchies/HierarchyCalculator.cpp \
+   $(himalayadir)/source/hierarchies/H5g1.cpp \
+   $(himalayadir)/source/hierarchies/HierarchyObject.cpp \
+   $(himalayadir)/source/hierarchies/H4.cpp \
+   $(himalayadir)/source/hierarchies/H32q2g.cpp \
+   $(himalayadir)/source/example.cpp \
+   $(himalayadir)/source/include \
+   $(himalayadir)/source/include/hierarchies \
+   $(himalayadir)/source/include/hierarchies/H3q22g.hpp \
+   $(himalayadir)/source/include/hierarchies/H6.hpp \
+   $(himalayadir)/source/include/hierarchies/H6bq22g.hpp \
+   $(himalayadir)/source/include/hierarchies/H4.hpp \
+   $(himalayadir)/source/include/hierarchies/H6b.hpp \
+   $(himalayadir)/source/include/hierarchies/h6b2qg2 \
+   $(himalayadir)/source/include/hierarchies/h6b2qg2/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6b2qg2/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6b2qg2/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h5 \
+   $(himalayadir)/source/include/hierarchies/h5/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h5/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h5/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6g2 \
+   $(himalayadir)/source/include/hierarchies/h6g2/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6g2/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6g2/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h9q2 \
+   $(himalayadir)/source/include/hierarchies/h9q2/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h9q2/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h9q2/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h3q22g \
+   $(himalayadir)/source/include/hierarchies/h3q22g/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h3q22g/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h3q22g/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/H32q2g.hpp \
+   $(himalayadir)/source/include/hierarchies/h3 \
+   $(himalayadir)/source/include/hierarchies/h3/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h3/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h3/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/H3.hpp \
+   $(himalayadir)/source/include/hierarchies/H6b2qg2.hpp \
+   $(himalayadir)/source/include/hierarchies/h6b \
+   $(himalayadir)/source/include/hierarchies/h6b/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6b/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6b/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h5g1 \
+   $(himalayadir)/source/include/hierarchies/h5g1/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h5g1/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h5g1/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/H5.hpp \
+   $(himalayadir)/source/include/hierarchies/h6bq22g \
+   $(himalayadir)/source/include/hierarchies/h6bq22g/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6bq22g/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6bq22g/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/H6bq2g2.hpp \
+   $(himalayadir)/source/include/hierarchies/H9.hpp \
+   $(himalayadir)/source/include/hierarchies/H9q2.hpp \
+   $(himalayadir)/source/include/hierarchies/H5g1.hpp \
+   $(himalayadir)/source/include/hierarchies/H6g2.hpp \
+   $(himalayadir)/source/include/hierarchies/h32q2g \
+   $(himalayadir)/source/include/hierarchies/h32q2g/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h32q2g/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h32q2g/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h9 \
+   $(himalayadir)/source/include/hierarchies/h9/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h9/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h9/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/Utils.hpp \
+   $(himalayadir)/source/include/hierarchies/h4 \
+   $(himalayadir)/source/include/hierarchies/h4/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h4/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h4/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6 \
+   $(himalayadir)/source/include/hierarchies/h6/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6/sigS1Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6bq2g2 \
+   $(himalayadir)/source/include/hierarchies/h6bq2g2/sigS2Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6bq2g2/sigS12Full.inc \
+   $(himalayadir)/source/include/hierarchies/h6bq2g2/sigS1Full.inc \
+   $(himalayadir)/source/include/Himalaya_interface.hpp \
+   $(himalayadir)/source/include/HierarchyCalculator.hpp \
+   $(himalayadir)/source/include/version.hpp.in \
+   $(himalayadir)/source/include/HierarchyObject.hpp \
+   $(himalayadir)/source/include/version.hpp \
+   $(himalayadir)/source/include/mh2l \
+   $(himalayadir)/source/include/mh2l/DSZHiggs.f \
+   $(himalayadir)/source/include/mh2l/functs.f \
+   $(himalayadir)/CMakeLists.txt

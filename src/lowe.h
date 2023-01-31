@@ -16,7 +16,6 @@
 #include <fstream>
 #include <sstream>
 #include <cstring>
-#include "def.h"
 #include "utils.h"
 #include "linalg.h"
 #include "rge.h"
@@ -58,8 +57,9 @@ DoubleVector gaugeDerivs(double, const DoubleVector &);
     DoubleVector a;   ///< gauge couplings
     DoubleVector mf;  ///< fermion running masses
     double mtPole, mbPole; ///< pole masses of third family quarks
-    double mbMb; ///< mb(mb) in the MSbar scheme with only QCD corrections
-    double mtauPole; ///< tau pole mass
+    double mbMb;      ///< mb(mb) in the MSbar scheme with only QCD corrections
+    double mtauPole;  ///< tau pole mass
+    DoubleVector aMz; ///< input gauge couplings at MZ scale, SM, MSbar
     
 public:
   QedQcd(); ///< Initialises with default values defined in lowe.h
@@ -74,7 +74,8 @@ public:
   /// sets a running quark mass
   void setMass(mass mno, double m) { mf(mno) = m; }; 
   /// sets QED or QCD structure constant
-  void setAlpha(leGauge ai, double ap) { a(ai) = ap; }; 
+    void setAlpha(leGauge ai, double ap) { a(ai) = ap; };
+    void setAlphaMz(leGauge ai, double ap) { aMz(ai) = ap; }; 
   /// For exporting beta functions to Runge-Kutta
   void set(const DoubleVector &); 
   
@@ -90,6 +91,7 @@ public:
   double displayMass(mass mno) const { return mf.display(mno); };
   /// Returns a single gauge structure constant
   double displayAlpha(leGauge ai) const { return a.display(ai); };
+    double displayAlphaMz(leGauge ai) const { return aMz.display(ai); };
   /// Obgligatory: returns vector of all running parameters
   const DoubleVector display() const;
   /// Returns mb(mb) MSbar
@@ -134,10 +136,6 @@ ostream & operator <<(ostream &, const QedQcd &);
 /// Formatted output from QedQcd object
 istream & operator >>(istream &left, QedQcd &m);
 
-/// Reads in a QedQed-type object and returns it in oneset.
-/// Call with fname "" if you want it to come from standard input
-/// "massIn" is an example of a data initialisation file: 
-void readIn(QedQcd & oneset, const char fname[80]); 
 /// Input pole mass of top and alphaS(mt), outputs running mass mt(mt)
 /// including one-loop standard model correction only
 double getRunMt(double poleMt, double asmt);
@@ -150,7 +148,7 @@ double getRunMtFromMz(double poleMt, double asMZ);
 inline QedQcd::QedQcd(const QedQcd &m)
   : RGE(), Approx(m.displayApprox()), a(m.a), mf(m.mf), mtPole(m.mtPole), 
     mbPole(m.mbPole), mbMb(m.mbMb), 
-    mtauPole(m.mtauPole) { 
+    mtauPole(m.mtauPole), aMz(m.aMz) { 
   setPars(11); 
   setMu(m.displayMu());
 }

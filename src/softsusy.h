@@ -15,52 +15,37 @@
 #ifndef SOFTSUSY_H
 #define SOFTSUSY_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <cstring>
 #include <cstdlib>
 #include <cmath>
+#include <limits>
 #include "def.h"
 #include "utils.h"
 #include "numerics.h"
 #include "physpars.h"
 #include "lowe.h"
 #include "softpars.h"
-#include "mssm_twoloop_as.h"
 #include "twoloophiggs.h"
 #include "mssmUtils.h"
-
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
 #include "higher_order.h"
-#endif
+#include "mssmjacobian.h"
 
 #define HR "----------------------------------------------------------"
 
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-#include "mssm_twoloop_mt.h"
-#include "mssm_twoloop_mb.h"
-#include "mssm_twoloop_mtau.h"
-#include "mssm_twoloop_as.h"
-//#include <ginac/ginac.h>
-namespace softsusy { class MssmSoftsusy; }
-//namespace SoftSusy_helpers_ {
-//  GiNaC::exmap drBarPars_exmap(const softsusy::MssmSoftsusy &);
-//}
-//#include "two_loop_thresholds/softsusy_exmap.hpp"
-//#include "two_loop_thresholds/mssmparam.hpp"
-//#include "two_loop_thresholds/tau_corrections.hpp"
-//#include "two_loop_thresholds/bquark_corrections.hpp"
-//#include "two_loop_thresholds/tquark_corrections.hpp"
-//#include "two_loop_thresholds/gs_corrections.hpp"
-//#include "two_loop_thresholds/dec_cor_helper.hpp"
-#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
-
 namespace softsusy {
+
+  /// uncertainty flags
+  enum EPoleUncertainties {
+     DeltaQpole = 1,
+     DeltaQmatch = 2,
+     DeltaMt = 4,
+     DeltaAlphaS = 8,
+     DeltaAlphaEm = 16,
+     DeltaAll = DeltaQpole + DeltaQmatch + DeltaMt + DeltaAlphaS + DeltaAlphaEm
+  };
 
   ///< default SUSY breaking boundary condition scale
   const double mxDefault = 1.9e16; 
@@ -108,9 +93,17 @@ namespace softsusy {
     bool setTbAtMX;     ///< flag: do we set tan beta at the SUSY breaking 
                         ///< scale?
     bool altEwsb;       ///< flag: do we set mu, mA at the SUSY breaking scale?
+    bool altMt;         ///< flag: do we use an alternative mt(MSSM,DR-bar) calculation?
+    bool altAlphaS;     ///< flag: do we use an alternative alpha_s(MSSM,DR-bar) calculation?
+    bool altAlphaEm;    ///< flag: do we use an alternative alpha_em(MSSM,DR-bar) calculation?
     double predMzSq;    ///< predicted Z mass squared after iteration
     double t1OV1Ms, t2OV2Ms;  ///< DRbar tadpoles(MSusy): incl 2 loops
-    double t1OV1Ms1loop, t2OV2Ms1loop; ///< DRbar tadpoles(MSusy): excl 2 loops
+    double t1OV1Ms1loop, t2OV2Ms1loop; ///< DRbar tadpoles(MSusy): excl 2
+				       ///loops
+    /// there are two possible conventions: if QEWSB > MZ, its value is assumed
+    /// in GeV and used as a constant MSUSY. Otherwise, it MULTIPLIES the usual 
+    /// MSUSY value, of root(mstop1 mstop2)
+    double qewsb;       
     
   protected:
     void setT1OV1Ms(double t1) { t1OV1Ms = t1; } 
@@ -119,10 +112,11 @@ namespace softsusy {
     void setT2OV2Ms1loop(double t2) { t2OV2Ms1loop = t2; }
     double mxBC; ///< Scale at which SUSY breaking boundary conditions set
     
+    void check_flags(); ///< check consistency of threshold flags
+    DoubleMatrix calcHiggs3L(bool is_bottom); ///< Higgs 3L corrections
   public:
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    //    SoftSusy_helpers_::decoupling_corrections_t decoupling_corrections; 
-#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
+    typedef void (*TMSSMBoundaryCondition)(MssmSoftsusy&, const DoubleVector&); 
+    
     /// Flag allowing to choose which two-loop thresholds have to be included
     int included_thresholds; 
     
@@ -153,6 +147,17 @@ namespace softsusy {
     
     /// Displays physical parameters only
      const sPhysical & displayPhys() const;
+
+    /// Displays uncertainty estimate of pole masses
+    sPhysical displayPhysUncertainty(
+       TMSSMBoundaryCondition boundaryCondition,
+       double mxGuess,
+       const DoubleVector & pars, int sgnMu, double tanb,
+       const QedQcd & oneset, bool gaugeUnification,
+       bool ewsbBCscale =  false,
+       int contributions = DeltaAll) const;
+    /// Displays uncertainty estimate of pole masses by scale variation only
+    sPhysical displayPhysUncertaintyScaleVariation() const;
     
     /// Displays tree-level masses and mixings of sparticles and third
     /// generation fermions
@@ -180,12 +185,17 @@ namespace softsusy {
     double displayMxBC() const { return mxBC; }; ///< displays M_X value
     /// Returns object as a const
     const MssmSoftsusy & displaySoftsusy() const { return *this; }
-    /// Returns value of pole MZ being used
-    double displayMz() const { return displayDataSet().displayMu(); }
+    /// Returns value of pole MZ being used 
+    double displayMz() const { return double(MZ); }
     /// Is tan beta set at the user defined SUSY breaking scale?
     bool displaySetTbAtMX() const { return setTbAtMX; } 
     bool displayAltEwsb() const { return altEwsb; }
+    bool displayAltMt() const { return altMt; }
+    bool displayAltAlphaS() const { return altAlphaS; }
+    bool displayAltAlphaEm() const { return altAlphaEm; }
     double displayPredMzSq() const { return predMzSq; }
+    double displayQewsb() const { return qewsb; }
+    double displayMatchingScale() const { return displayDataSet().displayMu(); }
     
     /// Flags weird mgut-type problems
     void flagMgutOutOfBounds(bool a) { problem.mgutOutOfBounds = a; };
@@ -254,10 +264,18 @@ namespace softsusy {
     void setSetTbAtMX(bool a) { setTbAtMX = a; }
     /// Use alernative EWSB conditions: set mu and MA(pole)
     void useAlternativeEwsb() { altEwsb = true; }
+    /// Use alernative mt(MSSM,DR-bar) calculation
+    void useAlternativeMt() { altMt = true; }
+    /// Use alernative alpha_s(MSSM,DR-bar) calculation
+    void useAlternativeAlphaS() { altAlphaS = true; }
+    /// Use alernative alpha_em(MSSM,DR-bar) calculation
+    void useAlternativeAlphaEm() { altAlphaEm = true; }
     /// Set MZ^2 predicted after iteration
     void setPredMzSq(double a) { predMzSq = a; }
     /// Sets total set of RGE parameters equal to elements of a vector
     void set(const DoubleVector &);
+    /// Sets user-set scale qewsb
+    void setQewsb(double q) { qewsb = q; };
     
     /// Switch 2-loop threshold \f$O(\alpha_s^2), O(\alpha_s \alpha_b),
     /// O(\alpha_s \alpha_t) \f$ corrections to \f$\alpha_s\f$ 
@@ -824,6 +842,17 @@ namespace softsusy {
     /// Returns fine-tuning as defined in Baer et al arXiv:1212.2655 eq 1.2
     double deltaEW() const;
 
+    /// DH: returns the values of the tree-level EWSB conditions
+    double ewsbCondition1TreeLevel() const;
+    double ewsbCondition2TreeLevel() const;
+    /// DH: returns the EWSB conditions at the current EWSB loop order.
+    /// Note that this uses the current values of the tadpoles, i.e. it
+    /// does not calculate or recalculate them.
+    void ewsbConditions(DoubleVector & values) const;
+    /// DH: solves the EWSB conditions for the Higgs VEVs,
+    /// given the current values of all of the other parameters
+    void predVevs(DoubleVector & vevs, int & err);
+
     /// Calculates fine-tuning for soft parameters and mu, m_3^2, top Yukawa. 
     /// IO parameters: bcPars 
     /// should be a vector giving the high-scale SUSY breaking boundary
@@ -846,6 +875,8 @@ namespace softsusy {
     /// You should evaluate this at a scale MSusy average of stops.
     /// Returns depth of electroweak minimum
     double realMinMs() const;
+    /// Calculates Bayesian naturalness a la arXiv:1709.07895
+    double calcBayesianNaturalness() const;
     
     /// Calculates Higgs contribution to the transverse part of Z self-energy: 
     //for p=external momentum, Q=renormalisation scale
@@ -1014,6 +1045,8 @@ namespace softsusy {
     string printShort() const;
     /// Prints a list of all sparticle/Higgs masses to standard output
     string printLong();
+    /// Prints a list of all *running* sparticle/Higgs masses to standard output
+    string printLongDrbar();
     
     /// Prints whole object to standard output
     virtual void printObj() { 
@@ -1041,14 +1074,16 @@ namespace softsusy {
     /// SUSY breaking is set in the usual way. If it is true, the boundary
     /// condition is set to \f$\sqrt{m_{{\tilde t}_1} m_{{\tilde t}_2}} \f$, ie
     /// like in the "pheno MSSM".
-    void fixedPointIteration(void (*boundaryCondition)
-			     (MssmSoftsusy &, const DoubleVector &),
+    /// Note that oneset should be at the scale at which QEDxQCD is matched to
+    /// the MSSM.
+    void fixedPointIteration(TMSSMBoundaryCondition boundaryCondition,
 			     double mxGuess, 
 			     const DoubleVector & pars, int sgnMu, double tanb,
 			     const QedQcd & oneset, bool gaugeUnification, 
 			     bool ewsbBCscale =  false); 
     /// legacy wrapper to provide backward compatibility: does the same as the
-    /// above 
+    /// above. If you want non-default valuse, make sure loops, qewsb and
+    /// mixing are set in the object before calling it
     double lowOrg(void (*boundaryCondition)
 		  (MssmSoftsusy &, const DoubleVector &),
 		  double mxGuess, 

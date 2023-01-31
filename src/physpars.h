@@ -60,6 +60,12 @@ struct sPhysical {
   
   /// Displays contents in a C-style convention *a (starts with index zero)
   void display(double *a) const;
+  /// Displays contents in a vector
+  DoubleVector display() const;
+  /// size of vector containing all elements
+  int size() const;
+  /// sets contents from a vector
+  void set(const DoubleVector&);
 }; 
 
 /// Formatted printout

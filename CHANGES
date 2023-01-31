@@ -1,1 +1,1 @@
-<li> Removed GiNaC and CLN dependencies when two-loop corrections to gauge and Yukawa coupling threshold corrections are switched on: output same to 1.0e-5, but much faster running 
+<li>Improved backwards compatibility for axodraw2 in manuals (latex)

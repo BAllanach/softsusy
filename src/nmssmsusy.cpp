@@ -227,7 +227,7 @@ namespace softsusy {
     }
    
     // Contains all susy derivatives:
-    NmssmSusy ds(du, dd, de, dg, dmu, dt, dHvev, 
+    NmssmSusy ds(du, dd, de, dg, dmu, dt, dHvev, s.displayMixing(),
 		 s.displayMssmLoops(),
 		 s.displayMssmApprox().displayThresholds(), 
 		 dSvev, dl, dk, dz, dmupr);
@@ -321,10 +321,11 @@ namespace softsusy {
 		       const DoubleMatrix & d, const
 		       DoubleMatrix & e, const DoubleVector & v, 
 		       double m,
-		       double tb,  double hv, int l, int t, double sv,
+		       double tb,  double hv, int mix, int l, int t, double sv,
 		       double lam, double kap, double z, 
 		       double mup)
-    : MssmSusy(u, d, e, v, m, tb, hv), NmssmSusyPars(lam, kap, sv, z, mup) {
+    : MssmSusy(u, d, e, v, m, tb, hv, mix),
+      NmssmSusyPars(lam, kap, sv, z, mup) {
     setNmssmApprox(l, t);
   }
 
@@ -384,9 +385,9 @@ namespace softsusy {
 			     const DoubleMatrix & d, const
 			     DoubleMatrix & e, const DoubleVector & v, double m,
 			     double tb, double MU, int l, int t, double hv, 
-			     double sv,
+			     int mix, double sv,
 			     double lam, double kap, double mpr, double z)
-    : NmssmSusy(u, d, e, v, m, tb, hv, l, t, sv, lam, kap, z, mpr) {
+    : NmssmSusy(u, d, e, v, m, tb, hv, mix, l, t, sv, lam, kap, z, mpr) {
     setPars(numNMssmPars);
     setMu(MU);
     setNmssmApprox(l, t);

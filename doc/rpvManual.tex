@@ -1,7 +1,7 @@
 % 17/7/12: changed susyRpvBCatMZ to be susyRpvBCatMSUSY, different input scale
 \documentclass[final,3p,times,pdflatex]{elsarticle}
-\usepackage{axodraw}
-
+\usepackage{axodraw2}
+\usepackage{verbatim}
 \bibstyle{elsarticle-num}
 
 % beginning of macros
@@ -362,33 +362,33 @@ $U$ and $V$ being orthogonal 5 by 5 matrices.
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=330pt]{rpvalg.eps}
-% \begin{picture}(323,245)
-% \put(10,0){\makebox(280,10)[c]{\fbox{7.\ Calculate Higgs and
-%       sparticle pole masses. Run to $M_Z$.}}}
-% \put(10,40){\makebox(280,10)[c]{\fbox{6.\ Run to $M_Z$.}}}
-% \put(150,76.5){\vector(0,-1){23}}
-% \put(10,80){\makebox(280,10)[c]{\fbox{5.\ Run to $M_X$. Apply soft breaking
-% and $\rpv$ SUSY boundary conditions.}}}
-% \put(150,116.5){\vector(0,-1){23}}
-% \put(10,120){\makebox(280,10)[c]{\fbox{4.\ EWSB, iterative solution of $\mu$ and sneutrino VEVs.}}}
-% \put(150,156){\vector(0,-1){23}}
-% \put(10,160){\makebox(280,10)[c]{\fbox{3.\ Run to $M_{SUSY}$.}}}
-% \put(30,170){convergence}
-% \DashLine(115,165)(0,165){5}
-% \DashLine(0,165)(0,5){5}
-% \DashLine(0,5)(30,5){5}
-% \put(30,5){\vector(1,0){2}}
-% \put(150,197){\vector(0,-1){24}}
-% \put(150,239){\vector(0,-1){26}}
-% \put(60,245){\fbox{1.\ SUSY radiative corrections to
-% $g_i(M_Z)$}}
-% \put(10,200){\makebox(280,10)[c]{\fbox{2.\ $Y_E$, $Y_D$ include $v_k$
-%       contributions. Iterative solution of $Y_E$.}}} 
-% \put(182,45){\line(1,0){161}}
-% \put(343,45){\line(0,1){200}}
-% \put(343,245){\vector(-1,0){115}}
-% \end{picture}
+\includegraphics[width=330pt]{rpvalg}
+%% \begin{picture}(323,245)
+%% \put(10,0){\makebox(280,10)[c]{\fbox{7.\ Calculate Higgs and
+%%       sparticle pole masses. Run to $M_Z$.}}}
+%% \put(10,40){\makebox(280,10)[c]{\fbox{6.\ Run to $M_Z$.}}}
+%% \put(150,76.5){\vector(0,-1){23}}
+%% \put(10,80){\makebox(280,10)[c]{\fbox{5.\ Run to $M_X$. Apply soft breaking
+%% and $\rpv$ SUSY boundary conditions.}}}
+%% \put(150,116.5){\vector(0,-1){23}}
+%% \put(10,120){\makebox(280,10)[c]{\fbox{4.\ EWSB, iterative solution of $\mu$ and sneutrino VEVs.}}}
+%% \put(150,156){\vector(0,-1){23}}
+%% \put(10,160){\makebox(280,10)[c]{\fbox{3.\ Run to $M_{SUSY}$.}}}
+%% \put(30,170){convergence}
+%% \DashLine(115,165)(0,165){5}
+%% \DashLine(0,165)(0,5){5}
+%% \DashLine(0,5)(30,5){5}
+%% \put(30,5){\vector(1,0){2}}
+%% \put(150,197){\vector(0,-1){24}}
+%% \put(150,239){\vector(0,-1){26}}
+%% \put(60,245){\fbox{1.\ SUSY radiative corrections to
+%% $g_i(M_Z)$}}
+%% \put(10,200){\makebox(280,10)[c]{\fbox{2.\ $Y_E$, $Y_D$ include $v_k$
+%%       contributions. Iterative solution of $Y_E$.}}} 
+%% \put(182,45){\line(1,0){161}}
+%% \put(343,45){\line(0,1){200}}
+%% \put(343,245){\vector(-1,0){115}}
+%% \end{picture}
 \end{center}
 \caption{Iterative algorithm used to calculate the $\rpv$ MSSM spectrum. 
 The initial step is the
@@ -761,104 +761,13 @@ $\lambda''_{323}(M_{GUT})$.
 
 The sample program has the following form: 
 \small
-\begin{verbatim}
-#include <rpvmain.h>
-
-int main() {
-  /// Sets up exception handling
-  signal(SIGFPE, FPE_ExceptionHandler); 
-
-  bool gaugeUnification = true, ewsbBCscale = false;
-
-  /// Do we include 2-loop RGEs of *all* scalar masses and A-terms, or only the
-  /// scalar mass Higgs parameters? (Other quantities all 2-loop anyway): the
-  /// default in SOFTSUSY 3 is to include all 2-loop terms, except for RPV,
-  /// which is already slow and calculated to less accuracy than the R-parity
-  /// conserving version
-  bool INCLUDE_2_LOOP_SCALAR_CORRECTIONS = false;
-
-  /// Sets format of output: 6 decimal places
-  outputCharacteristics(6);
-
-  /// Header  
-  cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
-       << " Ben Allanach, Markus Bernhardt 2009\n";
-  cerr << "If you use SOFTSUSY, please refer to B.C. Allanach, ";
-  cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145;\n";
-  cerr << "For RPV aspects, B.C. Allanach and M.A. Bernhardt, ";
-  cerr << "Comp. Phys. Commun. 181 (2010) 232, ";
-  cerr << "arXiv:0903.1805.\n";
-
-  /// "try" catches errors in main program and prints them out
-  try {
-    /// Turn quark mixing on
-    MIXING = 1;
-
-    /// Contains default quark and lepton masses and gauge coupling
-    /// information 
-    QedQcd oneset;      ///< See "lowe.h" for default parameter definitions 
-    oneset.toMz();      ///< Runs SM fermion masses to MZ
-    
-    /// Print out the Standard Model data being used, as well as quark mixing
-    /// assumption and the numerical accuracy of the solution
-    cerr << "Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
-         << TOLERANCE << endl << oneset << endl;
-    /// set parameters
-    double tanb = 10.;
-    int sgnMu = 1;
-    double mgutGuess = 2.e16; 
-    double a0 = 0.0, m12 = 500.0, m0 = 125.0; 
-    
-    /// number of points for scan
-    const int numPoints = 20; 
-    
-    /// parameter region
-    double Start = 0. , End = 0.7;
-    
-    DoubleVector pars(3);
-    /// set basic entries in pars
-    pars(1) = m0; pars(2) = m12; pars(3) = a0;
-      
-    cout << "l''_{323}(M_X) m_stop_R     # Problem flag" << endl;
-    /// loop over parameter space region
-    int ii; for (ii=0; ii<=numPoints; ii++){
-      double lambda = Start + ((End - Start) / double(numPoints) * double(ii));
-      
-      /// define rpvSoftsusy object
-      RpvSoftsusy kw;
-      
-      /// set lambda coupling at mgut
-      kw.setLamPrimePrime(3, 2, 3, lambda); 
-      
-      /// output parameters into double vector pars used by lowOrg
-      kw.rpvDisplay(pars);
-      
-      /// generate spectrum in RpvSoftsusy object kw
-      kw.lowOrg(rpvSugraBcs, mgutGuess, pars, sgnMu,
-       tanb, oneset, gaugeUnification, ewsbBCscale);
-      
-      /// outputs for this scan
-      int pos;
-      cout << lambda << "  " << kw.displayPhys().mu(2, 3) << " # " 
-           << kw.displayProblem() << endl;
-    }
-  }
-  catch(const string & a) {
-    cout << a; exit(-1);
-  }
-  catch(const char *a) {
-    printf("%s", a); exit(-1);
-  }
-  
-}
-\end{verbatim}
-\normalsize
+\verbatiminput{../src/rpvmain.cpp}\normalsize
 After including a header file, global variables are defined. These are all
 described in the $R_p$ manual~\cite{Allanach:2001kg}.
 After setting the output accuracy, 
 the program output begins with a title print-out. Then follow
 some variables specifying the Standard Model input parameters, the
-\code{MIXING}~switch, which determines how any quark mixing is implemented
+\code{mixing}~switch, which determines how any quark mixing is implemented
 (as in ref.~\cite{Allanach:2001kg}) and
 the iteration precision of the output, \code{TOLERANCE}.
 The running masses of the SM fermions and the QED and QCD gauge couplings are
@@ -916,32 +825,7 @@ We now present some non-SLHA2 compliant \SOFTSUSY~output
 for the example program presented in Section~\ref{sec:prog}.
 \normalsize
 The output obtained from this command is:
-\small
-\begin{verbatim}
-# l''_{323}(M_X) m_stop_R     # Problem flag
-0.000000e+00  8.147269e+02 # 
-3.500000e-02  8.120697e+02 # 
-7.000000e-02  8.041222e+02 # 
-1.050000e-01  7.916904e+02 # 
-1.400000e-01  7.740020e+02 # 
-1.750000e-01  7.559414e+02 # 
-2.100000e-01  7.368196e+02 # 
-2.450000e-01  7.177035e+02 # 
-2.800000e-01  6.993199e+02 # 
-3.150000e-01  6.821923e+02 # 
-3.500000e-01  6.665102e+02 # 
-3.850000e-01  6.525457e+02 # 
-4.200000e-01  6.399977e+02 # 
-4.550000e-01  6.289228e+02 # 
-4.900000e-01  6.191508e+02 # 
-5.250000e-01  6.105389e+02 # 
-5.600000e-01  6.029625e+02 # 
-5.950000e-01  4.809702e+02 # [ Quasi-fixed point breached Non-perturbative ]
-6.300000e-01  4.740464e+02 # [ Quasi-fixed point breached Non-perturbative ]
-6.650000e-01  4.683686e+02 # [ Quasi-fixed point breached Non-perturbative ]
-7.000000e-01  4.636366e+02 # [ Quasi-fixed point breached Non-perturbative ]
-\end{verbatim}
-\normalsize
+\small\verbatiminput{../inOutFiles/rpvOutputTest}\normalsize
 After a header line labelling the contents of the columns, we see the GUT
 scale value of $\lambda''_{323}$ assumed, then the pole value of the
 right-handed stop mass and any problems associated with the parameter point
@@ -975,33 +859,33 @@ more detail we refer the interested reader to
 the technical documentation on the \SOFTSUSY~web-site.
 \begin{figure}
 \begin{center}
-% \begin{picture}(215,200)(-30,0)
-% \GBox(200,200)(-30,0){0.9}
-% \ArrowLine(60,180)(20,130)
-% \ArrowLine(60,180)(150,190)
-% \ArrowLine(150,160)(150,190)
-% \ArrowLine(60,180)(150,130)
-% \ArrowLine(150,100)(150,130)
-% \ArrowLine(150,130)(50,100)
-% \ArrowLine(150,160)(150,130)
-% \ArrowLine(70,150)(150,130)
-% \ArrowLine(50,100)(50,70)
-% \ArrowLine(50,30)(50,70)
-% \ArrowLine(150,30)(50,70)
-% \SetPFont{Teletype}{10}
-% \BText(70,150){Approx}
-% \BText(60,180){RGE}
-% \BText(150,190){MssmSusyRGE}
-% \BText(20,130){QedQcd}
-% \BText(150,160){MssmSusy}
-% \BText(50,30){RpvSoftPars}
-% \BText(40,100){FlavourMssmSoftsusy}
-% \BText(30,70){RpvSoftsusy}
-% \BText(150,100){SoftParsMssm}
-% \BText(150,130){MssmSoftsusy}
-% \BText(150,30){RpvSusyPars}
-% \end{picture}
-\includegraphics[width=200pt]{rpvobj.eps}
+\begin{picture}(215,200)(-30,0)
+\GBox(200,200)(-30,0){0.9}
+\ArrowLine(60,180)(20,130)
+\ArrowLine(60,180)(150,190)
+\ArrowLine(150,160)(150,190)
+\ArrowLine(60,180)(150,130)
+\ArrowLine(150,100)(150,130)
+\ArrowLine(150,130)(50,100)
+\ArrowLine(150,160)(150,130)
+\ArrowLine(70,150)(150,130)
+\ArrowLine(50,100)(50,70)
+\ArrowLine(50,30)(50,70)
+\ArrowLine(150,30)(50,70)
+%\SetPFont{Teletype}{10}
+\BText(70,150){{\tt Approx}}
+\BText(60,180){{\tt RGE}}
+\BText(150,190){{\tt MssmSusyRGE}}
+\BText(20,130){{\tt QedQcd}}
+\BText(150,160){{\tt MssmSusy}}
+\BText(50,30){{\tt RpvSoftPars}}
+\BText(40,100){{\tt FlavourMssmSoftsusy}}
+\BText(30,70){{\tt RpvSoftsusy}}
+\BText(150,100){{\tt SoftParsMssm}}
+\BText(150,130){{\tt MssmSoftsusy}}
+\BText(150,30){{\tt RpvSusyPars}}
+\end{picture}
+%% \includegraphics[width=200pt]{rpvobj}
 \end{center}
 \caption{Heuristic high-level object structure of \SOFTSUSY\@. Inheritance is
 displayed by the direction of the arrows. \label{fig:objstruc}}

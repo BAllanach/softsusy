@@ -14,12 +14,13 @@
 #define MSSM_TWO_LOOP_AS_H
 
 #include <iosfwd>
+#include <limits>
 
 namespace flexiblesusy {
 namespace mssm_twoloop_as {
 
 using Real = long double;
-
+  
 struct Parameters {
     Real g3{};    ///< MSSM strong gauge coupling DR-bar
     Real yt{};    ///< MSSM top Yukawa coupling DR-bar

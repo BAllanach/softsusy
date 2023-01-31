@@ -5,7 +5,7 @@
    Authors:     B.C. Allanach, Markus Bernhardt 
    Manual:      B.C. Allanach and M.A. Bernhardt, CPC 181 (2010) 232, 
                 arXiv:0903.1805  and
-		B.C. Allanach,hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
+                B.C. Allanach,hep-ph/0104145, Comp. Phys. Comm. 143 (2002) 305 
    Webpage:     http://projects.hepforge.org/softsusy/
    Description: main calling program example:
                 - scanning CMSSM10.1 with one varying RPV coupling
@@ -13,45 +13,41 @@
 
 #include "rpvmain.h"
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 int main() {
   /// Sets up exception handling
   signal(SIGFPE, FPE_ExceptionHandler); 
 
   bool gaugeUnification = true, ewsbBCscale = false;
 
-  /// Do we include 2-loop RGEs of *all* scalar masses and A-terms, or only the
-  /// scalar mass Higgs parameters? (Other quantities all 2-loop anyway): the
-  /// default in SOFTSUSY 3 is to include all 2-loop terms, except for RPV,
-  /// which is already slow and calculated to less accuracy than the R-parity
-  /// conserving version
-  INCLUDE_2_LOOP_SCALAR_CORRECTIONS = false;
-
   /// Sets format of output: 6 decimal places
   outputCharacteristics(6);
 
   /// Header  
-  cerr << "SOFTSUSY" << SOFTSUSY_VERSION 
-       << " Ben Allanach, Markus Bernhardt 2009\n";
-  cerr << "If you use SOFTSUSY, please refer to B.C. Allanach, ";
-  cerr << "Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145;\n";
-  cerr << "For RPV aspects, B.C. Allanach and M.A. Bernhardt, ";
-  cerr << "Comp. Phys. Commun. 181 (2010) 232, ";
-  cerr << "arXiv:0903.1805.\n";
+  cout << "# SOFTSUSY" << PACKAGE_VERSION << endl;
+  cout << "# If you use SOFTSUSY, please refer to B.C. Allanach, \n";
+  cout << "# Comput. Phys. Commun. 143 (2002) 305, hep-ph/0104145;\n";
+  cout << "# For RPV aspects, B.C. Allanach and M.A. Bernhardt, \n";
+  cout << "# Comp. Phys. Commun. 181 (2010) 232, arXiv:0903.1805.\n";
 
   /// "try" catches errors in main program and prints them out
   try {
     /// Turn quark mixing on
-    MIXING = 1;
+    int mixing = 1;
     
     /// Contains default quark and lepton masses and gauge coupling
     /// information 
     QedQcd oneset;      ///< See "lowe.h" for default parameter definitions 
     oneset.toMz();      ///< Runs SM fermion masses to MZ
+    oneset.runto(oneset.displayPoleMt());      ///< Runs SM fermion masses to mt
     
     /// Print out the Standard Model data being used, as well as quark mixing
     /// assumption and the numerical accuracy of the solution
-    cerr << "Low energy data in SOFTSUSY: MIXING=" << MIXING << " TOLERANCE=" 
-         << TOLERANCE << endl << oneset << endl;
+    cout << "# Low energy data in SOFTSUSY: mixing=" << mixing << " TOLERANCE=" 
+         << TOLERANCE << endl;
 
     /// set parameters
     double tanb = 10.;
@@ -63,7 +59,7 @@ int main() {
     const int numPoints = 20; 
 
     /// parameter region
-    double Start = 0. , End = 0.4;
+    double Start = 0. , End = 0.6;
     
     DoubleVector pars(3);
     /// set basic entries in pars
@@ -75,7 +71,8 @@ int main() {
       double lambda = Start + ((End - Start) / double(numPoints) * double(ii));
       
       /// define rpvSoftsusy object
-      RpvSoftsusy kw;
+      RpvSoftsusy kw; 
+      kw.setMixing(mixing);
       
       /// set lambda coupling at mgut
       kw.setLamPrimePrime(3, 2, 3, lambda); 
@@ -93,7 +90,7 @@ int main() {
     }
   }
   catch(const string & a) {
-    cout << a; return -1;
+    cerr << a; return -1;
   }
   catch(const char *a) {
     printf("%s", a); return -1;

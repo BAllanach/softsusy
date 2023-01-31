@@ -7,6 +7,26 @@
 
 #include "./softsusy.h"
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+#include "mssm_twoloop_mt.h"
+#include "mssm_twoloop_mb.h"
+#include "mssm_twoloop_mtau.h"
+#include "mssm_twoloop_as.h"
+#endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
+
+#ifdef ENABLE_HIMALAYA
+#include "HierarchyCalculator.hpp"
+#endif
+
+#ifdef ENABLE_GSL
+#include <limits>
+#include <gsl/gsl_multiroots.h>
+#endif
+
 namespace softsusy {
   extern double sw2, gnuL, guL, gdL, geL, guR, gdR, geR, yuL, yuR, ydL,
     ydR, yeL, yeR, ynuL;
@@ -29,28 +49,16 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   setThresholds(s.displayThresholds());
   setSetTbAtMX(s.displaySetTbAtMX());
   altEwsb = s.altEwsb;
+  altMt = s.altMt;
+  altAlphaS = s.altAlphaS;
+  altAlphaEm = s.altAlphaEm;
   predMzSq = s.displayPredMzSq();
   t1OV1Ms = s.displayTadpole1Ms(); 
   t2OV2Ms = s.displayTadpole2Ms(); 
   t1OV1Ms1loop = s.displayTadpole1Ms1loop(); 
   t2OV2Ms1loop = s.displayTadpole2Ms1loop(); 
+  qewsb = s.displayQewsb();
   mxBC = s.displayMxBC();
-  
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  /*  decoupling_corrections.das.one_loop = s.decoupling_corrections.das.one_loop; 
-  decoupling_corrections.das.two_loop = s.decoupling_corrections.das.two_loop; 
-  
-  decoupling_corrections.dmb.one_loop = s.decoupling_corrections.dmb.one_loop; 
-  decoupling_corrections.dmb.two_loop = s.decoupling_corrections.dmb.two_loop; 
-  
-  decoupling_corrections.dmt.one_loop = s.decoupling_corrections.dmt.one_loop; 
-  decoupling_corrections.dmt.two_loop = s.decoupling_corrections.dmt.two_loop; 
-  
-  decoupling_corrections.dmtau.one_loop =
-    s.decoupling_corrections.dmtau.one_loop; 
-  decoupling_corrections.dmtau.two_loop
-  = s.decoupling_corrections.dmtau.two_loop; */
-#endif  ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
   included_thresholds = s.included_thresholds;
   
   return *this;
@@ -59,26 +67,15 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   MssmSoftsusy::MssmSoftsusy()
     : MssmSusy(), MssmSoftPars(), AltEwsbMssm(), Approx(), 
       physpars(), forLoops(), 
-      problem(), msusy(0.0), minV(6.66e66), 
-      mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false), 
-      predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), 
-      t2OV2Ms1loop(0.), mxBC(mxDefault) { 
+      problem(), msusy(0.0), minV(numberOfTheBeast), 
+      mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false),
+      altMt(false), altAlphaS(false), altAlphaEm(false),
+      predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.),
+      t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), qewsb(1.), mxBC(mxDefault)
+  {
     setPars(110);
     setMu(0.0);
     
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    /*    decoupling_corrections.das.one_loop = 0;
-    decoupling_corrections.das.two_loop = 0;
-    
-    decoupling_corrections.dmb.one_loop = 0;
-    decoupling_corrections.dmb.two_loop = 0;
-    
-    decoupling_corrections.dmt.one_loop = 0;
-    decoupling_corrections.dmt.two_loop = 0;
-    
-    decoupling_corrections.dmtau.one_loop = 0;
-    decoupling_corrections.dmtau.two_loop = 0;*/
-#endif
     if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | ENABLE_TWO_LOOP_AS_AS_YUK | 
 	ENABLE_TWO_LOOP_MB_AS | ENABLE_TWO_LOOP_MB_YUK |
@@ -98,61 +95,31 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       problem(s.problem), msusy(s.msusy), minV(s.minV), 
       mw(s.mw), dataSet(s.displayDataSet()), fracDiff(s.displayFracDiff()), 
       setTbAtMX(s.displaySetTbAtMX()), 
-      altEwsb(s.displayAltEwsb()), predMzSq(s.displayPredMzSq()), 
+      altEwsb(s.displayAltEwsb()), altMt(s.displayAltMt()),
+      altAlphaS(s.displayAltAlphaS()), altAlphaEm(s.displayAltAlphaEm()),
+      predMzSq(s.displayPredMzSq()),
       t1OV1Ms(s.displayTadpole1Ms()), t2OV2Ms(s.displayTadpole2Ms()), 
       t1OV1Ms1loop(s.displayTadpole1Ms1loop()), 
-      t2OV2Ms1loop(s.displayTadpole2Ms1loop()), mxBC(s.displayMxBC()) {
+      t2OV2Ms1loop(s.displayTadpole2Ms1loop()), qewsb(s.displayQewsb()),
+      mxBC(s.displayMxBC()) {
     
     setPars(110);
     setMu(s.displayMu()); 
     
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    /*    decoupling_corrections.das.one_loop =
-      s.decoupling_corrections.das.one_loop; 
-    decoupling_corrections.das.two_loop =
-      s.decoupling_corrections.das.two_loop; 
-    
-    decoupling_corrections.dmb.one_loop =
-      s.decoupling_corrections.dmb.one_loop; 
-    decoupling_corrections.dmb.two_loop =
-      s.decoupling_corrections.dmb.two_loop; 
-    
-    decoupling_corrections.dmt.one_loop =
-      s.decoupling_corrections.dmt.one_loop; 
-    decoupling_corrections.dmt.two_loop =
-      s.decoupling_corrections.dmt.two_loop; 
-    
-    decoupling_corrections.dmtau.one_loop =
-      s.decoupling_corrections.dmtau.one_loop; 
-    decoupling_corrections.dmtau.two_loop =
-    s.decoupling_corrections.dmtau.two_loop; */
-#endif  ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
     included_thresholds = s.included_thresholds;
   }
   
-  MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
-    : MssmSusy(s), MssmSoftPars(), AltEwsbMssm(), Approx(s.displayMssmApprox()),
-      physpars(), forLoops(), problem(), 
-      msusy(0.0), minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), 
-      setTbAtMX(false), altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
-      t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), mxBC(mxDefault) { 
+MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
+	: MssmSusy(s), MssmSoftPars(), AltEwsbMssm(), Approx(s.displayMssmApprox()),
+	physpars(), forLoops(), problem(), 
+	msusy(0.0), minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.), 
+	setTbAtMX(false), altEwsb(false), altMt(false), altAlphaS(false),
+        altAlphaEm(false), predMzSq(0.),
+        t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
+	qewsb(1.0), mxBC(mxDefault) { 
     setPars(110);
     setMu(s.displayMu()); 
     
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    /*    decoupling_corrections.das.one_loop = 0;
-    decoupling_corrections.das.two_loop = 0;
-    
-    decoupling_corrections.dmb.one_loop = 0;
-    decoupling_corrections.dmb.two_loop = 0;
-    
-    decoupling_corrections.dmt.one_loop = 0;
-    decoupling_corrections.dmt.two_loop = 0;
-    
-    decoupling_corrections.dmtau.one_loop = 0;
-    decoupling_corrections.dmtau.two_loop = 0;*/
-    
-#endif //COMPILE_TWO_LOOP_GAUGE_YUKAWA
     if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
 	ENABLE_TWO_LOOP_AS_AS_YUK | 
@@ -169,26 +136,16 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
    double hv) 
     : MssmSusy(ss), MssmSoftPars(s), AltEwsbMssm(), Approx(l, t), physpars(sp), 
       forLoops(), problem(), msusy(0.0),
-      minV(6.66e66), mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), 
-      altEwsb(false), predMzSq(0.), t1OV1Ms(0.), 
-      t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), mxBC(mxDefault) {
+      minV(numberOfTheBeast), mw(0.0), dataSet(), fracDiff(1.),
+      setTbAtMX(false), 
+      altEwsb(false), altMt(false), altAlphaS(false), altAlphaEm(false),
+      predMzSq(0.), t1OV1Ms(0.),
+      t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
+	qewsb(1.0), mxBC(mxDefault){
     setHvev(hv);
     setPars(110);
     setMu(mu);
     
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    /*    decoupling_corrections.das.one_loop = 0;
-    decoupling_corrections.das.two_loop = 0;
-    
-    decoupling_corrections.dmb.one_loop = 0;
-    decoupling_corrections.dmb.two_loop = 0;
-    
-    decoupling_corrections.dmt.one_loop = 0;
-    decoupling_corrections.dmt.two_loop = 0;
-    
-    decoupling_corrections.dmtau.one_loop = 0;
-    decoupling_corrections.dmtau.two_loop = 0;*/
-#endif
     if (USE_TWO_LOOP_GAUGE_YUKAWA) {
       included_thresholds = ENABLE_TWO_LOOP_MT_AS | 
 	ENABLE_TWO_LOOP_AS_AS_YUK | 
@@ -787,8 +744,8 @@ double MssmSoftsusy::doCalcTadpole2oneLoop(double /* mt */, double sinthDRbar) {
   /// Sfermion couplings
   DoubleMatrix lTS2Lr(2, 2),  lBS2Lr(2, 2),  lTauS2Lr(2, 2);
   H2SfSfCouplings(lTS2Lr, lBS2Lr, lTauS2Lr, gmzOcthW, mu, sinb);
-  double fermions = doCalcTad2Sfermions(lTS2Lr, lBS2Lr, lTauS2Lr, costhDRbar);
-  double sfermions = doCalcTad2fermions(q);
+  double sfermions = doCalcTad2Sfermions(lTS2Lr, lBS2Lr, lTauS2Lr, costhDRbar);
+  double fermions = doCalcTad2fermions(q);
   double higgs = doCalcTad2Higgs(q, costhDRbar2, g, tanb);
   /// Neutralinos
   double neutralinos = doCalcTad2Neutralinos(q, costhDRbar, g, sinb);
@@ -893,6 +850,245 @@ double MssmSoftsusy::displaySoftA(trilinears k, int i, int j) const {
   return temp;
 }
 
+  /// DH: return the values of the EWSB conditions
+  double MssmSoftsusy::ewsbCondition1TreeLevel() const {
+    const double vev = displayHvev();
+    const double tb = displayTanb();
+    const double vd = vev * cos(atan(tb));
+    const double vu = vev * sin(atan(tb));
+    const double mH1Sq = displayMh1Squared();
+    const double g1 = displayGaugeCoupling(1);
+    const double g2 = displayGaugeCoupling(2);
+    const double mu = displaySusyMu();
+    const double m3Sq = displayM3Squared();
+
+    double result = mH1Sq + 0.125 * (sqr(g2) + 0.6 * sqr(g1)) *
+       (sqr(vd) - sqr(vu)) - m3Sq * tb + sqr(mu);
+
+    return result;
+  }
+
+  double MssmSoftsusy::ewsbCondition2TreeLevel() const {
+    const double vev = displayHvev();
+    const double tb = displayTanb();
+    const double vd = vev * cos(atan(tb));
+    const double vu = vev * sin(atan(tb));
+    const double mH2Sq = displayMh2Squared();
+    const double g1 = displayGaugeCoupling(1);
+    const double g2 = displayGaugeCoupling(2);
+    const double mu = displaySusyMu();
+    const double m3Sq = displayM3Squared();
+
+    double result = mH2Sq - 0.125 * (sqr(g2) + 0.6 * sqr(g1)) *
+       (sqr(vd) - sqr(vu)) - m3Sq / tb + sqr(mu);
+
+    return result;
+  }
+
+  /// DH: returns the values of the EWSB conditions for the given
+  /// values of the VEVs
+  void MssmSoftsusy::ewsbConditions(DoubleVector & values) const {
+
+    values(1) = ewsbCondition1TreeLevel();
+    values(2) = ewsbCondition2TreeLevel();
+
+    if (numRewsbLoops > 0) {
+      values(1) -= displayTadpole1Ms();
+      values(2) -= displayTadpole2Ms();
+    }
+  }
+
+namespace {
+#ifdef ENABLE_GSL
+  int calcEWSBConditions(const gsl_vector* vevs, void* params,
+                         gsl_vector* values) {
+    if (testNan(gsl_vector_get(vevs, 0)) || testNan(gsl_vector_get(vevs, 1))) {
+      gsl_vector_set_all(values, std::numeric_limits<double>::max());
+      return GSL_EDOM;
+    }
+
+    MssmSoftsusy* model = static_cast<MssmSoftsusy*>(params);
+
+    // reset problems to avoid skipping tadpole calculation
+    const sProblem savedProblems(model->displayProblem());
+    model->setProblem(sProblem());
+
+    const double current_vd = gsl_vector_get(vevs, 0);
+    const double current_vu = gsl_vector_get(vevs, 1);
+
+    model->setHvev(sqrt(sqr(current_vd) + sqr(current_vu)));
+    model->setTanb(current_vu / current_vd);
+
+    if (numRewsbLoops > 0) {
+      model->calcDrBarPars();
+      const double mt = model->displayDrBarPars().mt;
+      const double sinthDRbar = model->calcSinthdrbar();
+      model->doTadpoles(mt, sinthDRbar);
+    }
+
+    DoubleVector ewsbValues(2);
+    model->ewsbConditions(ewsbValues);
+
+    model->setProblem(savedProblems);
+
+    for (std::size_t i = 0; i < 2; ++i)
+       gsl_vector_set(values, i, ewsbValues(i+1));
+
+    const int error = testNan(ewsbValues(1)) || testNan(ewsbValues(2));
+
+    return error ? GSL_EDOM : GSL_SUCCESS;
+  }
+#else
+  int calcEWSBConditions(const DoubleVector & vevs, void* params,
+                         DoubleVector & values) {
+
+    MssmSoftsusy* model = static_cast<MssmSoftsusy*>(params);
+
+    // reset problems to avoid skipping tadpole calculation
+    const sProblem savedProblems(model->displayProblem());
+    model->setProblem(sProblem());
+
+    model->setHvev(vevs(1));
+    model->setTanb(vevs(2));
+
+    if (numRewsbLoops > 0) {
+      model->calcDrBarPars();
+      const double mt = model->displayDrBarPars().mt;
+      const double sinthDRbar = model->calcSinthdrbar();
+      model->doTadpoles(mt, sinthDRbar);
+    }
+
+    model->ewsbConditions(values);
+
+    model->setProblem(savedProblems);
+
+    const int error = testNan(values(1)) || testNan(values(2));
+
+    return error;
+  }
+#endif
+}
+
+  /// DH: solves the EWSB conditions for the Higgs VEVs
+  void MssmSoftsusy::predVevs(DoubleVector & vevs, int & err) {
+    /// Stores running parameters in a vector
+    DoubleVector storedObject(display());
+    const double initialMu = displayMu();
+    const drBarPars savedDrBarPars(displayDrBarPars());
+
+    /// Initial guess
+    vevs(1) = displayHvev();
+    vevs(2) = displayTanb();
+
+    bool error;
+#ifdef ENABLE_GSL
+    const double precision = 1.0e-3 * TOLERANCE;
+    const std::size_t max_iters = 200;
+
+    const gsl_multiroot_fsolver_type* solvers[2]
+       = { gsl_multiroot_fsolver_hybrids, gsl_multiroot_fsolver_broyden };
+
+    const std::size_t number_of_solvers = sizeof(solvers)/sizeof(*solvers);
+
+    gsl_vector* x = gsl_vector_alloc(2);
+    if (!x) {
+      std::ostringstream ii;
+      ii << "Error: could not allocate gsl_vector\n";
+      throw ii.str();
+    }
+
+    const double initial_vd = vevs(1) * cos(atan(vevs(2)));
+    const double initial_vu = vevs(1) * sin(atan(vevs(2)));
+
+    gsl_vector_set(x, 0, initial_vd);
+    gsl_vector_set(x, 1, initial_vu);
+
+    gsl_multiroot_function func = {&calcEWSBConditions, 2, this};
+
+#ifndef DEBUG
+    gsl_set_error_handler_off();
+#endif
+
+    for (std::size_t i = 0; i < number_of_solvers; ++i) {
+      gsl_multiroot_fsolver* solver
+         = gsl_multiroot_fsolver_alloc(solvers[i], 2);
+
+      if (!solver) {
+        gsl_vector_free(x);
+        std::ostringstream ii;
+        ii << "Error: could not allocate gsl_multiroot_fsolver: "
+           << gsl_multiroot_fsolver_name(solver) << '\n';
+        throw ii.str();
+      }
+
+      gsl_multiroot_fsolver_set(solver, &func, x);
+
+      int status;
+      std::size_t iter = 0;
+
+      if (PRINTOUT > 2) {
+        cout << "# Starting iteration with solver " << i << '\n'
+             << "# Initial guess:\n"
+             << "#\tv = " << displayHvev() << ", "
+             << "tanb = " << displayTanb() << '\n'
+             << "#\tf1 = " << gsl_vector_get(solver->f, 0) << ", "
+             << "f2 = " << gsl_vector_get(solver->f, 1) << '\n';
+      }
+
+      do {
+        ++iter;
+        status = gsl_multiroot_fsolver_iterate(solver);
+
+        if (PRINTOUT > 2) {
+          cout << "# Iteration " << iter << ":\n"
+               << "#\tv = " << displayHvev() << ", "
+               << "tanb = " << displayTanb() << '\n'
+               << "#\tf1 = " << gsl_vector_get(solver->f, 0) << ", "
+               << "f2 = " << gsl_vector_get(solver->f, 1) << '\n';
+        }
+
+        if (status)
+          break;
+
+        status = gsl_multiroot_test_residual(solver->f, precision);
+      } while (status == GSL_CONTINUE && iter < max_iters);
+
+      if (PRINTOUT > 2) {
+        cout << "# Solver " << i << " finished with status: "
+             << gsl_strerror(status) << '\n';
+      }
+
+      const double found_vd = gsl_vector_get(solver->x, 0);
+      const double found_vu = gsl_vector_get(solver->x, 1);
+
+      vevs(1) = sqrt(sqr(found_vd) + sqr(found_vu));
+      vevs(2) = found_vu / found_vd;
+
+     gsl_multiroot_fsolver_free(solver);
+
+      if (status == GSL_SUCCESS) {
+        error = false;
+        break;
+      } else {
+        error = true;
+      }
+    }
+
+    gsl_vector_free(x);
+#else
+    /// @todo this uses the calculation of the DR-bar Higgs masses
+    /// after imposing EWSB.  Check that this is not inconsistent.
+    error = newt(vevs, calcEWSBConditions, this);
+#endif
+
+    err = error ? 1 : 0;
+
+    /// Restore initial parameters at correct scale
+    setMu(initialMu);
+    set(storedObject);
+    setDrBarPars(savedDrBarPars);
+  }
+
  double ftCalc(double x) {
   /// Stores running parameters in a vector
   DoubleVector storeObject(tempSoft1->display());
@@ -932,8 +1128,7 @@ double MssmSoftsusy::displaySoftA(trilinears k, int i, int j) const {
   double mt = tempSoft1->displayDrBarPars().mt;
   double sinthDRbar = tempSoft1->calcSinthdrbar();
   /// We miss two-loop terms in our calculation of fine-tuning...
-  tempSoft1->calcTadpole2Ms1loop(mt, sinthDRbar); 
-  tempSoft1->calcTadpole1Ms1loop(mt, sinthDRbar);
+  tempSoft1->doTadpoles(mt, sinthDRbar);
   
   referenceMzsq = tempSoft1->predMzsq(predTanb);  
   
@@ -1445,6 +1640,72 @@ string MssmSoftsusy::printLong() {
   return a.str();
 }
 
+string MssmSoftsusy::printLongDrbar() {
+  /// output:
+  ///  1  2     3      4   5   6   7    8  9  10 11   12    13    
+  /// mu  m3sq mH1sq mH2sq g1 g2 mt(mt) mh mA mH mH+ alphaH msnu3
+  ///  14     15     16     17    18     19    20   
+  /// msnu1 mstopL mstopR msupL msupR msbotL msbotR
+  ///  21   22   23     24     25     26     27    28     29     
+  /// msdL msdR mstauL mstauR mselL mselR thetat thetab thetatau
+  /// 30   31   32   33   34      35      36     37     38    
+  /// mgl mch1 mch2 thetaL thetaR mneut1 mneut2 mneut3 mneut4
+  ///   39    40     41 
+  /// sinthW t1ov1 t2ov2 
+  ostringstream a;
+  double mu = displaySusyMu();
+  if (displayProblem().muSqWrongSign || displayProblem().m3sq ||
+      displayProblem().higgsUfb) 
+    mu = -1.0 *  mu;
+  
+  a << " " << mu << " " 
+    << displayM3Squared() << " " 
+    << displayMh1Squared() << " " <<
+    displayMh2Squared() << " " << 
+    displayGaugeCoupling(1) << " " <<
+    displayGaugeCoupling(2) << " " <<
+    calcRunningMt() << " " <<
+    displayDrBarPars().mh0(1) << " " <<
+    displayDrBarPars().mA0(1) << " " <<
+    displayDrBarPars().mh0(2) << " " <<
+    displayDrBarPars().mHpm << " " <<
+    displayDrBarPars().thetaH << " " <<
+    displayDrBarPars().msnu.display(3) << " " <<
+    displayDrBarPars().msnu.display(1) << " " <<
+    displayDrBarPars().mu.display(1, 3) << " " <<
+    displayDrBarPars().mu.display(2, 3) << " " <<
+    displayDrBarPars().mu.display(1, 1) << " " <<
+    displayDrBarPars().mu.display(2, 1) << " " <<
+    displayDrBarPars().md.display(1, 3) << " " <<
+    displayDrBarPars().md.display(2, 3) << " " <<
+    displayDrBarPars().md.display(1, 1) << " " <<
+    displayDrBarPars().md.display(2, 1) << " " <<
+    displayDrBarPars().me.display(1, 3) << " " <<
+    displayDrBarPars().me.display(2, 3) << " " <<
+    displayDrBarPars().me.display(1, 1) << " " <<
+    displayDrBarPars().me.display(2, 1) << " " <<
+    displayDrBarPars().thetat << " " <<
+    displayDrBarPars().thetab << " " <<
+    displayDrBarPars().thetatau << " " <<
+    displayDrBarPars().mGluino << " " <<
+    displayDrBarPars().mch.display(1) << " " <<
+    displayDrBarPars().mch.display(2) << " " <<
+    displayDrBarPars().thetaL << " " <<
+    displayDrBarPars().thetaR << " " <<
+    displayDrBarPars().mneut.display(1) << " " <<
+    displayDrBarPars().mneut.display(2) << " " <<
+    displayDrBarPars().mneut.display(3) << " " <<
+    displayDrBarPars().mneut.display(4) << " " <<
+    calcSinthdrbar() << " " <<
+    displayTadpole1Ms() << " " <<
+    displayTadpole2Ms() << " ";
+  
+  if (displayProblem().test()) a << "%" << displayProblem();
+  a << flush;
+  return a.str();
+}
+
+  
 //PA: adds sfermion contribitions to the left right and scalar parts 
 //of the self energy
 void MssmSoftsusy::addChaLoopSfermion(double p, DoubleMatrix & sigmaL, DoubleMatrix & sigmaR, DoubleMatrix & sigmaS) const {
@@ -2395,18 +2656,7 @@ double MssmSoftsusy::calcRunMtQCD() const {
   double qcd = - (5.0 + 6.0 * log(displayMu() / mt)) * 4.0 *
     sqr(displayGaugeCoupling(3)) / 3.0;
   
-  /// 2 loop QCD: hep-ph/0210258 -- debugged 15-6-03
-  //rruiz: comment this out
-  //double l = 2.0 * log(mt / displayMu());
-  
-  //double  twoLoopQcd = sqr(sqr(displayGaugeCoupling(3))) * 
-  //  (-0.5383144424082562 + 0.1815337873591885 * l - 
-  //   0.03799544386587666 * sqr(l));
-  
-  //return qcd + twoLoopQcd;
-  
   return qcd;
-  
 }
 
 double MssmSoftsusy::calcRunMtStopGluino() const {
@@ -2433,38 +2683,6 @@ double MssmSoftsusy::calcRunMtStopGluino() const {
      sin(2.0 * thetat) * mg / mtdiv * 
      (b0(p, mg, mstop1, q) - 
       b0(p, mg, mstop2, q)));
-
-  /* This is defunct now if new corrections are used but they are provided for
-     backward compatibility with 3.7.0 or before */
-#ifndef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-  double mt = forLoops.mt;
-  /// 2 loop QCD involving MSSM sparticles -- hep-ph/0210258, in the
-  /// approximation that all squarks and the gluino 
-  /// have mass mSUSY: a few per mille error induced at SPS1a.
-  double twoLoopMssm = 0.0;
-  const static double cf = 4.0 / 3.0, ca = 3.0;
-  /// colour weighted average mass scale of squarks and gluino
-  double m = (3.0 * (forLoops.mu(1, 3) + forLoops.mu(2, 3) + 
-		     forLoops.mu(1, 2) + forLoops.mu(2, 2) + 
-		     forLoops.mu(1, 1) + forLoops.mu(2, 1) + 
-		     forLoops.md(1, 3) + forLoops.md(2, 3) + 
-		     forLoops.md(1, 2) + forLoops.md(2, 2) + 
-		     forLoops.md(1, 1) + forLoops.md(2, 1)) +
-	      8.0 * mg) / 44.0;
-  double aq = displaySoftA(UA, 3, 3) - displaySusyMu() / displayTanb();
-  double logMoQsq = 2.0 * log(m / q);
-  twoLoopMssm = -cf * sqr(sqr(displayGaugeCoupling(3))) / 
-    (16.0 * sqr(PI)) *
-    (47.0 / 3.0 + 20.0 * logMoQsq + 12.0 * logMoQsq * log(m / mt) +
-     cf * (23.0 / 24.0 - 13.0 / 6.0 * logMoQsq + 0.5 * sqr(logMoQsq) -
-	   6.0 * logMoQsq * log(mt / q)) + 
-     ca * (175.0 / 72.0 + 41.0 / 6.0 * logMoQsq - 0.5 * sqr(logMoQsq) -
-	   4.0 * logMoQsq * log(mt / q)) +
-     aq / m * (-4.0 - 8.0 * logMoQsq) + 
-     cf * aq / m * (7.0 / 3.0 - 11.0 / 3.0 * logMoQsq + 6.0 * log(mt / q)) +
-     ca * aq / m * (-8.0 / 3.0 + 4.0 * logMoQsq));
-  stopGluino += twoLoopMssm;
-#endif
 
   return stopGluino;
 }
@@ -2681,20 +2899,7 @@ double MssmSoftsusy::calcRunningMt() {
   
   if (USE_TWO_LOOP_GAUGE_YUKAWA && (included_thresholds & ENABLE_TWO_LOOP_MT_AS)) {
     ordinaryQcdCorrections = false;
-    /// bool & needcalc = decoupling_corrections.dmt.two_loop_needs_recalc; 
-    /// flag: calculate corrections if the
-    /// two-previous iterations gave different results
-    // using namespace GiNaC;
     if (included_thresholds & ENABLE_TWO_LOOP_MT_AS) {  
-      /*      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-      double dmtas2 =  decoupling_corrections.dmt.two_loop;
-      if (needcalc) {
-	ex test = tquark_corrections::eval_tquark_twoloop_strong_pole(drbrp);
-	if (is_a<numeric>(test)) dmtas2 = ex_to<numeric>(test).to_double();
-	else dout <<" Not numeric: 2loop pole t-quark " << endl;
-	decoupling_corrections.dmt.two_loop = dmtas2;
-      } else dout << " mt: no calculation " << endl;
-      */     
       /// back converion Mt -> mt(mu)
       /// dmt_as2 is already properly normalized
       /// one needs to normalize only 1-loop contribution
@@ -2710,8 +2915,15 @@ double MssmSoftsusy::calcRunningMt() {
       const double dmtas2 =
 	dMt_over_mt_2loop(g3, mt, mg, mst1, mst2, msusy, thetat, q);
 
-      double dmt_MT = (dmtas2 - dmtas*dmtas);
-      resigmat -= mtpole*dmt_MT;
+      if (altMt) {
+         // Eq.(16) of [1609.00371]
+         const double sigma_1L = resigmat/mtpole;
+         resigmat = mt*(sigma_1L - dmtas2);
+      } else {
+         // Eq.(13) of [1609.00371]
+         const double dmt_MT = (dmtas2 - dmtas*dmtas);
+         resigmat -= mtpole*dmt_MT;
+      }
     }
   } else ordinaryQcdCorrections = true;
 #endif
@@ -2731,9 +2943,11 @@ double MssmSoftsusy::calcRunningMt() {
 double MssmSoftsusy::calcRunMbDrBarConv() const {
   double    g       = displayGaugeCoupling(2);
   double    gp      = displayGaugeCoupling(1) * sqrt(0.6);
-  double alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
-  double conversion = (1.0 - alphasMZ / (3.0 * PI) 
-		       - 23.0 / 72.0 * sqr(alphasMZ) / sqr(PI) +
+  double alphasMZ   = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
+  double conversion = (1.0 - alphasMZ / (3.0 * PI) +
+		       // Commented this last line for consistency with HO
+		       // corrections to gauge/Yukawa couplings
+		       //- 29.0 / 72.0 * sqr(alphasMZ) / sqr(PI) +
 		       3.0 * sqr(g) / (128.0 * sqr(PI)) +
 		       13.0 * sqr(gp) / (1152. * sqr(PI)));
   return conversion;
@@ -2870,18 +3084,11 @@ double MssmSoftsusy::calcRunMbHiggs() const {
 
 
 double MssmSoftsusy::calcRunningMb() {
-  
-  if (displayMu() != displayMz()) {
-    ostringstream ii;
-    ii << "MssmSoftsusy::calcRunningMb called with mu=" <<
-      displayMu() << endl; 
-    throw ii.str();
-  }
-  
-  double mbMZ = dataSet.displayMass(mBottom);
-  /// First convert mbMZ into DRbar value from hep-ph/9703293,0207126,9701308
+  /// This boundary condition needs to be set at the relevant scale  
+  double mbSM5 = dataSet.displayMass(mBottom);
+  /// First convert mbSM5 into DRbar value from hep-ph/9703293,0207126,9701308
   /// (SM gauge boson contributions)
-  mbMZ = mbMZ * calcRunMbDrBarConv(); 
+  mbSM5 = mbSM5 * calcRunMbDrBarConv(); 
   
   double deltaSquarkGluino = calcRunMbSquarkGluino();
   //Chargino-squark loops
@@ -2899,34 +3106,6 @@ double MssmSoftsusy::calcRunningMb() {
   
   /// AVB: this also includes top quark contribution (decoupling)!
   if (USE_TWO_LOOP_GAUGE_YUKAWA && (included_thresholds & ENABLE_TWO_LOOP_MB_YUK)) {
-    /*    
-     bool & needcalc = decoupling_corrections.dmb.two_loop_needs_recalc; 
-    // flag: calculate corrections if two-previous iterations gave different results
-     using namespace GiNaC;
-     
-     if (needcalc) {
-       exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-      
-      if ((included_thresholds & ENABLE_TWO_LOOP_MB_AS)) {
-	ex test = bquark_corrections::eval_bquark_twoloop_strong_dec(drbrp);
-	if (is_a<numeric>(test))
-	  dzetamb += ex_to<numeric>(test).to_double();
-	  }
-	  if ((included_thresholds & ENABLE_TWO_LOOP_MB_YUK)) {
-	  ex test = bquark_corrections::eval_bquark_twoloop_yukawa_dec(drbrp);
-	  if (is_a<numeric>(test))
-	  dzetamb += ex_to<numeric>(test).to_double();
-	  }
-	  
-	  if (close(dzetamb, decoupling_corrections.dmb.two_loop, 
-	  TWOLOOP_NUM_THRESH)) needcalc = false; 
-	  decoupling_corrections.dmb.two_loop = dzetamb;
-	  }
-	  else {
-	  dzetamb = decoupling_corrections.dmb.two_loop;
-	  }*/
-
-     //      double dmtas = (qcd + stopGluino) / (16.0 * sqr(PI));
       double g3 = displayGaugeCoupling(3);
       double mt = displayDrBarPars().mt;
       double mb = displayDrBarPars().mb;
@@ -2944,9 +3123,10 @@ double MssmSoftsusy::calcRunningMb() {
 				      msusy, thetat, thetab, q);
       /// AVB:  fix double-counting of eps-scalar contribution due to
       /// factorization of one-loop term 
-      double alphasMZ = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
-      dzetamb-= + 31.0 / 72.0 * sqr(alphasMZ) / sqr(PI) ///< pure QCD
-	+ alphasMZ / (3.0 * PI) * decoupling_corrections_dmb_one_loop; 
+      double alphas = sqr(displayGaugeCoupling(3)) / (4.0 * PI);
+      /// commented this + 31.0 / 72.0 * sqr(alphas) / sqr(PI) ///< pure
+      /// QCD for consistency with HO corrections
+      dzetamb -= alphas / (3.0 * PI) * decoupling_corrections_dmb_one_loop; 
 
   }
 #endif
@@ -2954,7 +3134,7 @@ double MssmSoftsusy::calcRunningMb() {
   /// it's NOT clear if this resummation is reliable in the full 1-loop scheme
   /// but it's at least valid to 1 loop. Warning though: if you add higher
   /// loops, you'll have to re-arrange.
-  return mbMZ / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs
+  return mbSM5 / (1.0 + deltaSquarkGluino + deltaSquarkChargino + deltaHiggs
 		 + deltaNeutralino + dzetamb);
 }
 
@@ -3128,22 +3308,6 @@ double MssmSoftsusy::calcRunningMtau() {
   
   if (USE_TWO_LOOP_GAUGE_YUKAWA &&
       (included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
-    // flag: calculate corrections if two-previous iterations gave different
-    // results 
-    /*    bool & needcalc = decoupling_corrections.dmtau.two_loop_needs_recalc;  
-    using namespace GiNaC;
-    if ((included_thresholds & ENABLE_TWO_LOOP_MTAU_YUK)) {
-      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-      double dzmtau2 = decoupling_corrections.dmtau.two_loop;
-      if (needcalc) {
-	ex test = tau_corrections::eval_tau_twoloop_yukawa_dec(drbrp);
-	if (is_a<numeric>(test)) dzmtau2 = ex_to<numeric>(test).to_double();
-	else dout <<" Not numeric: 2loop  tau-lepton " << endl;
-	decoupling_corrections.dmtau.two_loop = dzmtau2;
-	
-      } 
-      dzetamtau2 = -dzetamtau*dzetamtau + dzmtau2;*/
-
       const drBarPars tree(displayDrBarPars());
       const double mst_1 = tree.mu(1, 3), mst_2 = tree.mu(2, 3),
         theta_t = tree.thetat;
@@ -3185,15 +3349,8 @@ double MssmSoftsusy::calcRunningMtau() {
         + flexiblesusy::mssm_twoloop_mtau::delta_mtau_2loop_atau_at(pars)
         + flexiblesusy::mssm_twoloop_mtau::delta_mtau_2loop_atau_ab(pars);
 
-      //      cout << "dmtau(GiNaC) = " << decoupling_corrections.dmtau.two_loop
-      //           << ", dmtau(C++) = " << dmtau_2L
-      //           << ", diff = " << (decoupling_corrections.dmtau.two_loop - dmtau_2L)/decoupling_corrections.dmtau.two_loop
-      //           << endl;
-
-      //      decoupling_corrections.dmtau.two_loop = dmtau_2L;
       dzetamtau2 = -dzetamtau*dzetamtau + dmtau_2L;
     }
-  // }
 #endif
   
   return mTauSMMZ * 
@@ -6549,9 +6706,7 @@ void MssmSoftsusy::doChargedSleptons(double mtau, double pizztMS, double
       
       physpars.me(1, family) = ccbSqrt(mSlepSquared(1, 1));
       physpars.me(2, family) = ccbSqrt(mSlepSquared(2, 2));
-      
-    }
-    
+    }    
   }
   
   /// do third family
@@ -6661,6 +6816,12 @@ void MssmSoftsusy::calcHiggsAtScale(int accuracy, double & mt,
     
     higgsTachyon = ppp.higgs(accuracy, piwwtMS, pizztMS); /// iterate 
     
+    /// If Higgs masses have been input, switch pole masses to these instead
+    if (inputMhPole) ppp.physpars.mh0(1) = fixMhPole;
+    if (inputMA0Pole) ppp.physpars.mA0(1) = fixMA0Pole;
+    if (inputMH0Pole) ppp.physpars.mh0(2) = fixMH0Pole;
+    if (inputMHpmPole) ppp.physpars.mHpm = fixMHpmPole;        
+
     DoubleVector newHiggsMasses(4);
     newHiggsMasses(1) = ppp.displayPhys().mh0(1);
     newHiggsMasses(2) = ppp.displayPhys().mA0(1);
@@ -6720,7 +6881,6 @@ void MssmSoftsusy::physical(int accuracy) {
 
   /// This part of the code adds higher loop corrections to gluino masses etc
   /// from Steve Martin et al
-#ifdef COMPILE_TWO_LOOP_SPARTICLE_MASS
   if(accuracy != 0 && USE_TWO_LOOP_SPARTICLE_MASS) {
     supermodel smodel;
 
@@ -6791,7 +6951,6 @@ void MssmSoftsusy::physical(int accuracy) {
     physpars.md(1, 2)  = smodel.msL;
     physpars.md(2, 2)  = smodel.msR;
   }
-#endif ///< COMPILE_TWO_LOOP_SPARTICLE_MASS
 }
 
   /// For a given trial value of the log of field H2, gives the value of the
@@ -6857,7 +7016,7 @@ static double unificationScale, minTol;
   double tol = 1.0e-3, lnx; minTol = tol * 10.0;
   /// Numerical recipes routine to determine minimum of potential specified in
   /// minimufb3
-  double Vmin = findMinimum(ax, bx, cx, minimufb3, tol, &lnx);
+  double Vmin = findMinimum(ax, bx, cx, minimufb3, tol, lnx);
   
   /// Restore initial parameters
   ///  setMu(initialMu);
@@ -6889,17 +7048,6 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
 
   if (USE_TWO_LOOP_GAUGE_YUKAWA) {
     if ((included_thresholds & ENABLE_TWO_LOOP_AS_AS_YUK)) {
-      /*      using namespace GiNaC;
-	      exmap drbrp = SoftSusy_helpers_::drBarPars_exmap(*this);
-	      ex test = gs_corrections::eval_gs_twoloop_strong(drbrp);
-	      if (is_a<numeric>(test)) {
-	      double dgs2 = ex_to<numeric>(test).to_double();
-	      dgs2 = 2.0*dgs2; 
-	      decoupling_corrections.das.two_loop = dgs2;
-	      dalpha_2 = deltaAlphas*deltaAlphas/4.0 + dgs2;
-	      }*/
-
-      ///////// comparing C++ implementation //////////
       const double mst_1 = tree.mu(1, 3), mst_2 = tree.mu(2, 3),
 	theta_t = tree.thetat;
       const double msb_1 = tree.md(1, 3), msb_2 = tree.md(2, 3),
@@ -6936,19 +7084,15 @@ double MssmSoftsusy::qcdSusythresh(double alphasMSbar, double q) {
          + flexiblesusy::mssm_twoloop_as::delta_alpha_s_2loop_at_as(pars)
          + flexiblesusy::mssm_twoloop_as::delta_alpha_s_2loop_ab_as(pars));
 
-      /*      cout << "GiNaC - C++ = "
-           << "(" << decoupling_corrections.das.two_loop << " - "
-           << dgs2_cpp << ") = "
-           << (1 - decoupling_corrections.das.two_loop/dgs2_cpp)*100
-           << "%" << endl;*/
-      
-      //      decoupling_corrections.das.two_loop = dgs2_cpp;
       dalpha_2 = deltaAlphas*deltaAlphas/4.0 + dgs2_cpp;
     }
   }
 #endif ///< COMPILE_TWO_LOOP_GAUGE_YUKAWA
   
-  const double alphasDRbar_post = alphasMSbar / (1.0 - deltaAlphas + dalpha_2);
+  const double alphasDRbar_post =
+     altAlphaS ?
+     alphasMSbar * (1.0 + deltaAlphas - dalpha_2 + sqr(deltaAlphas)) :
+     alphasMSbar / (1.0 - deltaAlphas + dalpha_2);
   
   return alphasDRbar_post;
 }
@@ -6962,11 +7106,11 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
   
   if (tree.mHpm < TOLERANCE) return 0.0;
   
-  double deltaASM = -1.0 / 3.0 + 
-    16.0 / 9.0 * log(tree.mt / q);
+  /// QedQcd always returns running couplings in the SM(5).
+  /// Therefore, the top threshold must be taken into account here.
+  double deltaASM = -1.0 / 3.0 + 16.0 / 9.0 * log(tree.mt / q);
   
   double deltaASusy = 
-    /// commented out since alpha(MZ) includes it!
     log(tree.mHpm / q) / 3.0 + 4.0 / 9.0 * 
     (log(tree.mu(1,1) / q) + 
      log(tree.mu(2,1) / q) + 
@@ -6988,11 +7132,38 @@ double MssmSoftsusy::qedSusythresh(double alphaEm, double q) const {
      log(tree.me(2,3) / q)) / 3.0 
     + (log(fabs(tree.mch(1)) / q) 
        + log(fabs(tree.mch(2)) / q)) * 4.0 / 3.0;
+
+  /// Two loop correction parameterisation from private communication of
+  ///  authors from 1411.7040 in MSBAR SCHEME and at MZ
+  /*  double b0 = 1.751181, b1 = -0.523813, b2 = -0.662710, b3 = -0.000962,
+      b4 =0.252884, b5 = 2.971626, b6 = -0.739561;
+    double mt = displayDataSet().displayPoleMt();
+    double dT = log(mt / 173.34) - 1.0;
+    double sw = calcSinthdrbar();
+    double ds = sqr(sw / 0.231) - 1.;
+    double dH = log(displayPhys().mh0(1) / 125.15);
+    double das = displayDataSet().displayAlpha(ALPHAS) / 0.1184 - 1.;
+    double dmu = log(displayDataSet().displayMu() / MZ);
+    double deltaAlphaTwoLoop = 1.0e-4 * (b0 + b1 * ds + b2 * dT + b3 * dH +
+					 b4 * das + b5 * dmu + b6 * dT * dmu);
+    
+    const double deltaAlpha_1L = -alphaEm / (2.0 * PI) *
+      (deltaASM + deltaASusy);
+      const double deltaAlpha_2L = twoLEW ? deltaAlphaTwoLoop : 0.; 
+
+    const double alphaEm_post =
+       altAlphaEm ?
+       alphaEm * (1.0 + deltaAlpha_1L + deltaAlpha_2L + sqr(deltaAlpha_1L)) :
+       alphaEm / (1.0 - (deltaAlpha_1L + deltaAlpha_2L)); */
+
+   const double deltaAlpha_1L = -alphaEm / (2.0 * PI) *
+      (deltaASM + deltaASusy);
+   
+  const double alphaEm_post =
+       altAlphaEm ?
+    alphaEm * (1.0 + deltaAlpha_1L) : alphaEm / (1.0 - deltaAlpha_1L);
   
-  double deltaAlpha;
-  deltaAlpha = -alphaEm / (2.0 * PI) * (deltaASM + deltaASusy);
-  
-  return alphaEm / (1.0 - deltaAlpha);
+    return alphaEm_post;
 }
 
 /// Returns lsp mass in mass and function return labels which particle is lsp:
@@ -7080,11 +7251,12 @@ double MssmSoftsusy::calcMs() const {
   
   drBarPars tree(displayDrBarPars());
   
-  if (QEWSB < EPSTOL) throw("QEWSB Probably too low\n");
+  if (displayQewsb() < EPSTOL) throw("qewsb Probably too low\n");
   
-  if (QEWSB < MZ) 
-    return maximum(QEWSB * sqrt(tree.mu(2, 3) * tree.mu(1, 3)), displayMz());
-  else return QEWSB;
+  if (displayQewsb() < MZ) 
+    return maximum(displayQewsb() * sqrt(tree.mu(2, 3) * tree.mu(1, 3)),
+		   displayMz());
+  else return displayQewsb();
 }
 
 /// Provides the first guess at a SUSY object at mt, inputting tanb and oneset
@@ -7145,6 +7317,43 @@ MssmSusyRGE MssmSoftsusy::guessAtSusyMt(double tanb, const QedQcd & oneset) {
   return t;
 }
 
+/// Check that threshold correction loop orders are consistent with
+/// Higgs mass loop order
+void MssmSoftsusy::check_flags()
+{
+#ifdef ENABLE_HIMALAYA
+  if (numHiggsMassLoops > 2) {
+#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
+     if (!USE_TWO_LOOP_GAUGE_YUKAWA ||
+         !(included_thresholds & ENABLE_TWO_LOOP_MT_AS) ||
+         !(included_thresholds & ENABLE_TWO_LOOP_MB_AS)) {
+        cout << "# WARNING: 3-loop corrections to the Higgs mass require"
+           " 2L corrections to yt and yb.  The latter will be enabled.\n";
+        USE_TWO_LOOP_GAUGE_YUKAWA = true;
+        included_thresholds |= ENABLE_TWO_LOOP_MT_AS;
+        included_thresholds |= ENABLE_TWO_LOOP_MB_AS;
+     }
+
+     if (displayLoops() < 3) {
+        cout << "# WARNING: 3-loop corrections to the Higgs mass require"
+           " 3L beta functions.  The latter will be enabled.\n";
+        setLoops(3);
+     }
+#else
+     cout << "# WARNING: You've enable 3-loop corrections to the Higgs mass,"
+        " but the necessary 2-loop corrections to yt and yb are not compiled"
+        " in.  The calculated CP-even Higgs mass is inconsistent at 3-loop"
+        " level!\n";
+#endif
+  }
+#else
+  if (numHiggsMassLoops > 2) {
+     cout << "# WARNING: 3-loop corrections to the Higgs mass are disabled,"
+        " because Himalaya is not compiled in.\n";
+  }
+#endif
+}
+
 /// Returns low energy softsusy object consistent with BC's m0 etc at MGUT.
 /// oneset should be at MZ and contains the SM data to fit the model to.
 /// If the running comes into difficulty, eg if a Landau pole is reached, it
@@ -7157,37 +7366,38 @@ void MssmSoftsusy::fixedPointIteration
  const DoubleVector & pars, int sgnMu, double tanb, const QedQcd &
  oneset, bool gaugeUnification, bool ewsbBCscale) {
   
+  check_flags();
+
   try {
-    
     const static MssmSoftsusy empty;
     
     double muFirst = displaySusyMu(); /// Remember initial values
     
     bool setTbAtMXflag = displaySetTbAtMX(); 
     bool altFlag = displayAltEwsb();
+    bool altFlagMt = displayAltMt();
+    bool altFlagAlphaS = displayAltAlphaS();
+    bool altFlagAlphaEm = displayAltAlphaEm();
     double m32 = displayGravitino();
     double muCondFirst = displayMuCond();
     double maCondFirst = displayMaCond();
+    double qqewsb      = displayQewsb();
+    int lpnum = displayLoops();
     
-    // keep it  
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    //    SoftSusy_helpers_::decoupling_corrections_t d_coupl = decoupling_corrections;
-#endif
     int enabled_thresholds = included_thresholds;    
-
     setSoftsusy(empty); /// Always starts from an empty object
-    /// These are things that are re-written by the new initialisation
-#ifdef COMPILE_TWO_LOOP_GAUGE_YUKAWA
-    //    decoupling_corrections = d_coupl;
-#endif
     included_thresholds = enabled_thresholds;
     setSetTbAtMX(setTbAtMXflag); 
     if (altFlag) useAlternativeEwsb();
+    if (altFlagMt) useAlternativeMt();
+    if (altFlagAlphaS) useAlternativeAlphaS();
+    if (altFlagAlphaEm) useAlternativeAlphaEm();
     setData(oneset); 
     setMw(MW); 
     setM32(m32);
     setMuCond(muCondFirst);
     setMaCond(maCondFirst);
+    setQewsb(qqewsb);
     
     double mz = displayMz();
     
@@ -7200,22 +7410,17 @@ void MssmSoftsusy::fixedPointIteration
       throw ii;
     }
     
-    if (oneset.displayMu() != mz) {
+    /*    if (oneset.displayMu() != mz) {
       cout << "WARNING: fixedPointIteration in softsusy.cpp called with oneset at scale\n" 
 	   << oneset.displayMu() << "\ninstead of " << mz << endl;
-    }
+	   }*/
     
     int maxtries = 100; 
     double tol = TOLERANCE;
     
     MssmSusyRGE t(guessAtSusyMt(tanb, oneset));
 
-    // default SoftSusy loop number
-    int lpnum = 2;
-    
-    if (USE_THREE_LOOP_RGE) lpnum = 3; 
-    
-    t.setMssmLoops(lpnum); /// >= 2 loops should protect against ht Landau pole 
+    t.setMssmLoops(2); /// 2 loops should protect against ht Landau pole 
     t.runto(mxBC); 
 
     setMssmSusy(t); setMu(t.displayMu());
@@ -7240,13 +7445,13 @@ void MssmSoftsusy::fixedPointIteration
       }
     }
 
-    run(mxBC, mz);
+    run(mxBC, displayMatchingScale());
 
     if (sgnMu == 1 || sgnMu == -1) rewsbTreeLevel(sgnMu); 
 
     physical(0);
 
-    setThresholds(3); setLoops(lpnum);
+    setThresholds(3); setLoops(lpnum); 
     
     itLowsoft(maxtries, sgnMu, tol, tanb, boundaryCondition, pars, 
 	      gaugeUnification, ewsbBCscale);
@@ -7256,7 +7461,7 @@ void MssmSoftsusy::fixedPointIteration
 	|| displayProblem().noRhoConvergence || displayProblem().problemThrown)
       return;
     
-    runto(maximum(displayMsusy(), mz));
+    runto(displayMsusy());
     if (ewsbBCscale) boundaryCondition(*this, pars); 
     
     physical(3);
@@ -7303,6 +7508,12 @@ double MssmSoftsusy::realMinMs() const {
     sqr(sqr(displayHvev()) * cos(2.0 * beta));
 }
 
+
+  double MssmSoftsusy::calcBayesianNaturalness() const {
+    MssmJacobian mj;
+    return mj.calcDeltaJ(displayMssmSoft());
+  }
+
 /// Calculates sin theta at the current scale
 double MssmSoftsusy::calcSinthdrbar() const {
   
@@ -7339,25 +7550,26 @@ double MssmSoftsusy::getVev() {
   return getVev(pizzt);
 }
 
-/// It'll set the important SUSY couplings: supposed to be applied at MZ
+/// It'll set the important SUSY couplings: 
 /// You should set up an iteration here since Yuk's depend on top mass which
 /// depends on Yuk's etc. 
-void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
-  double mz = displayMz();  if (displayMu() != mz) {
-    ostringstream ii;
-    ii << "Called MssmSoftsusy::sparticleThresholdCorrections "
-       << "with scale" << displayMu() << endl;
-    throw ii.str();
-  }
-  
+  void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
+    if (displayMu() != displayDataSet().displayMu()) {
+      ostringstream ii;
+      ii << "Called MssmSoftsusy::sparticleThresholdCorrections "
+	 << "with scale " << displayMu() << endl;
+      throw ii.str();
+    }
+
   if (!setTbAtMX) setTanb(tb);
   calcDrBarPars(); /// for the up-coming loops
+  
   double alphaMsbar = dataSet.displayAlpha(ALPHA);
   double alphaDrbar = qedSusythresh(alphaMsbar, displayMu());
-  
+
   double alphasMZDRbar =
     qcdSusythresh(displayDataSet().displayAlpha(ALPHAS), displayMu());
-  
+
   /// Do gauge couplings
   double outrho = 1.0, outsin = 0.48, tol = TOLERANCE * 1.0e-8; 
   int maxTries = 20;
@@ -7382,7 +7594,7 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   
   //  if (problem.noRhoConvergence) 
   //    outsin = sqrt(1.0 - sqr(displayMw() / displayMz())); 
-  
+  //  cout << "alphaInv=" << 1./alphaDrbar << endl;
   double eDR = sqrt(4.0 * PI * alphaDrbar), costhDR = cos(asin(outsin));
   
   DoubleVector newGauge(3);
@@ -7406,7 +7618,7 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   /// 3-family mixed-up Yukawa couplings: From PDG 2000
   doQuarkMixing(mDq, mUq); 
   
-  if (MIXING == -1) {
+  if (displayMixing() == -1) {
     mDq(1, 1) = 0.; mDq(2, 2) = 0.; mUq(1, 1) = 0.; mUq(2, 2) = 0.;
     mLep(1, 1) = 0.; mLep(2, 2) = 0.;
   }
@@ -7417,6 +7629,7 @@ void MssmSoftsusy::sparticleThresholdCorrections(double tb) {
   setMw(ccbSqrt(poleMwSq)); 
   setGaugeCoupling(1, newGauge(1));
   setGaugeCoupling(2, newGauge(2));
+  //  cout << "before3: " << this->displayGaugeCoupling(1) << " " << this->displayGaugeCoupling(2) << endl; ///<
   setGaugeCoupling(3, newGauge(3));
   setHvev(vev); 
   setYukawaMatrix(YU, mUq * (root2 / (vev * sin(beta))));
@@ -7483,7 +7696,7 @@ void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2,
   if (mAsq < 0.) {
     /// If it's only at MZ, the point may be OK: here, we may use the pole
     /// mass in loops, if necessary
-    if (close(displayMu(), MZ, 1.0e-6)) { 
+    if (close(displayMu(), displayDataSet().displayMu(), 1.0e-6)) {
       if (altEwsb) mAsq = sqr(displayMaCond());
       else {
 	double mApole = physpars.mA0(1); /// physical value
@@ -7500,7 +7713,7 @@ void MssmSoftsusy::calcDrBarHiggs(double beta, double mz2, double mw2,
 	
 	mAsq = poleMasq;	
       } ///< not alternative EWSB conditions
-    } ///< we are at MZ
+    } ///< we are at mScale
     
     /// If, after using the pole mass or whatever, we still have a problem, we
     /// must flag a tachyon and do something to stop a proliferation of NANs
@@ -7553,7 +7766,7 @@ void MssmSoftsusy::setNeutCurrCouplings(double sinthDRbar, double & sw2,
 
 //PA: sets the Yukawas and Trilinears
 void MssmSoftsusy::calcDRTrilinears(drBarPars & eg, double vev, double beta) {
-  if (MIXING > 0) {    
+  if (displayMixing() > 0) {    
     DoubleMatrix diagUp(displayYukawaMatrix(YU)),
       diagDown(displayYukawaMatrix(YD)),
       diagLep(displayYukawaMatrix(YE));
@@ -7700,14 +7913,6 @@ void MssmSoftsusy::itLowsoft
   static MssmSoftsusy old;
   static double oldMu = 0.;
   static int numTries = 0;
-  double mz = displayMz();
-  
-  if (numTries != 0 && sqr(displayMu() / mz - 1.0) > TOLERANCE) {
-    cout << "WARNING: itLowsoft called at inappropriate";
-    cout << " scale:" << displayMu() << endl; 
-    cout << "whereas it should be " << mz << endl; 
-  }
-
   if (numTries - 1 > maxTries) {/// Iterating too long: bail out
     setProblem(old.displayProblem());
     flagNoConvergence(true);    
@@ -7723,11 +7928,12 @@ void MssmSoftsusy::itLowsoft
   /// On first iteration, don't bother with finite corrections  
   numTries = numTries + 1;
   try {
+    runto(displayMatchingScale());
+
     sparticleThresholdCorrections(tanb); 
-    
+
     if (problem.noRhoConvergence && PRINTOUT) 
       cout << "No convergence in rhohat\n"; 
-    
     
     /// precision of running/RGE integration: start off low and increase
     double eps = maximum(exp(double(- numTries) * log(10.0)), tol * 0.01); 
@@ -7749,13 +7955,11 @@ void MssmSoftsusy::itLowsoft
       return;
     }
     
-    
     double tbIn; double predictedMzSq = 0.;
     predictedMzSq = predMzsq(tbIn);
     setPredMzSq(predictedMzSq);  
     if (!ewsbBCscale) err = runto(mxBC, eps);
-    
-    
+
     /// Guard against the top Yukawa fixed point
     if (displayYukawaElement(YU, 3, 3) > 3.0 
 	|| displayYukawaElement(YD, 3, 3) > 3.0 
@@ -7807,7 +8011,7 @@ void MssmSoftsusy::itLowsoft
     if (err) {
       // problem with running: bail out 
       flagProblemThrown(true);
-      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to MZ\n"; 
+      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to Msusy\n";
       if (PRINTOUT > 1) printObj();
       numTries = 0;
       return;
@@ -7816,6 +8020,17 @@ void MssmSoftsusy::itLowsoft
     setMsusy(calcMs());
     if (ewsbBCscale) mxBC = displayMsusy();
     if (PRINTOUT > 0) cout << " mgut=" << mxBC << flush;
+
+    if (!ewsbBCscale) err = runto(displayMsusy(), eps);
+    calcDrBarPars();
+    if (err) {
+      // problem with running: bail out
+      flagProblemThrown(true);
+      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to Msusy\n";
+      if (PRINTOUT > 1) printObj();
+      numTries = 0;
+      return;
+    }
     
     mtrun = forLoops.mt; ///< This will be at MSUSY
     //    double tbIn; double predictedMzSq = 0.;
@@ -7871,11 +8086,11 @@ void MssmSoftsusy::itLowsoft
       if (PRINTOUT > 1) printObj();
     }
     
-    err = runto(mz, eps);
+    err = runto(displayMatchingScale(), eps);
     if (err) {
       /// problem with running: bail out 
       flagProblemThrown(true);
-      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to MZ\n"; 
+      if (PRINTOUT) cout << "itLowsoft gone non-perturbative on way to M_{QEDxQCD}\n";
       if (PRINTOUT > 1) printObj();
       ///    old = MssmSoftsusy();
       numTries = 0;
@@ -9269,20 +9484,33 @@ double MssmSoftsusy::dRho(double outrho, double outsin, double alphaDRbar,
   /// 2 loop SM contribution
   double mt   = dataSet.displayPoleMt(); 
   double sinb = sin(atan(displayTanb()));
-  
   double xt = 3.0 * GMU * sqr(mt) / (8.0 * sqr(PI) * root2);
+  
+  /// This is the expression for the 2-loop SM corrections from 1411.7040
+  /// at MZ in rxi=1 gauge
+  /*  double y0 = -18.616753, y1 = 15.972019, y2 = -16.216781, y3 = 0.0152367,
+    y4 = -13.633472, y5 = 0.647931, y6 = 0.021604, y7 = 2.518649, y8 = 0.131301;
+  double dT = sqr(mt / 173.34) - 1.0;
+  double ds = sqr(outsin / 0.231) - 1.;
+  double dH = log(displayPhys().mh0(1) / 125.15);
+  double das = displayDataSet().displayAlpha(ALPHAS) / 0.1184 - 1.;
+  double dmu = log(displayDataSet().displayMu() / MZ);
+  double deltaRho2LoopSm = 1.0e-4 * (y0 + y1 * ds + y2 * dT + y3 * dH +
+				     y4 * das + y5 * dmu + y6 * sqr(dmu) +
+				     y7 * dT * dmu + y8 * dH * dmu); */
   
   double deltaRho2LoopSm = alphaDRbar * sqr(displayGaugeCoupling(3)) / 
     (16.0 * PI * sqr(PI) * sqr(outsin)) * /// bug-fixed 24.08.2002
     (-2.145 * sqr(mt) / sqr(displayMw()) + 1.262 * log(mt / mz) - 2.24 
      - 0.85 * sqr(mz)
      / sqr(mt)) + sqr(xt) * sqr(h1s2Mix()) / sqr(sinb) *
-    rho2(tree.mh0(1) / mt) / 3.0;
-  
+     rho2(tree.mh0(1) / mt) / 3.0; 
+
   double deltaRhoOneLoop = pizztMZ / (outrho * sqr(mz))
     - piwwtMW / sqr(displayMw());
-  
+
   double deltaRho = deltaRhoOneLoop + deltaRho2LoopSm;
+  //  if (twoLEW) deltaRho += deltaRho2LoopSm;
   
   return deltaRho;
 }
@@ -9290,17 +9518,12 @@ double MssmSoftsusy::dRho(double outrho, double outsin, double alphaDRbar,
 double MssmSoftsusy::dR(double outrho, double outsin, double alphaDRbar,
 			double pizztMZ, double piwwt0) {
   drBarPars tree(displayDrBarPars());
-  
   double outcos = cos(asin(outsin));
   /// 2 loop SM contribution
   double mt   = dataSet.displayPoleMt();
-  
   double sinb = sin(atan(displayTanb()));
-  
   double xt = 3.0 * GMU * sqr(mt) / (8.0 * sqr(PI) * root2);
-  
   double dvb = deltaVb(outrho, outsin, alphaDRbar, pizztMZ);
-  
   double mz = displayMz();
   
   double deltaR =  outrho * piwwt0 / sqr(displayMw()) - 
@@ -9313,8 +9536,21 @@ double MssmSoftsusy::dR(double outrho, double outsin, double alphaDRbar,
      - 0.144 * sqr(mz) / sqr(mt)) - 
     sqr(xt) * sqr(h1s2Mix()) / sqr(sinb) *
     rho2(tree.mh0(1) / mt) * (1.0 - deltaR) * outrho / 3.0;
+
+  /// new calculation from 1411.7040
+  /*  double r0 = -2.8472779, r1 = 1.620742, r2 = 1.773226, r3 =-0.364310,
+    r4 = 1.137797, r5 = -5.330681, r6 = 2.899265, r7 = 3.781905,
+    r8 = 0.241184;
+  double dT = log(displayDataSet().displayPoleMt() / 173.34);
+  double ds = sqr(outsin / 0.231) - 1.;
+  double dH = log(displayPhys().mh0(1) / 125.15);
+  double das = displayDataSet().displayAlpha(ALPHAS) / 0.1184 - 1.;
+  double dmu = log(displayDataSet().displayMu() / MZ);
+  double deltaR2LoopSm = 1.0e-4 * (r0 + r1 * ds + r2 * dT + r3 * dH +
+				   r4 * das + r5 * dmu + r6 * sqr(dmu) +
+				   r7 * dT * dmu + r8 * dH * dmu); */
   
-  deltaR = deltaR + deltaR2LoopSm; 
+  deltaR += deltaR2LoopSm; 
   
   return deltaR;
 }
@@ -9329,12 +9565,6 @@ void MssmSoftsusy::rhohat(double & outrho, double & outsin, double alphaDRbar,
   static double oldrho = 0.23, oldsin = 0.8;
   
   double mz = displayMz();
-  if (displayMu() != mz) {
-    ostringstream ii;   
-    ii << "Called MssmSoftsusy::rhohat "
-       << "with scale" << displayMu() << endl;
-    throw ii.str();
-  }
   
   static int numTries = 0;
   
@@ -9369,9 +9599,17 @@ void MssmSoftsusy::rhohat(double & outrho, double & outsin, double alphaDRbar,
 			 << " outrho=" << outrho << " outsin=" << outsin 
 			 << " aDRbar=" << alphaDRbar << " piZ=" << pizztMZ 
 			 << " piwwt0=" << piwwt0 << endl;
-  
+
+  /// old calculation of sin^2 theta_W
   double sin2thetasqO4 = PI * alphaDRbar / 
-    (root2 * sqr(mz) * GMU * (1.0 - deltaR)); 
+    (root2 * sqr(mz) * GMU * (1.0 - deltaR));
+  //  cout << "old s^2thW=" << sin2thetasqO4;
+  
+  sin2thetasqO4 = PI * alphaDRbar / (root2 * sqr(mz) * GMU);
+  //  if (twoLEW) sin2thetasqO4 *= (1.0 + deltaR);
+  //  else
+  sin2thetasqO4 /= (1.0 - deltaR);
+  //  cout << " new s^2thW=" << sin2thetasqO4 << endl;
   
   if (sin2thetasqO4 >= 0.25) sin2thetasqO4 = 0.25;
   if (sin2thetasqO4 < 0.0) sin2thetasqO4 = 0.0;
@@ -9385,7 +9623,10 @@ void MssmSoftsusy::rhohat(double & outrho, double & outsin, double alphaDRbar,
   double deltaRho = dRho(outrho, outsin, alphaDRbar, pizztMZ, piwwtMW);
   
   if (fabs(deltaRho) < 1.0) outrho = 1.0 / (1.0 - deltaRho);
-  else outrho = 1.0;
+  else {
+    outrho = 1.0;
+    flagNoRhoConvergence(true);
+  }
   
   if (PRINTOUT > 2) cout << " drho=" << deltaRho << " sw=" << outsin << endl; 
   
@@ -9741,7 +9982,7 @@ void MssmSoftsusy::headerSLHA(ostream & out) {
   out.setf(ios::scientific, ios::floatfield);
   out.precision(8);
   
-  out << "# SOFTSUSY" << SOFTSUSY_VERSION << " SLHA compliant output" << endl;
+  out << "# SOFTSUSY" << PACKAGE_VERSION << " SLHA compliant output" << endl;
   out << "# B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331,";
   out << " hep-ph/0104145\n";
 }
@@ -9749,7 +9990,7 @@ void MssmSoftsusy::headerSLHA(ostream & out) {
 void MssmSoftsusy::spinfoSLHA(ostream & out) {
   out << "Block SPINFO          # Program information\n"
       << "     1    SOFTSUSY    # spectrum calculator\n";
-  out << "     2    " << SOFTSUSY_VERSION << "       # version number\n";
+  out << "     2    " << PACKAGE_VERSION << "       # version number\n";
   if (displayProblem().noConvergence)
     out << "     3   Possible problem: Not achieved desired accuracy of "
 	<< TOLERANCE << "- got " 
@@ -9775,7 +10016,8 @@ void MssmSoftsusy::spinfoSLHA(ostream & out) {
 
 void MssmSoftsusy::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
-  out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
+  out << "# mixing=" << displayMixing() << " Desired accuracy="
+      << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
   out << "# 3-loop RGE corrections are ";
   if (displayLoops() == 3) out << "on"; else out << "off";
   out << ". 2-loop Yukawa/g3 thresholds are ";
@@ -9802,6 +10044,10 @@ void MssmSoftsusy::softsusySLHA(ostream & out) {
     if (expandAroundGluinoPole == 3) out << "# Expansion around gluino and squark pole masses.\n";    
   }
   else out << "off" << endl;
+  out << "# Matching scale=" << displayMatchingScale() << endl;
+  //  out << "# 2-loop EW SM threshold corrections to EW couplings are ";
+  //  if (twoLEW) out << "on" << endl;
+  //  else out << "off" << endl;
 }
 
 void MssmSoftsusy::higgsMSLHA(ostream & out) {
@@ -10125,10 +10371,10 @@ void MssmSoftsusy::drbarSLHA(ostream & out, int numPoints, double qMax, int n) {
 void MssmSoftsusy::sminputsSLHA(ostream & out) {
   QedQcd d(displayDataSet());
   out << "Block SMINPUTS             # Standard Model inputs\n";
-  out << "     1   "; printRow(out, 1.0 / d.displayAlpha(ALPHA)); 
+  out << "     1   "; printRow(out, 1.0 / d.displayAlphaMz(ALPHA)); 
   out << "   # alpha_em^(-1)(MZ) SM MSbar\n";
   out << "     2   "; printRow(out, GMU); out << "   # G_Fermi\n";
-  out << "     3   "; printRow(out, d.displayAlpha(ALPHAS)); 
+  out << "     3   "; printRow(out, d.displayAlphaMz(ALPHAS)); 
   out << "   # alpha_s(MZ)MSbar\n";
   out << "     4   "; printRow(out, displayMz()); out << "   # MZ(pole)\n";
   out << "     5   "; printRow(out, d.displayMbMb()); out << "   # mb(mb)\n";
@@ -10691,7 +10937,7 @@ void MssmSoftsusy::setEwsbConditions(const DoubleVector & inputs) {
   /// input diagonal matrices and it'll give you back mixed ones
 void MssmSoftsusy::doQuarkMixing(DoubleMatrix & /* mDon */,
 				 DoubleMatrix & /* mUpq */) {
-  /// This is a dummy routine - MIXING is ignored in this object (it's all
+  /// This is a dummy routine - mixing is ignored in this object (it's all
   /// done in FLAVOURMSSMSOFTSUSY these days).
 }
 
@@ -11558,6 +11804,61 @@ Complex MssmSoftsusy::pis2s2(double p, double q) const {
     / (16.0 * sqr(PI));
 }
 
+/// calculates 3-loop corrections to CP-even Higgs mass in the MSSM
+/// using Himalaya
+DoubleMatrix MssmSoftsusy::calcHiggs3L(bool is_bottom) {
+  DoubleMatrix DMh(2,2);
+
+#ifdef ENABLE_HIMALAYA
+  const double vev = displayHvev();
+  const double beta = std::atan(displayTanb());
+  const double sinb = std::sin(beta);
+  const double cosb = std::cos(beta);
+
+   himalaya::Parameters pars;
+   pars.scale = displayMu();
+   pars.mu = displaySusyMu();
+   pars.g3 = displayGaugeCoupling(3);
+   pars.vd = cosb * vev; // check sqrt(2.)
+   pars.vu = sinb * vev; // check sqrt(2.)
+   pars.At = displayTrilinear(UA,3,3);
+   pars.Ab = displayTrilinear(DA,3,3);
+   pars.MG = std::fabs(displayGaugino(3));
+   pars.MW = displayMwRun();
+   pars.MZ = displayMzRun();
+   pars.Mt = forLoops.mt;
+   pars.Mb = forLoops.mb;
+   pars.MA = sqrt(std::fabs(displayM3Squared() / (sinb * cosb)));
+   pars.MSt << forLoops.mu(1,3), forLoops.mu(2,3);
+   pars.MSb << forLoops.md(1,3), forLoops.md(2,3);
+   pars.s2t = std::sin(2*forLoops.thetat);
+   pars.s2b = std::cos(2*forLoops.thetab);
+   for (int i = 0; i < 3; i++) {
+      for (int k = 0; k < 3; k++) {
+         pars.mq2(i,k) = displaySoftMassSquared(mQl,i+1,k+1);
+         pars.md2(i,k) = displaySoftMassSquared(mDr,i+1,k+1);
+         pars.mu2(i,k) = displaySoftMassSquared(mUr,i+1,k+1);
+      }
+   }
+
+   try {
+      const bool mdr_scheme = false;
+      const bool verbose = false;
+      himalaya::HierarchyCalculator hc(pars, verbose);
+      const auto hier = hc.calculateDMh3L(is_bottom, mdr_scheme);
+      const auto DMh3L = hier.getDMh(3);
+      for (int i = 0; i < 2; i++)
+         for (int k = 0; k < 2; k++)
+            DMh(i+1,k+1) = DMh3L(i,k);
+   } catch (const std::exception& e) {
+      if (PRINTOUT > 1)
+         cout << e.what();
+   }
+#endif
+
+  return DMh;
+}
+
 bool MssmSoftsusy::higgs(int accuracy, double piwwtMS,
 			 double /* pizztMS */) {
   
@@ -11679,6 +11980,20 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS,
     sigmaMh(2, 1) = sigmaMh(1, 2);
     sigmaMH(2, 1) = sigmaMH(1, 2);
     sigma0(2, 1)  =  sigma0(1, 2);
+
+    if (numHiggsMassLoops > 2) {
+       const DoubleMatrix DMh_3L_t = calcHiggs3L(false);
+       const DoubleMatrix DMh_3L_b = calcHiggs3L(true);
+
+       for (int i = 1; i <= 2; i++) {
+          for (int k = 1; k <= 2; k++) {
+             sigmaMh(i,k) -= DMh_3L_t(i,k) + DMh_3L_b(i,k);
+             sigmaMH(i,k) -= DMh_3L_t(i,k) + DMh_3L_b(i,k);
+             sigma0 (i,k) -= DMh_3L_t(i,k) + DMh_3L_b(i,k);
+          }
+       }
+    }
+
     /*
       As the calculation stands without the two-loop terms, BPMZ have
       obviously organised PI_Sij (CP-even loop corrections) so that their pole
@@ -11731,6 +12046,8 @@ bool MssmSoftsusy::higgs(int accuracy, double piwwtMS,
     h0Htachyon = true;
     if (PRINTOUT > 2) cout << " h0/H tachyon: m^2=" << temp;
   }
+  //  cout << "mhatmh" << mhAtmh << endl;
+  //  cout << "*** temp" << tempc << endl;
   temp = temp.apply(ccbSqrt);
   
   /// If certain DRbar ratios are large, they can cause massive higher order
@@ -11914,6 +12231,154 @@ double softsusy::MssmSoftsusy::calcRunMbNeutralinos() const {
   deltaNeutralino = -deltaNeutralino / (16.0 * sqr(PI));
   
   return deltaNeutralino; 
+}
+
+/// calculates an uncertainty estimate of the pole masses from scale
+/// variation only
+softsusy::sPhysical MssmSoftsusy::displayPhysUncertaintyScaleVariation() const {
+   const sPhysical masses = displayPhys();
+   const int numPts = 30;
+   const double lnqMin = log(0.5 * displayMsusy()),
+      lnqMax = log(2.0 * displayMsusy());
+   DoubleVector mh(1), mH(1), mA(1), mHp(1);
+   mh(1) = displayPhys().mh0(1);
+   mH(1) = displayPhys().mh0(2);
+   mA(1) = displayPhys().mA0(1);
+   mHp(1) = displayPhys().mHpm;
+
+   for (int i = 0; i< numPts; i++) {
+      MssmSoftsusy a(*this);
+      const double lnq = (lnqMax - lnqMin) * double(i) / double(numPts) + lnqMin;
+      const double q = exp(lnq);
+      const int accuracy = 3;
+      double mt = 0., sinth = 0., piww = 0., pizz = 0;
+
+      a.calcHiggsAtScale(accuracy, mt, sinth, piww, pizz, q);
+
+      if (!a.displayProblem().testSeriousProblem()) {
+         mh.append(a.displayPhys().mh0(1));
+         mH.append(a.displayPhys().mh0(2));
+         mA.append(a.displayPhys().mA0(1));
+         mHp.append(a.displayPhys().mHpm);
+      }
+   }
+   int p;
+
+   sPhysical phys;
+   phys.mh0(1) = maximum(abs( mh.max(p) - masses.mh0(1)), abs( mh.min(p) - masses.mh0(1)));
+   phys.mh0(2) = maximum(abs( mH.max(p) - masses.mh0(2)), abs( mH.min(p) - masses.mh0(2)));
+   phys.mA0(1) = maximum(abs( mA.max(p) - masses.mA0(1)), abs( mA.min(p) - masses.mA0(1)));
+   phys.mHpm   = maximum(abs(mHp.max(p) - masses.mHpm  ), abs(mHp.min(p) - masses.mHpm  ));
+
+   return phys;
+}
+
+/// Calculates an uncertainty estimate of the pole masses from scale
+/// variation and changing of couplings by higher orders
+/// The first parameters are the same as in fixedPointIteration().
+/// The last parameter determines the sources of uncertainty taken
+/// into account.
+softsusy::sPhysical
+MssmSoftsusy::displayPhysUncertainty(TMSSMBoundaryCondition bc,
+   double mxGuess, const DoubleVector& pars, int sgnMu, double tanb,
+   const QedQcd& oneset, bool gaugeUnification,
+   bool ewsbBCscale, int contributions) const {
+   const sPhysical masses = displayPhys();
+   const DoubleVector v_masses = displayPhys().display();
+   const int len = displayPhys().size();
+   DoubleVector v_scale(len), v_match(len), v_mt(len), v_alphas(len),
+     v_alphaem(len);
+
+   /// vary Q_pole
+   if (contributions & DeltaQpole) {
+      v_scale = displayPhysUncertaintyScaleVariation().display();
+   }
+
+   /// vary Q_match
+   if (contributions & DeltaQmatch) {
+      const double Q_match = oneset.displayMu();
+      const double lnqMin = std::log(0.5 * Q_match);
+      const double lnqMax = std::log(2.0 * Q_match);
+      const int numPts = 10;
+      DoubleVector mh(1), mH(1), mA(1), mHp(1);
+      mh(1) = masses.mh0(1);
+      mH(1) = masses.mh0(2);
+      mA(1) = masses.mA0(1);
+      mHp(1) = masses.mHpm;
+
+      for (int i = 0; i < numPts; i++) {
+         const double lnq = (lnqMax - lnqMin) * double(i) / double(numPts) +
+	   lnqMin;
+         const double q = exp(lnq);
+
+         QedQcd tmp(oneset);
+         const int err = tmp.runto(q);
+
+         if (!err) {
+            MssmSoftsusy a(*this);
+            a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, tmp,
+				  gaugeUnification, ewsbBCscale);
+
+            if (!a.displayProblem().testSeriousProblem()) {
+               mh.append(a.displayPhys().mh0(1));
+               mH.append(a.displayPhys().mh0(2));
+               mA.append(a.displayPhys().mA0(1));
+               mHp.append(a.displayPhys().mHpm);
+            }
+         }
+      }
+
+      int p;
+      sPhysical phys;
+      phys.mh0(1) = maximum(abs( mh.max(p) - masses.mh0(1)), abs( mh.min(p) - masses.mh0(1)));
+      phys.mh0(2) = maximum(abs( mH.max(p) - masses.mh0(2)), abs( mH.min(p) - masses.mh0(2)));
+      phys.mA0(1) = maximum(abs( mA.max(p) - masses.mA0(1)), abs( mA.min(p) - masses.mA0(1)));
+      phys.mHpm   = maximum(abs(mHp.max(p) - masses.mHpm  ), abs(mHp.min(p) - masses.mHpm  ));
+
+      v_match = phys.display();
+   }
+
+   // vary mt
+   if (contributions & DeltaMt) {
+      MssmSoftsusy a(*this);
+      a.useAlternativeMt();
+      a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, oneset, gaugeUnification, ewsbBCscale);
+
+      if (!a.displayProblem().testSeriousProblem()) {
+         v_mt = DoubleVector(v_masses - a.displayPhys().display()).abs();
+      }
+   }
+
+   // vary alpha_s
+   if (contributions & DeltaAlphaS) {
+      MssmSoftsusy a(*this);
+      a.useAlternativeAlphaS();
+      a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, oneset, gaugeUnification, ewsbBCscale);
+
+      if (!a.displayProblem().testSeriousProblem()) {
+         v_alphas = DoubleVector(v_masses - a.displayPhys().display()).abs();
+      }
+   }
+
+   /// vary alpha_em
+   if (contributions & DeltaAlphaEm) {
+      MssmSoftsusy a(*this);
+      a.useAlternativeAlphaEm();
+      a.fixedPointIteration(bc, mxGuess, pars, sgnMu, tanb, oneset, gaugeUnification, ewsbBCscale);
+
+      if (!a.displayProblem().testSeriousProblem()) {
+         v_alphaem = DoubleVector(v_masses - a.displayPhys().display()).abs();
+      }
+   }
+
+   // combine
+   const DoubleVector total = v_scale.abs() + v_match.abs() +
+      v_mt.abs() + v_alphas.abs() + v_alphaem.abs();
+
+   sPhysical dM_total;
+   dM_total.set(total);
+
+   return dM_total;
 }
 
 } ///< namespace softsusy

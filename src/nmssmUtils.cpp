@@ -32,7 +32,7 @@ double NMSSM_input::get(NMSSM_parameters par) const {
 }
 
 DoubleVector NMSSM_input::get_nmpars() const {
-   DoubleVector nmpars(5);
+   DoubleVector nmpars(6);
    nmpars(1) = get(NMSSM_input::lambda);
    nmpars(2) = get(NMSSM_input::kappa);
    if (is_set(NMSSM_input::lambdaS)) {
@@ -49,6 +49,7 @@ DoubleVector NMSSM_input::get_nmpars() const {
    }
    nmpars(4) = get(NMSSM_input::xiF);
    nmpars(5) = get(NMSSM_input::muPrime);
+   nmpars(6) = get(NMSSM_input::xiS);   
    return nmpars;
 };
 
@@ -87,9 +88,9 @@ void NMSSM_input::check_ewsb_output_parameters() const {
          if (!is_set(lambdaS) && !is_set(kappa) && !is_set(mS2))
             supported = true;
       } else {
-         if (!is_set(mu) && !is_set(BmuOverCosBetaSinBeta) && !is_set(xiS))
+         if (!is_set(mu) && !is_set(BmuOverCosBetaSinBeta))
             supported = true;
-         if (!is_set(lambdaS) || close(parameter[lambdaS], 0., EPSTOL))
+         if ( (!is_set(lambdaS) || close(parameter[lambdaS], 0., EPSTOL)) && !is_set(xiS))
             throw "# ERROR: <S> is zero!  In the Z3 violating NMSSM <S> is not"
                " determined by the EWSB conditions, so <S> has to be set to"
                " a non-zero value on the user-side!\n";
@@ -128,8 +129,8 @@ void NMSSM_input::check_ewsb_output_parameters() const {
 
   ostream & operator << (ostream & left, const NmssmSoftsusy & s) {
     left << s.displaySoftsusy()
-	 << s.displayNmssmSusyPars() 
-	 << s.displaySoftParsNmssm();	 
+	 << s.displayNmssmSusyPars()
+	 << s.displaySoftParsNmssm();
     return left;
   }
 
@@ -173,7 +174,7 @@ void NMSSM_command_line_parser::parse(int argc, char* argv[]) {
       else if (starts_with(argv[i], "--a0="))
          a0  = get_value(argv[i], "--a0=");
       else if (strcmp(argv[i], "--lambdaAtMsusy") == 0)
-         softsusy::GUTlambda = false;
+         nmssm_input->set(NMSSM_input::GUTlambda, false);
       else if (starts_with(argv[i], "--tanBeta="))
          nmssm_input->set(NMSSM_input::tanBeta, get_value(argv[i], "--tanBeta="));
       else if (starts_with(argv[i], "--mHu2="))
@@ -314,7 +315,7 @@ void NmssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a
-  m.SoftParsNmssm::standardSugra(m0, m12, a0, m.displayNmssmSusyPars(), 
+  m.SoftParsNmssm::standardSugra(m0, m12, a0, m.displayNmssmSusyPars(),
 				 m.displayMssmSusy(),
 				 m.displayMssmSoftPars());
   m.MssmSoftPars::standardSugra(m.displayMssmSoft(), m0, m12, a0);
@@ -329,10 +330,131 @@ void MssmMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
   m.MssmSoftsusy::standardSugra(m.displayMssmSusy(), m0, m12, a0);
-  m.standardsemiSugra(m0, m12, a0, 0.0, 1e-15, m.displayNmssmSusy(), 
+  m.standardsemiSugra(m0, m12, a0, 0.0, 1e-15, m.displayNmssmSusy(),
 		      m.displayMssmSoftPars());
   m.setMspSquared(1e6);
 }
+//focusgmsb
+  void focusgmsb(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
+ //  void splitGmsb(MssmSoftsusy & m, const DoubleVector & inputParameters) {
+    
+    double LAMBDA3 = inputParameters(1);
+    double LAMBDAX = inputParameters(2);
+    double mMess = inputParameters(3);
+    double cgrav = inputParameters(4);
+
+    // double smallambda = inputParameters(5); //  nmpars(1)
+    // double csif = 1e6;                      //  nmpars(4)
+    // double muprime = 1e3;                   //  nmpars(5)
+    double msingl = 1e6;
+    // double Asmalllambda = 0;
+    double msinglprime = 0.0;
+    double csisingl;                           // output - obtained from tadpole condition 
+        
+    double lambdag1 =  5 *LAMBDAX;
+    double lambdag2 =  2 *LAMBDA3 + 3 *LAMBDAX;
+    double lambdag3 =  2 *LAMBDAX;
+
+    double m1, m2, m3;
+    m1 = sqr(m.displayGaugeCoupling(1)) / (16.0 * sqr(PI)) * lambdag1;
+    m2 = sqr(m.displayGaugeCoupling(2)) / (16.0 * sqr(PI)) * lambdag2;
+    m3 = sqr(m.displayGaugeCoupling(3)) / (16.0 * sqr(PI)) * lambdag3;
+    m.setGauginoMass(1, m1);
+    m.setGauginoMass(2, m2);
+    m.setGauginoMass(3, m3);
+// I am not sure about this    
+    m.setM32(2.37e-19 * sqrt((sqr(LAMBDA3) + sqr(LAMBDAX)) * 0.5) *
+	     mMess * cgrav);
+// I am not sure about this        
+      
+    double g1f = sqr(sqr(m.displayGaugeCoupling(1)));
+    double g2f = sqr(sqr(m.displayGaugeCoupling(2)));
+    double g3f = sqr(sqr(m.displayGaugeCoupling(3)));
+    
+    double lambdaP1sf = 5 * sqr(LAMBDAX);
+    double lambdaP2sf = 2 * sqr(LAMBDA3) + 3 *sqr(LAMBDAX);
+    double lambdaP3sq = 2 * sqr(LAMBDAX);
+
+
+  //   const double epstol = 1.0e-4;
+  //   double x = LAMBDA / mMess;
+  
+  //   double f, g;
+  
+  // if(fabs(x) < epstol) { /// hep-ph/9801271
+  //   g = 1.0 + x*x/6.0 + sqr(x*x)/15.0;
+  //   f = 1.0 + x*x/36.0 - 11.0*sqr(x*x)/450.0;
+  // }
+  // else if(fabs(x-1.0) < 0.0001) {
+  //   g  =  log(4.0);
+  //   f  = -sqr(PI)/6.0 + log(4.0) + 0.5*sqr(log(4.0));
+  //   g -=  0.0008132638905771205626;
+  //   f -= -0.0049563838821509165200;
+  // }
+  // else {
+  //   g = 1.0 / sqr(x) * 
+  //     ((1.0 + x) * log(1.0 + x) + (1.0 - x) * log(1.0 - x));
+  //   f = (1.0 + x) / sqr(x) * 
+  //     (log(1.0 + x) - 2.0 * dilog(x / (1.0 + x)) + 0.5 * 
+  //      dilog(2.0 * x / (1.0 + x))) + 
+  //     (1.0 - x) / sqr(x) * (log(1.0 - x) - 2.0 * dilog(-x / (1.0 - x)) +
+  // 			    0.5 * dilog(-2.0 * x / (1.0 - x)));
+  // }
+
+    double mursq, mdrsq, mersq, mqlsq, mllsq;
+    mursq = 2.0 *
+      (4.0 / 3.0 * g3f * lambdaP3sq + 0.6 * 4.0 / 9.0 * g1f * lambdaP1sf)
+      / sqr(16.0 * sqr(PI));
+    mdrsq = 2.0 *
+      (4.0 / 3.0 * g3f * lambdaP3sq + 0.6 * 1.0 / 9.0 * g1f * lambdaP1sf)
+      / sqr(16.0 * sqr(PI));
+    mersq = 2.0 *
+      (0.6 * g1f * lambdaP1sf)
+      / sqr(16.0 * sqr(PI));
+    mqlsq = 2.0 *
+      (4.0 / 3.0 * g3f * lambdaP3sq + 0.75 * g2f * lambdaP2sf +
+       0.6 * g1f / 36.0 * lambdaP1sf)
+      / sqr(16.0 * sqr(PI));
+    mllsq = 2.0 *
+      (0.75 * g2f * lambdaP2sf + 0.6 * 0.25 * g1f * lambdaP1sf)
+      / sqr(16.0 * sqr(PI));
+    
+    // You need Higgs masses too!
+    
+    DoubleMatrix id(3, 3);
+    id(1, 1) = 1.0; id(2, 2) = 1.0; id(3, 3) = 1.0;
+    
+    m.setSoftMassMatrix(mQl, mqlsq * id);
+    m.setSoftMassMatrix(mUr, mursq * id);
+    m.setSoftMassMatrix(mDr, mdrsq * id);
+    m.setSoftMassMatrix(mLl, mllsq * id);
+    m.setSoftMassMatrix(mEr, mersq * id);
+
+    m.setMh1Squared(mllsq);
+    m.setMh2Squared(mllsq);
+    m.setMsSquared(msingl);
+
+    const double susyMu = m.displaySusyMu();
+    if (!close(susyMu, 0.0, EPSTOL))
+      m.setMspSquared(m.displayM3Squared() * m.displayMupr() /
+		    susyMu);
+    
+    cout << "Boundary condition applied at scale: "
+	 << m.displayMu()
+	 << m;
+    
+    // m.setTrilinearElement(1,1 m.displayMssmSusy(), 0.0);
+    //    DoubleVector pars(2); ///< encodes EWSB BC
+    //    pars(1) = muOm2 * m2;
+    //    pars(2) = mAOm2 * m2;
+    
+    /// Save the two parameters
+    //m.setEwsbConditions(pars);
+    //maybe not needed for focusgmsb
+    //    cout << "**** DEBUG: at Mmess *****" <<;
+  }
+//focusgmsb
+  
 
 //PA: semi-msugra bcs for the nmssm
 void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
@@ -348,7 +470,7 @@ void SemiMsugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be a0
   m.MssmSoftPars::standardSugra(m.displayMssmSusy(), m0, m12, a0);
-  m.standardsemiSugra(m0, m12, a0, Al, Ak, m.displayNmssmSusy(), 
+  m.standardsemiSugra(m0, m12, a0, Al, Ak, m.displayNmssmSusy(),
 		      m.displayMssmSoftPars(), 0.);
 }
 
@@ -369,7 +491,7 @@ void NmssmSugraNoSoftHiggsMassBcs(NmssmSoftsusy & m, const DoubleVector & inputP
 
   // If SoftHiggsOut == true, then mu, Bmu and xiS are not fixed by
   // EWSB.  In this case they must be set in the BCS.
-  if (!softsusy::Z3 && softsusy::SoftHiggsOut) {
+  if (m.displayZ3() && softsusy::SoftHiggsOut) {
     m.setSusyMu(inputParameters(4));
     m.setM3Squared(inputParameters(5));
     m.setXiS(inputParameters(6));
@@ -383,7 +505,7 @@ void generalNmssmBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   ms.set(inputParameters); k = numSoftParsMssm + 1;
   r.set(inputParameters, k);
 
-  if (Z3 == false) {
+  if (m.displayZ3() == false) {
     double m3sq = m.displayM3Squared();
     double XiS = m.displayXiS();
     ms.setM3Squared(m3sq);
@@ -462,20 +584,20 @@ void extendedNMSugraBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters)
   if (!softsusy::SoftHiggsOut) {
     m.setMh1Squared(inputParameters.display(21));
     m.setMh2Squared(inputParameters.display(22));
-    if (!softsusy::Z3)
+    if (!m.displayZ3())
       m.setMsSquared(inputParameters.display(53));
   }
 
   m.setTrialambda(m.displayLambda() * inputParameters.display(50));
   m.setTriakappa(m.displayKappa() * inputParameters.display(51));
 
-  if (!softsusy::Z3) {
+  if (!m.displayZ3()) {
     m.setMspSquared(inputParameters.display(52) * m.displayMupr());
   }
 
   // If SoftHiggsOut == true, then mu, Bmu and xiS are not fixed by
   // EWSB.  In this case they must be set in the BCS.
-  if (!softsusy::Z3 && softsusy::SoftHiggsOut) {
+  if (m.displayZ3() && softsusy::SoftHiggsOut) {
     m.setSusyMu(inputParameters(54));
     m.setM3Squared(inputParameters(55));
     m.setXiS(inputParameters(56));
@@ -494,14 +616,14 @@ void nuhmINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   /// Sets scalar soft masses equal to m0, fermion ones to m12 and sets the
   /// trilinear scalar coupling to be A0
   ///  if (m0 < 0.0) m.flagTachyon(true); Deleted on request from A Pukhov
-  m.standardsemiSugra(m0, m12, A0, Al, Ak, m.displayNmssmSusy(), 
+  m.standardsemiSugra(m0, m12, A0, Al, Ak, m.displayNmssmSusy(),
 		      m.displayMssmSoftPars());
 
   m.setMh1Squared(mH * mH); m.setMh2Squared(mH * mH);
   m.setMsSquared(mH * mH);
   m.setTrialambda(m.displayLambda() * Al);
   m.setTriakappa(m.displayKappa() * Ak);
-  if(Z3 == false) {
+  if(m.displayZ3() == false) {
      m.setMspSquared(inputParameters.display(52) * m.displayMupr());
   }
 }
@@ -513,19 +635,19 @@ void nuhmIINM(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   double mH2  = inputParameters.display(4);
   double A0 = inputParameters.display(5);
   double mS = 0.0;
-  if (Z3 == false)
+  if (m.displayZ3() == false)
      mS = inputParameters.display(6);
   double Al = inputParameters.display(5);
   double Ak = inputParameters.display(6);
-  m.standardsemiSugra(m0, m12, A0, Al, Ak, m.displayNmssmSusy(), 
+  m.standardsemiSugra(m0, m12, A0, Al, Ak, m.displayNmssmSusy(),
 		      m.displayMssmSoftPars());
 
   m.setMh1Squared(mH1 * mH1); m.setMh2Squared(mH2 * mH2);
-  if (Z3 == false)
+  if (m.displayZ3() == false)
      m.setMsSquared(mS * mS);
   m.setTrialambda(m.displayLambda() * Al);
   m.setTriakappa(m.displayKappa() * Ak);
-  if (Z3 == false) {
+  if (m.displayZ3() == false) {
     m.setMspSquared(inputParameters.display(52) * m.displayMupr());
   }
 }
@@ -536,7 +658,7 @@ void amsbBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
   double m0 = inputParameters.display(2);
 
   m.MssmSoftPars::standardSugra(m.displayMssmSusy(), m0, 0., 0.);
-  m.SoftParsNmssm::standardSugra(m0, 0., 0., m.displayNmssmSusyPars(), 
+  m.SoftParsNmssm::standardSugra(m0, 0., 0., m.displayNmssmSusyPars(),
 				 m.displayMssmSusy(), m.displayMssmSoftPars());
   m.MssmSoftPars::addAmsb(m.displayMssmSusy(), m32);
   MssmSoftPars ms(m.displayMssmSoftPars());
@@ -545,7 +667,7 @@ void amsbBcs(NmssmSoftsusy & m, const DoubleVector & inputParameters) {
 }
 
 /// LCT: Difference between two NMSSM SOFTSUSY objects in and out: EWSB terms only
-double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out, 
+double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out,
 	      int numTries) {
   DoubleVector sT(37);
   sumTol(in.displayDrBarPars(), out.displayDrBarPars(), sT);
@@ -564,9 +686,269 @@ double sumTol(const NmssmSoftsusy & in, const NmssmSoftsusy & out,
 
   return sT.max();
 }
-  
+
+/// DH: Calculates coefficients in semi-analytic solution for m_{H_d}^2
+/// for MSUGRA BCs
+DoubleVector calcMh1SqNmssmMsugraCoeffs(const NmssmSoftsusy & m, double scale) {
+  NmssmSoftsusy model(m);
+  const double mx = model.displayMxBC();
+  model.runto(mx);
+
+  const DoubleVector savedPars(model.display());
+
+  DoubleVector coeffs(4);
+
+  // coefficient of M_0^2, M_{1/2}^2 and A_0^2
+  for (int i = 1; i <= 3; ++i) {
+    DoubleVector inputs(3);
+    inputs(i) = 1.0;
+
+    NmssmMsugraBcs(model, inputs);
+
+    model.runto(scale);
+
+    coeffs(i) = model.displayMh1Squared();
+
+    model.set(savedPars);
+    model.setMu(mx);
+  }
+
+  // coefficient of M_{1/2} A_0
+  DoubleVector crossTermInputs(3);
+  crossTermInputs(1) = 0.0;
+  crossTermInputs(2) = 1.0;
+  crossTermInputs(3) = 1.0;
+
+  NmssmMsugraBcs(model, crossTermInputs);
+
+  model.runto(scale);
+
+  coeffs(4) = model.displayMh1Squared() - coeffs(2) - coeffs(3);
+
+  return coeffs;
+}
+
+/// DH: Calculates coefficients in semi-analytic solution for m_{H_d}^2
+/// for semi-MSUGRA BCs
+DoubleVector calcMh1SqSemiMsugraCoeffs(const NmssmSoftsusy & m, double scale) {
+  NmssmSoftsusy model(m);
+  const double mx = model.displayMxBC();
+
+  model.runto(mx);
+
+  const DoubleVector savedPars(model.display());
+
+  DoubleVector coeffs(12);
+
+  // coefficients of M_0^2, M_{1/2}^2, A_0^2, A_\lambda^2
+  // and A_\kappa^2
+  for (int i = 1; i <= 5; ++i) {
+    DoubleVector inputs(5);
+    inputs(i) = 1.0;
+
+    SemiMsugraBcs(model, inputs);
+    model.setMsSquared(0.);
+
+    model.runto(scale);
+
+    coeffs(i) = model.displayMh1Squared();
+
+    model.set(savedPars);
+    model.setMu(mx);
+  }
+
+  // coefficient of m_S^2
+  DoubleVector ms2Inputs(5);
+  SemiMsugraBcs(model, ms2Inputs);
+  model.setMsSquared(1.);
+
+  model.runto(scale);
+
+  coeffs(6) = model.displayMh1Squared();
+
+  model.set(savedPars);
+  model.setMu(mx);
+
+  // coefficients of cross-terms involving gaugino mass
+  // and trilinears:
+  // M_{1/2} times trilinear
+  for (int i = 3; i <= 5; ++i) {
+    DoubleVector m12TrilinearInputs(5);
+    m12TrilinearInputs(2) = 1.0;
+    m12TrilinearInputs(i) = 1.0;
+
+    SemiMsugraBcs(model, m12TrilinearInputs);
+    model.setMsSquared(0.);
+
+    model.runto(scale);
+
+    coeffs(i + 4) = model.displayMh1Squared() - coeffs(2) - coeffs(i);
+
+    model.set(savedPars);
+    model.setMu(mx);
+  }
+
+  // A_0 times trilinear
+  for (int i = 4; i <= 5; ++i) {
+    DoubleVector a0TrilinearInputs(5);
+    a0TrilinearInputs(3) = 1.0;
+    a0TrilinearInputs(i) = 1.0;
+
+    SemiMsugraBcs(model, a0TrilinearInputs);
+    model.setMsSquared(0.);
+
+    model.runto(scale);
+
+    coeffs(i + 6) = model.displayMh1Squared() - coeffs(3) - coeffs(i);
+  }
+
+  // A_\lambda times A_\kappa
+  DoubleVector alamakapInputs(5);
+  alamakapInputs(4) = 1.0;
+  alamakapInputs(5) = 1.0;
+
+  SemiMsugraBcs(model, alamakapInputs);
+  model.setMsSquared(0.);
+
+  model.runto(scale);
+
+  coeffs(12) = model.displayMh1Squared() - coeffs(4) - coeffs(5);
+
+  return coeffs;
+}
+
+/// DH: Calculates coefficients in semi-analytic solution for m_{H_u}^2
+/// for MSUGRA BCs
+DoubleVector calcMh2SqNmssmMsugraCoeffs(const NmssmSoftsusy & m, double scale) {
+  NmssmSoftsusy model(m);
+  const double mx = model.displayMxBC();
+  model.runto(mx);
+
+  const DoubleVector savedPars(model.display());
+
+  DoubleVector coeffs(4);
+
+  // coefficient of M_0^2, M_{1/2}^2 and A_0^2
+  for (int i = 1; i <= 3; ++i) {
+    DoubleVector inputs(3);
+    inputs(i) = 1.0;
+
+    NmssmMsugraBcs(model, inputs);
+
+    model.runto(scale);
+
+    coeffs(i) = model.displayMh2Squared();
+
+    model.set(savedPars);
+    model.setMu(mx);
+  }
+
+  // coefficient of M_{1/2} A_0
+  DoubleVector crossTermInputs(3);
+  crossTermInputs(1) = 0.0;
+  crossTermInputs(2) = 1.0;
+  crossTermInputs(3) = 1.0;
+
+  NmssmMsugraBcs(model, crossTermInputs);
+
+  model.runto(scale);
+
+  coeffs(4) = model.displayMh2Squared() - coeffs(2) - coeffs(3);
+
+  return coeffs;
+}
+
+/// DH: Calculates coefficients in semi-analytic solution for m_{H_u}^2
+/// for semi-MSUGRA BCs
+DoubleVector calcMh2SqSemiMsugraCoeffs(const NmssmSoftsusy & m, double scale) {
+  NmssmSoftsusy model(m);
+  const double mx = model.displayMxBC();
+
+  model.runto(mx);
+
+  const DoubleVector savedPars(model.display());
+
+  DoubleVector coeffs(12);
+
+  // coefficients of M_0^2, M_{1/2}^2, A_0^2, A_\lambda^2
+  // and A_\kappa^2
+  for (int i = 1; i <= 5; ++i) {
+    DoubleVector inputs(5);
+    inputs(i) = 1.0;
+
+    SemiMsugraBcs(model, inputs);
+    model.setMsSquared(0.);
+
+    model.runto(scale);
+
+    coeffs(i) = model.displayMh2Squared();
+
+    model.set(savedPars);
+    model.setMu(mx);
+  }
+
+  // coefficient of m_S^2
+  DoubleVector ms2Inputs(5);
+  SemiMsugraBcs(model, ms2Inputs);
+  model.setMsSquared(1.);
+
+  model.runto(scale);
+
+  coeffs(6) = model.displayMh2Squared();
+
+  model.set(savedPars);
+  model.setMu(mx);
+
+  // coefficients of cross-terms involving gaugino mass
+  // and trilinears:
+  // M_{1/2} times trilinear
+  for (int i = 3; i <= 5; ++i) {
+    DoubleVector m12TrilinearInputs(5);
+    m12TrilinearInputs(2) = 1.0;
+    m12TrilinearInputs(i) = 1.0;
+
+    SemiMsugraBcs(model, m12TrilinearInputs);
+    model.setMsSquared(0.);
+
+    model.runto(scale);
+
+    coeffs(i + 4) = model.displayMh2Squared() - coeffs(2) - coeffs(i);
+
+    model.set(savedPars);
+    model.setMu(mx);
+  }
+
+  // A_0 times trilinear
+  for (int i = 4; i <= 5; ++i) {
+    DoubleVector a0TrilinearInputs(5);
+    a0TrilinearInputs(3) = 1.0;
+    a0TrilinearInputs(i) = 1.0;
+
+    SemiMsugraBcs(model, a0TrilinearInputs);
+    model.setMsSquared(0.);
+
+    model.runto(scale);
+
+    coeffs(i + 6) = model.displayMh2Squared() - coeffs(3) - coeffs(i);
+  }
+
+  // A_\lambda times A_\kappa
+  DoubleVector alamakapInputs(5);
+  alamakapInputs(4) = 1.0;
+  alamakapInputs(5) = 1.0;
+
+  SemiMsugraBcs(model, alamakapInputs);
+  model.setMsSquared(0.);
+
+  model.runto(scale);
+
+  coeffs(12) = model.displayMh2Squared() - coeffs(4) - coeffs(5);
+
+  return coeffs;
+}
+
   /// explicit template instantiations
 //  template class Softsusy<SoftParsNmssm>;
 //  template class SoftPars<NmssmSusy, nmsBrevity>;
-  
+
 } ///< namespace softsusy

@@ -12,7 +12,6 @@
 #include <sstream>
 #include <cstring>
 #include "mycomplex.h"
-#include "def.h"
 #include "linalg.h"
 #include "lowe.h"
 #include "rge.h"
@@ -29,6 +28,7 @@
 #include "twoloophiggs.h"
 #include "dilogwrap.h"
 #include "rpvneut.h"
+#include "mssmjacobian.h"
 using namespace softsusy;
 
 /// string routine for options

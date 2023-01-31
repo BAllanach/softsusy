@@ -9,7 +9,7 @@
 
 \newcommand\beq{\begin{eqnarray}}
 \newcommand\eeq{\end{eqnarray}}
-
+\UseRawInputEncoding
 
 % beginning of macros
 \def\SOFTSUSY{{\tt SOFTSUSY}}
@@ -23,11 +23,9 @@
 
 \begin{flushright}
 DAMTP-2016-16\\
-IFIC/??
 \end{flushright}
 
-\title{The Inclusion of Two-Loop SUSYQCD Corrections to Gluino and Squark 
-    Pole Masses in the Minimal and Next-to-Minimal Supersymmetric Standard Model: {\tt       SOFTSUSY3.7}}
+\title{The Inclusion of Two-Loop SUSYQCD Corrections to Gluino and Squark Pole Masses in the Minimal and Next-to-Minimal Supersymmetric Standard Model: {\tt SOFTSUSY3.7}}
 
 \author[damtp]{B.C.~Allanach}
 \cortext[cor1]{Corresponding author}
@@ -234,7 +232,7 @@ to the corresponding argument, and the external momentum invariant is $s=z$.)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[!tb]
 \centering
-\includegraphics[width=12.0cm,angle=0]{kink_fig.eps}
+\includegraphics[width=12.0cm,angle=0]{kink_fig}
 \caption{\label{fig:kinks}
 Feynman diagrams for the self-energy of a particle that couples to
 two lighter particles. The dark blobs in (b) and (c) represent 1-loop subdiagrams.
@@ -277,7 +275,7 @@ the Feynman diagram shown in Figure~\ref{fig:kinks2}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[!tb]
 \centering
-\includegraphics[width=4.0cm,angle=0]{kink_fig2.eps}
+\includegraphics[width=4.0cm,angle=0]{kink_fig2}
 \caption{\label{fig:kinks2}
 Feynman diagram for the self-energy of a particle that couples to
 two lighter particles, each of which couples to a massless gauge boson. 
@@ -335,8 +333,8 @@ resummation should be small.
 
 
 \begin{figure}[!t]
-\includegraphics[width=0.495\textwidth]{deltam.eps}
-\includegraphics[width=0.495\textwidth]{deltasigma.eps}
+\includegraphics[width=0.495\textwidth]{deltam}
+\includegraphics[width=0.495\textwidth]{deltasigma}
 \caption{\label{fig:m0scan} 
 Effects of the 2-loop SUSYQCD corrections to sparticle pole
   masses (left panel) and total production cross-sections (right panel), for a
@@ -419,10 +417,10 @@ because {\tt NLL-Fast3.1} considers the production cross-sections to be too
 small to be relevant, and so returns zeroes. 
 
 \begin{figure}[!t]
-\includegraphics[width=0.495\textwidth]{Qgluino.eps}
-\includegraphics[width=0.495\textwidth]{QsuL.eps}
-\includegraphics[width=0.495\textwidth]{Qstop1.eps}
-\includegraphics[width=0.495\textwidth]{Qstop2.eps}
+\includegraphics[width=0.495\textwidth]{Qgluino}
+\includegraphics[width=0.495\textwidth]{QsuL}
+\includegraphics[width=0.495\textwidth]{Qstop1}
+\includegraphics[width=0.495\textwidth]{Qstop2}
 \caption{\label{fig:Qdep} 
 Scale dependences of gluino and squark pole mass
 predictions for the CMSSM with $m_0=M_{1/2}=1$ TeV, $A_0=0$, $\tan \beta=10$
@@ -482,7 +480,7 @@ Higgs mass predictions, gauginos and sleptons, for instance.
 \section*{Acknowledgments}
 This work has been partially supported by STFC grant 
 ST/L000385/1. We thank the Cambridge SUSY working group for helpful
-discussions. 
+discussions and T Garon and L Everett for bug-finding.
 The work of SPM was supported in part by the National Science
 Foundation grant number PHY-1417028.
 DGR acknowledges the support of the Ohio Supercomputer Center.
@@ -493,17 +491,11 @@ DGR acknowledges the support of the Ohio Supercomputer Center.
 \label{sec:install}
 
 In order to have {\tt \small SOFTSUSY} use the higher order corrections
-described in the present paper, the code containing them must be both compiled
-{\em and}\/ a run-time flag should be set to ensure their employment in the
+described in the present paper, the run-time flag should be set to ensure
+their employment in the 
 spectrum calculation. 
-A compilation argument to the {\tt ./configure}~command is provided in order
-to compile the necessary code to include the higher order corrections:
-\begin{verbatim}
---enable-two-loop-sparticle-mass-compilation
-\end{verbatim}
 We have included a global boolean variable which controls the higher order
-corrections  at run time (provided that the program has already been compiled
-with  the higher order corrections included):
+corrections  at run time:
 \begin{quote}
  \verb|bool USE_TWO_LOOP_SPARTICLE_MASS|  - if \code{true}, the 
           $\mathcal{O}(\alpha_s^2)$ corrections are included 
@@ -519,11 +511,6 @@ two-loop corrections to the extracted MSSM value of $\alpha_s(M_Z)$ or
 three-loop MSSM renormalisation group equations, as
 described in Ref.~\cite{Allanach:2014nba}.
         
-To summarise, installation is completed by executing the following commands
-\begin{verbatim}
-> ./configure --enable-two-loop-sparticle-mass-compilation
-> make
-\end{verbatim}
 We remind the reader that the two-loop corrections discussed here are
 available for use either in the MSSM (with or without $R-$parity
 violation)~\cite{Allanach:2009bv} or 
@@ -567,8 +554,6 @@ parameters. The program may then be run with
 \normalsize
 
 One can change whether the higher order corrections are switched on 
-(provided they have been compiled by
-setting the correct \verb|./configure| flag as described above)
 with
 \code{SOFTSUSY Block} parameter 22 and the two-loop gluino expansion
 approximation with parameter 23:

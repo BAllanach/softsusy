@@ -1,4 +1,4 @@
-/** \file def.h
+/** \file rpvmain.h
    - Project:     SOFTSUSY
    - Author:      Ben Allanach, Markus Bernhardt
    - Manual:      arXiv:0903.1805, Comp. Phys. Comm. 181 (2010) 232
@@ -14,7 +14,6 @@
 #include <iostream>
 #include "rpvneut.h"
 #include "mycomplex.h"
-#include "def.h"
 #include "linalg.h"
 #include "lowe.h"
 #include "rge.h"

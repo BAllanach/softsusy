@@ -7,6 +7,10 @@
 
 #include "rpvneut.h"
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 namespace softsusy {
 
 const RpvNeutrino & RpvNeutrino::operator = (const RpvNeutrino &s) {
@@ -1385,10 +1389,10 @@ void RpvNeutrino::sparticleThresholdCorrections(double tb,
   
   setMw(sqrt(0.25 * sqr(newGauge(2)) * sqr(vev) - piwwtMW));
   
-  if (MIXING < 0 || MIXING > 2) {
+  if (displayMixing() < 0 || displayMixing() > 2) {
     ostringstream ii;
     ii << "In MssmSoftsusy::sparticleThresholdCorrections(double tb) ";
-    ii << "\n MIXING=" << MIXING << " is out of range (0 -> 2)\n";
+    ii << "\n mixing=" << displayMixing() << " is out of range (0 -> 2)\n";
     throw ii.str();
   }
   
@@ -1902,7 +1906,7 @@ void RpvNeutrino::neutrino(DoubleVector & neutrino, DoubleMatrix & mixMnu,
   msga  = msa  + gfix * mga;
   msgch = msch + gfix * mgch;
   
-  /// OBTAIN THE MIXING MATRICES AND MASS EIGENVALUES 
+  /// OBTAIN THE mixing MATRICES AND MASS EIGENVALUES 
   /// convention as in Dedes et al,  hep-ph/0603225
   ComplexMatrix zsr(5, 5), zsa(5, 5), zsch(8, 8), zsd(6, 6), zsu(6, 6), 
     zfn(7, 7);
@@ -2759,7 +2763,8 @@ void RpvNeutrino::headerSLHA(ostream & out) {
   MssmSoftsusy::headerSLHA(out);
   out << "# B.C. Allanach and M.A. Bernhardt, Comput. Phys. Commun. ";
   out << "181 (2010) 232,\n# arXiv:0903.1805\n";
-  out << "# B.C. Allanach, M. Hanussek and C.H. Kom, arXiv:1109.3735\n";
+  out << "# B.C. Allanach, M. Hanussek and C.H. Kom,\n";
+  out << "# Comput. Phys. Commun. 183 (2012) 785-793, arXiv:1109.3735\n";
 }
 
 void RpvNeutrino::massSLHA(ostream & out) {
@@ -2781,7 +2786,7 @@ void RpvNeutrino::massSLHA(ostream & out) {
 void RpvNeutrino::spinfoSLHA(ostream & out) {
   out << "Block SPINFO          # Program information\n"
       << "     1    SOFTSUSY    # spectrum calculator\n";
-  out << "     2    " << SOFTSUSY_VERSION << "       # version number\n";
+  out << "     2    " << PACKAGE_VERSION << "       # version number\n";
   if (displayProblem().noConvergence)
     out << "     3   Possible problem: Not achieved desired accuracy of "
 	<< TOLERANCE << "- got " 
@@ -3082,7 +3087,7 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
   m(2) = displayPhys().msnu(1);
   m(3) = displayPhys().msnu(2);
   m(4) = displayPhys().msnu(3);
-  m(5) = 6.66e66; /// goldstone boson in last place
+  m(5) = numberOfTheBeast; /// goldstone boson in last place
 
   //  DoubleVector newCpOdds(m.sort());
   DoubleVector newCpOdds(m);
