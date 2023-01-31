@@ -1,11 +1,11 @@
-SOFTSUSY
--------------------------------------------------
+# SOFTSUSY - supersymmetric/Higgs spectrum and decays
+
 by: B C Allanach, P Athron, A Bednyakov, M Bernhardt, T Cridge, D Grellscheid,
                   M Hanussek, C H Kom, S Martin, D Robertson, R Ruiz de Austri,
 		  P Slavich, L Tunstall, A Voigt and A G Williams 
 
-SUMMARY
--------
+## Summary
+
 This program provides a SUSY spectrum in the NMSSM, or the MSSM including
 flavour violation and with or without R-parity consistent with input Standard
 Model fermion mass/mixings and electroweak/strong coupling data. The R-parity
@@ -14,8 +14,7 @@ can be used in conjunction with other programs for many different particle
 physics calculations. SOFTSUSY now has a mode with 3 loop RGEs and some 2-loop
 threshold corrections.  
 
-QUICK INSTALLATION AND RUN TEST
--------------------------------
+## Quick Installation and Run Test
 
 For simplest installation:
 ```bash
@@ -53,50 +52,43 @@ See the manual (in the doc/ subdirectory) `threeLoop.pdf` for instructions on
 how to switch two-loop threshold corrections/three loop RGEs at run-time, once
 they've been compiled. 
 
-INTRODUCTION
-------------
-
-The most recent version of SOFTSUSY and full documentation can be obtained
-from: [softsusy](http://softsusy.hepforge.org/)
-
 This program provides a SUSY spectrum in the NMSSM, or the MSSM including
 flavour violation and with or without R-parity consistent with input Standard
 Model fermion mass/mixings and electroweak/strong coupling data. The R-parity
 violating mode can calculate neutrino masses and mixings to 1 loop. 
 
-REFERENCES
-----------
+## References
 
 If you use SOFTSUSY to write a paper, please cite (see MCnet guidelines)
 
-> 1. [B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145](https://arxiv.org/abs/hep-ph/0104145)
+> [1] [B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145](https://arxiv.org/abs/hep-ph/0104145)
 
 which is the SOFTSUSY manual for the R-parity conserving MSSM. If you
-calculate in the NMSSM, please cite 1 and 
+calculate in the NMSSM, please cite [1] and 
 
-> 2. [B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and A. Williams,
+> [2] [B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and A. Williams,
 arXiv:1311.7659](https://arxiv.org/abs/1311.7659)
 
-If you use the R-parity violating aspects, please cite 1 and
+If you use the R-parity violating aspects, please cite [1] and
 
-> 3. [B.C. Allanach and M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232,
+> [3] [B.C. Allanach and M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232,
 arXiv:0903.1805](https://arxiv.org/abs/0903.1805)
 
-If you use it to calculate neutrino masses and mixings, please cite 1, 3 and
+If you use it to calculate neutrino masses and mixings, please cite [1], [3] and
 
-> 4. [B.C. Allanach, M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012)
+> [4] [B.C. Allanach, M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012)
 785, arXiv:1109.3735](https://arxiv.org/abs/1109.3735)
 
 If you use the three-loop RGEs or two-loop threshold corrections, please cite
-1 and 
+[1] and 
 
-> 5. [B.C. Allanach, A. Bednyakov and R. Ruiz de Autri, arXiv:1407.6130](https://arxiv.org/abs/1407.6130)
+> [5] [B.C. Allanach, A. Bednyakov and R. Ruiz de Autri, arXiv:1407.6130](https://arxiv.org/abs/1407.6130)
 
 If you use the two-loop SUSY QCD corrections to squark and gluino pole masses,
-please cite 1 and 
+please cite [1] and 
 
-> 6. [B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de
-Austri, arXiv:1601.06657] (https://arxiv.org/abs/1601.06657)
+> [6] [B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de
+Austri, arXiv:1601.06657](https://arxiv.org/abs/1601.06657)
 
 
 ## SOFTSUSY-specific input for SUSY Les Houches Accord input files
@@ -127,8 +119,8 @@ Block SOFTSUSY           # SOFTSUSY specific inputs
  23    <expandAroundGluinoPole> # sets expandAroundGluinoPole parameter (default 3)
 ```
 
-HIGH ORDERS MODE
-----------------
+## High orders mode
+
 If the 2-loop SUSY QCD corrections to squark and gluino masses are required, do
 
 ```bash
@@ -140,8 +132,8 @@ An example point using the higher order terms can be run with, for example,
 ./softpoint.x sugra --tol=1.0e-4 --m0=1000 --m12=1000 --a0=0 --tanBeta=10 --sgnMu=1 --two-loop-sparticle-masses --two-loop-sparticle-mass-method=1
 ```
 
-HIGH ACCURACY MODE
-------------------
+## High accuracy mode
+
 If the high accuracy mode with 3-loop RGEs and some 2-loop threshold corrections is required, do
 ```bash
 ./configure --enable-full-susy-threshold-compilation --enable-three-loop-rge-compilation
@@ -161,31 +153,32 @@ codes in
 * Precise Determination of the Neutral Higgs Boson Masses in the MSSM, [B.C. Allanach, A. Djouadi, J.L. Kneur, W. Porod, P. Slavich, JHEP 0409 (2004) 044, hep-ph/0406166](https://arxiv.org/abs/hep-ph/0406166) 
 * Theoretical uncertainties in sparticle mass predictions from computational tools, [B.C. Allanach, S. Kraml, W. Porod, JHEP 03 (2003) 045, hep-ph/0302102](https://arxiv.org/abs/hep-ph/0302102)  
 
-EXECTUABLE FILES: AFTER INSTALLATION
-------------------------------------
+## Executable files: after installation
+
 * `softpoint.x`: command-line interface. GMSB, AMSB, mSUGRA and general boundary conditions possible. Main program: `src/softpoint.cpp`
 * `softsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying tan beta. Main program: `src/main.cpp`
 * `softsusy-nmssm.x`: example NMSSM test program - loops over tan beta. Main program: `src/main-nmssm.cpp`
 * `rpvsoftsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying lambda'_{331}(M_GUT). Main program: `src/rpvmain.cpp`
 * `rpvneut.x`: example neutrino mass calculating R-parity violating test program. Main program `src/rpvNeut.cpp` 
 
-FILES INCLUDED IN THIS DISTRIBUTION
------------------------------------
-Source files are to be found in the `src/` subdirectory. Manuals are found in the `doc/` subdirectory: `rpcManual.pdf` is the main one, and the other `.pdf` files describe various extensions to this.
+## Documentation
 
+Full code documentation can be obtained from: [softsusy](http://softsusy.hepforge.org/). Manuals are found in the `doc/` subdirectory: `rpcManual.pdf` is the main one, and the other `.pdf` files describe various extensions to this.
 
-INPUT AND INFO FILES
---------------------
-* `README` contains installation instructions and a list of included files
+## Input and information files
+* `README.md` contains these instructions 
 * `inOutFiles/outputTest` is the output from the test program
 * `inOutFiles/slha2Input` is an alternative input file in the SUSY Les Houches Accord 2 format for SPS1a' 
 * `inOutFiles/slha2Output` is the result of running with the above input file and includes flavour violation, for inclusion into codes like SusyBsg1.3 which include flavour corrections     
 * `inOutFiles/lesHouchesInput` is an alternative input file in the SUSY Les Houches Accord format
 * `inOutFiles/rpvHouchesInput` is an alternative input file in the SUSY Les Houches Accord format for R-parity violation
 * `inOutFiles/rpvHouchesOutput` is the output from the R-parity violating test program rpvmain.cpp
+
+## Files included in this distribution
+
+Source files are to be found in the `src/` subdirectory. The `inOutFiles/` directory contains input and output files. `doc/` contains the manuals (see above).
     
-LINK TO NMSSMTOOLS
-------------------
+## Link to `nmssmtools`
 
 This feature is now deprecated, but I have included instructions for SOFTSUSY
 authors. Users may ignore this. 
@@ -209,8 +202,7 @@ distribution) are: `setup_nmssmtools.sh`, `softsusy_nmssmtools.x.in`,
 `NMSSMTools_4.2.1.tgz`, `Makefile.nmssmtools`
 
 
-LICENSE
--------
+## Licence
 
     SOFTSUSY Copyright (C) 2007 B.C. Allanach
 
