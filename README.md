@@ -1,5 +1,5 @@
 -------------------------------------------------
-		 SOFTSUSY
+SOFTSUSY
 -------------------------------------------------
 by: B C Allanach, P Athron, A Bednyakov, M Bernhardt, T Cridge, D Grellscheid,
                   M Hanussek, C H Kom, S Martin, D Robertson, R Ruiz de Austri,
@@ -24,7 +24,7 @@ For simplest installation:
 make programs
 ```
 
-There are six C++ test programs, five of which can be run by the commands 
+There are four C++ test programs, which can be run by the commands 
 ```bash
 ./softsusy.x
 ./rpvsoftsusy.x 
@@ -41,7 +41,7 @@ You can run the SUSY Les Houches Accord input provided by running the commands
 ./softpoint.x leshouches < inOutFiles/rpvHouchesInput
 ```
 You may check the output of these commands against the output files
-lesHouchesOutput, slha2Output and rpvHouchesOutput (all in directory
+`lesHouchesOutput`, `slha2Output` and `rpvHouchesOutput` (all in directory
 inOutFiles), respectively, that are provided with the SOFTSUSY distribution
 
 Alternatively, run with command line inputs, for example
@@ -78,7 +78,7 @@ calculate in the NMSSM, please cite 1 and
 > 2. [B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and A. Williams,
 arXiv:1311.7659](https://arxiv.org/abs/1311.7659)
 
-If you use the R-parity violating aspects, please cite A and
+If you use the R-parity violating aspects, please cite 1 and
 
 > 3. [B.C. Allanach and M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232,
 arXiv:0903.1805](https://arxiv.org/abs/0903.1805)
@@ -89,18 +89,19 @@ If you use it to calculate neutrino masses and mixings, please cite 1, 3 and
 785, arXiv:1109.3735](https://arxiv.org/abs/1109.3735)
 
 If you use the three-loop RGEs or two-loop threshold corrections, please cite
-A and 
+1 and 
 
 > 5. [B.C. Allanach, A. Bednyakov and R. Ruiz de Autri, arXiv:1407.6130](https://arxiv.org/abs/1407.6130)
 
 If you use the two-loop SUSY QCD corrections to squark and gluino pole masses,
-please cite A and 
+please cite 1 and 
 
 > 6. B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de
 Austri, arXiv:1601.06657. 
 
 
-SOFTSUSY-specific input for SUSY Les Houches Accord input files
+## SOFTSUSY-specific input for SUSY Les Houches Accord input files
+
 ```bash
 Block SOFTSUSY           # SOFTSUSY specific inputs
   1   <TOLERANCE>        # desired fractional accuracy in output
@@ -158,26 +159,16 @@ See 5 for more details.
 
 There are detailed comparisons between SOFTSUSY and other publicly available
 codes in 
-        * Precise Determination of the Neutral Higgs Boson Masses in the MSSM,
-	[B.C. Allanach, A. Djouadi, J.L. Kneur, W. Porod, P. Slavich, JHEP 0409
-	(2004) 044, hep-ph/0406166](https://arxiv.org/abs/hep-ph/0406166) 
-        * Theoretical uncertainties in sparticle mass predictions from
-	computational tools, [B.C. Allanach, S. Kraml, W. Porod, JHEP 03 (2003)
-	045, hep-ph/0302102](https://arxiv.org/abs/hep-ph/0302102)  
+* Precise Determination of the Neutral Higgs Boson Masses in the MSSM, [B.C. Allanach, A. Djouadi, J.L. Kneur, W. Porod, P. Slavich, JHEP 0409 (2004) 044, hep-ph/0406166](https://arxiv.org/abs/hep-ph/0406166) 
+* Theoretical uncertainties in sparticle mass predictions from computational tools, [B.C. Allanach, S. Kraml, W. Porod, JHEP 03 (2003) 045, hep-ph/0302102](https://arxiv.org/abs/hep-ph/0302102)  
 
 EXECTUABLE FILES: AFTER INSTALLATION
 ------------------------------------
-    * `softpoint.x`: command-line interface. GMSB, AMSB, mSUGRA and general
-    boundary conditions possible. Main program: `src/softpoint.cpp`
-    * `softsusy.x`: example C++ test program - calculates spectrum of SPS1a
-    mSUGRA point with varying tan beta. Main program: `src/main.cpp`
-    * `softsusy-nmssm.x`: example NMSSM test program - loops over tan beta. Main
-    program: `src/main-nmssm.cpp`
-    * `rpvsoftsusy.x`: example C++ test program - calculates spectrum of SPS1a
-    mSUGRA point with varying lambda'_{331}(M_GUT). Main program: 
-    `src/rpvmain.cpp
-`    * `rpvneut.x`: example neutrino mass calculating R-parity violating 
-    test program. Main program `src/rpvNeut.cpp` 
+* `softpoint.x`: command-line interface. GMSB, AMSB, mSUGRA and general boundary conditions possible. Main program: `src/softpoint.cpp`
+* `softsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying tan beta. Main program: `src/main.cpp`
+* `softsusy-nmssm.x`: example NMSSM test program - loops over tan beta. Main program: `src/main-nmssm.cpp`
+* `rpvsoftsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying lambda'_{331}(M_GUT). Main program: `src/rpvmain.cpp`
+* `rpvneut.x`: example neutrino mass calculating R-parity violating test program. Main program `src/rpvNeut.cpp` 
 
 FILES INCLUDED IN THIS DISTRIBUTION
 -----------------------------------
@@ -185,21 +176,13 @@ Source files are to be found in the `src/` subdirectory.
 
 INPUT AND INFO FILES
 --------------------
-    * `README` contains installation instructions and a list of included files
-    * `inOutFiles/outputTest` is the output from the test program
-    * `inOutFiles/slha2Input` is an alternative input file in the SUSY Les
-    Houches Accord 
-    2 format for SPS1a' 
-    * `inOutFiles/slha2Output` is the result of running with the above input
-    file and 
-    includes flavour violation, for inclusion into codes like SusyBsg1.3 which
-    include flavour corrections     
-    * `inOutFiles/lesHouchesInput` is an alternative input file in the SUSY  
-    Les Houches Accord format
-    * `inOutFiles/rpvHouchesInput` is an alternative input file in the SUSY 
-    Les Houches Accord format for R-parity violation
-    * `inOutFiles/rpvHouchesOutput` is the output from the R-parity violating
-    test program rpvmain.cpp
+* `README` contains installation instructions and a list of included files
+* `inOutFiles/outputTest` is the output from the test program
+* `inOutFiles/slha2Input` is an alternative input file in the SUSY Les Houches Accord 2 format for SPS1a' 
+* `inOutFiles/slha2Output` is the result of running with the above input file and includes flavour violation, for inclusion into codes like SusyBsg1.3 which include flavour corrections     
+* `inOutFiles/lesHouchesInput` is an alternative input file in the SUSY Les Houches Accord format
+* `inOutFiles/rpvHouchesInput` is an alternative input file in the SUSY Les Houches Accord format for R-parity violation
+* `inOutFiles/rpvHouchesOutput` is the output from the R-parity violating test program rpvmain.cpp
     
 LINK TO NMSSMTOOLS
 ------------------
