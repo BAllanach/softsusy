@@ -40,7 +40,6 @@ benchmarks/*.spec
 doc/*.ps
 doc/*.spl
 doc/*.out
-doc/*.pdf
 doc/auto/*
 doc/*.bbl
 doc/*.blg
