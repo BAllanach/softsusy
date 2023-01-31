@@ -7,8 +7,8 @@ by: B C Allanach, P Athron, A Bednyakov, M Bernhardt, T Cridge, D Grellscheid,
 ## Summary
 
 This program provides a SUSY spectrum in the NMSSM, or the MSSM including flavour violation and with or without R-parity consistent with input Standard Model fermion mass/mixings and electroweak/strong coupling data. The R-parity violating mode can calculate neutrino masses and mixings to 1 loop. SOFTSUSY
-can be used in conjunction with other programs for many different particle
-physics calculations: see a [SUSY tools review](https://arxiv.org/abs/0805.2088). SOFTSUSY now has a mode with 3 loop RGEs and some 2-loop threshold correction and 2-loop SUSY QCD corrections to gluino and squark pole masses. SOFTSUSY *now computes decay branching ratios for the MSSM and NMSSM*. It also ships with (and links to) Himalaya-1.0 for three-loop corrections to mh0.
+can be used in conjunction with other programs for [many different particle
+physics calculations](https://arxiv.org/abs/0805.2088). SOFTSUSY now has a mode with 3 loop RGEs and some 2-loop threshold correction and 2-loop SUSY QCD corrections to gluino and squark pole masses. SOFTSUSY *now computes decay branching ratios for the MSSM and NMSSM*. It also ships with (and links to) Himalaya-1.0 for three-loop corrections to mh0.
 
 ## Quick Installation and Run Test
 
@@ -25,7 +25,6 @@ Then, for simplest installation, to compile the code:
 make programs
 ```
 
-For ultra-basic instructions, see the [introduction video](https://www.youtube.com/watch?v=avRPn9uUKJI&ab_channel=BenAllanach). Otherwise, see a quick [tutorial](https://softsusy.hepforge.org/softsusyTutorial.pdf) given at BUSSTEPP 2012.
 To run SOFTSUSY, you should need only standard `C++` and `fortran` libraries.
 
 There are four C++ test programs, which can be run by the commands 
@@ -51,6 +50,8 @@ in directory `inOutFiles/`.
 
 All of the output files mentioned above are produced by the `Makefile` automatically.
 *SOFTSUSY executables use no input or output files except for standard input or standard output.*
+
+For other ultra-basic instructions, see the [introduction video](https://www.youtube.com/watch?v=avRPn9uUKJI&ab_channel=BenAllanach). Otherwise, see a quick [tutorial](https://softsusy.hepforge.org/softsusyTutorial.pdf) given at BUSSTEPP 2012.
 
 Note that the executables are actually wrapper scripts, the "true" executables lie in the directory `.libs/`.
 
