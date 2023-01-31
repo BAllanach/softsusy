@@ -146,7 +146,7 @@ An example point using the high accuracy mode can be run with, for example,
 ./softpoint.x sugra --tol=1.0e-5 --m0=7240 --m12=800 --a0=-6000 --tanBeta=50 --sgnMu=1 --mt=173.2 --alpha_s=0.1187 --mbmb=4.18 --two-loop-susy-thresholds --three-loop-rges
 ```
 
-See 5 for more details.
+See [5] for more details.
 
 There are detailed comparisons between SOFTSUSY and other publicly available
 codes in 
