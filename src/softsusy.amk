@@ -6,8 +6,6 @@ bin_PROGRAMS += softsusy.x \
                 rpvsoftsusy.x \
                 rpvneut.x
 
-EXTRA_PROGRAMS = decay.x
-
 softsusy_x_SOURCES = src/main.cpp 
 softsusy_x_LDADD = libsoft.la 
 
@@ -22,9 +20,6 @@ rpvsoftsusy_x_LDADD = libsoft.la
 
 rpvneut_x_SOURCES = src/rpvneutmain.cpp 
 rpvneut_x_LDADD = libsoft.la 
-
-decay_x_SOURCES = src/mainDecay.cpp
-decay_x_LDADD   = libsoft.la
 
 if LOOPTOOLS
 softsusy_x_LDADD += -looptools -lgfortran
@@ -41,7 +36,6 @@ softsusy_nmssm_x_LDADD += libsupermodel.la libtsil.la
 softpoint_x_LDADD      += libsupermodel.la libtsil.la 
 rpvsoftsusy_x_LDADD    += libsupermodel.la libtsil.la 
 rpvneut_x_LDADD        += libsupermodel.la libtsil.la 
-decay_x_LDADD        += libsupermodel.la libtsil.la 
 
 himalayadir = $(srcdir)/src/Himalaya-1.0.0
 
@@ -65,7 +59,7 @@ pkginclude_HEADERS += \
 src/decays.h src/twoBodyDecays.h src/threeBodyDecays.h src/particle.h src/mssm_twoloop_mt.h \
 src/mssm_twoloop_mtau.h src/mssm_twoloop_mb.h src/mssm_twoloop_as.h \
 src/def.h src/main.h src/numerics.h \
-src/softpars.h src/mainDecay.h src/susy.h src/linalg.h \
+src/softpars.h src/susy.h src/linalg.h \
 src/physpars.h src/softpoint.h src/twoloophiggs.h \
 src/nmssm2loop.h src/dilogwrap.h \
 src/lowe.h src/mycomplex.h src/rge.h src/softsusy.h \

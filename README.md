@@ -6,21 +6,27 @@ by: B C Allanach, P Athron, A Bednyakov, M Bernhardt, T Cridge, D Grellscheid,
 
 ## Summary
 
-This program provides a SUSY spectrum in the NMSSM, or the MSSM including
-flavour violation and with or without R-parity consistent with input Standard
-Model fermion mass/mixings and electroweak/strong coupling data. The R-parity
-violating mode can calculate neutrino masses and mixings to 1 loop. SOFTSUSY
+This program provides a SUSY spectrum in the NMSSM, or the MSSM including flavour violation and with or without R-parity consistent with input Standard Model fermion mass/mixings and electroweak/strong coupling data. The R-parity violating mode can calculate neutrino masses and mixings to 1 loop. SOFTSUSY
 can be used in conjunction with other programs for many different particle
-physics calculations. SOFTSUSY now has a mode with 3 loop RGEs and some 2-loop
-threshold corrections.  
+physics calculations: see a [SUSY tools review](https://arxiv.org/abs/0805.2088). SOFTSUSY now has a mode with 3 loop RGEs and some 2-loop threshold correction and 2-loop SUSY QCD corrections to gluino and squark pole masses. SOFTSUSY *now computes decay branching ratios for the MSSM and NMSSM*. It also ships with (and links to) Himalaya-1.0 for three-loop corrections to mh0.
 
 ## Quick Installation and Run Test
 
-For simplest installation:
+The following releases contain a test program (`main.cpp`) and the SOFTSUSY library (`libsoft.a,` link with `-L.libs -lsoft`). In linux, just unpack the files with (eg for `softsusy-4.0`)
+```bash
+gunzip softsusy-4.0.tar.gz
+tar -xvf softsusy-4.0.tar 
+cd softsusy-4.0
+```
+
+Then, for simplest installation, to compile the code:
 ```bash
 ./configure
 make programs
 ```
+
+For ultra-basic instructions, see the [introduction video](https://www.youtube.com/watch?v=avRPn9uUKJI&ab_channel=BenAllanach). Otherwise, see a quick [tutorial](https://softsusy.hepforge.org/softsusyTutorial.pdf) given at BUSSTEPP 2012.
+To run SOFTSUSY, you should need only standard `C++` and `fortran` libraries.
 
 There are four C++ test programs, which can be run by the commands 
 ```bash
@@ -34,19 +40,19 @@ The output from these commands can be checked against `outputTest`,
 
 You can run the SUSY Les Houches Accord input provided by running the commands
 ```bash
-./softpoint.x leshouches < inOutFiles/lesHouchesInput
-./softpoint.x leshouches < inOutFiles/slha2Input
-./softpoint.x leshouches < inOutFiles/rpvHouchesInput
+./softpoint.x leshouches < inOutFiles/lesHouchesInput > inOutFiles/lesHouchesOutput
+./softpoint.x leshouches < inOutFiles/nmssmSLHAnoZ3Input > inOutFiles/nmssmSLHAnoZ3Output
+./softpoint.x leshouches < inOutFiles/nmssmSLHAZ3Input > inOutFiles/nmssmSLHAZ3Output
+./softpoint.x leshouches < inOutFiles/rpvHouchesInput > inOutFiles/rpvHouchesOutput
+./softpoint.x leshouches < inOutFiles/slha2Input > inOutFiles/slha2Output
 ```
 You may check the output of these commands against the output files
-`lesHouchesOutput`, `slha2Output` and `rpvHouchesOutput` (all in directory
-inOutFiles), respectively, that are provided with the SOFTSUSY distribution
+in directory `inOutFiles/`.
 
-Alternatively, run with command line inputs, for example
-```bash
-./softpoint.x nmssm sugra --m0=125 --m12=125 --a0=-300 --tanBeta=10
---lambda=0.1 --lambdaAtMsusy
-```
+All of the output files mentioned above are produced by the `Makefile` automatically.
+*SOFTSUSY executables use no input or output files except for standard input or standard output.*
+
+Note that the executables are actually wrapper scripts, the "true" executables lie in the directory `.libs/`.
 
 See the manual (in the doc/ subdirectory) `threeLoop.pdf` for instructions on
 how to switch two-loop threshold corrections/three loop RGEs at run-time, once
@@ -59,36 +65,59 @@ violating mode can calculate neutrino masses and mixings to 1 loop.
 
 ## References
 
-If you use SOFTSUSY to write a paper, please cite (see MCnet guidelines)
+If you use SOFTSUSY to write a paper, *please cite* (see [MCnet guidelines](https://www.montecarlonet.org/publications_guidelines/)) - collected in [soft.bib](soft.bib)
 
 > [1] [B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145](https://arxiv.org/abs/hep-ph/0104145)
 
-which is the SOFTSUSY manual for the R-parity conserving MSSM. If you
+which is the SOFTSUSY manual for the R-parity conserving MSSM.
+If you use the *decay* calculations, please cite [1] and
+
+> [2] [B.C. Allanach and T. Cridge, Comput. Phys. Comm. 220 (2017) 417, arxiv:1703.09717](https://arxiv.org/abs/1703.09717)
+
+If you
 calculate in the NMSSM, please cite [1] and 
 
-> [2] [B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and A. Williams,
+> [3] [B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and A. Williams,
 arXiv:1311.7659](https://arxiv.org/abs/1311.7659)
 
 If you use the R-parity violating aspects, please cite [1] and
 
-> [3] [B.C. Allanach and M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232,
+> [4] [B.C. Allanach and M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232,
 arXiv:0903.1805](https://arxiv.org/abs/0903.1805)
 
-If you use it to calculate neutrino masses and mixings, please cite [1], [3] and
+If you use it to calculate neutrino masses and mixings, please cite [1], [4] and
 
-> [4] [B.C. Allanach, M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012)
+> [5] [B.C. Allanach, M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012)
 785, arXiv:1109.3735](https://arxiv.org/abs/1109.3735)
 
 If you use the three-loop RGEs or two-loop threshold corrections, please cite
 [1] and 
 
-> [5] [B.C. Allanach, A. Bednyakov and R. Ruiz de Autri, arXiv:1407.6130](https://arxiv.org/abs/1407.6130)
+> [6] [B.C. Allanach, A. Bednyakov and R. Ruiz de Autri, arXiv:1407.6130](https://arxiv.org/abs/1407.6130)
 
 If you use the two-loop SUSY QCD corrections to squark and gluino pole masses,
 please cite [1] and 
 
-> [6] [B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de
+> [7] [B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de
 Austri, arXiv:1601.06657](https://arxiv.org/abs/1601.06657)
+
+## Particle Decays
+
+An example point including the calculation of sparticle decays, neglecting modes with a branching ratio of less than 1.0e-5, and outputting the partial widths in the comments:
+```bash
+./softpoint.x gmsb --n5=2 --mMess=1.0e6 --LAMBDA=5.0e5 --tanBeta=10 --sgnMu=1 --decays --minBR=1.0e-5 --outputPartialWidths
+```
+For queries regarding decay calculations please contact Tom Cridge
+
+## Three Loop Corrections to the Lightest CP Even Higgs Mass
+
+For Himalaya-1.0 three-loop corrections to mh0, you must first install the package [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page). Then do:
+```bash
+./configure CPPFLAGS="-I/usr/include/eigen3" --enable-two-loop-gauge-yukawa-compilation --enable-himalaya; make
+```
+After this, setting the `SLHA SOFTSUSY BLock` parameter 7 (number of Higgs mass loops) to 3 will include the corrections. If you use this option, you should cite [1], [6] and
+* [Robert V. Harlander, Jonas Klappert, Alexander Voigt, arXiv:1708.05720](https://arxiv.org/abs/1708.05720)
+* [P Kant, R Harlander, L Mihaila, M Steinhauser, JHEP 1008 (2010) 104, arXiv:1005.5709](https://arxiv.org/abs/1005.5709)
 
 
 ## SOFTSUSY-specific input for SUSY Les Houches Accord input files
@@ -113,7 +142,7 @@ Block SOFTSUSY           # SOFTSUSY specific inputs
  17   <NMSDECAY>         # If=1, flags for sparticle decays to be calculated via NMSDECAY
  18   <SoftHiggsOut>     # If=1, then the EWSB conditions output soft Higgs masses in NMSSM
  19   <threeLoopRGEs>    # If=1, then 3-loop MSSM RGEs included (default of 0 to disable)
- 20   <gyThresholds>     # If>0, switch on gauge/Yukawa two-loop thresholds (see manual [5] for details). 
+ 20   <gyThresholds>     # If>0, switch on gauge/Yukawa two-loop thresholds (see manual [6] for details). 
                            If=31, they all are switched on (default 0 to disable).
  22    <2-loop squark/gluino>   # Include 2-loop terms in gluino/squark masses (default of 0 to disable)
  23    <expandAroundGluinoPole> # sets expandAroundGluinoPole parameter (default 3)
@@ -146,20 +175,31 @@ An example point using the high accuracy mode can be run with, for example,
 ./softpoint.x sugra --tol=1.0e-5 --m0=7240 --m12=800 --a0=-6000 --tanBeta=50 --sgnMu=1 --mt=173.2 --alpha_s=0.1187 --mbmb=4.18 --two-loop-susy-thresholds --three-loop-rges
 ```
 
-See [5] for more details.
+See [6] for more details.
+
+## Comparisons with other SUSY spectrum generators
 
 There are detailed comparisons between SOFTSUSY and other publicly available
 codes in 
+* Uncertainties in the Lightest CP Even Higgs Boson Mass Prediction in the Minimal Supersymmetric Standard Model: Fixed Order Versus Effective Field Theory Prediction, [B.C. Allanach and A. Voigt, Eur.Phys.J. C78 (2018) no.7, arxiv:1804.09410](https://arxiv.org/abs/1804.09410)
+* The Calculation of Sparticle and Higgs Decays in the Minimal and Next-to-Minimal Supersymmetric Standard Models: SOFTSUSY4.0, [B.C. Allanach and T. Cridge, Comput. Phys. Comm. 220 (2017) 417, arxiv:1703.09717](https://arxiv.org/abs/1703.09717)
 * Precise Determination of the Neutral Higgs Boson Masses in the MSSM, [B.C. Allanach, A. Djouadi, J.L. Kneur, W. Porod, P. Slavich, JHEP 0409 (2004) 044, hep-ph/0406166](https://arxiv.org/abs/hep-ph/0406166) 
 * Theoretical uncertainties in sparticle mass predictions from computational tools, [B.C. Allanach, S. Kraml, W. Porod, JHEP 03 (2003) 045, hep-ph/0302102](https://arxiv.org/abs/hep-ph/0302102)  
 
+and comparisons with NMSSM generators in
+* [B.C. Allanach and T. Cridge, Comput. Phys. Comm. 220 (2017) 417, arxiv:1703.09717](https://arxiv.org/abs/1703.09717)
+* Higgs mass predictions of public NMSSM spectrum generators, [Staub et al, Comp. Phys. Comm. 202 (2016) 113, arXiv:1507.05093](https://arxiv.org/abs/1507.05093)
+* Improved predictions for intermediate and heavy Supersymmetry in the MSSM and beyond [Staub and Porod, Eur.\ Phys.\ J.\ C (2017) 77, arXiv:1703.03267](https://arxiv.org/abs/1703.03267)
+
+
 ## Executable files: after installation
 
-* `softpoint.x`: command-line interface. GMSB, AMSB, mSUGRA and general boundary conditions possible. Main program: `src/softpoint.cpp`
+* `softpoint.x`: command-line interface. GMSB, AMSB, mSUGRA and general boundary conditions possible, icluding SLHA. Main program: `src/softpoint.cpp`
 * `softsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying tan beta. Main program: `src/main.cpp`
 * `softsusy-nmssm.x`: example NMSSM test program - loops over tan beta. Main program: `src/main-nmssm.cpp`
 * `rpvsoftsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying lambda'_{331}(M_GUT). Main program: `src/rpvmain.cpp`
-* `rpvneut.x`: example neutrino mass calculating R-parity violating test program. Main program `src/rpvNeut.cpp` 
+* `rpvneut.x`: example neutrino mass calculating R-parity violating test program. Main program `src/rpvNeut.cpp`
+* 
 
 ## Documentation
 
@@ -177,30 +217,6 @@ Full code documentation can be obtained from: [softsusy](http://softsusy.hepforg
 ## Files included in this distribution
 
 Source files are to be found in the `src/` subdirectory. The `inOutFiles/` directory contains input and output files. `doc/` contains the manuals (see above).
-    
-## Link to `nmssmtools`
-
-This feature is now deprecated, but I have included instructions for SOFTSUSY
-authors. Users may ignore this. 
-To link with `NMSSMTools`, so that `SOFTSUSY NMSSM` output can be piped through it
-(to calculate decays, for example), you'll need to download 
-`NMSSMTools4.2.1`. Then, you can link it using by running 
-```bash
-./setup_nmssmtools.sh --nmssmtools-dir=/path/to/NMSSMTools --compile
-```
-After this, there will be an additional executable `./softsusy_nmssmtools.x`
-that calculates the spectrum with SOFTSUSY, and decays with NMSSMTools. It can
-be run by (for example): 
-```bash
-./softsusy_nmssmools.x leshouches < inOutFiles/nmssmSLHAnoZ3Input
-```
-If you use it, you should of course provide the proper citations to
-`NMSSMTools`. Using the program in this mode, you should make sure in the SLHA
-input file that `Block SOFTSUSY` variables 15 and 17 are set to 1.
-Other files that you need (and are not currently in the SOFTSUSY public
-distribution) are: `setup_nmssmtools.sh`, `softsusy_nmssmtools.x.in`,
-`NMSSMTools_4.2.1.tgz`, `Makefile.nmssmtools`
-
 
 ## Licence
 

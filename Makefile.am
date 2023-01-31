@@ -25,7 +25,7 @@ CLEANFILES += $(OUTPUTFILES) *.x
 
 nodoc: $(OUTPUTFILES) programs
 
-programs: softpoint.x rpvsoftsusy.x softsusy.x softsusy-nmssm.x rpvneut.x decay.x
+programs: softpoint.x rpvsoftsusy.x softsusy.x softsusy-nmssm.x rpvneut.x 
 
 updateWeb: dist
 	scp -P 222 softsusy-${VERSION}.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; 
