@@ -1,2 +1,2 @@
-<li>Added limits header file: some modern compilers had problems otherwise
+<li>Removed latex commands from make and improved README.md
 

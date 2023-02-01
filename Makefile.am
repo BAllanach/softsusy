@@ -14,6 +14,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 include src/softsusy.amk
 DOCFILES = doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
 	   doc/nmssmManual.pdf doc/threeLoop.pdf doc/ho.pdf doc/decays.pdf
+# Comment this line before making an official tag
 include doc/doc.amk
 include inOutFiles/inOut.amk
 
@@ -30,7 +31,7 @@ programs: softpoint.x rpvsoftsusy.x softsusy.x softsusy-nmssm.x rpvneut.x
 updateWeb: dist
 	scp -P 222 softsusy-${VERSION}.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; 
 	scp -P 222 inOutFiles/*{Input,Output}* allanach@login.hepforge.org:~/softsusy/public_html/code
-	scp -P 222 {src/def.h,inOutFiles/outputTest,README} allanach@login.hepforge.org:~/softsusy/public_html/code
+	scp -P 222 {src/def.h,inOutFiles/outputTest,README.md} allanach@login.hepforge.org:~/softsusy/public_html/code
 	scp -P 222 -r doc/*.pdf allanach@login.hepforge.org:~/softsusy/public_html/doc; \
 	doxygen softsusy.cfg &&\
 	scp -P 222 -r html allanach@login.hepforge.org:~/softsusy/public_html; \
