@@ -1,4 +1,5 @@
-# Adding comment
+# NB REMINDER: Making an official tag: First comment include doc/doc.amk line
+# below. Then, > git tag v4.X.Y -a; git push origin --tags
 lib_LTLIBRARIES = 
 bin_PROGRAMS = 
 CLEANFILES =

@@ -79,6 +79,7 @@ If you
 calculate in the NMSSM, please cite [1] and 
 
 > [3] [B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and A. Williams,
+Comput. Phys. Comm. 185 (2014) 2322,
 arXiv:1311.7659](https://arxiv.org/abs/1311.7659)
 
 If you use the R-parity violating aspects, please cite [1] and
@@ -94,7 +95,9 @@ If you use it to calculate neutrino masses and mixings, please cite [1], [4] and
 If you use the three-loop RGEs or two-loop threshold corrections, please cite
 [1] and 
 
-> [6] [B.C. Allanach, A. Bednyakov and R. Ruiz de Autri, arXiv:1407.6130](https://arxiv.org/abs/1407.6130)
+> [6] [B.C. Allanach, A. Bednyakov and R. Ruiz de Autri,
+Comput. Phys. Commun. 189 (2015) 192, 
+arXiv:1407.6130](https://arxiv.org/abs/1407.6130)
 
 If you use the two-loop SUSY QCD corrections to squark and gluino pole masses,
 please cite [1] and 
@@ -147,7 +150,10 @@ Block SOFTSUSY           # SOFTSUSY specific inputs
                            If=31, they all are switched on (default 0 to disable).
  22    <2-loop squark/gluino>   # Include 2-loop terms in gluino/squark masses (default of 0 to disable)
  23    <expandAroundGluinoPole> # sets expandAroundGluinoPole parameter (default 3)
-```
+24   <minBR>                  # If decay BR is below this number, don't output that mode
+ 25   <threeBodyDecays>        # If set to 0, don't calculate 3-body decays (1=default)
+ 26   <outputPartialWidths>    # If set to 1, output partial widths (0=default)
+ 27   <MQEDxQCD>    # Set scale at which QEDxQCD is matched to MSSM (mt=default)```
 
 ## High orders mode
 
