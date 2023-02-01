@@ -12,57 +12,11 @@ physics calculations](https://arxiv.org/abs/0805.2088). SOFTSUSY now has a mode 
 
 ## Quick Installation and Run Test
 
-The following releases contain a test program (`main.cpp`) and the SOFTSUSY library (`libsoft.a,` link with `-L.libs -lsoft`). In linux, just unpack the files with (eg for `softsusy-4.0`)
-```bash
-gunzip softsusy-4.0.tar.gz
-tar -xvf softsusy-4.0.tar 
-cd softsusy-4.0
-```
-
-Then, for simplest installation, to compile the code:
-```bash
-./configure
-make programs
-```
-
-To run SOFTSUSY, you should need only standard `C++` and `fortran` libraries.
-
-There are four C++ test programs, which can be run by the commands 
-```bash
-./softsusy.x
-./rpvsoftsusy.x 
-./rpvneut.x
-./softsusy-nmssm.x
-```
-The output from these commands can be checked against `outputTest`,
-`rpvOutputTest`, `neutOutputTest` and `outputTest-nmssm`.
-
-You can run the SUSY Les Houches Accord input provided by running the commands
-```bash
-./softpoint.x leshouches < inOutFiles/lesHouchesInput > inOutFiles/lesHouchesOutput
-./softpoint.x leshouches < inOutFiles/nmssmSLHAnoZ3Input > inOutFiles/nmssmSLHAnoZ3Output
-./softpoint.x leshouches < inOutFiles/nmssmSLHAZ3Input > inOutFiles/nmssmSLHAZ3Output
-./softpoint.x leshouches < inOutFiles/rpvHouchesInput > inOutFiles/rpvHouchesOutput
-./softpoint.x leshouches < inOutFiles/slha2Input > inOutFiles/slha2Output
-```
-You may check the output of these commands against the output files
-in directory `inOutFiles/`.
-
-All of the output files mentioned above are produced by the `Makefile` automatically.
-*SOFTSUSY executables use no input or output files except for standard input or standard output.*
+See [INSTALL.md](INSTALL.md) for quick installation and run-test instructions.
 
 For other ultra-basic instructions, see the [introduction video](https://www.youtube.com/watch?v=avRPn9uUKJI&ab_channel=BenAllanach). Otherwise, see a quick [tutorial](https://softsusy.hepforge.org/softsusyTutorial.pdf) given at BUSSTEPP 2012.
 
 Note that the executables are actually wrapper scripts, the "true" executables lie in the directory `.libs/`.
-
-See the manual (in the doc/ subdirectory) `threeLoop.pdf` for instructions on
-how to switch two-loop threshold corrections/three loop RGEs at run-time, once
-they've been compiled. 
-
-This program provides a SUSY spectrum in the NMSSM, or the MSSM including
-flavour violation and with or without R-parity consistent with input Standard
-Model fermion mass/mixings and electroweak/strong coupling data. The R-parity
-violating mode can calculate neutrino masses and mixings to 1 loop. 
 
 ## References
 
