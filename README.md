@@ -8,7 +8,7 @@ by: B C Allanach, P Athron, A Bednyakov, M Bernhardt, T Cridge, D Grellscheid,
 
 This program provides a SUSY spectrum in the NMSSM, or the MSSM including flavour violation and with or without R-parity consistent with input Standard Model fermion mass/mixings and electroweak/strong coupling data. The R-parity violating mode can calculate neutrino masses and mixings to 1 loop. SOFTSUSY
 can be used in conjunction with other programs for [many different particle
-physics calculations](https://arxiv.org/abs/0805.2088). SOFTSUSY now has a mode with 3 loop RGEs and some 2-loop threshold correction and 2-loop SUSY QCD corrections to gluino and squark pole masses. SOFTSUSY *now computes decay branching ratios for the MSSM and NMSSM*. It also ships with (and links to) Himalaya-1.0 for three-loop corrections to mh0.
+physics calculations](https://arxiv.org/abs/0805.2088). SOFTSUSY now has a mode with 3 loop RGEs and some 2-loop threshold correction and 2-loop SUSY QCD corrections to gluino and squark pole masses. SOFTSUSY *now computes decay branching ratios for the MSSM and NMSSM*. It also ships with (and links to) Himalaya-1.0 for three-loop corrections to mh0. Legacy code can be found on the old [softsusy website](https://softsusy.hepforge.org/).
 
 ## Quick Installation and Run Test
 
