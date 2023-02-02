@@ -150,7 +150,7 @@ codes in
 and comparisons with NMSSM generators in
 * [B.C. Allanach and T. Cridge, Comput. Phys. Comm. 220 (2017) 417, arxiv:1703.09717](https://arxiv.org/abs/1703.09717)
 * Higgs mass predictions of public NMSSM spectrum generators, [Staub et al, Comp. Phys. Comm. 202 (2016) 113, arXiv:1507.05093](https://arxiv.org/abs/1507.05093)
-* Improved predictions for intermediate and heavy Supersymmetry in the MSSM and beyond [Staub and Porod, Eur.\ Phys.\ J.\ C (2017) 77, arXiv:1703.03267](https://arxiv.org/abs/1703.03267)
+* Improved predictions for intermediate and heavy Supersymmetry in the MSSM and beyond [Staub and Porod, Eur. Phys. J. C (2017) 77, arXiv:1703.03267](https://arxiv.org/abs/1703.03267)
 
 
 ## Executable files: after installation

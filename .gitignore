@@ -4,7 +4,6 @@
 Config
 autom4te.cache
 config.log
-configure
 Makefile
 doc/*.dvi
 doc/*.aux
@@ -21,6 +20,8 @@ doc/auto/*
 def.lo
 *.la
 Makefile.in
+install-sh
+missing
 config.status
 *.*~
 gaugeUn.x
