@@ -160,24 +160,32 @@ and comparisons with NMSSM generators in
 
 ## Executable files: after installation
 
-* `softpoint.x`: command-line interface. GMSB, AMSB, mSUGRA and general boundary conditions possible, icluding SLHA. Main program: `src/softpoint.cpp`
-* `softsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying tan beta. Main program: `src/main.cpp`
-* `softsusy-nmssm.x`: example NMSSM test program - loops over tan beta. Main program: `src/main-nmssm.cpp`
-* `rpvsoftsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying lambda'_{331}(M_GUT). Main program: `src/rpvmain.cpp`
-* `rpvneut.x`: example neutrino mass calculating R-parity violating test program. Main program `src/rpvNeut.cpp`
+* `softsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying tan beta. Main program: `src/main.cpp`. Output: `inOutFiles/outputTest`
+* `softsusy-nmssm.x`: example NMSSM test program - loops over tan beta. Main program: `src/main-nmssm.cpp`. Output: `inOutFiles/outputTest-nmssm`
+* `rpvsoftsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying lambda'_{331}(M_GUT). Main program: `src/rpvmain.cpp`. Output `inOutFiles/rpvOutputTest`
+* `rpvneut.x`: example neutrino mass calculating R-parity violating test program. Main program `src/rpvNeut.cpp`. Output `inOutFiles/neutOutputTest`
+* `softpoint.x`: command-line interface. GMSB, AMSB, mSUGRA and general boundary conditions possible, icluding SLHA. Main program: `src/softpoint.cpp`. See [INSTALL.md](INSTALL.md) for examples of reading in SLHA files and producing output.
+
+### Input and information files
+* `README.md` contains these instructions 
+* `inOutFiles/lesHouchesInput` is an alternative input file in the SUSY Les Houches Accord (SLHA) format
+* `inOutFiles/nmssmSLHAnoZ3Input` is an SLHA2 NMSSM input file *without* assuming Z3 symmetry
+* `inOutFiles/nmssmSLHAZ3Input` is an SLHA NMSSM input file with the Z3 assumption
+* `inOutFiles/slha2Input` is an alternative input file in the SUSY Les Houches Accord 2 format for SPS1a' 
+* `inOutFiles/rpvHouchesInput` is an alternative input file in the SUSY Les Houches Accord format for R-parity violation
+
 
 ## Documentation
 
-Full code documentation can be obtained from: [softsusy](http://softsusy.hepforge.org/). Manuals are found in the `doc/` subdirectory: `rpcManual.pdf` is the main one, and the other `.pdf` files describe various extensions to this.
+Manuals are found in the `doc/` subdirectory:
+* `rpcManual.pdf` is the *main* one for the R-parity conserving MSSM: the base for all others
+* `decays.pdf` details calculations of sparticle and Higgs decays in the MSSM/NMSSM
+* `rpvManual.pdf` for R-parity violating generalisation
+* `neutManual.pdf` on the one-loop calculation of neutrino masses and lepton mixing in the R-parity violating MSSM
+* `nmssmManual.pdf` describes the NMSSM implementation
+* `threeLoop.pdf` describes the inclusion of three-loop MSSM RGEs and two-loop threshold corrections
 
-## Input and information files
-* `README.md` contains these instructions 
-* `inOutFiles/outputTest` is the output from the test program
-* `inOutFiles/slha2Input` is an alternative input file in the SUSY Les Houches Accord 2 format for SPS1a' 
-* `inOutFiles/slha2Output` is the result of running with the above input file and includes flavour violation, for inclusion into codes like SusyBsg1.3 which include flavour corrections     
-* `inOutFiles/lesHouchesInput` is an alternative input file in the SUSY Les Houches Accord format
-* `inOutFiles/rpvHouchesInput` is an alternative input file in the SUSY Les Houches Accord format for R-parity violation
-* `inOutFiles/rpvHouchesOutput` is the output from the R-parity violating test program rpvmain.cpp
+Full and detailed `doxygen` code documentation can be obtained from: [softsusy](http://softsusy.hepforge.org/).
 
 ## Files included in this distribution
 
