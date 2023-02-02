@@ -143,21 +143,6 @@ An example point using the high accuracy mode can be run with, for example,
 
 See [6] for more details.
 
-## Comparisons with other SUSY spectrum generators
-
-There are detailed comparisons between SOFTSUSY and other publicly available
-codes in 
-* Uncertainties in the Lightest CP Even Higgs Boson Mass Prediction in the Minimal Supersymmetric Standard Model: Fixed Order Versus Effective Field Theory Prediction, [B.C. Allanach and A. Voigt, Eur.Phys.J. C78 (2018) no.7, arxiv:1804.09410](https://arxiv.org/abs/1804.09410)
-* The Calculation of Sparticle and Higgs Decays in the Minimal and Next-to-Minimal Supersymmetric Standard Models: SOFTSUSY4.0, [B.C. Allanach and T. Cridge, Comput. Phys. Comm. 220 (2017) 417, arxiv:1703.09717](https://arxiv.org/abs/1703.09717)
-* Precise Determination of the Neutral Higgs Boson Masses in the MSSM, [B.C. Allanach, A. Djouadi, J.L. Kneur, W. Porod, P. Slavich, JHEP 0409 (2004) 044, hep-ph/0406166](https://arxiv.org/abs/hep-ph/0406166) 
-* Theoretical uncertainties in sparticle mass predictions from computational tools, [B.C. Allanach, S. Kraml, W. Porod, JHEP 03 (2003) 045, hep-ph/0302102](https://arxiv.org/abs/hep-ph/0302102)  
-
-and comparisons with NMSSM generators in
-* [B.C. Allanach and T. Cridge, Comput. Phys. Comm. 220 (2017) 417, arxiv:1703.09717](https://arxiv.org/abs/1703.09717)
-* Higgs mass predictions of public NMSSM spectrum generators, [Staub et al, Comp. Phys. Comm. 202 (2016) 113, arXiv:1507.05093](https://arxiv.org/abs/1507.05093)
-* Improved predictions for intermediate and heavy Supersymmetry in the MSSM and beyond [Staub and Porod, Eur. Phys. J. C (2017) 77, arXiv:1703.03267](https://arxiv.org/abs/1703.03267)
-
-
 ## Executable files: after installation
 
 * `softsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying tan beta. Main program: `src/main.cpp`. Output: `inOutFiles/outputTest`
@@ -190,6 +175,21 @@ Full and detailed `doxygen` code documentation can be obtained from: [softsusy](
 ## Files included in this distribution
 
 Source files are to be found in the `src/` subdirectory. The `inOutFiles/` directory contains input and output files. `doc/` contains the manuals (see above).
+
+## Comparisons with other SUSY spectrum generators
+
+There are detailed comparisons between SOFTSUSY and other publicly available
+codes in 
+* Uncertainties in the Lightest CP Even Higgs Boson Mass Prediction in the Minimal Supersymmetric Standard Model: Fixed Order Versus Effective Field Theory Prediction, [B.C. Allanach and A. Voigt, Eur.Phys.J. C78 (2018) no.7, arxiv:1804.09410](https://arxiv.org/abs/1804.09410)
+* The Calculation of Sparticle and Higgs Decays in the Minimal and Next-to-Minimal Supersymmetric Standard Models: SOFTSUSY4.0, [B.C. Allanach and T. Cridge, Comput. Phys. Comm. 220 (2017) 417, arxiv:1703.09717](https://arxiv.org/abs/1703.09717)
+* Precise Determination of the Neutral Higgs Boson Masses in the MSSM, [B.C. Allanach, A. Djouadi, J.L. Kneur, W. Porod, P. Slavich, JHEP 0409 (2004) 044, hep-ph/0406166](https://arxiv.org/abs/hep-ph/0406166) 
+* Theoretical uncertainties in sparticle mass predictions from computational tools, [B.C. Allanach, S. Kraml, W. Porod, JHEP 03 (2003) 045, hep-ph/0302102](https://arxiv.org/abs/hep-ph/0302102)  
+
+and comparisons with NMSSM generators in
+* [B.C. Allanach and T. Cridge, Comput. Phys. Comm. 220 (2017) 417, arxiv:1703.09717](https://arxiv.org/abs/1703.09717)
+* Higgs mass predictions of public NMSSM spectrum generators, [Staub et al, Comp. Phys. Comm. 202 (2016) 113, arXiv:1507.05093](https://arxiv.org/abs/1507.05093)
+* Improved predictions for intermediate and heavy Supersymmetry in the MSSM and beyond [Staub and Porod, Eur. Phys. J. C (2017) 77, arXiv:1703.03267](https://arxiv.org/abs/1703.03267)
+
 
 ## Licence
 
