@@ -11,7 +11,7 @@ can be used in conjunction with other programs for [many different particle
 physics calculations](https://arxiv.org/abs/0805.2088). SOFTSUSY now has a mode with 3 loop RGEs and some 2-loop threshold correction and 2-loop SUSY QCD corrections to gluino and squark pole masses. SOFTSUSY *now computes decay branching ratios for the MSSM and NMSSM*. It also ships with (and links to) Himalaya-1.0 for three-loop corrections to mh0. 
 
 ## Download
-* <a href="https://github.com/BAllanach/softsusy/tags/softsusy-4.1.17.tar.gz">SOFTSUSY-4.1.17</a>: improved documentation for github
+* <a href="https://github.com/BAllanach/softsusy/tree/master/tags/softsusy-4.1.17.tar.gz">SOFTSUSY-4.1.17</a>: improved documentation for github
 * [previous releases](https://softsusy.hepforge.org/) from old website
 
 ## Quick Installation and Run Test
