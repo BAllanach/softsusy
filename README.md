@@ -79,7 +79,7 @@ For Himalaya-1.0 three-loop corrections to mh0, you must first install the packa
 ./configure CPPFLAGS="-I/usr/include/eigen3" --enable-two-loop-gauge-yukawa-compilation --enable-himalaya; make
 ```
 After this, setting the `SLHA SOFTSUSY BLock` parameter 7 (number of Higgs mass loops) to 3 will include the corrections. If you use this option, you should cite [1], [6] and
-* [Robert V. Harlander, Jonas Klappert, Alexander Voigt, arXiv:1708.05720](https://arxiv.org/abs/1708.05720)
+* [Robert V. Harlander, Jonas Klappert, Alexander Voigt, Eur. Phys. J. C77 (2017) 814, arXiv:1708.05720](https://arxiv.org/abs/1708.05720)
 * [P Kant, R Harlander, L Mihaila, M Steinhauser, JHEP 1008 (2010) 104, arXiv:1005.5709](https://arxiv.org/abs/1005.5709)
 
 
