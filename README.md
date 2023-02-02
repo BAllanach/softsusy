@@ -57,7 +57,7 @@ If you use the two-loop SUSY QCD corrections to squark and gluino pole masses,
 please cite [1] and 
 
 > [7] [B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de
-Austri, arXiv:1601.06657](https://arxiv.org/abs/1601.06657)
+Austri, Comput. Phys. Commun. 05 (2017) 006, arXiv:1601.06657](https://arxiv.org/abs/1601.06657)
 
 ## Particle Decays
 
