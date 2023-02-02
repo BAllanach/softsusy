@@ -10,8 +10,7 @@ This program provides a SUSY spectrum in the NMSSM, or the MSSM including flavou
 can be used in conjunction with other programs for [many different particle
 physics calculations](https://arxiv.org/abs/0805.2088). SOFTSUSY now has a mode with 3 loop RGEs and some 2-loop threshold correction and 2-loop SUSY QCD corrections to gluino and squark pole masses. SOFTSUSY *now computes decay branching ratios for the MSSM and NMSSM*. It also ships with (and links to) Himalaya-1.0 for three-loop corrections to mh0. 
 
-## Download (right-click `Save link as')
-* [SOFTSUSY-4.1.17](https://github.com/BAllanach/softsusy/tree/master/tags/softsusy-4.1.17.tar.gz): improved documentation for github
+## Download 
 * <a id="raw-url" href="https://raw.githubusercontent.com/BAllanach/softsusy/master/tags/softsusy-4.1.17.tar.gz">SOFTSUSY-4.1.17</a>: improved documentation for github
 
 Previous releases from [old website](https://softsusy.hepforge.org/)
