@@ -1,5 +1,7 @@
-# NB REMINDER: Making an official tag: First comment include doc/doc.amk line
-# below. Then, > git tag v4.X.Y -a; git push origin --tags
+# NB REMINDER: Making an official tag: Make sure CHANGES.md is up to date.
+# Then,, first comment include doc/doc.amk line
+# below. Then,
+# git tag -a v4.X.Y -m "Official version v4.XY"; git push origin --tags
 lib_LTLIBRARIES = 
 bin_PROGRAMS = 
 CLEANFILES =
@@ -15,7 +17,7 @@ include src/softsusy.amk
 DOCFILES = doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
 	   doc/nmssmManual.pdf doc/threeLoop.pdf doc/ho.pdf doc/decays.pdf
 # Comment this line before making an official tag
-include doc/doc.amk
+# include doc/doc.amk
 include inOutFiles/inOut.amk
 
 dist_pkgdata_DATA += CHANGES.md $(DOCFILES)

@@ -13,7 +13,7 @@ Then, for simplest installation, to compile the code:
 make nodoc
 ```
 
-To run SOFTSUSY, you should need only standard `C`, `C++-14` and `fortran` libraries. If you type `make` without an argument, you'll also need `latex` along with various style files.
+To run SOFTSUSY, you should need only standard `C`, `C++14` and `fortran` libraries. If you type `make` without an argument, you'll also need `latex` along with various style files.
 
 There are four C++ test programs, which can be run by the commands 
 ```bash
