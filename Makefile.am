@@ -20,7 +20,7 @@ include src/softsusy.amk
 DOCFILES = doc/rpcManual.pdf doc/rpvManual.pdf doc/neutManual.pdf \
 	   doc/nmssmManual.pdf doc/threeLoop.pdf doc/ho.pdf doc/decays.pdf
 # Comment this line before making an official tag
-# include doc/doc.amk
+include doc/doc.amk
 include inOutFiles/inOut.amk
 
 dist_pkgdata_DATA += CHANGES.md $(DOCFILES)

@@ -9,9 +9,8 @@ cd softsusy-4.0
 
 Then, for simplest installation, to compile the code and run some test programs:
 ```bash
-autoreconf -vif
 ./configure
-make nodoc
+make 
 ```
 
 To run SOFTSUSY, you should need only standard `C`, `C++14` and `fortran` libraries. If you type `make` without an argument, you'll also need `latex` along with various style files.
