@@ -160,7 +160,6 @@ and comparisons with NMSSM generators in
 * `softsusy-nmssm.x`: example NMSSM test program - loops over tan beta. Main program: `src/main-nmssm.cpp`
 * `rpvsoftsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying lambda'_{331}(M_GUT). Main program: `src/rpvmain.cpp`
 * `rpvneut.x`: example neutrino mass calculating R-parity violating test program. Main program `src/rpvNeut.cpp`
-* 
 
 ## Documentation
 
