@@ -1,10 +1,11 @@
 # NB REMINDER: Making an official tag:
 # Make sure CHANGES.md is up to date.
 # Make sure version number in configure.ac is up-to-date
-# Then, comment include doc/doc.amk line
-# below. Then,
+# make -j8 dist
+# mv softsusy-4.X.Y.tar.gz tags/
 # git push
-# git tag -a v4.X.Y -m "Official version v4.X.Y"; git push origin --tags
+# git tag -a v4.X.Y -m "Official version v4.X.Y"
+# git push origin --tags
 lib_LTLIBRARIES = 
 bin_PROGRAMS = 
 CLEANFILES =
