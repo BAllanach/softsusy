@@ -7,8 +7,9 @@ tar -xvf softsusy-4.0.tar
 cd softsusy-4.0
 ```
 
-Then, for simplest installation, to compile the code:
+Then, for simplest installation, to compile the code and run some test programs:
 ```bash
+autoreconf -vif
 ./configure
 make nodoc
 ```

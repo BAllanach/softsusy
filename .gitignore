@@ -4,6 +4,7 @@
 Config
 autom4te.cache
 config.log
+configure
 Makefile
 doc/*.dvi
 doc/*.aux
