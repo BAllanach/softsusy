@@ -4,10 +4,6 @@ by: [B C Allanach](https://www.damtp.cam.ac.uk/user/bca20/), P Athron, A Bednyak
                   M Hanussek, C H Kom, S Martin, D Robertson, R Ruiz de Austri,
 		  P Slavich, L Tunstall, A Voigt and A G Williams 
 
-[ [downloads](tags/) | [old SOFTSUSY](https://softsusy.hepforge.org/) | [development version](https://github.com/BAllanach/softsusy) ]
-
-*Manuals* [ [main](doc/rpcManual.pdf) | [decays]() | [NMSSM]() | [RPV]() | [RPV nu]() | [NNLO gauge/Yukawa]() | [NNLO squark/gluino]() ]
-
 ## Summary
 
 This program provides a SUSY spectrum in the NMSSM, or the MSSM including flavour violation and with or without R-parity consistent with input Standard Model fermion mass/mixings and electroweak/strong coupling data. The R-parity violating mode can calculate neutrino masses and mixings to 1 loop. SOFTSUSY
@@ -167,12 +163,13 @@ See [6] for more details.
 ## Documentation
 
 Manuals are found in the `doc/` subdirectory:
-* `rpcManual.pdf` is the *main* one for the R-parity conserving MSSM: the base for all others
-* `decays.pdf` details calculations of sparticle and Higgs decays in the MSSM/NMSSM
-* `rpvManual.pdf` for R-parity violating generalisation
-* `neutManual.pdf` on the one-loop calculation of neutrino masses and lepton mixing in the R-parity violating MSSM
-* `nmssmManual.pdf` describes the NMSSM implementation
-* `threeLoop.pdf` describes the inclusion of three-loop MSSM RGEs and two-loop threshold corrections
+* [`rpcManual.pdf`](doc/rpcManual.pdf) is the *main* one for the R-parity conserving MSSM: the base for all others
+* [`decays.pdf`](doc/rpvManual.pdf) details calculations of sparticle and Higgs decays in the MSSM/NMSSM
+* [`rpvManual.pdf`](doc/rpvManual.pdf) for R-parity violating generalisation
+* [`neutManual.pdf`](doc/neutManual.pdf) on the one-loop calculation of neutrino masses and lepton mixing in the R-parity violating MSSM
+* [`nmssmManual.pdf`](doc/nmssmManual.pdf) describes the NMSSM implementation
+* [`threeLoop.pdf`](doc/threeLoop.pdf) describes the inclusion of three-loop MSSM RGEs and two-loop threshold corrections
+* [`ho.pdf`](doc/ho.pdf) describes the inclusion of NNLO corrections to squark and gluino masses
 
 
 ## Files included in this distribution
