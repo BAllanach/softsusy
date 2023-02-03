@@ -13,7 +13,7 @@ physics calculations](https://arxiv.org/abs/0805.2088). SOFTSUSY now has a mode 
 ## Download 
 * <a id="raw-url" href="https://raw.githubusercontent.com/BAllanach/softsusy/master/tags/softsusy-4.1.17.tar.gz">SOFTSUSY-4.1.17</a> (2/2/23): improved documentation for github
 
-Previous releases (4.1.13 and before) can be obtained from [old website](https://softsusy.hepforge.org/)
+Previous releases (4.1.13 and before) can be obtained from the [old website](https://softsusy.hepforge.org/)
 
 ## Quick Installation and Run Test
 
