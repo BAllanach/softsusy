@@ -1,8 +1,12 @@
 # SOFTSUSY - supersymmetric/Higgs spectrum and decays
 
-by: B C Allanach, P Athron, A Bednyakov, M Bernhardt, T Cridge, D Grellscheid,
+by: [B C Allanach](https://www.damtp.cam.ac.uk/user/bca20/), P Athron, A Bednyakov, M Bernhardt, T Cridge, D Grellscheid,
                   M Hanussek, C H Kom, S Martin, D Robertson, R Ruiz de Austri,
 		  P Slavich, L Tunstall, A Voigt and A G Williams 
+
+[ [downloads](tags/) | [old SOFTSUSY](https://softsusy.hepforge.org/) | [development version](https://github.com/BAllanach/softsusy) ]
+
+*Manuals* [ [main](doc/rpcManual.pdf) | [decays]() | [NMSSM]() | [RPV]() | [RPV nu]() | [NNLO gauge/Yukawa]() | [NNLO squark/gluino]() ]
 
 ## Summary
 
@@ -11,9 +15,9 @@ can be used in conjunction with other programs for [many different particle
 physics calculations](https://arxiv.org/abs/0805.2088). SOFTSUSY now has a mode with 3 loop RGEs and some 2-loop threshold correction and 2-loop SUSY QCD corrections to gluino and squark pole masses. SOFTSUSY *now computes decay branching ratios for the MSSM and NMSSM*. It also ships with (and links to) Himalaya-1.0 for three-loop corrections to mh0. 
 
 ## Download 
-* <a id="raw-url" href="https://raw.githubusercontent.com/BAllanach/softsusy/master/tags/softsusy-4.1.17.tar.gz">SOFTSUSY-4.1.17</a>: improved documentation for github
+* <a id="raw-url" href="https://raw.githubusercontent.com/BAllanach/softsusy/master/tags/softsusy-4.1.17.tar.gz">SOFTSUSY-4.1.17</a> (2/2/23): improved documentation for github
 
-Previous releases from [old website](https://softsusy.hepforge.org/)
+Previous releases (4.1.13 and before) can be obtained from [old website](https://softsusy.hepforge.org/)
 
 ## Quick Installation and Run Test
 
@@ -170,7 +174,6 @@ Manuals are found in the `doc/` subdirectory:
 * `nmssmManual.pdf` describes the NMSSM implementation
 * `threeLoop.pdf` describes the inclusion of three-loop MSSM RGEs and two-loop threshold corrections
 
-Full and detailed `doxygen` code documentation can be obtained from: [softsusy](http://softsusy.hepforge.org/).
 
 ## Files included in this distribution
 
