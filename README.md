@@ -106,8 +106,8 @@ Block SOFTSUSY           # SOFTSUSY specific inputs
  18   <SoftHiggsOut>     # If=1, then the EWSB conditions output soft Higgs masses in NMSSM
  19   <threeLoopRGEs>    # If=1, then 3-loop MSSM RGEs included (default of 0 to disable)
  20   <gyThresholds>     # If>0, switch on gauge/Yukawa two-loop thresholds (see manual [6] for details). If=31, they all are switched on (default 0 to disable).
- 22    <2-loop squark/gluino>   # Include 2-loop terms in gluino/squark masses (default of 0 to disable)
- 23    <expandAroundGluinoPole> # sets expandAroundGluinoPole parameter (default 3)
+ 22   <2-loop squark/gluino>   # Include 2-loop terms in gluino/squark masses (default of 0 to disable)
+ 23   <expandAroundGluinoPole> # sets expandAroundGluinoPole parameter (default 3)
  24   <minBR>                  # If decay BR is below this number, don't output that mode
  25   <threeBodyDecays>        # If set to 0, don't calculate 3-body decays (1=default)
  26   <outputPartialWidths>    # If set to 1, output partial widths (0=default)
