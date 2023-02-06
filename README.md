@@ -28,13 +28,13 @@ Note that the executables are actually wrapper scripts, the "true" executables l
 If you use SOFTSUSY to write a paper, *please cite* (see [MCnet guidelines](https://www.montecarlonet.org/publications_guidelines/)) - collected in [soft.bib](soft.bib) the manuals (up-to-date manuals included with distribution in `doc` subdirectory):
 
 > 1. [`rpcManual.pdf`](doc/rpcManual.pdf) is the *main* one for the R-parity conserving MSSM: the base for all others: [B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145](https://arxiv.org/abs/hep-ph/0104145) 
-  2. [`decays.pdf`](doc/rpvManual.pdf) details calculations of sparticle and Higgs decays in the MSSM/NMSSM: [B.C. Allanach and T. Cridge, Comput. Phys. Comm. 220 (2017) 417, arxiv:1703.09717](https://arxiv.org/abs/1703.09717) 
-  3. [`nmssmManual.pdf`](doc/nmssmManual.pdf) describes the NMSSM implementation: [B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and A. Williams, Comput. Phys. Comm. 185 (2014) 2322, arXiv:1311.7659](https://arxiv.org/abs/1311.7659) 
-  4. [`rpvManual.pdf`](doc/rpvManual.pdf) for R-parity violating generalisation: [B.C. Allanach and M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232,
+> 2. [`decays.pdf`](doc/rpvManual.pdf) details calculations of sparticle and Higgs decays in the MSSM/NMSSM: [B.C. Allanach and T. Cridge, Comput. Phys. Comm. 220 (2017) 417, arxiv:1703.09717](https://arxiv.org/abs/1703.09717) 
+> 3. [`nmssmManual.pdf`](doc/nmssmManual.pdf) describes the NMSSM implementation: [B.C. Allanach, P. Athron, L. Tunstall, A. Voigt and A. Williams, Comput. Phys. Comm. 185 (2014) 2322, arXiv:1311.7659](https://arxiv.org/abs/1311.7659) 
+> 4. [`rpvManual.pdf`](doc/rpvManual.pdf) for R-parity violating generalisation: [B.C. Allanach and M.A. Bernhardt, Comput. Phys. Commun. 181 (2010) 232,
 arXiv:0903.1805](https://arxiv.org/abs/0903.1805)
-  5. [`neutManual.pdf`](doc/neutManual.pdf) on the one-loop calculation of neutrino masses and lepton mixing in the R-parity violating MSSM: [B.C. Allanach, M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012) 785, arXiv:1109.3735](https://arxiv.org/abs/1109.3735)
-  6. [`threeLoop.pdf`](doc/threeLoop.pdf) describes the inclusion of three-loop MSSM RGEs and two-loop threshold corrections: [B.C. Allanach, A. Bednyakov and R. Ruiz de Autri, Comput. Phys. Commun. 189 (2015) 192, arXiv:1407.6130](https://arxiv.org/abs/1407.6130)
-  7. [`threeLoop.pdf`](doc/threeLoop.pdf) describes the inclusion of three-loop MSSM RGEs and two-loop threshold corrections: [B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de Austri, Comput. Phys. Commun. 05 (2017) 006, arXiv:1601.06657](https://arxiv.org/abs/1601.06657)
+> 5. [`neutManual.pdf`](doc/neutManual.pdf) on the one-loop calculation of neutrino masses and lepton mixing in the R-parity violating MSSM: [B.C. Allanach, M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012) 785, arXiv:1109.3735](https://arxiv.org/abs/1109.3735)
+> 6. [`threeLoop.pdf`](doc/threeLoop.pdf) describes the inclusion of three-loop MSSM RGEs and two-loop threshold corrections: [B.C. Allanach, A. Bednyakov and R. Ruiz de Autri, Comput. Phys. Commun. 189 (2015) 192, arXiv:1407.6130](https://arxiv.org/abs/1407.6130)
+> 7. [`threeLoop.pdf`](doc/threeLoop.pdf) describes the inclusion of three-loop MSSM RGEs and two-loop threshold corrections: [B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de Austri, Comput. Phys. Commun. 05 (2017) 006, arXiv:1601.06657](https://arxiv.org/abs/1601.06657)
 
 ## Particle Decays
 
