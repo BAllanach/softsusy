@@ -145,19 +145,19 @@ See [6] for more details.
 
 ## Executable files: after installation
 
-* `softsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying tan beta. Main program: `src/main.cpp`. Output: `inOutFiles/outputTest`
-* `softsusy-nmssm.x`: example NMSSM test program - loops over tan beta. Main program: `src/main-nmssm.cpp`. Output: `inOutFiles/outputTest-nmssm`
-* `rpvsoftsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying lambda'_{331}(M_GUT). Main program: `src/rpvmain.cpp`. Output `inOutFiles/rpvOutputTest`
-* `rpvneut.x`: example neutrino mass calculating R-parity violating test program. Main program `src/rpvNeut.cpp`. Output `inOutFiles/neutOutputTest`
-* `softpoint.x`: command-line interface. GMSB, AMSB, mSUGRA and general boundary conditions possible, icluding SLHA. Main program: `src/softpoint.cpp`. See [INSTALL.md](INSTALL.md) for examples of reading in SLHA files and producing output.
+* `softsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying tan beta. Main program: [`src/main.cpp`](src/main.cpp). Output: [`inOutFiles/outputTest`](inOutFiles/outputTest)
+* `softsusy-nmssm.x`: example NMSSM test program - loops over tan beta. Main program: [`src/main-nmssm.cpp`](src/main-nmssm.cpp). Output: [`inOutFiles/outputTest-nmssm`](inOutFiles/outputTest-nmssm)
+* `rpvsoftsusy.x`: example C++ test program - calculates spectrum of SPS1a mSUGRA point with varying lambda'_{331}(M_GUT). Main program: [`src/rpvmain.cpp`](src/rpvmain.cpp). Output [`inOutFiles/rpvOutputTest`](inOutFiles/rpvOutputtest)
+* `rpvneut.x`: example neutrino mass calculating R-parity violating test program. Main program [`src/rpvNeut.cpp`](src/rpvNeut.cpp). Output [`inOutFiles/neutOutputTest`](inOutFiles/neutOuptutTest)
+* `softpoint.x`: command-line interface. GMSB, AMSB, mSUGRA and general boundary conditions possible, icluding SLHA. Main program: [`src/softpoint.cpp`](src/softpoint.cpp). See [INSTALL.md](INSTALL.md) for examples of reading in SLHA files and producing output.
 
 ### Input and information files
 * `README.md` contains these instructions 
-* `inOutFiles/lesHouchesInput` is an alternative input file in the SUSY Les Houches Accord (SLHA) format
-* `inOutFiles/nmssmSLHAnoZ3Input` is an SLHA2 NMSSM input file *without* assuming Z3 symmetry
-* `inOutFiles/nmssmSLHAZ3Input` is an SLHA NMSSM input file with the Z3 assumption
-* `inOutFiles/slha2Input` is an alternative input file in the SUSY Les Houches Accord 2 format for SPS1a' 
-* `inOutFiles/rpvHouchesInput` is an alternative input file in the SUSY Les Houches Accord format for R-parity violation
+* [`inOutFiles/lesHouchesInput`](inOutFileslesHouchesInput) is an alternative input file in the [SUSY Les Houches Accord](https://arxiv.org/abs/hep-ph/0311123) (SLHA) format
+* [`inOutFiles/nmssmSLHAnoZ3Input`](inOutFiles/nmssmSLHAnoZ3Input) is an [SLHA2](https://arxiv.org/abs/0801.0045) NMSSM input file *without* assuming Z3 symmetry
+* [`inOutFiles/nmssmSLHAZ3Input`](inOutFiles/nmssmSLHAZ3Input) is an SLHA NMSSM input file with the Z3 assumption
+* [`inOutFiles/slha2Input`](inOutFiles/slha2Input) is an alternative input file in the SUSY Les Houches Accord 2 format for SPS1a' 
+* [`inOutFiles/rpvHouchesInput`](inOutFiles/rpvHouchesInput) is an alternative input file in the SUSY Les Houches Accord format for R-parity violation
 
 
 ## Documentation
