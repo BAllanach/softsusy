@@ -83,7 +83,8 @@ Block SOFTSUSY           # SOFTSUSY specific inputs
  24   <minBR>                  # If decay BR is below this number, don't output that mode
  25   <threeBodyDecays>        # If set to 0, don't calculate 3-body decays (1=default)
  26   <outputPartialWidths>    # If set to 1, output partial widths (0=default)
- 27   <MQEDxQCD>    # Set scale at which QEDxQCD is matched to MSSM (mt=default)```
+ 27   <MQEDxQCD>    # Set scale at which QEDxQCD is matched to MSSM (mt=default)
+```
 
 ## High orders mode
 
