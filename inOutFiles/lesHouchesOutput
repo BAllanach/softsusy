@@ -1,10 +1,10 @@
 # WARNING: Don't understand data input 20 0.000000e+00 in block SOFTSUSY: ignoring it
 # WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# SOFTSUSY4.1.17 SLHA compliant output
+# SOFTSUSY4.1.18 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    4.1.17       # version number
+     2    4.1.18       # version number
 Block MODSEL  # Select model
      1    1   # sugra
 Block SMINPUTS             # Standard Model inputs
@@ -426,31 +426,31 @@ DECAY 1000025     3.62597209e+00   # Neutralino3 decays
       9.09097088e-03    2      25         1000023   # ~chi_30 -> h ~chi_20
 #
 #     PDG         Width             
-DECAY 1000035     4.25315321e+00   # Neutralino4 decays
+DECAY 1000035     4.25315320e+00   # Neutralino4 decays
 #     BR                NDA   PDG1         PDG2       Comments          
-      5.53047675e-03    2     -11         1000011   # ~chi_40 -> e+ ~e_L-
+      5.53047677e-03    2     -11         1000011   # ~chi_40 -> e+ ~e_L-
       1.77173416e-03    2     -11         2000011   # ~chi_40 -> e+ ~e_R-
-      5.53047675e-03    2      11        -1000011   # ~chi_40 -> e ~e_L+
+      5.53047677e-03    2      11        -1000011   # ~chi_40 -> e ~e_L+
       1.77173416e-03    2      11        -2000011   # ~chi_40 -> e ~e_R+
-      5.53056749e-03    2     -13         1000013   # ~chi_40 -> mu+ ~mu_L-
+      5.53056751e-03    2     -13         1000013   # ~chi_40 -> mu+ ~mu_L-
       1.77178085e-03    2     -13         2000013   # ~chi_40 -> mu+ ~mu_R-
-      5.53056749e-03    2      13        -1000013   # ~chi_40 -> mu- ~mu_L+
+      5.53056751e-03    2      13        -1000013   # ~chi_40 -> mu- ~mu_L+
       1.77178085e-03    2      13        -2000013   # ~chi_40 -> mu- ~mu_R+
-      1.20904258e-02    2      12        -1000012   # ~chi_40 -> nu_e ~nu_eL*
-      1.20904258e-02    2     -12         1000012   # ~chi_40 -> nu_eb ~nu_eL
+      1.20904259e-02    2      12        -1000012   # ~chi_40 -> nu_e ~nu_eL*
+      1.20904259e-02    2     -12         1000012   # ~chi_40 -> nu_eb ~nu_eL
       1.20906203e-02    2      14        -1000014   # ~chi_40 -> numu ~nu_muL*
       1.20906203e-02    2     -14         1000014   # ~chi_40 -> nu_mub ~nu_muL
-      1.74856265e-02    2     -1000015    15        # ~chi_40 -> tau- ~tau_1+
-      2.80583887e-03    2     -2000015    15        # ~chi_40 -> tau- ~tau_2+
-      1.74856265e-02    2      1000015   -15        # ~chi_40 -> tau+ ~tau_1-
-      2.80583887e-03    2      2000015   -15        # ~chi_40 -> tau+ ~tau_2-
+      1.74856266e-02    2     -1000015    15        # ~chi_40 -> tau- ~tau_1+
+      2.80583888e-03    2     -2000015    15        # ~chi_40 -> tau- ~tau_2+
+      1.74856266e-02    2      1000015   -15        # ~chi_40 -> tau+ ~tau_1-
+      2.80583888e-03    2      2000015   -15        # ~chi_40 -> tau+ ~tau_2-
       1.21582579e-02    2      16        -1000016   # ~chi_40 -> nu_tau ~nu_tauL*
       1.21582579e-02    2     -16         1000016   # ~chi_40 -> nu_taub ~nu_tauL
-      2.66989654e-01    2      24        -1000024   # ~chi_40 -> W+ ~chi_1-
-      2.66989654e-01    2     -24         1000024   # ~chi_40 -> W- ~chi_1+
+      2.66989655e-01    2      24        -1000024   # ~chi_40 -> W+ ~chi_1-
+      2.66989655e-01    2     -24         1000024   # ~chi_40 -> W- ~chi_1+
       1.67709213e-02    2      23         1000022   # ~chi_40 -> Z ~chi_10
       1.19510846e-02    2      23         1000023   # ~chi_40 -> Z ~chi_20
-      8.42871677e-02    2      25         1000022   # ~chi_40 -> h ~chi_10
+      8.42871679e-02    2      25         1000022   # ~chi_40 -> h ~chi_10
       2.10540800e-01    2      25         1000023   # ~chi_40 -> h ~chi_20
 #
 #     PDG         Width             
