@@ -2851,7 +2851,6 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     xsiZisf1sf1Zj = dgauss(gxsidgauss,from,to,accuracy);
     rhotildaZisf1sf1Zj = dgauss(grhodgauss,from,to,accuracy);
     chiprimeZisf1sf1Zj = dgauss(gchiprimedgauss,from,to,accuracy);
-    /// the problem is in here - DEBUG
     zetaZisf1sf1Zj = dgauss(gzetadgauss,from,to,accuracy);
     XZisf1sf1Zj = dgauss(gXdgauss,from,to,accuracy);
     chitildaZisf1sf1Zj = dgauss(gchidgauss,from,to,accuracy);
@@ -3232,6 +3231,9 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
     
     GammagA = coupcombogA1*coupcombogA3*integralgA4 - 2*coupcombogA1*coupcombogA4*sqr(mq)*integralgA3 + 2*coupcombogA2*coupcombogA3*fabs(mneutralinoi)*fabs(mneutralinoj)*integralgA2 -4*coupcombogA2*coupcombogA4*sqr(mq)*fabs(mneutralinoi)*fabs(mneutralinoj)*integralgA1;
 
+    /// Explicitly decouple RH sneutrino contributions since it's not in MSSM
+    if (msf2 > 1.0e10) Gammahsf2 = 0, GammaHsf2 = 0, GammaAsf2 = 0, GammaZsf2 = 0;
+    
     amplitudeW = Nc/(512*pow(PI,3)*pow(fabs(mneutralinoi),3))*(GammaZ + Gammah + GammaH + GammaA + GammahHinterf + Gammasftot - 4*Gammahsf1 - 4*Gammahsf2 - 4*GammaHsf1 - 4*GammaHsf2 - 4*GammaAsf1 - 4*GammaAsf2 + 4*GammaZsf1 - 4*GammaZsf2 - 4*GammaZA + 2*GammagA - 4*GammaZg + Gammagoldstone - 4*Gammagsf1 -4*Gammagsf2);    
 }
   
@@ -3239,7 +3241,7 @@ double neutralinoamplitudedecaydgaussneutralinoffbar (double mneutralinoi, doubl
 }
 
 double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double msfp1, double msfp2, double msf1, double msf2, double mWboson, double mHP, double mcharginoj, double mfp, double mf, double thetaqp, double thetaq, double g, double gp, double alpha, double beta, double thetaL2, double thetaR2, double runmqp, double runmq, DoubleMatrix & mixNeut, int ineutralino, int jchargino, bool onetothree, char qorl, char norc) {
-  
+
   double amplitudeW = 0;
 
   if (fabs(mneutralinoi) > msf1 + mf || fabs(mneutralinoi) > msf2 + mf || fabs(mneutralinoi) > msfp1 + mfp || fabs(mneutralinoi) > msfp2 + mfp || fabs(mneutralinoi) > fabs(mcharginoj) + mHP ||fabs(mneutralinoi) > fabs(mcharginoj) + mWboson || fabs(mneutralinoi) < fabs(mcharginoj) + mf + mfp || onetothree == false){
@@ -3369,7 +3371,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     Gammagoldstone = coupcombo1Hpm1*coupcombo3Hpm1*int4Wpm - 4*coupcombo1Hpm1*coupcombo4Hpm1*int3Wpm*mf*mfp + 4*coupcombo2Hpm1*coupcombo3Hpm1*int2Wpm*fabs(mneutralinoi)*fabs(mcharginoj)*rj - 16*coupcombo2Hpm1*coupcombo4Hpm1*int1Wpm*mf*mfp*fabs(mneutralinoi)*fabs(mcharginoj)*rj;
 
     GammaHpm = coupcombo1Hpm2*coupcombo3Hpm2*int4Hpm - 4*coupcombo1Hpm2*coupcombo4Hpm2*int3Hpm*mf*mfp + 4*coupcombo2Hpm2*coupcombo3Hpm2*int2Hpm*fabs(mneutralinoi)*fabs(mcharginoj)*rj - 16*coupcombo2Hpm2*coupcombo4Hpm2*int1Hpm*mf*mfp*fabs(mneutralinoi)*fabs(mcharginoj)*rj;
- 
+
     ///Sfp Sfp diagonal (Remember fp is u-type fermion)
 
     double alphasfp1char = 0, betasfp1char = 0, alphasf1char = 0, betasf1char = 0, alphasfp2char = 0, betasfp2char = 0, alphasf2char = 0, betasf2char = 0;
@@ -3616,7 +3618,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int8sfp2sf1 = 2*fabs(m1)*dgauss(gneuticharjffp8sfp1sf2dgauss,mfp,Eupper,accuracy);
 
     Gammasfp2sf1 = coupcombo1sfp2sf1*int1sfp2sf1 + coupcombo2sfp2sf1*int2sfp2sf1 + coupcombo3sfp2sf1*int3sfp2sf1 + coupcombo4sfp2sf1*int4sfp2sf1 + coupcombo5sfp2sf1*int5sfp2sf1 + coupcombo6sfp2sf1*int6sfp2sf1 + coupcombo7sfp2sf1*int7sfp2sf1 + coupcombo8sfp2sf1*int8sfp2sf1;
-
     ///W-Hpm interference
     double coupcombo1WHpm = 0, coupcombo2WHpm = 0, coupcombo3WHpm = 0, coupcombo4WHpm = 0;
     coupcombo1WHpm = (charneutWcoupR*coupHpm2charneutR + charneutWcoupL*coupHpm2charneutL)*-g/(root2)*coupHpm2ffpu*fabs(mcharginoj)*mfp*rc;
@@ -3634,7 +3635,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int4WHpm = 2*fabs(m1)*dgauss(gneuticharjffp4WHpmdgauss,fabs(mcharginoj), Eupper3, accuracy);
 
     GammaWHpm = coupcombo1WHpm*int1WHpm*rc*rj + coupcombo2WHpm*int2WHpm*rc*rj + coupcombo3WHpm*int3WHpm + coupcombo4WHpm*int4WHpm;
-
     ///W-goldstone interference
     double coupcombo1Wg = 0, coupcombo2Wg = 0, coupcombo3Wg = 0, coupcombo4Wg = 0;
     coupcombo1Wg = (charneutWcoupR*coupHpm1charneutR + charneutWcoupL*coupHpm1charneutL)*-g/(root2)*coupHpm1ffpu*fabs(mcharginoj)*mfp*rc;
@@ -3651,7 +3651,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int4Wg = 2*fabs(m1)*dgauss(gneuticharjffp4WHpmdgauss,fabs(mcharginoj), Eupper3, accuracy);
 
     GammaWgoldstone = coupcombo1Wg*int1Wg + coupcombo2Wg*int2Wg + coupcombo3Wg*int3Wg + coupcombo4Wg*int4Wg;
-    
     ///W Sfp 1 interference
     double coupcombo1Wsfp1 = 0, coupcombo2Wsfp1 = 0, coupcombo3Wsfp1 = 0, coupcombo4Wsfp1 = 0, coupcombo5Wsfp1 = 0, coupcombo6Wsfp1 = 0, coupcombo7Wsfp1 = 0, coupcombo8Wsfp1 = 0;
     coupcombo7Wsfp1 = -2*charneutWcoupL*sf1beta1Ziu*g/(root2)*betasfp1char*mfp*mf;
@@ -3675,7 +3674,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     intW8Sfp1 = 2*fabs(m1)*dgauss(gneuticharjffpW8Sfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
 
     GammaWSfp1 = coupcombo1Wsfp1*intW1Sfp1 + coupcombo2Wsfp1*intW2Sfp1 + coupcombo3Wsfp1*intW3Sfp1 + coupcombo4Wsfp1*intW4Sfp1 + coupcombo5Wsfp1*intW5Sfp1 + coupcombo6Wsfp1*intW6Sfp1 + coupcombo7Wsfp1*intW7Sfp1 + coupcombo8Wsfp1*intW8Sfp1;
-
     /// W Sfp 2 interference
     double coupcombo1Wsfp2 = 0, coupcombo2Wsfp2 = 0, coupcombo3Wsfp2 = 0, coupcombo4Wsfp2 = 0, coupcombo5Wsfp2 = 0, coupcombo6Wsfp2 = 0, coupcombo7Wsfp2 = 0, coupcombo8Wsfp2 = 0;
     coupcombo1Wsfp2 = rc*2*charneutWcoupL*sf2alpha1Ziu*-g/(root2)*betasfp2char*fabs(mneutralinoi)*-mf*rj;
@@ -3699,7 +3697,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     intW8Sfp2 = 2*fabs(m1)*dgauss(gneuticharjffpW8Sfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
 
     GammaWSfp2 = coupcombo1Wsfp2*intW1Sfp2 + coupcombo2Wsfp2*intW2Sfp2 + coupcombo3Wsfp2*intW3Sfp2 + coupcombo4Wsfp2*intW4Sfp2 + coupcombo5Wsfp2*intW5Sfp2 + coupcombo6Wsfp2*intW6Sfp2 + coupcombo7Wsfp2*intW7Sfp2 + coupcombo8Wsfp2*intW8Sfp2;
-
     ///W Sf1 interference
     double coupcombo1Wsf1 = 0, coupcombo2Wsf1 = 0, coupcombo3Wsf1 = 0, coupcombo4Wsf1 = 0, coupcombo5Wsf1 = 0, coupcombo6Wsf1 = 0, coupcombo7Wsf1 = 0, coupcombo8Wsf1 = 0;
 
@@ -3736,7 +3733,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     intW8Sf1 = 2*fabs(m1)*dgauss(gneuticharjffpW8Sfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
 
     GammaWSf1 = coupcombo1Wsf1*intW1Sf1 + coupcombo2Wsf1*intW2Sf1 + coupcombo3Wsf1*intW3Sf1 + coupcombo4Wsf1*intW4Sf1 + coupcombo5Wsf1*intW5Sf1 + coupcombo6Wsf1*intW6Sf1 + coupcombo7Wsf1*intW7Sf1 + coupcombo8Wsf1*intW8Sf1;
-
     ///W Sf2 interference
     double coupcombo1Wsf2 = 0, coupcombo2Wsf2 = 0, coupcombo3Wsf2 = 0, coupcombo4Wsf2 = 0, coupcombo5Wsf2 = 0, coupcombo6Wsf2 = 0, coupcombo7Wsf2 = 0, coupcombo8Wsf2 = 0;
     coupcombo6Wsf2 = 2*charneutWcoupR*sf2alpha1Zid*g/(root2)*alphasf2char*fabs(mneutralinoi)*fabs(mcharginoj)*rj*rc;
@@ -3772,7 +3768,7 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     intW8Sf2 = 2*fabs(m1)*dgauss(gneuticharjffpW8Sfpdgauss,fabs(mcharginoj),Eupper3,accuracy);
 
     GammaWSf2 = coupcombo1Wsf2*intW1Sf2 + coupcombo2Wsf2*intW2Sf2 + coupcombo3Wsf2*intW3Sf2 + coupcombo4Wsf2*intW4Sf2 + coupcombo5Wsf2*intW5Sf2 + coupcombo6Wsf2*intW6Sf2 + coupcombo7Wsf2*intW7Sf2 + coupcombo8Wsf2*intW8Sf2;
-
+    
     ///H+ goldstone interference
     double coupcombo1Hg = 0, coupcombo2Hg = 0, coupcombo3Hg = 0, coupcombo4Hg = 0;
     coupcombo1Hg = coupHpm1charneutL*coupHpm2charneutL + coupHpm1charneutR*coupHpm2charneutR;
@@ -3788,7 +3784,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int4Hg = 2*fabs(m1)*dgauss(gneuticharjffpHg4dgauss,fabs(mcharginoj),Eupper3,accuracy);
 
     GammaHgoldstone = coupcombo1Hg*coupcombo3Hg*int4Hg - 2*coupcombo1Hg*coupcombo4Hg*mf*mfp*int3Hg + 2*coupcombo2Hg*coupcombo3Hg*fabs(mneutralinoi)*fabs(mcharginoj)*int2Hg - 4*coupcombo2Hg*coupcombo4Hg*fabs(mneutralinoi)*fabs(mcharginoj)*mf*mfp*int1Hg*rj;
-    
     ///goldstone - sfp1 interference
     double coupcombo1gsfp1 = 0, coupcombo2gsfp1 = 0, coupcombo3gsfp1 = 0, coupcombo4gsfp1 = 0, coupcombo5gsfp1 = 0, coupcombo6gsfp1 = 0, coupcombo7gsfp1 = 0, coupcombo8gsfp1 = 0; 
     if (norc == 'n') {
@@ -3842,7 +3837,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
 
     Gammagsfp1 = coupcombo1gsfp1*int1gsfp1 + coupcombo2gsfp1*int2gsfp1 + coupcombo3gsfp1*int3gsfp1 + coupcombo4gsfp1*int4gsfp1 + coupcombo5gsfp1*int5gsfp1 + coupcombo6gsfp1*int6gsfp1 + coupcombo7gsfp1*int7gsfp1 + coupcombo8gsfp1*int8gsfp1;
-
     ///goldstone - sfp2 interference
     double coupcombo1gsfp2 = 0, coupcombo2gsfp2 = 0, coupcombo3gsfp2 = 0, coupcombo4gsfp2 = 0, coupcombo5gsfp2 = 0, coupcombo6gsfp2 = 0, coupcombo7gsfp2 = 0, coupcombo8gsfp2 = 0; 
     if (norc == 'n') {
@@ -3896,7 +3890,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
 
     Gammagsfp2 = coupcombo1gsfp2*int1gsfp2 + coupcombo2gsfp2*int2gsfp2 + coupcombo3gsfp2*int3gsfp2 + coupcombo4gsfp2*int4gsfp2 + coupcombo5gsfp2*int5gsfp2 + coupcombo6gsfp2*int6gsfp2 + coupcombo7gsfp2*int7gsfp2 + coupcombo8gsfp2*int8gsfp2;
-
     ///H+ - sfp1 interference
     double coupcombo1Hpmsfp1 = 0, coupcombo2Hpmsfp1 = 0, coupcombo3Hpmsfp1 = 0, coupcombo4Hpmsfp1 = 0, coupcombo5Hpmsfp1 = 0, coupcombo6Hpmsfp1 = 0, coupcombo7Hpmsfp1 = 0, coupcombo8Hpmsfp1 = 0; 
     if (norc == 'n') {
@@ -3950,7 +3943,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
 
     GammaHpmsfp1 = coupcombo1Hpmsfp1*int1Hpmsfp1 + coupcombo2Hpmsfp1*int2Hpmsfp1 + coupcombo3Hpmsfp1*int3Hpmsfp1 + coupcombo4Hpmsfp1*int4Hpmsfp1 + coupcombo5Hpmsfp1*int5Hpmsfp1 + coupcombo6Hpmsfp1*int6Hpmsfp1 + coupcombo7Hpmsfp1*int7Hpmsfp1 + coupcombo8Hpmsfp1*int8Hpmsfp1;
-
     ///H+ - sfp2 interference
     double coupcombo1Hpmsfp2 = 0, coupcombo2Hpmsfp2 = 0, coupcombo3Hpmsfp2 = 0, coupcombo4Hpmsfp2 = 0, coupcombo5Hpmsfp2 = 0, coupcombo6Hpmsfp2 = 0, coupcombo7Hpmsfp2 = 0, coupcombo8Hpmsfp2 = 0; 
     if (norc == 'n') {
@@ -4004,7 +3996,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
 
     GammaHpmsfp2 = coupcombo1Hpmsfp2*int1Hpmsfp2 + coupcombo2Hpmsfp2*int2Hpmsfp2 + coupcombo3Hpmsfp2*int3Hpmsfp2 + coupcombo4Hpmsfp2*int4Hpmsfp2 + coupcombo5Hpmsfp2*int5Hpmsfp2 + coupcombo6Hpmsfp2*int6Hpmsfp2 + coupcombo7Hpmsfp2*int7Hpmsfp2 + coupcombo8Hpmsfp2*int8Hpmsfp2;
-
     ///goldstone - sf1 interference
     double coupcombo1gsf1 = 0, coupcombo2gsf1 = 0, coupcombo3gsf1 = 0, coupcombo4gsf1 = 0, coupcombo5gsf1 = 0, coupcombo6gsf1 = 0, coupcombo7gsf1 = 0, coupcombo8gsf1 = 0; 
     if (norc == 'n') {
@@ -4058,7 +4049,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
 
     Gammagsf1 = coupcombo1gsf1*int1gsf1 + coupcombo2gsf1*int2gsf1 + coupcombo3gsf1*int3gsf1 + coupcombo4gsf1*int4gsf1 + coupcombo5gsf1*int5gsf1 + coupcombo6gsf1*int6gsf1 + coupcombo7gsf1*int7gsf1 + coupcombo8gsf1*int8gsf1;
-
     ///goldstone - sf2 interference
     double coupcombo1gsf2 = 0, coupcombo2gsf2 = 0, coupcombo3gsf2 = 0, coupcombo4gsf2 = 0, coupcombo5gsf2 = 0, coupcombo6gsf2 = 0, coupcombo7gsf2 = 0, coupcombo8gsf2 = 0; 
     if (norc == 'n') {
@@ -4112,7 +4102,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
 
     Gammagsf2 = coupcombo1gsf2*int1gsf2 + coupcombo2gsf2*int2gsf2 + coupcombo3gsf2*int3gsf2 + coupcombo4gsf2*int4gsf2 + coupcombo5gsf2*int5gsf2 + coupcombo6gsf2*int6gsf2 + coupcombo7gsf2*int7gsf2 + coupcombo8gsf2*int8gsf2;
-
     //Hpm - sf1 interference
     double coupcombo1Hpmsf1 = 0, coupcombo2Hpmsf1 = 0, coupcombo3Hpmsf1 = 0, coupcombo4Hpmsf1 = 0, coupcombo5Hpmsf1 = 0, coupcombo6Hpmsf1 = 0, coupcombo7Hpmsf1 = 0, coupcombo8Hpmsf1 = 0; 
     if (norc == 'n') {
@@ -4166,7 +4155,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
 
     GammaHpmsf1 = coupcombo1Hpmsf1*int1Hpmsf1 + coupcombo2Hpmsf1*int2Hpmsf1 + coupcombo3Hpmsf1*int3Hpmsf1 + coupcombo4Hpmsf1*int4Hpmsf1 + coupcombo5Hpmsf1*int5Hpmsf1 + coupcombo6Hpmsf1*int6Hpmsf1 + coupcombo7Hpmsf1*int7Hpmsf1 + coupcombo8Hpmsf1*int8Hpmsf1;
-
     ///Hpm - sf2 interference
     double coupcombo1Hpmsf2 = 0, coupcombo2Hpmsf2 = 0, coupcombo3Hpmsf2 = 0, coupcombo4Hpmsf2 = 0, coupcombo5Hpmsf2 = 0, coupcombo6Hpmsf2 = 0, coupcombo7Hpmsf2 = 0, coupcombo8Hpmsf2 = 0; 
     if (norc == 'n') {
@@ -4220,7 +4208,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     }
 
     GammaHpmsf2 = coupcombo1Hpmsf2*int1Hpmsf2 + coupcombo2Hpmsf2*int2Hpmsf2 + coupcombo3Hpmsf2*int3Hpmsf2 + coupcombo4Hpmsf2*int4Hpmsf2 + coupcombo5Hpmsf2*int5Hpmsf2 + coupcombo6Hpmsf2*int6Hpmsf2 + coupcombo7Hpmsf2*int7Hpmsf2 + coupcombo8Hpmsf2*int8Hpmsf2;
-
     ///Sfp Sfp interference
     double coupcombo1sfpsfp = 0, coupcombo2sfpsfp = 0, coupcombo3sfpsfp = 0, coupcombo4sfpsfp = 0;
     if (norc == 'n') {
@@ -4267,7 +4254,6 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     else {
       throw("problem: norc must be n or c for neut or chargino respectively as decaying particle in neutralinoamplitudedecaycharginoffprimebar");
     }
-
     double Gammasf1sf2 = 0;
     ///Sf - Sf interference
     double coupcombo1sf1sf2 = 0, coupcombo2sf1sf2 = 0, coupcombo3sf1sf2 = 0, coupcombo4sf1sf2 = 0;
@@ -4284,17 +4270,21 @@ double neutralinoamplitudedecaycharginoffprimebar (double mneutralinoi, double m
     int4sf1sf2 = 2*fabs(m1)*dgauss(gneuticharjffp4sf1sf2dgauss,mf,Eupper2,accuracy);
     
       Gammasf1sf2 = (-rc*ri*coupcombo1sf1sf2*coupcombo3sf1sf2*int4sf1sf2 + 2*ri*coupcombo1sf1sf2*coupcombo4sf1sf2*mf*-fabs(mcharginoj)*int2sf1sf2 -rc*2*coupcombo2sf1sf2*coupcombo3sf1sf2*fabs(mneutralinoi)*mfp*int3sf1sf2 + 4*coupcombo2sf1sf2*coupcombo4sf1sf2*fabs(mneutralinoi)*mf*-fabs(mcharginoj)*mfp*int1sf1sf2);
-   
 
+      /// Decouple RH sneutrino contributions explicitly (which don't exist in
+      /// the MSSM: the signal is a huge msf2 of 1.0e11
+      if (msf2 >= 1.0e10) Gammasf2 = 0, Gammasfp1sf2 = 0, Gammasfp2sf2 = 0, GammaWSf2 = 0, Gammagsf2 = 0, GammaHpmsf2 = 0, Gammasf1sf2 = 0;
+      
     amplitudeW = Nc/(512*pow(PI,3)*pow(fabs(mneutralinoi),3))*(GammaW + Gammasf1 + Gammasf2 + Gammasfp1 + Gammasfp2 -2*Gammasfp1sf1 - 2*Gammasfp1sf2 - 2*Gammasfp2sf1 - 2*Gammasfp2sf2 + 2*GammaWHpm + 2*GammaWgoldstone+ GammaHpm + Gammagoldstone -2*GammaWSfp1 - 2*GammaWSfp2 - 2*GammaWSf1 - 2*GammaWSf2 + 2*GammaHgoldstone - 2*Gammagsfp1 - 2*Gammagsfp2 - 2*Gammagsf1 - 2*Gammagsf2 - 2*GammaHpmsfp1 - 2*GammaHpmsfp2 - 2*GammaHpmsf1 - 2*GammaHpmsf2 + 2*Gammasfpsfp - 2*Gammasf1sf2);
-    // fout << "amplitudeW = " << amplitudeW << endl;
-    // fout << "GammaW = " << GammaW << " Gammasf1 = " << Gammasf1 << " Gammasf2 = " << Gammasf2 << " Gammasfp1 = " << Gammasfp1 << " Gammasfp2 = " << Gammasfp2 << endl;
-    // fout << "Gammasfp1sf1 = " << Gammasfp1sf1 << " Gammasfp1sf2 = " << Gammasfp1sf2 <<" Gammasfp2sf1 = " << Gammasfp2sf1 <<" Gammasfp2sf2 = " << Gammasfp2sf2 << endl;
-    // fout << "GammaWHpm = " << GammaWHpm << " GammaWgoldstone = " << GammaWgoldstone << " GammaHpm = " << GammaHpm << " Gammagoldstone = " << Gammagoldstone << endl;
-    // fout << "GammaWSfp1 = " << GammaWSfp1 << " GammaWSfp2 = " << GammaWSfp2 << " GammaWSf1 = " << GammaWSf1 << " GammaWSf2 = " << GammaWSf2 << endl;
-    // fout << "GammaHgoldstone = " << GammaHgoldstone << " Gammagsfp1 = " << Gammagsfp1 << " Gammagsfp2 = " << Gammagsfp2 << " Gammagsf1 = " << Gammagsf1 << " Gammagsf2 = " << Gammagsf2 << endl;
-    // fout << "GammaHpmsfp1 = " << GammaHpmsfp1 << " GammaHpmsfp2 = " << GammaHpmsfp2 << " GammaHpmsf1 = " << GammaHpmsf1 << " GammaHpmsf2 = " << GammaHpmsf2 << endl;
-    // fout << "Gammasfpsfp = " << Gammasfpsfp << " Gammasf1sf2 = " << Gammasf1sf2 << endl;
+
+    /* cout << "amplitudeW = " << amplitudeW << endl;
+    cout << "GammaW = " << GammaW << " Gammasf1 = " << Gammasf1 << " Gammasf2 = " << Gammasf2 << " Gammasfp1 = " << Gammasfp1 << " Gammasfp2 = " << Gammasfp2 << endl;
+    cout << "Gammasfp1sf1 = " << Gammasfp1sf1 << " Gammasfp1sf2 = " << Gammasfp1sf2 <<" Gammasfp2sf1 = " << Gammasfp2sf1 <<" Gammasfp2sf2 = " << Gammasfp2sf2 << endl;
+    cout << "GammaWHpm = " << GammaWHpm << " GammaWgoldstone = " << GammaWgoldstone << " GammaHpm = " << GammaHpm << " Gammagoldstone = " << Gammagoldstone << endl;
+    cout << "GammaWSfp1 = " << GammaWSfp1 << " GammaWSfp2 = " << GammaWSfp2 << " GammaWSf1 = " << GammaWSf1 << " GammaWSf2 = " << GammaWSf2 << endl;
+    cout << "GammaHgoldstone = " << GammaHgoldstone << " Gammagsfp1 = " << Gammagsfp1 << " Gammagsfp2 = " << Gammagsfp2 << " Gammagsf1 = " << Gammagsf1 << " Gammagsf2 = " << Gammagsf2 << endl;
+    cout << "GammaHpmsfp1 = " << GammaHpmsfp1 << " GammaHpmsfp2 = " << GammaHpmsfp2 << " GammaHpmsf1 = " << GammaHpmsf1 << " GammaHpmsf2 = " << GammaHpmsf2 << endl;
+    cout << "Gammasfpsfp = " << Gammasfpsfp << " Gammasf1sf2 = " << Gammasf1sf2 << endl;*/
   }
 
   return amplitudeW;

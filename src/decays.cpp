@@ -4750,7 +4750,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    double Neut4_No_1to2_Decays = 0;
    
    Neut4_No_1to2_Decays = ParticleNeutralino4.No_1to2_Decays + ParticleNeutralino4.No_grav_Decays  + ParticleNeutralino4.No_NMSSM_Decays;
-   
+
    for (int j = 0; j<Neut4_No_1to2_Decays; j++) {
      ParticleNeutralino4.Array_Decays[j][4] = 0; ///0 indicates no 3rd daughter so 1->2 decay.
    }
@@ -4781,7 +4781,6 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
        // }	  
        throw( "nan in Neutralino4 total width \n");
      }
-      
  }
  
  if (nmssmIsIt == true) {

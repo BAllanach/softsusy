@@ -3,6 +3,9 @@
 # Make sure version number in configure.ac is up-to-date
 # make -j8 dist
 # mv softsusy-4.X.Y.tar.gz tags/
+# git status
+# git add tags/softsusy-4.X.Y.tar.gz
+# git commit
 # git push
 # git tag -a v4.X.Y -m "Official version v4.X.Y"
 # git push origin --tags
