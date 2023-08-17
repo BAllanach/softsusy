@@ -140,8 +140,7 @@ Source files are to be found in the `src/` subdirectory. The `inOutFiles/` direc
 
 ## Comparisons with other SUSY spectrum generators
 
-There are detailed comparisons between SOFTSUSY and other publicly available
-codes in 
+There are detailed comparisons between SOFTSUSY and other publicly available programs in 
 * Uncertainties in the Lightest CP Even Higgs Boson Mass Prediction in the Minimal Supersymmetric Standard Model: Fixed Order Versus Effective Field Theory Prediction, [B.C. Allanach and A. Voigt, Eur.Phys.J. C78 (2018) no.7, arxiv:1804.09410](https://arxiv.org/abs/1804.09410)
 * The Calculation of Sparticle and Higgs Decays in the Minimal and Next-to-Minimal Supersymmetric Standard Models: SOFTSUSY4.0, [B.C. Allanach and T. Cridge, Comput. Phys. Comm. 220 (2017) 417, arxiv:1703.09717](https://arxiv.org/abs/1703.09717)
 * Precise Determination of the Neutral Higgs Boson Masses in the MSSM, [B.C. Allanach, A. Djouadi, J.L. Kneur, W. Porod, P. Slavich, JHEP 0409 (2004) 044, hep-ph/0406166](https://arxiv.org/abs/hep-ph/0406166) 

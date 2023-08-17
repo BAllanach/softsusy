@@ -1,10 +1,10 @@
-# SOFTSUSY4.1.12 SLHA compliant output
+# SOFTSUSY4.1.19 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 # B.C. Allanach, P. Athron, L.C. Tunstall, A. Voigt and A.~G.~Williams,
 # Comput. Phys. Commun. 185 (2014) 2322, arXiv:1311.7659
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    4.1.12       # version number
+     2    4.1.19       # version number
 Block MODSEL  # Select model
      1    1   # sugra
      3    1   # NMSSM
