@@ -3059,7 +3059,7 @@ void RpvNeutrino::lesHouchesAccordOutput(ostream & out,
   vckminSLHA(out);
   MssmSoftsusy::minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale);  
 
-  RpvSoftsusy kw;
+  RpvSoftsusy kw; kw.setNumRpcBcs(displayNumRpcBcs());
   kw.RpvSoftsusy::rpvSet(pars);
   kw.outputNonZeroInputs(out);
   

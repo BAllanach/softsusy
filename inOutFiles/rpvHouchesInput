@@ -33,7 +33,7 @@ Block RVLAMLQDIN             # GUT scale RPV trilinear coupling
 Block SOFTSUSY
     1   1.000000000e-03
     2   2.000000000e+00      # quark mixing: none (=0), up (=1) or down (=2)
-    8   0.000000000e+00	     # Switch MSUSY scale RPV boundary condition on?
+    8   1.000000000e+00	     # Switch MSUSY scale RPV boundary condition on?
     9   0.000000000e+00	     # Use normal hierarchy(=0.0) or inverted (=1.0)
 #   19   1.000000000e+00      # Include 3-loop SUSY RGEs
 #   20   1.000000000e+00      # Include 2-loop gauge/Yukawa thresholds

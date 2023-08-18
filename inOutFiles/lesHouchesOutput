@@ -1,10 +1,9 @@
 # WARNING: Don't understand data input 20 0.000000e+00 in block SOFTSUSY: ignoring it
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# SOFTSUSY4.1.19 SLHA compliant output
+# SOFTSUSY4.1.20 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    4.1.19       # version number
+     2    4.1.20       # version number
 Block MODSEL  # Select model
      1    1   # sugra
 Block SMINPUTS             # Standard Model inputs
@@ -528,19 +527,6 @@ DECAY 37          3.64140934e+00   # Charged higgs+ decays
       5.60222560e-05    2      1000016   -1000015   # H+ -> ~tau_1+ nu_tauL
       7.49223980e-04    2      1000016   -2000015   # H+ -> ~tau_2+ nu_tauL
 #
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
-# WARNING: 3-loop corrections to the Higgs mass are disabled, because Himalaya is not compiled in.
 Block DMASS                   # uncertainties
       25     8.08234520e-01   # uncertainty of h0 in GeV
       35     4.97420110e+00   # uncertainty of H0 in GeV
