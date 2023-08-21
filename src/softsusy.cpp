@@ -58,6 +58,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
   t1OV1Ms1loop = s.displayTadpole1Ms1loop(); 
   t2OV2Ms1loop = s.displayTadpole2Ms1loop(); 
   qewsb = s.displayQewsb();
+  softsusyOpts = s.softsusyOpts;
   mxBC = s.displayMxBC();
   included_thresholds = s.included_thresholds;
   
@@ -71,7 +72,8 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       mw(0.0), dataSet(), fracDiff(1.), setTbAtMX(false), altEwsb(false),
       altMt(false), altAlphaS(false), altAlphaEm(false),
       predMzSq(0.), t1OV1Ms(0.), t2OV2Ms(0.),
-      t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), qewsb(1.), mxBC(mxDefault)
+      t1OV1Ms1loop(0.), t2OV2Ms1loop(0.), qewsb(1.), softsusyOpts(),
+      mxBC(mxDefault)
   {
     setPars(110);
     setMu(0.0);
@@ -101,6 +103,7 @@ const MssmSoftsusy& MssmSoftsusy::operator=(const MssmSoftsusy& s) {
       t1OV1Ms(s.displayTadpole1Ms()), t2OV2Ms(s.displayTadpole2Ms()), 
       t1OV1Ms1loop(s.displayTadpole1Ms1loop()), 
       t2OV2Ms1loop(s.displayTadpole2Ms1loop()), qewsb(s.displayQewsb()),
+      softsusyOpts(s.displaySoftsusyOpts()), 
       mxBC(s.displayMxBC()) {
     
     setPars(110);
@@ -116,7 +119,7 @@ MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
 	setTbAtMX(false), altEwsb(false), altMt(false), altAlphaS(false),
         altAlphaEm(false), predMzSq(0.),
         t1OV1Ms(0.), t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
-	qewsb(1.0), mxBC(mxDefault) { 
+	  qewsb(1.0), softsusyOpts(), mxBC(mxDefault) { 
     setPars(110);
     setMu(s.displayMu()); 
     
@@ -141,7 +144,7 @@ MssmSoftsusy::MssmSoftsusy(const MssmSusyRGE &s)
       altEwsb(false), altMt(false), altAlphaS(false), altAlphaEm(false),
       predMzSq(0.), t1OV1Ms(0.),
       t2OV2Ms(0.), t1OV1Ms1loop(0.), t2OV2Ms1loop(0.),
-	qewsb(1.0), mxBC(mxDefault){
+      qewsb(1.0), softsusyOpts(), mxBC(mxDefault){
     setHvev(hv);
     setPars(110);
     setMu(mu);
@@ -7383,6 +7386,7 @@ void MssmSoftsusy::fixedPointIteration
     double maCondFirst = displayMaCond();
     double qqewsb      = displayQewsb();
     int lpnum = displayLoops();
+    string sopts = displaySoftsusyOpts();
     
     int enabled_thresholds = included_thresholds;    
     setSoftsusy(empty); /// Always starts from an empty object
@@ -7398,6 +7402,7 @@ void MssmSoftsusy::fixedPointIteration
     setMuCond(muCondFirst);
     setMaCond(maCondFirst);
     setQewsb(qqewsb);
+    setSoftsusyOpts(sopts);
     
     double mz = displayMz();
     
@@ -10012,6 +10017,8 @@ void MssmSoftsusy::spinfoSLHA(ostream & out) {
   }
   if (displayProblem().testSeriousProblem()) 
     out << "     4    " << displayProblem() << " # Point invalid" << endl;
+  out << "Block SOFTSUSY               # SOFTSUSY specific SLHA options" << endl;
+  out << displaySoftsusyOpts();
 }
 
 void MssmSoftsusy::softsusySLHA(ostream & out) {

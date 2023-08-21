@@ -103,7 +103,9 @@ namespace softsusy {
     /// there are two possible conventions: if QEWSB > MZ, its value is assumed
     /// in GeV and used as a constant MSUSY. Otherwise, it MULTIPLIES the usual 
     /// MSUSY value, of root(mstop1 mstop2)
-    double qewsb;       
+    double qewsb;
+    /// SOFTSUSY 
+    string softsusyOpts;
     
   protected:
     void setT1OV1Ms(double t1) { t1OV1Ms = t1; } 
@@ -169,8 +171,9 @@ namespace softsusy {
     /// Return a trilinear element in "SUGRA style"
     double displaySoftA(trilinears, int, int) const;
     
-    /// Displays iteration accuracy attained 
-     double displayFracDiff() const { return fracDiff; }; 
+    /// Displays iteration accuracy attained
+    string displaySoftsusyOpts() const { return softsusyOpts; }
+    double displayFracDiff() const { return fracDiff; }; 
     double displayMinpot() const;    ///< Returns minimum of Higgs potential
     double displayMsusy() const; ///< Returns Higgs minimisation scale
     double displayMw() const; ///< Returns predicted pole MW
@@ -242,7 +245,9 @@ namespace softsusy {
     void flagProblemThrown(bool a) { problem.problemThrown = a; }
     /// Sets all problem flags 
     void setProblem(const sProblem a) { problem = a; }
-    
+
+    /// Sets SOFTSUSY-specific option string
+    void setSoftsusyOpts(const string & s) { softsusyOpts = s; }
     /// Sets whole object equal to another  
     void setSoftsusy(const MssmSoftsusy & s) { *this = s; };
     /// Sets low energy Standard Model fermion mass and gauge coupling data

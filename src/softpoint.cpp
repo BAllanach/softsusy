@@ -1132,6 +1132,7 @@ int main(int argc, char *argv[]) {
 		  }
 		}
 		else if (block == "SOFTSUSY") {
+		  r->setSoftsusyOpts(r->displaySoftsusyOpts() + line + "\n");
 		  int i; double d; kk >> i >> d;
 		  switch(i) {
 		  case 0: if (int(d) > 0) calcDecays = true;
@@ -1418,10 +1419,13 @@ int main(int argc, char *argv[]) {
          }
       }
 
-      if (RPVflag) {
+      if (RPVflag) {	
 	kw.setNumRpcBcs(pars.displayEnd());
 	kw.rpvDisplay(pars);
+	string sopts = r->displaySoftsusyOpts();
+	/// Bug in next line - temporarily fixed by following line
 	kw.setFlavourSoftsusy(k);
+	kw.setSoftsusyOpts(sopts);
 	r = &kw;
 
 	if (boundaryCondition == &sugraBcs) 
@@ -1464,6 +1468,8 @@ int main(int argc, char *argv[]) {
       if (useThreeLoopRge) {
 	r->setLoops(3); k.setLoops(3); nmssm.setLoops(3);
       }
+      k.setSoftsusyOpts(r->displaySoftsusyOpts());
+      nmssm.setSoftsusyOpts(r->displaySoftsusyOpts());
 
       /// Run to scale at which MSUSY and QEDxQCD are matched: by default it's
       /// mt for MSSM, MZ for NMSSM

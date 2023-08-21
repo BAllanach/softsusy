@@ -4,6 +4,21 @@
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
      2    4.1.20       # version number
+Block SOFTSUSY               # SOFTSUSY specific SLHA options
+    0   1.000000000e+00      # Calculate decays in output (only for RPC (N)MSSM)
+    1   1.000000000e-03      # Numerical precision: suggested range 10^(-3...-6)
+    2   0.000000000e+00	     # Quark mixing parameter: see manual
+    3   0.000000000e+00	     # Additional verbose output?
+    4   1.000000000e+00	     # Change electroweak symmetry breaking scale?
+    6   1.000000000e-04	     # Numerical precision
+    7	2.000000000e+00	     # Number of loops in Higgs mass computation
+   10	0.000000000e+00	     # Force it to SLHA***1*** output?
+   11	1.000000000e+19	     # Gravitino mass
+   12   0.000000000e+00	     # Print spectrum even when point disallowed
+   13	0.000000000e+00	     # Set a tachyonic A^0 to zero mass
+   19   1.000000000e+00      # Include 3-loop SUSY RGEs
+   20   0.000000000e+00      # Include 2-loop g/Yuk corrections: 31 for all
+   21   1.000000000e+00	     # Calculate uncertainties in Higgs mass prediction
 Block MODSEL  # Select model
      1    1   # sugra
 Block SMINPUTS             # Standard Model inputs

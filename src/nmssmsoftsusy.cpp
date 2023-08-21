@@ -9512,6 +9512,7 @@ namespace {
       bool GUTsVev = displayGUTsVev();
       int MICROMEGAS = displayMICROMEGAS();
       int NMSDECAY   = displayNMSDECAY();
+      string sopts = displaySoftsusyOpts();
       
       setSoftsusy(empty); /// Always starts from an empty object
       /// These are things that are re-written by the new initialisation
@@ -9527,6 +9528,7 @@ namespace {
       setGUTsVev(GUTsVev);
       setMICROMEGAS(MICROMEGAS);
       setNMSDECAY(NMSDECAY);
+      setSoftsusyOpts(sopts);
       double mz = displayMz();
 
       if (mxGuess > 0.0)

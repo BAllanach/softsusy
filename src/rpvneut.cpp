@@ -2793,6 +2793,8 @@ void RpvNeutrino::spinfoSLHA(ostream & out) {
 	<< displayFracDiff() << endl;
   if (displayProblem().testSeriousProblem()) 
     out << "     4   Point invalid: " << displayProblem() << endl;
+  out << "Block SOFTSUSY               # SOFTSUSY specific SLHA options" << endl;
+  out << displaySoftsusyOpts();
 }
 
 void RpvNeutrino::hmixSLHA(ostream & out) {
