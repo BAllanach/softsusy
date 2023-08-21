@@ -141,30 +141,28 @@ void RpvSoftsusy::rpvSet(const DoubleVector & parameters){
     pos++;
   }
 
+  /* disabling this because it interferes with SLHA2
   double a0 = parameters.display(3);
   setHr(LU, a0 * displayLambda(LU));
   setHr(LD, a0 * displayLambda(LD));
-  setHr(LE, a0 * displayLambda(LE));
+  setHr(LE, a0 * displayLambda(LE)); */
 
   for (i=1; i<=3; i++)
     for (j=1; j<=3; j++) 
       for (k=j+1; k<=3; k++){
-	RpvSoftPars::setHr(LE, i, j, k, displayHr(LE).display(i, j, k) + 
-			   parameters.display(pos));
+	RpvSoftPars::setHr(LE, i, j, k, parameters.display(pos));
 	pos++;
       }
   for (i=1; i<=3; i++)
     for (j=1; j<=3; j++) 
       for (k=1; k<=3; k++){
-	RpvSoftPars::setHr(LD, i, j, k, displayHr(LD).display(i, j, k) + 
-			   parameters.display(pos));
+	RpvSoftPars::setHr(LD, i, j, k, parameters.display(pos));
 	pos++;
       }
   for (i=1; i<=3; i++)
     for (j=1; j<=3; j++) 
       for (k=j+1; k<=3; k++){
-	RpvSoftPars::setHr(LU, i, j, k, displayHr(LU).display(i, j, k) + 
-			   parameters.display(pos));
+	RpvSoftPars::setHr(LU, i, j, k, parameters.display(pos));
 	pos++;
       }
   for (i=1; i<=3; i++){
@@ -172,7 +170,8 @@ void RpvSoftsusy::rpvSet(const DoubleVector & parameters){
     pos++;
   }
 
-  // dummy for sneutrinoVEVs setting, not implemented yet
+  // dummy for sneutrinoVEVs setting, not implemented yet -- it's difficult to
+  // do and will cause trouble
   for (i=1; i<=3; i++) pos++;
   
   for (i=1; i<=3; i++){
