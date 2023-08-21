@@ -4,7 +4,7 @@
 Config
 autom4te.cache
 config.log
-configure
+configure*
 Makefile
 doc/*.dvi
 doc/*.aux
@@ -60,3 +60,5 @@ src/Himalaya-1.0.0/libDSZ.a
 src/Himalaya-1.0.0/libHimalaya.a
 src/Himalaya-1.0.0/CMake*
 src/Himalaya-1.0.0/cmake*
+output
+inOutFiles/rpvPmssmInput
