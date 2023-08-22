@@ -38,14 +38,12 @@ nodoc: $(OUTPUTFILES) programs
 programs: softpoint.x rpvsoftsusy.x softsusy.x softsusy-nmssm.x rpvneut.x 
 
 updateWeb: dist
-	scp -P 222 softsusy-${VERSION}.tar.gz allanach@login.hepforge.org:~/softsusy/downloads; 
-	scp -P 222 inOutFiles/*{Input,Output}* allanach@login.hepforge.org:~/softsusy/public_html/code
-	scp -P 222 {src/def.h,inOutFiles/outputTest,README.md} allanach@login.hepforge.org:~/softsusy/public_html/code
-	scp -P 222 -r doc/*.pdf allanach@login.hepforge.org:~/softsusy/public_html/doc; \
-	doxygen softsusy.cfg &&\
-	scp -P 222 -r html allanach@login.hepforge.org:~/softsusy/public_html; \
-	scp -P 222 -r CHANGES allanach@login.hepforge.org:~/softsusy/public_html/CHANGES.${VERSION}.shtml; \
-	rm -fr html *.tar.gz
+	mv softsusy-${VERSION}.tar.gz tags
+	git add tags/softsusy-${VERSION}.tar.gz
+	git tag -a v${VERSION} -m "Official version v${VERSION}"
+	git commit -a -m "Official version v${VERSION}"
+	git push origin --tags
+	git push
 
 install-data-local:
 	rm -f softsusy.x softsusy-nmssm.x softpoint.x rpvsoftsusy.x rpvneut.x *.la

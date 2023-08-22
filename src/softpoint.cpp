@@ -1423,7 +1423,6 @@ int main(int argc, char *argv[]) {
 	kw.setNumRpcBcs(pars.displayEnd());
 	kw.rpvDisplay(pars);
 	string sopts = r->displaySoftsusyOpts();
-	/// Bug in next line - temporarily fixed by following line
 	kw.setFlavourSoftsusy(k);
 	kw.setSoftsusyOpts(sopts);
 	r = &kw;
@@ -1468,8 +1467,8 @@ int main(int argc, char *argv[]) {
       if (useThreeLoopRge) {
 	r->setLoops(3); k.setLoops(3); nmssm.setLoops(3);
       }
-      k.setSoftsusyOpts(r->displaySoftsusyOpts());
       nmssm.setSoftsusyOpts(r->displaySoftsusyOpts());
+      k.setSoftsusyOpts(r->displaySoftsusyOpts());	
 
       /// Run to scale at which MSUSY and QEDxQCD are matched: by default it's
       /// mt for MSSM, MZ for NMSSM
