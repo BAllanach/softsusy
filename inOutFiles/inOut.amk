@@ -3,7 +3,7 @@ inOutFiles/nmssmSLHAZ3Output inOutFiles/nmssmSLHAnoZ3Output
 
 INPUTFILES = inOutFiles/slha2Input inOutFiles/rpvHouchesInput \
 inOutFiles/nmssmSLHAZ3Input inOutFiles/nmssmSLHAnoZ3Input \
-inOutFiles/lesHouchesInput 
+inOutFiles/lesHouchesInput inOutFiles/rpvPmssmInput
 OUTPUTFILES = $(TESTOUTPUT) inOutFiles/neutOutputTest inOutFiles/rpvOutputTest \
 inOutFiles/outputTest inOutFiles/outputTest-nmssm
 
