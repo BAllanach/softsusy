@@ -34,10 +34,15 @@ namespace softsusy {
   /// default: use SLHA1 conventions for RPV output
   bool forceSlha1 = false;
   /// default is to have no trilinears set by SLHA2 conventions
-  bool slha2setTrilinear[] = {false, false, false, false, false, false, false, 
-			      false, false, false, false, false, false, false, 
-			      false, false, false, false, false, false, false, 
-			      false, false, false, false, false, false};
+  bool slha2setTrilinear[] = {
+    false, false, false, false, false, false, false, 
+    false, false, false, false, false, false, false, 
+    false, false, false, false, false, false, false, 
+    false, false, false, false, false, false
+  };
+  /// Same for mass squared params
+  bool slha2setMassSq = false;
+  
   /// default is to *not* print out theoretically excluded spectra
   bool printRuledOutSpectra = false;
   /// default is to set tree-level tachyonic A masses to 0 in loops

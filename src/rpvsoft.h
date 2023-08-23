@@ -69,16 +69,12 @@ public:
   /// Sets whole object equal to another  
   void setRpvSoftsusy(const RpvSoftsusy & s) { *this = s; };
 
-  /// returns double vector of 9 (untouched) free entries followed by 112 RPV
-  /// parameters the 9 entries are left free for general cmssmBcs, amsbBcs,
-  /// If you need *more parameters left, reserve the first pos (optional
-  /// argument) 
+  /// returns double vector of #RPC params+112 RPV params: RPC parameters
+  /// first 
   void rpvDisplay(DoubleVector & parameters) const;
   
   /// sets RPV parameters from entry 10 onwards
   /// using vector produced by RpvSoftsusy::rpvDisplay()
-  /// the 9 entries are left free for general cmssmBcs, amsbBcs, ...
-  /// parameters
   virtual void rpvSet(const DoubleVector & parameters);
 
   /// Returns the vacuum expectation values of sneutrinos
@@ -238,6 +234,7 @@ public:
   void slha1(ostream & out, const char model[], 
 	     const DoubleVector & pars, int sgnMu, 
 	     double tanb, double qMax, int numPoints, bool ewsbBCscale);
+  virtual void extparSLHA(ostream & out, const DoubleVector & pars, bool ewsbBCscale);
   /// Does the RPV coupling SLHA1 outputs
   void drbarRpv(ostream & out);
   bool leptonNumberViolation() const;

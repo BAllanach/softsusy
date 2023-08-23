@@ -30,7 +30,7 @@ Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
    12   0.000000000e+00	     # Print spectrum even when point disallowed
    13	0.000000000e+00	     # Set a tachyonic A^0 to zero mass
    19   1.000000000e+00      # Include 3-loop SUSY RGEs
-   20   0.000000000e+00      # Include 2-loop g/Yuk corrections: 31 for all
+#   20   0.000000000e+00      # Include 2-loop g/Yuk corrections: 31 for all
    21   1.000000000e+00	     # Calculate uncertainties in Higgs mass prediction
 #   22   1.000000000e+00      # Include 2-loop sparticle mass thresholds
 #   23   0.000000000e+00      # No expansion of 2-loop gluino terms

@@ -7430,8 +7430,10 @@ void MssmSoftsusy::fixedPointIteration
 
     setMssmSusy(t); setMu(t.displayMu());
 
-    /// Initial guess: B=0, 
+    /// Initial guess: B=0,
+    // cout << "DEBUG -1: softsusy.cpp\n" << *this;
     boundaryCondition(*this, pars);
+    // cout << "DEBUG 0: softsusy.cpp\n" << *this;    
 
     /// got nonzero gauge here
 

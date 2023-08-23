@@ -983,26 +983,31 @@ int main(int argc, char *argv[]) {
 		  }
 		} 
 		else if (block == "MSQ2IN") {
+		  slha2setMassSq = true;		  
 		  modelIdent = "nonUniversal";
 		  int i, j; double d; kk >> i >> j >> d;
 		  pars(positionOfSym(i, j) + 3) = d;
 		}
 		else if (block == "MSU2IN") {
+		  slha2setMassSq = true;		  
 		  modelIdent = "nonUniversal";
 		  int i, j; double d; kk >> i >> j >> d;
 		  pars(positionOfSym(i, j) + 9) = d;
 		}
 		else if (block == "MSD2IN") {
+		  slha2setMassSq = true;
 		  modelIdent = "nonUniversal";
 		  int i, j; double d; kk >> i >> j >> d;
 		  pars(positionOfSym(i, j) + 15) = d;
 		}
 		else if (block == "MSL2IN") {
+		  slha2setMassSq = true;
 		  modelIdent = "nonUniversal";
 		  int i, j; double d; kk >> i >> j >> d;
 		  pars(positionOfSym(i, j) + 21) = d;
 	      }
 		else if (block == "MSE2IN") {
+		  slha2setMassSq = true;
 		  modelIdent = "nonUniversal";
 		  int i, j; double d; kk >> i >> j >> d;
 		  pars(positionOfSym(i, j) + 27) = d;
@@ -1487,6 +1492,8 @@ int main(int argc, char *argv[]) {
       
       if (gutScaleOutput) qMax = r->displayMxBC();
 
+      kw.runto(kw.displayMsusy());
+      
       r->lesHouchesAccordOutput(cout, modelIdent, pars, sgnMu, tanb, qMax,  
 				numPoints, ewsbBCscale);
       if (calcDecays) {

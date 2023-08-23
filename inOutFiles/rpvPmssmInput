@@ -2,6 +2,7 @@
 # SOFTSUSY (v1.8 or higher)
 Block MODSEL		     # Select model
     1    1		     # sugra
+    4    1                   # RPV
 Block SMINPUTS		     # Standard Model inputs
     1	1.279340000e+02	     # alpha^(-1) SM MSbar(MZ)
     2   1.166370000e-05	     # G_Fermi
@@ -15,37 +16,20 @@ Block MINPAR		     # Input parameters
     2   6.000000000e+02	     # m12
     3   2.000000000e+01	     # tan beta at MZ, in DRbar scheme, Feynman gauge
     4   1.000000000e+00	     # sign(mu)
-    5   0.000000000e+00	     # A0
+    5  -1.000000000e+03	     # A0
 Block SOFTSUSY               # Optional SOFTSUSY-specific parameters
-    0   1.000000000e+00      # Calculate decays in output (only for RPC (N)MSSM)
 # The default is that without this, SOFTSUSY will only calculate the spectrum   
     1   1.000000000e-03      # Numerical precision: suggested range 10^(-3...-6)
     2   0.000000000e+00	     # Quark mixing parameter: see manual
-    3   0.000000000e+00	     # Additional verbose output?
     4   1.000000000e+00	     # Change electroweak symmetry breaking scale?
     5   1.000000000e+00      # Include 2-loop scalar mass squared/trilinear RGEs
-    6   1.000000000e-04	     # Numerical precision
     7	2.000000000e+00	     # Number of loops in Higgs mass computation
-   10	0.000000000e+00	     # Force it to SLHA***1*** output?
-   11	1.000000000e+19	     # Gravitino mass
-   12   0.000000000e+00	     # Print spectrum even when point disallowed
-   13	0.000000000e+00	     # Set a tachyonic A^0 to zero mass
-#   19   1.000000000e+00      # Include 3-loop SUSY RGEs
-#   20   3.100000000e+01      # Include 2-loop g/Yuk corrections: 31 for all
-#   22   1.000000000e+00      # Include 2-loop sparticle mass thresholds
-#   23   0.000000000e+00      # No expansion of 2-loop gluino terms
-#   24   1.000000000e-06      # If decay BR is below this number, don't output
-#   25   1.000000000e+00	     # If set to 0, don't calculate 3-body decays (1=default)
-   28   1.250000000e+02      # Artificially fixed value of mh0(pole)
-   29   2.500000000e+02      # Artificially fixed value of mA0(pole): TRUMPS EXTPAR 26
-   30   5.000000000e+02      # Artificially fixed value of mH0(pole)
-   31   6.000000000e+02      # Artificially fixed value of mH+/-(pole)   
 Block EXTPAR
    0    -1.0              # MX=MSUSY
    1    7.000000000e+02   # M1
    2	1.400000000e+03   # M2
    3    2.900000000e+03   # M3
-  11   -10.000000000e+03   # At
+  11   -1.000000000e+04   # At
   23    4.0e+03           # mu(MSUSY)
   26    2.0e+03           # mA(pole)
   31    9.00e+02          # meL
@@ -58,3 +42,10 @@ Block EXTPAR
   45    2.7e+03		  # mcR
   47	2.7e+03		  # mdR
   48	2.7e+03		  # msR
+Block RVLAMLQDIN             # GUT scale RPV trilinear coupling
+ 1 1 1  4.000000000e-02      # lam'_{111}
+ 2 1 1 -1.800000000e-03      # lam'_{211}
+ 3 1 1  1.900000000e-02      # lam'_{311}
+ 1 3 3  3.300000000e-04      # lam'_{133}
+ 2 3 3  3.200000000e-04      # lam'_{233}
+ 3 3 3 -3.500000000e-04      # lam'_{333}

@@ -2743,11 +2743,13 @@ ostream & operator <<(ostream &left, const RpvNeutrino & r) {
   getAngles(r.displayUpmns(), t12, t13, t23, d);
   cout << " tan^2(t12)=" << sqr(tan(t12)) << endl;
 
+  
+  
   cout << " dm^2(solar)=" << 1.0e18 * (sqr(r.displayPhysNuMasses().display(1)) - 
 				       sqr(r.displayPhysNuMasses().display(2))) 
        << " eV^2" << endl;
-  cout << " dm^2(atm)=" << 1.0e18 * sqr(r.displayPhysNuMasses().display(1)) 
-       << " eV^2" << endl;
+  cout << " dm^2(atm)=" << 1.0e18 * (sqr(r.displayPhysNuMasses().display(1)) -
+				     sqr(r.displayPhysNuMasses().display(3))) << " eV^2" << endl;
 
   left << HR << endl;
 
@@ -3184,5 +3186,5 @@ void RpvNeutrino::sleptonsSLHA(ostream & out) {
   out << "   1000019    "; printRow(out, m(3)); 
   out << "   # CP odd neutral scalar\n";
 }
-
+  
 } // namespace softsusy

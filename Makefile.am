@@ -37,6 +37,7 @@ nodoc: $(OUTPUTFILES) programs
 
 programs: softpoint.x rpvsoftsusy.x softsusy.x softsusy-nmssm.x rpvneut.x 
 
+# NB new version should be ready: remember to update README.md
 updateWeb: dist
 	mv softsusy-${VERSION}.tar.gz tags
 	git add tags/softsusy-${VERSION}.tar.gz

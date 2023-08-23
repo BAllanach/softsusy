@@ -22,7 +22,7 @@ Block MINPAR		     # Input parameters
     2   5.000000000e+02	     # m12
     3   2.000000000e+01	     # tanb
     4   1.000000000e+00	     # sign(mu)
-    5   0.125000000e+02	     # A0
+    5   0.125000000e+00	     # A0
 Block RVLAMLQDIN             # GUT scale RPV trilinear coupling
  1 1 1  4.000000000e-02      # lam'_{111}
  2 1 1 -1.800000000e-02      # lam'_{211}

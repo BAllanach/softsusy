@@ -42,6 +42,50 @@ namespace softsusy {
     for (i=1; i<=3; i++) m.setGauginoMass(i, inputParameters.display(i));
     if (inputParameters.display(25) > 1. && m.displaySetTbAtMX())
       m.setTanb(inputParameters.display(25));
+    DoubleMatrix mm(3, 3);
+    mm(3, 3) = m.displayYukawaElement(YU, 3, 3) * inputParameters.display(11);
+    m.setTrilinearMatrix(UA, mm);
+    mm(3, 3) = m.displayYukawaElement(YD, 3, 3) * inputParameters.display(12);
+    m.setTrilinearMatrix(DA, mm);
+    mm(3, 3) = m.displayYukawaElement(YE, 3, 3) * inputParameters.display(13);
+    m.setTrilinearMatrix(EA, mm);
+
+    mm(1, 1) = signedSqr(inputParameters.display(31));
+    mm(2, 2) = signedSqr(inputParameters.display(32));
+    mm(3, 3) = signedSqr(inputParameters.display(33));
+    m.setSoftMassMatrix(mLl, mm);
+
+    mm(1, 1) = signedSqr(inputParameters.display(34));
+    mm(2, 2) = signedSqr(inputParameters.display(35));
+    mm(3, 3) = signedSqr(inputParameters.display(36));
+    m.setSoftMassMatrix(mEr, mm);
+
+    mm(1, 1) = signedSqr(inputParameters.display(41));
+    mm(2, 2) = signedSqr(inputParameters.display(42));
+    mm(3, 3) = signedSqr(inputParameters.display(43));
+    m.setSoftMassMatrix(mQl, mm);
+
+    mm(1, 1) = signedSqr(inputParameters.display(44));
+    mm(2, 2) = signedSqr(inputParameters.display(45));
+    mm(3, 3) = signedSqr(inputParameters.display(46));
+    m.setSoftMassMatrix(mUr, mm);
+
+    mm(1, 1) = signedSqr(inputParameters.display(47));
+    mm(2, 2) = signedSqr(inputParameters.display(48));
+    mm(3, 3) = signedSqr(inputParameters.display(49));
+    m.setSoftMassMatrix(mDr, mm);
+
+    if (!m.displayAltEwsb()) {
+      m.setMh1Squared(inputParameters.display(21));
+      m.setMh2Squared(inputParameters.display(22));
+    }
+    }
+
+  /*  void extendedSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
+    int i;
+    for (i=1; i<=3; i++) m.setGauginoMass(i, inputParameters.display(i));
+    if (inputParameters.display(25) > 1. && m.displaySetTbAtMX())
+      m.setTanb(inputParameters.display(25));
     m.setTrilinearElement(UA, 3, 3, m.displayYukawaElement(YU, 3, 3) *
 			  inputParameters.display(11));
     m.setTrilinearElement(DA, 3, 3, m.displayYukawaElement(YD, 3, 3) *
@@ -74,7 +118,7 @@ namespace softsusy {
       m.setMh1Squared(inputParameters.display(21));
       m.setMh2Squared(inputParameters.display(22));
     }
-  }
+    }*/
   
   /// universal mSUGRA boundary conditions
   void sugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {

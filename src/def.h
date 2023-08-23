@@ -58,6 +58,8 @@ namespace softsusy{
   /// For flavour violation: records which SCKM trilinears have been set in
   /// SLHA2 
   extern bool slha2setTrilinear[];
+  /// Records which mass squared blocks have been fixed in SLHA2 conventions
+  extern bool slha2setMassSq;
   /// Flag which can be set to switch on producing spectrum output even for
   /// theoretically ruled out regions of parameter space
   extern bool printRuledOutSpectra;

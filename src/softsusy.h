@@ -1087,7 +1087,7 @@ namespace softsusy {
 			     const QedQcd & oneset, bool gaugeUnification, 
 			     bool ewsbBCscale =  false); 
     /// legacy wrapper to provide backward compatibility: does the same as the
-    /// above. If you want non-default valuse, make sure loops, qewsb and
+    /// above. If you want non-default values, make sure loops, qewsb and
     /// mixing are set in the object before calling it
     double lowOrg(void (*boundaryCondition)
 		  (MssmSoftsusy &, const DoubleVector &),
@@ -1109,7 +1109,6 @@ namespace softsusy {
     /// sgnMu is the desired sign of mu: + or - 1. If mu is 0, mu is set
     /// initially as a boundary condition. tanb = desired value of DR bar tan
     /// beta(MZ).
-    
     void itLowsoft(int maxTries, int sgnMu, double tol, 
 		   double tanb, void (*boundaryCondition)(MssmSoftsusy &, 
 							  const DoubleVector &), 

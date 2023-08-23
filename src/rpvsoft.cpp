@@ -141,28 +141,30 @@ void RpvSoftsusy::rpvSet(const DoubleVector & parameters){
     pos++;
   }
 
-  /* disabling this because it interferes with SLHA2
   double a0 = parameters.display(3);
   setHr(LU, a0 * displayLambda(LU));
   setHr(LD, a0 * displayLambda(LD));
-  setHr(LE, a0 * displayLambda(LE)); */
+  setHr(LE, a0 * displayLambda(LE)); 
 
   for (i=1; i<=3; i++)
     for (j=1; j<=3; j++) 
       for (k=j+1; k<=3; k++){
-	RpvSoftPars::setHr(LE, i, j, k, parameters.display(pos));
+	RpvSoftPars::setHr(LE, i, j, k, parameters.display(pos) +
+			   displayHr(LE).display(i, j, k));
 	pos++;
       }
   for (i=1; i<=3; i++)
     for (j=1; j<=3; j++) 
       for (k=1; k<=3; k++){
-	RpvSoftPars::setHr(LD, i, j, k, parameters.display(pos));
+	RpvSoftPars::setHr(LD, i, j, k, parameters.display(pos) +
+			   displayHr(LD).display(i, j, k));
 	pos++;
       }
   for (i=1; i<=3; i++)
     for (j=1; j<=3; j++) 
       for (k=j+1; k<=3; k++){
-	RpvSoftPars::setHr(LU, i, j, k, parameters.display(pos));
+	RpvSoftPars::setHr(LU, i, j, k, parameters.display(pos) +
+			   displayHr(LU).display(i, j, k));
 	pos++;
       }
   for (i=1; i<=3; i++){
@@ -188,7 +190,6 @@ void RpvSoftsusy::set(const DoubleVector & v) {
 }
 
 DoubleVector RpvSoftsusy::beta() const {
-  //  cout << "in beta fn (DEBUG) of " << *this;///< DEBUG
   return (RpvSoftsusy::beta2()).display();
 }
 
@@ -1386,7 +1387,7 @@ void RpvSoftsusy::outputNonZeroInputs(ostream & out) {
 	    if (!anyCoups) { 
 	      anyCoups = true;
 	      out << "Block RVLAMLLEIN           # input LLE couplings at ";
-	      if (susyRpvBCatMSUSY) out << "MSUSY\n"; else out << "MGUT\n";
+	      if (susyRpvBCatMSUSY) out << "MSUSY\n"; else out << "MX\n";
 	    }
 	    out << "  " << i << " " << j << " " << k 
 		<< "  "; printRow(out, displayLambda(LE).display(k, i, j));
@@ -1402,7 +1403,7 @@ void RpvSoftsusy::outputNonZeroInputs(ostream & out) {
 	    if (!anyCoups) { 
 	      anyCoups = true;
 	      out << "Block RVLAMLQDIN           # input LLE couplings at ";
-	      if (susyRpvBCatMSUSY) out << "MSUSY\n"; else out << "MGUT\n";
+	      if (susyRpvBCatMSUSY) out << "MSUSY\n"; else out << "MX\n";
 	    } 
 	    out << "  " << i << " " << j << " " << k 
 		<< "  "; printRow(out, displayLambda(LD).display(k, i, j));
@@ -1418,7 +1419,7 @@ void RpvSoftsusy::outputNonZeroInputs(ostream & out) {
 	    if (!anyCoups) { 
 	      anyCoups = true;
 	      out << "Block RVLAMUDDIN          # input LQD couplings at ";
-	      if (susyRpvBCatMSUSY) out << "MSUSY\n"; else out << "MGUT\n";
+	      if (susyRpvBCatMSUSY) out << "MSUSY\n"; else out << "MX\n";
 	    } 
 	    out << "  " << i << " " << j << " " << k 
 		<< "  "; printRow(out, displayLambda(LU).display(i, j, k));
@@ -1572,7 +1573,7 @@ void rpvGmsbBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
 }
 
 void rpvExtendedSugraBcs(MssmSoftsusy & m, 
-			 const DoubleVector & inputParameters) { 
+			 const DoubleVector & inputParameters) {
   extendedSugraBcs(m, inputParameters);
 
   if (!susyRpvBCatMSUSY) m.rpvSet(inputParameters);  
@@ -1718,4 +1719,134 @@ bool RpvSoftsusy::leptonNumberViolation() const {
   return false;
 }
 
+void RpvSoftsusy::extparSLHA(ostream & out, 
+				     const DoubleVector & pars, 
+				     bool ewsbBCscale) {
+    out << "Block EXTPAR              "
+	<< " # non-universal SUSY breaking parameters\n";
+    if (ewsbBCscale) 
+      out << "     0    -1.00000000e+00  # Set MX=MSUSY\n";
+    else {
+      out << "     0    "; printRow(out, displayMxBC()); 
+      cout << "  # MX scale\n";
+    }
+
+    int count = 0, i, j;
+    for (i=1; i<=3; i++) {
+      count++;
+      out << "     " << i << "   ";
+      printRow(out, pars.display(count)); 
+      out << "   # M_" << count << "(MX)" << endl;      
+    }
+    
+    if (!displayAltEwsb()) {
+      out << "     21  "; printRow(out, pars.display(63)) ; 
+      out << "   # mHd^2(MX)" << endl;    
+      out << "     22  "; printRow(out, pars.display(64)) ; 
+      out << "   # mHu^2(MX)" << endl;    
+    } else {
+      out << "     23   "; printRow(out, displayMuCond()) ; 
+      out << "  # mu(MX)" << endl;    
+      out << "     26   "; printRow(out, displayMaCond()) ; 
+      out << "  # mA(pole)" << endl;    
+    }
+
+    if (slha2setMassSq) {
+      out << "Block MSQ2IN               # MX-scale input for DRbar mass^2 parameter\n";
+      for (i=1; i<=3; i++)
+	for (j=i; j<=3; j++) {
+	  count++;
+	  out << "   " << i << " " << j << "   ";
+	  printRow(out, pars.display(count));
+	  out << "   # input (mhat_Q^2)_{" << i << "," << j << "} in SCKM basis";
+	  out << endl;
+	}
+      out << "Block MSU2IN               # MX-scale input for DRbar mass^2 parameter\n";
+      for (i=1; i<=3; i++)
+	for (j=i; j<=3; j++) {
+	  count++;
+	  out << "   " << i << " " << j << "   ";
+	  printRow(out, pars.display(count));
+	  out << "   # input (mhat_u^2)_{" << i << "," << j << "} in SCKM basis";
+	  out << endl;
+	}
+      out << "Block MSD2IN               # MX-scale input for DRbar mass^2 parameter\n";
+      for (i=1; i<=3; i++)
+	for (j=i; j<=3; j++) {
+	  count++;
+	  out << "   " << i << " " << j << "   ";
+	  printRow(out, pars.display(count));
+	  out << "   # input (mhat_d^2)_{" << i << "," << j << "} in SCKM basis";
+	  out << endl;
+	}
+      out << "Block MSL2IN               # MX-scale input for DRbar mass^2 parameter\n";
+      for (i=1; i<=3; i++)
+	for (j=i; j<=3; j++) {
+	  count++;
+	  out << "   " << i << " " << j << "   ";
+	  printRow(out, pars.display(count));
+	  out << "   # input (mhat_L^2)_{" << i << "," << j << "} in SCKM basis";
+	  out << endl;
+	}
+      out << "Block MSE2IN               # MX-scale input for DRbar mass^2 parameter\n";
+      for (i=1; i<=3; i++)
+	for (j=i; j<=3; j++) {
+	  count++;
+	  out << "   " << i << " " << j << "   ";
+	  printRow(out, pars.display(count));
+	  out << "   # input (mhat_L^2)_{" << i << "," << j << "} in SCKM basis";
+	  out << endl;
+	}
+    }
+    
+    bool anyTus = false;       int count2 = 0;
+    for (i=0; i<9; i++) if (slha2setTrilinear[i]) anyTus = true;
+    if (anyTus) 
+      out << "Block TUIN                 # MX-scale input for DRbar mass parameter\n";    
+    for (i=1; i<=3; i++)
+      for (j=1; j<=3; j++) {
+	count++; 
+	if (slha2setTrilinear[count2]) {	  
+	  out << "   " << i << " " << j << "   ";
+	  printRow(out, pars.display(count));
+	out << "   # input (That_U)_{" << i << "," << j << "} in SCKM basis";
+	  out << endl;
+	}
+	count2++;
+      }
+  
+    anyTus = false; 
+    for (i=9; i<18; i++) if (slha2setTrilinear[i]) anyTus = true;
+    if (anyTus) 
+      out << "Block TDIN                 # MX-scale input for DRbar mass parameter\n";    
+    for (i=1; i<=3; i++)
+      for (j=1; j<=3; j++) {
+	count++;
+	if (slha2setTrilinear[count2]) {	  
+	  out << "   " << i << " " << j << "   ";
+	  printRow(out, pars.display(count));
+	  out << "   # input (That_D)_{" << i << "," << j << "} in SCKM basis";
+	  out << endl;
+	}
+	count2++;
+      }
+
+    anyTus = false; 
+    for (i=19; i<27; i++) if (slha2setTrilinear[i]) anyTus = true;
+    if (anyTus) 
+    out << "Block TEIN                   # MX-scale input for DRbar mass parameter\n";    
+    for (i=1; i<=3; i++)
+      for (j=1; j<=3; j++) {
+	count++;
+	if (slha2setTrilinear[count2]) {	  
+	  out << "   " << i << " " << j << "   ";
+	  printRow(out, pars.display(count));
+	  out << "   # input (That_E)_{" << i << "," << j << "} in SCKM basis";
+	  out << endl;
+	}
+	count2++;
+    }
+}
+
+  
 } // namespace softsusy

@@ -409,7 +409,7 @@ void FlavourMssmSoftsusy::extparSLHA(ostream & out,
       cout << "  # MX scale\n";
     }
 
-    int count = 0, i;
+    int count = 0, i, j;
     for (i=1; i<=3; i++) {
       count++;
       out << "     " << i << "   ";
@@ -429,56 +429,58 @@ void FlavourMssmSoftsusy::extparSLHA(ostream & out,
       out << "  # mA(pole)" << endl;    
     }
 
-    out << "Block MSQ2IN               # GUT-scale input for DRbar mass^2 parameter\n";
-    int j; for (i=1; i<=3; i++)
-      for (j=i; j<=3; j++) {
-	count++;
-	out << "   " << i << " " << j << "   ";
-	printRow(out, pars.display(count));
-	out << "   # input (mhat_Q^2)_{" << i << "," << j << "} in SCKM basis";
-	out << endl;
-      }
-    out << "Block MSU2IN               # GUT-scale input for DRbar mass^2 parameter\n";
-    for (i=1; i<=3; i++)
-      for (j=i; j<=3; j++) {
-	count++;
-	out << "   " << i << " " << j << "   ";
-	printRow(out, pars.display(count));
-	out << "   # input (mhat_u^2)_{" << i << "," << j << "} in SCKM basis";
-	out << endl;
-      }
-    out << "Block MSD2IN               # GUT-scale input for DRbar mass^2 parameter\n";
-    for (i=1; i<=3; i++)
-      for (j=i; j<=3; j++) {
-	count++;
-	out << "   " << i << " " << j << "   ";
-	printRow(out, pars.display(count));
-	out << "   # input (mhat_d^2)_{" << i << "," << j << "} in SCKM basis";
-	out << endl;
-      }
-    out << "Block MSL2IN               # GUT-scale input for DRbar mass^2 parameter\n";
-    for (i=1; i<=3; i++)
-      for (j=i; j<=3; j++) {
-	count++;
-	out << "   " << i << " " << j << "   ";
-	printRow(out, pars.display(count));
-	out << "   # input (mhat_L^2)_{" << i << "," << j << "} in SCKM basis";
-	out << endl;
-      }
-    out << "Block MSE2IN               # GUT-scale input for DRbar mass^2 parameter\n";
-    for (i=1; i<=3; i++)
-      for (j=i; j<=3; j++) {
-	count++;
-	out << "   " << i << " " << j << "   ";
-	printRow(out, pars.display(count));
-	out << "   # input (mhat_L^2)_{" << i << "," << j << "} in SCKM basis";
-	out << endl;
-      }
-
+    if (slha2setMassSq) {
+      out << "Block MSQ2IN               # MX-scale input for DRbar mass^2 parameter\n";
+      for (i=1; i<=3; i++)
+	for (j=i; j<=3; j++) {
+	  count++;
+	  out << "   " << i << " " << j << "   ";
+	  printRow(out, pars.display(count));
+	  out << "   # input (mhat_Q^2)_{" << i << "," << j << "} in SCKM basis";
+	  out << endl;
+	}
+      out << "Block MSU2IN               # MX-scale input for DRbar mass^2 parameter\n";
+      for (i=1; i<=3; i++)
+	for (j=i; j<=3; j++) {
+	  count++;
+	  out << "   " << i << " " << j << "   ";
+	  printRow(out, pars.display(count));
+	  out << "   # input (mhat_u^2)_{" << i << "," << j << "} in SCKM basis";
+	  out << endl;
+	}
+      out << "Block MSD2IN               # MX-scale input for DRbar mass^2 parameter\n";
+      for (i=1; i<=3; i++)
+	for (j=i; j<=3; j++) {
+	  count++;
+	  out << "   " << i << " " << j << "   ";
+	  printRow(out, pars.display(count));
+	  out << "   # input (mhat_d^2)_{" << i << "," << j << "} in SCKM basis";
+	  out << endl;
+	}
+      out << "Block MSL2IN               # MX-scale input for DRbar mass^2 parameter\n";
+      for (i=1; i<=3; i++)
+	for (j=i; j<=3; j++) {
+	  count++;
+	  out << "   " << i << " " << j << "   ";
+	  printRow(out, pars.display(count));
+	  out << "   # input (mhat_L^2)_{" << i << "," << j << "} in SCKM basis";
+	  out << endl;
+	}
+      out << "Block MSE2IN               # MX-scale input for DRbar mass^2 parameter\n";
+      for (i=1; i<=3; i++)
+	for (j=i; j<=3; j++) {
+	  count++;
+	  out << "   " << i << " " << j << "   ";
+	  printRow(out, pars.display(count));
+	  out << "   # input (mhat_L^2)_{" << i << "," << j << "} in SCKM basis";
+	  out << endl;
+	}
+    }
+    
     bool anyTus = false;       int count2 = 0;
     for (i=0; i<9; i++) if (slha2setTrilinear[i]) anyTus = true;
     if (anyTus) 
-      out << "Block TUIN                 # GUT-scale input for DRbar mass parameter\n";    
+      out << "Block TUIN                 # MX-scale input for DRbar mass parameter\n";    
     for (i=1; i<=3; i++)
       for (j=1; j<=3; j++) {
 	count++; 
@@ -494,7 +496,7 @@ void FlavourMssmSoftsusy::extparSLHA(ostream & out,
     anyTus = false; 
     for (i=9; i<18; i++) if (slha2setTrilinear[i]) anyTus = true;
     if (anyTus) 
-      out << "Block TDIN                 # GUT-scale input for DRbar mass parameter\n";    
+      out << "Block TDIN                 # MX-scale input for DRbar mass parameter\n";    
     for (i=1; i<=3; i++)
       for (j=1; j<=3; j++) {
 	count++;
@@ -510,7 +512,7 @@ void FlavourMssmSoftsusy::extparSLHA(ostream & out,
     anyTus = false; 
     for (i=19; i<27; i++) if (slha2setTrilinear[i]) anyTus = true;
     if (anyTus) 
-    out << "Block TEIN                   # GUT-scale input for DRbar mass parameter\n";    
+    out << "Block TEIN                   # MX-scale input for DRbar mass parameter\n";    
     for (i=1; i<=3; i++)
       for (j=1; j<=3; j++) {
 	count++;
@@ -524,7 +526,7 @@ void FlavourMssmSoftsusy::extparSLHA(ostream & out,
     }
     if (fabs(pars.display(62)) > EPSTOL) 
       out << "# CAUTION: a universal A0=" << pars.display(62) 
-	  << " was set in addition.\n";
+      << " was set in addition.\n"; 
 }
 
 void FlavourMssmSoftsusy::yukawasSLHA(ostream & out) {
