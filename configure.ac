@@ -146,3 +146,5 @@ AC_OUTPUT
 # For GINAC/CLN
 # GINAC_LIBS="-L/usr/lib -lginac" GINAC_CFLAGS="-I/usr/include" CLN_LIBS="-L/usr/lib -lcln" CLN_CFLAGS="-I/usr/include" ./configure --enable-two-loop-gauge-yukawa-compilation --enable-three-loop-rge-compilation
 
+# For debugging, CXXFLAGS="-g3" ./configure && make clean && make -j8 softpoint.x
+# Then, do: export LD_LIBRARY_PATH=.libs; gdb .libs/softpoint.x
