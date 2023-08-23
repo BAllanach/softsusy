@@ -148,3 +148,6 @@ AC_OUTPUT
 
 # For debugging, CXXFLAGS="-g3" ./configure && make clean && make -j8 softpoint.x
 # Then, do: export LD_LIBRARY_PATH=.libs; gdb .libs/softpoint.x
+# **OR** when using gdb in emacs, run command gdb .libs/softpoint.x
+# Then in gdb type "set environment LD_LIBRARY_PATH=."
+# before running
