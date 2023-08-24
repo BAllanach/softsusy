@@ -41,6 +41,7 @@ programs: softpoint.x rpvsoftsusy.x softsusy.x softsusy-nmssm.x rpvneut.x
 updateWeb: dist
 	mv softsusy-${VERSION}.tar.gz tags
 	git add tags/softsusy-${VERSION}.tar.gz
+	git commit -a -m "Added dist to tags/ directory"
 	git tag -a v${VERSION} -m "Official version v${VERSION}"
 	git commit -a -m "Official version v${VERSION}"
 	git push origin --tags
