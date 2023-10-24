@@ -37,7 +37,7 @@ If you use SOFTSUSY to write a paper, *please cite* (see [MCnet guidelines](http
 arXiv:0903.1805](https://arxiv.org/abs/0903.1805)
 > 5. [`neutManual.pdf`](doc/neutManual.pdf) on the one-loop calculation of neutrino masses and lepton mixing in the R-parity violating MSSM: [B.C. Allanach, M. Hanussek and C.H. Kom, Comput. Phys. Commun. 183 (2012) 785, arXiv:1109.3735](https://arxiv.org/abs/1109.3735)
 > 6. [`threeLoop.pdf`](doc/threeLoop.pdf) describes the inclusion of three-loop MSSM RGEs and two-loop threshold corrections: [B.C. Allanach, A. Bednyakov and R. Ruiz de Autri, Comput. Phys. Commun. 189 (2015) 192, arXiv:1407.6130](https://arxiv.org/abs/1407.6130)
-> 7. [`threeLoop.pdf`](doc/threeLoop.pdf) describes the inclusion of three-loop MSSM RGEs and two-loop threshold corrections: [B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de Austri, Comput. Phys. Commun. 05 (2017) 006, arXiv:1601.06657](https://arxiv.org/abs/1601.06657)
+> 7. [`ho.pdf`](doc/ho.pdf) describes the inclusion of two-loop SUSYQCD corrections to squark and gluino pole masses: [B.C. Allanach, Stephen P. Martin, David G. Robertson and Roberto Ruiz de Austri, Comput. Phys. Commun. 05 (2017) 006, arXiv:1601.06657](https://arxiv.org/abs/1601.06657)
 
 ## Particle Decays
 
