@@ -1,2 +1,2 @@
-* Fixed compilation issue with 4.1.14 where it would require you to `autoreconf -vif` 
+* Fixed naming of inos in comments of decay output file: reinstated the tilde which was missing in some cases.
 
