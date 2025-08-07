@@ -1,3 +1,4 @@
+* Bug-fixed neutralino4 decays: added missing CP-conjugate modes.
 * Bug-fixed neutralino3 decays: added missing CP-conjugate modes.
 * Bug-fixed neutralino2 decays: added missing CP-conjugate modes.
 * Bug-fixed neutralino1 decays: added missing CP-conjugate modes.
