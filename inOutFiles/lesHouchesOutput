@@ -1,8 +1,8 @@
-# SOFTSUSY4.1.21 SLHA compliant output
+# SOFTSUSY4.1.22 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    4.1.21       # version number
+     2    4.1.22       # version number
 Block SOFTSUSY               # SOFTSUSY specific SLHA options
     0   1.000000000e+00      # Calculate decays in output (only for RPC (N)MSSM)
     1   1.000000000e-03      # Numerical precision: suggested range 10^(-3...-6)
