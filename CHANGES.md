@@ -1,3 +1,4 @@
+* Bug-fixed neutralino3 decays: added missing CP-conjugate modes.
 * Bug-fixed neutralino2 decays: added missing CP-conjugate modes.
 * Bug-fixed neutralino1 decays: added missing CP-conjugate modes.
 * Bug-fixed neutralino1 decay: minor change in identify of third fermion in ~chi_10 -> ~chi_1- u dbar.
