@@ -3,6 +3,7 @@
 .test/.dirstamp
 Config
 autom4te.cache
+desktop.ini
 config.log
 configure*
 Makefile

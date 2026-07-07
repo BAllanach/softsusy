@@ -6,19 +6,19 @@ bin_PROGRAMS += softsusy.x \
                 rpvsoftsusy.x \
                 rpvneut.x
 
-softsusy_x_SOURCES = src/main.cpp 
+softsusy_x_SOURCES = src/main.cpp src/fastalloc.cpp
 softsusy_x_LDADD = libsoft.la 
 
-softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp 
+softsusy_nmssm_x_SOURCES = src/main-nmssm.cpp src/fastalloc.cpp
 softsusy_nmssm_x_LDADD = libsoft.la
 
-softpoint_x_SOURCES = src/softpoint.cpp 
+softpoint_x_SOURCES = src/softpoint.cpp src/fastalloc.cpp
 softpoint_x_LDADD = libsoft.la 
 
-rpvsoftsusy_x_SOURCES = src/rpvmain.cpp 
+rpvsoftsusy_x_SOURCES = src/rpvmain.cpp src/fastalloc.cpp
 rpvsoftsusy_x_LDADD = libsoft.la 
 
-rpvneut_x_SOURCES = src/rpvneutmain.cpp 
+rpvneut_x_SOURCES = src/rpvneutmain.cpp src/fastalloc.cpp
 rpvneut_x_LDADD = libsoft.la 
 
 if LOOPTOOLS

@@ -26,7 +26,13 @@ namespace softsusy {
     int thresholds; ///< Threshold flag: not always used
   public: 
     Approx(): loops(2), thresholds(0) {};
-    virtual ~Approx() {};
+    // virtual ~Approx() {};
+    // Non-virtual: Approx has no virtual member functions and is never
+    // deleted through an Approx* pointer, so the virtual destructor was pure
+    // overhead (it forced a vtable pointer into every Approx and hence into
+    // every MssmSusy/QedQcd/MssmSoftsusy, and blocked trivial destruction of
+    // the millions of temporaries created during RG running).
+    ~Approx() {};
 
     inline const Approx & displayApprox() const { return *this; }
     const Approx & operator=(const Approx &);
