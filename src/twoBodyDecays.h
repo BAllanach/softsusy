@@ -70,6 +70,11 @@ double squark2amplitudedecaycharginoW2mix
 double squarkLamplitudedecayneutralino
 (double m1, double m2, double m3, double g, double gprime,
  DoubleMatrix & mixNeut, int neutralino, int uord ); 
+double stopamplitudedecaycharmneutralino
+(double mst1, double mcharmL, double mneutj, double thetat, double g, double gp,
+ DoubleMatrix & mixNeut, int neutralino, double mWboson, double beta,
+ double runmt, double runmb, double mQlsq, double mDrsq, double mHdsq,
+ double Ab, double mxBC);
 double squarkRamplitudedecayneutralino
 (double m1, double m2, double m3, double g, double gprime,
  DoubleMatrix & mixNeut, int neutralino, int uord );

@@ -296,6 +296,43 @@ double squarkRamplitudedecayneutralino (double m1, double m2, double m3, double 
 }
 
 
+double stopamplitudedecaycharmneutralino
+(double mst1, double mcharmL, double mneutj, double thetat, double g, double gp,
+ DoubleMatrix & mixNeut, int neutralino, double mWboson, double beta,
+ double runmt, double runmb, double mQlsq, double mDrsq, double mHdsq,
+ double Ab, double mxBC) {
+  /// Loop-induced flavour-changing decay ~t_1 -> c + ~chi^0_j.
+  /// Ken-ichi Hikasa & Makoto Kobayashi, Phys. Rev. D36 (1987) 724,
+  /// Eqs. (8a),(8b),(11),(13); the mixing eps as refined for the general MSSM
+  /// by Boehm, Djouadi & Mambrini, Phys.Rev. D61 (2000) 095006, Eqs.(14)-(16)
+  /// (the ~c_L 2nd-gen soft mass enters Delta_L).  The soft terms misalign the quark
+  /// and squark mass matrices through RG running from the flavour-universal
+  /// boundary scale M_X down to the weak scale; the physical ~t_1 thereby
+  /// acquires a small ~c_L admixture eps (dominated by the leading logarithm
+  /// ln(M_X^2/m_W^2)).  The decay proceeds through that admixture with the
+  /// ~c_L-c-~chi^0 gauge coupling.  Generalised from HK's photino result to a
+  /// general neutralino by reusing squarkLamplitudedecayneutralino, which in
+  /// the photino limit reduces to HK's sqrt(2) e e_c coupling [Eq.(12)].
+  double amplitudeW = 0.;
+  if (fabs(mst1) < fabs(mneutj)) return 0.;      /// phase space closed
+  if (mxBC < mWboson) return 0.;                 /// need a sensible high scale
+  double cosb = cos(beta);
+  const double Vtb = 0.99915, Vcb = 0.0409;      /// |V_tb V_cb| (PDG)
+  double logfac = log(sqr(mxBC / mWboson));      /// ln(M_X^2/m_W^2)
+  double pref = - sqr(g) / (16.0 * sqr(PI)) * logfac
+              * (Vtb * Vcb * sqr(runmb)) / (2.0 * sqr(mWboson) * sqr(cosb));
+  double DeltaL = pref * (mQlsq + mDrsq + mHdsq + sqr(Ab));   /// HK Eq.(8a)
+  double DeltaR = pref * (runmt * Ab);                       /// HK Eq.(8b)
+  double eps = - (DeltaL * cos(thetat) - DeltaR * sin(thetat))
+             / (sqr(mcharmL) - sqr(mst1));                    /// HK Eq.(11)
+  /// HK Eq.(13), generalised: Gamma = eps^2 x [~c_L -> c ~chi^0 partial width
+  /// evaluated with the ~t_1 mass and a massless charm quark].
+  amplitudeW = sqr(eps) *
+    squarkLamplitudedecayneutralino(mst1, 0.0, mneutj, g, gp, mixNeut,
+                                    neutralino, 1);
+  return amplitudeW;
+}
+
 double squark3amplitudedecayneutralino (double m1, double m2, double m3, double mWboson, double theta, double beta, DoubleMatrix & mixNeut, double g, double gp, double runmq, int squark , int oneortwo,  int neutralino) {
 
   double amplitudeW, lam, fq=0, alphatilda=0, betatilda=0, a=0, b=0;

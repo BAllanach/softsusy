@@ -745,7 +745,7 @@ int calculateDecays(ostream & fout, MssmSoftsusy * r,
  ParticleStop1.name = "Stop1";
  ParticleStop1.PDG = PDGstop1;
  ParticleStop1.mass = mu(1,3);
- ParticleStop1.No_1to2_Decays = 11;
+ ParticleStop1.No_1to2_Decays = 12; ///< +1 for ~t_1 -> c ~chi_10 (HK loop mode)
  ParticleStop1.No_1to3_Decays = 0;
  ParticleStop1.No_grav_Decays = 1;
  ParticleStop1.No_NMSSM_Decays = 1;
@@ -2229,6 +2229,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
  double stop1amplitudegluinotop=0, stop1amplitudetopneutralinoZ1=0, stop1amplitudetopneutralinoZ2=0, stop1amplitudetopneutralinoZ3=0, stop1amplitudetopneutralinoZ4=0, stop1amplitudebottomcharginoW1=0, stop1amplitudebottomcharginoW2=0, stop1amplitudeWbosonsbottom1=0, stop1amplitudeWbosonsbottom2=0, stop1amplitudeHplussbottom1=0, stop1amplitudeHplussbottom2=0, stop1amplitudetopgravitino=0;
  
  double stop1amplitudetopneutralinoZ5 = 0;
+ double stop1amplitudecharmneutralino1 = 0; ///< loop-induced ~t_1 -> c ~chi_10
 
  if (flagstop1 == 1) {
    stop1amplitudegluinotop = squarkamplitudedecaygluinomix (mu(1,3), mt, mGluino, alphas, 1, thetat);
@@ -2253,6 +2254,12 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    stop1amplitudeWbosonsbottom2 = squark3amplitudedecaysquark3Wboson (mu(1,3), polemw, md(2,3), g, thetat, thetab, 1, 1, 2, 2);
    stop1amplitudeHplussbottom1 = squark3amplitudedecaychargedHiggssquark3 (mu(1,3), mHpm, md(1,3), g, runmw, beta, thetat, thetab, greekmu, At, Ab, runmt, runmb, 1, 1);
    stop1amplitudeHplussbottom2 = squark3amplitudedecaychargedHiggssquark3 (mu(1,3), mHpm, md(2,3), g, runmw, beta, thetat, thetab, greekmu, At, Ab, runmt, runmb, 1, 2);
+   /// Loop-induced flavour-changing decay ~t_1 -> c ~chi_10 (Hikasa-Kobayashi,
+   /// Phys. Rev. D36 (1987) 724). ~c_L mass approximated by the lighter 2nd-gen
+   /// up-squark mu(1,2). Delta_L uses the 2nd-gen left soft mass
+   /// m^2_cL = displaySoftMassSquared(mQl,2,2) per Boehm-Djouadi-Mambrini,
+   /// Phys.Rev.D61(2000)095006 Eq.(16). M_X = displayMxBC() (GUT scale).
+   stop1amplitudecharmneutralino1 = stopamplitudedecaycharmneutralino(mu(1,3), mu(1,2), mneut(1), thetat, g, gp, mixNeut, 1, runmw, beta, runmt, runmb, r->displaySoftMassSquared(mQl,2,2), r->displaySoftMassSquared(mDr,3,3), r->displayMh1Squared(), Ab, r->displayMxBC());
  
    ParticleStop1.Array_Decays[0][0] = PDGtop; ParticleStop1.Array_Decays[0][1] = PDGgluino; ParticleStop1.Array_Decays[0][2] = stop1amplitudegluinotop; ParticleStop1.Array_Decays[0][3] = 2; ParticleStop1.Array_Comments[0] = "# ~t_1 -> t ~g";
    ParticleStop1.Array_Decays[1][0] = PDGbottom; ParticleStop1.Array_Decays[1][1] = PDGchargino1; ParticleStop1.Array_Decays[1][2] = stop1amplitudebottomcharginoW1; ParticleStop1.Array_Decays[1][3] = 2; ParticleStop1.Array_Comments[1] = "# ~t_1 -> b ~chi_1+";
@@ -2270,6 +2277,7 @@ ParticleGluino.Array_Decays[53][0] = PDGneutralino1; ParticleGluino.Array_Decays
    ParticleStop1.Array_Decays[11][0] = PDGtop; ParticleStop1.Array_Decays[11][1] = PDGneutralino5; ParticleStop1.Array_Decays[11][2] = stop1amplitudetopneutralinoZ5; ParticleStop1.Array_Decays[11][3] = 2; ParticleStop1.Array_Comments[11] = "# ~t_1 -> t ~chi_50";
 
    ParticleStop1.Array_Decays[12][0] = PDGtop; ParticleStop1.Array_Decays[12][1] = PDGgravitino; ParticleStop1.Array_Decays[12][2] = stop1amplitudetopgravitino; ParticleStop1.Array_Decays[12][3] = 2; ParticleStop1.Array_Comments[12] = "# ~t_1 -> t ~G";
+   ParticleStop1.Array_Decays[13][0] = PDGcharm; ParticleStop1.Array_Decays[13][1] = PDGneutralino1; ParticleStop1.Array_Decays[13][2] = stop1amplitudecharmneutralino1; ParticleStop1.Array_Decays[13][3] = 2; ParticleStop1.Array_Comments[13] = "# ~t_1 -> c ~chi_10";
 
    for(int i = 0; i<ParticleStop1.No_of_Decays; i++) {
      if (ParticleStop1.Array_Decays[i][2] < 0) {
