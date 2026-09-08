@@ -1,8 +1,14 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 project(Himalaya CXX Fortran)
 
-# require an Eigen installation
-find_package(Eigen3 REQUIRED)
+# Locate Eigen, unless the caller has already said where it is
+# (-DEIGEN3_INCLUDE_DIR=...; SOFTSUSY's build passes the directory its own
+# configure found, so that both use the same Eigen).  Not fatal if this
+# fails: the include path may instead be supplied through CMAKE_CXX_FLAGS,
+# and the compiler will complain if it is missing.
+if(NOT EIGEN3_INCLUDE_DIR)
+  find_package(Eigen3 QUIET)
+endif()
 
 # if needed, set your Fortran and C++ compiler
 #set (CMAKE_Fortran_COMPILER gfortran)
@@ -20,7 +26,12 @@ set(Himalaya_VERSION_MINOR 0)
 set(Himalaya_VERSION_RELEASE 0)
 
 # set the CXX flags
-set(CMAKE_CXX_FLAGS "-fPIC -std=c++11 -Wall -Wextra -pedantic")
+# Eigen >= 3.4.90/5.0 requires at least C++14; honour a -std= given by the
+# caller, otherwise default to C++14 (the Himalaya sources are C++11-clean).
+if(NOT CMAKE_CXX_FLAGS MATCHES "-std=")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Wall -Wextra -pedantic")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
@@ -30,7 +41,12 @@ set(INCLUDE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/source/include)
 #include c++ header files
 include_directories(${INCLUDE_PATH})
 include_directories(${INCLUDE_PATH}/hierarchies)
-include_directories(${EIGEN3_INCLUDE_DIR})
+if(EIGEN3_INCLUDE_DIR)
+  include_directories(${EIGEN3_INCLUDE_DIR})
+elseif(TARGET Eigen3::Eigen)
+  get_target_property(_eigen_inc Eigen3::Eigen INTERFACE_INCLUDE_DIRECTORIES)
+  include_directories(${_eigen_inc})
+endif()
 
 # setting the correct version to all headers
 configure_file (
@@ -52,12 +68,17 @@ list(REMOVE_ITEM LIBSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/source/example.cpp)
 add_library(DSZ STATIC ${FSOURCES})
 add_library(Himalaya STATIC ${LIBSOURCES})
 
-# set the executable and specify the c++ version
-add_executable(example ${CMAKE_CURRENT_SOURCE_DIR}/source/example.cpp)
-target_compile_features(example PRIVATE cxx_range_for)
+# The example program is not needed by SOFTSUSY; build it only on request
+# (cmake -DHIMALAYA_BUILD_EXAMPLE=ON .)
+option(HIMALAYA_BUILD_EXAMPLE "Build the Himalaya example program" OFF)
+if(HIMALAYA_BUILD_EXAMPLE)
+  # set the executable and specify the c++ version
+  add_executable(example ${CMAKE_CURRENT_SOURCE_DIR}/source/example.cpp)
+  target_compile_features(example PRIVATE cxx_range_for)
 
-# link mh2l and himalaya to the executable
-target_link_libraries(example Himalaya DSZ)
+  # link mh2l and himalaya to the executable
+  target_link_libraries(example Himalaya DSZ)
+endif()
 
 # install
 install(TARGETS Himalaya ARCHIVE DESTINATION lib)

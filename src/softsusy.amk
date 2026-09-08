@@ -48,8 +48,18 @@ rpvneut_x_LDADD        += $(himalayadir)/libHimalaya.a
 CPPFLAGS               += -I$(himalayadir)/source/include
 endif ENABLE_HIMALAYA
 
+# Build Himalaya with the same compilers, flags and Eigen headers as
+# SOFTSUSY itself (EIGEN_INCLUDE_DIR is the copy of Eigen that configure
+# found; passing it stops CMake's find_package(Eigen3) from picking a
+# different, possibly incompatible, installation).  A stale in-source
+# CMakeCache.txt from an earlier configuration would otherwise be silently
+# reused, so it is removed first.  Only the library target is built: the
+# Himalaya example program is not needed by SOFTSUSY and has been deleted.
 $(himalayadir)/libHimalaya.a:
-	cd $(himalayadir) && cmake . && $(MAKE)
+	cd $(himalayadir) && rm -f CMakeCache.txt && \
+	cmake . -DCMAKE_CXX_COMPILER="$(CXX)" -DCMAKE_Fortran_COMPILER="$(F77)" \
+	        -DCMAKE_CXX_FLAGS="$(CPPFLAGS) $(CXXFLAGS)" \
+	        -DEIGEN3_INCLUDE_DIR="$(EIGEN_INCLUDE_DIR)" && $(MAKE) Himalaya
 .PHONY: clean-local-himalaya
 clean-local: clean-local-himalaya
 clean-local-himalaya:
@@ -109,7 +119,6 @@ EXTRA_DIST += src/nmspec.f src/nmh_slhainp.f \
    $(himalayadir)/source/hierarchies/HierarchyObject.cpp \
    $(himalayadir)/source/hierarchies/H4.cpp \
    $(himalayadir)/source/hierarchies/H32q2g.cpp \
-   $(himalayadir)/source/example.cpp \
    $(himalayadir)/source/include \
    $(himalayadir)/source/include/hierarchies \
    $(himalayadir)/source/include/hierarchies/H3q22g.hpp \

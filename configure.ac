@@ -88,9 +88,31 @@ AM_CONDITIONAL(ENABLE_HIMALAYA, [test x$enable_himalaya = xyes])
 
 AS_IF([test "x$enable_himalaya" = "xyes"],
       [AC_LANG_PUSH([C++])
-       AC_CHECK_HEADERS([Eigen/Dense], [],
-                        [AC_MSG_ERROR([Eigen headers not found])]
-                       )
+       AC_CHECK_HEADERS([Eigen/Dense], [eigen_found=yes], [eigen_found=no])
+       dnl Eigen is usually installed in its own subdirectory, which is not
+       dnl on the default include path: try the usual locations.
+       if test x"$eigen_found" = xno; then
+         for eigen_dir in /usr/include/eigen3 /usr/local/include/eigen3 \
+                          /opt/homebrew/include/eigen3 /opt/local/include/eigen3; do
+           if test -f "$eigen_dir/Eigen/Dense"; then
+             AC_MSG_NOTICE([found Eigen in $eigen_dir])
+             CPPFLAGS="$CPPFLAGS -I$eigen_dir"
+             eigen_found=yes
+             break
+           fi
+         done
+       fi
+       if test x"$eigen_found" = xno; then
+         AC_MSG_ERROR([Eigen headers not found: install Eigen3 (e.g. apt install libeigen3-dev or brew install eigen) or pass CPPFLAGS=-I/path/to/eigen3])
+       fi
+       dnl Record which Eigen the compiler actually resolves, so that the
+       dnl Himalaya CMake build uses the very same copy rather than whatever
+       dnl find_package(Eigen3) happens to locate (e.g. a different version
+       dnl under /usr/local).
+       AC_MSG_CHECKING([which Eigen include directory is used])
+       EIGEN_INCLUDE_DIR=`echo '#include <Eigen/Dense>' | $CXX $CPPFLAGS $CXXFLAGS -E -x c++ - 2>/dev/null | sed -n 's|^# *[[0-9]]* *"\(.*\)/Eigen/Dense".*|\1|p' | head -n 1`
+       AC_MSG_RESULT([${EIGEN_INCLUDE_DIR:-unknown}])
+       AC_SUBST([EIGEN_INCLUDE_DIR])
        AC_LANG_POP([C++])]
      )
 

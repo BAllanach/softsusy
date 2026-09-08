@@ -1,10 +1,10 @@
-# SOFTSUSY4.1.23 SLHA compliant output
+# SOFTSUSY4.1.24 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
 # B.C. Allanach, P. Athron, L.C. Tunstall, A. Voigt and A.~G.~Williams,
 # Comput. Phys. Commun. 185 (2014) 2322, arXiv:1311.7659
 Block SPINFO          # Program information
      1    SOFTSUSY    # spectrum calculator
-     2    4.1.23       # version number
+     2    4.1.24       # version number
 Block SOFTSUSY               # SOFTSUSY specific SLHA options
     0   1.000000000e+00      # Calculate decays in output (only for RPC (N)MSSM)
     1   1.000000000e-04      # tolerance
@@ -343,13 +343,13 @@ DECAY 2000005     1.08647456e+00   # Sbottom2 decays
       7.59307598e-02    2      5          1000045   # ~b_2 -> b ~chi_50
 #
 #     PDG         Width             
-DECAY 1000006     3.05302588e+00   # Stop1 decays
+DECAY 1000006     3.05302592e+00   # Stop1 decays
 #     BR                NDA   PDG1         PDG2       Comments          
-      4.60965476e-01    2      5          1000024   # ~t_1 -> b ~chi_1+
-      9.94072779e-02    2      5          1000037   # ~t_1 -> b ~chi_2+
-      2.83495965e-01    2      6          1000022   # ~t_1 -> t ~chi_10
-      1.55716154e-01    2      6          1000023   # ~t_1 -> t ~chi_20
-      4.15127232e-04    2      6          1000025   # ~t_1 -> t ~chi_30
+      4.60965470e-01    2      5          1000024   # ~t_1 -> b ~chi_1+
+      9.94072767e-02    2      5          1000037   # ~t_1 -> b ~chi_2+
+      2.83495962e-01    2      6          1000022   # ~t_1 -> t ~chi_10
+      1.55716152e-01    2      6          1000023   # ~t_1 -> t ~chi_20
+      4.15127227e-04    2      6          1000025   # ~t_1 -> t ~chi_30
 #
 #     PDG         Width             
 DECAY 2000006     1.30534516e+01   # Stop2 decays

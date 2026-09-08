@@ -667,6 +667,7 @@ ENABLE_GSL_FALSE
 ENABLE_GSL_TRUE
 LOOPTOOLS_FALSE
 LOOPTOOLS_TRUE
+EIGEN_INCLUDE_DIR
 ENABLE_HIMALAYA_FALSE
 ENABLE_HIMALAYA_TRUE
 COMPILE_TWO_LOOP_GAUGE_YUKAWA_FALSE
@@ -21741,13 +21742,33 @@ do :
 if test "x$ac_cv_header_Eigen_Dense" = xyes
 then :
   printf "%s\n" "#define HAVE_EIGEN_DENSE 1" >>confdefs.h
-
+ eigen_found=yes
 else $as_nop
-  as_fn_error $? "Eigen headers not found" "$LINENO" 5
-
+  eigen_found=no
 fi
 
 done
+                     if test x"$eigen_found" = xno; then
+         for eigen_dir in /usr/include/eigen3 /usr/local/include/eigen3 \
+                          /opt/homebrew/include/eigen3 /opt/local/include/eigen3; do
+           if test -f "$eigen_dir/Eigen/Dense"; then
+             { printf "%s\n" "$as_me:${as_lineno-$LINENO}: found Eigen in $eigen_dir" >&5
+printf "%s\n" "$as_me: found Eigen in $eigen_dir" >&6;}
+             CPPFLAGS="$CPPFLAGS -I$eigen_dir"
+             eigen_found=yes
+             break
+           fi
+         done
+       fi
+       if test x"$eigen_found" = xno; then
+         as_fn_error $? "Eigen headers not found: install Eigen3 (e.g. apt install libeigen3-dev or brew install eigen) or pass CPPFLAGS=-I/path/to/eigen3" "$LINENO" 5
+       fi
+                                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking which Eigen include directory is used" >&5
+printf %s "checking which Eigen include directory is used... " >&6; }
+       EIGEN_INCLUDE_DIR=`echo '#include <Eigen/Dense>' | $CXX $CPPFLAGS $CXXFLAGS -E -x c++ - 2>/dev/null | sed -n 's|^# *[[0-9]]* *"\(.*\)/Eigen/Dense".*|\1|p' | head -n 1`
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: ${EIGEN_INCLUDE_DIR:-unknown}" >&5
+printf "%s\n" "${EIGEN_INCLUDE_DIR:-unknown}" >&6; }
+
        ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
