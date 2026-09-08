@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.59)
-AC_INIT([softsusy], [4.1.23], [B.C.Allanach@damtp.cam.ac.uk], [softsusy], [https://github.com/BAllanach/softsusy])
+AC_PREREQ([2.71])
+AC_INIT([softsusy],[4.1.24],[B.C.Allanach@damtp.cam.ac.uk],[softsusy],[https://github.com/BAllanach/softsusy])
 AC_CONFIG_SRCDIR([src])
 AC_CONFIG_AUX_DIR([Config])
 AC_CONFIG_HEADERS([Config/config.h])
@@ -49,18 +49,24 @@ fi
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
-## needed for twoloophiggs
+## needed for twoloophiggs.f, nmssm2loop.f and dilogwrap.f: a Fortran
+## compiler is mandatory.  AC_PROG_F77 does not abort if none is found,
+## which would otherwise lead to an obscure libtool failure at make time
+## ("libtool: error: unrecognised option: '-O2'").
 AC_PROG_F77
+if test x"$F77" = x; then
+ AC_MSG_ERROR([could not find a Fortran compiler (e.g. gfortran), which is required. On macOS, install one with e.g. "brew install gcc" and re-run configure, or set F77=/path/to/gfortran])
+fi
 AC_F77_LIBRARY_LDFLAGS
 ##
 
 ## If you want shared libraries, configure with --enable-shared
-AC_PROG_LIBTOOL
+LT_INIT
 
 ## Switch on two-loop threshold corrections to third family Yukawa couplings 
 ## and strong gauge coupling 
 AC_ARG_ENABLE([two-loop-gauge-yukawa-compilation], 
-               AC_HELP_STRING([--enable-two-loop-gauge-yukawa-compilation],[Compile two-loop SUSY thresholds to the third generation fermionic Yukawa couplings and the strong gauge coupling]),
+               AS_HELP_STRING([--enable-two-loop-gauge-yukawa-compilation],[Compile two-loop SUSY thresholds to the third generation fermionic Yukawa couplings and the strong gauge coupling]),
              [AC_DEFINE([COMPILE_TWO_LOOP_GAUGE_YUKAWA],[1],[Compile leading two-loop SUSY threshold corrections to fermionic third generation Yukawa couplings])
               case "${enableval}" in
               yes) two_loop_gauge_yukawa_compilation=true ;;
@@ -71,7 +77,7 @@ AM_CONDITIONAL(COMPILE_TWO_LOOP_GAUGE_YUKAWA, [test x$two_loop_gauge_yukawa_comp
 
 # Use Himalaya for 3L contributions to Mh
 AC_ARG_ENABLE([himalaya], 
-              AC_HELP_STRING([--enable-himalaya],[Include 3-loop Higgs mass contributions from Himalaya]),
+              AS_HELP_STRING([--enable-himalaya],[Include 3-loop Higgs mass contributions from Himalaya]),
              [AC_DEFINE([ENABLE_HIMALAYA],[1],[Include 3-loop Higgs mass contributions from Himalaya])
               case "${enableval}" in
               yes) enable_himalaya=yes ;;
@@ -90,7 +96,7 @@ AS_IF([test "x$enable_himalaya" = "xyes"],
 
 # Use looptools instead of SOFTSUSY's built in 1-loop functions
 AC_ARG_ENABLE([looptools], 
-               AC_HELP_STRING([--enable-looptools],[Looptools evaluation of Pasarino-Veltman functions]),
+               AS_HELP_STRING([--enable-looptools],[Looptools evaluation of Pasarino-Veltman functions]),
              [AC_DEFINE([LOOPTOOLS],[1],[Looptools evaluation of Pasarino-Veltman functions])
               case "${enableval}" in
               yes) looptools_compilation=true ;;
@@ -100,11 +106,11 @@ AC_ARG_ENABLE([looptools],
 AM_CONDITIONAL(LOOPTOOLS, [test x$looptools_compilation = xtrue])
 
 # AC_ARG_ENABLE([debug], 
-#               AC_HELP_STRING([--enable-debug],[enables debug printing in two-loop threshold corrections]), 
+#               AS_HELP_STRING([--enable-debug],[enables debug printing in two-loop threshold corrections]), 
 # 	      AC_DEFINE([DEBUG],[1],[Threshold correction debugging output]),[])
 
 AC_ARG_ENABLE([gsl],
-              AC_HELP_STRING([--enable-gsl],[enables linking against GSL (default: no)]),
+              AS_HELP_STRING([--enable-gsl],[enables linking against GSL (default: no)]),
               [],[enable_gsl=no])
 
 AS_IF([test "x$enable_gsl" = "xyes"],

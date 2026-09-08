@@ -264,9 +264,14 @@ struct TSIL_Data
   TSIL_REAL precisionGoal;
   int       nStepsStart, nStepsMaxCon, nStepsMaxVar, nStepsMin;
 
-  /* Pointers to RK stepper functions: */
-  int  (*RKstepper6) ();
-  void (*RKstepper5) ();
+  /* Pointers to RK stepper functions.  Full prototypes are required:
+     in C23 (the default for GCC >= 15) an empty parameter list means
+     (void), so the old K&R-style declarations are incompatible with
+     the actual stepper functions. */
+  int  (*RKstepper6) (struct TSIL_Data *, TSIL_COMPLEX *, TSIL_COMPLEX *,
+		      TSIL_REAL, int, TSIL_REAL, int);
+  void (*RKstepper5) (struct TSIL_Data *, TSIL_COMPLEX *, TSIL_COMPLEX,
+		      TSIL_REAL, int);
 };
 
 typedef struct TSIL_Data TSIL_DATA;
